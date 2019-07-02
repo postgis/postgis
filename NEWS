@@ -5,7 +5,7 @@ This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 * Major highlights *
-  - #4433 32-bit hash fix (requires reindexing your data if on 32-bit OS) (Raúl Marín)
+  - #4433 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
 
 
 PostGIS 3.0.0alpha3
@@ -103,6 +103,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
   - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
            them in database for some reason. (Darafei Praliaskouski)
+  - #4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
