@@ -390,3 +390,4 @@ ERROR:  BOX3D_construct: args can not be empty points
 ERROR:  BOX2D_construct: args can not be empty points
 #4176|t
 #4394
+#4445|f|t|t|t|f|t|t|f|f|f|f|f|f|t|t

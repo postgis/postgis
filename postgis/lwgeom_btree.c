@@ -68,7 +68,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	int cmp = gserialized_cmp(g1, g2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
-	if (cmp == 0)
+	if (cmp <= 0)
 		PG_RETURN_BOOL(true);
 	else
 		PG_RETURN_BOOL(false);

@@ -6,6 +6,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 * Major highlights *
   - #4433 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
+  - #4445, Fix a bug in geometry_le (Raúl Marín)
 
 
 PostGIS 3.0.0alpha3
@@ -198,6 +199,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4394, Allow FULL OUTER JOIN on geometry equality operator (Darafei Praliaskouski)
   - #4441, Make GiST penalty friendly to multi-column indexes and build single-column
            ones faster. (Darafei Praliaskouski)
+  - #4445, Fix a bug in geometry_le (Raúl Marín)
 
 
 PostGIS 2.5.0
