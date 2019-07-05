@@ -592,25 +592,31 @@ PG_FUNCTION_INFO_V1(LWGEOM_x_point);
 Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
-	LWGEOM *lwgeom;
-	LWPOINT *point = NULL;
-	POINT2D p;
+	GBOX box = {0};
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-	if ( gserialized_get_type(geom) != POINTTYPE )
+	if (gserialized_get_type(geom) != POINTTYPE)
 		lwpgerror("Argument to ST_X() must be a point");
 
-	lwgeom = lwgeom_from_gserialized(geom);
-	point = lwgeom_as_lwpoint(lwgeom);
-
-	if ( lwgeom_is_empty(lwgeom) )
+	if (gserialized_is_empty(geom))
 		PG_RETURN_NULL();
 
-	getPoint2d_p(point->point, 0, &p);
+	if (gserialized_peek_gbox_p(geom, &box) == LW_SUCCESS)
+	{
+		PG_RETURN_FLOAT8(box.xmin);
+	}
+	else
+	{
+		LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+		LWPOINT *point = lwgeom_as_lwpoint(lwgeom);
+		POINT2D p;
 
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_FLOAT8(p.x);
+		getPoint2d_p(point->point, 0, &p);
+
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_FLOAT8(p.x);
+	}
 }
 
 /**
@@ -621,26 +627,31 @@ PG_FUNCTION_INFO_V1(LWGEOM_y_point);
 Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
-	LWPOINT *point = NULL;
-	LWGEOM *lwgeom;
-	POINT2D p;
+	GBOX box = {0};
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwpgerror("Argument to ST_Y() must be a point");
+	if (gserialized_get_type(geom) != POINTTYPE)
+		lwpgerror("Argument to ST_X() must be a point");
 
-	lwgeom = lwgeom_from_gserialized(geom);
-	point = lwgeom_as_lwpoint(lwgeom);
-
-	if ( lwgeom_is_empty(lwgeom) )
+	if (gserialized_is_empty(geom))
 		PG_RETURN_NULL();
 
-	getPoint2d_p(point->point, 0, &p);
+	if (gserialized_peek_gbox_p(geom, &box) == LW_SUCCESS)
+	{
+		PG_RETURN_FLOAT8(box.ymin);
+	}
+	else
+	{
+		LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+		LWPOINT *point = lwgeom_as_lwpoint(lwgeom);
+		POINT2D p;
 
-	PG_FREE_IF_COPY(geom, 0);
+		getPoint2d_p(point->point, 0, &p);
 
-	PG_RETURN_FLOAT8(p.y);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_FLOAT8(p.y);
+	}
 }
 
 /**

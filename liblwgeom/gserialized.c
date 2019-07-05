@@ -253,8 +253,14 @@ const float * gserialized_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 		return gserialized1_get_float_box_p(g, ndims);
 }
 
-
-
+int
+gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
+{
+	if (GFLAGS_GET_VERSION(g->gflags))
+		return gserialized2_peek_gbox_p(g, gbox);
+	else
+		return gserialized1_peek_gbox_p(g, gbox);
+}
 
 /**
 * Return -1 if g1 is "less than" g2, 1 if g1 is "greater than"
