@@ -839,6 +839,11 @@ extern GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g);
 */
 extern uint32_t gserialized_get_version(const GSERIALIZED *g);
 
+/**
+* Pull the first point values of a #GSERIALIZED. Only works for POINTTYPE
+*/
+extern int gserialized_peek_first_point(const GSERIALIZED *g, POINT4D *out_point);
+
 /*****************************************************************************/
 
 

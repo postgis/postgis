@@ -311,7 +311,7 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		double *dptr = (double*)(g->data);
 
 		/* Read the empty flag */
-		int *iptr = (int*)(g->data);
+		int32_t *iptr = (int32_t *)(g->data);
 		int isempty = (iptr[1] == 0);
 
 		/* EMPTY point has no box */
@@ -337,7 +337,7 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		int ndims = G1FLAGS_NDIMS(g->gflags);
 		int i = 0; /* Start at <linetype><npoints> */
 		double *dptr = (double*)(g->data);
-		int *iptr = (int*)(g->data);
+		int32_t *iptr = (int32_t *)(g->data);
 		int npoints = iptr[1]; /* Read the npoints */
 
 		/* This only works with 2-point lines */
@@ -378,7 +378,7 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 	{
 		int i = 0; /* Start at <multipointtype><ngeoms> */
 		double *dptr = (double*)(g->data);
-		int *iptr = (int*)(g->data);
+		int32_t *iptr = (int32_t *)(g->data);
 		int ngeoms = iptr[1]; /* Read the ngeoms */
 		int npoints;
 
@@ -420,7 +420,7 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		int ndims = G1FLAGS_NDIMS(g->gflags);
 		int i = 0; /* Start at <multilinetype><ngeoms> */
 		double *dptr = (double*)(g->data);
-		int *iptr = (int*)(g->data);
+		int32_t *iptr = (int32_t *)(g->data);
 		int ngeoms = iptr[1]; /* Read the ngeoms */
 		int npoints;
 
@@ -467,6 +467,42 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 	}
 
 	return LW_FAILURE;
+}
+
+int
+gserialized1_peek_first_point(const GSERIALIZED *g, POINT4D *out_point)
+{
+	uint8_t *geometry_start = ((uint8_t *)g->data);
+	if (gserialized1_has_bbox(g))
+	{
+		geometry_start += gserialized1_box_size(g);
+	}
+
+	int32_t *iptr = (int32_t *)(geometry_start);
+	int32_t type = iptr[0];
+	int32_t isempty = (iptr[1] == 0);
+
+	/* EMPTY point has first point */
+	if (type != POINTTYPE || isempty)
+	{
+		return LW_FAILURE;
+	}
+
+	double *dptr = (double *)(geometry_start + sizeof(uint32_t) * 2);
+	uint8_t dim = 0;
+	out_point->x = dptr[dim++];
+	out_point->y = dptr[dim++];
+
+	if (G1FLAGS_GET_Z(g->gflags))
+	{
+		out_point->z = dptr[dim++];
+	}
+	if (G1FLAGS_GET_M(g->gflags))
+	{
+		out_point->m = dptr[dim];
+	}
+
+	return LW_SUCCESS;
 }
 
 /**
