@@ -56,8 +56,8 @@ rect_node_cmp(const void *pn1, const void *pn2)
 	b2.ymin = n2->ymin;
 	b2.ymax = n2->ymax;
 
-	h1 = gbox_get_sortable_hash(&b1);
-	h2 = gbox_get_sortable_hash(&b2);
+	h1 = gbox_get_sortable_hash(&b1, 0);
+	h2 = gbox_get_sortable_hash(&b2, 0);
 	return h1 < h2 ? -1 : (h1 > h2 ? 1 : 0);
 }
 

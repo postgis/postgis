@@ -2040,7 +2040,7 @@ extern int gbox_is_valid(const GBOX *gbox);
 /**
 * Return a sortable key based on the center point of the GBOX.
 */
-extern uint64_t gbox_get_sortable_hash(const GBOX *g);
+extern uint64_t gbox_get_sortable_hash(const GBOX *g, const int32_t srid);
 
 /**
 * Return a sortable key based on gserialized.

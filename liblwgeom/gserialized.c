@@ -328,6 +328,8 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	{
 		int g1_is_empty = (gserialized_get_gbox_p(g1, &box1) == LW_FAILURE);
 		int g2_is_empty = (gserialized_get_gbox_p(g2, &box2) == LW_FAILURE);
+		int32_t srid1 = gserialized_get_srid(g1);
+		int32_t srid2 = gserialized_get_srid(g2);
 
 		/* Empty < Non-empty */
 		if (g1_is_empty && !g2_is_empty)
@@ -340,8 +342,8 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		if (!g1_is_empty && !g2_is_empty)
 		{
 			/* Using the boxes, calculate sortable hash key. */
-			hash1 = gbox_get_sortable_hash(&box1);
-			hash2 = gbox_get_sortable_hash(&box2);
+			hash1 = gbox_get_sortable_hash(&box1, srid1);
+			hash2 = gbox_get_sortable_hash(&box2, srid2);
 
 			if (hash1 > hash2)
 				return 1;
@@ -361,7 +363,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		/* If SRID is not equal, sort on it */
 		if (cmp_srid != 0)
 		{
-			return (gserialized1_get_srid(g1) < gserialized1_get_srid(g2)) ? 1 : -1;
+			return (srid1 > srid2) ? 1 : -1;
 		}
 
 		assert(cmp != 0);
@@ -378,5 +380,5 @@ gserialized_get_sortable_hash(const GSERIALIZED *g)
 	if (is_empty)
 		return 0;
 	else
-		return gbox_get_sortable_hash(&box);
+		return gbox_get_sortable_hash(&box, gserialized_get_srid(g));
 }
