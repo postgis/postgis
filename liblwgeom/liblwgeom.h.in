@@ -2038,10 +2038,14 @@ extern void gbox_float_round(GBOX *gbox);
 extern int gbox_is_valid(const GBOX *gbox);
 
 /**
-* Return a sortable key based on the center point of the
-* GBOX.
+* Return a sortable key based on the center point of the GBOX.
 */
 extern uint64_t gbox_get_sortable_hash(const GBOX *g);
+
+/**
+* Return a sortable key based on gserialized.
+*/
+extern uint64_t gserialized_get_sortable_hash(const GSERIALIZED *g);
 
 /**
 * Utility function to get type number from string. For example, a string 'POINTZ'

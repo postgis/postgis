@@ -377,6 +377,12 @@ CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION geometry_sortsupport(internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'lwgeom_sortsupport'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
 --
 -- Sorting operators for Btree
 --
@@ -417,6 +423,7 @@ CREATE OPERATOR > (
 );
 
 -- Availability: 0.9.0
+-- Changed: 3.0.0
 CREATE OPERATOR CLASS btree_geometry_ops
 	DEFAULT FOR TYPE geometry USING btree AS
 	OPERATOR	1	< ,
@@ -424,7 +431,8 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	3	= ,
 	OPERATOR	4	>= ,
 	OPERATOR	5	> ,
-	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry);
+	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry),
+	FUNCTION	2	geometry_sortsupport(internal);
 
 --
 -- Sorting operators for Btree

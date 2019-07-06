@@ -303,127 +303,80 @@ inline static int gserialized_cmp_srid(const GSERIALIZED *g1, const GSERIALIZED 
 	) ? 0 : 1;
 }
 
+/* ORDER BY hash(g), g::bytea, ST_SRID(g) */
 int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 {
-	union floatuint {
-		uint32_t u;
-		float f;
-	};
-
-	int g1_is_empty, g2_is_empty, cmp;
 	GBOX box1, box2;
 	uint64_t hash1, hash2;
 	size_t sz1 = SIZE_GET(g1->size);
 	size_t sz2 = SIZE_GET(g2->size);
-	union floatuint x, y;
-
 	size_t hsz1 = gserialized_header_size(g1);
 	size_t hsz2 = gserialized_header_size(g2);
+	uint8_t *b1 = (uint8_t*)g1 + hsz1;
+	uint8_t *b2 = (uint8_t*)g2 + hsz2;
+	size_t bsz1 = sz1 - hsz1;
+	size_t bsz2 = sz2 - hsz2;
+	size_t bsz_min = bsz1 < bsz2 ? bsz1 : bsz2;
 
-	/*
-	* For two non-same points, we can skip a lot of machinery.
-	*/
-	if (
-		sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
-		sz2 > 16 &&
-		hsz1 == 8 &&
-		hsz2 == 8 &&
-		*(uint32_t*)(g1->data) == POINTTYPE &&
-		*(uint32_t*)(g2->data) == POINTTYPE
-	)
+	/* Equality fast path */
+	/* Return equality for perfect equality only */
+	int cmp_srid = gserialized_cmp_srid(g1, g2);
+	int cmp = memcmp(b1, b2, bsz_min);
+	if (bsz1 == bsz2 && cmp_srid == 0 && cmp == 0)
+		return 0;
+	else
 	{
-		double *dptr = (double*)(g1->data + 8);
-		x.f = 2.0 * dptr[0];
-		y.f = 2.0 * dptr[1];
-		hash1 = uint32_interleave_2(x.u, y.u);
+		int g1_is_empty = (gserialized_get_gbox_p(g1, &box1) == LW_FAILURE);
+		int g2_is_empty = (gserialized_get_gbox_p(g2, &box2) == LW_FAILURE);
 
-		dptr = (double*)(g2->data + 8);
-		x.f = 2.0 * dptr[0];
-		y.f = 2.0 * dptr[1];
-		hash2 = uint32_interleave_2(x.u, y.u);
+		/* Empty < Non-empty */
+		if (g1_is_empty && !g2_is_empty)
+			return -1;
 
-		/* If the SRIDs are the same, we can use hash inequality */
-		/* to jump us out of this function early. Otherwise we still */
-		/* have to do the full calculation */
-		if (gserialized_cmp_srid(g1, g2) == 0)
+		/* Non-empty > Empty */
+		if (!g1_is_empty && g2_is_empty)
+			return 1;
+
+		if (!g1_is_empty && !g2_is_empty)
 		{
+			/* Using the boxes, calculate sortable hash key. */
+			hash1 = gbox_get_sortable_hash(&box1);
+			hash2 = gbox_get_sortable_hash(&box2);
+
 			if (hash1 > hash2)
 				return 1;
 			if (hash1 < hash2)
 				return -1;
 		}
 
-		/* if hashes happen to be the same, go to full compare. */
+		/* Prefix comes before longer one. */
+		if (bsz1 != bsz2 && cmp == 0)
+		{
+			if (bsz1 < bsz2)
+				return -1;
+			else if (bsz1 > bsz2)
+				return 1;
+		}
+
+		/* If SRID is not equal, sort on it */
+		if (cmp_srid != 0)
+		{
+			return (gserialized1_get_srid(g1) < gserialized1_get_srid(g2)) ? 1 : -1;
+		}
+
+		assert(cmp != 0);
+		return cmp > 0 ? 1 : -1;
 	}
+}
 
-	uint8_t *b1 = (uint8_t*)g1 + hsz1;
-	uint8_t *b2 = (uint8_t*)g2 + hsz2;
-	size_t bsz1 = sz1 - hsz1;
-	size_t bsz2 = sz2 - hsz2;
-	size_t bsz = bsz1 < bsz2 ? bsz1 : bsz2;
+uint64_t
+gserialized_get_sortable_hash(const GSERIALIZED *g)
+{
+	GBOX box;
+	int is_empty = (gserialized_get_gbox_p(g, &box) == LW_FAILURE);
 
-	int cmp_srid = gserialized_cmp_srid(g1, g2);
-
-	g1_is_empty = (gserialized_get_gbox_p(g1, &box1) == LW_FAILURE);
-	g2_is_empty = (gserialized_get_gbox_p(g2, &box2) == LW_FAILURE);
-
-	/* Empty < Non-empty */
-	if (g1_is_empty && !g2_is_empty)
-		return -1;
-
-	/* Non-empty > Empty */
-	if (!g1_is_empty && g2_is_empty)
-		return 1;
-
-	/* Return equality for perfect equality only */
-	cmp = memcmp(b1, b2, bsz);
-	if (bsz1 == bsz2 && cmp_srid == 0 && cmp == 0)
+	if (is_empty)
 		return 0;
-
-	if (!g1_is_empty && !g2_is_empty)
-	{
-		/* Using the centroids, calculate somewhat sortable */
-		/* hash key. The key doesn't provide good locality over */
-		/* the +/- boundary, but otherwise is pretty OK */
-		hash1 = gbox_get_sortable_hash(&box1);
-		hash2 = gbox_get_sortable_hash(&box2);
-
-		if (hash1 > hash2)
-			return 1;
-		else if (hash1 < hash2)
-			return -1;
-
-		/* What, the hashes are equal? OK... sort on the */
-		/* box minima */
-		if (box1.xmin < box2.xmin)
-			return -1;
-		else if (box1.xmin > box2.xmin)
-			return 1;
-
-		if (box1.ymin < box2.ymin)
-			return -1;
-		else if (box1.ymin > box2.ymin)
-			return 1;
-
-		/* Still equal? OK... sort on the box maxima */
-		if (box1.xmax < box2.xmax)
-			return -1;
-		else if (box1.xmax > box2.xmax)
-			return 1;
-
-		if (box1.ymax < box2.ymax)
-			return -1;
-		else if (box1.ymax > box2.ymax)
-			return 1;
-	}
-
-	/* Prefix comes before longer one. */
-	if (bsz1 != bsz2 && cmp == 0)
-	{
-		if (bsz1 < bsz2)
- 			return -1;
-		else if (bsz1 > bsz2)
- 			return 1;
-	}
-	return cmp > 0 ? 1 : -1;
+	else
+		return gbox_get_sortable_hash(&box);
 }
