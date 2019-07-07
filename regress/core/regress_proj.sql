@@ -65,5 +65,5 @@ SELECT 13, count(*) FROM
 (
     SELECT ST_Transform('SRID=4326; POINT(0 0)'::geometry, srid) AS g
     FROM
-        ( SELECT srid FROM spatial_ref_sys LIMIT 150 ) _a
+        ( SELECT srid FROM spatial_ref_sys WHERE srtext LIKE 'GEOGCS%' AND proj4text NOT LIKE '%clrk80ign%' LIMIT 150 ) _a
 ) _b WHERE g IS NOT NULL;
