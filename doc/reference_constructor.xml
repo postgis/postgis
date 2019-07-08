@@ -760,9 +760,6 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 	<refentry id="ST_TileEnvelope">
 		<refnamediv>
 		<refname>ST_TileEnvelope</refname>
-
-<ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink>
-
 		<refpurpose>Creates a rectangular Polygon in <ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink> (SRID:3857) using the <ulink url="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</ulink>.</refpurpose>
 		</refnamediv>
 
