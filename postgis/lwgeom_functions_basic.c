@@ -2064,6 +2064,69 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+
+PG_FUNCTION_INFO_V1(ST_TileEnvelope);
+Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
+{
+	LWPOLY *poly;
+	GSERIALIZED *result;
+	uint32_t x, y, zoom;
+	int32_t worldTileSize;
+	double worldGeoSize, tileGeoSize;
+	double boundsWidth, boundsHeight;
+	double x1, y1, x2, y2;
+	int32_t srid = 3857;
+	GBOX *bounds;
+	GBOX bounds_3857;
+
+	POSTGIS_DEBUG(2, "ST_TileEnvelope called");
+
+	zoom = PG_GETARG_INT32(0);
+	x = PG_GETARG_INT32(1);
+	y = PG_GETARG_INT32(2);
+	if (PG_NARGS() > 3)
+		srid = PG_GETARG_INT32(3);
+	if (PG_NARGS() > 4)
+		bounds = (GBOX*)(PG_GETARG_POINTER(4));
+	else
+	{
+		gbox_init(&bounds_3857);
+		bounds_3857.ymin = bounds_3857.xmin = -20037508.3427892;
+		bounds_3857.ymax = bounds_3857.xmax =  20037508.3427892;
+		bounds = &bounds_3857;
+	}
+
+	boundsWidth  = bounds->xmax - bounds->xmin;
+	boundsHeight = bounds->ymax - bounds->ymin;
+	if (boundsWidth <= 0 || boundsHeight <= 0)
+		elog(ERROR, "%s: Geometric bounds are too small", __func__);
+
+	if (zoom >= 32 || zoom < 0)
+		elog(ERROR, "%s: Invalid tile zoom value, %d", __func__, zoom);
+
+	worldGeoSize = Max(boundsWidth, boundsHeight);
+	worldTileSize = 0x01 << (zoom > 31 ? 31 : zoom);
+
+	if (x >= worldTileSize || x < 0)
+		elog(ERROR, "%s: Invalid tile x value, %d", __func__, x);
+	if (y >= worldTileSize || y < 0)
+		elog(ERROR, "%s: Invalid tile y value, %d", __func__, y);
+
+	tileGeoSize = worldGeoSize / worldTileSize;
+	x1 = bounds->xmin + tileGeoSize * (x);
+	x2 = bounds->xmin + tileGeoSize * (x+1);
+	y1 = bounds->ymax - tileGeoSize * (y+1);
+	y2 = bounds->ymax - tileGeoSize * (y);
+
+	poly = lwpoly_construct_envelope(srid, x1, y1, x2, y2);
+
+	result = geometry_serialize(lwpoly_as_lwgeom(poly));
+	lwpoly_free(poly);
+
+	PG_RETURN_POINTER(result);
+}
+
+
 PG_FUNCTION_INFO_V1(ST_IsCollection);
 Datum ST_IsCollection(PG_FUNCTION_ARGS)
 {
