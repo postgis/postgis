@@ -2071,9 +2071,10 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 {
 	LWPOLY *poly;
 	GSERIALIZED *result;
-	uint32_t x, y, zoom;
-	int32_t worldTileSize;
-	double worldGeoSize, tileGeoSize;
+	uint32_t zoomu;
+	int32_t x, y, zoom;
+	uint32_t worldTileSize;
+	double tileGeoSizeX, tileGeoSizeY;
 	double boundsWidth, boundsHeight;
 	double x1, y1, x2, y2;
 	int32_t srid = 3857;
@@ -2102,10 +2103,10 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	if (boundsWidth <= 0 || boundsHeight <= 0)
 		elog(ERROR, "%s: Geometric bounds are too small", __func__);
 
-	if (zoom >= 32 || zoom < 0)
+	if (zoom < 0 || zoom >= 32)
 		elog(ERROR, "%s: Invalid tile zoom value, %d", __func__, zoom);
 
-	worldGeoSize = Max(boundsWidth, boundsHeight);
+	zoomu = (uint32_t)zoom;
 	worldTileSize = 0x01u << (zoom > 31 ? 31 : zoom);
 
 	if (x >= worldTileSize || x < 0)
@@ -2113,11 +2114,12 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	if (y >= worldTileSize || y < 0)
 		elog(ERROR, "%s: Invalid tile y value, %d", __func__, y);
 
-	tileGeoSize = worldGeoSize / worldTileSize;
-	x1 = bounds->xmin + tileGeoSize * (x);
-	x2 = bounds->xmin + tileGeoSize * (x+1);
-	y1 = bounds->ymax - tileGeoSize * (y+1);
-	y2 = bounds->ymax - tileGeoSize * (y);
+	tileGeoSizeX = boundsWidth / worldTileSize;
+	tileGeoSizeY = boundsHeight / worldTileSize;
+	x1 = bounds->xmin + tileGeoSizeX * (x);
+	x2 = bounds->xmin + tileGeoSizeX * (x+1);
+	y1 = bounds->ymax - tileGeoSizeY * (y+1);
+	y2 = bounds->ymax - tileGeoSizeY * (y);
 
 	poly = lwpoly_construct_envelope(srid, x1, y1, x2, y2);
 
