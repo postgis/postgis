@@ -2107,11 +2107,11 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: Invalid tile zoom value, %d", __func__, zoom);
 
 	zoomu = (uint32_t)zoom;
-	worldTileSize = 0x01u << (zoom > 31 ? 31 : zoom);
+	worldTileSize = 0x01u << (zoomu > 31 ? 31 : zoomu);
 
-	if (x >= worldTileSize || x < 0)
+	if (x < 0 || (uint32_t)x >= worldTileSize)
 		elog(ERROR, "%s: Invalid tile x value, %d", __func__, x);
-	if (y >= worldTileSize || y < 0)
+	if (y < 0 || (uint32_t)y >= worldTileSize)
 		elog(ERROR, "%s: Invalid tile y value, %d", __func__, y);
 
 	tileGeoSizeX = boundsWidth / worldTileSize;
