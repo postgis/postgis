@@ -469,6 +469,23 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 	return LW_FAILURE;
 }
 
+static inline void
+gserialized1_copy_point(double *dptr, lwflags_t flags, POINT4D *out_point)
+{
+	uint8_t dim = 0;
+	out_point->x = dptr[dim++];
+	out_point->y = dptr[dim++];
+
+	if (G1FLAGS_GET_Z(flags))
+	{
+		out_point->z = dptr[dim++];
+	}
+	if (G1FLAGS_GET_M(flags))
+	{
+		out_point->m = dptr[dim];
+	}
+}
+
 int
 gserialized1_peek_first_point(const GSERIALIZED *g, POINT4D *out_point)
 {
@@ -478,30 +495,28 @@ gserialized1_peek_first_point(const GSERIALIZED *g, POINT4D *out_point)
 		geometry_start += gserialized1_box_size(g);
 	}
 
-	int32_t *iptr = (int32_t *)(geometry_start);
-	int32_t type = iptr[0];
-	int32_t isempty = (iptr[1] == 0);
-
-	/* EMPTY point has first point */
-	if (type != POINTTYPE || isempty)
+	uint32_t isEmpty = (((uint32_t *)geometry_start)[1]) == 0;
+	if (isEmpty)
 	{
 		return LW_FAILURE;
 	}
 
-	double *dptr = (double *)(geometry_start + sizeof(uint32_t) * 2);
-	uint8_t dim = 0;
-	out_point->x = dptr[dim++];
-	out_point->y = dptr[dim++];
-
-	if (G1FLAGS_GET_Z(g->gflags))
+	uint32_t type = (((uint32_t *)geometry_start)[0]);
+	/* Setup double_array_start depending on the geometry type */
+	double *double_array_start = NULL;
+	switch (type)
 	{
-		out_point->z = dptr[dim++];
-	}
-	if (G1FLAGS_GET_M(g->gflags))
-	{
-		out_point->m = dptr[dim];
+	case (POINTTYPE):
+		/* For points we only need to jump over the type and npoints 32b ints */
+		double_array_start = (double *)(geometry_start + 2 * sizeof(uint32_t));
+		break;
+
+	default:
+		lwerror("%s is currently not implemented for type %d", type);
+		return LW_FAILURE;
 	}
 
+	gserialized1_copy_point(double_array_start, g->gflags, out_point);
 	return LW_SUCCESS;
 }
 
