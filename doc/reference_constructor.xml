@@ -771,7 +771,7 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 			<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>srid</parameter></paramdef>
-			<paramdef choice="opt"><type>box</type> <parameter>bounds=BOX(-20037508.342789 -20037508.342789,20037508.342789 20037508.342789)</parameter></paramdef>
+			<paramdef choice="opt"><type>box2d</type> <parameter>bounds=BOX(-20037508.342789 -20037508.342789,20037508.342789 20037508.342789)</parameter></paramdef>
 		  </funcprototype>
 		 </funcsynopsis>
 		</refsynopsisdiv>
