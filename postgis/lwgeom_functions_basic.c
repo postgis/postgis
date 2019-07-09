@@ -2077,6 +2077,11 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	double tileGeoSizeX, tileGeoSizeY;
 	double boundsWidth, boundsHeight;
 	double x1, y1, x2, y2;
+	/* This is broken, since 3857 doesn't mean "web mercator", it means
+	   the contents of the row in spatial_ref_sys with srid = 3857.
+	   For practical purposes this will work, but in good implementation
+	   we should de-reference in spatial ref sys to confirm that the
+	   srid of the object is EPSG:3857. */
 	int32_t srid = 3857;
 	GBOX *bounds;
 	GBOX bounds_3857;
