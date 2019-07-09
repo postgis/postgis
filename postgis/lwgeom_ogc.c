@@ -170,6 +170,23 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(text_ob);
 }
 
+/* Matches lwutil.c::lwgeomTypeName */
+static char *stTypeName[] = {"Unknown",
+			     "ST_Point",
+			     "ST_LineString",
+			     "ST_Polygon",
+			     "ST_MultiPoint",
+			     "ST_MultiLineString",
+			     "ST_MultiPolygon",
+			     "ST_GeometryCollection",
+			     "ST_CircularString",
+			     "ST_CompoundCurve",
+			     "ST_CurvePolygon",
+			     "ST_MultiCurve",
+			     "ST_MultiSurface",
+			     "ST_PolyhedralSurface",
+			     "ST_Triangle",
+			     "ST_Tin"};
 
 /* returns a string representation of this geometry's type */
 PG_FUNCTION_INFO_V1(geometry_geometrytype);
@@ -177,21 +194,12 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser;
 	text *type_text;
-#	define type_str_len 31
-	char type_str[type_str_len + 1];
 
 	/* Read just the header from the toasted tuple */
 	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
 
-	/* Make it empty string to start */
-	type_str[0] = 0;
-
-	/* Build up the output string */
-	strncat(type_str, "ST_", type_str_len);
-	strncat(type_str, lwtype_name(gserialized_get_type(gser)), type_str_len - 3);
-
 	/* Build a text type to store things in */
-	type_text = cstring_to_text(type_str);
+	type_text = cstring_to_text(stTypeName[gserialized_get_type(gser)]);
 
 	PG_FREE_IF_COPY(gser, 0);
 	PG_RETURN_TEXT_P(type_text);
