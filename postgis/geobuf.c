@@ -90,7 +90,7 @@ static void set_int_value(Data__Value *value, int64 intval) {
 		value->pos_int_value = (uint64_t) intval;
 	} else {
 		value->value_type_case = DATA__VALUE__VALUE_TYPE_NEG_INT_VALUE;
-		value->neg_int_value = (uint64_t) labs(intval);
+		value->neg_int_value = (uint64_t)llabs(intval);
 	}
 }
 
