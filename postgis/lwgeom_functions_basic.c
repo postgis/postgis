@@ -106,6 +106,7 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
 Datum ST_GeoHash(PG_FUNCTION_ARGS);
 Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
+Datum ST_TileEnvelope(PG_FUNCTION_ARGS);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
 Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
@@ -2105,7 +2106,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: Invalid tile zoom value, %d", __func__, zoom);
 
 	worldGeoSize = Max(boundsWidth, boundsHeight);
-	worldTileSize = 0x01 << (zoom > 31 ? 31 : zoom);
+	worldTileSize = 0x01u << (zoom > 31 ? 31 : zoom);
 
 	if (x >= worldTileSize || x < 0)
 		elog(ERROR, "%s: Invalid tile x value, %d", __func__, x);
