@@ -7,6 +7,8 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
 * Major highlights *
   - #4433 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
   - #4445, Fix a bug in geometry_le (Raúl Marín)
+  - #4451, Fix the calculation of gserialized_max_header_size (Raúl Marín)
+  - #4450, Speed up ST_GeometryType (Raúl Marín)
 
 
 PostGIS 3.0.0alpha3

@@ -144,6 +144,7 @@ raster/test/cunit/cu_tester
 raster/test/Makefile
 raster/test/regress/Makefile
 raster/test/regress/rtpostgis.sql
+raster/test/regress/loader/TiledAutoSkipNoData.tif
 regress/00-regress-install/
 regress/Makefile
 regress/core/Makefile
