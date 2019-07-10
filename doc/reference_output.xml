@@ -1093,6 +1093,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
         <title>See Also</title>
             <para>
                 <xref linkend="ST_AsMVT" />,
+                <xref linkend="ST_TileEnvelope" />,
                 <xref linkend="PostGIS_Wagyu_Version" />
             </para>
         </refsection>
@@ -1196,7 +1197,7 @@ FROM mvtgeom;
 		<refsection>
 			<title>See Also</title>
 				<para>
-					<xref linkend="ST_AsMVTGeom" />
+					<xref linkend="ST_AsMVTGeom" />, <xref linkend="ST_TileEnvelope" />
 				</para>
 		  </refsection>
 	</refentry>
