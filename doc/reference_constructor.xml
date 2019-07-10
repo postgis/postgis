@@ -788,9 +788,15 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 		<title>Example: Building a tile envelope</title>
 		 <programlisting>SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );
 
-st_astext
+ st_astext
 ------------------------------
-POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))
+ POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))
+
+SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326) ) );
+
+                      st_astext                       
+------------------------------------------------------
+ POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))
 </programlisting>
 		</refsection>
 		<refsection>
