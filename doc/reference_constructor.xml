@@ -216,7 +216,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_MakeLine" />, <xref linkend="ST_MakePolygon" /></para>
+			<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_MakeLine" />, <xref linkend="ST_MakePolygon" />, <xref linkend="ST_TileEnvelope" /></para>
 		</refsection>
 	</refentry>
 
@@ -754,6 +754,49 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 
 		<para> <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_LineMerge" />, <xref linkend="ST_MakePolygon" /></para>
 	  </refsection>
+	</refentry>
+
+
+	<refentry id="ST_TileEnvelope">
+		<refnamediv>
+		<refname>ST_TileEnvelope</refname>
+		<refpurpose>Creates a rectangular Polygon in <ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink> (SRID:3857) using the <ulink url="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</ulink>.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_TileEnvelope</function></funcdef>
+			<paramdef><type>integer</type> <parameter>tileZoom</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef>
+			<paramdef choice="opt"><type>geometry</type> <parameter>bounds=SRID=3857;LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 20037508.342789)</parameter></paramdef>
+		  </funcprototype>
+		 </funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Creates a rectangular Polygon in <ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink> (SRID:3857) using the <ulink url="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</ulink>. By default, the bounds are the in EPSG:3857 using the standard range of the Web Mercator system (-20037508.342789, 20037508.342789). The optional bounds parameter can be used to generate envelopes for any tiling scheme: provide a geometry that has the SRID and extent of the initial "zoom level zero" square within which the tile system is to be inscribed.</para>
+
+			<para>Availability: 3.0</para>
+
+		</refsection>
+
+		<refsection>
+		<title>Example: Building a tile envelope</title>
+		 <programlisting>SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );
+
+st_astext
+------------------------------
+POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakeEnvelope" /></para>
+		</refsection>
 	</refentry>
 
   </sect1>

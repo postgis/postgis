@@ -106,6 +106,7 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
 Datum ST_GeoHash(PG_FUNCTION_ARGS);
 Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
+Datum ST_TileEnvelope(PG_FUNCTION_ARGS);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
 Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
@@ -2063,6 +2064,67 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
+
+PG_FUNCTION_INFO_V1(ST_TileEnvelope);
+Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *bounds;
+	uint32_t zoomu;
+	int32_t x, y, zoom;
+	uint32_t worldTileSize;
+	double tileGeoSizeX, tileGeoSizeY;
+	double boundsWidth, boundsHeight;
+	double x1, y1, x2, y2;
+	/* This is broken, since 3857 doesn't mean "web mercator", it means
+	   the contents of the row in spatial_ref_sys with srid = 3857.
+	   For practical purposes this will work, but in good implementation
+	   we should de-reference in spatial ref sys to confirm that the
+	   srid of the object is EPSG:3857. */
+	int32_t srid;
+	GBOX bbox;
+
+	POSTGIS_DEBUG(2, "ST_TileEnvelope called");
+
+	zoom = PG_GETARG_INT32(0);
+	x = PG_GETARG_INT32(1);
+	y = PG_GETARG_INT32(2);
+
+	bounds = PG_GETARG_GSERIALIZED_P(3);
+	if(gserialized_get_gbox_p(bounds, &bbox) != LW_SUCCESS)
+		elog(ERROR, "%s: Empty bounds", __func__);
+	srid = gserialized_get_srid(bounds);
+
+	boundsWidth  = bbox.xmax - bbox.xmin;
+	boundsHeight = bbox.ymax - bbox.ymin;
+	if (boundsWidth <= 0 || boundsHeight <= 0)
+		elog(ERROR, "%s: Geometric bounds are too small", __func__);
+
+	if (zoom < 0 || zoom >= 32)
+		elog(ERROR, "%s: Invalid tile zoom value, %d", __func__, zoom);
+
+	zoomu = (uint32_t)zoom;
+	worldTileSize = 0x01u << (zoomu > 31 ? 31 : zoomu);
+
+	if (x < 0 || (uint32_t)x >= worldTileSize)
+		elog(ERROR, "%s: Invalid tile x value, %d", __func__, x);
+	if (y < 0 || (uint32_t)y >= worldTileSize)
+		elog(ERROR, "%s: Invalid tile y value, %d", __func__, y);
+
+	tileGeoSizeX = boundsWidth / worldTileSize;
+	tileGeoSizeY = boundsHeight / worldTileSize;
+	x1 = bbox.xmin + tileGeoSizeX * (x);
+	x2 = bbox.xmin + tileGeoSizeX * (x+1);
+	y1 = bbox.ymax - tileGeoSizeY * (y+1);
+	y2 = bbox.ymax - tileGeoSizeY * (y);
+
+	PG_RETURN_POINTER(
+		geometry_serialize(
+		lwpoly_as_lwgeom(
+		lwpoly_construct_envelope(
+			srid, x1, y1, x2, y2))));
+}
+
 
 PG_FUNCTION_INFO_V1(ST_IsCollection);
 Datum ST_IsCollection(PG_FUNCTION_ARGS)
