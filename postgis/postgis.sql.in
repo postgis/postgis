@@ -1680,7 +1680,7 @@ CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integ
 	_COST_LOW;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_TileEnvelope(x integer, y integer, z integer, srid integer DEFAULT 3857, bounds box2d DEFAULT 'BOX(-20037508.342789 -20037508.342789, 20037508.342789 20037508.342789)'::box2d)
+CREATE OR REPLACE FUNCTION ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry DEFAULT 'SRID=3857;LINESTRING(-20037508.342789 -20037508.342789, 20037508.342789 20037508.342789)'::geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_TileEnvelope'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL

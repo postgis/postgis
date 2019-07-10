@@ -270,11 +270,10 @@ select '228', ST_AsEWKT(ST_TileEnvelope(0, 0, 1));
 select '229', ST_AsEWKT(ST_TileEnvelope(0, 0, 0));
 select '230', ST_AsEWKT(ST_TileEnvelope(4, 8, 8));
 select '231', ST_AsEWKT(ST_TileEnvelope(4, 15, 15));
-select '232', ST_AsEWKT(ST_TileEnvelope(4, 8, 8, 0, 'BOX(-100 -100, 100 100)'::BOX2D));
-select '233', ST_AsEWKT(ST_TileEnvelope(4, 15, 15, 0, 'BOX(-100 -100, 100 100)'::BOX2D));
-select '234', ST_AsEWKT(ST_TileEnvelope(4, 0, 0, 0, 'BOX(-100 -100, 100 100)'::BOX2D));
-select '235', ST_AsEWKT(ST_TileEnvelope(4, 0, 0, 0));
-select '236', ST_AsEWKT(ST_TileEnvelope(4, 0, 0, 4326));
+select '232', ST_AsEWKT(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-100, -100, 100, 100, 0)));
+select '233', ST_AsEWKT(ST_TileEnvelope(4, 15, 15, ST_MakeEnvelope(-100, -100, 100, 100, 0)));
+select '234', ST_AsEWKT(ST_TileEnvelope(4, 0, 0, ST_MakeEnvelope(-100, -100, 100, 100, 0)));
+select '235', ST_AsEWKT(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-200, -100, 200, 100, 0)));
 
 
 -- Drop test table

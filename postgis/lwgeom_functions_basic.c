@@ -2069,8 +2069,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_TileEnvelope);
 Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 {
-	LWPOLY *poly;
-	GSERIALIZED *result;
+	GSERIALIZED *bounds;
 	uint32_t zoomu;
 	int32_t x, y, zoom;
 	uint32_t worldTileSize;
@@ -2082,29 +2081,22 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	   For practical purposes this will work, but in good implementation
 	   we should de-reference in spatial ref sys to confirm that the
 	   srid of the object is EPSG:3857. */
-	int32_t srid = 3857;
-	GBOX *bounds;
-	GBOX bounds_3857;
+	int32_t srid;
+	GBOX bbox;
 
 	POSTGIS_DEBUG(2, "ST_TileEnvelope called");
 
 	zoom = PG_GETARG_INT32(0);
 	x = PG_GETARG_INT32(1);
 	y = PG_GETARG_INT32(2);
-	if (PG_NARGS() > 3)
-		srid = PG_GETARG_INT32(3);
-	if (PG_NARGS() > 4)
-		bounds = (GBOX*)(PG_GETARG_POINTER(4));
-	else
-	{
-		gbox_init(&bounds_3857);
-		bounds_3857.ymin = bounds_3857.xmin = -20037508.3427892;
-		bounds_3857.ymax = bounds_3857.xmax =  20037508.3427892;
-		bounds = &bounds_3857;
-	}
 
-	boundsWidth  = bounds->xmax - bounds->xmin;
-	boundsHeight = bounds->ymax - bounds->ymin;
+	bounds = PG_GETARG_GSERIALIZED_P(3);
+	if(gserialized_get_gbox_p(bounds, &bbox) != LW_SUCCESS)
+		elog(ERROR, "%s: Empty bounds", __func__);
+	srid = gserialized_get_srid(bounds);
+
+	boundsWidth  = bbox.xmax - bbox.xmin;
+	boundsHeight = bbox.ymax - bbox.ymin;
 	if (boundsWidth <= 0 || boundsHeight <= 0)
 		elog(ERROR, "%s: Geometric bounds are too small", __func__);
 
@@ -2121,17 +2113,16 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 
 	tileGeoSizeX = boundsWidth / worldTileSize;
 	tileGeoSizeY = boundsHeight / worldTileSize;
-	x1 = bounds->xmin + tileGeoSizeX * (x);
-	x2 = bounds->xmin + tileGeoSizeX * (x+1);
-	y1 = bounds->ymax - tileGeoSizeY * (y+1);
-	y2 = bounds->ymax - tileGeoSizeY * (y);
+	x1 = bbox.xmin + tileGeoSizeX * (x);
+	x2 = bbox.xmin + tileGeoSizeX * (x+1);
+	y1 = bbox.ymax - tileGeoSizeY * (y+1);
+	y2 = bbox.ymax - tileGeoSizeY * (y);
 
-	poly = lwpoly_construct_envelope(srid, x1, y1, x2, y2);
-
-	result = geometry_serialize(lwpoly_as_lwgeom(poly));
-	lwpoly_free(poly);
-
-	PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(
+		geometry_serialize(
+		lwpoly_as_lwgeom(
+		lwpoly_construct_envelope(
+			srid, x1, y1, x2, y2))));
 }
 
 
