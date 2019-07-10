@@ -1181,18 +1181,16 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom')
-  FROM (SELECT 1 AS c1,
-    ST_AsMVTGeom(
-      ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),
-      ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
-      4096, 0, false) AS geom) AS q;
+		<programlisting><![CDATA[WITH mvtgeom AS
+(
+  SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12,513,412)) AS geom, name, description
+  FROM points_of_interest
+  WHERE ST_Intersects(geom, ST_TileEnvelope(12,513,412)
+)
+SELECT ST_AsMVT(mvtgeom.*)
+FROM mvtgeom;
+]]></programlisting>
 
-                              st_asmvt
---------------------------------------------------------------------
- \x1a320a0474657374121d1202000018032215095aa63f1a134631130a270f09280a121d0a14140f1a026331220228012880207802
-]]>
-		</programlisting>
 	  </refsection>
 
 		<refsection>
