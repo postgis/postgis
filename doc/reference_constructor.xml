@@ -778,7 +778,7 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 		<refsection>
 			<title>Description</title>
 
-			<para>Creates a rectangular Polygon in <ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink> (SRID:3857) using the <ulink url="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</ulink>. By default, the SRID is set to 3857 and the standard bounds of the Web Mercator system (-20037508.342789, 20037508.342789) are used. The optional SRID and bounds parameters can be used to generate envelopes for any tiling scheme, just provide the SRID of the planar space, and the initial "zoom level zero" square within which the tile system is to be inscribed.</para>
+			<para>Creates a rectangular Polygon in <ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink> (SRID:3857) using the <ulink url="https://en.wikipedia.org/wiki/Tiled_web_map">XYZ tile system</ulink>. By default, the bounds are the in EPSG:3857 using the standard range of the Web Mercator system (-20037508.342789, 20037508.342789). The optional bounds parameter can be used to generate envelopes for any tiling scheme: provide a geometry that has the SRID and extent of the initial "zoom level zero" square within which the tile system is to be inscribed.</para>
 
 			<para>Availability: 3.0</para>
 
