@@ -334,24 +334,24 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
  * lookups directly. Drop this ugly hack.
  */
 static POINTARRAY *
-gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
+gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 {
 	PJ *pj;
 	LWPROJ *lwp;
-	char text_in[32];
-	char text_out[32];
+	char text_in[16];
+	char text_out[16];
 
-	if (srid_in == SRID_UNKNOWN)
+	if (epsg_in == SRID_UNKNOWN)
 		return pa; /* nothing to do */
 
-	if (srid_out == SRID_UNKNOWN)
+	if (epsg_out == SRID_UNKNOWN)
 	{
 		gml_lwpgerror("invalid GML representation", 3);
 		return NULL;
 	}
 
-	snprintf(text_in, 32, "EPSG:%d", srid_in);
-	snprintf(text_out, 32, "EPSG:%d", srid_out);
+	snprintf(text_in, 16, "EPSG:%d", epsg_in);
+	snprintf(text_out, 16, "EPSG:%d", epsg_out);
 	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
 
 	lwp = lwproj_from_PJ(pj, LW_FALSE);
