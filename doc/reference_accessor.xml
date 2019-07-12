@@ -2552,7 +2552,7 @@ MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)
 	<refsection>
 	  <title>Description</title>
 
-	  <para>Returns the first point of a <varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname> geometry
+      <para>Returns the first point of a <varname>LINESTRING</varname>, <varname>CIRCULARLINESTRING</varname> or a <varname>COMPOUNDCURVE</varname> geometry
 	  as a <varname>POINT</varname> or <varname>NULL</varname> if the input
 	  parameter is not a <varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>.</para>
 
