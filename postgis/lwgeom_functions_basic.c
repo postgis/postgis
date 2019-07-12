@@ -2010,32 +2010,8 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
-	LWGEOM *lwg1, *lwg2;
-	bool result;
 
-	if ((gserialized_get_type(g1) != gserialized_get_type(g2)) ||
-		(gserialized_has_z(g1) != gserialized_has_z(g2)) ||
-		(gserialized_has_m(g1) != gserialized_has_m(g2)))
-	{
-		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_BOOL(false); /* different type or dimensionality */
-	}
-
-	/* ok, deserialize. */
-	lwg1 = lwgeom_from_gserialized(g1);
-	lwg2 = lwgeom_from_gserialized(g2);
-
-	/* invoke appropriate function */
-	result = lwgeom_same(lwg1, lwg2);
-
-	/* Release memory */
-	lwgeom_free(lwg1);
-	lwgeom_free(lwg2);
-	PG_FREE_IF_COPY(g1, 0);
-	PG_FREE_IF_COPY(g2, 1);
-
-	PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(gserialized_cmp(g1, g2) == 0);
 }
 
 PG_FUNCTION_INFO_V1(ST_MakeEnvelope);
