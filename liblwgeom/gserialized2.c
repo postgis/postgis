@@ -565,7 +565,7 @@ gserialized2_peek_first_point(const GSERIALIZED *g, POINT4D *out_point)
 		break;
 
 	default:
-		lwerror("%s is currently not implemented for type %d", type);
+		lwerror("%s is currently not implemented for type %d", __func__, type);
 		return LW_FAILURE;
 	}
 

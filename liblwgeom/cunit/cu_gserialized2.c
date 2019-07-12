@@ -447,6 +447,54 @@ static void test_gserialized2_peek_gbox_p_fails_for_unsupported_cases(void)
 	}
 }
 
+static int
+peek2_point_helper(char *geometry, POINT4D *p)
+{
+	cu_error_msg_reset();
+	p->x = p->y = p->z = p->m = 0;
+	LWGEOM *geom = lwgeom_from_wkt(geometry, LW_PARSER_CHECK_NONE);
+	CU_ASSERT(geom != NULL);
+	GSERIALIZED *g = gserialized2_from_lwgeom(geom, NULL);
+	CU_ASSERT(g != NULL);
+
+	int ret = gserialized2_peek_first_point(g, p);
+	lwfree(g);
+	lwgeom_free(geom);
+
+	return ret;
+}
+
+static void
+test_gserialized2_peek_first_point(void)
+{
+	POINT4D p = {0};
+
+	CU_ASSERT(peek2_point_helper("POINT(1 2)", &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 1);
+	CU_ASSERT_EQUAL(p.y, 2);
+
+	CU_ASSERT(peek2_point_helper("POINTZ(10 20 30)", &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 10);
+	CU_ASSERT_EQUAL(p.y, 20);
+	CU_ASSERT_EQUAL(p.z, 30);
+
+	CU_ASSERT(peek2_point_helper("POINTM(100 200 300)", &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 100);
+	CU_ASSERT_EQUAL(p.y, 200);
+	CU_ASSERT_EQUAL(p.m, 300);
+
+	CU_ASSERT(peek2_point_helper("POINTZM(1000 2000 3000 4000)", &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 1000);
+	CU_ASSERT_EQUAL(p.y, 2000);
+	CU_ASSERT_EQUAL(p.z, 3000);
+	CU_ASSERT_EQUAL(p.m, 4000);
+
+	CU_ASSERT(peek2_point_helper("MULTIPOINT((0 0), (1 1))", &p) == LW_FAILURE);
+	CU_ASSERT(peek2_point_helper("LINESTRING(0 0, 1 1)", &p) == LW_FAILURE);
+	CU_ASSERT(peek2_point_helper("MULTILINESTRING((0 0, 1 1), (0 0, 1 1))", &p) == LW_FAILURE);
+	CU_ASSERT(peek2_point_helper("POLYGON((0 0, 1 1, 1 0, 0 0))", &p) == LW_FAILURE);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -464,4 +512,5 @@ void gserialized2_suite_setup(void)
 	PG_ADD_TEST(suite, test_gserialized2_peek_gbox_p_gets_correct_box);
 	PG_ADD_TEST(suite, test_gserialized2_peek_gbox_p_fails_for_unsupported_cases);
 	PG_ADD_TEST(suite, test_gserialized2_extended_flags);
+	PG_ADD_TEST(suite, test_gserialized2_peek_first_point);
 }
