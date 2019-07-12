@@ -1799,12 +1799,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_isempty);
 Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	bool empty = lwgeom_is_empty(lwgeom);
-
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_BOOL(empty);
+	PG_RETURN_BOOL(gserialized_is_empty(geom));
 }
 
 
