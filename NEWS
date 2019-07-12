@@ -11,6 +11,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4450, Speed up ST_GeometryType (Raúl Marín)
   - #4452, Add ST_TileEnvelope() (Paul Ramsey)
   - #4417, Update spatial_ref_sys with new entries (Paul Ramsey)
+  - #4449, Speed up ST_X, ST_Y, ST_Z and ST_M (Raúl Marín)
 
 
 PostGIS 3.0.0alpha3

@@ -62,32 +62,32 @@ int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 * Extract the geometry type from the serialized form (it hides in
 * the anonymous data area, so this is a handy function).
 */
-uint32_t gserialized_get_type(const GSERIALIZED *g);
+extern uint32_t gserialized_get_type(const GSERIALIZED *g);
 
 /**
 * Returns the size in bytes to read from toast to get the basic
 * information from a geometry: GSERIALIZED struct, bbox and type
 */
-uint32_t gserialized_max_header_size(void);
+extern uint32_t gserialized_max_header_size(void);
 
 /**
 * Returns a hash code for the srid/type/geometry information
 * in the GSERIALIZED. Ignores metadata like flags and optional
 * boxes, etc.
 */
-int32_t gserialized_hash(const GSERIALIZED *g);
+extern int32_t gserialized_hash(const GSERIALIZED *g);
 
 /**
 * Extract the SRID from the serialized form (it is packed into
 * three bytes so this is a handy function).
 */
-int32_t gserialized_get_srid(const GSERIALIZED *g);
+extern int32_t gserialized_get_srid(const GSERIALIZED *g);
 
 /**
 * Write the SRID into the serialized form (it is packed into
 * three bytes so this is a handy function).
 */
-void gserialized_set_srid(GSERIALIZED *g, int32_t srid);
+extern void gserialized_set_srid(GSERIALIZED *g, int32_t srid);
 
 /**
 * Check if a #GSERIALIZED is empty without deserializing first.
@@ -95,32 +95,32 @@ void gserialized_set_srid(GSERIALIZED *g, int32_t srid);
 * is zero, will not catch collections of empty, eg:
 * GEOMETRYCOLLECTION(POINT EMPTY)
 */
-int gserialized_is_empty(const GSERIALIZED *g);
+extern int gserialized_is_empty(const GSERIALIZED *g);
 
 /**
 * Check if a #GSERIALIZED has a bounding box without deserializing first.
 */
-int gserialized_has_bbox(const GSERIALIZED *gser);
+extern int gserialized_has_bbox(const GSERIALIZED *gser);
 
 /**
 * Check if a #GSERIALIZED has a Z ordinate.
 */
-int gserialized_has_z(const GSERIALIZED *gser);
+extern int gserialized_has_z(const GSERIALIZED *gser);
 
 /**
 * Check if a #GSERIALIZED has an M ordinate.
 */
-int gserialized_has_m(const GSERIALIZED *gser);
+extern int gserialized_has_m(const GSERIALIZED *gser);
 
 /**
 * Check if a #GSERIALIZED is a geography.
 */
-int gserialized_is_geodetic(const GSERIALIZED *gser);
+extern int gserialized_is_geodetic(const GSERIALIZED *gser);
 
 /**
 * Return the number of dimensions (2, 3, 4) in a geometry
 */
-int gserialized_ndims(const GSERIALIZED *gser);
+extern int gserialized_ndims(const GSERIALIZED *gser);
 
 /**
 * Return -1 if g1 is "less than" g2, 1 if g1 is "greater than"
@@ -131,7 +131,7 @@ int gserialized_ndims(const GSERIALIZED *gser);
 * are evaluated by calculating a sortable key from the center
 * point of the object bounds.
 */
-int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
+extern int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
 
 /**
 * Allocate a new #GSERIALIZED from an #LWGEOM. For all non-point types, a bounding
@@ -166,3 +166,7 @@ int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box);
 */
 int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box);
 
+/**
+ * Pull the first point values of a #GSERIALIZED. Only works for POINTTYPE
+ */
+int gserialized_peek_first_point(const GSERIALIZED *g, POINT4D *out_point);

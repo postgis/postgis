@@ -99,6 +99,20 @@ static inline size_t gserialized2_header_size(const GSERIALIZED *g)
 	return sz;
 }
 
+/* Returns a pointer to the start of the geometry data */
+static inline uint8_t *
+gserialized2_get_geometry_p(const GSERIALIZED *g)
+{
+	uint32_t extra_data_bytes = 0;
+	if (gserialized2_has_extended(g))
+		extra_data_bytes += sizeof(uint64_t);
+
+	if (gserialized2_has_bbox(g))
+		extra_data_bytes += gserialized2_box_size(g);
+
+	return ((uint8_t *)g->data) + extra_data_bytes;
+}
+
 uint8_t lwflags_get_g2flags(lwflags_t lwflags)
 {
 	uint8_t gflags = 0;
@@ -169,8 +183,7 @@ uint32_t gserialized2_max_header_size(void)
 
 uint32_t gserialized2_get_type(const GSERIALIZED *g)
 {
-	uint8_t *ptr = (uint8_t*)g;
-	ptr += gserialized2_header_size(g);
+	uint8_t *ptr = gserialized2_get_geometry_p(g);
 	return *((uint32_t*)(ptr));
 }
 
@@ -238,9 +251,7 @@ static size_t gserialized2_is_empty_recurse(const uint8_t *p, int *isempty)
 int gserialized2_is_empty(const GSERIALIZED *g)
 {
 	int isempty = 0;
-	uint8_t *p = (uint8_t*)g;
-	assert(g);
-	p += gserialized2_header_size(g);
+	uint8_t *p = gserialized2_get_geometry_p(g);
 	gserialized2_is_empty_recurse(p, &isempty);
 	return isempty;
 }
@@ -349,26 +360,22 @@ int
 gserialized2_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
 	uint32_t type = gserialized2_get_type(g);
-	double *dptr = (double*)(g->data);
-	int *iptr = (int*)(g->data);
+	uint8_t *geometry_start = gserialized2_get_geometry_p(g);
+	double *dptr = (double *)(geometry_start);
+	int32_t *iptr = (int32_t *)(geometry_start);
 
 	/* Peeking doesn't help if you already have a box or are geodetic */
 	if (G2FLAGS_GET_GEODETIC(g->gflags) || G2FLAGS_GET_BBOX(g->gflags))
 	{
 		return LW_FAILURE;
 	}
-	/* Advance past 8 bytes of extended flags */
-	if (G2FLAGS_GET_EXTENDED(g->gflags))
-	{
-		dptr += 1; /* doubleptr */
-		iptr += 2; /* int32ptr */
-	}
+
 	/* Boxes of points are easy peasy */
 	if (type == POINTTYPE)
 	{
 		int i = 1; /* Start past <pointtype><padding> */
 
-		/* Read the empty flag */
+		/* Read the npoints flag */
 		int isempty = (iptr[1] == 0);
 
 		/* EMPTY point has no box */
@@ -518,6 +525,53 @@ gserialized2_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 	}
 
 	return LW_FAILURE;
+}
+
+static inline void
+gserialized2_copy_point(double *dptr, lwflags_t flags, POINT4D *out_point)
+{
+	uint8_t dim = 0;
+	out_point->x = dptr[dim++];
+	out_point->y = dptr[dim++];
+
+	if (G2FLAGS_GET_Z(flags))
+	{
+		out_point->z = dptr[dim++];
+	}
+	if (G2FLAGS_GET_M(flags))
+	{
+		out_point->m = dptr[dim];
+	}
+}
+
+int
+gserialized2_peek_first_point(const GSERIALIZED *g, POINT4D *out_point)
+{
+	uint8_t *geometry_start = gserialized2_get_geometry_p(g);
+
+	uint32_t isEmpty = (((uint32_t *)geometry_start)[1]) == 0;
+	if (isEmpty)
+	{
+		return LW_FAILURE;
+	}
+
+	uint32_t type = (((uint32_t *)geometry_start)[0]);
+	/* Setup double_array_start depending on the geometry type */
+	double *double_array_start = NULL;
+	switch (type)
+	{
+	case (POINTTYPE):
+		/* For points we only need to jump over the type and npoints 32b ints */
+		double_array_start = (double *)(geometry_start + 2 * sizeof(uint32_t));
+		break;
+
+	default:
+		lwerror("%s is currently not implemented for type %d", __func__, type);
+		return LW_FAILURE;
+	}
+
+	gserialized2_copy_point(double_array_start, g->gflags, out_point);
+	return LW_SUCCESS;
 }
 
 /**
