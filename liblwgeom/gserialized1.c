@@ -312,7 +312,7 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		double *dptr = (double*)(g->data);
 
 		/* Read the empty flag */
-		int *iptr = (int*)(g->data);
+		int32_t *iptr = (int32_t *)(g->data);
 		int isempty = (iptr[1] == 0);
 
 		/* EMPTY point has no box */
@@ -338,7 +338,7 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		int ndims = G1FLAGS_NDIMS(g->gflags);
 		int i = 0; /* Start at <linetype><npoints> */
 		double *dptr = (double*)(g->data);
-		int *iptr = (int*)(g->data);
+		int32_t *iptr = (int32_t *)(g->data);
 		int npoints = iptr[1]; /* Read the npoints */
 
 		/* This only works with 2-point lines */
@@ -379,7 +379,7 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 	{
 		int i = 0; /* Start at <multipointtype><ngeoms> */
 		double *dptr = (double*)(g->data);
-		int *iptr = (int*)(g->data);
+		int32_t *iptr = (int32_t *)(g->data);
 		int ngeoms = iptr[1]; /* Read the ngeoms */
 		int npoints;
 
@@ -421,7 +421,7 @@ gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		int ndims = G1FLAGS_NDIMS(g->gflags);
 		int i = 0; /* Start at <multilinetype><ngeoms> */
 		double *dptr = (double*)(g->data);
-		int *iptr = (int*)(g->data);
+		int32_t *iptr = (int32_t *)(g->data);
 		int ngeoms = iptr[1]; /* Read the ngeoms */
 		int npoints;
 

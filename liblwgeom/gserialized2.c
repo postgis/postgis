@@ -1481,7 +1481,6 @@ LWGEOM* lwgeom_from_gserialized2(const GSERIALIZED *g)
 	/* Skip optional flags */
 	if (G2FLAGS_GET_EXTENDED(g->gflags))
 	{
-		/* uint64_t xflags = *((uint64_t*)data_ptr); */
 		data_ptr += sizeof(uint64_t);
 	}
 
@@ -1633,4 +1632,3 @@ GSERIALIZED* gserialized2_drop_gbox(GSERIALIZED *g)
 
 	return g_out;
 }
-
