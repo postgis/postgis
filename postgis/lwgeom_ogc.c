@@ -595,7 +595,7 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	POINT4D pt;
 
 	if (gserialized_get_type(geom) != POINTTYPE)
-		lwpgerror("Argument to ST_X() must be a point");
+		lwpgerror("Argument to ST_X() must have type POINT");
 
 	if (gserialized_peek_first_point(geom, &pt) == LW_FAILURE)
 	{
@@ -615,7 +615,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	POINT4D pt;
 
 	if (gserialized_get_type(geom) != POINTTYPE)
-		lwpgerror("Argument to ST_Y() must be a point");
+		lwpgerror("Argument to ST_Y() must have type POINT");
 
 	if (gserialized_peek_first_point(geom, &pt) == LW_FAILURE)
 	{
@@ -636,7 +636,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	POINT4D pt;
 
 	if (gserialized_get_type(geom) != POINTTYPE)
-		lwpgerror("Argument to ST_Z() must be a point");
+		lwpgerror("Argument to ST_Z() must have type POINT");
 
 	if (!gserialized_has_z(geom) || (gserialized_peek_first_point(geom, &pt) == LW_FAILURE))
 	{
@@ -656,7 +656,7 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	POINT4D pt;
 
 	if (gserialized_get_type(geom) != POINTTYPE)
-		lwpgerror("Argument to ST_M() must be a point");
+		lwpgerror("Argument to ST_M() must have type POINT");
 
 	if (!gserialized_has_m(geom) || (gserialized_peek_first_point(geom, &pt) == LW_FAILURE))
 	{
