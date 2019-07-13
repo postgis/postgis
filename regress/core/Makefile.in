@@ -161,7 +161,8 @@ TESTS = \
 	regress_brin_index_3d \
 	regress_brin_index_geography \
 	minimum_clearance \
-	oriented_envelope
+	oriented_envelope \
+	point_coordinates
 
 # Slow slow tests
 TESTS_SLOW = \

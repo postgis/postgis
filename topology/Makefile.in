@@ -133,8 +133,10 @@ topology.sql: \
 uninstall_topology.sql: topology.sql ../utils/create_undef.pl
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
-check: topology.sql
-	$(MAKE) -C test $@
+check-local: topology.sql
+	$(MAKE) -C test check
+
+check: check-local
 
 distclean: clean
 	rm -f Makefile test/Makefile

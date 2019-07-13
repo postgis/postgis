@@ -160,3 +160,4 @@ const float * gserialized1_get_float_box_p(const GSERIALIZED *g, size_t *ndims);
 
 int gserialized1_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 
+int gserialized1_peek_first_point(const GSERIALIZED *g, POINT4D *out_point);

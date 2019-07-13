@@ -253,8 +253,14 @@ const float * gserialized_get_float_box_p(const GSERIALIZED *g, size_t *ndims)
 		return gserialized1_get_float_box_p(g, ndims);
 }
 
-
-
+int
+gserialized_peek_first_point(const GSERIALIZED *g, POINT4D *out_point)
+{
+	if (GFLAGS_GET_VERSION(g->gflags))
+		return gserialized2_peek_first_point(g, out_point);
+	else
+		return gserialized1_peek_first_point(g, out_point);
+}
 
 /**
 * Return -1 if g1 is "less than" g2, 1 if g1 is "greater than"
