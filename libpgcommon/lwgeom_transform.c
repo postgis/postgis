@@ -844,13 +844,21 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int32_t srid, SPHEROID *s)
 	double major_axis, minor_axis, eccentricity_squared;
 #endif
 
-	if ( GetPJUsingFCInfo(fcinfo, srid, srid, &pj) == LW_FAILURE)
+	if (GetPJUsingFCInfo(fcinfo, srid, srid, &pj) == LW_FAILURE)
 		return LW_FAILURE;
 
 #if POSTGIS_PROJ_VERSION >= 60
 	if (!pj->source_is_latlong)
 		return LW_FAILURE;
 	spheroid_init(s, pj->source_semi_major_metre, pj->source_semi_minor_metre);
+#elif POSTGIS_PROJ_VERSION >= 48
+	if (!pj_is_latlong(pj->pj_from))
+		return LW_FAILURE;
+	/* For newer versions of Proj we can pull the spheroid paramaeters and initialize */
+	/* using them */
+	pj_get_spheroid_defn(pj->pj_from, &major_axis, &eccentricity_squared);
+	minor_axis = major_axis * sqrt(1 - eccentricity_squared);
+	spheroid_init(s, major_axis, minor_axis);
 #endif
 
 	return LW_SUCCESS;

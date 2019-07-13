@@ -857,6 +857,16 @@ if test ! "x$PROJDIR" = "x"; then
 			AC_MSG_ERROR([the --with-projdir directory "$PROJDIR" cannot be found])
 		fi
 	fi
+	elif test ! -z "$PKG_CONFIG"; then
+       dnl Default to lproj if not found
+       PKG_CHECK_MODULES([PROJ], [proj],
+            [
+                PROJ_CPPFLAGS="$PROJ_CFLAGS"
+                PROJ_LDFLAGS="$PROJ_LIBS"
+            ],
+            [
+                PROJ_LDFLAGS="-lproj"
+            ])
 fi
 
 
