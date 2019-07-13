@@ -156,20 +156,24 @@ lwgeom_cmp_full(Datum x, Datum y, SortSupport ssup)
 	GSERIALIZED *g1 = (GSERIALIZED *)PG_DETOAST_DATUM(x);
 	GSERIALIZED *g2 = (GSERIALIZED *)PG_DETOAST_DATUM(y);
 	int ret = gserialized_cmp(g1, g2);
+	POSTGIS_FREE_IF_COPY_P(g1, x);
+	POSTGIS_FREE_IF_COPY_P(g2, y);
 	return ret;
 }
 
 static bool
 lwgeom_abbrev_abort(int memtupcount, SortSupport ssup)
 {
-	return 0;
+	return LW_FALSE;
 }
 
 static Datum
 lwgeom_abbrev_convert(Datum original, SortSupport ssup)
 {
 	GSERIALIZED *g = (GSERIALIZED *)PG_DETOAST_DATUM(original);
-	return gserialized_get_sortable_hash(g);
+	uint64_t hash = gserialized_get_sortable_hash(g);
+	POSTGIS_FREE_IF_COPY_P(g, original);
+	return hash;
 }
 
 /*
