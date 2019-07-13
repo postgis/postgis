@@ -939,10 +939,8 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 	OPERATOR        8        @@	,
 	-- Availability: 2.2.0
 	OPERATOR        13       <<->> FOR ORDER BY pg_catalog.float_ops,
-#if POSTGIS_PGSQL_VERSION >= 95
 	-- Availability: 2.2.0
 	OPERATOR        20       |=| FOR ORDER BY pg_catalog.float_ops,
-#endif
 	-- Availability: 2.2.0
 	FUNCTION        8        geometry_gist_distance_nd (internal, geometry, int4),
 	FUNCTION        1        geometry_gist_consistent_nd (internal, geometry, int4),

@@ -40,13 +40,8 @@
 #include "geography_measurement_trees.h" /* For circ_tree caching */
 #include "lwgeom_transform.h" /* For SRID functions */
 
-#ifdef PROJ_GEODESIC
 /* round to 10 nm precision */
 #define INVMINDIST 1.0e8
-#else
-/* round to 100 nm precision */
-#define INVMINDIST 1.0e9
-#endif
 
 Datum geography_distance(PG_FUNCTION_ARGS);
 Datum geography_distance_uncached(PG_FUNCTION_ARGS);
@@ -528,19 +523,6 @@ Datum geography_area(PG_FUNCTION_ARGS)
 		gbox = *(lwgeom->bbox);
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom, &gbox);
-
-#ifndef PROJ_GEODESIC
-	/* Test for cases that are currently not handled by spheroid code */
-	if ( use_spheroid )
-	{
-		/* We can't circle the poles right now */
-		if ( FP_GTEQ(gbox.zmax,1.0) || FP_LTEQ(gbox.zmin,-1.0) )
-			use_spheroid = LW_FALSE;
-		/* We can't cross the equator right now */
-		if ( gbox.zmax > 0.0 && gbox.zmin < 0.0 )
-			use_spheroid = LW_FALSE;
-	}
-#endif /* ifndef PROJ_GEODESIC */
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )

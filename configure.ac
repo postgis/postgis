@@ -857,16 +857,6 @@ if test ! "x$PROJDIR" = "x"; then
 			AC_MSG_ERROR([the --with-projdir directory "$PROJDIR" cannot be found])
 		fi
 	fi
-elif test ! -z "$PKG_CONFIG"; then
-        dnl To keep compatibility with PROJ pre 4.8, default to lproj if not found
-	PKG_CHECK_MODULES([PROJ], [proj],
-            [
-                PROJ_CPPFLAGS="$PROJ_CFLAGS"
-                PROJ_LDFLAGS="$PROJ_LIBS"
-            ],
-            [
-                PROJ_LDFLAGS="-lproj"
-            ])
 fi
 
 
@@ -887,9 +877,9 @@ AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ librar
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
-dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath)
-if test ! "$POSTGIS_PROJ_VERSION" -ge 46; then
-	AC_MSG_ERROR([PostGIS requires PROJ >= 4.6.0])
+dnl Ensure that we are using PROJ >= 4.9.0
+if test ! "$POSTGIS_PROJ_VERSION" -ge 49; then
+	AC_MSG_ERROR([PostGIS requires PROJ >= 4.9.0])
 fi
 
 AC_SUBST([PROJ_CPPFLAGS])
@@ -1326,8 +1316,8 @@ if test "x$with_raster" != "xno"; then
 	LIBGDAL_DEPLIBS_LDFLAGS=""
 
 	dnl GDAL version constants, update here
-	GDAL_MIN_VERSION=1.8.0
-	GDAL_MIN_VERSION_NUMBER=180 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
+	GDAL_MIN_VERSION=2.1.0
+	GDAL_MIN_VERSION_NUMBER=210 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
 
 	AC_ARG_WITH(
 		[gdalconfig],

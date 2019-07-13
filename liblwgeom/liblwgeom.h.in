@@ -66,14 +66,6 @@ typedef struct LWPROJ
 } LWPROJ;
 #endif
 
-#if POSTGIS_PROJ_VERSION < 49
-/* Use the old (pre-2.2) geodesic functions */
-#undef PROJ_GEODESIC
-#else
-/* Enable new geodesic functions API */
-#define PROJ_GEODESIC
-#endif
-
 /**
 * @file liblwgeom.h
 *

@@ -1,7 +1,7 @@
 PostGIS 3.0.0alpha4
 2019/xx/xx
 For full changes and enhancements, refer to PostGIS 3.0.0.
-This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+This version requires PostgreSQL 9.5+-12, GEOS >= 3.6+, PROJ >= 4.9, GDAL >= 2.1
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 * Major highlights *
@@ -110,6 +110,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
            them in database for some reason. (Darafei Praliaskouski)
   - #4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
+  - #4455, Bump Proj to 4.9 and GDAL to 2.1 (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
