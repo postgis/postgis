@@ -371,11 +371,10 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 
 		/* ZM flag sort*/
 		if (g1hasz != g2hasz)
-			return (g1hasz > g2hasz) ? 1: -1;
+			return (g1hasz > g2hasz) ? 1 : -1;
 
 		if (g1hasm != g2hasm)
-			return (g1hasm > g2hasm) ? 1: -1;
-
+			return (g1hasm > g2hasm) ? 1 : -1;
 
 		assert(cmp != 0);
 		return cmp > 0 ? 1 : -1;

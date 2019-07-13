@@ -855,12 +855,12 @@ gbox_get_sortable_hash(const GBOX *g, const int32_t srid)
 		x.f = (g->xmax + g->xmin) / 2;
 		y.f = (g->ymax + g->ymin) / 2;
 		/*
-		* Tweak for popular SRID values: push floating point values into 1..2 range,
-		* a region where exponent is constant and thus Hilbert curve
-		* doesn't have compression artifact when X or Y value is close to 0.
-		* If someone has out of bounds value it will still expose the arifact but not crash.
-		* TODO: reconsider when we will have machinery to properly get bounds by SRID.
-		*/
+		 * Tweak for popular SRID values: push floating point values into 1..2 range,
+		 * a region where exponent is constant and thus Hilbert curve
+		 * doesn't have compression artifact when X or Y value is close to 0.
+		 * If someone has out of bounds value it will still expose the arifact but not crash.
+		 * TODO: reconsider when we will have machinery to properly get bounds by SRID.
+		 */
 		if (srid == 3857 || srid == 3395)
 		{
 			x.f = 1.5 + x.f / 67108864.0;
