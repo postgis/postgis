@@ -2752,8 +2752,6 @@ rt_raster_gdal_rasterize(
 		/* geometry NOT properly contained by extent */
 		if (!result) {
 
-#if POSTGIS_GDAL_VERSION > 18
-
 			/* check alignment flag: grid_xw */
 			if (
 				(NULL == ul_xw && NULL == ul_yw) &&
@@ -2783,42 +2781,6 @@ rt_raster_gdal_rasterize(
 				extent.MinY -= (_scale[1] / 2.);
 				extent.MaxY += (_scale[1] / 2.);
 			}
-
-#else
-
-			/* check alignment flag: grid_xw */
-			if (
-				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_yw) &&
-				FLT_NEQ(*grid_xw, extent.MinX)
-			) {
-				/* do nothing */
-				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
-			}
-			else {
-				RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on X-axis");
-				extent.MinX -= _scale[0];
-				extent.MaxX += _scale[0];
-			}
-
-
-			/* check alignment flag: grid_yw */
-			if (
-				(NULL == ul_xw && NULL == ul_yw) &&
-				(NULL != grid_xw && NULL != grid_yw) &&
-				FLT_NEQ(*grid_yw, extent.MaxY)
-			) {
-				/* do nothing */
-				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
-			}
-			else {
-				RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on Y-axis");
-				extent.MinY -= _scale[1];
-				extent.MaxY += _scale[1];
-			}
-
-#endif
-
 		}
 
 		RASTER_DEBUGF(3, "Adjusted extent: %f, %f, %f, %f",

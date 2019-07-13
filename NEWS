@@ -1,5 +1,6 @@
 PostGIS 3.1.0
 2020/XX/XX
+This version requires PostgreSQL 9.5+-12, GEOS >= 3.6+, PROJ >= 4.9, GDAL >= 2.1
 
 * Deprecated signatures *
   - Function postgis_svn_version() replaced by postgis_lib_revision()
