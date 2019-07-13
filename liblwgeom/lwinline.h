@@ -206,7 +206,6 @@ lwgeom_is_empty(const LWGEOM *geom)
 	}
 }
 
-
 /*
  * This macro is based on PG_FREE_IF_COPY, except that it accepts two pointers.
  * See PG_FREE_IF_COPY comment in src/include/fmgr.h in postgres source code
