@@ -846,24 +846,31 @@ gbox_get_sortable_hash(const GBOX *g, const int32_t srid)
 		p.z = (g->zmax + g->zmin) / 2.0;
 		normalize(&p);
 		cart2geog(&p, &gpt);
-		x.f = gpt.lon;
-		y.f = gpt.lat;
+		/* We know range for geography, so build the curve taking it into account */
+		x.f = 1.5 + gpt.lon / 512.0;
+		y.f = 1.5 + gpt.lat / 256.0;
 	}
 	else
 	{
 		x.f = (g->xmax + g->xmin) / 2;
 		y.f = (g->ymax + g->ymin) / 2;
-	}
-
-	if (srid == 3857)
-	{
-		x.f = 1.5 + x.f / 67108864.0;
-		y.f = 1.5 + y.f / 67108864.0;
-	}
-	else if (srid == 4326)
-	{
-		x.f = 1.5 + x.f / 512.0;
-		y.f = 1.5 + y.f / 256.0;
+		/*
+		* Tweak for popular SRID values: push floating point values into 1..2 range,
+		* a region where exponent is constant and thus Hilbert curve
+		* doesn't have compression artifact when X or Y value is close to 0.
+		* If someone has out of bounds value it will still expose the arifact but not crash.
+		* TODO: reconsider when we will have machinery to properly get bounds by SRID.
+		*/
+		if (srid == 3857 || srid == 3395)
+		{
+			x.f = 1.5 + x.f / 67108864.0;
+			y.f = 1.5 + y.f / 67108864.0;
+		}
+		else if (srid == 4326)
+		{
+			x.f = 1.5 + x.f / 512.0;
+			y.f = 1.5 + y.f / 256.0;
+		}
 	}
 
 	return uint32_hilbert(y.u, x.u);

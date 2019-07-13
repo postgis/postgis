@@ -143,7 +143,7 @@ lwgeom_cmp_abbrev(Datum x, Datum y, SortSupport ssup)
 {
 	/* Empty is a special case */
 	if (x == 0 || y == 0 || x == y)
-		return 0;
+		return 0; /* 0 means "ask bigger comparator" and not equality*/
 	else if (x > y)
 		return 1;
 	else

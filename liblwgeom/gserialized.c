@@ -303,7 +303,7 @@ inline static int gserialized_cmp_srid(const GSERIALIZED *g1, const GSERIALIZED 
 	) ? 0 : 1;
 }
 
-/* ORDER BY hash(g), g::bytea, ST_SRID(g) */
+/* ORDER BY hash(g), g::bytea, ST_SRID(g), hasz(g), hasm(g) */
 int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 {
 	GBOX box1, box2;
@@ -322,7 +322,12 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	/* Return equality for perfect equality only */
 	int cmp_srid = gserialized_cmp_srid(g1, g2);
 	int cmp = memcmp(b1, b2, bsz_min);
-	if (bsz1 == bsz2 && cmp_srid == 0 && cmp == 0)
+	int g1hasz = gserialized_has_z(g1);
+	int g1hasm = gserialized_has_m(g1);
+	int g2hasz = gserialized_has_z(g2);
+	int g2hasm = gserialized_has_m(g2);
+
+	if (bsz1 == bsz2 && cmp_srid == 0 && cmp == 0 && g1hasz == g2hasz && g1hasm == g2hasm)
 		return 0;
 	else
 	{
@@ -362,9 +367,15 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 
 		/* If SRID is not equal, sort on it */
 		if (cmp_srid != 0)
-		{
 			return (srid1 > srid2) ? 1 : -1;
-		}
+
+		/* ZM flag sort*/
+		if (g1hasz != g2hasz)
+			return (g1hasz > g2hasz) ? 1: -1;
+
+		if (g1hasm != g2hasm)
+			return (g1hasm > g2hasm) ? 1: -1;
+
 
 		assert(cmp != 0);
 		return cmp > 0 ? 1 : -1;

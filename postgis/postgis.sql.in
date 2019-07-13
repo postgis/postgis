@@ -423,7 +423,6 @@ CREATE OPERATOR > (
 );
 
 -- Availability: 0.9.0
--- Changed: 3.0.0
 CREATE OPERATOR CLASS btree_geometry_ops
 	DEFAULT FOR TYPE geometry USING btree AS
 	OPERATOR	1	< ,
@@ -432,6 +431,7 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	4	>= ,
 	OPERATOR	5	> ,
 	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry),
+	-- Availability: 3.0.0
 	FUNCTION	2	geometry_sortsupport(internal);
 
 --
