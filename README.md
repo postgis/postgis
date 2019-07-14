@@ -10,6 +10,8 @@ GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)](https://gitlab.com/postgis/postgis/commits/svn-trunk)
 Drone.io:
  [![Build Status](https://cloud.drone.io/api/badges/postgis/postgis/status.svg?branch=svn-trunk)](https://cloud.drone.io/postgis/postgis?branch=svn-trunk)
+Berrie:
+ [![Build Status](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/badge)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/)
 
 
 This file is here to play nicely with modern code repository facilities.

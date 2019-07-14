@@ -1,5 +1,6 @@
 #Berrie is a 32-bit Rasberry Pi managed by Bruce Rindahl
 #BRANCH is passed in via jenkins which is set via gitea web hook
+mkdir -p ~/tmp
 sh autogen.sh
 ./configure
 make clean
