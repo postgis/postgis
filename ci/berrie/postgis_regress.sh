@@ -6,7 +6,7 @@ sh autogen.sh
 make clean
 make
 export PGUSER=postgres
-export PGIS_REG_TMPDIR=tmp
+#export PGIS_REG_TMPDIR=tmp
 psql -c "DROP DATABASE IF EXISTS postgis_reg;"
 make check RUNTESTFLAGS="-v"
 #make install
