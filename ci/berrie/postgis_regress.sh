@@ -9,5 +9,5 @@ export PGUSER=postgres
 #export PGIS_REG_TMPDIR=tmp
 psql -c "DROP DATABASE IF EXISTS postgis_reg;"
 make check RUNTESTFLAGS="-v"
-#make install
-#make check RUNTESTFLAGS="-v --extension"
+sudo make install
+make check RUNTESTFLAGS="-v --extension"
