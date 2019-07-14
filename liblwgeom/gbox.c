@@ -724,32 +724,105 @@ void gbox_float_round(GBOX *gbox)
 	}
 }
 
-uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
+inline static uint64_t
+uint64_interleave_2(uint64_t x, uint64_t y)
 {
-    uint64_t x = u1;
-    uint64_t y = u2;
-    int i;
+	x = (x | (x << 16)) & 0x0000FFFF0000FFFF;
+	x = (x | (x << 8)) & 0x00FF00FF00FF00FF;
+	x = (x | (x << 4)) & 0x0F0F0F0F0F0F0F0F;
+	x = (x | (x << 2)) & 0x3333333333333333;
+	x = (x | (x << 1)) & 0x5555555555555555;
 
-    static uint64_t B[5] =
-    {
-        0x5555555555555555,
-        0x3333333333333333,
-        0x0F0F0F0F0F0F0F0F,
-        0x00FF00FF00FF00FF,
-        0x0000FFFF0000FFFF
-    };
-    static uint64_t S[5] = { 1, 2, 4, 8, 16 };
+	y = (y | (y << 16)) & 0x0000FFFF0000FFFF;
+	y = (y | (y << 8)) & 0x00FF00FF00FF00FF;
+	y = (y | (y << 4)) & 0x0F0F0F0F0F0F0F0F;
+	y = (y | (y << 2)) & 0x3333333333333333;
+	y = (y | (y << 1)) & 0x5555555555555555;
 
-    for ( i = 4; i >= 0; i-- )
-    {
-        x = (x | (x << S[i])) & B[i];
-        y = (y | (y << S[i])) & B[i];
-    }
-
-    return x | (y << 1);
+	return x | (y << 1);
 }
 
-uint64_t gbox_get_sortable_hash(const GBOX *g)
+/* Based on https://github.com/rawrunprotected/hilbert_curves Public Domain code */
+inline static uint64_t
+uint32_hilbert(uint32_t px, uint32_t py)
+{
+	uint64_t x = px;
+	uint64_t y = py;
+
+	uint64_t A, B, C, D;
+
+	// Initial prefix scan round, prime with x and y
+	{
+		uint64_t a = x ^ y;
+		uint64_t b = 0xFFFFFFFF ^ a;
+		uint64_t c = 0xFFFFFFFF ^ (x | y);
+		uint64_t d = x & (y ^ 0xFFFFFFFF);
+
+		A = a | (b >> 1);
+		B = (a >> 1) ^ a;
+		C = ((c >> 1) ^ (b & (d >> 1))) ^ c;
+		D = ((a & (c >> 1)) ^ (d >> 1)) ^ d;
+	}
+
+	{
+		uint64_t a = A;
+		uint64_t b = B;
+		uint64_t c = C;
+		uint64_t d = D;
+
+		A = ((a & (a >> 2)) ^ (b & (b >> 2)));
+		B = ((a & (b >> 2)) ^ (b & ((a ^ b) >> 2)));
+		C ^= ((a & (c >> 2)) ^ (b & (d >> 2)));
+		D ^= ((b & (c >> 2)) ^ ((a ^ b) & (d >> 2)));
+	}
+
+	{
+		uint64_t a = A;
+		uint64_t b = B;
+		uint64_t c = C;
+		uint64_t d = D;
+
+		A = ((a & (a >> 4)) ^ (b & (b >> 4)));
+		B = ((a & (b >> 4)) ^ (b & ((a ^ b) >> 4)));
+		C ^= ((a & (c >> 4)) ^ (b & (d >> 4)));
+		D ^= ((b & (c >> 4)) ^ ((a ^ b) & (d >> 4)));
+	}
+
+	{
+		uint64_t a = A;
+		uint64_t b = B;
+		uint64_t c = C;
+		uint64_t d = D;
+
+		A = ((a & (a >> 8)) ^ (b & (b >> 8)));
+		B = ((a & (b >> 8)) ^ (b & ((a ^ b) >> 8)));
+		C ^= ((a & (c >> 8)) ^ (b & (d >> 8)));
+		D ^= ((b & (c >> 8)) ^ ((a ^ b) & (d >> 8)));
+	}
+
+	{
+		uint64_t a = A;
+		uint64_t b = B;
+		uint64_t c = C;
+		uint64_t d = D;
+
+		C ^= ((a & (c >> 16)) ^ (b & (d >> 16)));
+		D ^= ((b & (c >> 16)) ^ ((a ^ b) & (d >> 16)));
+	}
+
+	// Undo transformation prefix scan
+	uint64_t a = C ^ (C >> 1);
+	uint64_t b = D ^ (D >> 1);
+
+	// Recover index bits
+	uint64_t i0 = x ^ y;
+	uint64_t i1 = b | (0xFFFFFFFF ^ (i0 | a));
+
+	return uint64_interleave_2(i0, i1);
+}
+
+uint64_t
+gbox_get_sortable_hash(const GBOX *g, const int32_t srid)
 {
 	union floatuint {
 		uint32_t u;
@@ -773,20 +846,32 @@ uint64_t gbox_get_sortable_hash(const GBOX *g)
 		p.z = (g->zmax + g->zmin) / 2.0;
 		normalize(&p);
 		cart2geog(&p, &gpt);
-		x.f = gpt.lon;
-		y.f = gpt.lat;
+		/* We know range for geography, so build the curve taking it into account */
+		x.f = 1.5 + gpt.lon / 512.0;
+		y.f = 1.5 + gpt.lat / 256.0;
 	}
 	else
 	{
+		x.f = (g->xmax + g->xmin) / 2;
+		y.f = (g->ymax + g->ymin) / 2;
 		/*
-		* Here we'd like to get two ordinates from 4 in the box.
-		* Since it's just a sortable bit representation we can omit division from (A+B)/2.
-		* All it should do is subtract 1 from exponent anyways.
-		*/
-		x.f = g->xmax + g->xmin;
-		y.f = g->ymax + g->ymin;
+		 * Tweak for popular SRID values: push floating point values into 1..2 range,
+		 * a region where exponent is constant and thus Hilbert curve
+		 * doesn't have compression artifact when X or Y value is close to 0.
+		 * If someone has out of bounds value it will still expose the arifact but not crash.
+		 * TODO: reconsider when we will have machinery to properly get bounds by SRID.
+		 */
+		if (srid == 3857 || srid == 3395)
+		{
+			x.f = 1.5 + x.f / 67108864.0;
+			y.f = 1.5 + y.f / 67108864.0;
+		}
+		else if (srid == 4326)
+		{
+			x.f = 1.5 + x.f / 512.0;
+			y.f = 1.5 + y.f / 256.0;
+		}
 	}
-	return uint32_interleave_2(x.u, y.u);
+
+	return uint32_hilbert(y.u, x.u);
 }
-
-

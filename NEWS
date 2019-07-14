@@ -110,6 +110,9 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
            them in database for some reason. (Darafei Praliaskouski)
   - #4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
+  - #3383, Sorting now uses Hilbert curve and Postgres Abbreviated Compare.
+           You need to REINDEX your btree indexes if you had them.
+           (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
