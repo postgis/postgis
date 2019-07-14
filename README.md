@@ -4,14 +4,21 @@ Winnie:
  [![Build Status](https://winnie.postgis.net:444/buildStatus/icon?job=PostGIS_trunk)](https://winnie.postgis.net:444/view/PostGIS/job/PostGIS_trunk/)
 Dronie:
  [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=svn-trunk)](https://dronie.osgeo.org/postgis/postgis?branch=svn-trunk)
+ 
 Travis:
  [![Build Status](https://api.travis-ci.org/postgis/postgis.svg?branch=svn-trunk,svn-2.5,svn-2.4,svn-2.3)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)](https://gitlab.com/postgis/postgis/commits/svn-trunk)
 Drone.io:
  [![Build Status](https://cloud.drone.io/api/badges/postgis/postgis/status.svg?branch=svn-trunk)](https://cloud.drone.io/postgis/postgis?branch=svn-trunk)
+
+
+Bessie:
+ [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie/) 
+Bessie32:
+ [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie32)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie32/) 
 Berrie:
- [![Build Status](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/badge)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/)
+ [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dberrie)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/)
 
 
 This file is here to play nicely with modern code repository facilities.
