@@ -1224,10 +1224,7 @@ sub create_spatial
 	my ($cmd, $rv);
 	print "Creating database '$DB' \n";
 
-  $rv = create_db();
-
-	$cmd = "createlang plpgsql $DB >> $REGRESS_LOG 2>&1";
-	$rv = system($cmd);
+  	$rv = create_db();
 
 	# Count database objects before installing anything
 	$OBJ_COUNT_PRE = count_db_objects();
