@@ -5,7 +5,7 @@ This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 * Major highlights *
-  - #4433 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
+  - #4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
   - #4445, Fix a bug in geometry_le (Raúl Marín)
   - #4451, Fix the calculation of gserialized_max_header_size (Raúl Marín)
   - #4450, Speed up ST_GeometryType (Raúl Marín)
@@ -13,6 +13,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4417, Update spatial_ref_sys with new entries (Paul Ramsey)
   - #4449, Speed up ST_X, ST_Y, ST_Z and ST_M (Raúl Marín)
   - #4456, add Rasbery Pi 32-bit jenkins bot for testing (Bruce Rindahl)
+  - #4454, Speed up _ST_OrderingEquals (Raúl Marín)
 
 PostGIS 3.0.0alpha3
 2019/07/01
