@@ -108,7 +108,6 @@ intersects|f
 ST_GeometryN|LINESTRING(0 0,1 1)
 ST_NumGeometries|1
 ST_Union1|POLYGON((0 0,0 1,0.5 1,0.5 1.5,1.5 1.5,1.5 0.5,1 0.5,1 0,0 0))
-ST_StartPoint1|POINT(0 0)
 ST_EndPoint1|POINT(2 2)
 ST_PointN1|POINT(1 1)
 ST_PointN2|POINT(2 2)
@@ -120,3 +119,8 @@ ST_PointN7|POINT(3 3)
 ST_PointN8|
 ST_PointN9|POINT Z (1 1 1)
 ST_Buffer(empty)|POLYGON EMPTY
+ST_StartPoint1|POINT(0 0)
+ST_StartPoint2|POINT(2 2)
+ST_StartPoint3|POINT(3 3)
+ST_StartPoint4|
+ST_StartPoint5|
