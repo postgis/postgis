@@ -14,6 +14,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4449, Speed up ST_X, ST_Y, ST_Z and ST_M (Raúl Marín)
   - #4456, add Rasbery Pi 32-bit jenkins bot for testing (Bruce Rindahl)
   - #4454, Speed up _ST_OrderingEquals (Raúl Marín)
+  - #4453, Speed up ST_IsEmpty (Raúl Marín)
 
 PostGIS 3.0.0alpha3
 2019/07/01
