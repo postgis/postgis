@@ -79,7 +79,7 @@ LDFLAGS = \
 all: $(RASTER2PGSQL)
 
 raster2pgsql.o: raster2pgsql.c
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 
 $(RASTER2PGSQL): $(RT_CORE)/librtcore.a raster2pgsql.o
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
