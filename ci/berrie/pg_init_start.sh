@@ -4,10 +4,10 @@ export WORKSPACE=/home/jenkins/workspace
 
 cd ${WORKSPACE}/PostGIS_Worker_Run/label/berrie/$BRANCH
 export OS_BUILD=32
-export PG_VER=13
+export PG_VER=12
 export PGPATH=${WORKSPACE}/pg/label/berrie/rel/pg${PG_VER}w${OS_BUILD}
 export PATH=${PATH}:${PGPATH}/bin:${PGPATH}/lib
-export PGPORT=55532
+export PGPORT=55432
 export PGDATA=$PGPATH/data_${PGPORT}
 export PGLOG="$PGDATA/pgsql.log"
 # What to use to start up the postmaster (we do NOT use pg_ctl for this,
