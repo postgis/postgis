@@ -57,8 +57,8 @@ check: libpgcommon.a
 	$(MAKE) -C cunit check
 
 # Command to build each of the .o files
-$(SA_OBJS): %.o: %.c 
-	$(CC) $(CFLAGS) -c -o $@ $<
+$(SA_OBJS): %.o: %.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(SA_OBJS): ../postgis_config.h
 

@@ -87,13 +87,13 @@ $(LIBLWGEOM):
 	$(MAKE) -C ../liblwgeom
 
 shp2pgsql-core.o: shp2pgsql-core.c shp2pgsql-core.h shpcommon.h
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 
 pgsql2shp-core.o: pgsql2shp-core.c pgsql2shp-core.h shpcommon.h
-	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
 pgsql2shp-cli.o: pgsql2shp-cli.c pgsql2shp-core.h shpcommon.h
-	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
 $(PGSQL2SHP-CLI): $(SHPLIB_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \
@@ -104,7 +104,7 @@ $(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM)
 	  $(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS)
 
 shp2pgsql-gui.o: shp2pgsql-gui.c shp2pgsql-core.h shpcommon.h
-	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c shp2pgsql-gui.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c shp2pgsql-gui.c
 
 $(SHP2PGSQL-GUI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core.o $(LIBLWGEOM) $(GTK_WIN32_RES)
 	$(LIBTOOL) --mode=link \
