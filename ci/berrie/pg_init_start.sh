@@ -1,18 +1,18 @@
 #Berrie is a 32-bit Rasberry Pi managed by Bruce Rindahl
 #This is script to launch custom compiled PostgreSQL
+#export label=berrie #this is passed in via Jenkins
 export WORKSPACE=/home/jenkins/workspace
 
-cd ${WORKSPACE}/PostGIS_Worker_Run/label/berrie/$BRANCH
+
+
 export OS_BUILD=32
 export PG_VER=12
-export PGPATH=${WORKSPACE}/pg/label/berrie/rel/pg${PG_VER}w${OS_BUILD}
+export PGPATH=${WORKSPACE}/pg/label/${label}/rel/pg${PG_VER}w${OS_BUILD}
 export PATH=${PATH}:${PGPATH}/bin:${PGPATH}/lib
 export PGPORT=55432
 export PGDATA=$PGPATH/data_${PGPORT}
 export PGLOG="$PGDATA/pgsql.log"
-# What to use to start up the postmaster (we do NOT use pg_ctl for this,
-# as it adds no value and can cause the postmaster to misrecognize a stale
-# lock file)
+# What to use to start up the postmaster
 DAEMON="$PGPATH/bin/pg_ctl -D $PGDATA -l logfile start"
 
 # What to use to shut down the postmaster
@@ -32,6 +32,7 @@ $PGPATH/bin/initdb
 
 echo -n "Starting PostgreSQL: "
 $DAEMON &
+#sleep a bit because sometimes postgres takes a bit to start up
 sleep 20
 echo "ok"
 exit 0
