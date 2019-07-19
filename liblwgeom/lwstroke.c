@@ -587,13 +587,6 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
 	return lwline_construct(icompound->srid, NULL, ptarray_out);
 }
 
-/* Kept for backward compatibility - TODO: drop */
-LWLINE *
-lwcompound_stroke(const LWCOMPOUND *icompound, uint32_t perQuad)
-{
-		return lwcompound_linearize(icompound, perQuad, LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD, 0);
-}
-
 
 /*
  * @param icompound input curve polygon
