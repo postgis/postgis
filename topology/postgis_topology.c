@@ -1918,12 +1918,12 @@ cb_updateNodesById(const LWT_BE_TOPOLOGY *topo, const LWT_ISO_NODE *nodes, uint6
   return SPI_processed;
 }
 
-static int
+static uint64_t
 cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
-                    const LWT_ISO_FACE* faces, int numfaces )
+                    const LWT_ISO_FACE* faces, uint64_t numfaces )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
-  int i;
+  uint64_t i;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
@@ -1955,7 +1955,7 @@ cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
     pfree(sqldata.data);
-    return -1;
+    return UINT64_MAX;
   }
   pfree(sqldata.data);
 
