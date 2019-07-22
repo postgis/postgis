@@ -2854,11 +2854,11 @@ BEGIN
 				rec.name, rec.installed_version, rec.default_version;
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
-		ELSIF rec.default_version = rec.installed_version AND
-					rec.installed_version ILIKE '%dev'
+		ELSIF (rec.default_version = rec.installed_version AND rec.installed_version ILIKE '%dev') OR
+			(@extschema@._postgis_pgsql_version() != @extschema@._postgis_scripts_pgsql_version())
 		THEN
 			-- we need to upgrade to next and back
-			RAISE NOTICE 'Updating dev extension % %',
+			RAISE NOTICE 'Updating extension % %',
 				rec.name, rec.installed_version;
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
 						quote_ident(rec.default_version || 'next')   || ';';
