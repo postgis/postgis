@@ -1460,8 +1460,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			stringbuffer_aprintf(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
 		}
 	}
-
-			
+	
 	/**If we are in dump mode and a transform was asked for need to create a temp table to store original data
 	 You may ask, why don't we go straight into the main table and then do an alter table alter column afterwards
 	 Main reason is so we don't incur the penalty of WAL logging when we change the typmod in final run. **/
@@ -1517,8 +1516,7 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 
 			stringbuffer_aprintf(sb, " \"%s\" %s FROM stdin;\n", state->config->table, state->col_names);
 		}
-		
-	
+
 		/* Copy the string buffer into a new string, destroying the string buffer */
 		ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
 		strcpy(ret, (char *)stringbuffer_getstring(sb));
@@ -1870,10 +1868,9 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
 
-	
 	if ( state->config->dump_format && state->to_srid != state->from_srid){
 		/** We need to copy from the temp table to the real table, transforming to to_srid **/
-		stringbuffer_aprintf(sb, "ALTER TABLE  \"pgis_tmp_%s\" ALTER COLUMN \"%s\" TYPE ",   state->config->table, state->geo_col );
+		stringbuffer_aprintf(sb, "ALTER TABLE  \"pgis_tmp_%s\" ALTER COLUMN \"%s\" TYPE ", state->config->table, state->geo_col);
 		if (state->config->geography){
 			stringbuffer_aprintf(sb, "geography USING (ST_Transform(\"%s\", %d)::geography );\n", state->geo_col, state->to_srid);
 		}
@@ -1887,7 +1884,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 			stringbuffer_aprintf(sb, "\"%s\".", state->config->schema);
 		}
 		stringbuffer_aprintf(sb, "\"%s\" %s ", state->config->table, state->col_names);
-		stringbuffer_aprintf(sb, "SELECT %s FROM \"pgis_tmp_%s\";\n", state->col_names_no_paren, state->config->table );
+		stringbuffer_aprintf(sb, "SELECT %s FROM \"pgis_tmp_%s\";\n", state->col_names_no_paren, state->config->table);
 	}
 
 	/* Create gist index if specified and not in "prepare" mode */
