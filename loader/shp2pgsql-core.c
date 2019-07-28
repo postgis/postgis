@@ -1460,7 +1460,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			stringbuffer_aprintf(sb, "'%s',%d);\n", state->pgtype, state->pgdims);
 		}
 	}
-	
+
 	/**If we are in dump mode and a transform was asked for need to create a temp table to store original data
 	 You may ask, why don't we go straight into the main table and then do an alter table alter column afterwards
 	 Main reason is so we don't incur the penalty of WAL logging when we change the typmod in final run. **/
