@@ -16,6 +16,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4454, Speed up _ST_OrderingEquals (Raúl Marín)
   - #4453, Speed up ST_IsEmpty (Raúl Marín)
   - #4271, postgis_extensions_upgrade() also updates after pg_upgrade (Raúl Marín)
+  - #4403, Support for shp2pgsql ability to reproject with copy mode (-D) (Regina Obe)
 
 PostGIS 3.0.0alpha3
 2019/07/01

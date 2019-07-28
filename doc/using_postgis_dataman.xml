@@ -1672,7 +1672,6 @@ COMMIT;</programlisting>
           Optionally specifies that the input shapefile uses the given
           FROM_SRID, in which case the geometries will be reprojected to the
           target SRID.
-	  FROM_SRID cannot be specified with -D.
         </para>
       </listitem>
     </varlistentry>

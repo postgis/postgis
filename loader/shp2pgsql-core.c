@@ -786,6 +786,7 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	state->widths = NULL;
 	state->precisions = NULL;
 	state->col_names = NULL;
+	state->col_names_no_paren = NULL;
 	state->field_names = NULL;
 	state->num_fields = 0;
 	state->pgfieldtypes = NULL;
@@ -1090,10 +1091,11 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	state->precisions = malloc(state->num_fields * sizeof(int));
 	state->pgfieldtypes = malloc(state->num_fields * sizeof(char *));
 	state->col_names = malloc((state->num_fields + 2) * sizeof(char) * MAXFIELDNAMELEN);
+	state->col_names_no_paren = malloc((state->num_fields + 2) * sizeof(char) * MAXFIELDNAMELEN);
 
-	/* Generate a string of comma separated column names of the form "(col1, col2 ... colN)" for the SQL
+	strcpy(state->col_names_no_paren, "" );
+	/* Generate a string of comma separated column names of the form "col1, col2 ... colN" for the SQL
 	   insertion string */
-	strcpy(state->col_names, "(" );
 
 	for (j = 0; j < state->num_fields; j++)
 	{
@@ -1243,23 +1245,27 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			return SHPLOADERERR;
 		}
 
-		strcat(state->col_names, "\"");
-		strcat(state->col_names, name);
+		strcat(state->col_names_no_paren, "\"");
+		strcat(state->col_names_no_paren, name);
 
 		if (state->config->readshape == 1 || j < (state->num_fields - 1))
 		{
 			/* Don't include last comma if its the last field and no geometry field will follow */
-			strcat(state->col_names, "\",");
+			strcat(state->col_names_no_paren, "\",");
 		}
 		else
 		{
-			strcat(state->col_names, "\"");
+			strcat(state->col_names_no_paren, "\"");
 		}
 	}
 
 	/* Append the geometry column if required */
 	if (state->config->readshape == 1)
-		strcat(state->col_names, state->geo_col);
+		strcat(state->col_names_no_paren, state->geo_col);
+
+	/** Create with (col1,col2,..) ( **/
+	strcpy(state->col_names, "(" );
+	strcat(state->col_names, state->col_names_no_paren);
 
 	strcat(state->col_names, ")");
 
@@ -1455,6 +1461,23 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		}
 	}
 
+			
+	/**If we are in dump mode and a transform was asked for need to create a temp table to store original data
+	 You may ask, why don't we go straight into the main table and then do an alter table alter column afterwards
+	 Main reason is so we don't incur the penalty of WAL logging when we change the typmod in final run. **/
+	if (state->config->dump_format && state->to_srid != state->from_srid){
+		/** create a temp table with same structure as main except for no restriction on geometry type */
+		stringbuffer_aprintf(sb, "CREATE TEMP TABLE \"pgis_tmp_%s\" AS SELECT * FROM ", state->config->table);
+		/* Schema is optional, include if present. */
+		if (state->config->schema)
+		{
+			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
+		}
+		stringbuffer_aprintf(sb, "\"%s\" WHERE false;\n", state->config->table, state->geo_col);
+		/**out input data is going to be in different srid from target, so need to remove type constraint **/
+		stringbuffer_aprintf(sb, "ALTER TABLE \"pgis_tmp_%s\" ALTER COLUMN \"%s\" TYPE geometry USING ( (\"%s\"::geometry) ); \n", state->config->table,  state->geo_col, state->geo_col);
+	}
+
 	/* Copy the string buffer into a new string, destroying the string buffer */
 	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
 	strcpy(ret, (char *)stringbuffer_getstring(sb));
@@ -1470,27 +1493,38 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 int
 ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 {
-	char *copystr;
+	//char *copystr;
+	stringbuffer_t *sb;
+	char *ret;
+	sb = stringbuffer_create();
+	stringbuffer_clear(sb);
+
 
 	/* Allocate the string for the COPY statement */
 	if (state->config->dump_format)
 	{
-		if (state->config->schema)
-		{
-			copystr = malloc(strlen(state->config->schema) + strlen(state->config->table) +
-			                 strlen(state->col_names) + 40);
+		stringbuffer_aprintf(sb, "COPY ");
 
-			sprintf(copystr, "COPY \"%s\".\"%s\" %s FROM stdin;\n",
-			        state->config->schema, state->config->table, state->col_names);
+		if (state->to_srid != state->from_srid){
+			/** if we need to transform we copy into temp table instead of main table first */
+			stringbuffer_aprintf(sb, " \"pgis_tmp_%s\" %s FROM stdin;\n", state->config->table, state->col_names);
 		}
-		else
-		{
-			copystr = malloc(strlen(state->config->table) + strlen(state->col_names) + 40);
+		else {
+			if (state->config->schema)
+			{
+				stringbuffer_aprintf(sb, " \"%s\".\" ", state->config->schema);
+			}
 
-			sprintf(copystr, "COPY \"%s\" %s FROM stdin;\n", state->config->table, state->col_names);
+			stringbuffer_aprintf(sb, " \"%s\" %s FROM stdin;\n", state->config->table, state->col_names);
 		}
+		
+	
+		/* Copy the string buffer into a new string, destroying the string buffer */
+		ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
+		strcpy(ret, (char *)stringbuffer_getstring(sb));
+		stringbuffer_destroy(sb);
 
-		*strheader = copystr;
+		*strheader = ret;
 		return SHPLOADEROK;
 	}
 	else
@@ -1836,6 +1870,26 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
 
+	
+	if ( state->config->dump_format && state->to_srid != state->from_srid){
+		/** We need to copy from the temp table to the real table, transforming to to_srid **/
+		stringbuffer_aprintf(sb, "ALTER TABLE  \"pgis_tmp_%s\" ALTER COLUMN \"%s\" TYPE ",   state->config->table, state->geo_col );
+		if (state->config->geography){
+			stringbuffer_aprintf(sb, "geography USING (ST_Transform(\"%s\", %d)::geography );\n", state->geo_col, state->to_srid);
+		}
+		else {
+			stringbuffer_aprintf(sb, "geometry USING (ST_Transform(\"%s\", %d)::geometry );\n", state->geo_col, state->to_srid);
+		}
+		stringbuffer_aprintf(sb, "INSERT INTO ");
+		// /* Schema is optional, include if present. */
+		if (state->config->schema)
+		{
+			stringbuffer_aprintf(sb, "\"%s\".", state->config->schema);
+		}
+		stringbuffer_aprintf(sb, "\"%s\" %s ", state->config->table, state->col_names);
+		stringbuffer_aprintf(sb, "SELECT %s FROM \"pgis_tmp_%s\";\n", state->col_names_no_paren, state->config->table );
+	}
+
 	/* Create gist index if specified and not in "prepare" mode */
 	if (state->config->readshape && state->config->createindex)
 	{
@@ -1912,6 +1966,9 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 			free(state->precisions);
 		if (state->col_names)
 			free(state->col_names);
+
+		if (state->col_names_no_paren)
+			free(state->col_names_no_paren);
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);

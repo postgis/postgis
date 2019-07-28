@@ -24,7 +24,7 @@ usage()
 	printf(_( "USAGE: shp2pgsql [<options>] <shapefile> [[<schema>.]<table>]\n"
 	          "OPTIONS:\n" ));
 	printf(_( "  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
-	          "      Optionally reprojects from given SRID (cannot be used with -D).\n"),
+	          "      Optionally reprojects from given SRID.\n"),
 	          SRID_UNKNOWN);
 	printf(_( " (-d|a|c|p) These are mutually exclusive options:\n"
 	          "     -d  Drops the table, then recreates it and populates\n"
@@ -247,12 +247,6 @@ main (int argc, char **argv)
 	if (config->dump_format && !config->usetransaction)
 	{
 		fprintf(stderr, "Invalid argument combination - cannot use both -D and -e\n");
-		exit(1);
-	}
-
-	if (config->dump_format && config->shp_sr_id != SRID_UNKNOWN)
-	{
-		fprintf(stderr, "Invalid argument combination - cannot use -D with -s FROM_SRID:TO_SRID\n");
 		exit(1);
 	}
 

@@ -53,9 +53,12 @@ OPTIONS
               the default "insert" SQL format. Use this for  very  large  data
               sets.
 
-       -s <SRID>
-              Creates  and  populates  the  geometry tables with the specified
-              SRID.
+       -s [<FROM_SRID>:]<SRID>
+              Creates and populates the geometry tables with the specified SRID.
+              Optionally specifies that the input shapefile uses the given
+              FROM_SRID, in which case the geometries will be reprojected 
+              to the target SRID.
+
 
        -g <geometry_column>
               Specify the name of the geometry column (mostly useful in append
@@ -113,8 +116,9 @@ EXAMPLES
 
 
 AUTHORS
-       Originally   written   by  Jeff  Lounsbury  <jeffloun@refractions.net>.
-       Improved and  maintained  by  Sandro  Santilli  <strk@kbt.io>.
+       Originally written by Jeff Lounsbury <jeffloun@refractions.net>.
+       Improved and maintained by 
+       Sandro Santilli <strk@kbt.io>, Regina Obe <lr@pcorp.us>.
        Includes small contributions and improvements by others.
 
        This  application  uses  functionality  from  shapelib  1.2.9  by Frank
