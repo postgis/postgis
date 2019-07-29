@@ -2002,10 +2002,6 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 	if ( ! PG_ARGISNULL(2) )
 		mode = text_p_get_mode(PG_GETARG_TEXT_P(2));
 
-	/* Check if we've been asked to only use stats from parent */
-	if ( ! PG_ARGISNULL(3) )
-		only_parent = PG_GETARG_BOOL(3);
-
 	/* Retrieve the stats object */
 	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode, only_parent);
 	if ( ! nd_stats )
