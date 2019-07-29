@@ -786,7 +786,6 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	state->widths = NULL;
 	state->precisions = NULL;
 	state->col_names = NULL;
-	state->col_names_no_paren = NULL;
 	state->field_names = NULL;
 	state->num_fields = 0;
 	state->pgfieldtypes = NULL;
@@ -1091,9 +1090,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	state->precisions = malloc(state->num_fields * sizeof(int));
 	state->pgfieldtypes = malloc(state->num_fields * sizeof(char *));
 	state->col_names = malloc((state->num_fields + 2) * sizeof(char) * MAXFIELDNAMELEN);
-	state->col_names_no_paren = malloc((state->num_fields + 2) * sizeof(char) * MAXFIELDNAMELEN);
 
-	strcpy(state->col_names_no_paren, "" );
+	strcpy(state->col_names, "" );
 	/* Generate a string of comma separated column names of the form "col1, col2 ... colN" for the SQL
 	   insertion string */
 
@@ -1245,30 +1243,23 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			return SHPLOADERERR;
 		}
 
-		strcat(state->col_names_no_paren, "\"");
-		strcat(state->col_names_no_paren, name);
+		strcat(state->col_names, "\"");
+		strcat(state->col_names, name);
 
 		if (state->config->readshape == 1 || j < (state->num_fields - 1))
 		{
 			/* Don't include last comma if its the last field and no geometry field will follow */
-			strcat(state->col_names_no_paren, "\",");
+			strcat(state->col_names, "\",");
 		}
 		else
 		{
-			strcat(state->col_names_no_paren, "\"");
+			strcat(state->col_names, "\"");
 		}
 	}
 
 	/* Append the geometry column if required */
 	if (state->config->readshape == 1)
-		strcat(state->col_names_no_paren, state->geo_col);
-
-	/** Create with (col1,col2,..) ( **/
-	strcpy(state->col_names, "(" );
-	strcat(state->col_names, state->col_names_no_paren);
-
-	strcat(state->col_names, ")");
-
+		strcat(state->col_names, state->geo_col);
 
 	/* Return status */
 	return ret;
@@ -1504,7 +1495,7 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 
 		if (state->to_srid != state->from_srid){
 			/** if we need to transform we copy into temp table instead of main table first */
-			stringbuffer_aprintf(sb, " \"pgis_tmp_%s\" %s FROM stdin;\n", state->config->table, state->col_names);
+			stringbuffer_aprintf(sb, " \"pgis_tmp_%s\" (%s) FROM stdin;\n", state->config->table, state->col_names);
 		}
 		else {
 			if (state->config->schema)
@@ -1512,7 +1503,7 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 				stringbuffer_aprintf(sb, " \"%s\".\" ", state->config->schema);
 			}
 
-			stringbuffer_aprintf(sb, " \"%s\" %s FROM stdin;\n", state->config->table, state->col_names);
+			stringbuffer_aprintf(sb, " \"%s\" (%s) FROM stdin;\n", state->config->table, state->col_names);
 		}
 
 		/* Copy the string buffer into a new string, destroying the string buffer */
@@ -1593,12 +1584,12 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	{
 		if (state->config->schema)
 		{
-			stringbuffer_aprintf(sb, "INSERT INTO \"%s\".\"%s\" %s VALUES (", state->config->schema,
+			stringbuffer_aprintf(sb, "INSERT INTO \"%s\".\"%s\" (%s) VALUES (", state->config->schema,
 			                     state->config->table, state->col_names);
 		}
 		else
 		{
-			stringbuffer_aprintf(sb, "INSERT INTO \"%s\" %s VALUES (", state->config->table,
+			stringbuffer_aprintf(sb, "INSERT INTO \"%s\" (%s) VALUES (", state->config->table,
 			                     state->col_names);
 		}
 	}
@@ -1881,8 +1872,8 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 		{
 			stringbuffer_aprintf(sb, "\"%s\".", state->config->schema);
 		}
-		stringbuffer_aprintf(sb, "\"%s\" %s ", state->config->table, state->col_names);
-		stringbuffer_aprintf(sb, "SELECT %s FROM \"pgis_tmp_%s\";\n", state->col_names_no_paren, state->config->table);
+		stringbuffer_aprintf(sb, "\"%s\" (%s) ", state->config->table, state->col_names);
+		stringbuffer_aprintf(sb, "SELECT %s FROM \"pgis_tmp_%s\";\n", state->col_names, state->config->table);
 	}
 
 	/* Create gist index if specified and not in "prepare" mode */
@@ -1961,9 +1952,6 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 			free(state->precisions);
 		if (state->col_names)
 			free(state->col_names);
-
-		if (state->col_names_no_paren)
-			free(state->col_names_no_paren);
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);
