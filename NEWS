@@ -13,6 +13,7 @@ PostGIS 2.5.3
   - #4440, Internal type lookups fail over FDW (Paul Ramsey)
   - #4445, Fix bug in lwgeom_le (Raúl Marín)
   - #4466, Fix undefined behaviour in _postgis_gserialized_stats (Raúl Marín)
+  - #4209, Handle NULL geometry values in pgsql2shp (Paul Ramsey)
 
 
 PostGIS 2.5.2
