@@ -816,7 +816,7 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 
 	if (!state->geo_col)
 	{
-		state->geo_col = strdup(config->geography ? GEOGRAPHY_DEFAULT : GEOMETRY_DEFAULT);
+		state->geo_col = config->geography ? GEOGRAPHY_DEFAULT : GEOMETRY_DEFAULT;
 	}
 
 	colmap_init(&state->column_map);
@@ -1952,8 +1952,6 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 			free(state->precisions);
 		if (state->col_names)
 			free(state->col_names);
-		if (state->geo_col)
-			free(state->geo_col);
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);
