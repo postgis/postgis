@@ -887,15 +887,15 @@ getTableInfo(SHPDUMPERSTATE *state)
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->schema) + strlen(state->table));
 
-			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
-			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->schema, state->table, state->geo_col_name);
+			sprintf(query, "SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY 3",
+			state->geo_col_name, state->geo_col_name, state->schema, state->table);
 		}
 		else
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->table));
 
-			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
-			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->table, state->geo_col_name);
+			sprintf(query, "SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY 3",
+			state->geo_col_name, state->geo_col_name, state->table);
 		}
 	}
 	else
@@ -955,9 +955,14 @@ getTableInfo(SHPDUMPERSTATE *state)
 
 		for (i = 0; i < PQntuples(res); i++)
 		{
-			geometry_type_from_string(PQgetvalue(res, i, 2), &type, &dummy, &dummy);
+			/* skip null geometries */
+			if (PQgetisnull(res, i, 2))
+			{
+				state->rowcount += atoi(PQgetvalue(res, i, 0));
+				continue;
+			}
 
-			if (!type) continue; /* skip null geometries */
+			geometry_type_from_string(PQgetvalue(res, i, 2), &type, &dummy, &dummy);
 
 			/* We can always set typefound to that of the first column found */
 			if (!typefound)
