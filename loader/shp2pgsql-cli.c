@@ -446,6 +446,8 @@ main (int argc, char **argv)
 		free(config->schema);
 	if (config->table)
 		free(config->table);
+	if (config->encoding)
+		free(config->encoding);
 	free(config);
 
 	return 0;
