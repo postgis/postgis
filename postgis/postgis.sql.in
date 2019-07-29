@@ -4608,7 +4608,7 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEF
 	_COST_LOW;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits int4 DEFAULT 15, pretty_print bool DEFAULT false)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits int4 DEFAULT 15, pretty_bool bool DEFAULT false)
 	RETURNS text
 	AS 'MODULE_PATHNAME','ST_AsGeoJsonRow'
 	LANGUAGE 'c' STABLE STRICT _PARALLEL
