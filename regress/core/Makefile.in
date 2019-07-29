@@ -61,7 +61,9 @@ TESTS = \
 	../loader/NotReallyMultiPoint \
 	../loader/MultiToSinglePoint \
 	../loader/ReprojectPts \
+	../loader/ReprojectPtsD \
 	../loader/ReprojectPtsGeog \
+	../loader/ReprojectPtsGeogD \
 	../loader/Latin1 \
 	../loader/Latin1-implicit \
 	../loader/mfile \
