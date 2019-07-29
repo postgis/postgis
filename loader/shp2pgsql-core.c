@@ -1387,7 +1387,11 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			else
 				dimschar = "";
 
-			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->geo_col, state->pgtype, dimschar, 4326);
+			if (state->to_srid == SRID_UNKNOWN ){
+				state->to_srid = 4326;
+			}
+
+			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->geo_col, state->pgtype, dimschar, state->to_srid);
 		}
 		stringbuffer_aprintf(sb, ")");
 
