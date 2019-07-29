@@ -69,6 +69,8 @@ TESTS = \
 	../loader/mfile \
 	../dumper/literalsrid \
 	../dumper/realtable \
+	../dumper/nullsintable \
+	../dumper/null3d \
 	affine \
 	bestsrid \
 	binary \
