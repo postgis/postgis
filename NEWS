@@ -133,9 +133,10 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #1833, ST_AsGeoJSON(row) generates full GeoJSON Features (Joe Conway)
   - #3687, Casts json(geometry) and jsonb(geometry) for implicit GeoJSON
            generation (Paul Ramsey)
+  - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
+           Praliaskouski)
 
-* Enhancements and fixes *
-  - #4342, Move deprecated functions into legacy.sql file
+* Enhancements *
   - #4341, Using "support function" API in PgSQL 12+ to replace SQL inlining
            as the mechanism for providing index support under ST_Intersects, et al
   - #4330, postgis_restore OOM when output piped to an intermediate process
@@ -151,22 +152,10 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4181, ST_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
   - #4183, ST_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
-  - #4188, Avoid division by zero in KMeans (Raúl Marín)
-  - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
-  - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
-  - #4211, Fix ST_Subdivide for minimal exterior ring with minimal hole (Darafei
-           Praliaskouski)
-  - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
   - #4155, Support for GEOMETRYCOLLECTION, POLYGON, TIN, TRIANGLE in
            ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski)
   - #2767, Documentation for AddRasterConstraint optional parameters (Sunveer Singh)
-  - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
-  - #4190, Avoid undefined behaviour in gserialized_estimate (Raúl Marín)
-  - #4233, Fix undefined behaviour in gserialized_spgist_picksplit_nd (Raúl Marín)
-  - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
-  - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
-  - #4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)
   - #4244, Avoid unaligned memory access in BOX2D_out (Raúl Marín)
   - #4139, Make mixed-dimension ND index build tree correctly (Darafei Praliaskouski,
            Arthur Lesuisse, Andrew Gierth, Raúl Marín)
@@ -177,17 +166,13 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4301, ST_Subdivide: fix endless loop on coordinates near coincident to bounds
            (Darafei Praliaskouski)
   - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
-  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
-  - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
   - #4272, Improve notice message when unable to compute stats (Raúl Marín)
-  - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
   - #4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)
   - #4299, #4304, ST_GeneratePoints is now VOLATILE. IMMUTABLE version with
            seed parameter added. (Mike Taves)
   - #4278, ST_3DDistance and ST_3DIntersects now support Solid TIN and Solid
            POLYHEDRALSURFACE (Darafei Praliaskouski)
   - #4348, ST_AsMVTGeom (GEOS): Enforce validation at all times (Raúl Marín)
-  - #4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)
   - #4295, Allow GEOMETRYCOLLECTION in ST_Overlaps, ST_Contains, ST_ContainsProperly,
            ST_Covers, ST_CoveredBy, ST_Crosses, ST_Touches, ST_Disjoint, ST_Relate,
            ST_Equals (Esteban Zimányi)
@@ -198,23 +183,41 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4368, Reorder LWGEOM struct members to minimize extra padding (Raúl Marín)
   - #4141, Use uint64 to handle row counts in the topology extension (Raúl Marín)
   - #4225, Upgrade tiger to use tiger 2018 census files
-  - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
-           Praliaskouski)
   - #4412, Support ingesting rasters with NODATA=NaN (Darafei Praliaskouski)
   - #4413, Raster tile size follows GeoTIFF block size on raster2pgsql -t auto
            (Darafei Praliaskouski)
   - #4422, Modernize Python 2 code to get ready for Python 3 (Christian Clauss)
-  - #4383, Fix undefined behaviour in implicit conversions (Raúl Marín)
   - #4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)
+  - #4394, Allow FULL OUTER JOIN on geometry equality operator (Darafei Praliaskouski)
+  - #4441, Make GiST penalty friendly to multi-column indexes and build single-column
+           ones faster. (Darafei Praliaskouski)
+
+  - #4403, Support for shp2pgsql ability to reproject with copy mode (-D) (Regina Obe)
+
+* Fixes *
+  - #4342, Move deprecated functions into legacy.sql file
+  - #4445, Fix a bug in geometry_le (Raúl Marín)
+  - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
+  - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
+  - #4211, Fix ST_Subdivide for minimal exterior ring with minimal hole (Darafei
+           Praliaskouski)
+  - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
+  - #4190, Avoid undefined behaviour in gserialized_estimate (Raúl Marín)
+  - #4233, Fix undefined behaviour in gserialized_spgist_picksplit_nd (Raúl Marín)
+  - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
+  - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
+  - #4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)
+  - #4188, Avoid division by zero in KMeans (Raúl Marín)
+  - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
+  - #4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)
+  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
+  - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
+  - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
+  - #4383, Fix undefined behaviour in implicit conversions (Raúl Marín)
   - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
   - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
   - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
-  - #4394, Allow FULL OUTER JOIN on geometry equality operator (Darafei Praliaskouski)
-  - #4441, Make GiST penalty friendly to multi-column indexes and build single-column
-           ones faster. (Darafei Praliaskouski)
-  - #4445, Fix a bug in geometry_le (Raúl Marín)
-
 
 PostGIS 2.5.0
 2018/09/23
