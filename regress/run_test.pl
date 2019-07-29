@@ -816,7 +816,7 @@ sub run_loader_and_check_output
 
 		if ( $rv )
 		{
-			fail(" $description: running shp2pgsql", "$errfile");
+			fail(" $description: running $cmd", "$errfile");
 			return 0;
 		}
 
