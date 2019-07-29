@@ -1387,12 +1387,6 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			else
 				dimschar = "";
 
-			if (state->to_srid != SRID_UNKNOWN && state->to_srid != 4326)
-			{
-				snprintf(state->message, SHPLOADERMSGLEN, _("Invalid SRID for geography type: %d"), state->to_srid);
-				stringbuffer_destroy(sb);
-				return SHPLOADERERR;
-			}
 			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->geo_col, state->pgtype, dimschar, 4326);
 		}
 		stringbuffer_aprintf(sb, ")");
