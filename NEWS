@@ -14,6 +14,7 @@ PostGIS 2.5.3
   - #4445, Fix bug in lwgeom_le (Raúl Marín)
   - #4466, Fix undefined behaviour in _postgis_gserialized_stats (Raúl Marín)
   - #4209, Handle NULL geometry values in pgsql2shp (Paul Ramsey)
+  - #4419, Use protobuf version to enable/disable mvt/geobuf (Paul Ramsey)
 
 
 PostGIS 2.5.2

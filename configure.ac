@@ -1010,6 +1010,21 @@ if test "$CHECK_PROTOBUF" != "no"; then
     	fi
     fi
 
+    dnl Get version number for protoc-c
+    if test "$HAVE_PROTOBUF" = "yes"; then
+        AC_PATH_PROG(PROTOCC, protoc-c)
+        PROTOCC_SEMVER=$($PROTOCC --version | grep protobuf-c | awk '{print $2}')
+        AC_MSG_RESULT([checking protoc-c version... $PROTOCC_SEMVER])
+        PROTOCC_VERSION_MAJOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $1}')
+        PROTOCC_VERSION_MINOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $2}')
+        PROTOCC_VERSION_PATCH=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $3}')
+        PROTOCC_VERSION=$(expr 10000 \* $PROTOCC_VERSION_MAJOR + 100 \* $PROTOCC_VERSION_MINOR + $PROTOCC_VERSION_PATCH)
+        if test $PROTOCC_VERSION -ge 10100; then
+            AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf-c is >= 1.1])
+        fi
+    fi
+
+    AC_SUBST([PROTOCC_VERSION])
     AC_SUBST([PROTOBUF_CPPFLAGS])
     AC_SUBST([PROTOBUF_LDFLAGS])
     AC_SUBST([HAVE_PROTOBUF])
@@ -1506,7 +1521,12 @@ AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
+
 AC_MSG_RESULT([  protobuf-c support:   ${HAVE_PROTOBUF}])
+if test "x$HAVE_PROTOBUF" = "xyes"; then
+  AC_MSG_RESULT([  protobuf-c version:   ${PROTOCC_SEMVER}])
+fi
+
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
 AC_MSG_RESULT()

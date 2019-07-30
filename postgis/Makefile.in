@@ -55,7 +55,10 @@ SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o
 endif
 
 ifeq (@HAVE_PROTOBUF@,yes)
-PROTOBUF_OBJ=vector_tile.pb-c.o geobuf.pb-c.o
+PROTOBUF_OBJ = vector_tile.pb-c.o
+ifeq ($(shell expr @PROTOCC_VERSION@ ">=" 10100),1)
+PROTOBUF_OBJ += geobuf.pb-c.o
+endif
 endif
 
 # SQL preprocessor
@@ -203,8 +206,10 @@ geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
 ifeq (@HAVE_PROTOBUF@,yes)
 lwgeom_out_mvt.o: vector_tile.pb-c.h
 mvt.o: vector_tile.pb-c.h
+ifeq ($(shell expr $(PROTOCC_VERSION) ">=" 10100),1)
 lwgeom_out_geobuf.o: geobuf.pb-c.h
 geobuf.o: geobuf.pb-c.h
+endif
 endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
