@@ -61,6 +61,9 @@
 /* Define to 1 if libprotobuf-c is present */
 #undef HAVE_LIBPROTOBUF
 
+/* Define to 1 if libprotobuf-c is >= version 1.1 */
+#undef HAVE_GEOBUF
+
 /* Define to 1 if libjson is present */
 #undef HAVE_LIBJSON
 
