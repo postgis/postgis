@@ -19,6 +19,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4403, Support for shp2pgsql ability to reproject with copy mode (-D) (Regina Obe)
   - #4466, Fix undefined behaviour in _postgis_gserialized_stats (Raúl Marín)
   - #4209, Handle NULL geometry values in pgsql2shp (Paul Ramsey)
+  - #4419, Use protobuf version to enable/disable mvt/geobuf (Paul Ramsey)
 
 PostGIS 3.0.0alpha3
 2019/07/01
