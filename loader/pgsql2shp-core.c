@@ -67,6 +67,17 @@ static char * goodDBFValue(char *in, char fieldType);
 /** @brief Binary to hexewkb conversion function */
 char *convert_bytes_to_hex(uint8_t *ewkb, size_t size);
 
+static SHPObject *
+create_point_empty(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
+{
+	SHPObject *obj;
+	const uint8_t ndr_nan[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0x7f};
+	double double_nan;
+
+	memcpy(&double_nan, ndr_nan, 8);
+	obj = SHPCreateObject(state->outshptype, -1, 0, NULL, NULL, 1, &double_nan, &double_nan, &double_nan, &double_nan);
+	return obj;
+}
 
 static SHPObject *
 create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
@@ -2108,7 +2119,14 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			switch (lwgeom->type)
 			{
 			case POINTTYPE:
-				obj = create_point(state, lwgeom_as_lwpoint(lwgeom));
+				if (lwgeom_is_empty(lwgeom))
+				{
+					obj = create_point_empty(state, lwgeom_as_lwpoint(lwgeom));
+				}
+				else
+				{
+					obj = create_point(state, lwgeom_as_lwpoint(lwgeom));
+				}
 				break;
 
 			case MULTIPOINTTYPE:
