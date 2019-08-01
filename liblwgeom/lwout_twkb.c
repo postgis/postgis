@@ -112,6 +112,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 	int64_t nextdelta[MAX_N_DIMS];
 	int npoints = 0;
 	size_t npoints_offset = 0;
+	uint32_t max_points_left = pa->npoints;
 
 	LWDEBUGF(2, "Entered %s", __func__);
 
@@ -156,7 +157,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		double *dbl_ptr = (double*)getPoint_internal(pa, i);
-		int diff = 0;
+		int64_t diff = 0;
 
 		/* Write this coordinate to the buffer as a varint */
 		for ( j = 0; j < ndims; j++ )
@@ -173,8 +174,11 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 		/* Skipping the first point is not allowed */
 		/* If the sum(abs()) of all the deltas was zero, */
 		/* then this was a duplicate point, so we can ignore it */
-		if ( i > minpoints && diff == 0 )
+		if ( i > 0 && diff == 0 && max_points_left > minpoints )
+		{
+			max_points_left--;
 			continue;
+		}
 
 		/* We really added a point, so... */
 		npoints++;
