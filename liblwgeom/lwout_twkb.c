@@ -174,7 +174,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 		/* Skipping the first point is not allowed */
 		/* If the sum(abs()) of all the deltas was zero, */
 		/* then this was a duplicate point, so we can ignore it */
-		if ( diff == 0 &&  max_points_left > minpoints )
+		if ( i > 0 && diff == 0 &&  max_points_left > minpoints )
 		{
 			max_points_left--;
 			continue;
