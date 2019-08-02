@@ -544,7 +544,7 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
                       int flags)
 {
 	LWGEOM *geom;
-	POINTARRAY *ptarray = NULL, *ptarray_out = NULL;
+	POINTARRAY *ptarray = NULL;
 	LWLINE *tmp = NULL;
 	uint32_t i, j;
 	POINT4D p;
@@ -582,9 +582,9 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
 			return NULL;
 		}
 	}
-	ptarray_out = ptarray_remove_repeated_points(ptarray, 0.0);
-	ptarray_free(ptarray);
-	return lwline_construct(icompound->srid, NULL, ptarray_out);
+
+	ptarray_remove_repeated_points_in_place(ptarray, 0.0, 2);
+	return lwline_construct(icompound->srid, NULL, ptarray);
 }
 
 
