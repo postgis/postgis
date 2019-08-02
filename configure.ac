@@ -976,7 +976,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
         	HAVE_PROTOBUF=no
         else
         	dnl Ensure libprotobuf-c is of minimum required version
-        	PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
+        	PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c], [
                     HAVE_PROTOBUF=yes;
                     PROTOBUF_CPPFLAGS=$PROTOBUFC_CFLAGS;
                     PROTOBUF_LDFLAGS=$PROTOBUFC_LIBS
@@ -988,7 +988,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
     if test "$HAVE_PROTOBUF" = "yes"; then
     	AC_PATH_PROG(PROTOCC, protoc-c)
     	if test "x$PROTOCC" = "x"; then
-    	  AC_MSG_WARN([Protobuf compiler missing, disabling protobuf support.])
+    	  AC_MSG_WARN([Protobuf compiler not in path, disabling protobuf support.])
     	  HAVE_PROTOBUF=no
     	else
     	  AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
