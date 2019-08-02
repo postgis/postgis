@@ -426,13 +426,13 @@ lwarc_linearize(POINTARRAY *to,
 	}
 	else
 	{
-		/* Append points directly to the output POINTARRAY,
-		 * starting with p1. */
+		/* Append points directly to the output POINTARRAY */
 		pa = to;
-
-		ptarray_append_point(pa, p1, LW_FALSE);
-		++points_added;
 	}
+
+	/* We always start with p1 */
+	ptarray_append_point(pa, p1, LW_FALSE);
+	++points_added;
 
 	/* Sweep from a1 to a3 */
 	if ( angle_shift ) angle_shift -= increment;
@@ -450,17 +450,22 @@ lwarc_linearize(POINTARRAY *to,
 	}
 
 	/* Ensure the final point is EXACTLY the same as the first for the circular case */
-	if ( is_circle )
+	if (is_circle)
 	{
 		ptarray_remove_point(pa, pa->npoints - 1);
 		ptarray_append_point(pa, p1, LW_FALSE);
 	}
-
-	if ( reverse )
+	else
 	{
-		int i;
+		/* Ensure we finish with p3 */
+		++points_added;
 		ptarray_append_point(to, p3, LW_FALSE);
-		for ( i=pa->npoints; i>0; i-- ) {
+	}
+
+	if (reverse)
+	{
+		for (int64_t i = pa->npoints; i > 0; i--)
+		{
 			getPoint4d_p(pa, i-1, &pt);
 			ptarray_append_point(to, &pt, LW_FALSE);
 		}
