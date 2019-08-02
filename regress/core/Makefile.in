@@ -181,6 +181,13 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
 		frechet
 endif
 
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 38),1)
+	# GEOS-3.8 adds stable pointonsurface implementation
+	TESTS += \
+		geos38
+endif
+
+
 ifeq ($(INTERRUPTTESTS),yes)
 	# Allow CI servers to configure --with-interrupt-tests
 	TESTS += \
