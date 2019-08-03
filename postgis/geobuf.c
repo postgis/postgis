@@ -256,18 +256,16 @@ static Data__Geometry *encode_line(struct geobuf_agg_context *ctx,
 static Data__Geometry *
 encode_triangle(struct geobuf_agg_context *ctx, LWTRIANGLE *lwtri)
 {
-	POINTARRAY *pa;
-	Data__Geometry *geometry;
-
-	geometry = galloc(DATA__GEOMETRY__TYPE__POLYGON);
-
-	pa = lwtri->points;
+	Data__Geometry *geometry = galloc(DATA__GEOMETRY__TYPE__POLYGON);
+	POINTARRAY *pa = lwtri->points;
+	uint32_t len;
 
 	if (pa->npoints == 0)
 		return geometry;
 
-	geometry->n_coords = pa->npoints * ctx->dimensions;
-	geometry->coords = encode_coords(ctx, pa, NULL, pa->npoints - 1, 0);
+	len = pa->npoints - 1;
+	geometry->n_coords = len * ctx->dimensions;
+	geometry->coords = encode_coords(ctx, pa, NULL, len, 0);
 
 	return geometry;
 }

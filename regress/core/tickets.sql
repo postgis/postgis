@@ -1274,30 +1274,32 @@ WITH geom AS (
 	SELECT 'TRIANGLE((0 0, 1 1, 0 1, 0 0))'::geometry geom
 	union all
 	SELECT 'TIN(((0 0, 1 1, 0 1, 0 0)))'::geometry geom
+	union all
+	SELECT 'TRIANGLE EMPTY'::geometry geom
 )
 select '#4399', 'ST_AsBinary', ST_AsBinary(geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsEWKB', ST_AsEWKB(geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsEWKT', ST_AsEWKT(geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsGML', ST_AsGML(3,geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsHEXEWKB', ST_AsHEXEWKB(geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsKML', ST_AsKML(ST_SetSRID(geom, 4326))::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsText', ST_AsText(geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsTWKB', ST_AsTWKB(geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsX3D', ST_AsX3D(geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_GeoHash', ST_GeoHash(geom)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsGeobuf', ST_AsGeobuf(geom.*)::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsMVTGeom', ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(0, 0), ST_Point(32, 32)))::text from geom
-union ALL
+union all
 select '#4399', 'ST_AsGeoJSON', ST_AsGeoJSON(geom)::text from geom;
 
