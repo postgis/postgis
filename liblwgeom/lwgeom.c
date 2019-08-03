@@ -2219,19 +2219,18 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 			   LWCOLLECTION *col)
 {
 	const uint32_t maxdepth = 50;
-	GBOX clip, subbox1, subbox2;
-	uint32_t nvertices = 0;
-	uint32_t i;
-	uint32_t split_ordinate;
-	double width;
-	double height;
-	double pivot = DBL_MAX;
-	double center = DBL_MAX;
-	LWPOLY *lwpoly = NULL;
 
-	gbox_duplicate(lwgeom_get_bbox(geom), &clip);
-	width = clip.xmax - clip.xmin;
-	height = clip.ymax - clip.ymin;
+	if (!geom)
+		return;
+
+	const GBOX *box_in = lwgeom_get_bbox(geom);
+	if (!box_in)
+		return;
+
+	GBOX clip;
+	gbox_duplicate(box_in, &clip);
+	double width = clip.xmax - clip.xmin;
+	double height = clip.ymax - clip.ymin;
 
 	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
 		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(geom->type));
@@ -2262,7 +2261,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 		LWCOLLECTION *incol = (LWCOLLECTION*)geom;
 		/* Don't increment depth yet, since we aren't actually
 		 * subdividing geometries yet */
-		for ( i = 0; i < incol->ngeoms; i++ )
+		for (uint32_t i = 0; i < incol->ngeoms; i++ )
 			lwgeom_subdivide_recursive(incol->geoms[i], dimension, maxvertices, depth, col);
 		return;
 	}
@@ -2282,7 +2281,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 		return;
 	}
 
-	nvertices = lwgeom_count_vertices(geom);
+	uint32_t nvertices = lwgeom_count_vertices(geom);
 
 	/* Skip empties entirely */
 	if (nvertices == 0)
@@ -2295,12 +2294,9 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 		return;
 	}
 
-	split_ordinate = (width > height) ? 0 : 1;
-	if (split_ordinate == 0)
-		center = (clip.xmin + clip.xmax) / 2;
-	else
-		center = (clip.ymin + clip.ymax) / 2;
-
+	uint8_t split_ordinate = (width > height) ? 0 : 1;
+	double center = (split_ordinate == 0) ? (clip.xmin + clip.xmax) / 2 : (clip.ymin + clip.ymax) / 2;
+	double pivot = DBL_MAX;
 	if (geom->type == POLYGONTYPE)
 	{
 		uint32_t ring_to_trim = 0;
@@ -2308,14 +2304,13 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 		double pivot_eps = DBL_MAX;
 		double pt_eps = DBL_MAX;
 		POINTARRAY *pa;
-		pivot = DBL_MAX;
-		lwpoly = (LWPOLY *)geom;
+		LWPOLY *lwpoly = (LWPOLY *)geom;
 
 		/* if there are more points in holes than in outer ring */
 		if (nvertices >= 2 * lwpoly->rings[0]->npoints)
 		{
 			/* trim holes starting from biggest */
-			for (i = 1; i < lwpoly->nrings; i++)
+			for (uint32_t i = 1; i < lwpoly->nrings; i++)
 			{
 				double current_ring_area = fabs(ptarray_signed_area(lwpoly->rings[i]));
 				if (current_ring_area >= ring_area)
@@ -2329,7 +2324,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 		pa = lwpoly->rings[ring_to_trim];
 
 		/* find most central point in chosen ring */
-		for (i = 0; i < pa->npoints; i++)
+		for (uint32_t i = 0; i < pa->npoints; i++)
 		{
 			double pt;
 			if (split_ordinate == 0)
@@ -2344,11 +2339,12 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 			}
 		}
 	}
-
+	GBOX subbox1, subbox2;
 	gbox_duplicate(&clip, &subbox1);
 	gbox_duplicate(&clip, &subbox2);
 
-	if (pivot == DBL_MAX) pivot = center;
+	if (pivot == DBL_MAX)
+		pivot = center;
 
 	if (split_ordinate == 0)
 	{
