@@ -249,9 +249,6 @@ typedef enum LWORD_T {
 */
 extern int32_t clamp_srid(int32_t srid);
 
-/* Raise an lwerror if srids do not match */
-void error_if_srid_mismatch(int32_t srid1, int32_t srid2);
-
 /**
  * Global functions for memory/logging handlers.
  */

@@ -604,8 +604,7 @@ Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS)
 	LWGEOM *point;
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	point = lwgeom_closest_point(lwgeom1, lwgeom2);
 
@@ -634,8 +633,7 @@ Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS)
 	LWGEOM *theline;
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	theline = lwgeom_closest_line(lwgeom1, lwgeom2);
 
@@ -664,8 +662,7 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 	LWGEOM *theline;
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	theline = lwgeom_furthest_line(lwgeom1, lwgeom2);
 
@@ -692,8 +689,7 @@ Datum ST_Distance(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	mindist = lwgeom_mindistance2d(lwgeom1, lwgeom2);
 
@@ -731,7 +727,7 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	mindist = lwgeom_mindistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
 
@@ -763,7 +759,7 @@ Datum LWGEOM_dfullywithin(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	maxdist = lwgeom_maxdistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
 
@@ -788,8 +784,7 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	maxdist = lwgeom_maxdistance2d(lwgeom1, lwgeom2);
 
@@ -816,8 +811,7 @@ Datum LWGEOM_closestpoint3d(PG_FUNCTION_ARGS)
 	LWGEOM *point;
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	point = lwgeom_closest_point_3d(lwgeom1, lwgeom2);
 	// point = lw_dist3d_distancepoint(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
@@ -848,8 +842,7 @@ Datum LWGEOM_shortestline3d(PG_FUNCTION_ARGS)
 	LWGEOM *theline;
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	theline = lwgeom_closest_line_3d(lwgeom1, lwgeom2);
 	// theline = lw_dist3d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
@@ -880,8 +873,7 @@ Datum LWGEOM_longestline3d(PG_FUNCTION_ARGS)
 	LWGEOM *theline;
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	theline = lwgeom_furthest_line_3d(lwgeom1, lwgeom2);
 	// theline = lw_dist3d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MAX);
@@ -910,8 +902,7 @@ Datum ST_3DDistance(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	mindist = lwgeom_mindistance3d(lwgeom1, lwgeom2);
 
@@ -934,8 +925,7 @@ Datum ST_3DIntersects(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
-
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	mindist = lwgeom_mindistance3d_tolerance(lwgeom1, lwgeom2, 0.0);
 
@@ -968,7 +958,7 @@ Datum LWGEOM_dwithin3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	mindist = lwgeom_mindistance3d_tolerance(lwgeom1, lwgeom2, tolerance);
 
@@ -1001,7 +991,7 @@ Datum LWGEOM_dfullywithin3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 	maxdist = lwgeom_maxdistance3d_tolerance(lwgeom1, lwgeom2, tolerance);
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1026,7 +1016,7 @@ Datum LWGEOM_maxdistance3d(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	maxdist = lwgeom_maxdistance3d(lwgeom1, lwgeom2);
 
@@ -1160,6 +1150,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	gser1 = PG_GETARG_GSERIALIZED_P(0);
 	gser2 = PG_GETARG_GSERIALIZED_P(1);
+	gserialized_error_if_srid_mismatch(gser1, gser2, __func__);
 
 	POSTGIS_DEBUGF(3,
 		       "LWGEOM_collect(%s, %s): call",
@@ -1174,7 +1165,6 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	}
 
 	srid = gserialized_get_srid(gser1);
-	error_if_srid_mismatch(srid, gserialized_get_srid(gser2));
 
 	lwgeoms[0] = lwgeom_from_gserialized(gser1);
 	lwgeoms[1] = lwgeom_from_gserialized(gser2);
@@ -1286,22 +1276,18 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 			/* COMPUTE_BBOX WHEN_SIMPLE */
 			if (lwgeoms[count]->bbox)
-			{
 				box = gbox_copy(lwgeoms[count]->bbox);
-			}
 		}
 		else
 		{
 			/* Check SRID homogeneity */
-			error_if_srid_mismatch(lwgeoms[count]->srid, srid);
+			gserialized_error_if_srid_mismatch_reference(geom, srid, __func__);
 
 			/* COMPUTE_BBOX WHEN_SIMPLE */
 			if (box)
 			{
 				if (lwgeoms[count]->bbox)
-				{
 					gbox_merge(lwgeoms[count]->bbox, box);
-				}
 				else
 				{
 					pfree(box);
@@ -1460,9 +1446,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 			/* TODO: also get ZMflags */
 		}
 		else
-		{
-			error_if_srid_mismatch(geoms[ngeoms - 1]->srid, srid);
-		}
+			gserialized_error_if_srid_mismatch_reference(geom, srid, __func__);
 
 		POSTGIS_DEBUGF(3, "%s: element %d deserialized", __func__, ngeoms);
 	}
@@ -1510,7 +1494,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	error_if_srid_mismatch(gserialized_get_srid(pglwg1), gserialized_get_srid(pglwg2));
+	gserialized_error_if_srid_mismatch(pglwg1, pglwg2, __func__);
 
 	lwgeoms[0] = lwgeom_from_gserialized(pglwg1);
 	lwgeoms[1] = lwgeom_from_gserialized(pglwg2);
@@ -2578,11 +2562,9 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	double dist = PG_GETARG_FLOAT8(2);
 	GBOX g1_bvol;
 	double calc_dist;
-
 	LWGEOM *geom1 = lwgeom_from_gserialized(pg_geom1);
 	LWGEOM *geom2 = lwgeom_from_gserialized(pg_geom2);
-
-	error_if_srid_mismatch(geom1->srid, geom2->srid);
+	gserialized_error_if_srid_mismatch(pg_geom1, pg_geom2, __func__);
 
 	if (geom1->type != POLYGONTYPE)
 	{

@@ -398,3 +398,31 @@ gserialized_get_sortable_hash(const GSERIALIZED *g)
 	else
 		return gbox_get_sortable_hash(&box, gserialized_get_srid(g));
 }
+
+void gserialized_error_if_srid_mismatch(const GSERIALIZED *g1, const GSERIALIZED *g2, const char *funcname);
+void
+gserialized_error_if_srid_mismatch(const GSERIALIZED *g1, const GSERIALIZED *g2, const char *funcname)
+{
+	int32_t srid1 = gserialized_get_srid(g1);
+	int32_t srid2 = gserialized_get_srid(g2);
+	if (srid1 != srid2)
+		lwerror("%s: Operation on mixed SRID geometries (%s, %d) != (%s, %d)",
+			funcname,
+			lwtype_name(gserialized1_get_type(g1)),
+			srid1,
+			lwtype_name(gserialized_get_type(g2)),
+			srid2);
+}
+
+void gserialized_error_if_srid_mismatch_reference(const GSERIALIZED *g1, const int32_t srid2, const char *funcname);
+void
+gserialized_error_if_srid_mismatch_reference(const GSERIALIZED *g1, const int32_t srid2, const char *funcname)
+{
+	int32_t srid1 = gserialized_get_srid(g1);
+	if (srid1 != srid2)
+		lwerror("%s: Operation on mixed SRID geometries %s %d != %d",
+			funcname,
+			lwtype_name(gserialized1_get_type(g1)),
+			srid1,
+			srid2);
+}
