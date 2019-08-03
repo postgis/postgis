@@ -217,13 +217,7 @@ parse_geojson_linestring(json_object *geojson, int *hasz, int root_srid)
 static LWGEOM *
 parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 {
-	POINTARRAY **ppa = NULL;
-	json_object *rings = NULL;
-	json_object *points = NULL;
-	int i = 0, j = 0;
-	int nRings = 0, nPoints = 0;
-
-	rings = findMemberByName(geojson, "coordinates");
+	json_object *rings = findMemberByName(geojson, "coordinates");
 	if (!rings)
 	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
@@ -236,38 +230,44 @@ parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 		return NULL;
 	}
 
-	nRings = json_object_array_length(rings);
+	int nRings = json_object_array_length(rings);
 
 	/* No rings => POLYGON EMPTY */
 	if (!nRings)
 		return (LWGEOM *)lwpoly_construct_empty(root_srid, 0, 0);
 
-	for (i = 0; i < nRings; i++)
+	/* Expecting up to nRings otherwise */
+	POINTARRAY **ppa = (POINTARRAY **)lwalloc(sizeof(POINTARRAY *) * nRings);
+	int o = 0;
+
+	for (int i = 0; i < nRings; i++)
 	{
-		points = json_object_array_get_idx(rings, i);
+		json_object *points = json_object_array_get_idx(rings, i);
 		if (!points || json_object_get_type(points) != json_type_array)
 		{
 			geojson_lwerror("The 'coordinates' in GeoJSON ring are not an array", 4);
 			return NULL;
 		}
-		nPoints = json_object_array_length(points);
+		int nPoints = json_object_array_length(points);
 
 		/* Skip empty rings */
-		if (nPoints == 0)
-			continue;
+		if (!nPoints){
+			/* Empty outer? Don't promote first hole to outer, holes don't matter. */
+			if (!i)
+				break;
+			else
+				continue;
+		}
 
-		if (!ppa)
-			ppa = (POINTARRAY **)lwalloc(sizeof(POINTARRAY *) * nRings);
-
-		ppa[i] = ptarray_construct_empty(1, 0, 1);
-		for (j = 0; j < nPoints; j++)
+		ppa[o++] = ptarray_construct_empty(1, 0, 1);
+		for (int j = 0; j < nPoints; j++)
 		{
 			json_object *coords = NULL;
 			coords = json_object_array_get_idx(points, j);
 			if (LW_FAILURE == parse_geojson_coord(coords, hasz, ppa[i]))
 			{
 				int k;
-				for (k = 0; k <= i; k++)
+				for (k = 0; k < o; k++)
 					ptarray_free(ppa[k]);
 				lwfree(ppa);
 				geojson_lwerror("The 'coordinates' in GeoJSON polygon are not sufficiently nested", 4);
@@ -277,10 +277,13 @@ parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 	}
 
 	/* All the rings were empty! */
-	if (!ppa)
+	if (!o)
+	{
+		lwfree(ppa);
 		return (LWGEOM *)lwpoly_construct_empty(root_srid, 0, 0);
+	}
 
-	return (LWGEOM *)lwpoly_construct(root_srid, NULL, nRings, ppa);
+	return (LWGEOM *)lwpoly_construct(root_srid, NULL, o, ppa);
 }
 
 static LWGEOM *

@@ -31,3 +31,5 @@ geomfromgeojson_srs_3|GEOMETRYCOLLECTION(POINT(100 0),LINESTRING(101 0,102 1))
 geomfromgeojson_srs_4|GEOMETRYCOLLECTION(POINT(100 0),LINESTRING(101 0,102 1))
 #3583|MULTIPOLYGON Z (EMPTY)
 ERROR:  The 'coordinates' in GeoJSON polygon are not sufficiently nested
+#4470.a|POLYGON((0 0))
+#4470.b|POLYGON EMPTY
