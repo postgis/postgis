@@ -42,6 +42,7 @@ static uint8_t lwgeom_twkb_type(const LWGEOM *geom)
 		case LINETYPE:
 			twkb_type = WKB_LINESTRING_TYPE;
 			break;
+		case TRIANGLETYPE:
 		case POLYGONTYPE:
 			twkb_type = WKB_POLYGON_TYPE;
 			break;
@@ -54,12 +55,12 @@ static uint8_t lwgeom_twkb_type(const LWGEOM *geom)
 		case MULTIPOLYGONTYPE:
 			twkb_type = WKB_MULTIPOLYGON_TYPE;
 			break;
+		case TINTYPE:
 		case COLLECTIONTYPE:
 			twkb_type = WKB_GEOMETRYCOLLECTION_TYPE;
 			break;
 		default:
-			lwerror("Unsupported geometry type: %s [%d]",
-				lwtype_name(geom->type), geom->type);
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 	}
 	return twkb_type;
 }
@@ -254,6 +255,17 @@ static int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *globals, TWKB_ST
 	return 0;
 }
 
+static int
+lwtriangle_to_twkb_buf(const LWTRIANGLE *tri, TWKB_GLOBALS *globals, TWKB_STATE *ts)
+{
+	LWDEBUGF(2, "Entered %s", __func__);
+	bytebuffer_append_uvarint(ts->geom_buf, (uint64_t)1);
+
+	/* Set the coordinates (do write npoints) */
+	ptarray_to_twkb_buf(tri->points, globals, ts, 1, 2);
+	return 0;
+}
+
 /******************************************************************
 * POLYGONS
 *******************************************************************/
@@ -379,6 +391,11 @@ static int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_ST
 			LWDEBUGF(4,"Type found is Linestring, %d", geom->type);
 			return lwline_to_twkb_buf((LWLINE*) geom, globals, ts);
 		}
+		case TRIANGLETYPE:
+		{
+			LWDEBUGF(4, "Type found is Triangle, %d", geom->type);
+			return lwtriangle_to_twkb_buf((LWTRIANGLE *)geom, globals, ts);
+		}
 		/* Polygon has 'nrings' and 'rings' elements */
 		case POLYGONTYPE:
 		{
@@ -395,13 +412,14 @@ static int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_ST
 			return lwmulti_to_twkb_buf((LWCOLLECTION*)geom, globals, ts);
 		}
 		case COLLECTIONTYPE:
+		case TINTYPE:
 		{
 			LWDEBUGF(4,"Type found is collection, %d", geom->type);
 			return lwcollection_to_twkb_buf((LWCOLLECTION*) geom, globals, ts);
 		}
 		/* Unknown type! */
 		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name((geom)->type), (geom)->type);
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 	}
 
 	return 0;

@@ -131,8 +131,7 @@ static uint32_t lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 		wkb_type = WKB_TRIANGLE_TYPE;
 		break;
 	default:
-		lwerror("Unsupported geometry type: %s [%d]",
-			lwtype_name(geom->type), geom->type);
+		lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 	}
 
 	if ( variant & WKB_EXTENDED )
@@ -723,7 +722,7 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 
 		/* Unknown type! */
 		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), geom->type);
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 	}
 
 	return size;
@@ -771,7 +770,7 @@ static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 
 		/* Unknown type! */
 		default:
-			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(geom->type), geom->type);
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 	}
 	/* Return value to keep compiler happy. */
 	return 0;

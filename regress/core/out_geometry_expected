@@ -32,7 +32,7 @@ gml_out_curve_03|<gml:Polygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curv
 gml_out_curve_04|<gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="2">5 5 3 5 3 3 0 3</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension="2">0 0 2 1 2 2</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>
 gml_out_curve_05|<gml:MultiSurface><gml:Polygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension="2">-2 0 -1 -1 0 0 1 -1 2 0 0 2 -2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">-1 0 0 0.5 1 0 0 1 -1 0</gml:posList></gml:LinearRing></gml:interior></gml:Polygon><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">7 8 10 10 6 14 4 11 7 8</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:MultiSurface>
 ERROR:  Cannot find SRID (10) in spatial_ref_sys
-ERROR:  Input geometry has unknown (0) SRID
+ERROR:  ST_AsKML: Input geometry has unknown (0) SRID
 kml_empty_geom|
 kml_precision_01|<Point><coordinates>1,1</coordinates></Point>
 kml_precision_02|<Point><coordinates>1.1111111,1.1111111</coordinates></Point>

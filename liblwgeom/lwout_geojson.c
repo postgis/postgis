@@ -30,6 +30,7 @@
 
 static char *asgeojson_point(const LWPOINT *point, char *srs, GBOX *bbox, int precision);
 static char *asgeojson_line(const LWLINE *line, char *srs, GBOX *bbox, int precision);
+static char *asgeojson_triangle(const LWTRIANGLE *line, char *srs, GBOX *bbox, int precision);
 static char *asgeojson_poly(const LWPOLY *poly, char *srs, GBOX *bbox, int precision);
 static char * asgeojson_multipoint(const LWMPOINT *mpoint, char *srs, GBOX *bbox, int precision);
 static char * asgeojson_multiline(const LWMLINE *mline, char *srs, GBOX *bbox, int precision);
@@ -75,6 +76,9 @@ lwgeom_to_geojson(const LWGEOM *geom, char *srs, int precision, int has_bbox)
 		return asgeojson_multiline((LWMLINE*)geom, srs, bbox, precision);
 	case MULTIPOLYGONTYPE:
 		return asgeojson_multipolygon((LWMPOLY*)geom, srs, bbox, precision);
+	case TRIANGLETYPE:
+		return asgeojson_triangle((LWTRIANGLE *)geom, srs, bbox, precision);
+	case TINTYPE:
 	case COLLECTIONTYPE:
 		return asgeojson_collection((LWCOLLECTION*)geom, srs, bbox, precision);
 	default:
@@ -209,7 +213,55 @@ asgeojson_point(const LWPOINT *point, char *srs, GBOX *bbox, int precision)
 	return output;
 }
 
+/**
+ * Triangle Geometry
+ */
 
+static size_t
+asgeojson_triangle_size(const LWTRIANGLE *tri, char *srs, GBOX *bbox, int precision)
+{
+	int size;
+
+	size = sizeof("{'type':'Polygon',");
+	if (srs)
+		size += asgeojson_srs_size(srs);
+	if (bbox)
+		size += asgeojson_bbox_size(FLAGS_GET_Z(tri->flags), precision);
+	size += sizeof("'coordinates':[[]]}");
+	size += pointArray_geojson_size(tri->points, precision);
+
+	return size;
+}
+
+static size_t
+asgeojson_triangle_buf(const LWTRIANGLE *tri, char *srs, char *output, GBOX *bbox, int precision)
+{
+	char *ptr = output;
+
+	ptr += sprintf(ptr, "{\"type\":\"Polygon\",");
+	if (srs)
+		ptr += asgeojson_srs_buf(ptr, srs);
+	if (bbox)
+		ptr += asgeojson_bbox_buf(ptr, bbox, FLAGS_GET_Z(tri->flags), precision);
+	ptr += sprintf(ptr, "\"coordinates\":[[");
+	ptr += pointArray_to_geojson(tri->points, ptr, precision);
+	ptr += sprintf(ptr, "]]}");
+
+	return (ptr - output);
+}
+
+static char *
+asgeojson_triangle(const LWTRIANGLE *tri, char *srs, GBOX *bbox, int precision)
+{
+	char *output;
+	int size;
+
+	size = asgeojson_triangle_size(tri, srs, bbox, precision);
+	output = lwalloc(size);
+	asgeojson_triangle_buf(tri, srs, output, bbox, precision);
+
+	return output;
+}
 
 /**
  * Line Geometry
@@ -288,6 +340,7 @@ static size_t
 asgeojson_poly_buf(const LWPOLY *poly, char *srs, char *output, GBOX *bbox, int precision)
 {
 	uint32_t i;
+
 	char *ptr=output;
 
 	ptr += sprintf(ptr, "{\"type\":\"Polygon\",");
@@ -599,40 +652,26 @@ asgeojson_collection(const LWCOLLECTION *col, char *srs, GBOX *bbox, int precisi
 static size_t
 asgeojson_geom_size(const LWGEOM *geom, GBOX *bbox, int precision)
 {
-	int type = geom->type;
-	size_t size = 0;
-
-	switch (type)
+	switch (geom->type)
 	{
 	case POINTTYPE:
-		size = asgeojson_point_size((LWPOINT*)geom, NULL, bbox, precision);
-		break;
-
+		return asgeojson_point_size((LWPOINT *)geom, NULL, bbox, precision);
 	case LINETYPE:
-		size = asgeojson_line_size((LWLINE*)geom, NULL, bbox, precision);
-		break;
-
+		return asgeojson_line_size((LWLINE *)geom, NULL, bbox, precision);
+	case TRIANGLETYPE:
+		return asgeojson_triangle_size((LWTRIANGLE *)geom, NULL, bbox, precision);
 	case POLYGONTYPE:
-		size = asgeojson_poly_size((LWPOLY*)geom, NULL, bbox, precision);
-		break;
-
+		return asgeojson_poly_size((LWPOLY *)geom, NULL, bbox, precision);
 	case MULTIPOINTTYPE:
-		size = asgeojson_multipoint_size((LWMPOINT*)geom, NULL, bbox, precision);
-		break;
-
+		return asgeojson_multipoint_size((LWMPOINT *)geom, NULL, bbox, precision);
 	case MULTILINETYPE:
-		size = asgeojson_multiline_size((LWMLINE*)geom, NULL, bbox, precision);
-		break;
-
+		return asgeojson_multiline_size((LWMLINE *)geom, NULL, bbox, precision);
 	case MULTIPOLYGONTYPE:
-		size = asgeojson_multipolygon_size((LWMPOLY*)geom, NULL, bbox, precision);
-		break;
-
+		return asgeojson_multipolygon_size((LWMPOLY *)geom, NULL, bbox, precision);
 	default:
 		lwerror("GeoJson: geometry not supported.");
+		return 0;
 	}
-
-	return size;
 }
 
 
@@ -654,6 +693,10 @@ asgeojson_geom_buf(const LWGEOM *geom, char *output, GBOX *bbox, int precision)
 
 	case POLYGONTYPE:
 		ptr += asgeojson_poly_buf((LWPOLY*)geom, NULL, ptr, bbox, precision);
+		break;
+
+	case TRIANGLETYPE:
+		ptr += asgeojson_triangle_buf((LWTRIANGLE *)geom, NULL, ptr, bbox, precision);
 		break;
 
 	case MULTIPOINTTYPE:
