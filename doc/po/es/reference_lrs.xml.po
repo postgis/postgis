@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:00+0000\n"
 "PO-Revision-Date: 2018-07-22 03:18+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -42,7 +42,7 @@ msgstr ""
 "la cadena de linea el punto tiene que ser localizado."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:15
+#: reference_lrs.xml:15 reference_lrs.xml:83
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
@@ -56,15 +56,16 @@ msgstr ""
 "paramdef>"
 
 #. Tag: title
-#: reference_lrs.xml:24 reference_lrs.xml:93 reference_lrs.xml:156
-#: reference_lrs.xml:208 reference_lrs.xml:275 reference_lrs.xml:333
-#: reference_lrs.xml:387 reference_lrs.xml:432 reference_lrs.xml:476
+#: reference_lrs.xml:24 reference_lrs.xml:92 reference_lrs.xml:151
+#: reference_lrs.xml:214 reference_lrs.xml:266 reference_lrs.xml:333
+#: reference_lrs.xml:390 reference_lrs.xml:446 reference_lrs.xml:493
+#: reference_lrs.xml:537
 #, no-c-format
 msgid "Description"
 msgstr "Descripción"
 
 #. Tag: para
-#: reference_lrs.xml:26
+#: reference_lrs.xml:26 reference_lrs.xml:94
 #, no-c-format
 msgid ""
 "Returns a point interpolated along a line. First argument must be a "
@@ -77,7 +78,7 @@ msgstr ""
 "tiene que ser localizado."
 
 #. Tag: para
-#: reference_lrs.xml:30 reference_lrs.xml:219
+#: reference_lrs.xml:30 reference_lrs.xml:277
 #, no-c-format
 msgid ""
 "See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location "
@@ -111,16 +112,17 @@ msgstr ""
 "Cambiado: 2.1.0. Hasta 2.0. x esto se llamaba ST_Line_Interpolate_Point."
 
 #. Tag: para
-#: reference_lrs.xml:40 reference_lrs.xml:109 reference_lrs.xml:230
-#: reference_lrs.xml:395 reference_lrs.xml:438 reference_lrs.xml:482
+#: reference_lrs.xml:40 reference_lrs.xml:167 reference_lrs.xml:288
+#: reference_lrs.xml:456 reference_lrs.xml:499 reference_lrs.xml:543
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: title
-#: reference_lrs.xml:45 reference_lrs.xml:114 reference_lrs.xml:173
-#: reference_lrs.xml:234 reference_lrs.xml:298 reference_lrs.xml:352
-#: reference_lrs.xml:399 reference_lrs.xml:442 reference_lrs.xml:486
+#: reference_lrs.xml:45 reference_lrs.xml:109 reference_lrs.xml:172
+#: reference_lrs.xml:231 reference_lrs.xml:292 reference_lrs.xml:356
+#: reference_lrs.xml:412 reference_lrs.xml:460 reference_lrs.xml:503
+#: reference_lrs.xml:547
 #, no-c-format
 msgid "Examples"
 msgstr "Ejemplos"
@@ -195,36 +197,107 @@ msgstr ""
 " POINT(3 4)"
 
 #. Tag: title
-#: reference_lrs.xml:60 reference_lrs.xml:127 reference_lrs.xml:180
-#: reference_lrs.xml:248 reference_lrs.xml:304 reference_lrs.xml:359
-#: reference_lrs.xml:406 reference_lrs.xml:448
+#: reference_lrs.xml:60 reference_lrs.xml:117 reference_lrs.xml:185
+#: reference_lrs.xml:238 reference_lrs.xml:306 reference_lrs.xml:362
+#: reference_lrs.xml:419 reference_lrs.xml:467 reference_lrs.xml:509
 #, no-c-format
 msgid "See Also"
 msgstr "Ver también"
 
 #. Tag: para
 #: reference_lrs.xml:62
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-"linkend=\"ST_LineInterpolatePoints\"/> <xref linkend=\"ST_LineLocatePoint\"/"
-"> O"
+"linkend=\"ST_LineInterpolatePoints\"/> <xref linkend="
+"\"ST_3DLineInterpolatePoint\"/> <xref linkend=\"ST_LineLocatePoint\"/> O"
 msgstr ""
+", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
+">, <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:74
+#: reference_lrs.xml:75
+#, fuzzy, no-c-format
+msgid "ST_3DLineInterpolatePoint"
+msgstr "ST_LineInterpolatePoint"
+
+#. Tag: refpurpose
+#: reference_lrs.xml:77
+#, fuzzy, no-c-format
+msgid ""
+"Returns a point interpolated along a line in 3D. Second argument is a float8 "
+"between 0 and 1 representing fraction of total length of linestring the "
+"point has to be located."
+msgstr ""
+"Devuelve un punto interpolado a lo largo de una línea. El segundo argumento "
+"es un float8 entre 0 y 1 que representa la fracción de la longitud total de "
+"la cadena de linea el punto tiene que ser localizado."
+
+#. Tag: para
+#: reference_lrs.xml:99
+#, no-c-format
+msgid ""
+"computes resulting point in 2D and then interpolates value for Z and M, "
+"while ST_3DLineInterpolatePoint computes directly point in 3D and only M "
+"value is interpolated then."
+msgstr ""
+
+#. Tag: para
+#: reference_lrs.xml:104
+#, fuzzy, no-c-format
+msgid "Availability: 3.0.0"
+msgstr "Disponibilidad: 2.0.0"
+
+#. Tag: para
+#: reference_lrs.xml:111
+#, no-c-format
+msgid "Return point 20% along 3D line"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_lrs.xml:112
+#, fuzzy, no-c-format
+msgid ""
+"SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))\n"
+"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50 70, 100 125 90, 150 "
+"190 200)') as the_line) As foo;\n"
+"   st_asewkt\n"
+"----------------\n"
+" POINT(59.0675892910822 84.0675892910822 79.0846904776219)"
+msgstr ""
+"--Punto de retorno 20% a lo largo de línea 2D\n"
+"SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.20))\n"
+"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') "
+"as the_line) As foo;\n"
+"   st_asewkt\n"
+"----------------\n"
+" POINT(51.5974135047432 76.5974135047432)"
+
+#. Tag: para
+#: reference_lrs.xml:119
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
+"linkend=\"ST_LineInterpolatePoint\"/> <xref linkend="
+"\"ST_LineInterpolatePoints\"/> <xref linkend=\"ST_LineLocatePoint\"/>"
+msgstr ""
+", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
+">, <xref linkend=\"ST_LineSubstring\"/>"
+
+#. Tag: refname
+#: reference_lrs.xml:132
 #, no-c-format
 msgid "ST_LineInterpolatePoints"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_lrs.xml:76
+#: reference_lrs.xml:134
 #, no-c-format
 msgid "Returns one or more points interpolated along a line."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:83
+#: reference_lrs.xml:141
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineInterpolatePoints</function></funcdef> "
@@ -235,7 +308,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:95
+#: reference_lrs.xml:153
 #, no-c-format
 msgid ""
 "Returns one or more points interpolated along a line. First argument must be "
@@ -246,7 +319,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:102
+#: reference_lrs.xml:160
 #, no-c-format
 msgid ""
 "If the result has zero or one points, it will be returned as a POINT. If it "
@@ -254,25 +327,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:108
+#: reference_lrs.xml:166
 #, no-c-format
 msgid "Availability: 2.5.0"
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:110 reference_lrs.xml:293 reference_lrs.xml:348
+#: reference_lrs.xml:168 reference_lrs.xml:351 reference_lrs.xml:408
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
 
 #. Tag: para
-#: reference_lrs.xml:120
+#: reference_lrs.xml:178
 #, no-c-format
 msgid "A linestring with the interpolated points every 20%"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_lrs.xml:123
+#: reference_lrs.xml:181
 #, no-c-format
 msgid ""
 "--Return points each 20% along a 2D line\n"
@@ -286,13 +359,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_lrs.xml:138
+#: reference_lrs.xml:196
 #, no-c-format
 msgid "ST_LineLocatePoint"
 msgstr "ST_LineLocatePoint"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:140
+#: reference_lrs.xml:198
 #, no-c-format
 msgid ""
 "Returns a float between 0 and 1 representing the location of the closest "
@@ -304,7 +377,7 @@ msgstr ""
 "longitud total de la línea 2D."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:147
+#: reference_lrs.xml:205
 #, no-c-format
 msgid ""
 "<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef> "
@@ -318,7 +391,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:158
+#: reference_lrs.xml:216
 #, no-c-format
 msgid ""
 "Returns a float between 0 and 1 representing the location of the closest "
@@ -330,7 +403,7 @@ msgstr ""
 "longitud total de la <link linkend=\"ST_Length2D\">2d line</link>."
 
 #. Tag: para
-#: reference_lrs.xml:162
+#: reference_lrs.xml:220
 #, no-c-format
 msgid ""
 "You can use the returned location to extract a Point (<xref linkend="
@@ -342,25 +415,25 @@ msgstr ""
 "\"ST_LineSubstring\"/>)."
 
 #. Tag: para
-#: reference_lrs.xml:165
+#: reference_lrs.xml:223
 #, no-c-format
 msgid "This is useful for approximating numbers of addresses"
 msgstr "Esto es útil para aproximar números de direcciones"
 
 #. Tag: para
-#: reference_lrs.xml:167
+#: reference_lrs.xml:225
 #, no-c-format
 msgid "Availability: 1.1.0"
 msgstr "Disponibilidad: 1.1.0"
 
 #. Tag: para
-#: reference_lrs.xml:168
+#: reference_lrs.xml:226
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point."
 msgstr "Modificado: 2.1.0. Hasta 2.0.x esto se llamaba ST_Line_Locate_Point."
 
 #. Tag: programlisting
-#: reference_lrs.xml:175
+#: reference_lrs.xml:233
 #, no-c-format
 msgid ""
 "--Rough approximation of finding the street number of a point along the "
@@ -433,7 +506,7 @@ msgstr ""
 " POINT(3 4)"
 
 #. Tag: para
-#: reference_lrs.xml:182
+#: reference_lrs.xml:240
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
@@ -443,13 +516,13 @@ msgstr ""
 ">, <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:188
+#: reference_lrs.xml:246
 #, no-c-format
 msgid "ST_LineSubstring"
 msgstr "ST_LineSubstring"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:190
+#: reference_lrs.xml:248
 #, no-c-format
 msgid ""
 "Return a linestring being a substring of the input one starting and ending "
@@ -461,7 +534,7 @@ msgstr ""
 "argumentos segundo y tercero son valores float8 entre 0 y 1."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:198
+#: reference_lrs.xml:256
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineSubstring</function></funcdef> "
@@ -477,7 +550,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:210
+#: reference_lrs.xml:268
 #, no-c-format
 msgid ""
 "Return a linestring being a substring of the input one starting and ending "
@@ -493,7 +566,7 @@ msgstr ""
 "en conjunción con <xref linkend=\"ST_LineMerge\"/>."
 
 #. Tag: para
-#: reference_lrs.xml:216
+#: reference_lrs.xml:274
 #, no-c-format
 msgid ""
 "If 'start' and 'end' have the same value this is equivalent to <xref linkend="
@@ -503,7 +576,7 @@ msgstr ""
 "\"ST_LineInterpolatePoint\"/>."
 
 #. Tag: para
-#: reference_lrs.xml:223
+#: reference_lrs.xml:281
 #, no-c-format
 msgid ""
 "Since release 1.1.1 this function also interpolates M and Z values (when "
@@ -514,26 +587,26 @@ msgstr ""
 "establecen en valores no especificados."
 
 #. Tag: para
-#: reference_lrs.xml:228
+#: reference_lrs.xml:286
 #, no-c-format
 msgid "Availability: 1.1.0, Z and M supported added in 1.1.1"
 msgstr "Disponibilidad: 1.1.0, Soporte de Z y M, añadido en 1.1.1"
 
 #. Tag: para
-#: reference_lrs.xml:229
+#: reference_lrs.xml:287
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring."
 msgstr "Modificado: 2.1.0. Hasta 2.0.x esto se llamaba ST_Line_Substring."
 
 #. Tag: para
-#: reference_lrs.xml:240
+#: reference_lrs.xml:298
 #, no-c-format
 msgid "A linestring seen with 1/3 midrange overlaid (0.333, 0.666)"
 msgstr ""
 "Una cadena de línea vista con 1/3 de rango medio superpuestos (0,333, 0,666)"
 
 #. Tag: programlisting
-#: reference_lrs.xml:243
+#: reference_lrs.xml:301
 #, no-c-format
 msgid ""
 "--Return the approximate 1/3 mid-range part of a linestring\n"
@@ -605,7 +678,7 @@ msgstr ""
 "WHERE n*100.00/length &lt; 1;"
 
 #. Tag: para
-#: reference_lrs.xml:250
+#: reference_lrs.xml:308
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
@@ -615,13 +688,13 @@ msgstr ""
 "\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:256
+#: reference_lrs.xml:314
 #, no-c-format
 msgid "ST_LocateAlong"
 msgstr "ST_LocateAlong"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:258
+#: reference_lrs.xml:316
 #, no-c-format
 msgid ""
 "<refpurpose>Return a derived geometry collection value with elements that "
@@ -633,7 +706,7 @@ msgstr ""
 "poligonales.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:265
+#: reference_lrs.xml:323
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
@@ -649,7 +722,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:277
+#: reference_lrs.xml:335
 #, no-c-format
 msgid ""
 "<para>Return a derived geometry collection value with elements that match "
@@ -660,7 +733,7 @@ msgstr ""
 "para>"
 
 #. Tag: para
-#: reference_lrs.xml:281 reference_lrs.xml:338
+#: reference_lrs.xml:339 reference_lrs.xml:397
 #, no-c-format
 msgid ""
 "If an offset is provided, the resultant will be offset to the left or right "
@@ -673,7 +746,7 @@ msgstr ""
 "a la derecha."
 
 #. Tag: para
-#: reference_lrs.xml:286 reference_lrs.xml:342
+#: reference_lrs.xml:344 reference_lrs.xml:401
 #, no-c-format
 msgid ""
 "Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text for Continuation "
@@ -683,13 +756,13 @@ msgstr ""
 "Continuation CD Editing Meeting"
 
 #. Tag: para
-#: reference_lrs.xml:289
+#: reference_lrs.xml:347
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Along_Measure."
 msgstr "Disponibilidad: 1.1.0 por antiguo nombre ST_Locate_Along_Measure."
 
 #. Tag: para
-#: reference_lrs.xml:290
+#: reference_lrs.xml:348
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
@@ -701,13 +774,13 @@ msgstr ""
 "eliminará en el futuro, pero aún está disponible."
 
 #. Tag: para
-#: reference_lrs.xml:291
+#: reference_lrs.xml:349
 #, no-c-format
 msgid "Use this function only for geometries with an M component"
 msgstr "Utilice esta función sólo para geometrías con un componente M"
 
 #. Tag: programlisting
-#: reference_lrs.xml:299
+#: reference_lrs.xml:357
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(the_geom)\n"
@@ -738,7 +811,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:306
+#: reference_lrs.xml:364
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LocateBetween\"/>, <xref linkend="
@@ -746,26 +819,28 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_lrs.xml:312
+#: reference_lrs.xml:370
 #, no-c-format
 msgid "ST_LocateBetween"
 msgstr "ST_LocateBetween"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:314
-#, no-c-format
+#: reference_lrs.xml:372
+#, fuzzy, no-c-format
 msgid ""
 "Return a derived geometry collection value with elements that match the "
-"specified range of measures inclusively. Polygonal elements are not "
-"supported."
+"specified range of measures inclusively."
 msgstr ""
+"<para>Devuelve un valor de la colección Geometry derivado con elementos que "
+"coinciden con la medida especificada. No se admiten elementos poligonales.</"
+"para>"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:321
-#, no-c-format
+#: reference_lrs.xml:378
+#, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>measure_start</parameter></"
 "paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
@@ -779,21 +854,30 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:335
-#, no-c-format
+#: reference_lrs.xml:392
+#, fuzzy, no-c-format
 msgid ""
 "Return a derived geometry collection with elements that match the specified "
-"range of measures inclusively. Polygonal elements are not supported."
+"range of measures inclusively."
+msgstr ""
+"<para>Devuelve un valor de la colección Geometry derivado con elementos que "
+"coinciden con la medida especificada. No se admiten elementos poligonales.</"
+"para>"
+
+#. Tag: para
+#: reference_lrs.xml:395 reference_lrs.xml:451
+#, no-c-format
+msgid "Clipping a non-convex POLYGON may produce invalid geometry."
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:345
+#: reference_lrs.xml:404
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Between_Measures."
 msgstr "Disponibilidad: 1.1.0 por nombre antiguo ST_Locate_Between_Measures."
 
 #. Tag: para
-#: reference_lrs.xml:346
+#: reference_lrs.xml:405
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
@@ -805,16 +889,24 @@ msgstr ""
 "eliminará en el futuro, pero todavía está disponible para compatibilidad con "
 "versiones anteriores."
 
+#. Tag: para
+#: reference_lrs.xml:406 reference_lrs.xml:454
+#, no-c-format
+msgid "Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE."
+msgstr ""
+
 #. Tag: programlisting
-#: reference_lrs.xml:354
+#: reference_lrs.xml:414
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(the_geom)\n"
-"                FROM\n"
-"                (SELECT ST_LocateBetween(\n"
-"                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 "
-"4 3),\n"
-"                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n"
+"FROM (\n"
+"    SELECT ST_LocateBetween(\n"
+"       'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),\n"
+"       1.5,\n"
+"       3\n"
+"    ) as the_geom\n"
+") As foo;\n"
 "\n"
 "                                                         st_asewkt\n"
 "------------------------------------------------------------------------\n"
@@ -823,11 +915,13 @@ msgid ""
 "--Geometry collections are difficult animals so dump them\n"
 "--to make them more digestable\n"
 "SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
-"                FROM\n"
-"                (SELECT ST_LocateBetween(\n"
-"                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 "
-"4 3),\n"
-"                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n"
+"FROM (\n"
+"    SELECT ST_LocateBetween(\n"
+"        'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),\n"
+"        1.5,\n"
+"        3\n"
+"    ) As the_geom\n"
+") As foo;\n"
 "\n"
 "                   st_asewkt\n"
 "--------------------------------\n"
@@ -836,7 +930,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:361
+#: reference_lrs.xml:421
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend="
@@ -844,32 +938,31 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_lrs.xml:367
+#: reference_lrs.xml:427
 #, no-c-format
 msgid "ST_LocateBetweenElevations"
 msgstr "ST_LocateBetweenElevations"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:369
-#, no-c-format
+#: reference_lrs.xml:429
+#, fuzzy, no-c-format
 msgid ""
-"Return a derived geometry (collection) value with elements that intersect "
-"the specified range of elevations inclusively. Only 3D, 4D LINESTRINGS and "
-"MULTILINESTRINGS are supported."
+"<refpurpose>Return a derived geometry (collection) value with elements that "
+"intersect the specified range of elevations inclusively.</refpurpose>"
 msgstr ""
-"Devuelve un valor de geometría (colección) derivada con elementos que "
-"intersectan el rango de cotas especificado de forma inclusiva. Solamente 3D, "
-"4D LINESTRINGS y MULTILINESTRINGS son soportados."
+"<refpurpose>Devuelve un valor de la colección Geometry derivado con "
+"elementos que coinciden con la medida especificada. No se admiten elementos "
+"poligonales.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:376
-#, no-c-format
+#: reference_lrs.xml:435
+#, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>elevation_start</"
-"parameter></paramdef> <paramdef><type>float8 </type> "
-"<parameter>elevation_end</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>elevation_start</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>elevation_end</"
+"parameter></paramdef>"
 msgstr ""
 "<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
@@ -878,49 +971,46 @@ msgstr ""
 "<parameter>elevation_end</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:389
-#, no-c-format
+#: reference_lrs.xml:448
+#, fuzzy, no-c-format
 msgid ""
-"Return a derived geometry (collection) value with elements that intersect "
-"the specified range of elevations inclusively. Only 3D, 3DM LINESTRINGS and "
-"MULTILINESTRINGS are supported."
+"<para>Return a derived geometry (collection) value with elements that "
+"intersect the specified range of elevations inclusively.</para>"
 msgstr ""
-"Devuelve un valor de geometría (colección) derivada con elementos que "
-"intersectan el rango de cotas especificado de forma inclusiva. Solamente 3D, "
-"4D LINESTRINGS y MULTILINESTRINGS son soportados."
+"<para>Devuelve un valor de la colección Geometry derivado con elementos que "
+"coinciden con la medida especificada. No se admiten elementos poligonales.</"
+"para>"
 
 #. Tag: para
-#: reference_lrs.xml:393
+#: reference_lrs.xml:453
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "Disponibilidad: 1.4.0"
 
 #. Tag: programlisting
-#: reference_lrs.xml:401
+#: reference_lrs.xml:462
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'),2,4)) As "
-"ewelev;\n"
+"                        ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'), 2, 4)) "
+"As ewelev;\n"
 "                                                                   ewelev\n"
 "----------------------------------------------------------------\n"
 "        MULTILINESTRING((1 2 3,2 3 4))\n"
 "\n"
-"SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-"9)'),6,9)) As ewelev;\n"
+"SELECT ST_AsEWKT(ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 "
+"9)', 6, 9)) As ewelev;\n"
 "\n"
 "                                ewelev\n"
 "----------------------------------------------------------------\n"
 "GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))\n"
 "\n"
-"--Geometry collections are difficult animals so dump them\n"
-"--to make them more digestable\n"
+"-- Geometry collections are difficult animals so dump them\n"
+"-- to make them more digestable\n"
 "SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)\n"
-"                FROM\n"
-"                (SELECT ST_LocateBetweenElevations(\n"
-"                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-"9)'),6,9) As the_geom) As foo;\n"
+"        FROM\n"
+"        (SELECT ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 "
+"9)', 6, 9) as the_geom) As foo;\n"
 "\n"
 "                   st_asewkt\n"
 "--------------------------------\n"
@@ -928,14 +1018,21 @@ msgid ""
 "LINESTRING(6.1 7.1 6,7 8 9)"
 msgstr ""
 
+#. Tag: para
+#: reference_lrs.xml:469
+#, fuzzy, no-c-format
+msgid ", <xref linkend=\"ST_LocateBetween\"/>"
+msgstr ""
+", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+
 #. Tag: refname
-#: reference_lrs.xml:415
+#: reference_lrs.xml:476
 #, no-c-format
 msgid "ST_InterpolatePoint"
 msgstr "ST_InterpolatePoint"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:417
+#: reference_lrs.xml:478
 #, no-c-format
 msgid ""
 "<refpurpose>Return the value of the measure dimension of a geometry at the "
@@ -945,7 +1042,7 @@ msgstr ""
 "punto cerrado al punto proporcionado.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_lrs.xml:422
+#: reference_lrs.xml:483
 #, no-c-format
 msgid ""
 "<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
@@ -957,7 +1054,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:434
+#: reference_lrs.xml:495
 #, no-c-format
 msgid ""
 "<para>Return the value of the measure dimension of a geometry at the point "
@@ -967,13 +1064,13 @@ msgstr ""
 "cerrado al punto proporcionado.</para>"
 
 #. Tag: para
-#: reference_lrs.xml:436
+#: reference_lrs.xml:497
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Disponibilidad: 2.0.0"
 
 #. Tag: programlisting
-#: reference_lrs.xml:444
+#: reference_lrs.xml:505
 #, no-c-format
 msgid ""
 "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
@@ -987,7 +1084,7 @@ msgstr ""
 "                                    10"
 
 #. Tag: para
-#: reference_lrs.xml:450
+#: reference_lrs.xml:511
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
@@ -995,13 +1092,13 @@ msgstr ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:458
+#: reference_lrs.xml:519
 #, no-c-format
 msgid "ST_AddMeasure"
 msgstr "ST_AddMeasure"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:460
+#: reference_lrs.xml:521
 #, no-c-format
 msgid ""
 "Return a derived geometry with measure elements linearly interpolated "
@@ -1011,7 +1108,7 @@ msgstr ""
 "linealmente entre los puntos inicial y final."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:465
+#: reference_lrs.xml:526
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
@@ -1027,7 +1124,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:478
+#: reference_lrs.xml:539
 #, no-c-format
 msgid ""
 "Return a derived geometry with measure elements linearly interpolated "
@@ -1042,13 +1139,13 @@ msgstr ""
 "MULTILINESTRINGS."
 
 #. Tag: para
-#: reference_lrs.xml:480
+#: reference_lrs.xml:541
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "Disponibilidad: 1.5.0"
 
 #. Tag: programlisting
-#: reference_lrs.xml:488
+#: reference_lrs.xml:549
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_AddMeasure(\n"
@@ -1100,3 +1197,21 @@ msgstr ""
 "                             ewelev\n"
 "-----------------------------------------------------------------\n"
 " MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"
+
+#~ msgid ""
+#~ "Return a derived geometry (collection) value with elements that intersect "
+#~ "the specified range of elevations inclusively. Only 3D, 4D LINESTRINGS "
+#~ "and MULTILINESTRINGS are supported."
+#~ msgstr ""
+#~ "Devuelve un valor de geometría (colección) derivada con elementos que "
+#~ "intersectan el rango de cotas especificado de forma inclusiva. Solamente "
+#~ "3D, 4D LINESTRINGS y MULTILINESTRINGS son soportados."
+
+#~ msgid ""
+#~ "Return a derived geometry (collection) value with elements that intersect "
+#~ "the specified range of elevations inclusively. Only 3D, 3DM LINESTRINGS "
+#~ "and MULTILINESTRINGS are supported."
+#~ msgstr ""
+#~ "Devuelve un valor de geometría (colección) derivada con elementos que "
+#~ "intersectan el rango de cotas especificado de forma inclusiva. Solamente "
+#~ "3D, 4D LINESTRINGS y MULTILINESTRINGS son soportados."

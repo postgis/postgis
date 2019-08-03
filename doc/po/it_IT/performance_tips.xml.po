@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-08-24 19:57+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:00+0000\n"
 "PO-Revision-Date: 2013-11-30 05:55+0000\n"
 "Last-Translator: Tommaso Di Bucchianico\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
@@ -613,30 +613,34 @@ msgstr ""
 msgid "SET maintenance_work_mem TO '1GB';"
 msgstr "SET maintainence_work_mem TO 1200000;"
 
-#. Tag: para
-#: performance_tips.xml:272
+#. Tag: ulink
+#: performance_tips.xml:273
 #, no-c-format
-msgid ""
-"<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER"
-"\">max_parallel_workers_per_gather</ulink> This setting is only available "
-"for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS "
-"2.3+ supports parallel queries. If set to higher than 0, then some queries "
-"such as those involving relation functions like <code>ST_Intersects</code> "
-"can use multiple processes and can run more than twice as fast when doing "
-"so. If you have a lot of processors to spare, you should change the value of "
-"this to as many processors as you have. Also make sure to bump up "
-"<code>max_worker_processes</code> to at least as high as this number."
+msgid "max_parallel_workers_per_gather"
 msgstr ""
 
 #. Tag: para
-#: performance_tips.xml:282
+#: performance_tips.xml:275
+#, no-c-format
+msgid ""
+"This setting is only available for PostgreSQL 9.6+ and will only affect "
+"PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries. If set to "
+"higher than 0, then some queries such as those involving relation functions "
+"like <code>ST_Intersects</code> can use multiple processes and can run more "
+"than twice as fast when doing so. If you have a lot of processors to spare, "
+"you should change the value of this to as many processors as you have. Also "
+"make sure to bump up <code>max_worker_processes</code> to at least as high "
+"as this number."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:284
 #, fuzzy, no-c-format
 msgid "Default: 0"
 msgstr "Default: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:287
+#: performance_tips.xml:289
 #, no-c-format
 msgid ""
 "Sets the maximum number of workers that can be started by a single "

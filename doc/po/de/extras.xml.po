@@ -1,19 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
-# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2019
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
-"PO-Revision-Date: 2017-06-04 10:32+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:00+0000\n"
+"PO-Revision-Date: 2019-03-11 09:07+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
-"Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
+"Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
+"de/)\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: title
@@ -30,7 +31,12 @@ msgid ""
 "source tarballs and source repository. These are not always packaged with "
 "PostGIS binary releases, but are usually plpgsql based or standard shell "
 "scripts that can be run as is."
-msgstr "Dieses Kapitel beschreibt Features die sich in den zusätzlichen Verzeichnissen des PostGIS Quellcodes - Tarballs und Repository -  befinden. Diese sind nicht immer mit den binären PostGIS Veröffentlichung/Release paketiert, sind aber im allgemeinen plpgsql basiert oder es handelt sich um Shell Skripts die direkt aufgerufen werden können."
+msgstr ""
+"Dieses Kapitel beschreibt Funktionen, die sich in dem Verzeichnis \"extras\" "
+"des PostGIS Quellcodes (Tarball oder Repository) befinden. Diese sind nicht "
+"immer mit der binären PostGIS Release paketiert, es handelt sich dabei aber "
+"üblicherweise um Pl/Pgsql- oder Shell-Skripts, die direkt aufgerufen werden "
+"können."
 
 #. Tag: chapter
 #: extras.xml:6

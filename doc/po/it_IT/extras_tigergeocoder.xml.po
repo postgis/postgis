@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:00+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: pibinko <pibinko@gmail.com>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
@@ -1397,7 +1397,9 @@ msgstr ""
 #. Tag: para
 #: extras_tigergeocoder.xml:549
 #, no-c-format
-msgid ", <xref linkend=\"Loader_Generate_Nation_Script\"/>"
+msgid ""
+", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1519,6 +1521,12 @@ msgstr ""
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('sh');"
 msgstr "SELECT loader_generate_nation_script('sh');"
+
+#. Tag: para
+#: extras_tigergeocoder.xml:606
+#, no-c-format
+msgid ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
+msgstr ""
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:612

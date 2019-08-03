@@ -1,0 +1,1178 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:02+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#: reference_bbox.xml:5
+#, no-c-format
+msgid ""
+"These functions produce or operate on bounding boxes. They can also provide "
+"and accept geometry values, by using automatic or explicit casts."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:8
+#, no-c-format
+msgid "See also <xref linkend=\"PostGIS_BoxFunctions\"/>."
+msgstr ""
+
+#. Tag: title
+#: reference_bbox.xml:12
+#, no-c-format
+msgid "Bounding Box Functions"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:16
+#, no-c-format
+msgid "Box2D"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:18
+#, no-c-format
+msgid ""
+"<refpurpose>Returns a BOX2D representing the 2D extent of the geometry.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:23
+#, no-c-format
+msgid ""
+"<funcdef>box2d <function>Box2D</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_bbox.xml:31 reference_bbox.xml:72 reference_bbox.xml:131
+#: reference_bbox.xml:231 reference_bbox.xml:292 reference_bbox.xml:346
+#: reference_bbox.xml:395 reference_bbox.xml:433 reference_bbox.xml:479
+#: reference_bbox.xml:524 reference_bbox.xml:569 reference_bbox.xml:614
+#: reference_bbox.xml:659 reference_bbox.xml:704
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:33
+#, no-c-format
+msgid ""
+"<para>Returns a BOX2D representing the 2D extent of the geometry.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:35 reference_bbox.xml:75 reference_bbox.xml:255
+#: reference_bbox.xml:312 reference_bbox.xml:358
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
+"introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:36 reference_bbox.xml:76 reference_bbox.xml:161
+#: reference_bbox.xml:361 reference_bbox.xml:489 reference_bbox.xml:534
+#: reference_bbox.xml:579 reference_bbox.xml:624 reference_bbox.xml:669
+#: reference_bbox.xml:714
+#, no-c-format
+msgid "&curve_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:37 reference_bbox.xml:77 reference_bbox.xml:259
+#: reference_bbox.xml:313 reference_bbox.xml:362
+#, no-c-format
+msgid "&P_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:38 reference_bbox.xml:78 reference_bbox.xml:260
+#: reference_bbox.xml:314 reference_bbox.xml:363
+#, no-c-format
+msgid "&T_support;"
+msgstr ""
+
+#. Tag: title
+#: reference_bbox.xml:42 reference_bbox.xml:84 reference_bbox.xml:166
+#: reference_bbox.xml:265 reference_bbox.xml:319 reference_bbox.xml:367
+#: reference_bbox.xml:403 reference_bbox.xml:449 reference_bbox.xml:494
+#: reference_bbox.xml:539 reference_bbox.xml:584 reference_bbox.xml:629
+#: reference_bbox.xml:674 reference_bbox.xml:719
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:44
+#, no-c-format
+msgid ""
+"SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));\n"
+"        box2d\n"
+"        ---------\n"
+"        BOX(1 2,5 6)\n"
+"\n"
+"        SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 "
+"150505,220227 150406)'));\n"
+"        box2d\n"
+"        --------\n"
+"        BOX(220186.984375 150406,220288.25 150506.140625)"
+msgstr ""
+
+#. Tag: title
+#: reference_bbox.xml:49 reference_bbox.xml:91 reference_bbox.xml:173
+#: reference_bbox.xml:271 reference_bbox.xml:325 reference_bbox.xml:372
+#: reference_bbox.xml:410 reference_bbox.xml:456 reference_bbox.xml:501
+#: reference_bbox.xml:546 reference_bbox.xml:591 reference_bbox.xml:636
+#: reference_bbox.xml:681 reference_bbox.xml:726
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:51
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromText\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:57
+#, no-c-format
+msgid "Box3D"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:59
+#, no-c-format
+msgid ""
+"<refpurpose>Returns a BOX3D representing the 3D extent of the geometry.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:64
+#, no-c-format
+msgid ""
+"<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:74
+#, no-c-format
+msgid ""
+"<para>Returns a BOX3D representing the 3D extent of the geometry.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:79 reference_bbox.xml:360 reference_bbox.xml:488
+#: reference_bbox.xml:533 reference_bbox.xml:578 reference_bbox.xml:623
+#: reference_bbox.xml:668 reference_bbox.xml:713
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:86
+#, no-c-format
+msgid ""
+"SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));\n"
+"        Box3d\n"
+"        ---------\n"
+"        BOX3D(1 2 3,5 6 5)\n"
+"\n"
+"        SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+"150505 1,220227 150406 1)'));\n"
+"        Box3d\n"
+"        --------\n"
+"        BOX3D(220227 150406 1,220268 150415 1)"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:93
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromEWKT\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:99
+#, no-c-format
+msgid "ST_EstimatedExtent"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:101
+#, no-c-format
+msgid "Return the 'estimated' extent of a spatial table."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_bbox.xml:105
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></"
+"funcdef> <paramdef><type>text </type> <parameter>schema_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>table_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>geocolumn_name</"
+"parameter></paramdef> <paramdef><type>boolean </type> "
+"<parameter>parent_only</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></"
+"funcdef> <paramdef><type>text </type> <parameter>schema_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>table_name</parameter></"
+"paramdef> <paramdef><type>text </type> <parameter>geocolumn_name</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>box2d "
+"<function>ST_EstimatedExtent</function></funcdef> <paramdef><type>text </"
+"type> <parameter>table_name</parameter></paramdef> <paramdef><type>text </"
+"type> <parameter>geocolumn_name</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:133
+#, no-c-format
+msgid ""
+"Return the 'estimated' extent of the given spatial table. The estimated is "
+"taken from the geometry column's statistics. The current schema will be used "
+"if not specified. The default behavior is to also use statistics collected "
+"from child tables (tables with INHERITS) if available. If 'parent_only' is "
+"set to TRUE, only statistics for the given table are used and child tables "
+"are ignored."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:142
+#, no-c-format
+msgid ""
+"For PostgreSQL&gt;=8.0.0 statistics are gathered by VACUUM ANALYZE and "
+"resulting extent will be about 95% of the real one."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:147
+#, no-c-format
+msgid ""
+"In absence of statistics (empty table or no ANALYZE called) this function "
+"returns NULL. Prior to version 1.5.4 an exception was thrown instead."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:155
+#, no-c-format
+msgid ""
+"For PostgreSQL&lt;8.0.0 statistics are gathered by update_geometry_stats() "
+"and resulting extent will be exact."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:158
+#, no-c-format
+msgid "Availability: 1.0.0"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:159
+#, no-c-format
+msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:168
+#, no-c-format
+msgid ""
+"SELECT ST_EstimatedExtent('ny', 'edges', 'the_geom');\n"
+"--result--\n"
+"BOX(-8877653 4912316,-8010225.5 5589284)\n"
+"\n"
+"SELECT ST_EstimatedExtent('feature_poly', 'the_geom');\n"
+"--result--\n"
+"BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:180
+#, no-c-format
+msgid "ST_Expand"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:181
+#, no-c-format
+msgid ""
+"Returns a bounding box expanded from another bounding box or a geometry."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_bbox.xml:185
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>geometry <function>ST_Expand</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>units_to_expand</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Expand</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>float</type> "
+"<parameter>dx</parameter></paramdef> <paramdef><type>float</type> "
+"<parameter>dy</parameter></paramdef> <paramdef choice=\"opt\"><type>float</"
+"type> <parameter>dz=0</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>float</type> <parameter>dm=0</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>box2d <function>ST_Expand</"
+"function></funcdef> <paramdef><type>box2d </type> <parameter>box</"
+"parameter></paramdef> <paramdef><type>float</type> "
+"<parameter>units_to_expand</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>box2d <function>ST_Expand</function></funcdef> "
+"<paramdef><type>box2d </type> <parameter>box</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>dx</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>dy</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>box3d <function>ST_Expand</"
+"function></funcdef> <paramdef><type>box3d </type> <parameter>box</"
+"parameter></paramdef> <paramdef><type>float</type> "
+"<parameter>units_to_expand</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>box3d <function>ST_Expand</function></funcdef> "
+"<paramdef><type>box3d </type> <parameter>box</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>dx</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>dy</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>float</type> <parameter>dz=0</parameter></paramdef> </"
+"funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:233
+#, no-c-format
+msgid ""
+"This function returns a bounding box expanded from the bounding box of the "
+"input, either by specifying a single distance with which the box should be "
+"expanded in all directions, or by specifying an expansion distance for each "
+"direction. Uses double-precision. Can be very useful for distance queries, "
+"or to add a bounding box filter to a query to take advantage of a spatial "
+"index."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:239
+#, no-c-format
+msgid ""
+"In addition to the geometry version of ST_Expand, which is the most commonly "
+"used, variants are provided that accept and produce internal BOX2D and BOX3D "
+"data types."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:242
+#, no-c-format
+msgid ""
+"ST_Expand is similar in concept to <xref linkend=\"ST_Buffer\"/>, except "
+"while buffer expands the geometry in all directions, ST_Expand expands the "
+"bounding box along each axis."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:245
+#, no-c-format
+msgid ""
+"Units are in the units of the spatial reference system in use denoted by the "
+"SRID."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:248
+#, no-c-format
+msgid ""
+"Pre version 1.3, ST_Expand was used in conjunction with <xref linkend="
+"\"ST_Distance\"/> to do indexable distance queries. For example, "
+"<code>the_geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND "
+"ST_Distance(the_geom, 'POINT(10 20)') &lt; 10</code>. This has been replaced "
+"by the easier <xref linkend=\"ST_DWithin\"/> construct."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:254
+#, no-c-format
+msgid ""
+"Availability: 1.5.0 behavior changed to output double precision instead of "
+"float4 coordinates."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:256
+#, no-c-format
+msgid ""
+"Enhanced: 2.3.0 support was added to expand a box by different amounts in "
+"different dimensions."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:266
+#, no-c-format
+msgid ""
+"Examples below use US National Atlas Equal Area (SRID=2163) which is a meter "
+"projection"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:267
+#, no-c-format
+msgid ""
+"<!-- TODO: fix results of documentation to reflect new behavior -->\n"
+"--10 meter expanded box around bbox of a linestring\n"
+"SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 "
+"110701,2312892 110714)', 2163),10) As box2d);\n"
+"                                         st_expand\n"
+"------------------------------------\n"
+" BOX(2312882 110666,2312990 110724)\n"
+"\n"
+"--10 meter expanded 3D box of a 3D box\n"
+"SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' "
+"As box3d),10)\n"
+"                                                          st_expand\n"
+"-----------------------------------------------------\n"
+" BOX3D(778773 2951731 -9,794885 2970052.61545891 20)\n"
+"\n"
+" --10 meter geometry astext rep of a expand box around a point geometry\n"
+" SELECT ST_AsEWKT(ST_Expand(ST_GeomFromEWKT('SRID=2163;POINT(2312980 "
+"110676)'),10));\n"
+"                                                                                        st_asewkt\n"
+"-------------------------------------------------------------------------------------------------\n"
+" SRID=2163;POLYGON((2312970 110666,2312970 110686,2312990 110686,2312990 "
+"110666,2312970 110666))"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:272
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:278
+#, no-c-format
+msgid "ST_Extent"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:279
+#, no-c-format
+msgid ""
+"an aggregate function that returns the bounding box that bounds rows of "
+"geometries."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:284
+#, no-c-format
+msgid ""
+"<funcdef>box2d <function>ST_Extent</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:294
+#, no-c-format
+msgid ""
+"ST_Extent returns a bounding box that encloses a set of geometries. The "
+"ST_Extent function is an \"aggregate\" function in the terminology of SQL. "
+"That means that it operates on lists of data, in the same way the SUM() and "
+"AVG() functions do."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:297 reference_bbox.xml:351
+#, no-c-format
+msgid ""
+"Since it returns a bounding box, the spatial Units are in the units of the "
+"spatial reference system in use denoted by the SRID"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:298
+#, no-c-format
+msgid ""
+"ST_Extent is similar in concept to Oracle Spatial/Locator's SDO_AGGR_MBR"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:300
+#, no-c-format
+msgid ""
+"Since ST_Extent returns a bounding box, the SRID meta-data is lost. Use "
+"ST_SetSRID to force it back into a geometry with SRID meta data. The "
+"coordinates are in the units of the spatial ref of the orginal geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:305
+#, no-c-format
+msgid ""
+"ST_Extent will return boxes with only an x and y component even with (x,y,z) "
+"coordinate geometries. To maintain x,y,z use ST_3DExtent instead."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:309
+#, no-c-format
+msgid "Availability: 1.4.0"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:320
+#, no-c-format
+msgid "Examples below use Massachusetts State Plane ft (SRID=2249)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:321
+#, no-c-format
+msgid ""
+"SELECT ST_Extent(the_geom) as bextent FROM sometable;\n"
+"                                         st_bextent\n"
+"------------------------------------\n"
+"BOX(739651.875 2908247.25,794875.8125 2970042.75)\n"
+"\n"
+"\n"
+"--Return extent of each category of geometries\n"
+"SELECT ST_Extent(the_geom) as bextent\n"
+"FROM sometable\n"
+"GROUP BY category ORDER BY category;\n"
+"\n"
+"                                          bextent                       "
+"|         name\n"
+"----------------------------------------------------+----------------\n"
+" BOX(778783.5625 2951741.25,794875.8125 2970042.75) | A\n"
+" BOX(751315.8125 2919164.75,765202.6875 2935417.25) | B\n"
+" BOX(739651.875 2917394.75,756688.375 2935866)      | C\n"
+"\n"
+" --Force back into a geometry\n"
+" -- and render the extended text representation of that geometry\n"
+"SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;\n"
+"\n"
+"                                bextent\n"
+"--------------------------------------------------------------------------------\n"
+" SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 "
+"2970042.75,\n"
+" 794875.8125 2908247.25,739651.875 2908247.25))"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:326
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:332
+#, no-c-format
+msgid "ST_3DExtent"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:333
+#, no-c-format
+msgid ""
+"an aggregate function that returns the 3D bounding box that bounds rows of "
+"geometries."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:338
+#, no-c-format
+msgid ""
+"<funcdef>box3d <function>ST_3DExtent</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:348
+#, no-c-format
+msgid ""
+"ST_3DExtent returns a box3d (includes Z coordinate) bounding box that "
+"encloses a set of geometries. The ST_3DExtent function is an \"aggregate\" "
+"function in the terminology of SQL. That means that it operates on lists of "
+"data, in the same way the SUM() and AVG() functions do."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:354
+#, no-c-format
+msgid ""
+"Since ST_3DExtent returns a bounding box, the SRID meta-data is lost. Use "
+"ST_SetSRID to force it back into a geometry with SRID meta data. The "
+"coordinates are in the units of the spatial ref of the orginal geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:359
+#, no-c-format
+msgid "Changed: 2.0.0 In prior versions this used to be called ST_Extent3D"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:368
+#, no-c-format
+msgid ""
+"SELECT ST_3DExtent(foo.the_geom) As b3extent\n"
+"FROM (SELECT ST_MakePoint(x,y,z) As the_geom\n"
+"        FROM generate_series(1,3) As x\n"
+"                CROSS JOIN generate_series(1,2) As y\n"
+"                CROSS JOIN generate_series(0,2) As Z) As foo;\n"
+"          b3extent\n"
+"--------------------\n"
+" BOX3D(1 1 0,3 2 2)\n"
+"\n"
+"--Get the extent of various elevated circular strings\n"
+"SELECT ST_3DExtent(foo.the_geom) As b3extent\n"
+"FROM (SELECT "
+"ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_MakePoint(x,"
+"y),1))),0,0,z) As the_geom\n"
+"        FROM generate_series(1,3) As x\n"
+"                CROSS JOIN generate_series(1,2) As y\n"
+"                CROSS JOIN generate_series(0,2) As Z) As foo;\n"
+"\n"
+"        b3extent\n"
+"--------------------\n"
+" BOX3D(1 0 0,4 2 2)"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:373
+#, no-c-format
+msgid ", <xref linkend=\"ST_Force_3DZ\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:379
+#, no-c-format
+msgid "ST_MakeBox2D"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:381
+#, no-c-format
+msgid "Creates a BOX2D defined by two 2D point geometries."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:386
+#, no-c-format
+msgid ""
+"<funcdef>box2d <function>ST_MakeBox2D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>pointLowLeft</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>pointUpRight</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:397
+#, no-c-format
+msgid ""
+"Creates a BOX2D defined by the given two point geometries. This is useful "
+"for doing range queries"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:405
+#, no-c-format
+msgid ""
+"--Return all features that fall reside or partly reside in a US national "
+"atlas coordinate bounding box\n"
+"--It is assumed here that the geometries are stored with SRID = 2163 (US "
+"National atlas equal area)\n"
+"SELECT feature_id, feature_name, the_geom\n"
+"FROM features\n"
+"WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, "
+"528439.5625),\n"
+"        ST_Point(-987121.375 ,529933.1875)),2163)"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:412
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:418
+#, no-c-format
+msgid "ST_3DMakeBox"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:420
+#, no-c-format
+msgid "Creates a BOX3D defined by two 3D point geometries."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:424
+#, no-c-format
+msgid ""
+"<funcdef>box3d <function>ST_3DMakeBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>point3DLowLeftBottom</"
+"parameter></paramdef> <paramdef><type>geometry </type> "
+"<parameter>point3DUpRightTop</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:435
+#, no-c-format
+msgid "Creates a BOX3D defined by the given two 3D point geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:442
+#, no-c-format
+msgid "This function supports 3D and will not drop the z-index."
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:444
+#, no-c-format
+msgid "Changed: 2.0.0 In prior versions this used to be called ST_MakeBox3D"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:451
+#, no-c-format
+msgid ""
+"SELECT ST_3DMakeBox(ST_MakePoint(-989502.1875, 528439.5625, 10),\n"
+"        ST_MakePoint(-987121.375 ,529933.1875, 10)) As abb3d\n"
+"\n"
+"--bb3d--\n"
+"--------\n"
+"BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:458
+#, no-c-format
+msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:464
+#, no-c-format
+msgid "ST_XMax"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:466
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the X maxima of a 2D or 3D bounding box or a geometry.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:471
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_XMax</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:481
+#, no-c-format
+msgid ""
+"<para>Returns the X maxima of a 2D or 3D bounding box or a geometry.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:484 reference_bbox.xml:529 reference_bbox.xml:574
+#: reference_bbox.xml:619 reference_bbox.xml:664 reference_bbox.xml:709
+#, no-c-format
+msgid ""
+"Although this function is only defined for box3d, it also works for box2d "
+"and geometry values due to automatic casting. However it will not accept a "
+"geometry or box2d text representation, since those do not auto-cast."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:496
+#, no-c-format
+msgid ""
+"SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');\n"
+"st_xmax\n"
+"-------\n"
+"4\n"
+"\n"
+"SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_xmax\n"
+"-------\n"
+"5\n"
+"\n"
+"SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+"st_xmax\n"
+"-------\n"
+"3\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
+"SELECT ST_XMax('LINESTRING(1 3, 5 6)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_xmax\n"
+"--------\n"
+"220288.248780547"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:503 reference_bbox.xml:548
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:509
+#, no-c-format
+msgid "ST_XMin"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:511
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the X minima of a 2D or 3D bounding box or a geometry.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:516
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_XMin</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:526
+#, no-c-format
+msgid ""
+"<para>Returns the X minima of a 2D or 3D bounding box or a geometry.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:541
+#, no-c-format
+msgid ""
+"SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');\n"
+"st_xmin\n"
+"-------\n"
+"1\n"
+"\n"
+"SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_xmin\n"
+"-------\n"
+"1\n"
+"\n"
+"SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+"st_xmin\n"
+"-------\n"
+"-3\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
+"SELECT ST_XMin('LINESTRING(1 3, 5 6)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_xmin\n"
+"--------\n"
+"220186.995121892"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:554
+#, no-c-format
+msgid "ST_YMax"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:556
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the Y maxima of a 2D or 3D bounding box or a geometry.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:561
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_YMax</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:571
+#, no-c-format
+msgid ""
+"<para>Returns the Y maxima of a 2D or 3D bounding box or a geometry.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:586
+#, no-c-format
+msgid ""
+"SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');\n"
+"st_ymax\n"
+"-------\n"
+"5\n"
+"\n"
+"SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_ymax\n"
+"-------\n"
+"6\n"
+"\n"
+"SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+"st_ymax\n"
+"-------\n"
+"4\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
+"SELECT ST_YMax('LINESTRING(1 3, 5 6)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_ymax\n"
+"--------\n"
+"150506.126829327"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:593
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:599
+#, no-c-format
+msgid "ST_YMin"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:601
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the Y minima of a 2D or 3D bounding box or a geometry.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:606
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_YMin</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:616
+#, no-c-format
+msgid ""
+"<para>Returns the Y minima of a 2D or 3D bounding box or a geometry.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:631
+#, no-c-format
+msgid ""
+"SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');\n"
+"st_ymin\n"
+"-------\n"
+"2\n"
+"\n"
+"SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_ymin\n"
+"-------\n"
+"3\n"
+"\n"
+"SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+"st_ymin\n"
+"-------\n"
+"2\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
+"SELECT ST_YMin('LINESTRING(1 3, 5 6)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_ymin\n"
+"--------\n"
+"150406"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:638
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:644
+#, no-c-format
+msgid "ST_ZMax"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:646
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the Z maxima of a 2D or 3D bounding box or a geometry.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:651
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_ZMax</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:661
+#, no-c-format
+msgid ""
+"<para>Returns the Z maxima of a 2D or 3D bounding box or a geometry.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:676
+#, no-c-format
+msgid ""
+"SELECT ST_ZMax('BOX3D(1 2 3, 4 5 6)');\n"
+"st_zmax\n"
+"-------\n"
+"6\n"
+"\n"
+"SELECT ST_ZMax(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_zmax\n"
+"-------\n"
+"7\n"
+"\n"
+"SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)' );\n"
+"st_zmax\n"
+"-------\n"
+"1\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
+"SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_zmax\n"
+"--------\n"
+"3"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:683
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_bbox.xml:689
+#, no-c-format
+msgid "ST_ZMin"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_bbox.xml:691
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the Z minima of a 2D or 3D bounding box or a geometry.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_bbox.xml:696
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_ZMin</function></funcdef> <paramdef><type>box3d "
+"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:706
+#, no-c-format
+msgid ""
+"<para>Returns the Z minima of a 2D or 3D bounding box or a geometry.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_bbox.xml:721
+#, no-c-format
+msgid ""
+"SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');\n"
+"st_zmin\n"
+"-------\n"
+"3\n"
+"\n"
+"SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
+"st_zmin\n"
+"-------\n"
+"4\n"
+"\n"
+"SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );\n"
+"st_zmin\n"
+"-------\n"
+"1\n"
+"--Observe THIS DOES NOT WORK because it will try to autocast the string "
+"representation to a BOX3D\n"
+"SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');\n"
+"\n"
+"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+"\n"
+"SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)'));\n"
+"st_zmin\n"
+"--------\n"
+"1"
+msgstr ""
+
+#. Tag: para
+#: reference_bbox.xml:728
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
+"\"/>, <xref linkend=\"ST_ZMax\"/>"
+msgstr ""

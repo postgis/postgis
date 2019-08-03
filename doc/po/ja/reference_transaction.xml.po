@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:02+0000\n"
 "PO-Revision-Date: 2016-01-20 02:16+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -16,54 +16,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. Tag: title
-#: reference_transaction.xml:3
-#, no-c-format
-msgid "Long Transactions Support"
-msgstr "ロングトランザクション機能"
-
 #. Tag: para
-#: reference_transaction.xml:5
-#, no-c-format
+#: reference_transaction.xml:6
+#, fuzzy, no-c-format
 msgid ""
-"This module and associated pl/pgsql functions have been implemented to "
-"provide long locking support required by <ulink url=\"http://www."
-"opengeospatial.org/standards/wfs\">Web Feature Service</ulink> specification."
+"These functions implement a row locking mechanism to support long "
+"transactions. They are provided primarily for implementors of the <ulink url="
+"\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</ulink> "
+"specification."
 msgstr ""
 "このモジュールとPL/pgSQL関数は、<ulink url=\"http://www.opengeospatial.org/"
 "standards/wfs\">Web Feature Service</ulink>仕様で求められているロングロックに"
 "対応しています。"
 
+#. Tag: title
+#: reference_transaction.xml:13
+#, fuzzy, no-c-format
+msgid "Long Transaction Support"
+msgstr "ロングトランザクション機能"
+
 #. Tag: para
-#: reference_transaction.xml:10
-#, no-c-format
+#: reference_transaction.xml:16
+#, fuzzy, no-c-format
 msgid ""
-"Users must use <ulink url=\"http://www.postgresql.org/docs/current/static/"
-"transaction-iso.html\">serializable transaction level</ulink> otherwise "
-"locking mechanism would break."
+"For the locking mechanism to operate correctly the <emphasis role=\"bold"
+"\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/docs/"
+"current/static/transaction-iso.html\"> transaction isolation level</ulink> "
+"must be used."
 msgstr ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/transaction-iso."
 "html\">serializable transaction level</ulink>を使わなければなりません。さもな"
 "くばロック機構が壊れます。"
 
 #. Tag: refname
-#: reference_transaction.xml:18
+#: reference_transaction.xml:24
 #, no-c-format
 msgid "AddAuth"
 msgstr "AddAuth"
 
 #. Tag: refpurpose
-#: reference_transaction.xml:20
-#, no-c-format
+#: reference_transaction.xml:26
+#, fuzzy, no-c-format
 msgid ""
-"<refpurpose>Add an authorization token to be used in current transaction.</"
-"refpurpose>"
+"<refpurpose>Adds an authorization token to be used in the current "
+"transaction.</refpurpose>"
 msgstr ""
 "<refpurpose>現在のトランザクションで使われる認証トークンを追加します。</"
 "refpurpose>"
 
 #. Tag: funcprototype
-#: reference_transaction.xml:25
+#: reference_transaction.xml:31
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
@@ -73,49 +75,48 @@ msgstr ""
 "</type> <parameter>auth_token</parameter></paramdef>"
 
 #. Tag: title
-#: reference_transaction.xml:33 reference_transaction.xml:83
-#: reference_transaction.xml:130 reference_transaction.xml:177
-#: reference_transaction.xml:241 reference_transaction.xml:284
+#: reference_transaction.xml:39 reference_transaction.xml:88
+#: reference_transaction.xml:134 reference_transaction.xml:178
+#: reference_transaction.xml:243 reference_transaction.xml:288
 #, no-c-format
 msgid "Description"
 msgstr "説明"
 
 #. Tag: para
-#: reference_transaction.xml:35
-#, no-c-format
+#: reference_transaction.xml:41
+#, fuzzy, no-c-format
 msgid ""
-"<para>Add an authorization token to be used in current transaction.</para>"
+"<para>Adds an authorization token to be used in the current transaction.</"
+"para>"
 msgstr ""
 "<para>現在のトランザクションで使われる認証トークンを追加します。</para>"
 
 #. Tag: para
-#: reference_transaction.xml:37
+#: reference_transaction.xml:43
 #, no-c-format
 msgid ""
-"Creates/adds to a temp table called temp_lock_have_table the current "
-"transaction identifier and authorization token key."
+"Adds the current transaction identifier and authorization token to a "
+"temporary table called <varname>temp_lock_have_table</varname>."
 msgstr ""
-"temp_lock_have_tableという一時テーブルに現在のトランザクション識別子と認証"
-"トークンキーを作成、追加します。"
 
 #. Tag: para
-#: reference_transaction.xml:40 reference_transaction.xml:92
-#: reference_transaction.xml:138 reference_transaction.xml:185
-#: reference_transaction.xml:248 reference_transaction.xml:289
+#: reference_transaction.xml:46 reference_transaction.xml:98
+#: reference_transaction.xml:142 reference_transaction.xml:187
+#: reference_transaction.xml:252 reference_transaction.xml:293
 #, no-c-format
 msgid "Availability: 1.1.3"
 msgstr "Availability: 1.1.3"
 
 #. Tag: title
-#: reference_transaction.xml:45 reference_transaction.xml:98
-#: reference_transaction.xml:144 reference_transaction.xml:191
-#: reference_transaction.xml:253 reference_transaction.xml:294
+#: reference_transaction.xml:50 reference_transaction.xml:104
+#: reference_transaction.xml:148 reference_transaction.xml:193
+#: reference_transaction.xml:257 reference_transaction.xml:298
 #, no-c-format
 msgid "Examples"
 msgstr "例"
 
 #. Tag: programlisting
-#: reference_transaction.xml:47
+#: reference_transaction.xml:52
 #, no-c-format
 msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
@@ -143,31 +144,31 @@ msgstr ""
 "'priscilla'"
 
 #. Tag: title
-#: reference_transaction.xml:52 reference_transaction.xml:105
-#: reference_transaction.xml:151 reference_transaction.xml:198
-#: reference_transaction.xml:260 reference_transaction.xml:301
+#: reference_transaction.xml:57 reference_transaction.xml:111
+#: reference_transaction.xml:155 reference_transaction.xml:200
+#: reference_transaction.xml:264 reference_transaction.xml:305
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
 
 #. Tag: refname
-#: reference_transaction.xml:60
+#: reference_transaction.xml:65
 #, no-c-format
 msgid "CheckAuth"
 msgstr "CheckAuth"
 
 #. Tag: refpurpose
-#: reference_transaction.xml:62
-#, no-c-format
+#: reference_transaction.xml:67
+#, fuzzy, no-c-format
 msgid ""
-"Creates trigger on a table to prevent/allow updates and deletes of rows "
+"Creates a trigger on a table to prevent/allow updates and deletes of rows "
 "based on authorization token."
 msgstr ""
 "認証トークンに基づいて行の更新と削除を拒否/許可するテーブルのトリガを生成しま"
 "す。"
 
 #. Tag: funcsynopsis
-#: reference_transaction.xml:66
+#: reference_transaction.xml:71
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> "
@@ -189,17 +190,18 @@ msgstr ""
 "<parameter>a_key_column_name</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_transaction.xml:85
-#, no-c-format
+#: reference_transaction.xml:90
+#, fuzzy, no-c-format
 msgid ""
 "Creates trigger on a table to prevent/allow updates and deletes of rows "
-"based on authorization token. Identify rows using &lt;rowid_col&gt; column."
+"based on an authorization token. Identify rows using &lt;rowid_col&gt; "
+"column."
 msgstr ""
 "認証トークンに基づいて行の更新と削除を拒否/許可するテーブルのトリガを生成しま"
 "す。&lt;rowid_col&gt;カラムを使用する行を判別します。"
 
 #. Tag: para
-#: reference_transaction.xml:87
+#: reference_transaction.xml:93
 #, no-c-format
 msgid ""
 "If a_schema_name is not passed in, then searches for table in current schema."
@@ -207,20 +209,20 @@ msgstr ""
 "a_schema_nameが渡されない場合には、現在のスキーマのテーブルを探索します。"
 
 #. Tag: para
-#: reference_transaction.xml:88
+#: reference_transaction.xml:94
 #, no-c-format
 msgid ""
 "If an authorization trigger already exists on this table function errors."
 msgstr "このテーブルに認証トリガが既に存在している場合には、エラーになります。"
 
 #. Tag: para
-#: reference_transaction.xml:89
+#: reference_transaction.xml:95
 #, no-c-format
 msgid "If Transaction support is not enabled, function throws an exception."
 msgstr "トランザクション機能が無い場合は、例外が投げられます。"
 
 #. Tag: programlisting
-#: reference_transaction.xml:100
+#: reference_transaction.xml:106
 #, no-c-format
 msgid ""
 "SELECT CheckAuth('public', 'towns', 'gid');\n"
@@ -234,25 +236,19 @@ msgstr ""
 "                        0"
 
 #. Tag: refname
-#: reference_transaction.xml:113
+#: reference_transaction.xml:119
 #, no-c-format
 msgid "DisableLongTransactions"
 msgstr "DisableLongTransactions"
 
 #. Tag: refpurpose
-#: reference_transaction.xml:115
-#, no-c-format
-msgid ""
-"<refpurpose>Disable long transaction support. This function removes the long "
-"transaction support metadata tables, and drops all triggers attached to lock-"
-"checked tables.</refpurpose>"
-msgstr ""
-"<refpurpose>ロングトランザクション機能を無効にします。この関数によって、ロン"
-"グトランザクション機能のためのメタデータテーブルが削除され、ロックチェック"
-"テーブルに付けられた全てのトリガが削除されます。</refpurpose>"
+#: reference_transaction.xml:121
+#, fuzzy, no-c-format
+msgid "Disables long transaction support."
+msgstr "DisableLongTransactions"
 
 #. Tag: funcprototype
-#: reference_transaction.xml:122
+#: reference_transaction.xml:126
 #, no-c-format
 msgid ""
 "<funcdef>text <function>DisableLongTransactions</function></funcdef> "
@@ -262,19 +258,19 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: reference_transaction.xml:132
-#, no-c-format
+#: reference_transaction.xml:136
+#, fuzzy, no-c-format
 msgid ""
-"<para>Disable long transaction support. This function removes the long "
+"Disables long transaction support. This function removes the long "
 "transaction support metadata tables, and drops all triggers attached to lock-"
-"checked tables.</para>"
+"checked tables."
 msgstr ""
 "<para>ロングトランザクション機能を無効にします。この関数によって、ロングトラ"
 "ンザクション機能のためのメタデータテーブルが削除され、ロックチェックテーブル"
 "に付けられた全てのトリガが削除されます。</para>"
 
 #. Tag: para
-#: reference_transaction.xml:135
+#: reference_transaction.xml:139
 #, no-c-format
 msgid ""
 "Drops meta table called <varname>authorization_table</varname> and a view "
@@ -286,7 +282,7 @@ msgstr ""
 "varname>トリガの全てが削除されます。"
 
 #. Tag: programlisting
-#: reference_transaction.xml:146
+#: reference_transaction.xml:150
 #, no-c-format
 msgid ""
 "SELECT DisableLongTransactions();\n"
@@ -298,25 +294,19 @@ msgstr ""
 "Long transactions support disabled"
 
 #. Tag: refname
-#: reference_transaction.xml:159
+#: reference_transaction.xml:163
 #, no-c-format
 msgid "EnableLongTransactions"
 msgstr "EnableLongTransactions"
 
 #. Tag: refpurpose
-#: reference_transaction.xml:161
-#, no-c-format
-msgid ""
-"<refpurpose>Enable long transaction support. This function creates the "
-"required metadata tables, needs to be called once before using the other "
-"functions in this section. Calling it twice is harmless.</refpurpose>"
-msgstr ""
-"<refpurpose>ロングトランザクション機能を有効にします。この関数によって、必要"
-"なメタデータテーブルが生成されます。このセクションにある他の関数を呼ぶ前に、"
-"一度呼ぶ必要があります。二度呼んでも構いません。</refpurpose>"
+#: reference_transaction.xml:165
+#, fuzzy, no-c-format
+msgid "Enables long transaction support."
+msgstr "EnableLongTransactions"
 
 #. Tag: funcprototype
-#: reference_transaction.xml:169
+#: reference_transaction.xml:170
 #, no-c-format
 msgid ""
 "<funcdef>text <function>EnableLongTransactions</function></funcdef> "
@@ -326,19 +316,19 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: reference_transaction.xml:179
-#, no-c-format
+#: reference_transaction.xml:180
+#, fuzzy, no-c-format
 msgid ""
-"<para>Enable long transaction support. This function creates the required "
-"metadata tables, needs to be called once before using the other functions in "
-"this section. Calling it twice is harmless.</para>"
+"Enables long transaction support. This function creates the required "
+"metadata tables. It must be called once before using the other functions in "
+"this section. Calling it twice is harmless."
 msgstr ""
 "<para>ロングトランザクション機能を有効にします。この関数によって、必要なメタ"
 "データテーブルが生成されます。このセクションにある他の関数を呼ぶ前に、一度呼"
 "ぶ必要があります。二度呼んでも構いません。</para>"
 
 #. Tag: para
-#: reference_transaction.xml:183
+#: reference_transaction.xml:185
 #, no-c-format
 msgid ""
 "Creates a meta table called <varname>authorization_table</varname> and a "
@@ -348,7 +338,7 @@ msgstr ""
 "<varname>authorized_tables</varname>ビューが生成されます。"
 
 #. Tag: programlisting
-#: reference_transaction.xml:193
+#: reference_transaction.xml:195
 #, no-c-format
 msgid ""
 "SELECT EnableLongTransactions();\n"
@@ -360,19 +350,19 @@ msgstr ""
 "Long transactions support enabled"
 
 #. Tag: refname
-#: reference_transaction.xml:206
+#: reference_transaction.xml:208
 #, no-c-format
 msgid "LockRow"
 msgstr "LockRow"
 
 #. Tag: refpurpose
-#: reference_transaction.xml:208
-#, no-c-format
-msgid "Set lock/authorization for specific row in table"
+#: reference_transaction.xml:210
+#, fuzzy, no-c-format
+msgid "Sets lock/authorization for a row in a table."
 msgstr "テーブルの指定した行についてロック/認証を設定します。"
 
 #. Tag: funcsynopsis
-#: reference_transaction.xml:212
+#: reference_transaction.xml:214
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>integer <function>LockRow</function></funcdef> "
@@ -410,12 +400,14 @@ msgstr ""
 "<parameter>an_auth_token</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_transaction.xml:243
-#, no-c-format
+#: reference_transaction.xml:245
+#, fuzzy, no-c-format
 msgid ""
-"Set lock/authorization for specific row in table &lt;authid&gt; is a text "
-"value, &lt;expires&gt; is a timestamp defaulting to now()+1hour. Returns 1 "
-"if lock has been assigned, 0 otherwise (already locked by other auth)"
+"Sets lock/authorization for a specific row in a table. "
+"<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
+"varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
+"emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
+"already locked by another auth.)"
 msgstr ""
 "テーブルの指定した行についてロック/認証を設定します。&lt;authid&gt;は文字列値"
 "です。&lt;expires&gt;はタイムスタンプ値で、now()+1時間がデフォルトです。ロッ"
@@ -423,7 +415,7 @@ msgstr ""
 "は、0を返します。"
 
 #. Tag: programlisting
-#: reference_transaction.xml:255
+#: reference_transaction.xml:259
 #, no-c-format
 msgid ""
 "SELECT LockRow('public', 'towns', '2', 'joey');\n"
@@ -450,23 +442,19 @@ msgstr ""
 "0"
 
 #. Tag: refname
-#: reference_transaction.xml:268
+#: reference_transaction.xml:272
 #, no-c-format
 msgid "UnlockRows"
 msgstr "UnlockRows"
 
 #. Tag: refpurpose
-#: reference_transaction.xml:270
+#: reference_transaction.xml:274
 #, no-c-format
-msgid ""
-"<refpurpose>Remove all locks held by specified authorization id. Returns the "
-"number of locks released.</refpurpose>"
+msgid "Removes all locks held by an authorization token."
 msgstr ""
-"<refpurpose>指定した認証IDが保持するロックを全て削除します。解放されたロック"
-"の数が返されます。</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_transaction.xml:276
+#: reference_transaction.xml:280
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>UnlockRows</function></funcdef> "
@@ -476,17 +464,17 @@ msgstr ""
 "<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
 
 #. Tag: para
-#: reference_transaction.xml:286
-#, no-c-format
+#: reference_transaction.xml:290
+#, fuzzy, no-c-format
 msgid ""
-"<para>Remove all locks held by specified authorization id. Returns the "
-"number of locks released.</para>"
+"Removes all locks held by specified authorization token. Returns the number "
+"of locks released."
 msgstr ""
 "<para>指定した認証IDが保持するロックを全て削除します。解放されたロックの数が"
 "返されます。</para>"
 
 #. Tag: programlisting
-#: reference_transaction.xml:296
+#: reference_transaction.xml:300
 #, no-c-format
 msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
@@ -502,3 +490,35 @@ msgstr ""
 "                UnLockRows\n"
 "                ------------\n"
 "                2"
+
+#~ msgid ""
+#~ "Creates/adds to a temp table called temp_lock_have_table the current "
+#~ "transaction identifier and authorization token key."
+#~ msgstr ""
+#~ "temp_lock_have_tableという一時テーブルに現在のトランザクション識別子と認証"
+#~ "トークンキーを作成、追加します。"
+
+#~ msgid ""
+#~ "<refpurpose>Disable long transaction support. This function removes the "
+#~ "long transaction support metadata tables, and drops all triggers attached "
+#~ "to lock-checked tables.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>ロングトランザクション機能を無効にします。この関数によって、ロ"
+#~ "ングトランザクション機能のためのメタデータテーブルが削除され、ロックチェッ"
+#~ "クテーブルに付けられた全てのトリガが削除されます。</refpurpose>"
+
+#~ msgid ""
+#~ "<refpurpose>Enable long transaction support. This function creates the "
+#~ "required metadata tables, needs to be called once before using the other "
+#~ "functions in this section. Calling it twice is harmless.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>ロングトランザクション機能を有効にします。この関数によって、必"
+#~ "要なメタデータテーブルが生成されます。このセクションにある他の関数を呼ぶ前"
+#~ "に、一度呼ぶ必要があります。二度呼んでも構いません。</refpurpose>"
+
+#~ msgid ""
+#~ "<refpurpose>Remove all locks held by specified authorization id. Returns "
+#~ "the number of locks released.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>指定した認証IDが保持するロックを全て削除します。解放されたロッ"
+#~ "クの数が返されます。</refpurpose>"

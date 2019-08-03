@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-07-21 17:36+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:00+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1991,9 +1991,11 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:549
-#, no-c-format
-msgid ", <xref linkend=\"Loader_Generate_Nation_Script\"/>"
-msgstr ""
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
+"\"Drop_State_Tables_Generate_Script\"/>"
+msgstr ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:555
@@ -2137,6 +2139,12 @@ msgstr "Gerar script para carregar dados para os sistemas Linux/Unix. "
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('sh');"
 msgstr "SELECT loader_generate_nation_script('sh');"
+
+#. Tag: para
+#: extras_tigergeocoder.xml:606
+#, fuzzy, no-c-format
+msgid ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
+msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:612

@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # 
 # Translators:
-# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017,2019
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2017-01-28 07:03+0000\n"
-"PO-Revision-Date: 2017-06-04 10:59+0000\n"
+"PO-Revision-Date: 2019-03-11 09:28+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr "ST_IsValidTrajectory"
 #: reference_temporal.xml:9
 #, no-c-format
 msgid "Returns <varname>true</varname> if the geometry is a valid trajectory."
-msgstr ""
+msgstr "Gibt <varname>TRUE</varname> zurück, wenn die Geometrie eine valide Trajektorie ist."
 
 #. Tag: funcprototype
 #: reference_temporal.xml:16
@@ -55,7 +55,7 @@ msgstr "Beschreibung"
 msgid ""
 "Tell if a geometry encodes a valid trajectory. Valid trajectories are "
 "encoded as LINESTRING with M value growing from each vertex to the next."
-msgstr ""
+msgstr "Teilt mit, ob die Geometrie eine valide Trajektorie kodiert. Valide Trajektorien sind als LINESTRING mit einem von Knoten zu Knoten steigenden M-Wert kodiert."
 
 #. Tag: para
 #: reference_temporal.xml:32
@@ -63,7 +63,7 @@ msgstr ""
 msgid ""
 "Valid trajectories are expected as input to some spatio-temporal queries "
 "like <xref linkend=\"ST_ClosestPointOfApproach\"/>"
-msgstr ""
+msgstr "Valide Trajektorien werden von einigen räumlich-zeitlichen Abfragen, wie <xref linkend=\"ST_ClosestPointOfApproach\"/>, als Eingabe erwartet."
 
 #. Tag: para
 #: reference_temporal.xml:37 reference_temporal.xml:90
@@ -103,7 +103,7 @@ msgid ""
 " st_isvalidtrajectory\n"
 "----------------------\n"
 " f"
-msgstr ""
+msgstr "-- Eine valide Trajektorie\nSELECT ST_IsValidTrajectory(ST_MakeLine(\n  ST_MakePointM(0,0,1),\n  ST_MakePointM(0,1,2))\n);\n t\n\n-- Eine invalide Trajektorie\nSELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), ST_MakePointM(0,1,0)));\nNOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)\n st_isvalidtrajectory\n----------------------\n f"
 
 #. Tag: title
 #: reference_temporal.xml:49 reference_temporal.xml:102
@@ -124,7 +124,7 @@ msgstr "ST_ClosestPointOfApproach"
 msgid ""
 "Returns the measure at which points interpolated along two lines are "
 "closest."
-msgstr ""
+msgstr "Gibt die Kilometrierung zurück, an dem die entlang einer Linie interpolierten Punkte am nächsten zueinander liegen."
 
 #. Tag: funcprototype
 #: reference_temporal.xml:67
@@ -143,7 +143,7 @@ msgid ""
 "lines are at the smallest distance. Inputs must be valid trajectories as "
 "checked by <xref linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the"
 " trajectories do not overlap on the M range."
-msgstr ""
+msgstr "Gibt die niedrigste Kilometrierung zurück, an dem zwei sich bewegende Objekte den geringsten Abstand zueinander hatten. Es müssen valide Trajektorien übergeben werden, so wie von <xref linkend=\"ST_IsValidTrajectory\"/> überprüft. Wenn sich die Trajektorien im M-Bereich nicht überlagern, dann wird NULL zurückgegeben."
 
 #. Tag: para
 #: reference_temporal.xml:85
@@ -151,7 +151,7 @@ msgstr ""
 msgid ""
 "See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
 "given measure."
-msgstr ""
+msgstr "Siehe <xref linkend=\"ST_LocateAlong\"/> um die tatsächlichen Punkte an der gegebenen Kilometrierung zu erhalten."
 
 #. Tag: programlisting
 #: reference_temporal.xml:97
@@ -182,7 +182,7 @@ msgid ""
 "               t               |     distance\n"
 "-------------------------------+------------------\n"
 " 2015-05-26 10:45:31.034483+02 | 1.96036833151395"
-msgstr ""
+msgstr "-- Gibt den Zeitpunkt zurück, an dem zwei Objekte die sich zwischen 10:00 and 11:00 bewegen am nächsten zueinander liegen;\n-- sowie den Abstand der beiden Objekte an diesem Punkt\nWITH inp AS ( SELECT\n  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) a,\n  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) b\n), cpa AS (\n  SELECT ST_ClosestPointOfApproach(a,b) m FROM inp\n), points AS (\n  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,\n         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb\n  FROM inp, cpa\n)\nSELECT to_timestamp(m) t,\n       ST_Distance(pa,pb) distance\nFROM points, cpa;\n\n               t               |     distance\n-------------------------------+------------------\n 2015-05-26 10:45:31.034483+02 | 1.96036833151395"
 
 #. Tag: para
 #: reference_temporal.xml:103
@@ -203,7 +203,7 @@ msgstr "ST_DistanceCPA"
 #, no-c-format
 msgid ""
 "Returns the distance between closest points of approach in two trajectories."
-msgstr ""
+msgstr "Gibt die Entfernung zwischen den zwei nächstliegenden Punkten während der Annäherung zweier Trajektorien zurück."
 
 #. Tag: funcprototype
 #: reference_temporal.xml:123
@@ -222,7 +222,7 @@ msgid ""
 "Inputs must be valid trajectories as checked by <xref "
 "linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do "
 "not overlap on the M range."
-msgstr ""
+msgstr "Gibt die kleinste Entfernung zurück, die zwei sich bewegende Objekte jemals zueinander gehabt haben. Es müssen valide Trajektorien übergeben werden, so wie von <xref linkend=\"ST_IsValidTrajectory\"/> überprüft. Wenn sich die Trajektorien im M-Bereich nicht überlagern, dann wird NULL zurückgegeben."
 
 #. Tag: programlisting
 #: reference_temporal.xml:148
@@ -244,7 +244,7 @@ msgid ""
 "     distance\n"
 "------------------\n"
 " 1.96036833151395"
-msgstr ""
+msgstr "-- Gibt die geringste Entfernung zurück, die zwei sich bewegende Objekte zwischen 10:00 und 11:00 einnahmen\nWITH inp AS ( SELECT\n  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) a,\n  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) b\n)\nSELECT ST_DistanceCPA(a,b) distance FROM inp;\n\n     distance\n------------------\n 1.96036833151395"
 
 #. Tag: para
 #: reference_temporal.xml:154
@@ -266,7 +266,7 @@ msgstr "ST_CPAWithin"
 msgid ""
 "Returns true if the trajectories' closest points of approach are within the "
 "specified distance."
-msgstr ""
+msgstr "Gibt TRUE zurück, wenn sich die am nächsten zueinander liegenden Punkte der Trajektorien innerhalb der gegebenen Distanz befinden."
 
 #. Tag: funcprototype
 #: reference_temporal.xml:175
@@ -293,7 +293,7 @@ msgid ""
 "Inputs must be valid trajectories as checked by <xref "
 "linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do"
 " not overlap on the M range."
-msgstr ""
+msgstr "Es müssen valide Trajektorien übergeben werden, so wie von <xref linkend=\"ST_IsValidTrajectory\"/> überprüft. Wenn sich die Trajektorien im M-Bereich nicht überlagern, dann wird FALSE zurückgegeben."
 
 #. Tag: programlisting
 #: reference_temporal.xml:204

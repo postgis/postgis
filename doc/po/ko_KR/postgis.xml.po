@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:00+0000\n"
 "PO-Revision-Date: 2016-07-22 08:18+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -19,19 +19,19 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
-#: postgis.xml:128
+#: postgis.xml:136
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
 msgstr "PostGIS &last_release_version; 사용자 지침서"
 
 #. Tag: corpauthor
-#: postgis.xml:132
+#: postgis.xml:140
 #, no-c-format
 msgid "The PostGIS Development Group"
 msgstr "PostGIS 개발 그룹"
 
 #. Tag: affiliation
-#: postgis.xml:138
+#: postgis.xml:146
 #, no-c-format
 msgid ""
 "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
@@ -45,7 +45,7 @@ msgstr ""
 "address>"
 
 #. Tag: para
-#: postgis.xml:152
+#: postgis.xml:160
 #, no-c-format
 msgid ""
 "PostGIS is an extension to the PostgreSQL object-relational database system "
@@ -59,13 +59,13 @@ msgstr ""
 "한 기능을 포함하고 있습니다."
 
 #. Tag: para
-#: postgis.xml:161
+#: postgis.xml:169
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
 msgstr "이 문서는 &last_release_version; 버전의 사용자 지침서입니다."
 
 #. Tag: para
-#: postgis.xml:162
+#: postgis.xml:170
 #, no-c-format
 msgid ""
 "This work is licensed under a <ulink url=\"http://creativecommons.org/"
