@@ -30,12 +30,12 @@
 
 static char *asgeojson_point(const LWPOINT *point, char *srs, GBOX *bbox, int precision);
 static char *asgeojson_line(const LWLINE *line, char *srs, GBOX *bbox, int precision);
-static char *asgeojson_triangle(const LWTRIANGLE *line, char *srs, GBOX *bbox, int precision);
+static char *asgeojson_triangle(const LWTRIANGLE *tri, char *srs, GBOX *bbox, int precision);
 static char *asgeojson_poly(const LWPOLY *poly, char *srs, GBOX *bbox, int precision);
-static char * asgeojson_multipoint(const LWMPOINT *mpoint, char *srs, GBOX *bbox, int precision);
-static char * asgeojson_multiline(const LWMLINE *mline, char *srs, GBOX *bbox, int precision);
-static char * asgeojson_multipolygon(const LWMPOLY *mpoly, char *srs, GBOX *bbox, int precision);
-static char * asgeojson_collection(const LWCOLLECTION *col, char *srs, GBOX *bbox, int precision);
+static char *asgeojson_multipoint(const LWMPOINT *mpoint, char *srs, GBOX *bbox, int precision);
+static char *asgeojson_multiline(const LWMLINE *mline, char *srs, GBOX *bbox, int precision);
+static char *asgeojson_multipolygon(const LWMPOLY *mpoly, char *srs, GBOX *bbox, int precision);
+static char *asgeojson_collection(const LWCOLLECTION *col, char *srs, GBOX *bbox, int precision);
 static size_t asgeojson_geom_size(const LWGEOM *geom, GBOX *bbox, int precision);
 static size_t asgeojson_geom_buf(const LWGEOM *geom, char *output, GBOX *bbox, int precision);
 
