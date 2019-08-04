@@ -329,16 +329,6 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 	return output;
 }
 
-
-void
-error_if_srid_mismatch(int32_t srid1, int32_t srid2)
-{
-	if ( srid1 != srid2 )
-	{
-		lwerror("Operation on mixed SRID geometries");
-	}
-}
-
 int32_t
 clamp_srid(int32_t srid)
 {

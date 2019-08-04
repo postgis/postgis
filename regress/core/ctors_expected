@@ -1,11 +1,11 @@
 32749
-ERROR:  Operation on mixed SRID geometries
+ERROR:  LWGEOM_collect: Operation on mixed SRID geometries (Point, 32749) != (Point, 32740)
 SRID=3;LINESTRING(0 0,1 1)
-ERROR:  Operation on mixed SRID geometries
+ERROR:  LWGEOM_makeline: Operation on mixed SRID geometries (Point, 0) != (Point, 3)
 ST_MakeLine1|LINESTRING(0 0,1 1,10 0)
 ST_MakeLine_agg1|LINESTRING(0 0,1 1,10 0,20 20,40 4,40 4,40 5,40 5,40 6,40 6,40 7,40 8)
 ST_MakeLine_agg2|LINESTRING(0 0,1 0,1 0)
 BOX(0 0,1 1)
-ERROR:  Operation on mixed SRID geometries
+ERROR:  BOX2D_construct: Operation on mixed SRID geometries (Point, 0) != (Point, 3)
 BOX3D(0 0 0,1 1 0)
-ERROR:  Operation on mixed SRID geometries
+ERROR:  BOX3D_construct: Operation on mixed SRID geometries (Point, 0) != (Point, 3)

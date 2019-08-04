@@ -199,7 +199,7 @@ Datum ST_InterpolatePoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	error_if_srid_mismatch(gserialized_get_srid(gser_line), gserialized_get_srid(gser_point));
+	gserialized_error_if_srid_mismatch(gser_line, gser_point, __func__);
 
 	if ( ! gserialized_has_m(gser_line) )
 	{
@@ -237,7 +237,7 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(geom1));
 	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom2));

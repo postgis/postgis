@@ -161,6 +161,16 @@ GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
 
 /**
+ * Compare SRIDs of two GSERIALIZEDs and print informative error message if they differ.
+ */
+void gserialized_error_if_srid_mismatch(const GSERIALIZED *g1, const GSERIALIZED *g2, const char *funcname);
+
+/**
+ * Compare SRIDs of GSERIALIZEDs to reference and print informative error message if they differ.
+ */
+void gserialized_error_if_srid_mismatch_reference(const GSERIALIZED *g1, const int32_t srid, const char *funcname);
+
+/**
 * Pull out a gbox bounding box as fast as possible.
 * Tries to read cached box from front of serialized vardata.
 * If no cached box, calculates box from scratch.

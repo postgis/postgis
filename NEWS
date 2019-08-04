@@ -194,6 +194,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4441, Make GiST penalty friendly to multi-column indexes and build single-column
            ones faster. (Darafei Praliaskouski)
   - #4403, Support for shp2pgsql ability to reproject with copy mode (-D) (Regina Obe)
+  - #4410, More descriptive error messages about SRID mismatch (Darafei Praliaskouski)
 
 * Fixes *
   - #4342, Move deprecated functions into legacy.sql file

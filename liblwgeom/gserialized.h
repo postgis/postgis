@@ -43,7 +43,7 @@ GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox);
 * Remove the bounding box from a #GSERIALIZED. Returns a freshly
 * allocated #GSERIALIZED every time.
 */
-GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g)
+GSERIALIZED *gserialized_drop_gbox(GSERIALIZED *g);
 
 /**
 * Read the box from the #GSERIALIZED or calculate it if necessary.
