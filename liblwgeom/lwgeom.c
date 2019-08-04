@@ -2271,8 +2271,11 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	double center = DBL_MAX;
 	LWPOLY *lwpoly = NULL;
 	LWGEOM *clipped;
-
-	gbox_duplicate(lwgeom_get_bbox(geom), &clip);
+	const GBOX *box_in;
+	if (!geom) return 0;
+	box_in = lwgeom_get_bbox(geom);
+	if (!box_in) return 0;
+	gbox_duplicate(box_in, &clip);
 	width = clip.xmax - clip.xmin;
 	height = clip.ymax - clip.ymin;
 
