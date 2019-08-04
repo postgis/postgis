@@ -53,9 +53,7 @@ SELECT 'kml_empty_geom', ST_AsKML(geography(ST_GeomFromEWKT(NULL)));
 SELECT 'kml_precision_01', ST_AsKML(geography(ST_GeomFromEWKT('SRID=4326;POINT(1.1111111 1.1111111)')), -2);
 SELECT 'kml_precision_02', ST_AsKML(geography(ST_GeomFromEWKT('SRID=4326;POINT(1.1111111 1.1111111)')), 19);
 
--- Projected
--- National Astronomical Observatory of Colombia - Bogota, Colombia (Placemark)
-SELECT 'kml_projection_01', ST_AsKML(geography(ST_GeomFromEWKT('SRID=102189;POINT(1000000 1000000)')), 3);
+-- Projected -- there's no projected geography
 
 --
 -- SVG
