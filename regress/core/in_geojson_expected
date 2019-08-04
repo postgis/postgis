@@ -18,7 +18,7 @@ ERROR:  Unable to find 'coordinates' in GeoJSON string
 #2130|50
 #2216|30
 #2619|POLYGON EMPTY
-#2619|MULTIPOLYGON Z (EMPTY)
+#2619|MULTIPOLYGON EMPTY
 ERROR:  The 'coordinates' in GeoJSON ring are not an array
 ERROR:  The 'coordinates' in GeoJSON ring are not an array
 geomfromgeojson_z_01|POINT(1 2 3)
@@ -29,5 +29,9 @@ geomfromgeojson_srs_1|GEOMETRYCOLLECTION(POINT(100 0),LINESTRING(101 0,102 1))
 geomfromgeojson_srs_2|GEOMETRYCOLLECTION(POINT(100 0),LINESTRING(101 0,102 1))
 geomfromgeojson_srs_3|GEOMETRYCOLLECTION(POINT(100 0),LINESTRING(101 0,102 1))
 geomfromgeojson_srs_4|GEOMETRYCOLLECTION(POINT(100 0),LINESTRING(101 0,102 1))
-#3583|MULTIPOLYGON Z (EMPTY)
-ERROR:  The 'coordinates' in GeoJSON polygon are not sufficiently nested
+ERROR:  The 'coordinates' in GeoJSON are not sufficiently nested
+ERROR:  The 'coordinates' in GeoJSON are not sufficiently nested
+#4470.a|POLYGON((0 0))
+#4470.b|POLYGON EMPTY
+#4470.c|MULTIPOLYGON(((0 0)))
+#4470.d|MULTIPOLYGON EMPTY
