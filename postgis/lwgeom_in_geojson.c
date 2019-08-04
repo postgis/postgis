@@ -112,6 +112,10 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 		lwgeom_set_srid(lwgeom, getSRIDbySRS(srs));
 		lwfree(srs);
 	}
+	else
+	{
+		lwgeom_set_srid(lwgeom, WGS84_SRID);
+	}
 
 	geom = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);

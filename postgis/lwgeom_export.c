@@ -354,15 +354,19 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	char *geojson;
 	text *result;
-	int has_bbox = 0;
 	int precision = DBL_DIG;
+	int output_bbox = LW_FALSE;
+	int output_long_crs = LW_FALSE;
+	int output_short_crs = LW_FALSE;
 	char *srs = NULL;
+	int32_t srid;
 
 	/* Get the geometry */
-	if ( PG_ARGISNULL(0) )
+	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(geom);
 
 	/* Retrieve precision if any (default is max) */
 	if ( PG_NARGS() > 1 && !PG_ARGISNULL(1) )
@@ -375,42 +379,39 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	}
 
 	/* Retrieve output option
-	 * 0 = without option (default)
+	 * 0 = without option
 	 * 1 = bbox
 	 * 2 = short crs
 	 * 4 = long crs
 	 */
-	if ( PG_NARGS() > 2 && !PG_ARGISNULL(2) )
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
 	{
 		int option = PG_GETARG_INT32(2);
+		output_short_crs = (option & 2) ? LW_TRUE : LW_FALSE;
+		output_long_crs = (option & 4) ? LW_TRUE : LW_FALSE;
+		output_bbox = (option & 1) ? LW_TRUE : LW_FALSE;
+	}
+	else
+	{
+		output_short_crs = (srid != WGS84_SRID) ? LW_TRUE : LW_FALSE;
+	}
 
-		if ( option & 2 || option & 4 )
+	if (srid != SRID_UNKNOWN && (output_short_crs || output_long_crs))
+	{
+		if (output_long_crs)
+			srs = getSRSbySRID(srid, false);
+		else if (output_short_crs)
+			srs = getSRSbySRID(srid, true);
+
+		if (!srs)
 		{
-			int32_t srid = gserialized_get_srid(geom);
-			if ( srid != SRID_UNKNOWN )
-			{
-				if ( option & 2 )
-					srs = getSRSbySRID(srid, true);
-
-				if ( option & 4 )
-					srs = getSRSbySRID(srid, false);
-
-				if ( !srs )
-				{
-					elog(ERROR,
-					      "SRID %i unknown in spatial_ref_sys table",
-					      srid);
-					PG_RETURN_NULL();
-				}
-			}
+			elog(ERROR, "SRID %i unknown in spatial_ref_sys table", srid);
+			PG_RETURN_NULL();
 		}
-
-		if (option & 1)
-			has_bbox = 1;
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
+	geojson = lwgeom_to_geojson(lwgeom, srs, precision, output_bbox);
 	lwgeom_free(lwgeom);
 
 	if (srs) pfree(srs);
