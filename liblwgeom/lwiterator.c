@@ -100,14 +100,12 @@ extract_pointarrays_from_lwgeom(LWGEOM* g)
 		LWPOLY* p = lwgeom_as_lwpoly(g);
 		int i;
 		for (i = p->nrings - 1; i >= 0; i--)
-		{
 			n = prepend_node(p->rings[i], n);
-		}
 
 		return n;
 	}
 	default:
-		lwerror("Unsupported geometry type for lwpointiterator");
+		lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(g->type));
 	}
 
 	return NULL;

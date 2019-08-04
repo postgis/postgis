@@ -253,6 +253,23 @@ static Data__Geometry *encode_line(struct geobuf_agg_context *ctx,
 	return geometry;
 }
 
+static Data__Geometry *
+encode_triangle(struct geobuf_agg_context *ctx, LWTRIANGLE *lwtri)
+{
+	Data__Geometry *geometry = galloc(DATA__GEOMETRY__TYPE__POLYGON);
+	POINTARRAY *pa = lwtri->points;
+	uint32_t len;
+
+	if (pa->npoints == 0)
+		return geometry;
+
+	len = pa->npoints - 1;
+	geometry->n_coords = len * ctx->dimensions;
+	geometry->coords = encode_coords(ctx, pa, NULL, len, 0);
+
+	return geometry;
+}
+
 static Data__Geometry *encode_mline(struct geobuf_agg_context *ctx,
 	LWMLINE *lwmline)
 {
@@ -415,6 +432,8 @@ static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx,
 		return encode_point(ctx, (LWPOINT*)lwgeom);
 	case LINETYPE:
 		return encode_line(ctx, (LWLINE*)lwgeom);
+	case TRIANGLETYPE:
+		return encode_triangle(ctx, (LWTRIANGLE *)lwgeom);
 	case POLYGONTYPE:
 		return encode_poly(ctx, (LWPOLY*)lwgeom);
 	case MULTIPOINTTYPE:
@@ -424,6 +443,7 @@ static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx,
 	case MULTIPOLYGONTYPE:
 		return encode_mpoly(ctx, (LWMPOLY*)lwgeom);
 	case COLLECTIONTYPE:
+	case TINTYPE:
 		return encode_collection(ctx, (LWCOLLECTION*)lwgeom);
 	default:
 		elog(ERROR, "encode_geometry: '%s' geometry type not supported",
@@ -465,6 +485,7 @@ static void analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 	{
 	case POINTTYPE:
 	case LINETYPE:
+	case TRIANGLETYPE:
 		lwline = (LWLINE*) lwgeom;
 		analyze_pa(ctx, lwline->points);
 		break;
@@ -477,6 +498,7 @@ static void analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
+	case TINTYPE:
 		lwcollection = (LWCOLLECTION*) lwgeom;
 		for (i = 0; i < lwcollection->ngeoms; i++)
 			analyze_geometry(ctx, lwcollection->geoms[i]);

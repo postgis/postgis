@@ -279,14 +279,14 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_n
 LWPOINT*
 lwgeom_median(const LWGEOM* g, double tol, uint32_t max_iter, char fail_if_not_converged)
 {
-	switch( lwgeom_get_type(g) )
+	switch (g->type)
 	{
 		case POINTTYPE:
 			return lwpoint_clone(lwgeom_as_lwpoint(g));
 		case MULTIPOINTTYPE:
 			return lwmpoint_median(lwgeom_as_lwmpoint(g), tol, max_iter, fail_if_not_converged);
 		default:
-			lwerror("Unsupported geometry type in lwgeom_median");
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(g->type));
 			return NULL;
 	}
 }

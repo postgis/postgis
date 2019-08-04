@@ -577,8 +577,7 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
 		}
 		else
 		{
-			lwerror("Unsupported geometry type %d found.",
-			        geom->type, lwtype_name(geom->type));
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 			return NULL;
 		}
 	}

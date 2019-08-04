@@ -788,11 +788,14 @@ lwgeom_get_basic_type(LWGEOM *geom)
 	case LINETYPE:
 	case POLYGONTYPE:
 		return geom->type;
+	case TRIANGLETYPE:
+		return POLYGONTYPE;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 		return geom->type - 3; /* Based on LWTYPE positions */
 	case COLLECTIONTYPE:
+	case TINTYPE:
 	{
 		uint32_t i;
 		uint8 type = 0;

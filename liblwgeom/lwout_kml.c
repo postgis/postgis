@@ -30,6 +30,7 @@
 static int lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringbuffer_t *sb);
 static int lwpoint_to_kml2_sb(const LWPOINT *point, int precision, const char *prefix, stringbuffer_t *sb);
 static int lwline_to_kml2_sb(const LWLINE *line, int precision, const char *prefix, stringbuffer_t *sb);
+static int lwtriangle_to_kml2_sb(const LWTRIANGLE *tri, int precision, const char *prefix, stringbuffer_t *sb);
 static int lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringbuffer_t *sb);
 static int lwcollection_to_kml2_sb(const LWCOLLECTION *col, int precision, const char *prefix, stringbuffer_t *sb);
 static int ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb);
@@ -76,12 +77,16 @@ lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringb
 	case LINETYPE:
 		return lwline_to_kml2_sb((LWLINE*)geom, precision, prefix, sb);
 
+	case TRIANGLETYPE:
+		return lwtriangle_to_kml2_sb((LWTRIANGLE *)geom, precision, prefix, sb);
+
 	case POLYGONTYPE:
 		return lwpoly_to_kml2_sb((LWPOLY*)geom, precision, prefix, sb);
 
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case TINTYPE:
 		return lwcollection_to_kml2_sb((LWCOLLECTION*)geom, precision, prefix, sb);
 
 	default:
@@ -142,6 +147,25 @@ lwline_to_kml2_sb(const LWLINE *line, int precision, const char *prefix, stringb
 	if ( ptarray_to_kml2_sb(line->points, precision, sb) == LW_FAILURE ) return LW_FAILURE;
 	/* Close linestring */
 	if ( stringbuffer_aprintf(sb, "</%scoordinates></%sLineString>", prefix, prefix) < 0 ) return LW_FAILURE;
+
+	return LW_SUCCESS;
+}
+
+static int
+lwtriangle_to_kml2_sb(const LWTRIANGLE *tri, int precision, const char *prefix, stringbuffer_t *sb)
+{
+	/* Open polygon */
+	if (stringbuffer_aprintf(
+		sb, "<%sPolygon><%souterBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix, prefix) < 0)
+		return LW_FAILURE;
+	/* Coordinate array */
+	if (ptarray_to_kml2_sb(tri->points, precision, sb) == LW_FAILURE)
+		return LW_FAILURE;
+	/* Close polygon */
+	if (stringbuffer_aprintf(
+		sb, "</%scoordinates></%sLinearRing></%souterBoundaryIs></%sPolygon>", prefix, prefix, prefix, prefix) <
+	    0)
+		return LW_FAILURE;
 
 	return LW_SUCCESS;
 }

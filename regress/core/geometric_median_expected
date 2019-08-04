@@ -1,5 +1,5 @@
 t1|t
-ERROR:  Unsupported geometry type in lwgeom_median
+ERROR:  lwgeom_median: Unsupported geometry type: LineString
 t3|t
 t4|t
 t5|t

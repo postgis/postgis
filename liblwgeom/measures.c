@@ -390,7 +390,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 				case CURVEPOLYTYPE:
 					return lw_dist2d_point_curvepoly((LWPOINT *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 					return LW_FALSE;
 			}
 		}
@@ -411,7 +411,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 				case CURVEPOLYTYPE:
 					return lw_dist2d_line_curvepoly((LWLINE *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 					return LW_FALSE;
 			}
 		}
@@ -433,7 +433,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 				case CURVEPOLYTYPE:
 					return lw_dist2d_circstring_curvepoly((LWCIRCSTRING *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 					return LW_FALSE;
 			}
 		}
@@ -455,7 +455,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 					dl->twisted = 1;
 					return lw_dist2d_poly_curvepoly((LWPOLY *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 					return LW_FALSE;
 			}
 		}
@@ -476,13 +476,13 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *
 					dl->twisted = 1;
 					return lw_dist2d_curvepoly_curvepoly((LWCURVEPOLY *)lwg1, (LWCURVEPOLY *)lwg2, dl);
 				default:
-					lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+					lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 					return LW_FALSE;
 			}
 		}
 		default:
 		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t1));
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t1));
 			return LW_FALSE;
 		}
 	}
