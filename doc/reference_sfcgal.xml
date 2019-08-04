@@ -553,7 +553,7 @@ select ST_DelaunayTriangles(
 	  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_DelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
+			<para><xref linkend="ST_DelaunayTriangles" />,  <xref linkend="ST_Tesselate" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
 			</para>
 		</refsection>
 	</refentry>
@@ -984,7 +984,14 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 				</tbody>
 				</tgroup>
 			</informaltable>
-	  </refsection>
+		</refsection>
+
+		<refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_DelaunayTriangles" /></para>
+          </refsection>
+
 
 	</refentry>
 

@@ -1236,7 +1236,7 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
+			<para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />, <xref linkend="ST_Tesselate" />
 			</para>
 		</refsection>
 	</refentry>
