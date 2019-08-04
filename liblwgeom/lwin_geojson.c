@@ -52,7 +52,7 @@
 
 #include <string.h>
 
-static void geojson_lwerror(char *msg, int error_code)
+static void geojson_lwerror(char *msg, __attribute__((__unused__)) int error_code)
 {
 	LWDEBUGF(3, "lwgeom_from_geojson ERROR %i", error_code);
 	lwerror("%s", msg);
@@ -262,9 +262,6 @@ parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 		}
 		nPoints = json_object_array_length(points);
 
-		/* Skip empty rings */
-		if ( nPoints == 0 ) continue;
-
 		if ( ! ppa )
 			ppa = (POINTARRAY**)lwalloc(sizeof(POINTARRAY*) * nRings);
 
@@ -273,7 +270,17 @@ parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 		{
 			json_object* coords = NULL;
 			coords = json_object_array_get_idx( points, j );
-			parse_geojson_coord(coords, hasz, ppa[i]);
+			if (LW_FAILURE == parse_geojson_coord(coords, hasz, ppa[i]))
+			{
+				int k;
+				for (k = 0; k <= i; k++)
+				{
+					ptarray_free(ppa[k]);
+				}
+				lwfree(ppa);
+				geojson_lwerror("The 'coordinates' in GeoJSON polygon are not sufficiently nested", 4);
+				return NULL;
+			}
 		}
 	}
 
