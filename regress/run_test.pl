@@ -399,7 +399,6 @@ foreach $TEST (@ARGV)
 	my $TEST_OBJ_COUNT_PRE;
 	my $TEST_OBJ_COUNT_POST;
 
-
 	# catch a common mistake (strip trailing .sql)
 	$TEST =~ s/.sql$//;
 
