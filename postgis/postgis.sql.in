@@ -4602,7 +4602,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT
 -- ST_AsGeoJson(geom, precision, options) / version=1
 -- Changed: 2.0.0 to use default args and named args
 -- Changed: 3.0.0 reset default args to be provided in code
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4, options int4)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 8)
 	RETURNS text
 	AS 'MODULE_PATHNAME','LWGEOM_asGeoJson'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL

@@ -358,6 +358,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	int output_bbox = LW_FALSE;
 	int output_long_crs = LW_FALSE;
 	int output_short_crs = LW_FALSE;
+	int output_guess_short_srid = LW_FALSE;
 	char *srs = NULL;
 	int32_t srid;
 
@@ -383,25 +384,25 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	 * 1 = bbox
 	 * 2 = short crs
 	 * 4 = long crs
+	 * 8 = guess if CRS is needed (default)
 	 */
 	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
 	{
 		int option = PG_GETARG_INT32(2);
+		output_guess_short_srid = (option & 8) ? LW_TRUE : LW_FALSE;
 		output_short_crs = (option & 2) ? LW_TRUE : LW_FALSE;
 		output_long_crs = (option & 4) ? LW_TRUE : LW_FALSE;
 		output_bbox = (option & 1) ? LW_TRUE : LW_FALSE;
 	}
 	else
-	{
-		output_short_crs = (srid != WGS84_SRID) ? LW_TRUE : LW_FALSE;
-	}
+		output_guess_short_srid = LW_TRUE;
+
+	if (output_guess_short_srid && srid != WGS84_SRID && srid != SRID_UNKNOWN)
+		output_short_crs = LW_TRUE;
 
 	if (srid != SRID_UNKNOWN && (output_short_crs || output_long_crs))
 	{
-		if (output_long_crs)
-			srs = getSRSbySRID(srid, false);
-		else if (output_short_crs)
-			srs = getSRSbySRID(srid, true);
+		srs = getSRSbySRID(srid, !output_long_crs);
 
 		if (!srs)
 		{

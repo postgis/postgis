@@ -120,6 +120,7 @@ SELECT 'geojson_crs_03', ST_AsGeoJSON(ST_GeomFromEWKT('SRID=4326;POINT(1 1)'), 0
 SELECT 'geojson_crs_04', ST_AsGeoJSON(ST_GeomFromEWKT('SRID=0;POINT(1 1)'), 0, 4);
 SELECT 'geojson_crs_05', ST_AsGeoJSON(ST_GeomFromEWKT('SRID=1;POINT(1 1)'), 0, 2);
 SELECT 'geojson_crs_06', ST_AsGeoJSON(ST_GeomFromEWKT('SRID=1;POINT(1 1)'), 0, 4);
+SELECT 'geojson_crs_07', ST_AsGeoJSON(ST_GeomFromEWKT('SRID=3005;POINT(1 1)'));
 
 -- Bbox
 SELECT 'geojson_bbox_01', ST_AsGeoJSON(ST_GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0);
