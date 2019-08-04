@@ -25,7 +25,6 @@ kml_srid_02|<Point><coordinates>0,1</coordinates></Point>
 kml_empty_geom|
 kml_precision_01|<Point><coordinates>1,1</coordinates></Point>
 kml_precision_02|<Point><coordinates>1.1111111,1.1111111</coordinates></Point>
-ERROR:  Only lon/lat coordinate systems are supported in geography.
 svg_empty_geom|
 svg_option_01|M 1 -1 L 4 -4 5 -7
 svg_option_02|M 1 -1 l 3 -3 1 -3
