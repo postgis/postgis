@@ -2261,6 +2261,9 @@ For positive distance the offset will be at the left side of the input line
 and retain the same direction. For a negative distance it'll be at the right
 side and in the opposite direction.
 				</para>
+				<para>
+Note that output may be a MULTILINESTRING or EMPTY for some jigsaw-shaped input geometries.
+				</para>
 
 				<para>Performed by the GEOS module.</para>
 				<para>Availability: 2.0</para>
