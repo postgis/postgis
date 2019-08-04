@@ -18,7 +18,7 @@ PostGIS 2.5.3
   - #4437, Handle POINT EMPTY in shape loader/dumper (Paul Ramsey)
   - #4461, ST_AsTWKB doesn't always remove duplicate points (Nik Aven)
   - #4459, Fix ST_Subdivide crash on intermediate EMPTY (Darafei Praliaskouski)
-
+  - #4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)
 
 
 PostGIS 2.5.2
