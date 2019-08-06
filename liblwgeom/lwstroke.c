@@ -251,11 +251,12 @@ lwarc_linearize(POINTARRAY *to,
 	double radius; /* Arc radius */
 	double increment; /* Angle per segment */
 	double angle_shift = 0;
-	double a1, a2, a3, angle;
+	double a1, a2, a3;
 	POINTARRAY *pa;
 	int is_circle = LW_FALSE;
 	int points_added = 0;
 	int reverse = 0;
+	int segments = 0;
 
 	LWDEBUG(2, "lwarc_linearize called.");
 
@@ -339,8 +340,10 @@ lwarc_linearize(POINTARRAY *to,
 	 * we want shrink the increment enough so that we get two segments
 	 * for a standard arc, or three segments for a complete circle. */
 	int min_segs = is_circle ? 3 : 2;
-	if ( ceil(total_angle / increment) < min_segs)
+	segments = ceil(total_angle / increment);
+	if (segments < min_segs)
 	{
+		segments = min_segs;
 		increment = total_angle / min_segs;
 	}
 
@@ -351,34 +354,45 @@ lwarc_linearize(POINTARRAY *to,
 		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
 		{
 			/* Number of complete steps */
-			int steps = trunc(total_angle / increment);
+			segments = trunc(total_angle / increment);
 
 			/* Figure out the angle remainder, i.e. the amount of the angle
 			 * that is left after we can take no more complete angle
 			 * increments. */
-			double angle_remainder = total_angle - ( increment * steps );
+			double angle_remainder = total_angle - (increment * segments);
 
 			/* Shift the starting angle by half of the remainder. This
 			 * will have the effect of evenly distributing the remainder
 			 * among the first and last segments in the arc. */
 			angle_shift = angle_remainder / 2.0;
 
-			LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
-			         "total angle %g, steps %d, increment %g, remainder %g",
-			         total_angle * 180 / M_PI, steps, increment * 180 / M_PI,
-			         angle_remainder * 180 / M_PI);
+			LWDEBUGF(2,
+				 "lwarc_linearize RETAIN_ANGLE operation requested - "
+				 "total angle %g, steps %d, increment %g, remainder %g",
+				 total_angle * 180 / M_PI,
+				 segments,
+				 increment * 180 / M_PI,
+				 angle_remainder * 180 / M_PI);
 		}
 		else
 		{
 			/* Number of segments in output */
-			int segs = ceil(total_angle / increment);
+			segments = ceil(total_angle / increment);
 			/* Tweak increment to be regular for all the arc */
-			increment = total_angle/segs;
+			increment = total_angle / segments;
 
-			LWDEBUGF(2, "lwarc_linearize SYMMETRIC operation requested - "
-							"total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
-							total_angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
-							segs, increment*180/M_PI);
+			LWDEBUGF(2,
+				 "lwarc_linearize SYMMETRIC operation requested - "
+				 "total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
+				 total_angle * 180 / M_PI,
+				 p1->x,
+				 p1->y,
+				 center.x,
+				 center.y,
+				 p3->x,
+				 p3->y,
+				 segments,
+				 increment * 180 / M_PI);
 		}
 	}
 
@@ -409,9 +423,16 @@ lwarc_linearize(POINTARRAY *to,
 	if( is_circle )
 	{
 		increment = fabs(increment);
+		segments = ceil(total_angle / increment);
+		if (segments < 3)
+		{
+			segments = 3;
+			increment = total_angle / 3;
+		}
 		a3 = a1 + 2.0 * M_PI;
 		a2 = a1 + M_PI;
 		clockwise = LW_FALSE;
+		angle_shift = 0.0;
 	}
 
 	LWDEBUGF(2, "lwarc_linearize angle_shift:%g, increment:%g",
@@ -435,11 +456,20 @@ lwarc_linearize(POINTARRAY *to,
 	}
 
 	/* Sweep from a1 to a3 */
-	if ( angle_shift ) angle_shift -= increment;
+	int seg_start = 1; /* First point is added manually */
+	int seg_end = segments;
+	if (angle_shift != 0.0)
+	{
+		/* When we have extra angles we need to add the extra segments at the
+		 * start and end that cover those parts of the arc */
+		seg_start = 0;
+		seg_end = segments + 1;
+	}
 	LWDEBUGF(2, "a1:%g (%g deg), a3:%g (%g deg), inc:%g, shi:%g, cw:%d",
 		a1, a1 * 180 / M_PI, a3, a3 * 180 / M_PI, increment, angle_shift, clockwise);
-	for ( angle = a1 + increment + angle_shift; clockwise ? angle > a3 : angle < a3; angle += increment )
+	for (int s = seg_start; s < seg_end; s++)
 	{
+		double angle = a1 + increment * s + angle_shift;
 		LWDEBUGF(2, " SA: %g ( %g deg )", angle, angle*180/M_PI);
 		pt.x = center.x + radius * cos(angle);
 		pt.y = center.y + radius * sin(angle);
@@ -544,7 +574,7 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
                       int flags)
 {
 	LWGEOM *geom;
-	POINTARRAY *ptarray = NULL, *ptarray_out = NULL;
+	POINTARRAY *ptarray = NULL;
 	LWLINE *tmp = NULL;
 	uint32_t i, j;
 	POINT4D p;
@@ -581,9 +611,9 @@ lwcompound_linearize(const LWCOMPOUND *icompound, double tol,
 			return NULL;
 		}
 	}
-	ptarray_out = ptarray_remove_repeated_points(ptarray, 0.0);
-	ptarray_free(ptarray);
-	return lwline_construct(icompound->srid, NULL, ptarray_out);
+
+	ptarray_remove_repeated_points_in_place(ptarray, 0.0, 2);
+	return lwline_construct(icompound->srid, NULL, ptarray);
 }
 
 
