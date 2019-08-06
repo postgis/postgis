@@ -366,10 +366,13 @@ lwarc_linearize(POINTARRAY *to,
 			 * among the first and last segments in the arc. */
 			angle_shift = angle_remainder / 2.0;
 
-			LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
-			         "total angle %g, steps %d, increment %g, remainder %g",
-			         total_angle * 180 / M_PI, steps, increment * 180 / M_PI,
-			         angle_remainder * 180 / M_PI);
+			LWDEBUGF(2,
+				 "lwarc_linearize RETAIN_ANGLE operation requested - "
+				 "total angle %g, steps %d, increment %g, remainder %g",
+				 total_angle * 180 / M_PI,
+				 segments,
+				 increment * 180 / M_PI,
+				 angle_remainder * 180 / M_PI);
 		}
 		else
 		{
@@ -378,10 +381,18 @@ lwarc_linearize(POINTARRAY *to,
 			/* Tweak increment to be regular for all the arc */
 			increment = total_angle / segments;
 
-			LWDEBUGF(2, "lwarc_linearize SYMMETRIC operation requested - "
-							"total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
-							total_angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
-							segs, increment*180/M_PI);
+			LWDEBUGF(2,
+				 "lwarc_linearize SYMMETRIC operation requested - "
+				 "total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
+				 total_angle * 180 / M_PI,
+				 p1->x,
+				 p1->y,
+				 center.x,
+				 center.y,
+				 p3->x,
+				 p3->y,
+				 segments,
+				 increment * 180 / M_PI);
 		}
 	}
 
