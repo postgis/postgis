@@ -62,8 +62,8 @@ DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry, int4); -- this one changed to use
 DROP FUNCTION IF EXISTS ST_AsGeoJson(geography, int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry,int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography,int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry, int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4, int4); -- dropped because the version-first signature is dumb
 DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geometry, int4, int4); -- dropped in PostGIS-3.0 (r17300)
 DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geography, int4, int4); -- dropped in PostGIS-3.0 (r17300)

@@ -60,6 +60,7 @@ geojson_crs_03|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:og
 geojson_crs_04|{"type":"Point","coordinates":[1,1]}
 ERROR:  SRID 1 unknown in spatial_ref_sys table
 ERROR:  SRID 1 unknown in spatial_ref_sys table
+geojson_crs_07|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:3005"}},"coordinates":[1,1]}
 geojson_bbox_01|{"type":"LineString","coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_bbox_02|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_bbox_03|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}

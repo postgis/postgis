@@ -1,9 +1,6 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
-TRUNCATE spatial_ref_sys;
-INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( 'EPSG', 4326, 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
-
 -- Invalid topologies
 select topology.st_createtopogeo('', 'GEOMETRYCOLLECTION(POINT(0 0))');
 select topology.st_createtopogeo('t', 'GEOMETRYCOLLECTION(POINT(0 0))');
@@ -248,6 +245,5 @@ select * from print_isolated_nodes('T17');
 select null from ( select topology.DropTopology('t') ) as dt;
 
 -- clean up
-DELETE FROM spatial_ref_sys where srid = 4326;
 DROP FUNCTION print_isolated_nodes(text);
 DROP FUNCTION print_elements_count(text);

@@ -1,8 +1,6 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
-INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( 'EPSG', 4326, 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
-
 \i load_topology-4326.sql
 
 -- Save max node id
@@ -262,7 +260,6 @@ SELECT * FROM ValidateTopology('city_data');
 -- Cleanups
 DROP FUNCTION check_changes(text);
 SELECT DropTopology('city_data');
-DELETE FROM spatial_ref_sys where srid = 4326;
 
 -- See http://trac.osgeo.org/postgis/ticket/3280
 SELECT 't3280.start', topology.CreateTopology('bug3280') > 0;

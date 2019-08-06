@@ -2,14 +2,6 @@
 -- GeomFromKML regression test
 -- Written by Olivier Courtin - Oslandia
 --
-
---
--- spatial_ref_sys datas
---
-
--- EPSG 4326 : WGS 84
-INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (4326,'EPSG',4326,'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ');
-
 -- Empty Geometry
 SELECT 'empty_geom', ST_AsEWKT(ST_GeomFromKML(NULL));
 
@@ -328,8 +320,3 @@ SELECT 'double_31', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,$0%@
 -- ERROR: mixed coordinate dimension
 SELECT 'mixed_dims_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2 1,2,3</kml:coordinates></kml:Point>'));
 SELECT 'mixed_dims_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2,3 1,2</kml:coordinates></kml:Point>'));
-
---
--- Delete inserted spatial data
---
-DELETE FROM spatial_ref_sys WHERE srid = 4326;

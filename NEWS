@@ -197,8 +197,11 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4410, More descriptive error messages about SRID mismatch (Darafei Praliaskouski)
   - #4399, TIN and Triangle output support in all output functions (Darafei
            Praliaskouski)
-  - #3719, Impose minimun number of segments per arc during linearization
+  - #3719, Impose minimum number of segments per arc during linearization
            (Dan Baston / City of Helsinki, Raúl Marín)
+  - #4277, ST_GeomFromGeoJSON now marks SRID=4326 by default as per RFC7946,
+           ST_AsGeoJSON sets SRID in JSON output if it differs from 4326.
+           (Darafei Praliaskouski)
 
 * Fixes *
   - #4342, Move deprecated functions into legacy.sql file
