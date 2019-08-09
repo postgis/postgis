@@ -21,12 +21,13 @@ sh autogen.sh
 ./configure --with-pgconfig=${PGPATH}/bin/pg_config
 #make clean
 make
-export err=0
+export err_status=0
 make check RUNTESTFLAGS="-v"
 make install
-make check RUNTESTFLAGS="-v --extension" || $err=1
+make check RUNTESTFLAGS="-v --extension"
+err_status=$?
 
 if [ -d $PGDATA/postmaster.pid ] ; then
 	$PGCTL stop -D $PGDATA -s -m fast
 fi
-exit $err
+exit $err_status
