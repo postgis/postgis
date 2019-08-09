@@ -1,3 +1,4 @@
+#!/bin/bash
 #bessie is a 32-bit Rasberry Pi managed by Bruce Rindahl
 ## BRANCH is passed in via jenkins which is set via gitea web hook
 #export BRANCH=618a67b1d6fc223dd5a4c0b02c824939f21dbd65
@@ -20,11 +21,12 @@ sh autogen.sh
 ./configure --with-pgconfig=${PGPATH}/bin/pg_config
 #make clean
 make
-
+export err=0
 make check RUNTESTFLAGS="-v"
 make install
-make check RUNTESTFLAGS="-v --extension"
+make check RUNTESTFLAGS="-v --extension" || $err=1
 
 if [ -d $PGDATA/postmaster.pid ] ; then
 	$PGCTL stop -D $PGDATA -s -m fast
 fi
+exit $err
