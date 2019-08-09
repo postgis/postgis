@@ -1283,9 +1283,4 @@ select '#4399', 'ST_AsX3D', ST_AsX3D(geom)::text from geom
 union all
 select '#4399', 'ST_GeoHash', ST_GeoHash(geom)::text from geom
 union all
-select '#4399', 'ST_AsGeobuf', ST_AsGeobuf(geom.*)::text from geom
-union all
-select '#4399', 'ST_AsMVTGeom', ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(0, 0), ST_Point(32, 32)))::text from geom
-union all
 select '#4399', 'ST_AsGeoJSON', ST_AsGeoJSON(geom)::text from geom;
-

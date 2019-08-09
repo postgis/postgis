@@ -725,3 +725,14 @@ SELECT '#4348Crash', COALESCE(ST_Npoints(ST_AsMVTGeom(
     16,
     true
 )), 0) BETWEEN 0 AND 100;
+
+WITH geom AS (
+	SELECT 'TRIANGLE((0 0, 1 1, 0 1, 0 0))'::geometry geom
+	union all
+	SELECT 'TIN(((0 0, 1 1, 0 1, 0 0)))'::geometry geom
+	union all
+	SELECT 'TRIANGLE EMPTY'::geometry geom
+)
+select '#4399', 'ST_AsGeobuf', ST_AsGeobuf(geom.*)::text from geom
+union all
+select '#4399', 'ST_AsMVTGeom', ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(0, 0), ST_Point(32, 32)))::text from geom;
