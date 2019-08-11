@@ -3,6 +3,23 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.3.10</title>
+      <para>Release date: 2019/08/11</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+          <title>Bug Fixes and Enhancements</title>
+          <para>#4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)</para>
+          <para>#4326, Fix circular arc distance calculation (Paul Ramsey)</para>
+          <para>#4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)</para>
+          <para>#4327, Avoid pfree'ing the result of getenv (Raúl Marín)</para>
+          <para>#4406, Throw on invalid characters when decoding geohash (Raúl Marín)</para>
+          <para>#4466, Fix undefined behaviour in _postgis_gserialized_stats (Raúl Marín)</para>
+          <para>#4209, Handle NULL geometry values in pgsql2shp (Paul Ramsey)</para>
+          <para>#4437, Handle POINT EMPTY in shape loader/dumper (Paul Ramsey)</para>
+          <para>#4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)</para>
+        </simplesect>
+    </sect1>
+    <sect1>
       <title>Release 2.3.9</title>
       <para>Release date: 2019/03/10</para>
       <para>This is a bug fix and performance improvement release.</para>
