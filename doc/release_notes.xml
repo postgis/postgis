@@ -477,7 +477,7 @@
       <para>This is a new feature release, with new functions, improved performance, and other goodies.</para>
       <simplesect>
         <title>New Features</title>
-        <para>Topology API in liblwgeom (Sandro Santilli / Regione Toscana<para>SITA)</para>
+        <para>Topology API in liblwgeom (Sandro Santilli / Regione Toscana - SITA)</para>
         <para>New lwgeom_unaryunion method in liblwgeom</para>
         <para>New lwgeom_linemerge method in liblwgeom</para>
         <para>New lwgeom_is_simple method in liblwgeom</para>
@@ -557,7 +557,7 @@
         <title>Bug Fixes</title>
         <para>#3159, do not force a bbox cache on ST_Affine</para>
         <para>#3018, GROUP BY geography sometimes returns duplicate rows</para>
-        <para>#3084, shp2pgsql<para>illegal number format when specific system locale set</para>
+        <para>#3084, shp2pgsql - illegal number format when specific system locale set</para>
         <para>#3094, Malformed GeoJSON inputs crash backend</para>
         <para>#3104, st_asgml introduces random characters in ID field</para>
         <para>#3155, Remove liblwgeom.h on make uninstall</para>
@@ -783,7 +783,7 @@
     <title>Important / Breaking Changes</title>
      <para><ulink url="http://trac.osgeo.org/postgis/ticket/1653">#1653</ulink>, Removed srid parameter from ST_Resample(raster) and variants
                with reference raster no longer apply reference raster's SRID.</para>
-     <para><ulink url="http://trac.osgeo.org/postgis/ticket/1962">#1962</ulink> ST_Segmentize<para>As a result of
+     <para><ulink url="http://trac.osgeo.org/postgis/ticket/1962">#1962</ulink> ST_Segmentize - As a result of
               the introduction of geography support, The construct:
          <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code>
         will result in ambiguous function error</para>
@@ -1227,7 +1227,7 @@
         to <xref linkend="hard_upgrade" /> for details on upgrading.
         Refer to <xref linkend="NewFunctions_2_0" /> for more details and changed/new functions.</para>
        <simplesect>
-	<title>Testers<para>Our unsung heroes</title>
+	<title>Testers - Our unsung heroes</title>
 	<para>We are most indebted to the numerous members in the PostGIS community
 	who were brave enough to test out the new features in this release.
 	No major release can be successful without these folk.</para>
@@ -1235,17 +1235,17 @@
 			and thorough bug reports,
 			and detailed analysis.</para>
 <simplelist>
-			<member>Andrea Peri<para>Lots of testing on topology, checking for correctness</member>
-			<member>Andreas Forø Tollefsen<para>raster testing</member>
-			<member>Chris English<para>topology stress testing loader functions</member>
-			<member>Salvatore Larosa<para>topology robustness testing</member>
-			<member>Brian Hamlin<para>Benchmarking
+			<member>Andrea Peri - Lots of testing on topology, checking for correctness</member>
+			<member>Andreas Forø Tollefsen - raster testing</member>
+			<member>Chris English - topology stress testing loader functions</member>
+			<member>Salvatore Larosa - topology robustness testing</member>
+			<member>Brian Hamlin - Benchmarking
 				(also experimental experimental branches
 					before they are folded into core)
 				, general testing of various pieces
 			   including Tiger and Topology. Testing on various server VMs</member>
-			<member>Mike Pease<para> Tiger geocoder testing<para>very detailed reports of issues</member>
-			<member>Tom van Tilburg<para>raster testing</member>
+			<member>Mike Pease -  Tiger geocoder testing - very detailed reports of issues</member>
+			<member>Tom van Tilburg - raster testing</member>
 </simplelist>
         </simplesect>
         <simplesect>
@@ -1264,12 +1264,12 @@
     for tables created the old way reads (srid, type, dims) constraints
     for geometry columns created with type modifiers
     reads rom column definition</para>
-        <para><ulink url="http://trac.osgeo.org/postgis/ticket/1081">#1081</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1082">#1082</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1084">#1084</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1088">#1088</ulink><para>Mangement functions support typmod
+        <para><ulink url="http://trac.osgeo.org/postgis/ticket/1081">#1081</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1082">#1082</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1084">#1084</ulink>, <ulink url="http://trac.osgeo.org/postgis/ticket/1088">#1088</ulink> - Mangement functions support typmod
     geometry column creation functions now default to typmod creation
     (Regina Obe)</para>
         <para><ulink url="http://trac.osgeo.org/postgis/ticket/1083">#1083</ulink> probe_geometry_columns(), rename_geometry_table_constraints(),
         fix_geometry_columns(); removed
-   <para>now obsolete with geometry_column view
+    - now obsolete with geometry_column view
     (Regina Obe)</para>
         <para><ulink url="http://trac.osgeo.org/postgis/ticket/817">#817</ulink> Renaming old 3D functions to the convention ST_3D (Nicklas Avén)</para>
         <para><ulink url="http://trac.osgeo.org/postgis/ticket/548">#548</ulink> (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null
@@ -1282,7 +1282,7 @@
           <para><ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">Raster support integrated and documented</ulink>
 		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park)
 		(Company developer and funding: University Laval, Deimos Space, CadCorp,  Michigan Tech Research Institute, Azavea, Paragon Corporation, UC Davis Center for Vectorborne Diseases)</para>
-          <para>Making spatial indexes 3D aware<para>in progress (Paul Ramsey, Mark Cave-Ayland)</para>
+          <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
           <para>Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe, Jose Carlos Martinez Llari</para>
           <para>3D relationship and measurement support functions  (Nicklas Avén)</para>
           <para>   ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, ST_3DShortestLine and more...</para>
@@ -1311,9 +1311,9 @@
 	       (Jeff Adams / Azavea, Mark Cave-Ayland)</para>
 	<para>pgsql2shp conversion from predefined list
 	       (Loic Dachary / Mark Cave-Ayland)</para>
-	<para>Shp-pgsql GUI loader<para>support loading multiple files at a time.  (Mark Leslie)</para>
-	<para>Extras<para>upgraded tiger_geocoder from using old TIGER format to use new TIGER shp and file structure format (Stephen Frost)</para>
-	<para>Extras<para>revised tiger_geocoder to work with TIGER census 2010 data, addition of reverse geocoder function, various bug fixes, accuracy enhancements,
+	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>
+	<para>Extras - upgraded tiger_geocoder from using old TIGER format to use new TIGER shp and file structure format (Stephen Frost)</para>
+	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data, addition of reverse geocoder function, various bug fixes, accuracy enhancements,
 	     limit max result return, speed improvements, loading routines.
 	   (Regina Obe, Leo Hsu / Paragon Corporation / funding provided by Hunter Systems Group)</para>
 	<para>Overall Documentation proofreading and corrections. (Kasif Rasul)</para>
@@ -1397,7 +1397,7 @@
 			  <para><ulink url="http://trac.osgeo.org/postgis/ticket/441">#441</ulink> ST_AsGeoJson Bbox on GeometryCollection error (Olivier Courtin)</para>
 			  <para><ulink url="http://trac.osgeo.org/postgis/ticket/411">#411</ulink> Ability to backup invalid geometries (Sando Santilli)
 				 Reported by Regione Toscana</para>
-			  <para><ulink url="http://trac.osgeo.org/postgis/ticket/409">#409</ulink> ST_AsSVG<para>degraded (Olivier Courtin)
+			  <para><ulink url="http://trac.osgeo.org/postgis/ticket/409">#409</ulink> ST_AsSVG - degraded (Olivier Courtin)
 				 Reported by Sdikiy</para>
 			  <para><ulink url="http://trac.osgeo.org/postgis/ticket/373">#373</ulink> Documentation syntax error in hard upgrade (Paul Ramsey)
 				 Reported by psvensso</para>
@@ -1418,7 +1418,7 @@
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/393">#393</ulink>, Loader: Add temporary patch for large DBF files (Maxime Guillaud, Paul Ramsey)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/507">#507</ulink>, Fix wrong OGC URN in GeoJSON and GML output (Olivier Courtin)</para>
            <para>spatial_ref_sys.sql Add datum conversion for projection SRID 3021 (Paul Ramsey)</para>
-           <para>Geography<para>remove crash for case when all geographies are out of the estimate (Paul Ramsey)</para>
+           <para>Geography - remove crash for case when all geographies are out of the estimate (Paul Ramsey)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/469">#469</ulink>, Fix for array_aggregation error (Greg Stark, Paul Ramsey)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/532">#532</ulink>, Temporary geography tables showing up in other user sessions (Paul Ramsey)</para>
            <para><ulink url="http://trac.osgeo.org/postgis/ticket/562">#562</ulink>, ST_Dwithin errors for large geographies (Paul Ramsey)</para>
@@ -2441,8 +2441,8 @@
 
       <para>Release date: 2005/08/08</para>
 
-      <para>Contains some bug fixes<para><emphasis>including a severe one
-      affecting correctness of stored geometries</emphasis><para>and a few
+      <para>Contains some bug fixes - <emphasis>including a severe one
+      affecting correctness of stored geometries</emphasis> - and a few
       improvements.</para>
 
       <simplesect>
