@@ -1,5 +1,5 @@
 PostGIS 2.4.8
-2019/XX/XX
+2019/08/1X
 
   * Bug Fixes and Enhancements *
 
@@ -16,6 +16,7 @@ PostGIS 2.4.8
   - #4437, Handle POINT EMPTY in shape loader/dumper (Paul Ramsey)
   - #4461, ST_AsTWKB doesn't always remove duplicate points (Nik Aven)
   - #4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)
+  - #4420, update path does not exists for address_standardizer extension (Regina Obe)
 
 
 PostGIS 2.4.7
