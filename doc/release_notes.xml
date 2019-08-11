@@ -5,7 +5,7 @@
 
     <sect1>
       <title>Release 2.5.3</title>
-      <para>Release date: 2019/08/10</para>
+      <para>Release date: 2019/08/11</para>
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
       <para>Supported PostgreSQL versions for this release are:
       PostgreSQL 9.4 - PostgreSQL 11, GEOS &gt;= 3.5</para>
