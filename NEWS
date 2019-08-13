@@ -20,6 +20,7 @@ PostGIS 2.5.3
   - #4459, Fix ST_Subdivide crash on intermediate EMPTY (Darafei Praliaskouski)
   - #4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)
   - #4420, update path does not exists for address_standardizer extension (Regina Obe)
+  - #4480, Geography Distance inconsistent with Intersects (Paul Ramsey)
 
 
 PostGIS 2.5.2
