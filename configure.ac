@@ -973,95 +973,91 @@ dnl Detect if protobuf-c installed
 dnl ===========================================================================
 
 CHECK_PROTOBUF=yes
-HAVE_PROTOBUF=no
+HAVE_PROTOBUF=yes
 
 AC_ARG_WITH([protobuf],
 	[AS_HELP_STRING([--without-protobuf], [build without protobuf-c support])],
 	[CHECK_PROTOBUF="$withval"], [])
 
-dnl User didn't turn off protobuf support so...
+dnl User didn't turn OFF protobuf support so...
 if test "$CHECK_PROTOBUF" != "no"; then
 
-    AC_ARG_WITH([protobufdir],
-    	[AS_HELP_STRING([--with-protobufdir=PATH], [specify the protobuf-c installation directory])],
-    	[PROTOBUFDIR="$withval"], [PROTOBUFDIR=])
+	dnl Need to find libdir, incdir and protoc-c compiler
 
-    dnl User specified the directory to find protobuf in, check that and
-    dnl fail if it doesn't work
-    if test ! "x$PROTOBUFDIR" = "x"; then
-    	dnl Make sure that the directory exists
-    	if test "x$PROTOBUFDIR" = "xyes"; then
-    		AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/path/to])
-    	else
-    		AC_MSG_RESULT([Using user-specified protobuf-c directory: $PROTOBUFDIR])
+	CPPFLAGS_SAVE="$CPPFLAGS"
+	LDFLAGS_SAVE="$LDFLAGS"
 
-    		dnl Add the include directory to PROTOBUF_CPPFLAGS
-    		PROTOBUF_CPPFLAGS="-I$PROTOBUFDIR/include"
-    		PROTOBUF_LDFLAGS="-L$PROTOBUFDIR/lib"
-    	fi
+	dnl Try pkgconfig first
+	if test -n "$PKG_CONFIG"; then
+		dnl Ensure libprotobuf-c is of minimum required version
+		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.0.0], [
+				PROTOBUF_CPPFLAGS="$PROTOBUFC_CFLAGS";
+				PROTOBUF_LDFLAGS="$PROTOBUFC_LIBS";
+			], [])
+	fi
 
-        dnl Check that we can find the protobuf/protobuf.h header file
-        CPPFLAGS_SAVE="$CPPFLAGS"
-        CPPFLAGS="$PROTOBUF_CPPFLAGS"
-        AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [],
-		    AC_MSG_ERROR([unable to find $PROTOBUFDIR/include/protobuf-c/protobuf-c.h])
-        )
-        CPPFLAGS="$CPPFLAGS_SAVE"
+	AC_ARG_WITH([protobufdir],
+		[AS_HELP_STRING([--with-protobufdir=PATH], [specify the protobuf-c installation directory])],[
+			if test "x$withval" = "xyes"; then
+				AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/usr/local])
+			else
+				PROTOBUF_LDFLAGS="-L$withval/lib";
+				PROTOBUF_CPPFLAGS="-I$withval/include"
+			fi
+		], [])
 
-        dnl Ensure we can link against libprotobuf-c
-        LIBS_SAVE="$LIBS"
-        LIBS="$PROTOBUF_LDFLAGS"
-        AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [],
-            AC_MSG_ERROR([unable to link protobuf-c from $PROTOBUFDIR/lib])
-        )
-        HAVE_PROTOBUF=yes
-        PROTOBUF_LDFLAGS="-L$PROTOBUFDIR/lib -lprotobuf-c"
-        LIBS="$LIBS_SAVE"
+	AC_ARG_WITH([protobuf-inc],
+		[AS_HELP_STRING([--with-protobuf-inc=PATH], [google/protobuf-c/protobuf-c.h header installation directory])], [
+			PROTOBUF_CPPFLAGS="-I$withval"
+		],[])
 
-    dnl No user-specified protobuf dir, try to find one using pkg-config
-    else
-        if test -z "$PKG_CONFIG"; then
-        	AC_MSG_WARN([Cannot find pkg-config, disabling protobuf support.])
-        	HAVE_PROTOBUF=no
-        else
-        	dnl Ensure libprotobuf-c is of minimum required version
-        	PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
-                    HAVE_PROTOBUF=yes;
-                    PROTOBUF_CPPFLAGS=$PROTOBUFC_CFLAGS;
-                    PROTOBUF_LDFLAGS=$PROTOBUFC_LIBS
-                ],
-                [HAVE_PROTOBUF=no])
-        fi
-    fi
+	AC_ARG_WITH([protobuf-lib],
+		[AS_HELP_STRING([--with-protobuf-lib=PATH], [libprotobuf-c.so/dll/dylib library installation directory])], [
+			PROTOBUF_LDFLAGS="-L$withval"
+		],[])
 
-    if test "$HAVE_PROTOBUF" = "yes"; then
-    	AC_PATH_PROG(PROTOCC, protoc-c)
-    	if test "x$PROTOCC" = "x"; then
-    	  AC_MSG_WARN([Protobuf compiler missing, disabling protobuf support.])
-    	  HAVE_PROTOBUF=no
-    	else
-    	  AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
-    	fi
-    fi
+	if test -n "$PROTOBUF_CPPFLAGS"; then
+		CPPFLAGS="$PROTOBUF_CPPFLAGS"
+	fi
 
-    dnl Get version number for protoc-c
-    if test "$HAVE_PROTOBUF" = "yes"; then
-        AC_PATH_PROG(PROTOCC, protoc-c)
-        PROTOCC_SEMVER=$($PROTOCC --version | grep protobuf-c | awk '{print $2}')
-        AC_MSG_RESULT([checking protoc-c version... $PROTOCC_SEMVER])
-        PROTOCC_VERSION_MAJOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $1}')
-        PROTOCC_VERSION_MINOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $2}')
-        PROTOCC_VERSION_PATCH=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $3}')
-        PROTOCC_VERSION=$(expr 10000 \* $PROTOCC_VERSION_MAJOR + 100 \* $PROTOCC_VERSION_MINOR + $PROTOCC_VERSION_PATCH)
-        if test $PROTOCC_VERSION -ge 10100; then
-            AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf-c is >= 1.1])
-        fi
-    fi
+	if test -n "$PROTOBUF_LDFLAGS"; then
+		LDFLAGS="$PROTOBUF_LDFLAGS"
+	fi
 
+	AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [],
+		AC_MSG_RESULT([unable to find protobuf-c/protobuf-c.h using $CPPFLAGS])
+		HAVE_PROTOBUF=no
+	)
+
+	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [],
+		AC_MSG_RESULT([unable to link protobuf-c using $LDFLAGS])
+		HAVE_PROTOBUF=no
+	)
+
+	CPPFLAGS="$CPPFLAGS_SAVE"
+	LDFLAGS="$LDFLAGS_SAVE"
+
+	AC_PATH_PROG(PROTOCC, protoc-c)
+	if test "x$PROTOCC" = "x"; then
+		AC_MSG_RESULT([Cannot find protoc-c protobuf compiler on the PATH: $PATH])
+		HAVE_PROTOBUF=no
+	else
+		PROTOCC_SEMVER=$($PROTOCC --version | grep protobuf-c | awk '{print $2}')
+		AC_MSG_RESULT([checking protoc-c version... $PROTOCC_SEMVER])
+		PROTOCC_VERSION_MAJOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $1}')
+		PROTOCC_VERSION_MINOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $2}')
+		PROTOCC_VERSION_PATCH=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $3}')
+		PROTOCC_VERSION=$(expr 10000 \* $PROTOCC_VERSION_MAJOR + 100 \* $PROTOCC_VERSION_MINOR + $PROTOCC_VERSION_PATCH)
+		if test $PROTOCC_VERSION -ge 10100; then
+			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf-c is >= 1.1])
+		fi
+	fi
+
+    AC_SUBST([HAVE_PROTOBUF])
     AC_SUBST([PROTOCC_VERSION])
     AC_SUBST([PROTOBUF_CPPFLAGS])
     AC_SUBST([PROTOBUF_LDFLAGS])
-    AC_SUBST([HAVE_PROTOBUF])
+
 fi
 
 
