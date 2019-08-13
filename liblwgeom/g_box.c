@@ -259,7 +259,7 @@ int gbox_init_point3d(const POINT3D *p, GBOX *gbox)
 int gbox_contains_point3d(const GBOX *gbox, const POINT3D *pt)
 {
 	if ( gbox->xmin > pt->x || gbox->ymin > pt->y || gbox->zmin > pt->z ||
-	        gbox->xmax < pt->x || gbox->ymax < pt->y || gbox->zmax < pt->z )
+	     gbox->xmax < pt->x || gbox->ymax < pt->y || gbox->zmax < pt->z )
 	{
 		return LW_FALSE;
 	}

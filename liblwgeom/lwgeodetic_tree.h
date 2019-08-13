@@ -53,6 +53,7 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 double circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID *spheroid, double threshold);
 CIRC_NODE* lwgeom_calculate_circ_tree(const LWGEOM* lwgeom);
 int circ_tree_get_point(const CIRC_NODE* node, POINT2D* pt);
+int circ_tree_get_point_outside(const CIRC_NODE* node, POINT2D* pt);
 
 #endif /* _LWGEODETIC_TREE_H */
 

@@ -17,6 +17,7 @@ PostGIS 2.4.8
   - #4461, ST_AsTWKB doesn't always remove duplicate points (Nicklas Avén)
   - #4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)
   - #4420, update path does not exists for address_standardizer extension (Regina Obe)
+  - #4480, Geography Distance inconsistent with Intersects (Paul Ramsey)
 
 
 PostGIS 2.4.7

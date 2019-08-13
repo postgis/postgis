@@ -1837,7 +1837,7 @@ extern int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox );
 /**
 * Calculate a spherical point that falls outside the geocentric gbox
 */
-void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside);
+int gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside);
 
 /**
 * Create a new gbox with the dimensionality indicated by the flags. Caller
