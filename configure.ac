@@ -993,7 +993,9 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.0.0], [
 				PROTOBUF_CPPFLAGS="$PROTOBUFC_CFLAGS";
 				PROTOBUF_LDFLAGS="$PROTOBUFC_LIBS";
-			], [])
+			], [
+				AC_MSG_RESULT([libprotobuf-c not found in pkg-config])
+			])
 	fi
 
 	AC_ARG_WITH([protobufdir],
@@ -1031,7 +1033,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	)
 
 	dnl confirm that discovered/configured library path works
-	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [],
+	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init], [],
 		AC_MSG_RESULT([unable to link protobuf-c using $LDFLAGS])
 		HAVE_PROTOBUF=no
 	)
@@ -1045,24 +1047,24 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		AC_MSG_RESULT([Cannot find protoc-c protobuf compiler on the PATH: $PATH])
 		HAVE_PROTOBUF=no
 	else
-		PROTOCC_SEMVER=$($PROTOCC --version | grep protobuf-c | awk '{print $2}')
-		AC_MSG_RESULT([checking protoc-c version... $PROTOCC_SEMVER])
-		PROTOCC_VERSION_MAJOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $1}')
-		PROTOCC_VERSION_MINOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $2}')
-		PROTOCC_VERSION_PATCH=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $3}')
-		PROTOCC_VERSION=$(expr 10000 \* $PROTOCC_VERSION_MAJOR + 100 \* $PROTOCC_VERSION_MINOR + $PROTOCC_VERSION_PATCH)
+		PROTOC_SEMVER=$($PROTOCC --version | grep libprotoc | awk '{print $2}')
+		AC_MSG_RESULT([checking protoc version... $PROTOC_SEMVER])
+		PROTOC_VERSION_MAJOR=$(echo "$PROTOC_SEMVER" | tr '.' ' ' | awk '{print $1}')
+		PROTOC_VERSION_MINOR=$(echo "$PROTOC_SEMVER" | tr '.' ' ' | awk '{print $2}')
+		PROTOC_VERSION_PATCH=$(echo "$PROTOC_SEMVER" | tr '.' ' ' | awk '{print $3}')
+		PROTOC_VERSION=$(expr 10000 \* $PROTOC_VERSION_MAJOR + 100 \* $PROTOC_VERSION_MINOR + $PROTOC_VERSION_PATCH)
 	fi
 
 	dnl all tests passed! turn on compile-time defines
     if test "$HAVE_PROTOBUF" = "yes"; then
 		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
-		if test $PROTOCC_VERSION -ge 10100; then
+		if test $PROTOC_VERSION -ge 10100; then
 			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf-c is >= 1.1])
 		fi
 	fi
 
     AC_SUBST([HAVE_PROTOBUF])
-    AC_SUBST([PROTOCC_VERSION])
+    AC_SUBST([PROTOC_VERSION])
     AC_SUBST([PROTOBUF_CPPFLAGS])
     AC_SUBST([PROTOBUF_LDFLAGS])
 
@@ -1646,9 +1648,9 @@ AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 
-AC_MSG_RESULT([  protobuf-c support:   ${HAVE_PROTOBUF}])
+AC_MSG_RESULT([  protobuf support:     ${HAVE_PROTOBUF}])
 if test "x$HAVE_PROTOBUF" = "xyes"; then
-  AC_MSG_RESULT([  protobuf-c version:   ${PROTOCC_SEMVER}])
+  AC_MSG_RESULT([  protobuf version:     ${PROTOC_SEMVER}])
 fi
 
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
