@@ -1024,11 +1024,13 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		LDFLAGS="$PROTOBUF_LDFLAGS"
 	fi
 
+	dnl confirm that discovered/configured include path works
 	AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [],
 		AC_MSG_RESULT([unable to find protobuf-c/protobuf-c.h using $CPPFLAGS])
 		HAVE_PROTOBUF=no
 	)
 
+	dnl confirm that discovered/configured library path works
 	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [],
 		AC_MSG_RESULT([unable to link protobuf-c using $LDFLAGS])
 		HAVE_PROTOBUF=no
@@ -1037,6 +1039,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	CPPFLAGS="$CPPFLAGS_SAVE"
 	LDFLAGS="$LDFLAGS_SAVE"
 
+	dnl confirm that protobuf compiler is available
 	AC_PATH_PROG(PROTOCC, protoc-c)
 	if test "x$PROTOCC" = "x"; then
 		AC_MSG_RESULT([Cannot find protoc-c protobuf compiler on the PATH: $PATH])
@@ -1048,6 +1051,11 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		PROTOCC_VERSION_MINOR=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $2}')
 		PROTOCC_VERSION_PATCH=$(echo "$PROTOCC_SEMVER" | tr '.' ' ' | awk '{print $3}')
 		PROTOCC_VERSION=$(expr 10000 \* $PROTOCC_VERSION_MAJOR + 100 \* $PROTOCC_VERSION_MINOR + $PROTOCC_VERSION_PATCH)
+	fi
+
+	dnl all tests passed! turn on compile-time defines
+    if test "$HAVE_PROTOBUF" = "yes"; then
+		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
 		if test $PROTOCC_VERSION -ge 10100; then
 			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf-c is >= 1.1])
 		fi
