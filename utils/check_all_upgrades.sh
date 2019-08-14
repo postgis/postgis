@@ -1,17 +1,19 @@
 #!/bin/sh
 
-if test -z "$1"; then
-  echo "Usage: $0 [-s] <to_version>" >&2
-  echo "Options:" >&2
-  echo "\t-s  Stop on first failure" >&2
-  exit 1
-fi
 EXIT_ON_FIRST_FAILURE=0
 
 if test "$1" = "-s"; then
   EXIT_ON_FIRST_FAILURE=1
   shift
 fi
+
+if test -z "$1"; then
+  echo "Usage: $0 [-s] <to_version>" >&2
+  echo "Options:" >&2
+  echo "\t-s  Stop on first failure" >&2
+  exit 1
+fi
+
 to_version="$1"
 
 
