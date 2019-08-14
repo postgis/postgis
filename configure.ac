@@ -1003,7 +1003,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 			if test "x$withval" = "xyes"; then
 				AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/usr/local])
 			else
-				PROTOBUF_LDFLAGS="-L$withval/lib";
+				PROTOBUF_LDFLAGS="-L$withval/lib -lprotobuf-c";
 				PROTOBUF_CPPFLAGS="-I$withval/include"
 			fi
 		], [])
@@ -1015,7 +1015,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	AC_ARG_WITH([protobuf-lib],
 		[AS_HELP_STRING([--with-protobuf-lib=PATH], [libprotobuf-c.so/dll/dylib library installation directory])], [
-			PROTOBUF_LDFLAGS="-L$withval"
+			PROTOBUF_LDFLAGS="-L$withval -lprotobuf-c"
 		],[])
 
 	if test -n "$PROTOBUF_CPPFLAGS"; then
