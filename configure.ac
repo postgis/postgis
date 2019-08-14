@@ -1652,7 +1652,7 @@ AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 
 AC_MSG_RESULT([  protobuf support:     ${HAVE_PROTOBUF}])
 if test "x$HAVE_PROTOBUF" = "xyes"; then
-  AC_MSG_RESULT([  protobuf version:     ${PROTOC_SEMVER}])
+  AC_MSG_RESULT([  protobuf version:     ${PROTOC_VERSION}])
 fi
 
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
