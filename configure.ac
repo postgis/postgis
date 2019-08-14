@@ -1042,29 +1042,26 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		AC_DEFINE([HAVE_PROTOBUF_C_VERSION], [1], [Define to 1 if protobuf_c_version() is present]),
 		[])
 
+	AC_MSG_CHECKING([protobuf-c version])
+	AC_PROTOBUFC_VERSION([PROTOC_VERSION])
+	AC_MSG_RESULT([$PROTOC_VERSION])
+
 	CPPFLAGS="$CPPFLAGS_SAVE"
 	LDFLAGS="$LDFLAGS_SAVE"
 
 	dnl confirm that protobuf compiler is available
 	AC_PATH_PROG(PROTOCC, protoc-c)
-	if test "x$PROTOCC" = "x"; then
+	if test -z "$PROTOCC"; then
 		AC_MSG_RESULT([Cannot find protoc-c protobuf compiler on the PATH: $PATH])
 		HAVE_PROTOBUF=no
-	else
-		PROTOC_SEMVER=$($PROTOCC --version | grep libprotoc | awk '{print $2}')
-		AC_MSG_RESULT([checking protoc version... $PROTOC_SEMVER])
-		PROTOC_VERSION_MAJOR=$(echo "$PROTOC_SEMVER" | tr '.' ' ' | awk '{print $1}')
-		PROTOC_VERSION_MINOR=$(echo "$PROTOC_SEMVER" | tr '.' ' ' | awk '{print $2}')
-		PROTOC_VERSION_PATCH=$(echo "$PROTOC_SEMVER" | tr '.' ' ' | awk '{print $3}')
-		PROTOC_VERSION=$(expr 10000 \* $PROTOC_VERSION_MAJOR + 100 \* $PROTOC_VERSION_MINOR + $PROTOC_VERSION_PATCH)
 	fi
 
 	dnl all tests passed! turn on compile-time defines
     if test "$HAVE_PROTOBUF" = "yes"; then
 		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
-		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf])
-		if test $PROTOC_VERSION -ge 20600; then
-			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf is >= 2.6])
+		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf-c])
+		if test $PROTOC_VERSION -ge 1001000; then
+			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf is >= 1.1])
 		fi
 	fi
 

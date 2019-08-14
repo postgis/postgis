@@ -58,7 +58,7 @@ endif
 
 ifeq (@HAVE_PROTOBUF@,yes)
 PROTOBUF_OBJ = vector_tile.pb-c.o
-ifeq ($(shell expr @PROTOC_VERSION@ ">=" 20600),1)
+ifeq ($(shell expr @PROTOC_VERSION@ ">=" 1001000),1)
 PROTOBUF_OBJ += geobuf.pb-c.o
 endif
 UTHASH_INCLUDE = -I../deps/uthash/include
@@ -223,7 +223,7 @@ geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
 ifeq (@HAVE_PROTOBUF@,yes)
 lwgeom_out_mvt.o: vector_tile.pb-c.h
 mvt.o: vector_tile.pb-c.h
-ifeq ($(shell expr $(PROTOC_VERSION) ">=" 20600),1)
+ifeq ($(shell expr $(PROTOC_VERSION) ">=" 1001000),1)
 lwgeom_out_geobuf.o: geobuf.pb-c.h
 geobuf.o: geobuf.pb-c.h
 endif
