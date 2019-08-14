@@ -733,6 +733,4 @@ WITH geom AS (
 	union all
 	SELECT 'TRIANGLE EMPTY'::geometry geom
 )
-select '#4399', 'ST_AsGeobuf', ST_AsGeobuf(geom.*)::text from geom
-union all
 select '#4399', 'ST_AsMVTGeom', ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(0, 0), ST_Point(32, 32)))::text from geom;
