@@ -223,7 +223,7 @@ geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
 ifeq (@HAVE_PROTOBUF@,yes)
 lwgeom_out_mvt.o: vector_tile.pb-c.h
 mvt.o: vector_tile.pb-c.h
-ifeq ($(shell expr $(PROTOCC_VERSION) ">=" 10100),1)
+ifeq ($(shell expr @PROTOCC_VERSION@ ">=" 10100),1)
 lwgeom_out_geobuf.o: geobuf.pb-c.h
 geobuf.o: geobuf.pb-c.h
 endif
