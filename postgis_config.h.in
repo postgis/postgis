@@ -41,6 +41,12 @@
 /* Define to 1 if libprotobuf-c is present */
 #undef HAVE_LIBPROTOBUF
 
+/* Define to 1 if protobuf_c_version() is present */
+#undef HAVE_PROTOBUF_C_VERSION
+
+/* Numeric version number for libprotobuf */
+#undef LIBPROTOBUF_VERSION
+
 /* Define to 1 if libprotobuf-c is >= version 1.1 */
 #undef HAVE_GEOBUF
 
