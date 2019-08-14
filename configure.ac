@@ -1038,6 +1038,10 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		HAVE_PROTOBUF=no
 	)
 
+	AC_CHECK_LIB([protobuf-c], [protobuf_c_version],
+		AC_DEFINE([HAVE_PROTOBUF_C_VERSION], [1], [Define to 1 if protobuf_c_version() is present]),
+		[])
+
 	CPPFLAGS="$CPPFLAGS_SAVE"
 	LDFLAGS="$LDFLAGS_SAVE"
 
