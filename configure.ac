@@ -1058,6 +1058,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	dnl all tests passed! turn on compile-time defines
     if test "$HAVE_PROTOBUF" = "yes"; then
 		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
+		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf])
 		if test $PROTOC_VERSION -ge 20600; then
 			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf is >= 2.6])
 		fi
