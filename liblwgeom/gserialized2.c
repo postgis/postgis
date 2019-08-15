@@ -919,7 +919,8 @@ static size_t gserialized2_from_lwpoly(const LWPOLY *poly, uint8_t *buf)
 			lwerror("Dimensions mismatch in lwpoly");
 
 		pasize = pa->npoints * ptsize;
-		memcpy(loc, getPoint_internal(pa, 0), pasize);
+		if ( pa->npoints > 0 )
+			memcpy(loc, getPoint_internal(pa, 0), pasize);
 		loc += pasize;
 	}
 	return (size_t)(loc - buf);
