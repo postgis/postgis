@@ -88,6 +88,7 @@ WITH foo AS (
 		) AS rast
 	FROM raster_nmapalgebra_in
 	WHERE rid IN (3,4)
+	OFFSET 0
 )
 SELECT
 	rid,
@@ -130,6 +131,7 @@ IF array_to_string(regexp_matches(split_part(version(), ' ', 2), E'([0-9]+)\.([0
 			AND t2.rid BETWEEN 10 AND 18
 			AND ST_Intersects(t1.rast, t2.rast)
 		GROUP BY t1.rid, t1.rast
+		OFFSET 0
 	)
 	SELECT
 		rid,
@@ -156,6 +158,7 @@ IF array_to_string(regexp_matches(split_part(version(), ' ', 2), E'([0-9]+)\.([0
 			AND t2.rid BETWEEN 10 AND 18
 			AND ST_Intersects(t1.rast, t2.rast)
 		GROUP BY t1.rid, t1.rast
+		OFFSET 0
 	)
 	SELECT
 		rid,
@@ -183,6 +186,7 @@ IF array_to_string(regexp_matches(split_part(version(), ' ', 2), E'([0-9]+)\.([0
 			AND t2.rid BETWEEN 10 AND 18
 			AND ST_Intersects(t1.rast, t2.rast)
 		GROUP BY t1.rid, t1.rast
+		OFFSET 0
 	)
 	SELECT
 		rid,
@@ -205,6 +209,7 @@ ELSE
 			AND t2.rid BETWEEN 10 AND 18
 		WHERE t1.rid = 10
 		GROUP BY t1.rid
+		OFFSET 0
 	), bar AS (
 		SELECT
 			t1.rid,
@@ -218,6 +223,7 @@ ELSE
 		FROM raster_nmapalgebra_in t1
 		JOIN foo t2
 			ON t1.rid = t2.rid
+		OFFSET 0
 	)
 	SELECT
 		rid,
@@ -238,6 +244,7 @@ ELSE
 			AND t2.rid BETWEEN 10 AND 18
 		WHERE t1.rid = 14
 		GROUP BY t1.rid
+		OFFSET 0
 	), bar AS (
 		SELECT
 			t1.rid,
@@ -251,6 +258,7 @@ ELSE
 		FROM raster_nmapalgebra_in t1
 		JOIN foo t2
 			ON t1.rid = t2.rid
+		OFFSET 0
 	)
 	SELECT
 		rid,
@@ -271,6 +279,7 @@ ELSE
 			AND t2.rid BETWEEN 10 AND 18
 		WHERE t1.rid = 17
 		GROUP BY t1.rid
+		OFFSET 0
 	), bar AS (
 		SELECT
 			t1.rid,
@@ -285,6 +294,7 @@ ELSE
 		FROM raster_nmapalgebra_in t1
 		JOIN foo t2
 			ON t1.rid = t2.rid
+		OFFSET 0
 	)
 	SELECT
 		rid,
@@ -317,6 +327,7 @@ WITH foo AS (
 	CROSS JOIN raster_nmapalgebra_in t2
 	WHERE t1.rid = 20
 		AND t2.rid = 21
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -337,6 +348,7 @@ WITH foo AS (
 	CROSS JOIN raster_nmapalgebra_in t2
 	WHERE t1.rid = 20
 		AND t2.rid = 22
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -357,6 +369,7 @@ WITH foo AS (
 	CROSS JOIN raster_nmapalgebra_in t2
 	WHERE t1.rid = 21
 		AND t2.rid = 22
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -380,6 +393,7 @@ WITH foo AS (
 	CROSS JOIN raster_nmapalgebra_in t2
 	WHERE t1.rid = 20
 		AND t2.rid = 21
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -403,6 +417,7 @@ WITH foo AS (
 	CROSS JOIN raster_nmapalgebra_in t2
 	WHERE t1.rid = 20
 		AND t2.rid = 22
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -429,6 +444,7 @@ WITH foo AS (
 	WHERE t1.rid = 20
 		AND t2.rid = 21
 		AND t3.rid = 22
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -456,6 +472,7 @@ WITH foo AS (
 	WHERE t1.rid = 20
 		AND t2.rid = 21
 		AND t3.rid = 22
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -483,6 +500,7 @@ WITH foo AS (
 	WHERE t1.rid = 20
 		AND t2.rid = 21
 		AND t3.rid = 22
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -510,6 +528,7 @@ WITH foo AS (
 	WHERE t1.rid = 20
 		AND t2.rid = 21
 		AND t3.rid = 22
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -534,6 +553,7 @@ WITH foo AS (
 	WHERE t1.rid = 20
 		AND t2.rid = 21
 		AND t3.rid = 22
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -557,6 +577,7 @@ WITH foo AS (
 		) AS rast
 	FROM raster_nmapalgebra_in t1
 	WHERE t1.rid = 30
+	OFFSET 0
 )
 SELECT
 	rid,
@@ -573,6 +594,7 @@ WITH foo AS (
 		) AS rast
 	FROM raster_nmapalgebra_in t1
 	WHERE t1.rid = 30
+	OFFSET 0
 )
 SELECT
 	rid,
@@ -590,6 +612,7 @@ WITH foo AS (
 		) AS rast
 	FROM raster_nmapalgebra_in t1
 	WHERE t1.rid = 31
+	OFFSET 0
 )
 SELECT
 	rid,
@@ -610,6 +633,7 @@ WITH foo AS (
 	CROSS JOIN raster_nmapalgebra_in t2
 	WHERE t1.rid = 30
 		AND t2.rid = 31
+	OFFSET 0
 )
 SELECT
 	rid1,
@@ -627,6 +651,7 @@ WITH foo AS (
 		) AS rast
 	FROM raster_nmapalgebra_in t1
 	WHERE t1.rid = 30
+	OFFSET 0
 )
 SELECT
 	rid,
@@ -643,6 +668,7 @@ WITH foo AS (
 		) AS rast
 	FROM raster_nmapalgebra_in t1
 	WHERE t1.rid = 30
+	OFFSET 0
 )
 SELECT
 	rid,
