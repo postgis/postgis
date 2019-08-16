@@ -19,6 +19,7 @@ PostGIS 2.4.8
   - #4420, update path does not exists for address_standardizer extension (Regina Obe)
   - #4480, Geography Distance inconsistent with Intersects (Paul Ramsey)
   - #4481, Improve libprotobuf detection for old systems (Paul Ramsey)
+  - #4475, Avoid reading into empty ptarra (Paul Ramsey)
 
 
 PostGIS 2.4.7
