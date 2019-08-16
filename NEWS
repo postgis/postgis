@@ -12,6 +12,7 @@ PostGIS 2.3.10
   - #4209, Handle NULL geometry values in pgsql2shp (Paul Ramsey)
   - #4437, Handle POINT EMPTY in shape loader/dumper (Paul Ramsey)
   - #4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)
+  - #4475, Avoid reading into empty ptarray (Paul Ramsey)
 
 PostGIS 2.3.9
 2019/03/11
