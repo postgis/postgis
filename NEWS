@@ -22,6 +22,7 @@ PostGIS 2.5.3
   - #4420, update path does not exists for address_standardizer extension (Regina Obe)
   - #4480, Geography Distance inconsistent with Intersects (Paul Ramsey)
   - #4481, Improve libprotobuf detection for old systems (Paul Ramsey)
+  - #4475, Avoid reading into empty ptarray (Paul Ramsey)
 
 
 PostGIS 2.5.2
