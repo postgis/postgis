@@ -329,8 +329,14 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 		for (int i = 0; i < nGeoms; ++i)
 		{
 			json_object *poObjGeom = json_object_array_get_idx(poObjGeoms, i);
-			geom = (LWGEOM *)lwcollection_add_lwgeom((LWCOLLECTION *)geom,
-								 parse_geojson(poObjGeom, hasz));
+			LWGEOM *t = parse_geojson(poObjGeom, hasz);
+			if (t)
+				geom = (LWGEOM *)lwcollection_add_lwgeom((LWCOLLECTION *)geom, t);
+			else
+			{
+				lwgeom_free(geom);
+				return NULL;
+			}
 		}
 	}
 
