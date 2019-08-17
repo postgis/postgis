@@ -609,9 +609,6 @@ lw_dist2d_point_line(LWPOINT *point, LWLINE *line, DISTPTS *dl)
 	return lw_dist2d_pt_ptarray(p, line->points, dl);
 }
 
-/**
-point to line calculation
-*/
 int
 lw_dist2d_point_tri(LWPOINT *point, LWTRIANGLE *tri, DISTPTS *dl)
 {
@@ -688,7 +685,6 @@ lw_dist2d_point_curvepoly(LWPOINT *point, LWCURVEPOLY *poly, DISTPTS *dl)
 	 * Otherwise, distance = pt to ring distance.
 	 */
 	for (uint32_t i = 1; i < poly->nrings; i++)
-
 		if (lwgeom_contains_point(poly->rings[i], p) == LW_INSIDE)
 			return lw_dist2d_recursive((LWGEOM *)point, poly->rings[i], dl);
 
@@ -1968,10 +1964,9 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 	{
 		if ((lw_dist2d_pt_seg(A, C, D, dl)) && (lw_dist2d_pt_seg(B, C, D, dl)))
 		{
-			dl->twisted *= -1; /*here we change the order of inputted geometries and that
-								 we  notice by changing sign on dl->twisted*/
-			return ((lw_dist2d_pt_seg(C, A, B, dl)) &&
-				(lw_dist2d_pt_seg(D, A, B, dl))); /*if all is successful we return true*/
+			/* change the order of inputted geometries and that we notice by changing sign on dl->twisted*/
+			dl->twisted *= -1;
+			return ((lw_dist2d_pt_seg(C, A, B, dl)) && (lw_dist2d_pt_seg(D, A, B, dl)));
 		}
 		else
 			return LW_FALSE; /* if any of the calls to lw_dist2d_pt_seg goes wrong we return false*/
@@ -1984,18 +1979,18 @@ lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const PO
 	{
 		if ((lw_dist2d_pt_seg(A, C, D, dl)) && (lw_dist2d_pt_seg(B, C, D, dl)))
 		{
-			dl->twisted *= -1; /*here we change the order of inputted geometries and that
-								 we  notice by changing sign on dl->twisted*/
-			return ((lw_dist2d_pt_seg(C, A, B, dl)) &&
-				(lw_dist2d_pt_seg(D, A, B, dl))); /*if all is successful we return true*/
+			/* change the order of inputted geometries and that we notice by changing sign on dl->twisted*/
+			dl->twisted *= -1;
+			return ((lw_dist2d_pt_seg(C, A, B, dl)) && (lw_dist2d_pt_seg(D, A, B, dl)));
 		}
 		else
 			return LW_FALSE; /* if any of the calls to lw_dist2d_pt_seg goes wrong we return false*/
 	}
 	else
 	{
-		if (dl->mode == DIST_MIN) /*If there is intersection we identify the intersection point and return it
-					     but only if we are looking for mindistance*/
+		/* If there is intersection we identify the intersection point and return it but only if we are looking
+		 * for mindistance */
+		if (dl->mode == DIST_MIN)
 		{
 			POINT2D theP;
 
