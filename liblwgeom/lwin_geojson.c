@@ -315,13 +315,13 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz)
 static inline LWGEOM *
 parse_geojson_geometrycollection(json_object *geojson, int *hasz)
 {
-	LWGEOM *geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, 0, 1, 0);
 	json_object *poObjGeoms = findMemberByName(geojson, "geometries");
 	if (!poObjGeoms)
 	{
 		lwerror("Unable to find 'geometries' in GeoJSON string");
 		return NULL;
 	}
+	LWGEOM *geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, 0, 1, 0);
 
 	if (json_type_array == json_object_get_type(poObjGeoms))
 	{
