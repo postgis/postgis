@@ -107,9 +107,8 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 {
 	POINT4D pt = {0, 0, 0, 0};
 
-	if (json_type_array == json_object_get_type(poObj))
+	if (json_object_get_type(poObj) == json_type_array)
 	{
-
 		json_object *poObjCoord = NULL;
 		const int nSize = json_object_array_length(poObj);
 		if (nSize < 2)
@@ -147,6 +146,8 @@ static inline LWGEOM *
 parse_geojson_point(json_object *geojson, int *hasz)
 {
 	json_object *coords = parse_coordinates(geojson);
+	if (!coords)
+		return NULL;
 	POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
 	parse_geojson_coord(coords, hasz, pa);
 	return (LWGEOM *)lwpoint_construct(0, NULL, pa);
@@ -156,6 +157,8 @@ static inline LWGEOM *
 parse_geojson_linestring(json_object *geojson, int *hasz)
 {
 	json_object *points = parse_coordinates(geojson);
+	if (!points)
+		return NULL;
 	POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
 	const int nPoints = json_object_array_length(points);
 	for (int i = 0; i < nPoints; i++)
@@ -169,8 +172,9 @@ parse_geojson_linestring(json_object *geojson, int *hasz)
 static inline LWPOLY *
 parse_geojson_poly_rings(json_object *rings, int *hasz)
 {
-	if (!rings)
+	if (!rings || json_object_get_type(rings) != json_type_array)
 		return NULL;
+
 	int nRings = json_object_array_length(rings);
 
 	/* No rings => POLYGON EMPTY */
@@ -186,6 +190,10 @@ parse_geojson_poly_rings(json_object *rings, int *hasz)
 		json_object *points = json_object_array_get_idx(rings, i);
 		if (!points || json_object_get_type(points) != json_type_array)
 		{
+			int k;
+			for (k = 0; k < o; k++)
+				ptarray_free(ppa[k]);
+			lwfree(ppa);
 			lwerror("The 'coordinates' in GeoJSON ring are not an array");
 			return NULL;
 		}
@@ -201,21 +209,22 @@ parse_geojson_poly_rings(json_object *rings, int *hasz)
 				continue;
 		}
 
-		ppa[o++] = ptarray_construct_empty(1, 0, 1);
+		ppa[o] = ptarray_construct_empty(1, 0, 1);
 		for (int j = 0; j < nPoints; j++)
 		{
 			json_object *coords = NULL;
 			coords = json_object_array_get_idx(points, j);
-			if (LW_FAILURE == parse_geojson_coord(coords, hasz, ppa[i]))
+			if (LW_FAILURE == parse_geojson_coord(coords, hasz, ppa[o]))
 			{
 				int k;
-				for (k = 0; k < o; k++)
+				for (k = 0; k <= o; k++)
 					ptarray_free(ppa[k]);
 				lwfree(ppa);
 				lwerror("The 'coordinates' in GeoJSON are not sufficiently nested");
 				return NULL;
 			}
 		}
+		o++;
 	}
 
 	/* All the rings were empty! */
@@ -238,6 +247,8 @@ static inline LWGEOM *
 parse_geojson_multipoint(json_object *geojson, int *hasz)
 {
 	json_object *points = parse_coordinates(geojson);
+	if (!points)
+		return NULL;
 	LWMPOINT *geom = (LWMPOINT *)lwcollection_construct_empty(MULTIPOINTTYPE, 0, 1, 0);
 
 	const int nPoints = json_object_array_length(points);
@@ -255,21 +266,23 @@ parse_geojson_multipoint(json_object *geojson, int *hasz)
 static inline LWGEOM *
 parse_geojson_multilinestring(json_object *geojson, int *hasz)
 {
-	json_object *poObjLines = parse_coordinates(geojson);
+	json_object *mls = parse_coordinates(geojson);
+	if (!mls)
+		return NULL;
 	LWMLINE *geom = (LWMLINE *)lwcollection_construct_empty(MULTILINETYPE, 0, 1, 0);
-	const int nLines = json_object_array_length(poObjLines);
+	const int nLines = json_object_array_length(mls);
 	for (int i = 0; i < nLines; ++i)
 	{
 		POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
-		json_object *poObjLine = json_object_array_get_idx(poObjLines, i);
+		json_object *coords = json_object_array_get_idx(mls, i);
 
-		if (json_type_array == json_object_get_type(poObjLine))
+		if (json_type_array == json_object_get_type(coords))
 		{
-			const int nPoints = json_object_array_length(poObjLine);
+			const int nPoints = json_object_array_length(coords);
 			for (int j = 0; j < nPoints; ++j)
 			{
-				json_object *coords = json_object_array_get_idx(poObjLine, j);
-				parse_geojson_coord(coords, hasz, pa);
+				json_object *coord = json_object_array_get_idx(coords, j);
+				parse_geojson_coord(coord, hasz, pa);
 			}
 
 			geom = lwmline_add_lwline(geom, lwline_construct(0, NULL, pa));
@@ -282,15 +295,18 @@ parse_geojson_multilinestring(json_object *geojson, int *hasz)
 static inline LWGEOM *
 parse_geojson_multipolygon(json_object *geojson, int *hasz)
 {
-	LWGEOM *geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, 0, 1, 0);
 	json_object *polys = parse_coordinates(geojson);
+	if (!polys)
+		return NULL;
+	LWGEOM *geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, 0, 1, 0);
 	int nPolys = json_object_array_length(polys);
 
 	for (int i = 0; i < nPolys; ++i)
 	{
 		json_object *rings = json_object_array_get_idx(polys, i);
 		LWPOLY *poly = parse_geojson_poly_rings(rings, hasz);
-		geom = (LWGEOM *)lwmpoly_add_lwpoly((LWMPOLY *)geom, poly);
+		if (poly)
+			geom = (LWGEOM *)lwmpoly_add_lwpoly((LWMPOLY *)geom, poly);
 	}
 
 	return geom;
@@ -419,6 +435,8 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	int hasz = LW_FALSE;
 	LWGEOM *lwgeom = parse_geojson(poObj, &hasz);
 	json_object_put(poObj);
+	if (!lwgeom)
+		return NULL;
 
 	if (!hasz)
 	{

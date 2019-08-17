@@ -84,6 +84,8 @@ ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 int
 ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 {
+	if (!pa || !p)
+		return LW_FAILURE;
 	size_t point_size = ptarray_point_size(pa);
 	LWDEBUGF(5,"pa = %p; p = %p; where = %d", pa, p, where);
 	LWDEBUGF(5,"pa->npoints = %d; pa->maxpoints = %d", pa->npoints, pa->maxpoints);
@@ -144,7 +146,6 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, uint32_t where)
 int
 ptarray_append_point(POINTARRAY *pa, const POINT4D *pt, int repeated_points)
 {
-
 	/* Check for pathology */
 	if( ! pa || ! pt )
 	{
