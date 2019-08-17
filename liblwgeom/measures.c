@@ -417,7 +417,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return lw_dist2d_point_tri((LWPOINT *)lwg2, (LWTRIANGLE *)lwg1, dl);
 		case LINETYPE:
 			dl->twisted = -1;
-			return lw_dist2d_line_tri((LWLINE *)lwg1, (LWTRIANGLE *)lwg2, dl);
+			return lw_dist2d_line_tri((LWLINE *)lwg2, (LWTRIANGLE *)lwg1, dl);
 		case TRIANGLETYPE:
 			return lw_dist2d_tri_tri((LWTRIANGLE *)lwg1, (LWTRIANGLE *)lwg2, dl);
 		case POLYGONTYPE:
@@ -444,7 +444,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 			return lw_dist2d_line_circstring((LWLINE *)lwg2, (LWCIRCSTRING *)lwg1, dl);
 		case TRIANGLETYPE:
 			dl->twisted = -1;
-			return lw_dist2d_tri_circstring((LWTRIANGLE *)lwg1, (LWCIRCSTRING *)lwg2, dl);
+			return lw_dist2d_tri_circstring((LWTRIANGLE *)lwg2, (LWCIRCSTRING *)lwg1, dl);
 		case POLYGONTYPE:
 			return lw_dist2d_circstring_poly((LWCIRCSTRING *)lwg1, (LWPOLY *)lwg2, dl);
 		case CIRCSTRINGTYPE:
@@ -466,7 +466,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 		case LINETYPE:
 			return lw_dist2d_line_poly((LWLINE *)lwg2, (LWPOLY *)lwg1, dl);
 		case TRIANGLETYPE:
-			return lw_dist2d_tri_poly((LWTRIANGLE *)lwg1, (LWPOLY *)lwg2, dl);
+			return lw_dist2d_tri_poly((LWTRIANGLE *)lwg2, (LWPOLY *)lwg1, dl);
 		case CIRCSTRINGTYPE:
 			return lw_dist2d_circstring_poly((LWCIRCSTRING *)lwg2, (LWPOLY *)lwg1, dl);
 		case POLYGONTYPE:
@@ -490,7 +490,7 @@ lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS 
 		case LINETYPE:
 			return lw_dist2d_line_curvepoly((LWLINE *)lwg2, (LWCURVEPOLY *)lwg1, dl);
 		case TRIANGLETYPE:
-			return lw_dist2d_tri_curvepoly((LWTRIANGLE *)lwg1, (LWCURVEPOLY *)lwg2, dl);
+			return lw_dist2d_tri_curvepoly((LWTRIANGLE *)lwg2, (LWCURVEPOLY *)lwg1, dl);
 		case POLYGONTYPE:
 			return lw_dist2d_poly_curvepoly((LWPOLY *)lwg2, (LWCURVEPOLY *)lwg1, dl);
 		case CIRCSTRINGTYPE:
@@ -615,8 +615,17 @@ point to line calculation
 int
 lw_dist2d_point_tri(LWPOINT *point, LWTRIANGLE *tri, DISTPTS *dl)
 {
-	const POINT2D *p = getPoint2d_cp(point->point, 0);
-	return lw_dist2d_pt_ptarray(p, tri->points, dl);
+	const POINT2D *pt = getPoint2d_cp(point->point, 0);
+	/* Is point inside triangle? */
+	if (dl->mode == DIST_MIN && ptarray_contains_point(tri->points, pt) != LW_OUTSIDE)
+	{
+		dl->distance = 0.0;
+		dl->p1.x = dl->p2.x = pt->x;
+		dl->p1.y = dl->p2.y = pt->y;
+		return LW_TRUE;
+	}
+
+	return lw_dist2d_pt_ptarray(pt, tri->points, dl);
 }
 
 int
@@ -701,9 +710,17 @@ lw_dist2d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS *dl)
 int
 lw_dist2d_line_tri(LWLINE *line, LWTRIANGLE *tri, DISTPTS *dl)
 {
-	POINTARRAY *pa1 = line->points;
-	POINTARRAY *pa2 = tri->points;
-	return lw_dist2d_ptarray_ptarray(pa1, pa2, dl);
+	const POINT2D *pt = getPoint2d_cp(line->points, 0);
+	/* Is there a point inside triangle? */
+	if (dl->mode == DIST_MIN && ptarray_contains_point(tri->points, pt) != LW_OUTSIDE)
+	{
+		dl->distance = 0.0;
+		dl->p1.x = dl->p2.x = pt->x;
+		dl->p1.y = dl->p2.y = pt->y;
+		return LW_TRUE;
+	}
+
+	return lw_dist2d_ptarray_ptarray(line->points, tri->points, dl);
 }
 
 int
@@ -797,6 +814,24 @@ lw_dist2d_tri_tri(LWTRIANGLE *tri1, LWTRIANGLE *tri2, DISTPTS *dl)
 {
 	POINTARRAY *pa1 = tri1->points;
 	POINTARRAY *pa2 = tri2->points;
+	const POINT2D *pt = getPoint2d_cp(pa2, 0);
+	if (dl->mode == DIST_MIN && ptarray_contains_point(pa1, pt) != LW_OUTSIDE)
+	{
+		dl->distance = 0.0;
+		dl->p1.x = dl->p2.x = pt->x;
+		dl->p1.y = dl->p2.y = pt->y;
+		return LW_TRUE;
+	}
+
+	pt = getPoint2d_cp(pa1, 0);
+	if (dl->mode == DIST_MIN && ptarray_contains_point(pa2, pt) != LW_OUTSIDE)
+	{
+		dl->distance = 0.0;
+		dl->p1.x = dl->p2.x = pt->x;
+		dl->p1.y = dl->p2.y = pt->y;
+		return LW_TRUE;
+	}
+
 	return lw_dist2d_ptarray_ptarray(pa1, pa2, dl);
 }
 
@@ -806,20 +841,27 @@ lw_dist2d_tri_poly(LWTRIANGLE *tri, LWPOLY *poly, DISTPTS *dl)
 	POINTARRAY *pa = tri->points;
 	const POINT2D *pt = getPoint2d_cp(pa, 0);
 
-	/* Triangle has a pount outside poly. Check distance to outer ring only. */
+	/* If we are looking for maxdistance, just check the outer rings.*/
+	if (dl->mode == DIST_MAX)
+		return lw_dist2d_ptarray_ptarray(pa, poly->rings[0], dl);
+
+	/* Triangle has a point outside poly. Check distance to outer ring only. */
 	if (ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE)
 	{
-		if (lw_dist2d_ptarray_ptarray(pa, poly->rings[0], dl))
+		if (!lw_dist2d_ptarray_ptarray(pa, poly->rings[0], dl))
+			return LW_FALSE;
+
+		/* just a check if the answer is already given */
+		if (dl->distance <= dl->tolerance)
 			return LW_TRUE;
+
 		/* Maybe poly is inside triangle? */
-		if (ptarray_contains_point(pa, getPoint2d_cp(poly->rings[0], 0)) != LW_OUTSIDE)
+		const POINT2D *pt2 = getPoint2d_cp(poly->rings[0], 0);
+		if (ptarray_contains_point(pa, pt2) != LW_OUTSIDE)
 		{
-			if (dl->mode == DIST_MIN)
-			{
-				dl->distance = 0.0;
-				dl->p1.x = dl->p2.x = pt->x;
-				dl->p1.y = dl->p2.y = pt->y;
-			}
+			dl->distance = 0.0;
+			dl->p1.x = dl->p2.x = pt2->x;
+			dl->p1.y = dl->p2.y = pt2->y;
 			return LW_TRUE;
 		}
 	}
@@ -840,12 +882,9 @@ lw_dist2d_tri_poly(LWTRIANGLE *tri, LWPOLY *poly, DISTPTS *dl)
 			return LW_TRUE;
 
 	/* Not in hole, so inside polygon */
-	if (dl->mode == DIST_MIN)
-	{
-		dl->distance = 0.0;
-		dl->p1.x = dl->p2.x = pt->x;
-		dl->p1.y = dl->p2.y = pt->y;
-	}
+	dl->distance = 0.0;
+	dl->p1.x = dl->p2.x = pt->x;
+	dl->p1.y = dl->p2.y = pt->y;
 	return LW_TRUE;
 }
 static const POINT2D *
@@ -919,7 +958,7 @@ int
 lw_dist2d_tri_circstring(LWTRIANGLE *tri, LWCIRCSTRING *line, DISTPTS *dl)
 {
 	const POINT2D *pt = lw_curvering_getfirstpoint2d_cp((LWGEOM *)line);
-	if (ptarray_contains_point(tri->points, pt) != LW_OUTSIDE)
+	if (ptarray_contains_point(tri->points, pt) != LW_OUTSIDE && dl->mode == DIST_MIN)
 	{
 		dl->distance = 0.0;
 		dl->p1.x = dl->p2.x = pt->x;
