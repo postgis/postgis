@@ -41,22 +41,13 @@
 LWLINE *
 lwline_construct(int32_t srid, GBOX *bbox, POINTARRAY *points)
 {
-	LWLINE *result;
-	result = (LWLINE*) lwalloc(sizeof(LWLINE));
-
-	LWDEBUG(2, "lwline_construct called.");
-
+	LWLINE *result = (LWLINE *)lwalloc(sizeof(LWLINE));
 	result->type = LINETYPE;
-
 	result->flags = points->flags;
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
-
-	LWDEBUGF(3, "lwline_construct type=%d", result->type);
-
 	result->srid = srid;
 	result->points = points;
 	result->bbox = bbox;
-
 	return result;
 }
 

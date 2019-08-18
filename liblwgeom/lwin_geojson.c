@@ -298,6 +298,12 @@ parse_geojson_multilinestring(json_object *geojson, int *hasz)
 			}
 			geom = lwmline_add_lwline(geom, lwline_construct(0, NULL, pa));
 		}
+		else
+		{
+			lwmline_free(geom);
+			ptarray_free(pa);
+			return NULL;
+		}
 	}
 	return (LWGEOM *)geom;
 }

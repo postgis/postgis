@@ -315,14 +315,14 @@ ptarray_construct_copy_data(char hasz, char hasm, uint32_t npoints, const uint8_
 	return pa;
 }
 
-void ptarray_free(POINTARRAY *pa)
+void
+ptarray_free(POINTARRAY *pa)
 {
-	if(pa)
+	if (pa)
 	{
-		if(pa->serialized_pointlist && ( ! FLAGS_GET_READONLY(pa->flags) ) )
+		if (pa->serialized_pointlist && (!FLAGS_GET_READONLY(pa->flags)))
 			lwfree(pa->serialized_pointlist);
 		lwfree(pa);
-		LWDEBUG(5,"Freeing a PointArray");
 	}
 }
 
