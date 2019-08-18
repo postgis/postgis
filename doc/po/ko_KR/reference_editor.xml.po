@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-09-16 19:07+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:00+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -63,20 +63,15 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>position</parameter></paramdef>"
 
 #. Tag: title
-#: reference_editor.xml:29 reference_editor.xml:88 reference_editor.xml:146
-#: reference_editor.xml:192 reference_editor.xml:235 reference_editor.xml:278
-#: reference_editor.xml:319 reference_editor.xml:369 reference_editor.xml:408
-#: reference_editor.xml:465 reference_editor.xml:509 reference_editor.xml:538
-#: reference_editor.xml:595 reference_editor.xml:640 reference_editor.xml:683
-#: reference_editor.xml:734 reference_editor.xml:776 reference_editor.xml:811
-#: reference_editor.xml:883 reference_editor.xml:987 reference_editor.xml:1020
-#: reference_editor.xml:1068 reference_editor.xml:1117
-#: reference_editor.xml:1164 reference_editor.xml:1213
-#: reference_editor.xml:1289 reference_editor.xml:1357
-#: reference_editor.xml:1400 reference_editor.xml:1444
-#: reference_editor.xml:1521 reference_editor.xml:1599
-#: reference_editor.xml:1758 reference_editor.xml:1864
-#: reference_editor.xml:1916
+#: reference_editor.xml:29 reference_editor.xml:69 reference_editor.xml:120
+#: reference_editor.xml:162 reference_editor.xml:208 reference_editor.xml:251
+#: reference_editor.xml:294 reference_editor.xml:335 reference_editor.xml:385
+#: reference_editor.xml:424 reference_editor.xml:481 reference_editor.xml:525
+#: reference_editor.xml:554 reference_editor.xml:611 reference_editor.xml:656
+#: reference_editor.xml:695 reference_editor.xml:730 reference_editor.xml:802
+#: reference_editor.xml:906 reference_editor.xml:939 reference_editor.xml:978
+#: reference_editor.xml:1021 reference_editor.xml:1088
+#: reference_editor.xml:1166 reference_editor.xml:1304
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -92,40 +87,32 @@ msgstr ""
 "다. 세 번째 파라미터는 생략하거나, 추가 작업에 대해 -1로 설정할 수 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:34 reference_editor.xml:647 reference_editor.xml:990
-#: reference_editor.xml:1405
+#: reference_editor.xml:34 reference_editor.xml:663 reference_editor.xml:909
+#: reference_editor.xml:1026
 #, no-c-format
 msgid "Availability: 1.1.0"
 msgstr "1.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:35 reference_editor.xml:110 reference_editor.xml:157
-#: reference_editor.xml:200 reference_editor.xml:242 reference_editor.xml:324
-#: reference_editor.xml:377 reference_editor.xml:418 reference_editor.xml:473
-#: reference_editor.xml:514 reference_editor.xml:553 reference_editor.xml:604
-#: reference_editor.xml:991 reference_editor.xml:1025 reference_editor.xml:1077
-#: reference_editor.xml:1127 reference_editor.xml:1175
-#: reference_editor.xml:1226 reference_editor.xml:1312
-#: reference_editor.xml:1408 reference_editor.xml:1552
-#: reference_editor.xml:1872 reference_editor.xml:1929
+#: reference_editor.xml:35 reference_editor.xml:173 reference_editor.xml:216
+#: reference_editor.xml:258 reference_editor.xml:340 reference_editor.xml:393
+#: reference_editor.xml:434 reference_editor.xml:489 reference_editor.xml:530
+#: reference_editor.xml:569 reference_editor.xml:620 reference_editor.xml:910
+#: reference_editor.xml:944 reference_editor.xml:1029 reference_editor.xml:1119
+#: reference_editor.xml:1314
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: title
-#: reference_editor.xml:39 reference_editor.xml:116 reference_editor.xml:162
-#: reference_editor.xml:205 reference_editor.xml:248 reference_editor.xml:289
-#: reference_editor.xml:330 reference_editor.xml:424 reference_editor.xml:558
-#: reference_editor.xml:610 reference_editor.xml:653 reference_editor.xml:705
-#: reference_editor.xml:749 reference_editor.xml:784 reference_editor.xml:829
-#: reference_editor.xml:954 reference_editor.xml:995 reference_editor.xml:1030
-#: reference_editor.xml:1086 reference_editor.xml:1133
-#: reference_editor.xml:1182 reference_editor.xml:1234
-#: reference_editor.xml:1320 reference_editor.xml:1373
-#: reference_editor.xml:1412 reference_editor.xml:1460
-#: reference_editor.xml:1557 reference_editor.xml:1635
-#: reference_editor.xml:1798 reference_editor.xml:1877
-#: reference_editor.xml:1935
+#: reference_editor.xml:39 reference_editor.xml:91 reference_editor.xml:135
+#: reference_editor.xml:178 reference_editor.xml:221 reference_editor.xml:264
+#: reference_editor.xml:305 reference_editor.xml:346 reference_editor.xml:440
+#: reference_editor.xml:574 reference_editor.xml:626 reference_editor.xml:668
+#: reference_editor.xml:703 reference_editor.xml:748 reference_editor.xml:873
+#: reference_editor.xml:914 reference_editor.xml:949 reference_editor.xml:994
+#: reference_editor.xml:1033 reference_editor.xml:1124
+#: reference_editor.xml:1202
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -171,19 +158,14 @@ msgstr ""
 "LINESTRING(0 0 1,1 1 1,1 2 3)"
 
 #. Tag: title
-#: reference_editor.xml:43 reference_editor.xml:123 reference_editor.xml:169
-#: reference_editor.xml:212 reference_editor.xml:255 reference_editor.xml:296
-#: reference_editor.xml:337 reference_editor.xml:382 reference_editor.xml:433
-#: reference_editor.xml:478 reference_editor.xml:564 reference_editor.xml:616
-#: reference_editor.xml:658 reference_editor.xml:710 reference_editor.xml:754
-#: reference_editor.xml:789 reference_editor.xml:834 reference_editor.xml:963
-#: reference_editor.xml:999 reference_editor.xml:1093 reference_editor.xml:1140
-#: reference_editor.xml:1189 reference_editor.xml:1241
-#: reference_editor.xml:1327 reference_editor.xml:1378
-#: reference_editor.xml:1416 reference_editor.xml:1468
-#: reference_editor.xml:1564 reference_editor.xml:1710
-#: reference_editor.xml:1832 reference_editor.xml:1890
-#: reference_editor.xml:1942
+#: reference_editor.xml:43 reference_editor.xml:96 reference_editor.xml:140
+#: reference_editor.xml:185 reference_editor.xml:228 reference_editor.xml:271
+#: reference_editor.xml:312 reference_editor.xml:353 reference_editor.xml:398
+#: reference_editor.xml:449 reference_editor.xml:494 reference_editor.xml:580
+#: reference_editor.xml:632 reference_editor.xml:673 reference_editor.xml:708
+#: reference_editor.xml:753 reference_editor.xml:882 reference_editor.xml:918
+#: reference_editor.xml:999 reference_editor.xml:1037 reference_editor.xml:1131
+#: reference_editor.xml:1277 reference_editor.xml:1327
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -195,265 +177,226 @@ msgid ", <xref linkend=\"ST_SetPoint\"/>"
 msgstr ", <xref linkend=\"ST_SetPoint\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:50
+#: reference_editor.xml:51
 #, no-c-format
-msgid "ST_Affine"
-msgstr "ST_Affine"
+msgid "ST_CollectionExtract"
+msgstr "ST_CollectionExtract"
 
 #. Tag: refpurpose
-#: reference_editor.xml:52
-#, no-c-format
-msgid "Apply a 3d affine transformation to a geometry."
-msgstr "도형에 3차원 아핀 변환을 적용합니다."
-
-#. Tag: funcsynopsis
-#: reference_editor.xml:56
+#: reference_editor.xml:53
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_Affine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>a</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>b</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>c</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>d</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>e</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>f</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>h</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>i</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>xoff</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>yoff</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>zoff</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Affine</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>a</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>b</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>d</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>e</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>xoff</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>yoff</"
-"parameter></paramdef> </funcprototype>"
+"Given a (multi)geometry, return a (multi)geometry consisting only of "
+"elements of the specified type."
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Affine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>a</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>b</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>c</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>d</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>e</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>f</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>h</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>i</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>xoff</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>yoff</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>zoff</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Affine</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>a</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>b</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>d</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>e</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>xoff</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>yoff</"
-"parameter></paramdef> </funcprototype>"
-
-#. Tag: para
-#: reference_editor.xml:90
-#, no-c-format
-msgid ""
-"Applies a 3d affine transformation to the geometry to do things like "
-"translate, rotate, scale in one step."
-msgstr ""
-"변형, 회전, 축척 변경 등과 같은 작업을 한번에 처리하기 위해 도형에 3차원 아"
-"핀 변환을 적용합니다."
-
-#. Tag: para
-#: reference_editor.xml:91
-#, no-c-format
-msgid ""
-"Version 1: The call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, "
-"i, xoff, yoff, zoff) </programlisting> represents the transformation matrix "
-"<programlisting>/ a  b  c  xoff \\\n"
-"| d  e  f  yoff |\n"
-"| g  h  i  zoff |\n"
-"\\ 0  0  0     1 /</programlisting> and the vertices are transformed as "
-"follows: <programlisting>x' = a*x + b*y + c*z + xoff\n"
-"y' = d*x + e*y + f*z + yoff\n"
-"z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale "
-"functions below are expressed via such an affine transformation."
-msgstr ""
-"버전 1: <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, "
-"yoff, zoff) </programlisting> 함수 호출은 변환 매트릭스 <programlisting>/ a  "
-"b  c  xoff \\\n"
-"| d  e  f  yoff |\n"
-"| g  h  i  zoff |\n"
-"\\ 0  0  0     1 /</programlisting> 를 표현하며, 꼭짓점은 다음과 같이 변환됩"
-"니다: <programlisting>x' = a*x + b*y + c*z + xoff\n"
-"y' = d*x + e*y + f*z + yoff\n"
-"z' = g*x + h*y + i*z + zoff</programlisting> 이 단원에 정리된 모든 번역/크기 "
-"조정 함수들은 이런 아핀 변환을 통해 표현됩니다."
-
-#. Tag: para
-#: reference_editor.xml:98
-#, no-c-format
-msgid ""
-"Version 2: Applies a 2d affine transformation to the geometry. The call "
-"<programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting> "
-"represents the transformation matrix <programlisting>/  a  b  0  xoff  "
-"\\       /  a  b  xoff  \\\n"
-"|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n"
-"|  0  0  1     0  |       \\  0  0     1  /\n"
-"\\  0  0  0     1  /</programlisting> and the vertices are transformed as "
-"follows: <programlisting>x' = a*x + b*y + xoff\n"
-"y' = d*x + e*y + yoff\n"
-"z' = z </programlisting> This method is a subcase of the 3D method above."
-msgstr ""
-"버전 2: 도형에 2차원 아핀 변환을 적용합니다. <programlisting>ST_Affine(geom, "
-"a, b, d, e, xoff, yoff)</programlisting> 함수 호출은 변환 매트릭스 "
-"<programlisting>/  a  b  0  xoff  \\       /  a  b  xoff  \\\n"
-"|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n"
-"|  0  0  1     0  |       \\  0  0     1  /\n"
-"\\  0  0  0     1  /</programlisting> 를 표현하며, 꼭짓점은 다음과 같이 변환"
-"됩니다: <programlisting>x' = a*x + b*y + xoff\n"
-"y' = d*x + e*y + yoff\n"
-"z' = z </programlisting> 이 메소드는 버전 1 3D 메소드의 하위 사례입니다."
-
-#. Tag: para
-#: reference_editor.xml:104 reference_editor.xml:1074 reference_editor.xml:1124
-#: reference_editor.xml:1172 reference_editor.xml:1221
-#: reference_editor.xml:1309
-#, no-c-format
-msgid ""
-"Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
-"introduced."
-msgstr ""
-"개선 사항: 2.0.0 버전부터 2.0.0 버전부터 다면체 표면, 삼각형 및 TIN을 지원합"
+"(멀티) 도형을 입력하면 지정한 유형의 요소들로만 이루어진 (멀티) 도형을 반환합"
 "니다."
 
-#. Tag: para
-#: reference_editor.xml:105
-#, no-c-format
-msgid "Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2"
-msgstr ""
-"1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 Affine에서 "
-"ST_Affine으로 변경했습니다."
-
-#. Tag: para
-#: reference_editor.xml:106 reference_editor.xml:1224 reference_editor.xml:1305
-#: reference_editor.xml:1787 reference_editor.xml:1869
-#: reference_editor.xml:1925
+#. Tag: funcprototype
+#: reference_editor.xml:60
 #, no-c-format
 msgid ""
-"Prior to 1.3.4, this function crashes if used with geometries that contain "
-"CURVES. This is fixed in 1.3.4+"
+"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>collection</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>type</parameter></"
+"paramdef>"
 msgstr ""
-"1.3.4 미만 버전에서 이 함수에 만곡 도형(curve)을 담고 있는 도형을 입력하면 충"
-"돌이 일어났습니다. 1.3.4 버전부터 이 버그가 해결됐습니다."
+"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>collection</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>type</parameter></"
+"paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:108 reference_editor.xml:156 reference_editor.xml:198
-#: reference_editor.xml:241 reference_editor.xml:417 reference_editor.xml:511
-#: reference_editor.xml:554 reference_editor.xml:1026 reference_editor.xml:1079
-#: reference_editor.xml:1126 reference_editor.xml:1174
-#: reference_editor.xml:1228 reference_editor.xml:1311
-#: reference_editor.xml:1793
+#: reference_editor.xml:71
 #, no-c-format
-msgid "&P_support;"
-msgstr "&P_support;"
+msgid ""
+"Given a (multi)geometry, returns a (multi)geometry consisting only of "
+"elements of the specified type. Sub-geometries that are not the specified "
+"type are ignored. If there are no sub-geometries of the right type, an EMPTY "
+"geometry will be returned. Only points, lines and polygons are supported. "
+"Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON."
+msgstr ""
+"(멀티) 도형을 입력하면 지정된 유형의 요소들로만 이루어진 (멀티) 도형을 반환합"
+"니다. 지정되지 않은 유형인 하위 도형은 무시당합니다. 설정한 유형의 하위 도형"
+"이 없을 경우, 텅 빈 도형을 반환할 것입니다. 포인트, 라인, 폴리곤만 지원합니"
+"다. 유형 숫자는 1이 포인트, 2가 라인스트링, 3이 폴리곤입니다."
 
 #. Tag: para
-#: reference_editor.xml:109 reference_editor.xml:512 reference_editor.xml:1080
-#: reference_editor.xml:1128 reference_editor.xml:1176
-#: reference_editor.xml:1229 reference_editor.xml:1314
+#: reference_editor.xml:77
 #, no-c-format
-msgid "&T_support;"
-msgstr "&T_support;"
+msgid "Availability: 1.5.0"
+msgstr "1.5.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:111 reference_editor.xml:155 reference_editor.xml:199
-#: reference_editor.xml:243 reference_editor.xml:284 reference_editor.xml:325
-#: reference_editor.xml:419 reference_editor.xml:513 reference_editor.xml:606
-#: reference_editor.xml:1078 reference_editor.xml:1227
-#: reference_editor.xml:1313 reference_editor.xml:1456
-#: reference_editor.xml:1792 reference_editor.xml:1873
-#: reference_editor.xml:1930
+#: reference_editor.xml:79
 #, no-c-format
-msgid "&curve_support;"
-msgstr "&curve_support;"
+msgid ""
+"Prior to 1.5.3 this function returned non-collection inputs untouched, no "
+"matter type. In 1.5.3 non-matching single geometries result in a NULL "
+"return. In of 2.0.0 every case of missing match results in a typed EMPTY "
+"return."
+msgstr ""
+"1.5.3 미만 버전에서 집합이 아닌 도형을 입력받은 경우, 이 함수는 유형에 상관없"
+"이 입력 도형을 그대로 반환했습니다. 1.5.3 버전부터 일치하지 않는 단일 도형을 "
+"입력받으면 NULL을 반환합니다. 2.0.0 버전부터는 일치하지 않는 모든 경우에 "
+"EMPTY(텅 빈 도형)을 반환합니다."
+
+#. Tag: para
+#: reference_editor.xml:85 reference_editor.xml:126
+#, no-c-format
+msgid ""
+"When specifying 3 == POLYGON a multipolygon is returned even when the edges "
+"are shared. This results in an invalid multipolygon for many cases such as "
+"applying this function on an <xref linkend=\"ST_Split\"/> result."
+msgstr ""
+"폴리곤(3)을 지정했을 때 경계가 겹치더라도 멀티폴리곤을 반환합니다. <xref "
+"linkend=\"ST_Split\"/> 의 결과에 이 함수를 적용하는 것과 같은 많은 경우, 유효"
+"하지 않은 멀티폴리곤을 반환하게 됩니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:118
+#: reference_editor.xml:93
 #, no-c-format
 msgid ""
-"--Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for "
-"doing ST_Rotate();\n"
-" SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), "
-"cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,\n"
-"         ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As "
-"the_geom) As foo;\n"
-"        using_affine         |        using_rotate\n"
-"-----------------------------+-----------------------------\n"
-" LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)\n"
+"-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
+"SELECT "
+"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
+"0)))'),1));\n"
+"st_astext\n"
+"---------------\n"
+"MULTIPOINT(0 0)\n"
 "(1 row)\n"
 "\n"
-"--Rotate a 3d line 180 degrees in both the x and z axis\n"
-"SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), "
-"cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As "
-"the_geom) As foo;\n"
-"           st_asewkt\n"
-"-------------------------------\n"
-" LINESTRING(-1 -2 -3,-1 -4 -3)\n"
+"SELECT "
+"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
+"0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
+"st_astext\n"
+"---------------\n"
+"MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
 "(1 row)"
 msgstr ""
-"-- Z축을 기준으로 3D 라인을 180도 회전시킵니다. ST_Rotate() 함수를 풀어 쓴 방"
-"법이라는 점에 주의하십시오.\n"
-" SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), "
-"cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,\n"
-"         ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As "
-"the_geom) As foo;\n"
-"        using_affine         |        using_rotate\n"
-"-----------------------------+-----------------------------\n"
-" LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)\n"
+"-- 상수: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
+"SELECT "
+"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
+"0)))'),1));\n"
+"st_astext\n"
+"---------------\n"
+"MULTIPOINT(0 0)\n"
 "(1 row)\n"
 "\n"
-"-- X 및 Z축에 대해 3D 라인을 180도 회전시킵니다.\n"
-"SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), "
-"cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As "
-"the_geom) As foo;\n"
-"           st_asewkt\n"
-"-------------------------------\n"
-" LINESTRING(-1 -2 -3,-1 -4 -3)\n"
+"SELECT "
+"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
+"0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
+"st_astext\n"
+"---------------\n"
+"MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
 "(1 row)"
 
 #. Tag: para
-#: reference_editor.xml:125
+#: reference_editor.xml:97
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_TransScale\"/>"
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_CollectionHomogenize\"/>"
 msgstr ""
-", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_TransScale\"/>"
+", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_CollectionHomogenize\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:131
+#: reference_editor.xml:103
+#, no-c-format
+msgid "ST_CollectionHomogenize"
+msgstr "ST_CollectionHomogenize"
+
+#. Tag: refpurpose
+#: reference_editor.xml:105
+#, no-c-format
+msgid ""
+"Given a geometry collection, return the \"simplest\" representation of the "
+"contents."
+msgstr "도형 집합을 입력받아 해당 내용의 \"가장 단순한\" 표현식을 반환합니다."
+
+#. Tag: funcprototype
+#: reference_editor.xml:112
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
+
+#. Tag: para
+#: reference_editor.xml:122
+#, no-c-format
+msgid ""
+"Given a geometry collection, returns the \"simplest\" representation of the "
+"contents. Singletons will be returned as singletons. Collections that are "
+"homogeneous will be returned as the appropriate multi-type."
+msgstr ""
+"도형 집합을 입력받아 해당 내용의 \"가장 단순한\" 표현식을 반환합니다. 단일 개"
+"체(singleton)는 단일 개체를 반환할 것입니다. 동일 유형으로 이루어진"
+"(homogeneous) 집합은 적절한 멀티 유형으로 반환될 것입니다."
+
+#. Tag: para
+#: reference_editor.xml:130 reference_editor.xml:1198
+#, no-c-format
+msgid "Availability: 2.0.0"
+msgstr "2.0.0 버전부터 사용할 수 있습니다."
+
+#. Tag: programlisting
+#: reference_editor.xml:137
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
+"0))'));\n"
+"\n"
+"        st_astext\n"
+"        ------------\n"
+"         POINT(0 0)\n"
+"        (1 row)\n"
+"\n"
+"  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),"
+"POINT(1 1))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"         MULTIPOINT(0 0,1 1)\n"
+"        (1 row)"
+msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
+"0))'));\n"
+"\n"
+"        st_astext\n"
+"        ------------\n"
+"         POINT(0 0)\n"
+"        (1 row)\n"
+"\n"
+"  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),"
+"POINT(1 1))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"         MULTIPOINT(0 0,1 1)\n"
+"        (1 row)"
+
+#. Tag: para
+#: reference_editor.xml:141
+#, no-c-format
+msgid ", <xref linkend=\"ST_CollectionExtract\"/>"
+msgstr ", <xref linkend=\"ST_CollectionExtract\"/>"
+
+#. Tag: refname
+#: reference_editor.xml:147
 #, no-c-format
 msgid "ST_Force2D"
 msgstr "ST_Force2D"
 
 #. Tag: refpurpose
-#: reference_editor.xml:133
+#: reference_editor.xml:149
 #, no-c-format
 msgid "Force the geometries into a \"2-dimensional mode\"."
 msgstr "도형을 \"2차원 모드\"로 강제합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:138
+#: reference_editor.xml:154
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force2D</function></funcdef> "
@@ -463,7 +406,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:148
+#: reference_editor.xml:164
 #, no-c-format
 msgid ""
 "Forces the geometries into a \"2-dimensional mode\" so that all output "
@@ -475,23 +418,39 @@ msgstr ""
 "하는 데 유용합니다."
 
 #. Tag: para
-#: reference_editor.xml:153 reference_editor.xml:196 reference_editor.xml:239
-#: reference_editor.xml:413 reference_editor.xml:552 reference_editor.xml:1789
+#: reference_editor.xml:169 reference_editor.xml:212 reference_editor.xml:255
+#: reference_editor.xml:429 reference_editor.xml:568
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
 msgstr ""
 "개선 사항: 2.0.0 버전부터 다면체 표면(polyhedral surface)을 지원합니다."
 
 #. Tag: para
-#: reference_editor.xml:154
+#: reference_editor.xml:170
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D."
 msgstr ""
 "변경 사항: 2.1.0 미만 버전, 즉 2.0.x 버전까지 이 함수의 명칭은 ST_Force_2D였"
 "습니다."
 
+#. Tag: para
+#: reference_editor.xml:171 reference_editor.xml:215 reference_editor.xml:259
+#: reference_editor.xml:300 reference_editor.xml:341 reference_editor.xml:435
+#: reference_editor.xml:529 reference_editor.xml:622 reference_editor.xml:1313
+#, no-c-format
+msgid "&curve_support;"
+msgstr "&curve_support;"
+
+#. Tag: para
+#: reference_editor.xml:172 reference_editor.xml:214 reference_editor.xml:257
+#: reference_editor.xml:433 reference_editor.xml:527 reference_editor.xml:570
+#: reference_editor.xml:945 reference_editor.xml:1316
+#, no-c-format
+msgid "&P_support;"
+msgstr "&P_support;"
+
 #. Tag: programlisting
-#: reference_editor.xml:164
+#: reference_editor.xml:180
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 "
@@ -521,19 +480,19 @@ msgstr ""
 " POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))"
 
 #. Tag: refname
-#: reference_editor.xml:177
+#: reference_editor.xml:193
 #, no-c-format
 msgid "ST_Force3D"
 msgstr "ST_Force3D"
 
 #. Tag: refpurpose
-#: reference_editor.xml:179
+#: reference_editor.xml:195
 #, no-c-format
 msgid "Force the geometries into XYZ mode. This is an alias for ST_Force3DZ."
 msgstr "도형을 XYZ 모드로 강제합니다. ST_Force3DZ라고도 합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:184
+#: reference_editor.xml:200
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force3D</function></funcdef> "
@@ -543,7 +502,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:194
+#: reference_editor.xml:210
 #, no-c-format
 msgid ""
 "Forces the geometries into XYZ mode. This is an alias for ST_Force_3DZ. If a "
@@ -553,7 +512,7 @@ msgstr ""
 "요소를 가지고 있지 않을 경우, Z 좌표를 0으로 고정합니다."
 
 #. Tag: para
-#: reference_editor.xml:197
+#: reference_editor.xml:213
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D."
 msgstr ""
@@ -561,7 +520,7 @@ msgstr ""
 "습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:207
+#: reference_editor.xml:223
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
@@ -596,7 +555,7 @@ msgstr ""
 " POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
-#: reference_editor.xml:214
+#: reference_editor.xml:230
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
@@ -606,19 +565,19 @@ msgstr ""
 "linkend=\"ST_Force_3DZ\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:220
+#: reference_editor.xml:236
 #, no-c-format
 msgid "ST_Force3DZ"
 msgstr "ST_Force3DZ"
 
 #. Tag: refpurpose
-#: reference_editor.xml:222
+#: reference_editor.xml:238
 #, no-c-format
 msgid "Force the geometries into XYZ mode."
 msgstr "도형을 XYZ 모드로 강제합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:227
+#: reference_editor.xml:243
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force3DZ</function></funcdef> "
@@ -628,7 +587,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:237
+#: reference_editor.xml:253
 #, no-c-format
 msgid ""
 "Forces the geometries into XYZ mode. This is a synonym for ST_Force3DZ. If a "
@@ -638,7 +597,7 @@ msgstr ""
 "요소를 가지고 있지 않을 경우, Z 좌표를 0으로 고정합니다."
 
 #. Tag: para
-#: reference_editor.xml:240
+#: reference_editor.xml:256
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ."
 msgstr ""
@@ -646,7 +605,7 @@ msgstr ""
 "습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:250
+#: reference_editor.xml:266
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
@@ -680,7 +639,7 @@ msgstr ""
 " POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
-#: reference_editor.xml:257 reference_editor.xml:339
+#: reference_editor.xml:273 reference_editor.xml:355
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
@@ -690,19 +649,19 @@ msgstr ""
 "linkend=\"ST_Force_3D\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:263
+#: reference_editor.xml:279
 #, no-c-format
 msgid "ST_Force3DM"
 msgstr "ST_Force3DM"
 
 #. Tag: refpurpose
-#: reference_editor.xml:265
+#: reference_editor.xml:281
 #, no-c-format
 msgid "Force the geometries into XYM mode."
 msgstr "도형을 XYM 모드로 강제합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:270
+#: reference_editor.xml:286
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force3DM</function></funcdef> "
@@ -712,7 +671,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:280
+#: reference_editor.xml:296
 #, no-c-format
 msgid ""
 "Forces the geometries into XYM mode. If a geometry has no M component, then "
@@ -722,7 +681,7 @@ msgstr ""
 "를 0으로 고정합니다. 도형이 Z 요소를 가지고 있다면 제거합니다."
 
 #. Tag: para
-#: reference_editor.xml:283
+#: reference_editor.xml:299
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM."
 msgstr ""
@@ -730,7 +689,7 @@ msgstr ""
 "었습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:291
+#: reference_editor.xml:307
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
@@ -764,7 +723,7 @@ msgstr ""
 " POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
-#: reference_editor.xml:298 reference_editor.xml:435
+#: reference_editor.xml:314 reference_editor.xml:451
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
@@ -774,19 +733,19 @@ msgstr ""
 "linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:304
+#: reference_editor.xml:320
 #, no-c-format
 msgid "ST_Force4D"
 msgstr "ST_Force4D"
 
 #. Tag: refpurpose
-#: reference_editor.xml:306
+#: reference_editor.xml:322
 #, no-c-format
 msgid "Force the geometries into XYZM mode."
 msgstr "도형을 XYZM 모드로 강제합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:311
+#: reference_editor.xml:327
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force4D</function></funcdef> "
@@ -796,7 +755,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:321
+#: reference_editor.xml:337
 #, no-c-format
 msgid ""
 "Forces the geometries into XYZM mode. 0 is tacked on for missing Z and M "
@@ -806,7 +765,7 @@ msgstr ""
 "로 고정합니다."
 
 #. Tag: para
-#: reference_editor.xml:323
+#: reference_editor.xml:339
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D."
 msgstr ""
@@ -814,7 +773,7 @@ msgstr ""
 "습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:332
+#: reference_editor.xml:348
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
@@ -852,13 +811,13 @@ msgstr ""
 "1,1 1 0 1))"
 
 #. Tag: refname
-#: reference_editor.xml:345
+#: reference_editor.xml:361
 #, no-c-format
 msgid "ST_ForcePolygonCCW"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_editor.xml:348
+#: reference_editor.xml:364
 #, no-c-format
 msgid ""
 "Orients all exterior rings counter-clockwise and all interior rings "
@@ -866,7 +825,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_editor.xml:355
+#: reference_editor.xml:371
 #, no-c-format
 msgid ""
 "<funcdef> geometry <function>ST_ForcePolygonCCW</function> </funcdef> "
@@ -874,7 +833,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:371
+#: reference_editor.xml:387
 #, no-c-format
 msgid ""
 "Forces (Multi)Polygons to use a counter-clockwise orientation for their "
@@ -883,32 +842,32 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:378 reference_editor.xml:474 reference_editor.xml:1315
+#: reference_editor.xml:394 reference_editor.xml:490 reference_editor.xml:1315
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
 
 #. Tag: para
-#: reference_editor.xml:383 reference_editor.xml:479
+#: reference_editor.xml:399 reference_editor.xml:495
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:393
+#: reference_editor.xml:409
 #, no-c-format
 msgid "ST_ForceCollection"
 msgstr "ST_ForceCollection"
 
 #. Tag: refpurpose
-#: reference_editor.xml:395
+#: reference_editor.xml:411
 #, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
 msgstr "도형을 도형 집합으로 변환합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:400
+#: reference_editor.xml:416
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ForceCollection</function></funcdef> "
@@ -918,7 +877,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:410
+#: reference_editor.xml:426
 #, no-c-format
 msgid ""
 "Converts the geometry into a GEOMETRYCOLLECTION. This is useful for "
@@ -928,7 +887,7 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#: reference_editor.xml:414
+#: reference_editor.xml:430
 #, no-c-format
 msgid ""
 "Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves. "
@@ -939,7 +898,7 @@ msgstr ""
 "그가 해결됐습니다."
 
 #. Tag: para
-#: reference_editor.xml:415
+#: reference_editor.xml:431
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
 msgstr ""
@@ -947,7 +906,7 @@ msgstr ""
 "ST_Force_Collection이었습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:426
+#: reference_editor.xml:442
 #, no-c-format
 msgid ""
 "SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 "
@@ -985,7 +944,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: programlisting
-#: reference_editor.xml:428
+#: reference_editor.xml:444
 #, no-c-format
 msgid ""
 "-- POLYHEDRAL example --\n"
@@ -1029,13 +988,13 @@ msgstr ""
 ")"
 
 #. Tag: refname
-#: reference_editor.xml:441
+#: reference_editor.xml:457
 #, no-c-format
 msgid "ST_ForcePolygonCW"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_editor.xml:444
+#: reference_editor.xml:460
 #, no-c-format
 msgid ""
 "Orients all exterior rings clockwise and all interior rings counter-"
@@ -1043,7 +1002,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_editor.xml:451
+#: reference_editor.xml:467
 #, no-c-format
 msgid ""
 "<funcdef> geometry <function>ST_ForcePolygonCW</function> </funcdef> "
@@ -1051,7 +1010,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:467
+#: reference_editor.xml:483
 #, no-c-format
 msgid ""
 "Forces (Multi)Polygons to use a clockwise orientation for their exterior "
@@ -1060,19 +1019,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:489
+#: reference_editor.xml:505
 #, no-c-format
 msgid "ST_ForceSFS"
 msgstr "ST_ForceSFS"
 
 #. Tag: refpurpose
-#: reference_editor.xml:491
+#: reference_editor.xml:507
 #, no-c-format
 msgid "Force the geometries to use SFS 1.1 geometry types only."
 msgstr "도형이 SFS 1.1 도형 유형만을 쓰도록 강제합니다."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:495
+#: reference_editor.xml:511
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef> "
@@ -1089,14 +1048,20 @@ msgstr ""
 "parameter></paramdef> <paramdef><type>text </type> <parameter>version</"
 "parameter></paramdef> </funcprototype>"
 
+#. Tag: para
+#: reference_editor.xml:528 reference_editor.xml:1317
+#, no-c-format
+msgid "&T_support;"
+msgstr "&T_support;"
+
 #. Tag: refname
-#: reference_editor.xml:521
+#: reference_editor.xml:537
 #, no-c-format
 msgid "ST_ForceRHR"
 msgstr "ST_ForceRHR"
 
 #. Tag: refpurpose
-#: reference_editor.xml:523
+#: reference_editor.xml:539
 #, no-c-format
 msgid ""
 "Force the orientation of the vertices in a polygon to follow the Right-Hand-"
@@ -1106,7 +1071,7 @@ msgstr ""
 "을 따르도록 강제합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:529
+#: reference_editor.xml:545
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ForceRHR</function></funcdef> "
@@ -1116,7 +1081,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:540
+#: reference_editor.xml:556
 #, no-c-format
 msgid ""
 "Forces the orientation of the vertices in a polygon to follow a Right-Hand-"
@@ -1127,7 +1092,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:547
+#: reference_editor.xml:563
 #, no-c-format
 msgid ""
 "The above definition of the Right-Hand-Rule conflicts with definitions used "
@@ -1136,7 +1101,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:560
+#: reference_editor.xml:576
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(\n"
@@ -1162,7 +1127,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_editor.xml:566
+#: reference_editor.xml:582
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCW\"/>, <xref linkend=\"ST_IsPolygonCCW\"/"
@@ -1171,13 +1136,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:579
+#: reference_editor.xml:595
 #, no-c-format
 msgid "ST_ForceCurve"
 msgstr "ST_ForceCurve"
 
 #. Tag: refpurpose
-#: reference_editor.xml:581
+#: reference_editor.xml:597
 #, no-c-format
 msgid "Upcast a geometry into its curved type, if applicable."
 msgstr ""
@@ -1185,7 +1150,7 @@ msgstr ""
 "다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:586
+#: reference_editor.xml:602
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ForceCurve</function></funcdef> "
@@ -1195,7 +1160,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:597
+#: reference_editor.xml:613
 #, no-c-format
 msgid ""
 "Turns a geometry into its curved representation, if applicable: lines become "
@@ -1209,13 +1174,13 @@ msgstr ""
 "표현식인 경우 입력 표현식을 그대로 반환합니다."
 
 #. Tag: para
-#: reference_editor.xml:603
+#: reference_editor.xml:619 reference_editor.xml:1312
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:612
+#: reference_editor.xml:628
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -1241,13 +1206,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_editor.xml:624
+#: reference_editor.xml:640
 #, no-c-format
 msgid "ST_LineMerge"
 msgstr "ST_LineMerge"
 
 #. Tag: refpurpose
-#: reference_editor.xml:626
+#: reference_editor.xml:642
 #, no-c-format
 msgid ""
 "Return a (set of) LineString(s) formed by sewing together a MULTILINESTRING."
@@ -1255,7 +1220,7 @@ msgstr ""
 "멀티라인스트링을 함께 엮어 형성된 라인스트링(들)(의 집합)을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:632
+#: reference_editor.xml:648
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
@@ -1267,7 +1232,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:642
+#: reference_editor.xml:658
 #, no-c-format
 msgid ""
 "Returns a (set of) LineString(s) formed by sewing together the constituent "
@@ -1277,7 +1242,7 @@ msgstr ""
 "(들)(의 집합)을 반환합니다."
 
 #. Tag: para
-#: reference_editor.xml:644
+#: reference_editor.xml:660
 #, no-c-format
 msgid ""
 "Only use with MULTILINESTRING/LINESTRINGs. If you feed a polygon or geometry "
@@ -1287,19 +1252,19 @@ msgstr ""
 "을 입력하면, 텅 빈 도형 집합을 반환할 것입니다."
 
 #. Tag: para
-#: reference_editor.xml:648
+#: reference_editor.xml:662 reference_editor.xml:1197
 #, no-c-format
-msgid "requires GEOS &gt;= 2.1.0"
-msgstr "GEOS 2.1.0 이상 버전이 필요합니다."
+msgid "Performed by the GEOS module."
+msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:649
+#: reference_editor.xml:664
 #, no-c-format
 msgid "Will strip the M dimension."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:655
+#: reference_editor.xml:670
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_LineMerge(\n"
@@ -1355,232 +1320,25 @@ msgstr ""
 "MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))"
 
 #. Tag: para
-#: reference_editor.xml:659
+#: reference_editor.xml:674
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ", <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:665
-#, no-c-format
-msgid "ST_CollectionExtract"
-msgstr "ST_CollectionExtract"
-
-#. Tag: refpurpose
-#: reference_editor.xml:667
-#, no-c-format
-msgid ""
-"Given a (multi)geometry, return a (multi)geometry consisting only of "
-"elements of the specified type."
-msgstr ""
-"(멀티) 도형을 입력하면 지정한 유형의 요소들로만 이루어진 (멀티) 도형을 반환합"
-"니다."
-
-#. Tag: funcprototype
-#: reference_editor.xml:674
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>type</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>type</parameter></"
-"paramdef>"
-
-#. Tag: para
-#: reference_editor.xml:685
-#, no-c-format
-msgid ""
-"Given a (multi)geometry, returns a (multi)geometry consisting only of "
-"elements of the specified type. Sub-geometries that are not the specified "
-"type are ignored. If there are no sub-geometries of the right type, an EMPTY "
-"geometry will be returned. Only points, lines and polygons are supported. "
-"Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON."
-msgstr ""
-"(멀티) 도형을 입력하면 지정된 유형의 요소들로만 이루어진 (멀티) 도형을 반환합"
-"니다. 지정되지 않은 유형인 하위 도형은 무시당합니다. 설정한 유형의 하위 도형"
-"이 없을 경우, 텅 빈 도형을 반환할 것입니다. 포인트, 라인, 폴리곤만 지원합니"
-"다. 유형 숫자는 1이 포인트, 2가 라인스트링, 3이 폴리곤입니다."
-
-#. Tag: para
-#: reference_editor.xml:691
-#, no-c-format
-msgid "Availability: 1.5.0"
-msgstr "1.5.0 버전부터 사용할 수 있습니다."
-
-#. Tag: para
-#: reference_editor.xml:693
-#, no-c-format
-msgid ""
-"Prior to 1.5.3 this function returned non-collection inputs untouched, no "
-"matter type. In 1.5.3 non-matching single geometries result in a NULL "
-"return. In of 2.0.0 every case of missing match results in a typed EMPTY "
-"return."
-msgstr ""
-"1.5.3 미만 버전에서 집합이 아닌 도형을 입력받은 경우, 이 함수는 유형에 상관없"
-"이 입력 도형을 그대로 반환했습니다. 1.5.3 버전부터 일치하지 않는 단일 도형을 "
-"입력받으면 NULL을 반환합니다. 2.0.0 버전부터는 일치하지 않는 모든 경우에 "
-"EMPTY(텅 빈 도형)을 반환합니다."
-
-#. Tag: para
-#: reference_editor.xml:699 reference_editor.xml:740
-#, no-c-format
-msgid ""
-"When specifying 3 == POLYGON a multipolygon is returned even when the edges "
-"are shared. This results in an invalid multipolygon for many cases such as "
-"applying this function on an <xref linkend=\"ST_Split\"/> result."
-msgstr ""
-"폴리곤(3)을 지정했을 때 경계가 겹치더라도 멀티폴리곤을 반환합니다. <xref "
-"linkend=\"ST_Split\"/> 의 결과에 이 함수를 적용하는 것과 같은 많은 경우, 유효"
-"하지 않은 멀티폴리곤을 반환하게 됩니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:707
-#, no-c-format
-msgid ""
-"-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
-"SELECT "
-"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
-"0)))'),1));\n"
-"st_astext\n"
-"---------------\n"
-"MULTIPOINT(0 0)\n"
-"(1 row)\n"
-"\n"
-"SELECT "
-"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
-"0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
-"st_astext\n"
-"---------------\n"
-"MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
-"(1 row)"
-msgstr ""
-"-- 상수: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
-"SELECT "
-"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
-"0)))'),1));\n"
-"st_astext\n"
-"---------------\n"
-"MULTIPOINT(0 0)\n"
-"(1 row)\n"
-"\n"
-"SELECT "
-"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
-"0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
-"st_astext\n"
-"---------------\n"
-"MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
-"(1 row)"
-
-#. Tag: para
-#: reference_editor.xml:711
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_CollectionHomogenize\"/>"
-msgstr ""
-", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_CollectionHomogenize\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:717
-#, no-c-format
-msgid "ST_CollectionHomogenize"
-msgstr "ST_CollectionHomogenize"
-
-#. Tag: refpurpose
-#: reference_editor.xml:719
-#, no-c-format
-msgid ""
-"Given a geometry collection, return the \"simplest\" representation of the "
-"contents."
-msgstr "도형 집합을 입력받아 해당 내용의 \"가장 단순한\" 표현식을 반환합니다."
-
-#. Tag: funcprototype
-#: reference_editor.xml:726
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
-
-#. Tag: para
-#: reference_editor.xml:736
-#, no-c-format
-msgid ""
-"Given a geometry collection, returns the \"simplest\" representation of the "
-"contents. Singletons will be returned as singletons. Collections that are "
-"homogeneous will be returned as the appropriate multi-type."
-msgstr ""
-"도형 집합을 입력받아 해당 내용의 \"가장 단순한\" 표현식을 반환합니다. 단일 개"
-"체(singleton)는 단일 개체를 반환할 것입니다. 동일 유형으로 이루어진"
-"(homogeneous) 집합은 적절한 멀티 유형으로 반환될 것입니다."
-
-#. Tag: para
-#: reference_editor.xml:744
-#, no-c-format
-msgid "Availability: 2.0.0"
-msgstr "2.0.0 버전부터 사용할 수 있습니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:751
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
-"0))'));\n"
-"\n"
-"        st_astext\n"
-"        ------------\n"
-"         POINT(0 0)\n"
-"        (1 row)\n"
-"\n"
-"  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),"
-"POINT(1 1))'));\n"
-"\n"
-"        st_astext\n"
-"        ---------------------\n"
-"         MULTIPOINT(0 0,1 1)\n"
-"        (1 row)"
-msgstr ""
-"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
-"0))'));\n"
-"\n"
-"        st_astext\n"
-"        ------------\n"
-"         POINT(0 0)\n"
-"        (1 row)\n"
-"\n"
-"  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),"
-"POINT(1 1))'));\n"
-"\n"
-"        st_astext\n"
-"        ---------------------\n"
-"         MULTIPOINT(0 0,1 1)\n"
-"        (1 row)"
-
-#. Tag: para
-#: reference_editor.xml:755
-#, no-c-format
-msgid ", <xref linkend=\"ST_CollectionExtract\"/>"
-msgstr ", <xref linkend=\"ST_CollectionExtract\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:761
+#: reference_editor.xml:680
 #, no-c-format
 msgid "ST_Multi"
 msgstr "ST_Multi"
 
 #. Tag: refpurpose
-#: reference_editor.xml:763
+#: reference_editor.xml:682
 #, no-c-format
 msgid "Return the geometry as a MULTI* geometry."
 msgstr "도형을 멀티 유형 도형으로 반환합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:768
+#: reference_editor.xml:687
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Multi</function></funcdef> "
@@ -1590,7 +1348,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:778
+#: reference_editor.xml:697
 #, no-c-format
 msgid ""
 "Returns the geometry as a MULTI* geometry. If the geometry is already a "
@@ -1600,7 +1358,7 @@ msgstr ""
 "우, 그대로 반환합니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:786
+#: reference_editor.xml:705
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 "
@@ -1626,19 +1384,19 @@ msgstr ""
 "                        (1 row)"
 
 #. Tag: refname
-#: reference_editor.xml:796
+#: reference_editor.xml:715
 #, no-c-format
 msgid "ST_Normalize"
 msgstr "ST_Normalize"
 
 #. Tag: refpurpose
-#: reference_editor.xml:798
+#: reference_editor.xml:717
 #, no-c-format
 msgid "Return the geometry in its canonical form."
 msgstr "도형을 해당 도형의 기본형으로 반환합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:803
+#: reference_editor.xml:722
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Normalize</function></funcdef> "
@@ -1648,7 +1406,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:813
+#: reference_editor.xml:732
 #, no-c-format
 msgid ""
 "Returns the geometry in its normalized/canonical form. May reorder vertices "
@@ -1658,7 +1416,7 @@ msgstr ""
 "고리에 있는 꼭짓점, 멀티 유형 도형 집합체의 요소를 재정렬할 수도 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:819
+#: reference_editor.xml:738
 #, no-c-format
 msgid ""
 "Mostly only useful for testing purposes (comparing expected and obtained "
@@ -1668,13 +1426,13 @@ msgstr ""
 "결과물의 비교 등)."
 
 #. Tag: para
-#: reference_editor.xml:824
+#: reference_editor.xml:743
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr "2.3.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:831
+#: reference_editor.xml:750
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Normalize(ST_GeomFromText(\n"
@@ -1712,25 +1470,25 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_editor.xml:835
+#: reference_editor.xml:754
 #, no-c-format
 msgid "<para>,</para>"
 msgstr "<para>,</para>"
 
 #. Tag: refname
-#: reference_editor.xml:843
+#: reference_editor.xml:762
 #, no-c-format
 msgid "ST_QuantizeCoordinates"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_editor.xml:846
+#: reference_editor.xml:765
 #, no-c-format
 msgid "Sets least significant bits of coordinates to zero"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_editor.xml:853
+#: reference_editor.xml:772
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef> geometry <function>ST_QuantizeCoordinates</function> </funcdef> "
@@ -1748,7 +1506,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:884
+#: reference_editor.xml:803
 #, no-c-format
 msgid ""
 "<code>ST_QuantizeCoordinates</code> determines the number of bits (<code>N</"
@@ -1768,7 +1526,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:902
+#: reference_editor.xml:821
 #, no-c-format
 msgid ""
 "The coordinates produced by <code>ST_QuantizeCoordinates</code> are "
@@ -1780,19 +1538,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:911
+#: reference_editor.xml:830
 #, fuzzy, no-c-format
 msgid "Availability: 2.5.0"
 msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: title
-#: reference_editor.xml:914
+#: reference_editor.xml:833
 #, no-c-format
 msgid "Technical Background"
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:915
+#: reference_editor.xml:834
 #, no-c-format
 msgid ""
 "PostGIS stores all coordinate values as double-precision floating point "
@@ -1805,7 +1563,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:924
+#: reference_editor.xml:843
 #, no-c-format
 msgid ""
 "When 15 significant digits are available, there are many possible "
@@ -1825,7 +1583,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:944
+#: reference_editor.xml:863
 #, no-c-format
 msgid ""
 "Only the on-disk size of the geometry is potentially affected by "
@@ -1835,7 +1593,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:956
+#: reference_editor.xml:875
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_QuantizeCoordinates('POINT (100.123456 0)'::geometry, "
@@ -1846,7 +1604,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:958
+#: reference_editor.xml:877
 #, no-c-format
 msgid ""
 "WITH test AS (SELECT 'POINT (123.456789123456 123.456789123456)'::geometry "
@@ -1911,19 +1669,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:973
+#: reference_editor.xml:892
 #, no-c-format
 msgid "ST_RemovePoint"
 msgstr "ST_RemovePoint"
 
 #. Tag: refpurpose
-#: reference_editor.xml:974
+#: reference_editor.xml:893
 #, no-c-format
 msgid "Remove point from a linestring."
 msgstr "라인스트링에서 포인트를 제거합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:978
+#: reference_editor.xml:897
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_RemovePoint</function></funcdef> "
@@ -1935,7 +1693,7 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>offset</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:989
+#: reference_editor.xml:908
 #, no-c-format
 msgid ""
 "Remove a point from a linestring, given its 0-based index. Useful for "
@@ -1945,7 +1703,7 @@ msgstr ""
 "다. 닫힌 고리를 열린 라인스트링으로 바꾸는 데 유용합니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:996
+#: reference_editor.xml:915
 #, no-c-format
 msgid ""
 "--guarantee no LINESTRINGS are closed\n"
@@ -1964,25 +1722,25 @@ msgstr ""
 "        WHERE ST_IsClosed(the_geom) = true;"
 
 #. Tag: para
-#: reference_editor.xml:1000
+#: reference_editor.xml:919
 #, no-c-format
 msgid ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
 msgstr ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1006
+#: reference_editor.xml:925
 #, no-c-format
 msgid "ST_Reverse"
 msgstr "ST_Reverse"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1007
+#: reference_editor.xml:926
 #, no-c-format
 msgid "Return the geometry with vertex order reversed."
 msgstr "꼭짓점들의 순서가 반대인 도형을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1012
+#: reference_editor.xml:931
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Reverse</function></funcdef> "
@@ -1992,19 +1750,19 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1022
+#: reference_editor.xml:941
 #, no-c-format
 msgid "Can be used on any geometry and reverses the order of the vertexes."
 msgstr "어떤 도형도 입력받을 수 있으며, 꼭짓점들의 순서를 반전시킵니다."
 
 #. Tag: para
-#: reference_editor.xml:1024
+#: reference_editor.xml:943
 #, no-c-format
 msgid "Enhanced: 2.4.0 support for curves was introduced."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:1031
+#: reference_editor.xml:950
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(the_geom) as line, ST_AsText(ST_Reverse(the_geom)) As "
@@ -2028,521 +1786,13 @@ msgstr ""
 "LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)"
 
 #. Tag: refname
-#: reference_editor.xml:1037
-#, no-c-format
-msgid "ST_Rotate"
-msgstr "ST_Rotate"
-
-#. Tag: refpurpose
-#: reference_editor.xml:1039
-#, no-c-format
-msgid "Rotate a geometry rotRadians counter-clockwise about an origin."
-msgstr ""
-"원점(origin)을 기준으로 도형의 rotRadians를 반시계 방향으로 회전시킵니다."
-
-#. Tag: funcsynopsis
-#: reference_editor.xml:1043
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_Rotate</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Rotate</"
-"function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</"
-"parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
-"parameter></paramdef> <paramdef><type>float</type> <parameter>x0</"
-"parameter></paramdef> <paramdef><type>float</type> <parameter>y0</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
-"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> "
-"<parameter>rotRadians</parameter></paramdef> <paramdef><type>geometry</type> "
-"<parameter>pointOrigin</parameter></paramdef> </funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Rotate</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Rotate</"
-"function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</"
-"parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
-"parameter></paramdef> <paramdef><type>float</type> <parameter>x0</"
-"parameter></paramdef> <paramdef><type>float</type> <parameter>y0</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
-"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> "
-"<parameter>rotRadians</parameter></paramdef> <paramdef><type>geometry</type> "
-"<parameter>pointOrigin</parameter></paramdef> </funcprototype>"
-
-#. Tag: para
-#: reference_editor.xml:1070
-#, no-c-format
-msgid ""
-"Rotates geometry rotRadians counter-clockwise about the origin. The rotation "
-"origin can be specified either as a POINT geometry, or as x and y "
-"coordinates. If the origin is not specified, the geometry is rotated about "
-"POINT(0 0)."
-msgstr ""
-"원점(origin)을 기준으로 도형의 rotRadians를 반시계 방향으로 회전시킵니다. 회"
-"전 원점을 포인트 도형 또는 x, y 좌표로 설정할 수 있습니다.원점을 설정하지 않"
-"을 경우, POINT(0 0)을 중심으로 도형을 회전시킵니다."
-
-#. Tag: para
-#: reference_editor.xml:1075
-#, no-c-format
-msgid ""
-"Enhanced: 2.0.0 additional parameters for specifying the origin of rotation "
-"were added."
-msgstr ""
-"개선 사항: 2.0.0 버전에서 회전 원점을 설정하는 추가 파라미터가 추가됐습니다."
-
-#. Tag: para
-#: reference_editor.xml:1076
-#, no-c-format
-msgid "Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2"
-msgstr ""
-"1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 Rotate에서 "
-"ST_Rotate로 변경했습니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1088
-#, no-c-format
-msgid ""
-"--Rotate 180 degrees\n"
-"SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));\n"
-"               st_asewkt\n"
-"---------------------------------------\n"
-" LINESTRING(-50 -160,-50 -50,-100 -50)\n"
-"(1 row)\n"
-"\n"
-"--Rotate 30 degrees counter-clockwise at x=50, y=160\n"
-"SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, 50, "
-"160));\n"
-"                                 st_asewkt\n"
-"---------------------------------------------------------------------------\n"
-" LINESTRING(50 160,105 64.7372055837117,148.301270189222 89.7372055837117)\n"
-"(1 row)\n"
-"\n"
-"--Rotate 60 degrees clockwise from centroid\n"
-"SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))\n"
-"FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS "
-"foo;\n"
-"                           st_asewkt\n"
-"--------------------------------------------------------------\n"
-" LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)\n"
-"(1 row)"
-msgstr ""
-"-- 180도 회전\n"
-"SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));\n"
-"st_asewkt\n"
-"---------------------------------------\n"
-" LINESTRING(-50 -160,-50 -50,-100 -50)\n"
-"(1 row)\n"
-"\n"
-"-- x=50, y=160 좌표를 중심으로 반시계 방향 30도 회전\n"
-"SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, 50, "
-"160));\n"
-"st_asewkt\n"
-"---------------------------------------------------------------------------\n"
-" LINESTRING(50 160,105 64.7372055837117,148.301270189222 89.7372055837117)\n"
-"(1 row)\n"
-"\n"
-"-- 중심점 기준으로 시계 방향으로 60도 회전\n"
-"SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))\n"
-"FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS "
-"foo;\n"
-"st_asewkt\n"
-"--------------------------------------------------------------\n"
-" LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)\n"
-"(1 row)"
-
-#. Tag: para
-#: reference_editor.xml:1095
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
-"linkend=\"ST_RotateZ\"/>"
-msgstr ""
-", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
-"linkend=\"ST_RotateZ\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1101
-#, no-c-format
-msgid "ST_RotateX"
-msgstr "ST_RotateX"
-
-#. Tag: refpurpose
-#: reference_editor.xml:1103
-#, no-c-format
-msgid "Rotate a geometry rotRadians about the X axis."
-msgstr "X축을 기준으로 도형의 rotRadians를 회전시킵니다."
-
-#. Tag: funcprototype
-#: reference_editor.xml:1108
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateX</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_RotateX</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-
-#. Tag: para
-#: reference_editor.xml:1119
-#, no-c-format
-msgid "Rotate a geometry geomA - rotRadians about the X axis."
-msgstr "X축을 기준으로 geomA 도형의 rotRadians를 회전시킵니다."
-
-#. Tag: para
-#: reference_editor.xml:1121
-#, no-c-format
-msgid ""
-"<code>ST_RotateX(geomA, rotRadians)</code> is short-hand for "
-"<code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, "
-"sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
-msgstr ""
-"<code>ST_RotateX(geomA, rotRadians)</code> 함수는 <code>ST_Affine(geomA, 1, "
-"0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
-"cos(rotRadians), 0, 0, 0)</code> 을 간략화한 것입니다."
-
-#. Tag: para
-#: reference_editor.xml:1125
-#, no-c-format
-msgid "Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2"
-msgstr ""
-"1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 RotateX에서 "
-"ST_RotateX로 변경했습니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1135
-#, no-c-format
-msgid ""
-"--Rotate a line 90 degrees along x-axis\n"
-"SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
-"pi()/2));\n"
-"                 st_asewkt\n"
-"---------------------------\n"
-" LINESTRING(1 -3 2,1 -1 1)"
-msgstr ""
-"-- X축을 따라 라인을 90도 회전\n"
-"SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
-"pi()/2));\n"
-"st_asewkt\n"
-"---------------------------\n"
-" LINESTRING(1 -3 2,1 -1 1)"
-
-#. Tag: para
-#: reference_editor.xml:1142
-#, no-c-format
-msgid ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
-msgstr ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1148
-#, no-c-format
-msgid "ST_RotateY"
-msgstr "ST_RotateY"
-
-#. Tag: refpurpose
-#: reference_editor.xml:1150
-#, no-c-format
-msgid "Rotate a geometry rotRadians about the Y axis."
-msgstr "Y축을 기준으로 도형의 rotRadians를 회전시킵니다."
-
-#. Tag: funcprototype
-#: reference_editor.xml:1155
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateY</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_RotateY</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-
-#. Tag: para
-#: reference_editor.xml:1166
-#, no-c-format
-msgid "Rotate a geometry geomA - rotRadians about the y axis."
-msgstr "Y축을 기준으로 geomA 도형의 rotRadians를 회전시킵니다."
-
-#. Tag: para
-#: reference_editor.xml:1168
-#, no-c-format
-msgid ""
-"<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for "
-"<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -"
-"sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
-msgstr ""
-"<code>ST_RotateY(geomA, rotRadians)</code> 함수는 <code>ST_Affine(geomA, "
-"cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, "
-"cos(rotRadians), 0, 0, 0)</code> 을 간략화한 것입니다."
-
-#. Tag: para
-#: reference_editor.xml:1171
-#, no-c-format
-msgid "Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2"
-msgstr ""
-"1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 RotateY에서 "
-"ST_RotateY로 변경했습니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1184
-#, no-c-format
-msgid ""
-"--Rotate a line 90 degrees along y-axis\n"
-" SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
-"pi()/2));\n"
-"                 st_asewkt\n"
-"---------------------------\n"
-" LINESTRING(3 2 -1,1 1 -1)"
-msgstr ""
-"-- Y축을 따라 라인을 90도 회전\n"
-" SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
-"pi()/2));\n"
-"                 st_asewkt\n"
-"---------------------------\n"
-" LINESTRING(3 2 -1,1 1 -1)"
-
-#. Tag: para
-#: reference_editor.xml:1191
-#, no-c-format
-msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
-msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1197
-#, no-c-format
-msgid "ST_RotateZ"
-msgstr "ST_RotateZ"
-
-#. Tag: refpurpose
-#: reference_editor.xml:1199
-#, no-c-format
-msgid "Rotate a geometry rotRadians about the Z axis."
-msgstr "Z축을 기준으로 도형의 rotRadians를 회전시킵니다."
-
-#. Tag: funcprototype
-#: reference_editor.xml:1204
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_RotateZ</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_RotateZ</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-
-#. Tag: para
-#: reference_editor.xml:1215
-#, no-c-format
-msgid "Rotate a geometry geomA - rotRadians about the Z axis."
-msgstr "Z축을 기준으로 geomA 도형의 rotRadians를 회전시킵니다."
-
-#. Tag: para
-#: reference_editor.xml:1217
-#, no-c-format
-msgid "This is a synonym for ST_Rotate"
-msgstr "이 함수는 ST_Rotate 함수와 동일합니다."
-
-#. Tag: para
-#: reference_editor.xml:1218
-#, no-c-format
-msgid ""
-"<code>ST_RotateZ(geomA, rotRadians)</code> is short-hand for <code>SELECT "
-"ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
-"cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
-msgstr ""
-"<code>ST_RotateZ(geomA, rotRadians)</code> 함수는 <code>SELECT "
-"ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
-"cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code> 을 간략화한 것입니다."
-
-#. Tag: para
-#: reference_editor.xml:1223
-#, no-c-format
-msgid "Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2"
-msgstr ""
-"1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 RotateZ에서 "
-"ST_RotateZ로 변경했습니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1236
-#, no-c-format
-msgid ""
-"--Rotate a line 90 degrees along z-axis\n"
-"SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
-"pi()/2));\n"
-"                 st_asewkt\n"
-"---------------------------\n"
-" LINESTRING(-2 1 3,-1 1 1)\n"
-"\n"
-" --Rotate a curved circle around z-axis\n"
-"SELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))\n"
-"FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) "
-"As the_geom) As foo;\n"
-"\n"
-"                                                                                                           st_asewkt\n"
-"----------------------------------------------------------------------------------------------------------------------------\n"
-" CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 "
-"234,-569.12132034356 231.87867965644,-567 237))"
-msgstr ""
-"-- Z축을 따라 라인을 90도 회전\n"
-"SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
-"pi()/2));\n"
-"st_asewkt\n"
-"---------------------------\n"
-" LINESTRING(-2 1 3,-1 1 1)\n"
-"\n"
-" -- Z축을 기준으로 만곡 원(curved circle)을 회전\n"
-"SELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))\n"
-"FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) "
-"As the_geom) As foo;\n"
-"\n"
-"                                                                                                           st_asewkt\n"
-"----------------------------------------------------------------------------------------------------------------------------\n"
-" CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 "
-"234,-569.12132034356 231.87867965644,-567 237))"
-
-#. Tag: para
-#: reference_editor.xml:1243
-#, no-c-format
-msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
-msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1249
-#, no-c-format
-msgid "ST_Scale"
-msgstr "ST_Scale"
-
-#. Tag: refpurpose
-#: reference_editor.xml:1251
-#, no-c-format
-msgid "Scale a geometry by given factors."
-msgstr "주어진 인수로 도형의 크기를 조정합니다."
-
-#. Tag: funcsynopsis
-#: reference_editor.xml:1255
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ZFactor</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Scale</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</"
-"parameter></paramdef> <paramdef><type>float</type> <parameter>XFactor</"
-"parameter></paramdef> <paramdef><type>float</type> <parameter>YFactor</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Scale</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>geom</parameter></paramdef> <paramdef><type>geometry</type> "
-"<parameter>factor</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Scale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>factor</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>origin</parameter></paramdef> </"
-"funcprototype>"
-msgstr ""
-
-#. Tag: para
-#: reference_editor.xml:1291
-#, no-c-format
-msgid ""
-"Scales the geometry to a new size by multiplying the ordinates with the "
-"corresponding factor parameters."
-msgstr ""
-"좌표를 각각 대응하는 인수 파라미터로 곱해서 도형을 새로운 크기로 조정합니다."
-
-#. Tag: para
-#: reference_editor.xml:1295
-#, no-c-format
-msgid ""
-"The version taking a geometry as the <varname>factor</varname> parameter "
-"allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all "
-"supported dimensions. Missing dimensions in the <varname>factor</varname> "
-"point are equivalent to no scaling the corresponding dimension."
-msgstr ""
-"도형을 <varname>factor</varname> 파라미터로 입력받는 버전은 2D, 3DM, 3DZ, 4D "
-"포인트를 패스해서 지원하는 모든 차원에 대해 크기 조정(scale) 인수를 설정할 "
-"수 있습니다. <varname>factor</varname> 포인트에 없는 차원은 해당 차원의 크기 "
-"조정 대상에서 제외됩니다."
-
-#. Tag: para
-#: reference_editor.xml:1301
-#, no-c-format
-msgid ""
-"The three-geometry variant allows a \"false origin\" for the scaling to be "
-"passed in. This allows \"scaling in place\", for example using the centroid "
-"of the geometry as the false origin. Without a false origin, scaling takes "
-"place relative to the actual origin, so all coordinates are just multipled "
-"by the scale factor."
-msgstr ""
-
-#. Tag: para
-#: reference_editor.xml:1308 reference_editor.xml:1928
-#, no-c-format
-msgid "Availability: 1.1.0."
-msgstr "1.1.0 버전부터 사용할 수 있습니다."
-
-#. Tag: para
-#: reference_editor.xml:1310
-#, no-c-format
-msgid ""
-"Enhanced: 2.2.0 support for scaling all dimension (geometry parameter) was "
-"introduced."
-msgstr "개선 사항: 2.2.0 버전부터 모든 차원(도형 파라미터)을 지원합니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1322
-#, no-c-format
-msgid ""
-"--Version 1: scale X, Y, Z\n"
-"SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, "
-"0.75, 0.8));\n"
-"                          st_asewkt\n"
-"--------------------------------------\n"
-" LINESTRING(0.5 1.5 2.4,0.5 0.75 0.8)\n"
-"\n"
-"--Version 2: Scale X Y\n"
-" SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, "
-"0.75));\n"
-"                        st_asewkt\n"
-"----------------------------------\n"
-" LINESTRING(0.5 1.5 3,0.5 0.75 1)\n"
-"\n"
-"--Version 3: Scale X Y Z M\n"
-" SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),\n"
-"   ST_MakePoint(0.5, 0.75, 2, -1)));\n"
-"                               st_asewkt\n"
-"----------------------------------------\n"
-" LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)\n"
-"\n"
-"--Version 4: Scale X Y using false origin\n"
-"SELECT ST_AsText(ST_Scale('LINESTRING(1 1, 2 2)', 'POINT(2 2)', 'POINT(1 "
-"1)'::geometry));\n"
-"      st_astext\n"
-"---------------------\n"
-" LINESTRING(1 1,3 3)"
-msgstr ""
-
-#. Tag: para
-#: reference_editor.xml:1329
-#, no-c-format
-msgid ", <xref linkend=\"ST_TransScale\"/>"
-msgstr ", <xref linkend=\"ST_TransScale\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1335
+#: reference_editor.xml:956
 #, no-c-format
 msgid "ST_Segmentize"
 msgstr "ST_Segmentize"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1337
+#: reference_editor.xml:958
 #, no-c-format
 msgid ""
 "Return a modified geometry/geography having no segment longer than the given "
@@ -2550,7 +1800,7 @@ msgid ""
 msgstr "주어진 거리보다 더 긴 구간이 없도록 수정된 도형/지리형을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1342
+#: reference_editor.xml:963
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Segmentize</function></"
@@ -2570,7 +1820,7 @@ msgstr ""
 "<parameter>max_segment_length</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1359
+#: reference_editor.xml:980
 #, no-c-format
 msgid ""
 "Returns a modified geometry having no segment longer than the given "
@@ -2583,31 +1833,31 @@ msgstr ""
 "참조의 단위입니다. 지리형의 경우, 미터 단위를 씁니다."
 
 #. Tag: para
-#: reference_editor.xml:1362 reference_editor.xml:1871
+#: reference_editor.xml:983
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr "1.2.2 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:1363
+#: reference_editor.xml:984
 #, no-c-format
 msgid "Enhanced: 3.0.0 Segmentize geometry now uses equal length segments"
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1364
+#: reference_editor.xml:985
 #, no-c-format
 msgid "Enhanced: 2.3.0 Segmentize geography now uses equal length segments"
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1365
+#: reference_editor.xml:986
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for geography was introduced."
 msgstr "개선 사항: 2.1.0 버전부터 지리형을 지원하기 시작했습니다."
 
 #. Tag: para
-#: reference_editor.xml:1366
+#: reference_editor.xml:987
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 As a result of the introduction of geography support: The "
@@ -2624,7 +1874,7 @@ msgstr ""
 "형 같은 객체의 유형을 적절히 지정해야 합니다."
 
 #. Tag: para
-#: reference_editor.xml:1368
+#: reference_editor.xml:989
 #, no-c-format
 msgid ""
 "This will only increase segments. It will not lengthen segments shorter than "
@@ -2634,7 +1884,7 @@ msgstr ""
 "은 분절 구간의 길이가 늘어나지는 않습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:1375
+#: reference_editor.xml:996
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Segmentize(\n"
@@ -2680,19 +1930,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_editor.xml:1385
+#: reference_editor.xml:1006
 #, no-c-format
 msgid "ST_SetPoint"
 msgstr "ST_SetPoint"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1386
+#: reference_editor.xml:1007
 #, no-c-format
 msgid "Replace point of a linestring with a given point."
 msgstr "라인스트링의 포인트를 주어진 포인트로 대체합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1390
+#: reference_editor.xml:1011
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetPoint</function></funcdef> "
@@ -2708,7 +1958,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1402
+#: reference_editor.xml:1023
 #, no-c-format
 msgid ""
 "Replace point N of linestring with given point. Index is 0-based.Negative "
@@ -2722,13 +1972,13 @@ msgstr ""
 "용합니다."
 
 #. Tag: para
-#: reference_editor.xml:1406
+#: reference_editor.xml:1027
 #, no-c-format
 msgid "Updated 2.3.0 : negative indexing"
 msgstr "업데이트 사항: 2.3.0 버전에서 음수 인덱스를 지원하기 시작했습니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:1413
+#: reference_editor.xml:1034
 #, no-c-format
 msgid ""
 "--Change first point in line string from -1 3 to -1 1\n"
@@ -2777,7 +2027,7 @@ msgstr ""
 "LINESTRING(0 0,1 1,0 0,3 3,4 4)"
 
 #. Tag: para
-#: reference_editor.xml:1417
+#: reference_editor.xml:1038
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref "
@@ -2787,127 +2037,19 @@ msgstr ""
 "linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1423
-#, no-c-format
-msgid "ST_SetSRID"
-msgstr "ST_SetSRID"
-
-#. Tag: refpurpose
-#: reference_editor.xml:1425
-#, no-c-format
-msgid "Set the SRID on a geometry to a particular integer value."
-msgstr "도형에 적용된 SRID를 특정 정수값으로 설정합니다."
-
-#. Tag: funcprototype
-#: reference_editor.xml:1431
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-
-#. Tag: para
-#: reference_editor.xml:1446
-#, no-c-format
-msgid ""
-"Sets the SRID on a geometry to a particular integer value. Useful in "
-"constructing bounding boxes for queries."
-msgstr ""
-"도형에 적용된 SRID를 특정 정수값으로 설정합니다. 쿼리를 위해 경계 상자를 작성"
-"하는 작업에 유용합니다."
-
-#. Tag: para
-#: reference_editor.xml:1450
-#, no-c-format
-msgid ""
-"This function does not transform the geometry coordinates in any way - it "
-"simply sets the meta data defining the spatial reference system the geometry "
-"is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you want to "
-"transform the geometry into a new projection."
-msgstr ""
-"이 함수는 도형 좌표를 어떤 식으로든 변환하지 않습니다. 해당 도형에 적용됐다"
-"고 가정되는 공간 참조 시스템을 정의하는 메타데이터를 설정할 뿐입니다. 도형을 "
-"새 투영법으로 변환하고자 하는 경우엔 <xref linkend=\"ST_Transform\"/> 을 이용"
-"하십시오."
-
-#. Tag: para
-#: reference_editor.xml:1455
-#, no-c-format
-msgid "&sfs_compliant;"
-msgstr "&sfs_compliant;"
-
-#. Tag: para
-#: reference_editor.xml:1461
-#, no-c-format
-msgid "-- Mark a point as WGS 84 long lat --"
-msgstr "-- 포인트를 WGS84 경위도로 설정 --"
-
-#. Tag: programlisting
-#: reference_editor.xml:1462
-#, no-c-format
-msgid ""
-"SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
-"-- the ewkt representation (wrap with ST_AsEWKT) -\n"
-"SRID=4326;POINT(-123.365556 48.428611)"
-msgstr ""
-"SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
-"-- (ST_AsEWKT으로 싸인) EWKT 표현식 -\n"
-"SRID=4326;POINT(-123.365556 48.428611)"
-
-#. Tag: para
-#: reference_editor.xml:1463
-#, no-c-format
-msgid ""
-"-- Mark a point as WGS 84 long lat and then transform to web mercator "
-"(Spherical Mercator) --"
-msgstr ""
-"-- 포인트를 WGS84 경위도로 설정한 다음 웹 메르카토르(구체 메르카토르)로 변환 "
-"--"
-
-#. Tag: programlisting
-#: reference_editor.xml:1464
-#, no-c-format
-msgid ""
-"SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) "
-"As spere_merc;\n"
-"-- the ewkt representation (wrap with ST_AsEWKT) -\n"
-"SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
-msgstr ""
-"SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) "
-"As spere_merc;\n"
-"-- (ST_AsEWKT으로 싸인) EWKT 표현식 --\n"
-"SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
-
-#. Tag: para
-#: reference_editor.xml:1470
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend="
-"\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend="
-"\"UpdateGeometrySRID\"/>"
-msgstr ""
-", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend="
-"\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend="
-"\"UpdateGeometrySRID\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1477
+#: reference_editor.xml:1044
 #, no-c-format
 msgid "ST_SnapToGrid"
 msgstr "ST_SnapToGrid"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1479
+#: reference_editor.xml:1046
 #, no-c-format
 msgid "Snap all points of the input geometry to a regular grid."
 msgstr "입력 도형의 모든 포인트를 정규 그리드로 스냅(snap)시킵니다."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1485
+#: reference_editor.xml:1052
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></"
@@ -2957,7 +2099,7 @@ msgstr ""
 "<parameter>sizeM</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1523
+#: reference_editor.xml:1090
 #, no-c-format
 msgid ""
 "Variant 1,2,3: Snap all points of the input geometry to the grid defined by "
@@ -2973,7 +2115,7 @@ msgstr ""
 "는 데 유용합니다."
 
 #. Tag: para
-#: reference_editor.xml:1531
+#: reference_editor.xml:1098
 #, no-c-format
 msgid ""
 "Variant 4: Introduced 1.1.0 - Snap all points of the input geometry to the "
@@ -2985,7 +2127,7 @@ msgstr ""
 "가 그리드로 스냅시키고 싶지 않은 차원의 경우, 셀 크기를 0으로 설정하십시오."
 
 #. Tag: para
-#: reference_editor.xml:1537
+#: reference_editor.xml:1104
 #, no-c-format
 msgid ""
 "The returned geometry might lose its simplicity (see <xref linkend="
@@ -2995,7 +2137,7 @@ msgstr ""
 "참조)."
 
 #. Tag: para
-#: reference_editor.xml:1542
+#: reference_editor.xml:1109
 #, no-c-format
 msgid ""
 "Before release 1.1.0 this function always returned a 2d geometry. Starting "
@@ -3009,19 +2151,19 @@ msgstr ""
 "력받는 버전을 이용하십시오."
 
 #. Tag: para
-#: reference_editor.xml:1549
+#: reference_editor.xml:1116
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
 msgstr "1.0.0RC1 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:1550
+#: reference_editor.xml:1117
 #, no-c-format
 msgid "Availability: 1.1.0 - Z and M support"
 msgstr "1.1.0 버전부터 Z 및 M을 지원합니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:1559
+#: reference_editor.xml:1126
 #, no-c-format
 msgid ""
 "--Snap your geometries to a precision grid of 10^-3\n"
@@ -3094,7 +2236,7 @@ msgstr ""
 " LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)"
 
 #. Tag: para
-#: reference_editor.xml:1566
+#: reference_editor.xml:1133
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
@@ -3106,13 +2248,13 @@ msgstr ""
 "linkend=\"ST_Simplify\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1579
+#: reference_editor.xml:1146
 #, no-c-format
 msgid "ST_Snap"
 msgstr "ST_Snap"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1581
+#: reference_editor.xml:1148
 #, no-c-format
 msgid ""
 "Snap segments and vertices of input geometry to vertices of a reference "
@@ -3120,7 +2262,7 @@ msgid ""
 msgstr "입력 도형의 분절 구간과 꼭짓점을 참조 도형의 꼭짓점으로 스냅시킵니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1589
+#: reference_editor.xml:1156
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Snap</function></funcdef> "
@@ -3134,17 +2276,17 @@ msgstr ""
 "<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1601
+#: reference_editor.xml:1168
 #, no-c-format
 msgid ""
-"Snaps the vertices and segments of a geometry another Geometry's vertices. A "
-"snap distance tolerance is used to control where snapping is performed. The "
-"result geometry is the input geometry with the vertices snapped. If no "
-"snapping occurs then the input geometry is returned unchanged."
+"Snaps the vertices and segments of a geometry to another Geometry's "
+"vertices. A snap distance tolerance is used to control where snapping is "
+"performed. The result geometry is the input geometry with the vertices "
+"snapped. If no snapping occurs then the input geometry is returned unchanged."
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1608
+#: reference_editor.xml:1175
 #, no-c-format
 msgid ""
 "Snapping one geometry to another can improve robustness for overlay "
@@ -3156,7 +2298,7 @@ msgstr ""
 "상시킬 수 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:1615
+#: reference_editor.xml:1182
 #, no-c-format
 msgid ""
 "Too much snapping can result in invalid topology being created, so the "
@@ -3170,7 +2312,7 @@ msgstr ""
 "할 수도 있는 스냅 작업을 제외하게 될 수도 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:1624
+#: reference_editor.xml:1191
 #, no-c-format
 msgid ""
 "The returned geometry might lose its simplicity (see <xref linkend="
@@ -3180,19 +2322,13 @@ msgstr ""
 "linkend=\"ST_IsValid\"/> 참조)을 잃을 수도 있습니다."
 
 #. Tag: para
-#: reference_editor.xml:1631
-#, no-c-format
-msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
-msgstr "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이상 버전이 필요합니다."
-
-#. Tag: para
-#: reference_editor.xml:1648
+#: reference_editor.xml:1215
 #, no-c-format
 msgid "A multipolygon shown with a linestring (before any snapping)"
 msgstr "라인스트링과 함께 표출된 멀티폴리곤(스냅 작업 전)"
 
 #. Tag: para
-#: reference_editor.xml:1659
+#: reference_editor.xml:1226
 #, no-c-format
 msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.01 of distance. The new "
@@ -3202,8 +2338,8 @@ msgstr ""
 "은 참조 라인스트링과 함께 표출됩니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:1663
-#, no-c-format
+#: reference_editor.xml:1230
+#, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Snap(poly,line, ST_Distance(poly,line)*1.01)) AS "
 "polysnapped\n"
@@ -3213,7 +2349,6 @@ msgid ""
 "      ( 51 150, 101 150, 76 175, 51 150 )),\n"
 "      (( 151 100, 151 200, 176 175, 151 100 )))') As poly,\n"
 "       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line\n"
-"\n"
 "        ) As foo;\n"
 "\n"
 "                             polysnapped\n"
@@ -3238,7 +2373,7 @@ msgstr ""
 " (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
 
 #. Tag: para
-#: reference_editor.xml:1670
+#: reference_editor.xml:1237
 #, no-c-format
 msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.25 of distance. The new "
@@ -3248,8 +2383,8 @@ msgstr ""
 "은 참조 라인스트링과 함께 표출됩니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:1674
-#, no-c-format
+#: reference_editor.xml:1241
+#, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
 "    ST_Snap(poly,line, ST_Distance(poly,line)*1.25)\n"
@@ -3260,7 +2395,6 @@ msgid ""
 "      ( 51 150, 101 150, 76 175, 51 150 )),\n"
 "      (( 151 100, 151 200, 176 175, 151 100 )))') As poly,\n"
 "       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line\n"
-"\n"
 "        ) As foo;\n"
 "\n"
 "                             polysnapped\n"
@@ -3286,7 +2420,7 @@ msgstr ""
 "(51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
 
 #. Tag: para
-#: reference_editor.xml:1683
+#: reference_editor.xml:1250
 #, no-c-format
 msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.01 of "
@@ -3296,7 +2430,7 @@ msgstr ""
 "트링은 참조 멀티폴리곤과 함께 표출됩니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:1687
+#: reference_editor.xml:1254
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -3330,7 +2464,7 @@ msgstr ""
 " LINESTRING(5 107,26 125,54 84,101 100)"
 
 #. Tag: para
-#: reference_editor.xml:1695
+#: reference_editor.xml:1262
 #, no-c-format
 msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.25 of "
@@ -3340,7 +2474,7 @@ msgstr ""
 "트링은 참조 멀티폴리곤과 함께 표출됩니다."
 
 #. Tag: programlisting
-#: reference_editor.xml:1699
+#: reference_editor.xml:1266
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -3372,620 +2506,1145 @@ msgstr ""
 "LINESTRING(26 125,54 84,101 100)"
 
 #. Tag: refname
-#: reference_editor.xml:1720
+#: reference_editor.xml:1287
 #, no-c-format
-msgid "ST_Transform"
-msgstr "ST_Transform"
+msgid "ST_SwapOrdinates"
+msgstr ""
 
 #. Tag: refpurpose
-#: reference_editor.xml:1722
-#, no-c-format
+#: reference_editor.xml:1288
+#, fuzzy, no-c-format
 msgid ""
-"Return a new geometry with its coordinates transformed to a different "
-"spatial reference."
-msgstr ""
-"입력 도형의 좌표를 다른 공간 참조 시스템으로 변환시킨 새 도형을 반환합니다."
-
-#. Tag: funcsynopsis
-#: reference_editor.xml:1727
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>to_proj</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Transform</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>from_proj</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>to_proj</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Transform</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>geom</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>from_proj</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef> </funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>to_proj</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Transform</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>from_proj</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>to_proj</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Transform</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>geom</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>from_proj</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>to_srid</"
-"parameter></paramdef> </funcprototype>"
-
-#. Tag: para
-#: reference_editor.xml:1760
-#, no-c-format
-msgid ""
-"Returns a new geometry with its coordinates transformed to a different "
-"spatial reference system. The destination spatial reference "
-"<varname>to_srid</varname> may be identified by a valid SRID integer "
-"parameter (i.e. it must exist in the <varname>spatial_ref_sys</varname> "
-"table). Alternatively, a spatial reference defined as a PROJ.4 string can be "
-"used for <varname>to_proj</varname> and/or <varname>from_proj</varname>, "
-"however these methods are not optimized. If the destination spatial "
-"reference system is expressed with a PROJ.4 string instead of an SRID, the "
-"SRID of the output geometry will be set to zero. With the exception of "
-"functions with <varname>from_proj</varname>, input geometries must have a "
-"defined SRID."
-msgstr ""
-"입력 도형의 좌표를 다른 공간 참조 시스템으로 변환시킨 새 도형을 반환합니다. "
-"유효한 SRID 정수 파라미터가 (<varname>spatial_ref_sys</varname> 테이블에 존재"
-"해야만 합니다) 목표 공간 참조 시스템 <varname>to_srid</varname> 를 식별할 수"
-"도 있습니다. 다른 방법으로는, <varname>to_proj</varname> 그리고/또는 "
-"<varname>from_proj</varname> 에 대해 PROJ.4 문자열로 정의된 공간참조 시스템"
-"을 쓸 수도 있는데, 최적화된 방법은 아닙니다. 목표 공간 참조 시스템을 SRID 대"
-"신 PROJ.4 문자열로 표현할 경우, 산출 도형의 SRID는 0으로 설정될 것입니다. "
-"<varname>from_proj</varname> 파라미터를 가지고 있는 경우를 제외하면, 입력 도"
-"형은 정의된 SRID를 가지고 있어야만 합니다."
-
-#. Tag: para
-#: reference_editor.xml:1774
-#, no-c-format
-msgid ""
-"ST_Transform is often confused with ST_SetSRID(). ST_Transform actually "
-"changes the coordinates of a geometry from one spatial reference system to "
-"another, while ST_SetSRID() simply changes the SRID identifier of the "
-"geometry."
-msgstr ""
-"ST_Transform 함수는 종종 ST_SetSRID()와 착각당합니다. ST_Transform이 실제로 "
-"도형의 좌표를 한 공간 참조 시스템에서 또다른 공간 참조 시스템으로 변환시키는 "
-"반면, ST_SetSRID()는 도형의 SRID 식별자를 변경할 뿐입니다."
-
-#. Tag: para
-#: reference_editor.xml:1779
-#, no-c-format
-msgid ""
-"Requires PostGIS be compiled with Proj support. Use <xref linkend="
-"\"PostGIS_Full_Version\"/> to confirm you have proj support compiled in."
-msgstr ""
-"PostGIS를 Proj 지원과 함께 컴파일해야 합니다. Proj 지원과 함께 컴파일됐는지 "
-"여부를 확인하려면 <xref linkend=\"PostGIS_Full_Version\"/> 을 이용하십시오."
-
-#. Tag: para
-#: reference_editor.xml:1783
-#, no-c-format
-msgid ""
-"If using more than one transformation, it is useful to have a functional "
-"index on the commonly used transformations to take advantage of index usage."
-msgstr ""
-"변환 작업을 한 번 이상 하는 경우, 인덱스 활용의 장점을 취하기 위해 흔히 쓰이"
-"는 변환 작업에 함수 인덱스를 설정하는 편이 좋습니다."
-
-#. Tag: para
-#: reference_editor.xml:1790
-#, no-c-format
-msgid "Enhanced: 2.3.0 support for direct PROJ.4 text was introduced."
-msgstr "개선 사항: 2.3.0버전부터 PROJ.4 텍스트를 직접 지원하기 시작했습니다."
-
-#. Tag: para
-#: reference_editor.xml:1791
-#, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.6"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.6"
-
-#. Tag: para
-#: reference_editor.xml:1799
-#, no-c-format
-msgid "Change Massachusetts state plane US feet geometry to WGS 84 long lat"
-msgstr ""
-"매사추세츠 주의 미국 피트 단위 평면 상에 있는 도형을 WGS84 경위도로 변경하십"
-"시오."
-
-#. Tag: programlisting
-#: reference_editor.xml:1800
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
-"2967416,743238 2967450,\n"
-"        743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As "
-"wgs_geom;\n"
-"\n"
-" wgs_geom\n"
-"---------------------------\n"
-" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 "
-"42.3903829478009,\n"
-"-71.1775844305465 42.3903826677917,-71.1775825927231 "
-"42.3902893647987,-71.177684\n"
-"8522251 42.3902896512902));\n"
-"(1 row)\n"
-"\n"
-"--3D Circular String example\n"
-"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;"
-"CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 "
-"2967416 3,743238 2967416 4)'),4326));\n"
-"\n"
-"                                 st_asewkt\n"
-"--------------------------------------------------------------------------------------\n"
-" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 "
-"1,-71.1776843766326 42.3903829478009 2,\n"
-" -71.1775844305465 42.3903826677917 3,\n"
-" -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
-msgstr ""
-"SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
-"2967416,743238 2967450,\n"
-"        743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As "
-"wgs_geom;\n"
-"\n"
-" wgs_geom\n"
-"---------------------------\n"
-" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 "
-"42.3903829478009,\n"
-"-71.1775844305465 42.3903826677917,-71.1775825927231 "
-"42.3902893647987,-71.177684\n"
-"8522251 42.3902896512902));\n"
-"(1 row)\n"
-"\n"
-"-- 3D 원형 스트링 예시\n"
-"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;"
-"CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 "
-"2967416 3,743238 2967416 4)'),4326));\n"
-"\n"
-"                                 st_asewkt\n"
-"--------------------------------------------------------------------------------------\n"
-" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 "
-"1,-71.1776843766326 42.3903829478009 2,\n"
-" -71.1775844305465 42.3903826677917 3,\n"
-" -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
-
-#. Tag: para
-#: reference_editor.xml:1801
-#, no-c-format
-msgid ""
-"Example of creating a partial functional index. For tables where you are not "
-"sure all the geometries will be filled in, its best to use a partial index "
-"that leaves out null geometries which will both conserve space and make your "
-"index smaller and more efficient."
-msgstr ""
-"부분 함수의 인덱스를 생성하는 예시입니다. 사용자가 모든 도형이 어디에 채워질"
-"지 확신하지 못 하는 테이블의 경우, 최선의 방법은 NULL 도형을 제외하는 부분 인"
-"덱스를 이용하는 것입니다. 이렇게 하면 공간도 절약하고 사용자의 인덱스를 더 작"
-"고 효율적으로 만들 수 있습니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1803
-#, no-c-format
-msgid ""
-"CREATE INDEX idx_the_geom_26986_parcels\n"
-"  ON parcels\n"
-"  USING gist\n"
-"  (ST_Transform(the_geom, 26986))\n"
-"  WHERE the_geom IS NOT NULL;"
-msgstr ""
-"CREATE INDEX idx_the_geom_26986_parcels\n"
-"  ON parcels\n"
-"  USING gist\n"
-"  (ST_Transform(the_geom, 26986))\n"
-"  WHERE the_geom IS NOT NULL;"
-
-#. Tag: para
-#: reference_editor.xml:1805
-#, no-c-format
-msgid ""
-"Examples of using PROJ.4 text to transform with custom spatial references."
-msgstr ""
-"예시 - 사용자 지정 공간 참조 시스템으로 변환하는 데 PROJ.4 텍스트를 이용"
-
-#. Tag: programlisting
-#: reference_editor.xml:1806
-#, no-c-format
-msgid ""
-"-- Find intersection of two polygons near the North pole, using a custom "
-"Gnomic projection\n"
-"-- See http://boundlessgeo.com/2012/02/flattening-the-peel/\n"
-" WITH data AS (\n"
-"   SELECT\n"
-"     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', "
-"4326) AS p1,\n"
-"     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', "
-"4326) AS p2,\n"
-"     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom\n"
-" )\n"
-" SELECT ST_AsText(\n"
-"   ST_Transform(\n"
-"     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),\n"
-"   gnom, 4326))\n"
-" FROM data;\n"
-"                                          st_astext\n"
-" --------------------------------------------------------------------------------\n"
-"  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 "
-"74.053793645338))"
-msgstr ""
-"-- 북극 가까이 있는, 구심 투영(gnomonic projection)을 이용하는 폴리곤 2개가 "
-"교차하는 지점을 찾습니다.\n"
-"-- http://boundlessgeo.com/2012/02/flattening-the-peel/ 참조\n"
-" WITH data AS (\n"
-"   SELECT\n"
-"     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', "
-"4326) AS p1,\n"
-"     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', "
-"4326) AS p2,\n"
-"     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom\n"
-" )\n"
-" SELECT ST_AsText(\n"
-"   ST_Transform(\n"
-"     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),\n"
-"   gnom, 4326))\n"
-" FROM data;\n"
-"                                          st_astext\n"
-" --------------------------------------------------------------------------------\n"
-"  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 "
-"74.053793645338))"
-
-#. Tag: title
-#: reference_editor.xml:1810
-#, no-c-format
-msgid "Configuring transformation behaviour"
-msgstr "변환 습성 설정"
-
-#. Tag: para
-#: reference_editor.xml:1811
-#, no-c-format
-msgid ""
-"Sometimes coordinate transformation involving a grid-shift can fail, for "
-"example if PROJ.4 has not been built with grid-shift files or the coordinate "
-"does not lie within the range for which the grid shift is defined. By "
-"default, PostGIS will throw an error if a grid shift file is not present, "
-"but this behaviour can be configured on a per-SRID basis either by testing "
-"different <varname>to_proj</varname> values of PROJ.4 text, or altering the "
-"<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
-"varname> table."
-msgstr ""
-"때때로 그리드 이동(grid-shift)과 관련된 좌표 변환이 실패할 수도 있습니다. 예"
-"를 들어 PROJ.4가 그리드 이동 파일과 함께 빌드되지 않았거나, 좌표가 그리드 이"
-"동이 정의된 범위(range) 내부에 떨어지지 않는 경우입니다. 그리드 이동 파일이 "
-"없을 경우 PostGIS는 기본적으로 오류를 내지만, PROJ.4 텍스트의 서로 다른 "
-"<varname>to_proj</varname> 값들을 테스트하거나 또는<varname>spatial_ref_sys</"
-"varname> 테이블 내부의 <varname>proj4text</varname> 값을 수정해서 각 SRID마"
-"다 이 습성을 다르게 설정할 수 있습니다."
-
-#. Tag: para
-#: reference_editor.xml:1821
-#, no-c-format
-msgid ""
-"For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
-"the following +nadgrids parameter:"
-msgstr ""
-"예를 들어, proj4text 파라미터 \"+datum=NAD87\"은 다음 \"+nadgrids\" 파라미터"
-"를 간략화한 것입니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1822
-#, no-c-format
-msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
-msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
-
-#. Tag: para
-#: reference_editor.xml:1823
-#, no-c-format
-msgid ""
-"The @ prefix means no error is reported if the files are not present, but if "
-"the end of the list is reached with no file having been appropriate (ie. "
-"found and overlapping) then an error is issued."
-msgstr ""
-"접두사 \"@\"는 파일이 없는 경우에도 오류를 보고하지 말라는 뜻이지만, 제대로 "
-"된 파일 없이 목록의 마지막까지 가는 경우(예를 들어 찾아서 겹쳐졌을 경우)에는 "
-"오류를 보고합니다."
-
-#. Tag: para
-#: reference_editor.xml:1824
-#, no-c-format
-msgid ""
-"If, conversely, you wanted to ensure that at least the standard files were "
-"present, but that if all files were scanned without a hit a null "
-"transformation is applied you could use:"
-msgstr ""
-"만약 반대로 사용자가 적어도 표준 파일이 존재하는 것을 확인하려 하지만 모든 파"
-"일을 스캔했는데도 발견하지 못 한 경우, 다음 NULL 변환을 적용할 수 있습니다:"
-
-#. Tag: programlisting
-#: reference_editor.xml:1825
-#, no-c-format
-msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
-msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
-
-#. Tag: para
-#: reference_editor.xml:1826
-#, no-c-format
-msgid ""
-"The null grid shift file is a valid grid shift file covering the whole world "
-"and applying no shift. So for a complete example, if you wanted to alter "
-"PostGIS so that transformations to SRID 4267 that didn't lie within the "
-"correct range did not throw an ERROR, you would use the following:"
-msgstr ""
-"NULL 그리드 이동 파일은 전세계를 커버하며 어떤 이동도 시키지 않는 유효한 그리"
-"드 이동 파일입니다. 따라서 예시를 완전하게 하기 위해, 사용자가 PostGIS를 수정"
-"해서 SRID 4267로 변환시 정확한 범위 안에 떨어지지 않더라도 오류를 보고하지 않"
-"게 하려면, 다음과 같이 하면 됩니다:"
-
-#. Tag: programlisting
-#: reference_editor.xml:1827
-#, no-c-format
-msgid ""
-"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
-"+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid "
-"= 4267;"
-msgstr ""
-"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
-"+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid "
-"= 4267;"
-
-#. Tag: para
-#: reference_editor.xml:1834
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"UpdateGeometrySRID\"/>"
-msgstr ""
-", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"UpdateGeometrySRID\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1840
-#, no-c-format
-msgid "ST_Translate"
-msgstr "ST_Translate"
-
-#. Tag: refpurpose
-#: reference_editor.xml:1842
-#, no-c-format
-msgid "Translate a geometry by given offsets."
-msgstr "주어진 오프셋으로 도형을 변형시킵니다."
-
-#. Tag: funcsynopsis
-#: reference_editor.xml:1846
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_Translate</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>deltax</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>deltay</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Translate</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>deltax</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>deltay</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>deltaz</parameter></paramdef> </funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Translate</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>deltax</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>deltay</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Translate</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>deltax</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>deltay</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>deltaz</parameter></paramdef> </funcprototype>"
-
-#. Tag: para
-#: reference_editor.xml:1866
-#, no-c-format
-msgid ""
-"Returns a new geometry whose coordinates are translated delta x,delta y,"
-"delta z units. Units are based on the units defined in spatial reference "
-"(SRID) for this geometry."
-msgstr ""
-"좌표가 Δx, Δy, Δz 단위로 번형된 새로운 도형을 반환합니다. 이 단위는 해당 도형"
-"의 공간 참조(SRID)가 정의하는 단위를 기반으로 합니다."
-
-#. Tag: para
-#: reference_editor.xml:1878
-#, no-c-format
-msgid "Move a point 1 degree longitude"
-msgstr "포인트를 경도 1도 이동합니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1879
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 "
-"42.37)',4326),1,0)) As wgs_transgeomtxt;\n"
-"\n"
-"        wgs_transgeomtxt\n"
-"        ---------------------\n"
-"        POINT(-70.01 42.37)"
-msgstr ""
-"SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 "
-"42.37)',4326),1,0)) As wgs_transgeomtxt;\n"
-"\n"
-"        wgs_transgeomtxt\n"
-"        ---------------------\n"
-"        POINT(-70.01 42.37)"
-
-#. Tag: para
-#: reference_editor.xml:1880
-#, no-c-format
-msgid "Move a linestring 1 degree longitude and 1/2 degree latitude"
-msgstr "라인스트링을 경도 1도, 위도 1/2도 이동합니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1881
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 "
-"42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n"
-"                   wgs_transgeomtxt\n"
-"        ---------------------------------------\n"
-"        LINESTRING(-70.01 42.87,-70.11 42.88)"
-msgstr ""
-"SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 "
-"42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n"
-"                   wgs_transgeomtxt\n"
-"        ---------------------------------------\n"
-"        LINESTRING(-70.01 42.87,-70.11 42.88)"
-
-#. Tag: para
-#: reference_editor.xml:1882
-#, no-c-format
-msgid "Move a 3d point"
-msgstr "3차원 포인트를 이동합니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1883
-#, no-c-format
-msgid ""
-"SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n"
-"        st_asewkt\n"
-"        ---------\n"
-"        POINT(5 12 3)"
-msgstr ""
-"SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n"
-"        st_asewkt\n"
-"        ---------\n"
-"        POINT(5 12 3)"
-
-#. Tag: para
-#: reference_editor.xml:1884
-#, no-c-format
-msgid "Move a curve and a point"
-msgstr "커브와 포인트를 이동합니다."
-
-#. Tag: programlisting
-#: reference_editor.xml:1885
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 "
-"3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n"
-"                                                                                                                 st_astext\n"
-"------------------------------------------------------------------------------------------------------------\n"
-" GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 "
-"7.1213,7 9,9 11,5 5)),POINT(2 5))"
-msgstr ""
-"SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 "
-"3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n"
-"                                                                                                                 st_astext\n"
-"------------------------------------------------------------------------------------------------------------\n"
-" GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 "
-"7.1213,7 9,9 11,5 5)),POINT(2 5))"
-
-#. Tag: para
-#: reference_editor.xml:1891
-#, no-c-format
-msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
-msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:1897
-#, no-c-format
-msgid "ST_TransScale"
-msgstr "ST_TransScale"
-
-#. Tag: refpurpose
-#: reference_editor.xml:1899
-#, no-c-format
-msgid "Translate a geometry by given factors and offsets."
-msgstr "주어진 인수 및 오프셋으로 도형을 변형시킵니다."
+"Returns a version of the given geometry with given ordinate values swapped."
+msgstr "꼭짓점들의 순서가 반대인 도형을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1904
-#, no-c-format
+#: reference_editor.xml:1295
+#, fuzzy, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_TransScale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
+"<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_TransScale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
+"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1918
-#, no-c-format
-msgid ""
-"Translates the geometry using the deltaX and deltaY args, then scales it "
-"using the XFactor, YFactor args, working in 2D only."
-msgstr ""
-"Δx와 Δy 독립 변수(arg)를 이용해서 도형을 변형한 다음, XFactor, YFactor 독립 "
-"변수를 이용해 크기를 조정합니다. 2차원에서만 작동합니다."
+#: reference_editor.xml:1305
+#, fuzzy, no-c-format
+msgid "Returns a version of the given geometry with given ordinates swapped."
+msgstr "꼭짓점들의 순서가 반대인 도형을 반환합니다."
 
 #. Tag: para
-#: reference_editor.xml:1921
+#: reference_editor.xml:1308
 #, no-c-format
 msgid ""
-"<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is short-"
-"hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
-"deltaX*XFactor, deltaY*YFactor, 0)</code>."
+"The <varname>ords</varname> parameter is a 2-characters string naming the "
+"ordinates to swap. Valid names are: x,y,z and m."
 msgstr ""
-"<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> 는 "
-"<code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
-"deltaX*XFactor, deltaY*YFactor, 0)</code> 을 간략화한 것입니다."
+
+#. Tag: title
+#: reference_editor.xml:1321
+#, fuzzy, no-c-format
+msgid "Example"
+msgstr "예시"
 
 #. Tag: programlisting
-#: reference_editor.xml:1937
+#: reference_editor.xml:1322
 #, no-c-format
 msgid ""
-"SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
-"0.5, 1, 1, 2));\n"
-"                  st_asewkt\n"
-"-----------------------------\n"
-" LINESTRING(1.5 6 3,1.5 4 1)\n"
-"\n"
-"\n"
-"--Buffer a point to get an approximation of a circle, convert to curve and "
-"then translate 1,2 and scale it 3,4\n"
-"  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', "
-"3)),1,2,3,4));\n"
-"                                                                                                                  st_astext\n"
-"------------------------------------------------------------------------------------------------------------------------------\n"
-" CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 "
-"2264,698.636038969321 2284.48528137424,714 2276))"
+"<![CDATA[\n"
+"-- Scale M value by 2\n"
+"SELECT ST_AsText(\n"
+"  ST_SwapOrdinates(\n"
+"    ST_Scale(\n"
+"      ST_SwapOrdinates(g,'xm'),\n"
+"      2, 1\n"
+"    ),\n"
+"  'xm')\n"
+") FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;\n"
+"     st_astext\n"
+"--------------------\n"
+" POINT ZM (0 0 0 4)\n"
+"                 ]]>"
 msgstr ""
-"SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
-"0.5, 1, 1, 2));\n"
-"                  st_asewkt\n"
-"-----------------------------\n"
-" LINESTRING(1.5 6 3,1.5 4 1)\n"
-"\n"
-"\n"
-"-- 포인트에 버퍼를 부여해서 원에 가깝게 만들고, 커브로 변환한 다음 1, 2값으"
-"로 번역하고 3, 4값으로 크기를 조정합니다.\n"
-"  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', "
-"3)),1,2,3,4));\n"
-"                                                                                                                  st_astext\n"
-"------------------------------------------------------------------------------------------------------------------------------\n"
-" CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 "
-"2264,698.636038969321 2284.48528137424,714 2276))"
 
-#. Tag: para
-#: reference_editor.xml:1944
-#, no-c-format
-msgid ", <xref linkend=\"ST_Translate\"/>"
-msgstr ", <xref linkend=\"ST_Translate\"/>"
+#~ msgid "ST_Affine"
+#~ msgstr "ST_Affine"
+
+#~ msgid "Apply a 3d affine transformation to a geometry."
+#~ msgstr "도형에 3차원 아핀 변환을 적용합니다."
+
+#~ msgid ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Affine</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>a</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>b</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>c</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>d</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>e</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>f</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>g</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>h</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>i</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>xoff</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>yoff</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>zoff</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Affine</function></funcdef> <paramdef><type>geometry </type> "
+#~ "<parameter>geomA</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>a</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>b</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>d</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>e</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>xoff</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>yoff</parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Affine</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>a</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>b</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>c</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>d</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>e</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>f</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>g</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>h</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>i</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>xoff</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>yoff</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>zoff</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Affine</function></funcdef> <paramdef><type>geometry </type> "
+#~ "<parameter>geomA</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>a</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>b</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>d</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>e</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>xoff</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>yoff</parameter></paramdef> </funcprototype>"
+
+#~ msgid ""
+#~ "Applies a 3d affine transformation to the geometry to do things like "
+#~ "translate, rotate, scale in one step."
+#~ msgstr ""
+#~ "변형, 회전, 축척 변경 등과 같은 작업을 한번에 처리하기 위해 도형에 3차원 "
+#~ "아핀 변환을 적용합니다."
+
+#~ msgid ""
+#~ "Version 1: The call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, "
+#~ "h, i, xoff, yoff, zoff) </programlisting> represents the transformation "
+#~ "matrix <programlisting>/ a  b  c  xoff \\\n"
+#~ "| d  e  f  yoff |\n"
+#~ "| g  h  i  zoff |\n"
+#~ "\\ 0  0  0     1 /</programlisting> and the vertices are transformed as "
+#~ "follows: <programlisting>x' = a*x + b*y + c*z + xoff\n"
+#~ "y' = d*x + e*y + f*z + yoff\n"
+#~ "z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale "
+#~ "functions below are expressed via such an affine transformation."
+#~ msgstr ""
+#~ "버전 1: <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, "
+#~ "yoff, zoff) </programlisting> 함수 호출은 변환 매트릭스 <programlisting>/ "
+#~ "a  b  c  xoff \\\n"
+#~ "| d  e  f  yoff |\n"
+#~ "| g  h  i  zoff |\n"
+#~ "\\ 0  0  0     1 /</programlisting> 를 표현하며, 꼭짓점은 다음과 같이 변환"
+#~ "됩니다: <programlisting>x' = a*x + b*y + c*z + xoff\n"
+#~ "y' = d*x + e*y + f*z + yoff\n"
+#~ "z' = g*x + h*y + i*z + zoff</programlisting> 이 단원에 정리된 모든 번역/크"
+#~ "기 조정 함수들은 이런 아핀 변환을 통해 표현됩니다."
+
+#~ msgid ""
+#~ "Version 2: Applies a 2d affine transformation to the geometry. The call "
+#~ "<programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting> "
+#~ "represents the transformation matrix <programlisting>/  a  b  0  xoff  "
+#~ "\\       /  a  b  xoff  \\\n"
+#~ "|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n"
+#~ "|  0  0  1     0  |       \\  0  0     1  /\n"
+#~ "\\  0  0  0     1  /</programlisting> and the vertices are transformed as "
+#~ "follows: <programlisting>x' = a*x + b*y + xoff\n"
+#~ "y' = d*x + e*y + yoff\n"
+#~ "z' = z </programlisting> This method is a subcase of the 3D method above."
+#~ msgstr ""
+#~ "버전 2: 도형에 2차원 아핀 변환을 적용합니다. "
+#~ "<programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting> "
+#~ "함수 호출은 변환 매트릭스 <programlisting>/  a  b  0  xoff  \\       /  "
+#~ "a  b  xoff  \\\n"
+#~ "|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n"
+#~ "|  0  0  1     0  |       \\  0  0     1  /\n"
+#~ "\\  0  0  0     1  /</programlisting> 를 표현하며, 꼭짓점은 다음과 같이 변"
+#~ "환됩니다: <programlisting>x' = a*x + b*y + xoff\n"
+#~ "y' = d*x + e*y + yoff\n"
+#~ "z' = z </programlisting> 이 메소드는 버전 1 3D 메소드의 하위 사례입니다."
+
+#~ msgid ""
+#~ "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
+#~ "introduced."
+#~ msgstr ""
+#~ "개선 사항: 2.0.0 버전부터 2.0.0 버전부터 다면체 표면, 삼각형 및 TIN을 지원"
+#~ "합니다."
+
+#~ msgid "Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2"
+#~ msgstr ""
+#~ "1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 Affine에서 "
+#~ "ST_Affine으로 변경했습니다."
+
+#~ msgid ""
+#~ "Prior to 1.3.4, this function crashes if used with geometries that "
+#~ "contain CURVES. This is fixed in 1.3.4+"
+#~ msgstr ""
+#~ "1.3.4 미만 버전에서 이 함수에 만곡 도형(curve)을 담고 있는 도형을 입력하"
+#~ "면 충돌이 일어났습니다. 1.3.4 버전부터 이 버그가 해결됐습니다."
+
+#~ msgid ""
+#~ "--Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand "
+#~ "for doing ST_Rotate();\n"
+#~ " SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  "
+#~ "sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,\n"
+#~ "         ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate\n"
+#~ "        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As "
+#~ "the_geom) As foo;\n"
+#~ "        using_affine         |        using_rotate\n"
+#~ "-----------------------------+-----------------------------\n"
+#~ " LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "--Rotate a 3d line 180 degrees in both the x and z axis\n"
+#~ "SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), "
+#~ "cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))\n"
+#~ "        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As "
+#~ "the_geom) As foo;\n"
+#~ "           st_asewkt\n"
+#~ "-------------------------------\n"
+#~ " LINESTRING(-1 -2 -3,-1 -4 -3)\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "-- Z축을 기준으로 3D 라인을 180도 회전시킵니다. ST_Rotate() 함수를 풀어 "
+#~ "쓴 방법이라는 점에 주의하십시오.\n"
+#~ " SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  "
+#~ "sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,\n"
+#~ "         ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate\n"
+#~ "        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As "
+#~ "the_geom) As foo;\n"
+#~ "        using_affine         |        using_rotate\n"
+#~ "-----------------------------+-----------------------------\n"
+#~ " LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "-- X 및 Z축에 대해 3D 라인을 180도 회전시킵니다.\n"
+#~ "SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), "
+#~ "cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))\n"
+#~ "        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As "
+#~ "the_geom) As foo;\n"
+#~ "           st_asewkt\n"
+#~ "-------------------------------\n"
+#~ " LINESTRING(-1 -2 -3,-1 -4 -3)\n"
+#~ "(1 row)"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
+#~ "linkend=\"ST_TransScale\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
+#~ "linkend=\"ST_TransScale\"/>"
+
+#~ msgid "requires GEOS &gt;= 2.1.0"
+#~ msgstr "GEOS 2.1.0 이상 버전이 필요합니다."
+
+#~ msgid "ST_Rotate"
+#~ msgstr "ST_Rotate"
+
+#~ msgid "Rotate a geometry rotRadians counter-clockwise about an origin."
+#~ msgstr ""
+#~ "원점(origin)을 기준으로 도형의 rotRadians를 반시계 방향으로 회전시킵니다."
+
+#~ msgid ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Rotate</function></"
+#~ "funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></"
+#~ "paramdef> <paramdef><type>float</type> <parameter>rotRadians</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
+#~ "<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> "
+#~ "<parameter>rotRadians</parameter></paramdef> <paramdef><type>float</type> "
+#~ "<parameter>x0</parameter></paramdef> <paramdef><type>float</type> "
+#~ "<parameter>y0</parameter></paramdef> </funcprototype> <funcprototype> "
+#~ "<funcdef>geometry <function>ST_Rotate</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> "
+#~ "<paramdef><type>geometry</type> <parameter>pointOrigin</parameter></"
+#~ "paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Rotate</function></"
+#~ "funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></"
+#~ "paramdef> <paramdef><type>float</type> <parameter>rotRadians</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
+#~ "<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> "
+#~ "<parameter>rotRadians</parameter></paramdef> <paramdef><type>float</type> "
+#~ "<parameter>x0</parameter></paramdef> <paramdef><type>float</type> "
+#~ "<parameter>y0</parameter></paramdef> </funcprototype> <funcprototype> "
+#~ "<funcdef>geometry <function>ST_Rotate</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> "
+#~ "<paramdef><type>geometry</type> <parameter>pointOrigin</parameter></"
+#~ "paramdef> </funcprototype>"
+
+#~ msgid ""
+#~ "Rotates geometry rotRadians counter-clockwise about the origin. The "
+#~ "rotation origin can be specified either as a POINT geometry, or as x and "
+#~ "y coordinates. If the origin is not specified, the geometry is rotated "
+#~ "about POINT(0 0)."
+#~ msgstr ""
+#~ "원점(origin)을 기준으로 도형의 rotRadians를 반시계 방향으로 회전시킵니다. "
+#~ "회전 원점을 포인트 도형 또는 x, y 좌표로 설정할 수 있습니다.원점을 설정하"
+#~ "지 않을 경우, POINT(0 0)을 중심으로 도형을 회전시킵니다."
+
+#~ msgid ""
+#~ "Enhanced: 2.0.0 additional parameters for specifying the origin of "
+#~ "rotation were added."
+#~ msgstr ""
+#~ "개선 사항: 2.0.0 버전에서 회전 원점을 설정하는 추가 파라미터가 추가됐습니"
+#~ "다."
+
+#~ msgid "Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2"
+#~ msgstr ""
+#~ "1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 Rotate에서 "
+#~ "ST_Rotate로 변경했습니다."
+
+#~ msgid ""
+#~ "--Rotate 180 degrees\n"
+#~ "SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));\n"
+#~ "               st_asewkt\n"
+#~ "---------------------------------------\n"
+#~ " LINESTRING(-50 -160,-50 -50,-100 -50)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "--Rotate 30 degrees counter-clockwise at x=50, y=160\n"
+#~ "SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, "
+#~ "50, 160));\n"
+#~ "                                 st_asewkt\n"
+#~ "---------------------------------------------------------------------------\n"
+#~ " LINESTRING(50 160,105 64.7372055837117,148.301270189222 "
+#~ "89.7372055837117)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "--Rotate 60 degrees clockwise from centroid\n"
+#~ "SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))\n"
+#~ "FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS "
+#~ "foo;\n"
+#~ "                           st_asewkt\n"
+#~ "--------------------------------------------------------------\n"
+#~ " LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "-- 180도 회전\n"
+#~ "SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));\n"
+#~ "st_asewkt\n"
+#~ "---------------------------------------\n"
+#~ " LINESTRING(-50 -160,-50 -50,-100 -50)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "-- x=50, y=160 좌표를 중심으로 반시계 방향 30도 회전\n"
+#~ "SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, "
+#~ "50, 160));\n"
+#~ "st_asewkt\n"
+#~ "---------------------------------------------------------------------------\n"
+#~ " LINESTRING(50 160,105 64.7372055837117,148.301270189222 "
+#~ "89.7372055837117)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "-- 중심점 기준으로 시계 방향으로 60도 회전\n"
+#~ "SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))\n"
+#~ "FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS "
+#~ "foo;\n"
+#~ "st_asewkt\n"
+#~ "--------------------------------------------------------------\n"
+#~ " LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)\n"
+#~ "(1 row)"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
+#~ "linkend=\"ST_RotateZ\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
+#~ "linkend=\"ST_RotateZ\"/>"
+
+#~ msgid "ST_RotateX"
+#~ msgstr "ST_RotateX"
+
+#~ msgid "Rotate a geometry rotRadians about the X axis."
+#~ msgstr "X축을 기준으로 도형의 rotRadians를 회전시킵니다."
+
+#~ msgid ""
+#~ "<funcdef>geometry <function>ST_RotateX</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>geometry <function>ST_RotateX</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+
+#~ msgid "Rotate a geometry geomA - rotRadians about the X axis."
+#~ msgstr "X축을 기준으로 geomA 도형의 rotRadians를 회전시킵니다."
+
+#~ msgid ""
+#~ "<code>ST_RotateX(geomA, rotRadians)</code> is short-hand for "
+#~ "<code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, "
+#~ "sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
+#~ msgstr ""
+#~ "<code>ST_RotateX(geomA, rotRadians)</code> 함수는 <code>ST_Affine(geomA, "
+#~ "1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
+#~ "cos(rotRadians), 0, 0, 0)</code> 을 간략화한 것입니다."
+
+#~ msgid ""
+#~ "Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2"
+#~ msgstr ""
+#~ "1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 RotateX에서 "
+#~ "ST_RotateX로 변경했습니다."
+
+#~ msgid ""
+#~ "--Rotate a line 90 degrees along x-axis\n"
+#~ "SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
+#~ "pi()/2));\n"
+#~ "                 st_asewkt\n"
+#~ "---------------------------\n"
+#~ " LINESTRING(1 -3 2,1 -1 1)"
+#~ msgstr ""
+#~ "-- X축을 따라 라인을 90도 회전\n"
+#~ "SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
+#~ "pi()/2));\n"
+#~ "st_asewkt\n"
+#~ "---------------------------\n"
+#~ " LINESTRING(1 -3 2,1 -1 1)"
+
+#~ msgid ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
+#~ msgstr ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
+
+#~ msgid "ST_RotateY"
+#~ msgstr "ST_RotateY"
+
+#~ msgid "Rotate a geometry rotRadians about the Y axis."
+#~ msgstr "Y축을 기준으로 도형의 rotRadians를 회전시킵니다."
+
+#~ msgid ""
+#~ "<funcdef>geometry <function>ST_RotateY</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>geometry <function>ST_RotateY</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+
+#~ msgid "Rotate a geometry geomA - rotRadians about the y axis."
+#~ msgstr "Y축을 기준으로 geomA 도형의 rotRadians를 회전시킵니다."
+
+#~ msgid ""
+#~ "<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for "
+#~ "<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -"
+#~ "sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
+#~ msgstr ""
+#~ "<code>ST_RotateY(geomA, rotRadians)</code> 함수는 <code>ST_Affine(geomA, "
+#~ "cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, "
+#~ "cos(rotRadians), 0, 0, 0)</code> 을 간략화한 것입니다."
+
+#~ msgid ""
+#~ "Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2"
+#~ msgstr ""
+#~ "1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 RotateY에서 "
+#~ "ST_RotateY로 변경했습니다."
+
+#~ msgid ""
+#~ "--Rotate a line 90 degrees along y-axis\n"
+#~ " SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
+#~ "pi()/2));\n"
+#~ "                 st_asewkt\n"
+#~ "---------------------------\n"
+#~ " LINESTRING(3 2 -1,1 1 -1)"
+#~ msgstr ""
+#~ "-- Y축을 따라 라인을 90도 회전\n"
+#~ " SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
+#~ "pi()/2));\n"
+#~ "                 st_asewkt\n"
+#~ "---------------------------\n"
+#~ " LINESTRING(3 2 -1,1 1 -1)"
+
+#~ msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
+#~ msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
+
+#~ msgid "ST_RotateZ"
+#~ msgstr "ST_RotateZ"
+
+#~ msgid "Rotate a geometry rotRadians about the Z axis."
+#~ msgstr "Z축을 기준으로 도형의 rotRadians를 회전시킵니다."
+
+#~ msgid ""
+#~ "<funcdef>geometry <function>ST_RotateZ</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>geometry <function>ST_RotateZ</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+
+#~ msgid "Rotate a geometry geomA - rotRadians about the Z axis."
+#~ msgstr "Z축을 기준으로 geomA 도형의 rotRadians를 회전시킵니다."
+
+#~ msgid "This is a synonym for ST_Rotate"
+#~ msgstr "이 함수는 ST_Rotate 함수와 동일합니다."
+
+#~ msgid ""
+#~ "<code>ST_RotateZ(geomA, rotRadians)</code> is short-hand for <code>SELECT "
+#~ "ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
+#~ "cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
+#~ msgstr ""
+#~ "<code>ST_RotateZ(geomA, rotRadians)</code> 함수는 <code>SELECT "
+#~ "ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
+#~ "cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code> 을 간략화한 것입니다."
+
+#~ msgid ""
+#~ "Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2"
+#~ msgstr ""
+#~ "1.1.2 버전부터 사용할 수 있습니다. 1.2.2 버전에서 함수명을 RotateZ에서 "
+#~ "ST_RotateZ로 변경했습니다."
+
+#~ msgid ""
+#~ "--Rotate a line 90 degrees along z-axis\n"
+#~ "SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
+#~ "pi()/2));\n"
+#~ "                 st_asewkt\n"
+#~ "---------------------------\n"
+#~ " LINESTRING(-2 1 3,-1 1 1)\n"
+#~ "\n"
+#~ " --Rotate a curved circle around z-axis\n"
+#~ "SELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))\n"
+#~ "FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), "
+#~ "3)) As the_geom) As foo;\n"
+#~ "\n"
+#~ "                                                                                                           st_asewkt\n"
+#~ "----------------------------------------------------------------------------------------------------------------------------\n"
+#~ " CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 "
+#~ "236.12132034356,-564 234,-569.12132034356 231.87867965644,-567 237))"
+#~ msgstr ""
+#~ "-- Z축을 따라 라인을 90도 회전\n"
+#~ "SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
+#~ "pi()/2));\n"
+#~ "st_asewkt\n"
+#~ "---------------------------\n"
+#~ " LINESTRING(-2 1 3,-1 1 1)\n"
+#~ "\n"
+#~ " -- Z축을 기준으로 만곡 원(curved circle)을 회전\n"
+#~ "SELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))\n"
+#~ "FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), "
+#~ "3)) As the_geom) As foo;\n"
+#~ "\n"
+#~ "                                                                                                           st_asewkt\n"
+#~ "----------------------------------------------------------------------------------------------------------------------------\n"
+#~ " CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 "
+#~ "236.12132034356,-564 234,-569.12132034356 231.87867965644,-567 237))"
+
+#~ msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
+#~ msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
+
+#~ msgid "ST_Scale"
+#~ msgstr "ST_Scale"
+
+#~ msgid "Scale a geometry by given factors."
+#~ msgstr "주어진 인수로 도형의 크기를 조정합니다."
+
+#~ msgid ""
+#~ "Scales the geometry to a new size by multiplying the ordinates with the "
+#~ "corresponding factor parameters."
+#~ msgstr ""
+#~ "좌표를 각각 대응하는 인수 파라미터로 곱해서 도형을 새로운 크기로 조정합니"
+#~ "다."
+
+#~ msgid ""
+#~ "The version taking a geometry as the <varname>factor</varname> parameter "
+#~ "allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all "
+#~ "supported dimensions. Missing dimensions in the <varname>factor</varname> "
+#~ "point are equivalent to no scaling the corresponding dimension."
+#~ msgstr ""
+#~ "도형을 <varname>factor</varname> 파라미터로 입력받는 버전은 2D, 3DM, 3DZ, "
+#~ "4D 포인트를 패스해서 지원하는 모든 차원에 대해 크기 조정(scale) 인수를 설"
+#~ "정할 수 있습니다. <varname>factor</varname> 포인트에 없는 차원은 해당 차원"
+#~ "의 크기 조정 대상에서 제외됩니다."
+
+#~ msgid "Availability: 1.1.0."
+#~ msgstr "1.1.0 버전부터 사용할 수 있습니다."
+
+#~ msgid ""
+#~ "Enhanced: 2.2.0 support for scaling all dimension (geometry parameter) "
+#~ "was introduced."
+#~ msgstr "개선 사항: 2.2.0 버전부터 모든 차원(도형 파라미터)을 지원합니다."
+
+#~ msgid ", <xref linkend=\"ST_TransScale\"/>"
+#~ msgstr ", <xref linkend=\"ST_TransScale\"/>"
+
+#~ msgid "ST_SetSRID"
+#~ msgstr "ST_SetSRID"
+
+#~ msgid "Set the SRID on a geometry to a particular integer value."
+#~ msgstr "도형에 적용된 SRID를 특정 정수값으로 설정합니다."
+
+#~ msgid ""
+#~ "Sets the SRID on a geometry to a particular integer value. Useful in "
+#~ "constructing bounding boxes for queries."
+#~ msgstr ""
+#~ "도형에 적용된 SRID를 특정 정수값으로 설정합니다. 쿼리를 위해 경계 상자를 "
+#~ "작성하는 작업에 유용합니다."
+
+#~ msgid ""
+#~ "This function does not transform the geometry coordinates in any way - it "
+#~ "simply sets the meta data defining the spatial reference system the "
+#~ "geometry is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you "
+#~ "want to transform the geometry into a new projection."
+#~ msgstr ""
+#~ "이 함수는 도형 좌표를 어떤 식으로든 변환하지 않습니다. 해당 도형에 적용됐"
+#~ "다고 가정되는 공간 참조 시스템을 정의하는 메타데이터를 설정할 뿐입니다. 도"
+#~ "형을 새 투영법으로 변환하고자 하는 경우엔 <xref linkend=\"ST_Transform\"/"
+#~ "> 을 이용하십시오."
+
+#~ msgid "&sfs_compliant;"
+#~ msgstr "&sfs_compliant;"
+
+#~ msgid "-- Mark a point as WGS 84 long lat --"
+#~ msgstr "-- 포인트를 WGS84 경위도로 설정 --"
+
+#~ msgid ""
+#~ "SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As "
+#~ "wgs84long_lat;\n"
+#~ "-- the ewkt representation (wrap with ST_AsEWKT) -\n"
+#~ "SRID=4326;POINT(-123.365556 48.428611)"
+#~ msgstr ""
+#~ "SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As "
+#~ "wgs84long_lat;\n"
+#~ "-- (ST_AsEWKT으로 싸인) EWKT 표현식 -\n"
+#~ "SRID=4326;POINT(-123.365556 48.428611)"
+
+#~ msgid ""
+#~ "-- Mark a point as WGS 84 long lat and then transform to web mercator "
+#~ "(Spherical Mercator) --"
+#~ msgstr ""
+#~ "-- 포인트를 WGS84 경위도로 설정한 다음 웹 메르카토르(구체 메르카토르)로 변"
+#~ "환 --"
+
+#~ msgid ""
+#~ "SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, "
+#~ "48.428611),4326),3785) As spere_merc;\n"
+#~ "-- the ewkt representation (wrap with ST_AsEWKT) -\n"
+#~ "SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
+#~ msgstr ""
+#~ "SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, "
+#~ "48.428611),4326),3785) As spere_merc;\n"
+#~ "-- (ST_AsEWKT으로 싸인) EWKT 표현식 --\n"
+#~ "SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+#~ "linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend="
+#~ "\"UpdateGeometrySRID\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+#~ "linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend="
+#~ "\"UpdateGeometrySRID\"/>"
+
+#~ msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
+#~ msgstr ""
+#~ "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이상 버전이 필요합니다."
+
+#~ msgid "ST_Transform"
+#~ msgstr "ST_Transform"
+
+#~ msgid ""
+#~ "Return a new geometry with its coordinates transformed to a different "
+#~ "spatial reference."
+#~ msgstr ""
+#~ "입력 도형의 좌표를 다른 공간 참조 시스템으로 변환시킨 새 도형을 반환합니"
+#~ "다."
+
+#~ msgid ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+#~ "paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Transform</function></funcdef> <paramdef><type>geometry </"
+#~ "type> <parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+#~ "<parameter>to_proj</parameter></paramdef> </funcprototype> "
+#~ "<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
+#~ "paramdef> <paramdef><type>text </type> <parameter>from_proj</parameter></"
+#~ "paramdef> <paramdef><type>text </type> <parameter>to_proj</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Transform</function></funcdef> <paramdef><type>geometry </"
+#~ "type> <parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+#~ "<parameter>from_proj</parameter></paramdef> <paramdef><type>integer </"
+#~ "type> <parameter>to_srid</parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+#~ "paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Transform</function></funcdef> <paramdef><type>geometry </"
+#~ "type> <parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+#~ "<parameter>to_proj</parameter></paramdef> </funcprototype> "
+#~ "<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
+#~ "paramdef> <paramdef><type>text </type> <parameter>from_proj</parameter></"
+#~ "paramdef> <paramdef><type>text </type> <parameter>to_proj</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Transform</function></funcdef> <paramdef><type>geometry </"
+#~ "type> <parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+#~ "<parameter>from_proj</parameter></paramdef> <paramdef><type>integer </"
+#~ "type> <parameter>to_srid</parameter></paramdef> </funcprototype>"
+
+#~ msgid ""
+#~ "Returns a new geometry with its coordinates transformed to a different "
+#~ "spatial reference system. The destination spatial reference "
+#~ "<varname>to_srid</varname> may be identified by a valid SRID integer "
+#~ "parameter (i.e. it must exist in the <varname>spatial_ref_sys</varname> "
+#~ "table). Alternatively, a spatial reference defined as a PROJ.4 string can "
+#~ "be used for <varname>to_proj</varname> and/or <varname>from_proj</"
+#~ "varname>, however these methods are not optimized. If the destination "
+#~ "spatial reference system is expressed with a PROJ.4 string instead of an "
+#~ "SRID, the SRID of the output geometry will be set to zero. With the "
+#~ "exception of functions with <varname>from_proj</varname>, input "
+#~ "geometries must have a defined SRID."
+#~ msgstr ""
+#~ "입력 도형의 좌표를 다른 공간 참조 시스템으로 변환시킨 새 도형을 반환합니"
+#~ "다. 유효한 SRID 정수 파라미터가 (<varname>spatial_ref_sys</varname> 테이블"
+#~ "에 존재해야만 합니다) 목표 공간 참조 시스템 <varname>to_srid</varname> 를 "
+#~ "식별할 수도 있습니다. 다른 방법으로는, <varname>to_proj</varname> 그리고/"
+#~ "또는 <varname>from_proj</varname> 에 대해 PROJ.4 문자열로 정의된 공간참조 "
+#~ "시스템을 쓸 수도 있는데, 최적화된 방법은 아닙니다. 목표 공간 참조 시스템"
+#~ "을 SRID 대신 PROJ.4 문자열로 표현할 경우, 산출 도형의 SRID는 0으로 설정될 "
+#~ "것입니다. <varname>from_proj</varname> 파라미터를 가지고 있는 경우를 제외"
+#~ "하면, 입력 도형은 정의된 SRID를 가지고 있어야만 합니다."
+
+#~ msgid ""
+#~ "ST_Transform is often confused with ST_SetSRID(). ST_Transform actually "
+#~ "changes the coordinates of a geometry from one spatial reference system "
+#~ "to another, while ST_SetSRID() simply changes the SRID identifier of the "
+#~ "geometry."
+#~ msgstr ""
+#~ "ST_Transform 함수는 종종 ST_SetSRID()와 착각당합니다. ST_Transform이 실제"
+#~ "로 도형의 좌표를 한 공간 참조 시스템에서 또다른 공간 참조 시스템으로 변환"
+#~ "시키는 반면, ST_SetSRID()는 도형의 SRID 식별자를 변경할 뿐입니다."
+
+#~ msgid ""
+#~ "Requires PostGIS be compiled with Proj support. Use <xref linkend="
+#~ "\"PostGIS_Full_Version\"/> to confirm you have proj support compiled in."
+#~ msgstr ""
+#~ "PostGIS를 Proj 지원과 함께 컴파일해야 합니다. Proj 지원과 함께 컴파일됐는"
+#~ "지 여부를 확인하려면 <xref linkend=\"PostGIS_Full_Version\"/> 을 이용하십"
+#~ "시오."
+
+#~ msgid ""
+#~ "If using more than one transformation, it is useful to have a functional "
+#~ "index on the commonly used transformations to take advantage of index "
+#~ "usage."
+#~ msgstr ""
+#~ "변환 작업을 한 번 이상 하는 경우, 인덱스 활용의 장점을 취하기 위해 흔히 쓰"
+#~ "이는 변환 작업에 함수 인덱스를 설정하는 편이 좋습니다."
+
+#~ msgid "Enhanced: 2.3.0 support for direct PROJ.4 text was introduced."
+#~ msgstr ""
+#~ "개선 사항: 2.3.0버전부터 PROJ.4 텍스트를 직접 지원하기 시작했습니다."
+
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.6"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.6"
+
+#~ msgid "Change Massachusetts state plane US feet geometry to WGS 84 long lat"
+#~ msgstr ""
+#~ "매사추세츠 주의 미국 피트 단위 평면 상에 있는 도형을 WGS84 경위도로 변경하"
+#~ "십시오."
+
+#~ msgid ""
+#~ "SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
+#~ "2967416,743238 2967450,\n"
+#~ "        743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) "
+#~ "As wgs_geom;\n"
+#~ "\n"
+#~ " wgs_geom\n"
+#~ "---------------------------\n"
+#~ " POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 "
+#~ "42.3903829478009,\n"
+#~ "-71.1775844305465 42.3903826677917,-71.1775825927231 "
+#~ "42.3902893647987,-71.177684\n"
+#~ "8522251 42.3902896512902));\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "--3D Circular String example\n"
+#~ "SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;"
+#~ "CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 "
+#~ "3,743265.625 2967416 3,743238 2967416 4)'),4326));\n"
+#~ "\n"
+#~ "                                 st_asewkt\n"
+#~ "--------------------------------------------------------------------------------------\n"
+#~ " SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 "
+#~ "1,-71.1776843766326 42.3903829478009 2,\n"
+#~ " -71.1775844305465 42.3903826677917 3,\n"
+#~ " -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 "
+#~ "4)"
+#~ msgstr ""
+#~ "SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
+#~ "2967416,743238 2967450,\n"
+#~ "        743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) "
+#~ "As wgs_geom;\n"
+#~ "\n"
+#~ " wgs_geom\n"
+#~ "---------------------------\n"
+#~ " POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 "
+#~ "42.3903829478009,\n"
+#~ "-71.1775844305465 42.3903826677917,-71.1775825927231 "
+#~ "42.3902893647987,-71.177684\n"
+#~ "8522251 42.3902896512902));\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "-- 3D 원형 스트링 예시\n"
+#~ "SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;"
+#~ "CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 "
+#~ "3,743265.625 2967416 3,743238 2967416 4)'),4326));\n"
+#~ "\n"
+#~ "                                 st_asewkt\n"
+#~ "--------------------------------------------------------------------------------------\n"
+#~ " SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 "
+#~ "1,-71.1776843766326 42.3903829478009 2,\n"
+#~ " -71.1775844305465 42.3903826677917 3,\n"
+#~ " -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 "
+#~ "4)"
+
+#~ msgid ""
+#~ "Example of creating a partial functional index. For tables where you are "
+#~ "not sure all the geometries will be filled in, its best to use a partial "
+#~ "index that leaves out null geometries which will both conserve space and "
+#~ "make your index smaller and more efficient."
+#~ msgstr ""
+#~ "부분 함수의 인덱스를 생성하는 예시입니다. 사용자가 모든 도형이 어디에 채워"
+#~ "질지 확신하지 못 하는 테이블의 경우, 최선의 방법은 NULL 도형을 제외하는 부"
+#~ "분 인덱스를 이용하는 것입니다. 이렇게 하면 공간도 절약하고 사용자의 인덱스"
+#~ "를 더 작고 효율적으로 만들 수 있습니다."
+
+#~ msgid ""
+#~ "CREATE INDEX idx_the_geom_26986_parcels\n"
+#~ "  ON parcels\n"
+#~ "  USING gist\n"
+#~ "  (ST_Transform(the_geom, 26986))\n"
+#~ "  WHERE the_geom IS NOT NULL;"
+#~ msgstr ""
+#~ "CREATE INDEX idx_the_geom_26986_parcels\n"
+#~ "  ON parcels\n"
+#~ "  USING gist\n"
+#~ "  (ST_Transform(the_geom, 26986))\n"
+#~ "  WHERE the_geom IS NOT NULL;"
+
+#~ msgid ""
+#~ "Examples of using PROJ.4 text to transform with custom spatial references."
+#~ msgstr ""
+#~ "예시 - 사용자 지정 공간 참조 시스템으로 변환하는 데 PROJ.4 텍스트를 이용"
+
+#~ msgid ""
+#~ "-- Find intersection of two polygons near the North pole, using a custom "
+#~ "Gnomic projection\n"
+#~ "-- See http://boundlessgeo.com/2012/02/flattening-the-peel/\n"
+#~ " WITH data AS (\n"
+#~ "   SELECT\n"
+#~ "     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', "
+#~ "4326) AS p1,\n"
+#~ "     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 "
+#~ "68))', 4326) AS p2,\n"
+#~ "     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS "
+#~ "gnom\n"
+#~ " )\n"
+#~ " SELECT ST_AsText(\n"
+#~ "   ST_Transform(\n"
+#~ "     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),\n"
+#~ "   gnom, 4326))\n"
+#~ " FROM data;\n"
+#~ "                                          st_astext\n"
+#~ " --------------------------------------------------------------------------------\n"
+#~ "  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 "
+#~ "68,-170 74.053793645338))"
+#~ msgstr ""
+#~ "-- 북극 가까이 있는, 구심 투영(gnomonic projection)을 이용하는 폴리곤 2개"
+#~ "가 교차하는 지점을 찾습니다.\n"
+#~ "-- http://boundlessgeo.com/2012/02/flattening-the-peel/ 참조\n"
+#~ " WITH data AS (\n"
+#~ "   SELECT\n"
+#~ "     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', "
+#~ "4326) AS p1,\n"
+#~ "     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 "
+#~ "68))', 4326) AS p2,\n"
+#~ "     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS "
+#~ "gnom\n"
+#~ " )\n"
+#~ " SELECT ST_AsText(\n"
+#~ "   ST_Transform(\n"
+#~ "     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),\n"
+#~ "   gnom, 4326))\n"
+#~ " FROM data;\n"
+#~ "                                          st_astext\n"
+#~ " --------------------------------------------------------------------------------\n"
+#~ "  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 "
+#~ "68,-170 74.053793645338))"
+
+#~ msgid "Configuring transformation behaviour"
+#~ msgstr "변환 습성 설정"
+
+#~ msgid ""
+#~ "Sometimes coordinate transformation involving a grid-shift can fail, for "
+#~ "example if PROJ.4 has not been built with grid-shift files or the "
+#~ "coordinate does not lie within the range for which the grid shift is "
+#~ "defined. By default, PostGIS will throw an error if a grid shift file is "
+#~ "not present, but this behaviour can be configured on a per-SRID basis "
+#~ "either by testing different <varname>to_proj</varname> values of PROJ.4 "
+#~ "text, or altering the <varname>proj4text</varname> value within the "
+#~ "<varname>spatial_ref_sys</varname> table."
+#~ msgstr ""
+#~ "때때로 그리드 이동(grid-shift)과 관련된 좌표 변환이 실패할 수도 있습니다. "
+#~ "예를 들어 PROJ.4가 그리드 이동 파일과 함께 빌드되지 않았거나, 좌표가 그리"
+#~ "드 이동이 정의된 범위(range) 내부에 떨어지지 않는 경우입니다. 그리드 이동 "
+#~ "파일이 없을 경우 PostGIS는 기본적으로 오류를 내지만, PROJ.4 텍스트의 서로 "
+#~ "다른 <varname>to_proj</varname> 값들을 테스트하거나 또는"
+#~ "<varname>spatial_ref_sys</varname> 테이블 내부의 <varname>proj4text</"
+#~ "varname> 값을 수정해서 각 SRID마다 이 습성을 다르게 설정할 수 있습니다."
+
+#~ msgid ""
+#~ "For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
+#~ "the following +nadgrids parameter:"
+#~ msgstr ""
+#~ "예를 들어, proj4text 파라미터 \"+datum=NAD87\"은 다음 \"+nadgrids\" 파라미"
+#~ "터를 간략화한 것입니다."
+
+#~ msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
+#~ msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
+
+#~ msgid ""
+#~ "The @ prefix means no error is reported if the files are not present, but "
+#~ "if the end of the list is reached with no file having been appropriate "
+#~ "(ie. found and overlapping) then an error is issued."
+#~ msgstr ""
+#~ "접두사 \"@\"는 파일이 없는 경우에도 오류를 보고하지 말라는 뜻이지만, 제대"
+#~ "로 된 파일 없이 목록의 마지막까지 가는 경우(예를 들어 찾아서 겹쳐졌을 경"
+#~ "우)에는 오류를 보고합니다."
+
+#~ msgid ""
+#~ "If, conversely, you wanted to ensure that at least the standard files "
+#~ "were present, but that if all files were scanned without a hit a null "
+#~ "transformation is applied you could use:"
+#~ msgstr ""
+#~ "만약 반대로 사용자가 적어도 표준 파일이 존재하는 것을 확인하려 하지만 모"
+#~ "든 파일을 스캔했는데도 발견하지 못 한 경우, 다음 NULL 변환을 적용할 수 있"
+#~ "습니다:"
+
+#~ msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
+#~ msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
+
+#~ msgid ""
+#~ "The null grid shift file is a valid grid shift file covering the whole "
+#~ "world and applying no shift. So for a complete example, if you wanted to "
+#~ "alter PostGIS so that transformations to SRID 4267 that didn't lie within "
+#~ "the correct range did not throw an ERROR, you would use the following:"
+#~ msgstr ""
+#~ "NULL 그리드 이동 파일은 전세계를 커버하며 어떤 이동도 시키지 않는 유효한 "
+#~ "그리드 이동 파일입니다. 따라서 예시를 완전하게 하기 위해, 사용자가 PostGIS"
+#~ "를 수정해서 SRID 4267로 변환시 정확한 범위 안에 떨어지지 않더라도 오류를 "
+#~ "보고하지 않게 하려면, 다음과 같이 하면 됩니다:"
+
+#~ msgid ""
+#~ "UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
+#~ "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE "
+#~ "srid = 4267;"
+#~ msgstr ""
+#~ "UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
+#~ "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE "
+#~ "srid = 4267;"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+#~ "linkend=\"UpdateGeometrySRID\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+#~ "linkend=\"UpdateGeometrySRID\"/>"
+
+#~ msgid "ST_Translate"
+#~ msgstr "ST_Translate"
+
+#~ msgid "Translate a geometry by given offsets."
+#~ msgstr "주어진 오프셋으로 도형을 변형시킵니다."
+
+#~ msgid ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Translate</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>deltax</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>deltay</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Translate</function></funcdef> <paramdef><type>geometry </"
+#~ "type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>deltax</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>deltay</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>deltaz</parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>geometry <function>ST_Translate</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>deltax</parameter></"
+#~ "paramdef> <paramdef><type>float </type> <parameter>deltay</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+#~ "<function>ST_Translate</function></funcdef> <paramdef><type>geometry </"
+#~ "type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>deltax</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>deltay</parameter></paramdef> <paramdef><type>float </type> "
+#~ "<parameter>deltaz</parameter></paramdef> </funcprototype>"
+
+#~ msgid ""
+#~ "Returns a new geometry whose coordinates are translated delta x,delta y,"
+#~ "delta z units. Units are based on the units defined in spatial reference "
+#~ "(SRID) for this geometry."
+#~ msgstr ""
+#~ "좌표가 Δx, Δy, Δz 단위로 번형된 새로운 도형을 반환합니다. 이 단위는 해당 "
+#~ "도형의 공간 참조(SRID)가 정의하는 단위를 기반으로 합니다."
+
+#~ msgid "Move a point 1 degree longitude"
+#~ msgstr "포인트를 경도 1도 이동합니다."
+
+#~ msgid ""
+#~ "SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 "
+#~ "42.37)',4326),1,0)) As wgs_transgeomtxt;\n"
+#~ "\n"
+#~ "        wgs_transgeomtxt\n"
+#~ "        ---------------------\n"
+#~ "        POINT(-70.01 42.37)"
+#~ msgstr ""
+#~ "SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 "
+#~ "42.37)',4326),1,0)) As wgs_transgeomtxt;\n"
+#~ "\n"
+#~ "        wgs_transgeomtxt\n"
+#~ "        ---------------------\n"
+#~ "        POINT(-70.01 42.37)"
+
+#~ msgid "Move a linestring 1 degree longitude and 1/2 degree latitude"
+#~ msgstr "라인스트링을 경도 1도, 위도 1/2도 이동합니다."
+
+#~ msgid ""
+#~ "SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 "
+#~ "42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n"
+#~ "                   wgs_transgeomtxt\n"
+#~ "        ---------------------------------------\n"
+#~ "        LINESTRING(-70.01 42.87,-70.11 42.88)"
+#~ msgstr ""
+#~ "SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 "
+#~ "42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n"
+#~ "                   wgs_transgeomtxt\n"
+#~ "        ---------------------------------------\n"
+#~ "        LINESTRING(-70.01 42.87,-70.11 42.88)"
+
+#~ msgid "Move a 3d point"
+#~ msgstr "3차원 포인트를 이동합니다."
+
+#~ msgid ""
+#~ "SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, "
+#~ "12,3));\n"
+#~ "        st_asewkt\n"
+#~ "        ---------\n"
+#~ "        POINT(5 12 3)"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, "
+#~ "12,3));\n"
+#~ "        st_asewkt\n"
+#~ "        ---------\n"
+#~ "        POINT(5 12 3)"
+
+#~ msgid "Move a curve and a point"
+#~ msgstr "커브와 포인트를 이동합니다."
+
+#~ msgid ""
+#~ "SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 "
+#~ "3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n"
+#~ "                                                                                                                 st_astext\n"
+#~ "------------------------------------------------------------------------------------------------------------\n"
+#~ " GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 "
+#~ "7.1213,7 9,9 11,5 5)),POINT(2 5))"
+#~ msgstr ""
+#~ "SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 "
+#~ "3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n"
+#~ "                                                                                                                 st_astext\n"
+#~ "------------------------------------------------------------------------------------------------------------\n"
+#~ " GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 "
+#~ "7.1213,7 9,9 11,5 5)),POINT(2 5))"
+
+#~ msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
+
+#~ msgid "ST_TransScale"
+#~ msgstr "ST_TransScale"
+
+#~ msgid "Translate a geometry by given factors and offsets."
+#~ msgstr "주어진 인수 및 오프셋으로 도형을 변형시킵니다."
+
+#~ msgid ""
+#~ "<funcdef>geometry <function>ST_TransScale</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>geometry <function>ST_TransScale</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
+
+#~ msgid ""
+#~ "Translates the geometry using the deltaX and deltaY args, then scales it "
+#~ "using the XFactor, YFactor args, working in 2D only."
+#~ msgstr ""
+#~ "Δx와 Δy 독립 변수(arg)를 이용해서 도형을 변형한 다음, XFactor, YFactor 독"
+#~ "립 변수를 이용해 크기를 조정합니다. 2차원에서만 작동합니다."
+
+#~ msgid ""
+#~ "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is "
+#~ "short-hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, "
+#~ "1, deltaX*XFactor, deltaY*YFactor, 0)</code>."
+#~ msgstr ""
+#~ "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> 는 "
+#~ "<code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, "
+#~ "deltaX*XFactor, deltaY*YFactor, 0)</code> 을 간략화한 것입니다."
+
+#~ msgid ""
+#~ "SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 "
+#~ "1)'), 0.5, 1, 1, 2));\n"
+#~ "                  st_asewkt\n"
+#~ "-----------------------------\n"
+#~ " LINESTRING(1.5 6 3,1.5 4 1)\n"
+#~ "\n"
+#~ "\n"
+#~ "--Buffer a point to get an approximation of a circle, convert to curve "
+#~ "and then translate 1,2 and scale it 3,4\n"
+#~ "  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 "
+#~ "567)', 3)),1,2,3,4));\n"
+#~ "                                                                                                                  st_astext\n"
+#~ "------------------------------------------------------------------------------------------------------------------------------\n"
+#~ " CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 "
+#~ "2267.51471862576,705 2264,698.636038969321 2284.48528137424,714 2276))"
+#~ msgstr ""
+#~ "SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 "
+#~ "1)'), 0.5, 1, 1, 2));\n"
+#~ "                  st_asewkt\n"
+#~ "-----------------------------\n"
+#~ " LINESTRING(1.5 6 3,1.5 4 1)\n"
+#~ "\n"
+#~ "\n"
+#~ "-- 포인트에 버퍼를 부여해서 원에 가깝게 만들고, 커브로 변환한 다음 1, 2값"
+#~ "으로 번역하고 3, 4값으로 크기를 조정합니다.\n"
+#~ "  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 "
+#~ "567)', 3)),1,2,3,4));\n"
+#~ "                                                                                                                  st_astext\n"
+#~ "------------------------------------------------------------------------------------------------------------------------------\n"
+#~ " CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 "
+#~ "2267.51471862576,705 2264,698.636038969321 2284.48528137424,714 2276))"
+
+#~ msgid ", <xref linkend=\"ST_Translate\"/>"
+#~ msgstr ", <xref linkend=\"ST_Translate\"/>"

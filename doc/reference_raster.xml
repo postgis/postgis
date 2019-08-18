@@ -4122,7 +4122,7 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 			<refsection>
 				<title>Description</title>
 
-				<para>Returns the value that represents no data for the band</para>
+				<para>Returns name describing data type and size of values stored in each cell of given band.</para>
 				<para>There are 11 pixel types.  Pixel Types supported are as follows:
 					<itemizedlist>
 						<listitem>

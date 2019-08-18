@@ -323,53 +323,75 @@ static int gbox_check_poles(GBOX *gbox)
 	lwfree(gbox_str);
 #endif
 	/* Z axis */
-	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
-	     gbox->ymin < 0.0 && gbox->ymax > 0.0 )
+	if (gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
+	    gbox->ymin < 0.0 && gbox->ymax > 0.0)
 	{
-		if ( (gbox->zmin + gbox->zmax) > 0.0 )
+		/* Extrema lean positive */
+		if ((gbox->zmin > 0.0) && (gbox->zmax > 0.0))
 		{
 			LWDEBUG(4, "enclosed positive z axis");
 			gbox->zmax = 1.0;
 		}
-		else
+		/* Extrema lean negative */
+		else if ((gbox->zmin < 0.0) && (gbox->zmax < 0.0))
 		{
 			LWDEBUG(4, "enclosed negative z axis");
 			gbox->zmin = -1.0;
+		}
+		/* Extrema both sides! */
+		else
+		{
+			LWDEBUG(4, "enclosed both z axes");
+			gbox->zmin = -1.0;
+			gbox->zmax = 1.0;
 		}
 		rv = LW_TRUE;
 	}
 
 	/* Y axis */
-	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
-	     gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+	if (gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
+	    gbox->zmin < 0.0 && gbox->zmax > 0.0)
 	{
-		if ( gbox->ymin + gbox->ymax > 0.0 )
+		if ((gbox->ymin > 0.0) && (gbox->ymax > 0.0))
 		{
 			LWDEBUG(4, "enclosed positive y axis");
 			gbox->ymax = 1.0;
 		}
-		else
+		else if ((gbox->ymin < 0.0) && (gbox->ymax < 0.0))
 		{
 			LWDEBUG(4, "enclosed negative y axis");
+			gbox->ymax = -1.0;
+		}
+		else
+		{
+			LWDEBUG(4, "enclosed both y axes");
+			gbox->ymax = 1.0;
 			gbox->ymin = -1.0;
 		}
 		rv = LW_TRUE;
 	}
 
 	/* X axis */
-	if ( gbox->ymin < 0.0 && gbox->ymax > 0.0 &&
-	     gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+	if (gbox->ymin < 0.0 && gbox->ymax > 0.0 &&
+	    gbox->zmin < 0.0 && gbox->zmax > 0.0)
 	{
-		if ( gbox->xmin + gbox->xmax > 0.0 )
+		if ((gbox->xmin > 0.0) && (gbox->xmax > 0.0))
 		{
 			LWDEBUG(4, "enclosed positive x axis");
 			gbox->xmax = 1.0;
 		}
-		else
+		else if ((gbox->xmin < 0.0) && (gbox->xmax < 0.0))
 		{
 			LWDEBUG(4, "enclosed negative x axis");
 			gbox->xmin = -1.0;
 		}
+		else
+		{
+			LWDEBUG(4, "enclosed both x axes");
+			gbox->xmax = 1.0;
+			gbox->xmin = -1.0;
+		}
+
 		rv = LW_TRUE;
 	}
 
@@ -462,7 +484,7 @@ static void vector_difference(const POINT3D *a, const POINT3D *b, POINT3D *n)
 /**
 * Scale a vector out by a factor
 */
-static void vector_scale(POINT3D *n, double scale)
+void vector_scale(POINT3D *n, double scale)
 {
 	n->x *= scale;
 	n->y *= scale;
@@ -1450,28 +1472,84 @@ int edge_calculate_gbox(const POINT3D *A1, const POINT3D *A2, GBOX *gbox)
 	return LW_SUCCESS;
 }
 
-void lwpoly_pt_outside(const LWPOLY *poly, POINT2D *pt_outside)
+/*
+* When we have a globe-covering gbox but we still want an outside
+* point, we do this Very Bad Hack, which is look at the first two points
+* in the ring and then nudge a point to the left of that arc.
+* There is an assumption of convexity built in there, as well as that
+* the shape doesn't have a sharp reversal in it. It's ugly, but
+* it fixes some common cases (large selection polygons) that users
+* are generating. At some point all of geodetic needs a clean-room
+* rewrite.
+* There is also an assumption of CCW exterior ring, which is how the
+* GeoJSON spec defined geographic ring orientation.
+*/
+static int lwpoly_pt_outside_hack(const LWPOLY *poly, POINT2D *pt_outside)
 {
+	GEOGRAPHIC_POINT g1, g2, gSum;
+	POINT4D p1, p2;
+	POINT3D q1, q2, qMid, qCross, qSum;
+	POINTARRAY *pa;
+	if (lwgeom_is_empty((LWGEOM*)poly))
+		return LW_FAILURE;
+	if (poly->nrings < 1)
+		return LW_FAILURE;
+	pa = poly->rings[0];
+	if (pa->npoints < 2)
+		return LW_FAILURE;
+
+	/* First two points of ring */
+	getPoint4d_p(pa, 0, &p1);
+	getPoint4d_p(pa, 1, &p2);
+	/* Convert to XYZ unit vectors */
+	geographic_point_init(p1.x, p1.y, &g1);
+	geographic_point_init(p2.x, p2.y, &g2);
+	geog2cart(&g1, &q1);
+	geog2cart(&g2, &q2);
+	/* Mid-point of first two points */
+	vector_sum(&q1, &q2, &qMid);
+	normalize(&qMid);
+	/* Cross product of first two points (perpendicular) */
+	cross_product(&q1, &q2, &qCross);
+	normalize(&qCross);
+	/* Invert it to put it outside, and scale down */
+	vector_scale(&qCross, -0.2);
+	/* Project midpoint to the right */
+	vector_sum(&qMid, &qCross, &qSum);
+	normalize(&qSum);
+	/* Convert back to lon/lat */
+	cart2geog(&qSum, &gSum);
+	pt_outside->x = rad2deg(gSum.lon);
+	pt_outside->y = rad2deg(gSum.lat);
+	return LW_SUCCESS;
+}
+
+int lwpoly_pt_outside(const LWPOLY *poly, POINT2D *pt_outside)
+{
+	int rv;
 	/* Make sure we have boxes */
 	if ( poly->bbox )
 	{
-		gbox_pt_outside(poly->bbox, pt_outside);
-		return;
+		rv = gbox_pt_outside(poly->bbox, pt_outside);
 	}
 	else
 	{
 		GBOX gbox;
 		lwgeom_calculate_gbox_geodetic((LWGEOM*)poly, &gbox);
-		gbox_pt_outside(&gbox, pt_outside);
-		return;
+		rv = gbox_pt_outside(&gbox, pt_outside);
 	}
+
+	if (rv == LW_FALSE)
+		return lwpoly_pt_outside_hack(poly, pt_outside);
+
+	return rv;
 }
 
 /**
 * Given a unit geocentric gbox, return a lon/lat (degrees) coordinate point point that is
 * guaranteed to be outside the box (and therefore anything it contains).
 */
-void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
+int gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 {
 	double grow = M_PI / 180.0 / 60.0; /* one arc-minute */
 	int i;
@@ -1538,7 +1616,7 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 				pt_outside->x = rad2deg(g.lon);
 				pt_outside->y = rad2deg(g.lat);
 				LWDEBUGF(4, "returning POINT(%.8g %.8g) as outside point", pt_outside->x, pt_outside->y);
-				return;
+				return LW_SUCCESS;
 			}
 		}
 
@@ -1547,8 +1625,8 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	}
 
 	/* This should never happen! */
-	lwerror("BOOM! Could not generate outside point!");
-	return;
+	// lwerror("BOOM! Could not generate outside point!");
+	return LW_FAILURE;
 }
 
 
@@ -2473,7 +2551,7 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 	}
 
 	/* Calculate our outside point from the gbox */
-	gbox_pt_outside(&gbox, &pt_outside);
+	lwpoly_pt_outside(poly, &pt_outside);
 
 	LWDEBUGF(4, "pt_outside POINT(%.18g %.18g)", pt_outside.x, pt_outside.y);
 	LWDEBUGF(4, "pt_to_test POINT(%.18g %.18g)", pt_to_test->x, pt_to_test->y);
@@ -2806,6 +2884,7 @@ int getPoint2d_p_ro(const POINTARRAY *pa, uint32_t n, POINT2D **point)
 
 	return LW_SUCCESS;
 }
+
 
 int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 {

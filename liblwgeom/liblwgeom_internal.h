@@ -117,10 +117,18 @@
 /**
 * Macro for reading the size from the GSERIALIZED size attribute.
 * Cribbed from PgSQL, top 30 bits are size. Use VARSIZE() when working
-* internally with PgSQL.
+* internally with PgSQL. See SET_VARSIZE_4B / VARSIZE_4B in
+* PGSRC/src/include/postgres.h for details.
 */
+#ifdef WORDS_BIGENDIAN
+#define SIZE_GET(varsize) ((varsize) & 0x3FFFFFFF)
+#define SIZE_SET(varsize, len) ((varsize) = ((len) & 0x3FFFFFFF))
+#define IS_BIG_ENDIAN 1
+#else
 #define SIZE_GET(varsize) (((varsize) >> 2) & 0x3FFFFFFF)
-#define SIZE_SET(varsize, size) (((varsize) & 0x00000003)|(((size) & 0x3FFFFFFF) << 2 ))
+#define SIZE_SET(varsize, len) ((varsize) = (((uint32_t)(len)) << 2))
+#define IS_BIG_ENDIAN 0
+#endif
 
 /**
 * Macro that returns:
@@ -159,7 +167,6 @@
 /* Machine endianness */
 #define XDR 0 /* big endian */
 #define NDR 1 /* little endian */
-extern char getMachineEndian(void);
 
 
 /*
@@ -294,7 +301,6 @@ double lwtriangle_perimeter_2d(const LWTRIANGLE *triangle);
 /*
 * Segmentization
 */
-LWLINE *lwcompound_stroke(const LWCOMPOUND *icompound, uint32_t perQuad);
 LWPOLY *lwcurvepoly_stroke(const LWCURVEPOLY *curvepoly, uint32_t perQuad);
 
 /*

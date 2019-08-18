@@ -352,7 +352,7 @@ static void parse_column_keys(mvt_agg_context *ctx)
 
 		if (ctx->geom_name == NULL)
 		{
-			if (!geom_found && typoid == TypenameGetTypid("geometry"))
+			if (!geom_found && typoid == postgis_oid(GEOMETRYOID))
 			{
 				ctx->geom_index = i;
 				geom_found = true;
@@ -788,11 +788,14 @@ lwgeom_get_basic_type(LWGEOM *geom)
 	case LINETYPE:
 	case POLYGONTYPE:
 		return geom->type;
+	case TRIANGLETYPE:
+		return POLYGONTYPE;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 		return geom->type - 3; /* Based on LWTYPE positions */
 	case COLLECTIONTYPE:
+	case TINTYPE:
 	{
 		uint32_t i;
 		uint8 type = 0;

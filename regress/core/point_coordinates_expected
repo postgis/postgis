@@ -1,0 +1,32 @@
+X1|0
+X2|1
+X3|6
+X4|10
+ERROR:  Argument to ST_X() must have type POINT
+ERROR:  Argument to ST_X() must have type POINT
+ERROR:  Argument to ST_X() must have type POINT
+ERROR:  Argument to ST_X() must have type POINT
+Y1|0
+Y2|2
+Y3|7
+Y4|11
+ERROR:  Argument to ST_Y() must have type POINT
+ERROR:  Argument to ST_Y() must have type POINT
+ERROR:  Argument to ST_Y() must have type POINT
+ERROR:  Argument to ST_Y() must have type POINT
+Z1|
+Z2|3
+Z3|
+Z4|12
+ERROR:  Argument to ST_Z() must have type POINT
+ERROR:  Argument to ST_Z() must have type POINT
+ERROR:  Argument to ST_Z() must have type POINT
+ERROR:  Argument to ST_Z() must have type POINT
+M1|
+M2|
+M3|8
+M4|13
+ERROR:  Argument to ST_M() must have type POINT
+ERROR:  Argument to ST_M() must have type POINT
+ERROR:  Argument to ST_M() must have type POINT
+ERROR:  Argument to ST_M() must have type POINT

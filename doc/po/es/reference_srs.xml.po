@@ -1,0 +1,493 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:02+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#: reference_srs.xml:5
+#, no-c-format
+msgid "These functions work with the Spatial Reference System of geometries."
+msgstr ""
+
+#. Tag: title
+#: reference_srs.xml:9
+#, no-c-format
+msgid "Spatial Reference System Functions"
+msgstr ""
+
+#. Tag: refname
+#: reference_srs.xml:13
+#, no-c-format
+msgid "ST_SetSRID"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_srs.xml:15
+#, no-c-format
+msgid "Set the SRID on a geometry to a particular integer value."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_srs.xml:21
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_srs.xml:34 reference_srs.xml:81 reference_srs.xml:145
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:36
+#, no-c-format
+msgid ""
+"Sets the SRID on a geometry to a particular integer value. Useful in "
+"constructing bounding boxes for queries."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:40
+#, no-c-format
+msgid ""
+"This function does not transform the geometry coordinates in any way - it "
+"simply sets the meta data defining the spatial reference system the geometry "
+"is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you want to "
+"transform the geometry into a new projection."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:45
+#, no-c-format
+msgid "&sfs_compliant;"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:46 reference_srs.xml:89 reference_srs.xml:179
+#, no-c-format
+msgid "&curve_support;"
+msgstr ""
+
+#. Tag: title
+#: reference_srs.xml:50 reference_srs.xml:94 reference_srs.xml:185
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:51
+#, no-c-format
+msgid "-- Mark a point as WGS 84 long lat --"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:52
+#, no-c-format
+msgid ""
+"SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
+"-- the ewkt representation (wrap with ST_AsEWKT) -\n"
+"SRID=4326;POINT(-123.365556 48.428611)"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:53
+#, no-c-format
+msgid ""
+"-- Mark a point as WGS 84 long lat and then transform to web mercator "
+"(Spherical Mercator) --"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:54
+#, no-c-format
+msgid ""
+"SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) "
+"As spere_merc;\n"
+"-- the ewkt representation (wrap with ST_AsEWKT) -\n"
+"SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
+msgstr ""
+
+#. Tag: title
+#: reference_srs.xml:58 reference_srs.xml:99 reference_srs.xml:219
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:60
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
+"\"ST_Transform\"/>, <xref linkend=\"UpdateGeometrySRID\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_srs.xml:67
+#, no-c-format
+msgid "ST_SRID"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_srs.xml:68
+#, no-c-format
+msgid ""
+"Returns the spatial reference identifier for the ST_Geometry as defined in "
+"spatial_ref_sys table."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_srs.xml:73
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_SRID</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:83
+#, no-c-format
+msgid ""
+"Returns the spatial reference identifier for the ST_Geometry as defined in "
+"spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:84
+#, no-c-format
+msgid ""
+"spatial_ref_sys table is a table that catalogs all spatial reference systems "
+"known to PostGIS and is used for transformations from one spatial reference "
+"system to another. So verifying you have the right spatial reference system "
+"identifier is important if you plan to ever transform your geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:87
+#, no-c-format
+msgid "&sfs_compliant; s2.1.1.1"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:88
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.5"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:96
+#, no-c-format
+msgid ""
+"SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
+"                --result\n"
+"                4326"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:101
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_srs.xml:107
+#, no-c-format
+msgid "ST_Transform"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_srs.xml:109
+#, no-c-format
+msgid ""
+"Return a new geometry with its coordinates transformed to a different "
+"spatial reference system."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_srs.xml:114
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>to_proj</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geometry <function>ST_Transform</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>from_proj</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>to_proj</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Transform</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>geom</"
+"parameter></paramdef> <paramdef><type>text </type> <parameter>from_proj</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>to_srid</"
+"parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:147
+#, no-c-format
+msgid ""
+"Returns a new geometry with its coordinates transformed to a different "
+"spatial reference system. The destination spatial reference "
+"<varname>to_srid</varname> may be identified by a valid SRID integer "
+"parameter (i.e. it must exist in the <varname>spatial_ref_sys</varname> "
+"table). Alternatively, a spatial reference defined as a PROJ.4 string can be "
+"used for <varname>to_proj</varname> and/or <varname>from_proj</varname>, "
+"however these methods are not optimized. If the destination spatial "
+"reference system is expressed with a PROJ.4 string instead of an SRID, the "
+"SRID of the output geometry will be set to zero. With the exception of "
+"functions with <varname>from_proj</varname>, input geometries must have a "
+"defined SRID."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:161
+#, no-c-format
+msgid ""
+"ST_Transform is often confused with <xref linkend=\"ST_SetSRID\"/>. "
+"ST_Transform actually changes the coordinates of a geometry from one spatial "
+"reference system to another, while ST_SetSRID() simply changes the SRID "
+"identifier of the geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:166
+#, no-c-format
+msgid ""
+"Requires PostGIS be compiled with Proj support. Use <xref linkend="
+"\"PostGIS_Full_Version\"/> to confirm you have proj support compiled in."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:170
+#, no-c-format
+msgid ""
+"If using more than one transformation, it is useful to have a functional "
+"index on the commonly used transformations to take advantage of index usage."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:174
+#, no-c-format
+msgid ""
+"Prior to 1.3.4, this function crashes if used with geometries that contain "
+"CURVES. This is fixed in 1.3.4+"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:176
+#, no-c-format
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:177
+#, no-c-format
+msgid "Enhanced: 2.3.0 support for direct PROJ.4 text was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:178
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.6"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:180
+#, no-c-format
+msgid "&P_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:186
+#, no-c-format
+msgid "Change Massachusetts state plane US feet geometry to WGS 84 long lat"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:187
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
+"2967416,743238 2967450,\n"
+"        743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As "
+"wgs_geom;\n"
+"\n"
+" wgs_geom\n"
+"---------------------------\n"
+" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 "
+"42.3903829478009,\n"
+"-71.1775844305465 42.3903826677917,-71.1775825927231 "
+"42.3902893647987,-71.177684\n"
+"8522251 42.3902896512902));\n"
+"(1 row)\n"
+"\n"
+"--3D Circular String example\n"
+"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;"
+"CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 "
+"2967416 3,743238 2967416 4)'),4326));\n"
+"\n"
+"                                 st_asewkt\n"
+"--------------------------------------------------------------------------------------\n"
+" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 "
+"1,-71.1776843766326 42.3903829478009 2,\n"
+" -71.1775844305465 42.3903826677917 3,\n"
+" -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:188
+#, no-c-format
+msgid ""
+"Example of creating a partial functional index. For tables where you are not "
+"sure all the geometries will be filled in, its best to use a partial index "
+"that leaves out null geometries which will both conserve space and make your "
+"index smaller and more efficient."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:190
+#, no-c-format
+msgid ""
+"CREATE INDEX idx_the_geom_26986_parcels\n"
+"  ON parcels\n"
+"  USING gist\n"
+"  (ST_Transform(the_geom, 26986))\n"
+"  WHERE the_geom IS NOT NULL;"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:192
+#, no-c-format
+msgid ""
+"Examples of using PROJ.4 text to transform with custom spatial references."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:193
+#, no-c-format
+msgid ""
+"-- Find intersection of two polygons near the North pole, using a custom "
+"Gnomic projection\n"
+"-- See http://boundlessgeo.com/2012/02/flattening-the-peel/\n"
+" WITH data AS (\n"
+"   SELECT\n"
+"     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', "
+"4326) AS p1,\n"
+"     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', "
+"4326) AS p2,\n"
+"     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom\n"
+" )\n"
+" SELECT ST_AsText(\n"
+"   ST_Transform(\n"
+"     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),\n"
+"   gnom, 4326))\n"
+" FROM data;\n"
+"                                          st_astext\n"
+" --------------------------------------------------------------------------------\n"
+"  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 "
+"74.053793645338))"
+msgstr ""
+
+#. Tag: title
+#: reference_srs.xml:197
+#, no-c-format
+msgid "Configuring transformation behaviour"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:198
+#, no-c-format
+msgid ""
+"Sometimes coordinate transformation involving a grid-shift can fail, for "
+"example if PROJ.4 has not been built with grid-shift files or the coordinate "
+"does not lie within the range for which the grid shift is defined. By "
+"default, PostGIS will throw an error if a grid shift file is not present, "
+"but this behaviour can be configured on a per-SRID basis either by testing "
+"different <varname>to_proj</varname> values of PROJ.4 text, or altering the "
+"<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
+"varname> table."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:208
+#, no-c-format
+msgid ""
+"For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
+"the following +nadgrids parameter:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:209
+#, no-c-format
+msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:210
+#, no-c-format
+msgid ""
+"The @ prefix means no error is reported if the files are not present, but if "
+"the end of the list is reached with no file having been appropriate (ie. "
+"found and overlapping) then an error is issued."
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:211
+#, no-c-format
+msgid ""
+"If, conversely, you wanted to ensure that at least the standard files were "
+"present, but that if all files were scanned without a hit a null "
+"transformation is applied you could use:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:212
+#, no-c-format
+msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:213
+#, no-c-format
+msgid ""
+"The null grid shift file is a valid grid shift file covering the whole world "
+"and applying no shift. So for a complete example, if you wanted to alter "
+"PostGIS so that transformations to SRID 4267 that didn't lie within the "
+"correct range did not throw an ERROR, you would use the following:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_srs.xml:214
+#, no-c-format
+msgid ""
+"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
+"+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid "
+"= 4267;"
+msgstr ""
+
+#. Tag: para
+#: reference_srs.xml:221
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"UpdateGeometrySRID\"/>"
+msgstr ""

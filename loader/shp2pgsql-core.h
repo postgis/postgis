@@ -189,7 +189,7 @@ typedef struct shp_loader_state
 	/* Pointer to an array of PostgreSQL field types */
 	char **pgfieldtypes;
 
-	/* String containing colume name list in the form "(col1, col2, col3 ... , colN)" */
+	/* String containing colume name list in the form "col1, col2, col3 ... , colN" */
 	char *col_names;
 
 	/* String containing the PostGIS geometry type, e.g. POINT, POLYGON etc. */

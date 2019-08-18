@@ -670,7 +670,7 @@ def wkblify_raster_header(options, ds, level, ulp, xsize = None, ysize = None):
     """Writes WKT Raster header based on given GDAL into HEX-encoded WKB."""
     assert ds is not None, "Error: Missing GDAL dataset"
     assert level >= 1
-    assert len(ulp) == 2 is not None, "Error: invalid upper-left corner"
+    assert len(ulp) == 2, "Error: invalid upper-left corner"
 
     if xsize is None or ysize is None:
         assert xsize is None and ysize is None

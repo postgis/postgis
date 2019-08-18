@@ -51,7 +51,8 @@ static void array_to_json_internal(Datum array, StringInfo result,
 								   bool use_line_feeds);
 static void composite_to_geojson(Datum composite,
 					 char *geom_column_name, int32 maxdecimaldigits,
-					 StringInfo result, bool use_line_feeds);
+					 StringInfo result, bool use_line_feeds,
+					 Oid geom_oid, Oid geog_oid);
 static void composite_to_json(Datum composite, StringInfo result,
 							  bool use_line_feeds);
 static void datum_to_json(Datum val, bool is_null, StringInfo result,
@@ -80,13 +81,15 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 	bool		do_pretty = PG_GETARG_BOOL(3);
 	StringInfo	result;
 	char        *geom_column = text_to_cstring(geom_column_text);
+	Oid         geom_oid = postgis_oid_fcinfo(fcinfo, GEOMETRYOID);
+	Oid         geog_oid = postgis_oid_fcinfo(fcinfo, GEOGRAPHYOID);
 
 	if (strlen(geom_column) == 0)
 		geom_column = NULL;
 
 	result = makeStringInfo();
 
-	composite_to_geojson(array, geom_column, maxdecimaldigits, result, do_pretty);
+	composite_to_geojson(array, geom_column, maxdecimaldigits, result, do_pretty, geom_oid, geog_oid);
 
 	PG_RETURN_TEXT_P(cstring_to_text_with_len(result->data, result->len));
 }
@@ -96,7 +99,7 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
  */
 static void
 composite_to_geojson(Datum composite, char *geom_column_name, int32 maxdecimaldigits,
-					 StringInfo result, bool use_line_feeds)
+					 StringInfo result, bool use_line_feeds, Oid geom_oid, Oid geog_oid)
 {
 	HeapTupleHeader td;
 	Oid			tupType;
@@ -109,8 +112,6 @@ composite_to_geojson(Datum composite, char *geom_column_name, int32 maxdecimaldi
 	const char *sep;
 	StringInfo	props = makeStringInfo();
 	bool		geom_column_found = false;
-	Oid         geom_oid = postgis_geometry_oid();
-	Oid         geog_oid = postgis_geography_oid();
 
 	sep = use_line_feeds ? ",\n " : ", ";
 

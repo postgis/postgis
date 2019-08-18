@@ -377,6 +377,12 @@ CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'lwgeom_cmp'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION geometry_sortsupport(internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'lwgeom_sortsupport'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
 --
 -- Sorting operators for Btree
 --
@@ -399,7 +405,7 @@ CREATE OPERATOR <= (
 CREATE OPERATOR = (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_eq,
 	COMMUTATOR = '=', -- we might implement a faster negator here
-	RESTRICT = contsel, JOIN = contjoinsel
+	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
 );
 
 -- Availability: 0.9.0
@@ -424,7 +430,9 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	3	= ,
 	OPERATOR	4	>= ,
 	OPERATOR	5	> ,
-	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry);
+	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry),
+	-- Availability: 3.0.0
+	FUNCTION	2	geometry_sortsupport(internal);
 
 --
 -- Sorting operators for Btree
@@ -1679,6 +1687,13 @@ CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integ
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	_COST_LOW;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry DEFAULT 'SRID=3857;LINESTRING(-20037508.342789 -20037508.342789, 20037508.342789 20037508.342789)'::geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_TileEnvelope'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	_COST_LOW;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry, geometry[])
 	RETURNS geometry
@@ -2839,11 +2854,11 @@ BEGIN
 				rec.name, rec.installed_version, rec.default_version;
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
-		ELSIF rec.default_version = rec.installed_version AND
-					rec.installed_version ILIKE '%dev'
+		ELSIF (rec.default_version = rec.installed_version AND rec.installed_version ILIKE '%dev') OR
+			(@extschema@._postgis_pgsql_version() != @extschema@._postgis_scripts_pgsql_version())
 		THEN
 			-- we need to upgrade to next and back
-			RAISE NOTICE 'Updating dev extension % %',
+			RAISE NOTICE 'Updating extension % %',
 				rec.name, rec.installed_version;
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
 						quote_ident(rec.default_version || 'next')   || ';';
@@ -4585,15 +4600,16 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT
 -----------------------------------------------------------------------
 
 -- ST_AsGeoJson(geom, precision, options) / version=1
--- Changed 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
+-- Changed: 2.0.0 to use default args and named args
+-- Changed: 3.0.0 change default args mode
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEFAULT 9, options int4 DEFAULT 8)
 	RETURNS text
 	AS 'MODULE_PATHNAME','LWGEOM_asGeoJson'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	_COST_LOW;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits int4 DEFAULT 15, pretty_print bool DEFAULT false)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits int4 DEFAULT 9, pretty_bool bool DEFAULT false)
 	RETURNS text
 	AS 'MODULE_PATHNAME','ST_AsGeoJsonRow'
 	LANGUAGE 'c' STABLE STRICT _PARALLEL

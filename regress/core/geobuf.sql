@@ -19,3 +19,12 @@ SELECT 'T9', encode(ST_AsGeobuf(q, 'geom'), 'base64')
     FROM (SELECT ST_MakePoint(1, 2, 3) as geom) AS q;
 SELECT 'T10', encode(ST_AsGeobuf(q), 'base64')
     FROM (SELECT ST_MakePoint(1, 2, 3) as geom) AS q;
+
+WITH geom AS (
+	SELECT 'TRIANGLE((0 0, 1 1, 0 1, 0 0))'::geometry geom
+	union all
+	SELECT 'TIN(((0 0, 1 1, 0 1, 0 0)))'::geometry geom
+	union all
+	SELECT 'TRIANGLE EMPTY'::geometry geom
+)
+select '#4399', 'ST_AsGeobuf', ST_AsGeobuf(geom.*)::text from geom;

@@ -1,8 +1,31 @@
-PostGIS 3.0.0alpha3
-2019/xx/xx
-Coming soon
+PostGIS 3.0.0alpha4
+2019/08/10
+For full changes and enhancements, refer to PostGIS 3.0.0.
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
-For full changes and enhancements, refer to PostGIS 3.0.0 section.
+* Major highlights *
+  - #4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
+  - #4445, Fix a bug in geometry_le (Raúl Marín)
+  - #4451, Fix the calculation of gserialized_max_header_size (Raúl Marín)
+  - #4450, Speed up ST_GeometryType (Raúl Marín)
+  - #4452, Add ST_TileEnvelope() (Paul Ramsey)
+  - #4403, Support for shp2pgsql ability to reproject with copy mode (-D) (Regina Obe)
+  - #4417, Update spatial_ref_sys with new entries (Paul Ramsey)
+  - #4449, Speed up ST_X, ST_Y, ST_Z and ST_M (Raúl Marín)
+  - #4454, Speed up _ST_OrderingEquals (Raúl Marín)
+  - #4453, Speed up ST_IsEmpty (Raúl Marín)
+  - #4271, postgis_extensions_upgrade() also updates after pg_upgrade (Raúl Marín)
+  - #4466, Fix undefined behaviour in _postgis_gserialized_stats (Raúl Marín)
+  - #4209, Handle NULL geometry values in pgsql2shp (Paul Ramsey)
+  - #4419, Use protobuf version to enable/disable mvt/geobuf (Paul Ramsey)
+  - #4437, Handle POINT EMPTY in shape loader/dumper (Paul Ramsey)
+  - #4456, add Rasbery Pi 32-bit jenkins bot for testing (Bruce Rindahl,Regina Obe)
+  - #4420, update path does not exists for address_standardizer extension (Regina Obe)
+
+PostGIS 3.0.0alpha3
+2019/07/01
+For full changes and enhancements, refer to PostGIS 3.0.0.
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
@@ -15,13 +38,17 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
   - #4429, Avoid resource leaks with PROJ6 (Raúl Marín)
   - #4372, PROJ6: Speed improvements (Raúl Marín)
-  - #3437, Speed up ST_Intesects with Points (Raúl Marín)
+  - #3437, Speed up ST_Intersects with Points (Raúl Marín)
+  - #4438, Update serialization to support extended flags area (Paul Ramsey)
+  - #4443, Fix wagyu configure dropping CPPFLAGS (Raúl Marín)
+  - #4440, Type lookups in FDW fail (Paul Ramsey)
+  - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
+           them in database for some reason. (Darafei Praliaskouski)
+  - #4441, Make GiST penalty friendly to multi-column indexes and build single-column
+           ones faster. (Darafei Praliaskouski)
 
 PostGIS 3.0.0alpha2
 2019/06/02
-For full changes and enhancements, refer to PostGIS 3.0.0 section.
-This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
-Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 * Major highlights *
   - #4404, Fix selectivity issue with support functions (Paul Ramsey)
@@ -35,9 +62,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 PostGIS 3.0.0alpha1
 2019/05/26
-For full changes and enhancements, refer to PostGIS 3.0.0 section.
-This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
-Additional features enabled if you are running Proj6+ and PostgreSQL 12
+
 * Major highlights *
   - #4341, Using "support function" API in PgSQL 12+ to replace SQL inlining
            as the mechanism for providing index support under ST_Intersects, et al
@@ -64,6 +89,9 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 PostGIS 3.0.0
 2019/xx/xx
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
+
 * Breaking Changes *
   - #4267, Bump minimum GEOS version to 3.6 (Regina Obe, Darafei Praliaskouski)
   - #3888, Raster support now available as a separate extension
@@ -88,6 +116,12 @@ PostGIS 3.0.0
   - #4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)
   - #4414, Include version number in address_standardizer lib (Raúl Marín)
   - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
+  - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
+           them in database for some reason. (Darafei Praliaskouski)
+  - #4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
+  - #3383, Sorting now uses Hilbert curve and Postgres Abbreviated Compare.
+           You need to REINDEX your btree indexes if you had them.
+           (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
@@ -102,9 +136,10 @@ PostGIS 3.0.0
   - #1833, ST_AsGeoJSON(row) generates full GeoJSON Features (Joe Conway)
   - #3687, Casts json(geometry) and jsonb(geometry) for implicit GeoJSON
            generation (Paul Ramsey)
+  - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
+           Praliaskouski)
 
-* Enhancements and fixes *
-  - #4342, Move deprecated functions into legacy.sql file
+* Enhancements *
   - #4341, Using "support function" API in PgSQL 12+ to replace SQL inlining
            as the mechanism for providing index support under ST_Intersects, et al
   - #4330, postgis_restore OOM when output piped to an intermediate process
@@ -120,22 +155,10 @@ PostGIS 3.0.0
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4181, ST_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
   - #4183, ST_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
-  - #4188, Avoid division by zero in KMeans (Raúl Marín)
-  - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
-  - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
-  - #4211, Fix ST_Subdivide for minimal exterior ring with minimal hole (Darafei
-           Praliaskouski)
-  - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
   - #4155, Support for GEOMETRYCOLLECTION, POLYGON, TIN, TRIANGLE in
            ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski)
   - #2767, Documentation for AddRasterConstraint optional parameters (Sunveer Singh)
-  - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
-  - #4190, Avoid undefined behaviour in gserialized_estimate (Raúl Marín)
-  - #4233, Fix undefined behaviour in gserialized_spgist_picksplit_nd (Raúl Marín)
-  - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
-  - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
-  - #4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)
   - #4244, Avoid unaligned memory access in BOX2D_out (Raúl Marín)
   - #4139, Make mixed-dimension ND index build tree correctly (Darafei Praliaskouski,
            Arthur Lesuisse, Andrew Gierth, Raúl Marín)
@@ -146,17 +169,13 @@ PostGIS 3.0.0
   - #4301, ST_Subdivide: fix endless loop on coordinates near coincident to bounds
            (Darafei Praliaskouski)
   - #4289, ST_AsMVTGeom: Transform coordinates space before clipping (Raúl Marín)
-  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
-  - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
   - #4272, Improve notice message when unable to compute stats (Raúl Marín)
-  - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
   - #4313, #4307, PostgreSQL 12 compatibility (Laurenz Albe, Raúl Marín)
   - #4299, #4304, ST_GeneratePoints is now VOLATILE. IMMUTABLE version with
            seed parameter added. (Mike Taves)
   - #4278, ST_3DDistance and ST_3DIntersects now support Solid TIN and Solid
            POLYHEDRALSURFACE (Darafei Praliaskouski)
   - #4348, ST_AsMVTGeom (GEOS): Enforce validation at all times (Raúl Marín)
-  - #4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)
   - #4295, Allow GEOMETRYCOLLECTION in ST_Overlaps, ST_Contains, ST_ContainsProperly,
            ST_Covers, ST_CoveredBy, ST_Crosses, ST_Touches, ST_Disjoint, ST_Relate,
            ST_Equals (Esteban Zimányi)
@@ -167,18 +186,50 @@ PostGIS 3.0.0
   - #4368, Reorder LWGEOM struct members to minimize extra padding (Raúl Marín)
   - #4141, Use uint64 to handle row counts in the topology extension (Raúl Marín)
   - #4225, Upgrade tiger to use tiger 2018 census files
-  - #4198, Add ST_ConstrainedDelaunayTriangles SFCGAL function (Darafei
-           Praliaskouski)
   - #4412, Support ingesting rasters with NODATA=NaN (Darafei Praliaskouski)
   - #4413, Raster tile size follows GeoTIFF block size on raster2pgsql -t auto
            (Darafei Praliaskouski)
   - #4422, Modernize Python 2 code to get ready for Python 3 (Christian Clauss)
-  - #4383, Fix undefined behaviour in implicit conversions (Raúl Marín)
   - #4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)
+  - #4394, Allow FULL OUTER JOIN on geometry equality operator (Darafei Praliaskouski)
+  - #4441, Make GiST penalty friendly to multi-column indexes and build single-column
+           ones faster. (Darafei Praliaskouski)
+  - #4403, Support for shp2pgsql ability to reproject with copy mode (-D) (Regina Obe)
+  - #4410, More descriptive error messages about SRID mismatch (Darafei Praliaskouski)
+  - #4399, TIN and Triangle output support in all output functions (Darafei
+           Praliaskouski)
+  - #3719, Impose minimum number of segments per arc during linearization
+           (Dan Baston / City of Helsinki, Raúl Marín)
+  - #4277, ST_GeomFromGeoJSON now marks SRID=4326 by default as per RFC7946,
+           ST_AsGeoJSON sets SRID in JSON output if it differs from 4326.
+           (Darafei Praliaskouski)
+
+* Fixes *
+  - #4342, Move deprecated functions into legacy.sql file
+  - #4445, Fix a bug in geometry_le (Raúl Marín)
+  - #4189, Fix undefined behaviour in SADFWrite (Raúl Marín)
+  - #4191, Fix undefined behaviour in ptarray_clone_deep (Raúl Marín)
+  - #4211, Fix ST_Subdivide for minimal exterior ring with minimal hole (Darafei
+           Praliaskouski)
+  - #4326, Allocate enough memory in gidx_to_string (Raúl Marín)
+  - #4190, Avoid undefined behaviour in gserialized_estimate (Raúl Marín)
+  - #4233, Fix undefined behaviour in gserialized_spgist_picksplit_nd (Raúl Marín)
+  - #4247, Avoid undefined behaviour in next_float functions (Raúl Marín)
+  - #4249, Fix undefined behaviour in raster intersection (Raúl Marín)
+  - #4246, Fix undefined behaviour in ST_3DDistance (Raúl Marín)
+  - #4188, Avoid division by zero in KMeans (Raúl Marín)
+  - #3457, Fix raster envelope shortcut in ST_Clip (Sai-bot)
+  - #4361, Fix postgis_type_name with (GEOMETRYM,3) (Matt Bretl)
+  - #4275, Avoid passing a NULL pointer to GEOSisEmpty (Raúl Marín)
+  - #4296, Use `server_version_num` instead of parsing `version()` (Raúl Marín)
+  - #4314, ST_ClipByBox2D: Do not throw when the geometry is invalid (Raúl Marín)
+  - #4383, Fix undefined behaviour in implicit conversions (Raúl Marín)
   - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
   - #4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)
   - #4327, Avoid pfree'ing the result of getenv (Raúl Marín)
   - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
+  - #4459, Fix ST_Subdivide crash on intermediate EMPTY (Darafei Praliaskouski)
+  - #4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)
 
 
 PostGIS 2.5.0

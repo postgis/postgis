@@ -189,7 +189,6 @@ select 'intersects', ST_intersects(
 select 'ST_GeometryN', ST_asewkt(ST_GeometryN('LINESTRING(0 0, 1 1)'::geometry, 1));
 select 'ST_NumGeometries', ST_NumGeometries('LINESTRING(0 0, 1 1)'::geometry);
 select 'ST_Union1', ST_AsText(ST_Union(ARRAY['POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'POLYGON((0.5 0.5, 1.5 0.5, 1.5 1.5, 0.5 1.5, 0.5 0.5))'::geometry]));
-select 'ST_StartPoint1',ST_AsText(ST_StartPoint('LINESTRING(0 0, 1 1, 2 2)'::geometry));
 select 'ST_EndPoint1', ST_AsText(ST_Endpoint('LINESTRING(0 0, 1 1, 2 2)'::geometry));
 select 'ST_PointN1', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,2));
 select 'ST_PointN2', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,3));
@@ -203,3 +202,10 @@ select 'ST_PointN9', ST_AsText(ST_PointN('LINESTRING(0 0 0, 1 1 1,2 2 2,3 3 3,4 
 
 -- issues with EMPTY --
 select 'ST_Buffer(empty)', ST_AsText(ST_Buffer('POLYGON EMPTY'::geometry, 0.5));
+
+-- ST_StartPoint
+select 'ST_StartPoint1',ST_AsText(ST_StartPoint('LINESTRING(0 0, 1 1, 2 2)'::geometry));
+select 'ST_StartPoint2',ST_AsText(ST_StartPoint('CIRCULARSTRING(2 2, 1 1, 1 0)'::geometry));
+select 'ST_StartPoint3',ST_AsText(ST_StartPoint('COMPOUNDCURVE(CIRCULARSTRING(3 3, 1 1, 1 0),(1 0, 0 1))'::geometry));
+select 'ST_StartPoint4',ST_AsText(ST_StartPoint('CURVEPOLYGON(CIRCULARSTRING(5 5, 4 0, 4 4, 0 4, 5 5),(1 1, 3 3, 3 1, 1 1))'::geometry));
+select 'ST_StartPoint5',ST_AsText(ST_StartPoint('POLYGON((0 0, 1 1, 0 1, 0 0))'::geometry));

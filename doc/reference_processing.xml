@@ -1236,7 +1236,7 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
+			<para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />, <xref linkend="ST_Tesselate" />
 			</para>
 		</refsection>
 	</refentry>
@@ -2260,6 +2260,9 @@ distance from the input geometry.
 For positive distance the offset will be at the left side of the input line
 and retain the same direction. For a negative distance it'll be at the right
 side and in the opposite direction.
+				</para>
+				<para>
+Note that output may be a MULTILINESTRING or EMPTY for some jigsaw-shaped input geometries.
 				</para>
 
 				<para>Performed by the GEOS module.</para>

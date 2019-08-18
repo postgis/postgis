@@ -54,7 +54,7 @@ static char *spatialRefSysSchema = NULL;
  * from spatial_ref_sys query.
  */
 typedef struct {
-	char* epsgtext;
+	char* authtext;
 	char* srtext;
 	char* proj4text;
 } PjStrs;
@@ -72,6 +72,7 @@ static void
 SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 {
 	char *nsp_name;
+	Oid nsp_oid;
 
 	/* Schema info is already cached, we're done here */
 	if (spatialRefSysSchema) return;
@@ -79,7 +80,9 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 	/* For some reason we have a hobbled fcinfo/flinfo */
 	if (!fcinfo || !fcinfo->flinfo) return;
 
-	nsp_name = get_namespace_name(get_func_namespace(fcinfo->flinfo->fn_oid));
+	nsp_oid = postgis_oid_fcinfo(fcinfo, POSTGISNSPOID);
+	if (!nsp_oid) return;
+	nsp_name = get_namespace_name(nsp_oid);
 	/* early exit if we cannot lookup nsp_name, cf #4067 */
 	if (!nsp_name) return;
 
@@ -399,18 +402,17 @@ GetProjStringsSPI(int32_t srid)
 		if (proj4text && strlen(proj4text))
 			strs.proj4text = SPI_pstrdup(proj4text);
 
-		/* For Proj >= 6 prefer "EPSG:XXXX" to proj strings */
+		/* For Proj >= 6 prefer "AUTHNAME:AUTHSRID" to proj strings */
 		/* as proj_create_crs_to_crs() will give us more consistent */
-		/* results with EPSG numbers than with proj strings */
+		/* results with authority numbers than with proj strings */
 		char* authname = SPI_getvalue(tuple, tupdesc, 2);
 		char* authsrid = SPI_getvalue(tuple, tupdesc, 3);
 		if (authname && authsrid &&
-		    strcmp(authname,"EPSG") == 0 &&
-		    strlen(authsrid))
+		    strlen(authname) && strlen(authsrid))
 		{
 			char tmp[maxprojlen];
-			snprintf(tmp, maxprojlen, "EPSG:%s", authsrid);
-			strs.epsgtext = SPI_pstrdup(tmp);
+			snprintf(tmp, maxprojlen, "%s:%s", authname, authsrid);
+			strs.authtext = SPI_pstrdup(tmp);
 		}
 
 		/* Proj6+ can parse srtext, so return that too */
@@ -531,7 +533,7 @@ static int
 pjstrs_has_entry(const PjStrs *strs)
 {
 	if ((strs->proj4text && strlen(strs->proj4text)) ||
-		(strs->epsgtext && strlen(strs->epsgtext)) ||
+		(strs->authtext && strlen(strs->authtext)) ||
 		(strs->srtext && strlen(strs->srtext)))
 		return 1;
 	else
@@ -543,8 +545,8 @@ pjstrs_pfree(PjStrs *strs)
 {
 	if (strs->proj4text)
 		pfree(strs->proj4text);
-	if (strs->epsgtext)
-		pfree(strs->epsgtext);
+	if (strs->authtext)
+		pfree(strs->authtext);
 	if (strs->srtext)
 		pfree(strs->srtext);
 }
@@ -556,7 +558,7 @@ pgstrs_get_entry(const PjStrs *strs, int n)
 	switch (n)
 	{
 		case 0:
-			return strs->epsgtext;
+			return strs->authtext;
 		case 1:
 			return strs->srtext;
 		case 2:

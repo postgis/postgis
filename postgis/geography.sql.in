@@ -466,7 +466,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(text)
 -- GeoJson Output
 --
 
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 9, options int4 DEFAULT 0)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_geojson'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
@@ -476,7 +476,7 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DE
 -- Deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	RETURNS text AS
-	$$ SELECT @extschema@.ST_AsGeoJson($1::@extschema@.geometry,15,0);  $$
+	$$ SELECT @extschema@.ST_AsGeoJson($1::@extschema@.geometry, 9, 0);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 

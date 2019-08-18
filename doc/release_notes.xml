@@ -3,6 +3,63 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 3.0.0alpha4</title>
+      <para>Release date: 2019/08/11</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.5 - PostgreSQL 12
+      GEOS &gt;= 3.6. Additional features enabled if you running Proj6+ and/or PostgreSQL 12</para>
+      <simplesect>
+        <title>Major highlights</title>
+          <para>4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)</para>
+          <para>4445, Fix a bug in geometry_le (Raúl Marín)</para>
+          <para>4451, Fix the calculation of gserialized_max_header_size (Raúl Marín)</para>
+          <para>4450, Speed up ST_GeometryType (Raúl Marín)</para>
+          <para>4452, Add ST_TileEnvelope() (Paul Ramsey)</para>
+          <para>4403, Support for shp2pgsql ability to reproject with copy mode (-D) (Regina Obe)</para>
+          <para>4417, Update spatial_ref_sys with new entries (Paul Ramsey)</para>
+          <para>4449, Speed up ST_X, ST_Y, ST_Z and ST_M (Raúl Marín)</para>
+          <para>4454, Speed up _ST_OrderingEquals (Raúl Marín)</para>
+          <para>4453, Speed up ST_IsEmpty (Raúl Marín)</para>
+          <para>4271, postgis_extensions_upgrade() also updates after pg_upgrade (Raúl Marín)</para>
+          <para>4466, Fix undefined behaviour in _postgis_gserialized_stats (Raúl Marín)</para>
+          <para>4209, Handle NULL geometry values in pgsql2shp (Paul Ramsey)</para>
+          <para>4419, Use protobuf version to enable/disable mvt/geobuf (Paul Ramsey)</para>
+          <para>4437, Handle POINT EMPTY in shape loader/dumper (Paul Ramsey)</para>
+          <para>4456, add Rasbery Pi 32-bit jenkins bot for testing (Bruce Rindahl,Regina Obe)</para>
+          <para>4420, update path does not exists for address_standardizer extension (Regina Obe)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 3.0.0alpha3</title>
+      <para>Release date: 2019/07/01</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.5 - PostgreSQL 12
+      GEOS &gt;= 3.6</para>
+      <simplesect>
+        <title>Major highlights</title>
+          <para>4414, Include version number in address_standardizer lib (Raúl Marín)</para>
+          <para>4352, Use CREATE OR REPLACE AGGREGATE for PG12+ (Raúl Marín)</para>
+          <para>4334, Fix upgrade issues related to renamed parameters (Raúl Marín)</para>
+          <para>4388, AddRasterConstraints: Ignore NULLs when generating constraints (Raúl Marín)</para>
+          <para>4327, Avoid pfree'ing the result of getenv (Raúl Marín)</para>
+          <para>4406, Throw on invalid characters when decoding geohash (Raúl Marín)</para>
+          <para>4429, Avoid resource leaks with PROJ6 (Raúl Marín)</para>
+          <para>4372, PROJ6: Speed improvements (Raúl Marín)</para>
+          <para>3437, Speed up ST_Intersects with Points (Raúl Marín)</para>
+          <para>4438, Update serialization to support extended flags area (Paul Ramsey)</para>
+          <para>4443, Fix wagyu configure dropping CPPFLAGS (Raúl Marín)</para>
+          <para>4440, Type lookups in FDW fail (Paul Ramsey)</para>
+          <para>4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
+                    them in database for some reason. (Darafei Praliaskouski)</para>
+          <para>4441, Make GiST penalty friendly to multi-column indexes and build single-column
+                    ones faster. (Darafei Praliaskouski)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 3.0.0alpha2</title>
       <para>Release date: 2019/06/02</para>
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>

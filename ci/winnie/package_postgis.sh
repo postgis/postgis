@@ -14,22 +14,55 @@
 #export GCC_TYPE=
 #if no override is set - use these values
 #otherwise use the ones jenkins passes thru
+#!/bin/bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8
 	export GDAL_VER=2.2.4
 	export PROJ_VER=4.9.3
 	export SFCGAL_VER=1.3.2
-	export PROTOBUF_VER=3.2.0
-	export PROTOBUFC_VER=1.2.1
 	export CGAL_VER=4.11
 	export ICON_VER=1.15
+	export ZLIB_VER=1.2.11
+  	export PROTOBUF_VER=3.2.0
+	export PROTOBUFC_VER=1.2.1
+	export JSON_VER=0.12
+	export PROJSO=libproj-12.dll
 fi;
 
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
+export JSON_VER=0.12
 export PCRE_VER=8.33
 
+if  [[ "${ICON_VER}" == '' ]] ; then
+  export ICON_VER=1.15
+fi;
+
+echo "ICON_VER ${ICON_VER}"
+
+#set to something even if override is on but not set
+if  [[ "${ZLIB_VER}" == '' ]] ; then
+  export ZLIB_VER=1.2.11
+fi;
+
+
+#set to something even if override is on but not set
+if  [[ "${LIBXML_VER}" == '' ]] ; then
+  export LIBXML_VER=2.7.8
+fi;
+
+#set to something even if override is on but not set
+if  [[ "${CGAL_VER}" == '' ]] ; then
+  export CGAL_VER=4.11
+fi;
+
+echo "ZLIB_VER $ZLIB_VER"
+echo "PROJ_VER $PROJ_VER"
+echo "LIBXML_VER $LIBXML_VER"
+echo "CGAL_VER $CGAL_VER"
 
 export PROJECTS=/projects
-export MINGPROJECTS=/projects
+export PROJECTS=/projects
 export PATHOLD=$PATH
 
 
@@ -80,7 +113,7 @@ export RELDIR=${PROJECTS}/postgis/builds/${POSTGIS_MINOR_VER}
 export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
 export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
 export PCRE_VER=8.33 
-#PATH="${PGPATH}/bin:${PGPATH}/lib:${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
+#PATH="${PGPATH}/bin:${PGPATH}/lib:${PROJECTS}/xsltproc:${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
 #echo PATH AFTER: $PATH
 outdir="${RELDIR}/${RELVERDIR}"
 package="${RELDIR}/${RELVERDIR}.zip"
@@ -102,11 +135,11 @@ cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdi
 # it seems 9.2 and 9.3 doesn't come with its own libiconv good grief
 # and trying to use their libiconv2.dll makes shp2pgsql crash
 if [[ "$PG_VER" == *9.2* || "$PG_VER" == *9.3* ]]; then
-	cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin
+	cp ${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin
 fi;
 cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
 #cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
-cp ${MINGPROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
+cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
 
 cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
@@ -124,11 +157,11 @@ cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui/li
 cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/lib/gdk-pixbuf-2.0 $outdir/bin/postgisgui/lib
 
 
-cp ${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
-cp ${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
+cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj/* $outdir/share/contrib/postgis-${POSTGIS_MINOR_VER}/proj
+cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 
-cp ${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
+cp ${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 
 #for protobuf
@@ -168,8 +201,8 @@ fi;
 
 echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
 echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
-#cp ${MINGPROJECTS}/libxml/rel-libxml2-2.7.8w${OS_BUILD}/bin/*.dll  $outdir/bin/
-cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
+cp ${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}/bin/*.dll  $outdir/bin/
+#cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
 cd ${POSTGIS_SRC}
 strip postgis/*.dll

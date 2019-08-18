@@ -212,7 +212,7 @@ static LWGEOM* lwgeom_filter_m_ignore_null(LWGEOM *geom,double min,double max, i
 		}
 		/* Unknown type! */
 		default:
-			lwerror("Unsupported geometry type: %s [%d] in function %s", lwtype_name((geom)->type), (geom)->type, __func__);
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 	}
 	return geom_out;
 
@@ -258,7 +258,7 @@ LWGEOM* lwgeom_filter_m(LWGEOM *geom,double min,double max, int returnm)
 			}
 			/* Unknown type! */
 			default:
-				lwerror("Unsupported geometry type: %s [%d] in function %s", lwtype_name((geom)->type), (geom)->type, __func__);
+				lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(geom->type));
 		}
 	}
 	/*Shouldn't be possible*/

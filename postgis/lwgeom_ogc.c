@@ -170,6 +170,23 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(text_ob);
 }
 
+/* Matches lwutil.c::lwgeomTypeName */
+static char *stTypeName[] = {"Unknown",
+			     "ST_Point",
+			     "ST_LineString",
+			     "ST_Polygon",
+			     "ST_MultiPoint",
+			     "ST_MultiLineString",
+			     "ST_MultiPolygon",
+			     "ST_GeometryCollection",
+			     "ST_CircularString",
+			     "ST_CompoundCurve",
+			     "ST_CurvePolygon",
+			     "ST_MultiCurve",
+			     "ST_MultiSurface",
+			     "ST_PolyhedralSurface",
+			     "ST_Triangle",
+			     "ST_Tin"};
 
 /* returns a string representation of this geometry's type */
 PG_FUNCTION_INFO_V1(geometry_geometrytype);
@@ -177,21 +194,12 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser;
 	text *type_text;
-#	define type_str_len 31
-	char type_str[type_str_len + 1];
 
 	/* Read just the header from the toasted tuple */
 	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
 
-	/* Make it empty string to start */
-	type_str[0] = 0;
-
-	/* Build up the output string */
-	strncat(type_str, "ST_", type_str_len);
-	strncat(type_str, lwtype_name(gserialized_get_type(gser)), type_str_len - 3);
-
 	/* Build a text type to store things in */
-	type_text = cstring_to_text(type_str);
+	type_text = cstring_to_text(stTypeName[gserialized_get_type(gser)]);
 
 	PG_FREE_IF_COPY(gser, 0);
 	PG_RETURN_TEXT_P(type_text);
@@ -591,26 +599,17 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_x_point);
 Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	LWGEOM *lwgeom;
-	LWPOINT *point = NULL;
-	POINT2D p;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	POINT4D pt;
 
-	geom = PG_GETARG_GSERIALIZED_P(0);
+	if (gserialized_get_type(geom) != POINTTYPE)
+		lwpgerror("Argument to ST_X() must have type POINT");
 
-	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwpgerror("Argument to ST_X() must be a point");
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	point = lwgeom_as_lwpoint(lwgeom);
-
-	if ( lwgeom_is_empty(lwgeom) )
+	if (gserialized_peek_first_point(geom, &pt) == LW_FAILURE)
+	{
 		PG_RETURN_NULL();
-
-	getPoint2d_p(point->point, 0, &p);
-
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_FLOAT8(p.x);
+	}
+	PG_RETURN_FLOAT8(pt.x);
 }
 
 /**
@@ -620,27 +619,17 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_y_point);
 Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	LWPOINT *point = NULL;
-	LWGEOM *lwgeom;
-	POINT2D p;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	POINT4D pt;
 
-	geom = PG_GETARG_GSERIALIZED_P(0);
+	if (gserialized_get_type(geom) != POINTTYPE)
+		lwpgerror("Argument to ST_Y() must have type POINT");
 
-	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwpgerror("Argument to ST_Y() must be a point");
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	point = lwgeom_as_lwpoint(lwgeom);
-
-	if ( lwgeom_is_empty(lwgeom) )
+	if (gserialized_peek_first_point(geom, &pt) == LW_FAILURE)
+	{
 		PG_RETURN_NULL();
-
-	getPoint2d_p(point->point, 0, &p);
-
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_FLOAT8(p.y);
+	}
+	PG_RETURN_FLOAT8(pt.y);
 }
 
 /**
@@ -651,30 +640,17 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_z_point);
 Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	LWPOINT *point = NULL;
-	LWGEOM *lwgeom;
-	POINT3DZ p;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	POINT4D pt;
 
-	geom = PG_GETARG_GSERIALIZED_P(0);
+	if (gserialized_get_type(geom) != POINTTYPE)
+		lwpgerror("Argument to ST_Z() must have type POINT");
 
-	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwpgerror("Argument to ST_Z() must be a point");
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	point = lwgeom_as_lwpoint(lwgeom);
-
-	if ( lwgeom_is_empty(lwgeom) )
+	if (!gserialized_has_z(geom) || (gserialized_peek_first_point(geom, &pt) == LW_FAILURE))
+	{
 		PG_RETURN_NULL();
-
-	/* no Z in input */
-	if ( ! gserialized_has_z(geom) ) PG_RETURN_NULL();
-
-	getPoint3dz_p(point->point, 0, &p);
-
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_FLOAT8(p.z);
+	}
+	PG_RETURN_FLOAT8(pt.z);
 }
 
 /**  M(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its M value.
@@ -684,27 +660,17 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_m_point);
 Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	LWPOINT *point = NULL;
-	LWGEOM *lwgeom;
-	POINT3DM p;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	POINT4D pt;
 
-	geom = PG_GETARG_GSERIALIZED_P(0);
+	if (gserialized_get_type(geom) != POINTTYPE)
+		lwpgerror("Argument to ST_M() must have type POINT");
 
-	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwpgerror("Argument to ST_M() must be a point");
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	point = lwgeom_as_lwpoint(lwgeom);
-
-	if (lwgeom_is_empty(lwgeom) || !lwgeom_has_m(lwgeom))
+	if (!gserialized_has_m(geom) || (gserialized_peek_first_point(geom, &pt) == LW_FAILURE))
+	{
 		PG_RETURN_NULL();
-
-	getPoint3dm_p(point->point, 0, &p);
-
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_FLOAT8(p.m);
+	}
+	PG_RETURN_FLOAT8(pt.m);
 }
 
 /**

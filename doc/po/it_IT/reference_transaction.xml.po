@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -15,46 +15,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Tag: para
+#: reference_transaction.xml:6
+#, no-c-format
+msgid ""
+"These functions implement a row locking mechanism to support long "
+"transactions. They are provided primarily for implementors of the <ulink url="
+"\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</ulink> "
+"specification."
+msgstr ""
+
 #. Tag: title
-#: reference_transaction.xml:3
+#: reference_transaction.xml:13
 #, no-c-format
-msgid "Long Transactions Support"
+msgid "Long Transaction Support"
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:5
+#: reference_transaction.xml:16
 #, no-c-format
 msgid ""
-"This module and associated pl/pgsql functions have been implemented to "
-"provide long locking support required by <ulink url=\"http://www."
-"opengeospatial.org/standards/wfs\">Web Feature Service</ulink> specification."
-msgstr ""
-
-#. Tag: para
-#: reference_transaction.xml:10
-#, no-c-format
-msgid ""
-"Users must use <ulink url=\"http://www.postgresql.org/docs/current/static/"
-"transaction-iso.html\">serializable transaction level</ulink> otherwise "
-"locking mechanism would break."
+"For the locking mechanism to operate correctly the <emphasis role=\"bold"
+"\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/docs/"
+"current/static/transaction-iso.html\"> transaction isolation level</ulink> "
+"must be used."
 msgstr ""
 
 #. Tag: refname
-#: reference_transaction.xml:18
+#: reference_transaction.xml:24
 #, no-c-format
 msgid "AddAuth"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_transaction.xml:20
+#: reference_transaction.xml:26
 #, no-c-format
 msgid ""
-"<refpurpose>Add an authorization token to be used in current transaction.</"
-"refpurpose>"
+"<refpurpose>Adds an authorization token to be used in the current "
+"transaction.</refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_transaction.xml:25
+#: reference_transaction.xml:31
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
@@ -62,53 +64,54 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_transaction.xml:33 reference_transaction.xml:83
-#: reference_transaction.xml:130 reference_transaction.xml:177
-#: reference_transaction.xml:241 reference_transaction.xml:284
+#: reference_transaction.xml:39 reference_transaction.xml:88
+#: reference_transaction.xml:134 reference_transaction.xml:178
+#: reference_transaction.xml:243 reference_transaction.xml:288
 #, no-c-format
 msgid "Description"
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:35
+#: reference_transaction.xml:41
 #, no-c-format
 msgid ""
-"<para>Add an authorization token to be used in current transaction.</para>"
+"<para>Adds an authorization token to be used in the current transaction.</"
+"para>"
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:37
+#: reference_transaction.xml:43
 #, no-c-format
 msgid ""
-"Creates/adds to a temp table called temp_lock_have_table the current "
-"transaction identifier and authorization token key."
+"Adds the current transaction identifier and authorization token to a "
+"temporary table called <varname>temp_lock_have_table</varname>."
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:40 reference_transaction.xml:92
-#: reference_transaction.xml:138 reference_transaction.xml:185
-#: reference_transaction.xml:248 reference_transaction.xml:289
+#: reference_transaction.xml:46 reference_transaction.xml:98
+#: reference_transaction.xml:142 reference_transaction.xml:187
+#: reference_transaction.xml:252 reference_transaction.xml:293
 #, no-c-format
 msgid "Availability: 1.1.3"
 msgstr ""
 
 #. Tag: title
-#: reference_transaction.xml:45 reference_transaction.xml:98
-#: reference_transaction.xml:144 reference_transaction.xml:191
-#: reference_transaction.xml:253 reference_transaction.xml:294
+#: reference_transaction.xml:50 reference_transaction.xml:104
+#: reference_transaction.xml:148 reference_transaction.xml:193
+#: reference_transaction.xml:257 reference_transaction.xml:298
 #, no-c-format
 msgid "Examples"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_transaction.xml:47
+#: reference_transaction.xml:52
 #, no-c-format
 msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
 "                BEGIN TRANSACTION;\n"
 "                        SELECT AddAuth('joey');\n"
-"                        UPDATE towns SET the_geom = ST_Translate"
-"(the_geom,2,2) WHERE gid = 353;\n"
+"                        UPDATE towns SET the_geom = "
+"ST_Translate(the_geom,2,2) WHERE gid = 353;\n"
 "                COMMIT;\n"
 "\n"
 "\n"
@@ -118,29 +121,29 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_transaction.xml:52 reference_transaction.xml:105
-#: reference_transaction.xml:151 reference_transaction.xml:198
-#: reference_transaction.xml:260 reference_transaction.xml:301
+#: reference_transaction.xml:57 reference_transaction.xml:111
+#: reference_transaction.xml:155 reference_transaction.xml:200
+#: reference_transaction.xml:264 reference_transaction.xml:305
 #, no-c-format
 msgid "See Also"
 msgstr ""
 
 #. Tag: refname
-#: reference_transaction.xml:60
+#: reference_transaction.xml:65
 #, no-c-format
 msgid "CheckAuth"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_transaction.xml:62
+#: reference_transaction.xml:67
 #, no-c-format
 msgid ""
-"Creates trigger on a table to prevent/allow updates and deletes of rows "
+"Creates a trigger on a table to prevent/allow updates and deletes of rows "
 "based on authorization token."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_transaction.xml:66
+#: reference_transaction.xml:71
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> "
@@ -154,35 +157,36 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:85
+#: reference_transaction.xml:90
 #, no-c-format
 msgid ""
 "Creates trigger on a table to prevent/allow updates and deletes of rows "
-"based on authorization token. Identify rows using &lt;rowid_col&gt; column."
+"based on an authorization token. Identify rows using &lt;rowid_col&gt; "
+"column."
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:87
+#: reference_transaction.xml:93
 #, no-c-format
 msgid ""
 "If a_schema_name is not passed in, then searches for table in current schema."
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:88
+#: reference_transaction.xml:94
 #, no-c-format
 msgid ""
 "If an authorization trigger already exists on this table function errors."
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:89
+#: reference_transaction.xml:95
 #, no-c-format
 msgid "If Transaction support is not enabled, function throws an exception."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_transaction.xml:100
+#: reference_transaction.xml:106
 #, no-c-format
 msgid ""
 "SELECT CheckAuth('public', 'towns', 'gid');\n"
@@ -192,22 +196,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_transaction.xml:113
+#: reference_transaction.xml:119
 #, no-c-format
 msgid "DisableLongTransactions"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_transaction.xml:115
+#: reference_transaction.xml:121
 #, no-c-format
-msgid ""
-"<refpurpose>Disable long transaction support. This function removes the long "
-"transaction support metadata tables, and drops all triggers attached to lock-"
-"checked tables.</refpurpose>"
+msgid "Disables long transaction support."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_transaction.xml:122
+#: reference_transaction.xml:126
 #, no-c-format
 msgid ""
 "<funcdef>text <function>DisableLongTransactions</function></funcdef> "
@@ -215,16 +216,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:132
+#: reference_transaction.xml:136
 #, no-c-format
 msgid ""
-"<para>Disable long transaction support. This function removes the long "
+"Disables long transaction support. This function removes the long "
 "transaction support metadata tables, and drops all triggers attached to lock-"
-"checked tables.</para>"
+"checked tables."
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:135
+#: reference_transaction.xml:139
 #, no-c-format
 msgid ""
 "Drops meta table called <varname>authorization_table</varname> and a view "
@@ -233,7 +234,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_transaction.xml:146
+#: reference_transaction.xml:150
 #, no-c-format
 msgid ""
 "SELECT DisableLongTransactions();\n"
@@ -242,22 +243,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_transaction.xml:159
+#: reference_transaction.xml:163
 #, no-c-format
 msgid "EnableLongTransactions"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_transaction.xml:161
+#: reference_transaction.xml:165
 #, no-c-format
-msgid ""
-"<refpurpose>Enable long transaction support. This function creates the "
-"required metadata tables, needs to be called once before using the other "
-"functions in this section. Calling it twice is harmless.</refpurpose>"
+msgid "Enables long transaction support."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_transaction.xml:169
+#: reference_transaction.xml:170
 #, no-c-format
 msgid ""
 "<funcdef>text <function>EnableLongTransactions</function></funcdef> "
@@ -265,16 +263,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:179
+#: reference_transaction.xml:180
 #, no-c-format
 msgid ""
-"<para>Enable long transaction support. This function creates the required "
-"metadata tables, needs to be called once before using the other functions in "
-"this section. Calling it twice is harmless.</para>"
+"Enables long transaction support. This function creates the required "
+"metadata tables. It must be called once before using the other functions in "
+"this section. Calling it twice is harmless."
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:183
+#: reference_transaction.xml:185
 #, no-c-format
 msgid ""
 "Creates a meta table called <varname>authorization_table</varname> and a "
@@ -282,7 +280,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_transaction.xml:193
+#: reference_transaction.xml:195
 #, no-c-format
 msgid ""
 "SELECT EnableLongTransactions();\n"
@@ -291,19 +289,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_transaction.xml:206
+#: reference_transaction.xml:208
 #, no-c-format
 msgid "LockRow"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_transaction.xml:208
+#: reference_transaction.xml:210
 #, no-c-format
-msgid "Set lock/authorization for specific row in table"
+msgid "Sets lock/authorization for a row in a table."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_transaction.xml:212
+#: reference_transaction.xml:214
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>integer <function>LockRow</function></funcdef> "
@@ -325,16 +323,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:243
+#: reference_transaction.xml:245
 #, no-c-format
 msgid ""
-"Set lock/authorization for specific row in table &lt;authid&gt; is a text "
-"value, &lt;expires&gt; is a timestamp defaulting to now()+1hour. Returns 1 "
-"if lock has been assigned, 0 otherwise (already locked by other auth)"
+"Sets lock/authorization for a specific row in a table. "
+"<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
+"varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
+"emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
+"already locked by another auth.)"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_transaction.xml:255
+#: reference_transaction.xml:259
 #, no-c-format
 msgid ""
 "SELECT LockRow('public', 'towns', '2', 'joey');\n"
@@ -350,21 +350,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_transaction.xml:268
+#: reference_transaction.xml:272
 #, no-c-format
 msgid "UnlockRows"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_transaction.xml:270
+#: reference_transaction.xml:274
 #, no-c-format
-msgid ""
-"<refpurpose>Remove all locks held by specified authorization id. Returns the "
-"number of locks released.</refpurpose>"
+msgid "Removes all locks held by an authorization token."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_transaction.xml:276
+#: reference_transaction.xml:280
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>UnlockRows</function></funcdef> "
@@ -372,15 +370,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_transaction.xml:286
+#: reference_transaction.xml:290
 #, no-c-format
 msgid ""
-"<para>Remove all locks held by specified authorization id. Returns the "
-"number of locks released.</para>"
+"Removes all locks held by specified authorization token. Returns the number "
+"of locks released."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_transaction.xml:296
+#: reference_transaction.xml:300
 #, no-c-format
 msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"

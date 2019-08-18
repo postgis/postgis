@@ -67,6 +67,17 @@ static char * goodDBFValue(char *in, char fieldType);
 /** @brief Binary to hexewkb conversion function */
 char *convert_bytes_to_hex(uint8_t *ewkb, size_t size);
 
+static SHPObject *
+create_point_empty(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
+{
+	SHPObject *obj;
+	const uint8_t ndr_nan[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0x7f};
+	double double_nan;
+
+	memcpy(&double_nan, ndr_nan, 8);
+	obj = SHPCreateObject(state->outshptype, -1, 0, NULL, NULL, 1, &double_nan, &double_nan, &double_nan, &double_nan);
+	return obj;
+}
 
 static SHPObject *
 create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
@@ -887,15 +898,15 @@ getTableInfo(SHPDUMPERSTATE *state)
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->schema) + strlen(state->table));
 
-			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
-			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->schema, state->table, state->geo_col_name);
+			sprintf(query, "SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY 3",
+			state->geo_col_name, state->geo_col_name, state->schema, state->table);
 		}
 		else
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->table));
 
-			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
-			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->table, state->geo_col_name);
+			sprintf(query, "SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY 3",
+			state->geo_col_name, state->geo_col_name, state->table);
 		}
 	}
 	else
@@ -955,9 +966,14 @@ getTableInfo(SHPDUMPERSTATE *state)
 
 		for (i = 0; i < PQntuples(res); i++)
 		{
-			geometry_type_from_string(PQgetvalue(res, i, 2), &type, &dummy, &dummy);
+			/* skip null geometries */
+			if (PQgetisnull(res, i, 2))
+			{
+				state->rowcount += atoi(PQgetvalue(res, i, 0));
+				continue;
+			}
 
-			if (!type) continue; /* skip null geometries */
+			geometry_type_from_string(PQgetvalue(res, i, 2), &type, &dummy, &dummy);
 
 			/* We can always set typefound to that of the first column found */
 			if (!typefound)
@@ -2107,7 +2123,14 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			switch (lwgeom->type)
 			{
 			case POINTTYPE:
-				obj = create_point(state, lwgeom_as_lwpoint(lwgeom));
+				if (lwgeom_is_empty(lwgeom))
+				{
+					obj = create_point_empty(state, lwgeom_as_lwpoint(lwgeom));
+				}
+				else
+				{
+					obj = create_point(state, lwgeom_as_lwpoint(lwgeom));
+				}
 				break;
 
 			case MULTIPOINTTYPE:

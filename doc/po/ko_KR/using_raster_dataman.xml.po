@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:02+0000\n"
 "PO-Revision-Date: 2016-07-22 07:51+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -419,103 +419,97 @@ msgid "Optional parameters used to manipulate database objects"
 msgstr "데이터베이스 객체를 조작하는 데 이용되는 선택적 파라미터들"
 
 #. Tag: term
-#: using_raster_dataman.xml:206 using_raster_dataman.xml:235
-#, no-c-format
-msgid "<term>-q</term>"
-msgstr "<term>-q</term>"
-
-#. Tag: para
-#: using_raster_dataman.xml:208
-#, no-c-format
-msgid "Wrap PostgreSQL identifiers in quotes"
-msgstr "PostgreSQL 식별자를 따옴표로 감쌉니다."
-
-#. Tag: term
-#: using_raster_dataman.xml:213
+#: using_raster_dataman.xml:206
 #, no-c-format
 msgid "-f COLUMN"
 msgstr "-f COLUMN"
 
 #. Tag: para
-#: using_raster_dataman.xml:215
+#: using_raster_dataman.xml:208
 #, no-c-format
 msgid "Specify name of destination raster column, default is 'rast'"
 msgstr "저장될 래스터 열의 명칭을 설정합니다. 기본값은 'rast'입니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:221
+#: using_raster_dataman.xml:214
 #, no-c-format
 msgid "<term>-F</term>"
 msgstr "<term>-F</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:223
+#: using_raster_dataman.xml:216
 #, no-c-format
 msgid "Add a column with the name of the file"
 msgstr "파일명을 담은 열을 추가합니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:228
+#: using_raster_dataman.xml:221
 #, no-c-format
 msgid "-n COLUMN"
 msgstr "-n COLUMN"
 
 #. Tag: para
-#: using_raster_dataman.xml:230
+#: using_raster_dataman.xml:223
 #, no-c-format
 msgid "Specify the name of the filename column. Implies -F."
 msgstr "파일명 열의 명칭을 설정합니다. -F 플래그와 함께 써야 합니다."
 
+#. Tag: term
+#: using_raster_dataman.xml:228
+#, no-c-format
+msgid "<term>-q</term>"
+msgstr "<term>-q</term>"
+
 #. Tag: para
-#: using_raster_dataman.xml:237
+#: using_raster_dataman.xml:230
 #, no-c-format
 msgid "Wrap PostgreSQL identifiers in quotes."
 msgstr "PostgreSQL 식별자를 따옴표로 감쌉니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:242
+#: using_raster_dataman.xml:235
 #, no-c-format
 msgid "<term>-I</term>"
 msgstr "<term>-I</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:244
+#: using_raster_dataman.xml:237
 #, no-c-format
 msgid "Create a GiST index on the raster column."
 msgstr "래스터 열에 GiST 인덱스를 생성합니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:251
+#: using_raster_dataman.xml:244
 #, no-c-format
 msgid "<term>-M</term>"
 msgstr "<term>-M</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:253
+#: using_raster_dataman.xml:246
 #, no-c-format
 msgid "Vacuum analyze the raster table."
 msgstr "래스터 테이블을 빈공간 분석(vacuum analyze)합니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:261
+#: using_raster_dataman.xml:254
 #, no-c-format
 msgid "<term>-k</term>"
 msgstr "<term>-k</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:263
+#: using_raster_dataman.xml:256
 #, no-c-format
 msgid "Skip NODATA value checks for each raster band."
 msgstr "각 래스터 밴드 별로 NODATA 값 확인을 건너뜁니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:271
+#: using_raster_dataman.xml:264
 #, no-c-format
 msgid "-T <varname>tablespace</varname>"
 msgstr "-T <varname>tablespace</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:273
+#: using_raster_dataman.xml:266
 #, no-c-format
 msgid ""
 "Specify the tablespace for the new table. Note that indices (including the "
@@ -527,13 +521,13 @@ msgstr ""
 "에 주의하십시오."
 
 #. Tag: term
-#: using_raster_dataman.xml:282
+#: using_raster_dataman.xml:275
 #, no-c-format
 msgid "-X <varname>tablespace</varname>"
 msgstr "-X <varname>tablespace</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:284
+#: using_raster_dataman.xml:277
 #, no-c-format
 msgid ""
 "Specify the tablespace for the table's new index. This applies to the "
@@ -543,38 +537,38 @@ msgstr ""
 "기본 키와 공간 인덱스에 함께 적용됩니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:293
+#: using_raster_dataman.xml:286
 #, no-c-format
 msgid "<term>-Y</term>"
 msgstr "<term>-Y</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:295
+#: using_raster_dataman.xml:288
 #, no-c-format
 msgid "Use copy statements instead of insert statements."
 msgstr "삽입 선언문 대신 복사 선언문을 사용합니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:306
+#: using_raster_dataman.xml:299
 #, no-c-format
 msgid "<term>-e</term>"
 msgstr "<term>-e</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:307
+#: using_raster_dataman.xml:300
 #, no-c-format
 msgid "Execute each statement individually, do not use a transaction."
 msgstr ""
 "각 선언문을 개별적으로 실행하며, 상호처리(transaction)를 이용하지 않습니다."
 
 #. Tag: term
-#: using_raster_dataman.xml:311
+#: using_raster_dataman.xml:304
 #, no-c-format
 msgid "-E ENDIAN"
 msgstr "-E ENDIAN"
 
 #. Tag: para
-#: using_raster_dataman.xml:312
+#: using_raster_dataman.xml:305
 #, no-c-format
 msgid ""
 "Control endianness of generated binary output of raster; specify 0 for XDR "
@@ -585,13 +579,13 @@ msgstr ""
 "다."
 
 #. Tag: term
-#: using_raster_dataman.xml:316
+#: using_raster_dataman.xml:309
 #, no-c-format
 msgid "-V <varname>version</varname>"
 msgstr "-V <varname>version</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:317
+#: using_raster_dataman.xml:310
 #, no-c-format
 msgid ""
 "Specify version of output format. Default is 0. Only 0 is supported at this "
@@ -600,7 +594,7 @@ msgstr ""
 "산출물 형식의 버전을 설정합니다. 기본값은 0입니다. 현재, 0만 지원합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:320
+#: using_raster_dataman.xml:313
 #, no-c-format
 msgid ""
 "An example session using the loader to create an input file and uploading it "
@@ -610,7 +604,7 @@ msgstr ""
 "의 예시는 다음과 같습니다:"
 
 #. Tag: para
-#: using_raster_dataman.xml:321
+#: using_raster_dataman.xml:314
 #, no-c-format
 msgid ""
 "You can leave the schema name out e.g <varname>demelevation</varname> "
@@ -622,7 +616,7 @@ msgstr ""
 "은 데이터베이스 또는 사용자의 기본 스키마를 기반으로 생성될 것입니다."
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:323
+#: using_raster_dataman.xml:316
 #, no-c-format
 msgid ""
 "raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > elev."
@@ -634,13 +628,13 @@ msgstr ""
 "psql -d gisdb -f elev.sql"
 
 #. Tag: para
-#: using_raster_dataman.xml:325
+#: using_raster_dataman.xml:318
 #, no-c-format
 msgid "A conversion and upload can be done all in one step using UNIX pipes:"
 msgstr "UNIX 파이프를 이용하면 변환 및 업로드 작업을 한 번에 끝낼 수 있습니다:"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:327
+#: using_raster_dataman.xml:320
 #, no-c-format
 msgid ""
 "raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql "
@@ -650,7 +644,7 @@ msgstr ""
 "-d gisdb"
 
 #. Tag: para
-#: using_raster_dataman.xml:329
+#: using_raster_dataman.xml:322
 #, no-c-format
 msgid ""
 "Load rasters Massachusetts state plane meters aerial tiles into a schema "
@@ -672,7 +666,7 @@ msgstr ""
 "도록 -F 플래그로 \"filename\"이라는 필드를 포함시키십시오."
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:331
+#: using_raster_dataman.xml:324
 #, no-c-format
 msgid ""
 "raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*."
@@ -682,7 +676,7 @@ msgstr ""
 "jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:333
+#: using_raster_dataman.xml:326
 #, no-c-format
 msgid ""
 "--get a list of raster types supported:\n"
@@ -692,13 +686,13 @@ msgstr ""
 "raster2pgsql -G"
 
 #. Tag: para
-#: using_raster_dataman.xml:335
+#: using_raster_dataman.xml:328
 #, no-c-format
 msgid "The -G commands outputs a list something like"
 msgstr "-G 옵션이 다음과 같은 목록을 출력할 것입니다:"
 
 #. Tag: screen
-#: using_raster_dataman.xml:336
+#: using_raster_dataman.xml:329
 #, no-c-format
 msgid ""
 "Available GDAL raster formats:\n"
@@ -900,13 +894,13 @@ msgstr ""
 "  NOAA NGS Geoid Height Grids"
 
 #. Tag: title
-#: using_raster_dataman.xml:339
+#: using_raster_dataman.xml:332
 #, no-c-format
 msgid "Creating rasters using PostGIS raster functions"
 msgstr "PostGIS 래스터 함수를 이용해 래스터 생성하기"
 
 #. Tag: para
-#: using_raster_dataman.xml:340
+#: using_raster_dataman.xml:333
 #, no-c-format
 msgid ""
 "On many occasions, you'll want to create rasters and raster tables right in "
@@ -918,7 +912,7 @@ msgstr ""
 "단계는 다음과 같습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:342
+#: using_raster_dataman.xml:335
 #, no-c-format
 msgid ""
 "Create a table with a raster column to hold the new raster records which can "
@@ -927,13 +921,13 @@ msgstr ""
 "새 래스터 레코드를 담을 래스터 열을 가진 테이블을 다음과 같이 생성하십시오:"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:343
+#: using_raster_dataman.xml:336
 #, no-c-format
 msgid "CREATE TABLE myrasters(rid serial primary key, rast raster);"
 msgstr "CREATE TABLE myrasters(rid serial primary key, rast raster);"
 
 #. Tag: para
-#: using_raster_dataman.xml:346
+#: using_raster_dataman.xml:339
 #, no-c-format
 msgid ""
 "There are many functions to help with that goal. If you are creating rasters "
@@ -946,7 +940,7 @@ msgstr ""
 "linkend=\"RT_ST_AddBand\"/> 함수를 순서대로 사용하는 편이 좋습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:348
+#: using_raster_dataman.xml:341
 #, no-c-format
 msgid ""
 "You can also create rasters from geometries. To achieve that you'll want to "
@@ -961,7 +955,7 @@ msgstr ""
 "수와도 같은 다른 함수와 함께 사용하는 편이 좋습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:350
+#: using_raster_dataman.xml:343
 #, no-c-format
 msgid ""
 "There are even many more options for creating new raster tables from "
@@ -973,7 +967,7 @@ msgstr ""
 "블과는 다른 투영이 적용된 래스터 테이블을 생성할 수 있습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:352
+#: using_raster_dataman.xml:345
 #, no-c-format
 msgid ""
 "Once you are done populating your table initially, you'll want to create a "
@@ -983,7 +977,7 @@ msgstr ""
 "간 인덱스를 생성하는 편이 좋습니다:"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:353
+#: using_raster_dataman.xml:346
 #, no-c-format
 msgid ""
 "CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING "
@@ -993,7 +987,7 @@ msgstr ""
 "gist( ST_ConvexHull(rast) );"
 
 #. Tag: para
-#: using_raster_dataman.xml:354
+#: using_raster_dataman.xml:347
 #, no-c-format
 msgid ""
 "Note the use of <xref linkend=\"RT_ST_ConvexHull\"/> since most raster "
@@ -1003,7 +997,7 @@ msgstr ""
 "에 <xref linkend=\"RT_ST_ConvexHull\"/> 함수를 사용했다는 점에 주의하십시오."
 
 #. Tag: para
-#: using_raster_dataman.xml:355
+#: using_raster_dataman.xml:348
 #, no-c-format
 msgid ""
 "Pre-2.0 versions of PostGIS raster were based on the envelop rather than the "
@@ -1015,7 +1009,7 @@ msgstr ""
 "록 껍질 기반 인덱스로 대체해야 합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:356
+#: using_raster_dataman.xml:349
 #, no-c-format
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
@@ -1023,13 +1017,13 @@ msgstr ""
 "<xref linkend=\"RT_AddRasterConstraints\"/> 를 이용해 래스터 제약조건 적용"
 
 #. Tag: title
-#: using_raster_dataman.xml:361
+#: using_raster_dataman.xml:354
 #, no-c-format
 msgid "Raster Catalogs"
 msgstr "래스터 카탈로그"
 
 #. Tag: para
-#: using_raster_dataman.xml:362
+#: using_raster_dataman.xml:355
 #, no-c-format
 msgid ""
 "There are two raster catalog views that come packaged with PostGIS. Both "
@@ -1043,7 +1037,7 @@ msgstr ""
 "지합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:366
+#: using_raster_dataman.xml:359
 #, no-c-format
 msgid ""
 "<varname>raster_columns</varname> this view catalogs all the raster table "
@@ -1053,7 +1047,7 @@ msgstr ""
 "스터 테이블 열을 카탈로그화합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:369
+#: using_raster_dataman.xml:362
 #, no-c-format
 msgid ""
 "<varname>raster_overviews</varname> this view catalogs all the raster table "
@@ -1067,13 +1061,13 @@ msgstr ""
 "을 생성합니다."
 
 #. Tag: title
-#: using_raster_dataman.xml:373
+#: using_raster_dataman.xml:366
 #, no-c-format
 msgid "Raster Columns Catalog"
 msgstr "래스터 열 카탈로그"
 
 #. Tag: para
-#: using_raster_dataman.xml:374
+#: using_raster_dataman.xml:367
 #, no-c-format
 msgid ""
 "The <varname>raster_columns</varname> is a catalog of all raster table "
@@ -1090,7 +1084,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: using_raster_dataman.xml:376
+#: using_raster_dataman.xml:369
 #, no-c-format
 msgid ""
 "If you created your tables not with the loader or forgot to specify the "
@@ -1106,7 +1100,7 @@ msgstr ""
 "제약조건을 강제할 수 있습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:381
+#: using_raster_dataman.xml:374
 #, no-c-format
 msgid ""
 "<varname>r_table_catalog</varname> The database the table is in. This will "
@@ -1116,7 +1110,7 @@ msgstr ""
 "열은 언제나 현재 데이터베이스를 읽어들일 것입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:384
+#: using_raster_dataman.xml:377
 #, no-c-format
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table "
@@ -1126,13 +1120,13 @@ msgstr ""
 "마입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:387
+#: using_raster_dataman.xml:380
 #, no-c-format
 msgid "<varname>r_table_name</varname> raster table"
 msgstr "<varname>r_table_name</varname> 래스터 테이블 명입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:390
+#: using_raster_dataman.xml:383
 #, no-c-format
 msgid ""
 "<varname>r_raster_column</varname> the column in the <varname>r_table_name</"
@@ -1147,7 +1141,7 @@ msgstr ""
 "각 다른 래스터 열로 몇 번이고 나열할 수 있습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:393
+#: using_raster_dataman.xml:386
 #, no-c-format
 msgid ""
 "<varname>srid</varname> The spatial reference identifier of the raster. "
@@ -1157,7 +1151,7 @@ msgstr ""
 "\"spatial_ref_sys\"/> 목록에 있는 항목이어야 합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:396
+#: using_raster_dataman.xml:389
 #, no-c-format
 msgid ""
 "<varname>scale_x</varname> The scaling between geometric spatial coordinates "
@@ -1171,7 +1165,7 @@ msgstr ""
 "세한 내용은 <xref linkend=\"RT_ST_ScaleX\"/> 를 참조하십시오."
 
 #. Tag: para
-#: using_raster_dataman.xml:399
+#: using_raster_dataman.xml:392
 #, no-c-format
 msgid ""
 "<varname>scale_y</varname> The scaling between geometric spatial coordinates "
@@ -1186,7 +1180,7 @@ msgstr ""
 "세한 내용은 <xref linkend=\"RT_ST_ScaleY\"/> 를 참조하십시오."
 
 #. Tag: para
-#: using_raster_dataman.xml:402
+#: using_raster_dataman.xml:395
 #, no-c-format
 msgid ""
 "<varname>blocksize_x</varname> The width (number of pixels across) of each "
@@ -1196,7 +1190,7 @@ msgstr ""
 "니다. 자세한 사항은 <xref linkend=\"RT_ST_Width\"/> 를 참조하십시오."
 
 #. Tag: para
-#: using_raster_dataman.xml:405
+#: using_raster_dataman.xml:398
 #, no-c-format
 msgid ""
 "<varname>blocksize_y</varname> The width (number of pixels down) of each "
@@ -1206,7 +1200,7 @@ msgstr ""
 "니다. 자세한 사항은 <xref linkend=\"RT_ST_Height\"/> 를 참조하십시오."
 
 #. Tag: para
-#: using_raster_dataman.xml:408
+#: using_raster_dataman.xml:401
 #, no-c-format
 msgid ""
 "<varname>same_alignment</varname> A boolean that is true if all the raster "
@@ -1218,7 +1212,7 @@ msgstr ""
 "를 참조하십시오."
 
 #. Tag: para
-#: using_raster_dataman.xml:411
+#: using_raster_dataman.xml:404
 #, no-c-format
 msgid ""
 "<varname>regular_blocking</varname> If the raster column has the spatially "
@@ -1230,7 +1224,7 @@ msgstr ""
 "됩니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:414
+#: using_raster_dataman.xml:407
 #, no-c-format
 msgid ""
 "<varname>num_bands</varname> The number of bands in each tile of your raster "
@@ -1240,7 +1234,7 @@ msgstr ""
 "수입니다. 다음 열과 동일한 정보를 제공합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:417
+#: using_raster_dataman.xml:410
 #, no-c-format
 msgid ""
 "<varname>pixel_types</varname> An array defining the pixel type for each "
@@ -1254,7 +1248,7 @@ msgstr ""
 "유형 가운데 하나입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:420
+#: using_raster_dataman.xml:413
 #, no-c-format
 msgid ""
 "<varname>nodata_values</varname> An array of double precision numbers "
@@ -1271,7 +1265,7 @@ msgstr ""
 "linkend=\"RT_ST_BandNoDataValue\"/> 가 제공하는 정보와 유사합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:423
+#: using_raster_dataman.xml:416
 #, no-c-format
 msgid ""
 "<varname>out_db</varname> An array of boolean flags indicating if the raster "
@@ -1283,7 +1277,7 @@ msgstr ""
 "동일한 개수의 요소들이 들어갈 것입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:426
+#: using_raster_dataman.xml:419
 #, no-c-format
 msgid ""
 "<varname>extent</varname> This is the extent of all the raster rows in your "
@@ -1299,7 +1293,7 @@ msgstr ""
 "적용시키는 편이 좋습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:429
+#: using_raster_dataman.xml:422
 #, no-c-format
 msgid ""
 "<varname>spatial_index</varname> A boolean that is true if raster column has "
@@ -1309,13 +1303,13 @@ msgstr ""
 "값입니다."
 
 #. Tag: title
-#: using_raster_dataman.xml:434
+#: using_raster_dataman.xml:427
 #, no-c-format
 msgid "Raster Overviews"
 msgstr "래스터 오버뷰"
 
 #. Tag: para
-#: using_raster_dataman.xml:435
+#: using_raster_dataman.xml:428
 #, no-c-format
 msgid ""
 "<varname>raster_overviews</varname> catalogs information about raster table "
@@ -1338,7 +1332,7 @@ msgstr ""
 "\"RT_AddOverviewConstraints\"/> 함수를 통해 직접 생성할 수도 있습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:436
+#: using_raster_dataman.xml:429
 #, no-c-format
 msgid ""
 "Overview tables contain the same constraints as other raster tables as well "
@@ -1348,7 +1342,7 @@ msgstr ""
 "화된 제약조건에 관한 추가 정보도 포함합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:437
+#: using_raster_dataman.xml:430
 #, no-c-format
 msgid ""
 "The information in <varname>raster_overviews</varname> does not duplicate "
@@ -1365,13 +1359,13 @@ msgstr ""
 "함께 연결(join)시켜 필요한 완전한 정보를 얻으십시오."
 
 #. Tag: para
-#: using_raster_dataman.xml:438
+#: using_raster_dataman.xml:431
 #, no-c-format
 msgid "Two main reasons for overviews are:"
 msgstr "오버뷰의 주된 존재 이유는 다음 두 가지입니다:"
 
 #. Tag: para
-#: using_raster_dataman.xml:440
+#: using_raster_dataman.xml:433
 #, no-c-format
 msgid ""
 "Low resolution representation of the core tables commonly used for fast "
@@ -1379,7 +1373,7 @@ msgid ""
 msgstr "빠른 매핑 확대를 위해 흔히 핵심 테이블의 저해상도 모사를 이용합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:441
+#: using_raster_dataman.xml:434
 #, no-c-format
 msgid ""
 "Computations are generally faster to do on them than their higher resolution "
@@ -1394,7 +1388,7 @@ msgstr ""
 "thumb) 계산의 경우 오버뷰도 충분할 수 있습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:444
+#: using_raster_dataman.xml:437
 #, no-c-format
 msgid ""
 "The <varname>raster_overviews</varname> catalog contains the following "
@@ -1404,7 +1398,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: using_raster_dataman.xml:447
+#: using_raster_dataman.xml:440
 #, no-c-format
 msgid ""
 "<varname>o_table_catalog</varname> The database the overview table is in. "
@@ -1414,7 +1408,7 @@ msgstr ""
 "다. 이 열은 언제나 현재 데이터베이스를 읽어들일 것입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:450
+#: using_raster_dataman.xml:443
 #, no-c-format
 msgid ""
 "<varname>o_table_schema</varname> The database schema the overview raster "
@@ -1424,13 +1418,13 @@ msgstr ""
 "마입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:453
+#: using_raster_dataman.xml:446
 #, no-c-format
 msgid "<varname>o_table_name</varname> raster overview table name"
 msgstr "<varname>o_table_name</varname> 오버뷰 테이블 명입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:456
+#: using_raster_dataman.xml:449
 #, no-c-format
 msgid ""
 "<varname>o_raster_column</varname> the raster column in the overview table."
@@ -1438,7 +1432,7 @@ msgstr ""
 "<varname>o_raster_column</varname> 오버뷰 테이블이 담고 있는 래스터 열입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:460
+#: using_raster_dataman.xml:453
 #, no-c-format
 msgid ""
 "<varname>r_table_catalog</varname> The database the raster table that this "
@@ -1448,7 +1442,7 @@ msgstr ""
 "블 카탈로그입니다. 이 열은 언제나 현재 데이터베이스를 읽어들일 것입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:463
+#: using_raster_dataman.xml:456
 #, no-c-format
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table that "
@@ -1458,7 +1452,7 @@ msgstr ""
 "블 스키마입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:466
+#: using_raster_dataman.xml:459
 #, no-c-format
 msgid ""
 "<varname>r_table_name</varname> raster table that this overview services."
@@ -1467,7 +1461,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: using_raster_dataman.xml:469
+#: using_raster_dataman.xml:462
 #, no-c-format
 msgid ""
 "<varname>r_raster_column</varname> the raster column that this overview "
@@ -1476,7 +1470,7 @@ msgstr ""
 "<varname>r_raster_column</varname> 해당 오버뷰가 서비스하는 래스터 열입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:472
+#: using_raster_dataman.xml:465
 #, no-c-format
 msgid ""
 "<varname>overview_factor</varname> - this is the pyramid level of the "
@@ -1509,13 +1503,13 @@ msgstr ""
 "지의 2^overview_factor 픽셀에 해당하는) 저해상도라는 점에 주의하십시오."
 
 #. Tag: title
-#: using_raster_dataman.xml:484
+#: using_raster_dataman.xml:477
 #, no-c-format
 msgid "Building Custom Applications with PostGIS Raster"
 msgstr "PostGIS 래스터를 이용하는 사용자 지정 응용 프로그램 빌드하기"
 
 #. Tag: para
-#: using_raster_dataman.xml:485
+#: using_raster_dataman.xml:478
 #, no-c-format
 msgid ""
 "The fact that PostGIS raster provides you with SQL functions to render "
@@ -1536,14 +1530,14 @@ msgstr ""
 "를 이용할 수도 있습니다."
 
 #. Tag: title
-#: using_raster_dataman.xml:488
+#: using_raster_dataman.xml:481
 #, no-c-format
 msgid ""
 "PHP Example Outputting using ST_AsPNG in concert with other raster functions"
 msgstr "다른 래스터 함수와 함께 ST_AsPNG를 이용해서 PHP 예제를 출력하기"
 
 #. Tag: para
-#: using_raster_dataman.xml:489
+#: using_raster_dataman.xml:482
 #, no-c-format
 msgid ""
 "In this section, we'll demonstrate how to use the PHP PostgreSQL driver and "
@@ -1557,7 +1551,7 @@ msgstr ""
 "\" HTML 태그로 임베딩할 수 있습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:492 using_raster_dataman.xml:504
+#: using_raster_dataman.xml:485 using_raster_dataman.xml:497
 #, no-c-format
 msgid ""
 "The sample query demonstrates how to combine a whole bunch of raster "
@@ -1575,7 +1569,7 @@ msgstr ""
 "여줍니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:495
+#: using_raster_dataman.xml:488
 #, no-c-format
 msgid ""
 "You would call the below using <programlisting>http://mywebserver/"
@@ -1587,7 +1581,7 @@ msgstr ""
 "얻은 후, 다음 쿼리를 호출하십시오."
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:496
+#: using_raster_dataman.xml:489
 #, no-c-format
 msgid ""
 "<![CDATA[<?php\n"
@@ -1651,7 +1645,7 @@ msgstr ""
 "?>]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:499
+#: using_raster_dataman.xml:492
 #, no-c-format
 msgid ""
 "ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster "
@@ -1659,7 +1653,7 @@ msgid ""
 msgstr "다른 래스터 함수와 함께 ST_AsPNG를 이용해서 ASP.NET C# 예제를 출력하기"
 
 #. Tag: para
-#: using_raster_dataman.xml:500
+#: using_raster_dataman.xml:493
 #, no-c-format
 msgid ""
 "In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver "
@@ -1673,7 +1667,7 @@ msgstr ""
 "스트림을 \"img src\" HTML 태그로 임베딩할 수 있습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:503
+#: using_raster_dataman.xml:496
 #, no-c-format
 msgid ""
 "You will need the npgsql .NET PostgreSQL driver for this exercise which you "
@@ -1687,7 +1681,7 @@ msgstr ""
 "다운로드해서 사용자의 ASP.NET bin 폴더에 넣기만 하면 준비가 끝납니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:507
+#: using_raster_dataman.xml:500
 #, no-c-format
 msgid ""
 "This is same example as <xref linkend=\"RT_PHP_Output\"/> except implemented "
@@ -1697,7 +1691,7 @@ msgstr ""
 "예제와 동일합니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:508
+#: using_raster_dataman.xml:501
 #, no-c-format
 msgid ""
 "You would call the below using <programlisting>http://mywebserver/TestRaster."
@@ -1709,7 +1703,7 @@ msgstr ""
 "얻은 후, 다음 쿼리를 호출하십시오."
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:509
+#: using_raster_dataman.xml:502
 #, no-c-format
 msgid ""
 "-- web.config connection string section --\n"
@@ -1727,7 +1721,7 @@ msgstr ""
 "</connectionStrings>]]>"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:510
+#: using_raster_dataman.xml:503
 #, no-c-format
 msgid ""
 "// Code for TestRaster.ashx\n"
@@ -1869,13 +1863,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:513
+#: using_raster_dataman.xml:506
 #, no-c-format
 msgid "Java console app that outputs raster query as Image file"
 msgstr "래스터 쿼리를 이미지 파일로 출력하는 Java 콘솔 응용 프로그램"
 
 #. Tag: para
-#: using_raster_dataman.xml:514
+#: using_raster_dataman.xml:507
 #, no-c-format
 msgid ""
 "This is a simple java console app that takes a query that returns one image "
@@ -1885,7 +1879,7 @@ msgstr ""
 "솔 응용 프로그램입니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:515
+#: using_raster_dataman.xml:508
 #, no-c-format
 msgid ""
 "You can download the latest PostgreSQL JDBC drivers from <ulink url=\"http://"
@@ -1897,13 +1891,13 @@ msgstr ""
 "로드할 수 있습니다."
 
 #. Tag: para
-#: using_raster_dataman.xml:516
+#: using_raster_dataman.xml:509
 #, no-c-format
 msgid "You can compile the following code using a command something like:"
 msgstr "다음과 같은 명령어를 통해 예시 코드를 컴파일할 수 있습니다:"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:517
+#: using_raster_dataman.xml:510
 #, no-c-format
 msgid ""
 "set env CLASSPATH .:..\\postgresql-9.0-801.jdbc4.jar\n"
@@ -1915,13 +1909,13 @@ msgstr ""
 "jar cfm SaveQueryImage.jar Manifest.txt *.class"
 
 #. Tag: para
-#: using_raster_dataman.xml:518
+#: using_raster_dataman.xml:511
 #, no-c-format
 msgid "And call it from the command-line with something like"
 msgstr "다음과 같은 명령행을 이용해서 컴파일한 코드를 호출하십시오:"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:519
+#: using_raster_dataman.xml:512
 #, no-c-format
 msgid ""
 "java -jar SaveQueryImage.jar \"SELECT "
@@ -1933,7 +1927,7 @@ msgstr ""
 "'8BUI',100));\" \"test.png\""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:520
+#: using_raster_dataman.xml:513
 #, no-c-format
 msgid ""
 "-- Manifest.txt --\n"
@@ -1945,7 +1939,7 @@ msgstr ""
 "Main-Class: SaveQueryImage]]>"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:521
+#: using_raster_dataman.xml:514
 #, no-c-format
 msgid ""
 "// Code for SaveQueryImage.java\n"
@@ -2073,13 +2067,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:525
+#: using_raster_dataman.xml:518
 #, no-c-format
 msgid "Use PLPython to dump out images via SQL"
 msgstr "PLPython을 이용해서 SQL을 통해 이미지를 덤프하기"
 
 #. Tag: para
-#: using_raster_dataman.xml:526
+#: using_raster_dataman.xml:519
 #, no-c-format
 msgid ""
 "This is a plpython stored function that creates a file in the server "
@@ -2090,7 +2084,7 @@ msgstr ""
 "PLPython을 설치해야 합니다. PLPythonu와  PLPythonu3u 모두 잘 작동할 것입니다."
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:528
+#: using_raster_dataman.xml:521
 #, no-c-format
 msgid ""
 "<![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, "
@@ -2112,7 +2106,7 @@ msgstr ""
 "$$ LANGUAGE plpythonu;]]>"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:529
+#: using_raster_dataman.xml:522
 #, no-c-format
 msgid ""
 "--write out 5 images to the PostgreSQL server in varying sizes\n"
@@ -2151,13 +2145,13 @@ msgstr ""
 " C:/temp/slices5.png"
 
 #. Tag: title
-#: using_raster_dataman.xml:532
+#: using_raster_dataman.xml:525
 #, no-c-format
 msgid "Outputting Rasters with PSQL"
 msgstr "PSQL을 이용해서 래스터 출력하기"
 
 #. Tag: para
-#: using_raster_dataman.xml:533
+#: using_raster_dataman.xml:526
 #, no-c-format
 msgid ""
 "Sadly PSQL doesn't have easy to use built-in functionality for outputting "
@@ -2171,7 +2165,7 @@ msgstr ""
 "사용자의 PSQL 명령행을 실행하십시오."
 
 #. Tag: para
-#: using_raster_dataman.xml:535
+#: using_raster_dataman.xml:528
 #, no-c-format
 msgid ""
 "Unlike the python approach, this approach creates the file on your local "
@@ -2180,7 +2174,7 @@ msgstr ""
 "파이썬 접근법과는 달리, 이 접근법은 사용자의 로컬 시스템에 파일을 생성합니다."
 
 #. Tag: screen
-#: using_raster_dataman.xml:536
+#: using_raster_dataman.xml:529
 #, no-c-format
 msgid ""
 "SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes\n"
@@ -2217,3 +2211,6 @@ msgstr ""
 "\n"
 "-- 이 구문은 DB에 있는 대용량 객체 저장소에서 파일을 삭제합니다.\n"
 "SELECT lo_unlink(2630819);"
+
+#~ msgid "Wrap PostgreSQL identifiers in quotes"
+#~ msgstr "PostgreSQL 식별자를 따옴표로 감쌉니다."

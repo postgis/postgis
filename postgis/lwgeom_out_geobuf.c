@@ -45,15 +45,15 @@
 PG_FUNCTION_INFO_V1(pgis_asgeobuf_transfn);
 Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 {
-#ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
+#if ! (defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF)
+	elog(ERROR, "ST_AsGeobuf: Missing libprotobuf-c >= version 1.1");
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext;
 	struct geobuf_agg_context *ctx;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
-		elog(ERROR, "pgis_asmvt_transfn: called in non-aggregate context");
+		elog(ERROR, "pgis_asgeobuf_transfn: called in non-aggregate context");
 	MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0)) {
@@ -82,8 +82,8 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pgis_asgeobuf_finalfn);
 Datum pgis_asgeobuf_finalfn(PG_FUNCTION_ARGS)
 {
-#ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
+#if ! (defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF)
+	elog(ERROR, "ST_AsGeoBuf: Missing libprotobuf-c >= version 1.1");
 	PG_RETURN_NULL();
 #else
 	uint8_t *buf;

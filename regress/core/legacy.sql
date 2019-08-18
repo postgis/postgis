@@ -11,9 +11,6 @@ SET client_min_messages TO WARNING;
 \cd :scriptdir
 \i legacy.sql
 
-TRUNCATE spatial_ref_sys;
-INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (4326,'EPSG',4326,'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]','+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ');
-
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
 SELECT 'Setting up the data table...';
@@ -53,7 +50,5 @@ SELECT 'Done.';
 
 -- test #1869 ST_AsBinary is not unique --
 SELECT 1869 As ticket_id, ST_AsText(ST_AsBinary('POINT(1 2)'));
-
-DELETE FROM spatial_ref_sys WHERE SRID = '4326';
 
 \i uninstall_legacy.sql

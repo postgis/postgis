@@ -62,8 +62,8 @@ DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry, int4); -- this one changed to use
 DROP FUNCTION IF EXISTS ST_AsGeoJson(geography, int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry,int4); -- this one changed to use default args
-DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography,int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry, int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geography, int4, int4); -- dropped because the version-first signature is dumb
 DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geometry, int4, int4); -- dropped in PostGIS-3.0 (r17300)
 DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geography, int4, int4); -- dropped in PostGIS-3.0 (r17300)
@@ -231,6 +231,10 @@ DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
 -- See #3460
 UPDATE pg_type SET typlen=16 WHERE typname='pgis_abs' AND typlen=8;
+
+-- #4394
+update pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = 'geometry_eq'::regproc;
+
 
 DO language 'plpgsql'
 $$

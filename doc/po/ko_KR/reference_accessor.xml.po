@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-09-16 19:07+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:00+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -33,16 +33,12 @@ msgstr "도형 유형"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:10
-#, no-c-format
-msgid ""
-"<refpurpose>Returns the type of the geometry as a string. Eg: 'LINESTRING', "
-"'POLYGON', 'MULTIPOINT', etc.</refpurpose>"
-msgstr ""
-"<refpurpose>도형의 유형을 스트링으로 반환합니다. 예: 'LINESTRING', "
-"'POLYGON', 'MULTIPOINT' 등등.</refpurpose>"
+#, fuzzy, no-c-format
+msgid "Returns the type of a geometry as text."
+msgstr "ST_Geometry 값의 도형 유형을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:16
+#: reference_accessor.xml:15
 #, no-c-format
 msgid ""
 "<funcdef>text <function>GeometryType</function></funcdef> "
@@ -52,45 +48,42 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: title
-#: reference_accessor.xml:24 reference_accessor.xml:81
-#: reference_accessor.xml:162 reference_accessor.xml:210
-#: reference_accessor.xml:258 reference_accessor.xml:309
-#: reference_accessor.xml:370 reference_accessor.xml:441
-#: reference_accessor.xml:490 reference_accessor.xml:551
-#: reference_accessor.xml:602 reference_accessor.xml:667
-#: reference_accessor.xml:737 reference_accessor.xml:800
-#: reference_accessor.xml:859 reference_accessor.xml:914
-#: reference_accessor.xml:958 reference_accessor.xml:1009
-#: reference_accessor.xml:1066 reference_accessor.xml:1138
-#: reference_accessor.xml:1190 reference_accessor.xml:1249
-#: reference_accessor.xml:1295 reference_accessor.xml:1330
-#: reference_accessor.xml:1369 reference_accessor.xml:1409
-#: reference_accessor.xml:1452 reference_accessor.xml:1514
-#: reference_accessor.xml:1555 reference_accessor.xml:1599
-#: reference_accessor.xml:1656 reference_accessor.xml:1720
-#: reference_accessor.xml:1769 reference_accessor.xml:1812
-#: reference_accessor.xml:1865 reference_accessor.xml:1939
-#: reference_accessor.xml:1982 reference_accessor.xml:2027
-#: reference_accessor.xml:2073 reference_accessor.xml:2115
-#: reference_accessor.xml:2160 reference_accessor.xml:2206
-#: reference_accessor.xml:2248 reference_accessor.xml:2294
-#: reference_accessor.xml:2335
+#: reference_accessor.xml:23 reference_accessor.xml:79
+#: reference_accessor.xml:160 reference_accessor.xml:207
+#: reference_accessor.xml:252 reference_accessor.xml:310
+#: reference_accessor.xml:379 reference_accessor.xml:425
+#: reference_accessor.xml:475 reference_accessor.xml:536
+#: reference_accessor.xml:606 reference_accessor.xml:653
+#: reference_accessor.xml:714 reference_accessor.xml:760
+#: reference_accessor.xml:802 reference_accessor.xml:866
+#: reference_accessor.xml:935 reference_accessor.xml:997
+#: reference_accessor.xml:1054 reference_accessor.xml:1109
+#: reference_accessor.xml:1152 reference_accessor.xml:1202
+#: reference_accessor.xml:1250 reference_accessor.xml:1296
+#: reference_accessor.xml:1339 reference_accessor.xml:1374
+#: reference_accessor.xml:1413 reference_accessor.xml:1452
+#: reference_accessor.xml:1495 reference_accessor.xml:1556
+#: reference_accessor.xml:1596 reference_accessor.xml:1638
+#: reference_accessor.xml:1695 reference_accessor.xml:1759
+#: reference_accessor.xml:1810 reference_accessor.xml:1862
+#: reference_accessor.xml:1935 reference_accessor.xml:1979
+#: reference_accessor.xml:2024 reference_accessor.xml:2068
 #, no-c-format
 msgid "Description"
 msgstr "설명"
 
 #. Tag: para
-#: reference_accessor.xml:26
-#, no-c-format
+#: reference_accessor.xml:25
+#, fuzzy, no-c-format
 msgid ""
-"<para>Returns the type of the geometry as a string. Eg: 'LINESTRING', "
-"'POLYGON', 'MULTIPOINT', etc.</para>"
+"Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
+"'MULTIPOINT', etc."
 msgstr ""
 "<para>도형의 유형을 스트링으로 반환합니다. 예: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT' 등등.</para>"
 
 #. Tag: para
-#: reference_accessor.xml:29
+#: reference_accessor.xml:28
 #, no-c-format
 msgid ""
 "OGC SPEC s2.1.1.1 - Returns the name of the instantiable subtype of Geometry "
@@ -101,7 +94,7 @@ msgstr ""
 "형 하위 유형의 명칭을 스트링으로 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:35
+#: reference_accessor.xml:34
 #, no-c-format
 msgid ""
 "This function also indicates if the geometry is measured, by returning a "
@@ -111,8 +104,9 @@ msgstr ""
 "도 보여줍니다."
 
 #. Tag: para
-#: reference_accessor.xml:38 reference_accessor.xml:504
-#: reference_accessor.xml:1414
+#: reference_accessor.xml:37 reference_accessor.xml:266
+#: reference_accessor.xml:326 reference_accessor.xml:667
+#: reference_accessor.xml:1457
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
@@ -121,101 +115,97 @@ msgstr ""
 "개선 사항: 2.0.0 버전부터 다면체 표면, 삼각형 및 TIN을 지원하기 시작했습니다."
 
 #. Tag: para
-#: reference_accessor.xml:39 reference_accessor.xml:168
-#: reference_accessor.xml:506 reference_accessor.xml:613
-#: reference_accessor.xml:805 reference_accessor.xml:1085
-#: reference_accessor.xml:1258 reference_accessor.xml:1521
-#: reference_accessor.xml:1563 reference_accessor.xml:1673
-#: reference_accessor.xml:2078
+#: reference_accessor.xml:38 reference_accessor.xml:166
+#: reference_accessor.xml:669 reference_accessor.xml:813
+#: reference_accessor.xml:1003 reference_accessor.xml:1259
+#: reference_accessor.xml:1563 reference_accessor.xml:1604
+#: reference_accessor.xml:1712 reference_accessor.xml:1987
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
 
 #. Tag: para
-#: reference_accessor.xml:40 reference_accessor.xml:170
-#: reference_accessor.xml:267 reference_accessor.xml:509
-#: reference_accessor.xml:814 reference_accessor.xml:879
-#: reference_accessor.xml:925 reference_accessor.xml:1336
-#: reference_accessor.xml:1374 reference_accessor.xml:1676
-#: reference_accessor.xml:1734 reference_accessor.xml:1777
-#: reference_accessor.xml:1821 reference_accessor.xml:1881
-#: reference_accessor.xml:1992 reference_accessor.xml:2037
-#: reference_accessor.xml:2125 reference_accessor.xml:2170
-#: reference_accessor.xml:2258 reference_accessor.xml:2300
-#: reference_accessor.xml:2345
+#: reference_accessor.xml:39 reference_accessor.xml:168
+#: reference_accessor.xml:273 reference_accessor.xml:328
+#: reference_accessor.xml:434 reference_accessor.xml:672
+#: reference_accessor.xml:766 reference_accessor.xml:1012
+#: reference_accessor.xml:1074 reference_accessor.xml:1120
+#: reference_accessor.xml:1308 reference_accessor.xml:1380
+#: reference_accessor.xml:1418 reference_accessor.xml:1715
+#: reference_accessor.xml:1773 reference_accessor.xml:1819
+#: reference_accessor.xml:1878 reference_accessor.xml:2075
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
 
 #. Tag: para
-#: reference_accessor.xml:41 reference_accessor.xml:96
-#: reference_accessor.xml:171 reference_accessor.xml:265
-#: reference_accessor.xml:399 reference_accessor.xml:450
-#: reference_accessor.xml:508 reference_accessor.xml:557
-#: reference_accessor.xml:615 reference_accessor.xml:696
-#: reference_accessor.xml:766 reference_accessor.xml:813
-#: reference_accessor.xml:878 reference_accessor.xml:1023
-#: reference_accessor.xml:1260 reference_accessor.xml:1300
-#: reference_accessor.xml:1335 reference_accessor.xml:1373
-#: reference_accessor.xml:1418 reference_accessor.xml:1520
-#: reference_accessor.xml:1616 reference_accessor.xml:1675
-#: reference_accessor.xml:1735 reference_accessor.xml:1819
-#: reference_accessor.xml:1947 reference_accessor.xml:1991
-#: reference_accessor.xml:2036 reference_accessor.xml:2080
-#: reference_accessor.xml:2124 reference_accessor.xml:2169
-#: reference_accessor.xml:2214 reference_accessor.xml:2257
-#: reference_accessor.xml:2299 reference_accessor.xml:2344
+#: reference_accessor.xml:40 reference_accessor.xml:94
+#: reference_accessor.xml:169 reference_accessor.xml:276
+#: reference_accessor.xml:331 reference_accessor.xml:389
+#: reference_accessor.xml:432 reference_accessor.xml:565
+#: reference_accessor.xml:615 reference_accessor.xml:671
+#: reference_accessor.xml:720 reference_accessor.xml:765
+#: reference_accessor.xml:815 reference_accessor.xml:895
+#: reference_accessor.xml:964 reference_accessor.xml:1011
+#: reference_accessor.xml:1073 reference_accessor.xml:1216
+#: reference_accessor.xml:1261 reference_accessor.xml:1307
+#: reference_accessor.xml:1344 reference_accessor.xml:1379
+#: reference_accessor.xml:1417 reference_accessor.xml:1461
+#: reference_accessor.xml:1562 reference_accessor.xml:1656
+#: reference_accessor.xml:1714 reference_accessor.xml:1774
+#: reference_accessor.xml:1817 reference_accessor.xml:1944
+#: reference_accessor.xml:1989 reference_accessor.xml:2034
+#: reference_accessor.xml:2074
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
-#: reference_accessor.xml:42 reference_accessor.xml:172
-#: reference_accessor.xml:223 reference_accessor.xml:510
-#: reference_accessor.xml:558 reference_accessor.xml:817
-#: reference_accessor.xml:1337 reference_accessor.xml:1419
-#: reference_accessor.xml:1523 reference_accessor.xml:1617
-#: reference_accessor.xml:1884
+#: reference_accessor.xml:41 reference_accessor.xml:170
+#: reference_accessor.xml:220 reference_accessor.xml:274
+#: reference_accessor.xml:329 reference_accessor.xml:673
+#: reference_accessor.xml:721 reference_accessor.xml:1015
+#: reference_accessor.xml:1309 reference_accessor.xml:1381
+#: reference_accessor.xml:1462 reference_accessor.xml:1565
+#: reference_accessor.xml:1657 reference_accessor.xml:1881
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
 #. Tag: para
-#: reference_accessor.xml:43 reference_accessor.xml:173
-#: reference_accessor.xml:224 reference_accessor.xml:511
-#: reference_accessor.xml:1420 reference_accessor.xml:1887
+#: reference_accessor.xml:42 reference_accessor.xml:171
+#: reference_accessor.xml:221 reference_accessor.xml:275
+#: reference_accessor.xml:330 reference_accessor.xml:674
+#: reference_accessor.xml:1310 reference_accessor.xml:1463
+#: reference_accessor.xml:1884
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
 
 #. Tag: title
-#: reference_accessor.xml:49 reference_accessor.xml:101
-#: reference_accessor.xml:178 reference_accessor.xml:228
-#: reference_accessor.xml:277 reference_accessor.xml:331
-#: reference_accessor.xml:404 reference_accessor.xml:455
-#: reference_accessor.xml:563 reference_accessor.xml:621
-#: reference_accessor.xml:884 reference_accessor.xml:932
-#: reference_accessor.xml:977 reference_accessor.xml:1028
-#: reference_accessor.xml:1099 reference_accessor.xml:1155
-#: reference_accessor.xml:1215 reference_accessor.xml:1266
-#: reference_accessor.xml:1304 reference_accessor.xml:1342
-#: reference_accessor.xml:1379 reference_accessor.xml:1425
-#: reference_accessor.xml:1464 reference_accessor.xml:1527
-#: reference_accessor.xml:1568 reference_accessor.xml:1623
-#: reference_accessor.xml:1688 reference_accessor.xml:1742
-#: reference_accessor.xml:1782 reference_accessor.xml:1831
-#: reference_accessor.xml:1895 reference_accessor.xml:1953
-#: reference_accessor.xml:1997 reference_accessor.xml:2042
-#: reference_accessor.xml:2086 reference_accessor.xml:2130
-#: reference_accessor.xml:2175 reference_accessor.xml:2219
-#: reference_accessor.xml:2263 reference_accessor.xml:2305
-#: reference_accessor.xml:2350
+#: reference_accessor.xml:48 reference_accessor.xml:99
+#: reference_accessor.xml:176 reference_accessor.xml:225
+#: reference_accessor.xml:394 reference_accessor.xml:444
+#: reference_accessor.xml:497 reference_accessor.xml:570
+#: reference_accessor.xml:620 reference_accessor.xml:726
+#: reference_accessor.xml:771 reference_accessor.xml:821
+#: reference_accessor.xml:1079 reference_accessor.xml:1127
+#: reference_accessor.xml:1171 reference_accessor.xml:1221
+#: reference_accessor.xml:1267 reference_accessor.xml:1316
+#: reference_accessor.xml:1348 reference_accessor.xml:1386
+#: reference_accessor.xml:1423 reference_accessor.xml:1468
+#: reference_accessor.xml:1507 reference_accessor.xml:1569
+#: reference_accessor.xml:1609 reference_accessor.xml:1663
+#: reference_accessor.xml:1727 reference_accessor.xml:1781
+#: reference_accessor.xml:1829 reference_accessor.xml:1892
+#: reference_accessor.xml:1950 reference_accessor.xml:1995
+#: reference_accessor.xml:2039 reference_accessor.xml:2080
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
 
 #. Tag: programlisting
-#: reference_accessor.xml:51
+#: reference_accessor.xml:50
 #, no-c-format
 msgid ""
 "SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
@@ -231,7 +221,7 @@ msgstr ""
 " LINESTRING"
 
 #. Tag: programlisting
-#: reference_accessor.xml:52
+#: reference_accessor.xml:51
 #, no-c-format
 msgid ""
 "SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
@@ -255,7 +245,7 @@ msgstr ""
 "                        POLYHEDRALSURFACE"
 
 #. Tag: programlisting
-#: reference_accessor.xml:53
+#: reference_accessor.xml:52
 #, no-c-format
 msgid ""
 "SELECT GeometryType(geom) as result\n"
@@ -299,47 +289,44 @@ msgstr ""
 " TIN"
 
 #. Tag: title
-#: reference_accessor.xml:58 reference_accessor.xml:139
-#: reference_accessor.xml:185 reference_accessor.xml:233
-#: reference_accessor.xml:283 reference_accessor.xml:345
-#: reference_accessor.xml:409 reference_accessor.xml:460
-#: reference_accessor.xml:530 reference_accessor.xml:574
-#: reference_accessor.xml:628 reference_accessor.xml:702
-#: reference_accessor.xml:771 reference_accessor.xml:834
-#: reference_accessor.xml:890 reference_accessor.xml:983
-#: reference_accessor.xml:1034 reference_accessor.xml:1105
-#: reference_accessor.xml:1162 reference_accessor.xml:1222
-#: reference_accessor.xml:1272 reference_accessor.xml:1309
-#: reference_accessor.xml:1347 reference_accessor.xml:1386
-#: reference_accessor.xml:1430 reference_accessor.xml:1469
-#: reference_accessor.xml:1492 reference_accessor.xml:1532
-#: reference_accessor.xml:1573 reference_accessor.xml:1630
-#: reference_accessor.xml:1694 reference_accessor.xml:1748
-#: reference_accessor.xml:1787 reference_accessor.xml:1837
-#: reference_accessor.xml:1901 reference_accessor.xml:1959
-#: reference_accessor.xml:2004 reference_accessor.xml:2049
-#: reference_accessor.xml:2092 reference_accessor.xml:2137
-#: reference_accessor.xml:2182 reference_accessor.xml:2225
-#: reference_accessor.xml:2270 reference_accessor.xml:2312
-#: reference_accessor.xml:2357
+#: reference_accessor.xml:57 reference_accessor.xml:137
+#: reference_accessor.xml:183 reference_accessor.xml:230
+#: reference_accessor.xml:289 reference_accessor.xml:357
+#: reference_accessor.xml:401 reference_accessor.xml:450
+#: reference_accessor.xml:511 reference_accessor.xml:575
+#: reference_accessor.xml:625 reference_accessor.xml:693
+#: reference_accessor.xml:737 reference_accessor.xml:778
+#: reference_accessor.xml:828 reference_accessor.xml:901
+#: reference_accessor.xml:969 reference_accessor.xml:1032
+#: reference_accessor.xml:1085 reference_accessor.xml:1177
+#: reference_accessor.xml:1227 reference_accessor.xml:1273
+#: reference_accessor.xml:1353 reference_accessor.xml:1391
+#: reference_accessor.xml:1430 reference_accessor.xml:1473
+#: reference_accessor.xml:1512 reference_accessor.xml:1534
+#: reference_accessor.xml:1574 reference_accessor.xml:1614
+#: reference_accessor.xml:1670 reference_accessor.xml:1733
+#: reference_accessor.xml:1787 reference_accessor.xml:1835
+#: reference_accessor.xml:1898 reference_accessor.xml:1956
+#: reference_accessor.xml:2001 reference_accessor.xml:2045
+#: reference_accessor.xml:2087
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
 
 #. Tag: refname
-#: reference_accessor.xml:64
+#: reference_accessor.xml:63
 #, no-c-format
 msgid "ST_Boundary"
 msgstr "ST_Boundary"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:66
-#, no-c-format
-msgid "Returns the closure of the combinatorial boundary of this Geometry."
+#: reference_accessor.xml:65
+#, fuzzy, no-c-format
+msgid "Returns the boundary of a geometry."
 msgstr "해당 도형의 결합된 범위의 닫힘 여부를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:72
+#: reference_accessor.xml:70
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Boundary</function></funcdef> "
@@ -349,7 +336,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:83
+#: reference_accessor.xml:81
 #, no-c-format
 msgid ""
 "Returns the closure of the combinatorial boundary of this Geometry. The "
@@ -366,13 +353,13 @@ msgstr ""
 "서 결과 범위를 표현할 수 있습니다."
 
 #. Tag: para
-#: reference_accessor.xml:90
+#: reference_accessor.xml:88
 #, no-c-format
 msgid "Performed by the GEOS module"
 msgstr "GEOS 모듈로 실행"
 
 #. Tag: para
-#: reference_accessor.xml:92
+#: reference_accessor.xml:90
 #, no-c-format
 msgid ""
 "Prior to 2.0.0, this function throws an exception if used with "
@@ -384,31 +371,31 @@ msgstr ""
 "의미의) NULL을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:94
+#: reference_accessor.xml:92
 #, no-c-format
 msgid "&sfs_compliant; OGC SPEC s2.1.1.1"
 msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 
 #. Tag: para
-#: reference_accessor.xml:95
+#: reference_accessor.xml:93
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.14"
 
 #. Tag: para
-#: reference_accessor.xml:97
+#: reference_accessor.xml:95
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for Triangle was introduced"
 msgstr "개선 사항: 2.1.0 버전부터 삼각형을 지원하기 시작했습니다."
 
 #. Tag: para
-#: reference_accessor.xml:112
+#: reference_accessor.xml:110
 #, no-c-format
 msgid "Linestring with boundary points overlaid"
 msgstr "범위 포인트들이 겹치는 라인스트링"
 
 #. Tag: programlisting
-#: reference_accessor.xml:115
+#: reference_accessor.xml:113
 #, no-c-format
 msgid ""
 "SELECT ST_Boundary(geom)\n"
@@ -420,7 +407,7 @@ msgstr ""
 "As f;"
 
 #. Tag: screen
-#: reference_accessor.xml:116
+#: reference_accessor.xml:114
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -430,13 +417,13 @@ msgstr ""
 "MULTIPOINT(100 150,160 170)"
 
 #. Tag: para
-#: reference_accessor.xml:124
+#: reference_accessor.xml:122
 #, no-c-format
 msgid "polygon holes with boundary multilinestring"
 msgstr "범위 멀티라인스트링을 가진 폴리곤 구멍"
 
 #. Tag: programlisting
-#: reference_accessor.xml:127
+#: reference_accessor.xml:125
 #, no-c-format
 msgid ""
 "SELECT ST_Boundary(geom)\n"
@@ -454,7 +441,7 @@ msgstr ""
 "As f;"
 
 #. Tag: screen
-#: reference_accessor.xml:128
+#: reference_accessor.xml:126
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -466,7 +453,7 @@ msgstr ""
 "        (70 40,100 50,120 80,80 110,50 90,70 40))"
 
 #. Tag: programlisting
-#: reference_accessor.xml:136
+#: reference_accessor.xml:134
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 "
@@ -526,7 +513,7 @@ msgstr ""
 "MULTIPOINT(-1 1 1,1 1 0.75)"
 
 #. Tag: para
-#: reference_accessor.xml:141
+#: reference_accessor.xml:139
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
@@ -534,21 +521,19 @@ msgstr ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:147
+#: reference_accessor.xml:145
 #, no-c-format
 msgid "ST_CoordDim"
 msgstr "ST_CoordDim"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:149
-#, no-c-format
-msgid ""
-"<refpurpose>Return the coordinate dimension of the ST_Geometry value.</"
-"refpurpose>"
-msgstr "<refpurpose>ST_Geometry 값의 좌표 차원을 반환합니다.</refpurpose>"
+#: reference_accessor.xml:147
+#, fuzzy, no-c-format
+msgid "Return the coordinate dimension of a geometry."
+msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:154
+#: reference_accessor.xml:152
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_CoordDim</function></funcdef> "
@@ -558,26 +543,26 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:164
-#, no-c-format
-msgid "<para>Return the coordinate dimension of the ST_Geometry value.</para>"
+#: reference_accessor.xml:162
+#, fuzzy, no-c-format
+msgid "Return the coordinate dimension of the ST_Geometry value."
 msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
 
 #. Tag: para
-#: reference_accessor.xml:166
+#: reference_accessor.xml:164
 #, no-c-format
 msgid "This is the MM compliant alias name for <xref linkend=\"ST_NDims\"/>"
 msgstr ""
 "이 함수는 MM을 준수하는, <xref linkend=\"ST_NDims\"/> 와 동일한 함수합니다."
 
 #. Tag: para
-#: reference_accessor.xml:169
+#: reference_accessor.xml:167
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.3"
 
 #. Tag: programlisting
-#: reference_accessor.xml:180
+#: reference_accessor.xml:178
 #, no-c-format
 msgid ""
 "SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 "
@@ -599,23 +584,19 @@ msgstr ""
 "2"
 
 #. Tag: refname
-#: reference_accessor.xml:193
+#: reference_accessor.xml:191
 #, no-c-format
 msgid "ST_Dimension"
 msgstr "ST_Dimension"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:195
-#, no-c-format
-msgid ""
-"The inherent dimension of this Geometry object, which must be less than or "
-"equal to the coordinate dimension."
-msgstr ""
-"좌표 차원과 동등하거나 낮아야 하는, 해당 도형 객체의 내재된 차원을 반환합니"
-"다."
+#: reference_accessor.xml:193
+#, fuzzy, no-c-format
+msgid "Returns the topological dimension of a geometry."
+msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:201
+#: reference_accessor.xml:198
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_Dimension</function></funcdef> "
@@ -625,15 +606,15 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:212
+#: reference_accessor.xml:209
 #, fuzzy, no-c-format
 msgid ""
-"The inherent dimension of this Geometry object, which must be less than or "
-"equal to the coordinate dimension. OGC SPEC s2.1.1.1 - returns 0 for "
+"Return the topological dimension of this Geometry object, which must be less "
+"than or equal to the coordinate dimension. OGC SPEC s2.1.1.1 - returns 0 for "
 "<varname>POINT</varname>, 1 for <varname>LINESTRING</varname>, 2 for "
 "<varname>POLYGON</varname>, and the largest dimension of the components of a "
-"<varname>GEOMETRYCOLLECTION</varname>. If the dimension is unknown (empty "
-"<varname>GEOMETRYCOLLECTION</varname>) 0 is returned."
+"<varname>GEOMETRYCOLLECTION</varname>. If the dimension is unknown (e.g. for "
+"an empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned."
 msgstr ""
 "좌표 차원과 동등하거나 낮아야 하는, 해당 도형 객체의 내재된 차원을 반환합니"
 "다. OGC 사양서 s2.1.1.1 단원을 보면 <varname>POINT</varname> 는 0, "
@@ -642,13 +623,13 @@ msgstr ""
 "입니다. 알려지지 않은 (텅 빈) 도형인 경우 null을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:220
+#: reference_accessor.xml:217
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.2"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.2"
 
 #. Tag: para
-#: reference_accessor.xml:221
+#: reference_accessor.xml:218
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces and TINs was introduced. No "
@@ -658,7 +639,7 @@ msgstr ""
 "다. 빈 도형이 주어져도 더 이상 예외가 발생하지 않습니다."
 
 #. Tag: para
-#: reference_accessor.xml:222
+#: reference_accessor.xml:219
 #, no-c-format
 msgid ""
 "Prior to 2.0.0, this function throws an exception if used with empty "
@@ -666,7 +647,7 @@ msgid ""
 msgstr "2.0.0 미만 버전에서는 빈 도형에 대해 예외를 발생시켰습니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:230
+#: reference_accessor.xml:227
 #, no-c-format
 msgid ""
 "SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))');\n"
@@ -680,51 +661,666 @@ msgstr ""
 "1"
 
 #. Tag: refname
-#: reference_accessor.xml:241
+#: reference_accessor.xml:238
+#, no-c-format
+msgid "ST_Dump"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_accessor.xml:239
+#, no-c-format
+msgid ""
+"Returns a set of <varname>geometry_dump</varname> rows for the components of "
+"a geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_accessor.xml:244
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+
+#. Tag: para
+#: reference_accessor.xml:253
+#, no-c-format
+msgid ""
+"This is a set-returning function (SRF). It returns a set of geometry_dump "
+"rows, formed by a geometry (geom) and an array of integers (path). When the "
+"input geometry is a simple type (POINT,LINESTRING,POLYGON) a single record "
+"will be returned with an empty path array and the input geometry as geom. "
+"When the input geometry is a collection or multi it will return a record for "
+"each of the collection components, and the path will express the position of "
+"the component inside the collection."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:262
+#, no-c-format
+msgid ""
+"ST_Dump is useful for expanding geometries. It is the reverse of a GROUP BY "
+"in that it creates new rows. For example it can be use to expand "
+"MULTIPOLYGONS into POLYGONS."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:267
+#, no-c-format
+msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:269 reference_accessor.xml:1378
+#, no-c-format
+msgid ""
+"Prior to 1.3.4, this function crashes if used with geometries that contain "
+"CURVES. This is fixed in 1.3.4+"
+msgstr ""
+"1.3.4 미만 버전에서 이 함수에 만곡 도형(curve)을 담고 있는 도형을 입력하면 충"
+"돌이 일어났습니다. 1.3.4 버전부터 이 버그가 해결됐습니다."
+
+#. Tag: title
+#: reference_accessor.xml:280 reference_accessor.xml:680
+#, no-c-format
+msgid "Standard Examples"
+msgstr "표준 예시"
+
+#. Tag: programlisting
+#: reference_accessor.xml:281
+#, no-c-format
+msgid ""
+"SELECT sometable.field1, sometable.field1,\n"
+"      (ST_Dump(sometable.the_geom)).geom AS the_geom\n"
+"FROM sometable;\n"
+"\n"
+"-- Break a compound curve into its constituent linestrings and "
+"circularstrings\n"
+"SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)\n"
+"  FROM ( SELECT (ST_Dump(p_geom)).geom AS geom\n"
+"         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 "
+"1, 1 0),(1 0, 0 1))') AS p_geom) AS b\n"
+"        ) AS a;\n"
+"          st_asewkt          | st_hasarc\n"
+"-----------------------------+----------\n"
+" CIRCULARSTRING(0 0,1 1,1 0) | t\n"
+" LINESTRING(1 0,0 1)         | f\n"
+"(2 rows)"
+msgstr ""
+
+#. Tag: title
+#: reference_accessor.xml:283 reference_accessor.xml:351
+#: reference_accessor.xml:685
+#, no-c-format
+msgid "Polyhedral Surfaces, TIN and Triangle Examples"
+msgstr "다면체 표면, TIN 및 삼각형 예시"
+
+#. Tag: programlisting
+#: reference_accessor.xml:284
+#, fuzzy, no-c-format
+msgid ""
+"-- Polyhedral surface example\n"
+"-- Break a Polyhedral surface into its faces\n"
+"SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt\n"
+"  FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
+"((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 "
+"0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 "
+"1))\n"
+")') ) AS p_geom )  AS a;\n"
+"\n"
+" path |                geom_ewkt\n"
+"------+------------------------------------------\n"
+"    1 | POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0))\n"
+"    2 | POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))\n"
+"    3 | POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))\n"
+"    4 | POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0))\n"
+"    5 | POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0))\n"
+"    6 | POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))"
+msgstr ""
+"-- 다면체 표면 예시\n"
+"-- 다면체 표면을 각 면으로 분해하기\n"
+"SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt\n"
+"  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
+"((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))\n"
+")')  AS p_geom )  AS a;\n"
+"\n"
+"                geom_ewkt\n"
+"------------------------------------------\n"
+" POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))"
+
+#. Tag: programlisting
+#: reference_accessor.xml:286
+#, fuzzy, no-c-format
+msgid ""
+"-- TIN --\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )') ) AS gdump\n"
+"    ) AS g;\n"
+"-- result --\n"
+" path |                 wkt\n"
+"------+-------------------------------------\n"
+" {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
+" {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+msgstr ""
+"-- TIN --\n"
+"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )')  AS geom\n"
+"    ) AS g;\n"
+"-- 결과 --\n"
+"                 wkt\n"
+"-------------------------------------\n"
+" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+
+#. Tag: para
+#: reference_accessor.xml:290
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
+"\"ST_Collect\"/>, <xref linkend=\"ST_Collect\"/>, <xref linkend="
+"\"ST_GeometryN\"/>"
+msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+
+#. Tag: refname
+#: reference_accessor.xml:296
+#, fuzzy, no-c-format
+msgid "ST_DumpPoints"
+msgstr "ST_NumPoints"
+
+#. Tag: refpurpose
+#: reference_accessor.xml:297
+#, no-c-format
+msgid ""
+"Returns a set of <varname>geometry_dump</varname> rows for the points in a "
+"geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_accessor.xml:302
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
+
+#. Tag: para
+#: reference_accessor.xml:311
+#, no-c-format
+msgid ""
+"This set-returning function (SRF) returns a set of <varname>geometry_dump</"
+"varname> rows formed by a geometry (<varname>geom</varname>) and an array of "
+"integers (<varname>path</varname>)."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:314
+#, no-c-format
+msgid ""
+"The <parameter>geom</parameter> component of <varname>geometry_dump</"
+"varname> are all the <varname>POINT</varname>s that make up the supplied "
+"geometry"
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:317
+#, no-c-format
+msgid ""
+"The <parameter>path</parameter> component of <varname>geometry_dump</"
+"varname> (an <varname>integer[]</varname>) is an index reference enumerating "
+"the <varname>POINT</varname>s of the supplied geometry. For example, if a "
+"<varname>LINESTRING</varname> is supplied, a path of <varname>{i}</varname> "
+"is returned where <varname>i</varname> is the <varname>nth</varname> "
+"coordinate in the <varname>LINESTRING</varname>. If a <varname>POLYGON</"
+"varname> is supplied, a path of <varname>{i,j}</varname> is returned where "
+"<varname>i</varname> is the ring number (1 is outer; inner rings follow) and "
+"<varname>j</varname> enumerates the <varname>POINT</varname>s (again 1-based "
+"index)."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:325
+#, no-c-format
+msgid "Enhanced: 2.1.0 Faster speed. Reimplemented as native-C."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:327
+#, fuzzy, no-c-format
+msgid "Availability: 1.5.0"
+msgstr "1.2.2 버전부터 사용할 수 있습니다."
+
+#. Tag: title
+#: reference_accessor.xml:334
+#, no-c-format
+msgid "Classic Explode a Table of LineStrings into nodes"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_accessor.xml:335
+#, no-c-format
+msgid ""
+"SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode\n"
+"FROM (SELECT 1 As edge_id\n"
+"        , ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS "
+"dp\n"
+"     UNION ALL\n"
+"     SELECT 2 As edge_id\n"
+"        , ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS "
+"dp\n"
+"   ) As foo;\n"
+" edge_id | index |    wktnode\n"
+"---------+-------+--------------\n"
+"       1 |     1 | POINT(1 2)\n"
+"       1 |     2 | POINT(3 4)\n"
+"       1 |     3 | POINT(10 10)\n"
+"       2 |     1 | POINT(3 5)\n"
+"       2 |     2 | POINT(5 6)\n"
+"       2 |     3 | POINT(9 10)"
+msgstr ""
+
+#. Tag: title
+#: reference_accessor.xml:338
+#, fuzzy, no-c-format
+msgid "Standard Geometry Examples"
+msgstr "표준 예시"
+
+#. Tag: programlisting
+#: reference_accessor.xml:348
+#, no-c-format
+msgid ""
+"SELECT path, ST_AsText(geom)\n"
+"FROM (\n"
+"  SELECT (ST_DumpPoints(g.geom)).*\n"
+"  FROM\n"
+"    (SELECT\n"
+"       'GEOMETRYCOLLECTION(\n"
+"          POINT ( 0 1 ),\n"
+"          LINESTRING ( 0 3, 3 4 ),\n"
+"          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
+"          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ),\n"
+"                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
+"          MULTIPOLYGON (\n"
+"                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ),\n"
+"                   ( 1 6, 3 6, 2 7, 1 6 )),\n"
+"                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
+"          )\n"
+"        )'::geometry AS geom\n"
+"    ) AS g\n"
+"  ) j;\n"
+"\n"
+"   path    | st_astext\n"
+"-----------+------------\n"
+" {1,1}     | POINT(0 1)\n"
+" {2,1}     | POINT(0 3)\n"
+" {2,2}     | POINT(3 4)\n"
+" {3,1,1}   | POINT(2 0)\n"
+" {3,1,2}   | POINT(2 3)\n"
+" {3,1,3}   | POINT(0 2)\n"
+" {3,1,4}   | POINT(2 0)\n"
+" {4,1,1}   | POINT(3 0)\n"
+" {4,1,2}   | POINT(3 3)\n"
+" {4,1,3}   | POINT(6 3)\n"
+" {4,1,4}   | POINT(6 0)\n"
+" {4,1,5}   | POINT(3 0)\n"
+" {4,2,1}   | POINT(5 1)\n"
+" {4,2,2}   | POINT(4 2)\n"
+" {4,2,3}   | POINT(5 2)\n"
+" {4,2,4}   | POINT(5 1)\n"
+" {5,1,1,1} | POINT(0 5)\n"
+" {5,1,1,2} | POINT(0 8)\n"
+" {5,1,1,3} | POINT(4 8)\n"
+" {5,1,1,4} | POINT(4 5)\n"
+" {5,1,1,5} | POINT(0 5)\n"
+" {5,1,2,1} | POINT(1 6)\n"
+" {5,1,2,2} | POINT(3 6)\n"
+" {5,1,2,3} | POINT(2 7)\n"
+" {5,1,2,4} | POINT(1 6)\n"
+" {5,2,1,1} | POINT(5 4)\n"
+" {5,2,1,2} | POINT(5 8)\n"
+" {5,2,1,3} | POINT(6 7)\n"
+" {5,2,1,4} | POINT(5 4)\n"
+"(29 rows)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_accessor.xml:352
+#, no-c-format
+msgid ""
+"-- Polyhedral surface cube --\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
+"1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 "
+"0)),\n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 "
+"1)) )') ) AS gdump\n"
+"    ) AS g;\n"
+"-- result --\n"
+"  path   |     wkt\n"
+"---------+--------------\n"
+" {1,1,1} | POINT(0 0 0)\n"
+" {1,1,2} | POINT(0 0 1)\n"
+" {1,1,3} | POINT(0 1 1)\n"
+" {1,1,4} | POINT(0 1 0)\n"
+" {1,1,5} | POINT(0 0 0)\n"
+" {2,1,1} | POINT(0 0 0)\n"
+" {2,1,2} | POINT(0 1 0)\n"
+" {2,1,3} | POINT(1 1 0)\n"
+" {2,1,4} | POINT(1 0 0)\n"
+" {2,1,5} | POINT(0 0 0)\n"
+" {3,1,1} | POINT(0 0 0)\n"
+" {3,1,2} | POINT(1 0 0)\n"
+" {3,1,3} | POINT(1 0 1)\n"
+" {3,1,4} | POINT(0 0 1)\n"
+" {3,1,5} | POINT(0 0 0)\n"
+" {4,1,1} | POINT(1 1 0)\n"
+" {4,1,2} | POINT(1 1 1)\n"
+" {4,1,3} | POINT(1 0 1)\n"
+" {4,1,4} | POINT(1 0 0)\n"
+" {4,1,5} | POINT(1 1 0)\n"
+" {5,1,1} | POINT(0 1 0)\n"
+" {5,1,2} | POINT(0 1 1)\n"
+" {5,1,3} | POINT(1 1 1)\n"
+" {5,1,4} | POINT(1 1 0)\n"
+" {5,1,5} | POINT(0 1 0)\n"
+" {6,1,1} | POINT(0 0 1)\n"
+" {6,1,2} | POINT(1 0 1)\n"
+" {6,1,3} | POINT(1 1 1)\n"
+" {6,1,4} | POINT(0 1 1)\n"
+" {6,1,5} | POINT(0 0 1)\n"
+"(30 rows)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_accessor.xml:353
+#, fuzzy, no-c-format
+msgid ""
+"-- Triangle --\n"
+"SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((\n"
+"                0 0,\n"
+"                0 9,\n"
+"                9 0,\n"
+"                0 0\n"
+"            ))') ) AS gdump\n"
+"    ) AS g;\n"
+"-- result --\n"
+" path |    wkt\n"
+"------+------------\n"
+" {1}  | POINT(0 0)\n"
+" {2}  | POINT(0 9)\n"
+" {3}  | POINT(9 0)\n"
+" {4}  | POINT(0 0)"
+msgstr ""
+"-- TIN --\n"
+"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )')  AS geom\n"
+"    ) AS g;\n"
+"-- 결과 --\n"
+"                 wkt\n"
+"-------------------------------------\n"
+" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+
+#. Tag: programlisting
+#: reference_accessor.xml:354
+#, fuzzy, no-c-format
+msgid ""
+"-- TIN --\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_DumpPoints( ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )') ) AS gdump\n"
+"    ) AS g;\n"
+"-- result --\n"
+"  path   |     wkt\n"
+"---------+--------------\n"
+" {1,1,1} | POINT(0 0 0)\n"
+" {1,1,2} | POINT(0 0 1)\n"
+" {1,1,3} | POINT(0 1 0)\n"
+" {1,1,4} | POINT(0 0 0)\n"
+" {2,1,1} | POINT(0 0 0)\n"
+" {2,1,2} | POINT(0 1 0)\n"
+" {2,1,3} | POINT(1 1 0)\n"
+" {2,1,4} | POINT(0 0 0)\n"
+"(8 rows)"
+msgstr ""
+"-- TIN --\n"
+"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
+"                0 0 0\n"
+"            ))\n"
+"            )')  AS geom\n"
+"    ) AS g;\n"
+"-- 결과 --\n"
+"                 wkt\n"
+"-------------------------------------\n"
+" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+
+#. Tag: para
+#: reference_accessor.xml:358
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>"
+msgstr ""
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
+"\"ST_NumInteriorRing\"/>,"
+
+#. Tag: refname
+#: reference_accessor.xml:363
+#, fuzzy, no-c-format
+msgid "ST_DumpRings"
+msgstr "ST_NRings"
+
+#. Tag: refpurpose
+#: reference_accessor.xml:365
+#, no-c-format
+msgid ""
+"Returns a set of <varname>geometry_dump</varname> rows for the exterior and "
+"interior rings of a Polygon."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_accessor.xml:371
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
+
+#. Tag: para
+#: reference_accessor.xml:381
+#, no-c-format
+msgid ""
+"This is a set-returning function (SRF). It returns a set of "
+"<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</"
+"varname> and a <varname>geometry</varname>, aliased \"path\" and \"geom\" "
+"respectively. The \"path\" field holds the polygon ring index containing a "
+"single integer: 0 for the shell, >0 for holes. The \"geom\" field contains "
+"the corresponding ring as a polygon."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:387
+#, no-c-format
+msgid "Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:388
+#, fuzzy, no-c-format
+msgid ""
+"This only works for POLYGON geometries. It will not work for MULTIPOLYGONS"
+msgstr ""
+"이 함수는 멀티폴리곤을 입력받지 못 합니다. 멀티폴리곤의 경우 ST_Dump 함수와 "
+"결합해서 이용하십시오."
+
+#. Tag: programlisting
+#: reference_accessor.xml:396
+#, no-c-format
+msgid ""
+"SELECT sometable.field1, sometable.field1,\n"
+"          (ST_DumpRings(sometable.the_geom)).geom As the_geom\n"
+"FROM sometableOfpolys;\n"
+"\n"
+"SELECT ST_AsEWKT(geom) As the_geom, path\n"
+"        FROM ST_DumpRings(\n"
+"                ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 "
+"5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 "
+"5132466 1,-8148924 5132394 1,\n"
+"                -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 "
+"1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 "
+"1,\n"
+"                -8150305 5132788 1,-8149064 5133092 1),\n"
+"                (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 "
+"1,-8149695 5132675 1,-8149362 5132394 1))')\n"
+"                )  as foo;\n"
+" path |                                            the_geom\n"
+"----------------------------------------------------------------------------------------------------------------\n"
+"  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 "
+"1,-8148972 5132767 1,-8148958 5132508 1,\n"
+"          |          -8148941 5132466 1,-8148924 5132394 1,\n"
+"          |          -8148903 5132210 1,-8148930 5131967 1,\n"
+"          |          -8148992 5131978 1,-8149237 5132093 1,\n"
+"          |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 "
+"1,-8150305 5132788 1,-8149064 5133092 1))\n"
+"  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,\n"
+"          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 "
+"1))"
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:403
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN"
+"\"/>"
+msgstr ""
+", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+
+#. Tag: refname
+#: reference_accessor.xml:409
 #, no-c-format
 msgid "ST_EndPoint"
 msgstr "ST_EndPoint"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:243
-#, no-c-format
-msgid ""
-"Returns the last point of a <varname>LINESTRING</varname> or "
-"<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</varname>."
+#: reference_accessor.xml:411
+#, fuzzy, no-c-format
+msgid "Returns the last point of a LineString or CircularLineString."
 msgstr ""
-"<varname>LINESTRING</varname> 또는 <varname>CIRCULARLINESTRING</varname> 도형"
-"의 마지막 포인트를 <varname>POINT</varname>로 반환합니다."
+"ST_LineString 또는 ST_CircularString 값에 있는 포인트의 개수를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:249
-#, no-c-format
+#: reference_accessor.xml:416
+#, fuzzy, no-c-format
 msgid ""
-"<funcdef>boolean <function>ST_EndPoint</function></funcdef> "
+"<funcdef>geometry <function>ST_EndPoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
-"<funcdef>boolean <function>ST_EndPoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:260
-#, no-c-format
+#: reference_accessor.xml:427
+#, fuzzy, no-c-format
 msgid ""
-"Returns the last point of a <varname>LINESTRING</varname> geometry as a "
-"<varname>POINT</varname> or <varname>NULL</varname> if the input parameter "
-"is not a <varname>LINESTRING</varname>."
+"Returns the last point of a LINESTRING as a POINT. Returns <varname>NULL</"
+"varname> if the input is not a LINESTRING."
 msgstr ""
 "<varname>LINESTRING</varname> 도형의 마지막 포인트를 <varname>POINT</varname>"
 "로 반환합니다. 입력 파라미터가 <varname>LINESTRING</varname> 이 아닐 경우 "
 "<varname>NULL</varname> 을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:264
+#: reference_accessor.xml:431
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.4"
 
 #. Tag: para
-#: reference_accessor.xml:268 reference_accessor.xml:1822
+#: reference_accessor.xml:435 reference_accessor.xml:1820
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 no longer works with single geometry multilinestrings. In "
@@ -741,7 +1337,7 @@ msgstr ""
 "장했다고 가정한 사용자의 경우 현재 2.0 버전에서 NULL이 반환될 수도 있습니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:279
+#: reference_accessor.xml:446
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::"
@@ -785,29 +1381,27 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:285
+#: reference_accessor.xml:452
 #, no-c-format
 msgid ", <xref linkend=\"ST_StartPoint\"/>"
 msgstr ", <xref linkend=\"ST_StartPoint\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:292
+#: reference_accessor.xml:459
 #, no-c-format
 msgid "ST_Envelope"
 msgstr "ST_Envelope"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:294
-#, no-c-format
-msgid ""
-"Returns a geometry representing the double precision (float8) bounding box "
-"of the supplied geometry."
+#: reference_accessor.xml:461
+#, fuzzy, no-c-format
+msgid "Returns a geometry representing the bounding box of a geometry."
 msgstr ""
 "주어진 도형의 이중 정밀도(double precision; float8) 경계 상자를 표현하는 도형"
 "을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:300
+#: reference_accessor.xml:466
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Envelope</function></funcdef> "
@@ -817,16 +1411,17 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:311
-#, no-c-format
+#: reference_accessor.xml:477
+#, fuzzy, no-c-format
 msgid ""
-"Returns the float8 minimum bounding box for the supplied geometry, as a "
-"geometry. The polygon is defined by the corner points of the bounding box "
-"((<varname>MINX</varname>, <varname>MINY</varname>), (<varname>MINX</"
-"varname>, <varname>MAXY</varname>), (<varname>MAXX</varname>, <varname>MAXY</"
-"varname>), (<varname>MAXX</varname>, <varname>MINY</varname>), "
-"(<varname>MINX</varname>, <varname>MINY</varname>)). (PostGIS will add a "
-"<varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as well)."
+"Returns the double-precision (float8) minimum bounding box for the supplied "
+"geometry, as a geometry. The polygon is defined by the corner points of the "
+"bounding box ((<varname>MINX</varname>, <varname>MINY</varname>), "
+"(<varname>MINX</varname>, <varname>MAXY</varname>), (<varname>MAXX</"
+"varname>, <varname>MAXY</varname>), (<varname>MAXX</varname>, <varname>MINY</"
+"varname>), (<varname>MINX</varname>, <varname>MINY</varname>)). (PostGIS "
+"will add a <varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as "
+"well)."
 msgstr ""
 "주어진 도형에 대해 float8 형 최소치 경계 상자를 도형으로 반환합니다. 해당 폴"
 "리곤은 경계 상자의 꼭짓점 포인트들로 정의됩니다((<varname>MINX</varname>, "
@@ -837,7 +1432,7 @@ msgstr ""
 "<varname>ZMAX</varname> 좌표도 추가할 것입니다.)"
 
 #. Tag: para
-#: reference_accessor.xml:321
+#: reference_accessor.xml:487
 #, no-c-format
 msgid ""
 "Degenerate cases (vertical lines, points) will return a geometry of lower "
@@ -849,7 +1444,7 @@ msgstr ""
 "도형을 반환할 것입니다."
 
 #. Tag: para
-#: reference_accessor.xml:325
+#: reference_accessor.xml:491
 #, no-c-format
 msgid ""
 "Availability: 1.5.0 behavior changed to output double precision instead of "
@@ -859,20 +1454,20 @@ msgstr ""
 "록 변경되었습니다."
 
 #. Tag: para
-#: reference_accessor.xml:326 reference_accessor.xml:923
-#: reference_accessor.xml:1021 reference_accessor.xml:1775
+#: reference_accessor.xml:492 reference_accessor.xml:1118
+#: reference_accessor.xml:1214
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
 msgstr "&sfs_compliant; s2.1.1.1"
 
 #. Tag: para
-#: reference_accessor.xml:327
+#: reference_accessor.xml:493
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.15"
 
 #. Tag: programlisting
-#: reference_accessor.xml:333
+#: reference_accessor.xml:499
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Envelope('POINT(1 3)'::geometry));\n"
@@ -944,13 +1539,13 @@ msgstr ""
 "<!-- TODO: Fix examples to reflect new behavior -->"
 
 #. Tag: para
-#: reference_accessor.xml:339
+#: reference_accessor.xml:505
 #, no-c-format
 msgid "Envelope of a point and linestring."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:342
+#: reference_accessor.xml:508
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Envelope(\n"
@@ -964,25 +1559,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:347
+#: reference_accessor.xml:513
 #, no-c-format
 msgid ", <xref linkend=\"Box3D\"/>, <xref linkend=\"ST_OrientedEnvelope\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:353
+#: reference_accessor.xml:519
 #, no-c-format
 msgid "ST_BoundingDiagonal"
 msgstr "ST_BoundingDiagonal"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:355
-#, no-c-format
-msgid "Returns the diagonal of the supplied geometry's bounding box."
+#: reference_accessor.xml:521
+#, fuzzy, no-c-format
+msgid "Returns the diagonal of a geometry's bounding box."
 msgstr "주어진 도형의 경계 상자의 대각선을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:360
+#: reference_accessor.xml:526
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_BoundingDiagonal</function></funcdef> "
@@ -996,13 +1591,13 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:372
-#, no-c-format
+#: reference_accessor.xml:538
+#, fuzzy, no-c-format
 msgid ""
-"Returns the diagonal of the supplied geometry's bounding box as linestring. "
-"If the input geometry is empty, the diagonal line is also empty, otherwise "
-"it is a 2-points linestring with minimum values of each dimension in its "
-"start point and maximum values in its end point."
+"Returns the diagonal of the supplied geometry's bounding box as a "
+"LineString. If the input geometry is empty, the diagonal line is also empty, "
+"otherwise it is a 2-point LineString with the minimum values of each "
+"dimension in its start point and the maximum values in its end point."
 msgstr ""
 "주어진 도형의 경계 상자의 대각선을 라인스트링으로 반환합니다. 빈 도형을 입력"
 "받은 경우 빈 대각선을 반환하게 됩니다. 빈 도형이 아니라면 포인트 2개 중 시작"
@@ -1010,7 +1605,7 @@ msgstr ""
 "환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:379
+#: reference_accessor.xml:545
 #, no-c-format
 msgid ""
 "The returned linestring geometry always retains SRID and dimensionality (Z "
@@ -1019,7 +1614,7 @@ msgstr ""
 "반환된 라인스트링 도형은 언제나 입력 도형의 SRID 및 차원수를 유지합니다."
 
 #. Tag: para
-#: reference_accessor.xml:384
+#: reference_accessor.xml:550
 #, no-c-format
 msgid ""
 "The <varname>fits</varname> parameter specifies if the best fit is needed. "
@@ -1033,7 +1628,7 @@ msgstr ""
 "반환된 대각선의 경계 상자는 항상 입력 도형을 둘러쌉니다."
 
 #. Tag: para
-#: reference_accessor.xml:392
+#: reference_accessor.xml:558
 #, no-c-format
 msgid ""
 "In degenerate cases (a single vertex in input) the returned linestring will "
@@ -1045,20 +1640,20 @@ msgstr ""
 "로 유효하지 않다는 뜻은 아닙니다."
 
 #. Tag: para
-#: reference_accessor.xml:398
+#: reference_accessor.xml:564
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_accessor.xml:400 reference_accessor.xml:697
-#: reference_accessor.xml:767
+#: reference_accessor.xml:566 reference_accessor.xml:896
+#: reference_accessor.xml:965
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
 
 #. Tag: programlisting
-#: reference_accessor.xml:406
+#: reference_accessor.xml:572
 #, no-c-format
 msgid ""
 "-- Get the minimum X in a buffer around a point\n"
@@ -1078,7 +1673,7 @@ msgstr ""
 "  -10"
 
 #. Tag: para
-#: reference_accessor.xml:410
+#: reference_accessor.xml:576
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
@@ -1090,25 +1685,19 @@ msgstr ""
 "linkend=\"geometry_overlaps_nd\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:424
+#: reference_accessor.xml:590
 #, no-c-format
 msgid "ST_ExteriorRing"
 msgstr "ST_ExteriorRing"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:426
-#, no-c-format
-msgid ""
-"Returns a line string representing the exterior ring of the "
-"<varname>POLYGON</varname> geometry. Return NULL if the geometry is not a "
-"polygon. Will not work with MULTIPOLYGON"
-msgstr ""
-"<varname>POLYGON</varname> 도형의 외곽 고리(exterior ring)를 표현하는 라인스"
-"트링을 반환합니다. 도형이 폴리곤이 아닌 경우 NULL을 반환합니다. 멀티폴리곤은 "
-"입력받지 못 합니다."
+#: reference_accessor.xml:592
+#, fuzzy, no-c-format
+msgid "Returns a LineString representing the exterior ring of a Polygon."
+msgstr "폴리곤 도형의 내곽 고리의 개수를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:432
+#: reference_accessor.xml:597
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> "
@@ -1118,7 +1707,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:443
+#: reference_accessor.xml:608
 #, no-c-format
 msgid ""
 "Returns a line string representing the exterior ring of the "
@@ -1129,25 +1718,25 @@ msgstr ""
 "트링을 반환합니다. 도형이 폴리곤이 아닌 경우 NULL을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:446
+#: reference_accessor.xml:611
 #, no-c-format
 msgid "Only works with POLYGON geometry types"
 msgstr "오직 <varname>POLYGON</varname> 도형 유형만 입력받습니다."
 
 #. Tag: para
-#: reference_accessor.xml:448 reference_accessor.xml:967
+#: reference_accessor.xml:613 reference_accessor.xml:1161
 #, no-c-format
 msgid "&sfs_compliant; 2.1.5.1"
 msgstr "&sfs_compliant; 2.1.5.1"
 
 #. Tag: para
-#: reference_accessor.xml:449
+#: reference_accessor.xml:614
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
 
 #. Tag: programlisting
-#: reference_accessor.xml:456
+#: reference_accessor.xml:621
 #, no-c-format
 msgid ""
 "--If you have a table of polygons\n"
@@ -1196,7 +1785,7 @@ msgstr ""
 "LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)"
 
 #. Tag: para
-#: reference_accessor.xml:462
+#: reference_accessor.xml:627
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
@@ -1204,25 +1793,19 @@ msgstr ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_NumInteriorRings\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:472
+#: reference_accessor.xml:637
 #, no-c-format
 msgid "ST_GeometryN"
 msgstr "ST_GeometryN"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:474
-#, no-c-format
-msgid ""
-"Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
-"(MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, "
-"POLYHEDRALSURFACE Otherwise, return NULL."
-msgstr ""
-"입력 도형이 도형 집합, (멀티)포인트, (멀티)라인스트링, 멀티커브(multicurve) "
-"또는 (멀티)폴리곤이나 다면체 표면일 경우 1-기반 N번째 도형을 반환하며, 그 외"
-"의 경우 NULL을 반환합니다."
+#: reference_accessor.xml:639
+#, fuzzy, no-c-format
+msgid "Return the Nth geometry element of a geometry collection."
+msgstr "ST_Geometry 값의 도형 유형을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:481
+#: reference_accessor.xml:644
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_GeometryN</function></funcdef> "
@@ -1234,7 +1817,7 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:492
+#: reference_accessor.xml:655
 #, no-c-format
 msgid ""
 "Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
@@ -1246,7 +1829,7 @@ msgstr ""
 "의 경우 NULL을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:497
+#: reference_accessor.xml:660
 #, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Previous versions "
@@ -1256,17 +1839,17 @@ msgstr ""
 "반 인덱스를 시행했습니다."
 
 #. Tag: para
-#: reference_accessor.xml:502
-#, no-c-format
+#: reference_accessor.xml:665
+#, fuzzy, no-c-format
 msgid ""
-"If you want to extract all geometries, of a geometry, ST_Dump is more "
-"efficient and will also work for singular geoms."
+"If you want to extract all geometries, of a geometry, <xref linkend=\"ST_Dump"
+"\"/> is more efficient, and also works for singular geoms."
 msgstr ""
 "모든 도형들을 추출하고자 한다면 ST_Dump 함수가 더 효율적이며, 단일 도형에 대"
 "해서도 작동할 것입니다."
 
 #. Tag: para
-#: reference_accessor.xml:505
+#: reference_accessor.xml:668
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 Prior versions would return NULL for singular geometries. "
@@ -1276,19 +1859,13 @@ msgstr ""
 "버전부터 ST_GeometryN(..,1) 경우에 대한 도형을 반환하도록 변경됐습니다."
 
 #. Tag: para
-#: reference_accessor.xml:507
+#: reference_accessor.xml:670
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.5"
 msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.5"
 
-#. Tag: title
-#: reference_accessor.xml:517
-#, no-c-format
-msgid "Standard Examples"
-msgstr "표준 예시"
-
 #. Tag: programlisting
-#: reference_accessor.xml:519
+#: reference_accessor.xml:682
 #, no-c-format
 msgid ""
 "--Extracting a subset of points from a 3d multipoint\n"
@@ -1341,14 +1918,8 @@ msgstr ""
 "FROM sometable CROSS JOIN generate_series(1,100) n\n"
 "WHERE n &lt;= ST_NumGeometries(the_geom);"
 
-#. Tag: title
-#: reference_accessor.xml:522
-#, no-c-format
-msgid "Polyhedral Surfaces, TIN and Triangle Examples"
-msgstr "다면체 표면, TIN 및 삼각형 예시"
-
 #. Tag: programlisting
-#: reference_accessor.xml:523
+#: reference_accessor.xml:686
 #, no-c-format
 msgid ""
 "-- Polyhedral surface example\n"
@@ -1384,7 +1955,7 @@ msgstr ""
 " POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))"
 
 #. Tag: programlisting
-#: reference_accessor.xml:525
+#: reference_accessor.xml:688
 #, no-c-format
 msgid ""
 "-- TIN --\n"
@@ -1432,25 +2003,25 @@ msgstr ""
 " TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
 
 #. Tag: para
-#: reference_accessor.xml:532 reference_accessor.xml:1534
+#: reference_accessor.xml:695 reference_accessor.xml:1576
 #, no-c-format
 msgid ", <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ", <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:538
+#: reference_accessor.xml:701
 #, no-c-format
 msgid "ST_GeometryType"
 msgstr "ST_GeometryType"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:539
-#, no-c-format
-msgid "Return the geometry type of the ST_Geometry value."
+#: reference_accessor.xml:702
+#, fuzzy, no-c-format
+msgid "Returns the SQL-MM type of a geometry as text."
 msgstr "ST_Geometry 값의 도형 유형을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:544
+#: reference_accessor.xml:707
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_GeometryType</function></funcdef> "
@@ -1460,7 +2031,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:553
+#: reference_accessor.xml:716
 #, no-c-format
 msgid ""
 "Returns the type of the geometry as a string. EG: 'ST_Linestring', "
@@ -1475,21 +2046,21 @@ msgstr ""
 "GeometryType(geometry) 함수와는 다릅니다."
 
 #. Tag: para
-#: reference_accessor.xml:555 reference_accessor.xml:815
-#: reference_accessor.xml:1333
+#: reference_accessor.xml:718 reference_accessor.xml:1013
+#: reference_accessor.xml:1377
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
 msgstr ""
 "개선 사항: 2.0.0 버전부터 다면체 표면(polyhedral surface)을 지원합니다."
 
 #. Tag: para
-#: reference_accessor.xml:556
+#: reference_accessor.xml:719
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.4"
 
 #. Tag: programlisting
-#: reference_accessor.xml:565
+#: reference_accessor.xml:728
 #, no-c-format
 msgid ""
 "SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
@@ -1503,7 +2074,7 @@ msgstr ""
 "ST_LineString"
 
 #. Tag: programlisting
-#: reference_accessor.xml:567 reference_accessor.xml:569
+#: reference_accessor.xml:730 reference_accessor.xml:732
 #, no-c-format
 msgid ""
 "SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
@@ -1527,7 +2098,7 @@ msgstr ""
 "                        ST_PolyhedralSurface"
 
 #. Tag: programlisting
-#: reference_accessor.xml:571
+#: reference_accessor.xml:734
 #, no-c-format
 msgid ""
 "SELECT ST_GeometryType(geom) as result\n"
@@ -1571,23 +2142,73 @@ msgstr ""
 " ST_Tin"
 
 #. Tag: refname
-#: reference_accessor.xml:584
+#: reference_accessor.xml:745
+#, no-c-format
+msgid "ST_HasArc"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_accessor.xml:747
+#, no-c-format
+msgid "Tests if a geometry contains a circular arc"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_accessor.xml:752
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>boolean <function>ST_HasArc</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+
+#. Tag: para
+#: reference_accessor.xml:762
+#, fuzzy, no-c-format
+msgid ""
+"Returns true if a geometry or geometry collection contains a circular string"
+msgstr ""
+"해당 도형이 텅 빈 도형 집합, 폴리곤, 포인트 등인 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
+
+#. Tag: para
+#: reference_accessor.xml:764
+#, fuzzy, no-c-format
+msgid "Availability: 1.2.3?"
+msgstr "1.2.2 버전부터 사용할 수 있습니다."
+
+#. Tag: programlisting
+#: reference_accessor.xml:773
+#, no-c-format
+msgid ""
+"SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 "
+"1, 2 3, 4 5, 6 7, 5 6)'));\n"
+"                st_hasarc\n"
+"                --------\n"
+"                t"
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:780
+#, fuzzy, no-c-format
+msgid ", <xref linkend=\"ST_LineToCurve\"/>"
+msgstr ", <xref linkend=\"ST_PointN\"/>"
+
+#. Tag: refname
+#: reference_accessor.xml:786
 #, no-c-format
 msgid "ST_InteriorRingN"
 msgstr "ST_InteriorRingN"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:586
-#, no-c-format
-msgid ""
-"Return the Nth interior linestring ring of the polygon geometry. Return NULL "
-"if the geometry is not a polygon or the given N is out of range."
-msgstr ""
-"폴리곤 도형의 N번째 내곽 라인스트링 고리를 반환합니다. 도형이 폴리곤이 아니거"
-"나 주어진 N이 범위(range)를 벗어난 경우 NULL을 반환합니다."
+#: reference_accessor.xml:788
+#, fuzzy, no-c-format
+msgid "Returns the Nth interior ring (hole) of a Polygon."
+msgstr "폴리곤 도형의 내곽 고리의 개수를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:593
+#: reference_accessor.xml:793
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_InteriorRingN</function></funcdef> "
@@ -1599,35 +2220,35 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:604
-#, no-c-format
+#: reference_accessor.xml:804
+#, fuzzy, no-c-format
 msgid ""
-"Return the Nth interior linestring ring of the polygon geometry. Return NULL "
-"if the geometry is not a polygon or the given N is out of range. index "
-"starts at 1."
+"Returns the Nth interior linestring ring of the polygon geometry. Returns "
+"NULL if the geometry is not a polygon or the given N is out of range. The "
+"index starts at 1."
 msgstr ""
 "폴리곤 도형의 N번째 내곽 라인스트링 고리를 반환합니다. 도형이 폴리곤이 아니거"
 "나 주어진 N이 범위(range)를 벗어난 경우 NULL을 반환합니다. 인덱스는 1에서 시"
 "작합니다."
 
 #. Tag: para
-#: reference_accessor.xml:610
-#, no-c-format
+#: reference_accessor.xml:810
+#, fuzzy, no-c-format
 msgid ""
-"This will not work for MULTIPOLYGONs. Use in conjunction with ST_Dump for "
-"MULTIPOLYGONS"
+"This function does not support for MULTIPOLYGONs. Use in conjunction with "
+"<xref linkend=\"ST_Dump\"/> for MULTIPOLYGONS"
 msgstr ""
 "이 함수는 멀티폴리곤을 입력받지 못 합니다. 멀티폴리곤의 경우 ST_Dump 함수와 "
 "결합해서 이용하십시오."
 
 #. Tag: para
-#: reference_accessor.xml:614
+#: reference_accessor.xml:814
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
 msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
 
 #. Tag: programlisting
-#: reference_accessor.xml:623
+#: reference_accessor.xml:823
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_InteriorRingN(the_geom, 1)) As the_geom\n"
@@ -1643,7 +2264,7 @@ msgstr ""
 "                )  as foo"
 
 #. Tag: para
-#: reference_accessor.xml:630
+#: reference_accessor.xml:830
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
@@ -1653,21 +2274,21 @@ msgstr ""
 "\"ST_NumInteriorRing\"/>,"
 
 #. Tag: refname
-#: reference_accessor.xml:643
+#: reference_accessor.xml:843
 #, no-c-format
 msgid "ST_IsPolygonCCW"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_accessor.xml:646
+#: reference_accessor.xml:846
 #, no-c-format
 msgid ""
-"Returns true if all exterior rings are oriented counter-clockwise and all "
-"interior rings are oriented clockwise."
+"Tests if Polygons have exterior rings oriented counter-clockwise and "
+"interior rings oriented clockwise."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:653
+#: reference_accessor.xml:852
 #, no-c-format
 msgid ""
 "<funcdef> boolean <function>ST_IsPolygonCCW</function> </funcdef> <paramdef> "
@@ -1675,7 +2296,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:669
+#: reference_accessor.xml:868
 #, no-c-format
 msgid ""
 "Returns true if all polygonal components of the input geometry use a counter-"
@@ -1684,13 +2305,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:675 reference_accessor.xml:745
+#: reference_accessor.xml:874 reference_accessor.xml:943
 #, no-c-format
 msgid "Returns true if the geometry has no polygonal components."
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:680 reference_accessor.xml:750
+#: reference_accessor.xml:879 reference_accessor.xml:948
 #, no-c-format
 msgid ""
 "Closed linestrings are not considered polygonal components, so you would "
@@ -1699,7 +2320,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:688 reference_accessor.xml:758
+#: reference_accessor.xml:887 reference_accessor.xml:956
 #, no-c-format
 msgid ""
 "If a polygonal geometry does not use reversed orientation for interior rings "
@@ -1709,28 +2330,28 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:703 reference_accessor.xml:772
+#: reference_accessor.xml:902 reference_accessor.xml:970
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:713
+#: reference_accessor.xml:912
 #, no-c-format
 msgid "ST_IsPolygonCW"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_accessor.xml:716
+#: reference_accessor.xml:915
 #, no-c-format
 msgid ""
-"Returns true if all exterior rings are oriented clockwise and all interior "
-"rings are oriented counter-clockwise."
+"Tests if Polygons have exterior rings oriented clockwise and interior rings "
+"oriented counter-clockwise."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:723
+#: reference_accessor.xml:921
 #, no-c-format
 msgid ""
 "<funcdef> boolean <function>ST_IsPolygonCW</function> </funcdef> <paramdef> "
@@ -1738,7 +2359,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:739
+#: reference_accessor.xml:937
 #, no-c-format
 msgid ""
 "Returns true if all polygonal components of the input geometry use a "
@@ -1747,24 +2368,24 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:782
+#: reference_accessor.xml:980
 #, no-c-format
 msgid "ST_IsClosed"
 msgstr "ST_IsClosed"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:784
-#, no-c-format
+#: reference_accessor.xml:982
+#, fuzzy, no-c-format
 msgid ""
-"Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s start "
-"and end points are coincident. For Polyhedral surface is closed (volumetric)."
+"Tests if a LineStrings's start and end points are coincident. For a "
+"PolyhedralSurface tests if it is closed (volumetric)."
 msgstr ""
 "<varname>LINESTRING</varname> 의 시작점과 종단점이 일치하는 경우 "
 "<varname>TRUE</varname> 를 반환합니다. 다면체 표면이 닫혀 (부피를 가지고) 있"
 "는 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:791
+#: reference_accessor.xml:988
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsClosed</function></funcdef> "
@@ -1774,11 +2395,11 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:802
-#, no-c-format
+#: reference_accessor.xml:999
+#, fuzzy, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s start "
-"and end points are coincident. For Polyhedral Surfaces, it tells you if the "
+"and end points are coincident. For Polyhedral Surfaces, reports if the "
 "surface is areal (open) or volumetric (closed)."
 msgstr ""
 "<varname>LINESTRING</varname> 의 시작점과 종단점이 일치하는 경우 "
@@ -1786,13 +2407,13 @@ msgstr ""
 "(열림)을 가지고 있는지 부피(닫힘)를 가지고 있는지 알려줍니다."
 
 #. Tag: para
-#: reference_accessor.xml:806
+#: reference_accessor.xml:1004
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
 
 #. Tag: para
-#: reference_accessor.xml:808
+#: reference_accessor.xml:1006
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of <function>ST_IsClosed(<varname>NULL</varname>)</"
@@ -1802,13 +2423,13 @@ msgstr ""
 "0으로 정의하지만, PostGIS는 <varname>NULL</varname> 을 반환합니다."
 
 #. Tag: title
-#: reference_accessor.xml:822
+#: reference_accessor.xml:1020
 #, no-c-format
 msgid "Line String and Point Examples"
 msgstr "라인스트링 및 포인트 예시"
 
 #. Tag: programlisting
-#: reference_accessor.xml:824
+#: reference_accessor.xml:1022
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);\n"
@@ -1874,13 +2495,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: title
-#: reference_accessor.xml:828
+#: reference_accessor.xml:1026
 #, no-c-format
 msgid "Polyhedral Surface Examples"
 msgstr "다면체 표면 예시"
 
 #. Tag: programlisting
-#: reference_accessor.xml:830
+#: reference_accessor.xml:1028
 #, no-c-format
 msgid ""
 "-- A cube --\n"
@@ -1936,23 +2557,21 @@ msgstr ""
 " f"
 
 #. Tag: refname
-#: reference_accessor.xml:842
+#: reference_accessor.xml:1040
 #, no-c-format
 msgid "ST_IsCollection"
 msgstr "ST_IsCollection"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:844
-#, no-c-format
-msgid ""
-"Returns <varname>TRUE</varname> if the argument is a collection "
-"(<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</varname>, ...)"
+#: reference_accessor.xml:1041
+#, fuzzy, no-c-format
+msgid "Tests if a geometry is a geometry collection type."
 msgstr ""
-"인수가 집합(<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</"
-"varname>, ...)인 경우 <varname>TRUE</varname> 를 반환합니다."
+"해당 도형이 텅 빈 도형 집합, 폴리곤, 포인트 등인 경우 <varname>TRUE</"
+"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:851
+#: reference_accessor.xml:1046
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsCollection</function></funcdef> "
@@ -1962,35 +2581,35 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:861
-#, no-c-format
+#: reference_accessor.xml:1056
+#, fuzzy, no-c-format
 msgid ""
-"Returns <varname>TRUE</varname> if the geometry type of the argument is "
-"either:"
+"Returns <varname>TRUE</varname> if the geometry type of the argument a "
+"geometry collection type. Collection types are the following:"
 msgstr ""
 "인수의 도형 유형이 다음 가운데 하나일 경우 <varname>TRUE</varname> 를 반환합"
 "니다:"
 
 #. Tag: para
-#: reference_accessor.xml:864
+#: reference_accessor.xml:1059
 #, no-c-format
 msgid "GEOMETRYCOLLECTION"
 msgstr "GEOMETRYCOLLECTION"
 
 #. Tag: para
-#: reference_accessor.xml:865
+#: reference_accessor.xml:1060
 #, no-c-format
 msgid "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
 msgstr "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
 
 #. Tag: para
-#: reference_accessor.xml:866
+#: reference_accessor.xml:1061
 #, no-c-format
 msgid "COMPOUNDCURVE"
 msgstr "COMPOUNDCURVE"
 
 #. Tag: para
-#: reference_accessor.xml:871
+#: reference_accessor.xml:1066
 #, no-c-format
 msgid ""
 "This function analyzes the type of the geometry. This means that it will "
@@ -2001,7 +2620,7 @@ msgstr ""
 "일 경우에도 <varname>TRUE</varname> 를 반환할 것이라는 뜻입니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:886
+#: reference_accessor.xml:1081
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_IsCollection('LINESTRING(0 0, 1 1)'::geometry);\n"
@@ -2067,23 +2686,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_accessor.xml:898
+#: reference_accessor.xml:1093
 #, no-c-format
 msgid "ST_IsEmpty"
 msgstr "ST_IsEmpty"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:900
+#: reference_accessor.xml:1095
 #, no-c-format
-msgid ""
-"Returns true if this Geometry is an empty geometrycollection, polygon, point "
-"etc."
+msgid "Tests if a geometry is empty."
 msgstr ""
-"해당 도형이 텅 빈 도형 집합, 폴리곤, 포인트 등인 경우 <varname>TRUE</"
-"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:906
+#: reference_accessor.xml:1101
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
@@ -2093,7 +2708,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:916
+#: reference_accessor.xml:1111
 #, no-c-format
 msgid ""
 "Returns true if this Geometry is an empty geometry. If true, then this "
@@ -2104,7 +2719,7 @@ msgstr ""
 "등을 표현한다는 뜻입니다."
 
 #. Tag: para
-#: reference_accessor.xml:919
+#: reference_accessor.xml:1114
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while PostGIS returns "
@@ -2114,13 +2729,13 @@ msgstr ""
 "으로 정의하지만, PostGIS는 <varname>NULL</varname> 을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:924
+#: reference_accessor.xml:1119
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.7"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.7"
 
 #. Tag: para
-#: reference_accessor.xml:926
+#: reference_accessor.xml:1121
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 In prior versions of PostGIS "
@@ -2133,7 +2748,7 @@ msgstr ""
 "됐습니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:934
+#: reference_accessor.xml:1129
 #, no-c-format
 msgid ""
 "SELECT ST_IsEmpty(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY'));\n"
@@ -2201,23 +2816,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_accessor.xml:941
+#: reference_accessor.xml:1136
 #, no-c-format
 msgid "ST_IsRing"
 msgstr "ST_IsRing"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:943
+#: reference_accessor.xml:1138
 #, no-c-format
-msgid ""
-"Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
-"both closed and simple."
+msgid "Tests if a LineString is closed and simple."
 msgstr ""
-"<varname>LINESTRING</varname> 이 닫혀 있는 단순 도형인 경우 <varname>TRUE</"
-"varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:949
+#: reference_accessor.xml:1143
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsRing</function></funcdef> "
@@ -2227,7 +2838,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:960
+#: reference_accessor.xml:1154
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
@@ -2243,13 +2854,13 @@ msgstr ""
 "<varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:968
+#: reference_accessor.xml:1162
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.6"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.6"
 
 #. Tag: para
-#: reference_accessor.xml:970
+#: reference_accessor.xml:1164
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of <function>ST_IsRing(<varname>NULL</varname>)</"
@@ -2259,7 +2870,7 @@ msgstr ""
 "으로 정의하지만, PostGIS는 <varname>NULL</varname> 을 반환합니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:979
+#: reference_accessor.xml:1173
 #, no-c-format
 msgid ""
 "SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\n"
@@ -2295,7 +2906,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:985
+#: reference_accessor.xml:1179
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
@@ -2305,23 +2916,22 @@ msgstr ""
 "linkend=\"ST_EndPoint\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:993
+#: reference_accessor.xml:1187
 #, no-c-format
 msgid "ST_IsSimple"
 msgstr "ST_IsSimple"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:995
-#, no-c-format
+#: reference_accessor.xml:1189
+#, fuzzy, no-c-format
 msgid ""
-"Returns (TRUE) if this Geometry has no anomalous geometric points, such as "
-"self intersection or self tangency."
+"Tests if a geometry has no points of self-intersection or self-tangency."
 msgstr ""
 "해당 도형이 자체 교차하거나 자체 접촉하는 이례적인 도형 포인트를 가지고 있지 "
 "않을 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1001
+#: reference_accessor.xml:1194
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsSimple</function></funcdef> "
@@ -2331,7 +2941,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1011
+#: reference_accessor.xml:1204
 #, no-c-format
 msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
@@ -2346,7 +2956,7 @@ msgstr ""
 "link> 을 참조하십시오."
 
 #. Tag: para
-#: reference_accessor.xml:1017
+#: reference_accessor.xml:1210
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of ST_IsSimple(NULL) to be 0, while PostGIS "
@@ -2356,13 +2966,13 @@ msgstr ""
 "0으로 정의하지만, PostGIS는 <varname>NULL</varname> 을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:1022
+#: reference_accessor.xml:1215
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1030
+#: reference_accessor.xml:1223
 #, no-c-format
 msgid ""
 "SELECT ST_IsSimple(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));\n"
@@ -2392,478 +3002,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_accessor.xml:1042
-#, no-c-format
-msgid "ST_IsValid"
-msgstr "ST_IsValid"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:1044
-#, no-c-format
-msgid ""
-"Returns <varname>true</varname> if the <varname>ST_Geometry</varname> is "
-"well formed."
-msgstr ""
-"<varname>ST_Geometry</varname> 가 잘 형성돼 있는 경우 <varname>TRUE</"
-"varname> 를 반환합니다."
-
-#. Tag: funcsynopsis
-#: reference_accessor.xml:1050
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>boolean <function>ST_IsValid</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</"
-"parameter></paramdef> </funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>boolean <function>ST_IsValid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>boolean <function>ST_IsValid</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>flags</"
-"parameter></paramdef> </funcprototype>"
-
-#. Tag: para
-#: reference_accessor.xml:1068
-#, no-c-format
-msgid ""
-"Test if an ST_Geometry value is well formed. For geometries that are "
-"invalid, the PostgreSQL NOTICE will provide details of why it is not valid. "
-"For more information on the OGC's definition of geometry simplicity and "
-"validity, refer to <link linkend=\"OGC_Validity\">\"Ensuring OpenGIS "
-"compliancy of geometries\"</link>"
-msgstr ""
-"ST_Geometry 값이 잘 형성돼 있는지 검사합니다. 유효하지 않은 도형인 경우, "
-"PostgreSQL NOTICE가 그 이유에 대한 상세 정보를 제공할 것입니다. 도형 단순성 "
-"및 유효성에 대한 OGC의 정의를 더 자세히 알고 싶다면, <link linkend="
-"\"OGC_Validity\">\"OpenGIS의 도형 준수성 확인(Ensuring OpenGIS compliancy of "
-"geometries)\"</link> 을 참조하십시오."
-
-#. Tag: para
-#: reference_accessor.xml:1074
-#, no-c-format
-msgid ""
-"SQL-MM defines the result of ST_IsValid(NULL) to be 0, while PostGIS returns "
-"NULL."
-msgstr ""
-"SQL-MM은 <function>ST_IsValid(<varname>NULL</varname>)</function> 의 결과를 0"
-"으로 정의하지만, PostGIS는 <varname>NULL</varname> 을 반환합니다."
-
-#. Tag: para
-#: reference_accessor.xml:1078
-#, no-c-format
-msgid ""
-"The version accepting flags is available starting with 2.0.0 and requires "
-"GEOS &gt;= 3.3.0. Such version does not print a NOTICE explaining the "
-"invalidity. Allowed <varname>flags</varname> are documented in <xref linkend="
-"\"ST_IsValidDetail\"/>."
-msgstr ""
-"2.0.0 버전부터 플래그를 사용할 수 있으며, 이때 GEOS 3.3.0 이상 버전이 필요합"
-"니다. 이 버전의 함수는 비유효성을 설명하는 알림을 출력하지 않습니다. <xref "
-"linkend=\"ST_IsValidDetail\"/> 에 사용할 수 있는 <varname>flags</varname> 가 "
-"정리돼 있습니다."
-
-#. Tag: para
-#: reference_accessor.xml:1086
-#, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.9"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.9"
-
-#. Tag: para
-#: reference_accessor.xml:1089
-#, no-c-format
-msgid ""
-"Neither OGC-SFS nor SQL-MM specifications include a flag argument for "
-"ST_IsValid. The flag is a PostGIS extension."
-msgstr ""
-"OGC-SFS 또는 SQL-MM 어떤 사양도 ST_IsValid 함수용 플래그 인수를 포함하지 않습"
-"니다. 해당 플래그는 PostGIS 확장 프로그램입니다."
-
-#. Tag: programlisting
-#: reference_accessor.xml:1101
-#, no-c-format
-msgid ""
-"SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,\n"
-"        ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As "
-"bad_poly\n"
-"--results\n"
-"NOTICE:  Self-intersection at or near point 0 0\n"
-" good_line | bad_poly\n"
-"-----------+----------\n"
-" t         | f"
-msgstr ""
-"SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,\n"
-"        ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As "
-"bad_poly\n"
-"-- 결과\n"
-"NOTICE:  Self-intersection at or near point 0 0\n"
-" good_line | bad_poly\n"
-"-----------+----------\n"
-" t         | f"
-
-#. Tag: para
-#: reference_accessor.xml:1107
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/"
-">, <xref linkend=\"ST_Summary\"/>"
-msgstr ""
-", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/"
-">, <xref linkend=\"ST_Summary\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:1118
-#, no-c-format
-msgid "ST_IsValidReason"
-msgstr "ST_IsValidReason"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:1120
-#, no-c-format
-msgid ""
-"Returns text stating if a geometry is valid or not and if not valid, a "
-"reason why."
-msgstr ""
-"도형이 유효한지 아닌지, 그리고 유효하지 않을 경우 그 이유를 설명하는 텍스트"
-"를 반환합니다."
-
-#. Tag: funcsynopsis
-#: reference_accessor.xml:1124
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>text <function>ST_IsValidReason</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>text "
-"<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry </"
-"type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>flags</parameter></paramdef> </funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>text <function>ST_IsValidReason</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>text "
-"<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry </"
-"type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>flags</parameter></paramdef> </funcprototype>"
-
-#. Tag: para
-#: reference_accessor.xml:1140
-#, no-c-format
-msgid ""
-"Returns text stating if a geometry is valid or not an if not valid, a reason "
-"why."
-msgstr ""
-"도형이 유효한지 아닌지, 그리고 유효하지 않을 경우 그 이유를 설명하는 텍스트"
-"를 반환합니다."
-
-#. Tag: para
-#: reference_accessor.xml:1142
-#, no-c-format
-msgid ""
-"Useful in combination with ST_IsValid to generate a detailed report of "
-"invalid geometries and reasons."
-msgstr ""
-"ST_IsValid 함수와 함께 사용해서 유효하지 않은 도형 및 그 이유를 자세히 설명하"
-"는 보고서를 생성하는 데 유용합니다."
-
-#. Tag: para
-#: reference_accessor.xml:1144
-#, no-c-format
-msgid ""
-"Allowed <varname>flags</varname> are documented in <xref linkend="
-"\"ST_IsValidDetail\"/>."
-msgstr ""
-"<xref linkend=\"ST_IsValidDetail\"/> 에 사용할 수 있는 <varname>flags</"
-"varname> 가 정리돼 있습니다."
-
-#. Tag: para
-#: reference_accessor.xml:1148
-#, no-c-format
-msgid "Availability: 1.4 - requires GEOS &gt;= 3.1.0."
-msgstr "1.4 버전부터 사용할 수 있습니다. GEOS 3.1.0 이상 버전이 필요합니다."
-
-#. Tag: para
-#: reference_accessor.xml:1149
-#, no-c-format
-msgid ""
-"Availability: 2.0 - requires GEOS &gt;= 3.3.0 for the version taking flags."
-msgstr ""
-"플래그를 사용할 수 있는 버전은 2.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이"
-"상 버전이 필요합니다."
-
-#. Tag: programlisting
-#: reference_accessor.xml:1157
-#, no-c-format
-msgid ""
-"--First 3 Rejects from a successful quintuplet experiment\n"
-"SELECT gid, ST_IsValidReason(the_geom) as validity_info\n"
-"FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
-"the_geom, gid\n"
-"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
-"z1*1000 As gid\n"
-"        FROM generate_series(-4,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,8) z1\n"
-"        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
-"        INNER JOIN (SELECT "
-"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
-"z1*2) As line\n"
-"        FROM generate_series(-3,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,10) z1\n"
-"        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
-"ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
-"GROUP BY gid, e.buff) As quintuplet_experiment\n"
-"WHERE ST_IsValid(the_geom) = false\n"
-"ORDER BY gid\n"
-"LIMIT 3;\n"
-"\n"
-" gid  |      validity_info\n"
-"------+--------------------------\n"
-" 5330 | Self-intersection [32 5]\n"
-" 5340 | Self-intersection [42 5]\n"
-" 5350 | Self-intersection [52 5]\n"
-"\n"
-" --simple example\n"
-"SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 "
-"150410)');\n"
-"\n"
-" st_isvalidreason\n"
-"------------------\n"
-" Valid Geometry"
-msgstr ""
-"-- 성공적인 다섯 쌍 실험에서 첫 거부(reject) 3개\n"
-"SELECT gid, ST_IsValidReason(the_geom) as validity_info\n"
-"FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
-"the_geom, gid\n"
-"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
-"z1*1000 As gid\n"
-"        FROM generate_series(-4,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,8) z1\n"
-"        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
-"        INNER JOIN (SELECT "
-"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
-"z1*2) As line\n"
-"        FROM generate_series(-3,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,10) z1\n"
-"        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
-"ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
-"GROUP BY gid, e.buff) As quintuplet_experiment\n"
-"WHERE ST_IsValid(the_geom) = false\n"
-"ORDER BY gid\n"
-"LIMIT 3;\n"
-"\n"
-" gid  |      validity_info\n"
-"------+--------------------------\n"
-" 5330 | Self-intersection [32 5]\n"
-" 5340 | Self-intersection [42 5]\n"
-" 5350 | Self-intersection [52 5]\n"
-"\n"
-" -- 단순한 예시\n"
-"SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 "
-"150410)');\n"
-"\n"
-" st_isvalidreason\n"
-"------------------\n"
-" Valid Geometry"
-
-#. Tag: para
-#: reference_accessor.xml:1164
-#, no-c-format
-msgid ", <xref linkend=\"ST_Summary\"/>"
-msgstr ", <xref linkend=\"ST_Summary\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:1170
-#, no-c-format
-msgid "ST_IsValidDetail"
-msgstr "ST_IsValidDetail"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:1172
-#, no-c-format
-msgid ""
-"Returns a valid_detail (valid,reason,location) row stating if a geometry is "
-"valid or not and if not valid, a reason why and a location where."
-msgstr ""
-"도형이 유효한지 아닌지, 그리고 유효하지 않을 경우 그 이유 및 위치를 설명하는 "
-"valid_detail (유효 여부, 이유, 위치) 행을 반환합니다."
-
-#. Tag: funcsynopsis
-#: reference_accessor.xml:1176
-#, no-c-format
-msgid ""
-"<funcprototype> <funcdef>valid_detail <function>ST_IsValidDetail</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>valid_detail "
-"<function>ST_IsValidDetail</function></funcdef> <paramdef><type>geometry </"
-"type> <parameter>geom</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>flags</parameter></paramdef> </funcprototype>"
-msgstr ""
-"<funcprototype> <funcdef>valid_detail <function>ST_IsValidDetail</function></"
-"funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>valid_detail "
-"<function>ST_IsValidDetail</function></funcdef> <paramdef><type>geometry </"
-"type> <parameter>geom</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>flags</parameter></paramdef> </funcprototype>"
-
-#. Tag: para
-#: reference_accessor.xml:1192
-#, no-c-format
-msgid ""
-"Returns a valid_detail row, formed by a boolean (valid) stating if a "
-"geometry is valid, a varchar (reason) stating a reason why it is invalid and "
-"a geometry (location) pointing out where it is invalid."
-msgstr ""
-"도형이 유효한지 아닌지를 설명하는 불 값(유효 여부), 유효하지 않은 이유를 설명"
-"하는 varchar(이유), 그리고 유효하지 않은 위치를 지적하는 도형(위치)으로 구성"
-"된 valid_detail 행을 반환합니다."
-
-#. Tag: para
-#: reference_accessor.xml:1194
-#, no-c-format
-msgid ""
-"Useful to substitute and improve the combination of ST_IsValid and "
-"ST_IsValidReason to generate a detailed report of invalid geometries."
-msgstr ""
-"ST_IsValid 및 ST_IsValidReason 함수의 조합을 대신하고 개선해서 유효하지 않은 "
-"도형에 대한 상세 보고서를 생성하는 데 유용합니다."
-
-#. Tag: para
-#: reference_accessor.xml:1196
-#, no-c-format
-msgid "The 'flags' argument is a bitfield. It can have the following values:"
-msgstr ""
-"'플래그' 인수는 비트 필드 구조체(bitfield)입니다. 다음 값을 가질 수 있습니다:"
-
-#. Tag: para
-#: reference_accessor.xml:1200
-#, no-c-format
-msgid ""
-"1: Consider self-intersecting rings forming holes as valid. This is also "
-"know as \"the ESRI flag\". Note that this is against the OGC model."
-msgstr ""
-"1: 구멍을 형성하는, 자체 교차하는 고리를 유효한 것으로 간주합니다. 이 플래그"
-"는 \"ESRI 플래그\"로도 알려져 있습니다. OGC 모델과는 모순된다는 점을 주의하십"
-"시오."
-
-#. Tag: para
-#: reference_accessor.xml:1209
-#, no-c-format
-msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-msgstr "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이상 버전이 필요합니다."
-
-#. Tag: programlisting
-#: reference_accessor.xml:1217
-#, no-c-format
-msgid ""
-"--First 3 Rejects from a successful quintuplet experiment\n"
-"SELECT gid, reason(ST_IsValidDetail(the_geom)), "
-"ST_AsText(location(ST_IsValidDetail(the_geom))) as location\n"
-"FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
-"the_geom, gid\n"
-"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
-"z1*1000 As gid\n"
-"        FROM generate_series(-4,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,8) z1\n"
-"        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
-"        INNER JOIN (SELECT "
-"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
-"z1*2) As line\n"
-"        FROM generate_series(-3,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,10) z1\n"
-"        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
-"ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
-"GROUP BY gid, e.buff) As quintuplet_experiment\n"
-"WHERE ST_IsValid(the_geom) = false\n"
-"ORDER BY gid\n"
-"LIMIT 3;\n"
-"\n"
-" gid  |      reason       |  location\n"
-"------+-------------------+-------------\n"
-" 5330 | Self-intersection | POINT(32 5)\n"
-" 5340 | Self-intersection | POINT(42 5)\n"
-" 5350 | Self-intersection | POINT(52 5)\n"
-"\n"
-" --simple example\n"
-"SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 "
-"150407,222020 150410)');\n"
-"\n"
-" valid | reason | location\n"
-"-------+--------+----------\n"
-" t     |        |"
-msgstr ""
-"-- 성공적인 다섯 쌍 실험에서 첫 거부(reject) 3개\n"
-"SELECT gid, reason(ST_IsValidDetail(the_geom)), "
-"ST_AsText(location(ST_IsValidDetail(the_geom))) as location\n"
-"FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
-"the_geom, gid\n"
-"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
-"z1*1000 As gid\n"
-"        FROM generate_series(-4,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,8) z1\n"
-"        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
-"        INNER JOIN (SELECT "
-"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
-"z1*2) As line\n"
-"        FROM generate_series(-3,6) x1\n"
-"        CROSS JOIN generate_series(2,5) y1\n"
-"        CROSS JOIN generate_series(1,10) z1\n"
-"        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
-"ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
-"GROUP BY gid, e.buff) As quintuplet_experiment\n"
-"WHERE ST_IsValid(the_geom) = false\n"
-"ORDER BY gid\n"
-"LIMIT 3;\n"
-"\n"
-" gid  |      reason       |  location\n"
-"------+-------------------+-------------\n"
-" 5330 | Self-intersection | POINT(32 5)\n"
-" 5340 | Self-intersection | POINT(42 5)\n"
-" 5350 | Self-intersection | POINT(52 5)\n"
-"\n"
-" -- 단순한 예시\n"
-"SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 "
-"150407,222020 150410)');\n"
-"\n"
-" valid | reason | location\n"
-"-------+--------+----------\n"
-" t     |        |"
-
-#. Tag: para
-#: reference_accessor.xml:1224
-#, no-c-format
-msgid ", <xref linkend=\"ST_IsValidReason\"/>"
-msgstr ", <xref linkend=\"ST_IsValidReason\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:1233
+#: reference_accessor.xml:1235
 #, no-c-format
 msgid "ST_M"
 msgstr "ST_M"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1235
+#: reference_accessor.xml:1237
 #, no-c-format
-msgid ""
-"<refpurpose>Return the M coordinate of the point, or NULL if not available. "
-"Input must be a point.</refpurpose>"
+msgid "Returns the M coordinate of a Point."
 msgstr ""
-"<refpurpose>포인트의 M 좌표를 반환합니다. M 좌표가 없는 경우 NULL을 반환합니"
-"다. 포인트만 입력받을 수 있습니다.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1241
+#: reference_accessor.xml:1242
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_M</function></funcdef> <paramdef><type>geometry "
@@ -2873,17 +3024,17 @@ msgstr ""
 "</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1251
-#, no-c-format
+#: reference_accessor.xml:1252
+#, fuzzy, no-c-format
 msgid ""
-"<para>Return the M coordinate of the point, or NULL if not available. Input "
-"must be a point.</para>"
+"Return the M crdinate of a Point, or NULL if not available. Input must be a "
+"Point."
 msgstr ""
 "<para>포인트의 M 좌표를 반환합니다. M 좌표가 없는 경우 NULL을 반환합니다. 포"
 "인트만 입력받을 수 있습니다.</para>"
 
 #. Tag: para
-#: reference_accessor.xml:1255
+#: reference_accessor.xml:1256
 #, no-c-format
 msgid ""
 "This is not (yet) part of the OGC spec, but is listed here to complete the "
@@ -2893,13 +3044,13 @@ msgstr ""
 "수 목록을 완성하기 위해 이 문서에 작성됐습니다."
 
 #. Tag: para
-#: reference_accessor.xml:1259 reference_accessor.xml:2213
+#: reference_accessor.xml:1260 reference_accessor.xml:2033
 #, no-c-format
 msgid "&sqlmm_compliant;"
 msgstr "&sqlmm_compliant;"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1267
+#: reference_accessor.xml:1268
 #, no-c-format
 msgid ""
 "SELECT ST_M(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
@@ -2915,7 +3066,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:1274
+#: reference_accessor.xml:1275
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
@@ -2925,23 +3076,126 @@ msgstr ""
 ">"
 
 #. Tag: refname
-#: reference_accessor.xml:1280
+#: reference_accessor.xml:1281
+#, no-c-format
+msgid "ST_MemSize"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_accessor.xml:1283
+#, fuzzy, no-c-format
+msgid "Returns the amount of memory space a geometry takes."
+msgstr "ST_Geometry 값의 도형 유형을 반환합니다."
+
+#. Tag: funcprototype
+#: reference_accessor.xml:1288
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_MemSize</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_NRings</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+
+#. Tag: para
+#: reference_accessor.xml:1298
+#, fuzzy, no-c-format
+msgid "Returns the amount of memory space (in bytes) the geometry takes."
+msgstr "ST_Geometry 값의 도형 유형을 반환합니다."
+
+#. Tag: para
+#: reference_accessor.xml:1299
+#, no-c-format
+msgid ""
+"This complements the PostgreSQL built-in <ulink url=\"https://www.postgresql."
+"org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT\">database "
+"object functions</ulink> pg_column_size, pg_size_pretty, pg_relation_size, "
+"pg_total_relation_size."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:1301
+#, no-c-format
+msgid ""
+"pg_relation_size which gives the byte size of a table may return byte size "
+"lower than ST_MemSize. This is because pg_relation_size does not add toasted "
+"table contribution and large geometries are stored in TOAST tables."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:1303
+#, no-c-format
+msgid ""
+"pg_total_relation_size - includes, the table, the toasted tables, and the "
+"indexes."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:1304
+#, no-c-format
+msgid ""
+"pg_column_size returns how much space a geometry would take in a column "
+"considering compression, so may be lower than ST_MemSize"
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:1311
+#, no-c-format
+msgid ""
+"Changed: 2.2.0 name changed to ST_MemSize to follow naming convention. In "
+"prior versions this function was called ST_Mem_Size, old name deprecated "
+"though still available."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_accessor.xml:1318
+#, no-c-format
+msgid ""
+"--Return how much byte space Boston takes up  in our Mass data set\n"
+"SELECT pg_size_pretty(SUM(ST_MemSize(the_geom))) as totgeomsum,\n"
+"pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(the_geom) ELSE "
+"0 END)) As bossum,\n"
+"CAST(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(the_geom) ELSE 0 "
+"END)*1.00 /\n"
+"                SUM(ST_MemSize(the_geom))*100 As numeric(10,2)) As perbos\n"
+"FROM towns;\n"
+"\n"
+"totgeomsum        bossum        perbos\n"
+"----------        ------        ------\n"
+"1522 kB                30 kB        1.99\n"
+"\n"
+"\n"
+"SELECT ST_MemSize(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 "
+"150505,220227 150406)'));\n"
+"\n"
+"---\n"
+"73\n"
+"\n"
+"--What percentage of our table is taken up by just the geometry\n"
+"SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, "
+"sum(ST_MemSize(the_geom)) As geomsize,\n"
+"sum(ST_MemSize(the_geom))*1.00/pg_total_relation_size('public."
+"neighborhoods')*100 As pergeom\n"
+"FROM neighborhoods;\n"
+"fulltable_size geomsize  pergeom\n"
+"------------------------------------------------\n"
+"262144         96238         36.71188354492187500000"
+msgstr ""
+
+#. Tag: refname
+#: reference_accessor.xml:1325
 #, no-c-format
 msgid "ST_NDims"
 msgstr "ST_NDims"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1281
-#, no-c-format
-msgid ""
-"Returns coordinate dimension of the geometry as a small int. Values are: 2,3 "
-"or 4."
-msgstr ""
-"도형의 좌표 차원을 2바이트 정수형(smallint)으로 반환합니다. 값은 2, 3, 또는 4"
-"입니다."
+#: reference_accessor.xml:1326
+#, fuzzy, no-c-format
+msgid "Returns the coordinate dimension of a geometry."
+msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1287
+#: reference_accessor.xml:1331
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NDims</function></funcdef> "
@@ -2951,7 +3205,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1297
+#: reference_accessor.xml:1341
 #, no-c-format
 msgid ""
 "Returns the coordinate dimension of the geometry. PostGIS supports 2 - (x,"
@@ -2963,7 +3217,7 @@ msgstr ""
 "지원합니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1306
+#: reference_accessor.xml:1350
 #, no-c-format
 msgid ""
 "SELECT ST_NDims(ST_GeomFromText('POINT(1 1)')) As d2point,\n"
@@ -2983,26 +3237,26 @@ msgstr ""
 "           2 |       3 |        3"
 
 #. Tag: para
-#: reference_accessor.xml:1310
+#: reference_accessor.xml:1354
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1316
+#: reference_accessor.xml:1360
 #, no-c-format
 msgid "ST_NPoints"
 msgstr "ST_NPoints"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1317
-#, no-c-format
-msgid "Return the number of points (vertexes) in a geometry."
+#: reference_accessor.xml:1361
+#, fuzzy, no-c-format
+msgid "Returns the number of points (vertices) in a geometry."
 msgstr "도형이 가지고 있는 포인트(꼭짓점)의 개수를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1322
+#: reference_accessor.xml:1366
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NPoints</function></funcdef> "
@@ -3012,25 +3266,15 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1332
+#: reference_accessor.xml:1376
 #, no-c-format
 msgid "Return the number of points in a geometry. Works for all geometries."
 msgstr ""
 "도형이 가지고 있는 포인트의 개수를 반환합니다. 모든 도형을 입력받을 수 있습니"
 "다."
 
-#. Tag: para
-#: reference_accessor.xml:1334
-#, no-c-format
-msgid ""
-"Prior to 1.3.4, this function crashes if used with geometries that contain "
-"CURVES. This is fixed in 1.3.4+"
-msgstr ""
-"1.3.4 미만 버전에서 이 함수에 만곡 도형(curve)을 담고 있는 도형을 입력하면 충"
-"돌이 일어났습니다. 1.3.4 버전부터 이 버그가 해결됐습니다."
-
 #. Tag: programlisting
-#: reference_accessor.xml:1344
+#: reference_accessor.xml:1388
 #, no-c-format
 msgid ""
 "SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 "
@@ -3056,20 +3300,19 @@ msgstr ""
 "4"
 
 #. Tag: refname
-#: reference_accessor.xml:1355
+#: reference_accessor.xml:1399
 #, no-c-format
 msgid "ST_NRings"
 msgstr "ST_NRings"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1356
-#, no-c-format
-msgid ""
-"If the geometry is a polygon or multi-polygon returns the number of rings."
-msgstr "도형이 폴리곤 또는 멀티폴리곤인 경우 고리의 개수를 반환합니다."
+#: reference_accessor.xml:1400
+#, fuzzy, no-c-format
+msgid "Returns the number of rings in a polygonal geometry."
+msgstr "폴리곤 도형의 내곽 고리의 개수를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1361
+#: reference_accessor.xml:1405
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NRings</function></funcdef> "
@@ -3079,7 +3322,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1371
+#: reference_accessor.xml:1415
 #, no-c-format
 msgid ""
 "If the geometry is a polygon or multi-polygon returns the number of rings. "
@@ -3089,7 +3332,7 @@ msgstr ""
 "NumInteriorRings 함수와는 달리, 외곽 고리도 개수에 포함시킵니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1381
+#: reference_accessor.xml:1425
 #, no-c-format
 msgid ""
 "SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As "
@@ -3111,24 +3354,21 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_accessor.xml:1394
+#: reference_accessor.xml:1438
 #, no-c-format
 msgid "ST_NumGeometries"
 msgstr "ST_NumGeometries"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1395
-#, no-c-format
-msgid ""
-"If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the number of "
-"geometries, for single geometries will return 1, otherwise return NULL."
+#: reference_accessor.xml:1439
+#, fuzzy, no-c-format
+msgid "Returns the number of elements in a geometry collection."
 msgstr ""
-"도형이 도형 집합 또는 멀티 도형인 경우 도형의 개수를 반환합니다. 단일 도형인 "
-"경우 1을 반환하고, 도형 집합도 멀티 도형도 단일 도형도 아닌 경우 NULL을 반환"
-"합니다."
+"도형이 가지고 있는 포인트의 개수를 반환합니다. 모든 도형을 입력받을 수 있습니"
+"다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1401
+#: reference_accessor.xml:1444
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumGeometries</function></funcdef> "
@@ -3138,7 +3378,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1411
+#: reference_accessor.xml:1454
 #, no-c-format
 msgid ""
 "Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or "
@@ -3150,7 +3390,7 @@ msgstr ""
 "NULL을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:1415
+#: reference_accessor.xml:1458
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 In prior versions this would return NULL if the geometry was "
@@ -3162,13 +3402,13 @@ msgstr ""
 "해 1을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:1417
+#: reference_accessor.xml:1460
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1427
+#: reference_accessor.xml:1470
 #, no-c-format
 msgid ""
 "--Prior versions would have returned NULL for this -- in 2.0.0 this returns "
@@ -3203,25 +3443,25 @@ msgstr ""
 "3"
 
 #. Tag: para
-#: reference_accessor.xml:1432
+#: reference_accessor.xml:1475
 #, no-c-format
 msgid ", <xref linkend=\"ST_Multi\"/>"
 msgstr ", <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1438
+#: reference_accessor.xml:1481
 #, no-c-format
 msgid "ST_NumInteriorRings"
 msgstr "ST_NumInteriorRings"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1439
-#, no-c-format
-msgid "Return the number of interior rings of a polygon geometry."
+#: reference_accessor.xml:1482
+#, fuzzy, no-c-format
+msgid "Returns the number of interior rings (holes) of a Polygon."
 msgstr "폴리곤 도형의 내곽 고리의 개수를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1444
+#: reference_accessor.xml:1487
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumInteriorRings</function></funcdef> "
@@ -3231,7 +3471,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1454
+#: reference_accessor.xml:1497
 #, no-c-format
 msgid ""
 "Return the number of interior rings of a polygon geometry. Return NULL if "
@@ -3241,13 +3481,13 @@ msgstr ""
 "을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:1459
+#: reference_accessor.xml:1502
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.5"
 msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.5"
 
 #. Tag: para
-#: reference_accessor.xml:1460
+#: reference_accessor.xml:1503
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, "
@@ -3257,7 +3497,7 @@ msgstr ""
 "고리의 개수를 반환받을 수 있었습니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1466
+#: reference_accessor.xml:1509
 #, no-c-format
 msgid ""
 "--If you have a regular polygon\n"
@@ -3284,23 +3524,23 @@ msgstr ""
 "GROUP BY gid, field1,field2;"
 
 #. Tag: refname
-#: reference_accessor.xml:1477
+#: reference_accessor.xml:1520
 #, no-c-format
 msgid "ST_NumInteriorRing"
 msgstr "ST_NumInteriorRing"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1478
-#, no-c-format
+#: reference_accessor.xml:1521
+#, fuzzy, no-c-format
 msgid ""
-"Return the number of interior rings of a polygon in the geometry. Synonym "
-"for ST_NumInteriorRings."
+"Returns the number of interior rings (holes) of a Polygon. Aias for "
+"ST_NumInteriorRings"
 msgstr ""
 "도형 안에 있는 폴리곤의 내곽 고리의 개수를 반환합니다. ST_NumInteriorRings 함"
 "수와 동일합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1484
+#: reference_accessor.xml:1526
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> "
@@ -3310,13 +3550,13 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: refname
-#: reference_accessor.xml:1500
+#: reference_accessor.xml:1542
 #, no-c-format
 msgid "ST_NumPatches"
 msgstr "ST_NumPatches"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1501
+#: reference_accessor.xml:1543
 #, no-c-format
 msgid ""
 "Return the number of faces on a Polyhedral Surface. Will return null for non-"
@@ -3326,7 +3566,7 @@ msgstr ""
 "반환할 것입니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1506
+#: reference_accessor.xml:1548
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumPatches</function></funcdef> "
@@ -3336,7 +3576,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1516
+#: reference_accessor.xml:1558
 #, no-c-format
 msgid ""
 "Return the number of faces on a Polyhedral Surface. Will return null for non-"
@@ -3348,19 +3588,19 @@ msgstr ""
 "다. MM 규약을 신경 쓰지 않는다면 ST_NumGeometries가 더 빠릅니다."
 
 #. Tag: para
-#: reference_accessor.xml:1519 reference_accessor.xml:1614
+#: reference_accessor.xml:1561 reference_accessor.xml:1654
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_accessor.xml:1522 reference_accessor.xml:1615
+#: reference_accessor.xml:1564 reference_accessor.xml:1655
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: ?"
 msgstr "&sqlmm_compliant; SQL-MM 3: ?"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1529
+#: reference_accessor.xml:1571
 #, no-c-format
 msgid ""
 "SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
@@ -3384,21 +3624,20 @@ msgstr ""
 "                6"
 
 #. Tag: refname
-#: reference_accessor.xml:1540
+#: reference_accessor.xml:1582
 #, no-c-format
 msgid "ST_NumPoints"
 msgstr "ST_NumPoints"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1541
-#, no-c-format
-msgid ""
-"Return the number of points in an ST_LineString or ST_CircularString value."
+#: reference_accessor.xml:1583
+#, fuzzy, no-c-format
+msgid "Returns the number of points in a LineString or CircularString."
 msgstr ""
 "ST_LineString 또는 ST_CircularString 값에 있는 포인트의 개수를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1547
+#: reference_accessor.xml:1588
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumPoints</function></funcdef> "
@@ -3408,7 +3647,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1557
+#: reference_accessor.xml:1598
 #, no-c-format
 msgid ""
 "Return the number of points in an ST_LineString or ST_CircularString value. "
@@ -3424,13 +3663,13 @@ msgstr ""
 "할 수 있는 ST_NPoints 함수를 대신 사용하는 편이 좋습니다."
 
 #. Tag: para
-#: reference_accessor.xml:1564
+#: reference_accessor.xml:1605
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.4"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1570
+#: reference_accessor.xml:1611
 #, no-c-format
 msgid ""
 "SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
@@ -3444,24 +3683,19 @@ msgstr ""
 "                4"
 
 #. Tag: refname
-#: reference_accessor.xml:1581
+#: reference_accessor.xml:1622
 #, no-c-format
 msgid "ST_PatchN"
 msgstr "ST_PatchN"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1583
-#, no-c-format
-msgid ""
-"Return the 1-based Nth geometry (face) if the geometry is a "
-"POLYHEDRALSURFACE, POLYHEDRALSURFACEM. Otherwise, return NULL."
-msgstr ""
-"도형이 <varname>POLYHEDRALSURFACE</varname>, <varname>POLYHEDRALSURFACEM</"
-"varname> 인 경우 1-기반 N번째 도형 (면)을 반환합니다. 그 외의 경우 NULL을 반"
-"환합니다."
+#: reference_accessor.xml:1624
+#, fuzzy, no-c-format
+msgid "Returns the Nth geometry (face) of a PolyhedralSurface."
+msgstr "ST_Geometry 값의 도형 유형을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1590
+#: reference_accessor.xml:1629
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PatchN</function></funcdef> "
@@ -3473,13 +3707,13 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1601
-#, no-c-format
+#: reference_accessor.xml:1640
+#, fuzzy, no-c-format
 msgid ""
-">Return the 1-based Nth geometry (face) if the geometry is a "
-"POLYHEDRALSURFACE, POLYHEDRALSURFACEM. Otherwise, return NULL. This returns "
-"the same answer as ST_GeometryN for Polyhedral Surfaces. Using ST_GemoetryN "
-"is faster."
+">Returns the 1-based Nth geometry (face) if the geometry is a "
+"POLYHEDRALSURFACE or POLYHEDRALSURFACEM. Otherwise, returns NULL. This "
+"returns the same answer as ST_GeometryN for PolyhedralSurfaces. Using "
+"ST_GeometryN is faster."
 msgstr ""
 "도형이 <varname>POLYHEDRALSURFACE</varname>, <varname>POLYHEDRALSURFACEM</"
 "varname> 인 경우 1-기반 N번째 도형 (면)을 반환합니다. 그 외의 경우 NULL을 반"
@@ -3487,21 +3721,21 @@ msgstr ""
 "다. ST_GeometryN을 이용하는 편이 더 빠릅니다."
 
 #. Tag: para
-#: reference_accessor.xml:1607
+#: reference_accessor.xml:1647
 #, no-c-format
 msgid "Index is 1-based."
 msgstr "인덱스는 1-기반입니다."
 
 #. Tag: para
-#: reference_accessor.xml:1611
-#, no-c-format
+#: reference_accessor.xml:1651
+#, fuzzy, no-c-format
 msgid ""
-"If you want to extract all geometries, of a geometry, ST_Dump is more "
-"efficient."
+"If you want to extract all elements of a geometry <xref linkend=\"ST_Dump\"/"
+"> is more efficient."
 msgstr "모든 도형들을 추출하고자 한다면 ST_Dump 함수가 더 효율적입니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1625
+#: reference_accessor.xml:1665
 #, no-c-format
 msgid ""
 "--Extract the 2nd face of the polyhedral surface\n"
@@ -3535,7 +3769,7 @@ msgstr ""
 " POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))"
 
 #. Tag: para
-#: reference_accessor.xml:1632
+#: reference_accessor.xml:1672
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
@@ -3545,25 +3779,22 @@ msgstr ""
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1638
+#: reference_accessor.xml:1678
 #, no-c-format
 msgid "ST_PointN"
 msgstr "ST_PointN"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1640
-#, no-c-format
+#: reference_accessor.xml:1680
+#, fuzzy, no-c-format
 msgid ""
-"Return the Nth point in the first LineString or circular LineString in the "
-"geometry. Negative values are counted backwards from the end of the "
-"LineString. Returns NULL if there is no linestring in the geometry."
+"Returns the Nth point in the first LineString or circular LineString in a "
+"geometry."
 msgstr ""
-"도형 안에 있는 첫 번째 라인스트링 또는 원형 라인스트링의 N번째 포인트를 반환"
-"합니다. 음수 값은 라인스트링의 종단점으로부터 반대로 집계된 것입니다. 도형 안"
-"에 라인스트링이 없는 경우 NULL을 반환합니다."
+"ST_LineString 또는 ST_CircularString 값에 있는 포인트의 개수를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1647
+#: reference_accessor.xml:1686
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointN</function></funcdef> "
@@ -3575,7 +3806,7 @@ msgstr ""
 "paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1658
+#: reference_accessor.xml:1697
 #, no-c-format
 msgid ""
 "Return the Nth point in a single linestring or circular linestring in the "
@@ -3588,7 +3819,7 @@ msgstr ""
 "트입니다. 도형 안에 라인스트링이 없는 경우 NULL을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:1663
+#: reference_accessor.xml:1702
 #, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
@@ -3600,23 +3831,23 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#: reference_accessor.xml:1669
-#, no-c-format
+#: reference_accessor.xml:1708
+#, fuzzy, no-c-format
 msgid ""
-"If you want to get the nth point of each line string in a multilinestring, "
+"If you want to get the Nth point of each LineString in a MultiLineString, "
 "use in conjunction with ST_Dump"
 msgstr ""
 "멀티라인스트링 안에 있는 각 라인스트링의 N번째 포인트를 얻고자 할 경우, 이 함"
 "수를 ST_Dump 함수와 연결해서 이용하십시오."
 
 #. Tag: para
-#: reference_accessor.xml:1674
+#: reference_accessor.xml:1713
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
 
 #. Tag: para
-#: reference_accessor.xml:1677
+#: reference_accessor.xml:1716
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 no longer works with single geometry multilinestrings. In "
@@ -3630,7 +3861,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: reference_accessor.xml:1680
+#: reference_accessor.xml:1719
 #, no-c-format
 msgid "Changed: 2.3.0 : negative indexing available (-1 is last point)"
 msgstr ""
@@ -3638,8 +3869,8 @@ msgstr ""
 "다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1690
-#, no-c-format
+#: reference_accessor.xml:1729
+#, fuzzy, no-c-format
 msgid ""
 "-- Extract all POINTs from a LINESTRING\n"
 "SELECT ST_AsText(\n"
@@ -3657,20 +3888,22 @@ msgid ""
 "(3 rows)\n"
 "\n"
 "--Example circular string\n"
-"SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 "
-"2)'),2));\n"
+"SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'), "
+"2));\n"
 "\n"
-"st_astext\n"
-"----------\n"
-"POINT(3 2)\n"
+" st_astext\n"
+"------------\n"
+" POINT(3 2)\n"
+"(1 row)\n"
 "\n"
-"SELECT st_astext(f)\n"
-"FROM ST_GeometryFromtext('LINESTRING(0 0 0, 1 1 1, 2 2 2)') as g\n"
-"        ,ST_PointN(g, -2) AS f -- 1 based index\n"
+"SELECT ST_AsText(f)\n"
+"FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g\n"
+"  ,ST_PointN(g, -2) AS f; -- 1 based index\n"
 "\n"
-"st_astext\n"
-"----------\n"
-"\"POINT Z (1 1 1)\""
+"    st_astext\n"
+"-----------------\n"
+" POINT Z (1 1 1)\n"
+"(1 row)"
 msgstr ""
 "-- 라인스트링으로부터 모든 포인트를 추출합니다.\n"
 "SELECT ST_AsText(\n"
@@ -3704,19 +3937,19 @@ msgstr ""
 "\"POINT Z (1 1 1)\""
 
 #. Tag: refname
-#: reference_accessor.xml:1702
+#: reference_accessor.xml:1741
 #, no-c-format
 msgid "ST_Points"
 msgstr "ST_Points"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1703
-#, no-c-format
-msgid "Returns a MultiPoint containing all of the coordinates of a geometry."
+#: reference_accessor.xml:1742
+#, fuzzy, no-c-format
+msgid "Returns a MultiPoint containing all the coordinates of a geometry."
 msgstr "도형의 모든 좌표들을 담고 있는 멀티포인트를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1709
+#: reference_accessor.xml:1748
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
@@ -3726,7 +3959,7 @@ msgstr ""
 "<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1722
+#: reference_accessor.xml:1761
 #, no-c-format
 msgid ""
 "Returns a MultiPoint containing all of the coordinates of a geometry. Does "
@@ -3740,19 +3973,19 @@ msgstr ""
 "수를 이용해서 중첩된 포인트를 제거할 수도 있습니다)."
 
 #. Tag: para
-#: reference_accessor.xml:1730
-#, no-c-format
-msgid "M and Z ordinates will be preserved if present."
+#: reference_accessor.xml:1769
+#, fuzzy, no-c-format
+msgid "M and Z coordinates will be preserved if present."
 msgstr "M 및 Z 좌표가 있을 경우 그대로 유지될 것입니다."
 
 #. Tag: para
-#: reference_accessor.xml:1737
+#: reference_accessor.xml:1776
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr "2.3.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1744
+#: reference_accessor.xml:1783
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 "
@@ -3768,101 +4001,19 @@ msgstr ""
 "MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)"
 
 #. Tag: refname
-#: reference_accessor.xml:1755
-#, no-c-format
-msgid "ST_SRID"
-msgstr "ST_SRID"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:1756
-#, no-c-format
-msgid ""
-"Returns the spatial reference identifier for the ST_Geometry as defined in "
-"spatial_ref_sys table."
-msgstr ""
-"spatial_ref_sys 테이블에 정의되어 있는, ST_Geometry에 대한 공간 참조 식별자"
-"를 반환합니다."
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1761
-#, no-c-format
-msgid ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr ""
-"<funcdef>integer <function>ST_SRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-
-#. Tag: para
-#: reference_accessor.xml:1771
-#, no-c-format
-msgid ""
-"Returns the spatial reference identifier for the ST_Geometry as defined in "
-"spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
-msgstr ""
-"spatial_ref_sys 테이블에 정의되어 있는, ST_Geometry에 대한 공간 참조 식별자"
-"를 반환합니다. <xref linkend=\"spatial_ref_sys\"/>"
-
-#. Tag: para
-#: reference_accessor.xml:1772
-#, no-c-format
-msgid ""
-"spatial_ref_sys table is a table that catalogs all spatial reference systems "
-"known to PostGIS and is used for transformations from one spatial reference "
-"system to another. So verifying you have the right spatial reference system "
-"identifier is important if you plan to ever transform your geometries."
-msgstr ""
-"spatial_ref_sys 테이블은 PostGIS에 알려진 모든 공간 참조 시스템을 카탈로그화"
-"하는 테이블로, 어떤 공간 참조 시스템에서 다른 공간 참조 시스템으로 변환하는 "
-"작업에 쓰입니다. 따라서 사용자 도형을 변환할 계획이 있다면 올바른 공간 참조 "
-"시스템 식별자를 가지고 있는지 확인하는 일이 중요합니다."
-
-#. Tag: para
-#: reference_accessor.xml:1776
-#, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.5"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.5"
-
-#. Tag: programlisting
-#: reference_accessor.xml:1784
-#, no-c-format
-msgid ""
-"SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
-"                --result\n"
-"                4326"
-msgstr ""
-"SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
-"-- 결과\n"
-"4326"
-
-#. Tag: para
-#: reference_accessor.xml:1789
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>"
-msgstr ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:1795
+#: reference_accessor.xml:1794
 #, no-c-format
 msgid "ST_StartPoint"
 msgstr "ST_StartPoint"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1797
+#: reference_accessor.xml:1796
 #, no-c-format
-msgid ""
-"Returns the first point of a <varname>LINESTRING</varname> geometry as a "
-"<varname>POINT</varname>."
+msgid "Returns the first point of a LineString."
 msgstr ""
-"<varname>LINESTRING</varname> 도형의 첫 번째 포인트를 <varname>POINT</"
-"varname>로 반환합니다."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1803
+#: reference_accessor.xml:1801
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_StartPoint</function></funcdef> "
@@ -3872,7 +4023,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1814
+#: reference_accessor.xml:1812
 #, no-c-format
 msgid ""
 "Returns the first point of a <varname>LINESTRING</varname> or "
@@ -3886,13 +4037,13 @@ msgstr ""
 "아닐 경우 <varname>NULL</varname> 을 반환합니다."
 
 #. Tag: para
-#: reference_accessor.xml:1818
+#: reference_accessor.xml:1816
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.3"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1833
+#: reference_accessor.xml:1831
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));\n"
@@ -3948,27 +4099,25 @@ msgstr ""
 " POINT(5 2)"
 
 #. Tag: para
-#: reference_accessor.xml:1839
+#: reference_accessor.xml:1837
 #, no-c-format
 msgid ", <xref linkend=\"ST_PointN\"/>"
 msgstr ", <xref linkend=\"ST_PointN\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1844
+#: reference_accessor.xml:1842
 #, no-c-format
 msgid "ST_Summary"
 msgstr "ST_Summary"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1846
-#, no-c-format
-msgid ""
-"<refpurpose>Returns a text summary of the contents of the geometry.</"
-"refpurpose>"
-msgstr "<refpurpose>도형의 내용을 요약한 텍스트를 반환합니다.</refpurpose>"
+#: reference_accessor.xml:1844
+#, fuzzy, no-c-format
+msgid "Returns a text summary of the contents of a geometry."
+msgstr "<para>도형의 내용을 요약한 텍스트를 반환합니다.</para>"
 
 #. Tag: funcsynopsis
-#: reference_accessor.xml:1852
+#: reference_accessor.xml:1849
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_Summary</function></funcdef> "
@@ -3984,13 +4133,13 @@ msgstr ""
 "parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_accessor.xml:1867
-#, no-c-format
-msgid "<para>Returns a text summary of the contents of the geometry.</para>"
+#: reference_accessor.xml:1864
+#, fuzzy, no-c-format
+msgid "Returns a text summary of the contents of the geometry."
 msgstr "<para>도형의 내용을 요약한 텍스트를 반환합니다.</para>"
 
 #. Tag: para
-#: reference_accessor.xml:1869
+#: reference_accessor.xml:1866
 #, no-c-format
 msgid ""
 "Flags shown square brackets after the geometry type have the following "
@@ -3998,49 +4147,49 @@ msgid ""
 msgstr "도형 유형 뒤에 대괄호로 표기된 플래그는 다음과 같은 뜻입니다:"
 
 #. Tag: para
-#: reference_accessor.xml:1873
-#, no-c-format
-msgid "M: has M ordinate"
+#: reference_accessor.xml:1870
+#, fuzzy, no-c-format
+msgid "M: has M coordinate"
 msgstr "M: M 좌표가 존재합니다."
 
 #. Tag: para
-#: reference_accessor.xml:1874
-#, no-c-format
-msgid "Z: has Z ordinate"
+#: reference_accessor.xml:1871
+#, fuzzy, no-c-format
+msgid "Z: has Z coordinate"
 msgstr "Z: Z 좌표가 존재합니다."
 
 #. Tag: para
-#: reference_accessor.xml:1875
+#: reference_accessor.xml:1872
 #, no-c-format
 msgid "B: has a cached bounding box"
 msgstr "B: 캐쉬된 경계 상자를 가지고 있습니다."
 
 #. Tag: para
-#: reference_accessor.xml:1876
+#: reference_accessor.xml:1873
 #, no-c-format
 msgid "G: is geodetic (geography)"
 msgstr "G: 측지형(지리형)입니다."
 
 #. Tag: para
-#: reference_accessor.xml:1877
+#: reference_accessor.xml:1874
 #, no-c-format
 msgid "S: has spatial reference system"
 msgstr "S: 공간 참조 시스템을 가지고 있습니다."
 
 #. Tag: para
-#: reference_accessor.xml:1888
+#: reference_accessor.xml:1885
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr "1.2.2 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_accessor.xml:1889
+#: reference_accessor.xml:1886
 #, no-c-format
 msgid "Enhanced: 2.0.0 added support for geography"
 msgstr "개선 사항: 2.0.0 버전부터 지리형을 지원하기 시작했습니다."
 
 #. Tag: para
-#: reference_accessor.xml:1890
+#: reference_accessor.xml:1887
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 S flag to denote if has a known spatial reference system"
@@ -4049,14 +4198,14 @@ msgstr ""
 "그가 추가됐습니다."
 
 #. Tag: para
-#: reference_accessor.xml:1891
+#: reference_accessor.xml:1888
 #, no-c-format
 msgid "Enhanced: 2.2.0 Added support for TIN and Curves"
 msgstr ""
 "개선 사항: 2.2.0 버전부터 TIN 및 만곡 도형(curve)을 지원하기 시작했습니다."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1897
+#: reference_accessor.xml:1894
 #, no-c-format
 msgid ""
 "=# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,\n"
@@ -4106,7 +4255,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:1903
+#: reference_accessor.xml:1900
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_AddBBox\"/>, <xref linkend=\"ST_Force_3DM\"/>, "
@@ -4118,7 +4267,7 @@ msgstr ""
 "linkend=\"geography\"/>"
 
 #. Tag: para
-#: reference_accessor.xml:1912
+#: reference_accessor.xml:1909
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
@@ -4128,23 +4277,19 @@ msgstr ""
 "<xref linkend=\"ST_IsValidDetail\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1923
+#: reference_accessor.xml:1920
 #, no-c-format
 msgid "ST_X"
 msgstr "ST_X"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1925
+#: reference_accessor.xml:1922
 #, no-c-format
-msgid ""
-"<refpurpose>Return the X coordinate of the point, or NULL if not available. "
-"Input must be a point.</refpurpose>"
+msgid "Returns the X coordinate of a Point."
 msgstr ""
-"<refpurpose>포인트의 X 좌표를 반환합니다. X 좌표가 없는 경우 NULL을 반환합니"
-"다. 포인트만 입력받을 수 있습니다.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1931
+#: reference_accessor.xml:1927
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geometry "
@@ -4154,33 +4299,31 @@ msgstr ""
 "</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1941
-#, no-c-format
+#: reference_accessor.xml:1937
+#, fuzzy, no-c-format
 msgid ""
-"<para>Return the X coordinate of the point, or NULL if not available. Input "
-"must be a point.</para>"
+"Return the X coordinate of the point, or NULL if not available. Input must "
+"be a point."
 msgstr ""
 "<para>포인트의 X 좌표를 반환합니다. X 좌표가 없는 경우 NULL을 반환합니다. 포"
 "인트만 입력받을 수 있습니다.</para>"
 
 #. Tag: para
-#: reference_accessor.xml:1944
+#: reference_accessor.xml:1940
 #, no-c-format
 msgid ""
-"If you want to get the max min x values of any geometry look at ST_XMin, "
-"ST_XMax functions."
+"To get the minimum and maximum X value of geometry coordinates use the "
+"functions <xref linkend=\"ST_XMin\"/> and <xref linkend=\"ST_XMax\"/>."
 msgstr ""
-"어떤 도형의 최대 최소 x값을 얻고자 하는 경우 ST_XMin 및 ST_XMax 함수를 참고하"
-"십시오."
 
 #. Tag: para
-#: reference_accessor.xml:1946
+#: reference_accessor.xml:1943
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.3"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1954
+#: reference_accessor.xml:1951
 #, no-c-format
 msgid ""
 "SELECT ST_X(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
@@ -4208,7 +4351,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:1961
+#: reference_accessor.xml:1958
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
@@ -4220,229 +4363,19 @@ msgstr ""
 ">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1967
-#, no-c-format
-msgid "ST_XMax"
-msgstr "ST_XMax"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:1969
-#, no-c-format
-msgid ""
-"<refpurpose>Returns X maxima of a bounding box 2d or 3d or a geometry.</"
-"refpurpose>"
-msgstr ""
-"<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최"
-"대 X값을 반환합니다.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_accessor.xml:1974
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_XMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_XMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-
-#. Tag: para
-#: reference_accessor.xml:1984
-#, no-c-format
-msgid "<para>Returns X maxima of a bounding box 2d or 3d or a geometry.</para>"
-msgstr ""
-"<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최대 X값"
-"을 반환합니다.</para>"
-
-#. Tag: para
-#: reference_accessor.xml:1987 reference_accessor.xml:2032
-#: reference_accessor.xml:2120 reference_accessor.xml:2165
-#: reference_accessor.xml:2253 reference_accessor.xml:2340
-#, no-c-format
-msgid ""
-"Although this function is only defined for box3d, it will work for box2d and "
-"geometry because of the auto-casting behavior defined for geometries and "
-"box2d. However you can not feed it a geometry or box2d text representation, "
-"since that will not auto-cast."
-msgstr ""
-"이 함수가 box3d를 위해서만 정의됐긴 해도, 도형 및 box2d에 대해 정의된 자동 형"
-"변환 습성 때문에 도형 및 box2d를 위해서도 작동합니다. 하지만 도형 또는 box2d"
-"의 텍스트 표현식을 입력할 수는 없습니다. 텍스트 표현식은 자동 형변환의 대상"
-"이 아니기 때문입니다."
-
-#. Tag: programlisting
-#: reference_accessor.xml:1999
-#, no-c-format
-msgid ""
-"SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');\n"
-"st_xmax\n"
-"-------\n"
-"4\n"
-"\n"
-"SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_xmax\n"
-"-------\n"
-"5\n"
-"\n"
-"SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
-"st_xmax\n"
-"-------\n"
-"3\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string "
-"representation to a BOX3D\n"
-"SELECT ST_XMax('LINESTRING(1 3, 5 6)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_xmax\n"
-"--------\n"
-"220288.248780547"
-msgstr ""
-"SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');\n"
-"st_xmax\n"
-"-------\n"
-"4\n"
-"\n"
-"SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_xmax\n"
-"-------\n"
-"5\n"
-"\n"
-"SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
-"st_xmax\n"
-"-------\n"
-"3\n"
-"-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것을 "
-"지켜보십시오.\n"
-"SELECT ST_XMax('LINESTRING(1 3, 5 6)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_xmax\n"
-"--------\n"
-"220288.248780547"
-
-#. Tag: para
-#: reference_accessor.xml:2006 reference_accessor.xml:2051
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-msgstr ""
-", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:2012
-#, no-c-format
-msgid "ST_XMin"
-msgstr "ST_XMin"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:2014
-#, no-c-format
-msgid ""
-"<refpurpose>Returns X minima of a bounding box 2d or 3d or a geometry.</"
-"refpurpose>"
-msgstr ""
-"<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최"
-"소 X값을 반환합니다.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_accessor.xml:2019
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_XMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_XMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-
-#. Tag: para
-#: reference_accessor.xml:2029
-#, no-c-format
-msgid "<para>Returns X minima of a bounding box 2d or 3d or a geometry.</para>"
-msgstr ""
-"<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최소 X값"
-"을 반환합니다.</para>"
-
-#. Tag: programlisting
-#: reference_accessor.xml:2044
-#, no-c-format
-msgid ""
-"SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');\n"
-"st_xmin\n"
-"-------\n"
-"1\n"
-"\n"
-"SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_xmin\n"
-"-------\n"
-"1\n"
-"\n"
-"SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
-"st_xmin\n"
-"-------\n"
-"-3\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string "
-"representation to a BOX3D\n"
-"SELECT ST_XMin('LINESTRING(1 3, 5 6)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_xmin\n"
-"--------\n"
-"220186.995121892"
-msgstr ""
-"SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');\n"
-"st_xmin\n"
-"-------\n"
-"1\n"
-"\n"
-"SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_xmin\n"
-"-------\n"
-"1\n"
-"\n"
-"SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
-"st_xmin\n"
-"-------\n"
-"-3\n"
-"-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것을 "
-"지켜보십시오.\n"
-"SELECT ST_XMin('LINESTRING(1 3, 5 6)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_xmin\n"
-"--------\n"
-"220186.995121892"
-
-#. Tag: refname
-#: reference_accessor.xml:2057
+#: reference_accessor.xml:1964
 #, no-c-format
 msgid "ST_Y"
 msgstr "ST_Y"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:2059
+#: reference_accessor.xml:1966
 #, no-c-format
-msgid ""
-"<refpurpose>Return the Y coordinate of the point, or NULL if not available. "
-"Input must be a point.</refpurpose>"
+msgid "Returns the Y coordinate of a Point."
 msgstr ""
-"<refpurpose>포인트의 Y 좌표를 반환합니다. Y 좌표가 없는 경우 NULL을 반환합니"
-"다. 포인트만 입력받을 수 있습니다.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:2065
+#: reference_accessor.xml:1971
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Y</function></funcdef> <paramdef><type>geometry "
@@ -4452,23 +4385,31 @@ msgstr ""
 "</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:2075
-#, no-c-format
+#: reference_accessor.xml:1981
+#, fuzzy, no-c-format
 msgid ""
-"<para>Return the Y coordinate of the point, or NULL if not available. Input "
-"must be a point.</para>"
+"Return the Y coordinate of the point, or NULL if not available. Input must "
+"be a point."
 msgstr ""
 "<para>포인트의 Y 좌표를 반환합니다. Y 좌표가 없는 경우 NULL을 반환합니다. 포"
 "인트만 입력받을 수 있습니다.</para>"
 
 #. Tag: para
-#: reference_accessor.xml:2079
+#: reference_accessor.xml:1984
+#, no-c-format
+msgid ""
+"To get the minimum and maximum Y value of geometry coordinates use the "
+"functions <xref linkend=\"ST_YMin\"/> and <xref linkend=\"ST_YMax\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_accessor.xml:1988
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.4"
 
 #. Tag: programlisting
-#: reference_accessor.xml:2087
+#: reference_accessor.xml:1996
 #, no-c-format
 msgid ""
 "SELECT ST_Y(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
@@ -4496,7 +4437,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:2094
+#: reference_accessor.xml:2003
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
@@ -4508,223 +4449,19 @@ msgstr ""
 ">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:2100
-#, no-c-format
-msgid "ST_YMax"
-msgstr "ST_YMax"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:2102
-#, no-c-format
-msgid ""
-"<refpurpose>Returns Y maxima of a bounding box 2d or 3d or a geometry.</"
-"refpurpose>"
-msgstr ""
-"<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최"
-"대 Y값을 반환합니다.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_accessor.xml:2107
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_YMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_YMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-
-#. Tag: para
-#: reference_accessor.xml:2117
-#, no-c-format
-msgid "<para>Returns Y maxima of a bounding box 2d or 3d or a geometry.</para>"
-msgstr ""
-"<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최대 Y값"
-"을 반환합니다.</para>"
-
-#. Tag: programlisting
-#: reference_accessor.xml:2132
-#, no-c-format
-msgid ""
-"SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');\n"
-"st_ymax\n"
-"-------\n"
-"5\n"
-"\n"
-"SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_ymax\n"
-"-------\n"
-"6\n"
-"\n"
-"SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
-"st_ymax\n"
-"-------\n"
-"4\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string "
-"representation to a BOX3D\n"
-"SELECT ST_YMax('LINESTRING(1 3, 5 6)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_ymax\n"
-"--------\n"
-"150506.126829327"
-msgstr ""
-"SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');\n"
-"st_ymax\n"
-"-------\n"
-"5\n"
-"\n"
-"SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_ymax\n"
-"-------\n"
-"6\n"
-"\n"
-"SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
-"st_ymax\n"
-"-------\n"
-"4\n"
-"-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것을 "
-"지켜보십시오.\n"
-"SELECT ST_YMax('LINESTRING(1 3, 5 6)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_ymax\n"
-"--------\n"
-"150506.126829327"
-
-#. Tag: para
-#: reference_accessor.xml:2139
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-msgstr ""
-", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:2145
-#, no-c-format
-msgid "ST_YMin"
-msgstr "ST_YMin"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:2147
-#, no-c-format
-msgid ""
-"<refpurpose>Returns Y minima of a bounding box 2d or 3d or a geometry.</"
-"refpurpose>"
-msgstr ""
-"<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최"
-"소 Y값을 반환합니다.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_accessor.xml:2152
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_YMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_YMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-
-#. Tag: para
-#: reference_accessor.xml:2162
-#, no-c-format
-msgid "<para>Returns Y minima of a bounding box 2d or 3d or a geometry.</para>"
-msgstr ""
-"<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최소 Y값"
-"을 반환합니다.</para>"
-
-#. Tag: programlisting
-#: reference_accessor.xml:2177
-#, no-c-format
-msgid ""
-"SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');\n"
-"st_ymin\n"
-"-------\n"
-"2\n"
-"\n"
-"SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_ymin\n"
-"-------\n"
-"3\n"
-"\n"
-"SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
-"st_ymin\n"
-"-------\n"
-"2\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string "
-"representation to a BOX3D\n"
-"SELECT ST_YMin('LINESTRING(1 3, 5 6)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_ymin\n"
-"--------\n"
-"150406"
-msgstr ""
-"SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');\n"
-"st_ymin\n"
-"-------\n"
-"2\n"
-"\n"
-"SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_ymin\n"
-"-------\n"
-"3\n"
-"\n"
-"SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
-"st_ymin\n"
-"-------\n"
-"2\n"
-"-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것을 "
-"지켜보십시오.\n"
-"SELECT ST_YMin('LINESTRING(1 3, 5 6)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_ymin\n"
-"--------\n"
-"150406"
-
-#. Tag: para
-#: reference_accessor.xml:2184
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-msgstr ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:2190
+#: reference_accessor.xml:2009
 #, no-c-format
 msgid "ST_Z"
 msgstr "ST_Z"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:2192
+#: reference_accessor.xml:2011
 #, no-c-format
-msgid ""
-"<refpurpose>Return the Z coordinate of the point, or NULL if not available. "
-"Input must be a point.</refpurpose>"
+msgid "Returns the Z coordinate of a Point."
 msgstr ""
-"<refpurpose>포인트의 Z 좌표를 반환합니다. Z 좌표가 없는 경우 NULL을 반환합니"
-"다. 포인트만 입력받을 수 있습니다.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:2198
+#: reference_accessor.xml:2016
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Z</function></funcdef> <paramdef><type>geometry "
@@ -4734,17 +4471,25 @@ msgstr ""
 "</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:2208
-#, no-c-format
+#: reference_accessor.xml:2026
+#, fuzzy, no-c-format
 msgid ""
-"<para>Return the Z coordinate of the point, or NULL if not available. Input "
-"must be a point.</para>"
+"Return the Z coordinate of the point, or NULL if not available. Input must "
+"be a point."
 msgstr ""
 "<para>포인트의 Z 좌표를 반환합니다. Z 좌표가 없는 경우 NULL을 반환합니다. 포"
 "인트만 입력받을 수 있습니다.</para>"
 
+#. Tag: para
+#: reference_accessor.xml:2029
+#, no-c-format
+msgid ""
+"To get the minimum and maximum Z value of geometry coordinates use the "
+"functions <xref linkend=\"ST_ZMin\"/> and <xref linkend=\"ST_ZMax\"/>."
+msgstr ""
+
 #. Tag: programlisting
-#: reference_accessor.xml:2220
+#: reference_accessor.xml:2040
 #, no-c-format
 msgid ""
 "SELECT ST_Z(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
@@ -4760,7 +4505,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:2227
+#: reference_accessor.xml:2047
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
@@ -4770,124 +4515,21 @@ msgstr ""
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:2233
-#, no-c-format
-msgid "ST_ZMax"
-msgstr "ST_ZMax"
-
-#. Tag: refpurpose
-#: reference_accessor.xml:2235 reference_accessor.xml:2322
-#, no-c-format
-msgid ""
-"<refpurpose>Returns Z minima of a bounding box 2d or 3d or a geometry.</"
-"refpurpose>"
-msgstr ""
-"<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최"
-"대 Z값을 반환합니다.</refpurpose>"
-
-#. Tag: funcprototype
-#: reference_accessor.xml:2240
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_ZMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_ZMax</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-
-#. Tag: para
-#: reference_accessor.xml:2250
-#, no-c-format
-msgid "Returns Z maxima of a bounding box 2d or 3d or a geometry."
-msgstr ""
-"<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최대 Z값"
-"을 반환합니다.</para>"
-
-#. Tag: programlisting
-#: reference_accessor.xml:2265
-#, no-c-format
-msgid ""
-"SELECT ST_ZMax('BOX3D(1 2 3, 4 5 6)');\n"
-"st_zmax\n"
-"-------\n"
-"6\n"
-"\n"
-"SELECT ST_ZMax(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_zmax\n"
-"-------\n"
-"7\n"
-"\n"
-"SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)' );\n"
-"st_zmax\n"
-"-------\n"
-"1\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string "
-"representation to a BOX3D\n"
-"SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_zmax\n"
-"--------\n"
-"3"
-msgstr ""
-"SELECT ST_ZMax('BOX3D(1 2 3, 4 5 6)');\n"
-"st_zmax\n"
-"-------\n"
-"6\n"
-"\n"
-"SELECT ST_ZMax(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_zmax\n"
-"-------\n"
-"7\n"
-"\n"
-"SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)' );\n"
-"st_zmax\n"
-"-------\n"
-"1\n"
-"-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것을 "
-"지켜보십시오. \n"
-"SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_zmax\n"
-"--------\n"
-"3"
-
-#. Tag: para
-#: reference_accessor.xml:2272
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
-msgstr ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
-
-#. Tag: refname
-#: reference_accessor.xml:2278
+#: reference_accessor.xml:2053
 #, no-c-format
 msgid "ST_Zmflag"
 msgstr "ST_Zmflag"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:2280
-#, no-c-format
+#: reference_accessor.xml:2055
+#, fuzzy, no-c-format
 msgid ""
-"<refpurpose>Returns ZM (dimension semantic) flag of the geometries as a "
-"small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</refpurpose>"
-msgstr ""
-"<refpurpose>도형의 ZM(의미론적 차원) 플래그를 2바이트 정수형(smallint)으로 반"
-"환합니다. 값이 0일 때 2D, 1일 때 3DM, 3일 때 3DZ, 4일 때 4D를 뜻합니다."
-"<refpurpose>"
+"<refpurpose>Returns a code indicating the ZM coordinate dimension of a "
+"geometry.</refpurpose>"
+msgstr "<refpurpose>ST_Geometry 값의 좌표 차원을 반환합니다.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:2286
+#: reference_accessor.xml:2060
 #, no-c-format
 msgid ""
 "<funcdef>smallint <function>ST_Zmflag</function></funcdef> "
@@ -4897,17 +4539,21 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:2296
-#, no-c-format
+#: reference_accessor.xml:2070
+#, fuzzy, no-c-format
 msgid ""
-"<para>Returns ZM (dimension semantic) flag of the geometries as a small int. "
-"Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</para>"
+"<para>Returns a code indicating the ZM coordinate dimension of a geometry.</"
+"para>"
+msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
+
+#. Tag: para
+#: reference_accessor.xml:2072
+#, no-c-format
+msgid "Values are: 0 = 2D, 1 = 3D-M, 2 = 3D-Z, 3 = 4D."
 msgstr ""
-"<para>도형의 ZM(의미론적 차원) 플래그를 2바이트 정수형(smallint)으로 반환합니"
-"다. 값이 0일 때 2D, 1일 때 3DM, 3일 때 3DZ, 4일 때 4D를 뜻합니다.</para>"
 
 #. Tag: programlisting
-#: reference_accessor.xml:2307
+#: reference_accessor.xml:2082
 #, no-c-format
 msgid ""
 "SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRING(1 2, 3 4)'));\n"
@@ -4949,99 +4595,1108 @@ msgstr ""
 "                 3"
 
 #. Tag: para
-#: reference_accessor.xml:2314
+#: reference_accessor.xml:2089
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
-#. Tag: refname
-#: reference_accessor.xml:2320
-#, no-c-format
-msgid "ST_ZMin"
-msgstr "ST_ZMin"
+#~ msgid ""
+#~ "<refpurpose>Returns the type of the geometry as a string. Eg: "
+#~ "'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>도형의 유형을 스트링으로 반환합니다. 예: 'LINESTRING', "
+#~ "'POLYGON', 'MULTIPOINT' 등등.</refpurpose>"
 
-#. Tag: funcprototype
-#: reference_accessor.xml:2327
-#, no-c-format
-msgid ""
-"<funcdef>float <function>ST_ZMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
-msgstr ""
-"<funcdef>float <function>ST_ZMin</function></funcdef> <paramdef><type>box3d "
-"</type> <parameter>aGeomorBox2DorBox3D</parameter></paramdef>"
+#~ msgid ""
+#~ "The inherent dimension of this Geometry object, which must be less than "
+#~ "or equal to the coordinate dimension."
+#~ msgstr ""
+#~ "좌표 차원과 동등하거나 낮아야 하는, 해당 도형 객체의 내재된 차원을 반환합"
+#~ "니다."
 
-#. Tag: para
-#: reference_accessor.xml:2337
-#, no-c-format
-msgid "<para>Returns Z minima of a bounding box 2d or 3d or a geometry.</para>"
-msgstr ""
-"<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최소 Z값"
-"을 반환합니다.</para>"
+#~ msgid ""
+#~ "Returns the last point of a <varname>LINESTRING</varname> or "
+#~ "<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</"
+#~ "varname>."
+#~ msgstr ""
+#~ "<varname>LINESTRING</varname> 또는 <varname>CIRCULARLINESTRING</varname> "
+#~ "도형의 마지막 포인트를 <varname>POINT</varname>로 반환합니다."
 
-#. Tag: programlisting
-#: reference_accessor.xml:2352
-#, no-c-format
-msgid ""
-"SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');\n"
-"st_zmin\n"
-"-------\n"
-"3\n"
-"\n"
-"SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_zmin\n"
-"-------\n"
-"4\n"
-"\n"
-"SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );\n"
-"st_zmin\n"
-"-------\n"
-"1\n"
-"--Observe THIS DOES NOT WORK because it will try to autocast the string "
-"representation to a BOX3D\n"
-"SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_zmin\n"
-"--------\n"
-"1"
-msgstr ""
-"SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');\n"
-"st_zmin\n"
-"-------\n"
-"3\n"
-"\n"
-"SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
-"st_zmin\n"
-"-------\n"
-"4\n"
-"\n"
-"SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );\n"
-"st_zmin\n"
-"-------\n"
-"1\n"
-"-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것을 "
-"지켜보십시오.\n"
-"SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');\n"
-"\n"
-"--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
-"\n"
-"SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
-"2,220227 150406 3)'));\n"
-"st_zmin\n"
-"--------\n"
-"1"
+#~ msgid ""
+#~ "<funcdef>boolean <function>ST_EndPoint</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>boolean <function>ST_EndPoint</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
-#. Tag: para
-#: reference_accessor.xml:2359
-#, no-c-format
-msgid ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
-"\"/>, <xref linkend=\"ST_ZMax\"/>"
-msgstr ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
-"\"/>, <xref linkend=\"ST_ZMax\"/>"
+#~ msgid ""
+#~ "Returns a line string representing the exterior ring of the "
+#~ "<varname>POLYGON</varname> geometry. Return NULL if the geometry is not a "
+#~ "polygon. Will not work with MULTIPOLYGON"
+#~ msgstr ""
+#~ "<varname>POLYGON</varname> 도형의 외곽 고리(exterior ring)를 표현하는 라인"
+#~ "스트링을 반환합니다. 도형이 폴리곤이 아닌 경우 NULL을 반환합니다. 멀티폴리"
+#~ "곤은 입력받지 못 합니다."
+
+#~ msgid ""
+#~ "Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
+#~ "(MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, "
+#~ "POLYHEDRALSURFACE Otherwise, return NULL."
+#~ msgstr ""
+#~ "입력 도형이 도형 집합, (멀티)포인트, (멀티)라인스트링, 멀티커브"
+#~ "(multicurve) 또는 (멀티)폴리곤이나 다면체 표면일 경우 1-기반 N번째 도형을 "
+#~ "반환하며, 그 외의 경우 NULL을 반환합니다."
+
+#~ msgid ""
+#~ "Return the Nth interior linestring ring of the polygon geometry. Return "
+#~ "NULL if the geometry is not a polygon or the given N is out of range."
+#~ msgstr ""
+#~ "폴리곤 도형의 N번째 내곽 라인스트링 고리를 반환합니다. 도형이 폴리곤이 아"
+#~ "니거나 주어진 N이 범위(range)를 벗어난 경우 NULL을 반환합니다."
+
+#~ msgid ""
+#~ "Returns <varname>TRUE</varname> if the argument is a collection "
+#~ "(<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</varname>, ...)"
+#~ msgstr ""
+#~ "인수가 집합(<varname>MULTI*</varname>, <varname>GEOMETRYCOLLECTION</"
+#~ "varname>, ...)인 경우 <varname>TRUE</varname> 를 반환합니다."
+
+#~ msgid ""
+#~ "Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
+#~ "both closed and simple."
+#~ msgstr ""
+#~ "<varname>LINESTRING</varname> 이 닫혀 있는 단순 도형인 경우 "
+#~ "<varname>TRUE</varname> 를 반환합니다."
+
+#~ msgid "ST_IsValid"
+#~ msgstr "ST_IsValid"
+
+#~ msgid ""
+#~ "Returns <varname>true</varname> if the <varname>ST_Geometry</varname> is "
+#~ "well formed."
+#~ msgstr ""
+#~ "<varname>ST_Geometry</varname> 가 잘 형성돼 있는 경우 <varname>TRUE</"
+#~ "varname> 를 반환합니다."
+
+#~ msgid ""
+#~ "<funcprototype> <funcdef>boolean <function>ST_IsValid</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>g</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>boolean "
+#~ "<function>ST_IsValid</function></funcdef> <paramdef><type>geometry </"
+#~ "type> <parameter>g</parameter></paramdef> <paramdef><type>integer </type> "
+#~ "<parameter>flags</parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>boolean <function>ST_IsValid</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>g</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>boolean "
+#~ "<function>ST_IsValid</function></funcdef> <paramdef><type>geometry </"
+#~ "type> <parameter>g</parameter></paramdef> <paramdef><type>integer </type> "
+#~ "<parameter>flags</parameter></paramdef> </funcprototype>"
+
+#~ msgid ""
+#~ "Test if an ST_Geometry value is well formed. For geometries that are "
+#~ "invalid, the PostgreSQL NOTICE will provide details of why it is not "
+#~ "valid. For more information on the OGC's definition of geometry "
+#~ "simplicity and validity, refer to <link linkend=\"OGC_Validity\">"
+#~ "\"Ensuring OpenGIS compliancy of geometries\"</link>"
+#~ msgstr ""
+#~ "ST_Geometry 값이 잘 형성돼 있는지 검사합니다. 유효하지 않은 도형인 경우, "
+#~ "PostgreSQL NOTICE가 그 이유에 대한 상세 정보를 제공할 것입니다. 도형 단순"
+#~ "성 및 유효성에 대한 OGC의 정의를 더 자세히 알고 싶다면, <link linkend="
+#~ "\"OGC_Validity\">\"OpenGIS의 도형 준수성 확인(Ensuring OpenGIS compliancy "
+#~ "of geometries)\"</link> 을 참조하십시오."
+
+#~ msgid ""
+#~ "SQL-MM defines the result of ST_IsValid(NULL) to be 0, while PostGIS "
+#~ "returns NULL."
+#~ msgstr ""
+#~ "SQL-MM은 <function>ST_IsValid(<varname>NULL</varname>)</function> 의 결과"
+#~ "를 0으로 정의하지만, PostGIS는 <varname>NULL</varname> 을 반환합니다."
+
+#~ msgid ""
+#~ "The version accepting flags is available starting with 2.0.0 and requires "
+#~ "GEOS &gt;= 3.3.0. Such version does not print a NOTICE explaining the "
+#~ "invalidity. Allowed <varname>flags</varname> are documented in <xref "
+#~ "linkend=\"ST_IsValidDetail\"/>."
+#~ msgstr ""
+#~ "2.0.0 버전부터 플래그를 사용할 수 있으며, 이때 GEOS 3.3.0 이상 버전이 필요"
+#~ "합니다. 이 버전의 함수는 비유효성을 설명하는 알림을 출력하지 않습니다. "
+#~ "<xref linkend=\"ST_IsValidDetail\"/> 에 사용할 수 있는 <varname>flags</"
+#~ "varname> 가 정리돼 있습니다."
+
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.9"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.9"
+
+#~ msgid ""
+#~ "Neither OGC-SFS nor SQL-MM specifications include a flag argument for "
+#~ "ST_IsValid. The flag is a PostGIS extension."
+#~ msgstr ""
+#~ "OGC-SFS 또는 SQL-MM 어떤 사양도 ST_IsValid 함수용 플래그 인수를 포함하지 "
+#~ "않습니다. 해당 플래그는 PostGIS 확장 프로그램입니다."
+
+#~ msgid ""
+#~ "SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,\n"
+#~ "        ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) "
+#~ "As bad_poly\n"
+#~ "--results\n"
+#~ "NOTICE:  Self-intersection at or near point 0 0\n"
+#~ " good_line | bad_poly\n"
+#~ "-----------+----------\n"
+#~ " t         | f"
+#~ msgstr ""
+#~ "SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,\n"
+#~ "        ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) "
+#~ "As bad_poly\n"
+#~ "-- 결과\n"
+#~ "NOTICE:  Self-intersection at or near point 0 0\n"
+#~ " good_line | bad_poly\n"
+#~ "-----------+----------\n"
+#~ " t         | f"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail"
+#~ "\"/>, <xref linkend=\"ST_Summary\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail"
+#~ "\"/>, <xref linkend=\"ST_Summary\"/>"
+
+#~ msgid "ST_IsValidReason"
+#~ msgstr "ST_IsValidReason"
+
+#~ msgid ""
+#~ "Returns text stating if a geometry is valid or not and if not valid, a "
+#~ "reason why."
+#~ msgstr ""
+#~ "도형이 유효한지 아닌지, 그리고 유효하지 않을 경우 그 이유를 설명하는 텍스"
+#~ "트를 반환합니다."
+
+#~ msgid ""
+#~ "<funcprototype> <funcdef>text <function>ST_IsValidReason</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>text "
+#~ "<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry "
+#~ "</type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </"
+#~ "type> <parameter>flags</parameter></paramdef> </funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>text <function>ST_IsValidReason</function></"
+#~ "funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
+#~ "paramdef> </funcprototype> <funcprototype> <funcdef>text "
+#~ "<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry "
+#~ "</type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </"
+#~ "type> <parameter>flags</parameter></paramdef> </funcprototype>"
+
+#~ msgid ""
+#~ "Returns text stating if a geometry is valid or not an if not valid, a "
+#~ "reason why."
+#~ msgstr ""
+#~ "도형이 유효한지 아닌지, 그리고 유효하지 않을 경우 그 이유를 설명하는 텍스"
+#~ "트를 반환합니다."
+
+#~ msgid ""
+#~ "Useful in combination with ST_IsValid to generate a detailed report of "
+#~ "invalid geometries and reasons."
+#~ msgstr ""
+#~ "ST_IsValid 함수와 함께 사용해서 유효하지 않은 도형 및 그 이유를 자세히 설"
+#~ "명하는 보고서를 생성하는 데 유용합니다."
+
+#~ msgid ""
+#~ "Allowed <varname>flags</varname> are documented in <xref linkend="
+#~ "\"ST_IsValidDetail\"/>."
+#~ msgstr ""
+#~ "<xref linkend=\"ST_IsValidDetail\"/> 에 사용할 수 있는 <varname>flags</"
+#~ "varname> 가 정리돼 있습니다."
+
+#~ msgid "Availability: 1.4 - requires GEOS &gt;= 3.1.0."
+#~ msgstr "1.4 버전부터 사용할 수 있습니다. GEOS 3.1.0 이상 버전이 필요합니다."
+
+#~ msgid ""
+#~ "Availability: 2.0 - requires GEOS &gt;= 3.3.0 for the version taking "
+#~ "flags."
+#~ msgstr ""
+#~ "플래그를 사용할 수 있는 버전은 2.0 버전부터 사용할 수 있습니다. GEOS "
+#~ "3.3.0 이상 버전이 필요합니다."
+
+#~ msgid ""
+#~ "--First 3 Rejects from a successful quintuplet experiment\n"
+#~ "SELECT gid, ST_IsValidReason(the_geom) as validity_info\n"
+#~ "FROM\n"
+#~ "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
+#~ "the_geom, gid\n"
+#~ "FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + "
+#~ "y1*100 + z1*1000 As gid\n"
+#~ "        FROM generate_series(-4,6) x1\n"
+#~ "        CROSS JOIN generate_series(2,5) y1\n"
+#~ "        CROSS JOIN generate_series(1,8) z1\n"
+#~ "        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
+#~ "        INNER JOIN (SELECT "
+#~ "ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
+#~ "z1*2) As line\n"
+#~ "        FROM generate_series(-3,6) x1\n"
+#~ "        CROSS JOIN generate_series(2,5) y1\n"
+#~ "        CROSS JOIN generate_series(1,10) z1\n"
+#~ "        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
+#~ "ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
+#~ "GROUP BY gid, e.buff) As quintuplet_experiment\n"
+#~ "WHERE ST_IsValid(the_geom) = false\n"
+#~ "ORDER BY gid\n"
+#~ "LIMIT 3;\n"
+#~ "\n"
+#~ " gid  |      validity_info\n"
+#~ "------+--------------------------\n"
+#~ " 5330 | Self-intersection [32 5]\n"
+#~ " 5340 | Self-intersection [42 5]\n"
+#~ " 5350 | Self-intersection [52 5]\n"
+#~ "\n"
+#~ " --simple example\n"
+#~ "SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 "
+#~ "150410)');\n"
+#~ "\n"
+#~ " st_isvalidreason\n"
+#~ "------------------\n"
+#~ " Valid Geometry"
+#~ msgstr ""
+#~ "-- 성공적인 다섯 쌍 실험에서 첫 거부(reject) 3개\n"
+#~ "SELECT gid, ST_IsValidReason(the_geom) as validity_info\n"
+#~ "FROM\n"
+#~ "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
+#~ "the_geom, gid\n"
+#~ "FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + "
+#~ "y1*100 + z1*1000 As gid\n"
+#~ "        FROM generate_series(-4,6) x1\n"
+#~ "        CROSS JOIN generate_series(2,5) y1\n"
+#~ "        CROSS JOIN generate_series(1,8) z1\n"
+#~ "        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
+#~ "        INNER JOIN (SELECT "
+#~ "ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
+#~ "z1*2) As line\n"
+#~ "        FROM generate_series(-3,6) x1\n"
+#~ "        CROSS JOIN generate_series(2,5) y1\n"
+#~ "        CROSS JOIN generate_series(1,10) z1\n"
+#~ "        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
+#~ "ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
+#~ "GROUP BY gid, e.buff) As quintuplet_experiment\n"
+#~ "WHERE ST_IsValid(the_geom) = false\n"
+#~ "ORDER BY gid\n"
+#~ "LIMIT 3;\n"
+#~ "\n"
+#~ " gid  |      validity_info\n"
+#~ "------+--------------------------\n"
+#~ " 5330 | Self-intersection [32 5]\n"
+#~ " 5340 | Self-intersection [42 5]\n"
+#~ " 5350 | Self-intersection [52 5]\n"
+#~ "\n"
+#~ " -- 단순한 예시\n"
+#~ "SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 "
+#~ "150410)');\n"
+#~ "\n"
+#~ " st_isvalidreason\n"
+#~ "------------------\n"
+#~ " Valid Geometry"
+
+#~ msgid ", <xref linkend=\"ST_Summary\"/>"
+#~ msgstr ", <xref linkend=\"ST_Summary\"/>"
+
+#~ msgid "ST_IsValidDetail"
+#~ msgstr "ST_IsValidDetail"
+
+#~ msgid ""
+#~ "Returns a valid_detail (valid,reason,location) row stating if a geometry "
+#~ "is valid or not and if not valid, a reason why and a location where."
+#~ msgstr ""
+#~ "도형이 유효한지 아닌지, 그리고 유효하지 않을 경우 그 이유 및 위치를 설명하"
+#~ "는 valid_detail (유효 여부, 이유, 위치) 행을 반환합니다."
+
+#~ msgid ""
+#~ "<funcprototype> <funcdef>valid_detail <function>ST_IsValidDetail</"
+#~ "function></funcdef> <paramdef><type>geometry </type> <parameter>geom</"
+#~ "parameter></paramdef> </funcprototype> <funcprototype> "
+#~ "<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+#~ "<paramdef><type>integer </type> <parameter>flags</parameter></paramdef> </"
+#~ "funcprototype>"
+#~ msgstr ""
+#~ "<funcprototype> <funcdef>valid_detail <function>ST_IsValidDetail</"
+#~ "function></funcdef> <paramdef><type>geometry </type> <parameter>geom</"
+#~ "parameter></paramdef> </funcprototype> <funcprototype> "
+#~ "<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+#~ "<paramdef><type>integer </type> <parameter>flags</parameter></paramdef> </"
+#~ "funcprototype>"
+
+#~ msgid ""
+#~ "Returns a valid_detail row, formed by a boolean (valid) stating if a "
+#~ "geometry is valid, a varchar (reason) stating a reason why it is invalid "
+#~ "and a geometry (location) pointing out where it is invalid."
+#~ msgstr ""
+#~ "도형이 유효한지 아닌지를 설명하는 불 값(유효 여부), 유효하지 않은 이유를 "
+#~ "설명하는 varchar(이유), 그리고 유효하지 않은 위치를 지적하는 도형(위치)으"
+#~ "로 구성된 valid_detail 행을 반환합니다."
+
+#~ msgid ""
+#~ "Useful to substitute and improve the combination of ST_IsValid and "
+#~ "ST_IsValidReason to generate a detailed report of invalid geometries."
+#~ msgstr ""
+#~ "ST_IsValid 및 ST_IsValidReason 함수의 조합을 대신하고 개선해서 유효하지 않"
+#~ "은 도형에 대한 상세 보고서를 생성하는 데 유용합니다."
+
+#~ msgid ""
+#~ "The 'flags' argument is a bitfield. It can have the following values:"
+#~ msgstr ""
+#~ "'플래그' 인수는 비트 필드 구조체(bitfield)입니다. 다음 값을 가질 수 있습니"
+#~ "다:"
+
+#~ msgid ""
+#~ "1: Consider self-intersecting rings forming holes as valid. This is also "
+#~ "know as \"the ESRI flag\". Note that this is against the OGC model."
+#~ msgstr ""
+#~ "1: 구멍을 형성하는, 자체 교차하는 고리를 유효한 것으로 간주합니다. 이 플래"
+#~ "그는 \"ESRI 플래그\"로도 알려져 있습니다. OGC 모델과는 모순된다는 점을 주"
+#~ "의하십시오."
+
+#~ msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
+#~ msgstr ""
+#~ "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이상 버전이 필요합니다."
+
+#~ msgid ""
+#~ "--First 3 Rejects from a successful quintuplet experiment\n"
+#~ "SELECT gid, reason(ST_IsValidDetail(the_geom)), "
+#~ "ST_AsText(location(ST_IsValidDetail(the_geom))) as location\n"
+#~ "FROM\n"
+#~ "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
+#~ "the_geom, gid\n"
+#~ "FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + "
+#~ "y1*100 + z1*1000 As gid\n"
+#~ "        FROM generate_series(-4,6) x1\n"
+#~ "        CROSS JOIN generate_series(2,5) y1\n"
+#~ "        CROSS JOIN generate_series(1,8) z1\n"
+#~ "        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
+#~ "        INNER JOIN (SELECT "
+#~ "ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
+#~ "z1*2) As line\n"
+#~ "        FROM generate_series(-3,6) x1\n"
+#~ "        CROSS JOIN generate_series(2,5) y1\n"
+#~ "        CROSS JOIN generate_series(1,10) z1\n"
+#~ "        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
+#~ "ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
+#~ "GROUP BY gid, e.buff) As quintuplet_experiment\n"
+#~ "WHERE ST_IsValid(the_geom) = false\n"
+#~ "ORDER BY gid\n"
+#~ "LIMIT 3;\n"
+#~ "\n"
+#~ " gid  |      reason       |  location\n"
+#~ "------+-------------------+-------------\n"
+#~ " 5330 | Self-intersection | POINT(32 5)\n"
+#~ " 5340 | Self-intersection | POINT(42 5)\n"
+#~ " 5350 | Self-intersection | POINT(52 5)\n"
+#~ "\n"
+#~ " --simple example\n"
+#~ "SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 "
+#~ "150407,222020 150410)');\n"
+#~ "\n"
+#~ " valid | reason | location\n"
+#~ "-------+--------+----------\n"
+#~ " t     |        |"
+#~ msgstr ""
+#~ "-- 성공적인 다섯 쌍 실험에서 첫 거부(reject) 3개\n"
+#~ "SELECT gid, reason(ST_IsValidDetail(the_geom)), "
+#~ "ST_AsText(location(ST_IsValidDetail(the_geom))) as location\n"
+#~ "FROM\n"
+#~ "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
+#~ "the_geom, gid\n"
+#~ "FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + "
+#~ "y1*100 + z1*1000 As gid\n"
+#~ "        FROM generate_series(-4,6) x1\n"
+#~ "        CROSS JOIN generate_series(2,5) y1\n"
+#~ "        CROSS JOIN generate_series(1,8) z1\n"
+#~ "        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
+#~ "        INNER JOIN (SELECT "
+#~ "ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
+#~ "z1*2) As line\n"
+#~ "        FROM generate_series(-3,6) x1\n"
+#~ "        CROSS JOIN generate_series(2,5) y1\n"
+#~ "        CROSS JOIN generate_series(1,10) z1\n"
+#~ "        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
+#~ "ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
+#~ "GROUP BY gid, e.buff) As quintuplet_experiment\n"
+#~ "WHERE ST_IsValid(the_geom) = false\n"
+#~ "ORDER BY gid\n"
+#~ "LIMIT 3;\n"
+#~ "\n"
+#~ " gid  |      reason       |  location\n"
+#~ "------+-------------------+-------------\n"
+#~ " 5330 | Self-intersection | POINT(32 5)\n"
+#~ " 5340 | Self-intersection | POINT(42 5)\n"
+#~ " 5350 | Self-intersection | POINT(52 5)\n"
+#~ "\n"
+#~ " -- 단순한 예시\n"
+#~ "SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 "
+#~ "150407,222020 150410)');\n"
+#~ "\n"
+#~ " valid | reason | location\n"
+#~ "-------+--------+----------\n"
+#~ " t     |        |"
+
+#~ msgid ", <xref linkend=\"ST_IsValidReason\"/>"
+#~ msgstr ", <xref linkend=\"ST_IsValidReason\"/>"
+
+#~ msgid ""
+#~ "<refpurpose>Return the M coordinate of the point, or NULL if not "
+#~ "available. Input must be a point.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>포인트의 M 좌표를 반환합니다. M 좌표가 없는 경우 NULL을 반환합"
+#~ "니다. 포인트만 입력받을 수 있습니다.</refpurpose>"
+
+#~ msgid ""
+#~ "Returns coordinate dimension of the geometry as a small int. Values are: "
+#~ "2,3 or 4."
+#~ msgstr ""
+#~ "도형의 좌표 차원을 2바이트 정수형(smallint)으로 반환합니다. 값은 2, 3, 또"
+#~ "는 4입니다."
+
+#~ msgid ""
+#~ "If the geometry is a polygon or multi-polygon returns the number of rings."
+#~ msgstr "도형이 폴리곤 또는 멀티폴리곤인 경우 고리의 개수를 반환합니다."
+
+#~ msgid ""
+#~ "If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the number of "
+#~ "geometries, for single geometries will return 1, otherwise return NULL."
+#~ msgstr ""
+#~ "도형이 도형 집합 또는 멀티 도형인 경우 도형의 개수를 반환합니다. 단일 도형"
+#~ "인 경우 1을 반환하고, 도형 집합도 멀티 도형도 단일 도형도 아닌 경우 NULL"
+#~ "을 반환합니다."
+
+#~ msgid ""
+#~ "Return the 1-based Nth geometry (face) if the geometry is a "
+#~ "POLYHEDRALSURFACE, POLYHEDRALSURFACEM. Otherwise, return NULL."
+#~ msgstr ""
+#~ "도형이 <varname>POLYHEDRALSURFACE</varname>, <varname>POLYHEDRALSURFACEM</"
+#~ "varname> 인 경우 1-기반 N번째 도형 (면)을 반환합니다. 그 외의 경우 NULL을 "
+#~ "반환합니다."
+
+#~ msgid ""
+#~ "Return the Nth point in the first LineString or circular LineString in "
+#~ "the geometry. Negative values are counted backwards from the end of the "
+#~ "LineString. Returns NULL if there is no linestring in the geometry."
+#~ msgstr ""
+#~ "도형 안에 있는 첫 번째 라인스트링 또는 원형 라인스트링의 N번째 포인트를 반"
+#~ "환합니다. 음수 값은 라인스트링의 종단점으로부터 반대로 집계된 것입니다. 도"
+#~ "형 안에 라인스트링이 없는 경우 NULL을 반환합니다."
+
+#~ msgid "ST_SRID"
+#~ msgstr "ST_SRID"
+
+#~ msgid ""
+#~ "Returns the spatial reference identifier for the ST_Geometry as defined "
+#~ "in spatial_ref_sys table."
+#~ msgstr ""
+#~ "spatial_ref_sys 테이블에 정의되어 있는, ST_Geometry에 대한 공간 참조 식별"
+#~ "자를 반환합니다."
+
+#~ msgid ""
+#~ "<funcdef>integer <function>ST_SRID</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>integer <function>ST_SRID</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+
+#~ msgid ""
+#~ "Returns the spatial reference identifier for the ST_Geometry as defined "
+#~ "in spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
+#~ msgstr ""
+#~ "spatial_ref_sys 테이블에 정의되어 있는, ST_Geometry에 대한 공간 참조 식별"
+#~ "자를 반환합니다. <xref linkend=\"spatial_ref_sys\"/>"
+
+#~ msgid ""
+#~ "spatial_ref_sys table is a table that catalogs all spatial reference "
+#~ "systems known to PostGIS and is used for transformations from one spatial "
+#~ "reference system to another. So verifying you have the right spatial "
+#~ "reference system identifier is important if you plan to ever transform "
+#~ "your geometries."
+#~ msgstr ""
+#~ "spatial_ref_sys 테이블은 PostGIS에 알려진 모든 공간 참조 시스템을 카탈로그"
+#~ "화하는 테이블로, 어떤 공간 참조 시스템에서 다른 공간 참조 시스템으로 변환"
+#~ "하는 작업에 쓰입니다. 따라서 사용자 도형을 변환할 계획이 있다면 올바른 공"
+#~ "간 참조 시스템 식별자를 가지고 있는지 확인하는 일이 중요합니다."
+
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.5"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.5"
+
+#~ msgid ""
+#~ "SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
+#~ "                --result\n"
+#~ "                4326"
+#~ msgstr ""
+#~ "SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
+#~ "-- 결과\n"
+#~ "4326"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+#~ "<xref linkend=\"ST_Transform\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
+#~ "<xref linkend=\"ST_Transform\"/>"
+
+#~ msgid ""
+#~ "Returns the first point of a <varname>LINESTRING</varname> geometry as a "
+#~ "<varname>POINT</varname>."
+#~ msgstr ""
+#~ "<varname>LINESTRING</varname> 도형의 첫 번째 포인트를 <varname>POINT</"
+#~ "varname>로 반환합니다."
+
+#~ msgid ""
+#~ "<refpurpose>Returns a text summary of the contents of the geometry.</"
+#~ "refpurpose>"
+#~ msgstr "<refpurpose>도형의 내용을 요약한 텍스트를 반환합니다.</refpurpose>"
+
+#~ msgid ""
+#~ "<refpurpose>Return the X coordinate of the point, or NULL if not "
+#~ "available. Input must be a point.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>포인트의 X 좌표를 반환합니다. X 좌표가 없는 경우 NULL을 반환합"
+#~ "니다. 포인트만 입력받을 수 있습니다.</refpurpose>"
+
+#~ msgid ""
+#~ "If you want to get the max min x values of any geometry look at ST_XMin, "
+#~ "ST_XMax functions."
+#~ msgstr ""
+#~ "어떤 도형의 최대 최소 x값을 얻고자 하는 경우 ST_XMin 및 ST_XMax 함수를 참"
+#~ "고하십시오."
+
+#~ msgid "ST_XMax"
+#~ msgstr "ST_XMax"
+
+#~ msgid ""
+#~ "<refpurpose>Returns X maxima of a bounding box 2d or 3d or a geometry.</"
+#~ "refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형"
+#~ "의 최대 X값을 반환합니다.</refpurpose>"
+
+#~ msgid ""
+#~ "<funcdef>float <function>ST_XMax</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+#~ msgstr ""
+#~ "<funcdef>float <function>ST_XMax</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+
+#~ msgid ""
+#~ "<para>Returns X maxima of a bounding box 2d or 3d or a geometry.</para>"
+#~ msgstr ""
+#~ "<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최대 "
+#~ "X값을 반환합니다.</para>"
+
+#~ msgid ""
+#~ "Although this function is only defined for box3d, it will work for box2d "
+#~ "and geometry because of the auto-casting behavior defined for geometries "
+#~ "and box2d. However you can not feed it a geometry or box2d text "
+#~ "representation, since that will not auto-cast."
+#~ msgstr ""
+#~ "이 함수가 box3d를 위해서만 정의됐긴 해도, 도형 및 box2d에 대해 정의된 자"
+#~ "동 형변환 습성 때문에 도형 및 box2d를 위해서도 작동합니다. 하지만 도형 또"
+#~ "는 box2d의 텍스트 표현식을 입력할 수는 없습니다. 텍스트 표현식은 자동 형변"
+#~ "환의 대상이 아니기 때문입니다."
+
+#~ msgid ""
+#~ "SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_xmax\n"
+#~ "-------\n"
+#~ "4\n"
+#~ "\n"
+#~ "SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_xmax\n"
+#~ "-------\n"
+#~ "5\n"
+#~ "\n"
+#~ "SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+#~ "st_xmax\n"
+#~ "-------\n"
+#~ "3\n"
+#~ "--Observe THIS DOES NOT WORK because it will try to autocast the string "
+#~ "representation to a BOX3D\n"
+#~ "SELECT ST_XMax('LINESTRING(1 3, 5 6)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_xmax\n"
+#~ "--------\n"
+#~ "220288.248780547"
+#~ msgstr ""
+#~ "SELECT ST_XMax('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_xmax\n"
+#~ "-------\n"
+#~ "4\n"
+#~ "\n"
+#~ "SELECT ST_XMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_xmax\n"
+#~ "-------\n"
+#~ "5\n"
+#~ "\n"
+#~ "SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+#~ "st_xmax\n"
+#~ "-------\n"
+#~ "3\n"
+#~ "-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것"
+#~ "을 지켜보십시오.\n"
+#~ "SELECT ST_XMax('LINESTRING(1 3, 5 6)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_XMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_xmax\n"
+#~ "--------\n"
+#~ "220288.248780547"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+#~ "\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+#~ "\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+
+#~ msgid "ST_XMin"
+#~ msgstr "ST_XMin"
+
+#~ msgid ""
+#~ "<refpurpose>Returns X minima of a bounding box 2d or 3d or a geometry.</"
+#~ "refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형"
+#~ "의 최소 X값을 반환합니다.</refpurpose>"
+
+#~ msgid ""
+#~ "<funcdef>float <function>ST_XMin</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+#~ msgstr ""
+#~ "<funcdef>float <function>ST_XMin</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+
+#~ msgid ""
+#~ "<para>Returns X minima of a bounding box 2d or 3d or a geometry.</para>"
+#~ msgstr ""
+#~ "<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최소 "
+#~ "X값을 반환합니다.</para>"
+
+#~ msgid ""
+#~ "SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_xmin\n"
+#~ "-------\n"
+#~ "1\n"
+#~ "\n"
+#~ "SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_xmin\n"
+#~ "-------\n"
+#~ "1\n"
+#~ "\n"
+#~ "SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+#~ "st_xmin\n"
+#~ "-------\n"
+#~ "-3\n"
+#~ "--Observe THIS DOES NOT WORK because it will try to autocast the string "
+#~ "representation to a BOX3D\n"
+#~ "SELECT ST_XMin('LINESTRING(1 3, 5 6)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_xmin\n"
+#~ "--------\n"
+#~ "220186.995121892"
+#~ msgstr ""
+#~ "SELECT ST_XMin('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_xmin\n"
+#~ "-------\n"
+#~ "1\n"
+#~ "\n"
+#~ "SELECT ST_XMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_xmin\n"
+#~ "-------\n"
+#~ "1\n"
+#~ "\n"
+#~ "SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+#~ "st_xmin\n"
+#~ "-------\n"
+#~ "-3\n"
+#~ "-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것"
+#~ "을 지켜보십시오.\n"
+#~ "SELECT ST_XMin('LINESTRING(1 3, 5 6)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_XMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_xmin\n"
+#~ "--------\n"
+#~ "220186.995121892"
+
+#~ msgid ""
+#~ "<refpurpose>Return the Y coordinate of the point, or NULL if not "
+#~ "available. Input must be a point.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>포인트의 Y 좌표를 반환합니다. Y 좌표가 없는 경우 NULL을 반환합"
+#~ "니다. 포인트만 입력받을 수 있습니다.</refpurpose>"
+
+#~ msgid "ST_YMax"
+#~ msgstr "ST_YMax"
+
+#~ msgid ""
+#~ "<refpurpose>Returns Y maxima of a bounding box 2d or 3d or a geometry.</"
+#~ "refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형"
+#~ "의 최대 Y값을 반환합니다.</refpurpose>"
+
+#~ msgid ""
+#~ "<funcdef>float <function>ST_YMax</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+#~ msgstr ""
+#~ "<funcdef>float <function>ST_YMax</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+
+#~ msgid ""
+#~ "<para>Returns Y maxima of a bounding box 2d or 3d or a geometry.</para>"
+#~ msgstr ""
+#~ "<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최대 "
+#~ "Y값을 반환합니다.</para>"
+
+#~ msgid ""
+#~ "SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_ymax\n"
+#~ "-------\n"
+#~ "5\n"
+#~ "\n"
+#~ "SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_ymax\n"
+#~ "-------\n"
+#~ "6\n"
+#~ "\n"
+#~ "SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+#~ "st_ymax\n"
+#~ "-------\n"
+#~ "4\n"
+#~ "--Observe THIS DOES NOT WORK because it will try to autocast the string "
+#~ "representation to a BOX3D\n"
+#~ "SELECT ST_YMax('LINESTRING(1 3, 5 6)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_ymax\n"
+#~ "--------\n"
+#~ "150506.126829327"
+#~ msgstr ""
+#~ "SELECT ST_YMax('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_ymax\n"
+#~ "-------\n"
+#~ "5\n"
+#~ "\n"
+#~ "SELECT ST_YMax(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_ymax\n"
+#~ "-------\n"
+#~ "6\n"
+#~ "\n"
+#~ "SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+#~ "st_ymax\n"
+#~ "-------\n"
+#~ "4\n"
+#~ "-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것"
+#~ "을 지켜보십시오.\n"
+#~ "SELECT ST_YMax('LINESTRING(1 3, 5 6)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_YMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_ymax\n"
+#~ "--------\n"
+#~ "150506.126829327"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+#~ "\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
+#~ "\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+
+#~ msgid "ST_YMin"
+#~ msgstr "ST_YMin"
+
+#~ msgid ""
+#~ "<refpurpose>Returns Y minima of a bounding box 2d or 3d or a geometry.</"
+#~ "refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형"
+#~ "의 최소 Y값을 반환합니다.</refpurpose>"
+
+#~ msgid ""
+#~ "<funcdef>float <function>ST_YMin</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+#~ msgstr ""
+#~ "<funcdef>float <function>ST_YMin</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+
+#~ msgid ""
+#~ "<para>Returns Y minima of a bounding box 2d or 3d or a geometry.</para>"
+#~ msgstr ""
+#~ "<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최소 "
+#~ "Y값을 반환합니다.</para>"
+
+#~ msgid ""
+#~ "SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_ymin\n"
+#~ "-------\n"
+#~ "2\n"
+#~ "\n"
+#~ "SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_ymin\n"
+#~ "-------\n"
+#~ "3\n"
+#~ "\n"
+#~ "SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+#~ "st_ymin\n"
+#~ "-------\n"
+#~ "2\n"
+#~ "--Observe THIS DOES NOT WORK because it will try to autocast the string "
+#~ "representation to a BOX3D\n"
+#~ "SELECT ST_YMin('LINESTRING(1 3, 5 6)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_ymin\n"
+#~ "--------\n"
+#~ "150406"
+#~ msgstr ""
+#~ "SELECT ST_YMin('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_ymin\n"
+#~ "-------\n"
+#~ "2\n"
+#~ "\n"
+#~ "SELECT ST_YMin(ST_GeomFromText('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_ymin\n"
+#~ "-------\n"
+#~ "3\n"
+#~ "\n"
+#~ "SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));\n"
+#~ "st_ymin\n"
+#~ "-------\n"
+#~ "2\n"
+#~ "-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것"
+#~ "을 지켜보십시오.\n"
+#~ "SELECT ST_YMin('LINESTRING(1 3, 5 6)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_YMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_ymin\n"
+#~ "--------\n"
+#~ "150406"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+#~ "\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+#~ "\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+
+#~ msgid ""
+#~ "<refpurpose>Return the Z coordinate of the point, or NULL if not "
+#~ "available. Input must be a point.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>포인트의 Z 좌표를 반환합니다. Z 좌표가 없는 경우 NULL을 반환합"
+#~ "니다. 포인트만 입력받을 수 있습니다.</refpurpose>"
+
+#~ msgid "ST_ZMax"
+#~ msgstr "ST_ZMax"
+
+#~ msgid ""
+#~ "<refpurpose>Returns Z minima of a bounding box 2d or 3d or a geometry.</"
+#~ "refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형"
+#~ "의 최대 Z값을 반환합니다.</refpurpose>"
+
+#~ msgid ""
+#~ "<funcdef>float <function>ST_ZMax</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+#~ msgstr ""
+#~ "<funcdef>float <function>ST_ZMax</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+
+#~ msgid "Returns Z maxima of a bounding box 2d or 3d or a geometry."
+#~ msgstr ""
+#~ "<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최대 "
+#~ "Z값을 반환합니다.</para>"
+
+#~ msgid ""
+#~ "SELECT ST_ZMax('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_zmax\n"
+#~ "-------\n"
+#~ "6\n"
+#~ "\n"
+#~ "SELECT ST_ZMax(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_zmax\n"
+#~ "-------\n"
+#~ "7\n"
+#~ "\n"
+#~ "SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)' );\n"
+#~ "st_zmax\n"
+#~ "-------\n"
+#~ "1\n"
+#~ "--Observe THIS DOES NOT WORK because it will try to autocast the string "
+#~ "representation to a BOX3D\n"
+#~ "SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_zmax\n"
+#~ "--------\n"
+#~ "3"
+#~ msgstr ""
+#~ "SELECT ST_ZMax('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_zmax\n"
+#~ "-------\n"
+#~ "6\n"
+#~ "\n"
+#~ "SELECT ST_ZMax(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_zmax\n"
+#~ "-------\n"
+#~ "7\n"
+#~ "\n"
+#~ "SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)' );\n"
+#~ "st_zmax\n"
+#~ "-------\n"
+#~ "1\n"
+#~ "-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것"
+#~ "을 지켜보십시오. \n"
+#~ "SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_ZMax(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_zmax\n"
+#~ "--------\n"
+#~ "3"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+#~ "\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
+#~ "\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+
+#~ msgid ""
+#~ "<refpurpose>Returns ZM (dimension semantic) flag of the geometries as a "
+#~ "small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</refpurpose>"
+#~ msgstr ""
+#~ "<refpurpose>도형의 ZM(의미론적 차원) 플래그를 2바이트 정수형(smallint)으"
+#~ "로 반환합니다. 값이 0일 때 2D, 1일 때 3DM, 3일 때 3DZ, 4일 때 4D를 뜻합니"
+#~ "다.<refpurpose>"
+
+#~ msgid ""
+#~ "<para>Returns ZM (dimension semantic) flag of the geometries as a small "
+#~ "int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</para>"
+#~ msgstr ""
+#~ "<para>도형의 ZM(의미론적 차원) 플래그를 2바이트 정수형(smallint)으로 반환"
+#~ "합니다. 값이 0일 때 2D, 1일 때 3DM, 3일 때 3DZ, 4일 때 4D를 뜻합니다.</"
+#~ "para>"
+
+#~ msgid "ST_ZMin"
+#~ msgstr "ST_ZMin"
+
+#~ msgid ""
+#~ "<funcdef>float <function>ST_ZMin</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+#~ msgstr ""
+#~ "<funcdef>float <function>ST_ZMin</function></funcdef> "
+#~ "<paramdef><type>box3d </type> <parameter>aGeomorBox2DorBox3D</parameter></"
+#~ "paramdef>"
+
+#~ msgid ""
+#~ "<para>Returns Z minima of a bounding box 2d or 3d or a geometry.</para>"
+#~ msgstr ""
+#~ "<para>2차원 경계 상자(box2d) 또는 3차원 경계 상자(box3d) 또는 도형의 최소 "
+#~ "Z값을 반환합니다.</para>"
+
+#~ msgid ""
+#~ "SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_zmin\n"
+#~ "-------\n"
+#~ "3\n"
+#~ "\n"
+#~ "SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_zmin\n"
+#~ "-------\n"
+#~ "4\n"
+#~ "\n"
+#~ "SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );\n"
+#~ "st_zmin\n"
+#~ "-------\n"
+#~ "1\n"
+#~ "--Observe THIS DOES NOT WORK because it will try to autocast the string "
+#~ "representation to a BOX3D\n"
+#~ "SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_zmin\n"
+#~ "--------\n"
+#~ "1"
+#~ msgstr ""
+#~ "SELECT ST_ZMin('BOX3D(1 2 3, 4 5 6)');\n"
+#~ "st_zmin\n"
+#~ "-------\n"
+#~ "3\n"
+#~ "\n"
+#~ "SELECT ST_ZMin(ST_GeomFromEWKT('LINESTRING(1 3 4, 5 6 7)'));\n"
+#~ "st_zmin\n"
+#~ "-------\n"
+#~ "4\n"
+#~ "\n"
+#~ "SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );\n"
+#~ "st_zmin\n"
+#~ "-------\n"
+#~ "1\n"
+#~ "-- 스트링 표현식을 box3d로 자동 형변환하려 하기 때문에 오류가 발생하는 것"
+#~ "을 지켜보십시오.\n"
+#~ "SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');\n"
+#~ "\n"
+#~ "--ERROR:  BOX3D parser - doesn't start with BOX3D(\n"
+#~ "\n"
+#~ "SELECT ST_ZMin(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 "
+#~ "150505 2,220227 150406 3)'));\n"
+#~ "st_zmin\n"
+#~ "--------\n"
+#~ "1"
+
+#~ msgid ""
+#~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+#~ "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend="
+#~ "\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
+#~ "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend="
+#~ "\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"

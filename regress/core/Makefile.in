@@ -23,6 +23,7 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
 HAVE_PROTOBUF=@HAVE_PROTOBUF@
+PROTOC_VERSION=@PROTOC_VERSION@
 HAVE_SPGIST=@HAVE_SPGIST@
 INTERRUPTTESTS=@INTERRUPTTESTS@
 
@@ -61,12 +62,16 @@ TESTS = \
 	../loader/NotReallyMultiPoint \
 	../loader/MultiToSinglePoint \
 	../loader/ReprojectPts \
+	../loader/ReprojectPtsD \
 	../loader/ReprojectPtsGeog \
+	../loader/ReprojectPtsGeogD \
 	../loader/Latin1 \
 	../loader/Latin1-implicit \
 	../loader/mfile \
 	../dumper/literalsrid \
 	../dumper/realtable \
+	../dumper/nullsintable \
+	../dumper/null3d \
 	affine \
 	bestsrid \
 	binary \
@@ -161,7 +166,8 @@ TESTS = \
 	regress_brin_index_3d \
 	regress_brin_index_geography \
 	minimum_clearance \
-	oriented_envelope
+	oriented_envelope \
+	point_coordinates
 
 # Slow slow tests
 TESTS_SLOW = \
@@ -174,6 +180,13 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
 	TESTS += \
 		frechet
 endif
+
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 38),1)
+	# GEOS-3.8 adds stable pointonsurface implementation
+	TESTS += \
+		geos38
+endif
+
 
 ifeq ($(INTERRUPTTESTS),yes)
 	# Allow CI servers to configure --with-interrupt-tests
@@ -202,8 +215,11 @@ ifeq ($(HAVE_PROTOBUF),yes)
 	# ST_AsMVT, ST_AsGeobuf
 	TESTS += \
 		mvt \
-		geobuf \
 		mvt_jsonb
+ifeq ($(shell expr $(PROTOC_VERSION) ">=" 1001000),1)
+	TESTS += \
+		geobuf
+endif
 endif
 
 all install uninstall:

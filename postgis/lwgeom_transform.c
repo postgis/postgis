@@ -56,7 +56,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	srid_to = PG_GETARG_INT32(1);
 	if (srid_to == SRID_UNKNOWN)
 	{
-		elog(ERROR, "%d is an invalid target SRID", SRID_UNKNOWN);
+		elog(ERROR, "ST_Transform: %d is an invalid target SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
@@ -66,7 +66,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	if ( srid_from == SRID_UNKNOWN )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR, "Input geometry has unknown (%d) SRID", SRID_UNKNOWN);
+		elog(ERROR, "ST_Transform: Input geometry has unknown (%d) SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
@@ -77,7 +77,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	if ( GetPJUsingFCInfo(fcinfo, srid_from, srid_to, &pj) == LW_FAILURE )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR, "Failure reading projections from spatial_ref_sys.");
+		elog(ERROR, "ST_Transform: Failure reading projections from spatial_ref_sys.");
 		PG_RETURN_NULL();
 	}
 
@@ -187,7 +187,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	if ( srid_from == SRID_UNKNOWN )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR, "Input geometry has unknown (%d) SRID", SRID_UNKNOWN);
+		elog(ERROR, "ST_AsKML: Input geometry has unknown (%d) SRID", SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
@@ -217,7 +217,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 		if (GetPJUsingFCInfo(fcinfo, srid_from, srid_to, &pj) == LW_FAILURE)
 		{
 			PG_FREE_IF_COPY(geom, 0);
-			elog(ERROR, "Failure reading projections from spatial_ref_sys.");
+			elog(ERROR, "ST_AsKML: Failure reading projections from spatial_ref_sys.");
 			PG_RETURN_NULL();
 		}
 		lwgeom_transform(lwgeom, pj);

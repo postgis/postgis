@@ -528,7 +528,6 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param faces the faces to insert. Those with a node_id set to -1
    *              it will be replaced to an automatically assigned identifier
    * @param nelems number of elements in the faces array
-   *	TODO: Should be uint64_t to match SPI_processed
    *
    * @return number of inserted faces, or -1 (@see lastErrorMessage)
    */
@@ -541,14 +540,13 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param faces an array of LWT_ISO_FACE object with selecting id
    *              and setting mbr.
    * @param numfaces number of faces in the "faces" array
-   *	TODO: Should be uint64_t to match SPI_processed
    *
-   * @return number of faces being updated or -1 on error
+   * @return number of faces being updated or UINT64_MAX on error
    *         (@see lastErroMessage)
    */
-  int (*updateFacesById) (
+  uint64_t (*updateFacesById) (
       const LWT_BE_TOPOLOGY* topo,
-      const LWT_ISO_FACE* faces, int numfaces
+      const LWT_ISO_FACE* faces, uint64_t numfaces
   );
 
   /*
@@ -587,7 +585,6 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param edges an array of LWT_ISO_EDGE object with selecting id
    *              and updating fields.
    * @param numedges number of edges in the "edges" array
-   *	TODO: Should be uint64_t to match SPI_processed
    * @param upd_fields fields to be updated for the selected edges,
    *                   see LWT_COL_EDGE_* macros
    *
@@ -631,7 +628,6 @@ typedef struct LWT_BE_CALLBACKS_T {
    *                 identifiers in the input array, gets number of
    *                 nodes in output array if the return is not null,
    *                 otherwise see @return section for semantic.
-   *	TODO: Should be uint64_t to match SPI_processed
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_NODE_* macros
    * @param box optional bounding box to further restrict matches, use

@@ -471,7 +471,7 @@ LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value)
 		lwgeoms = lwalloc(sizeof(LWGEOM *));
 		lwgeoms[0] = (LWGEOM *)root->segment;
 
-		POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, root->segment->type, lwgeom_has_z(root->segment));
+		POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, root->segment->type, lwgeom_ndims((LWGEOM *)(root->segment)));
 
 		result = (LWMLINE *)lwcollection_construct(MULTILINETYPE, SRID_UNKNOWN, NULL, 1, lwgeoms);
 	}
@@ -484,7 +484,7 @@ LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value)
 		tmp = RTreeFindLineSegments(root->leftNode, value);
 		if (tmp)
 		{
-			POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, lwgeom_has_z(tmp));
+			POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, lwgeom_ndims((LWGEOM *)tmp));
 
 			if (result)
 				result = RTreeMergeMultiLines(result, tmp);
@@ -501,7 +501,7 @@ LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value)
 		tmp = RTreeFindLineSegments(root->rightNode, value);
 		if (tmp)
 		{
-			POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, lwgeom_has_z(tmp));
+			POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, lwgeom_ndims((LWGEOM *)tmp));
 
 			if (result)
 				result = RTreeMergeMultiLines(result, tmp);

@@ -27,6 +27,12 @@
 */
 
 /**
+* Read the flags from a #GSERIALIZED and return a standard lwflag
+* integer
+*/
+lwflags_t gserialized_get_lwflags(const GSERIALIZED *g);
+
+/**
 * Copy a new bounding box into an existing gserialized.
 * If necessary a new #GSERIALIZED will be allocated. Test
 * that input != output before freeing input.
@@ -37,7 +43,7 @@ GSERIALIZED *gserialized_set_gbox(GSERIALIZED *g, GBOX *gbox);
 * Remove the bounding box from a #GSERIALIZED. Returns a freshly
 * allocated #GSERIALIZED every time.
 */
-GSERIALIZED* gserialized_drop_gbox(GSERIALIZED *g)
+GSERIALIZED *gserialized_drop_gbox(GSERIALIZED *g);
 
 /**
 * Read the box from the #GSERIALIZED or calculate it if necessary.
@@ -69,7 +75,7 @@ extern uint32_t gserialized_max_header_size(void);
 * in the GSERIALIZED. Ignores metadata like flags and optional
 * boxes, etc.
 */
-extern uint64_t gserialized_hash(const GSERIALIZED *g);
+extern int32_t gserialized_hash(const GSERIALIZED *g);
 
 /**
 * Extract the SRID from the serialized form (it is packed into
@@ -134,29 +140,33 @@ extern int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
 * will contain the size of the final output, which is useful for setting the PgSQL
 * VARSIZE information.
 */
-extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
+GSERIALIZED *gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
 
 /**
 * Return the memory size a GSERIALIZED will occupy for a given LWGEOM.
 */
-extern size_t gserialized_from_lwgeom_size(const LWGEOM *geom);
+size_t gserialized_from_lwgeom_size(const LWGEOM *geom);
 
 /**
 * Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
 * that are double aligned and suitable for direct reading using getPoint2d_p_ro
 */
-extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
+LWGEOM *lwgeom_from_gserialized(const GSERIALIZED *g);
 
 /**
 * Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
 * it is not, calculate it from the geometry. If that doesn't work (null
 * or empty) return LW_FAILURE.
 */
-extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box);
+int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box);
 
 /**
 * Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
 * it is not, return LW_FAILURE.
 */
-extern int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box);
+int gserialized_fast_gbox_p(const GSERIALIZED *g, GBOX *box);
 
+/**
+ * Pull the first point values of a #GSERIALIZED. Only works for POINTTYPE
+ */
+int gserialized_peek_first_point(const GSERIALIZED *g, POINT4D *out_point);

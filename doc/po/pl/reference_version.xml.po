@@ -1,0 +1,731 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:02+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#: reference_version.xml:5
+#, no-c-format
+msgid "These functions report and upgrade PostGIS versions."
+msgstr ""
+
+#. Tag: title
+#: reference_version.xml:10
+#, no-c-format
+msgid "Version Functions"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:14
+#, no-c-format
+msgid "PostGIS_Extensions_Upgrade"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:16
+#, no-c-format
+msgid ""
+"Packages and upgrades postgis extensions (e.g. postgis_raster, "
+"postgis_topology, postgis_sfcgal) to latest available version."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:24
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Extensions_Upgrade</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_version.xml:33 reference_version.xml:92 reference_version.xml:139
+#: reference_version.xml:181 reference_version.xml:222
+#: reference_version.xml:263 reference_version.xml:294
+#: reference_version.xml:335 reference_version.xml:376
+#: reference_version.xml:418 reference_version.xml:461
+#: reference_version.xml:509 reference_version.xml:555
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:35
+#, no-c-format
+msgid ""
+"Packages and upgrades postgis extensions to latest version. Only extensions "
+"you have installed in the database will be packaged and upgraded if needed. "
+"Reports full postgis version and build configuration infos after. This is "
+"short-hand for doing multiple CREATE EXTENSION .. FROM unpackaged and ALTER "
+"EXTENSION .. UPDATE for each postgis extension. Currently only tries to "
+"upgrade extensions postgis, postgis_raster, postgis_sfcgal, "
+"postgis_topology, and postgis_tiger_geocoder."
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:44
+#, no-c-format
+msgid "Availability: 2.5.0"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:46
+#, no-c-format
+msgid ""
+"Changed: 3.0.0 to repackage loose extensions and support postgis_raster."
+msgstr ""
+
+#. Tag: title
+#: reference_version.xml:51 reference_version.xml:100 reference_version.xml:146
+#: reference_version.xml:187 reference_version.xml:229
+#: reference_version.xml:269 reference_version.xml:300
+#: reference_version.xml:342 reference_version.xml:383
+#: reference_version.xml:426 reference_version.xml:478
+#: reference_version.xml:524 reference_version.xml:561
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:53
+#, no-c-format
+msgid "SELECT PostGIS_Extensions_Upgrade();"
+msgstr ""
+
+#. Tag: screen
+#: reference_version.xml:54
+#, no-c-format
+msgid ""
+"NOTICE:  Packaging extension postgis\n"
+"NOTICE:  Packaging extension postgis_raster\n"
+"NOTICE:  Packaging extension postgis_sfcgal\n"
+"NOTICE:  Extension postgis_topology is not available or not packagable for "
+"some reason\n"
+"NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable "
+"for some reason\n"
+"\n"
+"                                                           postgis_extensions_upgrade\n"
+"----------------------------------------------------------------------------------\n"
+"POSTGIS=\"3.0.0dev r16878\" [EXTENSION] PGSQL=\"96\"\n"
+"GEOS=\"3.8.0dev-CAPI-1.11.0 a67b6f86\" SFCGAL=\"1.3.5\" PROJ=\"Rel. 4.9.3,\n"
+"15 August 2016\" GDAL=\"GDAL 2.3.0dev, released 2017/99/99\"\n"
+"LIBXML=\"2.9.4\" LIBJSON=\"0.12.1\" LIBPROTOBUF=\"1.2.1\" TOPOLOGY\n"
+"[UNPACKAGED!] RASTER\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: title
+#: reference_version.xml:58 reference_version.xml:106 reference_version.xml:152
+#: reference_version.xml:193 reference_version.xml:235
+#: reference_version.xml:306 reference_version.xml:348
+#: reference_version.xml:389 reference_version.xml:432
+#: reference_version.xml:484 reference_version.xml:530
+#: reference_version.xml:567
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:60
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:75
+#, no-c-format
+msgid "PostGIS_Full_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:77
+#, no-c-format
+msgid "Reports full postgis version and build configuration infos."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:83
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Full_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:94
+#, no-c-format
+msgid ""
+"Reports full postgis version and build configuration infos. Also informs "
+"about synchronization between libraries and scripts suggesting upgrades as "
+"needed."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:102
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Full_Version();\n"
+"                                                           postgis_full_version\n"
+"----------------------------------------------------------------------------------\n"
+"POSTGIS=\"3.0.0dev r17211\" [EXTENSION] PGSQL=\"110\" GEOS=\"3.8.0dev-"
+"CAPI-1.11.0 df24b6bb\" SFCGAL=\"1.3.6\" PROJ=\"Rel. 5.2.0, September 15th, "
+"2018\"\n"
+"GDAL=\"GDAL 2.3.2, released 2018/09/21\" LIBXML=\"2.9.9\" LIBJSON=\"0.13.1\" "
+"LIBPROTOBUF=\"1.3.1\" WAGYU=\"0.4.3 (Internal)\" TOPOLOGY RASTER\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:108
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Wagyu_Version\"/"
+">, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:122
+#, no-c-format
+msgid "PostGIS_GEOS_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:124
+#, no-c-format
+msgid "Returns the version number of the GEOS library."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:130
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_GEOS_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:141
+#, no-c-format
+msgid ""
+"Returns the version number of the GEOS library, or <varname>NULL</varname> "
+"if GEOS support is not enabled."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:148
+#, no-c-format
+msgid ""
+"SELECT PostGIS_GEOS_Version();\n"
+" postgis_geos_version\n"
+"----------------------\n"
+" 3.1.0-CAPI-1.5.0\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:154 reference_version.xml:195
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
+"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
+"<xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:164
+#, no-c-format
+msgid "PostGIS_Liblwgeom_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:166
+#, no-c-format
+msgid ""
+"Returns the version number of the liblwgeom library. This should match the "
+"version of PostGIS."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:172
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Liblwgeom_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:183
+#, no-c-format
+msgid "Returns the version number of the liblwgeom library/"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:189
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Liblwgeom_Version();\n"
+"postgis_liblwgeom_version\n"
+"--------------------------\n"
+"2.3.3 r15473\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:205
+#, no-c-format
+msgid "PostGIS_LibXML_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:207
+#, no-c-format
+msgid "Returns the version number of the libxml2 library."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:213
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_LibXML_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:224
+#, no-c-format
+msgid "Returns the version number of the LibXML2 library."
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:225
+#, no-c-format
+msgid "Availability: 1.5"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:231
+#, no-c-format
+msgid ""
+"SELECT PostGIS_LibXML_Version();\n"
+" postgis_libxml_version\n"
+"----------------------\n"
+" 2.7.6\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:237
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
+"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:247
+#, no-c-format
+msgid "PostGIS_Lib_Build_Date"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:249
+#, no-c-format
+msgid "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:254
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:265
+#, no-c-format
+msgid "<para>Returns build date of the PostGIS library.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:271
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Lib_Build_Date();\n"
+" postgis_lib_build_date\n"
+"------------------------\n"
+" 2008-06-21 17:53:21\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:277
+#, no-c-format
+msgid "PostGIS_Lib_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:279
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the version number of the PostGIS library.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:285
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Lib_Version</function></funcdef> <paramdef></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:296
+#, no-c-format
+msgid "<para>Returns the version number of the PostGIS library.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:302
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Lib_Version();\n"
+" postgis_lib_version\n"
+"---------------------\n"
+" 1.3.3\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:308
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
+"<xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:318
+#, no-c-format
+msgid "PostGIS_PROJ_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:320
+#, no-c-format
+msgid "Returns the version number of the PROJ4 library."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:326
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:337
+#, no-c-format
+msgid ""
+"Returns the version number of the PROJ4 library, or <varname>NULL</varname> "
+"if PROJ4 support is not enabled."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:344
+#, no-c-format
+msgid ""
+"SELECT PostGIS_PROJ_Version();\n"
+"  postgis_proj_version\n"
+"-------------------------\n"
+" Rel. 4.4.9, 29 Oct 2004\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:350 reference_version.xml:434
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:360
+#, no-c-format
+msgid "PostGIS_Wagyu_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:362
+#, no-c-format
+msgid "Returns the version number of the internal Wagyu library."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:367
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Wagyu_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:378
+#, no-c-format
+msgid ""
+"Returns the version number of the internal Wagyu library, or <varname>NULL</"
+"varname> if Wagyu support is not enabled."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:385
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Wagyu_Version();\n"
+" postgis_wagyu_version\n"
+"-----------------------\n"
+" 0.4.3 (Internal)\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:391
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref "
+"linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:402
+#, no-c-format
+msgid "PostGIS_Scripts_Build_Date"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:404
+#, no-c-format
+msgid "<refpurpose>Returns build date of the PostGIS scripts.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:409
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:420
+#, no-c-format
+msgid "<para>Returns build date of the PostGIS scripts.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:422
+#, no-c-format
+msgid "Availability: 1.0.0RC1"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:428
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Scripts_Build_Date();\n"
+"  postgis_scripts_build_date\n"
+"-------------------------\n"
+" 2007-08-18 09:09:26\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:444
+#, no-c-format
+msgid "PostGIS_Scripts_Installed"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:446
+#, no-c-format
+msgid ""
+"<refpurpose>Returns version of the postgis scripts installed in this "
+"database.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:452
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:463
+#, no-c-format
+msgid ""
+"<para>Returns version of the postgis scripts installed in this database.</"
+"para>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:467
+#, no-c-format
+msgid ""
+"If the output of this function doesn't match the output of <xref linkend="
+"\"PostGIS_Scripts_Released\"/> you probably missed to properly upgrade an "
+"existing database. See the <link linkend=\"upgrading\">Upgrading</link> "
+"section for more info."
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:474 reference_version.xml:520
+#, no-c-format
+msgid "Availability: 0.9.0"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:480
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Scripts_Installed();\n"
+"  postgis_scripts_installed\n"
+"-------------------------\n"
+" 1.5.0SVN\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:486
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend="
+"\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:492
+#, no-c-format
+msgid "PostGIS_Scripts_Released"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:494
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the version number of the postgis.sql script released "
+"with the installed postgis lib.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:500
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Scripts_Released</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:511
+#, no-c-format
+msgid ""
+"<para>Returns the version number of the postgis.sql script released with the "
+"installed postgis lib.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:515
+#, no-c-format
+msgid ""
+"Starting with version 1.1.0 this function returns the same value of <xref "
+"linkend=\"PostGIS_Lib_Version\"/>. Kept for backward compatibility."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:526
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Scripts_Released();\n"
+"  postgis_scripts_released\n"
+"-------------------------\n"
+" 1.3.4SVN\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:532
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_version.xml:538
+#, no-c-format
+msgid "PostGIS_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_version.xml:540
+#, no-c-format
+msgid ""
+"<refpurpose>Returns PostGIS version number and compile-time options.</"
+"refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_version.xml:546
+#, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Version</function></funcdef> <paramdef></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:557
+#, no-c-format
+msgid "<para>Returns PostGIS version number and compile-time options.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_version.xml:563
+#, no-c-format
+msgid ""
+"SELECT PostGIS_Version();\n"
+"                        postgis_version\n"
+"---------------------------------------\n"
+" 1.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_version.xml:569
+#, no-c-format
+msgid ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_PROJ_Version\"/>"
+msgstr ""

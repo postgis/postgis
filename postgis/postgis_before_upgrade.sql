@@ -144,6 +144,14 @@ SELECT _postgis_drop_function_if_needed
 	'geom1 geometry, geom2 geometry'
 	);
 
+-- FUNCTION ST_AsGeoJson changed argument names
+-- (pretty_print => pretty_bool) in 3.0alpha4
+SELECT _postgis_drop_function_if_needed
+	(
+	'@extschema@',
+	'ST_AsGeoJson',
+	'r record, geom_column text, maxdecimaldigits int4, pretty_print bool'
+	);
 
 -- FUNCTION ST_LineCrossingDirection changed argument names in 3.0
 -- Was (geom1 geometry, geom2 geometry) and now (line1 geometry, line2 geometry)

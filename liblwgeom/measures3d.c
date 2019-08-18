@@ -589,7 +589,7 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 		}
 		else
 		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 			return LW_FALSE;
 		}
 	}
@@ -617,7 +617,7 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 		}
 		else
 		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 			return LW_FALSE;
 		}
 	}
@@ -645,7 +645,7 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 		}
 		else
 		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 			return LW_FALSE;
 		}
 	}
@@ -673,14 +673,14 @@ lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3
 		}
 		else
 		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
+			lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t2));
 			return LW_FALSE;
 		}
 	}
 
 	else
 	{
-		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
+		lwerror("%s: Unsupported geometry type: %s", __func__, lwtype_name(t1));
 		return LW_FALSE;
 	}
 }

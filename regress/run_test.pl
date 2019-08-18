@@ -412,10 +412,14 @@ print "\nRunning tests\n\n";
 
 foreach $TEST (@ARGV)
 {
+	my $TEST_OBJ_COUNT_PRE;
+	my $TEST_OBJ_COUNT_POST;
+
 	# catch a common mistake (strip trailing .sql)
 	$TEST =~ s/.sql$//;
 
 	start_test($TEST);
+	$TEST_OBJ_COUNT_PRE = count_postgis_objects();
 
 	# Check for a "-pre.pl" file in case there are setup commands
     eval_file("${TEST}-pre.pl");
@@ -469,6 +473,14 @@ foreach $TEST (@ARGV)
 
 	# Check for a "-post.pl" file in case there are teardown commands
     eval_file("${TEST}-post.pl");
+
+	$TEST_OBJ_COUNT_POST = count_postgis_objects();
+
+	if ( $TEST_OBJ_COUNT_POST != $TEST_OBJ_COUNT_PRE )
+	{
+		fail("PostGIS object count pre-test ($TEST_OBJ_COUNT_POST) != post-test ($TEST_OBJ_COUNT_PRE)");
+		return 0;
+	}
 
 }
 
@@ -832,7 +844,7 @@ sub run_loader_and_check_output
 
 		if ( $rv )
 		{
-			fail(" $description: running shp2pgsql", "$errfile");
+			fail(" $description: running $cmd", "$errfile");
 			return 0;
 		}
 
@@ -1219,11 +1231,27 @@ sub count_db_objects
 		select count(*) from pg_opclass union all
 		select count(*) from pg_namespace
 			where nspname NOT LIKE 'pg_%' union all
-		select count(*) from pg_opfamily )
+		select count(*) from pg_opfamily
+		)
 		select sum(count) from counts");
 
  	return $count;
 }
+
+
+##################################################################
+# Count postgis objects
+##################################################################
+sub count_postgis_objects
+{
+	my $count = sql("WITH counts as (
+		select count(*) from spatial_ref_sys
+		)
+		select sum(count) from counts");
+
+ 	return $count;
+}
+
 
 
 ##################################################################
@@ -1240,10 +1268,7 @@ sub create_spatial
 	my ($cmd, $rv);
 	print "Creating database '$DB' \n";
 
-  $rv = create_db();
-
-	$cmd = "createlang plpgsql $DB >> $REGRESS_LOG 2>&1";
-	$rv = system($cmd);
+  	$rv = create_db();
 
 	# Count database objects before installing anything
 	$OBJ_COUNT_PRE = count_db_objects();
@@ -1385,6 +1410,7 @@ sub prepare_spatial
 	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis.sql", 1);
 	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis_comments.sql", 0);
 	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis_proc_set_search_path.sql", 0);
+	load_sql_file("${STAGED_SCRIPTS_DIR}/spatial_ref_sys.sql", 0);
 
 	if ( $OPT_WITH_TOPO )
 	{

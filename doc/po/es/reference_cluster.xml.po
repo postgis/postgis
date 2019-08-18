@@ -1,0 +1,466 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-03 21:02+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#: reference_cluster.xml:5
+#, no-c-format
+msgid "These functions implement clustering algorithms for sets of geometries."
+msgstr ""
+
+#. Tag: title
+#: reference_cluster.xml:8
+#, no-c-format
+msgid "Clustering Functions"
+msgstr ""
+
+#. Tag: refname
+#: reference_cluster.xml:12
+#, no-c-format
+msgid "ST_ClusterDBSCAN"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_cluster.xml:14
+#, no-c-format
+msgid ""
+"Window function that returns a cluster id for each input geometry using the "
+"DBSCAN algorithm."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_cluster.xml:19
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
+"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>eps</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>minpoints</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_cluster.xml:35 reference_cluster.xml:137 reference_cluster.xml:182
+#: reference_cluster.xml:259
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:37
+#, no-c-format
+msgid ""
+"Returns cluster number for each input geometry, based on a 2D implementation "
+"of the <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-based "
+"spatial clustering of applications with noise (DBSCAN)</ulink> algorithm. "
+"Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require the number "
+"of clusters to be specified, but instead uses the desired <link linkend="
+"\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
+"(<varname>minpoints</varname>) parameters to construct each cluster."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:44
+#, no-c-format
+msgid "An input geometry will be added to a cluster if it is either:"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:48
+#, no-c-format
+msgid ""
+"A \"core\" geometry, that is within <varname>eps</varname> <link linkend="
+"\"ST_Distance\">distance</link> of at least <varname>minpoints</varname> "
+"input geometries (including itself) or"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:53
+#, no-c-format
+msgid ""
+"A \"border\" geometry, that is within <varname>eps</varname> <link linkend="
+"\"ST_Distance\">distance</link> of a core geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:60
+#, no-c-format
+msgid ""
+"Note that border geometries may be within <varname>eps</varname> distance of "
+"core geometries in more than one cluster; in this case, either assignment "
+"would be correct, and the border geometry will be arbitrarily asssigned to "
+"one of the available clusters. In these cases, it is possible for a correct "
+"cluster to be generated with fewer than <varname>minpoints</varname> "
+"geometries. When assignment of a border geometry is ambiguous, repeated "
+"calls to ST_ClusterDBSCAN will produce identical results if an ORDER BY "
+"clause is included in the window definition, but cluster assignments may "
+"differ from other implementations of the same algorithm."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:68
+#, no-c-format
+msgid ""
+"Input geometries that do not meet the criteria to join any other cluster "
+"will be assigned a cluster number of NULL."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:72 reference_cluster.xml:189
+#, no-c-format
+msgid "Availability: 2.3.0"
+msgstr ""
+
+#. Tag: title
+#: reference_cluster.xml:76 reference_cluster.xml:145 reference_cluster.xml:193
+#: reference_cluster.xml:267
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:77
+#, no-c-format
+msgid ""
+"Assigning a cluster number to each polygon within 50 meters of each other. "
+"Require at least 2 polygons per cluster"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:89
+#, no-c-format
+msgid "within 50 meters at least 2 per cluster. singletons have NULL for cid"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_cluster.xml:92
+#, no-c-format
+msgid ""
+"SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS "
+"cid\n"
+"FROM boston_polys\n"
+"WHERE name > '' AND building > ''\n"
+"        AND ST_DWithin(geom,\n"
+"        ST_Transform(\n"
+"            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),\n"
+"           500);"
+msgstr ""
+
+#. Tag: screen
+#: reference_cluster.xml:95
+#, no-c-format
+msgid ""
+"<![CDATA[                name                 | bucket\n"
+"-------------------------------------+--------\n"
+" Manulife Tower                      |      0\n"
+" Park Lane Seaport I                 |      0\n"
+" Park Lane Seaport II                |      0\n"
+" Renaissance Boston Waterfront Hotel |      0\n"
+" Seaport Boston Hotel                |      0\n"
+" Seaport Hotel & World Trade Center  |      0\n"
+" Waterside Place                     |      0\n"
+" World Trade Center East             |      0\n"
+" 100 Northern Avenue                 |      1\n"
+" 100 Pier 4                          |      1\n"
+" The Institute of Contemporary Art   |      1\n"
+" 101 Seaport                         |      2\n"
+" District Hall                       |      2\n"
+" One Marina Park Drive               |      2\n"
+" Twenty Two Liberty                  |      2\n"
+" Vertex                              |      2\n"
+" Vertex                              |      2\n"
+" Watermark Seaport                   |      2\n"
+" Blue Hills Bank Pavilion            |   NULL\n"
+" World Trade Center West             |   NULL\n"
+"(20 rows)]]>"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:103
+#, no-c-format
+msgid ""
+"Combining parcels with the same cluster number into a single geometry. This "
+"uses named argument calling"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_cluster.xml:106
+#, no-c-format
+msgid ""
+"SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS "
+"ids_in_cluster FROM (\n"
+"    SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) "
+"over () AS cid, geom\n"
+"    FROM parcels) sq\n"
+"GROUP BY cid;"
+msgstr ""
+
+#. Tag: title
+#: reference_cluster.xml:110 reference_cluster.xml:149
+#: reference_cluster.xml:232 reference_cluster.xml:271
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:111
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_cluster.xml:122
+#, no-c-format
+msgid "ST_ClusterIntersecting"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_cluster.xml:124
+#, no-c-format
+msgid ""
+"Aggregate function that clusters the input geometries into connected sets."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_cluster.xml:129
+#, no-c-format
+msgid ""
+"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:139
+#, no-c-format
+msgid ""
+"ST_ClusterIntersecting is an aggregate function that returns an array of "
+"GeometryCollections, where each GeometryCollection represents an "
+"interconnected set of geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:141 reference_cluster.xml:263
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_cluster.xml:146
+#, no-c-format
+msgid ""
+"WITH testdata AS\n"
+"  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,\n"
+"                       'LINESTRING (5 5, 4 4)'::geometry,\n"
+"                       'LINESTRING (6 6, 7 7)'::geometry,\n"
+"                       'LINESTRING (0 0, -1 -1)'::geometry,\n"
+"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS "
+"geom)\n"
+"\n"
+"SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;\n"
+"\n"
+"--result\n"
+"\n"
+"st_astext\n"
+"---------\n"
+"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
+"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
+"GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:150
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_cluster.xml:162
+#, no-c-format
+msgid "ST_ClusterKMeans"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_cluster.xml:164
+#, no-c-format
+msgid ""
+"Window function that returns a cluster id for each input geometry using the "
+"K-means algorithm."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_cluster.xml:169
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
+"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>number_of_clusters</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:184
+#, no-c-format
+msgid ""
+"Returns 2D distance based <ulink url=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K-means</ulink> cluster number for each input geometry. "
+"The distance used for clustering is the distance between the centroids of "
+"the geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:194
+#, no-c-format
+msgid "Generate dummy set of parcels for examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_cluster.xml:195
+#, no-c-format
+msgid ""
+"CREATE TABLE parcels AS\n"
+"SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,\n"
+"('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As "
+"type\n"
+"FROM\n"
+"    ST_Subdivide(ST_Buffer('LINESTRING(40 100, 98 100, 100 150, 60 90)'::"
+"geometry,\n"
+"    40, 'endcap=square'),12) As geom;"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:207
+#, no-c-format
+msgid "Original Parcels"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:217
+#, no-c-format
+msgid "Parcels color-coded by cluster number (cid)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_cluster.xml:220
+#, no-c-format
+msgid ""
+"SELECT ST_ClusterKMeans(geom, 5) OVER() AS cid, parcel_id, geom\n"
+"FROM parcels;\n"
+"-- result\n"
+" cid | parcel_id |   geom\n"
+"-----+-----------+---------------\n"
+"   0 | 001       | 0103000000...\n"
+"   0 | 002       | 0103000000...\n"
+"   1 | 003       | 0103000000...\n"
+"   0 | 004       | 0103000000...\n"
+"   1 | 005       | 0103000000...\n"
+"   2 | 006       | 0103000000...\n"
+"   2 | 007       | 0103000000...\n"
+"(7 rows)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_cluster.xml:227
+#, no-c-format
+msgid ""
+"-- Partitioning parcel clusters by type\n"
+"SELECT ST_ClusterKMeans(geom,3) over (PARTITION BY type) AS cid, parcel_id, "
+"type\n"
+"FROM parcels;\n"
+"-- result\n"
+" cid | parcel_id |    type\n"
+"-----+-----------+-------------\n"
+"   1 | 005       | commercial\n"
+"   1 | 003       | commercial\n"
+"   2 | 007       | commercial\n"
+"   0 | 001       | commercial\n"
+"   1 | 004       | residential\n"
+"   0 | 002       | residential\n"
+"   2 | 006       | residential\n"
+"(7 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:233
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref linkend="
+"\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_cluster.xml:243
+#, no-c-format
+msgid "ST_ClusterWithin"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_cluster.xml:245
+#, no-c-format
+msgid ""
+"Aggregate function that clusters the input geometries by separation distance."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_cluster.xml:250
+#, no-c-format
+msgid ""
+"<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
+"<paramdef><type>geometry set </type> <parameter>g</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:261
+#, no-c-format
+msgid ""
+"ST_ClusterWithin is an aggregate function that returns an array of "
+"GeometryCollections, where each GeometryCollection represents a set of "
+"geometries separated by no more than the specified distance. (Distances are "
+"Cartesian distances in the units of the SRID.)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_cluster.xml:268
+#, no-c-format
+msgid ""
+"WITH testdata AS\n"
+"  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,\n"
+"                       'LINESTRING (5 5, 4 4)'::geometry,\n"
+"                       'LINESTRING (6 6, 7 7)'::geometry,\n"
+"                       'LINESTRING (0 0, -1 -1)'::geometry,\n"
+"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS "
+"geom)\n"
+"\n"
+"SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;\n"
+"\n"
+"--result\n"
+"\n"
+"st_astext\n"
+"---------\n"
+"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
+"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
+"GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:272
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>"
+msgstr ""

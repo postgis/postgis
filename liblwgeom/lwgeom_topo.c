@@ -287,9 +287,9 @@ lwt_be_updateNodes(LWT_TOPOLOGY* topo,
                           exc_node, exc_fields);
 }
 
-static int
+static uint64_t
 lwt_be_updateFacesById(LWT_TOPOLOGY* topo,
-  const LWT_ISO_FACE* faces, int numfaces
+  const LWT_ISO_FACE* faces, uint64_t numfaces
 )
 {
   CBT2(topo, updateFacesById, faces, numfaces);
@@ -3438,8 +3438,8 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   const GBOX* oldbox = lwgeom_get_bbox(lwline_as_lwgeom(oldedge->geom));
   const GBOX* newbox = lwgeom_get_bbox(lwline_as_lwgeom(geom));
   if ( ! gbox_same(oldbox, newbox) )
-  {{
-    int facestoupdate = 0;
+  {
+    uint64_t facestoupdate = 0;
     LWT_ISO_FACE faces[2];
     LWGEOM *nface1 = NULL;
     LWGEOM *nface2 = NULL;
@@ -3493,15 +3493,15 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     LWDEBUGF(1, "%d faces to update", facestoupdate);
     if ( facestoupdate )
     {
-	    res = lwt_be_updateFacesById(topo, &(faces[0]), facestoupdate);
-	    if (res != facestoupdate)
+		uint64_t updatedFaces = lwt_be_updateFacesById(topo, &(faces[0]), facestoupdate);
+	    if (updatedFaces != facestoupdate)
 	    {
 		    if (nface1)
 			    lwgeom_free(nface1);
 		    if (nface2)
 			    lwgeom_free(nface2);
 		    _lwt_release_edges(oldedge, 1);
-		    if (res == -1)
+		    if (updatedFaces == UINT64_MAX)
 			    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
 		    else
 			    lwerror("Unexpected error: %d faces found when expecting 1", i);
@@ -3510,9 +3510,11 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     }
     if ( nface1 ) lwgeom_free(nface1);
     if ( nface2 ) lwgeom_free(nface2);
-  }} else {{
+  }
+  else
+  {
     lwnotice("BBOX of changed edge did not change");
-  }}
+  }
 
   LWDEBUG(1, "all done, cleaning up edges");
 

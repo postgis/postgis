@@ -33,7 +33,6 @@
 #include "lwgeom_rtree.h"
 #include "lwgeom_functions_analytic.h"
 
-
 #include "access/htup_details.h"
 
 /* Prototypes */
@@ -479,7 +478,7 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
+	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	type1 = gserialized_get_type(geom1);
 	type2 = gserialized_get_type(geom2);

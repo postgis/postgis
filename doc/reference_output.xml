@@ -548,19 +548,19 @@ POINT(111.11 1.11)
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>record </type> <parameter>feature</parameter></paramdef>
 				<paramdef choice="opt"><type>text </type> <parameter>geomcolumnname</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>boolean </type> <parameter>prettyprint=false</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type> <parameter>pretty_bool=false</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=8</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=9</parameter></paramdef>
 				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -572,12 +572,12 @@ POINT(111.11 1.11)
 		  <para>Return the geometry as a GeoJSON "geometry" object, or the row as a GeoJSON "feature" object. (Cf <ulink
  url="https://tools.ietf.org/html/rfc7946">GeoJSON specifications RFC 7946</ulink>). 2D and 3D Geometries are both supported. GeoJSON only support SFS 1.1 geometry types (no curve support for example).</para>
 
-			<para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 15). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
+			<para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 9). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
 
 			<para>The <varname>options</varname> argument could be used to add BBOX or CRS in GeoJSON output:
 			  <itemizedlist>
 				<listitem>
-				  <para>0: means no option (default value)</para>
+				  <para>0: means no option</para>
 				</listitem>
 
 				<listitem>
@@ -591,6 +591,10 @@ POINT(111.11 1.11)
 				<listitem>
 				  <para>4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)</para>
 				</listitem>
+
+				<listitem>
+				  <para>8: GeoJSON Short CRS if not EPSG:4326 (default)</para>
+				</listitem>
 			  </itemizedlist>
 			</para>
 
@@ -598,6 +602,7 @@ POINT(111.11 1.11)
 			<para>Availability: 1.5.0 geography support was introduced.</para>
 			<para>Changed: 2.0.0 support default args and named args.</para>
 			<para>Changed: 3.0.0 support records as input</para>
+			<para>Changed: 3.0.0 output SRID if not EPSG:4326.</para>
 			<para>&Z_support;</para>
 	  </refsection>
 
@@ -1093,6 +1098,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
         <title>See Also</title>
             <para>
                 <xref linkend="ST_AsMVT" />,
+                <xref linkend="ST_TileEnvelope" />,
                 <xref linkend="PostGIS_Wagyu_Version" />
             </para>
         </refsection>
@@ -1181,24 +1187,22 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom')
-  FROM (SELECT 1 AS c1,
-    ST_AsMVTGeom(
-      ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),
-      ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
-      4096, 0, false) AS geom) AS q;
+		<programlisting><![CDATA[WITH mvtgeom AS
+(
+  SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12,513,412)) AS geom, name, description
+  FROM points_of_interest
+  WHERE ST_Intersects(geom, ST_TileEnvelope(12,513,412)
+)
+SELECT ST_AsMVT(mvtgeom.*)
+FROM mvtgeom;
+]]></programlisting>
 
-                              st_asmvt
---------------------------------------------------------------------
- \x1a320a0474657374121d1202000018032215095aa63f1a134631130a270f09280a121d0a14140f1a026331220228012880207802
-]]>
-		</programlisting>
 	  </refsection>
 
 		<refsection>
 			<title>See Also</title>
 				<para>
-					<xref linkend="ST_AsMVTGeom" />
+					<xref linkend="ST_AsMVTGeom" />, <xref linkend="ST_TileEnvelope" />
 				</para>
 		  </refsection>
 	</refentry>

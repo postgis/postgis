@@ -329,26 +329,6 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 	return output;
 }
 
-
-char
-getMachineEndian(void)
-{
-	static int endian_check_int = 1; /* don't modify this!!! */
-
-	return *((char *) &endian_check_int); /* 0 = big endian | xdr,
-	                                       * 1 = little endian | ndr
-	                                       */
-}
-
-void
-error_if_srid_mismatch(int32_t srid1, int32_t srid2)
-{
-	if ( srid1 != srid2 )
-	{
-		lwerror("Operation on mixed SRID geometries");
-	}
-}
-
 int32_t
 clamp_srid(int32_t srid)
 {
@@ -488,14 +468,14 @@ static char dumb_toupper(int in)
 	return dumb_upper_map[in];
 }
 
-uint8_t lwflags(int hasz, int hasm, int geodetic)
+lwflags_t lwflags(int hasz, int hasm, int geodetic)
 {
-	uint8_t flags = 0;
-	if ( hasz )
+	lwflags_t flags = 0;
+	if (hasz)
 		FLAGS_SET_Z(flags, 1);
-	if ( hasm )
+	if (hasm)
 		FLAGS_SET_M(flags, 1);
-	if ( geodetic )
+	if (geodetic)
 		FLAGS_SET_GEODETIC(flags, 1);
 	return flags;
 }
