@@ -136,7 +136,7 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 	else
 	{
 		/* If it's not an array, just don't handle it */
-		lwerror("Not an array in GeoJSON coordinate");
+		lwerror("The 'coordinates' in GeoJSON are not sufficiently nested");
 		return LW_FAILURE;
 	}
 
