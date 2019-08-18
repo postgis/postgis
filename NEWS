@@ -203,6 +203,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4277, ST_GeomFromGeoJSON now marks SRID=4326 by default as per RFC7946,
            ST_AsGeoJSON sets SRID in JSON output if it differs from 4326.
            (Darafei Praliaskouski)
+  - #3979, postgis_sfcgal_noop() round trip function (Lucas C. Villa Real)
 
 * Fixes *
   - #4342, Move deprecated functions into legacy.sql file

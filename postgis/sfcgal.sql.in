@@ -27,6 +27,13 @@ CREATE OR REPLACE FUNCTION postgis_sfcgal_version() RETURNS text
         AS 'MODULE_PATHNAME'
         LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION postgis_sfcgal_noop(geometry)
+        RETURNS geometry
+        AS 'MODULE_PATHNAME', 'postgis_sfcgal_noop'
+        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+        COST 1;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
        RETURNS geometry
