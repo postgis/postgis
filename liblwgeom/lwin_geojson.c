@@ -191,8 +191,7 @@ parse_geojson_poly_rings(json_object *rings, int *hasz)
 		json_object *points = json_object_array_get_idx(rings, i);
 		if (!points || json_object_get_type(points) != json_type_array)
 		{
-			int k;
-			for (k = 0; k < o; k++)
+			for (int k = 0; k < o; k++)
 				ptarray_free(ppa[k]);
 			lwfree(ppa);
 			lwerror("The 'coordinates' in GeoJSON ring are not an array");
@@ -217,8 +216,7 @@ parse_geojson_poly_rings(json_object *rings, int *hasz)
 			coords = json_object_array_get_idx(points, j);
 			if (LW_FAILURE == parse_geojson_coord(coords, hasz, ppa[o]))
 			{
-				int k;
-				for (k = 0; k <= o; k++)
+				for (int k = 0; k <= o; k++)
 					ptarray_free(ppa[k]);
 				lwfree(ppa);
 				lwerror("The 'coordinates' in GeoJSON are not sufficiently nested");
