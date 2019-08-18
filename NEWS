@@ -230,6 +230,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4406, Throw on invalid characters when decoding geohash (Raúl Marín)
   - #4459, Fix ST_Subdivide crash on intermediate EMPTY (Darafei Praliaskouski)
   - #4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)
+  - #4387, Re-enable OSS Fuzz and fuzz geojson parser (Darafei Praliaskouski)
 
 
 PostGIS 2.5.0

@@ -798,6 +798,8 @@ lwgeom_force_4d(const LWGEOM *geom)
 LWGEOM*
 lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 {
+	if (!geom)
+		return NULL;
 	switch(geom->type)
 	{
 		case POINTTYPE:

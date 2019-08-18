@@ -28,7 +28,7 @@ build_fuzzer()
     echo "Building fuzzer $fuzzerName"
     $CXX $CXXFLAGS -std=c++11 -I$SRC_DIR/liblwgeom \
         $sourceFilename $* -o $OUT/$fuzzerName \
-        -lFuzzingEngine -lstdc++ $SRC_DIR/liblwgeom/.libs/liblwgeom.a
+        -lFuzzingEngine -lstdc++ $SRC_DIR/liblwgeom/.libs/liblwgeom.a /usr/lib/x86_64-linux-gnu/libjson-c.a
 }
 
 fuzzerFiles=$(dirname $0)/*.cpp
@@ -37,4 +37,4 @@ for F in $fuzzerFiles; do
     build_fuzzer $fuzzerName $F
 done
 
-cp $(dirname $0)/*.dict $(dirname $0)/*.options $OUT/
+cp $(dirname $0)/*.dict $(dirname $0)/*.options $(dirname $0)/*.zip $OUT/
