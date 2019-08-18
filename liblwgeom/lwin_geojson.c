@@ -136,6 +136,7 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 	else
 	{
 		/* If it's not an array, just don't handle it */
+		lwerror("Not an array in GeoJSON coordinate");
 		return LW_FAILURE;
 	}
 
@@ -256,8 +257,14 @@ parse_geojson_multipoint(json_object *geojson, int *hasz)
 	{
 		POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
 		json_object *coord = json_object_array_get_idx(points, i);
-		parse_geojson_coord(coord, hasz, pa);
-		geom = lwmpoint_add_lwpoint(geom, lwpoint_construct(0, NULL, pa));
+		if (parse_geojson_coord(coord, hasz, pa))
+			geom = lwmpoint_add_lwpoint(geom, lwpoint_construct(0, NULL, pa));
+		else
+		{
+			lwmpoint_free(geom);
+			ptarray_free(pa);
+			return NULL;
+		}
 	}
 
 	return (LWGEOM *)geom;
@@ -282,13 +289,16 @@ parse_geojson_multilinestring(json_object *geojson, int *hasz)
 			for (int j = 0; j < nPoints; ++j)
 			{
 				json_object *coord = json_object_array_get_idx(coords, j);
-				parse_geojson_coord(coord, hasz, pa);
+				if (!parse_geojson_coord(coord, hasz, pa))
+				{
+					lwmline_free(geom);
+					ptarray_free(pa);
+					return NULL;
+				}
 			}
-
 			geom = lwmline_add_lwline(geom, lwline_construct(0, NULL, pa));
 		}
 	}
-
 	return (LWGEOM *)geom;
 }
 
