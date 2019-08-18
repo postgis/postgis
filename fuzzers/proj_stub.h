@@ -25,51 +25,34 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <setjmp.h>
-
-#include <set>
-extern "C" {
-#include "liblwgeom.h"
-#include "geos_stub.h"
-#include "proj_stub.h"
-}
-extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv);
-
-extern "C" {
-static void
-noticereporter(const char *, va_list)
-{}
-}
-
-static void
-debuglogger(int, const char *, va_list)
-{}
-
-int
-LLVMFuzzerInitialize(int * /*argc*/, char *** /*argv*/)
+#include <assert.h>
+void
+geod_init()
 {
-	lwgeom_set_handlers(malloc, realloc, free, noticereporter, noticereporter);
-	lwgeom_set_debuglogger(debuglogger);
-	return 0;
+	assert(0);
 }
-
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len);
-
-int
-LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len)
+void
+geod_inverse()
 {
-	char *srs = NULL;
-	char *psz = static_cast<char *>(malloc(len + 1));
-	memcpy(psz, buf, len);
-	psz[len] = '\0';
-	LWGEOM *lwgeom = lwgeom_from_geojson(psz, &srs);
-	lwgeom_free(lwgeom);
-	lwfree(srs);
-	free(psz);
-	return 0;
+	assert(0);
+}
+void
+geod_direct()
+{
+	assert(0);
+}
+void
+geod_polygon_init()
+{
+	assert(0);
+}
+void
+geod_polygon_addpoint()
+{
+	assert(0);
+}
+void
+geod_polygon_compute()
+{
+	assert(0);
 }
