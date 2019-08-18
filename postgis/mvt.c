@@ -1180,7 +1180,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	gridspec grid = {0, 0, 0, 0, 1, 1, 0, 0};
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
-	double resx, resy, res, fx, fy;
+	double fx, fy;
 	const uint8_t basic_type = lwgeom_get_basic_type(lwgeom);
 	int preserve_collapsed = LW_FALSE;
 	POSTGIS_DEBUG(2, "mvt_geom called");
@@ -1192,15 +1192,8 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 	if (lwgeom_is_empty(lwgeom))
 		return NULL;
 
-	resx = width / extent;
-	resy = height / extent;
-	res = (resx < resy ? resx : resy)/2;
 	fx = extent / width;
 	fy = -(extent / height);
-
-	/* Remove all non-essential points (under the output resolution) */
-	lwgeom_remove_repeated_points_in_place(lwgeom, res);
-	lwgeom_simplify_in_place(lwgeom, res, preserve_collapsed);
 
 	/* If geometry has disappeared, you're done */
 	if (lwgeom_is_empty(lwgeom))
@@ -1216,6 +1209,13 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buf
 
 	/* Snap to integer precision, removing duplicate points */
 	lwgeom_grid_in_place(lwgeom, &grid);
+
+	/* Remove points on straight lines */
+	lwgeom_simplify_in_place(lwgeom, 0, preserve_collapsed);
+
+	/* Remove duplicates in multipoints */
+	if (lwgeom->type == MULTIPOINTTYPE)
+		lwgeom_remove_repeated_points_in_place(lwgeom, 0);
 
 	if (!lwgeom || lwgeom_is_empty(lwgeom))
 		return NULL;
