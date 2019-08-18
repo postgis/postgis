@@ -182,9 +182,9 @@ extern "C"
 
 int LLVMFuzzerInitialize(int* /*argc*/, char*** /*argv*/)
 {
-    lwgeom_set_handlers(allocator, reallocator, freeor, errorreporter, noticereporter);
-    lwgeom_set_debuglogger(debuglogger);
-    return 0;
+	lwgeom_set_handlers(malloc, realloc, free, noticereporter, noticereporter);
+	lwgeom_set_debuglogger(debuglogger);
+	return 0;
 }
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *buf, size_t len);
