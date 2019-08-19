@@ -1031,6 +1031,47 @@ ptarray_isccw(const POINTARRAY *pa)
 	else return LW_TRUE;
 }
 
+int
+ptarray_is_convex(const POINTARRAY *pa)
+{
+	const POINT2D *P1, *P2, *P3;
+	uint32_t i;
+	int side;
+	int got_side = LW_FALSE;
+
+	if (! pa || pa->npoints < 3 )
+		return LW_FALSE;
+
+	P1 = getPoint2d_cp(pa, 0);
+	P2 = getPoint2d_cp(pa, 1);
+	for (i = 2; i < pa->npoints; i++)
+	{
+		int this_side;
+		P3 = getPoint2d_cp(pa, i);
+		/* -1 = left, 1 = right, 0 = colinear */
+		this_side = lw_segment_side(P1, P2, P3);
+
+		/* Convex rings will have next point on consistent side always */
+		/* Do not terminate for co-linear (this_side == 0) points */
+		if (got_side == LW_TRUE && this_side && this_side != side)
+		{
+			return LW_FALSE;
+		}
+
+		if (got_side == LW_FALSE && this_side != 0)
+		{
+			side = this_side;
+			got_side = LW_TRUE;
+		}
+
+		/* Move forwards! */
+		P1 = P2;
+		P2 = P3;
+	}
+	return LW_TRUE;
+}
+
+
 POINTARRAY*
 ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
 {

@@ -89,6 +89,53 @@ lwgeom_is_clockwise(LWGEOM *lwgeom)
 	}
 }
 
+int
+lwgeom_is_convex(const LWGEOM *lwgeom)
+{
+	if (!lwgeom)
+		return LW_FALSE;
+	if (lwgeom_is_empty(lwgeom))
+		return LW_FALSE;
+
+	switch (lwgeom->type)
+	{
+		/* Single point is always convex */
+		case POINTTYPE:
+			return LW_TRUE;
+
+		/* Any two-point line is convex (ie, == convexhull(line)) */
+		case LINETYPE:
+		{
+			const LWLINE *lwline = (const LWLINE*)lwgeom;
+			if (lwline->points && lwline->points->npoints == 2)
+				return LW_TRUE;
+		}
+
+		/* Hole => not convex, and exterior ring must be convex */
+		case POLYGONTYPE:
+		{
+			const LWPOLY *lwpoly = (const LWPOLY*)lwgeom;
+			if (lwpoly->rings &&
+			    lwpoly->nrings == 1 &&
+			    ptarray_is_convex(lwpoly->rings[0]))
+			{
+				return LW_TRUE;
+			}
+		}
+
+		/* A single-entry collection with a properly convex member is convex */
+		case COLLECTIONTYPE:
+		{
+			const LWCOLLECTION *lwcol = (const LWCOLLECTION*)lwgeom;
+			if (lwcol->geoms && lwcol->ngeoms == 1)
+				return lwgeom_is_convex(lwcol->geoms[0]);
+		}
+	}
+
+	return LW_FALSE;
+}
+
+
 LWGEOM *
 lwgeom_reverse(const LWGEOM *geom)
 {

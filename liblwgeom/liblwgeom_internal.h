@@ -352,6 +352,11 @@ int lwtriangle_is_clockwise(LWTRIANGLE *triangle);
 int ptarray_isccw(const POINTARRAY *pa);
 
 /*
+* Convex
+*/
+int ptarray_is_convex(const POINTARRAY *pa);
+
+/*
 * Same
 */
 char ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2);

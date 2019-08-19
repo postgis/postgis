@@ -616,6 +616,46 @@ static void test_ptarray_scale()
   lwline_free(line);
 }
 
+static void test_ptarray_is_convex()
+{
+	LWLINE *lwline;
+	POINTARRAY *pa;
+
+	lwline = lwgeom_as_lwline(lwgeom_from_text(
+	         "LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)"
+	         ));
+	pa = lwline->points;
+	CU_ASSERT_EQUAL(ptarray_is_convex(pa), LW_TRUE);
+	lwline_free(lwline);
+
+	lwline = lwgeom_as_lwline(lwgeom_from_text(
+	         "LINESTRING(0 0, 0 1, 0.5 0.9, 1 1, 1 0, 0 0)"
+	         ));
+	pa = lwline->points;
+	CU_ASSERT_EQUAL(ptarray_is_convex(pa), LW_FALSE);
+	lwline_free(lwline);
+
+	lwline = lwgeom_as_lwline(lwgeom_from_text(
+	         "LINESTRING(0 0, 0 0.5, 0 1, 1 1, 1 0, 0 0)"
+	         ));
+	pa = lwline->points;
+	CU_ASSERT_EQUAL(ptarray_is_convex(pa), LW_TRUE);
+	lwline_free(lwline);
+
+	lwline = lwgeom_as_lwline(lwgeom_from_text(
+	         "LINESTRING(0 0, 0 0.1, 0 0.5, 0 1, 1 1, 1 0, 0 0)"
+	         ));
+	pa = lwline->points;
+	CU_ASSERT_EQUAL(ptarray_is_convex(pa), LW_TRUE);
+	lwline_free(lwline);
+
+	lwline = lwgeom_as_lwline(lwgeom_from_text(
+	         "LINESTRING(0 0, 0 0.1, 0 0.5, 0 1, 0.1 1, 0.2 1, 0.4 0.9, 1 1, 1 0, 0 0)"
+	         ));
+	pa = lwline->points;
+	CU_ASSERT_EQUAL(ptarray_is_convex(pa), LW_FALSE);
+	lwline_free(lwline);
+}
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -633,4 +673,5 @@ void ptarray_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarray_contains_point);
 	PG_ADD_TEST(suite, test_ptarrayarc_contains_point);
 	PG_ADD_TEST(suite, test_ptarray_scale);
+	PG_ADD_TEST(suite, test_ptarray_is_convex);
 }

@@ -1338,6 +1338,11 @@ extern void interpolate_point4d(const POINT4D *A, const POINT4D *B, POINT4D *I, 
 */
 extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
 
+/**
+* Return #LW_TRUE if geometry is convex (such that a
+* convexhull calculation would return the input)
+*/
+extern int lwgeom_is_convex(const LWGEOM *lwgeom);
 
 /**
 * Simplification
