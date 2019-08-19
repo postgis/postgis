@@ -834,64 +834,34 @@ Datum boundary(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_ConvexHull2);
 Datum ST_ConvexHull2(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1, *geom2;
-	LWGEOM *lwg1, *lwg2, *lwgu, *lwgcu;
+	GSERIALIZED *gser1, *gser2, *gserout;
+	LWGEOM *lwcol, *lwgcu;
+	LWGEOM **geoms;
 	GEOSGeometry *gu, *gcu;
-	GSERIALIZED *result;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
-	lwg1 = lwgeom_from_gserialized(geom1);
-	lwg2 = lwgeom_from_gserialized(geom2);
+	gser1 = PG_GETARG_GSERIALIZED_P(0);
+	gser2 = PG_GETARG_GSERIALIZED_P(1);
+
+	geoms = lwalloc(sizeof(LWGEOM*) * 2);
+	geoms[0] = lwgeom_from_gserialized(gser1);
+	geoms[1] = lwgeom_from_gserialized(gser2);
+	lwcol = lwcollection_as_lwgeom(lwcollection_construct(COLLECTIONTYPE, gserialized_get_srid(gser1), NULL, 2, geoms));
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	/* If input it not convex, we need to convexify it */
-	if (!lwgeom_is_convex(lwg1))
-	{
-		uint32_t hasz1 = lwgeom_has_z(lwg1);
-		GEOSGeometry *h = LWGEOM2GEOS(lwg1, 0);
-		GEOSGeometry *g = GEOSConvexHull(h);
-		GEOSGeom_destroy(h);
-		GEOSSetSRID(g, lwgeom_get_srid(lwg1));
-		lwgeom_free(lwg1);
-		lwg1 = GEOS2LWGEOM(g, hasz1);
-		GEOSGeom_destroy(g);
-	}
-
-	/* If input it not convex, we need to convexify it */
-	if (!lwgeom_is_convex(lwg2))
-	{
-		uint32_t hasz2 = lwgeom_has_z(lwg2);
-		GEOSGeometry *h = LWGEOM2GEOS(lwg2, 0);
-		GEOSGeometry *g = GEOSConvexHull(h);
-		GEOSGeom_destroy(h);
-		GEOSSetSRID(g, lwgeom_get_srid(lwg2));
-		lwgeom_free(lwg2);
-		lwg2 = GEOS2LWGEOM(g, hasz2);
-		GEOSGeom_destroy(g);
-	}
-
-	/* Merge the convex inputs */
-	lwgu = lwgeom_union(lwg1, lwg2);
-	lwgeom_free(lwg1);
-	lwgeom_free(lwg2);
-
-	/* Convexify the union */
-	gu = LWGEOM2GEOS(lwgu, 0);
+	gu = LWGEOM2GEOS(lwcol, 0);
 	gcu = GEOSConvexHull(gu);
 	GEOSGeom_destroy(gu);
+	lwgeom_free(lwcol);
 
-	/* Return the result */
-	lwgcu = GEOS2LWGEOM(gcu, lwgeom_has_z(lwgu));
-	lwgeom_free(lwgu);
+	lwgcu = GEOS2LWGEOM(gcu, gserialized_has_z(gser1));
 	GEOSGeom_destroy(gcu);
-	result = geometry_serialize(lwgcu);
+	gserout = geometry_serialize(lwgcu);
 	lwgeom_free(lwgcu);
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-	PG_RETURN_POINTER(result);
+	PG_FREE_IF_COPY(gser1, 0);
+	PG_FREE_IF_COPY(gser2, 1);
+	PG_RETURN_POINTER(gserout);
 }
 
 PG_FUNCTION_INFO_V1(convexhull);
