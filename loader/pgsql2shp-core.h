@@ -106,9 +106,6 @@ typedef struct shp_dumper_state
 	/* Version of PostGIS being used */
 	int pgis_major_version;
 
-	/* 0=dumper running on little endian, 1=dumper running on big endian */
-	int big_endian;
-
 	/* OID for geometries */
 	int geom_oid;
 
