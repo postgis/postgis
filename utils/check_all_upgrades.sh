@@ -49,6 +49,7 @@ semver_compare()
 
 BUILDDIR=$PWD
 EXTDIR=`pg_config --sharedir`/extension/
+CTBDIR=`pg_config --sharedir`/contrib/
 
 cd $EXTDIR
 failures=0
@@ -63,10 +64,15 @@ fi
 
 echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
 
-for EXT in ${INSTALLED_EXTENSIONS}; do
+failed()
+{
+  failures=$((failures+1))
   if test $EXIT_ON_FIRST_FAILURE != 0 -a $failures != 0; then
     exit $failures
   fi
+}
+
+for EXT in ${INSTALLED_EXTENSIONS}; do
   if test "${EXT}" = "postgis"; then
     REGDIR=${BUILDDIR}/regress
   elif test "${EXT}" = "postgis_topology"; then
@@ -76,17 +82,17 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   else
     echo "SKIP: don't know where to find regress tests for extension ${EXT}"
   fi
+
+  # Check extension->extension upgrades
   files=`'ls' ${EXT}--* | grep -v -- '--.*--' | sed "s/^${EXT}--\(.*\)\.sql/\1/"`
-  for fname in unpackaged $files; do
+  for fname in $files; do
     from_version="$fname"
     UPGRADE_PATH="${from_version}--${to_version}"
     # only consider versions older than ${to_version}
-    if test $fname != "unpackaged"; then # unpackaged is always older
-      cmp=`semver_compare "${from_version}" "${to_version}"`
-      if test $cmp -ge 0; then
-        echo "SKIP: upgrade $UPGRADE_PATH (target is not newer than source)"
-        continue
-      fi
+    cmp=`semver_compare "${from_version}" "${to_version}"`
+    if test $cmp -ge 0; then
+      echo "SKIP: upgrade $UPGRADE_PATH (target is not newer than source)"
+      continue
     fi
     if test -e ${EXT}--${UPGRADE_PATH}.sql; then
       echo "Testing ${EXT} upgrade $UPGRADE_PATH"
@@ -95,12 +101,26 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
         echo "PASS: upgrade $UPGRADE_PATH"
       } || {
         echo "FAIL: upgrade $UPGRADE_PATH"
-        failures=$((failures+1))
+        failed
       }
     else
       echo "SKIP: ${EXT} upgrade $UPGRADE_PATH is missing"
     fi
   done
+
+  # Check unpackaged->extension upgrades
+  for majmin in "" `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
+    UPGRADE_PATH="unpackaged${majmin}--${to_version}"
+    echo "Testing ${EXT} upgrade $UPGRADE_PATH"
+    export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
+    make -C ${REGDIR} check && {
+      echo "PASS: upgrade $UPGRADE_PATH"
+    } || {
+      echo "FAIL: upgrade $UPGRADE_PATH"
+      failed
+    }
+  done
+
 done
 
 exit $failures
