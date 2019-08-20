@@ -112,7 +112,7 @@ sub has_split_raster_ext
   my $fullver = shift;
   # unpackaged is always current, so does have
   # split raster already.
-  return 1 if $fullver eq 'unpackaged';
+  return 1 if $fullver =~ /^unpackaged/;
   my @ver = split(/\./, $fullver);
   return 0 if ( $ver[0] < 3 );
   return 1;
@@ -249,6 +249,23 @@ if ( ! $libver )
 	print "\nSomething went wrong (no PostGIS installed in $DB).\n";
 	print "For details, check $REGRESS_LOG\n\n";
 	exit(1);
+}
+
+sub scriptdir
+{
+	my $version = shift;
+	my $scriptdir;
+	if ( $version and $version ne $libver ) {
+		my $pgis_majmin = $version;
+		$pgis_majmin =~ s/^([1-9]*\.[0-9]*).*/\1/;
+		$scriptdir = `pg_config --sharedir`;
+		chop $scriptdir;
+		$scriptdir .= "/contrib/postgis-" . $pgis_majmin;
+	} else {
+		$scriptdir = $STAGED_SCRIPTS_DIR;
+	}
+	#print "XXX: scriptdir: $scriptdir\n";
+	return $scriptdir;
 }
 
 sub semver_lessthan
@@ -705,17 +722,7 @@ sub run_simple_test
 	mkpath($betmpdir);
 	chmod 0777, $betmpdir;
 
-	my $scriptdir;
-	if ( $OPT_EXTENSIONS ) {
-		# TODO: allow override this default with env variable ?
-		my $pgis_majmin = $libver;
-		$pgis_majmin =~ s/^([1-9]*\.[0-9]*).*/\1/;
-		$scriptdir = `pg_config --sharedir`;
-		chop $scriptdir;
-		$scriptdir .= "/contrib/postgis-" . $pgis_majmin;
-	} else {
-		$scriptdir = $STAGED_SCRIPTS_DIR;
-	}
+	my $scriptdir = scriptdir($libver);
 	my $cmd = "psql -v \"VERBOSITY=terse\""
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
@@ -1300,9 +1307,10 @@ sub prepare_spatial_extensions
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
 	my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
 	my $sql = "CREATE EXTENSION postgis";
+
 	if ( $OPT_UPGRADE_FROM ) {
-		if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
-			prepare_spatial();
+		if ( $OPT_UPGRADE_FROM =~ /^unpackaged(.*)/ ) {
+			prepare_spatial($1);
 			return;
 		}
 		$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
@@ -1388,34 +1396,38 @@ sub prepare_spatial_extensions
 # Prepare the database for spatial operations (old method)
 sub prepare_spatial
 {
+	my $version = shift;
+	my $scriptdir = scriptdir($version);
+	print "Loading unpackaged components from $scriptdir\n";
+
 	print "Loading PostGIS into '${DB}' \n";
 
 	# Load postgis.sql into the database
-	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis.sql", 1);
-	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis_comments.sql", 0);
-	load_sql_file("${STAGED_SCRIPTS_DIR}/postgis_proc_set_search_path.sql", 0);
-	load_sql_file("${STAGED_SCRIPTS_DIR}/spatial_ref_sys.sql", 0);
+	load_sql_file("${scriptdir}/postgis.sql", 1);
+	load_sql_file("${scriptdir}/postgis_comments.sql", 0);
+	load_sql_file("${scriptdir}/postgis_proc_set_search_path.sql", 0);
+	load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
 
 	if ( $OPT_WITH_TOPO )
 	{
 		print "Loading Topology into '${DB}'\n";
-		load_sql_file("${STAGED_SCRIPTS_DIR}/topology.sql", 1);
-		load_sql_file("${STAGED_SCRIPTS_DIR}/topology_comments.sql", 0);
+		load_sql_file("${scriptdir}/topology.sql", 1);
+		load_sql_file("${scriptdir}/topology_comments.sql", 0);
 	}
 
 	if ( $OPT_WITH_RASTER )
 	{
 		print "Loading Raster into '${DB}'\n";
-		load_sql_file("${STAGED_SCRIPTS_DIR}/rtpostgis.sql", 1);
-		load_sql_file("${STAGED_SCRIPTS_DIR}/raster_comments.sql", 0);
-		load_sql_file("${STAGED_SCRIPTS_DIR}/rtpostgis_proc_set_search_path.sql", 0);
+		load_sql_file("${scriptdir}/rtpostgis.sql", 1);
+		load_sql_file("${scriptdir}/raster_comments.sql", 0);
+		load_sql_file("${scriptdir}/rtpostgis_proc_set_search_path.sql", 0);
 	}
 
 	if ( $OPT_WITH_SFCGAL )
 	{
 		print "Loading SFCGAL into '${DB}'\n";
-		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal.sql", 1);
-		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal_comments.sql", 0);
+		load_sql_file("${scriptdir}/sfcgal.sql", 1);
+		load_sql_file("${scriptdir}/sfcgal_comments.sql", 0);
 	}
 
 	return 1;
@@ -1495,7 +1507,7 @@ sub upgrade_spatial_extensions
     my $nextver = $OPT_UPGRADE_TO ? "${OPT_UPGRADE_TO}" : "${libver}next";
     my $sql = "ALTER EXTENSION postgis UPDATE TO '${nextver}'";
 
-    if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+    if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
       $sql = "CREATE EXTENSION postgis VERSION '${nextver}' FROM unpackaged";
     }
 
@@ -1532,7 +1544,7 @@ sub upgrade_spatial_extensions
       {
         my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
 
-        if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+        if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
           $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
         }
 
@@ -1579,7 +1591,7 @@ sub upgrade_spatial_extensions
     {
       my $sql = "ALTER EXTENSION postgis_topology UPDATE TO '${nextver}'";
 
-			if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+			if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
 				$sql = "CREATE EXTENSION postgis_topology VERSION '${nextver}' FROM unpackaged";
 			}
 
@@ -1597,7 +1609,7 @@ sub upgrade_spatial_extensions
     {
 			my $sql;
 
-			if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+			if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
 				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}' FROM unpackaged";
 			}
 			elsif ( $OPT_UPGRADE_FROM && semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
