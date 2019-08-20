@@ -727,17 +727,17 @@ void gbox_float_round(GBOX *gbox)
 inline static uint64_t
 uint64_interleave_2(uint64_t x, uint64_t y)
 {
-	x = (x | (x << 16)) & 0x0000FFFF0000FFFF;
-	x = (x | (x << 8)) & 0x00FF00FF00FF00FF;
-	x = (x | (x << 4)) & 0x0F0F0F0F0F0F0F0F;
-	x = (x | (x << 2)) & 0x3333333333333333;
-	x = (x | (x << 1)) & 0x5555555555555555;
+	x = (x | (x << 16)) & 0x0000FFFF0000FFFFULL;
+	x = (x | (x << 8)) & 0x00FF00FF00FF00FFULL;
+	x = (x | (x << 4)) & 0x0F0F0F0F0F0F0F0FULL;
+	x = (x | (x << 2)) & 0x3333333333333333ULL;
+	x = (x | (x << 1)) & 0x5555555555555555ULL;
 
-	y = (y | (y << 16)) & 0x0000FFFF0000FFFF;
-	y = (y | (y << 8)) & 0x00FF00FF00FF00FF;
-	y = (y | (y << 4)) & 0x0F0F0F0F0F0F0F0F;
-	y = (y | (y << 2)) & 0x3333333333333333;
-	y = (y | (y << 1)) & 0x5555555555555555;
+	y = (y | (y << 16)) & 0x0000FFFF0000FFFFULL;
+	y = (y | (y << 8)) & 0x00FF00FF00FF00FFULL;
+	y = (y | (y << 4)) & 0x0F0F0F0F0F0F0F0FULL;
+	y = (y | (y << 2)) & 0x3333333333333333ULL;
+	y = (y | (y << 1)) & 0x5555555555555555ULL;
 
 	return x | (y << 1);
 }
@@ -754,9 +754,9 @@ uint32_hilbert(uint32_t px, uint32_t py)
 	// Initial prefix scan round, prime with x and y
 	{
 		uint64_t a = x ^ y;
-		uint64_t b = 0xFFFFFFFF ^ a;
-		uint64_t c = 0xFFFFFFFF ^ (x | y);
-		uint64_t d = x & (y ^ 0xFFFFFFFF);
+		uint64_t b = 0xFFFFFFFFULL ^ a;
+		uint64_t c = 0xFFFFFFFFULL ^ (x | y);
+		uint64_t d = x & (y ^ 0xFFFFFFFFULL);
 
 		A = a | (b >> 1);
 		B = (a >> 1) ^ a;
@@ -816,7 +816,7 @@ uint32_hilbert(uint32_t px, uint32_t py)
 
 	// Recover index bits
 	uint64_t i0 = x ^ y;
-	uint64_t i1 = b | (0xFFFFFFFF ^ (i0 | a));
+	uint64_t i1 = b | (0xFFFFFFFFULL ^ (i0 | a));
 
 	return uint64_interleave_2(i0, i1);
 }

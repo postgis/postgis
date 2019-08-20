@@ -2451,7 +2451,7 @@ static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
 
 	int digits_left_of_decimal = (int) (1 + log10(fabs(d)));
 	uint8_t bits_needed = bits_for_precision(decimal_digits + digits_left_of_decimal);
-	uint64_t mask = 0xffffffffffffffff << (52 - bits_needed);
+	uint64_t mask = 0xffffffffffffffffULL << (52 - bits_needed);
 	uint64_t dint = 0;
 	size_t dsz = sizeof(d) < sizeof(dint) ? sizeof(d) : sizeof(dint);
 
