@@ -1551,17 +1551,12 @@ sub upgrade_spatial_extensions
       die;
     }
 
-    if ( $upgrade_via_function )
+    # Handle raster split if coming from pre-split and going
+    # to splitted raster
+    if ( $OPT_UPGRADE_FROM && has_split_raster_ext($OPT_UPGRADE_TO) &&
+         ! has_split_raster_ext($OPT_UPGRADE_FROM) )
     {
-      # The function does everything
-      return 1;
-    }
-
-    if ( $OPT_WITH_RASTER )
-    {
-      if ( $OPT_UPGRADE_FROM
-           && ! has_split_raster_ext($OPT_UPGRADE_FROM)
-         )
+      if ( $OPT_WITH_RASTER )
       {
         # upgrade of postgis must have unpackaged raster, so
         # we create it again here
@@ -1578,29 +1573,8 @@ sub upgrade_spatial_extensions
       }
       else
       {
-        my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
-
-        if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
-          $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
-        }
-
-        print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
-
-        my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-        my $rv = system($cmd);
-        if ( $rv ) {
-          fail "Error encountered altering EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
-          die;
-        }
-      }
-    }
-    else
-    {
-      # Raster support was not requested, so drop it if
-      # left unpackaged
-      if ( $OPT_UPGRADE_FROM
-           && ! has_split_raster_ext($OPT_UPGRADE_FROM) )
-      {
+        # Raster support was not requested, so drop it if
+        # left unpackaged
         print "Packaging PostGIS Raster in '${DB}' for later drop using: ${sql}\n" ;
 
         $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
@@ -1621,6 +1595,30 @@ sub upgrade_spatial_extensions
           die;
         }
       }
+		}
+
+    if ( $upgrade_via_function )
+    {
+      # The function does everything
+      return 1;
+    }
+
+    if ( $OPT_WITH_RASTER )
+    {
+        my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
+
+        if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
+          $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+        }
+
+        print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
+
+        my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+        my $rv = system($cmd);
+        if ( $rv ) {
+          fail "Error encountered altering EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
+          die;
+        }
     }
 
     if ( $OPT_WITH_TOPO )
