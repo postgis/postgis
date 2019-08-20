@@ -242,6 +242,7 @@ else
 }
 
 my $libver = sql("select postgis_lib_version()");
+my $defextver = sql("select default_version from pg_available_extensions where name = 'postgis'");
 
 if ( ! $libver )
 {
@@ -542,7 +543,13 @@ Options:
   -v, --verbose   be verbose about failures
   --nocreate      do not create the regression database on start
   --upgrade       source the upgrade scripts on start
-  --upgrade-path  upgrade path, format <from>--<to>
+  --upgrade-path  upgrade path, format <from>--<to>.
+                  <from> can be specified as "unpackaged<version>"
+                         to specify a script version to start from.
+                  <to> can be specified as ":auto" to request
+                       upgrades to default version, and ":auto!"
+                       to request upgrade via postgis_extensions_upgrade()
+                       if available.
   --dumprestore   dump and restore spatially-enabled db before running tests
   --nodrop        do not drop the regression database on exit
   --raster        load also raster extension
@@ -1504,11 +1511,34 @@ sub upgrade_spatial_extensions
 {
     # ON_ERROR_STOP is used by psql to return non-0 on an error
     my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
-    my $nextver = $OPT_UPGRADE_TO ? "${OPT_UPGRADE_TO}" : "${libver}next";
-    my $sql = "ALTER EXTENSION postgis UPDATE TO '${nextver}'";
+    my $sql;
+    my $upgrade_via_function = 0;
 
-    if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
+    if ( $OPT_UPGRADE_TO =~ /^:auto/ )
+    {
+      if ( $OPT_UPGRADE_TO =~ /^:auto!/ )
+      {
+        if ( ! semver_lessthan($OPT_UPGRADE_FROM, "2.5.0") )
+        {
+          $upgrade_via_function = 1;
+        }
+      }
+      $OPT_UPGRADE_TO = $defextver;
+    }
+
+    my $nextver = $OPT_UPGRADE_TO ? "${OPT_UPGRADE_TO}" : "${libver}next";
+
+    if ( $upgrade_via_function )
+    {
+      $sql = "SELECT postgis_extensions_upgrade()";
+    }
+    elsif ( $OPT_UPGRADE_FROM =~ /^unpackaged/ )
+    {
       $sql = "CREATE EXTENSION postgis VERSION '${nextver}' FROM unpackaged";
+    }
+    else
+    {
+      $sql = "ALTER EXTENSION postgis UPDATE TO '${nextver}'";
     }
 
     print "Upgrading PostGIS in '${DB}' using: ${sql}\n" ;
@@ -1519,6 +1549,12 @@ sub upgrade_spatial_extensions
     if ( $rv ) {
       fail "Error encountered altering EXTENSION POSTGIS", $REGRESS_LOG;
       die;
+    }
+
+    if ( $upgrade_via_function )
+    {
+      # The function does everything
+      return 1;
     }
 
     if ( $OPT_WITH_RASTER )
