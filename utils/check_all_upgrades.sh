@@ -14,7 +14,11 @@ if test -z "$1"; then
   exit 1
 fi
 
-to_version="$1"
+to_version_param="$1"
+to_version=$to_version_param
+if expr $to_version : ':auto' >/dev/null; then
+  to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"`
+fi
 
 
 # Return -1, 1 or 0 if the first version
@@ -87,14 +91,15 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   files=`'ls' ${EXT}--* | grep -v -- '--.*--' | sed "s/^${EXT}--\(.*\)\.sql/\1/"`
   for fname in $files; do
     from_version="$fname"
-    UPGRADE_PATH="${from_version}--${to_version}"
+    UPGRADE_PATH="${from_version}--${to_version_param}"
+    UPGRADE_FILE="${EXT}--${from_version}--${to_version}.sql"
     # only consider versions older than ${to_version}
     cmp=`semver_compare "${from_version}" "${to_version}"`
     if test $cmp -ge 0; then
-      echo "SKIP: upgrade $UPGRADE_PATH (target is not newer than source)"
+      echo "SKIP: upgrade $UPGRADE_PATH ($to_version is not newer than $from_version)"
       continue
     fi
-    if test -e ${EXT}--${UPGRADE_PATH}.sql; then
+    if test -e ${UPGRADE_FILE}; then
       echo "Testing ${EXT} upgrade $UPGRADE_PATH"
       export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
       make -C ${REGDIR} check && {
@@ -104,13 +109,13 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
         failed
       }
     else
-      echo "SKIP: ${EXT} upgrade $UPGRADE_PATH is missing"
+      echo "SKIP: ${EXT} upgrade $UPGRADE_FILE is missing"
     fi
   done
 
   # Check unpackaged->extension upgrades
   for majmin in "" `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
-    UPGRADE_PATH="unpackaged${majmin}--${to_version}"
+    UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
     echo "Testing ${EXT} upgrade $UPGRADE_PATH"
     export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
     make -C ${REGDIR} check && {
