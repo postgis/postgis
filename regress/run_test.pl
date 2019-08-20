@@ -1367,7 +1367,7 @@ sub prepare_spatial_extensions
 
 	if ( $OPT_WITH_SFCGAL )
 	{
-		do {
+		do {{
 			my $sql = "CREATE EXTENSION postgis_sfcgal";
 			if ( $OPT_UPGRADE_FROM ) {
 				if ( semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
@@ -1387,7 +1387,7 @@ sub prepare_spatial_extensions
 				fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
 				die;
 			}
-		} while (0);
+		}} while (0);
 	}
 
  	return 1;
