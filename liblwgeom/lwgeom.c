@@ -2444,28 +2444,21 @@ bits_for_precision(int32_t significant_digits)
 	return bits_needed;
 }
 
-static inline
-double mask_double(double d, uint64_t mask)
-{
-	uint64_t* double_bits = (uint64_t*) (&d);
-
-	(*double_bits) &= mask;
-
-	return *((double*) double_bits);
-}
-
 static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
 {
-	if (d==0)
+	if (d == 0)
 		return 0;
 
 	int digits_left_of_decimal = (int) (1 + log10(fabs(d)));
 	uint8_t bits_needed = bits_for_precision(decimal_digits + digits_left_of_decimal);
-
-
 	uint64_t mask = 0xffffffffffffffff << (52 - bits_needed);
+	uint64_t dint = 0;
+	size_t dsz = sizeof(d) < sizeof(dint) ? sizeof(d) : sizeof(dint);
 
-	return mask_double(d, mask);
+	memcpy(&dint, &d, dsz);
+	dint &= mask;
+	memcpy(&d, &dint, dsz);
+	return d;
 }
 
 void lwgeom_trim_bits_in_place(LWGEOM* geom, int32_t prec_x, int32_t prec_y, int32_t prec_z, int32_t prec_m)
