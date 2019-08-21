@@ -155,6 +155,8 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4176, ST_Intersects supports GEOMETRYCOLLECTION (Darafei Praliaskouski)
   - #4181, ST_AsMVTGeom: Avoid type changes due to validation (Raúl Marín)
   - #4183, ST_AsMVTGeom: Drop invalid geometries after simplification (Raúl Marín)
+  - #4196, Have postgis_extensions_upgrade() package unpackaged extensions
+           (Sandro Santilli)
   - #4215, Use floating point compare in ST_DumpAsPolygons (Darafei Praliaskouski)
   - #4155, Support for GEOMETRYCOLLECTION, POLYGON, TIN, TRIANGLE in
            ST_LocateBetween and ST_LocateBetweenElevations (Darafei Praliaskouski)
