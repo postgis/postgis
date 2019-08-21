@@ -1518,9 +1518,17 @@ sub upgrade_spatial_extensions
     {
       if ( $OPT_UPGRADE_TO =~ /^:auto!/ )
       {
-        if ( ! semver_lessthan($OPT_UPGRADE_FROM, "2.5.0") )
+        my $from = $OPT_UPGRADE_FROM;
+        $from =~ s/^unpackaged//;
+        if ( ! $from || semver_lessthan($from, "2.5.0") )
         {
           $upgrade_via_function = 1;
+        }
+        else
+        {
+          print "WARNING: postgis_extensions_upgrade()".
+                " not available in version $from.".
+                " We'll use manual upgrade.\n";
         }
       }
       $OPT_UPGRADE_TO = $defextver;
@@ -1595,7 +1603,7 @@ sub upgrade_spatial_extensions
           die;
         }
       }
-		}
+    }
 
     if ( $upgrade_via_function )
     {
