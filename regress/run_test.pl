@@ -1520,14 +1520,14 @@ sub upgrade_spatial_extensions
       {
         my $from = $OPT_UPGRADE_FROM;
         $from =~ s/^unpackaged//;
-        if ( ! $from || semver_lessthan($from, "2.5.0") )
+        if ( ! $from || ! semver_lessthan($from, "3.0.0") )
         {
           $upgrade_via_function = 1;
         }
         else
         {
           print "WARNING: postgis_extensions_upgrade()".
-                " not available in version $from.".
+                " not available or functional in version $from.".
                 " We'll use manual upgrade.\n";
         }
       }
