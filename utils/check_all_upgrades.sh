@@ -115,7 +115,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   done
 
   # Check unpackaged->extension upgrades
-  for majmin in "" `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
+  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
     UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
     echo "Testing ${EXT} upgrade $UPGRADE_PATH"
     export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
