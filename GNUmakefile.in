@@ -16,7 +16,7 @@ POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 PERL = @PERL@
 
 # todo: add more rules here, like uninstall, clean...
-all install uninstall noop clean distclean check:
+all install uninstall noop clean distclean check-unit check-regress:
 	for s in $(SUBDIRS); do \
 		echo "---- Making $@ in $${s}"; \
 		$(MAKE) -C $${s} $@ || exit 1; \
@@ -39,7 +39,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: all docs-check check-no-trailing-blanks
+check: all docs-check check-no-trailing-blanks check-unit check-regress
 
 check-no-trailing-blanks:
 	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
@@ -53,14 +53,14 @@ check-no-trailing-blanks:
 installcheck: installcheck-base installcheck-upgrade
 
 installcheck-base:
-	RUNTESTFLAGS="$(RUNTESTFLAGS) --extension" $(MAKE) check
+	RUNTESTFLAGS="$(RUNTESTFLAGS) --extension" $(MAKE) check-regress
 
 # only run upgrade test if RUNTESTFLAGS was not already doing that
 installcheck-upgrade: installcheck-upgrade-byfunc
 	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
 		RUNTESTFLAGS="$(RUNTESTFLAGS) --extension \
 			--upgrade-path unpackaged--$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)" \
-			$(MAKE) check; \
+			$(MAKE) check-regress; \
 	fi
 
 # only run upgrade test if RUNTESTFLAGS was not already doing that
@@ -68,7 +68,7 @@ installcheck-upgrade-byfunc:
 	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
 		RUNTESTFLAGS="$(RUNTESTFLAGS) --extension \
 			--upgrade-path unpackaged--$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)!" \
-			$(MAKE) check; \
+			$(MAKE) check-regress; \
 	fi
 
 distclean: distclean-local

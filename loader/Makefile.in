@@ -153,7 +153,11 @@ uninstall: uninstall-desktop uninstall-icons
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-GUI)"
 
-check:
+# TODO: move here what's currently run from regress/loader and
+# regress/dumper ?
+check-regress:
+
+check-unit:
 	$(MAKE) -C cunit check
 
 clean:

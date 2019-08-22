@@ -420,10 +420,13 @@ endif
 
 
 
+check: check-unit
+check-regress:
+
 ifeq ($(XMLLINT),)
-check: requirements_not_met_xmllint
+check-unit: requirements_not_met_xmllint
 else
-check: $(XML_INPUTS)
+check-unit: $(XML_INPUTS)
 	$(XMLLINT) --loaddtd --xinclude --valid postgis-out.xml > /dev/null
 endif
 

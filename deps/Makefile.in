@@ -40,7 +40,7 @@ install:
 
 uninstall:
 
-check:
+check check-unit check-regress:
 
 clean:
 	$(MAKE) -C wagyu $@

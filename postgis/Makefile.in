@@ -271,4 +271,8 @@ uninstall_sfcgal.sql: sfcgal.sql ../utils/create_undef.pl
 distclean: clean
 	rm -f Makefile
 
+check-unit:
+
+check-regress:
+
 maintainer-clean: distclean

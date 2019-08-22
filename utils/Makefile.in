@@ -77,4 +77,4 @@ distclean: clean
 	rm -f Makefile
 
 # And there's nothing to check
-check:
+check check-unit check-regress:

@@ -53,7 +53,11 @@ distclean: clean
 	$(MAKE) -C cunit distclean
 	rm -f Makefile
 
-check: libpgcommon.a
+check: check-unit
+
+check-regress:
+
+check-unit: libpgcommon.a
 	$(MAKE) -C cunit check
 
 # Command to build each of the .o files

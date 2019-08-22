@@ -62,8 +62,5 @@ distclean: clean
 	$(MAKE) -C scripts $@
 	rm -f raster_config.h Makefile
 
-core-check:
-	$(MAKE) -C test $@
-
-check:
+check check-unit check-regress core-check:
 	$(MAKE) -C test $@

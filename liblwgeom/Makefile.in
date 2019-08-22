@@ -193,7 +193,11 @@ distclean: clean
 	rm -f liblwgeom.h Makefile
 	rm -f Makefile
 
-check: liblwgeom.la
+check: check-unit
+
+check-regress:
+
+check-unit: liblwgeom.la
 	$(MAKE) -C cunit check
 
 # Command to build each of the .lo files
