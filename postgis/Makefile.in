@@ -91,6 +91,7 @@ PG_OBJS= \
 	lwgeom_geos_prepared.o \
 	lwgeom_geos_clean.o \
 	lwgeom_geos_relatematch.o \
+	lwgeom_hexgrid.o \
 	lwgeom_export.o \
 	lwgeom_in_gml.o \
 	lwgeom_in_kml.o \
