@@ -17,8 +17,8 @@ test:
     - ./autogen.sh
     - ./configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
-    - make check RUNTESTFLAGS=-v
-    - make check RUNTESTFLAGS="-v --dumprestore"
+    - RUNTESTFLAGS=-v make check
+    - RUNTESTFLAGS="-v --dumprestore" make check
     - make install
-    - make installcheck RUNTESTFLAGS=-v
-    - make installcheck RUNTESTFLAGS="-v --dumprestore"
+    - RUNTESTFLAGS=-v make installcheck
+    - RUNTESTFLAGS="-v --dumprestore" make installcheck
