@@ -16,4 +16,5 @@ LD_PRELOAD=/usr/lib/clang/7/lib/linux/libclang_rt.asan-x86_64.so /usr/local/pgsq
 # Build with Clang and usan flags
 ./autogen.sh
 ./configure CC=clang CFLAGS="${CFLAGS_USAN}" LDFLAGS="${LDFLAGS_STD}"
+bash ./ci/travis/logbt -- make -j
 bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose
