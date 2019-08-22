@@ -41,6 +41,7 @@ SQL_OBJS = \
   topology_drop_after.sql
 
 # Objects to build using PGXS
+
 OBJS = postgis_topology.o
 
 # Libraries to link into the module (proj, geos)
@@ -78,7 +79,13 @@ PERL=@PERL@
 # see http://trac.osgeo.org/postgis/ticket/1158#comment:57
 SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 
-$(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h
+$(OBJS): $(SHLIB_LINK_F)
+
+../libpgcommon/libpgcommon.a:
+	make -C ../libpgcommon
+
+../liblwgeom/.libs/liblwgeom.a:
+	make -C ../liblwgeom
 
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
