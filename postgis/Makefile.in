@@ -59,7 +59,7 @@ endif
 
 ifeq (@HAVE_PROTOBUF@,yes)
 PROTOBUF_OBJ = vector_tile.pb-c.o
-ifeq ($(shell expr "$(PROTOC_VERSION)" ">=" 1001000),1)
+ifeq (@HAVE_GEOBUF@,yes)
 PROTOBUF_OBJ += geobuf.pb-c.o
 endif
 UTHASH_INCLUDE = -I../deps/uthash/include

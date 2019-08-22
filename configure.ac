@@ -974,6 +974,7 @@ dnl ===========================================================================
 
 CHECK_PROTOBUF=yes
 HAVE_PROTOBUF=yes
+HAVE_GEOBUF=no
 
 AC_ARG_WITH([protobuf],
 	[AS_HELP_STRING([--without-protobuf], [build without protobuf-c support])],
@@ -1062,10 +1063,12 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf-c])
 		if test $PROTOC_VERSION -ge 1001000; then
 			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf is >= 1.1])
+			HAVE_GEOBUF=yes
 		fi
 	fi
 
     AC_SUBST([HAVE_PROTOBUF])
+    AC_SUBST([HAVE_GEOBUF])
     AC_SUBST([PROTOC_VERSION])
     AC_SUBST([PROTOBUF_CPPFLAGS])
     AC_SUBST([PROTOBUF_LDFLAGS])
