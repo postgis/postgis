@@ -44,6 +44,7 @@ my @ops = ();
 my @opcs = ();
 my @views = ();
 my @tables = ();
+my @sequences = ();
 my @schemas = ();
 
 sub strip_default {
@@ -68,7 +69,19 @@ while( my $line = <>)
 		push (@views, $1);
 	}
 	elsif ($line =~ /^create table \s*([\w\.]+)/i) {
-		push (@tables, $1);
+		#print STDERR "XXX table $1\n";
+		my $fqtn = $1;
+		push (@tables, $fqtn);
+		my $defn = $line;
+		while( not $defn =~ /\)/ ) {
+			#print STDERR "XXX defn $defn\n";
+			if ($defn =~ /([\w]+) serial\b/i) {
+				my $seq = "${fqtn}_$1_seq";
+				#print STDERR "XXX serial field [$seq]\n";
+				push (@sequences, $seq);
+			}
+			$defn = <>;
+		}
 	}
 	elsif ($line =~ /^create schema \s*([\w\.]+)/i) {
 		push (@schemas, $1);
@@ -184,6 +197,12 @@ print "-- Register all tables.\n";
 foreach my $table (@tables)
 {
 	add_if_not_exists("TABLE $table");
+}
+
+print "-- Register all sequences.\n";
+foreach my $seq (@sequences)
+{
+	add_if_not_exists("SEQUENCE $seq");
 }
 
 
