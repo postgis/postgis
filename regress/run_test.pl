@@ -547,8 +547,9 @@ Options:
                   <from> can be specified as "unpackaged<version>"
                          to specify a script version to start from.
                   <to> can be specified as ":auto" to request
-                       upgrades to default version, and ":auto!"
-                       to request upgrade via postgis_extensions_upgrade()
+                       upgrades to default version, and be appended
+                       a question mark (ie: ":auto!" or "3.0.0!") to
+                       request upgrade via postgis_extensions_upgrade()
                        if available.
   --dumprestore   dump and restore spatially-enabled db before running tests
   --nodrop        do not drop the regression database on exit
@@ -1514,23 +1515,25 @@ sub upgrade_spatial_extensions
     my $sql;
     my $upgrade_via_function = 0;
 
+    if ( $OPT_UPGRADE_TO =~ /!$/ )
+    {
+      $OPT_UPGRADE_TO =~ s/!$//;
+      my $from = $OPT_UPGRADE_FROM;
+      $from =~ s/^unpackaged//;
+      if ( ! $from || ! semver_lessthan($from, "3.0.0") )
+      {
+        $upgrade_via_function = 1;
+      }
+      else
+      {
+        print "WARNING: postgis_extensions_upgrade()".
+              " not available or functional in version $from.".
+              " We'll use manual upgrade.\n";
+      }
+    }
+
     if ( $OPT_UPGRADE_TO =~ /^:auto/ )
     {
-      if ( $OPT_UPGRADE_TO =~ /^:auto!/ )
-      {
-        my $from = $OPT_UPGRADE_FROM;
-        $from =~ s/^unpackaged//;
-        if ( ! $from || ! semver_lessthan($from, "3.0.0") )
-        {
-          $upgrade_via_function = 1;
-        }
-        else
-        {
-          print "WARNING: postgis_extensions_upgrade()".
-                " not available or functional in version $from.".
-                " We'll use manual upgrade.\n";
-        }
-      }
       $OPT_UPGRADE_TO = $defextver;
     }
 
