@@ -81,11 +81,6 @@ SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 
 $(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h
 
-../libpgcommon/libpgcommon.a:
-	make -C ../libpgcommon
-
-../liblwgeom/.libs/liblwgeom.a:
-	make -C ../liblwgeom
 
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
