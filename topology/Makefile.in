@@ -79,7 +79,7 @@ PERL=@PERL@
 # see http://trac.osgeo.org/postgis/ticket/1158#comment:57
 SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 
-$(OBJS): ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a
+$(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h
 
 ../libpgcommon/libpgcommon.a:
 	make -C ../libpgcommon
