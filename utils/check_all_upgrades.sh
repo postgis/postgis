@@ -17,7 +17,8 @@ fi
 to_version_param="$1"
 to_version=$to_version_param
 if expr $to_version : ':auto' >/dev/null; then
-  to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"`
+  export PGDATABASE=template1
+  to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
 fi
 
 
