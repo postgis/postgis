@@ -56,10 +56,18 @@ installcheck-base:
 	RUNTESTFLAGS="$(RUNTESTFLAGS) --extension" $(MAKE) check
 
 # only run upgrade test if RUNTESTFLAGS was not already doing that
-installcheck-upgrade:
+installcheck-upgrade: installcheck-upgrade-byfunc
 	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
 		RUNTESTFLAGS="$(RUNTESTFLAGS) --extension \
 			--upgrade-path unpackaged--$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)" \
+			$(MAKE) check; \
+	fi
+
+# only run upgrade test if RUNTESTFLAGS was not already doing that
+installcheck-upgrade-byfunc:
+	if test -z `echo "$(RUNTESTFLAGS)" | grep -- --upgrade`; then \
+		RUNTESTFLAGS="$(RUNTESTFLAGS) --extension \
+			--upgrade-path unpackaged--$(POSTGIS_MAJOR_VERSION).$(POSTGIS_MINOR_VERSION).$(POSTGIS_MICRO_VERSION)!" \
 			$(MAKE) check; \
 	fi
 
