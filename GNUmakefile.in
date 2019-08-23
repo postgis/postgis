@@ -39,7 +39,9 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: all docs-check check-no-trailing-blanks check-unit check-regress
+check: check-no-trailing-blanks check-unit check-regress docs-check
+
+check-unit check-regress docs-check: all
 
 check-no-trailing-blanks:
 	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
