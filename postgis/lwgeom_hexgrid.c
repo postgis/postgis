@@ -163,6 +163,7 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 
 	GSERIALIZED *gbounds;
 	GeometryGridState *state;
+	LWGEOM *lwgeom;
 
 	bool isnull[3] = {0,0,0}; /* needed to say no value is null */
 	Datum tuple_arr[3]; /* used to construct the composite return value */
@@ -253,7 +254,6 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 	j = state->cell_current / state->cell_width;
 
 	/* Generate geometry */
-	LWGEOM *lwgeom;
 	switch (state->cell_shape)
 	{
 		case SHAPE_HEXAGON:
