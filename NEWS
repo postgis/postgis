@@ -81,8 +81,7 @@ PostGIS 3.0.0alpha1
   - #4258, #4278 Enhance postgis functions ST_Area, ST_Distance, ST_Intersection,
            ST_Difference, ST_Union, ST_Intersects, ST_3DIntersects, ST_3DDistance
            to handle types (Solid PolyhedralSurface, TINS) that were only available in SFCGAL.
-           Remove postgis.backend switch.
-          (Darafei Praliaskouski)
+           Remove postgis.backend switch. (Darafei Praliaskouski)
   - #4230, SP-GiST and GiST support for ND box operators overlaps, contains,
            within, equals (Esteban Zimányi and Arthur Lesuisse from Université
            Libre de Bruxelles (ULB), Darafei Praliaskouski)
@@ -206,6 +205,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
            ST_AsGeoJSON sets SRID in JSON output if it differs from 4326.
            (Darafei Praliaskouski)
   - #3979, postgis_sfcgal_noop() round trip function (Lucas C. Villa Real)
+  - #4328, ST_3DIntersects for 2D TINs. (Darafei Praliaskouski)
 
 * Fixes *
   - #4342, Move deprecated functions into legacy.sql file
