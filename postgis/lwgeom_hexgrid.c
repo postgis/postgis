@@ -27,6 +27,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "funcapi.h"
+#include "access/htup_details.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -156,11 +157,11 @@ GeometryGridState;
 PG_FUNCTION_INFO_V1(ST_ShapeGrid);
 Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 {
+	int i, j;
 	FuncCallContext *funcctx;
 	MemoryContext oldcontext, newcontext;
 
 	GSERIALIZED *gbounds;
-	GBOX bounds;
 	GeometryGridState *state;
 
 	bool isnull[3] = {0,0,0}; /* needed to say no value is null */
@@ -170,15 +171,20 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 
 	if (SRF_IS_FIRSTCALL())
 	{
+		const char *func_name;
+		double bounds_width, bounds_height;
+		int gbounds_is_empty;
+		GBOX bounds;
+		double size;
 		funcctx = SRF_FIRSTCALL_INIT();
 
 		/* get a local copy of what we're doing a dump points on */
 		gbounds = PG_GETARG_GSERIALIZED_P(1);
-		double size = PG_GETARG_FLOAT8(0);
+		size = PG_GETARG_FLOAT8(0);
 
-		int gbounds_is_empty = (gserialized_get_gbox_p(gbounds, &bounds) == LW_FAILURE);
-		double bounds_width = bounds.xmax - bounds.xmin;
-		double bounds_height = bounds.ymax - bounds.ymin;
+		gbounds_is_empty = (gserialized_get_gbox_p(gbounds, &bounds) == LW_FAILURE);
+		bounds_width = bounds.xmax - bounds.xmin;
+		bounds_height = bounds.ymax - bounds.ymin;
 
 		/* quick opt-out if we get nonsensical inputs  */
 		if (size <= 0.0 || gbounds_is_empty ||
@@ -198,7 +204,7 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 		state->srid = gserialized_get_srid(gbounds);
 		state->size = size;
 
-		const char *func_name = get_func_name(fcinfo->flinfo->fn_oid);
+		func_name = get_func_name(fcinfo->flinfo->fn_oid);
 		if (strcmp(func_name, "st_hexagongrid") == 0)
 		{
 			state->cell_shape = SHAPE_HEXAGON;
@@ -243,8 +249,8 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 		SRF_RETURN_DONE(funcctx);
 	}
 
-	int i = state->cell_current % state->cell_width;
-	int j = state->cell_current / state->cell_width;
+	i = state->cell_current % state->cell_width;
+	j = state->cell_current / state->cell_width;
 
 	/* Generate geometry */
 	LWGEOM *lwgeom;
