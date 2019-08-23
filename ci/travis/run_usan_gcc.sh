@@ -10,5 +10,4 @@ LDFLAGS_STD="-Wl,-Bsymbolic-functions -Wl,-z,relro"
 
 # Build with GCC and usan flags
 ./configure CC=gcc CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
-bash ./ci/travis/logbt -- make -j
 bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose
