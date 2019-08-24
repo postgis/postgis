@@ -45,7 +45,6 @@
 /* Prototypes */
 static int reverse_points(int num_points, double *x, double *y, double *z, double *m);
 static int is_clockwise(int num_points,double *x,double *y,double *z);
-static int is_bigendian(void);
 static SHPObject *create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint);
 static SHPObject *create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint);
 static SHPObject *create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon);
@@ -575,21 +574,6 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 	size = atoi(PQgetvalue(res, 0, 0));
 	PQclear(res);
 	return size;
-}
-
-static int
-is_bigendian(void)
-{
-	int test = 1;
-
-	if ( (((char *)(&test))[0]) == 1)
-	{
-		return 0; /*NDR (little_endian) */
-	}
-	else
-	{
-		return 1; /*XDR (big_endian) */
-	}
 }
 
 char *
@@ -1186,7 +1170,6 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->dbffieldnames = NULL;
 	state->dbffieldtypes = NULL;
 	state->pgfieldnames = NULL;
-	state->big_endian = is_bigendian();
 	state->message[0] = '\0';
 	colmap_init(&state->column_map);
 
@@ -1890,30 +1873,27 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		if (state->fieldcount > 0)
 			strcat(state->main_scan_query, ",");
 
-		if (state->big_endian)
+#ifdef WORDS_BIGENDIAN
+		if (state->pgis_major_version > 0)
 		{
-			if (state->pgis_major_version > 0)
-			{
-				sprintf(buf, "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX", quote_identifier(state->geo_col_name) );
-			}
-			else
-			{
-				sprintf(buf, "asbinary(%s::geometry, 'XDR') AS _geoX",
-					quote_identifier(state->geo_col_name) );
-			}
+			sprintf(buf, "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX", quote_identifier(state->geo_col_name) );
 		}
-		else /* little_endian */
+		else
 		{
-			if (state->pgis_major_version > 0)
-			{
-				sprintf(buf, "ST_AsEWKB(ST_SetSRID(%s::geometry, 0), 'NDR') AS _geoX", quote_identifier(state->geo_col_name) ) ;
-			}
-			else
-			{
-				sprintf(buf, "asbinary(%s::geometry, 'NDR') AS _geoX",
-					quote_identifier(state->geo_col_name) );
-			}
+			sprintf(buf, "asbinary(%s::geometry, 'XDR') AS _geoX",
+				quote_identifier(state->geo_col_name) );
 		}
+#else
+		if (state->pgis_major_version > 0)
+		{
+			sprintf(buf, "ST_AsEWKB(ST_SetSRID(%s::geometry, 0), 'NDR') AS _geoX", quote_identifier(state->geo_col_name) ) ;
+		}
+		else
+		{
+			sprintf(buf, "asbinary(%s::geometry, 'NDR') AS _geoX",
+				quote_identifier(state->geo_col_name) );
+		}
+#endif
 
 		strcat(state->main_scan_query, buf);
 	}

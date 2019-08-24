@@ -57,6 +57,7 @@ documentation -- that means having the required software:
 Release procedure
 -----------------
 
+- Ensure all bots are green: https://trac.osgeo.org/postgis
 - Re-generate the ChangeLog (make ChangeLog)
 - Edit NEWS: set release date and check all notable changes have
   been reported (extract from ChangeLog).

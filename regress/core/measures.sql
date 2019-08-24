@@ -282,3 +282,11 @@ select '#4278.2', ST_3DDistance('BOX3D(0 0 0, 1 1 1)'::box3d::geometry, 'BOX3D(-
 -- cast to text and back as a way of getting rid of solid flag
 select '#4278.3', ST_3DIntersects('BOX3D(0 0 0, 1 1 1)'::box3d::geometry::text::geometry, 'BOX3D(-1 -1 -1, 2 2 2)'::box3d::geometry::text::geometry);
 select '#4278.4', ST_3DDistance('BOX3D(0 0 0, 1 1 1)'::box3d::geometry::text::geometry, 'BOX3D(-1 -1 -1, 2 2 2)'::box3d::geometry::text::geometry);
+
+
+SELECT '#4328.1', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POINT(.1 .1)'::geometry), ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POINT(.1 .1)'::geometry);
+SELECT '#4328.2', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'LINESTRING(.1 .1, .2 .2)'::geometry), ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'LINESTRING(.1 .1, .2 .2)'::geometry);
+SELECT '#4328.3', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'TRIANGLE((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry), ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'TRIANGLE((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry);
+SELECT '#4328.4', ST_Intersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POLYGON((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry), ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POLYGON((.1 .1, .2 .2, .2 .1, .1 .1))'::geometry);
+SELECT '#4328.5', ST_Intersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1)'::geometry), ST_3DIntersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1)'::geometry);
+SELECT '#4328.6', ST_Intersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CURVEPOLYGON(CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1, 1.2 1.2, 1.1 1.1))'::geometry), ST_3DIntersects('TIN(((0 0,3 0,0 3,0 0)))'::geometry, 'CURVEPOLYGON(CIRCULARSTRING(1.1 1.1, 1.2 1.2, 1.2 1.1, 1.2 1.2, 1.1 1.1))'::geometry);

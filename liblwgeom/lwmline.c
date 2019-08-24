@@ -111,18 +111,19 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 
 void lwmline_free(LWMLINE *mline)
 {
-	uint32_t i;
-	if ( ! mline ) return;
+	if (!mline)
+		return;
 
-	if ( mline->bbox )
+	if (mline->bbox)
 		lwfree(mline->bbox);
 
-	for ( i = 0; i < mline->ngeoms; i++ )
-		if ( mline->geoms && mline->geoms[i] )
-			lwline_free(mline->geoms[i]);
-
-	if ( mline->geoms )
+	if (mline->geoms)
+	{
+		for (uint32_t i = 0; i < mline->ngeoms; i++)
+			if (mline->geoms[i])
+				lwline_free(mline->geoms[i]);
 		lwfree(mline->geoms);
+	}
 
 	lwfree(mline);
 }

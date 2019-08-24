@@ -37,6 +37,6 @@ distclean-local:
 	rm -f Makefile
 
 
-check:
+check check-unit check-regress:
 	@echo "Nothing to check"
 

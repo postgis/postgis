@@ -291,3 +291,8 @@ SELECT regexp_replace(probin, '(rt)?postgis(_[^-]*)?', '')
 	FROM pg_proc WHERE proname = 'postgis_lib_version'
 )
 ORDER BY 2;
+
+
+SELECT 'UNEXPECTED', postgis_full_version()
+	WHERE postgis_full_version() LIKE '%UNPACKAGED%'
+	   OR postgis_full_version() LIKE '%need upgrade%';

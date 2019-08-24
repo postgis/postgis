@@ -1116,7 +1116,14 @@ SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry
 ---------------
  t
 (1 row)
-		</programlisting>
+
+-- Look up in table. Make sure table has a GiST index on geometry column for faster lookup.
+SELECT id, name FROM cities WHERE ST_Intersects(geom, 'SRID=4326;POLYGON((28 53,27.707 52.293,27 52,26.293 52.293,26 53,26.293 53.707,27 54,27.707 53.707,28 53))');
+ id | name
+----+-------
+  2 | Minsk
+(1 row)
+</programlisting>
 		</refsection>
 		<refsection>
 		<title>Geography Examples</title>

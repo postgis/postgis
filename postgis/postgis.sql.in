@@ -2829,10 +2829,10 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_proc
 							WHERE proname = 'postgis_sfcgal_version' ) )
 
-				 -- PostGIS Topoology is available if
+				 -- PostGIS Topology is available if
 				 -- 'topology.topology' table exists
-				 -- NOTE: disabled due to https://trac.osgeo.org/postgis/ticket/2503
-				 OR ( FALSE AND rec.name = 'postgis_topology' AND EXISTS (
+				 -- NOTE: watch out for https://trac.osgeo.org/postgis/ticket/2503
+				 OR ( rec.name = 'postgis_topology' AND EXISTS (
 							SELECT 1 FROM pg_catalog.pg_class c
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'topology' AND c.relname = 'topology') )

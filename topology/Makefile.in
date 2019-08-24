@@ -41,6 +41,7 @@ SQL_OBJS = \
   topology_drop_after.sql
 
 # Objects to build using PGXS
+
 OBJS = postgis_topology.o
 
 # Libraries to link into the module (proj, geos)
@@ -79,6 +80,7 @@ PERL=@PERL@
 SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 
 $(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h
+
 
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
@@ -133,10 +135,12 @@ topology.sql: \
 uninstall_topology.sql: topology.sql ../utils/create_undef.pl
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
-check-local: topology.sql
-	$(MAKE) -C test check
+check-unit:
 
-check: check-local
+check-regress: topology.sql
+	$(MAKE) -C test $@
+
+check: check-regress
 
 distclean: clean
 	rm -f Makefile test/Makefile

@@ -50,6 +50,7 @@ Datum sfcgal_tesselate(PG_FUNCTION_ARGS);
 Datum sfcgal_minkowski_sum(PG_FUNCTION_ARGS);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS);
 Datum sfcgal_is_solid(PG_FUNCTION_ARGS);
+Datum postgis_sfcgal_noop(PG_FUNCTION_ARGS);
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 char *text_to_cstring(const text *textptr);
@@ -523,6 +524,29 @@ Datum sfcgal_make_solid(PG_FUNCTION_ARGS)
 
 	output = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(postgis_sfcgal_noop);
+Datum postgis_sfcgal_noop(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input, *output;
+	LWGEOM *geom, *result;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	geom = lwgeom_from_gserialized(input);
+	if (!geom)
+		elog(ERROR, "sfcgal_noop: Unable to deserialize input");
+
+	result = lwgeom_sfcgal_noop(geom);
+	lwgeom_free(geom);
+	if (!result)
+		elog(ERROR, "sfcgal_noop: Unable to deserialize lwgeom");
+
+	output = geometry_serialize(result);
 	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(output);
 }

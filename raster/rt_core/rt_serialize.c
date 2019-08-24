@@ -728,7 +728,11 @@ rt_raster_deserialize(void* serialized, int header_only) {
 	const uint8_t *beg = NULL;
 	uint16_t i = 0;
 	uint16_t j = 0;
-	uint8_t littleEndian = isMachineLittleEndian();
+#ifdef WORDS_BIGENDIAN
+	uint8_t littleEndian = LW_FALSE;
+#else
+	uint8_t littleEndian = LW_TRUE;
+#endif
 
 	assert(NULL != serialized);
 

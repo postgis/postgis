@@ -22,7 +22,6 @@ POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
-HAVE_PROTOBUF=@HAVE_PROTOBUF@
 PROTOC_VERSION=@PROTOC_VERSION@
 HAVE_SPGIST=@HAVE_SPGIST@
 INTERRUPTTESTS=@INTERRUPTTESTS@
@@ -174,14 +173,14 @@ TESTS_SLOW = \
 	concave_hull_hard \
 	knn_recheck
 
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 37),1)
 	# GEOS-3.7 adds:
 	# ST_FrechetDistance
 	TESTS += \
 		frechet
 endif
 
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 38),1)
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 38),1)
 	# GEOS-3.8 adds stable pointonsurface implementation
 	TESTS += \
 		geos38
@@ -210,13 +209,13 @@ ifeq ($(HAVE_SPGIST),yes)
 	regress_spgist_index_nd
 endif
 
-ifeq ($(HAVE_PROTOBUF),yes)
+ifeq (@HAVE_PROTOBUF@,yes)
 	# protobuf-c adds:
 	# ST_AsMVT, ST_AsGeobuf
 	TESTS += \
 		mvt \
 		mvt_jsonb
-ifeq ($(shell expr $(PROTOC_VERSION) ">=" 1001000),1)
+ifeq (@HAVE_GEOBUF@,yes)
 	TESTS += \
 		geobuf
 endif

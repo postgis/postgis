@@ -39,7 +39,11 @@ export PATH
 
 all install uninstall:
 
-check: staged-install
+check: check-regress
+
+check-unit:
+
+check-regress: staged-install
 	$(MAKE) -C core check
 ifeq ($(HAVE_SFCGAL),yes)
 	$(MAKE) -C sfcgal check
