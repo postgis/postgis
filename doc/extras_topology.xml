@@ -330,7 +330,12 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 			<refsection>
 				<title>See Also</title>
 
-				<para><xref linkend="CreateTopology"/>, <xref linkend="CreateTopoGeom"/></para>
+				<para>
+				  <xref linkend="DropTopoGeometryColumn"/>,
+				  <xref linkend="toTopoGeom" />,
+				  <xref linkend="CreateTopology"/>,
+				  <xref linkend="CreateTopoGeom"/>
+				</para>
 			</refsection>
 		</refentry>
 		<refentry id="DropTopology">
