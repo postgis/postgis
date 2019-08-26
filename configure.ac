@@ -1487,13 +1487,9 @@ dnl Wagyu will only be necessary if protobuf is present to build MVTs
 
 HAVE_WAGYU=no
 if test "x$HAVE_PROTOBUF" = "xyes"; then
-    AC_ARG_WITH(
-            [wagyu],
-            AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]),
-            [HAVE_WAGYU=no],
-            [HAVE_WAGYU=yes])
+    AC_ARG_WITH([wagyu], AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]), [], [])
 
-    if test "x$HAVE_WAGYU" = "xyes"; then
+    if test "x$with_wagyu" != xno; then
             AC_MSG_RESULT([WAGYU: Wagyu usage requested])
 
             DEPS_SUBDIR="deps"
@@ -1542,6 +1538,7 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
             CXXFLAGS="$CXXFLAGS_SAVE"
             CPPFLAGS="$CPPFLAGS_SAVE"
 
+            HAVE_WAGYU=yes
             AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
             AC_SUBST([HAVE_WAGYU])
             AC_SUBST([WAGYU_CXX])
