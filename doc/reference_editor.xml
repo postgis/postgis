@@ -499,6 +499,7 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 				rings.  Non-polygonal geometries are returned unchanged.
 			</para>
 
+			<para>Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>
@@ -629,6 +630,7 @@ GEOMETRYCOLLECTION(
 				rings.  Non-polygonal geometries are returned unchanged.
 			</para>
 
+			<para>Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>

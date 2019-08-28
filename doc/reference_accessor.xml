@@ -1371,6 +1371,7 @@ FROM (SELECT ST_BuildArea(
 				</para>
 			</note>
 
+			<para>Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 
@@ -1440,6 +1441,7 @@ FROM (SELECT ST_BuildArea(
 				</para>
 			</note>
 
+			<para>Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>
