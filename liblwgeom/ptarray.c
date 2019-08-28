@@ -1465,8 +1465,10 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 
 	last = getPoint2d_cp(pa, 0);
 	void *p_to = ((char *)last) + pt_size;
-	for (i = 1; i < n_points - 1; i++)
+	for (i = 1; i < n_points; i++)
 	{
+		int last_point = (i == n_points - 1);
+
 		/* Look straight into the abyss */
 		pt = getPoint2d_cp(pa, i);
 
@@ -1478,7 +1480,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 				/* Only drop points that are within our tolerance */
 				dsq = distance2d_sqr_pt_pt(last, pt);
 				/* Allow any point but the last one to be dropped */
-				if (dsq <= tolsq)
+				if (!last_point && dsq <= tolsq)
 				{
 					continue;
 				}
@@ -1489,6 +1491,16 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 				if (memcmp((char*)pt, (char*)last, pt_size) == 0)
 					continue;
 			}
+
+			/* Got to last point, and it's not very different from */
+			/* the point that preceded it. We want to keep the last */
+			/* point, not the second-to-last one, so we pull our write */
+			/* index back one value */
+			if (last_point && n_points_out > 1 && tolerance > 0.0 && dsq <= tolsq)
+			{
+				n_points_out--;
+				p_to -= pt_size;
+			}
 		}
 
 		/* Compact all remaining values to front of array */
@@ -1497,28 +1509,6 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 		p_to += pt_size;
 		last = pt;
 	}
-
-	/* Last point has a different behaviour */
-	{
-		pt = getPoint2d_cp(pa, n_points - 1);
-		if ((n_points + n_points_out > min_points + i) && (n_points_out > 1) && (tolerance > 0.0))
-		{
-			/* Got to last point, and it's not very different from */
-			/* the point that preceded it. We want to keep the last */
-			/* point, not the second-to-last one, so we pull our write */
-			/* index back one value */
-			dsq = distance2d_sqr_pt_pt(last, pt);
-			if (dsq <= tolsq)
-			{
-				n_points_out--;
-				p_to -= pt_size;
-			}
-		}
-
-		memcpy(p_to, pt, pt_size);
-		n_points_out++;
-	}
-
 	/* Adjust array length */
 	pa->npoints = n_points_out;
 	return;
