@@ -15,3 +15,10 @@ SELECT '12', ST_astext(ST_Simplify('MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0),
 
 SELECT '13', ST_astext(ST_Simplify('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))', 20, false));
 SELECT '14', ST_astext(ST_Simplify('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))', 20, true));
+
+-- Updates the geometry bbox
+WITH geom AS
+(
+    SELECT ST_Simplify('POLYGON((0 0, 10 0, 10 10, 10.6 10, 10.5 10.5, 10 10, 0 10, 0 0))', 1) as g
+)
+Select '15', ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;

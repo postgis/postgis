@@ -6,6 +6,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 * Major highlights *
   - #4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)
+  - #4494, Fix ST_Simplify output having an outdated bbox (Raúl Marín)
 
 PostGIS 3.0.0alpha4
 2019/08/10
