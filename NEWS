@@ -1,3 +1,10 @@
+PostGIS 2.5.4
+XXXX/XX/XX
+
+ * Bug fixes *
+
+  - #4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)
+
 PostGIS 2.5.3
 2019/08/11
 
