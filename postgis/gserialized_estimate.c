@@ -2259,7 +2259,7 @@ gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
 
 	if (!vardata.statsTuple)
 	{
-		elog(DEBUG1, "%s: no statistics available on table, run ANALYZE", __func__);
+		elog(DEBUG1, "%s: no statistics available on table, run ANALYZE?", __func__);
 		return DEFAULT_ND_SEL;
 	}
 
