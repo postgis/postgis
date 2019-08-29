@@ -1,3 +1,12 @@
+PostGIS 3.0.0alpha5
+XXXX/XX/XX
+For full changes and enhancements, refer to PostGIS 3.0.0.
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
+
+* Major highlights *
+  - #4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)
+
 PostGIS 3.0.0alpha4
 2019/08/10
 For full changes and enhancements, refer to PostGIS 3.0.0.

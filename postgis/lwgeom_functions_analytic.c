@@ -71,8 +71,8 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	bool preserve_collapsed = false;
 
 	/* Handle optional argument to preserve collapsed features */
-	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
-		preserve_collapsed = true;
+	if ((PG_NARGS() > 2) && (!PG_ARGISNULL(2)))
+		preserve_collapsed = PG_GETARG_BOOL(2);
 
 	/* Can't simplify points! */
 	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
