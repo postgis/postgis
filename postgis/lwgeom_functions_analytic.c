@@ -86,7 +86,8 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in->bbox ) lwgeom_add_bbox(out);
+	if (in->bbox)
+		lwgeom_refresh_bbox(out);
 
 	result = geometry_serialize(out);
 	lwgeom_free(out);
