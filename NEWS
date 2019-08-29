@@ -5,6 +5,7 @@ XXXX/XX/XX
 
   - #4475, Avoid reading into empty ptarray (Paul Ramsey)
   - #4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)
+  - #4494, Fix ST_Simplify output having an outdated bbox (Raúl Marín)
 
 PostGIS 2.3.10
 2019/08/11
