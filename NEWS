@@ -1,5 +1,13 @@
+PostGIS 2.3.11
+XXXX/XX/XX
+
+  * Bug Fixes and Enhancements *
+
+  - #4475, Avoid reading into empty ptarray (Paul Ramsey)
+  - #4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)
+
 PostGIS 2.3.10
-2019/08/XX
+2019/08/11
 
   * Bug Fixes and Enhancements *
 
@@ -12,7 +20,6 @@ PostGIS 2.3.10
   - #4209, Handle NULL geometry values in pgsql2shp (Paul Ramsey)
   - #4437, Handle POINT EMPTY in shape loader/dumper (Paul Ramsey)
   - #4470, ST_GeomFromGeoJSON crash on empty rings (Darafei Praliaskouski)
-  - #4475, Avoid reading into empty ptarray (Paul Ramsey)
 
 PostGIS 2.3.9
 2019/03/11

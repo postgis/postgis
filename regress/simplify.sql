@@ -12,3 +12,6 @@ SELECT '9', ST_astext(ST_Simplify('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 5
 SELECT '10', ST_astext(ST_Simplify('LINESTRING(0 0, 0 10)', 20));
 SELECT '11', ST_astext(ST_Simplify('MULTIPOLYGON(((100 100, 100 130, 130 130, 130 100, 100 100)), ((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 5 6, 6 6, 8 5, 5 5)) )', 20));
 SELECT '12', ST_astext(ST_Simplify('MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 5 6, 6 6, 8 5, 5 5)),((100 100, 100 130, 130 130, 130 100, 100 100)))', 20));
+
+SELECT '13', ST_astext(ST_Simplify('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))', 20, false));
+SELECT '14', ST_astext(ST_Simplify('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))', 20, true));
