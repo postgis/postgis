@@ -2671,6 +2671,14 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 		tolerance = PG_GETARG_FLOAT8(1);
 
 	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in, tolerance);
+
+	/* COMPUTE_BBOX TAINTING */
+	if (lwgeom_in->bbox)
+	{
+		lwgeom_drop_bbox(lwgeom_out);
+		lwgeom_add_bbox(lwgeom_out);
+	}
+
 	g_out = geometry_serialize(lwgeom_out);
 
 	if ( lwgeom_out != lwgeom_in )

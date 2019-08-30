@@ -23,3 +23,9 @@ SELECT 12, ST_SRID(ST_RemoveRepeatedPoints('SRID=3;LINESTRING(0 0, 0 0, 0 0, 0 0
 SELECT 13, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(0 0, 1 0, 2 0, 3 0, 4 0)',1.5));
 SELECT 14, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(10 0,10 9,10 10)', 2));
 
+-- Updates the ouput bbox
+WITH geom AS
+(
+    SELECT ST_RemoveRepeatedPoints('POLYGON((0 0, 10 0, 10 10, 10.5 10.5, 10 10, 0 10, 0 0))', 1) as g
+)
+Select 19, ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
