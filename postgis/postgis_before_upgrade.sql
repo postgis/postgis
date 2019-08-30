@@ -21,7 +21,18 @@
 
 
 -- Helper function to drop functions when they match the full signature
--- Requires schema, name and __identity_arguments__ as extracted from pg_catalog
+-- Requires schema, name and __exact arguments__ as extracted from pg_catalog.pg_get_function_arguments
+-- You can extract the old function arguments using a query like:
+-- SELECT  p.oid as oid,
+--                 n.nspname as schema,
+--                 p.proname as name,
+--                 pg_catalog.pg_get_function_arguments(p.oid) as arguments
+--         FROM pg_catalog.pg_proc p
+--         LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+--         WHERE
+--                 LOWER(n.nspname) = LOWER('public') AND
+--                 LOWER(p.proname) = LOWER('ST_AsGeoJson')
+--         ORDER BY 1, 2, 3, 4;
 CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
 	function_schema text,
 	function_name text,
@@ -150,7 +161,7 @@ SELECT _postgis_drop_function_if_needed
 	(
 	'@extschema@',
 	'ST_AsGeoJson',
-	'r record, geom_column text, maxdecimaldigits int4, pretty_print bool'
+	$args$r record, geom_column text DEFAULT ''::text, maxdecimaldigits integer DEFAULT 15, pretty_print boolean DEFAULT false$args$
 	);
 
 -- FUNCTION ST_LineCrossingDirection changed argument names in 3.0
