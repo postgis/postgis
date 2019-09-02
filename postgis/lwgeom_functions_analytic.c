@@ -374,8 +374,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	/* COMPUTE_BBOX TAINTING */
 	if ( in_lwgeom->bbox )
-		lwgeom_add_bbox(out_lwgeom);
-
+		lwgeom_refresh_bbox(out_lwgeom);
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 
@@ -454,7 +453,10 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in_lwgeom->bbox ) lwgeom_add_bbox(out_lwgeom);
+	if (in_lwgeom->bbox)
+	{
+		lwgeom_refresh_bbox(out_lwgeom);
+	}
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 

@@ -12,3 +12,10 @@ SELECT '9', ST_astext(ST_Simplifyvw('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(5 5,
 SELECT '10', ST_astext(ST_Simplifyvw('LINESTRING(0 0, 0 10)', 20));
 SELECT '11', ST_astext(ST_Simplifyvw('MULTIPOLYGON(((100 100, 100 130, 130 130, 130 100, 100 100)), ((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 5 6, 6 6, 8 5, 5 5)) )', 20));
 SELECT '12', ST_astext(ST_Simplifyvw('MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 5 6, 6 6, 8 5, 5 5)),((100 100, 100 130, 130 130, 130 100, 100 100)))', 200));
+
+-- The geometry bbox is updated
+WITH geom AS
+(
+    SELECT ST_Simplifyvw('MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 5 6, 6 6, 8 5, 5 5)),((100 100, 100 130, 130 130, 130 131, 130 130, 130 100, 100 100)))', 200) AS g
+)
+SELECT '13', ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
