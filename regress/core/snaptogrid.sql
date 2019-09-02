@@ -15,5 +15,7 @@ DROP TABLE tmp;
 WITH geom AS
 (
     SELECT ST_SnapToGrid('POLYGON((0 0, 10 0, 10 10, 10.6 10, 10.5 10.5, 10 10, 0 10, 0 0))', 10) as g
+    UNION ALL
+    SELECT ST_SnapToGrid('POLYGON((0 0, 10 0, 10 10, 10.6 10, 10.5 10.5, 10 10, 0 10, 0 0))', 'POINT(0 0)', 10, 10, 10, 10) as g
 )
 Select ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
