@@ -18,9 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
- * Copyright 2009-2017 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2018 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2018 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  **********************************************************************/
 
@@ -57,14 +55,13 @@ static LWGEOM *
 hexagon(double origin_x, double origin_y, double edge, int cell_i, int cell_j, uint32_t srid)
 {
 	double height = edge * HXR;
-	POINT4D pt;
+	POINT4D pt = {0, 0, 0, 0};
 	POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 	POINTARRAY *pa = ptarray_construct(0, 0, 7);
 	uint32_t i;
 
 	double offset_x = origin_x + (1.5 * edge * cell_i);
 	double offset_y = origin_y + (height * cell_j) + (0.5 * height * (cell_i % 2));
-	pt.z = pt.m = 0.0;
 
 	for (i = 0; i < 7; ++i)
 	{
@@ -92,30 +89,14 @@ hexagon_grid_size(double edge, const GBOX *gbox, int *cell_width, int *cell_heig
 
 /* ********* ********* ********* ********* ********* ********* ********* ********* */
 
-static const double sqr_x[] = {0.0, 1.0, 1.0, 0.0, 0.0};
-static const double sqr_y[] = {0.0, 0.0, 1.0, 1.0, 0.0};
-
 static LWGEOM *
-square(double origin_x, double origin_y, double E, int cell_i, int cell_j, uint32_t srid)
+square(double origin_x, double origin_y, double size, int cell_i, int cell_j, uint32_t srid)
 {
-	POINT4D pt;
-	POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
-	POINTARRAY *pa = ptarray_construct(0, 0, 5);
-	uint32_t i;
-
-	double offset_x = origin_x + (E * cell_i);
-	double offset_y = origin_y + (E * cell_j);
-	pt.z = pt.m = 0.0;
-
-	for (i = 0; i < 5; ++i)
-	{
-		pt.x = E * sqr_x[i] + offset_x;
-		pt.y = E * sqr_y[i] + offset_y;
-		ptarray_set_point4d(pa, i, &pt);
-	}
-
-	ppa[0] = pa;
-	return lwpoly_as_lwgeom(lwpoly_construct(srid, NULL, 1 /* nrings */, ppa));
+	double ll_x = origin_x + (size * cell_i);
+	double ll_y = origin_y + (size * cell_j);
+	double ur_x = origin_x + (size * (cell_i + 1));
+	double ur_y = origin_y + (size * (cell_j + 1));
+	return (LWGEOM*)lwpoly_construct_envelope(srid, ll_x, ll_y, ur_x, ur_y);
 }
 
 static int
@@ -139,25 +120,27 @@ typedef enum
 
 typedef struct GeometryGridState
 {
-	int cell_current;
-	int cell_count;
-	int cell_width;
-	int cell_height;
+	int64_t cell_current;
+	int64_t cell_count;
+	int32_t cell_width;
+	int32_t cell_height;
 	GBOX bounds;
 	double size;
-	uint32_t srid;
+	int32_t srid;
 	GeometryShape cell_shape;
 }
 GeometryGridState;
 
 /**
-* ST_HexagonGrid(size double default 1.0,
-*            bounds geometry default 'LINESTRING(0 0, 100 100)')
+* ST_HexagonGrid(size float8 DEFAULT 1.0,
+*		bounds geometry DEFAULT 'LINESTRING(0 0, 100 100)')
+* ST_SquareGrid(size float8 DEFAULT 1.0,
+*		bounds geometry DEFAULT 'LINESTRING(0 0, 100 100)')
 */
 PG_FUNCTION_INFO_V1(ST_ShapeGrid);
 Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 {
-	int i, j;
+	int32_t i, j;
 	FuncCallContext *funcctx;
 	MemoryContext oldcontext, newcontext;
 
@@ -205,6 +188,10 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 		state->srid = gserialized_get_srid(gbounds);
 		state->size = size;
 
+		/*
+		* Support both hexagon and square grids with one function,
+		* by checking the calling signature up front.
+		*/
 		func_name = get_func_name(fcinfo->flinfo->fn_oid);
 		if (strcmp(func_name, "st_hexagongrid") == 0)
 		{
