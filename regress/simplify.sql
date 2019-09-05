@@ -22,3 +22,7 @@ WITH geom AS
     SELECT ST_Simplify('POLYGON((0 0, 10 0, 10 10, 10.6 10, 10.5 10.5, 10 10, 0 10, 0 0))', 1) as g
 )
 Select '15', ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;
+
+-- Triangle should collapse if requested
+SELECT '16', ST_AsText(ST_Simplify('TRIANGLE ((0 0, 0 9, 9 0, 0 0))', 10, true));
+SELECT '17', ST_AsText(ST_Simplify('TRIANGLE ((0 0, 0 9, 9 0, 0 0))', 10, false));
