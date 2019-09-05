@@ -1704,8 +1704,19 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 	{
 		/* No-op! Cannot simplify points or triangles */
 		case POINTTYPE:
-		case TRIANGLETYPE:
 			return;
+		case TRIANGLETYPE:
+		{
+			if (preserve_collapsed)
+				return;
+			LWTRIANGLE *t = lwgeom_as_lwtriangle(geom);
+			POINTARRAY *pa = t->points;
+			ptarray_simplify_in_place(pa, epsilon, 0);
+			if (pa->npoints < 3)
+			{
+				pa->npoints = 0;
+			}
+		}
 		case LINETYPE:
 		{
 			LWLINE *g = (LWLINE*)(geom);
