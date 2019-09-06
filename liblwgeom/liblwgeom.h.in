@@ -953,22 +953,6 @@ extern POINT2D getPoint2d(const POINTARRAY *pa, uint32_t n);
  */
 extern int getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point);
 
-/**
-* Returns a POINT3DZ pointer into the POINTARRAY serialized_ptlist,
-* suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the
-* values, only read them.
-*/
-extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, uint32_t n);
-
-/**
-* Returns a POINT4D pointer into the POINTARRAY serialized_ptlist,
-* suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the
-* values, only read them.
-*/
-extern const POINT4D* getPoint4d_cp(const POINTARRAY *pa, uint32_t n);
-
 /*
  * set point N to the given value
  * NOTE that the pointarray can be of any

@@ -752,8 +752,8 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			const POINT3DZ *pt;
-			pt = getPoint3dz_cp(pa, i);
+			const POINT3D *pt;
+			pt = getPoint3d_cp(pa, i);
 
 			lwprint_double(
 			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
