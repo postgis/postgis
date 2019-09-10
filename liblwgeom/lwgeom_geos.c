@@ -145,9 +145,16 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 
 	for (i = 0; i < size; i++)
 	{
+#if POSTGIS_GEOS_VERSION < 38
 		GEOSCoordSeq_getX(cs, i, &(point.x));
 		GEOSCoordSeq_getY(cs, i, &(point.y));
 		if (dims >= 3) GEOSCoordSeq_getZ(cs, i, &(point.z));
+#else
+		if (dims >= 3)
+			GEOSCoordSeq_getXYZ(cs, i, &(point.x), &(point.y), &(point.z));
+		else
+			GEOSCoordSeq_getXY(cs, i, &(point.x), &(point.y));
+#endif
 		ptarray_set_point4d(pa, i, &point);
 	}
 
@@ -283,10 +290,17 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 			LWDEBUGF(4, "Point: %g,%g", p2d->x, p2d->y);
 		}
 
+#if POSTGIS_GEOS_VERSION < 38
 		GEOSCoordSeq_setX(sq, i, p2d->x);
 		GEOSCoordSeq_setY(sq, i, p2d->y);
-
 		if (dims == 3) GEOSCoordSeq_setZ(sq, i, p3d->z);
+#else
+		if (dims == 3)
+			GEOSCoordSeq_setXYZ(sq, i, p2d->x, p2d->y, p3d->z);
+		else
+			GEOSCoordSeq_setXY(sq, i, p2d->x, p2d->y);
+#endif
+
 	}
 
 	if (append_points)
@@ -300,8 +314,12 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 			p2d = getPoint2d_cp(pa, 0);
 		for (i = pa->npoints; i < pa->npoints + append_points; i++)
 		{
+#if POSTGIS_GEOS_VERSION < 38
 			GEOSCoordSeq_setX(sq, i, p2d->x);
 			GEOSCoordSeq_setY(sq, i, p2d->y);
+#else
+			GEOSCoordSeq_setXY(sq, i, p2d->x, p2d->y);
+#endif
 
 			if (dims == 3) GEOSCoordSeq_setZ(sq, i, p3d->z);
 		}
@@ -328,6 +346,7 @@ GBOX2GEOS(const GBOX* box)
 	GEOSCoordSequence* seq = GEOSCoordSeq_create(5, 2);
 	if (!seq) return NULL;
 
+#if POSTGIS_GEOS_VERSION < 38
 	GEOSCoordSeq_setX(seq, 0, box->xmin);
 	GEOSCoordSeq_setY(seq, 0, box->ymin);
 
@@ -342,6 +361,13 @@ GBOX2GEOS(const GBOX* box)
 
 	GEOSCoordSeq_setX(seq, 4, box->xmin);
 	GEOSCoordSeq_setY(seq, 4, box->ymin);
+#else
+	GEOSCoordSeq_setXY(seq, 0, box->xmin, box->ymin);
+	GEOSCoordSeq_setXY(seq, 1, box->xmax, box->ymin);
+	GEOSCoordSeq_setXY(seq, 2, box->xmax, box->ymax);
+	GEOSCoordSeq_setXY(seq, 3, box->xmin, box->ymax);
+	GEOSCoordSeq_setXY(seq, 4, box->xmin, box->ymin);
+#endif
 
 	ring = GEOSGeom_createLinearRing(seq);
 	if (!ring)
@@ -535,8 +561,12 @@ make_geos_point(double x, double y)
 
 	if (!seq) return NULL;
 
+#if POSTGIS_GEOS_VERSION < 38
 	GEOSCoordSeq_setX(seq, 0, x);
 	GEOSCoordSeq_setY(seq, 0, y);
+#else
+	GEOSCoordSeq_setXY(seq, 0, x, y);
+#endif
 
 	geom = GEOSGeom_createPoint(seq);
 	if (!geom) GEOSCoordSeq_destroy(seq);
@@ -551,10 +581,15 @@ make_geos_segment(double x1, double y1, double x2, double y2)
 
 	if (!seq) return NULL;
 
+#if POSTGIS_GEOS_VERSION < 38
 	GEOSCoordSeq_setX(seq, 0, x1);
 	GEOSCoordSeq_setY(seq, 0, y1);
 	GEOSCoordSeq_setX(seq, 1, x2);
 	GEOSCoordSeq_setY(seq, 1, y2);
+#else
+	GEOSCoordSeq_setXY(seq, 0, x1, y1);
+	GEOSCoordSeq_setXY(seq, 1, x2, y2);
+#endif
 
 	geom = GEOSGeom_createLineString(seq);
 	if (!geom) GEOSCoordSeq_destroy(seq);
@@ -1577,8 +1612,12 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 			if (x >= bbox.xmax || y >= bbox.ymax) continue;
 
 			gseq = GEOSCoordSeq_create(1, 2);
+#if POSTIS_GEOS_VERSION < 38
 			GEOSCoordSeq_setX(gseq, 0, x);
 			GEOSCoordSeq_setY(gseq, 0, y);
+#else
+			GEOSCoordSeq_setXY(gseq, 0, x, y);
+#endif
 			gpt = GEOSGeom_createPoint(gseq);
 
 			contains = GEOSPreparedIntersects(gprep, gpt);
@@ -1813,7 +1852,11 @@ lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_points)
 			return NULL;
 		}
 
+#if POSTGIS_GEOS_VERSION < 38
 		if (!GEOSCoordSeq_setX(coords, i, tmp.x) || !GEOSCoordSeq_setY(coords, i, tmp.y))
+#else
+		if (!GEOSCoordSeq_setXY(coords, i, tmp.x, tmp.y))
+#endif
 		{
 			GEOSCoordSeq_destroy(coords);
 			lwpointiterator_destroy(it);
