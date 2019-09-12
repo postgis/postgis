@@ -919,7 +919,7 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x1, double y1, double x2, double
 }
 
 /* ------------ BuildArea stuff ---------------------------------------------------------------------{ */
-
+#if POSTGIS_GEOS_VERSION < 38
 typedef struct Face_t
 {
 	const GEOSGeometry* geom;
@@ -1165,6 +1165,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 
 	return shp;
 }
+#endif
 
 LWGEOM*
 lwgeom_buildarea(const LWGEOM* geom)
@@ -1183,7 +1184,11 @@ lwgeom_buildarea(const LWGEOM* geom)
 
 	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
+#if POSTGIS_GEOS_VERSION < 38
 	g3 = LWGEOM_GEOS_buildArea(g1);
+#else
+	g3 = GEOSBuildArea(g1);
+#endif
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);

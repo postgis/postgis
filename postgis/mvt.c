@@ -1050,7 +1050,12 @@ mvt_grid_and_validate_geos(LWGEOM *ng, uint8_t basic_type)
 
 		while (!valid && iterations < max_iterations)
 		{
+#if POSTGIS_GEOS_VERSION < 38
 			GEOSGeometry *geo_valid = LWGEOM_GEOS_makeValid(geo);
+#else
+			GEOSGeometry *geo_valid = GEOSMakeValid(geo);
+#endif
+
 			GEOSGeom_destroy(geo);
 			if (!geo_valid)
 				return NULL;
