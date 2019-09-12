@@ -429,8 +429,21 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 			g = GEOSGeom_createEmptyPolygon();
 		else
 		{
+#if POSTGIS_GEOS_VERSION < 38
 			sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
 			g = GEOSGeom_createPoint(sq);
+#else
+			if (lwgeom_has_z(lwgeom))
+			{
+				sq = ptarray_to_GEOSCoordSeq(lwp->point, 0);
+				g = GEOSGeom_createPoint(sq);
+			}
+			else
+			{
+				const POINT2D* p = getPoint2d_cp(lwp->point, 0);
+				g = GEOSGeom_createPointFromXY(p->x, p->y);
+			}
+#endif
 		}
 		if (!g) return NULL;
 		break;
