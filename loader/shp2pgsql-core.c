@@ -1509,10 +1509,10 @@ ShpLoaderGetSQLCopyStatement(SHPLOADERSTATE *state, char **strheader)
 		else {
 			if (state->config->schema)
 			{
-				stringbuffer_aprintf(sb, " \"%s\".\" ", state->config->schema);
+				stringbuffer_aprintf(sb, " \"%s\".", state->config->schema);
 			}
 
-			stringbuffer_aprintf(sb, " \"%s\" (%s) FROM stdin;\n", state->config->table, state->col_names);
+			stringbuffer_aprintf(sb, "\"%s\" (%s) FROM stdin;\n", state->config->table, state->col_names);
 		}
 
 		/* Copy the string buffer into a new string, destroying the string buffer */

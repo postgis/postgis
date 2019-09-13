@@ -1,5 +1,5 @@
 PostGIS 3.0.0alpha5
-XXXX/XX/XX
+2019/XX/XX
 For full changes and enhancements, refer to PostGIS 3.0.0.
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
@@ -12,6 +12,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4496, Make ST_Simplify(TRIANGLE) collapse if requested (Raúl Marín)
   - #4501, Allow postgis_tiger_geocoder to be installable by non-super users (Regina Obe)
   - #4503, Speed up the calculation of cartesian bbox (Raúl Marín)
+  - #4504, shp2pgsql -D not working with schema qualified tables
 
 PostGIS 3.0.0alpha4
 2019/08/10
