@@ -90,10 +90,31 @@ getPoint_internal(const POINTARRAY *pa, uint32_t n)
 static inline const POINT2D *
 getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
 {
-	if (!pa)
-		return 0;
-
 	return (const POINT2D *)getPoint_internal(pa, n);
+}
+
+/**
+ * Returns a POINT2D pointer into the POINTARRAY serialized_ptlist,
+ * suitable for reading from. This is very high performance
+ * and declared const because you aren't allowed to muck with the
+ * values, only read them.
+ */
+static inline const POINT3D *
+getPoint3d_cp(const POINTARRAY *pa, uint32_t n)
+{
+	return (const POINT3D *)getPoint_internal(pa, n);
+}
+
+/**
+ * Returns a POINT2D pointer into the POINTARRAY serialized_ptlist,
+ * suitable for reading from. This is very high performance
+ * and declared const because you aren't allowed to muck with the
+ * values, only read them.
+ */
+static inline const POINT4D *
+getPoint4d_cp(const POINTARRAY *pa, uint32_t n)
+{
+	return (const POINT4D *)getPoint_internal(pa, n);
 }
 
 static inline LWPOINT *

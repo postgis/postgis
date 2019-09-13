@@ -11,6 +11,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4495, Fix ST_SnapToGrid output having an outdated bbox (Raúl Marín)
   - #4496, Make ST_Simplify(TRIANGLE) collapse if requested (Raúl Marín)
   - #4501, Allow postgis_tiger_geocoder to be installable by non-super users (Regina Obe)
+  - #4503, Speed up the calculation of cartesian bbox (Raúl Marín)
 
 PostGIS 3.0.0alpha4
 2019/08/10
