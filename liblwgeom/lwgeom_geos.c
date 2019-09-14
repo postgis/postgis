@@ -1625,7 +1625,7 @@ lwpoly_to_points(const LWPOLY* lwpoly, uint32_t npoints, int32_t seed)
 			if (x >= bbox.xmax || y >= bbox.ymax) continue;
 
 			gseq = GEOSCoordSeq_create(1, 2);
-#if POSTIS_GEOS_VERSION < 38
+#if POSTGIS_GEOS_VERSION < 38
 			GEOSCoordSeq_setX(gseq, 0, x);
 			GEOSCoordSeq_setY(gseq, 0, y);
 #else
