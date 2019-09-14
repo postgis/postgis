@@ -13,6 +13,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4501, Allow postgis_tiger_geocoder to be installable by non-super users (Regina Obe)
   - #4503, Speed up the calculation of cartesian bbox (Raúl Marín)
   - #4504, shp2pgsql -D not working with schema qualified tables
+  - #4507, Use GEOSMakeValid and GEOSBuildArea for GEOS 3.8+ (Dan Baston)
 
 PostGIS 3.0.0alpha4
 2019/08/10
