@@ -1468,9 +1468,10 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 	if ( n_points <= min_points ) return;
 
 	last = getPoint2d_cp(pa, 0);
+	void *p_to = ((char *)last) + pt_size;
 	for (i = 1; i < n_points; i++)
 	{
-		int last_point = (i == n_points-1);
+		int last_point = (i == n_points - 1);
 
 		/* Look straight into the abyss */
 		pt = getPoint2d_cp(pa, i);
@@ -1502,11 +1503,14 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 			if (last_point && n_points_out > 1 && tolerance > 0.0 && dsq <= tolsq)
 			{
 				n_points_out--;
+				p_to -= pt_size;
 			}
 		}
 
 		/* Compact all remaining values to front of array */
-		ptarray_copy_point(pa, i, n_points_out++);
+		memcpy(p_to, pt, pt_size);
+		n_points_out++;
+		p_to += pt_size;
 		last = pt;
 	}
 	/* Adjust array length */

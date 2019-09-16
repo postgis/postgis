@@ -1258,7 +1258,7 @@ extern void lwgeom_longitude_shift(LWGEOM *lwgeom);
 extern void lwgeom_simplify_in_place(LWGEOM *igeom, double dist, int preserve_collapsed);
 extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
 extern void lwgeom_scale(LWGEOM *geom, const POINT4D *factors);
-extern void lwgeom_remove_repeated_points_in_place(LWGEOM *in, double tolerance);
+extern int lwgeom_remove_repeated_points_in_place(LWGEOM *in, double tolerance);
 
 
 /**
