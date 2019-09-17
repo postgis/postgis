@@ -11,6 +11,8 @@ XXXX/XX/XX
   - #4493, Fix ST_RemoveRepeatedPoints output having an outdated bbox (Raúl Marín)
   - #4495, Fix ST_SnapToGrid output having an outdated bbox (Raúl Marín)
   - #4496, Make ST_Simplify(TRIANGLE) collapse if requested (Raúl Marín)
+  - #4506, Remove tolerance in point-in-ring tests (Paul Ramsey)
+
 
 PostGIS 2.5.3
 2019/08/11
