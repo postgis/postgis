@@ -455,6 +455,11 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
     AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.2])
   fi
 
+  dnl Ensure that we are using PostgreSQL <= 9.6
+  if test $POSTGIS_PGSQL_VERSION -gt 96; then
+    AC_MSG_ERROR([PostGIS 2.3 not compatible with PostgreSQL > 9.6])
+  fi
+
   HAVE_BRIN=no
   if test $POSTGIS_PGSQL_VERSION -gt 94; then
     HAVE_BRIN=yes
