@@ -784,7 +784,7 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
 		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so increment.
 		 */
-		if (FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y) && side>0)
+		if ((seg1->y <= point->y) && (point->y < seg2->y) && (side > 0))
 		{
 			POSTGIS_DEBUG(3, "incrementing winding number.");
 
@@ -795,7 +795,7 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
 		 * then the line is to the right of the point and circling
 		 * clockwise, so decrement.
 		 */
-		else if (FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y) && side<0)
+		else if ((seg2->y <= point->y) && (point->y < seg1->y) && (side < 0))
 		{
 			POSTGIS_DEBUG(3, "decrementing winding number.");
 
@@ -839,7 +839,7 @@ static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y), FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y));
 
 		/* zero length segments are ignored. */
-		if (((seg2->x - seg1->x)*(seg2->x - seg1->x) + (seg2->y - seg1->y)*(seg2->y - seg1->y)) < 1e-12*1e-12)
+		if ((seg2->x == seg1->x) && (seg2->y == seg1->y))
 		{
 			POSTGIS_DEBUG(3, "segment is zero length... ignoring.");
 
@@ -863,7 +863,7 @@ static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so increment.
 		 */
-		if (FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y) && side>0)
+		if ((seg1->y <= point->y) && (point->y < seg2->y) && (side > 0))
 		{
 			POSTGIS_DEBUG(3, "incrementing winding number.");
 
@@ -874,7 +874,7 @@ static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 		 * then the line is to the right of the point and circling
 		 * clockwise, so decrement.
 		 */
-		else if (FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y) && side<0)
+		else if ((seg2->y <= point->y) && (point->y < seg1->y) && (side < 0))
 		{
 			POSTGIS_DEBUG(3, "decrementing winding number.");
 
