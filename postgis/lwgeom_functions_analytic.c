@@ -69,18 +69,22 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	int type = gserialized_get_type(geom);
 	LWGEOM *in;
 	bool preserve_collapsed = false;
-
-	/* Handle optional argument to preserve collapsed features */
-	if ((PG_NARGS() > 2) && (!PG_ARGISNULL(2)))
-		preserve_collapsed = PG_GETARG_BOOL(2);
+	int modified = LW_FALSE;
 
 	/* Can't simplify points! */
 	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
 		PG_RETURN_POINTER(geom);
 
+	/* Handle optional argument to preserve collapsed features */
+	if ((PG_NARGS() > 2) && (!PG_ARGISNULL(2)))
+		preserve_collapsed = PG_GETARG_BOOL(2);
+
 	in = lwgeom_from_gserialized(geom);
 
-	lwgeom_simplify_in_place(in, dist, preserve_collapsed);
+	modified = lwgeom_simplify_in_place(in, dist, preserve_collapsed);
+	if (!modified)
+		PG_RETURN_POINTER(geom);
+
 	if (!in || lwgeom_is_empty(in))
 		PG_RETURN_NULL();
 

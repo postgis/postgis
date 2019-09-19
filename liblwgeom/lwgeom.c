@@ -1711,31 +1711,36 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 
 /**************************************************************/
 
-void
+int
 lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 {
+	int modified = LW_FALSE;
 	switch (geom->type)
 	{
 		/* No-op! Cannot simplify points or triangles */
 		case POINTTYPE:
-			return;
+			return modified;
 		case TRIANGLETYPE:
 		{
 			if (preserve_collapsed)
-				return;
+				return modified;
 			LWTRIANGLE *t = lwgeom_as_lwtriangle(geom);
 			POINTARRAY *pa = t->points;
 			ptarray_simplify_in_place(pa, epsilon, 0);
 			if (pa->npoints < 3)
 			{
 				pa->npoints = 0;
+				modified = LW_TRUE;
 			}
+			break;
 		}
 		case LINETYPE:
 		{
 			LWLINE *g = (LWLINE*)(geom);
 			POINTARRAY *pa = g->points;
+			uint32_t in_npoints = pa->npoints;
 			ptarray_simplify_in_place(pa, epsilon, 2);
+			modified = in_npoints != pa->npoints;
 			/* Invalid output */
 			if (pa->npoints == 1 && pa->maxpoints > 1)
 			{
@@ -1771,7 +1776,9 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 				/* Skip zero'ed out rings */
 				if(!pa)
 					continue;
+				uint32_t in_npoints = pa->npoints;
 				ptarray_simplify_in_place(pa, epsilon, minpoints);
+				modified |= in_npoints != pa->npoints;
 				/* Drop collapsed rings */
 				if(pa->npoints < 4)
 				{
@@ -1797,7 +1804,7 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 			{
 				LWGEOM *g = col->geoms[i];
 				if (!g) continue;
-				lwgeom_simplify_in_place(g, epsilon, preserve_collapsed);
+				modified |= lwgeom_simplify_in_place(g, epsilon, preserve_collapsed);
 				/* Drop zero'ed out geometries */
 				if(lwgeom_is_empty(g))
 				{
@@ -1816,7 +1823,12 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 			break;
 		}
 	}
-	return;
+
+	if (modified)
+	{
+		lwgeom_drop_bbox(geom);
+	}
+	return modified;
 }
 
 LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed)
