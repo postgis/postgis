@@ -800,6 +800,8 @@ extern int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
 */
 extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
 
+extern GSERIALIZED* gserialized_from_lwgeom_reuse(LWGEOM *geom, size_t *size, GSERIALIZED *g_in);
+
 /**
 * Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
 * that are double aligned and suitable for direct reading using getPoint2d_p_ro

@@ -153,6 +153,7 @@ int gserialized2_ndims(const GSERIALIZED *gser);
 * VARSIZE information.
 */
 GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size);
+GSERIALIZED *gserialized2_from_lwgeom_reuse(LWGEOM *geom, size_t *size, GSERIALIZED *g_in);
 
 /**
 * Return the memory size a GSERIALIZED will occupy for a given LWGEOM.

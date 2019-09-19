@@ -815,16 +815,16 @@ static size_t gserialized2_from_lwpoint(const LWPOINT *point, uint8_t *buf)
 	loc = buf;
 
 	/* Write in the type. */
-	memcpy(loc, &type, sizeof(uint32_t));
+	memmove(loc, &type, sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 	/* Write in the number of points (0 => empty). */
-	memcpy(loc, &(point->point->npoints), sizeof(uint32_t));
+	memmove(loc, &(point->point->npoints), sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	/* Copy in the ordinates. */
 	if (point->point->npoints > 0)
 	{
-		memcpy(loc, getPoint_internal(point->point, 0), ptsize);
+		memmove(loc, getPoint_internal(point->point, 0), ptsize);
 		loc += ptsize;
 	}
 
@@ -851,11 +851,11 @@ static size_t gserialized2_from_lwline(const LWLINE *line, uint8_t *buf)
 	loc = buf;
 
 	/* Write in the type. */
-	memcpy(loc, &type, sizeof(uint32_t));
+	memmove(loc, &type, sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	/* Write in the npoints. */
-	memcpy(loc, &(line->points->npoints), sizeof(uint32_t));
+	memmove(loc, &(line->points->npoints), sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	LWDEBUGF(3, "%s added npoints (%d)", __func__, line->points->npoints);
@@ -864,7 +864,7 @@ static size_t gserialized2_from_lwline(const LWLINE *line, uint8_t *buf)
 	if (line->points->npoints > 0)
 	{
 		size = line->points->npoints * ptsize;
-		memcpy(loc, getPoint_internal(line->points, 0), size);
+		memmove(loc, getPoint_internal(line->points, 0), size);
 		loc += size;
 	}
 	LWDEBUGF(3, "%s copied serialized_pointlist (%d bytes)", __func__, ptsize * line->points->npoints);
@@ -888,17 +888,17 @@ static size_t gserialized2_from_lwpoly(const LWPOLY *poly, uint8_t *buf)
 	loc = buf;
 
 	/* Write in the type. */
-	memcpy(loc, &type, sizeof(uint32_t));
+	memmove(loc, &type, sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	/* Write in the nrings. */
-	memcpy(loc, &(poly->nrings), sizeof(uint32_t));
+	memmove(loc, &(poly->nrings), sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	/* Write in the npoints per ring. */
 	for (i = 0; i < poly->nrings; i++)
 	{
-		memcpy(loc, &(poly->rings[i]->npoints), sizeof(uint32_t));
+		memmove(loc, &(poly->rings[i]->npoints), sizeof(uint32_t));
 		loc += sizeof(uint32_t);
 	}
 
@@ -920,7 +920,7 @@ static size_t gserialized2_from_lwpoly(const LWPOLY *poly, uint8_t *buf)
 
 		pasize = pa->npoints * ptsize;
 		if ( pa->npoints > 0 )
-			memcpy(loc, getPoint_internal(pa, 0), pasize);
+			memmove(loc, getPoint_internal(pa, 0), pasize);
 		loc += pasize;
 	}
 	return (size_t)(loc - buf);
@@ -946,11 +946,11 @@ static size_t gserialized2_from_lwtriangle(const LWTRIANGLE *triangle, uint8_t *
 	loc = buf;
 
 	/* Write in the type. */
-	memcpy(loc, &type, sizeof(uint32_t));
+	memmove(loc, &type, sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	/* Write in the npoints. */
-	memcpy(loc, &(triangle->points->npoints), sizeof(uint32_t));
+	memmove(loc, &(triangle->points->npoints), sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	LWDEBUGF(3, "%s added npoints (%d)", __func__, triangle->points->npoints);
@@ -959,7 +959,7 @@ static size_t gserialized2_from_lwtriangle(const LWTRIANGLE *triangle, uint8_t *
 	if (triangle->points->npoints > 0)
 	{
 		size = triangle->points->npoints * ptsize;
-		memcpy(loc, getPoint_internal(triangle->points, 0), size);
+		memmove(loc, getPoint_internal(triangle->points, 0), size);
 		loc += size;
 	}
 	LWDEBUGF(3, "%s copied serialized_pointlist (%d bytes)", __func__, ptsize * triangle->points->npoints);
@@ -985,18 +985,18 @@ static size_t gserialized2_from_lwcircstring(const LWCIRCSTRING *curve, uint8_t 
 	loc = buf;
 
 	/* Write in the type. */
-	memcpy(loc, &type, sizeof(uint32_t));
+	memmove(loc, &type, sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	/* Write in the npoints. */
-	memcpy(loc, &curve->points->npoints, sizeof(uint32_t));
+	memmove(loc, &curve->points->npoints, sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	/* Copy in the ordinates. */
 	if (curve->points->npoints > 0)
 	{
 		size = curve->points->npoints * ptsize;
-		memcpy(loc, getPoint_internal(curve->points, 0), size);
+		memmove(loc, getPoint_internal(curve->points, 0), size);
 		loc += size;
 	}
 
@@ -1021,7 +1021,7 @@ static size_t gserialized2_from_lwcollection(const LWCOLLECTION *coll, uint8_t *
 	loc += sizeof(uint32_t);
 
 	/* Write in the number of subgeoms. */
-	memcpy(loc, &coll->ngeoms, sizeof(uint32_t));
+	memmove(loc, &coll->ngeoms, sizeof(uint32_t));
 	loc += sizeof(uint32_t);
 
 	/* Serialize subgeoms. */
@@ -1164,6 +1164,12 @@ static size_t gserialized2_from_gbox(const GBOX *gbox, uint8_t *buf)
 
 GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 {
+	return gserialized2_from_lwgeom_reuse(geom, size, NULL);
+}
+
+GSERIALIZED *
+gserialized2_from_lwgeom_reuse(LWGEOM *geom, size_t *size, GSERIALIZED *g_in)
+{
 	size_t expected_size = 0;
 	size_t return_size = 0;
 	uint8_t *ptr = NULL;
@@ -1185,8 +1191,15 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 
 	/* Set up the uint8_t buffer into which we are going to write the serialized geometry. */
 	expected_size = gserialized2_from_lwgeom_size(geom);
-	ptr = lwalloc(expected_size);
-	g = (GSERIALIZED*)(ptr);
+	if (g_in && SIZE_GET(g_in->size) >= expected_size)
+	{
+		ptr = (void *)g_in;
+	}
+	else
+	{
+		ptr = lwalloc(expected_size);
+	}
+	g = (GSERIALIZED *)(ptr);
 
 	/* Set the SRID! */
 	gserialized2_set_srid(g, geom->srid);
@@ -1616,15 +1629,19 @@ GSERIALIZED* gserialized2_set_gbox(GSERIALIZED *g, GBOX *gbox)
 		ptr_out = (uint8_t*)g_out;
 		ptr = ptr_in = (uint8_t*)g;
 		/* Copy the head of g into place */
-		memcpy(ptr_out, ptr_in, 8); ptr_out += 8; ptr_in += 8;
+		memmove(ptr_out, ptr_in, 8);
+		ptr_out += 8;
+		ptr_in += 8;
 		/* Optionally copy extended bit into place */
 		if (G2FLAGS_GET_EXTENDED(g->gflags))
 		{
-			memcpy(ptr_out, ptr_in, 8); ptr_out += 8; ptr_in += 8;
+			memmove(ptr_out, ptr_in, 8);
+			ptr_out += 8;
+			ptr_in += 8;
 		}
 		/* Copy the body of g into place after leaving space for the box */
 		ptr_out += box_size;
-		memcpy(ptr_out, ptr_in, varsize_in - (ptr_in - ptr));
+		memmove(ptr_out, ptr_in, varsize_in - (ptr_in - ptr));
 		G2FLAGS_SET_BBOX(g_out->gflags, 1);
 		SIZE_SET(g_out->size, varsize_out);
 	}
