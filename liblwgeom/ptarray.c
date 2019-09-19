@@ -1584,10 +1584,9 @@ ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts)
 	int sp = -1; /* recursion stack pointer */
 	int p1, split;
 	uint32_t outn = 0;
-	int pai = 0;
-	uint32_t i;
 	double dist;
 	double eps_sqr = epsilon * epsilon;
+	size_t pt_size = ptarray_point_size(pa);
 
 	/* Do not try to simplify really short things */
 	if (pa->npoints < 3) return;
@@ -1628,17 +1627,10 @@ ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts)
 	/* Put list of retained points into order */
 	qsort(outlist, outn, sizeof(int), int_cmp);
 	/* Copy retained points to front of array */
-	for (i = 0; i < outn; i++)
+	for (uint32_t i = 0; i < outn; i++)
 	{
 		int j = outlist[i];
-		/* Indexes the same, means no copy required */
-		if (j == pai)
-		{
-			pai++;
-			continue;
-		}
-		/* Indexes different, copy value down */
-		ptarray_copy_point(pa, j, pai++);
+		memcpy(pa->serialized_pointlist + pt_size * i, pa->serialized_pointlist + pt_size * j, pt_size);
 	}
 
 	/* Adjust point count on array */
