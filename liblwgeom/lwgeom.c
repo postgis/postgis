@@ -1782,15 +1782,9 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 				/* Drop collapsed rings */
 				if(pa->npoints < 4)
 				{
-					if (i == 0)
-					{
-						/* We can stop processing if the first ring collapses as the
-						 whole polygon will dissapear*/
-						g->nrings = 0;
-						return LW_TRUE;
-					}
-					ptarray_free(pa);
-					continue;
+					/* Any ring deeper than this one is, by OGR definition, smaller
+					 * so we drop them all */
+					break;
 				}
 				g->rings[j++] = pa;
 			}
