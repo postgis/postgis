@@ -2456,12 +2456,12 @@ double
 distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 {
 	double r, s;
+	double divider = ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
 
 	if ((A->x == B->x) && (A->y == B->y))
 		return distance2d_sqr_pt_pt(p, A);
 
-	r = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y)) /
-	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	r = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y)) / divider;
 
 	if (r < 0)
 		return distance2d_sqr_pt_pt(p, A);
@@ -2478,10 +2478,9 @@ distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 	 *
 	 */
 
-	s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y)) /
-	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y));
 
-	return s * s * ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	return s * s / divider;
 }
 
 /**
