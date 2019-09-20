@@ -1895,9 +1895,11 @@ Datum LWGEOM_force_clockwise_poly(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_noop);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P_COPY(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(in);
-	GSERIALIZED *out = geometry_serialize_reuse(lwgeom, in);
+	GSERIALIZED *out = geometry_serialize(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_POINTER(out);
 }
 

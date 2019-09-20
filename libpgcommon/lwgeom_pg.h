@@ -155,12 +155,6 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 
 /**
- * Utility method to call the serialization and then set the
- * PgSQL varsize header appropriately with the serialized size.
- */
-GSERIALIZED *geometry_serialize_reuse(LWGEOM *lwgeom, GSERIALIZED *g_in);
-
-/**
 * Utility method to call the serialization and then set the
 * PgSQL varsize header appropriately with the serialized size.
 */

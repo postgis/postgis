@@ -221,13 +221,7 @@ int gserialized_ndims(const GSERIALIZED *g)
 */
 GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size)
 {
-	return gserialized2_from_lwgeom_reuse(geom, size, NULL);
-}
-
-GSERIALIZED *
-gserialized_from_lwgeom_reuse(LWGEOM *geom, size_t *size, GSERIALIZED *g_in)
-{
-	return gserialized2_from_lwgeom_reuse(geom, size, g_in);
+	return gserialized2_from_lwgeom(geom, size);
 }
 
 /**
