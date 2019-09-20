@@ -1516,6 +1516,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 
 
 /************************************************************************/
+/* return distance squared, useful to avoid sqrt calculations */
 
 static double
 ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t itlast, uint32_t *split)
@@ -1543,10 +1544,33 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 		return max_distance_sqr;
 	}
 
+	const POINT2D *A = pfirst;
+	const POINT2D *B = plast;
+	/* This is based on distance2d_sqr_pt_seg, but inlined here to avoid recalculations */
+	double r_divider = ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	int r_divider_sign = SIGNUM(r_divider);
+	double s_divider = ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	double s_extra = ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
 	for (uint32_t itk = itfirst; itk < itlast; itk++)
 	{
-		const POINT2D *pk = getPoint2d_cp(pts, itk);
-		double distance_sqr = distance2d_sqr_pt_seg(pk, pfirst, plast);
+		const POINT2D *p = getPoint2d_cp(pts, itk);
+		double distance_sqr;
+		double r_dividend = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y));
+
+		if (r_divider_sign != SIGNUM(r_dividend))
+		{
+			distance_sqr = distance2d_sqr_pt_pt(p, A);
+		}
+		else if (r_dividend > r_divider)
+		{
+			distance_sqr = distance2d_sqr_pt_pt(p, B);
+		}
+		else
+		{
+			double s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y)) / s_divider;
+			distance_sqr = s * s * s_extra;
+		}
+
 		if (distance_sqr > max_distance_sqr)
 		{
 			*split = itk;
