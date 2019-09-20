@@ -1517,18 +1517,14 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 
 /************************************************************************/
 
-static void
-ptarray_dp_findsplit_in_place(const POINTARRAY *pts,
-			      uint32_t itfirst,
-			      uint32_t itlast,
-			      uint32_t *split,
-			      double *max_distance)
+static double
+ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t itlast, uint32_t *split)
 {
 	// if p1 == p2 --> min distance to p1
 	const POINT2D *pfirst = getPoint2d_cp(pts, itfirst);
 	const POINT2D *plast = getPoint2d_cp(pts, itlast);
 
-	*max_distance = -1;
+	double max_distance_sqr = -1;
 	*split = itfirst;
 
 	if (distance2d_sqr_pt_pt(pfirst, plast) < DBL_EPSILON)
@@ -1537,26 +1533,27 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts,
 		for (uint32_t itk = itfirst; itk < itlast; itk++)
 		{
 			const POINT2D *pk = getPoint2d_cp(pts, itk);
-			double distance = distance2d_sqr_pt_pt(pk, pfirst);
-			if (distance > *max_distance)
+			double distance_sqr = distance2d_sqr_pt_pt(pk, pfirst);
+			if (distance_sqr > max_distance_sqr)
 			{
 				*split = itk;
-				*max_distance = distance;
+				max_distance_sqr = distance_sqr;
 			}
 		}
-		return;
+		return max_distance_sqr;
 	}
 
 	for (uint32_t itk = itfirst; itk < itlast; itk++)
 	{
 		const POINT2D *pk = getPoint2d_cp(pts, itk);
-		double distance = distance2d_sqr_pt_seg(pk, pfirst, plast);
-		if (distance > *max_distance)
+		double distance_sqr = distance2d_sqr_pt_seg(pk, pfirst, plast);
+		if (distance_sqr > max_distance_sqr)
 		{
 			*split = itk;
-			*max_distance = distance;
+			max_distance_sqr = distance_sqr;
 		}
 	}
+	return max_distance_sqr;
 }
 
 void
@@ -1579,9 +1576,9 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	while (first_it < last_it && last_it < pa->npoints)
 	{
 		uint32_t split = first_it;
-		double dist;
-		ptarray_dp_findsplit_in_place(pa, first_it, last_it, &split, &dist);
-		if (dist < tolerance_sqr || split == first_it)
+		if (((last_it - first_it) < 2) ||
+		    (ptarray_dp_findsplit_in_place(pa, first_it, last_it, &split) < tolerance_sqr) ||
+		    (split == first_it))
 		{
 			/* We just look the new iterators, as anything between first and last
 			 * can be safely ignored */
@@ -1601,7 +1598,6 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 			kept_points[split] = LW_TRUE;
 			keptn++;
 			last_it = split;
-			//			lwnotice("Kept %d. New: %d -> %d", split, first_it, last_it);
 		}
 	}
 
