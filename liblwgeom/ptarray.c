@@ -1549,21 +1549,20 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	/* This is based on distance2d_sqr_pt_seg, but heavily inlined here to avoid recalculations */
 	double x_diff = (B->x - A->x);
 	double y_diff = (B->y - A->y);
-	double divider = (x_diff * x_diff + y_diff * y_diff);
-	int divider_sign = SIGNUM(divider);
+	double ab_length_sqr = (x_diff * x_diff + y_diff * y_diff);
 	for (uint32_t itk = itfirst; itk < itlast; itk++)
 	{
 		const POINT2D *p = getPoint2d_cp(pts, itk);
 		double distance_sqr;
 		double r_dividend = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y));
 
-		if (divider_sign != SIGNUM(r_dividend))
+		if (r_dividend < 0.0)
 		{
-			distance_sqr = distance2d_sqr_pt_pt(p, A) * divider;
+			distance_sqr = distance2d_sqr_pt_pt(p, A) * ab_length_sqr;
 		}
-		else if (r_dividend > divider)
+		else if (r_dividend > ab_length_sqr)
 		{
-			distance_sqr = distance2d_sqr_pt_pt(p, B) * divider;
+			distance_sqr = distance2d_sqr_pt_pt(p, B) * ab_length_sqr;
 		}
 		else
 		{
@@ -1577,7 +1576,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 			max_distance_sqr = distance_sqr;
 		}
 	}
-	return max_distance_sqr / divider;
+	return max_distance_sqr / ab_length_sqr;
 }
 
 void
