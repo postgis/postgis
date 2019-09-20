@@ -210,7 +210,7 @@ uint32_t lwcollection_count_vertices(LWCOLLECTION *col);
 /**
  * @param minpts minimum number of points to retain, if possible.
  */
-void ptarray_simplify_in_place(POINTARRAY *pa, double epsilon, uint32_t minpts);
+void ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts);
 
 /*
 * The possible ways a pair of segments can interact. Returned by lw_segment_intersects
