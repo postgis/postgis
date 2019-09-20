@@ -1550,6 +1550,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	double r_divider = ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
 	int r_divider_sign = SIGNUM(r_divider);
 	double s_divider = ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	double s_divider_sqr = s_divider * s_divider;
 	double s_extra = ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
 	for (uint32_t itk = itfirst; itk < itlast; itk++)
 	{
@@ -1559,15 +1560,15 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 
 		if (r_divider_sign != SIGNUM(r_dividend))
 		{
-			distance_sqr = distance2d_sqr_pt_pt(p, A);
+			distance_sqr = distance2d_sqr_pt_pt(p, A) * s_divider_sqr;
 		}
 		else if (r_dividend > r_divider)
 		{
-			distance_sqr = distance2d_sqr_pt_pt(p, B);
+			distance_sqr = distance2d_sqr_pt_pt(p, B) * s_divider_sqr;
 		}
 		else
 		{
-			double s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y)) / s_divider;
+			double s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y));
 			distance_sqr = s * s * s_extra;
 		}
 
@@ -1577,7 +1578,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 			max_distance_sqr = distance_sqr;
 		}
 	}
-	return max_distance_sqr;
+	return max_distance_sqr / s_divider_sqr;
 }
 
 void
