@@ -88,7 +88,12 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	if (!in || lwgeom_is_empty(in))
 		PG_RETURN_NULL();
 
-	result = geometry_serialize_reuse(in, geom);
+	/* COMPUTE_BBOX TAINTING */
+	if (in->bbox)
+		lwgeom_refresh_bbox(in);
+
+	result = geometry_serialize(in);
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 }
 
