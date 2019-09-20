@@ -1517,6 +1517,36 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 
 /************************************************************************/
 
+static inline double
+distance2d_sqr_pt_seg_inline(const POINT2D *p, const POINT2D *A, const POINT2D *B)
+{
+	double	r,s;
+
+	if (  ( A->x == B->x) && (A->y == B->y) )
+		return distance2d_sqr_pt_pt(p,A);
+
+	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+
+	if (r<0) return distance2d_sqr_pt_pt(p,A);
+	if (r>1) return distance2d_sqr_pt_pt(p,B);
+
+
+	/*
+	 * (2)
+	 *	     (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
+	 *	s = -----------------------------
+	 *	             	L^2
+	 *
+	 *	Then the distance from C to P = |s|*L.
+	 *
+	 */
+
+	s = ( (A->y-p->y)*(B->x-A->x)- (A->x-p->x)*(B->y-A->y) ) /
+	    ( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+
+	return s * s * ( (B->x-A->x)*(B->x-A->x) + (B->y-A->y)*(B->y-A->y) );
+}
+
 static void
 ptarray_dp_findsplit_in_place(const POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 {
@@ -1545,7 +1575,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, int p1, int p2, int *split,
 			LWDEBUGF(4, "P%d(%f,%f)", k, pk->x, pk->y);
 
 			/* distance computation */
-			tmp = distance2d_sqr_pt_seg(pk, pa, pb);
+			tmp = distance2d_sqr_pt_seg_inline(pk, pa, pb);
 
 			if (tmp > d)
 			{
