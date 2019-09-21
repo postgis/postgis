@@ -10,7 +10,7 @@
 	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Topology Wiki</ulink></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
-	<para>Topolgy support is build by default starting with PostGIS 2.0, and can be disabled specifying --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
+	<para>Topology support is build by default starting with PostGIS 2.0, and can be disabled specifying --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
 
 	<sect1 id="Topology_Types">
         <sect1info>
@@ -2810,7 +2810,7 @@ FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
 WHERE foo.gid = bg.gid;
 
 -- and if we wanted to convert our topogeometry back
--- to a denomalized geometry aligned with our faces and edges
+-- to a denormalized geometry aligned with our faces and edges
 -- cast the topo to a geometry
 -- The really cool thing is my new geometries
 -- are now aligned with my tiger street centerlines
