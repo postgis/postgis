@@ -1581,7 +1581,6 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	return max_distance_sqr / ab_length_sqr;
 }
 
-// TODO: Recover the stack allocation (2 * 256 * sizeof(int) */
 void
 ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 {
