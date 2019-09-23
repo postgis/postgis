@@ -1546,9 +1546,9 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	}
 
 	/* This is based on distance2d_sqr_pt_seg, but heavily inlined here to avoid recalculations */
-	double ba_x_diff = (B->x - A->x);
-	double ba_y_diff = (B->y - A->y);
-	double ab_length_sqr = (ba_x_diff * ba_x_diff + ba_y_diff * ba_y_diff);
+	double ba_x = (B->x - A->x);
+	double ba_y = (B->y - A->y);
+	double ab_length_sqr = (ba_x * ba_x + ba_y * ba_y);
 	/* To avoid the division by ab_length_sqr in the 3rd path, we normalize here
 	 * and multiply in the first two paths [(dot_ac_ab < 0) and (> ab_length_sqr)] */
 	max_distance_sqr *= ab_length_sqr;
@@ -1556,9 +1556,9 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	{
 		const POINT2D *C = getPoint2d_cp(pts, itk);
 		double distance_sqr;
-		double ca_x_diff = (C->x - A->x);
-		double ca_y_diff = (C->y - A->y);
-		double dot_ac_ab = (ca_x_diff * ba_x_diff + ca_y_diff * ba_y_diff);
+		double ca_x = (C->x - A->x);
+		double ca_y = (C->y - A->y);
+		double dot_ac_ab = (ca_x * ba_x + ca_y * ba_y);
 
 		if (dot_ac_ab <= 0.0)
 		{
@@ -1570,7 +1570,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 		}
 		else
 		{
-			double s_numerator = ca_x_diff * ba_y_diff - ca_y_diff * ba_x_diff;
+			double s_numerator = ca_x * ba_y - ca_y * ba_x;
 			distance_sqr = s_numerator * s_numerator; /* Missing division by ab_length_sqr on purpose */
 		}
 
@@ -1599,22 +1599,20 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	uint32_t last_it = pa->npoints - 1;
 	const double tolerance_sqr = tolerance * tolerance;
 
-	/* For the first minpts we remove the ignore the tolerance */
+	/* For the first minpts we ignore the tolerance */
 	double it_tol = keptn >= minpts ? tolerance_sqr : -1.0;
 	while (first_it < (pa->npoints - 2))
 	{
 		uint32_t split = ptarray_dp_findsplit_in_place(pa, first_it, last_it, it_tol);
 		if (split == first_it)
 		{
-			/* Anything between the current first and last iterators is closer than the tolerance,
-			 * so we ignore all of them and look for the new iterators after them*/
-
-			/* For the first point we can ignore all the points that we are already keeping */
+			/* After ignoring the current range, we look for the start of the next range,
+			 * which has to the shape as [kept, (not_kept)*, kept*/
 			first_it = last_it;
 			while ((first_it < (pa->npoints - 2)) && kept_points[first_it + 1])
 				first_it++;
 
-			/* The last iterator is the following point of those we are already keeping */
+			/* We pick the last iterator out of the points we are already keeping */
 			last_it = first_it + 1;
 			while ((last_it < (pa->npoints - 1)) && !kept_points[last_it])
 				last_it++;
@@ -1629,7 +1627,6 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 		}
 	}
 
-	/* Copy retained points to front of array */
 	const size_t pt_size = ptarray_point_size(pa);
 	/* The first point is already in place, so we don't need to copy it */
 	size_t kept_it = 1;

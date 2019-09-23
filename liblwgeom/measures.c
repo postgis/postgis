@@ -2426,12 +2426,12 @@ distance2d_sqr_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B)
 	 *	0<r<1 P is interior to AB
 	 */
 
-	double ba_x_diff = (B->x - A->x);
-	double ba_y_diff = (B->y - A->y);
-	double ab_length_sqr = (ba_x_diff * ba_x_diff + ba_y_diff * ba_y_diff);
-	double ca_x_diff = (C->x - A->x);
-	double ca_y_diff = (C->y - A->y);
-	double dot_ac_ab = (ca_x_diff * ba_x_diff + ca_y_diff * ba_y_diff);
+	double ba_x = (B->x - A->x);
+	double ba_y = (B->y - A->y);
+	double ab_length_sqr = (ba_x * ba_x + ba_y * ba_y);
+	double ca_x = (C->x - A->x);
+	double ca_y = (C->y - A->y);
+	double dot_ac_ab = (ca_x * ba_x + ca_y * ba_y);
 
 	if (dot_ac_ab <= 0)
 		return distance2d_sqr_pt_pt(C, A);
@@ -2448,7 +2448,7 @@ distance2d_sqr_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B)
 	 *
 	 */
 
-	double s_numerator = ca_x_diff * ba_y_diff - ca_y_diff * ba_x_diff;
+	double s_numerator = ca_x * ba_y - ca_y * ba_x;
 
 	/* Distance = (s_num / ab) * (s_num / ab) * ab == s_num * s_num / ab) */
 	return s_numerator * s_numerator / ab_length_sqr;
