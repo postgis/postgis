@@ -1584,12 +1584,18 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 void
 ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 {
+	static const size_t stack_size = 256 * 8 * 2;
+	uint8_t stack_points[stack_size] = {0};
 	/* Do not try to simplify really short things */
 	if (pa->npoints < 3 || pa->npoints <= minpts)
 		return;
 
-	uint8_t *kept_points = lwalloc(sizeof(uint8_t) * pa->npoints);
-	memset(kept_points, LW_FALSE, sizeof(uint8_t) * pa->npoints);
+	uint8_t *kept_points = stack_points;
+	if (pa->npoints > stack_size)
+	{
+		kept_points = lwalloc(sizeof(uint8_t) * pa->npoints);
+		memset(kept_points, LW_FALSE, sizeof(uint8_t) * pa->npoints);
+	}
 	kept_points[0] = LW_TRUE;
 	kept_points[pa->npoints - 1] = LW_TRUE;
 	uint32_t keptn = 2;
@@ -1644,7 +1650,8 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	}
 	pa->npoints = keptn;
 
-	lwfree(kept_points);
+	if (kept_points != stack_points)
+		lwfree(kept_points);
 }
 
 /************************************************************************/
