@@ -1581,70 +1581,93 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	return max_distance_sqr / ab_length_sqr;
 }
 
+static int
+int_cmp(const void *a, const void *b)
+{
+	/* casting pointer types */
+	const int *ia = (const int *)a;
+	const int *ib = (const int *)b;
+	/* returns negative if b > a and positive if a > b */
+	return *ia - *ib;
+}
+
 void
 ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 {
+	static size_t stack_size = 256;
+	int *stack, *outlist; /* recursion stack */
+	int stack_static[stack_size];
+	int outlist_static[stack_size];
+	int sp = -1; /* recursion stack pointer */
+	int p1;
+	uint32_t split;
+	uint32_t outn = 0;
+	int pai = 0;
+	uint32_t i;
+	double eps_sqr = tolerance * tolerance;
+
 	/* Do not try to simplify really short things */
-	if (pa->npoints < 3 || pa->npoints <= minpts)
+	if (pa->npoints < 3)
 		return;
 
-	uint8_t *kept_points = lwalloc(sizeof(uint8_t) * pa->npoints);
-	memset(kept_points, LW_FALSE, sizeof(uint8_t) * pa->npoints);
-	kept_points[0] = LW_TRUE;
-	kept_points[pa->npoints - 1] = LW_TRUE;
-	uint32_t keptn = 2;
-	uint32_t first_it = 0;
-	uint32_t last_it = pa->npoints - 1;
-	double tolerance_sqr = tolerance * tolerance;
-
-	while (first_it < (pa->npoints - 1))
+	/* Only heap allocate book-keeping arrays if necessary */
+	if (pa->npoints > stack_size)
 	{
-		uint32_t split = first_it;
-		double max_distance_sqr = -1.0;
-		if (/* Both points are already added */
-		    ((last_it - first_it) < 2) ||
-		    /* We could not find a valid split */
-		    ((max_distance_sqr = ptarray_dp_findsplit_in_place(pa, first_it, last_it, &split)) < 0.0) ||
-		    /* All points are further than tolerance, and we already have enough points */
-		    (max_distance_sqr <= tolerance_sqr && keptn >= minpts))
+		stack = lwalloc(sizeof(int) * pa->npoints);
+		outlist = lwalloc(sizeof(int) * pa->npoints);
+	}
+	else
+	{
+		stack = stack_static;
+		outlist = outlist_static;
+	}
+
+	p1 = 0;
+	stack[++sp] = pa->npoints - 1;
+
+	/* Add first point to output list */
+	outlist[outn++] = 0;
+	do
+	{
+		double dist = ptarray_dp_findsplit_in_place(pa, p1, stack[sp], &split);
+
+		if ((dist > eps_sqr) || ((outn + sp + 1 < minpts) && (dist >= 0)))
 		{
-			/* Anything between the current first and last iterators is closer than the tolerance,
-			 * so we ignore all of them and look for the new iterators after them*/
-
-			/* For the first point we can ignore all the points that we are already keeping */
-			first_it = last_it;
-			while ((first_it < (pa->npoints - 2)) && kept_points[first_it + 1])
-				first_it++;
-
-			/* The last iterator is the following point of those we are already keeping */
-			last_it = first_it + 1;
-			while ((last_it < (pa->npoints - 1)) && !kept_points[last_it])
-				last_it++;
+			stack[++sp] = split;
 		}
 		else
 		{
-			kept_points[split] = LW_TRUE;
-			keptn++;
-			last_it = split;
+			outlist[outn++] = stack[sp];
+			p1 = stack[sp--];
 		}
-	}
+	} while (!(sp < 0));
 
+	/* Put list of retained points into order */
+	qsort(outlist, outn, sizeof(int), int_cmp);
 	/* Copy retained points to front of array */
-	size_t pt_size = ptarray_point_size(pa);
-	size_t kept_it = 0;
-	for (uint32_t i = 0; i < pa->npoints; i++)
+	for (i = 0; i < outn; i++)
 	{
-		if (kept_points[i])
+		int j = outlist[i];
+		/* Indexes the same, means no copy required */
+		if (j == pai)
 		{
-			memcpy(pa->serialized_pointlist + pt_size * kept_it,
-			       pa->serialized_pointlist + pt_size * i,
-			       pt_size);
-			kept_it++;
+			pai++;
+			continue;
 		}
+		/* Indexes different, copy value down */
+		ptarray_copy_point(pa, j, pai++);
 	}
-	pa->npoints = keptn;
 
-	lwfree(kept_points);
+	/* Adjust point count on array */
+	pa->npoints = outn;
+
+	/* Only free if arrays are on heap */
+	if (stack != stack_static)
+		lwfree(stack);
+	if (outlist != outlist_static)
+		lwfree(outlist);
+
+	return;
 }
 
 /************************************************************************/
