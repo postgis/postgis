@@ -1597,6 +1597,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	uint32_t keptn = 2;
 	uint32_t first_it = 0;
 	uint32_t last_it = pa->npoints - 1;
+	uint32_t next_last_it = last_it;
 	const double tolerance_sqr = tolerance * tolerance;
 
 	/* For the first minpts we ignore the tolerance */
@@ -1613,7 +1614,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 				first_it++;
 
 			/* We pick the last iterator out of the points we are already keeping */
-			last_it = first_it + 1;
+			last_it = FP_MAX(next_last_it, first_it + 1);
 			while ((last_it < (pa->npoints - 1)) && !kept_points[last_it])
 				last_it++;
 		}
@@ -1623,6 +1624,8 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 			keptn++;
 			/* Update the tolerance depending on whether we reached the minpoints goal */
 			it_tol = keptn >= minpts ? tolerance_sqr : -1.0;
+			if (split < last_it - 1)
+				next_last_it = last_it;
 			last_it = split;
 		}
 	}
