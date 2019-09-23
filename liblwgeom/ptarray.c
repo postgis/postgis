@@ -1546,30 +1546,33 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	}
 
 	/* This is based on distance2d_sqr_pt_seg, but heavily inlined here to avoid recalculations */
-	double x_diff = (B->x - A->x);
-	double y_diff = (B->y - A->y);
-	double ab_length_sqr = (x_diff * x_diff + y_diff * y_diff);
+	double ba_x_diff = (B->x - A->x);
+	double ba_y_diff = (B->y - A->y);
+	double ab_length_sqr = (ba_x_diff * ba_x_diff + ba_y_diff * ba_y_diff);
 	for (uint32_t itk = itfirst + 1; itk < itlast; itk++)
 	{
-		const POINT2D *p = getPoint2d_cp(pts, itk);
+		const POINT2D *C = getPoint2d_cp(pts, itk);
 		double distance_sqr;
-		double dot_ac_ab = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y));
+		double ca_x_diff = (C->x - A->x);
+		double ca_y_diff = (C->y - A->y);
+		double dot_ac_ab = (ca_x_diff * ba_x_diff + ca_y_diff * ba_y_diff);
 
 		/* Note that in < 0 and > ab_length_sqr we multiply by ab_length_sqr
 		 * since we don't want to do the division in the final (and most common) option
 		 */
 		if (dot_ac_ab <= 0.0)
 		{
-			distance_sqr = distance2d_sqr_pt_pt(p, A) * ab_length_sqr;
+			distance_sqr = distance2d_sqr_pt_pt(C, A) * ab_length_sqr;
 		}
 		else if (dot_ac_ab >= ab_length_sqr)
 		{
-			distance_sqr = distance2d_sqr_pt_pt(p, B) * ab_length_sqr;
+			distance_sqr = distance2d_sqr_pt_pt(C, B) * ab_length_sqr;
 		}
 		else
 		{
-			double s = ((A->y - p->y) * x_diff - (A->x - p->x) * y_diff);
-			distance_sqr = s * s;
+			double s_numerator = ca_x_diff * ba_y_diff - ca_y_diff * ba_x_diff;
+			/* Notice this is missing the division by ab_length_sqr on purpose */
+			distance_sqr = s_numerator * s_numerator;
 		}
 
 		if (distance_sqr > max_distance_sqr)

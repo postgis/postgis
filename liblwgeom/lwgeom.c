@@ -1784,8 +1784,7 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 				{
 					/* Any ring deeper than this one is, by OGR definition, smaller
 					 * so we drop them all */
-					ptarray_free(pa);
-					for (i++; i < g->nrings; i++)
+					for (; i < g->nrings; i++)
 					{
 						pa = g->rings[i];
 						ptarray_free(pa);
