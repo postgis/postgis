@@ -1581,18 +1581,6 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	return max_distance_sqr / ab_length_sqr;
 }
 
-static inline void
-lw_bitarray_set(uint32_t *array, uint32_t pos)
-{
-	array[pos / 32] |= (1 << (pos % 32));
-}
-
-static inline int
-lw_bitarray_is_set(uint32_t *array, uint32_t pos)
-{
-	return ((array[pos / 32]) & (1 << (pos % 32))) != 0;
-}
-
 // TODO: Recover the stack allocation (2 * 256 * sizeof(int) */
 void
 ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
@@ -1601,11 +1589,10 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	if (pa->npoints < 3 || pa->npoints <= minpts)
 		return;
 
-	uint32_t bit_cnt = ((pa->npoints / 32) + 1) * 32;
-	uint32_t *kept_points = lwalloc(bit_cnt / 8);
-	memset(kept_points, LW_FALSE, bit_cnt / 8);
-	lw_bitarray_set(kept_points, 0);
-	lw_bitarray_set(kept_points, pa->npoints - 1);
+	uint8_t *kept_points = lwalloc(sizeof(uint8_t) * pa->npoints);
+	memset(kept_points, LW_FALSE, sizeof(uint8_t) * pa->npoints);
+	kept_points[0] = LW_TRUE;
+	kept_points[pa->npoints - 1] = LW_TRUE;
 	uint32_t keptn = 2;
 	uint32_t first_it = 0;
 	uint32_t last_it = pa->npoints - 1;
@@ -1627,17 +1614,17 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 
 			/* For the first point we can ignore all the points that we are already keeping */
 			first_it = last_it;
-			while ((first_it < (pa->npoints - 2)) && lw_bitarray_is_set(kept_points, first_it + 1))
+			while ((first_it < (pa->npoints - 2)) && kept_points[first_it + 1])
 				first_it++;
 
 			/* The last iterator is the following point of those we are already keeping */
 			last_it = first_it + 1;
-			while ((last_it < (pa->npoints - 1)) && !lw_bitarray_is_set(kept_points, last_it))
+			while ((last_it < (pa->npoints - 1)) && !kept_points[last_it])
 				last_it++;
 		}
 		else
 		{
-			lw_bitarray_set(kept_points, split);
+			kept_points[split] = LW_TRUE;
 			keptn++;
 			last_it = split;
 		}
@@ -1648,7 +1635,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	size_t kept_it = 0;
 	for (uint32_t i = 0; i < pa->npoints; i++)
 	{
-		if (lw_bitarray_is_set(kept_points, i))
+		if (kept_points[i])
 		{
 			memcpy(pa->serialized_pointlist + pt_size * kept_it,
 			       pa->serialized_pointlist + pt_size * i,
