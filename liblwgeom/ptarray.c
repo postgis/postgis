@@ -1598,15 +1598,13 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	uint32_t keptn = 2;
 	uint32_t first_it = 0;
 	uint32_t last_it = pa->npoints - 1;
-	double tolerance_sqr = tolerance * tolerance;
+	const double tolerance_sqr = tolerance * tolerance;
 
 	while (first_it < (pa->npoints - 1))
 	{
 		uint32_t split = first_it;
 		double max_distance_sqr = -1.0;
-		if (/* Both points are already added */
-		    ((last_it - first_it) < 2) ||
-		    /* We could not find a valid split */
+		if (/* We could not find a valid split, so iterate */
 		    ((max_distance_sqr = ptarray_dp_findsplit_in_place(pa, first_it, last_it, &split)) < 0.0) ||
 		    /* All points are further than tolerance, and we already have enough points */
 		    (max_distance_sqr <= tolerance_sqr && keptn >= minpts))
@@ -1633,12 +1631,13 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	}
 
 	/* Copy retained points to front of array */
-	size_t pt_size = ptarray_point_size(pa);
-	/* The first point is already in place */
+	const size_t pt_size = ptarray_point_size(pa);
+	/* The first point is already in place, so we don't need to copy it */
 	size_t kept_it = 1;
 	if (keptn == 2)
 	{
-		/* Copy just the last point */
+		/* If there are 2 points remaining, it has to be first and last as
+		 * we added those at the start */
 		memcpy(pa->serialized_pointlist + pt_size * kept_it,
 		       pa->serialized_pointlist + pt_size * (pa->npoints - 1),
 		       pt_size);
