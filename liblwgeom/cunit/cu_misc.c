@@ -62,6 +62,14 @@ static void test_misc_simplify(void)
 	lwgeom_free(geom);
 	lwgeom_free(geom2d);
 	lwfree(wkt_out);
+
+	geom = lwgeom_from_wkt("POLYGON((0 0,1 1,1 3,0 4,-2 3,-1 1,0 0))", LW_PARSER_CHECK_NONE);
+	geom2d = lwgeom_simplify(geom, 1, LW_FALSE);
+	wkt_out = lwgeom_to_ewkt(geom2d);
+	CU_ASSERT_STRING_EQUAL("POLYGON((0 0,0 4,-2 3,0 0))", wkt_out);
+	lwgeom_free(geom);
+	lwgeom_free(geom2d);
+	lwfree(wkt_out);
 }
 
 static void test_misc_count_vertices(void)

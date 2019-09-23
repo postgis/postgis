@@ -1521,17 +1521,17 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 static double
 ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t itlast, uint32_t *split)
 {
-	// if p1 == p2 --> min distance to p1
+	double max_distance_sqr = -1;
+	if (itfirst >= itlast)
+		return max_distance_sqr;
+
 	const POINT2D *pfirst = getPoint2d_cp(pts, itfirst);
 	const POINT2D *plast = getPoint2d_cp(pts, itlast);
-
-	double max_distance_sqr = -1;
-	*split = itfirst;
 
 	if (distance2d_sqr_pt_pt(pfirst, plast) < DBL_EPSILON)
 	{
 		/* If p1 == p2, we can calculate just the distance from each point to pfirst */
-		for (uint32_t itk = itfirst; itk < itlast; itk++)
+		for (uint32_t itk = itfirst + 1; itk < itlast; itk++)
 		{
 			const POINT2D *pk = getPoint2d_cp(pts, itk);
 			double distance_sqr = distance2d_sqr_pt_pt(pk, pfirst);
@@ -1550,7 +1550,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	double x_diff = (B->x - A->x);
 	double y_diff = (B->y - A->y);
 	double ab_length_sqr = (x_diff * x_diff + y_diff * y_diff);
-	for (uint32_t itk = itfirst; itk < itlast; itk++)
+	for (uint32_t itk = itfirst + 1; itk < itlast; itk++)
 	{
 		const POINT2D *p = getPoint2d_cp(pts, itk);
 		double distance_sqr;
@@ -1596,43 +1596,33 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	uint32_t last_it = pa->npoints - 1;
 	double tolerance_sqr = tolerance * tolerance;
 
-	//	lwnotice("Start %d -> %d", first_it, last_it);
 	while (first_it < last_it && last_it < pa->npoints)
 	{
 		uint32_t split = first_it;
-		if (((last_it - first_it) < 2) ||
-		    (ptarray_dp_findsplit_in_place(pa, first_it, last_it, &split) < tolerance_sqr) ||
-		    (split == first_it))
+		double max_distance_sqr = -1.0;
+		if (((last_it - first_it) < 2) || /* Both points are already added */
+		    ((max_distance_sqr = ptarray_dp_findsplit_in_place(pa, first_it, last_it, &split)) < 0.0) ||
+		    /* We only discard close points if we already have enough to fill minpts */
+		    (max_distance_sqr <= tolerance_sqr && keptn >= minpts))
 		{
-			/* We just look the new iterators, as anything between first and last
-			 * can be safely ignored */
+			/* Anything between the current first and last is closer than the tolerance,
+			 * so we ignore them and look for new iterators after those */
+
+			/* For the first point we can ignore all the points that we are already keeping */
 			first_it = last_it;
-			/* For the first point we can ignore all the points that we have
-			 * already decided to keep */
 			while ((first_it < (pa->npoints - 2)) && kept_points[first_it + 1])
 				first_it++;
+
+			/* The last iterator is the following point of those we are already keeping */
 			last_it = first_it + 1;
-			/* For the last point we look for the next point we have decided to keep */
 			while ((last_it < (pa->npoints - 1)) && !kept_points[last_it])
 				last_it++;
-			//			lwnotice("Discarded everything. New: %d -> %d", first_it, last_it);
 		}
 		else
 		{
 			kept_points[split] = LW_TRUE;
 			keptn++;
 			last_it = split;
-		}
-	}
-
-	/* If we saved less points than required, just take them from the front of the array */
-	for (uint32_t i = 0; keptn < minpts; i++)
-	{
-		if (!kept_points[i])
-		{
-			kept_points[i] = LW_TRUE;
-			//			lwnotice("Extra: %d", i);
-			keptn++;
 		}
 	}
 
@@ -1643,7 +1633,6 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	{
 		if (kept_points[i])
 		{
-			//			lwnotice("Kept %i", i);
 			memcpy(pa->serialized_pointlist + pt_size * kept_it,
 			       pa->serialized_pointlist + pt_size * i,
 			       pt_size);
