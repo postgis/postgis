@@ -1520,19 +1520,19 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
  * Returns itfirst if no point was found futher away than max_distance_sqr
  */
 static uint32_t
-ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t itlast, double max_distance_sqr)
+ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t it_first, uint32_t it_last, double max_distance_sqr)
 {
-	uint32_t split = itfirst;
-	if ((itfirst - itlast) < 2)
-		return itfirst;
+	uint32_t split = it_first;
+	if ((it_first - it_last) < 2)
+		return it_first;
 
-	const POINT2D *A = getPoint2d_cp(pts, itfirst);
-	const POINT2D *B = getPoint2d_cp(pts, itlast);
+	const POINT2D *A = getPoint2d_cp(pts, it_first);
+	const POINT2D *B = getPoint2d_cp(pts, it_last);
 
 	if (distance2d_sqr_pt_pt(A, B) < DBL_EPSILON)
 	{
 		/* If p1 == p2, we can just calculate the distance from each point to A */
-		for (uint32_t itk = itfirst + 1; itk < itlast; itk++)
+		for (uint32_t itk = it_first + 1; itk < it_last; itk++)
 		{
 			const POINT2D *pk = getPoint2d_cp(pts, itk);
 			double distance_sqr = distance2d_sqr_pt_pt(pk, A);
@@ -1552,7 +1552,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	/* To avoid the division by ab_length_sqr in the 3rd path, we normalize here
 	 * and multiply in the first two paths [(dot_ac_ab < 0) and (> ab_length_sqr)] */
 	max_distance_sqr *= ab_length_sqr;
-	for (uint32_t itk = itfirst + 1; itk < itlast; itk++)
+	for (uint32_t itk = it_first + 1; itk < it_last; itk++)
 	{
 		const POINT2D *C = getPoint2d_cp(pts, itk);
 		double distance_sqr;
@@ -1590,38 +1590,44 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	if (pa->npoints < 3 || pa->npoints <= minpts)
 		return;
 
+	/* We use this array to keep track of the points we are keeping, so
+	 * we store just TRUE / FALSE in their position */
 	uint8_t *kept_points = lwalloc(sizeof(uint8_t) * pa->npoints);
 	memset(kept_points, LW_FALSE, sizeof(uint8_t) * pa->npoints);
 	kept_points[0] = LW_TRUE;
 	kept_points[pa->npoints - 1] = LW_TRUE;
-
-	uint32_t *point_stack = lwalloc(sizeof(uint32_t) * pa->npoints);
-	point_stack[0] = 0;
-	uint32_t point_stack_size = 1;
-
 	uint32_t keptn = 2;
-	uint32_t first_it = 0;
-	uint32_t last_it = pa->npoints - 1;
-	const double tolerance_sqr = tolerance * tolerance;
 
-	/* For the first minpts we ignore the tolerance */
+	/* We use this array as a stack to store the iterators that we are going to need
+	 * in the following steps.
+	 * This is ~10% faster than iterating over @kept_points looking for them
+	 */
+	uint32_t *iterator_stack = lwalloc(sizeof(uint32_t) * pa->npoints);
+	iterator_stack[0] = 0;
+	uint32_t iterator_stack_size = 1;
+
+	uint32_t it_first = 0;
+	uint32_t it_last = pa->npoints - 1;
+
+	const double tolerance_sqr = tolerance * tolerance;
+	/* For the first @minpts points we ignore the tolerance */
 	double it_tol = keptn >= minpts ? tolerance_sqr : -1.0;
-	while (point_stack_size)
+
+	while (iterator_stack_size)
 	{
-		uint32_t split = ptarray_dp_findsplit_in_place(pa, first_it, last_it, it_tol);
-		if (split == first_it)
+		uint32_t split = ptarray_dp_findsplit_in_place(pa, it_first, it_last, it_tol);
+		if (split == it_first)
 		{
-			first_it = last_it;
-			last_it = point_stack[--point_stack_size];
+			it_first = it_last;
+			it_last = iterator_stack[--iterator_stack_size];
 		}
 		else
 		{
 			kept_points[split] = LW_TRUE;
 			keptn++;
 
-			point_stack[point_stack_size++] = last_it;
-			last_it = split;
-			/* Update the tolerance depending on whether we reached the minpoints goal */
+			iterator_stack[iterator_stack_size++] = it_last;
+			it_last = split;
 			it_tol = keptn >= minpts ? tolerance_sqr : -1.0;
 		}
 	}
@@ -1653,7 +1659,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	pa->npoints = keptn;
 
 	lwfree(kept_points);
-	lwfree(point_stack);
+	lwfree(iterator_stack);
 }
 
 /************************************************************************/
