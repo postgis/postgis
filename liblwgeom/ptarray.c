@@ -1557,18 +1557,22 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 		double ca_y_diff = (C->y - A->y);
 		double dot_ac_ab = (ca_x_diff * ba_x_diff + ca_y_diff * ba_y_diff);
 
+		/* Note that in < 0 and > ab_length_sqr we multiply by ab_length_sqr
+		 * since we don't want to do the division in the final (and most common) option
+		 */
 		if (dot_ac_ab <= 0.0)
 		{
-			distance_sqr = distance2d_sqr_pt_pt(C, A);
+			distance_sqr = distance2d_sqr_pt_pt(C, A) * ab_length_sqr;
 		}
 		else if (dot_ac_ab >= ab_length_sqr)
 		{
-			distance_sqr = distance2d_sqr_pt_pt(C, B);
+			distance_sqr = distance2d_sqr_pt_pt(C, B) * ab_length_sqr;
 		}
 		else
 		{
 			double s_numerator = ca_x_diff * ba_y_diff - ca_y_diff * ba_x_diff;
-			distance_sqr = s_numerator * s_numerator / ab_length_sqr;
+			/* Notice this is missing the division by ab_length_sqr on purpose */
+			distance_sqr = s_numerator * s_numerator;
 		}
 
 		if (distance_sqr > max_distance_sqr)
@@ -1577,7 +1581,7 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 			max_distance_sqr = distance_sqr;
 		}
 	}
-	return max_distance_sqr;
+	return max_distance_sqr / ab_length_sqr;
 }
 
 void
