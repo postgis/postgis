@@ -1331,13 +1331,13 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	/* Loop through pointarray looking for nearest segment */
 	for (t=1; t<pa->npoints; t++)
 	{
-		double dist;
+		double dist_sqr;
 		end = getPoint2d_cp(pa, t);
-		dist = distance2d_pt_seg(&p, start, end);
+		dist_sqr = distance2d_sqr_pt_seg(&p, start, end);
 
-		if ( dist < mindist )
+		if (dist_sqr < mindist)
 		{
-			mindist = dist;
+			mindist = dist_sqr;
 			seg=t-1;
 			if ( mindist == 0 )
 			{
@@ -1348,6 +1348,7 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 
 		start = end;
 	}
+	mindist = sqrt(mindist);
 
 	if ( mindistout ) *mindistout = mindist;
 
@@ -1525,16 +1526,16 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	if (itfirst >= itlast)
 		return max_distance_sqr;
 
-	const POINT2D *pfirst = getPoint2d_cp(pts, itfirst);
-	const POINT2D *plast = getPoint2d_cp(pts, itlast);
+	const POINT2D *A = getPoint2d_cp(pts, itfirst);
+	const POINT2D *B = getPoint2d_cp(pts, itlast);
 
-	if (distance2d_sqr_pt_pt(pfirst, plast) < DBL_EPSILON)
+	if (distance2d_sqr_pt_pt(A, B) < DBL_EPSILON)
 	{
-		/* If p1 == p2, we can calculate just the distance from each point to pfirst */
+		/* If p1 == p2, we can calculate just the distance from each point to A */
 		for (uint32_t itk = itfirst + 1; itk < itlast; itk++)
 		{
 			const POINT2D *pk = getPoint2d_cp(pts, itk);
-			double distance_sqr = distance2d_sqr_pt_pt(pk, pfirst);
+			double distance_sqr = distance2d_sqr_pt_pt(pk, A);
 			if (distance_sqr > max_distance_sqr)
 			{
 				*split = itk;
@@ -1544,8 +1545,6 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 		return max_distance_sqr;
 	}
 
-	const POINT2D *A = pfirst;
-	const POINT2D *B = plast;
 	/* This is based on distance2d_sqr_pt_seg, but heavily inlined here to avoid recalculations */
 	double x_diff = (B->x - A->x);
 	double y_diff = (B->y - A->y);
@@ -1554,13 +1553,16 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	{
 		const POINT2D *p = getPoint2d_cp(pts, itk);
 		double distance_sqr;
-		double r_dividend = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y));
+		double dot_ac_ab = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y));
 
-		if (r_dividend < 0.0)
+		/* Note that in < 0 and > ab_length_sqr we multiply by ab_length_sqr
+		 * since we don't want to do the division in the final (and most common) option
+		 */
+		if (dot_ac_ab <= 0.0)
 		{
 			distance_sqr = distance2d_sqr_pt_pt(p, A) * ab_length_sqr;
 		}
-		else if (r_dividend > ab_length_sqr)
+		else if (dot_ac_ab >= ab_length_sqr)
 		{
 			distance_sqr = distance2d_sqr_pt_pt(p, B) * ab_length_sqr;
 		}
@@ -1596,17 +1598,19 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	uint32_t last_it = pa->npoints - 1;
 	double tolerance_sqr = tolerance * tolerance;
 
-	while (first_it < last_it && last_it < pa->npoints)
+	while (first_it < (pa->npoints - 1))
 	{
 		uint32_t split = first_it;
 		double max_distance_sqr = -1.0;
-		if (((last_it - first_it) < 2) || /* Both points are already added */
+		if (/* Both points are already added */
+		    ((last_it - first_it) < 2) ||
+		    /* We could not find a valid split */
 		    ((max_distance_sqr = ptarray_dp_findsplit_in_place(pa, first_it, last_it, &split)) < 0.0) ||
-		    /* We only discard close points if we already have enough to fill minpts */
+		    /* All points are further than tolerance, and we already have enough points */
 		    (max_distance_sqr <= tolerance_sqr && keptn >= minpts))
 		{
-			/* Anything between the current first and last is closer than the tolerance,
-			 * so we ignore them and look for new iterators after those */
+			/* Anything between the current first and last iterators is closer than the tolerance,
+			 * so we ignore all of them and look for the new iterators after them*/
 
 			/* For the first point we can ignore all the points that we are already keeping */
 			first_it = last_it;

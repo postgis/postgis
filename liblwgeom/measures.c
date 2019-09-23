@@ -2403,22 +2403,21 @@ distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2)
 	return hypot(hside, vside);
 }
 
+/* return distance squared, useful to avoid sqrt calculations */
 double
-distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
+distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 {
-	double r, s;
-
 	/*if start==end, then use pt distance */
 	if ((A->x == B->x) && (A->y == B->y))
-		return distance2d_pt_pt(p, A);
+		return distance2d_sqr_pt_pt(p, A);
 
 	/*
 	 * otherwise, we use comp.graphics.algorithms
 	 * Frequently Asked Questions method
 	 *
-	 *  (1)     	      AC dot AB
+	 *  (1)     	AC dot AB
 	 *         r = ---------
-	 *               ||AB||^2
+	 *              ||AB||^2
 	 *	r has the following meaning:
 	 *	r=0 P = A
 	 *	r=1 P = B
@@ -2427,45 +2426,15 @@ distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 	 *	0<r<1 P is interior to AB
 	 */
 
-	r = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y)) /
-	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
+	double x_diff = (B->x - A->x);
+	double y_diff = (B->y - A->y);
+	double ab_length_sqr = (x_diff * x_diff + y_diff * y_diff);
 
-	if (r < 0)
-		return distance2d_pt_pt(p, A);
-	if (r > 1)
-		return distance2d_pt_pt(p, B);
+	double dot_ac_ab = ((p->x - A->x) * x_diff + (p->y - A->y) * y_diff);
 
-	/*
-	 * (2)
-	 *	     (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
-	 *	s = -----------------------------
-	 *	             	L^2
-	 *
-	 *	Then the distance from C to P = |s|*L.
-	 *
-	 */
-
-	s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y)) /
-	    ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
-
-	return FP_ABS(s) * sqrt((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
-}
-
-/* return distance squared, useful to avoid sqrt calculations */
-double
-distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
-{
-	double r, s;
-	double divider = ((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
-
-	if ((A->x == B->x) && (A->y == B->y))
+	if (dot_ac_ab <= 0)
 		return distance2d_sqr_pt_pt(p, A);
-
-	r = ((p->x - A->x) * (B->x - A->x) + (p->y - A->y) * (B->y - A->y)) / divider;
-
-	if (r < 0)
-		return distance2d_sqr_pt_pt(p, A);
-	if (r > 1)
+	if (dot_ac_ab >= ab_length_sqr)
 		return distance2d_sqr_pt_pt(p, B);
 
 	/*
@@ -2478,9 +2447,10 @@ distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 	 *
 	 */
 
-	s = ((A->y - p->y) * (B->x - A->x) - (A->x - p->x) * (B->y - A->y));
+	double s_numerator = ((A->y - p->y) * x_diff - (A->x - p->x) * y_diff);
 
-	return s * s / divider;
+	/* Distance = (s_num / ab) * (s_num / ab) * ab == s_num * s_num / ab) */
+	return s_numerator * s_numerator / ab_length_sqr;
 }
 
 /**
