@@ -1517,8 +1517,7 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 
 /* Out of the points in pa [itfist .. itlast], finds the one that's farthest away from
  * the segment determined by pts[itfist] and pts[itlast].
- * Only considers points at least max_distance_sqr distance away from the segment
- * Returns itfirst if no point could be found
+ * Returns itfirst if no point could be found futher away than max_distance_sqr
  */
 static uint32_t
 ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t itlast, double max_distance_sqr)
@@ -1530,9 +1529,9 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 	const POINT2D *A = getPoint2d_cp(pts, itfirst);
 	const POINT2D *B = getPoint2d_cp(pts, itlast);
 
-	if (distance2d_sqr_pt_pt(A, B) < DBL_EPSILON)
+	if (memcmp(A, B, sizeof(POINT2D)) == 0)
 	{
-		/* If p1 == p2, we can calculate just the distance from each point to A */
+		/* If p1 == p2, we can just calculate the distance from each point to A */
 		for (uint32_t itk = itfirst + 1; itk < itlast; itk++)
 		{
 			const POINT2D *pk = getPoint2d_cp(pts, itk);
