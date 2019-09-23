@@ -1584,18 +1584,12 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 void
 ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 {
-	static const size_t stack_size = 256 * 8 * 2;
-	uint8_t stack_points[stack_size] = {0};
 	/* Do not try to simplify really short things */
 	if (pa->npoints < 3 || pa->npoints <= minpts)
 		return;
 
-	uint8_t *kept_points = stack_points;
-	if (pa->npoints > stack_size)
-	{
-		kept_points = lwalloc(sizeof(uint8_t) * pa->npoints);
-		memset(kept_points, LW_FALSE, sizeof(uint8_t) * pa->npoints);
-	}
+	uint8_t *kept_points = lwalloc(sizeof(uint8_t) * pa->npoints);
+	memset(kept_points, LW_FALSE, sizeof(uint8_t) * pa->npoints);
 	kept_points[0] = LW_TRUE;
 	kept_points[pa->npoints - 1] = LW_TRUE;
 	uint32_t keptn = 2;
@@ -1637,21 +1631,31 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 
 	/* Copy retained points to front of array */
 	size_t pt_size = ptarray_point_size(pa);
-	size_t kept_it = 0;
-	for (uint32_t i = 0; i < pa->npoints; i++)
+	/* The first point is already in place */
+	size_t kept_it = 1;
+	if (keptn == 2)
 	{
-		if (kept_points[i])
+		/* Copy just the last point */
+		memcpy(pa->serialized_pointlist + pt_size * kept_it,
+		       pa->serialized_pointlist + pt_size * (pa->npoints - 1),
+		       pt_size);
+	}
+	else
+	{
+		for (uint32_t i = 1; i < pa->npoints; i++)
 		{
-			memcpy(pa->serialized_pointlist + pt_size * kept_it,
-			       pa->serialized_pointlist + pt_size * i,
-			       pt_size);
-			kept_it++;
+			if (kept_points[i])
+			{
+				memcpy(pa->serialized_pointlist + pt_size * kept_it,
+				       pa->serialized_pointlist + pt_size * i,
+				       pt_size);
+				kept_it++;
+			}
 		}
 	}
 	pa->npoints = keptn;
 
-	if (kept_points != stack_points)
-		lwfree(kept_points);
+	lwfree(kept_points);
 }
 
 /************************************************************************/
