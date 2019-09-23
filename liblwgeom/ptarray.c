@@ -1515,16 +1515,17 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 	return;
 }
 
-
-/************************************************************************/
-/* return distance squared, useful to avoid sqrt calculations */
-
-static double
-ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t itlast, uint32_t *split)
+/* Out of the points in pa [itfist .. itlast], finds the one that's farthest away from
+ * the segment determined by pts[itfist] and pts[itlast].
+ * Only considers points at least max_distance_sqr distance away from the segment
+ * Returns itfirst if no point could be found
+ */
+static uint32_t
+ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t itlast, double max_distance_sqr)
 {
-	double max_distance_sqr = -1;
+	uint32_t split = itfirst;
 	if (itfirst >= itlast)
-		return max_distance_sqr;
+		return itfirst;
 
 	const POINT2D *A = getPoint2d_cp(pts, itfirst);
 	const POINT2D *B = getPoint2d_cp(pts, itlast);
@@ -1538,17 +1539,20 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 			double distance_sqr = distance2d_sqr_pt_pt(pk, A);
 			if (distance_sqr > max_distance_sqr)
 			{
-				*split = itk;
+				split = itk;
 				max_distance_sqr = distance_sqr;
 			}
 		}
-		return max_distance_sqr;
+		return split;
 	}
 
 	/* This is based on distance2d_sqr_pt_seg, but heavily inlined here to avoid recalculations */
 	double ba_x_diff = (B->x - A->x);
 	double ba_y_diff = (B->y - A->y);
 	double ab_length_sqr = (ba_x_diff * ba_x_diff + ba_y_diff * ba_y_diff);
+	/* To avoid the division by ab_length_sqr in the 3rd path, we normalize here
+	 * and multiply in the first two paths [(dot_ac_ab < 0) and (> ab_length_sqr)] */
+	max_distance_sqr *= ab_length_sqr;
 	for (uint32_t itk = itfirst + 1; itk < itlast; itk++)
 	{
 		const POINT2D *C = getPoint2d_cp(pts, itk);
@@ -1557,9 +1561,6 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 		double ca_y_diff = (C->y - A->y);
 		double dot_ac_ab = (ca_x_diff * ba_x_diff + ca_y_diff * ba_y_diff);
 
-		/* Note that in < 0 and > ab_length_sqr we multiply by ab_length_sqr
-		 * since we don't want to do the division in the final (and most common) option
-		 */
 		if (dot_ac_ab <= 0.0)
 		{
 			distance_sqr = distance2d_sqr_pt_pt(C, A) * ab_length_sqr;
@@ -1571,17 +1572,16 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t 
 		else
 		{
 			double s_numerator = ca_x_diff * ba_y_diff - ca_y_diff * ba_x_diff;
-			/* Notice this is missing the division by ab_length_sqr on purpose */
-			distance_sqr = s_numerator * s_numerator;
+			distance_sqr = s_numerator * s_numerator; /* Missing division by ab_length_sqr on purpose */
 		}
 
 		if (distance_sqr > max_distance_sqr)
 		{
-			*split = itk;
+			split = itk;
 			max_distance_sqr = distance_sqr;
 		}
 	}
-	return max_distance_sqr / ab_length_sqr;
+	return split;
 }
 
 void
@@ -1600,14 +1600,12 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	uint32_t last_it = pa->npoints - 1;
 	const double tolerance_sqr = tolerance * tolerance;
 
+	/* For the first minpts we remove the ignore the tolerance */
+	double it_tol = keptn >= minpts ? tolerance_sqr : -1.0;
 	while (first_it < (pa->npoints - 1))
 	{
-		uint32_t split = first_it;
-		double max_distance_sqr = -1.0;
-		if (/* We could not find a valid split, so iterate */
-		    ((max_distance_sqr = ptarray_dp_findsplit_in_place(pa, first_it, last_it, &split)) < 0.0) ||
-		    /* All points are further than tolerance, and we already have enough points */
-		    (max_distance_sqr <= tolerance_sqr && keptn >= minpts))
+		uint32_t split = ptarray_dp_findsplit_in_place(pa, first_it, last_it, it_tol);
+		if (split == first_it)
 		{
 			/* Anything between the current first and last iterators is closer than the tolerance,
 			 * so we ignore all of them and look for the new iterators after them*/
@@ -1626,6 +1624,8 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 		{
 			kept_points[split] = LW_TRUE;
 			keptn++;
+			/* Update the tolerance depending on whether we reached the minpoints goal */
+			it_tol = keptn >= minpts ? tolerance_sqr : -1.0;
 			last_it = split;
 		}
 	}
