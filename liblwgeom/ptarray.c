@@ -1523,7 +1523,7 @@ static uint32_t
 ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t itfirst, uint32_t itlast, double max_distance_sqr)
 {
 	uint32_t split = itfirst;
-	if (itfirst >= itlast)
+	if ((itfirst - itlast) < 2)
 		return itfirst;
 
 	const POINT2D *A = getPoint2d_cp(pts, itfirst);
@@ -1594,39 +1594,35 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	memset(kept_points, LW_FALSE, sizeof(uint8_t) * pa->npoints);
 	kept_points[0] = LW_TRUE;
 	kept_points[pa->npoints - 1] = LW_TRUE;
+
+	uint32_t *point_stack = lwalloc(sizeof(uint32_t) * pa->npoints);
+	point_stack[0] = 0;
+	uint32_t point_stack_size = 1;
+
 	uint32_t keptn = 2;
 	uint32_t first_it = 0;
 	uint32_t last_it = pa->npoints - 1;
-	uint32_t next_last_it = last_it;
 	const double tolerance_sqr = tolerance * tolerance;
 
 	/* For the first minpts we ignore the tolerance */
 	double it_tol = keptn >= minpts ? tolerance_sqr : -1.0;
-	while (first_it < (pa->npoints - 2))
+	while (point_stack_size)
 	{
 		uint32_t split = ptarray_dp_findsplit_in_place(pa, first_it, last_it, it_tol);
 		if (split == first_it)
 		{
-			/* After ignoring the current range, we look for the start of the next range,
-			 * which has to the shape as [kept, (not_kept)*, kept*/
 			first_it = last_it;
-			while ((first_it < (pa->npoints - 2)) && kept_points[first_it + 1])
-				first_it++;
-
-			/* We pick the last iterator out of the points we are already keeping */
-			last_it = FP_MAX(next_last_it, first_it + 1);
-			while ((last_it < (pa->npoints - 1)) && !kept_points[last_it])
-				last_it++;
+			last_it = point_stack[--point_stack_size];
 		}
 		else
 		{
 			kept_points[split] = LW_TRUE;
 			keptn++;
+
+			point_stack[point_stack_size++] = last_it;
+			last_it = split;
 			/* Update the tolerance depending on whether we reached the minpoints goal */
 			it_tol = keptn >= minpts ? tolerance_sqr : -1.0;
-			if (split < last_it - 1)
-				next_last_it = last_it;
-			last_it = split;
 		}
 	}
 
@@ -1657,6 +1653,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 	pa->npoints = keptn;
 
 	lwfree(kept_points);
+	lwfree(point_stack);
 }
 
 /************************************************************************/
