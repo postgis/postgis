@@ -6,12 +6,12 @@ Changes:
 - Merged community `svn-2.5` as of 2019-10-02: Minor changes in the functions to handle raster constraints (not worth deploying in our case).
 - Backport [6018250](https://github.com/postgis/postgis/commit/601825064dbf8175f71e2ff896821a7a932ebe4f) to also cache prepared points and multipoints, speeding up ST_Intersects with those types.
 - Backport ubsan fixes.
-- Backport travis improvements (except python run).
 - Backport fixes for compiler warnings.
 - Backport [4498a19](https://github.com/postgis/postgis/commit/4498a19f96b12a66ee9d219d071d27d25b71f65a) and [8cbffb3](https://github.com/postgis/postgis/commit/8cbffb350c269ab6744ed189f19d84a6650a1041): Speed up ST_GeometryType, ST_X, ST_Y, ST_Z and ST_M.
 - Backport [143a35f](https://github.com/postgis/postgis/commit/143a35f8221275cc61f7b3bfcae4a1ff6507c2dc): Speed up ST_IsEmpty.
 - Backport [756c478](https://github.com/postgis/postgis/commit/756c4784566284b5cf01e2a58cb7a4156dbcaef9): Speed up the calculation of cartesian bbox
 - Backport [7a6ab51](https://github.com/postgis/postgis/commit/7a6ab51d90a001f5acd236283a0f662bdc9b36dc) and [66a95ca](https://github.com/postgis/postgis/commit/66a95caed47fd1480b14dd588cee5efda9de3f24): Speed up ST_RemoveRepeatedPoints
+- Backport [86057e2](https://github.com/postgis/postgis/commit/86057e2e46a272838a54eff9e6ebb5e56f33fab7): Speed up ST_Simplify
 
 ## 2.5.1.5+carto-1
 
