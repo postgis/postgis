@@ -1615,7 +1615,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 			int use_heap = (mpt->ngeoms > out_stack_size);
 
 			/* No-op on empty */
-			if (mpt->ngeoms == 0)
+			if (mpt->ngeoms < 2)
 				return geometry_modified;
 
 			/* We cannot write directly back to the multipoint */
