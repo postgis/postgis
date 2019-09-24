@@ -503,7 +503,7 @@ CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	_COST_LOW;
+	_COST_DEFAULT;
 
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -626,14 +626,14 @@ CREATE OR REPLACE FUNCTION _ST_BestSRID(geography, geography)
 	RETURNS integer
 	AS 'MODULE_PATHNAME','geography_bestsrid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	_COST_LOW;
+	_COST_DEFAULT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_BestSRID(geography)
 	RETURNS integer
 	AS 'MODULE_PATHNAME','geography_bestsrid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	_COST_LOW;
+	_COST_DEFAULT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
@@ -743,7 +743,7 @@ CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid int4)
 	RETURNS geography
 	AS 'MODULE_PATHNAME', 'LWGEOM_set_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	_COST_LOW;
+	_COST_DEFAULT;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_Centroid(geography, use_spheroid boolean DEFAULT true)
