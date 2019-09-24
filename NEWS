@@ -16,6 +16,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4505, Speed up conversion of geometries to/from GEOS (Dan Baston)
   - #4507, Use GEOSMakeValid and GEOSBuildArea for GEOS 3.8+ (Dan Baston)
   - #4491, Speed up ST_RemoveRepeatedPoints (Raúl Marín)
+  - #4510, Speed up ST_Simplify (Raúl Marín)
 
 PostGIS 3.0.0alpha4
 2019/08/10

@@ -209,7 +209,7 @@ int
 lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
                          LWMLINE* v)
 {
-	double mindist = -1;
+	double mindist_sqr = -1;
 	POINT4D pt, pt_projected;
 	POINT4D p1, p2;
 	POINTARRAY *ipa = lwline_in->points;
@@ -238,23 +238,28 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	for ( i = 0; i < nsegs; i++ )
 	{
 		getPoint4d_p(ipa, i+1, &p2);
-		double dist;
-		dist = distance2d_pt_seg((POINT2D*)&pt, (POINT2D*)&p1, (POINT2D*)&p2);
-		LWDEBUGF(4, " Distance of point %g %g to segment %g %g, %g %g: %g", pt.x, pt.y, p1.x, p1.y, p2.x, p2.y, dist);
-		if (i==0 || dist < mindist )
+		double dist_sqr = distance2d_sqr_pt_seg((POINT2D *)&pt, (POINT2D *)&p1, (POINT2D *)&p2);
+		LWDEBUGF(4, "Distance (squared) of point %g %g to segment %g %g, %g %g: %g",
+				 pt.x, pt.y,
+				 p1.x, p1.y,
+				 p2.x, p2.y,
+				 dist_sqr);
+		if (i == 0 || dist_sqr < mindist_sqr)
 		{
-			mindist = dist;
+			mindist_sqr = dist_sqr;
 			seg=i;
-			if ( mindist == 0.0 ) break; /* can't be closer than ON line */
+			if (mindist_sqr == 0.0)
+				break; /* can't be closer than ON line */
 		}
 		p1 = p2;
 	}
 
 	LWDEBUGF(3, "Closest segment: %d", seg);
-	LWDEBUGF(3, "mindist: %g", mindist);
+	LWDEBUGF(3, "mindist: %g", mindist_sqr);
 
 	/* No intersection */
-	if ( mindist > 0 ) return 0;
+	if (mindist_sqr > 0)
+		return 0;
 
 	/* empty or single-point line, intersection on boundary */
 	if ( seg == UINT32_MAX ) return 1;
