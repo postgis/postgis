@@ -54,36 +54,36 @@ snap|E|38|sn35|en36
 snap_again|7
 snap_again|36
 snap_again|38
-crossover|40
 crossover|41
+crossover|43
 crossover|44
 crossover|45
-crossover|N|37||POINT(21 10)
-crossover|N|38||POINT(21 7)
-crossover|N|39||POINT(9 18)
-crossover|N|40||POINT(9 20)
-crossover|N|41||POINT(16.2 14)
-crossover|E|9|sn15|en41
-crossover|E|20|sn9|en38
-crossover|E|21|sn15|en39
-crossover|E|39|sn37|en14
-crossover|E|40|sn38|en37
-crossover|E|41|sn39|en40
-crossover|E|42|sn40|en16
-crossover|E|43|sn41|en14
-crossover|E|44|sn41|en37
-crossover|E|45|sn40|en41
-crossover_again|40
+crossover|N|37||POINT(9 20)
+crossover|N|38||POINT(16.2 14)
+crossover|N|39||POINT(21 10)
+crossover|N|40||POINT(9 18)
+crossover|N|41||POINT(21 7)
+crossover|E|9|sn15|en38
+crossover|E|20|sn9|en41
+crossover|E|21|sn15|en40
+crossover|E|39|sn37|en16
+crossover|E|40|sn38|en14
+crossover|E|41|sn37|en38
+crossover|E|42|sn39|en14
+crossover|E|43|sn38|en39
+crossover|E|44|sn40|en37
+crossover|E|45|sn41|en39
 crossover_again|41
+crossover_again|43
 crossover_again|44
 crossover_again|45
 contains|25
 contains|46
 contains|47
-contains|N|42||POINT(7 36)
-contains|N|43||POINT(14 34)
-contains|E|46|sn21|en42
-contains|E|47|sn43|en22
+contains|N|42||POINT(14 34)
+contains|N|43||POINT(7 36)
+contains|E|46|sn42|en22
+contains|E|47|sn21|en43
 nodecross|48
 nodecross|49
 nodecross|N|44||POINT(18 37)
@@ -97,13 +97,13 @@ iso_ex_2segs|28
 #1613.1|E|50|sn46|en47
 #1613.2|52
 #1613.2|53
-#1613.2|N|48||POINT(556267.6 144887)
-#1613.2|N|49||POINT(556310 144887)
-#1613.2|N|50||POINT(556250 144887)
-#1613.2|E|50|sn46|en48
-#1613.2|E|51|sn48|en47
+#1613.2|N|48||POINT(556250 144887)
+#1613.2|N|49||POINT(556267.6 144887)
+#1613.2|N|50||POINT(556310 144887)
+#1613.2|E|50|sn46|en49
+#1613.2|E|51|sn49|en47
 #1613.2|E|52|sn48|en49
-#1613.2|E|53|sn50|en48
+#1613.2|E|53|sn49|en50
 #1631.1|54
 #1631.1|N|51||POINT(556267.6 144887)
 #1631.1|N|52||POINT(556267.6 144888)
@@ -199,9 +199,9 @@ t3402.end|Topology 'bug3402' dropped
 t3412.start|t
 t3412.L1|1
 t3412.L2|2
-t3412.L2|3
-t3412.L2|5
 t3412.L2|4
+t3412.L2|5
+t3412.L2|3
 t3412.end|Topology 'bug3412' dropped
 t3371.start|t
 t3371.L1|1
@@ -210,15 +210,15 @@ t3371.L2|2
 t3371.end|Topology 'bug3711' dropped
 t3838.start|t
 t3838.L1|1
-t3838.L2|1
+t3838.L2|2
 t3838.L2|3
 t3838.L2|4
 t3838.L2|5
+t3838.L2|1
 t3838.L2|6
 t3838.L2|7
 t3838.L2|8
 t3838.L2|9
-t3838.L2|2
 t3838.end|Topology 'bug3838' dropped
 t1855_1.start|t
 t1855_1.0|1
