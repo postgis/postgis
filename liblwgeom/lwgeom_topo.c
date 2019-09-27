@@ -5709,9 +5709,9 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   LWDEBUGG(1, noded, "Finally-noded");
 
   /* 3. For each (now-noded) segment, insert an edge */
-  // tmp = noded;
-  // noded = lwgeom_normalize(tmp);
-  // lwgeom_free(tmp);
+  tmp = noded;
+  noded = lwgeom_normalize(tmp);
+  lwgeom_free(tmp);
   col = lwgeom_as_lwcollection(noded);
   if ( col )
   {
