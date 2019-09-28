@@ -3,6 +3,7 @@ PostGIS 3.0.0beta1
 For full changes and enhancements, refer to PostGIS 3.0.0.
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
+Additional performance enhancements if running GEOS 3.8+
 
 * Major highlights *
   - #4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)
@@ -18,6 +19,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4491, Speed up ST_RemoveRepeatedPoints (Raúl Marín)
   - #4509, Update geocoder for tiger 2019 (Regina Obe)
   - #4338, Census block level data (tabblock table) not loading (Regina Obe)
+
 
 PostGIS 3.0.0alpha4
 2019/08/10
