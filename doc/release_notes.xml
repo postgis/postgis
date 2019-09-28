@@ -8,7 +8,8 @@
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
       <para>Supported PostgreSQL versions for this release are:
       PostgreSQL 9.5 - PostgreSQL 12
-      GEOS &gt;= 3.6. Additional features enabled if you running Proj6+ and/or PostgreSQL 12</para>
+      GEOS &gt;= 3.6. Additional features enabled if you running Proj6+ and/or PostgreSQL 12.
+      Performance enhancements if running GEOS 3.8+</para>
       <simplesect>
         <title>Major highlights</title>
           <para>4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)</para>
