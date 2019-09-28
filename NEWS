@@ -1,5 +1,5 @@
 PostGIS 2.5.4
-XXXX/XX/XX
+2019/XX/XX
 
  * Bug fixes *
 
@@ -12,6 +12,7 @@ XXXX/XX/XX
   - #4495, Fix ST_SnapToGrid output having an outdated bbox (Raúl Marín)
   - #4496, Make ST_Simplify(TRIANGLE) collapse if requested (Raúl Marín)
   - #4506, Remove tolerance in point-in-ring tests (Paul Ramsey)
+  - #4338, Fix Census block level data (tabblock table) loading (Regina Obe)
 
 
 PostGIS 2.5.3
