@@ -55,11 +55,11 @@ snap_again|7
 snap_again|36
 snap_again|38
 crossover|4
-crossover|N||POINT(9 20)
-crossover|N||POINT(16.2 14)
-crossover|N||POINT(21 10)
-crossover|N||POINT(9 18)
-crossover|N||POINT(21 7)
+crossover|N|
+crossover|N|
+crossover|N|
+crossover|N|
+crossover|N|
 crossover|E|
 crossover|E|
 crossover|E|
@@ -74,10 +74,10 @@ crossover_again|4
 contains|25
 contains|46
 contains|47
-contains|N|42||POINT(14 34)
-contains|N|43||POINT(7 36)
-contains|E|46|sn42|en22
-contains|E|47|sn21|en43
+contains|N|
+contains|N|
+contains|E|
+contains|E|
 nodecross|48
 nodecross|49
 nodecross|N|44||POINT(18 37)
@@ -91,13 +91,13 @@ iso_ex_2segs|28
 #1613.1|E|50|sn46|en47
 #1613.2|52
 #1613.2|53
-#1613.2|N|48||POINT(556250 144887)
-#1613.2|N|49||POINT(556267.6 144887)
-#1613.2|N|50||POINT(556310 144887)
-#1613.2|E|50|sn46|en49
-#1613.2|E|51|sn49|en47
-#1613.2|E|52|sn48|en49
-#1613.2|E|53|sn49|en50
+#1613.2|N|
+#1613.2|N|
+#1613.2|N|
+#1613.2|E|
+#1613.2|E|
+#1613.2|E|
+#1613.2|E|
 #1631.1|54
 #1631.1|N|51||POINT(556267.6 144887)
 #1631.1|N|52||POINT(556267.6 144888)
@@ -192,10 +192,7 @@ t3402.L2|3
 t3402.end|Topology 'bug3402' dropped
 t3412.start|t
 t3412.L1|1
-t3412.L2|2
 t3412.L2|4
-t3412.L2|5
-t3412.L2|3
 t3412.end|Topology 'bug3412' dropped
 t3371.start|t
 t3371.L1|1
@@ -204,14 +201,6 @@ t3371.L2|2
 t3371.end|Topology 'bug3711' dropped
 t3838.start|t
 t3838.L1|1
-t3838.L2|2
-t3838.L2|3
-t3838.L2|4
-t3838.L2|5
-t3838.L2|1
-t3838.L2|6
-t3838.L2|7
-t3838.L2|8
 t3838.L2|9
 t3838.end|Topology 'bug3838' dropped
 t1855_1.start|t
