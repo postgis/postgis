@@ -1,5 +1,5 @@
 PostGIS 3.0.0beta1
-2019/09/XX
+2019/09/28
 For full changes and enhancements, refer to PostGIS 3.0.0.
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
@@ -12,7 +12,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4496, Make ST_Simplify(TRIANGLE) collapse if requested (Raúl Marín)
   - #4501, Allow postgis_tiger_geocoder to be installable by non-super users (Regina Obe)
   - #4503, Speed up the calculation of cartesian bbox (Raúl Marín)
-  - #4504, shp2pgsql -D not working with schema qualified tables
+  - #4504, shp2pgsql -D not working with schema qualified tables (Regina Obe)
   - #4505, Speed up conversion of geometries to/from GEOS (Dan Baston)
   - #4507, Use GEOSMakeValid and GEOSBuildArea for GEOS 3.8+ (Dan Baston)
   - #4491, Speed up ST_RemoveRepeatedPoints (Raúl Marín)
