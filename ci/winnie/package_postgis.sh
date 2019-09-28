@@ -16,7 +16,7 @@
 #otherwise use the ones jenkins passes thru
 #!/bin/bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8
+	export GEOS_VER=3.8.0beta1
 	export GDAL_VER=2.2.4
 	export PROJ_VER=4.9.3
 	export SFCGAL_VER=1.3.2
