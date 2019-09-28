@@ -12,7 +12,7 @@ REM "%PGBIN%\psql" -d "%THEDB%" -c "ALTER EXTENSION postgis_tiger_geocoder UPDAT
 
 REM unremark the loader line to update your loader scripts
 REM note this wipes out your custom settings in loader_* tables
-REM "%PGBIN%\psql"  -d "%THEDB%" -f "tiger_loader_2018.sql"
+REM "%PGBIN%\psql"  -d "%THEDB%" -f "tiger_loader_2019.sql"
 cd regress
 REM "%PGBIN%\psql"  -d "%THEDB%" -t -f regress.sql
 pause

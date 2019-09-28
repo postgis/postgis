@@ -1,5 +1,5 @@
-PostGIS 3.0.0alpha5
-2019/XX/XX
+PostGIS 3.0.0beta1
+2019/09/XX
 For full changes and enhancements, refer to PostGIS 3.0.0.
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
 Additional features enabled if you are running Proj6+ and PostgreSQL 12
@@ -16,7 +16,8 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #4505, Speed up conversion of geometries to/from GEOS (Dan Baston)
   - #4507, Use GEOSMakeValid and GEOSBuildArea for GEOS 3.8+ (Dan Baston)
   - #4491, Speed up ST_RemoveRepeatedPoints (Raúl Marín)
-  - #4510, Speed up ST_Simplify (Raúl Marín)
+  - #4509, Update geocoder for tiger 2019 (Regina Obe)
+  - #4338, Census block level data (tabblock table) not loading (Regina Obe)
 
 PostGIS 3.0.0alpha4
 2019/08/10
@@ -226,6 +227,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
            (Darafei Praliaskouski)
   - #3979, postgis_sfcgal_noop() round trip function (Lucas C. Villa Real)
   - #4328, ST_3DIntersects for 2D TINs. (Darafei Praliaskouski)
+  - #4509, Update geocoder for tiger 2019 (Regina Obe)
 
 * Fixes *
   - #4342, Move deprecated functions into legacy.sql file
