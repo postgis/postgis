@@ -11,6 +11,7 @@ XXXX/XX/XX
   - #4493, Fix ST_RemoveRepeatedPoints output having an outdated bbox (Raúl Marín)
   - #4495, Fix ST_SnapToGrid output having an outdated bbox (Raúl Marín)
   - #4506, Remove tolerance in point-in-ring stabline tests (Paul Ramsey)
+  - #4518, Backport system views to make upgrade to PostGIS3 cleaner (Paul Ramsey)
 
 
 PostGIS 2.4.8

@@ -5409,7 +5409,8 @@ LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL COST 200;
 CREATE OR REPLACE FUNCTION postgis_constraint_srid(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
 $$
 SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+		 FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) s
 		 WHERE n.nspname = $1
 		 AND c.relname = $2
 		 AND a.attname = $3
@@ -5426,7 +5427,8 @@ LANGUAGE 'sql' STABLE STRICT _PARALLEL;
 CREATE OR REPLACE FUNCTION postgis_constraint_dims(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
 $$
 SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+		 FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) s
 		 WHERE n.nspname = $1
 		 AND c.relname = $2
 		 AND a.attname = $3
@@ -5445,7 +5447,8 @@ LANGUAGE 'sql' STABLE STRICT _PARALLEL;
 CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
 $$
 SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+		 FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) s
 		 WHERE n.nspname = $1
 		 AND c.relname = $2
 		 AND a.attname = $3
@@ -5476,21 +5479,24 @@ CREATE OR REPLACE VIEW geometry_columns AS
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
             s.conkey, replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
-           FROM pg_constraint AS s
+           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+				FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%geometrytype(% = %'::text
 
 ) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
             s.conkey, replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
-           FROM pg_constraint AS s
+           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%ndims(% = %'::text
 
 ) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
             s.conkey, replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
-           FROM pg_constraint AS s
+           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+		    FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%srid(% = %'::text
 
 ) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
