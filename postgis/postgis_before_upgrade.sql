@@ -34,7 +34,6 @@
 --                 LOWER(p.proname) = LOWER('ST_AsGeoJson')
 --         ORDER BY 1, 2, 3, 4;
 CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
-	function_schema text,
 	function_name text,
 	function_arguments text) RETURNS void AS $$
 DECLARE
@@ -44,13 +43,19 @@ BEGIN
 	FOR frec IN
 		SELECT  p.oid as oid,
 				n.nspname as schema,
+				n.oid as schema_oid,
 				p.proname as name,
 				pg_catalog.pg_get_function_arguments(p.oid) as arguments,
 				pg_catalog.pg_get_function_identity_arguments(p.oid) as identity_arguments
 			FROM pg_catalog.pg_proc p
 			LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
 			WHERE
-				LOWER(n.nspname) = LOWER(function_schema) AND
+				n.oid = (
+					SELECT n.oid
+					FROM pg_proc p
+					JOIN pg_namespace n ON p.pronamespace = n.oid
+					WHERE proname = 'postgis_full_version'
+					) AND
 				LOWER(p.proname) = LOWER(function_name) AND
 				LOWER(pg_catalog.pg_get_function_arguments(p.oid)) ~ LOWER(function_arguments) AND
 				pg_catalog.pg_function_is_visible(p.oid)
@@ -65,7 +70,7 @@ BEGIN
 			EXECUTE sql_drop;
 		EXCEPTION
 			WHEN OTHERS THEN
-				RAISE EXCEPTION 'Could not drop function %.%. You might need to drop dependant objects. Postgres error: %', function_schema, function_name, SQLERRM;
+				RAISE EXCEPTION 'Could not drop function %. You might need to drop dependant objects. Postgres error: %', function_name, SQLERRM;
 		END;
 	END LOOP;
 END;
@@ -76,7 +81,6 @@ $$ LANGUAGE plpgsql;
 -- (catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean)
 SELECT _postgis_drop_function_if_needed
 	(
-	'@extschema@',
 	'AddGeometryColumn',
 	'catalog_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer, new_type character varying, new_dim integer, use_typmod boolean'
 	);
@@ -85,7 +89,6 @@ SELECT _postgis_drop_function_if_needed
 -- (geom geometry, prec integer, options integer)
 SELECT _postgis_drop_function_if_needed
 	(
-	'@extschema@',
 	'ST_AsX3D',
 	'geom geometry, prec integer, options integer'
 	);
@@ -96,7 +99,6 @@ SELECT _postgis_drop_function_if_needed
 -- Dropping it conditionally since the same signature still exists.
 SELECT _postgis_drop_function_if_needed
 	(
-	'@extschema@',
 	'UpdateGeometrySRID',
 	'catalogn_name character varying, schema_name character varying, table_name character varying, column_name character varying, new_srid integer'
 	);
@@ -138,20 +140,26 @@ $$ ;
 
 -- FUNCTION ST_AsLatLonText went from multiple signatures to a single one with defaults for 2.2.0
 DROP FUNCTION IF EXISTS ST_AsLatLonText(geometry); -- Does not conflict
+
 SELECT _postgis_drop_function_if_needed
 	(
-	'@extschema@',
 	'ST_AsLatLonText',
 	'geometry, text'
 	);
 
+-- FUNCTION ST_LineCrossingDirection changed argument names in 3.0
+-- Was (geom1 geometry, geom2 geometry) and now (line1 geometry, line2 geometry)
+SELECT _postgis_drop_function_if_needed
+	(
+	'ST_LineCrossingDirection',
+	'geom1 geometry, geom2 geometry'
+	);
 
 -- FUNCTION _st_linecrossingdirection changed argument names in 3.0
 -- Was (geom1 geometry, geom2 geometry) and now (line1 geometry, line2 geometry)
 SELECT _postgis_drop_function_if_needed
 	(
-	'@extschema@',
-	'_st_linecrossingdirection',
+	'_ST_LineCrossingDirection',
 	'geom1 geometry, geom2 geometry'
 	);
 
@@ -159,26 +167,14 @@ SELECT _postgis_drop_function_if_needed
 -- (pretty_print => pretty_bool) in 3.0alpha4
 SELECT _postgis_drop_function_if_needed
 	(
-	'@extschema@',
 	'ST_AsGeoJson',
 	$args$r record, geom_column text DEFAULT ''::text, maxdecimaldigits integer DEFAULT 15, pretty_print boolean DEFAULT false$args$
 	);
-
--- FUNCTION ST_LineCrossingDirection changed argument names in 3.0
--- Was (geom1 geometry, geom2 geometry) and now (line1 geometry, line2 geometry)
-SELECT _postgis_drop_function_if_needed
-	(
-	'@extschema@',
-	'ST_LineCrossingDirection',
-	'geom1 geometry, geom2 geometry'
-	);
-
 
 -- FUNCTION _st_orderingequals changed argument names in 3.0
 -- Was (GeometryA geometry, GeometryB geometry) and now (geom1 geometry, geom2 geometry)
 SELECT _postgis_drop_function_if_needed
 	(
-	'@extschema@',
 	'_st_orderingequals',
 	'GeometryA geometry, GeometryB geometry'
 	);
@@ -187,7 +183,6 @@ SELECT _postgis_drop_function_if_needed
 -- Was (GeometryA geometry, GeometryB geometry) and now (geom1 geometry, geom2 geometry)
 SELECT _postgis_drop_function_if_needed
 	(
-	'@extschema@',
 	'st_orderingequals',
 	'GeometryA geometry, GeometryB geometry'
 	);
@@ -251,3 +246,4 @@ $$;
 
 -- DROP auxiliar function (created above)
 DROP FUNCTION _postgis_drop_function_if_needed(text, text, text);
+
