@@ -1,6 +1,8 @@
 #export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 sh autogen.sh
-./configure --with-libiconv=/usr/local --without-wagyu --without-interrupt-tests
+CC=gcc8   \
+CFLAGS="-Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-trunc" \
+ ./configure --with-libiconv=/usr/local --without-interrupt-tests
 make clean
 make
 export PGUSER=postgres
