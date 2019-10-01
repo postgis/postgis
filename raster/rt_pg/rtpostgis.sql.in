@@ -7301,19 +7301,18 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_spatially_unique(rastschema n
 	RETURNS boolean AS $$
 	SELECT
 		TRUE
-	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-			FROM pg_constraint) s, pg_index idx, pg_operator op
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conexclop, conindid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint WHERE contype = 'x') s, pg_index idx, pg_operator op
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
 		AND a.attrelid = c.oid
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
-		AND s.contype = 'x'
+		AND s.conexclop[1] = op.oid
 		AND 0::smallint = ANY (s.conkey)
 		AND idx.indexrelid = s.conindid
 		AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::%geometry)'
-		AND s.conexclop[1] = op.oid
 		AND op.oprname = '=';
 	$$ LANGUAGE sql STABLE STRICT
   COST 100;
@@ -7350,15 +7349,14 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 	BEGIN
 		SELECT
 			s.conname INTO cn
-		FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-			FROM pg_constraint) s, pg_index idx, pg_operator op
+		FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, conexclop, conindid, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint WHERE contype = 'x') s, pg_index idx, pg_operator op
 		WHERE n.nspname = $1
 			AND c.relname = $2
 			AND a.attname = $3
 			AND a.attrelid = c.oid
 			AND s.connamespace = n.oid
 			AND s.conrelid = c.oid
-			AND s.contype = 'x'
 			AND 0::smallint = ANY (s.conkey)
 			AND idx.indexrelid = s.conindid
 			AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::%geometry)'
