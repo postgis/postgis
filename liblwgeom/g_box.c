@@ -27,14 +27,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-/* Fall back to older finite() if necessary */
-#ifndef HAVE_ISFINITE
-# ifdef HAVE_GNU_ISFINITE
-#  define _GNU_SOURCE
-# else
-#  define isfinite finite
-# endif
-#endif
 
 GBOX* gbox_new(uint8_t flags)
 {
@@ -539,46 +531,114 @@ static int lw_arc_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2,
 	return rv;
 }
 
-int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )
+static void
+ptarray_calculate_gbox_cartesian_2d(const POINTARRAY *pa, GBOX *gbox)
 {
-	uint32_t i;
-	POINT4D p;
-	int has_z, has_m;
+	const POINT2D *p = getPoint2d_cp(pa, 0);
 
-	if ( ! pa ) return LW_FAILURE;
-	if ( ! gbox ) return LW_FAILURE;
-	if ( pa->npoints < 1 ) return LW_FAILURE;
+	gbox->xmax = gbox->xmin = p->x;
+	gbox->ymax = gbox->ymin = p->y;
 
-	has_z = FLAGS_GET_Z(pa->flags);
-	has_m = FLAGS_GET_M(pa->flags);
+	for (uint32_t i = 1; i < pa->npoints; i++)
+	{
+		p = getPoint2d_cp(pa, i);
+		gbox->xmin = FP_MIN(gbox->xmin, p->x);
+		gbox->xmax = FP_MAX(gbox->xmax, p->x);
+		gbox->ymin = FP_MIN(gbox->ymin, p->y);
+		gbox->ymax = FP_MAX(gbox->ymax, p->y);
+	}
+}
+
+/* Works with X/Y/Z. Needs to be adjusted after if X/Y/M was required */
+static void
+ptarray_calculate_gbox_cartesian_3d(const POINTARRAY *pa, GBOX *gbox)
+{
+	const POINT3D *p = getPoint3d_cp(pa, 0);
+
+	gbox->xmax = gbox->xmin = p->x;
+	gbox->ymax = gbox->ymin = p->y;
+	gbox->zmax = gbox->zmin = p->z;
+
+	for (uint32_t i = 1; i < pa->npoints; i++)
+	{
+		p = getPoint3d_cp(pa, i);
+		gbox->xmin = FP_MIN(gbox->xmin, p->x);
+		gbox->xmax = FP_MAX(gbox->xmax, p->x);
+		gbox->ymin = FP_MIN(gbox->ymin, p->y);
+		gbox->ymax = FP_MAX(gbox->ymax, p->y);
+		gbox->zmin = FP_MIN(gbox->zmin, p->z);
+		gbox->zmax = FP_MAX(gbox->zmax, p->z);
+	}
+}
+
+static void
+ptarray_calculate_gbox_cartesian_4d(const POINTARRAY *pa, GBOX *gbox)
+{
+	const POINT4D *p = getPoint4d_cp(pa, 0);
+
+	gbox->xmax = gbox->xmin = p->x;
+	gbox->ymax = gbox->ymin = p->y;
+	gbox->zmax = gbox->zmin = p->z;
+	gbox->mmax = gbox->mmin = p->m;
+
+	for (uint32_t i = 1; i < pa->npoints; i++)
+	{
+		p = getPoint4d_cp(pa, i);
+		gbox->xmin = FP_MIN(gbox->xmin, p->x);
+		gbox->xmax = FP_MAX(gbox->xmax, p->x);
+		gbox->ymin = FP_MIN(gbox->ymin, p->y);
+		gbox->ymax = FP_MAX(gbox->ymax, p->y);
+		gbox->zmin = FP_MIN(gbox->zmin, p->z);
+		gbox->zmax = FP_MAX(gbox->zmax, p->z);
+		gbox->mmin = FP_MIN(gbox->mmin, p->m);
+		gbox->mmax = FP_MAX(gbox->mmax, p->m);
+	}
+}
+
+int
+ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox)
+{
+	if (!pa || pa->npoints == 0)
+		return LW_FAILURE;
+	if (!gbox)
+		return LW_FAILURE;
+
+	int has_z = FLAGS_GET_Z(pa->flags);
+	int has_m = FLAGS_GET_M(pa->flags);
 	gbox->flags = gflags(has_z, has_m, 0);
 	LWDEBUGF(4, "ptarray_calculate_gbox Z: %d M: %d", has_z, has_m);
+	int coordinates = 2 + has_z + has_m;
 
-	getPoint4d_p(pa, 0, &p);
-	gbox->xmin = gbox->xmax = p.x;
-	gbox->ymin = gbox->ymax = p.y;
-	if ( has_z )
-		gbox->zmin = gbox->zmax = p.z;
-	if ( has_m )
-		gbox->mmin = gbox->mmax = p.m;
-
-	for ( i = 1 ; i < pa->npoints; i++ )
+	switch (coordinates)
 	{
-		getPoint4d_p(pa, i, &p);
-		gbox->xmin = FP_MIN(gbox->xmin, p.x);
-		gbox->xmax = FP_MAX(gbox->xmax, p.x);
-		gbox->ymin = FP_MIN(gbox->ymin, p.y);
-		gbox->ymax = FP_MAX(gbox->ymax, p.y);
-		if ( has_z )
+	case 2:
+	{
+		ptarray_calculate_gbox_cartesian_2d(pa, gbox);
+		break;
+	}
+	case 3:
+	{
+		if (has_z)
 		{
-			gbox->zmin = FP_MIN(gbox->zmin, p.z);
-			gbox->zmax = FP_MAX(gbox->zmax, p.z);
+			ptarray_calculate_gbox_cartesian_3d(pa, gbox);
 		}
-		if ( has_m )
+		else
 		{
-			gbox->mmin = FP_MIN(gbox->mmin, p.m);
-			gbox->mmax = FP_MAX(gbox->mmax, p.m);
+			double zmin = gbox->zmin;
+			double zmax = gbox->zmax;
+			ptarray_calculate_gbox_cartesian_3d(pa, gbox);
+			gbox->mmin = gbox->zmin;
+			gbox->mmax = gbox->zmax;
+			gbox->zmin = zmin;
+			gbox->zmax = zmax;
 		}
+		break;
+	}
+	default:
+	{
+		ptarray_calculate_gbox_cartesian_4d(pa, gbox);
+		break;
+	}
 	}
 	return LW_SUCCESS;
 }

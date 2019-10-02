@@ -10,6 +10,7 @@ Changes:
 - Backport fixes for compiler warnings.
 - Backport [4498a19](https://github.com/postgis/postgis/commit/4498a19f96b12a66ee9d219d071d27d25b71f65a) and [8cbffb3](https://github.com/postgis/postgis/commit/8cbffb350c269ab6744ed189f19d84a6650a1041): Speed up ST_GeometryType, ST_X, ST_Y, ST_Z and ST_M.
 - Backport [143a35f](https://github.com/postgis/postgis/commit/143a35f8221275cc61f7b3bfcae4a1ff6507c2dc): Speed up ST_IsEmpty.
+- Backport [756c478](https://github.com/postgis/postgis/commit/756c4784566284b5cf01e2a58cb7a4156dbcaef9): Speed up the calculation of cartesian bbox
 
 ## 2.5.1.5+carto-1
 

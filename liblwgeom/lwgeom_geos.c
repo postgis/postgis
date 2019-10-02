@@ -243,7 +243,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 	uint32_t dims = 2;
 	uint32_t i;
 	int append_points = 0;
-	const POINT3DZ* p3d = NULL;
+	const POINT3D *p3d = NULL;
 	const POINT2D* p2d = NULL;
 	GEOSCoordSeq sq;
 
@@ -273,7 +273,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 	{
 		if (dims == 3)
 		{
-			p3d = getPoint3dz_cp(pa, i);
+			p3d = getPoint3d_cp(pa, i);
 			p2d = (const POINT2D*)p3d;
 			LWDEBUGF(4, "Point: %g,%g,%g", p3d->x, p3d->y, p3d->z);
 		}
@@ -293,7 +293,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 	{
 		if (dims == 3)
 		{
-			p3d = getPoint3dz_cp(pa, 0);
+			p3d = getPoint3d_cp(pa, 0);
 			p2d = (const POINT2D*)p3d;
 		}
 		else
