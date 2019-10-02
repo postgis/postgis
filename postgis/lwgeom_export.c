@@ -77,10 +77,10 @@ getSRSbySRID(int32_t srid, bool short_crs)
 	}
 
 	if (short_crs)
-		sprintf(query, "SELECT auth_name||':'||auth_srid \
+		snprintf(query, 256, "SELECT auth_name||':'||auth_srid \
 		        FROM spatial_ref_sys WHERE srid='%d'", srid);
 	else
-		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
+		snprintf(query, 256, "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
 		        FROM spatial_ref_sys WHERE srid='%d'", srid);
 
 	err = SPI_exec(query, 1);
