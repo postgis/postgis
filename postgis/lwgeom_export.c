@@ -125,13 +125,14 @@ getSRSbySRID(int32_t srid, bool short_crs)
 */
 int getSRIDbySRS(const char* srs)
 {
-	char query[256];
+	char *query = palloc(256 + strlen(srs));
 	int32_t srid, err;
 
 	if (!srs) return 0;
 
 	if (SPI_OK_CONNECT != SPI_connect ())
 	{
+		pfree(query);
 		elog(NOTICE, "getSRIDbySRS: could not connect to SPI manager");
 		return 0;
 	}
@@ -145,6 +146,7 @@ int getSRIDbySRS(const char* srs)
 	err = SPI_exec(query, 1);
 	if ( err < 0 )
 	{
+		pfree(query);
 		elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
 		SPI_finish();
 		return 0;
@@ -163,12 +165,14 @@ int getSRIDbySRS(const char* srs)
 		err = SPI_exec(query, 1);
 		if ( err < 0 )
 		{
+			pfree(query);
 			elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
 			SPI_finish();
 			return 0;
 		}
 
 		if (SPI_processed <= 0) {
+			pfree(query);
 			SPI_finish();
 			return 0;
 		}
@@ -176,6 +180,7 @@ int getSRIDbySRS(const char* srs)
 
 	srid = atoi(SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1));
 
+	pfree(query);
 	SPI_finish();
 
 	return srid;
