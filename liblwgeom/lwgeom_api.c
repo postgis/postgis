@@ -373,55 +373,19 @@ getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point)
 const POINT2D*
 getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
 {
-	if ( ! pa ) return 0;
-
-	if ( n>=pa->npoints )
-	{
-		lwerror("getPoint2d_cp: point offset out of range");
-		return 0; /*error */
-	}
-
-	return (const POINT2D*)getPoint_internal(pa, n);
+	return (const POINT2D *)getPoint_internal(pa, n);
 }
 
-const POINT3DZ*
-getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
+const POINT3D *
+getPoint3d_cp(const POINTARRAY *pa, uint32_t n)
 {
-	if ( ! pa ) return 0;
-
-	if ( ! FLAGS_GET_Z(pa->flags) )
-	{
-		lwerror("getPoint3dz_cp: no Z coordinates in point array");
-		return 0; /*error */
-	}
-
-	if ( n>=pa->npoints )
-	{
-		lwerror("getPoint3dz_cp: point offset out of range");
-		return 0; /*error */
-	}
-
-	return (const POINT3DZ*)getPoint_internal(pa, n);
+	return (const POINT3D *)getPoint_internal(pa, n);
 }
 
 const POINT4D*
 getPoint4d_cp(const POINTARRAY* pa, uint32_t n)
 {
-	if (!pa) return 0;
-
-	if (!(FLAGS_GET_Z(pa->flags) && FLAGS_GET_M(pa->flags)))
-	{
-		lwerror("getPoint4d_cp: no Z and M coordinates in point array");
-		return 0; /*error */
-	}
-
-	if (n >= pa->npoints)
-	{
-		lwerror("getPoint4d_cp: point offset out of range");
-		return 0; /*error */
-	}
-
-	return (const POINT4D*)getPoint_internal(pa, n);
+	return (const POINT4D *)getPoint_internal(pa, n);
 }
 
 /*

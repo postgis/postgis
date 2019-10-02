@@ -845,7 +845,7 @@ extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, uint32_t n);
 * and declared const because you aren't allowed to muck with the
 * values, only read them.
 */
-extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, uint32_t n);
+extern const POINT3D* getPoint3d_cp(const POINTARRAY *pa, uint32_t n);
 
 /**
 * Returns a POINT4D pointer into the POINTARRAY serialized_ptlist,
