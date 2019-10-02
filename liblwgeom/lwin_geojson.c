@@ -262,9 +262,6 @@ parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 		}
 		nPoints = json_object_array_length(points);
 
-		/* Skip empty rings */
-		if ( nPoints == 0 ) continue;
-
 		if ( ! ppa )
 			ppa = (POINTARRAY**)lwalloc(sizeof(POINTARRAY*) * nRings);
 

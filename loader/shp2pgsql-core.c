@@ -240,41 +240,50 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	FLAGS_SET_Z(dims, state->has_z);
 	FLAGS_SET_M(dims, state->has_m);
 
-	/* Allocate memory for our array of LWPOINTs and our dynptarrays */
-	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
-
-	/* We need an array of pointers to each of our sub-geometries */
-	for (u = 0; u < obj->nVertices; u++)
+	/* POINT EMPTY encoded as POINT(NaN NaN) */
+	if (obj->nVertices == 1 && isnan(obj->padfX[0]) && isnan(obj->padfY[0]))
 	{
-		/* Create a ptarray containing a single point */
-		POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, 1);
-
-		/* Generate the point */
-		point4d.x = obj->padfX[u];
-		point4d.y = obj->padfY[u];
-
-		if (state->has_z)
-			point4d.z = obj->padfZ[u];
-		if (state->has_m)
-			point4d.m = obj->padfM[u];
-
-		/* Add in the point! */
-		ptarray_append_point(pa, &point4d, LW_TRUE);
-
-		/* Generate the LWPOINT */
-		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(state->from_srid, NULL, pa));
+		lwgeom = lwpoint_as_lwgeom(lwpoint_construct_empty(state->from_srid, state->has_z, state->has_m));
 	}
-
-	/* If we have more than 1 vertex then we are working on a MULTIPOINT and so generate a MULTIPOINT
-	rather than a POINT */
-	if ((obj->nVertices > 1) || force_multi)
-	{
-		lwgeom = lwcollection_as_lwgeom(lwcollection_construct(MULTIPOINTTYPE, state->from_srid, NULL, obj->nVertices, lwmultipoints));
-	}
+	/* Not empty */
 	else
 	{
-		lwgeom = lwmultipoints[0];
-		lwfree(lwmultipoints);
+		/* Allocate memory for our array of LWPOINTs and our dynptarrays */
+		lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);
+
+		/* We need an array of pointers to each of our sub-geometries */
+		for (u = 0; u < obj->nVertices; u++)
+		{
+			/* Create a ptarray containing a single point */
+			POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, 1);
+
+			/* Generate the point */
+			point4d.x = obj->padfX[u];
+			point4d.y = obj->padfY[u];
+
+			if (state->has_z)
+				point4d.z = obj->padfZ[u];
+			if (state->has_m)
+				point4d.m = obj->padfM[u];
+
+			/* Add in the point! */
+			ptarray_append_point(pa, &point4d, LW_TRUE);
+
+			/* Generate the LWPOINT */
+			lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(state->from_srid, NULL, pa));
+		}
+
+		/* If we have more than 1 vertex then we are working on a MULTIPOINT and so generate a MULTIPOINT
+		rather than a POINT */
+		if ((obj->nVertices > 1) || force_multi)
+		{
+			lwgeom = lwcollection_as_lwgeom(lwcollection_construct(MULTIPOINTTYPE, state->from_srid, NULL, obj->nVertices, lwmultipoints));
+		}
+		else
+		{
+			lwgeom = lwmultipoints[0];
+			lwfree(lwmultipoints);
+		}
 	}
 
 	if (state->config->use_wkt)
@@ -836,7 +845,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	int field_precision, field_width;
 	char name[MAXFIELDNAMELEN];
 	char name2[MAXFIELDNAMELEN];
-	DBFFieldType type = -1;
+	DBFFieldType type = FTInvalid;
 	char *utf8str;
 
 	/* If we are reading the entire shapefile, open it */

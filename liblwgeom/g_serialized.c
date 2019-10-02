@@ -233,11 +233,11 @@ static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 
     static uint64_t B[5] =
     {
-        0x5555555555555555,
-        0x3333333333333333,
-        0x0F0F0F0F0F0F0F0F,
-        0x00FF00FF00FF00FF,
-        0x0000FFFF0000FFFF
+        0x5555555555555555ULL,
+        0x3333333333333333ULL,
+        0x0F0F0F0F0F0F0F0FULL,
+        0x00FF00FF00FF00FFULL,
+        0x0000FFFF0000FFFFULL
     };
     static uint64_t S[5] = { 1, 2, 4, 8, 16 };
 
@@ -949,7 +949,8 @@ static size_t gserialized_from_lwpoly(const LWPOLY *poly, uint8_t *buf)
 			lwerror("Dimensions mismatch in lwpoly");
 
 		pasize = pa->npoints * ptsize;
-		memcpy(loc, getPoint_internal(pa, 0), pasize);
+		if ( pa->npoints > 0 )
+			memcpy(loc, getPoint_internal(pa, 0), pasize);
 		loc += pasize;
 	}
 	return (size_t)(loc - buf);

@@ -95,7 +95,6 @@ GetCircTreeGeomCache(FunctionCallInfo fcinfo, const GSERIALIZED *g1, const GSERI
 	return (CircTreeGeomCache*)GetGeomCache(fcinfo, &CircTreeCacheMethods, g1, g2);
 }
 
-
 static int
 CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const POINT4D* in_point)
 {
@@ -137,7 +136,10 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const POINT4D* in_poi
 			pt2d_inside.x = in_point->x;
 			pt2d_inside.y = in_point->y;
 			/* Calculate a definitive outside point */
-			gbox_pt_outside(&gbox1, &pt2d_outside);
+			if (gbox_pt_outside(&gbox1, &pt2d_outside) == LW_FAILURE)
+				if (circ_tree_get_point_outside(tree1, &pt2d_outside) == LW_FAILURE)
+					lwpgerror("%s: Unable to generate outside point!", __func__);
+
 			POSTGIS_DEBUGF(3, "p2d_inside=POINT(%g %g) p2d_outside=POINT(%g %g)", pt2d_inside.x, pt2d_inside.y, pt2d_outside.x, pt2d_outside.y);
 			/* Test the candidate point for strict containment */
 			POSTGIS_DEBUG(3, "calling circ_tree_contains_point for PiP test");

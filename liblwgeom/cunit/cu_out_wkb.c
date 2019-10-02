@@ -20,8 +20,8 @@
 /*
 ** Global variable to hold hex WKB strings
 */
-char *s;
-size_t s_size;
+static char *s;
+static size_t s_size;
 
 /*
 ** The suite initialization function.

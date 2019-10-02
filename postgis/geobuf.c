@@ -25,7 +25,7 @@
 #include <math.h>
 #include "geobuf.h"
 
-#ifdef HAVE_LIBPROTOBUF
+#if defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF
 
 #define FEATURES_CAPACITY_INITIAL 50
 #define MAX_PRECISION 1e6
@@ -66,7 +66,7 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 #endif
 		char *key = pstrdup(tkey);
 		if (ctx->geom_name == NULL) {
-			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
+			if (!geom_found && typoid == postgis_oid(GEOMETRYOID)) {
 				ctx->geom_index = i;
 				geom_found = 1;
 				continue;

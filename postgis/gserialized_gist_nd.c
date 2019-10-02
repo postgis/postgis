@@ -856,7 +856,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 	/* Can only add the M term if both objects have M */
 	if ( lwgeom_has_m(lw1) && lwgeom_has_m(lw2) )
 	{
-		double m1, m2;
+		double m1 = 0, m2 = 0;
 		int usebox = false;
 
 		if ( lwgeom_get_type(lw1) == POINTTYPE )

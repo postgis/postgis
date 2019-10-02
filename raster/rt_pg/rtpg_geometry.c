@@ -929,8 +929,8 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		}
 	}
 #if POSTGIS_DEBUG_LEVEL > 0
-	for (i = 0; i < pixtypes_len; i++)
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes[%d] = %d", i, (int) pixtypes[i]);
+	for (uint32_t u = 0; u < pixtypes_len; u++)
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes[%u] = %u", i, pixtypes[i]);
 #endif
 
 	/* value */
@@ -992,8 +992,8 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		}
 	}
 #if POSTGIS_DEBUG_LEVEL > 0
-	for (i = 0; i < values_len; i++)
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values[%d] = %f", i, values[i]);
+	for (uint32_t u = 0; u < values_len; u++)
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values[%u] = %f", i, values[i]);
 #endif
 
 	/* nodataval */
@@ -1064,9 +1064,10 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		}
 	}
 #if POSTGIS_DEBUG_LEVEL > 0
-	for (i = 0; i < nodatavals_len; i++) {
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: hasnodatas[%d] = %d", i, hasnodatas[i]);
-		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals[%d] = %f", i, nodatavals[i]);
+	for (uint32_t u = 0; u < nodatavals_len; u++)
+	{
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: hasnodatas[%u] = %d", u, hasnodatas[u]);
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals[%u] = %f", u, nodatavals[u]);
 	}
 #endif
 

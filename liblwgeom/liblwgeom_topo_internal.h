@@ -49,23 +49,29 @@ LWT_BE_TOPOLOGY * lwt_be_loadTopologyByName(LWT_BE_IFACE *be, const char *name);
 
 int lwt_be_freeTopology(LWT_TOPOLOGY *topo);
 
-LWT_ISO_NODE* lwt_be_getNodeWithinDistance2D(LWT_TOPOLOGY* topo, LWPOINT* pt, double dist, int* numelems, int fields, int limit);
+LWT_ISO_NODE *lwt_be_getNodeWithinDistance2D(LWT_TOPOLOGY *topo,
+					     LWPOINT *pt,
+					     double dist,
+					     uint64_t *numelems,
+					     int fields,
+					     int64_t limit);
 
-LWT_ISO_NODE* lwt_be_getNodeById(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids, int* numelems, int fields);
+LWT_ISO_NODE *lwt_be_getNodeById(LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numelems, int fields);
 
 int lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, LWPOINT* pt);
-int lwt_be_insertNodes(LWT_TOPOLOGY* topo, LWT_ISO_NODE* node, int numelems);
+int lwt_be_insertNodes(LWT_TOPOLOGY *topo, LWT_ISO_NODE *node, uint64_t numelems);
 
 int lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt);
 
 LWT_ELEMID lwt_be_getNextEdgeId(LWT_TOPOLOGY* topo);
-LWT_ISO_EDGE* lwt_be_getEdgeById(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids,
-                               int* numelems, int fields);
-LWT_ISO_EDGE* lwt_be_getEdgeWithinDistance2D(LWT_TOPOLOGY* topo, LWPOINT* pt,
-                               double dist, int* numelems, int fields,
-                               int limit);
-int
-lwt_be_insertEdges(LWT_TOPOLOGY* topo, LWT_ISO_EDGE* edge, int numelems);
+LWT_ISO_EDGE *lwt_be_getEdgeById(LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numelems, int fields);
+LWT_ISO_EDGE *lwt_be_getEdgeWithinDistance2D(LWT_TOPOLOGY *topo,
+					     LWPOINT *pt,
+					     double dist,
+					     uint64_t *numelems,
+					     int fields,
+					     int64_t limit);
+int lwt_be_insertEdges(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edge, uint64_t numelems);
 int
 lwt_be_updateEdges(LWT_TOPOLOGY* topo, const LWT_ISO_EDGE* sel_edge, int sel_fields, const LWT_ISO_EDGE* upd_edge, int upd_fields, const LWT_ISO_EDGE* exc_edge, int exc_fields);
 int

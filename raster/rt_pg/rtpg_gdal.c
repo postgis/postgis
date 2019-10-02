@@ -417,8 +417,8 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(4, "Result %d, Index %d", call_cntr, drv_set2[call_cntr].idx);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Short Name %s", call_cntr, drv_set2[call_cntr].short_name);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Full Name %s", call_cntr, drv_set2[call_cntr].long_name);
-		POSTGIS_RT_DEBUGF(4, "Result %d, Can Read %s", call_cntr, drv_set2[call_cntr].can_read);
-		POSTGIS_RT_DEBUGF(4, "Result %d, Can Write %s", call_cntr, drv_set2[call_cntr].can_write);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Can Read %u", call_cntr, drv_set2[call_cntr].can_read);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Can Write %u", call_cntr, drv_set2[call_cntr].can_write);
 		POSTGIS_RT_DEBUGF(5, "Result %d, Create Options %s", call_cntr, drv_set2[call_cntr].create_options);
 
 		/* build a tuple */
