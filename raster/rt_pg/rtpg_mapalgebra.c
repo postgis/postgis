@@ -77,6 +77,12 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
 /*  n-raster MapAlgebra                                             */
 /* ---------------------------------------------------------------- */
 
+/* Quiet warning */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
+
 typedef struct {
 	Oid ufc_noid;
 	Oid ufc_rettype;
@@ -92,6 +98,10 @@ typedef struct {
 	FunctionCallInfo ufc_info;
 #endif
 } rtpg_nmapalgebra_callback_arg;
+
+#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
+/* ! Quiet warning */
 
 typedef struct rtpg_nmapalgebra_arg_t *rtpg_nmapalgebra_arg;
 struct rtpg_nmapalgebra_arg_t {
@@ -457,10 +467,10 @@ static int rtpg_nmapalgebra_callback(
 	i++;
 
 	for (z = 0; z < arg->rasters; z++) {
-		_pos[i] = arg->src_pixel[z][0] + 1;
+		_pos[i] = (Datum)arg->src_pixel[z][0] + 1;
 		i++;
 
-		_pos[i] = arg->src_pixel[z][1] + 1;
+		_pos[i] = (Datum)arg->src_pixel[z][1] + 1;
 		i++;
 	}
 
@@ -924,10 +934,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			i = arg->numraster - 1;
 			break;
 		case ET_SECOND:
-			if (arg->numraster > 1) {
-				i = 1;
+			i = (arg->numraster > 1) ? 1 : 0;
 			break;
-			}
 		default:
 			i = 0;
 			break;
@@ -1897,11 +1905,8 @@ static int rtpg_union_mean_callback(
 	POSTGIS_RT_DEBUGF(4, "rast0: %f %d", arg->values[0][0][0], arg->nodata[0][0][0]);
 	POSTGIS_RT_DEBUGF(4, "rast1: %f %d", arg->values[1][0][0], arg->nodata[1][0][0]);
 
-	if (
-		!arg->nodata[0][0][0] &&
-		FLT_NEQ(arg->values[0][0][0], 0) &&
-		!arg->nodata[1][0][0]
-	) {
+	if (!arg->nodata[0][0][0] && FLT_NEQ(arg->values[0][0][0], 0.0) && !arg->nodata[1][0][0])
+	{
 		*value = arg->values[1][0][0] / arg->values[0][0][0];
 		*nodata = 0;
 	}
@@ -3016,7 +3021,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	rt_pgraster *pgraster = NULL;
 	LWGEOM *rastgeom = NULL;
 	double gt[6] = {0};
-	int srid = SRID_UNKNOWN;
+	int32_t srid = SRID_UNKNOWN;
 
 	rt_pgraster *pgrtn = NULL;
 	rt_raster rtn = NULL;
@@ -5411,11 +5416,11 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
         }
 
 #if POSTGIS_PGSQL_VERSION < 120
-		cbdata.arg[k] = (Datum)NULL;
-		cbdata.argnull[k] = TRUE;
+	cbdata.arg[k] = (Datum)NULL;
+        cbdata.argnull[k] = TRUE;
 #else
-		cbdata->args[k].value = (Datum)NULL;
-		cbdata->args[k].isnull = TRUE;
+	cbdata->args[k].value = (Datum)NULL;
+	cbdata->args[k].isnull = TRUE;
 #endif
     }
     else {
@@ -5502,7 +5507,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
                     }
 #if POSTGIS_PGSQL_VERSION < 120
 		    cbdata.argnull[0] = TRUE;
-            cbdata.arg[0] = (Datum)NULL;
+                    cbdata.arg[0] = (Datum)NULL;
 #else
 		    cbdata->args[0].isnull = TRUE;
 		    cbdata->args[0].value = (Datum)NULL;
@@ -5530,7 +5535,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 
 #if POSTGIS_PGSQL_VERSION < 120
 		    cbdata.argnull[1] = FALSE;
-            cbdata.arg[1] = PointerGetDatum(a);
+                    cbdata.arg[1] = PointerGetDatum(a);
 #else
 		    cbdata->args[1].isnull = FALSE;
 		    cbdata->args[1].value = PointerGetDatum(a);
@@ -7073,8 +7078,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					_pixel[i] = 0;
 
 					/* row/column */
-					_x = x - (int) _rastoffset[i][0];
-					_y = y - (int) _rastoffset[i][1];
+					_x = (int)x - (int)_rastoffset[i][0];
+					_y = (int)y - (int)_rastoffset[i][1];
 
 					/* store _x and _y in 1-based */
 					_pos[i][0] = _x + 1;
