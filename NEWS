@@ -13,6 +13,7 @@ PostGIS 2.5.4
   - #4496, Make ST_Simplify(TRIANGLE) collapse if requested (Raúl Marín)
   - #4506, Remove tolerance in point-in-ring tests (Paul Ramsey)
   - #4338, Fix Census block level data (tabblock table) loading (Regina Obe)
+  - #4519, Fix getSRIDbySRS crash (Raúl Marín)
 
 
 PostGIS 2.5.3
