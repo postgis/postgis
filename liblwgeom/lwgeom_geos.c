@@ -243,8 +243,8 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 	uint32_t dims = 2;
 	uint32_t i;
 	int append_points = 0;
-	const POINT3DZ* p3d;
-	const POINT2D* p2d;
+	const POINT3DZ* p3d = NULL;
+	const POINT2D* p2d = NULL;
 	GEOSCoordSeq sq;
 
 	if (FLAGS_GET_Z(pa->flags)) dims = 3;

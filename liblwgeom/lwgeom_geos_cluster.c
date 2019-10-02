@@ -81,6 +81,10 @@ static struct STRTree
 make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom)
 {
 	struct STRTree tree;
+	tree.envelopes = 0;
+	tree.num_geoms = 0;
+	tree.geom_ids = 0;
+
 	tree.tree = GEOSSTRtree_create(STRTREE_NODE_CAPACITY);
 	if (tree.tree == NULL)
 	{

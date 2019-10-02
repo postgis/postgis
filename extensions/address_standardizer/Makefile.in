@@ -1,3 +1,4 @@
+include ../upgradeable_versions.mk
 OBJS = \
     address_parser.o \
     address_standardizer.o \
@@ -41,14 +42,12 @@ DATA_built = \
 	$(EXTENSION)_data_us.control \
 	$(NULL)
 
-all:  sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION)--$(EXTVERSION)next.sql sql/address_standardizer--$(EXTVERSION)next--$(EXTVERSION).sql \
+all:  sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql \
  sql/$(EXTENSION)_data_us.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql  sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql \
 sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql \
 sql/test-init-extensions.sql sql/test-parseaddress.sql sql/test-standardize_address_1.sql sql/test-standardize_address_2.sql
 
 EXTRA_CLEAN += sql/*.sql
-
-
 
 DOCS = README.address_standardizer
 PG_CPPFLAGS = @CFLAGS@ @CPPFLAGS@
@@ -92,15 +91,16 @@ sql/address_standardizer--1.0--$(EXTVERSION).sql:  sql/address_standardizer_func
 	mkdir -p sql
 	cat $^ > $@
 
-# upgrade logic for us data extension (to go to next cludge for dev upgrading)
-sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/address_standardizer_functions.sql
-	mkdir -p sql
-	cat $^ > $@
+# Scripts making up the extension minor upgrade file
+# NOTE: order matters
+EXTENSION_UPGRADE_SCRIPTS = \
+	sql/address_standardizer_functions.sql
 
-# upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
-sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
-	mkdir -p sql
-	cat $^ > $@
+
+sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
+	cat $(EXTENSION_UPGRADE_SCRIPTS) > $@
+
+include ../upgrade-paths-rules.mk
 
 # build us data extension
 sql/$(EXTENSION)_data_us--$(EXTVERSION).sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in

@@ -1135,7 +1135,7 @@ static void test_lwpoly_covers_point2d(void)
 	lwgeom_free(lwg);
 
 	/* Great big ring */
-	lwg = lwgeom_from_wkt("POLYGON((-40.0 52.0, 102.0 -6.0, -67.0 -29.0, -40.0 52.0))", LW_PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((-40.0 52.0, -67.0 -29.0, 102.0 -6.0, -40.0 52.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 4.0;
 	pt_to_test.y = 11.0;

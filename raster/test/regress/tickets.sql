@@ -23,7 +23,7 @@ WITH data AS ( SELECT '#2911' l, ST_Metadata(ST_Rescale(
  ),
  2.0,
  -2.0
- )) m
+ )) m OFFSET 0
 ) SELECT l, (m).* FROM data;
 
 /******************************************************************************

@@ -1753,8 +1753,19 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 	{
 		/* No-op! Cannot simplify points or triangles */
 		case POINTTYPE:
-		case TRIANGLETYPE:
 			return;
+		case TRIANGLETYPE:
+		{
+			if (preserve_collapsed)
+				return;
+			LWTRIANGLE *t = lwgeom_as_lwtriangle(geom);
+			POINTARRAY *pa = t->points;
+			ptarray_simplify_in_place(pa, epsilon, 0);
+			if (pa->npoints < 3)
+			{
+				pa->npoints = 0;
+			}
+		}
 		case LINETYPE:
 		{
 			LWLINE *g = (LWLINE*)(geom);
@@ -2284,8 +2295,11 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, uint8_t dimension, uint32_t maxve
 	double center = DBL_MAX;
 	LWPOLY *lwpoly = NULL;
 	LWGEOM *clipped;
-
-	gbox_duplicate(lwgeom_get_bbox(geom), &clip);
+	const GBOX *box_in;
+	if (!geom) return 0;
+	box_in = lwgeom_get_bbox(geom);
+	if (!box_in) return 0;
+	gbox_duplicate(box_in, &clip);
 	width = clip.xmax - clip.xmin;
 	height = clip.ymax - clip.ymin;
 
@@ -2504,28 +2518,21 @@ bits_for_precision(int32_t significant_digits)
 	return bits_needed;
 }
 
-static inline
-double mask_double(double d, uint64_t mask)
-{
-	uint64_t* double_bits = (uint64_t*) (&d);
-
-	(*double_bits) &= mask;
-
-	return *((double*) double_bits);
-}
-
 static double trim_preserve_decimal_digits(double d, int32_t decimal_digits)
 {
-	if (d==0)
+	if (d == 0)
 		return 0;
 
 	int digits_left_of_decimal = (int) (1 + log10(fabs(d)));
 	uint8_t bits_needed = bits_for_precision(decimal_digits + digits_left_of_decimal);
+	uint64_t mask = 0xffffffffffffffffULL << (52 - bits_needed);
+	uint64_t dint = 0;
+	size_t dsz = sizeof(d) < sizeof(dint) ? sizeof(d) : sizeof(dint);
 
-
-	uint64_t mask = 0xffffffffffffffff << (52 - bits_needed);
-
-	return mask_double(d, mask);
+	memcpy(&dint, &d, dsz);
+	dint &= mask;
+	memcpy(&d, &dint, dsz);
+	return d;
 }
 
 void lwgeom_trim_bits_in_place(LWGEOM* geom, int32_t prec_x, int32_t prec_y, int32_t prec_z, int32_t prec_m)

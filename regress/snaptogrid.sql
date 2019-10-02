@@ -10,3 +10,12 @@ SELECT ST_snaptogrid(orig, 0.002) ~= ST_snaptogrid(ST_snaptogrid(orig, 0.002), 0
 SELECT ST_snaptogrid(orig, 0.003) ~= ST_snaptogrid(ST_snaptogrid(orig, 0.003), 0.003) FROM tmp;
 SELECT ST_snaptogrid(orig, 0.0002) ~= ST_snaptogrid(ST_snaptogrid(orig, 0.0002), 0.0002) FROM tmp;
 DROP TABLE tmp;
+
+-- The geometry bbox is updated
+WITH geom AS
+(
+    SELECT ST_SnapToGrid('POLYGON((0 0, 10 0, 10 10, 10.6 10, 10.5 10.5, 10 10, 0 10, 0 0))', 10) as g
+    UNION ALL
+    SELECT ST_SnapToGrid('POLYGON((0 0, 10 0, 10 10, 10.6 10, 10.5 10.5, 10 10, 0 10, 0 0))', 'POINT(0 0)', 10, 10, 10, 10) as g
+)
+Select ST_AsText(g) as geometry, postgis_getbbox(g) AS box from geom;

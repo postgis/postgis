@@ -42,7 +42,7 @@
 #include "lwgeom_pg.h"
 #include "lwgeom_log.h"
 
-#ifdef HAVE_LIBPROTOBUF
+#if defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF
 
 #include "geobuf.pb-c.h"
 

@@ -52,3 +52,7 @@ SELECT '#3583', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon", "coordinat
 
 -- #4164
 SELECT ST_AsText(ST_GeomFromGeoJSON('{"type": "Polygon", "coordinates": [[0,0],[0,5],[5, 5],[5,0],[0,0]]}'));
+SELECT '#4470.a', ST_AsText(ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[[[0,0]],[]]}'));
+SELECT '#4470.b', ST_AsText(ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[[],[0,0]]}'));
+SELECT '#4470.c', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinates":[[[[0,0]],[]]]}'));
+SELECT '#4470.d', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinates":[[[],[0,0]]]}'));
