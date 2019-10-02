@@ -30,9 +30,3 @@ script:
   - docker build -t pgtest .
   - ci_env=`bash .github/codecov_env.bash`
   - docker run $ci_env --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
-
-after_success:
-  - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
-
-notifications:
-  email: false
