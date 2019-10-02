@@ -29,7 +29,9 @@
  */
 
 #include "float.h" /* for DBL_DIG */
+
 #include "postgres.h"
+#include "catalog/pg_type.h" /* for CSTRINGOID */
 #include "executor/spi.h"
 
 #include "../postgis_config.h"
@@ -116,26 +118,26 @@ char * getSRSbySRID(int srid, bool short_crs)
 */
 int getSRIDbySRS(const char* srs)
 {
-	char query[256];
-	int srid, err;
+	char *query =
+	    "SELECT srid "
+	    "FROM spatial_ref_sys, "
+	    "regexp_matches($1::text, E'([a-z]+):([0-9]+)', 'gi') AS re "
+	    "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid";
+	Oid argtypes[] = {CSTRINGOID};
+	Datum values[] = {CStringGetDatum(srs)};
+	int32_t srid, err;
 
 	if (srs == NULL)
 		return 0;
 
-	if (SPI_OK_CONNECT != SPI_connect ())
+	if (SPI_OK_CONNECT != SPI_connect())
 	{
 		elog(NOTICE, "getSRIDbySRS: could not connect to SPI manager");
-		SPI_finish();
 		return 0;
 	}
-	sprintf(query,
-		"SELECT srid "
-		"FROM spatial_ref_sys, "
-		"regexp_matches('%s', E'([a-z]+):([0-9]+)', 'gi') AS re "
-		"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
 
-	err = SPI_exec(query, 1);
-	if ( err < 0 )
+	err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
+	if (err < 0)
 	{
 		elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
 		SPI_finish();
@@ -145,21 +147,22 @@ int getSRIDbySRS(const char* srs)
 	/* no entry in spatial_ref_sys */
 	if (SPI_processed <= 0)
 	{
-		sprintf(query,
-			"SELECT srid "
-			"FROM spatial_ref_sys, "
-			"regexp_matches('%s', E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
-			"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
+		query =
+		    "SELECT srid "
+		    "FROM spatial_ref_sys, "
+		    "regexp_matches($1::text, E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
+		    "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid";
 
-		err = SPI_exec(query, 1);
-		if ( err < 0 )
+		err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
+		if (err < 0)
 		{
 			elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
 			SPI_finish();
 			return 0;
 		}
 
-		if (SPI_processed <= 0) {
+		if (SPI_processed <= 0)
+		{
 			SPI_finish();
 			return 0;
 		}
