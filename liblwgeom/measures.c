@@ -2328,22 +2328,21 @@ distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
 	return hside * hside + vside * vside;
 }
 
+/* return distance squared, useful to avoid sqrt calculations */
 double
-distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
+distance2d_sqr_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B)
 {
-	double	r,s;
-
 	/*if start==end, then use pt distance */
-	if (  ( A->x == B->x) && (A->y == B->y) )
-		return distance2d_pt_pt(p,A);
+	if ((A->x == B->x) && (A->y == B->y))
+		return distance2d_sqr_pt_pt(C, A);
 
 	/*
 	 * otherwise, we use comp.graphics.algorithms
 	 * Frequently Asked Questions method
 	 *
-	 *  (1)     	      AC dot AB
-	        *         r = ---------
-	        *               ||AB||^2
+	 *  (1)     	AC dot AB
+	 *         r = ---------
+	 *              ||AB||^2
 	 *	r has the following meaning:
 	 *	r=0 P = A
 	 *	r=1 P = B
@@ -2352,44 +2351,17 @@ distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 	 *	0<r<1 P is interior to AB
 	 */
 
-	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+	double ba_x = (B->x - A->x);
+	double ba_y = (B->y - A->y);
+	double ab_length_sqr = (ba_x * ba_x + ba_y * ba_y);
+	double ca_x = (C->x - A->x);
+	double ca_y = (C->y - A->y);
+	double dot_ac_ab = (ca_x * ba_x + ca_y * ba_y);
 
-	if (r<0) return distance2d_pt_pt(p,A);
-	if (r>1) return distance2d_pt_pt(p,B);
-
-
-	/*
-	 * (2)
-	 *	     (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
-	 *	s = -----------------------------
-	 *	             	L^2
-	 *
-	 *	Then the distance from C to P = |s|*L.
-	 *
-	 */
-
-	s = ( (A->y-p->y)*(B->x-A->x)- (A->x-p->x)*(B->y-A->y) ) /
-	    ( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
-
-	return FP_ABS(s) * sqrt(
-	           (B->x-A->x)*(B->x-A->x) + (B->y-A->y)*(B->y-A->y)
-	       );
-}
-
-/* return distance squared, useful to avoid sqrt calculations */
-double
-distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
-{
-	double	r,s;
-
-	if (  ( A->x == B->x) && (A->y == B->y) )
-		return distance2d_sqr_pt_pt(p,A);
-
-	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
-
-	if (r<0) return distance2d_sqr_pt_pt(p,A);
-	if (r>1) return distance2d_sqr_pt_pt(p,B);
-
+	if (dot_ac_ab <= 0)
+		return distance2d_sqr_pt_pt(C, A);
+	if (dot_ac_ab >= ab_length_sqr)
+		return distance2d_sqr_pt_pt(C, B);
 
 	/*
 	 * (2)
@@ -2401,13 +2373,11 @@ distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 	 *
 	 */
 
-	s = ( (A->y-p->y)*(B->x-A->x)- (A->x-p->x)*(B->y-A->y) ) /
-	    ( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+	double s_numerator = ca_x * ba_y - ca_y * ba_x;
 
-	return s * s * ( (B->x-A->x)*(B->x-A->x) + (B->y-A->y)*(B->y-A->y) );
+	/* Distance = (s_num / ab) * (s_num / ab) * ab == s_num * s_num / ab) */
+	return s_numerator * s_numerator / ab_length_sqr;
 }
-
-
 
 /**
  * Compute the azimuth of segment AB in radians.

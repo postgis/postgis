@@ -64,33 +64,32 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point);
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	double dist = PG_GETARG_FLOAT8(1);
 	GSERIALIZED *result;
 	int type = gserialized_get_type(geom);
-	LWGEOM *in, *out;
+	LWGEOM *in;
 	bool preserve_collapsed = false;
-
-	/* Handle optional argument to preserve collapsed features */
-	if ((PG_NARGS() > 2) && (!PG_ARGISNULL(2)))
-		preserve_collapsed = PG_GETARG_BOOL(2);
+	int modified = LW_FALSE;
 
 	/* Can't simplify points! */
 	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
 		PG_RETURN_POINTER(geom);
 
+	/* Handle optional argument to preserve collapsed features */
+	if ((PG_NARGS() > 2) && (!PG_ARGISNULL(2)))
+		preserve_collapsed = PG_GETARG_BOOL(2);
+
 	in = lwgeom_from_gserialized(geom);
 
-	out = lwgeom_simplify(in, dist, preserve_collapsed);
-	if ( ! out ) PG_RETURN_NULL();
+	modified = lwgeom_simplify_in_place(in, dist, preserve_collapsed);
+	if (!modified)
+		PG_RETURN_POINTER(geom);
 
-	/* COMPUTE_BBOX TAINTING */
-	if (in->bbox)
-		lwgeom_refresh_bbox(out);
+	if (!in || lwgeom_is_empty(in))
+		PG_RETURN_NULL();
 
-	result = geometry_serialize(out);
-	lwgeom_free(out);
-	PG_FREE_IF_COPY(geom, 0);
+	result = geometry_serialize(in);
 	PG_RETURN_POINTER(result);
 }
 
