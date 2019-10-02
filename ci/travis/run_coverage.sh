@@ -9,4 +9,4 @@ LDFLAGS_COV="--coverage"
 ./autogen.sh
 ./configure CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}" --enable-debug
 make -j check
-bash .github/codecov.bash
+(curl -S -f https://codecov.io/bash -o .github/codecov.bash && bash .github/codecov.bash) || echo "Coverage report failed"

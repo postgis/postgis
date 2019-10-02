@@ -63,7 +63,7 @@ function find_core_by_pid() {
       binary_program=/$(echo ${filename##*.\!} | tr "!" "/")
       process_core ${binary_program} ${corefile} ${debugger}
     done
-  fi
+  fi  
 }
 
 function find_remaining_cores() {
@@ -122,7 +122,7 @@ function error_on_existing_cores() {
   local SEARCH_PATTERN_NON_TRACKED="${REQUIRED_FILENAME}.*"
   for corefile in ${core_directory}/${SEARCH_PATTERN_NON_TRACKED}; do
     error "Error: Found corefile (unexpected) at ${corefile}"
-  done
+  done  
 }
 
 function ensure_directory_is_writeable() {
@@ -135,7 +135,7 @@ function ensure_directory_is_writeable() {
   else
     # cleanup from test
     rm ${core_directory}/test.txt
-  fi
+  fi  
 }
 
 function get_target_core_pattern() {
@@ -158,7 +158,7 @@ function validate_core_pattern() {
   local core_pattern=${1}
   if [[ ! ${core_pattern} =~ ${REQUIRED_PATTERN} ]]; then
     error "unexpected core_pattern: ${core_pattern}"
-  fi
+  fi  
 }
 
 function generic_signal_handler() {
