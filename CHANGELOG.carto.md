@@ -8,6 +8,7 @@ Changes:
 - Backport ubsan fixes.
 - Backport travis improvements (except python run).
 - Backport fixes for compiler warnings.
+- Backport [4498a19](https://github.com/postgis/postgis/commit/4498a19f96b12a66ee9d219d071d27d25b71f65a#diff-d2e5244bca01881e3cfae38278d3debc) and [8cbffb3](https://github.com/postgis/postgis/commit/8cbffb350c269ab6744ed189f19d84a6650a1041#diff-d2e5244bca01881e3cfae38278d3debc): Speed up ST_GeometryType, ST_X, ST_Y, ST_Z and ST_M
 
 ## 2.5.1.5+carto-1
 
