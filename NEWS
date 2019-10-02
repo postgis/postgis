@@ -1,6 +1,14 @@
 PostGIS 3.0.0beta2
 2019/10/xx
 
+For full changes and enhancements, refer to PostGIS 3.0.0.
+This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+Additional features enabled if you are running Proj6+ and PostgreSQL 12
+Additional performance enhancements if running GEOS 3.8+
+
+* Major highlights *
+  - #4519, Fix getSRIDbySRS crash (Raúl Marín)
+
 
 
 PostGIS 3.0.0beta1
