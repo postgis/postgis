@@ -133,14 +133,14 @@ int getSRIDbySRS(const char* srs)
 	if (SPI_OK_CONNECT != SPI_connect ())
 	{
 		elog(NOTICE, "getSRIDbySRS: could not connect to SPI manager");
-		SPI_finish();
 		return 0;
 	}
 	sprintf(query,
 		"SELECT srid "
 		"FROM spatial_ref_sys, "
-		"regexp_matches('%s', E'([a-z]+):([0-9]+)', 'gi') AS re "
-		"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
+		"regexp_matches(quote_ident('%s'), E'([a-z]+):([0-9]+)', 'gi') AS re "
+		"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid",
+		srs);
 
 	err = SPI_exec(query, 1);
 	if ( err < 0 )
@@ -156,8 +156,9 @@ int getSRIDbySRS(const char* srs)
 		sprintf(query,
 			"SELECT srid "
 			"FROM spatial_ref_sys, "
-			"regexp_matches('%s', E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
-			"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
+			"regexp_matches(quote_ident('%s'), E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
+			"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid",
+			srs);
 
 		err = SPI_exec(query, 1);
 		if ( err < 0 )
