@@ -5,7 +5,6 @@ language: c
 
 env:
   # Use the last stable release to run more tests
-  - tag=pg12-geos37-gdal30-proj611 mode=garden
   - tag=pg12-geos37-gdal30-proj611 mode=tests
   - tag=pg12-geos37-gdal30-proj611 mode=debug
   - tag=pg12-geos37-gdal30-proj611 mode=coverage
