@@ -1,22 +1,20 @@
 services:
   - docker
 
+sudo: true
 language: c
 
 env:
-  # Use the last stable release to run more tests
-  - tag=pg12-geos37-gdal30-proj611 mode=tests
-  - tag=pg12-geos37-gdal30-proj611 mode=debug
-  - tag=pg12-geos37-gdal30-proj611 mode=usan_gcc
-  - tag=pg12-clang-geos37-gdal30-proj611 mode=usan_clang
-  - tag=pg12-geos37-gdal30-proj611 mode=nowagyu
-
-  # Run tests with different dependecy combinations
   - tag=latest mode=tests
+  - tag=pg11-geos37-gdal24-proj52 mode=debug
+  - tag=pg11-geos37-gdal24-proj52 mode=coverage
+  - tag=pg11-geos37-gdal24-proj52 mode=usan_gcc
+  - tag=pg11-geos37-gdal24-proj52 mode=usan_clang
+  - tag=pg11-geos37-gdal24-proj52 mode=no_wagyu
   - tag=pg11-geos37-gdal24-proj52 mode=tests
   - tag=pg10-geos36-gdal23-proj49 mode=tests
   - tag=pg96-geos36-gdal22-proj49 mode=tests
-  - tag=pg95-geos36-gdal21-proj48 mode=tests
+  - tag=pg95-geos35-gdal111-proj48 mode=tests
 
 matrix:
   allow_failures:
@@ -28,5 +26,16 @@ script:
   - echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
   - echo "CMD bash ci/travis/run_${mode}.sh" >> Dockerfile
   - docker build -t pgtest .
-  - ci_env=`bash .github/codecov_env.bash`
   - docker run $ci_env --name pgtest-${TRAVIS_BUILD_NUMBER} pgtest
+
+after_success:
+  - docker rm pgtest-${TRAVIS_BUILD_NUMBER}
+
+notifications:
+  email: false
+  irc:
+    channels:
+      - "irc.freenode.org#postgis-activity"
+    on_success: change
+    on_failure: always
+    use_notice: false
