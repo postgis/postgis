@@ -7,7 +7,6 @@ env:
   # Use the last stable release to run more tests
   - tag=pg12-geos37-gdal30-proj611 mode=tests
   - tag=pg12-geos37-gdal30-proj611 mode=debug
-  - tag=pg12-geos37-gdal30-proj611 mode=coverage
   - tag=pg12-geos37-gdal30-proj611 mode=usan_gcc
   - tag=pg12-clang-geos37-gdal30-proj611 mode=usan_clang
   - tag=pg12-geos37-gdal30-proj611 mode=nowagyu
