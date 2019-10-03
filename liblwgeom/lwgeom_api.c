@@ -382,6 +382,12 @@ getPoint3d_cp(const POINTARRAY *pa, uint32_t n)
 	return (const POINT3D *)getPoint_internal(pa, n);
 }
 
+const POINT3DZ *
+getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
+{
+	return (const POINT3DZ *)getPoint_internal(pa, n);
+}
+
 const POINT4D*
 getPoint4d_cp(const POINTARRAY* pa, uint32_t n)
 {

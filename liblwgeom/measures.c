@@ -2379,6 +2379,12 @@ distance2d_sqr_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B)
 	return s_numerator * s_numerator / ab_length_sqr;
 }
 
+double
+distance2d_pt_seg(const POINT2D *C, const POINT2D *A, const POINT2D *B)
+{
+	return sqrt(distance2d_sqr_pt_seg(C, A, B));
+}
+
 /**
  * Compute the azimuth of segment AB in radians.
  * Return 0 on exception (same point), 1 otherwise.

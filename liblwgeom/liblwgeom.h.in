@@ -846,6 +846,7 @@ extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, uint32_t n);
 * values, only read them.
 */
 extern const POINT3D* getPoint3d_cp(const POINTARRAY *pa, uint32_t n);
+extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, uint32_t n);
 
 /**
 * Returns a POINT4D pointer into the POINTARRAY serialized_ptlist,
@@ -1182,6 +1183,7 @@ extern float  next_float_up(double d);
 extern double  distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
 extern double  distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2);
 extern double  distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
+extern double  distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern LWGEOM* lwgeom_closest_line(const LWGEOM *lw1, const LWGEOM *lw2);
 extern LWGEOM* lwgeom_furthest_line(const LWGEOM *lw1, const LWGEOM *lw2);
 extern LWGEOM* lwgeom_closest_point(const LWGEOM *lw1, const LWGEOM *lw2);
