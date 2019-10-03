@@ -1,6 +1,6 @@
-## 2.5.1.5+carto-1
+## 2.5.1.6+carto-1
 
-**Release date**: 2019-XX-XX
+**Release date**: 2019-10-03
 
 Changes:
 - Merged community `svn-2.5` as of 2019-10-03: In the SQL part, there are only minor changes in the functions to handle raster constraints (not worth deploying in our case).
