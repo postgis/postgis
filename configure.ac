@@ -987,6 +987,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	CPPFLAGS_SAVE="$CPPFLAGS"
 	LDFLAGS_SAVE="$LDFLAGS"
+        LIBS_SAVE="$LIBS"
 
 	dnl Try pkgconfig first
 	if test -n "$PKG_CONFIG"; then
@@ -1049,6 +1050,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	CPPFLAGS="$CPPFLAGS_SAVE"
 	LDFLAGS="$LDFLAGS_SAVE"
+        LIBS="$LIBS_SAVE"
 
 	dnl confirm that protobuf compiler is available
 	AC_PATH_PROG(PROTOCC, protoc-c)
@@ -1058,7 +1060,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	fi
 
 	dnl all tests passed! turn on compile-time defines
-    if test "$HAVE_PROTOBUF" = "yes"; then
+        if test "$HAVE_PROTOBUF" = "yes"; then
 		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
 		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf-c])
 		if test $PROTOC_VERSION -ge 1001000; then
@@ -1506,10 +1508,14 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
             CFLAGS_SAVE="$CFLAGS"
             CXXFLAGS_SAVE="$CXXFLAGS"
             CPPFLAGS_SAVE="$CPPFLAGS"
+            LDFLAGS_SAVE="$LDFLAGS"
+            LIBS_SAVE="$LIBS"
 
             WAGYU_CXX=`"$PG_CONFIG" --cc`
             CPPFLAGS="-x c++"
             CFLAGS=""
+            LDFLAGS=""
+            LIBS=""
             CXX="$WAGYU_CXX"
             AC_PROG_CXX
             AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
@@ -1537,6 +1543,8 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
             CFLAGS="$CFLAGS_SAVE"
             CXXFLAGS="$CXXFLAGS_SAVE"
             CPPFLAGS="$CPPFLAGS_SAVE"
+            LDFLAGS="$LDFLAGS_SAVE"
+            LIBS="$LIBS_SAVE"
 
             HAVE_WAGYU=yes
             AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
