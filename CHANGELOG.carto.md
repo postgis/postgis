@@ -1,3 +1,10 @@
+## 2.5.1.7+carto-1
+
+**Release date**: 2019-10-03
+
+Changes:
+- Add removed symbols in 2.5.1.6 (distance2d_pt_seg and getPoint3dz_cp). They are unused, but this ensures ABI compatibility.
+
 ## 2.5.1.6+carto-1
 
 **Release date**: 2019-10-03
