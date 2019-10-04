@@ -74,6 +74,5 @@ POSTGIS_DEPRECATE("3.0.0", distance3d);
 POSTGIS_DEPRECATE("3.0.0", sfcgal_distance3d);
 POSTGIS_DEPRECATE("3.0.0", LWGEOM_mindistance3d);
 POSTGIS_DEPRECATE("3.0.0", intersects);
-POSTGIS_DEPRECATE("3.0.0", pgis_geometry_accum_finalfn);
 POSTGIS_DEPRECATE("3.0.0", postgis_autocache_bbox);
 POSTGIS_DEPRECATE("2.0.0", postgis_uses_stats);
