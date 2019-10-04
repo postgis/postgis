@@ -198,6 +198,8 @@ DROP FUNCTION IF EXISTS st_askml(geography, integer); -- Does not conflict
 -- This signature was superseeded
 DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not conflict
 
+-- dev function 3.0 cycle
+DROP FUNCTION IF EXISTS pgis_geometry_union_transfn(internal, geometry);
 
 -- FUNCTION ST_CurveToLine changed to add defaults in 2.5
 -- These signatures were superseeded
