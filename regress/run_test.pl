@@ -299,6 +299,25 @@ sub create_upgrade_test_objects
     exit(1);
   }
 
+  $query = "insert into upgrade_test(g1,g2) values ";
+	$query .= "('POINT(0 0)', 'LINESTRING(0 0, 1 1)'), ";
+	$query .= "('POINT(1 0)', 'LINESTRING(0 1, 1 1)');";
+  my $ret = sql($query);
+  unless ( $ret =~ /^INSERT/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong populating upgrade_test table: $ret.\n";
+    exit(1);
+  }
+
+  my $query = "create view upgrade_view_test as ";
+  $query .= "select st_union(g1) from upgrade_test;";
+  my $ret = sql($query);
+  unless ( $ret =~ /^CREATE/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
+    exit(1);
+  }
+
   if ( $OPT_WITH_RASTER )
   {
     $query = "insert into upgrade_test(r) ";
@@ -327,6 +346,13 @@ sub create_upgrade_test_objects
 sub drop_upgrade_test_objects
 {
   # TODO: allow passing the "upgrade-cleanup" script via commandline
+
+  my $ret = sql("drop view upgrade_view_test;");
+  unless ( $ret =~ /^DROP/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong dropping spatial view: $ret.\n";
+    exit(1);
+  }
 
   my $ret = sql("drop table upgrade_test;");
   unless ( $ret =~ /^DROP/ ) {
