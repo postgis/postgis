@@ -517,8 +517,8 @@ Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 	size_t ngeoms = 0;
 	int empty_type = 0;
 	bool first = true;
-	int32_t srid;
-	int has_z;
+	int32_t srid = SRID_UNKNOWN;
+	int has_z = LW_FALSE;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL(); /* returns null iff no input values */
