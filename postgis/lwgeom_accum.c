@@ -141,7 +141,7 @@ pgis_accum_finalfn(CollectionBuildState *state, MemoryContext mctx, __attribute_
 	int16 elmlen;
 	bool elmbyval;
 	char elmalign;
-	int i = 0;
+	size_t i = 0;
 	ArrayType *arr;
 	int dims[1];
 	int lbs[1] = {1};
