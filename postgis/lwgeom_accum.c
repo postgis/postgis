@@ -42,6 +42,7 @@
 Datum PGISDirectFunctionCall1(PGFunction func, Datum arg1);
 Datum PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2);
 Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
+Datum pgis_geometry_accum_transfn1(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS);
@@ -90,9 +91,9 @@ pgis_abs;
 ** function (present since 8.0) to build an array in a side memory
 ** context.
 */
-PG_FUNCTION_INFO_V1(pgis_geometry_accum_transfn);
+PG_FUNCTION_INFO_V1(pgis_geometry_accum_transfn1);
 Datum
-pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
+pgis_geometry_accum_transfn1(PG_FUNCTION_ARGS)
 {
 	Oid arg1_typeid = get_fn_expr_argtype(fcinfo->flinfo, 1);
 	MemoryContext aggcontext;
@@ -146,20 +147,107 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 }
 
 
+/**
+** To pass the internal state of our collection between the
+** transfn and finalfn we need to wrap it into a custom type first,
+** the CollectionBuildState type in our case.  The extra "data" member
+** can optionally be used to pass additional constant
+** arguments to a finalizer function.
+*/
+#define CollectionBuildStateDataSize 2
+typedef struct CollectionBuildState
+{
+	List *geoms;  /* collected geometries */
+	Datum data[CollectionBuildStateDataSize];
+	Oid geomOid;
+} CollectionBuildState;
 
-Datum pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo);
+/**
+** The transfer function builds a GeometryCollection allocated
+** in the aggregate memory context.
+*/
+PG_FUNCTION_INFO_V1(pgis_geometry_accum_transfn);
+Datum
+pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
+{
+	MemoryContext aggcontext, old;
+	CollectionBuildState *state;
+	LWGEOM *geom = NULL;
+	GSERIALIZED *gser = NULL;
+	Datum argType = get_fn_expr_argtype(fcinfo->flinfo, 1);
+
+	if (argType == InvalidOid)
+		ereport(ERROR,
+		        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+		         errmsg("could not determine input data type")));
+
+	if ( ! AggCheckCallContext(fcinfo, &aggcontext) )
+	{
+		/* cannot be called directly because of dummy-type argument */
+		elog(ERROR, "%s called in non-aggregate context", __func__);
+		aggcontext = NULL;  /* keep compiler quiet */
+	}
+
+	if ( PG_ARGISNULL(0) )
+	{
+		int n = ((PG_NARGS()-2) <= CollectionBuildStateDataSize) ? (PG_NARGS()-2) : CollectionBuildStateDataSize;
+
+		state = MemoryContextAlloc(aggcontext, sizeof(CollectionBuildState));
+		state->geoms = NULL;
+		state->geomOid = argType;
+
+		for (int i = 0; i < n; i++)
+		{
+			Datum argument = PG_GETARG_DATUM(i+2);
+			Oid dataOid = get_fn_expr_argtype(fcinfo->flinfo, i+2);
+			state->data[i] = datumCopy(argument, get_typbyval(dataOid), get_typlen(dataOid));
+		}
+	}
+	else
+	{
+		state = (CollectionBuildState*) PG_GETARG_POINTER(0);
+	}
+
+	if (!PG_ARGISNULL(1))
+		gser = PG_GETARG_GSERIALIZED_P(1);
+
+	/* Take a copy of the geometry into the aggregate context */
+	old = MemoryContextSwitchTo(aggcontext);
+	if (gser)
+		geom = lwgeom_clone_deep(lwgeom_from_gserialized(gser));
+
+	/* Initialize or append to list as necessary */
+	if (state->geoms)
+		state->geoms = lappend(state->geoms, geom);
+	else
+		state->geoms = list_make1(geom);
+
+	MemoryContextSwitchTo(old);
+
+	PG_RETURN_POINTER(state);
+}
+
+
+Datum pgis_accum_finalfn(CollectionBuildState *state, MemoryContext mctx, FunctionCallInfo fcinfo);
 
 /**
 ** The final function rescues the built array from the side memory context
 ** using the PostgreSQL built-in function makeMdArrayResult
 */
 Datum
-pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, __attribute__((__unused__)) FunctionCallInfo fcinfo)
+pgis_accum_finalfn(CollectionBuildState *state, MemoryContext mctx, __attribute__((__unused__)) FunctionCallInfo fcinfo)
 {
+	ListCell *l;
+	size_t nelems = 0;
+	Datum *elems;
+	bool *nulls;
+	int16 elmlen;
+	bool elmbyval;
+	char elmalign;
+	int i = 0;
+	ArrayType *arr;
 	int dims[1];
 	int lbs[1];
-	ArrayBuildState *state;
-	Datum result;
 
 	/* cannot be called directly because of internal-type argument */
 	Assert(fcinfo->context &&
@@ -167,11 +255,43 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, __attribute__((__unused__)) 
 	        IsA(fcinfo->context, WindowAggState))
 	       );
 
-	state = p->a;
-	dims[0] = state->nelems;
+	/* Retrieve geometry type metadata */
+	get_typlenbyvalalign(state->geomOid, &elmlen, &elmbyval, &elmalign);
+	nelems = list_length(state->geoms);
+
+	/* Build up an array, because that's what we pass to all the */
+	/* specific final functions */
+	elems = palloc(nelems * sizeof(Datum));
+	nulls = palloc(nelems * sizeof(bool));
+
+	foreach (l, state->geoms)
+	{
+		LWGEOM *geom = (LWGEOM*)(lfirst(l));
+		Datum elem = (Datum)0;
+		bool isNull = true;
+		if (geom)
+		{
+			GSERIALIZED *gser = geometry_serialize(geom);
+			elem = PointerGetDatum(gser);
+			isNull = false;
+		}
+		elems[i] = elem;
+		nulls[i] = isNull;
+		i++;
+
+		if (i >= nelems)
+			break;
+	}
+
+	/* Turn element array into PgSQL array */
+	dims[0] = nelems;
 	lbs[0] = 1;
-	result = makeMdArrayResult(state, 1, dims, lbs, mctx, false);
-	return result;
+
+
+	arr = construct_md_array(elems, nulls, 1, dims, lbs, state->geomOid,
+	                         elmlen, elmbyval, elmalign);
+
+	return PointerGetDatum(arr);
 }
 
 /**
@@ -182,14 +302,14 @@ PG_FUNCTION_INFO_V1(pgis_geometry_collect_finalfn);
 Datum
 pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS)
 {
-	pgis_abs *p;
+	CollectionBuildState *p;
 	Datum result = 0;
 	Datum geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();   /* returns null iff no input values */
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (CollectionBuildState*) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
 	result = PGISDirectFunctionCall1( LWGEOM_collect_garray, geometry_array );
@@ -208,14 +328,14 @@ PG_FUNCTION_INFO_V1(pgis_geometry_polygonize_finalfn);
 Datum
 pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS)
 {
-	pgis_abs *p;
+	CollectionBuildState *p;
 	Datum result = 0;
 	Datum geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();   /* returns null iff no input values */
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (CollectionBuildState*) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
 	result = PGISDirectFunctionCall1( polygonize_garray, geometry_array );
@@ -233,14 +353,14 @@ PG_FUNCTION_INFO_V1(pgis_geometry_makeline_finalfn);
 Datum
 pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)
 {
-	pgis_abs *p;
+	CollectionBuildState *p;
 	Datum result = 0;
 	Datum geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();   /* returns null iff no input values */
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (CollectionBuildState*) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
 	result = PGISDirectFunctionCall1( LWGEOM_makeline_garray, geometry_array );
@@ -258,14 +378,14 @@ PG_FUNCTION_INFO_V1(pgis_geometry_clusterintersecting_finalfn);
 Datum
 pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS)
 {
-	pgis_abs *p;
+	CollectionBuildState *p;
 	Datum result = 0;
 	Datum geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (CollectionBuildState*) PG_GETARG_POINTER(0);
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
 	result = PGISDirectFunctionCall1( clusterintersecting_garray, geometry_array );
 	if (!result)
@@ -282,23 +402,23 @@ PG_FUNCTION_INFO_V1(pgis_geometry_clusterwithin_finalfn);
 Datum
 pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
 {
-	pgis_abs *p;
+	CollectionBuildState *p;
 	Datum result = 0;
 	Datum geometry_array = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
-	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (CollectionBuildState*) PG_GETARG_POINTER(0);
 
-	if (!p->data)
+	if (!p->data[0])
 	{
 		elog(ERROR, "Tolerance not defined");
 		PG_RETURN_NULL();
 	}
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall2( cluster_within_distance_garray, geometry_array, p->data);
+	result = PGISDirectFunctionCall2( cluster_within_distance_garray, geometry_array, p->data[0]);
 	if (!result)
 		PG_RETURN_NULL();
 
