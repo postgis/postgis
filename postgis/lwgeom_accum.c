@@ -43,7 +43,6 @@
 Datum PGISDirectFunctionCall1(PGFunction func, Datum arg1);
 Datum PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2);
 Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
-Datum pgis_geometry_accum_transfn1(PG_FUNCTION_ARGS);
 Datum pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS);
@@ -60,8 +59,9 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 
 
 /**
-** The transfer function builds a GeometryCollection allocated
-** in the aggregate memory context.
+** The transfer function builds a List of LWGEOM* allocated
+** in the aggregate memory context. The pgis_accum_finalfn
+** converts that List into a Pg Array.
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_accum_transfn);
 Datum
@@ -128,8 +128,8 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 Datum pgis_accum_finalfn(CollectionBuildState *state, MemoryContext mctx, FunctionCallInfo fcinfo);
 
 /**
-** The final function rescues the built array from the side memory context
-** using the PostgreSQL built-in function makeMdArrayResult
+** The final function reads the List of LWGEOM* from the aggregate
+** memory context and constructs an Array using construct_md_array()
 */
 Datum
 pgis_accum_finalfn(CollectionBuildState *state, MemoryContext mctx, __attribute__((__unused__)) FunctionCallInfo fcinfo)

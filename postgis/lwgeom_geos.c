@@ -551,7 +551,7 @@ Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 	}
 
 	/*
-	** Take our GEOS geometries and turn them into a GEOS collection,
+	** Take our array of LWGEOM* and turn it into a GEOS collection,
 	** then pass that into cascaded union.
 	*/
 	if (ngeoms > 0)
