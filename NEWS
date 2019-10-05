@@ -1,5 +1,5 @@
-PostGIS 3.0.0beta2
-2019/10/xx
+PostGIS 3.0.0rc1
+2019/10/05
 
 For full changes and enhancements, refer to PostGIS 3.0.0.
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
@@ -9,7 +9,10 @@ Additional performance enhancements if running GEOS 3.8+
 * Major highlights *
   - #4519, Fix getSRIDbySRS crash (Raúl Marín)
   - #4520, Use a clean environment when detecting C++ libraries (Raúl Marín)
-
+  - Restore ST_Union() aggregate signature so drop agg not required and re-work 
+    performance/size enhancement to continue to avoid
+    using Array type during ST_Union(), hopefully
+    avoiding Array size limitations. (Paul Ramsey)
 
 PostGIS 3.0.0beta1
 2019/09/28

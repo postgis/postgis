@@ -1,3 +1,169 @@
+2019-10-04 18:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17856] postgis/lwgeom_accum.c, postgis/lwgeom_accum.h,
+	  postgis/lwgeom_geos.c, postgis/postgis.sql.in,
+	  postgis/postgis_after_upgrade.sql,
+	  postgis/postgis_before_upgrade.sql, regress/run_test.pl: Restore
+	  ST_Union() aggregate signature and re-work
+	  performance/size enhancement to continue to avoid
+	  using Array type during ST_Union(), hopefully
+	  avoiding Array size limitations.
+
+2019-10-03 09:49  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17855] autogen.sh: autogen.sh: Exit with an error when a tool
+	  is missing
+
+2019-10-03 09:40  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17854] NEWS, configure.ac: Use a clean environment when
+	  detecting C++ libraries
+	  
+	  Closes #4520
+	  Closes https://github.com/postgis/postgis/pull/488
+
+2019-10-02 18:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17851] postgis/lwgeom_export.c: Use snprintf in building SRID
+	  query string
+
+2019-10-02 13:45  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17846] NEWS, postgis/lwgeom_export.c: getSRIDbySRS: Fix crash
+	  
+	  - Prevents stack overflow when the srs is long (query + srs > 256
+	  chars).
+	  - Prevents sql injection.
+	  
+	  References #4519
+	  Closes https://github.com/postgis/postgis/pull/487
+
+2019-10-01 17:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17845] extensions/upgradeable_versions.mk: Get a little bit
+	  ahead on extension upgrade paths, so
+	  patch releases of older versions can still upgrade to 3.0 in
+	  near future
+
+2019-10-01 17:28  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17844] postgis/postgis_before_upgrade.sql: Fix scripts-based
+	  (not extension) upgrade from 2.4
+	  Closes #4516
+
+2019-10-01 14:30  Regina Obe <lr@pcorp.us>
+
+	* [r17842] NEWS: Create slot for next release - be confident we'll
+	  do another before end of month
+
+2019-09-30 21:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17841] raster/test/regress/rt_gdalwarp.sql,
+	  raster/test/regress/rt_gdalwarp_expected: Turn rt_gdalwarp tests
+	  back on, removing grid shifts to account
+	  for changes in Proj installed grids
+
+2019-09-30 19:49  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17839] regress/loader/ReprojectPts-w.select.expected,
+	  regress/loader/ReprojectPts.opts,
+	  regress/loader/ReprojectPts.select.expected,
+	  regress/loader/ReprojectPtsD.opts,
+	  regress/loader/ReprojectPtsD.select.expected,
+	  regress/loader/ReprojectPtsGeog-w.select.expected,
+	  regress/loader/ReprojectPtsGeog.opts,
+	  regress/loader/ReprojectPtsGeog.select.expected,
+	  regress/loader/ReprojectPtsGeogD-w.select.expected,
+	  regress/loader/ReprojectPtsGeogD.opts,
+	  regress/loader/ReprojectPtsGeogD.select.expected: Avoid
+	  datum/grid shifts in reproject test, to lower
+	  sensitivity to variance in proj installations wrt
+	  whether or not grid shift files are installed.
+	  References #4500
+
+2019-09-30 18:55  Regina Obe <lr@pcorp.us>
+
+	* [r17838] ci/bessie32/postgis_regress.sh: Add CXX and CXXFLAGS
+	  from pg_config seems to fix wagyu load issue
+	  Closes #4474
+
+2019-09-30 16:38  Regina Obe <lr@pcorp.us>
+
+	* [r17837] ci/bessie32/postgis_regress.sh: Put back wagyu, but try
+	  to force gcc8 as compiler and use CFLAGS from PostgreSQL 11
+	  install
+	  References #4474
+
+2019-09-29 00:38  Regina Obe <lr@pcorp.us>
+
+	* [r17836] Version.config, extensions/upgradeable_versions.mk: Flip
+	  to 3.0.0beta2dev
+
+2019-09-28 23:55  Regina Obe <lr@pcorp.us>
+
+	* [r17832] NEWS: oops forgot to commit same note in NEWS
+
+2019-09-28 23:54  Regina Obe <lr@pcorp.us>
+
+	* [r17831] doc/release_notes.xml: Add note about additional
+	  performance enhancements with GEOS 3.8
+
+2019-09-28 23:28  Regina Obe <lr@pcorp.us>
+
+	* [r17830] ChangeLog, Version.config,
+	  extensions/upgradeable_versions.mk: Prepare for PostGIS
+	  3.0.0beta1
+
+2019-09-28 22:37  Regina Obe <lr@pcorp.us>
+
+	* [r17829] ci/bessie32/postgis_regress.sh: Turn off wagyu for now
+	  for 32-bit FreeBSD12. For some reason it is deciding to use a
+	  higher gcc for wagyu building which causes the issue
+	  References #4474
+
+2019-09-28 22:13  Regina Obe <lr@pcorp.us>
+
+	* [r17828] ci/bessie32/postgis_regress.sh,
+	  ci/winnie/build_postgis.sh, ci/winnie/package_postgis.sh,
+	  ci/winnie/regress_postgis.sh: take out all pathing to see if that
+	  fixes the issue, in theory pkg-config should take care of
+	  everything. Set default GEOS to 3.8.0beta1 for winnie
+
+2019-09-28 13:09  Regina Obe <lr@pcorp.us>
+
+	* [r17827] NEWS, README.postgis, doc/release_notes.xml: Update docs
+	  in prep for 3.0.0beta1 release
+
+2019-09-28 02:52  Regina Obe <lr@pcorp.us>
+
+	* [r17825] NEWS, extensions/postgis_tiger_geocoder/Makefile.in,
+	  extras/tiger_geocoder/create_geocode.bat,
+	  extras/tiger_geocoder/create_geocode.sh,
+	  extras/tiger_geocoder/tiger_loader_2018.sql,
+	  extras/tiger_geocoder/tiger_loader_2019.sql,
+	  extras/tiger_geocoder/upgrade_geocoder.bat,
+	  extras/tiger_geocoder/upgrade_geocoder.sh: Fix issue with loading
+	  tabblock
+	  Update geocoder to load 2019 data
+	  Closes #4509 for PostGIS 3.0
+	  References #4338 for PostGIS 3.0
+
+2019-09-28 00:41  Regina Obe <lr@pcorp.us>
+
+	* [r17824] topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Missed some
+	  fixes in last commit. this should work on all.
+	  References #4514 for PostGIS 3.0
+
+2019-09-27 23:59  Regina Obe <lr@pcorp.us>
+
+	* [r17823] topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected,
+	  topology/test/regress/topogeo_addpolygon.sql,
+	  topology/test/regress/topogeo_addpolygon_expected: Revise
+	  topology tests so they yield same results in GEOS 3.8 and lower
+	  References #4514 for PostGIS 3.0
+
 2019-09-25 10:31  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
 	* [r17822] extensions/upgrade-paths-rules.mk:

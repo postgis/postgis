@@ -3,6 +3,25 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 3.0.0rc1</title>
+      <para>Release date: 2019/10/05</para>
+      <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
+      <para>Supported PostgreSQL versions for this release are:
+      PostgreSQL 9.5 - PostgreSQL 12
+      GEOS &gt;= 3.6. Additional features enabled if you running Proj6+ and/or PostgreSQL 12.
+      Performance enhancements if running GEOS 3.8+</para>
+      <simplesect>
+        <title>Major highlights</title>
+            <para>4519, Fix getSRIDbySRS crash (Raúl Marín)</para>
+            <para>4520, Use a clean environment when detecting C++ libraries (Raúl Marín)</para>
+            <para>Restore ST_Union() aggregate signature so drop agg not required and re-work 
+                  performance/size enhancement to continue to avoid
+                  using Array type during ST_Union(), hopefully
+                  avoiding Array size limitations. (Paul Ramsey)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 3.0.0beta1</title>
       <para>Release date: 2019/09/28</para>
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
