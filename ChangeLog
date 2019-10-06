@@ -1,3 +1,10 @@
+2019-10-05 18:06  Regina Obe <lr@pcorp.us>
+
+	* [r17857] ChangeLog, NEWS, README.postgis, Version.config,
+	  ci/winnie/build_postgis.sh, ci/winnie/regress_postgis.sh,
+	  doc/release_notes.xml, extensions/upgradeable_versions.mk:
+	  Prepping for PostGIS 3.0.0rc1 release
+
 2019-10-04 18:25  Paul Ramsey <pramsey@cleverelephant.ca>
 
 	* [r17856] postgis/lwgeom_accum.c, postgis/lwgeom_accum.h,
