@@ -932,13 +932,13 @@ if test "$CHECK_JSON" != "no"; then
                     AC_CHECK_FILE("$JSONDIR/include/json-c/json.h",
                                 [
                                     JSON_CPPFLAGS="-I$JSONDIR/include/json-c"
-                                    AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON_C=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"])
+                                    AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON_C=yes; JSON_LDFLAGS="-L$JSONDIR/lib -ljson-c"])
                                 ],
                                 [
                                     AC_CHECK_FILE("$JSONDIR/include/json/json.h",
                                     [
                                         JSON_CPPFLAGS="-I$JSONDIR/include/json"
-                                        AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson"])
+                                        AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="-L$JSONDIR/lib -ljson"])
                                     ],
                                     [AC_MSG_ERROR([Could not find header: json.h])])
                                 ])
