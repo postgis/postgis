@@ -63,7 +63,8 @@ sfcgal_postgis_init(void)
 	if (!__sfcgal_init)
 	{
 		sfcgal_init();
-		sfcgal_set_error_handlers((sfcgal_error_handler_t)lwpgnotice, (sfcgal_error_handler_t)lwpgerror);
+		sfcgal_set_error_handlers((sfcgal_error_handler_t)(void *)lwpgnotice,
+					  (sfcgal_error_handler_t)(void *)lwpgerror);
 		sfcgal_set_alloc_handlers(lwalloc, lwfree);
 		__sfcgal_init = 1;
 	}
