@@ -57,6 +57,11 @@ documentation -- that means having the required software:
 Release procedure
 -----------------
 
+- For first micro of a minor, make sure to pull the latest translations from transifex
+   TODO: more detail here - there is a job on debbie for 3.0 for examples 
+   https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.0 
+   and she's setup with an api key to pull and push translations.
+   
 - Ensure all bots are green: https://trac.osgeo.org/postgis
 - Re-generate the ChangeLog (make ChangeLog)
 - Edit NEWS: set release date and check all notable changes have
