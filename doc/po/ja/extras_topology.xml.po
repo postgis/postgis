@@ -1106,8 +1106,8 @@ msgid ""
 "<refpurpose>Takes a topology name and provides summary totals of types of "
 "objects in topology.</refpurpose>"
 msgstr ""
-"トポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体を提供しま"
-"す。"
+"<refpurpose>Tトポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体を提供しま"
+"す。</refpurpose>"
 
 #. Tag: funcprototype
 #: extras_topology.xml:430
@@ -1128,8 +1128,8 @@ msgid ""
 "<para>Takes a topology name and provides summary totals of types of objects "
 "in topology.</para>"
 msgstr ""
-"トポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体を提供しま"
-"す。"
+"<para>トポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体を提供しま"
+"す。</para>"
 
 #. Tag: para
 #: extras_topology.xml:443 extras_topology.xml:662 extras_topology.xml:800

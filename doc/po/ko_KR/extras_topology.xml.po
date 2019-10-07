@@ -1068,7 +1068,7 @@ msgid ""
 "<refpurpose>Takes a topology name and provides summary totals of types of "
 "objects in topology.</refpurpose>"
 msgstr ""
-"지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합니다."
+"<refpurpose>지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합니다.</refpurpose>"
 
 #. Tag: funcprototype
 #: extras_topology.xml:430
@@ -1089,7 +1089,7 @@ msgid ""
 "<para>Takes a topology name and provides summary totals of types of objects "
 "in topology.</para>"
 msgstr ""
-"지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합니다."
+"<para>지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합니다.</para>"
 
 #. Tag: para
 #: extras_topology.xml:443 extras_topology.xml:662 extras_topology.xml:800
