@@ -390,10 +390,14 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	/* One geom, good geom? Return it */
 	if ( count == 1 && nelems == 1 )
 	{
+#if GCC_VERSION >= 40604
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
 		PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
+#if GCC_VERSION >= 40604
 #pragma GCC diagnostic pop
+#endif
 	}
 
 	/* Ok, we really need GEOS now ;) */
