@@ -97,7 +97,9 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 		{
 			Datum argument = PG_GETARG_DATUM(i+2);
 			Oid dataOid = get_fn_expr_argtype(fcinfo->flinfo, i+2);
+			old = MemoryContextSwitchTo(aggcontext);
 			state->data[i] = datumCopy(argument, get_typbyval(dataOid), get_typlen(dataOid));
+			MemoryContextSwitchTo(old);
 		}
 	}
 	else
