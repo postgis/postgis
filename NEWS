@@ -14,6 +14,7 @@ PostGIS 2.5.4
   - #4506, Remove tolerance in point-in-ring tests (Paul Ramsey)
   - #4338, Fix Census block level data (tabblock table) loading (Regina Obe)
   - #4519, Fix getSRIDbySRS crash (Raúl Marín)
+  - #4517, Documentation error ST_EndPoint (Samuel Spurling)
 
 
 PostGIS 2.5.3

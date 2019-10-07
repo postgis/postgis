@@ -321,7 +321,7 @@ ST_Dimension
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>boolean <function>ST_EndPoint</function></funcdef>
+			<funcdef>geometry <function>ST_EndPoint</function></funcdef>
 
 			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
 		  </funcprototype>
