@@ -36,7 +36,6 @@
   &reference_trajectory;
   &reference_sfcgal;
   &reference_transaction;
-  <!-- &reference_misc; -->
   &reference_version;
   &reference_guc;
   &reference_troubleshooting;
