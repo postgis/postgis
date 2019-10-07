@@ -77,13 +77,10 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
 /*  n-raster MapAlgebra                                             */
 /* ---------------------------------------------------------------- */
 
-/* Quiet warning */
-#if GCC_VERSION >= 40604
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#if defined(__clang__)
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
 #endif
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu-variable-sized-type-not-at-end"
 
 typedef struct {
 	Oid ufc_noid;
@@ -101,11 +98,9 @@ typedef struct {
 #endif
 } rtpg_nmapalgebra_callback_arg;
 
-#pragma clang diagnostic pop
-#if GCC_VERSION >= 40604
-#pragma GCC diagnostic pop
+#if defined(__clang__)
+# pragma clang diagnostic pop
 #endif
-/* ! Quiet warning */
 
 typedef struct rtpg_nmapalgebra_arg_t *rtpg_nmapalgebra_arg;
 struct rtpg_nmapalgebra_arg_t {
