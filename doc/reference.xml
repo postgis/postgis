@@ -30,7 +30,6 @@
   &reference_lrs;
   &reference_temporal;
   &reference_transaction;
-  &reference_misc;
   &reference_exception;
 
 </chapter>
