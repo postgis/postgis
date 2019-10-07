@@ -309,14 +309,14 @@ sub create_upgrade_test_objects
     exit(1);
   }
 
-  my $query = "create view upgrade_view_test as ";
-  $query .= "select st_union(g1) from upgrade_test;";
-  my $ret = sql($query);
-  unless ( $ret =~ /^CREATE/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
-    exit(1);
-  }
+  # my $query = "create view upgrade_view_test as ";
+  # $query .= "select st_union(g1) from upgrade_test;";
+  # my $ret = sql($query);
+  # unless ( $ret =~ /^CREATE/ ) {
+  #   `dropdb $DB`;
+  #   print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
+  #   exit(1);
+  # }
 
   if ( $OPT_WITH_RASTER )
   {
@@ -347,12 +347,12 @@ sub drop_upgrade_test_objects
 {
   # TODO: allow passing the "upgrade-cleanup" script via commandline
 
-  my $ret = sql("drop view upgrade_view_test;");
-  unless ( $ret =~ /^DROP/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong dropping spatial view: $ret.\n";
-    exit(1);
-  }
+  # my $ret = sql("drop view upgrade_view_test;");
+  # unless ( $ret =~ /^DROP/ ) {
+  #   `dropdb $DB`;
+  #   print "\nSomething went wrong dropping spatial view: $ret.\n";
+  #   exit(1);
+  # }
 
   my $ret = sql("drop table upgrade_test;");
   unless ( $ret =~ /^DROP/ ) {
