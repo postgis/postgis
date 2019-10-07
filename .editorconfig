@@ -21,6 +21,11 @@ indent_style = tab
 [*.pl]
 indent_style = tab
 
+# Exception: utils/postgis_proc_upgrade.pl uses 4-spaces indent
+[utils/postgis_proc_upgrade.pl]
+indent_style = space
+indent_size = 4
+
 # SQL files want tab indentation
 [*.{sql,sql.in}]
 indent_style = tab

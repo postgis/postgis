@@ -270,9 +270,8 @@ EOF
             die "ERROR: no last updated info for aggregate '${aggsig}'\n";
         }
 
-		my $pg12_def = $def;
-		$pg12_def =~ s/CREATE AGGREGATE/CREATE OR REPLACE AGGREGATE/;
-
+        my $pg12_def = $def;
+        $pg12_def =~ s/CREATE AGGREGATE/CREATE OR REPLACE AGGREGATE/;
         if ($pg12_def eq "")
         {
             $pg12_def = "RAISE EXCEPTION 'Could not parse AGGREGATE'";
@@ -324,22 +323,22 @@ DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
   --IF $last_updated > version_from_num FROM _postgis_upgrade_info
-	--We trust presence of operator rather than version info
-	IF NOT EXISTS (
-		SELECT o.oprname
-		FROM
-			pg_catalog.pg_operator o,
-			pg_catalog.pg_type tl,
-			pg_catalog.pg_type tr
-		WHERE
-			o.oprleft = tl.oid AND
-			o.oprright = tr.oid AND
-			o.oprcode != 0 AND
-			o.oprname = '$opname' AND
-			tl.typname = '$opleft' AND
-			tr.typname = '$opright'
-	)
-	THEN
+    --We trust presence of operator rather than version info
+    IF NOT EXISTS (
+        SELECT o.oprname
+        FROM
+            pg_catalog.pg_operator o,
+            pg_catalog.pg_type tl,
+            pg_catalog.pg_type tr
+        WHERE
+            o.oprleft = tl.oid AND
+            o.oprright = tr.oid AND
+            o.oprcode != 0 AND
+            o.oprname = '$opname' AND
+            tl.typname = '$opleft' AND
+            tr.typname = '$opright'
+    )
+    THEN
     EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
   END IF;
 END
@@ -522,42 +521,42 @@ __END__
 
 DO $$
 DECLARE
-	old_scripts text;
-	new_scripts text;
-	old_maj text;
-	new_maj text;
+    old_scripts text;
+    new_scripts text;
+    old_maj text;
+    new_maj text;
 BEGIN
-	--
-	-- This uses postgis_lib_version() rather then
-	-- MODULE_scripts_installed() as in 1.0 because
-	-- in the 1.0 => 1.1 transition that would result
-	-- in an impossible upgrade:
-	--
-	--   from 0.3.0 to 1.1.0
-	--
-	-- Next releases will still be ok as
-	-- postgis_lib_version() and MODULE_scripts_installed()
-	-- would both return actual PostGIS release number.
-	--
-	BEGIN
-		SELECT into old_scripts MODULE_lib_version();
-	EXCEPTION WHEN OTHERS THEN
-		RAISE DEBUG 'Got %', SQLERRM;
-		SELECT into old_scripts MODULE_scripts_installed();
-	END;
-	SELECT into new_scripts 'NEWVERSION';
-	SELECT into old_maj substring(old_scripts from 1 for 1);
-	SELECT into new_maj substring(new_scripts from 1 for 1);
+    --
+    -- This uses postgis_lib_version() rather then
+    -- MODULE_scripts_installed() as in 1.0 because
+    -- in the 1.0 => 1.1 transition that would result
+    -- in an impossible upgrade:
+    --
+    --   from 0.3.0 to 1.1.0
+    --
+    -- Next releases will still be ok as
+    -- postgis_lib_version() and MODULE_scripts_installed()
+    -- would both return actual PostGIS release number.
+    --
+    BEGIN
+        SELECT into old_scripts MODULE_lib_version();
+    EXCEPTION WHEN OTHERS THEN
+        RAISE DEBUG 'Got %', SQLERRM;
+        SELECT into old_scripts MODULE_scripts_installed();
+    END;
+    SELECT into new_scripts 'NEWVERSION';
+    SELECT into old_maj substring(old_scripts from 1 for 1);
+    SELECT into new_maj substring(new_scripts from 1 for 1);
 
-	-- 2.x to 3.x was upgrade-compatible, see
-	-- https://trac.osgeo.org/postgis/ticket/4170#comment:1
-	IF new_maj = '3' AND old_maj = '2' THEN
-		old_maj = '3'; -- let's pretend old major = new major
-	END IF;
+    -- 2.x to 3.x was upgrade-compatible, see
+    -- https://trac.osgeo.org/postgis/ticket/4170#comment:1
+    IF new_maj = '3' AND old_maj = '2' THEN
+        old_maj = '3'; -- let's pretend old major = new major
+    END IF;
 
-	IF old_maj != new_maj THEN
-		RAISE EXCEPTION 'Upgrade of MODULE from version % to version % requires a dump/reload. See PostGIS manual for instructions', old_scripts, new_scripts;
-	END IF;
+    IF old_maj != new_maj THEN
+        RAISE EXCEPTION 'Upgrade of MODULE from version % to version % requires a dump/reload. See PostGIS manual for instructions', old_scripts, new_scripts;
+    END IF;
 END
 $$
 LANGUAGE 'plpgsql';
