@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2019-08-03 21:00+0000\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2019-10-06 23:49+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -107,15 +107,15 @@ msgstr ""
 #: reference_processing.xml:1507 reference_processing.xml:1561
 #: reference_processing.xml:1598 reference_processing.xml:1658
 #: reference_processing.xml:1711 reference_processing.xml:1765
-#: reference_processing.xml:1918 reference_processing.xml:1960
-#: reference_processing.xml:1998 reference_processing.xml:2072
-#: reference_processing.xml:2126 reference_processing.xml:2182
-#: reference_processing.xml:2233 reference_processing.xml:2274
-#: reference_processing.xml:2315 reference_processing.xml:2361
-#: reference_processing.xml:2409 reference_processing.xml:2465
-#: reference_processing.xml:2592 reference_processing.xml:2673
-#: reference_processing.xml:2763 reference_processing.xml:2840
-#: reference_processing.xml:2908 reference_processing.xml:2996
+#: reference_processing.xml:1921 reference_processing.xml:1963
+#: reference_processing.xml:2001 reference_processing.xml:2075
+#: reference_processing.xml:2129 reference_processing.xml:2185
+#: reference_processing.xml:2236 reference_processing.xml:2277
+#: reference_processing.xml:2318 reference_processing.xml:2364
+#: reference_processing.xml:2412 reference_processing.xml:2468
+#: reference_processing.xml:2595 reference_processing.xml:2676
+#: reference_processing.xml:2766 reference_processing.xml:2843
+#: reference_processing.xml:2911 reference_processing.xml:2999
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -216,7 +216,7 @@ msgstr ""
 "자열)을 설정할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:70 reference_processing.xml:1788
+#: reference_processing.xml:70 reference_processing.xml:1791
 #, no-c-format
 msgid ""
 "'quad_segs=#' : number of segments used to approximate a quarter circle "
@@ -237,7 +237,7 @@ msgstr ""
 "(butt)'도 쓸 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:76 reference_processing.xml:1791
+#: reference_processing.xml:76 reference_processing.xml:1794
 #, no-c-format
 msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
@@ -296,11 +296,11 @@ msgstr ""
 #: reference_processing.xml:92 reference_processing.xml:499
 #: reference_processing.xml:854 reference_processing.xml:1422
 #: reference_processing.xml:1517 reference_processing.xml:1672
-#: reference_processing.xml:1719 reference_processing.xml:1779
-#: reference_processing.xml:1803 reference_processing.xml:2003
-#: reference_processing.xml:2242 reference_processing.xml:2683
-#: reference_processing.xml:2786 reference_processing.xml:2926
-#: reference_processing.xml:3017
+#: reference_processing.xml:1719 reference_processing.xml:1782
+#: reference_processing.xml:1806 reference_processing.xml:2006
+#: reference_processing.xml:2245 reference_processing.xml:2686
+#: reference_processing.xml:2789 reference_processing.xml:2929
+#: reference_processing.xml:3020
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "GEOS 모듈로 실행"
@@ -308,7 +308,7 @@ msgstr "GEOS 모듈로 실행"
 #. Tag: para
 #: reference_processing.xml:93 reference_processing.xml:709
 #: reference_processing.xml:952 reference_processing.xml:1313
-#: reference_processing.xml:2600 reference_processing.xml:2793
+#: reference_processing.xml:2603 reference_processing.xml:2796
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
 msgstr "&sfs_compliant; s2.1.1.3"
@@ -337,15 +337,15 @@ msgstr ""
 #: reference_processing.xml:1317 reference_processing.xml:1369
 #: reference_processing.xml:1476 reference_processing.xml:1527
 #: reference_processing.xml:1573 reference_processing.xml:1618
-#: reference_processing.xml:1728 reference_processing.xml:1812
-#: reference_processing.xml:1930 reference_processing.xml:2093
-#: reference_processing.xml:2151 reference_processing.xml:2204
-#: reference_processing.xml:2247 reference_processing.xml:2287
-#: reference_processing.xml:2332 reference_processing.xml:2379
-#: reference_processing.xml:2436 reference_processing.xml:2489
-#: reference_processing.xml:2608 reference_processing.xml:2689
-#: reference_processing.xml:2800 reference_processing.xml:2932
-#: reference_processing.xml:3023
+#: reference_processing.xml:1728 reference_processing.xml:1815
+#: reference_processing.xml:1933 reference_processing.xml:2096
+#: reference_processing.xml:2154 reference_processing.xml:2207
+#: reference_processing.xml:2250 reference_processing.xml:2290
+#: reference_processing.xml:2335 reference_processing.xml:2382
+#: reference_processing.xml:2439 reference_processing.xml:2492
+#: reference_processing.xml:2611 reference_processing.xml:2692
+#: reference_processing.xml:2803 reference_processing.xml:2935
+#: reference_processing.xml:3026
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -656,16 +656,16 @@ msgstr ""
 #: reference_processing.xml:1483 reference_processing.xml:1522
 #: reference_processing.xml:1540 reference_processing.xml:1568
 #: reference_processing.xml:1610 reference_processing.xml:1683
-#: reference_processing.xml:1734 reference_processing.xml:1894
-#: reference_processing.xml:1936 reference_processing.xml:1976
-#: reference_processing.xml:2046 reference_processing.xml:2100
-#: reference_processing.xml:2158 reference_processing.xml:2209
-#: reference_processing.xml:2252 reference_processing.xml:2292
-#: reference_processing.xml:2337 reference_processing.xml:2384
-#: reference_processing.xml:2443 reference_processing.xml:2560
-#: reference_processing.xml:2649 reference_processing.xml:2726
-#: reference_processing.xml:2811 reference_processing.xml:2868
-#: reference_processing.xml:2957 reference_processing.xml:3076
+#: reference_processing.xml:1734 reference_processing.xml:1897
+#: reference_processing.xml:1939 reference_processing.xml:1979
+#: reference_processing.xml:2049 reference_processing.xml:2103
+#: reference_processing.xml:2161 reference_processing.xml:2212
+#: reference_processing.xml:2255 reference_processing.xml:2295
+#: reference_processing.xml:2340 reference_processing.xml:2387
+#: reference_processing.xml:2446 reference_processing.xml:2563
+#: reference_processing.xml:2652 reference_processing.xml:2729
+#: reference_processing.xml:2814 reference_processing.xml:2871
+#: reference_processing.xml:2960 reference_processing.xml:3079
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -1004,9 +1004,9 @@ msgstr ""
 "위상기하학적으로 유효하지 않은 도형을 입력해도 예외 상태에 빠지지는 않습니다."
 
 #. Tag: para
-#: reference_processing.xml:501 reference_processing.xml:1970
-#: reference_processing.xml:2283 reference_processing.xml:2432
-#: reference_processing.xml:2684
+#: reference_processing.xml:501 reference_processing.xml:1973
+#: reference_processing.xml:2286 reference_processing.xml:2435
+#: reference_processing.xml:2687
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "2.2.0 버전부터 사용할 수 있습니다."
@@ -1121,7 +1121,7 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:557 reference_processing.xml:707
 #: reference_processing.xml:950 reference_processing.xml:1308
-#: reference_processing.xml:2599
+#: reference_processing.xml:2602
 #, no-c-format
 msgid "Performed by the GEOS module"
 msgstr "GEOS 모듈로 실행"
@@ -1202,8 +1202,8 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:573 reference_processing.xml:1027
 #: reference_processing.xml:1424 reference_processing.xml:1720
-#: reference_processing.xml:2004 reference_processing.xml:2476
-#: reference_processing.xml:2862
+#: reference_processing.xml:2007 reference_processing.xml:2479
+#: reference_processing.xml:2865
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
@@ -1479,9 +1479,9 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.16"
 #: reference_processing.xml:856 reference_processing.xml:1029
 #: reference_processing.xml:1221 reference_processing.xml:1363
 #: reference_processing.xml:1428 reference_processing.xml:1471
-#: reference_processing.xml:1718 reference_processing.xml:1926
-#: reference_processing.xml:1972 reference_processing.xml:2084
-#: reference_processing.xml:2142 reference_processing.xml:2860
+#: reference_processing.xml:1718 reference_processing.xml:1929
+#: reference_processing.xml:1975 reference_processing.xml:2087
+#: reference_processing.xml:2145 reference_processing.xml:2863
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -1854,7 +1854,7 @@ msgstr "2.0.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:857 reference_processing.xml:1032
-#: reference_processing.xml:2088
+#: reference_processing.xml:2091
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -2032,10 +2032,12 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:919
 #, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
+msgid ""
+", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_Tesselate\"/>"
 msgstr ""
-", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
-"\"ST_MinimumBoundingCircle\"/>"
+", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
+"linkend=\"ST_Node\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:926
@@ -2090,7 +2092,7 @@ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.20"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.20"
 
 #. Tag: para
-#: reference_processing.xml:954 reference_processing.xml:2602
+#: reference_processing.xml:954 reference_processing.xml:2605
 #, no-c-format
 msgid ""
 "&Z_support; However it seems to only consider x y when doing the difference "
@@ -2176,7 +2178,7 @@ msgstr ""
 "MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)"
 
 #. Tag: para
-#: reference_processing.xml:1002 reference_processing.xml:2651
+#: reference_processing.xml:1002 reference_processing.xml:2654
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
@@ -2220,8 +2222,8 @@ msgid "&M_support;"
 msgstr "&M_support;"
 
 #. Tag: para
-#: reference_processing.xml:1031 reference_processing.xml:1971
-#: reference_processing.xml:2087
+#: reference_processing.xml:1031 reference_processing.xml:1974
+#: reference_processing.xml:2090
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
@@ -2300,8 +2302,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1096 reference_processing.xml:1219
-#: reference_processing.xml:2140 reference_processing.xml:2927
-#: reference_processing.xml:3018
+#: reference_processing.xml:2143 reference_processing.xml:2930
+#: reference_processing.xml:3021
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr "2.3.0 버전부터 사용할 수 있습니다."
@@ -2558,7 +2560,7 @@ msgid "Availability: 1.5 support for geography data type was introduced."
 msgstr "1.5 버전부터 지리형 데이터형을 지원합니다."
 
 #. Tag: para
-#: reference_processing.xml:1311 reference_processing.xml:2791
+#: reference_processing.xml:1311 reference_processing.xml:2794
 #, no-c-format
 msgid "Changed: 3.0.0 does not depend on SFCGAL."
 msgstr ""
@@ -3204,8 +3206,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1604 reference_processing.xml:2328
-#: reference_processing.xml:2375
+#: reference_processing.xml:1604 reference_processing.xml:2331
+#: reference_processing.xml:2378
 #, fuzzy, no-c-format
 msgid "Availability: 2.5.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
@@ -3492,13 +3494,21 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: reference_processing.xml:1780
+#: reference_processing.xml:1778
+#, no-c-format
+msgid ""
+"Note that output may be a MULTILINESTRING or EMPTY for some jigsaw-shaped "
+"input geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1783
 #, fuzzy, no-c-format
 msgid "Availability: 2.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:1781
+#: reference_processing.xml:1784
 #, fuzzy, no-c-format
 msgid ""
 "Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING"
@@ -3506,7 +3516,7 @@ msgstr ""
 "개선 사항: 2.1.0 버전부터 도형 집합 및 멀티포인트를 지원하기 시작했습니다."
 
 #. Tag: para
-#: reference_processing.xml:1783
+#: reference_processing.xml:1786
 #, no-c-format
 msgid ""
 "The optional third parameter allows specifying a list of blank-separated "
@@ -3516,7 +3526,7 @@ msgstr ""
 "키=값 쌍의 목록을 설정할 수 있습니다:"
 
 #. Tag: para
-#: reference_processing.xml:1794
+#: reference_processing.xml:1797
 #, no-c-format
 msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). "
@@ -3526,14 +3536,14 @@ msgstr ""
 "'mitre_limit'의 동의어로 'miter_limit'도 쓸 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:1799
+#: reference_processing.xml:1802
 #, no-c-format
 msgid ""
 "Units of distance are measured in units of the spatial reference system."
 msgstr "거리의 단위는 공간 참조 시스템의 단위로 측정됩니다."
 
 #. Tag: para
-#: reference_processing.xml:1805
+#: reference_processing.xml:1808
 #, no-c-format
 msgid ""
 "This function ignores the third dimension (z) and will always give a 2-d "
@@ -3543,13 +3553,13 @@ msgstr ""
 "결과를 반환할 것입니다."
 
 #. Tag: para
-#: reference_processing.xml:1813
+#: reference_processing.xml:1816
 #, no-c-format
 msgid "Compute an open buffer around roads"
 msgstr "도로 주위로 열린 버퍼를 계산합니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:1814
+#: reference_processing.xml:1817
 #, no-c-format
 msgid ""
 "SELECT ST_Union(\n"
@@ -3565,13 +3575,13 @@ msgstr ""
 "FROM someroadstable;"
 
 #. Tag: para
-#: reference_processing.xml:1824
+#: reference_processing.xml:1827
 #, no-c-format
 msgid "15, 'quad_segs=4 join=round' original line and its offset 15 units."
 msgstr "거리 15, 원본 라인에서 'quad_segs=4 join=round' 및 오프셋은 15단위"
 
 #. Tag: programlisting
-#: reference_processing.xml:1828
+#: reference_processing.xml:1831
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
@@ -3599,13 +3609,13 @@ msgstr ""
 "        2.14180701233067 12.2597485145237,1 18,1 195)"
 
 #. Tag: para
-#: reference_processing.xml:1835
+#: reference_processing.xml:1838
 #, no-c-format
 msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
 msgstr "거리 -15, 원본 라인에서 'quad_segs=4 join=round' 및 오프셋은 -15단위"
 
 #. Tag: programlisting
-#: reference_processing.xml:1839
+#: reference_processing.xml:1842
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(geom,\n"
@@ -3629,7 +3639,7 @@ msgstr ""
 "LINESTRING(31 195,31 31,164 31)"
 
 #. Tag: para
-#: reference_processing.xml:1848
+#: reference_processing.xml:1851
 #, no-c-format
 msgid ""
 "double-offset to get more curvy, note the first reverses direction, so -30 + "
@@ -3639,7 +3649,7 @@ msgstr ""
 "의하십시오. 즉 -30 + 15 = -15 입니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:1851
+#: reference_processing.xml:1854
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
@@ -3669,7 +3679,7 @@ msgstr ""
 "32.1418070123307 40.2597485145237,31 46,31 195)"
 
 #. Tag: para
-#: reference_processing.xml:1858
+#: reference_processing.xml:1861
 #, no-c-format
 msgid ""
 "double-offset to get more curvy,combined with regular offset 15 to get "
@@ -3679,7 +3689,7 @@ msgstr ""
 "오프셋. 원본과 중첩."
 
 #. Tag: programlisting
-#: reference_processing.xml:1861
+#: reference_processing.xml:1864
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
@@ -3721,13 +3731,13 @@ msgstr ""
 "32.1418070123307 40.2597485145237,31 46,31 195))"
 
 #. Tag: para
-#: reference_processing.xml:1870
+#: reference_processing.xml:1873
 #, no-c-format
 msgid "15, 'quad_segs=4 join=bevel' shown with original line"
 msgstr "거리 15, 원본 라인과 함께 표출된 'quad_segs=4 join=round'"
 
 #. Tag: programlisting
-#: reference_processing.xml:1873
+#: reference_processing.xml:1876
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
@@ -3751,13 +3761,13 @@ msgstr ""
 "        5.39339828220179 7.39339828220179,1 18,1 195)"
 
 #. Tag: para
-#: reference_processing.xml:1881
+#: reference_processing.xml:1884
 #, no-c-format
 msgid "15,-15 collected, join=mitre mitre_limit=2.1"
 msgstr "수집된 15, -15. join=mitre mitre_limit=2.1"
 
 #. Tag: programlisting
-#: reference_processing.xml:1884
+#: reference_processing.xml:1887
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
@@ -3787,19 +3797,19 @@ msgstr ""
 "        (31 195,31 31,164 31))"
 
 #. Tag: refname
-#: reference_processing.xml:1901
+#: reference_processing.xml:1904
 #, no-c-format
 msgid "ST_PointOnSurface"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1903
+#: reference_processing.xml:1906
 #, no-c-format
 msgid "Returns a <varname>POINT</varname> guaranteed to lie on the surface."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1908
+#: reference_processing.xml:1911
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
@@ -3809,19 +3819,19 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:1920
+#: reference_processing.xml:1923
 #, no-c-format
 msgid "Returns a <varname>POINT</varname> guaranteed to intersect a surface."
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1922
+#: reference_processing.xml:1925
 #, fuzzy, no-c-format
 msgid "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
 msgstr "&sfs_compliant; s2.1.1.3"
 
 #. Tag: para
-#: reference_processing.xml:1923
+#: reference_processing.xml:1926
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6. According to the specs, "
@@ -3833,7 +3843,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1932
+#: reference_processing.xml:1935
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));\n"
@@ -3864,25 +3874,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1938
+#: reference_processing.xml:1941
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_PointInsideCircle\"/>"
 msgstr ", <xref linkend=\"ST_MinimumBoundingCircle\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:1944
+#: reference_processing.xml:1947
 #, no-c-format
 msgid "ST_RemoveRepeatedPoints"
 msgstr "ST_RemoveRepeatedPoints"
 
 #. Tag: refpurpose
-#: reference_processing.xml:1945
+#: reference_processing.xml:1948
 #, no-c-format
 msgid "Returns a version of the given geometry with duplicated points removed."
 msgstr "입력 도형을 중복된 포인트들을 제거한 상태로 반환합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:1951
+#: reference_processing.xml:1954
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef> "
@@ -3896,7 +3906,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:1961
+#: reference_processing.xml:1964
 #, no-c-format
 msgid ""
 "Returns a version of the given geometry with duplicated points removed. Will "
@@ -3911,7 +3921,7 @@ msgstr ""
 "에 도형 집합도 입력할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:1967
+#: reference_processing.xml:1970
 #, no-c-format
 msgid ""
 "If the tolerance parameter is provided, vertices within the tolerance of one "
@@ -3921,13 +3931,13 @@ msgstr ""
 "\"동일\"하다고 간주, 제거할 것입니다."
 
 #. Tag: refname
-#: reference_processing.xml:1983
+#: reference_processing.xml:1986
 #, no-c-format
 msgid "ST_SharedPaths"
 msgstr "ST_SharedPaths"
 
 #. Tag: refpurpose
-#: reference_processing.xml:1984
+#: reference_processing.xml:1987
 #, no-c-format
 msgid ""
 "Returns a collection containing paths shared by the two input linestrings/"
@@ -3937,7 +3947,7 @@ msgstr ""
 "다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:1989
+#: reference_processing.xml:1992
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SharedPaths</function></funcdef> "
@@ -3949,7 +3959,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>lineal2</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:1999
+#: reference_processing.xml:2002
 #, no-c-format
 msgid ""
 "Returns a collection containing paths shared by the two input geometries. "
@@ -3962,19 +3972,19 @@ msgstr ""
 "소입니다. 경로 그 자체는 첫 번째 도형의 방향을 따릅니다."
 
 #. Tag: title
-#: reference_processing.xml:2007
+#: reference_processing.xml:2010
 #, no-c-format
 msgid "Examples: Finding shared paths"
 msgstr "예시: 공유된 경로 찾기"
 
 #. Tag: para
-#: reference_processing.xml:2017
+#: reference_processing.xml:2020
 #, no-c-format
 msgid "A multilinestring and a linestring"
 msgstr "멀티라인스트링과 라인스트링"
 
 #. Tag: para
-#: reference_processing.xml:2028
+#: reference_processing.xml:2031
 #, no-c-format
 msgid ""
 "The shared path of multilinestring and linestring overlaid with original "
@@ -3982,7 +3992,7 @@ msgid ""
 msgstr "멀티라인스트링과 라인스트링이 공유하는 경로와 원본 도형들을 중첩"
 
 #. Tag: programlisting
-#: reference_processing.xml:2031
+#: reference_processing.xml:2034
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -4016,7 +4026,7 @@ msgstr ""
 " (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
 
 #. Tag: programlisting
-#: reference_processing.xml:2037
+#: reference_processing.xml:2040
 #, no-c-format
 msgid ""
 "-- same example but linestring orientation flipped\n"
@@ -4048,7 +4058,7 @@ msgstr ""
 "MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
 
 #. Tag: para
-#: reference_processing.xml:2047
+#: reference_processing.xml:2050
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -4056,19 +4066,19 @@ msgstr ""
 ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2057
+#: reference_processing.xml:2060
 #, no-c-format
 msgid "ST_ShiftLongitude"
 msgstr "ST_ShiftLongitude"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2059
+#: reference_processing.xml:2062
 #, no-c-format
 msgid "Toggle geometry coordinates between -180..180 and 0..360 ranges."
 msgstr "도형의 좌표를 -180 ~ 180 범위와 0 ~ 360 범위 간에 전환합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2064
+#: reference_processing.xml:2067
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef> "
@@ -4078,7 +4088,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2074
+#: reference_processing.xml:2077
 #, no-c-format
 msgid ""
 "Reads every point/vertex in every component of every feature in a geometry, "
@@ -4090,7 +4100,7 @@ msgstr ""
 "가지는 데이터를 180을 중심으로 하는 맵에 그리게 됩니다."
 
 #. Tag: para
-#: reference_processing.xml:2078
+#: reference_processing.xml:2081
 #, no-c-format
 msgid "This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)"
 msgstr ""
@@ -4098,7 +4108,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: reference_processing.xml:2081
+#: reference_processing.xml:2084
 #, no-c-format
 msgid ""
 "Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with "
@@ -4108,7 +4118,7 @@ msgstr ""
 "전부터 멀티포인트도 입력할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2085
+#: reference_processing.xml:2088
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr ""
@@ -4116,14 +4126,14 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: reference_processing.xml:2086
+#: reference_processing.xml:2089
 #, no-c-format
 msgid "NOTE: this function was renamed from \"ST_Shift_Longitude\" in 2.2.0"
 msgstr ""
 "주의: 2.2.0 미만 버전에서, 이 함수의 명칭은 \"ST_Shift_Longitude\"였습니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:2095
+#: reference_processing.xml:2098
 #, no-c-format
 msgid ""
 "--3d points\n"
@@ -4161,19 +4171,19 @@ msgstr ""
 "LINESTRING(241.42 38.38,241.8 38.45)"
 
 #. Tag: refname
-#: reference_processing.xml:2109
+#: reference_processing.xml:2112
 #, no-c-format
 msgid "ST_WrapX"
 msgstr "ST_WrapX"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2111
+#: reference_processing.xml:2114
 #, no-c-format
 msgid "Wrap a geometry around an X value."
 msgstr "X값 근처에서 도형을 래핑합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2116
+#: reference_processing.xml:2119
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_WrapX</function></funcdef> "
@@ -4187,7 +4197,7 @@ msgstr ""
 "<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2128
+#: reference_processing.xml:2131
 #, no-c-format
 msgid ""
 "This function splits the input geometries and then moves every resulting "
@@ -4201,7 +4211,7 @@ msgstr ""
 "통합시킵니다."
 
 #. Tag: para
-#: reference_processing.xml:2135
+#: reference_processing.xml:2138
 #, no-c-format
 msgid ""
 "This is useful to \"recenter\" long-lat input to have features of interest "
@@ -4211,7 +4221,7 @@ msgstr ""
 "도록 하는 데 유용합니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:2153
+#: reference_processing.xml:2156
 #, no-c-format
 msgid ""
 "-- Move all components of the given geometries whose bounding box\n"
@@ -4231,13 +4241,13 @@ msgstr ""
 "select ST_WrapX(the_geom, -30, 360);"
 
 #. Tag: refname
-#: reference_processing.xml:2165
+#: reference_processing.xml:2168
 #, no-c-format
 msgid "ST_Simplify"
 msgstr "ST_Simplify"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2166
+#: reference_processing.xml:2169
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -4247,7 +4257,7 @@ msgstr ""
 "버전을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2172
+#: reference_processing.xml:2175
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
@@ -4263,7 +4273,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2183
+#: reference_processing.xml:2186
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -4278,7 +4288,7 @@ msgstr ""
 "업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2190
+#: reference_processing.xml:2193
 #, no-c-format
 msgid ""
 "The \"preserve collapsed\" flag will retain objects that would otherwise be "
@@ -4295,8 +4305,8 @@ msgstr ""
 "을 수 있으니까요."
 
 #. Tag: para
-#: reference_processing.xml:2196 reference_processing.xml:2279
-#: reference_processing.xml:2427
+#: reference_processing.xml:2199 reference_processing.xml:2282
+#: reference_processing.xml:2430
 #, no-c-format
 msgid ""
 "Note that returned geometry might lose its simplicity (see <xref linkend="
@@ -4306,8 +4316,8 @@ msgstr ""
 "\"ST_IsSimple\"/> 참조)."
 
 #. Tag: para
-#: reference_processing.xml:2198 reference_processing.xml:2281
-#: reference_processing.xml:2429
+#: reference_processing.xml:2201 reference_processing.xml:2284
+#: reference_processing.xml:2432
 #, no-c-format
 msgid ""
 "Note topology may not be preserved and may result in invalid geometries. Use "
@@ -4318,19 +4328,19 @@ msgstr ""
 "십시오."
 
 #. Tag: para
-#: reference_processing.xml:2200
+#: reference_processing.xml:2203
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr "1.2.2 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2205
+#: reference_processing.xml:2208
 #, no-c-format
 msgid "A circle simplified too much becomes a triangle, medium an octagon,"
 msgstr "원을 너무 단순화시키면 팔각형을 거쳐 삼각형이 되고 맙니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:2206
+#: reference_processing.xml:2209
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_Npoints(the_geom) AS np_before,\n"
@@ -4365,7 +4375,7 @@ msgstr ""
 "|             4 | t"
 
 #. Tag: para
-#: reference_processing.xml:2210
+#: reference_processing.xml:2213
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend="
@@ -4375,13 +4385,13 @@ msgstr ""
 "linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2216
+#: reference_processing.xml:2219
 #, no-c-format
 msgid "ST_SimplifyPreserveTopology"
 msgstr "ST_SimplifyPreserveTopology"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2217
+#: reference_processing.xml:2220
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -4393,7 +4403,7 @@ msgstr ""
 "니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2224
+#: reference_processing.xml:2227
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SimplifyPreserveTopology</function></funcdef> "
@@ -4405,7 +4415,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2234
+#: reference_processing.xml:2237
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -4422,13 +4432,13 @@ msgstr ""
 "에 이 함수에 도형 집합도 입력할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2243
+#: reference_processing.xml:2246
 #, no-c-format
 msgid "Availability: 1.3.3"
 msgstr "1.3.3 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2248
+#: reference_processing.xml:2251
 #, no-c-format
 msgid ""
 "Same example as Simplify, but we see Preserve Topology prevents "
@@ -4439,7 +4449,7 @@ msgstr ""
 "해야 사각형에서 끝납니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:2249
+#: reference_processing.xml:2252
 #, no-c-format
 msgid ""
 "SELECT ST_Npoints(the_geom) As np_before, "
@@ -4477,13 +4487,13 @@ msgstr ""
 "|             5 |                 5"
 
 #. Tag: refname
-#: reference_processing.xml:2259
+#: reference_processing.xml:2262
 #, no-c-format
 msgid "ST_SimplifyVW"
 msgstr "ST_SimplifyVW"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2260
+#: reference_processing.xml:2263
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Visvalingam-"
@@ -4493,7 +4503,7 @@ msgstr ""
 "\"단순화\"된 버전을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2265
+#: reference_processing.xml:2268
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SimplifyVW</function></funcdef> "
@@ -4505,7 +4515,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2275
+#: reference_processing.xml:2278
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Visvalingam-"
@@ -4520,7 +4530,7 @@ msgstr ""
 "로 단순화 작업을 하기 때문에 이 함수에 도형 집합도 입력할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2282 reference_processing.xml:2324
+#: reference_processing.xml:2285 reference_processing.xml:2327
 #, no-c-format
 msgid ""
 "This function handles 3D and the third dimension will affect the result."
@@ -4528,14 +4538,14 @@ msgstr ""
 "이 함수는 3차원을 처리하며, 세 번째 차원이 결과에 영향을 미칠 것입니다."
 
 #. Tag: para
-#: reference_processing.xml:2288
+#: reference_processing.xml:2291
 #, no-c-format
 msgid "A LineString is simplified with a minimum area threshold of 30."
 msgstr ""
 "라인스트링을 최소 임계 면적(minimum area threshold) 30으로 단순화합니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:2289
+#: reference_processing.xml:2292
 #, fuzzy, no-c-format
 msgid ""
 "select ST_AsText(ST_SimplifyVW(geom,30)) simplified\n"
@@ -4555,7 +4565,7 @@ msgstr ""
 "LINESTRING(5 2,7 25,10 10)"
 
 #. Tag: para
-#: reference_processing.xml:2293
+#: reference_processing.xml:2296
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
@@ -4567,13 +4577,13 @@ msgstr ""
 "\"TP_ST_Simplify\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2299
+#: reference_processing.xml:2302
 #, no-c-format
 msgid "ST_ChaikinSmoothing"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:2300
+#: reference_processing.xml:2303
 #, fuzzy, no-c-format
 msgid ""
 "Returns a \"smoothed\" version of the given geometry using the Chaikin "
@@ -4583,7 +4593,7 @@ msgstr ""
 "\"단순화\"된 버전을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2305
+#: reference_processing.xml:2308
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
@@ -4599,7 +4609,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2316
+#: reference_processing.xml:2319
 #, no-c-format
 msgid ""
 "Returns a \"smoothed\" version of the given geometry using the Chaikin "
@@ -4614,13 +4624,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2322
+#: reference_processing.xml:2325
 #, no-c-format
 msgid "Second argument, number of iterations is limited to max 5 iterations"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2323
+#: reference_processing.xml:2326
 #, no-c-format
 msgid ""
 "Note third argument is only valid for polygons, and will be ignored for "
@@ -4628,7 +4638,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2325
+#: reference_processing.xml:2328
 #, no-c-format
 msgid ""
 "Note that returned geometry will get more points than the original. To "
@@ -4638,13 +4648,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2333
+#: reference_processing.xml:2336
 #, no-c-format
 msgid "A triangle is smoothed"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2334
+#: reference_processing.xml:2337
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_ChaikinSmoothing(geom)) smoothed\n"
@@ -4657,25 +4667,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2338 reference_processing.xml:2385
+#: reference_processing.xml:2341 reference_processing.xml:2388
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_SimplifyVW\"/>"
 msgstr ", <xref linkend=\"ST_Dump\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2344
+#: reference_processing.xml:2347
 #, no-c-format
 msgid "ST_FilterByM"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:2345
+#: reference_processing.xml:2348
 #, no-c-format
 msgid "Filters vertex points based on their m-value"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:2350
+#: reference_processing.xml:2353
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_FilterByM</function></funcdef> "
@@ -4692,7 +4702,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2362
+#: reference_processing.xml:2365
 #, no-c-format
 msgid ""
 "Filters away vertex points based on their m-value. Returns a geometry with "
@@ -4706,7 +4716,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2368
+#: reference_processing.xml:2371
 #, no-c-format
 msgid ""
 "This function is mainly intended to be used in conjunction with "
@@ -4716,7 +4726,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2371
+#: reference_processing.xml:2374
 #, no-c-format
 msgid ""
 "There is a difference in what ST_SimplifyVW returns when not enough points "
@@ -4725,25 +4735,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2373
+#: reference_processing.xml:2376
 #, no-c-format
 msgid "Note that the retuned geometry might be invalid"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2374
+#: reference_processing.xml:2377
 #, no-c-format
 msgid "This function returns all dimensions, also the z and m-value"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2380
+#: reference_processing.xml:2383
 #, no-c-format
 msgid "A linestring is filtered"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2381
+#: reference_processing.xml:2384
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_FilterByM(geom,30)) simplified\n"
@@ -4763,13 +4773,13 @@ msgstr ""
 "LINESTRING(5 2,7 25,10 10)"
 
 #. Tag: refname
-#: reference_processing.xml:2391
+#: reference_processing.xml:2394
 #, no-c-format
 msgid "ST_SetEffectiveArea"
 msgstr "ST_SetEffectiveArea"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2392
+#: reference_processing.xml:2395
 #, no-c-format
 msgid ""
 "Sets the effective area for each vertex, storing the value in the M "
@@ -4781,7 +4791,7 @@ msgstr ""
 "생성할 수 있습니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2399
+#: reference_processing.xml:2402
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef> "
@@ -4795,7 +4805,7 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2410
+#: reference_processing.xml:2413
 #, no-c-format
 msgid ""
 "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
@@ -4810,7 +4820,7 @@ msgstr ""
 "형을 반환할 것입니다."
 
 #. Tag: para
-#: reference_processing.xml:2415
+#: reference_processing.xml:2418
 #, no-c-format
 msgid ""
 "This function can be used for server-side simplification when a threshold is "
@@ -4824,7 +4834,7 @@ msgstr ""
 "데 쓸 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2418
+#: reference_processing.xml:2421
 #, no-c-format
 msgid ""
 "Will actually do something only with (multi)lines and (multi)polygons but "
@@ -4837,13 +4847,13 @@ msgstr ""
 "함수에 도형 집합도 입력할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2430
+#: reference_processing.xml:2433
 #, no-c-format
 msgid "The output geometry will lose all previous information in the M-values"
 msgstr "출력 도형은 M값으로 가지고 있던 정보를 모두 잃게 될 것입니다."
 
 #. Tag: para
-#: reference_processing.xml:2431
+#: reference_processing.xml:2434
 #, no-c-format
 msgid ""
 "This function handles 3D and the third dimension will affect the effective "
@@ -4852,7 +4862,7 @@ msgstr ""
 "이 함수는 3차원을 처리하며, 세 번째 차원이 유효 범위에 영향을 미칠 것입니다."
 
 #. Tag: para
-#: reference_processing.xml:2437
+#: reference_processing.xml:2440
 #, no-c-format
 msgid ""
 "Calculating the effective area of a LineString. Because we use a threshold "
@@ -4862,7 +4872,7 @@ msgstr ""
 "형 안에 있는 모든 꼭짓점을 반환합니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:2440
+#: reference_processing.xml:2443
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_SetEffectiveArea(geom)) all_pts, "
@@ -4888,19 +4898,19 @@ msgstr ""
 "10 3.40282346638529e+38)"
 
 #. Tag: refname
-#: reference_processing.xml:2450
+#: reference_processing.xml:2453
 #, no-c-format
 msgid "ST_Split"
 msgstr "ST_Split"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2451
+#: reference_processing.xml:2454
 #, no-c-format
 msgid "Returns a collection of geometries resulting by splitting a geometry."
 msgstr "도형을 분해(split)해서 나오는 도형들의 집합을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2456
+#: reference_processing.xml:2459
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Split</function></funcdef> "
@@ -4912,7 +4922,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2466
+#: reference_processing.xml:2469
 #, no-c-format
 msgid ""
 "The function supports splitting a line by (multi)point, (multi)line or "
@@ -4923,7 +4933,7 @@ msgstr ""
 "고 라인으로 [멀티]폴리곤을 분해합니다. 언제나 도형 집합을 반환합니다."
 
 #. Tag: para
-#: reference_processing.xml:2470
+#: reference_processing.xml:2473
 #, no-c-format
 msgid ""
 "Think of this function as the opposite of ST_Union. Theoretically applying "
@@ -4934,7 +4944,7 @@ msgstr ""
 "소에 ST_Union을 적용하면 언제나 원본 도형을 출력해야 합니다."
 
 #. Tag: para
-#: reference_processing.xml:2477
+#: reference_processing.xml:2480
 #, fuzzy, no-c-format
 msgid ""
 "Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or "
@@ -4944,7 +4954,7 @@ msgstr ""
 "으로 라인을 분해할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2478
+#: reference_processing.xml:2481
 #, fuzzy, no-c-format
 msgid ""
 "Enhanced: 2.5.0 support for splitting a polygon by a multiline was "
@@ -4954,7 +4964,7 @@ msgstr ""
 "으로 라인을 분해할 수 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2480
+#: reference_processing.xml:2483
 #, no-c-format
 msgid ""
 "To improve the robustness of ST_Split it may be convenient to <xref linkend="
@@ -4972,7 +4982,7 @@ msgstr ""
 "ticket/2192\">#2192</ulink> 참조)."
 
 #. Tag: para
-#: reference_processing.xml:2482
+#: reference_processing.xml:2485
 #, no-c-format
 msgid ""
 "When a (multi)polygon is passed as as the blade, its linear component (the "
@@ -4982,25 +4992,25 @@ msgstr ""
 "형을 자르는 데 쓰입니다."
 
 #. Tag: para
-#: reference_processing.xml:2490
+#: reference_processing.xml:2493
 #, no-c-format
 msgid "Polygon Cut by Line"
 msgstr "라인으로 폴리곤을 분해"
 
 #. Tag: para
-#: reference_processing.xml:2502 reference_processing.xml:2536
+#: reference_processing.xml:2505 reference_processing.xml:2539
 #, no-c-format
 msgid "Before Split"
 msgstr "분해 전"
 
 #. Tag: para
-#: reference_processing.xml:2514 reference_processing.xml:2548
+#: reference_processing.xml:2517 reference_processing.xml:2551
 #, no-c-format
 msgid "After split"
 msgstr "분해 후"
 
 #. Tag: programlisting
-#: reference_processing.xml:2523
+#: reference_processing.xml:2526
 #, no-c-format
 msgid ""
 "-- this creates a geometry collection consisting of the 2 halves of the "
@@ -5054,13 +5064,13 @@ msgstr ""
 "62.2214883490198,53.8060233744357 ..))"
 
 #. Tag: para
-#: reference_processing.xml:2524
+#: reference_processing.xml:2527
 #, no-c-format
 msgid "Multilinestring Cut by point"
 msgstr "포인트로 멀티라인스트링을 분해"
 
 #. Tag: programlisting
-#: reference_processing.xml:2557
+#: reference_processing.xml:2560
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
@@ -5094,7 +5104,7 @@ msgstr ""
 ")"
 
 #. Tag: para
-#: reference_processing.xml:2561
+#: reference_processing.xml:2564
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
@@ -5106,13 +5116,13 @@ msgstr ""
 "\"ST_Subdivide\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2574
+#: reference_processing.xml:2577
 #, no-c-format
 msgid "ST_SymDifference"
 msgstr "ST_SymDifference"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2576
+#: reference_processing.xml:2579
 #, no-c-format
 msgid ""
 "Returns a geometry that represents the portions of A and B that do not "
@@ -5124,7 +5134,7 @@ msgstr ""
 "(symmetric difference)라고 합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2583
+#: reference_processing.xml:2586
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
@@ -5136,7 +5146,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2594
+#: reference_processing.xml:2597
 #, no-c-format
 msgid ""
 "Returns a geometry that represents the portions of A and B that do not "
@@ -5150,25 +5160,25 @@ msgstr ""
 "ST_Intersection(A,B)를 뺀 것으로 생각할 수도 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2601
+#: reference_processing.xml:2604
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 
 #. Tag: para
-#: reference_processing.xml:2621
+#: reference_processing.xml:2624
 #, no-c-format
 msgid "The original linestrings shown together"
 msgstr "함께 표출된 원본 라인스트링들"
 
 #. Tag: para
-#: reference_processing.xml:2633
+#: reference_processing.xml:2636
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
 msgstr "두 라인스트링의 대칭차(symmetric difference)"
 
 #. Tag: programlisting
-#: reference_processing.xml:2642
+#: reference_processing.xml:2645
 #, no-c-format
 msgid ""
 "--Safe for 2d - symmetric difference of 2 linestrings\n"
@@ -5196,7 +5206,7 @@ msgstr ""
 "MULTILINESTRING((50 150,50 200),(50 50,50 100))"
 
 #. Tag: programlisting
-#: reference_processing.xml:2644
+#: reference_processing.xml:2647
 #, no-c-format
 msgid ""
 "--When used in 3d doesn't quite do the right thing\n"
@@ -5218,13 +5228,13 @@ msgstr ""
 "MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))"
 
 #. Tag: refname
-#: reference_processing.xml:2658
+#: reference_processing.xml:2661
 #, no-c-format
 msgid "ST_Subdivide"
 msgstr "ST_Subdivide"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2659
+#: reference_processing.xml:2662
 #, no-c-format
 msgid ""
 "Returns a set of geometry where no geometry in the set has more than the "
@@ -5234,7 +5244,7 @@ msgstr ""
 "다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2664
+#: reference_processing.xml:2667
 #, no-c-format
 msgid ""
 "<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
@@ -5248,7 +5258,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2675
+#: reference_processing.xml:2678
 #, no-c-format
 msgid ""
 "Divides geometry into parts until a part can be represented using no more "
@@ -5262,7 +5272,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2685
+#: reference_processing.xml:2688
 #, no-c-format
 msgid ""
 "Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is "
@@ -5270,7 +5280,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2690
+#: reference_processing.xml:2693
 #, no-c-format
 msgid ""
 "-- Subdivide complex geometries in table, in place\n"
@@ -5287,7 +5297,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2692
+#: reference_processing.xml:2695
 #, no-c-format
 msgid ""
 "-- Create a new subdivided table suitable for joining to the original\n"
@@ -5301,13 +5311,13 @@ msgstr ""
 "FROM original_geoms;"
 
 #. Tag: para
-#: reference_processing.xml:2703
+#: reference_processing.xml:2706
 #, no-c-format
 msgid "Subdivide max 10 vertices"
 msgstr "최대 꼭짓점 10개로 세분화"
 
 #. Tag: programlisting
-#: reference_processing.xml:2706
+#: reference_processing.xml:2709
 #, no-c-format
 msgid ""
 "SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt\n"
@@ -5327,7 +5337,7 @@ msgstr ""
 "As f(geom);"
 
 #. Tag: screen
-#: reference_processing.xml:2707
+#: reference_processing.xml:2710
 #, no-c-format
 msgid ""
 "rn │                                                      wkt\n"
@@ -5344,7 +5354,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2716
+#: reference_processing.xml:2719
 #, fuzzy, no-c-format
 msgid ""
 "Useful in conjunction with ST_Segmentize(geography) to create additional "
@@ -5354,7 +5364,7 @@ msgstr ""
 "하는 데 유용합니다."
 
 #. Tag: programlisting
-#: reference_processing.xml:2719
+#: reference_processing.xml:2722
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Subdivide(ST_Segmentize('LINESTRING(0 0, 85 85)'::"
@@ -5364,7 +5374,7 @@ msgstr ""
 "150)'::geometry,10),8));"
 
 #. Tag: screen
-#: reference_processing.xml:2720
+#: reference_processing.xml:2723
 #, no-c-format
 msgid ""
 "LINESTRING(0 0,0.487578359029357 5.57659056746196,0.984542144675897 "
@@ -5385,7 +5395,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2727
+#: reference_processing.xml:2730
 #, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Segmentize\"/>, "
@@ -5395,20 +5405,20 @@ msgstr ""
 "<xref linkend=\"ST_Split\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2739
+#: reference_processing.xml:2742
 #, no-c-format
 msgid "ST_Union"
 msgstr "ST_Union"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2740
+#: reference_processing.xml:2743
 #, no-c-format
 msgid ""
 "Returns a geometry that represents the point set union of the Geometries."
 msgstr "도형들의 포인트들을 통합한 집합을 표현하는 도형을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_processing.xml:2745
+#: reference_processing.xml:2748
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
@@ -5432,7 +5442,7 @@ msgstr ""
 "</funcprototype>"
 
 #. Tag: para
-#: reference_processing.xml:2764
+#: reference_processing.xml:2767
 #, no-c-format
 msgid ""
 "Output type can be a MULTI*, single geometry, or Geometry Collection. Comes "
@@ -5447,7 +5457,7 @@ msgstr ""
 "는 종합 함수입니다."
 
 #. Tag: para
-#: reference_processing.xml:2768
+#: reference_processing.xml:2771
 #, no-c-format
 msgid ""
 "Aggregate version: This function returns a MULTI geometry or NON-MULTI "
@@ -5462,7 +5472,7 @@ msgstr ""
 "입니다. 또 대부분의 종합 함수와 마찬가지로, NULL 도형을 무시합니다."
 
 #. Tag: para
-#: reference_processing.xml:2774
+#: reference_processing.xml:2777
 #, no-c-format
 msgid ""
 "Non-Aggregate version: This function returns a geometry being a union of two "
@@ -5474,7 +5484,7 @@ msgstr ""
 "데 NULL 도형이 있을 경우, NULL 도형을 반환합니다."
 
 #. Tag: para
-#: reference_processing.xml:2778
+#: reference_processing.xml:2781
 #, no-c-format
 msgid ""
 "ST_Collect and ST_Union are often interchangeable. ST_Union is in general "
@@ -5488,7 +5498,7 @@ msgstr ""
 "문입니다."
 
 #. Tag: para
-#: reference_processing.xml:2783
+#: reference_processing.xml:2786
 #, fuzzy, no-c-format
 msgid ""
 "ST_Union will use the faster Cascaded Union algorithm described in <ulink "
@@ -5505,7 +5515,7 @@ msgstr ""
 "할 것입니다."
 
 #. Tag: para
-#: reference_processing.xml:2787
+#: reference_processing.xml:2790
 #, no-c-format
 msgid ""
 "NOTE: this function was formerly called GeomUnion(), which was renamed from "
@@ -5515,7 +5525,7 @@ msgstr ""
 "용어이기 때문에 \"Union\"으로 재명명됐습니다."
 
 #. Tag: para
-#: reference_processing.xml:2790
+#: reference_processing.xml:2793
 #, fuzzy, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
@@ -5525,13 +5535,13 @@ msgstr ""
 "다. 더 많은 도형들을 더 빨리 처리하도록 ST_Collect를 개선했습니다."
 
 #. Tag: para
-#: reference_processing.xml:2794
+#: reference_processing.xml:2797
 #, no-c-format
 msgid "Aggregate version is not explicitly defined in OGC SPEC."
 msgstr "종합 버전은 OGC 사양서에 명확하게 정의돼 있지 않습니다."
 
 #. Tag: para
-#: reference_processing.xml:2795
+#: reference_processing.xml:2798
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
@@ -5539,13 +5549,13 @@ msgid ""
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.19 폴리곤이 연관된 경우 Z-인덱스(고도)"
 
 #. Tag: para
-#: reference_processing.xml:2801
+#: reference_processing.xml:2804
 #, no-c-format
 msgid "Aggregate example"
 msgstr "종합 버전 예시"
 
 #. Tag: programlisting
-#: reference_processing.xml:2802
+#: reference_processing.xml:2805
 #, fuzzy, no-c-format
 msgid ""
 "SELECT stusps,\n"
@@ -5559,13 +5569,13 @@ msgstr ""
 "GROUP BY stusps"
 
 #. Tag: para
-#: reference_processing.xml:2803
+#: reference_processing.xml:2806
 #, no-c-format
 msgid "Non-Aggregate example"
 msgstr "비(非)종합 버전 예시"
 
 #. Tag: programlisting
-#: reference_processing.xml:2804
+#: reference_processing.xml:2807
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(-2 3)' :: "
@@ -5584,13 +5594,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2805
+#: reference_processing.xml:2808
 #, no-c-format
 msgid "3D example - sort of supports 3D (and with mixed dimensions!)"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2806
+#: reference_processing.xml:2809
 #, no-c-format
 msgid ""
 "select ST_AsEWKT(ST_Union(geom))\n"
@@ -5612,13 +5622,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2807
+#: reference_processing.xml:2810
 #, no-c-format
 msgid "3d example not mixing dimensions"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2808
+#: reference_processing.xml:2811
 #, no-c-format
 msgid ""
 "select ST_AsEWKT(ST_Union(geom))\n"
@@ -5650,7 +5660,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2812
+#: reference_processing.xml:2815
 #, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_Intersection\"/>, "
@@ -5660,19 +5670,19 @@ msgstr ""
 "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2824
+#: reference_processing.xml:2827
 #, no-c-format
 msgid "ST_UnaryUnion"
 msgstr "ST_UnaryUnion"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2826
+#: reference_processing.xml:2829
 #, no-c-format
 msgid "Like ST_Union, but working at the geometry component level."
 msgstr "ST_Union과 비슷하지만, 도형 구성 요소 레벨에서 동작합니다."
 
 #. Tag: funcprototype
-#: reference_processing.xml:2831
+#: reference_processing.xml:2834
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
@@ -5682,7 +5692,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2842
+#: reference_processing.xml:2845
 #, no-c-format
 msgid ""
 "Unlike ST_Union, ST_UnaryUnion does dissolve boundaries between components "
@@ -5698,7 +5708,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: reference_processing.xml:2852
+#: reference_processing.xml:2855
 #, no-c-format
 msgid ""
 "You may use this function to node a set of linestrings. You may mix "
@@ -5712,7 +5722,7 @@ msgstr ""
 "을 통합할지 상세하게 조정할 수도 있습니다."
 
 #. Tag: para
-#: reference_processing.xml:2870
+#: reference_processing.xml:2873
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
@@ -5722,13 +5732,13 @@ msgstr ""
 "linkend=\"ST_Node\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2881
+#: reference_processing.xml:2884
 #, no-c-format
 msgid "ST_VoronoiLines"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:2883
+#: reference_processing.xml:2886
 #, no-c-format
 msgid ""
 "Returns the boundaries between the cells of the Voronoi diagram constructed "
@@ -5736,7 +5746,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:2888
+#: reference_processing.xml:2891
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> <paramdef> "
@@ -5747,7 +5757,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2909
+#: reference_processing.xml:2912
 #, no-c-format
 msgid ""
 "ST_VoronoiLines computes a two-dimensional <ulink url=\"https://en.wikipedia."
@@ -5759,13 +5769,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2914 reference_processing.xml:3004
+#: reference_processing.xml:2917 reference_processing.xml:3007
 #, no-c-format
 msgid "Optional parameters:"
 msgstr "선택할 수 있는 파라미터:"
 
 #. Tag: para
-#: reference_processing.xml:2918 reference_processing.xml:3008
+#: reference_processing.xml:2921 reference_processing.xml:3011
 #, no-c-format
 msgid ""
 "'tolerance' : The distance within which vertices will be considered "
@@ -5777,7 +5787,7 @@ msgstr ""
 "다. (기본값 = 0.0)"
 
 #. Tag: para
-#: reference_processing.xml:2921 reference_processing.xml:3011
+#: reference_processing.xml:2924 reference_processing.xml:3014
 #, no-c-format
 msgid ""
 "'extend_to' : If a geometry is supplied as the \"extend_to\" parameter, the "
@@ -5788,13 +5798,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2942
+#: reference_processing.xml:2945
 #, no-c-format
 msgid "Voronoi lines with tolerance of 30 units"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2945 reference_processing.xml:3064
+#: reference_processing.xml:2948 reference_processing.xml:3067
 #, no-c-format
 msgid ""
 "SELECT ST_VoronoiLines(geom, 30) As geom\n"
@@ -5803,7 +5813,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_processing.xml:2946 reference_processing.xml:3065
+#: reference_processing.xml:2949 reference_processing.xml:3068
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -5817,20 +5827,20 @@ msgstr ""
 "-45.7142857142858,36.8181818181818 92.2727272727273))"
 
 #. Tag: para
-#: reference_processing.xml:2959
+#: reference_processing.xml:2962
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_VoronoiPolygons\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:2969
+#: reference_processing.xml:2972
 #, no-c-format
 msgid "ST_VoronoiPolygons"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:2971
+#: reference_processing.xml:2974
 #, no-c-format
 msgid ""
 "Returns the cells of the Voronoi diagram constructed from the vertices of a "
@@ -5838,7 +5848,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:2976
+#: reference_processing.xml:2979
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef> "
@@ -5849,7 +5859,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2998
+#: reference_processing.xml:3001
 #, no-c-format
 msgid ""
 "ST_VoronoiPolygons computes a two-dimensional <ulink url=\"https://en."
@@ -5862,13 +5872,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:3034
+#: reference_processing.xml:3037
 #, no-c-format
 msgid "Points overlaid on top of Voronoi diagram"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:3037
+#: reference_processing.xml:3040
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -5878,7 +5888,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_processing.xml:3038
+#: reference_processing.xml:3041
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -5908,13 +5918,13 @@ msgstr ""
 "270)))"
 
 #. Tag: para
-#: reference_processing.xml:3048
+#: reference_processing.xml:3051
 #, no-c-format
 msgid "Voronoi with tolerance of 30 units"
 msgstr "허용 오차 거리가 30 단위인 보로노이 다이어그램"
 
 #. Tag: programlisting
-#: reference_processing.xml:3051
+#: reference_processing.xml:3054
 #, no-c-format
 msgid ""
 "SELECT ST_VoronoiPolygons(geom, 30) As geom\n"
@@ -5923,7 +5933,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_processing.xml:3052
+#: reference_processing.xml:3055
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -5949,16 +5959,22 @@ msgstr ""
 "270)))"
 
 #. Tag: para
-#: reference_processing.xml:3061
+#: reference_processing.xml:3064
 #, no-c-format
 msgid "Voronoi with tolerance of 30 units as MultiLineString"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:3078
+#: reference_processing.xml:3081
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ""
+
+#, fuzzy
+#~ msgid ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
+#~ "\"ST_MinimumBoundingCircle\"/>"
 
 #~ msgid ""
 #~ "'join=round|mitre|bevel' : join style (defaults to \"round\", needs "
