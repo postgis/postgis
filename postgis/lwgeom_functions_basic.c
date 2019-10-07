@@ -1546,12 +1546,12 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 		holes = lwalloc(sizeof(LWLINE *) * nholes);
 		for (i = 0; i < nholes; i++)
 		{
-#if GCC_VERSION >= 40604
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #endif
 			GSERIALIZED *g = (GSERIALIZED *)(ARR_DATA_PTR(array) + offset);
-#if GCC_VERSION >= 40604
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic pop
 #endif
 			LWLINE *hole;
