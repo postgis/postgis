@@ -270,7 +270,9 @@ EOF
             die "ERROR: no last updated info for aggregate '${aggsig}'\n";
         }
 
-        my $pg12_def = $def =~ s/CREATE AGGREGATE/CREATE OR REPLACE AGGREGATE/r;
+		my $pg12_def = $def;
+		$pg12_def =~ s/CREATE AGGREGATE/CREATE OR REPLACE AGGREGATE/;
+
         if ($pg12_def eq "")
         {
             $pg12_def = "RAISE EXCEPTION 'Could not parse AGGREGATE'";
