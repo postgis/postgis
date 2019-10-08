@@ -499,8 +499,8 @@ msgstr "ST_CoordDim"
 #, fuzzy, no-c-format
 msgid "Return the coordinate dimension of a geometry."
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"Retourne la dimension des coordonnées d'une valeur ST_Geometry."
+""
 
 #. Tag: funcprototype
 #: reference_accessor.xml:152
@@ -517,8 +517,7 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "Return the coordinate dimension of the ST_Geometry value."
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"Retourne la dimension des coordonnées d'une valeur ST_Geometry."
 
 #. Tag: para
 #: reference_accessor.xml:164
@@ -565,8 +564,7 @@ msgstr "ST_Dimension"
 #, fuzzy, no-c-format
 msgid "Returns the topological dimension of a geometry."
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"Retourne la dimension des coordonnées d'une valeur ST_Geometry."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:198
@@ -2808,8 +2806,8 @@ msgid ""
 "Return the M crdinate of a Point, or NULL if not available. Input must be a "
 "Point."
 msgstr ""
-"<refpurpose> Retourne les coordonnées M d'un point, ou NULL si non "
-"disponible. L'entrée doit être un point. <refpurpose>"
+"Retourne les coordonnées M d'un point, ou NULL si non "
+"disponible. L'entrée doit être un point."
 
 #. Tag: para
 #: reference_accessor.xml:1258
@@ -2969,8 +2967,7 @@ msgstr "ST_NDims"
 #, fuzzy, no-c-format
 msgid "Returns the coordinate dimension of a geometry."
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"Retourne la dimension des coordonnées d'une valeur ST_Geometry."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1333
@@ -3901,8 +3898,8 @@ msgid ""
 "Return the X coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<refpurpose> Retourne les coordonnées M d'un point, ou NULL si non "
-"disponible. L'entrée doit être un point. <refpurpose>"
+"Retourne les coordonnées M d'un point, ou NULL si non "
+"disponible. L'entrée doit être un point."
 
 #. Tag: para
 #: reference_accessor.xml:1942
@@ -3987,8 +3984,8 @@ msgid ""
 "Return the Y coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<refpurpose> Retourne les coordonnées M d'un point, ou NULL si non "
-"disponible. L'entrée doit être un point. <refpurpose>"
+"Retourne les coordonnées M d'un point, ou NULL si non "
+"disponible. L'entrée doit être un point."
 
 #. Tag: para
 #: reference_accessor.xml:1986
@@ -4073,8 +4070,8 @@ msgid ""
 "Return the Z coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<refpurpose> Retourne les coordonnées M d'un point, ou NULL si non "
-"disponible. L'entrée doit être un point. <refpurpose>"
+"Retourne les coordonnées M d'un point, ou NULL si non "
+"disponible. L'entrée doit être un point."
 
 #. Tag: para
 #: reference_accessor.xml:2031
@@ -4138,8 +4135,8 @@ msgid ""
 "<para>Returns a code indicating the ZM coordinate dimension of a geometry.</"
 "para>"
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"<para>Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
+"para>"
 
 #. Tag: para
 #: reference_accessor.xml:2074

@@ -1128,8 +1128,8 @@ msgid ""
 "<refpurpose>Takes a topology name and provides summary totals of types of "
 "objects in topology.</refpurpose>"
 msgstr ""
-"Toma el nombre de una topología y provee un resumen del total de los tipos "
-"de objetos en la topología."
+"<refpurpose>Toma el nombre de una topología y provee un resumen del total de los tipos "
+"de objetos en la topología.</refpurpose>"
 
 #. Tag: funcprototype
 #: extras_topology.xml:430
@@ -1150,8 +1150,8 @@ msgid ""
 "<para>Takes a topology name and provides summary totals of types of objects "
 "in topology.</para>"
 msgstr ""
-"Toma el nombre de una topología y provee un resumen del total de los tipos "
-"de objetos en la topología."
+"<para>Toma el nombre de una topología y provee un resumen del total de los tipos "
+"de objetos en la topología.</para>"
 
 #. Tag: para
 #: extras_topology.xml:443 extras_topology.xml:662 extras_topology.xml:800
