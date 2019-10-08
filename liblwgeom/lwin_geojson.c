@@ -28,7 +28,7 @@
 #include "lwgeom_log.h"
 #include "../postgis_config.h"
 
-#if defined(HAVE_LIBJSON) || defined(HAVE_LIBJSON_C) /* --{ */
+#if defined(HAVE_LIBJSON)
 
 #define JSON_C_VERSION_013 (13 << 8)
 
@@ -403,7 +403,7 @@ parse_geojson(json_object *geojson, int *hasz)
 	return NULL; /* Never reach */
 }
 
-#endif /* HAVE_LIBJSON or HAVE_LIBJSON_C --} */
+#endif /* HAVE_LIBJSON */
 
 LWGEOM *
 lwgeom_from_geojson(const char *geojson, char **srs)
@@ -466,5 +466,5 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	}
 	lwgeom_add_bbox(lwgeom);
 	return lwgeom;
-#endif /* HAVE_LIBJSON } */
+#endif /* HAVE_LIBJSON */
 }

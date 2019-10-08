@@ -910,7 +910,6 @@ dnl ===========================================================================
 
 CHECK_JSON=yes
 HAVE_JSON=no
-HAVE_JSON_C=no
 
 AC_ARG_WITH([json],
 	[AS_HELP_STRING([--without-json], [build without json-c support])],
@@ -935,7 +934,7 @@ if test "$CHECK_JSON" != "no"; then
                     AC_CHECK_FILE("$JSONDIR/include/json-c/json.h",
                                 [
                                     JSON_CPPFLAGS="-I$JSONDIR/include/json-c"
-                                    AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON_C=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"])
+                                    AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"])
                                 ],
                                 [
                                     AC_CHECK_FILE("$JSONDIR/include/json/json.h",
@@ -949,7 +948,7 @@ if test "$CHECK_JSON" != "no"; then
             fi
     elif test ! -z "$PKG_CONFIG"; then
 	PKG_CHECK_MODULES([JSONC], [json-c], [
-                HAVE_JSON_C=yes
+                HAVE_JSON=yes
                 JSON_CPPFLAGS="$JSONC_CFLAGS"
                 JSON_LDFLAGS="$JSONC_LIBS"
             ], [])
@@ -958,16 +957,10 @@ if test "$CHECK_JSON" != "no"; then
     if test "$HAVE_JSON" = "yes"; then
             AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
     fi
-    if test "$HAVE_JSON_C" = "yes"; then
-            AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
-            AC_DEFINE([HAVE_LIBJSON_C], 1, [Define to 1 if libjson resides in a json-c subdir])
-            HAVE_JSON=yes
-    fi
 
     AC_SUBST([JSON_CPPFLAGS])
     AC_SUBST([JSON_LDFLAGS])
     AC_SUBST([HAVE_JSON])
-    AC_SUBST([HAVE_LIBJSON_C])
 
 fi
 

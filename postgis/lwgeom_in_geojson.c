@@ -32,7 +32,7 @@
 #include "liblwgeom.h"
 #include "lwgeom_export.h"
 
-#if defined(HAVE_LIBJSON) || defined(HAVE_LIBJSON_C)
+#if defined(HAVE_LIBJSON)
 
 #include <json.h>
 

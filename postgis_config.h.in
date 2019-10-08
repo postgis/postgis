@@ -53,9 +53,6 @@
 /* Define to 1 if libjson is present */
 #undef HAVE_LIBJSON
 
-/* Define to 1 if libjson resides in json-c subdir */
-#undef HAVE_LIBJSON_C
-
 /* Define to 1 if you have the `pq' library (-lpq). */
 #undef HAVE_LIBPQ
 
