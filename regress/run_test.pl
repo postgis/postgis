@@ -254,9 +254,9 @@ if ( ! $libver )
 
 sub scriptdir
 {
-	my $version = shift;
+	my ( $version, $systemwide ) = @_;
 	my $scriptdir;
-	if ( $version and $version ne $libver ) {
+	if ( $systemwide or ( $version and $version ne $libver ) ) {
 		my $pgis_majmin = $version;
 		$pgis_majmin =~ s/^([1-9]*\.[0-9]*).*/\1/;
 		$scriptdir = `pg_config --sharedir`;
@@ -756,7 +756,7 @@ sub run_simple_test
 	mkpath($betmpdir);
 	chmod 0777, $betmpdir;
 
-	my $scriptdir = scriptdir($libver);
+	my $scriptdir = scriptdir($libver, $OPT_EXTENSIONS);
 	my $cmd = "psql -v \"VERBOSITY=terse\""
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
