@@ -1,5 +1,5 @@
 --- build a larger database
-\i regress_lots_of_3dpoints.sql
+\i :regdir/core/regress_lots_of_3dpoints.sql
 
 --- Test the various BRIN opclass with dataset containing 3D geometries, or
 -- geometries of different number of dimensions

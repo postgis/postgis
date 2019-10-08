@@ -42,7 +42,7 @@ from (
          from inverted_geom
      ) z;
 
-\i regress_big_polygon.sql
+\i :regdir/core/regress_big_polygon.sql
 
 create table big_polygon_sliced as (
 	select ST_Subdivide(geom) As geom FROM big_polygon

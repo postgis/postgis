@@ -1,4 +1,4 @@
-\i regress_lots_of_nulls.sql
+\i :regdir/core/regress_lots_of_nulls.sql
 SET client_min_messages TO NOTICE;
 
 CREATE INDEX "test_geom_idx" ON "test" using gist (the_geom);

@@ -1,5 +1,5 @@
 --- build a larger database
-\i regress_lots_of_points.sql
+\i :regdir/core/regress_lots_of_points.sql
 
 --- test some of the searching capabilities
 
