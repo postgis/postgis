@@ -1,3 +1,339 @@
+2019-10-07 11:41  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17878] configure.ac: Fix lib detection with "--with-jsondir"
+	  flag
+	  
+	  Patch by jabakobob
+	  References #4528
+
+2019-10-07 10:38  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17877] configure.ac: Fix --with-jsondir ldflags
+	  
+	  Fixes #4528
+
+2019-10-07 10:29  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17876] postgis/lwgeom_functions_basic.c, postgis/lwgeom_geos.c,
+	  postgis/lwgeom_sfcgal.c: Address compiler warnings
+	  
+	  Closes #4527
+	  Closes https://github.com/postgis/postgis/pull/490
+
+2019-10-07 07:00  Sandro Santilli <strk@kbt.io>
+
+	* [r17875] raster/rt_pg/rtpg_mapalgebra.c: Use clang pragma only
+	  with clang
+	  
+	  Hopefully fixes #4526
+
+2019-10-07 06:57  Regina Obe <lr@pcorp.us>
+
+	* [r17874] doc/po/ja/extras_topology.xml.po,
+	  doc/po/ja/reference.xml.po, doc/po/ko_KR/extras_topology.xml.po,
+	  doc/po/ko_KR/reference.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po,
+	  doc/po/pt_BR/reference.xml.po: Fix tag issues
+
+2019-10-07 06:40  Sandro Santilli <strk@kbt.io>
+
+	* [r17873] .editorconfig, utils/postgis_proc_upgrade.pl: Tweak
+	  editorconfig for postgis_proc_upgrade.pl and indent it properly
+	  
+	  It looks like most lines are using 4-spaces indent, make that
+	  official
+	  and tweak the non-conforming lines (53 lines over 580 total
+	  lines)
+
+2019-10-07 06:18  Regina Obe <lr@pcorp.us>
+
+	* [r17872] doc/po/de/reference.xml.po: remove reference_exception
+	  evidentally was taken out of list
+
+2019-10-07 05:07  Regina Obe <lr@pcorp.us>
+
+	* [r17871] doc/Makefile.in: Add reference_exception.xml -- is
+	  referenced in reference.xml
+	  Missing file causing translation to fail
+	  references #4525 for PostGIS 3.0.
+
+2019-10-07 04:44  Regina Obe <lr@pcorp.us>
+
+	* [r17870] doc/po/ja/extras.xml.po,
+	  doc/po/ja/extras_address_standardizer.xml.po,
+	  doc/po/ja/extras_historytable.xml.po,
+	  doc/po/ja/extras_tigergeocoder.xml.po,
+	  doc/po/ja/extras_topology.xml.po, doc/po/ja/faq.xml.po,
+	  doc/po/ja/faq_raster.xml.po, doc/po/ja/installation.xml.po,
+	  doc/po/ja/introduction.xml.po, doc/po/ja/performance_tips.xml.po,
+	  doc/po/ja/postgis.xml.po, doc/po/ja/reference.xml.po,
+	  doc/po/ja/reference_accessor.xml.po,
+	  doc/po/ja/reference_bbox.xml.po,
+	  doc/po/ja/reference_cluster.xml.po,
+	  doc/po/ja/reference_constructor.xml.po,
+	  doc/po/ja/reference_editor.xml.po,
+	  doc/po/ja/reference_guc.xml.po, doc/po/ja/reference_input.xml.po,
+	  doc/po/ja/reference_lrs.xml.po,
+	  doc/po/ja/reference_management.xml.po,
+	  doc/po/ja/reference_measure.xml.po,
+	  doc/po/ja/reference_operator.xml.po,
+	  doc/po/ja/reference_output.xml.po,
+	  doc/po/ja/reference_processing.xml.po,
+	  doc/po/ja/reference_raster.xml.po,
+	  doc/po/ja/reference_relationship.xml.po,
+	  doc/po/ja/reference_sfcgal.xml.po,
+	  doc/po/ja/reference_srs.xml.po,
+	  doc/po/ja/reference_trajectory.xml.po,
+	  doc/po/ja/reference_transaction.xml.po,
+	  doc/po/ja/reference_transformation.xml.po,
+	  doc/po/ja/reference_troubleshooting.xml.po,
+	  doc/po/ja/reference_type.xml.po,
+	  doc/po/ja/reference_validation.xml.po,
+	  doc/po/ja/reference_version.xml.po,
+	  doc/po/ja/release_notes.xml.po, doc/po/ja/reporting.xml.po,
+	  doc/po/ja/using_postgis_app.xml.po,
+	  doc/po/ja/using_postgis_dataman.xml.po,
+	  doc/po/ja/using_raster_dataman.xml.po,
+	  doc/po/ko_KR/extras.xml.po,
+	  doc/po/ko_KR/extras_address_standardizer.xml.po,
+	  doc/po/ko_KR/extras_historytable.xml.po,
+	  doc/po/ko_KR/extras_tigergeocoder.xml.po,
+	  doc/po/ko_KR/extras_topology.xml.po, doc/po/ko_KR/faq.xml.po,
+	  doc/po/ko_KR/faq_raster.xml.po, doc/po/ko_KR/installation.xml.po,
+	  doc/po/ko_KR/introduction.xml.po,
+	  doc/po/ko_KR/performance_tips.xml.po,
+	  doc/po/ko_KR/postgis.xml.po, doc/po/ko_KR/reference.xml.po,
+	  doc/po/ko_KR/reference_accessor.xml.po,
+	  doc/po/ko_KR/reference_bbox.xml.po,
+	  doc/po/ko_KR/reference_cluster.xml.po,
+	  doc/po/ko_KR/reference_constructor.xml.po,
+	  doc/po/ko_KR/reference_editor.xml.po,
+	  doc/po/ko_KR/reference_guc.xml.po,
+	  doc/po/ko_KR/reference_input.xml.po,
+	  doc/po/ko_KR/reference_lrs.xml.po,
+	  doc/po/ko_KR/reference_management.xml.po,
+	  doc/po/ko_KR/reference_measure.xml.po,
+	  doc/po/ko_KR/reference_operator.xml.po,
+	  doc/po/ko_KR/reference_output.xml.po,
+	  doc/po/ko_KR/reference_processing.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/ko_KR/reference_relationship.xml.po,
+	  doc/po/ko_KR/reference_sfcgal.xml.po,
+	  doc/po/ko_KR/reference_srs.xml.po,
+	  doc/po/ko_KR/reference_trajectory.xml.po,
+	  doc/po/ko_KR/reference_transaction.xml.po,
+	  doc/po/ko_KR/reference_transformation.xml.po,
+	  doc/po/ko_KR/reference_troubleshooting.xml.po,
+	  doc/po/ko_KR/reference_type.xml.po,
+	  doc/po/ko_KR/reference_validation.xml.po,
+	  doc/po/ko_KR/reference_version.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po, doc/po/ko_KR/reporting.xml.po,
+	  doc/po/ko_KR/using_postgis_app.xml.po,
+	  doc/po/ko_KR/using_postgis_dataman.xml.po,
+	  doc/po/ko_KR/using_raster_dataman.xml.po,
+	  doc/po/pt_BR/extras.xml.po,
+	  doc/po/pt_BR/extras_address_standardizer.xml.po,
+	  doc/po/pt_BR/extras_historytable.xml.po,
+	  doc/po/pt_BR/extras_tigergeocoder.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po, doc/po/pt_BR/faq.xml.po,
+	  doc/po/pt_BR/faq_raster.xml.po, doc/po/pt_BR/installation.xml.po,
+	  doc/po/pt_BR/introduction.xml.po,
+	  doc/po/pt_BR/performance_tips.xml.po,
+	  doc/po/pt_BR/postgis.xml.po, doc/po/pt_BR/reference.xml.po,
+	  doc/po/pt_BR/reference_accessor.xml.po,
+	  doc/po/pt_BR/reference_bbox.xml.po,
+	  doc/po/pt_BR/reference_cluster.xml.po,
+	  doc/po/pt_BR/reference_constructor.xml.po,
+	  doc/po/pt_BR/reference_editor.xml.po,
+	  doc/po/pt_BR/reference_guc.xml.po,
+	  doc/po/pt_BR/reference_input.xml.po,
+	  doc/po/pt_BR/reference_lrs.xml.po,
+	  doc/po/pt_BR/reference_management.xml.po,
+	  doc/po/pt_BR/reference_measure.xml.po,
+	  doc/po/pt_BR/reference_operator.xml.po,
+	  doc/po/pt_BR/reference_output.xml.po,
+	  doc/po/pt_BR/reference_processing.xml.po,
+	  doc/po/pt_BR/reference_raster.xml.po,
+	  doc/po/pt_BR/reference_relationship.xml.po,
+	  doc/po/pt_BR/reference_sfcgal.xml.po,
+	  doc/po/pt_BR/reference_srs.xml.po,
+	  doc/po/pt_BR/reference_trajectory.xml.po,
+	  doc/po/pt_BR/reference_transaction.xml.po,
+	  doc/po/pt_BR/reference_transformation.xml.po,
+	  doc/po/pt_BR/reference_troubleshooting.xml.po,
+	  doc/po/pt_BR/reference_type.xml.po,
+	  doc/po/pt_BR/reference_validation.xml.po,
+	  doc/po/pt_BR/reference_version.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po, doc/po/pt_BR/reporting.xml.po,
+	  doc/po/pt_BR/using_postgis_app.xml.po,
+	  doc/po/pt_BR/using_postgis_dataman.xml.po,
+	  doc/po/pt_BR/using_raster_dataman.xml.po: Update more po files
+	  references #4525 for PostGIS 3.0
+
+2019-10-07 03:02  Regina Obe <lr@pcorp.us>
+
+	* [r17869] doc/po/it_IT/extras.xml.po,
+	  doc/po/it_IT/extras_address_standardizer.xml.po,
+	  doc/po/it_IT/extras_historytable.xml.po,
+	  doc/po/it_IT/extras_tigergeocoder.xml.po,
+	  doc/po/it_IT/extras_topology.xml.po, doc/po/it_IT/faq.xml.po,
+	  doc/po/it_IT/faq_raster.xml.po, doc/po/it_IT/installation.xml.po,
+	  doc/po/it_IT/introduction.xml.po,
+	  doc/po/it_IT/performance_tips.xml.po,
+	  doc/po/it_IT/postgis.xml.po, doc/po/it_IT/reference.xml.po,
+	  doc/po/it_IT/reference_accessor.xml.po,
+	  doc/po/it_IT/reference_bbox.xml.po,
+	  doc/po/it_IT/reference_cluster.xml.po,
+	  doc/po/it_IT/reference_constructor.xml.po,
+	  doc/po/it_IT/reference_editor.xml.po,
+	  doc/po/it_IT/reference_guc.xml.po,
+	  doc/po/it_IT/reference_input.xml.po,
+	  doc/po/it_IT/reference_lrs.xml.po,
+	  doc/po/it_IT/reference_management.xml.po,
+	  doc/po/it_IT/reference_measure.xml.po,
+	  doc/po/it_IT/reference_operator.xml.po,
+	  doc/po/it_IT/reference_output.xml.po,
+	  doc/po/it_IT/reference_processing.xml.po,
+	  doc/po/it_IT/reference_raster.xml.po,
+	  doc/po/it_IT/reference_relationship.xml.po,
+	  doc/po/it_IT/reference_sfcgal.xml.po,
+	  doc/po/it_IT/reference_srs.xml.po,
+	  doc/po/it_IT/reference_trajectory.xml.po,
+	  doc/po/it_IT/reference_transaction.xml.po,
+	  doc/po/it_IT/reference_transformation.xml.po,
+	  doc/po/it_IT/reference_troubleshooting.xml.po,
+	  doc/po/it_IT/reference_type.xml.po,
+	  doc/po/it_IT/reference_validation.xml.po,
+	  doc/po/it_IT/reference_version.xml.po,
+	  doc/po/it_IT/release_notes.xml.po, doc/po/it_IT/reporting.xml.po,
+	  doc/po/it_IT/using_postgis_app.xml.po,
+	  doc/po/it_IT/using_postgis_dataman.xml.po,
+	  doc/po/it_IT/using_raster_dataman.xml.po: update IT from
+	  transifex
+
+2019-10-07 02:58  Regina Obe <lr@pcorp.us>
+
+	* [r17868] doc/po/de/extras.xml.po,
+	  doc/po/de/extras_address_standardizer.xml.po,
+	  doc/po/de/extras_historytable.xml.po,
+	  doc/po/de/extras_tigergeocoder.xml.po,
+	  doc/po/de/extras_topology.xml.po, doc/po/de/faq.xml.po,
+	  doc/po/de/faq_raster.xml.po, doc/po/de/installation.xml.po,
+	  doc/po/de/introduction.xml.po, doc/po/de/performance_tips.xml.po,
+	  doc/po/de/postgis.xml.po, doc/po/de/reference.xml.po,
+	  doc/po/de/reference_accessor.xml.po,
+	  doc/po/de/reference_bbox.xml.po,
+	  doc/po/de/reference_cluster.xml.po,
+	  doc/po/de/reference_constructor.xml.po,
+	  doc/po/de/reference_editor.xml.po,
+	  doc/po/de/reference_guc.xml.po, doc/po/de/reference_input.xml.po,
+	  doc/po/de/reference_lrs.xml.po,
+	  doc/po/de/reference_management.xml.po,
+	  doc/po/de/reference_measure.xml.po,
+	  doc/po/de/reference_operator.xml.po,
+	  doc/po/de/reference_output.xml.po,
+	  doc/po/de/reference_processing.xml.po,
+	  doc/po/de/reference_raster.xml.po,
+	  doc/po/de/reference_relationship.xml.po,
+	  doc/po/de/reference_sfcgal.xml.po,
+	  doc/po/de/reference_srs.xml.po,
+	  doc/po/de/reference_trajectory.xml.po,
+	  doc/po/de/reference_transaction.xml.po,
+	  doc/po/de/reference_transformation.xml.po,
+	  doc/po/de/reference_troubleshooting.xml.po,
+	  doc/po/de/reference_type.xml.po,
+	  doc/po/de/reference_validation.xml.po,
+	  doc/po/de/reference_version.xml.po,
+	  doc/po/de/release_notes.xml.po, doc/po/de/reporting.xml.po,
+	  doc/po/de/using_postgis_app.xml.po,
+	  doc/po/de/using_postgis_dataman.xml.po,
+	  doc/po/de/using_raster_dataman.xml.po: uodate de files from
+	  transifex
+
+2019-10-07 01:38  Regina Obe <lr@pcorp.us>
+
+	* [r17867] doc/reference.xml: take out reference_misc entirely
+	  instead of just commenting it out. Think it might be causing
+	  issues with transifex
+
+2019-10-07 01:36  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17865] postgis/lwgeom_functions_basic.c, postgis/lwgeom_geos.c,
+	  raster/rt_pg/rtpg_mapalgebra.c: Guard some newer GCC'isms to
+	  allow older platforms
+	  to still build
+
+2019-10-07 01:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17864] utils/postgis_proc_upgrade.pl: Use older perl idiom to
+	  allow build on
+	  older platforms still
+
+2019-10-07 01:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17863] postgis/lwgeom_accum.c: datumCopy has to happen in agg
+	  context or else
+	  objects larger than datum size will be lost.
+	  Shows up in 32 bit because float8 doesn't fit
+	  on a datum.
+	  Closes #4522
+
+2019-10-07 00:46  Regina Obe <lr@pcorp.us>
+
+	* [r17861] doc/.tx/config: Get rid of reference_temporal. that
+	  evidentally was removed
+
+2019-10-07 00:16  Regina Obe <lr@pcorp.us>
+
+	* [r17860] doc/po/templates/extras.xml.pot,
+	  doc/po/templates/extras_address_standardizer.xml.pot,
+	  doc/po/templates/extras_historytable.xml.pot,
+	  doc/po/templates/extras_tigergeocoder.xml.pot,
+	  doc/po/templates/extras_topology.xml.pot,
+	  doc/po/templates/faq.xml.pot,
+	  doc/po/templates/faq_raster.xml.pot,
+	  doc/po/templates/installation.xml.pot,
+	  doc/po/templates/introduction.xml.pot,
+	  doc/po/templates/performance_tips.xml.pot,
+	  doc/po/templates/postgis.xml.pot,
+	  doc/po/templates/reference.xml.pot,
+	  doc/po/templates/reference_accessor.xml.pot,
+	  doc/po/templates/reference_bbox.xml.pot,
+	  doc/po/templates/reference_cluster.xml.pot,
+	  doc/po/templates/reference_constructor.xml.pot,
+	  doc/po/templates/reference_editor.xml.pot,
+	  doc/po/templates/reference_guc.xml.pot,
+	  doc/po/templates/reference_input.xml.pot,
+	  doc/po/templates/reference_lrs.xml.pot,
+	  doc/po/templates/reference_management.xml.pot,
+	  doc/po/templates/reference_measure.xml.pot,
+	  doc/po/templates/reference_operator.xml.pot,
+	  doc/po/templates/reference_output.xml.pot,
+	  doc/po/templates/reference_processing.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot,
+	  doc/po/templates/reference_relationship.xml.pot,
+	  doc/po/templates/reference_sfcgal.xml.pot,
+	  doc/po/templates/reference_srs.xml.pot,
+	  doc/po/templates/reference_temporal.xml.pot,
+	  doc/po/templates/reference_trajectory.xml.pot,
+	  doc/po/templates/reference_transaction.xml.pot,
+	  doc/po/templates/reference_transformation.xml.pot,
+	  doc/po/templates/reference_troubleshooting.xml.pot,
+	  doc/po/templates/reference_type.xml.pot,
+	  doc/po/templates/reference_validation.xml.pot,
+	  doc/po/templates/reference_version.xml.pot,
+	  doc/po/templates/release_notes.xml.pot,
+	  doc/po/templates/reporting.xml.pot,
+	  doc/po/templates/using_postgis_app.xml.pot,
+	  doc/po/templates/using_postgis_dataman.xml.pot,
+	  doc/po/templates/using_raster_dataman.xml.pot: Update pot files
+	  -- references #4525
+
+2019-10-06 15:44  Regina Obe <lr@pcorp.us>
+
+	* [r17858] ChangeLog, NEWS, README.postgis, doc/release_notes.xml:
+	  Change expected release from 10/5 to 10/8
+
 2019-10-05 18:06  Regina Obe <lr@pcorp.us>
 
 	* [r17857] ChangeLog, NEWS, README.postgis, Version.config,
