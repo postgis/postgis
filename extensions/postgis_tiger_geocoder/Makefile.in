@@ -32,7 +32,7 @@ REGRESS = test-normalize_address test-upgrade
 REGRESS_OPTS = --load-extension=fuzzystrmatch --load-extension=postgis --load-extension=$(EXTENSION)
 
 SQL_BITS     = $(wildcard sql_bits/*.sql)
-EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
+EXTRA_CLEAN = sql ${SQL_BITS}
 
 #test address standardizer if also built
 ifeq (@ADDRESS_STANDARDIZER@,address_standardizer)

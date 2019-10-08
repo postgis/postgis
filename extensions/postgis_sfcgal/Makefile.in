@@ -39,8 +39,7 @@ EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql_bits/sfcgal.sql \
 	../../utils/create_unpackaged.pl
 
-SQL_BITS     = $(wildcard sql_bits/*.sql)
-EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
+EXTRA_CLEAN = sql
 
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
 
