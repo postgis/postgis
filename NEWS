@@ -10,6 +10,7 @@ Additional performance enhancements if running GEOS 3.8+
   - #4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)
   - #4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)
   - #4537, Fix leak in WKT collection parser (Raúl Marín)
+  - #4535, WKB: Avoid buffer overflow (Raúl Marín)
 
 PostGIS 3.0.0rc1
 2019/10/08
