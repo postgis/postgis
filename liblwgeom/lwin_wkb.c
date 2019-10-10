@@ -613,7 +613,12 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 	{
 		geom = lwgeom_from_wkb_state(s);
 		if ( lwcurvepoly_add_ring(cp, geom) == LW_FAILURE )
+		{
+			lwgeom_free(geom);
+			lwgeom_free((LWGEOM *)cp);
 			lwerror("Unable to add geometry (%p) to curvepoly (%p)", geom, cp);
+			return NULL;
+		}
 	}
 	
 	return cp;

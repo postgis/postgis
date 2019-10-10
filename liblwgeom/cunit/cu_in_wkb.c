@@ -223,6 +223,15 @@ static void test_wkb_in_malformed(void)
 	cu_wkb_malformed_in("01060000C00100000001030000C00100000003000000E3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFFE3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFFE3D9107E234F5041A3DB66BC97A30F4122ACEF440DAF9440FFFFFFFFFFFFEFFF");
 }
 
+static void
+test_wkb_leak(void)
+{
+	/* OSS-FUZZ https://trac.osgeo.org/postgis/ticket/4534 */
+	uint8_t wkb[36] = {000, 000, 000, 000, 015, 000, 000, 000, 003, 000, 200, 000, 000, 010, 000, 000, 000, 000,
+			   000, 000, 000, 000, 010, 000, 000, 000, 000, 000, 000, 000, 000, 010, 000, 000, 000, 000};
+	LWGEOM *g = lwgeom_from_wkb(wkb, 36, LW_PARSER_CHECK_NONE);
+	lwgeom_free(g);
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -244,4 +253,5 @@ void wkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_wkb_in_multicurve);
 	PG_ADD_TEST(suite, test_wkb_in_multisurface);
 	PG_ADD_TEST(suite, test_wkb_in_malformed);
+	PG_ADD_TEST(suite, test_wkb_leak);
 }
