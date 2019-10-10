@@ -33,13 +33,13 @@ msgstr "リリースノート"
 #: release_notes.xml:6
 #, fuzzy, no-c-format
 msgid "Release 3.0.0rc1"
-msgstr "リリース2.5.0rc1"
+msgstr "リリース3.0.0rc1"
 
 #. Tag: para
 #: release_notes.xml:7
 #, fuzzy, no-c-format
 msgid "Release date: 2019/10/08"
-msgstr "リリース日: 2017/07/01"
+msgstr "リリース日: 2019/10/08"
 
 #. Tag: para
 #: release_notes.xml:8 release_notes.xml:27 release_notes.xml:53
@@ -90,13 +90,13 @@ msgstr ""
 #: release_notes.xml:25
 #, fuzzy, no-c-format
 msgid "Release 3.0.0beta1"
-msgstr "リリース 2.0.0"
+msgstr "リリース 3.0.0beta1"
 
 #. Tag: para
 #: release_notes.xml:26
 #, fuzzy, no-c-format
 msgid "Release date: 2019/09/28"
-msgstr "リリース日: 2012/06/22"
+msgstr "リリース日: 2019/09/28"
 
 #. Tag: para
 #: release_notes.xml:34
@@ -185,13 +185,13 @@ msgstr ""
 #: release_notes.xml:51
 #, fuzzy, no-c-format
 msgid "Release 3.0.0alpha4"
-msgstr "リリース 2.0.0"
+msgstr "リリース 3.0.0alpha4"
 
 #. Tag: para
 #: release_notes.xml:52
 #, fuzzy, no-c-format
 msgid "Release date: 2019/08/11"
-msgstr "リリース日: 2017/07/01"
+msgstr "リリース日: 2019/08/11"
 
 #. Tag: para
 #: release_notes.xml:54
@@ -318,13 +318,13 @@ msgstr ""
 #: release_notes.xml:80
 #, fuzzy, no-c-format
 msgid "Release 3.0.0alpha3"
-msgstr "リリース 2.0.0"
+msgstr "リリース 3.0.0alpha3"
 
 #. Tag: para
 #: release_notes.xml:81
 #, fuzzy, no-c-format
 msgid "Release date: 2019/07/01"
-msgstr "リリース日: 2017/07/01"
+msgstr "リリース日: 2019/07/01"
 
 #. Tag: para
 #: release_notes.xml:83 release_notes.xml:111 release_notes.xml:130
@@ -430,13 +430,13 @@ msgstr ""
 #: release_notes.xml:108
 #, fuzzy, no-c-format
 msgid "Release 3.0.0alpha2"
-msgstr "リリース 2.0.0"
+msgstr "リリース 3.0.0alpha2"
 
 #. Tag: para
 #: release_notes.xml:109
 #, fuzzy, no-c-format
 msgid "Release date: 2019/06/02"
-msgstr "リリース日: 2012/06/22"
+msgstr "リリース日: 2019/06/02"
 
 #. Tag: para
 #: release_notes.xml:116
@@ -468,13 +468,13 @@ msgstr ""
 #: release_notes.xml:127
 #, fuzzy, no-c-format
 msgid "Release 3.0.0alpha1"
-msgstr "リリース 2.0.0"
+msgstr "リリース 3.0.0alpha1"
 
 #. Tag: para
 #: release_notes.xml:128
 #, fuzzy, no-c-format
 msgid "Release date: 2019/05/26"
-msgstr "リリース日: 2016/09/26"
+msgstr "リリース日: 2019/05/26"
 
 #. Tag: title
 #: release_notes.xml:134 release_notes.xml:148 release_notes.xml:336
@@ -501,13 +501,13 @@ msgstr ""
 #: release_notes.xml:141
 #, fuzzy, no-c-format
 msgid "Release 2.5.0"
-msgstr "リリース 2.4.0"
+msgstr "リリース 2.5.0"
 
 #. Tag: para
 #: release_notes.xml:142
 #, fuzzy, no-c-format
 msgid "Release date: 2018/09/23"
-msgstr "リリース日: 2016/09/26"
+msgstr "リリース日: 2018/09/23"
 
 #. Tag: para
 #: release_notes.xml:144
@@ -900,13 +900,13 @@ msgstr ""
 #: release_notes.xml:225
 #, fuzzy, no-c-format
 msgid "Release 2.4.5"
-msgstr "リリース 2.4.4"
+msgstr "リリース 2.4.5"
 
 #. Tag: para
 #: release_notes.xml:226
 #, fuzzy, no-c-format
 msgid "Release date: 2018/09/12"
-msgstr "リリース日: 2018/08/19"
+msgstr "リリース日: 2018/09/12"
 
 #. Tag: para
 #: release_notes.xml:227 release_notes.xml:248 release_notes.xml:280
