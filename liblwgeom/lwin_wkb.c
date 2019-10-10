@@ -660,6 +660,8 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 		geom = lwgeom_from_wkb_state(s);
 		if ( lwcollection_add_lwgeom(col, geom) == NULL )
 		{
+			lwgeom_free(geom);
+			lwgeom_free((LWGEOM *)col);
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
