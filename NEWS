@@ -11,6 +11,7 @@ XXXX/XX/XX
   - #4498, Restrict build for PgSQL > 9.6
   - #4519, Fix getSRIDbySRS crash (Raúl Marín)
   - #4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)
+  - #4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)
 
 PostGIS 2.3.10
 2019/08/11
