@@ -14,6 +14,7 @@ XXXX/XX/XX
   - #4518, Backport system views to make upgrade to PostGIS3 cleaner (Paul Ramsey)
   - #4519, Fix getSRIDbySRS crash (Raúl Marín)
   - #4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)
+  - #4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)
 
 
 PostGIS 2.4.8
