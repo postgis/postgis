@@ -15,6 +15,7 @@ XXXX/XX/XX
   - #4519, Fix getSRIDbySRS crash (Raúl Marín)
   - #4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)
   - #4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)
+  - #4537, Fix leak in WKT collection parser (Raúl Marín)
 
 
 PostGIS 2.4.8
