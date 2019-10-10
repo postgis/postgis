@@ -541,7 +541,6 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		POINTARRAY *pa = ptarray_from_wkb_state(s);
 		if (pa == NULL)
 			return NULL;
-		;
 
 		/* Check for at least four points. */
 		if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4)
