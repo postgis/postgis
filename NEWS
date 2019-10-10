@@ -16,6 +16,7 @@ PostGIS 2.5.4
   - #4519, Fix getSRIDbySRS crash (Raúl Marín)
   - #4517, Documentation error ST_EndPoint (Samuel Spurling)
   - #4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)
+  - #4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)
 
 
 PostGIS 2.5.3
