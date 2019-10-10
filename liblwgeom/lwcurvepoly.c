@@ -85,6 +85,7 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	{
 		LWDEBUG(4,"mismatched nrings/maxrings");
 		lwerror("Curvepolygon is in inconsistent state. Null memory but non-zero collection counts.");
+		return LW_FAILURE;
 	}
 
 	/* Check that we're adding an allowed ring type */
