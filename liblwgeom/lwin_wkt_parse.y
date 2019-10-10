@@ -78,6 +78,11 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 			global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 			global_parser_result.errlocation = wkt_yylloc.last_column;
 		}
+		else if (global_parser_result.geom)
+		{
+			lwgeom_free(global_parser_result.geom);
+			global_parser_result.geom = NULL;
+		}
 
 		LWDEBUGF(5, "error returned by wkt_yyparse() @ %d: [%d] '%s'", 
 		            global_parser_result.errlocation, 
