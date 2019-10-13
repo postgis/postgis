@@ -59,4 +59,4 @@ UPGRADEABLE_VERSIONS = \
 	3.0.0alpha4 \
 	3.0.0beta1 \
 	3.0.0rc1 \
-	3.0.0rc2dev
+	3.0.0rc2
