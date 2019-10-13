@@ -1,3 +1,239 @@
+2019-10-11 13:24  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17906] liblwgeom/lwin_wkb.c: Memory leak in
+	  lwpoly_from_wkb_state
+	  
+	  References #4535
+
+2019-10-10 17:28  Regina Obe <lr@pcorp.us>
+
+	* [r17905] doc/po/ja/release_notes.xml.po: manual fix release note
+	  dates and numbers
+
+2019-10-10 16:58  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17904] NEWS, liblwgeom/cunit/cu_in_wkb.c, liblwgeom/lwin_wkb.c:
+	  WKB: Avoid buffer overflow
+	  
+	  This only happens when not running under PG context, as
+	  lwerror continues execution and that means that even after
+	  detecting there isn't enough bytes still try to read from the
+	  buffer
+	  
+	  Closes #4535
+	  Closes https://github.com/postgis/postgis/pull/495
+
+2019-10-10 13:01  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17900] NEWS, liblwgeom/cunit/cu_in_wkt.c,
+	  liblwgeom/lwin_wkt_parse.c, liblwgeom/lwin_wkt_parse.h,
+	  liblwgeom/lwin_wkt_parse.y: Fix leak in WKT collection parser
+	  
+	  References #4537
+
+2019-10-10 11:09  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17893] NEWS, liblwgeom/cunit/cu_in_wkb.c, liblwgeom/lwin_wkb.c:
+	  Fix leak in lwcollection_from_wkb_state
+	  
+	  Closes #4536
+	  Closes https://github.com/postgis/postgis/pull/493
+
+2019-10-10 10:10  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17892] NEWS, liblwgeom/cunit/cu_in_wkb.c,
+	  liblwgeom/lwcurvepoly.c, liblwgeom/lwin_wkb.c: Fix leak in
+	  lwcurvepoly_from_wkb_state
+	  
+	  Closes #4534
+	  Closes https://github.com/postgis/postgis/pull/492
+
+2019-10-08 11:48  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17891] configure.ac, liblwgeom/lwin_geojson.c,
+	  postgis/lwgeom_in_geojson.c, postgis_config.h.in: Remove
+	  HAVE_LIBJSON_C
+	  
+	  Patch by jabakobob
+	  References #4528
+
+2019-10-08 11:40  Sandro Santilli <strk@kbt.io>
+
+	* [r17890] extensions/address_standardizer/Makefile.in,
+	  extensions/postgis/Makefile.in,
+	  extensions/postgis_raster/Makefile.in,
+	  extensions/postgis_sfcgal/Makefile.in,
+	  extensions/postgis_tiger_geocoder/Makefile.in,
+	  extensions/postgis_topology/Makefile.in: Make sure "make clean"
+	  really cleans what's created by "make"
+	  
+	  Fixes #4531 and simplifies a little bit those Makefiles
+
+2019-10-08 10:59  Sandro Santilli <strk@kbt.io>
+
+	* [r17889] regress/core/regress.sql,
+	  regress/core/regress_brin_index.sql,
+	  regress/core/regress_brin_index_3d.sql,
+	  regress/core/regress_brin_index_geography.sql,
+	  regress/core/regress_index.sql,
+	  regress/core/regress_index_nulls.sql, regress/core/subdivide.sql:
+	  Allow running core tests from any directory
+	  
+	  Using the :regdir variable
+
+2019-10-08 09:43  Sandro Santilli <strk@kbt.io>
+
+	* [r17888] regress/run_test.pl: Force using systemwide scripts when
+	  run with --extension
+	  
+	  .. rather than relying on version mismatch (current vs.
+	  requested)
+	  to tell where to pick scripts from ..
+	  
+	  *might* relate to #4515
+
+2019-10-08 06:16  Regina Obe <lr@pcorp.us>
+
+	* [r17887] Version.config, extensions/upgradeable_versions.mk: Flip
+	  to 3.0.0rc2dev
+
+2019-10-08 06:11  Regina Obe <lr@pcorp.us>
+
+	* [r17885] ChangeLog, ci/winnie/package_postgis.sh: Change to
+	  package 3.8.0rc2 for windows, prepare for 3.0.0rc1 release
+
+2019-10-08 00:48  Regina Obe <lr@pcorp.us>
+
+	* [r17884] doc/po/es/extras_topology.xml.po,
+	  doc/po/fr/reference_accessor.xml.po: Fix pos for spanish and
+	  french so they produce proper XML
+	  Closes #4525
+
+2019-10-07 23:04  Regina Obe <lr@pcorp.us>
+
+	* [r17883] HOWTO_RELEASE: Add step to pull translations from
+	  transifex
+	  References #4525
+
+2019-10-07 22:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17882] regress/run_test.pl: Remove view testing from upgrade
+	  objects testing
+	  References #4386
+
+2019-10-07 22:49  Regina Obe <lr@pcorp.us>
+
+	* [r17881] doc/po/de/reference_exception.xml.po,
+	  doc/po/es/extras.xml.po,
+	  doc/po/es/extras_address_standardizer.xml.po,
+	  doc/po/es/extras_historytable.xml.po,
+	  doc/po/es/extras_tigergeocoder.xml.po,
+	  doc/po/es/extras_topology.xml.po, doc/po/es/faq.xml.po,
+	  doc/po/es/faq_raster.xml.po, doc/po/es/installation.xml.po,
+	  doc/po/es/introduction.xml.po, doc/po/es/performance_tips.xml.po,
+	  doc/po/es/postgis.xml.po, doc/po/es/reference.xml.po,
+	  doc/po/es/reference_accessor.xml.po,
+	  doc/po/es/reference_bbox.xml.po,
+	  doc/po/es/reference_cluster.xml.po,
+	  doc/po/es/reference_constructor.xml.po,
+	  doc/po/es/reference_editor.xml.po,
+	  doc/po/es/reference_guc.xml.po, doc/po/es/reference_input.xml.po,
+	  doc/po/es/reference_lrs.xml.po,
+	  doc/po/es/reference_management.xml.po,
+	  doc/po/es/reference_measure.xml.po,
+	  doc/po/es/reference_operator.xml.po,
+	  doc/po/es/reference_output.xml.po,
+	  doc/po/es/reference_processing.xml.po,
+	  doc/po/es/reference_raster.xml.po,
+	  doc/po/es/reference_relationship.xml.po,
+	  doc/po/es/reference_sfcgal.xml.po,
+	  doc/po/es/reference_srs.xml.po,
+	  doc/po/es/reference_trajectory.xml.po,
+	  doc/po/es/reference_transaction.xml.po,
+	  doc/po/es/reference_transformation.xml.po,
+	  doc/po/es/reference_troubleshooting.xml.po,
+	  doc/po/es/reference_type.xml.po,
+	  doc/po/es/reference_validation.xml.po,
+	  doc/po/es/reference_version.xml.po,
+	  doc/po/es/release_notes.xml.po, doc/po/es/reporting.xml.po,
+	  doc/po/es/using_postgis_app.xml.po,
+	  doc/po/es/using_postgis_dataman.xml.po,
+	  doc/po/es/using_raster_dataman.xml.po, doc/po/fr/extras.xml.po,
+	  doc/po/fr/extras_address_standardizer.xml.po,
+	  doc/po/fr/extras_historytable.xml.po,
+	  doc/po/fr/extras_tigergeocoder.xml.po,
+	  doc/po/fr/extras_topology.xml.po, doc/po/fr/faq.xml.po,
+	  doc/po/fr/faq_raster.xml.po, doc/po/fr/installation.xml.po,
+	  doc/po/fr/introduction.xml.po, doc/po/fr/performance_tips.xml.po,
+	  doc/po/fr/postgis.xml.po, doc/po/fr/reference.xml.po,
+	  doc/po/fr/reference_accessor.xml.po,
+	  doc/po/fr/reference_bbox.xml.po,
+	  doc/po/fr/reference_cluster.xml.po,
+	  doc/po/fr/reference_constructor.xml.po,
+	  doc/po/fr/reference_editor.xml.po,
+	  doc/po/fr/reference_guc.xml.po, doc/po/fr/reference_input.xml.po,
+	  doc/po/fr/reference_lrs.xml.po,
+	  doc/po/fr/reference_management.xml.po,
+	  doc/po/fr/reference_measure.xml.po,
+	  doc/po/fr/reference_operator.xml.po,
+	  doc/po/fr/reference_output.xml.po,
+	  doc/po/fr/reference_processing.xml.po,
+	  doc/po/fr/reference_raster.xml.po,
+	  doc/po/fr/reference_relationship.xml.po,
+	  doc/po/fr/reference_sfcgal.xml.po,
+	  doc/po/fr/reference_srs.xml.po,
+	  doc/po/fr/reference_trajectory.xml.po,
+	  doc/po/fr/reference_transaction.xml.po,
+	  doc/po/fr/reference_transformation.xml.po,
+	  doc/po/fr/reference_troubleshooting.xml.po,
+	  doc/po/fr/reference_type.xml.po,
+	  doc/po/fr/reference_validation.xml.po,
+	  doc/po/fr/reference_version.xml.po,
+	  doc/po/fr/release_notes.xml.po, doc/po/fr/reporting.xml.po,
+	  doc/po/fr/using_postgis_app.xml.po,
+	  doc/po/fr/using_postgis_dataman.xml.po,
+	  doc/po/fr/using_raster_dataman.xml.po, doc/po/pl/extras.xml.po,
+	  doc/po/pl/extras_address_standardizer.xml.po,
+	  doc/po/pl/extras_historytable.xml.po,
+	  doc/po/pl/extras_tigergeocoder.xml.po,
+	  doc/po/pl/extras_topology.xml.po, doc/po/pl/faq.xml.po,
+	  doc/po/pl/faq_raster.xml.po, doc/po/pl/installation.xml.po,
+	  doc/po/pl/introduction.xml.po, doc/po/pl/performance_tips.xml.po,
+	  doc/po/pl/postgis.xml.po, doc/po/pl/reference.xml.po,
+	  doc/po/pl/reference_accessor.xml.po,
+	  doc/po/pl/reference_bbox.xml.po,
+	  doc/po/pl/reference_cluster.xml.po,
+	  doc/po/pl/reference_constructor.xml.po,
+	  doc/po/pl/reference_editor.xml.po,
+	  doc/po/pl/reference_guc.xml.po, doc/po/pl/reference_input.xml.po,
+	  doc/po/pl/reference_lrs.xml.po,
+	  doc/po/pl/reference_management.xml.po,
+	  doc/po/pl/reference_measure.xml.po,
+	  doc/po/pl/reference_operator.xml.po,
+	  doc/po/pl/reference_output.xml.po,
+	  doc/po/pl/reference_processing.xml.po,
+	  doc/po/pl/reference_raster.xml.po,
+	  doc/po/pl/reference_relationship.xml.po,
+	  doc/po/pl/reference_sfcgal.xml.po,
+	  doc/po/pl/reference_srs.xml.po,
+	  doc/po/pl/reference_trajectory.xml.po,
+	  doc/po/pl/reference_transaction.xml.po,
+	  doc/po/pl/reference_transformation.xml.po,
+	  doc/po/pl/reference_troubleshooting.xml.po,
+	  doc/po/pl/reference_type.xml.po,
+	  doc/po/pl/reference_validation.xml.po,
+	  doc/po/pl/reference_version.xml.po,
+	  doc/po/pl/release_notes.xml.po, doc/po/pl/reporting.xml.po,
+	  doc/po/pl/using_postgis_app.xml.po,
+	  doc/po/pl/using_postgis_dataman.xml.po,
+	  doc/po/pl/using_raster_dataman.xml.po: update rest of pos
+
+2019-10-07 17:32  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17879] postgis/postgis_before_upgrade.sql: Try and be a little
+	  broader in dropping temporary old signature
+	  References #4521
+
 2019-10-07 11:41  Raúl Marín Rodríguez <rmrodriguez@carto.com>
 
 	* [r17878] configure.ac: Fix lib detection with "--with-jsondir"
