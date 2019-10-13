@@ -322,6 +322,13 @@ sub create_upgrade_test_objects
   {
     $query = "insert into upgrade_test(r) ";
     $query .= "select ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);";
+    $ret = sql($query);
+    unless ( $ret =~ /^INSERT/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong inserting raster into upgrade_test table: $ret.\n";
+      exit(1);
+    }
+
     $query .= "set client_min_messages to error; select AddRasterConstraints('upgrade_test', 'r')";
     $ret = sql($query);
     unless ( $ret =~ /^t$/ ) {
