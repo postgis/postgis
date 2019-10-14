@@ -383,6 +383,8 @@ sub drop_upgrade_test_objects
 
 if ( $OPT_UPGRADE )
 {
+	print "  Upgrading from postgis $libver\n";
+
   create_upgrade_test_objects();
 
   if ( $OPT_EXTENSIONS )
