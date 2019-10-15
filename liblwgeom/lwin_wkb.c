@@ -589,44 +589,41 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 	uint32_t nrings = integer_from_wkb_state(s);
 	if (s->error)
 		return NULL;
-	LWTRIANGLE *tri = lwtriangle_construct_empty(s->srid, s->has_z, s->has_m);
-	POINTARRAY *pa = NULL;
 
 	/* Empty triangle? */
 	if( nrings == 0 )
-		return tri;
+		return lwtriangle_construct_empty(s->srid, s->has_z, s->has_m);
 
 	/* Should be only one ring. */
-	if ( nrings != 1 )
+	if (nrings != 1)
+	{
 		lwerror("Triangle has wrong number of rings: %d", nrings);
+	}
 
 	/* There's only one ring, we hope? */
-	pa = ptarray_from_wkb_state(s);
+	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
 	/* If there's no points, return an empty triangle. */
-	if( pa == NULL )
-		return tri;
+	if (pa == NULL)
+		return lwtriangle_construct_empty(s->srid, s->has_z, s->has_m);
 
 	/* Check for at least four points. */
-	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
+	if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4)
 	{
-		LWDEBUGF(2, "%s must have at least four points", lwtype_name(s->lwtype));
+		ptarray_free(pa);
 		lwerror("%s must have at least four points", lwtype_name(s->lwtype));
 		return NULL;
 	}
 
-	if( s->check & LW_PARSER_CHECK_ZCLOSURE && ! ptarray_is_closed_z(pa) )
+	if (s->check & LW_PARSER_CHECK_ZCLOSURE && !ptarray_is_closed_z(pa))
 	{
+		ptarray_free(pa);
 		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 		return NULL;
 	}
 
 	/* Empty TRIANGLE starts w/ empty POINTARRAY, free it first */
-	if (tri->points)
-		ptarray_free(tri->points);
-
-	tri->points = pa;
-	return tri;
+	return lwtriangle_construct(s->srid, NULL, pa);
 }
 
 /**
