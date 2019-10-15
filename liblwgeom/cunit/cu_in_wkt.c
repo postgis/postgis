@@ -394,8 +394,15 @@ static void test_wkt_double(void)
 
 static void test_wkt_leak(void)
 {
+	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4537 */
 	char *wkt = "TINEMPTY,";
 	char *err = cu_wkt_in(wkt, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(err, "parse error - invalid geometry");
+	lwfree(err);
+
+	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4545 */
+	wkt = "GEOMeTRYCOLLECTION(POLYHEDRALSURFACEEMPTY ";
+	err = cu_wkt_in(wkt, WKT_EXTENDED);
 	CU_ASSERT_STRING_EQUAL(err, "parse error - invalid geometry");
 	lwfree(err);
 }

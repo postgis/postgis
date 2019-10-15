@@ -1,3 +1,16 @@
+PostGIS 3.1.0
+2020/XX/XX
+
+* Breaking changes *
+  -
+
+* New features *
+  -
+
+* Bug fixes *
+  - #4544, Fix leak when parsing a WKT geometry_list (Raúl Marín)
+  - #4545, Fix leak in wkt_parser_triangle_new (Raúl Marín)
+
 PostGIS 3.0.0rc2
 2019/10/13
 

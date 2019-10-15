@@ -193,6 +193,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %destructor { lwgeom_free($$); } curvering
 %destructor { lwgeom_free($$); } geometry_no_srid
 %destructor { lwgeom_free($$); } geometrycollection
+%destructor { lwgeom_free($$); } geometry_list
 %destructor { lwgeom_free($$); } linestring
 %destructor { lwgeom_free($$); } linestring_untagged
 %destructor { lwgeom_free($$); } multicurve
