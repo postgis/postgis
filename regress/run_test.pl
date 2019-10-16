@@ -320,12 +320,12 @@ sub create_upgrade_test_objects
 
   if ( $OPT_WITH_RASTER )
   {
-    $query = "insert into upgrade_test(r) ";
-    $query .= "select ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);";
+    $query = "UPDATE upgrade_test SET r = ";
+    $query .= " ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);";
     $ret = sql($query);
-    unless ( $ret =~ /^INSERT/ ) {
+    unless ( $ret =~ /^UPDATE/ ) {
       `dropdb $DB`;
-      print "\nSomething went wrong inserting raster into upgrade_test table: $ret.\n";
+      print "\nSomething went wrong setting raster into upgrade_test table: $ret.\n";
       exit(1);
     }
 
