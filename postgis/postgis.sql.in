@@ -6065,7 +6065,7 @@ $$
 		-- make sure result covers original (#3638)
 		-- Using ST_UnaryUnion since SFCGAL doesn't replace with its own implementation
 		-- and SFCGAL one chokes for some reason
-		var_resultgeom := @extschema@.ST_UnaryUnion(ST_Collect(param_inputgeom, var_resultgeom) );
+		var_resultgeom := @extschema@.ST_UnaryUnion(@extschema@.ST_Collect(param_inputgeom, var_resultgeom) );
 		RETURN var_resultgeom;
 
 	END;
