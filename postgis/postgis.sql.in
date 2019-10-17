@@ -2049,7 +2049,7 @@ BEGIN
         IF upper(gc_old.type) = 'GEOMETRY' THEN
         -- This is an unconstrained geometry we need to do something
         -- We need to figure out what to set the type by inspecting the data
-            EXECUTE 'SELECT @extschema@.ST_srid(' || quote_ident(gcs.attname) || ') As srid, GeometryType(' || quote_ident(gcs.attname) || ') As type, @extschema@.ST_NDims(' || quote_ident(gcs.attname) || ') As dims ' ||
+            EXECUTE 'SELECT @extschema@.ST_srid(' || quote_ident(gcs.attname) || ') As srid, @extschema@.GeometryType(' || quote_ident(gcs.attname) || ') As type, @extschema@.ST_NDims(' || quote_ident(gcs.attname) || ') As dims ' ||
                      ' FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
                      ' WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1;'
                 INTO gc;
@@ -5220,7 +5220,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
+	WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
 	THEN @extschema@.ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
@@ -5570,7 +5570,7 @@ BEGIN
 
 	geom := @extschema@.ST_BuildArea(mline);
 
-	IF GeometryType(geom) != 'POLYGON'
+	IF @extschema@.GeometryType(geom) != 'POLYGON'
 	THEN
 		RAISE EXCEPTION 'Input returns more then a single polygon, try using BdMPolyFromText instead';
 	END IF;
