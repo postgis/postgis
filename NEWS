@@ -18,6 +18,7 @@ PostGIS 2.5.4
   - #4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)
   - #4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)
   - #4537, Fix leak in WKT collection parser (Raúl Marín)
+  - #4546, Fix ST_ConcaveHull under FDW (Raúl Marín)
 
 
 PostGIS 2.5.3

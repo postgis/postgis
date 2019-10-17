@@ -103,7 +103,7 @@ endif
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g;s'@extschema@\.''g" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g;s'@extschema@\.''g;s'SET search_path = @extschema@''g;" > $@
 
 rtpostgis_for_extension.sql: rtpostgis.sql.in
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
