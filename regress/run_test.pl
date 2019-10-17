@@ -329,7 +329,7 @@ sub create_upgrade_test_objects
       exit(1);
     }
 
-    $query .= "set client_min_messages to error; select AddRasterConstraints('upgrade_test', 'r')";
+    $query = "set client_min_messages to error; select AddRasterConstraints('upgrade_test', 'r')";
     $ret = sql($query);
     unless ( $ret =~ /^t$/ ) {
       `dropdb $DB`;
