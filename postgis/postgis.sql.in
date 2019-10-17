@@ -5370,7 +5370,7 @@ BEGIN
 
 	geom := @extschema@.ST_BuildArea(mline);
 
-	IF @extschema@.GeometryType(geom) != 'POLYGON'
+	IF GeometryType(geom) != 'POLYGON'
 	THEN
 		RAISE EXCEPTION 'Input returns more then a single polygon, try using BdMPolyFromText instead';
 	END IF;
@@ -5378,8 +5378,7 @@ BEGIN
 	RETURN geom;
 END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL
-SET search_path = @extschema@;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 --
 -- SFSQL 1.1
@@ -5416,8 +5415,7 @@ BEGIN
 	RETURN geom;
 END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL
-SET search_path = @extschema@;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 /* Should we include the .sql directly here ? */
 #include "long_xact.sql.in"
@@ -5929,8 +5927,7 @@ $$
 
 	END;
 $$
-  LANGUAGE plpgsql IMMUTABLE STRICT _PARALLEL
-  SET search_path = @extschema@;
+  LANGUAGE plpgsql IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 -- Changed: 2.5.0
@@ -6093,7 +6090,6 @@ $$
 	END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
-SET search_path = @extschema@;
 -- ST_ConcaveHull and Helper functions end here --
 
 -----------------------------------------------------------------------
