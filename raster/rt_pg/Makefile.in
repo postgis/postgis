@@ -114,7 +114,7 @@ endif
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g;s'SET search_path = @extschema@''g;" > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
 ../../liblwgeom/.libs/liblwgeom.a:
 	$(MAKE) -C ../../liblwgeom
