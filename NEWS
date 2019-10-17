@@ -13,7 +13,6 @@ XXXX/XX/XX
   - #4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)
   - #4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)
   - #4537, Fix leak in WKT collection parser (Raúl Marín)
-  - #4546, Fix ST_ConcaveHull under FDW (Raúl Marín)
   - #4547, Fix AddRasterConstraints handling of empty tables (Sandro Santilli)
 
 PostGIS 2.3.10
