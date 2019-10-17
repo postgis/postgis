@@ -7197,24 +7197,28 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 		attr text; srid integer;
 	BEGIN
 		fqtn := '';
-		IF length($1) > 0 THEN
-			fqtn := quote_ident($1) || '.';
+		IF length(rastschema) > 0 THEN
+			fqtn := quote_ident(rastschema) || '.';
 		END IF;
-		fqtn := fqtn || quote_ident($2);
+		fqtn := fqtn || quote_ident(rasttable);
 
 		sql := 'SELECT @extschema@.ST_SRID('
-			|| quote_ident($3)
+			|| quote_ident(rastcolumn)
 			|| ') FROM '
 			|| fqtn
 			|| ' WHERE '
-			|| quote_ident($3)
+			|| quote_ident(rastcolumn)
 			|| ' IS NOT NULL LIMIT 1;';
                 EXECUTE sql INTO srid;
 
-		cn := 'enforce_max_extent_' || $3;
+    IF srid IS NULL THEN
+      RETURN false;
+    END IF;
+
+		cn := 'enforce_max_extent_' || rastcolumn;
 
 		sql := 'SELECT @extschema@.st_ashexewkb( @extschema@.st_setsrid( @extschema@.st_extent( @extschema@.st_envelope('
-			|| quote_ident($3)
+			|| quote_ident(rastcolumn)
 			|| ')), ' || srid || ')) FROM '
 			|| fqtn;
 		EXECUTE sql INTO attr;
@@ -7223,7 +7227,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK ( @extschema@.st_envelope('
-			|| quote_ident($3)
+			|| quote_ident(rastcolumn)
 			|| ') @ ''' || attr || '''::@extschema@.geometry) NOT VALID';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
