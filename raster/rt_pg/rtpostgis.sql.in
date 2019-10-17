@@ -2364,8 +2364,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 
 		RETURN @extschema@._ST_asraster(g, scale_x, scale_y, NULL, NULL, $3, $4, $5, NULL, NULL, ul_x, ul_y, skew_x, skew_y, $6);
 	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL
-	SET search_path = @extschema@;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -7449,8 +7448,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
-	COST 100
-	SET search_path = @extschema@;
+	COST 100;
 
 CREATE OR REPLACE FUNCTION _drop_raster_constraint_coverage_tile(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean AS
@@ -8807,8 +8805,7 @@ BEGIN
 
   RETURN;
 END;
-$$ LANGUAGE 'plpgsql' STABLE STRICT
-SET search_path = @extschema@;
+$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
 ------------------------------------------------------------------------------
 -- ST_CreateOverview
