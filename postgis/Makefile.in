@@ -234,7 +234,7 @@ endif
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g;s'SET search_path = @extschema@''g;" > $@
 
 #this is redundant but trying to fold in with extension just hangs
