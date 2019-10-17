@@ -3957,7 +3957,7 @@ CREATE OR REPLACE FUNCTION st_slope(
 	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
-	AS $$ SELECT @extschema@.ST_slope($1, $2, NULL::raster, $3, $4, $5, $6) $$
+	AS $$ SELECT @extschema@.ST_slope($1, $2, NULL::@extschema@.raster, $3, $4, $5, $6) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4135,7 +4135,7 @@ CREATE OR REPLACE FUNCTION st_aspect(
 	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
-	AS $$ SELECT @extschema@.ST_aspect($1, $2, NULL::raster, $3, $4, $5) $$
+	AS $$ SELECT @extschema@.ST_aspect($1, $2, NULL::@extschema@.raster, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4349,7 +4349,7 @@ CREATE OR REPLACE FUNCTION st_hillshade(
 	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT @extschema@.ST_hillshade($1, $2, NULL::raster, $3, $4, $5, $6, $7, $8) $$
+	AS $$ SELECT @extschema@.ST_hillshade($1, $2, NULL::@extschema@.raster, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4501,7 +4501,7 @@ CREATE OR REPLACE FUNCTION st_tpi(
 	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT @extschema@.ST_tpi($1, $2, NULL::raster, $3, $4) $$
+	AS $$ SELECT @extschema@.ST_tpi($1, $2, NULL::@extschema@.raster, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4632,7 +4632,7 @@ CREATE OR REPLACE FUNCTION ST_roughness(
 	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT @extschema@.ST_roughness($1, $2, NULL::raster, $3, $4) $$
+	AS $$ SELECT @extschema@.ST_roughness($1, $2, NULL::@extschema@.raster, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4783,7 +4783,7 @@ CREATE OR REPLACE FUNCTION st_tri(
 	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT @extschema@.ST_tri($1, $2, NULL::raster, $3, $4) $$
+	AS $$ SELECT @extschema@.ST_tri($1, $2, NULL::@extschema@.raster, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -8992,7 +8992,7 @@ CREATE OR REPLACE FUNCTION _UpdateRasterSRID(
 		sql := 'UPDATE ' || fqtn ||
 			' SET ' || quote_ident($3) ||
 			' =  @extschema@.ST_SetSRID(' || quote_ident($3) ||
-			'::raster, ' || srid || ')';
+			'::@extschema@.raster, ' || srid || ')';
 		RAISE NOTICE 'sql = %', sql;
 		EXECUTE sql;
 
