@@ -29,3 +29,42 @@ NOTICE:  Adding nodata value constraint
 NOTICE:  Adding out-of-database constraint
 NOTICE:  Adding maximum extent constraint
 t
+NOTICE:  Adding SRID constraint
+NOTICE:  Adding scale-X constraint
+NOTICE:  Adding scale-Y constraint
+NOTICE:  Adding blocksize-X constraint
+NOTICE:  Unable to add constraint: enforce_width_r
+NOTICE:  SQL used for failed constraint: ALTER TABLE public.ticket_4547 ADD CONSTRAINT enforce_width_r CHECK (st_width(r) IN ())
+NOTICE:  Returned error message: syntax error at or near ")" (42601)
+WARNING:  Unable to add constraint: 'blocksize_x'.  Skipping
+NOTICE:  Adding blocksize-Y constraint
+NOTICE:  Unable to add constraint: enforce_height_r
+NOTICE:  SQL used for failed constraint: ALTER TABLE public.ticket_4547 ADD CONSTRAINT enforce_height_r CHECK (st_height(r) IN ())
+NOTICE:  Returned error message: syntax error at or near ")" (42601)
+WARNING:  Unable to add constraint: 'blocksize_y'.  Skipping
+NOTICE:  Adding alignment constraint
+NOTICE:  Adding number of bands constraint
+NOTICE:  Adding pixel type constraint
+NOTICE:  Unable to get the pixel types of a sample raster (max < 1 or null)
+WARNING:  Unable to add constraint: 'pixel_types'.  Skipping
+NOTICE:  Adding nodata value constraint
+NOTICE:  Unable to get the nodata values of a sample raster (max < 1 or null)
+WARNING:  Unable to add constraint: 'nodata_values'.  Skipping
+NOTICE:  Adding out-of-database constraint
+NOTICE:  Unable to get the out-of-database bands of a sample raster (max < 1 or null)
+WARNING:  Unable to add constraint: 'out_db'.  Skipping
+NOTICE:  Adding maximum extent constraint
+WARNING:  Unable to add constraint: 'extent'.  Skipping
+#4547.1|t
+NOTICE:  Adding SRID constraint
+NOTICE:  Adding scale-X constraint
+NOTICE:  Adding scale-Y constraint
+NOTICE:  Adding blocksize-X constraint
+NOTICE:  Adding blocksize-Y constraint
+NOTICE:  Adding alignment constraint
+NOTICE:  Adding number of bands constraint
+NOTICE:  Adding pixel type constraint
+NOTICE:  Adding nodata value constraint
+NOTICE:  Adding out-of-database constraint
+NOTICE:  Adding maximum extent constraint
+#4547.2|t

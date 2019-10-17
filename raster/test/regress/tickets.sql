@@ -133,3 +133,12 @@ INSERT INTO table_4308(r) values (NULL);
 INSERT INTO table_4308(r) SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);;
 SELECT AddRasterConstraints('table_4308', 'r');
 DROP TABLE table_4308;
+
+
+-- #4547
+CREATE TABLE ticket_4547(r raster);
+SELECT '#4547.1', AddRasterConstraints('ticket_4547', 'r');
+INSERT INTO ticket_4547 VALUES (null);
+INSERT INTO ticket_4547 SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
+SELECT '#4547.2', AddRasterConstraints('ticket_4547', 'r');
+DROP TABLE ticket_4547;
