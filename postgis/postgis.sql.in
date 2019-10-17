@@ -5558,8 +5558,8 @@ AS $$
 DECLARE
 	geomtext alias for $1;
 	srid alias for $2;
-	mline geometry;
-	geom geometry;
+	mline @extschema@.geometry;
+	geom @extschema@.geometry;
 BEGIN
 	mline := @extschema@.ST_MultiLineStringFromText(geomtext, srid);
 
@@ -5600,8 +5600,8 @@ AS $$
 DECLARE
 	geomtext alias for $1;
 	srid alias for $2;
-	mline geometry;
-	geom geometry;
+	mline @extschema@.geometry;
+	geom @extschema@.geometry;
 BEGIN
 	mline := @extschema@.ST_MultiLineStringFromText(geomtext, srid);
 
@@ -6002,13 +6002,13 @@ CREATE OR REPLACE FUNCTION _st_concavehull(param_inputgeom geometry)
 $$
 	DECLARE
 	vexhull GEOMETRY;
-	var_resultgeom geometry;
-	var_inputgeom geometry;
-	vexring GEOMETRY;
-	cavering GEOMETRY;
-	cavept geometry[];
+	var_resultgeom @extschema@.geometry;
+	var_inputgeom @extschema@.geometry;
+	vexring @extschema@.GEOMETRY;
+	cavering @extschema@.GEOMETRY;
+	cavept @extschema@.geometry[];
 	seglength double precision;
-	var_tempgeom geometry;
+	var_tempgeom @extschema@.geometry;
 	scale_factor float := 1;
 	i integer;
 	BEGIN
