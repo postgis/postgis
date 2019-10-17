@@ -14,7 +14,7 @@ $target = $ARGV[0] if $ARGV[0];
 # Read the svn revision number
 my $svn_rev = &read_rev($target);
 
-# Write it 
+# Write it
 &write_defn($svn_rev);
 
 
@@ -30,7 +30,7 @@ sub read_rev {
     if ( -d $top_srcdir."/.svn" ) {
       #print STDERR "There's a ". $top_srcdir."/.svn dir\n";
       $svn_info  = &read_rev_svn($target);
-    } elsif ( -d $top_srcdir."/.git" ) {
+    } elsif ( -e $top_srcdir."/.git" ) {
       #print STDERR "There's a ". $top_srcdir."/.git dir\n";
       $svn_info  = &read_rev_git();
     } else {
