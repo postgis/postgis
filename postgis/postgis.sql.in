@@ -6001,7 +6001,7 @@ CREATE OR REPLACE FUNCTION _st_concavehull(param_inputgeom geometry)
   RETURNS geometry AS
 $$
 	DECLARE
-	vexhull GEOMETRY;
+	vexhull @extschema@.GEOMETRY;
 	var_resultgeom @extschema@.geometry;
 	var_inputgeom @extschema@.geometry;
 	vexring @extschema@.GEOMETRY;
@@ -6077,18 +6077,18 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL _COST_HIGH;
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
 	DECLARE
-		var_convhull geometry := @extschema@.ST_ForceSFS(@extschema@.ST_ConvexHull(param_geom));
-		var_param_geom geometry := @extschema@.ST_ForceSFS(param_geom);
+		var_convhull @extschema@.geometry := @extschema@.ST_ForceSFS(@extschema@.ST_ConvexHull(param_geom));
+		var_param_geom @extschema@.geometry := @extschema@.ST_ForceSFS(param_geom);
 		var_initarea float := @extschema@.ST_Area(var_convhull);
 		var_newarea float := var_initarea;
 		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per geometry to keep speed decent **/
-		var_tempgeom geometry;
-		var_tempgeom2 geometry;
-		var_cent geometry;
-		var_geoms geometry[4]; /** We will cut the current geometry into 4 triangular quadrants along the centroid/extent **/
-		var_enline geometry;
-		var_resultgeom geometry;
-		var_atempgeoms geometry[];
+		var_tempgeom @extschema@.geometry;
+		var_tempgeom2 @extschema@.geometry;
+		var_cent @extschema@.geometry;
+		var_geoms @extschema@.geometry[4]; /** We will cut the current geometry into 4 triangular quadrants along the centroid/extent **/
+		var_enline @extschema@.geometry;
+		var_resultgeom @extschema@.geometry;
+		var_atempgeoms @extschema@.geometry[];
 		var_buf float := 1; /** tolerance so that geometries that are right on the extent don't get accidentally clipped off **/
 	BEGIN
 		-- We start with convex hull as our base
@@ -6232,8 +6232,8 @@ $$
             RETURN var_resultgeom;
 	END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL _COST_HIGH
-SET search_path = @extschema@;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL _COST_HIGH;
+
 -- ST_ConcaveHull and Helper functions end here --
 
 -----------------------------------------------------------------------
