@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2019-10-18 14:11+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Milena Nowotarska <do.milenki@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -2363,8 +2363,8 @@ msgstr ""
 #: reference_accessor.xml:1254
 #, no-c-format
 msgid ""
-"Return the M crdinate of a Point, or NULL if not available. Input must be a "
-"Point."
+"Return the M coordinate of a Point, or NULL if not available. Input must be "
+"a Point."
 msgstr ""
 
 #. Tag: para

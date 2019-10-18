@@ -2495,7 +2495,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		out completely the IGN from the sql which is resulting 
 		from postgis_restore.pl. So, after having run :
 	  
-		<programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" > oldbb.sql</programlisting>
+		<programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" > olddb.sql</programlisting>
 
 		run this command :
 	  

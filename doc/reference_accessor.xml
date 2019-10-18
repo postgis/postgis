@@ -1863,7 +1863,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the M crdinate of a Point, or NULL if not
+		<para>Return the M coordinate of a Point, or NULL if not
 			available. Input must be a Point.</para>
 
 		<note>
