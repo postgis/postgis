@@ -50,9 +50,9 @@ select '5r', ST_IsValidReason(
 
 -- Check that it works without the extension schema being available
 SET search_path TO pg_catalog;
-select 7, valid, reason, public.st_astext(location) FROM (
-  SELECT (public.ST_IsValidDetail(
-    'POLYGON ((70 250, 70 500, 80 400, 40 400, 70 250))'::public.geometry
+select 7, valid, reason, :schema st_astext(location) FROM (
+  SELECT (:schema ST_IsValidDetail(
+    'POLYGON ((70 250, 70 500, 80 400, 40 400, 70 250))':: :schema geometry
   )).*
 ) foo;
 RESET search_path;
