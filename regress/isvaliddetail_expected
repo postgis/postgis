@@ -8,4 +8,6 @@
 6|t||
 6s|t
 5r|Valid Geometry
+BEGIN
 7|f|Self-intersection|POINT(70 400)
+COMMIT
