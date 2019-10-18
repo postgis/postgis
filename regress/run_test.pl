@@ -69,8 +69,8 @@ my $OPT_EXTVERSION = '';
 my $OPT_UPGRADE_PATH = '';
 our $OPT_UPGRADE_FROM = '';
 my $OPT_UPGRADE_TO = '';
-my $VERBOSE = 0;
-my $OPT_SCHEMA = 'public';
+our $VERBOSE = 0;
+our $OPT_SCHEMA = 'public';
 
 GetOptions (
 	'verbose' => \$VERBOSE,
@@ -590,6 +590,8 @@ Options:
                        if available.
   --dumprestore   dump and restore spatially-enabled db before running tests
   --nodrop        do not drop the regression database on exit
+  --schema        where to install/find PostGIS (relocatable) PostGIS
+                  (defaults to "public")
   --raster        load also raster extension
   --topology      load also topology extension
   --sfcgal        use also sfcgal backend
@@ -712,7 +714,7 @@ sub drop_table
 sub sql
 {
 	my $sql = shift;
-	my $result = `psql -tXA -d $DB -c "$sql"`;
+	my $result = `psql -qtXA -d $DB -c 'SET search_path TO public,$OPT_SCHEMA' -c "$sql"`;
 	$result =~ s/[\n\r]*$//;
 	$result;
 }
@@ -773,7 +775,8 @@ sub run_simple_test
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
-          . " -tXAq $DB < $sql > $outfile 2>&1";
+          . " -c \"SET search_path TO public,$OPT_SCHEMA\""
+          . " -tXAq $DB -f $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
 	# Check for ERROR lines
@@ -1335,7 +1338,9 @@ sub load_sql_file
 	{
 		# ON_ERROR_STOP is used by psql to return non-0 on an error
 		my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
-		my $cmd = "psql $psql_opts -Xf $file $DB >> $REGRESS_LOG 2>&1";
+		my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
+		$cmd .= "-c 'SET search_path TO $OPT_SCHEMA'";
+		$cmd .= " -Xf $file $DB >> $REGRESS_LOG 2>&1";
 		print "  $file\n" if $VERBOSE;
 		my $rv = system($cmd);
 		if ( $rv )
@@ -1352,6 +1357,15 @@ sub prepare_spatial_extensions
 {
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
 	my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+
+	my $sql = "CREATE SCHEMA IF NOT EXISTS ${OPT_SCHEMA}";
+	my $cmd = "psql $psql_opts -c \"". $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+	my $rv = system($cmd);
+	if ( $rv ) {
+	  fail "Error encountered creating target schema ${OPT_SCHEMA}", $REGRESS_LOG;
+	  die;
+	}
+
 	my $sql = "CREATE EXTENSION postgis";
 
 	if ( $OPT_UPGRADE_FROM ) {
@@ -1361,6 +1375,8 @@ sub prepare_spatial_extensions
 		}
 		$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 	}
+
+	$sql .= " SCHEMA " . $OPT_SCHEMA;
 
 	print "Preparing db '${DB}' using: ${sql}\n";
 
@@ -1401,6 +1417,8 @@ sub prepare_spatial_extensions
 			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 		}
 
+		$sql .= " SCHEMA " . $OPT_SCHEMA;
+
 		print "Preparing db '${DB}' using: ${sql}\n";
 
  		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
@@ -1424,6 +1442,8 @@ sub prepare_spatial_extensions
 				}
 				$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 			}
+
+			$sql .= " SCHEMA " . $OPT_SCHEMA;
 
 			print "Preparing db '${DB}' using: ${sql}\n";
 
