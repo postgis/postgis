@@ -2024,7 +2024,7 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$
 	DECLARE
-		rast2 raster;
+		rast2 @extschema@.raster;
 		num_bands int;
 		i int;
 	BEGIN
@@ -2102,7 +2102,7 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$
 	DECLARE
-		rast2 raster;
+		rast2 @extschema@.raster;
 		num_bands int;
 		i int;
 		pt text;
@@ -2316,7 +2316,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 	RETURNS raster
 	AS $$
 	DECLARE
-		g geometry;
+		g @extschema@.geometry;
 		g_srid integer;
 
 		ul_x double precision;
@@ -3834,14 +3834,14 @@ CREATE OR REPLACE FUNCTION st_slope(
 	RETURNS raster
 	AS $$
 	DECLARE
-		_rast raster;
+		_rast @extschema@.raster;
 		_nband integer;
 		_pixtype text;
 		_pixwidth double precision;
 		_pixheight double precision;
 		_width integer;
 		_height integer;
-		_customextent raster;
+		_customextent @extschema@.raster;
 		_extenttype text;
 	BEGIN
 		_customextent := customextent;
@@ -3891,7 +3891,7 @@ CREATE OR REPLACE FUNCTION st_slope(
 	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
-	AS $$ SELECT @extschema@.ST_slope($1, $2, NULL::raster, $3, $4, $5, $6) $$
+	AS $$ SELECT @extschema@.ST_slope($1, $2, NULL::@extschema@.raster, $3, $4, $5, $6) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4017,12 +4017,12 @@ CREATE OR REPLACE FUNCTION st_aspect(
 	RETURNS raster
 	AS $$
 	DECLARE
-		_rast raster;
+		_rast @extschema@.raster;
 		_nband integer;
 		_pixtype text;
 		_width integer;
 		_height integer;
-		_customextent raster;
+		_customextent @extschema@.raster;
 		_extenttype text;
 	BEGIN
 		_customextent := customextent;
@@ -4069,7 +4069,7 @@ CREATE OR REPLACE FUNCTION st_aspect(
 	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
-	AS $$ SELECT @extschema@.ST_aspect($1, $2, NULL::raster, $3, $4, $5) $$
+	AS $$ SELECT @extschema@.ST_aspect($1, $2, NULL::@extschema@.raster, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4223,14 +4223,14 @@ CREATE OR REPLACE FUNCTION st_hillshade(
 	RETURNS RASTER
 	AS $$
 	DECLARE
-		_rast raster;
+		_rast @extschema@.raster;
 		_nband integer;
 		_pixtype text;
 		_pixwidth double precision;
 		_pixheight double precision;
 		_width integer;
 		_height integer;
-		_customextent raster;
+		_customextent @extschema@.raster;
 		_extenttype text;
 	BEGIN
 		_customextent := customextent;
@@ -4283,7 +4283,7 @@ CREATE OR REPLACE FUNCTION st_hillshade(
 	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT @extschema@.ST_hillshade($1, $2, NULL::raster, $3, $4, $5, $6, $7, $8) $$
+	AS $$ SELECT @extschema@.ST_hillshade($1, $2, NULL::@extschema@.raster, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4383,14 +4383,14 @@ CREATE OR REPLACE FUNCTION st_tpi(
 	RETURNS raster
 	AS $$
 	DECLARE
-		_rast raster;
+		_rast @extschema@.raster;
 		_nband integer;
 		_pixtype text;
 		_pixwidth double precision;
 		_pixheight double precision;
 		_width integer;
 		_height integer;
-		_customextent raster;
+		_customextent @extschema@.raster;
 		_extenttype text;
 	BEGIN
 		_customextent := customextent;
@@ -4435,7 +4435,7 @@ CREATE OR REPLACE FUNCTION st_tpi(
 	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT @extschema@.ST_tpi($1, $2, NULL::raster, $3, $4) $$
+	AS $$ SELECT @extschema@.ST_tpi($1, $2, NULL::@extschema@.raster, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4519,14 +4519,14 @@ CREATE OR REPLACE FUNCTION st_roughness(
 	RETURNS raster
 	AS $$
 	DECLARE
-		_rast raster;
+		_rast @extschema@.raster;
 		_nband integer;
 		_pixtype text;
 		_pixwidth double precision;
 		_pixheight double precision;
 		_width integer;
 		_height integer;
-		_customextent raster;
+		_customextent @extschema@.raster;
 		_extenttype text;
 	BEGIN
 		_customextent := customextent;
@@ -4566,7 +4566,7 @@ CREATE OR REPLACE FUNCTION ST_roughness(
 	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT @extschema@.ST_roughness($1, $2, NULL::raster, $3, $4) $$
+	AS $$ SELECT @extschema@.ST_roughness($1, $2, NULL::@extschema@.raster, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4665,14 +4665,14 @@ CREATE OR REPLACE FUNCTION st_tri(
 	RETURNS raster
 	AS $$
 	DECLARE
-		_rast raster;
+		_rast @extschema@.raster;
 		_nband integer;
 		_pixtype text;
 		_pixwidth double precision;
 		_pixheight double precision;
 		_width integer;
 		_height integer;
-		_customextent raster;
+		_customextent @extschema@.raster;
 		_extenttype text;
 	BEGIN
 		_customextent := customextent;
@@ -4717,7 +4717,7 @@ CREATE OR REPLACE FUNCTION st_tri(
 	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT @extschema@.ST_tri($1, $2, NULL::raster, $3, $4) $$
+	AS $$ SELECT @extschema@.ST_tri($1, $2, NULL::@extschema@.raster, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -4993,7 +4993,7 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
     $$
     DECLARE
         params text[];
-        rastout raster;
+        rastout @extschema@.raster;
     BEGIN
         IF rast IS NULL THEN
             RAISE WARNING 'Cannot set georeferencing on a null raster in st_setgeoreference.';
@@ -6450,7 +6450,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	RETURNS raster
 	AS $$
 	DECLARE
-		rtn raster;
+		rtn @extschema@.raster;
 		_returnband text;
 		newnodata1 float8;
 		newnodata2 float8;
@@ -7351,8 +7351,8 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 		_tileheight integer;
 		_alignment boolean;
 
-		_covextent geometry;
-		_covrast raster;
+		_covextent @extschema@.geometry;
+		_covrast @extschema@.raster;
 	BEGIN
 		fqtn := '';
 		IF length($1) > 0 THEN
@@ -8640,7 +8640,7 @@ CREATE OR REPLACE FUNCTION _UpdateRasterSRID(
 		sql := 'UPDATE ' || fqtn ||
 			' SET ' || quote_ident($3) ||
 			' =  @extschema@.ST_SetSRID(' || quote_ident($3) ||
-			'::raster, ' || srid || ')';
+			'::@extschema@.raster, ' || srid || ')';
 		RAISE NOTICE 'sql = %', sql;
 		EXECUTE sql;
 
@@ -8692,7 +8692,7 @@ DECLARE
   ipy FLOAT8;
   tx int;
   ty int;
-  te GEOMETRY; -- tile extent
+  te @extschema@.GEOMETRY; -- tile extent
   ncols int;
   nlins int;
   srid int;

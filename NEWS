@@ -15,6 +15,7 @@ XXXX/XX/XX
   - #4537, Fix leak in WKT collection parser (Raúl Marín)
   - #4547, Fix AddRasterConstraints handling of empty tables (Sandro Santilli)
   - #4549, Fix schema qualification of internal types (Raúl Marín)
+  - #4546, Fix PLPGSQL functions missing the schema qualification (Raúl Marín)
 
 PostGIS 2.3.10
 2019/08/11
