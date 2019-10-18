@@ -1270,7 +1270,9 @@ sub count_db_objects
 		select count(*) from pg_operator union all
 		select count(*) from pg_opclass union all
 		select count(*) from pg_namespace
-			where nspname NOT LIKE 'pg_%' union all
+			where nspname NOT LIKE 'pg_%'
+			  and nspname != '${OPT_SCHEMA}'
+		union all
 		select count(*) from pg_opfamily
 		)
 		select sum(count) from counts");
