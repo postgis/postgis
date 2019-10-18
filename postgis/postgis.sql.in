@@ -2042,7 +2042,7 @@ BEGIN
         IF upper(gc_old.type) = 'GEOMETRY' THEN
         -- This is an unconstrained geometry we need to do something
         -- We need to figure out what to set the type by inspecting the data
-            EXECUTE 'SELECT @extschema@.ST_srid(' || quote_ident(gcs.attname) || ') As srid, GeometryType(' || quote_ident(gcs.attname) || ') As type, @extschema@.ST_NDims(' || quote_ident(gcs.attname) || ') As dims ' ||
+            EXECUTE 'SELECT @extschema@.ST_srid(' || quote_ident(gcs.attname) || ') As srid, @extschema@.GeometryType(' || quote_ident(gcs.attname) || ') As type, @extschema@.ST_NDims(' || quote_ident(gcs.attname) || ') As dims ' ||
                      ' FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
                      ' WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1;'
                 INTO gc;
@@ -4874,7 +4874,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
+	WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
 	THEN @extschema@.ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
@@ -5223,8 +5223,8 @@ AS $$
 DECLARE
 	geomtext alias for $1;
 	srid alias for $2;
-	mline geometry;
-	geom geometry;
+	mline @extschema@.geometry;
+	geom @extschema@.geometry;
 BEGIN
 	mline := @extschema@.ST_MultiLineStringFromText(geomtext, srid);
 
@@ -5235,7 +5235,7 @@ BEGIN
 
 	geom := @extschema@.ST_BuildArea(mline);
 
-	IF GeometryType(geom) != 'POLYGON'
+	IF @extschema@.GeometryType(geom) != 'POLYGON'
 	THEN
 		RAISE EXCEPTION 'Input returns more then a single polygon, try using BdMPolyFromText instead';
 	END IF;
@@ -5265,8 +5265,8 @@ AS $$
 DECLARE
 	geomtext alias for $1;
 	srid alias for $2;
-	mline geometry;
-	geom geometry;
+	mline @extschema@.geometry;
+	geom @extschema@.geometry;
 BEGIN
 	mline := @extschema@.ST_MultiLineStringFromText(geomtext, srid);
 
@@ -5743,14 +5743,14 @@ CREATE OR REPLACE FUNCTION _st_concavehull(param_inputgeom geometry)
   RETURNS geometry AS
 $$
 	DECLARE
-	vexhull GEOMETRY;
-	var_resultgeom geometry;
-	var_inputgeom geometry;
-	vexring GEOMETRY;
-	cavering GEOMETRY;
-	cavept geometry[];
+	vexhull @extschema@.geometry;
+	var_resultgeom @extschema@.geometry;
+	var_inputgeom @extschema@.geometry;
+	vexring @extschema@.geometry;
+	cavering @extschema@.geometry;
+	cavept @extschema@.geometry[];
 	seglength double precision;
-	var_tempgeom geometry;
+	var_tempgeom @extschema@.geometry;
 	scale_factor float := 1;
 	i integer;
 
@@ -5815,18 +5815,18 @@ $$
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
 	DECLARE
-		var_convhull geometry := @extschema@.ST_ConvexHull(param_geom);
-		var_param_geom geometry := param_geom;
+		var_convhull @extschema@.geometry := @extschema@.ST_ConvexHull(param_geom);
+		var_param_geom @extschema@.geometry := param_geom;
 		var_initarea float := @extschema@.ST_Area(var_convhull);
 		var_newarea float := var_initarea;
 		var_div integer := 6; /** this is the 1/var_div is the percent increase we will allow per triangle to keep speed decent **/
-		var_tempgeom geometry;
-		var_tempgeom2 geometry;
-		var_cent geometry;
-		var_geoms geometry[4]; /** We will cut the current geometry into 4 triangular quadrants along the centroid/extent **/
-		var_enline geometry;
-		var_resultgeom geometry;
-		var_atempgeoms geometry[];
+		var_tempgeom @extschema@.geometry;
+		var_tempgeom2 @extschema@.geometry;
+		var_cent @extschema@.geometry;
+		var_geoms @extschema@.geometry[4]; /** We will cut the current geometry into 4 triangular quadrants along the centroid/extent **/
+		var_enline @extschema@.geometry;
+		var_resultgeom @extschema@.geometry;
+		var_atempgeoms @extschema@.geometry[];
 		var_buf float := 1; /**tolerance so that geometries that are right on the extent don't get accidentally clipped off **/
 	BEGIN
 		-- We start with convex hull as our base
