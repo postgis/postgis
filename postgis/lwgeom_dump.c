@@ -118,7 +118,8 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		 * Build a tuple description for an
 		 * geometry_dump tuple
 		 */
-		tupdesc = RelationNameGetTupleDesc("geometry_dump");
+		get_call_result_type(fcinfo, 0, &tupdesc);
+		BlessTupleDesc(tupdesc);
 
 		/*
 		 * generate attribute metadata needed later to produce
@@ -256,7 +257,8 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		 * Build a tuple description for an
 		 * geometry_dump tuple
 		 */
-		tupdesc = RelationNameGetTupleDesc("geometry_dump");
+		get_call_result_type(fcinfo, 0, &tupdesc);
+		BlessTupleDesc(tupdesc);
 
 		/*
 		 * generate attribute metadata needed later to produce
