@@ -180,6 +180,7 @@ GEOMETRYCOLLECTION (
 ');
 
 -- Check that it works without the extension schema being available
+BEGIN;
 SET search_path TO pg_catalog;
 WITH data AS
 (
@@ -188,4 +189,4 @@ WITH data AS
 SELECT	't12',
 	:schema ST_AsText((public.ST_Dump(geom)).geom),
 	:schema ST_AsText((public.ST_DumpRings(geom)).geom) FROM data;
-RESET search_path;
+ROLLBACK;
