@@ -70,6 +70,7 @@ my $OPT_UPGRADE_PATH = '';
 our $OPT_UPGRADE_FROM = '';
 my $OPT_UPGRADE_TO = '';
 my $VERBOSE = 0;
+my $OPT_SCHEMA = 'public';
 
 GetOptions (
 	'verbose' => \$VERBOSE,
@@ -83,7 +84,8 @@ GetOptions (
 	'raster' => \$OPT_WITH_RASTER,
 	'sfcgal' => \$OPT_WITH_SFCGAL,
 	'expect' => \$OPT_EXPECT,
-	'extensions' => \$OPT_EXTENSIONS
+	'extensions' => \$OPT_EXTENSIONS,
+	'schema=s' => \$OPT_SCHEMA
 	);
 
 if ( @ARGV < 1 )
@@ -726,7 +728,8 @@ sub run_simple_test
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
-          . " -tXA $DB < $sql > $outfile 2>&1";
+          . " -v \"schema=$OPT_SCHEMA.\""
+          . " -tXAq $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
 	# Check for ERROR lines

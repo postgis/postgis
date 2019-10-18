@@ -1489,12 +1489,8 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	 * Build a tuple description for a
 	 * valid_detail tuple
 	 */
-	tupdesc = RelationNameGetTupleDesc("valid_detail");
-	if ( ! tupdesc )
-	{
-		lwpgerror("TYPE valid_detail not found");
-		PG_RETURN_NULL();
-	}
+	get_call_result_type(fcinfo, 0, &tupdesc);
+	BlessTupleDesc(tupdesc);
 
 	/*
 	 * generate attribute metadata needed later to produce

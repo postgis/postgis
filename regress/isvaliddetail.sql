@@ -48,3 +48,13 @@ select '6s', ST_IsValid(
 select '5r', ST_IsValidReason(
 'POLYGON ((70 250, 40 500, 100 400, 70 250, 80 350, 60 350, 70 250))' , 1);
 
+-- Check that it works without the extension schema being available
+BEGIN;
+SET search_path TO pg_catalog;
+select 7, valid, reason, :schema st_astext(location) FROM (
+  SELECT (:schema ST_IsValidDetail(
+    'POLYGON ((70 250, 70 500, 80 400, 40 400, 70 250))':: :schema geometry
+  )).*
+) foo;
+ROLLBACK;
+
