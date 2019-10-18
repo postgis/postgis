@@ -10,6 +10,7 @@ PostGIS 3.1.0
 * Bug fixes *
   - #4544, Fix leak when parsing a WKT geometry_list (Raúl Marín)
   - #4545, Fix leak in wkt_parser_triangle_new (Raúl Marín)
+  - #4549, Fix several functions when the schema isn't the search_path (Raúl Marín)
 
 
 PostGIS 3.0.0
