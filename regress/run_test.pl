@@ -728,7 +728,7 @@ sub run_simple_test
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
-          . " -tXAq $DB < $sql > $outfile 2>&1";
+          . " -tXA $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
 	# Check for ERROR lines
