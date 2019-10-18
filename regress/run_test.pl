@@ -775,7 +775,7 @@ sub run_simple_test
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
-          . " -c \"SET search_path TO public,$OPT_SCHEMA\""
+          . " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
           . " -tXAq $DB -f $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
@@ -1341,7 +1341,7 @@ sub load_sql_file
 		# ON_ERROR_STOP is used by psql to return non-0 on an error
 		my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
 		my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
-		$cmd .= "-c 'SET search_path TO $OPT_SCHEMA'";
+		$cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
 		$cmd .= " -Xf $file $DB >> $REGRESS_LOG 2>&1";
 		print "  $file\n" if $VERBOSE;
 		my $rv = system($cmd);
