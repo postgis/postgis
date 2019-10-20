@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2015-10-08
+Date: 2019-10-19
 
 Versioning Scheme
 -----------------
@@ -97,7 +97,7 @@ Release procedure
 - Documentation should also have been built and should be in postgis.net/stuff
   (this sometimes takes sometime so wait 15 minutes)
 - Test generated tarball (including extension upgrade)
-- Copy tarball, pdf, doc-html.. to http://download.osgeo.org/postgis/ web site and edit postgis.net/source page
+- Copy tarball, pdf, doc-html.. to https://download.osgeo.org/postgis/ web site and edit postgis.net/source page and config.yaml 
 - Announce on e-mail
     - postgis-users
     - postgis-devel
@@ -111,7 +111,7 @@ Release procedure
        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
-    - On postgis.net server, change /etc/apache2/postgis.net-common.conf (Versionless URL line )
+    - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net.conf (Versionless URL lines #current docs, #dev docs )
      Verify the documentation is up to date (might need to change the apach config)
     - Wikipedia
     - Twitter
