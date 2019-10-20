@@ -776,7 +776,7 @@ sub run_simple_test
           . " -v \"regdir=$REGDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
           . " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
-          . " -tXAq $DB -f $sql > $outfile 2>&1";
+          . " -tXAq -f $sql $DB > $outfile 2>&1";
 	my $rv = system($cmd);
 
 	# Check for ERROR lines
