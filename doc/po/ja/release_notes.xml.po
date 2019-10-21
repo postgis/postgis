@@ -33,13 +33,13 @@ msgstr "リリースノート"
 #: release_notes.xml:7
 #, fuzzy, no-c-format
 msgid "Release 3.0.0"
-msgstr "リリース 2.0.0"
+msgstr "リリース 3.0.0"
 
 #. Tag: para
 #: release_notes.xml:8
 #, fuzzy, no-c-format
 msgid "Release date: 2019/10/20"
-msgstr "リリース日: 2019/10/08"
+msgstr "リリース日: 2019/10/20"
 
 #. Tag: para
 #: release_notes.xml:9
@@ -618,13 +618,13 @@ msgstr "#4044, アップグレードのPostgreSQL 11 への対応 (Regina Obeさ
 #: release_notes.xml:135
 #, fuzzy, no-c-format
 msgid "Release 3.0.0rc2"
-msgstr "リリース3.0.0rc1"
+msgstr "リリース3.0.0rc2"
 
 #. Tag: para
 #: release_notes.xml:136
 #, fuzzy, no-c-format
 msgid "Release date: 2019/10/13"
-msgstr "リリース日: 2019/10/08"
+msgstr "リリース日: 2019/10/13"
 
 #. Tag: para
 #: release_notes.xml:137 release_notes.xml:155 release_notes.xml:174

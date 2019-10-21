@@ -34,13 +34,13 @@ msgstr "Anmerkungen zur Release"
 #: release_notes.xml:7
 #, fuzzy, no-c-format
 msgid "Release 3.0.0"
-msgstr "Release 2.0.0"
+msgstr "Release 3.0.0"
 
 #. Tag: para
 #: release_notes.xml:8
 #, fuzzy, no-c-format
 msgid "Release date: 2019/10/20"
-msgstr "Freigabedatum: 2017/07/01"
+msgstr "Freigabedatum: 2019/10/20"
 
 #. Tag: para
 #: release_notes.xml:9
@@ -619,13 +619,13 @@ msgstr "#4044, Unterstützung des Upgrades auf PgSQL 11 (Regina Obe)"
 #: release_notes.xml:135
 #, fuzzy, no-c-format
 msgid "Release 3.0.0rc2"
-msgstr "Release 2.5.0rc1"
+msgstr "Release 3.0.0rc2"
 
 #. Tag: para
 #: release_notes.xml:136
 #, fuzzy, no-c-format
 msgid "Release date: 2019/10/13"
-msgstr "Freigabedatum: 2017/07/01"
+msgstr "Freigabedatum: 2019/10/13"
 
 #. Tag: para
 #: release_notes.xml:137 release_notes.xml:155 release_notes.xml:174
@@ -683,13 +683,13 @@ msgstr ""
 #: release_notes.xml:153
 #, fuzzy, no-c-format
 msgid "Release 3.0.0rc1"
-msgstr "Release 2.5.0rc1"
+msgstr "Release 3.0.0rc1"
 
 #. Tag: para
 #: release_notes.xml:154
 #, fuzzy, no-c-format
 msgid "Release date: 2019/10/08"
-msgstr "Freigabedatum: 2017/07/01"
+msgstr "Freigabedatum: 2019/10/08"
 
 #. Tag: para
 #: release_notes.xml:162
@@ -716,13 +716,13 @@ msgstr ""
 #: release_notes.xml:172
 #, fuzzy, no-c-format
 msgid "Release 3.0.0beta1"
-msgstr "Release 2.0.0"
+msgstr "Release 3.0.0beta1"
 
 #. Tag: para
 #: release_notes.xml:173
 #, fuzzy, no-c-format
 msgid "Release date: 2019/09/28"
-msgstr "Freigabedatum: 2012/06/22"
+msgstr "Freigabedatum: 2019/09/28"
 
 #. Tag: para
 #: release_notes.xml:181
@@ -805,13 +805,13 @@ msgstr ""
 #: release_notes.xml:198
 #, fuzzy, no-c-format
 msgid "Release 3.0.0alpha4"
-msgstr "Release 2.0.0"
+msgstr "Release 3.0.0alpha4"
 
 #. Tag: para
 #: release_notes.xml:199
 #, fuzzy, no-c-format
 msgid "Release date: 2019/08/11"
-msgstr "Freigabedatum: 2017/07/01"
+msgstr "Freigabedatum: 2019/08/11"
 
 #. Tag: para
 #: release_notes.xml:201
@@ -924,13 +924,13 @@ msgstr ""
 #: release_notes.xml:227
 #, fuzzy, no-c-format
 msgid "Release 3.0.0alpha3"
-msgstr "Release 2.0.0"
+msgstr "Release 3.0.0alpha3"
 
 #. Tag: para
 #: release_notes.xml:228
 #, fuzzy, no-c-format
 msgid "Release date: 2019/07/01"
-msgstr "Freigabedatum: 2017/07/01"
+msgstr "Freigabedatum: 2019/07/01"
 
 #. Tag: para
 #: release_notes.xml:230 release_notes.xml:258 release_notes.xml:277
@@ -1006,13 +1006,13 @@ msgstr ""
 #: release_notes.xml:255
 #, fuzzy, no-c-format
 msgid "Release 3.0.0alpha2"
-msgstr "Release 2.0.0"
+msgstr "Release 3.0.0alpha2"
 
 #. Tag: para
 #: release_notes.xml:256
 #, fuzzy, no-c-format
 msgid "Release date: 2019/06/02"
-msgstr "Freigabedatum: 2012/06/22"
+msgstr "Freigabedatum: 2019/06/02"
 
 #. Tag: para
 #: release_notes.xml:263
@@ -1044,13 +1044,13 @@ msgstr ""
 #: release_notes.xml:274
 #, fuzzy, no-c-format
 msgid "Release 3.0.0alpha1"
-msgstr "Release 2.0.0"
+msgstr "Release 3.0.0alpha1"
 
 #. Tag: para
 #: release_notes.xml:275
 #, fuzzy, no-c-format
 msgid "Release date: 2019/05/26"
-msgstr "Freigabedatum: 2016/09/26"
+msgstr "Freigabedatum: 2019/05/26"
 
 #. Tag: para
 #: release_notes.xml:282
@@ -1074,7 +1074,7 @@ msgstr "Release 2.4.0"
 #: release_notes.xml:289
 #, fuzzy, no-c-format
 msgid "Release date: 2018/09/23"
-msgstr "Freigabedatum: 2016/09/26"
+msgstr "Freigabedatum: 2018/09/23"
 
 #. Tag: para
 #: release_notes.xml:291
