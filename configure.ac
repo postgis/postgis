@@ -82,7 +82,7 @@ AC_SUBST([NUMERICFLAGS])
 dnl
 dnl Add libm to LDFLAGS so we don't need to add it everywhere manually
 dnl
-AC_CHECK_LIB([m], [main], [LDFLAGS="$LDFLAGS -lm"], [AC_MSG_ERROR(Could not locate libm)])
+LDFLAGS="$LDFLAGS -lm"
 
 dnl
 dnl Exporting used library symbols in the module is a source of issues,
