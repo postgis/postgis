@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-18 12:22+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-10-23 20:58+0000\n"
 "PO-Revision-Date: 2019-03-11 09:32+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -34,13 +34,13 @@ msgstr "Anmerkungen zur Release"
 #: release_notes.xml:7
 #, fuzzy, no-c-format
 msgid "Release 3.0.0"
-msgstr "Release 2.0.0"
+msgstr "Release 3.0.0"
 
 #. Tag: para
 #: release_notes.xml:8
 #, fuzzy, no-c-format
 msgid "Release date: 2019/10/20"
-msgstr "Freigabedatum: 2017/07/01"
+msgstr "Freigabedatum: 2019/10/20"
 
 #. Tag: para
 #: release_notes.xml:9
