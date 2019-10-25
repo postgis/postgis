@@ -80,6 +80,11 @@ AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -ffloat-store], [dummy_cv_fflo
 AC_SUBST([NUMERICFLAGS])
 
 dnl
+dnl Add libm to LDFLAGS so we don't need to add it everywhere manually
+dnl
+LDFLAGS="$LDFLAGS -lm"
+
+dnl
 dnl Exporting used library symbols in the module is a source of issues,
 dnl see https://trac.osgeo.org/postgis/ticket/3281
 dnl
@@ -1619,6 +1624,7 @@ if test "x$HAVE_WAGYU" = "xyes"; then
     AC_MSG_RESULT([  C++ compiler (Wagyu): ${WAGYU_CXX} ${CXXFLAGS}])
 fi
 AC_MSG_RESULT([  CPPFLAGS:             $CPPFLAGS])
+AC_MSG_RESULT([  LDFLAGS:              $LDFLAGS])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])

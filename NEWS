@@ -5,7 +5,7 @@ PostGIS 3.1.0
   -
 
 * New features *
-  -
+  - #4539, Unify libm includes (Raúl Marín)
 
 * Bug fixes *
   - #4544, Fix leak when parsing a WKT geometry_list (Raúl Marín)
