@@ -105,7 +105,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef>
+				<funcdef>geometry <function>ST_3DLineInterpolatePoint</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 				<paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
 			  </funcprototype>
@@ -126,7 +126,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			</note>
 			
 			<para>Availability: 3.0.0</para>
-		      </refsection>
+		</refsection>
 
 
 		  <refsection>
