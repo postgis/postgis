@@ -209,7 +209,7 @@ SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
 
 				<note>
 					<para>
-						Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC <varname>postgis.enable_outdb_rasters</varname> determines the accessible raster formats.
+						Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC <varname>postgis.gdal_enabled_drivers</varname> determines the accessible raster formats.
 					</para>
 				</note>
 
