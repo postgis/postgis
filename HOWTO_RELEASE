@@ -58,10 +58,10 @@ Release procedure
 -----------------
 
 - For first micro of a minor, make sure to pull the latest translations from transifex
-   TODO: more detail here - there is a job on debbie for 3.0 for examples 
-   https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.0 
+   TODO: more detail here - there is a job on debbie for 3.0 for examples
+   https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.0
    and she's setup with an api key to pull and push translations.
-   
+
 - Ensure all bots are green: https://trac.osgeo.org/postgis
 - Re-generate the ChangeLog (make ChangeLog)
 - Edit NEWS: set release date and check all notable changes have
@@ -75,9 +75,8 @@ Release procedure
 	(this should only be needed for trunk release)
 - Commit all changes
 - If this is a minor or major release (no branch exists):
-	   $ base=https://svn.osgeo.org/postgis/
 	   $ rev=x.x
-	   $ svn copy -m "Branch $rev" $base/trunk $base/branches/$rev
+	   $ git checkout master; git checkout -b "$rev"; git push -u osgeo $rev
 
 	   Go to: https://debbie.postgis.net and copy last branch version and make new job
 	   a) Replace PostGIS_* string params with new version
@@ -87,10 +86,8 @@ Release procedure
 	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
 
 - Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
-   $ base=https://svn.osgeo.org/postgis/
-   $ brev=x.x
    $ rev=x.x.x
-   $ svn copy -m "Tagged release $rev" $base/branches/$brev $base/tags/$rev
+   $ git tag -am "Tagged release $rev"; git push osgeo --tags
 - Run: sh make_dist.sh $rev (note, debbie should have already done this,
       and the file will be waiting in postgis.net/stuff.  You might need to wait a few minutes to see it.)
       If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
