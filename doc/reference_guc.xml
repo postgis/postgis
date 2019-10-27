@@ -155,7 +155,7 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 				<programlisting>ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';</programlisting>
 
 				<para>Sets default enabled drivers for all new connections to server. Requires super user access and PostgreSQL 9.4+.
-				    Also not that database, session, and user settings override this.</para>
+				    Also note that database, session, and user settings override this.</para>
 				<programlisting>ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';
 SELECT pg_reload_conf();
 				</programlisting>
