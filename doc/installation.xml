@@ -307,21 +307,21 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	<para>
 	  Alternatively, checkout the source from the
-	  <ulink url="http://subversion.apache.org/">
-		svn
+	  <ulink url="https://git-scm.com/">
+		git
 	  </ulink>
 	  repository
-	  <ulink url="https://svn.osgeo.org/postgis/trunk/">
-		https://svn.osgeo.org/postgis/trunk/
+	  <ulink url="https://git.osgeo.org/gitea/postgis/postgis/">
+		https://git.osgeo.org/gitea/postgis/postgis/
 	  </ulink>
 	  .
 	</para>
 
-	<programlisting>svn checkout https://svn.osgeo.org/postgis/trunk/ postgis-&last_release_version;</programlisting>
+	<programlisting>git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis</programlisting>
 
 	<para>
 	  Change into the newly created
-	  <varname>postgis-&last_release_version;</varname> directory to continue
+	  <varname>postgis</varname> directory to continue
 	  the installation.
 	</para>
   </sect1>
@@ -2483,33 +2483,33 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</programlisting>
 
 		<programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));</programlisting>
-	  
+
 		If you are upgrading an old database containing french <ulink url="https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national">
 			IGN
-		  </ulink> cartography, you will have probably SRIDs out 
+		  </ulink> cartography, you will have probably SRIDs out
 		of range and you will see, when importing your database, issues like this :
-	  
+
 		<programlisting> WARNING: SRID 310642222 converted to 999175 (in reserved zone)</programlisting>
-	  
-		In this case, you can try following steps : first throw 
-		out completely the IGN from the sql which is resulting 
+
+		In this case, you can try following steps : first throw
+		out completely the IGN from the sql which is resulting
 		from postgis_restore.pl. So, after having run :
-	  
+
 		<programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" > olddb.sql</programlisting>
 
 		run this command :
-	  
+
 		<programlisting>grep -v IGNF olddb.sql > olddb-without-IGN.sql</programlisting>
-	  
-		Create then your newdb, activate the required Postgis extensions, 
+
+		Create then your newdb, activate the required Postgis extensions,
 		and insert properly the french system IGN with :
-	  
+
 		<ulink url="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">
 			this script
 		  </ulink>
-	  
+
 		After these operations, import your data :
-	  
+
 		<programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> errors.txt</programlisting>
 
 	</para>
