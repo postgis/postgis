@@ -70,7 +70,7 @@ cp html/images/* images
 make epub
 make -e chunked-html-web 2>&1 | tee -a doc-errors.log
 
-if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
+if [[ "$reference" == *"master"* ]]; then  #only do this for trunk because only trunk follows transifex
   make update-pot
   make pull-tx
   make -C po/it_IT/ local-html
