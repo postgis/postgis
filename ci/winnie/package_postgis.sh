@@ -81,26 +81,14 @@ echo PATH BEFORE: $PATH
 
 export PGPATH=${PROJECTS}/postgresql/rel/pg${PG_VER}w${OS_BUILD}${GCC_TYPE}
 export PGPATHEDB=${PGPATH}edb
-export PROJSO=libproj-9.dll
+#export PROJSO=libproj-13.dll
 export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
-
-if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
-	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MINOR_VER}
-	export svnurl="https://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
-else
-	#tagged version -- official release
-	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}
-	export svnurl="https://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
-fi;
 
 if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
 fi
 
-if [[ "$reference"  == *trunk* ]] ; then
-	export svnurl="https://svn.osgeo.org/postgis/trunk"
-fi;
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 #POSTGIS_SVN_REVISION=will_be_passed_in_by_bot
 export GDAL_DATA="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal"
