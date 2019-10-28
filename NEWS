@@ -5,6 +5,8 @@ PostGIS 3.1.0
   -
 
 * New features *
+
+* Enhancements *
   - #4539, Unify libm includes (Raúl Marín)
 
 * Bug fixes *
