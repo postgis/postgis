@@ -1,6 +1,10 @@
 PostGIS 3.1.0
 2020/XX/XX
 
+* Deprecated signatures *
+  - Function postgis_svn_version() replaced by postgis_lib_revision()
+    (Sandro Santilli)
+
 * Breaking changes *
   -
 

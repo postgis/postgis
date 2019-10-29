@@ -416,7 +416,9 @@ if ( $OPT_DUMPRESTORE )
 
 my $geosver =  sql("select postgis_geos_version()");
 my $projver = sql("select postgis_proj_version()");
-my $svnrev = sql("select postgis_svn_version()");
+# TODO: call postgis_lib_revision() instead of postgis_svn_version
+#       if $libver >= 3.1.0
+my $librev = sql("select postgis_svn_version()");
 my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
@@ -426,7 +428,7 @@ my $raster_scriptver = sql("select postgis_raster_scripts_installed()")
   if ( $OPT_WITH_RASTER );
 
 print "$pgsqlver\n";
-print "  Postgis $libver - r${svnrev} - $libbuilddate\n";
+print "  Postgis $libver - (${librev}) - $libbuilddate\n";
 print "  scripts ${scriptver}\n";
 print "  raster scripts ${raster_scriptver}\n" if ( $OPT_WITH_RASTER );
 print "  GEOS: $geosver\n" if $geosver;

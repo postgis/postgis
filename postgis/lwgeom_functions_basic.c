@@ -49,6 +49,7 @@ Datum postgis_version(PG_FUNCTION_ARGS);
 Datum postgis_liblwgeom_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum postgis_svn_version(PG_FUNCTION_ARGS);
+Datum postgis_lib_revision(PG_FUNCTION_ARGS);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
@@ -182,8 +183,20 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(result);
 }
 
+/*
+ * Deprecated as of version 3.1.0 but needs to be kept
+ * around until 4.x as we use the same library filename
+ * for any 3.x.x version of PostGIS and we don't want to
+ * fail at loading the library due to missing symbol.
+ */
 PG_FUNCTION_INFO_V1(postgis_svn_version);
 Datum postgis_svn_version(PG_FUNCTION_ARGS)
+{
+	return postgis_lib_revision(fcinfo);
+}
+
+PG_FUNCTION_INFO_V1(postgis_lib_revision);
+Datum postgis_lib_revision(PG_FUNCTION_ARGS)
 {
 	static int rev = POSTGIS_SVN_REVISION;
 	char ver[32];

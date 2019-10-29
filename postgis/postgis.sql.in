@@ -2757,7 +2757,7 @@ CREATE OR REPLACE FUNCTION postgis_lib_version() RETURNS text
 	LANGUAGE 'c' IMMUTABLE; -- a new lib will require a new session
 
 -- NOTE: from 1.1.0 to 1.5.x this was the same of postgis_lib_version()
--- NOTE: from 2.0.0 up it includes postgis_svn_revision()
+-- NOTE: from 2.0.0 up it includes postgis revision
 CREATE OR REPLACE FUNCTION postgis_scripts_released() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
@@ -2766,9 +2766,22 @@ CREATE OR REPLACE FUNCTION postgis_geos_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION postgis_svn_version() RETURNS text
+--- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION postgis_lib_revision() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
+
+--- Availability: 2.0.0
+--- Deprecation in 3.1.0
+CREATE OR REPLACE FUNCTION postgis_svn_version()
+RETURNS text AS $$
+	SELECT @extschema@._postgis_deprecate(
+		'postgis_svn_version', 'postgis_lib_revision', '3.1.0');
+	SELECT @extschema@.postgis_lib_revision();
+$$
+LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
+
+
 
 CREATE OR REPLACE FUNCTION postgis_libxml_version() RETURNS text
 	AS 'MODULE_PATHNAME'
@@ -2882,7 +2895,7 @@ CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
 	libver text;
-	svnver text;
+	librev text;
 	projver text;
 	geosver text;
 	sfcgalver text;
@@ -2934,7 +2947,7 @@ BEGIN
 	SELECT @extschema@.postgis_libxml_version() INTO libxmlver;
 	SELECT @extschema@.postgis_scripts_installed() INTO dbproc;
 	SELECT @extschema@.postgis_scripts_released() INTO relproc;
-	SELECT @extschema@.postgis_svn_version() INTO svnver;
+	SELECT @extschema@.postgis_lib_revision() INTO librev;
 	BEGIN
 		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
 	EXCEPTION
@@ -2966,8 +2979,8 @@ BEGIN
 
 	fullver = 'POSTGIS="' || libver;
 
-	IF  svnver IS NOT NULL THEN
-		fullver = fullver || ' r' || svnver;
+	IF  librev IS NOT NULL THEN
+		fullver = fullver || ' r' || librev;
 	END IF;
 
 	fullver = fullver || '"';
