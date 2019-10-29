@@ -36,7 +36,7 @@ sub read_rev_git {
   my $git_exe = `which git`;
   if ( ! $git_exe ) {
     print STDERR "Can't determine revision: no git executable found\n";
-    return "";
+    return 0;
   }
   chop($git_exe);
 
@@ -46,7 +46,7 @@ sub read_rev_git {
 
   if ( ! $rev ) {
     print STDERR "Can't determine revision from git log\n";
-    $rev = "";
+    $rev = 0;
   } else {
     chop($rev);
   }
@@ -67,7 +67,7 @@ sub write_defn {
       $oldrev = $1;
     }
     close(IN);
-    if ( $rev eq "" or $rev eq $oldrev ) {
+    if ( $rev eq "0" or $rev eq $oldrev ) {
       print STDERR "Not updating existing rev file at $oldrev\n";
       return;
     }
