@@ -30,7 +30,7 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include "../postgis_svn_revision.h"
+#include "../postgis_revision.h"
 
 const char *
 lwgeom_version()

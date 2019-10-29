@@ -11,7 +11,7 @@
 *.gcda
 *.gcno
 gmon.out
-postgis_svn_revision.h
+postgis_revision.h
 aclocal.m4
 autom4te.cache/
 build-aux/

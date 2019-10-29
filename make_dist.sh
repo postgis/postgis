@@ -92,10 +92,10 @@ owd="$PWD"
 cd "$outdir"
 ./autogen.sh
 ./configure ${CONFIGURE_ARGS}
-# generating postgis_svn_revision.h for >= 2.0.0 tags
-if test -f utils/svn_repo_revision.pl; then
-	echo "Generating postgis_svn_revision.h"
-	perl utils/svn_repo_revision.pl $svnurl
+# generating postgis_revision.h for >= 2.0.0 tags
+if test -f utils/repo_revision.pl; then
+	echo "Generating postgis_revision.h"
+	perl utils/repo_revision.pl $svnurl
 fi
 #make
 cd "$owd"
@@ -129,7 +129,7 @@ if test "$version" = "dev"; then
   VMAJ=`grep ^POSTGIS_MAJOR_VERSION "$outdir"/Version.config | cut -d= -f2`
   VMIN=`grep ^POSTGIS_MINOR_VERSION "$outdir"/Version.config | cut -d= -f2`
   VMIC=`grep ^POSTGIS_MICRO_VERSION "$outdir"/Version.config | cut -d= -f2`
-  VREV=`cat "$outdir"/postgis_svn_revision.h | awk '{print $3}'`
+  VREV=`cat "$outdir"/postgis_revision.h | awk '{print $3}'`
   version="${VMAJ}.${VMIN}.${VMIC}-r${VREV}"
   #if newoutdir is not already set, then set it
   if test "x$newoutdir" = "x"; then

@@ -6,7 +6,7 @@ use warnings;
 use strict;
 
 my $top_srcdir = ".";
-my $rev_file = $top_srcdir.'/postgis_svn_revision.h';
+my $rev_file = $top_srcdir.'/postgis_revision.h';
 
 my $target = 'local';
 $target = $ARGV[0] if $ARGV[0];

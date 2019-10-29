@@ -32,7 +32,7 @@ SCRIPTS_built = postgis_restore.pl
 
 SCRIPTS = \
 	create_undef.pl \
-	svn_repo_revision.pl \
+	repo_revision.pl \
 	postgis_proc_upgrade.pl \
 	profile_intersects.pl \
 	test_estimation.pl \

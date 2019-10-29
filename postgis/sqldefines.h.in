@@ -1,7 +1,7 @@
 #ifndef _LWPGIS_DEFINES
 #define _LWPGIS_DEFINES
 
-#include "../postgis_svn_revision.h"
+#include "../postgis_revision.h"
 
 /*
  * Define just the version numbers; otherwise we get some strange substitutions in postgis.sql.in

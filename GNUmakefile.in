@@ -25,7 +25,7 @@ all install uninstall noop clean distclean check-unit check-regress:
 		echo "PostGIS was built successfully. Ready to install."; \
 	fi
 
-all: postgis_svn_revision.h
+all: postgis_revision.h
 
 ifeq (@LIBLWGEOM_ONLY@,no)
 install: all comments-install
@@ -175,7 +175,7 @@ authors.git: authors.svn
 svnrebase: authors.git
 	git svn rebase --authors-file authors.git
 
-postgis_svn_revision.h:
-	$(PERL) utils/svn_repo_revision.pl
+postgis_revision.h:
+	$(PERL) utils/repo_revision.pl
 
-.PHONY: utils liblwgeom ChangeLog raster postgis_svn_revision.h
+.PHONY: utils liblwgeom ChangeLog raster postgis_revision.h
