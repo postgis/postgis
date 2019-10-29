@@ -169,12 +169,6 @@ fmt:
 commit:
 	$(MAKE) fmt && $(MAKE) clean && $(MAKE) check && svn commit
 
-authors.git: authors.svn
-	sed -e 's/:/ = /' authors.svn > authors.git
-
-svnrebase: authors.git
-	git svn rebase --authors-file authors.git
-
 postgis_revision.h:
 	$(PERL) utils/repo_revision.pl
 
