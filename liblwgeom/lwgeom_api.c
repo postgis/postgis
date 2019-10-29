@@ -32,6 +32,9 @@
 #include <assert.h>
 #include "../postgis_revision.h"
 
+#define xstr(s) str(s)
+#define str(s) #s
+
 const char *
 lwgeom_version()
 {
@@ -40,7 +43,7 @@ lwgeom_version()
   if ( ! ptr )
   {
     ptr = buf;
-    snprintf(ptr, 256, LIBLWGEOM_VERSION" r%d", POSTGIS_SVN_REVISION);
+    snprintf(ptr, 256, LIBLWGEOM_VERSION" " xstr(POSTGIS_REVISION));
   }
 
   return ptr;
