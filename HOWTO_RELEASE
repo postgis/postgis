@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2015-10-08
+Date: 2019-10-28
 
 Versioning Scheme
 -----------------
@@ -58,14 +58,13 @@ Release procedure
 -----------------
 
 - For first micro of a minor, make sure to pull the latest translations from transifex
-   TODO: more detail here - there is a job on debbie for 3.0 for examples
-   https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.0
+   TODO: more detail here - there is a job on debbie for 3.1 for examples
+   https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.1
    and she's setup with an api key to pull and push translations.
 
 - Ensure all bots are green: https://trac.osgeo.org/postgis
-- Re-generate the ChangeLog (make ChangeLog)
 - Edit NEWS: set release date and check all notable changes have
-  been reported (extract from ChangeLog).
+  been reported (extract from git log).
 - Edit README.postgis and set release date and version.
 - Add release notes in doc/release_notes.xml
 - Update Version.config to drop the "dev" suffix
@@ -94,7 +93,7 @@ Release procedure
 - Documentation should also have been built and should be in postgis.net/stuff
   (this sometimes takes sometime so wait 15 minutes)
 - Test generated tarball (including extension upgrade)
-- Copy tarball, pdf, doc-html.. to http://download.osgeo.org/postgis/ web site and edit postgis.net/source page
+- Copy tarball, pdf, doc-html.. to https://download.osgeo.org/postgis/ web site and edit postgis.net/source page
 - Announce on e-mail
     - postgis-users
     - postgis-devel
@@ -108,11 +107,13 @@ Release procedure
        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
-    - On postgis.net server, change /etc/apache2/postgis.net-common.conf (Versionless URL line )
+    - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
+         - nginx -t #to confirm you didn't breat the config
+         - service nginx reload
      Verify the documentation is up to date (might need to change the apach config)
     - Wikipedia
     - Twitter
-       This should automatically happen as a result of posting to PostGIS website since Planet PostGIS autotweets.
+       This should automatically happen as a result of posting to PostGIS website since Planet PostGIS and Planet PostgreSQL both autotweet.
 - Update Trac and make old Milestone as completed
 - Push the revision number forward (see Versioning Scheme)
 - Remove the "dev" suffixed version from extensions/upgradeable_versions.mk
