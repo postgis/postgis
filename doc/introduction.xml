@@ -27,39 +27,51 @@
 			or significant API changes.
 	</para>
 	<variablelist>
-	  <varlistentry>
+		<varlistentry>
+			<term>Raúl Marín Rodríguez</term>
+			<listitem>
+				<para>MVT support, Bug fixing, Performance and stability improvements, GitHub curation,  alignment of
+			PostGIS with PostgreSQL releases</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
-		  <para>Buildbot Maintenance, Windows production and experimental builds, documentation, alignment of
-		  PostGIS with PostgreSQL releases, general user support on PostGIS newsgroup,
-		  X3D support, TIGER geocoder Support, management functions,  and
-		  smoke testing new functionality or major code changes.</para>
+			<para>Buildbot Maintenance, Windows production and experimental builds, documentation, alignment of
+			PostGIS with PostgreSQL releases, X3D support, TIGER geocoder support, management functions.</para>
 		</listitem>
-	  </varlistentry>
+		</varlistentry>
 
-	  <varlistentry>
+		<varlistentry>
 		<term>Bborie Park</term>
 		<listitem>
-		  <para>Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
+			<para>Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
 		</listitem>
-	  </varlistentry>
+		</varlistentry>
 
-	  <varlistentry>
+		<varlistentry>
+			<term>Darafei Praliaskouski</term>
+			<listitem>
+				<para>Index improvements, bug fixing and geometry/geography function improvements, SFCGAL, raster, GitHub curation, and Travis bot maintenance.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
 		<term>Paul Ramsey (Chair)</term>
 		<listitem>
-		  <para>Co-founder of PostGIS project.  General bug fixing, geography support,  geography and geometry index support (2D, 3D, nD index and anything spatial index), underlying geometry internal structures, PointCloud (in development), GEOS functionality integration and alignment with
-		  GEOS releases, alignment of
-		  PostGIS with PostgreSQL releases, loader/dumper, and Shapefile GUI loader.</para>
+			<para>Co-founder of PostGIS project.  General bug fixing, geography support,  geography and geometry index support (2D, 3D, nD index and anything spatial index), underlying geometry internal structures, GEOS functionality integration and alignment with
+			GEOS releases, alignment of
+			PostGIS with PostgreSQL releases, loader/dumper, and Shapefile GUI loader.</para>
 		</listitem>
-	  </varlistentry>
+		</varlistentry>
 
-	  <varlistentry>
+		<varlistentry>
 		<term>Sandro Santilli</term>
-
 		<listitem>
-		  <para>Bug fixes and maintenance, git mirror management, integration of new GEOS functionality and alignment with GEOS releases, topology support, and raster framework and low level API functions.</para>
+			<para>Bug fixes and maintenance, buildbot maintenance, git mirror management, management functions, integration of new GEOS functionality and alignment with GEOS releases, topology support, and raster framework and low level API functions.</para>
 		</listitem>
-	  </varlistentry>
+		</varlistentry>
 
 	</variablelist>
   </sect1>
@@ -103,7 +115,7 @@
 			</listitem>
 		</varlistentry>
 
-    <varlistentry>
+    	<varlistentry>
 			<term>Björn Harrtell</term>
 
 			<listitem>
@@ -118,22 +130,6 @@
 			  <para>CMake support for PostGIS, built original raster loader in python and low level raster API functions</para>
 			</listitem>
 		</varlistentry>
-
-		<varlistentry>
-			<term>Raúl Marín Rodríguez</term>
-			<listitem>
-				<para>Bug fixing</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Darafei Praliaskouski</term>
-
-			<listitem>
-			  <para>Index improvements, bug fixing and geometry/geography function improvements, GitHub curation, and Travis bot maintenance.</para>
-			</listitem>
-		</varlistentry>
-
 
 		<varlistentry>
 			<term>Pierre Racine</term>
