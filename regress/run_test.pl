@@ -416,14 +416,15 @@ if ( $OPT_DUMPRESTORE )
 
 my $geosver =  sql("select postgis_geos_version()");
 my $projver = sql("select postgis_proj_version()");
-# TODO: call postgis_lib_revision() instead of postgis_svn_version
-#       if $libver >= 3.1.0
-my $librev = sql("select postgis_svn_version()");
 my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
 my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
 my $scriptver = sql("select postgis_scripts_installed()");
+# postgis_lib_revision was introduced in 3.1.0
+my $librev = semver_lessthan($scriptver, "3.1.0") ?
+							sql("select postgis_svn_version()") :
+							sql("select postgis_lib_revision()");
 my $raster_scriptver = sql("select postgis_raster_scripts_installed()")
   if ( $OPT_WITH_RASTER );
 
