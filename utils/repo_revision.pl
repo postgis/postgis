@@ -11,7 +11,7 @@ my $rev_file = $top_srcdir.'/postgis_revision.h';
 my $target = 'local';
 $target = $ARGV[0] if $ARGV[0];
 
-# Read the svn revision number
+# Read the revision number
 my $rev = &read_rev($target);
 
 # Write it
@@ -31,7 +31,7 @@ sub read_rev_git {
 
   # TODO: test on old systems, I think I saw some `which`
   #       implementations returning "nothing found" or something
-  #       like that, making the later if ( ! $svn_exe ) always false
+  #       like that, making the later if ( ! $git_exe ) always false
   #
   my $git_exe = `which git`;
   if ( ! $git_exe ) {
