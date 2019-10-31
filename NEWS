@@ -18,6 +18,7 @@ PostGIS 3.1.0
   - #4545, Fix leak in wkt_parser_triangle_new (Raúl Marín)
   - #4549, Fix several functions when the schema isn't the search_path (Raúl Marín)
   - #4546, Fix PLPGSQL functions missing the schema qualification (Raúl Marín)
+  - #4558, Fix oversimplification of polygon inner rings (Raúl Marín)
 
 
 PostGIS 3.0.0
