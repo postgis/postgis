@@ -1,3 +1,10 @@
+## 2.5.1.8+carto-1
+
+**Release date**: 20XX-XX-XX
+
+Changes:
+- Backport 570fbdb10: Fix oversimplification of polygon inner rings
+
 ## 2.5.1.7+carto-1
 
 **Release date**: 2019-10-03
