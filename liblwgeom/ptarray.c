@@ -1806,49 +1806,30 @@ ptarray_length(const POINTARRAY *pts)
 void
 ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 {
-	uint32_t i;
-	double x,y,z;
-	POINT4D p4d;
-
-	LWDEBUG(2, "lwgeom_affine_ptarray start");
-
-	if ( FLAGS_GET_Z(pa->flags) )
+	if (FLAGS_GET_Z(pa->flags))
 	{
-		LWDEBUG(3, " has z");
-
-		for (i=0; i<pa->npoints; i++)
+		for (uint32_t i = 0; i < pa->npoints; i++)
 		{
-			getPoint4d_p(pa, i, &p4d);
-			x = p4d.x;
-			y = p4d.y;
-			z = p4d.z;
-			p4d.x = a->afac * x + a->bfac * y + a->cfac * z + a->xoff;
-			p4d.y = a->dfac * x + a->efac * y + a->ffac * z + a->yoff;
-			p4d.z = a->gfac * x + a->hfac * y + a->ifac * z + a->zoff;
-			ptarray_set_point4d(pa, i, &p4d);
-
-			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, z, p4d.x, p4d.y, p4d.z);
+			POINT4D *p4d = (POINT4D *)(getPoint_internal(pa, i));
+			double x = p4d->x;
+			double y = p4d->y;
+			double z = p4d->z;
+			p4d->x = a->afac * x + a->bfac * y + a->cfac * z + a->xoff;
+			p4d->y = a->dfac * x + a->efac * y + a->ffac * z + a->yoff;
+			p4d->z = a->gfac * x + a->hfac * y + a->ifac * z + a->zoff;
 		}
 	}
 	else
 	{
-		LWDEBUG(3, " doesn't have z");
-
-		for (i=0; i<pa->npoints; i++)
+		for (uint32_t i = 0; i < pa->npoints; i++)
 		{
-			getPoint4d_p(pa, i, &p4d);
-			x = p4d.x;
-			y = p4d.y;
-			p4d.x = a->afac * x + a->bfac * y + a->xoff;
-			p4d.y = a->dfac * x + a->efac * y + a->yoff;
-			ptarray_set_point4d(pa, i, &p4d);
-
-			LWDEBUGF(3, " POINT %g %g => %g %g", x, y, p4d.x, p4d.y);
+			POINT2D *pt = (POINT2D *)(getPoint_internal(pa, i));
+			double x = pt->x;
+			double y = pt->y;
+			pt->x = a->afac * x + a->bfac * y + a->xoff;
+			pt->y = a->dfac * x + a->efac * y + a->yoff;
 		}
 	}
-
-	LWDEBUG(3, "lwgeom_affine_ptarray end");
-
 }
 
 /**

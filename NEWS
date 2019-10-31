@@ -13,7 +13,8 @@ PostGIS 3.1.0
 * Enhancements *
   - #4539, Unify libm includes (Raúl Marín)
   - #4569, Allow unknown SRID geometry insertion into typmod SRID column (Paul Ramsey)
-  - #4149, ST_Simplify(geom, 0) is now O(N) (Darafei Praliaskouski)
+  - #4149, ST_Simplify(geom, 0) is now O(N).
+           ST_Affine (ST_Translate, ST_TransScale, ST_Rotate) optimized. (Darafei Praliaskouski)
   - #4574, Link Time Optimizations enabled (Darafei Praliaskouski)
 
 * Bug fixes *
