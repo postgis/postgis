@@ -584,7 +584,7 @@ SELECT '#3922', St_GeometryType(ST_AsMVTGeom(
 		4096,
 		0,
 		true
-		));
+		)) is not null;
 
 SELECT '#4294_Horizontal', ST_AsText(ST_AsMVTGeom(
 	ST_GeomFromText('MULTILINESTRING((0 0, 0 5))'),
