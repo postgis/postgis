@@ -1,3 +1,10 @@
+PostGIS 3.0.1
+XXXX/XX/XX
+
+* Bug Fixes and Enhancements
+  - #4558, Fix oversimplification of polygon inner rings (Raúl Marín)
+
+
 PostGIS 3.0.0
 2019/10/20
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+

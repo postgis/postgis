@@ -1782,14 +1782,22 @@ lwgeom_simplify_in_place(LWGEOM *geom, double epsilon, int preserve_collapsed)
 				/* Drop collapsed rings */
 				if(pa->npoints < 4)
 				{
-					/* Any ring deeper than this one is, by OGR definition, smaller
-					 * so we drop them all */
-					for (; i < g->nrings; i++)
+					if (i == 0)
 					{
-						pa = g->rings[i];
-						ptarray_free(pa);
+						/* If the outter ring is dropped, all can be dropped */
+						for (i = 0; i < g->nrings; i++)
+						{
+							pa = g->rings[i];
+							ptarray_free(pa);
+						}
+						break;
 					}
-					break;
+					else
+					{
+						/* Drop this inner ring only */
+						ptarray_free(pa);
+						continue;
+					}
 				}
 				g->rings[j++] = pa;
 			}
