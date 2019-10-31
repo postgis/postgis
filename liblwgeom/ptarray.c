@@ -2007,70 +2007,64 @@ ptarray_startpoint(const POINTARRAY *pa, POINT4D *pt)
 void
 ptarray_grid_in_place(POINTARRAY *pa, const gridspec *grid)
 {
-	uint32_t i, j = 0;
+	uint32_t j = 0;
 	POINT4D *p, *p_out = NULL;
-	int ndims = FLAGS_NDIMS(pa->flags);
-	int has_z = FLAGS_GET_Z(pa->flags);
-	int has_m = FLAGS_GET_M(pa->flags);
+	double x, y, z = 0, m = 0;
+	uint32_t ndims = FLAGS_NDIMS(pa->flags);
+	uint32_t has_z = FLAGS_GET_Z(pa->flags);
+	uint32_t has_m = FLAGS_GET_M(pa->flags);
 
-	LWDEBUGF(2, "%s called on %p", __func__, pa);
-
-	for (i = 0; i < pa->npoints; i++)
+	for (uint32_t i = 0; i < pa->npoints; i++)
 	{
 		/* Look straight into the abyss */
-		p = (POINT4D*)(getPoint_internal(pa, i));
+		p = (POINT4D *)(getPoint_internal(pa, i));
+		x = p->x;
+		y = p->y;
+		if (ndims > 2)
+			z = p->z;
+		if (ndims > 3)
+			m = p->m;
 
 		if (grid->xsize > 0)
-		{
-			p->x = rint((p->x - grid->ipx)/grid->xsize) * grid->xsize + grid->ipx;
-		}
+			x = rint((x - grid->ipx) / grid->xsize) * grid->xsize + grid->ipx;
 
 		if (grid->ysize > 0)
-		{
-			p->y = rint((p->y - grid->ipy)/grid->ysize) * grid->ysize + grid->ipy;
-		}
+			y = rint((y - grid->ipy) / grid->ysize) * grid->ysize + grid->ipy;
 
 		/* Read and round this point */
 		/* Z is always in third position */
-		if (has_z)
-		{
-			if (grid->zsize > 0)
-				p->z = rint((p->z - grid->ipz)/grid->zsize) * grid->zsize + grid->ipz;
-		}
+		if (has_z && grid->zsize > 0)
+			z = rint((z - grid->ipz) / grid->zsize) * grid->zsize + grid->ipz;
+
 		/* M might be in 3rd or 4th position */
-		if (has_m)
+		if (has_m && grid->msize > 0)
 		{
-			/* In POINT M, M is in 3rd position */
-			if (grid->msize > 0 && !has_z)
-				p->z = rint((p->z - grid->ipm)/grid->msize) * grid->msize + grid->ipm;
-			/* In POINT ZM, M is in 4th position */
-			if (grid->msize > 0 && has_z)
-				p->m = rint((p->m - grid->ipm)/grid->msize) * grid->msize + grid->ipm;
+			/* In POINT ZM, M is in 4th position, in POINT M, M is in 3rd position which is Z in POINT4D */
+			if (has_z)
+				m = rint((m - grid->ipm) / grid->msize) * grid->msize + grid->ipm;
+			else
+				z = rint((z - grid->ipm) / grid->msize) * grid->msize + grid->ipm;
 		}
 
 		/* Skip duplicates */
-		if ( p_out && FP_EQUALS(p_out->x, p->x) && FP_EQUALS(p_out->y, p->y)
-		   && (ndims > 2 ? FP_EQUALS(p_out->z, p->z) : 1)
-		   && (ndims > 3 ? FP_EQUALS(p_out->m, p->m) : 1) )
-		{
+		if (p_out && p_out->x == x && p_out->y == y && (ndims > 2 ? p_out->z == z : 1) &&
+		    (ndims > 3 ? p_out->m == m : 1))
 			continue;
-		}
 
 		/* Write rounded values into the next available point */
-		p_out = (POINT4D*)(getPoint_internal(pa, j++));
-		p_out->x = p->x;
-		p_out->y = p->y;
+		p_out = (POINT4D *)(getPoint_internal(pa, j++));
+		p_out->x = x;
+		p_out->y = y;
 		if (ndims > 2)
-			p_out->z = p->z;
+			p_out->z = z;
 		if (ndims > 3)
-			p_out->m = p->m;
+			p_out->m = m;
 	}
 
 	/* Update output ptarray length */
 	pa->npoints = j;
 	return;
 }
-
 
 int
 ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
