@@ -1583,12 +1583,61 @@ ptarray_dp_findsplit_in_place(const POINTARRAY *pts, uint32_t it_first, uint32_t
 	return split;
 }
 
+/* O(N) simplification for tolearnce = 0 */
+static void
+ptarray_simplify_in_place_tolerance0(POINTARRAY *pa)
+{
+	uint32_t kept_it = 0;
+	uint32_t last_it = pa->npoints - 1;
+	const POINT2D *kept_pt = getPoint2d_cp(pa, 0);
+	const size_t pt_size = ptarray_point_size(pa);
+
+	for (uint32_t i = 1; i < last_it; i++)
+	{
+		const POINT2D *curr_pt = getPoint2d_cp(pa, i);
+		const POINT2D *next_pt = getPoint2d_cp(pa, i + 1);
+
+		double ba_x = next_pt->x - kept_pt->x;
+		double ba_y = next_pt->y - kept_pt->y;
+		double ab_length_sqr = ba_x * ba_x + ba_y * ba_y;
+
+		double ca_x = curr_pt->x - kept_pt->x;
+		double ca_y = curr_pt->y - kept_pt->y;
+		double dot_ac_ab = ca_x * ba_x + ca_y * ba_y;
+		double s_numerator = ca_x * ba_y - ca_y * ba_x;
+
+		if (dot_ac_ab < 0.0 || dot_ac_ab > ab_length_sqr || s_numerator != 0)
+		{
+			kept_it++;
+			kept_pt = curr_pt;
+			if (kept_it != i)
+				memcpy(pa->serialized_pointlist + pt_size * kept_it,
+				       pa->serialized_pointlist + pt_size * i,
+				       pt_size);
+		}
+	}
+
+	/* Append last point */
+	kept_it++;
+	if (kept_it != last_it)
+		memcpy(pa->serialized_pointlist + pt_size * kept_it,
+		       pa->serialized_pointlist + pt_size * last_it,
+		       pt_size);
+	pa->npoints = kept_it + 1;
+}
+
 void
 ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 {
 	/* Do not try to simplify really short things */
 	if (pa->npoints < 3 || pa->npoints <= minpts)
 		return;
+
+	if (tolerance == 0 && minpts <= 2)
+	{
+		ptarray_simplify_in_place_tolerance0(pa);
+		return;
+	}
 
 	/* We use this array to keep track of the points we are keeping, so
 	 * we store just TRUE / FALSE in their position */
