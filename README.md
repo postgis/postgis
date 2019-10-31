@@ -6,7 +6,7 @@ Dronie:
  [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=master)](https://dronie.osgeo.org/postgis/postgis?branch=master)
 
 Travis:
- [![Build Status](https://api.travis-ci.org/postgis/postgis.svg?branch=master,svn-2.5,svn-2.4,svn-2.3)](http://travis-ci.org/postgis/postgis)
+ [![Build Status](https://api.travis-ci.org/postgis/postgis.svg?branch=master)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/master/build.svg)](https://gitlab.com/postgis/postgis/commits/master)
 Drone.io:
