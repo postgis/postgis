@@ -12,6 +12,7 @@ PostGIS 3.1.0
 
 * Enhancements *
   - #4539, Unify libm includes (Raúl Marín)
+  - #4569, Allow unknown SRID geometry insertion into typmod SRID column (Paul Ramsey)
 
 * Bug fixes *
   - #4544, Fix leak when parsing a WKT geometry_list (Raúl Marín)
