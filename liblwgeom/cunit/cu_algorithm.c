@@ -1167,6 +1167,48 @@ static void test_lwgeom_simplify(void)
 	lwgeom_free(g);
 	lwgeom_free(l);
 	lwfree(ewkt);
+
+	/* POLYGON with multiple inner rings*/
+	g = lwgeom_from_wkt(
+	    "POLYGON("
+	    "(0 0, 100 0, 100 100, 0 100, 0 0),"
+	    "(1 1, 1 5, 5 5, 5 1, 1 1),"
+	    "(20 20, 20 40, 40 40, 40 20, 20 20)"
+	    ")",
+	    LW_PARSER_CHECK_NONE);
+	l = lwgeom_simplify(g, 10, LW_FALSE);
+	ewkt = lwgeom_to_ewkt(l);
+	ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,100 0,100 100,0 100,0 0),(20 20,20 40,40 40,40 20,20 20))");
+	lwgeom_free(g);
+	lwgeom_free(l);
+	lwfree(ewkt);
+
+	/* Reorder inner rings: Same result */
+	g = lwgeom_from_wkt(
+	    "POLYGON("
+	    "(0 0, 100 0, 100 100, 0 100, 0 0),"
+	    "(20 20, 20 40, 40 40, 40 20, 20 20),"
+	    "(1 1, 1 5, 5 5, 5 1, 1 1)"
+	    ")",
+	    LW_PARSER_CHECK_NONE);
+	l = lwgeom_simplify(g, 10, LW_FALSE);
+	ewkt = lwgeom_to_ewkt(l);
+	ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,100 0,100 100,0 100,0 0),(20 20,20 40,40 40,40 20,20 20))");
+	lwgeom_free(g);
+	lwgeom_free(l);
+	lwfree(ewkt);
+
+	g = lwgeom_from_wkt(
+	    "POLYGON("
+	    "(0 0, 100 0, 100 100, 0 100, 0 0),"
+	    "(20 20, 20 40, 40 40, 40 20, 20 20),"
+	    "(1 1, 1 5, 5 5, 5 1, 1 1)"
+	    ")",
+	    LW_PARSER_CHECK_NONE);
+	l = lwgeom_simplify(g, 100, LW_FALSE);
+	CU_ASSERT_EQUAL(l, NULL);
+	lwgeom_free(g);
+	lwgeom_free(l);
 }
 
 
