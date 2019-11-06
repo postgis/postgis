@@ -117,6 +117,12 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   # Check unpackaged->extension upgrades
   for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
     UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
+    # only consider versions older than ${to_version_param}
+    cmp=`semver_compare "${majmin}" "${to_version_param}"`
+    if test $cmp -ge 0; then
+      echo "SKIP: upgrade $UPGRADE_PATH ($to_version_param is not newer than $majmin)"
+      continue
+    fi
     echo "Testing ${EXT} upgrade $UPGRADE_PATH"
     export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
     make -C ${REGDIR} check && {
