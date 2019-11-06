@@ -224,6 +224,7 @@ cp utils/*.pl ${RELDIR}/${RELVERDIR}/utils
 #cp raster/rt_pg/rtpostgis_upgrade_20_minor.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 
 cp raster/loader/.libs/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
+cp raster/loader/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
 cp loader/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
