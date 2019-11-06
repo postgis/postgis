@@ -207,6 +207,7 @@ cp raster/rt_pg/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MIN
 cp utils/*.pl ${RELDIR}/${RELVERDIR}/utils
 
 cp raster/loader/.libs/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
+cp raster/loader/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
 cp loader/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
