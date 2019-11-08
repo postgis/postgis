@@ -23,7 +23,8 @@
 # **********************************************************************/
 
 CC = @CC@
-CPPFLAGS = @CPPFLAGS@
+RYU_INCLUDE = -I../deps/ryu/..
+CPPFLAGS =  $(RYU_INCLUDE) @CPPFLAGS@
 CFLAGS = @WARNFLAGS@ @CFLAGS@ @PICFLAGS@
 LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ @JSON_LDFLAGS@
 NUMERICFLAGS = @NUMERICFLAGS@
@@ -173,8 +174,13 @@ $(LT_OBJS): ../postgis_config.h ../postgis_revision.h $(SA_HEADERS)
 ../postgis_revision.h:
 	$(MAKE) -C .. postgis_revision.h
 
-liblwgeom.la: $(LT_OBJS)
-	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) \
+
+RYU_LIBPATH = ../deps/ryu/@RYU_LIB@
+$(RYU_LIBPATH):
+	$(MAKE) -C ../deps/ryu @RYU_LIB@
+
+liblwgeom.la: $(LT_OBJS) $(RYU_LIBPATH)
+	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) $(RYU_LIBPATH)\
              -release $(SOVER) -version-info $(VERSION_INFO) $(LDFLAGS) -static -o $@
 
 maintainer-clean: clean
@@ -191,7 +197,6 @@ clean:
 distclean: clean
 	$(MAKE) -C cunit distclean
 	rm -f liblwgeom.h Makefile
-	rm -f Makefile
 
 check: check-unit
 

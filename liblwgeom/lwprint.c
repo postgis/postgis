@@ -28,6 +28,7 @@
 #include <string.h>
 #include <math.h>
 #include "liblwgeom_internal.h"
+#include "ryu/ryu.h"
 
 /* Ensures the given lat and lon are in the "normal" range:
  * -90 to +90 for lat, -180 to +180 for lon. */
@@ -473,6 +474,7 @@ trim_trailing_zeros(char* str)
 	LWDEBUGF(3, "output: %s", str);
 }
 
+
 /*
  * Print an ordinate value using at most the given number of decimal digits
  *
@@ -501,12 +503,16 @@ lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
 	{
 		ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
 		if (maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd)) maxdd -= ndd;
-		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
+		//		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
+		length = d2fixed_buffered_n(d, maxdd, buf);
 	}
 	else
 	{
-		length = snprintf(buf, bufsize, "%g", d);
+		//		length = snprintf(buf, bufsize, "%g", d);
+		// TODO: Handle maxdd here
+		length = d2exp_buffered_n(d, maxdd, buf);
 	}
+	buf[length] = '\0';
 	trim_trailing_zeros(buf);
 	return length;
 }
