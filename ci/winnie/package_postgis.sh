@@ -17,7 +17,7 @@
 #!/bin/bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8.0
-	export GDAL_VER=2.4.2
+	export GDAL_VER=2.4.3
 	export PROJ_VER=5.2.0
 	export SFCGAL_VER=1.3.2
 	export CGAL_VER=4.11
@@ -236,15 +236,19 @@ cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer i
 cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
 
 
-echo "GEOS VERSION: ${GEOS_VER} http://trac.osgeo.org/geos" >> $verfile
-echo "GDAL VERSION: ${GDAL_VER} http://trac.osgeo.org/gdal" >> $verfile
-echo "PROJ VERSION: ${PROJ_VER} http://trac.osgeo.org/proj" >> $verfile
+echo "GEOS VERSION: ${GEOS_VER} https://trac.osgeo.org/geos" >> $verfile
+echo "GDAL VERSION: ${GDAL_VER} https://gdal.org/download.html#current-releases" >> $verfile
+echo "PROJ VERSION: ${PROJ_VER} https://proj.org/download.html#current-release" >> $verfile
 
 if [ -n "$SFCGAL_VER"  ]; then
     echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
     echo "BOOST VERSION: ${BOOST_VER} http://www.boost.org" >> $verfile
     echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://github.com/Oslandia/SFCGAL" >> $verfile
 fi;
+
+if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then 
+	cat $verfile ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt > $verfile
+fi
 #echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}
