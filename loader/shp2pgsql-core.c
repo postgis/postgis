@@ -839,10 +839,7 @@ int
 ShpLoaderOpenShape(SHPLOADERSTATE *state)
 {
 	SHPObject *obj = NULL;
-	int j, z;
 	int ret = SHPLOADEROK;
-
-	int field_precision, field_width;
 	char name[MAXFIELDNAMELEN];
 	char name2[MAXFIELDNAMELEN];
 	DBFFieldType type = FTInvalid;
@@ -905,7 +902,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		if (state->config->null_policy == POLICY_NULL_ABORT)
 		{
 			/* If we abort on null items, scan the entire file for NULLs */
-			for (j = 0; j < state->num_entities; j++)
+			for (int j = 0; j < state->num_entities; j++)
 			{
 				obj = SHPReadObject(state->hSHPHandle, j);
 
@@ -1104,8 +1101,9 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	/* Generate a string of comma separated column names of the form "col1, col2 ... colN" for the SQL
 	   insertion string */
 
-	for (j = 0; j < state->num_fields; j++)
+	for (int j = 0; j < state->num_fields; j++)
 	{
+		int field_precision = 0, field_width = 0;
 		type = DBFGetFieldInfo(state->hDBFHandle, j, name, &field_width, &field_precision);
 
 		state->types[j] = type;
@@ -1183,7 +1181,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		}
 
 		/* Avoid duplicating field names */
-		for (z = 0; z < j ; z++)
+		for (int z = 0; z < j; z++)
 		{
 			if (strcmp(state->field_names[z], name) == 0)
 			{

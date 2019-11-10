@@ -270,34 +270,30 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	uint8_t *ptr;
 	int zmflag;
 
-	if ( ! pa )
+	if (!pa)
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
-		return 0;
+		return LW_FALSE;
 	}
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
-		return 0;
+		return LW_FALSE;
 	}
 
-	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
-	         n, FLAGS_NDIMS(pa->flags), pa->npoints);
-
-
 	/* Get a pointer to nth point offset and zmflag */
-	ptr=getPoint_internal(pa, n);
-	zmflag=FLAGS_GET_ZM(pa->flags);
+	ptr = getPoint_internal(pa, n);
+	zmflag = FLAGS_GET_ZM(pa->flags);
 
 	/*
 	 * if input POINTARRAY has the M and NO Z,
 	 * we can issue a single memcpy
 	 */
-	if ( zmflag == 1 )
+	if (zmflag == 1)
 	{
 		memcpy(op, ptr, sizeof(POINT3DM));
-		return 1;
+		return LW_TRUE;
 	}
 
 	/*
@@ -311,19 +307,16 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	 * copy next double, otherwise initialize
 	 * M to NO_M_VALUE
 	 */
-	if ( zmflag == 3 )
+	if (zmflag == 3)
 	{
-		ptr+=sizeof(POINT3DZ);
+		ptr += sizeof(POINT3DZ);
 		memcpy(&(op->m), ptr, sizeof(double));
 	}
 	else
-	{
-		op->m=NO_M_VALUE;
-	}
+		op->m = NO_M_VALUE;
 
-	return 1;
+	return LW_TRUE;
 }
-
 
 /*
  * Copy a point from the point array into the parameter point
