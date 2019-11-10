@@ -1128,6 +1128,8 @@ if test $ENABLE_DEBUG -eq 1; then
 else
     AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
     AC_DEFINE([NDEBUG], [0], [Disable C asserts])
+    AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -flto], [_cv_flto], [-flto], [], [CFLAGS="$CFLAGS -flto"], [])
+    AC_LIBTOOL_LINKER_OPTION([if $compiler supports -flto], [_cv_flto], [[-flto]], [LDFLAGS="$LDFLAGS -flto"])
 fi
 
 
