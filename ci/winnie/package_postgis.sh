@@ -17,7 +17,7 @@
 #!/bin/bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8.0
-	export GDAL_VER=2.4.2
+	export GDAL_VER=2.4.3
 	export PROJ_VER=5.2.0
 	export SFCGAL_VER=1.3.2
 	export CGAL_VER=4.11
