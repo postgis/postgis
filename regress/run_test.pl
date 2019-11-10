@@ -15,6 +15,7 @@
 #$| = 1;
 use File::Basename;
 use File::Temp 'tempdir';
+use Time::HiRes qw(time);
 #use File::Which;
 use File::Copy;
 use File::Path;
@@ -456,6 +457,7 @@ foreach $TEST (@ARGV)
 {
 	my $TEST_OBJ_COUNT_PRE;
 	my $TEST_OBJ_COUNT_POST;
+	my $TEST_START_TIME;
 
 	# catch a common mistake (strip trailing .sql)
 	$TEST =~ s/.sql$//;
@@ -478,23 +480,24 @@ foreach $TEST (@ARGV)
 	# create the .sql
 	# Check for .dbf not just .shp since the loader can load
 	# .dbf files without a .shp.
+	$TEST_START_TIME = time;
 	if ( -r "${TEST}.dbf" )
 	{
-		pass() if ( run_loader_test() );
+		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if ( run_loader_test() );
 	}
 	elsif ( -r "${TEST}.tif" )
 	{
 		my $rv = run_raster_loader_test();
-		pass() if $rv;
+		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if $rv;
 	}
 	elsif ( -r "${TEST}.sql" )
 	{
 		my $rv = run_simple_test("${TEST}.sql", "${TEST}_expected");
-		pass() if $rv;
+		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if $rv;
 	}
 	elsif ( -r "${TEST}.dmp" )
 	{
-		pass() if run_dumper_test();
+		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if run_dumper_test();
 	}
 	else
 	{
@@ -630,8 +633,8 @@ sub show_progress
 # pass <msg>
 sub pass
 {
-  my $msg = shift;
-  printf(" ok %s\n", $msg);
+    my $msg = shift;
+    printf(" ok %s\n", $msg);
 }
 
 # fail <msg> <log>
