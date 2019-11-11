@@ -117,8 +117,8 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 			</listitem>
 		</itemizedlist>
 
-		By doing this, PostGIS EWKB/EWKT avoids over-specifying dimensionality and a whole
-		categories of potential errors that ISO admits, e.g.:
+		<para>By doing this, PostGIS EWKB/EWKT avoids over-specifying dimensionality and a whole
+		categories of potential errors that ISO admits, e.g.:</para>
 
 		<itemizedlist>
 			<listitem>
