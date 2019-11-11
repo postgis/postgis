@@ -10,8 +10,7 @@
 	PostGIS supports all the objects and functions specified in the OGC
 	"Simple Features for SQL" specification.</para>
 
-	<para>PostGIS extends the standard with support for 3DZ, 3DM and 4D
-	coordinates.</para>
+	<para>PostGIS extends the standard with support for embedded SRID information.</para>
 
 	<sect2 id="OpenGISWKBWKT">
 	  <title>OpenGIS WKB and WKT</title>
@@ -30,6 +29,14 @@
 		</listitem>
 
 		<listitem>
+		  <para>POINT Z (0 0 0)</para>
+		</listitem>
+
+		<listitem>
+		  <para>POINT ZM (0 0 0 0)</para>
+		</listitem>
+
+		<listitem>
 		  <para>LINESTRING(0 0,1 1,1 2)</para>
 		</listitem>
 
@@ -39,6 +46,10 @@
 
 		<listitem>
 		  <para>MULTIPOINT((0 0),(1 2))</para>
+		</listitem>
+
+		<listitem>
+		  <para>MULTIPOINT Z ((0 0 0),(1 2 3))</para>
 		</listitem>
 
 		<listitem>
@@ -78,16 +89,54 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 	<sect2 id="EWKB_EWKT">
 	  <title>PostGIS EWKB, EWKT and Canonical Forms</title>
 
-	  <para>OGC formats only support 2D geometries, and the associated SRID is
-	  *never* embedded in the input/output representations.</para>
+		<para>First OpenGIS specifications (prior to 1.2.0) only support 2D geometries,
+		and the associated SRID is *never* embedded in the input/output representations.</para>
 
-	  <para>PostGIS extended formats are currently superset of OGC one (every
-	  valid WKB/WKT is a valid EWKB/EWKT) but this might vary in the future,
-	  specifically if OGC comes out with a new format conflicting with our
-	  extensions. Thus you SHOULD NOT rely on this feature!</para>
+		<para>Even though the last OpenGIS specification 1.2.1 supports 3DM and 3DZ coordinates
+		specifing ZM qualifiers, it does not include yet the associated SRID in the
+		input/output representations.</para>
 
-	  <para>PostGIS EWKB/EWKT add 3DM, 3DZ, 4D coordinates support and embedded
-	  SRID information.</para>
+		<para>PostGIS extended formats add 3DM, 3DZ, 4D coordinates support and embedded
+		SRID information. However, PostGIS EWKB/EWKT outputs have several peculiarities:</para>
+
+		<itemizedlist>
+			<listitem>
+				<para>For 3DZ geometries they will drop the Z qualifier:</para>
+				<para>OpenGIS: POINT Z (1 2 3)</para>
+				<para>EWKB/EWKT: POINT(1 2 3)</para>
+			</listitem>
+			<listitem>
+				<para>For 3DM geometries they will keep the M qualifier:</para>
+				<para>OpenGIS: POINT M (1 2 3)</para>
+				<para>EWKB/EWKT: POINTM(1 2 3)</para>
+			</listitem>
+			<listitem>
+				<para>For 4D geometries they will drop the ZM qualifiers:</para>
+				<para>OpenGIS: POINT ZM (1 2 3 4)</para>
+				<para>EWKB/EWKT: POINT(1 2 3 4)</para>
+			</listitem>
+		</itemizedlist>
+
+		<para>By doing this, PostGIS EWKB/EWKT avoids over-specifying dimensionality and a whole
+		categories of potential errors that ISO admits, e.g.:</para>
+
+		<itemizedlist>
+			<listitem>
+				<para>POINT ZM (1 1)</para>
+			</listitem>
+			<listitem>
+				<para>POINT ZM (1 1 1)</para>
+			</listitem>
+			<listitem>
+				<para>POINT (1 1 1 1)</para>
+			</listitem>
+		</itemizedlist>
+
+		<caution>
+			<para>PostGIS extended formats are currently superset of the OGC one (every valid WKB/WKT is a valid EWKB/EWKT)
+			but this might vary in the future, specifically if OGC comes out with a new format conflicting with our
+			extensions. Thus you SHOULD NOT rely on this feature!</para>
+		</caution>
 
 	  <para>Examples of the text representations (EWKT) of the extended
 	  spatial objects of the features are as follows.</para>
@@ -2170,33 +2219,33 @@ WHERE
 	 	<title>SP-GiST Indexes</title>
 
 		<para>SP-GiST stands for "Space-Partitioned Generalized Search Tree" and is
-		a generic form of indexing that supports partitioned search trees, such as 
+		a generic form of indexing that supports partitioned search trees, such as
 		quad-trees, k-d trees, and radix trees (tries). The common feature of these
-		data structures is that they repeatedly divide the search space into 
-		partitions that need not be of equal size. In addition to GIS indexing, 
-		SP-GiST is used to speed up searches on many kinds of data, such as phone 
+		data structures is that they repeatedly divide the search space into
+		partitions that need not be of equal size. In addition to GIS indexing,
+		SP-GiST is used to speed up searches on many kinds of data, such as phone
 		routing, ip routing, substring search, etc. </para>
 
     <para>As it is the case for GiST indexes, SP-GiST indexes are lossy, in the
-		sense that they store the bounding box englobing the spatial objects. 
-		SP-GiST indexes can be considered as an alternative to GiST indexes. The 
-		performance tests reveal that SP-GiST indexes are especially beneficial 
-		when there are many overlapping objects, that is, with so-called 
+		sense that they store the bounding box englobing the spatial objects.
+		SP-GiST indexes can be considered as an alternative to GiST indexes. The
+		performance tests reveal that SP-GiST indexes are especially beneficial
+		when there are many overlapping objects, that is, with so-called
 		“spaghetti data”.</para>
 
-		<para>Once a GIS data table exceeds a few thousand rows, an SP-GiST index 
-		may be used to speed up spatial searches of the data. The syntax for 
+		<para>Once a GIS data table exceeds a few thousand rows, an SP-GiST index
+		may be used to speed up spatial searches of the data. The syntax for
 		building an SP-GiST index on a "geometry" column is as follows:</para>
 
 		<para><programlisting>CREATE INDEX [indexname] ON [tablename] USING SPGIST ( [geometryfield] ); </programlisting></para>
 
-		<para>The above syntax will build a 2-dimensional index. A 3-dimensional 
+		<para>The above syntax will build a 2-dimensional index. A 3-dimensional
 		index for the geometry type can be created using the 3D operator class:</para>
 
 		<para><programlisting>CREATE INDEX [indexname] ON [tablename] USING SPGIST ([geometryfield] spgist_geometry_ops_3d);</programlisting></para>
 
-		<para>Building a spatial index is a computationally intensive operation. 
-		It also blocks write access to your table for the time it creates, so on a 
+		<para>Building a spatial index is a computationally intensive operation.
+		It also blocks write access to your table for the time it creates, so on a
 		production system you may want to do in in a slower CONCURRENTLY-aware way:</para>
 
 	  <para><programlisting>CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST ( [geometryfield] ); </programlisting></para>
