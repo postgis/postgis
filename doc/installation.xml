@@ -307,21 +307,22 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	<para>
 	  Alternatively, checkout the source from the
-	  <ulink url="http://subversion.apache.org/">
-		svn
+	  <ulink url="https://git-scm.com/">
+		git
 	  </ulink>
 	  repository
-	  <ulink url="https://svn.osgeo.org/postgis/trunk/">
-		https://svn.osgeo.org/postgis/trunk/
+	  <ulink url="https://git.osgeo.org/gitea/postgis/postgis/">
+		https://git.osgeo.org/gitea/postgis/postgis/
 	  </ulink>
 	  .
 	</para>
 
-	<programlisting>svn checkout https://svn.osgeo.org/postgis/trunk/ postgis-&last_release_version;</programlisting>
+	<programlisting>git clone -b stable-&last_minor_version; https://git.osgeo.org/gitea/postgis/postgis.git postgis-&last_minor_version;</programlisting>
+	<para>PostGIS also offers <ulink url="https://postgis.net/source/">several git mirrors</ulink>.</para>
 
 	<para>
 	  Change into the newly created
-	  <varname>postgis-&last_release_version;</varname> directory to continue
+	  <varname>postgis-&last_minor_version;</varname> directory to continue
 	  the installation.
 	</para>
   </sect1>
