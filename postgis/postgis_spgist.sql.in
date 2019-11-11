@@ -7,32 +7,32 @@
 CREATE OR REPLACE FUNCTION geometry_spgist_config_2d(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME' ,'gserialized_spgist_config_2d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_choose_2d(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME' ,'gserialized_spgist_choose_2d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_2d(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME' ,'gserialized_spgist_picksplit_2d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_2d(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME' ,'gserialized_spgist_inner_consistent_2d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_2d(internal, internal)
 	RETURNS bool
 	AS 'MODULE_PATHNAME' ,'gserialized_spgist_leaf_consistent_2d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_compress_2d(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_spgist_compress_2d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OPERATOR CLASS spgist_geometry_ops_2d
@@ -64,25 +64,25 @@ CREATE OPERATOR CLASS spgist_geometry_ops_2d
 CREATE OR REPLACE FUNCTION geometry_overlaps_3d(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps_3d'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_contains_3d(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_contains_3d'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_contained_3d(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_contained_3d'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_same_3d(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME' ,'gserialized_same_3d'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OPERATOR &/& (
@@ -123,32 +123,32 @@ CREATE OPERATOR ~== (
 CREATE OR REPLACE FUNCTION geometry_spgist_config_3d(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME', 'gserialized_spgist_config_3d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_choose_3d(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME', 'gserialized_spgist_choose_3d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_3d(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME', 'gserialized_spgist_picksplit_3d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_3d(internal, internal)
 	RETURNS void
 	AS 'MODULE_PATHNAME', 'gserialized_spgist_inner_consistent_3d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_3d(internal, internal)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_spgist_leaf_consistent_3d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_compress_3d(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'gserialized_spgist_compress_3d'
-	LANGUAGE C IMMUTABLE STRICT  _PARALLEL;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OPERATOR CLASS spgist_geometry_ops_3d

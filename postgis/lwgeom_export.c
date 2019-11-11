@@ -34,12 +34,7 @@
 #include "catalog/pg_type.h" /* for CSTRINGOID */
 #include "executor/spi.h"
 #include "utils/builtins.h"
-
-#if POSTGIS_PGSQL_VERSION > 95
-#include "utils/fmgrprotos.h"
-#else
 #include "utils/jsonb.h"
-#endif
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"

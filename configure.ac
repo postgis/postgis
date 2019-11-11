@@ -480,9 +480,9 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-  dnl Ensure that we are using PostgreSQL >= 9.5
+  dnl Ensure that we are using PostgreSQL >= 9.6
   if test $POSTGIS_PGSQL_VERSION -lt 95; then
-    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.5])
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.6])
   fi
 
   HAVE_SPGIST=no
@@ -1706,7 +1706,7 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
+if test "$GEOS_NUMERIC_VERSION" -lt 30800; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION}.])
 AC_MSG_WARN([])

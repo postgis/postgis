@@ -738,13 +738,8 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 		if (bmd2[call_cntr].filesize)
 		{
-#if POSTGIS_PGSQL_VERSION > 95
 			values[6] = UInt64GetDatum(bmd2[call_cntr].filesize);
 			values[7] = UInt64GetDatum(bmd2[call_cntr].timestamp);
-#else /* POSTGIS_PGSQL_VERSION <= 95 */
-			values[6] = Int64GetDatum(bmd2[call_cntr].filesize);
-			values[7] = Int64GetDatum(bmd2[call_cntr].timestamp);
-#endif
 		}
 		else
 		{

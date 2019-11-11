@@ -1,5 +1,4 @@
 #include "sqldefines.h"
-#if POSTGIS_PGSQL_VERSION > 94
 --------------------------------------------------------------------
 -- BRIN support start                                                --
 --------------------------------------------------------------------
@@ -263,4 +262,3 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_4d
 -----------------------
 -- BRIN support end
 -----------------------
-#endif

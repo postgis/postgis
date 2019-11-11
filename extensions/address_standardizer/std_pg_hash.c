@@ -112,15 +112,9 @@ static int load_rules(RULES *rules, char *tabname);
 
 
 static void
-#if POSTGIS_PGSQL_VERSION < 96
-
-StdCacheDelete(MemoryContext context)
-{
-#else
 StdCacheDelete(void *ptr)
 {
 	MemoryContext context = (MemoryContext)ptr;
-#endif
     StdHashEntry *she;
 
     DBG("Enter: StdCacheDelete");
@@ -138,63 +132,6 @@ StdCacheDelete(void *ptr)
 
     DeleteStdHashEntry(context);
 }
-
-#if POSTGIS_PGSQL_VERSION < 96
-
-static void
-StdCacheInit(MemoryContext context)
-{
-    /* NOP - initialized when first used. */
-}
-
-
-static void
-StdCacheReset(MemoryContext context)
-{
-    // NOP - Seems to be a required function
-}
-
-static bool
-StdCacheIsEmpty(MemoryContext context)
-{
-    // always return false - another required function
-    return FALSE;
-}
-
-static void
-StdCacheStats(MemoryContext context, int level)
-{
-    // another required function
-    fprintf(stderr, "%s: STANDARDIZER context\n", context->name);
-}
-
-#ifdef MEMORY_CONTEXT_CHECKING
-static void
-StdCacheCheck(MemoryContext context)
-{
-    // NOP - another required function
-}
-#endif
-
-/* Memory context definition must match the current version of PostgreSQL */
-static MemoryContextMethods StdCacheContextMethods =
-{
-    NULL,
-    NULL,
-    NULL,
-    StdCacheInit,
-    StdCacheReset,
-    StdCacheDelete,
-    NULL,
-    StdCacheIsEmpty,
-    StdCacheStats
-#ifdef MEMORY_CONTEXT_CHECKING
-    , StdCacheCheck
-#endif
-};
-
-#endif /* POSTGIS_PGSQL_VERSION < 96 */
-
 
 uint32
 mcxt_ptr_hash_std(const void *key, Size keysize)
@@ -363,9 +300,7 @@ AddToStdPortalCache(StdPortalCache *STDCache, char *lextab, char *gaztab, char *
     MemoryContext STDMemoryContext;
     MemoryContext old_context;
     STANDARDIZER *std = NULL;
-#if POSTGIS_PGSQL_VERSION >= 96
-		MemoryContextCallback *callback;
-#endif
+    MemoryContextCallback *callback;
 
     DBG("Enter: AddToStdPortalCache");
     std = CreateStd(lextab, gaztab, rultab);
@@ -385,12 +320,6 @@ AddToStdPortalCache(StdPortalCache *STDCache, char *lextab, char *gaztab, char *
     DBG("Adding item to STD cache ('%s', '%s', '%s') index %d", lextab, gaztab, rultab, STDCache->NextSlot);
 
 
-#if POSTGIS_PGSQL_VERSION < 96
-    STDMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
-                                           &StdCacheContextMethods,
-                                           STDCache->StdCacheContext,
-                                           "PAGC STD Memory Context");
-#else
 	STDMemoryContext =  AllocSetContextCreate(STDCache->StdCacheContext,
 	                                          "PAGC STD Memory Context",
 	                                          ALLOCSET_SMALL_SIZES);
@@ -402,7 +331,6 @@ AddToStdPortalCache(StdPortalCache *STDCache, char *lextab, char *gaztab, char *
 	callback->arg = (void*)(STDMemoryContext);
 	callback->func = StdCacheDelete;
 	MemoryContextRegisterResetCallback(STDMemoryContext, callback);
-#endif
 
 
 
