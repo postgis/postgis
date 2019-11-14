@@ -2051,6 +2051,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	double tileGeoSizeX, tileGeoSizeY;
 	double boundsWidth, boundsHeight;
 	double x1, y1, x2, y2;
+	double margin;
 	/* This is broken, since 3857 doesn't mean "web mercator", it means
 	   the contents of the row in spatial_ref_sys with srid = 3857.
 	   For practical purposes this will work, but in good implementation
@@ -2064,8 +2065,9 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	zoom = PG_GETARG_INT32(0);
 	x = PG_GETARG_INT32(1);
 	y = PG_GETARG_INT32(2);
+	margin = PG_GETARG_FLOAT8(3);
 
-	bounds = PG_GETARG_GSERIALIZED_P(3);
+	bounds = PG_GETARG_GSERIALIZED_P(4);
 	if(gserialized_get_gbox_p(bounds, &bbox) != LW_SUCCESS)
 		elog(ERROR, "%s: Empty bounds", __func__);
 	srid = gserialized_get_srid(bounds);
@@ -2088,10 +2090,24 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 
 	tileGeoSizeX = boundsWidth / worldTileSize;
 	tileGeoSizeY = boundsHeight / worldTileSize;
-	x1 = bbox.xmin + tileGeoSizeX * (x);
-	x2 = bbox.xmin + tileGeoSizeX * (x+1);
-	y1 = bbox.ymax - tileGeoSizeY * (y+1);
-	y2 = bbox.ymax - tileGeoSizeY * (y);
+	x1 = bbox.xmin + tileGeoSizeX * (x - margin);
+	x2 = bbox.xmin + tileGeoSizeX * (x + 1 + margin);
+	y1 = bbox.ymax - tileGeoSizeY * (y + 1 + margin);
+	y2 = bbox.ymax - tileGeoSizeY * (y - margin);
+
+	if (x1 > x2 || y1 > y2)
+		elog(ERROR, "%s: Margin %f would invert the envelope", __func__, margin);
+
+	/*
+	 TODO:: See if we can handle anti-meridian margins too.
+	 When requesting tile with x == 0 or x == worldTileSize-1, ideally margins should extend
+	 beyond the anti-meridian, but this might not work with the regular -180..180 bounds,
+	 nor would longitude range -200..-160 match the same data as two ranges -180..-160 & +160..+180
+    */
+	if (y1 < bbox.ymin) y1 = bbox.ymin;
+	if (y2 > bbox.ymax) y2 = bbox.ymax;
+	if (x1 < bbox.xmin) x1 = bbox.xmin;
+	if (x2 > bbox.xmax) x2 = bbox.xmax;
 
 	PG_RETURN_POINTER(
 		geometry_serialize(

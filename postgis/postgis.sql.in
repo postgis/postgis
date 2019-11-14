@@ -1685,11 +1685,18 @@ CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integ
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
--- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry DEFAULT 'SRID=3857;LINESTRING(-20037508.342789 -20037508.342789, 20037508.342789 20037508.342789)'::geometry)
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_TileEnvelope(zoom integer, x integer, y integer, margin float8, bounds geometry DEFAULT 'SRID=3857;LINESTRING(-20037508.342789 -20037508.342789, 20037508.342789 20037508.342789)'::geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_TileEnvelope'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.0.0
+-- Changed: 3.1.0 - uses ST_TileEnvelope with margin=0.0
+CREATE OR REPLACE FUNCTION ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry DEFAULT 'SRID=3857;LINESTRING(-20037508.342789 -20037508.342789, 20037508.342789 20037508.342789)'::geometry)
+	RETURNS geometry AS 'SELECT ST_TileEnvelope($1, $2, $3, 0.0, $4)'
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL
 	_COST_LOW;
 
 -- Availability: 1.2.2

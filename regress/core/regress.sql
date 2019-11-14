@@ -274,6 +274,12 @@ select '232', ST_AsEWKT(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-100, -100, 100
 select '233', ST_AsEWKT(ST_TileEnvelope(4, 15, 15, ST_MakeEnvelope(-100, -100, 100, 100, 0)));
 select '234', ST_AsEWKT(ST_TileEnvelope(4, 0, 0, ST_MakeEnvelope(-100, -100, 100, 100, 0)));
 select '235', ST_AsEWKT(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-200, -100, 200, 100, 0)));
+select '236', ST_AsEWKT(ST_TileEnvelope(0, 0, 0, 0.1));
+select '237', ST_AsEWKT(ST_TileEnvelope(1, 0, 0, 0.1));
+select '238', ST_AsEWKT(ST_TileEnvelope(2, 1, 3, 0.5));
+select '239', ST_AsEWKT(ST_TileEnvelope(0, 0, 0, -0.5));
+select '240', ST_AsEWKT(ST_TileEnvelope(0, 0, 0, -0.51));
+select '241', ST_AsEWKT(ST_TileEnvelope(0, 0, 0, -0.4));
 
 
 -- Drop test table
