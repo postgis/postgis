@@ -1189,9 +1189,9 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		<title>Examples</title>
 		<programlisting><![CDATA[WITH mvtgeom AS
 (
-  SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12,513,412)) AS geom, name, description
+  SELECT ST_AsMVTGeom(geom, ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom, name, description
   FROM points_of_interest
-  WHERE ST_Intersects(geom, ST_TileEnvelope(12,513,412)
+  WHERE geom && ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096))
 )
 SELECT ST_AsMVT(mvtgeom.*)
 FROM mvtgeom;

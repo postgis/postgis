@@ -8,8 +8,10 @@ PostGIS 3.1.0
 * Breaking changes *
   - #4577, Drop support for PostgreSQL 9.5 (Raúl Marín)
   - #4579, Drop postgis_proc_set_search_path.pl (Raúl Marín)
+  - #4601, ST_TileEnvelope signature changed.
 
 * New features *
+  - #4601, Add ST_TileEnvelope margin argument (Yuri Astrakhan)
 
 * Enhancements *
   - #4539, Unify libm includes (Raúl Marín)

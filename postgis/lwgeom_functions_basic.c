@@ -2051,6 +2051,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	double tileGeoSizeX, tileGeoSizeY;
 	double boundsWidth, boundsHeight;
 	double x1, y1, x2, y2;
+	double margin;
 	/* This is broken, since 3857 doesn't mean "web mercator", it means
 	   the contents of the row in spatial_ref_sys with srid = 3857.
 	   For practical purposes this will work, but in good implementation
@@ -2070,6 +2071,11 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: Empty bounds", __func__);
 	srid = gserialized_get_srid(bounds);
 
+	margin = PG_GETARG_FLOAT8(4);
+	/* shrinking by more than 50% would eliminate the tile outright */
+	if (margin < -0.5)
+		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);
+
 	boundsWidth  = bbox.xmax - bbox.xmin;
 	boundsHeight = bbox.ymax - bbox.ymin;
 	if (boundsWidth <= 0 || boundsHeight <= 0)
@@ -2088,10 +2094,29 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 
 	tileGeoSizeX = boundsWidth / worldTileSize;
 	tileGeoSizeY = boundsHeight / worldTileSize;
-	x1 = bbox.xmin + tileGeoSizeX * (x);
-	x2 = bbox.xmin + tileGeoSizeX * (x+1);
-	y1 = bbox.ymax - tileGeoSizeY * (y+1);
-	y2 = bbox.ymax - tileGeoSizeY * (y);
+
+	/*
+	 * 1 margin (100%) is the same as a single tile width
+	 * if the size of the tile with margins span more than the total number of tiles,
+	 * reset x1/x2 to the bounds
+	*/
+	if ((1 + margin * 2) > worldTileSize)
+	{
+		x1 = bbox.xmin;
+		x2 = bbox.xmax;
+	}
+	else
+	{
+		x1 = bbox.xmin + tileGeoSizeX * (x - margin);
+		x2 = bbox.xmin + tileGeoSizeX * (x + 1 + margin);
+	}
+
+	y1 = bbox.ymax - tileGeoSizeY * (y + 1 + margin);
+	y2 = bbox.ymax - tileGeoSizeY * (y - margin);
+
+	/* Clip y-axis to the given bounds */
+	if (y1 < bbox.ymin) y1 = bbox.ymin;
+	if (y2 > bbox.ymax) y2 = bbox.ymax;
 
 	PG_RETURN_POINTER(
 		geometry_serialize(
