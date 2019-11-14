@@ -93,14 +93,14 @@ open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
 while(<INPUT>)
 {
 
-	if ( /^create or replace function([^\)]+)([\)]{0,1})/i )
+	if ( /^create or replace function([^(]+([^)']+'[^']+')*[^)]+)([)]{0,1})/i )
 	{
 		my $funchead = $1; # contains function header except the end )
 		my $endhead = 0;
-		my $endfunchead = $2;
+		my $endfunchead = $3;
 		my $search_path_safe = -1; # we can put a search path on it without disrupting spatial index use
 		
-		if ($2 eq ')') ## reached end of header
+		if ($endfunchead eq ')') ## reached end of header
 		{
 			$endhead = 1;
 		}
@@ -144,7 +144,7 @@ while(<INPUT>)
 		#strip quoted , trips up the default strip
 		$funchead =~ s/(',')+//ig;
 		#strip off default args from the function header
-		$funchead =~ s/(default\s+[A-Za-z\.\+\-0-9\'\[\]\:\s]*)//ig;
+		$funchead =~ s/(default\s+('[^']*'|[-A-Za-z.+0-9\[\]:\s]*)+)//ig;
 		
 		#check to see if function is STRICT or c or plpgsql
 		# we can't put search path on non-STRICT sql since search path breaks SQL inlining
