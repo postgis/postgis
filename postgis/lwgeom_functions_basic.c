@@ -2065,7 +2065,10 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	zoom = PG_GETARG_INT32(0);
 	x = PG_GETARG_INT32(1);
 	y = PG_GETARG_INT32(2);
+
 	margin = PG_GETARG_FLOAT8(3);
+	if (margin < -0.5)  // shrinking by more than 50% would eliminate the tile outright
+		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);
 
 	bounds = PG_GETARG_GSERIALIZED_P(4);
 	if(gserialized_get_gbox_p(bounds, &bbox) != LW_SUCCESS)
@@ -2090,24 +2093,27 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 
 	tileGeoSizeX = boundsWidth / worldTileSize;
 	tileGeoSizeY = boundsHeight / worldTileSize;
-	x1 = bbox.xmin + tileGeoSizeX * (x - margin);
-	x2 = bbox.xmin + tileGeoSizeX * (x + 1 + margin);
+
+	// 1 margin (100%) is the same as a single tile width
+	// if the size of the tile with margins span more than the total number of tiles,
+	// reset x1/x2 to the bounds
+	if (1 + margin * 2 > worldTileSize)
+	{
+		x1 = bbox.xmin;
+		x2 = bbox.xmax;
+	}
+	else
+	{
+		x1 = bbox.xmin + tileGeoSizeX * (x - margin);
+		x2 = bbox.xmin + tileGeoSizeX * (x + 1 + margin);
+	}
+
 	y1 = bbox.ymax - tileGeoSizeY * (y + 1 + margin);
 	y2 = bbox.ymax - tileGeoSizeY * (y - margin);
 
-	if (x1 > x2 || y1 > y2)
-		elog(ERROR, "%s: Margin %f would invert the envelope", __func__, margin);
-
-	/*
-	 TODO:: See if we can handle anti-meridian margins too.
-	 When requesting tile with x == 0 or x == worldTileSize-1, ideally margins should extend
-	 beyond the anti-meridian, but this might not work with the regular -180..180 bounds,
-	 nor would longitude range -200..-160 match the same data as two ranges -180..-160 & +160..+180
-    */
+	// Clip y-axis to the given bounds
 	if (y1 < bbox.ymin) y1 = bbox.ymin;
 	if (y2 > bbox.ymax) y2 = bbox.ymax;
-	if (x1 < bbox.xmin) x1 = bbox.xmin;
-	if (x2 > bbox.xmax) x2 = bbox.xmax;
 
 	PG_RETURN_POINTER(
 		geometry_serialize(
