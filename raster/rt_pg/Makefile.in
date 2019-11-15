@@ -31,7 +31,7 @@ MODULE_big=$(MODULE_NAME)-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 endif
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_upgrade.sql rtpostgis_proc_set_search_path.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
+DATA_built=rtpostgis.sql rtpostgis_upgrade.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
 DATA=
 
 # SQL preprocessor
@@ -136,9 +136,6 @@ $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_revision.h
 #this is redundant but trying to fold in with the  other just hangs
 rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
 	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
-
-rtpostgis_proc_set_search_path.sql: rtpostgis.sql ../../utils/postgis_proc_set_search_path.pl
-	$(PERL) ../../utils/postgis_proc_set_search_path.pl $< UNUSED > $@
 
 rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql
 	echo 'BEGIN;' > $@

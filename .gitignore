@@ -108,7 +108,6 @@ postgis/legacy_gist.sql
 postgis/legacy_minimal.sql
 postgis/legacy.sql
 postgis/postgis.sql
-postgis/postgis_proc_set_search_path.sql
 postgis/postgis_for_extension.sql
 postgis/postgis_upgrade.sql*
 postgis/postgis_upgrade_for_extension.sql
@@ -128,7 +127,6 @@ raster/rt_pg/Makefile
 raster/rt_pg/rtpostgis.sql
 raster/rt_pg/rtpostgis_drop.sql
 raster/rt_pg/rtpostgis_legacy.sql
-raster/rt_pg/rtpostgis_proc_set_search_path.sql
 raster/rt_pg/rtpostgis_for_extension.sql
 raster/rt_pg/rtpostgis_upgrade.sql.in
 raster/rt_pg/rtpostgis_upgrade*.sql

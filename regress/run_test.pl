@@ -1479,7 +1479,6 @@ sub prepare_spatial
 	# Load postgis.sql into the database
 	load_sql_file("${scriptdir}/postgis.sql", 1);
 	load_sql_file("${scriptdir}/postgis_comments.sql", 0);
-	load_sql_file("${scriptdir}/postgis_proc_set_search_path.sql", 0);
 	load_sql_file("${scriptdir}/spatial_ref_sys.sql", 0);
 
 	if ( $OPT_WITH_TOPO )
@@ -1494,7 +1493,6 @@ sub prepare_spatial
 		print "Loading Raster into '${DB}'\n";
 		load_sql_file("${scriptdir}/rtpostgis.sql", 1);
 		load_sql_file("${scriptdir}/raster_comments.sql", 0);
-		load_sql_file("${scriptdir}/rtpostgis_proc_set_search_path.sql", 0);
 	}
 
 	if ( $OPT_WITH_SFCGAL )

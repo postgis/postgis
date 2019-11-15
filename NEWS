@@ -7,6 +7,7 @@ PostGIS 3.1.0
 
 * Breaking changes *
   - #4577, Drop support for PostgreSQL 9.5 (Raúl Marín)
+  - #4579, Drop postgis_proc_set_search_path.pl (Raúl Marín)
 
 * New features *
 
