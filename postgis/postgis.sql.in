@@ -4987,7 +4987,7 @@ CREATE OR REPLACE FUNCTION ST_AsText(geometry)
 CREATE OR REPLACE FUNCTION ST_AsText(geometry, int4)
     RETURNS TEXT
     AS 'MODULE_PATHNAME','LWGEOM_asText'
-    LANGUAGE 'c' IMMUTABLE STRICT
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
     _COST_MEDIUM;
 
 -- Availability: 1.2.2
@@ -6232,7 +6232,7 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 -- has to be here because need ST_StartPoint
 CREATE OR REPLACE FUNCTION ST_Angle(line1 geometry, line2 geometry)
 	RETURNS float8 AS 'SELECT ST_Angle(St_StartPoint($1), ST_EndPoint($1), St_StartPoint($2), ST_EndPoint($2))'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- make views and spatial_ref_sys public viewable --
 GRANT SELECT ON TABLE geography_columns TO public;
