@@ -11,37 +11,37 @@
 CREATE OR REPLACE FUNCTION contains_2d(box2df, geometry)
 RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_contains_box2df_geom_2d'
-LANGUAGE 'c' IMMUTABLE STRICT;
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION is_contained_2d(box2df, geometry)
 RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_within_box2df_geom_2d'
-LANGUAGE 'c' IMMUTABLE STRICT;
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_2d(box2df, geometry)
 RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_overlaps_box2df_geom_2d'
-LANGUAGE 'c' IMMUTABLE STRICT;
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_2d(box2df, box2df)
 RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_contains_box2df_box2df_2d'
-LANGUAGE 'c' IMMUTABLE STRICT;
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION contains_2d(box2df, box2df)
 RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_contains_box2df_box2df_2d'
-LANGUAGE 'c' IMMUTABLE STRICT;
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION is_contained_2d(box2df, box2df)
 RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_contains_box2df_box2df_2d'
-LANGUAGE 'c' IMMUTABLE STRICT;
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OPERATOR ~ (
@@ -72,21 +72,21 @@ CREATE OR REPLACE FUNCTION contains_2d(geometry, box2df)
 RETURNS boolean
 AS
 	'SELECT $2 OPERATOR(@extschema@.@) $1;'
-LANGUAGE SQL IMMUTABLE STRICT;
+LANGUAGE SQL IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION is_contained_2d(geometry, box2df)
 RETURNS boolean
 AS
 	'SELECT $2 OPERATOR(@extschema@.~) $1;'
-LANGUAGE SQL IMMUTABLE STRICT;
+LANGUAGE SQL IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_2d(geometry, box2df)
 RETURNS boolean
 AS
 	'SELECT $2 OPERATOR(@extschema@.&&) $1;'
-LANGUAGE SQL IMMUTABLE STRICT;
+LANGUAGE SQL IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OPERATOR ~ (
@@ -139,13 +139,13 @@ CREATE OPERATOR ~ (
 CREATE OR REPLACE FUNCTION overlaps_nd(gidx, geometry)
 RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_gidx_geom_overlaps'
-LANGUAGE 'c' IMMUTABLE STRICT;
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_nd(gidx, gidx)
 RETURNS boolean
 AS 'MODULE_PATHNAME','gserialized_gidx_gidx_overlaps'
-LANGUAGE 'c' IMMUTABLE STRICT;
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OPERATOR &&& (
@@ -160,7 +160,7 @@ CREATE OR REPLACE FUNCTION overlaps_nd(geometry, gidx)
 RETURNS boolean
 AS
 	'SELECT $2 OPERATOR(@extschema@.&&&) $1;'
-LANGUAGE SQL IMMUTABLE STRICT;
+LANGUAGE SQL IMMUTABLE STRICT PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OPERATOR &&& (
@@ -187,19 +187,22 @@ CREATE OPERATOR &&& (
 	-------------
 
 -- Availability: 2.3.0
-CREATE OR REPLACE FUNCTION geom2d_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
-	AS 'MODULE_PATHNAME','geom2d_brin_inclusion_add_value'
-	LANGUAGE 'c';
+CREATE OR REPLACE FUNCTION geom2d_brin_inclusion_add_value(internal, internal, internal, internal)
+RETURNS boolean
+AS 'MODULE_PATHNAME','geom2d_brin_inclusion_add_value'
+LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
-CREATE OR REPLACE FUNCTION geom3d_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
-	AS 'MODULE_PATHNAME','geom3d_brin_inclusion_add_value'
-	LANGUAGE 'c';
+CREATE OR REPLACE FUNCTION geom3d_brin_inclusion_add_value(internal, internal, internal, internal)
+RETURNS boolean
+AS 'MODULE_PATHNAME','geom3d_brin_inclusion_add_value'
+LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
-CREATE OR REPLACE FUNCTION geom4d_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
-	AS 'MODULE_PATHNAME','geom4d_brin_inclusion_add_value'
-	LANGUAGE 'c';
+CREATE OR REPLACE FUNCTION geom4d_brin_inclusion_add_value(internal, internal, internal, internal)
+RETURNS boolean
+AS 'MODULE_PATHNAME','geom4d_brin_inclusion_add_value'
+LANGUAGE 'c' PARALLEL SAFE _COST_DEFAULT;
 
 -- Availability: 2.3.0
 CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d
