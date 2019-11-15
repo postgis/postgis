@@ -18,6 +18,7 @@ PostGIS 3.1.0
            ST_Affine (ST_Translate, ST_TransScale, ST_Rotate) optimized.
            ST_SnapToGrid optimized. (Darafei Praliaskouski)
   - #4574, Link Time Optimizations enabled (Darafei Praliaskouski)
+  - #4578, Add parallellism and cost properties to brin functions (Raúl Marín)
 
 * Bug fixes *
   - #4544, Fix leak when parsing a WKT geometry_list (Raúl Marín)
