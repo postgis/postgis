@@ -150,7 +150,7 @@ dnl Search for flex/bison to build the parser
 dnl
 
 AC_PROG_LEX
-AC_PROG_YACC
+AC_PATH_PROG(YACC, bison)
 AC_SUBST([LEX])
 AC_SUBST([YACC])
 

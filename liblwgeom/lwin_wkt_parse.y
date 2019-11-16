@@ -107,7 +107,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %}
 
 %locations
-%error-verbose
+%define parse.error verbose
 
 %union {
 	int integervalue;
