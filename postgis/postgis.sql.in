@@ -2804,6 +2804,7 @@ AS $$
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0
+-- Changed: 3.0.1 install from unpackaged should include postgis schema #4581
 -- Changed: 3.0.0 also upgrade postgis_raster if it exists
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
@@ -2850,7 +2851,7 @@ BEGIN
 
 				 -- TODO: How do we tell if PostGIS Tiger Geocoder is available  ?
 			THEN
-				sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged';
+				sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged SCHEMA @extschema@';
 				RAISE NOTICE 'Packaging extension %', rec.name;
 				RAISE DEBUG '%', sql;
 				EXECUTE sql;
