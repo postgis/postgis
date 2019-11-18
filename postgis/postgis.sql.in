@@ -2852,7 +2852,7 @@ BEGIN
 				 -- TODO: How do we tell if PostGIS Tiger Geocoder is available  ?
 			THEN
 				--force install in same schema as postgis only if postgis extension is installed
-				IF rec.name != 'postgis' AND EXISTS (SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'postgis') THEN
+				IF rec.name NOT IN('postgis', 'postgis_topology', 'postgis_tiger_geocoder') AND EXISTS (SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'postgis') THEN
 					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged SCHEMA ' 
 					|| quote_ident( (SELECT ns.nspname FROM pg_catalog.pg_extension AS e INNER JOIN pg_catalog.pg_namespace AS ns ON e.extnamespace = ns.oid WHERE extname = 'postgis')) || ';';
 				ELSE
