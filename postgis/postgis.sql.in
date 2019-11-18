@@ -2851,7 +2851,11 @@ BEGIN
 
 				 -- TODO: How do we tell if PostGIS Tiger Geocoder is available  ?
 			THEN
-				sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged SCHEMA @extschema@';
+				IF rec.name != 'postgis' THEN
+					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged SCHEMA @extschema@';
+				ELSE
+					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged';
+				END IF;
 				RAISE NOTICE 'Packaging extension %', rec.name;
 				RAISE DEBUG '%', sql;
 				EXECUTE sql;
