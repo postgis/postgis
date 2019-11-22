@@ -445,7 +445,7 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
  * Returns the amount of trailing zeros removed
  */
 static int
-trim_trailing_zeros(char *str)
+trim_trailing_zeros(char *str, size_t str_len)
 {
 	char *ptr, *totrim = NULL;
 
@@ -457,7 +457,7 @@ trim_trailing_zeros(char *str)
 
 	LWDEBUGF(3, "ptr: %s", ptr);
 
-	size_t len = strlen(ptr);
+	ptrdiff_t len = str_len - (ptr - str);
 	for (int i = len - 1; i; i--)
 	{
 		if (ptr[i] != '0') break;
@@ -543,7 +543,7 @@ lwprint_double(double d, uint32_t maxdd, char* buf, size_t bufsize)
 		const uint32_t fractional_digits = FP_MIN(maxdd, max_digits - integer_digits - sign_digits - 1 /*Point*/);
 		length = d2fixed_buffered_n(d, fractional_digits, buf);
 		buf[length] = '\0';
-		length -= trim_trailing_zeros(buf);
+		length -= trim_trailing_zeros(buf, length);
 	}
 
 
