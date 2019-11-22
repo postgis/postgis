@@ -107,10 +107,12 @@ ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 	{
 		getPoint4d_p(pa, i, &pt);
 		d = (double*)(&pt);
-		if ( i ) stringbuffer_append(sb," ");
+		if (i)
+			stringbuffer_append_len(sb, " ", 1);
 		for (j = 0; j < dims; j++)
 		{
-			if ( j ) stringbuffer_append(sb,",");
+			if (j)
+				stringbuffer_append_len(sb, ",", 1);
 			if( fabs(d[j]) < OUT_MAX_DOUBLE )
 			{
 				if ( stringbuffer_aprintf(sb, "%.*f", precision, d[j]) < 0 ) return LW_FAILURE;

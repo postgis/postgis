@@ -442,23 +442,23 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 /*
  * Removes trailing zeros and dot for a %f formatted number.
  * Modifies input.
+ * Returns the amount of trailing zeros removed
  */
-static void
-trim_trailing_zeros(char* str)
+static int
+trim_trailing_zeros(char *str)
 {
 	char *ptr, *totrim = NULL;
-	int len;
-	int i;
 
 	LWDEBUGF(3, "input: %s", str);
 
 	ptr = strchr(str, '.');
-	if (!ptr) return; /* no dot, no decimal digits */
+	if (!ptr)
+		return 0; /* no dot, no decimal digits */
 
 	LWDEBUGF(3, "ptr: %s", ptr);
 
-	len = strlen(ptr);
-	for (i = len - 1; i; i--)
+	size_t len = strlen(ptr);
+	for (int i = len - 1; i; i--)
 	{
 		if (ptr[i] != '0') break;
 		totrim = &ptr[i];
@@ -466,12 +466,16 @@ trim_trailing_zeros(char* str)
 	if (totrim)
 	{
 		if (ptr == totrim - 1)
+		{
 			*ptr = '\0';
-		else
-			*totrim = '\0';
+			return len;
+		}
+		*totrim = '\0';
+		return ptr + len - totrim;
 	}
 
 	LWDEBUGF(3, "output: %s", str);
+	return 0;
 }
 
 
@@ -539,7 +543,7 @@ lwprint_double(double d, uint32_t maxdd, char* buf, size_t bufsize)
 		const uint32_t fractional_digits = FP_MIN(maxdd, max_digits - integer_digits - sign_digits - 1 /*Point*/);
 		length = d2fixed_buffered_n(d, fractional_digits, buf);
 		buf[length] = '\0';
-		trim_trailing_zeros(buf);
+		length -= trim_trailing_zeros(buf);
 	}
 
 

@@ -93,4 +93,13 @@ stringbuffer_append(stringbuffer_t *s, const char *a)
 	memcpy(s->str_end, a, alen0);
 	s->str_end += alen;
 }
+
+inline static void
+stringbuffer_append_len(stringbuffer_t *s, const char *a, size_t alen)
+{
+	int alen0 = alen + 1; /* Length including null terminator */
+	stringbuffer_makeroom(s, alen0);
+	memcpy(s->str_end, a, alen0);
+	s->str_end += alen;
+}
 #endif /* _STRINGBUFFER_H */

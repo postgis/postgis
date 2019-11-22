@@ -521,7 +521,8 @@ ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, strin
 				lwprint_double(
 				    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
 
-				if ( i ) stringbuffer_append(sb," ");
+				if (i)
+					stringbuffer_append_len(sb, " ", 1);
 
 				if ( ( opts & LW_X3D_FLIP_XY) )
 					stringbuffer_aprintf(sb, "%s %s", y, x);
@@ -547,7 +548,8 @@ ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, strin
 				lwprint_double(
 				    pt.z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
 
-				if ( i ) stringbuffer_append(sb," ");
+				if (i)
+					stringbuffer_append_len(sb, " ", 1);
 
 				if ( ( opts & LW_X3D_FLIP_XY) )
 					stringbuffer_aprintf(sb, "%s %s %s", y, x, z);
