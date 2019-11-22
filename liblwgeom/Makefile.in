@@ -190,6 +190,7 @@ maintainer-clean: clean
 
 clean:
 	$(MAKE) -C cunit clean
+	$(MAKE) -C ../deps/ryu clean
 	rm -f $(LT_OBJS) $(SA_OBJS) $(NM_OBJS)
 	rm -f liblwgeom.la
 	rm -rf .libs

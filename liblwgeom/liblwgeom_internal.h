@@ -458,7 +458,7 @@ double gbox_angular_width(const GBOX* gbox);
 int gbox_centroid(const GBOX* gbox, POINT2D* out);
 
 /* Utilities */
-int lwprint_double(double d, int maxdd, char* buf, size_t bufsize);
+int lwprint_double(double d, uint32_t maxdd, char* buf, size_t bufsize);
 extern uint8_t MULTITYPE[NUMTYPES];
 
 extern lwinterrupt_callback *_lwgeom_interrupt_callback;

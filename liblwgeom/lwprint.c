@@ -475,44 +475,73 @@ trim_trailing_zeros(char* str)
 }
 
 
+static inline uint32_t decimalLength(const double d) {
+	if (d > OUT_MAX_DOUBLE) { return floor(log10(d)) + 1; }
+	uint64_t v = (uint64_t) d;
+	if (v >= 100000000000000L) { return 15; }
+	if (v >= 10000000000000L) { return 14; }
+	if (v >= 1000000000000L) { return 13; }
+	if (v >= 100000000000L) { return 12; }
+	if (v >= 10000000000L) { return 11; }
+	if (v >= 1000000000L) { return 10; }
+	if (v >= 100000000L) { return 9; }
+	if (v >= 10000000L) { return 8; }
+	if (v >= 1000000L) { return 7; }
+	if (v >= 100000L) { return 6; }
+	if (v >= 10000L) { return 5; }
+	if (v >= 1000L) { return 4; }
+	if (v >= 100L) { return 3; }
+	if (v >= 10L) { return 2; }
+	return 1;
+}
+
 /*
- * Print an ordinate value using at most the given number of decimal digits
+ * Print an ordinate value using at most **maxdd** number of decimal digits
  *
  * The actual number of printed decimal digits may be less than the
  * requested ones if out of significant digits.
  *
- * The function will not write more than maxsize bytes, including the
+ * The function will not write more than bufsize bytes, including the
  * terminating NULL. Returns the number of bytes that would have been
  * written if there was enough space (excluding terminating NULL).
  * So a return of ``bufsize'' or more means that the string was
  * truncated and misses a terminating NULL.
  *
  */
+
 int
-lwprint_double(double d, int maxdd, char* buf, size_t bufsize)
+lwprint_double(double d, uint32_t maxdd, char* buf, size_t bufsize)
 {
+	int length;
 	double ad = fabs(d);
-	int ndd;
-	int length = 0;
 	if (ad <= FP_TOLERANCE)
 	{
-		d = 0;
-		ad = 0;
+		return snprintf(buf, bufsize, "0");
 	}
-	if (ad < OUT_MAX_DOUBLE)
+
+	const uint32_t max_digits = FP_MIN(OUT_MAX_DOUBLE_PRECISION, bufsize - 1);
+	const uint32_t sign_digits = (d < 0 ? 1 : 0);
+	const uint32_t integer_digits = decimalLength(ad);
+
+	if ((integer_digits + sign_digits > max_digits))
 	{
-		ndd = ad < 1 ? 0 : floor(log10(ad)) + 1; /* non-decimal digits */
-		if (maxdd > (OUT_MAX_DOUBLE_PRECISION - ndd)) maxdd -= ndd;
-		//		length = snprintf(buf, bufsize, "%.*f", maxdd, d);
-		length = d2fixed_buffered_n(d, maxdd, buf);
+		/* Since the number of digits that we were going to use to print this double
+		 * exceed the space that we had, try to use scientific notation */
+
+		/* For e+150 we need 2 + 3 */
+		const uint32_t exponent_digits = 2 + decimalLength(integer_digits);
+		const uint32_t fractional_digits = FP_MIN(maxdd, max_digits - exponent_digits - sign_digits);
+		length = d2exp_buffered_n(d, fractional_digits, buf);
+		buf[length] = '\0';
 	}
 	else
 	{
-		//		length = snprintf(buf, bufsize, "%g", d);
-		// TODO: Handle maxdd here
-		length = d2exp_buffered_n(d, maxdd, buf);
+		const uint32_t fractional_digits = FP_MIN(maxdd, max_digits - integer_digits - sign_digits - 1 /*Point*/);
+		length = d2fixed_buffered_n(d, fractional_digits, buf);
+		buf[length] = '\0';
+		trim_trailing_zeros(buf);
 	}
-	buf[length] = '\0';
-	trim_trailing_zeros(buf);
+
+
 	return length;
 }
