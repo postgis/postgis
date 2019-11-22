@@ -243,8 +243,12 @@ $$
 BEGIN
 IF _postgis_scripts_pgsql_version()::integer >= 96 THEN
 -- mark ST_Union agg as parallel safe if it is not already
-	UPDATE pg_proc SET proparallel = 's'
-	WHERE oid = 'st_union(geometry)'::regprocedure AND proparallel = 'u';
+        BEGIN
+            UPDATE pg_proc SET proparallel = 's'
+            WHERE oid = 'st_union(geometry)'::regprocedure AND proparallel = 'u';
+        EXCEPTION WHEN OTHERS THEN
+            RAISE DEBUG 'Could not update st_union(geometry): %', SQLERRM;
+        END;
 END IF;
 END;
 $$;

@@ -3,6 +3,7 @@ XXXX/XX/XX
 
 * Bug Fixes and Enhancements
   - #4558, Fix oversimplification of polygon inner rings (Raúl Marín)
+  - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)
 
 
 PostGIS 3.0.0
