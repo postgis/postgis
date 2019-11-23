@@ -1127,7 +1127,7 @@ if test $ENABLE_DEBUG -eq 1; then
     CFLAGS="$CFLAGS -g"
 else
     AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
-    AC_DEFINE([NDEBUG], [0], [Disable C asserts])
+    CPPFLAGS="-DNDEBUG $CPPFLAGS"
 fi
 
 
