@@ -4125,7 +4125,7 @@ CREATE OR REPLACE FUNCTION postgis_index_supportfn (internal)
 -----------------------------------------------------------------------------
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geom1 geometry, geom2 geometry)
+CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(line1 geometry, line2 geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'ST_LineCrossingDirection'
 	SUPPORT postgis_index_supportfn
