@@ -28,6 +28,7 @@ PostGIS 3.1.0
   - #4546, Fix PLPGSQL functions missing the schema qualification (Raúl Marín)
   - #4558, Fix oversimplification of polygon inner rings (Raúl Marín)
   - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)
+  - #4590, Fix pg_upgrade issue with st_linecrossingdirection (Raúl Marín)
 
 
 PostGIS 3.0.0
