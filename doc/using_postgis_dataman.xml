@@ -2165,19 +2165,19 @@ WHERE
       size, and the penalty in write workload. Otherwise, BRIN index can be
       considered as an alternative. </para>
 
-      <para>The idea of a BRIN index is to store only the bouding box englobing
+      <para>The idea of a BRIN index is to store only the bounding box enclosing
       all the geometries contained in all the rows in a set of table blocks,
       called a range.  Obviously, this indexing method will only be efficient
-      if the data is physically ordered in a way where the resulting bouding
+      if the data is physically ordered in a way where the resulting bounding
       boxes for block ranges will be mutually exclusive. The resulting index
       will be really small, but will be less efficient than a GiST index in
       many cases.</para>
 
 	  <para>Building a BRIN index is way less intensive than building a GiST
-	  index. It's quite common to build a BRIN index in more than ten time less
-	  than a GiST index would have required. As a BRIN index only store one
-	  bouding box for one to many table blocks, it's pretty common to consume
-	  up to a thousand time less disk space for this kind of indexes.</para>
+	  index. It's quite common to build a BRIN index ten times faster
+	  than a GiST index would have required. As a BRIN index only stores one
+	  bounding box for one to many table blocks, it's pretty common to consume
+	  up to a thousand times less disk space for this kind of index.</para>
 
       <para>You can choose the number of blocks to summarize in a range. If you
       decrease this number, the index will be bigger but will probably help to
