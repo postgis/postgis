@@ -76,7 +76,7 @@ static inline bool multipleOfPowerOf5_32(const uint32_t value, const uint32_t p)
 
 // Returns true if value is divisible by 2^p.
 static inline bool multipleOfPowerOf2_32(const uint32_t value, const uint32_t p) {
-  // return __builtin_ctz(value) >= p;
+  // __builtin_ctz doesn't appear to be faster here.
   return (value & ((1u << p) - 1)) == 0;
 }
 
@@ -114,9 +114,9 @@ static inline uint32_t mulPow5InvDivPow2(const uint32_t m, const uint32_t q, con
 #if defined(RYU_FLOAT_FULL_TABLE)
   return mulShift(m, FLOAT_POW5_INV_SPLIT[q], j);
 #elif defined(RYU_OPTIMIZE_SIZE)
-  // The inverse multipliers are defines as [2^x / 5^y] + 1; the upper 64 bit from the double lookup
+  // The inverse multipliers are defined as [2^x / 5^y] + 1; the upper 64 bits from the double lookup
   // table are the correct bits for [2^x / 5^y], so we have to add 1 here. Note that we rely on the
-  // fact that the added 1 that's already stored in the table never overflows into the upper 64 bit.
+  // fact that the added 1 that's already stored in the table never overflows into the upper 64 bits.
   uint64_t pow5[2];
   double_computeInvPow5(q, pow5);
   return mulShift(m, pow5[1] + 1, j);

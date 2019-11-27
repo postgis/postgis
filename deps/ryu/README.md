@@ -33,4 +33,4 @@ It is integrated in the project by generating a static library, libryu.la, that 
 
 # Dependency changelog
 
-  - 2019-11-15 - [Ryu] Library extraction from https://github.com/ulfjack/ryu/tree/master/ryu: Extracts *.h and *.c files only, no subfolders.
+  - 2019-11-27 - [Ryu] Library extraction from https://github.com/ulfjack/ryu/tree/master/ryu: Extracts *.h and *.c files only, no subfolders.
