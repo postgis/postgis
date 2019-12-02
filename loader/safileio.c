@@ -116,6 +116,7 @@ static
 SAOffset SADFWrite( void *p, SAOffset size, SAOffset nmemb, SAFile file )
 
 {
+    if (!nmemb || !p) return 0;
     return (SAOffset) fwrite( p, (size_t) size, (size_t) nmemb,
                               (FILE *) file );
 }
