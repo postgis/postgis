@@ -1446,6 +1446,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		return SHPDUMPERERR;
 	}
 
+	/* Mimic old behaviour and skip the EOF character (1A) */
+	DBFSetWriteEndOfFileChar(state->dbf, 0);
+
 	/*
 	 * Scan the result setting fields to be returned in mainscan
 	 * query, filling the type_ary, and creating .dbf and .shp files.

@@ -1,4 +1,5 @@
 /******************************************************************************
+ * $Id$
  *
  * Project:  Shapelib
  * Purpose:  Default implementation of file io based on stdio.
@@ -8,7 +9,7 @@
  * Copyright (c) 2007, Frank Warmerdam
  *
  * This software is available under the following "MIT Style" license,
- * or at the option of the licensee under the LGPL (see LICENSE.LGPL).  This
+ * or at the option of the licensee under the LGPL (see COPYING).  This
  * option is discussed in more detail in shapelib.html.
  *
  * --
@@ -32,7 +33,16 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************
  *
- * $Log: safileio.c,v $
+ * $Log$
+ * Revision 1.6  2018-06-15 19:56:32  erouault
+ * * safileio.c: remove duplicate test. Patch by Jaroslav Fojtik.
+ * Fixes http://bugzilla.maptools.org/show_bug.cgi?id=2744
+ *
+ * Revision 1.5  2016-12-05 12:44:05  erouault
+ * * Major overhaul of Makefile build system to use autoconf/automake.
+ *
+ * * Warning fixes in contrib/
+ *
  * Revision 1.4  2008-01-16 20:05:14  bram
  * Add file hooks that accept UTF-8 encoded filenames on some platforms.  Use SASetupUtf8Hooks
  *  tosetup the hooks and check SHPAPI_UTF8_HOOKS for its availability.  Currently, this
@@ -64,7 +74,7 @@
 #include <string.h>
 #include <stdio.h>
 
-SHP_CVSID("$Id$")
+SHP_CVSID("$Id$");
 
 #ifdef SHPAPI_UTF8_HOOKS
 #   ifdef SHPAPI_WINDOWS
@@ -75,22 +85,11 @@ SHP_CVSID("$Id$")
 #   endif
 #endif
 
-/* Local prototypes */
-SAFile SADFOpen( const char *pszFilename, const char *pszAccess );
-SAOffset SADFRead( void *p, SAOffset size, SAOffset nmemb, SAFile file );
-SAOffset SADFWrite( void *p, SAOffset size, SAOffset nmemb, SAFile file );
-SAOffset SADFSeek( SAFile file, SAOffset offset, int whence );
-SAOffset SADFTell( SAFile file );
-int SADFFlush( SAFile file );
-int SADFClose( SAFile file );
-int SADRemove( const char *filename );
-void SADError( const char *message );
-
-
 /************************************************************************/
 /*                              SADFOpen()                              */
 /************************************************************************/
 
+static
 SAFile SADFOpen( const char *pszFilename, const char *pszAccess )
 
 {
@@ -101,6 +100,7 @@ SAFile SADFOpen( const char *pszFilename, const char *pszAccess )
 /*                              SADFRead()                              */
 /************************************************************************/
 
+static
 SAOffset SADFRead( void *p, SAOffset size, SAOffset nmemb, SAFile file )
 
 {
@@ -112,46 +112,41 @@ SAOffset SADFRead( void *p, SAOffset size, SAOffset nmemb, SAFile file )
 /*                             SADFWrite()                              */
 /************************************************************************/
 
+static
 SAOffset SADFWrite( void *p, SAOffset size, SAOffset nmemb, SAFile file )
 
 {
-	if (!nmemb || !p) return 0;
-	return (SAOffset) fwrite( p, (size_t) size, (size_t) nmemb,
-				(FILE *) file );
+    return (SAOffset) fwrite( p, (size_t) size, (size_t) nmemb,
+                              (FILE *) file );
 }
 
 /************************************************************************/
 /*                              SADFSeek()                              */
 /************************************************************************/
 
+static
 SAOffset SADFSeek( SAFile file, SAOffset offset, int whence )
 
 {
-#ifdef HAVE_FSEEKO
-    return (SAOffset) fseeko( (FILE *) file, (off_t) offset, whence );
-#else
     return (SAOffset) fseek( (FILE *) file, (long) offset, whence );
-#endif
 }
 
 /************************************************************************/
 /*                              SADFTell()                              */
 /************************************************************************/
 
+static
 SAOffset SADFTell( SAFile file )
 
 {
-#ifdef HAVE_FSEEKO
-    return (SAOffset) ftello( (FILE *) file );
-#else
     return (SAOffset) ftell( (FILE *) file );
-#endif
 }
 
 /************************************************************************/
 /*                             SADFFlush()                              */
 /************************************************************************/
 
+static
 int SADFFlush( SAFile file )
 
 {
@@ -162,6 +157,7 @@ int SADFFlush( SAFile file )
 /*                             SADFClose()                              */
 /************************************************************************/
 
+static
 int SADFClose( SAFile file )
 
 {
@@ -172,6 +168,7 @@ int SADFClose( SAFile file )
 /*                             SADFClose()                              */
 /************************************************************************/
 
+static
 int SADRemove( const char *filename )
 
 {
@@ -182,6 +179,7 @@ int SADRemove( const char *filename )
 /*                              SADError()                              */
 /************************************************************************/
 
+static
 void SADError( const char *message )
 
 {
@@ -251,7 +249,7 @@ SAFile SAUtf8WFOpen( const char *pszFilename, const char *pszAccess )
     const wchar_t *pwszFileName, *pwszAccess;
     pwszFileName = Utf8ToWideChar( pszFilename );
     pwszAccess = Utf8ToWideChar( pszAccess );
-    if( pwszFileName != NULL && pwszFileName != NULL)
+    if( pwszFileName != NULL && pwszAccess != NULL)
     {
         file = (SAFile) _wfopen( pwszFileName, pwszAccess );
     }
