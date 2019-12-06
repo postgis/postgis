@@ -7,7 +7,7 @@ Dronie:
 Travis:
  [![Build Status](https://secure.travis-ci.org/postgis/postgis.svg)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
- [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-2.5/build.svg)](https://gitlab.com/postgis/postgis/commits/stable-2.5)
+ [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-2.5/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/stable-2.5)
 
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
