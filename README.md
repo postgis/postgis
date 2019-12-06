@@ -8,7 +8,7 @@ Dronie:
 Travis:
  [![Build Status](https://api.travis-ci.org/postgis/postgis.svg?branch=master)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
- [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/master/build.svg)](https://gitlab.com/postgis/postgis/commits/master)
+ [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/master/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/master)
 Drone.io:
  [![Build Status](https://cloud.drone.io/api/badges/postgis/postgis/status.svg?branch=master)](https://cloud.drone.io/postgis/postgis?branch=master)
 
