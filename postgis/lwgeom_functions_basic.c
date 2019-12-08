@@ -2095,9 +2095,11 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	tileGeoSizeX = boundsWidth / worldTileSize;
 	tileGeoSizeY = boundsHeight / worldTileSize;
 
-	// 1 margin (100%) is the same as a single tile width
-	// if the size of the tile with margins span more than the total number of tiles,
-	// reset x1/x2 to the bounds
+	/*
+	 * 1 margin (100%) is the same as a single tile width
+	 * if the size of the tile with margins span more than the total number of tiles,
+	 * reset x1/x2 to the bounds
+	*/
 	if ((1 + margin * 2) > worldTileSize)
 	{
 		x1 = bbox.xmin;
@@ -2112,7 +2114,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	y1 = bbox.ymax - tileGeoSizeY * (y + 1 + margin);
 	y2 = bbox.ymax - tileGeoSizeY * (y - margin);
 
-	// Clip y-axis to the given bounds
+	/* Clip y-axis to the given bounds */
 	if (y1 < bbox.ymin) y1 = bbox.ymin;
 	if (y2 > bbox.ymax) y2 = bbox.ymax;
 
