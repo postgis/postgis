@@ -2067,7 +2067,8 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	y = PG_GETARG_INT32(2);
 
 	margin = PG_GETARG_FLOAT8(3);
-	if (margin < -0.5)  // shrinking by more than 50% would eliminate the tile outright
+	/* shrinking by more than 50% would eliminate the tile outright */
+	if (margin < -0.5)
 		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);
 
 	bounds = PG_GETARG_GSERIALIZED_P(4);
@@ -2097,7 +2098,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	// 1 margin (100%) is the same as a single tile width
 	// if the size of the tile with margins span more than the total number of tiles,
 	// reset x1/x2 to the bounds
-	if (1 + margin * 2 > worldTileSize)
+	if ((1 + margin * 2) > worldTileSize)
 	{
 		x1 = bbox.xmin;
 		x2 = bbox.xmax;
