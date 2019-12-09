@@ -771,6 +771,7 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 			<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef>
 			<paramdef choice="opt"><type>geometry</type> <parameter>bounds=SRID=3857;LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 20037508.342789)</parameter></paramdef>
+			<paramdef choice="opt"><type>float</type> <parameter>margin=0.0</parameter></paramdef>
 		  </funcprototype>
 		 </funcsynopsis>
 		</refsynopsisdiv>
@@ -794,7 +795,7 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 
 SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326) ) );
 
-                      st_astext                       
+                      st_astext
 ------------------------------------------------------
  POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))
 </programlisting>
