@@ -2066,15 +2066,15 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	x = PG_GETARG_INT32(1);
 	y = PG_GETARG_INT32(2);
 
-	margin = PG_GETARG_FLOAT8(3);
-	/* shrinking by more than 50% would eliminate the tile outright */
-	if (margin < -0.5)
-		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);
-
-	bounds = PG_GETARG_GSERIALIZED_P(4);
+	bounds = PG_GETARG_GSERIALIZED_P(3);
 	if(gserialized_get_gbox_p(bounds, &bbox) != LW_SUCCESS)
 		elog(ERROR, "%s: Empty bounds", __func__);
 	srid = gserialized_get_srid(bounds);
+
+	margin = PG_GETARG_FLOAT8(4);
+	/* shrinking by more than 50% would eliminate the tile outright */
+	if (margin < -0.5)
+		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);
 
 	boundsWidth  = bbox.xmax - bbox.xmin;
 	boundsHeight = bbox.ymax - bbox.ymin;
