@@ -1284,3 +1284,7 @@ union all
 select '#4399', 'ST_GeoHash', ST_GeoHash(geom)::text from geom
 union all
 select '#4399', 'ST_AsGeoJSON', ST_AsGeoJSON(geom)::text from geom;
+
+SELECT '#4599-1', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
+SELECT '#4599-2', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), 0));
+SELECT '#4599-3', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), -1));
