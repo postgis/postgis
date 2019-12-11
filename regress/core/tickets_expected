@@ -424,3 +424,6 @@ ERROR:  BOX2D_construct: args can not be empty points
 #4399|ST_AsGeoJSON|{"type":"Polygon","coordinates":[[[0,0],[1,1],[0,1],[0,0]]]}
 #4399|ST_AsGeoJSON|{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[0,0],[1,1],[0,1],[0,0]]]}]}
 #4399|ST_AsGeoJSON|{"type":"Polygon","coordinates":[[]]}
+#4599-1|LINESTRING(0 0 1,1 1 1,1 2 3)
+#4599-2|LINESTRING(1 2 3,0 0 1,1 1 1)
+#4599-3|LINESTRING(0 0 1,1 1 1,1 2 3)
