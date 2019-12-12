@@ -6,6 +6,7 @@ XXXX/XX/XX
   - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)
   - #4590, Fix pg_upgrade issue with st_linecrossingdirection (Raúl Marín)
   - #4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)
+  - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
 
 
 PostGIS 3.0.0
