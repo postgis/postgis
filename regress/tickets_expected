@@ -336,3 +336,6 @@ ERROR:  lwgeom_union: GEOS Error: TopologyException: Input geom 0 is invalid: Se
 #4081|f|t
 NOTICE:  table "bug_4144_table" does not exist, skipping
 #4176|t
+#4599-1|LINESTRING(0 0 1,1 1 1,1 2 3)
+#4599-2|LINESTRING(1 2 3,0 0 1,1 1 1)
+#4599-3|LINESTRING(0 0 1,1 1 1,1 2 3)

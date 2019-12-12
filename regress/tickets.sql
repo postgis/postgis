@@ -1115,3 +1115,7 @@ DROP TABLE IF EXISTS bug_4144_table;
 DELETE FROM spatial_ref_sys;
 
 SELECT '#4176', ST_Intersects('POLYGON((0 0, 10 10, 3 5, 0 0))', 'GEOMETRYCOLLECTION(POINT(10 10), LINESTRING(0 0, 3 3))');
+
+SELECT '#4599-1', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
+SELECT '#4599-2', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), 0));
+SELECT '#4599-3', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), -1));
