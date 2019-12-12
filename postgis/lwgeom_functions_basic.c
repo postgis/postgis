@@ -2059,6 +2059,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	   srid of the object is EPSG:3857. */
 	int32_t srid;
 	GBOX bbox;
+	LWGEOM *g = NULL;
 
 	POSTGIS_DEBUG(2, "ST_TileEnvelope called");
 
@@ -2067,9 +2068,17 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	y = PG_GETARG_INT32(2);
 
 	bounds = PG_GETARG_GSERIALIZED_P(3);
-	if(gserialized_get_gbox_p(bounds, &bbox) != LW_SUCCESS)
-		elog(ERROR, "%s: Empty bounds", __func__);
-	srid = gserialized_get_srid(bounds);
+	/*
+	 * We deserialize the geometry and recalculate the bounding box here to get
+	 * 64b floating point precision. The serialized bbox has 32b float is not
+	 * precise enough with big numbers such as the ones used in the default
+	 * parameters, e.g: -20037508.3427892 is transformed into -20037510
+	 */
+	g = lwgeom_from_gserialized(bounds);
+	if (lwgeom_calculate_gbox(g, &bbox) != LW_SUCCESS)
+		elog(ERROR, "%s: Unable to compute bbox", __func__);
+	srid = g->srid;
+	lwgeom_free(g);
 
 	margin = PG_GETARG_FLOAT8(4);
 	/* shrinking by more than 50% would eliminate the tile outright */
@@ -2099,7 +2108,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	 * 1 margin (100%) is the same as a single tile width
 	 * if the size of the tile with margins span more than the total number of tiles,
 	 * reset x1/x2 to the bounds
-	*/
+	 */
 	if ((1 + margin * 2) > worldTileSize)
 	{
 		x1 = bbox.xmin;
