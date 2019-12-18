@@ -7,6 +7,7 @@ XXXX/XX/XX
   - #4590, Fix pg_upgrade issue with st_linecrossingdirection (Raúl Marín)
   - #4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)
   - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
+  - #4605, Fix postgis_upgrade.pl with PostgreSQL 12 (Matti Linnanvuori)
 
 
 PostGIS 3.0.0
