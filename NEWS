@@ -23,6 +23,7 @@ PostGIS 2.5.4
   - #4546, Fix PLPGSQL functions missing the schema qualification (Raúl Marín)
   - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)
   - #4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)
+  - #4605, Fix postgis_upgrade.pl with PostgreSQL 12 (Matti Linnanvuori)
 
 
 PostGIS 2.5.3
