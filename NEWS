@@ -36,10 +36,44 @@ PostGIS 3.1.0
   - #4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)
   - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
 
+
 PostGIS 3.0.0
-2019/10/xx
+2019/10/20
+
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
-Additional features enabled if you are running Proj6+, PostgreSQL 12, and GEOS 3.8.0
+Additional features enabled if you are running Proj6+, PostgreSQL 12
+and GEOS 3.8.0
+
+* Breaking Changes *
+  - #4267, Bump minimum GEOS version to 3.6 (Regina Obe, Darafei Praliaskouski)
+  - #3888, Raster support now available as a separate extension
+           (Sandro Santilli)
+  - #3807, Extension library files no longer include the minor version.
+           Use New configure switch --with-library-minor-version
+           if you need the old behavior (Regina Obe)
+  - #4230, ND box operators (overlaps, contains, within, equals) now
+           don't look on dimensions that aren't present in both operands.
+           Please REINDEX your ND indexes after upgrade. (Darafei Praliaskouski)
+  - #4229, Dropped support for PostgreSQL < 9.5. (Darafei Praliaskouski)
+  - #4260, liblwgeom headers are not installed anymore.
+           If your project depends on them available, please use
+           librttopo instead. (Darafei Praliaskouski)
+  - #4258, Remove SFCGAL support for ST_Area, ST_Distance, ST_Intersection,
+           ST_Difference, ST_Union, ST_Intersects, ST_3DIntersects, ST_3DDistance
+           and postgis.backend switch (Darafei Praliaskouski)
+  - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
+  - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)
+  - #4331, ST_3DMakeBox now returns error instead of a miniscule box (Regina Obe)
+  - #4342, Removed "versioned" variants of ST_AsGeoJSON and ST_AsKML (Paul Ramsey)
+  - #4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)
+  - #4414, Include version number in address_standardizer lib (Raúl Marín)
+  - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
+  - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
+           them in database for some reason. (Darafei Praliaskouski)
+  - #4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
+  - #3383, Sorting now uses Hilbert curve and Postgres Abbreviated Compare.
+           You need to REINDEX your btree indexes if you had them.
+           (Darafei Praliaskouski)
 
 * New Features *
   - #2902, postgis_geos_noop (Sandro Santilli)
@@ -127,36 +161,6 @@ Additional features enabled if you are running Proj6+, PostgreSQL 12, and GEOS 3
   - #4328, ST_3DIntersects for 2D TINs. (Darafei Praliaskouski)
   - #4509, Update geocoder for tiger 2019 (Regina Obe)
 
-* Breaking Changes *
-  - #4267, Bump minimum GEOS version to 3.6 (Regina Obe, Darafei Praliaskouski)
-  - #3888, Raster support now available as a separate extension
-           (Sandro Santilli)
-  - #3807, Extension library files no longer include the minor version.
-           Use New configure switch --with-library-minor-version
-           if you need the old behavior (Regina Obe)
-  - #4230, ND box operators (overlaps, contains, within, equals) now don't look on
-           dimensions that aren't present in both operands.
-           Please REINDEX your ND indexes after upgrade. (Darafei Praliaskouski)
-  - #4229, Dropped support for PostgreSQL < 9.5. (Darafei Praliaskouski)
-  - #4260, liblwgeom headers are not installed anymore.
-           If your project depends on them available, please use
-           librttopo instead. (Darafei Praliaskouski)
-  - #4258, Remove SFCGAL support for ST_Area, ST_Distance, ST_Intersection,
-           ST_Difference, ST_Union, ST_Intersects, ST_3DIntersects, ST_3DDistance
-           and postgis.backend switch (Darafei Praliaskouski)
-  - #4267, Enable Proj 6 deprecated APIs (Darafei Praliaskouski, Raúl Marín)
-  - #4268, Bump minimum SFCGAL version to 1.3.1 (Darafei Praliaskouski)
-  - #4331, ST_3DMakeBox now returns error instead of a miniscule box (Regina Obe)
-  - #4342, Removed "versioned" variants of ST_AsGeoJSON and ST_AsKML (Paul Ramsey)
-  - #4356, ST_Accum removed. Use array_agg instead. (Darafei Praliaskouski)
-  - #4414, Include version number in address_standardizer lib (Raúl Marín)
-  - #4334, Fix upgrade issues related to renamed function parameters (Raúl Marín)
-  - #4442, raster2pgsql now skips NODATA tiles. Use -k option if you still want
-           them in database for some reason. (Darafei Praliaskouski)
-  - #4433, 32-bit hash fix (requires reindexing hash(geometry) indexes) (Raúl Marín)
-  - #3383, Sorting now uses Hilbert curve and Postgres Abbreviated Compare.
-           You need to REINDEX your btree indexes if you had them.
-           (Darafei Praliaskouski)
 
 PostGIS 2.5.0
 2018/09/23
