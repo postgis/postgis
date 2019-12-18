@@ -1,7 +1,7 @@
 PostGIS 3.0.1
 XXXX/XX/XX
 
-* Bug Fixes and Enhancements
+* Bug Fixes and Enhancements *
   - #4558, Fix oversimplification of polygon inner rings (Raúl Marín)
   - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)
   - #4590, Fix pg_upgrade issue with st_linecrossingdirection (Raúl Marín)
@@ -12,8 +12,10 @@ XXXX/XX/XX
 
 PostGIS 3.0.0
 2019/10/20
+
 This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
-Additional features enabled if you are running Proj6+ and PostgreSQL 12
+Additional features enabled if you are running Proj6+, PostgreSQL 12
+and GEOS 3.8.0
 
 * Breaking Changes *
   - #4267, Bump minimum GEOS version to 3.6 (Regina Obe, Darafei Praliaskouski)
@@ -22,8 +24,8 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
   - #3807, Extension library files no longer include the minor version.
            Use New configure switch --with-library-minor-version
            if you need the old behavior (Regina Obe)
-  - #4230, ND box operators (overlaps, contains, within, equals) now don't look on
-           dimensions that aren't present in both operands.
+  - #4230, ND box operators (overlaps, contains, within, equals) now
+           don't look on dimensions that aren't present in both operands.
            Please REINDEX your ND indexes after upgrade. (Darafei Praliaskouski)
   - #4229, Dropped support for PostgreSQL < 9.5. (Darafei Praliaskouski)
   - #4260, liblwgeom headers are not installed anymore.
@@ -134,6 +136,7 @@ Additional features enabled if you are running Proj6+ and PostgreSQL 12
 
 PostGIS 2.5.0
 2018/09/23
+
 WARNING: If compiling with PostgreSQL+JIT, LLVM >= 6 is required
 Supported PostgreSQL versions for this release are:
 PostgreSQL 9.4 - PostgreSQL 12 (in development)
