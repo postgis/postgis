@@ -1,7 +1,7 @@
 #!/bin/sh
 
 usage() {
-  echo "Usage: $0 [-v] [--ticket-refs] [<sourcedir>]"
+  echo "Usage: $0 [-v] [--ticket-refs] [--ticket-refs-skip-commits=<file>] [<sourcedir>]"
   echo "Sourcedir defaults to one directory above this script"
 }
 
@@ -10,6 +10,7 @@ usage() {
 VERBOSE=no
 TICKET_REFS=no
 RD= # Root source dir
+TICKET_REFS_SKIP_COMMITS=/dev/null
 while [ $# -gt 0 ]; do
   if [ "$1" = "--help" ]; then
     usage
@@ -18,6 +19,9 @@ while [ $# -gt 0 ]; do
     VERBOSE=yes
   elif [ "$1" = "--ticket-refs" ]; then
     TICKET_REFS="yes"
+  elif [ "$1" = "--ticket-refs-skip-commits" ]; then
+    shift
+    TICKET_REFS_SKIP_COMMITS=$1
   elif [ -z "${RD}" ]; then
     RD=$1
   else
@@ -61,7 +65,10 @@ if test "${TICKET_REFS}" = "yes"; then
   # If git is available, check that every ticket reference in
   # commit logs is also found in the NEWS file
   if which git > /dev/null && test -e .git; then
-    git log --grep '#[0-9]\+' |
+    git log --grep '#[0-9]\+' --pretty='format:%H%n%w(800,1,1)%B' |
+      grep -v 'git-svn-id:' |
+      awk 'NR > 1 && /^[^ ]/ { printf "\n" } 1 { printf "%s", $0 }' |
+      grep -wvf $TICKET_REFS_SKIP_COMMITS |
       grep -i ' #[0-9]\+' |
       sed -En 's|#([0-9]+)|\a\1\n|;/\n/!b;s|.*\a||;P;D' |
       sort -nru |
