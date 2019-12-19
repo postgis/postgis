@@ -62,10 +62,16 @@ test $? = 0 || exit 1
 echo "PASS: NEWS file entries are in good order"
 
 if test "${TICKET_REFS}" = "yes"; then
+
+  last_news_release=$( grep \
+    -B1 '^[0-9]\{4\}/[0-9]\{2\}/[0-9]\{2\}' NEWS |
+    head -1 | awk '{print $2}' )
+  echo "INFO: Checking ticket refs in commits since tag '$last_news_release'"
+
   # If git is available, check that every ticket reference in
   # commit logs is also found in the NEWS file
   if which git > /dev/null && test -e .git; then
-    git log --grep '#[0-9]\+' --pretty='format:%H' |
+    git rev-list HEAD --not $last_news_release |
       grep -vwFf $TICKET_REFS_SKIP_COMMITS |
       xargs git log --no-walk --pretty='format:%B' |
       sed -En 's|#([0-9]+)|\a\1\n|;/\n/!b;s|.*\a||;P;D' |
