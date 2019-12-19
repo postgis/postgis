@@ -63,9 +63,10 @@ if test "${TICKET_REFS}" = "yes"; then
   if which git > /dev/null && test -e .git; then
     git log --grep '#[0-9]\+' |
       grep -i ' #[0-9]\+' |
-      sed -En 's|#([0-9]+)|\a#\1\n|;/\n/!b;s|.*\a||;P;D' |
-      sort -u |
+      sed -En 's|#([0-9]+)|\a\1\n|;/\n/!b;s|.*\a||;P;D' |
+      sort -nru |
     while read ref; do
+      ref="#${ref}"
       if ! grep -qw "${ref}" NEWS; then
         echo "FAIL: Reference to commit-logged ticket ref ${ref} missing from NEWS" >&2
         exit 1
