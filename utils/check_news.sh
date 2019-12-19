@@ -66,7 +66,7 @@ if test "${TICKET_REFS}" = "yes"; then
   # commit logs is also found in the NEWS file
   if which git > /dev/null && test -e .git; then
     git log --grep '#[0-9]\+' --pretty='format:%H' |
-      grep -vwf $TICKET_REFS_SKIP_COMMITS |
+      grep -vwFf $TICKET_REFS_SKIP_COMMITS |
       xargs git log --no-walk --pretty='format:%B' |
       sed -En 's|#([0-9]+)|\a\1\n|;/\n/!b;s|.*\a||;P;D' |
       sort -nru |
