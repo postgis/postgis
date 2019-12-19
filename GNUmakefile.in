@@ -39,7 +39,10 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit check-regress docs-check
+check: check-no-trailing-blanks check-unit check-regress docs-check check-news
+
+check-news:
+	utils/check_news.sh
 
 check-unit check-regress docs-check: all
 
