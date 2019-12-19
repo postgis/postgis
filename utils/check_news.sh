@@ -1,7 +1,5 @@
 #!/bin/sh
 
-RD=`dirname $0`/.. # root source dir
-
 usage() {
   echo "Usage: $0 [-v] [--ticket-refs] [<sourcedir>]"
   echo "Sourcedir defaults to one directory above this script"
@@ -11,6 +9,7 @@ usage() {
 ### COMMAND LINE PARSING
 VERBOSE=no
 TICKET_REFS=no
+RD= # Root source dir
 while [ $# -gt 0 ]; do
   if [ "$1" = "--help" ]; then
     usage
@@ -19,6 +18,8 @@ while [ $# -gt 0 ]; do
     VERBOSE=yes
   elif [ "$1" = "--ticket-refs" ]; then
     TICKET_REFS="yes"
+  elif [ -z "${RD}" ]; then
+    RD=$1
   else
     echo "ERROR: unrecognized extra argument $1" >&2
     usage >&2
@@ -27,6 +28,9 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+if [ -z "${RD}" ]; then
+  RD=`dirname $0`/..
+fi
 
 cd ${RD}
 
