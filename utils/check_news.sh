@@ -49,7 +49,7 @@ grep -B1 '^[0-9]\{4\}/[0-9]\{2\}/[0-9]\{2\}' NEWS |
     ts=$( date -d "${date}" '+%s' )
     pts=$( date -d "${pdate}" '+%s' )
     if test $ts -gt $pts; then
-      echo "FAIL: ${rel} (${date}) appears after ${prel} (${pdate})" >&2
+      echo "FAIL: ${rel} (${date}) appears after ${prel} (${pdate})"
       exit 1
     fi
     if test "${VERBOSE}" = yes; then
@@ -70,18 +70,19 @@ if test "${TICKET_REFS}" = "yes"; then
       xargs git log --no-walk --pretty='format:%B' |
       sed -En 's|#([0-9]+)|\a\1\n|;/\n/!b;s|.*\a||;P;D' |
       sort -nru |
-    while read ref; do
+    { failures=0; while read ref; do
       ref="#${ref}"
       if ! grep -qw "${ref}" NEWS; then
-        echo "FAIL: Reference to commit-logged ticket ref ${ref} missing from NEWS" >&2
-        exit 1
+        echo "FAIL: Ticket ${ref} MISSING from NEWS"
+        failures=$((failures+1))
+        #exit 1
       else
         if test "${VERBOSE}" = yes; then
-          echo "INFO: Reference to commit-logged ticket ref ${ref} found in NEWS"
+          echo "INFO: Ticket ${ref} found in NEWS"
         fi
       fi
-    done
-    test $? = 0 || exit 1
+    done; exit $failures; }
+    test $? = 0 || exit $?
     echo "PASS: All ticket references in commits log found in NEWS"
   else
     echo "SKIP: GIT history cannot be checked (missing git or missing ${RD}/.git)"
