@@ -69,7 +69,6 @@ if test "${TICKET_REFS}" = "yes"; then
       grep -v 'git-svn-id:' |
       awk 'NR > 1 && /^[^ ]/ { printf "\n" } 1 { printf "%s", $0 }' |
       grep -wvf $TICKET_REFS_SKIP_COMMITS |
-      grep -i ' #[0-9]\+' |
       sed -En 's|#([0-9]+)|\a\1\n|;/\n/!b;s|.*\a||;P;D' |
       sort -nru |
     while read ref; do
