@@ -49,7 +49,7 @@ grep -B1 '^[0-9]\{4\}/[0-9]\{2\}/[0-9]\{2\}' NEWS |
       exit 1
     fi
     if test "${VERBOSE}" = yes; then
-      echo "${rel} (${date}) before ${prel} (${pdate})"
+      echo "INFO: ${rel} (${date}) before ${prel} (${pdate})"
     fi
     pts=${ts}
     prel=${rel}
@@ -66,9 +66,13 @@ if test "${TICKET_REFS}" = "yes"; then
       sed -En 's|#([0-9]+)|\a#\1\n|;/\n/!b;s|.*\a||;P;D' |
       sort -u |
     while read ref; do
-      if ! grep -qw '${ref}' NEWS; then
+      if ! grep -qw "${ref}" NEWS; then
         echo "FAIL: Reference to commit-logged ticket ref ${ref} missing from NEWS" >&2
         exit 1
+      else
+        if test "${VERBOSE}" = yes; then
+          echo "INFO: Reference to commit-logged ticket ref ${ref} found in NEWS"
+        fi
       fi
     done
     test $? = 0 || exit 1
