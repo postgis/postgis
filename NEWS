@@ -1,24 +1,3 @@
-PostGIS 1.5.10
-2013/MM/DD
-
- This is a bug fix release, addressing issues that have been
- filed since the 1.5.9 release.
-
- - Bug Fixes
-   - #2372, Cannot parse space-padded KML coordinates
-   - #2371, Support GEOS versions with more than 1 digit in micro
-
-PostGIS 1.5.9
-2012/11/15
-
- This is a bug fix release, addressing issues that have been
- filed since the 1.5.8 release.
-
- - Bug Fixes
-   - #2191, segfault when calculating bounding box of empty
-   - #2351, st_distance between geographies wrong
-
-
 PostGIS 1.5.8
 2012/11/15
 
