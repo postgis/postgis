@@ -65,10 +65,9 @@ if test "${TICKET_REFS}" = "yes"; then
   # If git is available, check that every ticket reference in
   # commit logs is also found in the NEWS file
   if which git > /dev/null && test -e .git; then
-    git log --grep '#[0-9]\+' --pretty='format:%H%n%w(800,1,1)%B' |
-      grep -v 'git-svn-id:' |
-      awk 'NR > 1 && /^[^ ]/ { printf "\n" } 1 { printf "%s", $0 }' |
-      grep -wvf $TICKET_REFS_SKIP_COMMITS |
+    git log --grep '#[0-9]\+' --pretty='format:%H' |
+      grep -vwf $TICKET_REFS_SKIP_COMMITS |
+      xargs git log --no-walk --pretty='format:%B' |
       sed -En 's|#([0-9]+)|\a\1\n|;/\n/!b;s|.*\a||;P;D' |
       sort -nru |
     while read ref; do
