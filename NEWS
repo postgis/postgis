@@ -1501,6 +1501,8 @@ PostGIS 2.0.0
   - 3D analysis functions are now named with "3D" as a prefix
     instead of a suffix (eg ST_Length3D has become ST_3DLength)
   - Operator && does not check for SRID mismatch anymore
+  - Cast function from raster to bytea now called `bytea` instead
+    of `st_bytea` (#1003)
 
 * New Features *
 
