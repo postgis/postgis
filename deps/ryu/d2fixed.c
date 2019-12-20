@@ -420,7 +420,8 @@ int d2fixed_buffered_n(double d, uint32_t precision, char* result) {
   if (!nonzero) {
     result[index++] = '0';
   }
-  if (precision > 0) {
+  const bool printDecimalPoint = precision > 0;
+  if (printDecimalPoint) {
     result[index++] = '.';
   }
 #ifdef RYU_DEBUG
@@ -532,6 +533,18 @@ int d2fixed_buffered_n(double d, uint32_t precision, char* result) {
     memset(result + index, '0', precision);
     index += precision;
   }
+
+#if RYU_NO_TRAILING_ZEROS
+  if (printDecimalPoint) {
+    while (result[index - 1] == '0') {
+      index--;
+    }
+    if (result[index - 1] == '.') {
+      index--;
+    }
+  }
+#endif
+
   return index;
 }
 
@@ -771,6 +784,18 @@ int d2exp_buffered_n(double d, uint32_t precision, char* result) {
       }
     }
   }
+
+#if RYU_NO_TRAILING_ZEROS
+  if (printDecimalPoint) {
+    while (result[index - 1] == '0') {
+      index--;
+    }
+    if (result[index - 1] == '.') {
+      index--;
+    }
+  }
+#endif
+
   result[index++] = 'e';
   if (exp < 0) {
     result[index++] = '-';
