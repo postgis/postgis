@@ -82,7 +82,7 @@ static inline bool multipleOfPowerOf2_32(const uint32_t value, const uint32_t p)
 
 // It seems to be slightly faster to avoid uint128_t here, although the
 // generated code for uint128_t looks slightly nicer.
-static inline uint32_t mulShift(const uint32_t m, const uint64_t factor, const int32_t shift) {
+static inline uint32_t mulShift32(const uint32_t m, const uint64_t factor, const int32_t shift) {
   assert(shift > 32);
 
   // The casts here help MSVC to avoid calls to the __allmul library
@@ -112,28 +112,28 @@ static inline uint32_t mulShift(const uint32_t m, const uint64_t factor, const i
 
 static inline uint32_t mulPow5InvDivPow2(const uint32_t m, const uint32_t q, const int32_t j) {
 #if defined(RYU_FLOAT_FULL_TABLE)
-  return mulShift(m, FLOAT_POW5_INV_SPLIT[q], j);
+  return mulShift32(m, FLOAT_POW5_INV_SPLIT[q], j);
 #elif defined(RYU_OPTIMIZE_SIZE)
   // The inverse multipliers are defined as [2^x / 5^y] + 1; the upper 64 bits from the double lookup
   // table are the correct bits for [2^x / 5^y], so we have to add 1 here. Note that we rely on the
   // fact that the added 1 that's already stored in the table never overflows into the upper 64 bits.
   uint64_t pow5[2];
   double_computeInvPow5(q, pow5);
-  return mulShift(m, pow5[1] + 1, j);
+  return mulShift32(m, pow5[1] + 1, j);
 #else
-  return mulShift(m, DOUBLE_POW5_INV_SPLIT[q][1] + 1, j);
+  return mulShift32(m, DOUBLE_POW5_INV_SPLIT[q][1] + 1, j);
 #endif
 }
 
 static inline uint32_t mulPow5divPow2(const uint32_t m, const uint32_t i, const int32_t j) {
 #if defined(RYU_FLOAT_FULL_TABLE)
-  return mulShift(m, FLOAT_POW5_SPLIT[i], j);
+  return mulShift32(m, FLOAT_POW5_SPLIT[i], j);
 #elif defined(RYU_OPTIMIZE_SIZE)
   uint64_t pow5[2];
   double_computePow5(i, pow5);
-  return mulShift(m, pow5[1], j);
+  return mulShift32(m, pow5[1], j);
 #else
-  return mulShift(m, DOUBLE_POW5_SPLIT[i][1], j);
+  return mulShift32(m, DOUBLE_POW5_SPLIT[i][1], j);
 #endif
 }
 
