@@ -21,6 +21,7 @@ config.sub
 config.status
 configure
 de9i*.png
+doc/*.html
 doc/html/image_src/generator
 doc/html/image_src/Makefile
 doc/html/*.html
