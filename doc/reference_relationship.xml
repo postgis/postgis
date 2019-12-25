@@ -1080,7 +1080,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
-			<para>Changed: 3.0.0 SFCGAL version removed.</para>
+			<para>Changed: 3.0.0 SFCGAL version removed and native suppport for 2D TINS added.</para>
 			<para>Enhanced: 2.5.0 Supports GEOMETRYCOLLECTION.</para>
 			<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 			<para>Performed by the GEOS module (for geometry), geography is native</para>
@@ -1102,7 +1102,9 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 			  - ST_Intersects(g1, g2 ) --&gt; Not (ST_Disjoint(g1, g2 ))
 			</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.27</para>
-                        <para>&sfcgal_enhanced;</para>
+			<para>&curve_support;</para>
+			<!-- Optionally mention support for Triangles and TINS  -->
+			<para>&T_support;</para>
 		</refsection>
 		<refsection>
 		<title>Geometry Examples</title>
