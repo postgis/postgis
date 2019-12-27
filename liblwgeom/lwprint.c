@@ -441,45 +441,9 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 	return lwdoubles_to_latlon(p->y, p->x, format);
 }
 
-/*
- * Removes trailing zeros and dot for a %f formatted number.
- * Modifies input.
- * Returns the amount of trailing zeros removed
+/**
+ * Returns the decimal length of a double. 0 for special cases (inf)
  */
-//static int
-//trim_trailing_zeros(char *str, size_t str_len)
-//{
-//	char *ptr, *totrim = NULL;
-//
-//	LWDEBUGF(3, "input: %s", str);
-//
-//	ptr = strchr(str, '.');
-//	if (!ptr)
-//		return 0; /* no dot, no decimal digits */
-//
-//	LWDEBUGF(3, "ptr: %s", ptr);
-//
-//	ptrdiff_t len = str_len - (ptr - str);
-//	for (int i = len - 1; i; i--)
-//	{
-//		if (ptr[i] != '0') break;
-//		totrim = &ptr[i];
-//	}
-//	if (totrim)
-//	{
-//		if (ptr == totrim - 1)
-//		{
-//			*ptr = '\0';
-//			return len;
-//		}
-//		*totrim = '\0';
-//		return ptr + len - totrim;
-//	}
-//
-//	LWDEBUGF(3, "output: %s", str);
-//	return 0;
-//}
-
 static inline uint32_t
 decimalLength(const double d)
 {
@@ -524,7 +488,6 @@ decimalLength(const double d)
  * truncated and misses a terminating NULL.
  *
  */
-
 int
 lwprint_double(double d, uint32_t maxdd, char* buf, size_t bufsize)
 {
