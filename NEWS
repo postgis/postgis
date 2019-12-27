@@ -9,7 +9,8 @@ XXXX/XX/XX
   - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
   - #4605, Fix postgis_upgrade.pl with PostgreSQL 12 (Matti Linnanvuori)
   - #4606, Respect user's LDFLAGS in postgis module build (Sandro Santilli)
-
+  - #4610, Add in logic to install postgis_tiger_geocoder from unpackaged (Regina obe)
+  - #4581, installing postgis_raster from unpackaged tries to use wrong schema
 
 PostGIS 3.0.0
 2019/10/20
