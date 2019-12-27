@@ -27,7 +27,7 @@ CFLAGS = -I.. @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ -DRYU_NO_TRAILING_ZEROS
 top_builddir = @top_builddir@
 LIBTOOL = @LIBTOOL@
 
-RYU_OBJS = d2fixed.o d2s.o f2s.o generic_128.o
+RYU_OBJS = d2fixed.o
 LT_RYU_OBJS =  $(RYU_OBJS:.o=.lo)
 
 all: @RYU_LIB@ 
