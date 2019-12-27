@@ -484,7 +484,12 @@ static inline uint32_t
 decimalLength(const double d)
 {
 	assert(d >= 0.0);
-	if (d > OUT_MAX_DOUBLE) { return floor(log10(d)) + 1; }
+	if (d > OUT_MAX_DOUBLE)
+	{
+		if (isinf(d))
+			return 0;
+		return floor(log10(d)) + 1;
+	}
 	uint64_t v = (uint64_t) d;
 	if (v >= 100000000000000L) { return 15; }
 	if (v >= 10000000000000L) { return 14; }
