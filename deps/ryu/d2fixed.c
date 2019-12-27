@@ -630,10 +630,10 @@ int d2exp_buffered_n(double d, uint32_t precision, char* result) {
     printf("len=%d\n", len);
 #endif
     for (int32_t i = len - 1; i >= 0; --i) {
-      const uint32_t j = p10bits - e2;
+      const int32_t j = ((int32_t) p10bits) - e2;
       // Temporary: j is usually around 128, and by shifting a bit, we push it to 128 or above, which is
       // a slightly faster code path in mulShift_mod1e9. Instead, we can just increase the multipliers.
-      digits = mulShift_mod1e9(m2 << 8, POW10_SPLIT[POW10_OFFSET[idx] + i], (int32_t) (j + 8));
+      digits = mulShift_mod1e9(m2 << 8, POW10_SPLIT[POW10_OFFSET[idx] + i], j + 8);
       if (printedDigits != 0) {
         if (printedDigits + 9 > precision) {
           availableDigits = 9;
