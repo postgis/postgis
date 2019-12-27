@@ -23,11 +23,13 @@
  *
  **********************************************************************/
 
+#include "liblwgeom_internal.h"
 
+#include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
-#include "liblwgeom_internal.h"
+
 #include "ryu/ryu.h"
 
 /* Ensures the given lat and lon are in the "normal" range:
@@ -478,8 +480,10 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 //	return 0;
 //}
 
-
-static inline uint32_t decimalLength(const double d) {
+static inline uint32_t
+decimalLength(const double d)
+{
+	assert(d >= 0.0);
 	if (d > OUT_MAX_DOUBLE) { return floor(log10(d)) + 1; }
 	uint64_t v = (uint64_t) d;
 	if (v >= 100000000000000L) { return 15; }
@@ -496,7 +500,10 @@ static inline uint32_t decimalLength(const double d) {
 	if (v >= 1000L) { return 4; }
 	if (v >= 100L) { return 3; }
 	if (v >= 10L) { return 2; }
-	return 1;
+	if (v >= 1L) { return 1; }
+	/* For compatibility with the previous implementation, we assume 0 has 0 digits,
+	 * although that's clearly not the case */
+	return 0;
 }
 
 /*
@@ -523,29 +530,29 @@ lwprint_double(double d, uint32_t maxdd, char* buf, size_t bufsize)
 		return snprintf(buf, bufsize, "0");
 	}
 
-	const uint32_t max_digits = FP_MIN(OUT_MAX_DOUBLE_PRECISION, bufsize - 1);
-	const uint32_t sign_digits = (d < 0 ? 1 : 0);
-	const uint32_t integer_digits = decimalLength(ad);
+	assert(bufsize >= OUT_DOUBLE_BUFFER_SIZE);
 
-	if ((integer_digits + sign_digits > max_digits))
+	if (ad >= OUT_MAX_DOUBLE)
 	{
-		/* Since the number of digits that we were going to use to print this double
-		 * exceed the space that we had, try to use scientific notation */
+		/* Compat with previous releases: The precision for exponential notation
+		 * was, as far as I can see, 8 - length(exponent) */
+		const uint32_t fractional_digits = 8 - decimalLength(decimalLength(ad));
 
-		/* For e+150 we need 2 + 3 */
-		const uint32_t exponent_digits = 2 + decimalLength(integer_digits);
-		const uint32_t fractional_digits = FP_MIN(maxdd, max_digits - exponent_digits - sign_digits);
 		length = d2exp_buffered_n(d, fractional_digits, buf);
-		buf[length] = '\0';
 	}
 	else
 	{
-		const uint32_t fractional_digits = FP_MIN(maxdd, max_digits - integer_digits - sign_digits - 1 /*Point*/);
+		/* We always need to save 1 last characters to add NULL */
+		const uint32_t max_chars = FP_MIN(OUT_DOUBLE_BUFFER_SIZE, bufsize) - 1;
+		const uint32_t integer_digits = decimalLength(ad);
+		/* Although we could use this extra digit for show an extra decimal in positive
+		 * numbers, we don't use it and save it instead */
+		static const uint32_t sign_digits = 1;
+		const uint32_t fractional_digits =
+		    FP_MIN(maxdd, max_chars - integer_digits - sign_digits - 1 /* '.' */);
 		length = d2fixed_buffered_n(d, fractional_digits, buf);
-		buf[length] = '\0';
-//		length -= trim_trailing_zeros(buf, length);
 	}
-
+	buf[length] = '\0';
 
 	return length;
 }

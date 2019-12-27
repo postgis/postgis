@@ -146,12 +146,20 @@
 /*
  * Export functions
  */
+
+/* Any number higher than this will always be printed in scientific notation */
 #define OUT_MAX_DOUBLE 1E15
-#define OUT_SHOW_DIGS_DOUBLE 20
+
+/* Limit for the max amount of decimal digits to show, e.g: 0.123456789012345 has 15 */
 #define OUT_MAX_DOUBLE_PRECISION 15
+
+/* Limits for the max amount of digits to show, e.g: 1234567890.12345678 has 18 digits */
+/* This used to be 20 but it never worked as announced and OUT_MAX_DOUBLE_PRECISION was used instead */
+#define OUT_SHOW_DIGS_DOUBLE 15
+
+/* Limit for the max amount of characters that a double can use, including dot and sign */
 #define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
-#define OUT_DOUBLE_BUFFER_SIZE \
-	OUT_MAX_DIGS_DOUBLE + OUT_MAX_DOUBLE_PRECISION + 1
+#define OUT_DOUBLE_BUFFER_SIZE OUT_MAX_DIGS_DOUBLE + 1 /* +1 including NULL */
 
 /**
 * Constants for point-in-polygon return values
