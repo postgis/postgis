@@ -2850,7 +2850,10 @@ BEGIN
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'topology' AND c.relname = 'topology') )
 
-				 -- TODO: How do we tell if PostGIS Tiger Geocoder is available  ?
+				 OR ( rec.name = 'postgis_tiger_geocoder' AND EXISTS (
+							SELECT 1 FROM pg_catalog.pg_class c
+							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
+							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
 			THEN
 				--force install in same schema as postgis only if postgis extension is installed
 				IF rec.name NOT IN('postgis', 'postgis_topology', 'postgis_tiger_geocoder') AND EXISTS (SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'postgis') THEN
