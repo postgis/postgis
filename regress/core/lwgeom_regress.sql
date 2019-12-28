@@ -98,6 +98,15 @@ SELECT ST_MemSize(ST_collect(ST_Force2d(ST_force4d(ST_force3dm(ST_force3dz(ST_fo
 
 DROP TABLE test_data;
 
+SELECT '#3057', ST_AsEWKT(ST_Force3D(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry)));
+SELECT '#3057', ST_AsEWKT(ST_Force3D(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry), 1));
+SELECT '#3057', ST_AsEWKT(ST_Force3DZ(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry)));
+SELECT '#3057', ST_AsEWKT(ST_Force3DZ(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry), 1));
+SELECT '#3057', ST_AsEWKT(ST_Force3DM(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry)));
+SELECT '#3057', ST_AsEWKT(ST_Force3DM(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry), 2));
+SELECT '#3057', ST_AsEWKT(ST_Force4D(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry)));
+SELECT '#3057', ST_AsEWKT(ST_Force4D(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry), 1, 2));
+
 SELECT '#3069', ST_Summary(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry));
 SELECT '#3069', ST_Summary(PostGIS_Noop('SRID=4326;LINESTRING(1 1,0 0)'::geometry));
 SELECT '#3069', replace(ST_Summary(PostGIS_Noop('SRID=4326;MULTIPOINT(1 1)'::geometry)),E'\n',' ');
