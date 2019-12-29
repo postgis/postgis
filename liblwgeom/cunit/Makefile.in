@@ -33,6 +33,7 @@ OBJS=	\
 	cu_clip_by_rect.o \
 	cu_effectivearea.o \
 	cu_filterm.o \
+	cu_force_dims.o \
 	cu_force_sfs.o \
 	cu_geodetic.o \
 	cu_geos_cluster.o \

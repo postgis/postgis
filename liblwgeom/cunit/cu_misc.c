@@ -18,29 +18,6 @@
 #include "cu_tester.h"
 
 
-static void test_misc_force_2d(void)
-{
-	LWGEOM *geom;
-	LWGEOM *geom2d;
-	char *wkt_out;
-
-	geom = lwgeom_from_wkt("CIRCULARSTRINGM(-5 0 4,0 5 3,5 0 2,10 -5 1,15 0 0)", LW_PARSER_CHECK_NONE);
-	geom2d = lwgeom_force_2d(geom);
-	wkt_out = lwgeom_to_ewkt(geom2d);
-	CU_ASSERT_STRING_EQUAL("CIRCULARSTRING(-5 0,0 5,5 0,10 -5,15 0)",wkt_out);
-	lwgeom_free(geom);
-	lwgeom_free(geom2d);
-	lwfree(wkt_out);
-
-	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(POINT(0 0 0),LINESTRING(1 1 1,2 2 2),POLYGON((0 0 1,0 1 1,1 1 1,1 0 1,0 0 1)),CURVEPOLYGON(CIRCULARSTRING(0 0 0,1 1 1,2 2 2,1 1 1,0 0 0)))", LW_PARSER_CHECK_NONE);
-	geom2d = lwgeom_force_2d(geom);
-	wkt_out = lwgeom_to_ewkt(geom2d);
-	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 1,2 2),POLYGON((0 0,0 1,1 1,1 0,0 0)),CURVEPOLYGON(CIRCULARSTRING(0 0,1 1,2 2,1 1,0 0)))",wkt_out);
-	lwgeom_free(geom);
-	lwgeom_free(geom2d);
-	lwfree(wkt_out);
-}
-
 static void test_misc_simplify(void)
 {
 	LWGEOM *geom;
@@ -265,7 +242,6 @@ void misc_suite_setup(void);
 void misc_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("miscellaneous", NULL, NULL);
-	PG_ADD_TEST(suite, test_misc_force_2d);
 	PG_ADD_TEST(suite, test_misc_simplify);
 	PG_ADD_TEST(suite, test_misc_count_vertices);
 	PG_ADD_TEST(suite, test_misc_area);

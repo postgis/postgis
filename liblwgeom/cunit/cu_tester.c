@@ -37,6 +37,7 @@ extern void clean_suite_setup();
 extern void clip_by_rect_suite_setup();
 extern void effectivearea_suite_setup(void);
 extern void filterm_suite_setup(void);
+extern void force_dims_suite_setup(void);
 extern void force_sfs_suite_setup(void);
 extern void geodetic_suite_setup(void);
 extern void geos_cluster_suite_setup(void);
@@ -89,6 +90,7 @@ PG_SuiteSetup setupfuncs[] =
 	clip_by_rect_suite_setup,
 	effectivearea_suite_setup,
 	filterm_suite_setup,
+	force_dims_suite_setup,
 	force_sfs_suite_setup,
 	geodetic_suite_setup,
 	geos_cluster_suite_setup,
