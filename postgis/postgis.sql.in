@@ -1311,32 +1311,59 @@ CREATE OR REPLACE FUNCTION ST_Force2D(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_Force3DZ(geometry, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DZ(geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	AS 'SELECT @extschema@.ST_Force3DZ($1, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
--- Availability: 2.1.0
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_Force3D(geometry, float8)
+	RETURNS geometry
+	AS 'SELECT @extschema@.ST_Force3DZ($1, $2)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 CREATE OR REPLACE FUNCTION ST_Force3D(geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	AS 'SELECT @extschema@.ST_Force3DZ($1, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
--- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Force3DM(geometry)
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_Force3DM(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Force4D(geometry)
+CREATE OR REPLACE FUNCTION ST_Force3DM(geometry)
+	RETURNS geometry
+	AS 'SELECT @extschema@.ST_Force3DM($1, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_Force4D(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_Force4D(geometry)
+	RETURNS geometry
+	AS 'SELECT @extschema@.ST_Force4D($1, 0, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
 -- Availability: 2.1.0
@@ -2850,10 +2877,7 @@ BEGIN
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'topology' AND c.relname = 'topology') )
 
-				 OR ( rec.name = 'postgis_tiger_geocoder' AND EXISTS (
-							SELECT 1 FROM pg_catalog.pg_class c
-							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
-							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
+				 -- TODO: How do we tell if PostGIS Tiger Geocoder is available  ?
 			THEN
 				--force install in same schema as postgis only if postgis extension is installed
 				IF rec.name NOT IN('postgis', 'postgis_topology', 'postgis_tiger_geocoder') AND EXISTS (SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'postgis') THEN

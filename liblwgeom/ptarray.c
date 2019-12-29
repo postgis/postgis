@@ -1032,7 +1032,7 @@ ptarray_isccw(const POINTARRAY *pa)
 }
 
 POINTARRAY*
-ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
+ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm, double defaultz, double defaultm)
 {
 	/* TODO handle zero-length point arrays */
 	uint32_t i;
@@ -1045,9 +1045,9 @@ ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
 	{
 		getPoint4d_p(pa, i, &pt);
 		if( hasz && ! in_hasz )
-			pt.z = 0.0;
+			pt.z = defaultz;
 		if( hasm && ! in_hasm )
-			pt.m = 0.0;
+			pt.m = defaultm;
 		ptarray_append_point(pa_out, &pt, LW_TRUE);
 	}
 
