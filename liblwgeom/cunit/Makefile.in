@@ -26,51 +26,51 @@ endif
 # ADD YOUR NEW TEST FILE HERE (1/1)
 OBJS=	\
 	cu_algorithm.o \
-	cu_bytebuffer.o \
 	cu_buildarea.o \
-	cu_clean.o \
-	cu_print.o \
-	cu_minimum_bounding_circle.o \
-	cu_misc.o \
-	cu_ptarray.o \
-	cu_geodetic.o \
-	cu_geos.o \
-	cu_geos_cluster.o \
-	cu_tree.o \
-	cu_measures.o \
-	cu_effectivearea.o \
+	cu_bytebuffer.o \
 	cu_chaikin.o \
-	cu_filterm.o \
-	cu_node.o \
+	cu_clean.o \
 	cu_clip_by_rect.o \
+	cu_effectivearea.o \
+	cu_filterm.o \
+	cu_force_sfs.o \
+	cu_geodetic.o \
+	cu_geos_cluster.o \
+	cu_geos.o \
 	cu_gserialized1.o \
 	cu_gserialized2.o \
-	cu_lwstroke.o \
-	cu_split.o \
-	cu_stringbuffer.o \
-	cu_triangulate.o \
 	cu_homogenize.o \
-	cu_force_sfs.o \
-	cu_out_twkb.o \
-	cu_out_wkt.o \
-	cu_out_wkb.o \
-	cu_out_gml.o \
-	cu_out_kml.o \
-	cu_out_geojson.o \
-	cu_out_svg.o \
-	cu_out_encoded_polyline.o \
-	cu_surface.o \
-	cu_out_x3d.o \
+	cu_in_encoded_polyline.o \
 	cu_in_geojson.o \
 	cu_in_twkb.o \
 	cu_in_wkb.o \
 	cu_in_wkt.o \
-	cu_in_encoded_polyline.o \
 	cu_iterator.o \
-	cu_varint.o \
+	cu_lwstroke.o \
+	cu_measures.o \
+	cu_minimum_bounding_circle.o \
+	cu_misc.o \
+	cu_node.o \
+	cu_out_encoded_polyline.o \
+	cu_out_geojson.o \
+	cu_out_gml.o \
+	cu_out_kml.o \
+	cu_out_svg.o \
+	cu_out_twkb.o \
+	cu_out_wkb.o \
+	cu_out_wkt.o \
+	cu_out_x3d.o \
+	cu_print.o \
+	cu_ptarray.o \
+	cu_split.o \
+	cu_stringbuffer.o \
+	cu_surface.o \
+	cu_tester.o \
+	cu_tree.o \
+	cu_triangulate.o \
 	cu_unionfind.o \
-	cu_wrapx.o \
-	cu_tester.o
+	cu_varint.o \
+	cu_wrapx.o
 
 ifeq (@SFCGAL@,sfcgal)
 CFLAGS += @SFCGAL_CPPFLAGS@
