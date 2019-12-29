@@ -1069,6 +1069,9 @@ extern LWGEOM* lwgeom_force_2d(const LWGEOM *geom);
 extern LWGEOM* lwgeom_force_3dz(const LWGEOM *geom);
 extern LWGEOM* lwgeom_force_3dm(const LWGEOM *geom);
 extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
+extern LWGEOM* lwgeom_force_3dz_with_default(const LWGEOM *geom, double z);
+extern LWGEOM* lwgeom_force_3dm_with_default(const LWGEOM *geom, double m);
+extern LWGEOM* lwgeom_force_4d_with_default(const LWGEOM *geom, double z, double m);
 
 extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double area);
 extern LWGEOM* lwgeom_chaikin(const LWGEOM *igeom, int n_iterations, int preserve_endpoint);

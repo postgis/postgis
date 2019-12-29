@@ -774,42 +774,60 @@ lwgeom_segmentize2d(const LWGEOM *lwgeom, double dist)
 LWGEOM*
 lwgeom_force_2d(const LWGEOM *geom)
 {
-	return lwgeom_force_dims(geom, 0, 0);
+	return lwgeom_force_dims(geom, 0, 0, 0, 0);
 }
 
 LWGEOM*
 lwgeom_force_3dz(const LWGEOM *geom)
 {
-	return lwgeom_force_dims(geom, 1, 0);
+	return lwgeom_force_3dz_with_default(geom, 0);
+}
+
+LWGEOM*
+lwgeom_force_3dz_with_default(const LWGEOM *geom, double z)
+{
+	return lwgeom_force_dims(geom, 1, 0, z, 0);
 }
 
 LWGEOM*
 lwgeom_force_3dm(const LWGEOM *geom)
 {
-	return lwgeom_force_dims(geom, 0, 1);
+	return lwgeom_force_3dm_with_default(geom, 0);
+}
+
+LWGEOM*
+lwgeom_force_3dm_with_default(const LWGEOM *geom, double m)
+{
+	return lwgeom_force_dims(geom, 0, 1, 0, m);
 }
 
 LWGEOM*
 lwgeom_force_4d(const LWGEOM *geom)
 {
-	return lwgeom_force_dims(geom, 1, 1);
+	return lwgeom_force_4d_with_default(geom, 0, 0);
 }
 
 LWGEOM*
-lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
+lwgeom_force_4d_with_default(const LWGEOM *geom, double z, double m)
+{
+	return lwgeom_force_dims(geom, 1, 1, z, m);
+}
+
+LWGEOM*
+lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm, double defaultz, double defaultm)
 {
 	if (!geom)
 		return NULL;
 	switch(geom->type)
 	{
 		case POINTTYPE:
-			return lwpoint_as_lwgeom(lwpoint_force_dims((LWPOINT*)geom, hasz, hasm));
+			return lwpoint_as_lwgeom(lwpoint_force_dims((LWPOINT*)geom, hasz, hasm, defaultz, defaultm));
 		case CIRCSTRINGTYPE:
 		case LINETYPE:
 		case TRIANGLETYPE:
-			return lwline_as_lwgeom(lwline_force_dims((LWLINE*)geom, hasz, hasm));
+			return lwline_as_lwgeom(lwline_force_dims((LWLINE*)geom, hasz, hasm, defaultz, defaultm));
 		case POLYGONTYPE:
-			return lwpoly_as_lwgeom(lwpoly_force_dims((LWPOLY*)geom, hasz, hasm));
+			return lwpoly_as_lwgeom(lwpoly_force_dims((LWPOLY*)geom, hasz, hasm, defaultz, defaultm));
 		case COMPOUNDTYPE:
 		case CURVEPOLYTYPE:
 		case MULTICURVETYPE:
@@ -820,7 +838,7 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 		case POLYHEDRALSURFACETYPE:
 		case TINTYPE:
 		case COLLECTIONTYPE:
-			return lwcollection_as_lwgeom(lwcollection_force_dims((LWCOLLECTION*)geom, hasz, hasm));
+			return lwcollection_as_lwgeom(lwcollection_force_dims((LWCOLLECTION*)geom, hasz, hasm, defaultz, defaultm));
 		default:
 			lwerror("lwgeom_force_2d: unsupported geom type: %s", lwtype_name(geom->type));
 			return NULL;
