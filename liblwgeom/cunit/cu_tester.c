@@ -30,28 +30,25 @@ cu_debuglogger(int level, const char *fmt, va_list ap);
 
 
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
-extern void print_suite_setup();
 extern void algorithms_suite_setup();
 extern void buildarea_suite_setup();
+extern void chaikin_suite_setup(void);
 extern void clean_suite_setup();
 extern void clip_by_rect_suite_setup();
+extern void effectivearea_suite_setup(void);
+extern void filterm_suite_setup(void);
 extern void force_sfs_suite_setup(void);
 extern void geodetic_suite_setup(void);
-extern void geos_suite_setup(void);
 extern void geos_cluster_suite_setup(void);
-extern void unionfind_suite_setup(void);
+extern void geos_suite_setup(void);
+extern void gserialized1_suite_setup(void);
+extern void gserialized2_suite_setup(void);
 extern void homogenize_suite_setup(void);
 extern void in_encoded_polyline_suite_setup(void);
 extern void in_geojson_suite_setup(void);
 extern void iterator_suite_setup(void);
-extern void twkb_in_suite_setup(void);
-extern void gserialized1_suite_setup(void);
-extern void gserialized2_suite_setup(void);
 extern void lwstroke_suite_setup(void);
 extern void measures_suite_setup(void);
-extern void effectivearea_suite_setup(void);
-extern void chaikin_suite_setup(void);
-extern void filterm_suite_setup(void);
 extern void minimum_bounding_circle_suite_setup(void);
 extern void misc_suite_setup(void);
 extern void node_suite_setup(void);
@@ -60,22 +57,25 @@ extern void out_geojson_suite_setup(void);
 extern void out_gml_suite_setup(void);
 extern void out_kml_suite_setup(void);
 extern void out_svg_suite_setup(void);
-extern void twkb_out_suite_setup(void);
 extern void out_x3d_suite_setup(void);
+extern void print_suite_setup();
 extern void ptarray_suite_setup(void);
 #if HAVE_SFCGAL
 extern void sfcgal_suite_setup(void);
 #endif
 extern void split_suite_setup(void);
 extern void stringbuffer_suite_setup(void);
+extern void surface_suite_setup(void);
 extern void tree_suite_setup(void);
 extern void triangulate_suite_setup(void);
+extern void twkb_in_suite_setup(void);
+extern void twkb_out_suite_setup(void);
+extern void unionfind_suite_setup(void);
 extern void varint_suite_setup(void);
-extern void wkt_out_suite_setup(void);
-extern void wkb_out_suite_setup(void);
-extern void surface_suite_setup(void);
 extern void wkb_in_suite_setup(void);
+extern void wkb_out_suite_setup(void);
 extern void wkt_in_suite_setup(void);
+extern void wkt_out_suite_setup(void);
 extern void wrapx_suite_setup(void);
 
 
@@ -84,27 +84,24 @@ PG_SuiteSetup setupfuncs[] =
 {
 	algorithms_suite_setup,
 	buildarea_suite_setup,
+	chaikin_suite_setup,
 	clean_suite_setup,
 	clip_by_rect_suite_setup,
+	effectivearea_suite_setup,
+	filterm_suite_setup,
 	force_sfs_suite_setup,
 	geodetic_suite_setup,
-	geos_suite_setup,
 	geos_cluster_suite_setup,
-	unionfind_suite_setup,
+	geos_suite_setup,
+	gserialized1_suite_setup,
+	gserialized2_suite_setup,
 	homogenize_suite_setup,
 	in_encoded_polyline_suite_setup,
 #if HAVE_LIBJSON
 	in_geojson_suite_setup,
 #endif
-    iterator_suite_setup,
-	twkb_in_suite_setup,
-	gserialized1_suite_setup,
-	gserialized2_suite_setup,
 	lwstroke_suite_setup,
 	measures_suite_setup,
-	effectivearea_suite_setup,
-	chaikin_suite_setup,
-	filterm_suite_setup,
 	minimum_bounding_circle_suite_setup,
 	misc_suite_setup,
 	node_suite_setup,
@@ -114,8 +111,8 @@ PG_SuiteSetup setupfuncs[] =
 	out_kml_suite_setup,
 	out_svg_suite_setup,
 	out_x3d_suite_setup,
-	ptarray_suite_setup,
 	print_suite_setup,
+	ptarray_suite_setup,
 #if HAVE_SFCGAL
 	sfcgal_suite_setup,
 #endif
@@ -124,13 +121,16 @@ PG_SuiteSetup setupfuncs[] =
 	surface_suite_setup,
 	tree_suite_setup,
 	triangulate_suite_setup,
+	twkb_in_suite_setup,
 	twkb_out_suite_setup,
+	unionfind_suite_setup,
 	varint_suite_setup,
 	wkb_in_suite_setup,
 	wkb_out_suite_setup,
 	wkt_in_suite_setup,
 	wkt_out_suite_setup,
 	wrapx_suite_setup,
+    iterator_suite_setup,
 	NULL
 };
 
