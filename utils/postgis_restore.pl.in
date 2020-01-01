@@ -145,7 +145,7 @@ close(DUMP) || die "$me: pg_restore returned an error\n";
 # unwanted bits.
 #
 print STDERR "  Writing ASCII to stdout...\n";
-open( INPUT, "pg_restore -L $manifest $dumpfile -f - |") || die "$me:\tCan't run pg_restore\n";
+open( INPUT, "pg_restore -f - -L $manifest $dumpfile |") || die "$me:\tCan't run pg_restore\n";
 
 if ( defined $POSTGIS_SCHEMA ) {
   print STDOUT "SET search_path = \"" . $POSTGIS_SCHEMA . "\";\n";
