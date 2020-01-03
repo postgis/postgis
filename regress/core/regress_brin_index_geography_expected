@@ -168,3 +168,5 @@ scan_idx|Bitmap Heap Scan,Bitmap Index Scan
 42.99|POINT Z (42.99 42.99 42.99)
 scan_idx|Bitmap Heap Scan,Bitmap Index Scan
 1001
+#4608-1|3681
+#4608-2|3681
