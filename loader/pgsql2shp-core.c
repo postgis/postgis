@@ -1144,6 +1144,7 @@ set_dumper_config_defaults(SHPDUMPERCONFIG *config)
 	config->keep_fieldname_case = 0;
 	config->fetchsize = 100;
 	config->column_map_filename = NULL;
+	config->quiet = 0;
 }
 
 /* Create a new shapefile state object */

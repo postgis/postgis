@@ -88,6 +88,9 @@ typedef struct shp_dumper_config
 	/* Name of the column map file if specified */
 	char *column_map_filename;
 
+	/* 0=normal output to stdout, 1=no output to stdout */
+	int quiet;
+
 } SHPDUMPERCONFIG;
 
 
