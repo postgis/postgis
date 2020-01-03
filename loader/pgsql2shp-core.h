@@ -88,6 +88,9 @@ typedef struct shp_dumper_config
 	/* Name of the column map file if specified */
 	char *column_map_filename;
 
+	/* 0=normal output to stdout, 1=no output to stdout */
+	int quiet;
+
 } SHPDUMPERCONFIG;
 
 
@@ -182,7 +185,7 @@ typedef struct shp_dumper_state
 	char message[SHPDUMPERMSGLEN];
 
 	/* Column map */
-  colmap column_map;
+	colmap column_map;
 
 } SHPDUMPERSTATE;
 
