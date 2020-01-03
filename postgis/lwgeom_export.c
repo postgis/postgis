@@ -316,31 +316,6 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 }
 
 
-
-
-/**
- * Encode Feature in GeoJson (Old C Signature)
- * ST_AsGeoJSON(version, geom, precision, options)
- * why was this written with a version param when there
- * is only one version?
- */
-PG_FUNCTION_INFO_V1(LWGEOM_asGeoJson_old);
-Datum LWGEOM_asGeoJson_old(PG_FUNCTION_ARGS)
-{
-	switch( PG_NARGS() )
-	{
-	case 2:
-		return DirectFunctionCall1(LWGEOM_asGeoJson, PG_GETARG_DATUM(1));
-	case 3:
-		return DirectFunctionCall2(LWGEOM_asGeoJson, PG_GETARG_DATUM(1), PG_GETARG_DATUM(2));
-	case 4:
-		return DirectFunctionCall3(LWGEOM_asGeoJson, PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), PG_GETARG_DATUM(3));
-	default:
-		elog(ERROR, "bad call in %s", __func__);
-	}
-	PG_RETURN_NULL();
-}
-
 /**
  * Encode Feature in GeoJson
  */
