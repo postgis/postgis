@@ -45,6 +45,7 @@
 
 /* PostGIS */
 #include "liblwgeom.h"
+#include "lwgeom_pg.h"
 
 /* Local prototypes */
 Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
@@ -53,6 +54,83 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS);
 float8 gserialized_joinsel_internal(PlannerInfo *root, List *args, JoinType jointype, int mode);
 float8 gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode);
 
+enum ST_FUNCTION_IDX
+{
+	ST_INTERSECTS_IDX = 0,
+	ST_DWITHIN_IDX = 1,
+	ST_CONTAINS_IDX = 2,
+	ST_WITHIN_IDX = 3,
+	ST_TOUCHES_IDX = 4,
+	ST_3DINTERSECTS_IDX = 5,
+	ST_CONTAINSPROPERLY_IDX = 6,
+	ST_COVEREDBY_IDX = 7,
+	ST_OVERLAPS_IDX = 8,
+	ST_COVERS_IDX = 9,
+	ST_CROSSES_IDX = 10,
+	ST_DFULLYWITHIN_IDX = 11,
+	ST_3DDWITHIN_IDX = 12,
+	ST_3DDFULLYWITHIN_IDX = 13,
+	ST_LINECROSSINGDIRECTION_IDX = 14,
+	ST_ORDERINGEQUALS_IDX = 15,
+	ST_EQUALS_IDX = 16
+};
+
+static const int16 GeometryStrategies[] = {
+	[ST_INTERSECTS_IDX]             = RTOverlapStrategyNumber,
+	[ST_DWITHIN_IDX]                = RTOverlapStrategyNumber,
+	[ST_CONTAINS_IDX]               = RTContainsStrategyNumber,
+	[ST_WITHIN_IDX]                 = RTContainedByStrategyNumber,
+	[ST_TOUCHES_IDX]                = RTOverlapStrategyNumber,
+	[ST_3DINTERSECTS_IDX]           = RTOverlapStrategyNumber,
+	[ST_CONTAINSPROPERLY_IDX]       = RTContainsStrategyNumber,
+	[ST_COVEREDBY_IDX]              = RTContainedByStrategyNumber,
+	[ST_OVERLAPS_IDX]               = RTOverlapStrategyNumber,
+	[ST_COVERS_IDX]                 = RTContainsStrategyNumber,
+	[ST_CROSSES_IDX]                = RTOverlapStrategyNumber,
+	[ST_DFULLYWITHIN_IDX]           = RTOverlapStrategyNumber,
+	[ST_3DDWITHIN_IDX]              = RTOverlapStrategyNumber,
+	[ST_3DDFULLYWITHIN_IDX]         = RTOverlapStrategyNumber,
+	[ST_LINECROSSINGDIRECTION_IDX]  = RTOverlapStrategyNumber,
+	[ST_ORDERINGEQUALS_IDX]         = RTSameStrategyNumber,
+	[ST_EQUALS_IDX]                 = RTSameStrategyNumber
+};
+
+/* We use InvalidStrategy for the functions that don't currently exist for geography */
+static const int16 GeographyStrategies[] = {
+	[ST_INTERSECTS_IDX]             = RTOverlapStrategyNumber,
+	[ST_DWITHIN_IDX]                = RTOverlapStrategyNumber,
+	[ST_CONTAINS_IDX]               = InvalidStrategy,
+	[ST_WITHIN_IDX]                 = InvalidStrategy,
+	[ST_TOUCHES_IDX]                = InvalidStrategy,
+	[ST_3DINTERSECTS_IDX]           = InvalidStrategy,
+	[ST_CONTAINSPROPERLY_IDX]       = InvalidStrategy,
+	[ST_COVEREDBY_IDX]              = RTOverlapStrategyNumber, /* This is different than geometry */
+	[ST_OVERLAPS_IDX]               = InvalidStrategy,
+	[ST_COVERS_IDX]                 = RTOverlapStrategyNumber, /* This is different than geometry */
+	[ST_CROSSES_IDX]                = InvalidStrategy,
+	[ST_DFULLYWITHIN_IDX]           = InvalidStrategy,
+	[ST_3DDWITHIN_IDX]              = InvalidStrategy,
+	[ST_3DDFULLYWITHIN_IDX]         = InvalidStrategy,
+	[ST_LINECROSSINGDIRECTION_IDX]  = InvalidStrategy,
+	[ST_ORDERINGEQUALS_IDX]         = InvalidStrategy,
+	[ST_EQUALS_IDX]                 = InvalidStrategy
+};
+
+static int16
+get_strategy_by_type(Oid first_type, uint16_t index)
+{
+	if (first_type == postgis_oid(GEOMETRYOID))
+	{
+		return GeometryStrategies[index];
+	}
+
+	if (first_type == postgis_oid(GEOGRAPHYOID))
+	{
+		return GeographyStrategies[index];
+	}
+
+	return InvalidStrategy;
+}
 
 /*
 * Depending on the function, we will deploy different
@@ -66,9 +144,9 @@ float8 gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int
 typedef struct
 {
 	const char *fn_name;
-	int   strategy_number; /* Index strategy to add */
-	int   nargs;           /* Expected number of function arguments */
-	int   expand_arg;      /* Radius argument for "within distance" search */
+	uint16_t index;     /* Position of the strategy in the arrays */
+	uint8_t nargs;      /* Expected number of function arguments */
+	uint8_t expand_arg; /* Radius argument for "within distance" search */
 } IndexableFunction;
 
 /*
@@ -76,25 +154,24 @@ typedef struct
 * so most common functions first. Could be sorted
 * and searched with binary search.
 */
-const IndexableFunction IndexableFunctions[] = {
-	{"st_intersects", RTOverlapStrategyNumber, 2, 0},
-	{"st_dwithin", RTOverlapStrategyNumber, 3, 3},
-	{"st_contains", RTContainsStrategyNumber, 2, 0},
-	{"st_within", RTContainedByStrategyNumber, 2, 0},
-	{"st_touches", RTOverlapStrategyNumber, 2, 0},
-	{"st_3dintersects", RTOverlapStrategyNumber, 2, 0},
-	{"st_containsproperly", RTOverlapStrategyNumber, 2, 0},
-	{"st_coveredby", RTContainedByStrategyNumber, 2, 0},
-	{"st_overlaps", RTOverlapStrategyNumber, 2, 0},
-	{"st_covers", RTContainsStrategyNumber, 2, 0},
-	{"st_crosses", RTOverlapStrategyNumber, 2, 0},
-	{"st_dfullywithin", RTOverlapStrategyNumber, 3, 3},
-	{"st_3dintersects", RTOverlapStrategyNumber, 3, 3},
-	{"st_3ddwithin", RTOverlapStrategyNumber, 3, 3},
-	{"st_3ddfullywithin", RTOverlapStrategyNumber, 3, 3},
-	{"st_linecrossingdirection", RTOverlapStrategyNumber, 2, 0},
-	{"st_orderingequals", RTSameStrategyNumber, 2, 0},
-	{"st_equals", RTSameStrategyNumber, 2, 0},
+static const IndexableFunction IndexableFunctions[] = {
+	{"st_intersects", ST_INTERSECTS_IDX, 2, 0},
+	{"st_dwithin", ST_DWITHIN_IDX, 3, 3},
+	{"st_contains", ST_CONTAINS_IDX, 2, 0},
+	{"st_within", ST_WITHIN_IDX, 2, 0},
+	{"st_touches", ST_TOUCHES_IDX, 2, 0},
+	{"st_3dintersects", ST_3DINTERSECTS_IDX, 2, 0},
+	{"st_containsproperly", ST_CONTAINSPROPERLY_IDX, 2, 0},
+	{"st_coveredby", ST_COVEREDBY_IDX, 2, 0},
+	{"st_overlaps", ST_OVERLAPS_IDX, 2, 0},
+	{"st_covers", ST_COVERS_IDX, 2, 0},
+	{"st_crosses", ST_CROSSES_IDX, 2, 0},
+	{"st_dfullywithin", ST_DFULLYWITHIN_IDX, 3, 3},
+	{"st_3ddwithin", ST_3DDWITHIN_IDX, 3, 3},
+	{"st_3ddfullywithin", ST_3DDFULLYWITHIN_IDX, 3, 3},
+	{"st_linecrossingdirection", ST_LINECROSSINGDIRECTION_IDX, 2, 0},
+	{"st_orderingequals", ST_ORDERINGEQUALS_IDX, 2, 0},
+	{"st_equals", ST_EQUALS_IDX, 2, 0},
 	{NULL, 0, 0, 0}
 };
 
@@ -302,9 +379,16 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				* desired strategy number we can now lookup the operator
 				* we want (usually && or &&&).
 				*/
-				oproid = get_opfamily_member(opfamilyoid, leftdatatype, rightdatatype, idxfn.strategy_number);
+				oproid = get_opfamily_member(opfamilyoid,
+							     leftdatatype,
+							     rightdatatype,
+							     get_strategy_by_type(leftdatatype, idxfn.index));
 				if (!OidIsValid(oproid))
-					elog(ERROR, "no spatial operator found for opfamily %u strategy %d", opfamilyoid, idxfn.strategy_number);
+					elog(ERROR,
+					     "no spatial operator found for '%s': opfamily %u type %d",
+					     idxfn.fn_name,
+					     opfamilyoid,
+					     leftdatatype);
 
 				/*
 				* For the ST_DWithin variants we need to build a more complex return.
