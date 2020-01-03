@@ -192,7 +192,7 @@ main(int argc, char **argv)
 	}
 
 	/* Open the table ready to return rows */
-	if(!state->config->quiet)
+	if (!state->config->quiet)
 	{
 		fprintf(stdout, _("Initializing... \n"));
 		fflush(stdout);
@@ -208,7 +208,7 @@ main(int argc, char **argv)
 			exit(1);
 	}
 
-	if(!state->config->quiet)
+	if (!state->config->quiet)
 	{
 		fprintf(stdout, _("Done (postgis major version: %d).\n"), state->pgis_major_version);
 		fprintf(stdout, _("Output shape: %s\n"), shapetypename(state->outshptype));
@@ -236,7 +236,7 @@ main(int argc, char **argv)
 		}
 	}
 
-	if(!state->config->quiet)
+	if (!state->config->quiet)
 	{
 		fprintf(stdout, _(" [%d rows].\n"), ShpDumperGetRecordCount(state));
 		fflush(stdout);
