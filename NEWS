@@ -36,6 +36,7 @@ PostGIS 3.1.0
   - #4592, Add missing CPPFLAGS in multiple Makefiles (Raúl Marín)
   - #4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)
   - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
+  - #4608, PG12: Fix several bugs in the index support function (Raúl Marín)
 
 
 PostGIS 3.0.0
