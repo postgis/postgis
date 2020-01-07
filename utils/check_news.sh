@@ -38,8 +38,8 @@ grep -B1 '^[0-9]\{4\}/[0-9]\{2\}/[0-9]\{2\}' NEWS |
   while read rel; do
     read date
     read sep
-    ts=$( date -d "${date}" '+%s' )
-    pts=$( date -d "${pdate}" '+%s' )
+    ts=$( echo "${date}" | tr -d '/' )
+    pts=$( echo "${pdate}" | tr -d '/' )
     if test $ts -gt $pts; then
       echo "FAIL: ${rel} (${date}) appears after ${prel} (${pdate})" >&2
       exit 1
