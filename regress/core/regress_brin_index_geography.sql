@@ -50,6 +50,9 @@ SELECT 'scan_idx', qnodes('select * from test where the_geog && ST_GeographyFrom
 SELECT 'scan_idx', qnodes('SELECT * FROM test WHERE the_geog IS NULL');
  SELECT COUNT(num) FROM test WHERE the_geog IS NULL;
 
+SELECT '#4608-1', count(*) FROM test where ST_Covers(ST_GeogFromText('POLYGON((0 0, 45 0, 45 45, 0 45, 0 0))'), the_geog);
+SELECT '#4608-2', count(*) FROM test where ST_CoveredBy(the_geog, ST_GeogFromText('POLYGON((0 0, 45 0, 45 45, 0 45, 0 0))'));
+
 DROP INDEX brin_geog;
 
 -- cleanup

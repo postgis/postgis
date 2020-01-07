@@ -11,8 +11,9 @@ XXXX/XX/XX
   - #4606, Respect user's LDFLAGS in postgis module build (Sandro Santilli)
   - #4610, Add in logic to install postgis_tiger_geocoder from unpackaged (Regina obe)
   - #4581, installing postgis_raster from unpackaged tries to use wrong schema
-  - #4596, The script to generate nation_script_load.sh is missing 
+  - #4596, The script to generate nation_script_load.sh is missing
            a trailing quote (Bill Mill)
+  - #4608, PG12: Fix several bugs in the index support function (Raúl Marín)
 
 PostGIS 3.0.0
 2019/10/20
