@@ -254,6 +254,7 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Force3D</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -261,10 +262,11 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 	  <refsection>
 		<title>Description</title>
 
-		<para>Forces the geometries into XYZ mode.  This is an alias for ST_Force_3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
+		<para>Forces the geometries into XYZ mode.  This is an alias for ST_Force3DZ. If a geometry has no Z component, then a Zvalue coordinate is tacked on.</para>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D.</para>
+		<para>Changed: 3.1.0. Added support for supplying a non-zero Z value.</para>
 		<para>&P_support;</para>
 		<para>&curve_support;</para>
 		<para>&Z_support;</para>
@@ -310,6 +312,7 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Force3DZ</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -317,10 +320,11 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refsection>
 		<title>Description</title>
 
-		<para>Forces the geometries into XYZ mode.  This is a synonym for ST_Force3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
+		<para>Forces the geometries into XYZ mode.  If a geometry has no Z component, then a Zvalue coordinate is tacked on.</para>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ.</para>
+		<para>Changed: 3.1.0. Added support for supplying a non-zero Z value.</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
@@ -366,6 +370,7 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Force3DM</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -376,7 +381,8 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 		<para>Forces the geometries into XYM mode.  If a geometry has no M component, then a 0 M coordinate is tacked on.  If it has a Z component, then Z is removed</para>
 
 
-		  <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM.</para>
+		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM.</para>
+		<para>Changed: 3.1.0. Added support for supplying a non-zero M value.</para>
 		<para>&curve_support;</para>
 	  </refsection>
 
@@ -421,6 +427,8 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Force4D</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>Zvalue = 0.0</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>Mvalue = 0.0</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -430,7 +438,8 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 
 		<para>Forces the geometries into XYZM mode.  0 is tacked on for missing Z and M dimensions. </para>
 
-		  <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D.</para>
+		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D.</para>
+		<para>Changed: 3.1.0. Added support for supplying non-zero Z and M values.</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>
