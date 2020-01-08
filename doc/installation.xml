@@ -606,6 +606,14 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			</para>
 		  </listitem>
 		</varlistentry>
+		<varlistentry>
+		  <term><command>--without-phony-revision</command></term>
+		  <listitem>
+			<para>
+			  Disable updating postgis_revision.h to match current HEAD of the git repository.
+			</para>
+		  </listitem>
+		</varlistentry>
 	  </variablelist>
 	  <note>
 		<para>
