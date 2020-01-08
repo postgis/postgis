@@ -50,6 +50,7 @@ OBJS=	\
 	cu_stringbuffer.o \
 	cu_triangulate.o \
 	cu_homogenize.o \
+	cu_force_dims.o \
 	cu_force_sfs.o \
 	cu_out_twkb.o \
 	cu_out_wkt.o \
