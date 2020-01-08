@@ -268,7 +268,7 @@ lwpoint_same(const LWPOINT *p1, const LWPOINT *p2)
 
 
 LWPOINT*
-lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
+lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm, double zval, double mval)
 {
 	POINTARRAY *pdims = NULL;
 	LWPOINT *pointout;
@@ -281,7 +281,7 @@ lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
 	else
 	{
 		/* Always we duplicate the ptarray and return */
-		pdims = ptarray_force_dims(point->point, hasz, hasm);
+		pdims = ptarray_force_dims(point->point, hasz, hasm, zval, mval);
 		pointout = lwpoint_construct(point->srid, NULL, pdims);
 	}
 	pointout->type = point->type;

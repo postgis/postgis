@@ -774,42 +774,42 @@ lwgeom_segmentize2d(const LWGEOM *lwgeom, double dist)
 LWGEOM*
 lwgeom_force_2d(const LWGEOM *geom)
 {
-	return lwgeom_force_dims(geom, 0, 0);
+	return lwgeom_force_dims(geom, 0, 0, 0, 0);
 }
 
 LWGEOM*
-lwgeom_force_3dz(const LWGEOM *geom)
+lwgeom_force_3dz(const LWGEOM *geom, double zval)
 {
-	return lwgeom_force_dims(geom, 1, 0);
+	return lwgeom_force_dims(geom, 1, 0, zval, 0);
 }
 
 LWGEOM*
-lwgeom_force_3dm(const LWGEOM *geom)
+lwgeom_force_3dm(const LWGEOM *geom, double mval)
 {
-	return lwgeom_force_dims(geom, 0, 1);
+	return lwgeom_force_dims(geom, 0, 1, 0, mval);
 }
 
 LWGEOM*
-lwgeom_force_4d(const LWGEOM *geom)
+lwgeom_force_4d(const LWGEOM *geom, double zval, double mval)
 {
-	return lwgeom_force_dims(geom, 1, 1);
+	return lwgeom_force_dims(geom, 1, 1, zval, mval);
 }
 
 LWGEOM*
-lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
+lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm, double zval, double mval)
 {
 	if (!geom)
 		return NULL;
 	switch(geom->type)
 	{
 		case POINTTYPE:
-			return lwpoint_as_lwgeom(lwpoint_force_dims((LWPOINT*)geom, hasz, hasm));
+			return lwpoint_as_lwgeom(lwpoint_force_dims((LWPOINT*)geom, hasz, hasm, zval, mval));
 		case CIRCSTRINGTYPE:
 		case LINETYPE:
 		case TRIANGLETYPE:
-			return lwline_as_lwgeom(lwline_force_dims((LWLINE*)geom, hasz, hasm));
+			return lwline_as_lwgeom(lwline_force_dims((LWLINE*)geom, hasz, hasm, zval, mval));
 		case POLYGONTYPE:
-			return lwpoly_as_lwgeom(lwpoly_force_dims((LWPOLY*)geom, hasz, hasm));
+			return lwpoly_as_lwgeom(lwpoly_force_dims((LWPOLY*)geom, hasz, hasm, zval, mval));
 		case COMPOUNDTYPE:
 		case CURVEPOLYTYPE:
 		case MULTICURVETYPE:
@@ -820,7 +820,7 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 		case POLYHEDRALSURFACETYPE:
 		case TINTYPE:
 		case COLLECTIONTYPE:
-			return lwcollection_as_lwgeom(lwcollection_force_dims((LWCOLLECTION*)geom, hasz, hasm));
+			return lwcollection_as_lwgeom(lwcollection_force_dims((LWCOLLECTION*)geom, hasz, hasm, zval, mval));
 		default:
 			lwerror("lwgeom_force_2d: unsupported geom type: %s", lwtype_name(geom->type));
 			return NULL;

@@ -35,6 +35,7 @@ extern void algorithms_suite_setup();
 extern void buildarea_suite_setup();
 extern void clean_suite_setup();
 extern void clip_by_rect_suite_setup();
+extern void force_dims_suite_setup(void);
 extern void force_sfs_suite_setup(void);
 extern void geodetic_suite_setup(void);
 extern void geos_suite_setup(void);
@@ -86,6 +87,7 @@ PG_SuiteSetup setupfuncs[] =
 	buildarea_suite_setup,
 	clean_suite_setup,
 	clip_by_rect_suite_setup,
+	force_dims_suite_setup,
 	force_sfs_suite_setup,
 	geodetic_suite_setup,
 	geos_suite_setup,
