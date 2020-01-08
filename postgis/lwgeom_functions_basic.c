@@ -2080,6 +2080,16 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	srid = g->srid;
 	lwgeom_free(g);
 
+	if (PG_NARGS() < 4)
+	{
+		/* Avoid crashing with old signature (old sql code with 3 args, new C code with 4) */
+		ereport(ERROR,
+			(errcode(ERRCODE_UNDEFINED_PARAMETER),
+			 errmsg("Missing margin parameter ($4) in C function '%s'", __func__),
+			 errhint("Consider running: SELECT postgis_extensions_upgrade()")));
+		PG_RETURN_POINTER(NULL);
+	}
+
 	margin = PG_GETARG_FLOAT8(4);
 	/* shrinking by more than 50% would eliminate the tile outright */
 	if (margin < -0.5)
