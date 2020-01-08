@@ -172,7 +172,12 @@ fmt:
 commit:
 	$(MAKE) fmt && $(MAKE) clean && $(MAKE) check && svn commit
 
+
+ifeq (@PHONY_REVISION@,yes)
+.PHONY: postgis_revision.h
+endif
+
 postgis_revision.h:
 	$(PERL) utils/repo_revision.pl
 
-.PHONY: utils liblwgeom ChangeLog raster postgis_revision.h
+.PHONY: utils liblwgeom ChangeLog raster

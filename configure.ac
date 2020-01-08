@@ -1130,6 +1130,18 @@ else
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
 fi
 
+dnl ===========================================================================
+dnl Allow the developer to disable the automatic updates of postgis_revision.h
+dnl with --without-phony-revision
+dnl
+AC_ARG_WITH([phony-revision], AC_HELP_STRING([--without-phony-revision], [Disable automatic updates of postgis_revision.h]), [], [])
+if test "x$with_phony_revision" != "xno"; then
+    PHONY_REVISION="yes"
+else
+    PHONY_REVISION="no"
+fi
+AC_MSG_RESULT([phony-revision: $with_phony_revision])
+AC_SUBST([PHONY_REVISION])
 
 dnl ===========================================================================
 dnl Define version macros

@@ -13,6 +13,7 @@ PostGIS 3.1.0
 * New features *
   - #4601, Add ST_TileEnvelope margin argument (Yuri Astrakhan)
   - #2972, Add quiet mode (-q) to pgsql2shp (Kristian Thy)
+  - #4617, Add configure switch `--without-phony-revision` (Raúl Marín)
 
 * Enhancements *
   - #4539, Unify libm includes (Raúl Marín)
