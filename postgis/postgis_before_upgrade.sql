@@ -194,6 +194,14 @@ SELECT _postgis_drop_function_if_needed
     'zoom integer, x integer, y integer, bounds geometry DEFAULT ''0102000020110F00000200000052107C45F81B73C152107C45F81B73C152107C45F81B734152107C45F81B7341''::geometry'
     );
 
+-- FUNCTION ST_Force3D, ST_Force3DZ, ST_Force3DM, ST_Force4DZ changed to add defaults in 3.1
+-- These signatures were superseeded
+DROP FUNCTION IF EXISTS ST_Force3D(geometry); -- Does not conflict
+DROP FUNCTION IF EXISTS ST_Force3DZ(geometry); -- Does not conflict
+DROP FUNCTION IF EXISTS ST_Force3DM(geometry); -- Does not conflict
+DROP FUNCTION IF EXISTS ST_Force4D(geometry); -- Does not conflict
+
+
 -- FUNCTION st_askml changed to add defaults in 3.0 / r17357
 -- These signatures were superseeded
 DROP FUNCTION IF EXISTS st_askml(geometry, integer); -- Does not conflict

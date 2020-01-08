@@ -5046,7 +5046,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
       POINT4D p4d;
       LWPOINT *prjpt;
       /* add Z to "prj" */
-      tmp = lwgeom_force_3dz(prj);
+      tmp = lwgeom_force_3dz(prj, 0);
       prjpt = lwgeom_as_lwpoint(tmp);
       getPoint4d_p(point->point, 0, &p4d);
       z = p4d.z;

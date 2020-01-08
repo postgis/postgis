@@ -483,7 +483,7 @@ lwcollection_extract(LWCOLLECTION* col, int type)
 }
 
 LWCOLLECTION*
-lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
+lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm, double zval, double mval)
 {
 	LWCOLLECTION *colout;
 
@@ -499,7 +499,7 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 		geoms = lwalloc(sizeof(LWGEOM*) * col->ngeoms);
 		for( i = 0; i < col->ngeoms; i++ )
 		{
-			geoms[i] = lwgeom_force_dims(col->geoms[i], hasz, hasm);
+			geoms[i] = lwgeom_force_dims(col->geoms[i], hasz, hasm, zval, mval);
 		}
 		colout = lwcollection_construct(col->type, col->srid, NULL, col->ngeoms, geoms);
 	}

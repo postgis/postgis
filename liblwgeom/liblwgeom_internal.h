@@ -172,12 +172,12 @@
 /*
 * Force dims
 */
-LWGEOM* lwgeom_force_dims(const LWGEOM *lwgeom, int hasz, int hasm);
-LWPOINT* lwpoint_force_dims(const LWPOINT *lwpoint, int hasz, int hasm);
-LWLINE* lwline_force_dims(const LWLINE *lwline, int hasz, int hasm);
-LWPOLY* lwpoly_force_dims(const LWPOLY *lwpoly, int hasz, int hasm);
-LWCOLLECTION* lwcollection_force_dims(const LWCOLLECTION *lwcol, int hasz, int hasm);
-POINTARRAY* ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm);
+LWGEOM* lwgeom_force_dims(const LWGEOM *lwgeom, int hasz, int hasm, double zval, double mval);
+LWPOINT* lwpoint_force_dims(const LWPOINT *lwpoint, int hasz, int hasm, double zval, double mval);
+LWLINE* lwline_force_dims(const LWLINE *lwline, int hasz, int hasm, double zval, double mval);
+LWPOLY* lwpoly_force_dims(const LWPOLY *lwpoly, int hasz, int hasm, double zval, double mval);
+LWCOLLECTION* lwcollection_force_dims(const LWCOLLECTION *lwcol, int hasz, int hasm, double zval, double mval);
+POINTARRAY* ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm, double zval, double mval);
 
 /**
  * Swap ordinate values o1 and o2 on a given POINTARRAY

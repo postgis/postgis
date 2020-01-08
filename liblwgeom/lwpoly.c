@@ -391,7 +391,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 }
 
 LWPOLY*
-lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
+lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm, double zval, double mval)
 {
 	LWPOLY *polyout;
 
@@ -407,7 +407,7 @@ lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
 		rings = lwalloc(sizeof(POINTARRAY*) * poly->nrings);
 		for( i = 0; i < poly->nrings; i++ )
 		{
-			rings[i] = ptarray_force_dims(poly->rings[i], hasz, hasm);
+			rings[i] = ptarray_force_dims(poly->rings[i], hasz, hasm, zval, mval);
 		}
 		polyout = lwpoly_construct(poly->srid, NULL, poly->nrings, rings);
 	}

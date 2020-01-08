@@ -1312,28 +1312,32 @@ CREATE OR REPLACE FUNCTION ST_Force2D(geometry)
 	_COST_LOW;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Force3DZ(geometry)
+-- Changed: 3.1.0 - add zvalue=0.0 parameter
+CREATE OR REPLACE FUNCTION ST_Force3DZ(geom geometry, zvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Force3D(geometry)
+-- Changed: 3.1.0 - add zvalue=0.0 parameter
+CREATE OR REPLACE FUNCTION ST_Force3D(geom geometry, zvalue float8 default 0.0)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	AS 'SELECT @extschema@.ST_Force3DZ($1, $2)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Force3DM(geometry)
+-- Changed: 3.1.0 - add mvalue=0.0 parameter
+CREATE OR REPLACE FUNCTION ST_Force3DM(geom geometry, mvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_Force4D(geometry)
+-- Changed: 3.1.0 - add zvalue=0.0 and mvalue=0.0 parameters
+CREATE OR REPLACE FUNCTION ST_Force4D(geom geometry, zvalue float8 default 0.0, mvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
