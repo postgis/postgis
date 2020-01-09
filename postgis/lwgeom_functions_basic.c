@@ -395,7 +395,7 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	GSERIALIZED *pg_geom_in = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *pg_geom_out;
 	LWGEOM *lwg_in, *lwg_out;
-	double z = PG_GETARG_FLOAT8(1);
+	double z = PG_NARGS() < 2 ? 0 : PG_GETARG_FLOAT8(1);
 
 	/* already 3d */
 	if (gserialized_ndims(pg_geom_in) == 3 && gserialized_has_z(pg_geom_in))
@@ -418,7 +418,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	GSERIALIZED *pg_geom_in = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *pg_geom_out;
 	LWGEOM *lwg_in, *lwg_out;
-	double m = PG_GETARG_FLOAT8(1);
+	double m = PG_NARGS() < 2 ? 0 : PG_GETARG_FLOAT8(1);
 
 	/* already 3d */
 	if (gserialized_ndims(pg_geom_in) == 3 && gserialized_has_m(pg_geom_in))
@@ -441,8 +441,8 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	GSERIALIZED *pg_geom_in = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *pg_geom_out;
 	LWGEOM *lwg_in, *lwg_out;
-	double z = PG_GETARG_FLOAT8(1);
-	double m = PG_GETARG_FLOAT8(2);
+	double z = PG_NARGS() < 3 ? 0 : PG_GETARG_FLOAT8(1);
+	double m = PG_NARGS() < 3 ? 0 : PG_GETARG_FLOAT8(2);
 
 	/* already 4d */
 	if (gserialized_ndims(pg_geom_in) == 4)
