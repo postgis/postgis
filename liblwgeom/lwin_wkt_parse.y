@@ -78,11 +78,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 			global_parser_result.message = parser_error_messages[PARSER_ERROR_OTHER];
 			global_parser_result.errlocation = wkt_yylloc.last_column;
 		}
-
-		/* Got a completed object parsed, but errored out after... */
-		/* Due to junk after the valid WKT, eg: "POINT(1 1) foobar" */
-		/* https://trac.osgeo.org/postgis/ticket/4273 */
-		if ( global_parser_result.errcode && ! parse_rv )
+		else if (global_parser_result.geom)
 		{
 			lwgeom_free(global_parser_result.geom);
 			global_parser_result.geom = NULL;
@@ -111,7 +107,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %}
 
 %locations
-%error-verbose
+%define parse.error verbose
 
 %union {
 	int integervalue;
@@ -197,6 +193,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 %destructor { lwgeom_free($$); } curvering
 %destructor { lwgeom_free($$); } geometry_no_srid
 %destructor { lwgeom_free($$); } geometrycollection
+%destructor { lwgeom_free($$); } geometry_list
 %destructor { lwgeom_free($$); } linestring
 %destructor { lwgeom_free($$); } linestring_untagged
 %destructor { lwgeom_free($$); } multicurve

@@ -11,7 +11,7 @@
 *.gcda
 *.gcno
 gmon.out
-postgis_svn_revision.h
+postgis_revision.h
 aclocal.m4
 autom4te.cache/
 build-aux/
@@ -21,6 +21,7 @@ config.sub
 config.status
 configure
 de9i*.png
+doc/*.html
 doc/html/image_src/generator
 doc/html/image_src/Makefile
 doc/html/*.html
@@ -108,7 +109,6 @@ postgis/legacy_gist.sql
 postgis/legacy_minimal.sql
 postgis/legacy.sql
 postgis/postgis.sql
-postgis/postgis_proc_set_search_path.sql
 postgis/postgis_for_extension.sql
 postgis/postgis_upgrade.sql*
 postgis/postgis_upgrade_for_extension.sql
@@ -128,7 +128,6 @@ raster/rt_pg/Makefile
 raster/rt_pg/rtpostgis.sql
 raster/rt_pg/rtpostgis_drop.sql
 raster/rt_pg/rtpostgis_legacy.sql
-raster/rt_pg/rtpostgis_proc_set_search_path.sql
 raster/rt_pg/rtpostgis_for_extension.sql
 raster/rt_pg/rtpostgis_upgrade.sql.in
 raster/rt_pg/rtpostgis_upgrade*.sql
@@ -187,3 +186,4 @@ postgis/uninstall_sfcgal.sql
 
 deps/Makefile
 deps/wagyu/Makefile
+deps/ryu/Makefile

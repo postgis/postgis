@@ -30,6 +30,9 @@
 #include "ogr_srs_api.h"
 #include <assert.h>
 
+#define xstr(s) str(s)
+#define str(s) #s
+
 static void
 loader_rt_error_handler(const char *fmt, va_list ap) {
 	static const char *label = "ERROR: ";
@@ -325,7 +328,7 @@ chartrim(const char *input, char *remove) {
 
 static void
 usage() {
-	printf(_("RELEASE: %s GDAL_VERSION=%d (r%d)\n"), POSTGIS_LIB_VERSION, POSTGIS_GDAL_VERSION, POSTGIS_SVN_REVISION);
+	printf(_("RELEASE: %s GDAL_VERSION=%d (%s)\n"), POSTGIS_LIB_VERSION, POSTGIS_GDAL_VERSION, xstr(POSTGIS_REVISION));
 	printf(_(
 		"USAGE: raster2pgsql [<options>] <raster>[ <raster>[ ...]] [[<schema>.]<table>]\n"
 		"  Multiple rasters can also be specified using wildcards (*,?).\n"

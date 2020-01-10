@@ -453,31 +453,34 @@ lwline_is_closed(const LWLINE *line)
 int
 lwline_is_trajectory(const LWLINE *line)
 {
-  POINT3DM p;
-  int i, n;
-  double m = -1 * FLT_MAX;
+	if (!FLAGS_GET_M(line->flags))
+	{
+		lwnotice("Line does not have M dimension");
+		return LW_FALSE;
+	}
 
-  if ( ! FLAGS_GET_M(line->flags) ) {
-    lwnotice("Line does not have M dimension");
-    return LW_FALSE;
-  }
+	uint32_t n = line->points->npoints;
 
-  n = line->points->npoints;
-  if ( n < 2 ) return LW_TRUE; /* empty or single-point are "good" */
+	if (n < 2)
+		return LW_TRUE; /* empty or single-point are "good" */
 
-  for (i=0; i<n; ++i) {
-    getPoint3dm_p(line->points, i, &p);
-    if ( p.m <= m ) {
-      lwnotice("Measure of vertex %d (%g) not bigger than measure of vertex %d (%g)",
-        i, p.m, i-1, m);
-      return LW_FALSE;
-    }
-    m = p.m;
-  }
+	double m = -1 * FLT_MAX;
+	for (uint32_t i = 0; i < n; ++i)
+	{
+		POINT3DM p;
+		if (!getPoint3dm_p(line->points, i, &p))
+			return LW_FALSE;
+		if (p.m <= m)
+		{
+			lwnotice(
+			    "Measure of vertex %d (%g) not bigger than measure of vertex %d (%g)", i, p.m, i - 1, m);
+			return LW_FALSE;
+		}
+		m = p.m;
+	}
 
-  return LW_TRUE;
+	return LW_TRUE;
 }
-
 
 LWLINE*
 lwline_force_dims(const LWLINE *line, int hasz, int hasm)

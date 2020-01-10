@@ -63,32 +63,32 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point);
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	double dist = PG_GETARG_FLOAT8(1);
 	GSERIALIZED *result;
 	int type = gserialized_get_type(geom);
-	LWGEOM *in, *out;
+	LWGEOM *in;
 	bool preserve_collapsed = false;
-
-	/* Handle optional argument to preserve collapsed features */
-	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
-		preserve_collapsed = true;
+	int modified = LW_FALSE;
 
 	/* Can't simplify points! */
 	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
 		PG_RETURN_POINTER(geom);
 
+	/* Handle optional argument to preserve collapsed features */
+	if ((PG_NARGS() > 2) && (!PG_ARGISNULL(2)))
+		preserve_collapsed = PG_GETARG_BOOL(2);
+
 	in = lwgeom_from_gserialized(geom);
 
-	out = lwgeom_simplify(in, dist, preserve_collapsed);
-	if ( ! out ) PG_RETURN_NULL();
+	modified = lwgeom_simplify_in_place(in, dist, preserve_collapsed);
+	if (!modified)
+		PG_RETURN_POINTER(geom);
 
-	/* COMPUTE_BBOX TAINTING */
-	if ( in->bbox ) lwgeom_add_bbox(out);
+	if (!in || lwgeom_is_empty(in))
+		PG_RETURN_NULL();
 
-	result = geometry_serialize(out);
-	lwgeom_free(out);
-	PG_FREE_IF_COPY(geom, 0);
+	result = geometry_serialize(in);
 	PG_RETURN_POINTER(result);
 }
 
@@ -373,8 +373,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	/* COMPUTE_BBOX TAINTING */
 	if ( in_lwgeom->bbox )
-		lwgeom_add_bbox(out_lwgeom);
-
+		lwgeom_refresh_bbox(out_lwgeom);
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 
@@ -453,7 +452,10 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in_lwgeom->bbox ) lwgeom_add_bbox(out_lwgeom);
+	if (in_lwgeom->bbox)
+	{
+		lwgeom_refresh_bbox(out_lwgeom);
+	}
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 
@@ -781,7 +783,7 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
 		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so increment.
 		 */
-		if (FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y) && side>0)
+		if ((seg1->y <= point->y) && (point->y < seg2->y) && (side > 0))
 		{
 			POSTGIS_DEBUG(3, "incrementing winding number.");
 
@@ -792,7 +794,7 @@ static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
 		 * then the line is to the right of the point and circling
 		 * clockwise, so decrement.
 		 */
-		else if (FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y) && side<0)
+		else if ((seg2->y <= point->y) && (point->y < seg1->y) && (side < 0))
 		{
 			POSTGIS_DEBUG(3, "decrementing winding number.");
 
@@ -836,7 +838,7 @@ static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y), FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y));
 
 		/* zero length segments are ignored. */
-		if (((seg2->x - seg1->x)*(seg2->x - seg1->x) + (seg2->y - seg1->y)*(seg2->y - seg1->y)) < 1e-12*1e-12)
+		if ((seg2->x == seg1->x) && (seg2->y == seg1->y))
 		{
 			POSTGIS_DEBUG(3, "segment is zero length... ignoring.");
 
@@ -860,7 +862,7 @@ static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so increment.
 		 */
-		if (FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y) && side>0)
+		if ((seg1->y <= point->y) && (point->y < seg2->y) && (side > 0))
 		{
 			POSTGIS_DEBUG(3, "incrementing winding number.");
 
@@ -871,7 +873,7 @@ static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 		 * then the line is to the right of the point and circling
 		 * clockwise, so decrement.
 		 */
-		else if (FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y) && side<0)
+		else if ((seg2->y <= point->y) && (point->y < seg1->y) && (side < 0))
 		{
 			POSTGIS_DEBUG(3, "decrementing winding number.");
 

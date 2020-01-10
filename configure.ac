@@ -80,6 +80,11 @@ AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -ffloat-store], [dummy_cv_fflo
 AC_SUBST([NUMERICFLAGS])
 
 dnl
+dnl Add libm to LDFLAGS so we don't need to add it everywhere manually
+dnl
+LDFLAGS="$LDFLAGS -lm"
+
+dnl
 dnl Exporting used library symbols in the module is a source of issues,
 dnl see https://trac.osgeo.org/postgis/ticket/3281
 dnl
@@ -145,7 +150,7 @@ dnl Search for flex/bison to build the parser
 dnl
 
 AC_PROG_LEX
-AC_PROG_YACC
+AC_PATH_PROG(YACC, bison)
 AC_SUBST([LEX])
 AC_SUBST([YACC])
 
@@ -475,9 +480,9 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-  dnl Ensure that we are using PostgreSQL >= 9.5
+  dnl Ensure that we are using PostgreSQL >= 9.6
   if test $POSTGIS_PGSQL_VERSION -lt 95; then
-    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.5])
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.6])
   fi
 
   HAVE_SPGIST=no
@@ -910,7 +915,6 @@ dnl ===========================================================================
 
 CHECK_JSON=yes
 HAVE_JSON=no
-HAVE_JSON_C=no
 
 AC_ARG_WITH([json],
 	[AS_HELP_STRING([--without-json], [build without json-c support])],
@@ -929,10 +933,13 @@ if test "$CHECK_JSON" != "no"; then
             else
                     AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
 
+                    JSON_LDFLAGS="-L$JSONDIR/lib"
+                    LIBS_SAVE="$LIBS"
+                    LIBS="$JSON_LDFLAGS"
                     AC_CHECK_FILE("$JSONDIR/include/json-c/json.h",
                                 [
                                     JSON_CPPFLAGS="-I$JSONDIR/include/json-c"
-                                    AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON_C=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"])
+                                    AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"])
                                 ],
                                 [
                                     AC_CHECK_FILE("$JSONDIR/include/json/json.h",
@@ -942,10 +949,11 @@ if test "$CHECK_JSON" != "no"; then
                                     ],
                                     [AC_MSG_ERROR([Could not find header: json.h])])
                                 ])
+                    LIBS="$LIBS_SAVE"
             fi
     elif test ! -z "$PKG_CONFIG"; then
 	PKG_CHECK_MODULES([JSONC], [json-c], [
-                HAVE_JSON_C=yes
+                HAVE_JSON=yes
                 JSON_CPPFLAGS="$JSONC_CFLAGS"
                 JSON_LDFLAGS="$JSONC_LIBS"
             ], [])
@@ -954,16 +962,10 @@ if test "$CHECK_JSON" != "no"; then
     if test "$HAVE_JSON" = "yes"; then
             AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
     fi
-    if test "$HAVE_JSON_C" = "yes"; then
-            AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
-            AC_DEFINE([HAVE_LIBJSON_C], 1, [Define to 1 if libjson resides in a json-c subdir])
-            HAVE_JSON=yes
-    fi
 
     AC_SUBST([JSON_CPPFLAGS])
     AC_SUBST([JSON_LDFLAGS])
     AC_SUBST([HAVE_JSON])
-    AC_SUBST([HAVE_LIBJSON_C])
 
 fi
 
@@ -987,6 +989,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	CPPFLAGS_SAVE="$CPPFLAGS"
 	LDFLAGS_SAVE="$LDFLAGS"
+        LIBS_SAVE="$LIBS"
 
 	dnl Try pkgconfig first
 	if test -n "$PKG_CONFIG"; then
@@ -1049,6 +1052,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	CPPFLAGS="$CPPFLAGS_SAVE"
 	LDFLAGS="$LDFLAGS_SAVE"
+        LIBS="$LIBS_SAVE"
 
 	dnl confirm that protobuf compiler is available
 	AC_PATH_PROG(PROTOCC, protoc-c)
@@ -1058,7 +1062,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	fi
 
 	dnl all tests passed! turn on compile-time defines
-    if test "$HAVE_PROTOBUF" = "yes"; then
+        if test "$HAVE_PROTOBUF" = "yes"; then
 		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
 		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf-c])
 		if test $PROTOC_VERSION -ge 1001000; then
@@ -1123,9 +1127,21 @@ if test $ENABLE_DEBUG -eq 1; then
     CFLAGS="$CFLAGS -g"
 else
     AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
-    AC_DEFINE([NDEBUG], [0], [Disable C asserts])
+    CPPFLAGS="-DNDEBUG $CPPFLAGS"
 fi
 
+dnl ===========================================================================
+dnl Allow the developer to disable the automatic updates of postgis_revision.h
+dnl with --without-phony-revision
+dnl
+AC_ARG_WITH([phony-revision], AC_HELP_STRING([--without-phony-revision], [Disable automatic updates of postgis_revision.h]), [], [])
+if test "x$with_phony_revision" != "xno"; then
+    PHONY_REVISION="yes"
+else
+    PHONY_REVISION="no"
+fi
+AC_MSG_RESULT([phony-revision: $with_phony_revision])
+AC_SUBST([PHONY_REVISION])
 
 dnl ===========================================================================
 dnl Define version macros
@@ -1487,13 +1503,9 @@ dnl Wagyu will only be necessary if protobuf is present to build MVTs
 
 HAVE_WAGYU=no
 if test "x$HAVE_PROTOBUF" = "xyes"; then
-    AC_ARG_WITH(
-            [wagyu],
-            AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]),
-            [HAVE_WAGYU=no],
-            [HAVE_WAGYU=yes])
+    AC_ARG_WITH([wagyu], AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]), [], [])
 
-    if test "x$HAVE_WAGYU" = "xyes"; then
+    if test "x$with_wagyu" != xno; then
             AC_MSG_RESULT([WAGYU: Wagyu usage requested])
 
             DEPS_SUBDIR="deps"
@@ -1510,10 +1522,14 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
             CFLAGS_SAVE="$CFLAGS"
             CXXFLAGS_SAVE="$CXXFLAGS"
             CPPFLAGS_SAVE="$CPPFLAGS"
+            LDFLAGS_SAVE="$LDFLAGS"
+            LIBS_SAVE="$LIBS"
 
             WAGYU_CXX=`"$PG_CONFIG" --cc`
             CPPFLAGS="-x c++"
             CFLAGS=""
+            LDFLAGS=""
+            LIBS=""
             CXX="$WAGYU_CXX"
             AC_PROG_CXX
             AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
@@ -1541,7 +1557,10 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
             CFLAGS="$CFLAGS_SAVE"
             CXXFLAGS="$CXXFLAGS_SAVE"
             CPPFLAGS="$CPPFLAGS_SAVE"
+            LDFLAGS="$LDFLAGS_SAVE"
+            LIBS="$LIBS_SAVE"
 
+            HAVE_WAGYU=yes
             AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
             AC_SUBST([HAVE_WAGYU])
             AC_SUBST([WAGYU_CXX])
@@ -1552,6 +1571,14 @@ if test "x$HAVE_PROTOBUF" = "xyes"; then
     fi
 fi
 
+dnl ===========================================================================
+dnl Ryu
+dnl ===========================================================================
+RYU_LIB=libryu.la
+AC_SUBST([RYU_LIB])
+
+DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+        deps/ryu/Makefile"
 
 
 dnl ===========================================================================
@@ -1617,6 +1644,7 @@ if test "x$HAVE_WAGYU" = "xyes"; then
     AC_MSG_RESULT([  C++ compiler (Wagyu): ${WAGYU_CXX} ${CXXFLAGS}])
 fi
 AC_MSG_RESULT([  CPPFLAGS:             $CPPFLAGS])
+AC_MSG_RESULT([  LDFLAGS:              $LDFLAGS])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])
@@ -1696,16 +1724,16 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
+if test "$GEOS_NUMERIC_VERSION" -lt 30800; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION}.])
 AC_MSG_WARN([])
 AC_MSG_WARN([  To take advantage of _all_ the features of ])
-AC_MSG_WARN([  PostGIS, GEOS 3.7.0 or higher is required.])
+AC_MSG_WARN([  PostGIS, GEOS 3.8.0 or higher is required.])
 AC_MSG_WARN([])
 AC_MSG_WARN([  For _most_ features, GEOS 3.6.0 is enough.])
 AC_MSG_WARN([])
-AC_MSG_WARN([  We recommend GEOS 3.7.0 or higher])
+AC_MSG_WARN([  We recommend GEOS 3.8.0 or higher])
 AC_MSG_WARN([])
 AC_MSG_WARN([  You can download the latest versions from ])
 AC_MSG_WARN([  http://geos.osgeo.org/ ])

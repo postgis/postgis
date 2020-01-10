@@ -30,7 +30,10 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include "../postgis_svn_revision.h"
+#include "../postgis_revision.h"
+
+#define xstr(s) str(s)
+#define str(s) #s
 
 const char *
 lwgeom_version()
@@ -40,7 +43,7 @@ lwgeom_version()
   if ( ! ptr )
   {
     ptr = buf;
-    snprintf(ptr, 256, LIBLWGEOM_VERSION" r%d", POSTGIS_SVN_REVISION);
+    snprintf(ptr, 256, LIBLWGEOM_VERSION" " xstr(POSTGIS_REVISION));
   }
 
   return ptr;
@@ -267,34 +270,30 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	uint8_t *ptr;
 	int zmflag;
 
-	if ( ! pa )
+	if (!pa)
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
-		return 0;
+		return LW_FALSE;
 	}
 
-	if ( n>=pa->npoints )
+	if (n >= pa->npoints)
 	{
 		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
-		return 0;
+		return LW_FALSE;
 	}
 
-	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
-	         n, FLAGS_NDIMS(pa->flags), pa->npoints);
-
-
 	/* Get a pointer to nth point offset and zmflag */
-	ptr=getPoint_internal(pa, n);
-	zmflag=FLAGS_GET_ZM(pa->flags);
+	ptr = getPoint_internal(pa, n);
+	zmflag = FLAGS_GET_ZM(pa->flags);
 
 	/*
 	 * if input POINTARRAY has the M and NO Z,
 	 * we can issue a single memcpy
 	 */
-	if ( zmflag == 1 )
+	if (zmflag == 1)
 	{
 		memcpy(op, ptr, sizeof(POINT3DM));
-		return 1;
+		return LW_TRUE;
 	}
 
 	/*
@@ -308,19 +307,16 @@ getPoint3dm_p(const POINTARRAY *pa, uint32_t n, POINT3DM *op)
 	 * copy next double, otherwise initialize
 	 * M to NO_M_VALUE
 	 */
-	if ( zmflag == 3 )
+	if (zmflag == 3)
 	{
-		ptr+=sizeof(POINT3DZ);
+		ptr += sizeof(POINT3DZ);
 		memcpy(&(op->m), ptr, sizeof(double));
 	}
 	else
-	{
-		op->m=NO_M_VALUE;
-	}
+		op->m = NO_M_VALUE;
 
-	return 1;
+	return LW_TRUE;
 }
-
 
 /*
  * Copy a point from the point array into the parameter point
@@ -360,46 +356,6 @@ getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point)
 	/* this does x,y */
 	memcpy(point, getPoint_internal(pa, n), sizeof(POINT2D));
 	return 1;
-}
-
-const POINT3DZ*
-getPoint3dz_cp(const POINTARRAY *pa, uint32_t n)
-{
-	if ( ! pa ) return 0;
-
-	if ( ! FLAGS_GET_Z(pa->flags) )
-	{
-		lwerror("getPoint3dz_cp: no Z coordinates in point array");
-		return 0; /*error */
-	}
-
-	if ( n>=pa->npoints )
-	{
-		lwerror("getPoint3dz_cp: point offset out of range");
-		return 0; /*error */
-	}
-
-	return (const POINT3DZ*)getPoint_internal(pa, n);
-}
-
-const POINT4D*
-getPoint4d_cp(const POINTARRAY* pa, uint32_t n)
-{
-	if (!pa) return 0;
-
-	if (!(FLAGS_GET_Z(pa->flags) && FLAGS_GET_M(pa->flags)))
-	{
-		lwerror("getPoint4d_cp: no Z and M coordinates in point array");
-		return 0; /*error */
-	}
-
-	if (n >= pa->npoints)
-	{
-		lwerror("getPoint4d_cp: point offset out of range");
-		return 0; /*error */
-	}
-
-	return (const POINT4D*)getPoint_internal(pa, n);
 }
 
 /*

@@ -13,12 +13,11 @@ env:
   - tag=pg12-clang-geos37-gdal30-proj611 mode=usan_clang
   - tag=pg12-geos37-gdal30-proj611 mode=nowagyu
 
-  # Run tests with different dependecy combinations
+  # Run tests with different dependency combinations
   - tag=latest mode=tests
   - tag=pg11-geos37-gdal24-proj52 mode=tests
   - tag=pg10-geos36-gdal23-proj49 mode=tests
   - tag=pg96-geos36-gdal22-proj49 mode=tests
-  - tag=pg95-geos36-gdal21-proj48 mode=tests
 
 matrix:
   allow_failures:

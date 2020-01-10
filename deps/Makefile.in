@@ -31,20 +31,21 @@ top_builddir = @top_builddir@
 libdir = @libdir@
 LIBTOOL = @LIBTOOL@
 
-all: @WAGYU_LIB@
+all: @WAGYU_LIB@ @RYU_LIB@
 
 @WAGYU_LIB@:
 	$(MAKE) -C wagyu $@
 
-install:
-
-uninstall:
-
-check check-unit check-regress:
+@RYU_LIB@:
+	$(MAKE) -C ryu $@
 
 clean:
 	$(MAKE) -C wagyu $@
+	$(MAKE) -C ryu $@
 
 distclean: clean
 	$(MAKE) -C wagyu $@
+	$(MAKE) -C ryu $@
 	rm -f Makefile
+
+.PHONY: install uninstall check check-unit check-regress

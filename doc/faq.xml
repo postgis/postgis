@@ -9,7 +9,7 @@
       </question>
 
       <answer>
-        <para>OpenGeo has a step by step tutorial guide workshop <ulink url="http://workshops.boundlessgeo.com/postgis-intro/">Introduction to PostGIS</ulink>.  It includes packaged data as well as intro to working with OpenGeo Suite. It is probably the best tutorial on PostGIS.</para>
+        <para>A step by step tutorial guide workshop <ulink url="http://postgis.net/workshops/postgis-intro/">Introduction to PostGIS</ulink>.  It includes packaged data as well as intro to working with OpenGeo Suite. It is probably the best tutorial on PostGIS.</para>
         <para>BostonGIS also has a <ulink url="http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01">PostGIS almost idiot's guide on getting started</ulink>. That one is more focused on the windows user.</para>
       </answer>
     </qandaentry>

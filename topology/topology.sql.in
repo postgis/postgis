@@ -365,9 +365,7 @@ ALTER DOMAIN topology.TopoElement ADD
     array_lower(VALUE, 1) = 1
   );
 ALTER DOMAIN topology.TopoElement DROP CONSTRAINT
-#if POSTGIS_PGSQL_VERSION >= 92
   IF EXISTS
-#endif
   type_range;
 ALTER DOMAIN topology.TopoElement ADD
         CONSTRAINT type_range CHECK (

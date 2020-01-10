@@ -178,3 +178,15 @@ GEOMETRYCOLLECTION (
 	)
 )
 ');
+
+-- Check that it works without the extension schema being available
+BEGIN;
+SET search_path TO pg_catalog;
+WITH data AS
+(
+    SELECT 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))':: :schema geometry as geom
+)
+SELECT	't12',
+	:schema ST_AsText(( :schema ST_Dump(geom)).geom),
+	:schema ST_AsText(( :schema ST_DumpRings(geom)).geom) FROM data;
+ROLLBACK;

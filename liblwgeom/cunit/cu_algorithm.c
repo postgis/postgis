@@ -432,9 +432,10 @@ static void test_lwpoint_get_ordinate(void)
 
 }
 
-static void test_point_interpolate(void)
+static void
+test_point_interpolate(void)
 {
-	POINT4D p, q, r;
+	POINT4D p, q, r = {0, 0, 0, 0};
 	int rv = 0;
 
 	p.x = 10.0;
@@ -448,21 +449,20 @@ static void test_point_interpolate(void)
 	q.m = 50.0;
 
 	rv = point_interpolate(&p, &q, &r, 1, 1, 'Z', 35.0);
-	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
-	CU_ASSERT_EQUAL( r.x, 15.0);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
+	CU_ASSERT_EQUAL(r.x, 15.0);
 
 	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 41.0);
-	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
-	CU_ASSERT_EQUAL( r.y, 21.0);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
+	CU_ASSERT_EQUAL(r.y, 21.0);
 
 	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 50.0);
-	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
-	CU_ASSERT_EQUAL( r.y, 30.0);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
+	CU_ASSERT_EQUAL(r.y, 30.0);
 
 	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 40.0);
-	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
-	CU_ASSERT_EQUAL( r.y, 20.0);
-
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
+	CU_ASSERT_EQUAL(r.y, 20.0);
 }
 
 static void test_lwline_interpolate_points(void)
@@ -1159,23 +1159,27 @@ static void test_lwgeom_remove_repeated_points(void)
 {
 	LWGEOM *g;
 	char *ewkt;
+	int modified = LW_FALSE;
 
 	g = lwgeom_from_wkt("MULTIPOINT(0 0, 10 0, 10 10, 10 10, 0 10, 0 10, 0 10, 0 0, 0 0, 0 0, 5 5, 0 0, 5 5)", LW_PARSER_CHECK_NONE);
-	lwgeom_remove_repeated_points_in_place(g, 1);
+	modified = lwgeom_remove_repeated_points_in_place(g, 1);
+	ASSERT_INT_EQUAL(modified, LW_TRUE);
 	ewkt = lwgeom_to_ewkt(g);
 	ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(0 0,10 0,10 10,0 10,5 5)");
 	lwgeom_free(g);
 	lwfree(ewkt);
 
 	g = lwgeom_from_wkt("LINESTRING(1612830.15445 4841287.12672,1612830.15824 4841287.12674,1612829.98813 4841274.56198)", LW_PARSER_CHECK_NONE);
-	lwgeom_remove_repeated_points_in_place(g, 0.01);
+	modified = lwgeom_remove_repeated_points_in_place(g, 0.01);
+	ASSERT_INT_EQUAL(modified, LW_TRUE);
 	ewkt = lwgeom_to_ewkt(g);
 	ASSERT_STRING_EQUAL(ewkt, "LINESTRING(1612830.15445 4841287.12672,1612829.98813 4841274.56198)");
 	lwgeom_free(g);
 	lwfree(ewkt);
 
 	g = lwgeom_from_wkt("MULTIPOINT(0 0,10 0,10 10,10 10,0 10,0 10,0 10,0 0,0 0,0 0,5 5,5 5,5 8,8 8,8 8,8 8,8 5,8 5,5 5,5 5,5 5,5 5,5 5,50 50,50 50,50 50,50 60,50 60,50 60,60 60,60 50,60 50,50 50,55 55,55 58,58 58,58 55,58 55,55 55)", LW_PARSER_CHECK_NONE);
-	lwgeom_remove_repeated_points_in_place(g, 1);
+	modified = lwgeom_remove_repeated_points_in_place(g, 1);
+	ASSERT_INT_EQUAL(modified, LW_TRUE);
 	ewkt = lwgeom_to_ewkt(g);
 	ASSERT_STRING_EQUAL(
 	    ewkt, "MULTIPOINT(0 0,10 0,10 10,0 10,5 5,5 8,8 8,8 5,50 50,50 60,60 60,60 50,55 55,55 58,58 58,58 55)");
@@ -1183,9 +1187,62 @@ static void test_lwgeom_remove_repeated_points(void)
 	lwfree(ewkt);
 
 	g = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
-	lwgeom_remove_repeated_points_in_place(g, 10000);
+	modified = lwgeom_remove_repeated_points_in_place(g, 10000);
+	ASSERT_INT_EQUAL(modified, LW_TRUE);
 	ewkt = lwgeom_to_ewkt(g);
 	ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,1 1,1 0,0 0))");
+	lwgeom_free(g);
+	lwfree(ewkt);
+
+	// Test the return value (modified or not)
+	g = lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE);
+	modified = lwgeom_remove_repeated_points_in_place(g, 10000);
+	ASSERT_INT_EQUAL(modified, LW_FALSE);
+	lwgeom_free(g);
+
+	g = lwgeom_from_wkt("TRIANGLE((0 0, 5 0, 3 3, 0 0))", LW_PARSER_CHECK_NONE);
+	modified = lwgeom_remove_repeated_points_in_place(g, 10000);
+	ASSERT_INT_EQUAL(modified, LW_FALSE);
+	lwgeom_free(g);
+
+	g = lwgeom_from_wkt("POLYGON((0 0,0 1,1 1,1 0,0 0))", LW_PARSER_CHECK_NONE);
+	modified = lwgeom_remove_repeated_points_in_place(g, 0.1);
+	ASSERT_INT_EQUAL(modified, LW_FALSE);
+	ewkt = lwgeom_to_ewkt(g);
+	ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,0 1,1 1,1 0,0 0))");
+	lwgeom_free(g);
+	lwfree(ewkt);
+
+	g = lwgeom_from_wkt("POLYGON((0 0,0 1,1 1,1 0,0 0), (0.4 0.4, 0.4 0.4, 0.4 0.5, 0.5 0.5, 0.5 0.4, 0.4 0.4))",
+			    LW_PARSER_CHECK_NONE);
+	modified = lwgeom_remove_repeated_points_in_place(g, 0.1);
+	ASSERT_INT_EQUAL(modified, LW_TRUE);
+	ewkt = lwgeom_to_ewkt(g);
+	ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,0 1,1 1,1 0,0 0),(0.4 0.4,0.5 0.5,0.5 0.4,0.4 0.4))");
+	lwgeom_free(g);
+	lwfree(ewkt);
+
+	g = lwgeom_from_wkt("GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0,1 0,1 1,0 1,0 0)))", LW_PARSER_CHECK_NONE);
+	modified = lwgeom_remove_repeated_points_in_place(g, 0.1);
+	ASSERT_INT_EQUAL(modified, LW_FALSE);
+	ewkt = lwgeom_to_ewkt(g);
+	ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0,1 0,1 1,0 1,0 0)))");
+	lwgeom_free(g);
+	lwfree(ewkt);
+
+	g = lwgeom_from_wkt("GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0, 0 1, 1 1, 1 0, 0 0)))", LW_PARSER_CHECK_NONE);
+	modified = lwgeom_remove_repeated_points_in_place(g, 10000);
+	ASSERT_INT_EQUAL(modified, LW_TRUE);
+	ewkt = lwgeom_to_ewkt(g);
+	ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0,1 1,1 0,0 0)))");
+	lwgeom_free(g);
+	lwfree(ewkt);
+
+	g = lwgeom_from_wkt("GEOMETRYCOLLECTION(POLYGON((0 0, 0 1, 1 1, 1 0, 0 0)),POINT(2 0))", LW_PARSER_CHECK_NONE);
+	modified = lwgeom_remove_repeated_points_in_place(g, 10000);
+	ASSERT_INT_EQUAL(modified, LW_TRUE);
+	ewkt = lwgeom_to_ewkt(g);
+	ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POLYGON((0 0,1 1,1 0,0 0)),POINT(2 0))");
 	lwgeom_free(g);
 	lwfree(ewkt);
 }
@@ -1245,6 +1302,48 @@ static void test_lwgeom_simplify(void)
 	lwgeom_free(g);
 	lwgeom_free(l);
 	lwfree(ewkt);
+
+	/* POLYGON with multiple inner rings*/
+	g = lwgeom_from_wkt(
+	    "POLYGON("
+	    "(0 0, 100 0, 100 100, 0 100, 0 0),"
+	    "(1 1, 1 5, 5 5, 5 1, 1 1),"
+	    "(20 20, 20 40, 40 40, 40 20, 20 20)"
+	    ")",
+	    LW_PARSER_CHECK_NONE);
+	l = lwgeom_simplify(g, 10, LW_FALSE);
+	ewkt = lwgeom_to_ewkt(l);
+	ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,100 0,100 100,0 100,0 0),(20 20,20 40,40 40,40 20,20 20))");
+	lwgeom_free(g);
+	lwgeom_free(l);
+	lwfree(ewkt);
+
+	/* Reorder inner rings: Same result */
+	g = lwgeom_from_wkt(
+	    "POLYGON("
+	    "(0 0, 100 0, 100 100, 0 100, 0 0),"
+	    "(20 20, 20 40, 40 40, 40 20, 20 20),"
+	    "(1 1, 1 5, 5 5, 5 1, 1 1)"
+	    ")",
+	    LW_PARSER_CHECK_NONE);
+	l = lwgeom_simplify(g, 10, LW_FALSE);
+	ewkt = lwgeom_to_ewkt(l);
+	ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,100 0,100 100,0 100,0 0),(20 20,20 40,40 40,40 20,20 20))");
+	lwgeom_free(g);
+	lwgeom_free(l);
+	lwfree(ewkt);
+
+	g = lwgeom_from_wkt(
+	    "POLYGON("
+	    "(0 0, 100 0, 100 100, 0 100, 0 0),"
+	    "(20 20, 20 40, 40 40, 40 20, 20 20),"
+	    "(1 1, 1 5, 5 5, 5 1, 1 1)"
+	    ")",
+	    LW_PARSER_CHECK_NONE);
+	l = lwgeom_simplify(g, 100, LW_FALSE);
+	CU_ASSERT_EQUAL(l, NULL);
+	lwgeom_free(g);
+	lwgeom_free(l);
 }
 
 

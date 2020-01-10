@@ -19,13 +19,16 @@
 #include "pgsql2shp-core.h"
 #include "../postgis_config.h"
 
+#define xstr(s) str(s)
+#define str(s) #s
 
 static void
 usage(int status)
 {
-  /* TODO: if status != 0 print all to stderr */
+	/* TODO: if status != 0 print all to stderr */
 
-	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
+	printf(_( "RELEASE: %s (%s)\n" ), POSTGIS_LIB_VERSION,
+		xstr(POSTGIS_REVISION));
 	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
 	         "       pgsql2shp [<options>] <database> <query>\n"
 	         "\n"
@@ -47,6 +50,7 @@ usage(int status)
 	         "     leading space. For example:\n"
 	         "         COLUMNNAME DBFFIELD1\n"
 	         "         AVERYLONGCOLUMNNAME DBFFIELD2\n" ));
+	printf(_("  -q Quiet mode. No messages to stdout.\n" ));
 	printf(_("  -? Display this help screen.\n\n" ));
 	exit(status);
 }
@@ -69,7 +73,7 @@ main(int argc, char **argv)
 	config = malloc(sizeof(SHPDUMPERCONFIG));
 	set_dumper_config_defaults(config);
 
-	while ((c = pgis_getopt(argc, argv, "bf:h:du:p:P:g:rkm:")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "bf:h:du:p:P:g:rkm:q")) != EOF)
 	{
 		switch (c)
 		{
@@ -107,6 +111,9 @@ main(int argc, char **argv)
 		case 'k':
 			config->keep_fieldname_case = 1;
 			break;
+		case 'q':
+			config->quiet = 1;
+			break;
 		default:
 			usage(pgis_optopt == '?' ? 0 : 1);
 		}
@@ -141,25 +148,25 @@ main(int argc, char **argv)
 			char *strptr = argv[pgis_optind];
 			char *chrptr = strchr(strptr, '.');
 
-				/* OK, this is a schema-qualified table name... */
-      if (chrptr)
-      {
-        if ( chrptr == strptr )
-        {
-          /* table is ".something" display help  */
-          usage(0);
-          exit(0);
-        }
-        /* Null terminate at the '.' */
-        *chrptr = '\0';
-        /* Copy in the parts */
-        config->schema = strdup(strptr);
-        config->table = strdup(chrptr+1);
-      }
-      else
-      {
-        config->table = strdup(strptr);
-      }
+			/* OK, this is a schema-qualified table name... */
+			if (chrptr)
+			{
+				if ( chrptr == strptr )
+				{
+					/* table is ".something" display help  */
+					usage(0);
+					exit(0);
+				}
+				/* Null terminate at the '.' */
+				*chrptr = '\0';
+				/* Copy in the parts */
+				config->schema = strdup(strptr);
+				config->table = strdup(chrptr+1);
+			}
+			else
+			{
+				config->table = strdup(strptr);
+			}
 		}
 	}
 	else
@@ -185,8 +192,11 @@ main(int argc, char **argv)
 	}
 
 	/* Open the table ready to return rows */
-	fprintf(stdout, _("Initializing... \n"));
-	fflush(stdout);
+	if (!state->config->quiet)
+	{
+		fprintf(stdout, _("Initializing... \n"));
+		fflush(stdout);
+	}
 
 	ret = ShpDumperOpenTable(state);
 	if (ret != SHPDUMPEROK)
@@ -198,15 +208,18 @@ main(int argc, char **argv)
 			exit(1);
 	}
 
-	fprintf(stdout, _("Done (postgis major version: %d).\n"), state->pgis_major_version);
-	fprintf(stdout, _("Output shape: %s\n"), shapetypename(state->outshptype));
-	fprintf(stdout, _("Dumping: "));
-	fflush(stdout);
+	if (!state->config->quiet)
+	{
+		fprintf(stdout, _("Done (postgis major version: %d).\n"), state->pgis_major_version);
+		fprintf(stdout, _("Output shape: %s\n"), shapetypename(state->outshptype));
+		fprintf(stdout, _("Dumping: "));
+		fflush(stdout);
+	}
 
 	for (i = 0; i < ShpDumperGetRecordCount(state); i++)
 	{
 		/* Mimic existing behaviour */
-		if (!(state->currow % state->config->fetchsize))
+		if (!state->config->quiet && !(state->currow % state->config->fetchsize))
 		{
 			fprintf(stdout, "X");
 			fflush(stdout);
@@ -223,8 +236,11 @@ main(int argc, char **argv)
 		}
 	}
 
-	fprintf(stdout, _(" [%d rows].\n"), ShpDumperGetRecordCount(state));
-	fflush(stdout);
+	if (!state->config->quiet)
+	{
+		fprintf(stdout, _(" [%d rows].\n"), ShpDumperGetRecordCount(state));
+		fflush(stdout);
+	}
 
 	ret = ShpDumperCloseTable(state);
 	if (ret != SHPDUMPEROK)

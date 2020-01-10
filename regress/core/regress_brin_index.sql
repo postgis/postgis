@@ -1,5 +1,5 @@
 --- build a larger database
-\i regress_lots_of_points.sql
+\i :regdir/core/regress_lots_of_points.sql
 
 --- Test the various BRIN opclass with dataset containing 2D geometries
 

@@ -227,6 +227,8 @@ DROP FUNCTION IF EXISTS st_combine_bbox(box3d, geometry);
 DROP FUNCTION IF EXISTS st_combine_bbox(box2d, geometry);
 DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
 
+-- dev function 3.0 cycle
+DROP FUNCTION IF EXISTS pgis_geometry_union_transfn(internal, geometry);
 
 -- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
 -- See #3460
@@ -241,8 +243,12 @@ $$
 BEGIN
 IF _postgis_scripts_pgsql_version()::integer >= 96 THEN
 -- mark ST_Union agg as parallel safe if it is not already
-	UPDATE pg_proc SET proparallel = 's'
-	WHERE oid = 'st_union(geometry)'::regprocedure AND proparallel = 'u';
+        BEGIN
+            UPDATE pg_proc SET proparallel = 's'
+            WHERE oid = 'st_union(geometry)'::regprocedure AND proparallel = 'u';
+        EXCEPTION WHEN OTHERS THEN
+            RAISE DEBUG 'Could not update st_union(geometry): %', SQLERRM;
+        END;
 END IF;
 END;
 $$;

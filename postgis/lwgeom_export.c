@@ -29,15 +29,12 @@
  */
 
 #include "float.h" /* for DBL_DIG */
+
 #include "postgres.h"
+#include "catalog/pg_type.h" /* for CSTRINGOID */
 #include "executor/spi.h"
 #include "utils/builtins.h"
-
-#if POSTGIS_PGSQL_VERSION > 95
-#include "utils/fmgrprotos.h"
-#else
 #include "utils/jsonb.h"
-#endif
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -75,10 +72,10 @@ getSRSbySRID(int32_t srid, bool short_crs)
 	}
 
 	if (short_crs)
-		sprintf(query, "SELECT auth_name||':'||auth_srid \
+		snprintf(query, 256, "SELECT auth_name||':'||auth_srid \
 		        FROM spatial_ref_sys WHERE srid='%d'", srid);
 	else
-		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
+		snprintf(query, 256, "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
 		        FROM spatial_ref_sys WHERE srid='%d'", srid);
 
 	err = SPI_exec(query, 1);
@@ -125,25 +122,25 @@ getSRSbySRID(int32_t srid, bool short_crs)
 */
 int getSRIDbySRS(const char* srs)
 {
-	char query[256];
+	char *query =
+	    "SELECT srid "
+	    "FROM spatial_ref_sys, "
+	    "regexp_matches($1::text, E'([a-z]+):([0-9]+)', 'gi') AS re "
+	    "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid";
+	Oid argtypes[] = {CSTRINGOID};
+	Datum values[] = {CStringGetDatum(srs)};
 	int32_t srid, err;
 
 	if (!srs) return 0;
 
-	if (SPI_OK_CONNECT != SPI_connect ())
+	if (SPI_OK_CONNECT != SPI_connect())
 	{
 		elog(NOTICE, "getSRIDbySRS: could not connect to SPI manager");
-		SPI_finish();
 		return 0;
 	}
-	sprintf(query,
-		"SELECT srid "
-		"FROM spatial_ref_sys, "
-		"regexp_matches('%s', E'([a-z]+):([0-9]+)', 'gi') AS re "
-		"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
 
-	err = SPI_exec(query, 1);
-	if ( err < 0 )
+	err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
+	if (err < 0)
 	{
 		elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
 		SPI_finish();
@@ -153,28 +150,28 @@ int getSRIDbySRS(const char* srs)
 	/* no entry in spatial_ref_sys */
 	if (SPI_processed <= 0)
 	{
-		sprintf(query,
-			"SELECT srid "
-			"FROM spatial_ref_sys, "
-			"regexp_matches('%s', E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
-			"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
+		query =
+		    "SELECT srid "
+		    "FROM spatial_ref_sys, "
+		    "regexp_matches($1::text, E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
+		    "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid";
 
-		err = SPI_exec(query, 1);
-		if ( err < 0 )
+		err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
+		if (err < 0)
 		{
 			elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
 			SPI_finish();
 			return 0;
 		}
 
-		if (SPI_processed <= 0) {
+		if (SPI_processed <= 0)
+		{
 			SPI_finish();
 			return 0;
 		}
 	}
 
 	srid = atoi(SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1));
-
 	SPI_finish();
 
 	return srid;
@@ -318,31 +315,6 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(result);
 }
 
-
-
-
-/**
- * Encode Feature in GeoJson (Old C Signature)
- * ST_AsGeoJSON(version, geom, precision, options)
- * why was this written with a version param when there
- * is only one version?
- */
-PG_FUNCTION_INFO_V1(LWGEOM_asGeoJson_old);
-Datum LWGEOM_asGeoJson_old(PG_FUNCTION_ARGS)
-{
-	switch( PG_NARGS() )
-	{
-	case 2:
-		return DirectFunctionCall1(LWGEOM_asGeoJson, PG_GETARG_DATUM(1));
-	case 3:
-		return DirectFunctionCall2(LWGEOM_asGeoJson, PG_GETARG_DATUM(1), PG_GETARG_DATUM(2));
-	case 4:
-		return DirectFunctionCall3(LWGEOM_asGeoJson, PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), PG_GETARG_DATUM(3));
-	default:
-		elog(ERROR, "bad call in %s", __func__);
-	}
-	PG_RETURN_NULL();
-}
 
 /**
  * Encode Feature in GeoJson

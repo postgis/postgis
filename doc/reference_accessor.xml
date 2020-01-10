@@ -1152,7 +1152,7 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the type of the geometry as a string. EG: 'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
+			<para>Returns the type of the geometry as a string. EG: 'ST_LineString', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 			<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
@@ -1371,6 +1371,7 @@ FROM (SELECT ST_BuildArea(
 				</para>
 			</note>
 
+			<para>Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 
@@ -1440,6 +1441,7 @@ FROM (SELECT ST_BuildArea(
 				</para>
 			</note>
 
+			<para>Availability: 2.4.0</para>
 			<para>&Z_support;</para>
 			<para>&M_support;</para>
 		</refsection>
@@ -1861,7 +1863,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the M crdinate of a Point, or NULL if not
+		<para>Return the M coordinate of a Point, or NULL if not
 			available. Input must be a Point.</para>
 
 		<note>

@@ -953,22 +953,6 @@ extern POINT2D getPoint2d(const POINTARRAY *pa, uint32_t n);
  */
 extern int getPoint2d_p(const POINTARRAY *pa, uint32_t n, POINT2D *point);
 
-/**
-* Returns a POINT3DZ pointer into the POINTARRAY serialized_ptlist,
-* suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the
-* values, only read them.
-*/
-extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, uint32_t n);
-
-/**
-* Returns a POINT4D pointer into the POINTARRAY serialized_ptlist,
-* suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the
-* values, only read them.
-*/
-extern const POINT4D* getPoint4d_cp(const POINTARRAY *pa, uint32_t n);
-
 /*
  * set point N to the given value
  * NOTE that the pointarray can be of any
@@ -1050,7 +1034,7 @@ extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdi
 
 /**
  * @brief Remove a point from a pointarray.
- *  @param which -  is the offset (starting at 0)
+ * @param where -  is the offset (starting at 0)
  * @return #POINTARRAY is newly allocated
  */
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, uint32_t where);
@@ -1281,7 +1265,6 @@ extern float  next_float_up(double d);
 
 /* general utilities 2D */
 extern double  distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
-extern double  distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern double  distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern LWGEOM* lwgeom_closest_line(const LWGEOM *lw1, const LWGEOM *lw2);
 extern LWGEOM* lwgeom_furthest_line(const LWGEOM *lw1, const LWGEOM *lw2);
@@ -1378,10 +1361,10 @@ extern void lwgeom_grid_in_place(LWGEOM *lwgeom, const gridspec *grid);
 extern void lwgeom_reverse_in_place(LWGEOM *lwgeom);
 extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
 extern void lwgeom_longitude_shift(LWGEOM *lwgeom);
-extern void lwgeom_simplify_in_place(LWGEOM *igeom, double dist, int preserve_collapsed);
+extern int lwgeom_simplify_in_place(LWGEOM *igeom, double dist, int preserve_collapsed);
 extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
 extern void lwgeom_scale(LWGEOM *geom, const POINT4D *factors);
-extern void lwgeom_remove_repeated_points_in_place(LWGEOM *in, double tolerance);
+extern int lwgeom_remove_repeated_points_in_place(LWGEOM *in, double tolerance);
 
 
 /**
@@ -2158,22 +2141,25 @@ LWGEOM_UNPARSER_RESULT;
 */
 
 /**
-* @param lwgeom geometry to convert to WKT
+* @param geom geometry to convert to WKT
 * @param variant output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
+* @param size_out (Out parameter) size of the buffer
 */
 extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out);
 
 /**
-* @param lwgeom geometry to convert to WKT
+* @param geom geometry to convert to WKT
 * @param variant output format to use
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
+* @param size_out (Out parameter) size of the buffer
 */
 extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
 
 /**
-* @param lwgeom geometry to convert to HEXWKB
+* @param geom geometry to convert to HEXWKB
 * @param variant output format to use
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
+* @param size_out (Out parameter) size of the buffer
 */
 extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
 
@@ -2183,9 +2169,9 @@ extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uint8_t variant, size_t *siz
 extern char *lwgeom_to_ewkt(const LWGEOM *lwgeom);
 
 /**
- * @param check parser check flags, see LW_PARSER_CHECK_* macros
- * @param size length of WKB byte buffer
+ * @param wkb_size length of WKB byte buffer
  * @param wkb WKB byte buffer
+ * @param check parser check flags, see LW_PARSER_CHECK_* macros
  */
 extern LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char check);
 
@@ -2225,8 +2211,9 @@ extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxleng
 */
 
 /**
+ * @param twkb Input twkb buffer
+ * @param twkb_size parser check flags, see LW_PARSER_CHECK_* macros
  * @param check parser check flags, see LW_PARSER_CHECK_* macros
- * @param size parser check flags, see LW_PARSER_CHECK_* macros
  */
 extern LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, char check);
 
@@ -2321,7 +2308,7 @@ typedef enum {
 /**
  * @param geom input geometry
  * @param tol tolerance, semantic driven by tolerance_type
- * @param tolerance_type see LW_LINEARIZE_TOLERANCE_TYPE
+ * @param type see LW_LINEARIZE_TOLERANCE_TYPE
  * @param flags bitwise OR of operational flags, see LW_LINEARIZE_FLAGS
  *
  * @return a newly allocated LWGEOM
@@ -2408,7 +2395,7 @@ projPJ projpj_from_string(const char* txt);
 /**
  * Transform (reproject) a geometry in-place.
  * @param geom the geometry to transform
- * @param PJ the input and output
+ * @param pj the input and output
  */
 int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
 int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);

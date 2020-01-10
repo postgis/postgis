@@ -386,3 +386,30 @@ GEOSNode()
 {
 	assert(0);
 }
+
+#if POSTGIS_GEOS_VERSION > 38
+void GEOSGeom_getXY()
+{
+	assert(0);
+}
+
+void GEOSGeom_getXYZ()
+{
+	assert(0);
+}
+
+void GEOSGeom_setXY()
+{
+	assert(0);
+}
+
+void GEOSGeom_setXYZ()
+{
+	assert(0);
+}
+
+void GEOSGeom_createPointFromXY()
+{
+	assert(0);
+}
+#endif

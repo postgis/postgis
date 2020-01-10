@@ -39,6 +39,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#define xstr(s) str(s)
+#define str(s) #s
+
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
@@ -49,6 +52,7 @@ Datum postgis_version(PG_FUNCTION_ARGS);
 Datum postgis_liblwgeom_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum postgis_svn_version(PG_FUNCTION_ARGS);
+Datum postgis_lib_revision(PG_FUNCTION_ARGS);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
@@ -182,18 +186,30 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(result);
 }
 
+/*
+ * Deprecated as of version 3.1.0 but needs to be kept
+ * around until 4.x as we use the same library filename
+ * for any 3.x.x version of PostGIS and we don't want to
+ * fail at loading the library due to missing symbol.
+ */
 PG_FUNCTION_INFO_V1(postgis_svn_version);
 Datum postgis_svn_version(PG_FUNCTION_ARGS)
 {
-	static int rev = POSTGIS_SVN_REVISION;
+	return postgis_lib_revision(fcinfo);
+}
+
+PG_FUNCTION_INFO_V1(postgis_lib_revision);
+Datum postgis_lib_revision(PG_FUNCTION_ARGS)
+{
+	static char *rev = xstr(POSTGIS_REVISION);
 	char ver[32];
-	if (rev > 0)
+	if (rev && rev[0] != '\0')
 	{
-		snprintf(ver, 32, "%d", rev);
+		snprintf(ver, 32, "%s", rev);
+		ver[31] = '\0';
 		PG_RETURN_TEXT_P(cstring_to_text(ver));
 	}
-	else
-		PG_RETURN_NULL();
+	else PG_RETURN_NULL();
 }
 
 PG_FUNCTION_INFO_V1(postgis_lib_build_date);
@@ -210,7 +226,7 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 	char ver[64];
 	text *result;
 
-	snprintf(ver, 64, "%s r%d", POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
+	snprintf(ver, 64, "%s %s", POSTGIS_LIB_VERSION, xstr(POSTGIS_REVISION));
 	ver[63] = '\0';
 
 	result = cstring_to_text(ver);
@@ -1546,10 +1562,14 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 		holes = lwalloc(sizeof(LWLINE *) * nholes);
 		for (i = 0; i < nholes; i++)
 		{
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
 			GSERIALIZED *g = (GSERIALIZED *)(ARR_DATA_PTR(array) + offset);
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic pop
+#endif
 			LWLINE *hole;
 			offset += INTALIGN(VARSIZE(g));
 			if (gserialized_get_type(g) != LINETYPE)
@@ -2031,6 +2051,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	double tileGeoSizeX, tileGeoSizeY;
 	double boundsWidth, boundsHeight;
 	double x1, y1, x2, y2;
+	double margin;
 	/* This is broken, since 3857 doesn't mean "web mercator", it means
 	   the contents of the row in spatial_ref_sys with srid = 3857.
 	   For practical purposes this will work, but in good implementation
@@ -2038,6 +2059,7 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	   srid of the object is EPSG:3857. */
 	int32_t srid;
 	GBOX bbox;
+	LWGEOM *g = NULL;
 
 	POSTGIS_DEBUG(2, "ST_TileEnvelope called");
 
@@ -2046,9 +2068,32 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	y = PG_GETARG_INT32(2);
 
 	bounds = PG_GETARG_GSERIALIZED_P(3);
-	if(gserialized_get_gbox_p(bounds, &bbox) != LW_SUCCESS)
-		elog(ERROR, "%s: Empty bounds", __func__);
-	srid = gserialized_get_srid(bounds);
+	/*
+	 * We deserialize the geometry and recalculate the bounding box here to get
+	 * 64b floating point precision. The serialized bbox has 32b float is not
+	 * precise enough with big numbers such as the ones used in the default
+	 * parameters, e.g: -20037508.3427892 is transformed into -20037510
+	 */
+	g = lwgeom_from_gserialized(bounds);
+	if (lwgeom_calculate_gbox(g, &bbox) != LW_SUCCESS)
+		elog(ERROR, "%s: Unable to compute bbox", __func__);
+	srid = g->srid;
+	lwgeom_free(g);
+
+	if (PG_NARGS() < 4)
+	{
+		/* Avoid crashing with old signature (old sql code with 3 args, new C code with 4) */
+		ereport(ERROR,
+			(errcode(ERRCODE_UNDEFINED_PARAMETER),
+			 errmsg("Missing margin parameter ($4) in C function '%s'", __func__),
+			 errhint("Consider running: SELECT postgis_extensions_upgrade()")));
+		PG_RETURN_POINTER(NULL);
+	}
+
+	margin = PG_GETARG_FLOAT8(4);
+	/* shrinking by more than 50% would eliminate the tile outright */
+	if (margin < -0.5)
+		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);
 
 	boundsWidth  = bbox.xmax - bbox.xmin;
 	boundsHeight = bbox.ymax - bbox.ymin;
@@ -2068,10 +2113,29 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 
 	tileGeoSizeX = boundsWidth / worldTileSize;
 	tileGeoSizeY = boundsHeight / worldTileSize;
-	x1 = bbox.xmin + tileGeoSizeX * (x);
-	x2 = bbox.xmin + tileGeoSizeX * (x+1);
-	y1 = bbox.ymax - tileGeoSizeY * (y+1);
-	y2 = bbox.ymax - tileGeoSizeY * (y);
+
+	/*
+	 * 1 margin (100%) is the same as a single tile width
+	 * if the size of the tile with margins span more than the total number of tiles,
+	 * reset x1/x2 to the bounds
+	 */
+	if ((1 + margin * 2) > worldTileSize)
+	{
+		x1 = bbox.xmin;
+		x2 = bbox.xmax;
+	}
+	else
+	{
+		x1 = bbox.xmin + tileGeoSizeX * (x - margin);
+		x2 = bbox.xmin + tileGeoSizeX * (x + 1 + margin);
+	}
+
+	y1 = bbox.ymax - tileGeoSizeY * (y + 1 + margin);
+	y2 = bbox.ymax - tileGeoSizeY * (y - margin);
+
+	/* Clip y-axis to the given bounds */
+	if (y1 < bbox.ymin) y1 = bbox.ymin;
+	if (y2 > bbox.ymax) y2 = bbox.ymax;
 
 	PG_RETURN_POINTER(
 		geometry_serialize(
@@ -2159,7 +2223,7 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	GSERIALIZED *pglwg1, *pglwg2, *result;
 	LWPOINT *point;
 	LWLINE *line, *linecopy;
-	int32 where = -1;
+	uint32_t uwhere = 0;
 
 	POSTGIS_DEBUGF(2, "%s called.", __func__);
 
@@ -2180,26 +2244,29 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 
 	line = lwgeom_as_lwline(lwgeom_from_gserialized(pglwg1));
 
-	if (PG_NARGS() > 2)
+	if (PG_NARGS() <= 2)
 	{
-		where = PG_GETARG_INT32(2);
+		uwhere = line->points->npoints;
 	}
 	else
 	{
-		where = line->points->npoints;
-	}
-
-	if (where < 0 || where > (int32)line->points->npoints)
-	{
-		elog(ERROR, "Invalid offset");
-		PG_RETURN_NULL();
+		int32 where = PG_GETARG_INT32(2);
+		if (where == -1)
+		{
+			uwhere = line->points->npoints;
+		}
+		else if (where < 0 || where > (int32)line->points->npoints)
+		{
+			elog(ERROR, "Invalid offset");
+			PG_RETURN_NULL();
+		}
 	}
 
 	point = lwgeom_as_lwpoint(lwgeom_from_gserialized(pglwg2));
 	linecopy = lwgeom_as_lwline(lwgeom_clone_deep(lwline_as_lwgeom(line)));
 	lwline_free(line);
 
-	if (lwline_add_lwpoint(linecopy, point, (uint32_t)where) == LW_FAILURE)
+	if (lwline_add_lwpoint(linecopy, point, uwhere) == LW_FAILURE)
 	{
 		elog(ERROR, "Point insert failed");
 		PG_RETURN_NULL();
@@ -2748,12 +2815,12 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_RemoveRepeatedPoints);
 Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g_in = PG_GETARG_GSERIALIZED_P(0);
-	int type = gserialized_get_type(g_in);
+	GSERIALIZED *g_in = PG_GETARG_GSERIALIZED_P_COPY(0);
+	uint32_t type = gserialized_get_type(g_in);
 	GSERIALIZED *g_out;
 	LWGEOM *lwgeom_in = NULL;
-	LWGEOM *lwgeom_out = NULL;
 	double tolerance = 0.0;
+	int modified = LW_FALSE;
 
 	/* Don't even start to think about points */
 	if (type == POINTTYPE)
@@ -2763,17 +2830,16 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 		tolerance = PG_GETARG_FLOAT8(1);
 
 	lwgeom_in = lwgeom_from_gserialized(g_in);
-	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in, tolerance);
-	g_out = geometry_serialize(lwgeom_out);
-
-	if (lwgeom_out != lwgeom_in)
+	modified = lwgeom_remove_repeated_points_in_place(lwgeom_in, tolerance);
+	if (!modified)
 	{
-		lwgeom_free(lwgeom_out);
+		/* Since there were no changes, we can return the input to avoid the serialization */
+		PG_RETURN_POINTER(g_in);
 	}
 
-	lwgeom_free(lwgeom_in);
+	g_out = geometry_serialize(lwgeom_in);
 
-	PG_FREE_IF_COPY(g_in, 0);
+	pfree(g_in);
 	PG_RETURN_POINTER(g_out);
 }
 

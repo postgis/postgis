@@ -189,7 +189,7 @@ $(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
 # Build the main executable
 generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
 	$(LIBTOOL) --mode=link \
-	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.la -lm $(CUNIT_LDFLAGS)
+	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.la $(CUNIT_LDFLAGS)
 
 # Build liblwgeom
 ../../../liblwgeom/.libs/liblwgeom.a:

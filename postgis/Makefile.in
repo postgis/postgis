@@ -34,7 +34,7 @@ MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 endif
 
 # Files to be copied to the contrib/ directory
-SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql postgis_proc_set_search_path.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
+SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring pre-processing)
@@ -181,6 +181,12 @@ PERL=@PERL@
 # see http://trac.osgeo.org/postgis/ticket/1158#comment:57
 SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 
+# NOTE: setting LDFLAGS explicitly here avoids getting the
+# link line polluted by unrelated PostgreSQL switches that
+# may be confusing and out-of-control for the builder of
+# PostGIS
+LDFLAGS = @LDFLAGS@
+
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
 # directory for regression testing.
@@ -195,12 +201,12 @@ endif
 # change is made, a PostGIS rebuild is triggered.
 #
 # Also they are all dependent on postgis_config.h
-# and thus postgis_svn_revision.h
+# and thus postgis_revision.h
 #
-$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_svn_revision.h $(WAGYU_DEP)
+$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h $(WAGYU_DEP)
 
-../postgis_svn_revision.h:
-	$(MAKE) -C .. postgis_svn_revision.h
+../postgis_revision.h:
+	$(MAKE) -C .. postgis_revision.h
 
 ../liblwgeom/.libs/liblwgeom.a:
 	$(MAKE) -C ../liblwgeom liblwgeom.la
@@ -242,8 +248,6 @@ endif
 postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
-postgis_proc_set_search_path.sql: postgis.sql ../utils/postgis_proc_set_search_path.pl
-	$(PERL) ../utils/postgis_proc_set_search_path.pl $< UNUSED > $@
 
 postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql
 	echo "BEGIN;" > $@
@@ -257,7 +261,7 @@ sfcgal_upgrade.sql: sfcgal_upgrade.sql.in postgis_after_upgrade.sql
 	cat $^ > $@
 
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
-$(SQL_OBJS): ../postgis_config.h ../postgis_svn_revision.h
+$(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 
 #postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c
 

@@ -27,6 +27,8 @@
 
 #include "../postgis_config.h"
 
+#include "float.h" /* for DBL_DIG */
+
 /* PostgreSQL */
 #include "postgres.h"
 #include "funcapi.h"
@@ -34,9 +36,7 @@
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
 #include "utils/numeric.h"
-
 #include "access/htup_details.h"
-
 
 /* PostGIS */
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
@@ -44,7 +44,7 @@
 #include "liblwgeom.h"
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h"
-#include "float.h" /* for DBL_DIG */
+#include "lwgeom_accum.h"
 
 
 /* Return NULL on GEOS error
@@ -107,6 +107,7 @@ Datum ST_BuildArea(PG_FUNCTION_ARGS);
 Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
+Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
 
 /*
 ** Prototypes end
@@ -389,10 +390,14 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	/* One geom, good geom? Return it */
 	if ( count == 1 && nelems == 1 )
 	{
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
 		PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic pop
+#endif
 	}
 
 	/* Ok, we really need GEOS now ;) */
@@ -505,135 +510,62 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gser_out);
 }
 
-typedef struct UnionBuildState
-{
-	MemoryContext mcontext; /* where all the temp stuff is kept */
-	GEOSGeometry **geoms;   /* collected GEOS geometries*/
-	int empty_type;
-	uint32_t alen;   /* allocated length of above arrays */
-	uint32_t ngeoms; /* number of valid entries in above arrays */
-	int32_t srid;
-	bool is3d;
-} UnionBuildState;
-
-PG_FUNCTION_INFO_V1(pgis_geometry_union_transfn);
-Datum pgis_geometry_union_transfn(PG_FUNCTION_ARGS)
-{
-	MemoryContext aggcontext;
-	MemoryContext old;
-	UnionBuildState *state;
-	GSERIALIZED *gser_in;
-	uint32_t curgeom;
-	GEOSGeometry *g;
-
-	if (!AggCheckCallContext(fcinfo, &aggcontext))
-	{
-		/* cannot be called directly because of dummy-type argument */
-		elog(ERROR, "%s called in non-aggregate context", __func__);
-		aggcontext = NULL; /* keep compiler quiet */
-	}
-
-	if (!PG_ARGISNULL(0))
-	{
-		state = (UnionBuildState *)PG_GETARG_POINTER(0);
-	}
-	else
-	{
-		old = MemoryContextSwitchTo(aggcontext);
-		state = (UnionBuildState *)palloc(sizeof(UnionBuildState));
-
-		state->mcontext = aggcontext;
-		state->alen = 10;
-		state->ngeoms = 0;
-		state->geoms = palloc(sizeof(GEOSGeometry *) * state->alen);
-		state->is3d = false;
-		state->srid = 0;
-		state->empty_type = 0;
-
-		initGEOS(lwpgnotice, lwgeom_geos_error);
-
-		MemoryContextSwitchTo(old);
-	};
-
-	/* do we have geometry to push? */
-	if (!PG_ARGISNULL(1))
-	{
-		old = MemoryContextSwitchTo(state->mcontext);
-		gser_in = PG_GETARG_GSERIALIZED_P_COPY(1);
-		MemoryContextSwitchTo(old);
-
-		if (state->ngeoms > 0)
-		{
-			if (state->srid != gserialized_get_srid(gser_in))
-				for (curgeom = 0; curgeom < state->ngeoms; curgeom++)
-					GEOSGeom_destroy(state->geoms[curgeom]);
-
-			gserialized_error_if_srid_mismatch_reference(gser_in, state->srid, __func__);
-		}
-
-		if (!gserialized_is_empty(gser_in))
-		{
-			if (state->ngeoms == 0)
-			{
-				state->srid = gserialized_get_srid(gser_in);
-				state->is3d = gserialized_has_z(gser_in);
-			}
-
-			old = MemoryContextSwitchTo(state->mcontext);
-			g = POSTGIS2GEOS(gser_in);
-			MemoryContextSwitchTo(old);
-
-			if (!g)
-			{
-				for (curgeom = 0; curgeom < state->ngeoms; curgeom++)
-					GEOSGeom_destroy(state->geoms[curgeom]);
-				HANDLE_GEOS_ERROR("One of the geometries in the set could not be converted to GEOS");
-			}
-
-			curgeom = state->ngeoms;
-			state->ngeoms++;
-
-			if (state->ngeoms > state->alen)
-			{
-				old = MemoryContextSwitchTo(state->mcontext);
-				state->alen *= 2;
-				state->geoms = repalloc(state->geoms, sizeof(GEOSGeometry *) * state->alen);
-				MemoryContextSwitchTo(old);
-			}
-
-			state->geoms[curgeom] = g;
-		}
-		else
-		{
-			int gser_type = gserialized_get_type(gser_in);
-			if (gser_type > state->empty_type)
-				state->empty_type = gser_type;
-		}
-	}
-
-	PG_RETURN_POINTER(state);
-}
 
 PG_FUNCTION_INFO_V1(pgis_geometry_union_finalfn);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 {
-	UnionBuildState *state;
-	GSERIALIZED *gser_out = NULL;
-	GEOSGeometry *g = NULL;
-	GEOSGeometry *g_union = NULL;
+	CollectionBuildState *state;
+	ListCell *l;
+	LWGEOM **geoms;
+	GSERIALIZED *gser_out;
+	size_t ngeoms = 0;
+	int empty_type = 0;
+	bool first = true;
+	int32_t srid = SRID_UNKNOWN;
+	int has_z = LW_FALSE;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL(); /* returns null iff no input values */
 
-	state = (UnionBuildState *)PG_GETARG_POINTER(0);
+	state = (CollectionBuildState *)PG_GETARG_POINTER(0);
+	geoms = palloc(list_length(state->geoms) * sizeof(LWGEOM*));
+
+	/* Read contents of list into an array of only non-null values */
+	foreach (l, state->geoms)
+	{
+		LWGEOM *geom = (LWGEOM*)(lfirst(l));
+		if (geom)
+		{
+			if (!lwgeom_is_empty(geom))
+			{
+				geoms[ngeoms++] = geom;
+				if (first)
+				{
+					srid = lwgeom_get_srid(geom);
+					has_z = lwgeom_has_z(geom);
+					first = false;
+				}
+			}
+			else
+			{
+				int type = lwgeom_get_type(geom);
+				empty_type = type > empty_type ? type : empty_type;
+			}
+		}
+	}
 
 	/*
-	** Take our GEOS geometries and turn them into a GEOS collection,
+	** Take our array of LWGEOM* and turn it into a GEOS collection,
 	** then pass that into cascaded union.
 	*/
-	if (state->ngeoms > 0)
+	if (ngeoms > 0)
 	{
-		g = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, state->geoms, state->ngeoms);
+		GEOSGeometry *g = NULL;
+		GEOSGeometry *g_union = NULL;
+		LWCOLLECTION* col = lwcollection_construct(COLLECTIONTYPE, srid, NULL, ngeoms, geoms);
+
+		initGEOS(lwpgnotice, lwgeom_geos_error);
+		g = LWGEOM2GEOS((LWGEOM*)col, LW_FALSE);
 		if (!g)
 			HANDLE_GEOS_ERROR("Could not create GEOS COLLECTION from geometry array");
 
@@ -642,17 +574,17 @@ Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 		if (!g_union)
 			HANDLE_GEOS_ERROR("GEOSUnaryUnion");
 
-		GEOSSetSRID(g_union, state->srid);
-		gser_out = GEOS2POSTGIS(g_union, state->is3d);
+		GEOSSetSRID(g_union, srid);
+		gser_out = GEOS2POSTGIS(g_union, has_z);
 		GEOSGeom_destroy(g_union);
 	}
 	/* No real geometries in our array, any empties? */
 	else
 	{
 		/* If it was only empties, we'll return the largest type number */
-		if (state->empty_type > 0)
+		if (empty_type > 0)
 			PG_RETURN_POINTER(
-			    geometry_serialize(lwgeom_construct_empty(state->empty_type, state->srid, state->is3d, 0)));
+			    geometry_serialize(lwgeom_construct_empty(empty_type, srid, has_z, 0)));
 
 		/* Nothing but NULL, returns NULL */
 		else
@@ -667,6 +599,8 @@ Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(gser_out);
 }
+
+
 
 /**
  * @example ST_UnaryUnion {@link #geomunion} SELECT ST_UnaryUnion(
@@ -1596,12 +1530,8 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	 * Build a tuple description for a
 	 * valid_detail tuple
 	 */
-	tupdesc = RelationNameGetTupleDesc("valid_detail");
-	if ( ! tupdesc )
-	{
-		lwpgerror("TYPE valid_detail not found");
-		PG_RETURN_NULL();
-	}
+	get_call_result_type(fcinfo, 0, &tupdesc);
+	BlessTupleDesc(tupdesc);
 
 	/*
 	 * generate attribute metadata needed later to produce

@@ -1,7 +1,7 @@
 #ifndef POSTGIS_CONFIG_H
 #define POSTGIS_CONFIG_H 1
 
-#include "postgis_svn_revision.h"
+#include "postgis_revision.h"
 
 /* Manually manipulate the POSTGIS_DEBUG_LEVEL, it is not affected by the
    configure process */
@@ -52,9 +52,6 @@
 
 /* Define to 1 if libjson is present */
 #undef HAVE_LIBJSON
-
-/* Define to 1 if libjson resides in json-c subdir */
-#undef HAVE_LIBJSON_C
 
 /* Define to 1 if you have the `pq' library (-lpq). */
 #undef HAVE_LIBPQ

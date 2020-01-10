@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.2.2.  */
+/* A Bison parser, made by GNU Bison 3.4.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -73,37 +74,12 @@ extern int wkt_yydebug;
     SRID_TOK = 280
   };
 #endif
-/* Tokens.  */
-#define POINT_TOK 258
-#define LINESTRING_TOK 259
-#define POLYGON_TOK 260
-#define MPOINT_TOK 261
-#define MLINESTRING_TOK 262
-#define MPOLYGON_TOK 263
-#define MSURFACE_TOK 264
-#define MCURVE_TOK 265
-#define CURVEPOLYGON_TOK 266
-#define COMPOUNDCURVE_TOK 267
-#define CIRCULARSTRING_TOK 268
-#define COLLECTION_TOK 269
-#define RBRACKET_TOK 270
-#define LBRACKET_TOK 271
-#define COMMA_TOK 272
-#define EMPTY_TOK 273
-#define SEMICOLON_TOK 274
-#define TRIANGLE_TOK 275
-#define TIN_TOK 276
-#define POLYHEDRALSURFACE_TOK 277
-#define DOUBLE_TOK 278
-#define DIMENSIONALITY_TOK 279
-#define SRID_TOK 280
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 116 "lwin_wkt_parse.y" /* yacc.c:1906  */
+#line 112 "lwin_wkt_parse.y"
 
 	int integervalue;
 	double doublevalue;
@@ -112,9 +88,9 @@ union YYSTYPE
 	POINT coordinatevalue;
 	POINTARRAY *ptarrayvalue;
 
-#line 116 "lwin_wkt_parse.h" /* yacc.c:1906  */
-};
+#line 92 "lwin_wkt_parse.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

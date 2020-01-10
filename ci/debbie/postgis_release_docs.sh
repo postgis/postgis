@@ -38,12 +38,12 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --without-raster --without-wagyu
 make clean
 
-# generating postgis_svn_revision.h in case hasn't been generated
-if test -f utils/svn_repo_revision.pl; then
-	echo "Generating postgis_svn_revision.h"
-	perl utils/svn_repo_revision.pl
+# generating postgis_revision.h in case hasn't been generated
+if test -f utils/repo_revision.pl; then
+	echo "Generating postgis_revision.h"
+	perl utils/repo_revision.pl
 fi
-export VREV="`cat postgis_svn_revision.h | awk '{print $3}'`"
+export VREV="`cat postgis_revision.h | awk '{print $3}'`"
 echo "SVN is ${VREV}"
 cd doc
 
@@ -70,7 +70,7 @@ cp html/images/* images
 make epub
 make -e chunked-html-web 2>&1 | tee -a doc-errors.log
 
-if [[ "$reference" == *"trunk"* ]]; then  #only do this for trunk because only trunk follows transifex
+if [[ "$reference" == *"master"* ]]; then  #only do this for trunk because only trunk follows transifex
   make update-pot
   make pull-tx
   make -C po/it_IT/ local-html

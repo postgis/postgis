@@ -50,7 +50,7 @@ all:  sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).
 sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql \
 sql/test-init-extensions.sql sql/test-parseaddress.sql sql/test-standardize_address_1.sql sql/test-standardize_address_2.sql
 
-EXTRA_CLEAN += sql/*.sql
+EXTRA_CLEAN = sql/
 
 
 

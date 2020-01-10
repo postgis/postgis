@@ -1708,92 +1708,79 @@ rt_raster_to_gdal(
  * @return set of "gdaldriver" values of available GDAL drivers
  */
 rt_gdaldriver
-rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t can_write) {
-	const char *cc;
-	const char *vio;
-	const char *txt;
-	int txt_len;
-	GDALDriverH *drv = NULL;
-	rt_gdaldriver rtn = NULL;
-	int count;
-	int i;
-	uint32_t j;
-
+rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t can_write)
+{
 	assert(drv_count != NULL);
-
+	uint32_t output_driver = 0;
 	rt_util_gdal_register_all(0);
-	count = GDALGetDriverCount();
-	RASTER_DEBUGF(3, "%d drivers found", count);
+	uint32_t count = (uint32_t)GDALGetDriverCount();
 
-	rtn = (rt_gdaldriver) rtalloc(count * sizeof(struct rt_gdaldriver_t));
-	if (NULL == rtn) {
+	rt_gdaldriver rtn = (rt_gdaldriver)rtalloc(count * sizeof(struct rt_gdaldriver_t));
+	if (!rtn)
+	{
 		rterror("rt_raster_gdal_drivers: Could not allocate memory for gdaldriver structure");
-		return 0;
+		*drv_count = output_driver;
+		return NULL;
 	}
 
-	for (i = 0, j = 0; i < count; i++) {
-		drv = GDALGetDriver(i);
+	for (uint32_t i = 0; i < count; i++)
+	{
+		GDALDriverH *drv = GDALGetDriver(i);
 
 #ifdef GDAL_DCAP_RASTER
 		/* Starting with GDAL 2.0, vector drivers can also be returned */
 		/* Only keep raster drivers */
 		const char *is_raster;
 		is_raster = GDALGetMetadataItem(drv, GDAL_DCAP_RASTER, NULL);
-		if (is_raster == NULL || !EQUAL(is_raster, "YES"))
+		if (!is_raster || !EQUAL(is_raster, "YES"))
 			continue;
 #endif
 
 		/* CreateCopy support */
-		cc = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
+		const char *cc = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
+		if (can_write && !cc)
+			continue;
 
 		/* VirtualIO support */
-		vio = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
-
-		if (can_write && (cc == NULL || vio == NULL))
+		const char *vio = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
+		if (can_write && !vio)
 			continue;
 
 		/* we can always read what GDAL can load */
-		rtn[j].can_read = 1;
+		rtn[output_driver].can_read = 1;
 		/* we require CreateCopy and VirtualIO support to write to GDAL */
-		rtn[j].can_write = (cc != NULL && vio != NULL);
-
-		if (rtn[j].can_write) {
-			RASTER_DEBUGF(3, "driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
-		}
+		rtn[output_driver].can_write = (cc != NULL && vio != NULL);
 
 		/* index of driver */
-		rtn[j].idx = i;
+		rtn[output_driver].idx = i;
 
 		/* short name */
-		txt = GDALGetDriverShortName(drv);
-		txt_len = strlen(txt);
-
+		const char *txt = GDALGetDriverShortName(drv);
+		size_t txt_len = strlen(txt);
 		txt_len = (txt_len + 1) * sizeof(char);
-		rtn[j].short_name = (char *) rtalloc(txt_len);
-		memcpy(rtn[j].short_name, txt, txt_len);
+		rtn[output_driver].short_name = (char *)rtalloc(txt_len);
+		memcpy(rtn[output_driver].short_name, txt, txt_len);
 
 		/* long name */
 		txt = GDALGetDriverLongName(drv);
 		txt_len = strlen(txt);
-
 		txt_len = (txt_len + 1) * sizeof(char);
-		rtn[j].long_name = (char *) rtalloc(txt_len);
-		memcpy(rtn[j].long_name, txt, txt_len);
+		rtn[output_driver].long_name = (char *)rtalloc(txt_len);
+		memcpy(rtn[output_driver].long_name, txt, txt_len);
 
 		/* creation options */
 		txt = GDALGetDriverCreationOptionList(drv);
 		txt_len = strlen(txt);
-
 		txt_len = (txt_len + 1) * sizeof(char);
-		rtn[j].create_options = (char *) rtalloc(txt_len);
-		memcpy(rtn[j].create_options, txt, txt_len);
+		rtn[output_driver].create_options = (char *)rtalloc(txt_len);
+		memcpy(rtn[output_driver].create_options, txt, txt_len);
 
-		j++;
+		output_driver++;
 	}
 
 	/* free unused memory */
-	rtn = rtrealloc(rtn, j * sizeof(struct rt_gdaldriver_t));
-	*drv_count = j;
+	rtn = rtrealloc(rtn, output_driver * sizeof(struct rt_gdaldriver_t));
+	*drv_count = output_driver;
 
 	return rtn;
 }

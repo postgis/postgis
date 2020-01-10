@@ -126,6 +126,7 @@ XML_SOURCES = \
 	reference_cluster.xml \
 	reference_constructor.xml \
 	reference_editor.xml \
+	reference_exception.xml \
 	reference_guc.xml \
 	reference_input.xml \
 	reference_lrs.xml \

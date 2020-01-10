@@ -16,5 +16,4 @@ export CUNIT_VALGRIND_FLAGS="--leak-check=full --error-exitcode=1"
 
 # Standard build
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
-bash ./ci/travis/logbt -- make -j
 bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose

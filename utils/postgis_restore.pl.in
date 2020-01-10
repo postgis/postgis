@@ -118,7 +118,7 @@ while(my $l = <DATA>) {
 if(!defined($POSTGIS_TOC)) {
   print STDERR "  Writing manifest of things to read from dump file...\n";
 
-  open( DUMP, "pg_restore -l $dumpfile |" ) || die "$me:\tCannot open dump file '$dumpfile'\n";
+  open( DUMP, "pg_restore -f - -l $dumpfile |" ) || die "$me:\tCannot open dump file '$dumpfile'\n";
 } else {
   open( DUMP, '<' . $POSTGIS_TOC) || die "$me:\tCannot open TOC file '$POSTGIS_TOC'\n";
 }
@@ -145,7 +145,7 @@ close(DUMP) || die "$me: pg_restore returned an error\n";
 # unwanted bits.
 #
 print STDERR "  Writing ASCII to stdout...\n";
-open( INPUT, "pg_restore -L $manifest $dumpfile |") || die "$me:\tCan't run pg_restore\n";
+open( INPUT, "pg_restore -f - -L $manifest $dumpfile |") || die "$me:\tCan't run pg_restore\n";
 
 if ( defined $POSTGIS_SCHEMA ) {
   print STDOUT "SET search_path = \"" . $POSTGIS_SCHEMA . "\";\n";

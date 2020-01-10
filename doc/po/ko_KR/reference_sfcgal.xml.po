@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2019-08-03 21:00+0000\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2019-10-06 23:48+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -71,8 +71,8 @@ msgstr "text <function>postgis_sfcgal_version</function>"
 #: reference_sfcgal.xml:218 reference_sfcgal.xml:282 reference_sfcgal.xml:311
 #: reference_sfcgal.xml:340 reference_sfcgal.xml:369 reference_sfcgal.xml:474
 #: reference_sfcgal.xml:541 reference_sfcgal.xml:617 reference_sfcgal.xml:691
-#: reference_sfcgal.xml:766 reference_sfcgal.xml:804 reference_sfcgal.xml:895
-#: reference_sfcgal.xml:936 reference_sfcgal.xml:964
+#: reference_sfcgal.xml:766 reference_sfcgal.xml:804 reference_sfcgal.xml:902
+#: reference_sfcgal.xml:943 reference_sfcgal.xml:971
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -90,8 +90,8 @@ msgstr "2.1.0 버전부터 사용할 수 있습니다."
 #: reference_sfcgal.xml:228 reference_sfcgal.xml:285 reference_sfcgal.xml:316
 #: reference_sfcgal.xml:343 reference_sfcgal.xml:379 reference_sfcgal.xml:482
 #: reference_sfcgal.xml:544 reference_sfcgal.xml:620 reference_sfcgal.xml:695
-#: reference_sfcgal.xml:769 reference_sfcgal.xml:807 reference_sfcgal.xml:898
-#: reference_sfcgal.xml:939 reference_sfcgal.xml:967
+#: reference_sfcgal.xml:769 reference_sfcgal.xml:807 reference_sfcgal.xml:905
+#: reference_sfcgal.xml:946 reference_sfcgal.xml:974
 #, no-c-format
 msgid "&sfcgal_required;"
 msgstr "&sfcgal_required;"
@@ -101,8 +101,8 @@ msgstr "&sfcgal_required;"
 #: reference_sfcgal.xml:229 reference_sfcgal.xml:286 reference_sfcgal.xml:317
 #: reference_sfcgal.xml:344 reference_sfcgal.xml:484 reference_sfcgal.xml:545
 #: reference_sfcgal.xml:621 reference_sfcgal.xml:696 reference_sfcgal.xml:770
-#: reference_sfcgal.xml:808 reference_sfcgal.xml:899 reference_sfcgal.xml:940
-#: reference_sfcgal.xml:968
+#: reference_sfcgal.xml:808 reference_sfcgal.xml:906 reference_sfcgal.xml:947
+#: reference_sfcgal.xml:975
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -111,8 +111,8 @@ msgstr "&Z_support;"
 #: reference_sfcgal.xml:39 reference_sfcgal.xml:71 reference_sfcgal.xml:164
 #: reference_sfcgal.xml:230 reference_sfcgal.xml:287 reference_sfcgal.xml:345
 #: reference_sfcgal.xml:546 reference_sfcgal.xml:622 reference_sfcgal.xml:697
-#: reference_sfcgal.xml:771 reference_sfcgal.xml:809 reference_sfcgal.xml:900
-#: reference_sfcgal.xml:941 reference_sfcgal.xml:969
+#: reference_sfcgal.xml:771 reference_sfcgal.xml:809 reference_sfcgal.xml:907
+#: reference_sfcgal.xml:948 reference_sfcgal.xml:976
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
@@ -121,8 +121,8 @@ msgstr "&P_support;"
 #: reference_sfcgal.xml:40 reference_sfcgal.xml:72 reference_sfcgal.xml:165
 #: reference_sfcgal.xml:231 reference_sfcgal.xml:288 reference_sfcgal.xml:346
 #: reference_sfcgal.xml:547 reference_sfcgal.xml:623 reference_sfcgal.xml:698
-#: reference_sfcgal.xml:772 reference_sfcgal.xml:810 reference_sfcgal.xml:901
-#: reference_sfcgal.xml:942 reference_sfcgal.xml:970
+#: reference_sfcgal.xml:772 reference_sfcgal.xml:810 reference_sfcgal.xml:908
+#: reference_sfcgal.xml:949 reference_sfcgal.xml:977
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -244,7 +244,7 @@ msgstr ""
 #. Tag: title
 #: reference_sfcgal.xml:135 reference_sfcgal.xml:257 reference_sfcgal.xml:518
 #: reference_sfcgal.xml:663 reference_sfcgal.xml:738 reference_sfcgal.xml:781
-#: reference_sfcgal.xml:912
+#: reference_sfcgal.xml:877 reference_sfcgal.xml:919
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -331,7 +331,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:227 reference_sfcgal.xml:619 reference_sfcgal.xml:694
-#: reference_sfcgal.xml:897 reference_sfcgal.xml:938 reference_sfcgal.xml:966
+#: reference_sfcgal.xml:904 reference_sfcgal.xml:945 reference_sfcgal.xml:973
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "2.2.0 버전부터 사용할 수 있습니다."
@@ -708,8 +708,12 @@ msgstr ""
 #. Tag: para
 #: reference_sfcgal.xml:519
 #, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
-msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+msgid ""
+", <xref linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_ConcaveHull\"/>, "
+"<xref linkend=\"ST_Dump\"/>"
+msgstr ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:525
@@ -1297,14 +1301,20 @@ msgstr ""
 msgid "Tesselated Polygon"
 msgstr "다듬어진 폴리곤"
 
+#. Tag: para
+#: reference_sfcgal.xml:879
+#, no-c-format
+msgid ", <xref linkend=\"ST_DelaunayTriangles\"/>"
+msgstr ""
+
 #. Tag: refname
-#: reference_sfcgal.xml:880
+#: reference_sfcgal.xml:887
 #, no-c-format
 msgid "ST_Volume"
 msgstr "ST_Volume"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:882
+#: reference_sfcgal.xml:889
 #, no-c-format
 msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
@@ -1314,7 +1324,7 @@ msgstr ""
 "반환할 것입니다."
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:887
+#: reference_sfcgal.xml:894
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Volume</function></funcdef> "
@@ -1324,13 +1334,13 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: title
-#: reference_sfcgal.xml:905
+#: reference_sfcgal.xml:912
 #, no-c-format
 msgid "Example"
 msgstr "예시"
 
 #. Tag: para
-#: reference_sfcgal.xml:906
+#: reference_sfcgal.xml:913
 #, no-c-format
 msgid ""
 "When closed surfaces are created with WKT, they are treated as areal rather "
@@ -1342,7 +1352,7 @@ msgstr ""
 "면 도형은 부피가 없습니다. 다음은 그 사실을 보여주는 예시입니다."
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:908
+#: reference_sfcgal.xml:915
 #, no-c-format
 msgid ""
 "SELECT ST_Volume(geom) As cube_surface_vol,\n"
@@ -1372,19 +1382,19 @@ msgstr ""
 "                0 |                 1"
 
 #. Tag: para
-#: reference_sfcgal.xml:914
+#: reference_sfcgal.xml:921
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:921
+#: reference_sfcgal.xml:928
 #, no-c-format
 msgid "ST_MakeSolid"
 msgstr "ST_MakeSolid"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:923
+#: reference_sfcgal.xml:930
 #, no-c-format
 msgid ""
 "Cast the geometry into a solid. No check is performed. To obtain a valid "
@@ -1395,7 +1405,7 @@ msgstr ""
 "얻으려면, 입력 도형이 닫힌 다면체 표면 또는 닫힌 TIN이어야만 합니다."
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:928
+#: reference_sfcgal.xml:935
 #, no-c-format
 msgid ""
 "<funcdef>geometry<function>ST_MakeSolid</function></funcdef> "
@@ -1405,19 +1415,19 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: refname
-#: reference_sfcgal.xml:949
+#: reference_sfcgal.xml:956
 #, no-c-format
 msgid "ST_IsSolid"
 msgstr "ST_IsSolid"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:951
+#: reference_sfcgal.xml:958
 #, no-c-format
 msgid "Test if the geometry is a solid. No validity check is performed."
 msgstr "도형이 입체인지 테스트합니다. 어떤 유효성 검사도 수행하지 않습니다."
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:956
+#: reference_sfcgal.xml:963
 #, no-c-format
 msgid ""
 "<funcdef>boolean<function>ST_IsSolid</function></funcdef> "
@@ -1425,6 +1435,10 @@ msgid ""
 msgstr ""
 "<funcdef>boolean<function>ST_IsSolid</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+
+#, fuzzy
+#~ msgid ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
+#~ msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 
 #~ msgid ""
 #~ "Some SFCGAL functions replace standard ones (ST_Intersects, "

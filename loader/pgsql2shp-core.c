@@ -832,16 +832,16 @@ projFileCreate(SHPDUMPERSTATE *state)
 				}
 				else
 				{
-				    result = fputs (srtext,fp);
-                    LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
-                    if (result == EOF)
-                    {
-                        fclose( fp );
-                        free( pszFullname );
-                        PQclear(res);
-                        free(query);
-                        return 0;
-                    }
+					result = fputs (srtext,fp);
+					LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
+					if (result == EOF)
+					{
+						fclose( fp );
+						free( pszFullname );
+						PQclear(res);
+						free(query);
+						return 0;
+					}
 				}
 				fclose( fp );
 				free( pszFullname );
@@ -883,14 +883,14 @@ getTableInfo(SHPDUMPERSTATE *state)
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->schema) + strlen(state->table));
 
 			sprintf(query, "SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY 3",
-			state->geo_col_name, state->geo_col_name, state->schema, state->table);
+			        state->geo_col_name, state->geo_col_name, state->schema, state->table);
 		}
 		else
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->table));
 
 			sprintf(query, "SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY 3",
-			state->geo_col_name, state->geo_col_name, state->table);
+			        state->geo_col_name, state->geo_col_name, state->table);
 		}
 	}
 	else
@@ -1144,6 +1144,7 @@ set_dumper_config_defaults(SHPDUMPERCONFIG *config)
 	config->keep_fieldname_case = 0;
 	config->fetchsize = 100;
 	config->column_map_filename = NULL;
+	config->quiet = 0;
 }
 
 /* Create a new shapefile state object */
@@ -1446,6 +1447,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		return SHPDUMPERERR;
 	}
 
+	/* Mimic old behaviour and skip the EOF character (1A) */
+	DBFSetWriteEndOfFileChar(state->dbf, 0);
+
 	/*
 	 * Scan the result setting fields to be returned in mainscan
 	 * query, filling the type_ary, and creating .dbf and .shp files.
@@ -1532,11 +1536,11 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		 * use this to create the dbf field name from
 		 * the PostgreSQL column name */
 		{
-		  const char *mapped = colmap_dbf_by_pg(&state->column_map, dbffieldname);
-		  if (mapped)
-		  {
-			  strncpy(dbffieldname, mapped, 10);
-			  dbffieldname[10] = '\0';
+			const char *mapped = colmap_dbf_by_pg(&state->column_map, dbffieldname);
+			if (mapped)
+			{
+				strncpy(dbffieldname, mapped, 10);
+				dbffieldname[10] = '\0';
 			}
 		}
 
@@ -1566,7 +1570,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		if (strcasecmp(dbffieldname, pgfieldname))
 		{
 			if ( snprintf(buf, 256, _("Warning, field %s renamed to %s\n"),
-							 pgfieldname, dbffieldname) >= 256 )
+			              pgfieldname, dbffieldname) >= 256 )
 			{
 				buf[255] = '\0';
 			}
@@ -1881,7 +1885,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		else
 		{
 			sprintf(buf, "asbinary(%s::geometry, 'XDR') AS _geoX",
-				quote_identifier(state->geo_col_name) );
+			        quote_identifier(state->geo_col_name) );
 		}
 #else
 		if (state->pgis_major_version > 0)
@@ -1891,7 +1895,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		else
 		{
 			sprintf(buf, "asbinary(%s::geometry, 'NDR') AS _geoX",
-				quote_identifier(state->geo_col_name) );
+			        quote_identifier(state->geo_col_name) );
 		}
 #endif
 

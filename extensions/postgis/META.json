@@ -10,9 +10,9 @@
          "web" : "http://trac.osgeo.org/postgis"
       },
       "repository" : {
-         "type" : "svn",
+         "type" : "git",
          "web" : "http://postgis.net",
-         "url" : "svn://svn.osgeo.org/postgis/"
+         "url" : "https://git.osgeo.org/gitea/postgis/postgis.git"
       }
    },
    "tags" : [

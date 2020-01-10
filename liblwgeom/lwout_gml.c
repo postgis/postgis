@@ -689,8 +689,7 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			const POINT3DZ *pt;
-			pt = getPoint3dz_cp(pa, i);
+			const POINT3D *pt = getPoint3d_cp(pa, i);
 			lwprint_double(
 			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
 			lwprint_double(
@@ -1919,8 +1918,7 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			const POINT3DZ *pt;
-			pt = getPoint3dz_cp(pa, i);
+			const POINT3D *pt = getPoint3d_cp(pa, i);
 
 			lwprint_double(
 			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);

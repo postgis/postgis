@@ -166,8 +166,3 @@ file_filter = po/<lang>/using_raster_dataman.xml.po
 source_file = po/templates/using_raster_dataman.xml.pot
 source_lang = en
 
-[postgis.reference_temporalxmlpot]
-file_filter = po/<lang>/reference_temporal.xml.po
-source_file = po/templates/reference_temporal.xml.pot
-source_lang = en
-

@@ -57,6 +57,7 @@ static char* cu_wkt_in(char *wkt, uint8_t variant)
 	if (p.errcode)
 	{
 		CU_ASSERT_EQUAL(rv, LW_FAILURE);
+		CU_ASSERT(!p.geom);
 		return strdup(p.message);
 	}
 	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
@@ -361,7 +362,9 @@ static void test_wkt_double(void)
 	wkt = "LINESTRING(1.1.1, 2.2.2)";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
-	CU_ASSERT_EQUAL( rv, LW_FAILURE );
+	CU_ASSERT( LW_FAILURE == rv );
+	CU_ASSERT( p.errcode );
+	CU_ASSERT( ! p.geom );
 	lwgeom_parser_result_free(&p);
 
 	wkt = "LINESTRING(1.1 .1, 2.2 .2)";
@@ -389,6 +392,21 @@ static void test_wkt_double(void)
 	lwgeom_parser_result_free(&p);
 }
 
+static void test_wkt_leak(void)
+{
+	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4537 */
+	char *wkt = "TINEMPTY,";
+	char *err = cu_wkt_in(wkt, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(err, "parse error - invalid geometry");
+	lwfree(err);
+
+	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4545 */
+	wkt = "GEOMeTRYCOLLECTION(POLYHEDRALSURFACEEMPTY ";
+	err = cu_wkt_in(wkt, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(err, "parse error - invalid geometry");
+	lwfree(err);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -412,4 +430,5 @@ void wkt_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_wkt_in_polyhedralsurface);
 	PG_ADD_TEST(suite, test_wkt_in_errlocation);
 	PG_ADD_TEST(suite, test_wkt_double);
+	PG_ADD_TEST(suite, test_wkt_leak);
 }

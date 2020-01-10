@@ -9,31 +9,31 @@ ERROR:  Invalid geometry type (MULTILINESTRING) passed to TopoGeo_AddPolygon, ex
 ERROR:  Invalid geometry type (POINT) passed to TopoGeo_AddPolygon, expected POLYGON
 ERROR:  No topology with name "invalid" in topology.topology
 iso_uni|10
-N|23||POINT(36 26)
-E|27|sn23|en23
-F|10
+iso_uni|N|23||POINT(36 26)
+iso_uni|E|27|sn23|en23
+iso_uni|F|10
 iso_uni_hole|11
-N|24||POINT(9 28)
-N|25||POINT(15 25)
-E|28|sn24|en24
-E|29|sn25|en25
-F|11
-F|12
+iso_uni_hole|N|24||POINT(9 28)
+iso_uni_hole|N|25||POINT(15 25)
+iso_uni_hole|E|28|sn24|en24
+iso_uni_hole|E|29|sn25|en25
+iso_uni_hole|F|11
+iso_uni_hole|F|12
 ex|4
 ex_union|6
 ex_union|7
 half|4
-E|30|sn14|en18
-F|13
+half|E|30|sn14|en18
+half|F|13
 split|4
 split|13
-N|26||POINT(28 18)
-E|30|sn14|en26
-E|31|sn26|en18
-E|32|sn26|en13
-E|33|sn17|en26
-F|14
-F|15
+split|N||POINT(28 18)
+split|E|
+split|E|
+split|E|
+split|E|
+split|F|
+split|F|
 ex_hole|3
 ex_hole|5
 ex_hole|6
@@ -58,5 +58,5 @@ t1855_0.end|Topology 'bug1855' dropped
 t1946.start|t
 t1946.0|1
 t1946.1|2
-t1946.2|4
+t1946.2|1
 t1946.end|Topology 'bug1946' dropped

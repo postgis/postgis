@@ -10,11 +10,10 @@ export ASAN_OPTIONS=halt_on_error=false,leak_check_at_exit=false,exitcode=0
 export MSAN_OPTIONS=halt_on_error=false,leak_check_at_exit=false,exitcode=0
 
 #Run postgres preloading sanitizer libs
-LD_PRELOAD=/usr/lib/clang/7/lib/linux/libclang_rt.asan-x86_64.so /usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile start
+LD_PRELOAD=/usr/lib/clang/8/lib/linux/libclang_rt.asan-x86_64.so /usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile start
 
 
 # Build with Clang and usan flags
 ./autogen.sh
 ./configure CC=clang CFLAGS="${CFLAGS_USAN}" LDFLAGS="${LDFLAGS_STD}"
-bash ./ci/travis/logbt -- make -j
 bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose

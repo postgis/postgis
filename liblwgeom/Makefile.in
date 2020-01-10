@@ -23,9 +23,10 @@
 # **********************************************************************/
 
 CC = @CC@
-CPPFLAGS = @CPPFLAGS@
+RYU_INCLUDE = -I../deps/ryu/..
+CPPFLAGS =  $(RYU_INCLUDE) @CPPFLAGS@
 CFLAGS = @WARNFLAGS@ @CFLAGS@ @PICFLAGS@
-LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ @JSON_LDFLAGS@ -lm
+LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ @JSON_LDFLAGS@
 NUMERICFLAGS = @NUMERICFLAGS@
 top_builddir = @top_builddir@
 prefix = @prefix@
@@ -167,14 +168,19 @@ install:
 
 uninstall:
 
-# Make all objects depend upon postgis_config.h and postgis_svn_revision.h
-$(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
+# Make all objects depend upon postgis_config.h and postgis_revision.h
+$(LT_OBJS): ../postgis_config.h ../postgis_revision.h $(SA_HEADERS)
 
-../postgis_svn_revision.h:
-	$(MAKE) -C .. postgis_svn_revision.h
+../postgis_revision.h:
+	$(MAKE) -C .. postgis_revision.h
 
-liblwgeom.la: $(LT_OBJS)
-	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) \
+
+RYU_LIBPATH = ../deps/ryu/@RYU_LIB@
+$(RYU_LIBPATH):
+	$(MAKE) -C ../deps/ryu @RYU_LIB@
+
+liblwgeom.la: $(LT_OBJS) $(RYU_LIBPATH)
+	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) $(RYU_LIBPATH)\
              -release $(SOVER) -version-info $(VERSION_INFO) $(LDFLAGS) -static -o $@
 
 maintainer-clean: clean
@@ -184,6 +190,7 @@ maintainer-clean: clean
 
 clean:
 	$(MAKE) -C cunit clean
+	$(MAKE) -C ../deps/ryu clean
 	rm -f $(LT_OBJS) $(SA_OBJS) $(NM_OBJS)
 	rm -f liblwgeom.la
 	rm -rf .libs
@@ -191,7 +198,6 @@ clean:
 distclean: clean
 	$(MAKE) -C cunit distclean
 	rm -f liblwgeom.h Makefile
-	rm -f Makefile
 
 check: check-unit
 

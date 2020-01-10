@@ -1,3 +1,2327 @@
+2019-10-11 13:24  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17906] liblwgeom/lwin_wkb.c: Memory leak in
+	  lwpoly_from_wkb_state
+	  
+	  References #4535
+
+2019-10-10 17:28  Regina Obe <lr@pcorp.us>
+
+	* [r17905] doc/po/ja/release_notes.xml.po: manual fix release note
+	  dates and numbers
+
+2019-10-10 16:58  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17904] NEWS, liblwgeom/cunit/cu_in_wkb.c, liblwgeom/lwin_wkb.c:
+	  WKB: Avoid buffer overflow
+	  
+	  This only happens when not running under PG context, as
+	  lwerror continues execution and that means that even after
+	  detecting there isn't enough bytes still try to read from the
+	  buffer
+	  
+	  Closes #4535
+	  Closes https://github.com/postgis/postgis/pull/495
+
+2019-10-10 13:01  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17900] NEWS, liblwgeom/cunit/cu_in_wkt.c,
+	  liblwgeom/lwin_wkt_parse.c, liblwgeom/lwin_wkt_parse.h,
+	  liblwgeom/lwin_wkt_parse.y: Fix leak in WKT collection parser
+	  
+	  References #4537
+
+2019-10-10 11:09  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17893] NEWS, liblwgeom/cunit/cu_in_wkb.c, liblwgeom/lwin_wkb.c:
+	  Fix leak in lwcollection_from_wkb_state
+	  
+	  Closes #4536
+	  Closes https://github.com/postgis/postgis/pull/493
+
+2019-10-10 10:10  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17892] NEWS, liblwgeom/cunit/cu_in_wkb.c,
+	  liblwgeom/lwcurvepoly.c, liblwgeom/lwin_wkb.c: Fix leak in
+	  lwcurvepoly_from_wkb_state
+	  
+	  Closes #4534
+	  Closes https://github.com/postgis/postgis/pull/492
+
+2019-10-08 11:48  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17891] configure.ac, liblwgeom/lwin_geojson.c,
+	  postgis/lwgeom_in_geojson.c, postgis_config.h.in: Remove
+	  HAVE_LIBJSON_C
+	  
+	  Patch by jabakobob
+	  References #4528
+
+2019-10-08 11:40  Sandro Santilli <strk@kbt.io>
+
+	* [r17890] extensions/address_standardizer/Makefile.in,
+	  extensions/postgis/Makefile.in,
+	  extensions/postgis_raster/Makefile.in,
+	  extensions/postgis_sfcgal/Makefile.in,
+	  extensions/postgis_tiger_geocoder/Makefile.in,
+	  extensions/postgis_topology/Makefile.in: Make sure "make clean"
+	  really cleans what's created by "make"
+	  
+	  Fixes #4531 and simplifies a little bit those Makefiles
+
+2019-10-08 10:59  Sandro Santilli <strk@kbt.io>
+
+	* [r17889] regress/core/regress.sql,
+	  regress/core/regress_brin_index.sql,
+	  regress/core/regress_brin_index_3d.sql,
+	  regress/core/regress_brin_index_geography.sql,
+	  regress/core/regress_index.sql,
+	  regress/core/regress_index_nulls.sql, regress/core/subdivide.sql:
+	  Allow running core tests from any directory
+	  
+	  Using the :regdir variable
+
+2019-10-08 09:43  Sandro Santilli <strk@kbt.io>
+
+	* [r17888] regress/run_test.pl: Force using systemwide scripts when
+	  run with --extension
+	  
+	  .. rather than relying on version mismatch (current vs.
+	  requested)
+	  to tell where to pick scripts from ..
+	  
+	  *might* relate to #4515
+
+2019-10-08 06:16  Regina Obe <lr@pcorp.us>
+
+	* [r17887] Version.config, extensions/upgradeable_versions.mk: Flip
+	  to 3.0.0rc2dev
+
+2019-10-08 06:11  Regina Obe <lr@pcorp.us>
+
+	* [r17885] ChangeLog, ci/winnie/package_postgis.sh: Change to
+	  package 3.8.0rc2 for windows, prepare for 3.0.0rc1 release
+
+2019-10-08 00:48  Regina Obe <lr@pcorp.us>
+
+	* [r17884] doc/po/es/extras_topology.xml.po,
+	  doc/po/fr/reference_accessor.xml.po: Fix pos for spanish and
+	  french so they produce proper XML
+	  Closes #4525
+
+2019-10-07 23:04  Regina Obe <lr@pcorp.us>
+
+	* [r17883] HOWTO_RELEASE: Add step to pull translations from
+	  transifex
+	  References #4525
+
+2019-10-07 22:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17882] regress/run_test.pl: Remove view testing from upgrade
+	  objects testing
+	  References #4386
+
+2019-10-07 22:49  Regina Obe <lr@pcorp.us>
+
+	* [r17881] doc/po/de/reference_exception.xml.po,
+	  doc/po/es/extras.xml.po,
+	  doc/po/es/extras_address_standardizer.xml.po,
+	  doc/po/es/extras_historytable.xml.po,
+	  doc/po/es/extras_tigergeocoder.xml.po,
+	  doc/po/es/extras_topology.xml.po, doc/po/es/faq.xml.po,
+	  doc/po/es/faq_raster.xml.po, doc/po/es/installation.xml.po,
+	  doc/po/es/introduction.xml.po, doc/po/es/performance_tips.xml.po,
+	  doc/po/es/postgis.xml.po, doc/po/es/reference.xml.po,
+	  doc/po/es/reference_accessor.xml.po,
+	  doc/po/es/reference_bbox.xml.po,
+	  doc/po/es/reference_cluster.xml.po,
+	  doc/po/es/reference_constructor.xml.po,
+	  doc/po/es/reference_editor.xml.po,
+	  doc/po/es/reference_guc.xml.po, doc/po/es/reference_input.xml.po,
+	  doc/po/es/reference_lrs.xml.po,
+	  doc/po/es/reference_management.xml.po,
+	  doc/po/es/reference_measure.xml.po,
+	  doc/po/es/reference_operator.xml.po,
+	  doc/po/es/reference_output.xml.po,
+	  doc/po/es/reference_processing.xml.po,
+	  doc/po/es/reference_raster.xml.po,
+	  doc/po/es/reference_relationship.xml.po,
+	  doc/po/es/reference_sfcgal.xml.po,
+	  doc/po/es/reference_srs.xml.po,
+	  doc/po/es/reference_trajectory.xml.po,
+	  doc/po/es/reference_transaction.xml.po,
+	  doc/po/es/reference_transformation.xml.po,
+	  doc/po/es/reference_troubleshooting.xml.po,
+	  doc/po/es/reference_type.xml.po,
+	  doc/po/es/reference_validation.xml.po,
+	  doc/po/es/reference_version.xml.po,
+	  doc/po/es/release_notes.xml.po, doc/po/es/reporting.xml.po,
+	  doc/po/es/using_postgis_app.xml.po,
+	  doc/po/es/using_postgis_dataman.xml.po,
+	  doc/po/es/using_raster_dataman.xml.po, doc/po/fr/extras.xml.po,
+	  doc/po/fr/extras_address_standardizer.xml.po,
+	  doc/po/fr/extras_historytable.xml.po,
+	  doc/po/fr/extras_tigergeocoder.xml.po,
+	  doc/po/fr/extras_topology.xml.po, doc/po/fr/faq.xml.po,
+	  doc/po/fr/faq_raster.xml.po, doc/po/fr/installation.xml.po,
+	  doc/po/fr/introduction.xml.po, doc/po/fr/performance_tips.xml.po,
+	  doc/po/fr/postgis.xml.po, doc/po/fr/reference.xml.po,
+	  doc/po/fr/reference_accessor.xml.po,
+	  doc/po/fr/reference_bbox.xml.po,
+	  doc/po/fr/reference_cluster.xml.po,
+	  doc/po/fr/reference_constructor.xml.po,
+	  doc/po/fr/reference_editor.xml.po,
+	  doc/po/fr/reference_guc.xml.po, doc/po/fr/reference_input.xml.po,
+	  doc/po/fr/reference_lrs.xml.po,
+	  doc/po/fr/reference_management.xml.po,
+	  doc/po/fr/reference_measure.xml.po,
+	  doc/po/fr/reference_operator.xml.po,
+	  doc/po/fr/reference_output.xml.po,
+	  doc/po/fr/reference_processing.xml.po,
+	  doc/po/fr/reference_raster.xml.po,
+	  doc/po/fr/reference_relationship.xml.po,
+	  doc/po/fr/reference_sfcgal.xml.po,
+	  doc/po/fr/reference_srs.xml.po,
+	  doc/po/fr/reference_trajectory.xml.po,
+	  doc/po/fr/reference_transaction.xml.po,
+	  doc/po/fr/reference_transformation.xml.po,
+	  doc/po/fr/reference_troubleshooting.xml.po,
+	  doc/po/fr/reference_type.xml.po,
+	  doc/po/fr/reference_validation.xml.po,
+	  doc/po/fr/reference_version.xml.po,
+	  doc/po/fr/release_notes.xml.po, doc/po/fr/reporting.xml.po,
+	  doc/po/fr/using_postgis_app.xml.po,
+	  doc/po/fr/using_postgis_dataman.xml.po,
+	  doc/po/fr/using_raster_dataman.xml.po, doc/po/pl/extras.xml.po,
+	  doc/po/pl/extras_address_standardizer.xml.po,
+	  doc/po/pl/extras_historytable.xml.po,
+	  doc/po/pl/extras_tigergeocoder.xml.po,
+	  doc/po/pl/extras_topology.xml.po, doc/po/pl/faq.xml.po,
+	  doc/po/pl/faq_raster.xml.po, doc/po/pl/installation.xml.po,
+	  doc/po/pl/introduction.xml.po, doc/po/pl/performance_tips.xml.po,
+	  doc/po/pl/postgis.xml.po, doc/po/pl/reference.xml.po,
+	  doc/po/pl/reference_accessor.xml.po,
+	  doc/po/pl/reference_bbox.xml.po,
+	  doc/po/pl/reference_cluster.xml.po,
+	  doc/po/pl/reference_constructor.xml.po,
+	  doc/po/pl/reference_editor.xml.po,
+	  doc/po/pl/reference_guc.xml.po, doc/po/pl/reference_input.xml.po,
+	  doc/po/pl/reference_lrs.xml.po,
+	  doc/po/pl/reference_management.xml.po,
+	  doc/po/pl/reference_measure.xml.po,
+	  doc/po/pl/reference_operator.xml.po,
+	  doc/po/pl/reference_output.xml.po,
+	  doc/po/pl/reference_processing.xml.po,
+	  doc/po/pl/reference_raster.xml.po,
+	  doc/po/pl/reference_relationship.xml.po,
+	  doc/po/pl/reference_sfcgal.xml.po,
+	  doc/po/pl/reference_srs.xml.po,
+	  doc/po/pl/reference_trajectory.xml.po,
+	  doc/po/pl/reference_transaction.xml.po,
+	  doc/po/pl/reference_transformation.xml.po,
+	  doc/po/pl/reference_troubleshooting.xml.po,
+	  doc/po/pl/reference_type.xml.po,
+	  doc/po/pl/reference_validation.xml.po,
+	  doc/po/pl/reference_version.xml.po,
+	  doc/po/pl/release_notes.xml.po, doc/po/pl/reporting.xml.po,
+	  doc/po/pl/using_postgis_app.xml.po,
+	  doc/po/pl/using_postgis_dataman.xml.po,
+	  doc/po/pl/using_raster_dataman.xml.po: update rest of pos
+
+2019-10-07 17:32  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17879] postgis/postgis_before_upgrade.sql: Try and be a little
+	  broader in dropping temporary old signature
+	  References #4521
+
+2019-10-07 11:41  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17878] configure.ac: Fix lib detection with "--with-jsondir"
+	  flag
+	  
+	  Patch by jabakobob
+	  References #4528
+
+2019-10-07 10:38  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17877] configure.ac: Fix --with-jsondir ldflags
+	  
+	  Fixes #4528
+
+2019-10-07 10:29  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17876] postgis/lwgeom_functions_basic.c, postgis/lwgeom_geos.c,
+	  postgis/lwgeom_sfcgal.c: Address compiler warnings
+	  
+	  Closes #4527
+	  Closes https://github.com/postgis/postgis/pull/490
+
+2019-10-07 07:00  Sandro Santilli <strk@kbt.io>
+
+	* [r17875] raster/rt_pg/rtpg_mapalgebra.c: Use clang pragma only
+	  with clang
+	  
+	  Hopefully fixes #4526
+
+2019-10-07 06:57  Regina Obe <lr@pcorp.us>
+
+	* [r17874] doc/po/ja/extras_topology.xml.po,
+	  doc/po/ja/reference.xml.po, doc/po/ko_KR/extras_topology.xml.po,
+	  doc/po/ko_KR/reference.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po,
+	  doc/po/pt_BR/reference.xml.po: Fix tag issues
+
+2019-10-07 06:40  Sandro Santilli <strk@kbt.io>
+
+	* [r17873] .editorconfig, utils/postgis_proc_upgrade.pl: Tweak
+	  editorconfig for postgis_proc_upgrade.pl and indent it properly
+	  
+	  It looks like most lines are using 4-spaces indent, make that
+	  official
+	  and tweak the non-conforming lines (53 lines over 580 total
+	  lines)
+
+2019-10-07 06:18  Regina Obe <lr@pcorp.us>
+
+	* [r17872] doc/po/de/reference.xml.po: remove reference_exception
+	  evidentally was taken out of list
+
+2019-10-07 05:07  Regina Obe <lr@pcorp.us>
+
+	* [r17871] doc/Makefile.in: Add reference_exception.xml -- is
+	  referenced in reference.xml
+	  Missing file causing translation to fail
+	  references #4525 for PostGIS 3.0.
+
+2019-10-07 04:44  Regina Obe <lr@pcorp.us>
+
+	* [r17870] doc/po/ja/extras.xml.po,
+	  doc/po/ja/extras_address_standardizer.xml.po,
+	  doc/po/ja/extras_historytable.xml.po,
+	  doc/po/ja/extras_tigergeocoder.xml.po,
+	  doc/po/ja/extras_topology.xml.po, doc/po/ja/faq.xml.po,
+	  doc/po/ja/faq_raster.xml.po, doc/po/ja/installation.xml.po,
+	  doc/po/ja/introduction.xml.po, doc/po/ja/performance_tips.xml.po,
+	  doc/po/ja/postgis.xml.po, doc/po/ja/reference.xml.po,
+	  doc/po/ja/reference_accessor.xml.po,
+	  doc/po/ja/reference_bbox.xml.po,
+	  doc/po/ja/reference_cluster.xml.po,
+	  doc/po/ja/reference_constructor.xml.po,
+	  doc/po/ja/reference_editor.xml.po,
+	  doc/po/ja/reference_guc.xml.po, doc/po/ja/reference_input.xml.po,
+	  doc/po/ja/reference_lrs.xml.po,
+	  doc/po/ja/reference_management.xml.po,
+	  doc/po/ja/reference_measure.xml.po,
+	  doc/po/ja/reference_operator.xml.po,
+	  doc/po/ja/reference_output.xml.po,
+	  doc/po/ja/reference_processing.xml.po,
+	  doc/po/ja/reference_raster.xml.po,
+	  doc/po/ja/reference_relationship.xml.po,
+	  doc/po/ja/reference_sfcgal.xml.po,
+	  doc/po/ja/reference_srs.xml.po,
+	  doc/po/ja/reference_trajectory.xml.po,
+	  doc/po/ja/reference_transaction.xml.po,
+	  doc/po/ja/reference_transformation.xml.po,
+	  doc/po/ja/reference_troubleshooting.xml.po,
+	  doc/po/ja/reference_type.xml.po,
+	  doc/po/ja/reference_validation.xml.po,
+	  doc/po/ja/reference_version.xml.po,
+	  doc/po/ja/release_notes.xml.po, doc/po/ja/reporting.xml.po,
+	  doc/po/ja/using_postgis_app.xml.po,
+	  doc/po/ja/using_postgis_dataman.xml.po,
+	  doc/po/ja/using_raster_dataman.xml.po,
+	  doc/po/ko_KR/extras.xml.po,
+	  doc/po/ko_KR/extras_address_standardizer.xml.po,
+	  doc/po/ko_KR/extras_historytable.xml.po,
+	  doc/po/ko_KR/extras_tigergeocoder.xml.po,
+	  doc/po/ko_KR/extras_topology.xml.po, doc/po/ko_KR/faq.xml.po,
+	  doc/po/ko_KR/faq_raster.xml.po, doc/po/ko_KR/installation.xml.po,
+	  doc/po/ko_KR/introduction.xml.po,
+	  doc/po/ko_KR/performance_tips.xml.po,
+	  doc/po/ko_KR/postgis.xml.po, doc/po/ko_KR/reference.xml.po,
+	  doc/po/ko_KR/reference_accessor.xml.po,
+	  doc/po/ko_KR/reference_bbox.xml.po,
+	  doc/po/ko_KR/reference_cluster.xml.po,
+	  doc/po/ko_KR/reference_constructor.xml.po,
+	  doc/po/ko_KR/reference_editor.xml.po,
+	  doc/po/ko_KR/reference_guc.xml.po,
+	  doc/po/ko_KR/reference_input.xml.po,
+	  doc/po/ko_KR/reference_lrs.xml.po,
+	  doc/po/ko_KR/reference_management.xml.po,
+	  doc/po/ko_KR/reference_measure.xml.po,
+	  doc/po/ko_KR/reference_operator.xml.po,
+	  doc/po/ko_KR/reference_output.xml.po,
+	  doc/po/ko_KR/reference_processing.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/ko_KR/reference_relationship.xml.po,
+	  doc/po/ko_KR/reference_sfcgal.xml.po,
+	  doc/po/ko_KR/reference_srs.xml.po,
+	  doc/po/ko_KR/reference_trajectory.xml.po,
+	  doc/po/ko_KR/reference_transaction.xml.po,
+	  doc/po/ko_KR/reference_transformation.xml.po,
+	  doc/po/ko_KR/reference_troubleshooting.xml.po,
+	  doc/po/ko_KR/reference_type.xml.po,
+	  doc/po/ko_KR/reference_validation.xml.po,
+	  doc/po/ko_KR/reference_version.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po, doc/po/ko_KR/reporting.xml.po,
+	  doc/po/ko_KR/using_postgis_app.xml.po,
+	  doc/po/ko_KR/using_postgis_dataman.xml.po,
+	  doc/po/ko_KR/using_raster_dataman.xml.po,
+	  doc/po/pt_BR/extras.xml.po,
+	  doc/po/pt_BR/extras_address_standardizer.xml.po,
+	  doc/po/pt_BR/extras_historytable.xml.po,
+	  doc/po/pt_BR/extras_tigergeocoder.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po, doc/po/pt_BR/faq.xml.po,
+	  doc/po/pt_BR/faq_raster.xml.po, doc/po/pt_BR/installation.xml.po,
+	  doc/po/pt_BR/introduction.xml.po,
+	  doc/po/pt_BR/performance_tips.xml.po,
+	  doc/po/pt_BR/postgis.xml.po, doc/po/pt_BR/reference.xml.po,
+	  doc/po/pt_BR/reference_accessor.xml.po,
+	  doc/po/pt_BR/reference_bbox.xml.po,
+	  doc/po/pt_BR/reference_cluster.xml.po,
+	  doc/po/pt_BR/reference_constructor.xml.po,
+	  doc/po/pt_BR/reference_editor.xml.po,
+	  doc/po/pt_BR/reference_guc.xml.po,
+	  doc/po/pt_BR/reference_input.xml.po,
+	  doc/po/pt_BR/reference_lrs.xml.po,
+	  doc/po/pt_BR/reference_management.xml.po,
+	  doc/po/pt_BR/reference_measure.xml.po,
+	  doc/po/pt_BR/reference_operator.xml.po,
+	  doc/po/pt_BR/reference_output.xml.po,
+	  doc/po/pt_BR/reference_processing.xml.po,
+	  doc/po/pt_BR/reference_raster.xml.po,
+	  doc/po/pt_BR/reference_relationship.xml.po,
+	  doc/po/pt_BR/reference_sfcgal.xml.po,
+	  doc/po/pt_BR/reference_srs.xml.po,
+	  doc/po/pt_BR/reference_trajectory.xml.po,
+	  doc/po/pt_BR/reference_transaction.xml.po,
+	  doc/po/pt_BR/reference_transformation.xml.po,
+	  doc/po/pt_BR/reference_troubleshooting.xml.po,
+	  doc/po/pt_BR/reference_type.xml.po,
+	  doc/po/pt_BR/reference_validation.xml.po,
+	  doc/po/pt_BR/reference_version.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po, doc/po/pt_BR/reporting.xml.po,
+	  doc/po/pt_BR/using_postgis_app.xml.po,
+	  doc/po/pt_BR/using_postgis_dataman.xml.po,
+	  doc/po/pt_BR/using_raster_dataman.xml.po: Update more po files
+	  references #4525 for PostGIS 3.0
+
+2019-10-07 03:02  Regina Obe <lr@pcorp.us>
+
+	* [r17869] doc/po/it_IT/extras.xml.po,
+	  doc/po/it_IT/extras_address_standardizer.xml.po,
+	  doc/po/it_IT/extras_historytable.xml.po,
+	  doc/po/it_IT/extras_tigergeocoder.xml.po,
+	  doc/po/it_IT/extras_topology.xml.po, doc/po/it_IT/faq.xml.po,
+	  doc/po/it_IT/faq_raster.xml.po, doc/po/it_IT/installation.xml.po,
+	  doc/po/it_IT/introduction.xml.po,
+	  doc/po/it_IT/performance_tips.xml.po,
+	  doc/po/it_IT/postgis.xml.po, doc/po/it_IT/reference.xml.po,
+	  doc/po/it_IT/reference_accessor.xml.po,
+	  doc/po/it_IT/reference_bbox.xml.po,
+	  doc/po/it_IT/reference_cluster.xml.po,
+	  doc/po/it_IT/reference_constructor.xml.po,
+	  doc/po/it_IT/reference_editor.xml.po,
+	  doc/po/it_IT/reference_guc.xml.po,
+	  doc/po/it_IT/reference_input.xml.po,
+	  doc/po/it_IT/reference_lrs.xml.po,
+	  doc/po/it_IT/reference_management.xml.po,
+	  doc/po/it_IT/reference_measure.xml.po,
+	  doc/po/it_IT/reference_operator.xml.po,
+	  doc/po/it_IT/reference_output.xml.po,
+	  doc/po/it_IT/reference_processing.xml.po,
+	  doc/po/it_IT/reference_raster.xml.po,
+	  doc/po/it_IT/reference_relationship.xml.po,
+	  doc/po/it_IT/reference_sfcgal.xml.po,
+	  doc/po/it_IT/reference_srs.xml.po,
+	  doc/po/it_IT/reference_trajectory.xml.po,
+	  doc/po/it_IT/reference_transaction.xml.po,
+	  doc/po/it_IT/reference_transformation.xml.po,
+	  doc/po/it_IT/reference_troubleshooting.xml.po,
+	  doc/po/it_IT/reference_type.xml.po,
+	  doc/po/it_IT/reference_validation.xml.po,
+	  doc/po/it_IT/reference_version.xml.po,
+	  doc/po/it_IT/release_notes.xml.po, doc/po/it_IT/reporting.xml.po,
+	  doc/po/it_IT/using_postgis_app.xml.po,
+	  doc/po/it_IT/using_postgis_dataman.xml.po,
+	  doc/po/it_IT/using_raster_dataman.xml.po: update IT from
+	  transifex
+
+2019-10-07 02:58  Regina Obe <lr@pcorp.us>
+
+	* [r17868] doc/po/de/extras.xml.po,
+	  doc/po/de/extras_address_standardizer.xml.po,
+	  doc/po/de/extras_historytable.xml.po,
+	  doc/po/de/extras_tigergeocoder.xml.po,
+	  doc/po/de/extras_topology.xml.po, doc/po/de/faq.xml.po,
+	  doc/po/de/faq_raster.xml.po, doc/po/de/installation.xml.po,
+	  doc/po/de/introduction.xml.po, doc/po/de/performance_tips.xml.po,
+	  doc/po/de/postgis.xml.po, doc/po/de/reference.xml.po,
+	  doc/po/de/reference_accessor.xml.po,
+	  doc/po/de/reference_bbox.xml.po,
+	  doc/po/de/reference_cluster.xml.po,
+	  doc/po/de/reference_constructor.xml.po,
+	  doc/po/de/reference_editor.xml.po,
+	  doc/po/de/reference_guc.xml.po, doc/po/de/reference_input.xml.po,
+	  doc/po/de/reference_lrs.xml.po,
+	  doc/po/de/reference_management.xml.po,
+	  doc/po/de/reference_measure.xml.po,
+	  doc/po/de/reference_operator.xml.po,
+	  doc/po/de/reference_output.xml.po,
+	  doc/po/de/reference_processing.xml.po,
+	  doc/po/de/reference_raster.xml.po,
+	  doc/po/de/reference_relationship.xml.po,
+	  doc/po/de/reference_sfcgal.xml.po,
+	  doc/po/de/reference_srs.xml.po,
+	  doc/po/de/reference_trajectory.xml.po,
+	  doc/po/de/reference_transaction.xml.po,
+	  doc/po/de/reference_transformation.xml.po,
+	  doc/po/de/reference_troubleshooting.xml.po,
+	  doc/po/de/reference_type.xml.po,
+	  doc/po/de/reference_validation.xml.po,
+	  doc/po/de/reference_version.xml.po,
+	  doc/po/de/release_notes.xml.po, doc/po/de/reporting.xml.po,
+	  doc/po/de/using_postgis_app.xml.po,
+	  doc/po/de/using_postgis_dataman.xml.po,
+	  doc/po/de/using_raster_dataman.xml.po: uodate de files from
+	  transifex
+
+2019-10-07 01:38  Regina Obe <lr@pcorp.us>
+
+	* [r17867] doc/reference.xml: take out reference_misc entirely
+	  instead of just commenting it out. Think it might be causing
+	  issues with transifex
+
+2019-10-07 01:36  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17865] postgis/lwgeom_functions_basic.c, postgis/lwgeom_geos.c,
+	  raster/rt_pg/rtpg_mapalgebra.c: Guard some newer GCC'isms to
+	  allow older platforms
+	  to still build
+
+2019-10-07 01:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17864] utils/postgis_proc_upgrade.pl: Use older perl idiom to
+	  allow build on
+	  older platforms still
+
+2019-10-07 01:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17863] postgis/lwgeom_accum.c: datumCopy has to happen in agg
+	  context or else
+	  objects larger than datum size will be lost.
+	  Shows up in 32 bit because float8 doesn't fit
+	  on a datum.
+	  Closes #4522
+
+2019-10-07 00:46  Regina Obe <lr@pcorp.us>
+
+	* [r17861] doc/.tx/config: Get rid of reference_temporal. that
+	  evidentally was removed
+
+2019-10-07 00:16  Regina Obe <lr@pcorp.us>
+
+	* [r17860] doc/po/templates/extras.xml.pot,
+	  doc/po/templates/extras_address_standardizer.xml.pot,
+	  doc/po/templates/extras_historytable.xml.pot,
+	  doc/po/templates/extras_tigergeocoder.xml.pot,
+	  doc/po/templates/extras_topology.xml.pot,
+	  doc/po/templates/faq.xml.pot,
+	  doc/po/templates/faq_raster.xml.pot,
+	  doc/po/templates/installation.xml.pot,
+	  doc/po/templates/introduction.xml.pot,
+	  doc/po/templates/performance_tips.xml.pot,
+	  doc/po/templates/postgis.xml.pot,
+	  doc/po/templates/reference.xml.pot,
+	  doc/po/templates/reference_accessor.xml.pot,
+	  doc/po/templates/reference_bbox.xml.pot,
+	  doc/po/templates/reference_cluster.xml.pot,
+	  doc/po/templates/reference_constructor.xml.pot,
+	  doc/po/templates/reference_editor.xml.pot,
+	  doc/po/templates/reference_guc.xml.pot,
+	  doc/po/templates/reference_input.xml.pot,
+	  doc/po/templates/reference_lrs.xml.pot,
+	  doc/po/templates/reference_management.xml.pot,
+	  doc/po/templates/reference_measure.xml.pot,
+	  doc/po/templates/reference_operator.xml.pot,
+	  doc/po/templates/reference_output.xml.pot,
+	  doc/po/templates/reference_processing.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot,
+	  doc/po/templates/reference_relationship.xml.pot,
+	  doc/po/templates/reference_sfcgal.xml.pot,
+	  doc/po/templates/reference_srs.xml.pot,
+	  doc/po/templates/reference_temporal.xml.pot,
+	  doc/po/templates/reference_trajectory.xml.pot,
+	  doc/po/templates/reference_transaction.xml.pot,
+	  doc/po/templates/reference_transformation.xml.pot,
+	  doc/po/templates/reference_troubleshooting.xml.pot,
+	  doc/po/templates/reference_type.xml.pot,
+	  doc/po/templates/reference_validation.xml.pot,
+	  doc/po/templates/reference_version.xml.pot,
+	  doc/po/templates/release_notes.xml.pot,
+	  doc/po/templates/reporting.xml.pot,
+	  doc/po/templates/using_postgis_app.xml.pot,
+	  doc/po/templates/using_postgis_dataman.xml.pot,
+	  doc/po/templates/using_raster_dataman.xml.pot: Update pot files
+	  -- references #4525
+
+2019-10-06 15:44  Regina Obe <lr@pcorp.us>
+
+	* [r17858] ChangeLog, NEWS, README.postgis, doc/release_notes.xml:
+	  Change expected release from 10/5 to 10/8
+
+2019-10-05 18:06  Regina Obe <lr@pcorp.us>
+
+	* [r17857] ChangeLog, NEWS, README.postgis, Version.config,
+	  ci/winnie/build_postgis.sh, ci/winnie/regress_postgis.sh,
+	  doc/release_notes.xml, extensions/upgradeable_versions.mk:
+	  Prepping for PostGIS 3.0.0rc1 release
+
+2019-10-04 18:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17856] postgis/lwgeom_accum.c, postgis/lwgeom_accum.h,
+	  postgis/lwgeom_geos.c, postgis/postgis.sql.in,
+	  postgis/postgis_after_upgrade.sql,
+	  postgis/postgis_before_upgrade.sql, regress/run_test.pl: Restore
+	  ST_Union() aggregate signature and re-work
+	  performance/size enhancement to continue to avoid
+	  using Array type during ST_Union(), hopefully
+	  avoiding Array size limitations.
+
+2019-10-03 09:49  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17855] autogen.sh: autogen.sh: Exit with an error when a tool
+	  is missing
+
+2019-10-03 09:40  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17854] NEWS, configure.ac: Use a clean environment when
+	  detecting C++ libraries
+	  
+	  Closes #4520
+	  Closes https://github.com/postgis/postgis/pull/488
+
+2019-10-02 18:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17851] postgis/lwgeom_export.c: Use snprintf in building SRID
+	  query string
+
+2019-10-02 13:45  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17846] NEWS, postgis/lwgeom_export.c: getSRIDbySRS: Fix crash
+	  
+	  - Prevents stack overflow when the srs is long (query + srs > 256
+	  chars).
+	  - Prevents sql injection.
+	  
+	  References #4519
+	  Closes https://github.com/postgis/postgis/pull/487
+
+2019-10-01 17:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17845] extensions/upgradeable_versions.mk: Get a little bit
+	  ahead on extension upgrade paths, so
+	  patch releases of older versions can still upgrade to 3.0 in
+	  near future
+
+2019-10-01 17:28  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17844] postgis/postgis_before_upgrade.sql: Fix scripts-based
+	  (not extension) upgrade from 2.4
+	  Closes #4516
+
+2019-10-01 14:30  Regina Obe <lr@pcorp.us>
+
+	* [r17842] NEWS: Create slot for next release - be confident we'll
+	  do another before end of month
+
+2019-09-30 21:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17841] raster/test/regress/rt_gdalwarp.sql,
+	  raster/test/regress/rt_gdalwarp_expected: Turn rt_gdalwarp tests
+	  back on, removing grid shifts to account
+	  for changes in Proj installed grids
+
+2019-09-30 19:49  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17839] regress/loader/ReprojectPts-w.select.expected,
+	  regress/loader/ReprojectPts.opts,
+	  regress/loader/ReprojectPts.select.expected,
+	  regress/loader/ReprojectPtsD.opts,
+	  regress/loader/ReprojectPtsD.select.expected,
+	  regress/loader/ReprojectPtsGeog-w.select.expected,
+	  regress/loader/ReprojectPtsGeog.opts,
+	  regress/loader/ReprojectPtsGeog.select.expected,
+	  regress/loader/ReprojectPtsGeogD-w.select.expected,
+	  regress/loader/ReprojectPtsGeogD.opts,
+	  regress/loader/ReprojectPtsGeogD.select.expected: Avoid
+	  datum/grid shifts in reproject test, to lower
+	  sensitivity to variance in proj installations wrt
+	  whether or not grid shift files are installed.
+	  References #4500
+
+2019-09-30 18:55  Regina Obe <lr@pcorp.us>
+
+	* [r17838] ci/bessie32/postgis_regress.sh: Add CXX and CXXFLAGS
+	  from pg_config seems to fix wagyu load issue
+	  Closes #4474
+
+2019-09-30 16:38  Regina Obe <lr@pcorp.us>
+
+	* [r17837] ci/bessie32/postgis_regress.sh: Put back wagyu, but try
+	  to force gcc8 as compiler and use CFLAGS from PostgreSQL 11
+	  install
+	  References #4474
+
+2019-09-29 00:38  Regina Obe <lr@pcorp.us>
+
+	* [r17836] Version.config, extensions/upgradeable_versions.mk: Flip
+	  to 3.0.0beta2dev
+
+2019-09-28 23:55  Regina Obe <lr@pcorp.us>
+
+	* [r17832] NEWS: oops forgot to commit same note in NEWS
+
+2019-09-28 23:54  Regina Obe <lr@pcorp.us>
+
+	* [r17831] doc/release_notes.xml: Add note about additional
+	  performance enhancements with GEOS 3.8
+
+2019-09-28 23:28  Regina Obe <lr@pcorp.us>
+
+	* [r17830] ChangeLog, Version.config,
+	  extensions/upgradeable_versions.mk: Prepare for PostGIS
+	  3.0.0beta1
+
+2019-09-28 22:37  Regina Obe <lr@pcorp.us>
+
+	* [r17829] ci/bessie32/postgis_regress.sh: Turn off wagyu for now
+	  for 32-bit FreeBSD12. For some reason it is deciding to use a
+	  higher gcc for wagyu building which causes the issue
+	  References #4474
+
+2019-09-28 22:13  Regina Obe <lr@pcorp.us>
+
+	* [r17828] ci/bessie32/postgis_regress.sh,
+	  ci/winnie/build_postgis.sh, ci/winnie/package_postgis.sh,
+	  ci/winnie/regress_postgis.sh: take out all pathing to see if that
+	  fixes the issue, in theory pkg-config should take care of
+	  everything. Set default GEOS to 3.8.0beta1 for winnie
+
+2019-09-28 13:09  Regina Obe <lr@pcorp.us>
+
+	* [r17827] NEWS, README.postgis, doc/release_notes.xml: Update docs
+	  in prep for 3.0.0beta1 release
+
+2019-09-28 02:52  Regina Obe <lr@pcorp.us>
+
+	* [r17825] NEWS, extensions/postgis_tiger_geocoder/Makefile.in,
+	  extras/tiger_geocoder/create_geocode.bat,
+	  extras/tiger_geocoder/create_geocode.sh,
+	  extras/tiger_geocoder/tiger_loader_2018.sql,
+	  extras/tiger_geocoder/tiger_loader_2019.sql,
+	  extras/tiger_geocoder/upgrade_geocoder.bat,
+	  extras/tiger_geocoder/upgrade_geocoder.sh: Fix issue with loading
+	  tabblock
+	  Update geocoder to load 2019 data
+	  Closes #4509 for PostGIS 3.0
+	  References #4338 for PostGIS 3.0
+
+2019-09-28 00:41  Regina Obe <lr@pcorp.us>
+
+	* [r17824] topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Missed some
+	  fixes in last commit. this should work on all.
+	  References #4514 for PostGIS 3.0
+
+2019-09-27 23:59  Regina Obe <lr@pcorp.us>
+
+	* [r17823] topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected,
+	  topology/test/regress/topogeo_addpolygon.sql,
+	  topology/test/regress/topogeo_addpolygon_expected: Revise
+	  topology tests so they yield same results in GEOS 3.8 and lower
+	  References #4514 for PostGIS 3.0
+
+2019-09-25 10:31  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17822] extensions/upgrade-paths-rules.mk:
+	  upgrade-paths-rules.mk: Drop the -v flag
+	  
+	  It's not available in some UNIX systems as it's not POSIX
+	  standard
+
+2019-09-24 10:58  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17821] NEWS, liblwgeom/cunit/cu_misc.c,
+	  liblwgeom/liblwgeom.h.in, liblwgeom/liblwgeom_internal.h,
+	  liblwgeom/lwgeom.c, liblwgeom/lwgeom_geos_split.c,
+	  liblwgeom/measures.c, liblwgeom/ptarray.c,
+	  postgis/lwgeom_functions_analytic.c: Speed up ST_Simplify
+	  
+	  Closes #4510
+	  Closes https://github.com/postgis/postgis/pull/480
+
+2019-09-24 10:45  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17820] liblwgeom/lwgeom.c: ST_RemoveRepeatedPoints: Optimize
+	  multipoints with single point
+	  
+	  References #4491
+	  Closes https://github.com/postgis/postgis/pull/481
+
+2019-09-24 10:44  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17819] ci/travis/run_usan_clang.sh: Travis: Fix clang ubsan
+	  build
+	  
+	  The latest build updated clang
+
+2019-09-23 09:20  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17818] doc/extras_topology.xml,
+	  doc/po/templates/extras_topology.xml.pot: Fix several
+	  documentation typos
+	  
+	  Patch by François Bonzon
+	  Closes https://github.com/postgis/postgis/pull/479/
+
+2019-09-17 20:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17817] postgis/lwgeom_functions_analytic.c: Remove tolerance in
+	  point-in-ring stabline tests
+	  Closes #4506
+
+2019-09-17 14:36  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17813] raster/test/cunit/cu_raster_misc.c: Disable raster
+	  failing tests
+	  
+	  References #4379
+
+2019-09-16 12:32  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17812] NEWS, liblwgeom/cunit/cu_algorithm.c,
+	  liblwgeom/liblwgeom.h.in, liblwgeom/lwgeom.c,
+	  liblwgeom/ptarray.c, postgis/lwgeom_functions_basic.c: Speed up
+	  ST_RemoveRepeatedPoints
+	  
+	  Closes #4491
+	  Closes https://github.com/postgis/postgis/pull/468
+
+2019-09-14 19:09  Daniel Baston <dbaston@gmail.com>
+
+	* [r17811] NEWS, fuzzers/geos_stub.h, liblwgeom/lwgeom_geos.c:
+	  Speed up conversion of geometries to/from GEOS
+	  
+	  GEOS 3.8 introduces multi-ordinate getters and setters that can
+	  read and write
+	  XY/XYZ in a single function call.
+	  
+	  Fixes #4505
+	  Closes https://github.com/postgis/postgis/pull/476
+
+2019-09-14 19:04  Daniel Baston <dbaston@gmail.com>
+
+	* [r17810] NEWS, liblwgeom/lwgeom_geos.c, liblwgeom/lwgeom_geos.h,
+	  liblwgeom/lwgeom_geos_clean.c, postgis/mvt.c: Use GEOSMakeValid
+	  and GEOSBuildArea for GEOS 3.8+
+	  
+	  Fixes #4507
+	  Closes https://github.com/postgis/postgis/pull/477
+
+2019-09-13 21:14  Regina Obe <lr@pcorp.us>
+
+	* [r17809] NEWS, loader/shp2pgsql-core.c: shp2pgsql -D not working
+	  with schema qualified tables
+	  Closes #4504
+
+2019-09-13 15:40  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17808] NEWS, liblwgeom/gbox.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/lwgeom_api.c, liblwgeom/lwgeom_geos.c,
+	  liblwgeom/lwinline.h, liblwgeom/lwout_geojson.c,
+	  liblwgeom/lwout_gml.c: Speed up the calculation of cartesian bbox
+	  
+	  Closes https://github.com/postgis/postgis/pull/475
+	  Closes https://trac.osgeo.org/postgis/ticket/4503
+
+2019-09-12 17:47  Daniel Baston <dbaston@gmail.com>
+
+	* [r17807] regress/core/oriented_envelope.sql: Reduce sensitivity
+	  of ST_OrientedEnvelope test
+	  
+	  GEOS master produces slightly different coordinate values, at
+	  least for now.
+
+2019-09-07 18:43  Regina Obe <lr@pcorp.us>
+
+	* [r17806] NEWS,
+	  extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control.in:
+	  Mark tiger geocoder as superuser safe since it only has
+	  plpgsql/sql and no c lib
+	  References #4501 for PostGIS 3.0
+
+2019-09-05 17:10  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17804] NEWS, liblwgeom/lwgeom.c, regress/core/simplify.sql,
+	  regress/core/simplify_expected: Make ST_Simplify(TRIANGLE)
+	  collapse if requested
+	  
+	  References #4496
+	  Closes https://github.com/postgis/postgis/pull/474
+
+2019-09-05 15:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17803] postgis/gserialized_estimate.c: Muck with stats message
+
+2019-09-02 11:55  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17798] NEWS, postgis/lwgeom_functions_analytic.c,
+	  regress/core/chaikin.sql, regress/core/chaikin_expected,
+	  regress/core/simplifyvw.sql, regress/core/simplifyvw_expected,
+	  regress/core/snaptogrid.sql, regress/core/snaptogrid_expected:
+	  Fix ST_SnapToGrid output having an outdated bbox
+	  
+	  References #4495
+	  Closes https://github.com/postgis/postgis/pull/473
+
+2019-08-30 14:58  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17797] postgis/postgis_before_upgrade.sql:
+	  _postgis_drop_function_if_needed: Update ST_GeoJSON args
+	  
+	  Related to #4483
+
+2019-08-30 13:31  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17793] NEWS, postgis/lwgeom_functions_basic.c,
+	  regress/core/remove_repeated_points.sql,
+	  regress/core/remove_repeated_points_expected: Fix
+	  ST_RemoveRepeatedPoints output having an outdated bbox
+	  
+	  References #4493
+	  Closes https://github.com/postgis/postgis/pull/472
+
+2019-08-29 15:17  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17786] NEWS, postgis/lwgeom_functions_analytic.c,
+	  regress/core/simplify.sql, regress/core/simplify_expected: Fix
+	  ST_Simplify output having an outdated bbox
+	  
+	  References #4494
+
+2019-08-29 11:51  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17782] NEWS, postgis/lwgeom_functions_analytic.c,
+	  regress/core/simplify.sql, regress/core/simplify_expected: Fix
+	  ST_Simplify ignoring the value of the 3rd parameter
+	  
+	  References #4492
+	  Closes https://github.com/postgis/postgis/pull/469
+
+2019-08-29 08:59  Sandro Santilli <strk@kbt.io>
+
+	* [r17781] postgis/gserialized_estimate.c: Be less assertive in
+	  debug message printed when missing table stats
+	  
+	  ... running ANALYZE won't always fix the missing stats
+
+2019-08-28 14:37  Sandro Santilli <strk@kbt.io>
+
+	* [r17780] NEWS: Expand info about polygon orientation functions in
+	  2.4 section
+
+2019-08-28 14:25  Sandro Santilli <strk@kbt.io>
+
+	* [r17779] doc/reference_accessor.xml, doc/reference_editor.xml:
+	  Add availability info for orientation checking and forcing
+	  functions
+	  
+	  These are:
+	  
+	  ST_IsPolygonCW
+	  ST_IsPolygonCCW
+	  ST_ForcePolygonCW
+	  ST_ForcePolygonCCW
+
+2019-08-26 15:10  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17778] configure.ac: Configure: Fix --with-wagyu flag
+
+2019-08-26 11:44  Sandro Santilli <strk@kbt.io>
+
+	* [r17777] doc/extras_topology.xml: Link AddTopoGeometryColumn to
+	  DropTopoGeometryColumn
+
+2019-08-23 15:58  Sandro Santilli <strk@kbt.io>
+
+	* [r17774] .drone-1.0.yml, ci/dronie, ci/dronie/postgis_regress.sh:
+	  [drone] Reorganize configuration to use external script
+	  
+	  Also add installcheck step
+
+2019-08-23 09:56  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17773] NEWS, liblwgeom/measures.c, liblwgeom/measures.h,
+	  regress/core/measures.sql, regress/core/measures_expected:
+	  Support 2D TINs in ST_3DIntersection
+	  
+	  Brings TIN into dist2d calculation. Removes homebrew atan2.
+	  
+	  Closes #4328
+	  Closes https://github.com/postgis/postgis/pull/461
+
+2019-08-23 06:37  Sandro Santilli <strk@kbt.io>
+
+	* [r17772] ci/travis/run_coverage.sh, ci/travis/run_nowagyu.sh,
+	  ci/travis/run_tests.sh, ci/travis/run_usan_clang.sh,
+	  ci/travis/run_usan_gcc.sh: [travis] Revert travis recipes
+	  modifications
+	  
+	  This reverts commit dd601071c093c2233f3eeeba12af41373075bae8.
+	  This reverts commit e8b5c3993e288e00a840b7a41f643901a280f5a9.
+
+2019-08-23 06:37  Sandro Santilli <strk@kbt.io>
+
+	* [r17771] GNUmakefile.in: Reorder Makefile dependencies to avoid
+	  duplicated build
+	  
+	  Mark most check targets as dependent on "all" rule
+
+2019-08-22 18:56  Sandro Santilli <strk@kbt.io>
+
+	* [r17770] ci/travis/run_nowagyu.sh, ci/travis/run_tests.sh,
+	  ci/travis/run_usan_clang.sh, ci/travis/run_usan_gcc.sh: [travis]
+	  More "make" before "make check"
+
+2019-08-22 18:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17768] postgis/Makefile.in: Move geobuf testing solely into
+	  configure
+
+2019-08-22 18:07  Sandro Santilli <strk@kbt.io>
+
+	* [r17766] ci/travis/run_coverage.sh: [travis] don't assume "make
+	  check" will work parallel w/out "make"
+
+2019-08-22 18:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17765] topology/Makefile.in: Remove apparently unhelpful
+	  dependency lines
+
+2019-08-22 17:33  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17764] topology/Makefile.in: And return to original form
+
+2019-08-22 17:32  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17763] topology/Makefile.in: Just note needed libraries, don't
+	  be clever
+
+2019-08-22 17:23  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17762] topology/Makefile.in: Be explicit about how to build
+	  liblwgeom and libpgcommon libs
+
+2019-08-22 16:33  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17761] configure.ac, postgis/Makefile.in,
+	  regress/core/Makefile.in: Move geobuf version test into one place
+	  and strip expr calls from makefiles
+
+2019-08-22 15:59  Sandro Santilli <strk@kbt.io>
+
+	* [r17760] postgis/Makefile.in, regress/core/Makefile.in: Quote
+	  expr arguments, consistently use variables
+
+2019-08-22 14:59  Sandro Santilli <strk@kbt.io>
+
+	* [r17759] utils/create_unpackaged.pl: Add support for extension
+	  sequences in create_unpackaged.pl
+	  
+	  Should fix topology dump-restore
+	  References #4488
+
+2019-08-22 13:36  Sandro Santilli <strk@kbt.io>
+
+	* [r17758] GNUmakefile.in, deps/Makefile.in, doc/Makefile.in,
+	  extensions/Makefile.in, liblwgeom/Makefile.in,
+	  libpgcommon/Makefile.in, loader/Makefile.in, postgis/Makefile.in,
+	  raster/Makefile.in, raster/test/Makefile.in, regress/Makefile.in,
+	  topology/Makefile.in, topology/test/Makefile.in,
+	  utils/Makefile.in: Split "check" into "check-regress" and
+	  "check-unit"
+	  
+	  Makes "installcheck" only run "check-regress"
+	  
+	  Closes #4487
+
+2019-08-22 12:13  Sandro Santilli <strk@kbt.io>
+
+	* [r17757] postgis/postgis.sql.in: Have postgis_extensions_upgrade
+	  repackage topology as well
+	  
+	  Closes #4486
+	  References #2503
+	  
+	  See failure here:
+	  https://gitlab.com/postgis/postgis/-/jobs/277847404
+
+2019-08-22 11:44  Sandro Santilli <strk@kbt.io>
+
+	* [r17756] .gitlab-ci.yml: [gitlab-ci] Use env variable rather than
+	  make parameter, for RUNTESTFLAGS
+	  
+	  I suspect gitlab-ci provided make is not compatible with
+	  parameter
+
+2019-08-22 09:21  Sandro Santilli <strk@kbt.io>
+
+	* [r17755] HOWTO_RELEASE: [HOWTO_RELEASE] Add note that bots need
+	  to be all green for release
+
+2019-08-22 09:20  Sandro Santilli <strk@kbt.io>
+
+	* [r17754] utils/check_all_upgrades.sh: check-all-upgrades: stop
+	  checking upgrades from latest unpackaged
+	  
+	  ... as this is already done by 'make installcheck'
+
+2019-08-22 09:20  Sandro Santilli <strk@kbt.io>
+
+	* [r17753] GNUmakefile.in: Have 'installcheck' also check with
+	  upgrade-from-function
+	  
+	  Closes #4485
+	  
+	  Adds an installcheck-upgrade-byfunc target,
+	  dependency of installcheck-upgrade
+
+2019-08-22 09:20  Sandro Santilli <strk@kbt.io>
+
+	* [r17752] regress/run_test.pl: [run_test] Allow requesting
+	  function upgrade also w/out :auto
+	  
+	  Append an exlamation mark to any target version in upgrade-path
+	  to request upgrade via function...
+
+2019-08-22 06:47  Sandro Santilli <strk@kbt.io>
+
+	* [r17751] utils/check_all_upgrades.sh: [check-all-upgrades] Fix
+	  retrival of :auto version
+
+2019-08-21 08:57  Sandro Santilli <strk@kbt.io>
+
+	* [r17750] regress/run_test.pl: [run_test] Fix logic for use
+	  postgis_extension_upgrade()
+	  
+	  The version before 3.0.0 did not repackage extensions, so we
+	  still
+	  need to do the packaging ourselves.
+
+2019-08-21 08:57  Sandro Santilli <strk@kbt.io>
+
+	* [r17749] NEWS: Document that postgis_extensions_upgrade
+	  re-pakcages from 3.0.0
+
+2019-08-21 07:28  Sandro Santilli <strk@kbt.io>
+
+	* [r17748] regress/run_test.pl: [run_test.pl] Allow using
+	  postgis_extensions_upgrade from unpackaged
+	  
+	  And warn when it cannot be used due to too old source version.
+
+2019-08-20 22:02  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17747] liblwgeom/gbox.c, liblwgeom/lwgeom.c: Remove 32-bit
+	  build warnings
+
+2019-08-20 19:29  Sandro Santilli <strk@kbt.io>
+
+	* [r17745] regress/run_test.pl: run_test.pl: always repackage
+	  raster when upgrading via function
+	  
+	  This is because the upgrade function invoked may be coming from
+	  the
+	  a pre-split version and thus not know anything about repackaging.
+	  
+	  See #4485
+
+2019-08-20 18:33  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17744] liblwgeom/lwgeom.c: Replace aliasing with memcpy
+	  References #4319
+
+2019-08-20 18:33  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17743] liblwgeom/lwgeom_geos.c,
+	  liblwgeom/lwgeom_geos_cluster.c, postgis/gserialized_gist_nd.c:
+	  Quiet warnings from centos 6 build
+
+2019-08-20 16:01  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17740] loader/pgsql2shp-core.c, loader/pgsql2shp-core.h,
+	  raster/rt_core/rt_serialize.c: Change run-time endianness checks
+	  to compile-time
+	  Leave 3rd party code unchanged
+	  Closes #4439
+
+2019-08-20 15:17  Sandro Santilli <strk@kbt.io>
+
+	* [r17739] utils/check_all_upgrades.sh: [check_all_upgrades]
+	  support :auto and :auto! upgrade targets
+	  
+	  See #4485
+
+2019-08-20 15:17  Sandro Santilli <strk@kbt.io>
+
+	* [r17738] regress/run_test.pl: Add support for :auto and :auto!
+	  upgrade-path targets in run_test.pl
+	  
+	  The former will request upgrading to default version, the latter
+	  to do so using the postgis_extension_upgrade() function.
+	  
+	  See #4485
+
+2019-08-20 14:03  Sandro Santilli <strk@kbt.io>
+
+	* [r17737] doc/reference_version.xml: Update
+	  postgis_extensions_upgrade docs to reflect new return value
+
+2019-08-20 11:38  Sandro Santilli <strk@kbt.io>
+
+	* [r17736] regress/core/regress.sql: Add test for
+	  postgis_full_version()
+	  
+	  Closes #4485
+	  
+	  NOTE: the test is only included in the core tests, might need to
+	  be replicated for sfcgal/topology/raster
+
+2019-08-20 11:37  Sandro Santilli <strk@kbt.io>
+
+	* [r17735] regress/run_test.pl: Simplify perl code
+
+2019-08-20 11:06  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17734] fuzzers/geojson_import_fuzzer_seed_corpus.zip: oss-fuzz:
+	  add geojson seed corpus.
+	  
+	  Closes
+	  https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=16564
+
+2019-08-20 09:24  Sandro Santilli <strk@kbt.io>
+
+	* [r17733] regress/run_test.pl: Fix perl syntax
+	  
+	  Can't "last" outside a loop block ...
+
+2019-08-20 09:03  Sandro Santilli <strk@kbt.io>
+
+	* [r17732] utils/check_all_upgrades.sh: [check_all_upgrades] Test
+	  upgrades from old versions unpackaged
+	  
+	  See #4485
+
+2019-08-20 09:03  Sandro Santilli <strk@kbt.io>
+
+	* [r17731] regress/run_test.pl: [run_test] Add support for
+	  upgrading from unpackaged<version>
+	  
+	  See #4485
+
+2019-08-19 20:19  Sandro Santilli <strk@kbt.io>
+
+	* [r17730] postgis/postgis.sql.in: Fix typo
+
+2019-08-19 16:14  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17729] configure.ac: Change 'protobuf version' to protobuf-c to
+	  be more explicit
+
+2019-08-18 12:55  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17728] doc/reference_relationship.xml: [doc] geometry polygon
+	  ST_Intersects example
+	  
+	  Closes #4248
+
+2019-08-18 12:18  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17727] NEWS, postgis/lwgeom_sfcgal.c, postgis/sfcgal.sql.in,
+	  regress/sfcgal/regress_sfcgal.sql,
+	  regress/sfcgal/regress_sfcgal_expected: postgis_sfcgal_noop().
+	  
+	  Patch by Lucas C. Villa Real <lucasvr@br.ibm.com>, tweaks by
+	  Darafei Praliaskouski
+	  
+	  Closes #3979
+
+2019-08-18 11:27  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17726] NEWS, fuzzers/build_google_oss_fuzzers.sh,
+	  fuzzers/geojson_import_fuzzer.cpp,
+	  fuzzers/geojson_import_fuzzer.dict,
+	  fuzzers/geojson_import_fuzzer.options, fuzzers/geos_stub.h,
+	  fuzzers/proj_stub.h, fuzzers/wkb_import_fuzzer.cpp,
+	  fuzzers/wkt_import_fuzzer.cpp, liblwgeom/lwcollection.c,
+	  liblwgeom/lwgeom.c, liblwgeom/lwin_geojson.c, liblwgeom/lwline.c,
+	  liblwgeom/lwmline.c, liblwgeom/ptarray.c: OSS Fuzz for geojson.
+	  
+	  Enable allocation testing for other fuzzers.
+	  
+	  Closes #4387
+	  Closes https://github.com/postgis/postgis/pull/462
+
+2019-08-16 21:26  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17725] postgis/postgis_before_upgrade.sql: Try and harmonize
+	  function parameter names for ST_AsGEoJSON(record)
+	  References #4483
+
+2019-08-15 19:43  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17719] raster/test/regress/bug_test_car5.sql,
+	  raster/test/regress/bug_test_car5_expected: Remove SRID error
+	  lines because that's a silly thing to test
+
+2019-08-15 17:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17716] liblwgeom/gserialized1.c, liblwgeom/gserialized2.c:
+	  Guard against reading into pointarrays when size of array == 0
+
+2019-08-14 22:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17715] macros/ac_protobufc_version.m4: Add missing macro file
+
+2019-08-14 22:07  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17711] configure.ac, postgis/Makefile.in,
+	  postgis/postgis_libprotobuf.c, postgis_config.h.in,
+	  regress/core/Makefile.in, regress/core/geobuf.sql,
+	  regress/core/geobuf_expected, regress/core/mvt.sql,
+	  regress/core/mvt_expected: Reorganize protobuf detection so that
+	  separate directories can be specified, and make version detection
+	  more robust over different protobuf installs.
+	  References #4481
+
+2019-08-14 11:06  Sandro Santilli <strk@kbt.io>
+
+	* [r17710] utils/check_all_upgrades.sh: [check-all-upgrades] Fix
+	  handling of bogus commandline
+
+2019-08-14 11:06  Sandro Santilli <strk@kbt.io>
+
+	* [r17709] postgis/Makefile.in: Fix syntax error in expr line
+	  
+	  Closes #4477
+
+2019-08-13 20:54  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17708] doc/reference_output.xml: Update ST_AsGeoJSON doco to
+	  harmonize number of digits default
+
+2019-08-13 18:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17707] postgis/geography.sql.in, postgis/postgis.sql.in: Lower
+	  default precision produced by ST_AsGeoJSON
+	  References #4468
+
+2019-08-13 16:59  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17706] liblwgeom/cunit/cu_geodetic.c, liblwgeom/gbox.c,
+	  liblwgeom/liblwgeom.h.in, liblwgeom/lwgeodetic.c,
+	  liblwgeom/lwgeodetic.h, liblwgeom/lwgeodetic_tree.c,
+	  liblwgeom/lwgeodetic_tree.h,
+	  postgis/geography_measurement_trees.c: Geography Distance
+	  inconsistent with Intersects
+	  Closes #4480
+
+2019-08-11 06:24  Regina Obe <lr@pcorp.us>
+
+	* [r17703] Version.config, extensions/upgradeable_versions.mk: flip
+	  to 3.0.0alpha5dev
+
+2019-08-11 06:15  Regina Obe <lr@pcorp.us>
+
+	* [r17701] Version.config, doc/release_notes.xml: Prep for
+	  3.0.0alpha4 release
+
+2019-08-11 02:36  Regina Obe <lr@pcorp.us>
+
+	* [r17687] NEWS, doc/release_notes.xml,
+	  extensions/address_standardizer/Makefile.in: Add upgrade install
+	  paths for address_standardizer
+	  Closese #4420 for PostGIS 3.0 (trunk)
+
+2019-08-09 23:51  Regina Obe <lr@pcorp.us>
+
+	* [r17684] NEWS, doc/release_notes.xml,
+	  extensions/upgradeable_versions.mk: Prepping for release tomorrow
+
+2019-08-09 22:52  Regina Obe <lr@pcorp.us>
+
+	* [r17683] ci/bessie32/postgis_regress.sh: Put libiconv back
+	  evidentally still need that one
+	  References #4474
+
+2019-08-09 22:50  Regina Obe <lr@pcorp.us>
+
+	* [r17682] NEWS, regress/core/mvt.sql, regress/core/mvt_expected,
+	  regress/core/tickets.sql, regress/core/tickets_expected: Move
+	  protobuf specific ticket lines to mvt test
+	  Closes #4472
+
+2019-08-09 22:44  Regina Obe <lr@pcorp.us>
+
+	* [r17681] ci/bessie32/postgis_regress.sh: Try to fix bessie32
+	  Undefined symbol
+	  "_ZNKSt8__detail20_Prime_rehash_policy11_M_next_bktEj" by getting
+	  rid of redundant configure lines that should be pulled in via
+	  pkg-config
+	  References #4474 for PostGIS 3.0
+
+2019-08-09 22:21  Regina Obe <lr@pcorp.us>
+
+	* [r17680] ci/berrie/postgis_regress.sh: Try to get berrie to
+	  return fail code if regress fails - try 2
+
+2019-08-09 21:55  Regina Obe <lr@pcorp.us>
+
+	* [r17679] ci/berrie/postgis_regress.sh: Try to get berrie to
+	  return fail code if regress fails
+
+2019-08-06 19:15  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17678] NEWS, doc/reference_input.xml, doc/reference_output.xml,
+	  extras/ogc_test_suite/3_cleanup.sql, liblwgeom/liblwgeom.h.in,
+	  postgis/lwgeom_export.c, postgis/lwgeom_in_geojson.c,
+	  postgis/postgis.sql.in, postgis/postgis_after_upgrade.sql,
+	  raster/test/regress/loader/Projected-post.sql,
+	  raster/test/regress/loader/Projected-pre.sql,
+	  regress/core/geography.sql, regress/core/in_geojson.sql,
+	  regress/core/in_geojson_expected, regress/core/in_gml.sql,
+	  regress/core/in_kml.sql, regress/core/knn_recheck.sql,
+	  regress/core/legacy.sql, regress/core/out_geography.sql,
+	  regress/core/out_geography_expected,
+	  regress/core/out_geometry.sql,
+	  regress/core/out_geometry_expected,
+	  regress/core/regress_management.sql,
+	  regress/core/regress_proj.sql, regress/core/tickets.sql,
+	  regress/loader/ReprojectPts-post.sql,
+	  regress/loader/ReprojectPts-pre.sql,
+	  regress/loader/ReprojectPtsD-post.sql,
+	  regress/loader/ReprojectPtsD-pre.sql,
+	  regress/loader/ReprojectPtsGeog-post.sql,
+	  regress/loader/ReprojectPtsGeog-pre.sql,
+	  regress/loader/ReprojectPtsGeogD-post.sql,
+	  regress/loader/ReprojectPtsGeogD-pre.sql, regress/run_test.pl,
+	  topology/test/regress/copytopology.sql,
+	  topology/test/regress/gml.sql,
+	  topology/test/regress/st_createtopogeo.sql,
+	  topology/test/regress/st_modedgesplit.sql,
+	  topology/test/regress/st_newedgessplit.sql,
+	  topology/test/regress/st_remedgemodface.sql,
+	  topology/test/regress/st_remedgenewface.sql,
+	  topology/test/regress/topogeo_addlinestring.sql: Improve GeoJSON
+	  SRID handling.
+	  
+	  If SRID is not specified, set it to 4326 by default on parsing,
+	  following RFC7946.
+	  If SRID is not 4326 on serialization, it will be marked in JSON
+	  unless disabled, making round trips almost lossless.
+	  
+	  Fixes spatial_ref_sys truncation in all the tests.
+	  Closes #4377
+	  Closes https://github.com/postgis/postgis/pull/455
+
+2019-08-06 15:59  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17677] NEWS, liblwgeom/lwstroke.c: lwarc_linearize: Iterate
+	  over the number of segments
+	  
+	  Closes https://github.com/postgis/postgis/pull/458
+	  Closes #4407
+	  References #3719
+
+2019-08-04 12:01  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17676] doc/reference_processing.xml, doc/reference_sfcgal.xml:
+	  Link ST_Tesselate to ST_(Constrained)DelaunayTriangles
+	  Closes #4458
+
+2019-08-04 11:52  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17675] doc/reference_processing.xml: [doc] Note about
+	  mulitlinestring in ST_OffsetCurve
+	  Closes #2553
+
+2019-08-04 11:43  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17674] NEWS, liblwgeom/lwgeom_median.c, liblwgeom/lwin_twkb.c,
+	  liblwgeom/lwin_wkb.c, liblwgeom/lwiterator.c, liblwgeom/lwmval.c,
+	  liblwgeom/lwout_geojson.c, liblwgeom/lwout_kml.c,
+	  liblwgeom/lwout_twkb.c, liblwgeom/lwout_wkb.c,
+	  liblwgeom/lwstroke.c, liblwgeom/measures.c,
+	  liblwgeom/measures3d.c, postgis/geobuf.c,
+	  postgis/lwgeom_out_geobuf.c, postgis/lwgeom_transform.c,
+	  postgis/mvt.c, regress/core/geometric_median_expected,
+	  regress/core/out_geometry_expected,
+	  regress/core/regress_proj_expected, regress/core/tickets.sql,
+	  regress/core/tickets_expected: Triangle and TIN output support
+	  
+	  Make all the "Unsupported geometry type" name themselves by
+	  __func__.
+	  In case output format doesn't know about TIN/Triangle, output
+	  them as GeometryCollection/Polygon.
+	  
+	  Closes #4399
+	  Closes https://github.com/postgis/postgis/pull/454
+
+2019-08-04 11:37  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17673] NEWS, liblwgeom/gserialized.c, liblwgeom/gserialized.h,
+	  liblwgeom/liblwgeom.h.in, liblwgeom/lwutil.c,
+	  libpgcommon/lwgeom_pg.h, postgis/geography_measurement.c,
+	  postgis/lwgeom_box.c, postgis/lwgeom_box3d.c,
+	  postgis/lwgeom_functions_analytic.c,
+	  postgis/lwgeom_functions_basic.c, postgis/lwgeom_functions_lrs.c,
+	  postgis/lwgeom_geos.c, postgis/lwgeom_spheroid.c,
+	  regress/core/ctors_expected, regress/core/split_expected: Better
+	  error messages for SRID mismatch.
+	  Closes #4110
+	  Closes https://github.com/postgis/postgis/pull/455
+
+2019-08-04 07:45  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17672] NEWS, liblwgeom/lwin_geojson.c,
+	  regress/core/in_geojson.sql, regress/core/in_geojson_expected:
+	  ST_GeomFromGeoJSON crash on empty rings
+	  
+	  Closes #4470
+	  Closes https://github.com/postgis/postgis/pull/453
+
+2019-08-04 07:08  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17667] NEWS, liblwgeom/lwgeom.c: ST_Subdivide crash on
+	  intermediate EMPTY fix.
+	  
+	  Closes #4459
+	  Closes https://github.com/postgis/postgis/pull/456
+
+2019-08-03 21:48  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17666] doc/po/de/extras.xml.po,
+	  doc/po/de/extras_address_standardizer.xml.po,
+	  doc/po/de/extras_historytable.xml.po,
+	  doc/po/de/extras_tigergeocoder.xml.po,
+	  doc/po/de/extras_topology.xml.po, doc/po/de/faq.xml.po,
+	  doc/po/de/faq_raster.xml.po, doc/po/de/installation.xml.po,
+	  doc/po/de/introduction.xml.po, doc/po/de/performance_tips.xml.po,
+	  doc/po/de/postgis.xml.po, doc/po/de/reference.xml.po,
+	  doc/po/de/reference_accessor.xml.po,
+	  doc/po/de/reference_bbox.xml.po,
+	  doc/po/de/reference_cluster.xml.po,
+	  doc/po/de/reference_constructor.xml.po,
+	  doc/po/de/reference_editor.xml.po,
+	  doc/po/de/reference_exception.xml.po,
+	  doc/po/de/reference_guc.xml.po, doc/po/de/reference_input.xml.po,
+	  doc/po/de/reference_lrs.xml.po,
+	  doc/po/de/reference_management.xml.po,
+	  doc/po/de/reference_measure.xml.po,
+	  doc/po/de/reference_misc.xml.po,
+	  doc/po/de/reference_operator.xml.po,
+	  doc/po/de/reference_output.xml.po,
+	  doc/po/de/reference_processing.xml.po,
+	  doc/po/de/reference_raster.xml.po,
+	  doc/po/de/reference_relationship.xml.po,
+	  doc/po/de/reference_sfcgal.xml.po,
+	  doc/po/de/reference_srs.xml.po,
+	  doc/po/de/reference_temporal.xml.po,
+	  doc/po/de/reference_trajectory.xml.po,
+	  doc/po/de/reference_transaction.xml.po,
+	  doc/po/de/reference_transformation.xml.po,
+	  doc/po/de/reference_troubleshooting.xml.po,
+	  doc/po/de/reference_type.xml.po,
+	  doc/po/de/reference_validation.xml.po,
+	  doc/po/de/reference_version.xml.po,
+	  doc/po/de/release_notes.xml.po, doc/po/de/reporting.xml.po,
+	  doc/po/de/using_postgis_app.xml.po,
+	  doc/po/de/using_postgis_dataman.xml.po,
+	  doc/po/de/using_raster_dataman.xml.po, doc/po/es/extras.xml.po,
+	  doc/po/es/extras_address_standardizer.xml.po,
+	  doc/po/es/extras_historytable.xml.po,
+	  doc/po/es/extras_tigergeocoder.xml.po,
+	  doc/po/es/extras_topology.xml.po, doc/po/es/faq.xml.po,
+	  doc/po/es/faq_raster.xml.po, doc/po/es/installation.xml.po,
+	  doc/po/es/introduction.xml.po, doc/po/es/performance_tips.xml.po,
+	  doc/po/es/postgis.xml.po, doc/po/es/reference.xml.po,
+	  doc/po/es/reference_accessor.xml.po,
+	  doc/po/es/reference_bbox.xml.po,
+	  doc/po/es/reference_cluster.xml.po,
+	  doc/po/es/reference_constructor.xml.po,
+	  doc/po/es/reference_editor.xml.po,
+	  doc/po/es/reference_guc.xml.po, doc/po/es/reference_input.xml.po,
+	  doc/po/es/reference_lrs.xml.po,
+	  doc/po/es/reference_management.xml.po,
+	  doc/po/es/reference_measure.xml.po,
+	  doc/po/es/reference_operator.xml.po,
+	  doc/po/es/reference_output.xml.po,
+	  doc/po/es/reference_processing.xml.po,
+	  doc/po/es/reference_raster.xml.po,
+	  doc/po/es/reference_relationship.xml.po,
+	  doc/po/es/reference_sfcgal.xml.po,
+	  doc/po/es/reference_srs.xml.po,
+	  doc/po/es/reference_trajectory.xml.po,
+	  doc/po/es/reference_transaction.xml.po,
+	  doc/po/es/reference_transformation.xml.po,
+	  doc/po/es/reference_troubleshooting.xml.po,
+	  doc/po/es/reference_type.xml.po,
+	  doc/po/es/reference_validation.xml.po,
+	  doc/po/es/reference_version.xml.po,
+	  doc/po/es/release_notes.xml.po, doc/po/es/reporting.xml.po,
+	  doc/po/es/using_postgis_app.xml.po,
+	  doc/po/es/using_postgis_dataman.xml.po,
+	  doc/po/es/using_raster_dataman.xml.po, doc/po/fr/extras.xml.po,
+	  doc/po/fr/extras_address_standardizer.xml.po,
+	  doc/po/fr/extras_historytable.xml.po,
+	  doc/po/fr/extras_tigergeocoder.xml.po,
+	  doc/po/fr/extras_topology.xml.po, doc/po/fr/faq.xml.po,
+	  doc/po/fr/faq_raster.xml.po, doc/po/fr/installation.xml.po,
+	  doc/po/fr/introduction.xml.po, doc/po/fr/performance_tips.xml.po,
+	  doc/po/fr/postgis.xml.po, doc/po/fr/reference.xml.po,
+	  doc/po/fr/reference_accessor.xml.po,
+	  doc/po/fr/reference_bbox.xml.po,
+	  doc/po/fr/reference_cluster.xml.po,
+	  doc/po/fr/reference_constructor.xml.po,
+	  doc/po/fr/reference_editor.xml.po,
+	  doc/po/fr/reference_guc.xml.po, doc/po/fr/reference_input.xml.po,
+	  doc/po/fr/reference_lrs.xml.po,
+	  doc/po/fr/reference_management.xml.po,
+	  doc/po/fr/reference_measure.xml.po,
+	  doc/po/fr/reference_operator.xml.po,
+	  doc/po/fr/reference_output.xml.po,
+	  doc/po/fr/reference_processing.xml.po,
+	  doc/po/fr/reference_raster.xml.po,
+	  doc/po/fr/reference_relationship.xml.po,
+	  doc/po/fr/reference_sfcgal.xml.po,
+	  doc/po/fr/reference_srs.xml.po,
+	  doc/po/fr/reference_trajectory.xml.po,
+	  doc/po/fr/reference_transaction.xml.po,
+	  doc/po/fr/reference_transformation.xml.po,
+	  doc/po/fr/reference_troubleshooting.xml.po,
+	  doc/po/fr/reference_type.xml.po,
+	  doc/po/fr/reference_validation.xml.po,
+	  doc/po/fr/reference_version.xml.po,
+	  doc/po/fr/release_notes.xml.po, doc/po/fr/reporting.xml.po,
+	  doc/po/fr/using_postgis_app.xml.po,
+	  doc/po/fr/using_postgis_dataman.xml.po,
+	  doc/po/fr/using_raster_dataman.xml.po,
+	  doc/po/it_IT/extras.xml.po,
+	  doc/po/it_IT/extras_address_standardizer.xml.po,
+	  doc/po/it_IT/extras_historytable.xml.po,
+	  doc/po/it_IT/extras_tigergeocoder.xml.po,
+	  doc/po/it_IT/extras_topology.xml.po, doc/po/it_IT/faq.xml.po,
+	  doc/po/it_IT/faq_raster.xml.po, doc/po/it_IT/installation.xml.po,
+	  doc/po/it_IT/introduction.xml.po,
+	  doc/po/it_IT/performance_tips.xml.po,
+	  doc/po/it_IT/postgis.xml.po, doc/po/it_IT/reference.xml.po,
+	  doc/po/it_IT/reference_accessor.xml.po,
+	  doc/po/it_IT/reference_bbox.xml.po,
+	  doc/po/it_IT/reference_cluster.xml.po,
+	  doc/po/it_IT/reference_constructor.xml.po,
+	  doc/po/it_IT/reference_editor.xml.po,
+	  doc/po/it_IT/reference_guc.xml.po,
+	  doc/po/it_IT/reference_input.xml.po,
+	  doc/po/it_IT/reference_lrs.xml.po,
+	  doc/po/it_IT/reference_management.xml.po,
+	  doc/po/it_IT/reference_measure.xml.po,
+	  doc/po/it_IT/reference_operator.xml.po,
+	  doc/po/it_IT/reference_output.xml.po,
+	  doc/po/it_IT/reference_processing.xml.po,
+	  doc/po/it_IT/reference_raster.xml.po,
+	  doc/po/it_IT/reference_relationship.xml.po,
+	  doc/po/it_IT/reference_sfcgal.xml.po,
+	  doc/po/it_IT/reference_srs.xml.po,
+	  doc/po/it_IT/reference_trajectory.xml.po,
+	  doc/po/it_IT/reference_transaction.xml.po,
+	  doc/po/it_IT/reference_transformation.xml.po,
+	  doc/po/it_IT/reference_troubleshooting.xml.po,
+	  doc/po/it_IT/reference_type.xml.po,
+	  doc/po/it_IT/reference_validation.xml.po,
+	  doc/po/it_IT/reference_version.xml.po,
+	  doc/po/it_IT/release_notes.xml.po, doc/po/it_IT/reporting.xml.po,
+	  doc/po/it_IT/using_postgis_app.xml.po,
+	  doc/po/it_IT/using_postgis_dataman.xml.po,
+	  doc/po/it_IT/using_raster_dataman.xml.po,
+	  doc/po/ja/extras.xml.po,
+	  doc/po/ja/extras_address_standardizer.xml.po,
+	  doc/po/ja/extras_historytable.xml.po,
+	  doc/po/ja/extras_tigergeocoder.xml.po,
+	  doc/po/ja/extras_topology.xml.po, doc/po/ja/faq.xml.po,
+	  doc/po/ja/faq_raster.xml.po, doc/po/ja/installation.xml.po,
+	  doc/po/ja/introduction.xml.po, doc/po/ja/performance_tips.xml.po,
+	  doc/po/ja/postgis.xml.po, doc/po/ja/reference.xml.po,
+	  doc/po/ja/reference_accessor.xml.po,
+	  doc/po/ja/reference_bbox.xml.po,
+	  doc/po/ja/reference_cluster.xml.po,
+	  doc/po/ja/reference_constructor.xml.po,
+	  doc/po/ja/reference_editor.xml.po,
+	  doc/po/ja/reference_guc.xml.po, doc/po/ja/reference_input.xml.po,
+	  doc/po/ja/reference_lrs.xml.po,
+	  doc/po/ja/reference_management.xml.po,
+	  doc/po/ja/reference_measure.xml.po,
+	  doc/po/ja/reference_operator.xml.po,
+	  doc/po/ja/reference_output.xml.po,
+	  doc/po/ja/reference_processing.xml.po,
+	  doc/po/ja/reference_raster.xml.po,
+	  doc/po/ja/reference_relationship.xml.po,
+	  doc/po/ja/reference_sfcgal.xml.po,
+	  doc/po/ja/reference_srs.xml.po,
+	  doc/po/ja/reference_trajectory.xml.po,
+	  doc/po/ja/reference_transaction.xml.po,
+	  doc/po/ja/reference_transformation.xml.po,
+	  doc/po/ja/reference_troubleshooting.xml.po,
+	  doc/po/ja/reference_type.xml.po,
+	  doc/po/ja/reference_validation.xml.po,
+	  doc/po/ja/reference_version.xml.po,
+	  doc/po/ja/release_notes.xml.po, doc/po/ja/reporting.xml.po,
+	  doc/po/ja/using_postgis_app.xml.po,
+	  doc/po/ja/using_postgis_dataman.xml.po,
+	  doc/po/ja/using_raster_dataman.xml.po,
+	  doc/po/ko_KR/extras.xml.po,
+	  doc/po/ko_KR/extras_address_standardizer.xml.po,
+	  doc/po/ko_KR/extras_historytable.xml.po,
+	  doc/po/ko_KR/extras_tigergeocoder.xml.po,
+	  doc/po/ko_KR/extras_topology.xml.po, doc/po/ko_KR/faq.xml.po,
+	  doc/po/ko_KR/faq_raster.xml.po, doc/po/ko_KR/installation.xml.po,
+	  doc/po/ko_KR/introduction.xml.po,
+	  doc/po/ko_KR/performance_tips.xml.po,
+	  doc/po/ko_KR/postgis.xml.po, doc/po/ko_KR/reference.xml.po,
+	  doc/po/ko_KR/reference_accessor.xml.po,
+	  doc/po/ko_KR/reference_bbox.xml.po,
+	  doc/po/ko_KR/reference_cluster.xml.po,
+	  doc/po/ko_KR/reference_constructor.xml.po,
+	  doc/po/ko_KR/reference_editor.xml.po,
+	  doc/po/ko_KR/reference_guc.xml.po,
+	  doc/po/ko_KR/reference_input.xml.po,
+	  doc/po/ko_KR/reference_lrs.xml.po,
+	  doc/po/ko_KR/reference_management.xml.po,
+	  doc/po/ko_KR/reference_measure.xml.po,
+	  doc/po/ko_KR/reference_operator.xml.po,
+	  doc/po/ko_KR/reference_output.xml.po,
+	  doc/po/ko_KR/reference_processing.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/ko_KR/reference_relationship.xml.po,
+	  doc/po/ko_KR/reference_sfcgal.xml.po,
+	  doc/po/ko_KR/reference_srs.xml.po,
+	  doc/po/ko_KR/reference_trajectory.xml.po,
+	  doc/po/ko_KR/reference_transaction.xml.po,
+	  doc/po/ko_KR/reference_transformation.xml.po,
+	  doc/po/ko_KR/reference_troubleshooting.xml.po,
+	  doc/po/ko_KR/reference_type.xml.po,
+	  doc/po/ko_KR/reference_validation.xml.po,
+	  doc/po/ko_KR/reference_version.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po, doc/po/ko_KR/reporting.xml.po,
+	  doc/po/ko_KR/using_postgis_app.xml.po,
+	  doc/po/ko_KR/using_postgis_dataman.xml.po,
+	  doc/po/ko_KR/using_raster_dataman.xml.po,
+	  doc/po/pl/extras.xml.po,
+	  doc/po/pl/extras_address_standardizer.xml.po,
+	  doc/po/pl/extras_historytable.xml.po,
+	  doc/po/pl/extras_tigergeocoder.xml.po,
+	  doc/po/pl/extras_topology.xml.po, doc/po/pl/faq.xml.po,
+	  doc/po/pl/faq_raster.xml.po, doc/po/pl/installation.xml.po,
+	  doc/po/pl/introduction.xml.po, doc/po/pl/performance_tips.xml.po,
+	  doc/po/pl/postgis.xml.po, doc/po/pl/reference.xml.po,
+	  doc/po/pl/reference_accessor.xml.po,
+	  doc/po/pl/reference_bbox.xml.po,
+	  doc/po/pl/reference_cluster.xml.po,
+	  doc/po/pl/reference_constructor.xml.po,
+	  doc/po/pl/reference_editor.xml.po,
+	  doc/po/pl/reference_guc.xml.po, doc/po/pl/reference_input.xml.po,
+	  doc/po/pl/reference_lrs.xml.po,
+	  doc/po/pl/reference_management.xml.po,
+	  doc/po/pl/reference_measure.xml.po,
+	  doc/po/pl/reference_operator.xml.po,
+	  doc/po/pl/reference_output.xml.po,
+	  doc/po/pl/reference_processing.xml.po,
+	  doc/po/pl/reference_raster.xml.po,
+	  doc/po/pl/reference_relationship.xml.po,
+	  doc/po/pl/reference_sfcgal.xml.po,
+	  doc/po/pl/reference_srs.xml.po,
+	  doc/po/pl/reference_trajectory.xml.po,
+	  doc/po/pl/reference_transaction.xml.po,
+	  doc/po/pl/reference_transformation.xml.po,
+	  doc/po/pl/reference_troubleshooting.xml.po,
+	  doc/po/pl/reference_type.xml.po,
+	  doc/po/pl/reference_validation.xml.po,
+	  doc/po/pl/reference_version.xml.po,
+	  doc/po/pl/release_notes.xml.po, doc/po/pl/reporting.xml.po,
+	  doc/po/pl/using_postgis_app.xml.po,
+	  doc/po/pl/using_postgis_dataman.xml.po,
+	  doc/po/pl/using_raster_dataman.xml.po,
+	  doc/po/pt_BR/extras.xml.po,
+	  doc/po/pt_BR/extras_address_standardizer.xml.po,
+	  doc/po/pt_BR/extras_historytable.xml.po,
+	  doc/po/pt_BR/extras_tigergeocoder.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po, doc/po/pt_BR/faq.xml.po,
+	  doc/po/pt_BR/faq_raster.xml.po, doc/po/pt_BR/installation.xml.po,
+	  doc/po/pt_BR/introduction.xml.po,
+	  doc/po/pt_BR/performance_tips.xml.po,
+	  doc/po/pt_BR/postgis.xml.po, doc/po/pt_BR/reference.xml.po,
+	  doc/po/pt_BR/reference_accessor.xml.po,
+	  doc/po/pt_BR/reference_bbox.xml.po,
+	  doc/po/pt_BR/reference_cluster.xml.po,
+	  doc/po/pt_BR/reference_constructor.xml.po,
+	  doc/po/pt_BR/reference_editor.xml.po,
+	  doc/po/pt_BR/reference_guc.xml.po,
+	  doc/po/pt_BR/reference_input.xml.po,
+	  doc/po/pt_BR/reference_lrs.xml.po,
+	  doc/po/pt_BR/reference_management.xml.po,
+	  doc/po/pt_BR/reference_measure.xml.po,
+	  doc/po/pt_BR/reference_operator.xml.po,
+	  doc/po/pt_BR/reference_output.xml.po,
+	  doc/po/pt_BR/reference_processing.xml.po,
+	  doc/po/pt_BR/reference_raster.xml.po,
+	  doc/po/pt_BR/reference_relationship.xml.po,
+	  doc/po/pt_BR/reference_sfcgal.xml.po,
+	  doc/po/pt_BR/reference_srs.xml.po,
+	  doc/po/pt_BR/reference_trajectory.xml.po,
+	  doc/po/pt_BR/reference_transaction.xml.po,
+	  doc/po/pt_BR/reference_transformation.xml.po,
+	  doc/po/pt_BR/reference_troubleshooting.xml.po,
+	  doc/po/pt_BR/reference_type.xml.po,
+	  doc/po/pt_BR/reference_validation.xml.po,
+	  doc/po/pt_BR/reference_version.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po, doc/po/pt_BR/reporting.xml.po,
+	  doc/po/pt_BR/using_postgis_app.xml.po,
+	  doc/po/pt_BR/using_postgis_dataman.xml.po,
+	  doc/po/pt_BR/using_raster_dataman.xml.po: Update documentation
+	  translations from transifex.
+
+2019-08-03 21:04  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17665] doc/po/templates/extras.xml.pot,
+	  doc/po/templates/extras_address_standardizer.xml.pot,
+	  doc/po/templates/extras_historytable.xml.pot,
+	  doc/po/templates/extras_tigergeocoder.xml.pot,
+	  doc/po/templates/extras_topology.xml.pot,
+	  doc/po/templates/faq.xml.pot,
+	  doc/po/templates/faq_raster.xml.pot,
+	  doc/po/templates/installation.xml.pot,
+	  doc/po/templates/introduction.xml.pot,
+	  doc/po/templates/performance_tips.xml.pot,
+	  doc/po/templates/postgis.xml.pot,
+	  doc/po/templates/reference.xml.pot,
+	  doc/po/templates/reference_accessor.xml.pot,
+	  doc/po/templates/reference_bbox.xml.pot,
+	  doc/po/templates/reference_cluster.xml.pot,
+	  doc/po/templates/reference_constructor.xml.pot,
+	  doc/po/templates/reference_editor.xml.pot,
+	  doc/po/templates/reference_exception.xml.pot,
+	  doc/po/templates/reference_guc.xml.pot,
+	  doc/po/templates/reference_input.xml.pot,
+	  doc/po/templates/reference_lrs.xml.pot,
+	  doc/po/templates/reference_management.xml.pot,
+	  doc/po/templates/reference_measure.xml.pot,
+	  doc/po/templates/reference_misc.xml.pot,
+	  doc/po/templates/reference_operator.xml.pot,
+	  doc/po/templates/reference_output.xml.pot,
+	  doc/po/templates/reference_processing.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot,
+	  doc/po/templates/reference_relationship.xml.pot,
+	  doc/po/templates/reference_sfcgal.xml.pot,
+	  doc/po/templates/reference_srs.xml.pot,
+	  doc/po/templates/reference_trajectory.xml.pot,
+	  doc/po/templates/reference_transaction.xml.pot,
+	  doc/po/templates/reference_transformation.xml.pot,
+	  doc/po/templates/reference_troubleshooting.xml.pot,
+	  doc/po/templates/reference_type.xml.pot,
+	  doc/po/templates/reference_validation.xml.pot,
+	  doc/po/templates/reference_version.xml.pot,
+	  doc/po/templates/release_notes.xml.pot,
+	  doc/po/templates/reporting.xml.pot,
+	  doc/po/templates/using_postgis_app.xml.pot,
+	  doc/po/templates/using_postgis_dataman.xml.pot,
+	  doc/po/templates/using_raster_dataman.xml.pot: Update translation
+	  templates.
+
+2019-08-02 20:06  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17664] regress/core/Makefile.in, regress/core/geos38.sql,
+	  regress/core/geos38_expected, regress/core/tickets.sql: Move out
+	  GEOS 3.8 specific result into a version-tested file
+
+2019-08-01 20:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17659] regress/core/estimatedextent.sql,
+	  regress/core/estimatedextent_expected: Harmonize calls so tests
+	  return same results on multiple Pg versions
+	  References #4464
+
+2019-08-01 13:28  Nicklas Avén <nicklas.aven@jordogskog.no>
+
+	* [r17655] liblwgeom/lwout_twkb.c: bugfix to fix for #4461
+
+2019-08-01 08:20  Nicklas Avén <nicklas.aven@jordogskog.no>
+
+	* [r17654] liblwgeom/lwout_twkb.c, regress/core/twkb.sql,
+	  regress/core/twkb_expected: Remove duplicate points with
+	  ST_AsTWKB also when apearing before min npoints Closes #4461
+
+2019-07-31 21:42  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17653] NEWS, loader/pgsql2shp-core.c, loader/shp2pgsql-core.c:
+	  Handle POINT EMPTY in shape loader/dumper
+	  Closes #4437
+
+2019-07-31 15:22  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17649] .travis.yml: Travis: Use PG12 image by default
+	  
+	  Closes #4446
+
+2019-07-30 22:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17648] NEWS, configure.ac, postgis/Makefile.in,
+	  postgis/geobuf.c, postgis/geobuf.h, postgis/lwgeom_out_geobuf.c,
+	  postgis_config.h.in, regress/core/Makefile.in: Use protobuf
+	  version to enable/disable mvt/geobuf
+	  Closes #4419
+
+2019-07-29 17:36  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17645] regress/core/Makefile.in,
+	  regress/dumper/null3d_expected.dbf,
+	  regress/dumper/null3d_expected.shp,
+	  regress/dumper/null3d_expected.shx,
+	  regress/dumper/nullsintable-post.sql,
+	  regress/dumper/nullsintable-pre.sql,
+	  regress/dumper/nullsintable.dmp,
+	  regress/dumper/nullsintable_expected.dbf,
+	  regress/dumper/nullsintable_expected.prj,
+	  regress/dumper/nullsintable_expected.shp,
+	  regress/dumper/nullsintable_expected.shx: Add test case and
+	  update test case for null-handling behaviour
+	  References #4209
+
+2019-07-29 16:58  Regina Obe <lr@pcorp.us>
+
+	* [r17644] NEWS: add in -d transform into enhancements list, move
+	  bug fixes into a separate section from enhancements.
+	  This is to make it easier to spot and drop bug fixes if they are
+	  backported to older versions of PostGIS (as they won't be new
+	  things in PostGIS 3.0)
+
+2019-07-29 16:33  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17640] doc/reference_output.xml: Match JSON pretty print param
+	  name to one used in pgsql
+
+2019-07-29 16:32  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17639] NEWS, loader/pgsql2shp-core.c, postgis/postgis.sql.in:
+	  Handle NULL geometry values in pgsql2shp
+	  References #4209
+
+2019-07-29 15:34  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17635] NEWS, postgis/gserialized_estimate.c: Fix undefined
+	  behaviour in _postgis_gserialized_stats
+	  
+	  Closes #4466
+
+2019-07-29 14:00  Sandro Santilli <strk@kbt.io>
+
+	* [r17631] regress/run_test.pl: Have run_test include full
+	  shp2pgsql commandline on failure
+
+2019-07-29 14:00  Sandro Santilli <strk@kbt.io>
+
+	* [r17630] loader/shp2pgsql-core.c: Do not free state->geo_col, and
+	  do not strdup when assigning defaults
+
+2019-07-29 13:59  Sandro Santilli <strk@kbt.io>
+
+	* [r17629] loader/shp2pgsql-cli.c, loader/shp2pgsql-core.c: Fix
+	  memory leaks in shp2pgsql
+
+2019-07-29 13:35  Sandro Santilli <strk@kbt.io>
+
+	* [r17628] loader/shp2pgsql-core.h: Remove unused variable from
+	  loader state
+
+2019-07-29 13:28  Sandro Santilli <strk@kbt.io>
+
+	* [r17627] loader/shp2pgsql-core.c: Use a single variable for
+	  column names
+
+2019-07-29 02:01  Regina Obe <lr@pcorp.us>
+
+	* [r17626] loader/shp2pgsql-core.c: Missed a spot - get rid of
+	  hard-coding of 4326 for geography srid
+	  References #4466
+
+2019-07-29 01:47  Regina Obe <lr@pcorp.us>
+
+	* [r17625] loader/shp2pgsql-core.c: Take out restriction that
+	  geography can only work with srid 4326
+	  Geography supports any long-lat projection since 2.2
+	  Closes #4465
+
+2019-07-29 01:11  Regina Obe <lr@pcorp.us>
+
+	* [r17624] regress/core/Makefile.in,
+	  regress/loader/ReprojectPtsD-post.sql,
+	  regress/loader/ReprojectPtsD-pre.sql,
+	  regress/loader/ReprojectPtsD.dbf,
+	  regress/loader/ReprojectPtsD.opts,
+	  regress/loader/ReprojectPtsD.select.expected,
+	  regress/loader/ReprojectPtsD.select.sql,
+	  regress/loader/ReprojectPtsD.shp,
+	  regress/loader/ReprojectPtsD.shx,
+	  regress/loader/ReprojectPtsGeogD-post.sql,
+	  regress/loader/ReprojectPtsGeogD-pre.sql,
+	  regress/loader/ReprojectPtsGeogD-w.select.expected,
+	  regress/loader/ReprojectPtsGeogD.dbf,
+	  regress/loader/ReprojectPtsGeogD.opts,
+	  regress/loader/ReprojectPtsGeogD.select.expected,
+	  regress/loader/ReprojectPtsGeogD.select.sql,
+	  regress/loader/ReprojectPtsGeogD.shp,
+	  regress/loader/ReprojectPtsGeogD.shx: Add regression tests for
+	  using -s from_srid:to_srid with -D (copy mode) for both geometry
+	  and geography
+	  Closes #4403
+
+2019-07-28 21:37  Regina Obe <lr@pcorp.us>
+
+	* [r17623] loader/shp2pgsql-core.c: Hoepfully last trailing space
+	  References #4403
+
+2019-07-28 21:27  Regina Obe <lr@pcorp.us>
+
+	* [r17622] loader/shp2pgsql-core.c: Get rid of trailing spaces
+	  References #4403
+
+2019-07-28 21:14  Regina Obe <lr@pcorp.us>
+
+	* [r17621] NEWS, doc/using_postgis_dataman.xml,
+	  loader/README.shp2pgsql, loader/shp2pgsql-cli.c,
+	  loader/shp2pgsql-core.c, loader/shp2pgsql-core.h: Support for
+	  srid reprojection when using -D switch
+	  References #4403
+	  Tests forthcoming
+
+2019-07-22 13:27  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17620] NEWS, postgis/postgis.sql.in:
+	  postgis_extensions_upgrade() also updates after pg_upgrade
+	  
+	  Closes #4271
+	  Closes https://github.com/postgis/postgis/pull/449
+
+2019-07-22 11:35  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17619] raster/test/regress/rt_gdalwarp.sql,
+	  raster/test/regress/rt_gdalwarp_expected: Disable tests that give
+	  different answer on Proj.5 vs. Proj.4
+	  
+	  References #4104
+
+2019-07-19 14:49  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17618] liblwgeom/liblwgeom_topo.h, liblwgeom/lwgeom_topo.c,
+	  topology/postgis_topology.c: Topology: Remove TODOs
+
+2019-07-19 14:21  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17617] liblwgeom/liblwgeom_internal.h, liblwgeom/lwstroke.c:
+	  lwcompound_stroke: Remove unused function
+	  
+
+2019-07-19 13:02  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17616] raster/test/regress/rt_gdalwarp.sql,
+	  raster/test/regress/rt_gdalwarp_expected: Re-enable gdal tests
+	  
+	  Reverts r16688
+	  
+	  Closes #4104
+	  Closes https://github.com/postgis/postgis/pull/450
+
+2019-07-19 05:47  Regina Obe <lr@pcorp.us>
+
+	* [r17615] doc/installation.xml: Dealing with IGN SRIDs from Michel
+	  Philippenko
+	  closes https://github.com/postgis/postgis/pull/448
+	  for PostGIS 23.0
+
+2019-07-18 16:29  Regina Obe <lr@pcorp.us>
+
+	* [r17613] doc/reference_raster.xml: Correct description of
+	  ST_BandPixelType function
+	  Closes https://github.com/postgis/postgis/pull/447
+	  thanks Mateusz Łoskot
+
+2019-07-16 21:42  Regina Obe <lr@pcorp.us>
+
+	* [r17612] ci/berrie/pg_init_start.sh,
+	  ci/berrie/postgis_regress.sh: Make berrie script a bit more
+	  generic and add regular make check as well
+
+2019-07-16 15:28  Regina Obe <lr@pcorp.us>
+
+	* [r17611] ci/berrie/pg_init_start.sh,
+	  ci/berrie/postgis_regress.sh: Change to test again PG 12 (instead
+	  of 13)
+	  Closes #4456
+
+2019-07-16 14:19  Regina Obe <lr@pcorp.us>
+
+	* [r17610] ci/berrie/pg_init_start.sh,
+	  ci/berrie/postgis_regress.sh: Revise berrie to use her own custom
+	  PostgreSQL build -- evidentally installing past the jenkins
+	  workspace is a no no for some reason
+
+2019-07-16 08:58  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17609] libpgcommon/Makefile.in, loader/Makefile.in,
+	  raster/loader/Makefile.in: Add CPPFLAGS where missing
+	  
+	  Spotted by Debian's build log hardening checker, blhc.
+	  
+	  https://salsa.debian.org/debian-gis-team/postgis/-/jobs/222378
+	  
+	  Patch by Christoph Berg <myon -at- debian.org>
+	  
+	  Closes https://github.com/postgis/postgis/pull/446
+
+2019-07-15 23:14  Regina Obe <lr@pcorp.us>
+
+	* [r17605] ci/berrie/postgis_regress.sh: Try to get berrie to use
+	  workspace installed pg12 to get around make install installing in
+	  wrong folder
+	  References #4456
+
+2019-07-15 12:38  Regina Obe <lr@pcorp.us>
+
+	* [r17604] regress/run_test.pl: Stop trying to run createlang --
+	  plpgsql is always installed
+	  Closes #4457
+
+2019-07-15 10:13  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17603] NEWS, postgis/lwgeom_functions_basic.c: ST_IsEmpty:
+	  Speed up by avoiding deserialization
+	  
+	  Closes #4453
+	  Closes https://github.com/postgis/postgis/pull/442
+
+2019-07-15 10:08  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17602] regress/core/regress_ogc.sql,
+	  regress/core/regress_ogc_expected: ST_Startpoint: Improve tests
+	  and documentation
+	  
+	  Closes https://github.com/postgis/postgis/pull/443/
+
+2019-07-15 10:07  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17601] NEWS, postgis/lwgeom_functions_basic.c:
+	  _ST_OrderingEquals: Avoid deserialization
+	  
+	  Closes #4454
+	  Closes https://github.com/postgis/postgis/pull/444
+
+2019-07-14 14:24  Darafei Praliaskouski <me@komzpa.net>
+
+	* [r17600] NEWS, liblwgeom/gbox.c, liblwgeom/gserialized.c,
+	  liblwgeom/liblwgeom.h.in, liblwgeom/liblwgeom_internal.h,
+	  liblwgeom/lwinline.h, liblwgeom/lwtree.c,
+	  libpgcommon/gserialized_gist.h, postgis/lwgeom_btree.c,
+	  postgis/postgis.sql.in: Fast Hilbert btree.
+	  
+	  Requires btree indexes to be recreated.
+	  
+	  Closes https://github.com/postgis/postgis/pull/436
+	  Closes #3883
+
+2019-07-14 05:06  Regina Obe <lr@pcorp.us>
+
+	* [r17599] ci/berrie/postgis_regress.sh: revise to install and test
+	  extensions
+
+2019-07-14 04:43  Regina Obe <lr@pcorp.us>
+
+	* [r17598] ci/berrie/postgis_regress.sh: Just let postgis build put
+	  wherever it wants the tmp files
+
+2019-07-14 04:15  Regina Obe <lr@pcorp.us>
+
+	* [r17597] ci/berrie/postgis_regress.sh: revise to have tmp folder
+	  in code folder to try to get around issue can't create directory
+
+2019-07-14 02:57  Regina Obe <lr@pcorp.us>
+
+	* [r17596] README.md: Fix Berrie's badge link. Add badge links for
+	  Bessie and Bessie32. revise to 3 bots per line
+
+2019-07-14 02:41  Regina Obe <lr@pcorp.us>
+
+	* [r17595] README.md, ci/berrie/postgis_regress.sh: Add berrie to
+	  list of buildbots. revise berrie script to create ~tmp folder if
+	  it doesn't exist
+	  References #4456
+
+2019-07-14 01:14  Regina Obe <lr@pcorp.us>
+
+	* [r17594] NEWS, ci/berrie, ci/berrie/postgis_regress.sh: Add
+	  berrie's ci script
+	  berrie is a Rasberry Pi 32-bit system running Debian Buster (10),
+	  graciously offered by Bruce Rindahl
+	  
+	  References #4456
+
+2019-07-12 16:03  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17593] NEWS, liblwgeom/cunit/cu_gserialized1.c,
+	  liblwgeom/cunit/cu_gserialized2.c, liblwgeom/gserialized.c,
+	  liblwgeom/gserialized.h, liblwgeom/gserialized1.c,
+	  liblwgeom/gserialized1.h, liblwgeom/gserialized2.c,
+	  liblwgeom/gserialized2.h, liblwgeom/liblwgeom.h.in,
+	  postgis/lwgeom_ogc.c, regress/core/Makefile.in,
+	  regress/core/point_coordinates.sql,
+	  regress/core/point_coordinates_expected: Speed up ST_X, ST_Y,
+	  ST_Z and ST_M
+	  
+	  Closes https://github.com/postgis/postgis/pull/435
+	  Closes https://trac.osgeo.org/postgis/ticket/4449
+
+2019-07-12 16:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17592] NEWS, libpgcommon/lwgeom_transform.c,
+	  postgis/lwgeom_in_gml.c, spatial_ref_sys.sql: Add new entries to
+	  spatial_ref_sys and handle non-EPSG authnames
+	  Closes #4417
+
+2019-07-12 15:57  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17591] liblwgeom/gserialized.h, liblwgeom/gserialized1.c,
+	  liblwgeom/gserialized2.c: gserialized: Style changes
+	  
+	  References #4449
+
+2019-07-10 22:49  Sandro Santilli <strk@kbt.io>
+
+	* [r17590] topology/Makefile.in: Fix Makefile override warning
+	  
+	  Fixes the following:
+	  
+	  warning: overriding recipe for target 'check'
+	  .../pgxs.mk:276: warning: ignoring old recipe for target 'check'
+
+2019-07-10 22:49  Sandro Santilli <strk@kbt.io>
+
+	* [r17589] regress/Makefile.in: Don't leave .bak files in staged
+	  install
+
+2019-07-10 21:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17588] doc/reference_constructor.xml: Add example using
+	  optional bounds
+
+2019-07-10 20:44  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17587] NEWS, doc/reference_constructor.xml,
+	  doc/reference_output.xml, postgis/lwgeom_functions_basic.c,
+	  postgis/postgis.sql.in, regress/core/regress.sql,
+	  regress/core/regress_expected: Add ST_TileEnvelope utility
+	  function
+	  Closes #4452
+
+2019-07-09 15:43  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17586] NEWS, postgis/lwgeom_ogc.c: Speed up ST_GeometryType
+	  
+	  Closes https://github.com/postgis/postgis/pull/434
+	  Closes #4450
+
+2019-07-09 15:33  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17585] NEWS, liblwgeom/gserialized1.c,
+	  liblwgeom/gserialized2.c: Fix the calculation of
+	  gserialized_max_header_size
+	  
+	  Closes #4451
+	  Closes https://github.com/postgis/postgis/pull/433
+
+2019-07-09 15:30  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17584] postgis/geobuf.c: Address compiler warning in 32b
+	  systems
+
+2019-07-08 21:08  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17583] .gitignore, raster/test/regress/loader: Ignore
+	  TiledAutoSkipNoData.tif
+
+2019-07-02 19:47  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r17582] liblwgeom/liblwgeom_internal.h, liblwgeom/lookup3.c,
+	  liblwgeom/lwin_wkb.c, liblwgeom/lwout_wkb.c, liblwgeom/lwutil.c:
+	  Strip out getMachineEndian() in favour of configure-time check
+
+2019-07-02 09:00  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17580] NEWS, postgis/lwgeom_btree.c, regress/core/tickets.sql,
+	  regress/core/tickets_expected: Fix bug in lwgeom_le
+	  
+	  Closes #4445
+
+2019-07-02 08:44  Raúl Marín Rodríguez <rmrodriguez@carto.com>
+
+	* [r17577] NEWS: Improve hash changes NEWS
+	  
+	  Since the output of the function has changed, any
+	  index using it must be reindexed
+	  
+	  References #4433
+
+2019-07-01 19:01  Regina Obe <lr@pcorp.us>
+
+	* [r17576] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh: get rid of -e in packaging (causing
+	  error to be thrown if tries to remove zip not present), minor
+	  adjustments to packaging.
+
+2019-07-01 18:15  Regina Obe <lr@pcorp.us>
+
+	* [r17575] NEWS, liblwgeom/gserialized.c, liblwgeom/gserialized.h,
+	  liblwgeom/gserialized1.c, liblwgeom/gserialized1.h,
+	  liblwgeom/gserialized2.c, liblwgeom/gserialized2.h,
+	  liblwgeom/liblwgeom.h.in, postgis/lwgeom_btree.c: fix for 32-bit
+	  hash
+	  Closes #4433
+	  Closes https://github.com/postgis/postgis/pull/429
+
+2019-07-01 14:03  Regina Obe <lr@pcorp.us>
+
+	* [r17574] NEWS, Version.config,
+	  extensions/upgradeable_versions.mk: Flip to 3.0.0alpha4dev
+
+2019-07-01 07:31  Regina Obe <lr@pcorp.us>
+
+	* [r17572] ChangeLog, NEWS, Version.config, doc/release_notes.xml:
+	  Prep for 3.0.0alpha3 release
+
+2019-07-01 03:37  Regina Obe <lr@pcorp.us>
+
+	* [r17571] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh:
+	  optional cgal version
+
 2019-07-01 01:27  Regina Obe <lr@pcorp.us>
 
 	* [r17570] ci/winnie/build_postgis.sh,

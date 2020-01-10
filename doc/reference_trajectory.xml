@@ -239,7 +239,7 @@ is within the specified distance.
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>float8 <function>ST_CPAWithin</function></funcdef>
+				<funcdef>boolean <function>ST_CPAWithin</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
 				<paramdef><type>float8 </type> <parameter>maxdist</parameter></paramdef>

@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.0.0alpah2
-:Date: 2019-06-02
+:Version: 3.1.0dev
+:Date: 2020-01-02
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -77,13 +77,13 @@ this to work.
 
     apt-get install libjson0-dev
 
-* GDAL (Optional, Version 1.8.0 or higher 1.9+ is strongly recommended)
+* GDAL (Optional, Version 2 or higher 3+ is strongly recommended)
 
   GDAL (http://gdal.org) is *required* if you want to compile PostGIS
   with raster support. To compile without raster support you
   must ``./configure --without-raster``
 
-* CGAL 4.1+ and SFCGAL 1.3.1+ (Optional) needed for advanced 3D support
+* CGAL 4.1+ and SFCGAL 1.3.2+ (Optional) needed for advanced 3D support
 
   https://github.com/Oslandia/SFCGAL
 

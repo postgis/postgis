@@ -4,3 +4,4 @@ default_version = '@EXTVERSION@'
 relocatable = false
 schema = tiger
 requires = 'postgis,fuzzystrmatch'
+superuser= false

@@ -148,6 +148,13 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 			gser = geometry_serialize(lwpoint_as_lwgeom(empty_point));
 	}
 
+	/* Typmod has a preference for SRID, but geometry does not? Harmonize the geometry SRID. */
+	if ( typmod_srid > 0 && geom_srid == 0 )
+	{
+		gserialized_set_srid(gser, typmod_srid);
+		geom_srid = typmod_srid;
+	}
+
 	/* Typmod has a preference for SRID? Geometry SRID had better match. */
 	if ( typmod_srid > 0 && typmod_srid != geom_srid )
 	{

@@ -16,9 +16,9 @@
 #otherwise use the ones jenkins passes thru
 #!/bin/bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8
-	export GDAL_VER=2.2.4
-	export PROJ_VER=4.9.3
+	export GEOS_VER=3.8.0
+	export GDAL_VER=2.4.3
+	export PROJ_VER=5.2.0
 	export SFCGAL_VER=1.3.2
 	export CGAL_VER=4.11
 	export ICON_VER=1.15
@@ -26,7 +26,7 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
   	export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
-	export PROJSO=libproj-12.dll
+	export PROJSO=libproj-13.dll
 fi;
 
 export PROTOBUF_VER=3.2.0
@@ -48,7 +48,7 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.7.8
+  export LIBXML_VER=2.9.9
 fi;
 
 #set to something even if override is on but not set
@@ -74,33 +74,21 @@ export PATHOLD=$PATH
 WEB=/home/www/postgis/htdocs
 DWN=${WEB}/download
 
-export PATHOLD="/mingw/bin:/mingw/include:/c/Windows/system32:/c/Windows:.:/bin:/include:/usr/local/bin:/c/ming${OS_BUILD}}${GCC_TYPE}/svn"
+export PATHOLD="/mingw/bin:/mingw/include:/c/Windows/system32:/c/Windows:.:/bin:/include:/usr/local/bin"
 #export PG_VER=9.2beta2
 
 echo PATH BEFORE: $PATH
 
 export PGPATH=${PROJECTS}/postgresql/rel/pg${PG_VER}w${OS_BUILD}${GCC_TYPE}
 export PGPATHEDB=${PGPATH}edb
-export PROJSO=libproj-9.dll
+#export PROJSO=libproj-13.dll
 export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
-
-if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
-	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MINOR_VER}
-	export svnurl="https://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
-else
-	#tagged version -- official release
-	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}
-	export svnurl="https://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
-fi;
 
 if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
 fi
 
-if [[ "$reference"  == *trunk* ]] ; then
-	export svnurl="https://svn.osgeo.org/postgis/trunk"
-fi;
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 #POSTGIS_SVN_REVISION=will_be_passed_in_by_bot
 export GDAL_DATA="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal"
@@ -112,13 +100,12 @@ export REL_PGVER=${PG_VER//./} #strip the period
 export RELDIR=${PROJECTS}/postgis/builds/${POSTGIS_MINOR_VER}
 export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
 export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
-export PCRE_VER=8.33 
+export PCRE_VER=8.33
 #PATH="${PGPATH}/bin:${PGPATH}/lib:${PROJECTS}/xsltproc:${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
 #echo PATH AFTER: $PATH
 outdir="${RELDIR}/${RELVERDIR}"
 package="${RELDIR}/${RELVERDIR}.zip"
 verfile="${RELDIR}/${RELVERDIR}/version.txt"
-#svnurl="http://svn.osgeo.org/postgis/trunk"
 rm -rf $outdir
 rm $package
 mkdir -p $outdir
@@ -144,6 +131,8 @@ cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
 
 cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
+cp ${PGPATHEDB}/bin/libcrypto-1_1-x64.dll $outdir/bin/postgisgui
+cp ${PGPATHEDB}/bin/libssl-1_1-x64.dll $outdir/bin/postgisgui
 
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libstdc++-6.dll $outdir/bin
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libgcc*.dll $outdir/bin
@@ -201,7 +190,7 @@ fi;
 
 echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
 echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
-cp ${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}/bin/*.dll  $outdir/bin/
+cp ${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/
 #cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
 cd ${POSTGIS_SRC}
@@ -216,12 +205,9 @@ cp doc/*_comments.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MIN
 cp postgis/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp raster/rt_pg/*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 cp utils/*.pl ${RELDIR}/${RELVERDIR}/utils
-#add extras
-#svn export "${svnurl}/extras" ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
-#cp raster/rt_pg/rtpostgis.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
-#cp raster/rt_pg/rtpostgis_upgrade_20_minor.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 
 cp raster/loader/.libs/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
+cp raster/loader/raster2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
 cp loader/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
@@ -250,15 +236,19 @@ cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer i
 cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
 
 
-echo "GEOS VERSION: ${GEOS_VER} http://trac.osgeo.org/geos" >> $verfile
-echo "GDAL VERSION: ${GDAL_VER} http://trac.osgeo.org/gdal" >> $verfile
-echo "PROJ VERSION: ${PROJ_VER} http://trac.osgeo.org/proj" >> $verfile
+echo "GEOS VERSION: ${GEOS_VER} https://trac.osgeo.org/geos" >> $verfile
+echo "GDAL VERSION: ${GDAL_VER} https://gdal.org/download.html#current-releases" >> $verfile
+echo "PROJ VERSION: ${PROJ_VER} https://proj.org/download.html#current-release" >> $verfile
 
 if [ -n "$SFCGAL_VER"  ]; then
     echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
     echo "BOOST VERSION: ${BOOST_VER} http://www.boost.org" >> $verfile
     echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://github.com/Oslandia/SFCGAL" >> $verfile
 fi;
+
+if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then 
+	cat $verfile ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt > $verfile
+fi
 #echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}

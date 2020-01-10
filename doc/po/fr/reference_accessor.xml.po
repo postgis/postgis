@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2019-08-03 21:00+0000\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2019-10-06 23:48+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Vincent Picavet <vincent.ml@oslandia.com>\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
@@ -60,18 +60,18 @@ msgstr ""
 #: reference_accessor.xml:606 reference_accessor.xml:653
 #: reference_accessor.xml:714 reference_accessor.xml:760
 #: reference_accessor.xml:802 reference_accessor.xml:866
-#: reference_accessor.xml:935 reference_accessor.xml:997
-#: reference_accessor.xml:1054 reference_accessor.xml:1109
-#: reference_accessor.xml:1152 reference_accessor.xml:1202
-#: reference_accessor.xml:1250 reference_accessor.xml:1296
-#: reference_accessor.xml:1339 reference_accessor.xml:1374
-#: reference_accessor.xml:1413 reference_accessor.xml:1452
-#: reference_accessor.xml:1495 reference_accessor.xml:1556
-#: reference_accessor.xml:1596 reference_accessor.xml:1638
-#: reference_accessor.xml:1695 reference_accessor.xml:1759
-#: reference_accessor.xml:1810 reference_accessor.xml:1862
-#: reference_accessor.xml:1935 reference_accessor.xml:1979
-#: reference_accessor.xml:2024 reference_accessor.xml:2068
+#: reference_accessor.xml:936 reference_accessor.xml:999
+#: reference_accessor.xml:1056 reference_accessor.xml:1111
+#: reference_accessor.xml:1154 reference_accessor.xml:1204
+#: reference_accessor.xml:1252 reference_accessor.xml:1298
+#: reference_accessor.xml:1341 reference_accessor.xml:1376
+#: reference_accessor.xml:1415 reference_accessor.xml:1454
+#: reference_accessor.xml:1497 reference_accessor.xml:1558
+#: reference_accessor.xml:1598 reference_accessor.xml:1640
+#: reference_accessor.xml:1697 reference_accessor.xml:1761
+#: reference_accessor.xml:1812 reference_accessor.xml:1864
+#: reference_accessor.xml:1937 reference_accessor.xml:1981
+#: reference_accessor.xml:2026 reference_accessor.xml:2070
 #, no-c-format
 msgid "Description"
 msgstr "Description"
@@ -110,7 +110,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:37 reference_accessor.xml:266
 #: reference_accessor.xml:326 reference_accessor.xml:667
-#: reference_accessor.xml:1457
+#: reference_accessor.xml:1459
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
@@ -122,9 +122,9 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:38 reference_accessor.xml:166
 #: reference_accessor.xml:669 reference_accessor.xml:813
-#: reference_accessor.xml:1003 reference_accessor.xml:1259
-#: reference_accessor.xml:1563 reference_accessor.xml:1604
-#: reference_accessor.xml:1712 reference_accessor.xml:1987
+#: reference_accessor.xml:1005 reference_accessor.xml:1261
+#: reference_accessor.xml:1565 reference_accessor.xml:1606
+#: reference_accessor.xml:1714 reference_accessor.xml:1989
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
@@ -133,12 +133,12 @@ msgstr "&sfs_compliant;"
 #: reference_accessor.xml:39 reference_accessor.xml:168
 #: reference_accessor.xml:273 reference_accessor.xml:328
 #: reference_accessor.xml:434 reference_accessor.xml:672
-#: reference_accessor.xml:766 reference_accessor.xml:1012
-#: reference_accessor.xml:1074 reference_accessor.xml:1120
-#: reference_accessor.xml:1308 reference_accessor.xml:1380
-#: reference_accessor.xml:1418 reference_accessor.xml:1715
-#: reference_accessor.xml:1773 reference_accessor.xml:1819
-#: reference_accessor.xml:1878 reference_accessor.xml:2075
+#: reference_accessor.xml:766 reference_accessor.xml:1014
+#: reference_accessor.xml:1076 reference_accessor.xml:1122
+#: reference_accessor.xml:1310 reference_accessor.xml:1382
+#: reference_accessor.xml:1420 reference_accessor.xml:1717
+#: reference_accessor.xml:1775 reference_accessor.xml:1821
+#: reference_accessor.xml:1880 reference_accessor.xml:2077
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -150,17 +150,17 @@ msgstr "&curve_support;"
 #: reference_accessor.xml:432 reference_accessor.xml:565
 #: reference_accessor.xml:615 reference_accessor.xml:671
 #: reference_accessor.xml:720 reference_accessor.xml:765
-#: reference_accessor.xml:815 reference_accessor.xml:895
-#: reference_accessor.xml:964 reference_accessor.xml:1011
-#: reference_accessor.xml:1073 reference_accessor.xml:1216
-#: reference_accessor.xml:1261 reference_accessor.xml:1307
-#: reference_accessor.xml:1344 reference_accessor.xml:1379
-#: reference_accessor.xml:1417 reference_accessor.xml:1461
-#: reference_accessor.xml:1562 reference_accessor.xml:1656
-#: reference_accessor.xml:1714 reference_accessor.xml:1774
-#: reference_accessor.xml:1817 reference_accessor.xml:1944
-#: reference_accessor.xml:1989 reference_accessor.xml:2034
-#: reference_accessor.xml:2074
+#: reference_accessor.xml:815 reference_accessor.xml:896
+#: reference_accessor.xml:966 reference_accessor.xml:1013
+#: reference_accessor.xml:1075 reference_accessor.xml:1218
+#: reference_accessor.xml:1263 reference_accessor.xml:1309
+#: reference_accessor.xml:1346 reference_accessor.xml:1381
+#: reference_accessor.xml:1419 reference_accessor.xml:1463
+#: reference_accessor.xml:1564 reference_accessor.xml:1658
+#: reference_accessor.xml:1716 reference_accessor.xml:1776
+#: reference_accessor.xml:1819 reference_accessor.xml:1946
+#: reference_accessor.xml:1991 reference_accessor.xml:2036
+#: reference_accessor.xml:2076
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -169,10 +169,10 @@ msgstr "&Z_support;"
 #: reference_accessor.xml:41 reference_accessor.xml:170
 #: reference_accessor.xml:220 reference_accessor.xml:274
 #: reference_accessor.xml:329 reference_accessor.xml:673
-#: reference_accessor.xml:721 reference_accessor.xml:1015
-#: reference_accessor.xml:1309 reference_accessor.xml:1381
-#: reference_accessor.xml:1462 reference_accessor.xml:1565
-#: reference_accessor.xml:1657 reference_accessor.xml:1881
+#: reference_accessor.xml:721 reference_accessor.xml:1017
+#: reference_accessor.xml:1311 reference_accessor.xml:1383
+#: reference_accessor.xml:1464 reference_accessor.xml:1567
+#: reference_accessor.xml:1659 reference_accessor.xml:1883
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
@@ -181,8 +181,8 @@ msgstr "&P_support;"
 #: reference_accessor.xml:42 reference_accessor.xml:171
 #: reference_accessor.xml:221 reference_accessor.xml:275
 #: reference_accessor.xml:330 reference_accessor.xml:674
-#: reference_accessor.xml:1310 reference_accessor.xml:1463
-#: reference_accessor.xml:1884
+#: reference_accessor.xml:1312 reference_accessor.xml:1465
+#: reference_accessor.xml:1886
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -194,17 +194,17 @@ msgstr "&T_support;"
 #: reference_accessor.xml:497 reference_accessor.xml:570
 #: reference_accessor.xml:620 reference_accessor.xml:726
 #: reference_accessor.xml:771 reference_accessor.xml:821
-#: reference_accessor.xml:1079 reference_accessor.xml:1127
-#: reference_accessor.xml:1171 reference_accessor.xml:1221
-#: reference_accessor.xml:1267 reference_accessor.xml:1316
-#: reference_accessor.xml:1348 reference_accessor.xml:1386
-#: reference_accessor.xml:1423 reference_accessor.xml:1468
-#: reference_accessor.xml:1507 reference_accessor.xml:1569
-#: reference_accessor.xml:1609 reference_accessor.xml:1663
-#: reference_accessor.xml:1727 reference_accessor.xml:1781
-#: reference_accessor.xml:1829 reference_accessor.xml:1892
-#: reference_accessor.xml:1950 reference_accessor.xml:1995
-#: reference_accessor.xml:2039 reference_accessor.xml:2080
+#: reference_accessor.xml:1081 reference_accessor.xml:1129
+#: reference_accessor.xml:1173 reference_accessor.xml:1223
+#: reference_accessor.xml:1269 reference_accessor.xml:1318
+#: reference_accessor.xml:1350 reference_accessor.xml:1388
+#: reference_accessor.xml:1425 reference_accessor.xml:1470
+#: reference_accessor.xml:1509 reference_accessor.xml:1571
+#: reference_accessor.xml:1611 reference_accessor.xml:1665
+#: reference_accessor.xml:1729 reference_accessor.xml:1783
+#: reference_accessor.xml:1831 reference_accessor.xml:1894
+#: reference_accessor.xml:1952 reference_accessor.xml:1997
+#: reference_accessor.xml:2041 reference_accessor.xml:2082
 #, no-c-format
 msgid "Examples"
 msgstr "Exemples"
@@ -273,19 +273,19 @@ msgstr ""
 #: reference_accessor.xml:511 reference_accessor.xml:575
 #: reference_accessor.xml:625 reference_accessor.xml:693
 #: reference_accessor.xml:737 reference_accessor.xml:778
-#: reference_accessor.xml:828 reference_accessor.xml:901
-#: reference_accessor.xml:969 reference_accessor.xml:1032
-#: reference_accessor.xml:1085 reference_accessor.xml:1177
-#: reference_accessor.xml:1227 reference_accessor.xml:1273
-#: reference_accessor.xml:1353 reference_accessor.xml:1391
-#: reference_accessor.xml:1430 reference_accessor.xml:1473
-#: reference_accessor.xml:1512 reference_accessor.xml:1534
-#: reference_accessor.xml:1574 reference_accessor.xml:1614
-#: reference_accessor.xml:1670 reference_accessor.xml:1733
-#: reference_accessor.xml:1787 reference_accessor.xml:1835
-#: reference_accessor.xml:1898 reference_accessor.xml:1956
-#: reference_accessor.xml:2001 reference_accessor.xml:2045
-#: reference_accessor.xml:2087
+#: reference_accessor.xml:828 reference_accessor.xml:902
+#: reference_accessor.xml:971 reference_accessor.xml:1034
+#: reference_accessor.xml:1087 reference_accessor.xml:1179
+#: reference_accessor.xml:1229 reference_accessor.xml:1275
+#: reference_accessor.xml:1355 reference_accessor.xml:1393
+#: reference_accessor.xml:1432 reference_accessor.xml:1475
+#: reference_accessor.xml:1514 reference_accessor.xml:1536
+#: reference_accessor.xml:1576 reference_accessor.xml:1616
+#: reference_accessor.xml:1672 reference_accessor.xml:1735
+#: reference_accessor.xml:1789 reference_accessor.xml:1837
+#: reference_accessor.xml:1900 reference_accessor.xml:1958
+#: reference_accessor.xml:2003 reference_accessor.xml:2047
+#: reference_accessor.xml:2089
 #, no-c-format
 msgid "See Also"
 msgstr "Voir aussi"
@@ -499,8 +499,8 @@ msgstr "ST_CoordDim"
 #, fuzzy, no-c-format
 msgid "Return the coordinate dimension of a geometry."
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"Retourne la dimension des coordonnées d'une valeur ST_Geometry."
+""
 
 #. Tag: funcprototype
 #: reference_accessor.xml:152
@@ -517,8 +517,7 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "Return the coordinate dimension of the ST_Geometry value."
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"Retourne la dimension des coordonnées d'une valeur ST_Geometry."
 
 #. Tag: para
 #: reference_accessor.xml:164
@@ -565,8 +564,7 @@ msgstr "ST_Dimension"
 #, fuzzy, no-c-format
 msgid "Returns the topological dimension of a geometry."
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"Retourne la dimension des coordonnées d'une valeur ST_Geometry."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:198
@@ -689,7 +687,7 @@ msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:269 reference_accessor.xml:1378
+#: reference_accessor.xml:269 reference_accessor.xml:1380
 #, no-c-format
 msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
@@ -1217,7 +1215,7 @@ msgid "&sqlmm_compliant; SQL-MM 3: 7.1.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.4"
 
 #. Tag: para
-#: reference_accessor.xml:435 reference_accessor.xml:1820
+#: reference_accessor.xml:435 reference_accessor.xml:1822
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 no longer works with single geometry multilinestrings. In "
@@ -1354,8 +1352,8 @@ msgstr ""
 "place de float4"
 
 #. Tag: para
-#: reference_accessor.xml:492 reference_accessor.xml:1118
-#: reference_accessor.xml:1214
+#: reference_accessor.xml:492 reference_accessor.xml:1120
+#: reference_accessor.xml:1216
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
 msgstr "&sfs_compliant; s2.1.1.1"
@@ -1502,8 +1500,8 @@ msgid "Availability: 2.2.0"
 msgstr "Disponibilité : 2.2.0"
 
 #. Tag: para
-#: reference_accessor.xml:566 reference_accessor.xml:896
-#: reference_accessor.xml:965
+#: reference_accessor.xml:566 reference_accessor.xml:897
+#: reference_accessor.xml:967
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
@@ -1580,7 +1578,7 @@ msgid "Only works with POLYGON geometry types"
 msgstr "Ne fonctionne qu'avec des géométries POLYGON"
 
 #. Tag: para
-#: reference_accessor.xml:613 reference_accessor.xml:1161
+#: reference_accessor.xml:613 reference_accessor.xml:1163
 #, no-c-format
 msgid "&sfs_compliant; 2.1.5.1"
 msgstr "&sfs_compliant; 2.1.5.1"
@@ -1827,7 +1825,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:695 reference_accessor.xml:1576
+#: reference_accessor.xml:695 reference_accessor.xml:1578
 #, no-c-format
 msgid ", <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ", <xref linkend=\"ST_NumGeometries\"/>"
@@ -1858,21 +1856,21 @@ msgstr ""
 #: reference_accessor.xml:716
 #, no-c-format
 msgid ""
-"Returns the type of the geometry as a string. EG: 'ST_Linestring', "
+"Returns the type of the geometry as a string. EG: 'ST_LineString', "
 "'ST_Polygon','ST_MultiPolygon' etc. This function differs from "
 "GeometryType(geometry) in the case of the string and ST in front that is "
 "returned, as well as the fact that it will not indicate whether the geometry "
 "is measured."
 msgstr ""
 "Renvoie le type de la géométrie sous forme de texte, par exemple: "
-"'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' etc. Cette fonction diffère "
+"'ST_LineString', 'ST_Polygon','ST_MultiPolygon' etc. Cette fonction diffère "
 "de GeometryType(geometry) par la casse du texte renvoyé et par le préfixe "
 "ST_ en début de texte. N'indique pas si la géométrie comporte une dimension "
 "MESURE."
 
 #. Tag: para
-#: reference_accessor.xml:718 reference_accessor.xml:1013
-#: reference_accessor.xml:1377
+#: reference_accessor.xml:718 reference_accessor.xml:1015
+#: reference_accessor.xml:1379
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
 msgstr ""
@@ -2102,13 +2100,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:874 reference_accessor.xml:943
+#: reference_accessor.xml:874 reference_accessor.xml:944
 #, no-c-format
 msgid "Returns true if the geometry has no polygonal components."
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:879 reference_accessor.xml:948
+#: reference_accessor.xml:879 reference_accessor.xml:949
 #, no-c-format
 msgid ""
 "Closed linestrings are not considered polygonal components, so you would "
@@ -2117,7 +2115,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:887 reference_accessor.xml:956
+#: reference_accessor.xml:887 reference_accessor.xml:957
 #, no-c-format
 msgid ""
 "If a polygonal geometry does not use reversed orientation for interior rings "
@@ -2127,20 +2125,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:902 reference_accessor.xml:970
+#: reference_accessor.xml:895 reference_accessor.xml:965
+#, fuzzy, no-c-format
+msgid "Availability: 2.4.0"
+msgstr "Disponibilité : 2.2.0"
+
+#. Tag: para
+#: reference_accessor.xml:903 reference_accessor.xml:972
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:912
+#: reference_accessor.xml:913
 #, no-c-format
 msgid "ST_IsPolygonCW"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_accessor.xml:915
+#: reference_accessor.xml:916
 #, no-c-format
 msgid ""
 "Tests if Polygons have exterior rings oriented clockwise and interior rings "
@@ -2148,7 +2152,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:921
+#: reference_accessor.xml:922
 #, no-c-format
 msgid ""
 "<funcdef> boolean <function>ST_IsPolygonCW</function> </funcdef> <paramdef> "
@@ -2156,7 +2160,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:937
+#: reference_accessor.xml:938
 #, no-c-format
 msgid ""
 "Returns true if all polygonal components of the input geometry use a "
@@ -2165,13 +2169,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:980
+#: reference_accessor.xml:982
 #, no-c-format
 msgid "ST_IsClosed"
 msgstr "ST_IsClosed"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:982
+#: reference_accessor.xml:984
 #, fuzzy, no-c-format
 msgid ""
 "Tests if a LineStrings's start and end points are coincident. For a "
@@ -2183,7 +2187,7 @@ msgstr ""
 "volumétrique (fermée)."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:988
+#: reference_accessor.xml:990
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsClosed</function></funcdef> "
@@ -2193,7 +2197,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:999
+#: reference_accessor.xml:1001
 #, fuzzy, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s start "
@@ -2206,13 +2210,13 @@ msgstr ""
 "volumétrique (fermée)."
 
 #. Tag: para
-#: reference_accessor.xml:1004
+#: reference_accessor.xml:1006
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.5, 9.3.3"
 
 #. Tag: para
-#: reference_accessor.xml:1006
+#: reference_accessor.xml:1008
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of <function>ST_IsClosed(<varname>NULL</varname>)</"
@@ -2223,13 +2227,13 @@ msgstr ""
 "PostGIS renvoie <varname>NULL</varname>."
 
 #. Tag: title
-#: reference_accessor.xml:1020
+#: reference_accessor.xml:1022
 #, no-c-format
 msgid "Line String and Point Examples"
 msgstr "Exemples: points et lignes"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1022
+#: reference_accessor.xml:1024
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);\n"
@@ -2295,13 +2299,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: title
-#: reference_accessor.xml:1026
+#: reference_accessor.xml:1028
 #, no-c-format
 msgid "Polyhedral Surface Examples"
 msgstr "Exemples: surfaces polyhédriques"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1028
+#: reference_accessor.xml:1030
 #, no-c-format
 msgid ""
 "-- A cube --\n"
@@ -2332,13 +2336,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:1040
+#: reference_accessor.xml:1042
 #, no-c-format
 msgid "ST_IsCollection"
 msgstr "ST_IsCollection"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1041
+#: reference_accessor.xml:1043
 #, fuzzy, no-c-format
 msgid "Tests if a geometry is a geometry collection type."
 msgstr ""
@@ -2346,7 +2350,7 @@ msgstr ""
 "un point etc. "
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1046
+#: reference_accessor.xml:1048
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsCollection</function></funcdef> "
@@ -2356,7 +2360,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1056
+#: reference_accessor.xml:1058
 #, fuzzy, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the geometry type of the argument a "
@@ -2364,25 +2368,25 @@ msgid ""
 msgstr "Renvoie <varname>TRUE</varname> le type de la géométrie est soit:"
 
 #. Tag: para
-#: reference_accessor.xml:1059
+#: reference_accessor.xml:1061
 #, no-c-format
 msgid "GEOMETRYCOLLECTION"
 msgstr "GEOMETRYCOLLECTION"
 
 #. Tag: para
-#: reference_accessor.xml:1060
+#: reference_accessor.xml:1062
 #, no-c-format
 msgid "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
 msgstr "MULTI{POINT,POLYGON,LINESTRING,CURVE,SURFACE}"
 
 #. Tag: para
-#: reference_accessor.xml:1061
+#: reference_accessor.xml:1063
 #, no-c-format
 msgid "COMPOUNDCURVE"
 msgstr "COMPOUNDCURVE"
 
 #. Tag: para
-#: reference_accessor.xml:1066
+#: reference_accessor.xml:1068
 #, no-c-format
 msgid ""
 "This function analyzes the type of the geometry. This means that it will "
@@ -2393,7 +2397,7 @@ msgstr ""
 "varname> pour les collections vides ou ne contenant q'un seul élément."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1081
+#: reference_accessor.xml:1083
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_IsCollection('LINESTRING(0 0, 1 1)'::geometry);\n"
@@ -2459,19 +2463,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_accessor.xml:1093
+#: reference_accessor.xml:1095
 #, no-c-format
 msgid "ST_IsEmpty"
 msgstr "ST_IsEmpty"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1095
+#: reference_accessor.xml:1097
 #, no-c-format
 msgid "Tests if a geometry is empty."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1101
+#: reference_accessor.xml:1103
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
@@ -2481,7 +2485,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1111
+#: reference_accessor.xml:1113
 #, no-c-format
 msgid ""
 "Returns true if this Geometry is an empty geometry. If true, then this "
@@ -2492,7 +2496,7 @@ msgstr ""
 "polygon, un point etc. "
 
 #. Tag: para
-#: reference_accessor.xml:1114
+#: reference_accessor.xml:1116
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while PostGIS returns "
@@ -2502,13 +2506,13 @@ msgstr ""
 "renvoie NULL."
 
 #. Tag: para
-#: reference_accessor.xml:1119
+#: reference_accessor.xml:1121
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.7"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.7"
 
 #. Tag: para
-#: reference_accessor.xml:1121
+#: reference_accessor.xml:1123
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 In prior versions of PostGIS "
@@ -2520,7 +2524,7 @@ msgstr ""
 "interdit dans PostGIS 2.0.0 pour respecter la norme SQL/MM."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1129
+#: reference_accessor.xml:1131
 #, no-c-format
 msgid ""
 "SELECT ST_IsEmpty(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY'));\n"
@@ -2588,19 +2592,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_accessor.xml:1136
+#: reference_accessor.xml:1138
 #, no-c-format
 msgid "ST_IsRing"
 msgstr "ST_IsRing"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1138
+#: reference_accessor.xml:1140
 #, no-c-format
 msgid "Tests if a LineString is closed and simple."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1143
+#: reference_accessor.xml:1145
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsRing</function></funcdef> "
@@ -2610,7 +2614,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1154
+#: reference_accessor.xml:1156
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if this <varname>LINESTRING</varname> is "
@@ -2626,13 +2630,13 @@ msgstr ""
 "<xref linkend=\"ST_IsSimple\"/> (pas d'auto intersection)."
 
 #. Tag: para
-#: reference_accessor.xml:1162
+#: reference_accessor.xml:1164
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.6"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.6"
 
 #. Tag: para
-#: reference_accessor.xml:1164
+#: reference_accessor.xml:1166
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of <function>ST_IsRing(<varname>NULL</varname>)</"
@@ -2642,7 +2646,7 @@ msgstr ""
 "function> doit renvoyer 0. PostGIS renvoie <varname>NULL</varname>."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1173
+#: reference_accessor.xml:1175
 #, no-c-format
 msgid ""
 "SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\n"
@@ -2678,7 +2682,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:1179
+#: reference_accessor.xml:1181
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
@@ -2688,13 +2692,13 @@ msgstr ""
 "linkend=\"ST_EndPoint\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1187
+#: reference_accessor.xml:1189
 #, no-c-format
 msgid "ST_IsSimple"
 msgstr "ST_IsSimple"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1189
+#: reference_accessor.xml:1191
 #, fuzzy, no-c-format
 msgid ""
 "Tests if a geometry has no points of self-intersection or self-tangency."
@@ -2703,7 +2707,7 @@ msgstr ""
 "intersection ou des segments tangentiels."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1194
+#: reference_accessor.xml:1196
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsSimple</function></funcdef> "
@@ -2713,7 +2717,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1204
+#: reference_accessor.xml:1206
 #, no-c-format
 msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
@@ -2727,7 +2731,7 @@ msgstr ""
 "\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 
 #. Tag: para
-#: reference_accessor.xml:1210
+#: reference_accessor.xml:1212
 #, no-c-format
 msgid ""
 "SQL-MM defines the result of ST_IsSimple(NULL) to be 0, while PostGIS "
@@ -2738,13 +2742,13 @@ msgstr ""
 "renvoie <varname>NULL</varname>."
 
 #. Tag: para
-#: reference_accessor.xml:1215
+#: reference_accessor.xml:1217
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.8"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1223
+#: reference_accessor.xml:1225
 #, no-c-format
 msgid ""
 "SELECT ST_IsSimple(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));\n"
@@ -2774,19 +2778,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_accessor.xml:1235
+#: reference_accessor.xml:1237
 #, no-c-format
 msgid "ST_M"
 msgstr "ST_M"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1237
+#: reference_accessor.xml:1239
 #, no-c-format
 msgid "Returns the M coordinate of a Point."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1242
+#: reference_accessor.xml:1244
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_M</function></funcdef> <paramdef><type>geometry "
@@ -2796,17 +2800,17 @@ msgstr ""
 "</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1252
+#: reference_accessor.xml:1254
 #, fuzzy, no-c-format
 msgid ""
 "Return the M crdinate of a Point, or NULL if not available. Input must be a "
 "Point."
 msgstr ""
-"<refpurpose> Retourne les coordonnées M d'un point, ou NULL si non "
-"disponible. L'entrée doit être un point. <refpurpose>"
+"Retourne les coordonnées M d'un point, ou NULL si non "
+"disponible. L'entrée doit être un point."
 
 #. Tag: para
-#: reference_accessor.xml:1256
+#: reference_accessor.xml:1258
 #, no-c-format
 msgid ""
 "This is not (yet) part of the OGC spec, but is listed here to complete the "
@@ -2814,13 +2818,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1260 reference_accessor.xml:2033
+#: reference_accessor.xml:1262 reference_accessor.xml:2035
 #, no-c-format
 msgid "&sqlmm_compliant;"
 msgstr "&sqlmm_compliant;"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1268
+#: reference_accessor.xml:1270
 #, no-c-format
 msgid ""
 "SELECT ST_M(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
@@ -2836,7 +2840,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:1275
+#: reference_accessor.xml:1277
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
@@ -2846,19 +2850,19 @@ msgstr ""
 ">"
 
 #. Tag: refname
-#: reference_accessor.xml:1281
+#: reference_accessor.xml:1283
 #, no-c-format
 msgid "ST_MemSize"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1283
+#: reference_accessor.xml:1285
 #, fuzzy, no-c-format
 msgid "Returns the amount of memory space a geometry takes."
 msgstr "Renvoie le type de la géométrie passée en paramètre."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1288
+#: reference_accessor.xml:1290
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_MemSize</function></funcdef> "
@@ -2868,13 +2872,13 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1298
+#: reference_accessor.xml:1300
 #, fuzzy, no-c-format
 msgid "Returns the amount of memory space (in bytes) the geometry takes."
 msgstr "Renvoie le type de la géométrie passée en paramètre."
 
 #. Tag: para
-#: reference_accessor.xml:1299
+#: reference_accessor.xml:1301
 #, no-c-format
 msgid ""
 "This complements the PostgreSQL built-in <ulink url=\"https://www.postgresql."
@@ -2884,7 +2888,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1301
+#: reference_accessor.xml:1303
 #, no-c-format
 msgid ""
 "pg_relation_size which gives the byte size of a table may return byte size "
@@ -2893,7 +2897,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1303
+#: reference_accessor.xml:1305
 #, no-c-format
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
@@ -2901,7 +2905,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1304
+#: reference_accessor.xml:1306
 #, no-c-format
 msgid ""
 "pg_column_size returns how much space a geometry would take in a column "
@@ -2909,7 +2913,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1311
+#: reference_accessor.xml:1313
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 name changed to ST_MemSize to follow naming convention. In "
@@ -2918,7 +2922,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:1318
+#: reference_accessor.xml:1320
 #, no-c-format
 msgid ""
 "--Return how much byte space Boston takes up  in our Mass data set\n"
@@ -2953,21 +2957,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:1325
+#: reference_accessor.xml:1327
 #, no-c-format
 msgid "ST_NDims"
 msgstr "ST_NDims"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1326
+#: reference_accessor.xml:1328
 #, fuzzy, no-c-format
 msgid "Returns the coordinate dimension of a geometry."
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"Retourne la dimension des coordonnées d'une valeur ST_Geometry."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1331
+#: reference_accessor.xml:1333
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NDims</function></funcdef> "
@@ -2977,7 +2980,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1341
+#: reference_accessor.xml:1343
 #, no-c-format
 msgid ""
 "Returns the coordinate dimension of the geometry. PostGIS supports 2 - (x,"
@@ -2986,7 +2989,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:1350
+#: reference_accessor.xml:1352
 #, no-c-format
 msgid ""
 "SELECT ST_NDims(ST_GeomFromText('POINT(1 1)')) As d2point,\n"
@@ -3006,26 +3009,26 @@ msgstr ""
 "2 | 3 | 3"
 
 #. Tag: para
-#: reference_accessor.xml:1354
+#: reference_accessor.xml:1356
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1360
+#: reference_accessor.xml:1362
 #, no-c-format
 msgid "ST_NPoints"
 msgstr "ST_NPoints"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1361
+#: reference_accessor.xml:1363
 #, fuzzy, no-c-format
 msgid "Returns the number of points (vertices) in a geometry."
 msgstr "Retourne le nombre de points (vertex) d'un objet géométrique."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1366
+#: reference_accessor.xml:1368
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NPoints</function></funcdef> "
@@ -3035,7 +3038,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1376
+#: reference_accessor.xml:1378
 #, no-c-format
 msgid "Return the number of points in a geometry. Works for all geometries."
 msgstr ""
@@ -3043,7 +3046,7 @@ msgstr ""
 "tous les types de géométrie. "
 
 #. Tag: programlisting
-#: reference_accessor.xml:1388
+#: reference_accessor.xml:1390
 #, no-c-format
 msgid ""
 "SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 "
@@ -3069,19 +3072,19 @@ msgstr ""
 "4"
 
 #. Tag: refname
-#: reference_accessor.xml:1399
+#: reference_accessor.xml:1401
 #, no-c-format
 msgid "ST_NRings"
 msgstr "ST_NRings"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1400
+#: reference_accessor.xml:1402
 #, fuzzy, no-c-format
 msgid "Returns the number of rings in a polygonal geometry."
 msgstr "Retourne le nombre de points (vertex) d'un objet géométrique."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1405
+#: reference_accessor.xml:1407
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NRings</function></funcdef> "
@@ -3091,7 +3094,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1415
+#: reference_accessor.xml:1417
 #, no-c-format
 msgid ""
 "If the geometry is a polygon or multi-polygon returns the number of rings. "
@@ -3099,7 +3102,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:1425
+#: reference_accessor.xml:1427
 #, no-c-format
 msgid ""
 "SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As "
@@ -3121,13 +3124,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_accessor.xml:1438
+#: reference_accessor.xml:1440
 #, no-c-format
 msgid "ST_NumGeometries"
 msgstr "ST_NumGeometries"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1439
+#: reference_accessor.xml:1441
 #, fuzzy, no-c-format
 msgid "Returns the number of elements in a geometry collection."
 msgstr ""
@@ -3135,7 +3138,7 @@ msgstr ""
 "tous les types de géométrie. "
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1444
+#: reference_accessor.xml:1446
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumGeometries</function></funcdef> "
@@ -3145,7 +3148,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1454
+#: reference_accessor.xml:1456
 #, no-c-format
 msgid ""
 "Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or "
@@ -3154,7 +3157,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1458
+#: reference_accessor.xml:1460
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 In prior versions this would return NULL if the geometry was "
@@ -3163,13 +3166,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1460
+#: reference_accessor.xml:1462
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 9.1.4"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1470
+#: reference_accessor.xml:1472
 #, no-c-format
 msgid ""
 "--Prior versions would have returned NULL for this -- in 2.0.0 this returns "
@@ -3189,25 +3192,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1475
+#: reference_accessor.xml:1477
 #, no-c-format
 msgid ", <xref linkend=\"ST_Multi\"/>"
 msgstr ", <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1481
+#: reference_accessor.xml:1483
 #, no-c-format
 msgid "ST_NumInteriorRings"
 msgstr "ST_NumInteriorRings"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1482
+#: reference_accessor.xml:1484
 #, fuzzy, no-c-format
 msgid "Returns the number of interior rings (holes) of a Polygon."
 msgstr "Retourne le nombre de points (vertex) d'un objet géométrique."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1487
+#: reference_accessor.xml:1489
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumInteriorRings</function></funcdef> "
@@ -3217,7 +3220,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1497
+#: reference_accessor.xml:1499
 #, no-c-format
 msgid ""
 "Return the number of interior rings of a polygon geometry. Return NULL if "
@@ -3225,13 +3228,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1502
+#: reference_accessor.xml:1504
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.2.5"
 msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.5"
 
 #. Tag: para
-#: reference_accessor.xml:1503
+#: reference_accessor.xml:1505
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, "
@@ -3239,7 +3242,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:1509
+#: reference_accessor.xml:1511
 #, no-c-format
 msgid ""
 "--If you have a regular polygon\n"
@@ -3256,13 +3259,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:1520
+#: reference_accessor.xml:1522
 #, no-c-format
 msgid "ST_NumInteriorRing"
 msgstr "ST_NumInteriorRing"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1521
+#: reference_accessor.xml:1523
 #, no-c-format
 msgid ""
 "Returns the number of interior rings (holes) of a Polygon. Aias for "
@@ -3270,7 +3273,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1526
+#: reference_accessor.xml:1528
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumInteriorRing</function></funcdef> "
@@ -3280,13 +3283,13 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: refname
-#: reference_accessor.xml:1542
+#: reference_accessor.xml:1544
 #, no-c-format
 msgid "ST_NumPatches"
 msgstr "ST_NumPatches"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1543
+#: reference_accessor.xml:1545
 #, no-c-format
 msgid ""
 "Return the number of faces on a Polyhedral Surface. Will return null for non-"
@@ -3294,7 +3297,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1548
+#: reference_accessor.xml:1550
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumPatches</function></funcdef> "
@@ -3304,7 +3307,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1558
+#: reference_accessor.xml:1560
 #, no-c-format
 msgid ""
 "Return the number of faces on a Polyhedral Surface. Will return null for non-"
@@ -3313,19 +3316,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1561 reference_accessor.xml:1654
+#: reference_accessor.xml:1563 reference_accessor.xml:1656
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Disponibilité : 2.0.0"
 
 #. Tag: para
-#: reference_accessor.xml:1564 reference_accessor.xml:1655
+#: reference_accessor.xml:1566 reference_accessor.xml:1657
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: ?"
 msgstr "&sqlmm_compliant; SQL-MM 3: ?"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1571
+#: reference_accessor.xml:1573
 #, no-c-format
 msgid ""
 "SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
@@ -3340,13 +3343,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:1582
+#: reference_accessor.xml:1584
 #, no-c-format
 msgid "ST_NumPoints"
 msgstr "ST_NumPoints"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1583
+#: reference_accessor.xml:1585
 #, fuzzy, no-c-format
 msgid "Returns the number of points in a LineString or CircularString."
 msgstr ""
@@ -3354,7 +3357,7 @@ msgstr ""
 "ST_LineString ou ST_CircularString."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1588
+#: reference_accessor.xml:1590
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_NumPoints</function></funcdef> "
@@ -3364,7 +3367,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1598
+#: reference_accessor.xml:1600
 #, no-c-format
 msgid ""
 "Return the number of points in an ST_LineString or ST_CircularString value. "
@@ -3375,13 +3378,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1605
+#: reference_accessor.xml:1607
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.4"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1611
+#: reference_accessor.xml:1613
 #, no-c-format
 msgid ""
 "SELECT ST_NumPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
@@ -3395,19 +3398,19 @@ msgstr ""
 "4"
 
 #. Tag: refname
-#: reference_accessor.xml:1622
+#: reference_accessor.xml:1624
 #, no-c-format
 msgid "ST_PatchN"
 msgstr "ST_PatchN"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1624
+#: reference_accessor.xml:1626
 #, fuzzy, no-c-format
 msgid "Returns the Nth geometry (face) of a PolyhedralSurface."
 msgstr "Renvoie le type de la géométrie passée en paramètre."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1629
+#: reference_accessor.xml:1631
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PatchN</function></funcdef> "
@@ -3419,7 +3422,7 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1640
+#: reference_accessor.xml:1642
 #, no-c-format
 msgid ""
 ">Returns the 1-based Nth geometry (face) if the geometry is a "
@@ -3429,13 +3432,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1647
+#: reference_accessor.xml:1649
 #, no-c-format
 msgid "Index is 1-based."
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1651
+#: reference_accessor.xml:1653
 #, fuzzy, no-c-format
 msgid ""
 "If you want to extract all elements of a geometry <xref linkend=\"ST_Dump\"/"
@@ -3445,7 +3448,7 @@ msgstr ""
 "ST_Dump sera plus efficace."
 
 #. Tag: programlisting
-#: reference_accessor.xml:1665
+#: reference_accessor.xml:1667
 #, no-c-format
 msgid ""
 "--Extract the 2nd face of the polyhedral surface\n"
@@ -3465,7 +3468,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1672
+#: reference_accessor.xml:1674
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
@@ -3475,13 +3478,13 @@ msgstr ""
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1678
+#: reference_accessor.xml:1680
 #, no-c-format
 msgid "ST_PointN"
 msgstr "ST_PointN"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1680
+#: reference_accessor.xml:1682
 #, fuzzy, no-c-format
 msgid ""
 "Returns the Nth point in the first LineString or circular LineString in a "
@@ -3491,7 +3494,7 @@ msgstr ""
 "ST_LineString ou ST_CircularString."
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1686
+#: reference_accessor.xml:1688
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointN</function></funcdef> "
@@ -3503,7 +3506,7 @@ msgstr ""
 "paramdef> <paramdef><type>integer </type> <parameter>n</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1697
+#: reference_accessor.xml:1699
 #, no-c-format
 msgid ""
 "Return the Nth point in a single linestring or circular linestring in the "
@@ -3513,7 +3516,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1702
+#: reference_accessor.xml:1704
 #, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
@@ -3522,7 +3525,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1708
+#: reference_accessor.xml:1710
 #, no-c-format
 msgid ""
 "If you want to get the Nth point of each LineString in a MultiLineString, "
@@ -3530,13 +3533,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1713
+#: reference_accessor.xml:1715
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5"
 
 #. Tag: para
-#: reference_accessor.xml:1716
+#: reference_accessor.xml:1718
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 no longer works with single geometry multilinestrings. In "
@@ -3546,13 +3549,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1719
+#: reference_accessor.xml:1721
 #, no-c-format
 msgid "Changed: 2.3.0 : negative indexing available (-1 is last point)"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:1729
+#: reference_accessor.xml:1731
 #, no-c-format
 msgid ""
 "-- Extract all POINTs from a LINESTRING\n"
@@ -3590,19 +3593,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_accessor.xml:1741
+#: reference_accessor.xml:1743
 #, no-c-format
 msgid "ST_Points"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1742
+#: reference_accessor.xml:1744
 #, no-c-format
 msgid "Returns a MultiPoint containing all the coordinates of a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1748
+#: reference_accessor.xml:1750
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
@@ -3610,7 +3613,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1761
+#: reference_accessor.xml:1763
 #, no-c-format
 msgid ""
 "Returns a MultiPoint containing all of the coordinates of a geometry. Does "
@@ -3620,19 +3623,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1769
+#: reference_accessor.xml:1771
 #, no-c-format
 msgid "M and Z coordinates will be preserved if present."
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1776
+#: reference_accessor.xml:1778
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:1783
+#: reference_accessor.xml:1785
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 "
@@ -3648,19 +3651,19 @@ msgstr ""
 "MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)"
 
 #. Tag: refname
-#: reference_accessor.xml:1794
+#: reference_accessor.xml:1796
 #, no-c-format
 msgid "ST_StartPoint"
 msgstr "ST_StartPoint"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1796
+#: reference_accessor.xml:1798
 #, no-c-format
 msgid "Returns the first point of a LineString."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1801
+#: reference_accessor.xml:1803
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_StartPoint</function></funcdef> "
@@ -3670,7 +3673,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1812
+#: reference_accessor.xml:1814
 #, no-c-format
 msgid ""
 "Returns the first point of a <varname>LINESTRING</varname> or "
@@ -3680,13 +3683,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1816
+#: reference_accessor.xml:1818
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.3"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1831
+#: reference_accessor.xml:1833
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));\n"
@@ -3717,25 +3720,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1837
+#: reference_accessor.xml:1839
 #, no-c-format
 msgid ", <xref linkend=\"ST_PointN\"/>"
 msgstr ", <xref linkend=\"ST_PointN\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1842
+#: reference_accessor.xml:1844
 #, no-c-format
 msgid "ST_Summary"
 msgstr "ST_Summary"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1844
+#: reference_accessor.xml:1846
 #, fuzzy, no-c-format
 msgid "Returns a text summary of the contents of a geometry."
 msgstr "Retourne le nombre de points (vertex) d'un objet géométrique."
 
 #. Tag: funcsynopsis
-#: reference_accessor.xml:1849
+#: reference_accessor.xml:1851
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_Summary</function></funcdef> "
@@ -3751,13 +3754,13 @@ msgstr ""
 "parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_accessor.xml:1864
+#: reference_accessor.xml:1866
 #, fuzzy, no-c-format
 msgid "Returns a text summary of the contents of the geometry."
 msgstr "Renvoie l'ensemble formant la frontière finie de cette géométrie."
 
 #. Tag: para
-#: reference_accessor.xml:1866
+#: reference_accessor.xml:1868
 #, no-c-format
 msgid ""
 "Flags shown square brackets after the geometry type have the following "
@@ -3765,62 +3768,62 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1870
+#: reference_accessor.xml:1872
 #, fuzzy, no-c-format
 msgid "M: has M coordinate"
 msgstr "M : possède une ordonnée M"
 
 #. Tag: para
-#: reference_accessor.xml:1871
+#: reference_accessor.xml:1873
 #, fuzzy, no-c-format
 msgid "Z: has Z coordinate"
 msgstr "Z : possède une coordonnée Z"
 
 #. Tag: para
-#: reference_accessor.xml:1872
+#: reference_accessor.xml:1874
 #, no-c-format
 msgid "B: has a cached bounding box"
 msgstr "B : possède une bounding box en cache"
 
 #. Tag: para
-#: reference_accessor.xml:1873
+#: reference_accessor.xml:1875
 #, no-c-format
 msgid "G: is geodetic (geography)"
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1874
+#: reference_accessor.xml:1876
 #, no-c-format
 msgid "S: has spatial reference system"
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1885
+#: reference_accessor.xml:1887
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1886
+#: reference_accessor.xml:1888
 #, no-c-format
 msgid "Enhanced: 2.0.0 added support for geography"
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1887
+#: reference_accessor.xml:1889
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 S flag to denote if has a known spatial reference system"
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1888
+#: reference_accessor.xml:1890
 #, no-c-format
 msgid "Enhanced: 2.2.0 Added support for TIN and Curves"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:1894
+#: reference_accessor.xml:1896
 #, no-c-format
 msgid ""
 "=# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,\n"
@@ -3848,7 +3851,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1900
+#: reference_accessor.xml:1902
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_AddBBox\"/>, <xref linkend=\"ST_Force_3DM\"/>, "
@@ -3857,7 +3860,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1909
+#: reference_accessor.xml:1911
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_IsValidReason\"/>, "
@@ -3867,19 +3870,19 @@ msgstr ""
 "<xref linkend=\"ST_IsValidDetail\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1920
+#: reference_accessor.xml:1922
 #, no-c-format
 msgid "ST_X"
 msgstr "ST_X"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1922
+#: reference_accessor.xml:1924
 #, no-c-format
 msgid "Returns the X coordinate of a Point."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1927
+#: reference_accessor.xml:1929
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_X</function></funcdef> <paramdef><type>geometry "
@@ -3889,17 +3892,17 @@ msgstr ""
 "</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1937
+#: reference_accessor.xml:1939
 #, fuzzy, no-c-format
 msgid ""
 "Return the X coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<refpurpose> Retourne les coordonnées M d'un point, ou NULL si non "
-"disponible. L'entrée doit être un point. <refpurpose>"
+"Retourne les coordonnées M d'un point, ou NULL si non "
+"disponible. L'entrée doit être un point."
 
 #. Tag: para
-#: reference_accessor.xml:1940
+#: reference_accessor.xml:1942
 #, no-c-format
 msgid ""
 "To get the minimum and maximum X value of geometry coordinates use the "
@@ -3907,13 +3910,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1943
+#: reference_accessor.xml:1945
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.3"
 msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.3"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1951
+#: reference_accessor.xml:1953
 #, no-c-format
 msgid ""
 "SELECT ST_X(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
@@ -3941,7 +3944,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:1958
+#: reference_accessor.xml:1960
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
@@ -3953,19 +3956,19 @@ msgstr ""
 ">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:1964
+#: reference_accessor.xml:1966
 #, no-c-format
 msgid "ST_Y"
 msgstr "ST_Y"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:1966
+#: reference_accessor.xml:1968
 #, no-c-format
 msgid "Returns the Y coordinate of a Point."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:1971
+#: reference_accessor.xml:1973
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Y</function></funcdef> <paramdef><type>geometry "
@@ -3975,17 +3978,17 @@ msgstr ""
 "</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:1981
+#: reference_accessor.xml:1983
 #, fuzzy, no-c-format
 msgid ""
 "Return the Y coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<refpurpose> Retourne les coordonnées M d'un point, ou NULL si non "
-"disponible. L'entrée doit être un point. <refpurpose>"
+"Retourne les coordonnées M d'un point, ou NULL si non "
+"disponible. L'entrée doit être un point."
 
 #. Tag: para
-#: reference_accessor.xml:1984
+#: reference_accessor.xml:1986
 #, no-c-format
 msgid ""
 "To get the minimum and maximum Y value of geometry coordinates use the "
@@ -3993,13 +3996,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:1988
+#: reference_accessor.xml:1990
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.4"
 
 #. Tag: programlisting
-#: reference_accessor.xml:1996
+#: reference_accessor.xml:1998
 #, no-c-format
 msgid ""
 "SELECT ST_Y(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
@@ -4027,7 +4030,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_accessor.xml:2003
+#: reference_accessor.xml:2005
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_M\"/>, <xref "
@@ -4039,19 +4042,19 @@ msgstr ""
 ">, <xref linkend=\"ST_Z\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:2009
+#: reference_accessor.xml:2011
 #, no-c-format
 msgid "ST_Z"
 msgstr "ST_Z"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:2011
+#: reference_accessor.xml:2013
 #, no-c-format
 msgid "Returns the Z coordinate of a Point."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_accessor.xml:2016
+#: reference_accessor.xml:2018
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Z</function></funcdef> <paramdef><type>geometry "
@@ -4061,17 +4064,17 @@ msgstr ""
 "</type> <parameter>a_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:2026
+#: reference_accessor.xml:2028
 #, fuzzy, no-c-format
 msgid ""
 "Return the Z coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<refpurpose> Retourne les coordonnées M d'un point, ou NULL si non "
-"disponible. L'entrée doit être un point. <refpurpose>"
+"Retourne les coordonnées M d'un point, ou NULL si non "
+"disponible. L'entrée doit être un point."
 
 #. Tag: para
-#: reference_accessor.xml:2029
+#: reference_accessor.xml:2031
 #, no-c-format
 msgid ""
 "To get the minimum and maximum Z value of geometry coordinates use the "
@@ -4079,7 +4082,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:2040
+#: reference_accessor.xml:2042
 #, no-c-format
 msgid ""
 "SELECT ST_Z(ST_GeomFromEWKT('POINT(1 2 3 4)'));\n"
@@ -4090,7 +4093,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_accessor.xml:2047
+#: reference_accessor.xml:2049
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
@@ -4100,13 +4103,13 @@ msgstr ""
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #. Tag: refname
-#: reference_accessor.xml:2053
+#: reference_accessor.xml:2055
 #, no-c-format
 msgid "ST_Zmflag"
 msgstr "ST_Zmflag"
 
 #. Tag: refpurpose
-#: reference_accessor.xml:2055
+#: reference_accessor.xml:2057
 #, fuzzy, no-c-format
 msgid ""
 "<refpurpose>Returns a code indicating the ZM coordinate dimension of a "
@@ -4116,7 +4119,7 @@ msgstr ""
 "refpurpose>"
 
 #. Tag: funcprototype
-#: reference_accessor.xml:2060
+#: reference_accessor.xml:2062
 #, no-c-format
 msgid ""
 "<funcdef>smallint <function>ST_Zmflag</function></funcdef> "
@@ -4126,23 +4129,23 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_accessor.xml:2070
+#: reference_accessor.xml:2072
 #, fuzzy, no-c-format
 msgid ""
 "<para>Returns a code indicating the ZM coordinate dimension of a geometry.</"
 "para>"
 msgstr ""
-"< para >Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
-"para >"
+"<para>Retourne la dimension des coordonnées d'une valeur ST_Geometry.</"
+"para>"
 
 #. Tag: para
-#: reference_accessor.xml:2072
+#: reference_accessor.xml:2074
 #, no-c-format
 msgid "Values are: 0 = 2D, 1 = 3D-M, 2 = 3D-Z, 3 = 4D."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_accessor.xml:2082
+#: reference_accessor.xml:2084
 #, no-c-format
 msgid ""
 "SELECT ST_Zmflag(ST_GeomFromEWKT('LINESTRING(1 2, 3 4)'));\n"
@@ -4184,7 +4187,7 @@ msgstr ""
 "                 3"
 
 #. Tag: para
-#: reference_accessor.xml:2089
+#: reference_accessor.xml:2091
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
