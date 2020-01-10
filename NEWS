@@ -25,6 +25,7 @@ PostGIS 3.1.0
   - #4578, Add parallellism and cost properties to brin functions (Raúl Marín)
   - #4473, Silence yacc warnings (Raúl Marín)
   - #4589, Disable C asserts when building without "--enable-debug" (Raúl Marín)
+  - #4543, Introduce ryu to print doubles (Raúl Marín)
 
 * Bug fixes *
   - #4544, Fix leak when parsing a WKT geometry_list (Raúl Marín)

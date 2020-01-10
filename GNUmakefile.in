@@ -53,6 +53,7 @@ check-no-trailing-blanks:
 		grep -v lookup3 | \
 		grep -v vector_tile.pb-c | \
 		grep -v postgis/sqldefines.h | \
+		grep -v deps/ | \
 		xargs grep -n '[[:space:]]$$'
 
 installcheck: installcheck-base installcheck-upgrade

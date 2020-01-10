@@ -23,29 +23,34 @@
 # **********************************************************************/
 
 CC=@CC@
-CXX=@CXX@
-CFLAGS=-I../liblwgeom @WARNFLAGS@ @CFLAGS@ @PICFLAGS@
-CXXFLAGS=-I../liblwgeom @WARNFLAGS@ @CXXFLAGS@ @PICFLAGS@
-LDFLAGS = @LDFLAGS@
+CFLAGS = -I.. @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ -DRYU_NO_TRAILING_ZEROS
 top_builddir = @top_builddir@
-libdir = @libdir@
 LIBTOOL = @LIBTOOL@
 
-all: @WAGYU_LIB@ @RYU_LIB@
+RYU_OBJS = d2fixed.o
+LT_RYU_OBJS =  $(RYU_OBJS:.o=.lo)
 
-@WAGYU_LIB@:
-	$(MAKE) -C wagyu $@
+all: @RYU_LIB@
 
-@RYU_LIB@:
-	$(MAKE) -C ryu $@
+@RYU_LIB@: $(LT_RYU_OBJS)
+	$(LIBTOOL) --tag=CC --mode=link $(CC) $(LT_RYU_OBJS) -static -o $@
+
+
+$(LT_RYU_OBJS): %.lo: %.c
+	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	$(MAKE) -C wagyu $@
-	$(MAKE) -C ryu $@
+	rm -f @RYU_LIB@ $(RYU_OBJS) $(LT_RYU_OBJS)
+	rm -rf .libs
 
 distclean: clean
-	$(MAKE) -C wagyu $@
-	$(MAKE) -C ryu $@
 	rm -f Makefile
 
-.PHONY: install uninstall check check-unit check-regress
+
+install:
+
+uninstall:
+
+check:
+
+.PHONY: clean distclean install uninstall check
