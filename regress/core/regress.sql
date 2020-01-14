@@ -268,7 +268,7 @@ select '226', ST_SRID(ST_Expand('SRID=4326;POINT (0 0)'::geometry, 1))=4326;
 select '227', ST_AsEWKT(ST_TileEnvelope(-1, 0, 0));
 select '228', ST_AsEWKT(ST_TileEnvelope(0, 0, 1));
 select '229', ST_AsEWKT(ST_TileEnvelope(0, 0, 0));
-select '230', ST_AsEWKT(ST_TileEnvelope(4, 8, 8));
+select '230', ST_AsText(ST_TileEnvelope(4, 8, 8), 7);
 select '231', ST_AsEWKT(ST_TileEnvelope(4, 15, 15));
 select '232', ST_AsEWKT(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-100, -100, 100, 100, 0)));
 select '233', ST_AsEWKT(ST_TileEnvelope(4, 15, 15, ST_MakeEnvelope(-100, -100, 100, 100, 0)));
