@@ -1908,46 +1908,41 @@ environment).</para></note>
 	  not using extensions.  If you have extensions and try to
 	  upgrade with this approach you'll get messages like:</para>
 
-	  <programlisting>can't drop ... because postgis extension depends on it</programlisting>
+		<programlisting>can't drop ... because postgis extension depends on it</programlisting>
 
-		<para>
-		NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from
+		<para>NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from
 		PostGIS 2.* prior to r7409, you cannot use this procedure but
-	  would rather need to do a
+		would rather need to do a
 		<link linkend="hard_upgrade">HARD UPGRADE</link>.
-	  </para>
-
-	  <para>
-		After compiling and installing (make install) you should
-		find a set of	<filename>*_upgrade.sql</filename>
-		files in the installation folders. You can list
-		them all with:
-	  </para>
-
-		<programlisting>
-		ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade.sql
-		</programlisting>
+		</para>
 
 		<para>
-		Load them all in turn, starting from <filename>postgis_upgrade.sql</filename>.
-	  </para>
+			After compiling and installing (make install) you should
+			find a set of	<filename>*_upgrade.sql</filename>
+			files in the installation folders. You can list
+			them all with:
+		</para>
 
-	  <programlisting>
-		psql -f postgis_upgrade.sql -d your_spatial_database
-		</programlisting>
+		<programlisting>ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade.sql</programlisting>
 
-	  <para>
-		The same procedure applies to raster,
-		topology and sfcgal extensions, with upgrade files named
-		<filename>rtpostgis_upgrade.sql</filename>,
-		<filename>topology_upgrade.sql</filename> and
-		<filename>sfcgal_upgrade.sql</filename> respectively.
-		If you need them:
-	  </para>
+		<para>
+			Load them all in turn, starting from <filename>postgis_upgrade.sql</filename>.
+		</para>
 
-	  <programlisting>psql -f rtpostgis_upgrade.sql -d your_spatial_database</programlisting>
-	  <programlisting>psql -f topology_upgrade.sql -d your_spatial_database</programlisting>
-	  <programlisting>psql -f sfcgal_upgrade.sql -d your_spatial_database</programlisting>
+		<programlisting>psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
+
+		<para>
+			The same procedure applies to raster,
+			topology and sfcgal extensions, with upgrade files named
+			<filename>rtpostgis_upgrade.sql</filename>,
+			<filename>topology_upgrade.sql</filename> and
+			<filename>sfcgal_upgrade.sql</filename> respectively.
+			If you need them:
+		</para>
+
+		<programlisting>psql -f rtpostgis_upgrade.sql -d your_spatial_database</programlisting>
+		<programlisting>psql -f topology_upgrade.sql -d your_spatial_database</programlisting>
+		<programlisting>psql -f sfcgal_upgrade.sql -d your_spatial_database</programlisting>
 
 	  <note>
 		<para>
