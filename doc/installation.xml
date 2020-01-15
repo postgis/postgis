@@ -54,7 +54,103 @@ in each individual database you want to use it in.
 
   </sect1>
 
-  <sect1 id="install_requirements">
+  <sect1 id="PGInstall">
+	<title>Compiling and Install from Source</title>
+
+	<note>
+	  <para>
+		Many OS systems now include pre-built packages for PostgreSQL/PostGIS.
+		In many cases compilation is only necessary if you want the most
+		bleeding edge versions or you are a package maintainer.
+	  </para>
+	  <para>This section includes general compilation instructions, if you are compiling for Windows etc
+		or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
+	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink></para>
+	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="https://postgis.net/windows_downloads">PostGIS Windows download site</ulink>
+	  We also have <ulink url="https://postgis.net/windows_downloads">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
+	  use these to experiment with the in progress releases of PostGIS</para>
+	</note>
+
+	<para>
+	  The PostGIS module is an extension to the PostgreSQL backend server. As
+	  such, PostGIS &last_release_version; <emphasis>requires</emphasis> full
+	  PostgreSQL server headers access in order to compile. It can be built
+	  against PostgreSQL versions &min_postgres_version; or higher. Earlier
+	  versions of PostgreSQL are <emphasis>not</emphasis> supported.
+	</para>
+
+	<para>
+	  Refer to the PostgreSQL installation guides if you haven't already
+	  installed PostgreSQL.
+	  <ulink url="http://www.postgresql.org">
+		http://www.postgresql.org
+	  </ulink>
+	  .
+	</para>
+
+	<note>
+	  <para>
+		For GEOS functionality, when you install PostgresSQL you may need to
+		explicitly link PostgreSQL against the standard C++ library:
+	  </para>
+
+	  <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
+
+	  <para>
+		This is a workaround for bogus C++ exceptions interaction with older
+		development tools. If you experience weird problems (backend
+		unexpectedly closed or similar things) try this trick. This will require
+		recompiling your PostgreSQL from scratch, of course.
+	  </para>
+	</note>
+
+	<para>
+	  The following steps outline the configuration and compilation of the
+	  PostGIS source. They are written for Linux users and will not work on
+	  Windows or Mac.
+	</para>
+
+  <sect2 id="install_getting_source">
+	<title>Getting the Source</title>
+
+	<para>
+	  Retrieve the PostGIS source archive from the downloads website
+	  <ulink url="&postgis_download_url;">
+		&postgis_download_url;
+	  </ulink>
+	</para>
+
+	<programlisting>wget &postgis_download_url;
+tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
+
+	<para>
+	  This will create a directory called
+	  <varname>postgis-&last_release_version;</varname> in the current working
+	  directory.
+	</para>
+
+	<para>
+	  Alternatively, checkout the source from the
+	  <ulink url="https://git-scm.com/">
+		git
+	  </ulink>
+	  repository
+	  <ulink url="https://git.osgeo.org/gitea/postgis/postgis/">
+		https://git.osgeo.org/gitea/postgis/postgis/
+	  </ulink>
+	  .
+	</para>
+
+	<programlisting>git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis</programlisting>
+
+	<para>
+	  Change into the newly created
+	  <varname>postgis</varname> directory to continue
+	  the installation.
+	</para>
+  </sect2>
+
+  <sect2 id="install_requirements">
 	<title>Install Requirements</title>
 
 	<para>
@@ -239,106 +335,11 @@ in each individual database you want to use it in.
 		</para>
 	  </listitem>
 	</itemizedlist>
-  </sect1>
+  </sect2>
 
-  <sect1 id="install_getting_source">
-	<title>Getting the Source</title>
-
-	<para>
-	  Retrieve the PostGIS source archive from the downloads website
-	  <ulink url="&postgis_download_url;">
-		&postgis_download_url;
-	  </ulink>
-	</para>
-
-	<programlisting>wget &postgis_download_url;
-tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
-
-	<para>
-	  This will create a directory called
-	  <varname>postgis-&last_release_version;</varname> in the current working
-	  directory.
-	</para>
-
-	<para>
-	  Alternatively, checkout the source from the
-	  <ulink url="https://git-scm.com/">
-		git
-	  </ulink>
-	  repository
-	  <ulink url="https://git.osgeo.org/gitea/postgis/postgis/">
-		https://git.osgeo.org/gitea/postgis/postgis/
-	  </ulink>
-	  .
-	</para>
-
-	<programlisting>git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis</programlisting>
-
-	<para>
-	  Change into the newly created
-	  <varname>postgis</varname> directory to continue
-	  the installation.
-	</para>
-  </sect1>
-
-  <sect1 id="PGInstall">
-	<title>Compiling and Install from Source: Detailed</title>
-
-	<note>
-	  <para>
-		Many OS systems now include pre-built packages for PostgreSQL/PostGIS.
-		In many cases compilation is only necessary if you want the most
-		bleeding edge versions or you are a package maintainer.
-	  </para>
-	  <para>This section includes general compilation instructions, if you are compiling for Windows etc
-		or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
-	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink></para>
-	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="https://postgis.net/windows_downloads">PostGIS Windows download site</ulink>
-	  We also have <ulink url="https://postgis.net/windows_downloads">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
-	  use these to experiment with the in progress releases of PostGIS</para>
-	</note>
-
-	<para>
-	  The PostGIS module is an extension to the PostgreSQL backend server. As
-	  such, PostGIS &last_release_version; <emphasis>requires</emphasis> full
-	  PostgreSQL server headers access in order to compile. It can be built
-	  against PostgreSQL versions &min_postgres_version; or higher. Earlier
-	  versions of PostgreSQL are <emphasis>not</emphasis> supported.
-	</para>
-
-	<para>
-	  Refer to the PostgreSQL installation guides if you haven't already
-	  installed PostgreSQL.
-	  <ulink url="http://www.postgresql.org">
-		http://www.postgresql.org
-	  </ulink>
-	  .
-	</para>
-
-	<note>
-	  <para>
-		For GEOS functionality, when you install PostgresSQL you may need to
-		explicitly link PostgreSQL against the standard C++ library:
-	  </para>
-
-	  <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
-
-	  <para>
-		This is a workaround for bogus C++ exceptions interaction with older
-		development tools. If you experience weird problems (backend
-		unexpectedly closed or similar things) try this trick. This will require
-		recompiling your PostgreSQL from scratch, of course.
-	  </para>
-	</note>
-
-	<para>
-	  The following steps outline the configuration and compilation of the
-	  PostGIS source. They are written for Linux users and will not work on
-	  Windows or Mac.
-	</para>
 
 	<sect2 id="installation_configuration">
-	  <title>Configuration</title>
+	  <title>Build configuration</title>
 
 	  <para>
 		As with most linux installations, the first step is to generate the
