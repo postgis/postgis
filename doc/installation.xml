@@ -1801,85 +1801,52 @@ All 2 tests passed.
 	<title>Creating spatial databases</title>
 
   <sect2 id="create_new_db_extensions">
-	<title>Creating a spatial database using EXTENSIONS</title>
+	<title>Spatially enable database using EXTENSION</title>
 
 	<para>
-	 If you are using PostgreSQL 9.1+ and have compiled and installed the extensions/ postgis modules, you
-	 can create a spatial database the new way.
+	 If you are using PostgreSQL 9.1+ and have compiled and installed the extensions/postgis modules, you
+	 can turn a database into a spatial one using the EXTENSION mechanism.
 	</para>
 
 	<para>
-	  <command>createdb [yourdatabase]</command>
+	  Core postgis extension includes geometry, geography,
+    spatial_ref_sys and all the functions and comments.
+	  Raster and topology are packaged as a separate extension.
 	</para>
 
 	<para>
-	  The core postgis extension installs PostGIS geometry, geography, spatial_ref_sys and all the functions and comments with a simple:
-	  <programlisting>CREATE EXTENSION postgis;</programlisting> command.
+	  Run the following SQL snippet in the database you want to enable spatially:
+<programlisting>
+      CREATE EXTENSION IF NOT EXISTS plpgsql;
+      CREATE EXTENSION postgis;
+      CREATE EXTENSION postgis_raster; -- OPTIONAL
+      CREATE EXTENSION postgis_topology; -- OPTIONAL
+</programlisting>
 	</para>
 
-	<para>
-	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis;"</command>
-	</para>
-
-	<para>
-	  Raster is packaged as a separate extension and installable with command:
-	</para>
-
-	<para>
-	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis_raster;"</command>
-	</para>
-
-	<para>
-	  Topology is packaged as a separate extension and installable with command:
-	</para>
-
-	<para>
-	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis_topology;"</command>
-	</para>
-
-	<para>If you plan to restore an old backup from prior versions in this new db, run:</para>
-	<para><command>psql -d [yourdatabase] -f legacy.sql</command></para>
-	<note><para>If you need legacy functions, you'll need to reinstall the legacy.sql script whenever you upgrade the minor version of PostGIS.
-	E.g. if you upgraded from 2.4.3 to 2.5.0, then you need to reinstall the legacy.sql packaged with 2.5.0.  This is because some of the functions make reference to the library
-	and the library is named with the minor in it.</para></note>
-	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
   </sect2>
 
     <sect2 id="create_new_db">
-	<title>Create a spatially-enabled database without using extensions</title>
+	<title>Spatially enable database without using EXTENSION (discouraged)</title>
 
 	<note><para>This is generally only needed if you cannot or don't
 want to get PostGIS installed in the PostgreSQL extension directory
 (for example during testing, development or in a restricted
 environment).</para></note>
-	<para> The first step in creating a PostGIS database is to create a simple
-	  PostgreSQL database.
+
+	<para>
+	  Adding PostGIS objects and function definitions into your
+    database is done by loading the various sql files located in
+	  <filename>[prefix]/share/contrib</filename> as specified during
+    the build phase.
 	</para>
 
 	<para>
-	  <command>createdb [yourdatabase]</command>
-	</para>
-
-	<para>
-	  Many of the PostGIS functions are written in the PL/pgSQL procedural
-	  language. As such, the next step to create a PostGIS database is to enable
-	  the PL/pgSQL language in your new database. This is accomplish by the
-	  command below command.  For PostgreSQL 8.4+, this is generally already installed
-	</para>
-
-	<para>
-	  <command>createlang plpgsql [yourdatabase]</command>
-	</para>
-
-	<para>
-	  Now load the PostGIS object and function definitions into your database by
-	  loading the <filename>postgis.sql</filename> definitions file (located in
-	  <filename>[prefix]/share/contrib</filename> as specified during the
-	  configuration step).
-	</para>
-
-	<para>
-	  <command>psql -d [yourdatabase] -f postgis.sql</command>
+    The core PostGIS objects (geometry and geography types, and their
+    support functions) are in the <filename>postgis.sql</filename>
+    script.
+    Raster objects are in the <filename>rtpostgis.sql</filename> script.
+    Topology objects are in the <filename>topology.sql</filename> script.
 	</para>
 
 	<para>
@@ -1890,59 +1857,33 @@ environment).</para></note>
 	</para>
 
 	<para>
-	  <command>psql -d [yourdatabase] -f spatial_ref_sys.sql</command>
-	</para>
-
-	<para>
-	  If you wish to add comments to the PostGIS functions, the final step is to
-	  load the <filename>postgis_comments.sql</filename> into your spatial
-	  database. The comments can be viewed by simply typing <command>\dd
+	  If you wish to add comments to the PostGIS functions, you can find
+    them in the <filename>postgis_comments.sql</filename> script.
+	  Comments can be viewed by simply typing <command>\dd
 	  [function_name]</command> from a <command>psql</command> terminal window.
 	</para>
 
 	<para>
-	  <command>psql -d [yourdatabase] -f postgis_comments.sql</command>
-	</para>
+	  Run the following Shell commands in your terminal:
+<programlisting>
+    DB=[yourdatabase]
+    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/
 
-	<para>
-	  Install raster support
-	</para>
+    # Core objects
+    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql
+    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql
+    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL
 
-	<para>
-	  <command>psql -d [yourdatabase] -f rtpostgis.sql</command>
-	</para>
+    # Raster support (OPTIONAL)
+    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql
+    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL
 
-	<para>
-	  Install raster support comments.  This will provide quick help info for each raster function
-	  using psql or PgAdmin or any other PostgreSQL tool that can show function comments
-	</para>
+    # Topology support (OPTIONAL)
+    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql
+    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
+</programlisting>
+  </para>
 
-	<para>
-	  <command>psql -d [yourdatabase] -f raster_comments.sql</command>
-	</para>
-	<para>
-	  Install topology support
-	</para>
-
-	<para>
-	  <command>psql -d [yourdatabase] -f topology/topology.sql</command>
-	</para>
-
-	<para>
-	  Install topology support comments.  This will provide quick help info for each topology function / type
-	  using psql or PgAdmin or any other PostgreSQL tool that can show function comments
-	</para>
-
-	<para>
-	  <command>psql -d [yourdatabase] -f topology/topology_comments.sql</command>
-	</para>
-
-	<para>If you plan to restore an old backup from prior versions in this new db, run:</para>
-	<para><command>psql -d [yourdatabase] -f legacy.sql</command></para>
-	<note><para>There is an alternative <filename>legacy_minimal.sql</filename> you can run instead which will install barebones needed to recover tables and work with apps like MapServer
-	and GeoServer. If you have views that use things like distance / length etc, you'll need the full blown <filename>legacy.sql</filename></para></note>
-
-	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
   </sect2>
 
   <sect2 id="templatepostgis">
