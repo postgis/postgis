@@ -14,57 +14,12 @@ cd postgis-&last_release_version;
 ./configure
 make
 make install</programlisting>
-	<para>Once postgis is installed, it needs to be enabled in each individual database you want to use it in.</para>
-	<note><para>Using the extension enable process is preferred and more user-friendly. To spatially enable your database:</para></note>
-	<programlisting>
-psql -d yourdatabase -c "CREATE EXTENSION postgis;"
-
--- if you built with raster support and want to install it --
-psql -d yourdatabase -c "CREATE EXTENSION postgis_raster;"
-
--- if you want to install topology support --
-psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
-
--- if you built with sfcgal support and want to install it --
-psql -d yourdatabase -c "CREATE EXTENSION postgis_sfcgal;"
-
--- if you want to install tiger geocoder --
-psql -d yourdatabase -c "CREATE EXTENSION fuzzystrmatch"
-psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"
-
--- if you installed with pcre
--- you should have address standardizer extension as well
-psql -d yourdatabase -c "CREATE EXTENSION address_standardizer;"
-</programlisting>
-
-
-	<para>Please refer to <xref linkend="make_install_postgis_extensions" /> for more details about querying installed/available extensions and upgrading extensions, or switching from a non-extension install to an extension install.</para>
-
-	<para>For those who decided for some reason to use a non-extension
-based install, here are longer more painful instructions for you:</para>
-	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_minor_version; folder
-		of your PostgreSQL install</para>
-
-	<programlisting>createdb yourdatabase
-createlang plpgsql yourdatabase
-psql -d yourdatabase -f postgis.sql
-psql -d yourdatabase -f postgis_comments.sql
-psql -d yourdatabase -f spatial_ref_sys.sql
-
--- if you want to enable topology
-psql -d yourdatabase -f topology.sql
-psql -d yourdatabase -f topology_comments.sql
-
--- if you want to enable raster
--- and only if you compiled with raster (GDAL)
-psql -d yourdatabase -f rtpostgis.sql
-psql -d yourdatabase -f raster_comments.sql
-
--- if you want to enable sfcgal backend
--- and only if you built with sfcgal support --
-psql -d yourdatabase -f sfcgal.sql
-psql -d yourdatabase -f sfcgal_comments.sql
-</programlisting>
+	<para>
+Once PostGIS is installed, it needs to be
+enabled (<xref linkend="create_spatial_db" />)
+or upgraded (<xref linkend="upgrading" />)
+in each individual database you want to use it in.
+  </para>
 
   </sect1>
 
