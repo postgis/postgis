@@ -2032,24 +2032,4 @@ pretty_address
 	</orderedlist>
   </sect1>
 
-  <sect1>
-	<title>Loader/Dumper</title>
-
-	<para>
-	  The data loader and dumper are built and installed automatically as part
-	  of the PostGIS build. To build and install them manually:
-	</para>
-
-	<programlisting># cd postgis-&last_release_version;/loader
-# make
-# make install</programlisting>
-
-	<para>
-	  The loader is called <filename>shp2pgsql</filename> and converts ESRI
-	  Shape files into SQL suitable for loading in PostGIS/PostgreSQL. The
-	  dumper is called <filename>pgsql2shp</filename> and converts PostGIS
-	  tables (or queries) into ESRI Shape files. For more verbose documentation,
-	  see the online help, and the manual pages.
-	</para>
-  </sect1>
 </chapter>
