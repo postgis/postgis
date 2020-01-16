@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <sect1 id="Tiger_Geocoder">
-     <sect1info>
+  <sect2 id="Tiger_Geocoder">
+     <sect2info>
         <abstract>
             <para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.   </para>
             <para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. </para>
@@ -42,7 +42,7 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
                 <note><para>The <varname>tiger</varname> schema must be added to the database search path for the functions to work properly.</para></note>
             </para>
         </abstract>
-     </sect1info>
+     </sect2info>
     <title>Tiger Geocoder</title>
 
      <para>There are a couple other open source geocoders for PostGIS, that unlike tiger geocoder have the advantage of multi-country geocoding support</para>
@@ -1451,4 +1451,4 @@ true</programlisting>
         <para><xref linkend="Get_Geocode_Setting" /></para>
       </refsection>
     </refentry>
-  </sect1>
+  </sect2>

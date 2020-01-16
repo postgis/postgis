@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="using_postgis_dbmanagement">
+<sect1 id="using_postgis_dbmanagement">
   <title>Using PostGIS: Data Management and Queries</title>
 
-  <sect1 id="RefObject">
+  <sect2 id="RefObject">
 	<title>GIS Objects</title>
 
 	<para>The GIS objects supported by PostGIS are a superset of the "Simple
@@ -12,7 +12,7 @@
 
 	<para>PostGIS extends the standard with support for embedded SRID information.</para>
 
-	<sect2 id="OpenGISWKBWKT">
+	<sect3 id="OpenGISWKBWKT">
 	  <title>OpenGIS WKB and WKT</title>
 
 	  <para>The OpenGIS specification defines two standard ways of expressing
@@ -84,9 +84,9 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 
 	  <programlisting>INSERT INTO geotable ( the_geom, the_name )
   VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
-	</sect2>
+	</sect3>
 
-	<sect2 id="EWKB_EWKT">
+	<sect3 id="EWKB_EWKT">
 	  <title>PostGIS EWKB, EWKT and Canonical Forms</title>
 
 		<para>First OpenGIS specifications (prior to 1.2.0) only support 2D geometries,
@@ -234,8 +234,8 @@ geometry
 ----------------------------------------------------
 01010000200400000000000000000000000000000000000000
 (1 row)</programlisting>
-	</sect2>
-	<sect2 id="SQL_MM_Part3">
+	</sect3>
+	<sect3 id="SQL_MM_Part3">
 	  <title>SQL-MM Part 3</title>
 
 	  <para>The SQL Multimedia Applications Spatial specification extends the
@@ -306,9 +306,9 @@ geometry
 		<para>All floating point comparisons within the SQL-MM implementation
 		are performed to a specified tolerance, currently 1E-8.</para>
 	  </note>
-	</sect2>
-  </sect1>
-  <sect1 id="PostGIS_Geography">
+	</sect3>
+  </sect2>
+  <sect2 id="PostGIS_Geography">
 	  <title>PostGIS Geography Type</title>
 
 	  <para>The geography type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
@@ -331,7 +331,7 @@ geometry
 	  <para>The geography type uses the PostgreSQL typmod definition format so that a table with a geography field
 			can be added in a single step.  All the standard OGC formats except for curves are supported.</para>
 
-	<sect2 id="Geography_Basics">
+	<sect3 id="Geography_Basics">
 		<title>Geography Basics</title>
 		<para>The geography type does not support curves, TINS, or POLYHEDRALSURFACEs, but other geometry types are supported. Standard geometry type data will autocast to geography if it is of SRID 4326.  You can also use the EWKT and EWKB
 			conventions to insert data.</para>
@@ -448,8 +448,8 @@ LINE 1: SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting></para>
 
 <para> <ulink url="http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR">Great Circle mapper</ulink>
 The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik and the straight line path from Seattle to London plotted on a flat map of the world. The nominal units of the result might be called "degrees", but the result doesn't correspond to any true angular difference between the points, so even calling them "degrees" is inaccurate.</para>
-	</sect2>
-	<sect2 id="PostGIS_GeographyVSGeometry">
+	</sect3>
+	<sect3 id="PostGIS_GeographyVSGeometry">
 	  <title>When to use Geography Data type over Geometry data type</title>
 	  <para>The geography type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
 	  <para>The type you choose should be conditioned on the expected working area of the application you are building. Will your data span the globe or a large continental area, or is it local to a state, county or municipality? </para>
@@ -464,8 +464,8 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 			what is supported for Geography vs. Geometry.  For a brief listing and description of Geography functions, refer to
 				<xref linkend="PostGIS_GeographyFunctions" />
 		</para>
-	</sect2>
-	<sect2 id="PostGIS_Geography_AdvancedFAQ">
+	</sect3>
+	<sect3 id="PostGIS_Geography_AdvancedFAQ">
 			<title>Geography Advanced FAQ</title>
 			<qandaset>
 				<qandaentry>
@@ -520,10 +520,10 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 				  </answer>
 				</qandaentry>
 			</qandaset>
-	</sect2>
-</sect1>
+	</sect3>
+</sect2>
 
-  <sect1>
+  <sect2>
 	<title>Using OpenGIS Standards</title>
 
 	<para>The OpenGIS "Simple Features Specification for SQL" defines standard
@@ -538,7 +538,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	<varname>SPATIAL_REF_SYS</varname> table holds the numeric IDs and textual
 	descriptions of coordinate systems used in the spatial database.</para>
 
-	<sect2 id="spatial_ref_sys">
+	<sect3 id="spatial_ref_sys">
 	  <title>The SPATIAL_REF_SYS Table and Spatial Reference Systems</title>
 
 	  <para>The spatial_ref_sys table is a PostGIS included and OGC compliant database table that lists over 3000
@@ -662,9 +662,9 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 		  </listitem>
 		</varlistentry>
 	  </variablelist>
-	</sect2>
+	</sect3>
 
-	<sect2 id="geometry_columns">
+	<sect3 id="geometry_columns">
 	  <title>The GEOMETRY_COLUMNS VIEW</title>
 
 	  <para><varname>GEOMETRY_COLUMNS</varname> is a view reading from database system catalogs.
@@ -744,9 +744,9 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 		  </listitem>
 		</varlistentry>
 	  </variablelist>
-	</sect2>
+	</sect3>
 
-	<sect2 id="Create_Spatial_Table">
+	<sect3 id="Create_Spatial_Table">
 	  <title>Creating a Spatial Table</title>
 
 	  <para>Creating a table with spatial data, can be done in one step. As shown in the following example
@@ -755,9 +755,9 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 
 	  <para>We can add additional columns using standard ALTER TABLE command as we do in this next example where we add a 3-D linestring.</para>
 	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
-	</sect2>
+	</sect3>
 
-	  <sect2 id="Manual_Register_Spatial_Column">
+	  <sect3 id="Manual_Register_Spatial_Column">
 		<title>Manually Registering Geometry Columns in geometry_columns</title>
 
 		<para>Two of the cases where you may need this are the case of SQL Views and bulk inserts.  For bulk insert case, you can correct the registration in the geometry_columns table
@@ -872,9 +872,9 @@ SELECT f_table_name, f_geometry_column, srid, type
 ------------------+-------------------+------+-------
  vw_pois_ny_parks | geom              | 4326 | POINT
  vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
- </sect2>
+ </sect3>
 
-	<sect2 id="OGC_Validity">
+	<sect3 id="OGC_Validity">
 	  <title>Ensuring OpenGIS compliancy of geometries</title>
 
 	  <para>PostGIS is compliant with the Open Geospatial Consortium’s (OGC)
@@ -1208,9 +1208,9 @@ gisdb=# SELECT
 		constraint checking geometry dimensions, so it is enough to specify 2
 		there.</para>
 	  </note>
-	</sect2>
+	</sect3>
 
-      <sect2 id="DE-9IM">
+      <sect3 id="DE-9IM">
         <title>Dimensionally Extended 9 Intersection Model (DE-9IM)</title>
 
         <para>It is sometimes the case that the typical spatial predicates
@@ -1293,7 +1293,7 @@ gisdb=# SELECT
         <para>So enters the Dimensionally Extended 9 Intersection Model, or
         DE-9IM for short.</para>
 
-        <sect3>
+        <sect4>
           <title>Theory</title>
 
           <para>According to the <ulink
@@ -1582,12 +1582,12 @@ AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
             </listitem>
           </itemizedlist>
 
-        </sect3>
-      </sect2>
+        </sect4>
+      </sect3>
 
-  </sect1>
+  </sect2>
 
-  <sect1 id="loading_geometry_data">
+  <sect2 id="loading_geometry_data">
 	<title>Loading GIS (Vector) Data</title>
 
 	<para>Once you have created a spatial table, you are ready to upload GIS
@@ -1595,7 +1595,7 @@ AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 	PostGIS/PostgreSQL database: using formatted SQL statements or using the
 	Shape file loader/dumper.</para>
 
-	<sect2>
+	<sect3>
 	  <title>Loading Data Using SQL</title>
 
 	  <para>If you can convert your data to a text representation, then using
@@ -1626,9 +1626,9 @@ COMMIT;</programlisting>
 	  "psql" SQL terminal monitor:</para>
 
 	  <programlisting>psql -d [database] -f roads.sql</programlisting>
-	</sect2>
+	</sect3>
 
-<sect2 id="shp2pgsql_usage">
+<sect3 id="shp2pgsql_usage">
   <title>shp2pgsql: Using the ESRI Shapefile Loader</title>
 
   <para>
@@ -1888,10 +1888,10 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
   </para>
 
   <programlisting># shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb</programlisting>
-</sect2>
-  </sect1>
+</sect3>
+  </sect2>
 
-  <sect1 id="retrieving_vector-data">
+  <sect2 id="retrieving_vector-data">
 	<title>Retrieving GIS Data</title>
 
 	<para>Data can be extracted from the database using either SQL or the
@@ -1899,7 +1899,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
 	the operators available to do comparisons and queries on spatial
 	tables.</para>
 
-	<sect2>
+	<sect3>
 	  <title>Using SQL to Retrieve Data</title>
 
 	  <para>The most straightforward means of pulling data out of the
@@ -1986,9 +1986,9 @@ WHERE
 	  <para>Note the use of the SRID 312, to specify the projection of the envelope.</para>
 
 
-	</sect2>
+	</sect3>
 
-	<sect2>
+	<sect3>
 	  <title>Using the Dumper</title>
 
 	  <para>The <filename>pgsql2shp</filename> table dumper connects directly
@@ -2082,10 +2082,10 @@ WHERE
 		  </listitem>
 		</varlistentry>
 	  </variablelist>
-	</sect2>
-  </sect1>
+	</sect3>
+  </sect2>
 
-  <sect1>
+  <sect2>
 	<title>Building Indexes</title>
 
 	<para>Indexes are what make using a spatial database for large data sets
@@ -2112,7 +2112,7 @@ WHERE
 	  </listitem>
 	</itemizedlist>
 
-	<sect2 id="gist_indexes">
+	<sect3 id="gist_indexes">
 	  <title>GiST Indexes</title>
 
 	  <para>GiST stands for "Generalized Search Tree" and is a generic form of
@@ -2142,9 +2142,9 @@ WHERE
 
 	  <para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];</programlisting></para>
 
-	</sect2>
+	</sect3>
 
-	<sect2 id="brin_indexes">
+	<sect3 id="brin_indexes">
 	  <title>BRIN Indexes</title>
 
 	    <para>BRIN stands for "Block Range Index" and is a generic form of
@@ -2213,9 +2213,9 @@ WHERE
           "geometry" and for "geography"), and just the <varname>&amp;&amp;&amp;</varname>
           operator can be used for the 3D geometries. There is no support
           for kNN searches at the moment.</para>
-	</sect2>
+	</sect3>
 
-	<sect2 id="spgist_indexes">
+	<sect3 id="spgist_indexes">
 	 	<title>SP-GiST Indexes</title>
 
 		<para>SP-GiST stands for "Space-Partitioned Generalized Search Tree" and is
@@ -2261,8 +2261,8 @@ WHERE
 			<listitem><para> &amp;/&amp;, ~==, @&gt;&gt;, and &lt;&lt;@, for 3-dimensional indexes.</para></listitem>
 		</itemizedlist>
 		<para>There is no support for kNN searches at the moment.</para>
-	</sect2>
-	<sect2>
+	</sect3>
+	<sect3>
 	  <title>Using Indexes</title>
 
 	  <para>Ordinarily, indexes invisibly speed up data access: once the index
@@ -2324,10 +2324,10 @@ WHERE
 		</listitem>
 
 	  </itemizedlist>
-	</sect2>
-  </sect1>
+	</sect3>
+  </sect2>
 
-  <sect1>
+  <sect2>
 	<title>Complex Queries</title>
 
 	<para>The <emphasis>raison d'etre</emphasis> of spatial database
@@ -2347,7 +2347,7 @@ and you want to map out the Mars planet for rehabitation,  you can use a non-ear
  make one up and insert it in the <varname>spatial_ref_sys</varname> table. Though this Mars coordinate system is a non-planar one (it's in degrees spheroidal),
  you can use it with the geography type to have your length and proximity measurements in meters instead of degrees.</para>
 
-	<sect2>
+	<sect3>
 	  <title>Taking Advantage of Indexes</title>
 
 	  <para>When constructing a query it is important to remember that only
@@ -2386,9 +2386,9 @@ WHERE ST_DWithin(the_geom, 'SRID=312;POINT(100000 200000)', 100)
 	  Assuming that our query box is much smaller than the extents of the
 	  entire geometry table, this will drastically reduce the number of
 	  distance calculations that need to be done.</para>
-	</sect2>
+	</sect3>
 
-	<sect2 id="examples_spatial_sql">
+	<sect3 id="examples_spatial_sql">
 	  <title>Examples of Spatial SQL</title>
 
 	  <para>The examples in this section will make use of two tables, a table
@@ -2598,6 +2598,6 @@ gid  | name         | area
 		  </answer>
 		</qandaentry>
 	  </qandaset>
-	</sect2>
-  </sect1>
-</chapter>
+	</sect3>
+  </sect2>
+</sect1>

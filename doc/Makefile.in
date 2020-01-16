@@ -119,6 +119,7 @@ XML_SOURCES = \
 	faq.xml \
 	installation.xml \
 	administration.xml \
+	usage.xml \
 	introduction.xml \
 	performance_tips.xml \
 	postgis.xml \

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="postgis_usage">
+  <title>PostGIS Usage</title>
+
+  &using_postgis_dataman;
+  &using_postgis_app;
+  &using_raster_dataman;
+  &extras_topology;
+  &extras_address_standardizer;
+  &extras;
+  &performance_tips;
+
+  <!-- &extras_historytable; why not here/disabled ? -->
+  <!-- &extras_tigergeocoder; is in extras.xml -->
+
+</chapter>

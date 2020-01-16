@@ -2,6 +2,8 @@
 <chapter id="postgis_administration">
   <title>PostGIS Administration</title>
 
+  &database_tuning;
+
   <sect1 id="raster_configuration">
 
   <title>Configuring raster support</title>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="Topology">
+<sect1 id="Topology">
 	<title>Topology</title>
 	<para>The PostGIS Topology types and functions are used to manage topological objects such as faces, edges and nodes. </para>
 	<para>Sandro Santilli's presentation at PostGIS Day Paris 2011  conference gives a good synopsis of PostGIS Topology and where it is headed <ulink url="http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf">Topology with PostGIS 2.0 slide deck</ulink>.</para>
@@ -12,14 +12,14 @@
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
 	<para>Topology support is build by default starting with PostGIS 2.0, and can be disabled specifying --without-topology configure option at build time as described in <xref linkend="postgis_installation"/></para>
 
-	<sect1 id="Topology_Types">
-        <sect1info>
+	<sect2 id="Topology_Types">
+        <sect2info>
             <abstract>
                 <para>This section lists the PostgreSQL data types installed by PostGIS Topology.  Note we describe the casting behavior of these which is very
                     important especially when designing your own functions.
                 </para>
             </abstract>
-        </sect1info>
+        </sect2info>
         <title>Topology Types</title>
 
 		<refentry id="getfaceedges_returntype">
@@ -118,16 +118,16 @@
                 <para><xref linkend="ValidateTopology"/></para>
             </refsection>
 		</refentry>
-	</sect1>
+	</sect2>
 
-	<sect1 id="Topology_Domains">
-        <sect1info>
+	<sect2 id="Topology_Domains">
+        <sect2info>
             <abstract>
                 <para>This section lists the PostgreSQL domains installed by PostGIS Topology.  Domains can be used like object types as return objects of functions or table columns. The distinction between
                     a domain and a type is that a domain is an existing type with a check constraint bound to it.
                 </para>
             </abstract>
-        </sect1info>
+        </sect2info>
         <title>Topology Domains</title>
 
 		<refentry id="topoelement">
@@ -236,14 +236,14 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
                 </para>
             </refsection>
 		</refentry>
-	</sect1>
+	</sect2>
 
-	<sect1 id="Topology_ManagementFunctions">
-	     <sect1info>
+	<sect2 id="Topology_ManagementFunctions">
+	     <sect2info>
             <abstract>
                 <para>This section lists the Topology functions for building new Topology schemas, validating topologies, and managing TopoGeometry Columns</para>
             </abstract>
-        </sect1info>
+        </sect2info>
 	    <title>Topology and TopoGeometry Management</title>
 	    <refentry id="AddTopoGeometryColumn">
 			<refnamediv>
@@ -641,14 +641,14 @@ face without edges |   0 |
 				<para><xref linkend="validatetopology_returntype"/>, <xref linkend="Topology_Load_Tiger" /></para>
 			</refsection>
 		</refentry>
-	</sect1>
+	</sect2>
 
-	<sect1 id="Topology_Constructors">
-    <sect1info>
+	<sect2 id="Topology_Constructors">
+    <sect2info>
         <abstract>
             <para>This section covers the topology functions for creating new topologies.</para>
         </abstract>
-    </sect1info>
+    </sect2info>
 	  <title>Topology Constructors</title>
 
 		<refentry id="CreateTopology">
@@ -1021,14 +1021,14 @@ Existing edges and faces may be split by the boundary of the new polygon.
 		</refentry>
 
 
-	</sect1>
+	</sect2>
 
-	<sect1 id="Topology_Editing">
-	    <sect1info>
+	<sect2 id="Topology_Editing">
+	    <sect2info>
             <abstract>
                 <para>This section covers topology functions for adding, moving, deleting, and splitting edges, faces, and nodes. All of these functions are defined by ISO SQL/MM.</para>
             </abstract>
-        </sect1info>
+        </sect2info>
 	    <title>Topology Editors</title>
 
 		<refentry id="ST_AddIsoNode">
@@ -1831,10 +1831,10 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 				<para><xref linkend="ST_AddIsoNode"/></para>
 			</refsection>
 		</refentry>
-	</sect1>
+	</sect2>
 
 
-	<sect1 id="Topology_Accessors">
+	<sect2 id="Topology_Accessors">
 	  <title>Topology Accessors</title>
         <refentry id="GetEdgeByPoint">
           <refnamediv>
@@ -2390,15 +2390,15 @@ and is thus usable to build edge ring linking.
 			</refsection>
 		</refentry>
 
-	</sect1>
+	</sect2>
 
 
-	<sect1 id="Topology_Processing">
-    <sect1info>
+	<sect2 id="Topology_Processing">
+    <sect2info>
         <abstract>
             <para>This section covers the functions for processing topologies in non-standard ways.</para>
         </abstract>
-    </sect1info>
+    </sect2info>
 	  <title>Topology Processing</title>
 		<refentry id="TopologyPolygonize">
 			<refnamediv>
@@ -2707,14 +2707,14 @@ faceid
 	</refentry>
 
 
-	</sect1>
+	</sect2>
 
-	<sect1 id="TopoGeometry_Constructors">
-    <sect1info>
+	<sect2 id="TopoGeometry_Constructors">
+    <sect2info>
         <abstract>
             <para>This section covers the topology functions for creating new topogeometries.</para>
         </abstract>
-    </sect1info>
+    </sect2info>
 	  <title>TopoGeometry Constructors</title>
 		<refentry id="CreateTopoGeom">
 			<refnamediv>
@@ -2996,14 +2996,14 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
 				<para><xref linkend="topoelement"/>, <xref linkend="topoelementarray"/></para>
 			</refsection>
           </refentry>
-	</sect1>
+	</sect2>
 
-	<sect1 id="TopoGeometry_Editors">
-    <sect1info>
+	<sect2 id="TopoGeometry_Editors">
+    <sect2info>
         <abstract>
             <para>This section covers the topology functions for editing existing topogeometries.</para>
         </abstract>
-    </sect1info>
+    </sect2info>
 	  <title>TopoGeometry Editors</title>
 
 		<refentry id="clearTopoGeom">
@@ -3157,9 +3157,9 @@ Refer to <xref linkend="toTopoGeom" />.
     </refentry>
 
 
-	</sect1>
+	</sect2>
 
-	<sect1 id="TopoGeom_Accessors">
+	<sect2 id="TopoGeom_Accessors">
 	  <title>TopoGeometry Accessors</title>
 
 	      <refentry id="GetTopoGeomElementArray">
@@ -3263,10 +3263,10 @@ Refer to <xref linkend="toTopoGeom" />.
 			</refsection>
 		</refentry>
 
-	</sect1>
+	</sect2>
 
 
-	<sect1 id="TopoGeometry_Outputs">
+	<sect2 id="TopoGeometry_Outputs">
 	  <title>TopoGeometry Outputs</title>
 	  <refentry id="AsGML">
 		    <refnamediv>
@@ -3549,14 +3549,14 @@ UNION ALL SELECT ']}'::text as t;
 </programlisting>
             </refsection>
 	  </refentry>
-</sect1>
+</sect2>
 
-<sect1 id="Topology_Relationships">
-	     <sect1info>
+<sect2 id="Topology_Relationships">
+	     <sect2info>
             <abstract>
                 <para>This section lists the Topology functions used to check relationships between topogeometries and topology primitives</para>
             </abstract>
-        </sect1info>
+        </sect2info>
 	    <title>Topology Spatial Relationships</title>
 	    <refentry id="TG_Equals">
         <refnamediv>
@@ -3659,5 +3659,5 @@ two topogeometries intersect.
           <para><xref linkend="ST_Intersects" /></para>
         </refsection>
       </refentry>
+</sect2>
 </sect1>
-</chapter>
