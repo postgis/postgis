@@ -17,6 +17,7 @@
 
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">
+<!ENTITY administration SYSTEM "administration.xml">
 <!ENTITY faq SYSTEM "faq.xml">
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
 <!ENTITY using_raster_dataman SYSTEM "using_raster_dataman.xml">
@@ -175,6 +176,7 @@
 
   &introduction;
   &installation;
+  &administration;
   &faq;
   &using_postgis_dataman;
   &using_raster_dataman;
