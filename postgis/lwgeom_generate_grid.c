@@ -125,12 +125,12 @@ hexagon_grid_state(double size, const GBOX *gbox, int32_t srid)
 	/* Column address is just width / column width, with an */
 	/* adjustment to account for partial overlaps */
 	state->column_min = floor(gbox->xmin / col_width);
-	if(gbox->xmin - state->column_min * size > size)
+	if(gbox->xmin - state->column_min * col_width > size)
 		state->column_min++;
 
 	state->column_max = ceil(gbox->xmax / col_width);
-	if(state->column_max * size - gbox->xmax > size)
-		state->column_max++;
+	if(state->column_max * col_width - gbox->xmax > size)
+		state->column_max--;
 
 	/* Row address range depends on the odd/even column we're on */
 	state->row_min_even = floor(gbox->ymin/row_height + 0.5);
