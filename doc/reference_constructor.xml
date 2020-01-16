@@ -838,18 +838,18 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 			This function answers the question: what hexagons in a given Tiling(SRS, Size)
 			overlap with a given bounds.</para>
 
-			<inlinemediaobject><imageobject>
+			<para><inlinemediaobject><imageobject>
 				<imagedata fileref='images/st_hexagongrid01.png' />
-			</imageobject></inlinemediaobject>
+			</imageobject></inlinemediaobject></para>
 
 			<para>The SRS for the output hexagons is the SRS provided by the bounds geometry.</para>
 			<para>Doubling or tripling the edge size of the hexagon generates a new parent tiling that
 			fits with the origin tiling. Unfortunately, it is not possible to generate parent
 			hexagon tilings that the child tiles perfectly fit inside.</para>
 
-			<inlinemediaobject><imageobject>
+			<para><inlinemediaobject><imageobject>
 				<imagedata fileref='images/st_hexagongrid02.png' />
-			</imageobject></inlinemediaobject>
+			</imageobject></inlinemediaobject></para>
 
 			<para>Availability: 3.1</para>
 
@@ -874,9 +874,9 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<para>If we generate a set of hexagons for each polygon boundary and filter
 			out those that do not intersect their hexagons, we end up with a tiling for
 			each polygon.</para>
-		<inlinemediaobject><imageobject>
+		<para><inlinemediaobject><imageobject>
 			<imagedata fileref='images/st_hexagongrid02.png' />
-		</imageobject></inlinemediaobject>
+		</imageobject></inlinemediaobject></para>
 		<para>Tiling states results in a hexagon coverage of each state, and multiple
 			hexagons overlapping at the borders between states.</para>
 		 <programlisting>WITH hexes AS (
