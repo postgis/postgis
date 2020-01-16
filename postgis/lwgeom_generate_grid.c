@@ -43,30 +43,49 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS);
 
 /* ********* ********* ********* ********* ********* ********* ********* ********* */
 
-/* XXX TO DO: what about negative sizes? */
+typedef enum
+{
+	SHAPE_SQUARE,
+	SHAPE_HEXAGON,
+	SHAPE_TRIANGLE
+} GeometryShape;
 
-/* Ratio of hexagon edge length to height = 2*cos(pi/6) */
-#define HXR 1.7320508075688774
+typedef struct GeometryGridState
+{
+	GeometryShape cell_shape;
+	bool done;
+	GBOX bounds;
+	int32_t srid;
+	double size;
+	int32_t i, j;
+}
+GeometryGridState;
 
-static const double hex_x[] = {0.0, 1.0, 1.5,     1.0, 0.0, -0.5,     0.0};
-static const double hex_y[] = {0.0, 0.0, 0.5*HXR, HXR, HXR,  0.5*HXR, 0.0};
+/* ********* ********* ********* ********* ********* ********* ********* ********* */
+
+/* Ratio of hexagon edge length to edge->center vertical distance = cos(M_PI/6.0) */
+#define H 0.8660254037844387
+
+/* Build origin hexagon centered around origin point */
+static const double hex_x[] = {-1.0, -0.5,  0.5, 1.0, 0.5, -0.5, -1.0};
+static const double hex_y[] = { 0.0, -1*H, -1*H, 0.0,   H,    H,  0.0};
 
 static LWGEOM *
-hexagon(double origin_x, double origin_y, double edge, int cell_i, int cell_j, uint32_t srid)
+hexagon(double origin_x, double origin_y, double size, int cell_i, int cell_j, uint32_t srid)
 {
-	double height = edge * HXR;
-	POINT4D pt = {0, 0, 0, 0};
+	double height = size * 2 * H;
+	POINT4D pt;
 	POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 	POINTARRAY *pa = ptarray_construct(0, 0, 7);
 	uint32_t i;
 
-	double offset_x = origin_x + (1.5 * edge * cell_i);
-	double offset_y = origin_y + (height * cell_j) + (0.5 * height * (cell_i % 2));
+	double offset_x = origin_x + (1.5 * size * cell_i);
+	double offset_y = origin_y + (height * cell_j) + (0.5 * height * (abs(cell_i) % 2));
 
 	for (i = 0; i < 7; ++i)
 	{
-		pt.x = edge * hex_x[i] + offset_x;
-		pt.y = edge * hex_y[i] + offset_y;
+		pt.x = size * hex_x[i] + offset_x;
+		pt.y = size * hex_y[i] + offset_y;
 		ptarray_set_point4d(pa, i, &pt);
 	}
 
@@ -74,17 +93,76 @@ hexagon(double origin_x, double origin_y, double edge, int cell_i, int cell_j, u
 	return lwpoly_as_lwgeom(lwpoly_construct(srid, NULL, 1 /* nrings */, ppa));
 }
 
-static int
-hexagon_grid_size(double edge, const GBOX *gbox, int *cell_width, int *cell_height)
+
+typedef struct HexagonGridState
 {
-	double hex_height = edge * HXR;
-	double bounds_width  = gbox->xmax - gbox->xmin;
-	double bounds_height = gbox->ymax - gbox->ymin;
-	int width  = (int)floor(bounds_width/(1.5*edge)) + 1;
-	int height = (int)floor(bounds_height/hex_height) + 1;
-	if (cell_width) *cell_width = width;
-	if (cell_height) *cell_height = height;
-	return width * height;
+	GeometryShape cell_shape;
+	bool done;
+	GBOX bounds;
+	int32_t srid;
+	double size;
+	int32_t i, j;
+	int32_t column_min, column_max;
+	int32_t row_min_odd, row_max_odd;
+	int32_t row_min_even, row_max_even;
+}
+HexagonGridState;
+
+static HexagonGridState *
+hexagon_grid_state(double size, const GBOX *gbox, int32_t srid)
+{
+	HexagonGridState *state = palloc0(sizeof(HexagonGridState));
+	double col_width = 1.5 * size;
+	double row_height = size * 2 * H;
+
+	/* fill in state */
+	state->cell_shape = SHAPE_HEXAGON;
+	state->size = size;
+	state->srid = srid;
+	state->done = false;
+	state->bounds = *gbox;
+
+	/* Column address is just width / column width, with an */
+	/* adjustment to account for partial overlaps */
+	state->column_min = floor(gbox->xmin / col_width);
+	if(gbox->xmin - state->column_min * size > size)
+		state->column_min++;
+
+	state->column_max = ceil(gbox->xmax / col_width);
+	if(state->column_max * size - gbox->xmax > size)
+		state->column_max++;
+
+	/* Row address range depends on the odd/even column we're on */
+	state->row_min_even = floor(gbox->ymin/row_height + 0.5);
+	state->row_max_even = floor(gbox->ymax/row_height + 0.5);
+	state->row_min_odd  = floor(gbox->ymin/row_height);
+	state->row_max_odd  = floor(gbox->ymax/row_height);
+
+	/* Set initial state */
+	state->i = state->column_min;
+	state->j = (state->i % 2) ? state->row_min_odd : state->row_min_even;
+
+	return state;
+}
+
+static bool
+hexagon_state_next(HexagonGridState *state)
+{
+	if (!state || state->done) return false;
+	/* Move up one row */
+	state->j++;
+	/* Off the end, increment column counter, reset row counter back to (appropriate) minimum */
+	if (state->j > ((state->i % 2) ? state->row_max_odd : state->row_max_even))
+	{
+		state->i++;
+		state->j = ((state->i % 2) ? state->row_min_odd : state->row_min_even);
+	}
+	/* Column counter over max means we have used up all combinations */
+	if (state->i > state->column_max)
+	{
+		state->done = true;
+	}
+	return !state->done;
 }
 
 /* ********* ********* ********* ********* ********* ********* ********* ********* */
@@ -99,48 +177,67 @@ square(double origin_x, double origin_y, double size, int cell_i, int cell_j, ui
 	return (LWGEOM*)lwpoly_construct_envelope(srid, ll_x, ll_y, ur_x, ur_y);
 }
 
-static int
-square_grid_size(double edge, const GBOX *gbox, int *cell_width, int *cell_height)
+typedef struct SquareGridState
 {
-	int width  = (int)floor((gbox->xmax - gbox->xmin)/edge) + 1;
-	int height = (int)floor((gbox->ymax - gbox->ymin)/edge) + 1;
-	if (cell_width) *cell_width = width;
-	if (cell_height) *cell_height = height;
-	return width * height;
-}
-
-/* ********* ********* ********* ********* ********* ********* ********* ********* */
-
-typedef enum
-{
-	SHAPE_SQUARE,
-	SHAPE_HEXAGON,
-	SHAPE_TRIANGLE
-} GeometryShape;
-
-typedef struct GeometryGridState
-{
-	int64_t cell_current;
-	int64_t cell_count;
-	int32_t cell_width;
-	int32_t cell_height;
-	GBOX bounds;
-	double size;
-	int32_t srid;
 	GeometryShape cell_shape;
+	bool done;
+	GBOX bounds;
+	int32_t srid;
+	double size;
+	int32_t i, j;
+	int32_t column_min, column_max;
+	int32_t row_min, row_max;
 }
-GeometryGridState;
+SquareGridState;
+
+static SquareGridState *
+square_grid_state(double size, const GBOX *gbox, int32_t srid)
+{
+	SquareGridState *state = palloc0(sizeof(SquareGridState));
+
+	/* fill in state */
+	state->cell_shape = SHAPE_SQUARE;
+	state->size = size;
+	state->srid = srid;
+	state->done = false;
+	state->bounds = *gbox;
+
+	state->column_min = floor(gbox->xmin / size);
+	state->column_max = floor(gbox->xmax / size);
+	state->row_min = floor(gbox->ymin / size);
+	state->row_max = floor(gbox->ymax / size);
+	state->i = state->column_min;
+	state->j = state->row_min;
+	return state;
+}
+
+static bool
+square_state_next(SquareGridState *state)
+{
+	if (!state || state->done) return false;
+	/* Move up one row */
+	state->j++;
+	/* Off the end, increment column counter, reset row counter back to (appropriate) minimum */
+	if (state->j > state->row_max)
+	{
+		state->i++;
+		state->j = state->row_min;
+	}
+	/* Column counter over max means we have used up all combinations */
+	if (state->i > state->column_max)
+	{
+		state->done = true;
+	}
+	return !state->done;
+}
 
 /**
-* ST_HexagonGrid(size float8 DEFAULT 1.0,
-*		bounds geometry DEFAULT 'LINESTRING(0 0, 100 100)')
-* ST_SquareGrid(size float8 DEFAULT 1.0,
-*		bounds geometry DEFAULT 'LINESTRING(0 0, 100 100)')
+* ST_HexagonGrid(size float8, bounds geometry)
+* ST_SquareGrid(size float8, bounds geometry)
 */
 PG_FUNCTION_INFO_V1(ST_ShapeGrid);
 Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 {
-	int32_t i, j;
 	FuncCallContext *funcctx;
 	MemoryContext oldcontext, newcontext;
 
@@ -157,12 +254,12 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 	{
 		const char *func_name;
 		double bounds_width, bounds_height;
-		int gbounds_is_empty;
+		char gbounds_is_empty;
 		GBOX bounds;
 		double size;
 		funcctx = SRF_FIRSTCALL_INIT();
 
-		/* get a local copy of what we're doing a dump points on */
+		/* Get a local copy of the bounds we are going to fill with shapes */
 		gbounds = PG_GETARG_GSERIALIZED_P(1);
 		size = PG_GETARG_FLOAT8(0);
 
@@ -181,13 +278,6 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 		newcontext = funcctx->multi_call_memory_ctx;
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
-		/* Create function state */
-		state = lwalloc(sizeof(GeometryGridState));
-		state->cell_current = 0;
-		state->bounds = bounds;
-		state->srid = gserialized_get_srid(gbounds);
-		state->size = size;
-
 		/*
 		* Support both hexagon and square grids with one function,
 		* by checking the calling signature up front.
@@ -195,15 +285,11 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 		func_name = get_func_name(fcinfo->flinfo->fn_oid);
 		if (strcmp(func_name, "st_hexagongrid") == 0)
 		{
-			state->cell_shape = SHAPE_HEXAGON;
-			state->cell_count = hexagon_grid_size(size, &state->bounds,
-			                                      &state->cell_width, &state->cell_height);
+			state = (GeometryGridState*)hexagon_grid_state(size, &bounds, gserialized_get_srid(gbounds));
 		}
 		else if (strcmp(func_name, "st_squaregrid") == 0)
 		{
-			state->cell_shape = SHAPE_SQUARE;
-			state->cell_count = square_grid_size(size, &state->bounds,
-			                                     &state->cell_width, &state->cell_height);
+			state = (GeometryGridState*)square_grid_state(size, &bounds, gserialized_get_srid(gbounds));
 		}
 		else
 		{
@@ -232,22 +318,27 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 	state = funcctx->user_fctx;
 
 	/* Stop when we've used up all the grid squares */
-	if (state->cell_current >= state->cell_count)
+	if (state->done)
 	{
 		SRF_RETURN_DONE(funcctx);
 	}
 
-	i = state->cell_current % state->cell_width;
-	j = state->cell_current / state->cell_width;
+	/* Store grid cell coordinates */
+	tuple_arr[1] = Int32GetDatum(state->i);
+	tuple_arr[2] = Int32GetDatum(state->j);
 
 	/* Generate geometry */
 	switch (state->cell_shape)
 	{
 		case SHAPE_HEXAGON:
-			lwgeom = hexagon(state->bounds.xmin, state->bounds.ymin, state->size, i, j, state->srid);
+			lwgeom = hexagon(0.0, 0.0, state->size, state->i, state->j, state->srid);
+			/* Increment to next cell */
+			hexagon_state_next((HexagonGridState*)state);
 			break;
 		case SHAPE_SQUARE:
-			lwgeom = square(state->bounds.xmin, state->bounds.ymin, state->size, i, j, state->srid);
+			lwgeom = square(0.0, 0.0, state->size, state->i, state->j, state->srid);
+			/* Increment to next cell */
+			square_state_next((SquareGridState*)state);
 			break;
 		default:
 			ereport(ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
@@ -257,30 +348,24 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 	tuple_arr[0] = PointerGetDatum(geometry_serialize(lwgeom));
 	lwfree(lwgeom);
 
-	/* Store grid cell coordinates */
-	tuple_arr[1] = Int32GetDatum(i);
-	tuple_arr[2] = Int32GetDatum(j);
-
+	/* Form tuple and return */
 	tuple = heap_form_tuple(funcctx->tuple_desc, tuple_arr, isnull);
 	result = HeapTupleGetDatum(tuple);
-	state->cell_current++;
 	SRF_RETURN_NEXT(funcctx, result);
 }
 
 /**
-* ST_Hexagon(size double,
-*            origin geometry default 'POINT(0 0)',
-*            int cellx default 0, int celly default 0)
+* ST_Hexagon(size double, cell_i integer default 0, cell_j integer default 0, origin geometry default 'POINT(0 0)')
 */
 PG_FUNCTION_INFO_V1(ST_Hexagon);
 Datum ST_Hexagon(PG_FUNCTION_ARGS)
 {
 	LWPOINT *lwpt;
 	double size = PG_GETARG_FLOAT8(0);
-	GSERIALIZED *gorigin = PG_GETARG_GSERIALIZED_P(1);
 	GSERIALIZED *ghex;
-	int cell_i = PG_GETARG_INT32(2);
-	int cell_j = PG_GETARG_INT32(3);
+	int cell_i = PG_GETARG_INT32(1);
+	int cell_j = PG_GETARG_INT32(2);
+	GSERIALIZED *gorigin = PG_GETARG_GSERIALIZED_P(3);
 	LWGEOM *lwhex;
 	LWGEOM *lworigin = lwgeom_from_gserialized(gorigin);
 
@@ -308,19 +393,17 @@ Datum ST_Hexagon(PG_FUNCTION_ARGS)
 
 
 /**
-* ST_Square(size double,
-*           origin geometry default 'POINT(0 0)',
-*           int cellx default 0, int celly default 0)
+* ST_Square(size double, cell_i integer, cell_j integer, origin geometry default 'POINT(0 0)')
 */
 PG_FUNCTION_INFO_V1(ST_Square);
 Datum ST_Square(PG_FUNCTION_ARGS)
 {
 	LWPOINT *lwpt;
 	double size = PG_GETARG_FLOAT8(0);
-	GSERIALIZED *gorigin = PG_GETARG_GSERIALIZED_P(1);
 	GSERIALIZED *gsqr;
-	int cell_i = PG_GETARG_INT32(2);
-	int cell_j = PG_GETARG_INT32(3);
+	int cell_i = PG_GETARG_INT32(1);
+	int cell_j = PG_GETARG_INT32(2);
+	GSERIALIZED *gorigin = PG_GETARG_GSERIALIZED_P(3);
 	LWGEOM *lwsqr;
 	LWGEOM *lworigin = lwgeom_from_gserialized(gorigin);
 

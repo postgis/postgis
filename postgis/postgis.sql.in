@@ -5975,42 +5975,39 @@ CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 ---
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_Hexagon(size float8, origin geometry DEFAULT 'POINT(0 0)', cell_i int4 DEFAULT 0, cell_j int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_Hexagon(size float8, cell_i integer, cell_j integer, origin geometry DEFAULT 'POINT(0 0)')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_Hexagon'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
 	_COST_MEDIUM;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_Square(size float8, origin geometry DEFAULT 'POINT(0 0)', cell_i int4 DEFAULT 0, cell_j int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_Square(size float8, cell_i integer, cell_j integer, origin geometry DEFAULT 'POINT(0 0)')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_Square'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
-	_COST_MEDIUM;
-
--- Availability: 1.0.0
-CREATE TYPE geometry_grid AS (
-	geom geometry,
-	i integer,
-	j integer
-);
-
--- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_HexagonGrid(size float8 DEFAULT 1.0, bounds geometry DEFAULT 'LINESTRING(0 0, 100 100)')
-    RETURNS SETOF geometry_grid
-	AS 'MODULE_PATHNAME', 'ST_ShapeGrid'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
 	_COST_MEDIUM;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_SquareGrid(size float8 DEFAULT 1.0, bounds geometry DEFAULT 'LINESTRING(0 0, 100 100)')
-    RETURNS SETOF geometry_grid
+CREATE OR REPLACE FUNCTION ST_HexagonGrid(size float8, bounds geometry, OUT geom geometry, OUT i integer, OUT j integer)
+    RETURNS SETOF record
 	AS 'MODULE_PATHNAME', 'ST_ShapeGrid'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION ST_SquareGrid(size float8, bounds geometry, OUT geom geometry, OUT i integer, OUT j integer)
+    RETURNS SETOF record
+	AS 'MODULE_PATHNAME', 'ST_ShapeGrid'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
 	_COST_MEDIUM;
 
 
--- moved to separate file cause its invovled
+-- moved to separate file cause its involved
 #include "postgis_brin.sql.in"
 
 ---------------------------------------------------------------
