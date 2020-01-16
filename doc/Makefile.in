@@ -118,6 +118,7 @@ XML_SOURCES = \
 	faq_raster.xml \
 	faq.xml \
 	installation.xml \
+	administration.xml \
 	introduction.xml \
 	performance_tips.xml \
 	postgis.xml \
