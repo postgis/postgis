@@ -1066,9 +1066,9 @@ extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2,
 * Strip out the Z/M components of an #LWGEOM
 */
 extern LWGEOM* lwgeom_force_2d(const LWGEOM *geom);
-extern LWGEOM* lwgeom_force_3dz(const LWGEOM *geom);
-extern LWGEOM* lwgeom_force_3dm(const LWGEOM *geom);
-extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
+extern LWGEOM* lwgeom_force_3dz(const LWGEOM *geom, double zval);
+extern LWGEOM* lwgeom_force_3dm(const LWGEOM *geom, double mval);
+extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom, double zval, double mval);
 
 extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, int set_area, double area);
 extern LWGEOM* lwgeom_chaikin(const LWGEOM *igeom, int n_iterations, int preserve_endpoint);

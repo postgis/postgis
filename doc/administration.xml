@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="postgis_administration">
+  <title>PostGIS Administration</title>
+
+  &database_tuning;
+
+  <sect1 id="raster_configuration">
+
+  <title>Configuring raster support</title>
+
+	<para>
+	  If you enabled raster support you may want to read
+    below how to properly configure it.
+	</para>
+
+	<para>As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled by default. In order to re-enable these, you need to set the following environment variables
+	<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. For PostGIS 2.2, you can use the more cross-platform approach of setting the corresponding <xref linkend="PostGIS_GUC" />.</para>
+
+	<para>If you want to enable offline raster:</para>
+	<programlisting>POSTGIS_ENABLE_OUTDB_RASTERS=1</programlisting>
+	<para>Any other setting or no setting at all will disable out of db rasters.</para>
+	<para>In order to enable all GDAL drivers available in your GDAL install, set this environment variable as follows</para>
+	<programlisting>POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL</programlisting>
+	<para>If you want to only enable specific drivers, set your environment variable as follows:</para>
+	<programlisting>POSTGIS_GDAL_ENABLED_DRIVERS="GTiff PNG JPEG GIF XYZ"</programlisting>
+
+	<note><para>If you are on windows, do not quote the driver list</para></note>
+
+	<para>Setting environment variables varies depending on OS.  For PostgreSQL installed on Ubuntu or Debian via apt-postgresql, the preferred way is to
+	edit <filename>/etc/postgresql/<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</filename> where 10 refers to version of PostgreSQL and main refers to the cluster.</para>
+
+	<para>On windows, if you are running as a service, you can set via System variables which for Windows 7 you can get to by right-clicking on Computer-&gt;Properties Advanced System Settings or in explorer navigating to <varname>Control Panel\All Control Panel Items\System</varname>.
+	Then clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment Variables</emphasis> and adding new system variables.</para>
+	<para>After you set the environment variables, you'll need to restart your PostgreSQL service for the changes to take effect.</para>
+
+  </sect1>
+
+  <sect1 id="create_spatial_db">
+	<title>Creating spatial databases</title>
+
+  <sect2 id="create_new_db_extensions">
+	<title>Spatially enable database using EXTENSION</title>
+
+	<para>
+	 If you are using PostgreSQL 9.1+ and have compiled and installed the extensions/postgis modules, you
+	 can turn a database into a spatial one using the EXTENSION mechanism.
+	</para>
+
+	<para>
+	  Core postgis extension includes geometry, geography,
+    spatial_ref_sys and all the functions and comments.
+	  Raster and topology are packaged as a separate extension.
+	</para>
+
+	<para>
+	  Run the following SQL snippet in the database you want to enable spatially:
+<programlisting>
+      CREATE EXTENSION IF NOT EXISTS plpgsql;
+      CREATE EXTENSION postgis;
+      CREATE EXTENSION postgis_raster; -- OPTIONAL
+      CREATE EXTENSION postgis_topology; -- OPTIONAL
+</programlisting>
+	</para>
+
+  </sect2>
+
+    <sect2 id="create_new_db">
+	<title>Spatially enable database without using EXTENSION (discouraged)</title>
+
+	<note><para>This is generally only needed if you cannot or don't
+want to get PostGIS installed in the PostgreSQL extension directory
+(for example during testing, development or in a restricted
+environment).</para></note>
+
+	<para>
+	  Adding PostGIS objects and function definitions into your
+    database is done by loading the various sql files located in
+	  <filename>[prefix]/share/contrib</filename> as specified during
+    the build phase.
+	</para>
+
+	<para>
+    The core PostGIS objects (geometry and geography types, and their
+    support functions) are in the <filename>postgis.sql</filename>
+    script.
+    Raster objects are in the <filename>rtpostgis.sql</filename> script.
+    Topology objects are in the <filename>topology.sql</filename> script.
+	</para>
+
+	<para>
+	  For a complete set of EPSG coordinate system definition identifiers, you
+	  can also load the <filename>spatial_ref_sys.sql</filename> definitions
+	  file and populate the <varname>spatial_ref_sys</varname> table. This will
+	  permit you to perform ST_Transform() operations on geometries.
+	</para>
+
+	<para>
+	  If you wish to add comments to the PostGIS functions, you can find
+    them in the <filename>postgis_comments.sql</filename> script.
+	  Comments can be viewed by simply typing <command>\dd
+	  [function_name]</command> from a <command>psql</command> terminal window.
+	</para>
+
+	<para>
+	  Run the following Shell commands in your terminal:
+<programlisting>
+    DB=[yourdatabase]
+    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/
+
+    # Core objects
+    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql
+    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql
+    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL
+
+    # Raster support (OPTIONAL)
+    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql
+    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL
+
+    # Topology support (OPTIONAL)
+    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql
+    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL
+</programlisting>
+  </para>
+
+  </sect2>
+
+  <sect2 id="templatepostgis">
+	<title>Create a spatially-enabled database from a template</title>
+
+	<para>
+	  Some packaged distributions of PostGIS (in particular the Win32 installers
+	  for PostGIS &gt;= 1.1.5) load the PostGIS functions into a template
+	  database called <varname>template_postgis</varname>. If the
+	  <varname>template_postgis</varname> database exists in your PostgreSQL
+	  installation then it is possible for users and/or applications to create
+	  spatially-enabled databases using a single command. Note that in both
+	  cases, the database user must have been granted the privilege to create
+	  new databases.
+	</para>
+
+	<para>
+	  From the shell:
+	</para>
+
+	<programlisting># createdb -T template_postgis my_spatial_db</programlisting>
+
+	<para>
+	  From SQL:
+	</para>
+
+	<programlisting>postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis</programlisting>
+  </sect2>
+
+  </sect1>
+
+  <sect1 id="upgrading">
+	<title>Upgrading spatial databases</title>
+
+	<para>
+	  Upgrading existing spatial databases can be tricky as it requires
+	  replacement or introduction of new PostGIS object definitions.
+	</para>
+
+	<para>
+	  Unfortunately not all definitions can be easily replaced in a live
+	  database, so sometimes your best bet is a dump/reload process.
+	</para>
+
+	<para>
+	  PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases,
+	  and a HARD UPGRADE procedure for major releases.
+	</para>
+
+	<para>
+	  Before attempting to upgrade PostGIS, it is always worth to backup your
+	  data. If you use the -Fc flag to pg_dump you will always be able to
+	  restore the dump with a HARD UPGRADE.
+	</para>
+
+	<sect2 id="soft_upgrade">
+	  <title>Soft upgrade</title>
+
+	  <para>If you installed your database using extensions, you'll need to upgrade using the extension model as well.  If you installed using the old sql script way,
+	  then you should upgrade using the sql script way. Please refer to the appropriate.</para>
+
+	  <sect3 id="soft_upgrade_sql_script">
+		<title>Soft Upgrade Pre 9.1+ or without extensions</title>
+
+	  <para>This section applies only to those who installed PostGIS
+	  not using extensions.  If you have extensions and try to
+	  upgrade with this approach you'll get messages like:</para>
+
+		<programlisting>can't drop ... because postgis extension depends on it</programlisting>
+
+		<para>NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from
+		PostGIS 2.* prior to r7409, you cannot use this procedure but
+		would rather need to do a
+		<link linkend="hard_upgrade">HARD UPGRADE</link>.
+		</para>
+
+		<para>
+			After compiling and installing (make install) you should
+			find a set of	<filename>*_upgrade.sql</filename>
+			files in the installation folders. You can list
+			them all with:
+		</para>
+
+		<programlisting>ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade.sql</programlisting>
+
+		<para>
+			Load them all in turn, starting from <filename>postgis_upgrade.sql</filename>.
+		</para>
+
+		<programlisting>psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
+
+		<para>
+			The same procedure applies to raster,
+			topology and sfcgal extensions, with upgrade files named
+			<filename>rtpostgis_upgrade.sql</filename>,
+			<filename>topology_upgrade.sql</filename> and
+			<filename>sfcgal_upgrade.sql</filename> respectively.
+			If you need them:
+		</para>
+
+		<programlisting>psql -f rtpostgis_upgrade.sql -d your_spatial_database</programlisting>
+		<programlisting>psql -f topology_upgrade.sql -d your_spatial_database</programlisting>
+		<programlisting>psql -f sfcgal_upgrade.sql -d your_spatial_database</programlisting>
+
+	  <note>
+		<para>
+		  If you can't find the
+		  <filename>postgis_upgrade.sql</filename> specific for
+		  upgrading your version you are using a version too
+		  early for a soft upgrade and need to do a
+			<link linkend="hard_upgrade">HARD UPGRADE</link>.
+		</para>
+	  </note>
+
+	  <para>
+		The <xref linkend="PostGIS_Full_Version" /> function
+		should inform you about the need to run this kind of
+		upgrade using a "procs need upgrade" message.
+	  </para>
+	  </sect3>
+
+	<sect3 id="soft_upgrade_extensions"><title>Soft Upgrade 9.1+ using extensions</title>
+		<para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions, is fairly painless.</para>
+		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;";
+ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
+		<para>If you get an error notice something like:</para>
+			<programlisting>No migration path defined for ... to &last_release_version;</programlisting>
+		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup ontop of this new database.</para>
+    <para>If you get a notice message like:</para>
+    <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
+    <para>
+Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
+you're attempting to upgrade from an development version to the next (which
+doesn't get a new version number); in that case you can append "next" to the version
+string, and next time you'll need to drop the "next" suffix again:
+    </para>
+		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
+ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
+		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
+		picks up the newest latest version during restore.</para></note>
+
+    <note>
+    <para>
+    If you are upgrading PostGIS extension from a version prior to 3.0.0
+    you'll end up with an unpackaged PostGIS Raster support. You can
+    repackage the raster support using:
+    <programlisting>
+    CREATE EXTENSION postgis_raster FROM unpackaged;
+    </programlisting>
+    And then, if you don't need it, drop it with:
+    <programlisting>
+    DROP EXTENSION postgis_raster;
+    </programlisting>
+    </para>
+    </note>
+
+	</sect3>
+
+	</sect2>
+
+	<sect2 id="hard_upgrade">
+	  <title>Hard upgrade</title>
+
+	  <para>
+		By HARD UPGRADE we mean full dump/reload of postgis-enabled databases.
+		You need a HARD UPGRADE when PostGIS objects' internal storage changes
+		or when SOFT UPGRADE is not possible. The
+		<link linkend="release_notes">Release Notes</link>
+		appendix reports for each version whether you need a dump/reload (HARD
+		UPGRADE) to upgrade.
+	  </para>
+
+	  <para>
+		The dump/reload process is assisted by the postgis_restore.pl
+		script which takes care of skipping from the dump all
+		definitions which belong to PostGIS (including old ones),
+		allowing you to restore your schemas and data into a
+		database with PostGIS installed without getting duplicate
+		symbol errors or bringing forward deprecated objects.
+	  </para>
+
+	 <para>Supplementary instructions for windows users are available at  <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade">Windows Hard upgrade</ulink>.</para>
+
+
+	  <para>
+		The Procedure is as follows:
+	  </para>
+
+	<orderedlist>
+
+	<listitem>
+
+	  <para>
+		Create a "custom-format" dump of the database you want
+		to upgrade (let's call it <varname>olddb</varname>)
+		include binary blobs (-b) and verbose (-v) output.
+		The user can be the owner of the db, need not be postgres
+		super account.
+	  </para>
+
+	  <programlisting>pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f "/somepath/olddb.backup" olddb</programlisting>
+
+	</listitem>
+
+	<listitem>
+
+	  <para>
+		Do a fresh install of PostGIS in a new database -- we'll
+		refer to this database as <varname>newdb</varname>.
+		Please refer to <xref linkend="create_new_db" /> and <xref linkend="create_new_db_extensions" /> for
+		instructions on how to do this.
+	  </para>
+
+	  <para>
+		The spatial_ref_sys entries found in your dump will be
+		restored, but they will not override existing ones in
+		spatial_ref_sys.  This is to ensure that fixes in the
+		official set will be properly propagated to restored
+		databases. If for any reason you really want your own
+		overrides of standard entries just don't load the
+		spatial_ref_sys.sql file when creating the new db.
+	  </para>
+
+	  <para>
+		If your database is really old or you know you've
+		been using long deprecated functions in your
+		views and functions, you might need to load
+		<filename>legacy.sql</filename> for all your functions
+		and views etc. to properly come back.
+		Only do this if _really_ needed. Consider upgrading your
+		views and functions before dumping instead, if possible.
+		The deprecated functions can be later removed by loading
+		<filename>uninstall_legacy.sql</filename>.
+	  </para>
+
+	</listitem>
+
+	<listitem>
+
+	  <para>
+		Restore your backup into your fresh
+		<varname>newdb</varname> database using
+		postgis_restore.pl.
+		Unexpected errors, if any, will be printed to the standard
+		error stream by psql. Keep a log of those.
+	  </para>
+
+	  <programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2> errors.txt</programlisting>
+
+	</listitem>
+
+	</orderedlist>
+
+	<para>
+		Errors may arise in the following cases:
+	</para>
+
+	<orderedlist>
+	<listitem>
+	<para>
+		Some of your views or functions make use of deprecated PostGIS objects.
+		In order to fix this you may try loading <filename>legacy.sql</filename>
+		script prior to restore or you'll have to restore to a
+		version of PostGIS which still contains those objects
+		and try a migration again after porting your code.
+		If the <filename>legacy.sql</filename> way works for you, don't forget
+		to fix your code to stop using deprecated functions and drop them
+		loading <filename>uninstall_legacy.sql</filename>.
+	</para>
+	</listitem>
+	<listitem>
+	<para>
+		Some custom records of spatial_ref_sys in dump file have
+		an invalid SRID value. Valid SRID values are bigger than 0
+		and smaller than 999000. Values in the 999000.999999 range
+    are reserved for internal use while values > 999999 can't
+    be used at all.
+    All your custom records with invalid SRIDs will be retained,
+    with those > 999999 moved into the reserved range, but the
+    spatial_ref_sys table would lose a check constraint guarding
+    for that invariant to hold and possibly also its primary key
+    ( when multiple invalid SRIDS get converted to the same reserved
+    SRID value ).
+  </para>
+
+  <para>
+		In order to fix this you should copy your custom SRS to
+		a SRID with a valid value (maybe in the 910000..910999
+		range), convert all your tables to the new srid (see
+		<xref linkend="UpdateGeometrySRID"/>), delete the invalid
+		entry from spatial_ref_sys and re-construct the check(s) with:
+
+		<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</programlisting>
+
+		<programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));</programlisting>
+
+		If you are upgrading an old database containing french <ulink url="https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national">
+			IGN
+		  </ulink> cartography, you will have probably SRIDs out
+		of range and you will see, when importing your database, issues like this :
+
+		<programlisting> WARNING: SRID 310642222 converted to 999175 (in reserved zone)</programlisting>
+
+		In this case, you can try following steps : first throw
+		out completely the IGN from the sql which is resulting
+		from postgis_restore.pl. So, after having run :
+
+		<programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" > olddb.sql</programlisting>
+
+		run this command :
+
+		<programlisting>grep -v IGNF olddb.sql > olddb-without-IGN.sql</programlisting>
+
+		Create then your newdb, activate the required Postgis extensions,
+		and insert properly the french system IGN with :
+
+		<ulink url="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">
+			this script
+		  </ulink>
+
+		After these operations, import your data :
+
+		<programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> errors.txt</programlisting>
+
+	</para>
+	</listitem>
+	</orderedlist>
+
+
+	</sect2>
+  </sect1>
+
+
+
+</chapter>

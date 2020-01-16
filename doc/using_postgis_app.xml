@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<sect1>
   <title id="using_postgis_applications">Using PostGIS Geometry: Building Applications</title>
-  <sect1 id="Using_MapServer">
+  <sect2 id="Using_MapServer">
     <title>Using MapServer</title>
 
     <para>The Minnesota MapServer is an internet web-mapping server which
@@ -19,7 +19,7 @@
       </listitem>
     </itemizedlist>
 
-    <sect2>
+    <sect3>
       <title>Basic Usage</title>
 
       <para>To use PostGIS with MapServer, you will need to know about how to
@@ -168,9 +168,9 @@ END</programlisting>
           identifiers. Using the table primary key is the best practice.</para>
         </listitem>
       </orderedlist>
-    </sect2>
+    </sect3>
 
-    <sect2>
+    <sect3>
       <title>Frequently Asked Questions</title>
 
       <qandaset>
@@ -266,9 +266,9 @@ postgis# VACUUM ANALYZE;</programlisting>
 
 
       </qandaset>
-    </sect2>
+    </sect3>
 
-    <sect2>
+    <sect3>
       <title>Advanced Usage</title>
 
       <para>The <varname>USING</varname> pseudo-SQL clause is used to add some
@@ -330,9 +330,9 @@ postgis# VACUUM ANALYZE;</programlisting>
         </varlistentry>
       </variablelist>
 
-    </sect2>
+    </sect3>
 
-    <sect2>
+    <sect3>
       <title>Examples</title>
 
       <para>Lets start with a simple example and work our way up. Consider the
@@ -435,10 +435,10 @@ END</programlisting>
       <para>This annotation layer adds green labels to all the roads when the
       scale gets down to 1:20000 or less. It also demonstrates how to use an
       SQL join in a <varname>DATA</varname> definition.</para>
-    </sect2>
-  </sect1>
+    </sect3>
+  </sect2>
 
-  <sect1>
+  <sect2>
     <title>Java Clients (JDBC)</title>
 
     <para>Java clients can access PostGIS "geometry" objects in the PostgreSQL
@@ -517,23 +517,23 @@ if( geom.getType() == Geometry.POLYGON ) {
 
     <para>The JavaDoc for the extension objects provides a reference for the
     various data accessor functions in the geometric objects.</para>
-  </sect1>
+  </sect2>
 
-  <sect1>
+  <sect2>
     <title>C Clients (libpq)</title>
 
     <para>...</para>
 
-    <sect2>
+    <sect3>
       <title>Text Cursors</title>
 
       <para>...</para>
-    </sect2>
+    </sect3>
 
-    <sect2>
+    <sect3>
       <title>Binary Cursors</title>
 
       <para>...</para>
-    </sect2>
-  </sect1>
-</chapter>
+    </sect3>
+  </sect2>
+</sect1>

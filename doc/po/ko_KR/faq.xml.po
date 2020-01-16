@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: 2018-07-22 04:06+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -37,12 +37,12 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:12
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"OpenGeo has a step by step tutorial guide workshop <ulink url=\"http://"
-"workshops.boundlessgeo.com/postgis-intro/\">Introduction to PostGIS</ulink>. "
-"It includes packaged data as well as intro to working with OpenGeo Suite. It "
-"is probably the best tutorial on PostGIS."
+"A step by step tutorial guide workshop <ulink url=\"http://postgis.net/"
+"workshops/postgis-intro/\">Introduction to PostGIS</ulink>. It includes "
+"packaged data as well as intro to working with OpenGeo Suite. It is probably "
+"the best tutorial on PostGIS."
 msgstr ""
 "OpenGeo가 단계별 예제 지침 워크숍 <ulink url=\"http://workshops.boundlessgeo."
 "com/postgis-intro/\">PostGIS 개론</ulink> 을 제공하고 있습니다. 이 워크숍은 "

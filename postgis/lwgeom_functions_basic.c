@@ -395,13 +395,14 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	GSERIALIZED *pg_geom_in = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *pg_geom_out;
 	LWGEOM *lwg_in, *lwg_out;
+	double z = PG_NARGS() < 2 ? 0 : PG_GETARG_FLOAT8(1);
 
 	/* already 3d */
 	if (gserialized_ndims(pg_geom_in) == 3 && gserialized_has_z(pg_geom_in))
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
-	lwg_out = lwgeom_force_3dz(lwg_in);
+	lwg_out = lwgeom_force_3dz(lwg_in, z);
 	pg_geom_out = geometry_serialize(lwg_out);
 	lwgeom_free(lwg_out);
 	lwgeom_free(lwg_in);
@@ -417,13 +418,14 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	GSERIALIZED *pg_geom_in = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *pg_geom_out;
 	LWGEOM *lwg_in, *lwg_out;
+	double m = PG_NARGS() < 2 ? 0 : PG_GETARG_FLOAT8(1);
 
 	/* already 3d */
 	if (gserialized_ndims(pg_geom_in) == 3 && gserialized_has_m(pg_geom_in))
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
-	lwg_out = lwgeom_force_3dm(lwg_in);
+	lwg_out = lwgeom_force_3dm(lwg_in, m);
 	pg_geom_out = geometry_serialize(lwg_out);
 	lwgeom_free(lwg_out);
 	lwgeom_free(lwg_in);
@@ -439,13 +441,15 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	GSERIALIZED *pg_geom_in = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *pg_geom_out;
 	LWGEOM *lwg_in, *lwg_out;
+	double z = PG_NARGS() < 3 ? 0 : PG_GETARG_FLOAT8(1);
+	double m = PG_NARGS() < 3 ? 0 : PG_GETARG_FLOAT8(2);
 
 	/* already 4d */
 	if (gserialized_ndims(pg_geom_in) == 4)
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
-	lwg_out = lwgeom_force_4d(lwg_in);
+	lwg_out = lwgeom_force_4d(lwg_in, z, m);
 	pg_geom_out = geometry_serialize(lwg_out);
 	lwgeom_free(lwg_out);
 	lwgeom_free(lwg_in);
@@ -2080,17 +2084,8 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 	srid = g->srid;
 	lwgeom_free(g);
 
-	if (PG_NARGS() < 4)
-	{
-		/* Avoid crashing with old signature (old sql code with 3 args, new C code with 4) */
-		ereport(ERROR,
-			(errcode(ERRCODE_UNDEFINED_PARAMETER),
-			 errmsg("Missing margin parameter ($4) in C function '%s'", __func__),
-			 errhint("Consider running: SELECT postgis_extensions_upgrade()")));
-		PG_RETURN_POINTER(NULL);
-	}
-
-	margin = PG_GETARG_FLOAT8(4);
+	/* Avoid crashing with old signature (old sql code with 3 args, new C code with 4) */
+	margin = PG_NARGS() < 4 ? 0 : PG_GETARG_FLOAT8(4);
 	/* shrinking by more than 50% would eliminate the tile outright */
 	if (margin < -0.5)
 		elog(ERROR, "%s: Margin must not be less than -50%%, margin=%f", __func__, margin);

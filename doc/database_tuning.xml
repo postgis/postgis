@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sect1 id="database_tuning_configuration">
+  <title>Tuning your configuration for performance</title>
+
+  <para>Tuning for PostGIS is much like tuning for any PostgreSQL workload.  The only additional note to keep in mind is that
+  geometries and rasters are heavy so memory related optimizations generally have more of an impact on PostGIS than other types of PostgreSQL queries.</para>
+
+  <para>For general details about optimizing PostgreSQL, refer to <ulink url="https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server">Tuning your PostgreSQL Server</ulink>.</para>
+
+  <para>For PostgreSQL 9.4+ all these can be set at the server level without touching postgresql.conf or postgresql.auto.conf
+  by using the <code>ALTER SYSTEM..</code> command.</para>
+  <programlisting>ALTER SYSTEM SET work_mem = '256MB';
+-- this will force, non-startup configs to take effect for new connections
+SELECT pg_reload_conf();
+-- show current setting value
+-- use SHOW ALL to see all settings
+SHOW work_mem;</programlisting>
+
+<para>In addition to these settings, PostGIS also has some custom settings which you can find listed in <xref linkend="PostGIS_GUC" />.</para>
+
+    <sect2>
+      <title>Startup</title>
+
+      <para>
+        These settings are configured in postgresql.conf:
+      </para>
+
+      <para>
+         <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-CONSTRAINT-EXCLUSION">constraint_exclusion</ulink>
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            Default: partition
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            This is generally used for table partitioning. The default for this is set to "partition" which is ideal for PostgreSQL 8.4 and above since
+      it will force the planner to only analyze tables for constraint consideration if they are in an inherited hierarchy
+      and not pay the planner penalty otherwise.
+          </para>
+        </listitem>
+      </itemizedlist>
+
+      <para>
+         <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-SHARED-BUFFERS">shared_buffers</ulink>
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            Default: ~128MB in PostgreSQL 9.6
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Set to about 25% to 40% of available RAM.  On windows you may not be able to set as high.
+          </para>
+        </listitem>
+      </itemizedlist>
+
+
+     <para>
+        <ulink url="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-WORKER-PROCESSES">max_worker_processes</ulink>
+        This setting is only available for PostgreSQL 9.4+.  For PostgreSQL 9.6+ this setting has additional importance in that it controls the
+        max number of processes you can have for parallel queries.
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            Default: 8
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Sets the maximum number of background processes that
+        the system can support. This parameter can only be set at
+        server start.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2>
+      <title>Runtime</title>
+
+      <para>
+        <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-WORK-MEM">work_mem</ulink> (the memory used for sort operations and complex queries)
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            Default: 1-4MB
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Adjust up for large dbs, complex queries, lots of RAM
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Adjust down for many concurrent users or low RAM.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+              If you have lots of RAM and few developers:
+              <programlisting>SET work_mem TO '256MB';</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+
+      <para>
+        <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</ulink> (used for VACUUM, CREATE INDEX, etc.)
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            Default: 16-64MB
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Generally too low - ties up I/O, locks objects while swapping memory
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Recommend 32MB to 1GB on production servers w/lots of RAM, but depends
+            on the # of concurrent users.  If you have lots of RAM and few developers:
+              <programlisting>SET maintenance_work_mem TO '1GB';</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+
+      <para>
+        <ulink url="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER">max_parallel_workers_per_gather</ulink>
+      </para>
+      <para>
+        This setting is only available for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries.
+        If set to higher than 0, then some queries such as those involving relation functions like <code>ST_Intersects</code> can use multiple processes and can run
+        more than twice as fast when doing so.  If you have a lot of processors to spare, you should change the value of this to as many processors as you have.
+        Also make sure to bump up <code>max_worker_processes</code> to at least as high as this number.
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            Default: 0
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Sets the maximum number of workers that can be started
+        by a single <varname>Gather</varname> node.
+        Parallel workers are taken from the pool of processes
+        established by <varname>max_worker_processes</varname>.
+        Note that the requested number of workers may not
+        actually be available at run time. If this occurs, the
+        plan will run with fewer workers than expected, which may
+        be inefficient. Setting this value to 0, which is the
+        default, disables parallel query execution.
+          </para>
+        </listitem>
+      </itemizedlist>
+
+    </sect2>
+
+</sect1>
+

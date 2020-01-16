@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: 2019-03-11 09:15+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -384,10 +384,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:153
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Sets default enabled drivers for all new connections to server. Requires "
-"super user access and PostgreSQL 9.4+. Also not that database, session, and "
+"super user access and PostgreSQL 9.4+. Also note that database, session, and "
 "user settings override this."
 msgstr ""
 "Setzt die standardmäßig aktivierten Treiber für alle neuen Verbindungen zum "
@@ -494,10 +494,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:198
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC "
-"<varname>postgis.enable_outdb_rasters</varname> determines the accessible "
+"<varname>postgis.gdal_enabled_drivers</varname> determines the accessible "
 "raster formats."
 msgstr ""
 "Auch wenn <varname>postgis.enable_outdb_rasters</varname> True ist, bestimmt "

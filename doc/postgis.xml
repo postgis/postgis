@@ -17,11 +17,14 @@
 
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">
-<!ENTITY faq SYSTEM "faq.xml">
+<!ENTITY administration SYSTEM "administration.xml">
+<!ENTITY usage SYSTEM "usage.xml">
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
 <!ENTITY using_raster_dataman SYSTEM "using_raster_dataman.xml">
 <!ENTITY using_postgis_app SYSTEM "using_postgis_app.xml">
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
+<!ENTITY database_tuning SYSTEM "database_tuning.xml">
+<!ENTITY faq SYSTEM "faq.xml">
 <!ENTITY reference SYSTEM "reference.xml">
 <!ENTITY postgis_aggs_mm SYSTEM "postgis_aggs_mm.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
@@ -175,17 +178,12 @@
 
   &introduction;
   &installation;
-  &faq;
-  &using_postgis_dataman;
-  &using_raster_dataman;
-  &using_postgis_app;
-  &performance_tips;
+  &administration;
+  &usage;
   &reference;
   &reference_raster;
+  &faq;
   &faq_raster;
-  &extras_topology;
-  &extras_address_standardizer;
-  &extras;
   &postgis_aggs_mm;
   &reporting;
   &release_notes;

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="Address_Standardizer">
+<sect1 id="Address_Standardizer">
 	<title>Address Standardizer</title>
 	<para>This is a fork of the <ulink url="http://www.pagcgeo.org/docs/html/pagc-11.html">PAGC standardizer</ulink> (original code for this portion was  <ulink url="http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>). </para>
 	<para>The address standardizer is a single line address parser that takes an input address and normalizes it based on a set of rules stored in a table and helper lex and gaz tables.</para>
 	<para>The code is built into a single postgresql extension library called <code>address_standardizer</code> which can be installed with <code>CREATE EXTENSION address_standardizer;</code>. In addition to the address_standardizer extension, a sample data extension called <code>address_standardizer_data_us</code> extensions is built, which contains gaz, lex, and rules tables for US data.  This extensions can be installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code></para>
 	 <para>The code for this extension can be found in the PostGIS <filename>extensions/address_standardizer</filename> and is currently self-contained.</para>
 	 <para>For installation instructions refer to: <xref linkend="installing_pagc_address_standardizer" />.</para>
-  <sect1 id="Address_Standardizer_Basics"><title>How the Parser Works</title>
+  <sect2 id="Address_Standardizer_Basics"><title>How the Parser Works</title>
 		<para>The parser works from right to left looking first at the macro elements
 			for postcode, state/province, city, and then looks micro elements to determine
 if we are dealing with a house number street or intersection or landmark.
@@ -30,15 +30,15 @@ These regexs are currently in the parseaddress-api.c but could get moved
 into includes in the future for easier maintenance.</para></listitem>
 				</varlistentry>
 			</variablelist>
-  </sect1>
-  <sect1 id="Address_Standardizer_Types">
-	<sect1info>
+  </sect2>
+  <sect2 id="Address_Standardizer_Types">
+	<sect2info>
 		<abstract>
 			<para>This section lists the PostgreSQL data types installed by Address Standardizer extension.  Note we describe the casting behavior of these which is very
 				important especially when designing your own functions.
 			</para>
 		</abstract>
-	</sect1info>
+	</sect2info>
 	<title>Address Standardizer Types</title>
 	<refentry id="stdaddr">
 		<refnamediv>
@@ -133,16 +133,16 @@ into includes in the future for easier maintenance.</para></listitem>
 			</variablelist>
 		</refsection>
 	</refentry>
-  </sect1>
+  </sect2>
 
-  <sect1 id="Address_Standardizer_Tables">
-		  <sect1info>
+  <sect2 id="Address_Standardizer_Tables">
+		  <sect2info>
             <abstract>
                 <para>This section lists the PostgreSQL table formats used by the address_standardizer for normalizing addresses.  Note that these tables do not need to be named the same as what is referenced here.  You can have different lex, gaz, rules tables for each country for example or for your custom geocoder.  The names of these tables get passed into the address standardizer functions.
                 </para>
                 <para>The packaged extension <varname>address_standardizer_data_us</varname> contains data for standardizing US addresses.</para>
             </abstract>
-        </sect1info>
+        </sect2info>
         <title>Address Standardizer Tables</title>
         <refentry id="rulestab">
 			<refnamediv>
@@ -562,9 +562,9 @@ into includes in the future for easier maintenance.</para></listitem>
 
 			</refsection>
 		</refentry>
-  </sect1>
+  </sect2>
 
-  <sect1 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
+  <sect2 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
 		<refentry id="parse_address">
 		<refnamediv>
 			<refname>parse_address</refname>
@@ -757,5 +757,5 @@ FROM (SELECT addid, parse_address(address) As a
 		</refsection>
 	</refentry>
 
-  </sect1>
-</chapter>
+  </sect2>
+</sect1>

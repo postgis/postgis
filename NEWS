@@ -9,11 +9,13 @@ PostGIS 3.1.0
   - #4577, Drop support for PostgreSQL 9.5 (Raúl Marín)
   - #4579, Drop postgis_proc_set_search_path.pl (Raúl Marín)
   - #4601, ST_TileEnvelope signature changed.
+  - #3057, ST_Force3D, ST_Force3DZ, ST_Force3DM and ST_Force4D signatures changed.
 
 * New features *
   - #4601, Add ST_TileEnvelope margin argument (Yuri Astrakhan)
   - #2972, Add quiet mode (-q) to pgsql2shp (Kristian Thy)
   - #4617, Add configure switch `--without-phony-revision` (Raúl Marín)
+  - #3057, Optional value params for Force3D*, Force4D functions (Kristian Thy)
 
 * Enhancements *
   - #4539, Unify libm includes (Raúl Marín)

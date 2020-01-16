@@ -483,7 +483,7 @@ lwline_is_trajectory(const LWLINE *line)
 }
 
 LWLINE*
-lwline_force_dims(const LWLINE *line, int hasz, int hasm)
+lwline_force_dims(const LWLINE *line, int hasz, int hasm, double zval, double mval)
 {
 	POINTARRAY *pdims = NULL;
 	LWLINE *lineout;
@@ -495,7 +495,7 @@ lwline_force_dims(const LWLINE *line, int hasz, int hasm)
 	}
 	else
 	{
-		pdims = ptarray_force_dims(line->points, hasz, hasm);
+		pdims = ptarray_force_dims(line->points, hasz, hasm, zval, mval);
 		lineout = lwline_construct(line->srid, NULL, pdims);
 	}
 	lineout->type = line->type;

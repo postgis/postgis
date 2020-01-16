@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -43,7 +43,7 @@ msgstr ""
 "다."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:15 reference_lrs.xml:83
+#: reference_lrs.xml:15
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
@@ -232,6 +232,20 @@ msgstr ""
 "라인을 따라 보간된 포인트를 반환합니다. 두 번째 인수는 0과 1 사이의 Float8 데"
 "이터형으로 라인스트링의 전체 길이에서 포인트가 위치해야 하는 비율을 의미합니"
 "다."
+
+#. Tag: funcprototype
+#: reference_lrs.xml:83
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DLineInterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
+"paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:99
