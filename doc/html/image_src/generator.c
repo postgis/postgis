@@ -34,7 +34,6 @@
 #include <ctype.h>
 #include <sys/wait.h> /* for WEXITSTATUS */
 
-#include "liblwgeom.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include "styles.h"
