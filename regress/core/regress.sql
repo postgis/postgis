@@ -286,6 +286,27 @@ select '252', ST_AsEWKT(ST_TileEnvelope(10,300,387, margin => 0.5));
 select '253', ST_AsEWKT(ST_TileEnvelope(10,300,387, margin => 2));
 select '254', ST_AsEWKT(ST_TileEnvelope(10,300,387, margin => -0.3));
 
+-- ST_Hexagon()
+select '300', ST_AsEWKT(ST_SnapToGrid(ST_Hexagon(10, 0, 0),0.00001));
+select '301', ST_AsEWKT(ST_SnapToGrid(ST_Hexagon(10, 1, 1),0.00001));
+select '302', ST_AsEWKT(ST_SnapToGrid(ST_Hexagon(10, -1, -1),0.00001));
+select '303', ST_AsEWKT(ST_SnapToGrid(ST_Hexagon(10, 100, -100),0.00001));
+-- ST_Square()
+select '304', ST_AsEWKT(ST_SnapToGrid(ST_Square(10, 0, 0),0.00001));
+select '305', ST_AsEWKT(ST_SnapToGrid(ST_Square(10, 1, 1),0.00001));
+select '306', ST_AsEWKT(ST_SnapToGrid(ST_Square(10, -1, -1),0.00001));
+select '307', ST_AsEWKT(ST_SnapToGrid(ST_Square(10, 100, -100),0.00001));
+-- ST_HexagonGrid()
+select '308', Count(*) FROM ST_HexagonGrid(100000, ST_TileEnvelope(4, 7, 7));
+select '309', Count(*) FROM ST_HexagonGrid(100000, ST_TileEnvelope(4, 7, 7)) hex, ST_TileEnvelope(4, 7, 7) tile WHERE NOT ST_Intersects(hex.geom, tile);
+select '310', Count(*) FROM ST_HexagonGrid(100000, ST_TileEnvelope(4, 2, 2));
+select '311', Count(*) FROM ST_HexagonGrid(100000, ST_TileEnvelope(4, 2, 2)) hex, ST_TileEnvelope(4, 2, 2) tile WHERE NOT ST_Intersects(hex.geom, tile);
+-- ST_SquareGrid()
+select '312', Count(*) FROM ST_SquareGrid(100000, ST_TileEnvelope(4, 7, 7));
+select '313', Count(*) FROM ST_SquareGrid(100000, ST_TileEnvelope(4, 7, 7)) hex, ST_TileEnvelope(4, 7, 7) tile WHERE NOT ST_Intersects(hex.geom, tile);
+select '314', Count(*) FROM ST_SquareGrid(100000, ST_TileEnvelope(4, 2, 2));
+select '315', Count(*) FROM ST_SquareGrid(100000, ST_TileEnvelope(4, 2, 2)) hex, ST_TileEnvelope(4, 2, 2) tile WHERE NOT ST_Intersects(hex.geom, tile);
+
 -- Drop test table
 DROP table test;
 

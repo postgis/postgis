@@ -809,4 +809,150 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		</refsection>
 	</refentry>
 
+
+
+	<refentry id="ST_HexagonGrid">
+		<refnamediv>
+		<refname>ST_HexagonGrid</refname>
+		<refpurpose>Returns a set of hexagons and cell indices that completely cover the bounds of the geometry argument.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>setof record <function>ST_HexagonGrid</function></funcdef>
+			<paramdef><type>float8</type> <parameter>size</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>
+		  </funcprototype>
+		 </funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Starts with the concept of a hexagon tiling of the plane.
+			(Not a hexagon tiling of the globe, this is not the
+			<ulink url="https://github.com/uber/h3">H3</ulink> tiling scheme.)
+			For a given planar SRS, and a given edge size, starting at the origin of the SRS,
+			there is one unique hexagonal tiling of the plane, Tiling(SRS, Size).
+			This function answers the question: what hexagons in a given Tiling(SRS, Size)
+			overlap with a given bounds.</para>
+
+			<inlinemediaobject><imageobject>
+				<imagedata fileref='images/st_hexagongrid01.png' />
+			</imageobject></inlinemediaobject>
+
+			<para>The SRS for the output hexagons is the SRS provided by the bounds geometry.</para>
+			<para>Doubling or tripling the edge size of the hexagon generates a new parent tiling that
+			fits with the origin tiling. Unfortunately, it is not possible to generate parent
+			hexagon tilings that the child tiles perfectly fit inside.</para>
+
+			<inlinemediaobject><imageobject>
+				<imagedata fileref='images/st_hexagongrid02.png' />
+			</imageobject></inlinemediaobject>
+
+			<para>Availability: 3.1</para>
+
+		</refsection>
+
+		<refsection>
+		<title>Example: Counting points in hexagons</title>
+		<para>To do a point summary against a hexagonal tiling, generate a hexagon grid using the
+		extent of the points as the bounds, then spatially join to that grid.</para>
+		 <programlisting>WITH bounds AS (
+ 	SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) AS geom
+ )
+ SELECT Count(*), hexes.geom
+ FROM pointtable pts
+ JOIN ST_HexagonGrid(1000, bounds.geom) hexes
+ GROUP BY hexes.geom
+</programlisting>
+		</refsection>
+
+		<refsection>
+		<title>Example: Generating hex coverage of polygons</title>
+		<para>If we generate a set of hexagons for each polygon boundary and filter
+			out those that do not intersect their hexagons, we end up with a tiling for
+			each polygon.</para>
+		<inlinemediaobject><imageobject>
+			<imagedata fileref='images/st_hexagongrid02.png' />
+		</imageobject></inlinemediaobject>
+		<para>Tiling states results in a hexagon coverage of each state, and multiple
+			hexagons overlapping at the borders between states.</para>
+		 <programlisting>WITH hexes AS (
+	SELECT admin1.gid,
+	       (ST_HexagonGrid(100000, admin1.geom)).* AS hex
+	FROM admin1
+	WHERE adm0_a3 = 'USA'
+)
+SELECT hexes.*
+FROM hexes
+JOIN admin1 USING (gid)
+WHERE ST_Intersects(admin1.geom, hexes.geom)
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_TileEnvelope" /><xref linkend="ST_SquareGrid" /></para>
+		</refsection>
+	</refentry>
+
+
+	<refentry id="ST_SquareGrid">
+		<refnamediv>
+		<refname>ST_SquareGrid</refname>
+		<refpurpose>Returns a set of grid squares and cell indices that completely cover the bounds of the geometry argument.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>setof record <function>ST_SquareGrid</function></funcdef>
+			<paramdef><type>float8</type> <parameter>size</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>
+		  </funcprototype>
+		 </funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Starts with the concept of a square tiling of the plane.
+			For a given planar SRS, and a given edge size, starting at the origin of the SRS,
+			there is one unique square tiling of the plane, Tiling(SRS, Size).
+			This function answers the question: what grids in a given Tiling(SRS, Size)
+			overlap with a given bounds.</para>
+
+			<para>The SRS for the output squares is the SRS provided by the bounds geometry.</para>
+			<para>Doubling or edge size of the square generates a new parent tiling that
+			perfectly fits with the original tiling. Standard web map tilings in mercator
+			are just powers-of-two square grids in the mercator plane.</para>
+
+			<para>Availability: 3.1</para>
+
+		</refsection>
+
+		<refsection>
+		<title>Example: Counting points in squares</title>
+		<para>To do a point summary against a square tiling, generate a square grid using the
+		extent of the points as the bounds, then spatially join to that grid.</para>
+		 <programlisting>WITH bounds AS (
+ 	SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) AS geom
+ )
+ SELECT Count(*), squares.geom
+ FROM pointtable pts
+ JOIN ST_HexagonGrid(1000, bounds.geom) squares
+ GROUP BY squares.geom
+</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_TileEnvelope" /><xref linkend="ST_HexagonGrid" /></para>
+		</refsection>
+	</refentry>
+
+
+
+
   </sect1>
