@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: 2019-03-11 09:16+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -42,7 +42,7 @@ msgstr ""
 "des Linienzuges an, wo der Punkt liegen soll."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:15 reference_lrs.xml:83
+#: reference_lrs.xml:15
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
@@ -234,6 +234,20 @@ msgstr ""
 "Fügt einen Punkt entlang einer Linie ein. Der zweite Parameter, in Float8-"
 "Darstellung mit den Werten von 0 bis 1, gibt jenen Bruchteil der Gesamtlänge "
 "des Linienzuges an, wo der Punkt liegen soll."
+
+#. Tag: funcprototype
+#: reference_lrs.xml:83
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DLineInterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
+"paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:99

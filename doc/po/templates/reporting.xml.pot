@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:49+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -43,8 +43,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If you aren't using the latest release, it's worth taking a look at its "
-"<ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</"
-"ulink> first, to find out if your bug has already been fixed."
+"<ulink url=\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/"
+"NEWS\">release changelog</ulink> first, to find out if your bug has already "
+"been fixed."
 msgstr ""
 
 #. Tag: para
@@ -110,19 +111,19 @@ msgstr ""
 #. Tag: para
 #: reporting.xml:54
 #, no-c-format
-msgid "Check out a copy of PostGIS' Subversion trunk. On Unix, type:"
+msgid "Clone the PostGIS' git repository. On Unix, type:"
 msgstr ""
 
 #. Tag: command
 #: reporting.xml:57
 #, no-c-format
-msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
+msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
 msgstr ""
 
 #. Tag: para
 #: reporting.xml:60
 #, no-c-format
-msgid "This will be stored in the directory ./trunk"
+msgid "This will be stored in the directory postgis"
 msgstr ""
 
 #. Tag: para
@@ -136,7 +137,7 @@ msgstr ""
 #. Tag: command
 #: reporting.xml:67
 #, no-c-format
-msgid "vim trunk/doc/postgis.xml"
+msgid "vim doc/postgis.xml"
 msgstr ""
 
 #. Tag: para
@@ -159,7 +160,7 @@ msgstr ""
 #. Tag: command
 #: reporting.xml:78
 #, no-c-format
-msgid "svn diff trunk/doc/postgis.xml &gt; doc.patch"
+msgid "git diff doc/postgis.xml &gt; doc.patch"
 msgstr ""
 
 #. Tag: para

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -52,7 +52,7 @@ msgstr ""
 #: reference_constructor.xml:154 reference_constructor.xml:203
 #: reference_constructor.xml:307 reference_constructor.xml:353
 #: reference_constructor.xml:407 reference_constructor.xml:489
-#: reference_constructor.xml:547 reference_constructor.xml:605
+#: reference_constructor.xml:547 reference_constructor.xml:606
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -261,7 +261,7 @@ msgstr ""
 #: reference_constructor.xml:170 reference_constructor.xml:266
 #: reference_constructor.xml:329 reference_constructor.xml:378
 #: reference_constructor.xml:459 reference_constructor.xml:523
-#: reference_constructor.xml:579 reference_constructor.xml:618
+#: reference_constructor.xml:579 reference_constructor.xml:622
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -1308,11 +1308,12 @@ msgid ""
 "<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>geometry</type> <parameter>bounds=SRID=3857;"
 "LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 "
-"20037508.342789)</parameter></paramdef>"
+"20037508.342789)</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>float</type> <parameter>margin=0.0</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:607
+#: reference_constructor.xml:608
 #, no-c-format
 msgid ""
 "Creates a rectangular Polygon in <ulink url=\"https://en.wikipedia.org/wiki/"
@@ -1326,19 +1327,43 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:609
+#: reference_constructor.xml:610
+#, no-c-format
+msgid ""
+"The optional margin parameter can be used to grow a tile by the given "
+"percentage, e.g. margin=0.125 grows the tile by 12.5%, which is equivalent "
+"to buffer=512 when extent is 4096, as used in <xref linkend=\"ST_AsMVTGeom\"/"
+">. This is useful to create a tile buffer -- to include data lying outside "
+"of the tile's visible area, but whose existence affects current tile's "
+"rendering. For example, a city name (a geopoint) could be near an edge of a "
+"tile, but the text would need to render on two tiles, even though the "
+"geopoint is located in the visible area of just one tile. Using an expanded "
+"tile in a search would include the city geopoint for both tiles. Use "
+"negative value to shrink the tile instead. Values less than -0.5 are "
+"prohibited because that would eliminate the tile completely. Do not use "
+"margin with ST_AsMVTGeom(). See example in <xref linkend=\"ST_AsMVT\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:612
 #, no-c-format
 msgid "Availability: 3.0"
 msgstr ""
 
+#. Tag: para
+#: reference_constructor.xml:613
+#, no-c-format
+msgid "Enhanced in 3.1: Added margin parameter."
+msgstr ""
+
 #. Tag: title
-#: reference_constructor.xml:614
+#: reference_constructor.xml:618
 #, no-c-format
 msgid "Example: Building a tile envelope"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:615
+#: reference_constructor.xml:619
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );\n"
@@ -1351,7 +1376,7 @@ msgid ""
 "SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, "
 "90, 4326) ) );\n"
 "\n"
-"                      st_astext                       \n"
+"                      st_astext\n"
 "------------------------------------------------------\n"
 " POLYGON((-135 45,-135 67.5,-90 67.5,-90 45,-135 45))"
 msgstr ""

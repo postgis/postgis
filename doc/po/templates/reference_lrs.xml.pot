@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -36,7 +36,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:15 reference_lrs.xml:83
+#: reference_lrs.xml:15
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
@@ -180,6 +180,16 @@ msgid ""
 "Returns a point interpolated along a line in 3D. Second argument is a float8 "
 "between 0 and 1 representing fraction of total length of linestring the "
 "point has to be located."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_lrs.xml:83
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DLineInterpolatePoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: para

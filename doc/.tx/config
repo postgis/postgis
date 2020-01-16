@@ -166,3 +166,58 @@ file_filter = po/<lang>/using_raster_dataman.xml.po
 source_file = po/templates/using_raster_dataman.xml.pot
 source_lang = en
 
+[postgis.reference_bboxxmlpot]
+file_filter = po/<lang>/reference_bbox.xml.po
+source_file = po/templates/reference_bbox.xml.pot
+source_lang = en
+
+[postgis.reference_clusterxmlpot]
+file_filter = po/<lang>/reference_cluster.xml.po
+source_file = po/templates/reference_cluster.xml.pot
+source_lang = en
+
+[postgis.reference_inputxmlpot]
+file_filter = po/<lang>/reference_input.xml.po
+source_file = po/templates/reference_input.xml.pot
+source_lang = en
+
+[postgis.reference_relationshipxmlpot]
+file_filter = po/<lang>/reference_relationship.xml.po
+source_file = po/templates/reference_relationship.xml.pot
+source_lang = en
+
+[postgis.reference_srsxmlpot]
+file_filter = po/<lang>/reference_srs.xml.po
+source_file = po/templates/reference_srs.xml.pot
+source_lang = en
+
+[postgis.reference_trajectoryxmlpot]
+file_filter = po/<lang>/reference_trajectory.xml.po
+source_file = po/templates/reference_trajectory.xml.pot
+source_lang = en
+
+[postgis.reference_transformationxmlpot]
+file_filter = po/<lang>/reference_transformation.xml.po
+source_file = po/templates/reference_transformation.xml.pot
+source_lang = en
+
+[postgis.reference_troubleshootingxmlpot]
+file_filter = po/<lang>/reference_troubleshooting.xml.po
+source_file = po/templates/reference_troubleshooting.xml.pot
+source_lang = en
+
+[postgis.reference_validationxmlpot]
+file_filter = po/<lang>/reference_validation.xml.po
+source_file = po/templates/reference_validation.xml.pot
+source_lang = en
+
+[postgis.reference_versionxmlpot]
+file_filter = po/<lang>/reference_version.xml.po
+source_file = po/templates/reference_version.xml.pot
+source_lang = en
+
+[postgis.administrationxmlpot]
+file_filter = po/<lang>/administration.xml.po
+source_file = po/templates/administration.xml.pot
+source_lang = en
+

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: 2019-03-11 09:08+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -36,12 +36,12 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:12
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"OpenGeo has a step by step tutorial guide workshop <ulink url=\"http://"
-"workshops.boundlessgeo.com/postgis-intro/\">Introduction to PostGIS</ulink>. "
-"It includes packaged data as well as intro to working with OpenGeo Suite. It "
-"is probably the best tutorial on PostGIS."
+"A step by step tutorial guide workshop <ulink url=\"http://postgis.net/"
+"workshops/postgis-intro/\">Introduction to PostGIS</ulink>. It includes "
+"packaged data as well as intro to working with OpenGeo Suite. It is probably "
+"the best tutorial on PostGIS."
 msgstr ""
 "OpenGeo hat ein schrittweises Lernprogramm <ulink url=\"http://workshops."
 "opengeo.org/postgis-intro/\">Introduction to PostGIS</ulink>. Es beinhaltet "

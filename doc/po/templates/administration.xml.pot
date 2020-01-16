@@ -1,0 +1,749 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: administration.xml:3
+#, no-c-format
+msgid "PostGIS Administration"
+msgstr ""
+
+#. Tag: title
+#: administration.xml:7
+#, no-c-format
+msgid "Configuring raster support"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:9
+#, no-c-format
+msgid ""
+"If you enabled raster support you may want to read below how to properly "
+"configure it."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:14
+#, no-c-format
+msgid ""
+"As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled "
+"by default. In order to re-enable these, you need to set the following "
+"environment variables <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. "
+"For PostGIS 2.2, you can use the more cross-platform approach of setting the "
+"corresponding <xref linkend=\"PostGIS_GUC\"/>."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:17
+#, no-c-format
+msgid "If you want to enable offline raster:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:18
+#, no-c-format
+msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:19
+#, no-c-format
+msgid "Any other setting or no setting at all will disable out of db rasters."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:20
+#, no-c-format
+msgid ""
+"In order to enable all GDAL drivers available in your GDAL install, set this "
+"environment variable as follows"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:21
+#, no-c-format
+msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:22
+#, no-c-format
+msgid ""
+"If you want to only enable specific drivers, set your environment variable "
+"as follows:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:23
+#, no-c-format
+msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
+msgstr ""
+
+#. Tag: para
+#: administration.xml:25
+#, no-c-format
+msgid "If you are on windows, do not quote the driver list"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:27
+#, no-c-format
+msgid ""
+"Setting environment variables varies depending on OS. For PostgreSQL "
+"installed on Ubuntu or Debian via apt-postgresql, the preferred way is to "
+"edit <filename>/etc/postgresql/<replaceable>10</replaceable>/"
+"<replaceable>main</replaceable>/environment</filename> where 10 refers to "
+"version of PostgreSQL and main refers to the cluster."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:30
+#, no-c-format
+msgid ""
+"On windows, if you are running as a service, you can set via System "
+"variables which for Windows 7 you can get to by right-clicking on Computer-"
+"&gt;Properties Advanced System Settings or in explorer navigating to "
+"<varname>Control Panel\\All Control Panel Items\\System</varname>. Then "
+"clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment "
+"Variables</emphasis> and adding new system variables."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:32
+#, no-c-format
+msgid ""
+"After you set the environment variables, you'll need to restart your "
+"PostgreSQL service for the changes to take effect."
+msgstr ""
+
+#. Tag: title
+#: administration.xml:37
+#, no-c-format
+msgid "Creating spatial databases"
+msgstr ""
+
+#. Tag: title
+#: administration.xml:40
+#, no-c-format
+msgid "Spatially enable database using EXTENSION"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:42
+#, no-c-format
+msgid ""
+"If you are using PostgreSQL 9.1+ and have compiled and installed the "
+"extensions/postgis modules, you can turn a database into a spatial one using "
+"the EXTENSION mechanism."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:47
+#, no-c-format
+msgid ""
+"Core postgis extension includes geometry, geography, spatial_ref_sys and all "
+"the functions and comments. Raster and topology are packaged as a separate "
+"extension."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:53
+#, no-c-format
+msgid ""
+"Run the following SQL snippet in the database you want to enable spatially:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:55
+#, no-c-format
+msgid ""
+"CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
+"      CREATE EXTENSION postgis;\n"
+"      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
+"      CREATE EXTENSION postgis_topology; -- OPTIONAL"
+msgstr ""
+
+#. Tag: title
+#: administration.xml:61
+#, no-c-format
+msgid "Spatially enable database without using EXTENSION (discouraged)"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:63
+#, no-c-format
+msgid ""
+"This is generally only needed if you cannot or don't want to get PostGIS "
+"installed in the PostgreSQL extension directory (for example during testing, "
+"development or in a restricted environment)."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:68
+#, no-c-format
+msgid ""
+"Adding PostGIS objects and function definitions into your database is done "
+"by loading the various sql files located in <filename>[prefix]/share/"
+"contrib</filename> as specified during the build phase."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:75
+#, no-c-format
+msgid ""
+"The core PostGIS objects (geometry and geography types, and their support "
+"functions) are in the <filename>postgis.sql</filename> script. Raster "
+"objects are in the <filename>rtpostgis.sql</filename> script. Topology "
+"objects are in the <filename>topology.sql</filename> script."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:83
+#, no-c-format
+msgid ""
+"For a complete set of EPSG coordinate system definition identifiers, you can "
+"also load the <filename>spatial_ref_sys.sql</filename> definitions file and "
+"populate the <varname>spatial_ref_sys</varname> table. This will permit you "
+"to perform ST_Transform() operations on geometries."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:90
+#, no-c-format
+msgid ""
+"If you wish to add comments to the PostGIS functions, you can find them in "
+"the <filename>postgis_comments.sql</filename> script. Comments can be viewed "
+"by simply typing <command>\\dd [function_name]</command> from a "
+"<command>psql</command> terminal window."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:97
+#, no-c-format
+msgid "Run the following Shell commands in your terminal:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:99
+#, no-c-format
+msgid ""
+"DB=[yourdatabase]\n"
+"    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/\n"
+"\n"
+"    # Core objects\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPTIONAL\n"
+"\n"
+"    # Raster support (OPTIONAL)\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPTIONAL\n"
+"\n"
+"    # Topology support (OPTIONAL)\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL"
+msgstr ""
+
+#. Tag: title
+#: administration.xml:105
+#, no-c-format
+msgid "Create a spatially-enabled database from a template"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:107
+#, no-c-format
+msgid ""
+"Some packaged distributions of PostGIS (in particular the Win32 installers "
+"for PostGIS &gt;= 1.1.5) load the PostGIS functions into a template database "
+"called <varname>template_postgis</varname>. If the "
+"<varname>template_postgis</varname> database exists in your PostgreSQL "
+"installation then it is possible for users and/or applications to create "
+"spatially-enabled databases using a single command. Note that in both cases, "
+"the database user must have been granted the privilege to create new "
+"databases."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:118
+#, no-c-format
+msgid "From the shell:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:122
+#, no-c-format
+msgid "# createdb -T template_postgis my_spatial_db"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:124
+#, no-c-format
+msgid "From SQL:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:128
+#, no-c-format
+msgid "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
+msgstr ""
+
+#. Tag: title
+#: administration.xml:134
+#, no-c-format
+msgid "Upgrading spatial databases"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:136
+#, no-c-format
+msgid ""
+"Upgrading existing spatial databases can be tricky as it requires "
+"replacement or introduction of new PostGIS object definitions."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:141
+#, no-c-format
+msgid ""
+"Unfortunately not all definitions can be easily replaced in a live database, "
+"so sometimes your best bet is a dump/reload process."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:146
+#, no-c-format
+msgid ""
+"PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
+"a HARD UPGRADE procedure for major releases."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:151
+#, no-c-format
+msgid ""
+"Before attempting to upgrade PostGIS, it is always worth to backup your "
+"data. If you use the -Fc flag to pg_dump you will always be able to restore "
+"the dump with a HARD UPGRADE."
+msgstr ""
+
+#. Tag: title
+#: administration.xml:158
+#, no-c-format
+msgid "Soft upgrade"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:160
+#, no-c-format
+msgid ""
+"If you installed your database using extensions, you'll need to upgrade "
+"using the extension model as well. If you installed using the old sql script "
+"way, then you should upgrade using the sql script way. Please refer to the "
+"appropriate."
+msgstr ""
+
+#. Tag: title
+#: administration.xml:164
+#, no-c-format
+msgid "Soft Upgrade Pre 9.1+ or without extensions"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:166
+#, no-c-format
+msgid ""
+"This section applies only to those who installed PostGIS not using "
+"extensions. If you have extensions and try to upgrade with this approach "
+"you'll get messages like:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:170
+#, no-c-format
+msgid "can't drop ... because postgis extension depends on it"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:172
+#, no-c-format
+msgid ""
+"NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
+"prior to r7409, you cannot use this procedure but would rather need to do a "
+"<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:178
+#, no-c-format
+msgid ""
+"After compiling and installing (make install) you should find a set of "
+"<filename>*_upgrade.sql</filename> files in the installation folders. You "
+"can list them all with:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:185
+#, no-c-format
+msgid ""
+"ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade."
+"sql"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:187
+#, no-c-format
+msgid ""
+"Load them all in turn, starting from <filename>postgis_upgrade.sql</"
+"filename>."
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:191
+#, no-c-format
+msgid "psql -f postgis_upgrade.sql -d your_spatial_database"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:193
+#, no-c-format
+msgid ""
+"The same procedure applies to raster, topology and sfcgal extensions, with "
+"upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
+"<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
+"filename> respectively. If you need them:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:202
+#, no-c-format
+msgid "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:203
+#, no-c-format
+msgid "psql -f topology_upgrade.sql -d your_spatial_database"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:204
+#, no-c-format
+msgid "psql -f sfcgal_upgrade.sql -d your_spatial_database"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:207
+#, no-c-format
+msgid ""
+"If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
+"upgrading your version you are using a version too early for a soft upgrade "
+"and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:216
+#, no-c-format
+msgid ""
+"The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
+"about the need to run this kind of upgrade using a \"procs need upgrade\" "
+"message."
+msgstr ""
+
+#. Tag: title
+#: administration.xml:223
+#, no-c-format
+msgid "Soft Upgrade 9.1+ using extensions"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:224
+#, no-c-format
+msgid ""
+"If you originally installed PostGIS with extensions, then you need to "
+"upgrade using extensions as well. Doing a minor upgrade with extensions, is "
+"fairly painless."
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:225
+#, no-c-format
+msgid ""
+"ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
+"ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:226
+#, no-c-format
+msgid "If you get an error notice something like:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:227
+#, no-c-format
+msgid "No migration path defined for ... to &last_release_version;"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:228
+#, no-c-format
+msgid ""
+"Then you'll need to backup your database, create a fresh one as described in "
+"<xref linkend=\"create_new_db_extensions\"/> and then restore your backup "
+"ontop of this new database."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:229
+#, no-c-format
+msgid "If you get a notice message like:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:230
+#, no-c-format
+msgid ""
+"Version \"&last_release_version;\" of extension \"postgis\" is already "
+"installed"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:231
+#, no-c-format
+msgid ""
+"Then everything is already up to date and you can safely ignore it. "
+"<emphasis role=\"bold\">UNLESS</emphasis> you're attempting to upgrade from "
+"an development version to the next (which doesn't get a new version number); "
+"in that case you can append \"next\" to the version string, and next time "
+"you'll need to drop the \"next\" suffix again:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:237
+#, no-c-format
+msgid ""
+"ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
+"ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;next\";"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:238
+#, no-c-format
+msgid ""
+"If you installed PostGIS originally without a version specified, you can "
+"often skip the reinstallation of postgis extension before restoring since "
+"the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
+"the newest latest version during restore."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:242
+#, no-c-format
+msgid ""
+"If you are upgrading PostGIS extension from a version prior to 3.0.0 you'll "
+"end up with an unpackaged PostGIS Raster support. You can repackage the "
+"raster support using: <programlisting>\n"
+"    CREATE EXTENSION postgis_raster FROM unpackaged;\n"
+"    </programlisting> And then, if you don't need it, drop it with:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:248
+#, no-c-format
+msgid "DROP EXTENSION postgis_raster;"
+msgstr ""
+
+#. Tag: title
+#: administration.xml:257
+#, no-c-format
+msgid "Hard upgrade"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:259
+#, no-c-format
+msgid ""
+"By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. You "
+"need a HARD UPGRADE when PostGIS objects' internal storage changes or when "
+"SOFT UPGRADE is not possible. The <link linkend=\"release_notes\">Release "
+"Notes</link> appendix reports for each version whether you need a dump/"
+"reload (HARD UPGRADE) to upgrade."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:268
+#, no-c-format
+msgid ""
+"The dump/reload process is assisted by the postgis_restore.pl script which "
+"takes care of skipping from the dump all definitions which belong to PostGIS "
+"(including old ones), allowing you to restore your schemas and data into a "
+"database with PostGIS installed without getting duplicate symbol errors or "
+"bringing forward deprecated objects."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:277
+#, no-c-format
+msgid ""
+"Supplementary instructions for windows users are available at <ulink url="
+"\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
+"upgrade</ulink>."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:280
+#, no-c-format
+msgid "The Procedure is as follows:"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:288
+#, no-c-format
+msgid ""
+"Create a \"custom-format\" dump of the database you want to upgrade (let's "
+"call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v) "
+"output. The user can be the owner of the db, need not be postgres super "
+"account."
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:296
+#, no-c-format
+msgid ""
+"pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
+"backup\" olddb"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:302
+#, no-c-format
+msgid ""
+"Do a fresh install of PostGIS in a new database -- we'll refer to this "
+"database as <varname>newdb</varname>. Please refer to <xref linkend="
+"\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> for "
+"instructions on how to do this."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:309
+#, no-c-format
+msgid ""
+"The spatial_ref_sys entries found in your dump will be restored, but they "
+"will not override existing ones in spatial_ref_sys. This is to ensure that "
+"fixes in the official set will be properly propagated to restored databases. "
+"If for any reason you really want your own overrides of standard entries "
+"just don't load the spatial_ref_sys.sql file when creating the new db."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:319
+#, no-c-format
+msgid ""
+"If your database is really old or you know you've been using long deprecated "
+"functions in your views and functions, you might need to load "
+"<filename>legacy.sql</filename> for all your functions and views etc. to "
+"properly come back. Only do this if _really_ needed. Consider upgrading your "
+"views and functions before dumping instead, if possible. The deprecated "
+"functions can be later removed by loading <filename>uninstall_legacy.sql</"
+"filename>."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:335
+#, no-c-format
+msgid ""
+"Restore your backup into your fresh <varname>newdb</varname> database using "
+"postgis_restore.pl. Unexpected errors, if any, will be printed to the "
+"standard error stream by psql. Keep a log of those."
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:343
+#, no-c-format
+msgid ""
+"perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost "
+"-p 5432 -U postgres newdb 2> errors.txt"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:349
+#, no-c-format
+msgid "Errors may arise in the following cases:"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:355
+#, no-c-format
+msgid ""
+"Some of your views or functions make use of deprecated PostGIS objects. In "
+"order to fix this you may try loading <filename>legacy.sql</filename> script "
+"prior to restore or you'll have to restore to a version of PostGIS which "
+"still contains those objects and try a migration again after porting your "
+"code. If the <filename>legacy.sql</filename> way works for you, don't forget "
+"to fix your code to stop using deprecated functions and drop them loading "
+"<filename>uninstall_legacy.sql</filename>."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:367
+#, no-c-format
+msgid ""
+"Some custom records of spatial_ref_sys in dump file have an invalid SRID "
+"value. Valid SRID values are bigger than 0 and smaller than 999000. Values "
+"in the 999000.999999 range are reserved for internal use while values > "
+"999999 can't be used at all. All your custom records with invalid SRIDs will "
+"be retained, with those > 999999 moved into the reserved range, but the "
+"spatial_ref_sys table would lose a check constraint guarding for that "
+"invariant to hold and possibly also its primary key ( when multiple invalid "
+"SRIDS get converted to the same reserved SRID value )."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:381
+#, no-c-format
+msgid ""
+"In order to fix this you should copy your custom SRS to a SRID with a valid "
+"value (maybe in the 910000..910999 range), convert all your tables to the "
+"new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
+"entry from spatial_ref_sys and re-construct the check(s) with: "
+"<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT "
+"spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</"
+"programlisting> <programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY "
+"KEY(srid));</programlisting> If you are upgrading an old database containing "
+"french <ulink url=\"https://en.wikipedia.org/wiki/Institut_g"
+"%C3%A9ographique_national\"> IGN </ulink> cartography, you will have "
+"probably SRIDs out of range and you will see, when importing your database, "
+"issues like this : <programlisting> WARNING: SRID 310642222 converted to "
+"999175 (in reserved zone)</programlisting> In this case, you can try "
+"following steps : first throw out completely the IGN from the sql which is "
+"resulting from postgis_restore.pl. So, after having run : "
+"<programlisting>perl utils/postgis_restore.pl \"/somepath/olddb.backup\" > "
+"olddb.sql</programlisting> run this command : <programlisting>grep -v IGNF "
+"olddb.sql > olddb-without-IGN.sql</programlisting> Create then your newdb, "
+"activate the required Postgis extensions, and insert properly the french "
+"system IGN with : <ulink url=\"https://raw.githubusercontent.com/Remi-C/"
+"IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql\"> this "
+"script </ulink> After these operations, import your data :"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:418
+#, no-c-format
+msgid ""
+"psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> "
+"errors.txt"
+msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:49+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: 2019-03-11 09:33+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -51,11 +51,12 @@ msgstr ""
 
 #. Tag: para
 #: reporting.xml:16
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you aren't using the latest release, it's worth taking a look at its "
-"<ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</"
-"ulink> first, to find out if your bug has already been fixed."
+"<ulink url=\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/"
+"NEWS\">release changelog</ulink> first, to find out if your bug has already "
+"been fixed."
 msgstr ""
 "Falls Sie nicht die aktuelle Version verwenden, sollten Sie zuerst unter "
 "<ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</"
@@ -145,21 +146,21 @@ msgstr ""
 
 #. Tag: para
 #: reporting.xml:54
-#, no-c-format
-msgid "Check out a copy of PostGIS' Subversion trunk. On Unix, type:"
+#, fuzzy, no-c-format
+msgid "Clone the PostGIS' git repository. On Unix, type:"
 msgstr ""
 "Eine Kopie des PostGIS Subversion Trunks auschecken. Eingabe unter Unix:"
 
 #. Tag: command
 #: reporting.xml:57
 #, no-c-format
-msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
-msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/"
+msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
+msgstr ""
 
 #. Tag: para
 #: reporting.xml:60
-#, no-c-format
-msgid "This will be stored in the directory ./trunk"
+#, fuzzy, no-c-format
+msgid "This will be stored in the directory postgis"
 msgstr "Dies wird im Verzeichnis ./trunk gespeichert"
 
 #. Tag: para
@@ -174,8 +175,8 @@ msgstr ""
 
 #. Tag: command
 #: reporting.xml:67
-#, no-c-format
-msgid "vim trunk/doc/postgis.xml"
+#, fuzzy, no-c-format
+msgid "vim doc/postgis.xml"
 msgstr "vim trunk/doc/postgis.xml"
 
 #. Tag: para
@@ -202,8 +203,8 @@ msgstr ""
 
 #. Tag: command
 #: reporting.xml:78
-#, no-c-format
-msgid "svn diff trunk/doc/postgis.xml &gt; doc.patch"
+#, fuzzy, no-c-format
+msgid "git diff doc/postgis.xml &gt; doc.patch"
 msgstr "svn diff trunk/doc/postgis.xml &gt; doc.patch"
 
 #. Tag: para
@@ -211,3 +212,6 @@ msgstr "svn diff trunk/doc/postgis.xml &gt; doc.patch"
 #, no-c-format
 msgid "Attach the patch to a new issue in bug tracker."
 msgstr "Fügen Sie den Patch einem neuen Thema/Issue im Bug Tracker bei."
+
+#~ msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
+#~ msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/"

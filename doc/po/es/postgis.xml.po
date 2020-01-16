@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"POT-Creation-Date: 2020-01-16 16:27+0000\n"
 "PO-Revision-Date: 2014-10-14 22:36+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
@@ -18,19 +18,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: title
-#: postgis.xml:136
+#: postgis.xml:137
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
 msgstr "Manual PostGIS &last_release_version; "
 
 #. Tag: corpauthor
-#: postgis.xml:140
+#: postgis.xml:141
 #, no-c-format
 msgid "The PostGIS Development Group"
 msgstr ""
 
 #. Tag: affiliation
-#: postgis.xml:146
+#: postgis.xml:147
 #, no-c-format
 msgid ""
 "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
@@ -44,7 +44,7 @@ msgstr ""
 "address>"
 
 #. Tag: para
-#: postgis.xml:160
+#: postgis.xml:161
 #, no-c-format
 msgid ""
 "PostGIS is an extension to the PostgreSQL object-relational database system "
@@ -58,13 +58,13 @@ msgstr ""
 "Tree, y funciones de análisis y procesado de objetos SIG."
 
 #. Tag: para
-#: postgis.xml:169
+#: postgis.xml:170
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
 msgstr "Este es el manual de la version &last_release_version;"
 
 #. Tag: para
-#: postgis.xml:170
+#: postgis.xml:171
 #, no-c-format
 msgid ""
 "This work is licensed under a <ulink url=\"http://creativecommons.org/"
