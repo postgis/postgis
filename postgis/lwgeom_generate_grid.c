@@ -237,7 +237,6 @@ PG_FUNCTION_INFO_V1(ST_ShapeGrid);
 Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
-	MemoryContext oldcontext;
 
 	GSERIALIZED *gbounds;
 	GeometryGridState *state;
@@ -250,6 +249,7 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 
 	if (SRF_IS_FIRSTCALL())
 	{
+		MemoryContext oldcontext;
 		const char *func_name;
 		double bounds_width, bounds_height;
 		char gbounds_is_empty;
@@ -309,7 +309,6 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 
 	/* stuff done on every call of the function */
 	funcctx = SRF_PERCALL_SETUP();
-	newcontext = funcctx->multi_call_memory_ctx;
 
 	/* get state */
 	state = funcctx->user_fctx;
