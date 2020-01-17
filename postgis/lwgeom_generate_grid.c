@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2018 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2020 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  **********************************************************************/
 
@@ -71,7 +71,7 @@ static const double hex_x[] = {-1.0, -0.5,  0.5, 1.0, 0.5, -0.5, -1.0};
 static const double hex_y[] = { 0.0, -1*H, -1*H, 0.0,   H,    H,  0.0};
 
 static LWGEOM *
-hexagon(double origin_x, double origin_y, double size, int cell_i, int cell_j, uint32_t srid)
+hexagon(double origin_x, double origin_y, double size, int cell_i, int cell_j, int32_t srid)
 {
 	double height = size * 2 * H;
 	POINT4D pt;
@@ -145,10 +145,10 @@ hexagon_grid_state(double size, const GBOX *gbox, int32_t srid)
 	return state;
 }
 
-static bool
+static void
 hexagon_state_next(HexagonGridState *state)
 {
-	if (!state || state->done) return false;
+	if (!state || state->done) return;
 	/* Move up one row */
 	state->j++;
 	/* Off the end, increment column counter, reset row counter back to (appropriate) minimum */
@@ -162,13 +162,12 @@ hexagon_state_next(HexagonGridState *state)
 	{
 		state->done = true;
 	}
-	return !state->done;
 }
 
 /* ********* ********* ********* ********* ********* ********* ********* ********* */
 
 static LWGEOM *
-square(double origin_x, double origin_y, double size, int cell_i, int cell_j, uint32_t srid)
+square(double origin_x, double origin_y, double size, int cell_i, int cell_j, int32_t srid)
 {
 	double ll_x = origin_x + (size * cell_i);
 	double ll_y = origin_y + (size * cell_j);
@@ -211,10 +210,10 @@ square_grid_state(double size, const GBOX *gbox, int32_t srid)
 	return state;
 }
 
-static bool
+static void
 square_state_next(SquareGridState *state)
 {
-	if (!state || state->done) return false;
+	if (!state || state->done) return;
 	/* Move up one row */
 	state->j++;
 	/* Off the end, increment column counter, reset row counter back to (appropriate) minimum */
@@ -228,7 +227,6 @@ square_state_next(SquareGridState *state)
 	{
 		state->done = true;
 	}
-	return !state->done;
 }
 
 /**
@@ -275,8 +273,7 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 
-		newcontext = funcctx->multi_call_memory_ctx;
-		oldcontext = MemoryContextSwitchTo(newcontext);
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/*
 		* Support both hexagon and square grids with one function,

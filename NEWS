@@ -16,6 +16,8 @@ PostGIS 3.1.0
   - #2972, Add quiet mode (-q) to pgsql2shp (Kristian Thy)
   - #4617, Add configure switch `--without-phony-revision` (Raúl Marín)
   - #3057, Optional value params for Force3D*, Force4D functions (Kristian Thy)
+  - ST_HexagonGrid and ST_SquareGrid, set returning funcitons to
+    generate tilings of the plane (Paul Ramsey)
 
 * Enhancements *
   - #4539, Unify libm includes (Raúl Marín)
