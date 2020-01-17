@@ -893,7 +893,7 @@ WHERE ST_Intersects(admin1.geom, hexes.geom)
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_TileEnvelope" /><xref linkend="ST_SquareGrid" /></para>
+			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_SquareGrid" /></para>
 		</refsection>
 	</refentry>
 
@@ -941,14 +941,14 @@ WHERE ST_Intersects(admin1.geom, hexes.geom)
  )
  SELECT Count(*), squares.geom
  FROM pointtable pts
- JOIN ST_HexagonGrid(1000, bounds.geom) squares
+ JOIN ST_SquareGrid(1000, bounds.geom) squares
  GROUP BY squares.geom
 </programlisting>
 		</refsection>
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_TileEnvelope" /><xref linkend="ST_HexagonGrid" /></para>
+			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_HexagonGrid" /></para>
 		</refsection>
 	</refentry>
 
