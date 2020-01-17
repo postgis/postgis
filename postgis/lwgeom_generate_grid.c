@@ -237,7 +237,7 @@ PG_FUNCTION_INFO_V1(ST_ShapeGrid);
 Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
-	MemoryContext oldcontext, newcontext;
+	MemoryContext oldcontext;
 
 	GSERIALIZED *gbounds;
 	GeometryGridState *state;
