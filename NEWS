@@ -14,6 +14,7 @@ XXXX/XX/XX
   - #4596, The script to generate nation_script_load.sh is missing
            a trailing quote (Bill Mill)
   - #4608, PG12: Fix several bugs in the index support function (Raúl Marín)
+  - #4621, Prevent stack overflow when parsing WKB (Raúl Marín)
 
 PostGIS 3.0.0
 2019/10/20

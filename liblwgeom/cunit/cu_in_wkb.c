@@ -261,6 +261,14 @@ test_wkb_fuzz(void)
 	uint8_t wkb3[9] = {0x01, 0x03, 0x00, 0x00, 0x10, 0x8d, 0x55, 0xf3, 0xff};
 	g = lwgeom_from_wkb(wkb3, 9, LW_PARSER_CHECK_NONE);
 	lwgeom_free(g);
+
+	/* OSS-FUZZ: https://trac.osgeo.org/postgis/ticket/4621 */
+	uint32_t big_size = 20000000;
+	uint8_t *wkb5 = lwalloc(big_size);
+	memset(wkb5, 0x01, big_size);
+	g = lwgeom_from_wkb(wkb5, big_size, LW_PARSER_CHECK_NONE);
+	lwgeom_free(g);
+	lwfree(wkb5);
 }
 
 /*
