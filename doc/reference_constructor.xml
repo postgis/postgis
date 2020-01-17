@@ -875,7 +875,7 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 			out those that do not intersect their hexagons, we end up with a tiling for
 			each polygon.</para>
 		<para><inlinemediaobject><imageobject>
-			<imagedata fileref='images/st_hexagongrid02.png' />
+			<imagedata fileref='images/st_hexagongrid03.png' />
 		</imageobject></inlinemediaobject></para>
 		<para>Tiling states results in a hexagon coverage of each state, and multiple
 			hexagons overlapping at the borders between states.</para>
