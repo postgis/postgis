@@ -692,6 +692,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 	s->depth++;
 	if (s->depth >= LW_PARSER_MAX_DEPTH)
 	{
+		lwcollection_free(col);
 		lwerror("Geometry has too many chained collections");
 		return NULL;
 	}
