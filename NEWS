@@ -21,6 +21,7 @@ XXXX/XX/XX
   - #4549, Fix schema qualification of internal types (Raúl Marín)
   - #4546, Fix PLPGSQL functions missing the schema qualification (Raúl Marín)
   - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)
+  - #4621, Prevent stack overflow when parsing WKB (Raúl Marín)
 
 
 PostGIS 2.4.8
