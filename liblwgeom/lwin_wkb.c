@@ -30,6 +30,9 @@
 #include <math.h>
 #include <limits.h>
 
+/** Max depth in a geometry. Matches the default YYINITDEPTH for WKT */
+#define LW_PARSER_MAX_DEPTH 200
+
 /**
 * Used for passing the parse state between the parsing functions.
 */
@@ -45,6 +48,7 @@ typedef struct
 	int8_t has_m;       /* M? */
 	int8_t has_srid;    /* SRID? */
 	int8_t error;       /* An error was found (not enough bytes to read) */
+	uint8_t depth;      /* Current recursion level (to prevent stack overflows). Maxes at LW_PARSER_MAX_DEPTH */
 	const uint8_t *pos; /* Current parse position */
 } wkb_parse_state;
 
@@ -685,6 +689,12 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 	if ( s->lwtype == POLYHEDRALSURFACETYPE )
 		s->check |= LW_PARSER_CHECK_ZCLOSURE;
 
+	s->depth++;
+	if (s->depth >= LW_PARSER_MAX_DEPTH)
+	{
+		lwerror("Geometry has too many chained collections");
+		return NULL;
+	}
 	for ( i = 0; i < ngeoms; i++ )
 	{
 		geom = lwgeom_from_wkb_state(s);
@@ -696,6 +706,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 			return NULL;
 		}
 	}
+	s->depth--;
 
 	return col;
 }
@@ -823,6 +834,7 @@ LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char ch
 	s.has_srid = LW_FALSE;
 	s.error = LW_FALSE;
 	s.pos = wkb;
+	s.depth = 1;
 
 	if (!wkb || !wkb_size)
 		return NULL;
