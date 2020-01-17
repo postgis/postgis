@@ -722,49 +722,56 @@ asgeojson_geom_buf(const LWGEOM *geom, char *output, GBOX *bbox, int precision)
 static size_t
 pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 {
-	uint32_t i;
-	char *ptr;
-	char x[OUT_DOUBLE_BUFFER_SIZE];
-	char y[OUT_DOUBLE_BUFFER_SIZE];
-	char z[OUT_DOUBLE_BUFFER_SIZE];
+	char *ptr = output;
 
 	assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
-	ptr = output;
 
-	/* TODO: rewrite this loop to be simpler and possibly quicker */
 	if (!FLAGS_GET_Z(pa->flags))
 	{
-		for (i=0; i<pa->npoints; i++)
+		for (uint32_t i = 0; i < pa->npoints; i++)
 		{
-			const POINT2D *pt;
-			pt = getPoint2d_cp(pa, i);
+			if (i)
+			{
+				*ptr = ',';
+				ptr++;
+			}
+			const POINT2D *pt = getPoint2d_cp(pa, i);
 
-			lwprint_double(
-			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
-
-			if ( i ) ptr += sprintf(ptr, ",");
-			ptr += sprintf(ptr, "[%s,%s]", x, y);
+			*ptr = '[';
+			ptr++;
+			ptr += lwprint_double(pt->x, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			*ptr = ',';
+			ptr++;
+			ptr += lwprint_double(pt->y, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			*ptr = ']';
+			ptr++;
 		}
 	}
 	else
 	{
-		for (i=0; i<pa->npoints; i++)
+		for (uint32_t i = 0; i < pa->npoints; i++)
 		{
+			if (i)
+			{
+				*ptr = ',';
+				ptr++;
+			}
+
 			const POINT3D *pt = getPoint3d_cp(pa, i);
-
-			lwprint_double(
-			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
-
-			if ( i ) ptr += sprintf(ptr, ",");
-			ptr += sprintf(ptr, "[%s,%s,%s]", x, y, z);
+			*ptr = '[';
+			ptr++;
+			ptr += lwprint_double(pt->x, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			*ptr = ',';
+			ptr++;
+			ptr += lwprint_double(pt->y, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			*ptr = ',';
+			ptr++;
+			ptr += lwprint_double(pt->z, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			*ptr = ']';
+			ptr++;
 		}
 	}
+	*ptr = '\0';
 
 	return (ptr-output);
 }
