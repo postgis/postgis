@@ -783,9 +783,8 @@ SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))
 
 			<para>The optional margin parameter can be used to grow a tile by the given percentage, e.g. margin=0.125 grows the tile by 12.5%, which is equivalent to buffer=512 when extent is 4096, as used in <xref linkend="ST_AsMVTGeom" />. This is useful to create a tile buffer -- to include data lying outside of the tile's visible area, but whose existence affects current tile's rendering. For example, a city name (a geopoint) could be near an edge of a tile, but the text would need to render on two tiles, even though the geopoint is located in the visible area of just one tile. Using an expanded tile in a search would include the city geopoint for both tiles. Use negative value to shrink the tile instead. Values less than -0.5 are prohibited because that would eliminate the tile completely. Do not use margin with ST_AsMVTGeom(). See example in <xref linkend="ST_AsMVT" />.</para>
 
-			<para>Availability: 3.0</para>
-			<para>Enhanced in 3.1: Added margin parameter.</para>
-
+			<para>Enhanced: 3.1.0 Added margin parameter.</para>
+			<para>Availability: 3.0.0</para>
 		</refsection>
 
 		<refsection>
