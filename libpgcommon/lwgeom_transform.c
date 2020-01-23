@@ -197,7 +197,6 @@ GetProjStringsSPI(int32_t srid)
 static PjStrs
 GetProjStrings(int32_t srid)
 {
-	const int maxprojlen = 512;
 	PjStrs strs;
 	memset(&strs, 0, sizeof(strs));
 
