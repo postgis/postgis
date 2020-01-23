@@ -458,7 +458,9 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 	{
 		/* For single points it's faster to call proj_trans */
 		PJ_XYZT v = {pa_double[0], pa_double[1], has_z ? pa_double[2] : 0.0, 0.0};
-		PJ_COORD t = proj_trans(pj->pj, PJ_FWD, (PJ_COORD)v);
+		PJ_COORD c;
+		c.xyzt = v;
+		PJ_COORD t = proj_trans(pj->pj, PJ_FWD, c);
 
 		int pj_errno_val = proj_errno(pj->pj);
 		if (pj_errno_val)
@@ -466,10 +468,10 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 			lwerror("transform: %s (%d)", proj_errno_string(pj_errno_val), pj_errno_val);
 			return LW_FAILURE;
 		}
-		pa_double[0] = ((PJ_XYZT)t.xyzt).x;
-		pa_double[1] = ((PJ_XYZT)t.xyzt).y;
+		pa_double[0] = (t.xyzt).x;
+		pa_double[1] = (t.xyzt).y;
 		if (has_z)
-			pa_double[2] = ((PJ_XYZT)t.xyzt).z;
+			pa_double[2] = (t.xyzt).z;
 	}
 	else
 	{
