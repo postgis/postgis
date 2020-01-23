@@ -38,8 +38,8 @@ on 1 byte), but shoehorning those bytes into integers efficiently is messy.
 #include <stdio.h>      /* defines printf for tests */
 #include <time.h>       /* defines time_t for timings in the test */
 #include <stdint.h>     /* defines uint32_t etc */
-#include <sys/param.h>  /* attempt to define endianness */
 #ifdef linux
+#include <sys/param.h>  /* attempt to define endianness */
 # include <endian.h>    /* attempt to define endianness */
 #endif
 
@@ -47,7 +47,10 @@ on 1 byte), but shoehorning those bytes into integers efficiently is messy.
  * My best guess at if you are big-endian or little-endian.  This may
  * need adjustment.
  */
-#if (defined(WORDS_BIGENDIAN))
+#if defined (__WIN32__) // windows is always little-endian except for NT 
+# define HASH_LITTLE_ENDIAN 1
+# define HASH_BIG_ENDIAN 0
+#elif (defined(WORDS_BIGENDIAN))
 # define HASH_LITTLE_ENDIAN 0
 # define HASH_BIG_ENDIAN 1
 #elif (defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN) && \
