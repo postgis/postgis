@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8.0

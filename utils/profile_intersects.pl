@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
 # 
 # TODO:
@@ -7,6 +7,7 @@
 #	eg. 1-3 or 1-32/5
 #
 
+use warnings;
 use Pg;
 use Time::HiRes("gettimeofday");
 

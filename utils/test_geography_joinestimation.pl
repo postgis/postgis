@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
 # 
 # TODO:
@@ -6,6 +6,7 @@
 # Apply oid filters on table2
 #
 
+use warnings;
 use Pg;
 
 $VERBOSE = 0;

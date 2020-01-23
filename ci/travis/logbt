@@ -317,7 +317,7 @@ function test_logbt() {
   # We use bash to avoid needing an external dep on some runtime
 
   # Due to https://github.com/mapbox/logbt/issues/29 we need to copy the bash
-  # exe on OS X to a new location since coredumps are disabled for /bin/bash for
+  # exe on OS X to a new location since coredumps are disabled for /usr/bin/env bash for
   # reasons I don't understand
   if [[ ${PLATFORM_UNAME} == "Darwin" ]]; then
       # first touch file to create it with writable permissions for this user

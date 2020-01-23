@@ -14,7 +14,7 @@
 #export GCC_TYPE=
 #if no override is set - use these values
 #otherwise use the ones jenkins passes thru
-#!/bin/bash
+#!/usr/bin/env bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8.0
 	export GDAL_VER=2.4.3
