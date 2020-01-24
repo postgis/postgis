@@ -345,8 +345,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *geojson;
-	text *result;
+	lwvarlena_t *geojson;
 	int precision = DBL_DIG;
 	int output_bbox = LW_FALSE;
 	int output_long_crs = LW_FALSE;
@@ -410,11 +409,8 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (srs) pfree(srs);
 
-	result = cstring_to_text(geojson);
-	lwfree(geojson);
-
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(geojson);
 }
 
 
@@ -426,12 +422,10 @@ Datum geometry_to_json(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
-	text *result = cstring_to_text(geojson);
+	lwvarlena_t *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
 	lwgeom_free(lwgeom);
-	pfree(geojson);
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(geojson);
 }
 
 PG_FUNCTION_INFO_V1(geometry_to_jsonb);
@@ -439,9 +433,9 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
+	lwvarlena_t *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
 	lwgeom_free(lwgeom);
-	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(geojson)));
+	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(pstrdup(geojson->data))));
 }
 
 

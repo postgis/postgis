@@ -431,8 +431,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_geojson);
 Datum geography_as_geojson(PG_FUNCTION_ARGS)
 {
-	char *geojson;
-	text *result;
+	lwvarlena_t *geojson;
 	int has_bbox = 0;
 	char * srs = NULL;
 	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
@@ -470,14 +469,11 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	if (option & 1) has_bbox = 1;
 
 	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
-    lwgeom_free(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 0);
 	if (srs) pfree(srs);
 
-	result = cstring_to_text(geojson);
-	lwfree(geojson);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(geojson);
 }
 
 
