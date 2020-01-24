@@ -308,6 +308,16 @@ fi
 AC_SUBST([MATHML2_DTD])
 
 dnl ===========================================================================
+dnl Detect if pkg-config installed
+dnl ===========================================================================
+# check for pkg-config
+PKG_PROG_PKG_CONFIG
+if test -z "$PKG_CONFIG"; then
+   AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
+fi
+
+
+dnl ===========================================================================
 dnl Detect CUnit if it is installed (used for unit testing)
 dnl
 dnl Note that we pass any specified CPPFLAGS and LDFLAGS into the Makefile
@@ -584,13 +594,31 @@ AC_ARG_WITH([xml2config],
 	[AS_HELP_STRING([--with-xml2config=FILE], [specify an alternative xml2-config file])],
 	[XML2CONFIG="$withval"], [XML2CONFIG=""])
 
+XML2_LDFLAGS=""
+XML2_CPPFLAGS=""
+
 if test "x$XML2CONFIG" = "x"; then
 	dnl XML2CONFIG was not specified, so search within the current path
 	AC_PATH_PROG([XML2CONFIG], [xml2-config])
 
-	dnl If we couldn't find xml2-config, display a warning
+	dnl If we couldn't find xml2-config, display a warning if pkg-config fails too
 	if test "x$XML2CONFIG" = "x"; then
-		AC_MSG_ERROR([could not find xml2-config from libxml2 within the current path. You may need to try re-running configure with a --with-xml2config parameter.])
+		if test ! -z "$PKG_CONFIG"; then
+			PKG_CHECK_MODULES([LIBXML2], [libxml-2.0], [
+				XML2_CPPFLAGS="$LIBXML2_CFLAGS"
+				XML2_LDFLAGS="$LIBXML2_LIBS"
+				POSTGIS_LIBXML2_VERSION=`$PKG_CONFIG libxml-2.0 --modversion`
+			], [])
+		else
+			AC_MSG_ERROR([could not find xml2-config from libxml2 within the current path. You may need to try re-running configure with a --with-xml2config parameter.])
+		fi
+	else
+		dnl Extract the linker and include flags
+		XML2_LDFLAGS=`$XML2CONFIG --libs`
+		XML2_CPPFLAGS=`$XML2CONFIG --cflags`
+
+		dnl Extract the version
+		POSTGIS_LIBXML2_VERSION=`$XML2CONFIG --version`
 	fi
 else
 	dnl XML2CONFIG was specified; display a message to the user
@@ -599,16 +627,18 @@ else
 	else
 		if test -f $XML2CONFIG; then
 			AC_MSG_RESULT([Using user-specified xml2-config file: $XML2CONFIG])
+
+			dnl Extract the linker and include flags
+			XML2_LDFLAGS=`$XML2CONFIG --libs`
+			XML2_CPPFLAGS=`$XML2CONFIG --cflags`
+
+			dnl Extract the version
+			POSTGIS_LIBXML2_VERSION=`$XML2CONFIG --version`
 		else
 			AC_MSG_ERROR([the user-specified xml2-config file $XML2CONFIG does not exist])
 		fi
 	fi
 fi
-
-
-dnl Extract the linker and include flags
-XML2_LDFLAGS=`$XML2CONFIG --libs`
-XML2_CPPFLAGS=`$XML2CONFIG --cflags`
 
 
 dnl
@@ -632,10 +662,6 @@ case $host_os in
         fi
         ;;
 esac
-
-
-dnl Extract the version
-POSTGIS_LIBXML2_VERSION=`$XML2CONFIG --version`
 
 dnl Check headers file
 CPPFLAGS_SAVE="$CPPFLAGS"
@@ -822,16 +848,6 @@ AC_SUBST([GETTEXT_LDFLAGS])
 
 LDFLAGS="$LDFLAGS_SAVE"
 CFLAGS="$CFLAGS_SAVE"
-
-
-dnl ===========================================================================
-dnl Detect if pkg-config installed
-dnl ===========================================================================
-# check for pkg-config
-PKG_PROG_PKG_CONFIG
-if test -z "$PKG_CONFIG"; then
-   AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
-fi
 
 
 dnl ===========================================================================
