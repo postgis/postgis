@@ -492,14 +492,16 @@ lwdecimal_length(const double d)
 int
 lwprint_double(double d, uint32_t maxdd, char *buf, size_t bufsize)
 {
+	assert(bufsize >= OUT_DOUBLE_BUFFER_SIZE);
+
 	int length;
 	double ad = fabs(d);
 	if (ad <= FP_TOLERANCE)
 	{
-		return snprintf(buf, bufsize, "0");
+		buf[0] = '0';
+		buf[1] = '\0';
+		return 1;
 	}
-
-	assert(bufsize >= OUT_DOUBLE_BUFFER_SIZE);
 
 	if (ad >= OUT_MAX_DOUBLE)
 	{
