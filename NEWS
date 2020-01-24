@@ -26,6 +26,7 @@ PostGIS 2.5.4
   - #4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)
   - #4605, Fix postgis_upgrade.pl with PostgreSQL 12 (Matti Linnanvuori)
   - #4621, Prevent stack overflow when parsing WKB (Raúl Marín)
+  - #4626, Support pkg-config for libxml2 (Bas Couwenberg)
 
 
 PostGIS 2.5.3
