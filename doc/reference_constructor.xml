@@ -951,6 +951,95 @@ WHERE ST_Intersects(admin1.geom, hexes.geom)
 		</refsection>
 	</refentry>
 
+	<refentry id="ST_Hexagon">
+		<refnamediv>
+		<refname>ST_Hexagon</refname>
+		<refpurpose>Returns a single hexagon, using the provided edge size and
+			cell coordinate within the hexagon grid space.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Hexagon</function></funcdef>
+			<paramdef><type>float8</type> <parameter>size</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef>
+			<paramdef choice="opt"><type>geometry</type> <parameter>origin</parameter></paramdef>
+		  </funcprototype>
+		 </funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Uses the same hexagon tiling concept as <xref linkend="ST_HexagonGrid" />, but generates just one hexagon at the desired cell coordinate. Optionally,
+			can adjust origin coordinate of the tiling, the default origin is at 0,0.
+			</para>
+			<para>Hexagons are generated with no SRID set, so use <xref linkend="ST_SetSRID" /> to set the SRID to the one you expect.</para>
+
+			<para>Availability: 3.1</para>
+		</refsection>
+
+		<refsection>
+		<title>Example: Creating a hexagon at the origin</title>
+		 <programlisting>SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));
+
+POLYGON((-1 0,-0.5
+         -0.866025403784439,0.5
+         -0.866025403784439,1
+         0,0.5
+         0.866025403784439,-0.5
+         0.866025403784439,-1 0)) </programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_HexagonGrid" />, <xref linkend="ST_Square" /></para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_Square">
+		<refnamediv>
+		<refname>ST_Square</refname>
+		<refpurpose>Returns a single square, using the provided edge size and
+			cell coordinate within the hexagon grid space.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Square</function></funcdef>
+			<paramdef><type>float8</type> <parameter>size</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef>
+			<paramdef choice="opt"><type>geometry</type> <parameter>origin</parameter></paramdef>
+		  </funcprototype>
+		 </funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>Uses the same square tiling concept as <xref linkend="ST_SquareGrid" />, but generates just one square at the desired cell coordinate. Optionally,
+			can adjust origin coordinate of the tiling, the default origin is at 0,0.
+			</para>
+			<para>Squares are generated with no SRID set, so use <xref linkend="ST_SetSRID" /> to set the SRID to the one you expect.</para>
+
+			<para>Availability: 3.1</para>
+		</refsection>
+
+		<refsection>
+		<title>Example: Creating a square at the origin</title>
+		 <programlisting>SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857));
+
+ POLYGON((0 0,0 1,1 1,1 0,0 0))</programlisting>
+ 		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_SquareGrid" />, <xref linkend="ST_Hexagon" /></para>
+		</refsection>
+	</refentry>
+
 
 
 
