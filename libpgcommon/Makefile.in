@@ -62,7 +62,7 @@ check-unit: libpgcommon.a
 
 # Command to build each of the .o files
 $(SA_OBJS): %.o: %.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(SA_OBJS): ../postgis_config.h
 

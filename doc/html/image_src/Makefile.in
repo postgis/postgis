@@ -175,7 +175,7 @@ images: $(IMAGES) $(IMAGES_RESIZED)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
-	$(CC) $(CFLAGS) $(CUNIT_CPPFLAGS) -c -o $@ $<
+	$(CC) $(CUNIT_CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 # Command to build each of the .wkt files
 $(IMAGES): ../images/%.png: %.wkt generator styles.conf
