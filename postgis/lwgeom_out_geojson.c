@@ -1,4 +1,6 @@
 
+#include "../postgis_config.h"
+
 /* PostgreSQL headers */
 #include "postgres.h"
 #include "funcapi.h"
@@ -17,12 +19,15 @@
 #include "utils/datetime.h"
 #include "utils/lsyscache.h"
 #include "utils/json.h"
+#if POSTGIS_PGSQL_VERSION < 130
 #include "utils/jsonapi.h"
+#else
+#include "common/jsonapi.h"
+#endif
 #include "utils/typcache.h"
 #include "utils/syscache.h"
 
 /* PostGIS headers */
-#include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "lwgeom_log.h"
 #include "liblwgeom.h"
