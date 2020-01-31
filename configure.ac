@@ -72,12 +72,6 @@ AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [
 AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wmissing-prototypes], [_cv_misprot], [-Wmissing-prototypes], [], [WARNFLAGS="$WARNFLAGS -Wmissing-prototypes"], [])
 AC_SUBST([WARNFLAGS])
 
-dnl
-dnl For some GCC versions and platforms, floating point issues need to be
-dnl ironed out.
-NUMERICFLAGS=""
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -ffloat-store], [dummy_cv_ffloat_store], [-ffloat-store], [], [NUMERICFLAGS="$NUMERICFLAGS -ffloat-store"], [])
-AC_SUBST([NUMERICFLAGS])
 
 dnl
 dnl Add libm to LDFLAGS so we don't need to add it everywhere manually

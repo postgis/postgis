@@ -27,7 +27,6 @@ RYU_INCLUDE = -I../deps/ryu/..
 CPPFLAGS =  $(RYU_INCLUDE) @CPPFLAGS@
 CFLAGS = @WARNFLAGS@ @CFLAGS@ @PICFLAGS@
 LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ @JSON_LDFLAGS@
-NUMERICFLAGS = @NUMERICFLAGS@
 top_builddir = @top_builddir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
@@ -211,7 +210,7 @@ $(LT_SA_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(LT_NM_OBJS): %.lo: %.c
-	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
+	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
 	@test -n "$(YACC)" || { \
