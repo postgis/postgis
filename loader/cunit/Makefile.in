@@ -93,7 +93,7 @@ $(OBJS): %.o: %.c
 # Clean target
 clean:
 	rm -f $(OBJS)
-	rm -f cu_tester.exe
+	rm -f cu_tester
 
 distclean: clean
 	rm -f Makefile
