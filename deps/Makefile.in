@@ -24,8 +24,8 @@
 
 CC=@CC@
 CXX=@CXX@
-CFLAGS=-I../liblwgeom @CPPFLAGS@ @WARNFLAGS@ @CFLAGS@ @PICFLAGS@
-CXXFLAGS=-I../liblwgeom @CPPFLAGS@ @WARNFLAGS@ @CXXFLAGS@ @PICFLAGS@
+CFLAGS=-I../liblwgeom @CPPFLAGS@ @CFLAGS@ @PICFLAGS@
+CXXFLAGS=-I../liblwgeom @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@

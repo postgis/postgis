@@ -10,7 +10,7 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@WARNFLAGS@ @CFLAGS@ @PROJ_CPPFLAGS@
+CFLAGS=@CFLAGS@ @PROJ_CPPFLAGS@
 top_builddir = @top_builddir@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@

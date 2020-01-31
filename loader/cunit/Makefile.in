@@ -11,7 +11,7 @@
 
 top_builddir = @top_builddir@
 CC=@CC@
-CFLAGS=@WARNFLAGS@ @CFLAGS@
+CFLAGS=@CFLAGS@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 

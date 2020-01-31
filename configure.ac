@@ -65,15 +65,6 @@ AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -std=gnu99], [_cv_std], -std=g
 
 
 dnl
-dnl For GCC enable additional warning flags -Wall and -Wmissing-prototypes (using macro included with libtool)
-dnl
-WARNFLAGS=""
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [WARNFLAGS="$WARNFLAGS -Wall"], [])
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wmissing-prototypes], [_cv_misprot], [-Wmissing-prototypes], [], [WARNFLAGS="$WARNFLAGS -Wmissing-prototypes"], [])
-AC_SUBST([WARNFLAGS])
-
-
-dnl
 dnl Add libm to LDFLAGS so we don't need to add it everywhere manually
 dnl
 LDFLAGS="$LDFLAGS -lm"

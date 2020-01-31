@@ -25,7 +25,7 @@
 CC = @CC@
 RYU_INCLUDE = -I../deps/ryu/..
 CPPFLAGS =  $(RYU_INCLUDE) @CPPFLAGS@
-CFLAGS = @WARNFLAGS@ @CFLAGS@ @PICFLAGS@
+CFLAGS = @CFLAGS@ @PICFLAGS@
 LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ @PROJ_LDFLAGS@ @JSON_LDFLAGS@
 top_builddir = @top_builddir@
 prefix = @prefix@
