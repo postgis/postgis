@@ -25,14 +25,26 @@ Source files included with PostGIS not under GPL
 ------------------------------------------------
 
 -- The following loader/dumper files are derivative works or direct ports
-of ShapeLib which is under an X/MIT License: loader/dbfopen,safileio.*,
-shapefil.h, shpopen.c
+of ShapeLib which is under an X/MIT License: loader/dbfopen, safileio.*,
+shapefil.h, shpopen.c (copyrighted by Frank Warmerdam and Even Rouault).
 
--- These are under AT&T public domain (someone should probably verify)
-loader/getopt.*
+-- loader/getopt.* are under AT&T public domain (Copyright (c) 1984, 1985 AT&T).
 
 -- Doc/xsl files
 These are under a BSD Style license
+
+-- liblwgeom/lookup3.c is released under Public Domain by Bob Jenkins, May 2006.
+
+-- deps/ryu (see LICENSE in folder) is released under the Apache 2.0 license;
+alternatively, in can be used under the Boost 1.0 license. Copyrighted by Ulf
+Adams and contributors.
+
+-- deps/uthash (see LICENSE in folder) is released under a simplified BSD
+license. Copyright (c) 2005-2018, Troy D. Hanson.
+
+-- deps/wagyu (see LICENSE.README in folder) includes code released under the
+ISC license (copyrighted by Mapbox) and the Boost Software License (copyrighted
+by Angus Johnson and Mapbox).
 
 The documentation for PostGIS is under a creative commons share-alike
 3.0 license.  http://creativecommons.org/licenses/by-sa/3.0/
