@@ -68,24 +68,20 @@ GeometryGridState;
 
 /* Build origin hexagon centered around origin point */
 static const double hex_x[] = {-1.0, -0.5,  0.5, 1.0, 0.5, -0.5, -1.0};
-static const double hex_y[] = { 0.0, -1*H, -1*H, 0.0,   H,    H,  0.0};
+static const double hex_y[] = {0.0, -0.5, -0.5, 0.0, 0.5, 0.5, 0.0};
 
 static LWGEOM *
 hexagon(double origin_x, double origin_y, double size, int cell_i, int cell_j, int32_t srid)
 {
-	double height = size * 2 * H;
-	POINT4D pt;
 	POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 	POINTARRAY *pa = ptarray_construct(0, 0, 7);
-	uint32_t i;
 
-	double offset_x = origin_x + (1.5 * size * cell_i);
-	double offset_y = origin_y + (height * cell_j) + (0.5 * height * (abs(cell_i) % 2));
-
-	for (i = 0; i < 7; ++i)
+	for (uint32_t i = 0; i < 7; ++i)
 	{
-		pt.x = size * hex_x[i] + offset_x;
-		pt.y = size * hex_y[i] + offset_y;
+		double height = size * 2 * H;
+		POINT4D pt;
+		pt.x = origin_x + size * (1.5 * cell_i + hex_x[i]);
+		pt.y = origin_y + height * (cell_j + 0.5 * (abs(cell_i) % 2) + hex_y[i]);
 		ptarray_set_point4d(pa, i, &pt);
 	}
 

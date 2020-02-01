@@ -307,6 +307,23 @@ select '313', Count(*) FROM ST_SquareGrid(100000, ST_TileEnvelope(4, 7, 7)) hex,
 select '314', Count(*) FROM ST_SquareGrid(100000, ST_TileEnvelope(4, 2, 2));
 select '315', Count(*) FROM ST_SquareGrid(100000, ST_TileEnvelope(4, 2, 2)) hex, ST_TileEnvelope(4, 2, 2) tile WHERE NOT ST_Intersects(hex.geom, tile);
 
+WITH geoms AS
+(
+    SELECT * FROM  (SELECT (ST_HexagonGrid(5, '01030000000100000005000000fdffffffff7f66c0fcffffffff7f56c0fdffffffff7f66c07cc0e71a95e8544000000000008066407cc0e71a95e854400000000000806640fcffffffff7f56c0fdffffffff7f66c0fcffffffff7f56c0')).*) sq  WHERE i = 5 AND j IN (0, 1)
+),
+j0 AS
+(
+    SELECT * FROM geoms WHERE i = 5 AND j = 0
+),
+j1 AS
+(
+    SELECT * FROM geoms WHERE i = 5 AND j = 1
+)
+SELECT '316',
+    ST_Intersects(j0.geom, j1.geom),
+    ST_AsText(ST_Intersection(j0.geom, j1.geom))
+FROM j0,j1;
+
 -- Drop test table
 DROP table test;
 

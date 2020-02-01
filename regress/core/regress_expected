@@ -230,3 +230,4 @@ ERROR:  ST_TileEnvelope: Margin must not be less than -50%, margin=-0.510000
 313|0
 314|676
 315|0
+316|t|LINESTRING(40 8.66025403784439,35 8.66025403784439)
