@@ -4,6 +4,8 @@ PostGIS 3.1.0alpha1
 * Breaking changes *
   - svn number replaced by git hash in version output
     (Sandro Santilli, Raúl Marín)
+  - remove ChangeLog (anyone who needs that much info should refer to git log)
+    (Regina Obe)
   - #4577, Drop support for PostgreSQL 9.5 (Raúl Marín)
   - #4579, Drop postgis_proc_set_search_path.pl (Raúl Marín)
   - #4601, ST_TileEnvelope signature changed.
