@@ -166,7 +166,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	  <listitem>
 		<para>
-		  Proj4 reprojection library, version 4.6.0 or greater. Proj4 4.9 or above is needed to take advantage of improved geodetic.
+		  Proj4 reprojection library. Proj4 4.9 or above is required.
 			The Proj4 library is used to provide coordinate reprojection support within
 		  PostGIS. Proj4 is available for download from
 		  <ulink url="http://trac.osgeo.org/proj/">
@@ -178,7 +178,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.6 or greater, but GEOS 3.7+ is recommended to take full advantage of all the new functions and features. GEOS is available for download from
+		  GEOS geometry library, version 3.6 or greater, but GEOS 3.8+ is recommended to take full advantage of all the new functions and features. GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/
 		  </ulink>.
@@ -201,9 +201,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	  <listitem>
 		<para>
-		  GDAL, version 1.8 or higher (1.9 or higher is strongly
-      recommended since some things will not work well or behavior
-      differently with lower versions).  This is required for raster
+		  GDAL, version 2+ is required 3+ is preferred.  This is required for raster
       support.
 		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
 		</para>
