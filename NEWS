@@ -1,11 +1,9 @@
-PostGIS 3.1.0
-2020/XX/XX
-
-* Deprecated signatures *
-  - Function postgis_svn_version() replaced by postgis_lib_revision()
-    (Sandro Santilli)
+PostGIS 3.1.0alpha1
+2020/02/01
 
 * Breaking changes *
+  - svn number replaced by git hash in version output
+    (Sandro Santilli, Raúl Marín)
   - #4577, Drop support for PostgreSQL 9.5 (Raúl Marín)
   - #4579, Drop postgis_proc_set_search_path.pl (Raúl Marín)
   - #4601, ST_TileEnvelope signature changed.
@@ -46,6 +44,10 @@ PostGIS 3.1.0
   - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
   - #4608, PG12: Fix several bugs in the index support function (Raúl Marín)
   - #4621, Prevent stack overflow when parsing WKB (Raúl Marín)
+
+* Deprecated signatures *
+  - Function postgis_svn_version() replaced by postgis_lib_revision()
+    (Sandro Santilli)
 
 
 PostGIS 3.0.0

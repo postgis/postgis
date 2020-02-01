@@ -4,6 +4,48 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+        <title>Release 3.1.0alpha1</title>
+        <para>Release date: 2020/02/01</para>
+        <para>This version requires PostgreSQL 9.5+-13 and GEOS >= 3.6+
+              Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8.0</para>
+        <simplesect>
+          <title>Breaking Changes</title>
+            <para>svn number replaced by git hash in version output
+                  (Sandro Santilli, Raúl Marín)</para>
+            <para>4577, Drop support for PostgreSQL 9.5 (Raúl Marín)</para>
+            <para>4579, Drop postgis_proc_set_search_path.pl (Raúl Marín)</para>
+            <para>4601, ST_TileEnvelope signature changed.</para>
+            <para>3057, ST_Force3D, ST_Force3DZ, ST_Force3DM and ST_Force4D signatures changed.</para>
+        </simplesect>
+
+        <simplesect>
+          <title>New features</title>
+          <para>4601, Add ST_TileEnvelope margin argument (Yuri Astrakhan)</para>
+          <para>2972, Add quiet mode (-q) to pgsql2shp (Kristian Thy)</para>
+          <para>4617, Add configure switch `--without-phony-revision` (Raúl Marín)</para>
+          <para>3057, Optional value params for Force3D*, Force4D functions (Kristian Thy)</para>
+          <para>4624, ST_HexagonGrid and ST_SquareGrid, set returning functions to
+              generate tilings of the plane (Paul Ramsey)</para>
+        </simplesect>
+
+        <simplesect>
+          <title>Enhancements</title>
+            <para>4539, Unify libm includes (Raúl Marín)</para>
+            <para>4569, Allow unknown SRID geometry insertion into typmod SRID column (Paul Ramsey)</para>
+            <para>4149, ST_Simplify(geom, 0) is now O(N).
+                      ST_Affine (ST_Translate, ST_TransScale, ST_Rotate) optimized.
+                      ST_SnapToGrid optimized. (Darafei Praliaskouski)</para>
+            <para>4574, Link Time Optimizations enabled (Darafei Praliaskouski)</para>
+            <para>4578, Add parallellism and cost properties to brin functions (Raúl Marín)</para>
+            <para>4473, Silence yacc warnings (Raúl Marín)</para>
+            <para>4589, Disable C asserts when building without "--enable-debug" (Raúl Marín)</para>
+            <para>4543, Introduce ryu to print doubles (Raúl Marín)</para>
+            <para>4626, Support pkg-config for libxml2 (Bas Couwenberg)</para>
+            <para>4615, Speed up geojson output (Raúl Marín)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
         <title>Release 3.0.0</title>
         <para>Release date: 2019/10/20</para>
         <para>This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
