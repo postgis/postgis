@@ -86,7 +86,7 @@ Release procedure
 
 - Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
    $ rev=x.x.x
-   $ git tag -am "Tagged release $rev"; git push osgeo --tags
+   $ git tag -a $rev -m "Tagged release $rev"; git push osgeo --tags
 - Run: sh make_dist.sh $rev (note, debbie should have already done this,
       and the file will be waiting in postgis.net/stuff.  You might need to wait a few minutes to see it.)
       If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/

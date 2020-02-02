@@ -6,7 +6,7 @@
     <sect1>
         <title>Release 3.1.0alpha1</title>
         <para>Release date: 2020/02/01</para>
-        <para>This version requires PostgreSQL 9.5+-13 and GEOS >= 3.6+
+        <para>This version requires PostgreSQL 9.6+-13 and GEOS >= 3.6+
               Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8.0</para>
         <simplesect>
           <title>Breaking Changes</title>
