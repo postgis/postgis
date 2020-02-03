@@ -91,10 +91,10 @@ echo "Running make distclean"
 owd="$PWD"
 cd "$outdir"
 ${MAKE} distclean
-if [ "$git" = "yes" ]; then
-  echo "Removing .git dir"
-  rm -rf .git
-fi
+
+echo "Removing .git dir"
+rm -rf .git
+
 cd "$owd"
 
 # Find a better version name when fetching
