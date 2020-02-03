@@ -33,32 +33,17 @@ if [ "$MAKE" = "" ]; then
     MAKE=make
 fi
 
-if [ -d ".git" ]; then
- git=yes
- # Extract tag from git or default to trunk
- tag=`git branch | grep \* | awk '{print $2}'`
-else
- git=no
- # Extract tag from svn or default to trunk
- tag=`svn info 2> /dev/null | grep ^URL | sed 's/.*\///'`
- [ -z "$tag" ] && tag=trunk
- [ "$tag" != "trunk" ] && tag=branches/$tag
-fi
+# Extract tag from git or default to trunk
+tag=`git branch | grep \* | awk '{print $2}'`
 
 if [ -n "$1" ]; then
   if [ "$1" = "-b" ]; then
     shift
-    if [ "$git" = "yes" ]; then
-      tag=svn-$1
-    else
-      tag="$1"
-      [ "$tag" != "trunk" ] && tag="branches/$tag"
-    fi
+    tag=svn-$1
     branch=yes
   else
+    tag=$1
     version="$1"
-    tag="tags/$version"
-    [ "$git" = "yes" ] && tag=$1
   fi
 fi
 
@@ -69,19 +54,7 @@ if [ -d "$outdir" ]; then
 	exit 1
 fi
 
-if [ "$git" = "no" ]; then
-  echo "Exporting tag $tag"
-  svnurl="http://svn.osgeo.org/postgis/$tag"
-  svn export $svnurl "$outdir"
-  if [ $? -gt 0 ]; then
-    exit 1
-  fi
-else
-  git clone -b $tag . $outdir || exit 1
-  #cd $outdir
-  #git checkout $tag || exit 1
-  #cd -
-fi
+git clone -b $tag . $outdir || exit 1
 
 echo "Removing make_dist.sh and HOWTO_RELEASE"
 rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
@@ -92,13 +65,15 @@ owd="$PWD"
 cd "$outdir"
 ./autogen.sh
 ./configure ${CONFIGURE_ARGS}
-# generating postgis_svn_revision.h for >= 2.0.0 tags
-if test -f utils/svn_repo_revision.pl; then
-	echo "Generating postgis_svn_revision.h"
-	perl utils/svn_repo_revision.pl $svnurl
+# generating postgis_revision.h for >= 2.0.0 tags
+if test -f utils/repo_revision.pl; then
+	echo "Generating postgis_revision.h"
+	perl utils/repo_revision.pl
 fi
-#make
+# generate ChangeLog
+make ChangeLog
 cd "$owd"
+
 
 # generating comments
 echo "Generating documentation"
@@ -116,10 +91,10 @@ echo "Running make distclean"
 owd="$PWD"
 cd "$outdir"
 ${MAKE} distclean
-if [ "$git" = "yes" ]; then
-  echo "Removing .git dir"
-  rm -rf .git
-fi
+
+echo "Removing .git dir"
+rm -rf .git
+
 cd "$owd"
 
 # Find a better version name when fetching
@@ -129,8 +104,8 @@ if test "$version" = "dev"; then
   VMAJ=`grep ^POSTGIS_MAJOR_VERSION "$outdir"/Version.config | cut -d= -f2`
   VMIN=`grep ^POSTGIS_MINOR_VERSION "$outdir"/Version.config | cut -d= -f2`
   VMIC=`grep ^POSTGIS_MICRO_VERSION "$outdir"/Version.config | cut -d= -f2`
-  VREV=`cat "$outdir"/postgis_svn_revision.h | awk '{print $3}'`
-  version="${VMAJ}.${VMIN}.${VMIC}-r${VREV}"
+  VREV=`cat "$outdir"/postgis_revision.h | awk '{print $3}'`
+  version="${VMAJ}.${VMIN}.${VMIC}-${VREV}"
   #if newoutdir is not already set, then set it
   if test "x$newoutdir" = "x"; then
       newoutdir=postgis-${version}
