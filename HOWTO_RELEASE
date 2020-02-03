@@ -82,7 +82,7 @@ Release procedure
 	   b) Replace repository url with new branch repo url
 	   c) Update the PostGIS_trunk by updating the PostGIS_* string params
 
-	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
+	   Go to: https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
 
 - Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
    $ rev=x.x.x
