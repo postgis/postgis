@@ -30,12 +30,12 @@ RTCORE_LDFLAGS=$(RT_CORE)/librtcore.a
 
 CC=@CC@
 CFLAGS = \
-	@WARNFLAGS@ @CFLAGS@ \
-	$(RTCORE_CFLAGS) \
 	$(LIBLWGEOM_CFLAGS) \
+	$(RTCORE_CFLAGS) \
 	$(PROJ_CFLAGS) \
 	$(LIBGDAL_CFLAGS) \
-	$(GEOS_CFLAGS)
+	$(GEOS_CFLAGS) \
+	@WARNFLAGS@ @CFLAGS@ \
 
 LDFLAGS = \
 	$(RTCORE_LDFLAGS) \
@@ -46,7 +46,7 @@ LDFLAGS = \
 	-lm \
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
+CUNIT_CPPFLAGS=-I.. @CUNIT_CPPFLAGS@
 
 # ADD YOUR NEW TEST FILE HERE (1/1)
 OBJS=	\
@@ -85,7 +85,7 @@ cu_tester: $(RT_CORE)/librtcore.a $(OBJS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
-	$(CC) $(CFLAGS) $(CUNIT_CPPFLAGS) -c -o $@ $<
+	$(CC) $(CUNIT_CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(RT_CORE)/librtcore.a:
 	$(MAKE) -C ../../rt_core

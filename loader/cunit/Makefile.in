@@ -16,7 +16,7 @@ SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
+CUNIT_CPPFLAGS=-I.. @CUNIT_CPPFLAGS@ @CPPFLAGS@
 
 # GTK includes and libraries
 GTK_CFLAGS = @GTK_CFLAGS@ @IGE_MAC_CFLAGS@
@@ -93,7 +93,7 @@ $(OBJS): %.o: %.c
 # Clean target
 clean:
 	rm -f $(OBJS)
-	rm -f cu_tester.exe
+	rm -f cu_tester
 
 distclean: clean
 	rm -f Makefile
