@@ -177,3 +177,5 @@ postgis/uninstall_sfcgal.sql
 # LLVM JIT
 *.bc
 *.ll
+postgis_revision.h
+ChangeLog
