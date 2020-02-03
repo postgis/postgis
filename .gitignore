@@ -187,3 +187,7 @@ postgis/uninstall_sfcgal.sql
 
 deps/Makefile
 deps/wagyu/Makefile
+
+#generated files
+postgis_revision.h
+ChangeLog 
