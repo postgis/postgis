@@ -2993,7 +2993,7 @@ BEGIN
 	fullver = 'POSTGIS="' || libver;
 
 	IF  librev IS NOT NULL THEN
-		fullver = fullver || ' r' || librev;
+		fullver = fullver || ' ' || librev;
 	END IF;
 
 	fullver = fullver || '"';
