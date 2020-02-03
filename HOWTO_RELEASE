@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2019-10-19
+Date: 2020-02-02
 
 Versioning Scheme
 -----------------
@@ -58,14 +58,13 @@ Release procedure
 -----------------
 
 - For first micro of a minor, make sure to pull the latest translations from transifex
-   TODO: more detail here - there is a job on debbie for 3.0 for examples 
-   https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.0 
+   TODO: more detail here - there is a job on debbie for 3.1 for examples
+   https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.0
    and she's setup with an api key to pull and push translations.
-   
+
 - Ensure all bots are green: https://trac.osgeo.org/postgis
-- Re-generate the ChangeLog (make ChangeLog)
 - Edit NEWS: set release date and check all notable changes have
-  been reported (extract from ChangeLog).
+  been reported (extract from git log).
 - Edit README.postgis and set release date and version.
 - Add release notes in doc/release_notes.xml
 - Update Version.config to drop the "dev" suffix
@@ -75,29 +74,26 @@ Release procedure
 	(this should only be needed for trunk release)
 - Commit all changes
 - If this is a minor or major release (no branch exists):
-	   $ base=https://svn.osgeo.org/postgis/
 	   $ rev=x.x
-	   $ svn copy -m "Branch $rev" $base/trunk $base/branches/$rev
+	   $ git checkout master; git checkout -b "$rev"; git push -u osgeo $rev
 
 	   Go to: https://debbie.postgis.net and copy last branch version and make new job
 	   a) Replace PostGIS_* string params with new version
 	   b) Replace repository url with new branch repo url
 	   c) Update the PostGIS_trunk by updating the PostGIS_* string params
 
-	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
+	   Go to: https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
 
 - Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
-   $ base=https://svn.osgeo.org/postgis/
-   $ brev=x.x
    $ rev=x.x.x
-   $ svn copy -m "Tagged release $rev" $base/branches/$brev $base/tags/$rev
+   $ git tag -a $rev -m "Tagged release $rev"; git push osgeo --tags
 - Run: sh make_dist.sh $rev (note, debbie should have already done this,
       and the file will be waiting in postgis.net/stuff.  You might need to wait a few minutes to see it.)
       If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
 - Documentation should also have been built and should be in postgis.net/stuff
   (this sometimes takes sometime so wait 15 minutes)
 - Test generated tarball (including extension upgrade)
-- Copy tarball, pdf, doc-html.. to https://download.osgeo.org/postgis/ web site and edit postgis.net/source page and config.yaml 
+- Copy tarball, pdf, doc-html.. to https://download.osgeo.org/postgis/ web site and edit postgis.net/source page
 - Announce on e-mail
     - postgis-users
     - postgis-devel
@@ -111,11 +107,13 @@ Release procedure
        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
-    - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net.conf (Versionless URL lines #current docs, #dev docs )
+    - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
+         - nginx -t #to confirm you didn't breat the config
+         - service nginx reload
      Verify the documentation is up to date (might need to change the apach config)
     - Wikipedia
     - Twitter
-       This should automatically happen as a result of posting to PostGIS website since Planet PostGIS autotweets.
+       This should automatically happen as a result of posting to PostGIS website since Planet PostGIS and Planet PostgreSQL both autotweet.
 - Update Trac and make old Milestone as completed
 - Push the revision number forward (see Versioning Scheme)
 - Remove the "dev" suffixed version from extensions/upgradeable_versions.mk
