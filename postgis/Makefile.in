@@ -200,12 +200,12 @@ endif
 # change is made, a PostGIS rebuild is triggered.
 #
 # Also they are all dependent on postgis_config.h
-# and thus postgis_svn_revision.h
+# and thus postgis_revision.h
 #
-$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_svn_revision.h $(WAGYU_DEP)
+$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h $(WAGYU_DEP)
 
-../postgis_svn_revision.h:
-	$(MAKE) -C .. postgis_svn_revision.h
+../postgis_revision.h:
+	$(MAKE) -C .. postgis_revision.h
 
 ../liblwgeom/.libs/liblwgeom.a:
 	$(MAKE) -C ../liblwgeom liblwgeom.la
@@ -262,7 +262,7 @@ sfcgal_upgrade.sql: sfcgal_upgrade.sql.in postgis_after_upgrade.sql
 	cat $^ > $@
 
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
-$(SQL_OBJS): ../postgis_config.h ../postgis_svn_revision.h
+$(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 
 #postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c
 

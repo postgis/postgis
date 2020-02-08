@@ -167,11 +167,11 @@ install:
 
 uninstall:
 
-# Make all objects depend upon postgis_config.h and postgis_svn_revision.h
-$(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
+# Make all objects depend upon postgis_config.h and postgis_revision.h
+$(LT_OBJS): ../postgis_config.h ../postgis_revision.h $(SA_HEADERS)
 
-../postgis_svn_revision.h:
-	$(MAKE) -C .. postgis_svn_revision.h
+../postgis_revision.h:
+	$(MAKE) -C .. postgis_revision.h
 
 liblwgeom.la: $(LT_OBJS)
 	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) \

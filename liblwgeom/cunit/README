@@ -80,7 +80,7 @@ Add a new line for your test:
 
 	PG_ADD_TEST(<your test function name>);
 
-The tests will be run in the order they appear in the list. 
+The tests will be run in the order they appear in the list.
 CU_TEST_INFO_NULL must always be the last entry.
 
 2.3 Add any necessary init / cleanup code.
@@ -102,8 +102,8 @@ Do the following steps to create a whole new test suite (new .c file).
 
 3.1 Create the file.
 
-Create the new file (remember to add to svn as well).  The naming convention
-is cu_<suite name>.c.
+Create the new file (remember to add to repository as well).
+The naming convention is cu_<suite name>.c.
 
 Make sure to import:
 
@@ -187,5 +187,3 @@ if (strlen(cu_error_msg) > 0)
         /* be nice and clean it up for the next test. */
         cu_error_msg_reset();
 }
-
-

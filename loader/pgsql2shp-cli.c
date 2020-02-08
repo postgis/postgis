@@ -19,13 +19,15 @@
 #include "pgsql2shp-core.h"
 #include "../postgis_config.h"
 
+#define xstr(s) str(s)
+#define str(s) #s
 
 static void
 usage(int status)
 {
   /* TODO: if status != 0 print all to stderr */
 
-	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
+	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, xstr(POSTGIS_REVISION));
 	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
 	         "       pgsql2shp [<options>] <database> <query>\n"
 	         "\n"

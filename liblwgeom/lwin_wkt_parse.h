@@ -1,9 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.4.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
-   Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,9 +29,6 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
-
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
 # define YY_WKT_YY_LWIN_WKT_PARSE_H_INCLUDED
@@ -101,9 +97,10 @@ extern int wkt_yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+
 union YYSTYPE
 {
-#line 112 "lwin_wkt_parse.y"
+#line 112 "lwin_wkt_parse.y" /* yacc.c:1909  */
 
 	int integervalue;
 	double doublevalue;
@@ -112,9 +109,9 @@ union YYSTYPE
 	POINT coordinatevalue;
 	POINTARRAY *ptarrayvalue;
 
-#line 116 "lwin_wkt_parse.h"
-
+#line 113 "lwin_wkt_parse.h" /* yacc.c:1909  */
 };
+
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

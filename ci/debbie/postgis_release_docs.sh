@@ -38,13 +38,13 @@ LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --without-raster --without-wagyu
 make clean
 
-# generating postgis_svn_revision.h in case hasn't been generated
-if test -f utils/svn_repo_revision.pl; then
-	echo "Generating postgis_svn_revision.h"
-	perl utils/svn_repo_revision.pl
+# generating postgis_revision.h in case hasn't been generated
+if test -f utils/repo_revision.pl; then
+	echo "Generating postgis_revision.h"
+	perl utils/repo_revision.pl
 fi
-export VREV="`cat postgis_svn_revision.h | awk '{print $3}'`"
-echo "SVN is ${VREV}"
+export VREV="`cat postgis_revision.h | awk '{print $3}'`"
+echo "GIT is ${VREV}"
 cd doc
 
 

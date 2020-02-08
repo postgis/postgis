@@ -25,7 +25,7 @@ all install uninstall noop clean distclean check-unit check-regress:
 		echo "PostGIS was built successfully. Ready to install."; \
 	fi
 
-all: postgis_svn_revision.h
+all: postgis_revision.h
 
 ifeq (@LIBLWGEOM_ONLY@,no)
 install: all comments-install
@@ -53,6 +53,7 @@ check-no-trailing-blanks:
 		grep -v lookup3 | \
 		grep -v vector_tile.pb-c | \
 		grep -v postgis/sqldefines.h | \
+		grep -v deps/ | \
 		xargs grep -n '[[:space:]]$$'
 
 installcheck: installcheck-base installcheck-upgrade
@@ -157,7 +158,7 @@ config.status: configure
 	./configure
 
 ChangeLog:
-	svn2cl --authors=authors.svn -i -o ChangeLog
+	git log --pretty --numstat --summary | git2cl > ChangeLog
 
 raster-post-install-check:
 	$(MAKE) -C raster post-install-check
@@ -172,13 +173,12 @@ fmt:
 commit:
 	$(MAKE) fmt && $(MAKE) clean && $(MAKE) check && svn commit
 
-authors.git: authors.svn
-	sed -e 's/:/ = /' authors.svn > authors.git
 
-svnrebase: authors.git
-	git svn rebase --authors-file authors.git
+ifeq (@PHONY_REVISION@,yes)
+.PHONY: postgis_revision.h
+endif
 
-postgis_svn_revision.h:
-	$(PERL) utils/svn_repo_revision.pl
+postgis_revision.h:
+	$(PERL) utils/repo_revision.pl
 
-.PHONY: utils liblwgeom ChangeLog raster postgis_svn_revision.h
+.PHONY: utils liblwgeom ChangeLog raster

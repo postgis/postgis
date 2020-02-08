@@ -11,7 +11,6 @@
 *.gcda
 *.gcno
 gmon.out
-postgis_svn_revision.h
 aclocal.m4
 autom4te.cache/
 build-aux/
@@ -190,4 +189,5 @@ deps/wagyu/Makefile
 
 #generated files
 postgis_revision.h
+postgis_svn_revision.h
 ChangeLog 

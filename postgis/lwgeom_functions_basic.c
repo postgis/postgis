@@ -39,6 +39,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#define xstr(s) str(s)
+#define str(s) #s
+
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
@@ -49,6 +52,7 @@ Datum postgis_version(PG_FUNCTION_ARGS);
 Datum postgis_liblwgeom_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum postgis_svn_version(PG_FUNCTION_ARGS);
+Datum postgis_lib_revision(PG_FUNCTION_ARGS);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
@@ -185,15 +189,21 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_svn_version);
 Datum postgis_svn_version(PG_FUNCTION_ARGS)
 {
-	static int rev = POSTGIS_SVN_REVISION;
+	return postgis_lib_revision(fcinfo);
+}
+
+PG_FUNCTION_INFO_V1(postgis_lib_revision);
+Datum postgis_lib_revision(PG_FUNCTION_ARGS)
+{
+	static char *rev = xstr(POSTGIS_REVISION);
 	char ver[32];
-	if (rev > 0)
+	if (rev && rev[0] != '\0')
 	{
-		snprintf(ver, 32, "%d", rev);
+		snprintf(ver, 32, "%s", rev);
+		ver[31] = '\0';
 		PG_RETURN_TEXT_P(cstring_to_text(ver));
 	}
-	else
-		PG_RETURN_NULL();
+	else PG_RETURN_NULL();
 }
 
 PG_FUNCTION_INFO_V1(postgis_lib_build_date);
@@ -210,7 +220,7 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 	char ver[64];
 	text *result;
 
-	snprintf(ver, 64, "%s r%d", POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
+	snprintf(ver, 64, "%s %s", POSTGIS_LIB_VERSION, xstr(POSTGIS_REVISION));
 	ver[63] = '\0';
 
 	result = cstring_to_text(ver);

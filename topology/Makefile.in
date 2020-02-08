@@ -130,7 +130,7 @@ topology.sql: \
 	sql/topogeometry/simplify.sql.in \
 	sql/predicates.sql.in \
 	../postgis/sqldefines.h \
-	../postgis_svn_revision.h
+	../postgis_revision.h
 
 uninstall_topology.sql: topology.sql ../utils/create_undef.pl
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@

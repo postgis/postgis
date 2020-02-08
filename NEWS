@@ -1,6 +1,15 @@
 PostGIS 3.0.1
 XXXX/XX/XX
 
+* Breaking Changes *
+  - #4637 svn number replaced by git hash in version output
+    (Sandro Santilli, Regina Obe, Bas Couwenberg)
+
+* New Features *
+ - #4617, Add configure switch `--without-phony-revision` (Raúl Marín)
+    Use to prevent postgis_revision.h 
+    from rebuilding (when building from tar ball) and building in a gitted folder
+
 * Bug Fixes and Enhancements *
   - #4558, Fix oversimplification of polygon inner rings (Raúl Marín)
   - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)

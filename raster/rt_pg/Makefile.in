@@ -128,10 +128,10 @@ endif
 # Objects dependencies
 # NOTE: the .a deps are really only link-time dependencies, but at this
 #       time I dunno how to wncode those
-$(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../rt_core/librtcore.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h ../../postgis_svn_revision.h
+$(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../rt_core/librtcore.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h ../../postgis_revision.h
 
 # SQL objects deps here
-$(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
+$(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_revision.h
 
 #this is redundant but trying to fold in with the  other just hangs
 rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
