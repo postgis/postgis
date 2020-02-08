@@ -1,7 +1,7 @@
 #BRANCH is passed in via jenkins which is set via svn hook
 export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 sh autogen.sh
-./configure --with-projdir=/usr/local --with-libiconv=/usr/local --without-interrupt-tests
+./configure --with-libiconv=/usr/local --without-interrupt-tests
 make clean
 make
 export PGUSER=postgres
