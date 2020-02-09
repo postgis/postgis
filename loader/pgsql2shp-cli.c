@@ -27,7 +27,7 @@ usage(int status)
 {
   /* TODO: if status != 0 print all to stderr */
 
-	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, xstr(POSTGIS_REVISION));
+	printf(_( "RELEASE: %s (%s)\n" ), POSTGIS_LIB_VERSION, xstr(POSTGIS_REVISION));
 	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
 	         "       pgsql2shp [<options>] <database> <query>\n"
 	         "\n"
