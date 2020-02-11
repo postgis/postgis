@@ -2915,7 +2915,8 @@ DECLARE
 	pgsql_ver text;
 	core_is_extension bool;
 BEGIN
-	SELECT @extschema@.postgis_svn_version() INTO libver;
+	SELECT @extschema@.postgis_lib_version() INTO libver;
+	SELECT @extschema@.postgis_svn_version() INTO librev;
 	SELECT @extschema@.postgis_proj_version() INTO projver;
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
