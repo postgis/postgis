@@ -42,7 +42,6 @@ SRID_MAXIMUM = @SRID_MAX@
 SRID_USER_MAXIMUM = @SRID_USR_MAX@
 
 all: postgis_restore.pl
-	chmod +x $(SCRIPTS)
 
 DROP_FILES = \
   ../raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
