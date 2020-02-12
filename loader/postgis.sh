@@ -29,7 +29,17 @@ upgrade() {
   for db in $@; do
     echo "upgrading db $db"
     LOG=`cat <<EOF | psql -XtA ${db}
-SELECT postgis_extensions_upgrade()
+BEGIN;
+UPDATE pg_catalog.pg_extension SET extversion = 'ANY'
+ WHERE extname IN (
+			'postgis',
+			'postgis_raster',
+			'postgis_sfcgal',
+			'postgis_topology',
+			'postgis_tiger_geocoder'
+  );
+SELECT postgis_extensions_upgrade();
+COMMIT;
 EOF`
     #sh $0 status ${db}
   done
