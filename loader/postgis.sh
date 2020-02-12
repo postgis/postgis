@@ -22,13 +22,17 @@ enable() {
 }
 
 upgrade() {
-  db="$1"; shift
-  test -n "$db" || {
-    echo "Please specify a database name" >&2
+  test -n "$1" || {
+    echo "Please specify at least a database name" >&2
     return 1
   }
-  echo "Upgrade is not implemented yet" >&2
-  return 1
+  for db in $@; do
+    echo "upgrading db $db"
+    LOG=`cat <<EOF | psql -XtA ${db}
+SELECT postgis_extensions_upgrade()
+EOF`
+    #sh $0 status ${db}
+  done
 }
 
 status() {
