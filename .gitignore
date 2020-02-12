@@ -92,6 +92,7 @@ loader/cunit/cu_tester
 loader/cunit/Makefile
 loader/Makefile
 loader/pgsql2shp
+loader/postgis
 loader/shp2pgsql
 loader/shp2pgsql-gui
 ltmain.sh
