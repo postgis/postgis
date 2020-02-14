@@ -2171,9 +2171,17 @@ LWGEOM_UNPARSER_RESULT;
 /**
 * @param geom geometry to convert to WKT
 * @param variant output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
+* @param precision Double precision
 * @param size_out (Out parameter) size of the buffer
 */
 extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out);
+
+/**
+* @param geom geometry to convert to WKT
+* @param variant output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
+* @param precision Double precision
+*/
+extern lwvarlena_t* lwgeom_to_wkt_varlena(const LWGEOM *geom, uint8_t variant, int precision);
 
 /**
 * @param geom geometry to convert to WKT
