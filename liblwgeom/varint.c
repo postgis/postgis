@@ -167,17 +167,17 @@ varint_size(const uint8_t *the_start, const uint8_t *the_end)
 
 uint64_t zigzag64(int64_t val)
 {
-	return ((uint64_t)(val) << 1) ^ (uint64_t)(val >> 63);
+	return (((uint64_t)val) << 1) ^ (uint64_t)(val >> 63);
 }
 
 uint32_t zigzag32(int32_t val)
 {
-	return ((uint32_t)(val) << 1) ^ (uint32_t)(val >> 31);
+	return (((uint32_t)val) << 1) ^ (uint32_t)(val >> 31);
 }
 
 uint8_t zigzag8(int8_t val)
 {
-	return ((uint8_t)(val) << 1) ^ (uint8_t)(val >> 7);
+	return (((uint8_t)val) << 1) ^ (uint8_t)(val >> 7);
 }
 
 int64_t unzigzag64(uint64_t val)
