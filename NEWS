@@ -1,5 +1,5 @@
 PostGIS 3.0.1
-XXXX/XX/XX
+2020/02/20
 
 * Breaking Changes *
   - #4637 svn number replaced by git hash in version output
@@ -7,24 +7,27 @@ XXXX/XX/XX
 
 * New Features *
  - #4617, Add configure switch `--without-phony-revision` (Raúl Marín)
-    Use to prevent postgis_revision.h 
-    from rebuilding (when building from tar ball) and building in a gitted folder
+          Use to prevent postgis_revision.h from rebuilding
+          (when building from tar ball) and building in a gitted folder.
 
 * Bug Fixes and Enhancements *
   - #4558, Fix oversimplification of polygon inner rings (Raúl Marín)
-  - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)
-  - #4590, Fix pg_upgrade issue with st_linecrossingdirection (Raúl Marín)
+  - #4588, Fix update when ST_Union(geometry) doesn't exist (Raúl Marín)
+  - #4590, Fix pg_upgrade issue with ST_LineCrossingDirection (Raúl Marín)
   - #4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)
   - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
   - #4605, Fix postgis_upgrade.pl with PostgreSQL 12 (Matti Linnanvuori)
   - #4606, Respect user's LDFLAGS in postgis module build (Sandro Santilli)
-  - #4610, Add in logic to install postgis_tiger_geocoder from unpackaged (Regina obe)
-  - #4581, installing postgis_raster from unpackaged tries to use wrong schema
+  - #4610, Add in logic to install postgis_tiger_geocoder from unpackaged (Regina Obe)
+  - #4581, Installing postgis_raster from unpackaged tries to use wrong schema (Regina Obe)
   - #4596, The script to generate nation_script_load.sh is missing
            a trailing quote (Bill Mill)
   - #4608, PG12: Fix several bugs in the index support function (Raúl Marín)
   - #4621, Prevent stack overflow when parsing WKB (Raúl Marín)
   - #4626, Support pkg-config for libxml2 (Bas Couwenberg)
+  - #4632, Allow building with PostgreSQL 13 (Raúl Marín)
+  - #4570, Include raster2pgsql in windows packaging (Regina Obe)
+
 
 PostGIS 3.0.0
 2019/10/20

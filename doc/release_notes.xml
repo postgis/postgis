@@ -4,6 +4,44 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+      <title>PostGIS 3.0.1</title>
+      <para>Release date: 2020/02/20</para>
+
+      <simplesect>
+        <title>Breaking Changes</title>
+          <para>#4637 svn number replaced by git hash in version output
+                (Sandro Santilli, Regina Obe, Bas Couwenberg)</para>
+      </simplesect>
+
+      <simplesect>
+        <title>New Features</title>
+          <para>#4617, Add configure switch `--without-phony-revision` (Raúl Marín)
+            Use to prevent postgis_revision.h from rebuilding
+            (when building from tar ball) and building in a gitted folder.</para>
+      </simplesect>
+
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+          <para>#4558, Fix oversimplification of polygon inner rings (Raúl Marín)</para>
+          <para>#4588, Fix update when ST_Union(geometry) doesn't exist (Raúl Marín)</para>
+          <para>#4590, Fix pg_upgrade issue with ST_LineCrossingDirection (Raúl Marín)</para>
+          <para>#4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)</para>
+          <para>#4600, Improve precision of ST_TileEnvelope (Raúl Marín)</para>
+          <para>#4605, Fix postgis_upgrade.pl with PostgreSQL 12 (Matti Linnanvuori)</para>
+          <para>#4606, Respect user's LDFLAGS in postgis module build (Sandro Santilli)</para>
+          <para>#4610, Add in logic to install postgis_tiger_geocoder from unpackaged (Regina Obe)</para>
+          <para>#4581, Installing postgis_raster from unpackaged tries to use wrong schema (Regina Obe)</para>
+          <para>#4596, The script to generate nation_script_load.sh is missing
+                  a trailing quote (Bill Mill)</para>
+          <para>#4608, PG12: Fix several bugs in the index support function (Raúl Marín)</para>
+          <para>#4621, Prevent stack overflow when parsing WKB (Raúl Marín)</para>
+          <para>#4626, Support pkg-config for libxml2 (Bas Couwenberg)</para>
+          <para>#4632, Allow building with PostgreSQL 13 (Raúl Marín)</para>
+          <para>#4570, Include raster2pgsql in windows packaging (Regina Obe)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
         <title>Release 3.0.0</title>
         <para>Release date: 2019/10/20</para>
         <para>This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
@@ -161,7 +199,7 @@
         <title>Major highlights</title>
             <para>4519, Fix getSRIDbySRS crash (Raúl Marín)</para>
             <para>4520, Use a clean environment when detecting C++ libraries (Raúl Marín)</para>
-            <para>Restore ST_Union() aggregate signature so drop agg not required and re-work 
+            <para>Restore ST_Union() aggregate signature so drop agg not required and re-work
                   performance/size enhancement to continue to avoid
                   using Array type during ST_Union(), hopefully
                   avoiding Array size limitations. (Paul Ramsey)</para>
