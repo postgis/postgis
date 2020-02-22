@@ -6942,9 +6942,13 @@ SELECT rid, (meta).* FROM bar
 					ST_Transform is often confused with ST_SetSRID(). ST_Transform actually changes the coordinates of a raster (and resamples the pixel values) from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of the raster.
 				</para>
 
-				<para>
-					Unlike the other variants, Variant 3 requires a reference raster as <varname>alignto</varname>. The transformed raster will be transformed to the spatial reference system (SRID) of the reference raster and be aligned (ST_SameAlignment = TRUE) to the reference raster.
-				</para>
+				<note>
+					<para>
+						If you are transforming more than one tile, such as a table of coverage rasters you should use the <code>ST_Transform(rast,alignto)</code> (Variant 3)
+						to ensure the tiles will all have same alignment (needed by many operations such as ST_Union) and minimize on gaps between tiles.
+					</para>
+					<para>Unlike the other variants, Variant 3 requires a reference raster as <varname>alignto</varname>. The transformed raster will be transformed to the spatial reference system (SRID) of the reference raster and be aligned (ST_SameAlignment = TRUE) to the reference raster.</para>
+				</note>
 
 				<note>
 					<para>
@@ -6952,8 +6956,9 @@ SELECT rid, (meta).* FROM bar
 					</para>
 				</note>
 
-				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 				<para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
+				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				
 			</refsection>
 
 			<refsection>
