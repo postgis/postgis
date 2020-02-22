@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2019-10-28
+Date: 2019-02-23
 
 Versioning Scheme
 -----------------
@@ -45,7 +45,9 @@ documentation -- that means having the required software:
 * For PostGIS:
   - PostgreSQL
   - GEOS
-  - Proj4
+  - Proj
+  - SFCGAL
+  - protobuf-c
   - GDAL (for raster)
   - json-c (for GeoJSON load support)
 * For the docs:
@@ -57,23 +59,44 @@ documentation -- that means having the required software:
 Release procedure
 -----------------
 
-- For first micro of a minor, make sure to pull the latest translations from transifex
-   TODO: more detail here - there is a job on debbie for 3.1 for examples
-   https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.1
-   and she's setup with an api key to pull and push translations.
 
-- Ensure all bots are green: https://trac.osgeo.org/postgis
-- Edit NEWS: set release date and check all notable changes have
-  been reported (extract from git log).
-- Edit README.postgis and set release date and version.
-- Add release notes in doc/release_notes.xml
-- Update Version.config to drop the "dev" suffix
-- Add the "dev" suffixed version in extensions/upgradeable_versions.mk
-  and ensure all the previous released minor versions are listed in it
-- Update the README.md to reflect new to be created buildbot badges
-	(this should only be needed for trunk release)
-- Commit all changes
-- If this is a minor or major release (no branch exists):
+1. Check access.
+
+  - Can edit tickets and milestones on http://trac.osgeo.org/postgis/
+  - Can commit to upstream git https://git.osgeo.org/gitea/postgis/postgis
+  - Have SSH to download.osgeo.org and can write to /osgeo/download/postgis.
+  - Have SSH to postgis.net and can write to /etc/nginx/sites-enabled/postgis.net.
+  - Post to https://git.osgeo.org/gitea/postgis/postgis.net/ and get it added to feed
+  https://planet.postgresql.org/register/new/
+  - Can alter https://debbie.postgis.net
+
+2. Check greenlight.
+
+  - Ensure all bots are green: https://trac.osgeo.org/postgis
+  - Check no blockers on https://trac.osgeo.org/postgis/roadmap on version you're releasing.
+
+3. Reconcile done & planned.
+
+  - Edit NEWS: set release date and check all notable changes have been reported
+    (extract from git log and trac tickets for milestone).
+  - Create milestone for next verison in Trac.
+  - Push all the open tickets in Trac milestone to future and Fund Me milestones.
+
+4. Update code.
+
+  - For first micro of a minor, make sure to pull the latest translations from transifex
+     TODO: more detail here - there is a job on debbie for 3.1 for examples
+     https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.1
+     and she's setup with an api key to pull and push translations.
+  - Update the README.md to reflect new to be created buildbot badges
+	   (this should only be needed for trunk release)
+  - Edit README.postgis and set release date and version.
+  - Add release notes in doc/release_notes.xml
+  - Update Version.config to drop the "dev" suffix
+  - Add the "dev" suffixed version in extensions/upgradeable_versions.mk
+    and ensure all the previous released minor versions are listed in it
+  - Commit all changes
+  - If this is a minor or major release (no branch exists):
 	   $ rev=x.x
 	   $ git checkout master; git checkout -b "$rev"; git push -u osgeo $rev
 
@@ -84,36 +107,54 @@ Release procedure
 
 	   Go to: https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
 
-- Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
-   $ rev=x.x.x
-   $ git tag -a $rev -m "Tagged release $rev"; git push osgeo --tags
-- Run: sh make_dist.sh $rev (note, debbie should have already done this,
-      and the file will be waiting in postgis.net/stuff.  You might need to wait a few minutes to see it.)
-      If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
-- Documentation should also have been built and should be in postgis.net/stuff
-  (this sometimes takes sometime so wait 15 minutes)
-- Test generated tarball (including extension upgrade)
-- Copy tarball, pdf, doc-html.. to https://download.osgeo.org/postgis/ web site and edit postgis.net/source page
-- Announce on e-mail
-    - postgis-users
-    - postgis-devel
-    - pgsql-announce (send email just to them, not with other ccs, they reject if others in cc)
-    - send note to david at fetter dot org to be included in Weekly news
-    - osgeo-discuss
-- Update web sites
-    - PostGIS News
-      - https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/posts
-       a) create a new Post for current year making sure the page name starts with mm-dd
-       b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
-       c) commit and wait 5 minutes to see changes on website
-    - PostGIS doc release versioned doc - http://postgis.net/documentation/
+5. Publish release
+
+  - Check that bots are still green on https://trac.osgeo.org/postgis
+
+  - Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1)
+     $ rev=x.x.x
+     $ git tag -a $rev -m "Tagged release $rev"
+     $ git push osgeo --tags
+
+  - Take tar ball from http://postgis.net/stuff/
+     (You might need to wait a few minutes to see it.
+     If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
+     If it fails, sh make_dist.sh $rev)
+  - Documentation should also have been built and should be in http://postgis.net/stuff
+     (this sometimes takes sometime so wait 15 minutes)
+  - Test generated tarball (including extension upgrade)
+  - Copy tarball, pdf, doc-html to https://download.osgeo.org/postgis/ web site.
+
+  - PostGIS doc release versioned doc - http://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
          - nginx -t #to confirm you didn't breat the config
          - service nginx reload
-     Verify the documentation is up to date (might need to change the apach config)
-    - Wikipedia
+      Verify the documentation is up to date (might need to change the apache config)
+
+  - Post on website:
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/master/_content/config.yml
+        Fix latest version pointers.
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/posts
+        a) create a new Post for current year making sure the page name starts with mm-dd
+        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
+        c) commit and wait 5 minutes to see changes on website
+
+6. Spread the word
+
+  - Announce on e-mail
+    - postgis-users@lists.osgeo.org
+    - postgis-devel@lists.osgeo.org
+    - discuss@lists.osgeo.org
+    - pgsql-announce@postgresql.org (send email just to them, not with other ccs, they reject if others in cc)
+    - david@fetter.org to be included in Weekly news
+
+  - External web sites
+    - Wikipedia https://en.wikipedia.org/wiki/PostGIS
+    - Wikidata https://www.wikidata.org/wiki/Q1569955
     - Twitter
        This should automatically happen as a result of posting to PostGIS website since Planet PostGIS and Planet PostgreSQL both autotweet.
-- Update Trac and make old Milestone as completed
-- Push the revision number forward (see Versioning Scheme)
-- Remove the "dev" suffixed version from extensions/upgradeable_versions.mk
+
+7. Start new development cycle
+  - Update Trac and make old Milestone as completed
+  - Push the revision number forward (see Versioning Scheme)
+  - Remove the "dev" suffixed version from extensions/upgradeable_versions.mk
