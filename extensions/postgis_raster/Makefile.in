@@ -32,6 +32,7 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
 DATA_built = \
 	$(EXTENSION).control \
 	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged.sql \
 	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
 	$(NULL)
 
@@ -73,6 +74,9 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
+
+sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
+	echo "-- Nothing to do here" > $@
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl sql/$(EXTENSION)--ANY--$(EXTVERSION).sql Makefile | sql
 	# Ensure version is correct
