@@ -51,12 +51,13 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
 		> $@
 
-sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
-	mkdir -p sql
+sql:
+	mkdir -p $@
+
+sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
 
-sql/$(EXTENSION).sql: extlock.sql sql_bits/topology.sql  sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql
-	mkdir -p sql
+sql/$(EXTENSION).sql: extlock.sql sql_bits/topology.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql | sql
 	cat $^ > $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
@@ -71,8 +72,7 @@ sql_bits/topology.sql: ../../topology/topology.sql
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/topology_upgrade.sql Makefile
-	mkdir -p sql
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/topology_upgrade.sql Makefile | sql
 	# Ugprade before packaging
 	cat sql/topology_upgrade.sql > $@
 	cat $< | $(PERL) ../../utils/create_unpackaged.pl postgis_topology >> $@
@@ -85,8 +85,7 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../
 #aggregates are special
 #they can be dropped but we need to remove
 #them from the extension first
-sql/topology_upgrade.sql:  ../../topology/topology_upgrade.sql
-	mkdir -p sql
+sql/topology_upgrade.sql:  ../../topology/topology_upgrade.sql | sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
