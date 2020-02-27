@@ -5,11 +5,13 @@ EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEPATH    = $$libdir/$(EXTENSION)-@POSTGIS_MAJOR_VERSION@
 
+# Scripts making up the extension file
+# NOTE: order matters
 EXTENSION_SCRIPTS = \
 	extlock.sql \
+	sql_bits/topology.sql \
 	sql_bits/mark_editable_objects.sql.in \
-	sql_bits/topology_comments.sql \
-	sql_bits/topology.sql
+	sql_bits/topology_comments.sql
 
 ifeq (@LIBINCLUDEMINORVERSION@,yes)
 MODULEPATH=$$libdir/$(EXTENSION)-$(MINORVERSION)
