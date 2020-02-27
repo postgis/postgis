@@ -26,6 +26,7 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
 DATA_built = \
 	$(EXTENSION).control \
 	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged.sql \
 	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
 	$(NULL)
 
@@ -71,6 +72,9 @@ sql_bits/topology.sql: ../../topology/topology.sql
 
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
+
+sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
+	echo "-- Nothing to do here" > $@
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/topology_upgrade.sql Makefile | sql
 	# Ugprade before packaging

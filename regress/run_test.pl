@@ -419,6 +419,7 @@ my $geosver =  sql("select postgis_geos_version()");
 my $projver = sql("select postgis_proj_version()");
 my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
+my $pgsqlvernum = sql("select current_setting('server_version_num')");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
 my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
 my $scriptver = sql("select postgis_scripts_installed()");
@@ -1505,6 +1506,20 @@ sub prepare_spatial
 	return 1;
 }
 
+sub package_extension_sql
+{
+	my ($extname, $extver) = @_;
+	my $sql;
+
+	if ( $pgsqlvernum lt 130000 ) {
+		$sql = "CREATE EXTENSION ${extname} VERSION '${extver}' FROM unpackaged;";
+	} else {
+		$sql = "CREATE EXTENSION ${extname} VERSION unpackaged;";
+		$sql .= "ALTER EXTENSION ${extname} UPDATE TO '${extver}'";
+	}
+	return $sql;
+}
+
 # Upgrade an existing database (soft upgrade)
 sub upgrade_spatial
 {
@@ -1609,7 +1624,7 @@ sub upgrade_spatial_extensions
     }
     elsif ( $OPT_UPGRADE_FROM =~ /^unpackaged/ )
     {
-      $sql = "CREATE EXTENSION postgis VERSION '${nextver}' FROM unpackaged";
+			$sql = package_extension_sql('postgis', ${nextver});
     }
     else
     {
@@ -1622,7 +1637,7 @@ sub upgrade_spatial_extensions
     #print "CMD: " . $cmd . "\n";
     my $rv = system($cmd);
     if ( $rv ) {
-      fail "Error encountered altering EXTENSION POSTGIS", $REGRESS_LOG;
+      fail "Error encountered updating EXTENSION POSTGIS", $REGRESS_LOG;
       die;
     }
 
@@ -1635,7 +1650,7 @@ sub upgrade_spatial_extensions
       {
         # upgrade of postgis must have unpackaged raster, so
         # we create it again here
-        my $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+				my $sql = package_extension_sql('postgis_raster', ${nextver});
 
         print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
 
@@ -1652,7 +1667,8 @@ sub upgrade_spatial_extensions
         # left unpackaged
         print "Packaging PostGIS Raster in '${DB}' for later drop using: ${sql}\n" ;
 
-        $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+				$sql = package_extension_sql('postgis_raster', ${nextver});
+
         $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
         if ( $rv ) {
@@ -1683,7 +1699,7 @@ sub upgrade_spatial_extensions
         my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
 
         if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
-          $sql = "CREATE EXTENSION postgis_raster VERSION '${nextver}' FROM unpackaged";
+					$sql = package_extension_sql('postgis_raster', ${nextver});
         }
 
         print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
@@ -1691,7 +1707,7 @@ sub upgrade_spatial_extensions
         my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
         my $rv = system($cmd);
         if ( $rv ) {
-          fail "Error encountered altering EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
+          fail "Error encountered updating EXTENSION POSTGIS_RASTER", $REGRESS_LOG;
           die;
         }
     }
@@ -1701,7 +1717,7 @@ sub upgrade_spatial_extensions
       my $sql = "ALTER EXTENSION postgis_topology UPDATE TO '${nextver}'";
 
 			if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
-				$sql = "CREATE EXTENSION postgis_topology VERSION '${nextver}' FROM unpackaged";
+				$sql = package_extension_sql('postgis_topology', ${nextver});
 			}
 
       print "Upgrading PostGIS Topology in '${DB}' using: ${sql}\n";
@@ -1709,7 +1725,7 @@ sub upgrade_spatial_extensions
       my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
       my $rv = system($cmd);
       if ( $rv ) {
-        fail "Error encountered altering EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+        fail "Error encountered updating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
         die;
       }
     }
@@ -1719,7 +1735,7 @@ sub upgrade_spatial_extensions
 			my $sql;
 
 			if ( $OPT_UPGRADE_FROM =~ /^unpackaged/ ) {
-				$sql = "CREATE EXTENSION postgis_sfcgal VERSION '${nextver}' FROM unpackaged";
+				$sql = package_extension_sql('postgis_sfcgal', ${nextver});
 			}
 			elsif ( $OPT_UPGRADE_FROM && semver_lessthan($OPT_UPGRADE_FROM, "2.2.0") )
 			{
