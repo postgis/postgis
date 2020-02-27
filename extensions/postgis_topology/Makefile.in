@@ -5,6 +5,12 @@ EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEPATH    = $$libdir/$(EXTENSION)-@POSTGIS_MAJOR_VERSION@
 
+EXTENSION_SCRIPTS = \
+	extlock.sql \
+	sql_bits/mark_editable_objects.sql.in \
+	sql_bits/topology_comments.sql \
+	sql_bits/topology.sql
+
 ifeq (@LIBINCLUDEMINORVERSION@,yes)
 MODULEPATH=$$libdir/$(EXTENSION)-$(MINORVERSION)
 endif
@@ -54,10 +60,8 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 sql:
 	mkdir -p $@
 
-sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
-	cp $< $@
-
-sql/$(EXTENSION).sql: extlock.sql sql_bits/topology.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql | sql
+sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
+	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ > $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions

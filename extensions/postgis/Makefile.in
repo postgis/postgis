@@ -55,7 +55,7 @@ EXTENSION_UPGRADE_SCRIPTS = \
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
-	sql/postgis.sql
+	sql/$(EXTENSION)--$(EXTVERSION).sql
 
 RASTER_DROP_SCRIPTS = \
 	../../raster/rt_pg/rtpostgis_upgrade_cleanup.sql \
@@ -67,10 +67,6 @@ EXTRA_CLEAN = sql/
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
-
-sql/$(EXTENSION).sql: $(EXTENSION_SCRIPTS) | sql
-	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
-	cat $^ >> $@
 
 $(EXTENSION).control: $(EXTENSION).control.in Makefile
 	cat $< \
@@ -95,8 +91,9 @@ sql/raster_unpackage.sql: $(RASTER_DROP_SCRIPTS) | sql
 	sed -ne '/UNPACKAGE_CODE/{s///; :a' -e 'n;p;ba' -e '}' \
 		unpackage_raster_if_needed.sql  >> $@
 
-sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
-	cp $< $@
+sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
+	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
+	cat $^ >> $@
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
 	# Ensure version is correct
