@@ -32,6 +32,7 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
 DATA_built = \
 	$(EXTENSION).control \
 	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged.sql \
 	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
 	$(NULL)
 
@@ -104,6 +105,9 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_
 	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
 		| $(PERL) ../../utils/create_unpackaged.pl postgis \
 		>> $@
+
+sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
+	echo "-- Nothing to do here" > $@
 
 sql:
 	mkdir -p $@

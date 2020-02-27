@@ -3,6 +3,7 @@ PostGIS 3.0.7dev
 
 * Bug Fixes
   - #5202, Guard against downgrades (Sandro Santilli)
+  - #4643, Fix upgrade from unpackaged on PostgreSQL >= 13 (Sandro Santilli)
 
 PostGIS 3.0.6
 2022/07/20
