@@ -4186,6 +4186,51 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
 
+		<refentry id="ST_MinPossibleValue">
+			<refnamediv>
+				<refname>ST_MinPossibleValue</refname>
+				<refpurpose>Returns the minimum value this pixeltype can store.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>integer <function>ST_MinPossibleValue</function></funcdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>Returns the minimum value this pixeltype can store.</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+					<programlisting>SELECT ST_MinPossibleValue('16BSI');
+
+ st_minpossiblevalue
+---------------------
+              -32768
+
+
+SELECT ST_MinPossibleValue('8BUI');
+
+ st_minpossiblevalue
+---------------------
+                   0
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_BandPixelType" /></para>
+			</refsection>
+		</refentry>
+
 		<refentry id="RT_ST_HasNoBand">
 			<refnamediv>
 				<refname>ST_HasNoBand</refname>
