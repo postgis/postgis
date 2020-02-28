@@ -31,7 +31,9 @@
         <para>4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)</para>
         <para>4605, Fix postgis_upgrade.pl with PostgreSQL 12 (Matti Linnanvuori)</para>
         <para>4621, Prevent stack overflow when parsing WKB (Raúl Marín)</para>
-        <para>4626, Support pkg-config for libxml2 (Bas Couwenberg)  </para>
+        <para>4626, Support pkg-config for libxml2 (Bas Couwenberg)</para>
+        <para>4646, Fix gserialized_cmp incorrect comparison (dkvash)</para>
+
       </simplesect>
     </sect1>
 
