@@ -50,4 +50,4 @@ UPGRADEABLE_VERSIONS = \
 	2.5.1 \
 	2.5.2 \
 	2.5.3 \
-	2.5.4dev
+	2.5.4
