@@ -168,7 +168,7 @@ SELECT _postgis_drop_function_if_needed
 SELECT _postgis_drop_function_if_needed
 	(
 	'ST_AsGeoJson',
-	'r record, geom_column text, maxdecimaldigits integer, pretty_print boolean'
+	$args$r record, geom_column text DEFAULT ''::text, maxdecimaldigits integer DEFAULT 15, pretty_print boolean DEFAULT false$args$
 	);
 
 -- FUNCTION _st_orderingequals changed argument names in 3.0

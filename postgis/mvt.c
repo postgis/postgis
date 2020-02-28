@@ -22,6 +22,7 @@
  *
  **********************************************************************/
 
+#include <stdbool.h>
 #include <string.h>
 #include <float.h>
 #include <math.h>
@@ -779,7 +780,7 @@ static void parse_values(mvt_agg_context *ctx)
 
 /* For a given geometry, look for the highest dimensional basic type, that is,
  * point, line or polygon */
-static uint8
+static uint8_t
 lwgeom_get_basic_type(LWGEOM *geom)
 {
 	switch(geom->type)
@@ -798,7 +799,7 @@ lwgeom_get_basic_type(LWGEOM *geom)
 	case TINTYPE:
 	{
 		uint32_t i;
-		uint8 type = 0;
+		uint8_t type = 0;
 		LWCOLLECTION *g = (LWCOLLECTION*)geom;
 		for (i = 0; i < g->ngeoms; i++)
 		{
@@ -820,7 +821,7 @@ lwgeom_get_basic_type(LWGEOM *geom)
  * draw it anyways.
  */
 static inline LWGEOM *
-lwgeom_to_basic_type(LWGEOM *geom, uint8 original_type)
+lwgeom_to_basic_type(LWGEOM *geom, uint8_t original_type)
 {
 	LWGEOM *geom_out = geom;
 	if (lwgeom_get_type(geom) == COLLECTIONTYPE)

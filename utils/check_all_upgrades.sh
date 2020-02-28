@@ -115,23 +115,31 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   done
 
   # Check unpackaged->extension upgrades
-  for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
-    UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
-    # only consider versions older than ${to_version_param}
-    cmp=`semver_compare "${majmin}" "${to_version_param}"`
-    if test $cmp -ge 0; then
-      echo "SKIP: upgrade $UPGRADE_PATH ($to_version_param is not newer than $majmin)"
-      continue
-    fi
-    echo "Testing ${EXT} upgrade $UPGRADE_PATH"
-    export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
-    make -C ${REGDIR} check && {
-      echo "PASS: upgrade $UPGRADE_PATH"
-    } || {
-      echo "FAIL: upgrade $UPGRADE_PATH"
-      failed
-    }
-  done
+  #
+  # NOTE: unsupported since PostgreSQL 13
+  #       See https://trac.osgeo.org/postgis/ticket/4643
+  #
+  export PGDATABASE=template1
+  pg_version_num=`psql -XAtc "SELECT current_setting('server_version_num')"` || exit 1
+  if test "$pg_version_num" -lt 130000; then
+    for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
+      UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
+      # only consider versions older than ${to_version_param}
+      cmp=`semver_compare "${majmin}" "${to_version_param}"`
+      if test $cmp -ge 0; then
+        echo "SKIP: upgrade $UPGRADE_PATH ($to_version_param is not newer than $majmin)"
+        continue
+      fi
+      echo "Testing ${EXT} upgrade $UPGRADE_PATH"
+      export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
+      make -C ${REGDIR} check && {
+        echo "PASS: upgrade $UPGRADE_PATH"
+      } || {
+        echo "FAIL: upgrade $UPGRADE_PATH"
+        failed
+      }
+    done
+  fi
 
 done
 

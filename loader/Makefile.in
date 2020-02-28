@@ -29,6 +29,7 @@ INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
 
 # Filenames with extension as determined by the OS
+POSTGIS-CLI=postgis@EXESUFFIX@
 PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
 SHP2PGSQL-CLI=shp2pgsql@EXESUFFIX@
 SHP2PGSQL-GUI=shp2pgsql-gui@EXESUFFIX@
@@ -75,7 +76,7 @@ gtk_build = @GTK_BUILD@
 SHPLIB_OBJS = shpopen.o dbfopen.o getopt.o shpcommon.o safileio.o
 
 # The real parts of the Makefile
-all: $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) @GTK_BUILD@
+all: $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) $(POSTGIS-CLI) @GTK_BUILD@
 
 gui: $(SHP2PGSQL-GUI) $(SHP2PGSQL-CLI) @GTK_WIN32_RES@
 
@@ -99,6 +100,9 @@ pgsql2shp-cli.o: pgsql2shp-cli.c pgsql2shp-core.h shpcommon.h
 $(PGSQL2SHP-CLI): $(SHPLIB_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CFLAGS) $^ $(LDFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@
+
+$(POSTGIS-CLI): postgis.sh
+	cp postgis.sh postgis; chmod +x postgis
 
 $(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \
@@ -152,6 +156,7 @@ uninstall: uninstall-desktop uninstall-icons
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)"
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-GUI)"
+	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(POSTGIS-CLI)"
 
 # TODO: move here what's currently run from regress/loader and
 # regress/dumper ?

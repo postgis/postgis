@@ -52,7 +52,7 @@ EXTENSION_UPGRADE_SCRIPTS = \
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
-	sql/rtpostgis.sql
+	sql/$(EXTENSION)--$(EXTVERSION).sql
 
 EXTRA_CLEAN = sql
 
@@ -63,10 +63,6 @@ all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERS
 sql:
 	mkdir -p $@
 
-sql/$(EXTENSION).sql: $(EXTENSION_SCRIPTS) | sql
-	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
-	cat $^ >> $@
-
 $(EXTENSION).control: $(EXTENSION).control.in Makefile
 	cat $< \
 		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
@@ -74,8 +70,9 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 		| sed -e 's|@MODULEPATH@|$(MODULEPATH)|g' \
 		> $@
 
-sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
-	cp $< $@
+sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
+	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
+	cat $^ >> $@
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl sql/$(EXTENSION)--ANY--$(EXTVERSION).sql Makefile | sql
 	# Ensure version is correct
