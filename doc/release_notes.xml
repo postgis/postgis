@@ -4,6 +4,38 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+      <title>Release 2.5.4</title>
+      <para>Release date: 2020/02/28</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para>4480, Geography Distance inconsistent with Intersects (Paul Ramsey)</para>
+        <para>4481, Improve libprotobuf detection for old systems (Paul Ramsey)</para>
+        <para>4475, Avoid reading into empty ptarray (Paul Ramsey)</para>
+        <para>4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)</para>
+        <para>4494, Fix ST_Simplify output having an outdated bbox (Raúl Marín)</para>
+        <para>4493, Fix ST_RemoveRepeatedPoints output having an outdated bbox (Raúl Marín)</para>
+        <para>4495, Fix ST_SnapToGrid output having an outdated bbox (Raúl Marín)</para>
+        <para>4496, Make ST_Simplify(TRIANGLE) collapse if requested (Raúl Marín)</para>
+        <para>4506, Remove tolerance in point-in-ring tests (Paul Ramsey)</para>
+        <para>4338, Fix Census block level data (tabblock table) loading (Regina Obe)</para>
+        <para>4519, Fix getSRIDbySRS crash (Raúl Marín)</para>
+        <para>4517, Documentation error ST_EndPoint (Samuel Spurling)</para>
+        <para>4530, Avoid bogus AddRasterConstraint in upgrade tests (Sandro Santilli)</para>
+        <para>4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)</para>
+        <para>4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)</para>
+        <para>4537, Fix leak in WKT collection parser (Raúl Marín)</para>
+        <para>4547, Fix AddRasterConstraints handling of empty tables (Sandro Santilli)</para>
+        <para>4549, Fix schema qualification of internal types (Raúl Marín)</para>
+        <para>4546, Fix PLPGSQL functions missing the schema qualification (Raúl Marín)</para>
+        <para>4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)</para>
+        <para>4599, ST_AddPoint: Accept -1 as a valid position (Raúl Marín)</para>
+        <para>4605, Fix postgis_upgrade.pl with PostgreSQL 12 (Matti Linnanvuori)</para>
+        <para>4621, Prevent stack overflow when parsing WKB (Raúl Marín)</para>
+        <para>4626, Support pkg-config for libxml2 (Bas Couwenberg)  </para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 2.5.3</title>
       <para>Release date: 2019/08/11</para>
       <para>If compiling with PostgreSQL+JIT, LLVM >= 6 is required</para>
