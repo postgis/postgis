@@ -129,7 +129,7 @@ config.status: configure
 	./configure
 
 ChangeLog:
-	svn2cl --authors=authors.svn -i -o ChangeLog
+	git log --pretty --numstat --summary | git2cl > ChangeLog
 
 raster-post-install-check:
 	$(MAKE) -C raster post-install-check
