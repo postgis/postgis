@@ -306,12 +306,12 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	if (
 		sz1 > 16 && // 16 is size of EMPTY, if it's larger - it has coordinates
 		sz2 > 16 &&
-		*(uint32_t*)(g1->data) == POINTTYPE &&
-		*(uint32_t*)(g2->data) == POINTTYPE &&
 		!FLAGS_GET_BBOX(g1->flags) &&
 		!FLAGS_GET_GEODETIC(g1->flags) &&
 		!FLAGS_GET_BBOX(g2->flags) &&
-		!FLAGS_GET_GEODETIC(g2->flags)
+		!FLAGS_GET_GEODETIC(g2->flags) &&
+		gserialized_get_type(g1) == POINTTYPE &&
+		gserialized_get_type(g2) == POINTTYPE
 	)
 	{
 		double *dptr = (double*)(g1->data);
