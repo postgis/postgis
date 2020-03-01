@@ -4,6 +4,8 @@ XXXX/XX/XX
   * Bug Fixes and Enhancements *
 
   - #4475, Avoid reading into empty ptarray (Paul Ramsey)
+  - #4518, Fix geometry_columns and raster views 
+          to not use pg_constraints.consrc which was removed in PG 12 (Regina Obe)
   - #4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)
   - #4494, Fix ST_Simplify output having an outdated bbox (Raúl Marín)
   - #4493, Fix ST_RemoveRepeatedPoints output having an outdated bbox (Raúl Marín)

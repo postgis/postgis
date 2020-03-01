@@ -6881,6 +6881,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint(rastschema name, rasttable na
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 change to use pg_get_contraintdef instead of deprecated consrc column
 CREATE OR REPLACE FUNCTION _raster_constraint_info_srid(rastschema name, rasttable name, rastcolumn name)
 	RETURNS integer AS $$
 	SELECT
@@ -6888,7 +6889,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_srid(rastschema name, rasttab
 			split_part(s.consrc, ' = ', 2),
 			'[\(\)]', '', 'g'
 		)::integer
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, 
+ 		(SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -6947,6 +6950,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_srid(rastschema name, rasttab
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 change to use pg_get_contraintdef instead of deprecated consrc column
 CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rasttable name, rastcolumn name, axis char)
 	RETURNS double precision AS $$
 	WITH c AS (SELECT
@@ -6960,7 +6964,8 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rastta
 			),
 			'[ ''''\(\)]', '', 'g'
 		)::text AS val
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7036,6 +7041,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_scale(rastschema name, rastta
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 change to use pg_get_contraintdef instead of deprecated consrc column
 CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, rasttable name, rastcolumn name, axis text)
 	RETURNS integer AS $$
 	SELECT
@@ -7048,7 +7054,8 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, ra
 					'[\(\)]', '', 'g'
 				)::integer
 			END
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7120,11 +7127,13 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_blocksize(rastschema name, ra
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 change to use pg_get_contraintdef instead of deprecated consrc column
 CREATE OR REPLACE FUNCTION _raster_constraint_info_extent(rastschema name, rasttable name, rastcolumn name)
 	RETURNS geometry AS $$
 	SELECT
 		trim(both '''' from split_part(trim(split_part(s.consrc, ' @ ', 2)), '::', 1))::@extschema@.geometry
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7188,11 +7197,13 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_extent(rastschema name, rastt
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 change to use pg_get_contraintdef instead of deprecated consrc column
 CREATE OR REPLACE FUNCTION _raster_constraint_info_alignment(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean AS $$
 	SELECT
 		TRUE
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7249,11 +7260,14 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_alignment(rastschema name, ra
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 change to use pg_get_contraintdef instead of deprecated consrc column
 CREATE OR REPLACE FUNCTION _raster_constraint_info_spatially_unique(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean AS $$
 	SELECT
 		TRUE
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s, pg_index idx, pg_operator op
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, contype, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
+		, pg_index idx, pg_operator op
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7294,6 +7308,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_spatially_unique(rastschema na
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 change to use pg_get_contraintdef instead of deprecated consrc column
 CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean AS $$
 	DECLARE
@@ -7301,7 +7316,9 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 	BEGIN
 		SELECT
 			s.conname INTO cn
-		FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s, pg_index idx, pg_operator op
+		FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, contype, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
+				, pg_index idx, pg_operator op
 		WHERE n.nspname = $1
 			AND c.relname = $2
 			AND a.attname = $3
@@ -7320,11 +7337,13 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 change to use pg_get_contraintdef instead of deprecated consrc column
 CREATE OR REPLACE FUNCTION _raster_constraint_info_coverage_tile(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean AS $$
 	SELECT
 		TRUE
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7428,6 +7447,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_regular_blocking(rastschema n
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 to use pg_get_constraintdef instead of consrc. consrc got removed in PG 12
 CREATE OR REPLACE FUNCTION _raster_constraint_info_num_bands(rastschema name, rasttable name, rastcolumn name)
 	RETURNS integer AS $$
 	SELECT
@@ -7435,7 +7455,8 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_num_bands(rastschema name, ra
 			split_part(s.consrc, ' = ', 2),
 			'[\(\)]', '', 'g'
 		)::integer
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7493,6 +7514,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_num_bands(rastschema name, ra
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 to use pg_get_constraintdef instead of consrc. consrc got removed in PG 12
 CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, rasttable name, rastcolumn name)
 	RETURNS text[] AS $$
 	SELECT
@@ -7505,7 +7527,8 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, 
 				'::', 1
 			)
 		)::text[]
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7578,6 +7601,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_pixel_types(rastschema name, 
 	$$ SELECT  @extschema@._drop_raster_constraint($1, $2, 'enforce_pixel_types_' || $3) $$
 	LANGUAGE 'sql' VOLATILE STRICT;
 
+-- Changed: 2.3.11 to use pg_get_constraintdef instead of consrc. consrc got removed in PG 12
 CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name, rasttable name, rastcolumn name)
 	RETURNS double precision[] AS $$
 	SELECT
@@ -7590,7 +7614,8 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 				'::', 1
 			)
 		)::double precision[]
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -7669,6 +7694,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_nodata_values(rastschema name
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+-- Changed: 2.3.11 to use pg_get_constraintdef instead of consrc. consrc got removed in PG 12
 CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean[] AS $$
 	SELECT
@@ -7681,7 +7707,8 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rastt
 				'::', 1
 			)
 		)::boolean[]
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -8314,6 +8341,7 @@ CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refsc
 	LANGUAGE 'sql' STABLE
 	COST 100;
 
+-- Changed: 2.3.11 to use pg_get_constraintdef instead of consrc. consrc got removed in PG 12
 CREATE OR REPLACE FUNCTION _overview_constraint_info(
 	ovschema name, ovtable name, ovcolumn name,
 	OUT refschema name, OUT reftable name, OUT refcolumn name, OUT factor integer
@@ -8324,7 +8352,8 @@ CREATE OR REPLACE FUNCTION _overview_constraint_info(
 		split_part(split_part(s.consrc, '''::name', 2), '''', 2)::name,
 		split_part(split_part(s.consrc, '''::name', 3), '''', 2)::name,
 		trim(both from split_part(s.consrc, ',', 2))::integer
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
@@ -8378,6 +8407,7 @@ CREATE OR REPLACE FUNCTION _drop_overview_constraint(ovschema name, ovtable name
 ------------------------------------------------------------------------------
 -- Availability: 2.0.0
 -- Changed: 2.2.0
+-- Changed: 2.3.11 to use pg_get_constraintdef instead of consrc. consrc got removed in PG 12
 CREATE OR REPLACE VIEW raster_overviews AS
 	SELECT
 		current_database() AS o_table_catalog,
@@ -8394,7 +8424,8 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		pg_attribute a,
 		pg_type t,
 		pg_namespace n,
-		pg_constraint s
+		(SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) s
 	WHERE t.typname = 'raster'::name
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
