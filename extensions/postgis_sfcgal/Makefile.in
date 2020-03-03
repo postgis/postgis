@@ -39,9 +39,11 @@ EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql_bits/sfcgal.sql \
 	../../utils/create_unpackaged.pl
 
+# Scripts making up the extension file
+# NOTE: order matters
 EXTENSION_SCRIPTS = \
-	sql_bits/sfcgal_comments.sql \
-	sql_bits/sfcgal.sql
+	sql_bits/sfcgal.sql \
+	sql_bits/sfcgal_comments.sql
 
 EXTRA_CLEAN = sql
 
