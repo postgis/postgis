@@ -81,6 +81,20 @@ stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 		s->str_end = s->str_start + current_size;
 	}
 }
+
+
+/**
+ * Append the specified string to the stringbuffer_t using known length
+ */
+inline static void
+stringbuffer_append_len(stringbuffer_t *s, const char *a, size_t alen)
+{
+	int alen0 = alen + 1; /* Length including null terminator */
+	stringbuffer_makeroom(s, alen0);
+	memcpy(s->str_end, a, alen0);
+	s->str_end += alen;
+}
+
 /**
  * Append the specified string to the stringbuffer_t.
  */
@@ -88,9 +102,6 @@ inline static void
 stringbuffer_append(stringbuffer_t *s, const char *a)
 {
 	int alen = strlen(a); /* Length of string to append */
-	int alen0 = alen + 1; /* Length including null terminator */
-	stringbuffer_makeroom(s, alen0);
-	memcpy(s->str_end, a, alen0);
-	s->str_end += alen;
+	stringbuffer_append_len(s, a, alen);
 }
 #endif /* _STRINGBUFFER_H */
