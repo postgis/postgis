@@ -14,11 +14,6 @@ kind: pipeline
 name: build
 clone: *clone
 steps:
-  - name: build-9.5
-    image: *test-image
-    pull: always
-    commands:
-      - PGVER=9.5 sh ci/dronie/postgis_regress.sh
 
   - name: build-9.6
     image: *test-image
