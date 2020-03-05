@@ -110,11 +110,8 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 			/* Spaces before every ordinate but the first */
 			if ( j > 0 )
 				stringbuffer_append_len(sb, " ", 1);
-			lwprint_double(dbl_ptr[j],
-				       precision,
-				       coord,
-				       buffer_size);
-			stringbuffer_append(sb, coord);
+			int len = lwprint_double(dbl_ptr[j], precision, coord, buffer_size);
+			stringbuffer_append_len(sb, coord, len);
 		}
 	}
 
