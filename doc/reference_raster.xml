@@ -4011,15 +4011,15 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 			<refsection>
 				<title>Description</title>
 
-				<para>Returns system file path to a band.  Throws an error if called with an in db band.</para>
+				<para>Returns system file path to a band.  Returns null for in db raster bands.</para>
 				</refsection>
 
 				<refsection>
 					<title>Examples</title>
 
-					<programlisting><!-- TODO: -->
-					</programlisting>
-
+					<programlisting>SELECT rid, ST_BandPath(rast,1) AS file_path
+FROM dem
+LIMIT 1;</programlisting>
 			</refsection>
 
 			<refsection>
