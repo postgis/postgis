@@ -4012,9 +4012,9 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 				<title>Description</title>
 
 				<para>Returns system file path to a band.  Returns null for in db raster bands.</para>
-				</refsection>
+			</refsection>
 
-				<refsection>
+			<refsection>
 					<title>Examples</title>
 
 					<programlisting>SELECT rid, ST_BandPath(rast,1) AS file_path
@@ -4024,7 +4024,7 @@ LIMIT 1;</programlisting>
 
 			<refsection>
 				<title>See Also</title>
-				<para></para>
+				<para><xref linkend="RT_ST_BandFileSize" />, <xref linkend="RT_ST_BandFileTimestamp" />, <xref linkend="RT_ST_BandMetaData" />, <xref linkend="postgis_enable_outdb_rasters" />, <xref linkend="outdb" /></para>
 			</refsection>
 		</refentry>
 
