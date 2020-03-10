@@ -68,8 +68,15 @@ SELECT n.nspname
     AND p.proname = 'postgis_full_version'
 ";
 
-		my $SCHEMA=`psql -qXtA ${db} -c "${sql}"`;
+		my $SCHEMA=`psql -qXtA ${db} -c "${sql}" 2>&1`;
 		chop($SCHEMA);
+		if ( $? ne 0 )
+		{
+			$SCHEMA =~ s/^.*FATAL: *//;
+			print "db $db cannot be inspected: $SCHEMA\n";
+			next;
+		}
+
     if ( ! "$SCHEMA" )
 		{
       print "db $db does not have postgis enabled\n";
