@@ -39,7 +39,7 @@ sub upgrade
   foreach my $db (@_)
   {
     print "upgrading db $db\n";
-    my $LOG=`cat <<EOF | psql -XtA ${db}
+    my $LOG=`cat <<EOF | psql -qXtA ${db}
 BEGIN;
 UPDATE pg_catalog.pg_extension SET extversion = 'ANY'
  WHERE extname IN (
@@ -68,7 +68,7 @@ SELECT n.nspname
     AND p.proname = 'postgis_full_version'
 ";
 
-		my $SCHEMA=`psql -XtA ${db} -c "${sql}"`;
+		my $SCHEMA=`psql -qXtA ${db} -c "${sql}"`;
 		chop($SCHEMA);
     if ( ! "$SCHEMA" )
 		{
@@ -77,7 +77,7 @@ SELECT n.nspname
     }
 
     $sql="SELECT ${SCHEMA}.postgis_full_version()";
-    my $FULL_VERSION=`psql -XtA ${db} -c "${sql}"`;
+    my $FULL_VERSION=`psql -qXtA ${db} -c "${sql}"`;
 		#print "FULL_VERSION: ${FULL_VERSION}\n";
 
     #POSTGIS="3.1.0dev r3.1.0alpha1-3-gfc5392de7"
@@ -101,6 +101,9 @@ SELECT n.nspname
     print "db $db has postgis ${VERSION}${EXTENSION} in schema ${SCHEMA}${NEED_UPGRADE}\n";
   }
 }
+
+# Avoid NOTICE messages
+$ENV{'PGOPTIONS'} = $ENV{'PGOPTIONS'} . ' --client-min-messages=warning';
 
 my $cmd = shift;
 if ( $cmd eq "help" ) {
