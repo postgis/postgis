@@ -1692,7 +1692,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 		       pa->serialized_pointlist + pt_size * (pa->npoints - 1),
 		       pt_size);
 	}
-	else
+	else if (pa->npoints != keptn) /* We don't need to move any points if we are keeping them all */
 	{
 		for (uint32_t i = 1; i < pa->npoints; i++)
 		{
