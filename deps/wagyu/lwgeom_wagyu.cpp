@@ -264,7 +264,8 @@ __lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 	clipper.execute(wagyu::clip_type_union, solution, wagyu::fill_type_even_odd, wagyu::fill_type_even_odd);
 
 	LWGEOM *g = wgmpoly_to_lwgeom(solution);
-	g->srid = geom->srid;
+	if (g)
+		g->srid = geom->srid;
 
 	return g;
 }
