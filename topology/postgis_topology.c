@@ -144,13 +144,11 @@ _box2d_to_lwgeom(const GBOX *bbox, int32_t srid)
 static char *
 _box2d_to_hexwkb(const GBOX *bbox, int32_t srid)
 {
-  char *hex;
-  size_t sz;
-  LWGEOM *geom = _box2d_to_lwgeom(bbox, srid);
-  hex = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz);
-  lwgeom_free(geom);
-  assert(hex[sz-1] == '\0');
-  return hex;
+	char *hex;
+	LWGEOM *geom = _box2d_to_lwgeom(bbox, srid);
+	hex = lwgeom_to_hexwkb_buffer(geom, WKT_EXTENDED);
+	lwgeom_free(geom);
+	return hex;
 }
 
 /* Backend callbacks */
@@ -348,7 +346,6 @@ addEdgeFields(StringInfo str, int fields, int fullEdgeData)
 static void
 addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdgeData)
 {
-  size_t hexewkb_size;
   char *hexewkb;
   const char *sep = "";
 
@@ -399,10 +396,9 @@ addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdge
   {
     if ( edge->geom )
     {
-      hexewkb = lwgeom_to_hexwkb(lwline_as_lwgeom(edge->geom),
-                                 WKB_EXTENDED, &hexewkb_size);
-      appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
-      lwfree(hexewkb);
+	    hexewkb = lwgeom_to_hexwkb_buffer(lwline_as_lwgeom(edge->geom), WKB_EXTENDED);
+	    appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
+	    lwfree(hexewkb);
     }
     else
     {
@@ -426,7 +422,6 @@ addEdgeUpdate(StringInfo str, const LWT_ISO_EDGE* edge, int fields,
   const char *sep = "";
   const char *sep1;
   const char *op;
-  size_t hexewkb_size;
   char *hexewkb;
 
   switch (updType)
@@ -501,8 +496,7 @@ addEdgeUpdate(StringInfo str, const LWT_ISO_EDGE* edge, int fields,
   if ( fields & LWT_COL_EDGE_GEOM )
   {
     appendStringInfo(str, "%sgeom", sep);
-    hexewkb = lwgeom_to_hexwkb(lwline_as_lwgeom(edge->geom),
-                               WKB_EXTENDED, &hexewkb_size);
+    hexewkb = lwgeom_to_hexwkb_buffer(lwline_as_lwgeom(edge->geom), WKB_EXTENDED);
     appendStringInfo(str, "%s'%s'::geometry", op, hexewkb);
     lwfree(hexewkb);
   }
@@ -515,7 +509,6 @@ addNodeUpdate(StringInfo str, const LWT_ISO_NODE* node, int fields,
   const char *sep = "";
   const char *sep1;
   const char *op;
-  size_t hexewkb_size;
   char *hexewkb;
 
   switch (updType)
@@ -557,8 +550,7 @@ addNodeUpdate(StringInfo str, const LWT_ISO_NODE* node, int fields,
   if ( fields & LWT_COL_NODE_GEOM )
   {
     appendStringInfo(str, "%sgeom", sep);
-    hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(node->geom),
-                               WKB_EXTENDED, &hexewkb_size);
+    hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(node->geom), WKB_EXTENDED);
     appendStringInfo(str, "%s'%s'::geometry", op, hexewkb);
     lwfree(hexewkb);
   }
@@ -606,7 +598,6 @@ addFaceFields(StringInfo str, int fields)
 static void
 addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 {
-  size_t hexewkb_size;
   char *hexewkb;
   const char *sep = "";
 
@@ -632,10 +623,9 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
   {
     if ( node->geom )
     {
-      hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(node->geom),
-                                 WKB_EXTENDED, &hexewkb_size);
-      appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
-      lwfree(hexewkb);
+	    hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(node->geom), WKB_EXTENDED);
+	    appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
+	    lwfree(hexewkb);
     }
     else
     {
@@ -1372,7 +1362,6 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   LWT_ISO_EDGE *edges;
   int spi_result;
   int64_t elems_requested = limit;
-  size_t hexewkb_size;
   char *hexewkb;
   MemoryContext oldcontext = CurrentMemoryContext;
   StringInfoData sqldata;
@@ -1391,7 +1380,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   }
   appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
   // TODO: use binary cursor here ?
-  hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
+  hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(pt), WKB_EXTENDED);
   if ( dist )
   {
     appendStringInfo(sql, " WHERE ST_DWithin('%s'::geometry, geom, %g)", hexewkb, dist);
@@ -1472,7 +1461,6 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   MemoryContext oldcontext = CurrentMemoryContext;
   LWT_ISO_NODE *nodes;
   int spi_result;
-  size_t hexewkb_size;
   char *hexewkb;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
@@ -1498,7 +1486,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   }
   appendStringInfo(sql, " FROM \"%s\".node", topo->name);
   // TODO: use binary cursor here ?
-  hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
+  hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(pt), WKB_EXTENDED);
   if ( dist )
   {
     appendStringInfo(sql, " WHERE ST_DWithin(geom, '%s'::geometry, %g)",

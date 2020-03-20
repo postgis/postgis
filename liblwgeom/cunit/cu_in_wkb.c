@@ -63,8 +63,7 @@ static void cu_wkb_in(char *wkt)
 {
 	LWGEOM_PARSER_RESULT pr;
 	LWGEOM *g_a, *g_b;
-	uint8_t *wkb_a, *wkb_b;
-	size_t wkb_size_a, wkb_size_b;
+	lwvarlena_t *wkb_a, *wkb_b;
 	/* int i; char *hex; */
 
 	if ( hex_a ) free(hex_a);
@@ -83,17 +82,17 @@ static void cu_wkb_in(char *wkt)
 	g_a = pr.geom;
 
 	/* Turn geom into WKB */
-	wkb_a = lwgeom_to_wkb(g_a, WKB_NDR | WKB_EXTENDED, &wkb_size_a);
+	wkb_a = lwgeom_to_wkb_varlena(g_a, WKB_NDR | WKB_EXTENDED);
 
 	/* Turn WKB back into geom  */
-	g_b = lwgeom_from_wkb(wkb_a, wkb_size_a, LW_PARSER_CHECK_NONE);
+	g_b = lwgeom_from_wkb((uint8_t *)wkb_a->data, LWSIZE_GET(wkb_a->size) - LWVARHDRSZ, LW_PARSER_CHECK_NONE);
 
 	/* Turn geom to WKB again */
-	wkb_b = lwgeom_to_wkb(g_b, WKB_NDR | WKB_EXTENDED, &wkb_size_b);
+	wkb_b = lwgeom_to_wkb_varlena(g_b, WKB_NDR | WKB_EXTENDED);
 
 	/* Turn geoms into WKB for comparisons */
-	hex_a = hexbytes_from_bytes(wkb_a, wkb_size_a);
-	hex_b = hexbytes_from_bytes(wkb_b, wkb_size_b);
+	hex_a = hexbytes_from_bytes((uint8_t *)wkb_a->data, LWSIZE_GET(wkb_a->size) - LWVARHDRSZ);
+	hex_b = hexbytes_from_bytes((uint8_t *)wkb_b->data, LWSIZE_GET(wkb_b->size) - LWVARHDRSZ);
 
 	/* Clean up */
 	lwfree(wkb_a);

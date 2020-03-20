@@ -189,16 +189,10 @@ Datum geography_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_out);
 Datum geography_out(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = NULL;
-	GSERIALIZED *g = NULL;
-	char *hexwkb;
 
-	g = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom = lwgeom_from_gserialized(g);
-	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, 0);
-	lwgeom_free(lwgeom);
-
-	PG_RETURN_CSTRING(hexwkb);
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+	PG_RETURN_CSTRING(lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED));
 }
 
 
@@ -630,21 +624,7 @@ Datum geography_recv(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_send);
 Datum geography_send(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = NULL;
-	GSERIALIZED *g = NULL;
-	size_t size_result;
-	uint8_t *wkb;
-	bytea *result;
-
-	g = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom = lwgeom_from_gserialized(g);
-	wkb = lwgeom_to_wkb(lwgeom, WKB_EXTENDED, &size_result);
-	lwgeom_free(lwgeom);
-
-	result = palloc(size_result + VARHDRSZ);
-	SET_VARSIZE(result, size_result + VARHDRSZ);
-	memcpy(VARDATA(result), wkb, size_result);
-	lwfree(wkb);
-
-	PG_RETURN_POINTER(result);
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+	PG_RETURN_POINTER(lwgeom_to_wkb_varlena(lwgeom, WKB_EXTENDED));
 }

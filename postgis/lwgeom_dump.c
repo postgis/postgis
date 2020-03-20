@@ -144,7 +144,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	if ( ! lwgeom_is_collection(state->root) )
 	{
 		values[0] = "{}";
-		values[1] = lwgeom_to_hexwkb(state->root, WKB_EXTENDED, 0);
+		values[1] = lwgeom_to_hexwkb_buffer(state->root, WKB_EXTENDED);
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
 		result = HeapTupleGetDatum(tuple);
 
@@ -201,7 +201,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	lwgeom->srid = state->root->srid;
 
 	values[0] = address;
-	values[1] = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, 0);
+	values[1] = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
 	tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
 	result = TupleGetDatum(funcctx->slot, tuple);
 	node->idx++;
@@ -301,7 +301,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		sprintf(address, "{%d}", state->ringnum);
 
 		values[0] = address;
-		values[1] = lwgeom_to_hexwkb(ringgeom, WKB_EXTENDED, 0);
+		values[1] = lwgeom_to_hexwkb_buffer(ringgeom, WKB_EXTENDED);
 
 		MemoryContextSwitchTo(oldcontext);
 

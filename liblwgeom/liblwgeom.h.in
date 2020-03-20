@@ -2184,12 +2184,12 @@ extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision,
 extern lwvarlena_t* lwgeom_to_wkt_varlena(const LWGEOM *geom, uint8_t variant, int precision);
 
 /**
-* @param geom geometry to convert to WKT
+* @param geom geometry to convert to WKB
 * @param variant output format to use
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
-* @param size_out (Out parameter) size of the buffer
 */
-extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
+extern uint8_t* lwgeom_to_wkb_buffer(const LWGEOM *geom, uint8_t variant);
+extern lwvarlena_t* lwgeom_to_wkb_varlena(const LWGEOM *geom, uint8_t variant);
 
 /**
 * @param geom geometry to convert to HEXWKB
@@ -2197,7 +2197,8 @@ extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
 * @param size_out (Out parameter) size of the buffer
 */
-extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
+extern char* lwgeom_to_hexwkb_buffer(const LWGEOM *geom, uint8_t variant);
+extern lwvarlena_t* lwgeom_to_hexwkb_varlena(const LWGEOM *geom, uint8_t variant);
 
 /**
 * @param lwgeom geometry to convert to EWKT

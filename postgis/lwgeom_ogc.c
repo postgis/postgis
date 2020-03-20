@@ -837,9 +837,6 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	uint8_t *wkb;
-	size_t wkb_size;
-	bytea *result;
 	uint8_t variant = WKB_ISO;
 
 	if (PG_ARGISNULL(0))
@@ -867,18 +864,7 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 	}
 
 	/* Write to WKB and free the geometry */
-	wkb = lwgeom_to_wkb(lwgeom, variant, &wkb_size);
-	lwgeom_free(lwgeom);
-
-	/* Write to text and free the WKT */
-	result = palloc(wkb_size + VARHDRSZ);
-	memcpy(VARDATA(result), wkb, wkb_size);
-	SET_VARSIZE(result, wkb_size + VARHDRSZ);
-	lwfree(wkb);
-
-	/* Return the text */
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_BYTEA_P(result);
+	PG_RETURN_BYTEA_P(lwgeom_to_wkb_varlena(lwgeom, variant));
 }
 
 

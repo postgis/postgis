@@ -282,15 +282,8 @@ PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom;
-	char *hexwkb;
-	size_t hexwkb_size;
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
-	lwgeom_free(lwgeom);
-
-	PG_RETURN_CSTRING(hexwkb);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	PG_RETURN_CSTRING(lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED));
 }
 
 /*
@@ -301,17 +294,12 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
-	char *hexwkb;
-	size_t hexwkb_size;
 	uint8_t variant = 0;
-	text *result;
-	text *type;
-	size_t text_size;
 
 	/* If user specified endianness, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
-		type = PG_GETARG_TEXT_P(1);
+		text *type = PG_GETARG_TEXT_P(1);
 
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
 		      ! strncmp(VARDATA(type), "XDR", 3) )
@@ -326,19 +314,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 
 	/* Create WKB hex string */
 	lwgeom = lwgeom_from_gserialized(geom);
-	hexwkb = lwgeom_to_hexwkb(lwgeom, variant | WKB_EXTENDED, &hexwkb_size);
-	lwgeom_free(lwgeom);
-
-	/* Prepare the PgSQL text return type */
-	text_size = hexwkb_size - 1 + VARHDRSZ;
-	result = palloc(text_size);
-	memcpy(VARDATA(result), hexwkb, hexwkb_size - 1);
-	SET_VARSIZE(result, text_size);
-
-	/* Clean up and return */
-	lwfree(hexwkb);
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_hexwkb_varlena(lwgeom, variant | WKB_EXTENDED));
 }
 
 
@@ -353,23 +329,8 @@ PG_FUNCTION_INFO_V1(LWGEOM_to_text);
 Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom;
-	char *hexwkb;
-	size_t hexwkb_size;
-	text *result;
-
-	/* Generate WKB hex text */
-	lwgeom = lwgeom_from_gserialized(geom);
-	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
-	lwgeom_free(lwgeom);
-
-	/* Copy into text obect */
-	result = cstring_to_text(hexwkb);
-	lwfree(hexwkb);
-
-	/* Clean up and return */
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	PG_RETURN_TEXT_P(lwgeom_to_hexwkb_varlena(lwgeom, WKB_EXTENDED));
 }
 
 /*
@@ -436,15 +397,12 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
-	uint8_t *wkb;
-	size_t wkb_size;
 	uint8_t variant = 0;
- 	bytea *result;
-	text *type;
+
 	/* If user specified endianness, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
-		type = PG_GETARG_TEXT_P(1);
+		text *type = PG_GETARG_TEXT_P(1);
 
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
 		      ! strncmp(VARDATA(type), "XDR", 3) )
@@ -456,22 +414,10 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 			variant = variant | WKB_NDR;
 		}
 	}
-	wkb_size= VARSIZE_ANY_EXHDR(geom);
+
 	/* Create WKB hex string */
 	lwgeom = lwgeom_from_gserialized(geom);
-
-	wkb = lwgeom_to_wkb(lwgeom, variant | WKB_EXTENDED , &wkb_size);
-	lwgeom_free(lwgeom);
-
-	/* Prepare the PgSQL text return type */
-	result = palloc(wkb_size + VARHDRSZ);
-	memcpy(VARDATA(result), wkb, wkb_size);
-	SET_VARSIZE(result, wkb_size+VARHDRSZ);
-
-	/* Clean up and return */
-	lwfree(wkb);
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_BYTEA_P(result);
+	PG_RETURN_BYTEA_P(lwgeom_to_wkb_varlena(lwgeom, variant | WKB_EXTENDED));
 }
 
 PG_FUNCTION_INFO_V1(TWKBFromLWGEOM);
