@@ -3296,10 +3296,11 @@ GEOMETRYCOLLECTION(
         <para>
 <xref linkend="ST_AsText" />,
 <xref linkend="ST_BuildArea" />,
+<xref linkend="ST_CollectionExtract" />,
 <xref linkend="ST_Dump" />,
 <xref linkend="ST_GeometryN" />,
-<xref linkend="ST_Union" />,
-<xref linkend="ST_Subdivide" />
+<xref linkend="ST_Subdivide" />,
+<xref linkend="ST_Union" />
         </para>
         </refsection>
     </refentry>
