@@ -244,6 +244,7 @@ else
 	}
 }
 
+my $pgvernum = sql("SELECT current_setting('server_version_num')");
 my $libver = sql("select postgis_lib_version()");
 my $defextver = sql("select default_version from pg_available_extensions where name = 'postgis'");
 
@@ -313,13 +314,23 @@ sub create_upgrade_test_objects
   }
 
 
-  my $query = "create view upgrade_view_test as ";
-  $query .= "select st_union(g1) from upgrade_test;";
-  my $ret = sql($query);
-  unless ( $ret =~ /^CREATE/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
-    exit(1);
+  if ( $pgvernum >= 120000 ) {
+    # We know upgrading with an st_union() based view
+    # fails unless you're on PostgreSQL 12, so we don't
+    # even try that.
+    #
+    # We could re-enable this test IF we fix the upgrade
+    # in pre-12 versions. Refer to
+    # https://trac.osgeo.org/postgis/ticket/4386
+    #
+    $query = "create view upgrade_view_test as ";
+    $query .= "select st_union(g1) from upgrade_test;";
+    my $ret = sql($query);
+    unless ( $ret =~ /^CREATE/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
+      exit(1);
+    }
   }
 
   if ( $OPT_WITH_RASTER )
@@ -358,7 +369,7 @@ sub drop_upgrade_test_objects
 {
   # TODO: allow passing the "upgrade-cleanup" script via commandline
 
-  my $ret = sql("drop view upgrade_view_test;");
+  my $ret = sql("drop view if exists upgrade_view_test;");
   unless ( $ret =~ /^DROP/ ) {
     `dropdb $DB`;
     print "\nSomething went wrong dropping spatial view: $ret.\n";
