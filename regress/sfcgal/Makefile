@@ -1,0 +1,57 @@
+# **********************************************************************
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.net
+# *
+# * Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
+# * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
+# * Copyright (C) 2008-2009 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+PERL=/usr/bin/perl
+TMPDIR?=/tmp
+
+HAVE_SFCGAL=yes
+
+ifeq ($(HAVE_SFCGAL),yes)
+
+# MingW hack: rather than use PGSQL_BINDIR directly, we change
+# to the directory and then use "pwd" to return the path. This
+# ensures that the returned path is in MSYS format, otherwise
+# colons in drive letters will break PATH.
+PGSQL_BINDIR=$(shell cd "C:/MING64~1/projects/POSTGR~1/rel/PG12W6~4/bin" && pwd)
+
+#
+# Put path from pg_config into front of search path
+#
+PATH := $(PGSQL_BINDIR):$(PATH)
+export PATH
+
+TESTS = \
+		regress_sfcgal \
+		approximatemedialaxis.sql
+
+test check:
+	$(PERL) ../run_test.pl --sfcgal $(RUNTESTFLAGS) $(TESTS)
+	# only run upgrade test if RUNTESTFLAGS was not already doing that
+	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
+		$(PERL) ../run_test.pl --sfcgal --upgrade $(RUNTESTFLAGS) $(TESTS); \
+	fi
+
+else
+
+check:
+
+endif # HAVE_SFCGAL
+
+distclean: clean
+	rm Makefile
+
+all install uninstall:
+
+
+clean:

@@ -1,0 +1,240 @@
+# **********************************************************************
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.net
+# *
+# * Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
+# * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
+# * Copyright (C) 2008-2009 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+PERL=/usr/bin/perl
+TMPDIR?=/tmp
+
+POSTGIS_PGSQL_VERSION=120
+POSTGIS_GEOS_VERSION=39
+GEOS_NUMERIC_VERSION=30900
+POSTGIS_PROJ_VERSION=62
+POSTGIS_MAJOR_VERSION=3
+POSTGIS_MINOR_VERSION=1
+HAVE_JSON=yes
+PROTOC_VERSION=1002001
+HAVE_SPGIST=yes
+INTERRUPTTESTS=no
+
+# MingW hack: rather than use PGSQL_BINDIR directly, we change
+# to the directory and then use "pwd" to return the path. This
+# ensures that the returned path is in MSYS format, otherwise
+# colons in drive letters will break PATH.
+PGSQL_BINDIR=$(shell cd "C:/MING64~1/projects/POSTGR~1/rel/PG12W6~4/bin" && pwd)
+
+
+#
+# Put path from pg_config into front of search path
+#
+PATH := $(PGSQL_BINDIR):$(PATH)
+export PATH
+
+
+TESTS = \
+	../loader/Point \
+	../loader/PointM \
+	../loader/PointZ \
+	../loader/MultiPoint \
+	../loader/MultiPointM \
+	../loader/MultiPointZ \
+	../loader/Arc \
+	../loader/ArcM \
+	../loader/ArcZ \
+	../loader/Polygon \
+	../loader/PolygonM \
+	../loader/PolygonZ \
+	../loader/TSTPolygon \
+	../loader/TSIPolygon \
+	../loader/TSTIPolygon \
+	../loader/PointWithSchema \
+	../loader/NoTransPoint \
+	../loader/NotReallyMultiPoint \
+	../loader/MultiToSinglePoint \
+	../loader/ReprojectPts \
+	../loader/ReprojectPtsD \
+	../loader/ReprojectPtsGeog \
+	../loader/ReprojectPtsGeogD \
+	../loader/Latin1 \
+	../loader/Latin1-implicit \
+	../loader/mfile \
+	../dumper/literalsrid \
+	../dumper/realtable \
+	../dumper/nullsintable \
+	../dumper/null3d \
+	affine \
+	bestsrid \
+	binary \
+	boundary \
+	chaikin \
+	filterm \
+	cluster \
+	concave_hull\
+	ctors \
+	curvetoline \
+	dump \
+	dumppoints \
+	empty \
+	estimatedextent \
+	forcecurve \
+	geography \
+	geometric_median \
+	hausdorff \
+	in_geohash \
+	in_gml \
+	in_kml \
+	in_encodedpolyline \
+	iscollection \
+	legacy \
+	long_xact \
+	lwgeom_regress \
+	measures \
+	minimum_bounding_circle \
+	normalize \
+	operators \
+	orientation \
+	out_geometry \
+	out_geography \
+	polygonize \
+	polyhedralsurface \
+	postgis_type_name \
+	quantize_coordinates \
+	regress \
+	regress_bdpoly \
+	regress_buffer_params \
+	regress_gist_index_nd \
+	regress_index \
+	regress_index_nulls \
+	regress_management \
+	regress_selectivity \
+	regress_lrs \
+	regress_ogc \
+	regress_ogc_cover \
+	regress_ogc_prep \
+	regress_proj \
+	relate \
+	remove_repeated_points \
+	removepoint \
+	reverse \
+	setpoint \
+	simplify \
+	simplifyvw \
+	size \
+	snaptogrid \
+	split \
+	sql-mm-serialize \
+	sql-mm-circularstring \
+	sql-mm-compoundcurve \
+	sql-mm-curvepoly \
+	sql-mm-general \
+	sql-mm-multicurve \
+	sql-mm-multisurface \
+	swapordinates \
+	summary \
+	temporal \
+	temporal_knn \
+	tickets \
+	twkb \
+	typmod \
+	wkb \
+	wkt \
+	wmsservers \
+	offsetcurve \
+	relatematch \
+	isvaliddetail \
+	sharedpaths \
+	snap \
+	node \
+	unaryunion \
+	clean \
+	relate_bnr \
+	delaunaytriangles \
+	clipbybox2d \
+	subdivide \
+	voronoi \
+	regress_brin_index \
+	regress_brin_index_3d \
+	regress_brin_index_geography \
+	minimum_clearance \
+	oriented_envelope \
+	point_coordinates
+
+# Slow slow tests
+TESTS_SLOW = \
+	concave_hull_hard \
+	knn_recheck
+
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 37),1)
+	# GEOS-3.7 adds:
+	# ST_FrechetDistance
+	TESTS += \
+		frechet
+endif
+
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 38),1)
+	# GEOS-3.8 adds stable pointonsurface implementation
+	TESTS += \
+		geos38
+endif
+
+
+ifeq ($(INTERRUPTTESTS),yes)
+	# Allow CI servers to configure --with-interrupt-tests
+	TESTS += \
+		interrupt \
+		interrupt_relate \
+		interrupt_buffer
+endif
+
+ifeq ($(HAVE_JSON),yes)
+	# JSON-C adds:
+	# ST_GeomFromGeoJSON()
+	TESTS += \
+		in_geojson
+endif
+
+ifeq ($(HAVE_SPGIST),yes)
+	TESTS += \
+	regress_spgist_index_2d \
+	regress_spgist_index_3d \
+	regress_spgist_index_nd
+endif
+
+ifeq (yes,yes)
+	# protobuf-c adds:
+	# ST_AsMVT, ST_AsGeobuf
+	TESTS += \
+		mvt \
+		mvt_jsonb
+ifeq (yes,yes)
+	TESTS += \
+		geobuf
+endif
+endif
+
+all install uninstall:
+
+distclean: clean
+	rm Makefile
+
+test check:
+	$(PERL) ../run_test.pl $(RUNTESTFLAGS) $(TESTS)
+	# only run upgrade test if RUNTESTFLAGS was not already doing that
+	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
+		$(PERL) ../run_test.pl --upgrade $(RUNTESTFLAGS) $(TESTS); \
+	fi
+
+check-long:
+	$(PERL) ../run_test.pl $(RUNTESTFLAGS) $(TESTS) $(TESTS_SLOW)
+
+
+clean:
