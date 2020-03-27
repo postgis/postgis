@@ -1820,9 +1820,6 @@ static LWGEOM* lwgeom_from_gml(const char* xml)
 	if ( root_srid != SRID_UNKNOWN )
 		lwgeom->srid = root_srid;
 
-	/* Should we really do this here ? */
-	lwgeom_add_bbox(lwgeom);
-
 	/* GML geometries could be either 2 or 3D and can be nested mixed.
 	 * Missing Z dimension is even tolerated inside some GML coords
 	 *
