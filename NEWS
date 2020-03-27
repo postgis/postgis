@@ -23,6 +23,7 @@ XXXX/XX/XX
   - #4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)
   - #4621, Prevent stack overflow when parsing WKB (Raúl Marín)
   - #4646, Fix gserialized_cmp incorrect comparison (dkvash)
+  - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
 
 
 PostGIS 2.4.8

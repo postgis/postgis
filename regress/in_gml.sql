@@ -17,7 +17,8 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 --- EPSG 27582 : NTF (Paris) / France II (deprecated)
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (27582,'EPSG',27582,'PROJCS["NTF (Paris) / France II (deprecated)",GEOGCS["NTF (Paris)",DATUM["Nouvelle_Triangulation_Francaise_Paris",SPHEROID["Clarke 1880 (IGN)",6378249.2,293.4660212936265,AUTHORITY["EPSG","7011"]],TOWGS84[-168,-60,320,0,0,0,0],AUTHORITY["EPSG","6807"]],PRIMEM["Paris",2.33722917,AUTHORITY["EPSG","8903"]],UNIT["grad",0.01570796326794897,AUTHORITY["EPSG","9105"]],AUTHORITY["EPSG","4807"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_1SP"],PARAMETER["latitude_of_origin",52],PARAMETER["central_meridian",0],PARAMETER["scale_factor",0.99987742],PARAMETER["false_easting",600000],PARAMETER["false_northing",2200000],AUTHORITY["EPSG","27582"],AXIS["X",EAST],AXIS["Y",NORTH]]','+proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=0 +k_0=0.99987742 +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs ');
 
-
+--- EPSG 28992
+INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (28992,'EPSG',28992,'PROJCS["Amersfoort / RD New",GEOGCS["Amersfoort",DATUM["Amersfoort",SPHEROID["Bessel 1841",6377397.155,299.1528128,AUTHORITY["EPSG","7004"]],TOWGS84[565.2369,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812],AUTHORITY["EPSG","6289"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4289"]],PROJECTION["Oblique_Stereographic"],PARAMETER["latitude_of_origin",52.15616055555555],PARAMETER["central_meridian",5.38763888888889],PARAMETER["scale_factor",0.9999079],PARAMETER["false_easting",155000],PARAMETER["false_northing",463000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["X",EAST],AXIS["Y",NORTH],AUTHORITY["EPSG","28992"]]','+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.2369,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs');
 
 
 -- Empty Geometry
@@ -1318,7 +1319,8 @@ SELECT 'double_30', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1.23E 2</gm
 SELECT 'double_31', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 $0%@#$^%#</gml:pos></gml:Point>'));
 
 
-
+-- #4652
+SELECT '#4652', ST_AsEWKT(ST_GeomFromGML('<gml:Curve id="id-69b216c9-2c07-434d-8664-e321b3697725-0" srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:28992"> <gml:segments> <gml:LineStringSegment> <gml:posList>119675.91899999976 526436.1209999993 119676.54699999839 526439.4930000007 119676.44299999997 526439.5130000003 119676.03299999982 526439.6220000014 119675.38500000164 526439.868999999</gml:posList> </gml:LineStringSegment> <gml:LineStringSegment> <gml:posList>119675.38500000164 526439.868999999 119675.15500452081 526439.9735735222 119674.92922525379 526440.0869634049 119674.70800000057 526440.2089999989</gml:posList> </gml:LineStringSegment> <gml:LineStringSegment> <gml:posList>119674.70800000057 526440.2089999989 119674.01347910661 526440.6575801083 119673.38748824484 526441.1976901226</gml:posList> </gml:LineStringSegment> </gml:segments> </gml:Curve>',28992));
 
 --
 -- Delete inserted spatial data
@@ -1326,3 +1328,4 @@ SELECT 'double_31', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 $0%@#$^%#</g
 DELETE FROM spatial_ref_sys WHERE srid = 4326;
 DELETE FROM spatial_ref_sys WHERE srid = 27562;
 DELETE FROM spatial_ref_sys WHERE srid = 27582;
+DELETE FROM spatial_ref_sys WHERE srid = 28992;
