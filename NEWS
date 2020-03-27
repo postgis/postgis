@@ -13,7 +13,7 @@ Only tickets not included in 3.1.0alpha1
   - #4651: ST_Simplify: Don't copy if nothing is removed
 
 * Bug fixes *
-  -
+  - #4652, Fix several memory related bugs in ST_GeomFromGML
 
 PostGIS 3.1.0alpha1
 2020/02/01
