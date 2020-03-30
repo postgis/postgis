@@ -3,7 +3,7 @@ PostGIS 2.5.5
 
  * Bug fixes *
 
-  - #4652, Fix several memory related bugs in ST_GeomFromGML
+  - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
 
 
 PostGIS 2.5.4
