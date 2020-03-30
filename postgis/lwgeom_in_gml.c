@@ -1061,6 +1061,7 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		 * So we must aggregate all the segments into a single one and avoid
 		 * to copy the redundant points
 		 */
+		size_t i;
 		size_t cp_point_size = sizeof(POINT3D); /* All internals are done with 3D */
 		size_t final_point_size = *hasz ? sizeof(POINT3D) : sizeof(POINT2D);
 		pa = ptarray_construct(1, 0, npoints - lss + 1);
@@ -1074,7 +1075,7 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		 * last point of the previous one, and copy all points except the
 		 * first one (since it'd be repeated)
 		 */
-		for (size_t i = 1; i < lss; i++)
+		for (i = 1; i < lss; i++)
 		{
 			if (memcmp(getPoint_internal(pa, npoints - 1), getPoint_internal(ppa[i], 0), final_point_size))
 				gml_lwpgerror("invalid GML representation", 41);
