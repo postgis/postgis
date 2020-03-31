@@ -7,13 +7,13 @@ Only tickets not included in 3.1.0alpha1
   -
 
 * New features *
-  -
+  - #4656, Cast a geojson_text::geometry for implicit GeoJSON ingestion (Raúl Marín)
 
 * Enhancements *
-  - #4651: ST_Simplify: Don't copy if nothing is removed
+  - #4651: ST_Simplify: Don't copy if nothing is removed (Raúl Marín)
 
 * Bug fixes *
-  - #4652, Fix several memory related bugs in ST_GeomFromGML
+  - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
 
 PostGIS 3.1.0alpha1
 2020/02/01

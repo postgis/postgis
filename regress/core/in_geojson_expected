@@ -36,3 +36,5 @@ ERROR:  The 'coordinates' in GeoJSON are not sufficiently nested
 #4470.b|POLYGON EMPTY
 #4470.c|MULTIPOLYGON(((0 0)))
 #4470.d|MULTIPOLYGON EMPTY
+cast1|POINT(1 1)
+cast2|SRID=3005;MULTIPOINT(1 1,1 1)

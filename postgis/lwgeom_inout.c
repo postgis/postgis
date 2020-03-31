@@ -45,6 +45,7 @@
 #include "funcapi.h"
 
 #include "liblwgeom.h"
+#include "lwgeom_export.h"
 #include "lwgeom_pg.h"
 #include "geography.h" /* for lwgeom_valid_typmod */
 #include "lwgeom_transform.h"
@@ -70,7 +71,6 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS);
 Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS);
 Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS);
 
-
 /*
  * LWGEOM_in(cstring)
  * format is '[SRID=#;]wkt|wkb'
@@ -78,6 +78,7 @@ Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS);
  *  LWGEOM_in( 'POINT(0 0)')            --> assumes SRID=SRID_UNKNOWN
  *  LWGEOM_in( 'SRID=99;0101000000000000000000F03F000000000000004')
  *  LWGEOM_in( '0101000000000000000000F03F000000000000004')
+ *  LWGEOM_in( '{"type":"Point","coordinates":[1,1]}')
  *  returns a GSERIALIZED object
  */
 PG_FUNCTION_INFO_V1(LWGEOM_in);
@@ -137,6 +138,19 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		/* Add a bbox if necessary */
 		if ( lwgeom_needs_bbox(lwgeom) ) lwgeom_add_bbox(lwgeom);
 		lwfree(wkb);
+		ret = geometry_serialize(lwgeom);
+		lwgeom_free(lwgeom);
+	}
+	else if (str[0] == '{')
+	{
+		char *srs = NULL;
+		lwgeom = lwgeom_from_geojson(str, &srs);
+		if (srs)
+		{
+			srid = getSRIDbySRS(srs);
+			lwfree(srs);
+			lwgeom_set_srid(lwgeom, srid);
+		}
 		ret = geometry_serialize(lwgeom);
 		lwgeom_free(lwgeom);
 	}
