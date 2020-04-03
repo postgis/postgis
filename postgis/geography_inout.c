@@ -342,8 +342,7 @@ PG_FUNCTION_INFO_V1(geography_as_kml);
 Datum geography_as_kml(PG_FUNCTION_ARGS)
 {
 
-	char *kml;
-	text *result;
+	lwvarlena_t *kml;
 	static const char *default_prefix = "";
 	char *prefixbuf;
 	const char *prefix = default_prefix;
@@ -375,17 +374,9 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	}
 
 	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
-
-    lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(g, 0);
-
-	if (!kml)
-		PG_RETURN_NULL();
-
-	result = cstring_to_text(kml);
-	lwfree(kml);
-
-	PG_RETURN_TEXT_P(result);
+	if (kml)
+		PG_RETURN_TEXT_P(kml);
+	PG_RETURN_NULL();
 }
 
 
