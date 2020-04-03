@@ -425,10 +425,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	uint8_t *twkb;
-	size_t twkb_size;
 	uint8_t variant = 0;
- 	bytea *result;
 	srs_precision sp;
 
 	/*check for null input since we cannot have the sql-function as strict.
@@ -465,14 +462,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 	/* Create TWKB binary string */
 	lwgeom = lwgeom_from_gserialized(geom);
-	twkb = lwgeom_to_twkb(lwgeom, variant, sp.precision_xy, sp.precision_z, sp.precision_m, &twkb_size);
-
-	/* Prepare the PgSQL text return type */
-	result = palloc(twkb_size + VARHDRSZ);
-	memcpy(VARDATA(result), twkb, twkb_size);
-	SET_VARSIZE(result, twkb_size + VARHDRSZ);
-
-	PG_RETURN_BYTEA_P(result);
+	PG_RETURN_BYTEA_P(lwgeom_to_twkb(lwgeom, variant, sp.precision_xy, sp.precision_z, sp.precision_m));
 }
 
 
@@ -496,9 +486,6 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	uint8_t variant = 0;
 
 	srs_precision sp;
-	uint8_t *twkb;
-	size_t twkb_size;
- 	bytea *result;
 
 	/* The first two arguments are required */
 	if ( PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1) )
@@ -614,24 +601,8 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 		variant |= TWKB_BBOX;
 
 	/* Write out the TWKB */
-	twkb = lwgeom_to_twkb_with_idlist(lwcollection_as_lwgeom(col),
-	                                  idlist, variant,
-	                                  sp.precision_xy, sp.precision_z, sp.precision_m,
-	                                  &twkb_size);
-
-	/* Convert to a bytea return type */
-	result = palloc(twkb_size + VARHDRSZ);
-	memcpy(VARDATA(result), twkb, twkb_size);
-	SET_VARSIZE(result, twkb_size + VARHDRSZ);
-
-	/* Clean up */
-	pfree(twkb);
-	pfree(idlist);
-	lwcollection_free(col);
-	PG_FREE_IF_COPY(arr_geoms, 0);
-	PG_FREE_IF_COPY(arr_ids, 1);
-
-	PG_RETURN_BYTEA_P(result);
+	PG_RETURN_BYTEA_P(lwgeom_to_twkb_with_idlist(
+	    lwcollection_as_lwgeom(col), idlist, variant, sp.precision_xy, sp.precision_z, sp.precision_m));
 }
 
 
