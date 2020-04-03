@@ -239,7 +239,7 @@ int point_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz
 * Geohash
 */
 int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds);
-char *geohash_point(double longitude, double latitude, int precision);
+lwvarlena_t *geohash_point(double longitude, double latitude, int precision);
 void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision);
 
 /*

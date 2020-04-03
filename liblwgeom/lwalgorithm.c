@@ -589,15 +589,16 @@ static char *base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 ** From geohash-native.c, (c) 2008 David Troy <dave@roundhousetech.com>
 ** Released under the MIT License.
 */
-char *geohash_point(double longitude, double latitude, int precision)
+lwvarlena_t *
+geohash_point(double longitude, double latitude, int precision)
 {
 	int is_even=1, i=0;
 	double lat[2], lon[2], mid;
 	char bits[] = {16,8,4,2,1};
 	int bit=0, ch=0;
-	char *geohash = NULL;
-
-	geohash = lwalloc(precision + 1);
+	lwvarlena_t *v = lwalloc(precision + LWVARHDRSZ);
+	LWSIZE_SET(v->size, precision + LWVARHDRSZ);
+	char *geohash = v->data;
 
 	lat[0] = -90.0;
 	lat[1] = 90.0;
@@ -645,8 +646,8 @@ char *geohash_point(double longitude, double latitude, int precision)
 			ch = 0;
 		}
 	}
-	geohash[i] = 0;
-	return geohash;
+
+	return v;
 }
 
 
@@ -853,7 +854,8 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 ** bounds of the feature. Big features have loose precision.
 ** Small features have tight precision.
 */
-char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
+lwvarlena_t *
+lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 {
 	GBOX gbox;
 	GBOX gbox_bounds;

@@ -1635,7 +1635,7 @@ extern LWPOINT* lwmpoint_median(const LWMPOINT *g, double tol, uint32_t maxiter,
 /**
 * Calculate the GeoHash (http://geohash.org) string for a geometry. Caller must free.
 */
-char *lwgeom_geohash(const LWGEOM *lwgeom, int precision);
+lwvarlena_t *lwgeom_geohash(const LWGEOM *lwgeom, int precision);
 unsigned int geohash_point_as_int(POINT2D *pt);
 
 

@@ -46,6 +46,19 @@ typedef void (*PG_SuiteSetup)(void);
   CU_ASSERT_STRING_EQUAL(o,e); \
 } while (0);
 
+#define ASSERT_VARLENA_EQUAL(v, s) \
+	do \
+	{ \
+		if (strncmp(v->data, s, LWSIZE_GET(v->size) - LWVARHDRSZ) != 0) \
+		{ \
+			fprintf( \
+			    stderr, "[%s:%d]\n Expected: %s\n Obtained: %s\n", __FILE__, __LINE__, (s), (v->data)); \
+			CU_FAIL(); \
+		} \
+		else \
+			CU_PASS(); \
+	} while (0);
+
 #define ASSERT_LWGEOM_EQUAL(o, e) do { \
 	if ( !lwgeom_same(o, e) ) { \
 		char* wkt_o = lwgeom_to_ewkt(o); \
