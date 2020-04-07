@@ -1658,8 +1658,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(contains);
 Datum contains(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED *geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	GSERIALIZED *geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	int result;
 	GEOSGeometry *g1, *g2;
 	GBOX box1, box2;
@@ -1777,8 +1777,6 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
 	PG_RETURN_BOOL(result > 0);
 }
 
@@ -1801,8 +1799,8 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	GBOX 			box1, box2;
 	PrepGeomCache *	prep_cache;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.ContainsProperly(Empty) == FALSE */
@@ -1851,9 +1849,6 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
 	PG_RETURN_BOOL(result);
 }
 
@@ -1870,8 +1865,8 @@ Datum covers(PG_FUNCTION_ARGS)
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	geom2 = ToastCacheGetGeometry(fcinfo, 1);
 
 	/* A.Covers(Empty) == FALSE */
 	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
@@ -1936,8 +1931,6 @@ Datum covers(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
 	}
 	else
@@ -1976,11 +1969,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSCovers");
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
 	PG_RETURN_BOOL(result);
-
 }
 
 
@@ -2005,8 +1994,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	GBOX box1, box2;
 	char *patt = "**F**F***";
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.CoveredBy(Empty) == FALSE */
@@ -2072,8 +2061,6 @@ Datum coveredby(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
 	}
 	else
@@ -2102,9 +2089,6 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g2);
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSCoveredBy");
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
 }
@@ -2174,8 +2158,8 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.Intersects(Empty) == FALSE */
@@ -2238,8 +2222,6 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
 	}
 
@@ -2282,9 +2264,6 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	}
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSIntersects");
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
 }

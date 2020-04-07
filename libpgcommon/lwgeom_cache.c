@@ -12,6 +12,8 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "access/tuptoaster.h"
+#include "utils/hashutils.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
@@ -238,4 +240,70 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	return NULL;
 }
 
+/******************************************************************************/
 
+inline static ToastCache*
+ToastCacheGet(FunctionCallInfo fcinfo)
+{
+	const uint32_t entry_number = TOAST_CACHE_ENTRY;
+	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
+	ToastCache* cache = (ToastCache*)(generic_cache->entry[entry_number]);
+	if (!cache)
+	{
+		cache = MemoryContextAllocZero(FIContext(fcinfo), sizeof(ToastCache));
+		cache->type = entry_number;
+		generic_cache->entry[entry_number] = (GenericCache*)cache;
+	}
+	return cache;
+}
+
+inline static uint64_t
+ToastCacheHashVarlena(const struct varlena *attr)
+{
+	struct varatt_external ve;
+	VARATT_EXTERNAL_GET_POINTER(ve, attr);
+	uint64_t a = DatumGetUInt64(hash_uint32(ve.va_valueid));
+	uint64_t b = DatumGetUInt64(hash_uint32(ve.va_toastrelid));
+	/* Merge hashes */
+	return a ^ (b + UINT64CONST(0x49a0f4dd15e5a8e3) + (a << 54) + (a >> 7));
+}
+
+GSERIALIZED*
+ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
+{
+	Assert(argnum < ToastCacheSize);
+	ToastCache* cache = ToastCacheGet(fcinfo);
+	ToastCacheArgument* arg = &(cache->arg[argnum]);
+
+	Datum datum = PG_GETARG_DATUM(argnum);
+	struct varlena *attr = (struct varlena *) DatumGetPointer(datum);
+
+	/* Argument is not TOASTED, access as normal. */
+	if (!VARATT_IS_EXTERNAL_ONDISK(attr))
+		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
+
+	/* Argument is TOASTed, check if we already have a copy handy. */
+	uint64_t hash = ToastCacheHashVarlena(attr);
+	/* We've seen this object before? */
+	if (arg->hash == hash)
+	{
+		if (arg->geom)
+			return arg->geom;
+
+		/* Take a copy into the upper context */
+		MemoryContext old_context = MemoryContextSwitchTo(FIContext(fcinfo));
+		arg->geom = (GSERIALIZED*)PG_DETOAST_DATUM_COPY(datum);
+		MemoryContextSwitchTo(old_context);
+		return arg->geom;
+	}
+	/* New object, clear our old copies and see if it */
+	/* shows up a second time before taking a copy */
+	else
+	{
+		if (arg->geom)
+			pfree(arg->geom);
+		arg->hash = hash;
+		arg->geom = NULL;
+		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
+	}
+}
