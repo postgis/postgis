@@ -145,9 +145,10 @@ GetGeomCache(FunctionCallInfo fcinfo,
 
 	/* Cache hit on the first argument */
 	if ( g1 &&
-	     cache->argnum != 2 &&
-	     cache->geom1_size == VARSIZE(g1) &&
-	     memcmp(cache->geom1, g1, cache->geom1_size) == 0 )
+	     cache->argnum != 2 && (
+	     (g1 == cache->geom1) ||
+	     (cache->geom1_size == VARSIZE(g1) && memcmp(cache->geom1, g1, cache->geom1_size) == 0)
+	     ))
 	{
 		cache_hit = 1;
 		geom = cache->geom1;
@@ -155,9 +156,10 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	}
 	/* Cache hit on second argument */
 	else if ( g2 &&
-	          cache->argnum != 1 &&
-	          cache->geom2_size == VARSIZE(g2) &&
-	          memcmp(cache->geom2, g2, cache->geom2_size) == 0 )
+	          cache->argnum != 1 && (
+	          (g2 == cache->geom2) ||
+	          (cache->geom2_size == VARSIZE(g2) && memcmp(cache->geom2, g2, cache->geom2_size) == 0)
+	          ))
 	{
 		cache_hit = 2;
 		geom = cache->geom2;
