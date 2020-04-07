@@ -13,7 +13,12 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "access/tuptoaster.h"
+
+#if POSTGIS_PGSQL_VERSION >= 120
 #include "utils/hashutils.h"
+#else
+#include "access/hash.h"
+#endif
 
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
