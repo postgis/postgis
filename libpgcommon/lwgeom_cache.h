@@ -117,7 +117,8 @@ GeomCache *GetGeomCache(FunctionCallInfo fcinfo,
 
 typedef struct
 {
-	uint64_t hash;
+	Oid valueid;
+	Oid toastrelid;
 	GSERIALIZED *geom;
 } ToastCacheArgument;
 

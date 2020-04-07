@@ -14,12 +14,6 @@
 #include "fmgr.h"
 #include "access/tuptoaster.h"
 
-#if POSTGIS_PGSQL_VERSION >= 120
-#include "utils/hashutils.h"
-#else
-#include "access/hash.h"
-#endif
-
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
 
@@ -262,17 +256,6 @@ ToastCacheGet(FunctionCallInfo fcinfo)
 	return cache;
 }
 
-inline static uint64_t
-ToastCacheHashVarlena(const struct varlena *attr)
-{
-	struct varatt_external ve;
-	VARATT_EXTERNAL_GET_POINTER(ve, attr);
-	uint64_t a = DatumGetUInt64(hash_uint32(ve.va_valueid));
-	uint64_t b = DatumGetUInt64(hash_uint32(ve.va_toastrelid));
-	/* Merge hashes */
-	return a ^ (b + UINT64CONST(0x49a0f4dd15e5a8e3) + (a << 54) + (a >> 7));
-}
-
 GSERIALIZED*
 ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 {
@@ -287,10 +270,14 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 	if (!VARATT_IS_EXTERNAL_ONDISK(attr))
 		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
 
-	/* Argument is TOASTed, check if we already have a copy handy. */
-	uint64_t hash = ToastCacheHashVarlena(attr);
+	/* Retrieve the unique keys */
+	struct varatt_external ve;
+	VARATT_EXTERNAL_GET_POINTER(ve, attr);
+	Oid valueid = ve.va_valueid;
+	Oid toastrelid = ve.va_toastrelid;
+
 	/* We've seen this object before? */
-	if (arg->hash == hash)
+	if (arg->valueid == valueid && arg->toastrelid == toastrelid)
 	{
 		if (arg->geom)
 			return arg->geom;
@@ -307,7 +294,8 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 	{
 		if (arg->geom)
 			pfree(arg->geom);
-		arg->hash = hash;
+		arg->valueid = valueid;
+		arg->toastrelid = toastrelid;
 		arg->geom = NULL;
 		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
 	}
