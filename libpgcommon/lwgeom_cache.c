@@ -266,11 +266,20 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 	Datum datum = PG_GETARG_DATUM(argnum);
 	struct varlena *attr = (struct varlena *) DatumGetPointer(datum);
 
-	/* Argument is not TOASTED, access as normal. */
+	/*
+	* In general, you have to detoast the whole object to
+	* determine if it's different from the cached object, but
+	* for toasted objects, the va_valueid and va_toastrelid are
+	* a unique key. Only objects toasted to disk have this
+	* property, but fortunately those are also the objects
+	* that are costliest to de-TOAST, which is why this
+	* cache is a performance win.
+	* https://www.postgresql.org/message-id/8196.1585870220@sss.pgh.pa.us
+	*/
 	if (!VARATT_IS_EXTERNAL_ONDISK(attr))
 		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
 
-	/* Retrieve the unique keys */
+	/* Retrieve the unique keys for this object */
 	struct varatt_external ve;
 	VARATT_EXTERNAL_GET_POINTER(ve, attr);
 	Oid valueid = ve.va_valueid;
