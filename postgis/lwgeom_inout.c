@@ -147,7 +147,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		lwgeom = lwgeom_from_geojson(str, &srs);
 		if (srs)
 		{
-			srid = getSRIDbySRS(srs);
+			srid = getSRIDbySRS(fcinfo, srs);
 			lwfree(srs);
 			lwgeom_set_srid(lwgeom, srid);
 		}

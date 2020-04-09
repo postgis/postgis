@@ -267,7 +267,9 @@ PG_FUNCTION_INFO_V1(gserialized_spgist_config_nd);
 PGDLLEXPORT Datum gserialized_spgist_config_nd(PG_FUNCTION_ARGS)
 {
 	spgConfigOut *cfg = (spgConfigOut *)PG_GETARG_POINTER(1);
-	Oid boxoid = postgis_oid_fcinfo(fcinfo, GIDXOID);
+	Oid boxoid = InvalidOid;
+	postgis_initialize_cache(fcinfo);
+	boxoid = postgis_oid(GIDXOID);
 
 	cfg->prefixType = boxoid;
 	cfg->labelType = VOIDOID; /* We don't need node labels. */

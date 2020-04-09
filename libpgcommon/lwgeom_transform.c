@@ -15,7 +15,6 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
-#include "utils/builtins.h"
 #include "utils/memutils.h"
 #include "executor/spi.h"
 #include "access/hash.h"
@@ -34,12 +33,6 @@
 #include <stdio.h>
 
 
-/**
-* Global variable to hold cached information about what
-* schema functions are installed in. Currently used by
-* SetSpatialRefSysSchema and GetProjStringsSPI
-*/
-static char *spatialRefSysSchema = NULL;
 
 /*
  * PROJ 4 backend hash table initial hash size
@@ -63,35 +56,6 @@ typedef struct {
 /* Internal Cache API */
 static LWPROJ *AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
 static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, uint32_t position);
-
-/*
-* Given a function call context, figure out what namespace the
-* function is being called from, and copy that into a global
-* for use by GetProjStringsSPI
-*/
-static void
-SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
-{
-	char *nsp_name;
-	Oid nsp_oid;
-
-	/* Schema info is already cached, we're done here */
-	if (spatialRefSysSchema) return;
-
-	/* For some reason we have a hobbled fcinfo/flinfo */
-	if (!fcinfo || !fcinfo->flinfo) return;
-
-	nsp_oid = postgis_oid_fcinfo(fcinfo, POSTGISNSPOID);
-	if (!nsp_oid) return;
-	nsp_name = get_namespace_name(nsp_oid);
-	/* early exit if we cannot lookup nsp_name, cf #4067 */
-	if (!nsp_name) return;
-
-	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
-	spatialRefSysSchema = MemoryContextStrdup(CacheMemoryContext, nsp_name);
-	pfree(nsp_name);
-	return;
-}
 
 static void
 PROJSRSDestroyPJ(void *projection)
@@ -168,19 +132,12 @@ GetProjStringsSPI(int32_t srid)
 		elog(ERROR, "Could not connect to database using SPI");
 	}
 
-	/*
-	* This global is allocated in CacheMemoryContext (lifespan of this backend)
-	* and is set by SetSpatialRefSysSchema the first time
-	* that GetPJUsingFCInfo is called.
-	*/
 	static char *proj_str_tmpl =
 	    "SELECT proj4text, auth_name, auth_srid, srtext "
 	    "FROM %s "
 	    "WHERE srid = %d "
 	    "LIMIT 1";
-	char *spatial_ref_sys_table = quote_qualified_identifier(spatialRefSysSchema, "spatial_ref_sys");
-	snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, spatial_ref_sys_table, srid);
-	pfree(spatial_ref_sys_table);
+	snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, postgis_spatial_ref_sys(), srid);
 
 	/* Execute the query, noting the readonly status of this SQL */
 	spi_result = SPI_execute(proj_spi_buffer, true, 1);
@@ -532,7 +489,7 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LW
 	PROJPortalCache *proj_cache = NULL;
 
 	/* Look up the spatial_ref_sys schema if we haven't already */
-	SetSpatialRefSysSchema(fcinfo);
+	postgis_initialize_cache(fcinfo);
 
 	/* get or initialize the cache for this round */
 	proj_cache = GetPROJSRSCache(fcinfo);

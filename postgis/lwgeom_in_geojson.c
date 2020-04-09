@@ -110,7 +110,7 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 
 	if (srs)
 	{
-		srid = getSRIDbySRS(srs);
+		srid = getSRIDbySRS(fcinfo, srs);
 		lwfree(srs);
 	}
 
