@@ -15,6 +15,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
+#include "utils/builtins.h"
 #include "utils/memutils.h"
 #include "executor/spi.h"
 #include "access/hash.h"
@@ -88,6 +89,7 @@ SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
 
 	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
 	spatialRefSysSchema = MemoryContextStrdup(CacheMemoryContext, nsp_name);
+	pfree(nsp_name);
 	return;
 }
 
@@ -171,18 +173,14 @@ GetProjStringsSPI(int32_t srid)
 	* and is set by SetSpatialRefSysSchema the first time
 	* that GetPJUsingFCInfo is called.
 	*/
-	static char *proj_str_tmpl = "SELECT proj4text, auth_name, auth_srid, srtext "
-	                             "FROM %s%sspatial_ref_sys "
-	                             "WHERE srid = %d "
-	                             "LIMIT 1";
-	if (spatialRefSysSchema)
-	{
-		snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, spatialRefSysSchema, ".", srid);
-	}
-	else
-	{
-		snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, "", "", srid);
-	}
+	static char *proj_str_tmpl =
+	    "SELECT proj4text, auth_name, auth_srid, srtext "
+	    "FROM %s "
+	    "WHERE srid = %d "
+	    "LIMIT 1";
+	char *spatial_ref_sys_table = quote_qualified_identifier(spatialRefSysSchema, "spatial_ref_sys");
+	snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, spatial_ref_sys_table, srid);
+	pfree(spatial_ref_sys_table);
 
 	/* Execute the query, noting the readonly status of this SQL */
 	spi_result = SPI_execute(proj_spi_buffer, true, 1);
