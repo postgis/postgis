@@ -212,8 +212,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
-	g1 = PG_GETARG_GSERIALIZED_P(0);
-	g2 = PG_GETARG_GSERIALIZED_P(1);
+	g1 = ToastCacheGetGeometry(fcinfo, 0);
+	g2 = ToastCacheGetGeometry(fcinfo, 1);
 
 	if (PG_NARGS() > 2)
 		use_spheroid = PG_GETARG_BOOL(2);
@@ -230,8 +230,6 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Return NULL on empty arguments. */
 	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
 	{
-		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_NULL();
 	}
 
@@ -249,10 +247,6 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom2);
 		*/
 	}
-
-	/* Clean up */
-	PG_FREE_IF_COPY(g1, 0);
-	PG_FREE_IF_COPY(g2, 1);
 
 	/* Knock off any funny business at the nanometer level, ticket #2168 */
 	distance = round(distance * INVMINDIST) / INVMINDIST;
@@ -274,8 +268,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_dwithin);
 Datum geography_dwithin(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	GSERIALIZED *g1 = ToastCacheGetGeometry(fcinfo, 0);
+	GSERIALIZED *g2 = ToastCacheGetGeometry(fcinfo, 1);
 	SPHEROID s;
 	double tolerance = 0.0;
 	bool use_spheroid = true;
@@ -317,8 +311,6 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom2);
 	}
 
-	PG_FREE_IF_COPY(g1, 0);
-	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_BOOL(dwithin);
 }
 

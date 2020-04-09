@@ -26,8 +26,9 @@
 #define RTREE_CACHE_ENTRY 2
 #define CIRC_CACHE_ENTRY 3
 #define RECT_CACHE_ENTRY 4
+#define TOAST_CACHE_ENTRY 5
 
-#define NUM_CACHE_ENTRIES 16
+#define NUM_CACHE_ENTRIES 8
 
 
 /*
@@ -109,5 +110,25 @@ GeomCache *GetGeomCache(FunctionCallInfo fcinfo,
 			const GeomCacheMethods *cache_methods,
 			const GSERIALIZED *g1,
 			const GSERIALIZED *g2);
+
+/******************************************************************************/
+
+#define ToastCacheSize 2
+
+typedef struct
+{
+	Oid valueid;
+	Oid toastrelid;
+	GSERIALIZED *geom;
+} ToastCacheArgument;
+
+typedef struct
+{
+	int type;
+	ToastCacheArgument arg[ToastCacheSize];
+} ToastCache;
+
+GSERIALIZED* ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum);
+
 
 #endif /* LWGEOM_CACHE_H_ */

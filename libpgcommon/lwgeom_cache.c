@@ -12,6 +12,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "access/tuptoaster.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
@@ -145,9 +146,10 @@ GetGeomCache(FunctionCallInfo fcinfo,
 
 	/* Cache hit on the first argument */
 	if ( g1 &&
-	     cache->argnum != 2 &&
-	     cache->geom1_size == VARSIZE(g1) &&
-	     memcmp(cache->geom1, g1, cache->geom1_size) == 0 )
+	     cache->argnum != 2 && (
+	     (g1 == cache->geom1) ||
+	     (cache->geom1_size == VARSIZE(g1) && memcmp(cache->geom1, g1, cache->geom1_size) == 0)
+	     ))
 	{
 		cache_hit = 1;
 		geom = cache->geom1;
@@ -155,9 +157,10 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	}
 	/* Cache hit on second argument */
 	else if ( g2 &&
-	          cache->argnum != 1 &&
-	          cache->geom2_size == VARSIZE(g2) &&
-	          memcmp(cache->geom2, g2, cache->geom2_size) == 0 )
+	          cache->argnum != 1 && (
+	          (g2 == cache->geom2) ||
+	          (cache->geom2_size == VARSIZE(g2) && memcmp(cache->geom2, g2, cache->geom2_size) == 0)
+	          ))
 	{
 		cache_hit = 2;
 		geom = cache->geom2;
@@ -236,4 +239,73 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	return NULL;
 }
 
+/******************************************************************************/
 
+inline static ToastCache*
+ToastCacheGet(FunctionCallInfo fcinfo)
+{
+	const uint32_t entry_number = TOAST_CACHE_ENTRY;
+	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
+	ToastCache* cache = (ToastCache*)(generic_cache->entry[entry_number]);
+	if (!cache)
+	{
+		cache = MemoryContextAllocZero(FIContext(fcinfo), sizeof(ToastCache));
+		cache->type = entry_number;
+		generic_cache->entry[entry_number] = (GenericCache*)cache;
+	}
+	return cache;
+}
+
+GSERIALIZED*
+ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
+{
+	Assert(argnum < ToastCacheSize);
+	ToastCache* cache = ToastCacheGet(fcinfo);
+	ToastCacheArgument* arg = &(cache->arg[argnum]);
+
+	Datum datum = PG_GETARG_DATUM(argnum);
+	struct varlena *attr = (struct varlena *) DatumGetPointer(datum);
+
+	/*
+	* In general, you have to detoast the whole object to
+	* determine if it's different from the cached object, but
+	* for toasted objects, the va_valueid and va_toastrelid are
+	* a unique key. Only objects toasted to disk have this
+	* property, but fortunately those are also the objects
+	* that are costliest to de-TOAST, which is why this
+	* cache is a performance win.
+	* https://www.postgresql.org/message-id/8196.1585870220@sss.pgh.pa.us
+	*/
+	if (!VARATT_IS_EXTERNAL_ONDISK(attr))
+		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
+
+	/* Retrieve the unique keys for this object */
+	struct varatt_external ve;
+	VARATT_EXTERNAL_GET_POINTER(ve, attr);
+	Oid valueid = ve.va_valueid;
+	Oid toastrelid = ve.va_toastrelid;
+
+	/* We've seen this object before? */
+	if (arg->valueid == valueid && arg->toastrelid == toastrelid)
+	{
+		if (arg->geom)
+			return arg->geom;
+
+		/* Take a copy into the upper context */
+		MemoryContext old_context = MemoryContextSwitchTo(FIContext(fcinfo));
+		arg->geom = (GSERIALIZED*)PG_DETOAST_DATUM_COPY(datum);
+		MemoryContextSwitchTo(old_context);
+		return arg->geom;
+	}
+	/* New object, clear our old copies and see if it */
+	/* shows up a second time before taking a copy */
+	else
+	{
+		if (arg->geom)
+			pfree(arg->geom);
+		arg->valueid = valueid;
+		arg->toastrelid = toastrelid;
+		arg->geom = NULL;
+		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
+	}
+}
