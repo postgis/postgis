@@ -321,6 +321,7 @@ pgstrs_get_entry(const PjStrs *strs, int n)
 }
 #endif
 
+#if POSTGIS_PROJ_VERSION < 60
 /*
 * Utility function for GML reader that still
 * needs proj4text access
@@ -336,6 +337,7 @@ GetProj4String(int32_t srid)
 	pjstrs_pfree(&strs);
 	return proj4str;
 }
+#endif
 
 /**
  * Add an entry to the local PROJ SRS cache. If we need to wrap around then

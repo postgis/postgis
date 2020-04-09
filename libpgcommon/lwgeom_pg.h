@@ -69,7 +69,7 @@ Oid postgis_oid(postgisType typ);
 
 /* Returns the fully qualified, and properly quoted, identifier of spatial_ref_sys
  * Note that it's length can be up to strlen(schema) + "." + strlen("spatial_ref_sys") + NULL, i.e: 80 bytes
- * Only useful if postgis_initialize_cache has been called before. Otherwise returns NULL
+ * Only useful if postgis_initialize_cache has been called before. Otherwise returns "spatial_ref_sys"
  */
 const char *postgis_spatial_ref_sys();
 

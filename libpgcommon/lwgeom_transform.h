@@ -22,7 +22,10 @@ typedef struct srs_precision
 	int precision_m;
 } srs_precision;
 
+#if POSTGIS_PROJ_VERSION < 60
+/* Needs to call postgis_initialize_cache first */
 char *GetProj4String(int32_t srid);
+#endif
 
 /**
  * Opaque type to use in the projection cache API.
