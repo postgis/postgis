@@ -11,9 +11,11 @@ Only tickets not included in 3.1.0alpha1
 
 * Enhancements *
   - #4651: ST_Simplify: Don't copy if nothing is removed (Raúl Marín)
+  - #4657: Avoid De-TOASTing where possible (Paul Ramsey)
 
 * Bug fixes *
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
+  - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
 
 PostGIS 3.1.0alpha1
 2020/02/01

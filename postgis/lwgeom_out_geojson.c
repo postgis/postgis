@@ -86,8 +86,12 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 	bool		do_pretty = PG_GETARG_BOOL(3);
 	StringInfo	result;
 	char        *geom_column = text_to_cstring(geom_column_text);
-	Oid         geom_oid = postgis_oid_fcinfo(fcinfo, GEOMETRYOID);
-	Oid         geog_oid = postgis_oid_fcinfo(fcinfo, GEOGRAPHYOID);
+	Oid geom_oid = InvalidOid;
+	Oid geog_oid = InvalidOid;
+
+	postgis_initialize_cache(fcinfo);
+	geom_oid = postgis_oid(GEOMETRYOID);
+	geog_oid = postgis_oid(GEOGRAPHYOID);
 
 	if (strlen(geom_column) == 0)
 		geom_column = NULL;

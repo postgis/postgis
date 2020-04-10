@@ -291,8 +291,10 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 		id = id_buf;
 	}
 
-	if (option & 1) srs = getSRSbySRID(srid, false);
-	else srs = getSRSbySRID(srid, true);
+	if (option & 1)
+		srs = getSRSbySRID(fcinfo, srid, false);
+	else
+		srs = getSRSbySRID(fcinfo, srid, true);
 	if (!srs)
 	{
 		elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
@@ -453,8 +455,10 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	if (option & 2 || option & 4)
 	{
 		/* Geography only handle srid SRID_DEFAULT */
-		if (option & 2) srs = getSRSbySRID(SRID_DEFAULT, true);
-		if (option & 4) srs = getSRSbySRID(SRID_DEFAULT, false);
+		if (option & 2)
+			srs = getSRSbySRID(fcinfo, SRID_DEFAULT, true);
+		if (option & 4)
+			srs = getSRSbySRID(fcinfo, SRID_DEFAULT, false);
 
 		if (!srs)
 		{
