@@ -112,7 +112,13 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);
 
+	/* Internally lwgeom_from_gml calls gml_reproject_pa which, for PROJ before 6, called GetProj4String.
+	 * That function requires access to spatial_ref_sys, so in order to have it ready we need to ensure
+	 * the internal cache is initialized
+	 */
+	postgis_initialize_cache(fcinfo);
 	lwgeom = lwgeom_from_gml(xml);
+
 	if ( root_srid != SRID_UNKNOWN )
 		lwgeom->srid = root_srid;
 
