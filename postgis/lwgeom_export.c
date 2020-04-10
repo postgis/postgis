@@ -487,8 +487,6 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *x3d;
-	text *result;
 	int version;
 	char *srs;
 	int32_t srid;
@@ -566,16 +564,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 		}
 	}
 
-
-	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);
-
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 1);
-
-	result = cstring_to_text(x3d);
-	lwfree(x3d);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_x3d3(lwgeom, srs, precision, option, defid));
 }
 
 /**
