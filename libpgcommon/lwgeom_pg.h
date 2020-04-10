@@ -53,19 +53,25 @@ typedef struct
 	Oid raster_oid;
 	Oid install_nsp_oid;
 	char *install_nsp;
+	char *spatial_ref_sys;
 } postgisConstants;
 
 /* Global to hold all the run-time constants */
 extern postgisConstants *POSTGIS_CONSTANTS;
 
-/* uses the nsp information of the calling function to infer the */
-/* install location of postgis, and thus the namespace to use */
-/* when looking up the type name */
-Oid postgis_oid_fcinfo(FunctionCallInfo fcinfo, postgisType typ);
+/* Infer the install location of postgis, and thus the namespace to use
+ * when looking up the type name, and cache oids */
+void postgis_initialize_cache(FunctionCallInfo fcinfo);
 
-/* only useful if postgis_oid_fcinfo() has been called first and */
-/* populated first, otherwise returns InvalidOid */
+/* Useful if postgis_initialize_cache() has been called before.
+ * Otherwise it tries to do a bare lookup */
 Oid postgis_oid(postgisType typ);
+
+/* Returns the fully qualified, and properly quoted, identifier of spatial_ref_sys
+ * Note that it's length can be up to strlen(schema) + "." + strlen("spatial_ref_sys") + NULL, i.e: 80 bytes
+ * Only useful if postgis_initialize_cache has been called before. Otherwise returns "spatial_ref_sys"
+ */
+const char *postgis_spatial_ref_sys(void);
 
 /****************************************************************************************/
 

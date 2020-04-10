@@ -63,11 +63,13 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
  * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
  */
 char *
-getSRSbySRID(int32_t srid, bool short_crs)
+getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 {
-	char query[256];
+	static const uint16_t max_query_size = 512;
+	char query[512];
 	char *srs, *srscopy;
 	int size, err;
+	postgis_initialize_cache(fcinfo);
 
 	if (SPI_OK_CONNECT != SPI_connect ())
 	{
@@ -77,11 +79,19 @@ getSRSbySRID(int32_t srid, bool short_crs)
 	}
 
 	if (short_crs)
-		snprintf(query, 256, "SELECT auth_name||':'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", srid);
+		snprintf(query,
+			 max_query_size,
+			 "SELECT auth_name||':'||auth_srid \
+		        FROM %s WHERE srid='%d'",
+			 postgis_spatial_ref_sys(),
+			 srid);
 	else
-		snprintf(query, 256, "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", srid);
+		snprintf(query,
+			 max_query_size,
+			 "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
+		        FROM %s WHERE srid='%d'",
+			 postgis_spatial_ref_sys(),
+			 srid);
 
 	err = SPI_exec(query, 1);
 	if ( err < 0 )
@@ -125,16 +135,23 @@ getSRSbySRID(int32_t srid, bool short_crs)
 * Require valid spatial_ref_sys table entry
 *
 */
-int getSRIDbySRS(const char* srs)
+int
+getSRIDbySRS(FunctionCallInfo fcinfo, const char *srs)
 {
-	char *query =
-	    "SELECT srid "
-	    "FROM spatial_ref_sys, "
-	    "regexp_matches($1::text, E'([a-z]+):([0-9]+)', 'gi') AS re "
-	    "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid";
+	static const int16_t max_query_size = 512;
+	char query[512];
 	Oid argtypes[] = {CSTRINGOID};
 	Datum values[] = {CStringGetDatum(srs)};
 	int32_t srid, err;
+
+	postgis_initialize_cache(fcinfo);
+	snprintf(query,
+		 max_query_size,
+		 "SELECT srid "
+		 "FROM %s, "
+		 "regexp_matches($1::text, E'([a-z]+):([0-9]+)', 'gi') AS re "
+		 "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid",
+		 postgis_spatial_ref_sys());
 
 	if (!srs) return 0;
 
@@ -155,11 +172,13 @@ int getSRIDbySRS(const char* srs)
 	/* no entry in spatial_ref_sys */
 	if (SPI_processed <= 0)
 	{
-		query =
-		    "SELECT srid "
-		    "FROM spatial_ref_sys, "
-		    "regexp_matches($1::text, E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
-		    "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid";
+		snprintf(query,
+			 max_query_size,
+			 "SELECT srid "
+			 "FROM %s, "
+			 "regexp_matches($1::text, E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
+			 "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid",
+			 postgis_spatial_ref_sys());
 
 		err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
 		if (err < 0)
@@ -272,8 +291,10 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
-	else if (option & 1) srs = getSRSbySRID(srid, false);
-	else                 srs = getSRSbySRID(srid, true);
+	else if (option & 1)
+		srs = getSRSbySRID(fcinfo, srid, false);
+	else
+		srs = getSRSbySRID(fcinfo, srid, true);
 
 	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
 	if (option & 4) lwopts |= LW_GML_SHORTLINE;
@@ -404,7 +425,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (srid != SRID_UNKNOWN && (output_short_crs || output_long_crs))
 	{
-		srs = getSRSbySRID(srid, !output_long_crs);
+		srs = getSRSbySRID(fcinfo, srid, !output_long_crs);
 
 		if (!srs)
 		{
@@ -566,8 +587,10 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
-	else if (option & 1) srs = getSRSbySRID(srid, false);
-	else                 srs = getSRSbySRID(srid, true);
+	else if (option & 1)
+		srs = getSRSbySRID(fcinfo, srid, false);
+	else
+		srs = getSRSbySRID(fcinfo, srid, true);
 
 	if (option & LW_X3D_USE_GEOCOORDS) {
 		if (srid != 4326) {

@@ -373,7 +373,10 @@ PGDLLEXPORT Datum gserialized_spgist_config_3d(PG_FUNCTION_ARGS)
 {
 	spgConfigOut *cfg = (spgConfigOut *)PG_GETARG_POINTER(1);
 
-	Oid boxoid = postgis_oid_fcinfo(fcinfo, BOX3DOID);
+	Oid boxoid = InvalidOid;
+	postgis_initialize_cache(fcinfo);
+	boxoid = postgis_oid(BOX3DOID);
+
 	cfg->prefixType = boxoid;
 	cfg->labelType = VOIDOID; /* We don't need node labels. */
 	cfg->leafType = boxoid;

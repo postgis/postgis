@@ -22,5 +22,5 @@
  *
  **********************************************************************/
 
-char *getSRSbySRID(int32_t SRID, bool short_crs);
-int getSRIDbySRS(const char* SRS);
+char *getSRSbySRID(FunctionCallInfo fcinfo, int32_t SRID, bool short_crs);
+int getSRIDbySRS(FunctionCallInfo fcinfo, const char *SRS);

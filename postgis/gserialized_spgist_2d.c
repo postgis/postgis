@@ -290,8 +290,10 @@ PG_FUNCTION_INFO_V1(gserialized_spgist_config_2d);
 PGDLLEXPORT Datum gserialized_spgist_config_2d(PG_FUNCTION_ARGS)
 {
 	spgConfigOut *cfg = (spgConfigOut *)PG_GETARG_POINTER(1);
+	Oid boxoid = InvalidOid;
+	postgis_initialize_cache(fcinfo);
+	boxoid = postgis_oid(BOX2DFOID);
 
-	Oid boxoid = postgis_oid_fcinfo(fcinfo, BOX2DFOID);
 	cfg->prefixType = boxoid;
 	cfg->labelType = VOIDOID; /* We don't need node labels. */
 	cfg->leafType = boxoid;

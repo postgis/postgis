@@ -2,7 +2,8 @@ PostGIS 3.0.2
 2020/XX/XX
 
 * Bug Fixes and Enhancements *
-  - #4652, Fix several memory related bugs in ST_GeomFromGML
+  - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
+  - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
 
 
 
