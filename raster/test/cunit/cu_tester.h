@@ -8,6 +8,9 @@
  *
  **********************************************************************/
 
+#ifndef _CU_RASTER_TESTER_H
+#define _CU_RASTER_TESTER_H 1
+
 #include "librtcore.h"
 
 #include "../../../postgis_config.h"
@@ -35,3 +38,5 @@ rt_band cu_add_band(
 
 /* Our internal callback to register Suites with the main tester */
 typedef void (*PG_SuiteSetup)(void);
+
+#endif /* _CU_RASTER_TESTER_H */
