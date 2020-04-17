@@ -90,7 +90,7 @@ static void out_geojson_test_precision(void)
 	/* double precision, see http://trac.osgeo.org/postgis/ticket/2051 */
 	do_geojson_test(
 	    "POINT(59.99 -59.99)",
-	    "{\"type\":\"Point\",\"coordinates\":[59.99,-59.99]}",
+		"{\"type\":\"Point\",\"coordinates\":[59.990000000000002,-59.990000000000002]}",
 	    NULL, 15, 0);
 
 	/* small numbers */

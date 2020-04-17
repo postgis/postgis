@@ -26,7 +26,7 @@ static void do_encoded_polyline_test(char * in, int precision, char * out)
 	size_t size;
 
 	g = lwgeom_from_encoded_polyline(in, precision);
-	h = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &size);
+	h = lwgeom_to_wkt(g, WKT_EXTENDED, precision, &size);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);

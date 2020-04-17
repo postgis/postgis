@@ -676,10 +676,8 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 			const POINT2D *pt;
 			pt = getPoint2d_cp(pa, i);
 
-			lwprint_double(
-			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(pt->x, precision, x);
+			lwprint_double(pt->y, precision, y);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%s,%s", x, y);
@@ -690,12 +688,9 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 		for (i=0; i<pa->npoints; i++)
 		{
 			const POINT3D *pt = getPoint3d_cp(pa, i);
-			lwprint_double(
-			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(pt->x, precision, x);
+			lwprint_double(pt->y, precision, y);
+			lwprint_double(pt->z, precision, z);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%s,%s,%s", x, y, z);
@@ -1902,10 +1897,8 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 		{
 			const POINT2D *pt;
 			pt = getPoint2d_cp(pa, i);
-			lwprint_double(
-			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(pt->x, precision, x);
+			lwprint_double(pt->y, precision, y);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			if (IS_DEGREE(opts))
@@ -1920,12 +1913,9 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision, int opts)
 		{
 			const POINT3D *pt = getPoint3d_cp(pa, i);
 
-			lwprint_double(
-			    pt->x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
-			lwprint_double(
-			    pt->z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
+			lwprint_double(pt->x, precision, x);
+			lwprint_double(pt->y, precision, y);
+			lwprint_double(pt->z, precision, z);
 
 			if ( i ) ptr += sprintf(ptr, " ");
 			if (IS_DEGREE(opts))
@@ -1947,7 +1937,7 @@ static size_t
 pointArray_GMLsize(POINTARRAY *pa, int precision)
 {
 	if (FLAGS_NDIMS(pa->flags) == 2)
-		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(", ")) * 2 * pa->npoints;
+		return (OUT_MAX_BYTES_DOUBLE + precision + sizeof(", ")) * 2 * pa->npoints;
 
-	return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(", ")) * 3 * pa->npoints;
+	return (OUT_MAX_BYTES_DOUBLE + precision + sizeof(", ")) * 3 * pa->npoints;
 }

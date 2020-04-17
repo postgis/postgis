@@ -516,10 +516,8 @@ ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, strin
 				POINT2D pt;
 				getPoint2d_p(pa, i, &pt);
 
-				lwprint_double(
-				    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-				lwprint_double(
-				    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+				lwprint_double(pt.x, precision, x);
+				lwprint_double(pt.y, precision, y);
 
 				if ( i ) stringbuffer_append_len(sb," ",1);
 
@@ -540,12 +538,9 @@ ptarray_to_x3d3_sb(POINTARRAY *pa, int precision, int opts, int is_closed, strin
 				POINT4D pt;
 				getPoint4d_p(pa, i, &pt);
 
-				lwprint_double(
-				    pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-				lwprint_double(
-				    pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
-				lwprint_double(
-				    pt.z, precision, z, OUT_DOUBLE_BUFFER_SIZE);
+				lwprint_double(pt.x, precision, x);
+				lwprint_double(pt.y, precision, y);
+				lwprint_double(pt.z, precision, z);
 
 				if ( i ) stringbuffer_append_len(sb," ",1);
 

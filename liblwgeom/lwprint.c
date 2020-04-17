@@ -478,22 +478,17 @@ lwdecimal_length(const double d)
 
 /*
  * Print an ordinate value using at most **maxdd** number of decimal digits
- *
  * The actual number of printed decimal digits may be less than the
  * requested ones if out of significant digits.
  *
- * The function will not write more than bufsize bytes, including the
- * terminating NULL. Returns the number of bytes that would have been
- * written if there was enough space (excluding terminating NULL).
- * So a return of ``bufsize'' or more means that the string was
- * truncated and misses a terminating NULL.
+ * The function will write at most OUT_DOUBLE_BUFFER_SIZE bytes, including the
+ * terminating NULL.
+ * It returns the number of bytes written (exluding the final NULL)
  *
  */
 int
-lwprint_double(double d, uint32_t maxdd, char *buf, size_t bufsize)
+lwprint_double(double d, int maxdd, char *buf)
 {
-	assert(bufsize >= OUT_DOUBLE_BUFFER_SIZE);
-
 	int length;
 	double ad = fabs(d);
 	if (ad <= FP_TOLERANCE)
@@ -508,19 +503,11 @@ lwprint_double(double d, uint32_t maxdd, char *buf, size_t bufsize)
 		/* Compat with previous releases: The precision for exponential notation
 		 * was, as far as I can see, 8 - length(exponent) */
 		const uint32_t fractional_digits = 8 - lwdecimal_length(lwdecimal_length(ad));
-
 		length = d2exp_buffered_n(d, fractional_digits, buf);
 	}
 	else
 	{
-		/* We always need to save 1 last characters to add NULL */
-		const uint32_t max_chars = FP_MIN(OUT_DOUBLE_BUFFER_SIZE, bufsize) - 1;
-		const uint32_t integer_digits = lwdecimal_length(ad);
-		/* Although we could use this extra digit to show an extra decimal in positive
-		 * numbers, we don't use it and save it instead */
-		static const uint32_t sign_digits = 1;
-		const uint32_t fractional_digits =
-		    FP_MIN(maxdd, max_chars - integer_digits - sign_digits - 1 /* '.' */);
+		const uint32_t fractional_digits = FP_MAX(0, FP_MIN(maxdd, OUT_MAX_DECIMAL_DIGITS));
 		length = d2fixed_buffered_n(d, fractional_digits, buf);
 	}
 	buf[length] = '\0';

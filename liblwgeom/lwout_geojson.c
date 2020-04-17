@@ -52,8 +52,6 @@ lwgeom_to_geojson(const LWGEOM *geom, char *srs, int precision, int has_bbox)
 	GBOX *bbox = NULL;
 	GBOX tmp;
 
-	if ( precision > OUT_MAX_DOUBLE_PRECISION ) precision = OUT_MAX_DOUBLE_PRECISION;
-
 	if (has_bbox)
 	{
 		/* Whether these are geography or geometry,
@@ -131,12 +129,12 @@ asgeojson_bbox_size(int hasz, int precision)
 	if (!hasz)
 	{
 		size = sizeof("\"bbox\":[,,,],");
-		size +=	2 * 2 * (OUT_MAX_DIGS_DOUBLE + precision);
+		size += 2 * 2 * (OUT_MAX_BYTES_DOUBLE + precision);
 	}
 	else
 	{
 		size = sizeof("\"bbox\":[,,,,,],");
-		size +=	2 * 3 * (OUT_MAX_DIGS_DOUBLE + precision);
+		size += 2 * 3 * (OUT_MAX_BYTES_DOUBLE + precision);
 	}
 
 	return size;
@@ -724,8 +722,6 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 {
 	char *ptr = output;
 
-	assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
-
 	if (!FLAGS_GET_Z(pa->flags))
 	{
 		for (uint32_t i = 0; i < pa->npoints; i++)
@@ -739,10 +735,10 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 
 			*ptr = '[';
 			ptr++;
-			ptr += lwprint_double(pt->x, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			ptr += lwprint_double(pt->x, precision, ptr);
 			*ptr = ',';
 			ptr++;
-			ptr += lwprint_double(pt->y, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			ptr += lwprint_double(pt->y, precision, ptr);
 			*ptr = ']';
 			ptr++;
 		}
@@ -760,13 +756,13 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 			const POINT3D *pt = getPoint3d_cp(pa, i);
 			*ptr = '[';
 			ptr++;
-			ptr += lwprint_double(pt->x, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			ptr += lwprint_double(pt->x, precision, ptr);
 			*ptr = ',';
 			ptr++;
-			ptr += lwprint_double(pt->y, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			ptr += lwprint_double(pt->y, precision, ptr);
 			*ptr = ',';
 			ptr++;
-			ptr += lwprint_double(pt->z, precision, ptr, OUT_DOUBLE_BUFFER_SIZE);
+			ptr += lwprint_double(pt->z, precision, ptr);
 			*ptr = ']';
 			ptr++;
 		}
@@ -782,11 +778,8 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 static size_t
 pointArray_geojson_size(POINTARRAY *pa, int precision)
 {
-	assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
 	if (FLAGS_NDIMS(pa->flags) == 2)
-		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(","))
-		       * 2 * pa->npoints + sizeof(",[]");
+		return (OUT_MAX_BYTES_DOUBLE + precision + sizeof(",")) * 2 * pa->npoints + sizeof(",[]");
 
-	return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(",,"))
-	       * 3 * pa->npoints + sizeof(",[]");
+	return (OUT_MAX_BYTES_DOUBLE + precision + sizeof(",,")) * 3 * pa->npoints + sizeof(",[]");
 }

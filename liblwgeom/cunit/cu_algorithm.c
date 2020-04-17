@@ -1173,7 +1173,7 @@ static void test_lwgeom_remove_repeated_points(void)
 	modified = lwgeom_remove_repeated_points_in_place(g, 0.01);
 	ASSERT_INT_EQUAL(modified, LW_TRUE);
 	ewkt = lwgeom_to_ewkt(g);
-	ASSERT_STRING_EQUAL(ewkt, "LINESTRING(1612830.15445 4841287.12672,1612829.98813 4841274.56198)");
+	ASSERT_STRING_EQUAL(ewkt, "LINESTRING(1612830.154450000031 4841287.126720000058,1612829.988129999954 4841274.561979999766)");
 	lwgeom_free(g);
 	lwfree(ewkt);
 

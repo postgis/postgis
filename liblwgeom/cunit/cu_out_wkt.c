@@ -80,7 +80,7 @@ static void test_wkt_out_point(void)
 
 	/* Test big numbers */
 	CU_ASSERT_STRING_EQUAL(cu_wkt("POINT(-123456789012345.12345678 -1234567890123458.12345678)", WKT_ISO),
-			       "POINT(-123456789012345 -1.234568e+15)");
+			    "POINT(-123456789012345.125 -1.234568e+15)");
 	CU_ASSERT_STRING_EQUAL(
 	    cu_wkt(
 		"POINT( "
