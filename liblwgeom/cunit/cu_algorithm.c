@@ -774,7 +774,7 @@ test_lwtriangle_clip(void)
 	// printf("c = %s\n", ewkt);
 	ASSERT_STRING_EQUAL(
 	    ewkt,
-	    "TIN(((1 1 1,2 1.5 2,2 1.333333333333 2,1 1 1)),((1 1 1,2 1.333333333333 2,1 0.666666666667 1,1 1 1)))");
+	    "TIN(((1 1 1,2 1.5 2,2 1.33333333333 2,1 1 1)),((1 1 1,2 1.33333333333 2,1 0.666666666667 1,1 1 1)))");
 	lwfree(ewkt);
 	lwcollection_free(c);
 	lwgeom_free(g);

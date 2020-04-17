@@ -700,7 +700,7 @@ test_lwgeom_locate_along(void)
 	str = lwgeom_to_wkt(out, WKT_ISO, 6, NULL);
 	lwgeom_free(geom);
 	lwgeom_free(out);
-	ASSERT_STRING_EQUAL(str, "MULTIPOINT M (55.226131 55.226131 105)");
+	ASSERT_STRING_EQUAL(str, "MULTIPOINT M (55.2261 55.2261 105)");
 	lwfree(str);
 
 	/* ST_Locatealong(ST_GeomFromText('MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))'), 105) */
@@ -709,7 +709,7 @@ test_lwgeom_locate_along(void)
 	str = lwgeom_to_wkt(out, WKT_ISO, 6, NULL);
 	lwgeom_free(geom);
 	lwgeom_free(out);
-	ASSERT_STRING_EQUAL(str, "MULTIPOINT M (55.226131 55.226131 105)");
+	ASSERT_STRING_EQUAL(str, "MULTIPOINT M (55.2261 55.2261 105)");
 	lwfree(str);
 }
 

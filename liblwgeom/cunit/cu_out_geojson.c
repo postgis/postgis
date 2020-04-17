@@ -65,9 +65,7 @@ static void out_geojson_test_precision(void)
 
 	/* 3 digits precision */
 	do_geojson_test(
-	    "POINT(1.1111111111111 1.1111111111111)",
-	    "{\"type\":\"Point\",\"coordinates\":[1.111,1.111]}",
-	    NULL, 3, 0);
+	    "POINT(1.1111111111111 1.1111111111111)", "{\"type\":\"Point\",\"coordinates\":[1.11,1.11]}", NULL, 3, 0);
 
 	/* 9 digits precision */
 	do_geojson_test(

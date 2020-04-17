@@ -64,16 +64,11 @@ static void out_x3d3_test_precision(void)
 	    NULL, 0, 0);
 
 	/* 3 digits precision */
-	do_x3d3_test(
-	    "POINT(1.1111111111111 1.1111111111111 2.11111111111111)",
-	    "1.111 1.111 2.111",
-	    NULL, 3, 0);
+	do_x3d3_test("POINT(1.1111111111111 1.1111111111111 2.11111111111111)", "1.11 1.11 2.11", NULL, 3, 0);
 
 	/* 9 digits precision */
 	do_x3d3_test(
-	    "POINT(1.2345678901234 1.2345678901234 4.123456789001)",
-	    "1.23456789 1.23456789 4.123456789",
-	    NULL, 9, 0);
+	    "POINT(1.2345678901234 1.2345678901234 4.123456789001)", "1.23456789 1.23456789 4.12345679", NULL, 9, 0);
 
 	/* huge data */
 	do_x3d3_test(
@@ -92,8 +87,10 @@ static void out_x3d3_test_geoms(void)
 	/* Polygon **/
 	do_x3d3_test(
 	    "POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",
-	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><Coordinate point='15 10 3 13.536 6.464 3 10 5 3 6.464 6.464 3 5 10 3 6.464 13.536 3 10 15 3 13.536 13.536 3 ' /></IndexedFaceSet>",
-	    NULL, 3, 0);
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><Coordinate point='15 10 3 13.5 6.46 3 10 5 3 6.46 6.46 3 5 10 3 6.46 13.5 3 10 15 3 13.5 13.5 3 ' /></IndexedFaceSet>",
+	    NULL,
+	    3,
+	    0);
 
 	/* TODO: Polygon - with internal ring - the answer is clearly wrong */
 	/** do_x3d3_test(
@@ -165,14 +162,18 @@ static void out_x3d3_test_option(void)
 	/* geocoordinate long,lat*/
 	do_x3d3_test(
 	    "SRID=4326;POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",
-	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='15 10 3 13.536 6.464 3 10 5 3 6.464 6.464 3 5 10 3 6.464 13.536 3 10 15 3 13.536 13.536 3 ' /></IndexedFaceSet>",
-	    NULL, 3, 2);
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='15 10 3 13.5 6.46 3 10 5 3 6.46 6.46 3 5 10 3 6.46 13.5 3 10 15 3 13.5 13.5 3 ' /></IndexedFaceSet>",
+	    NULL,
+	    3,
+	    2);
 
 	/* geocoordinate lat long*/
 	do_x3d3_test(
 	    "SRID=4326;POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",
-	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"' point='10 15 3 6.464 13.536 3 5 10 3 6.464 6.464 3 10 5 3 13.536 6.464 3 15 10 3 13.536 13.536 3 ' /></IndexedFaceSet>",
-	    NULL, 3, 3);
+	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"' point='10 15 3 6.46 13.5 3 5 10 3 6.46 6.46 3 10 5 3 13.5 6.46 3 15 10 3 13.5 13.5 3 ' /></IndexedFaceSet>",
+	    NULL,
+	    3,
+	    3);
 }
 
 

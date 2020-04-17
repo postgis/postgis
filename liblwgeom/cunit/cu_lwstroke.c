@@ -395,7 +395,6 @@ static void test_unstroke()
 	in = out;
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1)");
 	lwgeom_free(in);
 	lwgeom_free(out);
@@ -407,7 +406,6 @@ static void test_unstroke()
 	in = out;
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,-1 -1))");
 	lwgeom_free(in);
 	lwgeom_free(out);
@@ -419,12 +417,10 @@ static void test_unstroke()
 	in = out;
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	// printf("%s\n", str);
-	ASSERT_STRING_EQUAL(
-	    str,
-	    "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0.70710678 "
-	    "0.70710678,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 "
-	    "-2,-0.70710678 -3.70710678,1 -3),(1 -3,5 5))");
+	ASSERT_STRING_EQUAL(str,
+			    "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0.70710678 "
+			    "0.70710678,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 "
+			    "-2,-0.70710678 -3.7071068,1 -3),(1 -3,5 5))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
@@ -435,11 +431,9 @@ static void test_unstroke()
 	in = out;
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	// printf("%s\n", str);
-	ASSERT_STRING_EQUAL(
-	    str,
-	    "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 "
-	    "-1),CIRCULARSTRING(0 -1,-0.70710678 -2.70710678,1 -2))");
+	ASSERT_STRING_EQUAL(str,
+			    "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 "
+			    "-1),CIRCULARSTRING(0 -1,-0.70710678 -2.7071068,1 -2))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);

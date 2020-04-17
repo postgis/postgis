@@ -203,17 +203,17 @@ static void out_gml_test_precision(void)
 
 
 	/* GML2 - 3 digits precision */
-	do_gml2_test(
-	    "POINT(1.1111111111111 1.1111111111111)",
-	    "<gml:Point><gml:coordinates>1.111,1.111</gml:coordinates></gml:Point>",
-	    NULL, 3);
+	do_gml2_test("POINT(1.1111111111111 1.1111111111111)",
+		     "<gml:Point><gml:coordinates>1.11,1.11</gml:coordinates></gml:Point>",
+		     NULL,
+		     3);
 
 	/* GML3 - 3 digits precision */
-	do_gml3_test(
-	    "POINT(1.1111111111111 1.1111111111111)",
-	    "<gml:Point><gml:pos srsDimension=\"2\">1.111 1.111</gml:pos></gml:Point>",
-	    NULL, 3, 0);
-
+	do_gml3_test("POINT(1.1111111111111 1.1111111111111)",
+		     "<gml:Point><gml:pos srsDimension=\"2\">1.11 1.11</gml:pos></gml:Point>",
+		     NULL,
+		     3,
+		     0);
 
 	/* GML2 - 9 digits precision */
 	do_gml2_test(
@@ -560,17 +560,18 @@ static void out_gml_test_geoms(void)
         "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
                 "<gml:Polygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">-2 0 -1 -1 0 0 1 -1 2 0 0 2 -2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">-1 0 0 0.5 1 0 0 1 -1 0</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>",
                 NULL, 1, 0 );
-	do_gml3_test(
-		"CURVEPOLYGON(COMPOUNDCURVE((763650.600000001 189057.100000001,7636.35 189045.199999999, 763650.548999999 189057.844000001,763650.600000001 189057.100000001)))",
-				 "<gml:Polygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">763650.6 189057.1 7636.35 189045.2 763650.549 189057.844 763650.6 189057.1</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:Polygon>",
-				NULL, 7, 0 );
+    do_gml3_test(
+	"CURVEPOLYGON(COMPOUNDCURVE((763650.600000001 189057.100000001,7636.35 189045.199999999, 763650.548999999 189057.844000001,763650.600000001 189057.100000001)))",
+	"<gml:Polygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">763650.6 189057.1 7636.35 189045.2 763650.5 189057.8 763650.6 189057.1</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:Polygon>",
+	NULL,
+	7,
+	0);
 
-	/* GML2 - MultiCurve */
-	do_gml2_unsupported(
-	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
-	    "lwgeom_to_gml2: 'MultiCurve' geometry type not supported");
+    /* GML2 - MultiCurve */
+    do_gml2_unsupported("MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
+			"lwgeom_to_gml2: 'MultiCurve' geometry type not supported");
 
-	/* GML3 - MultiCurve */
+    /* GML3 - MultiCurve */
     do_gml3_test(
          "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
                 "<gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">5 5 3 5 3 3 0 3</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">0 0 2 1 2 2</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>",

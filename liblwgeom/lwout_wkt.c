@@ -85,8 +85,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 	/* OGC only includes X/Y */
 	uint32_t dimensions = 2;
 	uint32_t i, j;
-	static size_t buffer_size = 128;
-	char coord[buffer_size];
+	char coord[OUT_DOUBLE_BUFFER_SIZE];
 
 	/* ISO and extended formats include all dimensions */
 	if ( variant & ( WKT_ISO | WKT_EXTENDED ) )
@@ -110,7 +109,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 			/* Spaces before every ordinate but the first */
 			if ( j > 0 )
 				stringbuffer_append_len(sb, " ", 1);
-			int len = lwprint_double(dbl_ptr[j], precision, coord, buffer_size);
+			int len = lwprint_double(dbl_ptr[j], precision, coord);
 			stringbuffer_append_len(sb, coord, len);
 		}
 	}

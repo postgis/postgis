@@ -83,16 +83,12 @@ static void out_kml_test_precision(void)
 	    0);
 
 	/* 3 digits precision */
-	do_kml_test(
-	    "POINT(1.1111111111111 1.1111111111111)",
-	    "<Point><coordinates>1.111,1.111</coordinates></Point>",
-	    3);
+	do_kml_test("POINT(1.1111111111111 1.1111111111111)", "<Point><coordinates>1.11,1.11</coordinates></Point>", 3);
 
 	/* 9 digits precision */
-	do_kml_test(
-	    "POINT(1.2345678901234 1.2345678901234)",
-	    "<Point><coordinates>1.23456789,1.23456789</coordinates></Point>",
-	    8);
+	do_kml_test("POINT(1.2345678901234 1.2345678901234)",
+		    "<Point><coordinates>1.2345679,1.2345679</coordinates></Point>",
+		    8);
 
 	/* huge data */
 	do_kml_test(

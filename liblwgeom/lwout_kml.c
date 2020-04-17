@@ -111,15 +111,9 @@ ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 		for (j = 0; j < dims; j++)
 		{
 			if ( j ) stringbuffer_append_len(sb,",",1);
-			if( fabs(d[j]) < OUT_MAX_DOUBLE )
-			{
-				if ( stringbuffer_aprintf(sb, "%.*f", precision, d[j]) < 0 ) return LW_FAILURE;
-			}
-			else
-			{
-				if ( stringbuffer_aprintf(sb, "%g", d[j]) < 0 ) return LW_FAILURE;
-			}
-			stringbuffer_trim_trailing_zeroes(sb);
+			char coord[OUT_DOUBLE_BUFFER_SIZE];
+			int len = lwprint_double(d[j], precision, coord);
+			stringbuffer_append_len(sb, coord, len);
 		}
 	}
 	return LW_SUCCESS;
