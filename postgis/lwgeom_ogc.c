@@ -40,6 +40,7 @@
 #include "../postgis_config.h"
 
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"
 
 
@@ -826,7 +827,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	char *wkt;
 	size_t wkt_size;
 	text *result;
-	int dbl_dig_for_wkt = DBL_DIG;
+	int dbl_dig_for_wkt = OUT_DEFAULT_DECIMAL_DIGITS;
 
 	POSTGIS_DEBUG(2, "Called.");
 

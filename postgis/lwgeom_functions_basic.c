@@ -32,6 +32,7 @@
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"
 
 #include <math.h>
@@ -2397,7 +2398,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 
 	/* Write to WKT and free the geometry */
-	wkt = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, DBL_DIG, &wkt_size);
+	wkt = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, OUT_DEFAULT_DECIMAL_DIGITS, &wkt_size);
 	lwgeom_free(lwgeom);
 
 	/* Write to text and free the WKT */

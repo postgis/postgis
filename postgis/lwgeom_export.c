@@ -28,8 +28,6 @@
  *  Commons functions for all export functions
  */
 
-#include "float.h" /* for DBL_DIG */
-
 #include "postgres.h"
 #include "catalog/pg_type.h" /* for CSTRINGOID */
 #include "executor/spi.h"
@@ -39,6 +37,7 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_export.h"
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
@@ -212,7 +211,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	int32_t srid;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
-	int precision = DBL_DIG;
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
 	static const char* default_prefix = "gml:"; /* default prefix */
 	const char* prefix = default_prefix;
 	const char* gml_id = NULL;
@@ -237,11 +236,6 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom ? */
-		if (precision > DBL_DIG)
-			precision = DBL_DIG;
-		else if (precision < 0)
-			precision = 0;
 	}
 
 	/* retrieve option */
@@ -347,7 +341,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	char *geojson;
 	text *result;
-	int precision = DBL_DIG;
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
 	int output_bbox = LW_FALSE;
 	int output_long_crs = LW_FALSE;
 	int output_short_crs = LW_FALSE;
@@ -366,10 +360,6 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 1 && !PG_ARGISNULL(1) )
 	{
 		precision = PG_GETARG_INT32(1);
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 )
-			precision = 0;
 	}
 
 	/* Retrieve output option
@@ -456,7 +446,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	char *svg;
 	text *result;
 	int relative = 0;
-	int precision=DBL_DIG;
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -469,10 +459,6 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 	{
 		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom ? */
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
@@ -499,7 +485,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	char *srs;
 	int32_t srid;
 	int option = 0;
-	int precision = DBL_DIG;
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
 	static const char* default_defid = "x3d:"; /* default defid */
 	char *defidbuf;
 	const char* defid = default_defid;
@@ -521,10 +507,6 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom ? */
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
 	}
 
 	/* retrieve option */
