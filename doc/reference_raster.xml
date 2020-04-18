@@ -7003,7 +7003,7 @@ SELECT rid, (meta).* FROM bar
 
 				<para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
-				
+
 			</refsection>
 
 			<refsection>
@@ -7556,7 +7556,7 @@ rid | exclude_nodata | include_nodata
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
@@ -7564,14 +7564,14 @@ rid | exclude_nodata | include_nodata
 
 					<funcprototype>
 						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
 						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 					</funcprototype>
 
@@ -8132,7 +8132,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
@@ -8140,14 +8140,14 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 
 					<funcprototype>
 						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
 						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 					</funcprototype>
