@@ -23,7 +23,7 @@ extern "C" {
 
 #include <inttypes.h>
 
-int d2s_buffered_n(double f, char* result);
+int d2s_buffered_n(double f, uint32_t precision, char* result);
 void d2s_buffered(double f, char* result);
 char* d2s(double f);
 

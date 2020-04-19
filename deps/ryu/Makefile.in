@@ -29,7 +29,7 @@ SHELL = @SHELL@
 INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
 
-RYU_OBJS = d2fixed.o
+RYU_OBJS = d2fixed.o d2s.o
 LT_RYU_OBJS =  $(RYU_OBJS:.o=.lo)
 
 all: @RYU_LIB@

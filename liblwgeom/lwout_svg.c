@@ -108,7 +108,7 @@ assvg_point_size(__attribute__((__unused__)) const LWPOINT *point, int circle, i
 {
 	size_t size;
 
-	size = (OUT_MAX_DIGS_DOUBLE + precision) * 2;
+	size = (OUT_MAX_BYTES_DOUBLE + precision) * 2;
 	if (circle) size += sizeof("cx='' cy=''");
 	else size += sizeof("x='' y=''");
 
@@ -125,8 +125,8 @@ assvg_point_buf(const LWPOINT *point, char * output, int circle, int precision)
 
 	getPoint2d_p(point->point, 0, &pt);
 
-	lwprint_double(pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-	lwprint_double(-pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+	lwprint_double(pt.x, precision, x);
+	lwprint_double(-pt.y, precision, y);
 
 	if (circle) ptr += sprintf(ptr, "x=\"%s\" y=\"%s\"", x, y);
 	else ptr += sprintf(ptr, "cx=\"%s\" cy=\"%s\"", x, y);
@@ -553,8 +553,8 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 	x = round(pt->x*f)/f;
 	y = round(pt->y*f)/f;
 
-	lwprint_double(x, precision, sx, OUT_DOUBLE_BUFFER_SIZE);
-	lwprint_double(-y, precision, sy, OUT_DOUBLE_BUFFER_SIZE);
+	lwprint_double(x, precision, sx);
+	lwprint_double(-y, precision, sy);
 	ptr += sprintf(ptr,"%s %s l", sx, sy);
 
 	/* accum */
@@ -573,8 +573,8 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 		dx = x - accum_x;
 		dy = y - accum_y;
 
-		lwprint_double(dx, precision, sx, OUT_DOUBLE_BUFFER_SIZE);
-		lwprint_double(-dy, precision, sy, OUT_DOUBLE_BUFFER_SIZE);
+		lwprint_double(dx, precision, sx);
+		lwprint_double(-dy, precision, sy);
 
 		accum_x += dx;
 		accum_y += dy;
@@ -607,8 +607,8 @@ pointArray_svg_abs(POINTARRAY *pa, char *output, int close_ring, int precision)
 	{
 		getPoint2d_p(pa, i, &pt);
 
-		lwprint_double(pt.x, precision, x, OUT_DOUBLE_BUFFER_SIZE);
-		lwprint_double(-pt.y, precision, y, OUT_DOUBLE_BUFFER_SIZE);
+		lwprint_double(pt.x, precision, x);
+		lwprint_double(-pt.y, precision, y);
 
 		if (i == 1) ptr += sprintf(ptr, " L ");
 		else if (i) ptr += sprintf(ptr, " ");
@@ -625,6 +625,5 @@ pointArray_svg_abs(POINTARRAY *pa, char *output, int close_ring, int precision)
 static size_t
 pointArray_svg_size(POINTARRAY *pa, int precision)
 {
-	return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(" "))
-	       * 2 * pa->npoints + sizeof(" L ");
+	return (OUT_MAX_BYTES_DOUBLE + precision + sizeof(" ")) * 2 * pa->npoints + sizeof(" L ");
 }
