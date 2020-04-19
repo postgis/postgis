@@ -63,8 +63,7 @@ static void out_x3d3_test_precision(void)
 	    9, 0);
 
 	/* huge data */
-	do_x3d3_test(
-	    "POINT(1E300 -105E-153 4E300)", "1e+300 0 4e+300", 0, 0);
+	do_x3d3_test("POINT(1E300 -105E-153 4E300)", "1e+300 -1e-151 4e+300", 0, 0);
 }
 
 

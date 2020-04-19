@@ -31,7 +31,6 @@
 #include "liblwgeom.h"
 #include "lwgeom_transform.h"
 
-#include "float.h" /* DBL_DIG */
 
 Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
@@ -191,8 +190,6 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	}
 
 	/* Condition precision */
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
 	if (precision < 0)
 		precision = 0;
 

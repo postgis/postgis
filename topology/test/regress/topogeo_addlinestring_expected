@@ -44,9 +44,9 @@ cross|E|35|sn32|en33
 snap|7
 snap|36
 snap|38
-snap|N|34||POINT(18 22.2)
-snap|N|35||POINT(22.4 22)
-snap|N|36||POINT(21.2 20.4)
+snap|N|34||POINT(18 22.200000000000003)
+snap|N|35||POINT(22.400000000000002 22)
+snap|N|36||POINT(21.200000000000003 20.400000000000002)
 snap|E|7|sn17|en35
 snap|E|36|sn34|en17
 snap|E|37|sn35|en18

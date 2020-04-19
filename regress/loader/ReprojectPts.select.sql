@@ -1,2 +1,2 @@
-select ST_Asewkt(ST_SnapToGrid(the_geom,0.00000001)) from loadedshp;
+select ST_AsText(ST_SnapToGrid(the_geom,0.00000001), 8) from loadedshp;
 

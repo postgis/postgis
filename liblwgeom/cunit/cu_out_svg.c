@@ -113,10 +113,7 @@ static void out_svg_test_precision(void)
 	    0, 0);
 
 	/* huge data - with relative PointArray */
-	do_svg_test(
-	    "LINESTRING(1E300 -1E300,1E301 -1E301)",
-	    "M 1e+300 1e+300 l 9e+300 9e+300",
-	    0, 1);
+	do_svg_test("LINESTRING(1E300 -1E300,1E301 -1E301)", "M 1e+300 1e+300 l 9e+300 9e+300", 0, 1);
 }
 
 

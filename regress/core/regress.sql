@@ -265,37 +265,37 @@ select '225', ST_Expand('BOX(-2 3, -1 6'::BOX2D, 4, 2);
 select '226', ST_SRID(ST_Expand('SRID=4326;POINT (0 0)'::geometry, 1))=4326;
 
 -- ST_TileEnvelope()
-select '227', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(-1, 0, 0) ,0.01));
-select '228', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(0, 0, 1), 0.01));
-select '229', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(0, 0, 0), 0.01));
-select '230', ST_AsText(ST_SnapToGrid(ST_TileEnvelope(4, 8, 8), 0.01));
-select '231', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(4, 15, 15),0.01));
-select '232', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-100, -100, 100, 100, 0)), 0.01));
-select '233', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(4, 15, 15, ST_MakeEnvelope(-100, -100, 100, 100, 0)), 0.01));
-select '234', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(4, 0, 0, ST_MakeEnvelope(-100, -100, 100, 100, 0)), 0.01));
-select '235', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-200, -100, 200, 100, 0)), 0.01));
-select '236', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(0, 0, 0, margin => 0.1), 0.01));
-select '237', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(1, 0, 0, margin => 0.1), 0.01));
-select '238', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(2, 1, 3, margin => 0.5), 0.01));
-select '239', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(0, 0, 0, margin => -0.5), 0.01));
-select '240', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(0, 0, 0, margin => -0.51), 0.01));
-select '241', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(0, 0, 0, margin => -0.4), 0.01));
-select '250', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(10,300,387), 0.01));
-select '251', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(10,300,387, margin => 0.1), 0.01));
-select '252', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(10,300,387, margin => 0.5), 0.01));
-select '253', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(10,300,387, margin => 2), 0.01));
-select '254', ST_AsEWKT(ST_SnapToGrid(ST_TileEnvelope(10,300,387, margin => -0.3), 0.01));
+select '227', ST_AsText(ST_TileEnvelope(-1, 0, 0), 2);
+select '228', ST_AsText(ST_TileEnvelope(0, 0, 1), 2);
+select '229', ST_AsText(ST_TileEnvelope(0, 0, 0), 2);
+select '230', ST_AsText(ST_TileEnvelope(4, 8, 8), 2);
+select '231', ST_AsText(ST_TileEnvelope(4, 15, 15), 2);
+select '232', ST_AsText(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-100, -100, 100, 100, 0)), 2);
+select '233', ST_AsText(ST_TileEnvelope(4, 15, 15, ST_MakeEnvelope(-100, -100, 100, 100, 0)), 2);
+select '234', ST_AsText(ST_TileEnvelope(4, 0, 0, ST_MakeEnvelope(-100, -100, 100, 100, 0)), 2);
+select '235', ST_AsText(ST_TileEnvelope(4, 8, 8, ST_MakeEnvelope(-200, -100, 200, 100, 0)), 2);
+select '236', ST_AsText(ST_TileEnvelope(0, 0, 0, margin => 0.1), 2);
+select '237', ST_AsText(ST_TileEnvelope(1, 0, 0, margin => 0.1), 2);
+select '238', ST_AsText(ST_TileEnvelope(2, 1, 3, margin => 0.5), 2);
+select '239', ST_AsText(ST_TileEnvelope(0, 0, 0, margin => -0.5), 2);
+select '240', ST_AsText(ST_TileEnvelope(0, 0, 0, margin => -0.51), 2);
+select '241', ST_AsText(ST_TileEnvelope(0, 0, 0, margin => -0.4), 2);
+select '250', ST_AsText(ST_TileEnvelope(10,300,387), 2);
+select '251', ST_AsText(ST_TileEnvelope(10,300,387, margin => 0.1), 2);
+select '252', ST_AsText(ST_TileEnvelope(10,300,387, margin => 0.5), 2);
+select '253', ST_AsText(ST_TileEnvelope(10,300,387, margin => 2), 2);
+select '254', ST_AsText(ST_TileEnvelope(10,300,387, margin => -0.3), 2);
 
 -- ST_Hexagon()
-select '300', ST_AsEWKT(ST_SnapToGrid(ST_Hexagon(10, 0, 0),0.00001));
-select '301', ST_AsEWKT(ST_SnapToGrid(ST_Hexagon(10, 1, 1),0.00001));
-select '302', ST_AsEWKT(ST_SnapToGrid(ST_Hexagon(10, -1, -1),0.00001));
-select '303', ST_AsEWKT(ST_SnapToGrid(ST_Hexagon(10, 100, -100),0.00001));
+select '300', ST_AsText(ST_Hexagon(10, 0, 0), 5);
+select '301', ST_AsText(ST_Hexagon(10, 1, 1), 5);
+select '302', ST_AsText(ST_Hexagon(10, -1, -1), 5);
+select '303', ST_AsText(ST_Hexagon(10, 100, -100), 5);
 -- ST_Square()
-select '304', ST_AsEWKT(ST_SnapToGrid(ST_Square(10, 0, 0),0.00001));
-select '305', ST_AsEWKT(ST_SnapToGrid(ST_Square(10, 1, 1),0.00001));
-select '306', ST_AsEWKT(ST_SnapToGrid(ST_Square(10, -1, -1),0.00001));
-select '307', ST_AsEWKT(ST_SnapToGrid(ST_Square(10, 100, -100),0.00001));
+select '304', ST_AsText(ST_Square(10, 0, 0), 5);
+select '305', ST_AsText(ST_Square(10, 1, 1), 5);
+select '306', ST_AsText(ST_Square(10, -1, -1), 5);
+select '307', ST_AsText(ST_Square(10, 100, -100), 5);
 -- ST_HexagonGrid()
 select '308', Count(*) FROM ST_HexagonGrid(100000, ST_TileEnvelope(4, 7, 7));
 select '309', Count(*) FROM ST_HexagonGrid(100000, ST_TileEnvelope(4, 7, 7)) hex, ST_TileEnvelope(4, 7, 7) tile WHERE NOT ST_Intersects(hex.geom, tile);
@@ -322,7 +322,7 @@ j1 AS
 SELECT '316',
     ST_Intersects(j0.geom, j1.geom),
     ST_AsText(ST_Intersection(j0.geom, j1.geom))
-FROM j0,j1;
+FROM j0, j1;
 
 -- Drop test table
 DROP table test;

@@ -39,6 +39,7 @@
 #include "catalog/pg_type.h" /* for CSTRINGOID, INT4OID */
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom_internal.h"
 #include "lwgeom_cache.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
@@ -208,7 +209,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int version;
 	const char *srs;
 	int32_t srid = SRID_DEFAULT;
-	int precision = DBL_DIG;
+	int precision = -1;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
 	static const char *default_prefix = "gml:";
@@ -250,12 +251,6 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
-
-	/* Condition the precision argument */
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
-	if (precision < 0)
-		precision = 0;
 
 	/* Condition the prefix argument */
 	if (VARSIZE_ANY_EXHDR(prefix_text) > 0)
@@ -341,8 +336,6 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
 	/* Condition the precision */
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
 	if (precision < 0)
 		precision = 0;
 
@@ -380,9 +373,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	int precision = PG_GETARG_INT32(2);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
-	else if (precision < 0)
+	if (precision < 0)
 		precision = 0;
 
 	PG_RETURN_TEXT_P(lwgeom_to_svg(lwgeom, precision, relative));
@@ -403,8 +394,6 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	int option = PG_GETARG_INT32(2);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
 	if (precision < 0)
 		precision = 0;
 

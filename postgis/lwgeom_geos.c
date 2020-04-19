@@ -27,8 +27,6 @@
 
 #include "../postgis_config.h"
 
-#include "float.h" /* for DBL_DIG */
-
 /* PostgreSQL */
 #include "postgres.h"
 #include "funcapi.h"
