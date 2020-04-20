@@ -6,7 +6,6 @@ set -e
 su - postgres -c "export PGDATA=/var/lib/postgresql/data && pg_ctl start"
 #export PGPORT=`grep ^port /var/lib/postgresql/postgresql.conf | awk '{print $3}'`
 export PGPORT=5432
-export PATH=/usr/bin:$PATH
 psql --version
 ./autogen.sh
 ./configure CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests
