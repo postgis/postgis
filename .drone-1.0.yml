@@ -19,6 +19,7 @@ steps:
     pull: always
     commands:
       - PGVER=12 sh ci/dronie/postgis_regress_alpine.sh
+
   - name: build-9.6
     image: *test-image
     pull: always
