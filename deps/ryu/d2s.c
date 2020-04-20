@@ -35,7 +35,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#define RYU_DEBUG
 #ifdef RYU_DEBUG
 #include <inttypes.h>
 #include <stdio.h>
@@ -459,14 +458,12 @@ pow10(const int32_t exp)
   if (exp == 16) { return 10000000000000000L; }
   if (exp == 17) { return 100000000000000000L; }
 
-  return 1;
+  return 100000000000000000L;
 }
-
-
 
 static inline int to_chars_uint64(uint64_t output, char* const result)
 {
-	// TODO: Replace with the code underneath (using DIGIT_TABLE)
+	// TODO: Replace using DIGIT_TABLE
 	const uint32_t olength = decimalLength17(output);
 	for (uint32_t index = 0; index < olength; index++) {
 		const uint32_t c = output % 10; output = div10(output);
@@ -475,7 +472,7 @@ static inline int to_chars_uint64(uint64_t output, char* const result)
 	return olength;
 }
 
-static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool sign, char* const result)
+static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool sign, uint32_t precision, char* const result)
 {
 	int index = 0;
 	if (sign)
@@ -488,6 +485,7 @@ static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool s
 	int32_t exp = v.exponent;
 	uint64_t integer_part;
 	uint64_t decimal_part;
+	uint32_t extra_zeros = 0;
 	if (exp == 0)
 	{
 		integer_part = output;
@@ -501,11 +499,68 @@ static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool s
 	}
 	else
 	{
-		exp = -exp;
-		uint64_t p = pow10(exp);
-		integer_part = output / p;
-		decimal_part = output % p;
-		/* Note that we have removed leading zeros */
+		/* TODO: Better handle leading zeros */
+		int32_t nexp = -exp;
+		if (nexp <= 17)
+		{
+			uint64_t p = pow10(nexp);
+			integer_part = output / p;
+			if (integer_part)
+			{
+				decimal_part = output % p;
+				extra_zeros = olength - decimalLength17(integer_part) - decimalLength17(decimal_part);
+			}
+			else
+			{
+				decimal_part = output;
+				extra_zeros = nexp - olength;
+			}
+		}
+		else
+		{
+			integer_part = 0;
+			decimal_part = output;
+			extra_zeros = nexp - olength;
+		}
+
+		/* Round the decimal part according to the precision */
+		if (decimal_part)
+		{
+			const uint32_t meaningful_digits = decimalLength17(decimal_part);
+			const uint32_t decimal_digits = meaningful_digits + extra_zeros;
+#ifdef RYU_DEBUG
+			printf("PRECISION=%d\n", precision);
+			printf("EXTRA ZEROS=%d\n", extra_zeros);
+			printf("TOTAL DECIMAL DIGITS=%d\n", decimal_digits);
+#endif
+			if (precision <= extra_zeros)
+			{
+				decimal_part = 0;
+			}
+			else if (precision < decimal_digits)
+			{
+				uint32_t digits_to_trim = meaningful_digits - (precision - extra_zeros);
+				uint64_t decimal_trimmed;
+				/* TODO: Better handle trimming zeros ? */
+				do
+				{
+					uint64_t divisor = pow10(digits_to_trim);
+#ifdef RYU_DEBUG
+					printf("DECIMAL PRE=%lu\n", decimal_part);
+					printf("DIVISOR=%lu\n", divisor);
+					printf("DECIMAL POST=%lu\n", decimal_part);
+#endif
+					decimal_trimmed = (decimal_part + (divisor / 2)) / divisor;
+					digits_to_trim++;
+
+#ifdef RYU_DEBUG
+					printf("DECIMAL POST=%lu\n", decimal_part);
+#endif
+				} while (decimal_trimmed && (decimal_trimmed % 10 == 0));
+				decimal_part = decimal_trimmed;
+			}
+		}
+
 	}
 
 #ifdef RYU_DEBUG
@@ -519,14 +574,12 @@ static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool s
 	index += to_chars_uint64(integer_part, &result[index]);
 	if (decimal_part)
 	{
-		uint32_t ilength = decimalLength17(integer_part);
-		uint32_t dlength = decimalLength17(decimal_part);
-		int32_t extra_zeroes = olength - ilength - dlength;
+	#ifdef RYU_DEBUG
+		printf("EXTRA ZEROS=%d\n", extra_zeros);
+	#endif
 		result[index++] = '.';
-		for (int32_t i = 0; i < extra_zeroes; i++)
+		for (uint32_t i = 0; i < extra_zeros; i++)
 			result[index++] = '0';
-		/* TODO: Better handle leading zeroes */
-		/* TODO: Handle precision in the decimal part based on the input: Needs rounding */
 		index += to_chars_uint64(decimal_part, &result[index]);
 	}
 
@@ -696,7 +749,7 @@ int d2s_buffered_n(double f, uint32_t precision, char* result) {
 
   floating_decimal_64 v = d2d(ieeeMantissa, ieeeExponent);
 
-  return to_chars_fixed_point(v, ieeeSign, result);
+  return to_chars_fixed_point(v, ieeeSign, precision, result);
 }
 
 void d2s_buffered(double f, char* result) {

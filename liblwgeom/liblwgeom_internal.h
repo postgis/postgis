@@ -136,11 +136,13 @@
 #define OUT_MAX_DOUBLE 1E15
 #define OUT_DEFAULT_DECIMAL_DIGITS 15
 
-/* 17 digits are sufficient for round-tripping */
-#define OUT_MAX_DIGITS 17
+/* 17 digits are sufficient for round-tripping
+ * FP_TOLERANCE (12) max leading zeroes */
+#define OUT_MAX_DIGITS 17 + 12
 
 /* Limit for the max amount of characters that a double can use, including dot and sign */
-#define OUT_MAX_BYTES_DOUBLE (OUT_MAX_DIGITS + 2 + 1 /* For 0.x */)
+/* */
+#define OUT_MAX_BYTES_DOUBLE (1 /* Sign */ + 2 /* 0.x */ + OUT_MAX_DIGITS)
 #define OUT_DOUBLE_BUFFER_SIZE OUT_MAX_BYTES_DOUBLE + 1 /* +1 including NULL */
 
 /**
