@@ -23,7 +23,7 @@ static void do_gml2_test(char * in, char * out, char * srs, int precision)
 	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	lwvarlena_t *v = lwgeom_to_gml2(g, srs, precision, "gml:");
 
-	ASSERT_STRING_EQUAL(v->data, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
 	lwfree(v);
@@ -34,7 +34,7 @@ static void do_gml2_test_prefix(char * in, char * out, char * srs, int precision
 	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	lwvarlena_t *v = lwgeom_to_gml2(g, srs, precision, prefix);
 
-	ASSERT_STRING_EQUAL(v->data, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
 	lwfree(v);
@@ -42,96 +42,67 @@ static void do_gml2_test_prefix(char * in, char * out, char * srs, int precision
 
 static void do_gml3_test_opts(char * in, char * out, char * srs, int precision, int opts)
 {
-	LWGEOM *g;
-	char *h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_gml3(g, srs, precision, opts, "gml:", NULL);
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:", NULL);
-
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 static void do_gml3_test(char * in, char * out, char * srs, int precision, int is_geodetic)
 {
-	LWGEOM *g;
-	char *h;
 	int opts = LW_GML_IS_DIMS;
 	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:", NULL);
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_gml3(g, srs, precision, opts, "gml:", NULL);
 
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 static void do_gml3_test_prefix(char * in, char * out, char * srs, int precision, int is_geodetic, const char *prefix)
 {
-	LWGEOM *g;
-	char *h;
 	int opts = LW_GML_IS_DIMS;
-
 	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, opts, prefix, NULL);
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_gml3(g, srs, precision, opts, prefix, NULL);
 
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 static void do_gml3_test_nodims(char * in, char * out, char * srs, int precision, int is_geodetic, int is_dims, const char *prefix)
 {
-	LWGEOM *g;
-	char *h;
 	int opts = 0;
-
 	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 	if ( is_dims ) opts |= LW_GML_IS_DIMS;
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, opts, prefix, NULL);
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_gml3(g, srs, precision, opts, prefix, NULL);
 
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 static void do_gml2_unsupported(char * in, char * out)
 {
-	LWGEOM *g;
-	char *h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_gml2(g, NULL, 0, "");
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml2(g, NULL, 0, "");
-
-	if (strcmp(cu_error_msg, out))
-		fprintf(stderr, "\nGML 2 - In:   %s\nOut:  %s\nTheo: %s\n",
-		        in, cu_error_msg, out);
-	CU_ASSERT_STRING_EQUAL(out, cu_error_msg);
+	ASSERT_STRING_EQUAL(out, cu_error_msg);
 	cu_error_msg_reset();
 
-	lwfree(h);
+	lwfree(v);
 	lwgeom_free(g);
 }
 
@@ -146,7 +117,7 @@ static void do_gml2_extent_test(char * in, char * out, char * srs,
 	}
 	else
 	{
-		ASSERT_STRING_EQUAL(v->data, out);
+		ASSERT_VARLENA_EQUAL(v, out);
 	}
 
 	cu_error_msg_reset();
@@ -157,21 +128,13 @@ static void do_gml2_extent_test(char * in, char * out, char * srs,
 static void do_gml3_extent_test(char * in, char * out, char * srs,
                                 double precision, int opts, char* prefix)
 {
-	LWGEOM *g;
-	char *h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_extent_to_gml3(g, srs, precision, opts, prefix);
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_extent_to_gml3(g, srs, precision, opts, prefix);
-	if ( ! h ) h = strdup(cu_error_msg);
+	ASSERT_VARLENA_EQUAL(v, out);
 
-	if (strcmp(h, out))
-		fprintf(stderr, "\nEXT GML 3 - In:   %s\nObt: %s\nExp: %s\n",
-		        in, h, out);
-	CU_ASSERT_STRING_EQUAL(out, h);
-	cu_error_msg_reset();
-
-	lwfree(h);
 	lwgeom_free(g);
+	lwfree(v);
 }
 
 static void out_gml_test_precision(void)

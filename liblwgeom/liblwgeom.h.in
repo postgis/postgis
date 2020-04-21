@@ -1696,8 +1696,8 @@ extern lwvarlena_t* lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, i
 /**
  * @param opts output options bitfield, see LW_GML macros for meaning
  */
-extern char* lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix);
-extern char* lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix, const char *id);
+extern lwvarlena_t* lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix);
+extern lwvarlena_t* lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix, const char *id);
 extern lwvarlena_t* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
 extern lwvarlena_t* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
 extern lwvarlena_t* lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid);

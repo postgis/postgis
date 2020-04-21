@@ -204,8 +204,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g = NULL;
-	char *gml;
-	text *result;
+	lwvarlena_t *v;
 	int version;
 	char *srs;
 	int32_t srid = SRID_DEFAULT;
@@ -227,7 +226,6 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	*/
 	Oid first_type = get_fn_expr_argtype(fcinfo->flinfo, 0);
 	int argnum = 0;
-	int argeom = 0;
 	if (first_type != INT4OID)
 	{
 		version = 2;
@@ -236,7 +234,6 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	{
 		/* Get the version */
 		version = PG_GETARG_INT32(argnum++);
-		argeom = 1;
 		if (version != 2 && version != 3)
 		{
 			elog(ERROR, "Only GML 2 and GML 3 are supported");
@@ -316,28 +313,14 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	}
 
 	if (version == 2)
-	{
-		lwvarlena_t *v = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
-		if (!v)
-			PG_RETURN_NULL();
-		else
-			PG_RETURN_TEXT_P(v);
-	}
+		v = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
 	else
-		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, id);
+		v = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, id);
 
-    lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(g, argeom);
-
-	/* Return null on null */
-	if (!gml)
+	if (!v)
 		PG_RETURN_NULL();
-
-	/* Turn string result into text for return */
-	result = cstring_to_text(gml);
-	lwfree(gml);
-
-	PG_RETURN_TEXT_P(result);
+	else
+		PG_RETURN_TEXT_P(v);
 }
 
 

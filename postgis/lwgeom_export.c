@@ -205,8 +205,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *gml = NULL;
-	text *result;
+	lwvarlena_t *v = NULL;
 	int version;
 	char *srs;
 	int32_t srid;
@@ -308,35 +307,22 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	if (version == 2)
 	{
-		lwvarlena_t *v;
 		if (lwopts & LW_GML_EXTENT)
 			v = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
 		else
 			v = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
-		if (!v)
-			PG_RETURN_NULL();
-		PG_RETURN_TEXT_P(v);
 	}
 	if (version == 3)
 	{
 		if (lwopts & LW_GML_EXTENT)
-			gml = lwgeom_extent_to_gml3(
-			    lwgeom, srs, precision, lwopts, prefix);
+			v = lwgeom_extent_to_gml3(lwgeom, srs, precision, lwopts, prefix);
 		else
-			gml = lwgeom_to_gml3(
-			    lwgeom, srs, precision, lwopts, prefix, gml_id);
+			v = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, gml_id);
 	}
 
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 1);
-
-	/* Return null on null */
-	if ( ! gml )
+	if (!v)
 		PG_RETURN_NULL();
-
-	result = cstring_to_text(gml);
-	lwfree(gml);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(v);
 }
 
 
