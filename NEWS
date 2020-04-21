@@ -5,7 +5,7 @@ PostGIS 2.5.5
 
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
   - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
-
+  - #4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)
 
 PostGIS 2.5.4
 2020/02/28
