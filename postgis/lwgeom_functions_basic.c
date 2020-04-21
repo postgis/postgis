@@ -2216,8 +2216,12 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 		}
 		else if (where < 0 || where > (int32)line->points->npoints)
 		{
-			elog(ERROR, "Invalid offset");
+			elog(ERROR, "%s: Invalid offset", __func__);
 			PG_RETURN_NULL();
+		}
+		else
+		{
+			uwhere = where;
 		}
 	}
 

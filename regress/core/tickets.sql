@@ -1288,3 +1288,10 @@ select '#4399', 'ST_AsGeoJSON', ST_AsGeoJSON(geom)::text from geom;
 SELECT '#4599-1', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
 SELECT '#4599-2', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), 0));
 SELECT '#4599-3', ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3), -1));
+
+SELECT '#4670-0', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 0));
+SELECT '#4670-1', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 1));
+SELECT '#4670-2', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 2));
+SELECT '#4670-3', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 3));
+SELECT '#4670-4', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 4));
+SELECT '#4670-5', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geometry, 'POINT(2 2)'::geometry, 5));
