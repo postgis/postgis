@@ -20,36 +20,24 @@
 
 static void do_gml2_test(char * in, char * out, char * srs, int precision)
 {
-	LWGEOM *g;
-	char *h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_gml2(g, srs, precision, "gml:");
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml2(g, srs, precision, "gml:");
-
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_STRING_EQUAL(v->data, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 static void do_gml2_test_prefix(char * in, char * out, char * srs, int precision, const char *prefix)
 {
-	LWGEOM *g;
-	char *h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_gml2(g, srs, precision, prefix);
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml2(g, srs, precision, prefix);
-
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_STRING_EQUAL(v->data, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 static void do_gml3_test_opts(char * in, char * out, char * srs, int precision, int opts)
@@ -150,20 +138,19 @@ static void do_gml2_unsupported(char * in, char * out)
 static void do_gml2_extent_test(char * in, char * out, char * srs,
                                    double precision, char * prefix)
 {
-	LWGEOM *g;
-	char *h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_extent_to_gml2(g, srs, precision, prefix);
+	if (!v)
+	{
+		ASSERT_STRING_EQUAL(in, cu_error_msg);
+	}
+	else
+	{
+		ASSERT_STRING_EQUAL(v->data, out);
+	}
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_extent_to_gml2(g, srs, precision, prefix);
-	if ( ! h ) h = strdup(cu_error_msg);
-
-	if (strcmp(h, out))
-		fprintf(stderr, "\nEXT GML 2 - In:   %s\nObt: %s\nExp: %s\n",
-		        in, h, out);
-	CU_ASSERT_STRING_EQUAL(out, h);
 	cu_error_msg_reset();
-
-	lwfree(h);
+	lwfree(v);
 	lwgeom_free(g);
 }
 

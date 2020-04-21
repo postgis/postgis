@@ -308,11 +308,14 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	if (version == 2)
 	{
+		lwvarlena_t *v;
 		if (lwopts & LW_GML_EXTENT)
-			gml = lwgeom_extent_to_gml2(
-			    lwgeom, srs, precision, prefix);
+			v = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
 		else
-			gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+			v = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+		if (!v)
+			PG_RETURN_NULL();
+		PG_RETURN_TEXT_P(v);
 	}
 	if (version == 3)
 	{

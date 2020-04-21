@@ -316,7 +316,13 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	}
 
 	if (version == 2)
-		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+	{
+		lwvarlena_t *v = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+		if (!v)
+			PG_RETURN_NULL();
+		else
+			PG_RETURN_TEXT_P(v);
+	}
 	else
 		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, id);
 

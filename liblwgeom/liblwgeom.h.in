@@ -1691,8 +1691,8 @@ LWCOLLECTION* lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, d
 
 
 
-extern char* lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
-extern char* lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
+extern lwvarlena_t* lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
+extern lwvarlena_t* lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
 /**
  * @param opts output options bitfield, see LW_GML macros for meaning
  */
