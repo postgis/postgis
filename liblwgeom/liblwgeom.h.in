@@ -1702,7 +1702,7 @@ extern lwvarlena_t* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char
 extern lwvarlena_t* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
 extern lwvarlena_t* lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid);
 extern lwvarlena_t* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
-extern char* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision);
+extern lwvarlena_t* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision);
 
 /**
  * Create an LWGEOM object from a GeoJSON representation

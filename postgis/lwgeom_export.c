@@ -556,9 +556,7 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *encodedpolyline;
 	int precision = 5;
-	text *result;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -576,12 +574,5 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 		if ( precision < 0 ) precision = 5;
 	}
 
-	encodedpolyline = lwgeom_to_encoded_polyline(lwgeom, precision);
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 0);
-
-	result = cstring_to_text(encodedpolyline);
-	lwfree(encodedpolyline);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_encoded_polyline(lwgeom, precision));
 }
