@@ -4,7 +4,7 @@
 
 # See https://git.osgeo.org/gitea/postgis/postgis-docker
 # todo: add docker images from https://hub.docker.com/r/postgis/postgis-build-env/tags/
-test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
+test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel2
 kind: pipeline
 name: pg-9.3
 steps:
@@ -27,7 +27,7 @@ steps:
       - utils/check_all_upgrades.sh -s
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
 ---
-test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
+test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel2
 kind: pipeline
 name: pg-9.4
 steps:
@@ -50,7 +50,7 @@ steps:
       - utils/check_all_upgrades.sh -s
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
 ---
-test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
+test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel2
 kind: pipeline
 name: pg-9.5
 steps:
@@ -73,7 +73,7 @@ steps:
       - utils/check_all_upgrades.sh -s
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
 ---
-test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
+test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel2
 kind: pipeline
 name: pg-9.6
 steps:
@@ -96,7 +96,7 @@ steps:
       - utils/check_all_upgrades.sh -s
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
 ---
-test-image: &test-image docker.kbt.io/postgis/build-test:trisquel2
+test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel2
 kind: pipeline
 name: pg-10
 steps:
