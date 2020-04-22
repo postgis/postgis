@@ -375,8 +375,6 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_svg);
 Datum geography_as_svg(PG_FUNCTION_ARGS)
 {
-	char *svg;
-	text *result;
 	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
 	int relative = PG_GETARG_INT32(1) ? 1 : 0;
 	int precision = PG_GETARG_INT32(2);
@@ -387,15 +385,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	else if (precision < 0)
 		precision = 0;
 
-	svg = lwgeom_to_svg(lwgeom, precision, relative);
-
-    lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(g, 0);
-
-	result = cstring_to_text(svg);
-	lwfree(svg);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_svg(lwgeom, precision, relative));
 }
 
 

@@ -436,8 +436,6 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *svg;
-	text *result;
 	int relative = 0;
 	int precision=DBL_DIG;
 
@@ -459,13 +457,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	svg = lwgeom_to_svg(lwgeom, precision, relative);
-	result = cstring_to_text(svg);
-	lwgeom_free(lwgeom);
-	pfree(svg);
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_svg(lwgeom, precision, relative));
 }
 
 /**
