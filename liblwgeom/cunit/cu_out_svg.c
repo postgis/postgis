@@ -19,26 +19,39 @@
 
 static void do_svg_test(char * in, char * out, int precision, int relative)
 {
-	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	lwvarlena_t *v = lwgeom_to_svg(g, precision, relative);
+	LWGEOM *g;
+	char * h;
 
-	ASSERT_VARLENA_EQUAL(v, out);
+	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	h = lwgeom_to_svg(g, precision, relative);
+
+	if (strcmp(h, out))
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
+
+	CU_ASSERT_STRING_EQUAL(h, out);
 
 	lwgeom_free(g);
-	lwfree(v);
+	lwfree(h);
 }
 
 
 static void do_svg_unsupported(char * in, char * out)
 {
-	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	lwvarlena_t *v = lwgeom_to_svg(g, 0, 0);
+	LWGEOM *g;
+	char *h;
 
-	ASSERT_STRING_EQUAL(cu_error_msg, out);
+	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	h = lwgeom_to_svg(g, 0, 0);
+
+	if (strcmp(cu_error_msg, out))
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
+		        in, cu_error_msg, out);
+
+	CU_ASSERT_STRING_EQUAL(out, cu_error_msg);
 	cu_error_msg_reset();
 
+	lwfree(h);
 	lwgeom_free(g);
-	lwfree(v);
 }
 
 

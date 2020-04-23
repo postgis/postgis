@@ -292,7 +292,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	}
 	else
 	{
-		mem = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
+		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	}
 
 	if ( !mem )
@@ -385,7 +385,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	}
 
 	if (!state->config->use_wkt)
-		mem = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
+		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	else
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 
@@ -706,7 +706,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	}
 
 	if (!state->config->use_wkt)
-		mem = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
+		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
 	else
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 
@@ -1831,7 +1831,7 @@ done_cell:
 				}
 			}
 
-			//			free(geometry);
+			free(geometry);
 		}
 
 		/* Tidy up everything */

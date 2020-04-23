@@ -1266,10 +1266,10 @@ rt_raster_gdal_polygonize(
 			RASTER_DEBUGF(4, "LWGEOM wkt = %s", wkt);
 			rtdealloc(wkt);
 
-			lwvarlena_t *lwwkb = lwgeom_to_wkb_varlena(lwgeom, WKB_ISO | WKB_NDR);
-			size_t lwwkbsize = LWSIZE_GET(lwwkb->size) - LWVARHDRSZ;
+			size_t lwwkbsize = 0;
+			uint8_t *lwwkb = lwgeom_to_wkb(lwgeom, WKB_ISO | WKB_NDR, &lwwkbsize);
 			if (lwwkbsize) {
-				d_print_binary_hex("LWGEOM wkb", (const uint8_t *)lwwkb->data, lwwkbsize);
+				d_print_binary_hex("LWGEOM wkb", lwwkb, lwwkbsize);
 				rtdealloc(lwwkb);
 			}
 		}

@@ -1581,7 +1581,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	values[1] =  reason;
 
 	/* the location */
-	values[2] = location ? lwgeom_to_hexwkb_buffer(location, WKB_EXTENDED) : 0;
+	values[2] =  location ? lwgeom_to_hexwkb(location, WKB_EXTENDED, 0) : 0;
 
 	tuple = BuildTupleFromCStrings(attinmeta, values);
 	result = (HeapTupleHeader) palloc(tuple->t_len);

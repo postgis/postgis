@@ -26,25 +26,26 @@
 * @file X3D output routines.
 *
 **********************************************************************/
-
 #include "lwout_x3d.h"
 
 /*
  * VERSION X3D 3.0.2 http://www.web3d.org/specifications/x3d-3.0.dtd
  */
 /* takes a GEOMETRY and returns a X3D representation */
-lwvarlena_t *
+char*
 lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid)
 {
 	stringbuffer_t *sb;
 	int rv;
+	char *result;
 
-	/* Empty varlena for empties */
+	/* Empty string for empties */
 	if( lwgeom_is_empty(geom) )
 	{
-		lwvarlena_t *v = lwalloc(LWVARHDRSZ);
-		LWSIZE_SET(v->size, LWVARHDRSZ);
-		return v;
+		char *ret = NULL;
+		ret = lwalloc(1);
+		ret[0] = '\0';
+		return ret;
 	}
 
 	sb = stringbuffer_create();
@@ -56,10 +57,10 @@ lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const cha
 		return NULL;
 	}
 
-	lwvarlena_t *v = stringbuffer_getvarlenacopy(sb);
+	result = stringbuffer_getstringcopy(sb);
 	stringbuffer_destroy(sb);
 
-	return v;
+	return result;
 }
 /* takes a GEOMETRY and appends to string buffer the x3d output */
 static int

@@ -1213,7 +1213,8 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 
 	GSERIALIZED *gser = NULL;
 	uint8_t gtype;
-	lwvarlena_t *wkb = NULL;
+	unsigned char *wkb = NULL;
+	size_t wkb_len;
 
 	int i = 0;
 	uint32_t j = 0;
@@ -1371,29 +1372,22 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 
 		/* get wkb of geometry */
 		POSTGIS_RT_DEBUG(3, "getting wkb of geometry");
-		wkb = lwgeom_to_wkb_varlena(arg->gv[arg->ngv].geom, WKB_SFSQL);
+		wkb = lwgeom_to_wkb(arg->gv[arg->ngv].geom, WKB_SFSQL, &wkb_len);
 
 		/* rasterize geometry */
-		arg->gv[arg->ngv].mask = rt_raster_gdal_rasterize((unsigned char *)wkb->data,
-								  LWSIZE_GET(wkb->size) - LWVARHDRSZ,
-								  NULL,
-								  0,
-								  NULL,
-								  NULL,
-								  NULL,
-								  NULL,
-								  NULL,
-								  NULL,
-								  NULL,
-								  &(gt[1]),
-								  &(gt[5]),
-								  NULL,
-								  NULL,
-								  &(gt[0]),
-								  &(gt[3]),
-								  &(gt[2]),
-								  &(gt[4]),
-								  NULL);
+		arg->gv[arg->ngv].mask = rt_raster_gdal_rasterize(
+			wkb, wkb_len,
+			NULL,
+			0, NULL,
+			NULL, NULL,
+			NULL, NULL,
+			NULL, NULL,
+			&(gt[1]), &(gt[5]),
+			NULL, NULL,
+			&(gt[0]), &(gt[3]),
+			&(gt[2]), &(gt[4]),
+			NULL
+		);
 
 		pfree(wkb);
 		if (gtype != POINTTYPE && gtype != MULTIPOINTTYPE) {

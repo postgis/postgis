@@ -585,13 +585,10 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 * Convert LWGEOM to a char* in TWKB format. Caller is responsible for freeing
 * the returned array.
 */
-lwvarlena_t *
-lwgeom_to_twkb_with_idlist(const LWGEOM *geom,
-			   int64_t *idlist,
-			   uint8_t variant,
-			   int8_t precision_xy,
-			   int8_t precision_z,
-			   int8_t precision_m)
+uint8_t*
+lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant,
+               int8_t precision_xy, int8_t precision_z, int8_t precision_m,
+               size_t *twkb_size)
 {
 	LWDEBUGF(2, "Entered %s", __func__);
 	LWDEBUGF(2, "variant value %x", variant);
@@ -599,6 +596,8 @@ lwgeom_to_twkb_with_idlist(const LWGEOM *geom,
 	TWKB_GLOBALS tg;
 	TWKB_STATE ts;
 	bytebuffer_t geom_bytebuffer;
+
+	uint8_t *twkb;
 
 	memset(&ts, 0, sizeof(TWKB_STATE));
 	memset(&tg, 0, sizeof(TWKB_GLOBALS));
@@ -627,15 +626,18 @@ lwgeom_to_twkb_with_idlist(const LWGEOM *geom,
 	bytebuffer_init_with_size(ts.geom_buf, 512);
 	lwgeom_write_to_buffer(geom, &tg, &ts);
 
-	lwvarlena_t *v = bytebuffer_get_buffer_varlena(ts.geom_buf);
+	twkb = bytebuffer_get_buffer_copy(ts.geom_buf, twkb_size);
 	bytebuffer_destroy_buffer(ts.geom_buf);
-	return v;
+	return twkb;
 }
 
-lwvarlena_t *
-lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m)
+
+uint8_t*
+lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant,
+               int8_t precision_xy, int8_t precision_z, int8_t precision_m,
+               size_t *twkb_size)
 {
-	return lwgeom_to_twkb_with_idlist(geom, NULL, variant, precision_xy, precision_z, precision_m);
+	return lwgeom_to_twkb_with_idlist(geom, NULL, variant, precision_xy, precision_z, precision_m, twkb_size);
 }
 
 

@@ -55,7 +55,6 @@ void stringbuffer_copy(stringbuffer_t *sb, stringbuffer_t *src);
 extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
 extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);
-extern lwvarlena_t *stringbuffer_getvarlenacopy(stringbuffer_t *s);
 extern int stringbuffer_getlength(stringbuffer_t *sb);
 extern char stringbuffer_lastchar(stringbuffer_t *s);
 extern int stringbuffer_trim_trailing_white(stringbuffer_t *s);

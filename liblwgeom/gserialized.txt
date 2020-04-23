@@ -35,7 +35,7 @@ flags area. Or some combination of the above.
 
 typedef struct
 {
-  uint32 size; /* Use LWSIZE_SET() and LWSIZE_GET() macros to manipulate. */
+  uint32 size; /* Use SIZE_SET() and SIZE_GET() macros to manipulate. */
   uchar srid[3]; /* 21 bits of SRID (and 3 spare bits) */
   uchar flags; /* High priority information */
   uchar data[1]; /* See gserialized.txt */

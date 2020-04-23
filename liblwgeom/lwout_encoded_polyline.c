@@ -26,13 +26,13 @@
 #include "stringbuffer.h"
 #include "liblwgeom_internal.h"
 
-static lwvarlena_t *lwline_to_encoded_polyline(const LWLINE *, int precision);
-static lwvarlena_t *lwmmpoint_to_encoded_polyline(const LWMPOINT *, int precision);
-static lwvarlena_t *pointarray_to_encoded_polyline(const POINTARRAY *, int precision);
+static char* lwline_to_encoded_polyline(const LWLINE*, int precision);
+static char* lwmmpoint_to_encoded_polyline(const LWMPOINT*, int precision);
+static char* pointarray_to_encoded_polyline(const POINTARRAY*, int precision);
 
 /* takes a GEOMETRY and returns an Encoded Polyline representation */
-extern lwvarlena_t *
-lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision)
+extern char*
+lwgeom_to_encoded_polyline(const LWGEOM* geom, int precision)
 {
 	int type = geom->type;
 	switch (type)
@@ -48,37 +48,37 @@ lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision)
 	}
 }
 
-static lwvarlena_t *
-lwline_to_encoded_polyline(const LWLINE *line, int precision)
+static char*
+lwline_to_encoded_polyline(const LWLINE* line, int precision)
 {
 	return pointarray_to_encoded_polyline(line->points, precision);
 }
 
-static lwvarlena_t *
-lwmmpoint_to_encoded_polyline(const LWMPOINT *mpoint, int precision)
+static char*
+lwmmpoint_to_encoded_polyline(const LWMPOINT* mpoint, int precision)
 {
 	LWLINE* line = lwline_from_lwmpoint(mpoint->srid, mpoint);
-	lwvarlena_t *encoded_polyline = lwline_to_encoded_polyline(line, precision);
+	char* encoded_polyline = lwline_to_encoded_polyline(line, precision);
 
 	lwline_free(line);
 	return encoded_polyline;
 }
 
-static lwvarlena_t *
-pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
+static char*
+pointarray_to_encoded_polyline(const POINTARRAY* pa, int precision)
 {
 	uint32_t i;
 	const POINT2D* prevPoint;
 	int* delta;
+	char* encoded_polyline = NULL;
 	stringbuffer_t* sb;
 	double scale = pow(10, precision);
 
 	/* Empty input is empty string */
-	if (pa->npoints == 0)
-	{
-		lwvarlena_t *v = lwalloc(LWVARHDRSZ);
-		LWSIZE_SET(v->size, LWVARHDRSZ);
-		return v;
+	if (pa->npoints == 0) {
+		encoded_polyline = lwalloc(1 * sizeof(char));
+		encoded_polyline[0] = 0;
+		return encoded_polyline;
 	}
 
 	delta = lwalloc(2 * sizeof(int) * pa->npoints);
@@ -132,8 +132,8 @@ pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 	}
 
 	lwfree(delta);
-	lwvarlena_t *v = stringbuffer_getvarlenacopy(sb);
+	encoded_polyline = stringbuffer_getstringcopy(sb);
 	stringbuffer_destroy(sb);
 
-	return v;
+	return encoded_polyline;
 }

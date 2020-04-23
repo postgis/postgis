@@ -205,7 +205,8 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	lwvarlena_t *v = NULL;
+	char *gml = NULL;
+	text *result;
 	int version;
 	char *srs;
 	int32_t srid;
@@ -308,21 +309,31 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (version == 2)
 	{
 		if (lwopts & LW_GML_EXTENT)
-			v = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
+			gml = lwgeom_extent_to_gml2(
+			    lwgeom, srs, precision, prefix);
 		else
-			v = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+			gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
 	}
 	if (version == 3)
 	{
 		if (lwopts & LW_GML_EXTENT)
-			v = lwgeom_extent_to_gml3(lwgeom, srs, precision, lwopts, prefix);
+			gml = lwgeom_extent_to_gml3(
+			    lwgeom, srs, precision, lwopts, prefix);
 		else
-			v = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, gml_id);
+			gml = lwgeom_to_gml3(
+			    lwgeom, srs, precision, lwopts, prefix, gml_id);
 	}
 
-	if (!v)
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 1);
+
+	/* Return null on null */
+	if ( ! gml )
 		PG_RETURN_NULL();
-	PG_RETURN_TEXT_P(v);
+
+	result = cstring_to_text(gml);
+	lwfree(gml);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -334,7 +345,8 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	lwvarlena_t *geojson;
+	char *geojson;
+	text *result;
 	int precision = DBL_DIG;
 	int output_bbox = LW_FALSE;
 	int output_long_crs = LW_FALSE;
@@ -398,8 +410,11 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (srs) pfree(srs);
 
+	result = cstring_to_text(geojson);
+	lwfree(geojson);
+
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(geojson);
+	PG_RETURN_TEXT_P(result);
 }
 
 
@@ -411,10 +426,12 @@ Datum geometry_to_json(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	lwvarlena_t *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
+	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
+	text *result = cstring_to_text(geojson);
 	lwgeom_free(lwgeom);
+	pfree(geojson);
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(geojson);
+	PG_RETURN_TEXT_P(result);
 }
 
 PG_FUNCTION_INFO_V1(geometry_to_jsonb);
@@ -422,9 +439,9 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	lwvarlena_t *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
+	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
 	lwgeom_free(lwgeom);
-	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(pstrdup(geojson->data))));
+	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(geojson)));
 }
 
 
@@ -436,6 +453,8 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
+	char *svg;
+	text *result;
 	int relative = 0;
 	int precision=DBL_DIG;
 
@@ -457,7 +476,13 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	PG_RETURN_TEXT_P(lwgeom_to_svg(lwgeom, precision, relative));
+	svg = lwgeom_to_svg(lwgeom, precision, relative);
+	result = cstring_to_text(svg);
+	lwgeom_free(lwgeom);
+	pfree(svg);
+	PG_FREE_IF_COPY(geom, 0);
+
+	PG_RETURN_TEXT_P(result);
 }
 
 /**
@@ -468,6 +493,8 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
+	char *x3d;
+	text *result;
 	int version;
 	char *srs;
 	int32_t srid;
@@ -545,7 +572,16 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 		}
 	}
 
-	PG_RETURN_TEXT_P(lwgeom_to_x3d3(lwgeom, srs, precision, option, defid));
+
+	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);
+
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 1);
+
+	result = cstring_to_text(x3d);
+	lwfree(x3d);
+
+	PG_RETURN_TEXT_P(result);
 }
 
 /**
@@ -556,7 +592,9 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
+	char *encodedpolyline;
 	int precision = 5;
+	text *result;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -574,5 +612,12 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 		if ( precision < 0 ) precision = 5;
 	}
 
-	PG_RETURN_TEXT_P(lwgeom_to_encoded_polyline(lwgeom, precision));
+	encodedpolyline = lwgeom_to_encoded_polyline(lwgeom, precision);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+
+	result = cstring_to_text(encodedpolyline);
+	lwfree(encodedpolyline);
+
+	PG_RETURN_TEXT_P(result);
 }
