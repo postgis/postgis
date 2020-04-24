@@ -371,6 +371,6 @@ void print_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_oddball_formats);
 	PG_ADD_TEST(suite, test_lwpoint_to_latlon_bad_formats);
 	PG_ADD_TEST(suite, test_lwprint);
-	PG_ADD_TEST(suite, test_lwprint);
+	PG_ADD_TEST(suite, test_lwprint_roundtrip);
 }
 

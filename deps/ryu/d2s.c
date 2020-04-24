@@ -472,7 +472,7 @@ static inline int to_chars_uint64(uint64_t output, char* const result)
 	return olength;
 }
 
-static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool sign, uint32_t precision, char* const result)
+static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, uint32_t precision, char* const result)
 {
 	int index = 0;
 	if (sign)
@@ -499,10 +499,10 @@ static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool s
 	}
 	else
 	{
-		/* TODO: Better handle leading zeros */
 		int32_t nexp = -exp;
 		if (nexp <= 17)
 		{
+			/* TODO: Better handle leading zeros */
 			uint64_t p = pow10(nexp);
 			integer_part = output / p;
 			if (integer_part)
@@ -540,27 +540,23 @@ static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool s
 			else if (precision < decimal_digits)
 			{
 				uint32_t digits_to_trim = meaningful_digits - (precision - extra_zeros);
-				uint64_t decimal_trimmed;
-				/* TODO: Better handle trimming zeros ? */
-				do
-				{
-					uint64_t divisor = pow10(digits_to_trim);
-#ifdef RYU_DEBUG
-					printf("DECIMAL PRE=%lu\n", decimal_part);
-					printf("DIVISOR=%lu\n", divisor);
-					printf("DECIMAL POST=%lu\n", decimal_part);
-#endif
-					decimal_trimmed = (decimal_part + (divisor / 2)) / divisor;
-					digits_to_trim++;
+				uint64_t divisor = pow10(digits_to_trim);
+				decimal_part = (decimal_part + (divisor / 2)) / divisor;
 
-#ifdef RYU_DEBUG
-					printf("DECIMAL POST=%lu\n", decimal_part);
-#endif
-				} while (decimal_trimmed && (decimal_trimmed % 10 == 0));
-				decimal_part = decimal_trimmed;
+				if (decimal_part)
+				{
+					/* Remove trailing zeros after rounding */
+					for (;;)
+					{
+						const uint64_t q = div10(decimal_part);
+						const uint32_t r = ((uint32_t) decimal_part) - 10 * ((uint32_t) q);
+						if (r != 0)
+							break;
+						decimal_part = q;
+					}
+				}
 			}
 		}
-
 	}
 
 #ifdef RYU_DEBUG
@@ -586,7 +582,7 @@ static inline int to_chars_fixed_point(const floating_decimal_64 v, const bool s
 	return index;
 }
 
-static inline int to_chars(const floating_decimal_64 v, const bool sign, char* const result) {
+static inline int to_chars_exp(const floating_decimal_64 v, const bool sign, char* const result) {
   // Step 5: Print the decimal representation.
   int index = 0;
   if (sign) {
@@ -672,11 +668,15 @@ static inline int to_chars(const floating_decimal_64 v, const bool sign, char* c
   }
 
   // Print the exponent.
-  result[index++] = 'E';
+  result[index++] = 'e';
   int32_t exp = v.exponent + (int32_t) olength - 1;
   if (exp < 0) {
     result[index++] = '-';
     exp = -exp;
+  }
+  else
+  {
+	  result[index++] = '+';
   }
 
   if (exp >= 100) {
@@ -726,7 +726,7 @@ static inline bool d2d_small_int(const uint64_t ieeeMantissa, const uint32_t iee
   return true;
 }
 
-int d2s_buffered_n(double f, uint32_t precision, char* result) {
+int d2sfixed_buffered_n(double f, uint32_t precision, char* result) {
   // Step 1: Decode the floating-point number, and unify normalized and subnormal cases.
   const uint64_t bits = double_to_bits(f);
 
@@ -749,18 +749,49 @@ int d2s_buffered_n(double f, uint32_t precision, char* result) {
 
   floating_decimal_64 v = d2d(ieeeMantissa, ieeeExponent);
 
-  return to_chars_fixed_point(v, ieeeSign, precision, result);
+  return to_chars_fixed(v, ieeeSign, precision, result);
 }
 
-void d2s_buffered(double f, char* result) {
-  const int index = d2s_buffered_n(f, 20, result);
+int d2sexp_buffered_n(double f, char* result) {
+  // Step 1: Decode the floating-point number, and unify normalized and subnormal cases.
+  const uint64_t bits = double_to_bits(f);
 
-  // Terminate the string.
-  result[index] = '\0';
-}
+#ifdef RYU_DEBUG
+  printf("IN=");
+  for (int32_t bit = 63; bit >= 0; --bit) {
+    printf("%d", (int) ((bits >> bit) & 1));
+  }
+  printf("\n");
+#endif
 
-char* d2s(double f) {
-  char* const result = (char*) malloc(25);
-  d2s_buffered(f, result);
-  return result;
+  // Decode bits into sign, mantissa, and exponent.
+  const bool ieeeSign = ((bits >> (DOUBLE_MANTISSA_BITS + DOUBLE_EXPONENT_BITS)) & 1) != 0;
+  const uint64_t ieeeMantissa = bits & ((1ull << DOUBLE_MANTISSA_BITS) - 1);
+  const uint32_t ieeeExponent = (uint32_t) ((bits >> DOUBLE_MANTISSA_BITS) & ((1u << DOUBLE_EXPONENT_BITS) - 1));
+  // Case distinction; exit early for the easy cases.
+  if (ieeeExponent == ((1u << DOUBLE_EXPONENT_BITS) - 1u) || (ieeeExponent == 0 && ieeeMantissa == 0)) {
+    return copy_special_str(result, ieeeSign, ieeeExponent, ieeeMantissa);
+  }
+
+  floating_decimal_64 v;
+  const bool isSmallInt = d2d_small_int(ieeeMantissa, ieeeExponent, &v);
+  if (isSmallInt) {
+    // For small integers in the range [1, 2^53), v.mantissa might contain trailing (decimal) zeros.
+    // For scientific notation we need to move these zeros into the exponent.
+    // (This is not needed for fixed-point notation, so it might be beneficial to trim
+    // trailing zeros in to_chars only if needed - once fixed-point notation output is implemented.)
+    for (;;) {
+      const uint64_t q = div10(v.mantissa);
+      const uint32_t r = ((uint32_t) v.mantissa) - 10 * ((uint32_t) q);
+      if (r != 0) {
+        break;
+      }
+      v.mantissa = q;
+      ++v.exponent;
+    }
+  } else {
+    v = d2d(ieeeMantissa, ieeeExponent);
+  }
+
+  return to_chars_exp(v, ieeeSign, result);
 }

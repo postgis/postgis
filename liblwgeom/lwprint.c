@@ -441,41 +441,6 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 	return lwdoubles_to_latlon(p->y, p->x, format);
 }
 
-/**
- * Returns the decimal length of a double. 0 for special cases (inf)
- */
-static inline uint32_t
-lwdecimal_length(const double d)
-{
-	assert(d >= 0.0);
-	if (d > OUT_MAX_DOUBLE)
-	{
-		if (isinf(d))
-			return 0;
-		return floor(log10(d)) + 1;
-	}
-	int64_t v = (int64_t) d;
-	/* For compatibility with the previous implementation, we assume 0 has 0 digits,
-	 * although that's clearly not the case */
-	if (v == 0) { return 0; }
-	if (v < 10) { return 1; }
-	if (v < 100) { return 2; }
-	if (v < 1000) { return 3; }
-	if (v < 10000) { return 4; }
-	if (v < 100000) { return 5; }
-	if (v < 1000000) { return 6; }
-	if (v < 10000000) { return 7; }
-	if (v < 100000000) { return 8; }
-	if (v < 1000000000) { return 9; }
-	if (v < 10000000000) { return 10; }
-	if (v < 100000000000) { return 11; }
-	if (v < 1000000000000) { return 12; }
-	if (v < 10000000000000) { return 13; }
-	if (v < 100000000000000) { return 14; }
-
-	return 15;
-}
-
 /*
  * Print an ordinate value using at most **maxdd** number of decimal digits
  * The actual number of printed decimal digits may be less than the
@@ -498,19 +463,14 @@ lwprint_double(double d, int maxdd, char *buf)
 		return 1;
 	}
 
+	/* TODO: Consider scientific notation for small numbers ( < 0.0001 ) */
 	if (ad >= OUT_MAX_DOUBLE)
 	{
-		/* Compat with previous releases: The precision for exponential notation
-		 * was, as far as I can see, 8 - length(exponent) */
-		const uint32_t fractional_digits = 8 - lwdecimal_length(lwdecimal_length(ad));
-		length = d2exp_buffered_n(d, fractional_digits, buf);
+		length = d2sexp_buffered_n(d, buf);
 	}
 	else
 	{
-		//		const int integer_digits = lwdecimal_length(ad);
-		//		const int fractional_digits = FP_MAX(0, FP_MIN(maxdd, OUT_MAX_DIGITS - integer_digits));
-		//		length = d2fixed_buffered_n(d, fractional_digits, buf);
-		length = d2s_buffered_n(d, FP_MAX(0, maxdd), buf);
+		length = d2sfixed_buffered_n(d, FP_MAX(0, maxdd), buf);
 	}
 	buf[length] = '\0';
 
