@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2020-01-16 16:27+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-04-25 00:23+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -112,7 +112,7 @@ msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
 
 #. Tag: title
 #: reference_guc.xml:32 reference_guc.xml:80 reference_guc.xml:167
-#: reference_guc.xml:221
+#: reference_guc.xml:228
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -505,8 +505,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_guc.xml:215
-#, no-c-format
-msgid "Set and reset <varname>postgis.enable_outdb_rasters</varname>"
+#, fuzzy, no-c-format
+msgid ""
+"Set and reset <varname>postgis.enable_outdb_rasters</varname> for current "
+"session"
 msgstr ""
 "<varname>postgis.enable_outdb_rasters</varname> 를 설정한 다음 재설정해보십시"
 "오."
@@ -524,3 +526,33 @@ msgstr ""
 "SET postgis.enable_outdb_rasters = default;\n"
 "SET postgis.enable_outdb_rasters = True;\n"
 "SET postgis.enable_outdb_rasters = False;"
+
+#. Tag: para
+#: reference_guc.xml:219
+#, no-c-format
+msgid "Set for specific database"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:221
+#, fuzzy, no-c-format
+msgid "ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;"
+msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
+
+#. Tag: para
+#: reference_guc.xml:223
+#, no-c-format
+msgid ""
+"Setting for whole database cluster. You need to reconnect to the database "
+"for changes to take effect."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:224
+#, no-c-format
+msgid ""
+"--writes to postgres.auto.conf\n"
+"ALTER SYSTEM postgis.enable_outdb_rasters = true;\n"
+" --Reloads postgres conf\n"
+"SELECT pg_reload_conf();"
+msgstr ""

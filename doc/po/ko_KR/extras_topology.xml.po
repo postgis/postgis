@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-02-01 19:38+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -1068,7 +1068,8 @@ msgid ""
 "<refpurpose>Takes a topology name and provides summary totals of types of "
 "objects in topology.</refpurpose>"
 msgstr ""
-"<refpurpose>지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합니다.</refpurpose>"
+"<refpurpose>지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 "
+"반환합니다.</refpurpose>"
 
 #. Tag: funcprototype
 #: extras_topology.xml:430
@@ -1089,7 +1090,8 @@ msgid ""
 "<para>Takes a topology name and provides summary totals of types of objects "
 "in topology.</para>"
 msgstr ""
-"<para>지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합니다.</para>"
+"<para>지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합"
+"니다.</para>"
 
 #. Tag: para
 #: extras_topology.xml:443 extras_topology.xml:662 extras_topology.xml:800
