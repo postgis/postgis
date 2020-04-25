@@ -3044,7 +3044,7 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
 			the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
 			will not be in the resulting geometry. If resulting geometry have too few vertex points left for its geometry type an empty
 			geometry will be returned. In a geometry collection
-			geometries without enough points will just be left out silently. If </para>
+			geometries without enough points will just be left out silently.</para>
 		<para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area
 			of a vertex in its m-value. With ST_FilterByM it then is possible to get a simplified version of the geometry without any calculations, just by filtering</para>
 
