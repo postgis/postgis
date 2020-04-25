@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-02-01 19:38+0000\n"
 "PO-Revision-Date: 2016-01-20 02:09+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -37,7 +37,7 @@ msgstr ""
 "せんが、通常は実行可能なplpgsqlベースのものまたは標準的なシェルスクリプトで"
 "す。"
 
-#. Tag: chapter
+#. Tag: sect1
 #: extras.xml:6
 #, no-c-format
 msgid "&extras_tigergeocoder;"

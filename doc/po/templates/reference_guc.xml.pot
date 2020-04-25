@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2020-04-25 00:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -99,7 +99,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_guc.xml:32 reference_guc.xml:80 reference_guc.xml:167
-#: reference_guc.xml:221
+#: reference_guc.xml:228
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -422,7 +422,9 @@ msgstr ""
 #. Tag: para
 #: reference_guc.xml:215
 #, no-c-format
-msgid "Set and reset <varname>postgis.enable_outdb_rasters</varname>"
+msgid ""
+"Set and reset <varname>postgis.enable_outdb_rasters</varname> for current "
+"session"
 msgstr ""
 
 #. Tag: programlisting
@@ -433,4 +435,34 @@ msgid ""
 "SET postgis.enable_outdb_rasters = default;\n"
 "SET postgis.enable_outdb_rasters = True;\n"
 "SET postgis.enable_outdb_rasters = False;"
+msgstr ""
+
+#. Tag: para
+#: reference_guc.xml:219
+#, no-c-format
+msgid "Set for specific database"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:221
+#, no-c-format
+msgid "ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;"
+msgstr ""
+
+#. Tag: para
+#: reference_guc.xml:223
+#, no-c-format
+msgid ""
+"Setting for whole database cluster. You need to reconnect to the database "
+"for changes to take effect."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:224
+#, no-c-format
+msgid ""
+"--writes to postgres.auto.conf\n"
+"ALTER SYSTEM postgis.enable_outdb_rasters = true;\n"
+" --Reloads postgres conf\n"
+"SELECT pg_reload_conf();"
 msgstr ""

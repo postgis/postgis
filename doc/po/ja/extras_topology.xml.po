@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-02-01 19:38+0000\n"
 "PO-Revision-Date: 2018-09-26 00:55+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -1106,8 +1106,8 @@ msgid ""
 "<refpurpose>Takes a topology name and provides summary totals of types of "
 "objects in topology.</refpurpose>"
 msgstr ""
-"<refpurpose>Tトポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体を提供しま"
-"す。</refpurpose>"
+"<refpurpose>Tトポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体"
+"を提供します。</refpurpose>"
 
 #. Tag: funcprototype
 #: extras_topology.xml:430
@@ -1128,8 +1128,8 @@ msgid ""
 "<para>Takes a topology name and provides summary totals of types of objects "
 "in topology.</para>"
 msgstr ""
-"<para>トポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体を提供しま"
-"す。</para>"
+"<para>トポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体を提供"
+"します。</para>"
 
 #. Tag: para
 #: extras_topology.xml:443 extras_topology.xml:662 extras_topology.xml:800
