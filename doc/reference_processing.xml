@@ -879,7 +879,7 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
 		geometry that encloses all geometries in the input.</para>
 
 		<para>In the general case the convex hull is a Polygon.
-		The convext hull of two or more collinear points is a two-point LineString.
+		The convex hull of two or more collinear points is a two-point LineString.
 		The convex hull of one or more identical points is a Point.</para>
 
 		<para>It is usually used with Multi* and GeometryCollections.
@@ -3044,11 +3044,11 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
 			the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
 			will not be in the resulting geometry. If resulting geometry have too few vertex points left for its geometry type an empty
 			geometry will be returned. In a geometry collection
-			geometries without enough points will just be left out silently. If </para>
+			geometries without enough points will just be left out silently.</para>
 		<para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area
-			of a vertex in it's m-value. With ST_FilterByM it then is possible to get a simplified version of the geometry without any calculations, just by filtering</para>
+			of a vertex in its m-value. With ST_FilterByM it then is possible to get a simplified version of the geometry without any calculations, just by filtering</para>
 
-		<note><para>There is a difference in what ST_SimplifyVW returns when not enough points meets the creterias compared to ST_FilterByM.
+		<note><para>There is a difference in what ST_SimplifyVW returns when not enough points meet the criteria compared to ST_FilterByM.
 				ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>
 		<note><para>Note that the retuned geometry might be invalid</para></note>
 		<note><para>This function returns all dimensions, also the z and m-value</para></note>
