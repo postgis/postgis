@@ -851,6 +851,7 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 			</imageobject></inlinemediaobject></para>
 
 			<para>Availability: 3.1</para>
+			<note><para>All calls in the examples use an implicit LATERAL construct although you don't see the LATERAL keywor.  The LATERAL keyword is optional for set returning functions and is implied when using a input from prior table in the FROM.</para></note>
 
 		</refsection>
 
@@ -879,17 +880,11 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		</imageobject></inlinemediaobject></para>
 		<para>Tiling states results in a hexagon coverage of each state, and multiple
 			hexagons overlapping at the borders between states.</para>
-		 <programlisting>WITH hexes AS (
-	SELECT admin1.gid, hex.geom
+		 <programlisting>SELECT admin1.gid, hex.geom
 	FROM admin1
-		CROSS JOIN LATERAL ST_HexagonGrid(100000, admin1.geom) AS hex
+		CROSS JOIN ST_HexagonGrid(100000, admin1.geom) AS hex
 	WHERE adm0_a3 = 'USA'
-)
-SELECT hexes.*
-FROM hexes
-	INNER JOIN admin1 ON hexes.gid = admin1.gid
-WHERE ST_Intersects(admin1.geom, hexes.geom)
-</programlisting>
+		AND ST_Intersects(admin1.geom, hex.geom)</programlisting>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
