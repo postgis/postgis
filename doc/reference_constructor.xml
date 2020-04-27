@@ -859,13 +859,13 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<para>To do a point summary against a hexagonal tiling, generate a hexagon grid using the
 		extent of the points as the bounds, then spatially join to that grid.</para>
 		 <programlisting>WITH bounds AS (
- 	SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'),3857) AS geom
+ 		SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'),3857) AS geom
  )
- SELECT Count(*), hexes.geom
- FROM bounds CROSS JOIN
- 	LATERAL ST_HexagonGrid(10000, bounds.geom) AS hexes
- INNER JOIN  pointtable AS pts
- 	ON ST_Intersects(pts.geom, hexes.geom)
+ SELECT COUNT(*), hexes.geom
+ FROM bounds
+ 	CROSS JOIN
+ 		LATERAL ST_HexagonGrid(10000, bounds.geom) AS hexes
+	INNER JOIN pointtable AS pts ON ST_Intersects(pts.geom, hexes.geom)
  GROUP BY hexes.geom;</programlisting>
 		</refsection>
 
@@ -880,14 +880,14 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<para>Tiling states results in a hexagon coverage of each state, and multiple
 			hexagons overlapping at the borders between states.</para>
 		 <programlisting>WITH hexes AS (
-	SELECT admin1.gid,
-	      hex.geom
-	FROM admin1 CROSS JOIN ST_HexagonGrid(100000, admin1.geom) AS hex
+	SELECT admin1.gid, hex.geom
+	FROM admin1
+		CROSS JOIN LATERAL ST_HexagonGrid(100000, admin1.geom) AS hex
 	WHERE adm0_a3 = 'USA'
 )
 SELECT hexes.*
 FROM hexes
-INNER JOIN admin1 ON hexes.gid = admin1.gid
+	INNER JOIN admin1 ON hexes.gid = admin1.gid
 WHERE ST_Intersects(admin1.geom, hexes.geom)
 </programlisting>
 		</refsection>
