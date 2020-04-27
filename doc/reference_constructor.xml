@@ -851,7 +851,6 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 			</imageobject></inlinemediaobject></para>
 
 			<para>Availability: 3.1</para>
-			<note><para>All calls in the examples use an implicit LATERAL construct although you don't see the LATERAL keywor.  The LATERAL keyword is optional for set returning functions and is implied when using a input from prior table in the FROM.</para></note>
 
 		</refsection>
 
@@ -859,12 +858,10 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<title>Example: Counting points in hexagons</title>
 		<para>To do a point summary against a hexagonal tiling, generate a hexagon grid using the
 		extent of the points as the bounds, then spatially join to that grid.</para>
-		 <programlisting>WITH bounds AS (
- 		SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'),3857) AS geom
- )
- SELECT COUNT(*), hexes.geom
- FROM bounds
- 	CROSS JOIN ST_HexagonGrid(10000, bounds.geom) AS hexes
+		 <programlisting>SELECT COUNT(*), hexes.geom
+ FROM ST_HexagonGrid(10000,
+ 			 ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'),3857)
+ 		) AS hexes
 	INNER JOIN pointtable AS pts ON ST_Intersects(pts.geom, hexes.geom)
  GROUP BY hexes.geom;</programlisting>
 		</refsection>
@@ -874,6 +871,7 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<para>If we generate a set of hexagons for each polygon boundary and filter
 			out those that do not intersect their hexagons, we end up with a tiling for
 			each polygon.</para>
+		<note><para>The LATERAL keyword is optional for set returning functions and is implied when using a input from prior table in the FROM. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs.</para></note>
 		<para><inlinemediaobject><imageobject>
 			<imagedata fileref='images/st_hexagongrid03.png' />
 		</imageobject></inlinemediaobject></para>
