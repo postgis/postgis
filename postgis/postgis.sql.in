@@ -5978,7 +5978,7 @@ CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 -- Grid / Hexagon coverage functions
 ---
 
--- Availability: 3.0.0
+-- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_Hexagon(size float8, cell_i integer, cell_j integer, origin geometry DEFAULT 'POINT(0 0)')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_Hexagon'
@@ -5986,7 +5986,7 @@ CREATE OR REPLACE FUNCTION ST_Hexagon(size float8, cell_i integer, cell_j intege
 	PARALLEL SAFE
 	_COST_MEDIUM;
 
--- Availability: 3.0.0
+-- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_Square(size float8, cell_i integer, cell_j integer, origin geometry DEFAULT 'POINT(0 0)')
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_Square'
@@ -5994,7 +5994,7 @@ CREATE OR REPLACE FUNCTION ST_Square(size float8, cell_i integer, cell_j integer
 	PARALLEL SAFE
 	_COST_MEDIUM;
 
--- Availability: 3.0.0
+-- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_HexagonGrid(size float8, bounds geometry, OUT geom geometry, OUT i integer, OUT j integer)
     RETURNS SETOF record
 	AS 'MODULE_PATHNAME', 'ST_ShapeGrid'
@@ -6002,7 +6002,7 @@ CREATE OR REPLACE FUNCTION ST_HexagonGrid(size float8, bounds geometry, OUT geom
 	PARALLEL SAFE
 	_COST_MEDIUM;
 
--- Availability: 3.0.0
+-- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_SquareGrid(size float8, bounds geometry, OUT geom geometry, OUT i integer, OUT j integer)
     RETURNS SETOF record
 	AS 'MODULE_PATHNAME', 'ST_ShapeGrid'
