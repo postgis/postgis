@@ -864,8 +864,7 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
  )
  SELECT COUNT(*), hexes.geom
  FROM bounds
- 	CROSS JOIN
- 		LATERAL ST_HexagonGrid(10000, bounds.geom) AS hexes
+ 	CROSS JOIN ST_HexagonGrid(10000, bounds.geom) AS hexes
 	INNER JOIN pointtable AS pts ON ST_Intersects(pts.geom, hexes.geom)
  GROUP BY hexes.geom;</programlisting>
 		</refsection>
