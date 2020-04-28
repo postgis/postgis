@@ -61,3 +61,8 @@ indent_style = tab
 # .bat files want CRLF
 [*.bat]
 end_of_line = crlf
+
+# Docbook should be space cause tabs are mangled in html
+[*.xml]
+indent_style = space
+indent_size = 4

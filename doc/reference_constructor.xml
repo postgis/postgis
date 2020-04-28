@@ -859,14 +859,17 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<para>To do a point summary against a hexagonal tiling, generate a hexagon grid using the
 		extent of the points as the bounds, then spatially join to that grid.</para>
 		 <programlisting>SELECT COUNT(*), hexes.geom
- FROM ST_HexagonGrid(10000,
- 			 ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'),3857)
- 		) AS hexes
-	INNER JOIN pointtable AS pts ON ST_Intersects(pts.geom, hexes.geom)
- GROUP BY hexes.geom;</programlisting>
-		</refsection>
-
-		<refsection>
+FROM
+    ST_HexagonGrid(
+        10000,
+        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
+    ) AS hexes
+    INNER JOIN
+    pointtable AS pts
+    ON ST_Intersects(pts.geom, hexes.geom)
+GROUP BY hexes.geom;</programlisting>
+    </refsection>
+    <refsection>
 		<title>Example: Generating hex coverage of polygons</title>
 		<para>If we generate a set of hexagons for each polygon boundary and filter
 			out those that do not intersect their hexagons, we end up with a tiling for
@@ -877,16 +880,20 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<para>Tiling states results in a hexagon coverage of each state, and multiple
 			hexagons overlapping at the borders between states.</para>
 		<note><para>The LATERAL keyword is implied for set-returning functions when referring to a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs for this example.</para></note>
-		 <programlisting>SELECT admin1.gid, hex.geom
-	FROM admin1
-		CROSS JOIN ST_HexagonGrid(100000, admin1.geom) AS hex
-	WHERE adm0_a3 = 'USA'
-		AND ST_Intersects(admin1.geom, hex.geom)</programlisting>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_EstimatedExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SquareGrid" />, <xref linkend="ST_TileEnvelope" /></para>
-		</refsection>
+        <programlisting>SELECT admin1.gid, hex.geom
+        FROM
+            admin1
+            CROSS JOIN
+            ST_HexagonGrid(100000, admin1.geom) AS hex
+        WHERE
+            adm0_a3 = 'USA'
+            AND
+            ST_Intersects(admin1.geom, hex.geom)</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_EstimatedExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SquareGrid" />, <xref linkend="ST_TileEnvelope" /></para>
+        </refsection>
 	</refentry>
 
 
@@ -928,19 +935,23 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<title>Example: Counting points in squares</title>
 		<para>To do a point summary against a square tiling, generate a square grid using the
 		extent of the points as the bounds, then spatially join to that grid.</para>
-		 <programlisting>WITH bounds AS (
- 	SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) AS geom
- )
- SELECT Count(*), squares.geom
- FROM pointtable pts
- JOIN ST_SquareGrid(1000, bounds.geom) squares
- GROUP BY squares.geom
-</programlisting>
+		 <programlisting>SELECT COUNT(*), squares.geom
+FROM
+    pointtable AS pts
+    INNER JOIN
+    ST_SquareGrid(
+        1000,
+        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
+    ) AS squares
+    ON ST_Intersects(pts.geom, squares.geom)
+GROUP BY squares.geom</programlisting>
 		</refsection>
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_HexagonGrid" /></para>
+			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_HexagonGrid" />
+            , <xref linkend="ST_EstimatedExtent" />
+            , <xref linkend="ST_SetSRID" /></para>
 		</refsection>
 	</refentry>
 
