@@ -871,12 +871,12 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<para>If we generate a set of hexagons for each polygon boundary and filter
 			out those that do not intersect their hexagons, we end up with a tiling for
 			each polygon.</para>
-		<note><para>The LATERAL keyword is optional for set returning functions and is implied when using a input from prior table in the FROM. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs.</para></note>
 		<para><inlinemediaobject><imageobject>
 			<imagedata fileref='images/st_hexagongrid03.png' />
 		</imageobject></inlinemediaobject></para>
 		<para>Tiling states results in a hexagon coverage of each state, and multiple
 			hexagons overlapping at the borders between states.</para>
+		<note><para>The LATERAL keyword is implied for set-returning functions when referring to a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs for this example.</para></note>
 		 <programlisting>SELECT admin1.gid, hex.geom
 	FROM admin1
 		CROSS JOIN ST_HexagonGrid(100000, admin1.geom) AS hex
