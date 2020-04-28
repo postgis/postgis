@@ -881,14 +881,14 @@ GROUP BY hexes.geom;</programlisting>
 			hexagons overlapping at the borders between states.</para>
 		<note><para>The LATERAL keyword is implied for set-returning functions when referring to a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs for this example.</para></note>
         <programlisting>SELECT admin1.gid, hex.geom
-        FROM
-            admin1
-            CROSS JOIN
-            ST_HexagonGrid(100000, admin1.geom) AS hex
-        WHERE
-            adm0_a3 = 'USA'
-            AND
-            ST_Intersects(admin1.geom, hex.geom)</programlisting>
+FROM
+    admin1
+    CROSS JOIN
+    ST_HexagonGrid(100000, admin1.geom) AS hex
+WHERE
+    adm0_a3 = 'USA'
+    AND
+    ST_Intersects(admin1.geom, hex.geom)</programlisting>
         </refsection>
         <refsection>
             <title>See Also</title>
