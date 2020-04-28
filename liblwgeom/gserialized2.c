@@ -274,7 +274,7 @@ gserialized2_hash(const GSERIALIZED *g1)
 	size_t hsz1 = gserialized2_header_size(g1);
 	uint8_t *b1 = (uint8_t *)g1 + hsz1;
 	/* Calculate size of type/coordinate buffer */
-	size_t sz1 = SIZE_GET(g1->size);
+	size_t sz1 = LWSIZE_GET(g1->size);
 	size_t bsz1 = sz1 - hsz1;
 	/* Calculate size of srid/type/coordinate buffer */
 	int32_t srid = gserialized2_get_srid(g1);
@@ -1195,7 +1195,7 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	** We are aping PgSQL code here, PostGIS code should use
 	** VARSIZE to set this for real.
 	*/
-	SIZE_SET(g->size, expected_size);
+	LWSIZE_SET(g->size, expected_size);
 	g->gflags = lwflags_get_g2flags(geom->flags);
 
 	/* Move write head past size, srid and flags. */
@@ -1605,7 +1605,7 @@ GSERIALIZED* gserialized2_set_gbox(GSERIALIZED *g, GBOX *gbox)
 	*/
 	else
 	{
-		size_t varsize_in = SIZE_GET(g->size);
+		size_t varsize_in = LWSIZE_GET(g->size);
 		size_t varsize_out = varsize_in + box_size;
 		uint8_t *ptr_out, *ptr_in, *ptr;
 		g_out = lwalloc(varsize_out);
@@ -1622,7 +1622,7 @@ GSERIALIZED* gserialized2_set_gbox(GSERIALIZED *g, GBOX *gbox)
 		ptr_out += box_size;
 		memcpy(ptr_out, ptr_in, varsize_in - (ptr_in - ptr));
 		G2FLAGS_SET_BBOX(g_out->gflags, 1);
-		SIZE_SET(g_out->size, varsize_out);
+		LWSIZE_SET(g_out->size, varsize_out);
 	}
 
 	/* Move bounds to nearest float values */
@@ -1658,7 +1658,7 @@ GSERIALIZED* gserialized2_drop_gbox(GSERIALIZED *g)
 {
 	int g_ndims = G2FLAGS_NDIMS_BOX(g->gflags);
 	size_t box_size = 2 * g_ndims * sizeof(float);
-	size_t g_out_size = SIZE_GET(g->size) - box_size;
+	size_t g_out_size = LWSIZE_GET(g->size) - box_size;
 	GSERIALIZED *g_out = lwalloc(g_out_size);
 
 	/* Copy the contents while omitting the box */
@@ -1678,7 +1678,7 @@ GSERIALIZED* gserialized2_drop_gbox(GSERIALIZED *g)
 		/* Copy parts after the box into place */
 		memcpy(outptr, inptr, g_out_size - 8);
 		G2FLAGS_SET_BBOX(g_out->gflags, 0);
-		SIZE_SET(g_out->size, g_out_size);
+		LWSIZE_SET(g_out->size, g_out_size);
 	}
 	/* No box? Nothing to do but copy and return. */
 	else

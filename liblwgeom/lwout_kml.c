@@ -40,12 +40,11 @@ static int ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_
 */
 
 /* takes a GEOMETRY and returns a KML representation */
-char*
+lwvarlena_t *
 lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 {
 	stringbuffer_t *sb;
 	int rv;
-	char *kml;
 
 	/* Can't do anything with empty */
 	if( lwgeom_is_empty(geom) )
@@ -60,10 +59,10 @@ lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 		return NULL;
 	}
 
-	kml = stringbuffer_getstringcopy(sb);
+	lwvarlena_t *v = stringbuffer_getvarlenacopy(sb);
 	stringbuffer_destroy(sb);
 
-	return kml;
+	return v;
 }
 
 static int

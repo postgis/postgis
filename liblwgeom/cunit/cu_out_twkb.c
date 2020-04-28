@@ -55,13 +55,11 @@ static int clean_twkb_out_suite(void)
 static void cu_twkb(char *wkt, int8_t prec_xy, int8_t prec_z, int8_t prec_m, uint8_t variant)
 {
 	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
-	size_t twkb_size;
-	uint8_t *twkb;
 	if ( ! g )  lwnotice("input wkt is invalid: %s", wkt);
-	twkb = lwgeom_to_twkb(g, variant, prec_xy,  prec_z, prec_m, &twkb_size);
+	lwvarlena_t *twkb = lwgeom_to_twkb(g, variant, prec_xy, prec_z, prec_m);
 	lwgeom_free(g);
 	if ( s ) free(s);
-	s = hexbytes_from_bytes(twkb, twkb_size);
+	s = hexbytes_from_bytes((uint8_t *)twkb->data, LWSIZE_GET(twkb->size) - LWVARHDRSZ);
 	free(twkb);
 }
 
@@ -73,15 +71,13 @@ static void cu_twkb_idlist(char *wkt, int64_t *idlist, int8_t prec_xy, int8_t pr
 {
 	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	LWGEOM *g_b;
-	size_t twkb_size;
-	uint8_t *twkb;
 	if ( ! g )  lwnotice("input wkt is invalid: %s", wkt);
-	twkb = lwgeom_to_twkb_with_idlist(g, idlist, variant, prec_xy,  prec_z, prec_m, &twkb_size);
+	lwvarlena_t *twkb = lwgeom_to_twkb_with_idlist(g, idlist, variant, prec_xy, prec_z, prec_m);
 	lwgeom_free(g);
 	if ( s ) free(s);
 	if ( w ) free(w);
-	s = hexbytes_from_bytes(twkb, twkb_size);
-	g_b = lwgeom_from_twkb(twkb, twkb_size, LW_PARSER_CHECK_NONE);
+	s = hexbytes_from_bytes((uint8_t *)twkb->data, LWSIZE_GET(twkb->size) - LWVARHDRSZ);
+	g_b = lwgeom_from_twkb((uint8_t *)twkb->data, LWSIZE_GET(twkb->size) - LWVARHDRSZ, LW_PARSER_CHECK_NONE);
 	w = lwgeom_to_ewkt(g_b);
 	lwgeom_free(g_b);
 	free(twkb);

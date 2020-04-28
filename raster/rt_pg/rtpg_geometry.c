@@ -728,8 +728,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	rt_raster rast = NULL;
 	rt_pgraster *pgrast = NULL;
 
-	unsigned char *wkb;
-	size_t wkb_len = 0;
+	lwvarlena_t *wkb;
 	unsigned char variant = WKB_SFSQL;
 
 	double scale[2] = {0};
@@ -1276,25 +1275,33 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 	/* get wkb of geometry */
 	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: getting wkb of geometry");
-	wkb = lwgeom_to_wkb(geom, variant, &wkb_len);
+	wkb = lwgeom_to_wkb_varlena(geom, variant);
 	lwgeom_free(geom);
 	PG_FREE_IF_COPY(gser, 0);
 
 	/* rasterize geometry */
 	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: rasterizing geometry");
 	/* use nodatavals for the init parameter */
-	rast = rt_raster_gdal_rasterize(wkb,
-		(uint32_t) wkb_len, srs,
-		num_bands, pixtypes,
-		nodatavals, values,
-		nodatavals, hasnodatas,
-		dim_x, dim_y,
-		scale_x, scale_y,
-		ul_xw, ul_yw,
-		grid_xw, grid_yw,
-		skew_x, skew_y,
-		options
-	);
+	rast = rt_raster_gdal_rasterize((unsigned char *)wkb->data,
+					LWSIZE_GET(wkb->size) - LWVARHDRSZ,
+					srs,
+					num_bands,
+					pixtypes,
+					nodatavals,
+					values,
+					nodatavals,
+					hasnodatas,
+					dim_x,
+					dim_y,
+					scale_x,
+					scale_y,
+					ul_xw,
+					ul_yw,
+					grid_xw,
+					grid_yw,
+					skew_x,
+					skew_y,
+					options);
 
 	if (pixtypes_len) pfree(pixtypes);
 	if (values_len) pfree(values);

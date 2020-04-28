@@ -659,21 +659,10 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 	}
 }
 
-/**
- * WKT emitter function. Allocates a new *char and fills it with the WKT
- * representation. If size_out is not NULL, it will be set to the size of the
- * allocated *char.
- *
- * @param variant Bitmasked value, accepts one of WKT_ISO, WKT_SFSQL,
- * WKT_EXTENDED.
- * @param precision Maximal number of digits after comma in the output doubles.
- * @param size_out If supplied, will return the size of the returned string,
- * including the null terminator.
- */
-char* lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out)
+static stringbuffer_t *
+lwgeom_to_wkt_internal(const LWGEOM *geom, uint8_t variant, int precision)
 {
 	stringbuffer_t *sb;
-	char *str = NULL;
 	if ( geom == NULL )
 		return NULL;
 	sb = stringbuffer_create();
@@ -688,10 +677,40 @@ char* lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *
 		lwerror("Uh oh");
 		return NULL;
 	}
-	str = stringbuffer_getstringcopy(sb);
+	return sb;
+}
+
+/**
+ * WKT emitter function. Allocates a new *char and fills it with the WKT
+ * representation. If size_out is not NULL, it will be set to the size of the
+ * allocated *char.
+ *
+ * @param variant Bitmasked value, accepts one of WKT_ISO, WKT_SFSQL,
+ * WKT_EXTENDED.
+ * @param precision Maximal number of digits after comma in the output doubles.
+ * @param size_out If supplied, will return the size of the returned string,
+ * including the null terminator.
+ */
+char *
+lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out)
+{
+	stringbuffer_t *sb = lwgeom_to_wkt_internal(geom, variant, precision);
+	if (!sb)
+		return NULL;
+	char *str = stringbuffer_getstringcopy(sb);
 	if ( size_out )
 		*size_out = stringbuffer_getlength(sb) + 1;
 	stringbuffer_destroy(sb);
 	return str;
 }
 
+lwvarlena_t *
+lwgeom_to_wkt_varlena(const LWGEOM *geom, uint8_t variant, int precision)
+{
+	stringbuffer_t *sb = lwgeom_to_wkt_internal(geom, variant, precision);
+	if (!sb)
+		return NULL;
+	lwvarlena_t *output = stringbuffer_getvarlenacopy(sb);
+	stringbuffer_destroy(sb);
+	return output;
+}

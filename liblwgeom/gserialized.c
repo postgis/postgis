@@ -314,8 +314,8 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 {
 	GBOX box1, box2;
 	uint64_t hash1, hash2;
-	size_t sz1 = SIZE_GET(g1->size);
-	size_t sz2 = SIZE_GET(g2->size);
+	size_t sz1 = LWSIZE_GET(g1->size);
+	size_t sz2 = LWSIZE_GET(g2->size);
 	size_t hsz1 = gserialized_header_size(g1);
 	size_t hsz2 = gserialized_header_size(g2);
 	uint8_t *b1 = (uint8_t*)g1 + hsz1;

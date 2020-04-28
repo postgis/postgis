@@ -19,38 +19,25 @@
 
 static void do_geojson_test(char * in, char * out, char * srs, int precision, int has_bbox)
 {
-	LWGEOM *g;
-	char * h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_geojson(g, srs, precision, has_bbox);
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_geojson(g, srs, precision, has_bbox);
-
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 
 static void do_geojson_unsupported(char * in, char * out)
 {
-	LWGEOM *g;
-	char *h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_geojson(g, NULL, 0, 0);
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_geojson(g, NULL, 0, 0);
-
-	if (strcmp(cu_error_msg, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
-		        in, cu_error_msg, out);
-
-	CU_ASSERT_STRING_EQUAL(out, cu_error_msg);
+	ASSERT_STRING_EQUAL(out, cu_error_msg);
 	cu_error_msg_reset();
 
-	lwfree(h);
+	lwfree(v);
 	lwgeom_free(g);
 }
 

@@ -28,14 +28,14 @@
 #include <string.h>	/* strlen */
 #include <assert.h>
 
-static char *asgeojson_point(const LWPOINT *point, char *srs, GBOX *bbox, int precision);
-static char *asgeojson_line(const LWLINE *line, char *srs, GBOX *bbox, int precision);
-static char *asgeojson_triangle(const LWTRIANGLE *tri, char *srs, GBOX *bbox, int precision);
-static char *asgeojson_poly(const LWPOLY *poly, char *srs, GBOX *bbox, int precision);
-static char *asgeojson_multipoint(const LWMPOINT *mpoint, char *srs, GBOX *bbox, int precision);
-static char *asgeojson_multiline(const LWMLINE *mline, char *srs, GBOX *bbox, int precision);
-static char *asgeojson_multipolygon(const LWMPOLY *mpoly, char *srs, GBOX *bbox, int precision);
-static char *asgeojson_collection(const LWCOLLECTION *col, char *srs, GBOX *bbox, int precision);
+static lwvarlena_t *asgeojson_point(const LWPOINT *point, char *srs, GBOX *bbox, int precision);
+static lwvarlena_t *asgeojson_line(const LWLINE *line, char *srs, GBOX *bbox, int precision);
+static lwvarlena_t *asgeojson_triangle(const LWTRIANGLE *tri, char *srs, GBOX *bbox, int precision);
+static lwvarlena_t *asgeojson_poly(const LWPOLY *poly, char *srs, GBOX *bbox, int precision);
+static lwvarlena_t *asgeojson_multipoint(const LWMPOINT *mpoint, char *srs, GBOX *bbox, int precision);
+static lwvarlena_t *asgeojson_multiline(const LWMLINE *mline, char *srs, GBOX *bbox, int precision);
+static lwvarlena_t *asgeojson_multipolygon(const LWMPOLY *mpoly, char *srs, GBOX *bbox, int precision);
+static lwvarlena_t *asgeojson_collection(const LWCOLLECTION *col, char *srs, GBOX *bbox, int precision);
 static size_t asgeojson_geom_size(const LWGEOM *geom, GBOX *bbox, int precision);
 static size_t asgeojson_geom_buf(const LWGEOM *geom, char *output, GBOX *bbox, int precision);
 
@@ -45,7 +45,7 @@ static size_t pointArray_geojson_size(POINTARRAY *pa, int precision);
 /**
  * Takes a GEOMETRY and returns a GeoJson representation
  */
-char *
+lwvarlena_t *
 lwgeom_to_geojson(const LWGEOM *geom, char *srs, int precision, int has_bbox)
 {
 	int type = geom->type;
@@ -201,15 +201,13 @@ asgeojson_point_buf(const LWPOINT *point, char *srs, char *output, GBOX *bbox, i
 	return (ptr-output);
 }
 
-static char *
+static lwvarlena_t *
 asgeojson_point(const LWPOINT *point, char *srs, GBOX *bbox, int precision)
 {
-	char *output;
-	int size;
-
-	size = asgeojson_point_size(point, srs, bbox, precision);
-	output = lwalloc(size);
-	asgeojson_point_buf(point, srs, output, bbox, precision);
+	uint32_t size = asgeojson_point_size(point, srs, bbox, precision);
+	lwvarlena_t *output = (lwvarlena_t *)lwalloc(size + LWVARHDRSZ);
+	size = asgeojson_point_buf(point, srs, output->data, bbox, precision);
+	LWSIZE_SET(output->size, size + LWVARHDRSZ);
 	return output;
 }
 
@@ -250,16 +248,13 @@ asgeojson_triangle_buf(const LWTRIANGLE *tri, char *srs, char *output, GBOX *bbo
 	return (ptr - output);
 }
 
-static char *
+static lwvarlena_t *
 asgeojson_triangle(const LWTRIANGLE *tri, char *srs, GBOX *bbox, int precision)
 {
-	char *output;
-	int size;
-
-	size = asgeojson_triangle_size(tri, srs, bbox, precision);
-	output = lwalloc(size);
-	asgeojson_triangle_buf(tri, srs, output, bbox, precision);
-
+	uint32_t size = asgeojson_triangle_size(tri, srs, bbox, precision);
+	lwvarlena_t *output = (lwvarlena_t *)lwalloc(size + LWVARHDRSZ);
+	size = asgeojson_triangle_buf(tri, srs, output->data, bbox, precision);
+	LWSIZE_SET(output->size, size + LWVARHDRSZ);
 	return output;
 }
 
@@ -296,16 +291,13 @@ asgeojson_line_buf(const LWLINE *line, char *srs, char *output, GBOX *bbox, int 
 	return (ptr-output);
 }
 
-static char *
+static lwvarlena_t *
 asgeojson_line(const LWLINE *line, char *srs, GBOX *bbox, int precision)
 {
-	char *output;
-	int size;
-
-	size = asgeojson_line_size(line, srs, bbox, precision);
-	output = lwalloc(size);
-	asgeojson_line_buf(line, srs, output, bbox, precision);
-
+	uint32_t size = asgeojson_line_size(line, srs, bbox, precision);
+	lwvarlena_t *output = (lwvarlena_t *)lwalloc(size + LWVARHDRSZ);
+	size = asgeojson_line_buf(line, srs, output->data, bbox, precision);
+	LWSIZE_SET(output->size, size + LWVARHDRSZ);
 	return output;
 }
 
@@ -359,16 +351,13 @@ asgeojson_poly_buf(const LWPOLY *poly, char *srs, char *output, GBOX *bbox, int 
 	return (ptr-output);
 }
 
-static char *
+static lwvarlena_t *
 asgeojson_poly(const LWPOLY *poly, char *srs, GBOX *bbox, int precision)
 {
-	char *output;
-	int size;
-
-	size = asgeojson_poly_size(poly, srs, bbox, precision);
-	output = lwalloc(size);
-	asgeojson_poly_buf(poly, srs, output, bbox, precision);
-
+	uint32_t size = asgeojson_poly_size(poly, srs, bbox, precision);
+	lwvarlena_t *output = (lwvarlena_t *)lwalloc(size + LWVARHDRSZ);
+	size = asgeojson_poly_buf(poly, srs, output->data, bbox, precision);
+	LWSIZE_SET(output->size, size + LWVARHDRSZ);
 	return output;
 }
 
@@ -423,16 +412,13 @@ asgeojson_multipoint_buf(const LWMPOINT *mpoint, char *srs, char *output, GBOX *
 	return (ptr - output);
 }
 
-static char *
+static lwvarlena_t *
 asgeojson_multipoint(const LWMPOINT *mpoint, char *srs, GBOX *bbox, int precision)
 {
-	char *output;
-	int size;
-
-	size = asgeojson_multipoint_size(mpoint, srs, bbox, precision);
-	output = lwalloc(size);
-	asgeojson_multipoint_buf(mpoint, srs, output, bbox, precision);
-
+	uint32_t size = asgeojson_multipoint_size(mpoint, srs, bbox, precision);
+	lwvarlena_t *output = (lwvarlena_t *)lwalloc(size + LWVARHDRSZ);
+	size = asgeojson_multipoint_buf(mpoint, srs, output->data, bbox, precision);
+	LWSIZE_SET(output->size, size + LWVARHDRSZ);
 	return output;
 }
 
@@ -491,16 +477,13 @@ asgeojson_multiline_buf(const LWMLINE *mline, char *srs, char *output, GBOX *bbo
 	return (ptr - output);
 }
 
-static char *
+static lwvarlena_t *
 asgeojson_multiline(const LWMLINE *mline, char *srs, GBOX *bbox, int precision)
 {
-	char *output;
-	int size;
-
-	size = asgeojson_multiline_size(mline, srs, bbox, precision);
-	output = lwalloc(size);
-	asgeojson_multiline_buf(mline, srs, output, bbox, precision);
-
+	uint32_t size = asgeojson_multiline_size(mline, srs, bbox, precision);
+	lwvarlena_t *output = (lwvarlena_t *)lwalloc(size + LWVARHDRSZ);
+	size = asgeojson_multiline_buf(mline, srs, output->data, bbox, precision);
+	LWSIZE_SET(output->size, size + LWVARHDRSZ);
 	return output;
 }
 
@@ -568,16 +551,13 @@ asgeojson_multipolygon_buf(const LWMPOLY *mpoly, char *srs, char *output, GBOX *
 	return (ptr - output);
 }
 
-static char *
+static lwvarlena_t *
 asgeojson_multipolygon(const LWMPOLY *mpoly, char *srs, GBOX *bbox, int precision)
 {
-	char *output;
-	int size;
-
-	size = asgeojson_multipolygon_size(mpoly, srs, bbox, precision);
-	output = lwalloc(size);
-	asgeojson_multipolygon_buf(mpoly, srs, output, bbox, precision);
-
+	uint32_t size = asgeojson_multipolygon_size(mpoly, srs, bbox, precision);
+	lwvarlena_t *output = (lwvarlena_t *)lwalloc(size + LWVARHDRSZ);
+	size = asgeojson_multipolygon_buf(mpoly, srs, output->data, bbox, precision);
+	LWSIZE_SET(output->size, size + LWVARHDRSZ);
 	return output;
 }
 
@@ -634,16 +614,13 @@ asgeojson_collection_buf(const LWCOLLECTION *col, char *srs, char *output, GBOX 
 	return (ptr - output);
 }
 
-static char *
+static lwvarlena_t *
 asgeojson_collection(const LWCOLLECTION *col, char *srs, GBOX *bbox, int precision)
 {
-	char *output;
-	int size;
-
-	size = asgeojson_collection_size(col, srs, bbox, precision);
-	output = lwalloc(size);
-	asgeojson_collection_buf(col, srs, output, bbox, precision);
-
+	uint32_t size = asgeojson_collection_size(col, srs, bbox, precision);
+	lwvarlena_t *output = (lwvarlena_t *)lwalloc(size + LWVARHDRSZ);
+	size = asgeojson_collection_buf(col, srs, output->data, bbox, precision);
+	LWSIZE_SET(output->size, size + LWVARHDRSZ);
 	return output;
 }
 

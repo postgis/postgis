@@ -170,8 +170,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_asKML);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom;
-	char *kml;
-	text *result;
+	lwvarlena_t *kml;
 	const char *default_prefix = ""; /* default prefix */
 	char *prefixbuf;
 	const char *prefix = default_prefix;
@@ -224,14 +223,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	}
 
 	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 0);
-
-	if (!kml)
-		PG_RETURN_NULL();
-
-	result = cstring_to_text(kml);
-	lwfree(kml);
-
-	PG_RETURN_POINTER(result);
+	if (kml)
+		PG_RETURN_TEXT_P(kml);
+	PG_RETURN_NULL();
 }

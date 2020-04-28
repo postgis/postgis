@@ -2389,28 +2389,12 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asEWKT);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	LWGEOM *lwgeom;
-	char *wkt;
-	size_t wkt_size;
-	text *result;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 
 	POSTGIS_DEBUG(2, "LWGEOM_asEWKT called.");
 
-	geom = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom = lwgeom_from_gserialized(geom);
-
-	/* Write to WKT and free the geometry */
-	wkt = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, DBL_DIG, &wkt_size);
-	lwgeom_free(lwgeom);
-
-	/* Write to text and free the WKT */
-	result = cstring_to_text(wkt);
-	lwfree(wkt);
-
-	/* Return the text */
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_wkt_varlena(lwgeom, WKT_EXTENDED, DBL_DIG));
 }
 
 /**
@@ -2714,8 +2698,7 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 
 	GSERIALIZED *geom = NULL;
 	int precision = 0;
-	char *geohash = NULL;
-	text *result = NULL;
+	lwvarlena_t *geohash = NULL;
 
 	if (PG_ARGISNULL(0))
 	{
@@ -2730,14 +2713,9 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 	}
 
 	geohash = lwgeom_geohash((LWGEOM *)(lwgeom_from_gserialized(geom)), precision);
-
-	if (!geohash)
-		PG_RETURN_NULL();
-
-	result = cstring_to_text(geohash);
-	pfree(geohash);
-
-	PG_RETURN_TEXT_P(result);
+	if (geohash)
+		PG_RETURN_TEXT_P(geohash);
+	PG_RETURN_NULL();
 }
 
 PG_FUNCTION_INFO_V1(ST_CollectionExtract);
