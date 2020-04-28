@@ -37,6 +37,7 @@
 #include "utils/jsonb.h"
 
 #include "../postgis_config.h"
+#include "lwgeom_cache.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "lwgeom_export.h"
@@ -49,81 +50,6 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
 Datum geometry_to_json(PG_FUNCTION_ARGS);
 Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
-
-/*
- * Retrieve an SRS from a given SRID
- * Require valid spatial_ref_sys table entry
- *
- * Could return SRS as short one (i.e EPSG:4326)
- * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
- */
-char *
-getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
-{
-	static const uint16_t max_query_size = 512;
-	char query[512];
-	char *srs, *srscopy;
-	int size, err;
-	postgis_initialize_cache(fcinfo);
-
-	if (SPI_OK_CONNECT != SPI_connect ())
-	{
-		elog(NOTICE, "getSRSbySRID: could not connect to SPI manager");
-		SPI_finish();
-		return NULL;
-	}
-
-	if (short_crs)
-		snprintf(query,
-			 max_query_size,
-			 "SELECT auth_name||':'||auth_srid \
-		        FROM %s WHERE srid='%d'",
-			 postgis_spatial_ref_sys(),
-			 srid);
-	else
-		snprintf(query,
-			 max_query_size,
-			 "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
-		        FROM %s WHERE srid='%d'",
-			 postgis_spatial_ref_sys(),
-			 srid);
-
-	err = SPI_exec(query, 1);
-	if ( err < 0 )
-	{
-		elog(NOTICE, "getSRSbySRID: error executing query %d", err);
-		SPI_finish();
-		return NULL;
-	}
-
-	/* no entry in spatial_ref_sys */
-	if (SPI_processed <= 0)
-	{
-		SPI_finish();
-		return NULL;
-	}
-
-	/* get result  */
-	srs = SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1);
-
-	/* NULL result */
-	if ( ! srs )
-	{
-		SPI_finish();
-		return NULL;
-	}
-
-	/* copy result to upper executor context */
-	size = strlen(srs)+1;
-	srscopy = SPI_palloc(size);
-	memcpy(srscopy, srs, size);
-
-	/* disconnect from SPI */
-	SPI_finish();
-
-	return srscopy;
-}
-
 
 /*
 * Retrieve an SRID from a given SRS
@@ -207,7 +133,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	lwvarlena_t *v = NULL;
 	int version;
-	char *srs;
+	const char *srs;
 	int32_t srid;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
@@ -286,9 +212,9 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
 	else if (option & 1)
-		srs = getSRSbySRID(fcinfo, srid, false);
+		srs = GetSRSCacheBySRID(fcinfo, srid, false);
 	else
-		srs = getSRSbySRID(fcinfo, srid, true);
+		srs = GetSRSCacheBySRID(fcinfo, srid, true);
 
 	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
 	if (option & 4) lwopts |= LW_GML_SHORTLINE;
@@ -334,13 +260,12 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	lwvarlena_t *geojson;
 	int precision = DBL_DIG;
 	int output_bbox = LW_FALSE;
 	int output_long_crs = LW_FALSE;
 	int output_short_crs = LW_FALSE;
 	int output_guess_short_srid = LW_FALSE;
-	char *srs = NULL;
+	const char *srs = NULL;
 	int32_t srid;
 
 	/* Get the geometry */
@@ -383,7 +308,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (srid != SRID_UNKNOWN && (output_short_crs || output_long_crs))
 	{
-		srs = getSRSbySRID(fcinfo, srid, !output_long_crs);
+		srs = GetSRSCacheBySRID(fcinfo, srid, !output_long_crs);
 
 		if (!srs)
 		{
@@ -393,13 +318,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	geojson = lwgeom_to_geojson(lwgeom, srs, precision, output_bbox);
-	lwgeom_free(lwgeom);
-
-	if (srs) pfree(srs);
-
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(geojson);
+	PG_RETURN_TEXT_P(lwgeom_to_geojson(lwgeom, srs, precision, output_bbox));
 }
 
 
@@ -469,7 +388,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	int version;
-	char *srs;
+	const char *srs;
 	int32_t srid;
 	int option = 0;
 	int precision = DBL_DIG;
@@ -531,9 +450,9 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
 	else if (option & 1)
-		srs = getSRSbySRID(fcinfo, srid, false);
+		srs = GetSRSCacheBySRID(fcinfo, srid, false);
 	else
-		srs = getSRSbySRID(fcinfo, srid, true);
+		srs = GetSRSCacheBySRID(fcinfo, srid, true);
 
 	if (option & LW_X3D_USE_GEOCOORDS) {
 		if (srid != 4326) {

@@ -27,6 +27,7 @@
 #define CIRC_CACHE_ENTRY 3
 #define RECT_CACHE_ENTRY 4
 #define TOAST_CACHE_ENTRY 5
+#define SRSDESC_CACHE_ENTRY 6
 
 #define NUM_CACHE_ENTRIES 8
 
@@ -132,5 +133,20 @@ typedef struct
 
 GSERIALIZED* ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum);
 
+/******************************************************************************/
+
+#define SRSDescCacheSize 1
+typedef struct {
+	int32_t srid;
+	bool short_mode;
+	char *srs;
+} SRSDescCacheArgument;
+
+typedef struct {
+	int type;
+	SRSDescCacheArgument arg[SRSDescCacheSize];
+} SRSDescCache;
+
+const char *GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
 
 #endif /* LWGEOM_CACHE_H_ */

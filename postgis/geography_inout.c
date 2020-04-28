@@ -39,6 +39,7 @@
 #include "catalog/pg_type.h" /* for CSTRINGOID */
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "lwgeom_cache.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 #include "lwgeom_export.h"   /* For export functions. */
@@ -206,7 +207,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	GSERIALIZED *g = NULL;
 	lwvarlena_t *v;
 	int version;
-	char *srs;
+	const char *srs;
 	int32_t srid = SRID_DEFAULT;
 	int precision = DBL_DIG;
 	int option = 0;
@@ -283,9 +284,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	}
 
 	if (option & 1)
-		srs = getSRSbySRID(fcinfo, srid, false);
+		srs = GetSRSCacheBySRID(fcinfo, srid, false);
 	else
-		srs = getSRSbySRID(fcinfo, srid, true);
+		srs = GetSRSCacheBySRID(fcinfo, srid, true);
 	if (!srs)
 	{
 		elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
@@ -397,7 +398,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 {
 	lwvarlena_t *geojson;
 	int has_bbox = 0;
-	char * srs = NULL;
+	const char *srs = NULL;
 	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
 	int precision = PG_GETARG_INT32(1);
 	int option = PG_GETARG_INT32(2);
@@ -419,9 +420,9 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	{
 		/* Geography only handle srid SRID_DEFAULT */
 		if (option & 2)
-			srs = getSRSbySRID(fcinfo, SRID_DEFAULT, true);
+			srs = GetSRSCacheBySRID(fcinfo, SRID_DEFAULT, true);
 		if (option & 4)
-			srs = getSRSbySRID(fcinfo, SRID_DEFAULT, false);
+			srs = GetSRSCacheBySRID(fcinfo, SRID_DEFAULT, false);
 
 		if (!srs)
 		{
@@ -435,7 +436,6 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 0);
-	if (srs) pfree(srs);
 
 	PG_RETURN_TEXT_P(geojson);
 }

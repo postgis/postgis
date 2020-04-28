@@ -34,7 +34,7 @@
  */
 /* takes a GEOMETRY and returns a X3D representation */
 lwvarlena_t *
-lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid)
+lwgeom_to_x3d3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *defid)
 {
 	stringbuffer_t *sb;
 	int rv;
@@ -63,7 +63,7 @@ lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const cha
 }
 /* takes a GEOMETRY and appends to string buffer the x3d output */
 static int
-lwgeom_to_x3d3_sb(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
+lwgeom_to_x3d3_sb(const LWGEOM *geom, const char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	int type = geom->type;
 
@@ -110,7 +110,7 @@ lwgeom_to_x3d3_sb(const LWGEOM *geom, char *srs, int precision, int opts, const 
 }
 
 static int
-asx3d3_point_sb(const LWPOINT *point, __attribute__((__unused__)) char *srs, int precision,
+asx3d3_point_sb(const LWPOINT *point, __attribute__((__unused__)) const char *srs, int precision,
 		int opts, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 	/** for point we just output the coordinates **/
@@ -215,7 +215,7 @@ asx3d3_mpoly_coordindex_sb(const LWMPOLY *psur, stringbuffer_t *sb)
 
 /** Return the linestring as an X3D LineSet */
 static int
-asx3d3_line_sb(const LWLINE *line, __attribute__((__unused__)) char *srs, int precision,
+asx3d3_line_sb(const LWLINE *line, __attribute__((__unused__)) const char *srs, int precision,
 	       int opts, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 
@@ -242,7 +242,7 @@ asx3d3_line_sb(const LWLINE *line, __attribute__((__unused__)) char *srs, int pr
 
 /** Compute the X3D coordinates of the polygon and add to string buffer **/
 static int
-asx3d3_poly_sb(const LWPOLY *poly, __attribute__((__unused__))  char *srs, int precision,
+asx3d3_poly_sb(const LWPOLY *poly, __attribute__((__unused__))  const char *srs, int precision,
 	       int opts, __attribute__((__unused__)) int is_patch, __attribute__((__unused__)) const char *defid, stringbuffer_t *sb)
 {
 	uint32_t i;
@@ -255,7 +255,7 @@ asx3d3_poly_sb(const LWPOLY *poly, __attribute__((__unused__))  char *srs, int p
 }
 
 static int
-asx3d3_triangle_sb(const LWTRIANGLE *triangle, __attribute__((__unused__))  char *srs, int precision,
+asx3d3_triangle_sb(const LWTRIANGLE *triangle, __attribute__((__unused__))  const char *srs, int precision,
 		   int opts, __attribute__((__unused__))  const char *defid, stringbuffer_t *sb)
 {
 	return  ptarray_to_x3d3_sb(triangle->points, precision, opts, 1, sb);
@@ -266,7 +266,7 @@ asx3d3_triangle_sb(const LWTRIANGLE *triangle, __attribute__((__unused__))  char
  * Don't call this with single-geoms inspected!
  */
 static int
-asx3d3_multi_sb(const LWCOLLECTION *col, __attribute__((__unused__)) char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_multi_sb(const LWCOLLECTION *col, __attribute__((__unused__)) const char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	char *x3dtype;
 	uint32_t i;
@@ -345,7 +345,7 @@ asx3d3_multi_sb(const LWCOLLECTION *col, __attribute__((__unused__)) char *srs, 
  * Don't call this with single-geoms inspected!
  */
 static int
-asx3d3_psurface_sb(const LWPSURFACE *psur, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_psurface_sb(const LWPSURFACE *psur, const char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	uint32_t i;
 	uint32_t j;
@@ -398,7 +398,7 @@ asx3d3_psurface_sb(const LWPSURFACE *psur, char *srs, int precision, int opts, c
  * Computes X3D representation of TIN (as IndexedTriangleSet and adds to string buffer)
  */
 static int
-asx3d3_tin_sb(const LWTIN *tin, __attribute__((__unused__)) char *srs,  int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_tin_sb(const LWTIN *tin, __attribute__((__unused__)) const char *srs,  int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	uint32_t i;
 	uint32_t k;
@@ -436,7 +436,7 @@ asx3d3_tin_sb(const LWTIN *tin, __attribute__((__unused__)) char *srs,  int prec
 }
 
 static int
-asx3d3_collection_sb(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
+asx3d3_collection_sb(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *defid, stringbuffer_t *sb)
 {
 	uint32_t i;
 	LWGEOM *subgeom;
