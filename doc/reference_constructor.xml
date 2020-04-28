@@ -885,7 +885,7 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_SquareGrid" /></para>
+			<para><xref linkend="ST_EstimatedExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SquareGrid" />, <xref linkend="ST_TileEnvelope" /></para>
 		</refsection>
 	</refentry>
 
