@@ -1963,7 +1963,7 @@ Datum ST_Normalize(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_zmflag);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	int ret = 0;
 
 	if (gserialized_has_z(in))
@@ -1977,21 +1977,21 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_hasz);
 Datum LWGEOM_hasz(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	PG_RETURN_BOOL(gserialized_has_z(in));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_hasm);
 Datum LWGEOM_hasm(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	PG_RETURN_BOOL(gserialized_has_m(in));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_hasBBOX);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	char res = gserialized_has_bbox(in);
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_BOOL(res);
@@ -2001,7 +2001,7 @@ Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_ndims);
 Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	int ret = gserialized_ndims(in);
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
@@ -2143,17 +2143,8 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_IsCollection);
 Datum ST_IsCollection(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	int type;
-	size_t size;
-
-	/* Pull only a small amount of the tuple, enough to get the type. */
-	/* header + srid/flags + bbox? + type number */
-	size = VARHDRSZ + 8 + 32 + 4;
-
-	geom = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, size);
-
-	type = gserialized_get_type(geom);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_HEADER(0);
+	int type = gserialized_get_type(geom);
 	PG_RETURN_BOOL(lwtype_is_collection(type));
 }
 

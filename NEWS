@@ -14,6 +14,7 @@ Only tickets not included in 3.1.0alpha1
   - #4657: Avoid De-TOASTing where possible (Paul Ramsey)
   - #4490, Tweak function costs (Raúl Marín)
   - #4672, Cache getSRSbySRID and getSRIDbySRS (Raúl Marín)
+  - #4676, Avoid decompressing toasted geometries to read only the header (Raúl Marín)
 
 * Bug fixes *
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)

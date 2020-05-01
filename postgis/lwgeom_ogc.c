@@ -95,7 +95,7 @@ Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_get_srid);
 Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom=PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_HEADER(0);
 	int32_t srid = gserialized_get_srid(geom);
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(srid);
@@ -121,7 +121,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	uint8_t type;
 	static int maxtyplen = 20;
 
-	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
+	gser = PG_GETARG_GSERIALIZED_HEADER(0);
 	text_ob = palloc0(VARHDRSZ + maxtyplen);
 	result = VARDATA(text_ob);
 
@@ -196,7 +196,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 	text *type_text;
 
 	/* Read just the header from the toasted tuple */
-	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
+	gser = PG_GETARG_GSERIALIZED_HEADER(0);
 
 	/* Build a text type to store things in */
 	type_text = cstring_to_text(stTypeName[gserialized_get_type(gser)]);
