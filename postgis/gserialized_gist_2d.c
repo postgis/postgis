@@ -464,7 +464,7 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	** (though we still need to fully retrieve it from TOAST)
 	** which makes slicing worthwhile.
 	*/
-	gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
+	gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
 
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->gflags);
 
@@ -482,10 +482,11 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	else
 	{
 		/* No, we need to calculate it from the full object. */
+		GSERIALIZED *g = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
 		GBOX gbox;
 		gbox_init(&gbox);
 
-		result = gserialized_get_gbox_p(gpart, &gbox);
+		result = gserialized_get_gbox_p(g, &gbox);
 		if ( result == LW_SUCCESS )
 		{
 			result = box2df_from_gbox_p(&gbox, box2df);
@@ -494,6 +495,7 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 		{
 			POSTGIS_DEBUG(4, "could not calculate bbox");
 		}
+		POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 	}
 
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);

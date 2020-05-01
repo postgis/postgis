@@ -70,7 +70,7 @@ GIDX* gidx_new(int ndims)
 static lwflags_t
 gserialized_datum_get_flags(Datum gsdatum)
 {
-	GSERIALIZED *gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
+	GSERIALIZED *gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
 	return gserialized_get_lwflags(gpart);
 }
 
@@ -182,7 +182,7 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	** of floats necessary to hold the 8 floats of the largest XYZM index
 	** bounding box, so 40 bytes.
 	*/
-	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
+	gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
 
 	/* Do we even have a serialized bounding box? */
 	if (gserialized_has_bbox(gpart))

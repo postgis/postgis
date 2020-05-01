@@ -2143,17 +2143,8 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_IsCollection);
 Datum ST_IsCollection(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	int type;
-	size_t size;
-
-	/* Pull only a small amount of the tuple, enough to get the type. */
-	/* header + srid/flags + bbox? + type number */
-	size = VARHDRSZ + 8 + 32 + 4;
-
-	geom = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, size);
-
-	type = gserialized_get_type(geom);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_HEADER(0);
+	int type = gserialized_get_type(geom);
 	PG_RETURN_BOOL(lwtype_is_collection(type));
 }
 
