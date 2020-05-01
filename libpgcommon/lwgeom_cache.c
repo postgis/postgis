@@ -11,6 +11,8 @@
  **********************************************************************/
 
 #include "postgres.h"
+
+#include "catalog/pg_type.h" /* for CSTRINGOID */
 #include "executor/spi.h"
 #include "fmgr.h"
 #include "utils/memutils.h"
@@ -438,4 +440,108 @@ GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 		arg->srs = getSRSbySRID(fcinfo, srid, short_crs);
 	}
 	return arg->srs;
+}
+
+/*
+ * Retrieve an SRID from a given SRS
+ * Require valid spatial_ref_sys table entry
+ *
+ */
+static int32_t
+getSRIDbySRS(FunctionCallInfo fcinfo, const char *srs)
+{
+	static const int16_t max_query_size = 512;
+	char query[512];
+	Oid argtypes[] = {CSTRINGOID};
+	Datum values[] = {CStringGetDatum(srs)};
+	int32_t srid, err;
+
+	postgis_initialize_cache(fcinfo);
+	snprintf(query,
+		 max_query_size,
+		 "SELECT srid "
+		 "FROM %s, "
+		 "regexp_matches($1::text, E'([a-z]+):([0-9]+)', 'gi') AS re "
+		 "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid",
+		 postgis_spatial_ref_sys());
+
+	if (!srs)
+		return 0;
+
+	if (SPI_OK_CONNECT != SPI_connect())
+	{
+		elog(NOTICE, "getSRIDbySRS: could not connect to SPI manager");
+		return 0;
+	}
+
+	err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
+	if (err < 0)
+	{
+		elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
+		SPI_finish();
+		return 0;
+	}
+
+	/* no entry in spatial_ref_sys */
+	if (SPI_processed <= 0)
+	{
+		snprintf(query,
+			 max_query_size,
+			 "SELECT srid "
+			 "FROM %s, "
+			 "regexp_matches($1::text, E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
+			 "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid",
+			 postgis_spatial_ref_sys());
+
+		err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
+		if (err < 0)
+		{
+			elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
+			SPI_finish();
+			return 0;
+		}
+
+		if (SPI_processed <= 0)
+		{
+			SPI_finish();
+			return 0;
+		}
+	}
+
+	srid = atoi(SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1));
+	SPI_finish();
+
+	return srid;
+}
+
+static inline SRIDCache *
+SRIDCacheGet(FunctionCallInfo fcinfo)
+{
+	const uint32_t entry_number = SRID_CACHE_ENTRY;
+	GenericCacheCollection *generic_cache = GetGenericCacheCollection(fcinfo);
+	SRIDCache *cache = (SRIDCache *)(generic_cache->entry[entry_number]);
+	if (!cache)
+	{
+		cache = MemoryContextAllocZero(PostgisCacheContext(fcinfo), sizeof(SRIDCache));
+		cache->type = entry_number;
+		generic_cache->entry[entry_number] = (GenericCache *)cache;
+	}
+	return cache;
+}
+
+int32_t
+GetSRIDCacheBySRS(FunctionCallInfo fcinfo, const char *srs)
+{
+	SRIDCache *cache = SRIDCacheGet(fcinfo);
+	SRIDCacheArgument *arg = &(cache->arg[0]);
+
+	if (!arg->srid || strcmp(srs, arg->srs) != 0)
+	{
+		size_t size = strlen(srs) + 1;
+		arg->srid = getSRIDbySRS(fcinfo, srs);
+		arg->srs = MemoryContextAlloc(PostgisCacheContext(fcinfo), size);
+		memcpy(arg->srs, srs, size);
+	}
+
+	return arg->srid;
 }

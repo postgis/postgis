@@ -42,7 +42,6 @@
 #include "lwgeom_cache.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
-#include "lwgeom_export.h"   /* For export functions. */
 #include "lwgeom_transform.h"
 
 Datum geography_in(PG_FUNCTION_ARGS);

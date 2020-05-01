@@ -31,7 +31,6 @@
 #include "float.h" /* for DBL_DIG */
 
 #include "postgres.h"
-#include "catalog/pg_type.h" /* for CSTRINGOID */
 #include "executor/spi.h"
 #include "utils/builtins.h"
 #include "utils/jsonb.h"
@@ -40,7 +39,6 @@
 #include "lwgeom_cache.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
-#include "lwgeom_export.h"
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
@@ -50,78 +48,6 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
 Datum geometry_to_json(PG_FUNCTION_ARGS);
 Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
-
-/*
-* Retrieve an SRID from a given SRS
-* Require valid spatial_ref_sys table entry
-*
-*/
-int
-getSRIDbySRS(FunctionCallInfo fcinfo, const char *srs)
-{
-	static const int16_t max_query_size = 512;
-	char query[512];
-	Oid argtypes[] = {CSTRINGOID};
-	Datum values[] = {CStringGetDatum(srs)};
-	int32_t srid, err;
-
-	postgis_initialize_cache(fcinfo);
-	snprintf(query,
-		 max_query_size,
-		 "SELECT srid "
-		 "FROM %s, "
-		 "regexp_matches($1::text, E'([a-z]+):([0-9]+)', 'gi') AS re "
-		 "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid",
-		 postgis_spatial_ref_sys());
-
-	if (!srs) return 0;
-
-	if (SPI_OK_CONNECT != SPI_connect())
-	{
-		elog(NOTICE, "getSRIDbySRS: could not connect to SPI manager");
-		return 0;
-	}
-
-	err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
-	if (err < 0)
-	{
-		elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
-		SPI_finish();
-		return 0;
-	}
-
-	/* no entry in spatial_ref_sys */
-	if (SPI_processed <= 0)
-	{
-		snprintf(query,
-			 max_query_size,
-			 "SELECT srid "
-			 "FROM %s, "
-			 "regexp_matches($1::text, E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
-			 "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid",
-			 postgis_spatial_ref_sys());
-
-		err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
-		if (err < 0)
-		{
-			elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
-			SPI_finish();
-			return 0;
-		}
-
-		if (SPI_processed <= 0)
-		{
-			SPI_finish();
-			return 0;
-		}
-	}
-
-	srid = atoi(SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1));
-	SPI_finish();
-
-	return srid;
-}
-
 
 /**
  * Encode feature in GML
