@@ -35,6 +35,11 @@
 /* Returns the MemoryContext used to store the caches */
 MemoryContext PostgisCacheContext(FunctionCallInfo fcinfo);
 
+typedef struct {
+	uint32_t count; /* For PgSQL use only, use VAR* macros to manipulate. */
+	GSERIALIZED *geom;
+} SHARED_GSERIALIZED;
+
 /*
 * A generic GeomCache just needs space for the cache type,
 * the cache keys (GSERIALIZED geometries), the key sizes,
@@ -43,8 +48,8 @@ MemoryContext PostgisCacheContext(FunctionCallInfo fcinfo);
 */
 typedef struct {
 	int                         type;
-	GSERIALIZED*                geom1;
-	GSERIALIZED*                geom2;
+	SHARED_GSERIALIZED shared_geom1[1];
+	SHARED_GSERIALIZED shared_geom2[1];
 	size_t                      geom1_size;
 	size_t                      geom2_size;
 	LWGEOM*                     lwgeom1;
@@ -123,7 +128,7 @@ typedef struct
 {
 	Oid valueid;
 	Oid toastrelid;
-	GSERIALIZED *geom;
+	SHARED_GSERIALIZED shared_geom[1];
 } ToastCacheArgument;
 
 typedef struct
