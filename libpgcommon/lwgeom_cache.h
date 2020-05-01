@@ -48,8 +48,8 @@ typedef struct {
 */
 typedef struct {
 	int                         type;
-	SHARED_GSERIALIZED shared_geom1[1];
-	SHARED_GSERIALIZED shared_geom2[1];
+	SHARED_GSERIALIZED *shared_geom1;
+	SHARED_GSERIALIZED *shared_geom2;
 	size_t                      geom1_size;
 	size_t                      geom2_size;
 	LWGEOM*                     lwgeom1;
@@ -128,7 +128,7 @@ typedef struct
 {
 	Oid valueid;
 	Oid toastrelid;
-	SHARED_GSERIALIZED shared_geom[1];
+	SHARED_GSERIALIZED *shared_geom;
 } ToastCacheArgument;
 
 typedef struct

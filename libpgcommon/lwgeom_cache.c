@@ -147,7 +147,6 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	Assert(entry_number < NUM_CACHE_ENTRIES);
 
 	cache = (GeomCache*)(generic_cache->entry[entry_number]);
-
 	if ( ! cache )
 	{
 		old_context = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
@@ -160,7 +159,7 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	}
 
 	/* Cache hit on the first argument */
-	if (g1 && cache->argnum != 2 &&
+	if (g1 && cache->argnum != 2 && cache->shared_geom1 &&
 	    ((g1 == cache->shared_geom1->geom) ||
 	     (cache->geom1_size == VARSIZE(g1) && memcmp(cache->shared_geom1->geom, g1, cache->geom1_size) == 0)))
 	{
@@ -168,7 +167,7 @@ GetGeomCache(FunctionCallInfo fcinfo,
 		geom = cache->shared_geom1->geom;
 	}
 	/* Cache hit on second argument */
-	else if (g2 && cache->argnum != 1 &&
+	else if (g2 && cache->argnum != 1 && cache->shared_geom2 &&
 		 ((g2 == cache->shared_geom2->geom) ||
 		  (cache->geom2_size == VARSIZE(g2) && memcmp(cache->shared_geom2->geom, g2, cache->geom2_size) == 0)))
 	{
@@ -232,30 +231,95 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	/* Argument one didn't match, so copy the new value in. */
 	if ( g1 && cache_hit != 1 )
 	{
-		if (cache->shared_geom1->geom)
+		bool found = false;
+		if (cache->shared_geom1)
 		{
 			cache->shared_geom1->count--;
 			if (!cache->shared_geom1->count)
-				pfree(cache->shared_geom1->geom);
+			{
+				if (cache->shared_geom1->geom)
+					pfree(cache->shared_geom1->geom);
+				pfree(cache->shared_geom1);
+				cache->shared_geom1 = NULL;
+			}
+		}
+
+		if (MemoryContextContains(PostgisCacheContext(fcinfo), (void *)g1))
+		{
+			/* This memory has been allocated inside the cache context, so it probably comes from the toast
+			 * cache */
+			ToastCache *toast_cache = (ToastCache *)(generic_cache->entry[TOAST_CACHE_ENTRY]);
+			if (toast_cache)
+			{
+				for (uint8_t i = 0; i < ToastCacheSize; i++)
+				{
+					ToastCacheArgument *arg = &(toast_cache->arg[i]);
+					if (arg->shared_geom && arg->shared_geom->geom == g1)
+					{
+						arg->shared_geom->count++;
+						cache->shared_geom1 = arg->shared_geom;
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!found)
+		{
+			cache->shared_geom1 =
+			    MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(SHARED_GSERIALIZED));
+			cache->shared_geom1->count = 1;
+			cache->shared_geom1->geom = MemoryContextAlloc(PostgisCacheContext(fcinfo), VARSIZE(g1));
+			memcpy(cache->shared_geom1->geom, g1, VARSIZE(g1));
 		}
 		cache->geom1_size = VARSIZE(g1);
-		cache->shared_geom1->count = 1;
-		cache->shared_geom1->geom = MemoryContextAlloc(PostgisCacheContext(fcinfo), cache->geom1_size);
-		memcpy(cache->shared_geom1->geom, g1, cache->geom1_size);
 	}
+
 	/* Argument two didn't match, so copy the new value in. */
 	if ( g2 && cache_hit != 2 )
 	{
-		if (cache->shared_geom2->geom)
+		bool found = false;
+		if (cache->shared_geom2)
 		{
 			cache->shared_geom2->count--;
 			if (!cache->shared_geom2->count)
-				pfree(cache->shared_geom2->geom);
+			{
+				if (cache->shared_geom2->geom)
+					pfree(cache->shared_geom2->geom);
+				pfree(cache->shared_geom2);
+				cache->shared_geom2 = NULL;
+			}
+		}
+
+		if (MemoryContextContains(PostgisCacheContext(fcinfo), (void *)g2))
+		{
+			ToastCache *toast_cache = (ToastCache *)(generic_cache->entry[TOAST_CACHE_ENTRY]);
+			if (toast_cache)
+			{
+				for (uint8_t i = 0; i < ToastCacheSize; i++)
+				{
+					ToastCacheArgument *arg = &(toast_cache->arg[i]);
+					if (arg->shared_geom && arg->shared_geom->geom == g2)
+					{
+						arg->shared_geom->count++;
+						cache->shared_geom2 = arg->shared_geom;
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!found)
+		{
+			cache->shared_geom2 =
+			    MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(SHARED_GSERIALIZED));
+			cache->shared_geom2->count = 1;
+			cache->shared_geom2->geom = MemoryContextAlloc(PostgisCacheContext(fcinfo), VARSIZE(g2));
+			memcpy(cache->shared_geom2->geom, g2, VARSIZE(g2));
 		}
 		cache->geom2_size = VARSIZE(g2);
-		cache->shared_geom2->count = 1;
-		cache->shared_geom2->geom = MemoryContextAlloc(PostgisCacheContext(fcinfo), cache->geom2_size);
-		memcpy(cache->shared_geom2->geom, g2, cache->geom2_size);
 	}
 
 	return NULL;
@@ -310,30 +374,30 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 	/* We've seen this object before? */
 	if (arg->valueid == valueid && arg->toastrelid == toastrelid)
 	{
-		if (arg->shared_geom->geom)
-			return arg->shared_geom->geom;
-
+		return arg->shared_geom->geom;
+	}
+	/* New object, clear our old copies and get a copy of the new geom */
+	else
+	{
+		if (arg->shared_geom)
+		{
+			arg->shared_geom->count--;
+			if (!arg->shared_geom->count)
+			{
+				if (arg->shared_geom->geom)
+					pfree(arg->shared_geom->geom);
+				pfree(arg->shared_geom);
+			}
+		}
+		arg->valueid = valueid;
+		arg->toastrelid = toastrelid;
 		/* Take a copy into the upper context */
 		MemoryContext old_context = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
+		arg->shared_geom = MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(SHARED_GSERIALIZED));
 		arg->shared_geom->geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(datum);
 		arg->shared_geom->count = 1;
 		MemoryContextSwitchTo(old_context);
 		return arg->shared_geom->geom;
-	}
-	/* New object, clear our old copies and see if it */
-	/* shows up a second time before taking a copy */
-	else
-	{
-		if (arg->shared_geom->geom)
-		{
-			arg->shared_geom->count--;
-			if (!arg->shared_geom->count)
-				pfree(arg->shared_geom->geom);
-		}
-		arg->valueid = valueid;
-		arg->toastrelid = toastrelid;
-		arg->shared_geom->geom = NULL;
-		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
 	}
 }
 
