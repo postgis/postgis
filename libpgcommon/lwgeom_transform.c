@@ -54,7 +54,8 @@ typedef struct {
 } PjStrs;
 
 /* Internal Cache API */
-static LWPROJ *AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
+static LWPROJ *
+AddToPROJSRSCache(FunctionCallInfo fcinfo, PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
 static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, uint32_t position);
 
 static void
@@ -345,7 +346,7 @@ GetProj4String(int32_t srid)
  * which is the definition for the other half of the transformation.
  */
 static LWPROJ *
-AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
+AddToPROJSRSCache(FunctionCallInfo fcinfo, PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
 {
 	MemoryContext oldContext;
 
@@ -363,7 +364,7 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	if (!pjstrs_has_entry(&to_strs))
 		elog(ERROR, "got NULL for SRID (%d)", srid_to);
 
-	oldContext = MemoryContextSwitchTo(PROJCache->PROJSRSCacheContext);
+	oldContext = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
 
 #if POSTGIS_PROJ_VERSION < 60
 	PJ *projection = palloc(sizeof(PJ));
@@ -452,10 +453,10 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 
 	/* We register a new callback to delete the projection on exit */
 	MemoryContextCallback *callback =
-	    MemoryContextAlloc(PROJCache->PROJSRSCacheContext, sizeof(MemoryContextCallback));
+	    MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(MemoryContextCallback));
 	callback->func = PROJSRSDestroyPJ;
 	callback->arg = (void *)projection;
-	MemoryContextRegisterResetCallback(PROJCache->PROJSRSCacheContext, callback);
+	MemoryContextRegisterResetCallback(PostgisCacheContext(fcinfo), callback);
 
 	PROJCache->PROJSRSCache[cache_position].srid_from = srid_from;
 	PROJCache->PROJSRSCache[cache_position].srid_to = srid_to;
@@ -502,7 +503,7 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LW
 	*pj = GetProjectionFromPROJCache(proj_cache, srid_from, srid_to);
 	if (*pj == NULL)
 	{
-		*pj = AddToPROJSRSCache(proj_cache, srid_from, srid_to);
+		*pj = AddToPROJSRSCache(fcinfo, proj_cache, srid_from, srid_to);
 	}
 
 	return pj != NULL;

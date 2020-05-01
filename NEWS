@@ -4,7 +4,7 @@ PostGIS 3.1.0XXXX
 Only tickets not included in 3.1.0alpha1
 
 * Breaking changes *
-  -
+  - #4674, Internal cache now persists until the end of the transaction (Raúl Marín)
 
 * New features *
   - #4656, Cast a geojson_text::geometry for implicit GeoJSON ingestion (Raúl Marín)

@@ -11,7 +11,9 @@
  **********************************************************************/
 
 #include "postgres.h"
+#include "executor/spi.h"
 #include "fmgr.h"
+#include "utils/memutils.h"
 
 #include "../postgis_config.h"
 
@@ -56,13 +58,25 @@ typedef struct {
 } GenericCacheCollection;
 
 /**
-* Utility function to read the upper memory context off a function call
-* info data.
-*/
-static MemoryContext
-FIContext(FunctionCallInfo fcinfo)
+ * Utility function to read the upper memory context off a function call
+ * info data.
+ * This used to return flinfo->fn_mcxt (the function memory context) but that has the issue
+ * that is cleaned up once the function is finished, which on pure SQL functions (like ST_AsGML(geometry))
+ * is an issue as the cache will die after every _ST_AsGML call (thus being worthless).
+ * Instead we use CurTransactionContext which will live until the end of the transaction
+ */
+MemoryContext
+PostgisCacheContext(FunctionCallInfo fcinfo)
 {
-	return fcinfo->flinfo->fn_mcxt;
+	return CurTransactionContext;
+}
+
+static GenericCacheCollection *internal_cache = NULL;
+
+static void
+PostgisResetInternalCache(void *v)
+{
+	internal_cache = NULL;
 }
 
 /**
@@ -72,15 +86,19 @@ FIContext(FunctionCallInfo fcinfo)
 static GenericCacheCollection *
 GetGenericCacheCollection(FunctionCallInfo fcinfo)
 {
-	GenericCacheCollection* cache = fcinfo->flinfo->fn_extra;
-
-	if ( ! cache )
+	if (!internal_cache)
 	{
-		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(GenericCacheCollection));
-		memset(cache, 0, sizeof(GenericCacheCollection));
-		fcinfo->flinfo->fn_extra = cache;
+		internal_cache = MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(GenericCacheCollection));
+		memset(internal_cache, 0, sizeof(GenericCacheCollection));
+
+		MemoryContextCallback *cb =
+		    MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(MemoryContextCallback));
+		cb->func = PostgisResetInternalCache;
+		cb->arg = NULL;
+		MemoryContextRegisterResetCallback(PostgisCacheContext(fcinfo), cb);
 	}
-	return cache;
+
+	return internal_cache;
 }
 
 
@@ -97,17 +115,16 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 	if ( ! cache )
 	{
 		/* Allocate in the upper context */
-		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(PROJPortalCache));
+		cache = MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(PROJPortalCache));
 
 		if (cache)
 		{
 			POSTGIS_DEBUGF(3,
 				       "Allocating PROJCache for portal with transform() MemoryContext %p",
-				       FIContext(fcinfo));
+				       PostgisCacheContext(fcinfo));
 			memset(cache->PROJSRSCache, 0, sizeof(PROJSRSCacheItem) * PROJ_CACHE_ITEMS);
 			cache->type = PROJ_CACHE_ENTRY;
 			cache->PROJSRSCacheCount = 0;
-			cache->PROJSRSCacheContext = FIContext(fcinfo);
 
 			/* Store the pointer in GenericCache */
 			generic_cache->entry[PROJ_CACHE_ENTRY] = (GenericCache*)cache;
@@ -142,7 +159,7 @@ GetGeomCache(FunctionCallInfo fcinfo,
 
 	if ( ! cache )
 	{
-		old_context = MemoryContextSwitchTo(FIContext(fcinfo));
+		old_context = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
 		/* Allocate in the upper context */
 		cache = cache_methods->GeomCacheAllocator();
 		MemoryContextSwitchTo(old_context);
@@ -201,7 +218,7 @@ GetGeomCache(FunctionCallInfo fcinfo,
 
 		/* Save the tree and supporting geometry in the cache */
 		/* memory context */
-		old_context = MemoryContextSwitchTo(FIContext(fcinfo));
+		old_context = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
 		lwgeom = lwgeom_from_gserialized(geom);
 		cache->argnum = 0;
 
@@ -231,7 +248,7 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	{
 		if ( cache->geom1 ) pfree(cache->geom1);
 		cache->geom1_size = VARSIZE(g1);
-		cache->geom1 = MemoryContextAlloc(FIContext(fcinfo), cache->geom1_size);
+		cache->geom1 = MemoryContextAlloc(PostgisCacheContext(fcinfo), cache->geom1_size);
 		memcpy(cache->geom1, g1, cache->geom1_size);
 	}
 	/* Argument two didn't match, so copy the new value in. */
@@ -239,7 +256,7 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	{
 		if ( cache->geom2 ) pfree(cache->geom2);
 		cache->geom2_size = VARSIZE(g2);
-		cache->geom2 = MemoryContextAlloc(FIContext(fcinfo), cache->geom2_size);
+		cache->geom2 = MemoryContextAlloc(PostgisCacheContext(fcinfo), cache->geom2_size);
 		memcpy(cache->geom2, g2, cache->geom2_size);
 	}
 
@@ -256,7 +273,7 @@ ToastCacheGet(FunctionCallInfo fcinfo)
 	ToastCache* cache = (ToastCache*)(generic_cache->entry[entry_number]);
 	if (!cache)
 	{
-		cache = MemoryContextAllocZero(FIContext(fcinfo), sizeof(ToastCache));
+		cache = MemoryContextAllocZero(PostgisCacheContext(fcinfo), sizeof(ToastCache));
 		cache->type = entry_number;
 		generic_cache->entry[entry_number] = (GenericCache*)cache;
 	}
@@ -299,7 +316,7 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 			return arg->geom;
 
 		/* Take a copy into the upper context */
-		MemoryContext old_context = MemoryContextSwitchTo(FIContext(fcinfo));
+		MemoryContext old_context = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
 		arg->geom = (GSERIALIZED*)PG_DETOAST_DATUM_COPY(datum);
 		MemoryContextSwitchTo(old_context);
 		return arg->geom;
