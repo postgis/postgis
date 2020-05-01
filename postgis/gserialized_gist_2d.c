@@ -482,11 +482,17 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	else
 	{
 		/* No, we need to calculate it from the full object. */
-		GSERIALIZED *g = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
 		GBOX gbox;
 		gbox_init(&gbox);
 
-		result = gserialized_get_gbox_p(g, &gbox);
+		/* If we haven't, read the whole gserialized object */
+		if (LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+		{
+			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+			gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
+		}
+
+		result = gserialized_get_gbox_p(gpart, &gbox);
 		if ( result == LW_SUCCESS )
 		{
 			result = box2df_from_gbox_p(&gbox, box2df);
@@ -495,7 +501,6 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 		{
 			POSTGIS_DEBUG(4, "could not calculate bbox");
 		}
-		POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 	}
 
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);

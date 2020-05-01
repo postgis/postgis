@@ -212,19 +212,24 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	else
 	{
 		/* No, we need to calculate it from the full object. */
-		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+		LWGEOM *lwgeom;
 		GBOX gbox;
+		/* If we haven't, read the whole gserialized object */
+		if (LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+		{
+			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+			gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
+		}
+
+		lwgeom = lwgeom_from_gserialized(gpart);
 		if (lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE)
 		{
 			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
 			lwgeom_free(lwgeom);
 			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
-			POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 			return LW_FAILURE;
 		}
 		lwgeom_free(lwgeom);
-		POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 		gidx_from_gbox_p(gbox, gidx);
 	}
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
