@@ -45,7 +45,7 @@
 #include "funcapi.h"
 
 #include "liblwgeom.h"
-#include "lwgeom_export.h"
+#include "lwgeom_cache.h"
 #include "lwgeom_pg.h"
 #include "geography.h" /* for lwgeom_valid_typmod */
 #include "lwgeom_transform.h"
@@ -147,7 +147,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		lwgeom = lwgeom_from_geojson(str, &srs);
 		if (srs)
 		{
-			srid = getSRIDbySRS(fcinfo, srs);
+			srid = GetSRIDCacheBySRS(fcinfo, srs);
 			lwfree(srs);
 			lwgeom_set_srid(lwgeom, srid);
 		}

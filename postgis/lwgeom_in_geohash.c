@@ -42,7 +42,6 @@ static void geohash_lwpgerror(char *msg, __attribute__((__unused__)) int error_c
 	lwpgerror("%s", msg);
 }
 
-#include "lwgeom_export.h"
 
 static GBOX*
 parse_geohash(char *geohash, int precision)

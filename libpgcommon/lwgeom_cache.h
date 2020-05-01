@@ -28,6 +28,7 @@
 #define RECT_CACHE_ENTRY 4
 #define TOAST_CACHE_ENTRY 5
 #define SRSDESC_CACHE_ENTRY 6
+#define SRID_CACHE_ENTRY 7
 
 #define NUM_CACHE_ENTRIES 8
 
@@ -148,5 +149,20 @@ typedef struct {
 } SRSDescCache;
 
 const char *GetSRSCacheBySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs);
+
+/******************************************************************************/
+
+#define SRIDCacheSize 1
+typedef struct {
+	char *srs;
+	int32_t srid;
+} SRIDCacheArgument;
+
+typedef struct {
+	int type;
+	SRIDCacheArgument arg[SRIDCacheSize];
+} SRIDCache;
+
+int32_t GetSRIDCacheBySRS(FunctionCallInfo fcinfo, const char *srs);
 
 #endif /* LWGEOM_CACHE_H_ */

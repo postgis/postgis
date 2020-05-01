@@ -30,7 +30,7 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
-#include "lwgeom_export.h"
+#include "lwgeom_cache.h"
 
 #if defined(HAVE_LIBJSON)
 
@@ -110,7 +110,7 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 
 	if (srs)
 	{
-		srid = getSRIDbySRS(fcinfo, srs);
+		srid = GetSRIDCacheBySRS(fcinfo, srs);
 		lwfree(srs);
 	}
 
