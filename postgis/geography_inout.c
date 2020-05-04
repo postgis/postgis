@@ -36,7 +36,7 @@
 #include "utils/array.h"
 #include "utils/builtins.h"  /* for pg_atoi */
 #include "lib/stringinfo.h"  /* For binary input */
-#include "catalog/pg_type.h" /* for CSTRINGOID */
+#include "catalog/pg_type.h" /* for CSTRINGOID, INT4OID */
 
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_cache.h"
