@@ -7,4 +7,6 @@ ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - non-existent face.
+NOTICE:  Corrupted topology: face 4 could not be constructed only from edges knowing about it (like edge 4).
+POLYGON EMPTY
 Topology 'tt' dropped

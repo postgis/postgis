@@ -44,4 +44,20 @@ SELECT topology.st_getfacegeometry('', 1);
 -- Non-existent face
 SELECT topology.st_getfacegeometry('tt', 666);
 
+-- Face with partial rings
+-- See https://trac.osgeo.org/postgis/ticket/4681
+COPY tt.face(face_id, mbr) FROM STDIN;
+4	POLYGON((0 0,2 2,2 2,0 0))
+\.
+COPY tt.edge_data(
+	edge_id, start_node, end_node,
+	abs_next_left_edge, abs_next_right_edge,
+	next_left_edge, next_right_edge,
+        left_face, right_face, geom) FROM STDIN;
+4	2	1	1	2	1	-2	4	4	LINESTRING(0 0, 2 2)
+\.
+SET client_min_messages TO NOTICE;
+SELECT ST_AsText(topology.st_getfacegeometry('tt', 4));
+SET client_min_messages TO WARNING;
+
 SELECT topology.DropTopology('tt');

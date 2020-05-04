@@ -2784,7 +2784,7 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
 	LWT_ISO_FACE *face;
 	LWPOLY *out;
 	LWGEOM *outg;
-	uint64_t i;
+	uint64_t i, edgeid;
 	int fields;
 
 	if (faceid == 0)
@@ -2796,6 +2796,7 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
   /* Construct the face geometry */
   numfaceedges = 1;
   fields = LWT_COL_EDGE_GEOM |
+           LWT_COL_EDGE_EDGE_ID |
            LWT_COL_EDGE_FACE_LEFT |
            LWT_COL_EDGE_FACE_RIGHT
            ;
@@ -2827,12 +2828,30 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
     }
     /* Face has no boundary edges, we'll return EMPTY, see
      * https://trac.osgeo.org/postgis/ticket/3221 */
+    lwnotice("Corrupted topology: face %"
+        LWTFMT_ELEMID " has no associated edges.", faceid);
     out = lwpoly_construct_empty(topo->srid, topo->hasZ, 0);
     return lwpoly_as_lwgeom(out);
   }
+  edgeid = edges[0].edge_id;
 
   outg = _lwt_FaceByEdges( topo, edges, numfaceedges );
   _lwt_release_edges(edges, numfaceedges);
+
+  if ( ! outg )
+  {
+    /* Face did have edges but no polygon could be constructed
+     * with that material, sounds like a corrupted topology..
+     *
+     * We'll return EMPTY, see
+     * https://trac.osgeo.org/postgis/ticket/3221 */
+      lwnotice("Corrupted topology: face %"
+        LWTFMT_ELEMID " could not be constructed only from edges "
+        "knowing about it (like edge %" LWTFMT_ELEMID ").",
+        faceid, edgeid);
+      out = lwpoly_construct_empty(topo->srid, topo->hasZ, 0);
+      return lwpoly_as_lwgeom(out);
+  }
 
   return outg;
 }
