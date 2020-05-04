@@ -478,7 +478,12 @@ foreach $TEST (@ARGV)
 	$TEST_OBJ_COUNT_PRE = count_postgis_objects();
 
 	# Check for a "-pre.pl" file in case there are setup commands
-    eval_file("${TEST}-pre.pl");
+	unless ( eval_file("${TEST}-pre.pl") )
+	{
+		chop($@);
+		fail("Failed evaluating ${TEST}-pre.pl: $@");
+		next;
+	}
 
 	# Check for a "-pre.sql" file in case there is setup SQL needed before
 	# the test can be run.
@@ -529,7 +534,7 @@ foreach $TEST (@ARGV)
 	}
 
 	# Check for a "-post.pl" file in case there are teardown commands
-    eval_file("${TEST}-post.pl");
+	eval_file("${TEST}-post.pl");
 
 	$TEST_OBJ_COUNT_POST = count_postgis_objects();
 
@@ -743,12 +748,10 @@ sub eval_file
     my $pl;
     if ( -r $file )
     {
-        #open(PL, $file);
-        #$pl = <PL>;
-        #close(PL);
-        #eval($pl);
-				do $file;
+				do $file or return 0;
+				#system($^X, $file) == 0 or return 0;
     }
+		1;
 }
 
 ##################################################################
