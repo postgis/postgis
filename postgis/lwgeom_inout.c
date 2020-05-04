@@ -658,8 +658,10 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	/* Unwrap the PgSQL text type into a cstring */
 	wkt = text_to_cstring(wkt_text);
 
-	/* Now we call over to the geometry_in function */
-	result = DirectFunctionCall1(LWGEOM_in, CStringGetDatum(wkt));
+	/* Now we call over to the geometry_in function
+	 * We need to initialize the fcinfo since cache might be used
+	 */
+	result = CallerFInfoFunctionCall1(LWGEOM_in, fcinfo->flinfo, InvalidOid, CStringGetDatum(wkt));
 
 	/* Return null on null */
 	if ( ! result )
