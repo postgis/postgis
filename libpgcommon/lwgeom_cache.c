@@ -62,23 +62,13 @@ typedef struct {
 /**
  * Utility function to read the upper memory context off a function call
  * info data.
- * This used to return flinfo->fn_mcxt (the function memory context) but that has the issue
- * that is cleaned up once the function is finished, which on pure SQL functions (like ST_AsGML(geometry))
- * is an issue as the cache will die after every _ST_AsGML call (thus being worthless).
- * Instead we use CurTransactionContext which will live until the end of the transaction
  */
 MemoryContext
 PostgisCacheContext(FunctionCallInfo fcinfo)
 {
-	return CurTransactionContext;
-}
-
-static GenericCacheCollection *internal_cache = NULL;
-
-static void
-PostgisResetInternalCache(void *v)
-{
-	internal_cache = NULL;
+	if (!fcinfo->flinfo)
+		elog(ERROR, "%s: Could not find upper context", __func__);
+	return fcinfo->flinfo->fn_mcxt;
 }
 
 /**
@@ -88,18 +78,17 @@ PostgisResetInternalCache(void *v)
 static GenericCacheCollection *
 GetGenericCacheCollection(FunctionCallInfo fcinfo)
 {
+	GenericCacheCollection *internal_cache;
+	if (!fcinfo->flinfo)
+		elog(ERROR, "%s: Could not find upper context", __func__);
+
+	internal_cache = fcinfo->flinfo->fn_extra;
+
 	if (!internal_cache)
 	{
-		internal_cache = MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(GenericCacheCollection));
-		memset(internal_cache, 0, sizeof(GenericCacheCollection));
-
-		MemoryContextCallback *cb =
-		    MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(MemoryContextCallback));
-		cb->func = PostgisResetInternalCache;
-		cb->arg = NULL;
-		MemoryContextRegisterResetCallback(PostgisCacheContext(fcinfo), cb);
+		internal_cache = MemoryContextAllocZero(PostgisCacheContext(fcinfo), sizeof(GenericCacheCollection));
+		fcinfo->flinfo->fn_extra = internal_cache;
 	}
-
 	return internal_cache;
 }
 
