@@ -71,37 +71,55 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	char *gml_id_buf, *prefix_buf;
 	text *prefix_text, *gml_id_text;
 
-
-	/* Get the version */
-	version = PG_GETARG_INT32(0);
-	if ( version != 2 && version != 3 )
+	/*
+	 * Two potential callers, one starts with GML version,
+	 * one starts with geometry, and we check for initial
+	 * argument type and then dynamically change what args
+	 * we read based on presence/absence
+	 */
+	Oid first_type = get_fn_expr_argtype(fcinfo->flinfo, 0);
+	int argnum = 0;
+	if (first_type != INT4OID)
 	{
-		elog(ERROR, "Only GML 2 and GML 3 are supported");
-		PG_RETURN_NULL();
+		version = 2;
+	}
+	else
+	{
+		/* Get the version */
+		version = PG_GETARG_INT32(argnum++);
+		if (version != 2 && version != 3)
+		{
+			elog(ERROR, "Only GML 2 and GML 3 are supported");
+			PG_RETURN_NULL();
+		}
 	}
 
 	/* Get the geometry */
-	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_ARGISNULL(argnum))
+		PG_RETURN_NULL();
+	geom = PG_GETARG_GSERIALIZED_P(argnum++);
 
 	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
 	{
-		precision = PG_GETARG_INT32(2);
+		precision = PG_GETARG_INT32(argnum);
 		/* TODO: leave this to liblwgeom ? */
 		if (precision > DBL_DIG)
 			precision = DBL_DIG;
 		else if (precision < 0)
 			precision = 0;
 	}
+	argnum++;
 
 	/* retrieve option */
-	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) option = PG_GETARG_INT32(3);
+	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
+		option = PG_GETARG_INT32(argnum);
+	argnum++;
 
 	/* retrieve prefix */
-	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
+	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
 	{
-		prefix_text = PG_GETARG_TEXT_P(4);
+		prefix_text = PG_GETARG_TEXT_P(argnum);
 		if ( VARSIZE(prefix_text) == VARHDRSZ )
 		{
 			prefix = "";
@@ -117,10 +135,11 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 			prefix = prefix_buf;
 		}
 	}
+	argnum++;
 
-	if (PG_NARGS() >5 && !PG_ARGISNULL(5))
+	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
 	{
-		gml_id_text = PG_GETARG_TEXT_P(5);
+		gml_id_text = PG_GETARG_TEXT_P(argnum);
 		if ( VARSIZE(gml_id_text) == VARHDRSZ )
 		{
 			gml_id = "";
@@ -134,6 +153,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 			gml_id = gml_id_buf;
 		}
 	}
+	argnum++;
 
 	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
@@ -147,7 +167,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (option & 8)
 	{
 		elog(ERROR,
-		     "Options %d passed to ST_AsGML(geography) sets "
+		     "Options %d passed to ST_AsGML(geometry) sets "
 		     "unsupported value 8",
 		     option);
 		PG_RETURN_NULL();
