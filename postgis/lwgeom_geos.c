@@ -105,6 +105,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum ST_BuildArea(PG_FUNCTION_ARGS);
 Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
+Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
@@ -332,6 +333,128 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 
 #endif /* POSTGIS_GEOS_VERSION >= 37 */
 }
+
+
+/**
+ *  @brief Compute the Frechet distance with optional densification thanks to the corresponding GEOS function
+ *  @example ST_FrechetDistance {@link #frechetdistance} - SELECT ST_FrechetDistance(
+ *      'LINESTRING (0 0, 50 200, 100 0, 150 200, 200 0)'::geometry,
+ *      'LINESTRING (0 200, 200 150, 0 100, 200 50, 0 0)'::geometry, 0.5);
+ */
+
+PG_FUNCTION_INFO_V1(ST_MaximumInscribedCircle);
+Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 39
+
+	lwpgerror("The GEOS version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'GEOSMaximumInscribedCircle' function (3.9.0+ required)",
+	          POSTGIS_GEOS_VERSION);
+	          PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 39 */
+	GSERIALIZED* geom;
+	GSERIALIZED* center;
+	GSERIALIZED* nearest;
+	TupleDesc resultTupleDesc;
+	HeapTuple resultTuple;
+	Datum result;
+	Datum result_values[3];
+	bool result_is_null[3];
+	double radius = 0.0;
+	int32 srid = SRID_UNKNOWN;
+	bool is3d;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	geom = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(geom);
+	is3d = gserialized_has_z(geom);
+
+    /* Empty geometry?  Return POINT EMPTY with zero radius */
+	if (gserialized_is_empty(geom))
+	{
+		LWGEOM* lwcenter = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+		LWGEOM* lwnearest = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+		center = geometry_serialize(lwcenter);
+		nearest = geometry_serialize(lwnearest);
+		radius = 0.0;
+	}
+	else
+	{
+		GEOSGeometry *g1;
+		GEOSGeometry *g2;
+		GBOX gbox;
+		if (!gserialized_get_gbox_p(geom, &gbox))
+			PG_RETURN_NULL();
+
+		initGEOS(lwpgnotice, lwgeom_geos_error);
+
+		double width = gbox.xmax - gbox.xmin;
+		double height = gbox.ymax - gbox.ymin;
+		double size = width > height ? width : height;
+		double tolerance = size / 1000.0;
+
+		g1 = POSTGIS2GEOS(geom);
+		if (!g1)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+
+		int gtype = gserialized_get_type(geom);
+		if (gtype == POLYGONTYPE || gtype == MULTIPOLYGONTYPE)
+		{
+			g2 = GEOSMaximumInscribedCircle(g1, tolerance);
+			if (!g2)
+			{
+				lwpgerror("Error calculating GEOSMaximumInscribedCircle.");
+				GEOSGeom_destroy(g1);
+				PG_RETURN_NULL();
+			}
+		}
+		else
+		{
+			g2 = GEOSLargestEmptyCircle(g1, NULL, tolerance);
+			if (!g2)
+			{
+				lwpgerror("Error calculating GEOSLargestEmptyCircle.");
+				GEOSGeom_destroy(g1);
+				PG_RETURN_NULL();
+			}
+		}
+
+		GEOSGeometry *gcenter = GEOSGeomGetStartPoint(g2);
+		GEOSGeometry *gnearest = GEOSGeomGetEndPoint(g2);
+		GEOSDistance(gcenter, gnearest, &radius);
+		GEOSSetSRID(gcenter, srid);
+		GEOSSetSRID(gnearest, srid);
+
+		center = GEOS2POSTGIS(gcenter, is3d);
+		nearest = GEOS2POSTGIS(gnearest, is3d);
+		GEOSGeom_destroy(gcenter);
+		GEOSGeom_destroy(gnearest);
+		GEOSGeom_destroy(g2);
+		GEOSGeom_destroy(g1);
+	}
+
+	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
+	BlessTupleDesc(resultTupleDesc);
+
+	result_values[0] = PointerGetDatum(center);
+	result_is_null[0] = false;
+	result_values[1] = PointerGetDatum(nearest);
+	result_is_null[1] = false;
+	result_values[2] = Float8GetDatum(radius);
+	result_is_null[2] = false;
+	resultTuple = heap_form_tuple(resultTupleDesc, result_values, result_is_null);
+
+	result = HeapTupleGetDatum(resultTuple);
+
+	PG_RETURN_DATUM(result);
+
+#endif /* POSTGIS_GEOS_VERSION >= 39 */
+}
+
 
 /**
  * @brief This is the final function for GeomUnion

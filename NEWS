@@ -8,6 +8,8 @@ Only tickets not included in 3.1.0alpha1
 
 * New features *
   - #4656, Cast a geojson_text::geometry for implicit GeoJSON ingestion (Raúl Marín)
+  - #4687, Expose GEOS MaximumInscribedCircle (Paul Ramsey)
+  -
 
 * Enhancements *
   - #4681, ST_GetFaceGeometry: print corruption information (Sandro Santilli)

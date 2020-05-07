@@ -1,0 +1,6 @@
+mic-box|POINT(50 50)|POINT(50 0)|50.0000
+mic-empty|POINT EMPTY|POINT EMPTY|0.0000
+mic-null|||
+mic-line|POINT(50 50)|POINT(50 0)|50.0000
+mic-mpoint|POINT(50 50)|POINT(0 0)|70.7107
+mic-point|POINT(0 0)|POINT(0 0)|0.0000

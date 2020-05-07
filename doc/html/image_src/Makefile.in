@@ -104,6 +104,8 @@ IMAGES= \
 	../images/st_longestline01.png \
 	../images/st_longestline02.png \
 	../images/st_longestline03.png \
+	../images/st_maximuminscribedcircle01.png \
+	../images/st_maximuminscribedcircle02.png \
 	../images/st_minimumboundingcircle01.png \
 	../images/st_minkowskisum01.png \
 	../images/st_minkowskisum02.png \
