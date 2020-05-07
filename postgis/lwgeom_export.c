@@ -31,6 +31,7 @@
 #include "float.h" /* for DBL_DIG */
 
 #include "postgres.h"
+#include "catalog/pg_type.h" /* for INT4OID */
 #include "executor/spi.h"
 #include "utils/builtins.h"
 #include "utils/jsonb.h"
