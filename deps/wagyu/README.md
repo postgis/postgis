@@ -25,3 +25,4 @@ It is integrated in the project as an static library inside postgis.so, so it do
 
   - 2019-02-05 - [Wagyu] Library extraction from https://github.com/mapbox/wagyu
   - 2019-02-05 - [geometry.hpp] Library extraction from https://github.com/mapbox/geometry.hpp
+  - 2020-05-08 - [Wagyu] Update to 0.5.0
