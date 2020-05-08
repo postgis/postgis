@@ -4951,3 +4951,130 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
 
   SRF_RETURN_NEXT(funcctx, result);
 }
+
+/*  GetRingEdges(atopology, anedge, maxedges default null) */
+Datum GetRingEdges(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(GetRingEdges);
+Datum GetRingEdges(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID edge_id;
+  int maxedges = 0;
+  uint64_t nelems;
+  LWT_ELEMID *elems;
+  LWT_BE_TOPOLOGY *topo;
+  FuncCallContext *funcctx;
+  MemoryContext oldcontext, newcontext;
+  FACEEDGESSTATE *state;
+  Datum result;
+  HeapTuple tuple;
+  Datum ret[2];
+  bool isnull[2] = {0,0}; /* needed to say neither value is null */
+
+  if (SRF_IS_FIRSTCALL())
+  {
+    POSTGIS_DEBUG(1, "GetRingEdges first call");
+    funcctx = SRF_FIRSTCALL_INIT();
+    newcontext = funcctx->multi_call_memory_ctx;
+
+
+    if ( PG_ARGISNULL(0) )
+    {
+      lwpgerror("GetRingEdges: topology name cannot be null");
+      PG_RETURN_NULL();
+    }
+    toponame_text = PG_GETARG_TEXT_P(0);
+    toponame = text_to_cstring(toponame_text);
+    PG_FREE_IF_COPY(toponame_text, 0);
+
+    if ( PG_ARGISNULL(1) )
+    {
+      lwpgerror("GetRingEdges: edge id cannot be null");
+      PG_RETURN_NULL();
+    }
+    edge_id = PG_GETARG_INT32(1) ;
+
+    if ( ! PG_ARGISNULL(2) )
+    {
+      maxedges = PG_GETARG_INT32(2) ;
+    }
+
+    if ( SPI_OK_CONNECT != SPI_connect() )
+    {
+      lwpgerror("Could not connect to SPI");
+      PG_RETURN_NULL();
+    }
+
+    {
+      int pre = be_data.topoLoadFailMessageFlavor;
+      be_data.topoLoadFailMessageFlavor = 1;
+      topo = cb_loadTopologyByName(&be_data, toponame);
+      be_data.topoLoadFailMessageFlavor = pre;
+    }
+    oldcontext = MemoryContextSwitchTo( newcontext );
+    pfree(toponame);
+    if ( ! topo )
+    {
+      /* should never reach this point, as lwerror would raise an exception */
+      SPI_finish();
+      PG_RETURN_NULL();
+    }
+
+    POSTGIS_DEBUG(1, "Calling cb_getRingEdges");
+    elems = cb_getRingEdges(topo, edge_id, &nelems, maxedges);
+    POSTGIS_DEBUG(1, "cb_getRingEdges returned");
+    cb_freeTopology(topo);
+
+    if ( ! elems )
+    {
+      /* should never reach this point, as lwerror would raise an exception */
+      SPI_finish();
+      PG_RETURN_NULL();
+    }
+
+    state = lwalloc(sizeof(FACEEDGESSTATE));
+    state->elems = elems;
+    state->nelems = nelems;
+    state->curr = 0;
+    funcctx->user_fctx = state;
+
+    POSTGIS_DEBUG(1, "GetRingEdges calling SPI_finish");
+
+    /*
+     * Get tuple description for return type
+     */
+    get_call_result_type(fcinfo, 0, &funcctx->tuple_desc);
+    BlessTupleDesc(funcctx->tuple_desc);
+
+    MemoryContextSwitchTo(oldcontext);
+
+    SPI_finish();
+  }
+
+  POSTGIS_DEBUG(1, "Per-call invocation");
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+  /* get state */
+  state = funcctx->user_fctx;
+
+  if ( state->curr == state->nelems )
+  {
+    POSTGIS_DEBUG(1, "We're done, cleaning up all");
+    SRF_RETURN_DONE(funcctx);
+  }
+
+  edge_id = state->elems[state->curr++];
+  POSTGIS_DEBUGF(1, "GetRingEdges: cur:%d, val:%" LWTFMT_ELEMID,
+                 state->curr-1, edge_id);
+
+
+  ret[0] = Int32GetDatum(state->curr);
+  ret[1] = Int64GetDatum(edge_id);
+  tuple = heap_form_tuple(funcctx->tuple_desc, ret, isnull);
+  result = HeapTupleGetDatum(tuple);
+
+  SRF_RETURN_NEXT(funcctx, result);
+}

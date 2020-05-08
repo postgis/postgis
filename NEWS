@@ -12,6 +12,7 @@ Only tickets not included in 3.1.0alpha1
   -
 
 * Enhancements *
+  - #4675, topology.GetRingEdges now implemented in C (Sandro Santilli)
   - #4681, ST_GetFaceGeometry: print corruption information (Sandro Santilli)
   - #4651: ST_Simplify: Don't copy if nothing is removed (Raúl Marín)
   - #4657: Avoid De-TOASTing where possible (Paul Ramsey)
