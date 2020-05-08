@@ -19,11 +19,11 @@
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT4OID */
 #include "lib/stringinfo.h"
+#include "access/htup_details.h" /* for heap_form_tuple() */
 #include "access/xact.h" /* for RegisterXactCallback */
 #include "funcapi.h" /* for FuncCallContext */
 #include "executor/spi.h" /* this is what you need to work with SPI */
 #include "inttypes.h" /* for PRId64 */
-
 #include "../postgis_config.h"
 
 #include "liblwgeom_internal.h" /* for gbox_clone */
