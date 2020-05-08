@@ -384,47 +384,49 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		GEOSGeometry *g1;
-		GEOSGeometry *g2;
+		GEOSGeometry *ginput, *gcircle, *gcenter, *gnearest;
+		double width, height, size, tolerance;
 		GBOX gbox;
+		int gtype;
+
 		if (!gserialized_get_gbox_p(geom, &gbox))
 			PG_RETURN_NULL();
 
+		width = gbox.xmax - gbox.xmin;
+		height = gbox.ymax - gbox.ymin;
+		size = width > height ? width : height;
+		tolerance = size / 1000.0;
+
 		initGEOS(lwpgnotice, lwgeom_geos_error);
 
-		double width = gbox.xmax - gbox.xmin;
-		double height = gbox.ymax - gbox.ymin;
-		double size = width > height ? width : height;
-		double tolerance = size / 1000.0;
-
-		g1 = POSTGIS2GEOS(geom);
-		if (!g1)
+		ginput = POSTGIS2GEOS(geom);
+		if (!ginput)
 			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 
-		int gtype = gserialized_get_type(geom);
+		gtype = gserialized_get_type(geom);
 		if (gtype == POLYGONTYPE || gtype == MULTIPOLYGONTYPE)
 		{
-			g2 = GEOSMaximumInscribedCircle(g1, tolerance);
-			if (!g2)
+			gcircle = GEOSMaximumInscribedCircle(ginput, tolerance);
+			if (!gcircle)
 			{
 				lwpgerror("Error calculating GEOSMaximumInscribedCircle.");
-				GEOSGeom_destroy(g1);
+				GEOSGeom_destroy(ginput);
 				PG_RETURN_NULL();
 			}
 		}
 		else
 		{
-			g2 = GEOSLargestEmptyCircle(g1, NULL, tolerance);
-			if (!g2)
+			gcircle = GEOSLargestEmptyCircle(ginput, NULL, tolerance);
+			if (!gcircle)
 			{
 				lwpgerror("Error calculating GEOSLargestEmptyCircle.");
-				GEOSGeom_destroy(g1);
+				GEOSGeom_destroy(ginput);
 				PG_RETURN_NULL();
 			}
 		}
 
-		GEOSGeometry *gcenter = GEOSGeomGetStartPoint(g2);
-		GEOSGeometry *gnearest = GEOSGeomGetEndPoint(g2);
+		gcenter = GEOSGeomGetStartPoint(gcircle);
+		gnearest = GEOSGeomGetEndPoint(gcircle);
 		GEOSDistance(gcenter, gnearest, &radius);
 		GEOSSetSRID(gcenter, srid);
 		GEOSSetSRID(gnearest, srid);
@@ -433,8 +435,8 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 		nearest = GEOS2POSTGIS(gnearest, is3d);
 		GEOSGeom_destroy(gcenter);
 		GEOSGeom_destroy(gnearest);
-		GEOSGeom_destroy(g2);
-		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(gcircle);
+		GEOSGeom_destroy(ginput);
 	}
 
 	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
