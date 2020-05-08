@@ -74,18 +74,17 @@ struct hot_pixel_sorter {
     }
 };
 
-// Due to the nature of floating point calculations
-// and the high likely hood of values around X.5, we
-// need to fudge what is X.5 some for our rounding.
-const double rounding_offset = 1e-12;
-const double rounding_offset_y = 5e-13;
-
 template <typename T>
 T round_towards_min(double val) {
     // 0.5 rounds to 0
     // 0.0 rounds to 0
     // -0.5 rounds to -1
-    return static_cast<T>(std::ceil(val - 0.5 + rounding_offset));
+    double half = std::floor(val) + 0.5;
+    if (values_are_equal(val, half)) {
+        return static_cast<T>(std::floor(val));
+    } else {
+        return static_cast<T>(std::llround(val));
+    }
 }
 
 template <typename T>
@@ -93,7 +92,12 @@ T round_towards_max(double val) {
     // 0.5 rounds to 1
     // 0.0 rounds to 0
     // -0.5 rounds to 0
-    return static_cast<T>(std::floor(val + 0.5 + rounding_offset));
+    double half = std::floor(val) + 0.5;
+    if (values_are_equal(val, half)) {
+        return static_cast<T>(std::ceil(val));
+    } else {
+        return static_cast<T>(std::llround(val));
+    }
 }
 
 template <typename T>
@@ -117,8 +121,8 @@ inline T get_edge_min_x(edge<T> const& edge, const T current_y) {
         if (current_y == edge.bot.y) {
             return edge.bot.x;
         } else {
-            double return_val = static_cast<double>(edge.bot.x) +
-                                edge.dx * (static_cast<double>(current_y - edge.bot.y) + 0.5 - rounding_offset_y);
+            double return_val =
+                static_cast<double>(edge.bot.x) + edge.dx * (static_cast<double>(current_y - edge.bot.y) + 0.5);
             T value = round_towards_min<T>(return_val);
             return value;
         }
@@ -146,8 +150,8 @@ inline T get_edge_max_x(edge<T> const& edge, const T current_y) {
         if (current_y == edge.bot.y) {
             return edge.bot.x;
         } else {
-            double return_val = static_cast<double>(edge.bot.x) +
-                                edge.dx * (static_cast<double>(current_y - edge.bot.y) + 0.5 - rounding_offset_y);
+            double return_val =
+                static_cast<double>(edge.bot.x) + edge.dx * (static_cast<double>(current_y - edge.bot.y) + 0.5);
             T value = round_towards_max<T>(return_val);
             return value;
         }

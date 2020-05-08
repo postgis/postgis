@@ -9,7 +9,7 @@
 #ifdef USE_WAGYU_INTERRUPT
 
 namespace {
-bool WAGYU_INTERRUPT_REQUESTED = false;
+thread_local bool WAGYU_INTERRUPT_REQUESTED = false;
 }
 
 namespace mapbox {
