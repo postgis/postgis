@@ -26,3 +26,9 @@ SELECT 'mic-point' AS name, st_astext(center) AS center,
        st_astext(nearest) AS nearest,
        round(radius::numeric,4) AS radius
 FROM ST_MaximumInscribedCircle('POINT(0 0)'::geometry);
+
+WITH p AS (
+	SELECT 'Polygon((0 0, 100 0, 100 100, 0 100, 0 0))'::geometry AS ply
+)
+SELECT 'mic-cte' AS name, ST_AsText((ST_MaximumInscribedCircle(ply)).center)
+	FROM p;
