@@ -141,7 +141,7 @@ is_point(const GSERIALIZED* g)
  * Serialized poly may be a multipart.
  */
 static int
-pip_short_circuit(RTREE_POLY_CACHE* poly_cache, LWPOINT* point, GSERIALIZED* gpoly)
+pip_short_circuit(RTREE_POLY_CACHE *poly_cache, LWPOINT *point, const GSERIALIZED *gpoly)
 {
 	int result;
 
@@ -1783,8 +1783,10 @@ Datum overlaps(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(contains);
 Datum contains(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = ToastCacheGetGeometry(fcinfo, 0);
-	GSERIALIZED *geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	int result;
 	GEOSGeometry *g1, *g2;
 	GBOX box1, box2;
@@ -1814,9 +1816,11 @@ Datum contains(PG_FUNCTION_ARGS)
 	*/
 	if (is_poly(geom1) && is_point(geom2))
 	{
-		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
-		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
-		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
+		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
+		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
+		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -1872,7 +1876,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
+	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, NULL);
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
@@ -1918,14 +1922,14 @@ Datum within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(containsproperly);
 Datum containsproperly(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *				geom1;
-	GSERIALIZED *				geom2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	char 					result;
 	GBOX 			box1, box2;
 	PrepGeomCache *	prep_cache;
 
-	geom1 = ToastCacheGetGeometry(fcinfo, 0);
-	geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.ContainsProperly(Empty) == FALSE */
@@ -1945,7 +1949,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
+	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, 0);
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
@@ -1984,14 +1988,14 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(covers);
 Datum covers(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	int result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
-	geom1 = ToastCacheGetGeometry(fcinfo, 0);
-	geom2 = ToastCacheGetGeometry(fcinfo, 1);
 
 	/* A.Covers(Empty) == FALSE */
 	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
@@ -2017,9 +2021,11 @@ Datum covers(PG_FUNCTION_ARGS)
 	 */
 	if (is_poly(geom1) && is_point(geom2))
 	{
-		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
-		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
-		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
+		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
+		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
+		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2065,7 +2071,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
+	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, 0);
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
@@ -2112,15 +2118,15 @@ Datum within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(coveredby);
 Datum coveredby(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	GEOSGeometry *g1, *g2;
 	int result;
 	GBOX box1, box2;
 	char *patt = "**F**F***";
 
-	geom1 = ToastCacheGetGeometry(fcinfo, 0);
-	geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.CoveredBy(Empty) == FALSE */
@@ -2147,9 +2153,11 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 */
 	if (is_point(geom1) && is_poly(geom2))
 	{
-		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
-		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
-		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
+		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
+		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
+		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2277,14 +2285,14 @@ Datum crosses(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_Intersects);
 Datum ST_Intersects(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	int result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
-	geom1 = ToastCacheGetGeometry(fcinfo, 0);
-	geom2 = ToastCacheGetGeometry(fcinfo, 1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.Intersects(Empty) == FALSE */
@@ -2308,9 +2316,11 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	 */
 	if ((is_point(geom1) && is_poly(geom2)) || (is_poly(geom1) && is_point(geom2)))
 	{
-		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
-		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
-		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
+		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
+		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
+		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2351,7 +2361,7 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
-	prep_cache = GetPrepGeomCache( fcinfo, geom1, geom2 );
+	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
 
 	if ( prep_cache && prep_cache->prepared_geom )
 	{
@@ -2766,9 +2776,8 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 
 /*-----=POSTGIS2GEOS= */
 
-
 GEOSGeometry *
-POSTGIS2GEOS(GSERIALIZED *pglwgeom)
+POSTGIS2GEOS(const GSERIALIZED *pglwgeom)
 {
 	GEOSGeometry *ret;
 	LWGEOM *lwgeom = lwgeom_from_gserialized(pglwgeom);

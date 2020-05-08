@@ -106,7 +106,7 @@ static GeomCacheMethods RectTreeCacheMethods =
 };
 
 static RectTreeGeomCache *
-GetRectTreeGeomCache(FunctionCallInfo fcinfo, const GSERIALIZED *g1, const GSERIALIZED *g2)
+GetRectTreeGeomCache(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *g1, SHARED_GSERIALIZED *g2)
 {
 	return (RectTreeGeomCache*)GetGeomCache(fcinfo, &RectTreeCacheMethods, g1, g2);
 }
@@ -149,27 +149,27 @@ PG_FUNCTION_INFO_V1(ST_DistanceRectTreeCached);
 Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 {
 	RectTreeGeomCache *tree_cache = NULL;
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
-	LWGEOM *lwg1, *lwg2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *g1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *g2 = shared_gserialized_get(shared_geom2);
 
 	/* Return NULL on empty arguments. */
 	if (gserialized_is_empty(g1) || gserialized_is_empty(g2))
 	{
-		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_NULL();
 	}
 
-	lwg1 = lwgeom_from_gserialized(g1);
-	lwg2 = lwgeom_from_gserialized(g2);
-
 	/* Two points? Get outa here... */
-	if (lwg1->type == POINTTYPE && lwg2->type == POINTTYPE)
+	if (gserialized_get_type(g1) == POINTTYPE && gserialized_get_type(g2) == POINTTYPE)
+	{
+		LWGEOM *lwg1 = lwgeom_from_gserialized(g1);
+		LWGEOM *lwg2 = lwgeom_from_gserialized(g2);
 		PG_RETURN_FLOAT8(lwgeom_mindistance2d(lwg1, lwg2));
+	}
 
 	/* Fetch/build our cache, if appropriate, etc... */
-	tree_cache = GetRectTreeGeomCache(fcinfo, g1, g2);
+	tree_cache = GetRectTreeGeomCache(fcinfo, shared_geom1, shared_geom2);
 
 	if (tree_cache && tree_cache->gcache.argnum)
 	{
@@ -177,10 +177,12 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 		RECT_NODE *n_cached = tree_cache->index;;
 		if (tree_cache->gcache.argnum == 1)
 		{
+			LWGEOM *lwg2 = lwgeom_from_gserialized(g2);
 			n = rect_tree_from_lwgeom(lwg2);
 		}
 		else if (tree_cache->gcache.argnum == 2)
 		{
+			LWGEOM *lwg1 = lwgeom_from_gserialized(g1);
 			n = rect_tree_from_lwgeom(lwg1);
 		}
 		else
@@ -191,6 +193,8 @@ Datum ST_DistanceRectTreeCached(PG_FUNCTION_ARGS)
 	}
 	else
 	{
+		LWGEOM *lwg1 = lwgeom_from_gserialized(g1);
+		LWGEOM *lwg2 = lwgeom_from_gserialized(g2);
 		PG_RETURN_FLOAT8(lwgeom_mindistance2d(lwg1, lwg2));
 	}
 
