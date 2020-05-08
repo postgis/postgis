@@ -292,11 +292,6 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 	/* We've seen this object before? */
 	if (arg->valueid == valueid && arg->toastrelid == toastrelid)
 	{
-		if (arg->geom)
-			return arg->geom;
-
-		/* Take a copy into the upper context */
-		arg->geom = shared_gserialized_new_cached(fcinfo, datum);
 		return arg->geom;
 	}
 	/* New object, clear our old copies and see if it */
@@ -307,8 +302,8 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 			shared_gserialized_unref(fcinfo, arg->geom);
 		arg->valueid = valueid;
 		arg->toastrelid = toastrelid;
-		arg->geom = NULL;
-		return shared_gserialized_new_nocache(datum);
+		arg->geom = shared_gserialized_new_cached(fcinfo, datum);
+		return arg->geom;
 	}
 }
 
