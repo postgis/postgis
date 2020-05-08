@@ -133,21 +133,20 @@ GetPROJSRSCache(FunctionCallInfo fcinfo)
 GeomCache *
 GetGeomCache(FunctionCallInfo fcinfo,
 	     const GeomCacheMethods *cache_methods,
-	     const GSERIALIZED *g1,
-	     const GSERIALIZED *g2)
+	     SHARED_GSERIALIZED *g1,
+	     SHARED_GSERIALIZED *g2)
 {
 	GeomCache* cache;
 	int cache_hit = 0;
 	MemoryContext old_context;
 	const GSERIALIZED *geom;
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
-	int entry_number = cache_methods->entry_number;
+	uint32_t entry_number = cache_methods->entry_number;
 
 	Assert(entry_number >= 0);
 	Assert(entry_number < NUM_CACHE_ENTRIES);
 
 	cache = (GeomCache*)(generic_cache->entry[entry_number]);
-
 	if ( ! cache )
 	{
 		old_context = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
@@ -160,25 +159,16 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	}
 
 	/* Cache hit on the first argument */
-	if ( g1 &&
-	     cache->argnum != 2 && (
-	     (g1 == cache->geom1) ||
-	     (cache->geom1_size == VARSIZE(g1) && memcmp(cache->geom1, g1, cache->geom1_size) == 0)
-	     ))
+	if (g1 && cache->geom1 && cache->argnum != 2 && shared_gserialized_equal(g1, cache->geom1))
 	{
 		cache_hit = 1;
-		geom = cache->geom1;
-
+		geom = shared_gserialized_get(cache->geom1);
 	}
 	/* Cache hit on second argument */
-	else if ( g2 &&
-	          cache->argnum != 1 && (
-	          (g2 == cache->geom2) ||
-	          (cache->geom2_size == VARSIZE(g2) && memcmp(cache->geom2, g2, cache->geom2_size) == 0)
-	          ))
+	else if (g2 && cache->geom2 && cache->argnum != 1 && shared_gserialized_equal(g2, cache->geom2))
 	{
 		cache_hit = 2;
-		geom = cache->geom2;
+		geom = shared_gserialized_get(cache->geom2);
 	}
 	/* No cache hit. If we have a tree, free it. */
 	else
@@ -188,16 +178,6 @@ GetGeomCache(FunctionCallInfo fcinfo,
 		{
 			cache_methods->GeomIndexFreer(cache);
 			cache->argnum = 0;
-		}
-		if ( cache->lwgeom1 )
-		{
-			lwgeom_free(cache->lwgeom1);
-			cache->lwgeom1 = 0;
-		}
-		if ( cache->lwgeom2 )
-		{
-			lwgeom_free(cache->lwgeom2);
-			cache->lwgeom2 = 0;
 		}
 	}
 
@@ -237,18 +217,17 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	/* Argument one didn't match, so copy the new value in. */
 	if ( g1 && cache_hit != 1 )
 	{
-		if ( cache->geom1 ) pfree(cache->geom1);
-		cache->geom1_size = VARSIZE(g1);
-		cache->geom1 = MemoryContextAlloc(PostgisCacheContext(fcinfo), cache->geom1_size);
-		memcpy(cache->geom1, g1, cache->geom1_size);
+		if (cache->geom1)
+			shared_gserialized_unref(fcinfo, cache->geom1);
+		cache->geom1 = shared_gserialized_ref(fcinfo, g1);
 	}
+
 	/* Argument two didn't match, so copy the new value in. */
 	if ( g2 && cache_hit != 2 )
 	{
-		if ( cache->geom2 ) pfree(cache->geom2);
-		cache->geom2_size = VARSIZE(g2);
-		cache->geom2 = MemoryContextAlloc(PostgisCacheContext(fcinfo), cache->geom2_size);
-		memcpy(cache->geom2, g2, cache->geom2_size);
+		if (cache->geom2)
+			shared_gserialized_unref(fcinfo, cache->geom2);
+		cache->geom2 = shared_gserialized_ref(fcinfo, g2);
 	}
 
 	return NULL;
@@ -271,7 +250,7 @@ ToastCacheGet(FunctionCallInfo fcinfo)
 	return cache;
 }
 
-GSERIALIZED*
+SHARED_GSERIALIZED *
 ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 {
 	Assert(argnum < ToastCacheSize);
@@ -292,7 +271,7 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 	* https://www.postgresql.org/message-id/8196.1585870220@sss.pgh.pa.us
 	*/
 	if (!VARATT_IS_EXTERNAL_ONDISK(attr))
-		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
+		return shared_gserialized_new_nocache(datum);
 
 	/* Retrieve the unique keys for this object */
 	struct varatt_external ve;
@@ -303,13 +282,6 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 	/* We've seen this object before? */
 	if (arg->valueid == valueid && arg->toastrelid == toastrelid)
 	{
-		if (arg->geom)
-			return arg->geom;
-
-		/* Take a copy into the upper context */
-		MemoryContext old_context = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
-		arg->geom = (GSERIALIZED*)PG_DETOAST_DATUM_COPY(datum);
-		MemoryContextSwitchTo(old_context);
 		return arg->geom;
 	}
 	/* New object, clear our old copies and see if it */
@@ -317,11 +289,11 @@ ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum)
 	else
 	{
 		if (arg->geom)
-			pfree(arg->geom);
+			shared_gserialized_unref(fcinfo, arg->geom);
 		arg->valueid = valueid;
 		arg->toastrelid = toastrelid;
-		arg->geom = NULL;
-		return (GSERIALIZED*)PG_DETOAST_DATUM(datum);
+		arg->geom = shared_gserialized_new_cached(fcinfo, datum);
+		return arg->geom;
 	}
 }
 

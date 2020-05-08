@@ -205,15 +205,14 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_distance);
 Datum geography_distance(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED* g1 = NULL;
-	GSERIALIZED* g2 = NULL;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *g1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *g2 = shared_gserialized_get(shared_geom2);
 	double distance;
 	bool use_spheroid = true;
 	SPHEROID s;
 
-	/* Get our geometry objects loaded into memory. */
-	g1 = ToastCacheGetGeometry(fcinfo, 0);
-	g2 = ToastCacheGetGeometry(fcinfo, 1);
 
 	if (PG_NARGS() > 2)
 		use_spheroid = PG_GETARG_BOOL(2);
@@ -234,7 +233,7 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	}
 
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
-	if ( LW_FAILURE == geography_distance_cache(fcinfo, g1, g2, &s, &distance) )
+	if (LW_FAILURE == geography_distance_cache(fcinfo, shared_geom1, shared_geom2, &s, &distance))
 	{
 		/* default to using tree-based distance calculation at all times */
 		/* in standard distance call. */
@@ -268,8 +267,10 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_dwithin);
 Datum geography_dwithin(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = ToastCacheGetGeometry(fcinfo, 0);
-	GSERIALIZED *g2 = ToastCacheGetGeometry(fcinfo, 1);
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *g1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *g2 = shared_gserialized_get(shared_geom2);
 	SPHEROID s;
 	double tolerance = 0.0;
 	bool use_spheroid = true;
@@ -298,7 +299,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
-	if ( LW_FAILURE == geography_dwithin_cache(fcinfo, g1, g2, &s, tolerance, &dwithin) )
+	if (LW_FAILURE == geography_dwithin_cache(fcinfo, shared_geom1, shared_geom2, &s, tolerance, &dwithin))
 	{
 		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
 		LWGEOM* lwgeom2 = lwgeom_from_gserialized(g2);

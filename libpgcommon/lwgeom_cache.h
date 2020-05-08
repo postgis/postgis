@@ -35,6 +35,18 @@
 /* Returns the MemoryContext used to store the caches */
 MemoryContext PostgisCacheContext(FunctionCallInfo fcinfo);
 
+typedef struct {
+	GSERIALIZED *geom;
+	uint32_t count;
+} SHARED_GSERIALIZED;
+
+SHARED_GSERIALIZED *shared_gserialized_new_nocache(Datum d);
+SHARED_GSERIALIZED *shared_gserialized_new_cached(FunctionCallInfo fcinfo, Datum d);
+SHARED_GSERIALIZED *shared_gserialized_ref(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *ref);
+void shared_gserialized_unref(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *ref);
+bool shared_gserialized_equal(SHARED_GSERIALIZED *r1, SHARED_GSERIALIZED *r2);
+const GSERIALIZED *shared_gserialized_get(SHARED_GSERIALIZED *s);
+
 /*
 * A generic GeomCache just needs space for the cache type,
 * the cache keys (GSERIALIZED geometries), the key sizes,
@@ -42,14 +54,10 @@ MemoryContext PostgisCacheContext(FunctionCallInfo fcinfo);
 * to refer to.
 */
 typedef struct {
-	int                         type;
-	GSERIALIZED*                geom1;
-	GSERIALIZED*                geom2;
-	size_t                      geom1_size;
-	size_t                      geom2_size;
-	LWGEOM*                     lwgeom1;
-	LWGEOM*                     lwgeom2;
-	int32                       argnum;
+	uint32_t type;
+	uint32 argnum;
+	SHARED_GSERIALIZED *geom1;
+	SHARED_GSERIALIZED *geom2;
 } GeomCache;
 
 /*
@@ -100,7 +108,7 @@ PROJPortalCache;
 */
 typedef struct
 {
-	int entry_number; /* What kind of structure is this? */
+	uint32_t entry_number; /* What kind of structure is this? */
 	int (*GeomIndexBuilder)(const LWGEOM* lwgeom, GeomCache* cache); /* Build an index/tree and add it to your cache */
 	int (*GeomIndexFreer)(GeomCache* cache); /* Free the index/tree in your cache */
 	GeomCache* (*GeomCacheAllocator)(void); /* Allocate the kind of cache object you use (GeomCache+some extra space) */
@@ -112,8 +120,8 @@ typedef struct
 PROJPortalCache *GetPROJSRSCache(FunctionCallInfo fcinfo);
 GeomCache *GetGeomCache(FunctionCallInfo fcinfo,
 			const GeomCacheMethods *cache_methods,
-			const GSERIALIZED *g1,
-			const GSERIALIZED *g2);
+			SHARED_GSERIALIZED *g1,
+			SHARED_GSERIALIZED *g2);
 
 /******************************************************************************/
 
@@ -123,7 +131,7 @@ typedef struct
 {
 	Oid valueid;
 	Oid toastrelid;
-	GSERIALIZED *geom;
+	SHARED_GSERIALIZED *geom;
 } ToastCacheArgument;
 
 typedef struct
@@ -132,7 +140,7 @@ typedef struct
 	ToastCacheArgument arg[ToastCacheSize];
 } ToastCache;
 
-GSERIALIZED* ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum);
+SHARED_GSERIALIZED *ToastCacheGetGeometry(FunctionCallInfo fcinfo, uint32_t argnum);
 
 /******************************************************************************/
 

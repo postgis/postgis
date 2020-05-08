@@ -21,12 +21,13 @@ Only tickets not included in 3.1.0alpha1
   - #4676, Avoid decompressing toasted geometries to read only the header (Raúl Marín)
            Optimize cast to Postgresql point type (Raúl Marín)
   - #4620, Update internal wagyu to 0.5.0 (Raúl Marín)
+  - #4623, Optimize varlena returning functions (Raúl Marín)
+  - #4677, Share gserialized objects between different cache types (Raúl Marín)
 
 * Bug fixes *
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
   - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
   - #4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)
-  - #4623, Optimize varlena returning functions (Raúl Marín)
 
 PostGIS 3.1.0alpha1
 2020/02/01
