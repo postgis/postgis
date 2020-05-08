@@ -3,7 +3,7 @@ PostGIS Licensing
 
 This file attempts to include all licenses that apply within the PostGIS
 source tree, in particular any that are supposed to be exposed to the end
-user for credit requirements for instance. 
+user for credit requirements for instance.
 
 PostGIS General
 ----------------
@@ -44,7 +44,8 @@ license. Copyright (c) 2005-2018, Troy D. Hanson.
 
 -- deps/wagyu (see LICENSE.README in folder) includes code released under the
 ISC license (copyrighted by Mapbox) and the Boost Software License (copyrighted
-by Angus Johnson and Mapbox).
+by Angus Johnson and Mapbox). Copyright for "almost_equal.hpp" file is held by
+Google Inc and its license is listed at the top of that file.
 
 The documentation for PostGIS is under a creative commons share-alike
 3.0 license.  http://creativecommons.org/licenses/by-sa/3.0/
@@ -58,4 +59,4 @@ Data used in documentation falls in one of the following categories
   utilizes ImageMagick) as described
   http://trac.osgeo.org/postgis/wiki/DevWikiDocNewFeature
 - PostGIS raster output functions such as the ST_AsPNG etc.
-- raster/vector data from MassGIS: http://www.mass.gov/mgis/laylist.htm 
+- raster/vector data from MassGIS: http://www.mass.gov/mgis/laylist.htm

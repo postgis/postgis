@@ -54,7 +54,7 @@ active_bound_list_itr<T> process_horizontal_left_to_right(T scanline_y,
             ++hp_itr;
         }
 
-        if ((*bnd)->current_x > static_cast<double>((*horz_bound)->current_edge->top.x)) {
+        if (greater_than((*bnd)->current_x, static_cast<double>((*horz_bound)->current_edge->top.x))) {
             break;
         }
 
@@ -75,7 +75,7 @@ active_bound_list_itr<T> process_horizontal_left_to_right(T scanline_y,
         // OK, so far we're still in range of the horizontal Edge  but make sure
         // we're at the last of consec. horizontals when matching with eMaxPair
         if (is_maxima_edge && bnd == bound_max_pair) {
-            if ((*horz_bound)->ring) {
+            if ((*horz_bound)->ring && (*bound_max_pair)->ring) {
                 add_local_maximum_point(*(*horz_bound), *(*bound_max_pair), (*horz_bound)->current_edge->top, rings,
                                         active_bounds);
             }
@@ -159,7 +159,7 @@ active_bound_list_itr<T> process_horizontal_right_to_left(T scanline_y,
             ++hp_itr;
         }
 
-        if ((*bnd)->current_x < static_cast<double>((*horz_bound)->current_edge->top.x)) {
+        if (less_than((*bnd)->current_x, static_cast<double>((*horz_bound)->current_edge->top.x))) {
             break;
         }
 
@@ -180,7 +180,7 @@ active_bound_list_itr<T> process_horizontal_right_to_left(T scanline_y,
         // OK, so far we're still in range of the horizontal Edge  but make sure
         // we're at the last of consec. horizontals when matching with eMaxPair
         if (is_maxima_edge && bnd == bound_max_pair) {
-            if ((*horz_bound)->ring) {
+            if ((*horz_bound)->ring && (*bound_max_pair)->ring) {
                 add_local_maximum_point(*(*horz_bound), *(*bound_max_pair), (*horz_bound)->current_edge->top, rings,
                                         active_bounds);
             }

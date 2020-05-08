@@ -19,6 +19,7 @@ Only tickets not included in 3.1.0alpha1
   - #4672, Cache getSRSbySRID and getSRIDbySRS (Raúl Marín)
   - #4676, Avoid decompressing toasted geometries to read only the header (Raúl Marín)
            Optimize cast to Postgresql point type (Raúl Marín)
+  - #4620, Update internal wagyu to 0.5.0 (Raúl Marín)
 
 * Bug fixes *
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
