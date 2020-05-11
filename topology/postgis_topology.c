@@ -5072,7 +5072,7 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
 
 
   ret[0] = Int32GetDatum(state->curr);
-  ret[1] = Int64GetDatum(edge_id);
+  ret[1] = Int32GetDatum(edge_id);
   tuple = heap_form_tuple(funcctx->tuple_desc, ret, isnull);
   result = HeapTupleGetDatum(tuple);
 
