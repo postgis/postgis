@@ -143,7 +143,6 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
 	uint32_t entry_number = cache_methods->entry_number;
 
-	Assert(entry_number >= 0);
 	Assert(entry_number < NUM_CACHE_ENTRIES);
 
 	cache = (GeomCache*)(generic_cache->entry[entry_number]);
