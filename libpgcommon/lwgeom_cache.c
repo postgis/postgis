@@ -141,7 +141,7 @@ GetGeomCache(FunctionCallInfo fcinfo,
 	MemoryContext old_context;
 	const GSERIALIZED *geom;
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
-	int entry_number = cache_methods->entry_number;
+	uint32_t entry_number = cache_methods->entry_number;
 
 	Assert(entry_number >= 0);
 	Assert(entry_number < NUM_CACHE_ENTRIES);
@@ -178,16 +178,6 @@ GetGeomCache(FunctionCallInfo fcinfo,
 		{
 			cache_methods->GeomIndexFreer(cache);
 			cache->argnum = 0;
-		}
-		if ( cache->lwgeom1 )
-		{
-			lwgeom_free(cache->lwgeom1);
-			cache->lwgeom1 = 0;
-		}
-		if ( cache->lwgeom2 )
-		{
-			lwgeom_free(cache->lwgeom2);
-			cache->lwgeom2 = 0;
 		}
 	}
 

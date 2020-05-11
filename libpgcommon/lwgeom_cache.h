@@ -36,8 +36,8 @@
 MemoryContext PostgisCacheContext(FunctionCallInfo fcinfo);
 
 typedef struct {
-	uint32_t count;
 	GSERIALIZED *geom;
+	uint32_t count;
 } SHARED_GSERIALIZED;
 
 SHARED_GSERIALIZED *shared_gserialized_new_nocache(Datum d);
@@ -54,12 +54,10 @@ const GSERIALIZED *shared_gserialized_get(SHARED_GSERIALIZED *s);
 * to refer to.
 */
 typedef struct {
-	int                         type;
+	uint32_t type;
+	uint32 argnum;
 	SHARED_GSERIALIZED *geom1;
 	SHARED_GSERIALIZED *geom2;
-	LWGEOM*                     lwgeom1;
-	LWGEOM*                     lwgeom2;
-	int32                       argnum;
 } GeomCache;
 
 /*
@@ -110,7 +108,7 @@ PROJPortalCache;
 */
 typedef struct
 {
-	int entry_number; /* What kind of structure is this? */
+	uint32_t entry_number; /* What kind of structure is this? */
 	int (*GeomIndexBuilder)(const LWGEOM* lwgeom, GeomCache* cache); /* Build an index/tree and add it to your cache */
 	int (*GeomIndexFreer)(GeomCache* cache); /* Free the index/tree in your cache */
 	GeomCache* (*GeomCacheAllocator)(void); /* Allocate the kind of cache object you use (GeomCache+some extra space) */
