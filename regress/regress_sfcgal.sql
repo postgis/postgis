@@ -35,7 +35,7 @@ SET postgis.backend = 'geos';
 SELECT 'intersection_geos', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 0, 1 1)'));
 
 SET postgis.backend = 'sfcgal';
-SELECT 'intersection_sfcgal', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 0, 1 1)'));
+SELECT 'intersection_sfcgal', ST_astext(ST_intersection('LINESTRING(0 10, 0 0)', 'LINESTRING(0 0, 1 1)'));
 
 SET postgis.backend = 'foo';
 SET postgis.backend = '';
