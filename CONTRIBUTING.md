@@ -14,3 +14,6 @@ it _also_ has a matching Trac ticket.
 
 If you intend to be involved for more than an occasional patch we
 recommend you to subscribe to the [development mailing list](https://lists.osgeo.org/mailman/listinfo/postgis-devel).
+
+Note that We also welcome
+[git patches via email](https://git-send-email.io)
