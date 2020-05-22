@@ -502,7 +502,7 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 		int32_t nexp = -exp;
 		if (nexp <= 17)
 		{
-			/* TODO: Better handle leading zeros */
+			/* TODO: Improve handling of leading zeros */
 			uint64_t p = pow10(nexp);
 			integer_part = output / p;
 			if (integer_part)
