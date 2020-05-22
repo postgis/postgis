@@ -439,7 +439,7 @@ static inline uint64_t
 pow10(const int32_t exp)
 {
   assert(exp <= 17);
-  assert(exp > 0);
+  if (exp == 0) { return 1L; }
   if (exp == 1) { return 10L; }
   if (exp == 2) { return 100L; }
   if (exp == 3) { return 1000L; }
@@ -470,6 +470,12 @@ static inline int to_chars_uint64(uint64_t output, char* const result)
 		result[olength - index - 1] = (char) ('0' + c);
 	}
 	return olength;
+}
+
+
+int64_t divRoundClosest(const uint64_t n, const uint64_t d)
+{
+	return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
 }
 
 static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, uint32_t precision, char* const result)
@@ -543,17 +549,10 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 				uint64_t divisor = pow10(digits_to_trim);
 				decimal_part = (decimal_part + (divisor / 2)) / divisor;
 
-				if (decimal_part)
+				/* As this is the decimal part, we need to trim any extra trailling zeros procuced by the rounding */
+				for (uint64_t decDiv10 = div10(decimal_part); decDiv10 * 10 == decimal_part;  decDiv10 = div10(decimal_part))
 				{
-					/* Remove trailing zeros after rounding */
-					for (;;)
-					{
-						const uint64_t q = div10(decimal_part);
-						const uint32_t r = ((uint32_t) decimal_part) - 10 * ((uint32_t) q);
-						if (r != 0)
-							break;
-						decimal_part = q;
-					}
+					decimal_part = decDiv10;
 				}
 			}
 		}
