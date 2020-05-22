@@ -461,21 +461,71 @@ pow10(const int32_t exp)
   return 100000000000000000L;
 }
 
+#include <stdio.h>
+
 static inline int to_chars_uint64(uint64_t output, char* const result)
 {
-	// TODO: Replace using DIGIT_TABLE
 	const uint32_t olength = decimalLength17(output);
-	for (uint32_t index = 0; index < olength; index++) {
-		const uint32_t c = output % 10; output = div10(output);
-		result[olength - index - 1] = (char) ('0' + c);
+	uint32_t i = 0;
+
+	// We prefer 32-bit operations, even on 64-bit platforms.
+	// We have at most 17 digits, and uint32_t can store 9 digits.
+	// If output doesn't fit into uint32_t, we cut off 8 digits,
+	// so the rest will fit into uint32_t.
+	if ((output >> 32) != 0) {
+		// Expensive 64-bit division.
+		const uint64_t q = div1e8(output);
+		uint32_t output2 = ((uint32_t) output) - 100000000 * ((uint32_t) q);
+		output = q;
+
+		const uint32_t c = output2 % 10000;
+		output2 /= 10000;
+		const uint32_t d = output2 % 10000;
+		const uint32_t c0 = (c % 100) << 1;
+		const uint32_t c1 = (c / 100) << 1;
+		const uint32_t d0 = (d % 100) << 1;
+		const uint32_t d1 = (d / 100) << 1;
+		memcpy(result + olength - i - 2, DIGIT_TABLE + c0, 2);
+		memcpy(result + olength - i - 4, DIGIT_TABLE + c1, 2);
+		memcpy(result + olength - i - 6, DIGIT_TABLE + d0, 2);
+		memcpy(result + olength - i - 8, DIGIT_TABLE + d1, 2);
+		i += 8;
 	}
-	return olength;
-}
 
+	uint32_t output2 = (uint32_t) output;
+	while (output2 >= 10000)
+	{
+	#ifdef __clang__ // https://bugs.llvm.org/show_bug.cgi?id=38217
+		const uint32_t c = output2 - 10000 * (output2 / 10000);
+	#else
+		const uint32_t c = output2 % 10000;
+	#endif
+		output2 /= 10000;
+		const uint32_t c0 = (c % 100) << 1;
+		const uint32_t c1 = (c / 100) << 1;
+		memcpy(result + olength - i - 2, DIGIT_TABLE + c0, 2);
+		memcpy(result + olength - i - 4, DIGIT_TABLE + c1, 2);
+		i += 4;
+	}
 
-int64_t divRoundClosest(const uint64_t n, const uint64_t d)
-{
-	return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
+	if (output2 >= 100)
+	{
+		const uint32_t c = (output2 % 100) << 1;
+		output2 /= 100;
+		memcpy(result + olength - i - 2, DIGIT_TABLE + c, 2);
+		i += 2;
+	}
+	if (output2 >= 10)
+	{
+		const uint32_t c = output2 << 1;
+		memcpy(result + olength - i - 2, DIGIT_TABLE + c, 2);
+		i += 2;
+	} else {
+		result[0] = (char) ('0' + output2);
+		i += 1;
+	}
+
+	return i;
 }
 
 static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, uint32_t precision, char* const result)
