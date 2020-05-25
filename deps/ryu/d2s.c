@@ -609,8 +609,8 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 #endif
 
 	index += to_chars_uint64(integer_part, &result[index]);
-	memset(&result[index], '0', trailing_integer_zeros);
-	index += trailing_integer_zeros;
+	for (uint32_t i = 0; i < trailing_integer_zeros; i++)
+		result[index++] = '0';
 
 	if (decimal_part)
 	{
@@ -618,8 +618,8 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 		printf("EXTRA ZEROS=%d\n", leading_decimal_zeros);
 	#endif
 		result[index++] = '.';
-		memset(&result[index], '0', leading_decimal_zeros);
-		index += leading_decimal_zeros;
+		for (uint32_t i = 0; i < leading_decimal_zeros; i++)
+			result[index++] = '0';
 		index += to_chars_uint64(decimal_part, &result[index]);
 	}
 
