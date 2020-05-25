@@ -466,8 +466,6 @@ pow10(const int32_t exp)
 static inline int to_chars_uint64(uint64_t output, char* const result)
 {
 	const uint32_t olength = decimalLength17(output);
-	memset(result, '0', olength);
-	return olength;
 	uint32_t i = 0;
 
 	// We prefer 32-bit operations, even on 64-bit platforms.
