@@ -543,61 +543,51 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 	int32_t exp = v.exponent;
 	uint64_t integer_part;
 	uint64_t decimal_part;
-	uint32_t extra_zeros = 0;
-	if (exp == 0)
+	uint32_t trailing_integer_zeros = 0;
+	uint32_t leading_decimal_zeros = 0;
+
+	if (exp >= 0)
 	{
 		integer_part = output;
-		decimal_part = 0;
-	}
-	else if (exp > 0)
-	{
-		uint64_t p = pow10(exp);
-		integer_part = output * p;
+		trailing_integer_zeros = exp;
 		decimal_part = 0;
 	}
 	else
 	{
-		int32_t nexp = -exp;
-		if (nexp <= 17)
+		uint32_t nexp = -exp;
+		if (nexp < olength)
 		{
-			/* TODO: Improve handling of leading zeros */
+			/* TODO: Improve this operation */
 			uint64_t p = pow10(nexp);
 			integer_part = output / p;
-			if (integer_part)
-			{
-				decimal_part = output % p;
-				extra_zeros = olength - decimalLength17(integer_part) - decimalLength17(decimal_part);
-			}
-			else
-			{
-				decimal_part = output;
-				extra_zeros = nexp - olength;
-			}
+			decimal_part = output % p;
+			leading_decimal_zeros = olength - decimalLength17(integer_part) - decimalLength17(decimal_part);
 		}
 		else
 		{
 			integer_part = 0;
 			decimal_part = output;
-			extra_zeros = nexp - olength;
+			leading_decimal_zeros = nexp - olength;
 		}
 
 		/* Round the decimal part according to the precision */
 		if (decimal_part)
 		{
 			const uint32_t meaningful_digits = decimalLength17(decimal_part);
-			const uint32_t decimal_digits = meaningful_digits + extra_zeros;
+			const uint32_t decimal_digits = meaningful_digits + leading_decimal_zeros;
 #ifdef RYU_DEBUG
 			printf("PRECISION=%d\n", precision);
-			printf("EXTRA ZEROS=%d\n", extra_zeros);
+			printf("EXTRA ZEROS=%d\n", leading_decimal_zeros);
 			printf("TOTAL DECIMAL DIGITS=%d\n", decimal_digits);
 #endif
-			if (precision <= extra_zeros)
+			if (precision <= leading_decimal_zeros)
 			{
 				decimal_part = 0;
 			}
 			else if (precision < decimal_digits)
 			{
-				uint32_t digits_to_trim = meaningful_digits - (precision - extra_zeros);
+				/* TODO: Improve this operation */
+				uint32_t digits_to_trim = meaningful_digits - (precision - leading_decimal_zeros);
 				uint64_t divisor = pow10(digits_to_trim);
 				decimal_part = (decimal_part + (divisor / 2)) / divisor;
 
@@ -619,14 +609,17 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 #endif
 
 	index += to_chars_uint64(integer_part, &result[index]);
+	memset(&result[index], '0', trailing_integer_zeros);
+	index += trailing_integer_zeros;
+
 	if (decimal_part)
 	{
 	#ifdef RYU_DEBUG
-		printf("EXTRA ZEROS=%d\n", extra_zeros);
+		printf("EXTRA ZEROS=%d\n", leading_decimal_zeros);
 	#endif
 		result[index++] = '.';
-		for (uint32_t i = 0; i < extra_zeros; i++)
-			result[index++] = '0';
+		memset(&result[index], '0', leading_decimal_zeros);
+		index += leading_decimal_zeros;
 		index += to_chars_uint64(decimal_part, &result[index]);
 	}
 
