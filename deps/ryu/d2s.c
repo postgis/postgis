@@ -339,12 +339,13 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
       if (vpDiv10 <= vmDiv10) {
         break;
       }
-      const uint32_t vmMod10 = ((uint32_t) vm) - 10 * ((uint32_t) vmDiv10);
+	  /********* TODO: Review this and add lots of tests around it ******/
+//      const uint32_t vmMod10 = ((uint32_t) vm) - 10 * ((uint32_t) vmDiv10);
       const uint64_t vrDiv10 = div10(vr);
-      const uint32_t vrMod10 = ((uint32_t) vr) - 10 * ((uint32_t) vrDiv10);
-      vmIsTrailingZeros &= vmMod10 == 0;
-      vrIsTrailingZeros &= lastRemovedDigit == 0;
-      lastRemovedDigit = (uint8_t) vrMod10;
+//      const uint32_t vrMod10 = ((uint32_t) vr) - 10 * ((uint32_t) vrDiv10);
+//      vmIsTrailingZeros &= vmMod10 == 0;
+//      vrIsTrailingZeros &= lastRemovedDigit == 0;
+//      lastRemovedDigit = (uint8_t) vrMod10;
       vr = vrDiv10;
       vp = vpDiv10;
       vm = vmDiv10;
@@ -354,32 +355,32 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
     printf("V+=%" PRIu64 "\nV =%" PRIu64 "\nV-=%" PRIu64 "\n", vp, vr, vm);
     printf("d-10=%s\n", vmIsTrailingZeros ? "true" : "false");
 #endif
-    if (vmIsTrailingZeros) {
-      for (;;) {
-        const uint64_t vmDiv10 = div10(vm);
-        const uint32_t vmMod10 = ((uint32_t) vm) - 10 * ((uint32_t) vmDiv10);
-        if (vmMod10 != 0) {
-          break;
-        }
-        const uint64_t vpDiv10 = div10(vp);
-        const uint64_t vrDiv10 = div10(vr);
-        const uint32_t vrMod10 = ((uint32_t) vr) - 10 * ((uint32_t) vrDiv10);
-        vrIsTrailingZeros &= lastRemovedDigit == 0;
-        lastRemovedDigit = (uint8_t) vrMod10;
-        vr = vrDiv10;
-        vp = vpDiv10;
-        vm = vmDiv10;
-        ++removed;
-      }
-    }
+//    if (vmIsTrailingZeros) {
+//      for (;;) {
+//        const uint64_t vmDiv10 = div10(vm);
+//        const uint32_t vmMod10 = ((uint32_t) vm) - 10 * ((uint32_t) vmDiv10);
+//        if (vmMod10 != 0) {
+//          break;
+//        }
+//        const uint64_t vpDiv10 = div10(vp);
+//        const uint64_t vrDiv10 = div10(vr);
+//        const uint32_t vrMod10 = ((uint32_t) vr) - 10 * ((uint32_t) vrDiv10);
+//        vrIsTrailingZeros &= lastRemovedDigit == 0;
+//        lastRemovedDigit = (uint8_t) vrMod10;
+//        vr = vrDiv10;
+//        vp = vpDiv10;
+//        vm = vmDiv10;
+//        ++removed;
+//      }
+//    }
 #ifdef RYU_DEBUG
     printf("%" PRIu64 " %d\n", vr, lastRemovedDigit);
     printf("vr is trailing zeros=%s\n", vrIsTrailingZeros ? "true" : "false");
 #endif
-    if (vrIsTrailingZeros && lastRemovedDigit == 5 && vr % 2 == 0) {
-      // Round even if the exact number is .....50..0.
-      lastRemovedDigit = 4;
-    }
+//    if (vrIsTrailingZeros && lastRemovedDigit == 5 && vr % 2 == 0) {
+//      // Round even if the exact number is .....50..0.
+//      lastRemovedDigit = 4;
+//    }
     // We need to take vr + 1 if vr is outside bounds or we need to round up.
     output = vr + ((vr == vm && (!acceptBounds || !vmIsTrailingZeros)) || lastRemovedDigit >= 5);
   } else {
@@ -460,8 +461,6 @@ pow10(const int32_t exp)
 
   return 100000000000000000L;
 }
-
-#include <stdio.h>
 
 static inline int to_chars_uint64(uint64_t output, char* const result)
 {
