@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 export SFCGAL_VER=1.3.2
-export GEOS_VER=3.7.1
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
+export GEOS_VER=3.8.1
+export GDAL_VER=2.4.4
+export PROJ_VER=5.2.0
 export SFCGAL_VER=1.3.2
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
@@ -44,7 +44,7 @@ else
 	#tagged version -- official release
 	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_VER}.${POSTGIS_MICRO_VERSION}
 fi;
-export LIBXML_VER=2.7.8
+export LIBXML_VER=2.9.9
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 export GDAL_DATA="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal"
 

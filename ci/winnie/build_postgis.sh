@@ -13,9 +13,9 @@ set -e
 #POSTGIS_MICRO_VERSION=0SVN
 #export GCC_TYPE=gcc48  #for pre-4.8.0 compiles this is blank
 export SFCGAL_VER=1.3.2
-export GEOS_VER=3.7.1
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
+export GEOS_VER=3.8.1
+export GDAL_VER=2.4.4
+export PROJ_VER=5.2.0
 export SFCGAL_VER=1.3.2
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
@@ -23,7 +23,7 @@ export PROTOBUFC_VER=1.2.1
 export CGAL_VER=4.11
 
 
-export LIBXML_VER=2.7.8
+export LIBXML_VER=2.9.9
 
 if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
 	export PROJECTS=/projects

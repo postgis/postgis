@@ -13,9 +13,9 @@
 
 #export GCC_TYPE=
 export SFCGAL_VER=1.3.2
-export GEOS_VER=3.7.1
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
+export GEOS_VER=3.8.1
+export GDAL_VER=2.4.4
+export PROJ_VER=5.2.0
 export SFCGAL_VER=1.3.2
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
@@ -48,7 +48,7 @@ echo PATH BEFORE: $PATH
 
 export PGPATH=${PROJECTS}/postgresql/rel/pg${PG_VER}w${OS_BUILD}${GCC_TYPE}
 export PGPATHEDB=${PGPATH}edb
-export PROJSO=libproj-9.dll
+export PROJSO=libproj-13.dll
 export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 export POSTGIS_MICRO_VER=${POSTGIS_MICRO_VERSION}
 
