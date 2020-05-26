@@ -166,7 +166,8 @@ TESTS = \
 	regress_brin_index_geography \
 	minimum_clearance \
 	oriented_envelope \
-	point_coordinates
+	point_coordinates \
+	out_geojson
 
 # Slow slow tests
 TESTS_SLOW = \
