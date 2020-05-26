@@ -3,6 +3,32 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.3.11</title>
+      <para>Release date: 2020/05/xx</para>
+      <para>This is the final release for 2.3 series.
+        This is a bug fix and performance improvement release.</para>
+      <simplesect>
+          <title>Bug Fixes and Enhancements</title>
+            <para>#4475, Avoid reading into empty ptarray (Paul Ramsey)</para>
+            <para>#4518, Fix geometry_columns and raster views
+                    to not use pg_constraints.consrc which was removed in PG 12 (Regina Obe)</para>
+            <para>#4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)</para>
+            <para>#4494, Fix ST_Simplify output having an outdated bbox (Raúl Marín)</para>
+            <para>#4493, Fix ST_RemoveRepeatedPoints output having an outdated bbox (Raúl Marín)</para>
+            <para>#4495, Fix ST_SnapToGrid output having an outdated bbox (Raúl Marín)</para>
+            <para>#4498, Restrict build for PgSQL &lt; 9.6</para>
+            <para>#4519, Fix getSRIDbySRS crash (Raúl Marín)</para>
+            <para>#4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)</para>
+            <para>#4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)</para>
+            <para>#4537, Fix leak in WKT collection parser (Raúl Marín)</para>
+            <para>#4547, Fix AddRasterConstraints handling of empty tables (Sandro Santilli)</para>
+            <para>#4549, Fix schema qualification of internal types (Raúl Marín)</para>
+            <para>#4546, Fix PLPGSQL functions missing the schema qualification (Raúl Marín)</para>
+            <para>#4621, Prevent stack overflow when parsing WKB (Raúl Marín)</para>
+            <para>#4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)</para>
+        </simplesect>
+    </sect1>
+    <sect1>
       <title>Release 2.3.10</title>
       <para>Release date: 2019/08/11</para>
       <para>This is a bug fix and performance improvement release.</para>
