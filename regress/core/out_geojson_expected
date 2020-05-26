@@ -27,3 +27,4 @@ gj04|4|{"d": "2004-04-04", "f": 4.4, "g": {"type": "GeometryCollection", "geomet
 gj04|5|{"d": "2005-05-05", "f": 5.5, "g": {"type": "Point", "coordinates": []}, "i": 5, "t": "five"}
 gj04|6|{"d": "2006-06-06", "f": 6.6, "g": null, "i": 6, "t": "six"}
 gj04|7|{"d": "2007-07-07", "f": 7.7, "g": {"type": "GeometryCollection", "geometries": [{"type": "Point", "coordinates": []}, {"type": "Point", "coordinates": [1, 2]}]}, "i": 7, "t": "seven"}
+4695|{"type": "Feature", "geometry": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:2227"}},"coordinates":[0,1]}, "properties": {"v": 1}}

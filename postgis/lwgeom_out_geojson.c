@@ -54,10 +54,14 @@ static void array_dim_to_json(StringInfo result, int dim, int ndims, int *dims,
 				  bool use_line_feeds);
 static void array_to_json_internal(Datum array, StringInfo result,
 								   bool use_line_feeds);
-static void composite_to_geojson(Datum composite,
-					 char *geom_column_name, int32 maxdecimaldigits,
-					 StringInfo result, bool use_line_feeds,
-					 Oid geom_oid, Oid geog_oid);
+static void composite_to_geojson(FunctionCallInfo fcinfo,
+				 Datum composite,
+				 char *geom_column_name,
+				 int32 maxdecimaldigits,
+				 StringInfo result,
+				 bool use_line_feeds,
+				 Oid geom_oid,
+				 Oid geog_oid);
 static void composite_to_json(Datum composite, StringInfo result,
 							  bool use_line_feeds);
 static void datum_to_json(Datum val, bool is_null, StringInfo result,
@@ -98,7 +102,7 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 
 	result = makeStringInfo();
 
-	composite_to_geojson(array, geom_column, maxdecimaldigits, result, do_pretty, geom_oid, geog_oid);
+	composite_to_geojson(fcinfo, array, geom_column, maxdecimaldigits, result, do_pretty, geom_oid, geog_oid);
 
 	PG_RETURN_TEXT_P(cstring_to_text_with_len(result->data, result->len));
 }
@@ -107,8 +111,14 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
  * Turn a composite / record into GEOJSON.
  */
 static void
-composite_to_geojson(Datum composite, char *geom_column_name, int32 maxdecimaldigits,
-					 StringInfo result, bool use_line_feeds, Oid geom_oid, Oid geog_oid)
+composite_to_geojson(FunctionCallInfo fcinfo,
+		     Datum composite,
+		     char *geom_column_name,
+		     int32 maxdecimaldigits,
+		     StringInfo result,
+		     bool use_line_feeds,
+		     Oid geom_oid,
+		     Oid geog_oid)
 {
 	HeapTupleHeader td;
 	Oid			tupType;
@@ -166,8 +176,14 @@ composite_to_geojson(Datum composite, char *geom_column_name, int32 maxdecimaldi
 			val = heap_getattr(tuple, i + 1, tupdesc, &isnull);
 			if (!isnull)
 			{
-				appendStringInfo(result, "%s",
-					TextDatumGetCString(DirectFunctionCall2(LWGEOM_asGeoJson, val, Int32GetDatum(maxdecimaldigits))));
+				appendStringInfo(
+				    result,
+				    "%s",
+				    TextDatumGetCString(CallerFInfoFunctionCall2(LWGEOM_asGeoJson,
+										 fcinfo->flinfo,
+										 InvalidOid,
+										 val,
+										 Int32GetDatum(maxdecimaldigits))));
 			}
 			else
 			{
