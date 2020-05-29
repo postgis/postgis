@@ -24,6 +24,7 @@
 
 CC=@CC@
 CFLAGS = -I.. @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ -DRYU_NO_TRAILING_ZEROS
+CXXFLAGS = @CXXFLAGS@
 top_builddir = @top_builddir@
 SHELL = @SHELL@
 INSTALL = @INSTALL@
@@ -41,9 +42,13 @@ all: @RYU_LIB@
 $(LT_RYU_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
 
+benchmark: bm.cpp $(RYU_OBJS)
+	$(CC)++ $(CXXFLAGS) $^ @LDFLAGS@ -lbenchmark -o $@
+
 clean:
 	rm -f @RYU_LIB@ $(RYU_OBJS) $(LT_RYU_OBJS)
 	rm -rf .libs
+	rm -rf benchmark
 
 distclean: clean
 	rm -f Makefile
