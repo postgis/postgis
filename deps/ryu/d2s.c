@@ -570,21 +570,45 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 			printf("EXTRA ZEROS=%d\n", leading_decimal_zeros);
 			printf("TOTAL DECIMAL DIGITS=%d\n", decimal_digits);
 #endif
-			if (precision <= leading_decimal_zeros)
+			if (precision < leading_decimal_zeros)
 			{
 				decimal_part = 0;
 			}
 			else if (precision < decimal_digits)
 			{
-				/* TODO: Improve this operation */
+				/* TODO: Improve this operation:
+				 Unroll or combine with the process that it done in d2d */
 				uint32_t digits_to_trim = meaningful_digits - (precision - leading_decimal_zeros);
-				uint64_t divisor = pow10(digits_to_trim);
-				decimal_part = (decimal_part + (divisor / 2)) / divisor;
-
-				/* As this is the decimal part, we need to trim any extra trailling zeros procuced by the rounding */
-				for (uint64_t decDiv10 = div10(decimal_part); decDiv10 * 10 == decimal_part;  decDiv10 = div10(decimal_part))
+				uint32_t lastDigit = 0;
+				while (digits_to_trim && decimal_part)
 				{
+					const uint64_t decDiv10 = div10(decimal_part);
+					lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) decDiv10);
 					decimal_part = decDiv10;
+					digits_to_trim--;
+				}
+
+				if (lastDigit >= 5)
+				{
+					if (decimal_part)
+					{
+						decimal_part++;
+						lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) div10(decimal_part));
+					}
+					else
+					{
+						if (lastDigit != 5 || integer_part % 2)
+							integer_part++;
+					}
+				}
+
+				uint64_t decDiv10 = div10(decimal_part);
+				lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) decDiv10);
+				while (decimal_part && !lastDigit)
+				{
+					decimal_part = div10(decimal_part);
+					decDiv10 = div10(decimal_part);
+					lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) decDiv10);
 				}
 			}
 		}

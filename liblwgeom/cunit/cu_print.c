@@ -340,6 +340,17 @@ test_lwprint(void)
 	test_lwprint_assert(-0.0005, 3, "0");
 	test_lwprint_assert(-0.0005, 4, "-0.0005");
 
+	/* Rounding on the first decimal digit */
+	test_lwprint_assert(-2.5, 0, "-2");
+	test_lwprint_assert(-1.5, 0, "-2");
+	test_lwprint_assert(-0.99, 0, "-1");
+	test_lwprint_assert(-0.5, 0, "0");
+	test_lwprint_assert(-0.01, 0, "0");
+	test_lwprint_assert(0.5, 0, "0");
+	test_lwprint_assert(0.99, 0, "1");
+	test_lwprint_assert(1.5, 0, "2");
+	test_lwprint_assert(2.5, 0, "2");
+
 	/* TODO: Test regression changes (output that changed in the tests vs 3.0) */
 
 	/* TODO: Test high numbers (close to the limit to scientific notation */
