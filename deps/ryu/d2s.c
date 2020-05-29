@@ -787,7 +787,25 @@ int d2sfixed_buffered_n(double f, uint32_t precision, char* result) {
     return copy_special_str(result, ieeeSign, ieeeExponent, ieeeMantissa);
   }
 
-  floating_decimal_64 v = d2d(ieeeMantissa, ieeeExponent);
+  floating_decimal_64 v;
+  const bool isSmallInt = d2d_small_int(ieeeMantissa, ieeeExponent, &v);
+  if (isSmallInt) {
+    // For small integers in the range [1, 2^53), v.mantissa might contain trailing (decimal) zeros.
+    // For scientific notation we need to move these zeros into the exponent.
+    // (This is not needed for fixed-point notation, so it might be beneficial to trim
+    // trailing zeros in to_chars only if needed - once fixed-point notation output is implemented.)
+    for (;;) {
+      const uint64_t q = div10(v.mantissa);
+      const uint32_t r = ((uint32_t) v.mantissa) - 10 * ((uint32_t) q);
+      if (r != 0) {
+        break;
+      }
+      v.mantissa = q;
+      ++v.exponent;
+    }
+  } else {
+    v = d2d(ieeeMantissa, ieeeExponent);
+  }
 
   return to_chars_fixed(v, ieeeSign, precision, result);
 }
