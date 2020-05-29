@@ -333,6 +333,13 @@ test_lwprint(void)
 	test_lwprint_assert(0.0000000298023223876953125, 24, "0.000000029802322387695312");
 	test_lwprint_assert(0.0000000298023223876953125, 40, "0.000000029802322387695312");
 
+	/* Negative 0 after rounding should be printed as 0 */
+	test_lwprint_assert(-0.0005, 0, "0");
+	test_lwprint_assert(-0.0005, 1, "0");
+	test_lwprint_assert(-0.0005, 2, "0");
+	test_lwprint_assert(-0.0005, 3, "0");
+	test_lwprint_assert(-0.0005, 4, "-0.0005");
+
 	/* TODO: Test regression changes (output that changed in the tests vs 3.0) */
 
 	/* TODO: Test high numbers (close to the limit to scientific notation */

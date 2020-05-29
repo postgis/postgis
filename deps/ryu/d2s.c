@@ -461,8 +461,6 @@ pow10(const int32_t exp)
   return 100000000000000000L;
 }
 
-#include <stdio.h>
-
 static inline int to_chars_uint64(uint64_t output, char* const result)
 {
 	const uint32_t olength = decimalLength17(output);
@@ -530,12 +528,6 @@ static inline int to_chars_uint64(uint64_t output, char* const result)
 
 static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, uint32_t precision, char* const result)
 {
-	int index = 0;
-	if (sign)
-	{
-		result[index++] = '-';
-	}
-
 	uint64_t output = v.mantissa;
 	uint32_t olength = decimalLength17(output);
 	int32_t exp = v.exponent;
@@ -601,10 +593,19 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 #ifdef RYU_DEBUG
 	printf("DIGITS=%" PRIu64 "\n", v.mantissa);
 	printf("OLEN=%u\n", olength);
-	printf("EXP=%u\n", v.exponent + olength);
+	printf("EXP=%d\n", v.exponent);
 	printf("INTEGER=%lu\n", integer_part);
 	printf("DECIMAL=%lu\n", decimal_part);
+	printf("EXTRA TRAILING ZEROS=%d\n", trailing_integer_zeros);
+	printf("EXTRA LEADING ZEROS=%d\n", leading_decimal_zeros);
 #endif
+
+	/* If we have removed all digits, it may happen that we have -0 and we want it to be just 0 */
+	int index = 0;
+	if (sign && (integer_part || decimal_part))
+	{
+		result[index++] = '-';
+	}
 
 	index += to_chars_uint64(integer_part, &result[index]);
 	for (uint32_t i = 0; i < trailing_integer_zeros; i++)
@@ -612,9 +613,6 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 
 	if (decimal_part)
 	{
-	#ifdef RYU_DEBUG
-		printf("EXTRA ZEROS=%d\n", leading_decimal_zeros);
-	#endif
 		result[index++] = '.';
 		for (uint32_t i = 0; i < leading_decimal_zeros; i++)
 			result[index++] = '0';
