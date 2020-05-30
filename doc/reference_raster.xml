@@ -9818,8 +9818,8 @@ FROM apple;
 							<funcdef>raster <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
-							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
+							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
 					  </funcprototype>
 
 					  <funcprototype>
@@ -9837,8 +9837,8 @@ FROM apple;
 							<paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 							<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
-							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
+							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
 					  </funcprototype>
 
 					</funcsynopsis>
