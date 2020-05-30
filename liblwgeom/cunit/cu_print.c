@@ -356,9 +356,17 @@ test_lwprint(void)
 	test_lwprint_assert(-123456789012345.12345678, 20, "-123456789012345.12");
 	test_lwprint_assert(123456789012345.12345678, 20, "123456789012345.12");
 
-	/* TODO: Test high numbers (close to the limit to scientific notation */
+		/* Big numbers that use scientific notation print all significant digits */
+	test_lwprint_assert(9e+300, 0, "9e+300");
+	test_lwprint_assert(9e+300, 15, "9e+300");
+	test_lwprint_assert(-9e+300, 0, "-9e+300");
+	test_lwprint_assert(-9e+300, 15, "-9e+300");
+	test_lwprint_assert(9.000000000000001e+300, 0, "9.000000000000001e+300");
+	test_lwprint_assert(9.000000000000001e+300, 15, "9.000000000000001e+300");
+	test_lwprint_assert(-9.000000000000001e+300, 0, "-9.000000000000001e+300");
+	test_lwprint_assert(-9.000000000000001e+300, 15, "-9.000000000000001e+300");
 
-	/* TODO: Test scientific notation */
+	/* TODO: Test high numbers (close to the limit to scientific notation */
 
 	/* Test special values (+-inf, NaNs) */
 	for (int i = precision_start; i < precision_end; i++)
