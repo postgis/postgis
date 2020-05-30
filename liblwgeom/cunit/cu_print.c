@@ -371,6 +371,13 @@ test_lwprint(void)
 	test_lwprint_assert(463412.82600000006, 12, "463412.82600000006");
 	test_lwprint_assert(463462.2069374289, 12, "463462.2069374289");
 
+		/* SnapToGrid by itself is not enough to limit output decimals */
+	const double d = 526355.92112222222;
+	const double gridsize = 0.00001;
+	const double gridded = rint(d / gridsize) * gridsize; /* Formula from ptarray_grid_in_place */
+	test_lwprint_assert(gridded, 15, "526355.9211200001");
+	test_lwprint_assert(gridded, 5, "526355.92112");
+
 	/* TODO: Test high numbers (close to the limit to scientific notation */
 
 	/* Test special values (+-inf, NaNs) */
