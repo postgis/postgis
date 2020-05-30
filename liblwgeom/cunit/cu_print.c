@@ -351,7 +351,10 @@ test_lwprint(void)
 	test_lwprint_assert(1.5, 0, "2");
 	test_lwprint_assert(2.5, 0, "2");
 
-	/* TODO: Test regression changes (output that changed in the tests vs 3.0) */
+	/* Test regression changes (output that changed in the tests vs 3.0) */
+		/* There is at most 17 significative digits */
+	test_lwprint_assert(-123456789012345.12345678, 20, "-123456789012345.12");
+	test_lwprint_assert(123456789012345.12345678, 20, "123456789012345.12");
 
 	/* TODO: Test high numbers (close to the limit to scientific notation */
 
