@@ -366,6 +366,11 @@ test_lwprint(void)
 	test_lwprint_assert(-9.000000000000001e+300, 0, "-9.000000000000001e+300");
 	test_lwprint_assert(-9.000000000000001e+300, 15, "-9.000000000000001e+300");
 
+		/* Precision is respected (as number of decimal digits) */
+	test_lwprint_assert(92115.51207431706, 12, "92115.51207431706")
+	test_lwprint_assert(463412.82600000006, 12, "463412.82600000006");
+	test_lwprint_assert(463462.2069374289, 12, "463462.2069374289");
+
 	/* TODO: Test high numbers (close to the limit to scientific notation */
 
 	/* Test special values (+-inf, NaNs) */
