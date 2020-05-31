@@ -4,9 +4,10 @@
     <subtitle>Release Notes</subtitle>
     <sect1>
       <title>Release 2.3.11</title>
-      <para>Release date: 2020/05/xx</para>
+      <para>Release date: 2020/05/31</para>
       <para>This is the final release for 2.3 series.
-        This is a bug fix and performance improvement release.</para>
+        This is a bug fix and performance improvement release.
+        If you are running GEOS 3.7 or higher some topology tests might fail.  This can be safely ignored.</para>
       <simplesect>
           <title>Bug Fixes and Enhancements</title>
             <para>#4475, Avoid reading into empty ptarray (Paul Ramsey)</para>
