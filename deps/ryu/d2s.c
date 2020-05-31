@@ -592,8 +592,17 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 				{
 					if (decimal_part)
 					{
-						decimal_part++;
-						lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) div10(decimal_part));
+						/* .9999 + 1 overflows into the integer part */
+						if (decimalLength17(decimal_part) == decimalLength17(decimal_part + 1))
+						{
+							decimal_part++;
+							lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) div10(decimal_part));
+						}
+						else
+						{
+							decimal_part = 0;
+							integer_part++;
+						}
 					}
 					else
 					{
