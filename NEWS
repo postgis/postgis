@@ -1,6 +1,9 @@
 PostGIS 2.3.11
-2020/05/XX -- Final release
+2020/05/31 -- Final release
 
+  This is the final release for 2.3 series.
+  This is a bug fix and performance improvement release.
+  If you are running GEOS 3.7 or higher some topology tests might fail.  This can be safely ignored.
   * Bug Fixes and Enhancements *
 
   - #4475, Avoid reading into empty ptarray (Paul Ramsey)
