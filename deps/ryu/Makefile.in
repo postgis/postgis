@@ -42,8 +42,9 @@ all: @RYU_LIB@
 $(LT_RYU_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
 
+# TODO: Proper google benchmark include
 benchmark: bm.cpp $(RYU_OBJS)
-	$(CC)++ $(CXXFLAGS) $^ @LDFLAGS@ -lbenchmark -o $@
+	$(CC)++ $(CXXFLAGS) -I/usr/include $^ @LDFLAGS@ -lbenchmark -o $@
 
 clean:
 	rm -f @RYU_LIB@ $(RYU_OBJS) $(LT_RYU_OBJS)
