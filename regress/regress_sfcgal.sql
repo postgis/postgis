@@ -32,10 +32,10 @@ SELECT 'ST_StraightSkeleton', ST_AsText(ST_StraightSkeleton('POLYGON((1 1,2 1,2 
 
 -- Backend switch tests
 SET postgis.backend = 'geos';
-SELECT 'intersection_geos', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 0, 1 1)'));
+SELECT 'intersection_geos', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)', 'POINT(0 0)'));
 
 SET postgis.backend = 'sfcgal';
-SELECT 'intersection_sfcgal', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 0, 1 1)'));
+SELECT 'intersection_sfcgal', ST_astext(ST_intersection('LINESTRING(0 10, 0 0, 0 -10)', 'POINT(0 0)'));
 
 SET postgis.backend = 'foo';
 SET postgis.backend = '';
