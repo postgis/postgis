@@ -384,6 +384,9 @@ test_lwprint(void)
 	test_lwprint_assert(-115.17281600000001, 12, "-115.172816");
 	test_lwprint_assert(36.11464599999999, OUT_DEFAULT_DECIMAL_DIGITS, "36.11464599999999");
 	test_lwprint_assert(36.11464599999999, 12, "36.114646");
+	test_lwprint_assert(400000, 0, "400000");
+	test_lwprint_assert(400000, 12, "400000");
+	test_lwprint_assert(400000, 20, "400000");
 
 	/* SnapToGrid by itself is not enough to limit output decimals */
 	const double d = 526355.92112222222;
