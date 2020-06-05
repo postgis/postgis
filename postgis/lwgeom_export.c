@@ -102,7 +102,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
 	{
-		precision = PG_GETARG_INT32(2);
+		precision = PG_GETARG_INT32(argnum);
 	}
 	argnum++;
 
