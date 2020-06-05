@@ -395,7 +395,12 @@ test_lwprint(void)
 	test_lwprint_assert(gridded, 15, "526355.9211200001");
 	test_lwprint_assert(gridded, 5, "526355.92112");
 
-	/* TODO: Test high numbers (close to the limit to scientific notation */
+	/* TODO: Test high numbers (close to the limit to scientific notation) */
+
+	/* TODO: Test scientific notation with precision 0 or document its behaviour
+	 * as anything bigger than OUT_MAX_DOUBLE will be printed in exponential notation with
+	 * ALL (up to 17) significant digits
+	 */
 
 	/* Test special values (+-inf, NaNs) */
 	for (int i = precision_start; i < precision_end; i++)
