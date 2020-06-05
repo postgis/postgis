@@ -406,11 +406,22 @@ test_lwprint(void)
 static void
 test_lwprint_roundtrip(void)
 {
-	//	static const int precision = OUT_MAX_DIGITS;
+	/* Test roundtrip with the first value outside the range that's always printed as zero */
+	double original_value = nextafter(FP_TOLERANCE, 1);
+	char s[OUT_DOUBLE_BUFFER_SIZE] = {0};
+	lwprint_double(original_value, 50, s);
+	ASSERT_DOUBLE_EQUAL(atof(s), original_value);
 
-	/* Test that any double, when requested enough precision (39 for 0.000000000000xyz),
-	 * is able to do the round trip to the exact same number
+	original_value = nextafter(-FP_TOLERANCE, -1);
+	lwprint_double(original_value, 50, s);
+	ASSERT_DOUBLE_EQUAL(atof(s), original_value);
+
+	/* TODO: Add some more roundtrip tests */
+	/* TODO: Change 50 for the appropiate macro (max precision required to guarantee roundtrip, taking into account
+	 * the extra zeros) i.e: FP_TOLERANCE precision + 17
 	 */
+
+	/* TODO: Simplify with macros ? */
 }
 
 /*
