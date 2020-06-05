@@ -380,8 +380,12 @@ test_lwprint(void)
 	test_lwprint_assert(92115.51207431706, 12, "92115.51207431706")
 	test_lwprint_assert(463412.82600000006, 12, "463412.82600000006");
 	test_lwprint_assert(463462.2069374289, 12, "463462.2069374289");
+	test_lwprint_assert(-115.17281600000001, OUT_DEFAULT_DECIMAL_DIGITS, "-115.17281600000001");
+	test_lwprint_assert(-115.17281600000001, 12, "-115.172816");
+	test_lwprint_assert(36.11464599999999, OUT_DEFAULT_DECIMAL_DIGITS, "36.11464599999999");
+	test_lwprint_assert(36.11464599999999, 12, "36.114646");
 
-		/* SnapToGrid by itself is not enough to limit output decimals */
+	/* SnapToGrid by itself is not enough to limit output decimals */
 	const double d = 526355.92112222222;
 	const double gridsize = 0.00001;
 	const double gridded = rint(d / gridsize) * gridsize; /* Formula from ptarray_grid_in_place */
