@@ -388,6 +388,10 @@ test_lwprint(void)
 	test_lwprint_assert(400000, 12, "400000");
 	test_lwprint_assert(400000, 20, "400000");
 
+	/* Shortest representation is used */
+	test_lwprint_assert(7000109.9999999990686774253845214843750000000000, 8, "7000110");
+	test_lwprint_assert(7000109.9999999990686774253845214843750000000000, 12, "7000109.999999999");
+
 	/* SnapToGrid by itself is not enough to limit output decimals */
 	const double d = 526355.92112222222;
 	const double gridsize = 0.00001;
