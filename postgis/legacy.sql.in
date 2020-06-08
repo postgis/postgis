@@ -2056,7 +2056,7 @@ CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
 -- Deprecation in 2.0.0 replaced by ST_LocateBetween
 CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
 	RETURNS geometry AS
-	'SELECT ST_LocateBetween($1, $2, $2);'
+	'SELECT ST_LocateBetween($1, $2, $3);'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
