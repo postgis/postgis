@@ -2891,8 +2891,11 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 			}
 		}
-		else
+		else {
 			_raster = iwr->bandarg[i].raster[0];
+			if (_raster == NULL)
+				continue;
+		}
 
 		/* first band, _rtn doesn't exist */
 		if (i < 1) {

@@ -77,6 +77,7 @@ PostGIS 3.1.0alpha1
   - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
   - #4608, PG12: Fix several bugs in the index support function (Raúl Marín)
   - #4621, Prevent stack overflow when parsing WKB (Raúl Marín)
+  - #4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova)
 
 * Deprecated signatures *
   - Function postgis_svn_version() replaced by postgis_lib_revision()
