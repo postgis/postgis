@@ -28,6 +28,7 @@ Only tickets not included in 3.1.0alpha1
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
   - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
   - #4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)
+  - #4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, 2ndQuadrant)
 
 PostGIS 3.1.0alpha1
 2020/02/01
@@ -77,7 +78,6 @@ PostGIS 3.1.0alpha1
   - #4600, Improve precision of ST_TileEnvelope (Raúl Marín)
   - #4608, PG12: Fix several bugs in the index support function (Raúl Marín)
   - #4621, Prevent stack overflow when parsing WKB (Raúl Marín)
-  - #4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova)
 
 * Deprecated signatures *
   - Function postgis_svn_version() replaced by postgis_lib_revision()
