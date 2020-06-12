@@ -436,7 +436,7 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
 }
 
 static inline uint64_t
-pow10(const int32_t exp)
+pow_10(const int32_t exp)
 {
   assert(exp <= 17);
   if (exp == 0) { return 1L; }
@@ -548,7 +548,7 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 		if (nexp < olength)
 		{
 			/* TODO: Improve this operation */
-			uint64_t p = pow10(nexp);
+			uint64_t p = pow_10(nexp);
 			integer_part = output / p;
 			decimal_part = output % p;
 			leading_decimal_zeros = olength - decimalLength17(integer_part) - decimalLength17(decimal_part);
