@@ -657,7 +657,7 @@ topology building.
 
 <para>
 Adding elements to a topology triggers many database queries for
-finding existing edges that will be split, adding nodes and and
+finding existing edges that will be split, adding nodes and
 updating edges that will node with the new linework. For this reason
 it is useful that statistics about the data in the topology tables
 are up-to-date.
