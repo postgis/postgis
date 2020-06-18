@@ -575,7 +575,6 @@ if ( $OPT_CLEAN )
 
 if ( ! ($OPT_NODROP || $OPT_NOCREATE) )
 {
-	sleep(1);
 	system("dropdb $DB");
 }
 else
@@ -1189,7 +1188,6 @@ sub run_dumper_test
 
   # Produce the output SHP file.
   open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
-  sleep(1); # why ??
   my @dumplines = <DUMPFILE>;
   close DUMPFILE;
   chop(@dumplines);
@@ -1206,7 +1204,6 @@ sub run_dumper_test
   my $rv = system(@cmd);
   open STDERR, '>&', $stderr_save;
   open STDOUT, '>&', $stdout_save;
-  #sleep(3);
   show_progress();
 
   if ( $rv )
