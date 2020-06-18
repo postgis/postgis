@@ -1173,7 +1173,7 @@ sub run_loader_test
 #
 # input is ${TEST}.dmp, where last line is considered to be the
 # [table|query] argument for pgsql2shp and all the previous lines,
-# if any are
+# if any are options.
 #
 ##################################################################
 sub run_dumper_test
@@ -1189,12 +1189,16 @@ sub run_dumper_test
 
   # Produce the output SHP file.
   open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
-  sleep(1);
+  sleep(1); # why ??
   my @dumplines = <DUMPFILE>;
   close DUMPFILE;
-  my $dumpstring = join '', @dumplines;
-  chop($dumpstring);
-  my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile}, ${DB}, ${dumpstring});
+  chop(@dumplines);
+  my $dumpstring = shift @dumplines;
+  my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile});
+  push @cmd, @dumplines;
+  push @cmd, ${DB};
+  push @cmd, $dumpstring;
+  #print "CMD: " . join (' ', @cmd) . "\n";
   open my $stdout_save, '>&', *STDOUT or die "Cannot dup stdout\n";
   open my $stderr_save, '>&', *STDERR or die "Cannot dup stdout\n";
   open STDOUT, ">${outfile}" or die "Cannot write to ${outfile}\n";
