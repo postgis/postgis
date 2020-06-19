@@ -389,6 +389,28 @@ test_lwprint(void)
 	test_lwprint_assert(400000, 20, "400000");
 	test_lwprint_assert(5.0833333333333330372738600999582558870316, 15, "5.083333333333333");
 	test_lwprint_assert(1.4142135623730951, 15, "1.414213562373095");
+	test_lwprint_assert(143.62025166838282, 15, "143.62025166838282");
+	test_lwprint_assert(-30.037497356076827, 15, "-30.037497356076827");
+	test_lwprint_assert(142.92857147299705, 15, "142.92857147299705");
+	test_lwprint_assert(-32.75101196874403, 15, "-32.75101196874403");
+
+	/* Note about this:
+	 * 149.57565307617187 == 0x4062B26BC0000000
+	 * 149.57565307617188 == 0x4062B26BC0000000
+	 *
+	 * 0x4062B26BC0000000 == 149.575653076171875
+	 * Both if we consider "round to nearest, ties to even" (which is what we use)
+	 * or "round to nearest, ties away from zero":
+	 * 75 => 80 => 8 for the last digit
+	 *
+	 * It acts the same way in PostgreSQL:
+		# Select '149.57565307617187'::float8, '149.575653076171875'::float8, '149.57565307617188'::float8;
+			   float8       |       float8       |       float8
+		--------------------+--------------------+--------------------
+		 149.57565307617188 | 149.57565307617188 | 149.57565307617188
+		(1 row)
+	 */
+	test_lwprint_assert(149.57565307617187, 15, "149.57565307617188");
 
 	/* Shortest representation is used */
 	test_lwprint_assert(7000109.9999999990686774253845214843750000000000, 8, "7000110");
