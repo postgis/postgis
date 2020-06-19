@@ -2,6 +2,7 @@ PostGIS 3.0.2
 2020/XX/XX
 
 * Bug Fixes and Enhancements *
+  - #4706, Fix crash in ST_ChangeEdgeGeom on corrupted topology (Sandro Santilli)
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
   - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
   - #4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)
