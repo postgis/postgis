@@ -3455,6 +3455,12 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       }
   #endif
       lwgeom_add_bbox(nface1);
+      if ( ! nface1->bbox )
+      {
+        lwerror("Corrupted topology: face %d, left of edge %d, has no bbox",
+          oldedge->face_left, edge_id);
+        return -1;
+      }
       faces[facestoupdate].face_id = oldedge->face_left;
       /* ownership left to nface */
       faces[facestoupdate++].mbr = nface1->bbox;
@@ -3480,6 +3486,12 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       }
   #endif
       lwgeom_add_bbox(nface2);
+      if ( ! nface2->bbox )
+      {
+        lwerror("Corrupted topology: face %d, right of edge %d, has no bbox",
+          oldedge->face_right, edge_id);
+        return -1;
+      }
       faces[facestoupdate].face_id = oldedge->face_right;
       faces[facestoupdate++].mbr = nface2->bbox; /* ownership left to nface */
     }
