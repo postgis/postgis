@@ -600,14 +600,27 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 						}
 						else
 						{
-							decimal_part = 0;
-							integer_part++;
+							if (leading_decimal_zeros)
+							{
+								leading_decimal_zeros--;
+								decimal_part++;
+							}
+							else
+							{
+								decimal_part = 0;
+								integer_part++;
+							}
 						}
 					}
 					else
 					{
-						if (lastDigit != 5 || integer_part % 2)
-							integer_part++;
+						if (lastDigit != 5 || integer_part % 2) {
+							if (leading_decimal_zeros) {
+								leading_decimal_zeros--;
+							} else {
+								integer_part++;
+							}
+						}
 					}
 				}
 

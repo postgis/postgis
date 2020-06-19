@@ -360,6 +360,17 @@ test_lwprint(void)
 	for (int i = 16; i < 20; i++)
 		test_lwprint_assert(0.99999999999999977796, i, "0.9999999999999998");
 
+	for (int i = 1; i < 15; i++)
+	{
+		test_lwprint_assert(0.0999999999999999916733273153113, i, "0.1");
+		test_lwprint_assert(-0.0999999999999999916733273153113, i, "-0.1");
+	}
+
+	for (int i = 2; i < 15; i++)
+	{
+		test_lwprint_assert(0.00999999999999999847, i, "0.01");
+		test_lwprint_assert(-0.00999999999999999847, i, "-0.01");
+	}
 
 	/* Test regression changes (output that changed in the tests vs 3.0) */
 		/* There is at most 17 significative digits */
