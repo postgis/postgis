@@ -388,6 +388,7 @@ test_lwprint(void)
 	test_lwprint_assert(400000, 12, "400000");
 	test_lwprint_assert(400000, 20, "400000");
 	test_lwprint_assert(5.0833333333333330372738600999582558870316, 15, "5.083333333333333");
+	test_lwprint_assert(1.4142135623730951, 15, "1.414213562373095");
 
 	/* Shortest representation is used */
 	test_lwprint_assert(7000109.9999999990686774253845214843750000000000, 8, "7000110");
