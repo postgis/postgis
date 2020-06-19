@@ -41,4 +41,5 @@ T13.1|29
 T13.2|Edge 29 changed
 T13.3|26
 ERROR:  Edge motion collision at POINT(-1.1697 47.7825)
+ERROR:  Corrupted topology: face 4, right of edge 7, has no bbox
 Topology 'city_data' dropped

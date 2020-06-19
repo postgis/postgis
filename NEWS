@@ -3,6 +3,7 @@ PostGIS 2.4.9
 
   * Bug Fixes and Enhancements *
 
+  - #4706, Fix crash in ST_ChangeEdgeGeom on corrupted topology (Sandro Santilli)
   - #4480, Geography Distance inconsistent with Intersects (Paul Ramsey)
   - #4481, Improve libprotobuf detection for old systems (Paul Ramsey)
   - #4475, Avoid reading into empty ptarra (Paul Ramsey)
