@@ -67,6 +67,7 @@ TESTS = \
 	../loader/Latin1 \
 	../loader/Latin1-implicit \
 	../loader/mfile \
+	../dumper/mfiledmp \
 	../dumper/literalsrid \
 	../dumper/realtable \
 	../dumper/nullsintable \
