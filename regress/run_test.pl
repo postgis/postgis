@@ -541,7 +541,6 @@ foreach $TEST (@ARGV)
 	if ( $TEST_OBJ_COUNT_POST != $TEST_OBJ_COUNT_PRE )
 	{
 		fail("PostGIS object count pre-test ($TEST_OBJ_COUNT_POST) != post-test ($TEST_OBJ_COUNT_PRE)");
-		return 0;
 	}
 
 }
@@ -1170,8 +1169,8 @@ sub run_loader_test
 #  Run dumper and compare output with various expectances
 #  test and run simple test with provided expected output.
 #
-# input is ${TEST}.dmp, where last line is considered to be the
-# [table|query] argument for pgsql2shp and all the previous lines,
+# input is ${TEST}.dmp, where first line is considered to be the
+# [table|query] argument for pgsql2shp and all the next lines,
 # if any are options.
 #
 ##################################################################
@@ -1190,8 +1189,9 @@ sub run_dumper_test
   open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
   my @dumplines = <DUMPFILE>;
   close DUMPFILE;
-  chop(@dumplines);
+  chomp(@dumplines);
   my $dumpstring = shift @dumplines;
+  @dumplines = map { local $_ = $_; s/{regdir}/$REGDIR/; $_ } @dumplines;
   my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile});
   push @cmd, @dumplines;
   push @cmd, ${DB};
