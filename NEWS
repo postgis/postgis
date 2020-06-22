@@ -10,6 +10,7 @@ PostGIS 3.0.2
   - #4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)
   - #4702, Legacy ST_Locate_Between_Measures is wrong (Kaplas80)
   - #4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, 2ndQuadrant)
+  - #4716, Fix several issues with pkg-config in the configure script (Raúl Marín)
 
 PostGIS 3.0.1
 2020/02/20
