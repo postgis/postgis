@@ -864,15 +864,18 @@ if test ! "x$PROJDIR" = "x"; then
 		fi
 	fi
 elif test ! -z "$PKG_CONFIG"; then
-        dnl To keep compatibility with PROJ pre 4.8, default to lproj if not found
+	dnl To keep compatibility with PROJ pre 4.8, default to lproj if not found
 	PKG_CHECK_MODULES([PROJ], [proj],
-            [
-                PROJ_CPPFLAGS="$PROJ_CFLAGS"
-                PROJ_LDFLAGS="$PROJ_LIBS"
-            ],
-            [
-                PROJ_LDFLAGS="-lproj"
-            ])
+		[
+			PROJ_CPPFLAGS="$PROJ_CFLAGS"
+			PROJ_LDFLAGS="$PROJ_LIBS"
+		],
+		[
+			PROJ_LDFLAGS="-lproj"
+		])
+else
+	dnl To keep compatibility with PROJ pre 4.8, default to lproj
+	PROJ_LDFLAGS="-lproj"
 fi
 
 
