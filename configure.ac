@@ -960,7 +960,7 @@ if test "$CHECK_JSON" != "no"; then
                 HAVE_JSON=yes
                 JSON_CPPFLAGS="$JSONC_CFLAGS"
                 JSON_LDFLAGS="$JSONC_LIBS"
-            ], [])
+            ], [AC_MSG_WARN("Could not find json-c")])
     fi
 
     if test "$HAVE_JSON" = "yes"; then
