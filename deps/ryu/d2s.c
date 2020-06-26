@@ -617,6 +617,7 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 						if (lastDigit != 5 || integer_part % 2) {
 							if (leading_decimal_zeros) {
 								leading_decimal_zeros--;
+								decimal_part++;
 							} else {
 								integer_part++;
 							}

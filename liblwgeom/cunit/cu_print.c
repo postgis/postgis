@@ -360,12 +360,18 @@ test_lwprint(void)
 	for (int i = 16; i < 20; i++)
 		test_lwprint_assert(0.99999999999999977796, i, "0.9999999999999998");
 
+	test_lwprint_assert(0.0999999999999999916733273153113, 0, "0");
+	test_lwprint_assert(-0.0999999999999999916733273153113, 0, "0");
 	for (int i = 1; i < 15; i++)
 	{
 		test_lwprint_assert(0.0999999999999999916733273153113, i, "0.1");
 		test_lwprint_assert(-0.0999999999999999916733273153113, i, "-0.1");
 	}
 
+	test_lwprint_assert(0.00999999999999999847, 0, "0");
+	test_lwprint_assert(-0.00999999999999999847, 0, "0");
+	test_lwprint_assert(0.00999999999999999847, 1, "0");
+	test_lwprint_assert(-0.00999999999999999847, 1, "0");
 	for (int i = 2; i < 15; i++)
 	{
 		test_lwprint_assert(0.00999999999999999847, i, "0.01");
