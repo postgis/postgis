@@ -1898,6 +1898,14 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     return -2;
   }
   const POINTARRAY *pa = shell->rings[0];
+  if ( ! ptarray_is_closed(pa) )
+  {
+    lwpoly_free(shell);
+    lwfree( signed_edge_ids );
+    lwerror("Corrupted topology: ring of edge %" LWTFMT_ELEMID
+            " is geometrically not-closed", sedge);
+    return -2;
+  }
 
   int isccw = ptarray_isccw(pa);
   LWDEBUGF(1, "Ring of edge %" LWTFMT_ELEMID " is %sclockwise",
