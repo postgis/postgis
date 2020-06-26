@@ -1241,6 +1241,40 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
     val = DatumGetInt32(dat);
     edges[i] = val;
     POSTGIS_DEBUGF(1, "Component " UINT64_FORMAT " in ring of edge %" LWTFMT_ELEMID " is edge %d", i, edge, val);
+
+    /* For the last entry, check that we returned back to start
+     * point, or complain about topology being corrupted */
+    if ( i == *numelems - 1 )
+    {
+      int32 nextedge;
+      int sidecol = val > 0 ? 3 : 4;
+      const char *sidetext = val > 0 ? "left" : "right";
+
+      dat = SPI_getbinval(row, rowdesc, sidecol, &isnull);
+      if ( isnull )
+      {
+        lwfree(edges);
+        cberror(topo->be_data, "Edge %d" /*LWTFMT_ELEMID*/
+                               " has NULL next_%s_edge",
+                               val, sidetext);
+        *numelems = UINT64_MAX;
+        return NULL;
+      }
+      nextedge = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(1, "Last component in ring of edge %"
+                        LWTFMT_ELEMID " (%" LWTFMT_ELEMID ") has next_%s_edge %d",
+                        edge, val, sidetext, nextedge);
+      if ( nextedge != edge )
+      {
+        lwfree(edges);
+        cberror(topo->be_data, "Corrupted topology: ring of edge %"
+                               LWTFMT_ELEMID " is topologically non-closed",
+                               edge);
+        *numelems = UINT64_MAX;
+        return NULL;
+      }
+    }
+
   }
 
   SPI_freetuptable(SPI_tuptable);
