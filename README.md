@@ -9,6 +9,11 @@ Travis:
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-2.5/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/stable-2.5)
 
+ Berrie:
+ [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dberrie)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/)
+ Berrie64:
+ [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dberrie64)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie64/)
+
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
 
