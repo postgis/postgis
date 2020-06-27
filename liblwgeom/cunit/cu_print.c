@@ -444,8 +444,13 @@ test_lwprint(void)
 
 	/* TODO: Test scientific notation with precision 0 or document its behaviour
 	 * as anything bigger than OUT_MAX_DOUBLE will be printed in exponential notation with
-	 * ALL (up to 17) significant digits
+	 * ALL (up to 17) **significant** digits
 	 */
+	test_lwprint_assert(6917529027641081856.0, 17, "6.917529027641082e+18");
+	test_lwprint_assert(6917529027641081856.0, 16, "6.917529027641082e+18");
+	test_lwprint_assert(6917529027641081856.0, 15, "6.917529027641082e+18");
+	test_lwprint_assert(6917529027641081856.0, 10, "6.9175290276e+18");
+
 
 	/* Test special values (+-inf, NaNs) */
 	for (int i = precision_start; i < precision_end; i++)
