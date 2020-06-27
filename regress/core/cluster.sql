@@ -44,7 +44,7 @@ SELECT '#3612b', ST_ClusterDBSCAN(ST_Point(1,1), 20.1, 5) OVER();
 
 
 -- ST_ClusterKMeans
-select '#4100a', count(distinct result) from (SELECT ST_ClusterKMeans(foo1.the_geom, 3)OVER()  As result
+select '#4100a', count(distinct result) from (SELECT ST_ClusterKMeans(foo1.the_geom, 3) OVER()  As result
   FROM ((SELECT ST_Collect(geom)  As the_geom
 		FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.0822 42.3036 2,-71.082 42.3038 2,-71.0819 42.3037 2,-71.0821 42.3036 2)))') ),
 	( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.1261 42.2703 1,-71.1257 42.2703 1,-71.1257 42.2701 1,-71.126 42.2701 1,-71.1261 42.2702 1,-71.1261 42.2703 1))') ) ) As g(geom) CROSS JOIN generate_series(1,3) As i GROUP BY i )) As foo1 LIMIT 10) kmeans;
@@ -60,3 +60,15 @@ select '#4101a', count(distinct result) from (SELECT ST_ClusterKMeans(foo1.the_g
 			UNION ALL SELECT ST_GeomFromText('MULTILINESTRING EMPTY',4326) As the_geom ) ) As foo1 LIMIT 10) kmeans;
 
 select '#4101b', count(distinct cid) from (select ST_ClusterKMeans(geom,2) over () as cid from (values ('POINT EMPTY'::geometry), ('POINT EMPTY')) g(geom)) kmeans;
+
+select '3d_support-1', count(distinct cid) from (select ST_ClusterKMeans(geom,2) over () as cid from (values ('POINT(0 0 1)'::geometry), ('POINT(0 0 5)'), ('POINT(0 0 7)')) g(geom)) kmeans;
+select '3d_support-2', count(distinct cid) from (select ST_ClusterKMeans(geom,2) over () as cid from (values ('LINESTRING(0 0 1, 0 0 -1)'::geometry), ('POINT(0 0 5)'), ('POINT(0 0 7)')) g(geom)) kmeans;
+select '3d_support-3', count(distinct cid) from (select ST_ClusterKMeans(geom,2) over () as cid from (values ('LINESTRING(0 0, 0 0)'::geometry), ('POINT(0 0)'), ('POINT(0 0)')) g(geom)) kmeans;
+
+-- check that null and empty is handled in the clustering
+select '#4071', count(distinct a), count(distinct b), count(distinct c)  from
+(select
+	ST_ClusterKMeans(geom, 1) over () a,
+	ST_ClusterKMeans(geom, 2) over () b,
+	ST_ClusterKMeans(geom, 3) over () c
+from (values (null::geometry), ('POINT(1 1)'), ('POINT EMPTY'), ('POINT(0 0)'), ('POINT(4 4)')) as g (geom)) z;

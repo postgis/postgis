@@ -232,7 +232,7 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 		}
 
 		/* Calculate k-means on the list! */
-		r = lwgeom_cluster_2d_kmeans((const LWGEOM **)geoms, N, k);
+		r = lwgeom_cluster_kmeans((const LWGEOM **)geoms, N, k);
 
 		/* Clean up */
 		for (i = 0; i < N; i++)

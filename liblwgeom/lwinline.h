@@ -40,6 +40,16 @@ distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
 	return hside * hside + vside * vside;
 }
 
+inline static double
+distance3d_sqr_pt_pt(const POINT3D *p1, const POINT3D *p2)
+{
+	double hside = p2->x - p1->x;
+	double vside = p2->y - p1->y;
+	double zside = p2->z - p1->z;
+
+	return hside * hside + vside * vside + zside * zside;
+}
+
 /*
  * Size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
@@ -94,7 +104,7 @@ getPoint2d_cp(const POINTARRAY *pa, uint32_t n)
 }
 
 /**
- * Returns a POINT2D pointer into the POINTARRAY serialized_ptlist,
+ * Returns a POINT3D pointer into the POINTARRAY serialized_ptlist,
  * suitable for reading from. This is very high performance
  * and declared const because you aren't allowed to muck with the
  * values, only read them.
@@ -106,7 +116,7 @@ getPoint3d_cp(const POINTARRAY *pa, uint32_t n)
 }
 
 /**
- * Returns a POINT2D pointer into the POINTARRAY serialized_ptlist,
+ * Returns a POINT4D pointer into the POINTARRAY serialized_ptlist,
  * suitable for reading from. This is very high performance
  * and declared const because you aren't allowed to muck with the
  * values, only read them.

@@ -1726,7 +1726,7 @@ static void test_kmeans(void)
 		}
 	}
 
-	r = lwgeom_cluster_2d_kmeans((const LWGEOM **)geoms, N, num_clusters);
+	r = lwgeom_cluster_kmeans((const LWGEOM **)geoms, N, num_clusters);
 
 	// for (i = 0; i < k; i++)
 	// {
