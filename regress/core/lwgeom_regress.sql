@@ -219,14 +219,6 @@ group by cid
 order by count(*)
 limit 1;
 
--- check that null and empty is handled in the clustering
-select '#4071', count(distinct a), count(distinct b), count(distinct c)  from
-(select
-	ST_ClusterKMeans(geom, 1) over () a,
-	ST_ClusterKMeans(geom, 2) over () b,
-	ST_ClusterKMeans(geom, 3) over () c
-from (values (null::geometry), ('POINT(1 1)'), ('POINT EMPTY'), ('POINT(0 0)'), ('POINT(4 4)')) as g (geom)) z;
-
 -- typmod checks
 select 'typmod_point_4326', geometry_typmod_out(geometry_typmod_in('{Point,4326}'));
 select 'typmod_point_0', geometry_typmod_out(geometry_typmod_in('{Point,0}'));

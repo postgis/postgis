@@ -2512,7 +2512,7 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 * @param ngeoms the number of elements in the array
 * @param k the number of clusters to calculate
 */
-int * lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t ngeoms, uint32_t k);
+int * lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t ngeoms, uint32_t k);
 
 #include "lwinline.h"
 

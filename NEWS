@@ -9,7 +9,7 @@ Only tickets not included in 3.1.0alpha1
 * New features *
   - #4656, Cast a geojson_text::geometry for implicit GeoJSON ingestion (Raúl Marín)
   - #4687, Expose GEOS MaximumInscribedCircle (Paul Ramsey)
-  -
+  - #4710, ST_ClusterKMeans now works with 3D geometries (Darafei Praliaskouski)
 
 * Enhancements *
   - #4675, topology.GetRingEdges now implemented in C (Sandro Santilli)
