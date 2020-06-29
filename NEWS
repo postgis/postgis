@@ -3,6 +3,8 @@ PostGIS 2.5.5
 
  * Bug fixes *
 
+  - #4709, Fix crash in adding edge to corrupted topology, (Sandro Santilli)
+  - Handle non-closed edge rings by human readable error (Sandro Santilli)
   - #4706, Fix crash in ST_ChangeEdgeGeom on corrupted topology (Sandro Santilli)
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
   - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
