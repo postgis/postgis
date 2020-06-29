@@ -1839,7 +1839,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   else if ( i != numedges )
   {
     lwfree( signed_edge_ids );
-    _lwt_release_edges(ring_edges, numedges);
+    _lwt_release_edges(ring_edges, i);
     lwerror("Unexpected error: %d edges found when expecting %d", i, numedges);
     return -2;
   }
