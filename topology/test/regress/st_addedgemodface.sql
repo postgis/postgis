@@ -526,15 +526,13 @@ SELECT 'F'||face_id, st_astext(mbr) FROM city_data.face ORDER BY face_id;
 
 -- See https://trac.osgeo.org/postgis/ticket/4709
 BEGIN; -- need a transaction to corrupt the topology
--- 1. Corrupt topology by setting edge 5 next_face_right = 999999 (instead of 5)
+-- 1. Corrupt topology by setting edge 5 next_left_edge = 999999 (instead of -4)
 UPDATE city_data.edge_data
   SET
     next_left_edge = 999999,
     abs_next_left_edge = 999999
   WHERE edge_id = 5; -- corrupt topology
 -- 2. Try to add an edge closing a ring involving edge 5
--- 5 | POINT(36 38)
--- 7 | POINT(41 40)
 SELECT ST_AddEdgeModFace('city_data', 5, 7, 'LINESTRING(36 38,41 40)');
 ROLLBACK; -- restores the topology
 
