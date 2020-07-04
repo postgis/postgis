@@ -1999,7 +1999,7 @@ BEGIN
 		 pg_attribute a,
 		 pg_type t,
 		 pg_namespace n
-	WHERE c.relkind IN('r','v','f')
+	WHERE c.relkind IN('r','v','f', 'p')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -2016,7 +2016,7 @@ BEGIN
 			 pg_attribute a,
 			 pg_type t,
 			 pg_namespace n
-		WHERE c.relkind IN( 'r', 'f')
+		WHERE c.relkind IN( 'r', 'f', 'p')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -2082,12 +2082,12 @@ BEGIN
 
 	-- Iterate through all geometry columns in this table
 	FOR gcs IN
-	SELECT n.nspname, c.relname, a.attname
+	SELECT n.nspname, c.relname, a.attname, c.relkind
 		FROM pg_class c,
 			 pg_attribute a,
 			 pg_type t,
 			 pg_namespace n
-		WHERE c.relkind IN('r', 'f')
+		WHERE c.relkind IN('r', 'f', 'p')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -2103,7 +2103,7 @@ BEGIN
         -- Find the srid, coord_dimension, and type of current geometry
         -- in geometry_columns -- which is now a view
 
-        SELECT type, srid, coord_dimension INTO gc_old
+        SELECT type, srid, coord_dimension, gcs.relkind INTO gc_old
             FROM geometry_columns
             WHERE f_table_schema = gcs.nspname AND f_table_name = gcs.relname AND f_geometry_column = gcs.attname;
 
