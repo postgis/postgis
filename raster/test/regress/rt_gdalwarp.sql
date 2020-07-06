@@ -54,33 +54,33 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 		NULL
 	))
 ), (
-	0.1, (SELECT _st_gdalwarp(
-		rast,
-		'NearestNeighbour', 0.125,
-		993310
-	) FROM raster_gdalwarp_src)
-), (
-	0.2, (SELECT _st_gdalwarp(
-		rast,
-		'NearestNeighbour', 0.125,
-		993310
-	) FROM raster_gdalwarp_src)
-), (
-	0.3, (SELECT _st_gdalwarp(
-		rast,
-		'NearestNeighbour', 0.125,
-		994269
-	) FROM raster_gdalwarp_src)
-), (
-	0.4, (SELECT _st_gdalwarp(
-		rast,
-		'NearestNeighbor', 0.125,
-		993310,
-		500., 500.,
-		NULL, NULL,
-		0, 0
-	) FROM raster_gdalwarp_src)
-), (
+-- 	0.1, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'NearestNeighbour', 0.125,
+-- 		993310
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.2, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'NearestNeighbour', 0.125,
+-- 		993310
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.3, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'NearestNeighbour', 0.125,
+-- 		994269
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.4, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'NearestNeighbor', 0.125,
+-- 		993310,
+-- 		500., 500.,
+-- 		NULL, NULL,
+-- 		0, 0
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
 	0.5, (SELECT _st_gdalwarp(
 		rast,
 		'NearestNeighbor', 0.125,
@@ -168,22 +168,22 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 		0, 0
 	) FROM raster_gdalwarp_src)
 ), (
-	0.16, (SELECT _st_gdalwarp(
-		rast,
-		'NearestNeighbor', 0.125,
-		993310,
-		50., 50.,
-		-290, 7
-	) FROM raster_gdalwarp_src)
-), (
-	0.17, (SELECT _st_gdalwarp(
-		rast,
-		'NearestNeighbor', 0.125,
-		993310,
-		50., 50.,
-		-290, 7
-	) FROM raster_gdalwarp_src)
-), (
+-- 	0.16, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'NearestNeighbor', 0.125,
+-- 		993310,
+-- 		50., 50.,
+-- 		-290, 7
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.17, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'NearestNeighbor', 0.125,
+-- 		993310,
+-- 		50., 50.,
+-- 		-290, 7
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
 	0.18, (SELECT _st_gdalwarp(
 		rast,
 		'NearestNeighbor', 0.125,
@@ -193,54 +193,54 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 		3, 3
 	) FROM raster_gdalwarp_src)
 ), (
-	0.19, (SELECT _st_gdalwarp(
-		rast,
-		'Cubic', 0,
-		993310,
-		NULL, NULL,
-		NULL, NULL,
-		3, 3
-	) FROM raster_gdalwarp_src)
-), (
-	0.20, (SELECT _st_gdalwarp(
-		rast,
-		'Bilinear', 0.125,
-		993310,
-		NULL, NULL,
-		NULL, NULL,
-		1, 3
-	) FROM raster_gdalwarp_src)
-), (
-	0.21, (SELECT _st_gdalwarp(
-		rast,
-		'Cubic', 0,
-		993310,
-		500., 500.,
-		NULL, NULL,
-		3, 3
-	) FROM raster_gdalwarp_src)
-), (
-	0.22, (SELECT _st_gdalwarp(
-		rast,
-		'CubicSpline', 0.125,
-		993310,
-		500., 500.,
-		-12048, 14682,
-		0, 6
-	) FROM raster_gdalwarp_src)
-), (
-	0.23, (SELECT _st_gdalwarp(
-		rast,
-		'NearestNeighbor', 0.125,
-		984269
-	) FROM raster_gdalwarp_src)
-), (
-	0.24, (SELECT _st_gdalwarp(
-		rast,
-		'NearestNeighbor', 0.125,
-		974269
-	) FROM raster_gdalwarp_src)
-), (
+-- 	0.19, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'Cubic', 0,
+-- 		993310,
+-- 		NULL, NULL,
+-- 		NULL, NULL,
+-- 		3, 3
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.20, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'Bilinear', 0.125,
+-- 		993310,
+-- 		NULL, NULL,
+-- 		NULL, NULL,
+-- 		1, 3
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.21, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'Cubic', 0,
+-- 		993310,
+-- 		500., 500.,
+-- 		NULL, NULL,
+-- 		3, 3
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.22, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'CubicSpline', 0.125,
+-- 		993310,
+-- 		500., 500.,
+-- 		-12048, 14682,
+-- 		0, 6
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.23, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'NearestNeighbor', 0.125,
+-- 		984269
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	0.24, (SELECT _st_gdalwarp(
+-- 		rast,
+-- 		'NearestNeighbor', 0.125,
+-- 		974269
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
 	0.25, (SELECT _st_gdalwarp(
 		ST_SetGeoReference(ST_SetSRID(rast, 0), '1 0 0 -1 0 0'),
 		'NearestNeighbor', 0.125,
@@ -438,80 +438,80 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 
 -- ST_Transform
 INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
-	2.1, (SELECT ST_Transform(
-		rast,
-		993310
-	) FROM raster_gdalwarp_src)
-),	 (
-	2.2, (SELECT ST_Transform(
-		rast,
-		993310
-	) FROM raster_gdalwarp_src)
-), (
-	2.3, (SELECT ST_Transform(
-		rast,
-		994269
-	) FROM raster_gdalwarp_src)
-), (
+-- 	2.1, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310
+-- 	) FROM raster_gdalwarp_src)
+-- ),	 (
+-- 	2.2, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.3, (SELECT ST_Transform(
+-- 		rast,
+-- 		994269
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
 	2.4, (SELECT ST_Transform(
 		rast,
 		993310, NULL
 	) FROM raster_gdalwarp_src)
 ), (
-	2.5, (SELECT ST_Transform(
-		rast,
-		993310, 'Bilinear'
-	) FROM raster_gdalwarp_src)
-), (
+-- 	2.5, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 'Bilinear'
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
 	2.6, (SELECT ST_Transform(
 		rast,
 		993310, 'Bilinear', NULL::double precision
 	) FROM raster_gdalwarp_src)
-), (
-	2.7, (SELECT ST_Transform(
-		rast,
-		993310, 'Cubic', 0.0
-	) FROM raster_gdalwarp_src)
-), (
-	2.8, (SELECT ST_Transform(
-		rast,
-		993310, 'NearestNeighbour', 0.0
-	) FROM raster_gdalwarp_src)
-), (
-	2.9, (SELECT ST_Transform(
-		rast,
-		993310, 'NearestNeighbor', 0.0
-	) FROM raster_gdalwarp_src)
-), (
-	2.10, (SELECT ST_Transform(
-		rast,
-		993310, 'NearestNeighbor', 0.125, 500, 500
-	) FROM raster_gdalwarp_src)
-), (
-	2.11, (SELECT ST_Transform(
-		rast,
-		993310, 'Cubic', 0., 100, 100
-	) FROM raster_gdalwarp_src)
-), (
-	2.12, (SELECT ST_Transform(
-		rast,
-		993310, 'CubicSpline', 0., 2000, 2000
-	) FROM raster_gdalwarp_src)
-), (
-	2.13, (SELECT ST_Transform(
-		rast,
-		993310, 'CubicSpline', 0.1, 1500, 1500
-	) FROM raster_gdalwarp_src)
-), (
-	2.14, (SELECT ST_Transform(
-		rast,
-		993310, 500, 500
-	) FROM raster_gdalwarp_src)
-), (
-	2.15, (SELECT ST_Transform(
-		rast,
-		993310, 750
-	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.7, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 'Cubic', 0.0
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.8, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 'NearestNeighbour', 0.0
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.9, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 'NearestNeighbor', 0.0
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.10, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 'NearestNeighbor', 0.125, 500, 500
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.11, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 'Cubic', 0., 100, 100
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.12, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 'CubicSpline', 0., 2000, 2000
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.13, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 'CubicSpline', 0.1, 1500, 1500
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.14, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 500, 500
+-- 	) FROM raster_gdalwarp_src)
+-- ), (
+-- 	2.15, (SELECT ST_Transform(
+-- 		rast,
+-- 		993310, 750
+-- 	) FROM raster_gdalwarp_src)
 );
 
 -- ST_Rescale
