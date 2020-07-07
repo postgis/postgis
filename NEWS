@@ -23,6 +23,7 @@ Only tickets not included in 3.1.0alpha1
   - #4620, Update internal wagyu to 0.5.0 (Raúl Marín)
   - #4623, Optimize varlena returning functions (Raúl Marín)
   - #4677, Share gserialized objects between different cache types (Raúl Marín)
+  - Fix compilation with MSVC compiler / Standardize shebangs (Loïc Bartoletti)
 
 * Bug fixes *
   - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
