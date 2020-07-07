@@ -31,6 +31,7 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
+#define out_stack_size 32
 
 /** Force Right-hand-rule on LWGEOM polygons **/
 void
@@ -1606,7 +1607,6 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 		}
 		case MULTIPOINTTYPE:
 		{
-			static uint32_t out_stack_size = 32;
 			double tolsq = tolerance*tolerance;
 			uint32_t i, j, n = 0;
 			LWMPOINT *mpt = (LWMPOINT *)(geom);

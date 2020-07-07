@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this script will change it's current working directory to utils
 
 DB=postgis_uninstall

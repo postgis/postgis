@@ -1,6 +1,6 @@
-#!  /usr/bin/perl
-#!/usr/bin/perl -w
+#!/usr/bin/env perl 
 use strict;
+use warnings;
 use Regexp::Assemble;
 
 my @cities = split(/[\r\n]+/, qx(cat usps-st-city-name.txt));

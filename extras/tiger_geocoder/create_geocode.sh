@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 PGPORT=5432
 PGHOST=localhost
 PGUSER=postgres

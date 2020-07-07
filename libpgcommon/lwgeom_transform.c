@@ -32,6 +32,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#define maxprojlen  512
+#define spibufferlen 512
 
 
 /*
@@ -119,8 +121,6 @@ SPI_pstrdup(const char* str)
 static PjStrs
 GetProjStringsSPI(int32_t srid)
 {
-	const int maxprojlen = 512;
-	const int spibufferlen = 512;
 	int spi_result;
 	char proj_spi_buffer[spibufferlen];
 	PjStrs strs;
@@ -197,7 +197,6 @@ GetProjStringsSPI(int32_t srid)
 static PjStrs
 GetProjStrings(int32_t srid)
 {
-	const int maxprojlen = 512;
 	PjStrs strs;
 	memset(&strs, 0, sizeof(strs));
 
