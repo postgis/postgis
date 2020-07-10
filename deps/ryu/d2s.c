@@ -903,7 +903,7 @@ int d2sexp_buffered_n(double f, uint32_t precision, char* result) {
 
   // Print first the mantissa using the fixed point notation, then add the exponent manually
   const int32_t original_ieeeExponent = v.exponent + (int32_t) decimalLength17(v.mantissa) - 1;
-  v.exponent = 1 - decimalLength17(v.mantissa);
+  v.exponent = 1 - (int32_t) decimalLength17(v.mantissa);
   int index = to_chars_fixed(v, ieeeSign, precision, result);
 
   // Print the exponent.
