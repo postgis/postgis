@@ -462,15 +462,16 @@ lwprint_double(double d, int maxdd, char *buf)
 		buf[1] = '\0';
 		return 1;
 	}
+	int precision = FP_MAX(0, maxdd);
 
 	/* TODO: Consider scientific notation for small numbers ( < 0.0001 ) */
 	if (ad >= OUT_MAX_DOUBLE)
 	{
-		length = d2sexp_buffered_n(d, buf);
+		length = d2sexp_buffered_n(d, precision, buf);
 	}
 	else
 	{
-		length = d2sfixed_buffered_n(d, FP_MAX(0, maxdd), buf);
+		length = d2sfixed_buffered_n(d, precision, buf);
 	}
 	buf[length] = '\0';
 

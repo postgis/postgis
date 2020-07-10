@@ -669,7 +669,9 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 	return index;
 }
 
-static inline int to_chars_exp(const floating_decimal_64 v, const bool sign, char* const result) {
+// Original to_char_exp: TODO: Delete this once the rest is cleaned up
+#if 0
+static inline int to_chars_exp(const floating_decimal_64 v, const bool sign, uint32_t precision, char* const result) {
   // Step 5: Print the decimal representation.
   int index = 0;
   if (sign) {
@@ -780,6 +782,7 @@ static inline int to_chars_exp(const floating_decimal_64 v, const bool sign, cha
 
   return index;
 }
+#endif
 
 static inline bool d2d_small_int(const uint64_t ieeeMantissa, const uint32_t ieeeExponent,
   floating_decimal_64* const v) {
@@ -857,7 +860,7 @@ int d2sfixed_buffered_n(double f, uint32_t precision, char* result) {
   return to_chars_fixed(v, ieeeSign, precision, result);
 }
 
-int d2sexp_buffered_n(double f, char* result) {
+int d2sexp_buffered_n(double f, uint32_t precision, char* result) {
   // Step 1: Decode the floating-point number, and unify normalized and subnormal cases.
   const uint64_t bits = double_to_bits(f);
 
@@ -898,5 +901,34 @@ int d2sexp_buffered_n(double f, char* result) {
     v = d2d(ieeeMantissa, ieeeExponent);
   }
 
-  return to_chars_exp(v, ieeeSign, result);
+  // Print first the mantissa using the fixed point notation, then add the exponent manually
+  const int32_t original_ieeeExponent = v.exponent + (int32_t) decimalLength17(v.mantissa) - 1;
+  v.exponent = 1 - decimalLength17(v.mantissa);
+  int index = to_chars_fixed(v, ieeeSign, precision, result);
+
+  // Print the exponent.
+  result[index++] = 'e';
+  int32_t exp = original_ieeeExponent;
+  if (exp < 0) {
+    result[index++] = '-';
+    exp = -exp;
+  }
+  else
+  {
+	result[index++] = '+';
+  }
+
+  if (exp >= 100) {
+    const int32_t c = exp % 10;
+    memcpy(result + index, DIGIT_TABLE + 2 * (exp / 10), 2);
+    result[index + 2] = (char) ('0' + c);
+    index += 3;
+  } else if (exp >= 10) {
+    memcpy(result + index, DIGIT_TABLE + 2 * exp, 2);
+    index += 2;
+  } else {
+    result[index++] = (char) ('0' + exp);
+  }
+
+  return index;
 }

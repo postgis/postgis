@@ -30,9 +30,9 @@ extern "C" {
 int d2sfixed_buffered_n(double f, uint32_t precision, char* result);
 
 /* Print the shortest representation of a double using scientific notation
- * All meaningful digits are printed
+ * Precision limits the amount of digits of the decimal part
  */
-int d2sexp_buffered_n(double f, char* result);
+int d2sexp_buffered_n(double f, uint32_t precision, char* result);
 
 #ifdef __cplusplus
 }
