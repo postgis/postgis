@@ -174,10 +174,8 @@ $(LT_OBJS): ../postgis_config.h ../postgis_revision.h $(SA_HEADERS)
 	$(MAKE) -C .. postgis_revision.h
 
 
-# Always try to build ryu so if its files changes, the library is rebuilt
 RYU_LIBPATH = ../deps/ryu/@RYU_LIB@
-.PHONY: $(RYU_LIBPATH)
-$(RYU_LIBPATH):
+$(RYU_LIBPATH): ../deps/ryu/d2s.c
 	$(MAKE) -C ../deps/ryu @RYU_LIB@
 
 liblwgeom.la: $(LT_OBJS) $(RYU_LIBPATH)
