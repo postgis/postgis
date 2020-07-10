@@ -3552,7 +3552,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   }
   else
   {
-    lwnotice("BBOX of changed edge did not change");
+    LWDEBUG(1, "BBOX of changed edge did not change");
   }
 
   LWDEBUG(1, "all done, cleaning up edges");
