@@ -3394,9 +3394,6 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
    * Check edge adjacency after
    */
   edgeend span_post, epan_post;
-  res = _lwt_InitEdgeEndByLine(&span_post, &epan_post, geom, &p1, &p2);
-  if (res)
-	  return -1; /* lwerror should have been raised */
   /* initialize epan_post.myaz and epan_post.myaz */
   res = _lwt_InitEdgeEndByLine(&span_post, &epan_post, geom, &p1, &p2);
   if (res)

@@ -2,6 +2,7 @@ PostGIS 3.0.2
 2020/XX/XX
 
 * Bug Fixes and Enhancements *
+  - Remove useless duplicated call in ST_ChangeEdgeGeom (Sandro Santilli)
   - #4709, Fix crash in adding edge to corrupted topology, (Sandro Santilli)
   - Handle non-closed edge rings by human readable error (Sandro Santilli)
   - #4706, Fix crash in ST_ChangeEdgeGeom on corrupted topology (Sandro Santilli)
