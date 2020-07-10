@@ -576,12 +576,13 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 			}
 			else if (precision < decimal_digits)
 			{
-				/* TODO: Improve this operation:
-				 Unroll or combine with the process that it done in d2d */
+				/* TODO: Improve this */
 				uint32_t digits_to_trim = meaningful_digits - (precision - leading_decimal_zeros);
 				uint32_t lastDigit = 0;
+				bool trimmed_something = false;
 				while (digits_to_trim && decimal_part)
 				{
+					trimmed_something |= lastDigit != 0;
 					const uint64_t decDiv10 = div10(decimal_part);
 					lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) decDiv10);
 					decimal_part = decDiv10;
@@ -592,29 +593,31 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 				{
 					if (decimal_part)
 					{
-						/* .9999 + 1 overflows into the integer part */
-						if (decimalLength17(decimal_part) == decimalLength17(decimal_part + 1))
+						if (trimmed_something || lastDigit > 5 || decimal_part % 2 == 1)
 						{
-							decimal_part++;
-							lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) div10(decimal_part));
-						}
-						else
-						{
-							if (leading_decimal_zeros)
+							/* .9999 + 1 overflows into the integer part */
+							if (decimalLength17(decimal_part) == decimalLength17(decimal_part + 1))
 							{
-								leading_decimal_zeros--;
 								decimal_part++;
 							}
 							else
 							{
-								decimal_part = 0;
-								integer_part++;
+								if (leading_decimal_zeros)
+								{
+									leading_decimal_zeros--;
+									decimal_part++;
+								}
+								else
+								{
+									decimal_part = 0;
+									integer_part++;
+								}
 							}
 						}
 					}
 					else
 					{
-						if (lastDigit != 5 || integer_part % 2) {
+						if (lastDigit > 5 || integer_part % 2) {
 							if (leading_decimal_zeros) {
 								leading_decimal_zeros--;
 								decimal_part++;
@@ -625,13 +628,10 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 					}
 				}
 
-				uint64_t decDiv10 = div10(decimal_part);
-				lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) decDiv10);
-				while (decimal_part && !lastDigit)
-				{
-					decimal_part = div10(decimal_part);
-					decDiv10 = div10(decimal_part);
-					lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) decDiv10);
+				if (decimal_part) {
+					while (decimal_part % 10 == 0) {
+						decimal_part = div10(decimal_part);
+					}
 				}
 			}
 		}

@@ -350,6 +350,14 @@ test_lwprint(void)
 	test_lwprint_assert(0.99, 0, "1");
 	test_lwprint_assert(1.5, 0, "2");
 	test_lwprint_assert(2.5, 0, "2");
+
+	/* Check rounding */
+	test_lwprint_assert(0.035, 2, "0.04");
+	test_lwprint_assert(0.045, 2, "0.04");
+	test_lwprint_assert(0.04500000000000001, 2, "0.05");
+	test_lwprint_assert(0.077, 2, "0.08");
+	test_lwprint_assert(0.087, 2, "0.09");
+
 	for (int i = 0; i < 15; i++)
 		test_lwprint_assert(-0.99999999999999988898, i, "-1");
 	for (int i = 15; i < 20; i++)
