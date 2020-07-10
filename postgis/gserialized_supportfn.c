@@ -291,7 +291,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 		{
 			req->selectivity = gserialized_sel_internal(req->root, req->args, req->varRelid, 2);
 		}
-		elog(DEBUG2, "%s: got selectivity %g", __func__, req->selectivity);
+		POSTGIS_DEBUGF(2, "%s: got selectivity %g", __func__, req->selectivity);
 		PG_RETURN_POINTER(req);
 	}
 
