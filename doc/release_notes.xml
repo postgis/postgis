@@ -2,6 +2,43 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1>
+        <title>Release 3.1.0alpha2</title>
+        <para>Release date: 2020/07/18</para>
+        <para>Only changes since 3.1.0alpah1 and listed. This version requires PostgreSQL 9.6-13 and GEOS >= 3.6+
+                Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.9.0dev</para>
+        <simplesect>
+            <title>New Features</title>
+            <para>4656, Cast a geojson_text::geometry for implicit GeoJSON ingestion (Raúl Marín)</para>
+            <para>4687, Expose GEOS MaximumInscribedCircle (Paul Ramsey)</para>
+            <para>4710, ST_ClusterKMeans now works with 3D geometries (Darafei Praliaskouski)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Enhancements</title>
+                <para>4675, topology.GetRingEdges now implemented in C (Sandro Santilli)</para>
+                <para>4681, ST_GetFaceGeometry: print corruption information (Sandro Santilli)</para>
+                <para>4651, ST_Simplify: Don't copy if nothing is removed (Raúl Marín)</para>
+                <para>4657, Avoid De-TOASTing where possible (Paul Ramsey)</para>
+                <para>4490, Tweak function costs (Raúl Marín)</para>
+                <para>4672, Cache getSRSbySRID and getSRIDbySRS (Raúl Marín)</para>
+                <para>4676, Avoid decompressing toasted geometries to read only the header (Raúl Marín)
+                        Optimize cast to Postgresql point type (Raúl Marín)</para>
+                <para>4620, Update internal wagyu to 0.5.0 (Raúl Marín)</para>
+                <para>4623, Optimize varlena returning functions (Raúl Marín)</para>
+                <para>4677, Share gserialized objects between different cache types (Raúl Marín)</para>
+                <para>Fix compilation with MSVC compiler / Standardize shebangs (Loïc Bartoletti)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Bug fixes </title>
+            <para>4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)</para>
+            <para>4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)</para>
+            <para>4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)</para>
+            <para>4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, 2ndQuadrant)</para>
+            <para>4716, Fix several issues with pkg-config in the configure script (Raúl Marín)</para>
+        </simplesect>
+    </sect1>
 
     <sect1>
         <title>Release 3.1.0alpha1</title>
@@ -203,7 +240,7 @@
         <title>Major highlights</title>
             <para>4519, Fix getSRIDbySRS crash (Raúl Marín)</para>
             <para>4520, Use a clean environment when detecting C++ libraries (Raúl Marín)</para>
-            <para>Restore ST_Union() aggregate signature so drop agg not required and re-work 
+            <para>Restore ST_Union() aggregate signature so drop agg not required and re-work
                   performance/size enhancement to continue to avoid
                   using Array type during ST_Union(), hopefully
                   avoiding Array size limitations. (Paul Ramsey)</para>
