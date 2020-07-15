@@ -4658,6 +4658,12 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
   LWPOINT *pt;
   LWT_TOPOLOGY *topo;
 
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) )
+  {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
   toponame_text = PG_GETARG_TEXT_P(0);
   toponame = text_to_cstring(toponame_text);
   PG_FREE_IF_COPY(toponame_text, 0);
