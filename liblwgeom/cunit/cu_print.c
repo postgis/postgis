@@ -261,7 +261,7 @@ test_lwpoint_to_latlon_bad_formats(void)
 
 char result[OUT_DOUBLE_BUFFER_SIZE] = {0};
 
-#define test_lwprint_assert(d, precision, expected) \
+#define assert_lwprint_equal(d, precision, expected) \
 	lwprint_double((d), (precision), result); \
 	ASSERT_STRING_EQUAL(result, (expected));
 
@@ -273,7 +273,7 @@ test_lwprint(void)
 
 	/* Numbers close to zero should always be printed as zero */
 	for (int i = precision_start; i < precision_end; i++)
-		test_lwprint_assert(nextafter(0, 1), i, "0");
+		assert_lwprint_equal(nextafter(0, 1), i, "0");
 
 	/*  2 = 0x4000000000000000
 	 * -2 = 0xC000000000000000
@@ -281,133 +281,133 @@ test_lwprint(void)
 	 */
 	for (int i = precision_start; i < precision_end; i++)
 	{
-		test_lwprint_assert(2.0, i, "2");
-		test_lwprint_assert(-2.0, i, "-2");
+		assert_lwprint_equal(2.0, i, "2");
+		assert_lwprint_equal(-2.0, i, "-2");
 	}
 
 	/* 0.3 doesn't have an exact representation but it's the shortest representation for 0x3FD3333333333333
 	 * 2.99999999999999988897769753748E-1 = 0x3FD3333333333333
 	 */
-	test_lwprint_assert(0.3, 0, "0");
+	assert_lwprint_equal(0.3, 0, "0");
 	for (int i = 1; i < precision_end; i++)
 	{
-		test_lwprint_assert(0.3, i, "0.3");
-		test_lwprint_assert(2.99999999999999988897769753748E-1, i, "0.3");
+		assert_lwprint_equal(0.3, i, "0.3");
+		assert_lwprint_equal(2.99999999999999988897769753748E-1, i, "0.3");
 	}
 
 	/* 2.5 has an exact representation (0x4004000000000000) */
-	test_lwprint_assert(2.5, 0, "2");
+	assert_lwprint_equal(2.5, 0, "2");
 	for (int i = 1; i < precision_end; i++)
 	{
-		test_lwprint_assert(2.5, i, "2.5");
+		assert_lwprint_equal(2.5, i, "2.5");
 	}
 
 	/* Test trailing zeros and rounding
 	 * 0.0000000298023223876953125 == 0x3E60000000000000 == 2.98023223876953125E-8
 	 */
-	test_lwprint_assert(0.0000000298023223876953125, -1, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 0, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 1, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 2, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 3, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 4, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 5, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 6, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 7, "0");
-	test_lwprint_assert(0.0000000298023223876953125, 8, "0.00000003");
-	test_lwprint_assert(0.0000000298023223876953125, 9, "0.00000003");
-	test_lwprint_assert(0.0000000298023223876953125, 10, "0.0000000298");
-	test_lwprint_assert(0.0000000298023223876953125, 11, "0.0000000298");
-	test_lwprint_assert(0.0000000298023223876953125, 12, "0.000000029802");
-	test_lwprint_assert(0.0000000298023223876953125, 13, "0.0000000298023");
-	test_lwprint_assert(0.0000000298023223876953125, 14, "0.00000002980232");
-	test_lwprint_assert(0.0000000298023223876953125, 15, "0.000000029802322");
-	test_lwprint_assert(0.0000000298023223876953125, 16, "0.0000000298023224");
-	test_lwprint_assert(0.0000000298023223876953125, 17, "0.00000002980232239");
-	test_lwprint_assert(0.0000000298023223876953125, 18, "0.000000029802322388");
-	test_lwprint_assert(0.0000000298023223876953125, 19, "0.0000000298023223877");
-	test_lwprint_assert(0.0000000298023223876953125, 20, "0.0000000298023223877");
-	test_lwprint_assert(0.0000000298023223876953125, 21, "0.000000029802322387695");
-	test_lwprint_assert(0.0000000298023223876953125, 22, "0.0000000298023223876953");
-	test_lwprint_assert(0.0000000298023223876953125, 23, "0.00000002980232238769531");
-	test_lwprint_assert(0.0000000298023223876953125, 24, "0.000000029802322387695312");
-	test_lwprint_assert(0.0000000298023223876953125, 40, "0.000000029802322387695312");
+	assert_lwprint_equal(0.0000000298023223876953125, -1, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 0, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 1, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 2, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 3, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 4, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 5, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 6, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 7, "0");
+	assert_lwprint_equal(0.0000000298023223876953125, 8, "0.00000003");
+	assert_lwprint_equal(0.0000000298023223876953125, 9, "0.00000003");
+	assert_lwprint_equal(0.0000000298023223876953125, 10, "0.0000000298");
+	assert_lwprint_equal(0.0000000298023223876953125, 11, "0.0000000298");
+	assert_lwprint_equal(0.0000000298023223876953125, 12, "0.000000029802");
+	assert_lwprint_equal(0.0000000298023223876953125, 13, "0.0000000298023");
+	assert_lwprint_equal(0.0000000298023223876953125, 14, "0.00000002980232");
+	assert_lwprint_equal(0.0000000298023223876953125, 15, "0.000000029802322");
+	assert_lwprint_equal(0.0000000298023223876953125, 16, "0.0000000298023224");
+	assert_lwprint_equal(0.0000000298023223876953125, 17, "0.00000002980232239");
+	assert_lwprint_equal(0.0000000298023223876953125, 18, "0.000000029802322388");
+	assert_lwprint_equal(0.0000000298023223876953125, 19, "0.0000000298023223877");
+	assert_lwprint_equal(0.0000000298023223876953125, 20, "0.0000000298023223877");
+	assert_lwprint_equal(0.0000000298023223876953125, 21, "0.000000029802322387695");
+	assert_lwprint_equal(0.0000000298023223876953125, 22, "0.0000000298023223876953");
+	assert_lwprint_equal(0.0000000298023223876953125, 23, "0.00000002980232238769531");
+	assert_lwprint_equal(0.0000000298023223876953125, 24, "0.000000029802322387695312");
+	assert_lwprint_equal(0.0000000298023223876953125, 40, "0.000000029802322387695312");
 
 	/* Negative 0 after rounding should be printed as 0 */
-	test_lwprint_assert(-0.0005, 0, "0");
-	test_lwprint_assert(-0.0005, 1, "0");
-	test_lwprint_assert(-0.0005, 2, "0");
-	test_lwprint_assert(-0.0005, 3, "0");
-	test_lwprint_assert(-0.0005, 4, "-0.0005");
+	assert_lwprint_equal(-0.0005, 0, "0");
+	assert_lwprint_equal(-0.0005, 1, "0");
+	assert_lwprint_equal(-0.0005, 2, "0");
+	assert_lwprint_equal(-0.0005, 3, "0");
+	assert_lwprint_equal(-0.0005, 4, "-0.0005");
 
 	/* Rounding on the first decimal digit */
-	test_lwprint_assert(-2.5, 0, "-2");
-	test_lwprint_assert(-1.5, 0, "-2");
-	test_lwprint_assert(-0.99, 0, "-1");
-	test_lwprint_assert(-0.5, 0, "0");
-	test_lwprint_assert(-0.01, 0, "0");
-	test_lwprint_assert(0.5, 0, "0");
-	test_lwprint_assert(0.99, 0, "1");
-	test_lwprint_assert(1.5, 0, "2");
-	test_lwprint_assert(2.5, 0, "2");
+	assert_lwprint_equal(-2.5, 0, "-2");
+	assert_lwprint_equal(-1.5, 0, "-2");
+	assert_lwprint_equal(-0.99, 0, "-1");
+	assert_lwprint_equal(-0.5, 0, "0");
+	assert_lwprint_equal(-0.01, 0, "0");
+	assert_lwprint_equal(0.5, 0, "0");
+	assert_lwprint_equal(0.99, 0, "1");
+	assert_lwprint_equal(1.5, 0, "2");
+	assert_lwprint_equal(2.5, 0, "2");
 
 	/* Check rounding */
-	test_lwprint_assert(0.035, 2, "0.04");
-	test_lwprint_assert(0.045, 2, "0.04");
-	test_lwprint_assert(0.04500000000000001, 2, "0.05");
-	test_lwprint_assert(0.077, 2, "0.08");
-	test_lwprint_assert(0.087, 2, "0.09");
+	assert_lwprint_equal(0.035, 2, "0.04");
+	assert_lwprint_equal(0.045, 2, "0.04");
+	assert_lwprint_equal(0.04500000000000001, 2, "0.05");
+	assert_lwprint_equal(0.077, 2, "0.08");
+	assert_lwprint_equal(0.087, 2, "0.09");
 
 	for (int i = 0; i < 15; i++)
-		test_lwprint_assert(-0.99999999999999988898, i, "-1");
+		assert_lwprint_equal(-0.99999999999999988898, i, "-1");
 	for (int i = 15; i < 20; i++)
-		test_lwprint_assert(-0.99999999999999988898, i, "-0.9999999999999999");
+		assert_lwprint_equal(-0.99999999999999988898, i, "-0.9999999999999999");
 
 	for (int i = 0; i < 16; i++)
-		test_lwprint_assert(0.99999999999999977796, i, "1");
+		assert_lwprint_equal(0.99999999999999977796, i, "1");
 	for (int i = 16; i < 20; i++)
-		test_lwprint_assert(0.99999999999999977796, i, "0.9999999999999998");
+		assert_lwprint_equal(0.99999999999999977796, i, "0.9999999999999998");
 
-	test_lwprint_assert(0.0999999999999999916733273153113, 0, "0");
-	test_lwprint_assert(-0.0999999999999999916733273153113, 0, "0");
+	assert_lwprint_equal(0.0999999999999999916733273153113, 0, "0");
+	assert_lwprint_equal(-0.0999999999999999916733273153113, 0, "0");
 	for (int i = 1; i < 15; i++)
 	{
-		test_lwprint_assert(0.0999999999999999916733273153113, i, "0.1");
-		test_lwprint_assert(-0.0999999999999999916733273153113, i, "-0.1");
+		assert_lwprint_equal(0.0999999999999999916733273153113, i, "0.1");
+		assert_lwprint_equal(-0.0999999999999999916733273153113, i, "-0.1");
 	}
 
-	test_lwprint_assert(0.00999999999999999847, 0, "0");
-	test_lwprint_assert(-0.00999999999999999847, 0, "0");
-	test_lwprint_assert(0.00999999999999999847, 1, "0");
-	test_lwprint_assert(-0.00999999999999999847, 1, "0");
+	assert_lwprint_equal(0.00999999999999999847, 0, "0");
+	assert_lwprint_equal(-0.00999999999999999847, 0, "0");
+	assert_lwprint_equal(0.00999999999999999847, 1, "0");
+	assert_lwprint_equal(-0.00999999999999999847, 1, "0");
 	for (int i = 2; i < 15; i++)
 	{
-		test_lwprint_assert(0.00999999999999999847, i, "0.01");
-		test_lwprint_assert(-0.00999999999999999847, i, "-0.01");
+		assert_lwprint_equal(0.00999999999999999847, i, "0.01");
+		assert_lwprint_equal(-0.00999999999999999847, i, "-0.01");
 	}
 
 	/* Test regression changes (output that changed in the tests vs 3.0) */
 		/* There is at most 17 significative digits */
-	test_lwprint_assert(-123456789012345.12345678, 20, "-123456789012345.12");
-	test_lwprint_assert(123456789012345.12345678, 20, "123456789012345.12");
+	assert_lwprint_equal(-123456789012345.12345678, 20, "-123456789012345.12");
+	assert_lwprint_equal(123456789012345.12345678, 20, "123456789012345.12");
 
-		/* Precision is respected (as number of decimal digits) */
-	test_lwprint_assert(92115.51207431706, 12, "92115.51207431706")
-	test_lwprint_assert(463412.82600000006, 12, "463412.82600000006");
-	test_lwprint_assert(463462.2069374289, 12, "463462.2069374289");
-	test_lwprint_assert(-115.17281600000001, OUT_DEFAULT_DECIMAL_DIGITS, "-115.17281600000001");
-	test_lwprint_assert(-115.17281600000001, 12, "-115.172816");
-	test_lwprint_assert(36.11464599999999, OUT_DEFAULT_DECIMAL_DIGITS, "36.11464599999999");
-	test_lwprint_assert(36.11464599999999, 12, "36.114646");
-	test_lwprint_assert(400000, 0, "400000");
-	test_lwprint_assert(400000, 12, "400000");
-	test_lwprint_assert(400000, 20, "400000");
-	test_lwprint_assert(5.0833333333333330372738600999582558870316, 15, "5.083333333333333");
-	test_lwprint_assert(1.4142135623730951, 15, "1.414213562373095");
-	test_lwprint_assert(143.62025166838282, 15, "143.62025166838282");
-	test_lwprint_assert(-30.037497356076827, 15, "-30.037497356076827");
-	test_lwprint_assert(142.92857147299705, 15, "142.92857147299705");
-	test_lwprint_assert(-32.75101196874403, 15, "-32.75101196874403");
+	/* Precision is respected (as number of decimal digits) */
+	assert_lwprint_equal(92115.51207431706, 12, "92115.51207431706");
+	assert_lwprint_equal(463412.82600000006, 12, "463412.82600000006");
+	assert_lwprint_equal(463462.2069374289, 12, "463462.2069374289");
+	assert_lwprint_equal(-115.17281600000001, OUT_DEFAULT_DECIMAL_DIGITS, "-115.17281600000001");
+	assert_lwprint_equal(-115.17281600000001, 12, "-115.172816");
+	assert_lwprint_equal(36.11464599999999, OUT_DEFAULT_DECIMAL_DIGITS, "36.11464599999999");
+	assert_lwprint_equal(36.11464599999999, 12, "36.114646");
+	assert_lwprint_equal(400000, 0, "400000");
+	assert_lwprint_equal(400000, 12, "400000");
+	assert_lwprint_equal(400000, 20, "400000");
+	assert_lwprint_equal(5.0833333333333330372738600999582558870316, 15, "5.083333333333333");
+	assert_lwprint_equal(1.4142135623730951, 15, "1.414213562373095");
+	assert_lwprint_equal(143.62025166838282, 15, "143.62025166838282");
+	assert_lwprint_equal(-30.037497356076827, 15, "-30.037497356076827");
+	assert_lwprint_equal(142.92857147299705, 15, "142.92857147299705");
+	assert_lwprint_equal(-32.75101196874403, 15, "-32.75101196874403");
 
 	/* Note about this:
 	 * 149.57565307617187 == 0x4062B26BC0000000
@@ -425,62 +425,62 @@ test_lwprint(void)
 		 149.57565307617188 | 149.57565307617188 | 149.57565307617188
 		(1 row)
 	 */
-	test_lwprint_assert(149.57565307617187, 15, "149.57565307617188");
+	assert_lwprint_equal(149.57565307617187, 15, "149.57565307617188");
 
 	/* Shortest representation is used */
-	test_lwprint_assert(7000109.9999999990686774253845214843750000000000, 8, "7000110");
-	test_lwprint_assert(7000109.9999999990686774253845214843750000000000, 12, "7000109.999999999");
+	assert_lwprint_equal(7000109.9999999990686774253845214843750000000000, 8, "7000110");
+	assert_lwprint_equal(7000109.9999999990686774253845214843750000000000, 12, "7000109.999999999");
 
 	/* SnapToGrid by itself is not enough to limit output decimals */
 	const double d = 526355.92112222222;
 	const double gridsize = 0.00001;
 	const double gridded = rint(d / gridsize) * gridsize; /* Formula from ptarray_grid_in_place */
-	test_lwprint_assert(gridded, 15, "526355.9211200001");
-	test_lwprint_assert(gridded, 5, "526355.92112");
+	assert_lwprint_equal(gridded, 15, "526355.9211200001");
+	assert_lwprint_equal(gridded, 5, "526355.92112");
 
 	/* Test the change towards scientific notation */
-	test_lwprint_assert(nextafter(OUT_MAX_DOUBLE, 0), OUT_MAX_DIGITS, "999999999999999.9");
-	test_lwprint_assert(nextafter(-OUT_MAX_DOUBLE, 0), OUT_MAX_DIGITS, "-999999999999999.9");
-	test_lwprint_assert(OUT_MAX_DOUBLE, OUT_MAX_DIGITS, "1e+15");
-	test_lwprint_assert(-OUT_MAX_DOUBLE, OUT_MAX_DIGITS, "-1e+15");
-	test_lwprint_assert(nextafter(OUT_MAX_DOUBLE, INFINITY), OUT_MAX_DIGITS, "1.0000000000000001e+15");
-	test_lwprint_assert(nextafter(-OUT_MAX_DOUBLE, -INFINITY), OUT_MAX_DIGITS, "-1.0000000000000001e+15");
+	assert_lwprint_equal(nextafter(OUT_MAX_DOUBLE, 0), OUT_MAX_DIGITS, "999999999999999.9");
+	assert_lwprint_equal(nextafter(-OUT_MAX_DOUBLE, 0), OUT_MAX_DIGITS, "-999999999999999.9");
+	assert_lwprint_equal(OUT_MAX_DOUBLE, OUT_MAX_DIGITS, "1e+15");
+	assert_lwprint_equal(-OUT_MAX_DOUBLE, OUT_MAX_DIGITS, "-1e+15");
+	assert_lwprint_equal(nextafter(OUT_MAX_DOUBLE, INFINITY), OUT_MAX_DIGITS, "1.0000000000000001e+15");
+	assert_lwprint_equal(nextafter(-OUT_MAX_DOUBLE, -INFINITY), OUT_MAX_DIGITS, "-1.0000000000000001e+15");
 
 	/* Big numbers that use scientific notation respect the precision parameter */
-	test_lwprint_assert(9e+300, 0, "9e+300");
-	test_lwprint_assert(9e+300, 15, "9e+300");
-	test_lwprint_assert(-9e+300, 0, "-9e+300");
-	test_lwprint_assert(-9e+300, 15, "-9e+300");
-	test_lwprint_assert(9.000000000000001e+300, 0, "9e+300");
-	test_lwprint_assert(9.000000000000001e+300, 15, "9.000000000000001e+300");
-	test_lwprint_assert(-9.000000000000001e+300, 0, "-9e+300");
-	test_lwprint_assert(-9.000000000000001e+300, 15, "-9.000000000000001e+300");
+	assert_lwprint_equal(9e+300, 0, "9e+300");
+	assert_lwprint_equal(9e+300, 15, "9e+300");
+	assert_lwprint_equal(-9e+300, 0, "-9e+300");
+	assert_lwprint_equal(-9e+300, 15, "-9e+300");
+	assert_lwprint_equal(9.000000000000001e+300, 0, "9e+300");
+	assert_lwprint_equal(9.000000000000001e+300, 15, "9.000000000000001e+300");
+	assert_lwprint_equal(-9.000000000000001e+300, 0, "-9e+300");
+	assert_lwprint_equal(-9.000000000000001e+300, 15, "-9.000000000000001e+300");
 
-	test_lwprint_assert(6917529027641081856.0, 17, "6.917529027641082e+18");
-	test_lwprint_assert(6917529027641081856.0, 16, "6.917529027641082e+18");
-	test_lwprint_assert(6917529027641081856.0, 15, "6.917529027641082e+18");
-	test_lwprint_assert(6917529027641081856.0, 14, "6.91752902764108e+18");
-	test_lwprint_assert(6917529027641081856.0, 13, "6.9175290276411e+18");
-	test_lwprint_assert(6917529027641081856.0, 12, "6.917529027641e+18");
-	test_lwprint_assert(6917529027641081856.0, 11, "6.91752902764e+18");
-	test_lwprint_assert(6917529027641081856.0, 10, "6.9175290276e+18");
-	test_lwprint_assert(6917529027641081856.0, 9, "6.917529028e+18");
-	test_lwprint_assert(6917529027641081856.0, 8, "6.91752903e+18");
-	test_lwprint_assert(6917529027641081856.0, 7, "6.917529e+18");
-	test_lwprint_assert(6917529027641081856.0, 6, "6.917529e+18");
-	test_lwprint_assert(6917529027641081856.0, 5, "6.91753e+18");
-	test_lwprint_assert(6917529027641081856.0, 4, "6.9175e+18");
-	test_lwprint_assert(6917529027641081856.0, 3, "6.918e+18");
-	test_lwprint_assert(6917529027641081856.0, 2, "6.92e+18");
-	test_lwprint_assert(6917529027641081856.0, 1, "6.9e+18");
-	test_lwprint_assert(6917529027641081856.0, 0, "7e+18");
+	assert_lwprint_equal(6917529027641081856.0, 17, "6.917529027641082e+18");
+	assert_lwprint_equal(6917529027641081856.0, 16, "6.917529027641082e+18");
+	assert_lwprint_equal(6917529027641081856.0, 15, "6.917529027641082e+18");
+	assert_lwprint_equal(6917529027641081856.0, 14, "6.91752902764108e+18");
+	assert_lwprint_equal(6917529027641081856.0, 13, "6.9175290276411e+18");
+	assert_lwprint_equal(6917529027641081856.0, 12, "6.917529027641e+18");
+	assert_lwprint_equal(6917529027641081856.0, 11, "6.91752902764e+18");
+	assert_lwprint_equal(6917529027641081856.0, 10, "6.9175290276e+18");
+	assert_lwprint_equal(6917529027641081856.0, 9, "6.917529028e+18");
+	assert_lwprint_equal(6917529027641081856.0, 8, "6.91752903e+18");
+	assert_lwprint_equal(6917529027641081856.0, 7, "6.917529e+18");
+	assert_lwprint_equal(6917529027641081856.0, 6, "6.917529e+18");
+	assert_lwprint_equal(6917529027641081856.0, 5, "6.91753e+18");
+	assert_lwprint_equal(6917529027641081856.0, 4, "6.9175e+18");
+	assert_lwprint_equal(6917529027641081856.0, 3, "6.918e+18");
+	assert_lwprint_equal(6917529027641081856.0, 2, "6.92e+18");
+	assert_lwprint_equal(6917529027641081856.0, 1, "6.9e+18");
+	assert_lwprint_equal(6917529027641081856.0, 0, "7e+18");
 
 	/* Test special values (+-inf, NaNs) */
 	for (int i = precision_start; i < precision_end; i++)
 	{
-		test_lwprint_assert(NAN, i, "NaN");
-		test_lwprint_assert(INFINITY, i, "Infinity");
-		test_lwprint_assert(-INFINITY, i, "-Infinity");
+		assert_lwprint_equal(NAN, i, "NaN");
+		assert_lwprint_equal(INFINITY, i, "Infinity");
+		assert_lwprint_equal(-INFINITY, i, "-Infinity");
 	}
 }
 
