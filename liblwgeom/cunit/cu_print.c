@@ -438,7 +438,13 @@ test_lwprint(void)
 	test_lwprint_assert(gridded, 15, "526355.9211200001");
 	test_lwprint_assert(gridded, 5, "526355.92112");
 
-	/* TODO: Test high numbers (close to the limit to scientific notation) */
+	/* Test the change towards scientific notation */
+	test_lwprint_assert(nextafter(OUT_MAX_DOUBLE, 0), OUT_MAX_DIGITS, "999999999999999.9");
+	test_lwprint_assert(nextafter(-OUT_MAX_DOUBLE, 0), OUT_MAX_DIGITS, "-999999999999999.9");
+	test_lwprint_assert(OUT_MAX_DOUBLE, OUT_MAX_DIGITS, "1e+15");
+	test_lwprint_assert(-OUT_MAX_DOUBLE, OUT_MAX_DIGITS, "-1e+15");
+	test_lwprint_assert(nextafter(OUT_MAX_DOUBLE, INFINITY), OUT_MAX_DIGITS, "1.0000000000000001e+15");
+	test_lwprint_assert(nextafter(-OUT_MAX_DOUBLE, -INFINITY), OUT_MAX_DIGITS, "-1.0000000000000001e+15");
 
 	/* Big numbers that use scientific notation respect the precision parameter */
 	test_lwprint_assert(9e+300, 0, "9e+300");
@@ -478,25 +484,40 @@ test_lwprint(void)
 	}
 }
 
+/* Macro to test rountrip of lwprint_double when using enough precision digits (OUT_MAX_DIGITS) */
+#define assert_lwprint_roundtrip(d) \
+	{ \
+		char s[OUT_DOUBLE_BUFFER_SIZE] = {0}; \
+		lwprint_double(d, OUT_MAX_DIGITS, s); \
+		ASSERT_DOUBLE_EQUAL(atof(s), d); \
+	}
+
 static void
 test_lwprint_roundtrip(void)
 {
 	/* Test roundtrip with the first value outside the range that's always printed as zero */
-	double original_value = nextafter(FP_TOLERANCE, 1);
-	char s[OUT_DOUBLE_BUFFER_SIZE] = {0};
-	lwprint_double(original_value, 50, s);
-	ASSERT_DOUBLE_EQUAL(atof(s), original_value);
+	assert_lwprint_roundtrip(nextafter(FP_TOLERANCE, 1));
+	assert_lwprint_roundtrip(nextafter(-FP_TOLERANCE, -1));
 
-	original_value = nextafter(-FP_TOLERANCE, -1);
-	lwprint_double(original_value, 50, s);
-	ASSERT_DOUBLE_EQUAL(atof(s), original_value);
+	/* Test roundtrip in around the switch to scientific notation */
+	assert_lwprint_roundtrip(nextafter(OUT_MAX_DOUBLE, 0));
+	assert_lwprint_roundtrip(nextafter(-OUT_MAX_DOUBLE, 0));
+	assert_lwprint_roundtrip(OUT_MAX_DOUBLE);
+	assert_lwprint_roundtrip(OUT_MAX_DOUBLE);
+	assert_lwprint_roundtrip(nextafter(OUT_MAX_DOUBLE, INFINITY));
+	assert_lwprint_roundtrip(nextafter(-OUT_MAX_DOUBLE, -INFINITY));
 
-	/* TODO: Add some more roundtrip tests */
-	/* TODO: Change 50 for the appropiate macro (max precision required to guarantee roundtrip, taking into account
-	 * the extra zeros) i.e: FP_TOLERANCE precision + 17
-	 */
-
-	/* TODO: Simplify with macros ? */
+	/* Test some numbers */
+	assert_lwprint_roundtrip(0);
+	assert_lwprint_roundtrip(0.0000000298023223876953125);
+	assert_lwprint_roundtrip(0.3);
+	assert_lwprint_roundtrip(0.5);
+	assert_lwprint_roundtrip(7000109.9999999990686774253845214843750000000000);
+	assert_lwprint_roundtrip(6917529027641081856.0);
+	assert_lwprint_roundtrip(9e+300);
+	assert_lwprint_roundtrip(-9e+300);
+	assert_lwprint_roundtrip(9.000000000000001e+300);
+	assert_lwprint_roundtrip(-9.000000000000001e+300);
 }
 
 /*
