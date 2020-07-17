@@ -426,6 +426,7 @@ test_lwprint(void)
 		(1 row)
 	 */
 	assert_lwprint_equal(149.57565307617187, 15, "149.57565307617188");
+	assert_lwprint_equal(-149.57565307617187, 15, "-149.57565307617188");
 
 	/* Shortest representation is used */
 	assert_lwprint_equal(7000109.9999999990686774253845214843750000000000, 8, "7000110");
@@ -482,6 +483,11 @@ test_lwprint(void)
 		assert_lwprint_equal(INFINITY, i, "Infinity");
 		assert_lwprint_equal(-INFINITY, i, "-Infinity");
 	}
+
+	/* Extremes */
+	assert_lwprint_equal(2.2250738585072014e-308, OUT_MAX_DIGITS, "0"); /* We normalize small numbers to 0 */
+	assert_lwprint_equal(1.7976931348623157e+308, OUT_MAX_DIGITS, "1.7976931348623157e+308");  /* Max */
+	assert_lwprint_equal(2.9802322387695312E-8, OUT_MAX_DIGITS, "0.000000029802322387695312"); /* Trailing zeros */
 }
 
 /* Macro to test rountrip of lwprint_double when using enough precision digits (OUT_MAX_DIGITS) */
@@ -518,6 +524,17 @@ test_lwprint_roundtrip(void)
 	assert_lwprint_roundtrip(-9e+300);
 	assert_lwprint_roundtrip(9.000000000000001e+300);
 	assert_lwprint_roundtrip(-9.000000000000001e+300);
+
+	/* Even if we write the **same** number differently as the (compiler) input the roundtrip is guaranteed */
+	assert_lwprint_roundtrip(149.57565307617187);
+	assert_lwprint_roundtrip(149.57565307617188);
+	assert_lwprint_roundtrip(-149.57565307617187);
+	assert_lwprint_roundtrip(-149.57565307617188);
+
+	/* Extremes */
+	/* Note: We don't test small numbers since the transformation to 0 kills roundtrips */
+	assert_lwprint_roundtrip(1.7976931348623157e+308);
+	assert_lwprint_roundtrip(2.9802322387695312E-8);
 }
 
 /*
