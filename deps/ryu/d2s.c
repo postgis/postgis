@@ -439,7 +439,7 @@ static inline uint64_t
 pow_10(const int32_t exp)
 {
   assert(exp <= 17);
-  if (exp == 0) { return 1L; }
+  assert(exp >= 1);
   if (exp == 1) { return 10L; }
   if (exp == 2) { return 100L; }
   if (exp == 3) { return 1000L; }
@@ -456,7 +456,6 @@ pow_10(const int32_t exp)
   if (exp == 14) { return 100000000000000L; }
   if (exp == 15) { return 1000000000000000L; }
   if (exp == 16) { return 10000000000000000L; }
-  if (exp == 17) { return 100000000000000000L; }
 
   return 100000000000000000L;
 }
@@ -507,7 +506,11 @@ static inline int to_chars_uint64(uint64_t output, uint32_t olength, char* const
 
 	if (output2 >= 100)
 	{
+	#ifdef __clang__ // https://bugs.llvm.org/show_bug.cgi?id=38217
 		const uint32_t c = (output2 % 100) << 1;
+	#else
+		const uint32_t c = (output2 - 100 * (output2 / 100)) << 1;
+	#endif
 		output2 /= 100;
 		memcpy(result + olength - i - 2, DIGIT_TABLE + c, 2);
 		i += 2;
@@ -549,7 +552,6 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 		uint32_t nexp = -exp;
 		if (nexp < olength)
 		{
-			/* TODO: Improve this operation */
 			uint64_t p = pow_10(nexp);
 			integer_part = output / p;
 			decimal_part = output % p;
