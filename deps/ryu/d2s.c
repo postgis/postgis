@@ -439,7 +439,8 @@ static inline uint64_t
 pow_10(const int32_t exp)
 {
   assert(exp <= 17);
-  assert(exp >= 1);
+  assert(exp >= 0);
+  if (exp == 0) { return 1L; }
   if (exp == 1) { return 10L; }
   if (exp == 2) { return 100L; }
   if (exp == 3) { return 1000L; }
@@ -568,23 +569,16 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 		}
 
 		/* Round the decimal part according to the precision */
-		if (decimal_part)
+		if (decimal_part && precision < (decimal_part_length + leading_decimal_zeros))
 		{
-			const uint32_t meaningful_digits = decimal_part_length;
-			const uint32_t decimal_digits = meaningful_digits + leading_decimal_zeros;
-#ifdef RYU_DEBUG
-			printf("PRECISION=%d\n", precision);
-			printf("EXTRA ZEROS=%d\n", leading_decimal_zeros);
-			printf("TOTAL DECIMAL DIGITS=%d\n", decimal_digits);
-#endif
 			if (precision < leading_decimal_zeros)
 			{
 				decimal_part = 0;
 			}
-			else if (precision < decimal_digits)
+			else
 			{
 				/* TODO: Improve this */
-				uint32_t digits_to_trim = meaningful_digits - (precision - leading_decimal_zeros);
+				uint32_t digits_to_trim = decimal_part_length - (precision - leading_decimal_zeros);
 				uint32_t lastDigit = 0;
 				bool trimmed_something = false;
 				while (digits_to_trim && decimal_part)
@@ -601,20 +595,16 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 				{
 					if (decimal_part)
 					{
-						if (trimmed_something || lastDigit > 5 || decimal_part % 2 == 1)
+						if (trimmed_something || lastDigit != 5 || decimal_part & 1)
 						{
-							/* .9999 + 1 adds extra length (removing a leading zero or increasing the integer part) */
-							if (decimal_part_length == decimalLength17(decimal_part + 1))
-							{
-								decimal_part++;
-							}
-							else
+							uint32_t decimal_part_length_old = decimal_part_length;
+							decimal_part++;
+							decimal_part_length = decimalLength17(decimal_part);
+							if (decimal_part_length != decimal_part_length_old)
 							{
 								if (leading_decimal_zeros)
 								{
 									leading_decimal_zeros--;
-									decimal_part++;
-									decimal_part_length++;
 								}
 								else
 								{
@@ -627,12 +617,19 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 					}
 					else
 					{
-						if (lastDigit > 5 || integer_part % 2 == 1) {
-							if (leading_decimal_zeros) {
+						if (leading_decimal_zeros)
+						{
+							if (lastDigit != 5)
+							{
 								leading_decimal_zeros--;
 								decimal_part = 1;
 								decimal_part_length = 1;
-							} else {
+							}
+						}
+						else
+						{
+							if (lastDigit != 5 || integer_part & 1)
+							{
 								integer_part++;
 								integer_part_length = decimalLength17(integer_part);
 							}
@@ -640,8 +637,10 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 					}
 				}
 
-				if (decimal_part) {
-					while (decimal_part % 10 == 0) {
+				if (decimal_part)
+				{
+					while (decimal_part % 10 == 0)
+					{
 						decimal_part = div10(decimal_part);
 						decimal_part_length--;
 					}

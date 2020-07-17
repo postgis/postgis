@@ -357,6 +357,10 @@ test_lwprint(void)
 	assert_lwprint_equal(0.04500000000000001, 2, "0.05");
 	assert_lwprint_equal(0.077, 2, "0.08");
 	assert_lwprint_equal(0.087, 2, "0.09");
+	assert_lwprint_equal(1.05, 1, "1");
+	assert_lwprint_equal(1.005, 2, "1");
+	assert_lwprint_equal(2.05, 1, "2");
+	assert_lwprint_equal(2.005, 2, "2");
 
 	for (int i = 0; i < 15; i++)
 		assert_lwprint_equal(-0.99999999999999988898, i, "-1");
