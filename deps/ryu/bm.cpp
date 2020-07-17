@@ -3,12 +3,12 @@
 
 // Register the function as a benchmark
 double testdoubles[] = {
-//     10,
-//     0.0000000298023223876953125,
-//     -57.4025789315173,
-//     1234567,
-//     1234567.8
-//     -0.99999999999999988898
+    10,
+    0.0000000298023223876953125,
+    -57.4025789315173,
+    1234567,
+    1234567.8,
+    -0.99999999999999988898,
     0.99999999999999977796
 };
 
@@ -24,7 +24,7 @@ static void BM_print(benchmark::State& state) {
 
 static void CustomArguments(benchmark::internal::Benchmark* b) {
     for (uint32_t j = 0; j < sizeof(testdoubles) / sizeof(double); j++)
-        for (uint32_t i = 15;  i <= 15; i++)
+        for (uint32_t i = 0;  i <= 5; i++)
             b->Args({j, i});
 }
 BENCHMARK(BM_print)->Apply(CustomArguments);

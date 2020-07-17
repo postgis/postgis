@@ -461,9 +461,8 @@ pow_10(const int32_t exp)
   return 100000000000000000L;
 }
 
-static inline int to_chars_uint64(uint64_t output, char* const result)
+static inline int to_chars_uint64(uint64_t output, uint32_t olength, char* const result)
 {
-	const uint32_t olength = decimalLength17(output);
 	uint32_t i = 0;
 
 	// We prefer 32-bit operations, even on 64-bit platforms.
@@ -532,13 +531,16 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 	uint32_t olength = decimalLength17(output);
 	int32_t exp = v.exponent;
 	uint64_t integer_part;
+	uint32_t integer_part_length = 0;
 	uint64_t decimal_part;
+	uint32_t decimal_part_length = 0;
 	uint32_t trailing_integer_zeros = 0;
 	uint32_t leading_decimal_zeros = 0;
 
 	if (exp >= 0)
 	{
 		integer_part = output;
+		integer_part_length = olength;
 		trailing_integer_zeros = exp;
 		decimal_part = 0;
 	}
@@ -551,19 +553,22 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 			uint64_t p = pow_10(nexp);
 			integer_part = output / p;
 			decimal_part = output % p;
-			leading_decimal_zeros = olength - decimalLength17(integer_part) - decimalLength17(decimal_part);
+			integer_part_length = olength - nexp;
+			decimal_part_length = decimalLength17(decimal_part);
+			leading_decimal_zeros = olength - integer_part_length - decimal_part_length;
 		}
 		else
 		{
 			integer_part = 0;
 			decimal_part = output;
+			decimal_part_length = olength;
 			leading_decimal_zeros = nexp - olength;
 		}
 
 		/* Round the decimal part according to the precision */
 		if (decimal_part)
 		{
-			const uint32_t meaningful_digits = decimalLength17(decimal_part);
+			const uint32_t meaningful_digits = decimal_part_length;
 			const uint32_t decimal_digits = meaningful_digits + leading_decimal_zeros;
 #ifdef RYU_DEBUG
 			printf("PRECISION=%d\n", precision);
@@ -587,6 +592,7 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 					lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) decDiv10);
 					decimal_part = decDiv10;
 					digits_to_trim--;
+					decimal_part_length--;
 				}
 
 				if (lastDigit >= 5)
@@ -595,8 +601,8 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 					{
 						if (trimmed_something || lastDigit > 5 || decimal_part % 2 == 1)
 						{
-							/* .9999 + 1 overflows into the integer part */
-							if (decimalLength17(decimal_part) == decimalLength17(decimal_part + 1))
+							/* .9999 + 1 adds extra length (removing a leading zero or increasing the integer part) */
+							if (decimal_part_length == decimalLength17(decimal_part + 1))
 							{
 								decimal_part++;
 							}
@@ -606,23 +612,27 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 								{
 									leading_decimal_zeros--;
 									decimal_part++;
+									decimal_part_length++;
 								}
 								else
 								{
 									decimal_part = 0;
 									integer_part++;
+									integer_part_length = decimalLength17(integer_part);
 								}
 							}
 						}
 					}
 					else
 					{
-						if (lastDigit > 5 || integer_part % 2) {
+						if (lastDigit > 5 || integer_part % 2 == 1) {
 							if (leading_decimal_zeros) {
 								leading_decimal_zeros--;
-								decimal_part++;
+								decimal_part = 1;
+								decimal_part_length = 1;
 							} else {
 								integer_part++;
+								integer_part_length = decimalLength17(integer_part);
 							}
 						}
 					}
@@ -631,6 +641,7 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 				if (decimal_part) {
 					while (decimal_part % 10 == 0) {
 						decimal_part = div10(decimal_part);
+						decimal_part_length--;
 					}
 				}
 			}
@@ -639,7 +650,6 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 
 #ifdef RYU_DEBUG
 	printf("DIGITS=%" PRIu64 "\n", v.mantissa);
-	printf("OLEN=%u\n", olength);
 	printf("EXP=%d\n", v.exponent);
 	printf("INTEGER=%lu\n", integer_part);
 	printf("DECIMAL=%lu\n", decimal_part);
@@ -654,7 +664,7 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 		result[index++] = '-';
 	}
 
-	index += to_chars_uint64(integer_part, &result[index]);
+	index += to_chars_uint64(integer_part, integer_part_length, &result[index]);
 	for (uint32_t i = 0; i < trailing_integer_zeros; i++)
 		result[index++] = '0';
 
@@ -663,7 +673,7 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 		result[index++] = '.';
 		for (uint32_t i = 0; i < leading_decimal_zeros; i++)
 			result[index++] = '0';
-		index += to_chars_uint64(decimal_part, &result[index]);
+		index += to_chars_uint64(decimal_part, decimal_part_length, &result[index]);
 	}
 
 	return index;
@@ -902,8 +912,9 @@ int d2sexp_buffered_n(double f, uint32_t precision, char* result) {
   }
 
   // Print first the mantissa using the fixed point notation, then add the exponent manually
-  const int32_t original_ieeeExponent = v.exponent + (int32_t) decimalLength17(v.mantissa) - 1;
-  v.exponent = 1 - (int32_t) decimalLength17(v.mantissa);
+  const int32_t olength = (int32_t) decimalLength17(v.mantissa);
+  const int32_t original_ieeeExponent = v.exponent + olength - 1;
+  v.exponent = 1 - olength;
   int index = to_chars_fixed(v, ieeeSign, precision, result);
 
   // Print the exponent.
