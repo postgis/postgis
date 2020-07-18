@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8.0
-	export GDAL_VER=2.4.3
+	export GEOS_VER=3.8.1
+	export GDAL_VER=2.4.4
 	export PROJ_VER=5.2.0
-	export SFCGAL_VER=1.3.2
-	export CGAL_VER=4.11
+	export SFCGAL_VER=1.3.8
+	export CGAL_VER=5.0
 	export ICON_VER=1.15
 	export ZLIB_VER=1.2.11
   export PROTOBUF_VER=3.2.0

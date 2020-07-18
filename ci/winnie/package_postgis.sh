@@ -16,14 +16,14 @@
 #otherwise use the ones jenkins passes thru
 #!/bin/bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8.0
-	export GDAL_VER=2.4.3
+	export GEOS_VER=3.8.1
+	export GDAL_VER=2.4.4
 	export PROJ_VER=5.2.0
-	export SFCGAL_VER=1.3.2
-	export CGAL_VER=4.11
+	export SFCGAL_VER=1.3.8
+	export CGAL_VER=5.0
 	export ICON_VER=1.15
 	export ZLIB_VER=1.2.11
-  	export PROTOBUF_VER=3.2.0
+  export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
 	export PROJSO=libproj-13.dll
@@ -112,7 +112,7 @@ export REL_PGVER=${PG_VER//./} #strip the period
 export RELDIR=${PROJECTS}/postgis/builds/${POSTGIS_MINOR_VER}
 export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD}${GCC_TYPE}
 export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
-export PCRE_VER=8.33 
+export PCRE_VER=8.33
 #PATH="${PGPATH}/bin:${PGPATH}/lib:${PROJECTS}/xsltproc:${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gtkw${OS_BUILD}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include:${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
 #echo PATH AFTER: $PATH
 outdir="${RELDIR}/${RELVERDIR}"
@@ -263,7 +263,7 @@ if [ -n "$SFCGAL_VER"  ]; then
     echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://github.com/Oslandia/SFCGAL" >> $verfile
 fi;
 
-if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then 
+if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then
 	cat $verfile ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt > $verfile
 fi
 
