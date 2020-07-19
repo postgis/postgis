@@ -62,4 +62,5 @@ UPGRADEABLE_VERSIONS = \
 	3.0.0rc2 \
 	3.0.0 \
 	3.0.1 \
-	3.1.0alpha1
+	3.1.0alpha1 \
+	3.1.0alpha2
