@@ -132,13 +132,14 @@
  * Export functions
  */
 
-/* Any (absolute) value higher than this will be printed in scientific notation */
+/* Any (absolute) values outside this range will be printed in scientific notation */
+#define OUT_MIN_DOUBLE 1E-8
 #define OUT_MAX_DOUBLE 1E15
 #define OUT_DEFAULT_DECIMAL_DIGITS 15
 
 /* 17 digits are sufficient for round-tripping
- * FP_TOLERANCE (12) max leading zeroes */
-#define OUT_MAX_DIGITS 17 + 12
+ * Then we might add up to 8 (from OUT_MIN_DOUBLE) max leading zeroes (or 2 digits for "e+") */
+#define OUT_MAX_DIGITS 17 + 8
 
 /* Limit for the max amount of characters that a double can use, including dot and sign */
 /* */

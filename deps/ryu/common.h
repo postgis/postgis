@@ -79,15 +79,16 @@ static inline int copy_special_str(char * const result, const bool sign, const b
     memcpy(result, "NaN", 3);
     return 3;
   }
-  if (sign) {
-    result[0] = '-';
-  }
   if (exponent) {
+	/* PostGIS: Do not print signed zero */
+	if (sign) {
+	  result[0] = '-';
+	}
     memcpy(result + sign, "Infinity", 8);
     return sign + 8;
   }
-  memcpy(result + sign, "0", 1);
-  return sign + 1;
+  memcpy(result, "0", 1);
+  return 1;
 }
 
 static inline uint32_t float_to_bits(const float f) {

@@ -271,9 +271,9 @@ test_lwprint(void)
 	static const int precision_start = -1;               /* Check for negatives */
 	static const int precision_end = OUT_MAX_DIGITS + 2; /* Ask for more digits than available in all cases */
 
-	/* Numbers close to zero should always be printed as zero */
+	/* Negative zero should be printed as 0 */
 	for (int i = precision_start; i < precision_end; i++)
-		assert_lwprint_equal(nextafter(0, 1), i, "0");
+		assert_lwprint_equal(-0, i, "0");
 
 	/*  2 = 0x4000000000000000
 	 * -2 = 0xC000000000000000
@@ -489,7 +489,7 @@ test_lwprint(void)
 	}
 
 	/* Extremes */
-	assert_lwprint_equal(2.2250738585072014e-308, OUT_MAX_DIGITS, "0"); /* We normalize small numbers to 0 */
+	assert_lwprint_equal(2.2250738585072014e-308, OUT_MAX_DIGITS, "2.2250738585072014e-308");
 	assert_lwprint_equal(1.7976931348623157e+308, OUT_MAX_DIGITS, "1.7976931348623157e+308");  /* Max */
 	assert_lwprint_equal(2.9802322387695312E-8, OUT_MAX_DIGITS, "0.000000029802322387695312"); /* Trailing zeros */
 }
@@ -536,9 +536,17 @@ test_lwprint_roundtrip(void)
 	assert_lwprint_roundtrip(-149.57565307617188);
 
 	/* Extremes */
-	/* Note: We don't test small numbers since the transformation to 0 kills roundtrips */
+	assert_lwprint_roundtrip(2.2250738585072014e-308); /* We normalize small numbers to 0 */
 	assert_lwprint_roundtrip(1.7976931348623157e+308);
 	assert_lwprint_roundtrip(2.9802322387695312E-8);
+
+	/* Special cases */
+	assert_lwprint_roundtrip(-0); /* -0 is considered equal to 0 */
+	assert_lwprint_roundtrip(INFINITY);
+	assert_lwprint_roundtrip(-INFINITY);
+	/* nan is never equal to nan
+	 * assert_lwprint_roundtrip(NAN);
+	 */
 }
 
 /*

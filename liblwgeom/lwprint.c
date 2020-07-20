@@ -456,15 +456,9 @@ lwprint_double(double d, int maxdd, char *buf)
 {
 	int length;
 	double ad = fabs(d);
-	if (ad <= FP_TOLERANCE)
-	{
-		buf[0] = '0';
-		buf[1] = '\0';
-		return 1;
-	}
 	int precision = FP_MAX(0, maxdd);
 
-	if (ad >= OUT_MAX_DOUBLE)
+	if (ad <= OUT_MIN_DOUBLE || ad >= OUT_MAX_DOUBLE)
 	{
 		length = d2sexp_buffered_n(d, precision, buf);
 	}
