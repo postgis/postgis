@@ -438,27 +438,32 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
 static inline uint64_t
 pow_10(const int32_t exp)
 {
-  assert(exp <= 17);
-  assert(exp >= 0);
-  if (exp == 0) { return 1L; }
-  if (exp == 1) { return 10L; }
-  if (exp == 2) { return 100L; }
-  if (exp == 3) { return 1000L; }
-  if (exp == 4) { return 10000L; }
-  if (exp == 5) { return 100000L; }
-  if (exp == 6) { return 1000000L; }
-  if (exp == 7) { return 10000000L; }
-  if (exp == 8) { return 100000000L; }
-  if (exp == 9) { return 1000000000L; }
-  if (exp == 10) { return 10000000000L; }
-  if (exp == 11) { return 100000000000L; }
-  if (exp == 12) { return 1000000000000L; }
-  if (exp == 13) { return 10000000000000L; }
-  if (exp == 14) { return 100000000000000L; }
-  if (exp == 15) { return 1000000000000000L; }
-  if (exp == 16) { return 10000000000000000L; }
+	static const uint64_t POW_TABLE[18] = {
+		1ULL,
+		10ULL,
+		100ULL,
+		1000ULL,
+		10000ULL,
 
-  return 100000000000000000L;
+		100000ULL,
+		1000000ULL,
+		10000000ULL,
+		100000000ULL,
+		1000000000ULL,
+
+		10000000000ULL,
+		100000000000ULL,
+		1000000000000ULL,
+		10000000000000ULL,
+		100000000000000ULL,
+
+		1000000000000000ULL,
+		10000000000000000ULL,
+		100000000000000000ULL
+	};
+	assert(exp <= 17);
+	assert(exp >= 0);
+	return POW_TABLE[exp];
 }
 
 static inline int to_chars_uint64(uint64_t output, uint32_t olength, char* const result)
@@ -553,32 +558,30 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 		/* Adapt the decimal digits to the desired precision */
 		if (precision < (uint32_t) -exp)
 		{
-			uint32_t digits_to_trim = -exp - precision;
-			if (digits_to_trim > olength)
+			int32_t digits_to_trim = -exp - precision;
+			if (digits_to_trim > (int32_t) olength)
 			{
 				output = 0;
 				exp = 0;
 			}
 			else
 			{
-				bool trimmed_something = false;
-				uint32_t lastDigit = 0;
-				while (digits_to_trim)
-				{
-					trimmed_something |= lastDigit != 0;
-					const uint64_t decDiv10 = div10(output);
-					lastDigit = ((uint32_t) output) - 10 * ((uint32_t) decDiv10);
-					output = decDiv10;
-					digits_to_trim--;
-					exp++;
-					olength--;
-				}
+				const uint64_t divisor = pow_10(digits_to_trim);
+				const uint64_t divisor_half = divisor / 2;
+				const uint64_t outputDiv = output / divisor;
+				const uint64_t remainder = output - outputDiv * divisor;
 
-				if ((lastDigit == 5 && (trimmed_something || output & 1)) ||
-					(lastDigit > 5))
+				output = outputDiv;
+				exp += digits_to_trim;
+
+				if (remainder > divisor_half || (remainder == divisor_half && (output & 1)))
 				{
 					output++;
 					olength = decimalLength17(output);
+				}
+				else
+				{
+					olength -= digits_to_trim;
 				}
 
 				while (output && output % 10 == 0)
