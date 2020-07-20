@@ -550,15 +550,66 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 	}
 	else
 	{
-		uint32_t nexp = -exp;
-		if (nexp < olength)
+		/* Adapt the decimal digits to the desired precision */
+		if (precision < (uint32_t) -exp)
+		{
+			uint32_t digits_to_trim = -exp - precision;
+			if (digits_to_trim > olength)
+			{
+				output = 0;
+				exp = 0;
+			}
+			else
+			{
+				bool trimmed_something = false;
+				uint32_t lastDigit = 0;
+				while (digits_to_trim)
+				{
+					trimmed_something |= lastDigit != 0;
+					const uint64_t decDiv10 = div10(output);
+					lastDigit = ((uint32_t) output) - 10 * ((uint32_t) decDiv10);
+					output = decDiv10;
+					digits_to_trim--;
+					exp++;
+					olength--;
+				}
+
+				if ((lastDigit == 5 && (trimmed_something || output & 1)) ||
+					(lastDigit > 5))
+				{
+					output++;
+					olength = decimalLength17(output);
+				}
+
+				while (output && output % 10 == 0)
+				{
+					output = div10(output);
+					exp++;
+					olength--;
+				}
+			}
+		}
+
+		int32_t nexp = -exp;
+		if (exp >= 0)
+		{
+			integer_part = output;
+			integer_part_length = olength;
+			trailing_integer_zeros = exp;
+			decimal_part = 0;
+		}
+		else if (nexp < (int32_t) olength)
 		{
 			uint64_t p = pow_10(nexp);
 			integer_part = output / p;
 			decimal_part = output % p;
 			integer_part_length = olength - nexp;
-			decimal_part_length = decimalLength17(decimal_part);
-			leading_decimal_zeros = olength - integer_part_length - decimal_part_length;
+			decimal_part_length = olength - integer_part_length;
+			if (decimal_part < pow_10(decimal_part_length - 1))
+			{
+				decimal_part_length = decimalLength17(decimal_part);
+				leading_decimal_zeros = olength - integer_part_length - decimal_part_length;
+			}
 		}
 		else
 		{
@@ -566,86 +617,6 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 			decimal_part = output;
 			decimal_part_length = olength;
 			leading_decimal_zeros = nexp - olength;
-		}
-
-		/* Round the decimal part according to the precision */
-		if (decimal_part && precision < (decimal_part_length + leading_decimal_zeros))
-		{
-			if (precision < leading_decimal_zeros)
-			{
-				decimal_part = 0;
-			}
-			else
-			{
-				/* TODO: Improve this */
-				uint32_t digits_to_trim = decimal_part_length - (precision - leading_decimal_zeros);
-				uint32_t lastDigit = 0;
-				bool trimmed_something = false;
-				while (digits_to_trim && decimal_part)
-				{
-					trimmed_something |= lastDigit != 0;
-					const uint64_t decDiv10 = div10(decimal_part);
-					lastDigit = ((uint32_t) decimal_part) - 10 * ((uint32_t) decDiv10);
-					decimal_part = decDiv10;
-					digits_to_trim--;
-					decimal_part_length--;
-				}
-
-				if (lastDigit >= 5)
-				{
-					if (decimal_part)
-					{
-						if (trimmed_something || lastDigit != 5 || decimal_part & 1)
-						{
-							uint32_t decimal_part_length_old = decimal_part_length;
-							decimal_part++;
-							decimal_part_length = decimalLength17(decimal_part);
-							if (decimal_part_length != decimal_part_length_old)
-							{
-								if (leading_decimal_zeros)
-								{
-									leading_decimal_zeros--;
-								}
-								else
-								{
-									decimal_part = 0;
-									integer_part++;
-									integer_part_length = decimalLength17(integer_part);
-								}
-							}
-						}
-					}
-					else
-					{
-						if (leading_decimal_zeros)
-						{
-							if (lastDigit != 5)
-							{
-								leading_decimal_zeros--;
-								decimal_part = 1;
-								decimal_part_length = 1;
-							}
-						}
-						else
-						{
-							if (lastDigit != 5 || integer_part & 1)
-							{
-								integer_part++;
-								integer_part_length = decimalLength17(integer_part);
-							}
-						}
-					}
-				}
-
-				if (decimal_part)
-				{
-					while (decimal_part % 10 == 0)
-					{
-						decimal_part = div10(decimal_part);
-						decimal_part_length--;
-					}
-				}
-			}
 		}
 	}
 
