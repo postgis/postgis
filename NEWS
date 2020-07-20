@@ -2,6 +2,23 @@ PostGIS 3.1.0beta1
 2020/xx/xx
 Only tickets not included in 3.1.0alpha2
 
+* New features *
+  -
+
+* Enhancements *
+  - #4660, Changes in double / coordinate printing (Raúl Marín)
+        - Use the shortest representation (enough to guarantee roundtrip).
+        - Uses scientific notation for absolute numbers smaller than 1e-8.
+          The previous behaviour was to output 0 for absolute values smaller than
+          1e-12 and fixed notation for anything bigger than that.
+        - Uses scientific notation for absolute numbers greater than 1e+15 (same behaviour).
+        - The precision parameter now also affects the scientific notation (before it was fixed [5-8]).
+        - All output functions now respect the requested precision (without any limits).
+        - The default precision is the same (9 for GeoJSON, 15 for everything else).
+
+* Bug fixes *
+  -
+
 PostGIS 3.1.0alpha2
 2020/07/18
 
