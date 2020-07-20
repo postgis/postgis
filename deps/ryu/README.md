@@ -20,111 +20,24 @@ Ryu Printf implements %f and %e formatting in a way that should be drop-in compa
 
 The C implementation of Ryu comes from the ryu/ directory in the git repostitory (https://github.com/ulfjack/ryu).
 
-We've only copied the necessary files, that is `d2fixed.c` and its headers. It is integrated in the project by generating a static library, libryu.la.
+We've only copied the necessary files, that is `d2s.c` and its headers. It is integrated in the project by generating a static library, libryu.la.
 
 
 ### Main considerations about the library
 
 The library has one single function to connect to liblwgeom, lwprint_double, which matches the behaviour as closely as possible to the previous output, based on printf. We only use 2 functions from ryu:
 
-  - d2fixed_buffered_n: Prints a double with decimal notation.
-  - d2exp_buffered_n: Prints a double with exponential notation.
+  - d2sfixed_buffered_n: Prints a double with decimal notation.
+  - d2sexp_buffered_n: Prints a double with exponential notation.
 
-To speed up the removal of trailing zeros, extra code has been added to ryu itself since it already had the information necessary to do it. It has been proposed (https://github.com/ulfjack/ryu/issues/142), but it isn't included upstream yet. The full changediff is:
+Both functions have been heavily modified to support a new precision parameter that limits the amount of digits that are included after the floating point. This precision parameter affects both the scientific and fixed notation and respects proper rounding (round to nearest, ties to even).
 
-```diff
-diff --git a/ryu/d2fixed.c b/ryu/d2fixed.c
-index b008dab..3bcc22f 100644
---- a/ryu/d2fixed.c
-+++ b/ryu/d2fixed.c
-@@ -420,7 +420,8 @@ int d2fixed_buffered_n(double d, uint32_t precision, char* result) {
-   if (!nonzero) {
-     result[index++] = '0';
-   }
--  if (precision > 0) {
-+  const bool printDecimalPoint = precision > 0;
-+  if (printDecimalPoint) {
-     result[index++] = '.';
-   }
- #ifdef RYU_DEBUG
-@@ -532,6 +533,18 @@ int d2fixed_buffered_n(double d, uint32_t precision, char* result) {
-     memset(result + index, '0', precision);
-     index += precision;
-   }
-+
-+#if RYU_NO_TRAILING_ZEROS
-+  if (printDecimalPoint) {
-+    while (result[index - 1] == '0') {
-+      index--;
-+    }
-+    if (result[index - 1] == '.') {
-+      index--;
-+    }
-+  }
-+#endif
-+
-   return index;
- }
-
-@@ -771,6 +784,18 @@ int d2exp_buffered_n(double d, uint32_t precision, char* result) {
-       }
-     }
-   }
-+
-+#if RYU_NO_TRAILING_ZEROS
-+  if (printDecimalPoint) {
-+    while (result[index - 1] == '0') {
-+      index--;
-+    }
-+    if (result[index - 1] == '.') {
-+      index--;
-+    }
-+  }
-+#endif
-+
-   result[index++] = 'e';
-   if (exp < 0) {
-     result[index++] = '-';
-```
-
-It is hidden behind `RYU_NO_TRAILING_ZEROS` so that macro has to be passed during compilation.
-
-And to avoid ubsan warnings, the following changes have been introduced:
-```diff
-diff --git a/deps/ryu/d2fixed.c b/deps/ryu/d2fixed.c
-index 3bcc22f48..b23ca17c4 100644
---- a/deps/ryu/d2fixed.c
-+++ b/deps/ryu/d2fixed.c
-@@ -402,10 +402,10 @@ int d2fixed_buffered_n(double d, uint32_t precision, char* result) {
-     printf("len=%d\n", len);
- #endif
-     for (int32_t i = len - 1; i >= 0; --i) {
--      const uint32_t j = p10bits - e2;
-+      const int32_t j = ((int32_t) p10bits) - e2;
-       // Temporary: j is usually around 128, and by shifting a bit, we push it to 128 or above, which is
-       // a slightly faster code path in mulShift_mod1e9. Instead, we can just increase the multipliers.
--      const uint32_t digits = mulShift_mod1e9(m2 << 8, POW10_SPLIT[POW10_OFFSET[idx] + i], (int32_t) (j + 8));
-+      const uint32_t digits = mulShift_mod1e9(m2 << 8, POW10_SPLIT[POW10_OFFSET[idx] + i], j + 8);
-       if (nonzero) {
-         append_nine_digits(digits, result + index);
-         index += 9;
-@@ -630,10 +630,10 @@ int d2exp_buffered_n(double d, uint32_t precision, char* result) {
-     printf("len=%d\n", len);
- #endif
-     for (int32_t i = len - 1; i >= 0; --i) {
--      const uint32_t j = p10bits - e2;
-+      const int32_t j = ((int32_t) p10bits) - e2;
-       // Temporary: j is usually around 128, and by shifting a bit, we push it to 128 or above, which is
-       // a slightly faster code path in mulShift_mod1e9. Instead, we can just increase the multipliers.
--      digits = mulShift_mod1e9(m2 << 8, POW10_SPLIT[POW10_OFFSET[idx] + i], (int32_t) (j + 8));
-+      digits = mulShift_mod1e9(m2 << 8, POW10_SPLIT[POW10_OFFSET[idx] + i], j + 8);
-       if (printedDigits != 0) {
-         if (printedDigits + 9 > precision) {
-           availableDigits = 9;
-```
-
+The output has also been changed to match the old behaviour:
+- Uses "e+1" instead of E1.
+- Uses "e-1" instead of E-1.
+- Never outputs negative 0. It always returns "0".
 
 ### Dependency changelog
 
   - 2019-01-10 - [Ryu] Library extraction from https://github.com/ulfjack/ryu/tree/master/ryu. Added changes to remove trailing zeros from the output and minor changes to please ubsan.
-  - TODO: Update this
+  - 2020-07-20 - [Ryu] Switch from d2fixed/d2exp to d2sfixed/d2sexp, that is, using the shortest notation
