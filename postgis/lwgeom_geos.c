@@ -1524,17 +1524,20 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 		PG_RETURN_DATUM(PG_GETARG_DATUM(geom_idx));
 	}
 
-	lwgeom1 = lwgeom_from_gserialized(PG_GETARG_GSERIALIZED_P(geom_idx));
 	/* If bbox1 outside of bbox2, return empty */
 	if (!gbox_overlaps_2d(&bbox1, bbox2))
 	{
+		uint8_t type;
+		int32_t srid;
+		gserialized_datum_get_type_and_srid_p(PG_GETARG_DATUM(geom_idx), &type, &srid);
 		/* Get type and srid from datum */
-		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
+		lwresult = lwgeom_construct_empty(type, srid, 0, 0);
 		result = geometry_serialize(lwresult) ;
 		lwgeom_free(lwresult) ;
 		PG_RETURN_POINTER(result);
 	}
 
+	lwgeom1 = lwgeom_from_gserialized(PG_GETARG_GSERIALIZED_P(geom_idx));
 	lwresult = lwgeom_clip_by_rect(lwgeom1, bbox2->xmin, bbox2->ymin,
 	                               bbox2->xmax, bbox2->ymax);
 
