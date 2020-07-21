@@ -8,7 +8,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>2.0.0</xsl:variable>
+	<xsl:variable name='testversion'>3.1.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddTopoGeometryColumn DropTopoGeometryColumn CreateTopology</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
@@ -27,12 +27,12 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_topology_garden_log30</xsl:variable>
-	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
+	<xsl:variable name='var_logtable'>postgis_topology_garden_log31</xsl:variable>
+	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp()
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
-		
-	<!-- for queries that result data, we first log the sql in our log table and then use query_to_xml to output it as xml for easy storage 
+
+	<!-- for queries that result data, we first log the sql in our log table and then use query_to_xml to output it as xml for easy storage
 	    with this approach our run statement is always exactly the same -->
 	<xsl:variable name='var_logresultsasxml'>INSERT INTO <xsl:value-of select="$var_logtable" />_output(logid, log_output)
 				SELECT logid, query_to_xml(log_sql, false,false,'') As log_output
@@ -73,7 +73,7 @@
 FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))') ),
 	( ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))') )
 		)	As g(geom))</pgis:gset>
-		
+
 		<pgis:gset ID='POINTZ' GeometryType='POINTZ'>(SELECT ST_SetSRID(ST_MakePoint(i,j,k),4326) As the_geom
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(40,70, 20) j
@@ -88,18 +88,18 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 4
 		FROM generate_series(-10,50,20) As i
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
-			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>-->	
+			ORDER BY i, j, i+j+m, m, i*j*m)</pgis:gset>-->
 		<pgis:gset ID='POLYGONZ' GeometryType='POLYGONZ'>(SELECT geom  As the_geom
 FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.0771 42.3866 1,-71.0767 42.3872 1,-71.0767 42.3863 1,-71.0771 42.3866 1))') ),
 	( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.0775 42.386 2,-71.0773 42.3863 1.75,-71.0773 42.3859 1.75,-71.0775 42.386 2))') )
 		)	As g(geom))</pgis:gset>
-		
+
 		<pgis:gset ID='POLYGONZM' GeometryType='POLYGONZM'>(SELECT geom  As the_geom
 FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.0771 42.3866 1 2,-71.0767 42.3872 1 2.3,-71.0767 42.3863 1 2.3,-71.0771 42.3866 1 2))') ),
 	( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.0775 42.386 2 1.5,-71.0773 42.3863 1.75 1.5,-71.0773 42.3859 1.75 1.5,-71.0775 42.386 2 1.5))') )
 		)	As g(geom))</pgis:gset>
-	
-	
+
+
 <!-- MULTIs start here -->
 		<pgis:gset ID='MULTIPOINT' GeometryType='MULTIPOINT'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom
@@ -139,7 +139,7 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGON((-71.0771 42.3866 1 2,-71.0767
 FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.0822 42.3036 2,-71.082 42.3038 2,-71.0819 42.3037 2,-71.0821 42.3036 2)))') ),
 	( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.1261 42.2703 1,-71.1257 42.2703 1,-71.1257 42.2701 1,-71.126 42.2701 1,-71.1261 42.2702 1,-71.1261 42.2703 1)))') )
 		)	As g(geom))</pgis:gset>
-			
+
 
 		<pgis:gset ID='MULTIPOINTM' GeometryType='MULTIPOINTM'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_SetSRID(ST_MakePointM(i - 0.0821,j + 0.3036,m),4326) As the_geom
@@ -158,12 +158,12 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		<pgis:gset ID='MULTIPOLYGONM' GeometryType='MULTIPOLYGONM'>(
 			SELECT ST_GeomFromEWKT('SRID=4326;MULTIPOLYGONM(((0 0 2,10 0 1,10 10 -2,0 10 -5,0 0 -5),(5 5 6,7 5 6,7 7 6,5 7 10,5 5 -2)))')  As the_geom
 			)</pgis:gset>
-			
-	
+
+
 
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
-	
+
 
         <!-- We deal only with the reference chapter -->
         <xsl:template match="/">
@@ -186,7 +186,7 @@ SELECT '<xsl:value-of select="$log_label" />: Start Testing';
 			FROM (<xsl:value-of select="." />) As foo limit 1;
 	SELECT AddGeometryColumn('pgis_garden','the_geom_multi',ST_SRID(the_geom),GeometryType(ST_Multi(the_geom)),ST_CoordDim(the_geom))
 			FROM (<xsl:value-of select="." />) As foo limit 1;</xsl:variable>
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql)
 VALUES('<xsl:value-of select="$log_label" /> AddGeometryColumn','AddGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp(),
     '<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
 BEGIN;
@@ -202,7 +202,7 @@ BEGIN;
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> geometry index: End Testing <xsl:value-of select="@ID" />';
 
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start)
 VALUES('<xsl:value-of select="$log_label" /> insert data Geometry','insert data', '<xsl:value-of select="@ID" />', clock_timestamp());
 
 BEGIN;
@@ -210,28 +210,28 @@ BEGIN;
 	SELECT the_geom, ST_Multi(the_geom)
 	FROM (<xsl:value-of select="." />) As foo;
 	<xsl:value-of select="$var_logupdatesql" />
-COMMIT;	
-		
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+COMMIT;
+
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start)
 VALUES('<xsl:value-of select="$log_label" /> UpdateGeometrySRID','UpdateGeometrySRID', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 BEGIN;
 	SELECT UpdateGeometrySRID('pgis_garden', 'the_geom', 4269);
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start)
 VALUES('<xsl:value-of select="$log_label" /> vacuum analyze Geometry','vacuum analyze Geometry', '<xsl:value-of select="@ID" />', clock_timestamp());
 VACUUM ANALYZE pgis_garden;
 <xsl:value-of select="$var_logupdatesql" />
 
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start)
 VALUES('<xsl:value-of select="$log_label" /> DropGeometryColumn','DropGeometryColumn', '<xsl:value-of select="@GeometryType" />', clock_timestamp());
 
 BEGIN;
 	SELECT DropGeometryColumn ('pgis_garden','the_geom');
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) 
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start)
 VALUES('<xsl:value-of select="$log_label" /> DropGeometryTable','DropGeometryTable', '<xsl:value-of select="@ID" />', clock_timestamp());
 
 BEGIN;
@@ -298,7 +298,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 		<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geography')">
-			  INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql) 
+			  INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" /> Geography <xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@ID" />', clock_timestamp(),
 			  	'<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT ST_AsEWKT(foo1.the_geom) as ewktgeog1, ST_AsEWKT(foo2.the_geom) as ewktgeog2, geography(foo1.the_geom) <xsl:value-of select="$fnname" /> geography(foo2.the_geom) As geog1_op_geog2
@@ -315,7 +315,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 			</xsl:when>
 			<xsl:otherwise>
 			SELECT 'Geometry <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1id" />, <xsl:value-of select="@ID" />';
-			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql) 
+			 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" /> Geometry <xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@ID" />', clock_timestamp(),
 			  	'<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT ST_AsEWKT(foo1.the_geom) as ewktgeom1, ST_AsEWKT(foo2.the_geom) as ewktgeom2, foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom As geom1_op_geom2
@@ -368,14 +368,14 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				<xsl:choose>
 <!--Test functions that take no arguments and take no geometries/geographies -->
 	<xsl:when test="($numparamgeoms = '0' and $numparamgeogs = '0') and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, log_sql) 
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" />','<xsl:value-of select="$fnname" />', clock_timestamp(),
 			  	    '<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />) As output;</xsl:with-param></xsl:call-template>');
-	
+
 BEGIN;
     <xsl:value-of select="$var_logresultsasxml" />
-	<xsl:value-of select="$var_logupdatesql" />	
+	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
@@ -385,7 +385,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing';
 
-	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
+	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" />  <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text>','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@ID" />', clock_timestamp(),
 			  	'<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) As result
@@ -393,9 +393,9 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 				LIMIT 3;</xsl:with-param></xsl:call-template>');
 BEGIN;
     <xsl:value-of select="$var_logresultsasxml" />
-	<xsl:value-of select="$var_logupdatesql" />	
-COMMIT;		  
-			SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: End Testing';	
+	<xsl:value-of select="$var_logupdatesql" />
+COMMIT;
+			SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: End Testing';
 		</xsl:for-each>
 	</xsl:when>
 
@@ -410,7 +410,7 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 			<xsl:choose>
 			  <xsl:when test="($numparamgeogs > '0' or $numparamgeoms > '0')">
-	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2,  log_start, log_sql) 
+	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2,  log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text> <xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />','<xsl:value-of select="$geom1id" />', '<xsl:value-of select="@ID" />', clock_timestamp(),
 			  			'<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) As result, ST_AsText(foo1.the_geom) As ref1_geom, ST_AsText(foo2.the_geom) As ref2_geom
@@ -423,7 +423,7 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 			COMMIT;
 			</xsl:when>
 			  <xsl:otherwise>
-			  	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql) 
+			  	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, g2, log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" /> Other <xsl:text> </xsl:text><xsl:value-of select="$geom1id" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="$geom1id" />','<xsl:value-of select="@DI" />', clock_timestamp(),
 			  	'<xsl:call-template name="escapesinglequotes">
  <xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)</xsl:with-param></xsl:call-template>');
@@ -435,7 +435,7 @@ SELECT '<xsl:value-of select="$fnname" /> <xsl:text> </xsl:text><xsl:value-of se
 				COMMIT;
 			  </xsl:otherwise>
 			</xsl:choose>
-		
+
 	SELECT '<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnargs" />) <xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="$geom1id" />, <xsl:value-of select="@GeometryType" />';
 		<xsl:text>
 
@@ -564,7 +564,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
-	
+
 	<!-- copied from http://www.thedumbterminal.co.uk/php/knowledgebase/?action=view&id=94 -->
     <xsl:template name="escapesinglequotes">
      <xsl:param name="arg1"/>
