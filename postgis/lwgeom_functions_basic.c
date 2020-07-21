@@ -2899,48 +2899,55 @@ Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_BoundingDiagonal);
 Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom_in = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *geom_out;
 	bool fits = PG_GETARG_BOOL(1);
-	LWGEOM *lwgeom_in = lwgeom_from_gserialized(geom_in);
-	LWGEOM *lwgeom_out;
-	const GBOX *gbox;
-	int hasz = FLAGS_GET_Z(lwgeom_in->flags);
-	int hasm = FLAGS_GET_M(lwgeom_in->flags);
-	int32_t srid = lwgeom_in->srid;
+	LWGEOM *lwgeom_out = NULL;
+
+	GBOX gbox = {0};
+	int hasz;
+	int hasm;
+	int32_t srid;
+
 	POINT4D pt;
 	POINTARRAY *pa;
 
 	if (fits)
 	{
-		/* unregister any cached bbox to ensure it's recomputed */
-		lwgeom_in->bbox = NULL;
-	}
-
-	gbox = lwgeom_get_bbox(lwgeom_in);
-
-	if (!gbox)
-	{
-		lwgeom_out = lwgeom_construct_empty(LINETYPE, srid, hasz, hasm);
+		GSERIALIZED *geom_in = PG_GETARG_GSERIALIZED_P(0);
+		LWGEOM *lwgeom_in = lwgeom_from_gserialized(geom_in);
+		lwgeom_calculate_gbox(lwgeom_in, &gbox);
+		hasz = FLAGS_GET_Z(lwgeom_in->flags);
+		hasm = FLAGS_GET_M(lwgeom_in->flags);
+		srid = lwgeom_in->srid;
 	}
 	else
 	{
+		uint8_t type;
+		lwflags_t flags;
+		int res = gserialized_datum_get_internals_p(PG_GETARG_DATUM(0), &gbox, &flags, &type, &srid);
+		hasz = FLAGS_GET_Z(flags);
+		hasm = FLAGS_GET_M(flags);
+		if (res == LW_FAILURE)
+		{
+			lwgeom_out = lwgeom_construct_empty(LINETYPE, srid, hasz, hasm);
+		}
+	}
+
+	if (!lwgeom_out)
+	{
 		pa = ptarray_construct_empty(hasz, hasm, 2);
-		pt.x = gbox->xmin;
-		pt.y = gbox->ymin;
-		pt.z = gbox->zmin;
-		pt.m = gbox->mmin;
+		pt.x = gbox.xmin;
+		pt.y = gbox.ymin;
+		pt.z = gbox.zmin;
+		pt.m = gbox.mmin;
 		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = gbox->xmax;
-		pt.y = gbox->ymax;
-		pt.z = gbox->zmax;
-		pt.m = gbox->mmax;
+		pt.x = gbox.xmax;
+		pt.y = gbox.ymax;
+		pt.z = gbox.zmax;
+		pt.m = gbox.mmax;
 		ptarray_append_point(pa, &pt, LW_TRUE);
 		lwgeom_out = lwline_as_lwgeom(lwline_construct(srid, NULL, pa));
 	}
-
-	lwgeom_free(lwgeom_in);
-	PG_FREE_IF_COPY(geom_in, 0);
 
 	geom_out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);

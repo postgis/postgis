@@ -1509,8 +1509,9 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	GBOX *bbox2;
 	uint8_t type;
 	int32_t srid;
+	lwflags_t flags;
 
-	if (!gserialized_datum_get_internals_p(PG_GETARG_DATUM(geom_idx), &bbox1, &type, &srid))
+	if (!gserialized_datum_get_internals_p(PG_GETARG_DATUM(geom_idx), &bbox1, &flags, &type, &srid))
 	{
 		/* empty clips to empty, no matter rect */
 		PG_RETURN_DATUM(PG_GETARG_DATUM(geom_idx));

@@ -185,7 +185,7 @@ void gserialized_error_if_srid_mismatch_reference(const GSERIALIZED *g1, const i
 * Fails on empty.
 */
 int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
-int gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, uint8_t *type, int32_t *srid);
+int gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, lwflags_t *flags, uint8_t *type, int32_t *srid);
 
 /* PG-exposed */
 Datum BOX2D_same(PG_FUNCTION_ARGS);
