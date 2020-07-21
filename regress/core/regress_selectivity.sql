@@ -2154,6 +2154,8 @@ create table regular_overdots as
 -- Generate the stats
 analyze regular_overdots;
 
+Select * from pg_stats where tablename = 'regular_overdots' ORDER BY attname;
+
 -- Baseline info
 select 'selectivity_00', count(*) from regular_overdots;
 
