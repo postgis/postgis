@@ -66,6 +66,11 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "access/gist.h"
 #include "access/gist_private.h"
 #include "access/gistscan.h"
+#if PG_VERSION_NUM < 130000
+#include "access/tuptoaster.h" /* For toast_raw_datum_size */
+#else
+#include "access/detoast.h" /* For toast_raw_datum_size */
+#endif
 #include "utils/datum.h"
 #include "access/heapam.h"
 #include "catalog/index.h"
@@ -1435,11 +1440,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	for ( i = 0; i < sample_rows; i++ )
 	{
 		Datum datum;
-		GSERIALIZED *geom;
 		GBOX gbox;
 		ND_BOX *nd_box;
 		bool is_null;
-		bool is_copy;
 
 		datum = fetchfunc(stats, i, &is_null);
 
@@ -1452,9 +1455,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		}
 
 		/* Read the bounds from the gserialized. */
-		geom = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
-		is_copy = VARATT_IS_EXTENDED(datum);
-		if ( LW_FAILURE == gserialized_get_gbox_p(geom, &gbox) )
+		if (LW_FAILURE == gserialized_datum_get_gbox_p(datum, &gbox))
 		{
 			/* Skip empties too. */
 			POSTGIS_DEBUGF(3, " skipped empty geometry %d", i);
@@ -1494,7 +1495,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		nd_box_merge(nd_box, &sample_extent);
 
 		/* How many bytes does this sample use? */
-		total_width += VARSIZE(geom);
+		total_width += toast_raw_datum_size(datum);
 
 		/* Add bounds coordinates to sums for stddev calculation */
 		for ( d = 0; d < ndims; d++ )
@@ -1505,10 +1506,6 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 
 		/* Increment our "good feature" count */
 		notnull_cnt++;
-
-		/* Free up memory if our sample geometry was copied */
-		if ( is_copy )
-			pfree(geom);
 
 		/* Give backend a chance of interrupting us */
 		vacuum_delay_point();
