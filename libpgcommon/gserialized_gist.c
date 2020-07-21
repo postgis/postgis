@@ -67,12 +67,6 @@ GIDX* gidx_new(int ndims)
 	return g;
 }
 
-static lwflags_t
-gserialized_datum_get_flags(Datum gsdatum)
-{
-	GSERIALIZED *gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
-	return gserialized_get_lwflags(gpart);
-}
 
 /* Convert a double-based GBOX into a float-based GIDX,
    ensuring the float box is larger than the double box */
@@ -140,36 +134,6 @@ void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
 	}
 }
 
-
-/**
-* Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
-* of the memory) return the gbox extents. Does not deserialize the geometry,
-* but <em>WARNING</em> returns a slightly larger bounding box than actually
-* encompasses the objects. For geography objects returns geocentric bounding
-* box, for geometry objects returns cartesian bounding box.
-*/
-int
-gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
-{
-	char gboxmem[GIDX_MAX_SIZE];
-	GIDX *gidx = (GIDX*)gboxmem;
-
-	if( LW_FAILURE == gserialized_datum_get_gidx_p(gsdatum, gidx) )
-		return LW_FAILURE;
-
-	gbox->flags = gserialized_datum_get_flags(gsdatum);
-	gbox_from_gidx(gidx, gbox, gbox->flags);
-
-	return LW_SUCCESS;
-}
-
-void
-gserialized_datum_get_type_and_srid_p(Datum gsdatum, uint8_t *type, int32_t *srid)
-{
-	GSERIALIZED *gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
-	*type = gserialized_get_type(gpart);
-	*srid = gserialized_get_srid(gpart);
-}
 
 /**
 * Peak into a #GSERIALIZED datum to find the bounding box. If the

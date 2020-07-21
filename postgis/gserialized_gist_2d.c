@@ -439,20 +439,16 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 	return FLT_MAX;
 }
 
-
 /**
-* Peak into a #GSERIALIZED datum to find the bounding box. If the
-* box is there, copy it out and return it. If not, calculate the box from the
-* full object and return the box based on that. If no box is available,
-* return #LW_FAILURE, otherwise #LW_SUCCESS.
-*/
+ * Peak into a #GSERIALIZED datum to find its bounding box and some other metadata. If the box is there, copy it out and
+ * return it. If not, calculate the box from the full object and return the box based on that. If no box is available,
+ * return #LW_FAILURE, otherwise #LW_SUCCESS.
+ */
 int
-gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
+gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, uint8_t *type, int32_t *srid)
 {
 	GSERIALIZED *gpart;
 	int result = LW_SUCCESS;
-
-	POSTGIS_DEBUG(4, "entered function");
 
 	/*
 	** Because geometry is declared as "storage = main" anything large
@@ -465,50 +461,48 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	** which makes slicing worthwhile.
 	*/
 	gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
-
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->gflags);
-
-	/* Do we even have a serialized bounding box? */
-	if (gserialized_has_bbox(gpart))
+	if (!gserialized_has_bbox(gpart) && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
 	{
-		/* Yes! Copy it out into the box! */
-		size_t box_ndims;
-		const float *f = gserialized_get_float_box_p(gpart, &box_ndims);
-
-		POSTGIS_DEBUG(4, "copying box out of serialization");
-		memcpy(box2df, f, sizeof(BOX2DF));
-		result = LW_SUCCESS;
-	}
-	else
-	{
-		/* No, we need to calculate it from the full object. */
-		GBOX gbox;
-		gbox_init(&gbox);
-
-		/* If we haven't, read the whole gserialized object */
-		if (LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
-		{
-			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
-			gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
-		}
-
-		result = gserialized_get_gbox_p(gpart, &gbox);
-		if ( result == LW_SUCCESS )
-		{
-			result = box2df_from_gbox_p(&gbox, box2df);
-		}
-		else
-		{
-			POSTGIS_DEBUG(4, "could not calculate bbox");
-		}
+		/* The headers don't contain a bbox and there is the object is larger than what we retrieved, so
+		 * we now detoast it completely */
+		POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+		gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
 	}
 
+	result = gserialized_get_gbox_p(gpart, gbox);
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
-	POSTGIS_DEBUGF(4, "result = %d, got box2df %s", result, result == LW_SUCCESS ? box2df_to_string(box2df) : "NONE");
+
+	*srid = gserialized_get_srid(gpart);
+	*type = gserialized_get_type(gpart);
 
 	return result;
 }
 
+/**
+ * Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
+ * of the memory) return the gbox extents. Does not deserialize the geometry,
+ * but <em>WARNING</em> returns a slightly larger bounding box than actually
+ * encompasses the objects. For geography objects returns geocentric bounding
+ * box, for geometry objects returns cartesian bounding box.
+ */
+int
+gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
+{
+	uint8_t type;
+	int32_t srid;
+
+	return gserialized_datum_get_internals_p(gsdatum, gbox, &type, &srid);
+}
+
+int
+gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
+{
+	GBOX gbox;
+	if (gserialized_datum_get_gbox_p(gsdatum, &gbox) == LW_FAILURE)
+		return LW_FAILURE;
+
+	return box2df_from_gbox_p(&gbox, box2df);
+}
 
 /**
 * Support function. Based on two datums return true if
