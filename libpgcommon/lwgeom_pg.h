@@ -186,6 +186,11 @@ void gserialized_error_if_srid_mismatch_reference(const GSERIALIZED *g1, const i
 */
 int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
 
+/**
+ * Pull the type and srid of a datum (containing a GSERIALIZEDs)
+ */
+void gserialized_datum_get_type_and_srid_p(Datum gsdatum, uint8_t *type, int32_t *srid);
+
 /* PG-exposed */
 Datum BOX2D_same(PG_FUNCTION_ARGS);
 Datum BOX2D_overlap(PG_FUNCTION_ARGS);

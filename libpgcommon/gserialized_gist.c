@@ -163,6 +163,13 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 	return LW_SUCCESS;
 }
 
+void
+gserialized_datum_get_type_and_srid_p(Datum gsdatum, uint8_t *type, int32_t *srid)
+{
+	GSERIALIZED *gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	*type = gserialized_get_type(gpart);
+	*srid = gserialized_get_srid(gpart);
+}
 
 /**
 * Peak into a #GSERIALIZED datum to find the bounding box. If the
@@ -173,16 +180,7 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 int
 gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 {
-	GSERIALIZED *gpart;
-
-	POSTGIS_DEBUG(4, "entered function");
-
-	/*
-	** The most info we need is the 8 bytes of serialized header plus the 32 bytes
-	** of floats necessary to hold the 8 floats of the largest XYZM index
-	** bounding box, so 40 bytes.
-	*/
-	gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	GSERIALIZED *gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
 
 	/* Do we even have a serialized bounding box? */
 	if (gserialized_has_bbox(gpart))
