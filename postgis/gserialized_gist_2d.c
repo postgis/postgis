@@ -456,7 +456,7 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
  * return #LW_FAILURE, otherwise #LW_SUCCESS.
  */
 int
-gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, uint8_t *type, int32_t *srid)
+gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, lwflags_t *flags, uint8_t *type, int32_t *srid)
 {
 	GSERIALIZED *gpart;
 	int result = LW_SUCCESS;
@@ -481,11 +481,11 @@ gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, uint8_t *type, int3
 	}
 
 	result = gserialized_get_gbox_p(gpart, gbox);
-	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
-
+	*flags = gserialized_get_lwflags(gpart);
 	*srid = gserialized_get_srid(gpart);
 	*type = gserialized_get_type(gpart);
 
+	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
 	return result;
 }
 
@@ -501,8 +501,9 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 {
 	uint8_t type;
 	int32_t srid;
+	lwflags_t flags;
 
-	return gserialized_datum_get_internals_p(gsdatum, gbox, &type, &srid);
+	return gserialized_datum_get_internals_p(gsdatum, gbox, &flags, &type, &srid);
 }
 
 int
