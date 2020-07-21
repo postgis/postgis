@@ -676,19 +676,14 @@ PG_FUNCTION_INFO_V1(geography_point_outside);
 Datum geography_point_outside(PG_FUNCTION_ARGS)
 {
 	GBOX gbox;
-	GSERIALIZED *g = NULL;
-	GSERIALIZED *g_out = NULL;
 	LWGEOM *lwpoint = NULL;
 	POINT2D pt;
 
-	/* Get our geometry object loaded into memory. */
-	g = PG_GETARG_GSERIALIZED_P(0);
-
 	/* We need the bounding box to get an outside point for area algorithm */
-	if ( gserialized_get_gbox_p(g, &gbox) == LW_FAILURE )
+	if (gserialized_datum_get_gbox_p(PG_GETARG_DATUM(0), &gbox) == LW_FAILURE)
 	{
-		POSTGIS_DEBUG(4,"gserialized_get_gbox_p returned LW_FAILURE");
-		elog(ERROR, "Error in gserialized_get_gbox_p calculation.");
+		POSTGIS_DEBUG(4, "gserialized_datum_get_gbox_p returned LW_FAILURE");
+		elog(ERROR, "Error in gserialized_datum_get_gbox_p calculation.");
 		PG_RETURN_NULL();
 	}
 	POSTGIS_DEBUGF(4, "got gbox %s", gbox_to_string(&gbox));
@@ -698,11 +693,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 
 	lwpoint = (LWGEOM*) lwpoint_make2d(4326, pt.x, pt.y);
 
-	g_out = geography_serialize(lwpoint);
-
-	PG_FREE_IF_COPY(g, 0);
-	PG_RETURN_POINTER(g_out);
-
+	PG_RETURN_POINTER(geography_serialize(lwpoint));
 }
 
 /*
