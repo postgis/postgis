@@ -1507,8 +1507,10 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom1, *lwresult ;
 	GBOX bbox1 = {0};
 	GBOX *bbox2;
+	uint8_t type;
+	int32_t srid;
 
-	if (!gserialized_datum_get_gbox_p(PG_GETARG_DATUM(geom_idx), &bbox1))
+	if (!gserialized_datum_get_internals_p(PG_GETARG_DATUM(geom_idx), &bbox1, &type, &srid))
 	{
 		/* empty clips to empty, no matter rect */
 		PG_RETURN_DATUM(PG_GETARG_DATUM(geom_idx));
@@ -1527,9 +1529,6 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	/* If bbox1 outside of bbox2, return empty */
 	if (!gbox_overlaps_2d(&bbox1, bbox2))
 	{
-		uint8_t type;
-		int32_t srid;
-		gserialized_datum_get_type_and_srid_p(PG_GETARG_DATUM(geom_idx), &type, &srid);
 		/* Get type and srid from datum */
 		lwresult = lwgeom_construct_empty(type, srid, 0, 0);
 		result = geometry_serialize(lwresult) ;

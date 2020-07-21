@@ -100,8 +100,9 @@ int box2df_to_gbox_p(BOX2DF *a, GBOX *box);
 ** Fast functions for pulling boxes out of serializations.
 */
 
-/* Pull out the #GIDX bounding box with a absolute minimum system overhead */
+/* Pull out the #GIDX bounding box and flags with a absolute minimum system overhead */
 int gserialized_datum_get_gidx_p(Datum gserialized_datum, GIDX *gidx);
+int gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df);
 
 bool box2df_contains(const BOX2DF *a, const BOX2DF *b);
 void box2df_set_empty(BOX2DF *a);
@@ -123,4 +124,3 @@ void gidx_set_unknown(GIDX *a);
 bool gidx_overlaps(GIDX *a, GIDX *b);
 bool gidx_equals(GIDX *a, GIDX *b);
 bool gidx_contains(GIDX *a, GIDX *b);
-int gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df);
