@@ -410,46 +410,44 @@ Datum BOX2D_to_BOX3D(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(BOX2D_combine);
 Datum BOX2D_combine(PG_FUNCTION_ARGS)
 {
-	Pointer box2d_ptr = PG_GETARG_POINTER(0);
-	Pointer geom_ptr = PG_GETARG_POINTER(1);
+	static const uint32_t box2d_idx = 0;
+	static const uint32_t geom_idx = 1;
 	GBOX *a,*b;
-	GSERIALIZED *lwgeom;
 	GBOX box, *result;
 
-	if  ( (box2d_ptr == NULL) && (geom_ptr == NULL) )
+	if (PG_ARGISNULL(box2d_idx) && PG_ARGISNULL(geom_idx))
 	{
 		PG_RETURN_NULL(); /* combine_box2d(null,null) => null */
 	}
 
 	result = (GBOX *)palloc(sizeof(GBOX));
 
-	if (box2d_ptr == NULL)
+	if (PG_ARGISNULL(box2d_idx))
 	{
-		lwgeom = PG_GETARG_GSERIALIZED_P(1);
 		/* empty geom would make getbox2d_p return NULL */
-		if ( ! gserialized_get_gbox_p(lwgeom, &box) ) PG_RETURN_NULL();
+		if (!gserialized_datum_get_gbox_p(PG_GETARG_DATUM(geom_idx), &box))
+			PG_RETURN_NULL();
 		memcpy(result, &box, sizeof(GBOX));
 		PG_RETURN_POINTER(result);
 	}
 
 	/* combine_bbox(BOX3D, null) => BOX3D */
-	if (geom_ptr == NULL)
+	if (PG_ARGISNULL(geom_idx))
 	{
-		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(GBOX));
+		memcpy(result, (char *)PG_GETARG_DATUM(box2d_idx), sizeof(GBOX));
 		PG_RETURN_POINTER(result);
 	}
 
 	/*combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol) */
 
-	lwgeom = PG_GETARG_GSERIALIZED_P(1);
-	if ( ! gserialized_get_gbox_p(lwgeom, &box) )
+	if (!gserialized_datum_get_gbox_p(PG_GETARG_DATUM(geom_idx), &box))
 	{
 		/* must be the empty geom */
-		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(GBOX));
+		memcpy(result, (char *)PG_GETARG_DATUM(box2d_idx), sizeof(GBOX));
 		PG_RETURN_POINTER(result);
 	}
 
-	a = (GBOX *)PG_GETARG_DATUM(0);
+	a = (GBOX *)PG_GETARG_DATUM(box2d_idx);
 	b = &box;
 
 	result->xmax = Max(a->xmax, b->xmax);
