@@ -1501,55 +1501,49 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClipByBox2d);
 Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
+	static const uint32_t geom_idx = 0;
+	static const uint32_t box2d_idx = 1;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult ;
-	const GBOX *bbox1;
+	GBOX bbox1 = {0};
 	GBOX *bbox2;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom1 = lwgeom_from_gserialized(geom1) ;
-
-	bbox1 = lwgeom_get_bbox(lwgeom1);
-	if ( ! bbox1 )
+	if (!gserialized_datum_get_gbox_p(PG_GETARG_DATUM(geom_idx), &bbox1))
 	{
 		/* empty clips to empty, no matter rect */
-		lwgeom_free(lwgeom1);
-		PG_RETURN_POINTER(geom1);
+		PG_RETURN_DATUM(PG_GETARG_DATUM(geom_idx));
 	}
 
 	/* WARNING: this is really a BOX2DF, use only xmin and ymin fields */
-	bbox2 = (GBOX *)PG_GETARG_POINTER(1);
+	bbox2 = (GBOX *)PG_GETARG_POINTER(box2d_idx);
 	bbox2->flags = 0;
 
-	/* If bbox1 outside of bbox2, return empty */
-	if ( ! gbox_overlaps_2d(bbox1, bbox2) )
+	/* if bbox1 is covered by bbox2, return lwgeom1 */
+	if (gbox_contains_2d(bbox2, &bbox1))
 	{
+		PG_RETURN_DATUM(PG_GETARG_DATUM(geom_idx));
+	}
+
+	lwgeom1 = lwgeom_from_gserialized(PG_GETARG_GSERIALIZED_P(geom_idx));
+	/* If bbox1 outside of bbox2, return empty */
+	if (!gbox_overlaps_2d(&bbox1, bbox2))
+	{
+		/* Get type and srid from datum */
 		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
-		lwgeom_free(lwgeom1);
-		PG_FREE_IF_COPY(geom1, 0);
 		result = geometry_serialize(lwresult) ;
 		lwgeom_free(lwresult) ;
 		PG_RETURN_POINTER(result);
-	}
-
-	/* if bbox1 is covered by bbox2, return lwgeom1 */
-	if ( gbox_contains_2d(bbox2, bbox1) )
-	{
-		lwgeom_free(lwgeom1);
-		PG_RETURN_POINTER(geom1);
 	}
 
 	lwresult = lwgeom_clip_by_rect(lwgeom1, bbox2->xmin, bbox2->ymin,
 	                               bbox2->xmax, bbox2->ymax);
 
 	lwgeom_free(lwgeom1);
-	PG_FREE_IF_COPY(geom1, 0);
 
-	if (!lwresult) PG_RETURN_NULL();
+	if (!lwresult)
+		PG_RETURN_NULL();
 
 	result = geometry_serialize(lwresult) ;
-	lwgeom_free(lwresult) ;
 	PG_RETURN_POINTER(result);
 }
 
