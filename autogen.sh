@@ -81,6 +81,9 @@ ${ACLOCAL} -I macros || giveup
 echo "* Running ${AUTOCONF} (${AUTOCONF_VER})"
 ${AUTOCONF} || giveup
 
+# Work around an autoconf bug insisting in having this file
+touch build-aux/config.rpath
+
 if test -f "${PWD}/configure"; then
     echo "======================================"
     echo "Now you are ready to run './configure'"
