@@ -156,6 +156,7 @@ DROP FUNCTION IF EXISTS ST_AsBinary(text); -- deprecated in 2.0
 DROP FUNCTION IF EXISTS postgis_uses_stats(); -- deprecated in 2.0
 
 -- Old accum aggregate support type, removed in 2.5.0
+-- See #4035
 DROP TYPE IF EXISTS pgis_abs CASCADE;
 
 DROP FUNCTION IF EXISTS st_astwkb(geometry,integer,bigint,bool,bool); -- temporarely introduced before 2.2.0 final
@@ -175,10 +176,6 @@ DROP FUNCTION IF EXISTS _ST_DumpPoints( geometry, integer[]); -- removed 2.4.0, 
 DROP FUNCTION IF EXISTS _ST_DistanceRectTree(g1 geometry, g2 geometry);
 DROP FUNCTION IF EXISTS _ST_DistanceRectTreeCached(g1 geometry, g2 geometry);
 
-
--- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
--- See #3460
-UPDATE pg_type SET typlen=16 WHERE typname='pgis_abs' AND typlen=8;
 
 DO language 'plpgsql'
 $$
