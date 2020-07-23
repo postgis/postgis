@@ -1265,7 +1265,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
         cberror(topo->be_data, "Edge %d" /*LWTFMT_ELEMID*/
                                " has NULL next_%s_edge",
                                val, sidetext);
-        *numelems = UINT64_MAX;
+        *numelems = -1;
         return NULL;
       }
       nextedge = DatumGetInt32(dat);
@@ -1278,7 +1278,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
         cberror(topo->be_data, "Corrupted topology: ring of edge %"
                                LWTFMT_ELEMID " is topologically non-closed",
                                edge);
-        *numelems = UINT64_MAX;
+        *numelems = -1;
         return NULL;
       }
     }
