@@ -171,6 +171,7 @@ DROP FUNCTION IF EXISTS postgis_uses_stats(); -- deprecated in 2.0
 DROP FUNCTION IF EXISTS ST_GeneratePoints(geometry, numeric); -- numeric -> integer
 
 -- Old accum aggregate support type, removed in 2.5.0
+-- See #4035
 DROP TYPE IF EXISTS pgis_abs CASCADE;
 
 DROP FUNCTION IF EXISTS st_astwkb(geometry, integer, bigint, bool, bool); -- temporarely introduced before 2.2.0 final
@@ -229,10 +230,6 @@ DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
 
 -- dev function 3.0 cycle
 DROP FUNCTION IF EXISTS pgis_geometry_union_transfn(internal, geometry);
-
--- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
--- See #3460
-UPDATE pg_type SET typlen=16 WHERE typname='pgis_abs' AND typlen=8;
 
 -- #4394
 update pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = 'geometry_eq'::regproc;
