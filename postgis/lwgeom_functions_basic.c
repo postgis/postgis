@@ -2384,8 +2384,11 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 
-	POSTGIS_DEBUG(2, "LWGEOM_asEWKT called.");
-	PG_RETURN_TEXT_P(lwgeom_to_wkt_varlena(lwgeom, WKT_EXTENDED, OUT_DEFAULT_DECIMAL_DIGITS));
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
+	if (PG_NARGS() > 1)
+		precision = PG_GETARG_INT32(1);
+
+	PG_RETURN_TEXT_P(lwgeom_to_wkt_varlena(lwgeom, WKT_EXTENDED, precision));
 }
 
 /**

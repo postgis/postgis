@@ -3,7 +3,7 @@ PostGIS 3.1.0beta1
 Only tickets not included in 3.1.0alpha2
 
 * New features *
-  -
+  - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)
 
 * Enhancements *
   - #4660, Changes in double / coordinate printing (Raúl Marín)
