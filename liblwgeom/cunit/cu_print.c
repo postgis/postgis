@@ -451,6 +451,14 @@ test_lwprint(void)
 	assert_lwprint_equal(nextafter(OUT_MAX_DOUBLE, INFINITY), OUT_MAX_DIGITS, "1.0000000000000001e+15");
 	assert_lwprint_equal(nextafter(-OUT_MAX_DOUBLE, -INFINITY), OUT_MAX_DIGITS, "-1.0000000000000001e+15");
 
+	assert_lwprint_equal(nextafter(OUT_MIN_DOUBLE, 0), OUT_MAX_DIGITS, "9.999999999999999e-9");
+	assert_lwprint_equal(nextafter(-OUT_MIN_DOUBLE, 0), OUT_MAX_DIGITS, "-9.999999999999999e-9");
+	assert_lwprint_equal(OUT_MIN_DOUBLE, OUT_MAX_DIGITS, "1e-8");
+	assert_lwprint_equal(-OUT_MIN_DOUBLE, OUT_MAX_DIGITS, "-1e-8");
+	assert_lwprint_equal(nextafter(OUT_MIN_DOUBLE, INFINITY), OUT_MAX_DIGITS, "0.000000010000000000000002");
+	assert_lwprint_equal(nextafter(-OUT_MIN_DOUBLE, -INFINITY), OUT_MAX_DIGITS, "-0.000000010000000000000002");
+
+
 	/* Big numbers that use scientific notation respect the precision parameter */
 	assert_lwprint_equal(9e+300, 0, "9e+300");
 	assert_lwprint_equal(9e+300, 15, "9e+300");

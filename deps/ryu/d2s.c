@@ -610,6 +610,7 @@ static inline int to_chars_fixed(const floating_decimal_64 v, const bool sign, u
 			decimal_part_length = olength - integer_part_length;
 			if (decimal_part < pow_10(decimal_part_length - 1))
 			{
+				/* The decimal part had leading zeros (e.g. 123.0001) which were lost */
 				decimal_part_length = decimalLength17(decimal_part);
 				leading_decimal_zeros = olength - integer_part_length - decimal_part_length;
 			}
