@@ -76,6 +76,19 @@ static void empty_to_wkt_sb(stringbuffer_t *sb)
 	stringbuffer_append_len(sb, "EMPTY", 5);
 }
 
+inline static void
+coordinate_to_wkt_sb(double *coords, stringbuffer_t *sb, uint32_t dimensions, int precision)
+{
+	uint32_t d = 0;
+	stringbuffer_append_double(sb, coords[d], precision);
+
+	for (d = 1; d < dimensions; d++)
+	{
+		stringbuffer_append_len(sb, " ", 1);
+		stringbuffer_append_double(sb, coords[d], precision);
+	}
+}
+
 /*
 * Point array is a list of coordinates. Depending on output mode,
 * we may suppress some dimensions. ISO and Extended formats include
@@ -85,31 +98,29 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 {
 	/* OGC only includes X/Y */
 	uint32_t dimensions = 2;
-	uint32_t i, j;
 
 	/* ISO and extended formats include all dimensions */
 	if ( variant & ( WKT_ISO | WKT_EXTENDED ) )
 		dimensions = FLAGS_NDIMS(ptarray->flags);
 
+	stringbuffer_makeroom(sb, 2 + ((OUT_MAX_BYTES_DOUBLE + 1) * dimensions * ptarray->npoints));
 	/* Opening paren? */
 	if ( ! (variant & WKT_NO_PARENS) )
 		stringbuffer_append_len(sb, "(", 1);
 
 	/* Digits and commas */
-	for (i = 0; i < ptarray->npoints; i++)
+	if (ptarray->npoints)
 	{
-		double *dbl_ptr = (double*)getPoint_internal(ptarray, i);
+		uint32_t i = 0;
 
-		/* Commas before ever coord but the first */
-		if ( i > 0 )
-			stringbuffer_append_len(sb, ",", 1);
+		double *dbl_ptr = (double *)getPoint_internal(ptarray, i);
+		coordinate_to_wkt_sb(dbl_ptr, sb, dimensions, precision);
 
-		for (j = 0; j < dimensions; j++)
+		for (i = 1; i < ptarray->npoints; i++)
 		{
-			/* Spaces before every ordinate but the first */
-			if ( j > 0 )
-				stringbuffer_append_len(sb, " ", 1);
-			stringbuffer_append_double(sb, dbl_ptr[j], precision);
+			stringbuffer_append_len(sb, ",", 1);
+			dbl_ptr = (double *)getPoint_internal(ptarray, i);
+			coordinate_to_wkt_sb(dbl_ptr, sb, dimensions, precision);
 		}
 	}
 
