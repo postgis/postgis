@@ -15,6 +15,7 @@
 
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
+#include "../lwgeom_geos.h"
 
 static void test_lwgeom_wrapx(void)
 {
@@ -147,6 +148,12 @@ static void test_lwgeom_wrapx(void)
 
 }
 
+static int
+clean_geos_wrapx_suite(void)
+{
+	finishGEOS();
+	return 0;
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -154,6 +161,6 @@ static void test_lwgeom_wrapx(void)
 void wrapx_suite_setup(void);
 void wrapx_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("wrapx", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("wrapx", NULL, clean_geos_wrapx_suite);
 	PG_ADD_TEST(suite, test_lwgeom_wrapx);
 }
