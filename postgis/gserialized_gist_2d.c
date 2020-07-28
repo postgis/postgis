@@ -46,6 +46,7 @@
 #include "../postgis_config.h"
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"	     /* For utility functions. */
 
@@ -116,14 +117,24 @@ typedef bool (*box2df_predicate)(const BOX2DF *a, const BOX2DF *b);
 
 static char* box2df_to_string(const BOX2DF *a)
 {
-	char *rv = NULL;
+	static const int precision = 12;
+	char tmp[13 + 4 * OUT_MAX_BYTES_DOUBLE] = {'B', 'O', 'X', '2', 'D', 'F', '(', 0};
+	int len = 7;
 
-	if ( a == NULL )
+	if (a == NULL)
 		return pstrdup("<NULLPTR>");
 
-	rv = palloc(128);
-	sprintf(rv, "BOX2DF(%.12g %.12g, %.12g %.12g)", a->xmin, a->ymin, a->xmax, a->ymax);
-	return rv;
+	len += lwprint_double(a->xmin, precision, &tmp[len]);
+	tmp[len++] = ' ';
+	len += lwprint_double(a->ymin, precision, &tmp[len]);
+	tmp[len++] = ',';
+	tmp[len++] = ' ';
+	len += lwprint_double(a->xmax, precision, &tmp[len]);
+	tmp[len++] = ' ';
+	len += lwprint_double(a->ymax, precision, &tmp[len]);
+	tmp[len++] = ')';
+
+	return pstrdup(tmp);
 }
 
 /* Allocate a new copy of BOX2DF */

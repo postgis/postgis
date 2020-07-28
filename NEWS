@@ -16,6 +16,7 @@ Only tickets not included in 3.1.0alpha2
         - All output functions now respect the requested precision (without any limits).
         - The default precision is the same (9 for GeoJSON, 15 for everything else).
   - #4729, WKT/KML: Print doubles directly into stringbuffers (Raúl Marín)
+  - #4533, Use the standard coordinate printing system for box types (Raúl Marín)
 
 * Bug fixes *
   -

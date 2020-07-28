@@ -19,6 +19,7 @@
 /*#define POSTGIS_DEBUG_LEVEL 4*/
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"
 
@@ -30,30 +31,32 @@
 /* Generate human readable form for GIDX. */
 char* gidx_to_string(GIDX *a)
 {
-	char *str, *rv;
-	int i, ndims;
+	static const int precision = 12;
+	char tmp[8 + 8 * (OUT_MAX_BYTES_DOUBLE + 1)] = {'G', 'I', 'D', 'X', '(', 0};
+	int len = 5;
+	int ndims;
 
-	if ( a == NULL )
+	if (a == NULL)
 		return pstrdup("<NULLPTR>");
-	/* 4 (GIDX_MAX_DIM) *
-	 * 2 (MAX & MIN) *
-	 * 20 (Max representation (e.g. -3.40282346639e+38) [19] + space)
-	 * = 4*2*20 = 160
-	 * + 9 [ 'GIDX(' = 5, ','  = 1, ' )' = 2 + '\0' = 1]
-	 */
-	str = (char *)palloc(169);
-	rv = str;
+
 	ndims = GIDX_NDIMS(a);
 
-	str += sprintf(str, "GIDX(");
-	for ( i = 0; i < ndims; i++ )
-		str += sprintf(str, " %.12g", GIDX_GET_MIN(a,i));
-	str += sprintf(str, ",");
-	for ( i = 0; i < ndims; i++ )
-		str += sprintf(str, " %.12g", GIDX_GET_MAX(a,i));
-	str += sprintf(str, " )");
+	for (int i = 0; i < ndims; i++)
+	{
+		tmp[len++] = ' ';
+		len += lwprint_double(GIDX_GET_MIN(a, i), precision, &tmp[len]);
+	}
+	tmp[len++] = ',';
 
-	return rv;
+	for (int i = 0; i < ndims; i++)
+	{
+		tmp[len++] = ' ';
+		len += lwprint_double(GIDX_GET_MAX(a, i), precision, &tmp[len]);
+	}
+
+	tmp[len++] = ')';
+
+	return pstrdup(tmp);
 }
 
 /* Allocates a new GIDX on the heap of the requested dimensionality */
