@@ -617,7 +617,7 @@ CREATE OR REPLACE FUNCTION _ST_PointOutside(geography)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_point_outside'
 	LANGUAGE 'c' IMMUTABLE STRICT
-	_COST_MEDIUM;
+	_COST_DEFAULT;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Segmentize(geog geography, max_segment_length float8)

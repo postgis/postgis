@@ -17,6 +17,11 @@ Only tickets not included in 3.1.0alpha2
         - The default precision is the same (9 for GeoJSON, 15 for everything else).
   - #4729, WKT/KML: Print doubles directly into stringbuffers (Raúl Marín)
   - #4533, Use the standard coordinate printing system for box types (Raúl Marín)
+  - #4686, Avoid decompressing geographies when possible (Raúl Marín)
+           Affects ANALYZE, _ST_PointOutside, postgis_geobbox, ST_CombineBbox(box2d, geometry),
+           ST_ClipByBox2D when the geometry is fully inside or outside the bbox and
+           ST_BoundingDiagonal.
+
 
 * Bug fixes *
   -
