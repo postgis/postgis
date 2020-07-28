@@ -34,6 +34,7 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 #include <math.h>
 #include <float.h>
@@ -93,24 +94,30 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(BOX2D_out);
 Datum BOX2D_out(PG_FUNCTION_ARGS)
 {
-	char tmp[500]; /* big enough */
+	char tmp[500] = {'B', 'O', 'X', '(', 0}; /* big enough */
+	static const int precision = 15;
 	char *result;
-	int size;
+	int size = 0;
 
 	GBOX *box = (GBOX *)PG_GETARG_POINTER(0);
 	/* Avoid unaligned access to the gbox struct */
 	GBOX box_aligned;
 	memcpy(&box_aligned, box, sizeof(GBOX));
 
-	size = sprintf(tmp,
-		       "BOX(%.15g %.15g,%.15g %.15g)",
-		       box_aligned.xmin,
-		       box_aligned.ymin,
-		       box_aligned.xmax,
-		       box_aligned.ymax);
+	size = 4;
+	size += lwprint_double(box_aligned.xmin, precision, &tmp[size]);
+	tmp[size++] = ' ';
+	size += lwprint_double(box_aligned.ymin, precision, &tmp[size]);
+	tmp[size++] = ',';
+	size += lwprint_double(box_aligned.xmax, precision, &tmp[size]);
+	tmp[size++] = ' ';
+	size += lwprint_double(box_aligned.ymax, precision, &tmp[size]);
 
-	result= palloc(size+1); /* +1= null term */
-	memcpy(result,tmp,size+1);
+	tmp[size++] = ')';
+	size += 1;
+
+	result = palloc(size + 1); /* +1= null term */
+	memcpy(result, tmp, size + 1);
 	result[size] = '\0';
 
 	PG_RETURN_CSTRING(result);

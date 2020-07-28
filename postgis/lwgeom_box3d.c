@@ -33,6 +33,7 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_box3d.h"
 
 #include <math.h>
@@ -40,8 +41,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#define SHOW_DIGS_DOUBLE 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 + 1)
 
 /**
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
@@ -121,7 +120,9 @@ PG_FUNCTION_INFO_V1(BOX3D_out);
 Datum BOX3D_out(PG_FUNCTION_ARGS)
 {
 	BOX3D *bbox = (BOX3D *)PG_GETARG_POINTER(0);
-	int size;
+	static const int precision = 15;
+	static int size = OUT_MAX_BYTES_DOUBLE * 6 + 5 + 2 + 4 + 5 + 1; /* double * 6 + "BOX3D"+ "()" + commas + null */
+	int i = 0;
 	char *result;
 
 	if (bbox == NULL)
@@ -131,19 +132,26 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 		PG_RETURN_CSTRING(result);
 	}
 
-	/* double digits + "BOX3D"+ "()" + commas + null */
-	size = MAX_DIGS_DOUBLE * 6 + 5 + 2 + 4 + 5 + 1;
-
 	result = (char *)palloc(size);
-
-	sprintf(result,
-		"BOX3D(%.15g %.15g %.15g,%.15g %.15g %.15g)",
-		bbox->xmin,
-		bbox->ymin,
-		bbox->zmin,
-		bbox->xmax,
-		bbox->ymax,
-		bbox->zmax);
+	result[i++] = 'B';
+	result[i++] = 'O';
+	result[i++] = 'X';
+	result[i++] = '3';
+	result[i++] = 'D';
+	result[i++] = '(';
+	i += lwprint_double(bbox->xmin, precision, &result[i]);
+	result[i++] = ' ';
+	i += lwprint_double(bbox->ymin, precision, &result[i]);
+	result[i++] = ' ';
+	i += lwprint_double(bbox->zmin, precision, &result[i]);
+	result[i++] = ',';
+	i += lwprint_double(bbox->xmax, precision, &result[i]);
+	result[i++] = ' ';
+	i += lwprint_double(bbox->ymax, precision, &result[i]);
+	result[i++] = ' ';
+	i += lwprint_double(bbox->zmax, precision, &result[i]);
+	result[i++] = ')';
+	result[i++] = '\0';
 
 	PG_RETURN_CSTRING(result);
 }
