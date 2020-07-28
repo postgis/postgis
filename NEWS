@@ -15,6 +15,7 @@ Only tickets not included in 3.1.0alpha2
         - The precision parameter now also affects the scientific notation (before it was fixed [5-8]).
         - All output functions now respect the requested precision (without any limits).
         - The default precision is the same (9 for GeoJSON, 15 for everything else).
+  - #4729, WKT/KML: Print doubles directly into stringbuffers (Raúl Marín)
 
 * Bug fixes *
   -
