@@ -1477,7 +1477,7 @@ CREATE OR REPLACE FUNCTION ST_BoundingDiagonal(geom geometry, fits boolean DEFAU
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_BoundingDiagonal'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_DEFAULT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Reverse(geometry)
@@ -3848,7 +3848,7 @@ CREATE OR REPLACE FUNCTION ST_CombineBbox(box2d,geometry)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME', 'BOX2D_combine'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	_COST_LOW;
+	_COST_DEFAULT;
 
 -- Availability: 1.2.2
 -- Changed: 2.2.0 to use non-deprecated ST_CombineBBox (r13535)
