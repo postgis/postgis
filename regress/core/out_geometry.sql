@@ -166,3 +166,10 @@ SELECT 'pgcast_06',ST_AsText('((0,0),(0,1),(1,1),(1,0))'::polygon::geometry);
 -- Precision
 SELECT 'text_precision_01', ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'));
 SELECT 'text_precision_02', ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'),2);
+
+--
+-- ST_AsEWKT
+--
+SELECT 'EWKT_' || i, ST_AsEWKT('SRID=4326;POINT(12345678.123456789 1)'::geometry, i)
+FROM generate_series(0, 20) AS t(i)
+ORDER BY i;

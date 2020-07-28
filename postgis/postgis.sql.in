@@ -1549,6 +1549,13 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry, int4)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_AsTWKB(geom geometry, prec int4 default NULL, prec_z int4 default NULL, prec_m int4 default NULL, with_sizes boolean default NULL, with_boxes boolean default NULL)
 	RETURNS bytea
