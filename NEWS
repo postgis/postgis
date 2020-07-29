@@ -24,7 +24,8 @@ Only tickets not included in 3.1.0alpha2
 
 
 * Bug fixes *
-  -
+  - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
+
 
 PostGIS 3.1.0alpha2
 2020/07/18

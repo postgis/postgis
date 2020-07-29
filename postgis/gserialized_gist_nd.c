@@ -173,7 +173,8 @@ gidx_merge(GIDX **b_union, GIDX *b_new)
 	/* Q: Unknown is 0 dimensions. Should we never modify unknown instead? (ticket #4232) */
 	if (gidx_is_unknown(*b_union))
 	{
-		*b_union = b_new;
+		pfree(*b_union);
+		*b_union = gidx_copy(b_new);
 		return;
 	}
 
