@@ -5,8 +5,8 @@
 
 -- Ouput is snapped to grid to account for small floating numbers
 -- differences between architectures
-SELECT 'point quadsegs=2', ST_AsText(st_buffer('POINT(0 0)', 1, 'quad_segs=2'), 5);
-SELECT 'line quadsegs=2', ST_AsText(st_buffer('LINESTRING(0 0, 10 0)', 2, 'quad_segs=2'), 5);
+SELECT 'point quadsegs=2', ST_AsText(st_buffer('POINT(0 0)', 1, 'quad_segs=2'), 4);
+SELECT 'line quadsegs=2', ST_AsText(st_buffer('LINESTRING(0 0, 10 0)', 2, 'quad_segs=2'), 3);
 SELECT 'line quadsegs=2 endcap=flat', ST_AsText(st_buffer('LINESTRING(0 0, 10 0)', 2, 'quad_segs=2 endcap=flat'), 5);
 SELECT 'line quadsegs=2 endcap=butt', ST_AsText(st_buffer('LINESTRING(0 0, 10 0)', 2, 'quad_segs=2 endcap=butt'), 5);
 SELECT 'line quadsegs=2 endcap=square', ST_AsText(st_buffer('LINESTRING(0 0, 10 0)', 2, 'quad_segs=2 endcap=square'), 5);
