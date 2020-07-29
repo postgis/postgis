@@ -12,6 +12,7 @@ PostGIS 3.0.2
   - #4702, Legacy ST_Locate_Between_Measures is wrong (Kaplas80)
   - #4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, 2ndQuadrant)
   - #4716, Fix several issues with pkg-config in the configure script (Raúl Marín)
+  - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
 
 PostGIS 3.0.1
 2020/02/20
