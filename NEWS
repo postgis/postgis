@@ -10,6 +10,7 @@ PostGIS 2.5.5
   - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
   - #4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)
   - #4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, 2ndQuadrant)
+  - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
 
 PostGIS 2.5.4
 2020/02/28
