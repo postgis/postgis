@@ -184,7 +184,8 @@ static void gidx_merge(GIDX **b_union, GIDX *b_new)
 	/* Merge of unknown and known is known */
 	if( gidx_is_unknown(*b_union) )
 	{
-		*b_union = b_new;
+		pfree(*b_union);
+		*b_union = gidx_copy(b_new);
 		return;
 	}
 
