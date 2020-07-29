@@ -26,7 +26,17 @@
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>text <function>ST_AsEWKT</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsEWKT</function></funcdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsEWKT</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -34,7 +44,8 @@
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Text representation of the geometry prefixed with the SRID.</para>
+			<para>Returns the Well-Known Text representation of the geometry prefixed with the SRID. Optional argument may be used to reduce the maximum number
+			of decimal digits after floating point used in output (defaults to 15).</para>
 
 			<note>
 			  <para>The WKT spec does not include the SRID.  To get the OGC WKT format use ST_AsText.</para>
@@ -46,6 +57,7 @@
 			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
 			<para>Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
+            <para>Enhanced: 3.1.0 support for optional precision parameter.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
