@@ -784,6 +784,11 @@ test_lwtriangle_clip(void)
 	    LW_PARSER_CHECK_NONE);
 	c = lwgeom_clip_to_ordinate_range(g, 'Z', 0.0, DBL_MAX, 0);
 
+	/* Adjust for Rasberry Pi 64-bit (Debian Buster) */
+	gridspec grid = {0};
+	grid.xsize = grid.ysize = grid.zsize = grid.msize = 1;
+	lwgeom_grid_in_place((LWGEOM *)c, &grid);
+
 	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	// printf("c = %s\n", ewkt);
 	ASSERT_STRING_EQUAL(
