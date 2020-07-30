@@ -2831,8 +2831,7 @@ This is useful to "recenter" long-lat input to have features
 of interest not spawned from one side to the other.
     </para></note>
 
-        <para>Availability: 2.3.0</para>
-
+        <para>Availability: 2.3.0 requires GEOS</para>
         <para>&Z_support;</para>
 <!-- TODO: check these
         <para>&P_support;</para>
@@ -3233,7 +3232,7 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
             should always yield the original geometry.
             </para>
 
-            <para>Availability: 2.0.0</para>
+            <para>Availability: 2.0.0 requires GEOS</para>
             <para>Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or (multi)polygon boundary was introduced.</para>
             <para>Enhanced: 2.5.0 support for splitting a polygon by a multiline was introduced.</para>
 
