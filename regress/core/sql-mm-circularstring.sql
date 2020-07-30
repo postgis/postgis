@@ -188,10 +188,10 @@ SELECT 'ST_CurveToLine-402', ST_AsText(ST_CurveToLine(the_geom_3dm, 4), 3) FROM 
 SELECT 'ST_CurveToLine-403', ST_AsText(ST_CurveToLine(the_geom_3dz, 4), 3) FROM public.circularstring;
 SELECT 'ST_CurveToLine-404', ST_AsText(ST_CurveToLine(the_geom_4d, 4), 3) FROM public.circularstring;
 
-SELECT 'ST_CurveToLine01', ST_AsText(ST_CurveToLine(the_geom_2d), 3) FROM public.circularstring;
-SELECT 'ST_CurveToLine02', ST_AsText(ST_CurveToLine(the_geom_3dm), 3) FROM public.circularstring;
-SELECT 'ST_CurveToLine03', ST_AsText(ST_CurveToLine(the_geom_3dz), 3) FROM public.circularstring;
-SELECT 'ST_CurveToLine04', ST_AsText(ST_CurveToLine(the_geom_4d), 3) FROM public.circularstring;
+SELECT 'ST_CurveToLine01', ST_AsText(ST_CurveToLine(the_geom_2d), 2) FROM public.circularstring;
+SELECT 'ST_CurveToLine02', ST_AsText(ST_CurveToLine(the_geom_3dm), 2) FROM public.circularstring;
+SELECT 'ST_CurveToLine03', ST_AsText(ST_CurveToLine(the_geom_3dz), 2) FROM public.circularstring;
+SELECT 'ST_CurveToLine04', ST_AsText(ST_CurveToLine(the_geom_4d), 2) FROM public.circularstring;
 
 -- TODO: ST_SnapToGrid is required to remove platform dependent precision
 -- issues.  Until ST_SnapToGrid is updated to work against curves, these
