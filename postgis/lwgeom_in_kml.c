@@ -108,8 +108,6 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 		lwgeom = hlwgeom;
 	}
 
-	lwgeom_add_bbox(lwgeom);
-
 	/* KML geometries could be either 2 or 3D
 	 *
 	 * So we deal with 3D in all structures allocation, and flag hasz

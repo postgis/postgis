@@ -312,7 +312,7 @@ inline static int gserialized_cmp_srid(const GSERIALIZED *g1, const GSERIALIZED 
 /* ORDER BY hash(g), g::bytea, ST_SRID(g), hasz(g), hasm(g) */
 int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 {
-	GBOX box1, box2;
+	GBOX box1 = {0}, box2 = {0};
 	uint64_t hash1, hash2;
 	size_t sz1 = LWSIZE_GET(g1->size);
 	size_t sz2 = LWSIZE_GET(g2->size);

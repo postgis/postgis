@@ -1440,7 +1440,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	for ( i = 0; i < sample_rows; i++ )
 	{
 		Datum datum;
-		GBOX gbox;
+		GBOX gbox = {0};
 		ND_BOX *nd_box;
 		bool is_null;
 

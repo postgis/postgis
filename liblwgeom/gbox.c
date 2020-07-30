@@ -647,7 +647,7 @@ ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox)
 
 static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox)
 {
-	GBOX tmp;
+	GBOX tmp = {0};
 	POINT4D p1, p2, p3;
 	uint32_t i;
 
@@ -704,7 +704,7 @@ static int lwpoly_calculate_gbox_cartesian(LWPOLY *poly, GBOX *gbox)
 
 static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 {
-	GBOX subbox;
+	GBOX subbox = {0};
 	uint32_t i;
 	int result = LW_FAILURE;
 	int first = LW_TRUE;

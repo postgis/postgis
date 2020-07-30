@@ -509,7 +509,7 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 int
 gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
-	GBOX gbox;
+	GBOX gbox = {0};
 	if (gserialized_datum_get_gbox_p(gsdatum, &gbox) == LW_FAILURE)
 		return LW_FAILURE;
 

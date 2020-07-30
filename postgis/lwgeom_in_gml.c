@@ -588,7 +588,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 	int gml_dims;
 	char *p, *q;
 	bool digit;
-	POINT4D pt;
+	POINT4D pt = {0};
 
 	/* We begin to retrieve coordinates string */
 	gml_coord = xmlNodeGetContent(xnode);
@@ -702,7 +702,7 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	POINTARRAY *dpa;
 	bool x,y,z;
 	xmlChar *c;
-	POINT4D p;
+	POINT4D p = {0};
 
 	/* HasZ?, !HasM, 1 Point */
 	dpa = ptarray_construct_empty(1, 0, 1);

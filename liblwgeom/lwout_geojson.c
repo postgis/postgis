@@ -50,7 +50,7 @@ lwgeom_to_geojson(const LWGEOM *geom, const char *srs, int precision, int has_bb
 {
 	int type = geom->type;
 	GBOX *bbox = NULL;
-	GBOX tmp;
+	GBOX tmp = {0};
 
 	if (has_bbox)
 	{

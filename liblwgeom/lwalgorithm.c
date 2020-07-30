@@ -857,8 +857,8 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 lwvarlena_t *
 lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 {
-	GBOX gbox;
-	GBOX gbox_bounds;
+	GBOX gbox = {0};
+	GBOX gbox_bounds = {0};
 	double lat, lon;
 	int result;
 

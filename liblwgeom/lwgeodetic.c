@@ -2992,7 +2992,7 @@ static int lwtriangle_calculate_gbox_geodetic(const LWTRIANGLE *triangle, GBOX *
 
 static int lwcollection_calculate_gbox_geodetic(const LWCOLLECTION *coll, GBOX *gbox)
 {
-	GBOX subbox;
+	GBOX subbox = {0};
 	uint32_t i;
 	int result = LW_FAILURE;
 	int first = LW_TRUE;
