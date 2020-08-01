@@ -1,5 +1,5 @@
 PostGIS 3.0.2
-2020/07/XX
+2020/08/XX
 
 * Bug Fixes and Enhancements *
   - Remove useless duplicated call in ST_ChangeEdgeGeom (Sandro Santilli)
