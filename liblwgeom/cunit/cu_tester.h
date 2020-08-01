@@ -40,21 +40,11 @@ typedef void (*PG_SuiteSetup)(void);
   CU_ASSERT_EQUAL(o,e); \
 } while (0);
 
-#define ASSERT_STRING_EQUAL(o, e) \
-	do \
-	{ \
-		if ((!(o) && (e)) || (!(e) && (o)) || strcmp((o), (e)) != 0) \
-		{ \
-			fprintf(stderr, \
-				"[%s:%d]\n Expected: %s\n Obtained: %s\n", \
-				__FILE__, \
-				__LINE__, \
-				(e) ? (e) : "NULL", \
-				(o) ? (o) : "NULL"); \
-			CU_FAIL(); \
-		} \
-		CU_PASS(); \
-	} while (0);
+#define ASSERT_STRING_EQUAL(o,e) do { \
+  if ( strcmp(o,e) != 0 ) \
+    fprintf(stderr, "[%s:%d]\n Expected: %s\n Obtained: %s\n", __FILE__, __LINE__, (e), (o)); \
+  CU_ASSERT_STRING_EQUAL(o,e); \
+} while (0);
 
 #define ASSERT_VARLENA_EQUAL(v, s) \
 	do \
