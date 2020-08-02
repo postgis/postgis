@@ -5138,7 +5138,7 @@ FROM (
 
          st_neighborhood
 ---------------------------------
- {{NULL,1,1},{1,1,NULL},{1,1,1}}
+{{NULL,1,1},{1,1,1},{1,NULL,1}}
 				</programlisting>
 
 				<programlisting>
@@ -5173,8 +5173,7 @@ FROM (
 -- exclude_nodata_value = FALSE
 SELECT
 	ST_Neighborhood(rast, 3, 3, 1, 1, false)
-FROM (
-		ST_SetValues(
+FROM ST_SetValues(
 			ST_AddBand(
 				ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
 				'8BUI'::text, 1, 0
@@ -5188,11 +5187,10 @@ FROM (
 			]::double precision[],
 			1
 		) AS rast
-) AS foo
 
       st_neighborhood
 ---------------------------
- {{1,0,1},{1,1,1},{0,1,1}}
+{{1,1,0},{0,1,1},{1,1,1}}
 				</programlisting>
 
 			</refsection>
