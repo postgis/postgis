@@ -5930,6 +5930,7 @@ $$
   LANGUAGE plpgsql IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
+-- Changed: 2.5.5
 -- Changed: 2.5.0
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
@@ -5962,7 +5963,7 @@ $$
 				RETURN var_resultgeom;
 			END IF;
 		END IF;
-		IF @extschema@.ST_Dimension(var_resultgeom) > 1 AND param_pctconvex BETWEEN 0 and 0.98 THEN
+		IF @extschema@.ST_Dimension(var_resultgeom) > 1 AND param_pctconvex BETWEEN 0 and 0.99 THEN
 		-- get linestring that forms envelope of geometry
 			var_enline := @extschema@.ST_Boundary(@extschema@.ST_Envelope(var_param_geom));
 			var_buf := @extschema@.ST_Length(var_enline)/1000.0;
