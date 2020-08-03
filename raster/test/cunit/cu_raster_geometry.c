@@ -258,7 +258,6 @@ static void test_raster_surface() {
 	const int maxX = 5;
 	const int maxY = 5;
 	int x, y;
-	char *wkt = NULL;
 	LWMPOLY *mpoly = NULL;
 	int err;
 	LWGEOM *gexpected, *gobserved;
