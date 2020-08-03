@@ -14,6 +14,7 @@
 #define _CU_TESTER_H 1
 
 #include "liblwgeom.h"
+#include <stdio.h>
 
 #define MAX_CUNIT_ERROR_LENGTH 512
 
@@ -40,11 +41,25 @@ typedef void (*PG_SuiteSetup)(void);
   CU_ASSERT_EQUAL(o,e); \
 } while (0);
 
-#define ASSERT_STRING_EQUAL(o,e) do { \
-  if ( strcmp(o,e) != 0 ) \
-    fprintf(stderr, "[%s:%d]\n Expected: %s\n Obtained: %s\n", __FILE__, __LINE__, (e), (o)); \
-  CU_ASSERT_STRING_EQUAL(o,e); \
-} while (0);
+static inline void
+assert_string_equal_impl(const char *obtained, const char *expected, const char *file, int line)
+{
+	CU_BOOL error = (!obtained && expected) || (obtained && !expected) || (strcmp(obtained, expected) != 0);
+	char *msg = NULL;
+	if (error)
+	{
+		msg = lwalloc(60 + (obtained ? strlen(obtained) : 4) + (expected ? strlen(expected) : 4));
+		sprintf(msg,
+			"ASSERT_STRING_EQUAL\n\t* Expected: %s\n\t* Obtained: %s",
+			expected ? expected : "NULL",
+			obtained ? obtained : "NULL");
+	}
+	CU_assertImplementation(!error, line, msg, file, NULL, CU_FALSE);
+	if (msg)
+		lwfree(msg);
+}
+
+#define ASSERT_STRING_EQUAL(o, e) assert_string_equal_impl(o, e, __FILE__, __LINE__)
 
 #define ASSERT_VARLENA_EQUAL(v, s) \
 	do \

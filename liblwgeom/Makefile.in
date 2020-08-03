@@ -202,6 +202,7 @@ check: check-unit
 
 check-regress:
 
+.PHONY: check-unit
 check-unit: liblwgeom.la
 	$(MAKE) -C cunit check
 

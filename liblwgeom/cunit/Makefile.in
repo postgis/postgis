@@ -89,13 +89,14 @@ else
 all: cu_tester
 
 # Build and run the unit tester
+.PHONY: check
 check: cu_tester
 	$(LIBTOOL) --mode=execute $(LIBTOOL_VALGRIND) ./cu_tester
 
 endif
 
 # Build the main unit test executable
-cu_tester: ../liblwgeom.la $(OBJS)
+cu_tester: ../liblwgeom.la $(OBJS) cu_tester.h
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) -static ../liblwgeom.la
 
 # Command to build each of the .o files
