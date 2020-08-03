@@ -213,7 +213,7 @@ static void test_gdal_polygonize() {
 	*/
 
 	CU_ASSERT_DOUBLE_EQUAL(gv[1].val, 0.0, FLT_EPSILON);
-	gobserved = (const LWGEOM *)gv[1].geom;
+	gobserved = (LWGEOM *)gv[1].geom;
 	gexpected = lwgeom_from_wkt("POLYGON((3 3,3 6,6 6,6 3,3 3))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(gobserved), lwgeom_area(gexpected), FLT_EPSILON);
 	//wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
@@ -258,7 +258,7 @@ static void test_gdal_polygonize() {
 	*/
 
 	CU_ASSERT_DOUBLE_EQUAL(gv[3].val, 0.0, FLT_EPSILON);
-	gobserved = (const LWGEOM *)gv[3].geom;
+	gobserved = (LWGEOM *)gv[3].geom;
 	gexpected = lwgeom_from_wkt(
 	    "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))",
 	    LW_PARSER_CHECK_NONE);
