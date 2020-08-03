@@ -269,10 +269,10 @@ SELECT 'PG42 - OFF', ST_AsText(ST_AsMVTGeom(
 	10, 0, false));
 
 -- Invalid polygon (intersection)
-SELECT 'PG43 - ON ', ST_AsText(ST_AsMVTGeom(
+SELECT 'PG43 - ON ', ST_AsText(ST_Normalize(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON((-10 -10, 110 110, -10 110, 110 -10, -10 -10))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
-	10, 0, true));
+	10, 0, true)));
 
 SELECT 'PG43 - OFF', ST_AsText(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON((-10 -10, 110 110, -10 110, 110 -10, -10 -10))'),
@@ -365,13 +365,13 @@ SELECT 'PG56', ST_AsText(ST_AsMVTGeom(
 -- Different round behaviour between geos and wagyu
 WITH geometry AS
 (
-    SELECT ST_AsText(ST_AsMVTGeom(
+    SELECT ST_AsText(ST_Normalize(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON((0 0, 0 99, 1 101, 100 100, 100 0, 0 0))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(100, 100)),
-	100, 0, true)) as g
+	100, 0, true))) as g
 )
 SELECT 'PG57',
-        g = 'POLYGON((100 0,100 100,0 100,0 1,1 0,100 0))' OR g = 'POLYGON((0 1,0 0,100 0,100 100,0 100,0 1))'
+        g = 'POLYGON((0 1,0 100,100 100,100 0,1 0,0 1))' OR g = 'POLYGON((0 0,0 1,0 100,100 100,100 0,0 0))'
 FROM geometry;
 
 -- Geometrycollection test
