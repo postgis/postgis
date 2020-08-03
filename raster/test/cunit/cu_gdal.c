@@ -98,16 +98,6 @@ static void test_gdal_rasterize() {
 	cu_free_raster(raster);
 }
 
-static char *
-lwgeom_to_text(const LWGEOM *lwgeom) {
-	char *wkt;
-	size_t wkt_size;
-
-	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &wkt_size);
-
-	return wkt;
-}
-
 static rt_raster fillRasterToPolygonize(int hasnodata, double nodataval) {
 	rt_band band = NULL;
 	rt_pixtype pixtype = PT_32BF;
@@ -189,12 +179,12 @@ static void test_gdal_polygonize() {
 	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(gobserved), lwgeom_area(gexpected), FLT_EPSILON );
 
 	CU_ASSERT_DOUBLE_EQUAL(gv[2].val, 2.8, FLT_EPSILON);
-	gobserved = (const LWGEOM *)gv[2].geom;
+	gobserved = (LWGEOM *)gv[2].geom;
 	gexpected = lwgeom_from_wkt("POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))",
 				    LW_PARSER_CHECK_NONE);
 	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(gobserved), lwgeom_area(gexpected), FLT_EPSILON);
 
-	gobserved = (const LWGEOM *)gv[3].geom;
+	gobserved = (LWGEOM *)gv[3].geom;
 	gexpected = lwgeom_from_wkt(
 	    "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))",
 	    LW_PARSER_CHECK_NONE);
@@ -231,7 +221,7 @@ static void test_gdal_polygonize() {
 	//rtdealloc(wkt);
 
 	CU_ASSERT_DOUBLE_EQUAL(gv[2].val, 2.8, FLT_EPSILON);
-	gobserved = (const LWGEOM *)gv[2].geom;
+	gobserved = (LWGEOM *)gv[2].geom;
 	gexpected = lwgeom_from_wkt("POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))",
 				    LW_PARSER_CHECK_NONE);
 	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(gobserved), lwgeom_area(gexpected), FLT_EPSILON);
@@ -240,7 +230,7 @@ static void test_gdal_polygonize() {
 	//rtdealloc(wkt);
 
 	CU_ASSERT_DOUBLE_EQUAL(gv[3].val, 0.0, FLT_EPSILON);
-	gobserved = (const LWGEOM *)gv[3].geom;
+	gobserved = (LWGEOM *)gv[3].geom;
 	gexpected = lwgeom_from_wkt(
 	    "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))",
 	    LW_PARSER_CHECK_NONE);
