@@ -3,7 +3,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2010-2015 Sandro Santilli <strk@kbt.io>
+-- Copyright (C) 2010-2024 Sandro Santilli <strk@kbt.io>
 -- Copyright (C) 2005 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -401,14 +401,9 @@ RETURNS text
 AS
 $$
 DECLARE
-  typ char(4);
   rec RECORD;
-  ret int;
-  nodededges GEOMETRY;
   points GEOMETRY;
-  snode_id int;
-  enode_id int;
-  tolerance FLOAT8;
+  nodededges GEOMETRY;
   topoinfo RECORD;
 BEGIN
 
@@ -476,10 +471,10 @@ BEGIN
   WITH components AS ( SELECT geom FROM ST_Dump(acollection) )
   SELECT ST_UnaryUnion(ST_Collect(geom)) FROM (
     SELECT geom FROM components
-      WHERE ST_Dimension(geom) = 1
-    UNION ALL
+    WHERE ST_Dimension(geom) = 1
+      UNION ALL
     SELECT ST_Boundary(geom) FROM components
-      WHERE ST_Dimension(geom) = 2
+    WHERE ST_Dimension(geom) = 2
   ) as linework INTO STRICT nodededges;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -524,44 +519,56 @@ BEGIN
 #endif
   END IF; -- points is not null
 
-  --
-  -- Collect all nodes (from points and noded linework endpoints)
-  --
-
-  WITH edges AS ( SELECT geom FROM ST_Dump(nodededges) )
-  SELECT ST_Union( -- TODO: ST_UnaryUnion ?
-          COALESCE(ST_UnaryUnion(ST_Collect(geom)),
-            ST_SetSRID('POINT EMPTY'::geometry, topoinfo.SRID)),
-          COALESCE(points,
-            ST_SetSRID('POINT EMPTY'::geometry, topoinfo.SRID))
-         )
-  FROM (
-    SELECT ST_StartPoint(geom) as geom FROM edges
-      UNION ALL
-    SELECT ST_EndPoint(geom) FROM edges
-  ) as endpoints INTO points;
-
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Total nodes count: %', ST_NumGeometries(points);
-#endif
 
   --
-  -- Add all nodes as isolated so that
-  -- later calls to AddEdgeModFace will tweak their being
-  -- isolated or not...
+  -- Add pivot face (-1 id)
   --
-  FOR rec IN SELECT geom FROM ST_Dump(points)
+  EXECUTE format('INSERT INTO %I.face(face_id) VALUES (-1)', atopology);
+
+  --
+  -- Collect possibly isolated points, to add later
+  --
+  WITH components AS ( SELECT geom FROM ST_Dump(acollection) )
+  SELECT ST_Union(geom) FROM components
+  WHERE ST_Dimension(geom) = 0
+  INTO STRICT points;
+
+  --
+  -- Add all linework
+  -- NOTE: we do this in an ordered way to be predictable
+  --
+  FOR rec IN
+    WITH linework AS ( SELECT geom FROM ST_Dump(nodededges) )
+    SELECT topology.TopoGeo_addLinestring(
+      atopology, geom, 0,
+      skipFaceSplitDetection => true
+    )
+    FROM linework
+    ORDER BY geom
   LOOP
-    PERFORM topology.ST_AddIsoNode(atopology, 0, rec.geom);
   END LOOP;
 
-  FOR rec IN SELECT geom FROM ST_Dump(nodededges)
+  --
+  -- Register all faces
+  --
+  PERFORM topology._RegisterMissingFaces(atopology);
+
+
+  --
+  -- Delete pivot face (-1 id)
+  --
+  EXECUTE format('DELETE FROM %I.face WHERE face_id = -1', atopology);
+
+  --
+  -- Add collected points so isolated ones get correctly
+  -- marked as being in their face
+  -- NOTE: we do this in an ordered way to be predictable
+  --
+  FOR rec IN SELECT geom FROM
+    ( SELECT * FROM ST_Dump(points) ) foo
+    ORDER BY geom
   LOOP
-    SELECT topology.GetNodeByPoint(atopology, st_startpoint(rec.geom), 0)
-      INTO STRICT snode_id;
-    SELECT topology.GetNodeByPoint(atopology, st_endpoint(rec.geom), 0)
-      INTO STRICT enode_id;
-    PERFORM topology.ST_AddEdgeModFace(atopology, snode_id, enode_id, rec.geom);
+    PERFORM topology.TopoGeo_addPoint(atopology, rec.geom);
   END LOOP;
 
   RETURN 'Topology ' || atopology || ' populated';
