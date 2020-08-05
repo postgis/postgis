@@ -13,7 +13,7 @@
 --
 --
 
-/* #define POSTGIS_TOPOLOGY_DEBUG 1 */
+/*#define POSTGIS_TOPOLOGY_DEBUG 1*/
 
 --={ ----------------------------------------------------------------
 --  SQL/MM block
@@ -497,22 +497,15 @@ BEGIN
 #endif
 
   --
-  -- Further split edges by points
-  -- TODO: optimize this adding ST_Split support for multiline/multipoint
+  -- Further split edges by points, if needed
   --
-  FOR rec IN SELECT geom FROM ST_Dump(points)
-  LOOP
-    -- Use the node to split edges
-    SELECT ST_Collect(geom)
-    FROM ST_Dump(ST_Split(nodededges, rec.geom))
-    INTO STRICT nodededges;
-  END LOOP;
-  SELECT ST_UnaryUnion(nodededges) INTO STRICT nodededges;
-
+  IF points IS NOT NULL THEN
+    nodededges := ST_Split(nodededges, points);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Noded edges became % after point-split',
-    ST_NumGeometries(nodededges);
+    RAISE DEBUG 'Noded edges became % after point-split',
+      ST_NumGeometries(nodededges);
 #endif
+  END IF; -- points is not null
 
   --
   -- Collect all nodes (from points and noded linework endpoints)
