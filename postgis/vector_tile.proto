@@ -17,16 +17,15 @@ message Tile {
         // Variant type encoding
         // The use of values is described in section 4.1 of the specification
         message Value {
-                // Exactly one of these values must be present in a valid message
-                optional string string_value = 1;
-                optional float float_value = 2;
-                optional double double_value = 3;
-                optional int64 int_value = 4;
-                optional uint64 uint_value = 5;
-                optional sint64 sint_value = 6;
-                optional bool bool_value = 7;
-
-                extensions 8 to max;
+            oneof test_oneof {
+                string string_value = 1;
+                float float_value = 2;
+                double double_value = 3;
+                int64 int_value = 4;
+                uint64 uint_value = 5;
+                sint64 sint_value = 6;
+                bool bool_value = 7;
+            }
         }
 
         // Features are described in section 4.2 of the specification

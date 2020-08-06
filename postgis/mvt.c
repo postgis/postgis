@@ -418,7 +418,7 @@ static VectorTile__Tile__Value *create_value()
 		for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) \
 		{ \
 			VectorTile__Tile__Value *value = create_value(); \
-			value->hasfield = 1; \
+			value->test_oneof_case = hasfield; \
 			value->valuefield = kv->valuefield; \
 			values[kv->id] = value; \
 		} \
@@ -437,18 +437,19 @@ static void encode_values(mvt_agg_context *ctx)
 	{
 		VectorTile__Tile__Value *value = create_value();
 		value->string_value = kv->string_value;
+		value->test_oneof_case = VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE;
 		values[kv->id] = value;
 	}
 	MVT_CREATE_VALUES(mvt_kv_float_value,
-		float_values_hash, has_float_value, float_value);
+		float_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_FLOAT_VALUE, float_value);
 	MVT_CREATE_VALUES(mvt_kv_double_value,
-		double_values_hash, has_double_value, double_value);
+		double_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_DOUBLE_VALUE, double_value);
 	MVT_CREATE_VALUES(mvt_kv_uint_value,
-		uint_values_hash, has_uint_value, uint_value);
+		uint_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_UINT_VALUE, uint_value);
 	MVT_CREATE_VALUES(mvt_kv_sint_value,
-		sint_values_hash, has_sint_value, sint_value);
+		sint_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_SINT_VALUE, sint_value);
 	MVT_CREATE_VALUES(mvt_kv_bool_value,
-		bool_values_hash, has_bool_value, bool_value);
+		bool_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_BOOL_VALUE, bool_value);
 
 	POSTGIS_DEBUGF(3, "encode_values n_values: %d", ctx->values_hash_i);
 	ctx->layer->n_values = ctx->values_hash_i;
