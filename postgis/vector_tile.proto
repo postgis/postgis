@@ -16,17 +16,17 @@ message Tile {
 
         // Variant type encoding
         // The use of values is described in section 4.1 of the specification
+        // PostGIS: Made oneof (protobuf-c 1.1+ required) to reduce memory usage
         message Value {
-                // Exactly one of these values must be present in a valid message
-                optional string string_value = 1;
-                optional float float_value = 2;
-                optional double double_value = 3;
-                optional int64 int_value = 4;
-                optional uint64 uint_value = 5;
-                optional sint64 sint_value = 6;
-                optional bool bool_value = 7;
-
-                extensions 8 to max;
+            oneof test_oneof {
+                string string_value = 1;
+                float float_value = 2;
+                double double_value = 3;
+                int64 int_value = 4;
+                uint64 uint_value = 5;
+                sint64 sint_value = 6;
+                bool bool_value = 7;
+            }
         }
 
         // Features are described in section 4.2 of the specification
@@ -40,7 +40,8 @@ message Tile {
                 repeated uint32 tags = 2 [ packed = true ];
 
                 // The type of geometry stored in this feature.
-                optional GeomType type = 3 [ default = UNKNOWN ];
+                // PostGIS: Made mandatory
+                required GeomType type = 3 [ default = UNKNOWN ];
 
                 // Contains a stream of commands and parameters (vertices).
                 // A detailed description on geometry encoding is located in
@@ -67,9 +68,8 @@ message Tile {
                 // Dictionary encoding for values
                 repeated Value values = 4;
 
-                // Although this is an "optional" field it is required by the specification.
-                // See https://github.com/mapbox/vector-tile-spec/issues/47
-                optional uint32 extent = 5 [ default = 4096 ];
+                // PostGIS: Made mandatory (see https://github.com/mapbox/vector-tile-spec/issues/47)
+                required uint32 extent = 5 [ default = 4096 ];
 
                 extensions 16 to max;
         }

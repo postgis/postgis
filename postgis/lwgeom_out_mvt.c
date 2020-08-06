@@ -129,14 +129,14 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
-	MemoryContext aggcontext;
+	MemoryContext aggcontext, old_context;
 	mvt_agg_context *ctx;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
-	MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0)) {
+		old_context = MemoryContextSwitchTo(aggcontext);
 		ctx = palloc(sizeof(*ctx));
 		ctx->name = "default";
 		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
@@ -151,7 +151,12 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 			ctx->id_name = text_to_cstring(PG_GETARG_TEXT_P(5));
 		else
 			ctx->id_name = NULL;
+
+		ctx->trans_context = AllocSetContextCreate(aggcontext, "MVT transfn", ALLOCSET_DEFAULT_SIZES);
+
+		MemoryContextSwitchTo(ctx->trans_context);
 		mvt_agg_init_context(ctx);
+		MemoryContextSwitchTo(old_context);
 	} else {
 		ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
 	}
@@ -160,7 +165,10 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: parameter row cannot be other than a rowtype", __func__);
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
 
+	old_context = MemoryContextSwitchTo(ctx->trans_context);
 	mvt_agg_transfn(ctx);
+	MemoryContextSwitchTo(old_context);
+
 	PG_FREE_IF_COPY(ctx->row, 1);
 	PG_RETURN_POINTER(ctx);
 #endif
@@ -203,6 +211,7 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else
 	mvt_agg_context *ctx;
+	bytea *result;
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, NULL))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
@@ -215,7 +224,11 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 	}
 
 	ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
-	PG_RETURN_BYTEA_P(mvt_ctx_serialize(ctx));
+	result = mvt_ctx_serialize(ctx);
+	if (ctx->trans_context)
+		MemoryContextDelete(ctx->trans_context);
+	ctx->trans_context = NULL;
+	PG_RETURN_BYTEA_P(result);
 #endif
 }
 

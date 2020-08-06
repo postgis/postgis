@@ -56,26 +56,43 @@ typedef struct mvt_column_cache
 
 typedef struct mvt_agg_context
 {
+	/* Temporal memory context using during during pgis_asmvt_transfn and deleted after
+	 * pgis_asmvt_serialfn. This is to have a faster and simpler way to delete the temporal
+	 * objects in parallel runs */
+	MemoryContext trans_context;
 	char *name;
 	uint32_t extent;
+
+	/* Name and position of the property that sets the feature id */
 	char *id_name;
 	uint32_t id_index;
+
+	/* Name and position of the property that sets the feature geometry */
 	char *geom_name;
 	uint32_t geom_index;
+
 	HeapTupleHeader row;
 	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer;
 	VectorTile__Tile *tile;
 	size_t features_capacity;
+
+	/* Hash table holding the feature keys */
 	struct mvt_kv_key *keys_hash;
-	struct mvt_kv_string_value *string_values_hash;
-	struct mvt_kv_float_value *float_values_hash;
-	struct mvt_kv_double_value *double_values_hash;
-	struct mvt_kv_uint_value *uint_values_hash;
-	struct mvt_kv_sint_value *sint_values_hash;
-	struct mvt_kv_bool_value *bool_values_hash;
+
+	/* Hash tables holding the feature values, one per type */
+	struct mvt_kv_value *string_values_hash;
+	struct mvt_kv_value *float_values_hash;
+	struct mvt_kv_value *double_values_hash;
+	struct mvt_kv_value *uint_values_hash;
+	struct mvt_kv_value *sint_values_hash;
+	struct mvt_kv_value *bool_values_hash;
+
+	/* Total number of values stored (for all combined value hash tables) */
 	uint32_t values_hash_i;
+	/* Total number of keys stored */
 	uint32_t keys_hash_i;
+
 	uint32_t row_columns;
 	mvt_column_cache column_cache;
 } mvt_agg_context;
