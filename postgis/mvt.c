@@ -1409,7 +1409,7 @@ tile_value_copy(const VectorTile__Tile__Value *value)
 {
 	VectorTile__Tile__Value *nvalue = palloc(sizeof(VectorTile__Tile__Value));
 	memcpy(nvalue, value, sizeof(VectorTile__Tile__Value));
-	if (value->string_value)
+	if (value->test_oneof_case == VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE)
 		nvalue->string_value = pstrdup(value->string_value);
 	return nvalue;
 }
