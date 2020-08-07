@@ -56,6 +56,7 @@ typedef struct mvt_column_cache
 
 typedef struct mvt_agg_context
 {
+	MemoryContext trans_context;
 	char *name;
 	uint32_t extent;
 	char *id_name;

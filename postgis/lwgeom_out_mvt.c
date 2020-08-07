@@ -152,8 +152,9 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		else
 			ctx->id_name = NULL;
 
-		//		MemoryContextSwitchTo(old_context);
-		//		old_context = MemoryContextSwitchTo(ctx->transf_context);
+		ctx->trans_context = AllocSetContextCreate(aggcontext, "MVT transfn", ALLOCSET_DEFAULT_SIZES);
+
+		MemoryContextSwitchTo(ctx->trans_context);
 		mvt_agg_init_context(ctx);
 		MemoryContextSwitchTo(old_context);
 	} else {
@@ -164,8 +165,7 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: parameter row cannot be other than a rowtype", __func__);
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
 
-	//		old_context = MemoryContextSwitchTo(ctx->transf_context);
-	old_context = MemoryContextSwitchTo(aggcontext);
+	old_context = MemoryContextSwitchTo(ctx->trans_context);
 	mvt_agg_transfn(ctx);
 	MemoryContextSwitchTo(old_context);
 
@@ -211,6 +211,7 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else
 	mvt_agg_context *ctx;
+	bytea *result;
 	elog(DEBUG2, "%s called", __func__);
 	if (!AggCheckCallContext(fcinfo, NULL))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
@@ -223,7 +224,9 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 	}
 
 	ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
-	PG_RETURN_BYTEA_P(mvt_ctx_serialize(ctx));
+	result = mvt_ctx_serialize(ctx);
+	MemoryContextDelete(ctx->trans_context);
+	PG_RETURN_BYTEA_P(result);
 #endif
 }
 

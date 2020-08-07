@@ -1256,8 +1256,7 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 	layer->version = 2;
 	layer->name = ctx->name;
 	layer->extent = ctx->extent;
-	layer->features = palloc (ctx->features_capacity *
-		sizeof(*layer->features));
+	layer->features = palloc(ctx->features_capacity * sizeof(*layer->features));
 
 	ctx->layer = layer;
 }
