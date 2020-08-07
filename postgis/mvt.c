@@ -1365,13 +1365,13 @@ mvt_agg_context * mvt_ctx_deserialize(const bytea *ba)
 static VectorTile__Tile__Layer *
 vectortile_layer_combine(VectorTile__Tile__Layer *layer, VectorTile__Tile__Layer *layer2)
 {
-//	const uint32_t key_offset = layer->n_keys;
+	const uint32_t key_offset = layer->n_keys;
 //	const uint32_t value_offset = layer->n_values;
 //	const uint32_t feature_offset = layer->n_features;
-//
-//	layer->keys = repalloc(layer->keys, sizeof(char *) * (layer->n_keys + layer2->n_keys));
-//	memcpy(&layer->keys[key_offset], layer2->keys, sizeof(char *) * layer2->n_keys);
-//	layer->n_keys += layer2->n_keys;
+
+	layer->keys = repalloc(layer->keys, sizeof(char *) * (layer->n_keys + layer2->n_keys));
+	memcpy(&layer->keys[key_offset], layer2->keys, sizeof(char *) * layer2->n_keys);
+	layer->n_keys += layer2->n_keys;
 //
 //	layer->values =
 //	    repalloc(layer->values, sizeof(VectorTile__Tile__Value *) * (layer->n_values + layer2->n_values));
