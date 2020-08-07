@@ -183,7 +183,6 @@ static void encode_point(mvt_agg_context *ctx, LWPOINT *point)
 {
 	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POINT;
-	feature->has_type = 1;
 	feature->n_geometry = 3;
 	feature->geometry = palloc(sizeof(*feature->geometry) * 3);
 	encode_ptarray_initial(ctx, MVT_POINT, point->point, feature->geometry);
@@ -196,7 +195,6 @@ static void encode_mpoint(mvt_agg_context *ctx, LWMPOINT *mpoint)
 	// NOTE: inefficient shortcut LWMPOINT->LWLINE
 	LWLINE *lwline = lwline_from_lwmpoint(mpoint->srid, mpoint);
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POINT;
-	feature->has_type = 1;
 	c = 1 + lwline->points->npoints * 2;
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
 	feature->n_geometry = encode_ptarray_initial(ctx, MVT_POINT,
@@ -208,7 +206,6 @@ static void encode_line(mvt_agg_context *ctx, LWLINE *lwline)
 	size_t c;
 	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__LINESTRING;
-	feature->has_type = 1;
 	c = 2 + lwline->points->npoints * 2;
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
 	feature->n_geometry = encode_ptarray_initial(ctx, MVT_LINE,
@@ -222,7 +219,6 @@ static void encode_mline(mvt_agg_context *ctx, LWMLINE *lwmline)
 	size_t c = 0, offset = 0;
 	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__LINESTRING;
-	feature->has_type = 1;
 	for (i = 0; i < lwmline->ngeoms; i++)
 		c += 2 + lwmline->geoms[i]->points->npoints * 2;
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
@@ -240,7 +236,6 @@ static void encode_poly(mvt_agg_context *ctx, LWPOLY *lwpoly)
 	size_t c = 0, offset = 0;
 	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POLYGON;
-	feature->has_type = 1;
 	for (i = 0; i < lwpoly->nrings; i++)
 		c += 3 + ((lwpoly->rings[i]->npoints - 1) * 2);
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
@@ -259,7 +254,6 @@ static void encode_mpoly(mvt_agg_context *ctx, LWMPOLY *lwmpoly)
 	LWPOLY *poly;
 	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POLYGON;
-	feature->has_type = 1;
 	for (i = 0; i < lwmpoly->ngeoms; i++)
 		for (j = 0; poly = lwmpoly->geoms[i], j < poly->nrings; j++)
 			c += 3 + ((poly->rings[j]->npoints - 1) * 2);
@@ -1261,7 +1255,6 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 	vector_tile__tile__layer__init(layer);
 	layer->version = 2;
 	layer->name = ctx->name;
-	layer->has_extent = 1;
 	layer->extent = ctx->extent;
 	layer->features = palloc (ctx->features_capacity *
 		sizeof(*layer->features));
@@ -1430,7 +1423,6 @@ tile_feature_copy(const VectorTile__Tile__Feature *feature, int key_offset, int 
 	/* Copy settings straight over */
 	nfeature->has_id = feature->has_id;
 	nfeature->id = feature->id;
-	nfeature->has_type = feature->has_type;
 	nfeature->type = feature->type;
 
 	/* Copy tags over, offsetting indexes so they match the dictionaries */
@@ -1469,7 +1461,6 @@ vectortile_layer_combine(const VectorTile__Tile__Layer *layer1, const VectorTile
 	/* Take globals from layer1 */
 	layer->version = layer1->version;
 	layer->name = pstrdup(layer1->name);
-	layer->has_extent = layer1->has_extent;
 	layer->extent = layer1->extent;
 
 	/* Copy keys into new layer */
