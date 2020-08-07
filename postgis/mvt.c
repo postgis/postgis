@@ -1367,7 +1367,7 @@ vectortile_layer_combine(VectorTile__Tile__Layer *layer, VectorTile__Tile__Layer
 {
 	const uint32_t key_offset = layer->n_keys;
 	const uint32_t value_offset = layer->n_values;
-	//	const uint32_t feature_offset = layer->n_features;
+	const uint32_t feature_offset = layer->n_features;
 
 	layer->keys = repalloc(layer->keys, sizeof(char *) * (layer->n_keys + layer2->n_keys));
 	memcpy(&layer->keys[key_offset], layer2->keys, sizeof(char *) * layer2->n_keys);
@@ -1378,11 +1378,11 @@ vectortile_layer_combine(VectorTile__Tile__Layer *layer, VectorTile__Tile__Layer
 	memcpy(&layer->values[value_offset], layer2->values, sizeof(VectorTile__Tile__Value *) * layer2->n_values);
 	layer->n_values += layer2->n_values;
 
-	//	layer->features =
-	//	    repalloc(layer->features, sizeof(VectorTile__Tile__Feature *) * (layer->n_features +
-	//layer2->n_features)); 	memcpy(&layer->features[feature_offset], layer2->features, sizeof(char *) *
-	//layer2->n_features); 	layer->n_features += layer2->n_features; 	for (uint32_t i = feature_offset; i <
-	//layer->n_features; i += 2)
+	layer->features =
+	    repalloc(layer->features, sizeof(VectorTile__Tile__Feature *) * (layer->n_features + layer2->n_features));
+	memcpy(&layer->features[feature_offset], layer2->features, sizeof(char *) * layer2->n_features);
+	layer->n_features += layer2->n_features;
+	//	for (uint32_t i = feature_offset; i < layer->n_features; i += 2)
 	//	{
 	//		layer->features[i] += key_offset;
 	//		layer->features[i + 1] += value_offset;
