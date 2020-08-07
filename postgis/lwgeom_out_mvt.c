@@ -184,11 +184,10 @@ Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
-	MemoryContext aggcontext, oldcontext;
 	mvt_agg_context *ctx;
 	bytea *buf;
 	elog(DEBUG2, "%s called", __func__);
-	if (!AggCheckCallContext(fcinfo, aggcontext))
+	if (!AggCheckCallContext(fcinfo, NULL))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
 
 	if (PG_ARGISNULL(0))
@@ -199,7 +198,6 @@ Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 	}
 
 	ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
-	oldcontext = MemoryContextSwitchTo(aggcontext);
 	buf = mvt_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
 #endif
