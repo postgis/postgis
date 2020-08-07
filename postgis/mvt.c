@@ -1359,102 +1359,34 @@ mvt_agg_context * mvt_ctx_deserialize(const bytea *ba)
 	return ctx;
 }
 
-static VectorTile__Tile__Value *
-tile_value_copy(const VectorTile__Tile__Value *value)
-{
-	VectorTile__Tile__Value *nvalue = palloc(sizeof(VectorTile__Tile__Value));
-	memcpy(nvalue, value, sizeof(VectorTile__Tile__Value));
-	if (value->test_oneof_case == VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE)
-		nvalue->string_value = pstrdup(value->string_value);
-	return nvalue;
-}
-
-static VectorTile__Tile__Feature *
-tile_feature_copy(const VectorTile__Tile__Feature *feature, int key_offset, int value_offset)
-{
-	uint32_t i;
-	VectorTile__Tile__Feature *nfeature;
-
-	/* Null in => Null out */
-	if (!feature) return NULL;
-
-	/* Init object */
-	nfeature = palloc(sizeof(VectorTile__Tile__Feature));
-	vector_tile__tile__feature__init(nfeature);
-
-	/* Copy settings straight over */
-	nfeature->has_id = feature->has_id;
-	nfeature->id = feature->id;
-	nfeature->type = feature->type;
-
-	/* Copy tags over, offsetting indexes so they match the dictionaries */
-	/* at the Tile_Layer level */
-	if (feature->n_tags > 0)
-	{
-		nfeature->n_tags = feature->n_tags;
-		nfeature->tags = palloc(sizeof(uint32_t)*feature->n_tags);
-		for (i = 0; i < feature->n_tags/2; i++)
-		{
-			nfeature->tags[2*i] = feature->tags[2*i] + key_offset;
-			nfeature->tags[2*i+1] = feature->tags[2*i+1] + value_offset;
-		}
-	}
-
-	/* Copy the raw geometry data over literally */
-	if (feature->n_geometry > 0)
-	{
-		nfeature->n_geometry = feature->n_geometry;
-		nfeature->geometry = palloc(sizeof(uint32_t)*feature->n_geometry);
-		memcpy(nfeature->geometry, feature->geometry, sizeof(uint32_t)*feature->n_geometry);
-	}
-
-	/* Done */
-	return nfeature;
-}
-
+/**
+ * Combine 2 layers. This is going to push everything from layer2 into layer1
+ */
 static VectorTile__Tile__Layer *
-vectortile_layer_combine(const VectorTile__Tile__Layer *layer1, const VectorTile__Tile__Layer *layer2)
+vectortile_layer_combine(VectorTile__Tile__Layer *layer, VectorTile__Tile__Layer *layer2)
 {
-	uint32_t i, j;
-	int key2_offset, value2_offset;
-	VectorTile__Tile__Layer *layer = palloc(sizeof(VectorTile__Tile__Layer));
-	vector_tile__tile__layer__init(layer);
+	const uint32_t key_offset = layer->n_keys;
+	const uint32_t value_offset = layer->n_values;
+	const uint32_t feature_offset = layer->n_features;
 
-	/* Take globals from layer1 */
-	layer->version = layer1->version;
-	layer->name = pstrdup(layer1->name);
-	layer->extent = layer1->extent;
+	layer->keys = repalloc(layer->keys, sizeof(char *) * (layer->n_keys + layer2->n_keys));
+	memcpy(&layer->keys[key_offset], layer2->keys, sizeof(char *) * layer2->n_keys);
+	layer->n_keys += layer2->n_keys;
 
-	/* Copy keys into new layer */
-	j = 0;
-	layer->n_keys = layer1->n_keys + layer2->n_keys;
-	layer->keys = layer->n_keys ? palloc(layer->n_keys * sizeof(void*)) : NULL;
-	for (i = 0; i < layer1->n_keys; i++)
-		layer->keys[j++] = pstrdup(layer1->keys[i]);
-	key2_offset = j;
-	for (i = 0; i < layer2->n_keys; i++)
-		layer->keys[j++] = pstrdup(layer2->keys[i]);
+	layer->values =
+	    repalloc(layer->values, sizeof(VectorTile__Tile__Value *) * (layer->n_values + layer2->n_values));
+	memcpy(&layer->values[value_offset], layer2->values, sizeof(VectorTile__Tile__Value *) * layer2->n_values);
+	layer->n_values += layer2->n_values;
 
-	/* Copy values into new layer */
-	/* TODO, apply hash logic here too, so that merged tiles */
-	/* retain unique value maps */
-	layer->n_values = layer1->n_values + layer2->n_values;
-	layer->values = layer->n_values ? palloc(layer->n_values * sizeof(void*)) : NULL;
-	j = 0;
-	for (i = 0; i < layer1->n_values; i++)
-		layer->values[j++] = tile_value_copy(layer1->values[i]);
-	value2_offset = j;
-	for (i = 0; i < layer2->n_values; i++)
-		layer->values[j++] = tile_value_copy(layer2->values[i]);
-
-
-	layer->n_features = layer1->n_features + layer2->n_features;
-	layer->features = layer->n_features ? palloc(layer->n_features * sizeof(void*)) : NULL;
-	j = 0;
-	for (i = 0; i < layer1->n_features; i++)
-		layer->features[j++] = tile_feature_copy(layer1->features[i], 0, 0);
-	for (i = 0; i < layer2->n_features; i++)
-		layer->features[j++] = tile_feature_copy(layer2->features[i], key2_offset, value2_offset);
+	layer->features =
+	    repalloc(layer->features, sizeof(VectorTile__Tile__Feature *) * (layer->n_features + layer2->n_features));
+	memcpy(&layer->features[feature_offset], layer2->features, sizeof(char *) * layer2->n_features);
+	layer->n_features += layer2->n_features;
+	for (uint32_t i = feature_offset; i < layer->n_features; i += 2)
+	{
+		layer->features[i] += key_offset;
+		layer->features[i + 1] += value_offset;
+	}
 
 	return layer;
 }
