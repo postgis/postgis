@@ -1371,26 +1371,51 @@ vectortile_layer_combine(VectorTile__Tile__Layer *layer, VectorTile__Tile__Layer
 	const uint32_t value_offset = layer->n_values;
 	const uint32_t feature_offset = layer->n_features;
 
-	layer->keys = repalloc(layer->keys, sizeof(char *) * (layer->n_keys + layer2->n_keys));
-	memcpy(&layer->keys[key_offset], layer2->keys, sizeof(char *) * layer2->n_keys);
-	layer->n_keys += layer2->n_keys;
-
-	layer->values =
-	    repalloc(layer->values, sizeof(VectorTile__Tile__Value *) * (layer->n_values + layer2->n_values));
-	memcpy(&layer->values[value_offset], layer2->values, sizeof(VectorTile__Tile__Value *) * layer2->n_values);
-	layer->n_values += layer2->n_values;
-
-	layer->features =
-	    repalloc(layer->features, sizeof(VectorTile__Tile__Feature *) * (layer->n_features + layer2->n_features));
-	memcpy(&layer->features[feature_offset], layer2->features, sizeof(char *) * layer2->n_features);
-	layer->n_features += layer2->n_features;
-	/* We need to adapt the indexes of the copied features */
-	for (uint32_t i = feature_offset; i < layer->n_features; i++)
+	if (!layer->n_keys)
 	{
-		for (uint32_t t = 0; t < layer->features[i]->n_tags; t += 2)
+		layer->keys = layer2->keys;
+		layer->n_keys = layer2->n_keys;
+	}
+	else if (layer2->n_keys)
+	{
+		layer->keys = repalloc(layer->keys, sizeof(char *) * (layer->n_keys + layer2->n_keys));
+		memcpy(&layer->keys[key_offset], layer2->keys, sizeof(char *) * layer2->n_keys);
+		layer->n_keys += layer2->n_keys;
+	}
+
+	if (!layer->n_values)
+	{
+		layer->values = layer2->values;
+		layer->n_values = layer2->n_values;
+	}
+	else if (layer2->n_values)
+	{
+		layer->values =
+		    repalloc(layer->values, sizeof(VectorTile__Tile__Value *) * (layer->n_values + layer2->n_values));
+		memcpy(
+		    &layer->values[value_offset], layer2->values, sizeof(VectorTile__Tile__Value *) * layer2->n_values);
+		layer->n_values += layer2->n_values;
+	}
+
+	if (!layer->n_features)
+	{
+		layer->features = layer2->features;
+		layer->n_features = layer2->n_features;
+	}
+	else if (layer2->n_features)
+	{
+		layer->features = repalloc(
+		    layer->features, sizeof(VectorTile__Tile__Feature *) * (layer->n_features + layer2->n_features));
+		memcpy(&layer->features[feature_offset], layer2->features, sizeof(char *) * layer2->n_features);
+		layer->n_features += layer2->n_features;
+		/* We need to adapt the indexes of the copied features */
+		for (uint32_t i = feature_offset; i < layer->n_features; i++)
 		{
-			layer->features[i]->tags[t] += key_offset;
-			layer->features[i]->tags[t + 1] += value_offset;
+			for (uint32_t t = 0; t < layer->features[i]->n_tags; t += 2)
+			{
+				layer->features[i]->tags[t] += key_offset;
+				layer->features[i]->tags[t + 1] += value_offset;
+			}
 		}
 	}
 
