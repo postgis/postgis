@@ -1361,6 +1361,8 @@ mvt_agg_context * mvt_ctx_deserialize(const bytea *ba)
 
 /**
  * Combine 2 layers. This is going to push everything from layer2 into layer1
+ * We can do this because both sources and the result live in the same aggregation context
+ * so we are good as long as we don't free anything from the sources
  */
 static VectorTile__Tile__Layer *
 vectortile_layer_combine(VectorTile__Tile__Layer *layer, VectorTile__Tile__Layer *layer2)
@@ -1382,11 +1384,15 @@ vectortile_layer_combine(VectorTile__Tile__Layer *layer, VectorTile__Tile__Layer
 	    repalloc(layer->features, sizeof(VectorTile__Tile__Feature *) * (layer->n_features + layer2->n_features));
 	memcpy(&layer->features[feature_offset], layer2->features, sizeof(char *) * layer2->n_features);
 	layer->n_features += layer2->n_features;
-	//	for (uint32_t i = feature_offset; i < layer->n_features; i += 2)
-	//	{
-	//		layer->features[i] += key_offset;
-	//		layer->features[i + 1] += value_offset;
-	//	}
+	/* We need to adapt the indexes of the copied features */
+	for (uint32_t i = feature_offset; i < layer->n_features; i++)
+	{
+		for (uint32_t t = 0; t < layer->features[i]->n_tags; t += 2)
+		{
+			layer->features[i]->tags[t] += key_offset;
+			layer->features[i]->tags[t + 1] += value_offset;
+		}
+	}
 
 	return layer;
 }
