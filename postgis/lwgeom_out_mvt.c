@@ -134,9 +134,9 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);
-	old_context = MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0)) {
+		old_context = MemoryContextSwitchTo(aggcontext);
 		ctx = palloc(sizeof(*ctx));
 		ctx->name = "default";
 		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
@@ -151,7 +151,11 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 			ctx->id_name = text_to_cstring(PG_GETARG_TEXT_P(5));
 		else
 			ctx->id_name = NULL;
+
+		//		MemoryContextSwitchTo(old_context);
+		//		old_context = MemoryContextSwitchTo(ctx->transf_context);
 		mvt_agg_init_context(ctx);
+		MemoryContextSwitchTo(old_context);
 	} else {
 		ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
 	}
@@ -160,10 +164,12 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: parameter row cannot be other than a rowtype", __func__);
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
 
+	//		old_context = MemoryContextSwitchTo(ctx->transf_context);
+	old_context = MemoryContextSwitchTo(aggcontext);
 	mvt_agg_transfn(ctx);
-	PG_FREE_IF_COPY(ctx->row, 1);
-
 	MemoryContextSwitchTo(old_context);
+
+	PG_FREE_IF_COPY(ctx->row, 1);
 	PG_RETURN_POINTER(ctx);
 #endif
 }
