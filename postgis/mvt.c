@@ -68,44 +68,8 @@ struct mvt_kv_key
 	UT_hash_handle hh;
 };
 
-struct mvt_kv_string_value
-{
-	char *string_value;
-	uint32_t id;
-	UT_hash_handle hh;
-};
-
-struct mvt_kv_float_value
-{
-	float float_value;
-	uint32_t id;
-	UT_hash_handle hh;
-};
-
-struct mvt_kv_double_value
-{
-	double double_value;
-	uint32_t id;
-	UT_hash_handle hh;
-};
-
-struct mvt_kv_uint_value
-{
-	uint64_t uint_value;
-	uint32_t id;
-	UT_hash_handle hh;
-};
-
-struct mvt_kv_sint_value
-{
-	int64_t sint_value;
-	uint32_t id;
-	UT_hash_handle hh;
-};
-
-struct mvt_kv_bool_value
-{
-	protobuf_c_boolean bool_value;
+struct mvt_kv_value {
+	VectorTile__Tile__Value *value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
@@ -404,111 +368,86 @@ static VectorTile__Tile__Value *create_value()
 	return value;
 }
 
-#define MVT_CREATE_VALUES(kvtype, hash, hasfield, valuefield) \
-{ \
-	POSTGIS_DEBUG(2, "MVT_CREATE_VALUES called"); \
+#define MVT_CREATE_VALUES(hash) \
 	{ \
-		struct kvtype *kv; \
-		for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) \
+		struct mvt_kv_value *kv; \
+		for (kv = hash; kv != NULL; kv = kv->hh.next) \
 		{ \
-			VectorTile__Tile__Value *value = create_value(); \
-			value->test_oneof_case = hasfield; \
-			value->valuefield = kv->valuefield; \
-			values[kv->id] = value; \
+			values[kv->id] = kv->value; \
 		} \
-	} \
-}
+	}
 
 static void encode_values(mvt_agg_context *ctx)
 {
 	VectorTile__Tile__Value **values;
-	struct mvt_kv_string_value *kv;
-
 	POSTGIS_DEBUG(2, "encode_values called");
 
 	values = palloc(ctx->values_hash_i * sizeof(*values));
-	for (kv = ctx->string_values_hash; kv != NULL; kv=kv->hh.next)
-	{
-		VectorTile__Tile__Value *value = create_value();
-		value->string_value = kv->string_value;
-		value->test_oneof_case = VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE;
-		values[kv->id] = value;
-	}
-	MVT_CREATE_VALUES(mvt_kv_float_value,
-		float_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_FLOAT_VALUE, float_value);
-	MVT_CREATE_VALUES(mvt_kv_double_value,
-		double_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_DOUBLE_VALUE, double_value);
-	MVT_CREATE_VALUES(mvt_kv_uint_value,
-		uint_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_UINT_VALUE, uint_value);
-	MVT_CREATE_VALUES(mvt_kv_sint_value,
-		sint_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_SINT_VALUE, sint_value);
-	MVT_CREATE_VALUES(mvt_kv_bool_value,
-		bool_values_hash, VECTOR_TILE__TILE__VALUE__TEST_ONEOF_BOOL_VALUE, bool_value);
+	MVT_CREATE_VALUES(ctx->string_values_hash);
+	MVT_CREATE_VALUES(ctx->float_values_hash);
+	MVT_CREATE_VALUES(ctx->double_values_hash);
+	MVT_CREATE_VALUES(ctx->uint_values_hash);
+	MVT_CREATE_VALUES(ctx->sint_values_hash);
+	MVT_CREATE_VALUES(ctx->bool_values_hash);
 
 	POSTGIS_DEBUGF(3, "encode_values n_values: %d", ctx->values_hash_i);
 	ctx->layer->n_values = ctx->values_hash_i;
 	ctx->layer->values = values;
 
-	HASH_CLEAR(hh, ctx->string_values_hash);
-	HASH_CLEAR(hh, ctx->float_values_hash);
-	HASH_CLEAR(hh, ctx->double_values_hash);
-	HASH_CLEAR(hh, ctx->uint_values_hash);
-	HASH_CLEAR(hh, ctx->sint_values_hash);
-	HASH_CLEAR(hh, ctx->bool_values_hash);
-
-	pfree(ctx->column_cache.column_keys_index);
-	pfree(ctx->column_cache.column_oid);
-	pfree(ctx->column_cache.values);
-	pfree(ctx->column_cache.nulls);
 	ReleaseTupleDesc(ctx->column_cache.tupdesc);
 	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
 
 }
 
-#define MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size) \
-{ \
-	POSTGIS_DEBUG(2, "MVT_PARSE_VALUE called"); \
+#define MVT_PARSE_VALUE(hash, newvalue, size, pfvaluefield, pftype) \
 	{ \
-		struct kvtype *kv; \
-		HASH_FIND(hh, ctx->hash, &value, size, kv); \
-		if (!kv) \
+		POSTGIS_DEBUG(2, "MVT_PARSE_VALUE called"); \
 		{ \
-			POSTGIS_DEBUG(4, "MVT_PARSE_VALUE value not found"); \
-			kv = palloc(sizeof(*kv)); \
-			POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", \
-				ctx->values_hash_i); \
-			kv->id = ctx->values_hash_i++; \
-			kv->valuefield = value; \
-			HASH_ADD(hh, ctx->hash, valuefield, size, kv); \
+			struct mvt_kv_value *kv; \
+			HASH_FIND(hh, ctx->hash, &newvalue, size, kv); \
+			if (!kv) \
+			{ \
+				POSTGIS_DEBUG(4, "MVT_PARSE_VALUE value not found"); \
+				kv = palloc(sizeof(*kv)); \
+				POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", ctx->values_hash_i); \
+				kv->id = ctx->values_hash_i++; \
+				kv->value = create_value(); \
+				kv->value->pfvaluefield = newvalue; \
+				kv->value->test_oneof_case = pftype; \
+				HASH_ADD(hh, ctx->hash, value->pfvaluefield, size, kv); \
+			} \
+			tags[ctx->row_columns * 2] = k; \
+			tags[ctx->row_columns * 2 + 1] = kv->id; \
 		} \
-		tags[ctx->row_columns*2] = k; \
-		tags[ctx->row_columns*2+1] = kv->id; \
-	} \
-}
+	}
 
 #define MVT_PARSE_INT_VALUE(value) \
-{ \
-	if (value >= 0) \
 	{ \
-		uint64_t cvalue = value; \
-		MVT_PARSE_VALUE(cvalue, mvt_kv_uint_value, \
-				uint_values_hash, uint_value, \
-				sizeof(uint64_t)) \
-	} \
-	else \
-	{ \
-		int64_t cvalue = value; \
-		MVT_PARSE_VALUE(cvalue, mvt_kv_sint_value, \
-				sint_values_hash, sint_value, \
-				sizeof(int64_t)) \
-	} \
-}
+		if (value >= 0) \
+		{ \
+			uint64_t cvalue = value; \
+			MVT_PARSE_VALUE(uint_values_hash, \
+					cvalue, \
+					sizeof(uint64_t), \
+					uint_value, \
+					VECTOR_TILE__TILE__VALUE__TEST_ONEOF_UINT_VALUE); \
+		} \
+		else \
+		{ \
+			int64_t cvalue = value; \
+			MVT_PARSE_VALUE(sint_values_hash, \
+					cvalue, \
+					sizeof(int64_t), \
+					sint_value, \
+					VECTOR_TILE__TILE__VALUE__TEST_ONEOF_SINT_VALUE); \
+		} \
+	}
 
-#define MVT_PARSE_DATUM(type, kvtype, hash, valuefield, datumfunc, size) \
-{ \
-	type value = datumfunc(datum); \
-	MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size); \
-}
+#define MVT_PARSE_DATUM(type, datumfunc, hash, size, pfvaluefield, pftype) \
+	{ \
+		type value = datumfunc(datum); \
+		MVT_PARSE_VALUE(hash, value, size, pfvaluefield, pftype); \
+	}
 
 #define MVT_PARSE_INT_DATUM(type, datumfunc) \
 { \
@@ -516,10 +455,11 @@ static void encode_values(mvt_agg_context *ctx)
 	MVT_PARSE_INT_VALUE(value); \
 }
 
-static void add_value_as_string_with_size(mvt_agg_context *ctx,
-	char *value, size_t size, uint32_t *tags, uint32_t k)
+static bool
+add_value_as_string_with_size(mvt_agg_context *ctx, char *value, size_t size, uint32_t *tags, uint32_t k)
 {
-	struct mvt_kv_string_value *kv;
+	bool kept = false;
+	struct mvt_kv_value *kv;
 	POSTGIS_DEBUG(2, "add_value_as_string called");
 	HASH_FIND(hh, ctx->string_values_hash, value, size, kv);
 	if (!kv)
@@ -529,16 +469,19 @@ static void add_value_as_string_with_size(mvt_agg_context *ctx,
 		POSTGIS_DEBUGF(4, "add_value_as_string new hash key: %d",
 			ctx->values_hash_i);
 		kv->id = ctx->values_hash_i++;
-		kv->string_value = value;
-		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->string_value,
-			size, kv);
+		kv->value = create_value();
+		kv->value->string_value = value;
+		kv->value->test_oneof_case = VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE;
+		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->value->string_value, size, kv);
+		kept = true;
 	}
-	tags[ctx->row_columns*2] = k;
-	tags[ctx->row_columns*2+1] = kv->id;
+	tags[ctx->row_columns * 2] = k;
+	tags[ctx->row_columns * 2 + 1] = kv->id;
+	return kept;
 }
 
-static void add_value_as_string(mvt_agg_context *ctx,
-	char *value, uint32_t *tags, uint32_t k)
+static bool
+add_value_as_string(mvt_agg_context *ctx, char *value, uint32_t *tags, uint32_t k)
 {
 	return add_value_as_string_with_size(ctx, value, strlen(value), tags, k);
 }
@@ -548,12 +491,15 @@ static void parse_datum_as_string(mvt_agg_context *ctx, Oid typoid,
 {
 	Oid foutoid;
 	bool typisvarlena;
+	bool kept;
 	char *value;
 	POSTGIS_DEBUG(2, "parse_value_as_string called");
 	getTypeOutputInfo(typoid, &foutoid, &typisvarlena);
 	value = OidOutputFunctionCall(foutoid, datum);
 	POSTGIS_DEBUGF(4, "parse_value_as_string value: %s", value);
-	add_value_as_string(ctx, value, tags, k);
+	kept = add_value_as_string(ctx, value, tags, k);
+	if (!kept)
+		pfree(value);
 }
 
 static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
@@ -595,17 +541,22 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 
 			if (v.type == jbvString)
 			{
-				char *value;
-				value = palloc(v.val.string.len + 1);
+				bool kept;
+				char *value = palloc(v.val.string.len + 1);
 				memcpy(value, v.val.string.val, v.val.string.len);
 				value[v.val.string.len] = '\0';
-				add_value_as_string(ctx, value, tags, k);
+				kept = add_value_as_string(ctx, value, tags, k);
+				if (!kept)
+					pfree(value);
 				ctx->row_columns++;
 			}
 			else if (v.type == jbvBool)
 			{
-				MVT_PARSE_VALUE(v.val.boolean, mvt_kv_bool_value,
-					bool_values_hash, bool_value, sizeof(protobuf_c_boolean));
+				MVT_PARSE_VALUE(bool_values_hash,
+						v.val.boolean,
+						sizeof(protobuf_c_boolean),
+						bool_value,
+						VECTOR_TILE__TILE__VALUE__TEST_ONEOF_BOOL_VALUE);
 				ctx->row_columns++;
 			}
 			else if (v.type == jbvNumeric)
@@ -620,8 +571,11 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 
 				if (fabs(d - (double)l) > FLT_EPSILON)
 				{
-					MVT_PARSE_VALUE(d, mvt_kv_double_value, double_values_hash,
-						double_value, sizeof(double));
+					MVT_PARSE_VALUE(double_values_hash,
+							d,
+							sizeof(double),
+							double_value,
+							VECTOR_TILE__TILE__VALUE__TEST_ONEOF_DOUBLE_VALUE);
 				}
 				else
 				{
@@ -735,9 +689,12 @@ static void parse_values(mvt_agg_context *ctx)
 		switch (typoid)
 		{
 		case BOOLOID:
-			MVT_PARSE_DATUM(protobuf_c_boolean, mvt_kv_bool_value,
-				bool_values_hash, bool_value,
-				DatumGetBool, sizeof(protobuf_c_boolean));
+			MVT_PARSE_DATUM(protobuf_c_boolean,
+					DatumGetBool,
+					bool_values_hash,
+					sizeof(protobuf_c_boolean),
+					bool_value,
+					VECTOR_TILE__TILE__VALUE__TEST_ONEOF_BOOL_VALUE);
 			break;
 		case INT2OID:
 			MVT_PARSE_INT_DATUM(int16_t, DatumGetInt16);
@@ -749,14 +706,20 @@ static void parse_values(mvt_agg_context *ctx)
 			MVT_PARSE_INT_DATUM(int64_t, DatumGetInt64);
 			break;
 		case FLOAT4OID:
-			MVT_PARSE_DATUM(float, mvt_kv_float_value,
-				float_values_hash, float_value,
-				DatumGetFloat4, sizeof(float));
+			MVT_PARSE_DATUM(float,
+					DatumGetFloat4,
+					float_values_hash,
+					sizeof(float),
+					float_value,
+					VECTOR_TILE__TILE__VALUE__TEST_ONEOF_FLOAT_VALUE);
 			break;
 		case FLOAT8OID:
-			MVT_PARSE_DATUM(double, mvt_kv_double_value,
-				double_values_hash, double_value,
-				DatumGetFloat8, sizeof(double));
+			MVT_PARSE_DATUM(double,
+					DatumGetFloat8,
+					double_values_hash,
+					sizeof(double),
+					double_value,
+					VECTOR_TILE__TILE__VALUE__TEST_ONEOF_DOUBLE_VALUE);
 			break;
 		default:
 			parse_datum_as_string(ctx, typoid, datum, tags, k);
