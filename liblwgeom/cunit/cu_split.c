@@ -129,10 +129,12 @@ static void test_lwgeom_split(void)
 	geom = lwgeom_from_wkt("SRID=1;POLYGON((0 1, 10 1, 10 10, 0 10, 0 1))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT(geom != NULL);
 	blade = lwgeom_from_wkt("LINESTRING(7 0,7 20)", LW_PARSER_CHECK_NONE);
-	ret = lwgeom_split(geom, blade);
+	ret = lwgeom_normalize(lwgeom_split(geom, blade));
 	CU_ASSERT(ret != NULL);
 	wkt = lwgeom_to_ewkt(ret);
-	in_wkt = "SRID=1;GEOMETRYCOLLECTION(POLYGON((7 1,0 1,0 10,7 10,7 1)),POLYGON((7 10,10 10,10 1,7 1,7 10)))";
+	in_wkt = lwgeom_to_ewkt(lwgeom_normalize(lwgeom_from_wkt(
+	    "SRID=1;GEOMETRYCOLLECTION(POLYGON((7 1,0 1,0 10,7 10,7 1)),POLYGON((7 10,10 10,10 1,7 1,7 10)))",
+	    LW_PARSER_CHECK_NONE)));
 	ASSERT_STRING_EQUAL(wkt, in_wkt);
 	lwfree(wkt);
 	lwgeom_free(ret);
