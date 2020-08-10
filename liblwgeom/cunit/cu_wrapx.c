@@ -77,10 +77,11 @@ static void test_lwgeom_wrapx(void)
 		"LINESTRING(0 0,10 0)",
 		LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
-	ret = lwgeom_wrapx(geom, 8, -10);
+	ret = lwgeom_normalize(lwgeom_wrapx(geom, 8, -10));
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
-	exp_wkt = "MULTILINESTRING((0 0,8 0),(-2 0,0 0))";
+	exp_wkt = lwgeom_to_ewkt(lwgeom_normalize(lwgeom_from_wkt("MULTILINESTRING((0 0,8 0),(-2 0,0 0))",
+							LW_PARSER_CHECK_NONE)));
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
 	lwgeom_free(ret);
@@ -106,19 +107,21 @@ static void test_lwgeom_wrapx(void)
 		")",
 		LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
-	ret = lwgeom_wrapx(geom, 2, 20);
+	ret = lwgeom_normalize(lwgeom_wrapx(geom, 2, 20));
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
-	exp_wkt = "GEOMETRYCOLLECTION("
-						"MULTIPOLYGON("
-						"((22 0,20 0,20 10,22 10,22 4,22 2,22 0)),"
-						"((2 10,10 10,10 0,2 0,2 2,4 2,4 4,2 4,2 10))"
-						"),"
-						"MULTIPOLYGON("
-						"((22 11,20 11,20 21,22 21,22 15,22 13,22 11)),"
-						"((2 21,10 21,10 11,2 11,2 13,4 13,4 15,2 15,2 21))"
-						")"
-						")";
+	exp_wkt = lwgeom_to_ewkt(lwgeom_normalize(lwgeom_from_wkt(
+	    "GEOMETRYCOLLECTION("
+	    "MULTIPOLYGON("
+	    "((22 0,20 0,20 10,22 10,22 4,22 2,22 0)),"
+	    "((2 10,10 10,10 0,2 0,2 2,4 2,4 4,2 4,2 10))"
+	    "),"
+	    "MULTIPOLYGON("
+	    "((22 11,20 11,20 21,22 21,22 15,22 13,22 11)),"
+	    "((2 21,10 21,10 11,2 11,2 13,4 13,4 15,2 15,2 21))"
+	    ")"
+	    ")",
+	    LW_PARSER_CHECK_NONE)));
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
 	lwgeom_free(ret);
@@ -144,7 +147,6 @@ static void test_lwgeom_wrapx(void)
 	lwfree(obt_wkt);
 	lwgeom_free(ret);
 	lwgeom_free(geom);
-
 }
 
 
