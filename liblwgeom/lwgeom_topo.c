@@ -1773,7 +1773,7 @@ _lwt_MakeRingShell(LWT_TOPOLOGY *topo, LWT_ELEMID *signed_edge_ids, int num_sign
   else if ( i != numedges )
   {
     lwfree( signed_edge_ids );
-    _lwt_release_edges(ring_edges, numedges);
+    _lwt_release_edges(ring_edges, i);
     lwerror("Unexpected error: %d edges found when expecting %d", i, numedges);
     return NULL;
   }
@@ -1899,6 +1899,14 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     return -2;
   }
   const POINTARRAY *pa = shell->rings[0];
+  if ( ! ptarray_is_closed(pa) )
+  {
+    lwpoly_free(shell);
+    lwfree( signed_edge_ids );
+    lwerror("Corrupted topology: ring of edge %" LWTFMT_ELEMID
+            " is geometrically not-closed", sedge);
+    return -2;
+  }
 
   int isccw = ptarray_isccw(pa);
   LWDEBUGF(1, "Ring of edge %" LWTFMT_ELEMID " is %sclockwise",
@@ -3455,6 +3463,12 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       }
   #endif
       lwgeom_add_bbox(nface1);
+      if ( ! nface1->bbox )
+      {
+        lwerror("Corrupted topology: face %d, left of edge %d, has no bbox",
+          oldedge->face_left, edge_id);
+        return -1;
+      }
       faces[facestoupdate].face_id = oldedge->face_left;
       /* ownership left to nface */
       faces[facestoupdate++].mbr = nface1->bbox;
@@ -3480,6 +3494,12 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       }
   #endif
       lwgeom_add_bbox(nface2);
+      if ( ! nface2->bbox )
+      {
+        lwerror("Corrupted topology: face %d, right of edge %d, has no bbox",
+          oldedge->face_right, edge_id);
+        return -1;
+      }
       faces[facestoupdate].face_id = oldedge->face_right;
       faces[facestoupdate++].mbr = nface2->bbox; /* ownership left to nface */
     }

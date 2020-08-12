@@ -520,6 +520,22 @@ SELECT f.id, r.element_type||':'||r.element_id as comp
 
 SELECT 'F'||face_id, st_astext(mbr) FROM city_data.face ORDER BY face_id;
 
+-----------------------------------------------------
+-- Check robustness in presence of corrupted topology
+-----------------------------------------------------
+
+-- See https://trac.osgeo.org/postgis/ticket/4709
+BEGIN; -- need a transaction to corrupt the topology
+-- 1. Corrupt topology by setting edge 5 next_left_edge = 999999 (instead of -4)
+UPDATE city_data.edge_data
+  SET
+    next_left_edge = 999999,
+    abs_next_left_edge = 999999
+  WHERE edge_id = 5; -- corrupt topology
+-- 2. Try to add an edge closing a ring involving edge 5
+SELECT ST_AddEdgeModFace('city_data', 5, 7, 'LINESTRING(36 38,41 40)');
+ROLLBACK; -- restores the topology
+
 ---------------------------------------------------------------------
 -- Cleanups
 ---------------------------------------------------------------------
