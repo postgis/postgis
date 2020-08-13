@@ -80,7 +80,7 @@ static void test_lwline_split_by_point_to(void)
 
 static void test_lwgeom_split(void)
 {
-	LWGEOM *geom, *blade, *ret;
+	LWGEOM *geom, *blade, *ret, *tmp1, *tmp2;
 	char *wkt, *in_wkt;
 
 	geom = lwgeom_from_wkt("MULTILINESTRING((-5 -2,0 0),(0 0,10 10))", LW_PARSER_CHECK_NONE);
@@ -132,11 +132,14 @@ static void test_lwgeom_split(void)
 	ret = lwgeom_normalize(lwgeom_split(geom, blade));
 	CU_ASSERT(ret != NULL);
 	wkt = lwgeom_to_ewkt(ret);
-	in_wkt = lwgeom_to_ewkt(lwgeom_normalize(lwgeom_from_wkt(
+	tmp1 = lwgeom_normalize(lwgeom_from_wkt(
 	    "SRID=1;GEOMETRYCOLLECTION(POLYGON((7 1,0 1,0 10,7 10,7 1)),POLYGON((7 10,10 10,10 1,7 1,7 10)))",
-	    LW_PARSER_CHECK_NONE)));
+	    LW_PARSER_CHECK_NONE));
+	in_wkt = lwgeom_to_ewkt(tmp1);
 	ASSERT_STRING_EQUAL(wkt, in_wkt);
 	lwfree(wkt);
+	lwfree(in_wkt);
+	lwgeom_free(tmp1);
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 	lwgeom_free(blade);
