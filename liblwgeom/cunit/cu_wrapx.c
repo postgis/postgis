@@ -87,6 +87,7 @@ static void test_lwgeom_wrapx(void)
 					LW_PARSER_CHECK_NONE)));
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
+	lwfree(exp_wkt);
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 
@@ -107,6 +108,7 @@ static void test_lwgeom_wrapx(void)
 				);
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
+	lwfree(exp_wkt);
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 
@@ -134,6 +136,7 @@ static void test_lwgeom_wrapx(void)
 							    LW_PARSER_CHECK_NONE)));
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
+	lwfree(exp_wkt);
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 
@@ -158,6 +161,7 @@ static void test_lwgeom_wrapx(void)
 	    LW_PARSER_CHECK_NONE)) );
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
+	lwfree(exp_wkt);
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 }
