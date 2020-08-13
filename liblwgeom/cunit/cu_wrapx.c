@@ -19,7 +19,7 @@
 
 static void test_lwgeom_wrapx(void)
 {
-	LWGEOM *geom, *ret;
+	LWGEOM *geom, *ret, *tmp, *tmp2;
 	char *exp_wkt, *obt_wkt;
 
 	geom = lwgeom_from_wkt(
@@ -78,13 +78,18 @@ static void test_lwgeom_wrapx(void)
 		"LINESTRING(0 0,10 0)",
 		LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
-	ret = lwgeom_normalize(lwgeom_wrapx(geom, 8, -10));
+	tmp = lwgeom_wrapx(geom, 8, -10);
+	ret = lwgeom_normalize(tmp);
+	lwgeom_free(tmp);
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
-	exp_wkt = lwgeom_to_ewkt(
-	    lwgeom_normalize(lwgeom_from_wkt(
+	tmp = lwgeom_from_wkt(
 					"MULTILINESTRING((0 0,8 0),(-2 0,0 0))",
-					LW_PARSER_CHECK_NONE)));
+					LW_PARSER_CHECK_NONE);
+	tmp2 = lwgeom_normalize(tmp);
+	lwgeom_free(tmp);
+	exp_wkt = lwgeom_to_ewkt(tmp2);
+	lwgeom_free(tmp2);
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
 	lwfree(exp_wkt);
@@ -95,17 +100,16 @@ static void test_lwgeom_wrapx(void)
 		"MULTILINESTRING((-5 -2,0 0),(0 0,10 10))",
 		LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
-	ret = lwgeom_normalize(lwgeom_wrapx(geom, 0, 20));
+	tmp = lwgeom_wrapx(geom, 0, 20);
+	ret = lwgeom_normalize(tmp);
+	lwgeom_free(tmp);
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
-	exp_wkt = lwgeom_to_ewkt(
-							lwgeom_normalize(
-								lwgeom_from_wkt(
-								"MULTILINESTRING((15 -2,20 0),(0 0,10 10))"
-									, LW_PARSER_CHECK_NONE
-								)
-						)
-				);
+	tmp = lwgeom_from_wkt("MULTILINESTRING((15 -2,20 0),(0 0,10 10))", LW_PARSER_CHECK_NONE);
+	tmp2 = lwgeom_normalize(tmp);
+	lwgeom_free(tmp);
+	exp_wkt = lwgeom_to_ewkt(tmp2);
+	lwgeom_free(tmp2);
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
 	lwfree(exp_wkt);
@@ -119,11 +123,12 @@ static void test_lwgeom_wrapx(void)
 		")",
 		LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
-	ret = lwgeom_normalize(lwgeom_wrapx(geom, 2, 20));
+	tmp = lwgeom_wrapx(geom, 2, 20);
+	ret = lwgeom_normalize(tmp);
+	lwgeom_free(tmp);
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
-	exp_wkt =
-	    lwgeom_to_ewkt(lwgeom_normalize(lwgeom_from_wkt("GEOMETRYCOLLECTION("
+	tmp = lwgeom_from_wkt("GEOMETRYCOLLECTION("
 							    "MULTIPOLYGON("
 							    "((22 0,20 0,20 10,22 10,22 4,22 2,22 0)),"
 							    "((2 10,10 10,10 0,2 0,2 2,4 2,4 4,2 4,2 10))"
@@ -133,7 +138,11 @@ static void test_lwgeom_wrapx(void)
 							    "((2 21,10 21,10 11,2 11,2 13,4 13,4 15,2 15,2 21))"
 							    ")"
 							    ")",
-							    LW_PARSER_CHECK_NONE)));
+							    LW_PARSER_CHECK_NONE);
+	tmp2 = lwgeom_normalize(tmp);
+	lwgeom_free(tmp);
+	exp_wkt = lwgeom_to_ewkt(tmp2);
+	lwgeom_free(tmp2);
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
 	lwfree(exp_wkt);
@@ -148,17 +157,22 @@ static void test_lwgeom_wrapx(void)
 		")",
 		LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(geom != NULL);
-	ret = lwgeom_normalize(lwgeom_wrapx(geom, 0, 20));
+	tmp = lwgeom_wrapx(geom, 0, 20);
+	ret = lwgeom_normalize(tmp);
+	lwgeom_free(tmp);
 	CU_ASSERT_FATAL(ret != NULL);
 	obt_wkt = lwgeom_to_ewkt(ret);
-	exp_wkt = lwgeom_to_ewkt(
-			lwgeom_normalize(lwgeom_from_wkt(
+	tmp = lwgeom_from_wkt(
 	    "GEOMETRYCOLLECTION("
 	    "MULTILINESTRING((15 -2,20 0),(0 0,10 10)),"
 	    "POINT(15 0),"
 	    "POLYGON EMPTY"
 	    ")",
-	    LW_PARSER_CHECK_NONE)) );
+	    LW_PARSER_CHECK_NONE);
+	tmp2 = lwgeom_normalize(tmp);
+	lwgeom_free(tmp);
+	exp_wkt = lwgeom_to_ewkt(tmp2);
+	lwgeom_free(tmp2);
 	ASSERT_STRING_EQUAL(obt_wkt, exp_wkt);
 	lwfree(obt_wkt);
 	lwfree(exp_wkt);
