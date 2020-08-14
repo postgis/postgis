@@ -1,10 +1,9 @@
 #!/bin/bash
 set -e
-export SFCGAL_VER=1.3.2
-export GEOS_VER=3.8.0
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
-export SFCGAL_VER=1.3.2
+export GEOS_VER=3.8.1
+export GDAL_VER=2.4.4
+export PROJ_VER=5.2.0
+export SFCGAL_VER=1.3.8
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
@@ -58,7 +57,7 @@ export RELVERDIR=postgis-pg${REL_PGVER}-binaries-${POSTGIS_MICRO_VER}w${OS_BUILD
 
 export PATH="${PATHOLD}:${PGPATH}/bin:${PGPATH}/lib"
 #PATH="${MINGPROJECTS}/gettext/rel-gettext-0.18.1/bin:${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtk/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin:${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}/bin:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}/bin:${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}/bin:${MINGPROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}/bin:${PATH}"
-PATH="${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/lib:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
+PATH="${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/lib:${MINGPROJECTS}/rel-libiconv-1.15.1w${OS_BUILD}${GCC_TYPE}/include:${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin:${MINGPROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PATH}"
 
 #add protobuf
 export PATH="${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"

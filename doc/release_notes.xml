@@ -2,6 +2,42 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+    <sect1>
+      <title>Release 2.4.9</title>
+      <para>Release date: 2020/08/14</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect><title>Bug Fixes and Enhancements</title>
+        <para>4709, Fix crash in adding edge to corrupted topology, (Sandro Santilli)</para>
+        <para>Handle non-closed edge rings by human readable error (Sandro Santilli)</para>
+        <para>4706, Fix crash in ST_ChangeEdgeGeom on corrupted topology (Sandro Santilli)</para>
+        <para>4480, Geography Distance inconsistent with Intersects (Paul Ramsey)</para>
+        <para>4481, Improve libprotobuf detection for old systems (Paul Ramsey)</para>
+        <para>4475, Avoid reading into empty ptarra (Paul Ramsey)</para>
+        <para>4492, Fix ST_Simplify ignoring the value of the 3rd parameter (Raúl Marín)</para>
+        <para>4494, Fix ST_Simplify output having an outdated bbox (Raúl Marín)</para>
+        <para>4493, Fix ST_RemoveRepeatedPoints output having an outdated bbox (Raúl Marín)</para>
+        <para>4495, Fix ST_SnapToGrid output having an outdated bbox (Raúl Marín)</para>
+        <para>4506, Remove tolerance in point-in-ring stabline tests (Paul Ramsey)</para>
+        <para>4518, Backport system views to make upgrade to PostGIS3 cleaner (Paul Ramsey)</para>
+        <para>4519, Fix getSRIDbySRS crash (Raúl Marín)</para>
+        <para>4534, Fix leak in lwcurvepoly_from_wkb_state (Raúl Marín)</para>
+        <para>4536, Fix leak in lwcollection_from_wkb_state (Raúl Marín)</para>
+        <para>4537, Fix leak in WKT collection parser (Raúl Marín)</para>
+        <para>4546, Fix ST_ConcaveHull under FDW (Raúl Marín)</para>
+        <para>4547, Fix AddRasterConstraints handling of empty tables (Sandro Santilli)</para>
+        <para>4549, Fix schema qualification of internal types (Raúl Marín)</para>
+        <para>4546, Fix PLPGSQL functions missing the schema qualification (Raúl Marín)</para>
+        <para>4588, Fix update when st_union(geometry) doesn't exist (Raúl Marín)</para>
+        <para>4621, Prevent stack overflow when parsing WKB (Raúl Marín)</para>
+        <para>4646, Fix gserialized_cmp incorrect comparison (dkvash)</para>
+        <para>4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)</para>
+        <para>4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)</para>
+        <para>4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, 2ndQuadrant)</para>
+        <para>4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)</para>
+      </simplesect>
+    </sect1>
+
     <sect1>
       <title>Release 2.4.8</title>
       <para>Release date: 2019/08/11</para>

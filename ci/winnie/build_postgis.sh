@@ -12,11 +12,10 @@ set -e
 #POSTGIS_MINOR_VERSION=1
 #POSTGIS_MICRO_VERSION=0SVN
 #export GCC_TYPE=gcc48  #for pre-4.8.0 compiles this is blank
-export SFCGAL_VER=1.3.2
-export GEOS_VER=3.8.0
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
-export SFCGAL_VER=1.3.2
+export GEOS_VER=3.8.1
+export GDAL_VER=2.4.4
+export PROJ_VER=5.2.0
+export SFCGAL_VER=1.3.8
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
