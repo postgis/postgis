@@ -7102,7 +7102,7 @@ FROM baz
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/rt_st_transform01.png" />
+								<imagedata fileref="images/rt_st_transform04.png" />
 							  </imageobject>
 							  <caption><para>not_aligned</para></caption>
 							</mediaobject>
@@ -7112,7 +7112,7 @@ FROM baz
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/rt_st_transform02.png" />
+								<imagedata fileref="images/rt_st_transform05.png" />
 							  </imageobject>
 							  <caption><para>aligned</para></caption>
 							</mediaobject>
