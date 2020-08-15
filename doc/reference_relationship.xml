@@ -1339,57 +1339,6 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_PointInsideCircle">
-	  <refnamediv>
-		<refname>ST_PointInsideCircle</refname>
-
-		<refpurpose>Is the point geometry inside the circle defined by center_x, center_y, radius</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>ST_PointInsideCircle</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>center_x</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>center_y</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>radius</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>The syntax for this functions is
-			ST_PointInsideCircle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
-			Returns the true if the geometry is a point and is inside the
-			circle. Returns false otherwise.</para>
-		<note><para>This only works for points as the name suggests</para></note>
-
-		<para>Availability: 1.2</para>
-		<para>Changed: 2.2.0 In prior versions this used to be called ST_Point_Inside_Circle</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT ST_PointInsideCircle(ST_Point(1,2), 0.5, 2, 3);
- st_pointinsidecircle
-------------------------
- t
-</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_DWithin" /></para>
-	  </refsection>
-	</refentry>
-
 	<refentry id="ST_Relate">
 		<refnamediv>
 			<refname>ST_Relate</refname>
@@ -2131,6 +2080,57 @@ SELECT b.tower_id, b.geom
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_PointInsideCircle">
+	  <refnamediv>
+		<refname>ST_PointInsideCircle</refname>
+
+		<refpurpose>Is the point geometry inside the circle defined by center_x, center_y, radius</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_PointInsideCircle</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>center_x</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>center_y</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>radius</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The syntax for this functions is
+			ST_PointInsideCircle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
+			Returns the true if the geometry is a point and is inside the
+			circle. Returns false otherwise.</para>
+		<warning><para>Will not use spatial indexes. Use <xref linkend="ST_DWithin" /> instead.</para></warning>
+		<note><para>This only works for points as the name suggests.</para></note>
+
+		<para>Availability: 1.2</para>
+		<para>Changed: 2.2.0 In prior versions this used to be called ST_Point_Inside_Circle</para>
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_PointInsideCircle(ST_Point(1,2), 0.5, 2, 3);
+ st_pointinsidecircle
+------------------------
+ t
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_DWithin" /></para>
+	  </refsection>
+	</refentry>
 
     </sect2>
 
