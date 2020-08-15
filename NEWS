@@ -21,7 +21,8 @@ Only tickets not included in 3.1.0alpha2
            Affects ANALYZE, _ST_PointOutside, postgis_geobbox, ST_CombineBbox(box2d, geometry),
            ST_ClipByBox2D when the geometry is fully inside or outside the bbox and
            ST_BoundingDiagonal.
-
+  - #4741, Don't use ST_PointInsideCircle if you need indexes, use ST_DWithin instead.
+           Documentation adjusted (Darafei Praliaskouski)
 
 * Bug fixes *
   - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
