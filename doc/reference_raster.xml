@@ -203,11 +203,6 @@ VALUES (1,
             <para>raster is a spatial data type used to represent raster data such as those imported from JPEGs, TIFFs, PNGs, digital elevation models.
                 Each raster has 1 or more bands each having a set of pixel values. Rasters can be georeferenced.</para>
             <note>
-              <para>
-                Requires PostGIS Raster support to be enabled in the database. See <xref linkend="create_spatial_db" /> for more details.
-              </para>
-            </note>
-            <note>
               <para>Requires PostGIS be compiled with GDAL support. Currently rasters can be implicitly converted to geometry type, but the conversion returns the
                 <xref linkend="RT_ST_ConvexHull" /> of the raster.  This auto casting may be removed in the near future so don't rely on it.</para>
             </note>
@@ -4011,20 +4006,20 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 			<refsection>
 				<title>Description</title>
 
-				<para>Returns system file path to a band.  Returns null for in db raster bands.</para>
-			</refsection>
+				<para>Returns system file path to a band.  Throws an error if called with an in db band.</para>
+				</refsection>
 
-			<refsection>
+				<refsection>
 					<title>Examples</title>
 
-					<programlisting>SELECT rid, ST_BandPath(rast,1) AS file_path
-FROM dem
-LIMIT 1;</programlisting>
+					<programlisting><!-- TODO: -->
+					</programlisting>
+
 			</refsection>
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandFileSize" />, <xref linkend="RT_ST_BandFileTimestamp" />, <xref linkend="RT_ST_BandMetaData" />, <xref linkend="postgis_enable_outdb_rasters" />, <xref linkend="outdb" /></para>
+				<para></para>
 			</refsection>
 		</refentry>
 
@@ -6985,13 +6980,9 @@ SELECT rid, (meta).* FROM bar
 					ST_Transform is often confused with ST_SetSRID(). ST_Transform actually changes the coordinates of a raster (and resamples the pixel values) from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of the raster.
 				</para>
 
-				<note>
-					<para>
-						If you are transforming more than one tile, such as a table of coverage rasters you should use the <code>ST_Transform(rast,alignto)</code> (Variant 3)
-						to ensure the tiles will all have same alignment (needed by many operations such as ST_Union) and minimize on gaps between tiles.
-					</para>
-					<para>Unlike the other variants, Variant 3 requires a reference raster as <varname>alignto</varname>. The transformed raster will be transformed to the spatial reference system (SRID) of the reference raster and be aligned (ST_SameAlignment = TRUE) to the reference raster.</para>
-				</note>
+				<para>
+					Unlike the other variants, Variant 3 requires a reference raster as <varname>alignto</varname>. The transformed raster will be transformed to the spatial reference system (SRID) of the reference raster and be aligned (ST_SameAlignment = TRUE) to the reference raster.
+				</para>
 
 				<note>
 					<para>
@@ -6999,9 +6990,14 @@ SELECT rid, (meta).* FROM bar
 					</para>
 				</note>
 
-				<para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
-				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				<warning>
+					<para>
+						When transforming a coverage of tiles, you almost always want to use a reference raster to insure same alignment as demonstrated in example: Variant 3.
+					</para>
+				</warning>
 
+				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				<para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
 			</refsection>
 
 			<refsection>
@@ -7099,6 +7095,33 @@ FROM baz
 ------+-------------+---------
  t    | f           | t
 				</programlisting>
+				<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/rt_st_transform04.png" />
+							  </imageobject>
+							  <caption><para>not_aligned</para></caption>
+							</mediaobject>
+						  </informalfigure>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/rt_st_transform05.png" />
+							  </imageobject>
+							  <caption><para>aligned</para></caption>
+							</mediaobject>
+						  </informalfigure>
+						</para></entry>
+					  </row>
+						</tbody>
+						</tgroup>
+					</informaltable>
 			</refsection>
 
 			<refsection>
@@ -7554,7 +7577,7 @@ rid | exclude_nodata | include_nodata
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
@@ -7562,14 +7585,14 @@ rid | exclude_nodata | include_nodata
 
 					<funcprototype>
 						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
 						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 					</funcprototype>
 
@@ -8130,7 +8153,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
@@ -8138,14 +8161,14 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 
 					<funcprototype>
 						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
 						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 					</funcprototype>
@@ -9816,8 +9839,8 @@ FROM apple;
 							<funcdef>raster <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
+							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 					  </funcprototype>
 
 					  <funcprototype>
@@ -9835,8 +9858,8 @@ FROM apple;
 							<paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 							<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
+							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 					  </funcprototype>
 
 					</funcsynopsis>
