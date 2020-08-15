@@ -4,6 +4,31 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+        <title>Release 3.0.2</title>
+        <para>Release date: 2020/08/15</para>
+        <para>This is a bug fix / performance enhancements release. This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+              Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12, and GEOS 3.8</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+          <para>Remove useless duplicated call in ST_ChangeEdgeGeom (Sandro Santilli)</para>
+          <para>4709, Fix crash in adding edge to corrupted topology, (Sandro Santilli)</para>
+          <para>- Handle non-closed edge rings by human readable error (Sandro Santilli)</para>
+          <para>4706, Fix crash in ST_ChangeEdgeGeom on corrupted topology (Sandro Santilli)</para>
+          <para>4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)</para>
+          <para>4661,4129, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)</para>
+          <para>4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)</para>
+          <para>4702, Legacy ST_Locate_Between_Measures is wrong (Kaplas80)</para>
+          <para>4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, 2ndQuadrant)</para>
+          <para>4716, Fix several issues with pkg-config in the configure script (Raúl Marín)</para>
+          <para>4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)</para>
+          <para>4541, ST_ConcaveHull returns a "geometrycollection"
+                    type instead of the expected "polygon" (Regina Obe)</para>
+          <para>4640, Update raster docs to explain why ST_Transform using alignment is important.
+                    Update raster FAQ (Regina Obe, Maksim Gomov)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
       <title>PostGIS 3.0.1</title>
       <para>Release date: 2020/02/20</para>
 

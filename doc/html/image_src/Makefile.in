@@ -149,7 +149,9 @@ IMAGES= \
 	../images/st_voronoi01.png \
 	../images/st_voronoi02.png \
 	../images/st_voronoi03.png \
-	../images/st_within01.png
+	../images/st_within01.png \
+	../images/rt_st_transform01.png \
+	../images/rt_st_transform02.png
 
 # Images that are created with dimensions 100x100
 IMAGES_RESIZED= \

@@ -6990,6 +6990,12 @@ SELECT rid, (meta).* FROM bar
 					</para>
 				</note>
 
+				<warning>
+					<para>
+						When transforming a coverage of tiles, you almost always want to use a reference raster to insure same alignment as demonstrated in example: Variant 3.
+					</para>
+				</warning>
+
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 				<para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
 			</refsection>
@@ -7089,6 +7095,33 @@ FROM baz
 ------+-------------+---------
  t    | f           | t
 				</programlisting>
+				<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/rt_st_transform01.png" />
+							  </imageobject>
+							  <caption><para>not_aligned</para></caption>
+							</mediaobject>
+						  </informalfigure>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/rt_st_transform02.png" />
+							  </imageobject>
+							  <caption><para>aligned</para></caption>
+							</mediaobject>
+						  </informalfigure>
+						</para></entry>
+					  </row>
+						</tbody>
+						</tgroup>
+					</informaltable>
 			</refsection>
 
 			<refsection>

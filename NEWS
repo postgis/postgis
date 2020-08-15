@@ -1,5 +1,5 @@
 PostGIS 3.0.2
-2020/08/XX
+2020/08/15
 
 * Bug Fixes and Enhancements *
   - Remove useless duplicated call in ST_ChangeEdgeGeom (Sandro Santilli)
@@ -15,6 +15,8 @@ PostGIS 3.0.2
   - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
   - #4541, ST_ConcaveHull returns a "geometrycollection"
            type instead of the expected "polygon" (Regina Obe)
+  - #4640, Update raster docs to explain why ST_Transform using alignment is important.
+           Update raster FAQ (Regina Obe, Maksim Gomov)
 
 PostGIS 3.0.1
 2020/02/20
