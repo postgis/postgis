@@ -5,7 +5,7 @@
 
     <sect1>
       <title>Release 2.5.5</title>
-      <para>Release date: 2020/08/14</para>
+      <para>Release date: 2020/08/15</para>
       <simplesect>
         <title>Bug Fixes</title>
         <para>4709, Fix crash in adding edge to corrupted topology, (Sandro Santilli)</para>
