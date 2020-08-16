@@ -6992,7 +6992,7 @@ SELECT rid, (meta).* FROM bar
 
 				<warning>
 					<para>
-						When transforming a coverage of tiles, you almost always want to use a reference raster to insure same alignment as demonstrated in example: Variant 3.
+						When transforming a coverage of tiles, you almost always want to use a reference raster to insure same alignment and no gaps in your tiles as demonstrated in example: Variant 3.
 					</para>
 				</warning>
 
