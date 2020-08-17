@@ -480,26 +480,27 @@ add_value_as_string_with_size(mvt_agg_context *ctx, char *value, size_t size, ui
 	return kept;
 }
 
-static bool
+/* Adds a string to the stored values. Gets ownership of the string */
+static void
 add_value_as_string(mvt_agg_context *ctx, char *value, uint32_t *tags, uint32_t k)
 {
-	return add_value_as_string_with_size(ctx, value, strlen(value), tags, k);
+	bool kept = add_value_as_string_with_size(ctx, value, strlen(value), tags, k);
+	if (!kept)
+		pfree(value);
 }
 
-static void parse_datum_as_string(mvt_agg_context *ctx, Oid typoid,
-	Datum datum, uint32_t *tags, uint32_t k)
+/* Adds a Datum to the stored values as a string. */
+static inline void
+parse_datum_as_string(mvt_agg_context *ctx, Oid typoid, Datum datum, uint32_t *tags, uint32_t k)
 {
 	Oid foutoid;
 	bool typisvarlena;
-	bool kept;
 	char *value;
 	POSTGIS_DEBUG(2, "parse_value_as_string called");
 	getTypeOutputInfo(typoid, &foutoid, &typisvarlena);
 	value = OidOutputFunctionCall(foutoid, datum);
 	POSTGIS_DEBUGF(4, "parse_value_as_string value: %s", value);
-	kept = add_value_as_string(ctx, value, tags, k);
-	if (!kept)
-		pfree(value);
+	add_value_as_string(ctx, value, tags, k);
 }
 
 static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
@@ -541,13 +542,10 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 
 			if (v.type == jbvString)
 			{
-				bool kept;
 				char *value = palloc(v.val.string.len + 1);
 				memcpy(value, v.val.string.val, v.val.string.len);
 				value[v.val.string.len] = '\0';
-				kept = add_value_as_string(ctx, value, tags, k);
-				if (!kept)
-					pfree(value);
+				add_value_as_string(ctx, value, tags, k);
 				ctx->row_columns++;
 			}
 			else if (v.type == jbvBool)
@@ -720,6 +718,12 @@ static void parse_values(mvt_agg_context *ctx)
 					sizeof(double),
 					double_value,
 					VECTOR_TILE__TILE__VALUE__TEST_ONEOF_DOUBLE_VALUE);
+			break;
+		case TEXTOID:
+			add_value_as_string(ctx, text_to_cstring(DatumGetTextP(datum)), tags, k);
+			break;
+		case CSTRINGOID:
+			add_value_as_string(ctx, DatumGetCString(datum), tags, k);
 			break;
 		default:
 			parse_datum_as_string(ctx, typoid, datum, tags, k);
@@ -1363,6 +1367,8 @@ mvt_agg_context * mvt_ctx_deserialize(const bytea *ba)
  * Combine 2 layers. This is going to push everything from layer2 into layer1
  * We can do this because both sources and the result live in the same aggregation context
  * so we are good as long as we don't free anything from the sources
+ *
+ * TODO: Apply hash to remove duplicates (https://trac.osgeo.org/postgis/ticket/4310)
  */
 static VectorTile__Tile__Layer *
 vectortile_layer_combine(VectorTile__Tile__Layer *layer, VectorTile__Tile__Layer *layer2)
