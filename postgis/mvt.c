@@ -45,6 +45,8 @@
 /* Note: set UTHASH_FUNCTION (not HASH_FUNCTION) to change the hash function */
 #include "uthash.h"
 
+#include "vector_tile.pb-c.h"
+
 #define FEATURES_CAPACITY_INITIAL 50
 
 enum mvt_cmd_id
@@ -69,7 +71,7 @@ struct mvt_kv_key
 };
 
 struct mvt_kv_value {
-	VectorTile__Tile__Value *value;
+	VectorTile__Tile__Value value[1];
 	uint32_t id;
 	UT_hash_handle hh;
 };
@@ -361,13 +363,6 @@ static void encode_keys(mvt_agg_context *ctx)
 	HASH_CLEAR(hh, ctx->keys_hash);
 }
 
-static VectorTile__Tile__Value *create_value()
-{
-	VectorTile__Tile__Value *value = palloc(sizeof(*value));
-	vector_tile__tile__value__init(value);
-	return value;
-}
-
 #define MVT_CREATE_VALUES(hash) \
 	{ \
 		struct mvt_kv_value *kv; \
@@ -411,7 +406,7 @@ static void encode_values(mvt_agg_context *ctx)
 				kv = palloc(sizeof(*kv)); \
 				POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", ctx->values_hash_i); \
 				kv->id = ctx->values_hash_i++; \
-				kv->value = create_value(); \
+				vector_tile__tile__value__init(kv->value); \
 				kv->value->pfvaluefield = newvalue; \
 				kv->value->test_oneof_case = pftype; \
 				HASH_ADD(hh, ctx->hash, value->pfvaluefield, size, kv); \
@@ -469,7 +464,7 @@ add_value_as_string_with_size(mvt_agg_context *ctx, char *value, size_t size, ui
 		POSTGIS_DEBUGF(4, "add_value_as_string new hash key: %d",
 			ctx->values_hash_i);
 		kv->id = ctx->values_hash_i++;
-		kv->value = create_value();
+		vector_tile__tile__value__init(kv->value);
 		kv->value->string_value = value;
 		kv->value->test_oneof_case = VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE;
 		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->value->string_value, size, kv);
