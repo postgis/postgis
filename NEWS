@@ -1,3 +1,8 @@
+PostGIS 3.0.3
+2020/xx/xx
+* Bug Fixes and Enhancements *
+  - #4742 tiger geocoder reverted to 2018 version on tiger upgrade
+
 PostGIS 3.0.2
 2020/08/15
 
