@@ -998,7 +998,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	dnl Try pkgconfig first
 	if test -n "$PKG_CONFIG"; then
 		dnl Ensure libprotobuf-c is of minimum required version
-		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.0.0], [
+		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
 				PROTOBUF_CPPFLAGS="$PROTOBUFC_CFLAGS";
 				PROTOBUF_LDFLAGS="$PROTOBUFC_LIBS";
 			], [
@@ -1069,10 +1069,8 @@ if test "$CHECK_PROTOBUF" != "no"; then
         if test "$HAVE_PROTOBUF" = "yes"; then
 		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
 		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf-c])
-		if test $PROTOC_VERSION -ge 1001000; then
-			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf is >= 1.1])
-			HAVE_GEOBUF=yes
-		fi
+		AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if geobuf is present])
+		HAVE_GEOBUF=yes
 	fi
 
     AC_SUBST([HAVE_PROTOBUF])

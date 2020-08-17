@@ -389,6 +389,8 @@ static void encode_values(mvt_agg_context *ctx)
 	ctx->layer->n_values = ctx->values_hash_i;
 	ctx->layer->values = values;
 
+	/* Since the tupdesc is part of Postgresql cache, we need to ensure we release it when we
+	 * are done with it */
 	ReleaseTupleDesc(ctx->column_cache.tupdesc);
 	memset(&ctx->column_cache, 0, sizeof(ctx->column_cache));
 

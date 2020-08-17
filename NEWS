@@ -2,6 +2,9 @@ PostGIS 3.1.0beta1
 2020/xx/xx
 Only tickets not included in 3.1.0alpha2
 
+* Breaking changes *
+  - #4737, Bump minimum protobuf-c requirement to 1.1.0 (Raúl Marín)
+
 * New features *
   - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)
 
@@ -23,6 +26,8 @@ Only tickets not included in 3.1.0alpha2
            ST_BoundingDiagonal.
   - #4741, Don't use ST_PointInsideCircle if you need indexes, use ST_DWithin instead.
            Documentation adjusted (Darafei Praliaskouski)
+  - #4737, Improve performance and reduce memory usage in ST_AsMVT, especially in
+           queries involving parallelism (Raúl Marín)
 
 * Bug fixes *
   - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
