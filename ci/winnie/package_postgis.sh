@@ -25,6 +25,12 @@ export CGAL_VER=4.11
 export BOOST_VER=1.53.0
 	#BOOST_VER_WU=1_49_0
 export BOOST_VER_WU=1_53_0
+
+if [["${OS_BUILD}" == '64']] ; then
+  export GDAL_VER=2.4.4
+  export SFCGAL_VER=1.3.8
+fi;
+
 fi;
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
