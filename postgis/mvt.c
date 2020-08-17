@@ -401,7 +401,9 @@ static void encode_values(mvt_agg_context *ctx)
 		POSTGIS_DEBUG(2, "MVT_PARSE_VALUE called"); \
 		{ \
 			struct mvt_kv_value *kv; \
-			HASH_FIND(hh, ctx->hash, &newvalue, size, kv); \
+			unsigned hashv; \
+			HASH_VALUE(&newvalue, size, hashv); \
+			HASH_FIND_BYHASHVALUE(hh, ctx->hash, &newvalue, size, hashv, kv); \
 			if (!kv) \
 			{ \
 				POSTGIS_DEBUG(4, "MVT_PARSE_VALUE value not found"); \
@@ -411,7 +413,7 @@ static void encode_values(mvt_agg_context *ctx)
 				vector_tile__tile__value__init(kv->value); \
 				kv->value->pfvaluefield = newvalue; \
 				kv->value->test_oneof_case = pftype; \
-				HASH_ADD(hh, ctx->hash, value->pfvaluefield, size, kv); \
+				HASH_ADD_KEYPTR_BYHASHVALUE(hh, ctx->hash, &kv->value->pfvaluefield, size, hashv, kv); \
 			} \
 			tags[ctx->row_columns * 2] = k; \
 			tags[ctx->row_columns * 2 + 1] = kv->id; \
@@ -457,8 +459,10 @@ add_value_as_string_with_size(mvt_agg_context *ctx, char *value, size_t size, ui
 {
 	bool kept = false;
 	struct mvt_kv_value *kv;
+	unsigned hashv;
+	HASH_VALUE(value, size, hashv);
 	POSTGIS_DEBUG(2, "add_value_as_string called");
-	HASH_FIND(hh, ctx->string_values_hash, value, size, kv);
+	HASH_FIND_BYHASHVALUE(hh, ctx->string_values_hash, value, size, hashv, kv);
 	if (!kv)
 	{
 		POSTGIS_DEBUG(4, "add_value_as_string value not found");
@@ -469,7 +473,7 @@ add_value_as_string_with_size(mvt_agg_context *ctx, char *value, size_t size, ui
 		vector_tile__tile__value__init(kv->value);
 		kv->value->string_value = value;
 		kv->value->test_oneof_case = VECTOR_TILE__TILE__VALUE__TEST_ONEOF_STRING_VALUE;
-		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->value->string_value, size, kv);
+		HASH_ADD_KEYPTR_BYHASHVALUE(hh, ctx->string_values_hash, kv->value->string_value, size, hashv, kv);
 		kept = true;
 	}
 	tags[ctx->row_columns * 2] = k;
