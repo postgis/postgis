@@ -9,6 +9,7 @@ Only tickets not included in 3.1.0alpha2
   - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)
 
 * Enhancements *
+  - Make ST_Subdivide interruptable (Sandro Santilli)
   - #4660, Changes in double / coordinate printing (Raúl Marín)
         - Use the shortest representation (enough to guarantee roundtrip).
         - Uses scientific notation for absolute numbers smaller than 1e-8.
