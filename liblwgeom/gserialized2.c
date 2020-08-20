@@ -1099,36 +1099,24 @@ static size_t gserialized2_from_extended_flags(lwflags_t lwflags, uint8_t *buf)
 static size_t gserialized2_from_gbox(const GBOX *gbox, uint8_t *buf)
 {
 	uint8_t *loc = buf;
-	float f;
+	float *f;
+	uint8_t i = 0;
 	size_t return_size;
 
 	assert(buf);
 
-	f = next_float_down(gbox->xmin);
-	memcpy(loc, &f, sizeof(float));
-	loc += sizeof(float);
-
-	f = next_float_up(gbox->xmax);
-	memcpy(loc, &f, sizeof(float));
-	loc += sizeof(float);
-
-	f = next_float_down(gbox->ymin);
-	memcpy(loc, &f, sizeof(float));
-	loc += sizeof(float);
-
-	f = next_float_up(gbox->ymax);
-	memcpy(loc, &f, sizeof(float));
-	loc += sizeof(float);
+	f = (float *)buf;
+	f[i++] = next_float_down(gbox->xmin);
+	f[i++] = next_float_up(gbox->xmax);
+	f[i++] = next_float_down(gbox->ymin);
+	f[i++] = next_float_up(gbox->ymax);
+	loc += 4 * sizeof(float);
 
 	if (FLAGS_GET_GEODETIC(gbox->flags))
 	{
-		f = next_float_down(gbox->zmin);
-		memcpy(loc, &f, sizeof(float));
-		loc += sizeof(float);
-
-		f = next_float_up(gbox->zmax);
-		memcpy(loc, &f, sizeof(float));
-		loc += sizeof(float);
+		f[i++] = next_float_down(gbox->zmin);
+		f[i++] = next_float_up(gbox->zmax);
+		loc += 2 * sizeof(float);
 
 		return_size = (size_t)(loc - buf);
 		LWDEBUGF(4, "returning size %d", return_size);
@@ -1137,25 +1125,16 @@ static size_t gserialized2_from_gbox(const GBOX *gbox, uint8_t *buf)
 
 	if (FLAGS_GET_Z(gbox->flags))
 	{
-		f = next_float_down(gbox->zmin);
-		memcpy(loc, &f, sizeof(float));
-		loc += sizeof(float);
-
-		f = next_float_up(gbox->zmax);
-		memcpy(loc, &f, sizeof(float));
-		loc += sizeof(float);
-
+		f[i++] = next_float_down(gbox->zmin);
+		f[i++] = next_float_up(gbox->zmax);
+		loc += 2 * sizeof(float);
 	}
 
 	if (FLAGS_GET_M(gbox->flags))
 	{
-		f = next_float_down(gbox->mmin);
-		memcpy(loc, &f, sizeof(float));
-		loc += sizeof(float);
-
-		f = next_float_up(gbox->mmax);
-		memcpy(loc, &f, sizeof(float));
-		loc += sizeof(float);
+		f[i++] = next_float_down(gbox->mmin);
+		f[i++] = next_float_up(gbox->mmax);
+		loc += 2 * sizeof(float);
 	}
 	return_size = (size_t)(loc - buf);
 	LWDEBUGF(4, "returning size %d", return_size);
