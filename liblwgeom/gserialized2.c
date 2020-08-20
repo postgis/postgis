@@ -1214,12 +1214,7 @@ GSERIALIZED* gserialized2_from_lwgeom(LWGEOM *geom, size_t *size)
 	/* Calculate size as returned by data processing functions. */
 	return_size = ptr - (uint8_t*)g;
 
-	if (expected_size != return_size) /* Uh oh! */
-	{
-		lwerror("Return size (%lu) not equal to expected size (%lu)!", return_size, expected_size);
-		return NULL;
-	}
-
+	assert(expected_size == return_size);
 	if (size) /* Return the output size to the caller if necessary. */
 		*size = return_size;
 
