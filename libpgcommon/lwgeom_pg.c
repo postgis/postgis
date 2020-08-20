@@ -214,11 +214,6 @@ pg_alloc(size_t size)
 
 	POSTGIS_DEBUGF(5, "  pg_alloc(%d) returning %p", (int)size, result);
 
-	if ( ! result )
-	{
-		ereport(ERROR, (errmsg_internal("Out of virtual memory")));
-		return NULL;
-	}
 	return result;
 }
 
