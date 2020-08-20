@@ -684,6 +684,7 @@ static size_t gserialized2_from_lwpoly_size(const LWPOLY *poly)
 {
 	size_t size = 4; /* Type number. */
 	uint32_t i = 0;
+	const size_t point_size = FLAGS_NDIMS(poly->flags) * sizeof(double);
 
 	assert(poly);
 
@@ -694,7 +695,7 @@ static size_t gserialized2_from_lwpoly_size(const LWPOLY *poly)
 	for (i = 0; i < poly->nrings; i++)
 	{
 		size += 4; /* Number of points in ring. */
-		size += poly->rings[i]->npoints * FLAGS_NDIMS(poly->flags) * sizeof(double);
+		size += poly->rings[i]->npoints * point_size;
 	}
 
 	LWDEBUGF(3, "polygon size = %d", size);
