@@ -2280,7 +2280,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom,
 	if (!box_in)
 		return;
 
-	LW_ON_INTERRUPT(return NULL);
+	LW_ON_INTERRUPT(return);
 
 	GBOX clip;
 	gbox_duplicate(box_in, &clip);
