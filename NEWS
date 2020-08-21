@@ -29,6 +29,7 @@ Only tickets not included in 3.1.0alpha2
            Documentation adjusted (Darafei Praliaskouski)
   - #4737, Improve performance and reduce memory usage in ST_AsMVT, especially in
            queries involving parallelism (Raúl Marín)
+  - #4746, Micro optimizations to the serialization process (Raúl Marín)
 
 * Bug fixes *
   - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
