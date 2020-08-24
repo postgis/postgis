@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2011-2014 Sandro Santilli <strk@kbt.io>
+ * Copyright 2011-2020 Sandro Santilli <strk@kbt.io>
  * Copyright 2015-2018 Daniel Baston <dbaston@gmail.com>
  * Copyright 2017-2018 Darafei Praliaskouski <me@komzpa.net>
  *
@@ -673,7 +673,13 @@ lwgeom_normalize(const LWGEOM* geom)
 }
 
 LWGEOM*
-lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
+lwgeom_intersection(const LWGEOM* g1, const LWGEOM* g2)
+{
+	return lwgeom_intersection_prec(g1, g2, -1.0);
+}
+
+LWGEOM*
+lwgeom_intersection_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 {
 	LWGEOM* result;
 	int32_t srid = RESULT_SRID(geom1, geom2);
@@ -695,7 +701,19 @@ lwgeom_intersection(const LWGEOM* geom1, const LWGEOM* geom2)
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
-	g3 = GEOSIntersection(g1, g2);
+	if ( prec >= 0) {
+#if POSTGIS_GEOS_VERSION < 39
+		lwerror("Fixed-precision intersection requires GEOS-3.9 or higher");
+		GEOS_FREE_AND_FAIL(g1, g2);
+		return NULL;
+#else
+		g3 = GEOSIntersectionPrec(g1, g2, prec);
+#endif
+	}
+	else
+	{
+		g3 = GEOSIntersection(g1, g2);
+	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
@@ -740,6 +758,12 @@ lwgeom_linemerge(const LWGEOM* geom)
 LWGEOM*
 lwgeom_unaryunion(const LWGEOM* geom)
 {
+	return lwgeom_unaryunion_prec(geom, -1.0);
+}
+
+LWGEOM*
+lwgeom_unaryunion_prec(const LWGEOM* geom, double prec)
+{
 	LWGEOM* result;
 	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
@@ -755,7 +779,19 @@ lwgeom_unaryunion(const LWGEOM* geom)
 
 	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
-	g3 = GEOSUnaryUnion(g1);
+	if ( prec >= 0) {
+#if POSTGIS_GEOS_VERSION < 39
+		lwerror("Fixed-precision union requires GEOS-3.9 or higher");
+		GEOS_FREE_AND_FAIL(g1);
+		return NULL;
+#else
+		g3 = GEOSUnaryUnionPrec(g1, prec);
+#endif
+	}
+	else
+	{
+		g3 = GEOSUnaryUnion(g1);
+	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
@@ -770,6 +806,12 @@ lwgeom_unaryunion(const LWGEOM* geom)
 
 LWGEOM*
 lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
+{
+	return lwgeom_difference_prec(geom1, geom2, -1.0);
+}
+
+LWGEOM*
+lwgeom_difference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 {
 	LWGEOM* result;
 	int32_t srid = RESULT_SRID(geom1, geom2);
@@ -789,7 +831,19 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
-	g3 = GEOSDifference(g1, g2);
+	if ( prec >= 0) {
+#if POSTGIS_GEOS_VERSION < 39
+		lwerror("Fixed-precision difference requires GEOS-3.9 or higher");
+		GEOS_FREE_AND_FAIL(g1, g2);
+		return NULL;
+#else
+		g3 = GEOSDifferencePrec(g1, g2, prec);
+#endif
+	}
+	else
+	{
+		g3 = GEOSDifference(g1, g2);
+	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
@@ -803,6 +857,12 @@ lwgeom_difference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 LWGEOM*
 lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
+{
+	return lwgeom_symdifference_prec(geom1, geom2, -1.0);
+}
+
+LWGEOM*
+lwgeom_symdifference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 {
 	LWGEOM* result;
 	int32_t srid = RESULT_SRID(geom1, geom2);
@@ -822,7 +882,19 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
-	g3 = GEOSSymDifference(g1, g2);
+	if ( prec >= 0) {
+#if POSTGIS_GEOS_VERSION < 39
+		lwerror("Fixed-precision difference requires GEOS-3.9 or higher");
+		GEOS_FREE_AND_FAIL(g1, g2);
+		return NULL;
+#else
+		g3 = GEOSSymDifferencePrec(g1, g2, prec);
+#endif
+	}
+	else
+	{
+		g3 = GEOSSymDifference(g1, g2);
+	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);
@@ -901,7 +973,13 @@ lwgeom_pointonsurface(const LWGEOM *geom)
 }
 
 LWGEOM*
-lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
+lwgeom_union(const LWGEOM* g1, const LWGEOM* g2)
+{
+	return lwgeom_union_prec(g1, g2, -1.0);
+}
+
+LWGEOM*
+lwgeom_union_prec(const LWGEOM* geom1, const LWGEOM* geom2, double gridSize)
 {
 	LWGEOM* result;
 	int32_t srid = RESULT_SRID(geom1, geom2);
@@ -921,7 +999,19 @@ lwgeom_union(const LWGEOM* geom1, const LWGEOM* geom2)
 	if (!(g1 = LWGEOM2GEOS(geom1, AUTOFIX))) GEOS_FAIL();
 	if (!(g2 = LWGEOM2GEOS(geom2, AUTOFIX))) GEOS_FREE_AND_FAIL(g1);
 
-	g3 = GEOSUnion(g1, g2);
+	if ( gridSize >= 0) {
+#if POSTGIS_GEOS_VERSION < 39
+		lwerror("Fixed-precision union requires GEOS-3.9 or higher");
+		GEOS_FREE_AND_FAIL(g1, g2);
+		return NULL;
+#else
+		g3 = GEOSUnionPrec(g1, g2, gridSize);
+#endif
+	}
+	else
+	{
+		g3 = GEOSUnion(g1, g2);
+	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1, g2);
 	GEOSSetSRID(g3, srid);

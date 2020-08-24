@@ -1255,6 +1255,7 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
             <funcdef>geometry <function>ST_Difference</function></funcdef>
             <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
             <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -1267,7 +1268,15 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
             then an empty geometry collection is returned.</para>
         <note><para>Order matters. B - A will always return a portion of B</para></note>
 
+            <para>
+If a gridSize argument is provided, the inputs are
+snapped to a grid of the given size and all intersections are computed
+on that same grid. This method requires GEOS-3.9.0 or higher.
+            </para>
+
         <para>Performed by the GEOS module</para>
+
+        <para>Enhanced: 3.1.0 accept a gridSize parameter.</para>
 
         <para>&sfs_compliant; s2.1.1.3</para>
         <para>&sqlmm_compliant; SQL-MM 3: 5.1.20</para>
@@ -1631,6 +1640,10 @@ Returns a geometry that represents the shared portion of geomA and geomB.
                         <type>geometry</type>
                         <parameter>geomB</parameter>
                     </paramdef>
+                    <paramdef choice="opt">
+                        <type>float8</type>
+                        <parameter>gridSize</parameter>
+                    </paramdef>
                 </funcprototype>
                 <funcprototype>
                     <funcdef>geography <function>ST_Intersection</function></funcdef>
@@ -1658,6 +1671,12 @@ Returns a geometry that represents the shared portion of geomA and geomB.
             <para>ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region
                 queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
 
+            <para>
+If a gridSize argument is provided, the inputs are
+snapped to a grid of the given size and all intersections are computed
+on that same grid. This method requires GEOS-3.9.0 or higher.
+            </para>
+
             <note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
                     fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario)  and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography.</para></note>
 
@@ -1669,6 +1688,7 @@ Returns a geometry that represents the shared portion of geomA and geomB.
 
           <para>Availability: 1.5 support for geography data type was introduced.</para>
             <para>Changed: 3.0.0 does not depend on SFCGAL.</para>
+            <para>Changed: 3.1.0 added gridSize argument.</para>
 
           <para>&sfs_compliant; s2.1.1.3</para>
           <para>&sqlmm_compliant; SQL-MM 3: 5.1.18</para>
@@ -3380,6 +3400,7 @@ GEOMETRYCOLLECTION(
             <funcdef>geometry <function>ST_SymDifference</function></funcdef>
             <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
             <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -3392,7 +3413,16 @@ GEOMETRYCOLLECTION(
             ST_SymDifference(A,B) = ST_SymDifference(B,A). One can think of this as ST_Union(geomA,geomB) - ST_Intersection(A,B).
             </para>
 
+            <para>
+If a gridSize argument is provided, the inputs are
+snapped to a grid of the given size and all intersections are computed
+on that same grid. This method requires GEOS-3.9.0 or higher.
+            </para>
+
         <para>Performed by the GEOS module</para>
+
+        <para>Enhanced: 3.1.0 accept a gridSize parameter.</para>
+
         <para>&sfs_compliant; s2.1.1.3</para>
         <para>&sqlmm_compliant; SQL-MM 3: 5.1.21</para>
         <para>&Z_support; However it seems to only consider x y when
@@ -3482,6 +3512,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
                 <funcdef>setof geometry <function>ST_Subdivide</function></funcdef>
                 <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                 <paramdef><type>integer</type> <parameter>max_vertices=256</parameter></paramdef>
+                <paramdef choice="opt"><type>float8</type> <parameter>gridSize</parameter></paramdef>
             </funcprototype>
         </funcsynopsis>
     </refsynopsisdiv>
@@ -3494,12 +3525,13 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
             Point-in-polygon and other overlay operations are normally faster for indexed subdivided dataset:
             "miss" cases are faster to check as boxes for all parts typically cover smaller area than original geometry box,
             "hit" cases are faster because recheck operates on less points.
-            Uses the same envelope clipping as <code>ST_ClipByBox2D</code>.
             <code>max_vertices</code> must be 5 or more, as 5 points are needed to represent a closed box.
+            <code>gridSize</code> can be specified to have clipping work in fixed-precision space (requires GEOS-3.9.0+).
         </para>
         <para>Performed by the GEOS module.</para>
         <para>Availability: 2.2.0</para>
         <para>Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is lowered from 8 to 5.</para>
+        <para>Enhanced: 3.1.0 accept a gridSize parameter.</para>
       </refsection>
 
       <refsection>
@@ -3601,6 +3633,12 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
       </funcprototype>
       <funcprototype>
         <funcdef>geometry <function>ST_Union</function></funcdef>
+        <paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
+        <paramdef><type>float8</type> <parameter>gridSize</parameter></paramdef>
+      </funcprototype>
+      <funcprototype>
+        <funcdef>geometry <function>ST_Union</function></funcdef>
         <paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
@@ -3622,6 +3660,11 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
         input geometries. Output type can be a MULTI*, NON-MULTI or
         GEOMETRYCOLLECTION. If any are NULL, then NULL is returned.</para>
 
+    <para>
+        For non-aggregate version, <code>gridSize</code> can be specified
+        to work in fixed-precision space (requires GEOS-3.9.0+).
+    </para>
+
     <note><para>ST_Collect and ST_Union are often interchangeable.
         ST_Union is in general orders of magnitude slower than ST_Collect
         because it tries to dissolve boundaries and reorder geometries to ensure that a constructed Multi* doesn't
@@ -3636,6 +3679,7 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
         word.</para>
     <para>Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was introduced and also faster aggregate collection in PostgreSQL.</para>
     <para>Changed: 3.0.0 does not depend on SFCGAL.</para>
+    <para>Enhanced: 3.1.0 accept a gridSize parameter.</para>
 
     <para>&sfs_compliant; s2.1.1.3</para>
     <note><para>Aggregate version is not explicitly defined in OGC SPEC.</para></note>
@@ -3732,6 +3776,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
           <funcprototype>
             <funcdef>geometry <function>ST_UnaryUnion</function></funcdef>
             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize</parameter></paramdef>
           </funcprototype>
 
         </funcsynopsis>
@@ -3758,9 +3803,16 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
         balance between ST_Union and ST_MemUnion.
         </para>
 
+        <para>
+If a gridSize argument is provided, the inputs are
+snapped to a grid of the given size and all intersections are computed
+on that same grid. This method requires GEOS-3.9.0 or higher.
+        </para>
+
         <para>&Z_support;</para>
 
         <para>Availability: 2.0.0</para>
+        <para>Enhanced: 3.1.0 accept a gridSize parameter.</para>
       </refsection>
 
 

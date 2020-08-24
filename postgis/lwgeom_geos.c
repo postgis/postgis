@@ -83,7 +83,7 @@ Datum convexhull(PG_FUNCTION_ARGS);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS);
 Datum ST_Difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
-Datum symdifference(PG_FUNCTION_ARGS);
+Datum ST_SymDifference(PG_FUNCTION_ARGS);
 Datum ST_Union(PG_FUNCTION_ARGS);
 Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
@@ -683,23 +683,13 @@ Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 	*/
 	if (ngeoms > 0)
 	{
-		GEOSGeometry *g = NULL;
-		GEOSGeometry *g_union = NULL;
 		LWCOLLECTION* col = lwcollection_construct(COLLECTIONTYPE, srid, NULL, ngeoms, geoms);
-
-		initGEOS(lwpgnotice, lwgeom_geos_error);
-		g = LWGEOM2GEOS((LWGEOM*)col, LW_FALSE);
-		if (!g)
-			HANDLE_GEOS_ERROR("Could not create GEOS COLLECTION from geometry array");
-
-		g_union = GEOSUnaryUnion(g);
-		GEOSGeom_destroy(g);
-		if (!g_union)
-			HANDLE_GEOS_ERROR("GEOSUnaryUnion");
-
-		GEOSSetSRID(g_union, srid);
-		gser_out = GEOS2POSTGIS(g_union, has_z);
-		GEOSGeom_destroy(g_union);
+		LWGEOM *out = lwgeom_unaryunion_prec(lwcollection_as_lwgeom(col), state->gridSize);
+		if ( ! out )
+		{
+			lwcollection_free(col);
+		}
+		gser_out = geometry_serialize(out);
 	}
 	/* No real geometries in our array, any empties? */
 	else
@@ -737,12 +727,15 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult ;
+	double prec = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
+	if (PG_NARGS() > 1 && ! PG_ARGISNULL(1))
+		prec = PG_GETARG_FLOAT8(1);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 
-	lwresult = lwgeom_unaryunion(lwgeom1);
+	lwresult = lwgeom_unaryunion_prec(lwgeom1, prec);
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -760,14 +753,17 @@ Datum ST_Union(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
+	double gridSize = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		gridSize = PG_GETARG_FLOAT8(2);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1);
 	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_union(lwgeom1, lwgeom2);
+	lwresult = lwgeom_union_prec(lwgeom1, lwgeom2, gridSize);
 	result = geometry_serialize(lwresult);
 
 	lwgeom_free(lwgeom1);
@@ -780,26 +776,40 @@ Datum ST_Union(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+/* This is retained for backward ABI compatibility
+ * with PostGIS < 3.1.0 */
+PG_FUNCTION_INFO_V1(symdifference);
+Datum symdifference(PG_FUNCTION_ARGS)
+{
+  PG_RETURN_DATUM(DirectFunctionCall2(
+     ST_SymDifference,
+     PG_GETARG_DATUM(0), PG_GETARG_DATUM(1)
+  ));
+}
+
 /**
  *  @example symdifference {@link #symdifference} - SELECT ST_SymDifference(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
  */
-PG_FUNCTION_INFO_V1(symdifference);
-Datum symdifference(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_SymDifference);
+Datum ST_SymDifference(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
+	double prec = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		prec = PG_GETARG_FLOAT8(2);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
-	lwresult = lwgeom_symdifference(lwgeom1, lwgeom2) ;
+	lwresult = lwgeom_symdifference_prec(lwgeom1, lwgeom2, prec);
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -1406,14 +1416,17 @@ Datum ST_Intersection(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
+	double prec = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		prec = PG_GETARG_FLOAT8(2);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1);
 	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_intersection(lwgeom1, lwgeom2);
+	lwresult = lwgeom_intersection_prec(lwgeom1, lwgeom2, prec);
 	result = geometry_serialize(lwresult);
 
 	lwgeom_free(lwgeom1);
@@ -1433,14 +1446,17 @@ Datum ST_Difference(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
+	double prec = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		prec = PG_GETARG_FLOAT8(2);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1);
 	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_difference(lwgeom1, lwgeom2);
+	lwresult = lwgeom_difference_prec(lwgeom1, lwgeom2, prec);
 	result = geometry_serialize(lwresult);
 
 	lwgeom_free(lwgeom1);

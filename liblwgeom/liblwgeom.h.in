@@ -2364,15 +2364,21 @@ LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
 
 LWGEOM *lwgeom_normalize(const LWGEOM *geom);
 LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_intersection_prec(const LWGEOM *geom1, const LWGEOM *geom2, double gridSize);
 LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_difference_prec(const LWGEOM *geom1, const LWGEOM *geom2, double gridSize);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
+LWGEOM *lwgeom_symdifference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double gridSize);
 LWGEOM *lwgeom_pointonsurface(const LWGEOM* geom);
 LWGEOM *lwgeom_centroid(const LWGEOM* geom);
 LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_union_prec(const LWGEOM *geom1, const LWGEOM *geom2, double gridSize);
 LWGEOM *lwgeom_linemerge(const LWGEOM *geom1);
 LWGEOM *lwgeom_unaryunion(const LWGEOM *geom1);
+LWGEOM *lwgeom_unaryunion_prec(const LWGEOM *geom1, double gridSize);
 LWGEOM *lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double y1);
 LWCOLLECTION *lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices);
+LWCOLLECTION *lwgeom_subdivide_prec(const LWGEOM *geom, uint32_t maxvertices, double gridSize);
 
 /**
  * Snap vertices and segments of a geometry to another using a given tolerance.
