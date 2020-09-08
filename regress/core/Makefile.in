@@ -175,6 +175,11 @@ TESTS_SLOW = \
 	concave_hull_hard \
 	knn_recheck
 
+ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" ">=" 120),1)
+	TESTS += \
+		computed_columns
+endif
+
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 37),1)
 	# GEOS-3.7 adds:
 	# ST_FrechetDistance
