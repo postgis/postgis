@@ -196,7 +196,8 @@ endif
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 39),1)
 	# GEOS-3.0 adds stable maximuminscribedcircle implementation
 	TESTS += \
-		geos39
+		geos39 \
+		fixedoverlay
 endif
 
 ifeq ($(INTERRUPTTESTS),yes)
