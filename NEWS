@@ -7,6 +7,7 @@ Only tickets not included in 3.1.0alpha2
 
 * New features *
   - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)
+  - GEOS 3.9
 
 * Enhancements *
   - Make ST_Subdivide interruptable (Sandro Santilli)
