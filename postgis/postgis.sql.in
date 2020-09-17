@@ -2813,7 +2813,13 @@ $$ LANGUAGE 'sql' STABLE;
 -- Changed: 3.0.0 also upgrade postgis_raster if it exists
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
-DECLARE rec record; sql text; var_schema text;
+DECLARE
+	rec record;
+	sql text;
+	var_schema text;
+	install_schema text;
+	major_version int4;
+
 BEGIN
 
 	FOR rec IN
@@ -2860,11 +2866,24 @@ BEGIN
 							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
 			THEN
 				--force install in same schema as postgis only if postgis extension is installed
+				major_version = int4((regexp_match(split_part(version(),' ',2), '^(\d+)'))[1]);
+				RAISE DEBUG 'major_version = %', major_version;
 				IF rec.name NOT IN('postgis', 'postgis_topology', 'postgis_tiger_geocoder') AND EXISTS (SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'postgis') THEN
-					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged SCHEMA '
-					|| quote_ident( (SELECT ns.nspname FROM pg_catalog.pg_extension AS e INNER JOIN pg_catalog.pg_namespace AS ns ON e.extnamespace = ns.oid WHERE extname = 'postgis')) || ';';
+					SELECT ns.nspname INTO install_schema FROM pg_catalog.pg_extension AS e INNER JOIN pg_catalog.pg_namespace AS ns ON e.extnamespace = ns.oid WHERE extname = 'postgis';
+					IF major_version >= 13 THEN
+						sql = Format('CREATE EXTENSION %s SCHEMA %s VERSION unpackaged; ', rec.name, quote_ident(install_schema)) ||
+						      Format('ALTER EXTENSION %s UPDATE TO %s;', rec.name, quote_ident(rec.default_version));
+					ELSE
+						sql = Format('CREATE EXTENSION %s FROM unpackaged SCHEMA %s', rec.name, quote_ident(install_schema));
+					END IF;
 				ELSE
-					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged;';
+
+					IF major_version >= 13 THEN
+						sql = Format('CREATE EXTENSION %s VERSION unpackaged; ', rec.name) ||
+						      Format('ALTER EXTENSION %s UPDATE TO %s;', rec.name, quote_ident(rec.default_version));
+					ELSE
+  						sql = Format('CREATE EXTENSION %s FROM unpackaged;', rec.name);
+					END IF;
 				END IF;
 				RAISE NOTICE 'Packaging extension %', rec.name;
 				RAISE DEBUG '%', sql;
@@ -2881,7 +2900,8 @@ BEGIN
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
 		ELSIF (rec.default_version = rec.installed_version AND rec.installed_version ILIKE '%dev') OR
-			(@extschema@._postgis_pgsql_version() != @extschema@._postgis_scripts_pgsql_version())
+			--(@extschema@._postgis_pgsql_version() != @extschema@._postgis_scripts_pgsql_version())
+			(public._postgis_pgsql_version() != public._postgis_scripts_pgsql_version())
 		THEN
 			-- we need to upgrade to next and back
 			RAISE NOTICE 'Updating extension % %',
@@ -2902,6 +2922,7 @@ BEGIN
 
 END
 $$ LANGUAGE plpgsql VOLATILE;
+
 
 -- Changed: 3.0.0
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
