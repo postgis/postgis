@@ -130,24 +130,30 @@ SELECT '#2902', replace(ST_Summary(PostGIS_GEOS_Noop(
 
 -- ST_BoundingDiagonal
 
-SELECT 'BoundingDiagonal1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox(
-    'SRID=4326;POINT(1e+15 1e+15)'::geometry
-)));
-SELECT 'BoundingDiagonal2', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox(
-    'SRID=4326;POINT(1e+15 1e+15)'::geometry
-), true));
-SELECT 'BoundingDiagonal3', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox(
-    'SRID=4326;POINT(1e+15 1e+15)'::geometry
-), false));
-SELECT 'BoundingDiagonal4', ST_AsEwkt(ST_BoundingDiagonal(
-    'SRID=3857;LINESTRING(1 2 3 4, 0 1 -8 2, -1 -2 -3 9)'::geometry
-));
-SELECT 'BoundingDiagonal5', ST_AsEwkt(ST_BoundingDiagonal(
-    'SRID=3857;LINESTRING M (5 4 0,4 4 1)'::geometry
-));
-SELECT 'BoundingDiagonal6', ST_AsEwkt(ST_BoundingDiagonal(
-    'SRID=3857;POLYGON M EMPTY'::geometry
-));
+SELECT 'BoundingDiagonal1  ', ST_AsEwkt(ST_BoundingDiagonal('SRID=4326;POINT(1e+15 1e+15)'::geometry));
+SELECT 'BoundingDiagonal1.1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox('SRID=4326;POINT(1e+15 1e+15)'::geometry)));
+
+SELECT 'BoundingDiagonal2  ', ST_AsEwkt(ST_BoundingDiagonal('SRID=4326;POINT(1e+15 1e+15)'::geometry, true));
+SELECT 'BoundingDiagonal2.1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox('SRID=4326;POINT(1e+15 1e+15)'::geometry), true));
+
+SELECT 'BoundingDiagonal3  ', ST_AsEwkt(ST_BoundingDiagonal('SRID=4326;POINT(1e+15 1e+15)'::geometry, false));
+SELECT 'BoundingDiagonal3.1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox('SRID=4326;POINT(1e+15 1e+15)'::geometry), false));
+
+SELECT 'BoundingDiagonal4  ', ST_AsEwkt(ST_BoundingDiagonal('SRID=3857;LINESTRING(1 2 3 4, 0 1 -8 2, -1 -2 -3 9)'::geometry));
+SELECT 'BoundingDiagonal4.1', ST_AsEwkt(postgis_addbbox(ST_BoundingDiagonal('SRID=3857;LINESTRING(1 2 3 4, 0 1 -8 2, -1 -2 -3 9)'::geometry)));
+
+SELECT 'BoundingDiagonal5  ', ST_AsEwkt(ST_BoundingDiagonal('SRID=3857;LINESTRING M (5 4 0,4 4 1)'::geometry));
+SELECT 'BoundingDiagonal5.1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox('SRID=3857;LINESTRING M (5 4 0,4 4 1)'::geometry)));
+SELECT 'BoundingDiagonal5.2', ST_AsEwkt(ST_BoundingDiagonal('SRID=3857;LINESTRING Z (5 4 0,4 4 1)'::geometry));
+SELECT 'BoundingDiagonal5.3', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox('SRID=3857;LINESTRING Z (5 4 0,4 4 1)'::geometry)));
+
+SELECT 'BoundingDiagonal6  ', ST_AsEwkt(ST_BoundingDiagonal('SRID=3857;POLYGON M EMPTY'::geometry));
+SELECT 'BoundingDiagonal6.1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox('SRID=3857;POLYGON M EMPTY'::geometry)));
+
+SELECT 'BoundingDiagonal7  ', ST_AsEwkt(ST_BoundingDiagonal('SRID=3857;MULTILINESTRING M ((5 4 0,4 4 1))'::geometry));
+SELECT 'BoundingDiagonal7.1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox('SRID=3857;MULTILINESTRING M ((5 4 0,4 4 1))'::geometry)));
+SELECT 'BoundingDiagonal7.2', ST_AsEwkt(ST_BoundingDiagonal('SRID=3857;MULTILINESTRING Z ((5 4 0,4 4 1))'::geometry));
+SELECT 'BoundingDiagonal7.3', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox('SRID=3857;MULTILINESTRING Z ((5 4 0,4 4 1))'::geometry)));
 
 --- ST_Azimuth
 SELECT 'ST_Azimuth_regular' , round(ST_Azimuth(geom1,geom2)::numeric,4)
@@ -218,14 +224,6 @@ from (
 group by cid
 order by count(*)
 limit 1;
-
--- check that null and empty is handled in the clustering
-select '#4071', count(distinct a), count(distinct b), count(distinct c)  from
-(select
-	ST_ClusterKMeans(geom, 1) over () a,
-	ST_ClusterKMeans(geom, 2) over () b,
-	ST_ClusterKMeans(geom, 3) over () c
-from (values (null::geometry), ('POINT(1 1)'), ('POINT EMPTY'), ('POINT(0 0)'), ('POINT(4 4)')) as g (geom)) z;
 
 -- typmod checks
 select 'typmod_point_4326', geometry_typmod_out(geometry_typmod_in('{Point,4326}'));

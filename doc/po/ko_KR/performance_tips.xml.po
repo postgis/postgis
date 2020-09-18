@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-02-01 19:38+0000\n"
 "PO-Revision-Date: 2016-07-20 06:55+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -373,276 +373,118 @@ msgstr ""
 "dimension(the_geom)&gt;2\"로 업데이트를 제한하면 이미 2D인 도형을 다시 작성하"
 "는 일을 건너뛸 수 있습니다."
 
-#. Tag: title
-#: performance_tips.xml:138
-#, no-c-format
-msgid "Tuning your configuration"
-msgstr "사용자 설정 세부 조정"
+#~ msgid "Tuning your configuration"
+#~ msgstr "사용자 설정 세부 조정"
 
-#. Tag: para
-#: performance_tips.xml:140
-#, no-c-format
-msgid ""
-"Tuning for PostGIS is much like tuning for any PostgreSQL workload. The only "
-"additional note to keep in mind is that geometries and rasters are heavy so "
-"memory related optimizations generally have more of an impact on PostGIS "
-"than other types of PostgreSQL queries."
-msgstr ""
+#~ msgid "Startup"
+#~ msgstr "시작"
 
-#. Tag: para
-#: performance_tips.xml:143
-#, no-c-format
-msgid ""
-"For general details about optimizing PostgreSQL, refer to <ulink url="
-"\"https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">Tuning "
-"your PostgreSQL Server</ulink>."
-msgstr ""
+#~ msgid "These settings are configured in postgresql.conf:"
+#~ msgstr "다음 설정들은 postgresql.conf 파일 안에 설정됩니다:"
 
-#. Tag: para
-#: performance_tips.xml:145
-#, no-c-format
-msgid ""
-"For PostgreSQL 9.4+ all these can be set at the server level without "
-"touching postgresql.conf or postgresql.auto.conf by using the <code>ALTER "
-"SYSTEM..</code> command."
-msgstr ""
+#~ msgid "constraint_exclusion"
+#~ msgstr "constraint_exclusion"
 
-#. Tag: programlisting
-#: performance_tips.xml:147
-#, no-c-format
-msgid ""
-"ALTER SYSTEM SET work_mem = '256MB';\n"
-"-- this will force, non-startup configs to take effect for new connections\n"
-"SELECT pg_reload_conf();\n"
-"-- show current setting value\n"
-"-- use SHOW ALL to see all settings\n"
-"SHOW work_mem;"
-msgstr ""
+#, fuzzy
+#~ msgid "Default: partition"
+#~ msgstr "기본값은 1MB입니다."
 
-#. Tag: para
-#: performance_tips.xml:149
-#, no-c-format
-msgid ""
-"In addition to these settings, PostGIS also has some custom settings which "
-"you can find listed in <xref linkend=\"PostGIS_GUC\"/>."
-msgstr ""
+#, fuzzy
+#~ msgid ""
+#~ "This is generally used for table partitioning. The default for this is "
+#~ "set to \"partition\" which is ideal for PostgreSQL 8.4 and above since it "
+#~ "will force the planner to only analyze tables for constraint "
+#~ "consideration if they are in an inherited hierarchy and not pay the "
+#~ "planner penalty otherwise."
+#~ msgstr ""
+#~ "일반적으로 테이블을 분할하는 경우 쓰입니다. PostgreSQL 8.4 미만 버전을 실"
+#~ "행하고 있다면 쿼리 설계자가 원하는 만큼 최적화하도록 \"on\"으로 설정하십시"
+#~ "오. PostgreSQL 8.4 버전부터, 이 옵션의 기본값이 \"partition\"으로 설정되"
+#~ "어 PostgreSQL 8.4 이후 버전에 이상적으로 바뀌었습니다. 테이블이 상속된 계"
+#~ "층형일 경우 쿼리 설계자가 제약조건을 검토해야 할 테이블만 분석하도록 강제"
+#~ "하고 다른 경우엔 별다른 대가를 치르지 않기 때문입니다."
 
-#. Tag: title
-#: performance_tips.xml:152
-#, no-c-format
-msgid "Startup"
-msgstr "시작"
+#~ msgid "shared_buffers"
+#~ msgstr "shared_buffers"
 
-#. Tag: para
-#: performance_tips.xml:154
-#, no-c-format
-msgid "These settings are configured in postgresql.conf:"
-msgstr "다음 설정들은 postgresql.conf 파일 안에 설정됩니다:"
+#, fuzzy
+#~ msgid ""
+#~ "<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-"
+#~ "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</"
+#~ "ulink> This setting is only available for PostgreSQL 9.4+. For PostgreSQL "
+#~ "9.6+ this setting has additional importance in that it controls the max "
+#~ "number of processes you can have for parallel queries."
+#~ msgstr ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-WORK-MEM\">work_mem</ulink> (정렬 연산 및 복잡 쿼리에 쓰"
+#~ "이는 메모리)"
 
-#. Tag: ulink
-#: performance_tips.xml:159
-#, no-c-format
-msgid "constraint_exclusion"
-msgstr "constraint_exclusion"
+#, fuzzy
+#~ msgid "Default: 8"
+#~ msgstr "기본값은 1MB입니다."
 
-#. Tag: para
-#: performance_tips.xml:164
-#, fuzzy, no-c-format
-msgid "Default: partition"
-msgstr "기본값은 1MB입니다."
+#~ msgid "Runtime"
+#~ msgstr "런타임"
 
-#. Tag: para
-#: performance_tips.xml:169
-#, fuzzy, no-c-format
-msgid ""
-"This is generally used for table partitioning. The default for this is set "
-"to \"partition\" which is ideal for PostgreSQL 8.4 and above since it will "
-"force the planner to only analyze tables for constraint consideration if "
-"they are in an inherited hierarchy and not pay the planner penalty otherwise."
-msgstr ""
-"일반적으로 테이블을 분할하는 경우 쓰입니다. PostgreSQL 8.4 미만 버전을 실행하"
-"고 있다면 쿼리 설계자가 원하는 만큼 최적화하도록 \"on\"으로 설정하십시오. "
-"PostgreSQL 8.4 버전부터, 이 옵션의 기본값이 \"partition\"으로 설정되어 "
-"PostgreSQL 8.4 이후 버전에 이상적으로 바뀌었습니다. 테이블이 상속된 계층형일 "
-"경우 쿼리 설계자가 제약조건을 검토해야 할 테이블만 분석하도록 강제하고 다른 "
-"경우엔 별다른 대가를 치르지 않기 때문입니다."
+#~ msgid ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-WORK-MEM\">work_mem</ulink> (the memory used for sort "
+#~ "operations and complex queries)"
+#~ msgstr ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-WORK-MEM\">work_mem</ulink> (정렬 연산 및 복잡 쿼리에 쓰"
+#~ "이는 메모리)"
 
-#. Tag: ulink
-#: performance_tips.xml:178
-#, no-c-format
-msgid "shared_buffers"
-msgstr "shared_buffers"
+#, fuzzy
+#~ msgid "Default: 1-4MB"
+#~ msgstr "기본값은 1MB입니다."
 
-#. Tag: para
-#: performance_tips.xml:183
-#, no-c-format
-msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr ""
+#~ msgid "Adjust up for large dbs, complex queries, lots of RAM"
+#~ msgstr "대용량 DB, 복잡 쿼리, 많은 RAM의 경우 상향 조정하십시오."
 
-#. Tag: para
-#: performance_tips.xml:188
-#, no-c-format
-msgid ""
-"Set to about 25% to 40% of available RAM. On windows you may not be able to "
-"set as high."
-msgstr ""
+#~ msgid "Adjust down for many concurrent users or low RAM."
+#~ msgstr "동시 사용자가 많거나 RAM이 적을 경우 하향 조정하십시오."
 
-#. Tag: para
-#: performance_tips.xml:195
-#, fuzzy, no-c-format
-msgid ""
-"<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</ulink> This "
-"setting is only available for PostgreSQL 9.4+. For PostgreSQL 9.6+ this "
-"setting has additional importance in that it controls the max number of "
-"processes you can have for parallel queries."
-msgstr ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-WORK-MEM\">work_mem</ulink> (정렬 연산 및 복잡 쿼리에 쓰이"
-"는 메모리)"
+#~ msgid "If you have lots of RAM and few developers:"
+#~ msgstr "RAM이 많고 개발자가 적을 경우:"
 
-#. Tag: para
-#: performance_tips.xml:203
-#, fuzzy, no-c-format
-msgid "Default: 8"
-msgstr "기본값은 1MB입니다."
+#, fuzzy
+#~ msgid "SET work_mem TO '256MB';"
+#~ msgstr "SET work_mem TO 1200000;"
 
-#. Tag: para
-#: performance_tips.xml:208
-#, no-c-format
-msgid ""
-"Sets the maximum number of background processes that the system can support. "
-"This parameter can only be set at server start."
-msgstr ""
+#~ msgid ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> "
+#~ "(used for VACUUM, CREATE INDEX, etc.)"
+#~ msgstr ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> "
+#~ "(VACUUM, CREATE INDEX 등에 쓰이는 메모리)"
 
-#. Tag: title
-#: performance_tips.xml:218
-#, no-c-format
-msgid "Runtime"
-msgstr "런타임"
+#, fuzzy
+#~ msgid "Default: 16-64MB"
+#~ msgstr "기본값은 16MB입니다."
 
-#. Tag: para
-#: performance_tips.xml:220
-#, no-c-format
-msgid ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-WORK-MEM\">work_mem</ulink> (the memory used for sort "
-"operations and complex queries)"
-msgstr ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-WORK-MEM\">work_mem</ulink> (정렬 연산 및 복잡 쿼리에 쓰이"
-"는 메모리)"
+#~ msgid "Generally too low - ties up I/O, locks objects while swapping memory"
+#~ msgstr ""
+#~ "기본값이 너무 낮습니다. 메모리 스왑 도중 I/O 병목 현상이 일어나거나 객체"
+#~ "에 랙이 걸립니다."
 
-#. Tag: para
-#: performance_tips.xml:226
-#, fuzzy, no-c-format
-msgid "Default: 1-4MB"
-msgstr "기본값은 1MB입니다."
+#, fuzzy
+#~ msgid ""
+#~ "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
+#~ "the # of concurrent users. If you have lots of RAM and few developers:"
+#~ msgstr ""
+#~ "RAM이 많은 제품 서버(production server)라면 32MB에서 256MB까지 추천하지"
+#~ "만, 동시 사용자 수에 따라 다릅니다. RAM이 많고 개발자가 적을 경우:"
 
-#. Tag: para
-#: performance_tips.xml:231
-#, no-c-format
-msgid "Adjust up for large dbs, complex queries, lots of RAM"
-msgstr "대용량 DB, 복잡 쿼리, 많은 RAM의 경우 상향 조정하십시오."
+#, fuzzy
+#~ msgid "SET maintenance_work_mem TO '1GB';"
+#~ msgstr "SET maintainence_work_mem TO 1200000;"
 
-#. Tag: para
-#: performance_tips.xml:236
-#, no-c-format
-msgid "Adjust down for many concurrent users or low RAM."
-msgstr "동시 사용자가 많거나 RAM이 적을 경우 하향 조정하십시오."
-
-#. Tag: para
-#: performance_tips.xml:241
-#, no-c-format
-msgid "If you have lots of RAM and few developers:"
-msgstr "RAM이 많고 개발자가 적을 경우:"
-
-#. Tag: programlisting
-#: performance_tips.xml:243
-#, fuzzy, no-c-format
-msgid "SET work_mem TO '256MB';"
-msgstr "SET work_mem TO 1200000;"
-
-#. Tag: para
-#: performance_tips.xml:248
-#, no-c-format
-msgid ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> (used "
-"for VACUUM, CREATE INDEX, etc.)"
-msgstr ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> "
-"(VACUUM, CREATE INDEX 등에 쓰이는 메모리)"
-
-#. Tag: para
-#: performance_tips.xml:254
-#, fuzzy, no-c-format
-msgid "Default: 16-64MB"
-msgstr "기본값은 16MB입니다."
-
-#. Tag: para
-#: performance_tips.xml:259
-#, no-c-format
-msgid "Generally too low - ties up I/O, locks objects while swapping memory"
-msgstr ""
-"기본값이 너무 낮습니다. 메모리 스왑 도중 I/O 병목 현상이 일어나거나 객체에 랙"
-"이 걸립니다."
-
-#. Tag: para
-#: performance_tips.xml:264
-#, fuzzy, no-c-format
-msgid ""
-"Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
-"the # of concurrent users. If you have lots of RAM and few developers:"
-msgstr ""
-"RAM이 많은 제품 서버(production server)라면 32MB에서 256MB까지 추천하지만, 동"
-"시 사용자 수에 따라 다릅니다. RAM이 많고 개발자가 적을 경우:"
-
-#. Tag: programlisting
-#: performance_tips.xml:267
-#, fuzzy, no-c-format
-msgid "SET maintenance_work_mem TO '1GB';"
-msgstr "SET maintainence_work_mem TO 1200000;"
-
-#. Tag: ulink
-#: performance_tips.xml:273
-#, no-c-format
-msgid "max_parallel_workers_per_gather"
-msgstr ""
-
-#. Tag: para
-#: performance_tips.xml:275
-#, no-c-format
-msgid ""
-"This setting is only available for PostgreSQL 9.6+ and will only affect "
-"PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries. If set to "
-"higher than 0, then some queries such as those involving relation functions "
-"like <code>ST_Intersects</code> can use multiple processes and can run more "
-"than twice as fast when doing so. If you have a lot of processors to spare, "
-"you should change the value of this to as many processors as you have. Also "
-"make sure to bump up <code>max_worker_processes</code> to at least as high "
-"as this number."
-msgstr ""
-
-#. Tag: para
-#: performance_tips.xml:284
-#, fuzzy, no-c-format
-msgid "Default: 0"
-msgstr "기본값은 1MB입니다."
-
-#. Tag: para
-#: performance_tips.xml:289
-#, no-c-format
-msgid ""
-"Sets the maximum number of workers that can be started by a single "
-"<varname>Gather</varname> node. Parallel workers are taken from the pool of "
-"processes established by <varname>max_worker_processes</varname>. Note that "
-"the requested number of workers may not actually be available at run time. "
-"If this occurs, the plan will run with fewer workers than expected, which "
-"may be inefficient. Setting this value to 0, which is the default, disables "
-"parallel query execution."
-msgstr ""
+#, fuzzy
+#~ msgid "Default: 0"
+#~ msgstr "기본값은 1MB입니다."
 
 #~ msgid "Default: ~32MB"
 #~ msgstr "기본값은 최대 32MB입니다."

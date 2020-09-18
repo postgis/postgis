@@ -90,7 +90,7 @@ static GeomCacheMethods CircTreeCacheMethods =
 };
 
 static CircTreeGeomCache *
-GetCircTreeGeomCache(FunctionCallInfo fcinfo, const GSERIALIZED *g1, const GSERIALIZED *g2)
+GetCircTreeGeomCache(FunctionCallInfo fcinfo, SHARED_GSERIALIZED *g1, SHARED_GSERIALIZED *g2)
 {
 	return (CircTreeGeomCache*)GetGeomCache(fcinfo, &CircTreeCacheMethods, g1, g2);
 }
@@ -155,12 +155,14 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const POINT4D* in_poi
 
 static int
 geography_distance_cache_tolerance(FunctionCallInfo fcinfo,
-				   const GSERIALIZED *g1,
-				   const GSERIALIZED *g2,
+				   SHARED_GSERIALIZED *shared_g1,
+				   SHARED_GSERIALIZED *shared_g2,
 				   const SPHEROID *s,
 				   double tolerance,
 				   double *distance)
 {
+	const GSERIALIZED *g1 = shared_gserialized_get(shared_g1);
+	const GSERIALIZED *g2 = shared_gserialized_get(shared_g2);
 	CircTreeGeomCache* tree_cache = NULL;
 
 	int type1 = gserialized_get_type(g1);
@@ -173,7 +175,7 @@ geography_distance_cache_tolerance(FunctionCallInfo fcinfo,
 		return LW_FAILURE;
 
 	/* Fetch/build our cache, if appropriate, etc... */
-	tree_cache = GetCircTreeGeomCache(fcinfo, g1, g2);
+	tree_cache = GetCircTreeGeomCache(fcinfo, shared_g1, shared_g2);
 
 	/* OK, we have an index at the ready! Use it for the one tree argument and */
 	/* fill in the other tree argument */
@@ -250,8 +252,8 @@ geography_distance_cache_tolerance(FunctionCallInfo fcinfo,
 
 int
 geography_distance_cache(FunctionCallInfo fcinfo,
-			 const GSERIALIZED *g1,
-			 const GSERIALIZED *g2,
+			 SHARED_GSERIALIZED *g1,
+			 SHARED_GSERIALIZED *g2,
 			 const SPHEROID *s,
 			 double *distance)
 {
@@ -260,8 +262,8 @@ geography_distance_cache(FunctionCallInfo fcinfo,
 
 int
 geography_dwithin_cache(FunctionCallInfo fcinfo,
-			const GSERIALIZED *g1,
-			const GSERIALIZED *g2,
+			SHARED_GSERIALIZED *g1,
+			SHARED_GSERIALIZED *g2,
 			const SPHEROID *s,
 			double tolerance,
 			int *dwithin)

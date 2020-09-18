@@ -32,13 +32,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#define maxprojlen  512
+#define spibufferlen 512
 
-/**
-* Global variable to hold cached information about what
-* schema functions are installed in. Currently used by
-* SetSpatialRefSysSchema and GetProjStringsSPI
-*/
-static char *spatialRefSysSchema = NULL;
 
 /*
  * PROJ 4 backend hash table initial hash size
@@ -60,36 +56,9 @@ typedef struct {
 } PjStrs;
 
 /* Internal Cache API */
-static LWPROJ *AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
+static LWPROJ *
+AddToPROJSRSCache(FunctionCallInfo fcinfo, PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to);
 static void DeleteFromPROJSRSCache(PROJPortalCache *PROJCache, uint32_t position);
-
-/*
-* Given a function call context, figure out what namespace the
-* function is being called from, and copy that into a global
-* for use by GetProjStringsSPI
-*/
-static void
-SetSpatialRefSysSchema(FunctionCallInfo fcinfo)
-{
-	char *nsp_name;
-	Oid nsp_oid;
-
-	/* Schema info is already cached, we're done here */
-	if (spatialRefSysSchema) return;
-
-	/* For some reason we have a hobbled fcinfo/flinfo */
-	if (!fcinfo || !fcinfo->flinfo) return;
-
-	nsp_oid = postgis_oid_fcinfo(fcinfo, POSTGISNSPOID);
-	if (!nsp_oid) return;
-	nsp_name = get_namespace_name(nsp_oid);
-	/* early exit if we cannot lookup nsp_name, cf #4067 */
-	if (!nsp_name) return;
-
-	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
-	spatialRefSysSchema = MemoryContextStrdup(CacheMemoryContext, nsp_name);
-	return;
-}
 
 static void
 PROJSRSDestroyPJ(void *projection)
@@ -152,8 +121,6 @@ SPI_pstrdup(const char* str)
 static PjStrs
 GetProjStringsSPI(int32_t srid)
 {
-	const int maxprojlen = 512;
-	const int spibufferlen = 512;
 	int spi_result;
 	char proj_spi_buffer[spibufferlen];
 	PjStrs strs;
@@ -166,23 +133,12 @@ GetProjStringsSPI(int32_t srid)
 		elog(ERROR, "Could not connect to database using SPI");
 	}
 
-	/*
-	* This global is allocated in CacheMemoryContext (lifespan of this backend)
-	* and is set by SetSpatialRefSysSchema the first time
-	* that GetPJUsingFCInfo is called.
-	*/
-	static char *proj_str_tmpl = "SELECT proj4text, auth_name, auth_srid, srtext "
-	                             "FROM %s%sspatial_ref_sys "
-	                             "WHERE srid = %d "
-	                             "LIMIT 1";
-	if (spatialRefSysSchema)
-	{
-		snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, spatialRefSysSchema, ".", srid);
-	}
-	else
-	{
-		snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, "", "", srid);
-	}
+	static char *proj_str_tmpl =
+	    "SELECT proj4text, auth_name, auth_srid, srtext "
+	    "FROM %s "
+	    "WHERE srid = %d "
+	    "LIMIT 1";
+	snprintf(proj_spi_buffer, spibufferlen, proj_str_tmpl, postgis_spatial_ref_sys(), srid);
 
 	/* Execute the query, noting the readonly status of this SQL */
 	spi_result = SPI_execute(proj_spi_buffer, true, 1);
@@ -241,7 +197,6 @@ GetProjStringsSPI(int32_t srid)
 static PjStrs
 GetProjStrings(int32_t srid)
 {
-	const int maxprojlen = 512;
 	PjStrs strs;
 	memset(&strs, 0, sizeof(strs));
 
@@ -366,6 +321,7 @@ pgstrs_get_entry(const PjStrs *strs, int n)
 }
 #endif
 
+#if POSTGIS_PROJ_VERSION < 60
 /*
 * Utility function for GML reader that still
 * needs proj4text access
@@ -381,6 +337,7 @@ GetProj4String(int32_t srid)
 	pjstrs_pfree(&strs);
 	return proj4str;
 }
+#endif
 
 /**
  * Add an entry to the local PROJ SRS cache. If we need to wrap around then
@@ -388,7 +345,7 @@ GetProj4String(int32_t srid)
  * which is the definition for the other half of the transformation.
  */
 static LWPROJ *
-AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
+AddToPROJSRSCache(FunctionCallInfo fcinfo, PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to)
 {
 	MemoryContext oldContext;
 
@@ -406,7 +363,7 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 	if (!pjstrs_has_entry(&to_strs))
 		elog(ERROR, "got NULL for SRID (%d)", srid_to);
 
-	oldContext = MemoryContextSwitchTo(PROJCache->PROJSRSCacheContext);
+	oldContext = MemoryContextSwitchTo(PostgisCacheContext(fcinfo));
 
 #if POSTGIS_PROJ_VERSION < 60
 	PJ *projection = palloc(sizeof(PJ));
@@ -495,10 +452,10 @@ AddToPROJSRSCache(PROJPortalCache *PROJCache, int32_t srid_from, int32_t srid_to
 
 	/* We register a new callback to delete the projection on exit */
 	MemoryContextCallback *callback =
-	    MemoryContextAlloc(PROJCache->PROJSRSCacheContext, sizeof(MemoryContextCallback));
+	    MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(MemoryContextCallback));
 	callback->func = PROJSRSDestroyPJ;
 	callback->arg = (void *)projection;
-	MemoryContextRegisterResetCallback(PROJCache->PROJSRSCacheContext, callback);
+	MemoryContextRegisterResetCallback(PostgisCacheContext(fcinfo), callback);
 
 	PROJCache->PROJSRSCache[cache_position].srid_from = srid_from;
 	PROJCache->PROJSRSCache[cache_position].srid_to = srid_to;
@@ -534,7 +491,7 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LW
 	PROJPortalCache *proj_cache = NULL;
 
 	/* Look up the spatial_ref_sys schema if we haven't already */
-	SetSpatialRefSysSchema(fcinfo);
+	postgis_initialize_cache(fcinfo);
 
 	/* get or initialize the cache for this round */
 	proj_cache = GetPROJSRSCache(fcinfo);
@@ -545,7 +502,7 @@ GetPJUsingFCInfo(FunctionCallInfo fcinfo, int32_t srid_from, int32_t srid_to, LW
 	*pj = GetProjectionFromPROJCache(proj_cache, srid_from, srid_to);
 	if (*pj == NULL)
 	{
-		*pj = AddToPROJSRSCache(proj_cache, srid_from, srid_to);
+		*pj = AddToPROJSRSCache(fcinfo, proj_cache, srid_from, srid_to);
 	}
 
 	return pj != NULL;

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 #
 # PostGIS - Spatial Types for PostgreSQL
@@ -257,6 +257,7 @@ else
 	}
 }
 
+my $pgvernum = sql("SELECT current_setting('server_version_num')");
 my $libver = sql("select postgis_lib_version()");
 my $defextver = sql("select default_version from pg_available_extensions where name = 'postgis'");
 
@@ -325,14 +326,25 @@ sub create_upgrade_test_objects
     exit(1);
   }
 
-  # my $query = "create view upgrade_view_test as ";
-  # $query .= "select st_union(g1) from upgrade_test;";
-  # my $ret = sql($query);
-  # unless ( $ret =~ /^CREATE/ ) {
-  #   `dropdb $DB`;
-  #   print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
-  #   exit(1);
-  # }
+
+  if ( $pgvernum >= 120000 ) {
+    # We know upgrading with an st_union() based view
+    # fails unless you're on PostgreSQL 12, so we don't
+    # even try that.
+    #
+    # We could re-enable this test IF we fix the upgrade
+    # in pre-12 versions. Refer to
+    # https://trac.osgeo.org/postgis/ticket/4386
+    #
+    $query = "create view upgrade_view_test as ";
+    $query .= "select st_union(g1) from upgrade_test;";
+    my $ret = sql($query);
+    unless ( $ret =~ /^CREATE/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
+      exit(1);
+    }
+  }
 
   if ( $OPT_WITH_RASTER )
   {
@@ -370,12 +382,12 @@ sub drop_upgrade_test_objects
 {
   # TODO: allow passing the "upgrade-cleanup" script via commandline
 
-  # my $ret = sql("drop view upgrade_view_test;");
-  # unless ( $ret =~ /^DROP/ ) {
-  #   `dropdb $DB`;
-  #   print "\nSomething went wrong dropping spatial view: $ret.\n";
-  #   exit(1);
-  # }
+  my $ret = sql("drop view if exists upgrade_view_test;");
+  unless ( $ret =~ /^DROP/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong dropping spatial view: $ret.\n";
+    exit(1);
+  }
 
   my $ret = sql("drop table upgrade_test;");
   unless ( $ret =~ /^DROP/ ) {
@@ -477,7 +489,12 @@ foreach $TEST (@ARGV)
 	$TEST_OBJ_COUNT_PRE = count_postgis_objects();
 
 	# Check for a "-pre.pl" file in case there are setup commands
-    eval_file("${TEST}-pre.pl");
+	unless ( eval_file("${TEST}-pre.pl") )
+	{
+		chop($@);
+		fail("Failed evaluating ${TEST}-pre.pl: $@");
+		next;
+	}
 
 	# Check for a "-pre.sql" file in case there is setup SQL needed before
 	# the test can be run.
@@ -528,14 +545,13 @@ foreach $TEST (@ARGV)
 	}
 
 	# Check for a "-post.pl" file in case there are teardown commands
-    eval_file("${TEST}-post.pl");
+	eval_file("${TEST}-post.pl");
 
 	$TEST_OBJ_COUNT_POST = count_postgis_objects();
 
 	if ( $TEST_OBJ_COUNT_POST != $TEST_OBJ_COUNT_PRE )
 	{
 		fail("PostGIS object count pre-test ($TEST_OBJ_COUNT_POST) != post-test ($TEST_OBJ_COUNT_PRE)");
-		return 0;
 	}
 
 }
@@ -569,7 +585,6 @@ if ( $OPT_CLEAN )
 
 if ( ! ($OPT_NODROP || $OPT_NOCREATE) )
 {
-	sleep(1);
 	system("dropdb $DB");
 }
 else
@@ -755,12 +770,10 @@ sub eval_file
     my $pl;
     if ( -r $file )
     {
-        #open(PL, $file);
-        #$pl = <PL>;
-        #close(PL);
-        #eval($pl);
-				do $file;
+				do $file or return 0;
+				#system($^X, $file) == 0 or return 0;
     }
+		1;
 }
 
 ##################################################################
@@ -1102,10 +1115,14 @@ sub run_loader_test
 	if ( -r $opts_file )
 	{
 		open(FILE, $opts_file);
-		my @opts = <FILE>;
+		my @opts;
+		while (<FILE>) {
+			next if /^\s*#/;
+			chop;
+			s/{regdir}/$REGDIR/;
+			push @opts, $_;
+		}
 		close(FILE);
-		@opts = grep(!/^\s*#/, @opts);
-		map(s/\n//, @opts);
 		$custom_opts = join(" ", @opts);
 	}
 
@@ -1176,9 +1193,9 @@ sub run_loader_test
 #  Run dumper and compare output with various expectances
 #  test and run simple test with provided expected output.
 #
-# input is ${TEST}.dmp, where last line is considered to be the
-# [table|query] argument for pgsql2shp and all the previous lines,
-# if any are
+# input is ${TEST}.dmp, where first line is considered to be the
+# [table|query] argument for pgsql2shp and all the next lines,
+# if any are options.
 #
 ##################################################################
 sub run_dumper_test
@@ -1194,12 +1211,16 @@ sub run_dumper_test
 
   # Produce the output SHP file.
   open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
-  sleep(1);
   my @dumplines = <DUMPFILE>;
   close DUMPFILE;
-  my $dumpstring = join '', @dumplines;
-  chop($dumpstring);
-  my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile}, ${DB}, ${dumpstring});
+  chomp(@dumplines);
+  my $dumpstring = shift @dumplines;
+  @dumplines = map { local $_ = $_; s/{regdir}/$REGDIR/; $_ } @dumplines;
+  my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile});
+  push @cmd, @dumplines;
+  push @cmd, ${DB};
+  push @cmd, $dumpstring;
+  #print "CMD: " . join (' ', @cmd) . "\n";
   open my $stdout_save, '>&', *STDOUT or die "Cannot dup stdout\n";
   open my $stderr_save, '>&', *STDERR or die "Cannot dup stdout\n";
   open STDOUT, ">${outfile}" or die "Cannot write to ${outfile}\n";
@@ -1207,7 +1228,6 @@ sub run_dumper_test
   my $rv = system(@cmd);
   open STDERR, '>&', $stderr_save;
   open STDOUT, '>&', $stdout_save;
-  #sleep(3);
   show_progress();
 
   if ( $rv )

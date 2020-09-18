@@ -858,17 +858,18 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		<title>Example: Counting points in hexagons</title>
 		<para>To do a point summary against a hexagonal tiling, generate a hexagon grid using the
 		extent of the points as the bounds, then spatially join to that grid.</para>
-		 <programlisting>WITH bounds AS (
- 	SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) AS geom
- )
- SELECT Count(*), hexes.geom
- FROM pointtable pts
- JOIN ST_HexagonGrid(1000, bounds.geom) hexes
- GROUP BY hexes.geom
-</programlisting>
-		</refsection>
-
-		<refsection>
+		 <programlisting>SELECT COUNT(*), hexes.geom
+FROM
+    ST_HexagonGrid(
+        10000,
+        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
+    ) AS hexes
+    INNER JOIN
+    pointtable AS pts
+    ON ST_Intersects(pts.geom, hexes.geom)
+GROUP BY hexes.geom;</programlisting>
+    </refsection>
+    <refsection>
 		<title>Example: Generating hex coverage of polygons</title>
 		<para>If we generate a set of hexagons for each polygon boundary and filter
 			out those that do not intersect their hexagons, we end up with a tiling for
@@ -878,78 +879,96 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 		</imageobject></inlinemediaobject></para>
 		<para>Tiling states results in a hexagon coverage of each state, and multiple
 			hexagons overlapping at the borders between states.</para>
-		 <programlisting>WITH hexes AS (
-	SELECT admin1.gid,
-	       (ST_HexagonGrid(100000, admin1.geom)).* AS hex
-	FROM admin1
-	WHERE adm0_a3 = 'USA'
-)
-SELECT hexes.*
-FROM hexes
-JOIN admin1 USING (gid)
-WHERE ST_Intersects(admin1.geom, hexes.geom)
-</programlisting>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_SquareGrid" /></para>
-		</refsection>
+		<note><para>The LATERAL keyword is implied for set-returning functions when referring to a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just plain , are equivalent constructs for this example.</para></note>
+        <programlisting>SELECT admin1.gid, hex.geom
+FROM
+    admin1
+    CROSS JOIN
+    ST_HexagonGrid(100000, admin1.geom) AS hex
+WHERE
+    adm0_a3 = 'USA'
+    AND
+    ST_Intersects(admin1.geom, hex.geom)</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_EstimatedExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SquareGrid" />, <xref linkend="ST_TileEnvelope" /></para>
+        </refsection>
 	</refentry>
 
 
-	<refentry id="ST_SquareGrid">
-		<refnamediv>
-		<refname>ST_SquareGrid</refname>
-		<refpurpose>Returns a set of grid squares and cell indices that completely cover the bounds of the geometry argument.</refpurpose>
-		</refnamediv>
+    <refentry id="ST_SquareGrid">
+        <refnamediv>
+        <refname>ST_SquareGrid</refname>
+        <refpurpose>Returns a set of grid squares and cell indices that completely cover the bounds of the geometry argument.</refpurpose>
+        </refnamediv>
 
-		<refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>setof record <function>ST_SquareGrid</function></funcdef>
-			<paramdef><type>float8</type> <parameter>size</parameter></paramdef>
-			<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>
-		  </funcprototype>
-		 </funcsynopsis>
-		</refsynopsisdiv>
+        <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+            <funcdef>setof record <function>ST_SquareGrid</function></funcdef>
+            <paramdef><type>float8</type> <parameter>size</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>
+            </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
 
-		<refsection>
-			<title>Description</title>
+        <refsection>
+            <title>Description</title>
 
-			<para>Starts with the concept of a square tiling of the plane.
-			For a given planar SRS, and a given edge size, starting at the origin of the SRS,
-			there is one unique square tiling of the plane, Tiling(SRS, Size).
-			This function answers the question: what grids in a given Tiling(SRS, Size)
-			overlap with a given bounds.</para>
+            <para>Starts with the concept of a square tiling of the plane.
+            For a given planar SRS, and a given edge size, starting at the origin of the SRS,
+            there is one unique square tiling of the plane, Tiling(SRS, Size).
+            This function answers the question: what grids in a given Tiling(SRS, Size)
+            overlap with a given bounds.</para>
 
-			<para>The SRS for the output squares is the SRS provided by the bounds geometry.</para>
-			<para>Doubling or edge size of the square generates a new parent tiling that
-			perfectly fits with the original tiling. Standard web map tilings in mercator
-			are just powers-of-two square grids in the mercator plane.</para>
+            <para>The SRS for the output squares is the SRS provided by the bounds geometry.</para>
+            <para>Doubling or edge size of the square generates a new parent tiling that
+            perfectly fits with the original tiling. Standard web map tilings in mercator
+            are just powers-of-two square grids in the mercator plane.</para>
 
-			<para>Availability: 3.1</para>
+            <para>Availability: 3.1</para>
 
-		</refsection>
+        </refsection>
 
-		<refsection>
-		<title>Example: Counting points in squares</title>
-		<para>To do a point summary against a square tiling, generate a square grid using the
-		extent of the points as the bounds, then spatially join to that grid.</para>
-		 <programlisting>WITH bounds AS (
- 	SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) AS geom
- )
- SELECT Count(*), squares.geom
- FROM pointtable pts
- JOIN ST_SquareGrid(1000, bounds.geom) squares
- GROUP BY squares.geom
-</programlisting>
-		</refsection>
+        <refsection>
+        <title>Example: Counting points in squares (using single chopped grid)</title>
+        <para>To do a point summary against a square tiling, generate a square grid using the
+        extent of the points as the bounds, then spatially join to that grid. Note the estimated extent might be off from actual extent, so be cautious and at very least make sure you've analyzed your table.</para>
+            <programlisting>SELECT COUNT(*), squares.geom
+    FROM
+    pointtable AS pts
+    INNER JOIN
+    ST_SquareGrid(
+        1000,
+        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)
+    ) AS squares
+    ON ST_Intersects(pts.geom, squares.geom)
+    GROUP BY squares.geom</programlisting>
+        </refsection>
 
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_HexagonGrid" /></para>
-		</refsection>
-	</refentry>
+    <refsection>
+        <title>Example: Counting points in squares using set of grid per point</title>
+        <para>This yields the same result as the first example but will be slower for a large number of points</para>
+            <programlisting>SELECT COUNT(*), squares.geom
+    FROM
+    pointtable AS pts
+    INNER JOIN
+    ST_SquareGrid(
+        1000,
+       pts.geom
+    ) AS squares
+    ON ST_Intersects(pts.geom, squares.geom)
+    GROUP BY squares.geom</programlisting>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_TileEnvelope" />, <xref linkend="ST_HexagonGrid" />
+            , <xref linkend="ST_EstimatedExtent" />
+            , <xref linkend="ST_SetSRID" /></para>
+        </refsection>
+    </refentry>
 
 	<refentry id="ST_Hexagon">
 		<refnamediv>

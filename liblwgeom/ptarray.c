@@ -1500,14 +1500,14 @@ ptarray_remove_repeated_points_in_place(POINTARRAY *pa, double tolerance, uint32
 			if (last_point && n_points_out > 1 && tolerance > 0.0 && dsq <= tolsq)
 			{
 				n_points_out--;
-				p_to -= pt_size;
+				p_to = (char*)p_to - pt_size;
 			}
 		}
 
 		/* Compact all remaining values to front of array */
 		memcpy(p_to, pt, pt_size);
 		n_points_out++;
-		p_to += pt_size;
+		p_to = (char*)p_to + pt_size;
 		last = pt;
 	}
 	/* Adjust array length */
@@ -1692,7 +1692,7 @@ ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts)
 		       pa->serialized_pointlist + pt_size * (pa->npoints - 1),
 		       pt_size);
 	}
-	else
+	else if (pa->npoints != keptn) /* We don't need to move any points if we are keeping them all */
 	{
 		for (uint32_t i = 1; i < pa->npoints; i++)
 		{

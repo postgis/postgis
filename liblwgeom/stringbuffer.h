@@ -55,6 +55,7 @@ void stringbuffer_copy(stringbuffer_t *sb, stringbuffer_t *src);
 extern int stringbuffer_aprintf(stringbuffer_t *sb, const char *fmt, ...);
 extern const char *stringbuffer_getstring(stringbuffer_t *sb);
 extern char *stringbuffer_getstringcopy(stringbuffer_t *sb);
+extern lwvarlena_t *stringbuffer_getvarlenacopy(stringbuffer_t *s);
 extern int stringbuffer_getlength(stringbuffer_t *sb);
 extern char stringbuffer_lastchar(stringbuffer_t *s);
 extern int stringbuffer_trim_trailing_white(stringbuffer_t *s);
@@ -81,6 +82,20 @@ stringbuffer_makeroom(stringbuffer_t *s, size_t size_to_add)
 		s->str_end = s->str_start + current_size;
 	}
 }
+
+
+/**
+ * Append the specified string to the stringbuffer_t using known length
+ */
+inline static void
+stringbuffer_append_len(stringbuffer_t *s, const char *a, size_t alen)
+{
+	int alen0 = alen + 1; /* Length including null terminator */
+	stringbuffer_makeroom(s, alen0);
+	memcpy(s->str_end, a, alen0);
+	s->str_end += alen;
+}
+
 /**
  * Append the specified string to the stringbuffer_t.
  */
@@ -88,9 +103,13 @@ inline static void
 stringbuffer_append(stringbuffer_t *s, const char *a)
 {
 	int alen = strlen(a); /* Length of string to append */
-	int alen0 = alen + 1; /* Length including null terminator */
-	stringbuffer_makeroom(s, alen0);
-	memcpy(s->str_end, a, alen0);
-	s->str_end += alen;
+	stringbuffer_append_len(s, a, alen);
+}
+
+inline static void
+stringbuffer_append_double(stringbuffer_t *s, double d, int precision)
+{
+	stringbuffer_makeroom(s, OUT_MAX_BYTES_DOUBLE);
+	s->str_end += lwprint_double(d, precision, s->str_end);
 }
 #endif /* _STRINGBUFFER_H */

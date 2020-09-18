@@ -203,11 +203,6 @@ VALUES (1,
             <para>raster is a spatial data type used to represent raster data such as those imported from JPEGs, TIFFs, PNGs, digital elevation models.
                 Each raster has 1 or more bands each having a set of pixel values. Rasters can be georeferenced.</para>
             <note>
-              <para>
-                Requires PostGIS Raster support to be enabled in the database. See <xref linkend="create_spatial_db" /> for more details.
-              </para>
-            </note>
-            <note>
               <para>Requires PostGIS be compiled with GDAL support. Currently rasters can be implicitly converted to geometry type, but the conversion returns the
                 <xref linkend="RT_ST_ConvexHull" /> of the raster.  This auto casting may be removed in the near future so don't rely on it.</para>
             </note>
@@ -4191,6 +4186,51 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
 
+		<refentry id="ST_MinPossibleValue">
+			<refnamediv>
+				<refname>ST_MinPossibleValue</refname>
+				<refpurpose>Returns the minimum value this pixeltype can store.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>integer <function>ST_MinPossibleValue</function></funcdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>Returns the minimum value this pixeltype can store.</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+					<programlisting>SELECT ST_MinPossibleValue('16BSI');
+
+ st_minpossiblevalue
+---------------------
+              -32768
+
+
+SELECT ST_MinPossibleValue('8BUI');
+
+ st_minpossiblevalue
+---------------------
+                   0
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_BandPixelType" /></para>
+			</refsection>
+		</refentry>
+
 		<refentry id="RT_ST_HasNoBand">
 			<refnamediv>
 				<refname>ST_HasNoBand</refname>
@@ -5093,7 +5133,7 @@ FROM (
 
          st_neighborhood
 ---------------------------------
- {{NULL,1,1},{1,1,NULL},{1,1,1}}
+{{NULL,1,1},{1,1,1},{1,NULL,1}}
 				</programlisting>
 
 				<programlisting>
@@ -5128,8 +5168,7 @@ FROM (
 -- exclude_nodata_value = FALSE
 SELECT
 	ST_Neighborhood(rast, 3, 3, 1, 1, false)
-FROM (
-		ST_SetValues(
+FROM ST_SetValues(
 			ST_AddBand(
 				ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
 				'8BUI'::text, 1, 0
@@ -5143,11 +5182,10 @@ FROM (
 			]::double precision[],
 			1
 		) AS rast
-) AS foo
 
       st_neighborhood
 ---------------------------
- {{1,0,1},{1,1,1},{0,1,1}}
+{{1,1,0},{0,1,1},{1,1,1}}
 				</programlisting>
 
 			</refsection>
@@ -6952,6 +6990,12 @@ SELECT rid, (meta).* FROM bar
 					</para>
 				</note>
 
+				<warning>
+					<para>
+						When transforming a coverage of tiles, you almost always want to use a reference raster to insure same alignment and no gaps in your tiles as demonstrated in example: Variant 3.
+					</para>
+				</warning>
+
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 				<para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
 			</refsection>
@@ -7051,6 +7095,33 @@ FROM baz
 ------+-------------+---------
  t    | f           | t
 				</programlisting>
+				<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/rt_st_transform04.png" />
+							  </imageobject>
+							  <caption><para>not_aligned</para></caption>
+							</mediaobject>
+						  </informalfigure>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/rt_st_transform05.png" />
+							  </imageobject>
+							  <caption><para>aligned</para></caption>
+							</mediaobject>
+						  </informalfigure>
+						</para></entry>
+					  </row>
+						</tbody>
+						</tgroup>
+					</informaltable>
 			</refsection>
 
 			<refsection>

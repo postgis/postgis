@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 export PGPORT=5432
 export PGHOST=localhost
 export PGUSER=postgres

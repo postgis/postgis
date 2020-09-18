@@ -5,16 +5,17 @@ language: c
 
 env:
   # Use the last stable release to run more tests
-  - tag=pg12-geos37-gdal30-proj611 mode=garden
-  - tag=pg12-geos37-gdal30-proj611 mode=tests
-  - tag=pg12-geos37-gdal30-proj611 mode=debug
-  - tag=pg12-geos37-gdal30-proj611 mode=coverage
-  - tag=pg12-geos37-gdal30-proj611 mode=usan_gcc
-  - tag=pg12-clang-geos37-gdal30-proj611 mode=usan_clang
-  - tag=pg12-geos37-gdal30-proj611 mode=nowagyu
+  - tag=pg13-geos38-gdal31-proj71 mode=garden
+  - tag=pg13-geos38-gdal31-proj71 mode=tests
+  - tag=pg13-geos38-gdal31-proj71 mode=debug
+  - tag=pg13-geos38-gdal31-proj71 mode=coverage
+  - tag=pg13-geos38-gdal31-proj71 mode=usan_gcc
+  - tag=pg13-clang-geos38-gdal31-proj71 mode=usan_clang
+  - tag=pg13-geos38-gdal31-proj71 mode=nowagyu
 
   # Run tests with different dependency combinations
   - tag=latest mode=tests
+  - tag=pg12-geos37-gdal30-proj611 mode=tests
   - tag=pg11-geos37-gdal24-proj52 mode=tests
   - tag=pg10-geos36-gdal23-proj49 mode=tests
   - tag=pg96-geos36-gdal22-proj49 mode=tests
@@ -28,6 +29,12 @@ matrix:
       script:
         - pip install flake8  # lint Python code for syntax errors
         - flake8 . --count --select=E9,F63,F72,F82 --show-source --statistics
+
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
 script:
   - echo "/tmp/logbt-coredumps/core.%p.%E" | sudo tee /proc/sys/kernel/core_pattern

@@ -1,5 +1,6 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 use strict;
+use warnings;
 
 sub Usage {
     print "Usage: mk-sql.pl pgver file-in.sql\n";

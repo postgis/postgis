@@ -1,3 +1,74 @@
+PostGIS 3.1.0beta1
+2020/xx/xx
+Only tickets not included in 3.1.0alpha2
+
+* Breaking changes *
+  - #4737, Bump minimum protobuf-c requirement to 1.1.0 (Raúl Marín)
+
+* New features *
+  - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)
+  - GEOS 3.9
+
+* Enhancements *
+  - Make ST_Subdivide interruptable (Sandro Santilli)
+  - #4660, Changes in double / coordinate printing (Raúl Marín)
+        - Use the shortest representation (enough to guarantee roundtrip).
+        - Uses scientific notation for absolute numbers smaller than 1e-8.
+          The previous behaviour was to output 0 for absolute values smaller than
+          1e-12 and fixed notation for anything bigger than that.
+        - Uses scientific notation for absolute numbers greater than 1e+15 (same behaviour).
+        - The precision parameter now also affects the scientific notation (before it was fixed [5-8]).
+        - All output functions now respect the requested precision (without any limits).
+        - The default precision is the same (9 for GeoJSON, 15 for everything else).
+  - #4729, WKT/KML: Print doubles directly into stringbuffers (Raúl Marín)
+  - #4533, Use the standard coordinate printing system for box types (Raúl Marín)
+  - #4686, Avoid decompressing geographies when possible (Raúl Marín)
+           Affects ANALYZE, _ST_PointOutside, postgis_geobbox, ST_CombineBbox(box2d, geometry),
+           ST_ClipByBox2D when the geometry is fully inside or outside the bbox and
+           ST_BoundingDiagonal.
+  - #4741, Don't use ST_PointInsideCircle if you need indexes, use ST_DWithin instead.
+           Documentation adjusted (Darafei Praliaskouski)
+  - #4737, Improve performance and reduce memory usage in ST_AsMVT, especially in
+           queries involving parallelism (Raúl Marín)
+  - #4746, Micro optimizations to the serialization process (Raúl Marín)
+
+* Bug fixes *
+  - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
+  - Fix handling of bad WKB inputs (Oracle types) and unit tests for
+    malformed WKB. Remove memory leaks in malformed WKB cases. (Paul Ramsey)
+
+
+PostGIS 3.1.0alpha2
+2020/07/18
+
+Only tickets not included in 3.1.0alpha1
+
+* New features *
+  - #4656, Cast a geojson_text::geometry for implicit GeoJSON ingestion (Raúl Marín)
+  - #4687, Expose GEOS MaximumInscribedCircle (Paul Ramsey)
+  - #4710, ST_ClusterKMeans now works with 3D geometries (Darafei Praliaskouski)
+
+* Enhancements *
+  - #4675, topology.GetRingEdges now implemented in C (Sandro Santilli)
+  - #4681, ST_GetFaceGeometry: print corruption information (Sandro Santilli)
+  - #4651: ST_Simplify: Don't copy if nothing is removed (Raúl Marín)
+  - #4657: Avoid De-TOASTing where possible (Paul Ramsey)
+  - #4490, Tweak function costs (Raúl Marín)
+  - #4672, Cache getSRSbySRID and getSRIDbySRS (Raúl Marín)
+  - #4676, Avoid decompressing toasted geometries to read only the header (Raúl Marín)
+           Optimize cast to Postgresql point type (Raúl Marín)
+  - #4620, Update internal wagyu to 0.5.0 (Raúl Marín)
+  - #4623, Optimize varlena returning functions (Raúl Marín)
+  - #4677, Share gserialized objects between different cache types (Raúl Marín)
+  - Fix compilation with MSVC compiler / Standardize shebangs (Loïc Bartoletti)
+
+* Bug fixes *
+  - #4652, Fix several memory related bugs in ST_GeomFromGML (Raúl Marín)
+  - #4661, Fix access to spatial_ref_sys with a non default schema (Raúl Marín)
+  - #4670, ST_AddPoint: Fix bug when a positive position is requested (Raúl Marín)
+  - #4699, crash on null input to ST_Union(raster, otherarg) (Jaime Casanova, 2ndQuadrant)
+  - #4716, Fix several issues with pkg-config in the configure script (Raúl Marín)
+
 PostGIS 3.1.0alpha1
 2020/02/01
 

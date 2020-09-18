@@ -67,6 +67,7 @@ TESTS = \
 	../loader/Latin1 \
 	../loader/Latin1-implicit \
 	../loader/mfile \
+	../dumper/mfiledmp \
 	../dumper/literalsrid \
 	../dumper/realtable \
 	../dumper/nullsintable \
@@ -166,12 +167,18 @@ TESTS = \
 	regress_brin_index_geography \
 	minimum_clearance \
 	oriented_envelope \
-	point_coordinates
+	point_coordinates \
+	out_geojson
 
 # Slow slow tests
 TESTS_SLOW = \
 	concave_hull_hard \
 	knn_recheck
+
+ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" ">=" 120),1)
+	TESTS += \
+		computed_columns
+endif
 
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 37),1)
 	# GEOS-3.7 adds:
@@ -186,6 +193,12 @@ ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 38),1)
 		geos38
 endif
 
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 39),1)
+	# GEOS-3.0 adds stable maximuminscribedcircle implementation
+	TESTS += \
+		geos39 \
+		fixedoverlay
+endif
 
 ifeq ($(INTERRUPTTESTS),yes)
 	# Allow CI servers to configure --with-interrupt-tests

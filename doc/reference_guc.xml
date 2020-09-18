@@ -225,13 +225,27 @@ SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
 
 			<refsection>
 				<title>Examples</title>
-				<para>Set and reset <varname>postgis.enable_outdb_rasters</varname></para>
+				<para>Set and reset <varname>postgis.enable_outdb_rasters</varname> for current session</para>
 
 				<programlisting>
 SET postgis.enable_outdb_rasters TO True;
 SET postgis.enable_outdb_rasters = default;
 SET postgis.enable_outdb_rasters = True;
 SET postgis.enable_outdb_rasters = False;
+				</programlisting>
+
+				<para>Set for specific database</para>
+
+				<programlisting>
+ALTER DATABASE gisdb SET postgis.enable_outdb_rasters = true;
+				</programlisting>
+
+				<para>Setting for whole database cluster. You need to reconnect to the database for changes to take effect.</para>
+				<programlisting>
+ --writes to postgres.auto.conf
+ALTER SYSTEM postgis.enable_outdb_rasters = true;
+ --Reloads postgres conf
+SELECT pg_reload_conf();
 				</programlisting>
 			</refsection>
 

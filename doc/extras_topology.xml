@@ -643,6 +643,44 @@ face without edges |   0 |
 		</refentry>
 	</sect2>
 
+	<sect2 id="Topology_StatsManagement"
+           xreflabel="maintaining statistics during topology editing and population" >
+	     <sect2info>
+            <abstract>
+                <para>
+This section discusses management of database statistics during
+topology building.
+                </para>
+            </abstract>
+        </sect2info>
+	    <title>Topology Statistics Management</title>
+
+<para>
+Adding elements to a topology triggers many database queries for
+finding existing edges that will be split, adding nodes and
+updating edges that will node with the new linework. For this reason
+it is useful that statistics about the data in the topology tables
+are up-to-date.
+</para>
+
+<para>
+PostGIS Topology population and editing functions do not automatically
+update the statistics because a updating stats after each and every
+change in a topology would be overkill, so it is the caller's duty
+to take care of that.
+</para>
+
+<note>
+<para>
+That the statistics updated by autovacuum
+will NOT be visible to transactions which started before autovacuum
+process completed, so long-running transactions will need to run
+ANALYZE themeselves, to use updated statistics.
+</para>
+</note>
+
+	</sect2>
+
 	<sect2 id="Topology_Constructors">
     <sect2info>
         <abstract>
@@ -959,6 +997,11 @@ The given line will snap to existing nodes or edges within given tolerance.
 Existing edges and faces may be split by the line.
                 </para>
 
+                <note><para>
+Updating statistics about topologies being loaded via this function is
+up to caller, see <xref linkend="Topology_StatsManagement"/>.
+                </para></note>
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
 			</refsection>
@@ -1002,6 +1045,11 @@ Adds a polygon to an existing topology and returns a set of face identifiers for
 The boundary of the given polygon will snap to existing nodes or edges within given tolerance.
 Existing edges and faces may be split by the boundary of the new polygon.
                 </para>
+
+                <note><para>
+Updating statistics about topologies being loaded via this function is
+up to caller, see <xref linkend="Topology_StatsManagement"/>.
+                </para></note>
 
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>

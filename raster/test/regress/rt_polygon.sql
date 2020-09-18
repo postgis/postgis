@@ -31,11 +31,11 @@ CREATE OR REPLACE FUNCTION temp_geos_version()
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 SELECT
-	ST_AsText(ST_Polygon(rast)) = 'MULTIPOLYGON(((0 0,0 -5,5 -5,5 0,0 0)))'
+	ST_Equals( ST_Polygon(rast),  'MULTIPOLYGON(((0 0,0 -5,5 -5,5 0,0 0)))'::geometry)
 FROM raster_polygon;
 
 SELECT
-	ST_AsText(ST_Polygon(rast)) = 'MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0)))'
+	ST_Equals( ST_Polygon(rast), 'MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0)))'::geometry)
 FROM (
 	SELECT
 		ST_SetValue(
@@ -45,7 +45,7 @@ FROM (
 ) foo;
 
 SELECT
-	ST_AsText(ST_Polygon(rast)) = 'MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1)))'
+	ST_Equals( ST_Polygon(rast),  'MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1)))'::geometry )
 FROM (
 	SELECT
 		ST_SetValue(
@@ -58,7 +58,7 @@ FROM (
 ) foo;
 
 SELECT
-	ST_AsText(ST_Polygon(rast)) = 'MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2)))'
+	ST_Equals( ST_Polygon(rast), 'MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2)))'::geometry)
 FROM (
 	SELECT
 		ST_SetValue(
@@ -74,7 +74,7 @@ FROM (
 ) foo;
 
 SELECT
-	ST_AsText(ST_Polygon(rast)) = 'MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))'
+	ST_Equals( ST_Polygon(rast) , 'MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))'::geometry)
 FROM (
 	SELECT
 		ST_SetValue(
@@ -93,7 +93,7 @@ FROM (
 ) foo;
 
 SELECT
-	ST_AsText(ST_Polygon(rast)) = 'MULTIPOLYGON(((4 -4,4 -5,0 -5,0 -1,1 -1,1 -2,2 -2,2 -3,3 -3,3 -4,4 -4)),((1 -1,1 0,5 0,5 -4,4 -4,4 -3,3 -3,3 -2,2 -2,2 -1,1 -1)))'
+	ST_Equals( ST_Polygon(rast) , 'MULTIPOLYGON(((4 -4,4 -5,0 -5,0 -1,1 -1,1 -2,2 -2,2 -3,3 -3,3 -4,4 -4)),((1 -1,1 0,5 0,5 -4,4 -4,4 -3,3 -3,3 -2,2 -2,2 -1,1 -1)))'::geometry)
 FROM (
 	SELECT
 		ST_SetValue(
@@ -115,7 +115,7 @@ FROM (
 ) foo;
 
 SELECT
-	ST_AsText(ST_Polygon(rast)) = 'MULTIPOLYGON(((1 -4,2 -4,2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,1 -5,1 -4)),((1 -4,0 -4,0 -1,1 -1,1 -2,2 -2,2 -3,1 -3,1 -4)),((3 -2,4 -2,4 -1,5 -1,5 -4,4 -4,4 -3,3 -3,3 -2)),((3 -2,2 -2,2 -1,1 -1,1 0,4 0,4 -1,3 -1,3 -2)))'
+	ST_Equals( ST_Polygon(rast) , 'MULTIPOLYGON(((1 -4,2 -4,2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,1 -5,1 -4)),((1 -4,0 -4,0 -1,1 -1,1 -2,2 -2,2 -3,1 -3,1 -4)),((3 -2,4 -2,4 -1,5 -1,5 -4,4 -4,4 -3,3 -3,3 -2)),((3 -2,2 -2,2 -1,1 -1,1 0,4 0,4 -1,3 -1,3 -2)))'::geometry)
 FROM (
 	SELECT
 		ST_SetValue(

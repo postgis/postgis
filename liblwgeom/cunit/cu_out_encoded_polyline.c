@@ -22,19 +22,13 @@
 static void
 do_encoded_polyline_test(char* in, int precision, char* out)
 {
-	LWGEOM* g;
-	char* h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_encoded_polyline(g, precision);
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_encoded_polyline(g, precision);
-
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 static void

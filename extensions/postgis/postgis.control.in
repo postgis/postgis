@@ -1,5 +1,5 @@
 # postgis extension
-comment = 'PostGIS geometry, geography, and raster spatial types and functions'
+comment = 'PostGIS geometry and geography spatial types and functions'
 default_version = '@EXTVERSION@'
 module_pathname = '@MODULEPATH@'
 relocatable = false

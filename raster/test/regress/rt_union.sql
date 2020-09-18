@@ -457,3 +457,5 @@ DROP TABLE IF EXISTS raster_union_out;
 -- Some toxic input
 SELECT 'none', ST_Union(r) from ( select null::raster r where false ) f;
 SELECT 'null', ST_Union(null::raster);
+--#4699 crash
+SELECT 'null-1', ST_Union(null::raster,1);

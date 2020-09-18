@@ -32,6 +32,7 @@
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"
 
 #include <math.h>
@@ -1922,8 +1923,6 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(in);
 	GSERIALIZED *out = geometry_serialize(lwgeom);
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_POINTER(out);
 }
 
@@ -1963,7 +1962,7 @@ Datum ST_Normalize(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_zmflag);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	int ret = 0;
 
 	if (gserialized_has_z(in))
@@ -1977,21 +1976,21 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_hasz);
 Datum LWGEOM_hasz(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	PG_RETURN_BOOL(gserialized_has_z(in));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_hasm);
 Datum LWGEOM_hasm(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	PG_RETURN_BOOL(gserialized_has_m(in));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_hasBBOX);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	char res = gserialized_has_bbox(in);
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_BOOL(res);
@@ -2001,7 +2000,7 @@ Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_ndims);
 Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_HEADER(0);
 	int ret = gserialized_ndims(in);
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
@@ -2143,17 +2142,8 @@ Datum ST_TileEnvelope(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_IsCollection);
 Datum ST_IsCollection(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	int type;
-	size_t size;
-
-	/* Pull only a small amount of the tuple, enough to get the type. */
-	/* header + srid/flags + bbox? + type number */
-	size = VARHDRSZ + 8 + 32 + 4;
-
-	geom = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, size);
-
-	type = gserialized_get_type(geom);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_HEADER(0);
+	int type = gserialized_get_type(geom);
 	PG_RETURN_BOOL(lwtype_is_collection(type));
 }
 
@@ -2252,8 +2242,12 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 		}
 		else if (where < 0 || where > (int32)line->points->npoints)
 		{
-			elog(ERROR, "Invalid offset");
+			elog(ERROR, "%s: Invalid offset", __func__);
 			PG_RETURN_NULL();
+		}
+		else
+		{
+			uwhere = where;
 		}
 	}
 
@@ -2385,28 +2379,14 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asEWKT);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	LWGEOM *lwgeom;
-	char *wkt;
-	size_t wkt_size;
-	text *result;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 
-	POSTGIS_DEBUG(2, "LWGEOM_asEWKT called.");
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
+	if (PG_NARGS() > 1)
+		precision = PG_GETARG_INT32(1);
 
-	geom = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom = lwgeom_from_gserialized(geom);
-
-	/* Write to WKT and free the geometry */
-	wkt = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, DBL_DIG, &wkt_size);
-	lwgeom_free(lwgeom);
-
-	/* Write to text and free the WKT */
-	result = cstring_to_text(wkt);
-	lwfree(wkt);
-
-	/* Return the text */
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_wkt_varlena(lwgeom, WKT_EXTENDED, precision));
 }
 
 /**
@@ -2710,8 +2690,7 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 
 	GSERIALIZED *geom = NULL;
 	int precision = 0;
-	char *geohash = NULL;
-	text *result = NULL;
+	lwvarlena_t *geohash = NULL;
 
 	if (PG_ARGISNULL(0))
 	{
@@ -2726,14 +2705,9 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 	}
 
 	geohash = lwgeom_geohash((LWGEOM *)(lwgeom_from_gserialized(geom)), precision);
-
-	if (!geohash)
-		PG_RETURN_NULL();
-
-	result = cstring_to_text(geohash);
-	pfree(geohash);
-
-	PG_RETURN_TEXT_P(result);
+	if (geohash)
+		PG_RETURN_TEXT_P(geohash);
+	PG_RETURN_NULL();
 }
 
 PG_FUNCTION_INFO_V1(ST_CollectionExtract);
@@ -2926,48 +2900,55 @@ Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_BoundingDiagonal);
 Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom_in = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *geom_out;
 	bool fits = PG_GETARG_BOOL(1);
-	LWGEOM *lwgeom_in = lwgeom_from_gserialized(geom_in);
-	LWGEOM *lwgeom_out;
-	const GBOX *gbox;
-	int hasz = FLAGS_GET_Z(lwgeom_in->flags);
-	int hasm = FLAGS_GET_M(lwgeom_in->flags);
-	int32_t srid = lwgeom_in->srid;
+	LWGEOM *lwgeom_out = NULL;
+
+	GBOX gbox = {0};
+	int hasz;
+	int hasm;
+	int32_t srid;
+
 	POINT4D pt;
 	POINTARRAY *pa;
 
 	if (fits)
 	{
-		/* unregister any cached bbox to ensure it's recomputed */
-		lwgeom_in->bbox = NULL;
-	}
-
-	gbox = lwgeom_get_bbox(lwgeom_in);
-
-	if (!gbox)
-	{
-		lwgeom_out = lwgeom_construct_empty(LINETYPE, srid, hasz, hasm);
+		GSERIALIZED *geom_in = PG_GETARG_GSERIALIZED_P(0);
+		LWGEOM *lwgeom_in = lwgeom_from_gserialized(geom_in);
+		lwgeom_calculate_gbox(lwgeom_in, &gbox);
+		hasz = FLAGS_GET_Z(lwgeom_in->flags);
+		hasm = FLAGS_GET_M(lwgeom_in->flags);
+		srid = lwgeom_in->srid;
 	}
 	else
 	{
+		uint8_t type;
+		lwflags_t flags;
+		int res = gserialized_datum_get_internals_p(PG_GETARG_DATUM(0), &gbox, &flags, &type, &srid);
+		hasz = FLAGS_GET_Z(flags);
+		hasm = FLAGS_GET_M(flags);
+		if (res == LW_FAILURE)
+		{
+			lwgeom_out = lwgeom_construct_empty(LINETYPE, srid, hasz, hasm);
+		}
+	}
+
+	if (!lwgeom_out)
+	{
 		pa = ptarray_construct_empty(hasz, hasm, 2);
-		pt.x = gbox->xmin;
-		pt.y = gbox->ymin;
-		pt.z = gbox->zmin;
-		pt.m = gbox->mmin;
+		pt.x = gbox.xmin;
+		pt.y = gbox.ymin;
+		pt.z = gbox.zmin;
+		pt.m = gbox.mmin;
 		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = gbox->xmax;
-		pt.y = gbox->ymax;
-		pt.z = gbox->zmax;
-		pt.m = gbox->mmax;
+		pt.x = gbox.xmax;
+		pt.y = gbox.ymax;
+		pt.z = gbox.zmax;
+		pt.m = gbox.mmax;
 		ptarray_append_point(pa, &pt, LW_TRUE);
 		lwgeom_out = lwline_as_lwgeom(lwline_construct(srid, NULL, pa));
 	}
-
-	lwgeom_free(lwgeom_in);
-	PG_FREE_IF_COPY(geom_in, 0);
 
 	geom_out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);

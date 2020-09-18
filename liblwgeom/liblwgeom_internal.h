@@ -114,21 +114,6 @@
 #define WKB_TIN_TYPE 16
 #define WKB_TRIANGLE_TYPE 17
 
-/**
-* Macro for reading the size from the GSERIALIZED size attribute.
-* Cribbed from PgSQL, top 30 bits are size. Use VARSIZE() when working
-* internally with PgSQL. See SET_VARSIZE_4B / VARSIZE_4B in
-* PGSRC/src/include/postgres.h for details.
-*/
-#ifdef WORDS_BIGENDIAN
-#define SIZE_GET(varsize) ((varsize) & 0x3FFFFFFF)
-#define SIZE_SET(varsize, len) ((varsize) = ((len) & 0x3FFFFFFF))
-#define IS_BIG_ENDIAN 1
-#else
-#define SIZE_GET(varsize) (((varsize) >> 2) & 0x3FFFFFFF)
-#define SIZE_SET(varsize, len) ((varsize) = (((uint32_t)(len)) << 2))
-#define IS_BIG_ENDIAN 0
-#endif
 
 /**
 * Macro that returns:
@@ -147,19 +132,19 @@
  * Export functions
  */
 
-/* Any number higher than this will always be printed in scientific notation */
+/* Any (absolute) values outside this range will be printed in scientific notation */
+#define OUT_MIN_DOUBLE 1E-8
 #define OUT_MAX_DOUBLE 1E15
+#define OUT_DEFAULT_DECIMAL_DIGITS 15
 
-/* Limit for the max amount of decimal digits to show, e.g: 0.123456789012345 has 15 */
-#define OUT_MAX_DOUBLE_PRECISION 15
-
-/* Limits for the max amount of digits to show, e.g: 1234567890.12345678 has 18 digits */
-/* This used to be 20 but it never worked as announced and OUT_MAX_DOUBLE_PRECISION was used instead */
-#define OUT_SHOW_DIGS_DOUBLE 15
+/* 17 digits are sufficient for round-tripping
+ * Then we might add up to 8 (from OUT_MIN_DOUBLE) max leading zeroes (or 2 digits for "e+") */
+#define OUT_MAX_DIGITS 17 + 8
 
 /* Limit for the max amount of characters that a double can use, including dot and sign */
-#define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
-#define OUT_DOUBLE_BUFFER_SIZE OUT_MAX_DIGS_DOUBLE + 1 /* +1 including NULL */
+/* */
+#define OUT_MAX_BYTES_DOUBLE (1 /* Sign */ + 2 /* 0.x */ + OUT_MAX_DIGITS)
+#define OUT_DOUBLE_BUFFER_SIZE OUT_MAX_BYTES_DOUBLE + 1 /* +1 including NULL */
 
 /**
 * Constants for point-in-polygon return values
@@ -254,7 +239,7 @@ int point_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz
 * Geohash
 */
 int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds);
-char *geohash_point(double longitude, double latitude, int precision);
+lwvarlena_t *geohash_point(double longitude, double latitude, int precision);
 void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision);
 
 /*
@@ -466,7 +451,7 @@ double gbox_angular_width(const GBOX* gbox);
 int gbox_centroid(const GBOX* gbox, POINT2D* out);
 
 /* Utilities */
-int lwprint_double(double d, uint32_t maxdd, char *buf, size_t bufsize);
+int lwprint_double(double d, int maxdd, char *buf);
 extern uint8_t MULTITYPE[NUMTYPES];
 
 extern lwinterrupt_callback *_lwgeom_interrupt_callback;

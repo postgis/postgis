@@ -40,7 +40,14 @@ EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql_bits/sfcgal.sql \
 	../../utils/create_unpackaged.pl
 
+# Scripts making up the extension file
+# NOTE: order matters
+EXTENSION_SCRIPTS = \
+	sql_bits/sfcgal.sql \
+	sql_bits/sfcgal_comments.sql
+
 EXTRA_CLEAN = sql
+
 
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
 
@@ -52,21 +59,9 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
 		> $@
 
-sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
-	mkdir -p sql
-	cp $< $@
-
-sql/$(EXTENSION).sql: sql_bits/sfcgal.sql  sql_bits/sfcgal_comments.sql
-	mkdir -p sql
+sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
+	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ > $@
-
-#this is a cludge to allow upgrading from same SVN to same SVN
-sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/sfcgal_upgrade_minor.sql
-	mkdir -p sql
-	cat $^ > $@
-sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
-	mkdir -p sql
-	cp $< $@
 
 sql_bits/sfcgal.sql: ../../postgis/sfcgal.sql
 	mkdir -p sql_bits

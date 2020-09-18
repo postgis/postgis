@@ -4,6 +4,7 @@
 
 #include <mapbox/geometry/point.hpp>
 #include <mapbox/geometry/polygon.hpp>
+#include <mapbox/geometry/wagyu/almost_equal.hpp>
 #include <mapbox/geometry/wagyu/point.hpp>
 
 namespace mapbox {
@@ -30,16 +31,24 @@ double area(mapbox::geometry::linear_ring<T> const& poly) {
     return -a * 0.5;
 }
 
-inline bool value_is_zero(double val) {
-    return std::fabs(val) < (5.0 * std::numeric_limits<double>::epsilon());
+inline bool values_are_equal(double x, double y) {
+    return util::FloatingPoint<double>(x).AlmostEquals(util::FloatingPoint<double>(y));
 }
 
-inline bool values_are_equal(double x, double y) {
-    return value_is_zero(x - y);
+inline bool value_is_zero(double val) {
+    return values_are_equal(val, static_cast<double>(0.0));
 }
 
 inline bool greater_than_or_equal(double x, double y) {
     return x > y || values_are_equal(x, y);
+}
+
+inline bool greater_than(double x, double y) {
+    return (!values_are_equal(x, y) && x > y);
+}
+
+inline bool less_than(double x, double y) {
+    return (!values_are_equal(x, y) && x < y);
 }
 
 template <typename T>

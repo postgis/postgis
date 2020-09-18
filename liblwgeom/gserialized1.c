@@ -29,6 +29,8 @@
 #include "lwgeodetic.h"
 #include "gserialized1.h"
 
+#include <stddef.h>
+
 /***********************************************************************
 * GSERIALIZED metadata utility functions.
 */
@@ -113,9 +115,8 @@ int gserialized1_is_geodetic(const GSERIALIZED *gser)
 
 uint32_t gserialized1_max_header_size(void)
 {
-	static const intptr_t size_of_gserialized_up_to_data = (intptr_t) & ((GSERIALIZED *)NULL)->data;
 	/* GSERIALIZED size + max bbox according gbox_serialized_size (XYZM*2) + extended flags + type */
-	return size_of_gserialized_up_to_data + 8 * sizeof(float) + sizeof(uint32_t);
+	return offsetof(GSERIALIZED, data) + 8 * sizeof(float) + sizeof(uint32_t);
 }
 
 static uint32_t gserialized1_header_size(const GSERIALIZED *gser)
@@ -231,7 +232,7 @@ gserialized1_hash(const GSERIALIZED *g1)
 	size_t hsz1 = gserialized1_header_size(g1);
 	uint8_t *b1 = (uint8_t*)g1 + hsz1;
 	/* Calculate size of type/coordinate buffer */
-	size_t sz1 = SIZE_GET(g1->size);
+	size_t sz1 = LWSIZE_GET(g1->size);
 	size_t bsz1 = sz1 - hsz1;
 	/* Calculate size of srid/type/coordinate buffer */
 	int32_t srid = gserialized1_get_srid(g1);
@@ -1532,7 +1533,7 @@ GSERIALIZED* gserialized1_set_gbox(GSERIALIZED *g, GBOX *gbox)
 	*/
 	else
 	{
-		size_t varsize_new = SIZE_GET(g->size) + box_size;
+		size_t varsize_new = LWSIZE_GET(g->size) + box_size;
 		uint8_t *ptr;
 		g_out = lwalloc(varsize_new);
 		/* Copy the head of g into place */
@@ -1540,9 +1541,9 @@ GSERIALIZED* gserialized1_set_gbox(GSERIALIZED *g, GBOX *gbox)
 		/* Copy the body of g into place after leaving space for the box */
 		ptr = g_out->data;
 		ptr += box_size;
-		memcpy(ptr, g->data, SIZE_GET(g->size) - 8);
+		memcpy(ptr, g->data, LWSIZE_GET(g->size) - 8);
 		G1FLAGS_SET_BBOX(g_out->gflags, 1);
-		SIZE_SET(g_out->size, varsize_new);
+		LWSIZE_SET(g_out->size, varsize_new);
 	}
 
 	/* Move bounds to nearest float values */
@@ -1578,7 +1579,7 @@ GSERIALIZED* gserialized1_drop_gbox(GSERIALIZED *g)
 {
 	int g_ndims = G1FLAGS_NDIMS_BOX(g->gflags);
 	size_t box_size = 2 * g_ndims * sizeof(float);
-	size_t g_out_size = SIZE_GET(g->size) - box_size;
+	size_t g_out_size = LWSIZE_GET(g->size) - box_size;
 	GSERIALIZED *g_out = lwalloc(g_out_size);
 
 	/* Copy the contents while omitting the box */
@@ -1593,7 +1594,7 @@ GSERIALIZED* gserialized1_drop_gbox(GSERIALIZED *g)
 		/* Copy parts after the box into place */
 		memcpy(outptr, inptr, g_out_size - 8);
 		G1FLAGS_SET_BBOX(g_out->gflags, 0);
-		SIZE_SET(g_out->size, g_out_size);
+		LWSIZE_SET(g_out->size, g_out_size);
 	}
 	/* No box? Nothing to do but copy and return. */
 	else

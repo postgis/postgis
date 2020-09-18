@@ -206,4 +206,5 @@ F32|POLYGON((36 33,36 38,57 38,57 33,36 33))
 F33|POLYGON((38 40,38 43,41 43,41 40,38 40))
 F34|POLYGON((35 25,35 45,63 45,63 25,35 25))
 F35|POLYGON((9 14,9 22,21 22,21 14,9 14))
+ERROR:  Backend error (no ring edges for edge 58): Corrupted topology: ring of edge 58 is topologically non-closed
 Topology 'city_data' dropped

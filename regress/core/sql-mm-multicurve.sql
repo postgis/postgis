@@ -134,20 +134,20 @@ SELECT 'asewkb02', encode(ST_AsEWKB(the_geom_3dm, 'xdr'), 'hex') FROM public.mul
 SELECT 'asewkb03', encode(ST_AsEWKB(the_geom_3dz, 'ndr'), 'hex') FROM public.multicurve;
 SELECT 'asewkb04', encode(ST_AsEWKB(the_geom_4d, 'xdr'), 'hex') FROM public.multicurve;
 
-SELECT 'ST_CurveToLine-201', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_2d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine-202', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine-203', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine-204', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_4d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
+SELECT 'ST_CurveToLine-201', ST_AsText(ST_CurveToLine(the_geom_2d, 2), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine-202', ST_AsText(ST_CurveToLine(the_geom_3dm, 2), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine-203', ST_AsText(ST_CurveToLine(the_geom_3dz, 2), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine-204', ST_AsText(ST_CurveToLine(the_geom_4d, 2), 8) FROM public.multicurve;
 
-SELECT 'ST_CurveToLine-401', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_2d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine-402', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine-403', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine-404', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_4d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
+SELECT 'ST_CurveToLine-401', ST_AsText(ST_CurveToLine(the_geom_2d, 4), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine-402', ST_AsText(ST_CurveToLine(the_geom_3dm, 4), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine-403', ST_AsText(ST_CurveToLine(the_geom_3dz, 4), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine-404', ST_AsText(ST_CurveToLine(the_geom_4d, 4), 8) FROM public.multicurve;
 
-SELECT 'ST_CurveToLine01', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine02', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine03', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
-SELECT 'ST_CurveToLine04', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multicurve;
+SELECT 'ST_CurveToLine01', ST_AsText(ST_CurveToLine(the_geom_2d), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine02', ST_AsText(ST_CurveToLine(the_geom_3dm), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine03', ST_AsText(ST_CurveToLine(the_geom_3dz), 8) FROM public.multicurve;
+SELECT 'ST_CurveToLine04', ST_AsText(ST_CurveToLine(the_geom_4d), 8) FROM public.multicurve;
 
 -- TODO: ST_SnapToGrid is required to remove platform dependent precision
 -- issues.  Until ST_SnapToGrid is updated to work against curves, these

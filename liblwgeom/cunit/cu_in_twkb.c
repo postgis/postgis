@@ -54,8 +54,6 @@ static void cu_twkb_in(char *wkt)
 {
 	LWGEOM_PARSER_RESULT pr;
 	LWGEOM *g_a, *g_b;
-	uint8_t *twkb_a, *twkb_b;
-	size_t twkb_size_a, twkb_size_b;
 	/* int i; char *hex; */
 
 	/* Turn WKT into geom */
@@ -71,23 +69,23 @@ static void cu_twkb_in(char *wkt)
 	g_a = pr.geom;
 
 	/* Turn geom into TWKB */
-	twkb_a = lwgeom_to_twkb(g_a, variant, precision, precision, precision, &twkb_size_a);
+	lwvarlena_t *twkb_a = lwgeom_to_twkb(g_a, variant, precision, precision, precision);
 
 	// printf("\n Size: %ld\n", twkb_size_a);
 
 	/* Turn TWKB back into geom  */
-	g_b = lwgeom_from_twkb(twkb_a, twkb_size_a, LW_PARSER_CHECK_NONE);
+	g_b = lwgeom_from_twkb((uint8_t *)twkb_a->data, LWSIZE_GET(twkb_a->size) - LWVARHDRSZ, LW_PARSER_CHECK_NONE);
 
 	// printf("\n Org: %s\n 1st: %s\n 2nd: %s\n", wkt, lwgeom_to_ewkt(g_a), lwgeom_to_ewkt(g_b));
 
 	/* Turn geom to TWKB again */
-	twkb_b = lwgeom_to_twkb(g_b, variant, precision, precision, precision, &twkb_size_b);
+	lwvarlena_t *twkb_b = lwgeom_to_twkb(g_b, variant, precision, precision, precision);
 
 	/* Turn TWKB into hex for comparisons */
 	if ( hex_a ) lwfree(hex_a);
 	if ( hex_b ) lwfree(hex_b);
-	hex_a = hexbytes_from_bytes(twkb_a, twkb_size_a);
-	hex_b = hexbytes_from_bytes(twkb_b, twkb_size_b);
+	hex_a = hexbytes_from_bytes((uint8_t *)twkb_a->data, LWSIZE_GET(twkb_a->size) - LWVARHDRSZ);
+	hex_b = hexbytes_from_bytes((uint8_t *)twkb_b->data, LWSIZE_GET(twkb_b->size) - LWVARHDRSZ);
 
 	/* Clean up */
 	lwfree(twkb_a);

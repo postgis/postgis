@@ -195,7 +195,11 @@ static LWGEOM *
 wgmpoly_to_lwgeom(const wagyu_multipolygon &mp)
 {
 	const uint32_t ngeoms = mp.size();
-	if (ngeoms == 1)
+	if (ngeoms == 0)
+	{
+		return NULL;
+	}
+	else if (ngeoms == 1)
 	{
 		return wgpoly_to_lwgeom(mp[0]);
 	}
@@ -260,7 +264,8 @@ __lwgeom_wagyu_clip_by_box(const LWGEOM *geom, const GBOX *bbox)
 	clipper.execute(wagyu::clip_type_union, solution, wagyu::fill_type_even_odd, wagyu::fill_type_even_odd);
 
 	LWGEOM *g = wgmpoly_to_lwgeom(solution);
-	g->srid = geom->srid;
+	if (g)
+		g->srid = geom->srid;
 
 	return g;
 }
@@ -284,7 +289,7 @@ libwagyu_version()
 {
 	static char str[50] = {0};
 	snprintf(
-	    str, sizeof(str), "%d.%d.%d (Internal)", WAGYU_MAJOR_VERSION, WAGYU_MINOR_VERSION, WAGYU_PATCH_VERSION);
+		str, sizeof(str), "%d.%d.%d (Internal)", WAGYU_MAJOR_VERSION, WAGYU_MINOR_VERSION, WAGYU_PATCH_VERSION);
 
 	return str;
 }

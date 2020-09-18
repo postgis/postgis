@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 export PG_VER=9.6
 # export PGPORT=8442
 export OS_BUILD=64

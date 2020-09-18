@@ -312,6 +312,34 @@ extern lwinterrupt_callback *lwgeom_register_interrupt_callback(lwinterrupt_call
 */
 typedef uint16_t lwflags_t;
 
+/******************************************************************
+* LWGEOM varlena equivalent type that contains both the size and
+* data(see Postgresql c.h)
+*/
+typedef struct lwvarlena_t
+{
+    uint32_t    size;	/* Do not touch this field directly! */
+    char        data[];	/* Data content is here */
+} lwvarlena_t;
+
+#define LWVARHDRSZ ((int32_t) sizeof(int32_t))
+
+/**
+* Macro for reading the size from the GSERIALIZED size attribute.
+* Cribbed from PgSQL, top 30 bits are size. Use VARSIZE() when working
+* internally with PgSQL. See SET_VARSIZE_4B / VARSIZE_4B in
+* PGSRC/src/include/postgres.h for details.
+*/
+#ifdef WORDS_BIGENDIAN
+#define LWSIZE_GET(varsize) ((varsize) & 0x3FFFFFFF)
+#define LWSIZE_SET(varsize, len) ((varsize) = ((len) & 0x3FFFFFFF))
+#define IS_BIG_ENDIAN 1
+#else
+#define LWSIZE_GET(varsize) (((varsize) >> 2) & 0x3FFFFFFF)
+#define LWSIZE_SET(varsize, len) ((varsize) = (((uint32_t)(len)) << 2))
+#define IS_BIG_ENDIAN 0
+#endif
+
 /******************************************************************/
 
 typedef struct {
@@ -1607,7 +1635,7 @@ extern LWPOINT* lwmpoint_median(const LWMPOINT *g, double tol, uint32_t maxiter,
 /**
 * Calculate the GeoHash (http://geohash.org) string for a geometry. Caller must free.
 */
-char *lwgeom_geohash(const LWGEOM *lwgeom, int precision);
+lwvarlena_t *lwgeom_geohash(const LWGEOM *lwgeom, int precision);
 unsigned int geohash_point_as_int(POINT2D *pt);
 
 
@@ -1663,18 +1691,18 @@ LWCOLLECTION* lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, d
 
 
 
-extern char* lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
-extern char* lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
+extern lwvarlena_t* lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
+extern lwvarlena_t* lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix);
 /**
  * @param opts output options bitfield, see LW_GML macros for meaning
  */
-extern char* lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix);
-extern char* lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix, const char *id);
-extern char* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
-extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
-extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
-extern char* lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid);
-extern char* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision);
+extern lwvarlena_t* lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix);
+extern lwvarlena_t* lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix, const char *id);
+extern lwvarlena_t* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
+extern lwvarlena_t* lwgeom_to_geojson(const LWGEOM *geo, const char *srs, int precision, int has_bbox);
+extern lwvarlena_t* lwgeom_to_x3d3(const LWGEOM *geom, int precision, int opts, const char *defid);
+extern lwvarlena_t* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
+extern lwvarlena_t* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision);
 
 /**
  * Create an LWGEOM object from a GeoJSON representation
@@ -2143,17 +2171,25 @@ LWGEOM_UNPARSER_RESULT;
 /**
 * @param geom geometry to convert to WKT
 * @param variant output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
+* @param precision Double precision
 * @param size_out (Out parameter) size of the buffer
 */
 extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out);
 
 /**
 * @param geom geometry to convert to WKT
+* @param variant output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
+* @param precision Double precision
+*/
+extern lwvarlena_t* lwgeom_to_wkt_varlena(const LWGEOM *geom, uint8_t variant, int precision);
+
+/**
+* @param geom geometry to convert to WKB
 * @param variant output format to use
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
-* @param size_out (Out parameter) size of the buffer
 */
-extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
+extern uint8_t* lwgeom_to_wkb_buffer(const LWGEOM *geom, uint8_t variant);
+extern lwvarlena_t* lwgeom_to_wkb_varlena(const LWGEOM *geom, uint8_t variant);
 
 /**
 * @param geom geometry to convert to HEXWKB
@@ -2161,7 +2197,8 @@ extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
 * @param size_out (Out parameter) size of the buffer
 */
-extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
+extern char* lwgeom_to_hexwkb_buffer(const LWGEOM *geom, uint8_t variant);
+extern lwvarlena_t* lwgeom_to_hexwkb_varlena(const LWGEOM *geom, uint8_t variant);
 
 /**
 * @param lwgeom geometry to convert to EWKT
@@ -2222,9 +2259,9 @@ extern LWGEOM* lwgeom_from_twkb(const uint8_t *twkb, size_t twkb_size, char chec
  * @param variant what variations on TWKB are requested?
  * @param twkb_size returns the length of the output TWKB in bytes if set
  */
-extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m, size_t *twkb_size);
+extern lwvarlena_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m);
 
-extern uint8_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m, size_t *twkb_size);
+extern lwvarlena_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m);
 
 /**
  * Trim the bits of an LWGEOM in place, to optimize it for compression.
@@ -2327,15 +2364,21 @@ LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
 
 LWGEOM *lwgeom_normalize(const LWGEOM *geom);
 LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_intersection_prec(const LWGEOM *geom1, const LWGEOM *geom2, double gridSize);
 LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_difference_prec(const LWGEOM *geom1, const LWGEOM *geom2, double gridSize);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
+LWGEOM *lwgeom_symdifference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double gridSize);
 LWGEOM *lwgeom_pointonsurface(const LWGEOM* geom);
 LWGEOM *lwgeom_centroid(const LWGEOM* geom);
 LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_union_prec(const LWGEOM *geom1, const LWGEOM *geom2, double gridSize);
 LWGEOM *lwgeom_linemerge(const LWGEOM *geom1);
 LWGEOM *lwgeom_unaryunion(const LWGEOM *geom1);
+LWGEOM *lwgeom_unaryunion_prec(const LWGEOM *geom1, double gridSize);
 LWGEOM *lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double y1);
 LWCOLLECTION *lwgeom_subdivide(const LWGEOM *geom, uint32_t maxvertices);
+LWCOLLECTION *lwgeom_subdivide_prec(const LWGEOM *geom, uint32_t maxvertices, double gridSize);
 
 /**
  * Snap vertices and segments of a geometry to another using a given tolerance.
@@ -2475,7 +2518,7 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 * @param ngeoms the number of elements in the array
 * @param k the number of clusters to calculate
 */
-int * lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, uint32_t ngeoms, uint32_t k);
+int * lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t ngeoms, uint32_t k);
 
 #include "lwinline.h"
 

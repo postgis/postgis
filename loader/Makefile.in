@@ -101,8 +101,8 @@ $(PGSQL2SHP-CLI): $(SHPLIB_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CFLAGS) $^ $(LDFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@
 
-$(POSTGIS-CLI): postgis.sh
-	cp postgis.sh postgis; chmod +x postgis
+$(POSTGIS-CLI): postgis.pl
+	cp postgis.pl postgis; chmod +x postgis
 
 $(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \

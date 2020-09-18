@@ -14,6 +14,8 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
+char cu_error_msg[MAX_CUNIT_MSG_LENGTH + 1] = {0};
+
 /* Internal funcs */
 static void
 cu_error_reporter(const char *fmt, va_list ap);

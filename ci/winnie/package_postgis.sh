@@ -14,10 +14,10 @@
 #export GCC_TYPE=
 #if no override is set - use these values
 #otherwise use the ones jenkins passes thru
-#!/bin/bash
+#!/usr/bin/env bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8.0
-	export GDAL_VER=2.4.3
+	export GEOS_VER=3.8.1
+	export GDAL_VER=2.4.4
 	export PROJ_VER=5.2.0
 	export SFCGAL_VER=1.3.2
 	export CGAL_VER=4.11
@@ -246,7 +246,7 @@ if [ -n "$SFCGAL_VER"  ]; then
     echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://github.com/Oslandia/SFCGAL" >> $verfile
 fi;
 
-if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then 
+if [ -f ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt ]; then
 	cat $verfile ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/gdal_depends.txt > $verfile
 fi
 #echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile

@@ -292,7 +292,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	}
 	else
 	{
-		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
+		mem = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
 	}
 
 	if ( !mem )
@@ -385,7 +385,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 	}
 
 	if (!state->config->use_wkt)
-		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
+		mem = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
 	else
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 
@@ -706,7 +706,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	}
 
 	if (!state->config->use_wkt)
-		mem = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &mem_length);
+		mem = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
 	else
 		mem = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, WKT_PRECISION, &mem_length);
 
@@ -1641,12 +1641,28 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 			case FTString:
 			case FTLogical:
+				rv = snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i));
+				if (rv >= MAXVALUELEN || rv == -1)
+				{
+					stringbuffer_aprintf(sbwarn, "Warning: field %d name truncated\n", i);
+					val[MAXVALUELEN - 1] = '\0';
+				}
+				break;
+
 			case FTDate:
 				rv = snprintf(val, MAXVALUELEN, "%s", DBFReadStringAttribute(state->hDBFHandle, item, i));
 				if (rv >= MAXVALUELEN || rv == -1)
 				{
 					stringbuffer_aprintf(sbwarn, "Warning: field %d name truncated\n", i);
 					val[MAXVALUELEN - 1] = '\0';
+				}
+				if (strlen(val) == 0)
+				{
+					if (state->config->dump_format)
+						stringbuffer_aprintf(sb, "\\N");
+					else
+						stringbuffer_aprintf(sb, "NULL");
+					goto done_cell;
 				}
 				break;
 
@@ -1706,6 +1722,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			if (val != escval)
 				free(escval);
 		}
+
+done_cell:
 
 		/* Only put in delimeter if not last field or a shape will follow */
 		if (state->config->readshape == 1 || i < DBFGetFieldCount(state->hDBFHandle) - 1)
@@ -1813,7 +1831,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				}
 			}
 
-			free(geometry);
+			//			free(geometry);
 		}
 
 		/* Tidy up everything */

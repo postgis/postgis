@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:48+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-02-01 19:38+0000\n"
 "PO-Revision-Date: 2016-11-16 19:54+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -378,278 +378,123 @@ msgstr ""
 "restrigir o UPDATE por \"WHERE dimension(the_geom)&gt;2\" pula as geometrias "
 "que já estão em 2D."
 
-#. Tag: title
-#: performance_tips.xml:138
-#, no-c-format
-msgid "Tuning your configuration"
-msgstr "Tunando sua configuração"
+#~ msgid "Tuning your configuration"
+#~ msgstr "Tunando sua configuração"
 
-#. Tag: para
-#: performance_tips.xml:140
-#, no-c-format
-msgid ""
-"Tuning for PostGIS is much like tuning for any PostgreSQL workload. The only "
-"additional note to keep in mind is that geometries and rasters are heavy so "
-"memory related optimizations generally have more of an impact on PostGIS "
-"than other types of PostgreSQL queries."
-msgstr ""
+#~ msgid "Startup"
+#~ msgstr "Início"
 
-#. Tag: para
-#: performance_tips.xml:143
-#, no-c-format
-msgid ""
-"For general details about optimizing PostgreSQL, refer to <ulink url="
-"\"https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">Tuning "
-"your PostgreSQL Server</ulink>."
-msgstr ""
+#~ msgid "These settings are configured in postgresql.conf:"
+#~ msgstr "Estas configuração estão no arquivo postgresql.conf:"
 
-#. Tag: para
-#: performance_tips.xml:145
-#, no-c-format
-msgid ""
-"For PostgreSQL 9.4+ all these can be set at the server level without "
-"touching postgresql.conf or postgresql.auto.conf by using the <code>ALTER "
-"SYSTEM..</code> command."
-msgstr ""
+#~ msgid "constraint_exclusion"
+#~ msgstr "constraint_exclusion"
 
-#. Tag: programlisting
-#: performance_tips.xml:147
-#, no-c-format
-msgid ""
-"ALTER SYSTEM SET work_mem = '256MB';\n"
-"-- this will force, non-startup configs to take effect for new connections\n"
-"SELECT pg_reload_conf();\n"
-"-- show current setting value\n"
-"-- use SHOW ALL to see all settings\n"
-"SHOW work_mem;"
-msgstr ""
+#, fuzzy
+#~ msgid "Default: partition"
+#~ msgstr "Padrão: 1MB"
 
-#. Tag: para
-#: performance_tips.xml:149
-#, no-c-format
-msgid ""
-"In addition to these settings, PostGIS also has some custom settings which "
-"you can find listed in <xref linkend=\"PostGIS_GUC\"/>."
-msgstr ""
+#, fuzzy
+#~ msgid ""
+#~ "This is generally used for table partitioning. The default for this is "
+#~ "set to \"partition\" which is ideal for PostgreSQL 8.4 and above since it "
+#~ "will force the planner to only analyze tables for constraint "
+#~ "consideration if they are in an inherited hierarchy and not pay the "
+#~ "planner penalty otherwise."
+#~ msgstr ""
+#~ "Isto é geralmente utilizado para particionamento de tabelas. Se você está "
+#~ "rodando versões anteriores do 8.4, configure para \"on\" garantindo que o "
+#~ "planejador de queries irá otimizar como desejado. Depois do PostgreSQL "
+#~ "84, o padrão é partition, que é ideal, já que irá forçar o planejador a "
+#~ "analisar somente as tabelas se elas estão na hierarquia de herança e não "
+#~ "irá pagar outras penalidades com o planejador."
 
-#. Tag: title
-#: performance_tips.xml:152
-#, no-c-format
-msgid "Startup"
-msgstr "Início"
+#~ msgid "shared_buffers"
+#~ msgstr "shared_buffers"
 
-#. Tag: para
-#: performance_tips.xml:154
-#, no-c-format
-msgid "These settings are configured in postgresql.conf:"
-msgstr "Estas configuração estão no arquivo postgresql.conf:"
+#, fuzzy
+#~ msgid ""
+#~ "<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-"
+#~ "config-resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</"
+#~ "ulink> This setting is only available for PostgreSQL 9.4+. For PostgreSQL "
+#~ "9.6+ this setting has additional importance in that it controls the max "
+#~ "number of processes you can have for parallel queries."
+#~ msgstr ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-WORK-MEM\">work_mem</ulink> (memória utilizada para "
+#~ "operações de ordenamento e queries complexas)"
 
-#. Tag: ulink
-#: performance_tips.xml:159
-#, no-c-format
-msgid "constraint_exclusion"
-msgstr "constraint_exclusion"
+#, fuzzy
+#~ msgid "Default: 8"
+#~ msgstr "Padrão: 1MB"
 
-#. Tag: para
-#: performance_tips.xml:164
-#, fuzzy, no-c-format
-msgid "Default: partition"
-msgstr "Padrão: 1MB"
+#~ msgid "Runtime"
+#~ msgstr "Runtime"
 
-#. Tag: para
-#: performance_tips.xml:169
-#, fuzzy, no-c-format
-msgid ""
-"This is generally used for table partitioning. The default for this is set "
-"to \"partition\" which is ideal for PostgreSQL 8.4 and above since it will "
-"force the planner to only analyze tables for constraint consideration if "
-"they are in an inherited hierarchy and not pay the planner penalty otherwise."
-msgstr ""
-"Isto é geralmente utilizado para particionamento de tabelas. Se você está "
-"rodando versões anteriores do 8.4, configure para \"on\" garantindo que o "
-"planejador de queries irá otimizar como desejado. Depois do PostgreSQL 84, o "
-"padrão é partition, que é ideal, já que irá forçar o planejador a analisar "
-"somente as tabelas se elas estão na hierarquia de herança e não irá pagar "
-"outras penalidades com o planejador."
+#~ msgid ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-WORK-MEM\">work_mem</ulink> (the memory used for sort "
+#~ "operations and complex queries)"
+#~ msgstr ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-WORK-MEM\">work_mem</ulink> (memória utilizada para "
+#~ "operações de ordenamento e queries complexas)"
 
-#. Tag: ulink
-#: performance_tips.xml:178
-#, no-c-format
-msgid "shared_buffers"
-msgstr "shared_buffers"
+#, fuzzy
+#~ msgid "Default: 1-4MB"
+#~ msgstr "Padrão: 1MB"
 
-#. Tag: para
-#: performance_tips.xml:183
-#, no-c-format
-msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr ""
+#~ msgid "Adjust up for large dbs, complex queries, lots of RAM"
+#~ msgstr ""
+#~ "Ajuste para cima para grandes bancos de dados, queries complexas e muito "
+#~ "RAM"
 
-#. Tag: para
-#: performance_tips.xml:188
-#, no-c-format
-msgid ""
-"Set to about 25% to 40% of available RAM. On windows you may not be able to "
-"set as high."
-msgstr ""
+#~ msgid "Adjust down for many concurrent users or low RAM."
+#~ msgstr ""
+#~ "AJuste para baixo para muitos usuários concorrentes ou pouca RAM "
+#~ "disponível"
 
-#. Tag: para
-#: performance_tips.xml:195
-#, fuzzy, no-c-format
-msgid ""
-"<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</ulink> This "
-"setting is only available for PostgreSQL 9.4+. For PostgreSQL 9.6+ this "
-"setting has additional importance in that it controls the max number of "
-"processes you can have for parallel queries."
-msgstr ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-WORK-MEM\">work_mem</ulink> (memória utilizada para "
-"operações de ordenamento e queries complexas)"
+#~ msgid "If you have lots of RAM and few developers:"
+#~ msgstr "Se vocÊ tem muita memória RAM e poucos desenvolvedores:"
 
-#. Tag: para
-#: performance_tips.xml:203
-#, fuzzy, no-c-format
-msgid "Default: 8"
-msgstr "Padrão: 1MB"
+#, fuzzy
+#~ msgid "SET work_mem TO '256MB';"
+#~ msgstr "SET work_mem TO 1200000;"
 
-#. Tag: para
-#: performance_tips.xml:208
-#, no-c-format
-msgid ""
-"Sets the maximum number of background processes that the system can support. "
-"This parameter can only be set at server start."
-msgstr ""
+#~ msgid ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> "
+#~ "(used for VACUUM, CREATE INDEX, etc.)"
+#~ msgstr ""
+#~ "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+#~ "resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> "
+#~ "(utilizado para VACUUM, CREATE INDEX, etc.)"
 
-#. Tag: title
-#: performance_tips.xml:218
-#, no-c-format
-msgid "Runtime"
-msgstr "Runtime"
+#, fuzzy
+#~ msgid "Default: 16-64MB"
+#~ msgstr "Padrão: 16MB"
 
-#. Tag: para
-#: performance_tips.xml:220
-#, no-c-format
-msgid ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-WORK-MEM\">work_mem</ulink> (the memory used for sort "
-"operations and complex queries)"
-msgstr ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-WORK-MEM\">work_mem</ulink> (memória utilizada para "
-"operações de ordenamento e queries complexas)"
+#~ msgid "Generally too low - ties up I/O, locks objects while swapping memory"
+#~ msgstr ""
+#~ "Geralmente é muito pouco - amarra I/O, trava objetos enquanto swappa "
+#~ "memória"
 
-#. Tag: para
-#: performance_tips.xml:226
-#, fuzzy, no-c-format
-msgid "Default: 1-4MB"
-msgstr "Padrão: 1MB"
+#, fuzzy
+#~ msgid ""
+#~ "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
+#~ "the # of concurrent users. If you have lots of RAM and few developers:"
+#~ msgstr ""
+#~ "Recomenda-se entre 32MB até 256MB em produção com muita memória RAM, mas "
+#~ "depende do número concorrente de usuários. Se você tem muita RAM e poucos "
+#~ "desenvolvedores:"
 
-#. Tag: para
-#: performance_tips.xml:231
-#, no-c-format
-msgid "Adjust up for large dbs, complex queries, lots of RAM"
-msgstr ""
-"Ajuste para cima para grandes bancos de dados, queries complexas e muito RAM"
+#, fuzzy
+#~ msgid "SET maintenance_work_mem TO '1GB';"
+#~ msgstr "SET maintainence_work_mem TO 1200000;"
 
-#. Tag: para
-#: performance_tips.xml:236
-#, no-c-format
-msgid "Adjust down for many concurrent users or low RAM."
-msgstr ""
-"AJuste para baixo para muitos usuários concorrentes ou pouca RAM disponível"
-
-#. Tag: para
-#: performance_tips.xml:241
-#, no-c-format
-msgid "If you have lots of RAM and few developers:"
-msgstr "Se vocÊ tem muita memória RAM e poucos desenvolvedores:"
-
-#. Tag: programlisting
-#: performance_tips.xml:243
-#, fuzzy, no-c-format
-msgid "SET work_mem TO '256MB';"
-msgstr "SET work_mem TO 1200000;"
-
-#. Tag: para
-#: performance_tips.xml:248
-#, no-c-format
-msgid ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> (used "
-"for VACUUM, CREATE INDEX, etc.)"
-msgstr ""
-"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> "
-"(utilizado para VACUUM, CREATE INDEX, etc.)"
-
-#. Tag: para
-#: performance_tips.xml:254
-#, fuzzy, no-c-format
-msgid "Default: 16-64MB"
-msgstr "Padrão: 16MB"
-
-#. Tag: para
-#: performance_tips.xml:259
-#, no-c-format
-msgid "Generally too low - ties up I/O, locks objects while swapping memory"
-msgstr ""
-"Geralmente é muito pouco - amarra I/O, trava objetos enquanto swappa memória"
-
-#. Tag: para
-#: performance_tips.xml:264
-#, fuzzy, no-c-format
-msgid ""
-"Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
-"the # of concurrent users. If you have lots of RAM and few developers:"
-msgstr ""
-"Recomenda-se entre 32MB até 256MB em produção com muita memória RAM, mas "
-"depende do número concorrente de usuários. Se você tem muita RAM e poucos "
-"desenvolvedores:"
-
-#. Tag: programlisting
-#: performance_tips.xml:267
-#, fuzzy, no-c-format
-msgid "SET maintenance_work_mem TO '1GB';"
-msgstr "SET maintainence_work_mem TO 1200000;"
-
-#. Tag: ulink
-#: performance_tips.xml:273
-#, no-c-format
-msgid "max_parallel_workers_per_gather"
-msgstr ""
-
-#. Tag: para
-#: performance_tips.xml:275
-#, no-c-format
-msgid ""
-"This setting is only available for PostgreSQL 9.6+ and will only affect "
-"PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries. If set to "
-"higher than 0, then some queries such as those involving relation functions "
-"like <code>ST_Intersects</code> can use multiple processes and can run more "
-"than twice as fast when doing so. If you have a lot of processors to spare, "
-"you should change the value of this to as many processors as you have. Also "
-"make sure to bump up <code>max_worker_processes</code> to at least as high "
-"as this number."
-msgstr ""
-
-#. Tag: para
-#: performance_tips.xml:284
-#, fuzzy, no-c-format
-msgid "Default: 0"
-msgstr "Padrão: 1MB"
-
-#. Tag: para
-#: performance_tips.xml:289
-#, no-c-format
-msgid ""
-"Sets the maximum number of workers that can be started by a single "
-"<varname>Gather</varname> node. Parallel workers are taken from the pool of "
-"processes established by <varname>max_worker_processes</varname>. Note that "
-"the requested number of workers may not actually be available at run time. "
-"If this occurs, the plan will run with fewer workers than expected, which "
-"may be inefficient. Setting this value to 0, which is the default, disables "
-"parallel query execution."
-msgstr ""
+#, fuzzy
+#~ msgid "Default: 0"
+#~ msgstr "Padrão: 1MB"
 
 #~ msgid "Default: ~32MB"
 #~ msgstr "Padrão: 32MB"

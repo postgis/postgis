@@ -40,6 +40,7 @@
 #include "../postgis_config.h"
 
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"
 
 
@@ -95,7 +96,7 @@ Datum LWGEOM_isclosed(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_get_srid);
 Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom=PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_HEADER(0);
 	int32_t srid = gserialized_get_srid(geom);
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(srid);
@@ -121,7 +122,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	uint8_t type;
 	static int maxtyplen = 20;
 
-	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
+	gser = PG_GETARG_GSERIALIZED_HEADER(0);
 	text_ob = palloc0(VARHDRSZ + maxtyplen);
 	result = VARDATA(text_ob);
 
@@ -196,7 +197,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 	text *type_text;
 
 	/* Read just the header from the toasted tuple */
-	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
+	gser = PG_GETARG_GSERIALIZED_HEADER(0);
 
 	/* Build a text type to store things in */
 	type_text = cstring_to_text(stTypeName[gserialized_get_type(gser)]);
@@ -821,32 +822,13 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
-	LWGEOM *lwgeom;
-	char *wkt;
-	size_t wkt_size;
-	text *result;
-	int dbl_dig_for_wkt = DBL_DIG;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 
-	POSTGIS_DEBUG(2, "Called.");
-
-	geom = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom = lwgeom_from_gserialized(geom);
-
+	int dbl_dig_for_wkt = OUT_DEFAULT_DECIMAL_DIGITS;
 	if (PG_NARGS() > 1) dbl_dig_for_wkt = PG_GETARG_INT32(1);
 
-	/* Write to WKT and free the geometry */
-	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, dbl_dig_for_wkt, &wkt_size);
-	lwgeom_free(lwgeom);
-	POSTGIS_DEBUGF(3, "WKT size = %u, WKT length = %u", (unsigned int)wkt_size, (unsigned int)strlen(wkt));
-
-	/* Write to text and free the WKT */
-	result = cstring_to_text(wkt);
-	lwfree(wkt);
-
-	/* Return the text */
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_wkt_varlena(lwgeom, WKT_ISO, dbl_dig_for_wkt));
 }
 
 
@@ -856,9 +838,6 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	uint8_t *wkb;
-	size_t wkb_size;
-	bytea *result;
 	uint8_t variant = WKB_ISO;
 
 	if (PG_ARGISNULL(0))
@@ -886,18 +865,7 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 	}
 
 	/* Write to WKB and free the geometry */
-	wkb = lwgeom_to_wkb(lwgeom, variant, &wkb_size);
-	lwgeom_free(lwgeom);
-
-	/* Write to text and free the WKT */
-	result = palloc(wkb_size + VARHDRSZ);
-	memcpy(VARDATA(result), wkb, wkb_size);
-	SET_VARSIZE(result, wkb_size + VARHDRSZ);
-	lwfree(wkb);
-
-	/* Return the text */
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_BYTEA_P(result);
+	PG_RETURN_BYTEA_P(lwgeom_to_wkb_varlena(lwgeom, variant));
 }
 
 

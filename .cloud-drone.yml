@@ -1,0 +1,21 @@
+# This is for the drone 1.0 agent
+# https://docs.drone.io/user-guide/pipeline/steps/
+# https://cloud.drone.io/postgis/ #1.0 server #this is a reduced test
+
+# See https://git.osgeo.org/gitea/postgis/postgis-docker
+# todo: add docker images from https://hub.docker.com/r/postgis/postgis-build-env/tags/
+clone: &clone
+    image: plugins/git
+    depth: 20
+    recursive: false
+
+kind: pipeline
+name: build
+clone: *clone
+steps:
+  - name: build-12
+    image: docker.osgeo.org/postgis/build-test:alpine-edge
+    pull: always
+    commands:
+      - PGVER=12 sh ci/dronie/postgis_regress_alpine.sh
+...

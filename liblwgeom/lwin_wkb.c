@@ -163,6 +163,13 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 
 	/* Mask off the flags */
 	wkb_type = wkb_type & 0x0FFFFFFF;
+
+	/* Catch strange Oracle WKB type numbers */
+	if ( wkb_type >= 4000 ) {
+		lwerror("Unknown WKB type (%d)!", wkb_type);
+		return;
+	}
+
 	/* Strip out just the type number (1-12) from the ISO number (eg 3001-3012) */
 	wkb_simple_type = wkb_type % 1000;
 
@@ -349,9 +356,11 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	npoints = integer_from_wkb_state(s);
 	if (s->error)
 		return NULL;
+
 	if (npoints > maxpoints)
 	{
-		lwerror("Pointarray length (%d) is too large");
+		s->error = LW_TRUE;
+		lwerror("Pointarray length (%d) is too large", npoints);
 		return NULL;
 	}
 
@@ -553,6 +562,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		if (s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4)
 		{
 			lwpoly_free(poly);
+			ptarray_free(pa);
 			LWDEBUGF(2, "%s must have at least four points in each ring", lwtype_name(s->lwtype));
 			lwerror("%s must have at least four points in each ring", lwtype_name(s->lwtype));
 			return NULL;
@@ -562,6 +572,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_is_closed_2d(pa) )
 		{
 			lwpoly_free(poly);
+			ptarray_free(pa);
 			LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
 			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 			return NULL;
@@ -571,6 +582,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		if ( lwpoly_add_ring(poly, pa) == LW_FAILURE )
 		{
 			lwpoly_free(poly);
+			ptarray_free(pa);
 			LWDEBUG(2, "Unable to add ring to polygon");
 			lwerror("Unable to add ring to polygon");
 			return NULL;

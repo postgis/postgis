@@ -113,6 +113,13 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);
 
+#if POSTGIS_PROJ_VERSION < 60
+	/* Internally lwgeom_from_gml calls gml_reproject_pa which, for PROJ before 6, called GetProj4String.
+	 * That function requires access to spatial_ref_sys, so in order to have it ready we need to ensure
+	 * the internal cache is initialized
+	 */
+	postgis_initialize_cache(fcinfo);
+#endif
 	lwgeom = lwgeom_from_gml(xml, xml_size);
 	if ( root_srid != SRID_UNKNOWN )
 		lwgeom->srid = root_srid;
@@ -581,7 +588,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 	int gml_dims;
 	char *p, *q;
 	bool digit;
-	POINT4D pt;
+	POINT4D pt = {0};
 
 	/* We begin to retrieve coordinates string */
 	gml_coord = xmlNodeGetContent(xnode);
@@ -695,7 +702,7 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	POINTARRAY *dpa;
 	bool x,y,z;
 	xmlChar *c;
-	POINT4D p;
+	POINT4D p = {0};
 
 	/* HasZ?, !HasM, 1 Point */
 	dpa = ptarray_construct_empty(1, 0, 1);
@@ -751,7 +758,7 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 	POINTARRAY *dpa;
 	char *pos, *p;
 	bool digit;
-	POINT4D pt;
+	POINT4D pt = {0, 0, 0, 0};
 
 	/* HasZ, !HasM, 1 Point */
 	dpa = ptarray_construct_empty(1, 0, 1);
@@ -817,7 +824,7 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 	char *poslist, *p;
 	int dim, gml_dim;
 	POINTARRAY *dpa;
-	POINT4D pt;
+	POINT4D pt = {0, 0, 0, 0};
 	bool digit;
 
 	/* Retrieve gml:srsDimension attribute if any */
@@ -859,6 +866,7 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 			if (gml_dim == dim)
 			{
 				ptarray_append_point(dpa, &pt, LW_FALSE);
+				pt.x = pt.y = pt.z = pt.m = 0.0;
 				gml_dim = 0;
 			}
 			else if (*(poslist+1) == '\0')
@@ -1048,7 +1056,7 @@ static LWGEOM* parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
 static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
 	xmlNodePtr xa;
-	int lss, last, i;
+	size_t lss;
 	bool found=false;
 	gmlSrs srs;
 	LWGEOM *geom=NULL;
@@ -1104,36 +1112,44 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	/* Most common case, a single segment */
 	if (lss == 1) pa = ppa[0];
 
-	/*
-	 * "The curve segments are connected to one another, with the end point
-	 *  of each segment except the last being the start point of the next
-	 *  segment"  from  ISO 19107:2003 -> 6.3.16.1 (p43)
-	 *
-	 * So we must aggregate all the segments into a single one and avoid
-	 * to copy the redundant points
-	 */
 	if (lss > 1)
 	{
-		pa = ptarray_construct(1, 0, npoints - (lss - 1));
-		for (last = npoints = i = 0; i < lss ; i++)
+		/*
+		 * "The curve segments are connected to one another, with the end point
+		 *  of each segment except the last being the start point of the next
+		 *  segment"  from  ISO 19107:2003 -> 6.3.16.1 (p43)
+		 *
+		 * So we must aggregate all the segments into a single one and avoid
+		 * to copy the redundant points
+		 */
+		size_t cp_point_size = sizeof(POINT3D); /* All internals are done with 3D */
+		size_t final_point_size = *hasz ? sizeof(POINT3D) : sizeof(POINT2D);
+		pa = ptarray_construct(1, 0, npoints - lss + 1);
+
+		/* Copy the first linestring fully */
+		memcpy(getPoint_internal(pa, 0), getPoint_internal(ppa[0], 0), cp_point_size * (ppa[0]->npoints));
+		npoints = ppa[0]->npoints;
+		lwfree(ppa[0]);
+
+		/* For the rest of linestrings, ensure the first point matches the
+		 * last point of the previous one, and copy all points except the
+		 * first one (since it'd be repeated)
+		 */
+		for (size_t i = 1; i < lss; i++)
 		{
-			if (i + 1 == lss) last = 1;
-			/* Check if segments are not disjoints */
-			if (i > 0 && memcmp( getPoint_internal(pa, npoints),
-			                     getPoint_internal(ppa[i], 0),
-			                     *hasz ? sizeof(POINT3D) : sizeof(POINT2D)))
+			if (memcmp(getPoint_internal(pa, npoints - 1), getPoint_internal(ppa[i], 0), final_point_size))
 				gml_lwpgerror("invalid GML representation", 41);
 
-			/* Aggregate stuff */
-			memcpy(	getPoint_internal(pa, npoints),
-			        getPoint_internal(ppa[i], 0),
-			        ptarray_point_size(ppa[i]) * (ppa[i]->npoints + last));
+			memcpy(getPoint_internal(pa, npoints),
+			       getPoint_internal(ppa[i], 1),
+			       cp_point_size * (ppa[i]->npoints - 1));
 
 			npoints += ppa[i]->npoints - 1;
 			lwfree(ppa[i]);
 		}
-		lwfree(ppa);
 	}
+
+	lwfree(ppa);
 
 	parse_gml_srs(xnode, &srs);
 	if (srs.reverse_axis) pa = ptarray_flip_coordinates(pa);
@@ -1882,9 +1898,6 @@ lwgeom_from_gml(const char *xml, int xml_size)
 
 	if ( root_srid != SRID_UNKNOWN )
 		lwgeom->srid = root_srid;
-
-	/* Should we really do this here ? */
-	lwgeom_add_bbox(lwgeom);
 
 	/* GML geometries could be either 2 or 3D and can be nested mixed.
 	 * Missing Z dimension is even tolerated inside some GML coords

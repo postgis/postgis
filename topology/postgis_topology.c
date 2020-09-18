@@ -19,11 +19,11 @@
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT4OID */
 #include "lib/stringinfo.h"
+#include "access/htup_details.h" /* for heap_form_tuple() */
 #include "access/xact.h" /* for RegisterXactCallback */
 #include "funcapi.h" /* for FuncCallContext */
 #include "executor/spi.h" /* this is what you need to work with SPI */
 #include "inttypes.h" /* for PRId64 */
-
 #include "../postgis_config.h"
 
 #include "liblwgeom_internal.h" /* for gbox_clone */
@@ -144,13 +144,11 @@ _box2d_to_lwgeom(const GBOX *bbox, int32_t srid)
 static char *
 _box2d_to_hexwkb(const GBOX *bbox, int32_t srid)
 {
-  char *hex;
-  size_t sz;
-  LWGEOM *geom = _box2d_to_lwgeom(bbox, srid);
-  hex = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz);
-  lwgeom_free(geom);
-  assert(hex[sz-1] == '\0');
-  return hex;
+	char *hex;
+	LWGEOM *geom = _box2d_to_lwgeom(bbox, srid);
+	hex = lwgeom_to_hexwkb_buffer(geom, WKT_EXTENDED);
+	lwgeom_free(geom);
+	return hex;
 }
 
 /* Backend callbacks */
@@ -348,7 +346,6 @@ addEdgeFields(StringInfo str, int fields, int fullEdgeData)
 static void
 addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdgeData)
 {
-  size_t hexewkb_size;
   char *hexewkb;
   const char *sep = "";
 
@@ -399,10 +396,9 @@ addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdge
   {
     if ( edge->geom )
     {
-      hexewkb = lwgeom_to_hexwkb(lwline_as_lwgeom(edge->geom),
-                                 WKB_EXTENDED, &hexewkb_size);
-      appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
-      lwfree(hexewkb);
+	    hexewkb = lwgeom_to_hexwkb_buffer(lwline_as_lwgeom(edge->geom), WKB_EXTENDED);
+	    appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
+	    lwfree(hexewkb);
     }
     else
     {
@@ -426,7 +422,6 @@ addEdgeUpdate(StringInfo str, const LWT_ISO_EDGE* edge, int fields,
   const char *sep = "";
   const char *sep1;
   const char *op;
-  size_t hexewkb_size;
   char *hexewkb;
 
   switch (updType)
@@ -501,8 +496,7 @@ addEdgeUpdate(StringInfo str, const LWT_ISO_EDGE* edge, int fields,
   if ( fields & LWT_COL_EDGE_GEOM )
   {
     appendStringInfo(str, "%sgeom", sep);
-    hexewkb = lwgeom_to_hexwkb(lwline_as_lwgeom(edge->geom),
-                               WKB_EXTENDED, &hexewkb_size);
+    hexewkb = lwgeom_to_hexwkb_buffer(lwline_as_lwgeom(edge->geom), WKB_EXTENDED);
     appendStringInfo(str, "%s'%s'::geometry", op, hexewkb);
     lwfree(hexewkb);
   }
@@ -515,7 +509,6 @@ addNodeUpdate(StringInfo str, const LWT_ISO_NODE* node, int fields,
   const char *sep = "";
   const char *sep1;
   const char *op;
-  size_t hexewkb_size;
   char *hexewkb;
 
   switch (updType)
@@ -557,8 +550,7 @@ addNodeUpdate(StringInfo str, const LWT_ISO_NODE* node, int fields,
   if ( fields & LWT_COL_NODE_GEOM )
   {
     appendStringInfo(str, "%sgeom", sep);
-    hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(node->geom),
-                               WKB_EXTENDED, &hexewkb_size);
+    hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(node->geom), WKB_EXTENDED);
     appendStringInfo(str, "%s'%s'::geometry", op, hexewkb);
     lwfree(hexewkb);
   }
@@ -606,7 +598,6 @@ addFaceFields(StringInfo str, int fields)
 static void
 addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 {
-  size_t hexewkb_size;
   char *hexewkb;
   const char *sep = "";
 
@@ -632,10 +623,9 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
   {
     if ( node->geom )
     {
-      hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(node->geom),
-                                 WKB_EXTENDED, &hexewkb_size);
-      appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
-      lwfree(hexewkb);
+	    hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(node->geom), WKB_EXTENDED);
+	    appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
+	    lwfree(hexewkb);
     }
     else
     {
@@ -1241,6 +1231,40 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
     val = DatumGetInt32(dat);
     edges[i] = val;
     POSTGIS_DEBUGF(1, "Component " UINT64_FORMAT " in ring of edge %" LWTFMT_ELEMID " is edge %d", i, edge, val);
+
+    /* For the last entry, check that we returned back to start
+     * point, or complain about topology being corrupted */
+    if ( i == *numelems - 1 )
+    {
+      int32 nextedge;
+      int sidecol = val > 0 ? 3 : 4;
+      const char *sidetext = val > 0 ? "left" : "right";
+
+      dat = SPI_getbinval(row, rowdesc, sidecol, &isnull);
+      if ( isnull )
+      {
+        lwfree(edges);
+        cberror(topo->be_data, "Edge %d" /*LWTFMT_ELEMID*/
+                               " has NULL next_%s_edge",
+                               val, sidetext);
+        *numelems = UINT64_MAX;
+        return NULL;
+      }
+      nextedge = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(1, "Last component in ring of edge %"
+                        LWTFMT_ELEMID " (%" LWTFMT_ELEMID ") has next_%s_edge %d",
+                        edge, val, sidetext, nextedge);
+      if ( nextedge != edge )
+      {
+        lwfree(edges);
+        cberror(topo->be_data, "Corrupted topology: ring of edge %"
+                               LWTFMT_ELEMID " is topologically non-closed",
+                               edge);
+        *numelems = UINT64_MAX;
+        return NULL;
+      }
+    }
+
   }
 
   SPI_freetuptable(SPI_tuptable);
@@ -1372,7 +1396,6 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   LWT_ISO_EDGE *edges;
   int spi_result;
   int64_t elems_requested = limit;
-  size_t hexewkb_size;
   char *hexewkb;
   MemoryContext oldcontext = CurrentMemoryContext;
   StringInfoData sqldata;
@@ -1391,7 +1414,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   }
   appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
   // TODO: use binary cursor here ?
-  hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
+  hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(pt), WKB_EXTENDED);
   if ( dist )
   {
     appendStringInfo(sql, " WHERE ST_DWithin('%s'::geometry, geom, %g)", hexewkb, dist);
@@ -1472,7 +1495,6 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   MemoryContext oldcontext = CurrentMemoryContext;
   LWT_ISO_NODE *nodes;
   int spi_result;
-  size_t hexewkb_size;
   char *hexewkb;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
@@ -1498,7 +1520,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY *topo,
   }
   appendStringInfo(sql, " FROM \"%s\".node", topo->name);
   // TODO: use binary cursor here ?
-  hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
+  hexewkb = lwgeom_to_hexwkb_buffer(lwpoint_as_lwgeom(pt), WKB_EXTENDED);
   if ( dist )
   {
     appendStringInfo(sql, " WHERE ST_DWithin(geom, '%s'::geometry, %g)",
@@ -4636,6 +4658,12 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
   LWPOINT *pt;
   LWT_TOPOLOGY *topo;
 
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) )
+  {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
   toponame_text = PG_GETARG_TEXT_P(0);
   toponame = text_to_cstring(toponame_text);
   PG_FREE_IF_COPY(toponame_text, 0);
@@ -4960,6 +4988,133 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
                  state->curr-1, id);
 
   result = Int32GetDatum((int32)id);
+
+  SRF_RETURN_NEXT(funcctx, result);
+}
+
+/*  GetRingEdges(atopology, anedge, maxedges default null) */
+Datum GetRingEdges(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(GetRingEdges);
+Datum GetRingEdges(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID edge_id;
+  int maxedges = 0;
+  uint64_t nelems;
+  LWT_ELEMID *elems;
+  LWT_BE_TOPOLOGY *topo;
+  FuncCallContext *funcctx;
+  MemoryContext oldcontext, newcontext;
+  FACEEDGESSTATE *state;
+  Datum result;
+  HeapTuple tuple;
+  Datum ret[2];
+  bool isnull[2] = {0,0}; /* needed to say neither value is null */
+
+  if (SRF_IS_FIRSTCALL())
+  {
+    POSTGIS_DEBUG(1, "GetRingEdges first call");
+    funcctx = SRF_FIRSTCALL_INIT();
+    newcontext = funcctx->multi_call_memory_ctx;
+
+
+    if ( PG_ARGISNULL(0) )
+    {
+      lwpgerror("GetRingEdges: topology name cannot be null");
+      PG_RETURN_NULL();
+    }
+    toponame_text = PG_GETARG_TEXT_P(0);
+    toponame = text_to_cstring(toponame_text);
+    PG_FREE_IF_COPY(toponame_text, 0);
+
+    if ( PG_ARGISNULL(1) )
+    {
+      lwpgerror("GetRingEdges: edge id cannot be null");
+      PG_RETURN_NULL();
+    }
+    edge_id = PG_GETARG_INT32(1) ;
+
+    if ( ! PG_ARGISNULL(2) )
+    {
+      maxedges = PG_GETARG_INT32(2) ;
+    }
+
+    if ( SPI_OK_CONNECT != SPI_connect() )
+    {
+      lwpgerror("Could not connect to SPI");
+      PG_RETURN_NULL();
+    }
+
+    {
+      int pre = be_data.topoLoadFailMessageFlavor;
+      be_data.topoLoadFailMessageFlavor = 1;
+      topo = cb_loadTopologyByName(&be_data, toponame);
+      be_data.topoLoadFailMessageFlavor = pre;
+    }
+    oldcontext = MemoryContextSwitchTo( newcontext );
+    pfree(toponame);
+    if ( ! topo )
+    {
+      /* should never reach this point, as lwerror would raise an exception */
+      SPI_finish();
+      PG_RETURN_NULL();
+    }
+
+    POSTGIS_DEBUG(1, "Calling cb_getRingEdges");
+    elems = cb_getRingEdges(topo, edge_id, &nelems, maxedges);
+    POSTGIS_DEBUG(1, "cb_getRingEdges returned");
+    cb_freeTopology(topo);
+
+    if ( ! elems )
+    {
+      /* should never reach this point, as lwerror would raise an exception */
+      SPI_finish();
+      PG_RETURN_NULL();
+    }
+
+    state = lwalloc(sizeof(FACEEDGESSTATE));
+    state->elems = elems;
+    state->nelems = nelems;
+    state->curr = 0;
+    funcctx->user_fctx = state;
+
+    POSTGIS_DEBUG(1, "GetRingEdges calling SPI_finish");
+
+    /*
+     * Get tuple description for return type
+     */
+    get_call_result_type(fcinfo, 0, &funcctx->tuple_desc);
+    BlessTupleDesc(funcctx->tuple_desc);
+
+    MemoryContextSwitchTo(oldcontext);
+
+    SPI_finish();
+  }
+
+  POSTGIS_DEBUG(1, "Per-call invocation");
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+  /* get state */
+  state = funcctx->user_fctx;
+
+  if ( state->curr == state->nelems )
+  {
+    POSTGIS_DEBUG(1, "We're done, cleaning up all");
+    SRF_RETURN_DONE(funcctx);
+  }
+
+  edge_id = state->elems[state->curr++];
+  POSTGIS_DEBUGF(1, "GetRingEdges: cur:%d, val:%" LWTFMT_ELEMID,
+                 state->curr-1, edge_id);
+
+
+  ret[0] = Int32GetDatum(state->curr);
+  ret[1] = Int32GetDatum(edge_id);
+  tuple = heap_form_tuple(funcctx->tuple_desc, ret, isnull);
+  result = HeapTupleGetDatum(tuple);
 
   SRF_RETURN_NEXT(funcctx, result);
 }

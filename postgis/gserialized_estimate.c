@@ -66,6 +66,11 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "access/gist.h"
 #include "access/gist_private.h"
 #include "access/gistscan.h"
+#if PG_VERSION_NUM < 130000
+#include "access/tuptoaster.h" /* For toast_raw_datum_size */
+#else
+#include "access/detoast.h" /* For toast_raw_datum_size */
+#endif
 #include "utils/datum.h"
 #include "access/heapam.h"
 #include "catalog/index.h"
@@ -1267,13 +1272,13 @@ gserialized_joinsel_internal(PlannerInfo *root, List *args, JoinType jointype, i
 	Var *var1 = (Var*) arg1;
 	Var *var2 = (Var*) arg2;
 
-	elog(DEBUG2, "%s: entered function", __func__);
+	POSTGIS_DEBUGF(2, "%s: entered function", __func__);
 
 	/* We only do column joins right now, no functional joins */
 	/* TODO: handle g1 && ST_Expand(g2) */
 	if (!IsA(arg1, Var) || !IsA(arg2, Var))
 	{
-		elog(DEBUG1, "%s called with arguments that are not column references", __func__);
+		POSTGIS_DEBUGF(1, "%s called with arguments that are not column references", __func__);
 		return DEFAULT_ND_JOINSEL;
 	}
 
@@ -1288,17 +1293,17 @@ gserialized_joinsel_internal(PlannerInfo *root, List *args, JoinType jointype, i
 	/* If we can't get stats, we have to stop here! */
 	if (!stats1)
 	{
-		elog(DEBUG2, "%s: cannot find stats for \"%s\"",  __func__, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL");
+		POSTGIS_DEBUGF(2, "%s: cannot find stats for \"%s\"",  __func__, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL");
 		return DEFAULT_ND_JOINSEL;
 	}
 	else if (!stats2)
 	{
-		elog(DEBUG2, "%s: cannot find stats for \"%s\"",  __func__, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL");
+		POSTGIS_DEBUGF(2, "%s: cannot find stats for \"%s\"",  __func__, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL");
 		return DEFAULT_ND_JOINSEL;
 	}
 
 	selectivity = estimate_join_selectivity(stats1, stats2);
-	elog(DEBUG2, "got selectivity %g", selectivity);
+	POSTGIS_DEBUGF(2, "got selectivity %g", selectivity);
 	pfree(stats1);
 	pfree(stats2);
 	return selectivity;
@@ -1321,19 +1326,19 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	JoinType jointype = (JoinType) PG_GETARG_INT16(3);
 	int mode = PG_GETARG_INT32(4);
 
-	elog(DEBUG2, "%s: entered function", __func__);
+	POSTGIS_DEBUGF(2, "%s: entered function", __func__);
 
 	/* Check length of args and punt on > 2 */
 	if (list_length(args) != 2)
 	{
-		elog(DEBUG2, "%s: got nargs == %d", __func__, list_length(args));
+		POSTGIS_DEBUGF(2, "%s: got nargs == %d", __func__, list_length(args));
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
 
 	/* Only respond to an inner join/unknown context join */
 	if (jointype != JOIN_INNER)
 	{
-		elog(DEBUG1, "%s: jointype %d not supported", __func__, jointype);
+		POSTGIS_DEBUGF(1, "%s: jointype %d not supported", __func__, jointype);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
 
@@ -1435,11 +1440,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	for ( i = 0; i < sample_rows; i++ )
 	{
 		Datum datum;
-		GSERIALIZED *geom;
-		GBOX gbox;
+		GBOX gbox = {0};
 		ND_BOX *nd_box;
 		bool is_null;
-		bool is_copy;
 
 		datum = fetchfunc(stats, i, &is_null);
 
@@ -1452,9 +1455,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		}
 
 		/* Read the bounds from the gserialized. */
-		geom = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
-		is_copy = VARATT_IS_EXTENDED(datum);
-		if ( LW_FAILURE == gserialized_get_gbox_p(geom, &gbox) )
+		if (LW_FAILURE == gserialized_datum_get_gbox_p(datum, &gbox))
 		{
 			/* Skip empties too. */
 			POSTGIS_DEBUGF(3, " skipped empty geometry %d", i);
@@ -1494,7 +1495,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		nd_box_merge(nd_box, &sample_extent);
 
 		/* How many bytes does this sample use? */
-		total_width += VARSIZE(geom);
+		total_width += toast_raw_datum_size(datum);
 
 		/* Add bounds coordinates to sums for stddev calculation */
 		for ( d = 0; d < ndims; d++ )
@@ -1505,10 +1506,6 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 
 		/* Increment our "good feature" count */
 		notnull_cnt++;
-
-		/* Free up memory if our sample geometry was copied */
-		if ( is_copy )
-			pfree(geom);
 
 		/* Give backend a chance of interrupting us */
 		vacuum_delay_point();
@@ -2235,31 +2232,31 @@ gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
 	GBOX search_box;
 	float8 selectivity = 0;
 
-	elog(DEBUG2, "%s: entered function", __func__);
+	POSTGIS_DEBUGF(2, "%s: entered function", __func__);
 
 	if (!get_restriction_variable(root, args, varRelid, &vardata, &other, &varonleft))
 	{
-		elog(DEBUG2, "%s: could not find vardata", __func__);
+		POSTGIS_DEBUGF(2, "%s: could not find vardata", __func__);
 		return DEFAULT_ND_SEL;
 	}
 
 	if (!IsA(other, Const))
 	{
 		ReleaseVariableStats(vardata);
-		elog(DEBUG2, "%s: no constant argument, returning default selectivity %g", __func__, DEFAULT_ND_SEL);
+		POSTGIS_DEBUGF(2, "%s: no constant argument, returning default selectivity %g", __func__, DEFAULT_ND_SEL);
 		return DEFAULT_ND_SEL;
 	}
 
 	if (!gserialized_datum_get_gbox_p(((Const*)other)->constvalue, &search_box))
 	{
 		ReleaseVariableStats(vardata);
-		elog(DEBUG2, "%s: search box is EMPTY", __func__);
+		POSTGIS_DEBUGF(2, "%s: search box is EMPTY", __func__);
 		return 0.0;
 	}
 
 	if (!vardata.statsTuple)
 	{
-		elog(DEBUG1, "%s: no statistics available on table. Empty? Need to ANALYZE?", __func__);
+		POSTGIS_DEBUGF(1, "%s: no statistics available on table. Empty? Need to ANALYZE?", __func__);
 		return DEFAULT_ND_SEL;
 	}
 
@@ -2279,7 +2276,7 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 	int varRelid = PG_GETARG_INT32(3);
 	int mode = PG_GETARG_INT32(4);
 	float8 selectivity = gserialized_sel_internal(root, args, varRelid, mode);
-	elog(DEBUG2, "%s: selectivity is %g", __func__, selectivity);
+	POSTGIS_DEBUGF(2, "%s: selectivity is %g", __func__, selectivity);
 	PG_RETURN_FLOAT8(selectivity);
 }
 
@@ -2343,7 +2340,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	/* Read the extent from the head of the spatial index, if there is one */
 	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
 	if (!idx_oid)
-		elog(DEBUG2, "index for \"%s.%s\" does not exist", tbl, text_to_cstring(col));
+		POSTGIS_DEBUGF(2, "index for \"%s.%s\" does not exist", tbl, text_to_cstring(col));
 	gbox = spatial_index_read_extent(idx_oid, key_type);
 #endif
 

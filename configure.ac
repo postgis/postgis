@@ -864,15 +864,18 @@ if test ! "x$PROJDIR" = "x"; then
 		fi
 	fi
 elif test ! -z "$PKG_CONFIG"; then
-        dnl To keep compatibility with PROJ pre 4.8, default to lproj if not found
+	dnl To keep compatibility with PROJ pre 4.8, default to lproj if not found
 	PKG_CHECK_MODULES([PROJ], [proj],
-            [
-                PROJ_CPPFLAGS="$PROJ_CFLAGS"
-                PROJ_LDFLAGS="$PROJ_LIBS"
-            ],
-            [
-                PROJ_LDFLAGS="-lproj"
-            ])
+		[
+			PROJ_CPPFLAGS="$PROJ_CFLAGS"
+			PROJ_LDFLAGS="$PROJ_LIBS"
+		],
+		[
+			PROJ_LDFLAGS="-lproj"
+		])
+else
+	dnl To keep compatibility with PROJ pre 4.8, default to lproj
+	PROJ_LDFLAGS="-lproj"
 fi
 
 
@@ -957,7 +960,7 @@ if test "$CHECK_JSON" != "no"; then
                 HAVE_JSON=yes
                 JSON_CPPFLAGS="$JSONC_CFLAGS"
                 JSON_LDFLAGS="$JSONC_LIBS"
-            ], [])
+            ], [AC_MSG_WARN("Could not find json-c")])
     fi
 
     if test "$HAVE_JSON" = "yes"; then
@@ -995,7 +998,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	dnl Try pkgconfig first
 	if test -n "$PKG_CONFIG"; then
 		dnl Ensure libprotobuf-c is of minimum required version
-		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.0.0], [
+		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
 				PROTOBUF_CPPFLAGS="$PROTOBUFC_CFLAGS";
 				PROTOBUF_LDFLAGS="$PROTOBUFC_LIBS";
 			], [
@@ -1066,10 +1069,8 @@ if test "$CHECK_PROTOBUF" != "no"; then
         if test "$HAVE_PROTOBUF" = "yes"; then
 		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
 		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf-c])
-		if test $PROTOC_VERSION -ge 1001000; then
-			AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if libprotobuf is >= 1.1])
-			HAVE_GEOBUF=yes
-		fi
+		AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if geobuf is present])
+		HAVE_GEOBUF=yes
 	fi
 
     AC_SUBST([HAVE_PROTOBUF])

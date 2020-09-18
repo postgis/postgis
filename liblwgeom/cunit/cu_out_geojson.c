@@ -19,38 +19,25 @@
 
 static void do_geojson_test(char * in, char * out, char * srs, int precision, int has_bbox)
 {
-	LWGEOM *g;
-	char * h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_geojson(g, srs, precision, has_bbox);
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_geojson(g, srs, precision, has_bbox);
-
-	if (strcmp(h, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
-
-	CU_ASSERT_STRING_EQUAL(h, out);
+	ASSERT_VARLENA_EQUAL(v, out);
 
 	lwgeom_free(g);
-	lwfree(h);
+	lwfree(v);
 }
 
 
 static void do_geojson_unsupported(char * in, char * out)
 {
-	LWGEOM *g;
-	char *h;
+	LWGEOM *g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	lwvarlena_t *v = lwgeom_to_geojson(g, NULL, 0, 0);
 
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_geojson(g, NULL, 0, 0);
-
-	if (strcmp(cu_error_msg, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
-		        in, cu_error_msg, out);
-
-	CU_ASSERT_STRING_EQUAL(out, cu_error_msg);
+	ASSERT_STRING_EQUAL(out, cu_error_msg);
 	cu_error_msg_reset();
 
-	lwfree(h);
+	lwfree(v);
 	lwgeom_free(g);
 }
 
@@ -94,16 +81,7 @@ static void out_geojson_test_precision(void)
 	    NULL, 15, 0);
 
 	/* small numbers */
-  /* NOTE: precision of 300 will be converted to max precision (15)
-   *       and being there no significant digit within that range
-   *       only zeroes will be returned
-   * See http://trac.osgeo.org/postgis/ticket/2051#comment:11
-   */
-	do_geojson_test("POINT(1E-300 -2E-200)",
-			"{\"type\":\"Point\",\"coordinates\":[0,0]}",
-			NULL,
-			300,
-			0);
+	do_geojson_test("POINT(1E-300 -2E-200)", "{\"type\":\"Point\",\"coordinates\":[1e-300,-2e-200]}", NULL, 300, 0);
 }
 
 

@@ -15,6 +15,7 @@
 
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
+#include "../lwgeom_geos.h"
 
 static void test_lwgeom_node(void)
 {
@@ -58,12 +59,19 @@ static void test_lwgeom_node(void)
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 }
 
+static int
+clean_geos_node_suite(void)
+{
+	finishGEOS();
+	return 0;
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
 void node_suite_setup(void);
 void node_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("noding", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("noding", NULL, clean_geos_node_suite);
 	PG_ADD_TEST(suite, test_lwgeom_node);
 }

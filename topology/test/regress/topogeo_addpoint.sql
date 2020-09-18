@@ -7,6 +7,10 @@ set client_min_messages to ERROR;
 SELECT 'invalid', TopoGeo_addPoint('city_data', 'LINESTRING(36 26, 38 30)');
 SELECT 'invalid', TopoGeo_addPoint('city_data', 'MULTIPOINT((36 26))');
 SELECT 'invalid', TopoGeo_addPoint('invalid', 'POINT(36 26)');
+-- See #4722
+SELECT 'invalid', TopoGeo_addPoint(null::varchar, null::geometry, null::float8);
+SELECT 'invalid', TopoGeo_addPoint(null::varchar, 'POINT(36 36)'::geometry, null::float8);
+SELECT 'invalid', TopoGeo_addPoint('city_data', null::geometry, null::float8);
 
 -- Save max node id
 select 'node'::text as what, max(node_id) INTO city_data.limits FROM city_data.node;

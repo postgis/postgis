@@ -293,7 +293,8 @@ SELECT 'mpoint_5', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint></gml:MultiPoint>')
 SELECT 'mpoint_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiPoint> <!-- --> <gml:pointMember> <!-- --> <gml:Point> <!-- --> <gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember> <!-- --> <gml:pointMember> <!-- --> <gml:Point> <!-- --> <gml:coordinates>3,4</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>'));
 
 -- Mixed srsName
-SELECT 'mpoint_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint srsName="EPSG:27582"><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point srsName="EPSG:27562"><gml:coordinates>400000,5000000</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>'));
+WITH g AS (SELECT ST_GeomFromGML('<gml:MultiPoint srsName="EPSG:27582"><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point srsName="EPSG:27562"><gml:coordinates>400000,5000000</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>') as geom)
+SELECT 'mpoint_7', ST_SRID(g.geom), ST_AsText(g.geom, 8) from g;
 
 -- 1 point in pointMembers
 SELECT 'mpoint_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMembers><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMembers></gml:MultiPoint>'));
@@ -329,8 +330,8 @@ SELECT 'mline_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString><gml:lineString
 SELECT 'mline_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString><gml:lineStringMember><gml:LineString><gml:posList srsDimension="2">1 2 3 4</gml:posList></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString><gml:posList srsDimension="3">5 6 7 8 9 10</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString>'));
 
 -- Mixed srsName
-SELECT 'mline_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString srsName="EPSG:27582"><gml:lineStringMember><gml:LineString><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString srsName="EPSG:27562"><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>'));
-
+WITH g AS (SELECT ST_GeomFromGML('<gml:MultiLineString srsName="EPSG:27582"><gml:lineStringMember><gml:LineString><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString srsName="EPSG:27562"><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>') as g)
+SELECT 'mline_9', ST_SRID(g.g), ST_AsText(g.g, 8) from g;
 --
 -- MultiCurve
 --
@@ -356,7 +357,8 @@ SELECT 'mcurve_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMember><g
 SELECT 'mcurve_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="2">1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">5 6 7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>'));
 
 -- Mixed srsName
-SELECT 'mcurve_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve srsName="EPSG:27582"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve srsName="EPSG:27562"><gml:segments><gml:LineStringSegment><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>'));
+WITH g AS (SELECT ST_GeomFromGML('<gml:MultiCurve srsName="EPSG:27582"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve srsName="EPSG:27562"><gml:segments><gml:LineStringSegment><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>') as g)
+SELECT 'mcurve_9', ST_SRID(g.g), ST_AsText(g.g, 8) FROM g;
 
 -- 1 curve in curveMembers
 SELECT 'mcurve_10', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMembers><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMembers></gml:MultiCurve>'));
@@ -391,7 +393,8 @@ SELECT 'mpoly_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon><gml:polygonMember
 SELECT 'mpoly_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:posList srsDimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>'));
 
 -- Mixed srsName
-SELECT 'mpoly_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPolygon srsName="EPSG:27582"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon srsName="EPSG:27562"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>'));
+-- Note, Using ST_AsText with precision due to precision changes in proj
+SELECT 'mpoly_9', ST_AsText(ST_GeomFromGML('<gml:MultiPolygon srsName="EPSG:27582"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon srsName="EPSG:27562"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>'), 8);
 
 --
 -- MultiSurface
@@ -418,7 +421,8 @@ SELECT 'msurface_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMem
 SELECT 'msurface_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">7 8 9 10 11 12 13 14 15 7 8 9</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'));
 
 -- Mixed srsName
-SELECT 'msurface_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface srsName="EPSG:27582"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon srsName="EPSG:27562"><gml:exterior><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:interior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'));
+-- Note, Using ST_AsText with precision due to precision changes in proj
+SELECT 'msurface_9', ST_AsText(ST_GeomFromGML('<gml:MultiSurface srsName="EPSG:27582"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon srsName="EPSG:27562"><gml:exterior><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:interior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'), 8);
 
 -- 1 surface in surfaceMembers
 SELECT 'msurface_10', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMembers><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMembers></gml:MultiSurface>'));
@@ -590,7 +594,8 @@ SELECT 'collection_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geomet
 SELECT 'collection_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos srsDimension="2">1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos srsDimension="3">3 4 5</gml:pos></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
 
 -- Mixed srsName
-SELECT 'collection_14', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="EPSG:27582"><gml:geometryMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:MultiGeometry srsName="EPSG:27562"><gml:geometryMember><gml:Point><gml:coordinates>400000,5000000</gml:coordinates></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>'));
+WITH g AS (SELECT ST_GeomFromGML('<gml:MultiGeometry srsName="EPSG:27582"><gml:geometryMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:MultiGeometry srsName="EPSG:27562"><gml:geometryMember><gml:Point><gml:coordinates>400000,5000000</gml:coordinates></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>') AS g)
+SELECT 'collection_14', ST_SRID(g.g), ST_AsText(g.g, 8) FROM g;
 
 --
 -- srsName
@@ -1247,3 +1252,6 @@ SELECT 'double_30', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1.23E 2</gm
 
 -- ERROR: Junk
 SELECT 'double_31', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 $0%@#$^%#</gml:pos></gml:Point>'));
+
+-- #4652
+SELECT '#4652', ST_AsEWKT(ST_GeomFromGML('<gml:Curve id="id-69b216c9-2c07-434d-8664-e321b3697725-0" srsDimension="2" srsName="urn:x-ogc:def:crs:EPSG:28992"> <gml:segments> <gml:LineStringSegment> <gml:posList>119675.91899999976 526436.1209999993 119676.54699999839 526439.4930000007 119676.44299999997 526439.5130000003 119676.03299999982 526439.6220000014 119675.38500000164 526439.868999999</gml:posList> </gml:LineStringSegment> <gml:LineStringSegment> <gml:posList>119675.38500000164 526439.868999999 119675.15500452081 526439.9735735222 119674.92922525379 526440.0869634049 119674.70800000057 526440.2089999989</gml:posList> </gml:LineStringSegment> <gml:LineStringSegment> <gml:posList>119674.70800000057 526440.2089999989 119674.01347910661 526440.6575801083 119673.38748824484 526441.1976901226</gml:posList> </gml:LineStringSegment> </gml:segments> </gml:Curve>',28992));

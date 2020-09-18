@@ -144,7 +144,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	if ( ! lwgeom_is_collection(state->root) )
 	{
 		values[0] = "{}";
-		values[1] = lwgeom_to_hexwkb(state->root, WKB_EXTENDED, 0);
+		values[1] = lwgeom_to_hexwkb_buffer(state->root, WKB_EXTENDED);
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
 		result = HeapTupleGetDatum(tuple);
 
@@ -201,7 +201,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	lwgeom->srid = state->root->srid;
 
 	values[0] = address;
-	values[1] = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, 0);
+	values[1] = lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED);
 	tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
 	result = TupleGetDatum(funcctx->slot, tuple);
 	node->idx++;
@@ -301,7 +301,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		sprintf(address, "{%d}", state->ringnum);
 
 		values[0] = address;
-		values[1] = lwgeom_to_hexwkb(ringgeom, WKB_EXTENDED, 0);
+		values[1] = lwgeom_to_hexwkb_buffer(ringgeom, WKB_EXTENDED);
 
 		MemoryContextSwitchTo(oldcontext);
 
@@ -347,6 +347,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		LWCOLLECTION *col;
 		/* default to maxvertices < page size */
 		int maxvertices = 128;
+		double gridSize = -1;
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
@@ -369,9 +370,15 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 			maxvertices = PG_GETARG_INT32(1);
 
 		/*
+		* Get the gridSize value
+		*/
+		if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+			gridSize = PG_GETARG_FLOAT8(2);
+
+		/*
 		* Compute the subdivision of the geometry
 		*/
-		col = lwgeom_subdivide(geom, maxvertices);
+		col = lwgeom_subdivide_prec(geom, maxvertices, gridSize);
 
 		if ( ! col )
 			SRF_RETURN_DONE(funcctx);

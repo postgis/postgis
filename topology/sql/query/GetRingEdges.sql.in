@@ -38,43 +38,7 @@
 -- GetRingEdges(atopology, anedge, [maxedges])
 --
 CREATE OR REPLACE FUNCTION topology.GetRingEdges(atopology varchar, anedge int, maxedges int DEFAULT null)
-	RETURNS SETOF topology.GetFaceEdges_ReturnType
-AS
-$$
-DECLARE
-  rec RECORD;
-  retrec topology.GetFaceEdges_ReturnType;
-  n int;
-  sql text;
-BEGIN
-  sql := 'WITH RECURSIVE edgering AS ( SELECT '
-    || anedge
-    || ' as signed_edge_id, edge_id, next_left_edge, next_right_edge FROM '
-    || quote_ident(atopology)
-    || '.edge_data WHERE edge_id = '
-    || abs(anedge)
-    || ' UNION '
-    || ' SELECT CASE WHEN p.signed_edge_id < 0 THEN p.next_right_edge '
-    || ' ELSE p.next_left_edge END, e.edge_id, e.next_left_edge, e.next_right_edge '
-    || ' FROM ' || quote_ident(atopology)
-    || '.edge_data e, edgering p WHERE e.edge_id = CASE WHEN p.signed_edge_id < 0 '
-    || 'THEN abs(p.next_right_edge) ELSE abs(p.next_left_edge) END ) SELECT * FROM edgering';
-
-  n := 1;
-  FOR rec IN EXECUTE sql
-  LOOP
-    retrec.sequence := n;
-    retrec.edge := rec.signed_edge_id;
-    RETURN NEXT retrec;
-
-    n := n + 1;
-
-    IF n > maxedges THEN
-      RAISE EXCEPTION 'Max traversing limit hit: %', maxedges;
-    END IF;
-  END LOOP;
-
-END
-$$
-LANGUAGE 'plpgsql' STABLE;
+	RETURNS SETOF topology.GetFaceEdges_ReturnType AS
+	'MODULE_PATHNAME', 'GetRingEdges'
+LANGUAGE 'c' STABLE;
 --} GetRingEdges

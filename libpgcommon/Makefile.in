@@ -21,7 +21,8 @@ SA_OBJS = \
 	gserialized_gist.o \
 	lwgeom_transform.o \
 	lwgeom_cache.o \
-	lwgeom_pg.o
+	lwgeom_pg.o \
+	shared_gserialized.o
 
 
 SA_HEADERS = \

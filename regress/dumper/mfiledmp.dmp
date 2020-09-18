@@ -1,0 +1,2 @@
+SELECT * FROM (VALUES ('This is Test 1', 'TT1', 'red', ST_Point(0, 0)), ('This is Test 2', 'TT2', 'green', ST_Point(0, 100))) AS m (address, some_very_long_name, color, geom)
+-m{regdir}/dumper/mfiledmp_mapping.txt

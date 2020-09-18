@@ -55,3 +55,7 @@ SELECT '#4470.a', ST_AsText(ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":
 SELECT '#4470.b', ST_AsText(ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[[],[0,0]]}'));
 SELECT '#4470.c', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinates":[[[[0,0]],[]]]}'));
 SELECT '#4470.d', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinates":[[[],[0,0]]]}'));
+
+-- ::geometry cast
+SELECT 'cast1', ST_AsEWKT('{"type":"Point","coordinates":[1,1]}'::geometry);
+SELECT 'cast2', ST_AsEWKT(st_asgeojson('SRID=3005;MULTIPOINT(1 1, 1 1)'::geometry)::geometry);

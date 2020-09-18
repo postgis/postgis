@@ -383,6 +383,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.40</para>
 			<para>&curve_support;</para>
+            <note><para>While not OGC-compliant, <xref linkend="ST_MakePoint" /> is faster than ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric coordinate values. <xref linkend="ST_Point" /> is another option similar in speed to <xref linkend="ST_MakePoint" /> and is OGC-compliant, but doesn't support anything but 2D points.</para></note>
 			<warning><para>Changed: 2.0.0 In prior versions of PostGIS ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') was allowed.  This is now illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This should now be
 			    written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')</para></warning>
 

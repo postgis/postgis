@@ -18,6 +18,7 @@
 #include <fmgr.h>
 #include <miscadmin.h>
 #include <executor/spi.h>
+#include "utils/builtins.h"
 #include <utils/guc.h>
 #include <utils/guc_tables.h>
 #include <catalog/namespace.h>
@@ -69,6 +70,12 @@ getPostgisConstants(FunctionCallInfo fcinfo)
 	constants->install_nsp_oid = nsp_oid;
 	constants->install_nsp = MemoryContextStrdup(CacheMemoryContext, nsp_name);
 	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
+
+	char *spatial_ref_sys_fullpath = quote_qualified_identifier(nsp_name, "spatial_ref_sys");
+	constants->spatial_ref_sys = MemoryContextStrdup(CacheMemoryContext, spatial_ref_sys_fullpath);
+	elog(DEBUG4, "%s: Spatial ref sys qualified as %s", __func__, spatial_ref_sys_fullpath);
+	pfree(nsp_name);
+	pfree(spatial_ref_sys_fullpath);
 
 	/* Lookup all the type names in the context of the install schema */
 	constants->geometry_oid = TypenameNspGetTypid("geometry", nsp_oid);
@@ -133,15 +140,20 @@ postgis_oid(postgisType typ)
 	}
 }
 
-Oid
-postgis_oid_fcinfo(FunctionCallInfo fcinfo, postgisType oid)
+void
+postgis_initialize_cache(FunctionCallInfo fcinfo)
 {
 	/* Cache the info if we don't already have it */
 	if (!POSTGIS_CONSTANTS)
-		POSTGIS_CONSTANTS = getPostgisConstants(fcinfo);;
+		POSTGIS_CONSTANTS = getPostgisConstants(fcinfo);
+}
 
-	if (!POSTGIS_CONSTANTS) return InvalidOid;
-	return postgis_oid(oid);
+const char *
+postgis_spatial_ref_sys()
+{
+	if (!POSTGIS_CONSTANTS)
+		return NULL;
+	return POSTGIS_CONSTANTS->spatial_ref_sys;
 }
 
 /****************************************************************************************/
@@ -202,11 +214,6 @@ pg_alloc(size_t size)
 
 	POSTGIS_DEBUGF(5, "  pg_alloc(%d) returning %p", (int)size, result);
 
-	if ( ! result )
-	{
-		ereport(ERROR, (errmsg_internal("Out of virtual memory")));
-		return NULL;
-	}
 	return result;
 }
 
@@ -297,13 +304,12 @@ pg_install_lwgeom_handlers(void)
 */
 GSERIALIZED* geography_serialize(LWGEOM *lwgeom)
 {
-	size_t ret_size = 0;
-	GSERIALIZED *g = NULL;
+	size_t ret_size;
+	GSERIALIZED *g;
 	/** force to geodetic in case it's not **/
 	lwgeom_set_geodetic(lwgeom, true);
 
 	g = gserialized_from_lwgeom(lwgeom,  &ret_size);
-	if ( ! g ) lwpgerror("Unable to serialize lwgeom.");
 	SET_VARSIZE(g, ret_size);
 	return g;
 }
@@ -315,11 +321,10 @@ GSERIALIZED* geography_serialize(LWGEOM *lwgeom)
 */
 GSERIALIZED* geometry_serialize(LWGEOM *lwgeom)
 {
-	size_t ret_size = 0;
-	GSERIALIZED *g = NULL;
+	size_t ret_size;
+	GSERIALIZED *g;
 
 	g = gserialized_from_lwgeom(lwgeom, &ret_size);
-	if ( ! g ) lwpgerror("Unable to serialize lwgeom.");
 	SET_VARSIZE(g, ret_size);
 	return g;
 }

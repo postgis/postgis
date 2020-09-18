@@ -19,6 +19,7 @@
 /*#define POSTGIS_DEBUG_LEVEL 4*/
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"
 
@@ -30,30 +31,32 @@
 /* Generate human readable form for GIDX. */
 char* gidx_to_string(GIDX *a)
 {
-	char *str, *rv;
-	int i, ndims;
+	static const int precision = 12;
+	char tmp[8 + 8 * (OUT_MAX_BYTES_DOUBLE + 1)] = {'G', 'I', 'D', 'X', '(', 0};
+	int len = 5;
+	int ndims;
 
-	if ( a == NULL )
+	if (a == NULL)
 		return pstrdup("<NULLPTR>");
-	/* 4 (GIDX_MAX_DIM) *
-	 * 2 (MAX & MIN) *
-	 * 20 (Max representation (e.g. -3.40282346639e+38) [19] + space)
-	 * = 4*2*20 = 160
-	 * + 9 [ 'GIDX(' = 5, ','  = 1, ' )' = 2 + '\0' = 1]
-	 */
-	str = (char *)palloc(169);
-	rv = str;
+
 	ndims = GIDX_NDIMS(a);
 
-	str += sprintf(str, "GIDX(");
-	for ( i = 0; i < ndims; i++ )
-		str += sprintf(str, " %.12g", GIDX_GET_MIN(a,i));
-	str += sprintf(str, ",");
-	for ( i = 0; i < ndims; i++ )
-		str += sprintf(str, " %.12g", GIDX_GET_MAX(a,i));
-	str += sprintf(str, " )");
+	for (int i = 0; i < ndims; i++)
+	{
+		tmp[len++] = ' ';
+		len += lwprint_double(GIDX_GET_MIN(a, i), precision, &tmp[len]);
+	}
+	tmp[len++] = ',';
 
-	return rv;
+	for (int i = 0; i < ndims; i++)
+	{
+		tmp[len++] = ' ';
+		len += lwprint_double(GIDX_GET_MAX(a, i), precision, &tmp[len]);
+	}
+
+	tmp[len++] = ')';
+
+	return pstrdup(tmp);
 }
 
 /* Allocates a new GIDX on the heap of the requested dimensionality */
@@ -67,12 +70,6 @@ GIDX* gidx_new(int ndims)
 	return g;
 }
 
-static lwflags_t
-gserialized_datum_get_flags(Datum gsdatum)
-{
-	GSERIALIZED *gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
-	return gserialized_get_lwflags(gpart);
-}
 
 /* Convert a double-based GBOX into a float-based GIDX,
    ensuring the float box is larger than the double box */
@@ -142,29 +139,6 @@ void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
 
 
 /**
-* Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
-* of the memory) return the gbox extents. Does not deserialize the geometry,
-* but <em>WARNING</em> returns a slightly larger bounding box than actually
-* encompasses the objects. For geography objects returns geocentric bounding
-* box, for geometry objects returns cartesian bounding box.
-*/
-int
-gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
-{
-	char gboxmem[GIDX_MAX_SIZE];
-	GIDX *gidx = (GIDX*)gboxmem;
-
-	if( LW_FAILURE == gserialized_datum_get_gidx_p(gsdatum, gidx) )
-		return LW_FAILURE;
-
-	gbox->flags = gserialized_datum_get_flags(gsdatum);
-	gbox_from_gidx(gidx, gbox, gbox->flags);
-
-	return LW_SUCCESS;
-}
-
-
-/**
 * Peak into a #GSERIALIZED datum to find the bounding box. If the
 * box is there, copy it out and return it. If not, calculate the box from the
 * full object and return the box based on that. If no box is available,
@@ -173,16 +147,7 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 int
 gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 {
-	GSERIALIZED *gpart;
-
-	POSTGIS_DEBUG(4, "entered function");
-
-	/*
-	** The most info we need is the 8 bytes of serialized header plus the 32 bytes
-	** of floats necessary to hold the 8 floats of the largest XYZM index
-	** bounding box, so 40 bytes.
-	*/
-	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
+	GSERIALIZED *gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
 
 	/* Do we even have a serialized bounding box? */
 	if (gserialized_has_bbox(gpart))
@@ -212,19 +177,24 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	else
 	{
 		/* No, we need to calculate it from the full object. */
-		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+		LWGEOM *lwgeom;
 		GBOX gbox;
+		/* If we haven't, read the whole gserialized object */
+		if (LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+		{
+			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+			gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
+		}
+
+		lwgeom = lwgeom_from_gserialized(gpart);
 		if (lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE)
 		{
 			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
 			lwgeom_free(lwgeom);
 			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
-			POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 			return LW_FAILURE;
 		}
 		lwgeom_free(lwgeom);
-		POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 		gidx_from_gbox_p(gbox, gidx);
 	}
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);

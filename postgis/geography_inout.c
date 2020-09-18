@@ -36,12 +36,13 @@
 #include "utils/array.h"
 #include "utils/builtins.h"  /* for pg_atoi */
 #include "lib/stringinfo.h"  /* For binary input */
-#include "catalog/pg_type.h" /* for CSTRINGOID */
+#include "catalog/pg_type.h" /* for CSTRINGOID, INT4OID */
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom_internal.h"
+#include "lwgeom_cache.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
-#include "lwgeom_export.h"   /* For export functions. */
 #include "lwgeom_transform.h"
 
 Datum geography_in(PG_FUNCTION_ARGS);
@@ -189,16 +190,10 @@ Datum geography_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_out);
 Datum geography_out(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = NULL;
-	GSERIALIZED *g = NULL;
-	char *hexwkb;
 
-	g = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom = lwgeom_from_gserialized(g);
-	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, 0);
-	lwgeom_free(lwgeom);
-
-	PG_RETURN_CSTRING(hexwkb);
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+	PG_RETURN_CSTRING(lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED));
 }
 
 
@@ -210,12 +205,11 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g = NULL;
-	char *gml;
-	text *result;
+	lwvarlena_t *v;
 	int version;
-	char *srs;
+	const char *srs;
 	int32_t srid = SRID_DEFAULT;
-	int precision = DBL_DIG;
+	int precision = -1;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
 	static const char *default_prefix = "gml:";
@@ -233,7 +227,6 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	*/
 	Oid first_type = get_fn_expr_argtype(fcinfo->flinfo, 0);
 	int argnum = 0;
-	int argeom = 0;
 	if (first_type != INT4OID)
 	{
 		version = 2;
@@ -242,7 +235,6 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	{
 		/* Get the version */
 		version = PG_GETARG_INT32(argnum++);
-		argeom = 1;
 		if (version != 2 && version != 3)
 		{
 			elog(ERROR, "Only GML 2 and GML 3 are supported");
@@ -259,12 +251,6 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
-
-	/* Condition the precision argument */
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
-	if (precision < 0)
-		precision = 0;
 
 	/* Condition the prefix argument */
 	if (VARSIZE_ANY_EXHDR(prefix_text) > 0)
@@ -291,8 +277,10 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 		id = id_buf;
 	}
 
-	if (option & 1) srs = getSRSbySRID(srid, false);
-	else srs = getSRSbySRID(srid, true);
+	if (option & 1)
+		srs = GetSRSCacheBySRID(fcinfo, srid, false);
+	else
+		srs = GetSRSCacheBySRID(fcinfo, srid, true);
 	if (!srs)
 	{
 		elog(ERROR, "SRID %d unknown in spatial_ref_sys table", SRID_DEFAULT);
@@ -320,22 +308,14 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	}
 
 	if (version == 2)
-		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+		v = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
 	else
-		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, id);
+		v = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, id);
 
-    lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(g, argeom);
-
-	/* Return null on null */
-	if (!gml)
+	if (!v)
 		PG_RETURN_NULL();
-
-	/* Turn string result into text for return */
-	result = cstring_to_text(gml);
-	lwfree(gml);
-
-	PG_RETURN_TEXT_P(result);
+	else
+		PG_RETURN_TEXT_P(v);
 }
 
 
@@ -346,8 +326,7 @@ PG_FUNCTION_INFO_V1(geography_as_kml);
 Datum geography_as_kml(PG_FUNCTION_ARGS)
 {
 
-	char *kml;
-	text *result;
+	lwvarlena_t *kml;
 	static const char *default_prefix = "";
 	char *prefixbuf;
 	const char *prefix = default_prefix;
@@ -357,8 +336,6 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
 	/* Condition the precision */
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
 	if (precision < 0)
 		precision = 0;
 
@@ -379,17 +356,9 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	}
 
 	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
-
-    lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(g, 0);
-
-	if (!kml)
-		PG_RETURN_NULL();
-
-	result = cstring_to_text(kml);
-	lwfree(kml);
-
-	PG_RETURN_TEXT_P(result);
+	if (kml)
+		PG_RETURN_TEXT_P(kml);
+	PG_RETURN_NULL();
 }
 
 
@@ -399,27 +368,15 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_svg);
 Datum geography_as_svg(PG_FUNCTION_ARGS)
 {
-	char *svg;
-	text *result;
 	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
 	int relative = PG_GETARG_INT32(1) ? 1 : 0;
 	int precision = PG_GETARG_INT32(2);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
-	else if (precision < 0)
+	if (precision < 0)
 		precision = 0;
 
-	svg = lwgeom_to_svg(lwgeom, precision, relative);
-
-    lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(g, 0);
-
-	result = cstring_to_text(svg);
-	lwfree(svg);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_svg(lwgeom, precision, relative));
 }
 
 
@@ -429,17 +386,14 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_as_geojson);
 Datum geography_as_geojson(PG_FUNCTION_ARGS)
 {
-	char *geojson;
-	text *result;
+	lwvarlena_t *geojson;
 	int has_bbox = 0;
-	char * srs = NULL;
+	const char *srs = NULL;
 	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
 	int precision = PG_GETARG_INT32(1);
 	int option = PG_GETARG_INT32(2);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 
-	if (precision > DBL_DIG)
-		precision = DBL_DIG;
 	if (precision < 0)
 		precision = 0;
 
@@ -453,8 +407,10 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	if (option & 2 || option & 4)
 	{
 		/* Geography only handle srid SRID_DEFAULT */
-		if (option & 2) srs = getSRSbySRID(SRID_DEFAULT, true);
-		if (option & 4) srs = getSRSbySRID(SRID_DEFAULT, false);
+		if (option & 2)
+			srs = GetSRSCacheBySRID(fcinfo, SRID_DEFAULT, true);
+		if (option & 4)
+			srs = GetSRSCacheBySRID(fcinfo, SRID_DEFAULT, false);
 
 		if (!srs)
 		{
@@ -466,14 +422,10 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	if (option & 1) has_bbox = 1;
 
 	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
-    lwgeom_free(lwgeom);
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 0);
-	if (srs) pfree(srs);
 
-	result = cstring_to_text(geojson);
-	lwfree(geojson);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(geojson);
 }
 
 
@@ -630,21 +582,7 @@ Datum geography_recv(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_send);
 Datum geography_send(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = NULL;
-	GSERIALIZED *g = NULL;
-	size_t size_result;
-	uint8_t *wkb;
-	bytea *result;
-
-	g = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom = lwgeom_from_gserialized(g);
-	wkb = lwgeom_to_wkb(lwgeom, WKB_EXTENDED, &size_result);
-	lwgeom_free(lwgeom);
-
-	result = palloc(size_result + VARHDRSZ);
-	SET_VARSIZE(result, size_result + VARHDRSZ);
-	memcpy(VARDATA(result), wkb, size_result);
-	lwfree(wkb);
-
-	PG_RETURN_POINTER(result);
+	GSERIALIZED *g = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+	PG_RETURN_POINTER(lwgeom_to_wkb_varlena(lwgeom, WKB_EXTENDED));
 }

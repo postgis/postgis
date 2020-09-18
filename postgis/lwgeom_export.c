@@ -28,18 +28,17 @@
  *  Commons functions for all export functions
  */
 
-#include "float.h" /* for DBL_DIG */
-
 #include "postgres.h"
-#include "catalog/pg_type.h" /* for CSTRINGOID */
+#include "catalog/pg_type.h" /* for INT4OID */
 #include "executor/spi.h"
 #include "utils/builtins.h"
 #include "utils/jsonb.h"
 
 #include "../postgis_config.h"
+#include "lwgeom_cache.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
-#include "lwgeom_export.h"
+#include "liblwgeom_internal.h"
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
@@ -50,134 +49,6 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
 Datum geometry_to_json(PG_FUNCTION_ARGS);
 Datum geometry_to_jsonb(PG_FUNCTION_ARGS);
 
-/*
- * Retrieve an SRS from a given SRID
- * Require valid spatial_ref_sys table entry
- *
- * Could return SRS as short one (i.e EPSG:4326)
- * or as long one: (i.e urn:ogc:def:crs:EPSG::4326)
- */
-char *
-getSRSbySRID(int32_t srid, bool short_crs)
-{
-	char query[256];
-	char *srs, *srscopy;
-	int size, err;
-
-	if (SPI_OK_CONNECT != SPI_connect ())
-	{
-		elog(NOTICE, "getSRSbySRID: could not connect to SPI manager");
-		SPI_finish();
-		return NULL;
-	}
-
-	if (short_crs)
-		snprintf(query, 256, "SELECT auth_name||':'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", srid);
-	else
-		snprintf(query, 256, "SELECT 'urn:ogc:def:crs:'||auth_name||'::'||auth_srid \
-		        FROM spatial_ref_sys WHERE srid='%d'", srid);
-
-	err = SPI_exec(query, 1);
-	if ( err < 0 )
-	{
-		elog(NOTICE, "getSRSbySRID: error executing query %d", err);
-		SPI_finish();
-		return NULL;
-	}
-
-	/* no entry in spatial_ref_sys */
-	if (SPI_processed <= 0)
-	{
-		SPI_finish();
-		return NULL;
-	}
-
-	/* get result  */
-	srs = SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1);
-
-	/* NULL result */
-	if ( ! srs )
-	{
-		SPI_finish();
-		return NULL;
-	}
-
-	/* copy result to upper executor context */
-	size = strlen(srs)+1;
-	srscopy = SPI_palloc(size);
-	memcpy(srscopy, srs, size);
-
-	/* disconnect from SPI */
-	SPI_finish();
-
-	return srscopy;
-}
-
-
-/*
-* Retrieve an SRID from a given SRS
-* Require valid spatial_ref_sys table entry
-*
-*/
-int getSRIDbySRS(const char* srs)
-{
-	char *query =
-	    "SELECT srid "
-	    "FROM spatial_ref_sys, "
-	    "regexp_matches($1::text, E'([a-z]+):([0-9]+)', 'gi') AS re "
-	    "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid";
-	Oid argtypes[] = {CSTRINGOID};
-	Datum values[] = {CStringGetDatum(srs)};
-	int32_t srid, err;
-
-	if (!srs) return 0;
-
-	if (SPI_OK_CONNECT != SPI_connect())
-	{
-		elog(NOTICE, "getSRIDbySRS: could not connect to SPI manager");
-		return 0;
-	}
-
-	err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
-	if (err < 0)
-	{
-		elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
-		SPI_finish();
-		return 0;
-	}
-
-	/* no entry in spatial_ref_sys */
-	if (SPI_processed <= 0)
-	{
-		query =
-		    "SELECT srid "
-		    "FROM spatial_ref_sys, "
-		    "regexp_matches($1::text, E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
-		    "WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid";
-
-		err = SPI_execute_with_args(query, 1, argtypes, values, NULL, true, 1);
-		if (err < 0)
-		{
-			elog(NOTICE, "getSRIDbySRS: error executing query %d", err);
-			SPI_finish();
-			return 0;
-		}
-
-		if (SPI_processed <= 0)
-		{
-			SPI_finish();
-			return 0;
-		}
-	}
-
-	srid = atoi(SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1));
-	SPI_finish();
-
-	return srid;
-}
-
-
 /**
  * Encode feature in GML
  */
@@ -186,14 +57,13 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *gml = NULL;
-	text *result;
+	lwvarlena_t *v = NULL;
 	int version;
-	char *srs;
+	const char *srs;
 	int32_t srid;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
-	int precision = DBL_DIG;
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
 	static const char* default_prefix = "gml:"; /* default prefix */
 	const char* prefix = default_prefix;
 	const char* gml_id = NULL;
@@ -201,37 +71,50 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	char *gml_id_buf, *prefix_buf;
 	text *prefix_text, *gml_id_text;
 
-
-	/* Get the version */
-	version = PG_GETARG_INT32(0);
-	if ( version != 2 && version != 3 )
+	/*
+	 * Two potential callers, one starts with GML version,
+	 * one starts with geometry, and we check for initial
+	 * argument type and then dynamically change what args
+	 * we read based on presence/absence
+	 */
+	Oid first_type = get_fn_expr_argtype(fcinfo->flinfo, 0);
+	int argnum = 0;
+	if (first_type != INT4OID)
 	{
-		elog(ERROR, "Only GML 2 and GML 3 are supported");
-		PG_RETURN_NULL();
+		version = 2;
+	}
+	else
+	{
+		/* Get the version */
+		version = PG_GETARG_INT32(argnum++);
+		if (version != 2 && version != 3)
+		{
+			elog(ERROR, "Only GML 2 and GML 3 are supported");
+			PG_RETURN_NULL();
+		}
 	}
 
 	/* Get the geometry */
-	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_ARGISNULL(argnum))
+		PG_RETURN_NULL();
+	geom = PG_GETARG_GSERIALIZED_P(argnum++);
 
 	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
 	{
-		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom ? */
-		if (precision > DBL_DIG)
-			precision = DBL_DIG;
-		else if (precision < 0)
-			precision = 0;
+		precision = PG_GETARG_INT32(argnum);
 	}
+	argnum++;
 
 	/* retrieve option */
-	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) option = PG_GETARG_INT32(3);
+	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
+		option = PG_GETARG_INT32(argnum);
+	argnum++;
 
 	/* retrieve prefix */
-	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
+	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
 	{
-		prefix_text = PG_GETARG_TEXT_P(4);
+		prefix_text = PG_GETARG_TEXT_P(argnum);
 		if ( VARSIZE(prefix_text) == VARHDRSZ )
 		{
 			prefix = "";
@@ -247,10 +130,11 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 			prefix = prefix_buf;
 		}
 	}
+	argnum++;
 
-	if (PG_NARGS() >5 && !PG_ARGISNULL(5))
+	if (PG_NARGS() > argnum && !PG_ARGISNULL(argnum))
 	{
-		gml_id_text = PG_GETARG_TEXT_P(5);
+		gml_id_text = PG_GETARG_TEXT_P(argnum);
 		if ( VARSIZE(gml_id_text) == VARHDRSZ )
 		{
 			gml_id = "";
@@ -264,18 +148,21 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 			gml_id = gml_id_buf;
 		}
 	}
+	argnum++;
 
 	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
-	else if (option & 1) srs = getSRSbySRID(srid, false);
-	else                 srs = getSRSbySRID(srid, true);
+	else if (option & 1)
+		srs = GetSRSCacheBySRID(fcinfo, srid, false);
+	else
+		srs = GetSRSCacheBySRID(fcinfo, srid, true);
 
 	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
 	if (option & 4) lwopts |= LW_GML_SHORTLINE;
 	if (option & 8)
 	{
 		elog(ERROR,
-		     "Options %d passed to ST_AsGML(geography) sets "
+		     "Options %d passed to ST_AsGML(geometry) sets "
 		     "unsupported value 8",
 		     option);
 		PG_RETURN_NULL();
@@ -288,31 +175,21 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (version == 2)
 	{
 		if (lwopts & LW_GML_EXTENT)
-			gml = lwgeom_extent_to_gml2(
-			    lwgeom, srs, precision, prefix);
+			v = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
 		else
-			gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
+			v = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
 	}
 	if (version == 3)
 	{
 		if (lwopts & LW_GML_EXTENT)
-			gml = lwgeom_extent_to_gml3(
-			    lwgeom, srs, precision, lwopts, prefix);
+			v = lwgeom_extent_to_gml3(lwgeom, srs, precision, lwopts, prefix);
 		else
-			gml = lwgeom_to_gml3(
-			    lwgeom, srs, precision, lwopts, prefix, gml_id);
+			v = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, gml_id);
 	}
 
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 1);
-
-	/* Return null on null */
-	if ( ! gml )
+	if (!v)
 		PG_RETURN_NULL();
-
-	result = cstring_to_text(gml);
-	lwfree(gml);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(v);
 }
 
 
@@ -324,14 +201,12 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *geojson;
-	text *result;
-	int precision = DBL_DIG;
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
 	int output_bbox = LW_FALSE;
 	int output_long_crs = LW_FALSE;
 	int output_short_crs = LW_FALSE;
 	int output_guess_short_srid = LW_FALSE;
-	char *srs = NULL;
+	const char *srs = NULL;
 	int32_t srid;
 
 	/* Get the geometry */
@@ -345,10 +220,6 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 1 && !PG_ARGISNULL(1) )
 	{
 		precision = PG_GETARG_INT32(1);
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 )
-			precision = 0;
 	}
 
 	/* Retrieve output option
@@ -374,7 +245,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (srid != SRID_UNKNOWN && (output_short_crs || output_long_crs))
 	{
-		srs = getSRSbySRID(srid, !output_long_crs);
+		srs = GetSRSCacheBySRID(fcinfo, srid, !output_long_crs);
 
 		if (!srs)
 		{
@@ -384,16 +255,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	geojson = lwgeom_to_geojson(lwgeom, srs, precision, output_bbox);
-	lwgeom_free(lwgeom);
-
-	if (srs) pfree(srs);
-
-	result = cstring_to_text(geojson);
-	lwfree(geojson);
-
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_geojson(lwgeom, srs, precision, output_bbox));
 }
 
 
@@ -405,12 +267,10 @@ Datum geometry_to_json(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
-	text *result = cstring_to_text(geojson);
+	lwvarlena_t *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
 	lwgeom_free(lwgeom);
-	pfree(geojson);
 	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(geojson);
 }
 
 PG_FUNCTION_INFO_V1(geometry_to_jsonb);
@@ -418,9 +278,9 @@ Datum geometry_to_jsonb(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	char *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
+	lwvarlena_t *geojson = lwgeom_to_geojson(lwgeom, NULL, 15, 0);
 	lwgeom_free(lwgeom);
-	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(geojson)));
+	PG_RETURN_DATUM(DirectFunctionCall1(jsonb_in, PointerGetDatum(pstrdup(geojson->data))));
 }
 
 
@@ -432,10 +292,8 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *svg;
-	text *result;
 	int relative = 0;
-	int precision=DBL_DIG;
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -448,20 +306,10 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 	{
 		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom ? */
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	svg = lwgeom_to_svg(lwgeom, precision, relative);
-	result = cstring_to_text(svg);
-	lwgeom_free(lwgeom);
-	pfree(svg);
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_svg(lwgeom, precision, relative));
 }
 
 /**
@@ -472,13 +320,9 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *x3d;
-	text *result;
 	int version;
-	char *srs;
-	int32_t srid;
 	int option = 0;
-	int precision = DBL_DIG;
+	int precision = OUT_DEFAULT_DECIMAL_DIGITS;
 	static const char* default_defid = "x3d:"; /* default defid */
 	char *defidbuf;
 	const char* defid = default_defid;
@@ -500,16 +344,11 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		/* TODO: leave this to liblwgeom ? */
-		if ( precision > DBL_DIG )
-			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
 	}
 
 	/* retrieve option */
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
 		option = PG_GETARG_INT32(3);
-
 
 
 	/* retrieve defid */
@@ -534,13 +373,10 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	srid = gserialized_get_srid(geom);
-	if (srid == SRID_UNKNOWN)      srs = NULL;
-	else if (option & 1) srs = getSRSbySRID(srid, false);
-	else                 srs = getSRSbySRID(srid, true);
 
 	if (option & LW_X3D_USE_GEOCOORDS) {
-		if (srid != 4326) {
+		if (lwgeom->srid != 4326)
+		{
 			PG_FREE_IF_COPY(geom, 0);
 			/** TODO: we need to support UTM and other coordinate systems supported by X3D eventually
 			http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#t-earthgeoids **/
@@ -549,16 +385,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 		}
 	}
 
-
-	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);
-
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 1);
-
-	result = cstring_to_text(x3d);
-	lwfree(x3d);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_x3d3(lwgeom, precision, option, defid));
 }
 
 /**
@@ -569,9 +396,7 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	char *encodedpolyline;
 	int precision = 5;
-	text *result;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -589,12 +414,5 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 		if ( precision < 0 ) precision = 5;
 	}
 
-	encodedpolyline = lwgeom_to_encoded_polyline(lwgeom, precision);
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 0);
-
-	result = cstring_to_text(encodedpolyline);
-	lwfree(encodedpolyline);
-
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_encoded_polyline(lwgeom, precision));
 }

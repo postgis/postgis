@@ -21,7 +21,6 @@
 ** Global variable to hold hex WKB strings
 */
 static char *s;
-static size_t s_size;
 
 /*
 ** The suite initialization function.
@@ -51,7 +50,7 @@ static void cu_wkb_from_hexwkb(char *hexwkb)
 {
 	LWGEOM *g = lwgeom_from_hexwkb(hexwkb, LW_PARSER_CHECK_NONE);
 	if ( s ) free(s);
-	s = (char*)lwgeom_to_wkb(g, WKB_HEX | WKB_XDR | WKB_EXTENDED, 0);
+	s = (char *)lwgeom_to_wkb_buffer(g, WKB_HEX | WKB_XDR | WKB_EXTENDED);
 	lwgeom_free(g);
 }
 
@@ -62,7 +61,7 @@ static void cu_wkb(char *wkt)
 {
 	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	if ( s ) free(s);
-	s = (char*)lwgeom_to_wkb(g, WKB_HEX | WKB_XDR | WKB_EXTENDED, &s_size);
+	s = (char *)lwgeom_to_wkb_buffer(g, WKB_HEX | WKB_XDR | WKB_EXTENDED);
 	lwgeom_free(g);
 }
 

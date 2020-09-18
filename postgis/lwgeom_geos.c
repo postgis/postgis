@@ -27,8 +27,6 @@
 
 #include "../postgis_config.h"
 
-#include "float.h" /* for DBL_DIG */
-
 /* PostgreSQL */
 #include "postgres.h"
 #include "funcapi.h"
@@ -85,7 +83,7 @@ Datum convexhull(PG_FUNCTION_ARGS);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS);
 Datum ST_Difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
-Datum symdifference(PG_FUNCTION_ARGS);
+Datum ST_SymDifference(PG_FUNCTION_ARGS);
 Datum ST_Union(PG_FUNCTION_ARGS);
 Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
@@ -105,6 +103,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum ST_BuildArea(PG_FUNCTION_ARGS);
 Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
+Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
@@ -140,7 +139,7 @@ is_point(const GSERIALIZED* g)
  * Serialized poly may be a multipart.
  */
 static int
-pip_short_circuit(RTREE_POLY_CACHE* poly_cache, LWPOINT* point, GSERIALIZED* gpoly)
+pip_short_circuit(RTREE_POLY_CACHE *poly_cache, LWPOINT *point, const GSERIALIZED *gpoly)
 {
 	int result;
 
@@ -332,6 +331,130 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 
 #endif /* POSTGIS_GEOS_VERSION >= 37 */
 }
+
+
+/**
+ *  @brief Compute the Frechet distance with optional densification thanks to the corresponding GEOS function
+ *  @example ST_FrechetDistance {@link #frechetdistance} - SELECT ST_FrechetDistance(
+ *      'LINESTRING (0 0, 50 200, 100 0, 150 200, 200 0)'::geometry,
+ *      'LINESTRING (0 200, 200 150, 0 100, 200 50, 0 0)'::geometry, 0.5);
+ */
+
+PG_FUNCTION_INFO_V1(ST_MaximumInscribedCircle);
+Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 39
+
+	lwpgerror("The GEOS version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'GEOSMaximumInscribedCircle' function (3.9.0+ required)",
+	          POSTGIS_GEOS_VERSION);
+	          PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 39 */
+	GSERIALIZED* geom;
+	GSERIALIZED* center;
+	GSERIALIZED* nearest;
+	TupleDesc resultTupleDesc;
+	HeapTuple resultTuple;
+	Datum result;
+	Datum result_values[3];
+	bool result_is_null[3];
+	double radius = 0.0;
+	int32 srid = SRID_UNKNOWN;
+	bool is3d;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	geom = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(geom);
+	is3d = gserialized_has_z(geom);
+
+    /* Empty geometry?  Return POINT EMPTY with zero radius */
+	if (gserialized_is_empty(geom))
+	{
+		LWGEOM* lwcenter = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+		LWGEOM* lwnearest = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+		center = geometry_serialize(lwcenter);
+		nearest = geometry_serialize(lwnearest);
+		radius = 0.0;
+	}
+	else
+	{
+		GEOSGeometry *ginput, *gcircle, *gcenter, *gnearest;
+		double width, height, size, tolerance;
+		GBOX gbox;
+		int gtype;
+
+		if (!gserialized_get_gbox_p(geom, &gbox))
+			PG_RETURN_NULL();
+
+		width = gbox.xmax - gbox.xmin;
+		height = gbox.ymax - gbox.ymin;
+		size = width > height ? width : height;
+		tolerance = size / 1000.0;
+
+		initGEOS(lwpgnotice, lwgeom_geos_error);
+
+		ginput = POSTGIS2GEOS(geom);
+		if (!ginput)
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+
+		gtype = gserialized_get_type(geom);
+		if (gtype == POLYGONTYPE || gtype == MULTIPOLYGONTYPE)
+		{
+			gcircle = GEOSMaximumInscribedCircle(ginput, tolerance);
+			if (!gcircle)
+			{
+				lwpgerror("Error calculating GEOSMaximumInscribedCircle.");
+				GEOSGeom_destroy(ginput);
+				PG_RETURN_NULL();
+			}
+		}
+		else
+		{
+			gcircle = GEOSLargestEmptyCircle(ginput, NULL, tolerance);
+			if (!gcircle)
+			{
+				lwpgerror("Error calculating GEOSLargestEmptyCircle.");
+				GEOSGeom_destroy(ginput);
+				PG_RETURN_NULL();
+			}
+		}
+
+		gcenter = GEOSGeomGetStartPoint(gcircle);
+		gnearest = GEOSGeomGetEndPoint(gcircle);
+		GEOSDistance(gcenter, gnearest, &radius);
+		GEOSSetSRID(gcenter, srid);
+		GEOSSetSRID(gnearest, srid);
+
+		center = GEOS2POSTGIS(gcenter, is3d);
+		nearest = GEOS2POSTGIS(gnearest, is3d);
+		GEOSGeom_destroy(gcenter);
+		GEOSGeom_destroy(gnearest);
+		GEOSGeom_destroy(gcircle);
+		GEOSGeom_destroy(ginput);
+	}
+
+	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
+	BlessTupleDesc(resultTupleDesc);
+
+	result_values[0] = PointerGetDatum(center);
+	result_is_null[0] = false;
+	result_values[1] = PointerGetDatum(nearest);
+	result_is_null[1] = false;
+	result_values[2] = Float8GetDatum(radius);
+	result_is_null[2] = false;
+	resultTuple = heap_form_tuple(resultTupleDesc, result_values, result_is_null);
+
+	result = HeapTupleGetDatum(resultTuple);
+
+	PG_RETURN_DATUM(result);
+
+#endif /* POSTGIS_GEOS_VERSION >= 39 */
+}
+
 
 /**
  * @brief This is the final function for GeomUnion
@@ -560,23 +683,13 @@ Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 	*/
 	if (ngeoms > 0)
 	{
-		GEOSGeometry *g = NULL;
-		GEOSGeometry *g_union = NULL;
 		LWCOLLECTION* col = lwcollection_construct(COLLECTIONTYPE, srid, NULL, ngeoms, geoms);
-
-		initGEOS(lwpgnotice, lwgeom_geos_error);
-		g = LWGEOM2GEOS((LWGEOM*)col, LW_FALSE);
-		if (!g)
-			HANDLE_GEOS_ERROR("Could not create GEOS COLLECTION from geometry array");
-
-		g_union = GEOSUnaryUnion(g);
-		GEOSGeom_destroy(g);
-		if (!g_union)
-			HANDLE_GEOS_ERROR("GEOSUnaryUnion");
-
-		GEOSSetSRID(g_union, srid);
-		gser_out = GEOS2POSTGIS(g_union, has_z);
-		GEOSGeom_destroy(g_union);
+		LWGEOM *out = lwgeom_unaryunion_prec(lwcollection_as_lwgeom(col), state->gridSize);
+		if ( ! out )
+		{
+			lwcollection_free(col);
+		}
+		gser_out = geometry_serialize(out);
 	}
 	/* No real geometries in our array, any empties? */
 	else
@@ -614,12 +727,15 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult ;
+	double prec = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
+	if (PG_NARGS() > 1 && ! PG_ARGISNULL(1))
+		prec = PG_GETARG_FLOAT8(1);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 
-	lwresult = lwgeom_unaryunion(lwgeom1);
+	lwresult = lwgeom_unaryunion_prec(lwgeom1, prec);
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -637,14 +753,17 @@ Datum ST_Union(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
+	double gridSize = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		gridSize = PG_GETARG_FLOAT8(2);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1);
 	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_union(lwgeom1, lwgeom2);
+	lwresult = lwgeom_union_prec(lwgeom1, lwgeom2, gridSize);
 	result = geometry_serialize(lwresult);
 
 	lwgeom_free(lwgeom1);
@@ -657,26 +776,40 @@ Datum ST_Union(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+/* This is retained for backward ABI compatibility
+ * with PostGIS < 3.1.0 */
+PG_FUNCTION_INFO_V1(symdifference);
+Datum symdifference(PG_FUNCTION_ARGS)
+{
+  PG_RETURN_DATUM(DirectFunctionCall2(
+     ST_SymDifference,
+     PG_GETARG_DATUM(0), PG_GETARG_DATUM(1)
+  ));
+}
+
 /**
  *  @example symdifference {@link #symdifference} - SELECT ST_SymDifference(
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
  */
-PG_FUNCTION_INFO_V1(symdifference);
-Datum symdifference(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_SymDifference);
+Datum ST_SymDifference(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
+	double prec = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		prec = PG_GETARG_FLOAT8(2);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
-	lwresult = lwgeom_symdifference(lwgeom1, lwgeom2) ;
+	lwresult = lwgeom_symdifference_prec(lwgeom1, lwgeom2, prec);
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -1283,14 +1416,17 @@ Datum ST_Intersection(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
+	double prec = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		prec = PG_GETARG_FLOAT8(2);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1);
 	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_intersection(lwgeom1, lwgeom2);
+	lwresult = lwgeom_intersection_prec(lwgeom1, lwgeom2, prec);
 	result = geometry_serialize(lwresult);
 
 	lwgeom_free(lwgeom1);
@@ -1310,14 +1446,17 @@ Datum ST_Difference(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
+	double prec = -1;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
+	if (PG_NARGS() > 2 && ! PG_ARGISNULL(2))
+		prec = PG_GETARG_FLOAT8(2);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1);
 	lwgeom2 = lwgeom_from_gserialized(geom2);
 
-	lwresult = lwgeom_difference(lwgeom1, lwgeom2);
+	lwresult = lwgeom_difference_prec(lwgeom1, lwgeom2, prec);
 	result = geometry_serialize(lwresult);
 
 	lwgeom_free(lwgeom1);
@@ -1378,55 +1517,52 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClipByBox2d);
 Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
+	static const uint32_t geom_idx = 0;
+	static const uint32_t box2d_idx = 1;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult ;
-	const GBOX *bbox1;
+	GBOX bbox1 = {0};
 	GBOX *bbox2;
+	uint8_t type;
+	int32_t srid;
+	lwflags_t flags;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	lwgeom1 = lwgeom_from_gserialized(geom1) ;
-
-	bbox1 = lwgeom_get_bbox(lwgeom1);
-	if ( ! bbox1 )
+	if (!gserialized_datum_get_internals_p(PG_GETARG_DATUM(geom_idx), &bbox1, &flags, &type, &srid))
 	{
 		/* empty clips to empty, no matter rect */
-		lwgeom_free(lwgeom1);
-		PG_RETURN_POINTER(geom1);
+		PG_RETURN_DATUM(PG_GETARG_DATUM(geom_idx));
 	}
 
 	/* WARNING: this is really a BOX2DF, use only xmin and ymin fields */
-	bbox2 = (GBOX *)PG_GETARG_POINTER(1);
+	bbox2 = (GBOX *)PG_GETARG_POINTER(box2d_idx);
 	bbox2->flags = 0;
 
-	/* If bbox1 outside of bbox2, return empty */
-	if ( ! gbox_overlaps_2d(bbox1, bbox2) )
+	/* if bbox1 is covered by bbox2, return lwgeom1 */
+	if (gbox_contains_2d(bbox2, &bbox1))
 	{
-		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
-		lwgeom_free(lwgeom1);
-		PG_FREE_IF_COPY(geom1, 0);
+		PG_RETURN_DATUM(PG_GETARG_DATUM(geom_idx));
+	}
+
+	/* If bbox1 outside of bbox2, return empty */
+	if (!gbox_overlaps_2d(&bbox1, bbox2))
+	{
+		/* Get type and srid from datum */
+		lwresult = lwgeom_construct_empty(type, srid, 0, 0);
 		result = geometry_serialize(lwresult) ;
 		lwgeom_free(lwresult) ;
 		PG_RETURN_POINTER(result);
 	}
 
-	/* if bbox1 is covered by bbox2, return lwgeom1 */
-	if ( gbox_contains_2d(bbox2, bbox1) )
-	{
-		lwgeom_free(lwgeom1);
-		PG_RETURN_POINTER(geom1);
-	}
-
+	lwgeom1 = lwgeom_from_gserialized(PG_GETARG_GSERIALIZED_P(geom_idx));
 	lwresult = lwgeom_clip_by_rect(lwgeom1, bbox2->xmin, bbox2->ymin,
 	                               bbox2->xmax, bbox2->ymax);
 
 	lwgeom_free(lwgeom1);
-	PG_FREE_IF_COPY(geom1, 0);
 
-	if (!lwresult) PG_RETURN_NULL();
+	if (!lwresult)
+		PG_RETURN_NULL();
 
 	result = geometry_serialize(lwresult) ;
-	lwgeom_free(lwresult) ;
 	PG_RETURN_POINTER(result);
 }
 
@@ -1581,7 +1717,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	values[1] =  reason;
 
 	/* the location */
-	values[2] =  location ? lwgeom_to_hexwkb(location, WKB_EXTENDED, 0) : 0;
+	values[2] = location ? lwgeom_to_hexwkb_buffer(location, WKB_EXTENDED) : 0;
 
 	tuple = BuildTupleFromCStrings(attinmeta, values);
 	result = (HeapTupleHeader) palloc(tuple->t_len);
@@ -1658,8 +1794,10 @@ Datum overlaps(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(contains);
 Datum contains(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	int result;
 	GEOSGeometry *g1, *g2;
 	GBOX box1, box2;
@@ -1689,9 +1827,11 @@ Datum contains(PG_FUNCTION_ARGS)
 	*/
 	if (is_poly(geom1) && is_point(geom2))
 	{
-		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
-		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
-		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
+		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
+		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
+		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -1747,7 +1887,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
+	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, NULL);
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
@@ -1777,8 +1917,6 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
 	PG_RETURN_BOOL(result > 0);
 }
 
@@ -1795,14 +1933,14 @@ Datum within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(containsproperly);
 Datum containsproperly(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *				geom1;
-	GSERIALIZED *				geom2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	char 					result;
 	GBOX 			box1, box2;
 	PrepGeomCache *	prep_cache;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.ContainsProperly(Empty) == FALSE */
@@ -1822,7 +1960,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
+	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, 0);
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
@@ -1851,9 +1989,6 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSContains");
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
 	PG_RETURN_BOOL(result);
 }
 
@@ -1864,14 +1999,14 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(covers);
 Datum covers(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	int result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* A.Covers(Empty) == FALSE */
 	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
@@ -1897,9 +2032,11 @@ Datum covers(PG_FUNCTION_ARGS)
 	 */
 	if (is_poly(geom1) && is_point(geom2))
 	{
-		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
-		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
-		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
+		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
+		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
+		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -1936,8 +2073,6 @@ Datum covers(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
 	}
 	else
@@ -1947,7 +2082,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
+	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, 0);
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->gcache.argnum == 1 )
 	{
@@ -1976,11 +2111,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSCovers");
 
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
 	PG_RETURN_BOOL(result);
-
 }
 
 
@@ -1998,15 +2129,15 @@ Datum within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(coveredby);
 Datum coveredby(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	GEOSGeometry *g1, *g2;
 	int result;
 	GBOX box1, box2;
 	char *patt = "**F**F***";
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.CoveredBy(Empty) == FALSE */
@@ -2033,9 +2164,11 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 */
 	if (is_point(geom1) && is_poly(geom2))
 	{
-		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
-		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
-		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
+		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
+		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
+		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2072,8 +2205,6 @@ Datum coveredby(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
 	}
 	else
@@ -2102,9 +2233,6 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g2);
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSCoveredBy");
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
 }
@@ -2168,14 +2296,14 @@ Datum crosses(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_Intersects);
 Datum ST_Intersects(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *geom1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *geom2 = shared_gserialized_get(shared_geom2);
 	int result;
 	GBOX box1, box2;
 	PrepGeomCache *prep_cache;
 
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
 	/* A.Intersects(Empty) == FALSE */
@@ -2199,9 +2327,11 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	 */
 	if ((is_point(geom1) && is_poly(geom2)) || (is_poly(geom1) && is_point(geom2)))
 	{
-		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
-		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
-		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		SHARED_GSERIALIZED *shared_gpoly = is_poly(geom1) ? shared_geom1 : shared_geom2;
+		SHARED_GSERIALIZED *shared_gpoint = is_point(geom1) ? shared_geom1 : shared_geom2;
+		const GSERIALIZED *gpoly = shared_gserialized_get(shared_gpoly);
+		const GSERIALIZED *gpoint = shared_gserialized_get(shared_gpoint);
+		RTREE_POLY_CACHE *cache = GetRtreeCache(fcinfo, shared_gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2238,13 +2368,11 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_BOOL(retval);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
-	prep_cache = GetPrepGeomCache( fcinfo, geom1, geom2 );
+	prep_cache = GetPrepGeomCache(fcinfo, shared_geom1, shared_geom2);
 
 	if ( prep_cache && prep_cache->prepared_geom )
 	{
@@ -2282,9 +2410,6 @@ Datum ST_Intersects(PG_FUNCTION_ARGS)
 	}
 
 	if (result == 2) HANDLE_GEOS_ERROR("GEOSIntersects");
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
 }
@@ -2662,9 +2787,8 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 
 /*-----=POSTGIS2GEOS= */
 
-
 GEOSGeometry *
-POSTGIS2GEOS(GSERIALIZED *pglwgeom)
+POSTGIS2GEOS(const GSERIALIZED *pglwgeom)
 {
 	GEOSGeometry *ret;
 	LWGEOM *lwgeom = lwgeom_from_gserialized(pglwgeom);

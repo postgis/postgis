@@ -15,6 +15,7 @@
 #include "cu_tester.h"
 
 #include "liblwgeom_internal.h"
+#include "../lwgeom_geos.h"
 
 static void
 test_lwgeom_delaunay_triangulation(void)
@@ -102,6 +103,13 @@ test_lwgeom_voronoi_diagram_expected_empty(void)
 	assert_empty_diagram("MULTIPOINT (0 0, 0 0.00001)", 0.001);
 }
 
+static int
+clean_geos_triangulate_suite(void)
+{
+	finishGEOS();
+	return 0;
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -109,7 +117,7 @@ void triangulate_suite_setup(void);
 void
 triangulate_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("triangulate", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("triangulate", NULL, clean_geos_triangulate_suite);
 	PG_ADD_TEST(suite, test_lwgeom_delaunay_triangulation);
 	PG_ADD_TEST(suite, test_lwgeom_voronoi_diagram);
 	PG_ADD_TEST(suite, test_lwgeom_voronoi_diagram_expected_empty);

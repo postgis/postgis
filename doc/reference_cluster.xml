@@ -233,8 +233,9 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
       <para>Returns 2D distance based
         <ulink url="https://en.wikipedia.org/wiki/K-means_clustering">K-means</ulink>
         cluster number for each input geometry. The distance used for clustering is the
-        distance between the centroids of the geometries.
+        distance between the centroids for 2D geometries, and distance between bounding box centers for 3D geometries.
       </para>
+      <para>Enhanced: 3.1.0 Support for 3D geometries</para>
       <para>Availability: 2.3.0</para>
     </refsection>
 
@@ -245,7 +246,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,
 ('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As type
 FROM
-    ST_Subdivide(ST_Buffer('LINESTRING(40 100, 98 100, 100 150, 60 90)'::geometry,
+    ST_Subdivide(ST_Buffer('SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 90)'::geometry,
     40, 'endcap=square'),12) As geom;
 </programlisting>
 
@@ -305,6 +306,27 @@ FROM parcels;
    0 | 002       | residential
    2 | 006       | residential
 (7 rows)</programlisting>
+
+
+		    <programlisting> -- Clustering points around antimeridian can be done in 3D XYZ CRS, EPSG:4978:
+
+SELECT ST_ClusterKMeans(ST_Transform(ST_Force3D(geom), 4978), 3) over () AS cid, parcel_id, type
+FROM parcels;
+-- result
+┌─────┬───────────┬─────────────┐
+│ cid │ parcel_id │    type     │
+├─────┼───────────┼─────────────┤
+│   1 │ 001       │ commercial  │
+│   2 │ 002       │ residential │
+│   0 │ 003       │ commercial  │
+│   1 │ 004       │ residential │
+│   0 │ 005       │ commercial  │
+│   2 │ 006       │ residential │
+│   0 │ 007       │ commercial  │
+└─────┴───────────┴─────────────┘
+(7 rows)
+</programlisting>
+
 
     </refsection>
 

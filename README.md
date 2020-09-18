@@ -18,7 +18,9 @@ Bessie:
 Bessie32:
  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie32)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie32/)
 Berrie:
- [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dberrie)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/)
+ [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie&build=last:${params.reference=refs/heads/master})](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/)
+ Berrie64:
+ [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie64&build=last:${params.reference=refs/heads/master})](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie64/)
 
 
 This file is here to play nicely with modern code repository facilities.

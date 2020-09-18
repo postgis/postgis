@@ -205,15 +205,14 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_distance);
 Datum geography_distance(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED* g1 = NULL;
-	GSERIALIZED* g2 = NULL;
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *g1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *g2 = shared_gserialized_get(shared_geom2);
 	double distance;
 	bool use_spheroid = true;
 	SPHEROID s;
 
-	/* Get our geometry objects loaded into memory. */
-	g1 = PG_GETARG_GSERIALIZED_P(0);
-	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	if (PG_NARGS() > 2)
 		use_spheroid = PG_GETARG_BOOL(2);
@@ -230,13 +229,11 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	/* Return NULL on empty arguments. */
 	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
 	{
-		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_NULL();
 	}
 
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
-	if ( LW_FAILURE == geography_distance_cache(fcinfo, g1, g2, &s, &distance) )
+	if (LW_FAILURE == geography_distance_cache(fcinfo, shared_geom1, shared_geom2, &s, &distance))
 	{
 		/* default to using tree-based distance calculation at all times */
 		/* in standard distance call. */
@@ -249,10 +246,6 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom2);
 		*/
 	}
-
-	/* Clean up */
-	PG_FREE_IF_COPY(g1, 0);
-	PG_FREE_IF_COPY(g2, 1);
 
 	/* Knock off any funny business at the nanometer level, ticket #2168 */
 	distance = round(distance * INVMINDIST) / INVMINDIST;
@@ -274,8 +267,10 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_dwithin);
 Datum geography_dwithin(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	SHARED_GSERIALIZED *shared_geom1 = ToastCacheGetGeometry(fcinfo, 0);
+	SHARED_GSERIALIZED *shared_geom2 = ToastCacheGetGeometry(fcinfo, 1);
+	const GSERIALIZED *g1 = shared_gserialized_get(shared_geom1);
+	const GSERIALIZED *g2 = shared_gserialized_get(shared_geom2);
 	SPHEROID s;
 	double tolerance = 0.0;
 	bool use_spheroid = true;
@@ -304,7 +299,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
-	if ( LW_FAILURE == geography_dwithin_cache(fcinfo, g1, g2, &s, tolerance, &dwithin) )
+	if (LW_FAILURE == geography_dwithin_cache(fcinfo, shared_geom1, shared_geom2, &s, tolerance, &dwithin))
 	{
 		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
 		LWGEOM* lwgeom2 = lwgeom_from_gserialized(g2);
@@ -317,8 +312,6 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		lwgeom_free(lwgeom2);
 	}
 
-	PG_FREE_IF_COPY(g1, 0);
-	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_BOOL(dwithin);
 }
 
@@ -683,19 +676,14 @@ PG_FUNCTION_INFO_V1(geography_point_outside);
 Datum geography_point_outside(PG_FUNCTION_ARGS)
 {
 	GBOX gbox;
-	GSERIALIZED *g = NULL;
-	GSERIALIZED *g_out = NULL;
 	LWGEOM *lwpoint = NULL;
 	POINT2D pt;
 
-	/* Get our geometry object loaded into memory. */
-	g = PG_GETARG_GSERIALIZED_P(0);
-
 	/* We need the bounding box to get an outside point for area algorithm */
-	if ( gserialized_get_gbox_p(g, &gbox) == LW_FAILURE )
+	if (gserialized_datum_get_gbox_p(PG_GETARG_DATUM(0), &gbox) == LW_FAILURE)
 	{
-		POSTGIS_DEBUG(4,"gserialized_get_gbox_p returned LW_FAILURE");
-		elog(ERROR, "Error in gserialized_get_gbox_p calculation.");
+		POSTGIS_DEBUG(4, "gserialized_datum_get_gbox_p returned LW_FAILURE");
+		elog(ERROR, "Error in gserialized_datum_get_gbox_p calculation.");
 		PG_RETURN_NULL();
 	}
 	POSTGIS_DEBUGF(4, "got gbox %s", gbox_to_string(&gbox));
@@ -705,11 +693,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 
 	lwpoint = (LWGEOM*) lwpoint_make2d(4326, pt.x, pt.y);
 
-	g_out = geography_serialize(lwpoint);
-
-	PG_FREE_IF_COPY(g, 0);
-	PG_RETURN_POINTER(g_out);
-
+	PG_RETURN_POINTER(geography_serialize(lwpoint));
 }
 
 /*

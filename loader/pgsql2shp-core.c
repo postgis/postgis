@@ -1536,7 +1536,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		 * use this to create the dbf field name from
 		 * the PostgreSQL column name */
 		{
-			const char *mapped = colmap_dbf_by_pg(&state->column_map, dbffieldname);
+			const char *mapped = colmap_dbf_by_pg(&state->column_map, pgfieldname);
 			if (mapped)
 			{
 				strncpy(dbffieldname, mapped, 10);

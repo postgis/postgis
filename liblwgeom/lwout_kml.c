@@ -40,12 +40,11 @@ static int ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_
 */
 
 /* takes a GEOMETRY and returns a KML representation */
-char*
+lwvarlena_t *
 lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 {
 	stringbuffer_t *sb;
 	int rv;
-	char *kml;
 
 	/* Can't do anything with empty */
 	if( lwgeom_is_empty(geom) )
@@ -60,10 +59,10 @@ lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 		return NULL;
 	}
 
-	kml = stringbuffer_getstringcopy(sb);
+	lwvarlena_t *v = stringbuffer_getvarlenacopy(sb);
 	stringbuffer_destroy(sb);
 
-	return kml;
+	return v;
 }
 
 static int
@@ -107,19 +106,11 @@ ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 	{
 		getPoint4d_p(pa, i, &pt);
 		d = (double*)(&pt);
-		if ( i ) stringbuffer_append(sb," ");
+		if ( i ) stringbuffer_append_len(sb," ",1);
 		for (j = 0; j < dims; j++)
 		{
-			if ( j ) stringbuffer_append(sb,",");
-			if( fabs(d[j]) < OUT_MAX_DOUBLE )
-			{
-				if ( stringbuffer_aprintf(sb, "%.*f", precision, d[j]) < 0 ) return LW_FAILURE;
-			}
-			else
-			{
-				if ( stringbuffer_aprintf(sb, "%g", d[j]) < 0 ) return LW_FAILURE;
-			}
-			stringbuffer_trim_trailing_zeroes(sb);
+			if ( j ) stringbuffer_append_len(sb,",",1);
+			stringbuffer_append_double(sb, d[j], precision);
 		}
 	}
 	return LW_SUCCESS;

@@ -784,6 +784,11 @@ test_lwtriangle_clip(void)
 	    LW_PARSER_CHECK_NONE);
 	c = lwgeom_clip_to_ordinate_range(g, 'Z', 0.0, DBL_MAX, 0);
 
+	/* Adjust for Rasberry Pi 64-bit (Debian Buster) */
+	gridspec grid = {0};
+	grid.xsize = grid.ysize = grid.zsize = grid.msize = 1;
+	lwgeom_grid_in_place((LWGEOM *)c, &grid);
+
 	ewkt = lwgeom_to_ewkt((LWGEOM *)c);
 	// printf("c = %s\n", ewkt);
 	ASSERT_STRING_EQUAL(
@@ -951,21 +956,21 @@ static void test_geohash_precision(void)
 
 static void test_geohash_point(void)
 {
-	char *geohash;
+	lwvarlena_t *geohash;
 
 	geohash = geohash_point(0, 0, 16);
 	//printf("\ngeohash %s\n",geohash);
-	ASSERT_STRING_EQUAL(geohash, "s000000000000000");
+	ASSERT_VARLENA_EQUAL(geohash, "s000000000000000");
 	lwfree(geohash);
 
 	geohash = geohash_point(90, 0, 16);
 	//printf("\ngeohash %s\n",geohash);
-	ASSERT_STRING_EQUAL(geohash, "w000000000000000");
+	ASSERT_VARLENA_EQUAL(geohash, "w000000000000000");
 	lwfree(geohash);
 
 	geohash = geohash_point(20.012345, -20.012345, 15);
 	//printf("\ngeohash %s\n",geohash);
-	ASSERT_STRING_EQUAL(geohash, "kkqnpkue9ktbpe5");
+	ASSERT_VARLENA_EQUAL(geohash, "kkqnpkue9ktbpe5");
 	lwfree(geohash);
 
 }
@@ -975,40 +980,40 @@ static void test_geohash(void)
 	LWPOINT *lwpoint = NULL;
 	LWLINE *lwline = NULL;
 	LWMLINE *lwmline = NULL;
-	char *geohash = NULL;
+	lwvarlena_t *geohash = NULL;
 
 	lwpoint = (LWPOINT*)lwgeom_from_wkt("POINT(23.0 25.2)", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwpoint,0);
 	//printf("\ngeohash %s\n",geohash);
-	ASSERT_STRING_EQUAL(geohash, "ss2r77s0du7p2ewb8hmx");
+	ASSERT_VARLENA_EQUAL(geohash, "ss2r77s0du7p2ewb8hmx");
 	lwpoint_free(lwpoint);
 	lwfree(geohash);
 
 	lwpoint = (LWPOINT*)lwgeom_from_wkt("POINT(23.0 25.2 2.0)", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwpoint,0);
 	//printf("geohash %s\n",geohash);
-	ASSERT_STRING_EQUAL(geohash, "ss2r77s0du7p2ewb8hmx");
+	ASSERT_VARLENA_EQUAL(geohash, "ss2r77s0du7p2ewb8hmx");
 	lwpoint_free(lwpoint);
 	lwfree(geohash);
 
 	lwline = (LWLINE*)lwgeom_from_wkt("LINESTRING(23.0 23.0,23.1 23.1)", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwline,0);
 	//printf("geohash %s\n",geohash);
-	ASSERT_STRING_EQUAL(geohash, "ss0");
+	ASSERT_VARLENA_EQUAL(geohash, "ss0");
 	lwline_free(lwline);
 	lwfree(geohash);
 
 	lwline = (LWLINE*)lwgeom_from_wkt("LINESTRING(23.0 23.0,23.001 23.001)", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwline,0);
 	//printf("geohash %s\n",geohash);
-	ASSERT_STRING_EQUAL(geohash, "ss06g7h");
+	ASSERT_VARLENA_EQUAL(geohash, "ss06g7h");
 	lwline_free(lwline);
 	lwfree(geohash);
 
 	lwmline = (LWMLINE*)lwgeom_from_wkt("MULTILINESTRING((23.0 23.0,23.1 23.1),(23.0 23.0,23.1 23.1))", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwmline,0);
 	//printf("geohash %s\n",geohash);
-	ASSERT_STRING_EQUAL(geohash, "ss0");
+	ASSERT_VARLENA_EQUAL(geohash, "ss0");
 	lwmline_free(lwmline);
 	lwfree(geohash);
 }
@@ -1726,7 +1731,7 @@ static void test_kmeans(void)
 		}
 	}
 
-	r = lwgeom_cluster_2d_kmeans((const LWGEOM **)geoms, N, num_clusters);
+	r = lwgeom_cluster_kmeans((const LWGEOM **)geoms, N, num_clusters);
 
 	// for (i = 0; i < k; i++)
 	// {

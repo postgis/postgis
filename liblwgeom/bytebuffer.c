@@ -101,15 +101,14 @@ bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 }
 
 /** Returns a copy of the internal buffer */
-uint8_t*
-bytebuffer_get_buffer_copy(const bytebuffer_t *s, size_t *buffer_length)
+lwvarlena_t *
+bytebuffer_get_buffer_varlena(const bytebuffer_t *s)
 {
 	size_t bufsz = bytebuffer_getlength(s);
-	uint8_t *buf = lwalloc(bufsz);
-	memcpy(buf, s->buf_start, bufsz);
-	if ( buffer_length )
-		*buffer_length = bufsz;
-	return buf;
+	lwvarlena_t *v = lwalloc(bufsz + LWVARHDRSZ);
+	memcpy(v->data, s->buf_start, bufsz);
+	LWSIZE_SET(v->size, bufsz + LWVARHDRSZ);
+	return v;
 }
 
 /** Returns a read-only reference to the internal buffer */
@@ -181,6 +180,18 @@ bytebuffer_getlength(const bytebuffer_t *s)
 
 /* Unused functions */
 #if 0
+
+/** Returns a copy of the internal buffer */
+uint8_t*
+bytebuffer_get_buffer_copy(const bytebuffer_t *s, size_t *buffer_length)
+{
+	size_t bufsz = bytebuffer_getlength(s);
+	uint8_t *buf = lwalloc(bufsz);
+	memcpy(buf, s->buf_start, bufsz);
+	if ( buffer_length )
+		*buffer_length = bufsz;
+	return buf;
+}
 
 /**
 * Allocate a new bytebuffer_t. Use bytebuffer_destroy to free.

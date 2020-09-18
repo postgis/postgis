@@ -53,19 +53,25 @@ typedef struct
 	Oid raster_oid;
 	Oid install_nsp_oid;
 	char *install_nsp;
+	char *spatial_ref_sys;
 } postgisConstants;
 
 /* Global to hold all the run-time constants */
 extern postgisConstants *POSTGIS_CONSTANTS;
 
-/* uses the nsp information of the calling function to infer the */
-/* install location of postgis, and thus the namespace to use */
-/* when looking up the type name */
-Oid postgis_oid_fcinfo(FunctionCallInfo fcinfo, postgisType typ);
+/* Infer the install location of postgis, and thus the namespace to use
+ * when looking up the type name, and cache oids */
+void postgis_initialize_cache(FunctionCallInfo fcinfo);
 
-/* only useful if postgis_oid_fcinfo() has been called first and */
-/* populated first, otherwise returns InvalidOid */
+/* Useful if postgis_initialize_cache() has been called before.
+ * Otherwise it tries to do a bare lookup */
 Oid postgis_oid(postgisType typ);
+
+/* Returns the fully qualified, and properly quoted, identifier of spatial_ref_sys
+ * Note that it's length can be up to strlen(schema) + "." + strlen("spatial_ref_sys") + NULL, i.e: 80 bytes
+ * Only useful if postgis_initialize_cache has been called before. Otherwise returns "spatial_ref_sys"
+ */
+const char *postgis_spatial_ref_sys();
 
 /****************************************************************************************/
 
@@ -84,6 +90,8 @@ void pg_install_lwgeom_handlers(void);
 #define PG_GETARG_GSERIALIZED_P(varno) ((GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(varno)))
 #define PG_GETARG_GSERIALIZED_P_COPY(varno) ((GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(varno)))
 #define PG_GETARG_GSERIALIZED_P_SLICE(varno, start, size) ((GSERIALIZED *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(varno), start, size))
+#define PG_GETARG_GSERIALIZED_HEADER(varno) \
+	((GSERIALIZED *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(varno), 0, gserialized_max_header_size()))
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -177,6 +185,7 @@ void gserialized_error_if_srid_mismatch_reference(const GSERIALIZED *g1, const i
 * Fails on empty.
 */
 int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
+int gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, lwflags_t *flags, uint8_t *type, int32_t *srid);
 
 /* PG-exposed */
 Datum BOX2D_same(PG_FUNCTION_ARGS);

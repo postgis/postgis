@@ -103,34 +103,35 @@ CREATE OR REPLACE FUNCTION ST_AsText(geography)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_AsText(geography, int4)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_AsText(text)
 	RETURNS text AS
 	$$ SELECT @extschema@.ST_AsText($1::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+        _COST_MEDIUM;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeographyFromText(text)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeogFromText(text)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeogFromWKB(bytea)
@@ -407,13 +408,14 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography, rel int4 DEFAULT 0, maxdecim
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_svg'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 	RETURNS text AS
 	$$ SELECT @extschema@.ST_AsSVG($1::@extschema@.geometry,0,15);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+        _COST_MEDIUM;
 
 --
 -- GML OUTPUT
@@ -428,20 +430,21 @@ CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigi
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_gml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_gml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Change 2.0.0 to use base function
 CREATE OR REPLACE FUNCTION ST_AsGML(text)
 	RETURNS text AS
 	$$ SELECT @extschema@._ST_AsGML(2,$1::@extschema@.geometry,15,0, NULL, NULL);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+        _COST_MEDIUM;
 
 --
 -- KML OUTPUT
@@ -453,14 +456,15 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAUL
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_kml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Deprecated 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(text)
 	RETURNS text AS
 	$$ SELECT @extschema@.ST_AsKML($1::@extschema@.geometry, 15);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+        _COST_MEDIUM;
 
 --
 -- GeoJson Output
@@ -470,14 +474,15 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DE
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_geojson'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	RETURNS text AS
 	$$ SELECT @extschema@.ST_AsGeoJson($1::@extschema@.geometry, 9, 0);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+        _COST_MEDIUM;
 
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -612,7 +617,7 @@ CREATE OR REPLACE FUNCTION _ST_PointOutside(geography)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_point_outside'
 	LANGUAGE 'c' IMMUTABLE STRICT
-	_COST_MEDIUM;
+	_COST_DEFAULT;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Segmentize(geog geography, max_segment_length float8)
@@ -703,13 +708,20 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_LOW;
+	_COST_MEDIUM;
+
+CREATE OR REPLACE FUNCTION ST_AsEWKT(geography, int4)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
 
 -- Availability: 2.0.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_AsEWKT(text)
 	RETURNS text AS
 	$$ SELECT @extschema@.ST_AsEWKT($1::@extschema@.geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+        _COST_MEDIUM;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION GeometryType(geography)

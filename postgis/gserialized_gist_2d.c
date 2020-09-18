@@ -46,6 +46,7 @@
 #include "../postgis_config.h"
 
 #include "liblwgeom.h"         /* For standard geometry types. */
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"	     /* For utility functions. */
 
@@ -116,14 +117,24 @@ typedef bool (*box2df_predicate)(const BOX2DF *a, const BOX2DF *b);
 
 static char* box2df_to_string(const BOX2DF *a)
 {
-	char *rv = NULL;
+	static const int precision = 12;
+	char tmp[13 + 4 * OUT_MAX_BYTES_DOUBLE] = {'B', 'O', 'X', '2', 'D', 'F', '(', 0};
+	int len = 7;
 
-	if ( a == NULL )
+	if (a == NULL)
 		return pstrdup("<NULLPTR>");
 
-	rv = palloc(128);
-	sprintf(rv, "BOX2DF(%.12g %.12g, %.12g %.12g)", a->xmin, a->ymin, a->xmax, a->ymax);
-	return rv;
+	len += lwprint_double(a->xmin, precision, &tmp[len]);
+	tmp[len++] = ' ';
+	len += lwprint_double(a->ymin, precision, &tmp[len]);
+	tmp[len++] = ',';
+	tmp[len++] = ' ';
+	len += lwprint_double(a->xmax, precision, &tmp[len]);
+	tmp[len++] = ' ';
+	len += lwprint_double(a->ymax, precision, &tmp[len]);
+	tmp[len++] = ')';
+
+	return pstrdup(tmp);
 }
 
 /* Allocate a new copy of BOX2DF */
@@ -439,20 +450,16 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 	return FLT_MAX;
 }
 
-
 /**
-* Peak into a #GSERIALIZED datum to find the bounding box. If the
-* box is there, copy it out and return it. If not, calculate the box from the
-* full object and return the box based on that. If no box is available,
-* return #LW_FAILURE, otherwise #LW_SUCCESS.
-*/
+ * Peak into a #GSERIALIZED datum to find its bounding box and some other metadata. If the box is there, copy it out and
+ * return it. If not, calculate the box from the full object and return the box based on that. If no box is available,
+ * return #LW_FAILURE, otherwise #LW_SUCCESS.
+ */
 int
-gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
+gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, lwflags_t *flags, uint8_t *type, int32_t *srid)
 {
 	GSERIALIZED *gpart;
 	int result = LW_SUCCESS;
-
-	POSTGIS_DEBUG(4, "entered function");
 
 	/*
 	** Because geometry is declared as "storage = main" anything large
@@ -464,44 +471,50 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	** (though we still need to fully retrieve it from TOAST)
 	** which makes slicing worthwhile.
 	*/
-	gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->gflags);
-
-	/* Do we even have a serialized bounding box? */
-	if (gserialized_has_bbox(gpart))
+	gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	if (!gserialized_has_bbox(gpart) && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
 	{
-		/* Yes! Copy it out into the box! */
-		size_t box_ndims;
-		const float *f = gserialized_get_float_box_p(gpart, &box_ndims);
-
-		POSTGIS_DEBUG(4, "copying box out of serialization");
-		memcpy(box2df, f, sizeof(BOX2DF));
-		result = LW_SUCCESS;
+		/* The headers don't contain a bbox and there is the object is larger than what we retrieved, so
+		 * we now detoast it completely */
+		POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+		gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
 	}
-	else
-	{
-		/* No, we need to calculate it from the full object. */
-		GBOX gbox;
-		gbox_init(&gbox);
 
-		result = gserialized_get_gbox_p(gpart, &gbox);
-		if ( result == LW_SUCCESS )
-		{
-			result = box2df_from_gbox_p(&gbox, box2df);
-		}
-		else
-		{
-			POSTGIS_DEBUG(4, "could not calculate bbox");
-		}
-	}
+	result = gserialized_get_gbox_p(gpart, gbox);
+	*flags = gserialized_get_lwflags(gpart);
+	*srid = gserialized_get_srid(gpart);
+	*type = gserialized_get_type(gpart);
 
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
-	POSTGIS_DEBUGF(4, "result = %d, got box2df %s", result, result == LW_SUCCESS ? box2df_to_string(box2df) : "NONE");
-
 	return result;
 }
 
+/**
+ * Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
+ * of the memory) return the gbox extents. Does not deserialize the geometry,
+ * but <em>WARNING</em> returns a slightly larger bounding box than actually
+ * encompasses the objects. For geography objects returns geocentric bounding
+ * box, for geometry objects returns cartesian bounding box.
+ */
+int
+gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
+{
+	uint8_t type;
+	int32_t srid;
+	lwflags_t flags;
+
+	return gserialized_datum_get_internals_p(gsdatum, gbox, &flags, &type, &srid);
+}
+
+int
+gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
+{
+	GBOX gbox = {0};
+	if (gserialized_datum_get_gbox_p(gsdatum, &gbox) == LW_FAILURE)
+		return LW_FAILURE;
+
+	return box2df_from_gbox_p(&gbox, box2df);
+}
 
 /**
 * Support function. Based on two datums return true if

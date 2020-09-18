@@ -476,7 +476,7 @@ int circ_tree_get_point_outside(const CIRC_NODE* node, POINT2D* pt)
 {
 	POINT3D center3d;
 	GEOGRAPHIC_POINT g;
-	if (node->radius >= M_PI) return LW_FAILURE;
+	// if (node->radius >= M_PI) return LW_FAILURE;
 	geog2cart(&(node->center), &center3d);
 	vector_scale(&center3d, -1.0);
 	cart2geog(&center3d, &g);

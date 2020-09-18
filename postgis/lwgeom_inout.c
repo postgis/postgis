@@ -45,6 +45,7 @@
 #include "funcapi.h"
 
 #include "liblwgeom.h"
+#include "lwgeom_cache.h"
 #include "lwgeom_pg.h"
 #include "geography.h" /* for lwgeom_valid_typmod */
 #include "lwgeom_transform.h"
@@ -70,7 +71,6 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS);
 Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS);
 Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS);
 
-
 /*
  * LWGEOM_in(cstring)
  * format is '[SRID=#;]wkt|wkb'
@@ -78,6 +78,7 @@ Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS);
  *  LWGEOM_in( 'POINT(0 0)')            --> assumes SRID=SRID_UNKNOWN
  *  LWGEOM_in( 'SRID=99;0101000000000000000000F03F000000000000004')
  *  LWGEOM_in( '0101000000000000000000F03F000000000000004')
+ *  LWGEOM_in( '{"type":"Point","coordinates":[1,1]}')
  *  returns a GSERIALIZED object
  */
 PG_FUNCTION_INFO_V1(LWGEOM_in);
@@ -137,6 +138,19 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		/* Add a bbox if necessary */
 		if ( lwgeom_needs_bbox(lwgeom) ) lwgeom_add_bbox(lwgeom);
 		lwfree(wkb);
+		ret = geometry_serialize(lwgeom);
+		lwgeom_free(lwgeom);
+	}
+	else if (str[0] == '{')
+	{
+		char *srs = NULL;
+		lwgeom = lwgeom_from_geojson(str, &srs);
+		if (srs)
+		{
+			srid = GetSRIDCacheBySRS(fcinfo, srs);
+			lwfree(srs);
+			lwgeom_set_srid(lwgeom, srid);
+		}
 		ret = geometry_serialize(lwgeom);
 		lwgeom_free(lwgeom);
 	}
@@ -268,15 +282,8 @@ PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom;
-	char *hexwkb;
-	size_t hexwkb_size;
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
-	lwgeom_free(lwgeom);
-
-	PG_RETURN_CSTRING(hexwkb);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	PG_RETURN_CSTRING(lwgeom_to_hexwkb_buffer(lwgeom, WKB_EXTENDED));
 }
 
 /*
@@ -287,17 +294,12 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
-	char *hexwkb;
-	size_t hexwkb_size;
 	uint8_t variant = 0;
-	text *result;
-	text *type;
-	size_t text_size;
 
 	/* If user specified endianness, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
-		type = PG_GETARG_TEXT_P(1);
+		text *type = PG_GETARG_TEXT_P(1);
 
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
 		      ! strncmp(VARDATA(type), "XDR", 3) )
@@ -312,19 +314,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 
 	/* Create WKB hex string */
 	lwgeom = lwgeom_from_gserialized(geom);
-	hexwkb = lwgeom_to_hexwkb(lwgeom, variant | WKB_EXTENDED, &hexwkb_size);
-	lwgeom_free(lwgeom);
-
-	/* Prepare the PgSQL text return type */
-	text_size = hexwkb_size - 1 + VARHDRSZ;
-	result = palloc(text_size);
-	memcpy(VARDATA(result), hexwkb, hexwkb_size - 1);
-	SET_VARSIZE(result, text_size);
-
-	/* Clean up and return */
-	lwfree(hexwkb);
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(lwgeom_to_hexwkb_varlena(lwgeom, variant | WKB_EXTENDED));
 }
 
 
@@ -339,23 +329,8 @@ PG_FUNCTION_INFO_V1(LWGEOM_to_text);
 Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom;
-	char *hexwkb;
-	size_t hexwkb_size;
-	text *result;
-
-	/* Generate WKB hex text */
-	lwgeom = lwgeom_from_gserialized(geom);
-	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
-	lwgeom_free(lwgeom);
-
-	/* Copy into text obect */
-	result = cstring_to_text(hexwkb);
-	lwfree(hexwkb);
-
-	/* Clean up and return */
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_TEXT_P(result);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	PG_RETURN_TEXT_P(lwgeom_to_hexwkb_varlena(lwgeom, WKB_EXTENDED));
 }
 
 /*
@@ -422,15 +397,12 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
-	uint8_t *wkb;
-	size_t wkb_size;
 	uint8_t variant = 0;
- 	bytea *result;
-	text *type;
+
 	/* If user specified endianness, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
-		type = PG_GETARG_TEXT_P(1);
+		text *type = PG_GETARG_TEXT_P(1);
 
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
 		      ! strncmp(VARDATA(type), "XDR", 3) )
@@ -442,22 +414,10 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 			variant = variant | WKB_NDR;
 		}
 	}
-	wkb_size= VARSIZE_ANY_EXHDR(geom);
+
 	/* Create WKB hex string */
 	lwgeom = lwgeom_from_gserialized(geom);
-
-	wkb = lwgeom_to_wkb(lwgeom, variant | WKB_EXTENDED , &wkb_size);
-	lwgeom_free(lwgeom);
-
-	/* Prepare the PgSQL text return type */
-	result = palloc(wkb_size + VARHDRSZ);
-	memcpy(VARDATA(result), wkb, wkb_size);
-	SET_VARSIZE(result, wkb_size+VARHDRSZ);
-
-	/* Clean up and return */
-	lwfree(wkb);
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_BYTEA_P(result);
+	PG_RETURN_BYTEA_P(lwgeom_to_wkb_varlena(lwgeom, variant | WKB_EXTENDED));
 }
 
 PG_FUNCTION_INFO_V1(TWKBFromLWGEOM);
@@ -465,10 +425,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	uint8_t *twkb;
-	size_t twkb_size;
 	uint8_t variant = 0;
- 	bytea *result;
 	srs_precision sp;
 
 	/*check for null input since we cannot have the sql-function as strict.
@@ -505,14 +462,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 	/* Create TWKB binary string */
 	lwgeom = lwgeom_from_gserialized(geom);
-	twkb = lwgeom_to_twkb(lwgeom, variant, sp.precision_xy, sp.precision_z, sp.precision_m, &twkb_size);
-
-	/* Prepare the PgSQL text return type */
-	result = palloc(twkb_size + VARHDRSZ);
-	memcpy(VARDATA(result), twkb, twkb_size);
-	SET_VARSIZE(result, twkb_size + VARHDRSZ);
-
-	PG_RETURN_BYTEA_P(result);
+	PG_RETURN_BYTEA_P(lwgeom_to_twkb(lwgeom, variant, sp.precision_xy, sp.precision_z, sp.precision_m));
 }
 
 
@@ -536,9 +486,6 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	uint8_t variant = 0;
 
 	srs_precision sp;
-	uint8_t *twkb;
-	size_t twkb_size;
- 	bytea *result;
 
 	/* The first two arguments are required */
 	if ( PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1) )
@@ -654,24 +601,8 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 		variant |= TWKB_BBOX;
 
 	/* Write out the TWKB */
-	twkb = lwgeom_to_twkb_with_idlist(lwcollection_as_lwgeom(col),
-	                                  idlist, variant,
-	                                  sp.precision_xy, sp.precision_z, sp.precision_m,
-	                                  &twkb_size);
-
-	/* Convert to a bytea return type */
-	result = palloc(twkb_size + VARHDRSZ);
-	memcpy(VARDATA(result), twkb, twkb_size);
-	SET_VARSIZE(result, twkb_size + VARHDRSZ);
-
-	/* Clean up */
-	pfree(twkb);
-	pfree(idlist);
-	lwcollection_free(col);
-	PG_FREE_IF_COPY(arr_geoms, 0);
-	PG_FREE_IF_COPY(arr_ids, 1);
-
-	PG_RETURN_BYTEA_P(result);
+	PG_RETURN_BYTEA_P(lwgeom_to_twkb_with_idlist(
+	    lwcollection_as_lwgeom(col), idlist, variant, sp.precision_xy, sp.precision_z, sp.precision_m));
 }
 
 
@@ -727,8 +658,10 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	/* Unwrap the PgSQL text type into a cstring */
 	wkt = text_to_cstring(wkt_text);
 
-	/* Now we call over to the geometry_in function */
-	result = DirectFunctionCall1(LWGEOM_in, CStringGetDatum(wkt));
+	/* Now we call over to the geometry_in function
+	 * We need to initialize the fcinfo since cache might be used
+	 */
+	result = CallerFInfoFunctionCall1(LWGEOM_in, fcinfo->flinfo, InvalidOid, CStringGetDatum(wkt));
 
 	/* Return null on null */
 	if ( ! result )
