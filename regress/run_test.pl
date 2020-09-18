@@ -210,6 +210,19 @@ my $REGRESS_LOG = "${TMPDIR}/regress_log";
 # Report
 print "TMPDIR is $TMPDIR\n";
 
+
+##################################################################
+# Report PostgreSQL environment
+##################################################################
+
+my $pgsqlver = sql_db_postgres("select version()");
+my $pgsqlvernum = sql_db_postgres("select current_setting('server_version_num')");
+
+print "PostgreSQL environment\n";
+print "  version: $pgsqlver\n";
+print "  vernum:  $pgsqlvernum\n";
+
+
 ##################################################################
 # Prepare the database
 ##################################################################
@@ -410,7 +423,6 @@ if ( $OPT_DUMPRESTORE )
   dump_restore();
 }
 
-
 ##################################################################
 # Report PostGIS environment
 ##################################################################
@@ -418,8 +430,6 @@ if ( $OPT_DUMPRESTORE )
 my $geosver =  sql("select postgis_geos_version()");
 my $projver = sql("select postgis_proj_version()");
 my $libbuilddate = sql("select postgis_lib_build_date()");
-my $pgsqlver = sql("select version()");
-my $pgsqlvernum = sql("select current_setting('server_version_num')");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
 my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
 my $scriptver = sql("select postgis_scripts_installed()");
@@ -430,14 +440,14 @@ my $librev = semver_lessthan($scriptver, "3.1.0") ?
 my $raster_scriptver = sql("select postgis_raster_scripts_installed()")
   if ( $OPT_WITH_RASTER );
 
-print "$pgsqlver\n";
-print "  Postgis $libver - (${librev}) - $libbuilddate\n";
+print "PostGIS environment\n";
+print "  libver $libver - (${librev}) - $libbuilddate\n";
 print "  scripts ${scriptver}\n";
 print "  raster scripts ${raster_scriptver}\n" if ( $OPT_WITH_RASTER );
-print "  GEOS: $geosver\n" if $geosver;
-print "  PROJ: $projver\n" if $projver;
+print "  GEOS:   $geosver\n"   if $geosver;
+print "  PROJ:   $projver\n"   if $projver;
 print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
-print "  GDAL: $gdalver\n" if $gdalver;
+print "  GDAL:   $gdalver\n"   if $gdalver;
 
 
 ##################################################################
@@ -718,12 +728,25 @@ sub drop_table
 	die "Could not run: $cmd\n" if $rv;
 }
 
+sub sql_db
+{
+	my $sql = shift;
+	my $db = shift;
+	my $result = `psql -tXA -d $db -c 'SET search_path TO public,$OPT_SCHEMA' -c "$sql" | sed '/^SET\$/d'`;
+	$result =~ s/[\n\r]*$//;
+	return $result;
+}
+
 sub sql
 {
 	my $sql = shift;
-	my $result = `psql -tXA -d $DB -c 'SET search_path TO public,$OPT_SCHEMA' -c "$sql" | sed '/^SET\$/d'`;
-	$result =~ s/[\n\r]*$//;
-	$result;
+	return sql_db($sql, $DB);
+}
+
+sub sql_db_postgres
+{
+	my $sql = shift;
+	return sql_db($sql, "postgres");
 }
 
 sub eval_file
@@ -1514,7 +1537,7 @@ sub package_extension_sql
 	if ( $pgsqlvernum lt 130000 ) {
 		$sql = "CREATE EXTENSION ${extname} VERSION '${extver}' FROM unpackaged;";
 	} else {
-		$sql = "CREATE EXTENSION ${extname} VERSION unpackaged;";
+		$sql = "CREATE EXTENSION ${extname} VERSION unpackaged; ";
 		$sql .= "ALTER EXTENSION ${extname} UPDATE TO '${extver}'";
 	}
 	return $sql;
