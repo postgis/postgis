@@ -1,7 +1,8 @@
-PostGIS 3.0.3
+PostGIS 3.0.3dev
 2020/xx/xx
 * Bug Fixes and Enhancements *
   - #4742 tiger geocoder reverted to 2018 version on tiger upgrade
+  - #4757, Handle line collapse due to snap-to-existing node (Sandro Santilli)
 
 PostGIS 3.0.2
 2020/08/15

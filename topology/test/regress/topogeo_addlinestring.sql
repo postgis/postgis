@@ -34,7 +34,7 @@ BEGIN
   -- Check effect on edges (there should be one split)
   sql := 'WITH node_limits AS ( SELECT max FROM city_data.limits WHERE what = ''node''::text ),
        edge_limits AS ( SELECT max FROM city_data.limits WHERE what = ''edge''::text )
-  SELECT $1 || ''|E|'' ' || CASE WHEN add_id THEN ' || e.edge_id || ''|sn'' || e.start_node || ''|en'' || e.end_node::text ' ELSE '' END || ' AS xx ' || 
+  SELECT $1 || ''|E|'' ' || CASE WHEN add_id THEN ' || e.edge_id || ''|sn'' || e.start_node || ''|en'' || e.end_node::text ' ELSE '' END || ' AS xx ' ||
    ' FROM city_data.edge e, node_limits nl, edge_limits el
    WHERE e.start_node > nl.max
       OR e.end_node > nl.max
@@ -330,7 +330,7 @@ SELECT 't3412.L1', TopoGeo_AddLinestring('bug3412',
 /**SELECT 't3412.L2', TopoGeo_AddLinestring('bug3412',
 '0102000000020000003AB42BBFEE4C22410010C5A997A6524167BB5DBDEE4C224117FE3DA85FA75241'
 ::geometry, 0);**/
-SELECT 't3412.L2', COUNT(*) 
+SELECT 't3412.L2', COUNT(*)
 FROM TopoGeo_AddLinestring('bug3412',
 '0102000000020000003AB42BBFEE4C22410010C5A997A6524167BB5DBDEE4C224117FE3DA85FA75241'
 ::geometry, 0);
@@ -362,7 +362,7 @@ SELECT 't3838.L1', topology.TopoGeo_addLinestring('bug3838',
 /** SELECT 't3838.L2', topology.TopoGeo_addLinestring('bug3838',
 'LINESTRING(622608 6554988, 622596 6554984)'
 ::geometry , 10);**/
-SELECT 't3838.L2', COUNT(*) 
+SELECT 't3838.L2', COUNT(*)
   FROM topology.TopoGeo_addLinestring('bug3838',
 'LINESTRING(622608 6554988, 622596 6554984)'
 ::geometry , 10);
@@ -382,3 +382,9 @@ SELECT 't1855_2.1', topology.topogeo_AddLinestring('bug1855',
   'LINESTRING(10 51, -100 50, 10 49)', 2);
 SELECT 't1855_2.end', topology.DropTopology('bug1855');
 
+-- See https://trac.osgeo.org/postgis/ticket/4757
+SELECT 't4757.start', topology.CreateTopology('bug4757') > 0;
+SELECT 't4757.0', topology.TopoGeo_addPoint('bug4757', 'POINT(0 0)');
+SELECT 't4757.1', topology.TopoGeo_addLinestring('bug4757',
+  'LINESTRING(0 -0.1,1 0,1 1,0 1,0 -0.1)', 1);
+SELECT 't4757.end', topology.DropTopology('bug4757');
