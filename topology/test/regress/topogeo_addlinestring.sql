@@ -10,7 +10,7 @@ SELECT 'max',* from city_data.limits;
 
 -- Check changes since last saving, save more
 -- {
-CREATE OR REPLACE FUNCTION check_changes(lbl text, add_id boolean default true)
+CREATE OR REPLACE FUNCTION check_changes(lbl text)
 RETURNS TABLE (o text)
 AS $$
 DECLARE
@@ -18,12 +18,12 @@ DECLARE
   sql text;
 BEGIN
   -- Check effect on nodes
-  sql :=  'SELECT $1 || ''|N|'' ' || CASE WHEN add_id THEN ' || n.node_id || ''|'' ||
+  sql :=  'SELECT $1 || ''|N|'' ||
         COALESCE(n.containing_face::text,'''') || ''|'' ||
-        ST_AsText(ST_SnapToGrid(n.geom, 0.2))::text ' ELSE '' END || ' as xx
+        ST_AsText(n.geom, 2)::text as xx
   	FROM city_data.node n WHERE n.node_id > (
     		SELECT max FROM city_data.limits WHERE what = ''node''::text )
-  		ORDER BY n.node_id';
+  		ORDER BY n.geom';
 
   FOR rec IN EXECUTE sql USING ( lbl )
   LOOP
@@ -31,15 +31,15 @@ BEGIN
     RETURN NEXT;
   END LOOP;
 
-  -- Check effect on edges (there should be one split)
+  -- Check effect on edges
   sql := 'WITH node_limits AS ( SELECT max FROM city_data.limits WHERE what = ''node''::text ),
        edge_limits AS ( SELECT max FROM city_data.limits WHERE what = ''edge''::text )
-  SELECT $1 || ''|E|'' ' || CASE WHEN add_id THEN ' || e.edge_id || ''|sn'' || e.start_node || ''|en'' || e.end_node::text ' ELSE '' END || ' AS xx ' ||
+  SELECT $1 || ''|E|'' || ST_AsText(e.geom, 2)::text AS xx ' ||
    ' FROM city_data.edge e, node_limits nl, edge_limits el
    WHERE e.start_node > nl.max
       OR e.end_node > nl.max
       OR e.edge_id > el.max
-  ORDER BY e.edge_id;';
+  ORDER BY e.geom;';
 
   FOR rec IN EXECUTE sql USING ( lbl )
   LOOP
@@ -108,18 +108,18 @@ SELECT check_changes('snap_again');
 --       strk fix as you please leter
 --SELECT 'crossover', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(9 18, 9 20, 21 10, 21 7)') ORDER BY 2;
 SELECT 'crossover', COUNT(*) FROM TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(9 18, 9 20, 21 10, 21 7)') AS t;
-SELECT check_changes('crossover', false);
+SELECT check_changes('crossover');
 
 -- TODO: Geos 3.8+ gives different results, so just returning the count of edges instead
 --       strk fix as you please leter
 --SELECT 'crossover_again', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(9 18, 9 20, 21 10, 21 7)') ORDER BY 2;
 SELECT 'crossover_again', COUNT(*) FROM TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(9 18, 9 20, 21 10, 21 7)') AS t;
-SELECT check_changes('crossover_again', false);
+SELECT check_changes('crossover_again');
 
 -- Fully containing
 SELECT 'contains', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(14 34, 13 35, 10 35, 9 35, 7 36)') ORDER BY 2;
 -- answers different between 3.8 and older geos so disabling output of ids and geometry
-SELECT check_changes('contains', false);
+SELECT check_changes('contains');
 
 -- Crossing a node
 SELECT 'nodecross', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(18 37, 22 37)') ORDER BY 2;
@@ -134,7 +134,7 @@ SELECT check_changes('iso_ex_2segs');
 SELECT '#1613.1', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(556267.562954 144887.066638, 556267 144887.4)') ORDER BY 2;
 SELECT check_changes('#1613.1');
 SELECT '#1613.2', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(556250 144887, 556267 144887.07, 556310.04 144887)') ORDER BY 2;
-SELECT check_changes('#1613.2', false);
+SELECT check_changes('#1613.2');
 
 -- Consistency check
 SELECT * FROM ValidateTopology('city_data');
@@ -240,9 +240,8 @@ SELECT '#1706.1', 'E', TopoGeo_AddLineString('city_data',
  'SRID=4326;LINESTRING(20 10, 10 10, 9 12, 10 20)');
 SELECT check_changes('#1706.1');
 
-SELECT '#1706.2', 'E*', TopoGeo_addLineString('city_data',
- 'SRID=4326;LINESTRING(10 0, 10 10, 15 10, 20 10)'
-, 4) ORDER BY 3;
+SELECT '#1706.2', count(*) FROM TopoGeo_addLineString('city_data',
+ 'SRID=4326;LINESTRING(10 0, 10 10, 15 10, 20 10)' , 4);
 SELECT check_changes('#1706.2');
 
 -- Consistency check
@@ -266,7 +265,7 @@ SELECT check_changes('#1714.2');
 SELECT * FROM ValidateTopology('city_data');
 
 -- Cleanups
-DROP FUNCTION check_changes(text,boolean);
+DROP FUNCTION check_changes(text);
 SELECT DropTopology('city_data');
 
 -- See http://trac.osgeo.org/postgis/ticket/3280
@@ -341,7 +340,7 @@ SELECT 't3371.start', topology.CreateTopology('bug3711', 0, 0, true) > 1;
 SELECT 't3371.L1', topology.TopoGeo_AddLineString('bug3711',
 'LINESTRING (618369 4833784 0.88, 618370 4833784 1.93, 618370 4833780 1.90)'
 ::geometry, 0);
-SELECT 't3371.L2', topology.TopoGeo_AddLineString( 'bug3711',
+SELECT 't3371.L2', count(*) FROM topology.TopoGeo_AddLineString( 'bug3711',
 'LINESTRING (618370 4833780 1.92, 618370 4833784 1.90, 618371 4833780 1.93)'
 ::geometry, 0);
 SELECT 't3371.end', topology.DropTopology('bug3711');
@@ -378,7 +377,7 @@ SELECT 't1855_1.end', topology.DropTopology('bug1855');
 SELECT 't1855_2.start', topology.CreateTopology('bug1855') > 0;
 SELECT 't1855_2.0', topology.topogeo_AddLinestring('bug1855',
   'LINESTRING(0 0, 0 100)');
-SELECT 't1855_2.1', topology.topogeo_AddLinestring('bug1855',
+SELECT 't1855_2.1', count(*) FROM topology.topogeo_AddLinestring('bug1855',
   'LINESTRING(10 51, -100 50, 10 49)', 2);
 SELECT 't1855_2.end', topology.DropTopology('bug1855');
 
