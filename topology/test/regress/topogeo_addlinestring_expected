@@ -214,3 +214,6 @@ t1855_2.1|3
 t1855_2.1|5
 t1855_2.1|6
 t1855_2.end|Topology 'bug1855' dropped
+t4757.start|t
+t4757.0|1
+t4757.end|Topology 'bug4757' dropped

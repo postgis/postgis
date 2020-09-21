@@ -1,3 +1,10 @@
+PostGIS 2.5.6dev
+YYYY/MM/DD
+
+ * Bug fixes *
+
+  - #4757, Handle line collapse due to snap-to-existing node (Sandro Santilli)
+
 PostGIS 2.5.5
 2020/08/15
 
