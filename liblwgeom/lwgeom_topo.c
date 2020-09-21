@@ -5480,6 +5480,14 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     if ( tmp ) lwgeom_free(tmp);
     tmp = tmp2;
 
+    /* check if the so-decimated edge collapsed to single-point */
+    if ( nid[0] == nid[1] && edge->points->npoints == 2 )
+    {
+      lwgeom_free(tmp);
+      LWDEBUG(1, "Repeated-point removed edge collapsed");
+      return 0;
+    }
+
     /* check if the so-decimated edge _now_ exists */
     id = _lwt_GetEqualEdge ( topo, edge );
     LWDEBUGF(1, "_lwt_GetEqualEdge returned %" LWTFMT_ELEMID, id);
