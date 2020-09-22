@@ -3,9 +3,7 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 
-#ifdef HAVE_LIBPROTOBUF
 #include <protobuf-c/protobuf-c.h>
-#endif
 
 #ifdef HAVE_WAGYU
 #include "lwgeom_wagyu.h"
@@ -14,13 +12,11 @@
 PG_FUNCTION_INFO_V1(postgis_libprotobuf_version);
 Datum postgis_libprotobuf_version(PG_FUNCTION_ARGS)
 {
-#ifdef HAVE_PROTOBUF_C_VERSION
-	const char *ver = protobuf_c_version();
-	text *result = cstring_to_text(ver);
+	static char str[50] = {0};
+	text *result;
+	snprintf(str, sizeof(str), "%s (Internal)", protobuf_c_version());
+	result = cstring_to_text(str);
 	PG_RETURN_POINTER(result);
-#else
-	PG_RETURN_NULL();
-#endif
 }
 
 PG_FUNCTION_INFO_V1(postgis_wagyu_version);

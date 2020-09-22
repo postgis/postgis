@@ -57,13 +57,11 @@ ifeq (@HAVE_SPGIST@,yes)
 SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o gserialized_spgist_nd.o
 endif
 
-ifeq (@HAVE_PROTOBUF@,yes)
-PROTOBUF_OBJ = vector_tile.pb-c.o
-ifeq (@HAVE_GEOBUF@,yes)
-PROTOBUF_OBJ += geobuf.pb-c.o
-endif
+PROTOBUF_OBJ = vector_tile.pb-c.o geobuf.pb-c.o
+PROTOBUF_LIBPATH = ../deps/protobuf-c/@PROTOBUFC_LIB@
+PROTOBUF_INCLUDE = -I../deps
+
 UTHASH_INCLUDE = -I../deps/uthash/include
-endif
 
 WAGYU_LIBPATH = ../deps/wagyu/@WAGYU_LIB@
 ifeq (@HAVE_WAGYU@,yes)
@@ -143,8 +141,8 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I../liblwgeom @CFLAGS@ -I../libpgcommon $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
-SHLIB_LINK_F = $(WAYGU_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
+PG_CPPFLAGS += -I../liblwgeom $(PROTOBUF_INCLUDE) @CFLAGS@ -I../libpgcommon $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
+SHLIB_LINK_F = $(WAYGU_LIB) $(PROTOBUF_LIBPATH) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Add SFCGAL Flags if defined
 ifeq (@SFCGAL@,sfcgal)
@@ -160,11 +158,7 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	postgis_upgrade.sql.in \
 	postgis_upgrade.sql \
 	sfcgal_upgrade.sql.in \
-	sfcgal_upgrade.sql \
-	vector_tile.pb-c.c \
-	vector_tile.pb-c.h \
-	geobuf.pb-c.c \
-	geobuf.pb-c.h
+	sfcgal_upgrade.sql
 
 # PGXS information
 PG_CONFIG := @PG_CONFIG@
@@ -203,7 +197,7 @@ endif
 # Also they are all dependent on postgis_config.h
 # and thus postgis_revision.h
 #
-$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h $(WAGYU_DEP)
+$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h $(WAGYU_DEP) $(PROTOBUF_LIBPATH)
 
 ../postgis_revision.h:
 	$(MAKE) -C .. postgis_revision.h
@@ -213,6 +207,9 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 
 ../libpgcommon/libpgcommon.a:
 	$(MAKE) -C ../libpgcommon libpgcommon.a
+
+$(PROTOBUF_LIBPATH):
+	$(MAKE) -C ../deps/protobuf-c all
 
 $(WAGYU_LIBPATH):
 	$(MAKE) -C ../deps/wagyu all
@@ -228,14 +225,10 @@ vector_tile.pb-c.c vector_tile.pb-c.h: vector_tile.proto
 geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
 	$(PROTOCC) --c_out=. $<
 
-ifeq (@HAVE_PROTOBUF@,yes)
 lwgeom_out_mvt.o: vector_tile.pb-c.h
 mvt.o: vector_tile.pb-c.h
-ifeq (@HAVE_GEOBUF@,yes)
 lwgeom_out_geobuf.o: geobuf.pb-c.h
 geobuf.o: geobuf.pb-c.h
-endif
-endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number

@@ -973,113 +973,40 @@ if test "$CHECK_JSON" != "no"; then
 
 fi
 
+dnl ===========================================================================
+dnl Deps folder
+dnl ===========================================================================
+
+DEPS_MAKEFILE_LIST="
+    deps/Makefile"
+
 
 dnl ===========================================================================
-dnl Detect if protobuf-c installed
+dnl Setup protobuf-c
 dnl ===========================================================================
 
-CHECK_PROTOBUF=yes
-HAVE_PROTOBUF=yes
-HAVE_GEOBUF=no
+AC_ARG_WITH([protocc],
+	[AS_HELP_STRING([--without-protocc], [build without protoc-c support])],
+	[CHECK_PROTOCC="$withval"], [])
 
-AC_ARG_WITH([protobuf],
-	[AS_HELP_STRING([--without-protobuf], [build without protobuf-c support])],
-	[CHECK_PROTOBUF="$withval"], [])
-
-dnl User didn't turn OFF protobuf support so...
-if test "$CHECK_PROTOBUF" != "no"; then
-
-	dnl Need to find libdir, incdir and protoc-c compiler
-
-	CPPFLAGS_SAVE="$CPPFLAGS"
-	LDFLAGS_SAVE="$LDFLAGS"
-        LIBS_SAVE="$LIBS"
-
-	dnl Try pkgconfig first
-	if test -n "$PKG_CONFIG"; then
-		dnl Ensure libprotobuf-c is of minimum required version
-		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
-				PROTOBUF_CPPFLAGS="$PROTOBUFC_CFLAGS";
-				PROTOBUF_LDFLAGS="$PROTOBUFC_LIBS";
-			], [
-				AC_MSG_RESULT([libprotobuf-c not found in pkg-config])
-			])
-	fi
-
-	AC_ARG_WITH([protobufdir],
-		[AS_HELP_STRING([--with-protobufdir=PATH], [specify the protobuf-c installation directory])],[
-			if test "x$withval" = "xyes"; then
-				AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/usr/local])
-			else
-				PROTOBUF_LDFLAGS="-L$withval/lib -lprotobuf-c";
-				PROTOBUF_CPPFLAGS="-I$withval/include"
-			fi
-		], [])
-
-	AC_ARG_WITH([protobuf-inc],
-		[AS_HELP_STRING([--with-protobuf-inc=PATH], [google/protobuf-c/protobuf-c.h header installation directory])], [
-			PROTOBUF_CPPFLAGS="-I$withval"
-		],[])
-
-	AC_ARG_WITH([protobuf-lib],
-		[AS_HELP_STRING([--with-protobuf-lib=PATH], [libprotobuf-c.so/dll/dylib library installation directory])], [
-			PROTOBUF_LDFLAGS="-L$withval -lprotobuf-c"
-		],[])
-
-	if test -n "$PROTOBUF_CPPFLAGS"; then
-		CPPFLAGS="$PROTOBUF_CPPFLAGS"
-	fi
-
-	if test -n "$PROTOBUF_LDFLAGS"; then
-		LDFLAGS="$PROTOBUF_LDFLAGS"
-	fi
-
-	dnl confirm that discovered/configured include path works
-	AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [],
-		AC_MSG_RESULT([unable to find protobuf-c/protobuf-c.h using $CPPFLAGS])
-		HAVE_PROTOBUF=no
-	)
-
-	dnl confirm that discovered/configured library path works
-	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init], [],
-		AC_MSG_RESULT([unable to link protobuf-c using $LDFLAGS])
-		HAVE_PROTOBUF=no
-	)
-
-	AC_CHECK_LIB([protobuf-c], [protobuf_c_version],
-		AC_DEFINE([HAVE_PROTOBUF_C_VERSION], [1], [Define to 1 if protobuf_c_version() is present]),
-		[])
-
-	AC_MSG_CHECKING([protobuf-c version])
-	AC_PROTOBUFC_VERSION([PROTOC_VERSION])
-	AC_MSG_RESULT([$PROTOC_VERSION])
-
-	CPPFLAGS="$CPPFLAGS_SAVE"
-	LDFLAGS="$LDFLAGS_SAVE"
-        LIBS="$LIBS_SAVE"
+dnl User didn't turn OFF protocc support so...
+HAVE_PROTOCC=no
+if test "$CHECK_PROTOCC" != "no"; then
 
 	dnl confirm that protobuf compiler is available
 	AC_PATH_PROG(PROTOCC, protoc-c)
 	if test -z "$PROTOCC"; then
 		AC_MSG_RESULT([Cannot find protoc-c protobuf compiler on the PATH: $PATH])
-		HAVE_PROTOBUF=no
-	fi
-
-	dnl all tests passed! turn on compile-time defines
-        if test "$HAVE_PROTOBUF" = "yes"; then
-		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
-		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf-c])
-		AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if geobuf is present])
-		HAVE_GEOBUF=yes
-	fi
-
-    AC_SUBST([HAVE_PROTOBUF])
-    AC_SUBST([HAVE_GEOBUF])
-    AC_SUBST([PROTOC_VERSION])
-    AC_SUBST([PROTOBUF_CPPFLAGS])
-    AC_SUBST([PROTOBUF_LDFLAGS])
-
+	else
+                HAVE_PROTOCC=yes
+        fi
 fi
+
+PROTOBUFC_LIB=libprotobuf-c.la
+AC_SUBST([PROTOBUFC_LIB])
+
+DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+        deps/protobuf-c/Makefile"
 
 
 dnl ===========================================================================
@@ -1457,87 +1384,77 @@ fi
 
 
 dnl ===========================================================================
-dnl Deps folder
-dnl ===========================================================================
-
-DEPS_MAKEFILE_LIST="
-    deps/Makefile"
-
-
-dnl ===========================================================================
 dnl Wagyu
 dnl ===========================================================================
 
 dnl Wagyu will only be necessary if protobuf is present to build MVTs
 
 HAVE_WAGYU=no
-if test "x$HAVE_PROTOBUF" = "xyes"; then
-    AC_ARG_WITH([wagyu], AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]), [], [])
+AC_ARG_WITH([wagyu], AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]), [], [])
 
-    if test "x$with_wagyu" != xno; then
-            AC_MSG_RESULT([WAGYU: Wagyu usage requested])
+if test "x$with_wagyu" != xno; then
+        AC_MSG_RESULT([WAGYU: Wagyu usage requested])
 
-            DEPS_SUBDIR="deps"
-            AC_SUBST([DEPS_SUBDIR])
+        DEPS_SUBDIR="deps"
+        AC_SUBST([DEPS_SUBDIR])
 
-            WAGYU_LIB=libwagyu.la
-            AC_SUBST([WAGYU_LIB])
+        WAGYU_LIB=libwagyu.la
+        AC_SUBST([WAGYU_LIB])
 
-            dnl ============================================================
-            dnl We force  to use the same compiler as Postgresql
-            dnl ============================================================
-            CXX_SAVE="$CXX"
-            CC_SAVE="$CC"
-            CFLAGS_SAVE="$CFLAGS"
-            CXXFLAGS_SAVE="$CXXFLAGS"
-            CPPFLAGS_SAVE="$CPPFLAGS"
-            LDFLAGS_SAVE="$LDFLAGS"
-            LIBS_SAVE="$LIBS"
+        dnl ============================================================
+        dnl We force  to use the same compiler as Postgresql
+        dnl ============================================================
+        CXX_SAVE="$CXX"
+        CC_SAVE="$CC"
+        CFLAGS_SAVE="$CFLAGS"
+        CXXFLAGS_SAVE="$CXXFLAGS"
+        CPPFLAGS_SAVE="$CPPFLAGS"
+        LDFLAGS_SAVE="$LDFLAGS"
+        LIBS_SAVE="$LIBS"
 
-            WAGYU_CXX=`"$PG_CONFIG" --cc`
-            CPPFLAGS="-x c++"
-            CFLAGS=""
-            LDFLAGS=""
-            LIBS=""
-            CXX="$WAGYU_CXX"
-            AC_PROG_CXX
-            AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
-            WAGYU_CXX="$CXX -x c++"
+        WAGYU_CXX=`"$PG_CONFIG" --cc`
+        CPPFLAGS="-x c++"
+        CFLAGS=""
+        LDFLAGS=""
+        LIBS=""
+        CXX="$WAGYU_CXX"
+        AC_PROG_CXX
+        AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+        WAGYU_CXX="$CXX -x c++"
 
-            dnl ============================================================
-            dnl Check if we can declare the c++ stdlib
-            dnl ============================================================
-            CC="$WAGYU_CXX"
+        dnl ============================================================
+        dnl Check if we can declare the c++ stdlib
+        dnl ============================================================
+        CC="$WAGYU_CXX"
 
-            AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
-            AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
+        AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
+        AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
 
-            if test "x$HAVE_CPP" = "xyes"; then
-                WAGYU_LDFLAGS="-lc++"
-            elif test "x$HAVE_STDCPP" = "xyes"; then
-                WAGYU_LDFLAGS="-lstdc++"
-            else
-                AC_MSG_WARN("Could not find a C++ standard library")
-                WAGYU_LDFLAGS=""
-            fi
+        if test "x$HAVE_CPP" = "xyes"; then
+            WAGYU_LDFLAGS="-lc++"
+        elif test "x$HAVE_STDCPP" = "xyes"; then
+            WAGYU_LDFLAGS="-lstdc++"
+        else
+            AC_MSG_WARN("Could not find a C++ standard library")
+            WAGYU_LDFLAGS=""
+        fi
 
-            CXX="$CXX_SAVE"
-            CC="$CC_SAVE"
-            CFLAGS="$CFLAGS_SAVE"
-            CXXFLAGS="$CXXFLAGS_SAVE"
-            CPPFLAGS="$CPPFLAGS_SAVE"
-            LDFLAGS="$LDFLAGS_SAVE"
-            LIBS="$LIBS_SAVE"
+        CXX="$CXX_SAVE"
+        CC="$CC_SAVE"
+        CFLAGS="$CFLAGS_SAVE"
+        CXXFLAGS="$CXXFLAGS_SAVE"
+        CPPFLAGS="$CPPFLAGS_SAVE"
+        LDFLAGS="$LDFLAGS_SAVE"
+        LIBS="$LIBS_SAVE"
 
-            HAVE_WAGYU=yes
-            AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
-            AC_SUBST([HAVE_WAGYU])
-            AC_SUBST([WAGYU_CXX])
-            AC_SUBST([WAGYU_LDFLAGS])
+        HAVE_WAGYU=yes
+        AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
+        AC_SUBST([HAVE_WAGYU])
+        AC_SUBST([WAGYU_CXX])
+        AC_SUBST([WAGYU_LDFLAGS])
 
-            DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
-                    deps/wagyu/Makefile"
-    fi
+        DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+                deps/wagyu/Makefile"
 fi
 
 dnl ===========================================================================
@@ -1650,10 +1567,7 @@ AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 
-AC_MSG_RESULT([  protobuf support:     ${HAVE_PROTOBUF}])
-if test "x$HAVE_PROTOBUF" = "xyes"; then
-  AC_MSG_RESULT([  protobuf-c version:   ${PROTOC_VERSION}])
-fi
+AC_MSG_RESULT([  protocc support:      ${HAVE_PROTOCC}])
 
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])

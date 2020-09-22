@@ -35,6 +35,9 @@ These are under a BSD Style license
 
 -- liblwgeom/lookup3.c is released under Public Domain by Bob Jenkins, May 2006.
 
+-- deps/protobuf-c (see LICENSE in folder) is released under a modified
+The 2-Clause BSD License. Copyright (c) 2008-2016, Dave Benson and the protobuf-c authors.
+
 -- deps/ryu (see LICENSE in folder) is released under the Apache 2.0 license;
 alternatively, in can be used under the Boost 1.0 license. Copyrighted by Ulf
 Adams and contributors.

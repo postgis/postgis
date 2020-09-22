@@ -18,39 +18,42 @@
 # *
 # **********************************************************************
 # *
-# * Copyright 2019 Raúl Marín
+# * Copyright 2020 Raúl Marín
 # *
 # **********************************************************************/
 
-CC=@CC@
-CXX=@CXX@
-CFLAGS=-I../liblwgeom @CPPFLAGS@ @CFLAGS@ @PICFLAGS@
-CXXFLAGS=-I../liblwgeom @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
+CC = @CC@
+CFLAGS = -I. @CPPFLAGS@ @CFLAGS@ -Wno-error
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@
 LIBTOOL = @LIBTOOL@
 
-all: @WAGYU_LIB@ @RYU_LIB@ @PROTOBUFC_LIB@
+PROTO_OBJS = \
+	protobuf-c.o
 
-@WAGYU_LIB@:
-	$(MAKE) -C wagyu $@
+PROTO_HEADERS = \
+	protobuf-c.h
 
-@RYU_LIB@:
-	$(MAKE) -C ryu $@
+all: @PROTOBUFC_LIB@
 
-@PROTOBUFC_LIB@:
-	$(MAKE) -C protobuf-c $@
+@PROTOBUFC_LIB@: $(PROTO_OBJS)
+	ar rs @PROTOBUFC_LIB@ $(PROTO_OBJS)
+
+$(PROTO_OBJS): %.o: %.c $(PROTO_HEADERS)
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	$(MAKE) -C wagyu $@
-	$(MAKE) -C ryu $@
-	$(MAKE) -C protobuf-c $@
+	rm -f @PROTOBUFC_LIB@ $(PROTO_OBJS)
 
 distclean: clean
-	$(MAKE) -C wagyu $@
-	$(MAKE) -C ryu $@
-	$(MAKE) -C protobuf-c $@
 	rm -f Makefile
 
-.PHONY: install uninstall check check-unit check-regress
+
+install:
+
+uninstall:
+
+check:
+
+.PHONY: clean distclean install uninstall check

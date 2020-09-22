@@ -45,10 +45,6 @@
 PG_FUNCTION_INFO_V1(pgis_asgeobuf_transfn);
 Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 {
-#if ! (defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF)
-	elog(ERROR, "ST_AsGeobuf: Missing libprotobuf-c >= version 1.1");
-	PG_RETURN_NULL();
-#else
 	MemoryContext aggcontext;
 	struct geobuf_agg_context *ctx;
 
@@ -73,7 +69,6 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 
 	geobuf_agg_transfn(ctx);
 	PG_RETURN_POINTER(ctx);
-#endif
 }
 
 /**
@@ -82,10 +77,6 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pgis_asgeobuf_finalfn);
 Datum pgis_asgeobuf_finalfn(PG_FUNCTION_ARGS)
 {
-#if ! (defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF)
-	elog(ERROR, "ST_AsGeoBuf: Missing libprotobuf-c >= version 1.1");
-	PG_RETURN_NULL();
-#else
 	uint8_t *buf;
 	struct geobuf_agg_context *ctx;
 	if (!AggCheckCallContext(fcinfo, NULL))
@@ -97,5 +88,4 @@ Datum pgis_asgeobuf_finalfn(PG_FUNCTION_ARGS)
 	ctx = (struct geobuf_agg_context *) PG_GETARG_POINTER(0);
 	buf = geobuf_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
-#endif
 }

@@ -256,10 +256,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 		<listitem>
 			<para>
-			  To enable ST_AsMVT protobuf-c library (for usage) and the protoc-c compiler (for building) are required.
-				Also, pkg-config is required to verify the correct minimum version of protobuf-c.
-				See <ulink url="https://github.com/protobuf-c/protobuf-c">protobuf-c</ulink>.
-				By default, Postgis will use Wagyu to validate MVT polygons faster which requires a c++11 compiler. It will use CXXFLAGS and the same compiler as the PostgreSQL installation. To disable this and use GEOS instead use the <varname>--without-wagyu</varname> during the configure step.
+			  	By default, Postgis will use Wagyu to validate MVT polygons faster which requires a c++11 compiler. It will use CXXFLAGS and the same compiler as the PostgreSQL installation. To disable this and use GEOS instead use the <varname>--without-wagyu</varname> during the configure step.
 			</para>
 		</listitem>
 

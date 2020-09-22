@@ -31,7 +31,6 @@
 #include "lwgeom_geos.h"
 #include "pgsql_compat.h"
 
-#ifdef HAVE_LIBPROTOBUF
 #include "utils/jsonb.h"
 
 #if POSTGIS_PGSQL_VERSION < 110
@@ -1507,6 +1506,3 @@ bytea *mvt_agg_finalfn(mvt_agg_context *ctx)
 {
 	return mvt_ctx_to_bytea(ctx);
 }
-
-
-#endif

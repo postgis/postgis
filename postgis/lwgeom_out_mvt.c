@@ -31,9 +31,7 @@
 #include "liblwgeom.h"
 #include "mvt.h"
 
-#ifdef HAVE_LIBPROTOBUF
 #include "vector_tile.pb-c.h"
-#endif  /* HAVE_LIBPROTOBUF */
 
 /**
  * Process input parameters to mvt_geom and returned serialized geometry
@@ -41,10 +39,6 @@
 PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
 Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 {
-#ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
-	PG_RETURN_NULL();
-#else
 	GBOX *bounds = NULL;
 	int32_t extent = 0;
 	int32_t buffer = 0;
@@ -116,7 +110,6 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom_out);
 	PG_FREE_IF_COPY(geom_in, 0);
 	PG_RETURN_POINTER(geom_out);
-#endif
 }
 
 /**
@@ -125,10 +118,6 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pgis_asmvt_transfn);
 Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 {
-#ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
-	PG_RETURN_NULL();
-#else
 	MemoryContext aggcontext, old_context;
 	mvt_agg_context *ctx;
 
@@ -171,7 +160,6 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(ctx->row, 1);
 	PG_RETURN_POINTER(ctx);
-#endif
 }
 
 /**
@@ -180,10 +168,6 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pgis_asmvt_finalfn);
 Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 {
-#ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
-	PG_RETURN_NULL();
-#else
 	mvt_agg_context *ctx;
 	bytea *buf;
 	elog(DEBUG2, "%s called", __func__);
@@ -200,16 +184,11 @@ Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 	ctx = (mvt_agg_context *) PG_GETARG_POINTER(0);
 	buf = mvt_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
-#endif
 }
 
 PG_FUNCTION_INFO_V1(pgis_asmvt_serialfn);
 Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 {
-#ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
-	PG_RETURN_NULL();
-#else
 	mvt_agg_context *ctx;
 	bytea *result;
 	elog(DEBUG2, "%s called", __func__);
@@ -229,17 +208,12 @@ Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 		MemoryContextDelete(ctx->trans_context);
 	ctx->trans_context = NULL;
 	PG_RETURN_BYTEA_P(result);
-#endif
 }
 
 
 PG_FUNCTION_INFO_V1(pgis_asmvt_deserialfn);
 Datum pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
 {
-#ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
-	PG_RETURN_NULL();
-#else
 	MemoryContext aggcontext, oldcontext;
 	mvt_agg_context *ctx;
 	elog(DEBUG2, "%s called", __func__);
@@ -251,16 +225,11 @@ Datum pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
 	MemoryContextSwitchTo(oldcontext);
 
 	PG_RETURN_POINTER(ctx);
-#endif
 }
 
 PG_FUNCTION_INFO_V1(pgis_asmvt_combinefn);
 Datum pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
 {
-#ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
-	PG_RETURN_NULL();
-#else
 	MemoryContext aggcontext, oldcontext;
 	mvt_agg_context *ctx, *ctx1, *ctx2;
 	elog(DEBUG2, "%s called", __func__);
@@ -273,6 +242,5 @@ Datum pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
 	ctx = mvt_ctx_combine(ctx1, ctx2);
 	MemoryContextSwitchTo(oldcontext);
 	PG_RETURN_POINTER(ctx);
-#endif
 }
 

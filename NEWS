@@ -3,7 +3,7 @@ PostGIS 3.1.0beta1
 Only tickets not included in 3.1.0alpha2
 
 * Breaking changes *
-  - #4737, Bump minimum protobuf-c requirement to 1.1.0 (Raúl Marín)
+  - The protobuf-c library is now included inside the project itself (Raúl Marín)
 
 * New features *
   - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)

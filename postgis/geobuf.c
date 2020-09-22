@@ -26,8 +26,6 @@
 #include "geobuf.h"
 #include "pgsql_compat.h"
 
-#if defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF
-
 #define FEATURES_CAPACITY_INITIAL 50
 #define MAX_PRECISION 1e6
 
@@ -657,5 +655,3 @@ uint8_t *geobuf_agg_finalfn(struct geobuf_agg_context *ctx)
 
 	return buf;
 }
-
-#endif

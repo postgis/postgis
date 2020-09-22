@@ -41,8 +41,6 @@
 #include "lwgeom_pg.h"
 #include "lwgeom_log.h"
 
-#ifdef HAVE_LIBPROTOBUF
-
 #include "vector_tile.pb-c.h"
 
 typedef struct mvt_column_cache
@@ -105,8 +103,5 @@ bytea *mvt_agg_finalfn(mvt_agg_context *ctx);
 bytea *mvt_ctx_serialize(mvt_agg_context *ctx);
 mvt_agg_context * mvt_ctx_deserialize(const bytea *ba);
 mvt_agg_context * mvt_ctx_combine(mvt_agg_context *ctx1, mvt_agg_context *ctx2);
-
-
-#endif  /* HAVE_LIBPROTOBUF */
 
 #endif

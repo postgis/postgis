@@ -87,17 +87,6 @@ this to work.
 
   https://github.com/Oslandia/SFCGAL
 
-* protobuf-c (Optional, Version 1.1.0 or higher)
-
-  The protobuf-c library and compiler is required for ST_AsMVT and
-  ST_AsGeobuf output. Also, pkg-config is required to verify the correct
-  minimum version of protobuf-c.
-
-    https://github.com/protobuf-c/protobuf-c
-
-  To get packages on apt-based systems:
-
-    apt-get install libprotobuf-c-dev protobuf-c-compiler
 
 CONFIGURATION
 -------------
@@ -135,9 +124,6 @@ you must provide the ``--without-raster`` option.
 
 If you want to compile PostGIS *without* Topology support,
 you must provide the ``--without-topology`` option.
-
-If you want to compile PostGIS *without* Protobuf formats support,
-you must provide the ``--without-protobuf`` option.
 
 PostGIS will be compiled with sfcgal support if it is found.
 You can explicitly state the location with --with-sfcgal=path/to/sfcgal

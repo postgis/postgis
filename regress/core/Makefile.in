@@ -168,7 +168,10 @@ TESTS = \
 	minimum_clearance \
 	oriented_envelope \
 	point_coordinates \
-	out_geojson
+	out_geojson \
+	mvt \
+	mvt_jsonb \
+	geobuf
 
 # Slow slow tests
 TESTS_SLOW = \
@@ -220,18 +223,6 @@ ifeq ($(HAVE_SPGIST),yes)
 	regress_spgist_index_2d \
 	regress_spgist_index_3d \
 	regress_spgist_index_nd
-endif
-
-ifeq (@HAVE_PROTOBUF@,yes)
-	# protobuf-c adds:
-	# ST_AsMVT, ST_AsGeobuf
-	TESTS += \
-		mvt \
-		mvt_jsonb
-ifeq (@HAVE_GEOBUF@,yes)
-	TESTS += \
-		geobuf
-endif
 endif
 
 all install uninstall:

@@ -47,7 +47,6 @@ documentation -- that means having the required software:
   - GEOS
   - Proj
   - SFCGAL
-  - protobuf-c
   - GDAL (for raster)
   - json-c (for GeoJSON load support)
 * For the docs:
