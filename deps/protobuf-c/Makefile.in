@@ -23,7 +23,7 @@
 # **********************************************************************/
 
 CC = @CC@
-CFLAGS = -I. @CPPFLAGS@ @CFLAGS@ -Wno-error
+CFLAGS = -I. @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ -Wno-error
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@
