@@ -777,16 +777,16 @@ uint32_pack(uint32_t value, uint8_t *out)
 	unsigned rv = 0;
 
 	if (value >= 0x80) {
-		out[rv++] = value | 0x80;
+		out[rv++] = (uint8_t) value | 0x80;
 		value >>= 7;
 		if (value >= 0x80) {
-			out[rv++] = value | 0x80;
+			out[rv++] = (uint8_t)  value | 0x80;
 			value >>= 7;
 			if (value >= 0x80) {
-				out[rv++] = value | 0x80;
+				out[rv++] = (uint8_t)  value | 0x80;
 				value >>= 7;
 				if (value >= 0x80) {
-					out[rv++] = value | 0x80;
+					out[rv++] = (uint8_t)  value | 0x80;
 					value >>= 7;
 				}
 			}

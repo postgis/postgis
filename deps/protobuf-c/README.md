@@ -11,3 +11,4 @@ Only the necessary code for the protobuf C library (libprotobuf-c) is copied fro
 # Dependency changelog
 
   - 2020-09-22 - Library extraction from https://github.com/protobuf-c/protobuf-c/tree/master/protobuf-c
+  - 2020-09-22 - Small tweaks in uint32_pack() to make clang ubsan happy
