@@ -36,6 +36,9 @@ Only tickets not included in 3.1.0alpha2
   - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
   - Fix handling of bad WKB inputs (Oracle types) and unit tests for
     malformed WKB. Remove memory leaks in malformed WKB cases. (Paul Ramsey)
+  - #4740, Round values in geography_distance_tree
+           as we do on geography_distance (Raúl Marín, Paul Ramsey, Regina Obe)
+
 
 
 PostGIS 3.1.0alpha2

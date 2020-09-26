@@ -371,6 +371,8 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 		elog(ERROR, "geography_distance_tree failed!");
 		PG_RETURN_NULL();
 	}
+	/* Knock off any funny business at the nanometer level, ticket #2168 */
+	distance = round(distance * INVMINDIST) / INVMINDIST;
 
 	PG_RETURN_FLOAT8(distance);
 }
