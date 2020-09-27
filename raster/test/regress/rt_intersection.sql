@@ -161,5 +161,12 @@ FROM (
 ) foo
 ORDER BY 1, 2, 3, 4, 5, 6, 7;
 
+-- test for mismatched srid geom/raster https://trac.osgeo.org/postgis/ticket/4719
+SELECT '#4719' AS ticker,  r1.rid, ST_Intersection(
+		r1.rast, ST_Buffer(ST_SetSRID(ST_Point(1,2), 4326),0.5)
+	)
+	FROM raster_intersection AS r1
+	WHERE r1.rid = 10;
+
 DROP TABLE IF EXISTS raster_intersection;
 DROP TABLE IF EXISTS raster_intersection_out;

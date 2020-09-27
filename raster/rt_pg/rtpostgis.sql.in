@@ -6679,14 +6679,20 @@ CREATE OR REPLACE FUNCTION ST_Disjoint(rast1 raster, rast2 raster)
 
 -----------------------------------------------------------------------
 -- ST_Intersection(geometry, raster) in geometry-space
+-- Changed: 3.0.3, fail fast on mismatch srid and schema qualify funcs
 -----------------------------------------------------------------------
-
 CREATE OR REPLACE FUNCTION ST_Intersection(geomin geometry, rast raster, band integer DEFAULT 1)
 	RETURNS SETOF geomval AS $$
 	DECLARE
-		intersects boolean := FALSE;
+		intersects boolean := FALSE; same_srid boolean := FALSE;
 	BEGIN
-		intersects := ST_Intersects(geomin, rast, band);
+		same_srid :=  (@extschema@.ST_SRID(geomin) = @extschema@.ST_SRID(rast));
+		IF NOT same_srid THEN
+			RAISE EXCEPTION 'SRIDS of geometry: % and raster: % are not the same',
+				@extschema@.ST_SRID(geomin), @extschema@.ST_SRID(rast)
+				USING HINT = 'Verify using ST_SRID function';
+		END IF;
+		intersects :=  @extschema@.ST_Intersects(geomin, rast, band);
 		IF intersects THEN
 			-- Return the intersections of the geometry with the vectorized parts of
 			-- the raster and the values associated with those parts, if really their
@@ -6697,12 +6703,12 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geomin geometry, rast raster, band in
 					val
 				FROM (
 					SELECT
-						ST_Intersection((gv).geom, geomin) AS intgeom,
+						@extschema@.ST_Intersection((gv).geom, geomin) AS intgeom,
 						(gv).val
-					FROM ST_DumpAsPolygons(rast, band) gv
-					WHERE ST_Intersects((gv).geom, geomin)
+					FROM @extschema@.ST_DumpAsPolygons(rast, band) gv
+					WHERE @extschema@.ST_Intersects((gv).geom, geomin)
 				) foo
-				WHERE NOT ST_IsEmpty(intgeom);
+				WHERE NOT @extschema@.ST_IsEmpty(intgeom);
 		ELSE
 			-- If the geometry does not intersect with the raster, return an empty
 			-- geometry and a null value
