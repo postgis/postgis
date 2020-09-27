@@ -31,6 +31,8 @@ Only tickets not included in 3.1.0alpha2
   - #4737, Improve performance and reduce memory usage in ST_AsMVT, especially in
            queries involving parallelism (Raúl Marín)
   - #4746, Micro optimizations to the serialization process (Raúl Marín)
+  - #4719, Fail fast when srids don't match ST_Intersection(geometry,raster)
+            Also schema qualify calls in function. (Regina Obe)
 
 * Bug fixes *
   - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
