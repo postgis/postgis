@@ -6666,8 +6666,8 @@ CREATE OR REPLACE FUNCTION ST_Disjoint(rast1 raster, rast2 raster)
 
 -----------------------------------------------------------------------
 -- ST_Intersection(geometry, raster) in geometry-space
+-- Changed: 3.0.3, fail fast on mismatch srid and schema qualify funcs
 -----------------------------------------------------------------------
-
 CREATE OR REPLACE FUNCTION ST_Intersection(geomin geometry, rast raster, band integer DEFAULT 1)
 	RETURNS SETOF geomval AS $$
 	DECLARE
