@@ -52,10 +52,7 @@ SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o gserialized_spgist_n
 endif
 
 ifeq (@HAVE_PROTOBUF@,yes)
-PROTOBUF_OBJ = vector_tile.pb-c.o
-ifeq (@HAVE_GEOBUF@,yes)
-PROTOBUF_OBJ += geobuf.pb-c.o
-endif
+PROTOBUF_OBJ = vector_tile.pb-c.o geobuf.pb-c.o
 UTHASH_INCLUDE = -I../deps/uthash/include
 endif
 
@@ -217,10 +214,8 @@ geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
 ifeq (@HAVE_PROTOBUF@,yes)
 lwgeom_out_mvt.o: vector_tile.pb-c.h
 mvt.o: vector_tile.pb-c.h
-ifeq (@HAVE_GEOBUF@,yes)
 lwgeom_out_geobuf.o: geobuf.pb-c.h
 geobuf.o: geobuf.pb-c.h
-endif
 endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor

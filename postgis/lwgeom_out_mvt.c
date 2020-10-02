@@ -42,7 +42,7 @@ PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
 Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
+	elog(ERROR, "ST_AsMVTGeom: Compiled without protobuf-c support");
 	PG_RETURN_NULL();
 #else
 	GBOX *bounds = NULL;
@@ -126,7 +126,7 @@ PG_FUNCTION_INFO_V1(pgis_asmvt_transfn);
 Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
+	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext, old_context;
@@ -181,7 +181,7 @@ PG_FUNCTION_INFO_V1(pgis_asmvt_finalfn);
 Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
+	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
 	PG_RETURN_NULL();
 #else
 	mvt_agg_context *ctx;
@@ -207,7 +207,7 @@ PG_FUNCTION_INFO_V1(pgis_asmvt_serialfn);
 Datum pgis_asmvt_serialfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
+	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
 	PG_RETURN_NULL();
 #else
 	mvt_agg_context *ctx;
@@ -237,7 +237,7 @@ PG_FUNCTION_INFO_V1(pgis_asmvt_deserialfn);
 Datum pgis_asmvt_deserialfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
+	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext, oldcontext;
@@ -258,7 +258,7 @@ PG_FUNCTION_INFO_V1(pgis_asmvt_combinefn);
 Datum pgis_asmvt_combinefn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	elog(ERROR, "Missing libprotobuf-c");
+	elog(ERROR, "ST_AsMVT: Compiled without protobuf-c support");
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext, oldcontext;

@@ -4,6 +4,8 @@ Only tickets not included in 3.1.0alpha2
 
 * Breaking changes *
   - #4737, Bump minimum protobuf-c requirement to 1.1.0 (Raúl Marín)
+           The configure step will now fail if the requirement isn't
+           met or explicitly disabled (--without-protobuf)
   - #4258, Untangle postgis_sfcgal into its own .so (Regina Obe)
 
 * New features *

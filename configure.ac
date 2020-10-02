@@ -979,8 +979,7 @@ dnl Detect if protobuf-c installed
 dnl ===========================================================================
 
 CHECK_PROTOBUF=yes
-HAVE_PROTOBUF=yes
-HAVE_GEOBUF=no
+HAVE_PROTOBUF=no
 
 AC_ARG_WITH([protobuf],
 	[AS_HELP_STRING([--without-protobuf], [build without protobuf-c support])],
@@ -989,6 +988,7 @@ AC_ARG_WITH([protobuf],
 dnl User didn't turn OFF protobuf support so...
 if test "$CHECK_PROTOBUF" != "no"; then
 
+	HAVE_PROTOBUF=yes
 	dnl Need to find libdir, incdir and protoc-c compiler
 
 	CPPFLAGS_SAVE="$CPPFLAGS"
@@ -1036,13 +1036,13 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	dnl confirm that discovered/configured include path works
 	AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [],
-		AC_MSG_RESULT([unable to find protobuf-c/protobuf-c.h using $CPPFLAGS])
+		AC_MSG_ERROR([unable to find protobuf-c/protobuf-c.h using CPPFLAGS. You can disable MVT and Geobuf support using --without-protobuf])
 		HAVE_PROTOBUF=no
 	)
 
 	dnl confirm that discovered/configured library path works
 	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init], [],
-		AC_MSG_RESULT([unable to link protobuf-c using $LDFLAGS])
+		AC_MSG_ERROR([unable to link protobuf-c using $LDFLAGS. You can disable MVT and Geobuf support using --without-protobuf])
 		HAVE_PROTOBUF=no
 	)
 
@@ -1052,6 +1052,9 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	AC_MSG_CHECKING([protobuf-c version])
 	AC_PROTOBUFC_VERSION([PROTOC_VERSION])
+        if test ! "$PROTOC_VERSION" -ge 1001000; then
+                AC_MSG_ERROR("Old protobuf-c release found but 1.1.0 is required. You can disable MVT and Geobuf support using --without-protobuf")
+        fi
 	AC_MSG_RESULT([$PROTOC_VERSION])
 
 	CPPFLAGS="$CPPFLAGS_SAVE"
@@ -1061,7 +1064,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	dnl confirm that protobuf compiler is available
 	AC_PATH_PROG(PROTOCC, protoc-c)
 	if test -z "$PROTOCC"; then
-		AC_MSG_RESULT([Cannot find protoc-c protobuf compiler on the PATH: $PATH])
+		AC_MSG_ERROR([Cannot find protoc-c protobuf compiler on the PATH: $PATH. You can disable MVT and Geobuf support using --without-protobuf])
 		HAVE_PROTOBUF=no
 	fi
 
@@ -1069,15 +1072,14 @@ if test "$CHECK_PROTOBUF" != "no"; then
         if test "$HAVE_PROTOBUF" = "yes"; then
 		AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
 		AC_DEFINE_UNQUOTED([LIBPROTOBUF_VERSION], [$PROTOC_VERSION], [Numeric version number for libprotobuf-c])
-		AC_DEFINE([HAVE_GEOBUF], [1], [Define to 1 if geobuf is present])
-		HAVE_GEOBUF=yes
-	fi
+	else
+                AC_MSG_ERROR("Missing protobuf-c support. You can disable MVT and Geobuf support using --without-protobuf")
+        fi
 
-    AC_SUBST([HAVE_PROTOBUF])
-    AC_SUBST([HAVE_GEOBUF])
-    AC_SUBST([PROTOC_VERSION])
-    AC_SUBST([PROTOBUF_CPPFLAGS])
-    AC_SUBST([PROTOBUF_LDFLAGS])
+        AC_SUBST([HAVE_PROTOBUF])
+        AC_SUBST([PROTOC_VERSION])
+        AC_SUBST([PROTOBUF_CPPFLAGS])
+        AC_SUBST([PROTOBUF_LDFLAGS])
 
 fi
 

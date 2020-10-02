@@ -45,8 +45,8 @@
 PG_FUNCTION_INFO_V1(pgis_asgeobuf_transfn);
 Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 {
-#if ! (defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF)
-	elog(ERROR, "ST_AsGeobuf: Missing libprotobuf-c >= version 1.1");
+#if !(defined HAVE_LIBPROTOBUF)
+	elog(ERROR, "ST_AsGeobuf: Compiled without protobuf-c support");
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext;
@@ -82,8 +82,8 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pgis_asgeobuf_finalfn);
 Datum pgis_asgeobuf_finalfn(PG_FUNCTION_ARGS)
 {
-#if ! (defined HAVE_LIBPROTOBUF && defined HAVE_GEOBUF)
-	elog(ERROR, "ST_AsGeoBuf: Missing libprotobuf-c >= version 1.1");
+#if !(defined HAVE_LIBPROTOBUF)
+	elog(ERROR, "ST_AsGeobuf: Compiled without protobuf-c support");
 	PG_RETURN_NULL();
 #else
 	uint8_t *buf;
