@@ -89,6 +89,7 @@ ST_AsGeoJsonRow(PG_FUNCTION_ARGS)
 	Oid geom_oid = InvalidOid;
 	Oid geog_oid = InvalidOid;
 
+	/* We need to initialize the internal cache to access it later via postgis_oid() */
 	postgis_initialize_cache(fcinfo);
 	geom_oid = postgis_oid(GEOMETRYOID);
 	geog_oid = postgis_oid(GEOGRAPHYOID);
