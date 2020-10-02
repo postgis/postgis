@@ -2565,11 +2565,12 @@ Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS)
 	int key_type;
 	Oid tbl_oid = PG_GETARG_DATUM(0);
 	text *col = PG_GETARG_TEXT_P(1);
+	Oid idx_oid;
 
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
 	postgis_initialize_cache(fcinfo);
 
-	Oid idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
+	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
 	if (!idx_oid)
 		PG_RETURN_NULL();
 
