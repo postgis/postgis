@@ -2300,6 +2300,9 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	bool only_parent = false;
 	int key_type;
 
+	/* We need to initialize the internal cache to access it later via postgis_oid() */
+	postgis_initialize_cache(fcinfo);
+
 	if ( PG_NARGS() == 4 )
 	{
 		nsp = text_to_cstring(PG_GETARG_TEXT_P(0));
@@ -2562,6 +2565,9 @@ Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS)
 	int key_type;
 	Oid tbl_oid = PG_GETARG_DATUM(0);
 	text *col = PG_GETARG_TEXT_P(1);
+
+	/* We need to initialize the internal cache to access it later via postgis_oid() */
+	postgis_initialize_cache(fcinfo);
 
 	Oid idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
 	if (!idx_oid)

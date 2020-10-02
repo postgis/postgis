@@ -49,6 +49,9 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 	elog(ERROR, "ST_AsGeobuf: Missing libprotobuf-c >= version 1.1");
 	PG_RETURN_NULL();
 #else
+	/* We need to initialize the internal cache to access it later via postgis_oid() */
+	postgis_initialize_cache(fcinfo);
+
 	MemoryContext aggcontext;
 	struct geobuf_agg_context *ctx;
 
