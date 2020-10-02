@@ -227,11 +227,8 @@ ifeq (@HAVE_PROTOBUF@,yes)
 	# ST_AsMVT, ST_AsGeobuf
 	TESTS += \
 		mvt \
-		mvt_jsonb
-ifeq (@HAVE_GEOBUF@,yes)
-	TESTS += \
+		mvt_jsonb \
 		geobuf
-endif
 endif
 
 all install uninstall:

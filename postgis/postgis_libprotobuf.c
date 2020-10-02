@@ -14,7 +14,7 @@
 PG_FUNCTION_INFO_V1(postgis_libprotobuf_version);
 Datum postgis_libprotobuf_version(PG_FUNCTION_ARGS)
 {
-#ifdef HAVE_PROTOBUF_C_VERSION
+#ifdef HAVE_LIBPROTOBUF
 	const char *ver = protobuf_c_version();
 	text *result = cstring_to_text(ver);
 	PG_RETURN_POINTER(result);
