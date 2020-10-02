@@ -43,6 +43,7 @@ Only tickets not included in 3.1.0alpha2
     malformed WKB. Remove memory leaks in malformed WKB cases. (Paul Ramsey)
   - #4740, Round values in geography_distance_tree
            as we do on geography_distance (Raúl Marín, Paul Ramsey, Regina Obe)
+  - #4739, Ensure all functions using postgis_oid initialize the internal cache (Raúl Marín)
 
 
 

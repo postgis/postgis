@@ -279,6 +279,12 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 	Node *rawreq = (Node *) PG_GETARG_POINTER(0);
 	Node *ret = NULL;
 
+	/* The support function need the cache to be populated to know what the type Oids are.
+	 * Otherwise it will need look them up dynamically, which only works in the schema where Postgis
+	 * is installed is part of the search path (Trac #4739)
+	 */
+	postgis_initialize_cache(fcinfo);
+
 	if (IsA(rawreq, SupportRequestSelectivity))
 	{
 		SupportRequestSelectivity *req = (SupportRequestSelectivity *) rawreq;
