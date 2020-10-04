@@ -1,9 +1,10 @@
-PostGIS 3.1.0beta1
+PostGIS 3.1.0alpha3
 2020/xx/xx
 Only tickets not included in 3.1.0alpha2
 
 * Breaking changes *
   - #4737, Bump minimum protobuf-c requirement to 1.1.0 (Raúl Marín)
+  - #4258, Untangle postgis_sfcgal into its own .so (Regina Obe)
 
 * New features *
   - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)

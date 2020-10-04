@@ -12,7 +12,7 @@
 -- New SFCGAL functions (meaning prototype not already provided by GEOS)
 --
 
-#include "sqldefines.h"
+#include "../postgis/sqldefines.h"
 
 -- INSTALL VERSION: POSTGIS_LIB_VERSION
 

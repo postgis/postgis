@@ -18,6 +18,7 @@
 # *
 # **********************************************************************
 # *
+# * Copyright 2020 Regina Obe
 # * Copyright 2008 Mark Cave-Ayland
 # *
 # **********************************************************************
@@ -41,17 +42,10 @@ DATA=../spatial_ref_sys.sql
 SQL_objs=postgis.sql legacy.sql legacy_minimal.sql
 
 GEOM_BACKEND_OBJ = lwgeom_geos.o
-SFCGAL_BACKEND_OBJ = lwgeom_sfcgal.o
 
-ifeq (@SFCGAL@,sfcgal)
-DATA_built=$(SQL_built) sfcgal.sql sfcgal_upgrade.sql uninstall_sfcgal.sql
-SQL_OBJS=$(SQL_objs) sfcgal.sql
-BACKEND_OBJ=$(GEOM_BACKEND_OBJ) $(SFCGAL_BACKEND_OBJ)
-else
 BACKEND_OBJ=$(GEOM_BACKEND_OBJ)
 DATA_built=$(SQL_built)
 SQL_OBJS=$(SQL_objs)
-endif
 
 ifeq (@HAVE_SPGIST@,yes)
 SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o gserialized_spgist_nd.o
@@ -146,12 +140,6 @@ OBJS=$(PG_OBJS)
 PG_CPPFLAGS += -I../liblwgeom @CFLAGS@ -I../libpgcommon $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = $(WAYGU_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
-# Add SFCGAL Flags if defined
-ifeq (@SFCGAL@,sfcgal)
-PG_CPPFLAGS += @SFCGAL_CPPFLAGS@
-SHLIB_LINK_F += @SFCGAL_LDFLAGS@
-endif
-
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS) \
 	uninstall_postgis.sql \
@@ -159,8 +147,6 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	uninstall_sfcgal.sql \
 	postgis_upgrade.sql.in \
 	postgis_upgrade.sql \
-	sfcgal_upgrade.sql.in \
-	sfcgal_upgrade.sql \
 	vector_tile.pb-c.c \
 	vector_tile.pb-c.h \
 	geobuf.pb-c.c \
@@ -254,12 +240,6 @@ postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_a
 	cat $^ >> $@
 	echo "COMMIT;" >> $@
 
-sfcgal_upgrade.sql.in: sfcgal.sql ../utils/postgis_proc_upgrade.pl
-	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
-
-sfcgal_upgrade.sql: sfcgal_upgrade.sql.in postgis_after_upgrade.sql
-	cat $^ > $@
-
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
 $(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 
@@ -269,9 +249,6 @@ uninstall_postgis.sql: postgis.sql ../utils/create_undef.pl
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 uninstall_legacy.sql: legacy.sql ../utils/create_undef.pl
-	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
-
-uninstall_sfcgal.sql: sfcgal.sql ../utils/create_undef.pl
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean

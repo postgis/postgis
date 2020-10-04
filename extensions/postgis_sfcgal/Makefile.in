@@ -62,7 +62,7 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ > $@
 
-sql_bits/sfcgal.sql: ../../postgis/sfcgal.sql
+sql_bits/sfcgal.sql: ../../sfcgal/sfcgal.sql
 	mkdir -p sql_bits
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
@@ -83,7 +83,7 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_
 		| $(PERL) ../../utils/create_unpackaged.pl ${EXTENSION} \
 		>> $@
 
-sql_bits/sfcgal_upgrade.sql : ../../postgis/sfcgal_upgrade.sql
+sql_bits/sfcgal_upgrade.sql : ../../sfcgal/sfcgal_upgrade.sql
 	mkdir -p sql_bits
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 

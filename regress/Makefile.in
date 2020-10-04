@@ -60,6 +60,11 @@ distclean: clean
 	$(MAKE) -C sfcgal $@
 	rm -f Makefile
 
+staged-install-sfcgal:
+	@if test x"@SFCGAL@" != "x"; then \
+		$(MAKE) -C ../sfcgal REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
+	fi
+
 staged-install-topology:
 	@if test x"@TOPOLOGY@" != "x"; then \
 		$(MAKE) -C ../topology REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
@@ -70,7 +75,7 @@ staged-install-raster:
 		$(MAKE) -C ../raster/rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
 	fi
 
-staged-install: staged-install-raster staged-install-topology
+staged-install: staged-install-raster staged-install-topology staged-install-sfcgal
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 	$(MAKE) -C ../ REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) comments-install
 	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql

@@ -1,0 +1,13 @@
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2020 Regina Obe <lr@pcorp.us>
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- These are functions that need to be dropped beforehand
+-- where the argument names may have changed  --
+-- so have to be dropped before upgrade can happen --
+-- argument names changed --

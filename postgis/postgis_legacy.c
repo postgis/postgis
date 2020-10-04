@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2018 Regina Obe <lr@pcorp.us>
+ * Copyright (C) 2018-2020 Regina Obe <lr@pcorp.us>
  *
  **********************************************************************/
 /******************************************************************************
@@ -77,3 +77,25 @@ POSTGIS_DEPRECATE("3.0.0", intersects);
 POSTGIS_DEPRECATE("3.0.0", pgis_geometry_accum_finalfn);
 POSTGIS_DEPRECATE("3.0.0", postgis_autocache_bbox);
 POSTGIS_DEPRECATE("2.0.0", postgis_uses_stats);
+
+/**Start: SFCGAL functions moved to postgis_sfcgal lib, to ease pg_upgrade **/
+/**: TODO these can be taken out in a later release once PostGIS 3.0 is EOLd **/
+POSTGIS_DEPRECATE("3.1.0", sfcgal_from_ewkt);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_area3D);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_intersection3D);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_difference3D);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_union3D);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_volume);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_extrude);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_straight_skeleton);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_approximate_medial_axis);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_is_planar);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_orientation);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_force_lhr);
+POSTGIS_DEPRECATE("3.1.0", ST_ConstrainedDelaunayTriangles);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_tesselate);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_minkowski_sum);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_make_solid);
+POSTGIS_DEPRECATE("3.1.0", sfcgal_is_solid);
+POSTGIS_DEPRECATE("3.1.0", postgis_sfcgal_noop);
+/**End: SFCGAL functions moved to postgis_sfcgal lib, to ease pg_upgrade **/

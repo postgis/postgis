@@ -1586,6 +1586,7 @@ AC_OUTPUT([GNUmakefile
    libpgcommon/cunit/Makefile
    postgis/Makefile
    postgis/sqldefines.h
+	 sfcgal/Makefile
    loader/Makefile
    loader/cunit/Makefile
    topology/Makefile
