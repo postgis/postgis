@@ -4948,6 +4948,62 @@ CREATE AGGREGATE ST_AsGeobuf(anyelement, text)
 	finalfunc = pgis_asgeobuf_finalfn
 );
 
+-----------------------------------------------------------------------
+-- FLATGEOBUF OUTPUT
+-- Availability: 3.1.0
+-----------------------------------------------------------------------
+
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION pgis_asflatgeobuf_transfn(internal, anyelement)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asflatgeobuf_transfn'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION pgis_asflatgeobuf_transfn(internal, anyelement, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asflatgeobuf_transfn'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION pgis_asflatgeobuf_finalfn(internal)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME', 'pgis_asflatgeobuf_finalfn'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.1.0
+CREATE AGGREGATE ST_AsFlatGeobuf(anyelement)
+(
+	sfunc = pgis_asflatgeobuf_transfn,
+	stype = internal,
+	parallel = safe,
+	finalfunc = pgis_asflatgeobuf_finalfn
+);
+
+-- Availability: 3.1.0
+CREATE AGGREGATE ST_AsFlatGeobuf(anyelement, text)
+(
+	sfunc = pgis_asflatgeobuf_transfn,
+	stype = internal,
+	parallel = safe,
+	finalfunc = pgis_asflatgeobuf_finalfn
+);
+
+-----------------------------------------------------------------------
+-- FLATGEOBUF INPUT
+-- Availability: 3.1.0
+-----------------------------------------------------------------------
+
+-- Availability: 3.1.0
+--CREATE OR REPLACE FUNCTION ST_FromFlatGeobuf(bytea)
+--	RETURNS setof record
+--	AS 'MODULE_PATHNAME','pgis_fromflatgeobuf'
+--	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+--	_COST_MEDIUM;
+
 ------------------------------------------------------------------------
 -- GeoHash (geohash.org)
 ------------------------------------------------------------------------

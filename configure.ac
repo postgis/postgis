@@ -1553,6 +1553,16 @@ DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
 
 
 dnl ===========================================================================
+dnl Flatcc
+dnl ===========================================================================
+FLATCC_LIB=libflatcc.a
+AC_SUBST([FLATCC_LIB])
+
+DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+        deps/flatcc/Makefile"
+
+
+dnl ===========================================================================
 dnl See if we have the requirements for building the extensions, namely
 dnl the xlstproc tool for generating the comments SQL file.
 dnl ===========================================================================
