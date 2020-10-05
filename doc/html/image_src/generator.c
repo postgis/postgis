@@ -78,8 +78,8 @@ pointarrayToString(char *output, POINTARRAY *pa)
 		POINT2D pt;
 		getPoint2d_p(pa, i, &pt);
 
-		lwprint_double(pt.x, 10, x, OUT_DOUBLE_BUFFER_SIZE);
-		lwprint_double(pt.y, 10, y, OUT_DOUBLE_BUFFER_SIZE);
+		lwprint_double(pt.x, 10, x);
+		lwprint_double(pt.y, 10, y);
 
 		if ( i ) ptr += sprintf(ptr, " ");
 		ptr += sprintf(ptr, "%s,%s", x, y);
@@ -111,9 +111,9 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
 	LWDEBUGF(4, "%s", "drawPoint called");
 	LWDEBUGF( 4, "point = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
 
-	lwprint_double(p.x, 10, x, OUT_DOUBLE_BUFFER_SIZE);
-	lwprint_double(p.y, 10, y1, OUT_DOUBLE_BUFFER_SIZE);
-	lwprint_double(p.y + styles->pointSize, 10, y2, OUT_DOUBLE_BUFFER_SIZE);
+	lwprint_double(p.x, 10, x);
+	lwprint_double(p.y, 10, y1);
+	lwprint_double(p.y + styles->pointSize, 10, y2);
 
 	ptr += sprintf(ptr, "-fill %s -strokewidth 0 ", styles->pointColor);
 	ptr += sprintf(ptr, "-draw \"circle %s,%s %s,%s", x, y1, x, y2);
