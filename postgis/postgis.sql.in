@@ -2934,6 +2934,7 @@ BEGIN
 				    AND n.oid = p.pronamespace
 				  LIMIT 1;
 				IF rec.name NOT IN('postgis_topology', 'postgis_tiger_geocoder')
+				THEN
 					sql := format(
 					          'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
 					          'ALTER EXTENSION %1%I UPDATE TO %3$I',
