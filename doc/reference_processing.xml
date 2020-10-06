@@ -400,48 +400,25 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
                               <imageobject>
                                 <imagedata fileref="images/st_buildarea01.png" />
                               </imageobject>
-                              <caption><para>This will create a donut</para></caption>
+                              <caption><para>These will create a donut</para></caption>
                             </mediaobject>
                           </informalfigure>
-                <programlisting>
+                <programlisting>--using polygons
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
 FROM (SELECT
     ST_Buffer(
       ST_GeomFromText('POINT(100 90)'), 25) As smallc,
     ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
                 </programlisting>
+
+                <programlisting>--using linestrings
+SELECT ST_BuildArea(ST_Collect(smallc,bigc))
+FROM (SELECT
+    ST_ExteriorRing(ST_Buffer(
+      ST_GeomFromText('POINT(100 90)'), 25)) As smallc,
+    ST_ExteriorRing(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As bigc) As foo;</programlisting>
                           </para></entry>
                     </row>
-                    <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buildarea02.png" />
-                              </imageobject>
-                              <caption><para>This will create a gaping hole inside the circle with prongs sticking out</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_BuildArea(ST_Collect(line,circle))
-FROM (SELECT
-    ST_Buffer(
-        ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),
-                5)  As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-
---this creates the same gaping hole
---but using linestrings instead of polygons
-SELECT ST_BuildArea(
-    ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))
-    )
-FROM (SELECT ST_Buffer(
-    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190))
-        ,5)  As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-
-                </programlisting>
-                        </para></entry>
-                      </row>
                     </tbody>
                   </tgroup>
             </informaltable>
@@ -453,6 +430,7 @@ FROM (SELECT ST_Buffer(
             <para>
             <xref linkend="ST_Node" />,
             <xref linkend="ST_MakePolygon" />,
+            <xref linkend="ST_MakeValid" />,
             <xref linkend="ST_BdPolyFromText" />,
             <xref linkend="ST_BdMPolyFromText" />wrappers to
             this function with standard OGC interface</para>
@@ -1866,11 +1844,64 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
     <para>&Z_support;</para>
 
           </refsection>
-
+          <refsection>
+            <title>Examples</title>
+            <informaltable>
+                  <tgroup cols="1">
+                    <tbody>
+                    <row>
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_makevalid01.png" />
+                              </imageobject>
+                              <caption><para>This will create a valid multipolygon noded which looks like a circle with a prong.</para>
+                              <para>Note: ST_Collect simply collects all the polygons into an invalid MULTIPOLYGON because the polygons overlap.  Use ST_MakeValid to convert to a valid multipolygon.</para>
+                              </caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>
+SELECT ST_MakeValid( ST_Collect(line,circle) )
+FROM (SELECT
+    ST_Buffer(
+        ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),
+                5)  As line,
+    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+                </programlisting>
+            </para>
+            </entry>
+        </row>
+        <row>
+            <entry><para><informalfigure>
+                <mediaobject>
+                    <imageobject>
+                    <imagedata fileref="images/st_makevalid02.png" />
+                    </imageobject>
+                    <caption><para>This will create a valid multipolygon from overlapping collection of polygons.</para>
+                    <para>Note: ST_Collect simply collects all the polygons into an invalid MULTIPOLYGON because the polygons overlap.  Use ST_MakeValid to convert to a valid multipolygon if you want to maintain boundaries.</para>
+                    </caption>
+                </mediaobject>
+                </informalfigure>
+    <programlisting>
+SELECT ST_MakeValid( ST_Collect(line,circle) )
+FROM (SELECT
+ST_Buffer(
+ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),
+    5)  As line,
+ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+    </programlisting>
+</para>
+</entry>
+        </row>
+    </tbody>
+    </tgroup>
+</informaltable>
+</refsection>
           <refsection>
             <title>See Also</title>
             <para>
-                <xref linkend="ST_IsValid" />
+                <xref linkend="ST_IsValid" />,
+                <xref linkend="ST_Collect" />,
                 <xref linkend="ST_CollectionExtract" />
             </para>
           </refsection>

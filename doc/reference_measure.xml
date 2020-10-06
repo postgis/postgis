@@ -1300,7 +1300,7 @@ LINESTRING(20 40,121.111404660392 186.629392246051)
 SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt,
 	ST_MaxDistance(c.the_geom,c.the_geom) As max_dist,
 	ST_Length(ST_LongestLine(c.the_geom, c.the_geom)) As lenll
-FROM (SELECT ST_BuildArea(ST_Collect(the_geom)) As the_geom
+FROM (SELECT ST_MakeValid(ST_Collect(the_geom)) As the_geom
 	FROM (SELECT ST_Translate(ST_SnapToGrid(ST_Buffer(ST_Point(50 ,generate_series(50,190, 50)
 			),40, 'quad_segs=2'),1), x, 0)  As the_geom
 			FROM generate_series(1,100,50) As x)  AS foo
@@ -1320,7 +1320,7 @@ FROM (SELECT ST_BuildArea(ST_Collect(the_geom)) As the_geom
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_3DLongestLine"/></para>
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_MakeValid"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_3DLongestLine"/></para>
 	  </refsection>
 	</refentry>
 
