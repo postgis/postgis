@@ -2937,12 +2937,12 @@ BEGIN
 				THEN
 					sql := format(
 					          'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
-					          'ALTER EXTENSION %1%I UPDATE TO %3$I',
+					          'ALTER EXTENSION %1$I UPDATE TO %3$I',
 					          rec.name, var_schema, rec.default_version);
 				ELSE
 					sql := format(
 					         'CREATE EXTENSION %1$I VERSION unpackaged;'
-					         'ALTER EXTENSION %1%I UPDATE TO %2$I',
+					         'ALTER EXTENSION %1$I UPDATE TO %2$I',
 					         rec.name, rec.default_version);
 				END IF;
 				RAISE NOTICE 'Packaging extension %', rec.name;
