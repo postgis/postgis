@@ -105,6 +105,8 @@ IMAGES= \
 	../images/st_longestline03.png \
 	../images/st_makevalid01.png \
 	../images/st_makevalid02.png \
+	../images/st_makevalid03.png \
+	../images/st_makevalid04.png \
 	../images/st_maximuminscribedcircle01.png \
 	../images/st_maximuminscribedcircle02.png \
 	../images/st_minimumboundingcircle01.png \
