@@ -1855,7 +1855,7 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
                               <imageobject>
                                 <imagedata fileref="images/st_makevalid01.png" />
                               </imageobject>
-                              <caption><para>before_geom: MULTIPOLYGON of overlapping polygons</para></caption>
+                              <caption><para>before_geom: MULTIPOLYGON of 2 overlapping polygons</para></caption>
                             </mediaobject>
                           </informalfigure>
                           <informalfigure>
@@ -1863,7 +1863,7 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
                               <imageobject>
                                 <imagedata fileref="images/st_makevalid02.png" />
                               </imageobject>
-                              <caption><para>after_geom: MULTIPOLYGON of non-overlapping polygons</para>
+                              <caption><para>after_geom: MULTIPOLYGON of 4 non-overlapping polygons</para>
                               </caption>
                             </mediaobject>
                           </informalfigure>
@@ -1884,13 +1884,13 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
                 <informalfigure>
                 <mediaobject>
                     <imageobject><imagedata fileref="images/st_makevalid03.png" /></imageobject>
-                    <caption><para>before_geom: MULTIPOLYGON of overlapping polygons</para></caption>
+                    <caption><para>before_geom: MULTIPOLYGON of 6 overlapping polygons</para></caption>
                 </mediaobject>
                 </informalfigure>
                 <informalfigure>
                 <mediaobject>
                     <imageobject><imagedata fileref="images/st_makevalid04.png" /></imageobject>
-                    <caption><para>after_geom: MULTIPOLYGON of Non-overlapping polygons</para></caption>
+                    <caption><para>after_geom: MULTIPOLYGON of 14 Non-overlapping polygons</para></caption>
                 </mediaobject>
                 </informalfigure>
                 <programlisting>SELECT c.geom AS before_geom, ST_MakeValid(c.geom) AS after_geom
