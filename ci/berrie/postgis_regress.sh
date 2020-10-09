@@ -18,7 +18,7 @@ export PGDATA=$PGPATH/data_${PGPORT}
 export PGHOST=localhost
 
 sh autogen.sh
-./configure --with-pgconfig=${PGPATH}/bin/pg_config
+./configure --with-pgconfig=${PGPATH}/bin/pg_config --without-protobuf
 #make clean
 make
 export err_status=0

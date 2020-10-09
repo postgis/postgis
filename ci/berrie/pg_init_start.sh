@@ -20,10 +20,10 @@ PGCTL="$PGPATH/bin/pg_ctl"
 
 # remove cluster if exists
 if [ -d $PGDATA ] ; then
-    if [ -d $PGDATA/postmaster.pid] ; then
+    if [ -d $PGDATA/postmaster.pid ] ; then
     	$PGCTL stop -D $PGDATA -s -m fast
     fi;
-	
+
     rm -rf $PGDATA
 fi;
 
