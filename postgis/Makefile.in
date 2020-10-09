@@ -129,6 +129,7 @@ PG_OBJS= \
 	lwgeom_out_geobuf.o \
 	lwgeom_out_geojson.o \
 	flatgeobuf.o \
+	lwgeom_in_flatgeobuf.o \
 	lwgeom_out_flatgeobuf.o \
 	postgis_legacy.o
 

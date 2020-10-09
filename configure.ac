@@ -1555,7 +1555,7 @@ DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
 dnl ===========================================================================
 dnl Flatcc
 dnl ===========================================================================
-FLATCC_LIB=libflatcc.a
+FLATCC_LIB=libflatccrt.a
 AC_SUBST([FLATCC_LIB])
 
 DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST

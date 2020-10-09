@@ -4998,11 +4998,18 @@ CREATE AGGREGATE ST_AsFlatGeobuf(anyelement, text)
 -----------------------------------------------------------------------
 
 -- Availability: 3.1.0
---CREATE OR REPLACE FUNCTION ST_FromFlatGeobuf(bytea)
---	RETURNS setof record
---	AS 'MODULE_PATHNAME','pgis_fromflatgeobuf'
---	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
---	_COST_MEDIUM;
+CREATE OR REPLACE FUNCTION ST_TableFromFlatGeobuf(text, text)
+	RETURNS void
+	AS 'MODULE_PATHNAME','pgis_tablefromflatgeobuf'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_FromFlatGeobuf(anyelement, bytea)
+	RETURNS setof anyelement
+	AS 'MODULE_PATHNAME','pgis_fromflatgeobuf'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	_COST_MEDIUM;
 
 ------------------------------------------------------------------------
 -- GeoHash (geohash.org)

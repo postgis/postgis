@@ -44,18 +44,37 @@
 #include "header_builder.h"
 #include "feature_builder.h"
 
-struct flatgeobuf_agg_context {
+struct flatgeobuf_encode_ctx
+{
         char *geom_name;
         uint32_t geom_index;
         HeapTupleHeader row;
-        LWGEOM **lwgeoms;
+        LWGEOM *lwgeom;
         uint64_t features_count;
         uint8_t *buf;
         uint64_t offset;
 };
 
-void flatgeobuf_agg_init_context(struct flatgeobuf_agg_context *ctx);
-void flatgeobuf_agg_transfn(struct flatgeobuf_agg_context *ctx);
-uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_agg_context *ctx);
+void flatgeobuf_agg_init_context(struct flatgeobuf_encode_ctx *ctx);
+void flatgeobuf_agg_transfn(struct flatgeobuf_encode_ctx *ctx);
+uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_encode_ctx *ctx);
+
+struct flatgeobuf_decode_ctx
+{
+	TupleDesc tupdesc;
+        uint8_t *buf;
+        uint64_t size;
+	uint64_t offset;
+	Datum result;
+        uint64_t fid;
+	bool done;
+        Header_table_t header;
+        GeometryType_enum_t geometry_type;
+        size_t columns_len;
+};
+
+void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx);
+void flatgeobuf_decode_header(struct flatgeobuf_decode_ctx *ctx);
+void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx);
 
 #endif

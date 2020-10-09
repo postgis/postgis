@@ -46,7 +46,7 @@ PG_FUNCTION_INFO_V1(pgis_asflatgeobuf_transfn);
 Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 {
 	MemoryContext aggcontext;
-	struct flatgeobuf_agg_context *ctx;
+	struct flatgeobuf_encode_ctx *ctx;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "pgis_asflatgeobuf_transfn: called in non-aggregate context");
@@ -60,7 +60,7 @@ Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 			ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(2));
 		flatgeobuf_agg_init_context(ctx);
 	} else {
-		ctx = (struct flatgeobuf_agg_context *) PG_GETARG_POINTER(0);
+		ctx = (struct flatgeobuf_encode_ctx *) PG_GETARG_POINTER(0);
 	}
 
 	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
@@ -78,14 +78,14 @@ PG_FUNCTION_INFO_V1(pgis_asflatgeobuf_finalfn);
 Datum pgis_asflatgeobuf_finalfn(PG_FUNCTION_ARGS)
 {
 	uint8_t *buf;
-	struct flatgeobuf_agg_context *ctx;
+	struct flatgeobuf_encode_ctx *ctx;
 	if (!AggCheckCallContext(fcinfo, NULL))
 		elog(ERROR, "pgis_asflatgeobuf_finalfn called in non-aggregate context");
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
-	ctx = (struct flatgeobuf_agg_context *) PG_GETARG_POINTER(0);
+	ctx = (struct flatgeobuf_encode_ctx *) PG_GETARG_POINTER(0);
 	buf = flatgeobuf_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
 }
