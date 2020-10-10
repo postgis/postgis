@@ -38,22 +38,19 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 
 	B = &builder;
 	flatcc_builder_init(B);
-	/*flatbuffers_string_ref_t name = flatbuffers_string_create_str(B, "");
-	flatbuffers_double_vec_ref_t envelope;
-	GeometryType_enum_t geometry_type = GeometryType_Unknown;
-	flatbuffers_bool_t hasZ;
-	flatbuffers_bool_t hasM;
-	flatbuffers_bool_t hasT;
-	flatbuffers_bool_t hasTM;
-	Column_vec_start(B);
-	Column_vec_t columns = Column_vec_start(B);
-	uint16_t index_node_size = 16;
-	Crs_vec_start(B);
-	Crs_vec_t crs = Crs_vec_end(B);
-	flatbuffers_string_ref_t title = flatbuffers_string_create_str(B, "");
-	flatbuffers_string_ref_t description = flatbuffers_string_create_str(B, "");
-	flatbuffers_string_ref_t metadata = flatbuffers_string_create_str(B, "");*/
+	//flatbuffers_double_vec_ref_t envelope;
+	//Column_vec_start(B);
+	//Column_vec_t columns = Column_vec_start(B);
+	//uint16_t index_node_size = 16;
+	//Crs_vec_start(B);
+	//Crs_vec_t crs = Crs_vec_end(B);
 	Header_start_as_root_with_size(B);
+	Header_name_create_str(B, "");
+	Header_geometry_type_add(B, GeometryType_Point);
+	Header_hasZ_add(B, false);
+	Header_hasM_add(B, false);
+	Header_hasT_add(B, false);
+	Header_hasTM_add(B, false);
 	Header_end_as_root(B);
 
 	header = flatcc_builder_finalize_buffer(B, &size);
@@ -63,20 +60,58 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 	ctx->offset += size;
 }
 
-static void encode_geometry(struct flatgeobuf_encode_ctx *ctx, flatcc_builder_t *B)
-{	
-	LWPOINT *lwpt = (LWPOINT *) ctx->lwgeom;
+static void encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *lwpt)
+{
 	POINT4D pt;
+	flatcc_builder_t *B = ctx->B;
 	getPoint4d_p(lwpt->point, 0, &pt);
-
-	Geometry_ref_t geometry;
 	Geometry_start(B);
 	Geometry_xy_start(B);
 	Geometry_xy_push_create(B, pt.x);
 	Geometry_xy_push_create(B, pt.y);
 	Geometry_xy_end(B);
-	geometry = Geometry_end(B);
-	Feature_geometry_add(B, geometry);
+	if (ctx->hasZ) {
+		Geometry_z_start(B);
+		Geometry_z_push_create(B, pt.z);
+		Geometry_z_end(B);
+	}
+	if (ctx->hasM) {
+		Geometry_m_start(B);
+		Geometry_m_push_create(B, pt.m);
+		Geometry_m_end(B);
+	}
+	Feature_geometry_add(B, Geometry_end(B));
+}
+
+static void encode_geometry(struct flatgeobuf_encode_ctx *ctx)
+{
+	LWGEOM *lwgeom = ctx->lwgeom;
+
+	if (lwgeom == NULL)
+		return;
+
+	switch (lwgeom->type) {
+	case POINTTYPE:
+		return encode_point(ctx, (LWPOINT *) lwgeom);
+	/*case LINETYPE:
+		return encode_line(ctx, (LWLINE*)lwgeom);
+	case TRIANGLETYPE:
+		return encode_triangle(ctx, (LWTRIANGLE *)lwgeom);
+	case POLYGONTYPE:
+		return encode_poly(ctx, (LWPOLY*)lwgeom);
+	case MULTIPOINTTYPE:
+		return encode_mpoint(ctx, (LWMPOINT*)lwgeom);
+	case MULTILINETYPE:
+		return encode_mline(ctx, (LWMLINE*)lwgeom);
+	case MULTIPOLYGONTYPE:
+		return encode_mpoly(ctx, (LWMPOLY*)lwgeom);
+	case COLLECTIONTYPE:
+	case TINTYPE:
+		return encode_collection(ctx, (LWCOLLECTION*)lwgeom);*/
+	default:
+		elog(ERROR, "encode_geometry: '%s' geometry type not supported",
+				lwtype_name(lwgeom->type));
+	}
 }
 
 static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
@@ -87,8 +122,10 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 
 	B = &builder;
 	flatcc_builder_init(B);
+	ctx->B = B;
+	
 	Feature_start_as_root_with_size(B);
-	encode_geometry(ctx, B);
+	encode_geometry(ctx);
 	// TODO: encode feature properties
 	Feature_end_as_root(B);
 	feature = flatcc_builder_finalize_buffer(B, &size);
@@ -111,26 +148,65 @@ void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx)
 
 void flatgeobuf_decode_header(struct flatgeobuf_decode_ctx *ctx)
 {
+	Header_table_t header;
 	Column_vec_t columns;
 	size_t size;
 	
 	flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
 	ctx->offset += sizeof(flatbuffers_uoffset_t);
 	
-	ctx->header = Header_as_root(ctx->buf + ctx->offset);
+	header = Header_as_root(ctx->buf + ctx->offset);
 	ctx->offset += size;
 	
-	columns = Header_columns(ctx->header);
+	columns = Header_columns(header);
 	
-	ctx->geometry_type = Header_geometry_type(ctx->header);
+	ctx->geometry_type = Header_geometry_type(header);
+	ctx->hasZ = Header_hasZ(header);
+	ctx->hasM = Header_hasM(header);
+	ctx->hasT = Header_hasT(header);
+	ctx->hasTM = Header_hasTM(header);
 	ctx->columns_len = Column_vec_len(columns);
 	if (ctx->tupdesc->natts != ctx->columns_len + 2)
 		elog(ERROR, "Mismatched column structure");
+
+	ctx->header = header;
+}
+
+static Datum decode_point(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+{
+	POINTARRAY *pa;
+	LWGEOM *lwgeom;
+	POINT4D pt;
+
+	flatbuffers_double_vec_t xy = Geometry_xy(geometry);
+
+	double x = flatbuffers_double_vec_at(xy, 0);
+	double y = flatbuffers_double_vec_at(xy, 1);
+
+	if (ctx->hasZ) {
+		flatbuffers_double_vec_t z = Geometry_z(geometry);
+	} else {
+		pt = (POINT4D) { x, y, 0, 0};
+	}
+	
+	pa = ptarray_construct_empty(ctx->hasZ, ctx->hasM, 1);
+	ptarray_append_point(pa, &pt, LW_TRUE);
+	lwgeom = (LWGEOM *) lwpoint_construct(0, NULL, pa);
+	return (Datum) geometry_serialize(lwgeom);
+}
+
+static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+{
+	flatbuffers_double_vec_t xy = Geometry_xy(geometry);
+	if (ctx->geometry_type == GeometryType_Point)
+		return decode_point(ctx, geometry);
+	elog(ERROR, "Unknown geometry type");
 }
 
 void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 {
 	size_t size;
+	Feature_table_t feature;
 
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
@@ -146,22 +222,10 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 	flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
 	ctx->offset += sizeof(flatbuffers_uoffset_t);
 
-	Feature_table_t feature = Feature_as_root(ctx->buf + ctx->offset);
+	feature = Feature_as_root(ctx->buf + ctx->offset);
 	ctx->offset += size;
 
-	Geometry_table_t geometry = Feature_geometry(feature);
-	flatbuffers_double_vec_t xy = Geometry_xy(geometry);
-	size_t l = flatbuffers_double_vec_len(xy);
-	double x = flatbuffers_double_vec_at(xy, 0);
-	double y = flatbuffers_double_vec_at(xy, 1);
-	pt.x = x;
-	pt.y = y;
-
-	pa = ptarray_construct_empty(0, 0, 1);
-	ptarray_append_point(pa, &pt, LW_TRUE);
-	lwgeom = (LWGEOM *) lwpoint_construct(0, NULL, pa);
-	geom = geometry_serialize(lwgeom);
-	values[1] = (Datum) geom;
+	values[1] = (Datum) decode_geometry(ctx, Feature_geometry(feature));
 
 	heapTuple = heap_form_tuple(ctx->tupdesc, values, isnull);
 	ctx->result = HeapTupleGetDatum(heapTuple);
@@ -209,11 +273,9 @@ void flatgeobuf_agg_transfn(struct flatgeobuf_encode_ctx *ctx)
 		gs = (GSERIALIZED *) PG_DETOAST_DATUM_COPY(datum);
 		lwgeom = lwgeom_from_gserialized(gs);
 	}
+
 	ctx->lwgeom = lwgeom;
 
-	if (ctx->lwgeom == NULL)
-		elog(ERROR, "ctx->lwgeom is null");
-	
 	encode_feature(ctx);
 }
 
