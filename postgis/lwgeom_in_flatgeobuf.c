@@ -125,6 +125,10 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		flatgeobuf_check_magicbytes(ctx);
 		flatgeobuf_decode_header(ctx);
 
+		// no feature data
+		if (ctx->size == ctx->offset)
+			SRF_RETURN_DONE(funcctx);
+
 		// TODO: get table and verify structure against header
 
 		MemoryContextSwitchTo(oldcontext);

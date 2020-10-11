@@ -26,6 +26,7 @@
 #include "flatgeobuf.h"
 #include "pgsql_compat.h"
 #include "funcapi.h"
+#include "parser/parse_type.h"
 
 uint8_t magicbytes[] = { 0x66, 0x67, 0x62, 0x03, 0x66, 0x67, 0x62, 0x00 };
 size_t MAGICBYTES_LEN = (sizeof(magicbytes) / sizeof((magicbytes)[0]));
@@ -47,10 +48,10 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 	Header_start_as_root_with_size(B);
 	Header_name_create_str(B, "");
 	Header_geometry_type_add(B, GeometryType_Point);
-	Header_hasZ_add(B, false);
-	Header_hasM_add(B, false);
-	Header_hasT_add(B, false);
-	Header_hasTM_add(B, false);
+	Header_hasZ_add(B, ctx->hasZ);
+	Header_hasM_add(B, ctx->hasM);
+	//Header_hasT_add(B, false);
+	//Header_hasTM_add(B, false);
 	Header_end_as_root(B);
 
 	header = flatcc_builder_finalize_buffer(B, &size);
@@ -183,8 +184,20 @@ static Datum decode_point(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t ge
 	double x = flatbuffers_double_vec_at(xy, 0);
 	double y = flatbuffers_double_vec_at(xy, 1);
 
-	if (ctx->hasZ) {
-		flatbuffers_double_vec_t z = Geometry_z(geometry);
+	if (ctx->hasZ && ctx->hasM) {
+		flatbuffers_double_vec_t za = Geometry_z(geometry);
+		flatbuffers_double_vec_t ma = Geometry_m(geometry);
+		double z = flatbuffers_double_vec_at(za, 0);
+		double m = flatbuffers_double_vec_at(ma, 0);
+		pt = (POINT4D) { x, y, z, m};
+	} else if (ctx->hasZ) {
+		flatbuffers_double_vec_t za = Geometry_z(geometry);
+		double z = flatbuffers_double_vec_at(za, 0);
+		pt = (POINT4D) { x, y, z, 0};
+	} else if (ctx->hasM) {
+		flatbuffers_double_vec_t ma = Geometry_m(geometry);
+		double m = flatbuffers_double_vec_at(ma, 0);
+		pt = (POINT4D) { x, y, 0, m};
 	} else {
 		pt = (POINT4D) { x, y, 0, 0};
 	}
@@ -197,7 +210,6 @@ static Datum decode_point(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t ge
 
 static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
 {
-	flatbuffers_double_vec_t xy = Geometry_xy(geometry);
 	if (ctx->geometry_type == GeometryType_Point)
 		return decode_point(ctx, geometry);
 	elog(ERROR, "Unknown geometry type");
@@ -213,6 +225,7 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 	HeapTuple heapTuple;
 	POINTARRAY *pa;
 	POINT4D pt = { 0, 0, 0, 0 };
+	Geometry_table_t geometry;
 	
 	Datum *values = palloc(ctx->tupdesc->natts * sizeof(Datum *));
 	bool *isnull = palloc(ctx->tupdesc->natts * sizeof(bool *));
@@ -225,7 +238,11 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 	feature = Feature_as_root(ctx->buf + ctx->offset);
 	ctx->offset += size;
 
-	values[1] = (Datum) decode_geometry(ctx, Feature_geometry(feature));
+	geometry = Feature_geometry(feature);
+	if (geometry != NULL)
+		values[1] = (Datum) decode_geometry(ctx, geometry);
+	else
+		isnull[1] = true;
 
 	heapTuple = heap_form_tuple(ctx->tupdesc, values, isnull);
 	ctx->result = HeapTupleGetDatum(heapTuple);
@@ -245,6 +262,7 @@ void flatgeobuf_agg_init_context(struct flatgeobuf_encode_ctx *ctx)
 	ctx->geom_index = 0;
 	ctx->features_count = 0;
 	ctx->offset = size;
+	ctx->tupdesc = NULL;
 }
 
 /**
@@ -264,14 +282,21 @@ void flatgeobuf_agg_transfn(struct flatgeobuf_encode_ctx *ctx)
 	bool isnull = false;
 	Datum datum;
 	GSERIALIZED *gs;
-	
-	if (ctx->features_count == 0)
-		encode_header(ctx);
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
 	if (!isnull) {
 		gs = (GSERIALIZED *) PG_DETOAST_DATUM_COPY(datum);
 		lwgeom = lwgeom_from_gserialized(gs);
+		ctx->hasZ = lwgeom_has_z(lwgeom);
+		ctx->hasM = lwgeom_has_m(lwgeom);
+	}
+
+	if (ctx->features_count == 0) {
+		Oid tupType = HeapTupleHeaderGetTypeId(ctx->row);
+		int32 tupTypmod = HeapTupleHeaderGetTypMod(ctx->row);
+		TupleDesc tupdesc = lookup_rowtype_tupdesc(tupType, tupTypmod);
+		ctx->tupdesc = tupdesc;
+		encode_header(ctx);
 	}
 
 	ctx->lwgeom = lwgeom;
@@ -286,6 +311,14 @@ void flatgeobuf_agg_transfn(struct flatgeobuf_encode_ctx *ctx)
  */
 uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_encode_ctx *ctx)
 {
+	if (ctx == NULL) {
+		ctx = palloc(sizeof(*ctx));
+		flatgeobuf_agg_init_context(ctx);
+	}
+	if (ctx->features_count == 0)
+		encode_header(ctx);
+	if (ctx->tupdesc)
+		ReleaseTupleDesc(ctx->tupdesc);
 	SET_VARSIZE(ctx->buf, ctx->offset);
 	return ctx->buf;
 }

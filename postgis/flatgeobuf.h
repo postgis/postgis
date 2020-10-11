@@ -50,6 +50,7 @@ struct flatgeobuf_encode_ctx
 
         char *geom_name;
         uint32_t geom_index;
+        TupleDesc tupdesc;
         HeapTupleHeader row;
         LWGEOM *lwgeom;
         uint64_t features_count;
