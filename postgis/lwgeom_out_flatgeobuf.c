@@ -22,8 +22,6 @@
  *
  **********************************************************************/
 
-#include "geobuf.h"
-
 /**
  * @file
  * Geobuf export functions
@@ -46,6 +44,7 @@ PG_FUNCTION_INFO_V1(pgis_asflatgeobuf_transfn);
 Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 {
 	MemoryContext aggcontext;
+	char *geom_name = NULL;
 	struct flatgeobuf_encode_ctx *ctx;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
@@ -53,12 +52,9 @@ Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 	MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0)) {
-		ctx = palloc(sizeof(*ctx));
-
-		ctx->geom_name = NULL;
 		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
-			ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(2));
-		flatgeobuf_agg_init_context(ctx);
+			geom_name = text_to_cstring(PG_GETARG_TEXT_P(2));
+		ctx = flatgeobuf_agg_init_context(geom_name);
 	} else {
 		ctx = (struct flatgeobuf_encode_ctx *) PG_GETARG_POINTER(0);
 	}

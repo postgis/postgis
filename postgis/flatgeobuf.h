@@ -48,7 +48,7 @@ struct flatgeobuf_encode_ctx
 {
         flatcc_builder_t *B;
 
-        char *geom_name;
+        const char *geom_name;
         uint32_t geom_index;
         TupleDesc tupdesc;
         HeapTupleHeader row;
@@ -56,6 +56,7 @@ struct flatgeobuf_encode_ctx
         uint64_t features_count;
         uint8_t *buf;
         uint64_t offset;
+        uint8_t lwgeom_type;
         GeometryType_enum_t geometry_type;
         bool hasZ;
         bool hasM;
@@ -63,7 +64,7 @@ struct flatgeobuf_encode_ctx
         bool hasTM;
 };
 
-void flatgeobuf_agg_init_context(struct flatgeobuf_encode_ctx *ctx);
+struct flatgeobuf_encode_ctx *flatgeobuf_agg_init_context(const char *geom_name);
 void flatgeobuf_agg_transfn(struct flatgeobuf_encode_ctx *ctx);
 uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_encode_ctx *ctx);
 
