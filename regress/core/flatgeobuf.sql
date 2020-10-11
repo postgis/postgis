@@ -1,6 +1,8 @@
 begin transaction;
 select ST_TableFromFlatGeobuf('public', 'flatgeobuf_t1');
 
+select '--- Null geometry ---';
+
 -- single row null geometry
 select 'T1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     select ST_AsFlatGeobuf(q) fgb from (select null::geometry) q)
@@ -10,6 +12,8 @@ select 'T1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
 --select 'T2', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
 --    select ST_AsFlatGeobuf(q) fgb from (select null::geometry limit 0) q)
 --);
+
+select '--- Geometry roundtrips ---';
 
 -- 2D Point
 select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
@@ -75,6 +79,13 @@ select 'GC1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     select ST_AsFlatGeobuf(q) from (select 
         'GEOMETRYCOLLECTION (POINT (40 10), LINESTRING (10 10, 20 20, 10 40), POLYGON ((40 40, 20 45, 45 30, 40 40)))'::geometry
     ) q)
+);
+
+select '--- Multiple rows ---';
+
+-- 2D Point
+select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
+    select ST_AsFlatGeobuf(q) fgb from (select ST_MakePoint(1.1, 2.1)) q)
 );
 
 commit;
