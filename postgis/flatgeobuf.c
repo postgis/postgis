@@ -109,7 +109,7 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 	ctx->offset += size;
 }
 
-static void encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *lwpt)
+static Geometry_ref_t encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *lwpt)
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
@@ -129,10 +129,10 @@ static void encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *lwpt)
 		Geometry_m_push_create(B, pt.m);
 		Geometry_m_end(B);
 	}
-	Feature_geometry_add(B, Geometry_end(B));
+	return Geometry_end(B);
 }
 
-static void encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
+static Geometry_ref_t encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
@@ -160,10 +160,10 @@ static void encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
 		}
 		Geometry_m_end(B);
 	}
-	Feature_geometry_add(B, Geometry_end(B));
+	return Geometry_end(B);
 }
 
-static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa, size_t len)
+static Geometry_ref_t encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa, size_t len)
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
@@ -206,75 +206,67 @@ static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa,
 		}
 		Geometry_m_end(B);
 	}
-	Feature_geometry_add(B, Geometry_end(B));
+	return Geometry_end(B);
 }
 
-static void encode_line(struct flatgeobuf_encode_ctx *ctx, LWLINE *lwline)
+static Geometry_ref_t encode_line(struct flatgeobuf_encode_ctx *ctx, LWLINE *lwline)
 {
-	encode_line_pa(ctx, lwline->points);
+	return encode_line_pa(ctx, lwline->points);
 }
 
-static void encode_triangle(struct flatgeobuf_encode_ctx *ctx, LWTRIANGLE *lwtriangle)
+static Geometry_ref_t encode_triangle(struct flatgeobuf_encode_ctx *ctx, LWTRIANGLE *lwtriangle)
 {
-	encode_line_pa(ctx, lwtriangle->points);
+	return encode_line_pa(ctx, lwtriangle->points);
 }
 
-static void encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwpoly)
+static Geometry_ref_t encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwpoly)
 {
 	uint32_t nrings = lwpoly->nrings;
 	POINTARRAY **ppa = lwpoly->rings;
-	if (nrings == 0)
-		return;
 	if (nrings == 1)
-		encode_line_pa(ctx, ppa[0]);
+		return encode_line_pa(ctx, ppa[0]);
 	else
-		encode_line_ppa(ctx, ppa, nrings);
+		return encode_line_ppa(ctx, ppa, nrings);
 }
 
-static void encode_mpoint(struct flatgeobuf_encode_ctx *ctx, LWMPOINT *lwmpoint)
+static Geometry_ref_t encode_mpoint(struct flatgeobuf_encode_ctx *ctx, LWMPOINT *lwmpoint)
 {
 	LWLINE *lwline = lwline_from_lwmpoint(0, lwmpoint);
-	encode_line_pa(ctx, lwline->points);
+	return encode_line_pa(ctx, lwline->points);
 }
 
-static void encode_mline(struct flatgeobuf_encode_ctx *ctx, LWMLINE *lwmline)
+static Geometry_ref_t encode_mline(struct flatgeobuf_encode_ctx *ctx, LWMLINE *lwmline)
 {
 	uint32_t ngeoms = lwmline->ngeoms;
 	POINTARRAY **ppa;
-	if (ngeoms == 0)
-		return;
 	if (ngeoms == 1) {
-		encode_line_pa(ctx, lwmline->geoms[0]->points);
+		return encode_line_pa(ctx, lwmline->geoms[0]->points);
 	} else {
 		ppa = lwalloc(sizeof(POINTARRAY *) * ngeoms);
 		for (int i = 0; i < ngeoms; i++)
 			ppa[i] = lwmline->geoms[i]->points;
-		encode_line_ppa(ctx, ppa, ngeoms);
+		return encode_line_ppa(ctx, ppa, ngeoms);
 	}
 }
 
-static void encode_mpoly(struct flatgeobuf_encode_ctx *ctx, LWMPOLY *lwmpoly)
+static Geometry_ref_t encode_mpoly(struct flatgeobuf_encode_ctx *ctx, LWMPOLY *lwmpoly)
 {
 	flatcc_builder_t *B = ctx->B;
 	uint32_t ngeoms = lwmpoly->ngeoms;
-
 	Geometry_ref_t *parts = lwalloc(sizeof(Geometry_ref_t) * ngeoms);
-	for (uint32_t i = 0; i < ngeoms; i++) {
-		Geometry_start(B);
-		encode_poly(ctx, lwmpoly->geoms[i]);
-		parts[i] = Geometry_end(B);
-	}
+	for (uint32_t i = 0; i < ngeoms; i++)
+		parts[i] = encode_poly(ctx, lwmpoly->geoms[i]);
 	Geometry_start(B);
 	Geometry_parts_create(B, parts, ngeoms);
-	Feature_geometry_add(B, Geometry_end(B));
+	return Geometry_end(B);
 }
 
-static void encode_geometry(struct flatgeobuf_encode_ctx *ctx)
+static Geometry_ref_t encode_geometry(struct flatgeobuf_encode_ctx *ctx)
 {
 	LWGEOM *lwgeom = ctx->lwgeom;
 
 	if (lwgeom == NULL)
-		return;
+		return 0;
 
 	if (ctx->geometry_type != GeometryType_Unknown && lwgeom->type != ctx->geometry_type)
 		elog(ERROR, "encode_geometry: unexpected geometry type '%s'", lwtype_name(lwgeom->type));
@@ -308,13 +300,16 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 	size_t size;
 	uint8_t *feature;
 	flatcc_builder_t builder, *B;
+	Geometry_ref_t geometry;
 
 	B = &builder;
 	flatcc_builder_init(B);
 	ctx->B = B;
 	
 	Feature_start_as_root_with_size(B);
-	encode_geometry(ctx);
+	geometry = encode_geometry(ctx);
+	if (geometry != 0)
+		Feature_geometry_add(B, encode_geometry(ctx));
 	// TODO: encode feature properties
 	Feature_end_as_root(B);
 	feature = flatcc_builder_finalize_buffer(B, &size);
