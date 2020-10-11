@@ -70,4 +70,11 @@ select 'MP1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     ) q)
 );
 
+-- 2D GeometryCollection
+select 'GC1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
+    select ST_AsFlatGeobuf(q) from (select 
+        'GEOMETRYCOLLECTION (POINT (40 10), LINESTRING (10 10, 20 20, 10 40), POLYGON ((40 40, 20 45, 45 30, 40 40)))'::geometry
+    ) q)
+);
+
 commit;

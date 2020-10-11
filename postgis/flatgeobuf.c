@@ -49,9 +49,9 @@ static uint8_t get_geometrytype(LWGEOM *lwgeom) {
 		return GeometryType_MultiLineString;
 	case MULTIPOLYGONTYPE:
 		return GeometryType_MultiPolygon;
-	//case COLLECTIONTYPE:
-	//case TINTYPE:
-	//	return encode_collection(ctx, (LWCOLLECTION*)lwgeom);
+	case TINTYPE:
+	case COLLECTIONTYPE:
+		return GeometryType_GeometryCollection;
 	default:
 		elog(ERROR, "get_geometrytype: '%s' geometry type not supported",
 				lwtype_name(type));
@@ -109,7 +109,7 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 	ctx->offset += size;
 }
 
-static Geometry_ref_t encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *lwpt)
+static Geometry_ref_t encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *lwpt, bool with_type)
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
@@ -129,14 +129,16 @@ static Geometry_ref_t encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *l
 		Geometry_m_push_create(B, pt.m);
 		Geometry_m_end(B);
 	}
+	if (with_type)
+		Geometry_type_add(B, GeometryType_Point);
 	return Geometry_end(B);
 }
 
-static Geometry_ref_t encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
+static void encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
-	Geometry_start(B);
+
 	Geometry_xy_start(B);
 	for (int i = 0; i < pa->npoints; i++) {
 		getPoint4d_p(pa, i, &pt);
@@ -160,17 +162,15 @@ static Geometry_ref_t encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARR
 		}
 		Geometry_m_end(B);
 	}
-	return Geometry_end(B);
 }
 
-static Geometry_ref_t encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa, size_t len)
+static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa, size_t len)
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
 	uint32_t *ends = lwalloc(sizeof(uint32_t) * len);
 	uint32_t offset = 0;
 
-	Geometry_start(B);
 	Geometry_xy_start(B);
 	for (int n = 0; n < len; n++) {
 		POINTARRAY *pa = ppa[n];
@@ -206,93 +206,145 @@ static Geometry_ref_t encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTAR
 		}
 		Geometry_m_end(B);
 	}
+}
+
+static Geometry_ref_t encode_line(struct flatgeobuf_encode_ctx *ctx, LWLINE *lwline, bool with_type)
+{
+	flatcc_builder_t *B = ctx->B;
+
+	Geometry_start(B);
+	encode_line_pa(ctx, lwline->points);
+	if (with_type)
+		Geometry_type_add(B, GeometryType_LineString);
 	return Geometry_end(B);
 }
 
-static Geometry_ref_t encode_line(struct flatgeobuf_encode_ctx *ctx, LWLINE *lwline)
+static Geometry_ref_t encode_triangle(struct flatgeobuf_encode_ctx *ctx, LWTRIANGLE *lwtriangle, bool with_type)
 {
-	return encode_line_pa(ctx, lwline->points);
+	flatcc_builder_t *B = ctx->B;
+
+	Geometry_start(B);
+	encode_line_pa(ctx, lwtriangle->points);
+	if (with_type)
+		Geometry_type_add(B, GeometryType_Triangle);
+	return Geometry_end(B); 
 }
 
-static Geometry_ref_t encode_triangle(struct flatgeobuf_encode_ctx *ctx, LWTRIANGLE *lwtriangle)
+static Geometry_ref_t encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwpoly, bool with_type)
 {
-	return encode_line_pa(ctx, lwtriangle->points);
-}
-
-static Geometry_ref_t encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwpoly)
-{
+	flatcc_builder_t *B = ctx->B;
 	uint32_t nrings = lwpoly->nrings;
 	POINTARRAY **ppa = lwpoly->rings;
+
+	Geometry_start(B);
 	if (nrings == 1)
-		return encode_line_pa(ctx, ppa[0]);
+		encode_line_pa(ctx, ppa[0]);
 	else
-		return encode_line_ppa(ctx, ppa, nrings);
+		encode_line_ppa(ctx, ppa, nrings);
+	if (with_type)
+		Geometry_type_add(B, GeometryType_Polygon);
+	return Geometry_end(B); 
 }
 
-static Geometry_ref_t encode_mpoint(struct flatgeobuf_encode_ctx *ctx, LWMPOINT *lwmpoint)
+static Geometry_ref_t encode_mpoint(struct flatgeobuf_encode_ctx *ctx, LWMPOINT *lwmpoint, bool with_type)
 {
+	flatcc_builder_t *B = ctx->B;
 	LWLINE *lwline = lwline_from_lwmpoint(0, lwmpoint);
-	return encode_line_pa(ctx, lwline->points);
+
+	Geometry_start(B);
+	encode_line_pa(ctx, lwline->points);
+	if (with_type)
+		Geometry_type_add(B, GeometryType_MultiPoint);
+	return Geometry_end(B);  
 }
 
-static Geometry_ref_t encode_mline(struct flatgeobuf_encode_ctx *ctx, LWMLINE *lwmline)
+static Geometry_ref_t encode_mline(struct flatgeobuf_encode_ctx *ctx, LWMLINE *lwmline, bool with_type)
 {
+	flatcc_builder_t *B = ctx->B;
 	uint32_t ngeoms = lwmline->ngeoms;
 	POINTARRAY **ppa;
+
+	Geometry_start(B);
 	if (ngeoms == 1) {
-		return encode_line_pa(ctx, lwmline->geoms[0]->points);
+		encode_line_pa(ctx, lwmline->geoms[0]->points);
 	} else {
 		ppa = lwalloc(sizeof(POINTARRAY *) * ngeoms);
 		for (int i = 0; i < ngeoms; i++)
 			ppa[i] = lwmline->geoms[i]->points;
-		return encode_line_ppa(ctx, ppa, ngeoms);
+		encode_line_ppa(ctx, ppa, ngeoms);
 	}
+	if (with_type)
+		Geometry_type_add(B, GeometryType_MultiLineString);
+	return Geometry_end(B);  
 }
 
-static Geometry_ref_t encode_mpoly(struct flatgeobuf_encode_ctx *ctx, LWMPOLY *lwmpoly)
+static Geometry_ref_t encode_mpoly(struct flatgeobuf_encode_ctx *ctx, LWMPOLY *lwmpoly, bool with_type)
 {
 	flatcc_builder_t *B = ctx->B;
 	uint32_t ngeoms = lwmpoly->ngeoms;
 	Geometry_ref_t *parts = lwalloc(sizeof(Geometry_ref_t) * ngeoms);
 	for (uint32_t i = 0; i < ngeoms; i++)
-		parts[i] = encode_poly(ctx, lwmpoly->geoms[i]);
+		parts[i] = encode_poly(ctx, lwmpoly->geoms[i], false);
 	Geometry_start(B);
 	Geometry_parts_create(B, parts, ngeoms);
+	if (with_type)
+		Geometry_type_add(B, GeometryType_MultiPolygon);
 	return Geometry_end(B);
 }
 
-static Geometry_ref_t encode_geometry(struct flatgeobuf_encode_ctx *ctx)
-{
-	LWGEOM *lwgeom = ctx->lwgeom;
+static Geometry_ref_t encode_geometry_part(struct flatgeobuf_encode_ctx *ctx, LWGEOM *lwgeom, bool with_type);
 
+static Geometry_ref_t encode_collection(struct flatgeobuf_encode_ctx *ctx, LWCOLLECTION *lwcollection, bool with_type)
+{
+	flatcc_builder_t *B = ctx->B;
+	uint32_t ngeoms = lwcollection->ngeoms;
+	Geometry_ref_t *parts = lwalloc(sizeof(Geometry_ref_t) * ngeoms);
+	for (uint32_t i = 0; i < ngeoms; i++)
+		parts[i] = encode_geometry_part(ctx, lwcollection->geoms[i], true);
+	Geometry_start(B);
+	Geometry_parts_create(B, parts, ngeoms);
+	if (with_type)
+		Geometry_type_add(B, GeometryType_GeometryCollection);
+	return Geometry_end(B);
+}
+
+static Geometry_ref_t encode_geometry_part(struct flatgeobuf_encode_ctx *ctx, LWGEOM *lwgeom, bool with_type)
+{
 	if (lwgeom == NULL)
 		return 0;
 
-	if (ctx->geometry_type != GeometryType_Unknown && lwgeom->type != ctx->geometry_type)
-		elog(ERROR, "encode_geometry: unexpected geometry type '%s'", lwtype_name(lwgeom->type));
-
 	switch (lwgeom->type) {
 	case POINTTYPE:
-		return encode_point(ctx, (LWPOINT *) lwgeom);
+		return encode_point(ctx, (LWPOINT *) lwgeom, with_type);
 	case LINETYPE:
-		return encode_line(ctx, (LWLINE*)lwgeom);
+		return encode_line(ctx, (LWLINE *) lwgeom, with_type);
 	case TRIANGLETYPE:
-		return encode_triangle(ctx, (LWTRIANGLE *)lwgeom);
+		return encode_triangle(ctx, (LWTRIANGLE *) lwgeom, with_type);
 	case POLYGONTYPE:
-		return encode_poly(ctx, (LWPOLY*)lwgeom);
+		return encode_poly(ctx, (LWPOLY *) lwgeom, with_type);
 	case MULTIPOINTTYPE:
-		return encode_mpoint(ctx, (LWMPOINT*)lwgeom);
+		return encode_mpoint(ctx, (LWMPOINT *) lwgeom, with_type);
 	case MULTILINETYPE:
-		return encode_mline(ctx, (LWMLINE*)lwgeom);
+		return encode_mline(ctx, (LWMLINE *) lwgeom, with_type);
 	case MULTIPOLYGONTYPE:
-		return encode_mpoly(ctx, (LWMPOLY*)lwgeom);
-	/*case COLLECTIONTYPE:
+		return encode_mpoly(ctx, (LWMPOLY *) lwgeom, with_type);
+	case COLLECTIONTYPE:
 	case TINTYPE:
-		return encode_collection(ctx, (LWCOLLECTION*)lwgeom);*/
+		return encode_collection(ctx, (LWCOLLECTION *) lwgeom, with_type);
 	default:
 		elog(ERROR, "encode_geometry: '%s' geometry type not supported",
 				lwtype_name(lwgeom->type));
 	}
+}
+
+static Geometry_ref_t encode_geometry(struct flatgeobuf_encode_ctx *ctx)
+{
+	bool geometry_type_is_unknown = ctx->geometry_type == GeometryType_Unknown;
+
+	if (!geometry_type_is_unknown && ctx->lwgeom->type != ctx->geometry_type)
+		elog(ERROR, "encode_geometry: unexpected geometry type '%s'", lwtype_name(ctx->lwgeom->type));
+
+	return encode_geometry_part(ctx, ctx->lwgeom, geometry_type_is_unknown);
 }
 
 static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
@@ -526,31 +578,48 @@ static LWMPOLY *decode_mpoly(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 	return lwmpoly;
 }
 
-static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+static LWGEOM *decode_geometry_part(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry, GeometryType_enum_t geometry_type);
+
+static LWCOLLECTION *decode_collection(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+{
+	Geometry_vec_t parts = Geometry_parts(geometry);
+	size_t ngeoms = Geometry_vec_len(parts);
+	LWCOLLECTION *lwcollection = lwcollection_construct_empty(COLLECTIONTYPE, 0, ctx->hasZ, ctx->hasM);
+	for (int i = 0; i < ngeoms; i++) {
+		Geometry_table_t part = Geometry_vec_at(parts, i);
+		GeometryType_enum_t geometry_type = Geometry_type_get(part);
+		lwcollection_add_lwgeom(lwcollection, decode_geometry_part(ctx, part, geometry_type));
+	}
+	return lwcollection;
+}
+
+static LWGEOM *decode_geometry_part(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry, GeometryType_enum_t geometry_type)
 {
 	LWGEOM *lwgeom;
-	switch (ctx->geometry_type) {
+	switch (geometry_type) {
 	case GeometryType_Point:
-		lwgeom = (LWGEOM *) decode_point(ctx, geometry);
-		break;
+		return (LWGEOM *) decode_point(ctx, geometry);
 	case GeometryType_LineString:
-		lwgeom = (LWGEOM *) decode_line(ctx, geometry);
-		break;
+		return (LWGEOM *) decode_line(ctx, geometry);
 	case GeometryType_Polygon:
-		lwgeom = (LWGEOM *) decode_poly(ctx, geometry);
-		break;
+		return (LWGEOM *) decode_poly(ctx, geometry);
 	case GeometryType_MultiPoint:
-		lwgeom = (LWGEOM *) decode_mpoint(ctx, geometry);
-		break;
+		return (LWGEOM *) decode_mpoint(ctx, geometry);
 	case GeometryType_MultiLineString:
-		lwgeom = (LWGEOM *) decode_mline(ctx, geometry);
-		break;
+		return (LWGEOM *) decode_mline(ctx, geometry);
 	case GeometryType_MultiPolygon:
-		lwgeom = (LWGEOM *) decode_mpoly(ctx, geometry);
-		break;
+		return (LWGEOM *) decode_mpoly(ctx, geometry);
+	case GeometryType_GeometryCollection:
+		return (LWGEOM *) decode_collection(ctx, geometry);
 	default:
-		elog(ERROR, "decode_geometry: Unknown geometry type %d", ctx->geometry_type);
+		elog(ERROR, "decode_geometry: Unknown geometry type %d", geometry_type);
 	}
+	return NULL;
+}
+
+static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+{
+	LWGEOM *lwgeom = decode_geometry_part(ctx, geometry, ctx->geometry_type);
 	return (Datum) geometry_serialize(lwgeom);
 }
 
