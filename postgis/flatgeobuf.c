@@ -132,10 +132,9 @@ static void encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *lwpt)
 	Feature_geometry_add(B, Geometry_end(B));
 }
 
-static void encode_line(struct flatgeobuf_encode_ctx *ctx, LWLINE *lwline)
+static void encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
 {
 	POINT4D pt;
-	POINTARRAY *pa = lwline->points;
 	flatcc_builder_t *B = ctx->B;
 	Geometry_start(B);
 	Geometry_xy_start(B);
@@ -164,6 +163,69 @@ static void encode_line(struct flatgeobuf_encode_ctx *ctx, LWLINE *lwline)
 	Feature_geometry_add(B, Geometry_end(B));
 }
 
+static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa, size_t len)
+{
+	POINT4D pt;
+	flatcc_builder_t *B = ctx->B;
+	uint32_t *ends = lwalloc(sizeof(uint32_t) * len);
+	uint32_t offset = 0;
+
+	Geometry_start(B);
+	Geometry_xy_start(B);
+	for (int n = 0; n < len; n++) {
+		POINTARRAY *pa = ppa[n];
+		for (int i = 0; i < pa->npoints; i++) {
+			getPoint4d_p(pa, i, &pt);
+			Geometry_xy_push_create(B, pt.x);
+			Geometry_xy_push_create(B, pt.y);
+		}
+		offset += pa->npoints;
+		ends[n] = offset;
+	}
+	Geometry_xy_end(B);
+	Geometry_ends_create(B, ends, len);
+	if (ctx->hasZ) {
+		Geometry_z_start(B);
+		for (int n = 0; n < len; n++) {
+			POINTARRAY *pa = ppa[n];
+			for (int i = 0; i < pa->npoints; i++) {
+				getPoint4d_p(pa, i, &pt);
+				Geometry_z_push_create(B, pt.z);
+			}
+		}
+		Geometry_z_end(B);
+	}
+	if (ctx->hasM) {
+		Geometry_m_start(B);
+		for (int n = 0; n < len; n++) {
+			POINTARRAY *pa = ppa[n];
+			for (int i = 0; i < pa->npoints; i++) {
+				getPoint4d_p(pa, i, &pt);
+				Geometry_m_push_create(B, pt.m);
+			}
+		}
+		Geometry_m_end(B);
+	}
+	Feature_geometry_add(B, Geometry_end(B));
+}
+
+static void encode_line(struct flatgeobuf_encode_ctx *ctx, LWLINE *lwline)
+{
+	encode_line_pa(ctx, lwline->points);
+}
+
+static void encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwpoly)
+{
+	uint32_t nrings = lwpoly->nrings;
+	POINTARRAY **ppa = lwpoly->rings;
+	if (nrings == 0)
+		return;
+	if (nrings == 1)
+		encode_line_pa(ctx, ppa[0]);
+	else
+		encode_line_ppa(ctx, ppa, nrings);
+}
+
 static void encode_geometry(struct flatgeobuf_encode_ctx *ctx)
 {
 	LWGEOM *lwgeom = ctx->lwgeom;
@@ -179,11 +241,11 @@ static void encode_geometry(struct flatgeobuf_encode_ctx *ctx)
 		return encode_point(ctx, (LWPOINT *) lwgeom);
 	case LINETYPE:
 		return encode_line(ctx, (LWLINE*)lwgeom);
-	/*case TRIANGLETYPE:
-		return encode_triangle(ctx, (LWTRIANGLE *)lwgeom);
+	//case TRIANGLETYPE:
+	//	return encode_triangle(ctx, (LWTRIANGLE *)lwgeom);
 	case POLYGONTYPE:
 		return encode_poly(ctx, (LWPOLY*)lwgeom);
-	case MULTIPOINTTYPE:
+	/*case MULTIPOINTTYPE:
 		return encode_mpoint(ctx, (LWMPOINT*)lwgeom);
 	case MULTILINETYPE:
 		return encode_mline(ctx, (LWMLINE*)lwgeom);
@@ -291,7 +353,7 @@ static Datum decode_point(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t ge
 	return (Datum) geometry_serialize(lwgeom);
 }
 
-static Datum decode_line(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+static POINTARRAY *decode_line_pa(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry, uint32 end, uint32 offset)
 {
 	POINTARRAY *pa;
 	LWGEOM *lwgeom;
@@ -299,13 +361,22 @@ static Datum decode_line(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geo
 
 	flatbuffers_double_vec_t xy = Geometry_xy(geometry);
 
-	size_t xy_len = flatbuffers_double_vec_len(xy);
-	size_t npoints = xy_len / 2;
+	size_t npoints;
+	size_t xy_len;
+
+	if (end != 0) {
+		npoints = end - offset;
+		xy_len = npoints * 2;
+	} else {
+		xy_len = flatbuffers_double_vec_len(xy);
+		npoints = xy_len / 2;
+		end = npoints;
+	}
 
 	pa = ptarray_construct_empty(ctx->hasZ, ctx->hasM, npoints);
 
 	if (ctx->hasZ && ctx->hasM) {
-		for (size_t i = 0; i < npoints; i++) {
+		for (size_t i = offset; i < end; i++) {
 			double x = flatbuffers_double_vec_at(xy, (i * 2));
 			double y = flatbuffers_double_vec_at(xy, (i * 2) + 1);
 			flatbuffers_double_vec_t za = Geometry_z(geometry);
@@ -316,7 +387,7 @@ static Datum decode_line(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geo
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 	} else if (ctx->hasZ) {
-		for (size_t i = 0; i < npoints; i++) {
+		for (size_t i = offset; i < end; i++) {
 			double x = flatbuffers_double_vec_at(xy, (i * 2));
 			double y = flatbuffers_double_vec_at(xy, (i * 2) + 1);
 			flatbuffers_double_vec_t za = Geometry_z(geometry);
@@ -325,7 +396,7 @@ static Datum decode_line(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geo
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 	} else if (ctx->hasM) {
-		for (size_t i = 0; i < npoints; i++) {
+		for (size_t i = offset; i < end; i++) {
 			double x = flatbuffers_double_vec_at(xy, (i * 2));
 			double y = flatbuffers_double_vec_at(xy, (i * 2) + 1);
 			flatbuffers_double_vec_t ma = Geometry_m(geometry);
@@ -334,15 +405,47 @@ static Datum decode_line(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geo
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 	} else {
-		for (size_t i = 0; i < xy_len; i += 2) {
-			double x = flatbuffers_double_vec_at(xy, i);
-			double y = flatbuffers_double_vec_at(xy, i + 1);
+		for (size_t i = offset; i < end; i++) {
+			double x = flatbuffers_double_vec_at(xy, (i * 2));
+			double y = flatbuffers_double_vec_at(xy, (i * 2) + 1);
 			pt = (POINT4D) { x, y, 0, 0 };
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 	}
+
+	return pa;
+}
+
+static Datum decode_line(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+{
+	POINTARRAY *pa = decode_line_pa(ctx, geometry, 0, 0);
+	LWGEOM *lwgeom = (LWGEOM *) lwline_construct(0, NULL, pa);
+	return (Datum) geometry_serialize(lwgeom);
+}
+
+static Datum decode_poly(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+{
+	LWGEOM *lwgeom;
+	POINTARRAY **ppa;
+
+	flatbuffers_uint32_vec_t ends = Geometry_ends(geometry);
+
+	size_t nrings = 1;
+	uint32 end = 0;
+	uint32 offset = 0;
 	
-	lwgeom = (LWGEOM *) lwline_construct(0, NULL, pa);
+	if (ends != NULL)
+		nrings = flatbuffers_uint32_vec_len(ends);
+	
+	ppa = lwalloc(sizeof(POINTARRAY *) * nrings);
+	for (size_t i = 0; i < nrings; i++) {
+		if (ends != NULL)
+			end = flatbuffers_uint32_vec_at(ends, i);
+		ppa[i] = decode_line_pa(ctx, geometry, end, offset);
+		offset = end;
+	}
+
+	lwgeom = (LWGEOM *) lwpoly_construct(0, NULL, nrings, ppa);
 	return (Datum) geometry_serialize(lwgeom);
 }
 
@@ -354,6 +457,8 @@ static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 			return decode_point(ctx, geometry);
 		case GeometryType_LineString:
 			return decode_line(ctx, geometry);
+		case GeometryType_Polygon:
+			return decode_poly(ctx, geometry);
 		default:
 			elog(ERROR, "Unknown geometry type");
 	}
@@ -376,6 +481,7 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 	bool *isnull = palloc(ctx->tupdesc->natts * sizeof(bool *));
 
 	values[0] = Int32GetDatum(ctx->fid);
+	isnull[0] = false;
 	
 	flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
 	ctx->offset += sizeof(flatbuffers_uoffset_t);
