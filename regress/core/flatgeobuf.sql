@@ -83,9 +83,10 @@ select 'GC1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
 
 select '--- Multiple rows ---';
 
--- 2D Point
+-- Multiple 2D points
+with q (k) AS (VALUES ('POINT (1 2)'::geometry), ('POINT (3 4)'::geometry)) 
 select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
-    select ST_AsFlatGeobuf(q) fgb from (select ST_MakePoint(1.1, 2.1)) q)
+    select ST_AsFlatGeobuf(q) from q)
 );
 
 commit;

@@ -657,7 +657,8 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 	ctx->result = HeapTupleGetDatum(heapTuple);
 	ctx->fid++;
 
-	ctx->done = true;
+	if (ctx->offset == ctx->size)
+		ctx->done = true;
 }
 
 /**
