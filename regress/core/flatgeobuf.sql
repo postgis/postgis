@@ -49,4 +49,11 @@ select 'P2', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     ) q)
 );
 
+-- 2D MultiPoint
+select 'MP1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
+    select ST_AsFlatGeobuf(q) from (select 
+        'MULTIPOINT (10 40, 40 30, 20 20, 30 10)'::geometry
+    ) q)
+);
+
 commit;

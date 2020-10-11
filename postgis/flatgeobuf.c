@@ -214,6 +214,11 @@ static void encode_line(struct flatgeobuf_encode_ctx *ctx, LWLINE *lwline)
 	encode_line_pa(ctx, lwline->points);
 }
 
+static void encode_triangle(struct flatgeobuf_encode_ctx *ctx, LWTRIANGLE *lwtriangle)
+{
+	encode_line_pa(ctx, lwtriangle->points);
+}
+
 static void encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwpoly)
 {
 	uint32_t nrings = lwpoly->nrings;
@@ -224,6 +229,12 @@ static void encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwpoly)
 		encode_line_pa(ctx, ppa[0]);
 	else
 		encode_line_ppa(ctx, ppa, nrings);
+}
+
+static void encode_mpoint(struct flatgeobuf_encode_ctx *ctx, LWMPOINT *lwmpoint)
+{
+	LWLINE *lwline = lwline_from_lwmpoint(0, lwmpoint);
+	encode_line_pa(ctx, lwline->points);
 }
 
 static void encode_geometry(struct flatgeobuf_encode_ctx *ctx)
@@ -241,13 +252,13 @@ static void encode_geometry(struct flatgeobuf_encode_ctx *ctx)
 		return encode_point(ctx, (LWPOINT *) lwgeom);
 	case LINETYPE:
 		return encode_line(ctx, (LWLINE*)lwgeom);
-	//case TRIANGLETYPE:
-	//	return encode_triangle(ctx, (LWTRIANGLE *)lwgeom);
+	case TRIANGLETYPE:
+		return encode_triangle(ctx, (LWTRIANGLE *)lwgeom);
 	case POLYGONTYPE:
 		return encode_poly(ctx, (LWPOLY*)lwgeom);
-	/*case MULTIPOINTTYPE:
+	case MULTIPOINTTYPE:
 		return encode_mpoint(ctx, (LWMPOINT*)lwgeom);
-	case MULTILINETYPE:
+	/*case MULTILINETYPE:
 		return encode_mline(ctx, (LWMLINE*)lwgeom);
 	case MULTIPOLYGONTYPE:
 		return encode_mpoly(ctx, (LWMPOLY*)lwgeom);
@@ -449,6 +460,13 @@ static Datum decode_poly(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geo
 	return (Datum) geometry_serialize(lwgeom);
 }
 
+static Datum decode_mpoint(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
+{
+	POINTARRAY *pa = decode_line_pa(ctx, geometry, 0, 0);
+	LWGEOM *lwgeom = (LWGEOM *) lwmpoint_construct(0, pa);
+	return (Datum) geometry_serialize(lwgeom);
+}
+
 static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
 {
 	switch (ctx->geometry_type)
@@ -459,6 +477,8 @@ static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 			return decode_line(ctx, geometry);
 		case GeometryType_Polygon:
 			return decode_poly(ctx, geometry);
+		case GeometryType_MultiPoint:
+			return decode_mpoint(ctx, geometry);
 		default:
 			elog(ERROR, "Unknown geometry type");
 	}
