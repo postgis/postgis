@@ -158,7 +158,7 @@ iso_ex_2segs|28
 #1706.2|E*|69
 #1706.2|E*|70
 #1706.2|E*|71
-#1706.2|E*|73
+#1706.2|E*|74
 #1706.2|N|73||POINT(10 0)
 #1706.2|N|74||POINT(10 10)
 #1706.2|N|75||POINT(9 12)
@@ -168,11 +168,12 @@ iso_ex_2segs|28
 #1706.2|E|71|sn73|en74
 #1706.2|E|72|sn75|en72
 #1706.2|E|73|sn76|en74
+#1706.2|E|74|sn75|en76
 #1714.1|N|77
 #1714.1|N|77|0|POINT(10 0)
-#1714.2|E*|74
+#1714.2|E*|75
 #1714.2|N|78||POINT(0 20)
-#1714.2|E|74|sn77|en78
+#1714.2|E|75|sn77|en78
 Topology 'city_data' dropped
 t3280.start|t
 t3280|L11
@@ -201,7 +202,7 @@ t3371.L2|2
 t3371.end|Topology 'bug3711' dropped
 t3838.start|t
 t3838.L1|1
-t3838.L2|9
+t3838.L2|6
 t3838.end|Topology 'bug3838' dropped
 t1855_1.start|t
 t1855_1.0|1
@@ -215,3 +216,10 @@ t1855_2.end|Topology 'bug1855' dropped
 t4757.start|t
 t4757.0|1
 t4757.end|Topology 'bug4757' dropped
+t4758.start|t
+t4758.0|1
+t4758.1|2
+t4758.2|4
+t4758.2|5
+t4758.2|2
+t4758.end|Topology 't4758' dropped

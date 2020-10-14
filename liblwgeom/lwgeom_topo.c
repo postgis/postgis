@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015-2017 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2020 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -5567,10 +5567,10 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
               tol, qbox.xmin, qbox.ymin, qbox.xmax, qbox.ymax);
 
   LWGEOM **nearby = 0;
-  int nearbyindex=0;
+  int nearbyindex = 0;
   int nearbycount = 0;
 
-  /* 2. Node to edges falling within tol distance */
+  /* 2.0. Find edges falling within tol distance */
   edges = lwt_be_getEdgeWithinBox2D( topo, &qbox, &numedges, LWT_COL_EDGE_ALL, 0 );
   if (numedges == UINT64_MAX)
   {
@@ -5584,7 +5584,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   {{
     /* collect those whose distance from us is < tol */
     nearbycount += numedges;
-    nearby = lwalloc(nearbycount * sizeof(LWGEOM *));
+    nearby = lwalloc(numedges * sizeof(LWGEOM *));
     for (i=0; i<numedges; ++i)
     {
       LW_ON_INTERRUPT(return NULL);
@@ -5596,56 +5596,11 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
       if ( dist && dist >= tol ) continue;
       nearby[nearbyindex++] = g;
     }
-    LWDEBUGF(2, "Found %d lines closer than tolerance (%g)", nearbyindex, tol);
-    if ( nearbyindex )
-    {{
-      LWCOLLECTION *col;
-      LWGEOM *iedges; /* just an alias for col */
-      LWGEOM *snapped;
-      LWGEOM *set1, *set2;
-
-      LWDEBUGF(1, "Line intersects %d edges", nearbyindex);
-
-      col = lwcollection_construct(COLLECTIONTYPE, topo->srid,
-                                   NULL, nearbyindex, nearby);
-      iedges = lwcollection_as_lwgeom(col);
-      LWDEBUGG(1, iedges, "Collected edges");
-      LWDEBUGF(1, "Snapping noded, with srid=%d "
-                  "to interesecting edges, with srid=%d",
-                  noded->srid, iedges->srid);
-      snapped = _lwt_toposnap(noded, iedges, tol);
-      lwgeom_free(noded);
-      LWDEBUGG(1, snapped, "Snapped");
-      LWDEBUGF(1, "Diffing snapped, with srid=%d "
-                  "and interesecting edges, with srid=%d",
-                  snapped->srid, iedges->srid);
-      noded = lwgeom_difference(snapped, iedges);
-      LWDEBUGG(1, noded, "Differenced");
-      LWDEBUGF(1, "Intersecting snapped, with srid=%d "
-                  "and interesecting edges, with srid=%d",
-                  snapped->srid, iedges->srid);
-      set1 = lwgeom_intersection(snapped, iedges);
-      LWDEBUGG(1, set1, "Intersected");
-      lwgeom_free(snapped);
-      LWDEBUGF(1, "Linemerging set1, with srid=%d", set1->srid);
-      set2 = lwgeom_linemerge(set1);
-      LWDEBUGG(1, set2, "Linemerged");
-      LWDEBUGG(1, noded, "Noded");
-      lwgeom_free(set1);
-      LWDEBUGF(1, "Unioning noded, with srid=%d "
-                  "and set2, with srid=%d", noded->srid, set2->srid);
-      set1 = lwgeom_union(noded, set2);
-      lwgeom_free(set2);
-      lwgeom_free(noded);
-      noded = set1;
-      LWDEBUGG(1, set1, "Unioned");
-
-      /* will not release the geoms array */
-      lwcollection_release(col);
-    }}
+    LWDEBUGF(1, "Found %d edges closer than tolerance (%g)", nearbyindex, tol);
   }}
+  int nearbyedgecount = nearbyindex;
 
-  /* 2.1. Node with existing nodes within tol
+  /* 2.1. Find nodes falling within tol distance *
    * TODO: check if we should be only considering _isolated_ nodes! */
   nodes = lwt_be_getNodeWithinBox2D( topo, &qbox, &numnodes, LWT_COL_NODE_ALL, 0 );
   if (numnodes == UINT64_MAX)
@@ -5655,11 +5610,10 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     return NULL;
   }
   LWDEBUGF(1, "Line bbox intersects %d nodes bboxes", numnodes);
-  int nearbyedgecount = nearbyindex;
   if ( numnodes )
   {{
     /* collect those whose distance from us is < tol */
-    nearbycount = nearbyindex + numnodes;
+    nearbycount = nearbyedgecount + numnodes;
     nearby = nearby ?
         lwrealloc(nearby, nearbycount * sizeof(LWGEOM *))
         :
@@ -5672,21 +5626,29 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
       LWGEOM *g = lwpoint_as_lwgeom(n->geom);
       double dist = lwgeom_mindistance2d(g, noded);
       /* must be closer than tolerated, unless distance is zero */
-      if ( dist && dist >= tol ) continue;
+      if ( dist && dist >= tol )
+      {
+        LWDEBUGF(1, "Node %d is %g units away, we tolerate only %g", n->node_id, dist, tol);
+        continue;
+      }
       nearby[nearbyindex++] = g;
       ++nn;
     }
+    LWDEBUGF(1, "Found %d nodes closer than tolerance (%g)", nn, tol);
   }}
+  int nearbynodecount = nearbyindex - nearbyedgecount;
+  nearbycount = nearbyindex;
 
-  LWDEBUGF(1, "Number of nearby elements is %d", nearbyindex);
+  LWDEBUGF(1, "Number of nearby elements is %d", nearbycount);
 
-  if ( numnodes )
+  /* 2.2. Snap to nearby elements */
+  if ( nearbycount )
   {{
     LWCOLLECTION *col;
     LWGEOM *elems;
 
     col = lwcollection_construct(COLLECTIONTYPE, topo->srid,
-                                 NULL, nearbyindex, nearby);
+                                 NULL, nearbycount, nearby);
     elems = lwcollection_as_lwgeom(col);
 
     LWDEBUGG(1, elems, "Collected nearby elements");
@@ -5699,20 +5661,6 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     /* will not release the geoms array */
     lwcollection_release(col);
 
-    if ( numnodes )
-    {{
-      col = lwcollection_construct(MULTIPOINTTYPE, topo->srid,
-                             NULL, nearbyindex-nearbyedgecount,
-                             nearby + nearbyedgecount);
-      LWGEOM *inodes = lwcollection_as_lwgeom(col);
-      tmp = _lwt_split_by_nodes(noded, inodes);
-      lwgeom_free(noded);
-      noded = tmp;
-      LWDEBUGG(1, noded, "Node-split");
-      /* will not release the geoms array */
-      lwcollection_release(col);
-    }}
-
     /*
     -- re-node to account for ST_Snap introduced self-intersections
     -- See http://trac.osgeo.org/postgis/ticket/1714
@@ -5722,11 +5670,110 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Unary-unioned");
-
   }}
+
+  /* 2.3. Node with nearby edges */
+  if ( nearbyedgecount )
+  {{
+    LWCOLLECTION *col;
+    LWGEOM *iedges; /* just an alias for col */
+    LWGEOM *diff, *xset;
+
+    LWDEBUGF(1, "Line intersects %d edges", nearbyedgecount);
+
+    col = lwcollection_construct(COLLECTIONTYPE, topo->srid,
+                                 NULL, nearbyedgecount, nearby);
+    iedges = lwcollection_as_lwgeom(col);
+    LWDEBUGG(1, iedges, "Collected edges");
+
+    LWDEBUGF(1, "Diffing noded, with srid=%d "
+                "and interesecting edges, with srid=%d",
+                noded->srid, iedges->srid);
+    diff = lwgeom_difference(noded, iedges);
+    LWDEBUGG(1, diff, "Differenced");
+
+    LWDEBUGF(1, "Intersecting noded, with srid=%d "
+                "and interesecting edges, with srid=%d",
+                noded->srid, iedges->srid);
+    xset = lwgeom_intersection(noded, iedges);
+    LWDEBUGG(1, xset, "Intersected");
+    lwgeom_free(noded);
+
+    /* We linemerge here because INTERSECTION, as of GEOS 3.8,
+     * will result in shared segments being output as multiple
+     * lines rather than a single line. Example:
+
+          INTERSECTION(
+            'LINESTRING(0 0, 5 0, 8 0, 10 0,12 0)',
+            'LINESTRING(5 0, 8 0, 10 0)'
+          )
+          ==
+          MULTILINESTRING((5 0,8 0),(8 0,10 0))
+
+     * We will re-split in a subsequent step, by splitting
+     * the final line with pre-existing nodes
+     */
+    LWDEBUG(1, "Linemerging intersection");
+    tmp = lwgeom_linemerge(xset);
+    LWDEBUGG(1, tmp, "Linemerged");
+    lwgeom_free(xset);
+    xset = tmp;
+
+    /*
+     * Here we union the (linemerged) intersection with
+     * the difference (new lines)
+     */
+    LWDEBUG(1, "Unioning difference and (linemerged) intersection");
+    noded = lwgeom_union(diff, xset);
+    LWDEBUGG(1, noded, "Diff-Xset Unioned");
+    lwgeom_free(xset);
+    lwgeom_free(diff);
+
+    /* will not release the geoms array */
+    lwcollection_release(col);
+  }}
+
+
+  /* 2.4. Split by pre-existing nodes
+   *
+   * Pre-existing nodes are isolated nodes AND endpoints
+   * of intersecting edges
+   */
+  if ( nearbyedgecount )
+  {
+    nearbycount += nearbyedgecount * 2; /* make space for endpoints */
+    nearby = lwrealloc(nearby, nearbycount * sizeof(LWGEOM *));
+    for (int i=0; i<nearbyedgecount; i++)
+    {
+      LWLINE *edge = lwgeom_as_lwline(nearby[i]);
+      LWPOINT *startNode = lwline_get_lwpoint(edge, 0);
+      LWPOINT *endNode = lwline_get_lwpoint(edge, edge->points->npoints-1);
+      /* TODO: only add if within distance to noded AND if not duplicated */
+      nearby[nearbyindex++] = lwpoint_as_lwgeom(startNode);
+      nearbynodecount++;
+      nearby[nearbyindex++] = lwpoint_as_lwgeom(endNode);
+      nearbynodecount++;
+    }
+  }
+  if ( nearbynodecount )
+  {
+    col = lwcollection_construct(MULTIPOINTTYPE, topo->srid,
+                             NULL, nearbynodecount,
+                             nearby + nearbyedgecount);
+    LWGEOM *inodes = lwcollection_as_lwgeom(col);
+    /* TODO: use lwgeom_split of lwgeom_union ... */
+    tmp = _lwt_split_by_nodes(noded, inodes);
+    lwgeom_free(noded);
+    noded = tmp;
+    LWDEBUGG(1, noded, "Node-split");
+    /* will not release the geoms array */
+    lwcollection_release(col);
+  }
+
 
   LWDEBUG(1, "Freeing up nearby elements");
 
+  /* TODO: free up endpoints of nearbyedges */
   if ( nearby ) lwfree(nearby);
   if ( nodes ) _lwt_release_nodes(nodes, numnodes);
   if ( edges ) _lwt_release_edges(edges, numedges);
