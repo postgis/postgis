@@ -387,3 +387,13 @@ SELECT 't4757.0', topology.TopoGeo_addPoint('bug4757', 'POINT(0 0)');
 SELECT 't4757.1', topology.TopoGeo_addLinestring('bug4757',
   'LINESTRING(0 -0.1,1 0,1 1,0 1,0 -0.1)', 1);
 SELECT 't4757.end', topology.DropTopology('bug4757');
+
+-- See https://trac.osgeo.org/postgis/ticket/t4758
+select 't4758.start', topology.CreateTopology ('t4758', 0, 1e-06) > 0;
+select 't4758.0', topology.TopoGeo_addLinestring('t4758',
+  'LINESTRING(11.38327215  60.4081942, 11.3826176   60.4089484)');
+select 't4758.1', topology.TopoGeo_addLinestring('t4758',
+  'LINESTRING( 11.3832721  60.408194249999994, 11.38327215 60.4081942)');
+select 't4758.2', topology.TopoGeo_addLinestring('t4758',
+  'LINESTRING( 11.38330505 60.408239599999995, 11.3832721  60.408194249999994)');
+SELECT 't4758.end', topology.DropTopology('t4758');

@@ -162,12 +162,13 @@ iso_ex_2segs|28
 #1706.2|N||POINT(10 10)
 #1706.2|E|LINESTRING(10 0,10 10)
 #1706.2|E|LINESTRING(15 10,10 10)
+#1706.2|E|LINESTRING(9 12,15 10)
 #1706.2|E|LINESTRING(10 10,9 12)
 #1706.2|E|LINESTRING(20 10,15 10)
 #1706.2|E|LINESTRING(9 12,10 20)
 #1714.1|N|77
 #1714.1|N|0|POINT(10 0)
-#1714.2|E*|74
+#1714.2|E*|75
 #1714.2|N||POINT(0 20)
 #1714.2|E|LINESTRING(10 0,0 20)
 Topology 'city_data' dropped
@@ -197,7 +198,7 @@ t3371.L2|2
 t3371.end|Topology 'bug3711' dropped
 t3838.start|t
 t3838.L1|1
-t3838.L2|9
+t3838.L2|6
 t3838.end|Topology 'bug3838' dropped
 t1855_1.start|t
 t1855_1.0|1
@@ -209,3 +210,10 @@ t1855_2.end|Topology 'bug1855' dropped
 t4757.start|t
 t4757.0|1
 t4757.end|Topology 'bug4757' dropped
+t4758.start|t
+t4758.0|1
+t4758.1|2
+t4758.2|4
+t4758.2|5
+t4758.2|2
+t4758.end|Topology 't4758' dropped
