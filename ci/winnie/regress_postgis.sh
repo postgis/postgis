@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8.0
-	export GDAL_VER=2.4.4
-	export PROJ_VER=5.2.0
+	export GEOS_VER=3.8.1
+	export GDAL_VER=3.0.4
+	export PROJ_VER=6.3.2
 	export SFCGAL_VER=1.3.8
 	export CGAL_VER=5.0.2
 	export ICON_VER=1.15
@@ -134,8 +134,8 @@ fi
 
 if [ -n "$SFCGAL_VER" ]; then
 	##hard code versions of cgal etc. for now
-	export CGAL_VER=4.11
-	BOOST_VER=1.53.0
+	#export CGAL_VER=4.11
+	BOOST_VER=1.59.0
 	#BOOST_VER_WU=1_49_0
 	export BOOST_VER_WU=1_53_0
 	export PATH="${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/boost/rel-${BOOST_VER_WU}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
@@ -191,6 +191,7 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  strip raster/rt_pg/postgis_raster-*.dll
  cp topology/*.dll ${PGPATHEDB}/lib
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
+ cp sfcgal/*.dll ${PGPATHEDB}/lib
  cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
  cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
  cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${PGPATHEDB}/share/extension
