@@ -5619,8 +5619,10 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   }}
   int nearbyedgecount = nearbyindex;
 
-  /* 2.1. Find nodes falling within tol distance *
-   * TODO: check if we should be only considering _isolated_ nodes! */
+  /* 2.1. Find isolated nodes falling within tol distance
+   *
+   * TODO: add backend-interface support for only getting isolated nodes
+   */
   nodes = lwt_be_getNodeWithinBox2D( topo, &qbox, &numnodes, LWT_COL_NODE_ALL, 0 );
   if (numnodes == UINT64_MAX)
   {
@@ -5642,6 +5644,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     for (i=0; i<numnodes; ++i)
     {
       LWT_ISO_NODE *n = &(nodes[i]);
+      if ( n->containing_face == -1 ) continue; /* skip not-isolated nodes */
       LWGEOM *g = lwpoint_as_lwgeom(n->geom);
       double dist = lwgeom_mindistance2d(g, noded);
       /* must be closer than tolerated, unless distance is zero */
@@ -5653,7 +5656,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
       nearby[nearbyindex++] = g;
       ++nn;
     }
-    LWDEBUGF(1, "Found %d nodes closer than tolerance (%g)", nn, tol);
+    LWDEBUGF(1, "Found %d isolated nodes closer than tolerance (%g)", nn, tol);
   }}
   int nearbynodecount = nearbyindex - nearbyedgecount;
   nearbycount = nearbyindex;
