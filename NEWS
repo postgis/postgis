@@ -47,7 +47,7 @@ Only tickets not included in 3.1.0alpha2
            as we do on geography_distance (Raúl Marín, Paul Ramsey, Regina Obe)
   - #4739, Ensure all functions using postgis_oid initialize the internal cache (Raúl Marín)
   - #4767, #4768, #4771, #4772, Fix segfault when parsing invalid WKB (Raúl Marín)
-
+  - #4769, Fix segfault in st_addband (Raúl Marín)
 
 
 PostGIS 3.1.0alpha2
