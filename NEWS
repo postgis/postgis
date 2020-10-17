@@ -8,6 +8,7 @@ PostGIS 3.0.3dev
   - #4719, Fail fast when srids don't match ST_Intersection(geometry,raster)
            Also schema qualify calls in function. (Regina Obe)
   - #4739, Ensure all functions using postgis_oid initialize the internal cache (Raúl Marín)
+  - #4767, #4768, #4771, #4772, Fix segfault when parsing invalid WKB (Raúl Marín)
 
 PostGIS 3.0.2
 2020/08/15
