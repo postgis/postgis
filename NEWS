@@ -4,6 +4,7 @@ YYYY/MM/DD
   * Bug Fixes and Enhancements *
 
   - #4757, Handle line collapse due to snap-to-existing node (Sandro Santilli)
+  - #4769, Fix segfault in st_addband (Raúl Marín)
 
 PostGIS 2.4.9
 2020/08/14
