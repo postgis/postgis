@@ -142,3 +142,6 @@ INSERT INTO ticket_4547 VALUES (null);
 INSERT INTO ticket_4547 SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
 SELECT '#4547.2', AddRasterConstraints('ticket_4547', 'r');
 DROP TABLE ticket_4547;
+
+-- #4769
+SELECT '#4769', st_addband(NULL, NULL::_raster, 1, 1);
