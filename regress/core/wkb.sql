@@ -533,3 +533,13 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
  'TIN ZM EMPTY'
 ::text as g ) as foo;
 
+
+-- Crashes (#4767, #4768, #4771, #4772)
+SELECT st_mpointfromwkb('\x'::BYTEA);
+SELECT geometry('\x'::bytea);
+SELECT st_geomcollfromwkb('\x'::bytea);
+SELECT st_geomfromewkb('\x'::bytea);
+SELECT st_wkbtosql('\x');
+SELECT st_mpolyfromwkb('\x'::BYTEA);
+SELECT st_mlinefromwkb('\x'::bytea);
+SELECT st_mlinefromwkb('\x'::bytea,1);
