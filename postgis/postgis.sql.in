@@ -4998,7 +4998,7 @@ CREATE AGGREGATE ST_AsFlatGeobuf(anyelement, text)
 -----------------------------------------------------------------------
 
 -- Availability: 3.1.0
-CREATE OR REPLACE FUNCTION ST_TableFromFlatGeobuf(text, text)
+CREATE OR REPLACE FUNCTION ST_TableFromFlatGeobuf(text, text, bytea)
 	RETURNS void
 	AS 'MODULE_PATHNAME','pgis_tablefromflatgeobuf'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE

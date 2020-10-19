@@ -83,6 +83,7 @@ struct flatgeobuf_decode_ctx
         bool hasM;
         bool hasT;
         bool hasTM;
+        Column_vec_t columns;
         size_t columns_len;
         Datum geom;
 };

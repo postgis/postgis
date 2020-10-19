@@ -1,5 +1,5 @@
 begin transaction;
-select ST_TableFromFlatGeobuf('public', 'flatgeobuf_t1');
+select ST_TableFromFlatGeobuf('public', 'flatgeobuf_t1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry) q));
 
 select '--- Null geometry ---';
 
@@ -89,6 +89,14 @@ select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
         ('POINT (1 2)'::geometry),
         ('POINT (3 4)'::geometry)
     ) q)
+);
+
+select '--- Attribute roundtrips ---';
+
+-- single row null geometry
+select ST_TableFromFlatGeobuf('public', 'flatgeobuf_a1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 1::int as int_1) q));
+select 'A1', id, ST_AsText(geom), int_1 from ST_FromFlatGeobuf(null::flatgeobuf_a1, (
+    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 1::int as int_1) q)
 );
 
 commit;

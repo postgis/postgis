@@ -16,3 +16,5 @@ GC1|0|GEOMETRYCOLLECTION(POINT(40 10),LINESTRING(10 10,20 20,10 40),POLYGON((40 
 --- Multiple rows ---
 P1|0|POINT(1 2)
 P1|1|POINT(3 4)
+--- Attribute roundtrips ---
+A1|0||1

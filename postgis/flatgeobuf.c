@@ -31,7 +31,7 @@
 uint8_t magicbytes[] = { 0x66, 0x67, 0x62, 0x03, 0x66, 0x67, 0x62, 0x00 };
 size_t MAGICBYTES_LEN = (sizeof(magicbytes) / sizeof((magicbytes)[0]));
 
-static uint8_t get_geometrytype(LWGEOM *lwgeom) {
+static GeometryType_enum_t get_geometrytype(LWGEOM *lwgeom) {
 	int type = lwgeom->type;
 	switch (type)
 	{
@@ -56,7 +56,17 @@ static uint8_t get_geometrytype(LWGEOM *lwgeom) {
 		elog(ERROR, "get_geometrytype: '%s' geometry type not supported",
 				lwtype_name(type));
 	}
-	return 0;
+	return GeometryType_Unknown;
+}
+
+static ColumnType_enum_t get_column_type(Oid typoid) {
+	switch (typoid)
+	{
+	case INT4OID:
+		return ColumnType_Int;
+	}
+	elog(ERROR, "get_column_type: '%d' column type not supported",
+		typoid);
 }
 
 static void encode_header(struct flatgeobuf_encode_ctx *ctx)
@@ -64,10 +74,14 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 	size_t size;
 	uint8_t *header;
 	flatcc_builder_t builder, *B;
-
+	uint32_t columns_len = 0;
 	Oid tupType = HeapTupleHeaderGetTypeId(ctx->row);
 	int32 tupTypmod = HeapTupleHeaderGetTypMod(ctx->row);
 	TupleDesc tupdesc = lookup_rowtype_tupdesc(tupType, tupTypmod);
+	int natts = tupdesc->natts;
+	bool geom_found = false;
+	Column_ref_t *columns = lwalloc(sizeof(Column_ref_t) * natts);
+
 	ctx->tupdesc = tupdesc;
 
 	// inspect first geometry
@@ -82,9 +96,35 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 
 	B = &builder;
 	flatcc_builder_init(B);
+
+	// inspect columns
+	// NOTE: last element will be unused if geom attr is found
+	for (int i = 0; i < natts; i++) {
+		Oid typoid = getBaseType(TupleDescAttr(tupdesc, i)->atttypid);
+		const char *key = TupleDescAttr(tupdesc, i)->attname.data;
+		POSTGIS_DEBUGF(3, "flatgeobuf: inspecting column definition for %s with oid %d", key, typoid);
+		if (ctx->geom_name == NULL) {
+			if (!geom_found && typoid == postgis_oid(GEOMETRYOID)) {
+				ctx->geom_index = i;
+				geom_found = 1;
+				continue;
+			}
+		} else {
+			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
+				ctx->geom_index = i;
+				geom_found = 1;
+				continue;
+			}
+		}
+		POSTGIS_DEBUGF(2, "flatgeobuf: creating column definition for %s with oid %d", key, typoid);
+		Column_start(B);
+		Column_name_create_str(B, pstrdup(key));
+		Column_type_add(B, get_column_type(typoid));
+		columns[columns_len] = Column_end(B);
+		columns_len++;
+	}
+
 	//flatbuffers_double_vec_ref_t envelope;
-	//Column_vec_start(B);
-	//Column_vec_t columns = Column_vec_start(B);
 	//uint16_t index_node_size = 16;
 	//Crs_vec_start(B);
 	//Crs_vec_t crs = Crs_vec_end(B);
@@ -95,16 +135,15 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 	Header_hasM_add(B, ctx->hasM);
 	//Header_hasT_add(B, false);
 	//Header_hasTM_add(B, false);
-
-	// inspect columns
-
+	Header_columns_create(B, columns, columns_len);
 	Header_end_as_root(B);
 
 	header = flatcc_builder_finalize_buffer(B, &size);
+	POSTGIS_DEBUGF(3, "flatgeobuf: created header with size %ld", size);
+	POSTGIS_DEBUGF(3, "flatgeobuf: reallocating buf to size %ld", ctx->offset + size);
 	ctx->buf = repalloc(ctx->buf, ctx->offset + size);
 	memcpy(ctx->buf + ctx->offset, header, size);
 	free(header);
-	ReleaseTupleDesc(tupdesc);
 
 	ctx->offset += size;
 }
@@ -113,6 +152,7 @@ static Geometry_ref_t encode_point(struct flatgeobuf_encode_ctx *ctx, LWPOINT *l
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
+
 	getPoint4d_p(lwpt->point, 0, &pt);
 	Geometry_start(B);
 	Geometry_xy_start(B);
@@ -347,6 +387,44 @@ static Geometry_ref_t encode_geometry(struct flatgeobuf_encode_ctx *ctx)
 	return encode_geometry_part(ctx, ctx->lwgeom, geometry_type_is_unknown);
 }
 
+static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
+{
+	uint32_t size = 1024 * 4;
+	uint16_t ci = 0;
+	uint8_t *data = palloc(sizeof(uint8_t) * size);
+	uint32_t offset = 0;
+	Datum datum;
+	bool isnull;
+	Oid typoid;
+
+	int int_value;
+
+	// TODO: realloc if size is not large enough
+	// TODO: reusable buffer in ctx?
+
+	POSTGIS_DEBUG(2, "flatgeobuf: encode_properties for");
+	for (int i = 0; i < ctx->tupdesc->natts; i++) {
+		if (ctx->geom_index == i)
+			continue;
+		datum = GetAttributeByNum(ctx->row, i + 1, &isnull);
+		if (isnull)
+			continue;
+		memcpy(data + offset, &ci, sizeof(ci));
+		offset += sizeof(ci);
+		typoid = getBaseType(TupleDescAttr(ctx->tupdesc, i)->atttypid);
+		switch (typoid) {
+		case INT4OID:
+			int_value = DatumGetInt32(datum);
+			memcpy(data + offset, &int_value, sizeof(int_value));
+			offset += sizeof(int_value);
+			break;
+		}
+		ci++;
+	}
+
+	Feature_properties_create(ctx->B, data, offset);
+}
+
 static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 {
 	size_t size;
@@ -362,7 +440,7 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 	geometry = encode_geometry(ctx);
 	if (geometry != 0)
 		Feature_geometry_add(B, encode_geometry(ctx));
-	// TODO: encode feature properties
+	encode_properties(ctx);
 	Feature_end_as_root(B);
 	feature = flatcc_builder_finalize_buffer(B, &size);
 
@@ -376,8 +454,9 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx)
 {
 	uint8_t *buf = ctx->buf + ctx->offset;
+
 	for (int i = 0; i < MAGICBYTES_LEN; i++)
-		if (ctx->buf[i] != magicbytes[i])
+		if (buf[i] != magicbytes[i])
 			elog(ERROR, "Data is not FlatGeobuf");
 	ctx->offset += MAGICBYTES_LEN;
 }
@@ -388,22 +467,20 @@ void flatgeobuf_decode_header(struct flatgeobuf_decode_ctx *ctx)
 	Column_vec_t columns;
 	size_t size;
 	
+	POSTGIS_DEBUGF(3, "flatgeobuf: reading feature prefix at %ld", ctx->offset);
 	flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
+	POSTGIS_DEBUGF(3, "flatgeobuf: feature size is %ld", size);
 	ctx->offset += sizeof(flatbuffers_uoffset_t);
 	
 	header = Header_as_root(ctx->buf + ctx->offset);
 	ctx->offset += size;
-	
-	columns = Header_columns(header);
-	
 	ctx->geometry_type = Header_geometry_type(header);
 	ctx->hasZ = Header_hasZ(header);
 	ctx->hasM = Header_hasM(header);
 	ctx->hasT = Header_hasT(header);
 	ctx->hasTM = Header_hasTM(header);
-	ctx->columns_len = Column_vec_len(columns);
-	if (ctx->tupdesc->natts != ctx->columns_len + 2)
-		elog(ERROR, "Mismatched column structure");
+	ctx->columns = Header_columns_get(header);
+	ctx->columns_len = Column_vec_len(ctx->columns);
 
 	ctx->header = header;
 }
@@ -623,20 +700,74 @@ static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 	return (Datum) geometry_serialize(lwgeom);
 }
 
+static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t feature, Datum *values, bool *isnull)
+{
+	uint32_t natts = ctx->tupdesc->natts;
+	uint16_t i;
+	uint32_t natti = 2;
+	flatbuffers_uoffset_t offset = 0;
+	flatbuffers_uint8_vec_t data = Feature_properties(feature);
+	size_t size = flatbuffers_uint8_vec_len(data);
+	Column_table_t column;
+	ColumnType_enum_t type;
+
+	// TODO: init isnull
+
+	if (size > 0 && size < (sizeof(uint16_t) + sizeof(uint8_t)))
+        elog(ERROR, "flatgeobuf: decode_properties: Unexpected properties data size %ld", size);
+	while (offset + 1 < size) {
+		if (offset + sizeof(uint16_t) > size)
+            elog(ERROR, "flatgeobuf: decode_properties: Unexpected offset %d", offset);
+        i = *((uint16_t *)(data + offset));
+		offset += sizeof(uint16_t);
+		if (i >= ctx->columns_len)
+			elog(ERROR, "flatgeobuf: decode_properties: Column index %hu out of range", i);
+		column = Column_vec_at(ctx->columns, i);
+		type = Column_type(column);
+		switch (type) {
+        case ColumnType_Bool:
+			if (offset + sizeof(unsigned char) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for bool value");
+			isnull[i + 2] = false;
+			values[i + 2] = *(data + offset);
+			offset += sizeof(unsigned char);
+			break;
+		case ColumnType_Byte:
+			POSTGIS_DEBUG(3, "flatgeobuf: encode ColumnType_Byte");
+			if (offset + sizeof(signed char) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for byte value");
+			isnull[i + 2] = false;
+			values[i + 2] = *(data + offset);
+			offset += sizeof(signed char);
+			break;
+		case ColumnType_Int:
+			POSTGIS_DEBUG(3, "flatgeobuf: encode ColumnType_Int");
+			if (offset + sizeof(int32_t) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for byte value");
+			isnull[i + 2] = false;
+			values[i + 2] = *(data + offset);
+			offset += sizeof(int32_t);
+			break;
+		default:
+			elog(ERROR, "flatgeobuf: decode_properties: Unknown type %d", type);
+		}
+	}
+	
+}
+
 void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 {
 	size_t size;
 	Feature_table_t feature;
-
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	HeapTuple heapTuple;
+	uint32_t natts = ctx->tupdesc->natts;
 	POINTARRAY *pa;
 	POINT4D pt = { 0, 0, 0, 0 };
 	Geometry_table_t geometry;
-	
-	Datum *values = palloc(ctx->tupdesc->natts * sizeof(Datum *));
-	bool *isnull = palloc(ctx->tupdesc->natts * sizeof(bool *));
+	Datum *values = palloc(natts * sizeof(Datum *));
+	bool *isnull = palloc(natts * sizeof(bool *));
 
 	values[0] = Int32GetDatum(ctx->fid);
 	isnull[0] = false;
@@ -652,6 +783,9 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 		values[1] = (Datum) decode_geometry(ctx, geometry);
 	else
 		isnull[1] = true;
+
+	if (natts > 2)
+		decode_properties(ctx, feature, values, isnull);
 
 	heapTuple = heap_form_tuple(ctx->tupdesc, values, isnull);
 	ctx->result = HeapTupleGetDatum(heapTuple);
@@ -722,6 +856,8 @@ uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_encode_ctx *ctx)
 		flatgeobuf_agg_init_context(NULL);
 	if (ctx->features_count == 0)
 		encode_header(ctx);
+	if (ctx->tupdesc != NULL)
+		ReleaseTupleDesc(ctx->tupdesc);
 	SET_VARSIZE(ctx->buf, ctx->offset);
 	return ctx->buf;
 }
