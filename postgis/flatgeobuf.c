@@ -27,6 +27,7 @@
 #include "pgsql_compat.h"
 #include "funcapi.h"
 #include "parser/parse_type.h"
+#include "utils/jsonb.h"
 
 uint8_t magicbytes[] = { 0x66, 0x67, 0x62, 0x03, 0x66, 0x67, 0x62, 0x00 };
 size_t MAGICBYTES_LEN = (sizeof(magicbytes) / sizeof((magicbytes)[0]));
@@ -62,8 +63,14 @@ static GeometryType_enum_t get_geometrytype(LWGEOM *lwgeom) {
 static ColumnType_enum_t get_column_type(Oid typoid) {
 	switch (typoid)
 	{
+	case BOOLOID:
+		return ColumnType_Bool;
+	case INT2OID:
+		return ColumnType_Short;
 	case INT4OID:
 		return ColumnType_Int;
+	case INT8OID:
+		return ColumnType_Long;
 	case FLOAT4OID:
 		return ColumnType_Float;
 	case FLOAT8OID:
@@ -71,6 +78,15 @@ static ColumnType_enum_t get_column_type(Oid typoid) {
 	case TEXTOID:
 	case VARCHAROID:
 		return ColumnType_String;
+	/*case JSONBOID:
+		return ColumnType_Json;*/
+	case BYTEAOID:
+		return ColumnType_Binary;
+	case DATEOID:
+	case TIMEOID:
+	case TIMESTAMPOID:
+	case TIMESTAMPTZOID:
+		return ColumnType_DateTime;
 	}
 	elog(ERROR, "get_column_type: '%d' column type not supported",
 		typoid);
@@ -405,10 +421,14 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 	Oid typoid;
 	uint32_t len;
 
-	int int_value;
+	int16_t short_value;
+	int32_t int_value;
+	int64_t long_value;
 	float float_value;
 	double double_value;
 	char *string_value;
+
+	Jsonb *jb;
 
 	// TODO: realloc if size is not large enough
 	// TODO: reusable buffer in ctx?
@@ -422,10 +442,25 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 		offset += sizeof(ci);
 		typoid = getBaseType(TupleDescAttr(ctx->tupdesc, i)->atttypid);
 		switch (typoid) {
+		case BOOLOID:
+			int_value = DatumGetBool(datum) ? 1 : 0;
+			memcpy(data + offset, &int_value, sizeof(int_value));
+			offset += sizeof(int_value);
+			break;
+		case INT2OID:
+			short_value = DatumGetInt16(datum);
+			memcpy(data + offset, &short_value, sizeof(short_value));
+			offset += sizeof(short_value);
+			break;
 		case INT4OID:
 			int_value = DatumGetInt32(datum);
 			memcpy(data + offset, &int_value, sizeof(int_value));
 			offset += sizeof(int_value);
+			break;
+		case INT8OID:
+			long_value = DatumGetInt64(datum);
+			memcpy(data + offset, &long_value, sizeof(long_value));
+			offset += sizeof(long_value);
 			break;
 		case FLOAT4OID:
 			float_value = DatumGetFloat4(datum);
@@ -445,6 +480,16 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 			memcpy(data + offset, string_value, len);
 			offset += len;
 			break;
+		// TODO: handle date/time types
+		/*case JSONBOID:
+			jb = DatumGetJsonbP(datum);
+			string_value = JsonbToCString(NULL, &jb->root, VARSIZE(jb));
+			len = strlen(string_value);
+			memcpy(data + offset, &len, sizeof(len));
+			offset += sizeof(len);
+			memcpy(data + offset, string_value, len);
+			offset += len;
+			break;*/
 		}
 		ci++;
 	}
@@ -755,22 +800,58 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 		isnull[ci] = false;
 		switch (type) {
         case ColumnType_Bool:
-			if (offset + sizeof(unsigned char) > size)
+			if (offset + sizeof(uint8_t) > size)
             	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for bool value");
-			values[ci] = *(data + offset);
-			offset += sizeof(unsigned char);
+			values[ci] = BoolGetDatum(*((uint8_t *)(data + offset)));
+			offset += sizeof(uint8_t);
 			break;
 		case ColumnType_Byte:
-			if (offset + sizeof(signed char) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for byte value");
-			values[ci] = *(data + offset);
-			offset += sizeof(signed char);
+			if (offset + sizeof(int8_t) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ubyte value");
+			values[ci] = Int8GetDatum(*((int8_t *)(data + offset)));
+			offset += sizeof(int8_t);
+			break;
+		case ColumnType_UByte:
+			if (offset + sizeof(uint8_t) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ubyte value");
+			values[ci] = UInt8GetDatum(*((uint8_t *)(data + offset)));
+			offset += sizeof(uint8_t);
+			break;
+		case ColumnType_Short:
+			if (offset + sizeof(int16_t) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for short value");
+			values[ci] = Int16GetDatum(*((int16_t *)(data + offset)));
+			offset += sizeof(int16_t);
+			break;
+		case ColumnType_UShort:
+			if (offset + sizeof(uint16_t) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ushort value");
+			values[ci] = UInt16GetDatum(*((uint16_t *)(data + offset)));
+			offset += sizeof(uint16_t);
 			break;
 		case ColumnType_Int:
 			if (offset + sizeof(int32_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for byte value");
-			values[ci] = *(data + offset);
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for int value");
+			values[ci] = Int64GetDatum(*((int32_t *)(data + offset)));
 			offset += sizeof(int32_t);
+			break;
+		case ColumnType_UInt:
+			if (offset + sizeof(uint32_t) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for uint value");
+			values[ci] = UInt32GetDatum(*((uint32_t *)(data + offset)));
+			offset += sizeof(uint32_t);
+			break;
+		case ColumnType_Long:
+			if (offset + sizeof(int64_t) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for long value");
+			values[ci] = Int64GetDatum(*((int64_t *)(data + offset)));
+			offset += sizeof(int64_t);
+			break;
+		case ColumnType_ULong:
+			if (offset + sizeof(uint64_t) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ulong value");
+			values[ci] = UInt64GetDatum(*((uint64_t *)(data + offset)));
+			offset += sizeof(uint64_t);
 			break;
 		case ColumnType_Float:
 			if (offset + sizeof(float) > size)
@@ -792,6 +873,24 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 			values[ci] = PointerGetDatum(cstring_to_text_with_len((const char *) data + offset, len));
 			offset += len;
 			break;
+		case ColumnType_DateTime:
+			if (offset + sizeof(len) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
+			len = *((uint32_t *)(data + offset));
+			offset += sizeof(len);			
+			// TODO: find out how to parse an ISO datetime string into a Datum
+			//values[ci] = PointerGetDatum(cstring_to_text_with_len((const char *) data + offset, len));
+			offset += len;
+			break;
+		// TODO: find out how to handle string to jsonb Datum
+		/*case ColumnType_Json:
+			if (offset + sizeof(len) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for json value");
+			len = *((uint32_t *)(data + offset));
+			offset += sizeof(len);
+			values[ci] = jsonb_from_cstring((const char *) data + offset, len);
+			offset += len;
+			break;*/
 		default:
 			elog(ERROR, "flatgeobuf: decode_properties: Unknown type %d", type);
 		}

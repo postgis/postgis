@@ -15,6 +15,7 @@ select 'T1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
 
 select '--- Geometry roundtrips ---';
 
+-- TODO: find out why first attempt deserializes into nothing
 -- 2D Point
 select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     select ST_AsFlatGeobuf(q) fgb from (select ST_MakePoint(1.1, 2.1)) q)
@@ -97,20 +98,26 @@ select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
 
 select '--- Attribute roundtrips ---';
 
--- single row null geometry
+-- TODO: find out why the bool is decoded as false
 select ST_TableFromFlatGeobuf('public', 'flatgeobuf_a1', (select ST_AsFlatGeobuf(q) fgb from (select
         null::geometry,
-        1::int as int_1,
-        2::int as int_2,
-        1.2::real as float_1,
-        1.3::double precision as double_1,
+        null::boolean as bool_1,
+        null::integer as int_1,
+        null::integer as int_2,
+        null::smallint as smallint_1,
+        null::bigint as bigint_1,
+        null::real as float_1,
+        null::double precision as double_1,
         'hello'::text as string_1
     ) q));
-select 'A1', id, ST_AsText(geom), int_1, int_2, float_1, double_1, string_1 from ST_FromFlatGeobuf(null::flatgeobuf_a1, (
+select 'A1', id, ST_AsText(geom), bool_1, int_1, int_2, smallint_1, bigint_1, float_1, double_1, string_1 from ST_FromFlatGeobuf(null::flatgeobuf_a1, (
     select ST_AsFlatGeobuf(q) fgb from (select
         null::geometry,
-        1::int as int_1,
-        2::int as int_2,
+        true::boolean as bool_1,
+        1::integer as int_1,
+        2::integer as int_2,
+        3::smallint as smallint_1,
+        4::bigint as bigint_1,
         1.2::real as float_1,
         1.3::double precision as double_1,
         'hello'::text as string_1

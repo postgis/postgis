@@ -38,14 +38,31 @@
 
 static char *get_pgtype(ColumnType_enum_t column_type) {
 	switch (column_type) {
+	case ColumnType_Bool:
+		return "boolean";
+	case ColumnType_Byte:
+	case ColumnType_UByte:
+		return "smallint";
+	case ColumnType_Short:
+		return "smallint";
 	case ColumnType_Int:
-		return "int";
+		return "integer";
+	case ColumnType_UInt:
+	case ColumnType_Long:
+	case ColumnType_ULong:
+		return "bigint";
 	case ColumnType_Float:
 		return "real";
 	case ColumnType_Double:
 		return "double precision";
+	case ColumnType_DateTime:
+		return "timestamptz";
 	case ColumnType_String:
 		return "text";
+	case ColumnType_Binary:
+		return "bytea";
+	/*case ColumnType_Json:
+		return "jsonb";*/
 	}
 	elog(ERROR, "unknown column_type %d", column_type);
 }
