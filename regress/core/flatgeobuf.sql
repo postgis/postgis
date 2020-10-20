@@ -19,6 +19,10 @@ select '--- Geometry roundtrips ---';
 select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     select ST_AsFlatGeobuf(q) fgb from (select ST_MakePoint(1.1, 2.1)) q)
 );
+-- 2D Point
+select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
+    select ST_AsFlatGeobuf(q) fgb from (select ST_MakePoint(1.1, 2.1)) q)
+);
 -- 3D Point
 select 'P2', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     select ST_AsFlatGeobuf(q) fgb from (select ST_MakePoint(1.1, 2.11, 3.2)) q)
@@ -94,9 +98,23 @@ select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
 select '--- Attribute roundtrips ---';
 
 -- single row null geometry
-select ST_TableFromFlatGeobuf('public', 'flatgeobuf_a1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 1::int as int_1) q));
-select 'A1', id, ST_AsText(geom), int_1 from ST_FromFlatGeobuf(null::flatgeobuf_a1, (
-    select ST_AsFlatGeobuf(q) fgb from (select null::geometry, 1::int as int_1) q)
+select ST_TableFromFlatGeobuf('public', 'flatgeobuf_a1', (select ST_AsFlatGeobuf(q) fgb from (select
+        null::geometry,
+        1::int as int_1,
+        2::int as int_2,
+        1.2::real as float_1,
+        1.3::double precision as double_1,
+        'hello'::text as string_1
+    ) q));
+select 'A1', id, ST_AsText(geom), int_1, int_2, float_1, double_1, string_1 from ST_FromFlatGeobuf(null::flatgeobuf_a1, (
+    select ST_AsFlatGeobuf(q) fgb from (select
+        null::geometry,
+        1::int as int_1,
+        2::int as int_2,
+        1.2::real as float_1,
+        1.3::double precision as double_1,
+        'hello'::text as string_1
+    ) q)
 );
 
 commit;

@@ -40,6 +40,12 @@ static char *get_pgtype(ColumnType_enum_t column_type) {
 	switch (column_type) {
 	case ColumnType_Int:
 		return "int";
+	case ColumnType_Float:
+		return "real";
+	case ColumnType_Double:
+		return "double precision";
+	case ColumnType_String:
+		return "text";
 	}
 	elog(ERROR, "unknown column_type %d", column_type);
 }

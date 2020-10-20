@@ -64,6 +64,13 @@ static ColumnType_enum_t get_column_type(Oid typoid) {
 	{
 	case INT4OID:
 		return ColumnType_Int;
+	case FLOAT4OID:
+		return ColumnType_Float;
+	case FLOAT8OID:
+		return ColumnType_Double;
+	case TEXTOID:
+	case VARCHAROID:
+		return ColumnType_String;
 	}
 	elog(ERROR, "get_column_type: '%d' column type not supported",
 		typoid);
@@ -396,13 +403,15 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 	Datum datum;
 	bool isnull;
 	Oid typoid;
+	uint32_t len;
 
 	int int_value;
+	float float_value;
+	double double_value;
+	char *string_value;
 
 	// TODO: realloc if size is not large enough
 	// TODO: reusable buffer in ctx?
-
-	POSTGIS_DEBUG(2, "flatgeobuf: encode_properties for");
 	for (int i = 0; i < ctx->tupdesc->natts; i++) {
 		if (ctx->geom_index == i)
 			continue;
@@ -417,6 +426,24 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 			int_value = DatumGetInt32(datum);
 			memcpy(data + offset, &int_value, sizeof(int_value));
 			offset += sizeof(int_value);
+			break;
+		case FLOAT4OID:
+			float_value = DatumGetFloat4(datum);
+			memcpy(data + offset, &float_value, sizeof(float_value));
+			offset += sizeof(float_value);
+			break;
+		case FLOAT8OID:
+			double_value = DatumGetFloat8(datum);
+			memcpy(data + offset, &double_value, sizeof(double_value));
+			offset += sizeof(double_value);
+			break;
+		case TEXTOID:
+			string_value = text_to_cstring(DatumGetTextP(datum));
+			len = strlen(string_value);
+			memcpy(data + offset, &len, sizeof(len));
+			offset += sizeof(len);
+			memcpy(data + offset, string_value, len);
+			offset += len;
 			break;
 		}
 		ci++;
@@ -703,8 +730,8 @@ static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t feature, Datum *values, bool *isnull)
 {
 	uint32_t natts = ctx->tupdesc->natts;
-	uint16_t i;
-	uint32_t natti = 2;
+	uint16_t i, ci;
+	uint32_t len, natti = 2;
 	flatbuffers_uoffset_t offset = 0;
 	flatbuffers_uint8_vec_t data = Feature_properties(feature);
 	size_t size = flatbuffers_uint8_vec_len(data);
@@ -719,34 +746,51 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 		if (offset + sizeof(uint16_t) > size)
             elog(ERROR, "flatgeobuf: decode_properties: Unexpected offset %d", offset);
         i = *((uint16_t *)(data + offset));
+		ci = i + 2;
 		offset += sizeof(uint16_t);
 		if (i >= ctx->columns_len)
 			elog(ERROR, "flatgeobuf: decode_properties: Column index %hu out of range", i);
 		column = Column_vec_at(ctx->columns, i);
 		type = Column_type(column);
+		isnull[ci] = false;
 		switch (type) {
         case ColumnType_Bool:
 			if (offset + sizeof(unsigned char) > size)
             	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for bool value");
-			isnull[i + 2] = false;
-			values[i + 2] = *(data + offset);
+			values[ci] = *(data + offset);
 			offset += sizeof(unsigned char);
 			break;
 		case ColumnType_Byte:
-			POSTGIS_DEBUG(3, "flatgeobuf: encode ColumnType_Byte");
 			if (offset + sizeof(signed char) > size)
             	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for byte value");
-			isnull[i + 2] = false;
-			values[i + 2] = *(data + offset);
+			values[ci] = *(data + offset);
 			offset += sizeof(signed char);
 			break;
 		case ColumnType_Int:
-			POSTGIS_DEBUG(3, "flatgeobuf: encode ColumnType_Int");
 			if (offset + sizeof(int32_t) > size)
             	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for byte value");
-			isnull[i + 2] = false;
-			values[i + 2] = *(data + offset);
+			values[ci] = *(data + offset);
 			offset += sizeof(int32_t);
+			break;
+		case ColumnType_Float:
+			if (offset + sizeof(float) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for float value");
+			values[ci] = Float4GetDatum(*((float *)(data + offset)));
+			offset += sizeof(float);
+			break;
+		case ColumnType_Double:
+			if (offset + sizeof(double) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for double value");
+			values[ci] = Float8GetDatum(*((double *)(data + offset)));
+			offset += sizeof(double);
+			break;
+		case ColumnType_String:
+			if (offset + sizeof(len) > size)
+            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
+			len = *((uint32_t *)(data + offset));
+			offset += sizeof(len);
+			values[ci] = PointerGetDatum(cstring_to_text_with_len((const char *) data + offset, len));
+			offset += len;
 			break;
 		default:
 			elog(ERROR, "flatgeobuf: decode_properties: Unknown type %d", type);
