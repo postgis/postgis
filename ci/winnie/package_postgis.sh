@@ -21,7 +21,7 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export PROJ_VER=6.3.2
 	export SFCGAL_VER=1.3.8
 	export CGAL_VER=5.0
-	export ICON_VER=1.15
+	export ICON_VER=1.16
 	export ZLIB_VER=1.2.11
   export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
@@ -241,6 +241,8 @@ cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
 echo "GEOS VERSION: ${GEOS_VER} https://trac.osgeo.org/geos" >> $verfile
 echo "GDAL VERSION: ${GDAL_VER} https://gdal.org/download.html#current-releases" >> $verfile
 echo "PROJ VERSION: ${PROJ_VER} https://proj.org/download.html#current-release" >> $verfile
+
+echo "LIBICONV VERSION: ${ICON_VER} http://ftp.gnu.org/gnu/libiconv/libiconv-${ICONV_VER}.tar.gz" >> $verfile
 
 if [ -n "$SFCGAL_VER"  ]; then
     echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile

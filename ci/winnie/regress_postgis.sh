@@ -20,7 +20,7 @@ export JSON_VER=0.12
 export PCRE_VER=8.33
 
 if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.15
+  export ICON_VER=1.16
 fi;
 
 echo "ICON_VER ${ICON_VER}"
@@ -38,7 +38,7 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=4.11
+  export CGAL_VER=5.0
 fi;
 
 echo "ZLIB_VER $ZLIB_VER"
@@ -137,7 +137,7 @@ if [ -n "$SFCGAL_VER" ]; then
 	#export CGAL_VER=4.11
 	BOOST_VER=1.59.0
 	#BOOST_VER_WU=1_49_0
-	export BOOST_VER_WU=1_53_0
+	export BOOST_VER_WU=1_59_0
 	export PATH="${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/boost/rel-${BOOST_VER_WU}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 
 

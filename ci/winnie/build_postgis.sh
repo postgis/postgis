@@ -2,16 +2,16 @@
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8.1
-	export GDAL_VER=2.4.4
-	export PROJ_VER=5.2.0
+	export GDAL_VER=3.0.4
+	export PROJ_VER=6.3.2
 	export SFCGAL_VER=1.3.8
-	export CGAL_VER=5.0.2
-	export ICON_VER=1.15
+	export CGAL_VER=5.0
+	export ICON_VER=1.16
 	export ZLIB_VER=1.2.11
   export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
-	export PROJSO=libproj-13.dll
+	export PROJSO=libproj-15.dll
 fi;
 
 export PROTOBUF_VER=3.2.0
