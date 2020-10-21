@@ -86,6 +86,7 @@ TESTS = \
 	dumppoints \
 	empty \
 	estimatedextent \
+	flatgeobuf \
 	forcecurve \
 	geography \
 	geometric_median \
