@@ -292,7 +292,7 @@ static Geometry_ref_t encode_triangle(struct flatgeobuf_encode_ctx *ctx, LWTRIAN
 	encode_line_pa(ctx, lwtriangle->points);
 	if (with_type)
 		Geometry_type_add(B, GeometryType_Triangle);
-	return Geometry_end(B); 
+	return Geometry_end(B);
 }
 
 static Geometry_ref_t encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwpoly, bool with_type)
@@ -308,7 +308,7 @@ static Geometry_ref_t encode_poly(struct flatgeobuf_encode_ctx *ctx, LWPOLY *lwp
 		encode_line_ppa(ctx, ppa, nrings);
 	if (with_type)
 		Geometry_type_add(B, GeometryType_Polygon);
-	return Geometry_end(B); 
+	return Geometry_end(B);
 }
 
 static Geometry_ref_t encode_mpoint(struct flatgeobuf_encode_ctx *ctx, LWMPOINT *lwmpoint, bool with_type)
@@ -320,7 +320,7 @@ static Geometry_ref_t encode_mpoint(struct flatgeobuf_encode_ctx *ctx, LWMPOINT 
 	encode_line_pa(ctx, lwline->points);
 	if (with_type)
 		Geometry_type_add(B, GeometryType_MultiPoint);
-	return Geometry_end(B);  
+	return Geometry_end(B);
 }
 
 static Geometry_ref_t encode_mline(struct flatgeobuf_encode_ctx *ctx, LWMLINE *lwmline, bool with_type)
@@ -341,7 +341,7 @@ static Geometry_ref_t encode_mline(struct flatgeobuf_encode_ctx *ctx, LWMLINE *l
 	}
 	if (with_type)
 		Geometry_type_add(B, GeometryType_MultiLineString);
-	return Geometry_end(B);  
+	return Geometry_end(B);
 }
 
 static Geometry_ref_t encode_mpoly(struct flatgeobuf_encode_ctx *ctx, LWMPOLY *lwmpoly, bool with_type)
@@ -515,7 +515,7 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 	B = &builder;
 	flatcc_builder_init(B);
 	ctx->B = B;
-	
+
 	Feature_start_as_root_with_size(B);
 	geometry = encode_geometry(ctx);
 	if (geometry != 0)
@@ -547,12 +547,12 @@ void flatgeobuf_decode_header(struct flatgeobuf_decode_ctx *ctx)
 	Header_table_t header;
 	Column_vec_t columns;
 	size_t size;
-	
+
 	POSTGIS_DEBUGF(3, "flatgeobuf: reading feature prefix at %ld", ctx->offset);
 	flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
 	POSTGIS_DEBUGF(3, "flatgeobuf: feature size is %ld", size);
 	ctx->offset += sizeof(flatbuffers_uoffset_t);
-	
+
 	header = Header_as_root(ctx->buf + ctx->offset);
 	ctx->offset += size;
 	ctx->geometry_type = Header_geometry_type(header);
@@ -594,7 +594,7 @@ static LWPOINT *decode_point(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 	} else {
 		pt = (POINT4D) { x, y, 0, 0 };
 	}
-	
+
 	pa = ptarray_construct_empty(ctx->hasZ, ctx->hasM, 1);
 	ptarray_append_point(pa, &pt, LW_TRUE);
 	return lwpoint_construct(0, NULL, pa);
@@ -676,10 +676,10 @@ static LWPOLY *decode_poly(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t g
 	uint32_t end = 0;
 	uint32_t offset = 0;
 	uint32_t i;
-	
+
 	if (ends != NULL)
 		nrings = flatbuffers_uint32_vec_len(ends);
-	
+
 	ppa = lwalloc(sizeof(POINTARRAY *) * nrings);
 	for (i = 0; i < nrings; i++) {
 		if (ends != NULL)
@@ -889,7 +889,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 			if (offset + sizeof(len) > size)
             	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
 			len = *((uint32_t *)(data + offset));
-			offset += sizeof(len);			
+			offset += sizeof(len);
 			// TODO: find out how to parse an ISO datetime string into a Datum
 			//values[ci] = PointerGetDatum(cstring_to_text_with_len((const char *) data + offset, len));
 			offset += len;
@@ -907,7 +907,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 			elog(ERROR, "flatgeobuf: decode_properties: Unknown type %d", type);
 		}
 	}
-	
+
 }
 
 void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
@@ -926,7 +926,7 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 
 	values[0] = Int32GetDatum(ctx->fid);
 	isnull[0] = false;
-	
+
 	flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
 	ctx->offset += sizeof(flatbuffers_uoffset_t);
 
