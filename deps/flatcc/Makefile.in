@@ -28,7 +28,7 @@ top_builddir = @top_builddir@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
-FLATCC_OBJS = src/runtime/builder.o src/runtime/emitter.o src/runtime/json_parser.o src/runtime/json_printer.o src/runtime/refmap.c src/runtime/verifier.o
+FLATCC_OBJS = src/runtime/builder.o src/runtime/emitter.o src/runtime/json_parser.o src/runtime/json_printer.o src/runtime/refmap.o src/runtime/verifier.o
 LT_FLATCC_OBJS =  $(FLATCC_OBJS:.o=.lo)
 
 all: @FLATCC_LIB@
