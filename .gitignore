@@ -191,5 +191,4 @@ postgis/uninstall_sfcgal.sql
 deps/Makefile
 deps/wagyu/Makefile
 deps/ryu/Makefile
-deps/flatcc
-!deps/flatcc/Makefile.in
+deps/flatcc/Makefile

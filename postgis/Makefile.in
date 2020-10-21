@@ -64,7 +64,7 @@ WAGYU_DEP = $(WAGYU_LIBPATH)
 endif
 
 FLATCC_INCLUDE = -I../deps/flatcc/include
-FLATCC_LIBPATH = ../deps/flatcc/lib/@FLATCC_LIB@
+FLATCC_LIBPATH = ../deps/flatcc/@FLATCC_LIB@
 FLATCC_LIB = $(FLATCC_LIBPATH)
 FLATCC_DEP = $(FLATCC_LIBPATH)
 FLATGEOBUF_INCLUDE = -I../deps/flatgeobuf

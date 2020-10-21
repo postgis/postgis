@@ -1,0 +1,4 @@
+This directory holds subdirectories it can be added to the include path
+such that standard and OS specific header includes like <stdint.h>,
+<bool.h> and <endian.h> can succeed without explicitly including
+special headers explicitly.

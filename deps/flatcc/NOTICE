@@ -1,0 +1,22 @@
+This file documents third party content that is not covered by the
+project license.
+
+Files in the `external` and `include/flatcc/portable` directories have
+separate licenses and copyrights. These have relaxed open source
+licenses - either MIT, BSD, Apache 2.0, or similar as documented in
+these folders.
+
+`include/flatcc/support` files are in part based on snippets posted on online
+forums and documented as such in the source.
+
+A minimal set of files have migrated from Googles `flatbuffers` project
+in the interest of interoperability: `reflection/reflection.fbs` and
+`test/monster_test/monster_test.{fbs,golden,json}`, and grammar syntax
+in the `doc` directory. These are covered by the Apache 2.0 license,
+copyright Google Inc.
+
+`test/benchmark/flatbench.fbs` and the test data set is based on Googles
+FlatBuffers benchmark code by authors permission.
+
+The name `flatcc` which non-coincidentally resembles the `flatc` tool
+in the Google FlatBuffers project is used with authors permission.
