@@ -46,22 +46,22 @@
 
 struct flatgeobuf_encode_ctx
 {
-        flatcc_builder_t *B;
+	flatcc_builder_t *B;
 
-        const char *geom_name;
-        uint32_t geom_index;
-        TupleDesc tupdesc;
-        HeapTupleHeader row;
-        LWGEOM *lwgeom;
-        uint64_t features_count;
-        uint8_t *buf;
-        uint64_t offset;
-        uint8_t lwgeom_type;
-        GeometryType_enum_t geometry_type;
-        bool hasZ;
-        bool hasM;
-        bool hasT;
-        bool hasTM;
+	const char *geom_name;
+	uint32_t geom_index;
+	TupleDesc tupdesc;
+	HeapTupleHeader row;
+	LWGEOM *lwgeom;
+	uint64_t features_count;
+	uint8_t *buf;
+	uint64_t offset;
+	uint8_t lwgeom_type;
+	GeometryType_enum_t geometry_type;
+	bool hasZ;
+	bool hasM;
+	bool hasT;
+	bool hasTM;
 };
 
 struct flatgeobuf_encode_ctx *flatgeobuf_agg_init_context(const char *geom_name);
@@ -71,21 +71,21 @@ uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_encode_ctx *ctx);
 struct flatgeobuf_decode_ctx
 {
 	TupleDesc tupdesc;
-        uint8_t *buf;
-        uint64_t size;
+		uint8_t *buf;
+		uint64_t size;
 	uint64_t offset;
 	Datum result;
-        uint64_t fid;
+		uint64_t fid;
 	bool done;
-        Header_table_t header;
-        GeometryType_enum_t geometry_type;
-        bool hasZ;
-        bool hasM;
-        bool hasT;
-        bool hasTM;
-        Column_vec_t columns;
-        size_t columns_len;
-        Datum geom;
+		Header_table_t header;
+		GeometryType_enum_t geometry_type;
+		bool hasZ;
+		bool hasM;
+		bool hasT;
+		bool hasTM;
+		Column_vec_t columns;
+		size_t columns_len;
+		Datum geom;
 };
 
 void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx);

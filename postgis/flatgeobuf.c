@@ -798,11 +798,11 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 	// TODO: init isnull
 
 	if (size > 0 && size < (sizeof(uint16_t) + sizeof(uint8_t)))
-        elog(ERROR, "flatgeobuf: decode_properties: Unexpected properties data size %ld", size);
+		elog(ERROR, "flatgeobuf: decode_properties: Unexpected properties data size %ld", size);
 	while (offset + 1 < size) {
 		if (offset + sizeof(uint16_t) > size)
-            elog(ERROR, "flatgeobuf: decode_properties: Unexpected offset %d", offset);
-        i = *((uint16_t *)(data + offset));
+			elog(ERROR, "flatgeobuf: decode_properties: Unexpected offset %d", offset);
+		i = *((uint16_t *)(data + offset));
 		ci = i + 2;
 		offset += sizeof(uint16_t);
 		if (i >= ctx->columns_len)
@@ -811,75 +811,75 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 		type = Column_type(column);
 		isnull[ci] = false;
 		switch (type) {
-        case ColumnType_Bool:
+		case ColumnType_Bool:
 			if (offset + sizeof(uint8_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for bool value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for bool value");
 			values[ci] = BoolGetDatum(*((uint8_t *)(data + offset)));
 			offset += sizeof(uint8_t);
 			break;
 		case ColumnType_Byte:
 			if (offset + sizeof(int8_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ubyte value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ubyte value");
 			values[ci] = Int8GetDatum(*((int8_t *)(data + offset)));
 			offset += sizeof(int8_t);
 			break;
 		case ColumnType_UByte:
 			if (offset + sizeof(uint8_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ubyte value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ubyte value");
 			values[ci] = UInt8GetDatum(*((uint8_t *)(data + offset)));
 			offset += sizeof(uint8_t);
 			break;
 		case ColumnType_Short:
 			if (offset + sizeof(int16_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for short value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for short value");
 			values[ci] = Int16GetDatum(*((int16_t *)(data + offset)));
 			offset += sizeof(int16_t);
 			break;
 		case ColumnType_UShort:
 			if (offset + sizeof(uint16_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ushort value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ushort value");
 			values[ci] = UInt16GetDatum(*((uint16_t *)(data + offset)));
 			offset += sizeof(uint16_t);
 			break;
 		case ColumnType_Int:
 			if (offset + sizeof(int32_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for int value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for int value");
 			values[ci] = Int64GetDatum(*((int32_t *)(data + offset)));
 			offset += sizeof(int32_t);
 			break;
 		case ColumnType_UInt:
 			if (offset + sizeof(uint32_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for uint value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for uint value");
 			values[ci] = UInt32GetDatum(*((uint32_t *)(data + offset)));
 			offset += sizeof(uint32_t);
 			break;
 		case ColumnType_Long:
 			if (offset + sizeof(int64_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for long value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for long value");
 			values[ci] = Int64GetDatum(*((int64_t *)(data + offset)));
 			offset += sizeof(int64_t);
 			break;
 		case ColumnType_ULong:
 			if (offset + sizeof(uint64_t) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ulong value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for ulong value");
 			values[ci] = UInt64GetDatum(*((uint64_t *)(data + offset)));
 			offset += sizeof(uint64_t);
 			break;
 		case ColumnType_Float:
 			if (offset + sizeof(float) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for float value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for float value");
 			values[ci] = Float4GetDatum(*((float *)(data + offset)));
 			offset += sizeof(float);
 			break;
 		case ColumnType_Double:
 			if (offset + sizeof(double) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for double value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for double value");
 			values[ci] = Float8GetDatum(*((double *)(data + offset)));
 			offset += sizeof(double);
 			break;
 		case ColumnType_String:
 			if (offset + sizeof(len) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
 			len = *((uint32_t *)(data + offset));
 			offset += sizeof(len);
 			values[ci] = PointerGetDatum(cstring_to_text_with_len((const char *) data + offset, len));
@@ -887,7 +887,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 			break;
 		case ColumnType_DateTime:
 			if (offset + sizeof(len) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for string value");
 			len = *((uint32_t *)(data + offset));
 			offset += sizeof(len);
 			// TODO: find out how to parse an ISO datetime string into a Datum
@@ -897,7 +897,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Feature_table_t
 		// TODO: find out how to handle string to jsonb Datum
 		/*case ColumnType_Json:
 			if (offset + sizeof(len) > size)
-            	elog(ERROR, "flatgeobuf: decode_properties: Invalid size for json value");
+				elog(ERROR, "flatgeobuf: decode_properties: Invalid size for json value");
 			len = *((uint32_t *)(data + offset));
 			offset += sizeof(len);
 			values[ci] = jsonb_from_cstring((const char *) data + offset, len);

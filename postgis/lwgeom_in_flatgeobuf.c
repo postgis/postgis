@@ -95,7 +95,7 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	table = text_to_cstring(table_input);
 
 	data = PG_GETARG_BYTEA_PP(2);
-	
+
 	ctx = palloc(sizeof(*ctx));
 	ctx->size = VARSIZE_ANY_EXHDR(data);
 	ctx->buf = (uint8_t *) VARDATA_ANY(data);
@@ -112,7 +112,7 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 		flatbuffers_string_t name = Column_name(column);
 		ColumnType_enum_t column_type = Column_type(column);
 		char *pgtype = get_pgtype(column_type);
-		size_t len = strlen(name) + strlen(pgtype) + 1; 
+		size_t len = strlen(name) + strlen(pgtype) + 1;
 		column_defs[i] = palloc0(sizeof(char) * len);
 		strcat(column_defs[i], name);
 		strcat(column_defs[i], " ");
@@ -135,7 +135,7 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	format = "create temp table if not exists %s (id int, geom geometry%s) on commit drop";
 	//format = "create table %s.%s (id int, geom geometry)";
 	sql = palloc(strlen(format) + strlen(schema) + strlen(table));
-	
+
 	sprintf(sql, format, table, column_defs_str);
 	//sprintf(sql, format, schema, table);
 
@@ -156,9 +156,9 @@ PG_FUNCTION_INFO_V1(pgis_fromflatgeobuf);
 Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
-	int                  call_cntr;
-    int                  max_calls;
-	
+	int				  call_cntr;
+	int				  max_calls;
+
 	TupleDesc tupdesc;
 	bytea *data;
 	HeapTuple tuple;
@@ -175,10 +175,10 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		funcctx->max_calls = 0;
 
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)
-            ereport(ERROR,
-                    (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-                     errmsg("function returning record called in context "
-                            "that cannot accept type record")));
+			ereport(ERROR,
+					(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+					 errmsg("function returning record called in context "
+							"that cannot accept type record")));
 
 		data = PG_GETARG_BYTEA_PP(1);
 
