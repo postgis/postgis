@@ -78,6 +78,10 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	char *format;
 	char *sql;
 	bytea *data;
+	size_t i;
+	char **column_defs;
+	size_t column_defs_total_len;
+	char *column_defs_str;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
@@ -100,10 +104,10 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	flatgeobuf_check_magicbytes(ctx);
 	flatgeobuf_decode_header(ctx);
 
-	char **column_defs = palloc(sizeof(char *) * ctx->columns_len);
-	size_t column_defs_total_len = 0;
+	column_defs = palloc(sizeof(char *) * ctx->columns_len);
+	column_defs_total_len = 0;
 	POSTGIS_DEBUGF(2, "flatgeobuf: pgis_tablefromflatgeobuf found %ld columns", ctx->columns_len);
-	for (int i = 0; i < ctx->columns_len; i++) {
+	for (i = 0; i < ctx->columns_len; i++) {
 		Column_table_t column = Column_vec_at(ctx->columns, i);
 		flatbuffers_string_t name = Column_name(column);
 		ColumnType_enum_t column_type = Column_type(column);
@@ -115,10 +119,10 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 		strcat(column_defs[i], pgtype);
 		column_defs_total_len += len;
 	}
-	char *column_defs_str = palloc0(sizeof(char) * column_defs_total_len + (ctx->columns_len * 2) + 2);
+	column_defs_str = palloc0(sizeof(char) * column_defs_total_len + (ctx->columns_len * 2) + 2);
 	if (ctx->columns_len > 0)
 		strcat(column_defs_str, ", ");
-	for (int i = 0; i < ctx->columns_len; i++) {
+	for (i = 0; i < ctx->columns_len; i++) {
 		strcat(column_defs_str, column_defs[i]);
 		if (i < ctx->columns_len - 1)
 			strcat(column_defs_str, ", ");

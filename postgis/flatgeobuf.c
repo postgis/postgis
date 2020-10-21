@@ -30,7 +30,7 @@
 #include "utils/jsonb.h"
 
 uint8_t magicbytes[] = { 0x66, 0x67, 0x62, 0x03, 0x66, 0x67, 0x62, 0x00 };
-size_t MAGICBYTES_LEN = (sizeof(magicbytes) / sizeof((magicbytes)[0]));
+uint8_t MAGICBYTES_LEN = (sizeof(magicbytes) / sizeof((magicbytes)[0]));
 
 static GeometryType_enum_t get_geometrytype(LWGEOM *lwgeom) {
 	int type = lwgeom->type;
@@ -201,9 +201,10 @@ static void encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
+	uint32_t i;
 
 	Geometry_xy_start(B);
-	for (int i = 0; i < pa->npoints; i++) {
+	for (i = 0; i < pa->npoints; i++) {
 		getPoint4d_p(pa, i, &pt);
 		Geometry_xy_push_create(B, pt.x);
 		Geometry_xy_push_create(B, pt.y);
@@ -211,7 +212,7 @@ static void encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
 	Geometry_xy_end(B);
 	if (ctx->hasZ) {
 		Geometry_z_start(B);
-		for (int i = 0; i < pa->npoints; i++) {
+		for (i = 0; i < pa->npoints; i++) {
 			getPoint4d_p(pa, i, &pt);
 			Geometry_z_push_create(B, pt.z);
 		}
@@ -219,7 +220,7 @@ static void encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
 	}
 	if (ctx->hasM) {
 		Geometry_m_start(B);
-		for (int i = 0; i < pa->npoints; i++) {
+		for (i = 0; i < pa->npoints; i++) {
 			getPoint4d_p(pa, i, &pt);
 			Geometry_m_push_create(B, pt.m);
 		}
@@ -227,17 +228,18 @@ static void encode_line_pa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY *pa)
 	}
 }
 
-static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa, size_t len)
+static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa, uint32_t len)
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
 	uint32_t *ends = lwalloc(sizeof(uint32_t) * len);
 	uint32_t offset = 0;
+	uint32_t n, i;
 
 	Geometry_xy_start(B);
-	for (int n = 0; n < len; n++) {
+	for (n = 0; n < len; n++) {
 		POINTARRAY *pa = ppa[n];
-		for (int i = 0; i < pa->npoints; i++) {
+		for (i = 0; i < pa->npoints; i++) {
 			getPoint4d_p(pa, i, &pt);
 			Geometry_xy_push_create(B, pt.x);
 			Geometry_xy_push_create(B, pt.y);
@@ -249,9 +251,9 @@ static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa,
 	Geometry_ends_create(B, ends, len);
 	if (ctx->hasZ) {
 		Geometry_z_start(B);
-		for (int n = 0; n < len; n++) {
+		for (n = 0; n < len; n++) {
 			POINTARRAY *pa = ppa[n];
-			for (int i = 0; i < pa->npoints; i++) {
+			for (i = 0; i < pa->npoints; i++) {
 				getPoint4d_p(pa, i, &pt);
 				Geometry_z_push_create(B, pt.z);
 			}
@@ -260,9 +262,9 @@ static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa,
 	}
 	if (ctx->hasM) {
 		Geometry_m_start(B);
-		for (int n = 0; n < len; n++) {
+		for (n = 0; n < len; n++) {
 			POINTARRAY *pa = ppa[n];
-			for (int i = 0; i < pa->npoints; i++) {
+			for (i = 0; i < pa->npoints; i++) {
 				getPoint4d_p(pa, i, &pt);
 				Geometry_m_push_create(B, pt.m);
 			}
@@ -326,13 +328,14 @@ static Geometry_ref_t encode_mline(struct flatgeobuf_encode_ctx *ctx, LWMLINE *l
 	flatcc_builder_t *B = ctx->B;
 	uint32_t ngeoms = lwmline->ngeoms;
 	POINTARRAY **ppa;
+	uint32_t i;
 
 	Geometry_start(B);
 	if (ngeoms == 1) {
 		encode_line_pa(ctx, lwmline->geoms[0]->points);
 	} else {
 		ppa = lwalloc(sizeof(POINTARRAY *) * ngeoms);
-		for (int i = 0; i < ngeoms; i++)
+		for (i = 0; i < ngeoms; i++)
 			ppa[i] = lwmline->geoms[i]->points;
 		encode_line_ppa(ctx, ppa, ngeoms);
 	}
@@ -346,7 +349,9 @@ static Geometry_ref_t encode_mpoly(struct flatgeobuf_encode_ctx *ctx, LWMPOLY *l
 	flatcc_builder_t *B = ctx->B;
 	uint32_t ngeoms = lwmpoly->ngeoms;
 	Geometry_ref_t *parts = lwalloc(sizeof(Geometry_ref_t) * ngeoms);
-	for (uint32_t i = 0; i < ngeoms; i++)
+	uint32_t i;
+
+	for (i = 0; i < ngeoms; i++)
 		parts[i] = encode_poly(ctx, lwmpoly->geoms[i], false);
 	Geometry_start(B);
 	Geometry_parts_create(B, parts, ngeoms);
@@ -362,7 +367,9 @@ static Geometry_ref_t encode_collection(struct flatgeobuf_encode_ctx *ctx, LWCOL
 	flatcc_builder_t *B = ctx->B;
 	uint32_t ngeoms = lwcollection->ngeoms;
 	Geometry_ref_t *parts = lwalloc(sizeof(Geometry_ref_t) * ngeoms);
-	for (uint32_t i = 0; i < ngeoms; i++)
+	uint32_t i;
+
+	for (i = 0; i < ngeoms; i++)
 		parts[i] = encode_geometry_part(ctx, lwcollection->geoms[i], true);
 	Geometry_start(B);
 	Geometry_parts_create(B, parts, ngeoms);
@@ -420,6 +427,7 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 	bool isnull;
 	Oid typoid;
 	uint32_t len;
+	uint32_t i;
 
 	int16_t short_value;
 	int32_t int_value;
@@ -432,7 +440,7 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 
 	// TODO: realloc if size is not large enough
 	// TODO: reusable buffer in ctx?
-	for (int i = 0; i < ctx->tupdesc->natts; i++) {
+	for (i = 0; i < (uint32_t) ctx->tupdesc->natts; i++) {
 		if (ctx->geom_index == i)
 			continue;
 		datum = GetAttributeByNum(ctx->row, i + 1, &isnull);
@@ -526,8 +534,9 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx)
 {
 	uint8_t *buf = ctx->buf + ctx->offset;
+	uint32_t i;
 
-	for (int i = 0; i < MAGICBYTES_LEN; i++)
+	for (i = 0; i < MAGICBYTES_LEN; i++)
 		if (buf[i] != magicbytes[i])
 			elog(ERROR, "Data is not FlatGeobuf");
 	ctx->offset += MAGICBYTES_LEN;
@@ -591,30 +600,27 @@ static LWPOINT *decode_point(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 	return lwpoint_construct(0, NULL, pa);
 }
 
-static POINTARRAY *decode_line_pa(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry, uint32 end, uint32 offset)
+static POINTARRAY *decode_line_pa(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry, uint32_t end, uint32_t offset)
 {
 	POINTARRAY *pa;
 	LWGEOM *lwgeom;
 	POINT4D pt;
-
 	flatbuffers_double_vec_t xy = Geometry_xy(geometry);
-
-	size_t npoints;
+	uint32_t npoints;
 	size_t xy_len;
+	uint32_t i;
 
 	if (end != 0) {
 		npoints = end - offset;
-		xy_len = npoints * 2;
 	} else {
-		xy_len = flatbuffers_double_vec_len(xy);
-		npoints = xy_len / 2;
+		npoints = flatbuffers_double_vec_len(xy) / 2;
 		end = npoints;
 	}
 
 	pa = ptarray_construct_empty(ctx->hasZ, ctx->hasM, npoints);
 
 	if (ctx->hasZ && ctx->hasM) {
-		for (size_t i = offset; i < end; i++) {
+		for (i = offset; i < end; i++) {
 			double x = flatbuffers_double_vec_at(xy, (i * 2));
 			double y = flatbuffers_double_vec_at(xy, (i * 2) + 1);
 			flatbuffers_double_vec_t za = Geometry_z(geometry);
@@ -625,7 +631,7 @@ static POINTARRAY *decode_line_pa(struct flatgeobuf_decode_ctx *ctx, Geometry_ta
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 	} else if (ctx->hasZ) {
-		for (size_t i = offset; i < end; i++) {
+		for (i = offset; i < end; i++) {
 			double x = flatbuffers_double_vec_at(xy, (i * 2));
 			double y = flatbuffers_double_vec_at(xy, (i * 2) + 1);
 			flatbuffers_double_vec_t za = Geometry_z(geometry);
@@ -634,7 +640,7 @@ static POINTARRAY *decode_line_pa(struct flatgeobuf_decode_ctx *ctx, Geometry_ta
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 	} else if (ctx->hasM) {
-		for (size_t i = offset; i < end; i++) {
+		for (i = offset; i < end; i++) {
 			double x = flatbuffers_double_vec_at(xy, (i * 2));
 			double y = flatbuffers_double_vec_at(xy, (i * 2) + 1);
 			flatbuffers_double_vec_t ma = Geometry_m(geometry);
@@ -643,7 +649,7 @@ static POINTARRAY *decode_line_pa(struct flatgeobuf_decode_ctx *ctx, Geometry_ta
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 	} else {
-		for (size_t i = offset; i < end; i++) {
+		for (i = offset; i < end; i++) {
 			double x = flatbuffers_double_vec_at(xy, (i * 2));
 			double y = flatbuffers_double_vec_at(xy, (i * 2) + 1);
 			pt = (POINT4D) { x, y, 0, 0 };
@@ -666,15 +672,16 @@ static LWPOLY *decode_poly(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t g
 
 	flatbuffers_uint32_vec_t ends = Geometry_ends(geometry);
 
-	size_t nrings = 1;
-	uint32 end = 0;
-	uint32 offset = 0;
+	uint32_t nrings = 1;
+	uint32_t end = 0;
+	uint32_t offset = 0;
+	uint32_t i;
 	
 	if (ends != NULL)
 		nrings = flatbuffers_uint32_vec_len(ends);
 	
 	ppa = lwalloc(sizeof(POINTARRAY *) * nrings);
-	for (size_t i = 0; i < nrings; i++) {
+	for (i = 0; i < nrings; i++) {
 		if (ends != NULL)
 			end = flatbuffers_uint32_vec_at(ends, i);
 		ppa[i] = decode_line_pa(ctx, geometry, end, offset);
@@ -695,6 +702,7 @@ static LWMLINE *decode_mline(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 	uint32_t ngeoms = 1;
 	flatbuffers_uint32_vec_t ends = Geometry_ends(geometry);
 	LWMLINE *lwmline = lwmline_construct_empty(0, ctx->hasZ, ctx->hasM);
+	uint32_t i;
 
 	if (ends != NULL)
 		ngeoms = flatbuffers_uint32_vec_len(ends);
@@ -704,7 +712,7 @@ static LWMLINE *decode_mline(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 		LWLINE *lwline = lwline_construct(0, NULL, pa);
 		lwmline_add_lwline(lwmline, lwline);
 	} else {
-		for (size_t i = 0; i < ngeoms; i++) {
+		for (i = 0; i < ngeoms; i++) {
 			uint32 end = flatbuffers_uint32_vec_at(ends, i);
 			uint32 offset = 0;
 			POINTARRAY *pa = decode_line_pa(ctx, geometry, end, offset);
@@ -720,9 +728,11 @@ static LWMLINE *decode_mline(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t
 static LWMPOLY *decode_mpoly(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
 {
 	Geometry_vec_t parts = Geometry_parts(geometry);
-	size_t ngeoms = Geometry_vec_len(parts);
+	uint32_t ngeoms = Geometry_vec_len(parts);
 	LWMPOLY *lwmpoly = lwmpoly_construct_empty(0, ctx->hasZ, ctx->hasM);
-	for (int i = 0; i < ngeoms; i++)
+	uint32_t i;
+
+	for (i = 0; i < ngeoms; i++)
 		lwmpoly_add_lwpoly(lwmpoly, decode_poly(ctx, Geometry_vec_at(parts, i)));
 	return lwmpoly;
 }
@@ -732,9 +742,11 @@ static LWGEOM *decode_geometry_part(struct flatgeobuf_decode_ctx *ctx, Geometry_
 static LWCOLLECTION *decode_collection(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t geometry)
 {
 	Geometry_vec_t parts = Geometry_parts(geometry);
-	size_t ngeoms = Geometry_vec_len(parts);
+	uint32_t ngeoms = Geometry_vec_len(parts);
 	LWCOLLECTION *lwcollection = lwcollection_construct_empty(COLLECTIONTYPE, 0, ctx->hasZ, ctx->hasM);
-	for (int i = 0; i < ngeoms; i++) {
+	uint32_t i;
+
+	for (i = 0; i < ngeoms; i++) {
 		Geometry_table_t part = Geometry_vec_at(parts, i);
 		GeometryType_enum_t geometry_type = Geometry_type_get(part);
 		lwcollection_add_lwgeom(lwcollection, decode_geometry_part(ctx, part, geometry_type));
