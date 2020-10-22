@@ -429,6 +429,7 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 	uint32_t len;
 	uint32_t i;
 
+	uint8_t byte_value;
 	int16_t short_value;
 	int32_t int_value;
 	int64_t long_value;
@@ -451,9 +452,9 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 		typoid = getBaseType(TupleDescAttr(ctx->tupdesc, i)->atttypid);
 		switch (typoid) {
 		case BOOLOID:
-			int_value = DatumGetBool(datum) ? 1 : 0;
-			memcpy(data + offset, &int_value, sizeof(int_value));
-			offset += sizeof(int_value);
+			byte_value = DatumGetBool(datum) ? 1 : 0;
+			memcpy(data + offset, &byte_value, sizeof(byte_value));
+			offset += sizeof(byte_value);
 			break;
 		case INT2OID:
 			short_value = DatumGetInt16(datum);
