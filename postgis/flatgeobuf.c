@@ -417,11 +417,22 @@ static Geometry_ref_t encode_geometry(struct flatgeobuf_encode_ctx *ctx)
 	return encode_geometry_part(ctx, ctx->lwgeom, geometry_type_is_unknown);
 }
 
+static void ensure_tmp_buf_size(struct flatgeobuf_encode_ctx *ctx, size_t size)
+{
+	if (ctx->tmp_buf_size == 0) {
+		ctx->tmp_buf_size = 1024 * 4;
+		ctx->tmp_buf = palloc(sizeof(uint8_t) * ctx->tmp_buf_size);
+	}
+	if (ctx->tmp_buf_size < size) {
+		ctx->tmp_buf_size = ctx->tmp_buf_size * 2;
+		ctx->tmp_buf = repalloc(ctx->tmp_buf, sizeof(uint8_t) * ctx->tmp_buf_size);
+		ensure_tmp_buf_size(ctx, size);
+	}
+}
+
 static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 {
-	uint32_t size = 1024 * 4;
 	uint16_t ci = 0;
-	uint8_t *data = palloc(sizeof(uint8_t) * size);
 	uint32_t offset = 0;
 	Datum datum;
 	bool isnull;
@@ -439,54 +450,61 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 
 	Jsonb *jb;
 
-	// TODO: realloc if size is not large enough
-	// TODO: reusable buffer in ctx?
 	for (i = 0; i < (uint32_t) ctx->tupdesc->natts; i++) {
 		if (ctx->geom_index == i)
 			continue;
 		datum = GetAttributeByNum(ctx->row, i + 1, &isnull);
 		if (isnull)
 			continue;
-		memcpy(data + offset, &ci, sizeof(ci));
+		ensure_tmp_buf_size(ctx, offset + sizeof(ci));
+		memcpy(ctx->tmp_buf + offset, &ci, sizeof(ci));
 		offset += sizeof(ci);
 		typoid = getBaseType(TupleDescAttr(ctx->tupdesc, i)->atttypid);
 		switch (typoid) {
 		case BOOLOID:
 			byte_value = DatumGetBool(datum) ? 1 : 0;
-			memcpy(data + offset, &byte_value, sizeof(byte_value));
+			ensure_tmp_buf_size(ctx, offset + sizeof(byte_value));
+			memcpy(ctx->tmp_buf + offset, &byte_value, sizeof(byte_value));
 			offset += sizeof(byte_value);
 			break;
 		case INT2OID:
 			short_value = DatumGetInt16(datum);
-			memcpy(data + offset, &short_value, sizeof(short_value));
+			ensure_tmp_buf_size(ctx, offset + sizeof(short_value));
+			memcpy(ctx->tmp_buf + offset, &short_value, sizeof(short_value));
 			offset += sizeof(short_value);
 			break;
 		case INT4OID:
 			int_value = DatumGetInt32(datum);
-			memcpy(data + offset, &int_value, sizeof(int_value));
+			ensure_tmp_buf_size(ctx, offset + sizeof(int_value));
+			memcpy(ctx->tmp_buf + offset, &int_value, sizeof(int_value));
 			offset += sizeof(int_value);
 			break;
 		case INT8OID:
 			long_value = DatumGetInt64(datum);
-			memcpy(data + offset, &long_value, sizeof(long_value));
+			ensure_tmp_buf_size(ctx, offset + sizeof(long_value));
+			memcpy(ctx->tmp_buf + offset, &long_value, sizeof(long_value));
 			offset += sizeof(long_value);
 			break;
 		case FLOAT4OID:
 			float_value = DatumGetFloat4(datum);
-			memcpy(data + offset, &float_value, sizeof(float_value));
+			ensure_tmp_buf_size(ctx, offset + sizeof(float_value));
+			memcpy(ctx->tmp_buf + offset, &float_value, sizeof(float_value));
 			offset += sizeof(float_value);
 			break;
 		case FLOAT8OID:
 			double_value = DatumGetFloat8(datum);
-			memcpy(data + offset, &double_value, sizeof(double_value));
+			ensure_tmp_buf_size(ctx, offset + sizeof(double_value));
+			memcpy(ctx->tmp_buf + offset, &double_value, sizeof(double_value));
 			offset += sizeof(double_value);
 			break;
 		case TEXTOID:
 			string_value = text_to_cstring(DatumGetTextP(datum));
 			len = strlen(string_value);
-			memcpy(data + offset, &len, sizeof(len));
+			ensure_tmp_buf_size(ctx, offset + sizeof(len));
+			memcpy(ctx->tmp_buf + offset, &len, sizeof(len));
 			offset += sizeof(len);
-			memcpy(data + offset, string_value, len);
+			ensure_tmp_buf_size(ctx, offset + len);
+			memcpy(ctx->tmp_buf + offset, string_value, len);
 			offset += len;
 			break;
 		// TODO: handle date/time types
@@ -503,7 +521,7 @@ static void encode_properties(struct flatgeobuf_encode_ctx *ctx)
 		ci++;
 	}
 
-	Feature_properties_create(ctx->B, data, offset);
+	Feature_properties_create(ctx->B, ctx->tmp_buf, offset);
 }
 
 static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
@@ -960,6 +978,8 @@ struct flatgeobuf_encode_ctx *flatgeobuf_agg_init_context(const char *geom_name)
 	size_t size = VARHDRSZ + sizeof(magicbytes);
 	ctx = palloc(sizeof(*ctx));
 	ctx->buf = palloc(size);
+	ctx->tmp_buf = NULL;
+	ctx->tmp_buf_size = 0;
 	memcpy(ctx->buf + VARHDRSZ, magicbytes, sizeof(magicbytes));
 	ctx->geom_name = geom_name;
 	ctx->geom_index = 0;

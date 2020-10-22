@@ -55,6 +55,8 @@ struct flatgeobuf_encode_ctx
 	LWGEOM *lwgeom;
 	uint64_t features_count;
 	uint8_t *buf;
+	uint8_t *tmp_buf;
+	uint32_t tmp_buf_size;
 	uint64_t offset;
 	uint8_t lwgeom_type;
 	GeometryType_enum_t geometry_type;
