@@ -3571,7 +3571,7 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         <para>Performed by the GEOS module.</para>
         <para>Availability: 2.2.0</para>
         <para>Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is lowered from 8 to 5.</para>
-        <para>Enhanced: 3.1.0 accept a gridSize parameter.</para>
+        <para>Enhanced: 3.1.0 accept a gridSize parameter, requires GEOS &gt;= 3.9.0 to use this new feature.</para>
       </refsection>
 
       <refsection>
