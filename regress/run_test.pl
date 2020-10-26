@@ -431,7 +431,6 @@ my $geosver =  sql("select postgis_geos_version()");
 my $projver = sql("select postgis_proj_version()");
 my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
-my $pgsqlvernum = sql("select current_setting('server_version_num')");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
 my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
 my $scriptver = sql("select postgis_scripts_installed()");
@@ -1531,7 +1530,7 @@ sub package_extension_sql
 	my ($extname, $extver) = @_;
 	my $sql;
 
-	if ( $pgsqlvernum lt 130000 ) {
+	if ( $pgvernum lt 130000 ) {
 		$sql = "CREATE EXTENSION ${extname} VERSION '${extver}' FROM unpackaged;";
 	} else {
 		$sql = "CREATE EXTENSION ${extname} VERSION unpackaged;";
