@@ -3,6 +3,7 @@
 TMPDIR=/tmp/pgis_upgrade_test-$$/
 DATADIR=${TMPDIR}/cluster
 LOGFILE=${TMPDIR}/log
+INIT_SCRIPT=
 export PGPORT=15432
 export PGHOST=${TMPDIR}
 export PGDATABASE=pgis
@@ -10,7 +11,7 @@ PG_CONFIG_OLD=
 PG_CONFIG_NEW=
 
 usage() {
-  echo "Usage: $0 <pg_config> <pg_config>"
+  echo "Usage: $0 [-i <init_script>] <pg_config_old> <pg_config_new>"
 }
 
 cleanup() {
@@ -23,7 +24,11 @@ trap 'cleanup' EXIT
 mkdir -p ${TMPDIR}
 
 while test -n "$1"; do
-  if test -z "$PG_CONFIG_OLD"; then
+  if test "$1" = "-i"; then
+    shift
+    INIT_SCRIPT=$1
+    shift
+  elif test -z "$PG_CONFIG_OLD"; then
     PG_CONFIG_OLD="$1"
     shift
   elif test -z "$PG_CONFIG_NEW"; then
@@ -66,10 +71,16 @@ ${BIN_OLD}/pg_ctl -D ${DATADIR} -o "-F -p ${PGPORT} -k ${TMPDIR}" -l ${LOGFILE} 
 
 echo "Creating FROM db"
 ${BIN_OLD}/createdb pgis || exit 1
-${BIN_OLD}/psql -c "CREATE EXTENSION postgis" || exit 1
+
+#TODO: run an custom script
+if test -n "$INIT_SCRIPT"; then
+  ${BIN_OLD}/psql -X --set ON_ERROR_STOP=1 -f "$INIT_SCRIPT" || exit 1
+else
+  ${BIN_OLD}/psql -Xc --set ON_ERROR_STOP=1 "CREATE EXTENSION postgis" || exit 1
+fi
 
 echo "---- OLD cluster info -------------------------"
-${BIN_OLD}/psql -XAt <<EOF || exit 1
+${BIN_OLD}/psql -XAt --set ON_ERROR_STOP=1 <<EOF || exit 1
 SELECT version();
 SELECT postgis_full_version();
 EOF
