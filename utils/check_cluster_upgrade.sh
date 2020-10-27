@@ -15,7 +15,9 @@ usage() {
 }
 
 cleanup() {
-  ${BIN_OLD}/pg_ctl -D ${DATADIR} stop || exit 1
+  if test -f ${DATADIR}/cluster/postmaster.pid; then
+    ${BIN_OLD}/pg_ctl -D ${DATADIR} stop
+  fi
   rm -rf ${TMPDIR}
 }
 
@@ -27,6 +29,12 @@ while test -n "$1"; do
   if test "$1" = "-i"; then
     shift
     INIT_SCRIPT=$1
+    if test -f ${INIT_SCRIPT}; then
+      :
+    else
+      echo "${INIT_SCRIPT} is not a file" >&2
+      exit 1
+    fi
     shift
   elif test -z "$PG_CONFIG_OLD"; then
     PG_CONFIG_OLD="$1"
@@ -102,7 +110,13 @@ ${BIN_NEW}/initdb ${PGDATANEW} > ${LOGFILE} 2>&1 || {
 echo "Upgrading cluster"
 cd ${TMPDIR}
 ${BIN_NEW}/pg_upgrade --link -b ${BIN_OLD} -B ${BIN_NEW} > ${LOGFILE} 2>&1 ||  {
-  cat ${LOGFILE} && exit 1
+  cat ${LOGFILE}
+  DUMPLOG=$(grep 'pg_upgrade_dump.*log' ${LOGFILE} | cut -d'"' -f2)
+  if test -n "${DUMPLOG}"; then
+    echo "${DUMPLOG} follows:"
+    tail ${TMPDIR}/${DUMPLOG}
+  fi
+  exit 1
 }
 
 echo "Starting TO cluster"
