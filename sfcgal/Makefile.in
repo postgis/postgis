@@ -87,6 +87,10 @@ PGXS := @PGXS@
 #
 $(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h
 
+# SQL objects are also dependent on postgis_config.h for PostgreSQL
+# version
+$(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
+
 # Note: we specify liblwgeom.a directly in SHLIB_LINK rather than using
 # -L... -l options to prevent issues with some platforms trying to link
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
