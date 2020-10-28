@@ -39,13 +39,15 @@ SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql legacy.sql unins
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring pre-processing)
-SQL_objs=postgis.sql legacy.sql legacy_minimal.sql
+SQL_OBJS = \
+	postgis.sql \
+	legacy.sql \
+	legacy_minimal.sql
 
 GEOM_BACKEND_OBJ = lwgeom_geos.o
 
 BACKEND_OBJ=$(GEOM_BACKEND_OBJ)
 DATA_built=$(SQL_built)
-SQL_OBJS=$(SQL_objs)
 
 ifeq (@HAVE_SPGIST@,yes)
 SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o gserialized_spgist_nd.o
