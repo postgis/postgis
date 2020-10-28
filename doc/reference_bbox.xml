@@ -395,7 +395,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_3DExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="geometry_overlaps" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_3DExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 

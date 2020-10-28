@@ -50,21 +50,21 @@
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
-		  <refsection>
-			<title>Description</title>
+        <refsection>
+            <title>Description</title>
 
-			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the 2D bounding box of geometry A intersects the 2D bounding box of geometry B.</para>
+            <para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the 2D bounding box of geometry A intersects the 2D bounding box of geometry B.</para>
 
-			<note><para>This operand will make use of any indexes that may be available on the
-				geometries.</para></note>
+            <note><para>This operand will make use of any indexes that may be available on the
+                geometries.</para></note>
 
-			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-			<para>Availability: 1.5.0 support for geography was introduced.</para>
-			<para>&curve_support;</para>
-			<para>&P_support;</para>
-		  </refsection>
+            <para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+            <para>Availability: 1.5.0 support for geography was introduced.</para>
+            <para>&curve_support;</para>
+            <para>&P_support;</para>
+        </refsection>
 
-		  <refsection>
+		<refsection>
 			<title>Examples</title>
 
 			<programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp; tbl2.column2 AS overlaps
@@ -86,12 +86,15 @@ FROM ( VALUES
 			<title>See Also</title>
 
 			<para>
+                <xref linkend="ST_Intersects" />,
+                <xref linkend="ST_Extent" />,
 				<xref linkend="ST_Geometry_Overabove" />,
 				<xref linkend="ST_Geometry_Overright" />,
 				<xref linkend="ST_Geometry_Overbelow" />,
 				<xref linkend="ST_Geometry_Overleft" />,
 				<xref linkend="ST_Geometry_Contain" />,
-				<xref linkend="ST_Geometry_Contained" /></para>
+				<xref linkend="ST_Geometry_Contained" />
+            </para>
 		  </refsection>
 		</refentry>
 
