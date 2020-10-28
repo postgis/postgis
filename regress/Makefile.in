@@ -18,6 +18,8 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 
+topsrcdir = $(realpath ../)
+
 # Where we put our regression installation
 ifeq ($(MINGWBUILD),1)
 	srcdir=$(shell bash -c "pwd -W")
@@ -39,26 +41,31 @@ export PATH
 
 all install uninstall:
 
-check: check-regress
+check-regress: staged-install
+check-regress: check
 
 check-unit:
 
-check-regress: staged-install
-	$(MAKE) -C core check
+include core/tests.mk
+include loader/tests.mk
+include dumper/tests.mk
 ifeq ($(HAVE_SFCGAL),yes)
-	$(MAKE) -C sfcgal check
+	override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
+	include sfcgal/tests.mk
 endif
 
+include runtest.mk
+
 clean:
-	$(MAKE) -C core $@
-	$(MAKE) -C sfcgal $@
 	rm -rf $(REGRESS_INSTALLDIR)
 	rm -f postgis_garden_result.txt
 
 distclean: clean
-	$(MAKE) -C core $@
-	$(MAKE) -C sfcgal $@
 	rm -f Makefile
+	rm -f core/Makefile
+	rm -f loader/Makefile
+	rm -f dumper/Makefile
+	rm -f sfcgal/Makefile
 
 staged-install-sfcgal:
 	@if test x"@SFCGAL@" != "x"; then \

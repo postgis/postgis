@@ -10,11 +10,7 @@
 # *
 # **********************************************************************
 
-PERL=@PERL@
+TESTS += \
+		$(topsrcdir)/regress/sfcgal/regress_sfcgal \
+		$(topsrcdir)/regress/sfcgal/approximatemedialaxis.sql
 
-override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
-
-topsrcdir = $(realpath ../../)
-
-include tests.mk
-include ../runtest.mk

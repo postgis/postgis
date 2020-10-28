@@ -1595,6 +1595,9 @@ AC_OUTPUT([GNUmakefile
    topology/test/Makefile
    regress/Makefile
    regress/core/Makefile
+   regress/core/tests.mk
+   regress/dumper/Makefile
+   regress/loader/Makefile
    regress/sfcgal/Makefile
    doc/Makefile
    doc/Makefile.comments

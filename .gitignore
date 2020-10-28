@@ -148,6 +148,9 @@ raster/test/regress/loader/TiledAutoSkipNoData.tif
 regress/00-regress-install/
 regress/Makefile
 regress/core/Makefile
+regress/core/tests.mk
+regress/dumper/Makefile
+regress/loader/Makefile
 regress/sfcgal/Makefile
 regress/postgis.sql
 regress/postgis_garden_result.txt

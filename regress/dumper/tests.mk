@@ -10,11 +10,9 @@
 # *
 # **********************************************************************
 
-PERL=@PERL@
-
-override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
-
-topsrcdir = $(realpath ../../)
-
-include tests.mk
-include ../runtest.mk
+TESTS += \
+	$(topsrcdir)/regress/dumper/mfiledmp \
+	$(topsrcdir)/regress/dumper/literalsrid \
+	$(topsrcdir)/regress/dumper/realtable \
+	$(topsrcdir)/regress/dumper/nullsintable \
+	$(topsrcdir)/regress/dumper/null3d
