@@ -1,7 +1,7 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
-\i load_topology.sql
+\i ../load_topology.sql
 
 -- Invalid calls
 SELECT 'invalid', TopoGeo_addPoint('city_data', 'LINESTRING(36 26, 38 30)');

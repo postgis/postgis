@@ -1,7 +1,7 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
-\i load_topology.sql
+\i ../load_topology.sql
 
 -- Save max node,edge and face ids
 select 'node'::text as what, max(node_id) INTO city_data.limits FROM city_data.node;

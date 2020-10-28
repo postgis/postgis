@@ -4,7 +4,7 @@ set client_min_messages to ERROR;
 INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( 'EPSG', 4326, 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
 
 -- Import city_data
-\i load_topology-4326.sql
+\i ../load_topology-4326.sql
 
 -- Utility functions for the test {
 
@@ -377,9 +377,9 @@ SELECT topology.DropTopology('city_data');
 -- {
 
 -- Import city_data
-\i load_topology.sql
-\i load_features.sql
-\i cache_geometries.sql
+\i ../load_topology.sql
+\i ../load_features.sql
+\i ../cache_geometries.sql
 
 -- A city_street is defined by edge 3, can't drop
 SELECT '*RN(3)', topology.ST_RemEdgeNewFace('city_data', 3);

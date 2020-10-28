@@ -1,7 +1,7 @@
 set client_min_messages to WARNING;
 
-\i load_topology.sql
-\i load_features.sql
+\i ../load_topology.sql
+\i ../load_features.sql
 
 SELECT lid, tid, GetTopoGeomElements('city_data', lid, tid)
 FROM (
