@@ -2,7 +2,7 @@
 set client_min_messages to ERROR;
 
 -- Import city_data
-\i load_topology.sql
+\i ../load_topology.sql
 
 SELECT topology.ST_NewEdgeHeal('city_data', 1, null);
 SELECT topology.ST_NewEdgeHeal('city_data', null, 1);

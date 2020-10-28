@@ -1,6 +1,6 @@
 set client_min_messages to ERROR;
 
-\i load_topology.sql
+\i ../load_topology.sql
 
 -- Endpoint / node mismatch
 SELECT topology.ST_AddEdgeNewFaces('city_data', 7, 6,
