@@ -42,11 +42,7 @@ SQLPP = @SQLPP@
 
 # SQL objects (files requiring pre-processing)
 SQL_OBJS = \
-  sfcgal.sql \
-	sfcgal_upgrade.sql.in \
-  sfcgal_upgrade.sql \
-  sfcgal_after_upgrade.sql \
-  sfcgal_before_upgrade.sql
+  sfcgal.sql
 
 # Objects to build using PGXS
 
@@ -68,9 +64,6 @@ PG_CPPFLAGS += @SFCGAL_CPPFLAGS@
 SHLIB_LINK_F += @SFCGAL_LDFLAGS@
 endif
 
-# Set PERL _after_ the include of PGXS
-PERL=@PERL@
-
 # This is to workaround a bug in PGXS 8.4 win32 link line,
 # see http://trac.osgeo.org/postgis/ticket/1158#comment:57
 SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
@@ -78,18 +71,6 @@ SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 # PGXS information
 PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
-
-# Make all PostGIS objects depend upon liblwgeom, so that if an underlying
-# change is made, a PostGIS rebuild is triggered.
-#
-# Also they are all dependent on postgis_config.h
-# and thus postgis_revision.h
-#
-$(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h
-
-# SQL objects are also dependent on postgis_config.h for PostgreSQL
-# version
-$(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 
 # Note: we specify liblwgeom.a directly in SHLIB_LINK rather than using
 # -L... -l options to prevent issues with some platforms trying to link
@@ -107,7 +88,11 @@ endif
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS) \
-	uninstall_sfcgal.sql
+	uninstall_sfcgal.sql \
+	sfcgal_upgrade.sql.in \
+	sfcgal_upgrade.sql \
+	sfcgal_after_upgrade.sql \
+	sfcgal_before_upgrade.sql
 
 # PGXS information
 PG_CONFIG := @PG_CONFIG@
@@ -139,6 +124,19 @@ ifeq ($(REGRESS),1)
 	datadir=/share
 	datamoduledir=contrib/postgis
 endif
+
+# Make all PostGIS objects depend upon liblwgeom, so that if an underlying
+# change is made, a PostGIS rebuild is triggered.
+#
+# Also they are all dependent on postgis_config.h
+# and thus postgis_revision.h
+#
+$(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h
+
+# SQL objects are also dependent on postgis_config.h for PostgreSQL
+# version
+$(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
+
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
