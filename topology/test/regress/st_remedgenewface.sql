@@ -2,7 +2,7 @@
 set client_min_messages to ERROR;
 
 -- Import city_data
-\i load_topology-4326.sql
+\i ../load_topology-4326.sql
 
 -- Utility functions for the test {
 
@@ -375,9 +375,9 @@ SELECT topology.DropTopology('city_data');
 -- {
 
 -- Import city_data
-\i load_topology.sql
-\i load_features.sql
-\i cache_geometries.sql
+\i ../load_topology.sql
+\i ../load_features.sql
+\i ../cache_geometries.sql
 
 -- A city_street is defined by edge 3, can't drop
 SELECT '*RN(3)', topology.ST_RemEdgeNewFace('city_data', 3);

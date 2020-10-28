@@ -789,13 +789,15 @@ sub run_simple_test
 	chmod 0777, $betmpdir;
 
 	my $scriptdir = scriptdir($libver, $OPT_EXTENSIONS);
-	my $cmd = "psql -v \"VERBOSITY=terse\""
+
+	my ($sqlfile,$sqldir) = fileparse($sql);
+	my $cmd = "cd $sqldir; psql -v \"VERBOSITY=terse\""
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
           . " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
-          . " -tXAq -f $sql $DB > $outfile 2>&1";
+          . " -tXAq -f $sqlfile $DB > $outfile 2>&1";
 	my $rv = system($cmd);
 
 	# Check for ERROR lines

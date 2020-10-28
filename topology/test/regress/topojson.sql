@@ -1,8 +1,8 @@
 set client_min_messages to WARNING;
 
-\i load_topology.sql
-\i load_features.sql
-\i hierarchy.sql
+\i ../load_topology.sql
+\i ../load_features.sql
+\i ../hierarchy.sql
 
 -- This edges perturbate the topology so that walking around the boundaries
 -- of P1 and P2 may require walking on some of them
