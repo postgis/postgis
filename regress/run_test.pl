@@ -1371,7 +1371,7 @@ sub load_sql_file
 		my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
 		$cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
 		$cmd .= " -Xf $file $DB >> $REGRESS_LOG 2>&1";
-		print "  $file\n" if $VERBOSE;
+		#print "  $file\n" if $VERBOSE;
 		my $rv = system($cmd);
 		if ( $rv )
 		{
