@@ -79,7 +79,13 @@ SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 
-$(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h
+# Make all PostGIS objects depend upon liblwgeom, so that if an underlying
+# change is made, a PostGIS rebuild is triggered.
+#
+# Also they are all dependent on postgis_config.h
+# and thus postgis_revision.h
+#
+$(OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h
 
 # Note: we specify liblwgeom.a directly in SHLIB_LINK rather than using
 # -L... -l options to prevent issues with some platforms trying to link
@@ -129,14 +135,6 @@ ifeq ($(REGRESS),1)
 	datadir=/share
 	datamoduledir=contrib/postgis
 endif
-
-# Make all PostGIS objects depend upon liblwgeom, so that if an underlying
-# change is made, a PostGIS rebuild is triggered.
-#
-# Also they are all dependent on postgis_config.h
-# and thus postgis_revision.h
-#
-$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
