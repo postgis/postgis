@@ -1,6 +1,7 @@
 #############################################################################
 #
-# Copyright (c) 2009 Sandro Santilli <strk@kbt.io>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
+# Copyright (c) 2009-2020 Sandro Santilli <strk@kbt.io>
+# Copyright (c) 2009 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 # Copyright (c) 2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 # Copyright (c) 2011-2013 Regents of the University of California
 #   <bkpark@ucdavis.edu>
@@ -158,7 +159,7 @@ TEST_LOADER = \
 	loader/TiledAuto \
 	loader/TiledAutoSkipNoData
 
-TESTS = $(TEST_FIRST) \
+RASTER_TESTS := $(TEST_FIRST) \
 	$(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
 	$(TEST_PROPS) $(TEST_BANDPROPS) \
 	$(TEST_UTILITY) $(TEST_MAPALGEBRA) $(TEST_SREL) \
@@ -179,10 +180,11 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 	$(PERL) -lpe "s'\\\$$libdir'$(REGRESS_INSTALLDIR)/lib'g" $< > $@
 
 
-check:
-	$(MAKE) -C ../../../regress staged-install
-	$(PERL) ../../../regress/run_test.pl --raster $(RUNTESTFLAGS) $(TESTS)
-	# only run upgrade test if RUNTESTFLAGS was not already doing that
-	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
-		$(PERL) ../../../regress/run_test.pl --upgrade --raster $(RUNTESTFLAGS) $(TESTS); \
-	fi
+override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
+
+topsrcdir = $(realpath ../../../)
+
+#include tests.mk
+TESTS += $(patsubst %, $(topsrcdir)/raster/test/regress/%, $(RASTER_TESTS))
+include ../../../regress/runtest.mk
+
