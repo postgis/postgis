@@ -9,6 +9,8 @@ ifeq (@LIBLWGEOM_ONLY@,no)
 SUBDIRS += libpgcommon postgis regress @RASTER@ @TOPOLOGY@ @SFCGAL@ loader utils doc @EXTENSIONS@ @DEPS_SUBDIR@
 endif
 
+HAVE_SFCGAL=@HAVE_SFCGAL@
+
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
@@ -16,7 +18,7 @@ POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 PERL = @PERL@
 
 # todo: add more rules here, like uninstall, clean...
-all install uninstall noop clean distclean check-unit check-regress:
+all install uninstall noop clean distclean check-unit:
 	for s in $(SUBDIRS); do \
 		echo "---- Making $@ in $${s}"; \
 		$(MAKE) -C $${s} $@ || exit 1; \
@@ -185,3 +187,30 @@ postgis_revision.h:
 	$(PERL) utils/repo_revision.pl
 
 .PHONY: utils liblwgeom ChangeLog raster
+
+topsrcdir = $(realpath ./)
+include regress/core/tests.mk
+include regress/loader/tests.mk
+include regress/dumper/tests.mk
+ifeq ($(HAVE_SFCGAL),yes)
+	override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
+	include regress/sfcgal/tests.mk
+endif
+ifeq (@TOPOLOGY@,topology)
+	override RUNTESTFLAGS := $(RUNTESTFLAGS) --topology
+	include topology/test/tests.mk
+endif
+ifeq (@RASTER@,raster)
+	override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
+	include raster/test/regress/tests.mk
+endif
+
+include regress/runtest.mk
+
+check-regress: staged-install check-regress-deps
+
+check-regress-deps:
+ifeq (@TOPOLOGY@,topology)
+	$(MAKE) -C topology/test $@
+endif
+

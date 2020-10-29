@@ -18,3 +18,5 @@ topsrcdir = $(realpath ../../)
 
 include tests.mk
 include ../runtest.mk
+
+check: check-regress

@@ -184,7 +184,7 @@ override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
 
 topsrcdir = $(realpath ../../../)
 
-#include tests.mk
-TESTS += $(patsubst %, $(topsrcdir)/raster/test/regress/%, $(RASTER_TESTS))
+include tests.mk
 include ../../../regress/runtest.mk
 
+check: check-regress

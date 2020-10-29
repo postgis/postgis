@@ -42,7 +42,7 @@ export PATH
 all install uninstall:
 
 check-regress: staged-install
-check-regress: check
+check: check-regress
 
 check-unit:
 
