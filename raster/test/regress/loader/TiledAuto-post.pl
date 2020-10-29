@@ -1,1 +1,1 @@
-unlink "loader/TiledAuto.tif";
+unlink $TEST . ".tif";

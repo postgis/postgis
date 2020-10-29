@@ -1,1 +1,9 @@
-link "loader/testraster.tif", "loader/Tiled8x8.tif";
+my $TARGETFILE = $TEST . '.tif';
+
+if ( ! -e $TARGETFILE ) {
+	my $FILERASTER = dirname($TEST) . "/testraster.tif";
+	link ("$FILERASTER", "$TARGETFILE") ||
+		die("Cannot link $FILERASTER to $TARGETFILE: $!");
+}
+
+1;
