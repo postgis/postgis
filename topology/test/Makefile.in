@@ -35,61 +35,12 @@ load_topology-4326.sql: load_topology.sql.in
 clean distclean:
 	rm -f topo_predicates.sql load_topology.sql load_topology-4326.sql
 
-TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
-	regress/legacy_invalid.sql regress/sqlmm.sql \
-	regress/legacy_query.sql regress/addnode.sql \
-	regress/addedge.sql regress/addface.sql \
-	regress/addface2.5d.sql \
-	regress/addtopogeometrycolumn.sql \
-	regress/polygonize.sql \
-	regress/st_addisoedge.sql \
-	regress/st_addisonode.sql \
-	regress/st_addedgemodface.sql \
-	regress/st_addedgenewfaces.sql \
-	regress/st_changeedgegeom.sql \
-	regress/st_createtopogeo.sql \
-	regress/st_getfacegeometry.sql \
-	regress/st_getfaceedges.sql \
-	regress/st_modedgeheal.sql \
-	regress/st_modedgesplit.sql \
-	regress/st_newedgeheal.sql \
-	regress/st_newedgessplit.sql \
-	regress/st_remedgenewface.sql \
-	regress/st_remedgemodface.sql \
-	regress/st_simplify.sql \
-	regress/topoelement.sql \
-	regress/topoelementarray_agg.sql \
-	regress/topogeo_addlinestring.sql \
-	regress/topogeo_addpoint.sql \
-	regress/topogeo_addpolygon.sql \
-  regress/topogeom_edit.sql \
-	regress/topogeometry_type.sql \
-	regress/topojson.sql \
-  regress/topologysummary.sql \
-	regress/topo2.5d.sql \
-	regress/totopogeom.sql \
-	regress/droptopology.sql \
-	regress/droptopogeometrycolumn.sql \
-	regress/copytopology.sql \
-	regress/createtopogeom.sql \
-	regress/createtopology.sql \
-	regress/gml.sql \
-	regress/getnodebypoint.sql \
-	regress/getedgebypoint.sql \
-	regress/getfacebypoint.sql \
-	regress/getringedges.sql \
-	regress/gettopogeomelements.sql \
-	regress/layertrigger.sql \
-	regress/validatetopology.sql
+check-regress: check
+check: topo_predicates.sql load_topology.sql load_topology-4326.sql
 
-TESTS_EXPECTED = $(TESTS:.sql=_expected)
+override RUNTESTFLAGS := $(RUNTESTFLAGS) --topology
 
-check: check-regress
+topsrcdir = $(realpath ../../)
 
-check-regress: topo_predicates.sql load_topology.sql load_topology-4326.sql $(TESTS) $(TESTS_EXPECTED)
-	$(MAKE) -C ../../regress staged-install
-	$(PERL) ../../regress/run_test.pl --topology $(RUNTESTFLAGS) $(TESTS)
-	# only run upgrade test if RUNTESTFLAGS was not already doing that
-	if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
-		$(PERL) ../../regress/run_test.pl --upgrade --topology $(RUNTESTFLAGS) $(TESTS); \
-	fi
+include tests.mk
+include ../../regress/runtest.mk
