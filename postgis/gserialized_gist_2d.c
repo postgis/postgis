@@ -458,21 +458,19 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 int
 gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, lwflags_t *flags, uint8_t *type, int32_t *srid)
 {
-	GSERIALIZED *gpart;
 	int result = LW_SUCCESS;
+	GSERIALIZED *gpart = NULL;
+	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST((struct varlena *)gsdatum);
+	if (need_detoast)
+	{
+		gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	}
+	else
+	{
+		gpart = (GSERIALIZED *)gsdatum;
+	}
 
-	/*
-	** Because geometry is declared as "storage = main" anything large
-	** enough to take serious advantage of PG_DETOAST_DATUM_SLICE will have
-	** already been compressed, which means the entire object will be
-	** fetched and decompressed before a slice is taken, thus removing
-	** any efficiencies gained from slicing.
-	** As of Pg12 we can partially decompress a toasted object
-	** (though we still need to fully retrieve it from TOAST)
-	** which makes slicing worthwhile.
-	*/
-	gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
-	if (!gserialized_has_bbox(gpart) && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+	if (!gserialized_has_bbox(gpart) && need_detoast && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
 	{
 		/* The headers don't contain a bbox and the object is larger than what we retrieved, so
 		 * we now detoast it completely */
@@ -513,7 +511,16 @@ int
 gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
 	int result = LW_SUCCESS;
-	GSERIALIZED *gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	GSERIALIZED *gpart = NULL;
+	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST((struct varlena *)gsdatum);
+	if (need_detoast)
+	{
+		gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	}
+	else
+	{
+		gpart = (GSERIALIZED *)gsdatum;
+	}
 
 	if (gserialized_has_bbox(gpart))
 	{
@@ -525,7 +532,7 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	else
 	{
 		GBOX gbox = {0};
-		if (LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+		if (need_detoast && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
 		{
 			/* The headers don't contain a bbox and the object is larger than what we retrieved, so
 			 * we now detoast it completely and recheck */
