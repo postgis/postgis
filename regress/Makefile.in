@@ -66,26 +66,8 @@ distclean: clean
 	rm -f dumper/Makefile
 	rm -f sfcgal/Makefile
 
-staged-install-sfcgal:
-	@if test x"@SFCGAL@" != "x"; then \
-		$(MAKE) -C ../sfcgal REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
-	fi
-
-staged-install-topology:
-	@if test x"@TOPOLOGY@" != "x"; then \
-		$(MAKE) -C ../topology REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
-	fi
-
-staged-install-raster:
-	@if test x"@RASTER@" != "x"; then \
-		$(MAKE) -C ../raster/rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
-	fi
-
-staged-install: staged-install-raster staged-install-topology staged-install-sfcgal
-	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
-	$(MAKE) -C ../ REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) comments-install
-	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
-	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+staged-install:
+	$(MAKE) -C .. REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
 garden: staged-install
 	createdb postgis_garden
