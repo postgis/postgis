@@ -81,11 +81,17 @@ staged-install-raster:
 		$(MAKE) -C ../raster/rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
 	fi
 
-staged-install: staged-install-raster staged-install-topology staged-install-sfcgal
+staged-install-core:
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 	$(MAKE) -C ../ REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) comments-install
 	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+
+staged-install:
+	$(MAKE) staged-install-core
+	$(MAKE) staged-install-raster
+	$(MAKE) staged-install-topology
+	$(MAKE) staged-install-sfcgal
 
 garden: staged-install
 	createdb postgis_garden
