@@ -5,7 +5,7 @@ set -e
 CFLAGS_COV="-g -O0 --coverage"
 LDFLAGS_COV="--coverage"
 
-/usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile start
+/usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile -o '-F' start
 ./autogen.sh
 ./configure CFLAGS="${CFLAGS_COV}" LDFLAGS="${LDFLAGS_COV}" --enable-debug
 make -j check

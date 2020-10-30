@@ -5,7 +5,7 @@ set -e
 CFLAGS_STD="-g -O0 -mtune=generic -fno-omit-frame-pointer --coverage"
 LDFLAGS_STD="--coverage"
 
-/usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile start
+/usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile -o '-F' start
 ./autogen.sh
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}" --enable-debug
 make -j
