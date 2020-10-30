@@ -3,7 +3,7 @@
 # Exit on first error
 set -e
 
-su - postgres -c "export PGDATA=/var/lib/postgresql/data && pg_ctl -l -o '-F' /var/lib/postgresql/data/pg.log start"
+su - postgres -c "export PGDATA=/var/lib/postgresql/data && pg_ctl -o '-F' -l /var/lib/postgresql/data/pg.log start"
 #export PGPORT=`grep ^port /var/lib/postgresql/postgresql.conf | awk '{print $3}'`
 export PGPORT=5432
 psql --version
