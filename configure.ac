@@ -103,11 +103,6 @@ dnl Include minor version in postgis extension libraries
 dnl =====================================================
 LIBINCLUDEMINORVERSION="no"
 AC_ARG_WITH([library-minor-version],
-    [AS_HELP_STRING([--without-interrupt-tests],
-                    [Disable the interrupt tests (for CI servers)])],
-    [], [])
-
-AC_ARG_WITH([library-minor-version],
     [AS_HELP_STRING([--with-library-minor-version],
                     [Include minor version in the PostgreSQL PostGIS library files])],
     [LIBINCLUDEMINORVERSION="yes"], [])
@@ -1266,13 +1261,8 @@ dnl interrupt tests
 dnl ====================================
 INTERRUPTTESTS="no"
 AC_ARG_WITH([interrupt-tests],
-    [AS_HELP_STRING([--without-interrupt-tests],
-                    [Disable the interrupt tests (for CI servers)])],
-    [], [])
-
-AC_ARG_WITH([interrupt-tests],
     [AS_HELP_STRING([--with-interrupt-tests],
-                    [Enable interrupt tests])],
+                    [Enable the interrupt tests])],
     [INTERRUPTTESTS="yes"], [])
 
 if test "x$with_interrupt_tests" = "xno"; then
