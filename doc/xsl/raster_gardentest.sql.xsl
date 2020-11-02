@@ -71,52 +71,52 @@
 	<!--changed all to no skew so they pass the world tests -->
 	<pgis:pixeltypes>
 		 <pgis:pixeltype ID="1BB" PixType="1BB" createtable="true" nodata="0">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '1BB'), i, (i+1),0),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '1BB'), i, (i+1),0),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="2BUI" PixType="2BUI" createtable="true" nodata="2">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '2BUI'), i, (i+1),1),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '2BUI'), i, (i+1),1),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="4BUI" PixType="4BUI" createtable="true" nodata="15">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '4BUI'), i, (i+1),14),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '4BUI'), i, (i+1),14),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="8BSI" PixType="8BSI" createtable="true" nodata="-56">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '8BSI'), i, (i+1),-50),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '8BSI'), i, (i+1),-50),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="8BUI" PixType="8BUI" createtable="true" nodata="255">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '8BUI'), i, (i+1),150),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '8BUI'), i, (i+1),150),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="16BSI" PixType="16BSI" createtable="true" nodata="0">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '16BSI'), i, (i+1),-6000),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '16BSI'), i, (i+1),-6000),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="16BUI" PixType="16BUI" createtable="true" nodata="65535">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '16BUI'), i, (i+1),64567),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '16BUI'), i, (i+1),64567),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="32BSI" PixType="32BSI" createtable="true" nodata="-4294967295">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '32BSI'), i, (i+1),-429496),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '32BSI'), i, (i+1),-429496),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="32BUI" PixType="32BUI" createtable="true" nodata="4294967295">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '32BUI'), i, (i+1),42949),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '32BUI'), i, (i+1),42949),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="32BF" PixType="32BF" createtable="true" nodata="-4294.967295">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '32BF'), i, (i+1),-4294),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '32BF'), i, (i+1),-4294),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		  <pgis:pixeltype ID="64BF" PixType="64BF" createtable="true" nodata="429496.7295">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '64BF'), i, (i+1),42949.12345),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '64BF'), i, (i+1),42949.12345),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="NULLRaster" PixType="null" createtable="true" nodata="NULL">
 		 	(SELECT NULL::raster As rast
-		 		FROM generate_series(1,10) As i)
+		 		FROM generate_series(1,3) As i)
 		 </pgis:pixeltype>
 	</pgis:pixeltypes>
         <!-- We deal only with the reference chapter -->
