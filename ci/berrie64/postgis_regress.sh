@@ -12,7 +12,7 @@ export OS_BUILD=64
 export PG_VER=13
 export PGPATH=${WORKSPACE}/pg/label/${label}/rel/pg${PG_VER}w${OS_BUILD}
 
-export PATH=${PATH}:${PGPATH}/bin:${PGPATH}/lib
+export PATH=${PGPATH}/bin:${PGPATH}/lib:${PATH}
 export PGPORT=55432
 export PGDATA=$PGPATH/data_${PGPORT}
 export PGHOST=localhost
