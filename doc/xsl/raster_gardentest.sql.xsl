@@ -114,6 +114,10 @@
 		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '64BF'), i, (i+1),42949.12345),4326) As rast
 		 		FROM generate_series(1,10) As i)
 		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="NULLRaster" PixType="64BF" createtable="true" nodata="NULL">
+		 	(SELECT NULL::raster As rast
+		 		FROM generate_series(1,10) As i)
+		 </pgis:pixeltype>
 	</pgis:pixeltypes>
         <!-- We deal only with the reference chapter -->
         <xsl:template match="/">
@@ -243,7 +247,7 @@ COMMIT;
 				-- <xsl:value-of select="funcdef"/>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') ]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
-				<xsl:variable name='numparamrasts'><xsl:value-of select="count(paramdef/type[contains(text(),'raster')] )" /></xsl:variable>
+				<xsl:variable name='numparamrasts'><xsl:value-of select="count(paramdef/type[contains(text(),'raster') ] )" /></xsl:variable>
 				<xsl:variable name='log_label'><xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
 
 				<xsl:variable name="geoftype">
@@ -285,7 +289,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 <!-- put functions that take only one raster no need to cross with another raster collection, these are unary raster, aggregates, and so forth -->
 	<xsl:when test="$numparamrasts = '1' and $numparamgeoms = '0'  and not(contains($fnexclude,funcdef/function))" >
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
-		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@PixType" />';
+		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@PixType" /> with 1 rast param';
 			<xsl:choose>
 			  <xsl:when test="contains($fndef, 'raster ') or contains($fndef, 'geometry ')">
 	 <!-- If output is raster show ewkt convexhull rep -->
@@ -464,13 +468,13 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(type, 'raster[]') ">
 						<xsl:text>ARRAY[rast2.rast]</xsl:text>
 					</xsl:when>
-					<xsl:when test="(type = 'raster' or type = 'raster ' or contains(type, 'raster set') ) and (position() = 1) ">
+					<xsl:when test="(type = 'raster' or type = 'raster ' or contains(type, 'raster set') or contains(type, 'setof raster') ) and (position() = 1) ">
 						<xsl:text>rast1.rast</xsl:text>
 					</xsl:when>
-					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')">
+					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')or contains(type, 'setof raster')">
 						<xsl:text>rast2.rast</xsl:text>
 					</xsl:when>
-					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')">
+					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set') or contains(type, 'setof raster')">
 						<xsl:text>rast2.rast</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'geometry[]') and count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
