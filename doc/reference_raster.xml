@@ -10029,7 +10029,7 @@ FROM (
 
 						<funcprototype>
 							<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
-							<paramdef><type>nband</type> <parameter>integer</parameter></paramdef>
+							<paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
 							<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></paramdef>
 							<paramdef><type>float8[] </type> <parameter>mask</parameter></paramdef>
 							<paramdef><type>boolean </type> <parameter>weighted</parameter></paramdef>
