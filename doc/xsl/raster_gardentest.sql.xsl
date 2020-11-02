@@ -114,7 +114,7 @@
 		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '64BF'), i, (i+1),42949.12345),4326) As rast
 		 		FROM generate_series(1,10) As i)
 		 </pgis:pixeltype>
-		 <pgis:pixeltype ID="NULLRaster" PixType="64BF" createtable="true" nodata="NULL">
+		 <pgis:pixeltype ID="NULLRaster" PixType="null" createtable="true" nodata="NULL">
 		 	(SELECT NULL::raster As rast
 		 		FROM generate_series(1,10) As i)
 		 </pgis:pixeltype>
@@ -127,7 +127,7 @@ DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
 CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
-                <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
+            <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
         </xsl:template>
 	<xsl:template match='chapter'>
 <!-- define a table we call pgis_rgarden_mega that will contain a raster column with a band for all types of pixels we support -->
@@ -244,7 +244,6 @@ COMMIT;
 				<xsl:variable name='fnargs'><xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
-				-- <xsl:value-of select="funcdef"/>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') ]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
 				<xsl:variable name='numparamrasts'><xsl:value-of select="count(paramdef/type[contains(text(),'raster') ] )" /></xsl:variable>
@@ -267,6 +266,7 @@ COMMIT;
 					</xsl:otherwise>
 				  </xsl:choose>
 				</xsl:variable>
+				SELECT 'Start Considering <xsl:value-of select="funcdef/function" /> <xsl:value-of select="$geoftype" />';
 
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
@@ -287,7 +287,8 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	</xsl:when>
 <!--Start Test aggregate and unary functions -->
 <!-- put functions that take only one raster no need to cross with another raster collection, these are unary raster, aggregates, and so forth -->
-	<xsl:when test="$numparamrasts = '1' and $numparamgeoms = '0'  and not(contains($fnexclude,funcdef/function))" >
+	<xsl:when test="$numparamrasts = '1' and $numparamgeoms = '0' and not(contains($fnexclude,funcdef/function))" >
+		SELECT '<xsl:value-of select="$fnname" />';
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@PixType" /> with 1 rast param';
 			<xsl:choose>

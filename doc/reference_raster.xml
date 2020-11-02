@@ -9080,11 +9080,8 @@ FROM dummy_rast WHERE rid=2;
 		</refentry>
 	</sect1>
 
-	<sect1 id="Raster_Processing">
-		<title>Raster Processing</title>
-
-		<sect2 id="Raster_Processing_MapAlgebra">
-			<title>Map Algebra</title>
+	<sect1 id="Raster_Processing_MapAlgebra">
+		<title>Raster Processing: Map Algebra</title>
 
 			<refentry id="RT_ST_Clip">
 				<refnamediv>
@@ -12091,39 +12088,35 @@ UPDATE wind
 
 				<refsynopsisdiv>
 					<funcsynopsis>
-					  <funcprototype>
-							<funcdef>raster <function>ST_Union</function></funcdef>
-							<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
-					</funcprototype>
-					</funcsynopsis>
-					<funcsynopsis>
-					  <funcprototype>
-							<funcdef>raster <function>ST_Union</function></funcdef>
-							<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
-							<paramdef><type>unionarg[] </type> <parameter>unionargset</parameter></paramdef>
-					  </funcprototype>
-					</funcsynopsis>
-					<funcsynopsis>
-					  <funcprototype>
-							<funcdef>raster <function>ST_Union</function></funcdef>
-							<paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
-							<paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
-					  </funcprototype>
-					</funcsynopsis>
-					<funcsynopsis>
-					  <funcprototype>
-							<funcdef>raster <function>ST_Union</function></funcdef>
-							<paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
-							<paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
-					  </funcprototype>
-					</funcsynopsis>
-					<funcsynopsis>
-					  <funcprototype>
-							<funcdef>raster <function>ST_Union</function></funcdef>
-							<paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
-							<paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
-							<paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
-					  </funcprototype>
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>unionarg[] </type> <parameter>unionargset</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
+                        </funcprototype>
+
+                        <funcprototype>
+                            <funcdef>raster <function>ST_Union</function></funcdef>
+                            <paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
+                            <paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
+                            <paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
+                        </funcprototype>
 					</funcsynopsis>
 				</refsynopsisdiv>
 
@@ -12188,9 +12181,9 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 				</refsection>
 			</refentry>
 
-		</sect2> <!-- /map algebra -->
+		</sect1> <!-- /map algebra -->
 
-		<sect2 id="Raster_Processing_MapAlgebra_Callbacks">
+		<sect1 id="Raster_Processing_MapAlgebra_Callbacks">
 			<title>Built-in Map Algebra Callback Functions</title>
 
         <refentry id="RT_ST_Distinct4ma">
@@ -12926,10 +12919,10 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
 
-		</sect2> <!-- /callback -->
+		</sect1> <!-- /callback -->
 
-		<sect2 id="Raster_Processing_DEM">
-			<title>DEM (Elevation)</title>
+		<sect1 id="Raster_Processing_DEM">
+			<title>Raster Processing: DEM (Elevation)</title>
 
 			<refentry id="RT_ST_Aspect">
 				<refnamediv>
@@ -13502,10 +13495,10 @@ GROUP BY t1.rast;
 				</refsection>
 			</refentry>
 
-		</sect2> <!-- /DEM -->
+		</sect1> <!-- /DEM -->
 
-		<sect2 id="Raster_Processing_Geometry">
-			<title>Raster to Geometry</title>
+		<sect1 id="Raster_Processing_Geometry">
+			<title>Raster Processing: Raster to Geometry</title>
 
 			<refentry id="RT_Box3D">
 				<refnamediv>
@@ -13915,9 +13908,7 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
 				</refsection>
 			</refentry>
 
-		</sect2> <!-- /misc -->
-
-	</sect1>
+	</sect1> <!-- /misc -->
 
 	<sect1 id="RT_Operators">
 	<title>Raster Operators</title>
