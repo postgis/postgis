@@ -48,10 +48,6 @@ check-unit:
 include core/tests.mk
 include loader/tests.mk
 include dumper/tests.mk
-ifeq ($(HAVE_SFCGAL),yes)
-	override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
-	include sfcgal/tests.mk
-endif
 
 include runtest.mk
 
@@ -64,7 +60,6 @@ distclean: clean
 	rm -f core/Makefile
 	rm -f loader/Makefile
 	rm -f dumper/Makefile
-	rm -f sfcgal/Makefile
 
 staged-install-sfcgal:
 	@if test x"@SFCGAL@" != "x"; then \

@@ -194,7 +194,7 @@ include regress/loader/tests.mk
 include regress/dumper/tests.mk
 ifeq ($(HAVE_SFCGAL),yes)
 	override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
-	include regress/sfcgal/tests.mk
+	include sfcgal/regress/tests.mk
 endif
 ifeq (@TOPOLOGY@,topology)
 	override RUNTESTFLAGS := $(RUNTESTFLAGS) --topology

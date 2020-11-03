@@ -17,6 +17,6 @@ override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
 topsrcdir = $(realpath ../../)
 
 include tests.mk
-include ../runtest.mk
+include ../../regress/runtest.mk
 
 check: check-regress

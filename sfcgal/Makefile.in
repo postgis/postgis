@@ -161,6 +161,7 @@ uninstall_sfcgal.sql: sfcgal.sql ../utils/create_undef.pl
 
 distclean: clean
 	rm -f Makefile
+	rm -f regress/Makefile
 
 check-unit:
 

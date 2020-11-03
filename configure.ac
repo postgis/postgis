@@ -1579,6 +1579,7 @@ AC_OUTPUT([GNUmakefile
    postgis/Makefile
    postgis/sqldefines.h
 	 sfcgal/Makefile
+   sfcgal/regress/Makefile
    loader/Makefile
    loader/cunit/Makefile
    topology/Makefile
@@ -1588,7 +1589,6 @@ AC_OUTPUT([GNUmakefile
    regress/core/tests.mk
    regress/dumper/Makefile
    regress/loader/Makefile
-   regress/sfcgal/Makefile
    doc/Makefile
    doc/Makefile.comments
    doc/html/image_src/Makefile
