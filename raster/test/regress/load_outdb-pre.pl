@@ -57,13 +57,13 @@ SELECT
 	) AS rast
 END
 
-my $PREFNAME = abs_path($TEST) . '-pre.sql';
+my $PREFNAME = $TEST . '-pre.sql';
 open(PRESQL, '>', $PREFNAME) || die ('Cannot open ' . $PREFNAME . ": $!");
 print PRESQL $sql;
 close(PRESQL);
 
 # no longer needed as the "clean" test takes care of it
-#my $POSTFNAME = abs_path($TEST) . '-post.sql';
+#my $POSTFNAME = $TEST . '-post.sql';
 #open(POSTSQL, '>', $POSTFNAME) || die ('Cannot open ' . $POSTFNAME .  ": $!");;
 #print POSTSQL "DROP TABLE IF EXISTS raster_outdb_template;\n";
 #close(POSTSQL);

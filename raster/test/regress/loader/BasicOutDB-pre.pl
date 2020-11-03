@@ -10,7 +10,7 @@ if ( ! -e $TARGETFILE ) {
 		die("Cannot link $FILERASTER to $TARGETFILE: $!");
 }
 
-my $OPTSFNAME = abs_path($TEST) . '.opts';
+my $OPTSFNAME = $TEST . '.opts';
 open(OPTS, '>', $OPTSFNAME) || die ('Cannot open ' . $OPTSFNAME. ": $1");
 print OPTS "-F -C -R \"$FILERASTER\"\n";
 close(OPTS);
