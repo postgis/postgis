@@ -193,12 +193,6 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 ../postgis_revision.h:
 	$(MAKE) -C .. postgis_revision.h
 
-../liblwgeom/.libs/liblwgeom.a:
-	$(MAKE) -C ../liblwgeom liblwgeom.la
-
-../libpgcommon/libpgcommon.a:
-	$(MAKE) -C ../libpgcommon libpgcommon.a
-
 $(WAGYU_LIBPATH):
 	$(MAKE) -C ../deps/wagyu all
 
