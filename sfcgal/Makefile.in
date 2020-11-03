@@ -168,3 +168,6 @@ check-unit:
 check-regress:
 
 maintainer-clean: distclean
+
+check:
+	$(MAKE) -C regress check
