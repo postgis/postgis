@@ -394,6 +394,8 @@ select 't4758.0', topology.TopoGeo_addLinestring('t4758',
   'LINESTRING(11.38327215  60.4081942, 11.3826176   60.4089484)');
 select 't4758.1', topology.TopoGeo_addLinestring('t4758',
   'LINESTRING( 11.3832721  60.408194249999994, 11.38327215 60.4081942)');
-select 't4758.2', topology.TopoGeo_addLinestring('t4758',
-  'LINESTRING( 11.38330505 60.408239599999995, 11.3832721  60.408194249999994)');
+SELECT 't4758.2', t
+FROM topology.TopoGeo_addLinestring('t4758',
+  'LINESTRING( 11.38330505 60.408239599999995, 11.3832721  60.408194249999994)') AS t
+ORDER BY t;
 SELECT 't4758.end', topology.DropTopology('t4758');
