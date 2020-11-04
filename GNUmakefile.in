@@ -43,7 +43,7 @@ test: check
 
 check: check-no-trailing-blanks check-unit check-regress docs-check check-news
 
-staged-install:
+staged-install: all
 	$(MAKE) -C regress staged-install
 
 check-news:
