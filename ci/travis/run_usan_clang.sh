@@ -17,4 +17,5 @@ LD_PRELOAD=/usr/lib/clang/9/lib/linux/libclang_rt.asan-x86_64.so \
 # Build with Clang and usan flags
 ./autogen.sh
 ./configure CC=clang CFLAGS="${CFLAGS_USAN}" LDFLAGS="${LDFLAGS_STD}"
-bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose
+bash ./ci/travis/logbt -- make -j
+bash ./ci/travis/logbt -- make check RUNTESTFLAGS=--verbose
