@@ -116,6 +116,15 @@ endif
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
+../../liblwgeom/.libs/liblwgeom.a:
+	$(MAKE) -C ../../liblwgeom
+
+../rt_core/librtcore.a:
+	$(MAKE) -C ../rt_core
+
+../../libpgcommon/libpgcommon.a:
+	$(MAKE) -C ../../libpgcommon
+
 # Objects dependencies
 # NOTE: the .a deps are really only link-time dependencies, but at this
 #       time I dunno how to wncode those
