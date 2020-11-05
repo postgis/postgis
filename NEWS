@@ -13,6 +13,7 @@ PostGIS 2.5.5
   - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)
   - #4541, ST_ConcaveHull returns a "geometrycollection"
            type instead of the expected "polygon" (Regina Obe)
+  - #4727, Fix geocentric bounding box computation for rare case (Paul Ramsey)
 
 PostGIS 2.5.4
 2020/02/28
