@@ -256,7 +256,16 @@ proj_crs_is_swapped(const PJ *pj_crs)
 				      &out_unit_name,
 				      &out_unit_auth_name,
 				      &out_unit_code);
-		rv = (strcasecmp(out_direction, "north") == 0);
+		if (strcasecmp(out_abbrev, "E") == 0)
+			rv = LW_FALSE;
+		else if (strcasecmp(out_abbrev, "Lat") == 0)
+			rv = LW_TRUE;
+		else if (strcasecmp(out_direction, "north") == 0)
+			rv = LW_TRUE;
+		else if (strcasecmp(out_direction, "south") == 0)
+			rv = LW_TRUE;
+		else
+			rv = LW_FALSE;
 	}
 	proj_destroy(pj_cs);
 	return rv;
