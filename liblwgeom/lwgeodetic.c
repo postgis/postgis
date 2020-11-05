@@ -2156,7 +2156,7 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROID *spheroid)
 {
 	GEOGRAPHIC_POINT g1, g2;
-	double x1, y1, x2, y2;
+	double x1, y1, x2, y2, az;
 
 	/* Convert r to a geodetic point */
 	x1 = lwpoint_get_x(r);
@@ -2175,7 +2175,9 @@ double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROI
 	}
 
 	/* Do the direction calculation */
-	return spheroid_direction(&g1, &g2, spheroid);
+	az = spheroid_direction(&g1, &g2, spheroid);
+	/* Ensure result is positive */
+	return az > 0 ? az : M_PI - az;
 }
 
 /**

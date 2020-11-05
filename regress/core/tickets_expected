@@ -435,3 +435,4 @@ ERROR:  BOX2D_construct: args can not be empty points
 ERROR:  LWGEOM_addpoint: Invalid offset
 #4689|0
 #4748|SRID=3031;POINT(-2399498.7 3213318.5)
+#4718|270.000|90.000
