@@ -5418,22 +5418,22 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     if ( col )
     {{
 
-      col = lwcollection_extract(col, LINETYPE);
+      LWCOLLECTION *colex = lwcollection_extract(col, LINETYPE);
 
       /* Check if the so-snapped edge collapsed (see #1650) */
-      if ( col->ngeoms == 0 )
+      if ( colex->ngeoms == 0 )
       {
-        lwcollection_free(col);
+        lwcollection_free(colex);
         lwgeom_free(tmp);
         LWDEBUG(1, "Made-valid snapped edge collapsed");
         return 0;
       }
 
-      tmp2 = lwgeom_clone_deep( col->geoms[0] );
+      tmp2 = lwgeom_clone_deep(colex->geoms[0]);
       lwgeom_free(tmp);
       tmp = tmp2;
       edge = lwgeom_as_lwline(tmp);
-      lwcollection_free(col);
+      lwcollection_free(colex);
       if ( ! edge )
       {
         /* should never happen */

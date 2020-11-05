@@ -2713,47 +2713,47 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_CollectionExtract);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *input = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *output;
-	LWGEOM *lwgeom = lwgeom_from_gserialized(input);
-	LWGEOM *lwcol = NULL;
-	int type = PG_GETARG_INT32(1);
-	int lwgeom_type = lwgeom->type;
+	GSERIALIZED *gser_in, *gser_out;
+	LWGEOM *lwg_in = NULL;
+	LWGEOM *lwg_out = NULL;
+	int extype = 0;
+
+	if (PG_NARGS() > 1)
+		extype = PG_GETARG_INT32(1);
 
 	/* Ensure the right type was input */
-	if (!(type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE))
+	if (!(extype == 0 || extype == POINTTYPE || extype == LINETYPE || extype == POLYGONTYPE))
 	{
-		lwgeom_free(lwgeom);
 		elog(ERROR, "ST_CollectionExtract: only point, linestring and polygon may be extracted");
 		PG_RETURN_NULL();
 	}
 
+	gser_in = PG_GETARG_GSERIALIZED_P(0);
+	lwg_in = lwgeom_from_gserialized(gser_in);
+
 	/* Mirror non-collections right back */
-	if (!lwgeom_is_collection(lwgeom))
+	if (!lwgeom_is_collection(lwg_in))
 	{
 		/* Non-collections of the matching type go back */
-		if (lwgeom_type == type)
+		if (lwg_in->type == extype || !extype)
 		{
-			lwgeom_free(lwgeom);
-			PG_RETURN_POINTER(input);
+			lwgeom_free(lwg_in);
+			PG_RETURN_POINTER(gser_in);
 		}
 		/* Others go back as EMPTY */
 		else
 		{
-			lwcol = lwgeom_construct_empty(
-			    type, lwgeom->srid, lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom));
+			lwg_out = lwgeom_construct_empty(extype, lwg_in->srid, lwgeom_has_z(lwg_in), lwgeom_has_m(lwg_in));
+			PG_RETURN_POINTER(geometry_serialize(lwg_out));
 		}
 	}
-	else
-	{
-		lwcol = lwcollection_as_lwgeom(lwcollection_extract((LWCOLLECTION *)lwgeom, type));
-	}
 
-	output = geometry_serialize((LWGEOM *)lwcol);
-	lwgeom_free(lwgeom);
-	lwgeom_free(lwcol);
+	lwg_out = (LWGEOM*)lwcollection_extract((LWCOLLECTION*)lwg_in, extype);
 
-	PG_RETURN_POINTER(output);
+	gser_out = geometry_serialize(lwg_out);
+	lwgeom_free(lwg_in);
+	lwgeom_free(lwg_out);
+	PG_RETURN_POINTER(gser_out);
 }
 
 PG_FUNCTION_INFO_V1(ST_CollectionHomogenize);

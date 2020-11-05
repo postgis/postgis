@@ -76,26 +76,35 @@ Given a (multi)geometry, return a (multi)geometry consisting only of elements of
 			  <funcprototype>
 				<funcdef>geometry <function>ST_CollectionExtract</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>type</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>geometry <function>ST_CollectionExtract</function></funcdef>
+                <paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+                <paramdef><type>integer </type> <parameter>type</parameter></paramdef>
+              </funcprototype>
+            </funcsynopsis>
 		</refsynopsisdiv>
 
 		<refsection>
 			<title>Description</title>
 
-			<para>
-Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
-Sub-geometries that are not the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned.
-Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.
-			</para>
+			<para>Given a geometry collection, return a homogeneous multi-geometry.
+            If the type is specified, return a multi-geometry containing only that type, and an EMPTY multigeometry otherwise. If the type is not specified, return a multi-geometry containing only geometries of the highest coordinate dimension. So polygons are preferred over lines, which are preferred over points. Sub-geometries that are not the desired type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned. </para>
+            <para>Only points, lines and polygons are supported. The type numbers are:</para>
+            <itemizedlist>
+            <listitem><para>1 == POINT</para></listitem>
+            <listitem><para>2 == LINESTRING</para></listitem>
+            <listitem><para>3 == POLYGON</para></listitem>
+            </itemizedlist>
 
 			<para>Availability: 1.5.0</para>
 
 			<note><para>
-Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type.
-In 1.5.3 non-matching single geometries result in a NULL return.
-In of 2.0.0 every case of missing match results in a typed EMPTY return.
+            Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type.
+            In 1.5.3 non-matching single geometries result in a NULL return.
+            In 2.0.0 every case of missing match results in a typed EMPTY return.
 			</para></note>
 
 			<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases

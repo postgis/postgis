@@ -38,6 +38,8 @@ Only tickets not included in 3.1.0alpha2
   - #4746, Micro optimizations to the serialization process (Raúl Marín)
   - #4719, Fail fast when srids don't match ST_Intersection(geometry,raster)
             Also schema qualify calls in function. (Regina Obe)
+  - #4784, Add ST_CollectionExtract(geometry) with default behaviour of
+           extracting the components of highest coordinate dimension. (Paul Ramsey)
 
 * Bug fixes *
   - #4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)

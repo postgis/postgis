@@ -1087,7 +1087,6 @@ lwgeom_is_collection(const LWGEOM *geom)
 int
 lwtype_is_collection(uint8_t type)
 {
-
 	switch (type)
 	{
 	case MULTIPOINTTYPE:

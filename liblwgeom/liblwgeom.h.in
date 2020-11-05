@@ -1197,10 +1197,7 @@ extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
  ******************************************************************/
 
 LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
-
-/* WARNING: the output will contain references to geometries in the input, */
-/* so the result must be carefully released, not freed. */
-LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
+LWCOLLECTION* lwcollection_extract(const LWCOLLECTION *col, uint32_t type);
 
 
 /******************************************************************

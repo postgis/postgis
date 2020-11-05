@@ -1402,6 +1402,13 @@ CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CollectionExtract'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CollectionHomogenize(geometry)
 	RETURNS geometry
