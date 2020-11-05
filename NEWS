@@ -11,6 +11,7 @@ PostGIS 3.0.3dev
   - #4767, #4768, #4771, #4772, Fix segfault when parsing invalid WKB (Raúl Marín)
   - #4769, Fix segfault in st_addband (Raúl Marín)
   - #4748, Fix incorrect axis swapping in polar stereographic (Paul Ramsey)
+  - #4727, Fix bug in geocentrix box computation (Paul Ramsey)
 
 PostGIS 3.0.2
 2020/08/15

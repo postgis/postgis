@@ -360,7 +360,7 @@ static int gbox_check_poles(GBOX *gbox)
 		else if ((gbox->ymin < 0.0) && (gbox->ymax < 0.0))
 		{
 			LWDEBUG(4, "enclosed negative y axis");
-			gbox->ymax = -1.0;
+			gbox->ymin = -1.0;
 		}
 		else
 		{
