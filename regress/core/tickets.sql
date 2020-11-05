@@ -1298,3 +1298,4 @@ SELECT '#4670-5', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geomet
 
 SELECT '#4689', _ST_DistanceTree('POLYGON ((30 10, 40 40, 20 40, 30 10))'::geography, 'POLYGON((81 6,140 35,-70 18,-51 0,-60 -46,106 -6,81 6))');
 
+SELECT '#4748', ST_AsEWKT(ST_Transform(ST_SetSRID(ST_Point(-36.75, -54.25), 4326), 3031),1);
