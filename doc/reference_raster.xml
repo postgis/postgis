@@ -6193,7 +6193,7 @@ FROM foo
             <refsynopsisdiv>
                 <funcsynopsis>
                     <funcprototype>
-                        <funcdef>float8 <function>ST_SetRotation</function></funcdef>
+                        <funcdef>raster <function>ST_SetRotation</function></funcdef>
                         <paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>
                     </funcprototype>
