@@ -195,7 +195,7 @@ ERROR:  got NULL for SRID (500001)
 #1543|MULTILINESTRING((0 0,10 0,10 10,0 0),(0 0))|POLYGON((0 0,10 10,10 0,0 0))
 #1578|f|f
 #1580.1|Point[S]
-ERROR:  transform: tolerance condition error (-20)
+ERROR:  transform: latitude or longitude exceeded limits (-14)
 #1580.3|Point[S]
 #1596.1|public.road_pg.roads_geom SRID:3395 TYPE:POINT DIMS:2 
 ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
