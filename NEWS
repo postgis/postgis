@@ -14,6 +14,8 @@ Only tickets not included in 3.1.0alpha2
 
 * Enhancements *
 
+  - #4789, Speed up TopoJSON output for areal TopoGeometry with
+           many holes (Sandro Santilli)
   - #4758, Improve topology noding robustness (Sandro Santilli)
   - Make ST_Subdivide interruptable (Sandro Santilli)
   - #4660, Changes in double / coordinate printing (Raúl Marín)
