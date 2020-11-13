@@ -12,6 +12,7 @@ PostGIS 3.0.3dev
   - #4769, Fix segfault in st_addband (Raúl Marín)
   - #4748, Fix incorrect axis swapping in polar stereographic (Paul Ramsey)
   - #4727, Fix bug in geocentrix box computation (Paul Ramsey)
+  - #4790, Fix ST_3dintersects calculations with identical vertices (Nicklas Avén)
 
 PostGIS 3.0.2
 2020/08/15
