@@ -379,7 +379,7 @@ Datum ST_Hexagon(PG_FUNCTION_ARGS)
 		            lwgeom_get_srid(lworigin));
 
 	ghex = geometry_serialize(lwhex);
-	PG_FREE_IF_COPY(gorigin, 1);
+	PG_FREE_IF_COPY(gorigin, 3);
 	PG_RETURN_POINTER(ghex);
 }
 
@@ -417,6 +417,6 @@ Datum ST_Square(PG_FUNCTION_ARGS)
 		           lwgeom_get_srid(lworigin));
 
 	gsqr = geometry_serialize(lwsqr);
-	PG_FREE_IF_COPY(gorigin, 1);
+	PG_FREE_IF_COPY(gorigin, 3);
 	PG_RETURN_POINTER(gsqr);
 }
