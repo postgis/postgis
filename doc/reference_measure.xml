@@ -484,7 +484,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 			<paramdef><type>geography </type>
 			<parameter>geog2</parameter></paramdef>
 
-			<paramdef choice="opt">><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>use_spheroid=true</parameter></paramdef>
 		  </funcprototype>
 
