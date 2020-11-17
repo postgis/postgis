@@ -94,7 +94,7 @@ sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTV
 sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_path.sql \
   sql_bits/upgrade_before.sql.in \
   	../../extras/tiger_geocoder/geocode_settings.sql \
-  ../../extras/tiger_geocoder/tiger_loader_2018.sql \
+  ../../extras/tiger_geocoder/tiger_loader_2019.sql \
 	../../extras/tiger_geocoder/utility/utmzone.sql \
 	../../extras/tiger_geocoder/utility/cull_null.sql \
 	../../extras/tiger_geocoder/utility/nullable_levenshtein.sql \

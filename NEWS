@@ -53,6 +53,7 @@ Only tickets not included in 3.1.0alpha2
   - #4767, #4768, #4771, #4772, Fix segfault when parsing invalid WKB (Raúl Marín)
   - #4769, Fix segfault in st_addband (Raúl Marín)
   - #4790, Fix ST_3dintersects calculations with identical vertices (Nicklas Avén)
+  - #4742, tiger geocoder reverted to 2018 version on tiger upgrade (Regina Obe)
 
 
 PostGIS 3.1.0alpha2
