@@ -10,7 +10,9 @@ Only tickets not included in 3.1.0alpha2
 
 * New features *
   - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)
-  - Add a gridSize optional parameter to overlay operations (Sandro Santilli)
+  - Add a gridSize optional parameter to ST_Union, ST_UnaryUnion,
+    ST_Difference, ST_Intersection, ST_SymDifference, ST_Subdivide
+    (Sandro Santilli)
   - GEOS 3.9
 
 * Enhancements *
