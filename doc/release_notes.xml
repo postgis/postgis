@@ -2,10 +2,74 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1><title>Release 3.1.0alpha3</title>
+        <para>Release date: 2020/11/19</para>
+        <para>Only changes since 3.1.0alpah2 are listed. This version requires PostgreSQL 9.6-13 and GEOS >= 3.6+
+                Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.9.0dev</para>
+        <simplesect><title>Breaking changes</title>
+            <para>4737, Bump minimum protobuf-c requirement to 1.1.0 (Raúl Marín)
+                    The configure step will now fail if the requirement isn't
+                    met or explicitly disabled (--without-protobuf)</para>
+            <para>4258, Untangle postgis_sfcgal from postgis
+                    into its own lib file (Regina Obe)</para>
+        </simplesect>
+
+        <simplesect><title>New features</title>
+            <para>4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)</para>
+            <para>Add a gridSize optional parameter to ST_Union, ST_UnaryUnion,
+                ST_Difference, ST_Intersection, ST_SymDifference, ST_Subdivide
+                Requires GEOS 3.9 (Sandro Santilli)</para>
+        </simplesect>
+
+        <simplesect><title>Enhancements</title>
+            <para>4789, Speed up TopoJSON output for areal TopoGeometry with
+                    many holes (Sandro Santilli)</para>
+            <para>4758, Improve topology noding robustness (Sandro Santilli)</para>
+            <para>Make ST_Subdivide interruptable (Sandro Santilli)</para>
+            <para>4660, Changes in double / coordinate printing (Raúl Marín)
+                - Use the shortest representation (enough to guarantee roundtrip).
+                - Uses scientific notation for absolute numbers smaller than 1e-8.
+                The previous behaviour was to output 0 for absolute values smaller than
+                1e-12 and fixed notation for anything bigger than that.
+                - Uses scientific notation for absolute numbers greater than 1e+15 (same behaviour).
+                - The precision parameter now also affects the scientific notation (before it was fixed [5-8]).
+                - All output functions now respect the requested precision (without any limits).
+                - The default precision is the same (9 for GeoJSON, 15 for everything else).</para>
+            <para>4729, WKT/KML: Print doubles directly into stringbuffers (Raúl Marín)</para>
+            <para>4533, Use the standard coordinate printing system for box types (Raúl Marín)</para>
+            <para>4686, Avoid decompressing geographies when possible (Raúl Marín)
+                Affects ANALYZE, _ST_PointOutside, postgis_geobbox, ST_CombineBbox(box2d, geometry),
+                ST_ClipByBox2D when the geometry is fully inside or outside the bbox and
+                ST_BoundingDiagonal.</para>
+            <para>4741, Don't use ST_PointInsideCircle if you need indexes, use ST_DWithin instead.
+                    Documentation adjusted (Darafei Praliaskouski)</para>
+            <para>4737, Improve performance and reduce memory usage in ST_AsMVT, especially in
+                    queries involving parallelism (Raúl Marín)</para>
+            <para>4746, Micro optimizations to the serialization process (Raúl Marín)</para>
+            <para>4719, Fail fast when srids don't match ST_Intersection(geometry,raster)
+            Also schema qualify calls in function. (Regina Obe)</para>
+            <para>4784, Add ST_CollectionExtract(geometry) with default behaviour of
+           extracting the components of highest coordinate dimension. (Paul Ramsey)</para>
+        </simplesect>
+
+        <simplesect><title>Bug Fixes</title>
+            <para>4691, Fix segfault during gist index creation with empty geometries (Raúl Marín)</para>
+            <para>Fix handling of bad WKB inputs (Oracle types) and unit tests for
+                malformed WKB. Remove memory leaks in malformed WKB cases. (Paul Ramsey)</para>
+            <para>4740, Round values in geography_distance_tree
+                    as we do on geography_distance (Raúl Marín, Paul Ramsey, Regina Obe)</para>
+            <para>4739, Ensure all functions using postgis_oid initialize the internal cache (Raúl Marín)</para>
+            <para>4767, #4768, #4771, #4772, Fix segfault when parsing invalid WKB (Raúl Marín)</para>
+            <para>4769, Fix segfault in st_addband (Raúl Marín)</para>
+            <para>4790, Fix ST_3dintersects calculations with identical vertices (Nicklas Avén)</para>
+            <para>4742, tiger geocoder reverted to 2018 version on tiger upgrade (Regina Obe)</para>
+            <para>3372, TopoElementArray cannot be null - change domain constraint (Regina Obe)</para>
+        </simplesect>
+    </sect1>
     <sect1>
         <title>Release 3.1.0alpha2</title>
         <para>Release date: 2020/07/18</para>
-        <para>Only changes since 3.1.0alpah1 and listed. This version requires PostgreSQL 9.6-13 and GEOS >= 3.6+
+        <para>Only changes since 3.1.0alpah1 are listed. This version requires PostgreSQL 9.6-13 and GEOS >= 3.6+
                 Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.9.0dev</para>
         <simplesect>
             <title>New Features</title>
