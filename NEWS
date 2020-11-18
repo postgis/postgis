@@ -6,14 +6,14 @@ Only tickets not included in 3.1.0alpha2
   - #4737, Bump minimum protobuf-c requirement to 1.1.0 (Raúl Marín)
            The configure step will now fail if the requirement isn't
            met or explicitly disabled (--without-protobuf)
-  - #4258, Untangle postgis_sfcgal into its own .so (Regina Obe)
+  - #4258, Untangle postgis_sfcgal from postgis
+           into its own lib file (Regina Obe)
 
 * New features *
   - #4698, Add a precision parameter to ST_AsEWKT (Raúl Marín)
   - Add a gridSize optional parameter to ST_Union, ST_UnaryUnion,
     ST_Difference, ST_Intersection, ST_SymDifference, ST_Subdivide
-    (Sandro Santilli)
-  - GEOS 3.9
+    Requires GEOS 3.9 (Sandro Santilli)
 
 * Enhancements *
 
@@ -57,6 +57,7 @@ Only tickets not included in 3.1.0alpha2
   - #4769, Fix segfault in st_addband (Raúl Marín)
   - #4790, Fix ST_3dintersects calculations with identical vertices (Nicklas Avén)
   - #4742, tiger geocoder reverted to 2018 version on tiger upgrade (Regina Obe)
+  - #3372, TopoElementArray cannot be null - change domain constraint (Regina Obe)
 
 
 PostGIS 3.1.0alpha2

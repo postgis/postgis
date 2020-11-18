@@ -375,10 +375,22 @@ ALTER DOMAIN topology.TopoElement ADD
 --
 -- TopoElementArray domain
 --
+-- Changed: 3.1.0 - get rid of IS NOT NULL check
 CREATE DOMAIN topology.TopoElementArray AS integer[][]
   CONSTRAINT DIMENSIONS CHECK (
-    array_upper(VALUE, 2) IS NOT NULL
-    AND array_upper(VALUE, 2) = 2
+    array_upper(VALUE, 2) = 2
+    AND array_upper(VALUE, 3) IS NULL
+  );
+
+-- Changed: 3.1.0
+ALTER DOMAIN topology.TopoElementArray DROP CONSTRAINT
+  IF EXISTS
+  DIMENSIONS;
+
+-- Changed: 3.1.0 - get rid of IS NOT NULL check
+ALTER DOMAIN topology.TopoElementArray ADD
+        CONSTRAINT type_range CHECK (
+    array_upper(VALUE, 2) = 2
     AND array_upper(VALUE, 3) IS NULL
   );
 
