@@ -2,6 +2,26 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1>
+        <title>Release 3.0.3</title>
+        <para>Release date: 2020/11/19</para>
+        <para>This is a bug fix / performance enhancements release. This version requires PostgreSQL 9.5+-12 and GEOS >= 3.6+
+              Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12, and GEOS 3.8</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+            <para>4742 tiger geocoder reverted to 2018 version on tiger upgrade</para>
+            <para>4757, Handle line collapse due to snap-to-existing node (Sandro Santilli)</para>
+            <para>4758, Improve topology noding robustness (Sandro Santilli)</para>
+            <para>4719, Fail fast when srids don't match ST_Intersection(geometry,raster)
+                    Also schema qualify calls in function. (Regina Obe)</para>
+            <para>4739, Ensure all functions using postgis_oid initialize the internal cache (Raúl Marín)</para>
+            <para>4767, #4768, #4771, #4772, Fix segfault when parsing invalid WKB (Raúl Marín)</para>
+            <para>4769, Fix segfault in st_addband (Raúl Marín)</para>
+            <para>4748, Fix incorrect axis swapping in polar stereographic (Paul Ramsey)</para>
+            <para>4727, Fix bug in geocentrix box computation (Paul Ramsey)</para>
+            <para>4790, Fix ST_3dintersects calculations with identical vertices (Nicklas Avén)</para>
+        </simplesect>
+    </sect1>
 
     <sect1>
         <title>Release 3.0.2</title>
