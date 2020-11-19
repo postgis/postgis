@@ -513,11 +513,12 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 	case MULTIPOLYGONTYPE:
 	case TINTYPE:
 	case COLLECTIONTYPE:
+	case MULTISURFACETYPE: // a MULTISURFACE without any arcs, because if it had arcs it would have been converted to MULTIPOLYGON
 		if (lwgeom->type == MULTIPOINTTYPE)
 			geostype = GEOS_MULTIPOINT;
 		else if (lwgeom->type == MULTILINETYPE)
 			geostype = GEOS_MULTILINESTRING;
-		else if (lwgeom->type == MULTIPOLYGONTYPE)
+		else if (lwgeom->type == MULTIPOLYGONTYPE || lwgeom->type == MULTISURFACETYPE)
 			geostype = GEOS_MULTIPOLYGON;
 		else
 			geostype = GEOS_GEOMETRYCOLLECTION;
