@@ -1298,16 +1298,6 @@ SELECT '#4670-5', ST_AsEWKT(ST_AddPoint('LINESTRING(0 0, 1 1, 3 3, 4 4)'::geomet
 
 SELECT '#4689', _ST_DistanceTree('POLYGON ((30 10, 40 40, 20 40, 30 10))'::geography, 'POLYGON((81 6,140 35,-70 18,-51 0,-60 -46,106 -6,81 6))');
 
-SELECT '#4718',
-	round(degrees(
-	ST_Azimuth('POINT(77.46412 37.96999)'::geography,
-           'POINT(77.46409 37.96999)'::geography
-           ))::numeric,3),
-	round(degrees(
-	ST_Azimuth('POINT(77.46412 37.96999)'::geography,
-           'POINT(77.46429 37.96999)'::geography
-           ))::numeric,3);
-
 SELECT '#4727', _ST_DistanceTree('SRID=4326;POLYGON((-179.9 -85.05112877980659, -179.9 74.99999999999997, -152 80, -130 84.99999999999997, -115 85.05112877980659, -60 85.05112877980659, -60 79, -70 70, -130 50, -80 6, -65 -53, -100 -85.05112877980659, -179.9 -85.05112877980659))'::geography,
 				ST_MakePoint(-150,-40), 0.0, true);
 
