@@ -56,8 +56,9 @@
 			<note>
 			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
-			<para>Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
             <para>Enhanced: 3.1.0 support for optional precision parameter.</para>
+			<para>Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
+
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>

@@ -850,7 +850,7 @@ SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4
 				<imagedata fileref='images/st_hexagongrid02.png' />
 			</imageobject></inlinemediaobject></para>
 
-			<para>Availability: 3.1</para>
+			<para>Availability: 3.1.0</para>
 
 		</refsection>
 
@@ -927,7 +927,7 @@ WHERE
             perfectly fits with the original tiling. Standard web map tilings in mercator
             are just powers-of-two square grids in the mercator plane.</para>
 
-            <para>Availability: 3.1</para>
+            <para>Availability: 3.1.0</para>
 
         </refsection>
 
@@ -997,7 +997,7 @@ WHERE
 			</para>
 			<para>Hexagons are generated with no SRID set, so use <xref linkend="ST_SetSRID" /> to set the SRID to the one you expect.</para>
 
-			<para>Availability: 3.1</para>
+			<para>Availability: 3.1.0</para>
 		</refsection>
 
 		<refsection>
@@ -1044,7 +1044,7 @@ POLYGON((-1 0,-0.5
 			</para>
 			<para>Squares are generated with no SRID set, so use <xref linkend="ST_SetSRID" /> to set the SRID to the one you expect.</para>
 
-			<para>Availability: 3.1</para>
+			<para>Availability: 3.1.0</para>
 		</refsection>
 
 		<refsection>
