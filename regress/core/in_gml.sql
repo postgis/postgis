@@ -636,6 +636,30 @@ SELECT 'srs_16', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:-1"><gml:pos
 -- Reverse axis with all kind of simples geometry types
 SELECT 'srs_17', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::4326"><gml:geometryMember><gml:Point><gml:pos srsDimension="2">1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList srsDimension="2">3 4 5 6</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="2">7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">11 12 13 14 15 16 11 12</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">17 18 19 20 21 22 17 18</gml:posList></gml:LinearRing></gml:interior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">23 24 25 26 27 28 23 24</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">25 26 27 28 29 30 25 26</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface></gml:geometryMember></gml:MultiGeometry>'));
 
+-- Projected CRS with AXIS["Easting",EAST],AXIS["Northing",NORTH]. No coordinate swapping
+SELECT 'srs_18', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::32631"><gml:pos>500000 0</gml:pos></gml:Point>'));
+
+-- Projected CRS with northing, easting axis order, but with no explicit AXIS (EPSG 2393: KKJ / Finland Uniform Coordinate System). We must swap the coordinates
+SELECT 'srs_19', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::2393"><gml:pos>6000000 3500000</gml:pos></gml:Point>'));
+
+-- Geocentric CRS with explicit geocentric AXIS (WGS 84 geocentric). No coordinate swapping
+SELECT 'srs_20', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::4978"><gml:pos srsDimension="3">1 2 3</gml:pos></gml:Point>'));
+
+-- Geographic 3D CRS with AXIS["geodetic latitude (Lat)",north,ORDER[1],...] (WGS 84 with ellipsoidal height). We must swap coordinates
+SELECT 'srs_21', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::4979"><gml:pos srsDimension="3">49 2 3</gml:pos></gml:Point>'));
+
+-- BoundCRS of a Geographic 2D CRS with AXIS["latitude",north,ORDER[1],...] (EPSG 4985: WGS 72 BE). We must swap coordinates
+SELECT 'srs_22', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::4985"><gml:pos>49 2</gml:pos></gml:Point>'));
+
+-- Projected CRS with empty srtext (EPSG 8857 : WGS 84 / Equal Earth Greenwich). We assume GIS friendly order (which is the case here)
+SELECT 'srs_23', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::8857"><gml:pos>1 2</gml:pos></gml:Point>'));
+
+-- CompoundCRS of a Geographic CRS (EPSG 8360 : ETRS89 + Baltic 1957 height). We must swap coordinates
+SELECT 'srs_24', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::8360"><gml:pos srsDimension="3">49 2 3</gml:pos></gml:Point>'));
+
+-- Projected CRS with AXIS["Northing",NORTH],AXIS["Easting",EAST] in its definition (EPSG 8433 : Macao 1920 / Macao Grid). We must swap coordinates
+SELECT 'srs_25', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="urn:ogc:def:crs:EPSG::8433"><gml:pos>2 1</gml:pos></gml:Point>'));
+
 -- Reverse axis with severals multi geometry types
 -- TODO
 
