@@ -1513,6 +1513,27 @@ Datum centroid(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+Datum ST_ReducePrecision(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_ReducePrecision);
+Datum ST_ReducePrecision(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom, *result;
+	LWGEOM *lwgeom, *lwresult;
+	double gridSize = PG_GETARG_FLOAT8(1);
+	geom = PG_GETARG_GSERIALIZED_P(0);
+
+	lwgeom = lwgeom_from_gserialized(geom);
+	lwresult = lwgeom_reduceprecision(lwgeom, gridSize);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
+
+	if (!lwresult) PG_RETURN_NULL();
+
+	result = geometry_serialize(lwresult);
+	lwgeom_free(lwresult);
+	PG_RETURN_POINTER(result);
+}
+
 Datum ST_ClipByBox2d(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_ClipByBox2d);
 Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)

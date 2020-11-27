@@ -4,6 +4,7 @@ Only tickets not included in 3.1.0alpha3
 
  * New features*
   - #4801, ST_ClusterKMeans supports weights in POINT[Z]M geometries (Darafei Praliaskouski)
+  - #4804, ST_ReducePrecision (GEOS 3.9+) allows valid precision reduction (Paul Ramsey)
 
 
 PostGIS 3.1.0alpha3

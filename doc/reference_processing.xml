@@ -2652,6 +2652,64 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
       </refsection>
     </refentry>
 
+
+    <refentry id="ST_ReducePrecision">
+      <refnamediv>
+        <refname>ST_ReducePrecision</refname>
+
+        <refpurpose>Returns a valid geometry with all points rounded to the provided grid tolerance, and features below the tolerance removed.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_ReducePrecision</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g</parameter></paramdef>
+            <paramdef><type>float8 </type>
+            <parameter>gridsize</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns a valid geometry with all points rounded to the provided grid tolerance, and features below the tolerance removed.</para>
+
+        <para>Unlike <xref linkend="ST_SnapToGrid" /> the returned geometry will be valid, with no ring self-intersections or collapsed components.</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));
+    st_astext
+-----------------
+ POINT(1.4 19.3)
+
+SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 1.0));
+  st_astext
+-------------
+ POINT(1 19)
+
+ SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
+  st_astext
+-------------
+ POINT(0 20)
+</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_SnapToGrid" />, <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyVW" /></para>
+      </refsection>
+    </refentry>
+
+
     <refentry id="ST_RemoveRepeatedPoints">
       <refnamediv>
         <refname>ST_RemoveRepeatedPoints</refname>

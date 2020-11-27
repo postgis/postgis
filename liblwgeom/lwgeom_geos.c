@@ -939,6 +939,42 @@ lwgeom_centroid(const LWGEOM* geom)
 	return result;
 }
 
+LWGEOM*
+lwgeom_reduceprecision(const LWGEOM* geom, double gridSize)
+{
+#if POSTGIS_GEOS_VERSION < 39
+	lwerror("Precision reduction requires GEOS-3.9 or higher");
+	return NULL;
+#else
+
+	LWGEOM* result;
+	int32_t srid = RESULT_SRID(geom);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry *g1, *g3;
+
+	if (srid == SRID_INVALID) return NULL;
+
+	if (lwgeom_is_empty(geom))
+		return lwgeom_clone_deep(geom);
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
+
+	g3 = GEOSGeom_setPrecision(g1, gridSize, 0);
+
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
+	GEOSSetSRID(g3, srid);
+
+	if (!(result = GEOS2LWGEOM(g3, is3d)))
+		GEOS_FREE_AND_FAIL(g1);
+
+	GEOS_FREE(g1, g3);
+
+	return result;
+#endif
+}
+
 LWGEOM *
 lwgeom_pointonsurface(const LWGEOM *geom)
 {

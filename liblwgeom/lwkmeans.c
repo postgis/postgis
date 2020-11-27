@@ -43,7 +43,7 @@ update_r(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
 		int curr_cluster = 0;
 
 		/* Check all other cluster centers and find the nearest */
-		for (int cluster = 1; cluster < k; cluster++)
+		for (int cluster = 1; cluster < (int)k; cluster++)
 		{
 			double distance = distance3d_sqr_pt4d_pt4d(&obj, &centers[cluster]);
 			if (distance < curr_distance)
