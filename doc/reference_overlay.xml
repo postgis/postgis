@@ -31,9 +31,10 @@
         <title>Description</title>
 
         <para>
-            Clips a geometry by a 2D box in a fast but possibly dirty way.
-            The output geometry is not guaranteed to be valid (self-intersections for a polygon may be introduced).
-            Topologically invalid input geometries do not result in exceptions being thrown.
+        Clips a geometry by a 2D box in a fast and tolerant but possibly invalid way.
+        Topologically invalid input geometries do not result in exceptions being thrown.
+        The output geometry is not guaranteed to be valid
+        (in particular, self-intersections for a polygon may be introduced).
         </para>
 
         <para>Performed by the GEOS module.</para>
@@ -114,7 +115,7 @@ on that same grid. This method requires GEOS-3.9.0 or higher.
                                   <imageobject>
                                     <imagedata fileref="images/st_symdifference01.png" />
                                   </imageobject>
-                                  <caption><para>The original linestrings shown together. </para></caption>
+                                  <caption><para>The input linestrings </para></caption>
                                 </mediaobject>
                             </informalfigure>
                         </para>
@@ -135,7 +136,7 @@ on that same grid. This method requires GEOS-3.9.0 or higher.
         </tbody>
     </tgroup>
 </informaltable>
-<para>Safe for 2D. This is same geometries as what is shown for st_symdifference</para>
+<para>The difference of 2D linestrings.</para>
 <programlisting>SELECT ST_AsText(
     ST_Difference(
             'LINESTRING(50 100, 50 200)'::geometry,
@@ -148,16 +149,16 @@ st_astext
 LINESTRING(50 150,50 200)
 </programlisting>
 
-<para>When used in 3d doesn't quite do the right thing.</para>
-<programlisting>select ST_AsEWKT(
-           ST_Difference(
-               'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
-               'POINT(-118.614 38.281 5)' :: geometry
-               )
-    );
+<para>The difference of 3D points.</para>
+<programlisting>SELECT ST_AsEWKT( ST_Difference(
+                   'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
+                   'POINT(-118.614 38.281 5)' :: geometry
+                  ) );
+
 st_asewkt
 ---------
-MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</programlisting>
+MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
+</programlisting>
       </refsection>
 
       <refsection>
@@ -207,11 +208,10 @@ Returns a geometry that represents the shared portion of geomA and geomB.
         </refsynopsisdiv>
         <refsection>
             <title>Description</title>
-            <para>Returns a geometry that represents the point set
-                intersection of the Geometries.</para>
-
-            <para>In other words - that portion of geometry A and geometry B
-            that is shared between the two geometries.</para>
+            <para>Returns a geometry that represents the point-set
+                intersection of two geometries.
+                In other words, that portion of geometry A and geometry B
+                that is shared between the two geometries.</para>
 
             <para>If the geometries do not share any space (are disjoint), then an empty geometry collection
             is returned.</para>
@@ -351,7 +351,7 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
         <refname>ST_Node</refname>
 
         <refpurpose>
-Nodes a set of linestrings.
+Nodes a set of lines.
         </refpurpose>
       </refnamediv>
 
@@ -369,9 +369,13 @@ Nodes a set of linestrings.
         <title>Description</title>
 
         <para>
-Fully node a set of linestrings using the least possible number of nodes
-while preserving all of the input ones.
+Returns a (Multi)LineString representing the fully noded version of an input set of linestrings.
+The noding preserves all of the input nodes,
+and introduces the least possible number of new nodes.
+The resulting linework is dissolved (duplicate lines are removed).
         </para>
+
+        <para>This is a good way to create fully-noded linework suitable for use as input to <xref linkend="ST_Polygonize" />.</para>
 
         <para>&Z_support;</para>
         <para>Performed by the GEOS module.</para>
@@ -384,6 +388,7 @@ This may cause the resulting linestrings to have a different order and direction
       </refsection>
       <refsection>
         <title>Examples</title>
+        <para>Noding a 3D LineString which self-intersects</para>
         <programlisting>
 SELECT ST_AsText(
         ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
@@ -392,6 +397,18 @@ output
 -----------
 MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))
         </programlisting>
+
+        <para>Noding two LineStrings which share common linework.
+        Note that the result linework is dissolved.</para>
+        <programlisting>
+SELECT ST_AsText(
+        ST_Node('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))'::geometry)
+    ) As  output;
+output
+-----------
+MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))
+        </programlisting>
+
       </refsection>
 
       <!-- Optionally add a "See Also" section -->
@@ -407,7 +424,7 @@ MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10
     <refentry id="ST_Split">
         <refnamediv>
             <refname>ST_Split</refname>
-            <refpurpose>Returns a collection of geometries resulting by splitting a geometry.</refpurpose>
+            <refpurpose>Returns a collection of geometries created by splitting a geometry by another geometry.</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
@@ -423,7 +440,9 @@ MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10
         <refsection>
             <title>Description</title>
             <para>
-            The function supports splitting a line by (multi)point, (multi)line or (multi)polygon boundary, a (multi)polygon by line. The returned geometry is always a collection.
+            The function supports splitting a line by a (multi)point, (multi)line or (multi)polygon boundary,
+            or a (multi)polygon by line.
+            The returned geometry is always a collection.
             </para>
 
             <para>

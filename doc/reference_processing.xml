@@ -1952,17 +1952,21 @@ POLYGON((19.9999999999997 79.9999999999999,33.0769230769229 60.3846153846152,138
         <refsection>
             <title>Description</title>
 
-            <para>Creates a GeometryCollection containing possible
-            polygons formed from the constituent linework of a set of
-            geometries.</para>
+            <para>Creates a GeometryCollection containing the
+            polygons formed by the constituent linework of a set of geometries.
+            Input linework must be correctly noded for this function to work properly.</para>
 
             <note>
-                <para>Geometry Collections are often difficult to deal with with third party tools, so use ST_Polygonize in conjunction with  <xref linkend="ST_Dump" /> to dump the polygons
-                out into individual polygons.</para>
+                <para>
+                To ensure input is fully noded use <xref linkend="ST_Node" /> on the input geometry
+                before polygonizing.
+                </para>
             </note>
 
             <note>
-                <para>Input linework must be correctly noded for this function to work properly</para>
+                <para>GeometryCollections are often difficult to deal with with third party tools.
+                Use <xref linkend="ST_Dump" /> to convert the polygonize result
+                into separate polygons.</para>
             </note>
             <para>Performed by the GEOS module.</para>
 
