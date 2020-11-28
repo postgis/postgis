@@ -160,11 +160,7 @@ select '125',a &>b from TEST;
 select '126',a ~= b from TEST;
 select '127',a @ b from TEST;
 select '128',a ~ b from TEST;
-
--- ST_Mem_Size was deprecated in favor of ST_MemSize in 2.2.0
---  ST_Mem_Size will be removed in 2.4.0
 select '129', ST_MemSize(PostGIS_DropBBOX(a)), ST_MemSize(PostGIS_DropBBOX(b)) from TEST;
-
 select '131', ST_X('POINT(1 2)');
 select '132', ST_Y('POINT(1 2)');
 select '133', ST_Z('POINT(1 2)');

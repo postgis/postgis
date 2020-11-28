@@ -1928,7 +1928,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
-		<para>Changed: 2.2.0 name changed to ST_MemSize to follow naming convention.  In prior versions this function was called ST_Mem_Size, old name deprecated though still available.</para>
+		<para>Changed: 2.2.0 name changed to ST_MemSize to follow naming convention.</para>
 	  </refsection>
 
 
