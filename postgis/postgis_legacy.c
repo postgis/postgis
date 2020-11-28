@@ -99,3 +99,5 @@ POSTGIS_DEPRECATE("3.1.0", sfcgal_make_solid);
 POSTGIS_DEPRECATE("3.1.0", sfcgal_is_solid);
 POSTGIS_DEPRECATE("3.1.0", postgis_sfcgal_noop);
 /**End: SFCGAL functions moved to postgis_sfcgal lib, to ease pg_upgrade **/
+
+POSTGIS_DEPRECATE("3.1.0", LWGEOM_locate_between_m);

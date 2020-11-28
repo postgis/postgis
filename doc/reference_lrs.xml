@@ -121,10 +121,10 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 
 			<note>
 			  <para><xref linkend="ST_LineInterpolatePoint" /> computes resulting point in 2D and then interpolates
-			  value for Z and M, while ST_3DLineInterpolatePoint computes directly point in 3D and only M value 
+			  value for Z and M, while ST_3DLineInterpolatePoint computes directly point in 3D and only M value
 			  is interpolated then.</para>
 			</note>
-			
+
 			<para>Availability: 3.0.0</para>
 		</refsection>
 
@@ -442,7 +442,7 @@ WHERE n*100.00/length &lt; 1;
 		for Continuation CD Editing Meeting</para>
 
 		<para>Availability: 1.1.0 by old name ST_Locate_Along_Measure. </para>
-		<para>Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.  The old name has been deprecated and will be removed in the future but is still available.</para>
+		<para>Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.</para>
 		<note><para>Use this function only for geometries with an M component</para></note>
 
 		<para>&M_support;</para>
@@ -522,7 +522,7 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		CD Editing Meeting</para>
 
 		<para>Availability: 1.1.0 by old name ST_Locate_Between_Measures. </para>
-		<para>Changed: 2.0.0 - in prior versions this used to be called ST_Locate_Between_Measures.  The old name has been deprecated and will be removed in the future but is still available for backward compatibility.</para>
+		<para>Changed: 2.0.0 - in prior versions this used to be called ST_Locate_Between_Measures.</para>
 		<para>Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
 
 		<para>&M_support;</para>
