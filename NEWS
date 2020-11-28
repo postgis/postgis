@@ -5,6 +5,9 @@ Only tickets not included in 3.1.0alpha3
  * New features*
   - #4801, ST_ClusterKMeans supports weights in POINT[Z]M geometries (Darafei Praliaskouski)
   - #4804, ST_ReducePrecision (GEOS 3.9+) allows valid precision reduction (Paul Ramsey)
+  - #4805, _ST_SortableHash exposed to work around parallel soring performance issue
+           in Postgres. If your table is huge, use ORDER BY _ST_SortableHash(geom)
+           instead of ORDER BY geom to make parallel sort faster (Darafei Praliaskouski)
 
 
 PostGIS 3.1.0alpha3

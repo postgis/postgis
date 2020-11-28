@@ -2710,6 +2710,14 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 }
 
+PG_FUNCTION_INFO_V1(_ST_SortableHash);
+Datum _ST_SortableHash(PG_FUNCTION_ARGS)
+{
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	PG_RETURN_INT64(gserialized_get_sortable_hash(PG_GETARG_GSERIALIZED_P(0)));
+}
+
 PG_FUNCTION_INFO_V1(ST_CollectionExtract);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 {

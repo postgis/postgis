@@ -4973,6 +4973,14 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars int4 DEFAULT 0)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+--
+-- Availability 3.1.0
+CREATE OR REPLACE FUNCTION _ST_SortableHash(geom geometry)
+	RETURNS bigint
+	AS 'MODULE_PATHNAME', '_ST_SortableHash'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -----------------------------------------------------------------------
 -- GeoHash input
 -- Availability: 2.0.?

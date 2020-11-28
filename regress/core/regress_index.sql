@@ -111,3 +111,6 @@ DROP FUNCTION qnodes(text);
 set enable_indexscan = on;
 set enable_bitmapscan = on;
 set enable_seqscan = on;
+
+-- _ST_SortableHash is a work around Postgres parallel sort requiring recalculation of abbreviated keys.
+select '_st_sortablehash', _ST_SortableHash('POINT(0 0)'), _ST_SortableHash('SRID=4326;POINT(0 0)'), _ST_SortableHash('SRID=3857;POINT(0 0)');
