@@ -1219,7 +1219,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 2-D longest line between the points of two geometries.
+		<para>Returns the 2-dimensional longest line between the points of two geometries.
 		</para>
 		<para>The function returns the first longest line if more than one is found.
 		The line returned starts on g1 and ends on g2.
@@ -1232,7 +1232,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsection>
 		<title>Examples</title>
 			<informaltable>
-				  <tgroup cols="2">
+				  <tgroup cols="1">
 					<tbody>
 					  <row>
 						<entry><para><informalfigure>
@@ -1240,7 +1240,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 							  <imageobject>
 								<imagedata fileref="images/st_longestline01.png" />
 							  </imageobject>
-							  <caption><para>Longest line between point and line</para></caption>
+							  <caption><para>Longest line between a point and a line</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -1255,13 +1255,14 @@ SELECT ST_AsText(
 LINESTRING(100 100,98 190)
 				</programlisting>
 						  </para></entry>
-
+						    </row>
+						    <row>
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_longestline02.png" />
 							  </imageobject>
-							  <caption><para>longest line between polygon and polygon</para></caption>
+							  <caption><para>Longest line between two polygons</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -1292,19 +1293,21 @@ LINESTRING(20 40,121.111404660392 186.629392246051)
 							  <imageobject>
 								<imagedata fileref="images/st_longestline03.png" />
 							  </imageobject>
-							  <caption><para>longest straight distance to travel from one part of an elegant city to the other
-								Note the max distance = to the length of the line.</para></caption>
+							  <caption><para>Longest straight distance to travel from one part of a city to another.
+								Note that the maximum distance is equal to the length of the line.</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
-SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt,
-	ST_MaxDistance(c.the_geom,c.the_geom) As max_dist,
-	ST_Length(ST_LongestLine(c.the_geom, c.the_geom)) As lenll
-FROM (SELECT ST_MakeValid(ST_Collect(the_geom)) As the_geom
-	FROM (SELECT ST_Translate(ST_SnapToGrid(ST_Buffer(ST_Point(50 ,generate_series(50,190, 50)
-			),40, 'quad_segs=2'),1), x, 0)  As the_geom
-			FROM generate_series(1,100,50) As x)  AS foo
-) As c;
+SELECT ST_AsText( ST_LongestLine(c.geom, c.geom)) AS llinewkt,
+       ST_MaxDistance( c.geom,c.geom) AS max_dist,
+       ST_Length( ST_LongestLine(c.geom, c.geom)) AS lenll
+FROM (SELECT ST_MakeValid( ST_Collect(geom)) AS geom
+      FROM (SELECT ST_Translate( ST_SnapToGrid(
+                ST_Buffer(
+                    ST_Point(50 ,generate_series(50,190, 50)),
+                    40, 'quad_segs=2'),1), x, 0) AS geom
+            FROM generate_series(1,100,50) As x) AS foo
+      ) AS c;
 
           llinewkt          |     max_dist     |      lenll
 ---------------------------+------------------+------------------
@@ -1348,10 +1351,10 @@ FROM (SELECT ST_MakeValid(ST_Collect(the_geom)) As the_geom
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 3-dimensional longest line between two geometries. The function will
-		only return the first longest line if more than one.
-		The line returned will always start in g1 and end in g2.
-		The 3D length of the line this function returns will always be the same as <xref linkend="ST_3DMaxDistance" /> returns for g1 and g2.
+		<para>Returns the 3-dimensional longest line between two geometries.
+        The function returns the first longest line if more than one.
+		The line returned starts in g1 and ends in g2.
+		The 3D length of the line is equal to the distance returned by <xref linkend="ST_3DMaxDistance" />.
 		</para>
 
 		<para>Availability: 2.0.0</para>
@@ -1445,29 +1448,39 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
     <title>Description</title>
 
     <!-- optionally mention that this function uses indexes if appropriate -->
-    <note>
-      <para>Returns the 2-dimensional maximum distance between two geometries in
-		projected units. If g1 and g2 is the same geometry the function will return the distance between
-		the two vertices most far from each other in that geometry.</para>
-    </note>
+    <para>Returns the 2-dimensional maximum distance between two geometries, in  projected units.
+    The maximum distance always occurs between two vertices.
+    This is the length of the line returned by <xref linkend="ST_LongestLine"/>.
+    </para>
+    <para>If g1 and g2 are the same geometry, returns the distance between
+    the two vertices farthest apart in that geometry.
+    </para>
 
 	<para>Availability: 1.5.0</para>
   </refsection>
   <refsection>
     <title>Examples</title>
 
-     <para>Basic furthest distance the point is to any part of the line</para>
+     <para>Maximum distance between a point and lines.</para>
 		<programlisting>postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
    st_maxdistance
 -----------------
  2
-(1 row)
 
 postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )'::geometry);
   st_maxdistance
 ------------------
  2.82842712474619
-(1 row)</programlisting>
+</programlisting>
+
+     <para>Maximum distance between vertices of a geometry.</para>
+<programlisting>
+SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry,
+                      'POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry);
+  st_maxdistance
+------------------
+ 14.142135623730951
+</programlisting>
   </refsection>
 
   <!-- Optionally add a "See Also" section -->
@@ -2116,4 +2129,3 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 
 
 </sect1>
-
