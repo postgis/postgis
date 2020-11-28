@@ -138,6 +138,7 @@ XML_SOURCES = \
 	reference_sfcgal.xml \
 	reference_operator.xml \
 	reference_output.xml \
+	reference_overlay.xml \
 	reference_processing.xml \
 	reference_raster.xml \
 	reference_relationship.xml \
@@ -480,4 +481,3 @@ requirements_not_met_imagemagick:
 	@echo
 	@echo "  http://postgis.net/documentation"
 	@echo
-
