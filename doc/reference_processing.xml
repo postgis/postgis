@@ -6,9 +6,8 @@
                 <refname>ST_Buffer</refname>
 
                 <refpurpose>
-(T)
 Returns a geometry covering all points within a given distance
-from the input geometry.
+from a geometry.
             </refpurpose>
             </refnamediv>
 
@@ -633,8 +632,7 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
     <refentry id="ST_ConcaveHull">
       <refnamediv>
         <refname>ST_ConcaveHull</refname>
-        <refpurpose>The concave hull of a geometry represents a possibly concave
-        geometry that encloses all geometries within the set.  You can think of it as shrink wrapping.</refpurpose>
+        <refpurpose>Computes a possibly concave geometry that encloses all geometries within the input.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -922,7 +920,7 @@ SELECT d.disease_type,
       <refnamediv>
         <refname>ST_CurveToLine</refname>
 
-        <refpurpose>Converts a CIRCULARSTRING/CURVEPOLYGON/MULTISURFACE to a LINESTRING/POLYGON/MULTIPOLYGON</refpurpose>
+        <refpurpose>Converts a geometry containing curves to a linear geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1075,7 +1073,7 @@ st_astext
             <refname>ST_DelaunayTriangles</refname>
 
             <refpurpose>
-Return a Delaunay triangulation around the given input points.
+Returns a Delaunay triangulation around the given input points.
             </refpurpose>
         </refnamediv>
 
@@ -1327,13 +1325,64 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</programlisting>
       </refsection>
     </refentry>
 
+    <refentry id="ST_FilterByM">
+      <refnamediv>
+        <refname>ST_FilterByM</refname>
+        <refpurpose>Filters vertex points based on their m-value</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_FilterByM</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+            <paramdef><type>double precision</type> <parameter>min</parameter></paramdef>
+            <paramdef><type>double precision</type> <parameter>max = null</parameter></paramdef>
+            <paramdef><type>boolean</type> <parameter>returnM = false</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Filters away vertex points based on their m-value. Returns a geometry with only
+            vertex points that have a m-value larger or equal to the min value and smaller or equal to
+            the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
+            will not be in the resulting geometry. If resulting geometry have too few vertex points left for its geometry type an empty
+            geometry will be returned. In a geometry collection
+            geometries without enough points will just be left out silently.</para>
+        <para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area
+            of a vertex in its m-value. With ST_FilterByM it then is possible to get a simplified version of the geometry without any calculations, just by filtering</para>
+
+        <note><para>There is a difference in what ST_SimplifyVW returns when not enough points meet the criteria compared to ST_FilterByM.
+                ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>
+        <note><para>Note that the returned geometry might be invalid</para></note>
+        <note><para>This function returns all dimensions, also the z and m-value</para></note>
+        <para>Availability: 2.5.0</para>
+      </refsection>
+
+          <refsection>
+            <title>Examples</title>
+            <para>A linestring is filtered</para>
+                <programlisting>
+SELECT ST_AsText(ST_FilterByM(geom,30)) simplified
+FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;
+-result
+         simplified
+----------------------------
+ LINESTRING(5 2,7 25,10 10)
+                </programlisting>
+          </refsection>
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_SimplifyVW" /></para>
+          </refsection>
+    </refentry>
+
     <refentry id="ST_FlipCoordinates">
       <refnamediv>
         <refname>ST_FlipCoordinates</refname>
-        <refpurpose>Returns a version of the given geometry with
-                X and Y axis flipped. Useful for people
-                who have built latitude/longitude features
-                and need to fix them.</refpurpose>
+        <refpurpose>Returns a version of a geometry with X and Y axis flipped. </refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1347,7 +1396,8 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</programlisting>
 
       <refsection>
         <title>Description</title>
-        <para>Returns a version of the given geometry with X and Y axis flipped.</para>
+        <para>Returns a version of the given geometry with X and Y axis flipped.
+        Useful for fixing geometries which contain coordinates expressed as latitude/longitude (Y,X).</para>
         <para>Availability: 2.0.0</para>
         <para>&curve_support;</para>
         <para>&Z_support;</para>
@@ -1601,7 +1651,6 @@ FROM test;
             <refname>ST_Intersection</refname>
 
             <refpurpose>
-(T)
 Returns a geometry that represents the shared portion of geomA and geomB.
             </refpurpose>
         </refnamediv>
@@ -1731,7 +1780,7 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
       <refnamediv>
         <refname>ST_LineToCurve</refname>
 
-        <refpurpose>Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVEPOLYGON</refpurpose>
+        <refpurpose>Converts a linear geometry to a curved geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1966,7 +2015,7 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
     <refentry id="ST_MaximumInscribedCircle">
       <refnamediv>
         <refname>ST_MaximumInscribedCircle</refname>
-        <refpurpose>Finds the largest circle that can by fully contained within a geometry. Returns a record with the center point of that circle, the point on the geometry that is nearest to the center, and the radius of the circle.</refpurpose>
+        <refpurpose>Finds the largest circle that can by fully contained within a geometry. </refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2027,8 +2076,7 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
     <refentry id="ST_MinimumBoundingCircle">
       <refnamediv>
         <refname>ST_MinimumBoundingCircle</refname>
-        <refpurpose>Returns the smallest circle polygon that can fully contain a geometry. Default
-        uses 48 segments per quarter circle.</refpurpose>
+        <refpurpose>Returns the smallest circle polygon that fully contains a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2099,7 +2147,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
     <refentry id="ST_MinimumBoundingRadius">
     <refnamediv>
         <refname>ST_MinimumBoundingRadius</refname>
-        <refpurpose>Returns the center point and radius of the smallest circle that can fully contain a geometry.</refpurpose>
+        <refpurpose>Returns the center point and radius of the smallest circle that fullys contain a geometry.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -2209,9 +2257,8 @@ POLYGON((19.9999999999997 79.9999999999999,33.0769230769229 60.3846153846152,138
         <refnamediv>
             <refname>ST_Polygonize</refname>
 
-            <refpurpose>Aggregate. Creates a GeometryCollection containing possible
-            polygons formed from the constituent linework of a set of
-            geometries.</refpurpose>
+            <refpurpose>Computes a collection of polygons formed from the linework of a set of geometries.
+            </refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
@@ -2292,7 +2339,7 @@ geomtextrep
         <refname>ST_Node</refname>
 
         <refpurpose>
-Node a set of linestrings.
+Nodes a set of linestrings.
         </refpurpose>
       </refnamediv>
 
@@ -2350,7 +2397,7 @@ MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10
                 <refname>ST_OffsetCurve</refname>
 
                 <refpurpose>
-Return an offset line at a given distance and side from an input line. Useful for computing parallel lines about a center line
+Returns an offset line at a given distance and side from an input line.
             </refpurpose>
             </refnamediv>
 
@@ -2374,11 +2421,12 @@ Return an offset line at a given distance and side from an input line. Useful fo
 Return an offset line at a given distance and side from an input line.
 All points of the returned geometries are not further than the given
 distance from the input geometry.
+Useful for computing parallel lines about a center line.
                 </para>
 
                 <para>
-For positive distance the offset will be at the left side of the input line
-and retain the same direction. For a negative distance it'll be at the right
+For positive distance the offset is on the left side of the input line
+and retains the same direction. For a negative distance it is on the right
 side and in the opposite direction.
                 </para>
                 <para>
@@ -2590,7 +2638,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
       <refnamediv>
         <refname>ST_PointOnSurface</refname>
 
-        <refpurpose>Returns a <varname>POINT</varname> guaranteed to lie on the surface.</refpurpose>
+        <refpurpose>Returns a point guaranteed to lie in a polygon or on a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2657,7 +2705,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
       <refnamediv>
         <refname>ST_ReducePrecision</refname>
 
-        <refpurpose>Returns a valid geometry with all points rounded to the provided grid tolerance, and features below the tolerance removed.</refpurpose>
+        <refpurpose>Returns a valid geometry with all points rounded to the provided grid tolerance.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2854,7 +2902,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
       <refnamediv>
         <refname>ST_ShiftLongitude</refname>
 
-        <refpurpose>Toggle geometry coordinates between -180..180 and 0..360 ranges.</refpurpose>
+        <refpurpose>Shifts a geometry with geographic coordinates between -180..180 and 0..360.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2869,11 +2917,11 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
       <refsection>
         <title>Description</title>
 
-        <para>Reads every point/vertex in every component of every feature
-            in a geometry, and if the longitude coordinate is &lt;0, adds 360
-            to it. The result would be a 0-360 version of the data to be
+        <para>Reads every point/vertex in a geometry, and if the longitude coordinate is &lt;0, adds 360
+            to it. The result is a 0-360 version of the data to be
             plotted in a 180 centric map</para>
-        <note><para>This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)</para></note>
+        <note><para>This is only useful for data with coordinates in
+        longitude/latitude; e.g. SRID 4326 (WGS 84 geographic)</para></note>
 
         <warning>
             <para>Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with MULTIPOINT as well.</para>
@@ -2981,7 +3029,7 @@ select ST_WrapX(the_geom, -30, 360);
     <refentry id="ST_Simplify">
       <refnamediv>
         <refname>ST_Simplify</refname>
-        <refpurpose>Returns a "simplified" version of the given geometry using
+        <refpurpose>Returns a simplified version of a geometry, using
                 the Douglas-Peucker algorithm.</refpurpose>
       </refnamediv>
 
@@ -3044,9 +3092,8 @@ select ST_WrapX(the_geom, -30, 360);
     <refentry id="ST_SimplifyPreserveTopology">
       <refnamediv>
         <refname>ST_SimplifyPreserveTopology</refname>
-        <refpurpose>Returns a "simplified" version of the given geometry using
-            the Douglas-Peucker algorithm. Will avoid creating derived
-            geometries (polygons in particular) that are invalid.</refpurpose>
+        <refpurpose>Returns a simplified and valid version of a geometry, using
+            the Douglas-Peucker algorithm.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -3097,7 +3144,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
     <refentry id="ST_SimplifyVW">
       <refnamediv>
         <refname>ST_SimplifyVW</refname>
-        <refpurpose>Returns a "simplified" version of the given geometry using the Visvalingam-Whyatt algorithm</refpurpose>
+        <refpurpose>Returns a simplified version of a geometry, using the Visvalingam-Whyatt algorithm</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -3146,7 +3193,7 @@ LINESTRING(5 2,7 25,10 10)
     <refentry id="ST_ChaikinSmoothing">
       <refnamediv>
         <refname>ST_ChaikinSmoothing</refname>
-        <refpurpose>Returns a "smoothed" version of the given geometry using the Chaikin algorithm</refpurpose>
+        <refpurpose>Returns a smoothed version of a geometry, using the Chaikin algorithm</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -3196,68 +3243,11 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
           </refsection>
     </refentry>
 
-    <refentry id="ST_FilterByM">
-      <refnamediv>
-        <refname>ST_FilterByM</refname>
-        <refpurpose>Filters vertex points based on their m-value</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_FilterByM</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-            <paramdef><type>double precision</type> <parameter>min</parameter></paramdef>
-            <paramdef><type>double precision</type> <parameter>max = null</parameter></paramdef>
-            <paramdef><type>boolean</type> <parameter>returnM = false</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-        <para>Filters away vertex points based on their m-value. Returns a geometry with only
-            vertex points that have a m-value larger or equal to the min value and smaller or equal to
-            the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
-            will not be in the resulting geometry. If resulting geometry have too few vertex points left for its geometry type an empty
-            geometry will be returned. In a geometry collection
-            geometries without enough points will just be left out silently.</para>
-        <para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area
-            of a vertex in its m-value. With ST_FilterByM it then is possible to get a simplified version of the geometry without any calculations, just by filtering</para>
-
-        <note><para>There is a difference in what ST_SimplifyVW returns when not enough points meet the criteria compared to ST_FilterByM.
-                ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>
-        <note><para>Note that the returned geometry might be invalid</para></note>
-        <note><para>This function returns all dimensions, also the z and m-value</para></note>
-        <para>Availability: 2.5.0</para>
-      </refsection>
-
-          <refsection>
-            <title>Examples</title>
-            <para>A linestring is filtered</para>
-                <programlisting>
-
-
-SELECT ST_AsText(ST_FilterByM(geom,30)) simplified
-FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;
--result
-         simplified
-----------------------------
- LINESTRING(5 2,7 25,10 10)
-
-                </programlisting>
-          </refsection>
-          <refsection>
-            <title>See Also</title>
-            <para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_SimplifyVW" /></para>
-          </refsection>
-    </refentry>
-
     <refentry id="ST_SetEffectiveArea">
       <refnamediv>
         <refname>ST_SetEffectiveArea</refname>
         <refpurpose>
-            Sets the effective area for each vertex, storing the value in the M ordinate.  A simplified geometry can then be generated by filtering on the M ordinate.
+            Sets the effective area for each vertex, using the Visvalingam-Whyatt algorithm.
         </refpurpose>
       </refnamediv>
 
@@ -3487,8 +3477,7 @@ GEOMETRYCOLLECTION(
         <refname>ST_SymDifference</refname>
 
         <refpurpose>Returns a geometry that represents the portions of A and B
-            that do not intersect. It is called a symmetric difference because
-            ST_SymDifference(A,B) = ST_SymDifference(B,A).</refpurpose>
+            that do not intersect.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -3713,8 +3702,8 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
 <refentry id="ST_Union">
   <refnamediv>
     <refname>ST_Union</refname>
-    <refpurpose>Returns a geometry that represents the point set union of
-        the Geometries.</refpurpose>
+    <refpurpose>Returns a geometry that represents the point-set union of
+        the input geometries.</refpurpose>
   </refnamediv>
 
   <refsynopsisdiv>
@@ -3931,7 +3920,7 @@ on that same grid. This method requires GEOS-3.9.0 or higher.
       <refnamediv>
         <refname>ST_VoronoiLines</refname>
 
-        <refpurpose>Returns the boundaries between the cells of the Voronoi diagram constructed from the vertices of a geometry.</refpurpose>
+        <refpurpose>Returns the boundaries of the Voronoi diagram constructed from the vertices of a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
