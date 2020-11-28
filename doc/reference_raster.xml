@@ -7509,19 +7509,6 @@ ORDER BY 1, 2;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
-				  <funcprototype>
-					<funcdef>bigint <function>ST_Count</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>bigint <function>ST_Count</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -7530,14 +7517,8 @@ ORDER BY 1, 2;
 
 				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para>
 				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will only count pixels with value not equal to the <varname>nodata</varname> value of the raster. Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para></note>
-				<para>Availability: 2.0.0 </para>
-
-				<warning>
-					<para>
-						The ST_Count(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="RT_ST_CountAgg" /> instead.
-					</para>
-				</warning>
-
+				<para>Changed: 3.1.0 - The ST_Count(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="RT_ST_CountAgg" /> instead.</para>
+                <para>Availability: 2.0.0 </para>
 			</refsection>
 
 			<refsection>
