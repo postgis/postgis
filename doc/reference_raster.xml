@@ -7517,7 +7517,7 @@ ORDER BY 1, 2;
 
 				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para>
 				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will only count pixels with value not equal to the <varname>nodata</varname> value of the raster. Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para></note>
-				<para>Changed: 3.1.0 - The ST_Count(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="RT_ST_CountAgg" /> instead.</para>
+				<para>Changed: 3.1.0 - The ST_Count(rastertable, rastercolumn, ...) variants removed. Use <xref linkend="RT_ST_CountAgg" /> instead.</para>
                 <para>Availability: 2.0.0 </para>
 			</refsection>
 
@@ -7682,46 +7682,6 @@ FROM foo;
 					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
 				  </funcprototype>
-
-				  <funcprototype>
-					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
-				  </funcprototype>
-
-				  <funcprototype>
-					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>right</parameter></paramdef>
-				  </funcprototype>
-
-				  <funcprototype>
-					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>bins=autocomputed</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>right=false</parameter></paramdef>
-				  </funcprototype>
-
-				  <funcprototype>
-					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>right=false</parameter></paramdef>
-				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -7747,7 +7707,8 @@ FROM foo;
                         <listitem><para>compute the histogram from the right rather than from the left (default). This changes the criteria for evaluating a value x from [a, b) to (a, b]</para></listitem>
                     </varlistentry>
                 </variablelist>
-				<para>Availability: 2.0.0 </para>
+                <para>Changed: 3.1.0 Removed ST_Histogram(table_name, column_name) variant. </para>
+                <para>Availability: 2.0.0 </para>
 			</refsection>
 
 			<refsection>
@@ -7876,23 +7837,6 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>quantile</parameter></paramdef>
 				  </funcprototype>
-				  <!-- TABLE COVERAGE VERSIONS -->
-				  <!-- TODO: Add the rest and examples -->
-				  <funcprototype>
-					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-					<paramdef><type>double precision[] </type> <parameter>quantiles</parameter></paramdef>
-				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -7901,6 +7845,7 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 
 				<para>Compute quantiles for a raster or raster table coverage in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</para>
 				<note><para>If <varname>exclude_nodata_value</varname> is set to false, will also count pixels with no data.</para></note>
+                <para>Changed: 3.1.0 Removed ST_Quantile(table_name, column_name) variant. </para>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
 
@@ -7995,23 +7940,6 @@ ORDER BY value, quantile,rid
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
-
-				  <funcprototype>
-					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-				  </funcprototype>
-
-				  <funcprototype>
-					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-				  </funcprototype>
-
-
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -8024,13 +7952,8 @@ ORDER BY value, quantile,rid
 
 				<note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</para></note>
 
+                <para>Changed: 3.1.0 ST_SummaryStats(rastertable, rastercolumn, ...) variants are removed. Use <xref linkend="RT_ST_SummaryStatsAgg" /> instead. </para>
 				<para>Availability: 2.0.0 </para>
-
-				<warning>
-					<para>
-						The ST_SummaryStats(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="RT_ST_SummaryStatsAgg" /> instead.
-					</para>
-				</warning>
 
 			</refsection>
 

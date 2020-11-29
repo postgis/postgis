@@ -6,7 +6,7 @@
 --
 -- Copyright (C) 2011 Regina Obe <lr@pcorp.us>
 -- Copyright (C) 2011-2012 Regents of the University of California
---   <bkpark@ucdavis.edu>
+-- <bkpark@ucdavis.edu>
 --
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 --
 -- This program is distributed in the hope that it will be useful,
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
@@ -52,8 +52,8 @@ DROP FUNCTION IF EXISTS ST_Intersects(raster,boolean,geometry);
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster,boolean);
 DROP FUNCTION IF EXISTS ST_Intersects(raster,geometry);
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster);
-DROP FUNCTION IF EXISTS ST_Intersects(raster, integer, boolean  , geometry);
-DROP FUNCTION IF EXISTS ST_Intersects(geometry , raster, integer , boolean);
+DROP FUNCTION IF EXISTS ST_Intersects(raster, integer, boolean, geometry);
+DROP FUNCTION IF EXISTS ST_Intersects(geometry, raster, integer, boolean);
 DROP FUNCTION IF EXISTS ST_Intersection(raster,raster, integer, integer);
 DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
 
@@ -71,3 +71,52 @@ DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4, text);
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8);
 -- Removed in 2.2.0
 DROP FUNCTION IF EXISTS _st_mapalgebra(rastbandarg[],regprocedure,text,integer,integer,text,raster,text[]);
+
+-- Removed in 3.1.0
+DROP FUNCTION IF EXISTS _st_count(text, text, integer, boolean, double precision);
+DROP FUNCTION IF EXISTS st_count(text, text, int, boolean);
+DROP FUNCTION IF EXISTS st_count(text, text, boolean);
+DROP FUNCTION IF EXISTS st_approxcount(text, text, int, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxcount(text, text, int, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxcount(text, text, int, double precision);
+DROP FUNCTION IF EXISTS st_approxcount(text, text, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxcount(text, text, double precision);
+
+DROP FUNCTION IF EXISTS _st_summarystats(text, text, integer, boolean, double precision);
+DROP FUNCTION IF EXISTS st_summarystats(text, text, integer, boolean);
+DROP FUNCTION IF EXISTS st_summarystats(text, text, boolean);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, integer, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, integer, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, boolean);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, double precision);
+
+DROP FUNCTION IF EXISTS _st_histogram(text, text, int, boolean, double precision, int,double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, boolean, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, boolean, int, boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram( ext, text, int, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, boolean, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, boolean, double precision, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int,double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision, int, boolean);
+
+
+DROP FUNCTION IF EXISTS _st_quantile( rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_quantile( rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_quantile( rastertable text, rastercolumn text, nband int, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_quantile( rastertable text, rastercolumn text, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, quantile double precision);
+DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, nband int, quantile double precision);
+DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision);
+DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, quantile double precision);
+DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, nband int, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, quantile double precision);
+DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, nband int, sample_percent double precision, quantile double precision);
+DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, sample_percent double precision, quantile double precision);
+DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision);
+DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, quantile double precision);

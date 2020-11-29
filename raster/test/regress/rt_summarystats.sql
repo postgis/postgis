@@ -164,72 +164,6 @@ CREATE TEMP TABLE test_summarystats
 		SELECT generate_series(1, 10) AS id
 	) AS id
 		ON 1 = 1;
-SELECT
-	count,
-	round(sum::numeric, 3),
-	round(mean::numeric, 3),
-	round(stddev::numeric, 3),
-	round(min::numeric, 3),
-	round(max::numeric, 3)
-FROM ST_SummaryStats('test_summarystats', 'rast', 1, TRUE);
-SELECT
-	count,
-	round(sum::numeric, 3),
-	round(mean::numeric, 3),
-	round(stddev::numeric, 3),
-	round(min::numeric, 3),
-	round(max::numeric, 3)
-FROM ST_SummaryStats('test_summarystats', 'rast', 1, FALSE);
-SELECT
-	count,
-	round(sum::numeric, 3),
-	round(mean::numeric, 3),
-	round(stddev::numeric, 3),
-	round(min::numeric, 3),
-	round(max::numeric, 3)
-FROM ST_SummaryStats('test_summarystats', 'rast', 1);
-SELECT
-	count,
-	round(sum::numeric, 3),
-	round(mean::numeric, 3),
-	round(stddev::numeric, 3),
-	round(min::numeric, 3),
-	round(max::numeric, 3)
-FROM ST_SummaryStats('test_summarystats', 'rast');
-SAVEPOINT test;
-SELECT
-	count,
-	round(sum::numeric, 3),
-	round(mean::numeric, 3),
-	round(stddev::numeric, 3),
-	round(min::numeric, 3),
-	round(max::numeric, 3)
-FROM ST_SummaryStats('test_summarystats', 'rast', 2);
-ROLLBACK TO SAVEPOINT test;
-RELEASE SAVEPOINT test;
-SAVEPOINT test;
-SELECT
-	count,
-	round(sum::numeric, 3),
-	round(mean::numeric, 3),
-	round(stddev::numeric, 3),
-	round(min::numeric, 3),
-	round(max::numeric, 3)
-FROM ST_SummaryStats('test_summarystats', 'rast');
-ROLLBACK TO SAVEPOINT test;
-RELEASE SAVEPOINT test;
-SAVEPOINT test;
-SELECT
-	count,
-	round(sum::numeric, 3),
-	round(mean::numeric, 3),
-	round(stddev::numeric, 3),
-	round(min::numeric, 3),
-	round(max::numeric, 3)
-FROM ST_SummaryStats('test_summarystats', 'rast');
-ROLLBACK TO SAVEPOINT test;
-RELEASE SAVEPOINT test;
-SAVEPOINT test;
 
 SELECT
 	(stats).count,
@@ -244,10 +178,7 @@ FROM (
 	FROM test_summarystats
 ) foo;
 
-ROLLBACK TO SAVEPOINT test;
-RELEASE SAVEPOINT test;
 SAVEPOINT test;
-
 SELECT
 	(stats).count,
 	round((stats).sum::numeric, 3),

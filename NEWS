@@ -2,6 +2,13 @@ PostGIS 3.1.0alpha4
 2020/xx/xx
 Only tickets not included in 3.1.0alpha3
 
+ * Breaking changes *
+  - #4214, Deprecated ST_Count(tablename,...), ST_ApproxCount(tablename, ...)
+           ST_SummaryStats(tablename, ..),
+           ST_Histogram(tablename, ...), ST_ApproxHistogram(tablename, ...),
+           ST_Quantile(tablename, ...), ST_ApproxQuantile(tablename, ...) removed.
+           (Darafei Praliaskouski)
+
  * New features*
   - #4801, ST_ClusterKMeans supports weights in POINT[Z]M geometries (Darafei Praliaskouski)
   - #4804, ST_ReducePrecision (GEOS 3.9+) allows valid precision reduction (Paul Ramsey)
