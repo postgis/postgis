@@ -168,8 +168,17 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
  */
 #define STATISTIC_KIND_ND 102
 #define STATISTIC_KIND_2D 103
-#define STATISTIC_SLOT_ND 0
-#define STATISTIC_SLOT_2D 1
+
+/*
+ * Postgres does not pin its slots and uses them as they come.
+ * We need to preserve its Correlation for brin to work
+ * 0 may be MCV
+ * 1 may be Histogram
+ * 2 may be Correlation
+ * We take 3 and 4.
+ */
+#define STATISTIC_SLOT_ND 3
+#define STATISTIC_SLOT_2D 4
 
 /*
 * The SD factor restricts the side of the statistics histogram
@@ -274,8 +283,11 @@ typedef struct ND_STATS_T
 	float4 value[1];
 } ND_STATS;
 
-
-
+typedef struct {
+	/* Saved state from std_typanalyze() */
+	AnalyzeAttrComputeStatsFunc std_compute_stats;
+	void *std_extra_data;
+} GserializedAnalyzeExtraData;
 
 /**
 * Given that geodetic boxes are X/Y/Z regardless of the
@@ -1345,9 +1357,6 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(gserialized_joinsel_internal(root, args, jointype, mode));
 }
 
-
-
-
 /**
  * The gserialized_analyze_nd sets this function as a
  * callback on the stats object when called by the ANALYZE
@@ -1363,7 +1372,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
  * for use by operator estimators.
  *
  * We will populate an n-d histogram using the provided
- * sample rows. The selectivity estimators (sel and j_oinsel)
+ * sample rows. The selectivity estimators (sel and joinsel)
  * can then use the histogram
  */
 static void
@@ -1864,6 +1873,12 @@ static void
 compute_gserialized_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
                           int sample_rows, double total_rows)
 {
+	GserializedAnalyzeExtraData *extra_data = (GserializedAnalyzeExtraData *)stats->extra_data;
+	/* Call standard statistics calculation routine to fill in correlation for BRIN to work */
+	stats->extra_data = extra_data->std_extra_data;
+	extra_data->std_compute_stats(stats, fetchfunc, sample_rows, total_rows);
+	stats->extra_data = extra_data;
+
 	/* 2D Mode */
 	compute_gserialized_stats_mode(stats, fetchfunc, sample_rows, total_rows, 2);
 
@@ -1900,30 +1915,24 @@ compute_gserialized_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 *
 * Being this experimental we'll stick to a static stat_builder/sample_rows
 * value for now.
-*
 */
 PG_FUNCTION_INFO_V1(gserialized_analyze_nd);
 Datum gserialized_analyze_nd(PG_FUNCTION_ARGS)
 {
 	VacAttrStats *stats = (VacAttrStats *)PG_GETARG_POINTER(0);
-	Form_pg_attribute attr = stats->attr;
+	GserializedAnalyzeExtraData *extra_data =
+	    (GserializedAnalyzeExtraData *)palloc(sizeof(GserializedAnalyzeExtraData));
 
-	POSTGIS_DEBUG(2, "gserialized_analyze_nd called");
+	/* Ask for standard analyze to fill in as much as possible */
+	if (!std_typanalyze(stats))
+		PG_RETURN_BOOL(false);
 
-	/* If the attstattarget column is negative, use the default value */
-	/* NB: it is okay to scribble on stats->attr since it's a copy */
-	if (attr->attstattarget < 0)
-		attr->attstattarget = default_statistics_target;
-
-	POSTGIS_DEBUGF(3, " attribute stat target: %d", attr->attstattarget);
-
-	/* Setup the minimum rows and the algorithm function.
-	 * 300 matches the default value set in
-	 * postgresql/src/backend/commands/analyze.c */
-	stats->minrows = 300 * stats->attr->attstattarget;
+	/* Save old compute_stats and extra_data for scalar statistics ... */
+	extra_data->std_compute_stats = stats->compute_stats;
+	extra_data->std_extra_data = stats->extra_data;
+	/* ... and replace with our info */
 	stats->compute_stats = compute_gserialized_stats;
-
-	POSTGIS_DEBUGF(3, " minrows: %d", stats->minrows);
+	stats->extra_data = extra_data;
 
 	/* Indicate we are done successfully */
 	PG_RETURN_BOOL(true);
@@ -2462,7 +2471,7 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 				/* Save result, clean up, and break out */
 				result = idx_oid;
 				if (key_type)
-					*key_type = (atttypid == b2d_oid ? STATISTIC_SLOT_2D : STATISTIC_SLOT_ND);
+					*key_type = (atttypid == b2d_oid ? STATISTIC_KIND_2D : STATISTIC_KIND_ND);
 				break;
 			}
 		}
@@ -2507,7 +2516,7 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 			Datum idx_attr = index_getattr(ituple, 1, idx_rel->rd_att, &isnull);
 			if (!isnull)
 			{
-				if (key_type == STATISTIC_SLOT_2D)
+				if (key_type == STATISTIC_KIND_2D)
 				{
 					BOX2DF *b = (BOX2DF*)DatumGetPointer(idx_attr);
 					if (bounds_2df)
@@ -2531,14 +2540,14 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 	ReleaseBuffer(buffer);
 	index_close(idx_rel, AccessShareLock);
 
-	if (key_type == STATISTIC_SLOT_2D && bounds_2df)
+	if (key_type == STATISTIC_KIND_2D && bounds_2df)
 	{
 		if (box2df_is_empty(bounds_2df))
 			return NULL;
 		gbox = gbox_new(0);
 		box2df_to_gbox_p(bounds_2df, gbox);
 	}
-	else if (key_type == STATISTIC_SLOT_ND && bounds_gidx)
+	else if (key_type == STATISTIC_KIND_ND && bounds_gidx)
 	{
 		if (gidx_is_unknown(bounds_gidx))
 			return NULL;

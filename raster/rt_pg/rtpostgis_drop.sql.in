@@ -111,7 +111,7 @@ DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, nband i
 DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, nband int, quantile double precision);
 DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision);
 DROP FUNCTION IF EXISTS st_quantile(rastertable text, rastercolumn text, quantile double precision);
-DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1, quantiles double precision[], OUT quantile double precision, OUT value double precision);
+DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
 DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, nband int, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
 DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, sample_percent double precision, quantiles double precision[], OUT quantile double precision, OUT value double precision);
 DROP FUNCTION IF EXISTS st_approxquantile( rastertable text, rastercolumn text, quantiles double precision[], OUT quantile double precision, OUT value double precision);
