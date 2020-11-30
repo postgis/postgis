@@ -88,7 +88,7 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
         <note><para>Order matters. B - A will always return a portion of B</para></note>
 
             <para>
-If a gridSize argument is provided, the inputs are
+If the optional <code>gridSize</code> argument is provided, the inputs are
 snapped to a grid of the given size and all intersections are computed
 on that same grid. This method requires GEOS-3.9.0 or higher.
             </para>
@@ -190,7 +190,7 @@ Returns a geometry that represents the shared portion of geomA and geomB.
                     </paramdef>
                     <paramdef choice="opt">
                         <type>float8</type>
-                        <parameter>gridSize</parameter>
+                        <parameter>gridSize = -1</parameter>
                     </paramdef>
                 </funcprototype>
                 <funcprototype>
@@ -219,7 +219,7 @@ Returns a geometry that represents the shared portion of geomA and geomB.
                 queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
 
             <para>
-If a gridSize argument is provided, the inputs are
+If the optional <code>gridSize</code> argument is provided, the inputs are
 snapped to a grid of the given size and all intersections are computed
 on that same grid. This method requires GEOS-3.9.0 or higher.
             </para>
@@ -596,7 +596,7 @@ GEOMETRYCOLLECTION(
                 <funcdef>setof geometry <function>ST_Subdivide</function></funcdef>
                 <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
                 <paramdef><type>integer</type> <parameter>max_vertices=256</parameter></paramdef>
-                <paramdef choice="opt"><type>float8</type> <parameter>gridSize</parameter></paramdef>
+                <paramdef choice="opt"><type>float8</type> <parameter>gridSize = -1</parameter></paramdef>
             </funcprototype>
         </funcsynopsis>
     </refsynopsisdiv>
@@ -711,7 +711,7 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
             <funcdef>geometry <function>ST_SymDifference</function></funcdef>
             <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
             <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize = -1</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -725,7 +725,7 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
             </para>
 
             <para>
-If a gridSize argument is provided, the inputs are
+If the optional <code>gridSize</code> argument is provided, the inputs are
 snapped to a grid of the given size and all intersections are computed
 on that same grid. This method requires GEOS-3.9.0 or higher.
             </para>
@@ -975,7 +975,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
           <funcprototype>
             <funcdef>geometry <function>ST_UnaryUnion</function></funcdef>
             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize = -1</parameter></paramdef>
           </funcprototype>
 
         </funcsynopsis>
@@ -1003,7 +1003,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
         </para>
 
         <para>
-If a gridSize argument is provided, the inputs are
+If the optional <code>gridSize</code> argument is provided, the inputs are
 snapped to a grid of the given size and all intersections are computed
 on that same grid. This method requires GEOS-3.9.0 or higher.
         </para>
