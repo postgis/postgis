@@ -407,7 +407,7 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 
 	LWDEBUGF(4, "LWGEOM2GEOS got a %s", lwtype_name(lwgeom->type));
 
-	if (lwgeom_has_arc(lwgeom))
+	if (lwgeom_type_arc(lwgeom))
 	{
 		LWGEOM* lwgeom_stroked = lwgeom_stroke(lwgeom, 32);
 		GEOSGeometry* g = LWGEOM2GEOS(lwgeom_stroked, autofix);

@@ -2278,8 +2278,24 @@ extern void lwgeom_trim_bits_in_place(LWGEOM *geom, int32_t prec_x, int32_t prec
  * SQLMM internal functions
  ******************************************************************************/
 
+/**
+* Geometry includes at least one actual circular arc
+*/
 int lwgeom_has_arc(const LWGEOM *geom);
+/**
+* Geometry type is one of the potentially "arc containing"
+* types (circstring, multicurve, etc) but does not necessarily
+* contain an actual arc.
+*/
+int lwgeom_type_arc(const LWGEOM *geom);
+/**
+* Convert type with arcs into equivalent linearized type
+*/
 LWGEOM *lwgeom_stroke(const LWGEOM *geom, uint32_t perQuad);
+/**
+* Convert linearized type into arc type, de-linearizing the
+* strokes where possible.
+*/
 LWGEOM *lwgeom_unstroke(const LWGEOM *geom);
 
 /**
