@@ -262,8 +262,7 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 		bounds_height = bounds.ymax - bounds.ymin;
 
 		/* quick opt-out if we get nonsensical inputs  */
-		if (size <= 0.0 || gbounds_is_empty ||
-		    bounds_width <= 0.0 || bounds_height <= 0.0)
+		if (size <= 0.0 || gbounds_is_empty)
 		{
 			funcctx = SRF_PERCALL_SETUP();
 			SRF_RETURN_DONE(funcctx);
