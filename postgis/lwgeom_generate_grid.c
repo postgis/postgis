@@ -247,7 +247,6 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 	{
 		MemoryContext oldcontext;
 		const char *func_name;
-		double bounds_width, bounds_height;
 		char gbounds_is_empty;
 		GBOX bounds;
 		double size;
@@ -258,8 +257,6 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 		size = PG_GETARG_FLOAT8(0);
 
 		gbounds_is_empty = (gserialized_get_gbox_p(gbounds, &bounds) == LW_FAILURE);
-		bounds_width = bounds.xmax - bounds.xmin;
-		bounds_height = bounds.ymax - bounds.ymin;
 
 		/* quick opt-out if we get nonsensical inputs  */
 		if (size <= 0.0 || gbounds_is_empty)
