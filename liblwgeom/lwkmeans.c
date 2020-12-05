@@ -19,6 +19,10 @@
  */
 #define KMEANS_MAX_ITERATIONS 1000
 
+
+static uint8_t
+kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k, uint32_t max_k);
+
 inline static double
 distance3d_sqr_pt4d_pt4d(const POINT4D *p1, const POINT4D *p2)
 {
@@ -27,6 +31,110 @@ distance3d_sqr_pt4d_pt4d(const POINT4D *p1, const POINT4D *p2)
 	double zside = p2->z - p1->z;
 
 	return hside * hside + vside * vside + zside * zside;
+}
+
+static double bayesian_information_criteria(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
+{
+	if (n < k)
+		return INFINITY;
+
+/*	double total_weight = 0.0;
+	for (uint32_t i = 0; i < n; i++)
+		total_weight += objs[i].m;
+
+	if (total_weight < k)
+		return INFINITY;*/
+
+	/* estimation of the noise variance in the data set */
+    double sigma_sqrt = 0.0;
+    for (uint32_t i = 0; i < n; i++)
+		sigma_sqrt += distance3d_sqr_pt4d_pt4d(&objs[i], &centers[clusters[i]]);
+	sigma_sqrt /= (n - k);
+
+	/* in geography everything is flat */
+	double dimension = 2;
+	double p = (k - 1) + dimension * k + 1;
+
+	/* in case of the same points, sigma_sqrt can be zero */
+	double sigma_multiplier = 0.0;
+	if (sigma_sqrt <= 0.0)
+		sigma_multiplier = -INFINITY;
+	else
+		sigma_multiplier = dimension * 0.5 * log(sigma_sqrt);
+
+	/* splitting criterion */
+	double score = 0;
+	for (int cluster = 0; cluster < (int)k; cluster++)
+	{
+		double weight = centers[cluster].m;
+		/*double L = weight * log(weight) - weight * log(total_weight) - weight * 0.5 * log(2.0 * M_PI) - weight * sigma_multiplier - (weight - k) * 0.5; */
+		double L = - weight * 0.5 * log(2.0 * M_PI) - weight * sigma_multiplier - (weight - k)/2 + weight * log(weight) - weight * log((double)n);
+
+		/* BIC calculation */
+		score += L - p * 0.5 * log((double)n);
+	}
+	return score;
+}
+
+static uint32_t
+improve_structure(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k, uint32_t max_k)
+{
+	POINT4D * temp_objs = lwalloc(sizeof(POINT4D)*n);
+	int * temp_clusters = lwalloc(sizeof(int)*n);
+	POINT4D * temp_centers = lwalloc(sizeof(POINT4D)*2);
+	uint32_t new_k = k;
+	/* worst case we will get twice as much clusters but no more than max */
+	/*uint32_t new_size = (k*2 > max_k) ? max_k : k*2;
+	centers = lwrealloc(centers, sizeof(POINT4D) * new_size);*/
+
+	for (int cluster = 0; cluster < (int)k; cluster++)
+	{
+		if (new_k >= max_k)
+			break;
+
+		/* copy cluster alone */
+		int cluster_size = 0;
+		for (uint32_t i = 0; i < n; i++)
+			if (clusters[i] == cluster)
+				temp_objs[cluster_size++] = objs[i];
+
+		/* clustering intention is to have less objects than points, so split if we have at least 3 points */
+		if (cluster_size < 3)
+			continue;
+		memset(temp_clusters, 0, sizeof(int) * cluster_size);
+		temp_centers[0] = centers[cluster];
+
+		/* calculate BIC for cluster */
+		double initial_bic = bayesian_information_criteria(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, 1);
+		/* 2-means the cluster */
+		kmeans(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, 2, 2);
+		/* calculate BIC for 2-means */
+		double split_bic = bayesian_information_criteria(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, 2);
+		/* replace cluster with split if needed */
+		if (split_bic > initial_bic)
+		{
+			lwnotice(
+		    "%s: splitting cluster %u into %u, bic orig = %f, bic split = %f, size = %d",
+		    __func__,
+		    cluster,
+			new_k,
+			initial_bic,
+			split_bic,
+			cluster_size
+			);
+			uint32_t d = 0;
+			for (uint32_t i = 0; i < n; i++)
+			{
+				if (clusters[i] == cluster)
+					if (temp_clusters[d++])
+						clusters[i] = new_k;
+			}
+			centers[cluster] = temp_centers[0];
+			centers[new_k] = temp_centers[1];
+			new_k++;
+		}
+	}
+	return new_k;
 }
 
 static uint8_t
@@ -84,24 +192,6 @@ update_means(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_
 			centers[i].z /= centers[i].m;
 		}
 	}
-}
-
-static uint8_t
-kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
-{
-	uint8_t converged = LW_FALSE;
-
-	for (uint32_t i = 0; i < KMEANS_MAX_ITERATIONS; i++)
-	{
-		LW_ON_INTERRUPT(break);
-		converged = update_r(objs, clusters, n, centers, k);
-		if (converged)
-			break;
-		update_means(objs, clusters, n, centers, k);
-	}
-	if (!converged)
-		lwerror("%s did not converge after %d iterations", __func__, KMEANS_MAX_ITERATIONS);
-	return converged;
 }
 
 static void
@@ -202,6 +292,37 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 	}
 }
 
+static uint8_t
+kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k, uint32_t max_k)
+{
+	uint8_t converged = LW_FALSE;
+	uint32_t cur_k = k;
+
+	kmeans_init(objs, n, centers, k);
+
+	for (uint32_t t = 0; t < KMEANS_MAX_ITERATIONS; t++)
+	{
+		for (uint32_t i = 0; i < KMEANS_MAX_ITERATIONS; i++)
+		{
+			LW_ON_INTERRUPT(break);
+			converged = update_r(objs, clusters, n, centers, cur_k);
+			if (converged)
+				break;
+			update_means(objs, clusters, n, centers, cur_k);
+		}
+		if (!converged || k >= max_k)
+			break;
+		uint32_t new_k = improve_structure(objs, clusters, n, centers, cur_k, max_k);
+		if (new_k == cur_k)
+			break;
+		cur_k = new_k;
+	}
+
+	if (!converged)
+		lwerror("%s did not converge after %d iterations", __func__, KMEANS_MAX_ITERATIONS);
+	return converged;
+}
+
 int *
 lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 {
@@ -232,8 +353,8 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	memset(clusters, 0, sizeof(int) * n);
 
 	/* An array of clusters centers for the algorithm. */
-	POINT4D *centers = lwalloc(sizeof(POINT4D) * k);
-	memset(centers, 0, sizeof(POINT4D) * k);
+	POINT4D *centers = lwalloc(sizeof(POINT4D) * n);
+	memset(centers, 0, sizeof(POINT4D) * n);
 
 	/* Prepare the list of object pointers for K-means */
 	for (uint32_t i = 0; i < n; i++)
@@ -304,9 +425,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	{
 		int *clusters_dense = lwalloc(sizeof(int) * num_non_empty);
 		memset(clusters_dense, 0, sizeof(int) * num_non_empty);
-
-		kmeans_init(objs, num_non_empty, centers, k);
-		converged = kmeans(objs, clusters_dense, num_non_empty, centers, k);
+		converged = kmeans(objs, clusters_dense, num_non_empty, centers, k, k);
 
 		if (converged)
 		{
