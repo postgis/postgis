@@ -74,7 +74,7 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
             <funcdef>geometry <function>ST_Difference</function></funcdef>
             <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
             <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>gridSize = -1</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -89,8 +89,8 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
 
             <para>
 If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size and all intersections are computed
-on that same grid. This method requires GEOS-3.9.0 or higher.
+snapped to a grid of the given size, and the result vertices are computed
+on that same grid. (Requires GEOS-3.9.0 or higher)
             </para>
 
         <para>Performed by the GEOS module</para>
@@ -220,8 +220,8 @@ Returns a geometry that represents the shared portion of geomA and geomB.
 
             <para>
 If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size and all intersections are computed
-on that same grid. This method requires GEOS-3.9.0 or higher.
+snapped to a grid of the given size, and the result vertices are computed
+on that same grid.  (Requires GEOS-3.9.0 or higher)
             </para>
 
             <note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
@@ -302,8 +302,7 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
       <refnamediv>
         <refname>ST_MemUnion</refname>
 
-        <refpurpose>Same as ST_Union, only memory-friendly (uses less memory
-            and more processor time).</refpurpose>
+        <refpurpose>Aggregate function which unions geometry in a slow but memory-friendly way</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -319,13 +318,17 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
       <refsection>
         <title>Description</title>
 
-        <para>Some useful description here.</para>
+    <para>Unions the input geometries, merging geometry to produce a result geometry
+        with no overlaps.
+        The output may be a single geometry, a MultiGeometry, or a Geometry Collection.
+        </para>
 
         <!-- optionally mention that this function uses indexes if appropriate -->
         <note>
-          <para>Same as ST_Union, only memory-friendly (uses less memory
-            and more processor time).  This aggregate function works by unioning the geometries one at a time to previous result as opposed to
-            ST_Union aggregate which first creates an array and then unions</para>
+          <para>Produces the same result as <xref linkend="ST_Union" />, but uses less memory
+            and more processor time.
+            This aggregate function works by unioning the geometries incrementally, as opposed to
+            the ST_Union aggregate which first creates an array and then unions</para>
         </note>
 
         <para>&Z_support;</para>
@@ -726,8 +729,8 @@ LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
 
             <para>
 If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size and all intersections are computed
-on that same grid. This method requires GEOS-3.9.0 or higher.
+snapped to a grid of the given size, and the result vertices are computed
+on that same grid. (Requires GEOS-3.9.0 or higher)
             </para>
 
         <para>Performed by the GEOS module</para>
@@ -822,10 +825,6 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
     <funcsynopsis>
       <funcprototype>
         <funcdef>geometry <function>ST_Union</function></funcdef>
-        <paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
-      </funcprototype>
-      <funcprototype>
-        <funcdef>geometry <function>ST_Union</function></funcdef>
         <paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
         <paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
       </funcprototype>
@@ -839,36 +838,45 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         <funcdef>geometry <function>ST_Union</function></funcdef>
         <paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
       </funcprototype>
+      <funcprototype>
+        <funcdef>geometry <function>ST_Union</function></funcdef>
+        <paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+      </funcprototype>
     </funcsynopsis>
   </refsynopsisdiv>
 
   <refsection>
     <title>Description</title>
-    <para> Output type can be a MULTI*, single geometry, or Geometry Collection. Comes in 2 variants.  Variant 1 unions 2 geometries resulting in a new geometry with no intersecting regions.
-        Variant 2 is an aggregate function that takes a set of geometries and unions
-        them into a single ST_Geometry resulting in no intersecting regions.</para>
+    <para>Unions the input geometries, merging geometry to produce a result geometry
+        with no overlaps.
+        The output may be a single geometry, a MultiGeometry, or a Geometry Collection.
+        Comes in 2 variants.  Variant 1 unions 2 geometries.
+        Variant 2 is an aggregate function that unions a set of geometries.</para>
 
-    <para>Aggregate version: This function returns a MULTI geometry or NON-MULTI geometry
-        from a set of geometries. The ST_Union() function is an "aggregate"
+    <para><emphasis role="bold">Non-Aggregate variants:</emphasis>
+        returns a geometry that is the union of two input geometries.
+        If either input is NULL, then NULL is returned.</para>
+
+    <para>The <code>gridSize</code> can be specified to work in fixed-precision space.
+        The inputs are snapped to a grid of the given size, and the result vertices are computed
+        on that same grid.
+        (Requires GEOS-3.9.0 or higher)
+    </para>
+
+    <para><emphasis role="bold">Aggregate variant:</emphasis>
+        returns a geometry that is the union of a set of geometries.
+        The ST_Union() function is an "aggregate"
         function in the terminology of PostgreSQL. That means that it
         operates on rows of data, in the same way the SUM() and AVG()
         functions do and like most aggregates, it also ignores NULL geometries.</para>
 
-    <para>Non-Aggregate version: This function returns a geometry being a union of two
-        input geometries. Output type can be a MULTI*, NON-MULTI or
-        GEOMETRYCOLLECTION. If any are NULL, then NULL is returned.</para>
+    <note><para><xref linkend="ST_Collect" /> may sometimes be used in place of ST_Union,
+        if the result is not required to be non-overlapping.
+        ST_Collect is usually faster than ST_Union because it performs no processing
+        on the collected geometries.
+        </para></note>
 
-    <para>
-        For non-aggregate version, <code>gridSize</code> can be specified
-        to work in fixed-precision space (requires GEOS-3.9.0+).
-    </para>
-
-    <note><para>ST_Collect and ST_Union are often interchangeable.
-        ST_Union is in general orders of magnitude slower than ST_Collect
-        because it tries to dissolve boundaries and reorder geometries to ensure that a constructed Multi* doesn't
-        have intersecting regions.</para></note>
-
-        <para>ST_Union will use the faster Cascaded Union algorithm described in <ulink
+    <para>ST_Union uses the fast Cascaded Union algorithm described in <ulink
         url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink></para>
 
     <para>Performed by the GEOS module.</para>
@@ -957,7 +965,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
             <xref linkend="ST_Collect" />,
             <xref linkend="ST_UnaryUnion" />,
             <xref linkend="ST_Intersection" />,
-            <xref linkend="ST_Difference" />
+            <xref linkend="ST_Difference" />,
             <xref linkend="ST_SymDifference" />
         </para>
       </refsection>
@@ -985,11 +993,11 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
         <title>Description</title>
 
         <para>
-        Unlike ST_Union, ST_UnaryUnion does dissolve boundaries
+        Unlike ST_Union, ST_UnaryUnion dissolves boundaries
         between components of a multipolygon (invalid)
-        and does perform union between the components of a
+        and performs union between the components of a
         geometrycollection.
-        Each components of the input geometry is assumed to be
+        Each component of the input geometry is assumed to be
         valid, so you won't get a valid multipolygon out of a
         bow-tie polygon (invalid).
         </para>
@@ -1004,8 +1012,8 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 
         <para>
 If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size and all intersections are computed
-on that same grid. This method requires GEOS-3.9.0 or higher.
+snapped to a grid of the given size, and the result vertices are computed
+on that same grid. (Requires GEOS-3.9.0 or higher)
         </para>
 
         <para>&Z_support;</para>
