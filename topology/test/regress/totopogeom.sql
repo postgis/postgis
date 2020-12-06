@@ -87,7 +87,7 @@ inp as ( select
 )'
  ::geometry as g),
 tg as ( select totopogeom(g, 'tt', 5) as g from inp )
-select St_AsText(inp.g), st_astext(tg.g::geometry) from inp, tg;
+select St_AsText(inp.g), st_astext(ST_Normalize(tg.g::geometry) ) from inp, tg;
 
 -- Convert some empties
 SELECT ST_AsText(toTopoGeom('POINT EMPTY', 'tt', 1)::geometry);
