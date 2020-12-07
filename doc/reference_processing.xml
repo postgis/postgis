@@ -474,28 +474,26 @@ FROM (SELECT
     <refsection>
       <title>Description</title>
 
-      <para>Computes the geometric center of a geometry, or equivalently,
-      the center of mass of the geometry as a <varname>POINT</varname>. For
-      [<varname>MULTI</varname>]<varname>POINT</varname>s, this is computed
-      as the arithmetic mean of the input coordinates. For
-      [<varname>MULTI</varname>]<varname>LINESTRING</varname>s, this is
-      computed as the weighted length of each line segment. For
-      [<varname>MULTI</varname>]<varname>POLYGON</varname>s, "weight" is
-      thought in terms of area. If an empty geometry is supplied, an empty
-      <varname>GEOMETRYCOLLECTION</varname> is returned. If
-      <varname>NULL</varname> is supplied, <varname>NULL</varname> is
-      returned.
+      <para>Computes a point which is the geometric center of mass of a geometry.
+      For [<varname>MULTI</varname>]<varname>POINT</varname>s,
+      the centroid is the arithmetic mean of the input coordinates.
+      For [<varname>MULTI</varname>]<varname>LINESTRING</varname>s,
+      the centroid is computed using the weighted length of each line segment.
+      For [<varname>MULTI</varname>]<varname>POLYGON</varname>s,
+      the centroid is computed in terms of area.
+      If an empty geometry is supplied, an empty <varname>GEOMETRYCOLLECTION</varname> is returned.
+      If <varname>NULL</varname> is supplied, <varname>NULL</varname> is returned.
       If <varname>CIRCULARSTRING</varname> or <varname>COMPOUNDCURVE</varname>
       are supplied, they are converted to linestring wtih CurveToLine first,
       then same than for  <varname>LINESTRING</varname>
       </para>
+      <para>For mixed-dimension input, the result is equal to the centroid of the component
+      Geometries of highest dimension (since the lower-dimension geometries
+      contribute zero "weight" to the centroid).</para>
+
       <para>New in 2.3.0 : support <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
 
       <para>Availability: 2.4.0 support for geography was introduced.</para>
-
-      <para>The centroid is equal to the centroid of the set of component
-      Geometries of highest dimension (since the lower-dimension geometries
-      contribute zero "weight" to the centroid).</para>
 
       <para>&sfs_compliant;</para>
       <para>&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5</para>
@@ -504,7 +502,7 @@ FROM (SELECT
     <refsection>
       <title>Examples</title>
 
-      <para>In each of the following illustrations, the green dot represents
+      <para>In the following illustrations the green dot is
       the centroid of the source geometry.</para>
 
       <informaltable>
@@ -598,7 +596,7 @@ POINT(0.5 1)
         <funcsynopsis>
          <funcprototype>
             <funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float </type> <parameter>target_percent</parameter></paramdef>
             <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes=false</parameter></paramdef>
           </funcprototype>
@@ -609,7 +607,7 @@ POINT(0.5 1)
         <title>Description</title>
             <para>The concave hull of a geometry represents a possibly concave
         geometry that encloses all geometries within the set. Defaults to false for allowing polygons with holes.
-        The result is never higher than a single polygon.</para>
+        The result is a single polygon, line or point.</para>
 
         <para>The target_percent is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting.
         One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. The
@@ -1082,7 +1080,7 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geo
       <refnamediv>
         <refname>ST_GeneratePoints</refname>
 
-        <refpurpose>Converts a polygon or multi-polygon into a multi-point composed of randomly location points within the original areas.</refpurpose>
+        <refpurpose>Generates random points contained in a Polygon or MultiPolygon.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1100,18 +1098,9 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geo
           </funcprototype>
           <funcprototype>
             <funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
-            <paramdef>
-                <parameter>g</parameter>
-                <type>geometry</type>
-            </paramdef>
-            <paramdef>
-                <parameter>npoints</parameter>
-                <type>integer</type>
-            </paramdef>
-            <paramdef>
-                <parameter>seed</parameter>
-                <type>integer</type>
-            </paramdef>
+            <paramdef> <type>geometry</type> <parameter>g</parameter> </paramdef>
+            <paramdef> <type>integer</type> <parameter>npoints</parameter> </paramdef>
+            <paramdef> <type>integer</type> <parameter>seed</parameter> </paramdef>
           </funcprototype>
 
         </funcsynopsis>
@@ -1121,9 +1110,10 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geo
         <title>Description</title>
 
         <para>
-            ST_GeneratePoints generates pseudo-random points until the requested number are
-            found within the input area. The optional seed must be greater than zero,
-            and is used to regenerate a deterministic sequence of points.
+            ST_GeneratePoints generates a given number of pseudo-random points
+            which lie within the input area.
+            The optional <code>seed</code> is used to regenerate a deterministic sequence of points,
+            and must be greater than zero.
         </para>
 
         <para>Availability: 2.3.0</para>
@@ -1186,47 +1176,12 @@ FROM (
     <refsynopsisdiv>
       <funcsynopsis>
         <funcprototype>
-            <funcdef>geometry
-                <function>
-                    ST_GeometricMedian
-                </function>
-            </funcdef>
+            <funcdef>geometry <function>ST_GeometricMedian</function> </funcdef>
 
-            <paramdef>
-                <type>
-                    geometry
-                </type>
-                <parameter>
-                    g
-                </parameter>
-            </paramdef>
-
-            <paramdef>
-                <type>
-                    float8
-                </type>
-                <parameter>
-                    tolerance
-                </parameter>
-            </paramdef>
-
-            <paramdef>
-                <type>
-                    int
-                </type>
-                <parameter>
-                    max_iter
-                </parameter>
-            </paramdef>
-
-            <paramdef>
-                <type>
-                    boolean
-                </type>
-                <parameter>
-                    fail_if_not_converged
-                </parameter>
-            </paramdef>
+            <paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef>
+            <paramdef choice="opt"><type>float8</type> <parameter>tolerance = NULL</parameter></paramdef>
+            <paramdef choice="opt"><type>int</type> <parameter>max_iter = 10000</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean</type> <parameter>fail_if_not_converged = false</parameter></paramdef>
 
         </funcprototype>
       </funcsynopsis>
@@ -1237,23 +1192,24 @@ FROM (
 
     <para>
           Computes the approximate geometric median of a MultiPoint geometry
-          using the Weiszfeld algorithm.  The geometric median provides a
-          centrality measure that is less sensitive to outlier points than
-          the centroid.
+          using the Weiszfeld algorithm.
+          The geometric median is the point minimizing the sum of distances to the input points.
+          It provides a centrality measure
+          that is less sensitive to outlier points than the centroid (center of mass).
     </para>
     <para>
-          The algorithm will iterate until the distance change between
+          The algorithm iterates until the distance change between
           successive iterations is less than the supplied <varname>tolerance</varname>
           parameter.  If this condition has not been met after <varname>max_iterations</varname>
-          iterations, the function will produce an error and exit, unless <varname>fail_if_not_converged</varname>
-          is set to false.
+          iterations, the function produces an error and exits,
+          unless <varname>fail_if_not_converged</varname> is set to <code>false</code> (the default).
     </para>
     <para>
-          If a <varname>tolerance</varname> value is not provided, a default tolerance value
-          will be calculated based on the extent of the input geometry.
+          If a <varname>tolerance</varname> argument is not provided, the tolerance value
+          is calculated based on the extent of the input geometry.
     </para>
     <para>
-          M value of points, if present, is interpreted as their relative weight.
+          If present, the input point M values are interpreted as their relative weights.
     </para>
     <para>Availability: 2.3.0</para>
     <para>Enhanced: 2.5.0 Added support for M as weight of points.</para>
@@ -1364,7 +1320,7 @@ FROM test;
     <refentry id="ST_MinimumBoundingCircle">
       <refnamediv>
         <refname>ST_MinimumBoundingCircle</refname>
-        <refpurpose>Returns the smallest circle polygon that fully contains a geometry.</refpurpose>
+        <refpurpose>Returns the smallest circle polygon that contains a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1379,7 +1335,7 @@ FROM test;
 
       <refsection>
         <title>Description</title>
-            <para>Returns the smallest circle polygon that can fully contain a geometry. </para>
+            <para>Returns the smallest circle polygon that contains a geometry. </para>
             <note><para>The circle is approximated by a polygon with a default of 48 segments per quarter circle.  Because the polygon is an approximation of the minimum bounding circle, some points in the input geometry may not be contained within the polygon.  The approximation can be improved by increasing the number of segments, with little performance penalty.  For applications where a polygonal approximation is not suitable, ST_MinimumBoundingRadius may be used.</para></note>
 
             <para>It is often used with MULTI and Geometry Collections.
@@ -1435,7 +1391,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
     <refentry id="ST_MinimumBoundingRadius">
     <refnamediv>
         <refname>ST_MinimumBoundingRadius</refname>
-        <refpurpose>Returns the center point and radius of the smallest circle that fullys contain a geometry.</refpurpose>
+        <refpurpose>Returns the center point and radius of the smallest circle that contains a geometry.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1449,8 +1405,8 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
     <refsection>
         <title>Description</title>
-        <para>Returns a record containing the center point and radius of the smallest circle that can fully contain a geometry.</para>
-        <para>Can be used in conjunction with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
+        <para>Returns a record containing the center point and radius of the smallest circle that contains a geometry.</para>
+        <para>Use in conjunction with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
         <para>Availability - 2.3.0</para>
     </refsection>
 
