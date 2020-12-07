@@ -366,15 +366,14 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
           <refnamediv>
             <refname>ST_BuildArea</refname>
 
-            <refpurpose>Creates an areal geometry formed by the constituent linework
-            of given geometry.</refpurpose>
+            <refpurpose>Creates a polygonal geometry formed by the linework of a geometry.</refpurpose>
           </refnamediv>
 
           <refsynopsisdiv>
             <funcsynopsis>
               <funcprototype>
                 <funcdef>geometry <function>ST_BuildArea</function></funcdef>
-                <paramdef><type>geometry </type> <parameter>A</parameter></paramdef>
+                <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
               </funcprototype>
             </funcsynopsis>
           </refsynopsisdiv>
@@ -383,11 +382,12 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
             <title>Description</title>
 
             <para>Creates an areal geometry formed by the constituent linework
-            of given geometry. The return type can be a Polygon or
-            MultiPolygon, depending on input. If the input lineworks do not
-            form polygons NULL is returned.  The inputs can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.
+            of the input geometry.
+            The input can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.
+            The result is a Polygon or MultiPolygon, depending on input.
+            If the input linework does not form polygons, NULL is returned.
             </para>
-            <para>This function will assume all inner geometries represent holes</para>
+            <para>This function assumes all inner geometries represent holes</para>
 
             <note>
                 <para>Input linework must be correctly noded for this function to work properly</para>
@@ -589,7 +589,7 @@ POINT(0.5 1)
     <refentry id="ST_ConcaveHull">
       <refnamediv>
         <refname>ST_ConcaveHull</refname>
-        <refpurpose>Computes a possibly concave geometry that encloses all geometries within the input.</refpurpose>
+        <refpurpose>Computes a possibly concave geometry that encloses all input geometry vertices</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -598,7 +598,7 @@ POINT(0.5 1)
             <funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
             <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float </type> <parameter>target_percent</parameter></paramdef>
-            <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes=false</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -606,23 +606,26 @@ POINT(0.5 1)
       <refsection>
         <title>Description</title>
             <para>The concave hull of a geometry represents a possibly concave
-        geometry that encloses all geometries within the set. Defaults to false for allowing polygons with holes.
-        The result is a single polygon, line or point.</para>
+        geometry that encloses the input geometry.
+        The result is a single polygon, line or point.
+        It will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+        </para>
 
-        <para>The target_percent is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting.
+        <para>The <varname>target_percent</varname> is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting.
         One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. The
-            target_percent of 1 will give you the same answer as the convex hull.  A target_percent
-                between 0 and 0.99 will give you something that should have a smaller area than the convex hull.  This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
+        target_percent of 1 will give you the same answer as the convex hull.  A target_percent
+        between 0 and 0.99 will give you something that should have a smaller area than the convex hull.
+        This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
 
-            <para>It is usually used with MULTI and Geometry Collections.
-        Although it is not an aggregate - you can use it in conjunction
-        with ST_Collect or ST_Union to get the concave hull of a set of points/linestring/polygons
-        ST_ConcaveHull(ST_Collect(somepointfield), 0.80).</para>
+        <para>It is usually used with MULTI and Geometry Collections.
+        It is not an aggregate function, but can be used
+        with <xref linkend="ST_Collect" /> or <xref linkend="ST_Union" /> to get the concave hull of a set of points/linestring/polygons
+        (e.g. <code>ST_ConcaveHull(ST_Collect(somepointfield), 0.80)</code>.</para>
 
-        <para>It is much slower to compute than convex hull but encloses the geometry better and is also useful for
-            image recognition.</para>
+        <para>It is slower to compute than the convex hull
+        but generally has a smaller result area
+        and represents a more natural bounds of the input geometry.</para>
 
-        <para>Performed by the GEOS module</para>
         <note><para>Note - If you are using with points, linestrings, or geometry collections use ST_Collect. If you are using with polygons, use ST_Union since
             it may fail with invalid geometries.</para></note>
 
@@ -637,6 +640,8 @@ POINT(0.5 1)
         <para>Also check out Simon Greener's article on demonstrating ConcaveHull introduced in Oracle 11G R2. <ulink
         url="http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2">http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2</ulink>.
         The solution we get at 0.75 target percent of convex hull is similar to the shape Simon gets with  Oracle SDO_CONCAVEHULL_BOUNDARY.</para>
+
+        <para>Performed by the GEOS module</para>
 
         <para>Availability: 2.0.0</para>
       </refsection>
@@ -1025,7 +1030,7 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
     <refentry id="ST_FilterByM">
       <refnamediv>
         <refname>ST_FilterByM</refname>
-        <refpurpose>Filters vertex points based on their m-value</refpurpose>
+        <refpurpose>Removes vertices based on their M value</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1042,8 +1047,8 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
 
       <refsection>
         <title>Description</title>
-        <para>Filters away vertex points based on their m-value. Returns a geometry with only
-            vertex points that have a m-value larger or equal to the min value and smaller or equal to
+        <para>Filters out vertex points based on their M-value. Returns a geometry with only
+            vertex points that have a M-value larger or equal to the min value and smaller or equal to
             the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
             will not be in the resulting geometry. If resulting geometry have too few vertex points left for its geometry type an empty
             geometry will be returned. In a geometry collection
@@ -1054,7 +1059,7 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
         <note><para>There is a difference in what ST_SimplifyVW returns when not enough points meet the criteria compared to ST_FilterByM.
                 ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>
         <note><para>Note that the returned geometry might be invalid</para></note>
-        <note><para>This function returns all dimensions, also the z and m-value</para></note>
+        <note><para>This function returns all dimensions, including the Z and M values</para></note>
         <para>Availability: 2.5.0</para>
       </refsection>
 
@@ -1259,7 +1264,7 @@ FROM test;
     <refentry id="ST_MaximumInscribedCircle">
       <refnamediv>
         <refname>ST_MaximumInscribedCircle</refname>
-        <refpurpose>Finds the largest circle that can by fully contained within a geometry. </refpurpose>
+        <refpurpose>Computes the largest circle that is fully contained within a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1273,9 +1278,13 @@ FROM test;
 
       <refsection>
         <title>Description</title>
-            <para>Finds the largest circle that can by fully contained within a geometry. Returns a record with the center point of that circle, the point on the geometry that is nearest to the center, and the radius of the circle. </para>
+        <para>Finds the largest circle that is fully contained within a geometry.
+        Returns a record with the center point of the circle,
+        a point on the geometry that is nearest to the center, and the radius of the circle. </para>
 
-            <para>For polygonal inputs, the circle is inscribed within the external ring, using the internal rings as boundaries. For linear and point inputs, the circle is inscribed within the convex hull of the input, using the input as further boundaries.</para>
+        <para>For polygonal inputs, the circle is inscribed within the external ring, using the internal rings as boundaries.
+        For linear and point inputs, the circle is inscribed within the convex hull of the input, using the input as further boundaries.</para>
+
         <para>Availability: 3.1.0 - requires GEOS &gt;= 3.9.0.</para>
 
       </refsection>
@@ -1430,7 +1439,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
     <refentry id="ST_OrientedEnvelope">
         <refnamediv>
             <refname>ST_OrientedEnvelope</refname>
-            <refpurpose>Returns a minimum rotated rectangle enclosing a geometry.</refpurpose>
+            <refpurpose>Returns a minimum-area rectangle containing a geometry.</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
@@ -1448,8 +1457,8 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
         <refsection>
             <title>Description</title>
             <para>
-                Returns a mimimum rotated rectangle enclosing a geometry.
-                Note that more than one minimum rotated rectangle may exist.
+                Returns the mimimum-area rotated rectangle enclosing a geometry.
+                Note that more than one such rectangle may exist.
                 May return a Point or LineString in the case of degenerate inputs.
             </para>
             <para>
@@ -1497,137 +1506,52 @@ POLYGON((19.9999999999997 79.9999999999999,33.0769230769229 60.3846153846152,138
         </refsection>
     </refentry>
 
-    <refentry id="ST_Polygonize">
+    <refentry id="ST_OffsetCurve">
         <refnamediv>
-            <refname>ST_Polygonize</refname>
+            <refname>ST_OffsetCurve</refname>
 
-            <refpurpose>Computes a collection of polygons formed from the linework of a set of geometries.
-            </refpurpose>
+            <refpurpose>
+Returns an offset line at a given distance and side from an input line.
+        </refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_Polygonize</function></funcdef>
-            <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
-          </funcprototype>
+            <funcsynopsis>
 
-          <funcprototype>
-            <funcdef>geometry <function>ST_Polygonize</function></funcdef>
-            <paramdef><type>geometry[]</type> <parameter>geom_array</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
+                <funcprototype>
+                <funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
+                <paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
+                <paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
+                <paramdef choice="opt"><type>text </type> <parameter>style_parameters=''</parameter></paramdef>
+                </funcprototype>
+
+            </funcsynopsis>
         </refsynopsisdiv>
 
         <refsection>
             <title>Description</title>
 
-            <para>Creates a GeometryCollection containing the
-            polygons formed by the constituent linework of a set of geometries.
-            Input linework must be correctly noded for this function to work properly.</para>
-
-            <note>
-                <para>
-                To ensure input is fully noded use <xref linkend="ST_Node" /> on the input geometry
-                before polygonizing.
-                </para>
-            </note>
-
-            <note>
-                <para>GeometryCollections are often difficult to deal with with third party tools.
-                Use <xref linkend="ST_Dump" /> to convert the polygonize result
-                into separate polygons.</para>
-            </note>
-            <para>Performed by the GEOS module.</para>
-
-            <para>Availability: 1.0.0RC1</para>
-        </refsection>
-
-        <refsection>
-        <title>Examples: Polygonizing single linestrings</title>
-         <programlisting>
-SELECT ST_AsEWKT(ST_Polygonize(the_geom_4269)) As geomtextrep
-FROM (SELECT the_geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As foo;
-
-geomtextrep
--------------------------------------
- SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,-71.040878 42.285678)),
- POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358,-71.171794 42.354971,-71.170511 42.354855,
- -71.17112 42.354238,-71.17166 42.353675)))
-(1 row)
-
---Use ST_Dump to dump out the polygonize geoms into individual polygons
-SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep
-FROM (SELECT ST_Polygonize(the_geom_4269) As polycoll
-    FROM (SELECT the_geom_4269 FROM ma.suffolk_edges
-        ORDER BY tlid LIMIT 45) As foo) As foofoo;
-
-geomtextrep
-------------------------
- SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,
--71.040878 42.285678))
- SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358
-,-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 42.353675))
-(2 rows)
-
-              </programlisting>
-        </refsection>
-
-        <refsection>
-            <title>See Also</title>
             <para>
-            <xref linkend="ST_Node" />,
-            <xref linkend="ST_Dump" />
-            </para>
-        </refsection>
-    </refentry>
-
-            <refentry id="ST_OffsetCurve">
-            <refnamediv>
-                <refname>ST_OffsetCurve</refname>
-
-                <refpurpose>
-Returns an offset line at a given distance and side from an input line.
-            </refpurpose>
-            </refnamediv>
-
-            <refsynopsisdiv>
-                <funcsynopsis>
-
-                  <funcprototype>
-                    <funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
-                    <paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
-                    <paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
-                    <paramdef choice="opt"><type>text </type> <parameter>style_parameters=''</parameter></paramdef>
-                  </funcprototype>
-
-                </funcsynopsis>
-            </refsynopsisdiv>
-
-              <refsection>
-                <title>Description</title>
-
-                <para>
 Return an offset line at a given distance and side from an input line.
 All points of the returned geometries are not further than the given
 distance from the input geometry.
 Useful for computing parallel lines about a center line.
-                </para>
+            </para>
 
-                <para>
+            <para>
 For positive distance the offset is on the left side of the input line
 and retains the same direction. For a negative distance it is on the right
 side and in the opposite direction.
-                </para>
-                <para>
+            </para>
+            <para>
 Note that output may be a MULTILINESTRING or EMPTY for some jigsaw-shaped input geometries.
-                </para>
+            </para>
 
-                <para>Performed by the GEOS module.</para>
-                <para>Availability: 2.0</para>
-                <para>Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING</para>
+            <para>Performed by the GEOS module.</para>
+            <para>Availability: 2.0</para>
+            <para>Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING</para>
 
-                <para>
+            <para>
 The optional third parameter allows specifying a list of blank-separated
 key=value pairs to tweak operations as follows:
 <itemizedlist>
@@ -1890,6 +1814,90 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
       </refsection>
     </refentry>
 
+    <refentry id="ST_Polygonize">
+        <refnamediv>
+            <refname>ST_Polygonize</refname>
+
+            <refpurpose>Computes a collection of polygons formed from the linework of a set of geometries.
+            </refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Polygonize</function></funcdef>
+            <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>geometry <function>ST_Polygonize</function></funcdef>
+            <paramdef><type>geometry[]</type> <parameter>geom_array</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Creates a GeometryCollection containing the
+            polygons formed by the constituent linework of a set of geometries.
+            Input linework must be correctly noded for this function to work properly.</para>
+
+            <note>
+                <para>
+                To ensure input is fully noded use <xref linkend="ST_Node" /> on the input geometry
+                before polygonizing.
+                </para>
+            </note>
+
+            <note>
+                <para>GeometryCollections are often difficult to deal with with third party tools.
+                Use <xref linkend="ST_Dump" /> to convert the polygonize result
+                into separate polygons.</para>
+            </note>
+            <para>Performed by the GEOS module.</para>
+
+            <para>Availability: 1.0.0RC1</para>
+        </refsection>
+
+        <refsection>
+        <title>Examples: Polygonizing single linestrings</title>
+         <programlisting>
+SELECT ST_AsEWKT(ST_Polygonize(the_geom_4269)) As geomtextrep
+FROM (SELECT the_geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As foo;
+
+geomtextrep
+-------------------------------------
+ SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,-71.040878 42.285678)),
+ POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358,-71.171794 42.354971,-71.170511 42.354855,
+ -71.17112 42.354238,-71.17166 42.353675)))
+(1 row)
+
+--Use ST_Dump to dump out the polygonize geoms into individual polygons
+SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep
+FROM (SELECT ST_Polygonize(the_geom_4269) As polycoll
+    FROM (SELECT the_geom_4269 FROM ma.suffolk_edges
+        ORDER BY tlid LIMIT 45) As foo) As foofoo;
+
+geomtextrep
+------------------------
+ SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,
+-71.040878 42.285678))
+ SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358
+,-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 42.353675))
+(2 rows)
+
+              </programlisting>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para>
+            <xref linkend="ST_Node" />,
+            <xref linkend="ST_Dump" />
+            </para>
+        </refsection>
+    </refentry>
 
     <refentry id="ST_ReducePrecision">
       <refnamediv>
@@ -2337,7 +2345,7 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
       <refnamediv>
         <refname>ST_VoronoiLines</refname>
 
-        <refpurpose>Returns the boundaries of the Voronoi diagram constructed from the vertices of a geometry.</refpurpose>
+        <refpurpose>Returns the boundaries of the Voronoi diagram of the vertices of a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2428,7 +2436,7 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
       <refnamediv>
         <refname>ST_VoronoiPolygons</refname>
 
-        <refpurpose>Returns the cells of the Voronoi diagram constructed from the vertices of a geometry.</refpurpose>
+        <refpurpose>Returns the cells of the Voronoi diagram of the vertices of a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
