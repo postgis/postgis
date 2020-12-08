@@ -1369,7 +1369,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 				<funcdef>text <function>ST_Relate</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>BoundaryNodeRule</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>boundaryNodeRule</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
@@ -1377,80 +1377,134 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 		<refsection>
 			<title>Description</title>
 
-			<para>Variant 1: Tests if two geometries are spatially related
-                according to the given <varname>intersectionMatrixPattern</varname>, by testing for intersections between the
-					Interior, Boundary and Exterior of the two geometries as specified
-					by the values in the <ulink url="http://en.wikipedia.org/wiki/DE-9IM">DE-9IM matrix pattern</ulink>.</para>
-
-			<para>This is useful for testing multiple conditions of intersection, crosses, etc in one step.
-            It also allows testing spatial relationships which do not have a named pattern
-            (for example, "interior-intersects" which has the pattern <code>T********</code>).
+            <para>
+            These functions allow testing and evaluating the spatial (topological) relationship between two geometries,
+            as defined by the <ulink url="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</ulink> (DE-9IM).
+            </para>
+            <para>
+            The DE-9IM is specified as a 9-element matrix indicating the dimension of the intersections between the
+            Interior, Boundary and Exterior of two geometries.
+            It is represented by a 9-character text string using the symbols 'F', '0', '1', '2'
+            (e.g. <code>'FF1FF0102'</code>).
+            </para>
+            <para>
+            A specific kind of spatial relationships is evaluated by comparing the intersection
+            matrix to an <emphasis>intersection matrix pattern</emphasis>.
+            A pattern can include the additional symbols 'T' and '*'.
+            Common spatial relationships are provided by the named functions
+            <xref linkend="ST_Contains" />, <xref linkend="ST_ContainsProperly" />,
+            <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
+            <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
+            <xref linkend="ST_Intersects" />, <xref linkend="ST_Overlaps" />, <xref linkend="ST_Touches" />,
+            and <xref linkend="ST_Within" />.
+            Using an explicit pattern allows testing multiple conditions of intersects, crosses, etc in one step.
+            It also allows testing spatial relationships which do not have a named spatial relationship function.
+            For example, the relationship "Interior-Intersects" has the DE-9IM pattern <code>T********</code>,
+            which is not evaluated by any named predicate.
+            </para>
+            <para>
+             For more information refer to <xref linkend="DE-9IM" />.
             </para>
 
-			<note><para>This is the "allowable" version that returns a
-			boolean, not an integer.  This is defined in OGC spec</para></note>
+			<para><emphasis role="bold">Variant 1:</emphasis> Tests if two geometries are spatially related
+            according to the given <varname>intersectionMatrixPattern</varname>.
+            </para>
 
-			<note><para>This does NOT automatically include an index call.
+			<note><para>Unlike most of the named spatial relationship predicates,
+                this does NOT automatically include an index call.
                 The reason is that some relationships are true for geometries
-                whose extents do NOT intersect (e.g. Disjoint).  If you are
+                which do NOT intersect (e.g. Disjoint).  If you are
 				using a relationship pattern that requires intersection, then include the &amp;&amp;
-				index call.</para></note>
+				index call.
+                </para></note>
 
-			<para>Variant 2: Returns the <xref linkend="DE-9IM" /> matrix string for the
-                relationship between the two inputs</para>
+			<note><para>It is better to use a named relationship function if available,
+            since they automatically use a spatial index where one exists.
+            Also, they may implement performance optimizations which are not available
+            with full relate evalation.
+                </para></note>
 
-			<para>Variant 3: same as variant 2, but allows specifying a boundary node rule (1:OGC/MOD2, 2:Endpoint, 3:MultivalentEndpoint, 4:MonovalentEndpoint)</para>
+			<para><emphasis role="bold">Variant 2:</emphasis> Returns the DE-9IM matrix string for the
+            spatial relationship between the two input geometries.
+            The matrix string can be tested for matching a DE-9IM pattern using <xref linkend="ST_RelateMatch" />.
+            </para>
 
-			<important>
-			  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
-			</important>
+			<para><emphasis role="bold">Variant 3:</emphasis> Like variant 2,
+            but allows specifying a <emphasis role="bold">Boundary Node Rule</emphasis>.
+            A boundary node rule allows finer control over whether geometry boundary points are
+            considered to lie in the DE-9IM Interior or Boundary.
+            The <varname>boundaryNodeRule</varname> code is:
+            1: OGC/MOD2, 2: Endpoint, 3: MultivalentEndpoint, 4: MonovalentEndpoint. </para>
 
-			<para>not in OGC spec, but implied. see s2.1.13.2</para>
+			<para>This function is not in the OGC spec, but is implied. see s2.1.13.2</para>
 			<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
 			<para>Performed by the GEOS module</para>
 			<para>Enhanced: 2.0.0 - added support for specifying boundary node rule.</para>
+			<important>
+			  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
+			</important>
+
 		</refsection>
 
 
 		<refsection>
 		<title>Examples</title>
-		<programlisting>
---Find all compounds that intersect and not touch a poly (interior intersects)
-SELECT l.* , b.name As poly_name
-	FROM polys As b
-INNER JOIN compounds As l
-ON (p.the_geom &amp;&amp; b.the_geom
-AND ST_Relate(l.the_geom, b.the_geom,'T********'));
 
-SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2));
+        <para>Using the boolean-valued function to test spatial relationships.</para>
+		<programlisting>
+SELECT ST_Relate('POINT(1 2)', ST_Buffer( 'POINT(1 2)', 2), '0FFFFF212');
+st_relate
+-----------
+t
+
+SELECT ST_Relate(POINT(1 2)', ST_Buffer( 'POINT(1 2)', 2), '*FF*FF212');
+st_relate
+-----------
+t
+</programlisting>
+
+        <para>Testing a custom spatial relationship pattern as a query condition,
+        with <code>&amp;&amp;</code> to enable using a spatial index.</para>
+		<programlisting>
+-- Find compounds that properly intersect (not just touch) a poly (Interior Intersects)
+
+SELECT c.* , p.name As poly_name
+    FROM polys AS p
+    INNER JOIN compounds As c
+          ON c.geom &amp;&amp; p.geom
+             AND ST_Relate(p.geom, c.geom,'T********');
+</programlisting>
+
+         <para>Computing the intersection matrix for spatial relationships.</para>
+		<programlisting>
+SELECT ST_Relate( 'POINT(1 2)',
+                  ST_Buffer( 'POINT(1 2)', 2));
 st_relate
 -----------
 0FFFFF212
 
-SELECT ST_Relate(ST_GeometryFromText('LINESTRING(1 2, 3 4)'), ST_GeometryFromText('LINESTRING(5 6, 7 8)'));
+SELECT ST_Relate( 'LINESTRING(1 2, 3 4)',
+                  'LINESTRING(5 6, 7 8)' );
 st_relate
 -----------
 FF1FF0102
+</programlisting>
 
-
-SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '0FFFFF212');
-st_relate
------------
-t
-
-SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '*FF*FF212');
-st_relate
------------
-t
-		</programlisting>
 	</refsection>
 
 	<!-- Optionally add a "See Also" section -->
 	<refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Crosses" />, <xref linkend="DE-9IM" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" /></para>
+		<para>
+            <xref linkend="DE-9IM" />, <xref linkend="ST_RelateMatch" />,
+            <xref linkend="ST_Contains" />, <xref linkend="ST_ContainsProperly" />,
+            <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
+            <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
+            <xref linkend="ST_Intersects" />, <xref linkend="ST_Overlaps" />,
+            <xref linkend="ST_Touches" />, <xref linkend="ST_Within" />
+        </para>
 	</refsection>
 </refentry>
 
@@ -1458,7 +1512,8 @@ t
 	<refnamediv>
 		<refname>ST_RelateMatch</refname>
 
-		<refpurpose>Returns true if an Intersection Matrix value matches an Intersection Matrix pattern</refpurpose>
+		<refpurpose>Returns true if a DE-9IM Intersection Matrix value matches an Intersection Matrix pattern
+        </refpurpose>
 	</refnamediv>
 
 	<refsynopsisdiv>
@@ -1474,10 +1529,17 @@ t
 	<refsection>
 		<title>Description</title>
 
-		<para> Tests if an <varname>intersectionMatrix</varname> value satisfies
+		<para>
+        Tests if a <ulink url="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</ulink> (DE-9IM)
+        <varname>intersectionMatrix</varname> value satisfies
 		an <varname>intersectionMatrixPattern</varname>.
-        For more information refer to <xref linkend="DE-9IM" />.	</para>
+        Intersection matrix values can be computed by <xref linkend="ST_Relate" />.
+        </para>
+        <para>
+        For more information refer to <xref linkend="DE-9IM" />.
+        </para>
 		<para>Performed by the GEOS module</para>
+
 		<para>Availability: 2.0.0</para>
 	</refsection>
 
@@ -1488,21 +1550,38 @@ t
 SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;
 -- result --
 t
---example of common intersection matrix patterns and example matrices
--- comparing relationships of involving one invalid geometry and ( a line and polygon that intersect at interior and boundary)
-SELECT mat.name, pat.name, ST_RelateMatch(mat.val, pat.val) As satisfied
-    FROM
-        ( VALUES ('Equality', 'T1FF1FFF1'),
-                ('Overlaps', 'T*T***T**'),
-                ('Within', 'T*F**F***'),
-                ('Disjoint', 'FF*FF****') As pat(name,val)
-        CROSS JOIN
-            (	VALUES ('Self intersections (invalid)', '111111111'),
-                    ('IE2_BI1_BB0_BE1_EI1_EE2', 'FF2101102'),
-                    ('IB1_IE1_BB0_BE0_EI2_EI1_EE2', 'F11F00212')
-            ) As mat(name,val);
+</programlisting>
+		<para>Patterns for common spatial relationships
+matched against intersection matrix values,
+for a line in various positions relative to a polygon</para>
+		<programlisting>
+SELECT pat.name AS relationship, pat.val AS pattern,
+       mat.name AS position, mat.val AS matrix,
+       ST_RelateMatch(mat.val, pat.val) AS match
+    FROM (VALUES ( 'Equality', 'T1FF1FFF1' ),
+                 ( 'Overlaps', 'T*T***T**' ),
+                 ( 'Within',   'T*F**F***' ),
+                 ( 'Disjoint', 'FF*FF****' )) AS pat(name,val)
+    CROSS JOIN
+        (VALUES  ('non-intersecting', 'FF1FF0212'),
+                 ('overlapping',      '1010F0212'),
+                 ('inside',           '1FF0FF212')) AS mat(name,val);
 
-		</programlisting>
+ relationship |  pattern  |     position     |  matrix   | match
+--------------+-----------+------------------+-----------+-------
+ Equality     | T1FF1FFF1 | non-intersecting | FF1FF0212 | f
+ Equality     | T1FF1FFF1 | overlapping      | 1010F0212 | f
+ Equality     | T1FF1FFF1 | inside           | 1FF0FF212 | f
+ Overlaps     | T*T***T** | non-intersecting | FF1FF0212 | f
+ Overlaps     | T*T***T** | overlapping      | 1010F0212 | t
+ Overlaps     | T*T***T** | inside           | 1FF0FF212 | f
+ Within       | T*F**F*** | non-intersecting | FF1FF0212 | f
+ Within       | T*F**F*** | overlapping      | 1010F0212 | f
+ Within       | T*F**F*** | inside           | 1FF0FF212 | t
+ Disjoint     | FF*FF**** | non-intersecting | FF1FF0212 | t
+ Disjoint     | FF*FF**** | overlapping      | 1010F0212 | f
+ Disjoint     | FF*FF**** | inside           | 1FF0FF212 | f
+</programlisting>
 	</refsection>
 
 	<!-- Optionally add a "See Also" section -->

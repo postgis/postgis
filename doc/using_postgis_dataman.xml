@@ -6,9 +6,9 @@
 	<title>GIS Objects</title>
 
 	<para>The GIS objects supported by PostGIS are a superset of the "Simple
-	Features" defined by the OpenGIS Consortium (OGC).
+	Features" standard defined by the OpenGIS Consortium (OGC).
 	PostGIS supports all the objects and functions specified in the OGC
-	"Simple Features for SQL" specification.</para>
+	"Simple Features for SQL" specification (SFS).</para>
 
 	<para>PostGIS extends the standard with support for embedded SRID information.</para>
 
@@ -1211,13 +1211,24 @@ gisdb=# SELECT
 	</sect3>
 
       <sect3 id="DE-9IM">
-        <title>Dimensionally Extended 9 Intersection Model (DE-9IM)</title>
+        <title>Evaluating Spatial Relationships with the DE-9IM</title>
 
-        <para>It is sometimes the case that the typical spatial predicates
-        (<xref linkend="ST_Intersects" />, <xref linkend="ST_Contains" />,
-				<xref linkend="ST_Crosses" />, <xref linkend="ST_Touches" />, ...) are
-        insufficient in and of themselves to adequately provide that desired
-        spatial filter.</para>
+        <para>
+        The OGC SFS defines a set of <emphasis>named spatial relationship predicates</emphasis> to evaluate the
+        spatial relationship between pairs of geometries.
+        PostGIS provides these as the functions
+            <xref linkend="ST_Contains" />,
+            <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
+            <xref linkend="ST_Intersects" />, <xref linkend="ST_Overlaps" />,
+            <xref linkend="ST_Touches" />, <xref linkend="ST_Within" />.
+        It also defines the non-standard relationship predicates
+            <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
+            and <xref linkend="ST_ContainsProperly" />.
+        </para>
+
+        <para>In some cases the named spatial relationships
+        are insufficient to  provide a desired spatial filter.
+        </para>
 
         <informaltable frame="none" border="0">
           <tgroup cols="1">
@@ -1226,23 +1237,23 @@ gisdb=# SELECT
                 <entry><para><informalfigure float="1" floatstyle="left">
                     <graphic align="left" fileref="images/de9im01.png" />
                   </informalfigure></para><para>For example, consider a linear
-                dataset representing a road network. It may be the task of a
-                GIS analyst to identify all road segments that cross
-                each other, not at a point, but on a line, perhaps invalidating
-                some business rule. In this case, <xref linkend="ST_Crosses" /> does not
-                adequately provide the necessary spatial filter since, for
-                linear features, it returns <varname>true</varname> only where
-                they cross at a point.</para> <para>One two-step solution
-                might be to first perform the actual intersection
-                (<xref linkend="ST_Intersection" />) of pairs of road segments that spatially
-                intersect (<xref linkend="ST_Intersects" />), and then compare the intersection's
-                <xref linkend="ST_GeometryType" /> with '<varname>LINESTRING</varname>' (properly
+                dataset representing a road network. It may be required
+                to identify all road segments that cross
+                each other, not at a point, but in a line (perhaps to validate some business rule).
+                In this case <xref linkend="ST_Crosses" /> does not
+                provide the necessary spatial filter, since for
+                linear features it returns <varname>true</varname> only where they cross at a point.
+                </para>
+                <para>A two-step solution
+                would be to first compute the actual intersection
+                (<xref linkend="ST_Intersection" />) of pairs of road lines that spatially
+                intersect (<xref linkend="ST_Intersects" />), and then check if the intersection's
+                <xref linkend="ST_GeometryType" /> is '<varname>LINESTRING</varname>' (properly
                 dealing with cases that return
                 <varname>GEOMETRYCOLLECTION</varname>s of
                 <varname>[MULTI]POINT</varname>s,
-                <varname>[MULTI]LINESTRING</varname>s, etc.).</para> <para>A
-                more elegant / faster solution may indeed be
-                desirable.</para></entry>
+                <varname>[MULTI]LINESTRING</varname>s, etc.).</para>
+                <para>Clearly, a simpler and faster solution is desirable.</para></entry>
               </row>
             </tbody>
           </tgroup>
@@ -1254,15 +1265,15 @@ gisdb=# SELECT
               <row>
                 <entry><para> <informalfigure float="1" floatstyle="right">
                     <graphic align="right" fileref="images/de9im02.png" />
-                  </informalfigure></para> <para>A second [theoretical]
-                example may be that of a GIS analyst trying to locate all
-                wharfs or docks that intersect a lake's boundary on a line and
-                where only one end of the wharf is up on shore. In other
-                words, where a wharf is within, but not completely within a
-                lake, intersecting the boundary of a lake on a line, and where
-                the wharf's endpoints are both completely within and on the
-                boundary of the lake. The analyst may need to use a
-                combination of spatial predicates to isolate the sought after
+                  </informalfigure></para> <para>A second
+                example is locating
+                wharves that intersect a lake's boundary on a line and
+                where one end of the wharf is up on shore. In other
+                words, where a wharf is within but not completely contained by a
+                lake, intersects the boundary of a lake on a line, and where
+                exactly one of the wharf's endpoints is within or on the
+                boundary of the lake. It is possible to use a
+                combination of spatial predicates to find the required
                 features:</para> <itemizedlist>
                     <listitem>
                       <para><xref linkend="ST_Contains" />(lake, wharf) = TRUE</para>
@@ -1281,8 +1292,7 @@ gisdb=# SELECT
                       <para><xref linkend="ST_NumGeometries" />(<xref linkend="ST_Multi" />(<xref linkend="ST_Intersection" />(<xref linkend="ST_Boundary" />(wharf),
                       <xref linkend="ST_Boundary" />(lake)))) = 1</para>
 
-                      <para>... (needless to say, this could get quite
-                      complicated)</para>
+                      <para>... but needless to say, this is quite complicated.</para>
                     </listitem>
                   </itemizedlist></entry>
               </row>
@@ -1290,8 +1300,8 @@ gisdb=# SELECT
           </tgroup>
         </informaltable>
 
-        <para>So enters the Dimensionally Extended 9 Intersection Model, or
-        DE-9IM for short.</para>
+        <para>These requirements can be met by using the
+        Dimensionally Extended 9-Intersection Model (DE-9IM for short).</para>
 
         <sect4>
           <title>Theory</title>
@@ -1305,6 +1315,11 @@ gisdb=# SELECT
           geometries based on the entries in the resulting 'intersection'
           matrix."</para>
 
+        <para>In the theory of point-set topology,
+        the points in a geometry embedded in 2-dimensional space
+        can be categorized into the following sets:
+        </para>
+
           <glosslist>
             <glossentry>
               <glossterm>Boundary</glossterm>
@@ -1313,9 +1328,9 @@ gisdb=# SELECT
                 <para>The boundary of a geometry is the set of geometries of
                 the next lower dimension. For <varname>POINT</varname>s, which
                 have a dimension of 0, the boundary is the empty set. The
-                boundary of a <varname>LINESTRING</varname> are the two
+                boundary of a <varname>LINESTRING</varname> is the two
                 endpoints. For <varname>POLYGON</varname>s, the boundary is
-                the linework that make up the exterior and interior
+                the linework of the exterior and interior
                 rings.</para>
               </glossdef>
             </glossentry>
@@ -1325,10 +1340,10 @@ gisdb=# SELECT
 
               <glossdef>
                 <para>The interior of a geometry are those points of a
-                geometry that are left when the boundary is removed. For
+                geometry that are not in the boundary. For
                 <varname>POINT</varname>s, the interior is the
-                <varname>POINT</varname> itself. The interior of a
-                <varname>LINESTRING</varname> are the set of real points
+                point itself. The interior of a
+                <varname>LINESTRING</varname> is the set of points
                 between the endpoints. For <varname>POLYGON</varname>s, the
                 interior is the areal surface inside the polygon.</para>
               </glossdef>
@@ -1338,29 +1353,63 @@ gisdb=# SELECT
               <glossterm>Exterior</glossterm>
 
               <glossdef>
-                <para>The exterior of a geometry is the universe, an areal
-                surface, not on the interior or boundary of the
-                geometry.</para>
+                <para>The exterior of a geometry is the rest of the space
+                in which the geometry is embedded;
+                in other words, all points not in the interior or on the boundary of the geometry.
+                It is a 2-dimensional non-closed surface.
+                </para>
               </glossdef>
             </glossentry>
           </glosslist>
 
-          <para>Given geometry <emphasis>a</emphasis>, where the
-          <emphasis>I(a)</emphasis>, <emphasis>B(a)</emphasis>, and
-          <emphasis>E(a)</emphasis> are the <emphasis>Interior</emphasis>,
-          <emphasis>Boundary</emphasis>, and <emphasis>Exterior</emphasis> of
-          a, the mathematical representation of the matrix is:</para>
+        <para>The <ulink url="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</ulink>
+        (DE-9IM) describes the spatial relationship between two geometries
+        by specifying the dimensions of the 9 intersections between the above sets for each geometry.
+        The intersection dimensions can be formally represented
+        in a 3x3 <emphasis role="bold">intersection matrix</emphasis>.
+        </para>
+
+        <para>For a geometry <emphasis>g</emphasis>
+            the <emphasis>Interior</emphasis>, <emphasis>Boundary</emphasis>, and <emphasis>Exterior</emphasis>
+            are denoted using the notation
+          <emphasis>I(g)</emphasis>, <emphasis>B(g)</emphasis>, and
+          <emphasis>E(g)</emphasis>.
+          Also, <emphasis>dim(g)</emphasis> denotes the dimension of
+          <emphasis>g</emphasis> with the domain of
+          <literal>{0,1,2,F}</literal>
+          (as computed by <xref linkend="ST_Dimension" />)
+        </para>
+
+        <itemizedlist spacing="compact">
+        <listitem>
+            <para><literal>0</literal> =&gt; point</para>
+        </listitem>
+
+        <listitem>
+            <para><literal>1</literal> =&gt; line</para>
+        </listitem>
+
+        <listitem>
+            <para><literal>2</literal> =&gt; area</para>
+        </listitem>
+
+        <listitem>
+            <para><literal>F</literal> =&gt; empty set</para>
+        </listitem>
+
+        </itemizedlist>
+
+        <para>
+          Using this notation, the intersection matrix
+          for two geometries <emphasis>a</emphasis> and <emphasis>b</emphasis> is:</para>
 
           <informaltable tabstyle="styledtable">
             <tgroup align="center" cols="4">
               <thead>
                 <row>
                   <entry></entry>
-
                   <entry><emphasis role="bold">Interior</emphasis></entry>
-
                   <entry><emphasis role="bold">Boundary</emphasis></entry>
-
                   <entry><emphasis role="bold">Exterior</emphasis></entry>
                 </row>
               </thead>
@@ -1389,40 +1438,7 @@ gisdb=# SELECT
             </tgroup>
           </informaltable>
 
-          <para>Where <emphasis>dim(a)</emphasis> is the dimension of
-          <emphasis>a</emphasis> as specified by
-          <xref linkend="ST_Dimension" /> but has the domain of
-          <literal>{0,1,2,T,F,*}</literal></para>
-
-          <itemizedlist spacing="compact">
-            <listitem>
-              <para><literal>0</literal> =&gt; point</para>
-            </listitem>
-
-            <listitem>
-              <para><literal>1</literal> =&gt; line</para>
-            </listitem>
-
-            <listitem>
-              <para><literal>2</literal> =&gt; area</para>
-            </listitem>
-
-            <listitem>
-              <para><literal>T</literal> =&gt;
-              <literal>{0,1,2}</literal></para>
-            </listitem>
-
-            <listitem>
-              <para><literal>F</literal> =&gt; empty set</para>
-            </listitem>
-
-            <listitem>
-              <para><literal>*</literal> =&gt; don't care</para>
-            </listitem>
-          </itemizedlist>
-
-          <para>Visually, for two overlapping polygonal geometries, this looks
-          like:</para>
+         <para>Visually, for two overlapping polygonal geometries, this looks like:</para>
 
           <informaltable frame="none" border="0">
             <tgroup cols="2">
@@ -1538,31 +1554,64 @@ gisdb=# SELECT
             </tgroup>
           </informaltable>
 
-          <para>Read from left to right and from top to bottom, the dimensional matrix is
-          represented, '<emphasis role="bold">212101212</emphasis>'.</para>
+          <para>Reading from left to right and from top to bottom, the intersection matrix is
+          represented as '<emphasis role="bold">212101212</emphasis>'.</para>
 
-          <para>A relate matrix that would therefore represent our first
-          example of two lines that intersect on a line would be: '<emphasis
-          role="bold">1*1***1**</emphasis>'</para>
+          <para>
+          PostGIS provides the <xref linkend="ST_Relate" /> function
+          to compute the intersection matrix for two geometries:
+          </para>
 
-          <programlisting>-- Identify road segments that cross on a line
+          <programlisting>
+SELECT ST_Relate( 'LINESTRING (1 1, 5 5)',
+                  'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );
+st_relate
+-----------
+1010F0212
+</programlisting>
+
+          <para>
+          To specify more general spatial relationships,
+          an <emphasis role="bold">intersection matrix pattern</emphasis> is used.
+          This is a matrix represention augmented with the additional symbols
+          <literal>{T,*}</literal>:
+            </para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><literal>T</literal> =&gt;
+              intersection dimension is non-empty; i.e. is in <literal>{0,1,2}</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><literal>*</literal> =&gt; don't care</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Using intersection matrix patterns and the 3-parameter variant of <xref linkend="ST_Relate" />,
+          specific spatial relationships can be evaluated in a more succinct way.
+          For the first example above, an intersection matrix pattern specifying
+          two lines intersecting in a line is
+          '<emphasis role="bold">1*1***1**</emphasis>':</para>
+
+          <programlisting>-- Find road segments that cross on a line
 SELECT a.id
 FROM roads a, roads b
 WHERE a.id != b.id
 AND a.geom &amp;&amp; b.geom
 AND ST_Relate(a.geom, b.geom, '1*1***1**');</programlisting>
 
-          <para>A relate matrix that represents the second example of wharfs
-          partly on the lake's shoreline would be '<emphasis
-          role="bold">102101FF2</emphasis>'</para>
+          <para>For the second example, an intersection matrix pattern
+          specifying a line partly inside and partly outside a polygon is
+          '<emphasis role="bold">102101FF2</emphasis>':</para>
 
-          <programlisting>-- Identify wharfs partly on a lake's shoreline
+          <programlisting>-- Find wharves partly on a lake's shoreline
 SELECT a.lake_id, b.wharf_id
 FROM lakes a, wharfs b
 WHERE a.geom &amp;&amp; b.geom
 AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 
-          <para>For more information or reading, see:</para>
+          <para>For more information, refer to:</para>
 
           <itemizedlist spacing="compact">
             <listitem>
