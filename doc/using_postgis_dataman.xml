@@ -1636,24 +1636,23 @@ AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 
   </sect2>
 
-  <sect2 id="loading_geometry_data">
-	<title>Loading GIS (Vector) Data</title>
+  <sect2 id="loading-data">
+	<title>Loading Spatial Data</title>
 
-	<para>Once you have created a spatial table, you are ready to upload GIS
-	data to the database. Currently, there are two ways to get data into a
+	<para>Once you have created a spatial table, you are ready to upload spatial
+	data to the database. There are two built-in ways to get spatial data into a
 	PostGIS/PostgreSQL database: using formatted SQL statements or using the
-	Shape file loader/dumper.</para>
+	Shapefile loader.</para>
 
 	<sect3>
-	  <title>Loading Data Using SQL</title>
+	  <title>Using SQL to Load Data</title>
 
-	  <para>If you can convert your data to a text representation, then using
-	  formatted SQL might be the easiest way to get your data into PostGIS. As
-	  with Oracle and other SQL databases, data can be bulk loaded by piping a
-	  large text file full of SQL "INSERT" statements into the SQL terminal
-	  monitor.</para>
+	  <para>If spatial data can be converted to a text representation (as either WKT or WKB), then using
+	  SQL might be the easiest way to get data into PostGIS.
+      Data can be bulk-loaded into PostGIS/PostgreSQL by loading a
+	  text file of SQL <code>INSERT</code> statements using the <code>psql</code> SQL utility.</para>
 
-	  <para>A data upload file (<filename>roads.sql</filename> for example)
+	  <para>A SQL load file (<filename>roads.sql</filename> for example)
 	  might look like this:</para>
 
 	  <programlisting>BEGIN;
@@ -1671,22 +1670,22 @@ INSERT INTO roads (road_id, roads_geom, road_name)
   VALUES (6,'LINESTRING(198231 263418,198213 268322)','Dave Cres');
 COMMIT;</programlisting>
 
-	  <para>The data file can be piped into PostgreSQL very easily using the
-	  "psql" SQL terminal monitor:</para>
+	  <para>The SQL file can be loaded into PostgreSQL using <code>psql</code>:</para>
 
 	  <programlisting>psql -d [database] -f roads.sql</programlisting>
 	</sect3>
 
 <sect3 id="shp2pgsql_usage">
-  <title>shp2pgsql: Using the ESRI Shapefile Loader</title>
+  <title>Using the Shapefile Loader</title>
 
   <para>
-    The <filename>shp2pgsql</filename> data loader converts ESRI Shape files into SQL suitable for
-    insertion into a PostGIS/PostgreSQL database either in geometry or geography format. The loader has several operating modes
-    distinguished by command line flags:
+    The <filename>shp2pgsql</filename> data loader converts Shapefiles into SQL suitable for
+    insertion into a PostGIS/PostgreSQL database either in geometry or geography format.
+    The loader has several operating modes selected by command line flags.
   </para>
-  <para>In addition to the shp2pgsql command-line loader, there is an <filename>shp2pgsql-gui</filename> graphical interface with most
-	of the options as the command-line loader, but may be easier to use for one-off non-scripted loading or if you are new to PostGIS.
+  <para>There is also a <filename>shp2pgsql-gui</filename> graphical interface with most
+	of the options as the command-line loader.
+    This may be easier to use for one-off non-scripted loading or if you are new to PostGIS.
 	It can also be configured as a plugin to PgAdminIII.
 	</para>
 
@@ -1700,7 +1699,7 @@ COMMIT;</programlisting>
               <term>-c</term>
               <listitem>
                 <para>
-                  Creates a new table and populates it from the shapefile. <emphasis>This is the
+                  Creates a new table and populates it from the Shapefile. <emphasis>This is the
                   default mode.</emphasis>
                 </para>
               </listitem>
@@ -1710,7 +1709,7 @@ COMMIT;</programlisting>
               <term>-a</term>
               <listitem>
                 <para>
-                  Appends data from the Shape file into the database table. Note that to use this
+                  Appends data from the Shapefile into the database table. Note that to use this
                   option to load multiple files, the files must have the same attributes and same
                   data types.
                 </para>
@@ -1721,8 +1720,7 @@ COMMIT;</programlisting>
               <term>-d</term>
               <listitem>
                 <para>
-                  Drops the database table before creating a new table with the data in the Shape
-                  file.
+                  Drops the database table before creating a new table with the data in the Shapefile.
                 </para>
               </listitem>
             </varlistentry>
@@ -1925,7 +1923,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
   </variablelist>
 
   <para>
-    An example session using the loader to create an input file and uploading it might look like
+    An example session using the loader to create an input file and loading it might look like
     this:
   </para>
 
@@ -1933,28 +1931,28 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
 # psql -d roadsdb -f roads.sql</programlisting>
 
   <para>
-    A conversion and upload can be done all in one step using UNIX pipes:
+    A conversion and load can be done in one step using UNIX pipes:
   </para>
 
   <programlisting># shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb</programlisting>
 </sect3>
   </sect2>
 
-  <sect2 id="retrieving_vector-data">
-	<title>Retrieving GIS Data</title>
+  <sect2 id="extracting-data">
+	<title>Extracting Spatial Data</title>
 
-	<para>Data can be extracted from the database using either SQL or the
-	Shape file loader/dumper. In the section on SQL we will discuss some of
-	the operators available to do comparisons and queries on spatial
-	tables.</para>
+	<para>Spatial data can be extracted from the database using either SQL or the
+	Shapefile dumper. The section on SQL presents some of
+	the functions available to do comparisons and queries on spatial tables.
+    </para>
 
 	<sect3>
-	  <title>Using SQL to Retrieve Data</title>
+	  <title>Using SQL to Extract Data</title>
 
-	  <para>The most straightforward means of pulling data out of the
-        database is to use a SQL select query to reduce the number of RECORDS and COLUMNS returned
-        and dump the resulting columns
-        into a parsable text file:</para>
+	  <para>The most straightforward way of extracting spatial data out of the
+        database is to use a SQL <code>SELECT</code> query
+        to define the data set to be extracted
+        and dump the resulting columns into a parsable text file:</para>
 
 	  <programlisting>db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;
 
@@ -1969,11 +1967,11 @@ road_id | geom                                    | road_name
 	  7 | LINESTRING(218421 284121,224123 241231) | Chris Way
 (6 rows)</programlisting>
 
-	  <para>However, there will be times when some kind of restriction is
-	  necessary to cut down the number of fields returned. In the case of
-	  attribute-based restrictions, just use the same SQL syntax as normal
+	  <para>There will be times when some kind of restriction is
+	  necessary to cut down the number of records returned. In the case of
+	  attribute-based restrictions, use the same SQL syntax as used
 	  with a non-spatial table. In the case of spatial restrictions, the
-	  following operators are available/useful:</para>
+	  following functions are useful:</para>
 
 	  <variablelist>
 		<varlistentry>
@@ -1992,7 +1990,6 @@ road_id | geom                                    | road_name
 			geometrically identical. For example, if 'POLYGON((0 0,1 1,1 0,0
 			0))' is the same as 'POLYGON((0 0,1 1,1 0,0 0))' (it is).
 			</para>
-			<para>Note: before PostGIS 2.4 this compared only boxes of geometries.</para>
 		  </listitem>
 		</varlistentry>
 	  </variablelist>
@@ -2038,7 +2035,7 @@ WHERE
 	</sect3>
 
 	<sect3>
-	  <title>Using the Dumper</title>
+	  <title>Using the Shapefile Dumper</title>
 
 	  <para>The <filename>pgsql2shp</filename> table dumper connects directly
 	  to the database and converts a table (possibly defined by a query) into
@@ -2135,21 +2132,22 @@ WHERE
   </sect2>
 
   <sect2>
-	<title>Building Indexes</title>
+	<title>Building Spatial Indexes</title>
 
-	<para>Indexes are what make using a spatial database for large data sets
+	<para>Indexes make using a spatial database for large data sets
 	possible. Without indexing, any search for a feature would require a
-	"sequential scan" of every record in the database. Indexing speeds up
+	sequential scan of every record in the database. Indexing speeds up
 	searching by organizing the data into a search tree which can be quickly
-	traversed to find a particular record. PostgreSQL supports three kinds of
-	indexes by default: B-Tree indexes, SP-GiST and GiST indexes.</para>
+	traversed to find a particular record. PostgreSQL supports sevaral kinds of
+	spatial indexes: B-Tree indexes, GiST, BRIN and SP-GiST indexes.</para>
 
 	<itemizedlist>
 	  <listitem>
 		<para>B-Trees are used for data which can be sorted along one axis;
 		for example, numbers, letters, dates. Spatial data can be sorted along
-		a space-filling curve, Z-order curve or Hilbert curve. This representation
-		however does not allow speeding up common operations. </para>
+		a space-filling curve, Z-order curve or Hilbert curve.
+        However, this kind of index does not allow speeding up spatial operations
+        which involve comparisons of spatial extent. </para>
 	  </listitem>
 
 	  <listitem>

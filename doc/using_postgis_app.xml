@@ -192,7 +192,7 @@ END</programlisting>
 
         <qandaentry>
           <question>
-            <para>The FILTER I use for my Shape files is not working for my
+            <para>The FILTER I use for my Shapefiles is not working for my
             PostGIS table of the same data.</para>
           </question>
 
@@ -207,13 +207,13 @@ END</programlisting>
 
         <qandaentry>
           <question>
-            <para>My PostGIS layer draws much slower than my Shape file layer,
+            <para>My PostGIS layer draws much slower than my Shapefile layer,
             is this normal?</para>
           </question>
 
           <answer>
             <para>In general, the more features you are drawing into a given map,
-            the more likely it is that PostGIS will be slower than Shape files.
+            the more likely it is that PostGIS will be slower than Shapefiles.
             For maps with relatively few features (100s), PostGIS will often be faster.
             For maps with high feature density (1000s), PostGIS will always be slower.
             </para>
