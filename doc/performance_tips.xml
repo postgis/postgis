@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sect1 id="performance_tips">
-  <title>Performance tips</title>
+  <title>Performance Tips</title>
 
   <sect2 id="small_tables_large_objects">
     <title>Small tables of large geometries</title>

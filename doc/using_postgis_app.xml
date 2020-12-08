@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sect1>
-  <title id="using_postgis_applications">Using PostGIS: Building Applications</title>
+  <title id="using_postgis_applications">Building Applications</title>
   <sect2 id="Using_MapServer">
     <title>Using MapServer</title>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sect1 id="using_postgis_dbmanagement">
-  <title>Using PostGIS: Data Management and Queries</title>
+  <title>Data Management and Queries</title>
 
   <sect2 id="RefObject">
 	<title>GIS Objects</title>
@@ -1484,19 +1484,19 @@ gisdb=# SELECT
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im05.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( I(a) ∩ I(b) ) =
                             </emphasis><emphasis
                             role="bold">2</emphasis></para></entry>
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im06.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( I(a) ∩ B(b)  =
                             </emphasis><emphasis
                             role="bold">1</emphasis></para></entry>
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im07.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( I(a) ∩ E(b) ) =
                             </emphasis><emphasis
                             role="bold">2</emphasis></para></entry>
                           </row>
@@ -1507,19 +1507,19 @@ gisdb=# SELECT
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im08.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( B(a) ∩ I(b) ) =
                             </emphasis><emphasis
                             role="bold">1</emphasis></para></entry>
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im09.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( B(a) ∩ B(b) ) =
                             </emphasis><emphasis
                             role="bold">0</emphasis></para></entry>
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im10.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( B(a) ∩ E(b) ) =
                             </emphasis><emphasis
                             role="bold">1</emphasis></para></entry>
                           </row>
@@ -1530,19 +1530,19 @@ gisdb=# SELECT
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im11.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( E(a) ∩ I(b) ) =
                             </emphasis><emphasis
                             role="bold">2</emphasis></para></entry>
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im12.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( E(a) ∩ B(b) ) =
                             </emphasis><emphasis
                             role="bold">1</emphasis></para></entry>
 
                             <entry><para><informalfigure>
                                 <graphic fileref="images/de9im13.png" />
-                              </informalfigure></para><para><emphasis>dim(...) =
+                              </informalfigure></para><para><emphasis>dim( E(a) ∩ E(b)  =
                             </emphasis><emphasis
                             role="bold">2</emphasis></para></entry>
                           </row>
@@ -1554,12 +1554,12 @@ gisdb=# SELECT
             </tgroup>
           </informaltable>
 
-          <para>Reading from left to right and from top to bottom, the intersection matrix is
-          represented as '<emphasis role="bold">212101212</emphasis>'.</para>
+          <para>Reading from left to right and top to bottom, the intersection matrix is
+          represented as the text string '<emphasis role="bold">212101212</emphasis>'.</para>
 
           <para>
           PostGIS provides the <xref linkend="ST_Relate" /> function
-          to compute the intersection matrix for two geometries:
+          to compute the intersection matrix:
           </para>
 
           <programlisting>
@@ -1571,9 +1571,9 @@ st_relate
 </programlisting>
 
           <para>
-          To specify more general spatial relationships,
+          To specify fully general spatial relationships,
           an <emphasis role="bold">intersection matrix pattern</emphasis> is used.
-          This is a matrix represention augmented with the additional symbols
+          This is a matrix representation augmented with the additional symbols
           <literal>{T,*}</literal>:
             </para>
 
@@ -1590,18 +1590,18 @@ st_relate
 
           <para>Using intersection matrix patterns and the 3-parameter variant of <xref linkend="ST_Relate" />,
           specific spatial relationships can be evaluated in a more succinct way.
-          For the first example above, an intersection matrix pattern specifying
+          For the first example above, the intersection matrix pattern specifying
           two lines intersecting in a line is
           '<emphasis role="bold">1*1***1**</emphasis>':</para>
 
-          <programlisting>-- Find road segments that cross on a line
+          <programlisting>-- Find road segments that intersect in a line
 SELECT a.id
 FROM roads a, roads b
 WHERE a.id != b.id
-AND a.geom &amp;&amp; b.geom
-AND ST_Relate(a.geom, b.geom, '1*1***1**');</programlisting>
+      AND a.geom &amp;&amp; b.geom
+      AND ST_Relate(a.geom, b.geom, '1*1***1**');</programlisting>
 
-          <para>For the second example, an intersection matrix pattern
+          <para>For the second example, the intersection matrix pattern
           specifying a line partly inside and partly outside a polygon is
           '<emphasis role="bold">102101FF2</emphasis>':</para>
 
@@ -1609,7 +1609,7 @@ AND ST_Relate(a.geom, b.geom, '1*1***1**');</programlisting>
 SELECT a.lake_id, b.wharf_id
 FROM lakes a, wharfs b
 WHERE a.geom &amp;&amp; b.geom
-AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
+      AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 
           <para>For more information, refer to:</para>
 
