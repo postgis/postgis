@@ -1512,7 +1512,7 @@ FF1FF0102
 	<refnamediv>
 		<refname>ST_RelateMatch</refname>
 
-		<refpurpose>Returns true if a DE-9IM Intersection Matrix value matches an Intersection Matrix pattern
+		<refpurpose>Tests if a DE-9IM Intersection Matrix matches an Intersection Matrix pattern
         </refpurpose>
 	</refnamediv>
 

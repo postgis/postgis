@@ -17,7 +17,7 @@
       information).</para>
 
       <para>The problem appears if you happen to have a table with rather
-      large geometries, but not too manyrows of them (like a table containing
+      large geometries, but not too many rows of them (like a table containing
       the boundaries of all European countries in high resolution). Then the
       table itself is small, but it uses lots of TOAST space. In our example
       case, the table itself had about 80 rows and used only 3 data pages, but

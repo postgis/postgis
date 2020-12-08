@@ -3,12 +3,12 @@
   <title>PostGIS Usage</title>
 
   &using_postgis_dataman;
+  &performance_tips;
   &using_postgis_app;
   &using_raster_dataman;
   &extras_topology;
   &extras_address_standardizer;
   &extras;
-  &performance_tips;
 
   <!-- &extras_historytable; why not here/disabled ? -->
   <!-- &extras_tigergeocoder; is in extras.xml -->

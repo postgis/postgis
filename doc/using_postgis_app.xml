@@ -5,7 +5,7 @@
     <title>Using MapServer</title>
 
     <para>The Minnesota MapServer is an internet web-mapping server which
-    conforms to the OpenGIS Web Mapping Server specification.</para>
+    conforms to the OpenGIS Web Map Service specification.</para>
 
     <itemizedlist>
       <listitem>
@@ -14,7 +14,7 @@
       </listitem>
 
       <listitem>
-        <para>The OpenGIS Web Map Specification is at <ulink
+        <para>The OpenGIS Web Map Service specification is at <ulink
         url="http://www.opengeospatial.org/standards/wms">http://www.opengeospatial.org/standards/wms</ulink>.</para>
       </listitem>
     </itemizedlist>
@@ -22,9 +22,9 @@
     <sect3>
       <title>Basic Usage</title>
 
-      <para>To use PostGIS with MapServer, you will need to know about how to
+      <para>To use PostGIS with MapServer, you need to know how to
       configure MapServer, which is beyond the scope of this documentation.
-      This section will cover specific PostGIS issues and configuration
+      This section covers specific PostGIS issues and configuration
       details.</para>
 
       <para>To use PostGIS with MapServer, you will need:</para>
@@ -40,7 +40,7 @@
       </itemizedlist>
 
       <para>MapServer accesses PostGIS/PostgreSQL data like any other
-      PostgreSQL client -- using the <filename>libpq</filename> interface. This means that
+      PostgreSQL client, using the <filename>libpq</filename> interface. This means that
       MapServer can be installed on any machine with network access to the
       PostGIS server, and use PostGIS as a source of data. The faster the connection
       between the systems, the better.</para>
