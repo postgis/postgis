@@ -665,9 +665,9 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	</sect3>
 
 	<sect3 id="geometry_columns">
-	  <title>The GEOMETRY_COLUMNS VIEW</title>
+	  <title>The GEOMETRY_COLUMNS View</title>
 
-	  <para><varname>GEOMETRY_COLUMNS</varname> is a view reading from database system catalogs.
+	  <para><varname>GEOMETRY_COLUMNS</varname> is a view reading from database system catalog tables.
 	  Its structure is as follows:</para>
 
 	  <programlisting>\d geometry_columns</programlisting>
@@ -758,7 +758,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	</sect3>
 
 	  <sect3 id="Manual_Register_Spatial_Column">
-		<title>Manually Registering Geometry Columns in geometry_columns</title>
+		<title>Manually Registering Geometry Columns</title>
 
 		<para>Two of the cases where you may need this are the case of SQL Views and bulk inserts.  For bulk insert case, you can correct the registration in the geometry_columns table
 		by constraining the column or doing an alter table.  For views, you could expose using a CAST operation.
@@ -857,7 +857,7 @@ but the constraint based one does not.</para>
  vw_pois_ny_parks | geom_2160         |    0 | GEOMETRY</screen>
 
 <para>This may change in future versions of PostGIS, but for now
-To force the constraint based view column to register correctly, we need to do this:</para>
+to force the constraint-based view column to register correctly, you need to do this:</para>
 <programlisting>DROP VIEW vw_pois_ny_parks;
 CREATE VIEW vw_pois_ny_parks AS
 SELECT gid, poi_name, cat,
@@ -875,7 +875,7 @@ SELECT f_table_name, f_geometry_column, srid, type
  </sect3>
 
 	<sect3 id="OGC_Validity">
-	  <title>Ensuring OpenGIS compliancy of geometries</title>
+	  <title>Ensuring Geometry is OpenGIS Compliant</title>
 
 	  <para>PostGIS is compliant with the Open Geospatial Consortium’s (OGC)
 	  OpenGIS Specifications.  As such, many PostGIS methods require, or more
@@ -894,7 +894,7 @@ SELECT f_table_name, f_geometry_column, srid, type
 	  geometric class includes specific conditions that further detail geometric
 	  simplicity and validity.</para>
 
-	  <para>A <varname>POINT</varname> is inheritably <emphasis>simple</emphasis>
+	  <para>A <varname>POINT</varname> is inherently <emphasis>simple</emphasis>
 	  as a 0-dimensional geometry object.</para>
 
 	  <para><varname>MULTIPOINT</varname>s are <emphasis>simple</emphasis> if
@@ -1625,9 +1625,6 @@ WHERE a.geom &amp;&amp; b.geom
             </listitem>
             <listitem>
               <para><ulink url="http://docs.geotools.org/latest/userguide/library/jts/dim9.html">GeoTools: Point Set Theory and the DE-9IM Matrix</ulink></para>
-            </listitem>
-            <listitem>
-              <para><emphasis>Encyclopedia of GIS</emphasis> By Hui Xiong</para>
             </listitem>
           </itemizedlist>
 
