@@ -7,6 +7,7 @@ Only tickets not included in 3.1.0beta1
            to GEOS (Sandro Santilli)
   - #4815, Fix GEOS conversion of POINT EMPTY to retain type
            (Sandro Santilli)
+  - #4813, ST_MakeValid removing NaN coordinates (Sandro Santilli)
 
 PostGIS 3.1.0beta1
 2020/12/09
@@ -30,6 +31,7 @@ Only tickets not included in 3.1.0alpha3
            (Darafei Praliaskouski)
   - Fix axis order issue with urn:ogc:def:crs:EPSG in ST_GeomFromGML()
            (Even Roualt)
+
 
 PostGIS 3.1.0alpha3
 2020/11/19

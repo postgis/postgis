@@ -22,6 +22,9 @@
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
+/*#define POSTGIS_DEBUG_LEVEL 4*/
+
 #include "liblwgeom.h"
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
@@ -31,7 +34,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-/* #define POSTGIS_DEBUG_LEVEL 4 */
 /* #define PARANOIA_LEVEL 2 */
 #undef LWGEOM_PROFILE_MAKEVALID
 
@@ -116,6 +118,36 @@ LWGEOM* lwline_make_geos_friendly(LWLINE* line);
 LWGEOM* lwpoly_make_geos_friendly(LWPOLY* poly);
 POINTARRAY* ring_make_geos_friendly(POINTARRAY* ring);
 
+static void
+ptarray_strip_nan_coords_in_place(POINTARRAY *pa)
+{
+	uint32_t i, j = 0;
+	POINT4D *p, *np;
+	int ndims = FLAGS_NDIMS(pa->flags);
+	for ( i = 0; i < pa->npoints; i++ )
+	{
+		int isnan = 0;
+		p = (POINT4D *)(getPoint_internal(pa, i));
+		if ( isnan(p->x) || isnan(p->y) ) isnan = 1;
+		else if (ndims > 2 && isnan(p->z) ) isnan = 1;
+		else if (ndims > 3 && isnan(p->m) ) isnan = 1;
+		if ( isnan ) continue;
+
+		np = (POINT4D *)(getPoint_internal(pa, j++));
+		if ( np != p ) {
+			np->x = p->x;
+			np->y = p->y;
+			if (ndims > 2)
+				np->z = p->z;
+			if (ndims > 3)
+				np->m = p->m;
+		}
+	}
+	pa->npoints = j;
+}
+
+
+
 /*
  * Ensure the geometry is "structurally" valid
  * (enough for GEOS to accept it)
@@ -129,10 +161,8 @@ lwgeom_make_geos_friendly(LWGEOM* geom)
 	switch (geom->type)
 	{
 	case POINTTYPE:
-	case MULTIPOINTTYPE:
-		/* a point is always valid */
+		ptarray_strip_nan_coords_in_place(((LWPOINT*)geom)->point);
 		return geom;
-		break;
 
 	case LINETYPE:
 		/* lines need at least 2 points */
@@ -147,6 +177,7 @@ lwgeom_make_geos_friendly(LWGEOM* geom)
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
+	case MULTIPOINTTYPE:
 		return lwcollection_make_geos_friendly((LWCOLLECTION*)geom);
 		break;
 
@@ -170,8 +201,7 @@ lwgeom_make_geos_friendly(LWGEOM* geom)
  * constructed POINTARRAY.
  * TODO: move in ptarray.c
  */
-POINTARRAY* ptarray_close2d(POINTARRAY* ring);
-POINTARRAY*
+static POINTARRAY*
 ptarray_close2d(POINTARRAY* ring)
 {
 	POINTARRAY* newring;
@@ -192,6 +222,8 @@ ring_make_geos_friendly(POINTARRAY* ring)
 {
 	POINTARRAY* closedring;
 	POINTARRAY* ring_in = ring;
+
+	ptarray_strip_nan_coords_in_place(ring_in);
 
 	/* close the ring if not already closed (2d only) */
 	closedring = ptarray_close2d(ring);
@@ -258,6 +290,8 @@ LWGEOM*
 lwline_make_geos_friendly(LWLINE* line)
 {
 	LWGEOM* ret;
+
+	ptarray_strip_nan_coords_in_place(line->points);
 
 	if (line->points->npoints == 1) /* 0 is fine, 2 is fine */
 	{
@@ -858,6 +892,8 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	GEOSGeometry* geosout;
 	LWGEOM* lwgeom_out;
 
+	LWDEBUG(1, "lwgeom_make_valid enter");
+
 	is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
 	/*
@@ -867,7 +903,9 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
-	lwgeom_out = lwgeom_in;
+	lwgeom_out = lwgeom_make_geos_friendly(lwgeom_in);
+	if (!lwgeom_out) lwerror("Could not make a geos friendly geometry out of input");
+
 	geosgeom = LWGEOM2GEOS(lwgeom_out, 1);
 	if (!geosgeom)
 	{
@@ -876,8 +914,6 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 			 " - will try cleaning that up first",
 			 lwgeom_geos_errmsg);
 
-		lwgeom_out = lwgeom_make_geos_friendly(lwgeom_out);
-		if (!lwgeom_out) lwerror("Could not make a valid geometry out of input");
 
 		/* try again as we did cleanup now */
 		/* TODO: invoke LWGEOM2GEOS directly with autoclean ? */

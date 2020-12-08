@@ -27,15 +27,16 @@
 #include "fmgr.h"
 #include "funcapi.h"
 
+
 #include "../postgis_config.h"
+/*#define POSTGIS_DEBUG_LEVEL 4*/
+
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
 #include <string.h>
 #include <assert.h>
-
-/* #define POSTGIS_DEBUG_LEVEL 4 */
 
 Datum ST_MakeValid(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_MakeValid);
@@ -46,6 +47,8 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 
 	in = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom_in = lwgeom_from_gserialized(in);
+
+	POSTGIS_DEBUG(1, "ST_MakeValid enter");
 
 	switch ( lwgeom_in->type )
 	{
