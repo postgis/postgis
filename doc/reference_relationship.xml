@@ -1403,7 +1403,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
             which is not evaluated by any named predicate.
             </para>
             <para>
-             For more information refer to <xref linkend="DE-9IM" />.
+             For more information refer to <xref linkend="eval_spatial_rel" />.
             </para>
 
 			<para><emphasis role="bold">Variant 1:</emphasis> Tests if two geometries are spatially related
@@ -1498,7 +1498,7 @@ FF1FF0102
 		<title>See Also</title>
 
 		<para>
-            <xref linkend="DE-9IM" />, <xref linkend="ST_RelateMatch" />,
+            <xref linkend="eval_spatial_rel" />, <xref linkend="ST_RelateMatch" />,
             <xref linkend="ST_Contains" />, <xref linkend="ST_ContainsProperly" />,
             <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
             <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
@@ -1536,7 +1536,7 @@ FF1FF0102
         Intersection matrix values can be computed by <xref linkend="ST_Relate" />.
         </para>
         <para>
-        For more information refer to <xref linkend="DE-9IM" />.
+        For more information refer to <xref linkend="eval_spatial_rel" />.
         </para>
 		<para>Performed by the GEOS module</para>
 
@@ -1587,7 +1587,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
 	<!-- Optionally add a "See Also" section -->
 	<refsection>
 		<title>See Also</title>
-		<para><xref linkend="DE-9IM" />, <xref linkend="ST_Relate" /></para>
+		<para><xref linkend="eval_spatial_rel" />, <xref linkend="ST_Relate" /></para>
 	</refsection>
 </refentry>
 

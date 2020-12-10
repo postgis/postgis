@@ -3,6 +3,7 @@
   <title>PostGIS Usage</title>
 
   &using_postgis_dataman;
+  &using_postgis_query;
   &performance_tips;
   &using_postgis_app;
   &using_raster_dataman;

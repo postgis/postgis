@@ -155,6 +155,7 @@ XML_SOURCES = \
 	reporting.xml \
 	using_postgis_app.xml \
 	using_postgis_dataman.xml \
+	using_postgis_query.xml \
 	using_raster_dataman.xml
 
 XML_GENERATED_SOURCES = \
