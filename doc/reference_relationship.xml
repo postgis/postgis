@@ -2073,7 +2073,7 @@ ST_DWithin(
 				<parameter>distance_meters</parameter></paramdef>
 
 				<paramdef choice="opt"><type>boolean </type>
-				<parameter>use_spheroid</parameter></paramdef>
+				<parameter>use_spheroid = true</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -2085,27 +2085,27 @@ ST_DWithin(
 
 		<para>For <type>geometry</type>: The distance is specified in units defined by the
 		spatial reference system of the geometries.  For this function to make
-		sense, the source geometries must both be of the same coordinate projection,
-		having the same SRID.</para>
+		sense, the source geometries must be in the same coordinate system
+		(have the same SRID).</para>
 
-		<para>For <type>geography</type> units are in meters and measurement is
-		defaulted to <varname>use_spheroid</varname>=true, for faster check, <varname>use_spheroid</varname>=false to measure along sphere.
+		<para>For <type>geography</type>: units are in meters and distance measurement
+		defaults to <varname>use_spheroid</varname>=true.
+        For faster evaluation use <varname>use_spheroid</varname>=false to measure on the sphere.
 		</para>
 
+		<note><para>Use <xref linkend="ST_3DDWithin"/> for 3D geometries.</para></note>
+
 		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
+		  <para>This function call includes a bounding box
+		  comparison that makes use of any indexes that are available on
 		  the geometries.</para>
 		</note>
 
 		<note>
 		  <para>Prior to 1.3, ST_Expand was commonly used in conjunction with &amp;&amp; and ST_Distance to
-		  achieve the same effect and in pre-1.3.4 this function was basically short-hand for that construct.
-		  From 1.3.4, ST_DWithin uses a more short-circuit distance function which should make it more efficient
-		  than prior versions for larger buffer regions.</para>
+		  test for distance, and in pre-1.3.4 this function used that logic.
+		  From 1.3.4, ST_DWithin uses a faster short-circuit distance function.</para>
 		</note>
-
-		<note><para>Use ST_3DDWithin if you have 3D geometries.</para></note>
 
 		<para>&sfs_compliant;</para>
 		<para>Availability: 1.5.0 support for geography was introduced</para>
@@ -2186,10 +2186,10 @@ SELECT b.tower_id, b.geom
 			circle with center <varname>center_x</varname>,<varname>center_y</varname>
             and radius <varname>radius</varname>.
         </para>
-		<warning><para>Does use spatial indexes. Use <xref linkend="ST_DWithin" /> instead.</para></warning>
+		<warning><para>Does not use spatial indexes. Use <xref linkend="ST_DWithin" /> instead.</para></warning>
 
 		<para>Availability: 1.2</para>
-		<para>Changed: 2.2.0 In prior versions this used to be called ST_Point_Inside_Circle</para>
+		<para>Changed: 2.2.0 In prior versions this was called ST_Point_Inside_Circle</para>
 	  </refsection>
 
 
