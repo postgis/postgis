@@ -532,7 +532,7 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 		{
 			GEOSGeometry* g;
 
-			if (lwgeom_is_empty(lwc->geoms[i])) continue;
+			/* if (lwgeom_is_empty(lwc->geoms[i])) continue; */
 
 			g = LWGEOM2GEOS(lwc->geoms[i], 0);
 			if (!g)
