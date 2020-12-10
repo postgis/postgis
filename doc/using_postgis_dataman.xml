@@ -541,30 +541,42 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	<sect3 id="spatial_ref_sys">
 	  <title>The SPATIAL_REF_SYS Table and Spatial Reference Systems</title>
 
-	  <para>The spatial_ref_sys table is a PostGIS included and OGC compliant database table that lists over 3000
-			known <ulink url="http://www.sharpgis.net/post/2007/05/Spatial-references2c-coordinate-systems2c-projections2c-datums2c-ellipsoids-e28093-confusing.aspx">spatial reference systems</ulink>
-			and details needed to transform/reproject between them.</para>
+	<para>The <varname>SPATIAL_REF_SYS</varname> table used by PostGIS
+    is an OGC-compliant database table that lists over 3000
+	known <ulink url="https://en.wikipedia.org/wiki/Spatial_reference_system">spatial reference systems</ulink>
+	and details needed to transform (reproject) between them.</para>
 
-	  <para>Although the PostGIS spatial_ref_sys table contains over 3000 of the more commonly used spatial reference system definitions that can be handled by the proj library, it does not contain all known to man and you can define your own custom projection if you are familiar with proj4 constructs.  Keep in mind that most spatial reference systems are regional and have no meaning when used outside of the bounds they were intended for.</para>
+    <para>The PostGIS <varname>SPATIAL_REF_SYS</varname> table contains over 3000 of
+    the most common spatial reference system definitions that are handled by the
+    <ulink url="https://proj.org">PROJ</ulink> projection library.
+    But there are many coordinate systems that it does not contain.
+    You can define your own custom spatial reference system if you are familiar with PROJ constructs.
+    Keep in mind that most spatial reference systems are regional
+    and have no meaning when used outside of the bounds they were intended for.</para>
 
-	  <para>An excellent resource for finding spatial reference systems not defined in the core set is <ulink url="http://spatialreference.org/">http://spatialreference.org/</ulink></para>
+    <para>A resource for finding spatial reference systems not defined in the core set is <ulink url="http://spatialreference.org/">http://spatialreference.org/</ulink></para>
 
-	  <para>Some of the more commonly used spatial reference systems are: <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>,
+	  <para>Some commonly used spatial reference systems are:
+            <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>,
 			<ulink url="http://spatialreference.org/ref/epsg/4269/">4269 - NAD 83 Long Lat</ulink>,
 			<ulink url="http://spatialreference.org/ref/epsg/3395/">3395 - WGS 84 World Mercator</ulink>,
 			<ulink url="http://spatialreference.org/ref/epsg/2163/">2163 - US National Atlas Equal Area</ulink>,
-			Spatial reference systems for each NAD 83, WGS 84 UTM zone - UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
+        and the 60 WGS84 UTM zones.
+		UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
+        (To determine which UTM zone to use for your area of interest, see the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance">utmzone PostGIS plpgsql helper function</ulink>.)
 	</para>
 	<para>
-		Various US state plane spatial reference systems (meter or feet based) - usually one or 2 exists per US state.  Most of the meter ones are in the core set, but many of the
-		feet based ones or ESRI created ones you will need to pull from <ulink url="http://spatialreference.org">spatialreference.org</ulink>.
-	</para>
-	<para>
-		For details on determining which UTM zone to use for your area of interest, check out the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance">utmzone PostGIS plpgsql helper function</ulink>.
+		US states use State Plane spatial reference systems (meter or feet based) - usually one or 2 exists per state.
+        Most of the meter-based ones are in the core set, but many of the
+		feet-based ones or ESRI created ones will need to be copied from <ulink url="http://spatialreference.org">spatialreference.org</ulink>.
 	</para>
 
-	  <para>The <varname>SPATIAL_REF_SYS</varname> table definition is as
-	  follows:</para>
+	<para>You can even define non-Earth-based coordinate systems,
+    such as <ulink url="http://spatialreference.org/ref/iau2000/mars-2000/">Mars 2000</ulink>
+ This Mars coordinate system is non-planar (it's in degrees spheroidal),
+ but you can use it with the <varname>geography</varname> type to obtain length and proximity measurements in meters instead of degrees.</para>
+
+	  <para>The <varname>SPATIAL_REF_SYS</varname> table definition is:</para>
 
 	  <programlisting>CREATE TABLE spatial_ref_sys (
   srid       INTEGER NOT NULL PRIMARY KEY,
@@ -574,16 +586,15 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
   proj4text  VARCHAR(2048)
 )</programlisting>
 
-	  <para>The <varname>SPATIAL_REF_SYS</varname> columns are as
-	  follows:</para>
+	  <para>The columns are:</para>
 
 	  <variablelist>
 		<varlistentry>
-		  <term><ulink url="http://en.wikipedia.org/wiki/SRID">SRID</ulink></term>
+		  <term>SRID</term>
 
 		  <listitem>
-			<para>An integer value that uniquely identifies the Spatial
-			Referencing System (SRS) within the database.</para>
+			<para>An integer code that uniquely identifies the <ulink url="http://en.wikipedia.org/wiki/SRID">Spatial
+			Referencing System</ulink> (SRS) within the database.</para>
 		  </listitem>
 		</varlistentry>
 
@@ -592,7 +603,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 
 		  <listitem>
 			<para>The name of the standard or standards body that is being
-			cited for this reference system. For example, "EPSG" would be a
+			cited for this reference system. For example, "EPSG" is a
 			valid <varname>AUTH_NAME</varname>.</para>
 		  </listitem>
 		</varlistentry>
@@ -668,7 +679,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	  <title>The GEOMETRY_COLUMNS View</title>
 
 	  <para><varname>GEOMETRY_COLUMNS</varname> is a view reading from database system catalog tables.
-	  Its structure is as follows:</para>
+	  Its structure is:</para>
 
 	  <programlisting>\d geometry_columns</programlisting>
 <screen>             View "public.geometry_columns"
@@ -682,7 +693,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
  srid              | integer                |
  type              | character varying(30)  |</screen>
 
-	  <para>The column meanings are:</para>
+	  <para>The columns are:</para>
 
 	  <variablelist>
 		<varlistentry>
@@ -1588,8 +1599,10 @@ st_relate
             </listitem>
           </itemizedlist>
 
-          <para>Using intersection matrix patterns and the 3-parameter variant of <xref linkend="ST_Relate" />,
+          <para>Using intersection matrix patterns,
           specific spatial relationships can be evaluated in a more succinct way.
+          The <xref linkend="ST_Relate" /> and the <xref linkend="ST_RelateMatch" />
+          functions can be used to test intersection matrix patterns.
           For the first example above, the intersection matrix pattern specifying
           two lines intersecting in a line is
           '<emphasis role="bold">1*1***1**</emphasis>':</para>
@@ -2398,26 +2411,24 @@ CREATE INDEX [indexname] ON [tablename]
 	  <title>Using Indexes</title>
 
 	  <para>Ordinarily, indexes invisibly speed up data access: once the index
-	  is built, the query planner transparently decides when to use index
-	  information to speed up a query plan. Unfortunately, the PostgreSQL
-	  query planner sometimes does not optimize the use of GiST indexes well, so
-	  sometimes searches which should use a spatial index instead may perform a
-	  sequential scan of the whole table.</para>
+	  is built, the PostgreSQL query planner automatically decides when to use index
+	  information to speed up a query plan. Unfortunately, the
+	  query planner sometimes does not optimize the use of GiST indexes,
+      so queries end up using slow sequential scans instead of a spatial index.</para>
 
-	  <para>If you find your spatial indexes are not being used (or your
-	  attribute indexes, for that matter) there are a couple things you can
-	  do:</para>
+	  <para>If you find your spatial indexes are not being used,
+      there are a couple things you can do:</para>
 
 	  <itemizedlist>
 		<listitem>
-		  <para>Firstly, read query plan and check your query actually tries to compute the
-			thing you need. A runaway JOIN condition, either forgotten or to the wrong table,
-			can unexpectedly bring you all of your table multiple times. To get query plan,
-			add EXPLAIN keyword in front of your query.</para>
+		  <para>Examine the query plan and check your query actually computes the
+			thing you need. An erroneous JOIN, either forgotten or to the wrong table,
+			can unexpectedly retrieve table records multiple times.
+            To get the query plan, execute with <code>EXPLAIN</code> in front of the query.</para>
 		</listitem>
 
 		<listitem>
-		  <para>Second, make sure statistics are gathered about the number
+		  <para>Make sure statistics are gathered about the number
 		  and distributions of values in a table, to provide the query planner
 		  with better information to make decisions around index usage.
 			<command>VACUUM ANALYZE</command> will compute both.</para>
@@ -2450,9 +2461,10 @@ CREATE INDEX [indexname] ON [tablename]
 
 		<listitem>
 		  <para>If <command>set enable_seqscan to off;</command> does not help your query,
-			it may happen you use a construction Postgres is not yet able to untangle.
-			A subquery with inline select is one example - you need to rewrite it to the form
-			planner can optimize, say, a LATERAL JOIN.</para>
+			the query may be using a SQL construct that the Postgres planner is not yet able to optimize.
+            It may be possible to rewrite the query in a way that the planner is able to handle.
+			For example, a subquery with an inline SELECT may not produce an efficient plan,
+            but could possibly be rewritten using a LATERAL JOIN.</para>
 		</listitem>
 
 	  </itemizedlist>
@@ -2460,24 +2472,15 @@ CREATE INDEX [indexname] ON [tablename]
   </sect2>
 
   <sect2>
-	<title>Complex Queries</title>
+	<title>Querying Spatial Data</title>
 
 	<para>The <emphasis>raison d'etre</emphasis> of spatial database
 	functionality is performing queries inside the database which would
 	ordinarily require desktop GIS functionality. Using PostGIS effectively
-	requires knowing what spatial functions are available, and ensuring that
-	appropriate indexes are in place to provide good performance. The SRID of 312 used in these
-	examples is purely for demonstration.  You should be using a REAL SRID listed in the the spatial_ref_sys table
-	and one that matches the projection of your data.  If your data has no spatial reference system
-	specified, you should be THINKING very thoughtfully why it doesn't and maybe it should.</para>
-	<para>If your reason is because you are modeling something that doesn't have a geographic spatial reference system defined such as the internals of a molecule
-	or the floorplan of a not yet built amusement park then that's fine.  If the location of the amusement park has been planned however, then it would make
-	sense to use a suitable planar coordinate system for that location if nothing more than to ensure the amusement part is not trespassing on already existing
-	structures.</para>
-	<para>Even in the case where you are planning a Mars expedition to transport the human race in the event of a nuclear holocaust
-and you want to map out the Mars planet for rehabitation,  you can use a non-earthly coordinate system such as <ulink url="http://spatialreference.org/ref/iau2000/mars-2000/">Mars 2000</ulink>
- make one up and insert it in the <varname>spatial_ref_sys</varname> table. Though this Mars coordinate system is a non-planar one (it's in degrees spheroidal),
- you can use it with the geography type to have your length and proximity measurements in meters instead of degrees.</para>
+	requires knowing what spatial functions are available,
+    how to use them in queries, and ensuring that
+	appropriate indexes are in place to provide good performance.
+    </para>
 
 	<sect3>
 	  <title>Taking Advantage of Indexes</title>
