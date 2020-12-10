@@ -426,7 +426,7 @@ LWGEOM2GEOS(const LWGEOM* lwgeom, uint8_t autofix)
 		lwp = (LWPOINT*)lwgeom;
 
 		if (lwgeom_is_empty(lwgeom))
-			g = GEOSGeom_createEmptyPolygon();
+			g = GEOSGeom_createEmptyPoint();
 		else
 		{
 #if POSTGIS_GEOS_VERSION < 38
