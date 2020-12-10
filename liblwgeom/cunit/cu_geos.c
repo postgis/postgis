@@ -71,7 +71,7 @@ test_geos_noop(void)
 	geom_in = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 	geom_out = lwgeom_geos_noop(geom_in);
 	out_ewkt = lwgeom_to_ewkt(geom_out);
-	ASSERT_STRING_EQUAL(out_ewkt, "GEOMETRYCOLLECTION(LINESTRING(1 1,2 2),POLYGON((0 0,1 0,1 1,0 0)))");
+	ASSERT_STRING_EQUAL(out_ewkt, "GEOMETRYCOLLECTION(LINESTRING(1 1,2 2),POINT EMPTY,POLYGON((0 0,1 0,1 1,0 0)))");
 	lwfree(out_ewkt);
 	lwgeom_free(geom_in);
 	lwgeom_free(geom_out);
