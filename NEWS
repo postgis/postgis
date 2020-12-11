@@ -1,5 +1,6 @@
+
 PostGIS 3.1.0beta2
-2020/12/DD
+2020/12/11
 Only tickets not included in 3.1.0beta1
 
  * Enhancements *
@@ -8,6 +9,7 @@ Only tickets not included in 3.1.0beta1
   - #4815, Fix GEOS conversion of POINT EMPTY to retain type
            (Sandro Santilli)
   - #4813, ST_MakeValid removing NaN coordinates (Sandro Santilli)
+
 
 PostGIS 3.1.0beta1
 2020/12/09
