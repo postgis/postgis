@@ -524,11 +524,11 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 </sect2>
 
   <sect2>
-	<title>Using OpenGIS Standards</title>
+	<title>Spatial Metadata Tables</title>
 
-	<para>The OpenGIS "Simple Features Specification for SQL" defines standard
-	GIS object types, the functions required to manipulate them, and a set of
-	meta-data tables. In order to ensure that meta-data remain consistent,
+	<para>The OpenGIS "Simple Features Specification for SQL" defines some
+	metadata tables to describe geometry table structure and coordinate systems.
+    In order to ensure that metadata remains consistent,
 	operations such as creating and removing a spatial column are carried out
 	through special procedures defined by OpenGIS.</para>
 
@@ -594,7 +594,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 
 		  <listitem>
 			<para>An integer code that uniquely identifies the <ulink url="http://en.wikipedia.org/wiki/SRID">Spatial
-			Referencing System</ulink> (SRS) within the database.</para>
+			Reference System</ulink> (SRS) within the database.</para>
 		  </listitem>
 		</varlistentry>
 
@@ -645,7 +645,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 			<para>For a listing of EPSG projection codes and their
 			corresponding WKT representations, see <ulink
 			url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.
-			For a discussion of WKT in general, see the OpenGIS "Coordinate
+			For a discussion of SRS WKT in general, see the OpenGIS "Coordinate
 			Transformation Services Implementation Specification" at <ulink
 			url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.
 			For information on the European Petroleum Survey Group (EPSG) and
@@ -658,15 +658,15 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 		  <term>PROJ4TEXT</term>
 
 		  <listitem>
-			<para>PostGIS uses the Proj4 library to provide coordinate
+			<para>PostGIS uses the PROJ library to provide coordinate
 			transformation capabilities. The <varname>PROJ4TEXT</varname>
 			column contains the Proj4 coordinate definition string for a
 			particular SRID. For example:</para>
 
 			<programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting>
 
-			<para>For more information about, see the Proj4 web site at <ulink
-			url="http://trac.osgeo.org/proj/">http://trac.osgeo.org/proj/</ulink>.
+			<para>For more information see the
+            <ulink url="https://proj.org/">Proj4 web site</ulink>.
 			The <filename>spatial_ref_sys.sql</filename> file contains both
 			<varname>SRTEXT</varname> and <varname>PROJ4TEXT</varname>
 			definitions for all EPSG projections.</para>
@@ -883,10 +883,11 @@ SELECT f_table_name, f_geometry_column, srid, type
 ------------------+-------------------+------+-------
  vw_pois_ny_parks | geom              | 4326 | POINT
  vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
- </sect3>
-
-	<sect3 id="OGC_Validity">
-	  <title>Ensuring Geometry is OpenGIS Compliant</title>
+    </sect3>
+</sect2>
+<!-- ==============================================================  -->
+<sect2 id="OGC_Validity">
+	  <title>Geometry Validation</title>
 
 	  <para>PostGIS is compliant with the Open Geospatial Consortium’s (OGC)
 	  OpenGIS Specifications.  As such, many PostGIS methods require, or more
@@ -1219,9 +1220,7 @@ gisdb=# SELECT
 		constraint checking geometry dimensions, so it is enough to specify 2
 		there.</para>
 	  </note>
-	</sect3>
-
-  </sect2>
+</sect2>
 
   <sect2 id="loading-data">
 	<title>Loading Spatial Data</title>
