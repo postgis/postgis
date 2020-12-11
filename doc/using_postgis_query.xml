@@ -10,103 +10,17 @@
 	appropriate indexes are in place to provide good performance.
     </para>
 
-      <sect2 id="eval_spatial_rel">
+    <sect2 id="eval_spatial_rel">
         <title>Determining Spatial Relationships</title>
 
-        <para>
-        The OGC SFS defines a set of <emphasis>named spatial relationship predicates</emphasis> to evaluate the
-        spatial relationship between pairs of geometries.
-        PostGIS provides these as the functions
-            <xref linkend="ST_Contains" />,
-            <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
-            <xref linkend="ST_Intersects" />, <xref linkend="ST_Overlaps" />,
-            <xref linkend="ST_Touches" />, <xref linkend="ST_Within" />.
-        It also defines the non-standard relationship predicates
-            <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
-            and <xref linkend="ST_ContainsProperly" />.
+        <para>Spatial relationships indicate how two geometries interact with one another.
+        They are a fundamental capability for querying geometry.
         </para>
-
-        <para>In some cases the named spatial relationships
-        are insufficient to  provide a desired spatial filter.
-        </para>
-
-        <informaltable frame="none" border="0">
-          <tgroup cols="1">
-            <tbody>
-              <row>
-                <entry><para><informalfigure float="1" floatstyle="left">
-                    <graphic align="left" fileref="images/de9im01.png" />
-                  </informalfigure></para><para>For example, consider a linear
-                dataset representing a road network. It may be required
-                to identify all road segments that cross
-                each other, not at a point, but in a line (perhaps to validate some business rule).
-                In this case <xref linkend="ST_Crosses" /> does not
-                provide the necessary spatial filter, since for
-                linear features it returns <varname>true</varname> only where they cross at a point.
-                </para>
-                <para>A two-step solution
-                would be to first compute the actual intersection
-                (<xref linkend="ST_Intersection" />) of pairs of road lines that spatially
-                intersect (<xref linkend="ST_Intersects" />), and then check if the intersection's
-                <xref linkend="ST_GeometryType" /> is '<varname>LINESTRING</varname>' (properly
-                dealing with cases that return
-                <varname>GEOMETRYCOLLECTION</varname>s of
-                <varname>[MULTI]POINT</varname>s,
-                <varname>[MULTI]LINESTRING</varname>s, etc.).</para>
-                <para>Clearly, a simpler and faster solution is desirable.</para></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>
-
-        <informaltable frame="none" border="0">
-          <tgroup cols="1">
-            <tbody>
-              <row>
-                <entry><para> <informalfigure float="1" floatstyle="right">
-                    <graphic align="right" fileref="images/de9im02.png" />
-                  </informalfigure></para> <para>A second
-                example is locating
-                wharves that intersect a lake's boundary on a line and
-                where one end of the wharf is up on shore. In other
-                words, where a wharf is within but not completely contained by a
-                lake, intersects the boundary of a lake on a line, and where
-                exactly one of the wharf's endpoints is within or on the
-                boundary of the lake. It is possible to use a
-                combination of spatial predicates to find the required
-                features:</para> <itemizedlist>
-                    <listitem>
-                      <para><xref linkend="ST_Contains" />(lake, wharf) = TRUE</para>
-                    </listitem>
-
-                    <listitem>
-                      <para><xref linkend="ST_ContainsProperly" />(lake, wharf) = FALSE</para>
-                    </listitem>
-
-                    <listitem>
-                      <para><xref linkend="ST_GeometryType" />(<xref linkend="ST_Intersection" />(wharf, lake)) =
-                      'LINESTRING'</para>
-                    </listitem>
-
-                    <listitem>
-                      <para><xref linkend="ST_NumGeometries" />(<xref linkend="ST_Multi" />(<xref linkend="ST_Intersection" />(<xref linkend="ST_Boundary" />(wharf),
-                      <xref linkend="ST_Boundary" />(lake)))) = 1</para>
-
-                      <para>... but needless to say, this is quite complicated.</para>
-                    </listitem>
-                  </itemizedlist></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>
-
-        <para>These requirements can be met by using the
-        Dimensionally Extended 9-Intersection Model (DE-9IM for short).</para>
 
         <sect3>
           <title>Dimensionally Extended 9-Intersection Model</title>
 
-          <para>According to the <ulink
+         <para>According to the <ulink
           url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
           Features Implementation Specification for SQL</ulink>, "the basic
           approach to comparing two geometries is to make pair-wise tests of
@@ -116,8 +30,7 @@
           matrix."</para>
 
         <para>In the theory of point-set topology,
-        the points in a geometry embedded in 2-dimensional space
-        can be categorized into the following sets:
+        the points in a geometry embedded in 2-dimensional space are categorized into three sets:
         </para>
 
           <glosslist>
@@ -174,10 +87,9 @@
             are denoted using the notation
           <emphasis>I(g)</emphasis>, <emphasis>B(g)</emphasis>, and
           <emphasis>E(g)</emphasis>.
-          Also, <emphasis>dim(g)</emphasis> denotes the dimension of
-          <emphasis>g</emphasis> with the domain of
-          <literal>{0,1,2,F}</literal>
-          (as computed by <xref linkend="ST_Dimension" />)
+          Also, <emphasis>dim(s)</emphasis> denotes the dimension of
+          a set <emphasis>s</emphasis> with the domain of
+          <literal>{0,1,2,F}</literal>:
         </para>
 
         <itemizedlist spacing="compact">
@@ -357,9 +269,135 @@
           <para>Reading from left to right and top to bottom, the intersection matrix is
           represented as the text string '<emphasis role="bold">212101212</emphasis>'.</para>
 
-          <para>
+          <para>For more information, refer to:</para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL</ulink> (version 1.1, section 2.1.13.2)</para>
+            </listitem>
+
+            <listitem>
+                <para><ulink url="https://en.wikipedia.org/wiki/DE-9IM">Wikipedia: Dimensionally
+              Extended Nine-Intersection Model (DE-9IM)</ulink></para>
+            </listitem>
+            <listitem>
+              <para><ulink url="http://docs.geotools.org/latest/userguide/library/jts/dim9.html">GeoTools: Point Set Theory and the DE-9IM Matrix</ulink></para>
+            </listitem>
+          </itemizedlist>
+
+        </sect3>
+
+        <sect3>
+          <title>Named Spatial Relationships</title>
+
+        <para>To make it easy to determine common spatial relationships,
+        the OGC SFS defines a set of <emphasis>named spatial relationship predicates</emphasis>.
+        PostGIS provides these as the functions
+            <xref linkend="ST_Contains" />,
+            <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
+            <xref linkend="ST_Intersects" />, <xref linkend="ST_Overlaps" />,
+            <xref linkend="ST_Touches" />, <xref linkend="ST_Within" />.
+        It also defines the non-standard relationship predicates
+            <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
+            and <xref linkend="ST_ContainsProperly" />.
+        </para>
+        <para>Spatial predicates are usually used as conditions in SQL <code>WHERE</code> or <code>JOIN</code> clauses.
+        The named spatial predicates automatically use a spatial index if one is available,
+        so there is no need to use the bounding box operator <code>&amp;&amp;</code> as well.
+        For example:
+        </para>
+
+		<programlisting>
+SELECT city.name, state.name, city.geom
+FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
+</programlisting>
+
+        <para>For more details and illustrations, see the
+        <ulink url="https://postgis.net/workshops/postgis-intro/spatial_relationships.html">PostGIS Workshop.</ulink></para>
+
+        </sect3>
+
+        <sect3>
+          <title>General Spatial Relationships</title>
+
+        <para>In some cases the named spatial relationships
+        are insufficient to  provide a desired spatial filter condition.
+        </para>
+
+        <informaltable frame="none" border="0">
+          <tgroup cols="1">
+            <tbody>
+              <row>
+                <entry><para><informalfigure float="1" floatstyle="left">
+                    <graphic align="left" fileref="images/de9im01.png" />
+                  </informalfigure></para><para>For example, consider a linear
+                dataset representing a road network. It may be required
+                to identify all road segments that cross
+                each other, not at a point, but in a line (perhaps to validate some business rule).
+                In this case <xref linkend="ST_Crosses" /> does not
+                provide the necessary spatial filter, since for
+                linear features it returns <varname>true</varname> only where they cross at a point.
+                </para>
+                <para>A two-step solution
+                would be to first compute the actual intersection
+                (<xref linkend="ST_Intersection" />) of pairs of road lines that spatially
+                intersect (<xref linkend="ST_Intersects" />), and then check if the intersection's
+                <xref linkend="ST_GeometryType" /> is '<varname>LINESTRING</varname>' (properly
+                dealing with cases that return
+                <varname>GEOMETRYCOLLECTION</varname>s of
+                <varname>[MULTI]POINT</varname>s,
+                <varname>[MULTI]LINESTRING</varname>s, etc.).</para>
+                <para>Clearly, a simpler and faster solution is desirable.</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+
+        <informaltable frame="none" border="0">
+          <tgroup cols="1">
+            <tbody>
+              <row>
+                <entry><para> <informalfigure float="1" floatstyle="right">
+                    <graphic align="right" fileref="images/de9im02.png" />
+                  </informalfigure></para> <para>A second
+                example is locating
+                wharves that intersect a lake's boundary on a line and
+                where one end of the wharf is up on shore. In other
+                words, where a wharf is within but not completely contained by a
+                lake, intersects the boundary of a lake on a line, and where
+                exactly one of the wharf's endpoints is within or on the
+                boundary of the lake. It is possible to use a
+                combination of spatial predicates to find the required
+                features:</para> <itemizedlist>
+                    <listitem>
+                      <para><xref linkend="ST_Contains" />(lake, wharf) = TRUE</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><xref linkend="ST_ContainsProperly" />(lake, wharf) = FALSE</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><xref linkend="ST_GeometryType" />(<xref linkend="ST_Intersection" />(wharf, lake)) =
+                      'LINESTRING'</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><xref linkend="ST_NumGeometries" />(<xref linkend="ST_Multi" />(<xref linkend="ST_Intersection" />(<xref linkend="ST_Boundary" />(wharf),
+                      <xref linkend="ST_Boundary" />(lake)))) = 1</para>
+
+                      <para>... but needless to say, this is quite complicated.</para>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+
+        <para>These requirements can be met by computing the full DE-9IM intersection matrix.
           PostGIS provides the <xref linkend="ST_Relate" /> function
-          to compute the intersection matrix:
+          to do this:
           </para>
 
           <programlisting>
@@ -370,10 +408,9 @@ st_relate
 1010F0212
 </programlisting>
 
-          <para>
-          To specify fully general spatial relationships,
+        <para>To test a particular spatial relationship,
           an <emphasis role="bold">intersection matrix pattern</emphasis> is used.
-          This is a matrix representation augmented with the additional symbols
+          This is the matrix representation augmented with the additional symbols
           <literal>{T,*}</literal>:
             </para>
 
@@ -412,23 +449,6 @@ SELECT a.lake_id, b.wharf_id
 FROM lakes a, wharfs b
 WHERE a.geom &amp;&amp; b.geom
       AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
-
-          <para>For more information, refer to:</para>
-
-          <itemizedlist spacing="compact">
-            <listitem>
-              <para><ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
-          Features Implementation Specification for SQL</ulink> (version 1.1, section 2.1.13.2)</para>
-            </listitem>
-
-            <listitem>
-                <para><ulink url="https://en.wikipedia.org/wiki/DE-9IM">Dimensionally
-              Extended Nine-Intersection Model (DE-9IM)</ulink></para>
-            </listitem>
-            <listitem>
-              <para><ulink url="http://docs.geotools.org/latest/userguide/library/jts/dim9.html">GeoTools: Point Set Theory and the DE-9IM Matrix</ulink></para>
-            </listitem>
-          </itemizedlist>
 
         </sect3>
     </sect2>
