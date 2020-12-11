@@ -1620,7 +1620,7 @@ WHERE
 
 	</sect3>
 
-	<sect3>
+	<sect3 id="pgsql2shp-usage">
 	  <title>Using the Shapefile Dumper</title>
 
 	  <para>The <filename>pgsql2shp</filename> table dumper connects
@@ -1717,7 +1717,7 @@ WHERE
 	</sect3>
   </sect2>
 
-  <sect2>
+  <sect2 id="build-indexes">
 	<title>Building Spatial Indexes</title>
 
 	<para>Indexes make using a spatial database for large data sets
