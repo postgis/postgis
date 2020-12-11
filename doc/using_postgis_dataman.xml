@@ -1765,6 +1765,11 @@ WHERE
 	  </listitem>
 	</itemizedlist>
 
+    <para>For more information see the
+    <ulink url="https://postgis.net/workshops/postgis-intro/indexing.html">PostGIS Workshop</ulink>,
+    and the <ulink url="https://www.postgresql.org/docs/current/indexes.html">PostgreSQL documentation</ulink>.
+    </para>
+
 	<sect3 id="gist_indexes">
 	  <title>GiST Indexes</title>
 
