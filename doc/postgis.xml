@@ -162,7 +162,7 @@
     <productnumber>&last_release_version;</productnumber>
 
     <abstract>
-      <para>PostGIS is an extension to the PostgreSQL object-relational
+      <para>PostGIS is an extension to the <ulink url="https://www.postgresql.org/">PostgreSQL</ulink> object-relational
       database system which allows GIS (Geographic Information Systems)
       objects to be stored in the database. PostGIS includes support for
       GiST-based R-Tree spatial indexes, and functions for analysis and
