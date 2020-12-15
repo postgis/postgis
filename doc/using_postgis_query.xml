@@ -466,8 +466,8 @@ WHERE a.geom &amp;&amp; b.geom
     and the distance operators used in nearest-neighbour queries
     (the most common being <xref linkend="geometry_distance_knn" />.)
     Index-aware functions include most of the named spatial predicates
-    (such as <xref linkend="ST_Intersects" />), and most of the distance predicates such as
-    <xref linkend="ST_DWithin" />.)
+    (such as <xref linkend="ST_Intersects" />), and most of the distance predicates
+    (such as <xref linkend="ST_DWithin" />.)
     </para>
     <para>
      Functions such as
@@ -486,7 +486,7 @@ WHERE ST_Distance(the_geom, 'SRID=312;POINT(100000 200000)') &lt; 100</programli
     is computed for <emphasis role="bold">every</emphasis> row in the table.
     </para>
     <para>
-    We can reduce the number of distance calculations required by using the
+    We can reduce the number of rows processed by using the
 	index-aware function <xref linkend="ST_DWithin" />:</para>
 
 	  <programlisting>SELECT the_geom
@@ -495,15 +495,17 @@ WHERE ST_DWithin(the_geom, 'SRID=312;POINT(100000 200000)', 100)
 </programlisting>
 
     <para>This query selects the same geometries, but it does it in a more
-    efficient way. If there is a GiST index on the_geom, the query
-    planner will recognize that it can use the index to reduce the number of
-    rows before calculating the distance.
+    efficient way.
     This is enabled by <varname>ST_DWithin()</varname> using the
     <varname>&amp;&amp;</varname> operator internally on an expanded bounding box
     of the query geometry.
-    That uses the spatial index to find only records with geometries
+    If there is a spatial index on <code>the_geom</code>, the query
+    planner will recognize that it can use the index to reduce the number of
+    rows scanned before calculating the distance.
+    The spatial index allows retrieving only records with geometries
     whose bounding boxes overlap the expanded extent
-    (or in other words, skips records with geometries which are guaranteed to be too far away.)
+    and hence which <emphasis>might</emphasis> be within the required distance.
+    The actual distance is then computed to confirm whether to include the record in the result set.
     </para>
 
 	</sect2>
