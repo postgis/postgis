@@ -453,7 +453,7 @@ WHERE a.geom &amp;&amp; b.geom
         </sect3>
     </sect2>
 
-	<sect2>
+	<sect2 id="using-query-indexes">
     <title>Taking Advantage of Indexes</title>
 
     <para>When constructing queries using spatial conditions it is important to
