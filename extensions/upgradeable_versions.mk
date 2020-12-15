@@ -58,7 +58,5 @@ UPGRADEABLE_VERSIONS = \
 	3.0.1 \
 	3.0.2 \
 	3.0.3 \
-	3.1.0alpha1 \
-	3.1.0alpha2 \
-	3.1.0beta1 \
-	3.1.0beta2
+	3.1.0 \
+	3.1.0dev
