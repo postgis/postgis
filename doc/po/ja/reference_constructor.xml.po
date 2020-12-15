@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2020-12-15 04:51+0000\n"
 "PO-Revision-Date: 2018-07-24 01:40+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -65,7 +65,7 @@ msgstr ""
 #: reference_constructor.xml:407 reference_constructor.xml:489
 #: reference_constructor.xml:547 reference_constructor.xml:606
 #: reference_constructor.xml:645 reference_constructor.xml:715
-#: reference_constructor.xml:765 reference_constructor.xml:805
+#: reference_constructor.xml:773 reference_constructor.xml:813
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -277,8 +277,8 @@ msgstr ""
 #: reference_constructor.xml:329 reference_constructor.xml:378
 #: reference_constructor.xml:459 reference_constructor.xml:523
 #: reference_constructor.xml:579 reference_constructor.xml:621
-#: reference_constructor.xml:692 reference_constructor.xml:740
-#: reference_constructor.xml:780 reference_constructor.xml:820
+#: reference_constructor.xml:692 reference_constructor.xml:746
+#: reference_constructor.xml:788 reference_constructor.xml:828
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -1642,9 +1642,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:668 reference_constructor.xml:728
-#: reference_constructor.xml:772 reference_constructor.xml:812
+#: reference_constructor.xml:780 reference_constructor.xml:820
 #, fuzzy, no-c-format
-msgid "Availability: 3.1"
+msgid "Availability: 3.1.0"
 msgstr "Availability: 2.1.0"
 
 #. Tag: title
@@ -1666,24 +1666,26 @@ msgstr ""
 #: reference_constructor.xml:676
 #, no-c-format
 msgid ""
-"WITH bounds AS (\n"
-"         SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) "
-"AS geom\n"
-" )\n"
-" SELECT Count(*), hexes.geom\n"
-" FROM pointtable pts\n"
-" JOIN ST_HexagonGrid(1000, bounds.geom) hexes\n"
-" GROUP BY hexes.geom"
+"SELECT COUNT(*), hexes.geom\n"
+"FROM\n"
+"    ST_HexagonGrid(\n"
+"        10000,\n"
+"        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
+"    ) AS hexes\n"
+"    INNER JOIN\n"
+"    pointtable AS pts\n"
+"    ON ST_Intersects(pts.geom, hexes.geom)\n"
+"GROUP BY hexes.geom;"
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:680
+#: reference_constructor.xml:679
 #, fuzzy, no-c-format
 msgid "Example: Generating hex coverage of polygons"
 msgstr "例: バウンディングボックスポリゴンの生成"
 
 #. Tag: para
-#: reference_constructor.xml:681
+#: reference_constructor.xml:680
 #, no-c-format
 msgid ""
 "If we generate a set of hexagons for each polygon boundary and filter out "
@@ -1692,34 +1694,46 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:687
+#: reference_constructor.xml:686
 #, no-c-format
 msgid ""
 "Tiling states results in a hexagon coverage of each state, and multiple "
 "hexagons overlapping at the borders between states."
 msgstr ""
 
+#. Tag: para
+#: reference_constructor.xml:688
+#, no-c-format
+msgid ""
+"The LATERAL keyword is implied for set-returning functions when referring to "
+"a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just "
+"plain , are equivalent constructs for this example."
+msgstr ""
+
 #. Tag: programlisting
 #: reference_constructor.xml:689
 #, no-c-format
 msgid ""
-"WITH hexes AS (\n"
-"        SELECT admin1.gid,\n"
-"               (ST_HexagonGrid(100000, admin1.geom)).* AS hex\n"
-"        FROM admin1\n"
-"        WHERE adm0_a3 = 'USA'\n"
-")\n"
-"SELECT hexes.*\n"
-"FROM hexes\n"
-"JOIN admin1 USING (gid)\n"
-"WHERE ST_Intersects(admin1.geom, hexes.geom)"
+"SELECT admin1.gid, hex.geom\n"
+"FROM\n"
+"    admin1\n"
+"    CROSS JOIN\n"
+"    ST_HexagonGrid(100000, admin1.geom) AS hex\n"
+"WHERE\n"
+"    adm0_a3 = 'USA'\n"
+"    AND\n"
+"    ST_Intersects(admin1.geom, hex.geom)"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:693
 #, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_SquareGrid\"/>"
-msgstr ", <xref linkend=\"ST_AsKML\"/>"
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SquareGrid\"/>, <xref "
+"linkend=\"ST_TileEnvelope\"/>"
+msgstr ""
+", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:700
@@ -1776,46 +1790,84 @@ msgstr ""
 
 #. Tag: title
 #: reference_constructor.xml:733
-#, no-c-format
-msgid "Example: Counting points in squares"
-msgstr ""
+#, fuzzy, no-c-format
+msgid "Example: Counting points in squares (using single chopped grid)"
+msgstr "例: 配列使用版"
 
 #. Tag: para
 #: reference_constructor.xml:734
 #, no-c-format
 msgid ""
 "To do a point summary against a square tiling, generate a square grid using "
-"the extent of the points as the bounds, then spatially join to that grid."
+"the extent of the points as the bounds, then spatially join to that grid. "
+"Note the estimated extent might be off from actual extent, so be cautious "
+"and at very least make sure you've analyzed your table."
 msgstr ""
 
 #. Tag: programlisting
 #: reference_constructor.xml:736
 #, no-c-format
 msgid ""
-"WITH bounds AS (\n"
-"         SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) "
-"AS geom\n"
-" )\n"
-" SELECT Count(*), squares.geom\n"
-" FROM pointtable pts\n"
-" JOIN ST_SquareGrid(1000, bounds.geom) squares\n"
-" GROUP BY squares.geom"
+"SELECT COUNT(*), squares.geom\n"
+"    FROM\n"
+"    pointtable AS pts\n"
+"    INNER JOIN\n"
+"    ST_SquareGrid(\n"
+"        1000,\n"
+"        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
+"    ) AS squares\n"
+"    ON ST_Intersects(pts.geom, squares.geom)\n"
+"    GROUP BY squares.geom"
 msgstr ""
+
+#. Tag: title
+#: reference_constructor.xml:740
+#, fuzzy, no-c-format
+msgid "Example: Counting points in squares using set of grid per point"
+msgstr "例: 配列使用版"
 
 #. Tag: para
 #: reference_constructor.xml:741
+#, no-c-format
+msgid ""
+"This yields the same result as the first example but will be slower for a "
+"large number of points"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_constructor.xml:742
+#, no-c-format
+msgid ""
+"SELECT COUNT(*), squares.geom\n"
+"    FROM\n"
+"    pointtable AS pts\n"
+"    INNER JOIN\n"
+"    ST_SquareGrid(\n"
+"        1000,\n"
+"       pts.geom\n"
+"    ) AS squares\n"
+"    ON ST_Intersects(pts.geom, squares.geom)\n"
+"    GROUP BY squares.geom"
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:747
 #, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_HexagonGrid\"/>"
-msgstr ", <xref linkend=\"ST_AsBinary\"/>"
+msgid ""
+", <xref linkend=\"ST_HexagonGrid\"/> , <xref linkend=\"ST_EstimatedExtent\"/"
+"> , <xref linkend=\"ST_SetSRID\"/>"
+msgstr ""
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:747
+#: reference_constructor.xml:755
 #, no-c-format
 msgid "ST_Hexagon"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:748
+#: reference_constructor.xml:756
 #, no-c-format
 msgid ""
 "Returns a single hexagon, using the provided edge size and cell coordinate "
@@ -1823,7 +1875,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:754
+#: reference_constructor.xml:762
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Hexagon</function></funcdef> "
@@ -1840,7 +1892,7 @@ msgstr ""
 "<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:767
+#: reference_constructor.xml:775
 #, no-c-format
 msgid ""
 "Uses the same hexagon tiling concept as <xref linkend=\"ST_HexagonGrid\"/>, "
@@ -1849,7 +1901,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:770
+#: reference_constructor.xml:778
 #, no-c-format
 msgid ""
 "Hexagons are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
@@ -1857,13 +1909,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:776
+#: reference_constructor.xml:784
 #, no-c-format
 msgid "Example: Creating a hexagon at the origin"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:777
+#: reference_constructor.xml:785
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));\n"
@@ -1877,19 +1929,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:781
+#: reference_constructor.xml:789
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_HexagonGrid\"/>, <xref linkend=\"ST_Square\"/>"
 msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:787
+#: reference_constructor.xml:795
 #, no-c-format
 msgid "ST_Square"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:788
+#: reference_constructor.xml:796
 #, no-c-format
 msgid ""
 "Returns a single square, using the provided edge size and cell coordinate "
@@ -1897,7 +1949,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:794
+#: reference_constructor.xml:802
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Square</function></funcdef> "
@@ -1914,7 +1966,7 @@ msgstr ""
 "<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:807
+#: reference_constructor.xml:815
 #, no-c-format
 msgid ""
 "Uses the same square tiling concept as <xref linkend=\"ST_SquareGrid\"/>, "
@@ -1923,7 +1975,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:810
+#: reference_constructor.xml:818
 #, no-c-format
 msgid ""
 "Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
@@ -1931,13 +1983,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:816
+#: reference_constructor.xml:824
 #, no-c-format
 msgid "Example: Creating a square at the origin"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:817
+#: reference_constructor.xml:825
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857));\n"
@@ -1951,10 +2003,22 @@ msgstr ""
 "POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))"
 
 #. Tag: para
-#: reference_constructor.xml:821
+#: reference_constructor.xml:829
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_SquareGrid\"/>, <xref linkend=\"ST_Hexagon\"/>"
 msgstr ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
+
+#, fuzzy
+#~ msgid "Availability: 3.1"
+#~ msgstr "Availability: 2.1.0"
+
+#, fuzzy
+#~ msgid ", <xref linkend=\"ST_SquareGrid\"/>"
+#~ msgstr ", <xref linkend=\"ST_AsKML\"/>"
+
+#, fuzzy
+#~ msgid ", <xref linkend=\"ST_HexagonGrid\"/>"
+#~ msgstr ", <xref linkend=\"ST_AsBinary\"/>"
 
 #~ msgid "ST_BdPolyFromText"
 #~ msgstr "ST_BdPolyFromText"
@@ -3718,13 +3782,6 @@ msgstr ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 #~ "WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, "
 #~ "528439.5625),\n"
 #~ "        ST_Point(-987121.375 ,529933.1875)),2163)"
-
-#~ msgid ""
-#~ ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_SRID\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_SRID\"/>"
 
 #~ msgid "ST_3DMakeBox"
 #~ msgstr "ST_3DMakeBox"

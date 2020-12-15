@@ -1,0 +1,949 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-12-15 04:51+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: using_postgis_query.xml:3
+#, no-c-format
+msgid "Spatial Queries"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:5
+#, no-c-format
+msgid ""
+"The <emphasis>raison d'etre</emphasis> of spatial databases is to perform "
+"queries inside the database which would ordinarily require desktop GIS "
+"functionality. Using PostGIS effectively requires knowing what spatial "
+"functions are available, how to use them in queries, and ensuring that "
+"appropriate indexes are in place to provide good performance."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_query.xml:14
+#, no-c-format
+msgid "Determining Spatial Relationships"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:16
+#, no-c-format
+msgid ""
+"Spatial relationships indicate how two geometries interact with one another. "
+"They are a fundamental capability for querying geometry."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_query.xml:21
+#, no-c-format
+msgid "Dimensionally Extended 9-Intersection Model"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:23
+#, no-c-format
+msgid ""
+"According to the <ulink url=\"http://www.opengeospatial.org/standards/sfs"
+"\">OpenGIS Simple Features Implementation Specification for SQL</ulink>, "
+"\"the basic approach to comparing two geometries is to make pair-wise tests "
+"of the intersections between the Interiors, Boundaries and Exteriors of the "
+"two geometries and to classify the relationship between the two geometries "
+"based on the entries in the resulting 'intersection' matrix.\""
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:32
+#, no-c-format
+msgid ""
+"In the theory of point-set topology, the points in a geometry embedded in 2-"
+"dimensional space are categorized into three sets:"
+msgstr ""
+
+#. Tag: glossterm
+#: using_postgis_query.xml:38
+#, no-c-format
+msgid "<glossterm>Boundary</glossterm>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:41
+#, no-c-format
+msgid ""
+"The boundary of a geometry is the set of geometries of the next lower "
+"dimension. For <varname>POINT</varname>s, which have a dimension of 0, the "
+"boundary is the empty set. The boundary of a <varname>LINESTRING</varname> "
+"is the two endpoints. For <varname>POLYGON</varname>s, the boundary is the "
+"linework of the exterior and interior rings."
+msgstr ""
+
+#. Tag: glossterm
+#: using_postgis_query.xml:52
+#, no-c-format
+msgid "<glossterm>Interior</glossterm>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:55
+#, no-c-format
+msgid ""
+"The interior of a geometry are those points of a geometry that are not in "
+"the boundary. For <varname>POINT</varname>s, the interior is the point "
+"itself. The interior of a <varname>LINESTRING</varname> is the set of points "
+"between the endpoints. For <varname>POLYGON</varname>s, the interior is the "
+"areal surface inside the polygon."
+msgstr ""
+
+#. Tag: glossterm
+#: using_postgis_query.xml:66
+#, no-c-format
+msgid "<glossterm>Exterior</glossterm>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:69
+#, no-c-format
+msgid ""
+"The exterior of a geometry is the rest of the space in which the geometry is "
+"embedded; in other words, all points not in the interior or on the boundary "
+"of the geometry. It is a 2-dimensional non-closed surface."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:78
+#, no-c-format
+msgid ""
+"The <ulink url=\"http://en.wikipedia.org/wiki/DE-9IM\">Dimensionally "
+"Extended 9-Intersection Model</ulink> (DE-9IM) describes the spatial "
+"relationship between two geometries by specifying the dimensions of the 9 "
+"intersections between the above sets for each geometry. The intersection "
+"dimensions can be formally represented in a 3x3 <emphasis role=\"bold"
+"\">intersection matrix</emphasis>."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:85
+#, no-c-format
+msgid ""
+"For a geometry <emphasis>g</emphasis> the <emphasis>Interior</emphasis>, "
+"<emphasis>Boundary</emphasis>, and <emphasis>Exterior</emphasis> are denoted "
+"using the notation <emphasis>I(g)</emphasis>, <emphasis>B(g)</emphasis>, and "
+"<emphasis>E(g)</emphasis>. Also, <emphasis>dim(s)</emphasis> denotes the "
+"dimension of a set <emphasis>s</emphasis> with the domain of <literal>{0,1,2,"
+"F}</literal>:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:97
+#, no-c-format
+msgid "<literal>0</literal> =&gt; point"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:101
+#, no-c-format
+msgid "<literal>1</literal> =&gt; line"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:105
+#, no-c-format
+msgid "<literal>2</literal> =&gt; area"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:109
+#, no-c-format
+msgid "<literal>F</literal> =&gt; empty set"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:114
+#, no-c-format
+msgid ""
+"Using this notation, the intersection matrix for two geometries <emphasis>a</"
+"emphasis> and <emphasis>b</emphasis> is:"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:123 using_postgis_query.xml:131
+#: using_postgis_query.xml:182 using_postgis_query.xml:195
+#, no-c-format
+msgid "<emphasis role=\"bold\">Interior</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:124 using_postgis_query.xml:137
+#: using_postgis_query.xml:185 using_postgis_query.xml:218
+#, no-c-format
+msgid "<emphasis role=\"bold\">Boundary</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:125 using_postgis_query.xml:143
+#: using_postgis_query.xml:188 using_postgis_query.xml:241
+#, no-c-format
+msgid "<emphasis role=\"bold\">Exterior</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:132
+#, no-c-format
+msgid "dim( I(a) ∩ I(b) )"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:133
+#, no-c-format
+msgid "dim( I(a) ∩ B(b) )"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:134
+#, no-c-format
+msgid "dim( I(a) ∩ E(b) )"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:138
+#, no-c-format
+msgid "dim( B(a) ∩ I(b) )"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:139
+#, no-c-format
+msgid "dim( B(a) ∩ B(b) )"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:140
+#, no-c-format
+msgid "dim( B(a) ∩ E(b) )"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:144
+#, no-c-format
+msgid "dim( E(a) ∩ I(b) )"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:145
+#, no-c-format
+msgid "dim( E(a) ∩ B(b) )"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_query.xml:146
+#, no-c-format
+msgid "dim( E(a) ∩ E(b) )"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:153
+#, no-c-format
+msgid "Visually, for two overlapping polygonal geometries, this looks like:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:199
+#, no-c-format
+msgid ""
+"<emphasis>dim( I(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">2</"
+"emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:205
+#, no-c-format
+msgid ""
+"<emphasis>dim( I(a) ∩ B(b) = </emphasis><emphasis role=\"bold\">1</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:211
+#, no-c-format
+msgid ""
+"<emphasis>dim( I(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\">2</"
+"emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:222
+#, no-c-format
+msgid ""
+"<emphasis>dim( B(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">1</"
+"emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:228
+#, no-c-format
+msgid ""
+"<emphasis>dim( B(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\">0</"
+"emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:234
+#, no-c-format
+msgid ""
+"<emphasis>dim( B(a) ∩ E(b) ) = </emphasis><emphasis role=\"bold\">1</"
+"emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:245
+#, no-c-format
+msgid ""
+"<emphasis>dim( E(a) ∩ I(b) ) = </emphasis><emphasis role=\"bold\">2</"
+"emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:251
+#, no-c-format
+msgid ""
+"<emphasis>dim( E(a) ∩ B(b) ) = </emphasis><emphasis role=\"bold\">1</"
+"emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:257
+#, no-c-format
+msgid ""
+"<emphasis>dim( E(a) ∩ E(b) = </emphasis><emphasis role=\"bold\">2</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:269
+#, no-c-format
+msgid ""
+"Reading from left to right and top to bottom, the intersection matrix is "
+"represented as the text string '<emphasis role=\"bold\">212101212</"
+"emphasis>'."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:272
+#, no-c-format
+msgid "For more information, refer to:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:276
+#, no-c-format
+msgid ""
+"<ulink url=\"http://www.opengeospatial.org/standards/sfs\">OpenGIS Simple "
+"Features Implementation Specification for SQL</ulink> (version 1.1, section "
+"2.1.13.2)"
+msgstr ""
+
+#. Tag: ulink
+#: using_postgis_query.xml:281
+#, no-c-format
+msgid "Wikipedia: Dimensionally Extended Nine-Intersection Model (DE-9IM)"
+msgstr ""
+
+#. Tag: ulink
+#: using_postgis_query.xml:285
+#, no-c-format
+msgid "GeoTools: Point Set Theory and the DE-9IM Matrix"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_query.xml:292
+#, no-c-format
+msgid "Named Spatial Relationships"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:294
+#, no-c-format
+msgid ""
+"To make it easy to determine common spatial relationships, the OGC SFS "
+"defines a set of <emphasis>named spatial relationship predicates</emphasis>. "
+"PostGIS provides these as the functions <xref linkend=\"ST_Contains\"/>, "
+"<xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Disjoint\"/>, <xref "
+"linkend=\"ST_Equals\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend="
+"\"ST_Overlaps\"/>, <xref linkend=\"ST_Touches\"/>, <xref linkend=\"ST_Within"
+"\"/>. It also defines the non-standard relationship predicates <xref linkend="
+"\"ST_Covers\"/>, <xref linkend=\"ST_CoveredBy\"/>, and <xref linkend="
+"\"ST_ContainsProperly\"/>."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:305
+#, no-c-format
+msgid ""
+"Spatial predicates are usually used as conditions in SQL <code>WHERE</code> "
+"or <code>JOIN</code> clauses. The named spatial predicates automatically use "
+"a spatial index if one is available, so there is no need to use the bounding "
+"box operator <code>&amp;&amp;</code> as well. For example:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:311
+#, no-c-format
+msgid ""
+"SELECT city.name, state.name, city.geom\n"
+"FROM city JOIN state ON ST_Intersects(city.geom, state.geom);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:313
+#, no-c-format
+msgid ""
+"For more details and illustrations, see the <ulink url=\"https://postgis.net/"
+"workshops/postgis-intro/spatial_relationships.html\">PostGIS Workshop.</"
+"ulink>"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_query.xml:319
+#, no-c-format
+msgid "General Spatial Relationships"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:321
+#, no-c-format
+msgid ""
+"In some cases the named spatial relationships are insufficient to provide a "
+"desired spatial filter condition."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:331
+#, no-c-format
+msgid ""
+"For example, consider a linear dataset representing a road network. It may "
+"be required to identify all road segments that cross each other, not at a "
+"point, but in a line (perhaps to validate some business rule). In this case "
+"<xref linkend=\"ST_Crosses\"/> does not provide the necessary spatial "
+"filter, since for linear features it returns <varname>true</varname> only "
+"where they cross at a point."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:339
+#, no-c-format
+msgid ""
+"A two-step solution would be to first compute the actual intersection (<xref "
+"linkend=\"ST_Intersection\"/>) of pairs of road lines that spatially "
+"intersect (<xref linkend=\"ST_Intersects\"/>), and then check if the "
+"intersection's <xref linkend=\"ST_GeometryType\"/> is '<varname>LINESTRING</"
+"varname>' (properly dealing with cases that return "
+"<varname>GEOMETRYCOLLECTION</varname>s of <varname>[MULTI]POINT</varname>s, "
+"<varname>[MULTI]LINESTRING</varname>s, etc.)."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:348
+#, no-c-format
+msgid "Clearly, a simpler and faster solution is desirable."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:360
+#, no-c-format
+msgid ""
+"A second example is locating wharves that intersect a lake's boundary on a "
+"line and where one end of the wharf is up on shore. In other words, where a "
+"wharf is within but not completely contained by a lake, intersects the "
+"boundary of a lake on a line, and where exactly one of the wharf's endpoints "
+"is within or on the boundary of the lake. It is possible to use a "
+"combination of spatial predicates to find the required features:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:371
+#, no-c-format
+msgid "(lake, wharf) = TRUE"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:375
+#, no-c-format
+msgid "(lake, wharf) = FALSE"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:379
+#, no-c-format
+msgid "(<xref linkend=\"ST_Intersection\"/>(wharf, lake)) = 'LINESTRING'"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:384
+#, no-c-format
+msgid ""
+"(<xref linkend=\"ST_Multi\"/>(<xref linkend=\"ST_Intersection\"/>(<xref "
+"linkend=\"ST_Boundary\"/>(wharf), <xref linkend=\"ST_Boundary\"/>(lake)))) = "
+"1"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:387
+#, no-c-format
+msgid "... but needless to say, this is quite complicated."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:395
+#, no-c-format
+msgid ""
+"These requirements can be met by computing the full DE-9IM intersection "
+"matrix. PostGIS provides the <xref linkend=\"ST_Relate\"/> function to do "
+"this:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:400
+#, no-c-format
+msgid ""
+"SELECT ST_Relate( 'LINESTRING (1 1, 5 5)',\n"
+"                  'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );\n"
+"st_relate\n"
+"-----------\n"
+"1010F0212"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:402
+#, no-c-format
+msgid ""
+"To test a particular spatial relationship, an <emphasis role=\"bold"
+"\">intersection matrix pattern</emphasis> is used. This is the matrix "
+"representation augmented with the additional symbols <literal>{T,*}</"
+"literal>:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:410
+#, no-c-format
+msgid ""
+"<literal>T</literal> =&gt; intersection dimension is non-empty; i.e. is in "
+"<literal>{0,1,2}</literal>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:415
+#, no-c-format
+msgid "<literal>*</literal> =&gt; don't care"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:419
+#, no-c-format
+msgid ""
+"Using intersection matrix patterns, specific spatial relationships can be "
+"evaluated in a more succinct way. The <xref linkend=\"ST_Relate\"/> and the "
+"<xref linkend=\"ST_RelateMatch\"/> functions can be used to test "
+"intersection matrix patterns. For the first example above, the intersection "
+"matrix pattern specifying two lines intersecting in a line is '<emphasis "
+"role=\"bold\">1*1***1**</emphasis>':"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:427
+#, no-c-format
+msgid ""
+"-- Find road segments that intersect in a line\n"
+"SELECT a.id\n"
+"FROM roads a, roads b\n"
+"WHERE a.id != b.id\n"
+"      AND a.geom &amp;&amp; b.geom\n"
+"      AND ST_Relate(a.geom, b.geom, '1*1***1**');"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:429
+#, no-c-format
+msgid ""
+"For the second example, the intersection matrix pattern specifying a line "
+"partly inside and partly outside a polygon is '<emphasis role=\"bold"
+"\">102101FF2</emphasis>':"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:433
+#, no-c-format
+msgid ""
+"-- Find wharves partly on a lake's shoreline\n"
+"SELECT a.lake_id, b.wharf_id\n"
+"FROM lakes a, wharfs b\n"
+"WHERE a.geom &amp;&amp; b.geom\n"
+"      AND ST_Relate(a.geom, b.geom, '102101FF2');"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_query.xml:439
+#, no-c-format
+msgid "Taking Advantage of Indexes"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:441
+#, no-c-format
+msgid ""
+"When constructing queries using spatial conditions it is important to ensure "
+"that a spatial index is used, if one exists (see <xref linkend=\"build-"
+"indexes\"/>). To do this, an index-aware spatial operator or function must "
+"be used in the <code>WHERE</code> or <code>ON</code> clause. Spatial "
+"operators include the bounding box-based operators (of which the most "
+"commonly used is <xref linkend=\"geometry_overlaps\"/>) and the distance "
+"operators used in nearest-neighbour queries (the most common being <xref "
+"linkend=\"geometry_distance_knn\"/>.) Index-aware functions include most of "
+"the named spatial predicates (such as <xref linkend=\"ST_Intersects\"/>), "
+"and most of the distance predicates (such as <xref linkend=\"ST_DWithin\"/>.)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:454
+#, no-c-format
+msgid ""
+"Functions such as <xref linkend=\"ST_Distance\"/> do not use indexes to "
+"optimize their operation. For example, the following query would be quite "
+"slow on a large table:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:460
+#, no-c-format
+msgid ""
+"SELECT the_geom\n"
+"FROM geom_table\n"
+"WHERE ST_Distance(the_geom, 'SRID=312;POINT(100000 200000)') &lt; 100"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:462
+#, no-c-format
+msgid ""
+"This query selects all the geometries in <code>geom_table</code> which are "
+"within 100 units of the point (100000, 200000). It will be slow because it "
+"is calculating the distance between each point in the table and the "
+"specified point, ie. one <varname>ST_Distance()</varname> calculation is "
+"computed for <emphasis role=\"bold\">every</emphasis> row in the table."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:468
+#, no-c-format
+msgid ""
+"We can reduce the number of rows processed by using the index-aware function "
+"<xref linkend=\"ST_DWithin\"/>:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:472
+#, no-c-format
+msgid ""
+"SELECT the_geom\n"
+"FROM geom_table\n"
+"WHERE ST_DWithin(the_geom, 'SRID=312;POINT(100000 200000)', 100)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:474
+#, no-c-format
+msgid ""
+"This query selects the same geometries, but it does it in a more efficient "
+"way. This is enabled by <varname>ST_DWithin()</varname> using the "
+"<varname>&amp;&amp;</varname> operator internally on an expanded bounding "
+"box of the query geometry. If there is a spatial index on <code>the_geom</"
+"code>, the query planner will recognize that it can use the index to reduce "
+"the number of rows scanned before calculating the distance. The spatial "
+"index allows retrieving only records with geometries whose bounding boxes "
+"overlap the expanded extent and hence which <emphasis>might</emphasis> be "
+"within the required distance. The actual distance is then computed to "
+"confirm whether to include the record in the result set."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_query.xml:491
+#, no-c-format
+msgid "Examples of Spatial SQL"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:493
+#, no-c-format
+msgid ""
+"The examples in this section will make use of two tables, a table of linear "
+"roads, and a table of polygonal municipality boundaries. The table "
+"definitions for the <varname>bc_roads</varname> table is:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:497
+#, no-c-format
+msgid ""
+"Column      | Type              | Description\n"
+"------------+-------------------+-------------------\n"
+"gid         | integer           | Unique ID\n"
+"name        | character varying | Road Name\n"
+"the_geom    | geometry          | Location Geometry (Linestring)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:499
+#, no-c-format
+msgid ""
+"The table definition for the <varname>bc_municipality</varname> table is:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:502
+#, no-c-format
+msgid ""
+"Column     | Type              | Description\n"
+"-----------+-------------------+-------------------\n"
+"gid        | integer           | Unique ID\n"
+"code       | integer           | Unique ID\n"
+"name       | character varying | City / Town Name\n"
+"the_geom   | geometry          | Location Geometry (Polygon)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:507
+#, no-c-format
+msgid "What is the total length of all roads, expressed in kilometers?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:512
+#, no-c-format
+msgid "You can answer this question with a very simple piece of SQL:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:515
+#, no-c-format
+msgid ""
+"SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;\n"
+"\n"
+"km_roads\n"
+"------------------\n"
+"70842.1243039643\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:521
+#, no-c-format
+msgid "How large is the city of Prince George, in hectares?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:525
+#, no-c-format
+msgid ""
+"This query combines an attribute condition (on the municipality name) with a "
+"spatial calculation (of the area):"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:529
+#, no-c-format
+msgid ""
+"SELECT\n"
+"  ST_Area(the_geom)/10000 AS hectares\n"
+"FROM bc_municipality\n"
+"WHERE name = 'PRINCE GEORGE';\n"
+"\n"
+"hectares\n"
+"------------------\n"
+"32657.9103824927\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:535
+#, no-c-format
+msgid "What is the largest municipality in the province, by area?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:540
+#, no-c-format
+msgid ""
+"This query brings a spatial measurement into the query condition. There are "
+"several ways of approaching this problem, but the most efficient is below:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:544
+#, no-c-format
+msgid ""
+"SELECT\n"
+"  name,\n"
+"  ST_Area(the_geom)/10000 AS hectares\n"
+"FROM\n"
+"  bc_municipality\n"
+"ORDER BY hectares DESC\n"
+"LIMIT 1;\n"
+"\n"
+"name           | hectares\n"
+"---------------+-----------------\n"
+"TUMBLER RIDGE  | 155020.02556131\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:546
+#, no-c-format
+msgid ""
+"Note that in order to answer this query we have to calculate the area of "
+"every polygon. If we were doing this a lot it would make sense to add an "
+"area column to the table that we could separately index for performance. By "
+"ordering the results in a descending direction, and them using the "
+"PostgreSQL \"LIMIT\" command we can easily pick off the largest value "
+"without using an aggregate function like max()."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:558
+#, no-c-format
+msgid "What is the length of roads fully contained within each municipality?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:563
+#, no-c-format
+msgid ""
+"This is an example of a \"spatial join\", because we are bringing together "
+"data from two tables (doing a join) but using a spatial interaction "
+"condition (\"contained\") as the join condition rather than the usual "
+"relational approach of joining on a common key:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:569
+#, no-c-format
+msgid ""
+"SELECT\n"
+"  m.name,\n"
+"  sum(ST_Length(r.the_geom))/1000 as roads_km\n"
+"FROM\n"
+"  bc_roads AS r,\n"
+"  bc_municipality AS m\n"
+"WHERE\n"
+"  ST_Contains(m.the_geom, r.the_geom)\n"
+"GROUP BY m.name\n"
+"ORDER BY roads_km;\n"
+"\n"
+"name                        | roads_km\n"
+"----------------------------+------------------\n"
+"SURREY                      | 1539.47553551242\n"
+"VANCOUVER                   | 1450.33093486576\n"
+"LANGLEY DISTRICT            | 833.793392535662\n"
+"BURNABY                     | 773.769091404338\n"
+"PRINCE GEORGE               | 694.37554369147\n"
+"..."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:571
+#, no-c-format
+msgid ""
+"This query takes a while, because every road in the table is summarized into "
+"the final result (about 250K roads for our particular example table). For "
+"smaller overlays (several thousand records on several hundred) the response "
+"can be very fast."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:580
+#, no-c-format
+msgid "Create a new table with all the roads within the city of Prince George."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:585
+#, no-c-format
+msgid ""
+"This is an example of an \"overlay\", which takes in two tables and outputs "
+"a new table that consists of spatially clipped or cut resultants. Unlike the "
+"\"spatial join\" demonstrated above, this query actually creates new "
+"geometries. An overlay is like a turbo-charged spatial join, and is useful "
+"for more exact analysis work:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:592
+#, no-c-format
+msgid ""
+"CREATE TABLE pg_roads as\n"
+"SELECT\n"
+"  ST_Intersection(r.the_geom, m.the_geom) AS intersection_geom,\n"
+"  ST_Length(r.the_geom) AS rd_orig_length,\n"
+"  r.*\n"
+"FROM\n"
+"  bc_roads AS r,\n"
+"  bc_municipality AS m\n"
+"WHERE\n"
+"  m.name = 'PRINCE GEORGE'\n"
+"        AND ST_Intersects(r.the_geom, m.the_geom);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:598
+#, no-c-format
+msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:603
+#, no-c-format
+msgid ""
+"SELECT\n"
+"  sum(ST_Length(r.the_geom))/1000 AS kilometers\n"
+"FROM\n"
+"  bc_roads r,\n"
+"  bc_municipality m\n"
+"WHERE\n"
+"        r.name = 'Douglas St'\n"
+"        AND m.name = 'VICTORIA'\n"
+"        AND ST_Intersects(m.the_geom, r.the_geom);\n"
+"\n"
+"kilometers\n"
+"------------------\n"
+"4.89151904172838\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:609
+#, no-c-format
+msgid "What is the largest municipality polygon that has a hole?"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_query.xml:614
+#, no-c-format
+msgid ""
+"SELECT gid, name, ST_Area(the_geom) AS area\n"
+"FROM bc_municipality\n"
+"WHERE ST_NRings(the_geom) &gt; 1\n"
+"ORDER BY area DESC LIMIT 1;\n"
+"\n"
+"gid  | name         | area\n"
+"-----+--------------+------------------\n"
+"12   | SPALLUMCHEEN | 257374619.430216\n"
+"(1 row)"
+msgstr ""

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2020-12-15 04:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -596,8 +596,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
-"ST_Locate_Along_Measure. The old name has been deprecated and will be "
-"removed in the future but is still available."
+"ST_Locate_Along_Measure."
 msgstr ""
 
 #. Tag: para
@@ -696,8 +695,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
-"ST_Locate_Between_Measures. The old name has been deprecated and will be "
-"removed in the future but is still available for backward compatibility."
+"ST_Locate_Between_Measures."
 msgstr ""
 
 #. Tag: para

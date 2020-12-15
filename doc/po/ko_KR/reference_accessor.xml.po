@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2020-12-15 04:51+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -3147,10 +3147,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:1313
 #, no-c-format
-msgid ""
-"Changed: 2.2.0 name changed to ST_MemSize to follow naming convention. In "
-"prior versions this function was called ST_Mem_Size, old name deprecated "
-"though still available."
+msgid "Changed: 2.2.0 name changed to ST_MemSize to follow naming convention."
 msgstr ""
 
 #. Tag: programlisting
