@@ -331,6 +331,16 @@ sub create_upgrade_test_objects
       print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
       exit(1);
     }
+
+    $query = "create view upgrade_view_makepoint_test as ";
+    $query .= "select st_makepoint(st_x(g1), st_y(g1)) from upgrade_test;";
+    my $ret = sql($query);
+    unless ( $ret =~ /^CREATE/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
+      exit(1);
+    }
+
   }
 
   if ( $OPT_WITH_RASTER )
@@ -398,7 +408,7 @@ sub drop_upgrade_test_objects
 
 if ( $OPT_UPGRADE )
 {
-	print "  Upgrading from postgis $libver\n";
+  print "  Upgrading from postgis $libver\n";
 
   create_upgrade_test_objects();
 
@@ -408,7 +418,7 @@ if ( $OPT_UPGRADE )
   }
   else
   {
-	  upgrade_spatial();
+    upgrade_spatial();
   }
 
   drop_upgrade_test_objects();

@@ -6120,6 +6120,12 @@ CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+CREATE OR REPLACE FUNCTION ST_Point(x float8, y float8, srid integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- PostGIS equivalent function: ST_MakePolygon(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	RETURNS geometry
