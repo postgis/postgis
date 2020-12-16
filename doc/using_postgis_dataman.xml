@@ -1230,7 +1230,7 @@ gisdb=# SELECT
 	PostGIS/PostgreSQL database: using formatted SQL statements or using the
 	Shapefile loader.</para>
 
-	<sect3>
+	<sect3 id="load-data-sql">
 	  <title>Using SQL to Load Data</title>
 
 	  <para>If spatial data can be converted to a text representation (as either WKT or WKB), then using
@@ -1532,7 +1532,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
 	the functions available to do comparisons and queries on spatial tables.
     </para>
 
-	<sect3>
+	<sect3 id="extract-data-sql">
 	  <title>Using SQL to Extract Data</title>
 
 	  <para>The most straightforward way of extracting spatial data out of the
@@ -1988,17 +1988,17 @@ CREATE INDEX [indexname] ON [tablename]
 		</itemizedlist>
 		<para>There is no support for kNN searches at the moment.</para>
 	</sect3>
-	<sect3>
-	  <title>Using Indexes</title>
+	<sect3 id="tuning-index-usage">
+	  <title>Tuning Index Usage</title>
 
-	  <para>Ordinarily, indexes invisibly speed up data access: once the index
-	  is built, the PostgreSQL query planner automatically decides when to use index
-	  information to speed up a query plan. Unfortunately, the
-	  query planner sometimes does not optimize the use of GiST indexes,
+	  <para>Ordinarily, indexes invisibly speed up data access: once an index
+	  is built, the PostgreSQL query planner automatically decides when to use it
+      to improve query performance. But there are some situations
+	  where the planner does not choose to use existing indexes,
       so queries end up using slow sequential scans instead of a spatial index.</para>
 
 	  <para>If you find your spatial indexes are not being used,
-      there are a couple things you can do:</para>
+      there are a few things you can do:</para>
 
 	  <itemizedlist>
 		<listitem>
@@ -2014,34 +2014,35 @@ CREATE INDEX [indexname] ON [tablename]
 		  with better information to make decisions around index usage.
 			<command>VACUUM ANALYZE</command> will compute both.</para>
 
-			<para>You should regularly vacuum your databases anyways - many PostgreSQL DBAs have
-			<command>VACUUM</command> run as an off-peak cron job on a regular basis.</para>
+			<para>You should regularly vacuum your databases anyways.  Many PostgreSQL DBAs run
+			<command>VACUUM</command> as an off-peak cron job on a regular basis.</para>
 		</listitem>
 
 		<listitem>
-		  <para>If vacuuming does not help, you can temporarily force the planner to use
-		  the index information by using the <command>set enable_seqscan to off;</command>
-			command. This way you can check whether planner is at all capable to generate
-			an index accelerated query plan for your query.
-			You should only use this command only for debug: generally
-		  speaking, the planner knows better than you do about when to use
-		  indexes. Once you have run your query, do not forget to set
-			<varname>ENABLE_SEQSCAN</varname> back on, so that other queries will utilize
-			the planner as normal.</para>
+		    <para>If vacuuming does not help, you can temporarily force the planner to use
+		    the index information by using the command <command>SET ENABLE_SEQSCAN TO OFF;</command>.
+		    This way you can check whether the planner is at all able to generate
+			an index-accelerated query plan for your query.
+			You should only use this command for debugging; generally
+		    speaking, the planner knows better than you do about when to use
+		    indexes. Once you have run your query, do not forget to run
+			<command>SET ENABLE_SEQSCAN TO ON;</command> so that the planner
+            will operate normally for other queries.</para>
 		</listitem>
 
 		<listitem>
-		  <para>If <command>set enable_seqscan to off;</command> helps your query to run,
-			your Postgres is likely not tuned for your hardware.
-			If you find the planner wrong about the cost of sequential vs
-		  index scans try reducing the value of <varname>random_page_cost</varname> in
-		  postgresql.conf or using <command>set random_page_cost to 1.1;</command>. Default value for
-		  the parameter is 4, try setting it to 1 (on SSD) or 2 (on fast magnetic disks).
-			Decreasing the value makes the planner more inclined of using Index scans.</para>
+		    <para>If <command>SET ENABLE_SEQSCAN TO OFF;</command> helps your query to run faster,
+		    your Postgres is likely not tuned for your hardware.
+			If you find the planner wrong about the cost of sequential versus
+		    index scans try reducing the value of <varname>RANDOM_PAGE_COST</varname> in
+		    <code>postgresql.conf</code>, or use <command>SET RANDOM_PAGE_COST TO 1.1;</command>.
+            The default value for <varname>RANDOM_PAGE_COST</varname> is 4.0.
+            Try setting it to 1.1 (for SSD) or 2.0 (for fast magnetic disks).
+		    Decreasing the value makes the planner more likely to use index scans.</para>
 		</listitem>
 
 		<listitem>
-		  <para>If <command>set enable_seqscan to off;</command> does not help your query,
+		  <para>If <command>SET ENABLE_SEQSCAN TO OFF;</command> does not help your query,
 			the query may be using a SQL construct that the Postgres planner is not yet able to optimize.
             It may be possible to rewrite the query in a way that the planner is able to handle.
 			For example, a subquery with an inline SELECT may not produce an efficient plan,
@@ -2049,6 +2050,9 @@ CREATE INDEX [indexname] ON [tablename]
 		</listitem>
 
 	  </itemizedlist>
+
+      For more information see the Postgres manual section on
+      <ulink url="https://www.postgresql.org/docs/current/runtime-config-query.html">Query Planning</ulink>.
 	</sect3>
   </sect2>
 

@@ -17,7 +17,7 @@
         They are a fundamental capability for querying geometry.
         </para>
 
-        <sect3>
+        <sect3 id="DE-9IM">
           <title>Dimensionally Extended 9-Intersection Model</title>
 
          <para>According to the <ulink
@@ -288,7 +288,7 @@
 
         </sect3>
 
-        <sect3>
+        <sect3 id="named-spatial-rel">
           <title>Named Spatial Relationships</title>
 
         <para>To make it easy to determine common spatial relationships,
@@ -318,7 +318,7 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
 
         </sect3>
 
-        <sect3>
+        <sect3 id="general-spatial-rel">
           <title>General Spatial Relationships</title>
 
         <para>In some cases the named spatial relationships
