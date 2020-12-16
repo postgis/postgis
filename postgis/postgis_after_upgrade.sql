@@ -234,6 +234,13 @@ DROP FUNCTION IF EXISTS pgis_geometry_union_transfn(internal, geometry);
 -- #4394
 update pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = 'geometry_eq'::regproc;
 
+-- FUNCTION ST_MakePoint(x,y,z,srid) added in 3.2, with
+-- defaults to remove need for these signatures
+DROP FUNCTION IF EXISTS ST_MakePoint(float8, float8);
+DROP FUNCTION IF EXISTS ST_MakePoint(float8, float8, float8);
+DROP FUNCTION IF EXISTS ST_MakePoint(float8, float8, float8, float8);
+
+
 
 DO language 'plpgsql'
 $$
