@@ -1667,7 +1667,7 @@ CREATE OR REPLACE FUNCTION ST_MakePointM(float8, float8, float8)
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_MakePoint(x float8, y float8, z float8 default null, m float8 default null, srid integer default null)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint3dm'
+	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	_COST_LOW;
 
