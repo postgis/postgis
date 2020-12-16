@@ -2139,26 +2139,59 @@ PG_FUNCTION_INFO_V1(LWGEOM_makepoint);
 Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 {
 	double x, y, z, m;
+	uint32_t srid = SRID_UNKNOWN;
 	LWPOINT *point;
 	GSERIALIZED *result;
 
 	POSTGIS_DEBUG(2, "LWGEOM_makepoint called");
 
+	/*
+	* ST_MakePoint(x, y, [z] default null, [m] default null, [srid] default null)
+	*/
 	x = PG_GETARG_FLOAT8(0);
 	y = PG_GETARG_FLOAT8(1);
 
-	if (PG_NARGS() == 2)
-		point = lwpoint_make2d(SRID_UNKNOWN, x, y);
+	if (PG_NARGS() == 2) {
+		point = lwpoint_make2d(srid, x, y);
+	}
 	else if (PG_NARGS() == 3)
 	{
 		z = PG_GETARG_FLOAT8(2);
-		point = lwpoint_make3dz(SRID_UNKNOWN, x, y, z);
+		point = lwpoint_make3dz(srid, x, y, z);
 	}
 	else if (PG_NARGS() == 4)
 	{
 		z = PG_GETARG_FLOAT8(2);
 		m = PG_GETARG_FLOAT8(3);
-		point = lwpoint_make4d(SRID_UNKNOWN, x, y, z, m);
+		point = lwpoint_make4d(srid, x, y, z, m);
+	}
+	else if (PG_NARGS() == 5)
+	{
+		bool hasz = LW_FALSE;
+		bool hasm = LW_FALSE;
+		if (!PG_ARGISNULL(2)) {
+			hasz = LW_TRUE;
+			z = PG_GETARG_FLOAT8(2);
+		}
+		if (!PG_ARGISNULL(3)) {
+			hasm = LW_TRUE;
+			m = PG_GETARG_FLOAT8(3);
+		}
+		if (!PG_ARGISNULL(4)) {
+			srid = PG_GETARG_INT32(4) >= 0 ? PG_GETARG_INT32(4) : SRID_UNKNOWN;
+		}
+		if (hasz && hasm) {
+			point = lwpoint_make4d(srid, x, y, z, m);
+		}
+		else if (hasm) {
+			point = lwpoint_make3dm(srid, x, y, m);
+		}
+		else if (hasz) {
+			point = lwpoint_make3dz(srid, x, y, z);
+		}
+		else {
+			point = lwpoint_make2d(srid, x, y);
+		}
 	}
 	else
 	{
@@ -2167,7 +2200,6 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 	}
 
 	result = geometry_serialize((LWGEOM *)point);
-
 	PG_RETURN_POINTER(result);
 }
 

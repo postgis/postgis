@@ -6127,11 +6127,10 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 -- SQL/MM - SQL Functions on type ST_Point
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: ST_MakePoint(XCoordinate float8,YCoordinate float8)
-CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
+CREATE OR REPLACE FUNCTION ST_Point(x float8, y float8, z float8 DEFAULT NULL, M float8 DEFAULT NULL, srid INTEGER DEFAULT NULL)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	_COST_LOW;
 
 -- PostGIS equivalent function: ST_MakePolygon(Geometry geometry)

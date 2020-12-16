@@ -642,7 +642,10 @@ FROM (SELECT ST_ExteriorRing(
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Point</function></funcdef>
 			<paramdef><type>float</type> <parameter>x</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>y</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>y</parameter></paramdef>
+            <paramdef choice="opt"><type>float</type> <parameter>z</parameter></paramdef>
+            <paramdef choice="opt"><type>float</type> <parameter>m</parameter></paramdef>
+            <paramdef choice="opt"><type>integer</type> <parameter>srid</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>

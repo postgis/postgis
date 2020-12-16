@@ -228,6 +228,9 @@ DROP FUNCTION IF EXISTS st_combine_bbox(box3d, geometry);
 DROP FUNCTION IF EXISTS st_combine_bbox(box2d, geometry);
 DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
 
+-- Dropped in 3.2 in favour of parameterized form
+DROP FUNCTION IF EXISTS ST_Point(float8, float8);
+
 -- dev function 3.0 cycle
 DROP FUNCTION IF EXISTS pgis_geometry_union_transfn(internal, geometry);
 
