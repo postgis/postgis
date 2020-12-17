@@ -2,7 +2,8 @@
   <sect1 id="SRS_Functions">
     <sect1info>
     <abstract>
-	<para>These functions work with the Spatial Reference System of geometries.</para>
+	<para>These functions work with the Spatial Reference System of geometries
+    as defined in the <varname>spatial_ref_sys</varname> table.</para>
    </abstract>
     </sect1info>
 
@@ -12,8 +13,7 @@
 	  <refnamediv>
 		<refname>ST_SetSRID</refname>
 
-		<refpurpose>Set the SRID on a geometry to a particular integer
-		value.</refpurpose>
+		<refpurpose>Set the SRID on a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -63,7 +63,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_AsEWKT"/>,  <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
 	  </refsection>
 
 	</refentry>
@@ -71,7 +71,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 	<refentry id="ST_SRID">
 	  <refnamediv>
 		<refname>ST_SRID</refname>
-		<refpurpose>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table.</refpurpose>
+		<refpurpose>Returns the spatial reference identifier for a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -107,7 +107,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
@@ -115,7 +115,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 	  <refnamediv>
 		<refname>ST_Transform</refname>
 
-		<refpurpose>Return a new geometry with its coordinates transformed to
+		<refpurpose>Return a new geometry with coordinates transformed to
 			a different spatial reference system.</refpurpose>
 	  </refnamediv>
 
@@ -270,7 +270,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="ST_AsText" />, <xref linkend="ST_SetSRID" />, <xref linkend="UpdateGeometrySRID"/></para>
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" />, <xref linkend="UpdateGeometrySRID"/></para>
 	  </refsection>
 	</refentry>
 
