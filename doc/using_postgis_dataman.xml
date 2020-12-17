@@ -524,190 +524,29 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 </sect2>
 
   <sect2>
-	<title>Spatial Metadata Tables</title>
+	<title>Spatial Tables</title>
 
-	<para>The OpenGIS "Simple Features Specification for SQL" defines some
-	metadata tables to describe geometry table structure and coordinate systems.
-    In order to ensure that metadata remains consistent,
-	operations such as creating and removing a spatial column are carried out
-	through special procedures defined by OpenGIS.</para>
+	<sect3 id="Create_Spatial_Table">
+	  <title>Creating a Spatial Table</title>
 
-	<para>There are two OpenGIS meta-data tables:
-	<varname>SPATIAL_REF_SYS</varname> and
-	<varname>GEOMETRY_COLUMNS</varname>.
-    </para>
+	  <para>Creating a table with spatial data, can be done in one step. As shown in the following example
+	  which creates a roads table with a 2D linestring geometry column in WGS84 long lat</para>
+	  <programlisting>CREATE TABLE ROADS (ID serial, ROAD_NAME text, geom geometry(LINESTRING,4326) );</programlisting>
 
-	<sect3 id="spatial_ref_sys">
-	  <title>The SPATIAL_REF_SYS Table and Spatial Reference Systems</title>
-
-	<para>The <varname>SPATIAL_REF_SYS</varname> table used by PostGIS
-    is an OGC-compliant database table that defines the available
-	<ulink url="https://en.wikipedia.org/wiki/Spatial_reference_system">spatial reference systems</ulink>.
-	It holds the numeric IDs and textual descriptions of the coordinate systems,
-    to support transformation (reprojection) between them using <xref linkend="ST_Transform" />.
-    </para>
-
-	  <para>The <varname>SPATIAL_REF_SYS</varname> table definition is:</para>
-
-	  <programlisting>CREATE TABLE spatial_ref_sys (
-  srid       INTEGER NOT NULL PRIMARY KEY,
-  auth_name  VARCHAR(256),
-  auth_srid  INTEGER,
-  srtext     VARCHAR(2048),
-  proj4text  VARCHAR(2048)
-)</programlisting>
-
-	  <para>The columns are:</para>
-
-	  <variablelist>
-		<varlistentry>
-		  <term>SRID</term>
-
-		  <listitem>
-			<para>An integer code that uniquely identifies the <ulink url="http://en.wikipedia.org/wiki/SRID">Spatial
-			Reference System</ulink> (SRS) within the database.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>AUTH_NAME</term>
-
-		  <listitem>
-			<para>The name of the standard or standards body that is being
-			cited for this reference system. For example, "EPSG" is a
-			valid <varname>AUTH_NAME</varname>.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>AUTH_SRID</term>
-
-		  <listitem>
-			<para>The ID of the Spatial Reference System as defined by the
-			Authority cited in the <varname>AUTH_NAME</varname>. In the case
-			of EPSG, this is where the EPSG projection code would go.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>SRTEXT</term>
-
-		  <listitem>
-			<para>The Well-Known Text representation of the Spatial Reference
-			System. An example of a WKT SRS representation is:</para>
-
-			<programlisting>PROJCS["NAD83 / UTM Zone 10N",
-  GEOGCS["NAD83",
-	DATUM["North_American_Datum_1983",
-	  SPHEROID["GRS 1980",6378137,298.257222101]
-	],
-	PRIMEM["Greenwich",0],
-	UNIT["degree",0.0174532925199433]
-  ],
-  PROJECTION["Transverse_Mercator"],
-  PARAMETER["latitude_of_origin",0],
-  PARAMETER["central_meridian",-123],
-  PARAMETER["scale_factor",0.9996],
-  PARAMETER["false_easting",500000],
-  PARAMETER["false_northing",0],
-  UNIT["metre",1]
-]</programlisting>
-
-			<para>For a listing of EPSG projection codes and their
-			corresponding WKT representations, see <ulink
-			url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.
-			For a discussion of SRS WKT in general, see the OpenGIS "Coordinate
-			Transformation Services Implementation Specification" at <ulink
-			url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.
-			For information on the European Petroleum Survey Group (EPSG) and
-			their database of spatial reference systems, see <ulink
-			url="http://www.epsg.org/">http://www.epsg.org</ulink>.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>PROJ4TEXT</term>
-
-		  <listitem>
-			<para>PostGIS uses the PROJ library to provide coordinate
-			transformation capabilities. The <varname>PROJ4TEXT</varname>
-			column contains the PROJ coordinate definition string for a
-			particular SRID. For example:</para>
-
-			<programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting>
-
-			<para>For more information see the
-            <ulink url="https://proj.org/">PROJ web site</ulink>.
-			The <filename>spatial_ref_sys.sql</filename> file contains both
-			<varname>SRTEXT</varname> and <varname>PROJ4TEXT</varname>
-			definitions for all EPSG projections.</para>
-		  </listitem>
-		</varlistentry>
-	  </variablelist>
-
-    <para>When retrieving spatial reference system definitions for use in transformations,
-    PostGIS uses fhe following strategy:
-    </para>
-	<itemizedlist>
-		<listitem><para>If <varname>AUTH_NAME</varname> and <varname>AUTH_SRID</varname>
-            are present (non-NULL)
-            use the PROJ SRS based on those entries (if one exists).
-            </para></listitem>
-		<listitem><para>If <varname>SRTEXT</varname> is present
-            create a SRS using it, if possible.
-            </para></listitem>
-		<listitem><para>If <varname>PROJ4TEXT</varname> is present
-            create a SRS using it, if possible.
-            </para></listitem>
-	</itemizedlist>
-
-    <para>The PostGIS <varname>SPATIAL_REF_SYS</varname> table contains over 3000 of
-    the most common spatial reference system definitions that are handled by the
-    <ulink url="https://proj.org">PROJ</ulink> projection library.
-    But there are many coordinate systems that it does not contain.
-    You can define your own custom spatial reference system if you are familiar with PROJ constructs.
-    Keep in mind that most spatial reference systems are regional
-    and have no meaning when used outside of the bounds they were intended for.</para>
-
-    <para>A resource for finding spatial reference systems not defined in the core set is <ulink url="http://spatialreference.org/">http://spatialreference.org/</ulink></para>
-
-	<para>Some commonly used spatial reference systems are:
-            <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>,
-			<ulink url="http://spatialreference.org/ref/epsg/4269/">4269 - NAD 83 Long Lat</ulink>,
-			<ulink url="http://spatialreference.org/ref/epsg/3395/">3395 - WGS 84 World Mercator</ulink>,
-			<ulink url="http://spatialreference.org/ref/epsg/2163/">2163 - US National Atlas Equal Area</ulink>,
-        and the 60 WGS84 UTM zones.
-		UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
-        (To determine which UTM zone to use for your area of interest, see the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance">utmzone PostGIS plpgsql helper function</ulink>.)
-	</para>
-	<para>
-		US states use State Plane spatial reference systems (meter or feet based) - usually one or 2 exists per state.
-        Most of the meter-based ones are in the core set, but many of the
-		feet-based ones or ESRI created ones will need to be copied from <ulink url="http://spatialreference.org">spatialreference.org</ulink>.
-	</para>
-
-	<para>You can even define non-Earth-based coordinate systems,
-    such as <ulink url="http://spatialreference.org/ref/iau2000/mars-2000/">Mars 2000</ulink>
-    This Mars coordinate system is non-planar (it's in degrees spheroidal),
-    but you can use it with the <varname>geography</varname> type
-    to obtain length and proximity measurements in meters instead of degrees.</para>
-
-    <para>Here is an example of loading a custom coordinate system using
-    an unassigned SRID and the PROJ definition for a US-centric Lambert Conformal projection:</para>
-
-<programlisting>
-INSERT INTO spatial_ref_sys (srid, proj4text)
-VALUES ( 990000,
-  '+proj=lcc  +lon_0=-95 +lat_0=25 +lat_1=25 +lat_2=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs'
-);
-</programlisting>
-
+	  <para>We can add additional columns using standard ALTER TABLE command as we do in this next example where we add a 3-D linestring.</para>
+	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
 	</sect3>
 
 	<sect3 id="geometry_columns">
 	  <title>The GEOMETRY_COLUMNS View</title>
 
-	  <para><varname>GEOMETRY_COLUMNS</varname> is a view reading from database system catalog tables.
+        <para>The OpenGIS "Simple Features Specification for SQL" defines
+        the <varname>GEOMETRY_COLUMNS</varname> metadata table to describe geometry table structure.
+        In order to ensure that metadata remains consistent,
+        operations such as creating and removing a spatial column are carried out
+        through special procedures defined by OpenGIS.</para>
+
+	  <para>In PostGIS <varname>geometry_columns</varname> is a view reading from database system catalog tables.
 	  Its structure is:</para>
 
 	  <programlisting>\d geometry_columns</programlisting>
@@ -726,7 +565,7 @@ VALUES ( 990000,
 
 	  <variablelist>
 		<varlistentry>
-		  <term>F_TABLE_CATALOG, F_TABLE_SCHEMA, F_TABLE_NAME</term>
+		  <term>f_table_catalog, f_table_schema, f_table_name</term>
 
 		  <listitem>
 			<para>The fully qualified name of the feature table containing the
@@ -738,7 +577,7 @@ VALUES ( 990000,
 		</varlistentry>
 
 		<varlistentry>
-		  <term>F_GEOMETRY_COLUMN</term>
+		  <term>f_geometry_column</term>
 
 		  <listitem>
 			<para>The name of the geometry column in the feature table.</para>
@@ -746,7 +585,7 @@ VALUES ( 990000,
 		</varlistentry>
 
 		<varlistentry>
-		  <term>COORD_DIMENSION</term>
+		  <term>coord_dimension</term>
 
 		  <listitem>
 			<para>The spatial dimension (2, 3 or 4 dimensional) of the
@@ -755,17 +594,18 @@ VALUES ( 990000,
 		</varlistentry>
 
 		<varlistentry>
-		  <term>SRID</term>
+		  <term>srid</term>
 
 		  <listitem>
 			<para>The ID of the spatial reference system used for the
 			coordinate geometry in this table. It is a foreign key reference
-			to the <varname>SPATIAL_REF_SYS</varname>.</para>
+			to the <varname>spatial_ref_sys</varname> table
+            (see <xref linkend="spatial_ref_sys_table" />).</para>
 		  </listitem>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>TYPE</term>
+		  <term>type</term>
 
 		  <listitem>
 			<para>The type of the spatial object. To restrict the spatial
@@ -784,17 +624,6 @@ VALUES ( 990000,
 		  </listitem>
 		</varlistentry>
 	  </variablelist>
-	</sect3>
-
-	<sect3 id="Create_Spatial_Table">
-	  <title>Creating a Spatial Table</title>
-
-	  <para>Creating a table with spatial data, can be done in one step. As shown in the following example
-	  which creates a roads table with a 2D linestring geometry column in WGS84 long lat</para>
-	  <programlisting>CREATE TABLE ROADS (ID serial, ROAD_NAME text, geom geometry(LINESTRING,4326) );</programlisting>
-
-	  <para>We can add additional columns using standard ALTER TABLE command as we do in this next example where we add a 3-D linestring.</para>
-	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
 	</sect3>
 
 	  <sect3 id="Manual_Register_Spatial_Column">
@@ -914,6 +743,188 @@ SELECT f_table_name, f_geometry_column, srid, type
  vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
     </sect3>
 </sect2>
+<!-- ==============================================================  -->
+
+<sect2 id="spatial_ref_sys">
+	<title>Spatial Reference Systems</title>
+
+	<para><ulink url="https://en.wikipedia.org/wiki/Spatial_reference_system">Spatial Reference Systems</ulink> (SRS)
+    define how geometry is referenced to locations on the Earth's surface.</para>
+
+	<sect3 id="spatial_ref_sys_table">
+	  <title>SPATIAL_REF_SYS Table</title>
+
+	<para>The <varname>SPATIAL_REF_SYS</varname> table used by PostGIS
+    is an OGC-compliant database table that defines the available
+	spatial reference systems.
+	It holds the numeric IDs and textual descriptions of the coordinate systems.
+    The main use is to support transformation (reprojection) between them using
+    <xref linkend="ST_Transform" />.
+    </para>
+
+	  <para>The <varname>spatial_ref_sys</varname> table definition is:</para>
+
+	  <programlisting>CREATE TABLE spatial_ref_sys (
+  srid       INTEGER NOT NULL PRIMARY KEY,
+  auth_name  VARCHAR(256),
+  auth_srid  INTEGER,
+  srtext     VARCHAR(2048),
+  proj4text  VARCHAR(2048)
+)</programlisting>
+
+	  <para>The columns are:</para>
+
+	  <variablelist>
+		<varlistentry>
+		  <term>srid</term>
+
+		  <listitem>
+			<para>An integer code that uniquely identifies the <ulink url="http://en.wikipedia.org/wiki/SRID">Spatial
+			Reference System</ulink> (SRS) within the database.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>auth_name</term>
+
+		  <listitem>
+			<para>The name of the standard or standards body that is being
+			cited for this reference system. For example, "EPSG" is a
+			valid <varname>auth_name</varname>.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>auth_srid</term>
+
+		  <listitem>
+			<para>The ID of the Spatial Reference System as defined by the
+			Authority cited in the <varname>auth_name</varname>. In the case
+			of EPSG, this is where the EPSG projection code would go.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>srtext</term>
+
+		  <listitem>
+			<para>The Well-Known Text representation of the Spatial Reference
+			System. An example of a WKT SRS representation is:</para>
+
+			<programlisting>PROJCS["NAD83 / UTM Zone 10N",
+  GEOGCS["NAD83",
+	DATUM["North_American_Datum_1983",
+	  SPHEROID["GRS 1980",6378137,298.257222101]
+	],
+	PRIMEM["Greenwich",0],
+	UNIT["degree",0.0174532925199433]
+  ],
+  PROJECTION["Transverse_Mercator"],
+  PARAMETER["latitude_of_origin",0],
+  PARAMETER["central_meridian",-123],
+  PARAMETER["scale_factor",0.9996],
+  PARAMETER["false_easting",500000],
+  PARAMETER["false_northing",0],
+  UNIT["metre",1]
+]</programlisting>
+
+			<para>For a listing of EPSG projection codes and their
+			corresponding WKT representations, see <ulink
+			url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.
+			For a discussion of SRS WKT in general, see the OpenGIS "Coordinate
+			Transformation Services Implementation Specification" at <ulink
+			url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.
+			For information on the European Petroleum Survey Group (EPSG) and
+			their database of spatial reference systems, see <ulink
+			url="http://www.epsg.org/">http://www.epsg.org</ulink>.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>proj4text</term>
+
+		  <listitem>
+			<para>PostGIS uses the PROJ library to provide coordinate
+			transformation capabilities. The <varname>proj4text</varname>
+			column contains the PROJ coordinate definition string for a
+			particular SRID. For example:</para>
+
+			<programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting>
+
+			<para>For more information see the
+            <ulink url="https://proj.org/">PROJ web site</ulink>.
+			The <filename>spatial_ref_sys.sql</filename> file contains both
+			<varname>srtext</varname> and <varname>proj4text</varname>
+			definitions for all EPSG projections.</para>
+		  </listitem>
+		</varlistentry>
+	  </variablelist>
+
+    <para>When retrieving spatial reference system definitions for use in transformations,
+    PostGIS uses fhe following strategy:
+    </para>
+	<itemizedlist>
+		<listitem><para>If <varname>auth_name</varname> and <varname>auth_srid</varname>
+            are present (non-NULL)
+            use the PROJ SRS based on those entries (if one exists).
+            </para></listitem>
+		<listitem><para>If <varname>srtext</varname> is present
+            create a SRS using it, if possible.
+            </para></listitem>
+		<listitem><para>If <varname>proj4text</varname> is present
+            create a SRS using it, if possible.
+            </para></listitem>
+	</itemizedlist>
+    </sect3>
+    <sect3 id="user-spatial-ref-sys">
+    <title>User-Defined Spatial Reference Systems</title>
+
+    <para>The PostGIS <varname>spatial_ref_sys</varname> table contains over 3000 of
+    the most common spatial reference system definitions that are handled by the
+    <ulink url="https://proj.org">PROJ</ulink> projection library.
+    But there are many coordinate systems that it does not contain.
+    You can add SRS definitions to the table if you have
+    the required information about the spatial reference system.
+    Or, you can define your own custom spatial reference system if you are familiar with PROJ constructs.
+    Keep in mind that most spatial reference systems are regional
+    and have no meaning when used outside of the bounds they were intended for.</para>
+
+    <para>A resource for finding spatial reference systems not defined in the core set is <ulink url="http://spatialreference.org/">http://spatialreference.org/</ulink></para>
+
+	<para>Some commonly used spatial reference systems are:
+            <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/4269/">4269 - NAD 83 Long Lat</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/3395/">3395 - WGS 84 World Mercator</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/2163/">2163 - US National Atlas Equal Area</ulink>,
+        and the 60 WGS84 UTM zones.
+		UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
+        (To determine which UTM zone to use for your area of interest, see the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance">utmzone PostGIS plpgsql helper function</ulink>.)
+	</para>
+	<para>
+		US states use State Plane spatial reference systems (meter or feet based) - usually one or 2 exists per state.
+        Most of the meter-based ones are in the core set, but many of the
+		feet-based ones or ESRI-created ones will need to be copied from <ulink url="http://spatialreference.org">spatialreference.org</ulink>.
+	</para>
+
+	<para>You can even define non-Earth-based coordinate systems,
+    such as <ulink url="http://spatialreference.org/ref/iau2000/mars-2000/">Mars 2000</ulink>
+    This Mars coordinate system is non-planar (it's in degrees spheroidal),
+    but you can use it with the <varname>geography</varname> type
+    to obtain length and proximity measurements in meters instead of degrees.</para>
+
+    <para>Here is an example of loading a custom coordinate system using
+    an unassigned SRID and the PROJ definition for a US-centric Lambert Conformal projection:</para>
+
+<programlisting>
+INSERT INTO spatial_ref_sys (srid, proj4text)
+VALUES ( 990000,
+  '+proj=lcc  +lon_0=-95 +lat_0=25 +lat_1=25 +lat_2=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs'
+);
+</programlisting>
+
+	</sect3>
+</sect2>
+
 <!-- ==============================================================  -->
 <sect2 id="OGC_Validity">
 	  <title>Geometry Validation</title>
