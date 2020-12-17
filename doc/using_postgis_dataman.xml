@@ -649,13 +649,16 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
     PostGIS uses fhe following strategy:
     </para>
 	<itemizedlist>
-		<listitem>If <varname>AUTH_NAME</varname> and <varname>AUTH_SRID</varname>
+		<listitem><para>If <varname>AUTH_NAME</varname> and <varname>AUTH_SRID</varname>
             are present (non-NULL)
-            use the PROJ SRS based on those entries (if one exists).</listitem>
-		<listitem>If <varname>SRTEXT</varname> is present
-            create a SRS using it, if possible.</listitem>
-		<listitem>If <varname>PROJ4TEXT</varname> is present
-            create a SRS using it, if possible.</listitem>
+            use the PROJ SRS based on those entries (if one exists).
+            </para></listitem>
+		<listitem><para>If <varname>SRTEXT</varname> is present
+            create a SRS using it, if possible.
+            </para></listitem>
+		<listitem><para>If <varname>PROJ4TEXT</varname> is present
+            create a SRS using it, if possible.
+            </para></listitem>
 	</itemizedlist>
 
     <para>The PostGIS <varname>SPATIAL_REF_SYS</varname> table contains over 3000 of
