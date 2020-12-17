@@ -2080,8 +2080,11 @@ CREATE INDEX [indexname] ON [tablename]
 
 	  </itemizedlist>
 
-      For more information see the Postgres manual section on
-      <ulink url="https://www.postgresql.org/docs/current/runtime-config-query.html">Query Planning</ulink>.
+        <para>
+        For more information see the Postgres manual section on
+        <ulink url="https://www.postgresql.org/docs/current/runtime-config-query.html">Query Planning</ulink>.
+        </para>
+
 	</sect3>
   </sect2>
 
