@@ -1,6 +1,6 @@
 
 PostGIS 3.1.0
-2020/12/xx
+2020/12/18
 
 This version requires PostgreSQL 9.6 or higher and GEOS 3.6 or higher
 Additional features are enabled if you are running GEOS 3.9.
