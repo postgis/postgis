@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2020-01-16 16:27+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: 2019-03-11 09:16+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -811,11 +811,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:348
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
-"ST_Locate_Along_Measure. The old name has been deprecated and will be "
-"removed in the future but is still available."
+"ST_Locate_Along_Measure."
 msgstr ""
 "Änderung: 2.0.0 In Vorgängerversionen als ST_Locate_Along_Measure bezeichet. "
 "Der alte Name ist überholt und wird in der Zukunft entfernt ist aber noch "
@@ -955,15 +954,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:405
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
-"ST_Locate_Between_Measures. The old name has been deprecated and will be "
-"removed in the future but is still available for backward compatibility."
+"ST_Locate_Between_Measures."
 msgstr ""
-"Änderung: 2.0.0 In Vorgängerversionen als ST_Locate_Between_Measures "
-"bezeichet. Der alte Name ist überholt und wird in der Zukunft entfernt, ist "
-"aber aus Gründen der Abwärtskompatibilität noch verfügbar."
+"Änderung: 2.0.0 In Vorgängerversionen als ST_Locate_Along_Measure bezeichet. "
+"Der alte Name ist überholt und wird in der Zukunft entfernt ist aber noch "
+"verfügbar."
 
 #. Tag: para
 #: reference_lrs.xml:406 reference_lrs.xml:454
@@ -1327,6 +1325,15 @@ msgstr ""
 "                             ewelev\n"
 "-----------------------------------------------------------------\n"
 " MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"
+
+#~ msgid ""
+#~ "Changed: 2.0.0 - in prior versions this used to be called "
+#~ "ST_Locate_Between_Measures. The old name has been deprecated and will be "
+#~ "removed in the future but is still available for backward compatibility."
+#~ msgstr ""
+#~ "Änderung: 2.0.0 In Vorgängerversionen als ST_Locate_Between_Measures "
+#~ "bezeichet. Der alte Name ist überholt und wird in der Zukunft entfernt, "
+#~ "ist aber aus Gründen der Abwärtskompatibilität noch verfügbar."
 
 #~ msgid ""
 #~ "Return a derived geometry (collection) value with elements that intersect "

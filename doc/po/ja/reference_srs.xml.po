@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:39+0000\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -18,25 +18,27 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:5
 #, no-c-format
-msgid "These functions work with the Spatial Reference System of geometries."
+msgid ""
+"These functions work with the Spatial Reference System of geometries as "
+"defined in the <varname>spatial_ref_sys</varname> table."
 msgstr ""
 
 #. Tag: title
-#: reference_srs.xml:9
+#: reference_srs.xml:10
 #, no-c-format
 msgid "Spatial Reference System Functions"
 msgstr ""
 
 #. Tag: refname
-#: reference_srs.xml:13
+#: reference_srs.xml:14
 #, no-c-format
 msgid "ST_SetSRID"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_srs.xml:15
+#: reference_srs.xml:16
 #, no-c-format
-msgid "Set the SRID on a geometry to a particular integer value."
+msgid "Set the SRID on a geometry."
 msgstr ""
 
 #. Tag: funcprototype
@@ -133,8 +135,8 @@ msgstr ""
 #: reference_srs.xml:60
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
-"\"ST_Transform\"/>, <xref linkend=\"UpdateGeometrySRID\"/>"
+", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"UpdateGeometrySRID\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -146,9 +148,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_srs.xml:68
 #, no-c-format
-msgid ""
-"Returns the spatial reference identifier for the ST_Geometry as defined in "
-"spatial_ref_sys table."
+msgid "Returns the spatial reference identifier for a geometry."
 msgstr ""
 
 #. Tag: funcprototype
@@ -201,9 +201,7 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:101
 #, no-c-format
-msgid ""
-", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>"
+msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -216,8 +214,8 @@ msgstr ""
 #: reference_srs.xml:109
 #, no-c-format
 msgid ""
-"Return a new geometry with its coordinates transformed to a different "
-"spatial reference system."
+"Return a new geometry with coordinates transformed to a different spatial "
+"reference system."
 msgstr ""
 
 #. Tag: funcsynopsis
@@ -489,6 +487,6 @@ msgstr ""
 #: reference_srs.xml:221
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"UpdateGeometrySRID\"/>"
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
+"\"UpdateGeometrySRID\"/>"
 msgstr ""
