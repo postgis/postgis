@@ -322,6 +322,8 @@ lwcollection_make_geos_friendly(LWCOLLECTION* g)
 	uint32_t i, new_ngeoms = 0;
 	LWCOLLECTION* ret;
 
+	if ( ! g->ngeoms ) return lwcollection_as_lwgeom(g);
+
 	/* enough space for all components */
 	new_geoms = lwalloc(sizeof(LWGEOM*) * g->ngeoms);
 
