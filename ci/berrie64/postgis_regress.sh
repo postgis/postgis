@@ -26,10 +26,11 @@ make check RUNTESTFLAGS="-v"
 make install
 make check RUNTESTFLAGS="-v --extension"
 err_status=$?
-if [$err_status == 0] ; then
-	make garden
-	err_status=$?
-fi
+
+
+make garden
+err_status=$?
+
 
 if [ -d $PGDATA/postmaster.pid ] ; then
 	$PGCTL stop -D $PGDATA -s -m fast
