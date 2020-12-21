@@ -159,7 +159,7 @@ static void test_lwgeom_make_valid(void)
 
 	ewkt = lwgeom_to_ewkt(gout);
 	/* printf("c = %s\n", ewkt); */
-	CU_ASSERT_STRING_EQUAL(ewkt, "MULTIPOLYGON EMPTY");
+	ASSERT_STRING_EQUAL(ewkt, "SRID=3857;MULTIPOLYGON EMPTY");
 	lwfree(ewkt);
 
 	lwgeom_free(gout);
