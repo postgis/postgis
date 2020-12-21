@@ -4,7 +4,7 @@ PostGIS 3.1.1
 
  * Bug Fixes
 
-  - #xxxx, 
+  - #4814, Crash passing collection with only empty components to ST_MakeValid
 
 
 PostGIS 3.1.0
