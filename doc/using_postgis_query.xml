@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sect1 id="using_postgis_query">
+<chapter id="using_postgis_query">
   <title>Spatial Queries</title>
 
 	<para>The <emphasis>raison d'etre</emphasis> of spatial databases
@@ -10,14 +10,14 @@
 	appropriate indexes are in place to provide good performance.
     </para>
 
-    <sect2 id="eval_spatial_rel">
+    <sect1 id="eval_spatial_rel">
         <title>Determining Spatial Relationships</title>
 
         <para>Spatial relationships indicate how two geometries interact with one another.
         They are a fundamental capability for querying geometry.
         </para>
 
-        <sect3 id="DE-9IM">
+        <sect2 id="DE-9IM">
           <title>Dimensionally Extended 9-Intersection Model</title>
 
          <para>According to the <ulink
@@ -286,9 +286,9 @@
             </listitem>
           </itemizedlist>
 
-        </sect3>
+        </sect2>
 
-        <sect3 id="named-spatial-rel">
+        <sect2 id="named-spatial-rel">
           <title>Named Spatial Relationships</title>
 
         <para>To make it easy to determine common spatial relationships,
@@ -316,9 +316,9 @@ FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
         <para>For more details and illustrations, see the
         <ulink url="https://postgis.net/workshops/postgis-intro/spatial_relationships.html">PostGIS Workshop.</ulink></para>
 
-        </sect3>
+        </sect2>
 
-        <sect3 id="general-spatial-rel">
+        <sect2 id="general-spatial-rel">
           <title>General Spatial Relationships</title>
 
         <para>In some cases the named spatial relationships
@@ -450,10 +450,10 @@ FROM lakes a, wharfs b
 WHERE a.geom &amp;&amp; b.geom
       AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 
-        </sect3>
-    </sect2>
+        </sect2>
+    </sect1>
 
-	<sect2 id="using-query-indexes">
+	<sect1 id="using-query-indexes">
     <title>Taking Advantage of Indexes</title>
 
     <para>When constructing queries using spatial conditions it is important to
@@ -508,9 +508,9 @@ WHERE ST_DWithin(the_geom, 'SRID=312;POINT(100000 200000)', 100)
     The actual distance is then computed to confirm whether to include the record in the result set.
     </para>
 
-	</sect2>
+	</sect1>
 
-	<sect2 id="examples_spatial_sql">
+	<sect1 id="examples_spatial_sql">
 	  <title>Examples of Spatial SQL</title>
 
 	  <para>The examples in this section will make use of two tables, a table
@@ -721,5 +721,5 @@ gid  | name         | area
 		</qandaentry>
 	  </qandaset>
 
-  </sect2>
-</sect1>
+  </sect1>
+</chapter>

@@ -18,7 +18,6 @@
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">
 <!ENTITY administration SYSTEM "administration.xml">
-<!ENTITY usage SYSTEM "usage.xml">
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
 <!ENTITY using_postgis_query SYSTEM "using_postgis_query.xml">
 <!ENTITY using_raster_dataman SYSTEM "using_raster_dataman.xml">
@@ -181,11 +180,17 @@
   &introduction;
   &installation;
   &administration;
-  &usage;
+  &using_postgis_dataman;
+  &using_postgis_query;
+  &performance_tips;
+  &using_postgis_app;
   &reference;
-  &reference_raster;
   &faq;
+  &extras_topology;
+  &using_raster_dataman;
+  &reference_raster;
   &faq_raster;
+  &extras;
   &postgis_aggs_mm;
   &reporting;
   &release_notes;
