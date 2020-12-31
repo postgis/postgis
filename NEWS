@@ -5,6 +5,7 @@ PostGIS 3.1.1
  * Bug Fixes
 
   - #4814, Crash passing collection with only empty components to ST_MakeValid
+  - #4818, Make the VSICURL synthetic driver work as documented 
 
 
 PostGIS 3.1.0
