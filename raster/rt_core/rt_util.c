@@ -393,6 +393,7 @@ rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
 		}
 		else if (
 			(strstr(fn, "/vsi") != NULL) &&
+			(strstr(fn, "/vsimem") == NULL) &&
 			(strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL)
 		) {
 			rterror("rt_util_gdal_open: Cannot open %s file. %s disabled", GDAL_VSICURL, GDAL_VSICURL);
