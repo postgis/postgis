@@ -278,6 +278,7 @@ static void
 rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	int enable_all = 0;
 	int disable_all = 0;
+	int vsicurl = 0;
 
 	char **enabled_drivers_array = NULL;
 	uint32_t enabled_drivers_count = 0;
@@ -293,6 +294,8 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	/* if NULL, nothing to do */
 	if (enabled_drivers == NULL)
 		return;
+
+	elog(DEBUG4, "Enabling GDAL drivers: %s", enabled_drivers);
 
 	/* destroy the driver manager */
 	/* this is the only way to ensure GDAL_SKIP is recognized */
@@ -322,6 +325,14 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 			if (strstr(enabled_drivers_array[i], GDAL_ENABLE_ALL) != NULL) {
 				enabled_drivers_found[i] = TRUE;
 				enable_all = 1;
+			}
+		}
+	}
+	else if (strstr(enabled_drivers, GDAL_VSICURL) != NULL) {
+		for (i = 0; i < enabled_drivers_count; i++) {
+			if (strstr(enabled_drivers_array[i], GDAL_VSICURL) != NULL) {
+				enabled_drivers_found[i] = TRUE;
+				vsicurl = 1;
 			}
 		}
 	}
@@ -392,6 +403,9 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 		else
 			elog(WARNING, "Unknown GDAL driver: %s", enabled_drivers_array[i]);
 	}
+
+	if (vsicurl)
+		elog(WARNING, "%s set.", GDAL_VSICURL);
 
 	/* destroy the driver manager */
 	/* this is the only way to ensure GDAL_SKIP is recognized */
