@@ -392,10 +392,10 @@ rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
 			/* do nothing */
 		}
 		else if (
-			(strstr(fn, "/vsicurl") != NULL) &&
+			(strstr(fn, "/vsi") != NULL) &&
 			(strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL)
 		) {
-			rterror("rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
+			rterror("rt_util_gdal_open: Cannot open %s file. %s disabled", GDAL_VSICURL, GDAL_VSICURL);
 			return NULL;
 		}
 	}
