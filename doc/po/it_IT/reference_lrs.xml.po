@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2020-01-16 16:27+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: pibinko <pibinko@gmail.com>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
@@ -600,8 +600,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
-"ST_Locate_Along_Measure. The old name has been deprecated and will be "
-"removed in the future but is still available."
+"ST_Locate_Along_Measure."
 msgstr ""
 
 #. Tag: para
@@ -726,8 +725,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
-"ST_Locate_Between_Measures. The old name has been deprecated and will be "
-"removed in the future but is still available for backward compatibility."
+"ST_Locate_Between_Measures."
 msgstr ""
 
 #. Tag: para

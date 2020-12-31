@@ -1,6 +1,9 @@
+PostGIS 3.2.0
+2021/xx/xx
+
 
 PostGIS 3.1.0
-2020/12/xx
+2020/12/18
 
 This version requires PostgreSQL 9.6 or higher and GEOS 3.6 or higher
 Additional features are enabled if you are running GEOS 3.9.
@@ -11,10 +14,7 @@ Additional features are enabled if you are running GEOS 3.9.
            met or explicitly disabled (--without-protobuf)
   - #4258, Separated postgis_sfcgal from postgis
            into its own lib file and extension (Regina Obe)
-  - svn number is replaced by git hash in version output
-    (Sandro Santilli, Raúl Marín)
   - #4577, Drop support for PostgreSQL 9.5 (Raúl Marín)
-  - #4579, Drop postgis_proc_set_search_path.pl (Raúl Marín)
   - #4601, ST_TileEnvelope signature changed.
   - #3057, ST_Force3D, ST_Force3DZ, ST_Force3DM and ST_Force4D signatures changed.
 
@@ -34,6 +34,7 @@ Additional features are enabled if you are running GEOS 3.9.
            for overlay with exact tolerance (Sandro Santilli)
   - #4624, ST_HexagonGrid and ST_SquareGrid, set returning functions to
            generate tilings of the plane (Paul Ramsey)
+  - #4624, ST_Hexagon and ST_Square, shape generators (Paul Ramsey)
   - #4804, (GEOS 3.9+) ST_ReducePrecision allows valid precision reduction
            (Paul Ramsey)
   - #4710, ST_ClusterKMeans now works with 3D geometries (Darafei Praliaskouski)
@@ -80,7 +81,6 @@ Additional features are enabled if you are running GEOS 3.9.
   - #4677, Share gserialized objects between different cache types (Raúl Marín)
   - #4601, Add ST_TileEnvelope margin argument (Yuri Astrakhan)
   - #2972, Add quiet mode (-q) to pgsql2shp (Kristian Thy)
-  - #4617, Add configure switch `--without-phony-revision` (Raúl Marín)
   - #3057, Optional value params for Force3D*, Force4D functions (Kristian Thy)
   - #4569, Allow unknown SRID geometry insertion into typmod SRID column (Paul Ramsey)
   - #4149, ST_Simplify(geom, 0) is now O(N).

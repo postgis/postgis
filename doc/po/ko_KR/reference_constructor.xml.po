@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -63,10 +63,10 @@ msgstr ""
 #: reference_constructor.xml:30 reference_constructor.xml:109
 #: reference_constructor.xml:154 reference_constructor.xml:203
 #: reference_constructor.xml:307 reference_constructor.xml:353
-#: reference_constructor.xml:407 reference_constructor.xml:489
-#: reference_constructor.xml:547 reference_constructor.xml:606
-#: reference_constructor.xml:645 reference_constructor.xml:715
-#: reference_constructor.xml:765 reference_constructor.xml:805
+#: reference_constructor.xml:407 reference_constructor.xml:492
+#: reference_constructor.xml:550 reference_constructor.xml:609
+#: reference_constructor.xml:648 reference_constructor.xml:720
+#: reference_constructor.xml:757 reference_constructor.xml:815
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -139,7 +139,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:58 reference_constructor.xml:115
 #: reference_constructor.xml:220 reference_constructor.xml:321
-#: reference_constructor.xml:421 reference_constructor.xml:564
+#: reference_constructor.xml:421 reference_constructor.xml:567
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -277,10 +277,10 @@ msgstr ""
 #: reference_constructor.xml:87 reference_constructor.xml:127
 #: reference_constructor.xml:170 reference_constructor.xml:266
 #: reference_constructor.xml:329 reference_constructor.xml:378
-#: reference_constructor.xml:459 reference_constructor.xml:523
-#: reference_constructor.xml:579 reference_constructor.xml:621
-#: reference_constructor.xml:692 reference_constructor.xml:740
-#: reference_constructor.xml:780 reference_constructor.xml:820
+#: reference_constructor.xml:466 reference_constructor.xml:526
+#: reference_constructor.xml:582 reference_constructor.xml:624
+#: reference_constructor.xml:695 reference_constructor.xml:735
+#: reference_constructor.xml:788 reference_constructor.xml:830
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -333,7 +333,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_constructor.xml:120 reference_constructor.xml:325
-#: reference_constructor.xml:364 reference_constructor.xml:569
+#: reference_constructor.xml:364 reference_constructor.xml:572
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -798,7 +798,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:319 reference_constructor.xml:359
-#: reference_constructor.xml:493
+#: reference_constructor.xml:496
 #, no-c-format
 msgid ""
 "For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</"
@@ -1018,7 +1018,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:417 reference_constructor.xml:558
+#: reference_constructor.xml:417 reference_constructor.xml:561
 #, fuzzy, no-c-format
 msgid ""
 "This function does not accept MultiLineStrings. Use <xref linkend="
@@ -1139,19 +1139,21 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:443
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Create a set of province boundaries with holes representing lakes. The input "
 "is a table of province Polygons/MultiPolygons and a table of water "
-"linestrings. Using a LEFT JOIN ensures all provinces are included even if "
-"they have no lakes."
+"linestrings. Lines forming lakes are determined by using <xref linkend="
+"\"ST_IsClosed\"/>. The province linework is extracted by using <xref linkend="
+"\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the boundary "
+"is forced to be a single LineString by using <xref linkend=\"ST_LineMerge\"/"
+">. (However, note that if a province has more than one region or has islands "
+"this will produce an invallid polygon.) Using a LEFT JOIN ensures all "
+"provinces are included even if they have no lakes."
 msgstr ""
-"지역 폴리곤/멀티폴리곤과 수변 라인스트링의 집합으로부터 지역 내에 있는 호수"
-"를 표현하는 구멍들을 가진 지역 경계선을 빌드해봅시다. 이 예시에서는 PostGIS "
-"ST_Accum 함수를 사용합니다."
 
 #. Tag: para
-#: reference_constructor.xml:449
+#: reference_constructor.xml:456
 #, fuzzy, no-c-format
 msgid ""
 "The CASE construct is used because passing a null array into ST_MakePolygon "
@@ -1161,23 +1163,22 @@ msgstr ""
 "합니다."
 
 #. Tag: programlisting
-#: reference_constructor.xml:452
+#: reference_constructor.xml:459
 #, no-c-format
 msgid ""
 "SELECT p.gid, p.province_name,\n"
-"                CASE WHEN array_agg(w.the_geom) IS NULL\n"
-"                THEN p.the_geom\n"
-"                ELSE  ST_MakePolygon( ST_LineMerge(ST_Boundary(p.the_geom)), "
-"array_agg(w.the_geom)) END\n"
-"        FROM\n"
-"                provinces p LEFT JOIN waterlines w\n"
-"                        ON (ST_Within(w.the_geom, p.the_geom) AND "
-"ST_IsClosed(w.the_geom))\n"
-"        GROUP BY p.gid, p.province_name, p.the_geom;"
+"        CASE WHEN array_agg(w.geom) IS NULL\n"
+"        THEN p.geom\n"
+"        ELSE  ST_MakePolygon( ST_LineMerge(ST_Boundary(p.geom)),\n"
+"                        array_agg(w.geom)) END\n"
+"FROM\n"
+"        provinces p LEFT JOIN waterlines w\n"
+"                ON (ST_Within(w.geom, p.geom) AND ST_IsClosed(w.geom))\n"
+"GROUP BY p.gid, p.province_name, p.geom;"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:454
+#: reference_constructor.xml:461
 #, no-c-format
 msgid ""
 "Another technique is to utilize a correlated subquery and the ARRAY() "
@@ -1185,23 +1186,23 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:456
+#: reference_constructor.xml:463
 #, fuzzy, no-c-format
 msgid ""
 "SELECT p.gid,  p.province_name,\n"
-"                CASE WHEN EXISTS( SELECT w.the_geom\n"
-"                        FROM waterlines w\n"
-"                        WHERE ST_Within(w.the_geom, p.the_geom)\n"
-"                        AND ST_IsClosed(w.the_geom))\n"
-"                THEN ST_MakePolygon(\n"
-"                        ST_LineMerge(ST_Boundary(p.the_geom)),\n"
-"                        ARRAY( SELECT w.the_geom\n"
-"                                FROM waterlines w\n"
-"                                WHERE ST_Within(w.the_geom, p.the_geom)\n"
-"                                AND ST_IsClosed(w.the_geom)))\n"
-"                ELSE p.the_geom\n"
-"                END AS the_geom\n"
-"        FROM provinces p;"
+"    CASE WHEN EXISTS( SELECT w.geom\n"
+"        FROM waterlines w\n"
+"        WHERE ST_Within(w.geom, p.geom)\n"
+"        AND ST_IsClosed(w.geom))\n"
+"    THEN ST_MakePolygon(\n"
+"        ST_LineMerge(ST_Boundary(p.geom)),\n"
+"        ARRAY( SELECT w.geom\n"
+"            FROM waterlines w\n"
+"            WHERE ST_Within(w.geom, p.geom)\n"
+"            AND ST_IsClosed(w.geom)))\n"
+"    ELSE p.geom\n"
+"    END AS geom\n"
+"FROM provinces p;"
 msgstr ""
 "SELECT p.gid, p.province_name,\n"
 "                CASE WHEN\n"
@@ -1232,26 +1233,14 @@ msgstr ""
 "        FROM\n"
 "                provinces p;"
 
-#. Tag: para
-#: reference_constructor.xml:460
-#, fuzzy, no-c-format
-msgid ""
-", <xref linkend=\"ST_AddPoint\"/>, <xref linkend=\"ST_IsClosed\"/>, <xref "
-"linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref linkend="
-"\"ST_BuildArea\"/>"
-msgstr ""
-", <xref linkend=\"ST_Accum\"/>, <xref linkend=\"ST_AddPoint\"/>, <xref "
-"linkend=\"ST_GeometryType\"/>, <xref linkend=\"ST_IsClosed\"/>, <xref "
-"linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_BuildArea\"/>"
-
 #. Tag: refname
-#: reference_constructor.xml:473
+#: reference_constructor.xml:476
 #, no-c-format
 msgid "ST_Point"
 msgstr "ST_Point"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:475
+#: reference_constructor.xml:478
 #, fuzzy, no-c-format
 msgid ""
 "Creates a Point with the given coordinate values. Alias for ST_MakePoint."
@@ -1260,7 +1249,7 @@ msgstr ""
 "니다."
 
 #. Tag: funcprototype
-#: reference_constructor.xml:480
+#: reference_constructor.xml:483
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Point</function></funcdef> "
@@ -1272,7 +1261,7 @@ msgstr ""
 "<paramdef><type>float </type> <parameter>y_lat</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:491
+#: reference_constructor.xml:494
 #, fuzzy, no-c-format
 msgid ""
 "Returns an Point with the given X and Y coordinate values. This is the SQL-"
@@ -1282,31 +1271,31 @@ msgstr ""
 "ST_MakePoint와 동일한 함수입니다."
 
 #. Tag: para
-#: reference_constructor.xml:495
+#: reference_constructor.xml:498
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.2"
 msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.2"
 
 #. Tag: title
-#: reference_constructor.xml:501
+#: reference_constructor.xml:504
 #, no-c-format
 msgid "Examples: Geometry"
 msgstr "예시: 도형"
 
 #. Tag: programlisting
-#: reference_constructor.xml:503
+#: reference_constructor.xml:506
 #, fuzzy, no-c-format
 msgid "SELECT ST_SetSRID( ST_Point( -71.104, 42.315), 4326)"
 msgstr "SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)"
 
 #. Tag: title
-#: reference_constructor.xml:507
+#: reference_constructor.xml:510
 #, no-c-format
 msgid "Examples: Geography"
 msgstr "예시: 지리형"
 
 #. Tag: programlisting
-#: reference_constructor.xml:509
+#: reference_constructor.xml:512
 #, fuzzy, no-c-format
 msgid ""
 "SELECT CAST(ST_SetSRID( ST_Point( -71.104, 42.315), 4326) AS geography);"
@@ -1315,14 +1304,14 @@ msgstr ""
 "As geography);"
 
 #. Tag: para
-#: reference_constructor.xml:511
+#: reference_constructor.xml:514
 #, no-c-format
 msgid ""
 "PostgreSQL also provides the <varname>::</varname> short-hand for casting"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:512
+#: reference_constructor.xml:515
 #, fuzzy, no-c-format
 msgid "SELECT ST_SetSRID( ST_Point( -71.104, 42.315), 4326)::geography;"
 msgstr ""
@@ -1330,7 +1319,7 @@ msgstr ""
 "As geography);"
 
 #. Tag: para
-#: reference_constructor.xml:514
+#: reference_constructor.xml:517
 #, no-c-format
 msgid ""
 "If the point coordinates are not in a geodetic coordinate system (such as "
@@ -1340,7 +1329,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:518
+#: reference_constructor.xml:521
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::"
@@ -1350,7 +1339,7 @@ msgstr ""
 "As geography);"
 
 #. Tag: para
-#: reference_constructor.xml:525
+#: reference_constructor.xml:528
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
@@ -1360,19 +1349,19 @@ msgstr ""
 "linkend=\"ST_Transform\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:531
+#: reference_constructor.xml:534
 #, no-c-format
 msgid "ST_Polygon"
 msgstr "ST_Polygon"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:533
+#: reference_constructor.xml:536
 #, no-c-format
 msgid "Creates a Polygon from a LineString with a specified SRID."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:538
+#: reference_constructor.xml:541
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Polygon</function></funcdef> "
@@ -1386,7 +1375,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:549
+#: reference_constructor.xml:552
 #, no-c-format
 msgid ""
 "Returns a polygon built from the given LineString and sets the spatial "
@@ -1394,7 +1383,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:552
+#: reference_constructor.xml:555
 #, no-c-format
 msgid ""
 "ST_Polygon is similar to <xref linkend=\"ST_MakePolygon\"/> Variant 1 with "
@@ -1402,7 +1391,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:554
+#: reference_constructor.xml:557
 #, fuzzy, no-c-format
 msgid ""
 "To create polygons with holes use <xref linkend=\"ST_MakePolygon\"/> Variant "
@@ -1410,25 +1399,25 @@ msgid ""
 msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
 #. Tag: para
-#: reference_constructor.xml:562
+#: reference_constructor.xml:565
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
 
 #. Tag: para
-#: reference_constructor.xml:563
+#: reference_constructor.xml:566
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.2"
 msgstr "&sqlmm_compliant; SQL-MM 3: 8.3.2"
 
 #. Tag: para
-#: reference_constructor.xml:571
+#: reference_constructor.xml:574
 #, no-c-format
 msgid "Create a 2D polygon."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:572
+#: reference_constructor.xml:575
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::"
@@ -1439,13 +1428,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:573
+#: reference_constructor.xml:576
 #, no-c-format
 msgid "Create a 3D polygon."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:574
+#: reference_constructor.xml:577
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, "
@@ -1456,7 +1445,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:581
+#: reference_constructor.xml:584
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
@@ -1468,13 +1457,13 @@ msgstr ""
 "linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:588
+#: reference_constructor.xml:591
 #, fuzzy, no-c-format
 msgid "ST_TileEnvelope"
 msgstr "ST_MakeEnvelope"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:589
+#: reference_constructor.xml:592
 #, no-c-format
 msgid ""
 "Creates a rectangular Polygon in <ulink url=\"https://en.wikipedia.org/wiki/"
@@ -1483,7 +1472,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:594
+#: reference_constructor.xml:597
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_TileEnvelope</function></funcdef> "
@@ -1502,7 +1491,7 @@ msgstr ""
 "<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:608
+#: reference_constructor.xml:611
 #, no-c-format
 msgid ""
 "Creates a rectangular Polygon in <ulink url=\"https://en.wikipedia.org/wiki/"
@@ -1516,7 +1505,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:610
+#: reference_constructor.xml:613
 #, no-c-format
 msgid ""
 "The optional margin parameter can be used to grow a tile by the given "
@@ -1534,25 +1523,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:612
+#: reference_constructor.xml:615
 #, fuzzy, no-c-format
 msgid "Enhanced: 3.1.0 Added margin parameter."
 msgstr "개선 사항: 2.0.0 버전에서 선택적인 기본 SRID 파라미터가 추가됐습니다."
 
 #. Tag: para
-#: reference_constructor.xml:613
+#: reference_constructor.xml:616
 #, fuzzy, no-c-format
 msgid "Availability: 3.0.0"
 msgstr "2.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: title
-#: reference_constructor.xml:617
+#: reference_constructor.xml:620
 #, fuzzy, no-c-format
 msgid "Example: Building a tile envelope"
 msgstr "예시: 경계 상자 폴리곤을 빌드하기"
 
 #. Tag: programlisting
-#: reference_constructor.xml:618
+#: reference_constructor.xml:621
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_TileEnvelope(2, 1, 1) );\n"
@@ -1571,13 +1560,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_constructor.xml:630
+#: reference_constructor.xml:633
 #, no-c-format
 msgid "ST_HexagonGrid"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:631
+#: reference_constructor.xml:634
 #, no-c-format
 msgid ""
 "Returns a set of hexagons and cell indices that completely cover the bounds "
@@ -1585,7 +1574,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:636
+#: reference_constructor.xml:639
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>setof record <function>ST_HexagonGrid</function></funcdef> "
@@ -1597,7 +1586,7 @@ msgstr ""
 "<paramdef><type>float </type> <parameter>y_lat</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:647
+#: reference_constructor.xml:650
 #, no-c-format
 msgid ""
 "Starts with the concept of a hexagon tiling of the plane. (Not a hexagon "
@@ -1609,14 +1598,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:659
+#: reference_constructor.xml:662
 #, no-c-format
 msgid ""
 "The SRS for the output hexagons is the SRS provided by the bounds geometry."
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:660
+#: reference_constructor.xml:663
 #, no-c-format
 msgid ""
 "Doubling or tripling the edge size of the hexagon generates a new parent "
@@ -1625,20 +1614,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:668 reference_constructor.xml:728
-#: reference_constructor.xml:772 reference_constructor.xml:812
+#: reference_constructor.xml:671 reference_constructor.xml:727
+#: reference_constructor.xml:770 reference_constructor.xml:822
 #, fuzzy, no-c-format
-msgid "Availability: 3.1"
+msgid "Availability: 3.1.0"
 msgstr "2.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: title
-#: reference_constructor.xml:673
+#: reference_constructor.xml:676
 #, fuzzy, no-c-format
 msgid "Example: Counting points in hexagons"
 msgstr "예시: 배열 버전 사용하기"
 
 #. Tag: para
-#: reference_constructor.xml:674
+#: reference_constructor.xml:677
 #, no-c-format
 msgid ""
 "To do a point summary against a hexagonal tiling, generate a hexagon grid "
@@ -1647,27 +1636,29 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:676
+#: reference_constructor.xml:679
 #, no-c-format
 msgid ""
-"WITH bounds AS (\n"
-"         SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) "
-"AS geom\n"
-" )\n"
-" SELECT Count(*), hexes.geom\n"
-" FROM pointtable pts\n"
-" JOIN ST_HexagonGrid(1000, bounds.geom) hexes\n"
-" GROUP BY hexes.geom"
+"SELECT COUNT(*), hexes.geom\n"
+"FROM\n"
+"    ST_HexagonGrid(\n"
+"        10000,\n"
+"        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
+"    ) AS hexes\n"
+"    INNER JOIN\n"
+"    pointtable AS pts\n"
+"    ON ST_Intersects(pts.geom, hexes.geom)\n"
+"GROUP BY hexes.geom;"
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:680
+#: reference_constructor.xml:682
 #, fuzzy, no-c-format
 msgid "Example: Generating hex coverage of polygons"
 msgstr "예시: 경계 상자 폴리곤을 빌드하기"
 
 #. Tag: para
-#: reference_constructor.xml:681
+#: reference_constructor.xml:683
 #, no-c-format
 msgid ""
 "If we generate a set of hexagons for each polygon boundary and filter out "
@@ -1676,130 +1667,55 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:687
+#: reference_constructor.xml:689
 #, no-c-format
 msgid ""
 "Tiling states results in a hexagon coverage of each state, and multiple "
 "hexagons overlapping at the borders between states."
 msgstr ""
 
-#. Tag: programlisting
-#: reference_constructor.xml:689
-#, no-c-format
-msgid ""
-"WITH hexes AS (\n"
-"        SELECT admin1.gid,\n"
-"               (ST_HexagonGrid(100000, admin1.geom)).* AS hex\n"
-"        FROM admin1\n"
-"        WHERE adm0_a3 = 'USA'\n"
-")\n"
-"SELECT hexes.*\n"
-"FROM hexes\n"
-"JOIN admin1 USING (gid)\n"
-"WHERE ST_Intersects(admin1.geom, hexes.geom)"
-msgstr ""
-
 #. Tag: para
-#: reference_constructor.xml:693
-#, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_SquareGrid\"/>"
-msgstr ", <xref linkend=\"ST_AsKML\"/>"
-
-#. Tag: refname
-#: reference_constructor.xml:700
-#, no-c-format
-msgid "ST_SquareGrid"
-msgstr ""
-
-#. Tag: refpurpose
-#: reference_constructor.xml:701
+#: reference_constructor.xml:691
 #, no-c-format
 msgid ""
-"Returns a set of grid squares and cell indices that completely cover the "
-"bounds of the geometry argument."
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_constructor.xml:706
-#, fuzzy, no-c-format
-msgid ""
-"<funcdef>setof record <function>ST_SquareGrid</function></funcdef> "
-"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float </type> <parameter>x_lon</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>y_lat</parameter></paramdef>"
-
-#. Tag: para
-#: reference_constructor.xml:717
-#, no-c-format
-msgid ""
-"Starts with the concept of a square tiling of the plane. For a given planar "
-"SRS, and a given edge size, starting at the origin of the SRS, there is one "
-"unique square tiling of the plane, Tiling(SRS, Size). This function answers "
-"the question: what grids in a given Tiling(SRS, Size) overlap with a given "
-"bounds."
-msgstr ""
-
-#. Tag: para
-#: reference_constructor.xml:723
-#, no-c-format
-msgid ""
-"The SRS for the output squares is the SRS provided by the bounds geometry."
-msgstr ""
-
-#. Tag: para
-#: reference_constructor.xml:724
-#, no-c-format
-msgid ""
-"Doubling or edge size of the square generates a new parent tiling that "
-"perfectly fits with the original tiling. Standard web map tilings in "
-"mercator are just powers-of-two square grids in the mercator plane."
-msgstr ""
-
-#. Tag: title
-#: reference_constructor.xml:733
-#, no-c-format
-msgid "Example: Counting points in squares"
-msgstr ""
-
-#. Tag: para
-#: reference_constructor.xml:734
-#, no-c-format
-msgid ""
-"To do a point summary against a square tiling, generate a square grid using "
-"the extent of the points as the bounds, then spatially join to that grid."
+"The LATERAL keyword is implied for set-returning functions when referring to "
+"a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just "
+"plain , are equivalent constructs for this example."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:736
+#: reference_constructor.xml:692
 #, no-c-format
 msgid ""
-"WITH bounds AS (\n"
-"         SELECT ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857) "
-"AS geom\n"
-" )\n"
-" SELECT Count(*), squares.geom\n"
-" FROM pointtable pts\n"
-" JOIN ST_SquareGrid(1000, bounds.geom) squares\n"
-" GROUP BY squares.geom"
+"SELECT admin1.gid, hex.geom\n"
+"FROM\n"
+"    admin1\n"
+"    CROSS JOIN\n"
+"    ST_HexagonGrid(100000, admin1.geom) AS hex\n"
+"WHERE\n"
+"    adm0_a3 = 'USA'\n"
+"    AND\n"
+"    ST_Intersects(admin1.geom, hex.geom)"
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:741
+#: reference_constructor.xml:696
 #, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_HexagonGrid\"/>"
-msgstr ", <xref linkend=\"ST_AsBinary\"/>"
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SquareGrid\"/>, <xref "
+"linkend=\"ST_TileEnvelope\"/>"
+msgstr ""
+", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:747
+#: reference_constructor.xml:702
 #, no-c-format
 msgid "ST_Hexagon"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:748
+#: reference_constructor.xml:703
 #, no-c-format
 msgid ""
 "Returns a single hexagon, using the provided edge size and cell coordinate "
@@ -1807,7 +1723,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:754
+#: reference_constructor.xml:709
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Hexagon</function></funcdef> "
@@ -1824,7 +1740,7 @@ msgstr ""
 "<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:767
+#: reference_constructor.xml:722
 #, no-c-format
 msgid ""
 "Uses the same hexagon tiling concept as <xref linkend=\"ST_HexagonGrid\"/>, "
@@ -1833,7 +1749,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:770
+#: reference_constructor.xml:725
 #, no-c-format
 msgid ""
 "Hexagons are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
@@ -1841,13 +1757,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:776
+#: reference_constructor.xml:731
 #, no-c-format
 msgid "Example: Creating a hexagon at the origin"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:777
+#: reference_constructor.xml:732
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_SetSRID(ST_Hexagon(1.0, 0, 0), 3857));\n"
@@ -1861,27 +1777,152 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:781
+#: reference_constructor.xml:736
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_HexagonGrid\"/>, <xref linkend=\"ST_Square\"/>"
 msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:787
+#: reference_constructor.xml:742
+#, no-c-format
+msgid "ST_SquareGrid"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_constructor.xml:743
+#, no-c-format
+msgid ""
+"Returns a set of grid squares and cell indices that completely cover the "
+"bounds of the geometry argument."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_constructor.xml:748
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>setof record <function>ST_SquareGrid</function></funcdef> "
+"<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>bounds</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Point</function></funcdef> "
+"<paramdef><type>float </type> <parameter>x_lon</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>y_lat</parameter></paramdef>"
+
+#. Tag: para
+#: reference_constructor.xml:759
+#, no-c-format
+msgid ""
+"Starts with the concept of a square tiling of the plane. For a given planar "
+"SRS, and a given edge size, starting at the origin of the SRS, there is one "
+"unique square tiling of the plane, Tiling(SRS, Size). This function answers "
+"the question: what grids in a given Tiling(SRS, Size) overlap with a given "
+"bounds."
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:765
+#, no-c-format
+msgid ""
+"The SRS for the output squares is the SRS provided by the bounds geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:766
+#, no-c-format
+msgid ""
+"Doubling or edge size of the square generates a new parent tiling that "
+"perfectly fits with the original tiling. Standard web map tilings in "
+"mercator are just powers-of-two square grids in the mercator plane."
+msgstr ""
+
+#. Tag: title
+#: reference_constructor.xml:775
+#, fuzzy, no-c-format
+msgid "Example: Counting points in squares (using single chopped grid)"
+msgstr "예시: 배열 버전 사용하기"
+
+#. Tag: para
+#: reference_constructor.xml:776
+#, no-c-format
+msgid ""
+"To do a point summary against a square tiling, generate a square grid using "
+"the extent of the points as the bounds, then spatially join to that grid. "
+"Note the estimated extent might be off from actual extent, so be cautious "
+"and at very least make sure you've analyzed your table."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_constructor.xml:778
+#, no-c-format
+msgid ""
+"SELECT COUNT(*), squares.geom\n"
+"    FROM\n"
+"    pointtable AS pts\n"
+"    INNER JOIN\n"
+"    ST_SquareGrid(\n"
+"        1000,\n"
+"        ST_SetSRID(ST_EstimatedExtent('pointtable', 'geom'), 3857)\n"
+"    ) AS squares\n"
+"    ON ST_Intersects(pts.geom, squares.geom)\n"
+"    GROUP BY squares.geom"
+msgstr ""
+
+#. Tag: title
+#: reference_constructor.xml:782
+#, fuzzy, no-c-format
+msgid "Example: Counting points in squares using set of grid per point"
+msgstr "예시: 배열 버전 사용하기"
+
+#. Tag: para
+#: reference_constructor.xml:783
+#, no-c-format
+msgid ""
+"This yields the same result as the first example but will be slower for a "
+"large number of points"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_constructor.xml:784
+#, no-c-format
+msgid ""
+"SELECT COUNT(*), squares.geom\n"
+"    FROM\n"
+"    pointtable AS pts\n"
+"    INNER JOIN\n"
+"    ST_SquareGrid(\n"
+"        1000,\n"
+"       pts.geom\n"
+"    ) AS squares\n"
+"    ON ST_Intersects(pts.geom, squares.geom)\n"
+"    GROUP BY squares.geom"
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:789
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"ST_HexagonGrid\"/> , <xref linkend=\"ST_EstimatedExtent\"/"
+"> , <xref linkend=\"ST_SetSRID\"/>"
+msgstr ""
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
+
+#. Tag: refname
+#: reference_constructor.xml:797
 #, no-c-format
 msgid "ST_Square"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:788
+#: reference_constructor.xml:798
 #, no-c-format
 msgid ""
 "Returns a single square, using the provided edge size and cell coordinate "
-"within the hexagon grid space."
+"within the square grid space."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_constructor.xml:794
+#: reference_constructor.xml:804
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Square</function></funcdef> "
@@ -1898,7 +1939,7 @@ msgstr ""
 "<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:807
+#: reference_constructor.xml:817
 #, no-c-format
 msgid ""
 "Uses the same square tiling concept as <xref linkend=\"ST_SquareGrid\"/>, "
@@ -1907,7 +1948,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_constructor.xml:810
+#: reference_constructor.xml:820
 #, no-c-format
 msgid ""
 "Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
@@ -1915,13 +1956,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_constructor.xml:816
+#: reference_constructor.xml:826
 #, no-c-format
 msgid "Example: Creating a square at the origin"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_constructor.xml:817
+#: reference_constructor.xml:827
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_SetSRID(ST_Square(1.0, 0, 0), 3857));\n"
@@ -1935,10 +1976,43 @@ msgstr ""
 "POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))"
 
 #. Tag: para
-#: reference_constructor.xml:821
+#: reference_constructor.xml:831
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_SquareGrid\"/>, <xref linkend=\"ST_Hexagon\"/>"
 msgstr ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
+
+#, fuzzy
+#~ msgid ""
+#~ "Create a set of province boundaries with holes representing lakes. The "
+#~ "input is a table of province Polygons/MultiPolygons and a table of water "
+#~ "linestrings. Using a LEFT JOIN ensures all provinces are included even if "
+#~ "they have no lakes."
+#~ msgstr ""
+#~ "지역 폴리곤/멀티폴리곤과 수변 라인스트링의 집합으로부터 지역 내에 있는 호"
+#~ "수를 표현하는 구멍들을 가진 지역 경계선을 빌드해봅시다. 이 예시에서는 "
+#~ "PostGIS ST_Accum 함수를 사용합니다."
+
+#, fuzzy
+#~ msgid ""
+#~ ", <xref linkend=\"ST_AddPoint\"/>, <xref linkend=\"ST_IsClosed\"/>, <xref "
+#~ "linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_StartPoint\"/>, <xref "
+#~ "linkend=\"ST_BuildArea\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Accum\"/>, <xref linkend=\"ST_AddPoint\"/>, <xref "
+#~ "linkend=\"ST_GeometryType\"/>, <xref linkend=\"ST_IsClosed\"/>, <xref "
+#~ "linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_BuildArea\"/>"
+
+#, fuzzy
+#~ msgid "Availability: 3.1"
+#~ msgstr "2.1.0 버전부터 사용할 수 있습니다."
+
+#, fuzzy
+#~ msgid ", <xref linkend=\"ST_SquareGrid\"/>"
+#~ msgstr ", <xref linkend=\"ST_AsKML\"/>"
+
+#, fuzzy
+#~ msgid ", <xref linkend=\"ST_HexagonGrid\"/>"
+#~ msgstr ", <xref linkend=\"ST_AsBinary\"/>"
 
 #~ msgid "ST_BdPolyFromText"
 #~ msgstr "ST_BdPolyFromText"
@@ -3639,13 +3713,6 @@ msgstr ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 #~ "WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, "
 #~ "528439.5625),\n"
 #~ "        ST_Point(-987121.375 ,529933.1875)),2163)"
-
-#~ msgid ""
-#~ ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_SRID\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_SRID\"/>"
 
 #~ msgid "ST_3DMakeBox"
 #~ msgstr "ST_3DMakeBox"
