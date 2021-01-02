@@ -322,7 +322,10 @@ lwcollection_make_geos_friendly(LWCOLLECTION* g)
 	uint32_t i, new_ngeoms = 0;
 	LWCOLLECTION* ret;
 
-	if ( ! g->ngeoms ) return lwcollection_as_lwgeom(g);
+	if ( ! g->ngeoms ) {
+		LWDEBUG(3, "lwcollection_make_geos_friendly: returning input untouched");
+		return lwcollection_as_lwgeom(g);
+	}
 
 	/* enough space for all components */
 	new_geoms = lwalloc(sizeof(LWGEOM*) * g->ngeoms);
@@ -334,7 +337,12 @@ lwcollection_make_geos_friendly(LWCOLLECTION* g)
 	for (i = 0; i < g->ngeoms; i++)
 	{
 		LWGEOM* newg = lwgeom_make_geos_friendly(g->geoms[i]);
-		if (newg) new_geoms[new_ngeoms++] = newg;
+		if (!newg) continue;
+		if ( newg != g->geoms[i] ) {
+			new_geoms[new_ngeoms++] = newg;
+		} else {
+			new_geoms[new_ngeoms++] = lwgeom_clone(newg);
+		}
 	}
 
 	ret->bbox = NULL; /* recompute later... */
@@ -908,28 +916,20 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	lwgeom_out = lwgeom_make_geos_friendly(lwgeom_in);
 	if (!lwgeom_out) lwerror("Could not make a geos friendly geometry out of input");
 
+	LWDEBUGF(4, "Input geom %p made GEOS-valid as %p", lwgeom_in, lwgeom_out);
+
 	geosgeom = LWGEOM2GEOS(lwgeom_out, 1);
+	if ( lwgeom_in != lwgeom_out ) {
+		lwgeom_free(lwgeom_out);
+	}
 	if (!geosgeom)
 	{
-		LWDEBUGF(4,
-			 "Original geom can't be converted to GEOS (%s)"
-			 " - will try cleaning that up first",
-			 lwgeom_geos_errmsg);
-
-
-		/* try again as we did cleanup now */
-		/* TODO: invoke LWGEOM2GEOS directly with autoclean ? */
-		geosgeom = LWGEOM2GEOS(lwgeom_out, 0);
-		if (!geosgeom)
-		{
-			lwerror("Couldn't convert POSTGIS geom to GEOS: %s", lwgeom_geos_errmsg);
-			return NULL;
-		}
+		lwerror("Couldn't convert POSTGIS geom to GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
 	}
 	else
 	{
-		LWDEBUG(4, "original geom converted to GEOS");
-		lwgeom_out = lwgeom_in;
+		LWDEBUG(4, "geom converted to GEOS");
 	}
 
 #if POSTGIS_GEOS_VERSION < 38
