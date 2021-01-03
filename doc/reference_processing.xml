@@ -1926,6 +1926,7 @@ geomtextrep
 
         <para>Unlike <xref linkend="ST_SnapToGrid" /> the returned geometry will be valid, with no ring self-intersections or collapsed components.</para>
 
+        <para>Availability: 3.1.0 - requires GEOS &gt;= 3.9.0. </para>
       </refsection>
 
       <refsection>
