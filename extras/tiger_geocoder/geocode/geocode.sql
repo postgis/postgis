@@ -33,7 +33,9 @@ BEGIN
   RETURN QUERY SELECT g.addy, g.geomout, g.rating FROM geocode(ADDY, max_results, restrict_geom) As g ORDER BY g.rating;
 
 END;
-$_$ LANGUAGE plpgsql STABLE;
+$_$ LANGUAGE plpgsql COST 1000
+STABLE PARALLEL SAFE
+ROWS 1;
 
 CREATE OR REPLACE FUNCTION geocode(
     IN_ADDY NORM_ADDY,
@@ -125,5 +127,7 @@ BEGIN
   RETURN;
 
 END;
-$_$ LANGUAGE plpgsql STABLE
-  COST 1000;
+$_$ LANGUAGE plpgsql
+COST 1000
+STABLE PARALLEL SAFE
+ROWS 1;
