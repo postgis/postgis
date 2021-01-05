@@ -45,7 +45,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	GSERIALIZED *in, *out;
 	LWGEOM *lwgeom_in, *lwgeom_out;
 
-	in = PG_GETARG_GSERIALIZED_P(0);
+	in = PG_GETARG_GSERIALIZED_P_COPY(0);
 	lwgeom_in = lwgeom_from_gserialized(in);
 
 	POSTGIS_DEBUG(1, "ST_MakeValid enter");
