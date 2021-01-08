@@ -1,6 +1,8 @@
 PostGIS 3.2.0
 2021/xx/xx
 
+ * Breaking changes *
+  - Removed `--without-wagyu` build option. Using Wagyu is not mandatory to build with MVT support.
 
 PostGIS 3.1.0
 2020/12/18
