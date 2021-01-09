@@ -76,6 +76,10 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	}
 
 	out = geometry_serialize(lwgeom_out);
+	if ( lwgeom_out != lwgeom_in ) {
+		lwgeom_free(lwgeom_out);
+	}
+	PG_FREE_IF_COPY(in, 0);
 
 	PG_RETURN_POINTER(out);
 }
