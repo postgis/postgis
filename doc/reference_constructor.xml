@@ -982,6 +982,18 @@ POLYGON((-1 0,-0.5
         </refsection>
 
         <refsection>
+        <title>Example: Generating a 1 degree grid for a country</title>
+        <para>The grid will fill the whole bounds of the country, so if you want just squares
+            that touch the country you will have to filter afterwards with ST_Intersects.</para>
+            <programlisting>WITH grid AS (
+SELECT (ST_SquareGrid(1, ST_Transform(geom,4326))).*
+FROM admin0 WHERE name = 'Canada'
+)
+  SELEcT ST_AsText(geom)
+  FROM grid</programlisting>
+        </refsection>
+
+        <refsection>
         <title>Example: Counting points in squares (using single chopped grid)</title>
         <para>To do a point summary against a square tiling, generate a square grid using the
         extent of the points as the bounds, then spatially join to that grid. Note the estimated extent might be off from actual extent, so be cautious and at very least make sure you've analyzed your table.</para>
