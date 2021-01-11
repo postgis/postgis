@@ -1616,9 +1616,9 @@ BEGIN
        'face_check (face_id);';
 
   -- Scan the table looking for NULL geometries
-  FOR rec IN EXECUTE
-    'SELECT f1.face_id FROM '
-       'face_check f1 WHERE f1.geom IS NULL OR ST_IsEmpty(f1.geom)'
+  FOR rec IN
+    SELECT face_id FROM face_check
+    WHERE geom IS NULL OR ST_IsEmpty(geom)
   LOOP
     -- Face missing !
     retrec.error := 'face has no rings';
@@ -1629,14 +1629,17 @@ BEGIN
 
   -- Scan the table looking for overlap or containment
   -- TODO: also check for MBR consistency
-  FOR rec IN EXECUTE
-    'SELECT f1.geom, f1.face_id as id1, f2.face_id as id2, '
-       ' ST_Relate(f1.geom, f2.geom) as im'
-       ' FROM '
-       'face_check f1, '
-       'face_check f2 '
-       'WHERE f1.face_id < f2.face_id'
-       ' AND f1.geom && f2.geom'
+  FOR rec IN
+    SELECT
+      f1.geom,
+      f1.face_id as id1,
+      f2.face_id as id2,
+      ST_Relate(f1.geom, f2.geom) as im
+    FROM
+      face_check f1,
+      face_check f2
+      WHERE f1.face_id < f2.face_id
+      AND f1.geom && f2.geom
   LOOP
 
     -- Face overlap
