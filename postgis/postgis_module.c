@@ -35,7 +35,7 @@
 #include "lwgeom_pg.h"
 #include "geos_c.h"
 
-#ifdef HAVE_WAGYU
+#ifdef HAVE_LIBPROTOBUF
 #include "lwgeom_wagyu.h"
 #endif
 
@@ -97,7 +97,7 @@ handleInterrupt(int sig)
 
   GEOS_interruptRequest();
 
-#ifdef HAVE_WAGYU
+#ifdef HAVE_LIBPROTOBUF
   lwgeom_wagyu_interruptRequest();
 #endif
 

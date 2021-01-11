@@ -1462,74 +1462,67 @@ dnl ===========================================================================
 
 dnl Wagyu will only be necessary if protobuf is present to build MVTs
 
-HAVE_WAGYU=no
 if test "x$HAVE_PROTOBUF" = "xyes"; then
-    AC_ARG_WITH([wagyu], AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]), [], [])
+    DEPS_SUBDIR="deps"
+    AC_SUBST([DEPS_SUBDIR])
 
-    if test "x$with_wagyu" != xno; then
-            AC_MSG_RESULT([WAGYU: Wagyu usage requested])
+    WAGYU_LIB=libwagyu.la
+    AC_SUBST([WAGYU_LIB])
 
-            DEPS_SUBDIR="deps"
-            AC_SUBST([DEPS_SUBDIR])
+    dnl ============================================================
+    dnl We force  to use the same compiler as Postgresql
+    dnl ============================================================
+    CXX_SAVE="$CXX"
+    CC_SAVE="$CC"
+    CFLAGS_SAVE="$CFLAGS"
+    CXXFLAGS_SAVE="$CXXFLAGS"
+    CPPFLAGS_SAVE="$CPPFLAGS"
+    LDFLAGS_SAVE="$LDFLAGS"
+    LIBS_SAVE="$LIBS"
 
-            WAGYU_LIB=libwagyu.la
-            AC_SUBST([WAGYU_LIB])
+    WAGYU_CXX=`"$PG_CONFIG" --cc`
+    CPPFLAGS="-x c++"
+    CFLAGS=""
+    LDFLAGS=""
+    LIBS=""
+    CXX="$WAGYU_CXX"
+    AC_PROG_CXX
+    AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+    WAGYU_CXX="$CXX -x c++"
 
-            dnl ============================================================
-            dnl We force  to use the same compiler as Postgresql
-            dnl ============================================================
-            CXX_SAVE="$CXX"
-            CC_SAVE="$CC"
-            CFLAGS_SAVE="$CFLAGS"
-            CXXFLAGS_SAVE="$CXXFLAGS"
-            CPPFLAGS_SAVE="$CPPFLAGS"
-            LDFLAGS_SAVE="$LDFLAGS"
-            LIBS_SAVE="$LIBS"
+    dnl ============================================================
+    dnl Check if we can declare the c++ stdlib
+    dnl ============================================================
+    CC="$WAGYU_CXX"
 
-            WAGYU_CXX=`"$PG_CONFIG" --cc`
-            CPPFLAGS="-x c++"
-            CFLAGS=""
-            LDFLAGS=""
-            LIBS=""
-            CXX="$WAGYU_CXX"
-            AC_PROG_CXX
-            AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
-            WAGYU_CXX="$CXX -x c++"
+    AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
+    AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
 
-            dnl ============================================================
-            dnl Check if we can declare the c++ stdlib
-            dnl ============================================================
-            CC="$WAGYU_CXX"
-
-            AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
-            AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
-
-            if test "x$HAVE_CPP" = "xyes"; then
-                WAGYU_LDFLAGS="-lc++"
-            elif test "x$HAVE_STDCPP" = "xyes"; then
-                WAGYU_LDFLAGS="-lstdc++"
-            else
-                AC_MSG_WARN("Could not find a C++ standard library")
-                WAGYU_LDFLAGS=""
-            fi
-
-            CXX="$CXX_SAVE"
-            CC="$CC_SAVE"
-            CFLAGS="$CFLAGS_SAVE"
-            CXXFLAGS="$CXXFLAGS_SAVE"
-            CPPFLAGS="$CPPFLAGS_SAVE"
-            LDFLAGS="$LDFLAGS_SAVE"
-            LIBS="$LIBS_SAVE"
-
-            HAVE_WAGYU=yes
-            AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
-            AC_SUBST([HAVE_WAGYU])
-            AC_SUBST([WAGYU_CXX])
-            AC_SUBST([WAGYU_LDFLAGS])
-
-            DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
-                    deps/wagyu/Makefile"
+    if test "x$HAVE_CPP" = "xyes"; then
+        WAGYU_LDFLAGS="-lc++"
+    elif test "x$HAVE_STDCPP" = "xyes"; then
+        WAGYU_LDFLAGS="-lstdc++"
+    else
+        AC_MSG_WARN("Could not find a C++ standard library")
+        WAGYU_LDFLAGS=""
     fi
+
+    CXX="$CXX_SAVE"
+    CC="$CC_SAVE"
+    CFLAGS="$CFLAGS_SAVE"
+    CXXFLAGS="$CXXFLAGS_SAVE"
+    CPPFLAGS="$CPPFLAGS_SAVE"
+    LDFLAGS="$LDFLAGS_SAVE"
+    LIBS="$LIBS_SAVE"
+
+    HAVE_WAGYU=yes
+    AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
+    AC_SUBST([HAVE_WAGYU])
+    AC_SUBST([WAGYU_CXX])
+    AC_SUBST([WAGYU_LDFLAGS])
+
+    DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+            deps/wagyu/Makefile"
 fi
 
 dnl ===========================================================================
@@ -1653,7 +1646,6 @@ fi
 
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
-AC_MSG_RESULT([  Wagyu:                ${HAVE_WAGYU}])
 
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])

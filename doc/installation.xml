@@ -522,14 +522,6 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  </listitem>
 		</varlistentry>
 		<varlistentry>
-		  <term><command>--without-wagyu</command></term>
-		  <listitem>
-			<para>
-			  When building with MVT support, Postgis will use <ulink url="https://github.com/mapbox/wagyu/">Wagyu</ulink> to clip and validate MVT polygons. Wagyu is the fastest alternative and guarantees producing correct values for this specific case, but it requires a C++-11 compiler. With this optional argument you can disable using this library; GEOS will be used instead.
-			</para>
-		  </listitem>
-		</varlistentry>
-		<varlistentry>
 		  <term><command>--without-phony-revision</command></term>
 		  <listitem>
 			<para>

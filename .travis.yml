@@ -11,7 +11,6 @@ env:
   - tag=pg13-geos39-gdal31-proj71 mode=coverage
   - tag=pg13-geos39-gdal31-proj71 mode=usan_gcc
   - tag=pg13-clang-geos39-gdal31-proj71 mode=usan_clang
-  - tag=pg13-geos39-gdal31-proj71 mode=nowagyu
 
   # Run tests with different dependency combinations
   - tag=latest mode=tests

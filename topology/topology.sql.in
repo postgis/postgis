@@ -1470,6 +1470,7 @@ BEGIN
 
     END IF;
 
+    -- Check edge being simple (ie: not self-intersecting)
     IF NOT ST_IsSimple(rec.geom) THEN
       retrec.error = 'edge not simple';
       retrec.id1 = rec.id1;
@@ -1615,9 +1616,9 @@ BEGIN
        'face_check (face_id);';
 
   -- Scan the table looking for NULL geometries
-  FOR rec IN EXECUTE
-    'SELECT f1.face_id FROM '
-       'face_check f1 WHERE f1.geom IS NULL OR ST_IsEmpty(f1.geom)'
+  FOR rec IN
+    SELECT face_id FROM face_check
+    WHERE geom IS NULL OR ST_IsEmpty(geom)
   LOOP
     -- Face missing !
     retrec.error := 'face has no rings';
@@ -1628,14 +1629,17 @@ BEGIN
 
   -- Scan the table looking for overlap or containment
   -- TODO: also check for MBR consistency
-  FOR rec IN EXECUTE
-    'SELECT f1.geom, f1.face_id as id1, f2.face_id as id2, '
-       ' ST_Relate(f1.geom, f2.geom) as im'
-       ' FROM '
-       'face_check f1, '
-       'face_check f2 '
-       'WHERE f1.face_id < f2.face_id'
-       ' AND f1.geom && f2.geom'
+  FOR rec IN
+    SELECT
+      f1.geom,
+      f1.face_id as id1,
+      f2.face_id as id2,
+      ST_Relate(f1.geom, f2.geom) as im
+    FROM
+      face_check f1,
+      face_check f2
+      WHERE f1.face_id < f2.face_id
+      AND f1.geom && f2.geom
   LOOP
 
     -- Face overlap
@@ -1664,23 +1668,46 @@ BEGIN
 
   END LOOP;
 
-#if 0
-  -- Check SRID consistency
-  FOR rec in EXECUTE
-    'SELECT count(*) FROM ( getSRID(geom) FROM '
-    || quote_ident(toponame) || '.edge '
-       ' UNION '
-    'SELECT getSRID(geom) FROM '
-    || quote_ident(toponame) || '.node )'
+  -- Check nodes have correct containing_face (#3233)
+  FOR rec IN EXECUTE format(
+    $SQL$
+
+      SELECT
+        n.node_id,
+        -- in a corrupted topology multiple faces may contain the node
+        min(f.face_id) face_id,
+        -- multiple edges may contain the node
+        min(e.edge_id) edge_id
+
+      FROM %1$I.node n
+      LEFT JOIN face_check f ON ( ST_Contains(f.geom, n.geom) )
+      LEFT JOIN %1$I.edge e ON (
+        ST_Equals(ST_StartPoint(e.geom), n.geom) OR
+        ST_Equals(ST_EndPoint(e.geom), n.geom)
+      )
+
+      WHERE
+       (
+         e.edge_id IS NULL AND (
+          n.containing_face != f.face_id
+          OR ( n.containing_face IS NULL AND f.face_id IS NOT NULL )
+         )
+       )
+       OR ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL )
+
+      GROUP BY n.node_id, n.containing_face
+    $SQL$, toponame)
   LOOP
-    IF rec.count > 1 THEN
-      retrec.error = 'mixed SRIDs';
-      retrec.id1 = NULL;
-      retrec.id2 = NULL;
-      RETURN NEXT retrec;
+    IF rec.edge_id IS NOT NULL THEN
+      -- node is not really isolated
+      retrec.error := 'not-isolated node has not-null containing_face';
+    ELSE
+      retrec.error := 'isolated node has wrong containing_face';
     END IF;
+    retrec.id1 := rec.node_id;
+    retrec.id2 := NULL; -- TODO: write expected containing_face here ?
+    RETURN NEXT retrec;
   END LOOP;
-#endif
 
   DROP TABLE face_check;
 
