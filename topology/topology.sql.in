@@ -1671,22 +1671,35 @@ BEGIN
   -- Check nodes have correct containing_face (#3233)
   FOR rec IN EXECUTE format(
     $SQL$
-      SELECT n.node_id, f.face_id, e.edge_id
+
+      SELECT
+        n.node_id,
+        -- in a corrupted topology multiple faces may contain the node
+        min(f.face_id) face_id,
+        -- multiple edges may contain the node
+        min(e.edge_id) edge_id
+
       FROM %1$I.node n
       LEFT JOIN face_check f ON ( ST_Contains(f.geom, n.geom) )
       LEFT JOIN %1$I.edge e ON (
         ST_Equals(ST_StartPoint(e.geom), n.geom) OR
         ST_Equals(ST_EndPoint(e.geom), n.geom)
       )
+
       WHERE
-       n.containing_face != f.face_id
-        OR
-       ( n.containing_face IS NULL AND f.face_id IS NOT NULL )
-        OR
-       ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL )
+       (
+         e.edge_id IS NULL AND (
+          n.containing_face != f.face_id
+          OR ( n.containing_face IS NULL AND f.face_id IS NOT NULL )
+         )
+       )
+       OR ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL )
+
+      GROUP BY n.node_id, n.containing_face
     $SQL$, toponame)
   LOOP
     IF rec.edge_id IS NOT NULL THEN
+      -- node is not really isolated
       retrec.error := 'not-isolated node has not-null containing_face';
     ELSE
       retrec.error := 'isolated node has wrong containing_face';
