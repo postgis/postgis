@@ -1470,6 +1470,7 @@ BEGIN
 
     END IF;
 
+    -- Check edge being simple (ie: not self-intersecting)
     IF NOT ST_IsSimple(rec.geom) THEN
       retrec.error = 'edge not simple';
       retrec.id1 = rec.id1;
@@ -1663,24 +1664,6 @@ BEGIN
     END IF;
 
   END LOOP;
-
-#if 0
-  -- Check SRID consistency
-  FOR rec in EXECUTE
-    'SELECT count(*) FROM ( getSRID(geom) FROM '
-    || quote_ident(toponame) || '.edge '
-       ' UNION '
-    'SELECT getSRID(geom) FROM '
-    || quote_ident(toponame) || '.node )'
-  LOOP
-    IF rec.count > 1 THEN
-      retrec.error = 'mixed SRIDs';
-      retrec.id1 = NULL;
-      retrec.id2 = NULL;
-      RETURN NEXT retrec;
-    END IF;
-  END LOOP;
-#endif
 
   DROP TABLE face_check;
 
