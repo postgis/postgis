@@ -4,6 +4,9 @@ PostGIS 3.2.0
  * Breaking changes *
   - Removed `--without-wagyu` build option. Using Wagyu is not mandatory to build with MVT support.
 
+ * Enhancements *
+  - #3233, ValidateTopology check for node's containing_face (Sandro Santilli)
+
 PostGIS 3.1.0
 2020/12/18
 

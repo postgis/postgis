@@ -22,3 +22,25 @@ SELECT '#1797', '---', null, null ORDER BY 1,2,3,4;
 
 select null from ( select topology.DropTopology('t') ) as dt;
 
+-- Test correctness of node.containing_face
+-- See https://trac.osgeo.org/postgis/ticket/3233
+
+SELECT null from ( select topology.CreateTopology('t') ) as ct;
+SELECT null from ( select TopoGeo_addPolygon('t', 'POLYGON((0 0,10 0,10 10,0 10,0 0))') ) af;
+SELECT null from ( select TopoGeo_addPoint('t', 'POINT(5 5)') ) ap;
+SELECT '#3233.0', (ValidateTopology('t')).* UNION
+SELECT '#3233.0', '---', null, null ORDER BY 1,2,3,4;
+-- 1. Set wrong containing_face for isolated node
+UPDATE t.node SET containing_face = 0 WHERE ST_Equals(geom, 'POINT(5 5)');
+SELECT '#3233.1', (ValidateTopology('t')).* UNION
+SELECT '#3233.1', '---', null, null ORDER BY 1,2,3,4;
+-- 2. Set null containing_face for isolated node
+UPDATE t.node SET containing_face = NULL WHERE ST_Equals(geom, 'POINT(5 5)');
+SELECT '#3233.2', (ValidateTopology('t')).* UNION
+SELECT '#3233.2', '---', null, null ORDER BY 1,2,3,4;
+-- 3. Set containing_face for non-isolated node
+UPDATE t.node SET containing_face = 1 WHERE ST_Equals(geom, 'POINT(5 5)');
+UPDATE t.node SET containing_face = 0 WHERE NOT ST_Equals(geom, 'POINT(5 5)');
+SELECT '#3233.3', (ValidateTopology('t')).* UNION
+SELECT '#3233.3', '---', null, null ORDER BY 1,2,3,4;
+SELECT null from ( select topology.DropTopology('t') ) as dt;
