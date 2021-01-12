@@ -1709,6 +1709,41 @@ BEGIN
     RETURN NEXT retrec;
   END LOOP;
 
+  -- Check edges are covered by their left-right faces (#4831)
+  FOR rec IN EXECUTE format(
+    $SQL$
+      WITH edge_coverage AS (
+        SELECT
+          e.edge_id,
+          e.left_face,
+          ST_Covers(fl.geom, e.geom) covered_left,
+          e.right_face,
+          ST_Covers(fr.geom, e.geom) covered_right
+        FROM
+          %1$I.edge_data e
+          LEFT JOIN face_check fl ON ( fl.face_id = e.left_face )
+          LEFT JOIN face_check fr ON ( fr.face_id = e.right_face )
+        WHERE
+          -- isolated only
+          e.next_left_edge = e.edge_id
+          AND
+          e.next_right_edge = e.edge_id
+          -- skip invalid edges (will be already reported previously)
+          AND NOT e.edge_id = ANY(%2$L)
+      )
+      SELECT * from edge_coverage
+      WHERE
+        NOT covered_left
+        OR NOT covered_right
+      ORDER BY edge_id
+    $SQL$, toponame, invalid_edges)
+  LOOP
+      retrec.error := 'edge not covered by both its side faces';
+      retrec.id1 := rec.edge_id;
+      retrec.id2 := NULL; -- TODO: write expected containing_face here ?
+      RETURN NEXT retrec;
+  END LOOP;
+
   DROP TABLE face_check;
 
   RETURN;

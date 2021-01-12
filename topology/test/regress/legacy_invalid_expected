@@ -19,4 +19,6 @@ face has no rings|10|
 face within face|11|2
 face overlaps face|2|12
 not-isolated node has not-null containing_face|4|
+edge not covered by both its side faces|28|
+edge not covered by both its side faces|30|
 Topology 'invalid_topology' dropped
