@@ -1716,32 +1716,47 @@ BEGIN
         SELECT
           e.edge_id,
           e.left_face,
-          ST_Covers(fl.geom, e.geom) covered_left,
           e.right_face,
-          ST_Covers(fr.geom, e.geom) covered_right
+          array_agg(COALESCE(f.face_id, 0)) covered_by
         FROM
           %1$I.edge_data e
-          LEFT JOIN face_check fl ON ( fl.face_id = e.left_face )
-          LEFT JOIN face_check fr ON ( fr.face_id = e.right_face )
-        WHERE
-          -- isolated only
-          e.next_left_edge = e.edge_id
-          AND
-          e.next_right_edge = e.edge_id
-          -- skip invalid edges (will be already reported previously)
-          AND NOT e.edge_id = ANY(%2$L)
+          LEFT JOIN face_check f ON ( ST_Covers(f.geom, e.geom) )
+          -- skip invalid edges (toxic, and will be already reported previously)
+          WHERE %2$L IS NULL OR NOT e.edge_id = ANY(%2$L)
+        GROUP BY
+          e.edge_id, e.left_face, e.right_face
       )
-      SELECT * from edge_coverage
+      SELECT
+         *,
+         left_face = ANY(covered_by) left_face_covered,
+         right_face = ANY(covered_by) right_face_covered
+         from edge_coverage
       WHERE
-        NOT covered_left
-        OR NOT covered_right
+        ( left_face != 0 AND NOT left_face = ANY(covered_by) )
+        OR
+        ( right_face != 0 AND NOT right_face = ANY(covered_by) )
+        OR
+        ( right_face = 0 AND left_face = 0 AND covered_by[1] != 0 )
       ORDER BY edge_id
     $SQL$, toponame, invalid_edges)
   LOOP
-      retrec.error := 'edge not covered by both its side faces';
       retrec.id1 := rec.edge_id;
       retrec.id2 := NULL; -- TODO: write expected containing_face here ?
-      RETURN NEXT retrec;
+      IF rec.left_face = 0 AND rec.right_face = 0 THEN
+        retrec.error := 'edge covered by some face has universal face on both sides';
+        RETURN NEXT retrec;
+      ELSE
+        retrec.error := 'edge not covered by both its side faces';
+        RETURN NEXT retrec;
+--        IF rec.left_face != 0 AND NOT rec.left_face_covered THEN
+--          retrec.error := 'edge not covered by its left face';
+--          RETURN NEXT retrec;
+--        END IF;
+--        IF rec.right_face != 0 AND NOT rec.right_face_covered THEN
+--          retrec.error := 'edge not covered by its right face';
+--          RETURN NEXT retrec;
+--        END IF;
+      END IF;
   END LOOP;
 
   DROP TABLE face_check;

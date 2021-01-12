@@ -44,3 +44,82 @@ UPDATE t.node SET containing_face = 0 WHERE NOT ST_Equals(geom, 'POINT(5 5)');
 SELECT '#3233.3', (ValidateTopology('t')).* UNION
 SELECT '#3233.3', '---', null, null ORDER BY 1,2,3,4;
 SELECT null from ( select topology.DropTopology('t') ) as dt;
+
+-- Test edges containment in their side faces
+-- See https://trac.osgeo.org/postgis/ticket/4684
+
+SELECT null from ( select topology.CreateTopology('t') ) as ct;
+SELECT null from ( select TopoGeo_addPolygon('t',
+  'POLYGON((0 0,10 0,10 10,0 10,0 0))' -- face 1
+) ) af;
+SELECT null from ( select TopoGeo_addPolygon('t',
+  'POLYGON((20 0,30 0,30 10,20 10,20 0))' -- face 2
+) ) af;
+SELECT null from ( select TopoGeo_addLineString('t',
+  'LINESTRING(5 5, 10 5)') -- edge inside faces, touching on endpoint
+) al;
+SELECT null from ( select TopoGeo_addLineString('t',
+  'LINESTRING(10 6, 5 6)') -- edge inside faces, touching on startpoint
+) al;
+SELECT null from ( select TopoGeo_addLineString('t',
+  'LINESTRING(10 5, 15 5)') -- edge outside faces, touching on startpoint
+) al;
+SELECT null from ( select TopoGeo_addLineString('t',
+  'LINESTRING(15 6, 10 6)') -- edge outside faces, touching on endpoint
+) al;
+SELECT null from ( select TopoGeo_addLineString('t',
+  'LINESTRING(5 8, 6 8)') -- edge inside face1, isolated
+) al;
+SELECT '#4830.0', (ValidateTopology('t')).* UNION
+SELECT '#4830.0', '---', null, null ORDER BY 1,2,3,4;
+-- 0. Set edge 1 self-linking to avoid "face with no rings"
+--    invalidity.
+UPDATE t.edge_data SET
+  next_left_edge = 1,
+  next_right_edge = -1
+  WHERE edge_id = 1;
+-- 1. Set wrong left_face for dangling inside edges
+BEGIN;
+UPDATE t.edge_data SET left_face = 2
+  WHERE
+    ST_Equals(geom, 'LINESTRING(5 5, 10 5)') OR
+    ST_Equals(geom, 'LINESTRING(10 6, 5 6)');
+SELECT '#4830.1', (ValidateTopology('t')).* UNION
+SELECT '#4830.1', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+-- 2. Set wrong right_face for dangling inside edges
+BEGIN;
+UPDATE t.edge_data SET right_face = 2
+  WHERE
+    ST_Equals(geom, 'LINESTRING(5 5, 10 5)') OR
+    ST_Equals(geom, 'LINESTRING(10 6, 5 6)');
+SELECT '#4830.2', (ValidateTopology('t')).* UNION
+SELECT '#4830.2', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+-- 3. Set wrong left_face for dangling outside edges
+BEGIN;
+UPDATE t.edge_data SET left_face = 2
+  WHERE
+    ST_Equals(geom, 'LINESTRING(10 5, 15 5)') OR
+    ST_Equals(geom, 'LINESTRING(15 6, 10 6)');
+SELECT '#4830.3', (ValidateTopology('t')).* UNION
+SELECT '#4830.3', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+-- 4. Set wrong right_face for dangling outside edges
+BEGIN;
+UPDATE t.edge_data SET right_face = 2
+  WHERE
+    ST_Equals(geom, 'LINESTRING(10 5, 15 5)') OR
+    ST_Equals(geom, 'LINESTRING(15 6, 10 6)');
+SELECT '#4830.4', (ValidateTopology('t')).* UNION
+SELECT '#4830.4', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+-- 5. Set universal face on both sides of internal edge
+BEGIN;
+UPDATE t.edge_data SET left_face = 0, right_face = 0
+  WHERE
+    ST_Equals(geom, 'LINESTRING(5 8, 6 8)');
+SELECT '#4830.5', (ValidateTopology('t')).* UNION
+SELECT '#4830.5', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+SELECT null from ( select topology.DropTopology('t') ) as dt;
