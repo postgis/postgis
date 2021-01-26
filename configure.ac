@@ -11,6 +11,8 @@ dnl **********************************************************************
 
 AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
+AH_TEMPLATE([HAVE_VASPRINTF])
+AH_TEMPLATE([HAVE_ASPRINTF])
 AC_CONFIG_MACRO_DIR([macros])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PROG_INSTALL
