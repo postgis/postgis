@@ -1137,6 +1137,8 @@ else
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
 fi
 
+AC_DEFINE([POSTGIS_DEBUG_LEVEL], [0], [Define debug level. Default 0])
+
 dnl ===========================================================================
 dnl Allow the developer to disable the automatic updates of postgis_revision.h
 dnl with --without-phony-revision
