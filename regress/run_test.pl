@@ -698,7 +698,9 @@ sub run_simple_sql
 
 	# Dump output to a temp file.
 	my $tmpfile = sprintf("%s/test_%s_tmp", $TMPDIR, $RUN);
-	my $cmd = "psql -v \"VERBOSITY=terse\" -tXAq $DB < $sql > $tmpfile 2>&1";
+	my $cmd = "psql -v \"VERBOSITY=terse\" "
+		. " -v \"regdir=$REGDIR\""
+		. " -tXAq $DB < $sql > $tmpfile 2>&1";
 	#print($cmd);
 	my $rv = system($cmd);
 	# Check if psql errored out.
