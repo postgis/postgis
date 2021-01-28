@@ -55,6 +55,13 @@ static void wkt_lexer_unknown()
 	return DOUBLE_TOK;
 	}
 
+([Nn][Aa][Nn])[ \,\)\t\n\r] {
+	LWDEBUG(5,"DOUBLE NAN");
+	wkt_yylval.doublevalue = atof(wkt_yytext);
+	yyless(wkt_yyleng-1);
+	return DOUBLE_TOK;
+}
+
 SRID=-?[0-9]+ {
 	LWDEBUG(5,"SRID");
 	wkt_yylval.integervalue = wkt_lexer_read_srid(wkt_yytext);

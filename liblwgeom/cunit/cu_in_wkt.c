@@ -66,6 +66,14 @@ static char* cu_wkt_in(char *wkt, uint8_t variant)
 	return s;
 }
 
+#include <ctype.h>
+static void cu_strtolower(char* str)
+{
+	int i;
+	for (i = 0; i < strlen(str); i++) {
+		str[i] = tolower(str[i]);
+	}
+}
 
 static void test_wkt_in_point(void)
 {
@@ -94,7 +102,13 @@ static void test_wkt_in_point(void)
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
 
-	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	s = "point(nan 10)";
+	r = cu_wkt_in(s, WKT_ISO);
+	cu_strtolower(r);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	// printf("\nIN:  %s\nOUT: %s\n",s,r);
 }
 
 static void test_wkt_in_linestring(void)
