@@ -864,6 +864,7 @@ elif test ! -z "$PKG_CONFIG"; then
 		[
 			PROJ_CPPFLAGS="$PROJ_CFLAGS"
 			PROJ_LDFLAGS="$PROJ_LIBS"
+			POSTGIS_PROJ_VERSION=`$PKG_CONFIG proj --modversion | sed 's/\([[0-9]]\).*\([[0-9]]\).*\([[0-9]]\)/\1\2/'`
 		],
 		[
 			PROJ_LDFLAGS="-lproj"
@@ -885,8 +886,10 @@ AC_CHECK_HEADER([proj_api.h],
 		)]
 	)
 
-dnl Return the PROJ.4 version number
-AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
+dnl Return the PROJ.4 version number if not detected by pkg-config
+if test "x$POSTGIS_PROJ_VERSION" = "x"; then
+	AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
+fi
 AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ library version])
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
