@@ -2,6 +2,19 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+    <sect1>
+        <title>Release 3.1.1</title>
+        <para>Release date: 2021/01/28</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para>#4814, Crash passing collection with only empty components to ST_MakeValid (Sandro Santilli)</para>
+            <para>#4818, Make the VSICURL synthetic driver work as documented</para>
+            <para>#4825, Unstable results from ST_MakeValid (Sandro Santilli)</para>
+            <para>#4823, Avoid listing the same geometry in different collections</para>
+        </simplesect>
+    </sect1>
+
     <sect1>
         <title>Release 3.1.0beta1</title>
         <para>Release date: 2020/12/09</para>
