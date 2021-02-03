@@ -490,8 +490,14 @@ FROM (SELECT
       <para>For mixed-dimension input, the result is equal to the centroid of the component
       Geometries of highest dimension (since the lower-dimension geometries
       contribute zero "weight" to the centroid).</para>
+      <para>Note that for polygonal geometries the centroid does not necessarily
+      lie in the interior of the polygon.  For example, see the diagram below
+      of the centroid of a C-shaped polygon.
+      To construct a point guaranteed to lie in the interior
+      of a polygon use <xref linkend="ST_PointOnSurface" />.
+      </para>
 
-      <para>New in 2.3.0 : support <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
+      <para>New in 2.3.0 : supports <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
 
       <para>Availability: 2.4.0 support for geography was introduced.</para>
 
@@ -1752,7 +1758,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
       <refnamediv>
         <refname>ST_PointOnSurface</refname>
 
-        <refpurpose>Returns a point guaranteed to lie in a polygon or on a geometry.</refpurpose>
+        <refpurpose>Returns a point guaranteed to lie in a polygon, or on a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1769,12 +1775,17 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
       <refsection>
         <title>Description</title>
 
-        <para>Returns a <varname>POINT</varname> guaranteed to intersect a surface.</para>
+        <para>Returns a <varname>POINT</varname> which is guaranteed to lie in the interior of a surface
+        (POLYGON, MULTIPOLYGON, and CURVED POLYGON).
+        In PostGIS this function also works on non-surface geometries.
+        </para>
 
         <para>&sfs_compliant; s3.2.14.2 // s3.2.18.2</para>
         <para>&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6.
-         According to the specs, ST_PointOnSurface works for surface geometries (POLYGONs, MULTIPOLYGONS, CURVED POLYGONS).  So PostGIS seems to be extending what
-         the spec allows here.  Most databases Oracle,DB II, ESRI SDE seem to only support this function for surfaces.  SQL Server 2008 like PostGIS supports for all common geometries.</para>
+         The specifications define ST_PointOnSurface for surface geometries only.
+         PostGIS extends the function to support all common geometry types.
+         Other databases (Oracle,DB II, ESRI SDE) seem to support this function only for surfaces.
+         SQL Server 2008 supports all common geometry types.</para>
         <para>&Z_support;</para>
       </refsection>
 
@@ -1810,7 +1821,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_Centroid" />, <xref linkend="ST_PointInsideCircle" /></para>
+        <para><xref linkend="ST_Centroid" /></para>
       </refsection>
     </refentry>
 
