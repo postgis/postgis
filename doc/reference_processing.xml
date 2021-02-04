@@ -15,7 +15,7 @@
                 <refname>ST_Buffer</refname>
 
                 <refpurpose>
-Returns a geometry covering all points within a given distance from a geometry.
+Computes a geometry covering all points within a given distance from a geometry.
             </refpurpose>
             </refnamediv>
 
@@ -56,42 +56,56 @@ Returns a geometry covering all points within a given distance from a geometry.
               <refsection>
                 <title>Description</title>
 
-                <para>Returns a geometry/geography that represents all points whose distance
-            from this Geometry/geography is less than or equal to distance. </para>
-            <para>Geometry: Calculations
-            are in the Spatial Reference System of the geometry. Introduced in 1.5 support for
-            different end cap and mitre settings to control shape.</para>
-            <note><para>Negative radii: For polygons, a negative radius can be used, which will shrink the polygon rather than expanding it.</para></note>
-                <note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
-                    fits the bounding box of the geography object (favoring UTM, Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
-            <warning><para>
-            For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline</para></warning>
-                <para>
-The optional third parameter (currently only applies to geometry) can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:
+                <para>Computes a a POLYGON or MULTIPOLYGON that represents all points whose distance
+            from a geometry/geography is less than or equal to a given distance.
+            A negative distance shrinks the geometry rather than expanding it.
+            A negative distance may shrink a polygon completely, in which case POLYGON EMPTY is returned.
+            For points and lines negative distances always return empty results.
+            </para>
+            <para>For geometry, the distance is specified in the units of the
+            Spatial Reference System of the geometry.
+            For geography, the distance is specified in meters.</para>
+
+            <para>The optional third parameter controls the buffer accuracy and style.
+The accuracy of circular arcs in the buffer is specified as the number of line segments
+used to approximate a quarter circle (default is 8).
+The buffer style can be specifed by
+providing a list of blank-separated key=value pairs as follows:
 <itemizedlist>
 <listitem>
-<para>'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).</para>
+<para>'quad_segs=#' : number of line segments used to approximate a quarter circle (default is 8).</para>
 </listitem>
 <listitem>
-<para>'endcap=round|flat|square' : endcap style (defaults to "round"). 'butt' is also accepted as a synonym for 'flat'.</para>
+<para>'endcap=round|flat|square' : endcap style (defaults to "round"). 'butt' is accepted as a synonym for 'flat'.</para>
 </listitem>
 <listitem>
-<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is also accepted as a synonym for 'mitre'.</para>
+<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is accepted as a synonym for 'mitre'.</para>
 </listitem>
 <listitem>
-<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.</para>
+<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is accepted as a synonym for 'mitre_limit'.</para>
 </listitem>
 <listitem>
 <para>'side=both|left|right' : 'left' or 'right' performs a single-sided buffer on the geometry, with the buffered side relative to the direction of the line.
-This is only really relevant to LINESTRING geometry and does not affect POINT or POLYGON geometries. By default end caps are square.</para>
+This is only applicable to LINESTRING geometry and does not affect POINT or POLYGON geometries. By default end caps are square.</para>
 </listitem>
 </itemizedlist>
                 </para>
 
-                <para>Units of radius are measured in units of the spatial reference system.</para>
-                <para>The inputs can be POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.</para>
+            <note><para>For geography, this is a wrapper around the geometry implementation.
+            It determines a planar spatial reference system that best fits the bounding box of the geography object
+            (trying UTM, Lambert Azimuthal Equal Area (LAEA) North/South pole, and finally Mercator ).
+            The buffer is computed in the planar space, and then transformed back to WGS84.
+            This may not produce the desired behaviour if the input object is much larger than a UTM zone or crosses the dateline
+            </para></note>
 
-                <note><para>Creating a buffer to do a radius search is inefficient.  Use <xref linkend="ST_DWithin" /> instead.</para></note>
+            <note><para>Buffer output is always a valid polygonal geometry.
+            Buffer can handle invalid inputs,
+            so buffering by distance 0 is sometimes used as a way of repairing invalid polygons.
+            <xref linkend="ST_MakeValid" /> can also be used for this purpose.
+            </para></note>
+
+            <note><para>Buffering is sometimes used to perform a within-distance search.
+            For this use case it is more efficient to use <xref linkend="ST_DWithin" />.</para></note>
 
             <note><para>This function ignores the Z dimension.
 It always gives a 2D result even when used on a 3D geometry.</para></note>
@@ -361,7 +375,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
               <refsection>
                 <title>See Also</title>
 
-                <para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_Union" /></para>
+                <para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_Union" />, <xref linkend="ST_MakeValid" /></para>
               </refsection>
         </refentry>
 
