@@ -1757,8 +1757,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
     <refentry id="ST_PointOnSurface">
       <refnamediv>
         <refname>ST_PointOnSurface</refname>
-
-        <refpurpose>Returns a point guaranteed to lie in a polygon, or on a geometry.</refpurpose>
+        <refpurpose>Computes a point guaranteed to lie in a polygon, or on a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1777,14 +1776,14 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 
         <para>Returns a <varname>POINT</varname> which is guaranteed to lie in the interior of a surface
         (POLYGON, MULTIPOLYGON, and CURVED POLYGON).
-        In PostGIS this function also works on non-surface geometries.
+        In PostGIS this function also works on line and point geometries.
         </para>
 
         <para>&sfs_compliant; s3.2.14.2 // s3.2.18.2</para>
         <para>&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6.
          The specifications define ST_PointOnSurface for surface geometries only.
          PostGIS extends the function to support all common geometry types.
-         Other databases (Oracle,DB II, ESRI SDE) seem to support this function only for surfaces.
+         Other databases (Oracle, DB2, ArcSDE) seem to support this function only for surfaces.
          SQL Server 2008 supports all common geometry types.</para>
         <para>&Z_support;</para>
       </refsection>
@@ -1796,32 +1795,27 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
  st_astext
 ------------
  POINT(0 5)
-(1 row)
 
 SELECT ST_AsText(ST_PointOnSurface('LINESTRING(0 5, 0 10)'::geometry));
  st_astext
 ------------
  POINT(0 5)
-(1 row)
 
 SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometry));
    st_astext
 ----------------
  POINT(2.5 2.5)
-(1 row)
 
 SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 10 2)')));
    st_asewkt
 ----------------
  POINT(0 0 1)
-(1 row)
 </programlisting>
       </refsection>
 
       <refsection>
         <title>See Also</title>
-
-        <para><xref linkend="ST_Centroid" /></para>
+        <para><xref linkend="ST_Centroid" />, <xref linkend="ST_MaximumInscribedCircle" /></para>
       </refsection>
     </refentry>
 
