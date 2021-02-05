@@ -4,6 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
+# Copyright (C) 2021 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2011 OpenGeo.org
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
 # Copyright (C) 2001-2005 Refractions Research Inc.
@@ -23,14 +24,18 @@ eval "exec perl -w $0 $@"
 ($#ARGV == 1) || die "Usage: perl create_undef.pl <postgis.sql> <pgsql_version #>\nCreates a new SQL script to delete all the PostGIS functions.\n";
 
 # drops are in the following order:
-#	1. Indexing system stuff
-#	2. Meta datatables <not done>
-#	3. Aggregates
-#	3. Casts
-#	4. Operators
-#	5. Functions
-#	6. Types
-#	7. Tables
+# - Views
+# - Aggregates
+# - Operator classes and families
+# - Operators
+# - Casts
+# - Table triggers
+# - Functions except those needed for types definition
+# - Types (if unused in column types)
+# - Support functions
+# - Functions needed for types definition
+# - Tables
+# - Schemas
 
 my @aggs = ();
 my @casts = ();
@@ -44,6 +49,7 @@ my @opcs = ();
 my @views = ();
 my @tables = ();
 my @schemas = ();
+my @triggers = ();
 
 my $version = $ARGV[1];
 
@@ -103,6 +109,30 @@ while( my $line = <INPUT>)
 	elsif ($line =~ /^create schema \s*([\w\.]+)/i) {
 		push (@schemas, $1);
 	}
+	elsif ($line =~ /^create trigger \s*([\w\.]+)/i) {
+		my $trignam = $1;
+		my $trigtab = undef;
+		#print STDERR "XXX trignam: $trignam\n";
+		while ( not defined($trigtab) )
+		{
+			#print STDERR "XXX subline: $line";
+			if ( $line =~ /ON\s*([\w\.]*)/i )
+			{
+				$trigtab = $1;
+				#print STDERR "XXX trigtab: $trigtab\n";
+				last;
+			}
+			last if ( $line =~ /;\s*$/ );
+			$line = <INPUT>;
+		}
+		if ( not defined($trigtab) )
+		{
+			die "Couldn't parse CREATE TRIGGER $trignam (could not find target table)\n";
+		}
+		my $trigdef = $trignam . ' ON ' . $trigtab;
+		#print STDERR "XXX trigdef: $trigdef\n";
+		push (@triggers, $trigdef);
+	}
 	elsif ( $line =~ /^create operator class (\w+)/i ) {
 		my $opcname = $1;
 		my $am = '';
@@ -161,16 +191,6 @@ foreach my $view (@views)
 	print "DROP VIEW IF EXISTS $view;\n";
 }
 
-print "-- Drop all tables.\n";
-# we reverse table definitions so foreign key constraints
-# are more likely not to get in our way
-@tables = reverse(@tables);
-foreach my $table (@tables)
-{
-	print "DROP TABLE IF EXISTS $table;\n";
-}
-
-
 print "-- Drop all aggregates.\n";
 foreach my $agg (@aggs)
 {
@@ -220,6 +240,12 @@ foreach my $cast (@casts)
 	{
 		die "Couldn't parse CAST line: $cast\n";
 	}
+}
+
+print "-- Drop all table triggers.\n";
+foreach my $tr (@triggers)
+{
+	print "DROP TRIGGER IF EXISTS $tr;\n";
 }
 
 print "-- Drop all functions except " . (keys %type_funcs) . " needed for type definition.\n";
@@ -324,6 +350,16 @@ foreach my $fn (@type_funcs)
 		die "Couldn't parse line: $fn\n";
 	}
 }
+
+print "-- Drop all tables.\n";
+# we reverse table definitions so foreign key constraints
+# are more likely not to get in our way
+@tables = reverse(@tables);
+foreach my $table (@tables)
+{
+	print "DROP TABLE IF EXISTS $table;\n";
+}
+
 
 print "-- Drop all schemas.\n";
 if (@schemas)
