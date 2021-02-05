@@ -211,34 +211,66 @@ projpj_from_string(const char *str1)
 
 #else /* POSTGIS_PROJ_VERION >= 60 */
 
+static PJ *
+proj_cs_get_simplecs(const PJ *pj_crs)
+{
+	PJ *pj_sub = NULL;
+	if (proj_get_type(pj_crs) == PJ_TYPE_COMPOUND_CRS)
+	{
+		/* Sub-CRS[0] is the horizontal component */
+		pj_sub = proj_crs_get_sub_crs(NULL, pj_crs, 0);
+		if (!pj_sub)
+			lwerror("%s: proj_crs_get_sub_crs(0) returned NULL", __func__);
+	}
+	else if (proj_get_type(pj_crs) == PJ_TYPE_BOUND_CRS)
+	{
+		pj_sub = proj_get_source_crs(NULL, pj_crs);
+		if (!pj_sub)
+			lwerror("%s: proj_get_source_crs returned NULL", __func__);
+	}
+	else
+	{
+		/* If this works, we have a CS so we can return */
+		pj_sub = proj_crs_get_coordinate_system(NULL, pj_crs);
+		if (pj_sub)
+			return pj_sub;
+	}
+
+	/* Only sub-components of the Compound or Bound CRS's get here */
+	/* If we failed to get sub-components, or we failed to extract */
+	/* a CS from a generic CRS, then this is another case we don't */
+	/* handle */
+	if (!pj_sub)
+		lwerror("%s: %s", __func__, proj_errno_string(proj_context_errno(NULL)));
+
+	/* If the components are usable, we can extract the CS and return */
+	int pj_type = proj_get_type(pj_sub);
+	if (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS || pj_type == PJ_TYPE_PROJECTED_CRS)
+	{
+		PJ *pj_2d = proj_crs_get_coordinate_system(NULL, pj_sub);
+		proj_destroy(pj_sub);
+		return pj_2d;
+	}
+
+	/* If the components are *themselves* Bound/Compound, we can recurse */
+	if (pj_type == PJ_TYPE_COMPOUND_CRS || pj_type == PJ_TYPE_BOUND_CRS)
+		return proj_cs_get_simplecs(pj_sub);
+
+	/* This is a case we don't know how to handle */
+	lwerror("%s: un-handled CRS sub-type: %s", __func__, pj_type);
+	return NULL;
+}
+
 static uint8_t
 proj_crs_is_swapped(const PJ *pj_crs)
 {
 	PJ *pj_cs;
 	uint8_t rv = LW_FALSE;
 
-	if (proj_get_type(pj_crs) == PJ_TYPE_COMPOUND_CRS)
-	{
-		PJ *pj_horiz_crs = proj_crs_get_sub_crs(NULL, pj_crs, 0);
-		if (!pj_horiz_crs)
-			lwerror("%s: proj_crs_get_sub_crs returned NULL", __func__);
-		pj_cs = proj_crs_get_coordinate_system(NULL, pj_horiz_crs);
-		proj_destroy(pj_horiz_crs);
+	pj_cs = proj_cs_get_simplecs(pj_crs);
+	if (!pj_cs) {
+		lwerror("%s: proj_cs_get_simplecs returned NULL", __func__);
 	}
-	else if (proj_get_type(pj_crs) == PJ_TYPE_BOUND_CRS)
-	{
-		PJ *pj_src_crs = proj_get_source_crs(NULL, pj_crs);
-		if (!pj_src_crs)
-			lwerror("%s: proj_get_source_crs returned NULL", __func__);
-		pj_cs = proj_crs_get_coordinate_system(NULL, pj_src_crs);
-		proj_destroy(pj_src_crs);
-	}
-	else
-	{
-		pj_cs = proj_crs_get_coordinate_system(NULL, pj_crs);
-	}
-	if (!pj_cs)
-		lwerror("%s: proj_crs_get_coordinate_system returned NULL", __func__);
 	int axis_count = proj_cs_get_axis_count(NULL, pj_cs);
 	if (axis_count > 0)
 	{
