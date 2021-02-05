@@ -2107,9 +2107,6 @@ $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} DropTopology
 
-#include "sql/manage/TopologySummary.sql.in"
-#include "sql/manage/CopyTopology.sql.in"
-
 -- Spatial predicates
 #include "sql/predicates.sql.in"
 
@@ -2147,6 +2144,10 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --general management --
 #include "sql/manage/ManageHelper.sql.in"
+#include "sql/manage/TopologySummary.sql.in"
+#include "sql/manage/CopyTopology.sql.in"
+#include "sql/manage/FindTopology.sql.in"
+
 
 CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION

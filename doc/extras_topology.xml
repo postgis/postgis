@@ -641,6 +641,65 @@ face without edges |   0 |
 				<para><xref linkend="validatetopology_returntype"/>, <xref linkend="Topology_Load_Tiger" /></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="FindTopology">
+			<refnamediv>
+				<refname>FindTopology</refname>
+
+				<refpurpose>Returns a topology record by different means.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+                        <funcdef>topology <function>FindTopology</function></funcdef>
+                        <paramdef><type>TopoGeometry</type> <parameter>topogeom</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>topology <function>FindTopology</function></funcdef>
+                        <paramdef><type>regclass</type> <parameter>layerTable</parameter></paramdef>
+                        <paramdef><type>name</type> <parameter>layerColumn</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>topology <function>FindTopology</function></funcdef>
+                        <paramdef><type>name</type> <parameter>layerSchema</parameter></paramdef>
+                        <paramdef><type>name</type> <parameter>layerTable</parameter></paramdef>
+                        <paramdef><type>name</type> <parameter>layerColumn</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>topology <function>FindTopology</function></funcdef>
+                        <paramdef><type>text</type> <parameter>topoName</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>topology <function>FindTopology</function></funcdef>
+                        <paramdef><type>int</type> <parameter>id</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Takes a topology identifier or the identifier of
+a topology-related object and returns a topology.topology record.</para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 3.2.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+<programlisting>
+SELECT name(findTopology('features.land_parcels', 'feature'));
+   name
+-----------
+ city_data
+(1 row)
+</programlisting>
+			</refsection>
+			<!-- Optionally add a "See Also" section -->
+		</refentry>
 	</sect1>
 
 	<sect1 id="Topology_StatsManagement"

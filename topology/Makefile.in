@@ -94,7 +94,7 @@ endif
 
 
 
-# Generate any .sql file from .sql.in.c files by running them through the SQL pre-processor
+# Generate any .sql file from .sql.in files by running them through the SQL pre-processor
 %.sql: %.sql.in
 	$(SQLPP) $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
@@ -121,6 +121,7 @@ topology.sql: \
 	sql/query/GetNodeEdges.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/CopyTopology.sql.in \
+	sql/manage/FindTopology.sql.in \
 	sql/manage/ManageHelper.sql.in \
 	sql/topoelement/topoelement_agg.sql.in \
 	sql/topogeometry/type.sql.in \
