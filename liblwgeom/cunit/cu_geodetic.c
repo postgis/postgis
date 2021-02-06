@@ -1184,6 +1184,17 @@ static void test_lwgeom_distance_sphere(void)
 	spheroid_init(&s, 6378137.0, 6356752.314245179498);
 	s.a = s.b = s.radius;
 
+	/* Line/point #4835 */
+	lwg1 = lwgeom_from_wkt("LINESTRING (-166.11 68.875, 15.55 78.216667)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT (0 89.999)", LW_PARSER_CHECK_NONE);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
+	// printf("%12.9g\n", d);
+	// Wrong answer = 1310248.65
+	// Right answer = 25031.4956
+	CU_ASSERT_DOUBLE_EQUAL(d, 25031.4956, 0.1);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
 	/* Line/line distance, 1 degree apart */
 	lwg1 = lwgeom_from_wkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", LW_PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_wkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", LW_PARSER_CHECK_NONE);

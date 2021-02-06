@@ -702,7 +702,7 @@ edge_point_side(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 	/* We expect the dot product of with normal with any vector in the plane to be zero */
 	w = dot_product(&normal, &pt);
 	LWDEBUGF(4,"dot product %.9g",w);
-	if ( FP_IS_ZERO(w) )
+	if (FP_IS_ZERO(w))
 	{
 		LWDEBUG(4, "point is on plane (dot product is zero)");
 		return 0;
@@ -816,7 +816,7 @@ int edge_point_in_cone(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 	** for the test cases here.
 	** However, tuning the tolerance value feels like a dangerous hack.
 	** Fundamentally, the problem is that this test is so sensitive.
-	*/
+	 */
 
 	/* 1.1102230246251565404236316680908203125e-16 */
 
