@@ -6,6 +6,7 @@ PostGIS 3.1.2
   - #4826, postgis_tiger_geocoder Better answers when no zip is provided
            (Regina Obe)
   - #4817, handle more complex compound coordinate dystems (Paul Ramsey)
+  - #4842, Only do axis flips on CRS that have a "Lat" as the first column (Paul Ramsey)
 
 
 PostGIS 3.1.1
