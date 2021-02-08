@@ -277,7 +277,7 @@ proj_crs_is_swapped(const PJ *pj_crs)
 		const char *out_name, *out_abbrev, *out_direction;
 		double out_unit_conv_factor;
 		const char *out_unit_name, *out_unit_auth_name, *out_unit_code;
-		/* Read only first axis, see if it is degrees / north */
+		/* Read only first axis */
 		proj_cs_get_axis_info(NULL,
 				      pj_cs,
 				      0,
@@ -288,13 +288,10 @@ proj_crs_is_swapped(const PJ *pj_crs)
 				      &out_unit_name,
 				      &out_unit_auth_name,
 				      &out_unit_code);
-		if (strcasecmp(out_abbrev, "E") == 0)
-			rv = LW_FALSE;
-		else if (strcasecmp(out_abbrev, "Lat") == 0)
-			rv = LW_TRUE;
-		else if (strcasecmp(out_direction, "north") == 0)
-			rv = LW_TRUE;
-		else if (strcasecmp(out_direction, "south") == 0)
+
+		/* Only swap Lat/Lon systems */
+		/* Use whatever ordering planar systems default to */
+		if (strcasecmp(out_abbrev, "Lat") == 0)
 			rv = LW_TRUE;
 		else
 			rv = LW_FALSE;
