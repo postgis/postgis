@@ -13,6 +13,7 @@ PostGIS 3.0.3
   - #4748, Fix incorrect axis swapping in polar stereographic (Paul Ramsey)
   - #4727, Fix bug in geocentrix box computation (Paul Ramsey)
   - #4790, Fix ST_3dintersects calculations with identical vertices (Nicklas Avén)
+  - #4817, Handle complex compound coordinate systems (Paul Ramsey)
 
 PostGIS 3.0.2
 2020/08/15
