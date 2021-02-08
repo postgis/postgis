@@ -233,8 +233,9 @@ Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDeta
 		<title>Examples</title>
 
         <programlisting>-- invalid bow-tie polygon
-SELECT ST_IsValidReason('POLYGON ((100 200, 100 100, 200 200, 200
-100, 100 200))'::geometry) as validity_info;
+SELECT ST_IsValidReason(
+    'POLYGON ((100 200, 100 100, 200 200,
+     200 100, 100 200))'::geometry) as validity_info;
 validity_info
 --------------------------
 Self-intersection[150 150]
