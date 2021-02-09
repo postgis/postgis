@@ -42,17 +42,17 @@
 		<title>Description</title>
 
 		<para>
-                  Test if an ST_Geometry value is well-formed in 2D according to the OGC rules.
-		  For geometries that are invalid, the PostgreSQL NOTICE will provide details of why it is not valid.
-                  For geometries with 3 and 4 dimensions, the validity still only tested in 2 dimensions.
+        Tests if an ST_Geometry value is well-formed and valid in 2D according to the OGC rules.
+        For geometries with 3 and 4 dimensions, the validity is still only tested in 2 dimensions.
+		For geometries that are invalid, a PostgreSQL NOTICE is emitted providing details of why it is not valid.
                 </para>
 		<para>
-For the version with flags,
-supported <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />
+For the version with the <varname>flags</varname> parameter,
+supported values are documented in <xref linkend="ST_IsValidDetail" />
 This version does not print a NOTICE explaining invalidity.
 		</para>
 		<para>For more information on the definition of geometry validity, refer
-			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link>
+			to <xref linkend="OGC_Validity" />
 		</para>
 		<note>
 			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
@@ -96,7 +96,6 @@ NOTICE:  Self-intersection at or near point 0 0
 <xref linkend="ST_IsSimple" />,
 <xref linkend="ST_IsValidReason" />,
 <xref linkend="ST_IsValidDetail" />,
-<xref linkend="ST_Summary" />
 </para>
 	  </refsection>
 	</refentry>
@@ -106,7 +105,7 @@ NOTICE:  Self-intersection at or near point 0 0
 	  <refnamediv>
 		<refname>ST_IsValidDetail</refname>
 
-		<refpurpose>Returns a <varname>valid_detail</varname> row stating if a geometry is valid, and if not a reason why and a location.</refpurpose>
+		<refpurpose>Returns a <varname>valid_detail</varname> row stating if a geometry is valid or if not a reason and a location.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -122,20 +121,29 @@ NOTICE:  Self-intersection at or near point 0 0
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a valid_detail row, formed by a boolean (valid) stating if a geometry is valid, a varchar (reason) stating a reason why it is invalid and a geometry (location) pointing out where it is invalid.</para>
+		<para>Returns a <varname>valid_detail</varname> row,
+        containing a boolean (<varname>valid</varname>) stating if a geometry is valid,
+        a varchar (<varname>reason</varname>) stating a reason why it is invalid
+        and a geometry (<varname>location</varname>) pointing out where it is invalid.</para>
 
-		<para>Useful to substitute and improve the combination of ST_IsValid and ST_IsValidReason to generate a detailed report of invalid geometries.</para>
+		<para>Useful to improve on the combination of <xref linkend="ST_IsValid" /> and <xref linkend="ST_IsValidReason" /> to generate a detailed report of invalid geometries.</para>
 
 		<para>
-The 'flags' argument is a bitfield. It can have the following values:
-			<itemizedlist>
-				<listitem>
+The optional <varname>flags</varname> parameter is a bitfield. It can have the following values:
+		<itemizedlist>
+<listitem>
 <para>
-1: Consider self-intersecting rings forming holes as valid.
-   This is also know as "the ESRI flag".
-   Note that this is against the OGC model.
+0: Use usual OGC SFS validity semantics.
 </para>
-				</listitem>
+</listitem>
+<listitem>
+<para>
+1: Consider certain kinds of self-touching rings (inverted shells and exverted holes) as valid.
+   This is also known as "the ESRI flag", since this is the validity model used by those tools.
+   Note that this is invalid under the OGC model.
+</para>
+</listitem>
+
 			</itemizedlist>
 		</para>
 		<para>Performed by the GEOS module.</para>
@@ -218,9 +226,9 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns text stating if a geometry is valid or not an if not valid, a reason why.</para>
+		<para>Returns text stating if a geometry is valid, or if invalid a reason why.</para>
 
-		<para>Useful in combination with ST_IsValid to generate a detailed report of invalid geometries and reasons.</para>
+		<para>Useful in combination with <xref linkend="ST_IsValid" /> to generate a detailed report of invalid geometries and reasons.</para>
 
 		<para>
 Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
@@ -305,7 +313,7 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
     <para>
     The function attempts to create a valid representation of a given invalid
     geometry without losing any of the input vertices.
-    Already-valid geometries are returned without further intervention.
+    Valid geometries are returned unchanged.
     </para>
 
     <para>
@@ -316,8 +324,8 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 
     <para>
     In case of full or partial dimensional collapses, the output geometry
-    may be a collection of lower-to-equal dimension geometries or a
-    geometry of lower dimension.
+    may be a collection of lower-to-equal dimension geometries,
+    or a geometry of lower dimension.
     </para>
 
     <para>
