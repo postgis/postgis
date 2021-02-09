@@ -917,11 +917,14 @@ AC_SUBST([PROJ_LDFLAGS])
 dnl Ensure we can link against libproj
 LIBS_SAVE="$LIBS"
 LIBS="$PROJ_LDFLAGS"
-AC_CHECK_LIB([proj], [pj_get_release],
-	[],
-	[AC_MSG_ERROR([could not find libproj - you may need to specify the directory of a PROJ installation using --with-projdir])],
+AC_CHECK_LIB([proj], [pj_get_release], [],
+	[AC_CHECK_LIB([proj], [proj_info], [],
+		[AC_MSG_ERROR([could not find libproj - you may need to specify the directory of a PROJ installation using --with-projdir])],
+		[]
+		)],
 	[])
 LIBS="$LIBS_SAVE"
+
 
 dnl ===========================================================================
 dnl Detect if json-c installed
