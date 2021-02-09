@@ -4,9 +4,8 @@ Winnie:
  [![Build Status](https://winnie.postgis.net:444/buildStatus/icon?job=PostGIS_trunk)](https://winnie.postgis.net:444/view/PostGIS/job/PostGIS_trunk/)
 Dronie:
  [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=master)](https://dronie.osgeo.org/postgis/postgis?branch=master)
-
-Travis:
- [![Build Status](https://api.travis-ci.org/postgis/postgis.svg?branch=master)](http://travis-ci.org/postgis/postgis)
+GitHub:
+ [![CI](https://github.com/postgis/postgis/workflows/CI/badge.svg?branch=master)](https://github.com/postgis/postgis/actions?query=workflow%3ACI)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/master/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/master)
 Drone.io:
