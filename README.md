@@ -5,8 +5,8 @@ Winnie:
 Dronie:
  [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=stable-3.1)](https://dronie.osgeo.org/postgis/postgis?branch=stable-3.1)
 
-Travis:
- [![Build Status](https://api.travis-ci.org/postgis/postgis.svg?branch=stable-3.1)](http://travis-ci.org/postgis/postgis)
+GitHub:
+ ![CI](https://github.com/postgis/postgis/workflows/CI/badge.svg?branch=stable-3.1)](https://github.com/postgis/postgis/actions?query=branch%3Astable-3.1)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-3.1/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/stable-3.1)
 Drone.io:
