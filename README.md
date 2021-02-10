@@ -1,7 +1,7 @@
 
 | **GitHub** | **GitLab** | **Drone.io** ||
 | :---: | :---: | :---: | :---: |
-| [![CI](https://github.com/postgis/postgis/workflows/CI/badge.svg?branch=master)](https://github.com/postgis/postgis/actions?query=workflow%3ACI) |  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/master/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/master) |  [![Build Status](https://cloud.drone.io/api/badges/postgis/postgis/status.svg?branch=master)](https://cloud.drone.io/postgis/postgis?branch=master) ||
+| [![CI](https://github.com/postgis/postgis/workflows/CI/badge.svg?branch=master)](https://github.com/postgis/postgis/actions?query=branch%3Amaster) |  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/master/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/master) |  [![Build Status](https://cloud.drone.io/api/badges/postgis/postgis/status.svg?branch=master)](https://cloud.drone.io/postgis/postgis?branch=master) ||
 | **Debbie** | **Winnie** | **Dronie** ||
 | [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_trunk)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_trunk/) | [![Build Status](https://winnie.postgis.net:444/buildStatus/icon?job=PostGIS_trunk)](https://winnie.postgis.net:444/view/PostGIS/job/PostGIS_trunk/) | [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=master)](https://dronie.osgeo.org/postgis/postgis?branch=master) ||
 | **Bessie** | **Bessie32** | **Berrie** | **Berrie64** |
