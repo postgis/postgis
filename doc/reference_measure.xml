@@ -1572,37 +1572,44 @@ SELECT ST_3DMaxDistance(
 		<title>Description</title>
 
 		<para>
-			It is not uncommon to have a geometry that, while meeting the criteria for validity according to ST_IsValid (polygons)
-			or ST_IsSimple (lines), would become invalid if one of the vertices moved by a slight distance, as can happen during
-			conversion to text-based formats (such as WKT, KML, GML GeoJSON), or binary formats that do not use double-precision
-			floating point coordinates (MapInfo TAB).
+		It is possible for a geometry to meet the criteria for validity according to <xref linkend="ST_IsValid" /> (polygons)
+		or <xref linkend="ST_IsSimple" /> (lines),
+        but to become invalid if one of its vertices is moved by a small distance.
+        This can happen due to loss of precision during conversion to text formats (such as WKT, KML, GML, GeoJSON),
+        or binary formats that do not use double-precision floating point coordinates (e.g. MapInfo TAB).
 		</para>
 
 		<para>
-			A geometry's "minimum clearance" is the smallest distance by which a vertex of the geometry could be moved to produce
-			an invalid geometry.  It can be thought of as a quantitative measure of a geometry's robustness, where increasing values
-			of minimum clearance indicate increasing robustness.
+		The minimum clearance is a quantitative measure of a geometry's robustness to change in coordinate precision.
+        It is the largest distance by which vertices of the geometry can be moved without creating an invalid geometry.
+        Larger values of minimum clearance indicate greater robustness.
 		</para>
 
 		<para>
-			If a geometry has a minimum clearance of <varname>e</varname>, it can be said that:
-			<itemizedlist>
-				<listitem>
-					<para>
-						No two distinct vertices in the geometry are separated by less than <varname>e</varname>.
-					</para>
-				</listitem>
-				<listitem>
-					<para>
-						No vertex is closer than <varname>e</varname> to a line segement of which it is not an endpoint.
-					</para>
-				</listitem>
-			</itemizedlist>
+        If a geometry has a minimum clearance of <varname>e</varname>, then:
+        <itemizedlist>
+            <listitem>
+                <para>
+                    No two distinct vertices in the geometry are closer than the distance <varname>e</varname>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    No vertex is closer than <varname>e</varname> to a line segement of which it is not an endpoint.
+                </para>
+            </listitem>
+        </itemizedlist>
 		</para>
 
 		<para>
-			If no minimum clearance exists for a geometry (for example, a single point, or a multipoint whose points are identical), then
-			ST_MinimumClearance will return Infinity.
+		If no minimum clearance exists for a geometry (e.g. a single point, or a multipoint whose points are identical),
+        the return value is <varname>Infinity</varname>.
+		</para>
+
+		<para>
+        To avoid validity issues caused by precision loss,
+		<xref linkend="ST_ReducePrecision" /> can reduce coordinate precision
+        while ensuring that polygonal geometry remains valid.
 		</para>
 
 		<para>Availability: 2.3.0</para>
@@ -1624,7 +1631,10 @@ SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');
 		<title>See Also</title>
 
 		<para>
-			<xref linkend="ST_MinimumClearanceLine" />
+			<xref linkend="ST_MinimumClearanceLine" />,
+            <xref linkend="ST_IsSimple" />,
+            <xref linkend="ST_IsValid" />,
+            <xref linkend="ST_ReducePrecision" />
 		</para>
 	  </refsection>
 	</refentry>

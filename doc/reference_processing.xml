@@ -1920,7 +1920,7 @@ geomtextrep
       <refnamediv>
         <refname>ST_ReducePrecision</refname>
 
-        <refpurpose>Returns a valid geometry with all points rounded to the provided grid tolerance.</refpurpose>
+        <refpurpose>Returns a valid geometry with points rounded to a grid tolerance.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1942,6 +1942,27 @@ geomtextrep
         <para>Returns a valid geometry with all points rounded to the provided grid tolerance, and features below the tolerance removed.</para>
 
         <para>Unlike <xref linkend="ST_SnapToGrid" /> the returned geometry will be valid, with no ring self-intersections or collapsed components.</para>
+
+		<para>
+        Precision reduction can be used to:
+        <itemizedlist>
+            <listitem><para>
+            match coordinate precision to the data accuracy
+            </para></listitem>
+            <listitem><para>
+            reduce the number of coordinates needed to represent a geometry
+            </para></listitem>
+            <listitem><para>
+            ensure valid geometry output to formats which use lower precision
+            (e.g. text formats such as WKT, GeoJSON or KML
+            when the number of output decimal places is limited).
+            </para></listitem>
+            <listitem><para>
+            export valid geometry to systems which use lower or limited precision
+            (e.g. SDE, Oracle tolerance value)
+            </para></listitem>
+        </itemizedlist>
+		</para>
 
         <para>Availability: 3.1.0 - requires GEOS &gt;= 3.9.0. </para>
       </refsection>
