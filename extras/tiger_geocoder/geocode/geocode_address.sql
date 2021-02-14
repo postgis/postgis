@@ -432,5 +432,4 @@ BEGIN
 END;
 $$
   LANGUAGE 'plpgsql' STABLE COST 1000 ROWS 50 PARALLEL SAFE;
-ALTER FUNCTION geocode_address(IN norm_addy, IN integer, IN geometry) SET join_collapse_limit='2';
 
