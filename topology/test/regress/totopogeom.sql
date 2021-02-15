@@ -1,5 +1,5 @@
 \set VERBOSITY terse
-set client_min_messages to ERROR;
+set client_min_messages to WARNING;
 
 select 'create', createtopology('tt') > 0;
 
@@ -199,7 +199,9 @@ SELECT 'tgup1.3', id(t.g), st_area(t.g), count(r.*)
   WHERE t.id = -1 AND r.layer_id = 4 AND r.topogeo_id = id(t.g)
   GROUP BY id(t.g), st_area(t.g);
 
+--------------------------------------------------------
 -- http://trac.osgeo.org/postgis/ticket/3359
+--------------------------------------------------------
 -- NOTE: requires identifier of the second edge to be 2
 TRUNCATE tt.relation CASCADE;
 TRUNCATE tt.edge_data CASCADE;

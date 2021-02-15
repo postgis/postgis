@@ -1,0 +1,11 @@
+simple_puntual_layer|1
+simple_lineal_layer|2
+simple_areal_layer|3
+simple_collection_layer|4
+hierarchical_puntual_layer|5
+tg2tg.poi2poi|MULTIPOINT(0 0,1 1)
+tg2tg.poi2mix|GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))
+tg2tg.lin2lin|MULTILINESTRING((0 0,2 0),(0 1,1 1,2 1))
+tg2tg.lin2mix|GEOMETRYCOLLECTION(LINESTRING(0 0,2 0),POINT(0 0))
+tg2tg.pol2pol|MULTIPOLYGON(((0 0,0 10,10 10,10 0,0 0)))
+tg2tg.pol2pol|GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0)),POINT(0 0))

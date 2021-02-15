@@ -3250,6 +3250,65 @@ UPDATE mylayer SET tg = TopoGeom_remElement(tg, '{43,3}');
 			</refsection>
 		</refentry>
 
+    <refentry id="TopoGeom_addTopoGeom">
+			<refnamediv>
+				<refname>TopoGeom_addTopoGeom</refname>
+				<refpurpose>Adds element of a TopoGeometry to the definition of another TopoGeometry.</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>TopoGeom_addTopoGeom</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>tgt</parameter></paramdef>
+                    <paramdef><type>topogeometry </type> <parameter>src</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Adds the elements of a <xref linkend="topogeometry" /> to the definition of
+another TopoGeometry, possibly changing its cached type (type attribute)
+to a collection, if needed to hold all elements in the source object.
+                </para>
+
+                <para>
+The two TopoGeometry objects need be defined against the *same*
+topology and, if hierarchically defined, need be composed by elements
+of the same child layer.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 3.2</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+        <programlisting>
+-- Set an "overall" TopoGeometry value to be composed by all
+-- elements of specific TopoGeometry values
+UPDATE mylayer SET tg_overall = TopoGeom_addTopogeometry(
+    TopoGeom_addTopoGeometry(
+        clearTopoGeom(tg_overall),
+        tg_specific1
+    ),
+    tg_specific1
+);
+				</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+        <para>
+<xref linkend="TopoGeom_addElement" />,
+<xref linkend="clearTopoGeom" />,
+<xref linkend="CreateTopoGeom" />
+        </para>
+			</refsection>
+		</refentry>
+
     <refentry id="toTopoGeom_editor_proxy">
 			<refnamediv>
         <refname>toTopoGeom</refname>

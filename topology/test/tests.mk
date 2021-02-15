@@ -59,6 +59,7 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/topogeo_addpoint.sql \
 	$(topsrcdir)/topology/test/regress/topogeo_addpolygon.sql \
   $(topsrcdir)/topology/test/regress/topogeom_edit.sql \
+  $(topsrcdir)/topology/test/regress/topogeom_addtopogeom.sql \
 	$(topsrcdir)/topology/test/regress/topogeometry_type.sql \
 	$(topsrcdir)/topology/test/regress/topojson.sql \
   $(topsrcdir)/topology/test/regress/topologysummary.sql \
