@@ -17,6 +17,7 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/addnode.sql \
 	$(topsrcdir)/topology/test/regress/addtopogeometrycolumn.sql \
 	$(topsrcdir)/topology/test/regress/copytopology.sql \
+	$(topsrcdir)/topology/test/regress/cleartopogeom.sql \
 	$(topsrcdir)/topology/test/regress/createtopogeom.sql \
 	$(topsrcdir)/topology/test/regress/createtopology.sql \
 	$(topsrcdir)/topology/test/regress/droptopogeometrycolumn.sql \

@@ -33,4 +33,5 @@ SELECT 'relation after', count(distinct topogeo_id)
  FROM city_data.relation
  WHERE layer_id = 1;
 
-select droptopology('city_data');
+select NULL FROM droptopology('city_data');
+DROP SCHEMA features CASCADE;
