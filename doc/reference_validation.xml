@@ -213,12 +213,12 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 		  <funcprototype>
 			<funcdef>text <function>ST_IsValidReason</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
 			<funcdef>text <function>ST_IsValidReason</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
