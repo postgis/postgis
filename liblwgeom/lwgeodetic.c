@@ -2177,7 +2177,8 @@ double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROI
 	/* Do the direction calculation */
 	az = spheroid_direction(&g1, &g2, spheroid);
 	/* Ensure result is positive */
-	return az > 0 ? az : M_PI - az;
+	return az < -0 ? 2*M_PI + az : az;
+	// return az;
 }
 
 /**

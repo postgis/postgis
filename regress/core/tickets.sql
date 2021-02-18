@@ -1319,5 +1319,26 @@ SELECT '#4796', st_astext(st_snaptogrid(st_normalize(st_simplifypreservetopology
 
 SELECT '#4812', st_srid('SRID=999999;POINT(1 1)'::geometry);
 
+SELECT
+'#4840',
+round(degrees(ST_azimuth(C,N)))  AS az_n,
+round(degrees(ST_azimuth(C,NE))) AS az_ne,
+round(degrees(ST_azimuth(C,E)))  AS az_e,
+round(degrees(ST_azimuth(C,SE))) AS az_se,
+round(degrees(ST_azimuth(C,S)))  AS az_s,
+round(degrees(ST_azimuth(C,SW))) AS az_sw,
+round(degrees(ST_azimuth(C,W)))  AS az_w,
+round(degrees(ST_azimuth(C,NW))) AS az_nw
+FROM (SELECT
+'POINT(5 55)'::geography AS C,
+'POINT(5 56)'::geography AS N,
+'POINT(6 56)'::geography AS NE,
+'POINT(6 55)'::geography AS E,
+'POINT(6 54)'::geography AS SE,
+'POINT(5 54)'::geography AS S,
+'POINT(4 54)'::geography AS SW,
+'POINT(4 55)'::geography AS W,
+'POINT(4 56)'::geography AS NW ) points;
+
 SELECT '#4853', ST_ClusterDBSCAN(geom,  eps := 0.000906495804256269, minpoints := 4) OVER() AS cid FROM (VALUES ('0101000020E6100000E4141DC9E5934B40D235936FB6193940'::geometry), ('0101000020E6100000C746205ED7934B40191C25AFCE193940'::geometry), ('0101000020E6100000C780ECF5EE934B40B6BE4868CB193940'::geometry), ('0101000020E6100000ABB2EF8AE0934B404451A04FE4193940'::geometry)) AS t(geom);
 
