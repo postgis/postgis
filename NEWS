@@ -8,6 +8,7 @@ PostGIS 3.2.0
   - #3233, ValidateTopology check for node's containing_face (Sandro Santilli)
   - #4830, ValidateTopology check for edges side face containment
            (Sandro Santilli)
+  - #4827, Allow NaN coordinates in WKT input (Paul Ramsey)
 
  * New features*
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)
