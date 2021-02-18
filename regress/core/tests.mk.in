@@ -38,6 +38,7 @@ TESTS += \
 	$(topsrcdir)/regress/core/forcecurve \
 	$(topsrcdir)/regress/core/geography \
 	$(topsrcdir)/regress/core/geometric_median \
+  $(topsrcdir)/regress/core/geos_noop \
 	$(topsrcdir)/regress/core/hausdorff \
 	$(topsrcdir)/regress/core/in_geohash \
 	$(topsrcdir)/regress/core/in_gml \
@@ -117,7 +118,8 @@ TESTS += \
 	$(topsrcdir)/regress/core/minimum_clearance \
 	$(topsrcdir)/regress/core/oriented_envelope \
 	$(topsrcdir)/regress/core/point_coordinates \
-	$(topsrcdir)/regress/core/out_geojson
+	$(topsrcdir)/regress/core/out_geojson \
+  $(topsrcdir)/regress/core/wrapx
 
 # Slow slow tests
 TESTS_SLOW = \
