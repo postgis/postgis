@@ -10,6 +10,7 @@ PostGIS 3.1.2
   - Support recent Proj versions that have removed pj_get_release (Paul Ramsey)
   - #4835, Adjust tolerance for geodetic calculations (Paul Ramsey)
   - #4840, Improper conversion of negative geographic azimuth to positive (Paul Ramsey)
+  - #4853, DBSCAN cluster not formed when recordset length equal to minPoints (Dan Baston)
 
 
 PostGIS 3.1.1
