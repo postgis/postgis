@@ -41,7 +41,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit check-regress docs-check check-news
+check: check-no-trailing-blanks check-unit check-regress docs-check check-news check-tests-enabled
 
 staged-install: all
 	$(MAKE) -C regress staged-install
@@ -208,6 +208,9 @@ endif
 include regress/runtest.mk
 
 check-regress: staged-install check-regress-deps
+
+check-tests-enabled:
+	utils/check_tests_enabled.sh
 
 check-regress-deps:
 ifeq (@TOPOLOGY@,topology)
