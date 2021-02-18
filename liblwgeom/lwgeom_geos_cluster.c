@@ -401,7 +401,7 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 		*in_a_cluster_ret = in_a_cluster;
 
 	/* Bail if we don't even have enough inputs to make a cluster. */
-	if (num_geoms <= min_points)
+	if (num_geoms < min_points)
 	{
 		if (!in_a_cluster_ret)
 			lwfree(in_a_cluster);
