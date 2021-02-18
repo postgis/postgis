@@ -278,7 +278,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 
 <para>Create a line composed of two points.</para>
 <programlisting>
-SELECT ST_AsText( ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)) );
+SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );
 
 	  st_astext
 ---------------------
@@ -346,7 +346,13 @@ SELECT gps.track_id, ST_MakeLine(gps.geom) As geom
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_RemoveRepeatedPoints" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" /></para>
+			<para><xref linkend="ST_RemoveRepeatedPoints" />,
+            <xref linkend="ST_AsEWKT" />,
+            <xref linkend="ST_AsText" />,
+            <xref linkend="ST_GeomFromText" />,
+            <xref linkend="ST_MakePoint" />,
+            <xref linkend="ST_Point" />
+            </para>
 		</refsection>
 	</refentry>
 
@@ -573,10 +579,10 @@ POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))
 		   <programlisting>
 SELECT ST_MakePolygon( ST_ExteriorRing( ST_Buffer(ring.line,10)),
 	ARRAY[  ST_Translate(ring.line, 1, 1),
-		ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
+		ST_ExteriorRing(ST_Buffer(ST_Point(20,20),1)) ]
 	)
 FROM (SELECT ST_ExteriorRing(
-	ST_Buffer(ST_MakePoint(10,10),10,10)) AS line ) AS ring;
+	ST_Buffer(ST_Point(10,10),10,10)) AS line ) AS ring;
 </programlisting>
     <para>Create a set of province boundaries with holes
     representing lakes.  The input is a table of

@@ -513,7 +513,7 @@ When a (multi)polygon is passed as as the blade, its linear component
 -- this is similar to the example we demonstrated in ST_BuildArea
 SELECT ST_Split(circle, line)
 FROM (SELECT
-    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
+    ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) As line,
     ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
 
 -- result --
@@ -522,7 +522,7 @@ FROM (SELECT
 -- To convert to individual polygons, you can use ST_Dump or ST_GeometryN
 SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt
 FROM (SELECT
-    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
+    ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) As line,
     ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
 
 -- result --

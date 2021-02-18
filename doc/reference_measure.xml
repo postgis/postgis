@@ -244,7 +244,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		FROM  generate_series(1,2,2) AS s
 	)
 	 , points AS (
-		SELECT s, rad1,rad2, ST_MakePoint(cos1+s,sin1+s) as p1, ST_MakePoint(s,s) AS p2, ST_MakePoint(cos2+s,sin2+s) as p3
+		SELECT s, rad1,rad2, ST_Point(cos1+s,sin1+s) as p1, ST_Point(s,s) AS p2, ST_Point(cos2+s,sin2+s) as p3
 		FROM rand
 			,cos(rad1) cos1, sin(rad1) sin1
 			,cos(rad2) cos2, sin(rad2) sin2

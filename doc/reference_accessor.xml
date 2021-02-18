@@ -261,7 +261,7 @@ The result is still topologically valid.
 		<programlisting>
 -- Get the minimum X in a buffer around a point
 SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
-  ST_Buffer(ST_MakePoint(0,0),10)
+  ST_Buffer(ST_Point(0,0),10)
 )));
  st_x
 ------
