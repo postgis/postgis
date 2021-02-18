@@ -26,6 +26,7 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/getedgebypoint.sql \
 	$(topsrcdir)/topology/test/regress/getfacebypoint.sql \
 	$(topsrcdir)/topology/test/regress/getnodebypoint.sql \
+	$(topsrcdir)/topology/test/regress/getnodeedges.sql \
 	$(topsrcdir)/topology/test/regress/getringedges.sql \
 	$(topsrcdir)/topology/test/regress/gettopogeomelements.sql \
 	$(topsrcdir)/topology/test/regress/gml.sql \
