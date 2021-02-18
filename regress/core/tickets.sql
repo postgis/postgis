@@ -1318,3 +1318,25 @@ SELECT '#4727', _ST_DistanceTree('SRID=4326;POLYGON((-179.9 -85.05112877980659, 
 SELECT '#4796', st_astext(st_snaptogrid(st_normalize(st_simplifypreservetopology('MULTISURFACE(((178632.044 397744.007,178631.118 397743.786,178646.399 397679.574,178693.864 397690.889,178698.958 397669.487,178700.206 397669.784,178758.532 397683.689,178748.351 397726.468,178752.199 397727.384,178748.782 397741.904,178744.897 397740.98,178738.157 397769.303,178632.044 397744.007)))'::geometry,1)),1));
 
 SELECT '#4812', st_srid('SRID=999999;POINT(1 1)'::geometry);
+
+SELECT
+'#4840',
+round(degrees(ST_azimuth(C,N)))  AS az_n,
+round(degrees(ST_azimuth(C,NE))) AS az_ne,
+round(degrees(ST_azimuth(C,E)))  AS az_e,
+round(degrees(ST_azimuth(C,SE))) AS az_se,
+round(degrees(ST_azimuth(C,S)))  AS az_s,
+round(degrees(ST_azimuth(C,SW))) AS az_sw,
+round(degrees(ST_azimuth(C,W)))  AS az_w,
+round(degrees(ST_azimuth(C,NW))) AS az_nw
+FROM (SELECT
+'POINT(5 55)'::geography AS C,
+'POINT(5 56)'::geography AS N,
+'POINT(6 56)'::geography AS NE,
+'POINT(6 55)'::geography AS E,
+'POINT(6 54)'::geography AS SE,
+'POINT(5 54)'::geography AS S,
+'POINT(4 54)'::geography AS SW,
+'POINT(4 55)'::geography AS W,
+'POINT(4 56)'::geography AS NW ) points;
+
