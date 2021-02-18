@@ -8,6 +8,7 @@ PostGIS 3.1.2
   - #4817, handle more complex compound coordinate dystems (Paul Ramsey)
   - #4842, Only do axis flips on CRS that have a "Lat" as the first column (Paul Ramsey)
   - Support recent Proj versions that have removed pj_get_release (Paul Ramsey)
+  - $4835, Adjust tolerance for geodetic calculations (Paul Ramsey)
 
 
 PostGIS 3.1.1
