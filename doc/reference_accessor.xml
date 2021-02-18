@@ -406,7 +406,7 @@ ST_Dimension
 		<title>Description</title>
 			<para>A set-returning function (SRF) that extracts the components of a geometry.
             It returns a set of
-			<varname><xref linkend="geometry_dump" /></varname> rows,
+			<xref linkend="geometry_dump" /> rows,
             each containing a geometry (<parameter>geom</parameter> field)
             and an array of integers (<parameter>path</parameter> field).
             </para>
@@ -518,7 +518,7 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 			<title>Description</title>
 			<para>A set-returning function (SRF) that extracts the coordinates (vertices) of a geometry.
             It returns a set of
-			    <varname><xref linkend="geometry_dump" /></varname> rows,
+			    <xref linkend="geometry_dump" /> rows,
                 each containing a geometry (<parameter>geom</parameter> field)
                 and an array of integers (<parameter>path</parameter> field).
             </para>
@@ -759,14 +759,15 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 		<title>Description</title>
 
         <para>A set-returning function (SRF) that extracts the rings of a polygon.
-            It returns a set of <varname><xref linkend="geometry_dump" /></varname> rows,
+            It returns a set of <xref linkend="geometry_dump" /> rows,
             each containing a geometry (<parameter>geom</parameter> field)
             and an array of integers (<parameter>path</parameter> field).
         </para>
         <para>
-		The <parameter>geom</parameter> field contains each ring as a POLYGON.</para>
+		The <parameter>geom</parameter> field contains each ring as a POLYGON.
 	    The <parameter>path</parameter> field is an integer array of length 1 containing the polygon ring index.
         The exterior ring (shell) has index 0.  The interior rings (holes) have indices of 1 and higher.
+        </para>
 
 		<note><para>This only works for POLYGON geometries. It does not work for MULTIPOLYGONS</para></note>
 		<para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
