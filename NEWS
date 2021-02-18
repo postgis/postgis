@@ -5,6 +5,7 @@ PostGIS 3.04
   - Support newer proj versions that have deprecated pj_get_release (Paul Ramsey)
   - #4835, Adjust geodetic tolerance for calculations (Paul Ramsey)
   - #4853, DBSCAN cluster not formed when recordset length equal to minPoints (Dan Baston)
+  - #4844, Repair axis order handling for polar coordinate systems (Paul Ramsey)
 
 PostGIS 3.0.3
 2020/11/20
