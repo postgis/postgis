@@ -1616,10 +1616,6 @@ Datum isvalid(PG_FUNCTION_ARGS)
 
 	if ( ! g1 )
 	{
-		/* should we drop the following
-		 * notice now that we have ST_isValidReason ?
-		 */
-		lwpgnotice("%s", lwgeom_geos_errmsg);
 		PG_RETURN_BOOL(false);
 	}
 
