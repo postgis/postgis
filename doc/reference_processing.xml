@@ -362,7 +362,7 @@ promisingcircle_pcount | lamecircle_pcount
 to Mass state plane meter and then buffer to get measurements in meters;
 SELECT ST_AsText(ST_Buffer(
 ST_Transform(
-ST_SetSRID(ST_MakePoint(-71.063526, 42.35785),4269), 26986)
+ST_SetSRID(ST_Point(-71.063526, 42.35785),4269), 26986)
 ,100,2)) As octagon;
 ----------------------
 POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235

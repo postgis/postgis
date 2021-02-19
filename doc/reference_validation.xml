@@ -158,12 +158,12 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 SELECT gid, reason(ST_IsValidDetail(the_geom)), ST_AsText(location(ST_IsValidDetail(the_geom))) as location
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
-FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
+FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,8) z1
 	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
-	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line
+	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
 	FROM generate_series(-3,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,10) z1
@@ -253,12 +253,12 @@ Self-intersection[150 150]
 SELECT gid, ST_IsValidReason(the_geom) as validity_info
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
-FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
+FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,8) z1
 	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
-	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line
+	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
 	FROM generate_series(-3,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,10) z1

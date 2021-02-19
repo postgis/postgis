@@ -277,7 +277,7 @@ SELECT ST_AsText(house_loc) As as_text_house_loc,
 			* ST_LineLocatePoint(street_line, house_loc) As integer) As street_num
 FROM
 (SELECT ST_GeomFromText('LINESTRING(1 2, 3 4)') As street_line,
-	ST_MakePoint(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,
+	ST_Point(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,
 		20 As endstreet_num
 FROM generate_series(1,3) x CROSS JOIN generate_series(2,4) As y)
 As foo

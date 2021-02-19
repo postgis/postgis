@@ -1542,8 +1542,8 @@ UPDATE sometable
 		<programlisting>
 SELECT ST_AsText(the_geom) as line, ST_AsText(ST_Reverse(the_geom)) As reverseline
 FROM
-(SELECT ST_MakeLine(ST_MakePoint(1,2),
-		ST_MakePoint(1,10)) As the_geom) as foo;
+(SELECT ST_MakeLine(ST_Point(1,2),
+		ST_Point(1,10)) As the_geom) as foo;
 --result
 		line         |     reverseline
 ---------------------+----------------------

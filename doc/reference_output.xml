@@ -1572,13 +1572,13 @@ x3dfrag
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));
+		<programlisting><![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326));
 
 	 st_geohash
 ----------------------
  c0w3hf1s70w3hf1s70w3
 
-SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
+SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326),5);
 
  st_geohash
 ------------
