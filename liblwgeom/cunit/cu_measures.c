@@ -71,7 +71,6 @@ do_test_mindistance_tolerance(char *in1,
 	distance = distancef(lw1, lw2, 0.0);
 	lwgeom_free(lw1);
 	lwgeom_free(lw2);
-
 	if ( fabs(distance - expected_res) > accepted_error )
 	{
 		printf(msg1, distance, expected_res, line);
@@ -88,6 +87,8 @@ static void test_mindistance2d_tolerance(void)
 {
 	double default_accepted_error = 0.00001;
 	double zero_accepted_error = 0.0;
+
+
 	/*
 	** Simple case.
 	*/
@@ -208,6 +209,12 @@ static void test_mindistance2d_tolerance(void)
 	*/
 	DIST2DTEST("LINESTRING(0.5 1,0.5 3)", "MULTICURVE(CIRCULARSTRING(2 3,3 2,2 1,1 2,2 3),(0 0, 0 5))", 0.5, default_accepted_error);
 
+	/*
+	** "Fast path" case
+	*/
+	DIST2DTEST("LINESTRING(10 0,11 1,12 2,13 3,14 4,15 5,16 6)",
+		"LINESTRING(1 1.5,2 3,3 4.5,4 6,5 7.5,6 9)",
+		8.3205, default_accepted_error);
 }
 
 static void
