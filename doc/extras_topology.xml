@@ -2491,6 +2491,7 @@ and is thus usable to build edge ring linking.
 			<refsection>
 				<title>See Also</title>
 				<para>
+<xref linkend="getfaceedges_returntype"/>,
 <xref linkend="GetRingEdges"/>,
 <xref linkend="ST_Azimuth"/>
 				</para>
