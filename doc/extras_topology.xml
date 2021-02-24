@@ -25,11 +25,19 @@
 		<refentry id="getfaceedges_returntype">
 		  <refnamediv>
 			<refname>getfaceedges_returntype</refname>
-			<refpurpose>A composite type that consists of a sequence number and edge number.  This is the return type for <varname>ST_GetFaceEdges</varname>.</refpurpose>
+			<refpurpose>
+A composite type that consists of a sequence
+number and an edge number.
+			</refpurpose>
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
-			<para>A composite type that consists of a sequence number and edge number.  This is the return type for <varname>ST_GetFaceEdges</varname> function.</para>
+			<para>
+A composite type that consists of a sequence number
+and an edge number.
+This is the return type for <varname>ST_GetFaceEdges</varname>
+and <varname>GetNodeEdges</varname> functions.
+			</para>
 			<orderedlist>
 			  <listitem>
 				<para><varname>sequence</varname> is an integer:  Refers to a topology defined in the topology.topology table which defines the topology schema and srid.</para>
