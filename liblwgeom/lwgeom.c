@@ -2019,6 +2019,9 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 		}
 	}
 
+	/* Recompute bbox if needed */
+	if (geom->bbox)
+		lwgeom_refresh_bbox(geom);
 }
 
 void
@@ -2071,19 +2074,8 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 	}
 
 	/* Recompute bbox if needed */
-
-	if ( geom->bbox )
-	{
-		/* TODO: expose a gbox_scale function */
-		geom->bbox->xmin *= factor->x;
-		geom->bbox->xmax *= factor->x;
-		geom->bbox->ymin *= factor->y;
-		geom->bbox->ymax *= factor->y;
-		geom->bbox->zmin *= factor->z;
-		geom->bbox->zmax *= factor->z;
-		geom->bbox->mmin *= factor->m;
-		geom->bbox->mmax *= factor->m;
-	}
+	if (geom->bbox)
+		lwgeom_refresh_bbox(geom);
 }
 
 LWGEOM *
