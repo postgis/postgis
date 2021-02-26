@@ -11,6 +11,7 @@ PostGIS 3.1.2
   - #4835, Adjust tolerance for geodetic calculations (Paul Ramsey)
   - #4840, Improper conversion of negative geographic azimuth to positive (Paul Ramsey)
   - #4853, DBSCAN cluster not formed when recordset length equal to minPoints (Dan Baston)
+  - #4863, Update bboxes after scale/affine coordinate changes (Paul Ramsey)
 
 
 PostGIS 3.1.1
