@@ -440,3 +440,4 @@ ERROR:  LWGEOM_addpoint: Invalid offset
 #4853|0
 #4853|0
 #4844|SRID=4326;POINT(19.49 69.79)
+#4863|t
