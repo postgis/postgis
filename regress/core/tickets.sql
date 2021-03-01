@@ -591,7 +591,30 @@ select '#1578', st_within(p, mp), st_intersects(p, mp) FROM inp;
 
 -- #1580
 select '#1580.1', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395));
--- select '#1580.2', ST_Transform('SRID=4326;POINT(180 95)'::geometry, 3395); -- fails
+
+do $$
+declare
+proj_version integer;
+err_str text;
+begin
+
+    select ((regexp_matches(postgis_proj_version(), '(\d+)\.\d+'))[1])::integer into proj_version;
+    select ST_Transform('SRID=4326;POINT(180 95)'::geometry, 3395); -- fails
+
+exception
+when others then
+    err_str := SQLERRM;
+    if proj_version >= 8 and SQLERRM = 'transform: Invalid coordinate (2049)' then
+        raise notice '#1580.2: Caught a PROJ error';
+    elsif proj_version < 8 and SQLERRM = 'transform: latitude or longitude exceeded limits (-14)' then
+        raise notice '#1580.2: Caught a PROJ error';
+    else
+    	raise notice '#1580.2: Unexpected PROJ Result. Proj version = %. Error string: %', proj_version, err_str;
+    end if;
+
+end;
+$$ language 'plpgsql';
+
 select '#1580.3', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395));
 
 -- #1596 --
