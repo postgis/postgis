@@ -657,13 +657,13 @@ Options:
   --expect        save obtained output as expected
   --extension     load using extensions
   --after-create-script <path>
-									script to load after spatial db creation
+                  script to load after spatial db creation
   --before-uninstall-script <path>
-									script to load before spatial extension uninstall
+                  script to load before spatial extension uninstall
   --before-upgrade-script <path>
-									script to load before upgrade
+                  script to load before upgrade
   --after-upgrade-script <path>
-									script to load after upgrade
+                  script to load after upgrade
 };
 
 }
