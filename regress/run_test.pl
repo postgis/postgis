@@ -66,6 +66,10 @@ my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
+my $OPT_HOOK_AFTER_CREATE = '';
+my $OPT_HOOK_BEFORE_UNINSTALL = '';
+my $OPT_HOOK_BEFORE_UPGRADE = '';
+my $OPT_HOOK_AFTER_UPGRADE = '';
 my $OPT_EXTVERSION = '';
 my $OPT_UPGRADE_PATH = '';
 our $OPT_UPGRADE_FROM = '';
@@ -86,7 +90,11 @@ GetOptions (
 	'sfcgal' => \$OPT_WITH_SFCGAL,
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS,
-	'schema=s' => \$OPT_SCHEMA
+	'schema=s' => \$OPT_SCHEMA,
+	'after-create-script=s' => \$OPT_HOOK_AFTER_CREATE,
+	'before-uninstall-script=s' => \$OPT_HOOK_BEFORE_UNINSTALL,
+	'before-upgrade-script=s' => \$OPT_HOOK_BEFORE_UPGRADE,
+	'after-upgrade-script=s' => \$OPT_HOOK_BEFORE_UPGRADE
 	);
 
 if ( @ARGV < 1 )
@@ -291,7 +299,8 @@ sub semver_lessthan
 
 sub create_upgrade_test_objects
 {
-  # TODO: allow passing the "upgrade-init" script via commandline
+
+  # TODO: replace the following with --before-upgrade-script usage
 
   my $query = "create table upgrade_test(g1 geometry, g2 geography";
   $query .= ", r raster" if ( $OPT_WITH_RASTER );
@@ -398,7 +407,13 @@ sub drop_upgrade_test_objects
 
 if ( $OPT_UPGRADE )
 {
-	print "  Upgrading from postgis $libver\n";
+	print "Upgrading from postgis $libver\n";
+
+	if ( '' ne $OPT_HOOK_BEFORE_UPGRADE )
+	{
+		print "Running before-upgrade-script $OPT_HOOK_BEFORE_UPGRADE\n";
+		die unless load_sql_file($OPT_HOOK_BEFORE_UPGRADE, 1);
+	}
 
   create_upgrade_test_objects();
 
@@ -412,6 +427,12 @@ if ( $OPT_UPGRADE )
   }
 
   drop_upgrade_test_objects();
+
+	if ( '' ne $OPT_HOOK_AFTER_UPGRADE )
+	{
+		print "  Running after-upgrade-script $OPT_HOOK_AFTER_UPGRADE\n";
+		die unless load_sql_file($OPT_HOOK_AFTER_UPGRADE, 1);
+	}
 
   # Update libver
   $libver = sql("select postgis_lib_version()");
@@ -464,6 +485,14 @@ our $TEST = "";
 ##################################################################
 
 print "\nRunning tests\n\n";
+
+if ( '' ne $OPT_HOOK_AFTER_CREATE )
+{
+	start_test("after-create-script");
+	show_progress();
+	pass("($OPT_HOOK_AFTER_CREATE)")
+		if load_sql_file($OPT_HOOK_AFTER_CREATE, 1);
+}
 
 foreach $TEST (@ARGV)
 {
@@ -545,6 +574,14 @@ foreach $TEST (@ARGV)
 
 }
 
+if ( '' ne $OPT_HOOK_BEFORE_UNINSTALL )
+{
+	start_test("before-uninstall-script");
+	show_progress();
+	pass("($OPT_HOOK_BEFORE_UNINSTALL)")
+		if load_sql_file($OPT_HOOK_BEFORE_UNINSTALL, 1);
+}
+
 
 ###################################################################
 # Uninstall postgis (serves as an uninstall test)
@@ -619,6 +656,14 @@ Options:
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
   --extension     load using extensions
+  --after-create-script <path>
+									script to load after spatial db creation
+  --before-uninstall-script <path>
+									script to load before spatial extension uninstall
+  --before-upgrade-script <path>
+									script to load before upgrade
+  --after-upgrade-script <path>
+									script to load after upgrade
 };
 
 }
@@ -1363,7 +1408,8 @@ sub load_sql_file
 
 	if ( $strict && ! -e $file )
 	{
-		die "Unable to find $file\n";
+		fail "Unable to find $file";
+		return 0;
 	}
 
 	if ( -e $file )
@@ -1378,7 +1424,8 @@ sub load_sql_file
 		if ( $rv )
 		{
 		  fail "Error encountered loading $file", $REGRESS_LOG;
-		  exit 1;
+		  #exit 1;
+			return 0;
 		}
 	}
 	return 1;
@@ -1850,6 +1897,7 @@ sub drop_spatial_extensions
 sub uninstall_spatial
 {
 	my $ok;
+
 	start_test("uninstall");
 
 	if ( $OPT_EXTENSIONS )
@@ -1861,24 +1909,19 @@ sub uninstall_spatial
 		$ok = drop_spatial();
 	}
 
-	if ( $ok )
-	{
-		show_progress(); # on to objects count
-		$OBJ_COUNT_POST = count_db_objects();
+	return $ok if ! $ok;
 
-		if ( $OBJ_COUNT_POST != $OBJ_COUNT_PRE )
-		{
-			fail("Object count pre-install ($OBJ_COUNT_PRE) != post-uninstall ($OBJ_COUNT_POST)");
-			return 0;
-		}
-		else
-		{
-			pass("($OBJ_COUNT_PRE)");
-			return 1;
-		}
+	show_progress(); # on to objects count
+	$OBJ_COUNT_POST = count_db_objects();
+
+	if ( $OBJ_COUNT_POST != $OBJ_COUNT_PRE )
+	{
+		fail("Object count pre-install ($OBJ_COUNT_PRE) != post-uninstall ($OBJ_COUNT_POST)");
+		return 0;
 	}
 
-	return 0;
+	pass("($OBJ_COUNT_PRE)");
+	return 1;
 }
 
 # Dump and restore the database
