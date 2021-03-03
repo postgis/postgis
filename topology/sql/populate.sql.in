@@ -293,15 +293,53 @@ BEGIN
 	      RETURN rec.edge_id;
 	  END IF;
 
-	  -- WARNING: the constructive operation might throw an exception
-	  BEGIN
-	    ix = ST_Intersection(rec.geom, aline);
-	  EXCEPTION
-	  WHEN OTHERS THEN
-	    RAISE NOTICE 'Could not compute intersection between input edge (%) and edge % (%)', aline::text, rec.edge_id, rec.geom::text;
-	  END;
+    -- WARNING: the constructive operation might throw an exception
+    BEGIN
+      ix = ST_Intersection(rec.geom, aline);
+    EXCEPTION
+    WHEN OTHERS THEN
+      RAISE NOTICE
+        'Could not compute intersection between'
+          ' input edge (%) and edge % (%)',
+        aline::text,
+        rec.edge_id,
+        rec.geom::text;
+    END;
 
-	  RAISE EXCEPTION 'Edge intersects (not on endpoints) with existing edge % at or near point %', rec.edge_id, ST_AsText(ST_PointOnSurface(ix));
+    -- Find a point on the intersection which
+    -- is NOT an endpoint of "aline"
+    IF ST_Dimension(ix) = 0
+    THEN
+      WITH SharedBounds AS (
+        (
+          SELECT ST_Force2D(ST_StartPoint(rec.geom)) g
+          UNION
+          SELECT ST_Force2D(ST_EndPoint(rec.geom))
+        )
+        INTERSECT
+        (
+          SELECT ST_Force2D(ST_StartPoint(aline))
+          UNION
+          SELECT ST_Force2D(ST_EndPoint(aline))
+        )
+      )
+      SELECT d.geom
+      FROM ST_DumpPoints(ix) d
+      WHERE ST_Force2D(geom) NOT IN ( SELECT g FROM SharedBounds )
+      ORDER BY d.path
+      LIMIT 1
+      INTO STRICT ix;
+    ELSE
+      -- for linear intersection we pick
+      -- an internal point.
+      ix := ST_PointOnSurface(ix);
+    END IF;
+
+    RAISE EXCEPTION
+      'Edge intersects (not on endpoints)'
+        ' with existing edge % at or near point %',
+      rec.edge_id,
+      ST_AsText(ix);
 
 	END LOOP;
 
