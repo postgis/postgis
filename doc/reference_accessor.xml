@@ -2382,7 +2382,7 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Description</title>
 
-		<para>>Returns the 1-based Nth geometry (face) if the geometry is a
+		<para>Returns the 1-based Nth geometry (face) if the geometry is a
 			POLYHEDRALSURFACE or POLYHEDRALSURFACEM.
 			Otherwise, returns NULL.
 			This returns the same answer as ST_GeometryN for PolyhedralSurfaces.
