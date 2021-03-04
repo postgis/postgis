@@ -18,6 +18,7 @@ PostGIS 3.2.0
 
  * New features*
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)
+  - #4869, FindLayer to quickly get a layer record (Sandro Santilli)
   - #4851, TopoGeom_addTopoGeom function (Sandro Santilli)
   - ST_MakeValid(geometry, options) allows alternative validity building
     algorithms with GEOS 3.10 (Paul Ramsey)
