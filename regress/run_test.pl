@@ -66,10 +66,10 @@ my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
-my $OPT_HOOK_AFTER_CREATE = '';
-my $OPT_HOOK_BEFORE_UNINSTALL = '';
-my $OPT_HOOK_BEFORE_UPGRADE = '';
-my $OPT_HOOK_AFTER_UPGRADE = '';
+my @OPT_HOOK_AFTER_CREATE;
+my @OPT_HOOK_BEFORE_UNINSTALL;
+my @OPT_HOOK_BEFORE_UPGRADE;
+my @OPT_HOOK_AFTER_UPGRADE;
 my $OPT_EXTVERSION = '';
 my $OPT_UPGRADE_PATH = '';
 our $OPT_UPGRADE_FROM = '';
@@ -91,10 +91,10 @@ GetOptions (
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS,
 	'schema=s' => \$OPT_SCHEMA,
-	'after-create-script=s' => \$OPT_HOOK_AFTER_CREATE,
-	'before-uninstall-script=s' => \$OPT_HOOK_BEFORE_UNINSTALL,
-	'before-upgrade-script=s' => \$OPT_HOOK_BEFORE_UPGRADE,
-	'after-upgrade-script=s' => \$OPT_HOOK_BEFORE_UPGRADE
+	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
+	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
+	'before-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE,
+	'after-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE
 	);
 
 if ( @ARGV < 1 )
@@ -409,10 +409,10 @@ if ( $OPT_UPGRADE )
 {
 	print "Upgrading from postgis $libver\n";
 
-	if ( '' ne $OPT_HOOK_BEFORE_UPGRADE )
+	foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
 	{
-		print "Running before-upgrade-script $OPT_HOOK_BEFORE_UPGRADE\n";
-		die unless load_sql_file($OPT_HOOK_BEFORE_UPGRADE, 1);
+		print "Running before-upgrade-script $hook\n";
+		die unless load_sql_file($hook, 1);
 	}
 
   create_upgrade_test_objects();
@@ -428,10 +428,10 @@ if ( $OPT_UPGRADE )
 
   drop_upgrade_test_objects();
 
-	if ( '' ne $OPT_HOOK_AFTER_UPGRADE )
+	foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
 	{
-		print "  Running after-upgrade-script $OPT_HOOK_AFTER_UPGRADE\n";
-		die unless load_sql_file($OPT_HOOK_AFTER_UPGRADE, 1);
+		print "  Running after-upgrade-script $hook\n";
+		die unless load_sql_file($hook, 1);
 	}
 
   # Update libver
@@ -486,12 +486,11 @@ our $TEST = "";
 
 print "\nRunning tests\n\n";
 
-if ( '' ne $OPT_HOOK_AFTER_CREATE )
+foreach my $hook (@OPT_HOOK_AFTER_CREATE)
 {
-	start_test("after-create-script");
+	start_test("after-create-script $hook");
 	show_progress();
-	pass("($OPT_HOOK_AFTER_CREATE)")
-		if load_sql_file($OPT_HOOK_AFTER_CREATE, 1);
+	pass() if load_sql_file($hook, 1);
 }
 
 foreach $TEST (@ARGV)
@@ -574,12 +573,11 @@ foreach $TEST (@ARGV)
 
 }
 
-if ( '' ne $OPT_HOOK_BEFORE_UNINSTALL )
+foreach my $hook (@OPT_HOOK_BEFORE_UNINSTALL)
 {
-	start_test("before-uninstall-script");
+	start_test("before-uninstall-script $hook");
 	show_progress();
-	pass("($OPT_HOOK_BEFORE_UNINSTALL)")
-		if load_sql_file($OPT_HOOK_BEFORE_UNINSTALL, 1);
+	pass() if load_sql_file($hook, 1);
 }
 
 
@@ -658,12 +656,16 @@ Options:
   --extension     load using extensions
   --after-create-script <path>
                   script to load after spatial db creation
+                  (multiple switches supported, to be run in given order)
   --before-uninstall-script <path>
                   script to load before spatial extension uninstall
+                  (multiple switches supported, to be run in given order)
   --before-upgrade-script <path>
                   script to load before upgrade
+                  (multiple switches supported, to be run in given order)
   --after-upgrade-script <path>
                   script to load after upgrade
+                  (multiple switches supported, to be run in given order)
 };
 
 }
