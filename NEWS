@@ -3,6 +3,8 @@ PostGIS 3.1.2
 
  * Bug Fixes
 
+  - #4871, TopoGeometry::geometry cast returns NULL for empty
+           TopoGeometry objects (Sandro Santilli)
   - #4826, postgis_tiger_geocoder Better answers when no zip is provided
            (Regina Obe)
   - #4817, handle more complex compound coordinate dystems (Paul Ramsey)
