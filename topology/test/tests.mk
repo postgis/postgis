@@ -23,6 +23,7 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/droptopogeometrycolumn.sql \
 	$(topsrcdir)/topology/test/regress/droptopology.sql \
 	$(topsrcdir)/topology/test/regress/findtopology.sql \
+	$(topsrcdir)/topology/test/regress/geometry_cast.sql \
 	$(topsrcdir)/topology/test/regress/getedgebypoint.sql \
 	$(topsrcdir)/topology/test/regress/getfacebypoint.sql \
 	$(topsrcdir)/topology/test/regress/getnodebypoint.sql \
