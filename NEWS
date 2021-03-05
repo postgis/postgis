@@ -1,6 +1,8 @@
-PostGIS 3.04
+PostGIS 3.0.4dev
 2021/xx/xx
 
+  - #4871, TopoGeometry::geometry cast returns NULL for empty
+           TopoGeometry objects (Sandro Santilli)
   - #4817, Handle complex compound coordinate systems (Paul Ramsey)
   - Support newer proj versions that have deprecated pj_get_release (Paul Ramsey)
   - #4835, Adjust geodetic tolerance for calculations (Paul Ramsey)

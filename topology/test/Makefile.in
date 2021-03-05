@@ -74,6 +74,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/createtopogeom.sql \
 	regress/createtopology.sql \
 	regress/gml.sql \
+	regress/geometry_cast.sql \
 	regress/getnodebypoint.sql \
 	regress/getedgebypoint.sql \
 	regress/getfacebypoint.sql \
