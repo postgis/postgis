@@ -376,11 +376,14 @@ rt_util_gdal_driver_registered(const char *drv) {
 /* variable for PostgreSQL GUC: postgis.gdal_enabled_drivers */
 char *gdal_enabled_drivers = NULL;
 
+char ** gdal_open_options = NULL;
+
 /*
 	wrapper for GDALOpen and GDALOpenShared
 */
 GDALDatasetH
 rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
+	unsigned int open_flags;
 	assert(NULL != fn);
 
 	if (gdal_enabled_drivers != NULL) {
@@ -401,10 +404,12 @@ rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
 		}
 	}
 
-	if (shared)
-		return GDALOpenShared(fn, fn_access);
-	else
-		return GDALOpen(fn, fn_access);
+	open_flags = GDAL_OF_RASTER
+		| GDAL_OF_VERBOSE_ERROR
+		| (fn_access == GA_Update ? GDAL_OF_UPDATE : 0)
+		| (shared ? GDAL_OF_SHARED : 0);
+
+	return GDALOpenEx(fn, open_flags, NULL, (const char **)gdal_open_options, NULL);
 }
 
 void

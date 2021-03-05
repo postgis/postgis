@@ -241,7 +241,6 @@ typedef void  (*rt_message_handler)(const char* string, va_list ap)
  */
 extern void rt_install_default_allocators(void);
 
-
 /**
  * Wrappers used for managing memory. They simply call the functions defined by
  * the caller

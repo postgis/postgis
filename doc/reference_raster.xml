@@ -1321,6 +1321,64 @@ WHERE short_name = 'GTiff') As g;
 	  </refsection>
 	</refentry>
 
+
+    <refentry id="RT_ST_GDALOpenOptions">
+      <refnamediv>
+        <refname>ST_GDALOpenOptions</refname>
+
+        <refpurpose>Sets the GDAL driver open options for this session. When using "out db" rasters, it may be necessary to alter the default open options in order to improve performance, or supply authentication information.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text[] <function>ST_GDALOpenOptions</function></funcdef>
+            <paramdef>
+                <type>text[] </type><parameter>options</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>
+            Sets the "open options" to be used by GDAL for this session (until the current user disconnects). Returns the list of options the function could parse.
+        </para>
+        <para>
+            Options are expressed in the <ulink url="https://gdal.org/user/configoptions.html">standard GDAL options format</ulink>, "NAME=VALUE". Options remain set for the lifetime of the databaes connection, but can be altered at any time by re-running the function.
+        </para>
+        <para>
+            For cloud-stored "out db" rasters, setting authentication options is neccesary to accessing private buckets.
+        </para>
+         <para>Availability: 3.2.0</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Example</title>
+        <para>To access a raster stored in an S3 bucket, us a id/key pair that has permission for the object.</para>
+
+        <programlisting>SELECT st_gdalopenoptions(ARRAY[
+    'AWS_ACCESS_KEY_ID=08080808080808080808 ',
+    'AWS_SECRET_ACCESS_KEY=2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x']
+)</programlisting>
+        <para>To create an "out db" table that references an authenticated cloud raster, pass in the options to the environment of the loader.</para>
+        <programlisting>AWS_ACCESS_KEY_ID=08080808080808080808 \
+AWS_SECRET_ACCESS_KEY=2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x2x \
+raster2pgsql \
+  -s 26910 \
+  -t 256x256 \
+  -I \
+  -R \
+  /vsis3/your.bucket.com/your_raster_file.tif \
+  your_raster_table \
+  | psql your_db</programlisting>
+
+</refsection>
+</refentry>
+
 		<refentry id="RT_UpdateRasterSRID">
 			<refnamediv>
 				<refname>UpdateRasterSRID</refname>

@@ -1495,6 +1495,11 @@ CREATE OR REPLACE FUNCTION st_gdaldrivers(
 	AS 'MODULE_PATHNAME', 'RASTER_getGDALDrivers'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION st_gdalopenoptions(opts text[])
+	RETURNS text[]
+	AS 'MODULE_PATHNAME', 'RASTER_setGDALOpenOptions'
+	LANGUAGE 'c' STRICT;
+
 -- Cannot be strict as "options" and "srid" can be NULL
 CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[] DEFAULT NULL, srid integer DEFAULT NULL)
 	RETURNS bytea

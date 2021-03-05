@@ -34,6 +34,7 @@
 #include "utils/lsyscache.h" /* for get_typlenbyvalalign */
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+#include "utils/memutils.h" /* For TopMemoryContext */
 
 #include "../../postgis_config.h"
 
@@ -50,6 +51,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS);
 /* convert raster to GDAL raster */
 Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS);
 Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
+Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS);
 
 /* warp a raster using GDAL Warp API */
 Datum RASTER_GDALWarp(PG_FUNCTION_ARGS);
@@ -439,6 +441,98 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		pfree(drv_set2);
 		SRF_RETURN_DONE(funcctx);
 	}
+}
+
+
+/* variable declared in rt_util.c */
+extern char ** gdal_open_options;
+
+PG_FUNCTION_INFO_V1(RASTER_setGDALOpenOptions);
+Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
+{
+//xxxxx
+	int16 elmlen;
+	bool elmbyval;
+	char elmalign;
+	int dims[1];
+	int lbs[1] = {1};
+
+	Datum value;
+	bool isnull;
+
+	MemoryContext oldcontext;
+
+	Datum *elems;
+	bool *nulls;
+#   define GDAL_OPEN_MAXOPTS 64
+	char * opts[GDAL_OPEN_MAXOPTS];
+	size_t nopts = 0;
+	size_t i;
+
+	ArrayType *array = PG_GETARG_ARRAYTYPE_P(0);
+	ArrayIterator iterator = array_create_iterator(array, 0, NULL);
+	while (array_iterate(iterator, &value, &isnull))
+	{
+		char* namevalue;
+		/* Skip Null */
+		if (isnull)
+			continue;
+
+		/* Skip anything that is not 'NAME=VALUE' */
+		namevalue = text_to_cstring(DatumGetTextP(value));
+		if (!strstr(namevalue, "="))
+			continue;
+
+		/* Don't overshoot our buffer */
+		if (nopts == GDAL_OPEN_MAXOPTS)
+		{
+			elog(NOTICE, "%s: maximum number (%u) of open options reached", __func__, GDAL_OPEN_MAXOPTS);
+			break;
+		}
+
+		/* Remember this option */
+		opts[nopts++] = namevalue;
+	}
+	array_free_iterator(iterator);
+
+	/* Clean up any pre-existing global options */
+	if (gdal_open_options)
+	{
+		char** opts = gdal_open_options;
+		while(*opts)
+		{
+			pfree(*opts);
+			++opts;
+		}
+		pfree(gdal_open_options);
+		gdal_open_options = NULL;
+	}
+
+	/* Copy the options to the global location (for this backend) */
+	oldcontext = MemoryContextSwitchTo(TopMemoryContext);
+	gdal_open_options = palloc(sizeof(char*) * (nopts+1));
+	for (i = 0; i < nopts; i++)
+	{
+		gdal_open_options[i] = pstrdup(opts[i]);
+	}
+	gdal_open_options[nopts] = NULL;
+	MemoryContextSwitchTo(oldcontext);
+
+	/* Fill-in array data arrays */
+	elems = palloc(nopts * sizeof(Datum));
+	nulls = palloc(nopts * sizeof(bool));
+	for (i = 0; i < nopts; i++)
+	{
+		elems[i] = PointerGetDatum(cstring_to_text(opts[i]));
+		nulls[i] = false;
+	}
+
+	/* Construct output array */
+	dims[0] = nopts;
+	get_typlenbyvalalign(TEXTOID, &elmlen, &elmbyval, &elmalign);
+	PG_RETURN_POINTER(construct_md_array(
+		elems, nulls, 1, dims, lbs,
+	    TEXTOID, elmlen, elmbyval, elmalign));
 }
 
 /**
