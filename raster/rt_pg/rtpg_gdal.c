@@ -535,6 +535,29 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
 	    TEXTOID, elmlen, elmbyval, elmalign));
 }
 
+
+/*
+* st_gdalcontour(raster, text[] options, bandnumber int default 1)
+* returns record(linestring, id, value_elevation)
+* options ID_FIELD = n, ELEV_FIELD = n
+*/
+PG_FUNCTION_INFO_V1(RASTER_GDALContour);
+Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
+{
+	//xxxx
+	int src_srid = SRID_UNKNOWN;
+	char *src_srs = NULL;
+
+	rt_pgraster *pgraster = NULL;
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	src_srid = clamp_srid(rt_raster_get_srid(raster));
+	src_srs = rtpg_getSR(src_srid); // palloc'ed srs text that GDAL supports
+
+}
+
+
 /**
  * warp a raster using GDAL Warp API
  */

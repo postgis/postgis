@@ -39,6 +39,7 @@ RT_OBJS = \
 	rt_statistics.o \
 	rt_pixel.o \
 	rt_warp.o \
+	rt_gdal.o \
 	rt_band.o \
 	rt_raster.o \
 	rt_serialize.o \
