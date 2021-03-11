@@ -98,7 +98,7 @@ FROM ST_BandMetaData(
 );
 
 SELECT
-	bandnum
+	bandnum,
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
@@ -110,7 +110,7 @@ FROM ST_BandMetaData(
 );
 
 SELECT
-	bandnum
+	bandnum,
 	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
