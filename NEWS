@@ -14,6 +14,8 @@ PostGIS 3.1.2
   - #4840, Improper conversion of negative geographic azimuth to positive (Paul Ramsey)
   - #4853, DBSCAN cluster not formed when recordset length equal to minPoints (Dan Baston)
   - #4863, Update bboxes after scale/affine coordinate changes (Paul Ramsey)
+  - #4876, Fix raster issues related to PostgreSQL 14 tablefunc changes
+           (Paul Ramsey, Regina Obe)
   - #4877, mingw64 PostGIS / PostgreSQL 14 compile (Regina Obe, Tom Lane)
 
 
