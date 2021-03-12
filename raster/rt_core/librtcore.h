@@ -1631,6 +1631,36 @@ GDALDatasetH rt_raster_to_gdal_mem(
 	GDALDriverH *rtn_drv, int *destroy_rtn_drv
 );
 
+/*
+* Generate contour vectors from a raster input
+*/
+struct rt_contour_t {
+	LWGEOM *geom;
+	double elevation;
+	int id;
+}
+
+/**
+ * Return palloc'ed list of contours.
+ * @param src_raster : raster to generate contour from
+ * @param options : CSList of OPTION=VALUE strings for the
+ *   contour routine, see https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv419GDALContourGenerate15GDALRasterBandHddiPdidPvii16GDALProgressFuncPv
+ * @param src_srs : Coordinate reference system string for raster
+ * @param ncontours : Output parameter for length of contour list
+ * @param contours : palloc'ed list of contours, caller to free
+ */
+int rt_raster_gdal_contour(
+	/* input parameters */
+	rt_raster src_raster,
+	int src_band,
+	int src_srid,
+	const char **options,
+	/* output parameters */
+	size_t *ncontours,
+	struct rt_contour_t **contours
+	);
+
+
 /**
  * Return a raster from a GDAL dataset
  *
@@ -2188,6 +2218,7 @@ rt_util_gdal_driver_registered(const char *drv);
 */
 GDALDatasetH
 rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
+
 
 void
 rt_util_from_ogr_envelope(
