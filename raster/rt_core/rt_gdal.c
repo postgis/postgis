@@ -51,7 +51,7 @@ typedef struct
 
 
 static void
-_rti_contour_arg_init(_rti_contour_arg& arg)
+_rti_contour_arg_init(_rti_contour_arg* arg)
 {
 	memset(arg, 0, sizeof(_rti_contour_arg));
 	return;
@@ -59,7 +59,7 @@ _rti_contour_arg_init(_rti_contour_arg& arg)
 
 
 static int
-_rti_contour_arg_destroy(_rti_contour_arg& arg)
+_rti_contour_arg_destroy(_rti_contour_arg* arg)
 {
 	if(arg->src.ds != NULL)
 		GDALClose(arg->dst.ds);
@@ -88,9 +88,10 @@ _rti_contour_arg_destroy(_rti_contour_arg& arg)
  */
 int rt_raster_gdal_contour(
 	/* input parameters */
-	raster src_raster,
+	rt_raster src_raster,
 	int src_band,
 	int src_srid,
+	const char* src_srs,
 	const char **options,
 	/* output parameters */
 	size_t *ncontours,
@@ -108,12 +109,12 @@ int rt_raster_gdal_contour(
 	_rti_contour_arg_init(&arg);
 
 	/* Load raster into GDAL memory */
-	arg.src.ds = rt_raster_to_gdal_mem(raster, src_srs, NULL, NULL, 0, &(arg.src.drv), &(arg.src.destroy_drv));
+	arg.src.ds = rt_raster_to_gdal_mem(src_raster, src_srs, NULL, NULL, 0, &(arg.src.drv), &(arg.src.destroy_drv));
 	/* Extract the desired band */
 	hBand = GDALGetRasterBand(arg.src.ds, src_band);
 
 	/* Set up the OGR destination data store */
-	arg.dst.srid = src_srid
+	arg.dst.srid = src_srid;
 	arg.dst.drv = OGRGetDriverByName("Memory");
 	if (!arg.dst.drv)
 		return _rti_contour_arg_destroy(&arg);
@@ -129,13 +130,13 @@ int rt_raster_gdal_contour(
 		arg.dst.gtype = wkbLineString;
 
 	/* Layer has geometry, elevation, id */
-	arg.dst.lyr = OGR_DS_CreateLayer(arg.dst.ds, "contours", NULL, arg.dst.gtype);
+	arg.dst.lyr = OGR_DS_CreateLayer(arg.dst.ds, "contours", NULL, arg.dst.gtype, NULL);
 	if (!arg.dst.lyr)
 		return _rti_contour_arg_destroy(&arg);
 
 	/* ID field */
 	OGRFieldDefnH hFldId = OGR_Fld_Create("id", OFTInteger);
-	ogrerr = OGR_L_CreateField(arg.dst.lyr, OFTInteger, TRUE);
+	ogrerr = OGR_L_CreateField(arg.dst.lyr, hFldId, TRUE);
 	if (ogrerr != OGRERR_NONE)
 		return _rti_contour_arg_destroy(&arg);
 
@@ -178,8 +179,8 @@ int rt_raster_gdal_contour(
 		/* Reclaim feature and associated geometry memory */
 		OGR_F_Destroy(hFeat);
 		contour.geom = lwgeom_from_wkb(bufWkb, szWkb, LW_PARSER_CHECK_NONE);
-		rtfree(bufWkb);
-		lwgeom_set_srid(contour.geom. arg.dst.srid);
+		rtdealloc(bufWkb);
+		lwgeom_set_srid(contour.geom, arg.dst.srid);
 		*contours[j++] = contour;
 	}
 

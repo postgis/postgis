@@ -129,6 +129,7 @@
 #include "gdalwarper.h"
 #include "cpl_vsi.h"
 #include "cpl_conv.h"
+#include "cpl_string.h"
 #include "ogr_api.h"
 #include "ogr_srs_api.h"
 
@@ -1638,7 +1639,7 @@ struct rt_contour_t {
 	LWGEOM *geom;
 	double elevation;
 	int id;
-}
+};
 
 /**
  * Return palloc'ed list of contours.
@@ -1654,6 +1655,7 @@ int rt_raster_gdal_contour(
 	rt_raster src_raster,
 	int src_band,
 	int src_srid,
+	const char* src_srs,
 	const char **options,
 	/* output parameters */
 	size_t *ncontours,

@@ -57,9 +57,9 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS);
 /* warp a raster using GDAL Warp API */
 Datum RASTER_GDALWarp(PG_FUNCTION_ARGS);
 
-/* ---------------------------------------------------------------- */
-/* Returns raster from GDAL raster
-/* ---------------------------------------------------------------- */
+/* ----------------------------------------------------------------
+ * Returns raster from GDAL raster
+ * ---------------------------------------------------------------- */
 PG_FUNCTION_INFO_V1(RASTER_fromGDALRaster);
 Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 {
@@ -552,16 +552,14 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_GDALContour);
 Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 {
-	//xxxx
-	FuncCallContext *funcctx;
-
 	/* For return values */
 	typedef struct {
 		size_t ncontours;
 		struct rt_contour_t *contours;
 	} gdal_contour_result_t;
 
-	gdal_contour_result_t *result;
+	//xxxx
+	FuncCallContext *funcctx;
 
 	if (SRF_IS_FIRSTCALL())
 	{
@@ -570,8 +568,10 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 
 		/* For reading the raster */
 		int src_srid = SRID_UNKNOWN;
+		char *src_srs = NULL;
 		rt_raster raster = NULL;
 		int num_bands;
+		int band, rv;
 
 		/* For reading the levels[] */
 		ArrayType *array;
@@ -592,15 +592,18 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		bool polygonize = false;
 
 		/* For the NAME=VALUE GDAL options */
-		char *options[8];
+		const char *options[8];
 		size_t options_count = 0;
+
+		/* To carry the output from rt_raster_gdal_contour */
+		gdal_contour_result_t result;
+		memset(&result, 0, sizeof(gdal_contour_result_t));
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
 		/* switch to memory context appropriate for multiple function calls */
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		result = palloc0(sizeof(gdal_contour_result_t));
 
 		/* Build a tuple descriptor for our return result */
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
@@ -622,6 +625,7 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		num_bands = rt_raster_get_num_bands(raster);
 		src_srid = clamp_srid(rt_raster_get_srid(raster));
+		src_srs = rtpg_getSR(src_srid);
 
 		/* Read the band number */
 		band = PG_GETARG_INT32(1);
@@ -633,7 +637,7 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		level_base = PG_GETARG_FLOAT8(2);
 
 		/* Read the level_interval */
-		level_interval = PG_GETARG_FLOAT8(3)
+		level_interval = PG_GETARG_FLOAT8(3);
 		if (level_interval <= 0.0) {
 			elog(ERROR, "%s: level interval must be greater than zero", __func__);
 		}
@@ -665,7 +669,7 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 
 		/* Always places outputs in the same location */
 		options[options_count++] = "ID_FIELD=0";
-		options[options_count++] = "ELEV_FIELD=1"
+		options[options_count++] = "ELEV_FIELD=1";
 
 		/* Array of levels supercedes the base/interval parameters */
 		if (level_count == 0) {
@@ -699,14 +703,16 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 			raster,
 			band,
 			src_srid,
+			src_srs,
 			options,
 			/* output parameters */
-			&(result->ncontours),
-			&(result->contours)
+			&(result.ncontours),
+			&(result.contours)
 			);
 
-		funcctx->user_fctx = result;
-		funcctx->max_calls = result->ncontours;
+		funcctx->user_fctx = palloc(sizeof(result));
+		memcpy(funcctx->user_fctx, &result, sizeof(result));
+		funcctx->max_calls = result.ncontours;
 		MemoryContextSwitchTo(oldcontext);
 	}
 
@@ -715,15 +721,16 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (funcctx->call_cntr < funcctx->max_calls) {
+
+		gdal_contour_result_t *result = funcctx->user_fctx;
 		TupleDesc tupdesc = funcctx->tuple_desc;
-		result = funcctx->user_fctx;
-		Datum values[3];
-		bool nulls[3];
-		memset(nulls, FALSE, sizeof(bool) * 3);
-		if (result[funcctx->call_cntr].geom) {
-			values[0] = PointerGetDatum(result[funcctx->call_cntr].geom);
-			values[1] = Int32GetDatum(result[funcctx->call_cntr].id);
-			values[2] = Float8GetDatum(result[funcctx->call_cntr].elevation);
+		Datum values[3] = {0, 0, 0};
+		bool nulls[3] = {0, 0, 0};
+		struct rt_contour_t c = result->contours[funcctx->call_cntr];
+		if (c.geom) {
+			values[0] = PointerGetDatum(c.geom);
+			values[1] = Int32GetDatum(c.id);
+			values[2] = Float8GetDatum(c.elevation);
 		}
 		else {
 			nulls[0] = true;
