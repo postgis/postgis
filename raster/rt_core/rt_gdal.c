@@ -62,7 +62,7 @@ static int
 _rti_contour_arg_destroy(_rti_contour_arg* arg)
 {
 	if(arg->src.ds != NULL)
-		GDALClose(arg->dst.ds);
+		GDALClose(arg->src.ds);
 
 	if (arg->src.drv != NULL && arg->src.destroy_drv) {
 		GDALDeregisterDriver(arg->src.drv);
@@ -84,7 +84,7 @@ _rti_contour_arg_destroy(_rti_contour_arg* arg)
  *   contour routine, see https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv419GDALContourGenerate15GDALRasterBandHddiPdidPvii16GDALProgressFuncPv
  * @param src_srs : Coordinate reference system string for raster
  * @param ncontours : Output parameter for length of contour list
- * @param contours : palloc'ed list of contours, caller to free
+ * @param contours : Output palloc'ed list of contours, caller to free
  */
 int rt_raster_gdal_contour(
 	/* input parameters */
@@ -92,7 +92,7 @@ int rt_raster_gdal_contour(
 	int src_band,
 	int src_srid,
 	const char* src_srs,
-	const char **options,
+	char **options,
 	/* output parameters */
 	size_t *ncontours,
 	struct rt_contour_t **contours
@@ -167,10 +167,11 @@ int rt_raster_gdal_contour(
 		struct rt_contour_t contour;
 		OGRGeometryH hGeom;
 		OGRFeatureH hFeat;
+		LWGEOM *geom;
 		if (!(hFeat = OGR_L_GetFeature(arg.dst.lyr, i))) continue;
 		/* Store elevation/id */
-		contour.elevation = OGR_F_GetFieldAsDouble(hFeat, 0);
-		contour.id = OGR_F_GetFieldAsInteger(hFeat, 1);
+		contour.id = OGR_F_GetFieldAsInteger(hFeat, 0);
+		contour.elevation = OGR_F_GetFieldAsDouble(hFeat, 1);
 		/* Convert OGR geometry to LWGEOM via WKB */
 		if (!(hGeom = OGR_F_GetGeometryRef(hFeat))) continue;
 		szWkb = OGR_G_WkbSize(hGeom);
@@ -178,10 +179,12 @@ int rt_raster_gdal_contour(
 		if (OGR_G_ExportToWkb(hGeom, wkbNDR, bufWkb) != OGRERR_NONE) continue;
 		/* Reclaim feature and associated geometry memory */
 		OGR_F_Destroy(hFeat);
-		contour.geom = lwgeom_from_wkb(bufWkb, szWkb, LW_PARSER_CHECK_NONE);
+		geom = lwgeom_from_wkb(bufWkb, szWkb, LW_PARSER_CHECK_NONE);
+		lwgeom_set_srid(geom, arg.dst.srid);
+		contour.geom = gserialized_from_lwgeom(geom, NULL);
+		lwgeom_free(geom);
 		rtdealloc(bufWkb);
-		lwgeom_set_srid(contour.geom, arg.dst.srid);
-		*contours[j++] = contour;
+		(*contours)[j++] = contour;
 	}
 
 	/* Return total number of contours saved */

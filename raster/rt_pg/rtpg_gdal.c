@@ -553,7 +553,7 @@ PG_FUNCTION_INFO_V1(RASTER_GDALContour);
 Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 {
 	/* For return values */
-	typedef struct {
+	typedef struct gdal_contour_result_t {
 		size_t ncontours;
 		struct rt_contour_t *contours;
 	} gdal_contour_result_t;
@@ -575,35 +575,27 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 
 		/* For reading the levels[] */
 		ArrayType *array;
-		ArrayIterator iterator;
-		Datum value;
-		bool isnull;
+		size_t level_count = 0;
 
 		/* For the level parameters */
 		double level_base;
 		double level_interval;
 
-		/* For the levels array */
-		size_t level_capacity = 8;
-		size_t level_count = 0;
-		double *levels = palloc0(sizeof(double)*level_capacity);
-
 		/* for the polygonize flag */
 		bool polygonize = false;
 
 		/* For the NAME=VALUE GDAL options */
-		const char *options[8];
+		char *options[8];
 		size_t options_count = 0;
-
-		/* To carry the output from rt_raster_gdal_contour */
-		gdal_contour_result_t result;
-		memset(&result, 0, sizeof(gdal_contour_result_t));
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
+
 		/* switch to memory context appropriate for multiple function calls */
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
+		/* To carry the output from rt_raster_gdal_contour */
+		gdal_contour_result_t *result = palloc0(sizeof(gdal_contour_result_t));
 
 		/* Build a tuple descriptor for our return result */
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
@@ -642,24 +634,6 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 			elog(ERROR, "%s: level interval must be greater than zero", __func__);
 		}
 
-		/* Read the levels array */
-		array = PG_GETARG_ARRAYTYPE_P(4);
-		iterator = array_create_iterator(array, 0, NULL);
-		while (array_iterate(iterator, &value, &isnull))
-		{
-			/* Skip nulls */
-			if (isnull)
-				continue;
-
-			if (level_count == level_capacity) {
-				level_capacity *= 2;
-				levels = repalloc(levels, sizeof(double)*level_capacity);
-			}
-			levels[level_count++] = DatumGetFloat8(value);
-
-		}
-		array_free_iterator(iterator);
-
 		/* Read the polygonize flag */
 		polygonize = PG_GETARG_BOOL(5);
 
@@ -670,6 +644,35 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		/* Always places outputs in the same location */
 		options[options_count++] = "ID_FIELD=0";
 		options[options_count++] = "ELEV_FIELD=1";
+
+		/* Read the levels array */
+		array = PG_GETARG_ARRAYTYPE_P(4);
+		if (ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)) > 0) {
+			stringbuffer_t sb;
+			Datum value;
+			bool isnull;
+			stringbuffer_init(&sb);
+
+			ArrayIterator iterator = array_create_iterator(array, 0, NULL);
+			while (array_iterate(iterator, &value, &isnull))
+			{
+				double level;
+				/* Skip nulls */
+				if (isnull)
+					continue;
+
+				level = DatumGetFloat8(value);
+				if (level_count == 0)
+					stringbuffer_aprintf(&sb, "FIXED_LEVELS=%g", level);
+				else
+					stringbuffer_aprintf(&sb, ",%g", level);
+
+				level_count++;
+			}
+			array_free_iterator(iterator);
+			options[options_count++] = stringbuffer_getstringcopy(&sb);
+			stringbuffer_release(&sb);
+		}
 
 		/* Array of levels supercedes the base/interval parameters */
 		if (level_count == 0) {
@@ -683,17 +686,7 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 			snprintf(level_interval_str, sizeof(level_interval_str), "LEVEL_INTERVAL=%g", level_interval);
 			options[options_count++] = level_interval_str;
 		}
-		else {
-			size_t i;
-			stringbuffer_t sb;
-			stringbuffer_init(&sb);
-			stringbuffer_aprintf(&sb, "FIXED_LEVELS=%g", levels[0]);
-			for (i = 1; i < level_count; i++) {
-				stringbuffer_aprintf(&sb, ",%g", levels[i]);
-			}
-			options[options_count++] = stringbuffer_getstringcopy(&sb);
-			stringbuffer_release(&sb);
-		}
+
 		/* Zero out the end of the CSList */
 		options[options_count] = NULL;
 
@@ -706,13 +699,12 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 			src_srs,
 			options,
 			/* output parameters */
-			&(result.ncontours),
-			&(result.contours)
+			&(result->ncontours),
+			&(result->contours)
 			);
 
-		funcctx->user_fctx = palloc(sizeof(result));
-		memcpy(funcctx->user_fctx, &result, sizeof(result));
-		funcctx->max_calls = result.ncontours;
+		funcctx->user_fctx = result;
+		funcctx->max_calls = result->ncontours;
 		MemoryContextSwitchTo(oldcontext);
 	}
 
@@ -722,11 +714,14 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 	/* do when there is more left to send */
 	if (funcctx->call_cntr < funcctx->max_calls) {
 
-		gdal_contour_result_t *result = funcctx->user_fctx;
-		TupleDesc tupdesc = funcctx->tuple_desc;
+		HeapTuple tuple;
+		Datum srf_result;
 		Datum values[3] = {0, 0, 0};
 		bool nulls[3] = {0, 0, 0};
+
+		gdal_contour_result_t *result = funcctx->user_fctx;
 		struct rt_contour_t c = result->contours[funcctx->call_cntr];
+
 		if (c.geom) {
 			values[0] = PointerGetDatum(c.geom);
 			values[1] = Int32GetDatum(c.id);
@@ -739,9 +734,9 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		}
 
 		/* return a tuple */
-		SRF_RETURN_NEXT(funcctx,
-			HeapTupleGetDatum(
-				heap_form_tuple(tupdesc, values, nulls)));
+		tuple = heap_form_tuple(funcctx->tuple_desc, values, nulls);
+		srf_result = HeapTupleGetDatum(tuple);
+		SRF_RETURN_NEXT(funcctx, srf_result);
 	}
 	else {
 		SRF_RETURN_DONE(funcctx);

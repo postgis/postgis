@@ -1515,8 +1515,8 @@ CREATE OR REPLACE FUNCTION st_gdalcontour(
 		fixed_levels float8[] DEFAULT ARRAY[]::float8[],
 		polygonize boolean DEFAULT false
 		)
-	RETURNS table(geom geometry, value float8, id integer)
-	AS 'MODULE_PATHNAME, 'RASTER_GDALContour'
+	RETURNS table(geom geometry, id integer, value float8)
+	AS 'MODULE_PATHNAME', 'RASTER_GDALContour'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -----------------------------------------------------------------------

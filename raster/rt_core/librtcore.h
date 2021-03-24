@@ -1636,7 +1636,7 @@ GDALDatasetH rt_raster_to_gdal_mem(
 * Generate contour vectors from a raster input
 */
 struct rt_contour_t {
-	LWGEOM *geom;
+	GSERIALIZED *geom;
 	double elevation;
 	int id;
 };
@@ -1656,7 +1656,7 @@ int rt_raster_gdal_contour(
 	int src_band,
 	int src_srid,
 	const char* src_srs,
-	const char **options,
+	char **options,
 	/* output parameters */
 	size_t *ncontours,
 	struct rt_contour_t **contours
