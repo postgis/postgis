@@ -98,6 +98,9 @@ int rt_raster_gdal_contour(
 	struct rt_contour_t **contours
 	)
 {
+#if POSTGIS_GDAL_VERSION < 24
+	return FALSE;
+#else
 	CPLErr cplerr;
 	OGRErr ogrerr;
 	GDALRasterBandH hBand;
@@ -197,5 +200,6 @@ int rt_raster_gdal_contour(
 
 	/* Done */
 	return TRUE;
+#endif
 }
 

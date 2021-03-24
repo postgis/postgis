@@ -552,7 +552,7 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_GDALContour);
 Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GDAL_VERSION < 23
+#if POSTGIS_GDAL_VERSION < 24
 	elog(ERROR, "ST_GDALContour requires GDAL 2.3 or higher");
 #else
 	/* For return values */
