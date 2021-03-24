@@ -102,8 +102,7 @@ int rt_raster_gdal_contour(
 	OGRErr ogrerr;
 	GDALRasterBandH hBand;
 	const char* polygonize;
-	size_t i = 0, j = 0;
-	int nfeatures = 0;
+	int nfeatures = 0, i = 0, j = 0;
 
 	_rti_contour_arg arg;
 	_rti_contour_arg_init(&arg);
@@ -160,6 +159,9 @@ int rt_raster_gdal_contour(
 
 	/* Convert the OGR layer into PostGIS geometries */
 	nfeatures = OGR_L_GetFeatureCount(arg.dst.lyr, TRUE);
+	if (nfeatures < 0)
+		return _rti_contour_arg_destroy(&arg);
+
 	*contours = rtalloc(sizeof(struct rt_contour_t) * nfeatures);
 	for (i = 0; i < nfeatures; i++) {
 		size_t szWkb;

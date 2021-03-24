@@ -703,6 +703,12 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 			&(result->contours)
 			);
 
+		/* No-op on bad return */
+		if (rv == FALSE) {
+			funcctx = SRF_PERCALL_SETUP();
+			SRF_RETURN_DONE(funcctx);
+		}
+
 		funcctx->user_fctx = result;
 		funcctx->max_calls = result->ncontours;
 		MemoryContextSwitchTo(oldcontext);
