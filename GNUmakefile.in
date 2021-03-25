@@ -41,7 +41,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit check-regress docs-check check-news check-tests-enabled
+check: check-no-trailing-blanks check-unit check-regress docs-check check-news 
 
 staged-install: all
 	$(MAKE) -C regress staged-install
