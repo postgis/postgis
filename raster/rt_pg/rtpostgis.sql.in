@@ -1506,6 +1506,18 @@ CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options tex
 	AS 'MODULE_PATHNAME', 'RASTER_asGDALRaster'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION st_gdalcontour(
+		rast raster,
+		bandnumber integer DEFAULT 1,
+		level_interval float8 DEFAULT 100.0,
+		level_base float8 DEFAULT 0.0,
+		fixed_levels float8[] DEFAULT ARRAY[]::float8[],
+		polygonize boolean DEFAULT false
+		)
+	RETURNS table(geom geometry, id integer, value float8)
+	AS 'MODULE_PATHNAME', 'RASTER_GDALContour'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
 -----------------------------------------------------------------------
 -- ST_AsTIFF
 -----------------------------------------------------------------------
