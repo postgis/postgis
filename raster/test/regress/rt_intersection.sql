@@ -134,11 +134,13 @@ FROM (
 	SELECT
 		rid1,
 		rid2,
-		(ST_Metadata(rast)).*,
-		(ST_BandMetadata(rast, 1)).*,
+		md.*,
+		bmd.*,
 		ST_Value(rast, 1, 1, 1) AS firstvalue,
 		ST_Value(rast, 1, ST_Width(rast), ST_Height(rast)) AS lastvalue
 	FROM raster_intersection_out
+		LEFT JOIN LATERAL ST_Metadata(rast) AS md ON true
+		LEFT JOIN LATERAL ST_BandMetadata(rast,1) AS bmd ON true
 ) AS r;
 
 -- Display the pixels and the values of the resulting rasters
@@ -155,9 +157,10 @@ FROM (
 		rid1,
 		rid2,
 		band,
-		ST_PixelAsPolygons(rast, band) gvxy
+	 	gvxy
 	FROM raster_intersection_out
-	CROSS JOIN generate_series(1, 2) band
+	CROSS JOIN generate_series(1, 2) AS band
+	CROSS JOIN ST_PixelAsPolygons(rast, band) AS gvxy
 ) foo
 ORDER BY 1, 2, 3, 4, 5, 6, 7;
 

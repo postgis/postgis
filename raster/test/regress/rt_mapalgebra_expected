@@ -72,6 +72,7 @@ NOTICE:  userargs = {3.14}
 NOTICE:  All input rasters do not have bands at indicated indexes. Returning empty raster
 NOTICE:  Raster provided has no bands
 NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
 NOTICE:  value = {{{NULL,NULL,NULL},{NULL,200,200},{NULL,200,200}}}
 NOTICE:  pos = [0:1][1:2]={{1,1},{1,1}}
 NOTICE:  userargs = <NULL>

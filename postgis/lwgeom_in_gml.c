@@ -46,15 +46,14 @@
 *
 **********************************************************************/
 
+#include "postgres.h"
+#include "executor/spi.h"
+#include "utils/builtins.h"
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
-
-#include "postgres.h"
-#include "executor/spi.h"
-#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"

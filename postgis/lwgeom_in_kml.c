@@ -37,14 +37,12 @@
 * Written by Olivier Courtin - Oslandia
 *
 **********************************************************************/
-
+#include "postgres.h"
+#include "utils/builtins.h"
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <string.h>
-
-#include "postgres.h"
-#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
