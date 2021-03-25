@@ -565,6 +565,8 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 	{
 		MemoryContext oldcontext;
 		TupleDesc tupdesc;
+		gdal_contour_result_t *result;
+		rt_pgraster *pgraster = NULL;
 
 		/* For reading the raster */
 		int src_srid = SRID_UNKNOWN;
@@ -593,7 +595,7 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/* To carry the output from rt_raster_gdal_contour */
-		gdal_contour_result_t *result = palloc0(sizeof(gdal_contour_result_t));
+		result = palloc0(sizeof(gdal_contour_result_t));
 
 		/* Build a tuple descriptor for our return result */
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
@@ -610,7 +612,6 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		funcctx->tuple_desc = tupdesc;
 
 		/* Read the raster */
-		rt_pgraster *pgraster = NULL;
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		num_bands = rt_raster_get_num_bands(raster);
@@ -642,8 +643,8 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		if (array_size > 0) {
 			Datum value;
 			bool isnull;
-			fixed_levels = palloc0(array_size * sizeof(double));
 			ArrayIterator iterator = array_create_iterator(array, 0, NULL);
+			fixed_levels = palloc0(array_size * sizeof(double));
 			while (array_iterate(iterator, &value, &isnull))
 			{
 				/* Skip nulls */
