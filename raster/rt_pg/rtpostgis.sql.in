@@ -1510,8 +1510,8 @@ CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options tex
 CREATE OR REPLACE FUNCTION st_gdalcontour(
 		rast raster,
 		bandnumber integer DEFAULT 1,
-		level_base float8 DEFAULT 0.0,
 		level_interval float8 DEFAULT 100.0,
+		level_base float8 DEFAULT 0.0,
 		fixed_levels float8[] DEFAULT ARRAY[]::float8[],
 		polygonize boolean DEFAULT false
 		)

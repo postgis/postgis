@@ -92,19 +92,19 @@ int rt_raster_gdal_contour(
 	int src_band,
 	int src_srid,
 	const char* src_srs,
-	char **options,
+	double contour_interval,
+	double contour_base,
+	int fixed_level_count,
+	double *fixed_levels,
+	int polygonize,
 	/* output parameters */
 	size_t *ncontours,
 	struct rt_contour_t **contours
 	)
 {
-#if POSTGIS_GDAL_VERSION < 24
-	return FALSE;
-#else
 	CPLErr cplerr;
 	OGRErr ogrerr;
 	GDALRasterBandH hBand;
-	const char* polygonize;
 	int nfeatures = 0, i = 0, j = 0;
 
 	_rti_contour_arg arg;
@@ -125,11 +125,12 @@ int rt_raster_gdal_contour(
 	if (!arg.dst.ds)
 		return _rti_contour_arg_destroy(&arg);
 
-	polygonize = CSLFetchNameValue(options, "POLYGONIZE");
-	if (polygonize && strcasecmp(polygonize, "YES") == 0)
-		arg.dst.gtype = wkbPolygon;
-	else
-		arg.dst.gtype = wkbLineString;
+	/* Polygonize is 2.4+ only */
+#if POSTGIS_GDAL_VERSION >= 24
+	arg.dst.gtype = polygonize ? wkbPolygon : wkbLineString;
+#else
+	arg.dst.gtype = wkbLineString;
+#endif
 
 	/* Layer has geometry, elevation, id */
 	arg.dst.lyr = OGR_DS_CreateLayer(arg.dst.ds, "contours", NULL, arg.dst.gtype, NULL);
@@ -148,13 +149,25 @@ int rt_raster_gdal_contour(
 	if (ogrerr != OGRERR_NONE)
 		return _rti_contour_arg_destroy(&arg);
 
+	// GDALContourGenerate( GDALRasterBandH hBand,
+	//   double dfContourInterval, double dfContourBase,
+	//   int nFixedLevelCount, double *padfFixedLevels,
+	//   int bUseNoData, double dfNoDataValue,
+	//   void *hLayer, int iIDField, int iElevField,
+	//   GDALProgressFunc pfnProgress, void *pProgressArg );
+
+	static int use_no_data = 0;
+	static double no_data_value = 0.0;
+
 	/* Run the contouring routine, filling up the OGR layer */
-	cplerr = GDALContourGenerateEx(
+	cplerr = GDALContourGenerate(
 		hBand,
-		arg.dst.lyr,
-		options,
-		NULL, // GDALProgressFunc pfnProgress
-		NULL // void *pProgressArg
+		contour_interval, contour_base,
+		fixed_level_count, fixed_levels,
+		use_no_data, no_data_value,
+		arg.dst.lyr, 0, 1, // OGRLayer, idFieldNum, elevFieldNum
+		NULL,              // GDALProgressFunc pfnProgress
+		NULL               // void *pProgressArg
 		);
 
 	if (cplerr != CE_None)
@@ -200,6 +213,5 @@ int rt_raster_gdal_contour(
 
 	/* Done */
 	return TRUE;
-#endif
 }
 

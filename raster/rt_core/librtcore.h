@@ -1656,12 +1656,15 @@ int rt_raster_gdal_contour(
 	int src_band,
 	int src_srid,
 	const char* src_srs,
-	char **options,
+	double contour_interval,
+	double contour_base,
+	int fixed_level_count,
+	double *fixed_levels,
+	int polygonize,
 	/* output parameters */
 	size_t *ncontours,
 	struct rt_contour_t **contours
 	);
-
 
 /**
  * Return a raster from a GDAL dataset

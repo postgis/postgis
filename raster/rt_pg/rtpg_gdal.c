@@ -552,9 +552,6 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_GDALContour);
 Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GDAL_VERSION < 24
-	elog(ERROR, "ST_GDALContour requires GDAL 2.3 or higher");
-#else
 	/* For return values */
 	typedef struct gdal_contour_result_t {
 		size_t ncontours;
@@ -578,18 +575,16 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 
 		/* For reading the levels[] */
 		ArrayType *array;
-		size_t level_count = 0;
+		size_t array_size = 0;
 
 		/* For the level parameters */
-		double level_base;
-		double level_interval;
+		double level_base = 0.0;
+		double level_interval = 100.0;
+		double *fixed_levels = NULL;
+		size_t fixed_levels_count = 0;
 
 		/* for the polygonize flag */
 		bool polygonize = false;
-
-		/* For the NAME=VALUE GDAL options */
-		char *options[8];
-		size_t options_count = 0;
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
@@ -628,11 +623,12 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 			elog(ERROR, "%s: band number must be between 1 and %u inclusive", __func__, num_bands);
 		}
 
-		/* Read the level_base */
-		level_base = PG_GETARG_FLOAT8(2);
-
 		/* Read the level_interval */
-		level_interval = PG_GETARG_FLOAT8(3);
+		level_interval = PG_GETARG_FLOAT8(2);
+
+		/* Read the level_base */
+		level_base = PG_GETARG_FLOAT8(3);
+
 		if (level_interval <= 0.0) {
 			elog(ERROR, "%s: level interval must be greater than zero", __func__);
 		}
@@ -640,58 +636,27 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 		/* Read the polygonize flag */
 		polygonize = PG_GETARG_BOOL(5);
 
-		/* Turn the parameters into options list */
-		/* LEVEL_INTERVAL, LEVEL_BASE, FIXED_LEVELS, POLYGONIZE */
-		/* ID_FIELD, ELEV_FIELD, ELEV_FIELD_MIN */
-
-		/* Always places outputs in the same location */
-		options[options_count++] = "ID_FIELD=0";
-		options[options_count++] = "ELEV_FIELD=1";
-
 		/* Read the levels array */
 		array = PG_GETARG_ARRAYTYPE_P(4);
-		if (ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)) > 0) {
-			stringbuffer_t sb;
+		array_size = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		if (array_size > 0) {
 			Datum value;
 			bool isnull;
-			stringbuffer_init(&sb);
-
+			fixed_levels = palloc0(array_size * sizeof(double));
 			ArrayIterator iterator = array_create_iterator(array, 0, NULL);
 			while (array_iterate(iterator, &value, &isnull))
 			{
-				double level;
 				/* Skip nulls */
 				if (isnull)
 					continue;
 
-				level = DatumGetFloat8(value);
-				if (level_count == 0)
-					stringbuffer_aprintf(&sb, "FIXED_LEVELS=%g", level);
-				else
-					stringbuffer_aprintf(&sb, ",%g", level);
+				/* Can out if for some reason we are about to blow memory */
+				if (fixed_levels_count >= array_size)
+					break;
 
-				level_count++;
+				fixed_levels[fixed_levels_count++] = DatumGetFloat8(value);
 			}
-			array_free_iterator(iterator);
-			options[options_count++] = stringbuffer_getstringcopy(&sb);
-			stringbuffer_release(&sb);
 		}
-
-		/* Array of levels supercedes the base/interval parameters */
-		if (level_count == 0) {
-			/* LEVEL_BASE */
-			char level_base_str[256];
-			snprintf(level_base_str, sizeof(level_base_str), "LEVEL_BASE=%g", level_base);
-			options[options_count++] = level_base_str;
-
-			/* LEVEL_INTERVAL */
-			char level_interval_str[256];
-			snprintf(level_interval_str, sizeof(level_interval_str), "LEVEL_INTERVAL=%g", level_interval);
-			options[options_count++] = level_interval_str;
-		}
-
-		/* Zero out the end of the CSList */
-		options[options_count] = NULL;
 
 		/* Run the contouring routine */
 		rv = rt_raster_gdal_contour(
@@ -700,7 +665,11 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 			band,
 			src_srid,
 			src_srs,
-			options,
+			level_interval,
+			level_base,
+			fixed_levels_count,
+			fixed_levels,
+			polygonize,
 			/* output parameters */
 			&(result->ncontours),
 			&(result->contours)
@@ -750,7 +719,6 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 	else {
 		SRF_RETURN_DONE(funcctx);
 	}
-#endif
 }
 
 /**
