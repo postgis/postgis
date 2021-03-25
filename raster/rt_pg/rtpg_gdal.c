@@ -542,8 +542,8 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
 * ST_GDALContour(
 * 	rast raster,
 * 	bandnumber integer DEFAULT 1,
-* 	level_base float8 DEFAULT 0.0,
 * 	level_interval float8 DEFAULT 100.0,
+* 	level_base float8 DEFAULT 0.0,
 * 	fixed_levels float8[] DEFAULT ARRAY[]::float8[],
 * 	polygonize boolean DEFAULT false
 * 	)
