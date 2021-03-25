@@ -328,11 +328,13 @@ FROM (
 		rid1,
 		rid2,
 		extent,
-		(ST_Metadata(rast)).*,
-		(ST_BandMetadata(rast, 1)).*,
+		mda.*,
+		bmd.*,
 		ST_Value(rast, 1, 1, 1) AS firstvalue,
 		ST_Value(rast, 1, ST_Width(rast), ST_Height(rast)) AS lastvalue
 	FROM raster_mapalgebra_out
+		LEFT JOIN LATERAL ST_Metadata(rast) AS mda ON true
+		LEFT JOIN LATERAL ST_BandMetadata(rast,1) AS bmd ON true
 ) AS r;
 
 DROP FUNCTION IF EXISTS raster_mapalgebra_intersection(double precision, double precision, int[], VARIADIC text[]);

@@ -485,8 +485,9 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		bool isoutdb;
 		char *bandpath;
 		uint8_t extbandnum;
-                uint64_t filesize;
-                uint64_t timestamp;
+		uint64_t filesize;
+		uint64_t timestamp;
+		bool isnullband;
 	};
 	struct bandmetadata *bmd = NULL;
 	struct bandmetadata *bmd2 = NULL;
@@ -527,10 +528,29 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		/* switch to memory context appropriate for multiple function calls */
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			MemoryContextSwitchTo(oldcontext);
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
 		/* pgraster is null, return null */
 		if (PG_ARGISNULL(0)) {
+			bmd = (struct bandmetadata *) palloc(sizeof(struct bandmetadata));
+			bmd->isnullband = TRUE;
+			funcctx->user_fctx = bmd;
+			funcctx->max_calls = 1;
 			MemoryContextSwitchTo(oldcontext);
-			SRF_RETURN_DONE(funcctx);
+			goto PER_CALL;
 		}
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -549,8 +569,12 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			elog(NOTICE, "Raster provided has no bands");
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
+			bmd = (struct bandmetadata *) palloc(sizeof(struct bandmetadata));
+			bmd->isnullband = TRUE;
+			funcctx->user_fctx = bmd;
+			funcctx->max_calls = 1;
 			MemoryContextSwitchTo(oldcontext);
-			SRF_RETURN_DONE(funcctx);
+			goto PER_CALL;
 		}
 
 		/* band index */
@@ -593,8 +617,12 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 				pfree(bandNums);
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
+				bmd = (struct bandmetadata *) palloc(sizeof(struct bandmetadata));
+				bmd->isnullband = TRUE;
+				funcctx->user_fctx = bmd;
+				funcctx->max_calls = 1;
 				MemoryContextSwitchTo(oldcontext);
-				SRF_RETURN_DONE(funcctx);
+				goto PER_CALL;
 			}
 
 			bandNums[j] = idx;
@@ -611,7 +639,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		else if (j < n)
 			bandNums = repalloc(bandNums, sizeof(uint32_t) * j);
 
-		bmd = (struct bandmetadata *) palloc(sizeof(struct bandmetadata) * j);
+		bmd = (struct bandmetadata *) palloc0(sizeof(struct bandmetadata) * j);
 
 		for (i = 0; i < j; i++) {
 			band = rt_raster_get_band(raster, bandNums[i] - 1);
@@ -619,8 +647,11 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 				elog(NOTICE, "Could not get raster band at index %d", bandNums[i]);
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
+				bmd[0].isnullband = TRUE;
+				funcctx->user_fctx = bmd;
+				funcctx->max_calls = 1;
 				MemoryContextSwitchTo(oldcontext);
-				SRF_RETURN_DONE(funcctx);
+				goto PER_CALL;
 			}
 
 			/* bandnum */
@@ -685,23 +716,10 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		/* total number of tuples to be returned */
 		funcctx->max_calls = j;
 
-		/* Build a tuple descriptor for our result type */
-		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
-			MemoryContextSwitchTo(oldcontext);
-			ereport(ERROR, (
-				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-				errmsg(
-					"function returning record called in context "
-					"that cannot accept type record"
-				)
-			));
-		}
-
-		BlessTupleDesc(tupdesc);
-		funcctx->tuple_desc = tupdesc;
-
 		MemoryContextSwitchTo(oldcontext);
 	}
+
+	PER_CALL:
 
 	/* stuff done on every call of the function */
 	funcctx = SRF_PERCALL_SETUP();
@@ -715,6 +733,14 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	if (call_cntr < max_calls) {
 		Datum values[VALUES_LENGTH];
 		bool nulls[VALUES_LENGTH];
+
+		if (bmd2[0].isnullband) {
+			int i;
+			for (i = 0; i < VALUES_LENGTH; i++)
+				nulls[i] = TRUE;
+			result = HeapTupleGetDatum(heap_form_tuple(tupdesc, values, nulls));
+			SRF_RETURN_NEXT(funcctx, result);
+		}
 
 		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
 
