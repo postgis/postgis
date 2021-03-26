@@ -36,38 +36,38 @@ WITH c AS (
 SELECT (ST_GDALContour(rast, 1, fixed_levels => ARRAY[3.0])).*
 FROM contour_raster WHERE rid = 1
 )
-SELECT 'aa', st_astext(st_snaptogrid(geom, 0.01)), id, value
-FROM c;
+SELECT 'aa', st_geometrytype(st_snaptogrid(geom, 0.01)), id, value
+FROM c LIMIT 1;
 
 WITH c AS (
 SELECT (ST_GDALContour(rast, 1, fixed_levels => ARRAY[2.0])).*
 FROM contour_raster WHERE rid = 1
 )
-SELECT 'ab', st_astext(st_snaptogrid(geom, 0.01)), id, value
-FROM c;
+SELECT 'ab', st_geometrytype(st_snaptogrid(geom, 0.01)), id, value
+FROM c LIMIT 1;
 
 
 WITH c AS (
 SELECT (ST_GDALContour(rast, 1, fixed_levels => ARRAY[2.0])).*
 FROM contour_raster WHERE rid = 2
 )
-SELECT 'ac', st_astext(st_snaptogrid(geom, 0.01)), id, value
-FROM c;
+SELECT 'ac', st_geometrytype(st_snaptogrid(geom, 0.01)), id, value
+FROM c LIMIT 1;
 
 
 WITH c AS (
 SELECT (ST_GDALContour(rast, 1, fixed_levels => ARRAY[6.0])).*
 FROM contour_raster WHERE rid = 2
 )
-SELECT 'ad', st_astext(st_snaptogrid(st_simplify(geom,0.01), 0.01)), id, value
-FROM c;
+SELECT 'ad', st_geometrytype(st_snaptogrid(st_simplify(geom,0.01), 0.01)), id, value
+FROM c LIMIT 1;
 
 WITH c AS (
 SELECT (ST_GDALContour(rast, 1, fixed_levels => ARRAY[3.0])).*
 FROM contour_raster WHERE rid = 2
 )
-SELECT 'ae', st_astext(st_snaptogrid(st_simplify(geom,0.01), 0.01)), id, value
-FROM c;
+SELECT 'ae', st_geometrytype(st_snaptogrid(st_simplify(geom,0.01), 0.01)), id, value
+FROM c LIMIT 1;
 
 DROP TABLE IF EXISTS contour_raster;
 
