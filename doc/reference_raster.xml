@@ -1384,7 +1384,7 @@ raster2pgsql \
         <refname>ST_GDALContour</refname>
 
         <refpurpose>Generates a set of vector contours from the provided raster
-            band, using the <ulink href="https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv">GDAL contouring algorithm</ulink>.</refpurpose>
+            band, using the <ulink url="https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv">GDAL contouring algorithm</ulink>.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1408,7 +1408,7 @@ raster2pgsql \
 
         <para>
             Generates a set of vector contours from the provided raster
-            band, using the <ulink href="https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv">GDAL contouring algorithm</ulink>.</para>
+            band, using the <ulink url="https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv">GDAL contouring algorithm</ulink>.</para>
         <para>
             When the <varname>fixed_levels</varname> parameter is a non-empty
             array, the <varname>level_interval</varname> and <varname>level_base</varname> parameters are ignored.
