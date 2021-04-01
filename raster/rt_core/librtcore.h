@@ -123,9 +123,9 @@
 
 #include "liblwgeom.h"
 
-#include "gdal_alg.h"
-#include "gdal_frmts.h"
 #include "gdal.h"
+#include "gdalgrid.h" /* for ParseAlgorithmAndOptions */
+#include "gdal_frmts.h"
 #include "gdalwarper.h"
 #include "cpl_vsi.h"
 #include "cpl_conv.h"

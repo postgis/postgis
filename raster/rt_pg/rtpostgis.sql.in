@@ -1506,7 +1506,7 @@ CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options tex
 	AS 'MODULE_PATHNAME', 'RASTER_asGDALRaster'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
-CREATE OR REPLACE FUNCTION st_gdalcontour(
+CREATE OR REPLACE FUNCTION ST_GDALContour(
 		rast raster,
 		bandnumber integer DEFAULT 1,
 		level_interval float8 DEFAULT 100.0,
@@ -1516,6 +1516,16 @@ CREATE OR REPLACE FUNCTION st_gdalcontour(
 		)
 	RETURNS table(geom geometry, id integer, value float8)
 	AS 'MODULE_PATHNAME', 'RASTER_GDALContour'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION ST_GDALGrid(
+		geom geometry,
+		rast raster,
+		options text,
+		bandnumber integer DEFAULT 1
+		)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_GDALGrid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -----------------------------------------------------------------------
