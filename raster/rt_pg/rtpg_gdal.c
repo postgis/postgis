@@ -535,17 +535,18 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
 }
 
 
-/*
-* ST_GDALContour(
-* 	rast raster,
-* 	bandnumber integer DEFAULT 1,
-* 	level_interval float8 DEFAULT 100.0,
-* 	level_base float8 DEFAULT 0.0,
-* 	fixed_levels float8[] DEFAULT ARRAY[]::float8[],
-* 	polygonize boolean DEFAULT false
-* 	)
-* RETURNS table(geom geometry, value float8, id integer)
-*/
+/************************************************************************
+ * ST_GDALContour(
+ *   rast raster,
+ *   bandnumber integer DEFAULT 1,
+ *   level_interval float8 DEFAULT 100.0,
+ *   level_base float8 DEFAULT 0.0,
+ *   fixed_levels float8[] DEFAULT ARRAY[]::float8[],
+ *   polygonize boolean DEFAULT false
+ * )
+ * RETURNS table(geom geometry, value float8, id integer)
+ ************************************************************************/
+
 PG_FUNCTION_INFO_V1(RASTER_GDALContour);
 Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 {
@@ -734,28 +735,6 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_GDALGrid);
 Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 {
-
-//xxxxxxxxxx
-//
-// CPLErr GDALGridCreate(GDALGridAlgorithm,
-//   const void* poOptions, GUInt32 nPoints,
-//   const double* padfX, const double* padfY, const double* padfZ,
-//   double dfXMin, double dfXMax, double dfYMin, double dfYMax,
-//   GUInt32 nXSize, GUInt32 nYSize, GDALDataType eType, void* pData,
-//   GDALProgressFunc pfnProgress, void* pProgressArg)
-
-// extern JsonbValue *getKeyJsonValueFromContainer(JsonbContainer *container,
-//   const char *keyVal, int keyLen,
-//   JsonbValue *res);
-
-// typedef struct
-// {
-//     int32       vl_len_;         varlena header (do not touch directly!)
-//     JsonbContainer root;
-// } Jsonb;
-
-// DatumGetJsonbP(PG_GETARG_DATUM())
-
 	rt_pgraster *in_pgrast = NULL;
 	rt_pgraster *out_pgrast = NULL;
 	rt_raster in_rast = NULL;
@@ -919,9 +898,10 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 }
 
 
-/**
- * warp a raster using GDAL Warp API
- */
+/************************************************************************
+ * Warp a raster using GDAL Warp API
+ ************************************************************************/
+
 PG_FUNCTION_INFO_V1(RASTER_GDALWarp);
 Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 {
