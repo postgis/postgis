@@ -1391,14 +1391,12 @@ raster2pgsql \
         <funcsynopsis>
           <funcprototype>
             <funcdef>setof record <function>ST_GDALContour</function></funcdef>
-            <paramdef>
-                <type>raster </type><parameter>rast</parameter>
-                <type>integer </type><parameter>bandnumber</parameter>
-                <type>double precision </type><parameter>level_interval</parameter>
-                <type>double precision </type><parameter>level_base</parameter>
-                <type>double precision[] </type><parameter>fixed_levels</parameter>
-                <type>boolean </type><parameter>polygonize</parameter>
-            </paramdef>
+            <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
+            <paramdef><type>integer </type><parameter>bandnumber</parameter></paramdef>
+            <paramdef><type>double precision </type><parameter>level_interval</parameter></paramdef>
+            <paramdef><type>double precision </type><parameter>level_base</parameter></paramdef>
+            <paramdef><type>double precision[] </type><parameter>fixed_levels</parameter></paramdef>
+            <paramdef><type>boolean </type><parameter>polygonize</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
