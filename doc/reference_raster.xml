@@ -1448,7 +1448,6 @@ FROM c;</programlisting>
 </refentry>
 
 
-//xxx
     <refentry id="RT_ST_GDALGrid">
       <refnamediv>
         <refname>ST_GDALGrid</refname>
