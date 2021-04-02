@@ -738,6 +738,8 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	rt_pgraster *in_pgrast = NULL;
 	rt_pgraster *out_pgrast = NULL;
 	rt_raster in_rast = NULL;
+	rt_raster out_rast = NULL;
+	uint32_t out_rast_bands[1] = {0};
 	rt_band in_band = NULL;
 	int band_number;
 	uint16_t in_band_width, in_band_height;
@@ -753,7 +755,7 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	char *options = NULL;
 	void *options_struct = NULL;
 	CPLErr err;
-	void *out_data;
+	uint8_t *out_data;
 	rt_errorstate rterr;
 
 	/* Input points */
@@ -773,10 +775,16 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	if (gserialized_is_empty(gser))
 		PG_RETURN_NULL();
 
-	in_pgrast = (rt_pgraster *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
+	in_pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	in_rast = rt_raster_deserialize(in_pgrast, FALSE);
 	if (!in_rast)
 		elog(ERROR, "%s: Could not deserialize raster", __func__);
+
+	/* GDAL cannot grid a skewed raster */
+	if (rt_raster_get_x_skew(in_rast) != 0.0 ||
+	    rt_raster_get_y_skew(in_rast) != 0.0) {
+		elog(ERROR, "%s: Cannot generate a grid into a skewed raster",__func__);
+	}
 
 	/* Flat JSON map of options from user */
 	options_txt = PG_GETARG_TEXT_P(2);
@@ -805,7 +813,13 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	in_band_height = rt_band_get_height(in_band);
 	in_band_pixtype = rt_band_get_pixtype(in_band);
 	in_band_gdaltype = rt_util_pixtype_to_gdal_datatype(in_band_pixtype);
-	in_band_gdaltype_size = GDALGetDataTypeSize(in_band_gdaltype);
+	in_band_gdaltype_size = GDALGetDataTypeSize(in_band_gdaltype) / 8;
+
+	/* Prepare new raster for output */
+	// out_rast = rt_raster_new(in_band_width, in_band_height);
+	// rt_raster_set_skews(out_rast, 0.0, 0.0);
+	// rt_raster_set_scale(out_rast, rt_raster_get_x_scale(in_rast), rt_raster_get_y_scale(in_rast));
+	// rt_raster_set_offsets(out_raster, rt_raster_get_x_offset(in_rast), rt_raster_get_y_offset(in_rast));
 
 	/* Extract algorithm and options from options text */
 	options = text_to_cstring(options_txt);
@@ -883,9 +897,20 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 		elog(ERROR, "%s: GDALGridCreate failed: %s", __func__, CPLGetLastErrorMsg());
 	}
 
+	// out_band = rt_band_new_offline(
+	// 	in_band_width, in_band_height,
+	// 	in_band_pixtype,
+	// 	0,   /* hasnodata */
+	// 	0.0, /* nodataval */
+	// 	out_data
+	// );
+
+	out_rast = rt_raster_from_band(in_rast, out_rast_bands, 1);
+
 	/* Copy the data from the output buffer into the destination band */
 	for (uint32_t y = 0; y < in_band_height; y++) {
-		rterr = rt_band_set_pixel_line(in_band, 0, y, out_data, in_band_width);
+		size_t offset = (in_band_height-y-1) * (in_band_gdaltype_size * in_band_width);
+		rterr = rt_band_set_pixel_line(in_band, 0, y, out_data + offset, in_band_width);
 	}
 
 	out_pgrast = rt_raster_serialize(in_rast);
