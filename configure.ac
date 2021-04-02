@@ -11,6 +11,8 @@ dnl **********************************************************************
 
 AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
+AH_TEMPLATE([HAVE_VASPRINTF])
+AH_TEMPLATE([HAVE_ASPRINTF])
 AC_CONFIG_MACRO_DIR([macros])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PROG_INSTALL
@@ -1135,6 +1137,8 @@ else
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
 fi
 
+AC_DEFINE([POSTGIS_DEBUG_LEVEL], [0], [Define debug level. Default 0])
+
 dnl ===========================================================================
 dnl Allow the developer to disable the automatic updates of postgis_revision.h
 dnl with --without-phony-revision
@@ -1335,7 +1339,7 @@ if test "x$with_raster" != "xno"; then
 	LIBGDAL_DEPLIBS_LDFLAGS=""
 
 	dnl GDAL version constants, update here
-	GDAL_MIN_VERSION=1.8.0
+	GDAL_MIN_VERSION=2.0.0
 	GDAL_MIN_VERSION_NUMBER=180 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
 
 	AC_ARG_WITH(
