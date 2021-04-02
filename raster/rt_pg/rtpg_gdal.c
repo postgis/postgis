@@ -741,6 +741,7 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	rt_raster out_rast = NULL;
 	uint32_t out_rast_bands[1] = {0};
 	rt_band in_band = NULL;
+	rt_band out_band = NULL;
 	int band_number;
 	uint16_t in_band_width, in_band_height;
 	uint32_t npoints;
@@ -752,7 +753,6 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 
 	GDALGridAlgorithm algorithm;
 	text *options_txt = NULL;
-	char *options = NULL;
 	void *options_struct = NULL;
 	CPLErr err;
 	uint8_t *out_data;
@@ -775,7 +775,7 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	if (gserialized_is_empty(gser))
 		PG_RETURN_NULL();
 
-	in_pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	in_pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
 	in_rast = rt_raster_deserialize(in_pgrast, FALSE);
 	if (!in_rast)
 		elog(ERROR, "%s: Could not deserialize raster", __func__);
@@ -787,7 +787,7 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	}
 
 	/* Flat JSON map of options from user */
-	options_txt = PG_GETARG_TEXT_P(2);
+	options_txt = PG_GETARG_TEXT_P(1);
 	/* 1-base band number from user */
 	band_number = PG_GETARG_INT32(3);
 	if (band_number < 1)
@@ -815,52 +815,36 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	in_band_gdaltype = rt_util_pixtype_to_gdal_datatype(in_band_pixtype);
 	in_band_gdaltype_size = GDALGetDataTypeSize(in_band_gdaltype) / 8;
 
-	/* Prepare new raster for output */
-	// out_rast = rt_raster_new(in_band_width, in_band_height);
-	// rt_raster_set_skews(out_rast, 0.0, 0.0);
-	// rt_raster_set_scale(out_rast, rt_raster_get_x_scale(in_rast), rt_raster_get_y_scale(in_rast));
-	// rt_raster_set_offsets(out_raster, rt_raster_get_x_offset(in_rast), rt_raster_get_y_offset(in_rast));
-
-	/* Extract algorithm and options from options text */
-	options = text_to_cstring(options_txt);
-	pfree(options_txt);
-	err = ParseAlgorithmAndOptions(options, &algorithm, &options_struct);
-	pfree(options);
-	if (err != CE_None) {
-		if (options_struct) free(options_struct);
-		elog(ERROR, "%s: Unable to parse options string: %s", __func__, CPLGetLastErrorMsg());
-	}
-
 	/* Quickly copy options struct into local memory context, so we */
 	/* don't have malloc'ed memory lying around */
-	if (err == CE_None && options_struct) {
-		void *tmp = options_struct;
-		switch (algorithm) {
-			case GGA_InverseDistanceToAPower:
-				options_struct = palloc(sizeof(GDALGridInverseDistanceToAPowerOptions));
-				memcpy(options_struct, tmp, sizeof(GDALGridInverseDistanceToAPowerOptions));
-				break;
-			case GGA_InverseDistanceToAPowerNearestNeighbor:
-				options_struct = palloc(sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions));
-				memcpy(options_struct, tmp, sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions));
-				break;
-			case GGA_MovingAverage:
-				options_struct = palloc(sizeof(GDALGridMovingAverageOptions));
-				memcpy(options_struct, tmp, sizeof(GDALGridMovingAverageOptions));
-				break;
-			case GGA_NearestNeighbor:
-				options_struct = palloc(sizeof(GDALGridNearestNeighborOptions));
-				memcpy(options_struct, tmp, sizeof(GDALGridNearestNeighborOptions));
-				break;
-			case GGA_Linear:
-				options_struct = palloc(sizeof(GDALGridLinearOptions));
-				memcpy(options_struct, tmp, sizeof(GDALGridLinearOptions));
-				break;
-			default:
-				elog(ERROR, "%s: Unsupported gridding algorithm %d", __func__, algorithm);
-		}
-		free(tmp);
-	}
+	// if (err == CE_None && options_struct) {
+	// 	void *tmp = options_struct;
+	// 	switch (algorithm) {
+	// 		case GGA_InverseDistanceToAPower:
+	// 			options_struct = palloc(sizeof(GDALGridInverseDistanceToAPowerOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridInverseDistanceToAPowerOptions));
+	// 			break;
+	// 		case GGA_InverseDistanceToAPowerNearestNeighbor:
+	// 			options_struct = palloc(sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions));
+	// 			break;
+	// 		case GGA_MovingAverage:
+	// 			options_struct = palloc(sizeof(GDALGridMovingAverageOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridMovingAverageOptions));
+	// 			break;
+	// 		case GGA_NearestNeighbor:
+	// 			options_struct = palloc(sizeof(GDALGridNearestNeighborOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridNearestNeighborOptions));
+	// 			break;
+	// 		case GGA_Linear:
+	// 			options_struct = palloc(sizeof(GDALGridLinearOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridLinearOptions));
+	// 			break;
+	// 		default:
+	// 			elog(ERROR, "%s: Unsupported gridding algorithm %d", __func__, algorithm);
+	// 	}
+	// 	free(tmp);
+	// }
 
 	/* Prepare destination grid buffer for output */
 	out_data = palloc(in_band_gdaltype_size * in_band_width * in_band_height);
@@ -882,38 +866,50 @@ Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
 	}
 	lwpointiterator_destroy(iterator);
 
+	/* Extract algorithm and options from options text */
+	/* This malloc's the options struct, so clean up right away */
+	err = ParseAlgorithmAndOptions(
+		text_to_cstring(options_txt),
+		&algorithm,
+		&options_struct);
+	if (err != CE_None) {
+		if (options_struct) free(options_struct);
+		elog(ERROR, "%s: Unable to parse options string: %s", __func__, CPLGetLastErrorMsg());
+	}
+
 	/* Run the gridding algorithm */
 	err = GDALGridCreate(
-			algorithm, options_struct,
-			npoints, xcoords, ycoords, zcoords,
-			env.MinX, env.MaxX, env.MinY, env.MaxY,
-			in_band_width, in_band_height,
-			in_band_gdaltype, out_data,
-			NULL, /* GDALProgressFunc */
-			NULL /* ProgressArgs */
-			);
+	        algorithm, options_struct,
+	        npoints, xcoords, ycoords, zcoords,
+	        env.MinX, env.MaxX, env.MinY, env.MaxY,
+	        in_band_width, in_band_height,
+	        in_band_gdaltype, out_data,
+	        NULL, /* GDALProgressFunc */
+	        NULL /* ProgressArgs */
+	        );
+
+	/* Quickly clean up malloc'ed memory */
+	if (options_struct)
+		free(options_struct);
 
 	if (err != CE_None) {
 		elog(ERROR, "%s: GDALGridCreate failed: %s", __func__, CPLGetLastErrorMsg());
 	}
 
-	// out_band = rt_band_new_offline(
-	// 	in_band_width, in_band_height,
-	// 	in_band_pixtype,
-	// 	0,   /* hasnodata */
-	// 	0.0, /* nodataval */
-	// 	out_data
-	// );
-
+	out_rast_bands[0] = band_number-1;
 	out_rast = rt_raster_from_band(in_rast, out_rast_bands, 1);
+	out_band = rt_raster_get_band(out_rast, 0);
+	if (!out_band)
+		elog(ERROR, "%s: Cannot access output raster band", __func__);
 
 	/* Copy the data from the output buffer into the destination band */
 	for (uint32_t y = 0; y < in_band_height; y++) {
 		size_t offset = (in_band_height-y-1) * (in_band_gdaltype_size * in_band_width);
-		rterr = rt_band_set_pixel_line(in_band, 0, y, out_data + offset, in_band_width);
+		rterr = rt_band_set_pixel_line(out_band, 0, y, out_data + offset, in_band_width);
 	}
 
-	out_pgrast = rt_raster_serialize(in_rast);
+	out_pgrast = rt_raster_serialize(out_rast);
+	rt_raster_destroy(out_rast);
 	rt_raster_destroy(in_rast);
 
 	if (NULL == out_pgrast) PG_RETURN_NULL();

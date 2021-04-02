@@ -1447,6 +1447,93 @@ FROM c;</programlisting>
 </refsection>
 </refentry>
 
+
+//xxx
+    <refentry id="RT_ST_GDALGrid">
+      <refnamediv>
+        <refname>ST_GDALGrid</refname>
+
+        <refpurpose>Interpolates a gridded surface based on an input set
+        of 3-d points, using the X- and Y-values to position the points on
+        the grid and the Z-value of the points as the surface elevation.
+        </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>raster <function>ST_GDALGrid</function></funcdef>
+            <paramdef><type>geometry </type><parameter>input_points</parameter></paramdef>
+            <paramdef><type>text </type><parameter>algorithm_options</parameter></paramdef>
+            <paramdef><type>raster </type><parameter>template</parameter></paramdef>
+            <paramdef><type>integer </type><parameter>template_band_num</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>
+            Interpolates a gridded surface based on an input set
+            of 3-d points, using the X- and Y-values to position the points on
+            the grid and the Z-value of the points as the surface elevation.
+
+            There are five interpolation algorithms available: inverse distance,
+            inverse distance nearest-neighbor, moving average, nearest neighbor,
+            and linear interpolation.
+            See the <ulink url="https://gdal.org/programs/gdal_grid.html#interpolation-algorithms">gdal_grid documentation</ulink>
+            for more details on the algorithms and their parameters. For more
+            information on how interpolations are calculated, see the
+            <ulink url="https://gdal.org/tutorials/gdal_grid_tut.html">GDAL grid
+            tutorial</ulink>.
+        </para>
+        <para>
+            Input parameters are:
+        </para>
+        <variablelist>
+            <varlistentry><term>input_points</term>
+                <listitem><para>The points to drive the interpolation. Any
+                    geometry with Z-values is acceptable, all points in the
+                    input will be used.</para></listitem>
+            </varlistentry>
+            <varlistentry><term>algorithm_options</term>
+                <listitem><para>A string defining the algorithm and
+                    algorithm options, in the format used by <ulink url="https://gdal.org/programs/gdal_grid.html#interpolation-algorithms">gdal_grid</ulink>.
+                    For example, for an inverse-distance interpolation with a
+                    smoothing of 2, you would use "invdist:smoothing=2.0"
+                </para></listitem>
+            </varlistentry>
+            <varlistentry><term>template</term>
+                <listitem><para>A raster template to drive the geometry of the
+                    output raster. The width, height, pixel size, spatial extent
+                    and pixel type will be read from this template.
+                </para></listitem>
+            </varlistentry>
+            <varlistentry><term>template_band_num</term>
+                <listitem><para>By default the first band in the template raster
+                    is used to drive the output raster, but that can be adjusted
+                    with this parameter.
+                </para></listitem>
+            </varlistentry>
+        </variablelist>
+        <para>Availability: 3.2.0</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Example</title>
+
+<programlisting>SELECT ST_GDALGrid(
+    'MULTIPOINT(10.5 9.5 1000, 11.5 8.5 1000, 10.5 8.5 500, 11.5 9.5 500)'::geometry,
+    ST_AddBand(ST_MakeEmptyRaster(200, 400, 10, 10, 0.01, -0.005, 0, 0), '16BSI'),
+    'invdist:smoothing:2.0'
+)</programlisting>
+
+</refsection>
+</refentry>
+
+
         <refentry id="RT_UpdateRasterSRID">
             <refnamediv>
                 <refname>UpdateRasterSRID</refname>

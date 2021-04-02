@@ -1520,8 +1520,8 @@ CREATE OR REPLACE FUNCTION ST_GDALContour(
 
 CREATE OR REPLACE FUNCTION ST_GDALGrid(
 		geom geometry,
-		rast raster,
 		options text,
+		rast raster,
 		bandnumber integer DEFAULT 1
 		)
 	RETURNS raster
