@@ -142,7 +142,10 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 	LWDEBUGF(4, " output dimensions: %d", dims);
 
 	pa = ptarray_construct((dims == 3), 0, size);
-
+#if POSTGIS_GEOS_VERSION >= 310
+	GEOSCoordSeq_copyToBuffer(cs, (double*) pa->serialized_pointlist, (dims == 3), 0);
+	return pa;
+#else
 	for (i = 0; i < size; i++)
 	{
 #if POSTGIS_GEOS_VERSION < 38
@@ -159,6 +162,7 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 	}
 
 	return pa;
+#endif
 }
 
 /* Return an LWGEOM from a Geometry */
@@ -270,7 +274,18 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 		}
 	}
 
-	if (!(sq = GEOSCoordSeq_create(pa->npoints + append_points, dims)))
+#if POSTGIS_GEOS_VERSION >= 310
+	if (append_points == 0) {
+		sq = GEOSCoordSeq_copyFromBuffer((const double*) pa->serialized_pointlist, pa->npoints, FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags));
+		if (!sq)
+		{
+			lwerror("Error creating GEOS Coordinate Sequence");
+			return NULL;
+		}
+		return sq;
+	}
+#else
+        if (!(sq = GEOSCoordSeq_create(pa->npoints + append_points, dims)))
 	{
 		lwerror("Error creating GEOS Coordinate Sequence");
 		return NULL;
@@ -326,6 +341,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 	}
 
 	return sq;
+#endif
 }
 
 static inline GEOSGeometry*
