@@ -2610,6 +2610,9 @@ lwgeom_boundary(LWGEOM *lwgeom)
 					n++;
 				}
 			}
+
+			if (points)
+				lwgeom_free((LWGEOM *)points);
 		}
 
 		LWMPOINT *lwmpoint = lwmpoint_construct_empty(srid, hasz, hasm);
