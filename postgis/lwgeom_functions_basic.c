@@ -3174,3 +3174,37 @@ Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom_out);
 	PG_RETURN_POINTER(geom_out);
 }
+
+PG_FUNCTION_INFO_V1(boundary);
+Datum boundary(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom1;
+	GSERIALIZED *result;
+	LWGEOM *lwgeom, *lwresult;
+
+	geom1 = PG_GETARG_GSERIALIZED_P(0);
+
+	/* Empty.Boundary() == Empty */
+	if (gserialized_is_empty(geom1))
+		PG_RETURN_POINTER(geom1);
+
+	lwgeom = lwgeom_from_gserialized(geom1);
+	if (!lwgeom)
+	{
+		lwpgerror("POSTGIS2GEOS: unable to deserialize input");
+		PG_RETURN_NULL();
+	}
+
+	lwresult = lwgeom_boundary(lwgeom);
+	if (lwresult == NULL)
+	{
+		PG_RETURN_NULL();
+	}
+
+	result = geometry_serialize(lwresult);
+
+	lwgeom_free(lwgeom);
+	lwgeom_free(lwresult);
+
+	PG_RETURN_POINTER(result);
+}

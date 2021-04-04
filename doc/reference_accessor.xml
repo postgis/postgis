@@ -122,6 +122,7 @@
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.14</para>
 		<para>&Z_support;</para>
 		<para>Enhanced: 2.1.0 support for Triangle was introduced</para>
+		<para>Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves</para>
 	  </refsection>
 
 	  <refsection>
