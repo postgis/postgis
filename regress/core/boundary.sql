@@ -1,5 +1,16 @@
+SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POINT(0 1)')));
+SELECT ST_AsText(ST_Boundary(ST_GeomFromText('MULTIPOINT(0 0, 1 1)')));
 SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));
+SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, 1 1)')));
 SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 1))')));
 SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, 1 1 1))')));
+SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, 1 1 1),(1 1 1,0 0 1, -1 1 1, 1 1 1))')));
 SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));
+SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1 1 1),(-1 1 1,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));
+SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, 1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));
 SELECT ST_AsText(ST_Boundary(ST_GeomFromText('TRIANGLE((1 1,0 0, -1 1, 1 1))')));
+SELECT ST_AsText(ST_Boundary(ST_GeomFromText('MULTIPOLYGON(((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)), ((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))')));
+SELECT ST_AsText(ST_Boundary(ST_GeomFromEWKT('TIN(((0 0,0 -1,-1 1,0 0)),((0 0,1 0,0 -1,0 0)))')));
+SELECT ST_AsText(ST_Boundary(ST_GeomFromEWKT('TIN(((0 0,0 -1,-1 1,0 0)))')));
+SELECT ST_AsText(ST_Boundary(ST_GeomFromEWKT('CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1))')));
+SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTICURVE((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));

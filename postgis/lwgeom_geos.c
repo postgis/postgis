@@ -40,6 +40,7 @@
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h"
 #include "lwgeom_accum.h"
@@ -818,79 +819,6 @@ Datum ST_SymDifference(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
-
-	PG_RETURN_POINTER(result);
-}
-
-
-PG_FUNCTION_INFO_V1(boundary);
-Datum boundary(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED	*geom1;
-	GEOSGeometry *g1, *g3;
-	GSERIALIZED *result;
-	LWGEOM *lwgeom;
-	int32_t srid;
-
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-
-	/* Empty.Boundary() == Empty */
-	if ( gserialized_is_empty(geom1) )
-		PG_RETURN_POINTER(geom1);
-
-	srid = gserialized_get_srid(geom1);
-
-	lwgeom = lwgeom_from_gserialized(geom1);
-	if ( ! lwgeom ) {
-		lwpgerror("POSTGIS2GEOS: unable to deserialize input");
-		PG_RETURN_NULL();
-	}
-
-	/* GEOS doesn't do triangle type, so we special case that here */
-	if (lwgeom->type == TRIANGLETYPE)
-	{
-		lwgeom->type = LINETYPE;
-		result = geometry_serialize(lwgeom);
-		lwgeom_free(lwgeom);
-		PG_RETURN_POINTER(result);
-	}
-
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-	g1 = LWGEOM2GEOS(lwgeom, 0);
-	lwgeom_free(lwgeom);
-
-	if (!g1)
-		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-
-	g3 = GEOSBoundary(g1);
-
-	if (!g3)
-	{
-		GEOSGeom_destroy(g1);
-		HANDLE_GEOS_ERROR("GEOSBoundary");
-	}
-
-	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
-
-	GEOSSetSRID(g3, srid);
-
-	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
-
-	if (!result)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
-		elog(NOTICE,
-		     "GEOS2POSTGIS threw an error (result postgis geometry "
-		     "formation)!");
-		PG_RETURN_NULL(); /* never get here */
-	}
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
-
-	PG_FREE_IF_COPY(geom1, 0);
 
 	PG_RETURN_POINTER(result);
 }

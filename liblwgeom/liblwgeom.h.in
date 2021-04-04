@@ -2274,6 +2274,8 @@ extern lwvarlena_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idli
  */
 extern void lwgeom_trim_bits_in_place(LWGEOM *geom, int32_t prec_x, int32_t prec_y, int32_t prec_z, int32_t prec_m);
 
+extern LWGEOM* lwgeom_boundary(LWGEOM* lwgeom);
+
 /*******************************************************************************
  * SQLMM internal functions
  ******************************************************************************/

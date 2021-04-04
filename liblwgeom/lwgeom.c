@@ -2534,3 +2534,161 @@ void lwgeom_trim_bits_in_place(LWGEOM* geom, int32_t prec_x, int32_t prec_y, int
 
 	lwpointiterator_destroy(it);
 }
+
+LWGEOM *
+lwgeom_boundary(LWGEOM *lwgeom)
+{
+	LWGEOM *lwresult;
+
+	int32_t srid = lwgeom_get_srid(lwgeom);
+	uint8_t hasz = lwgeom_has_z(lwgeom);
+	uint8_t hasm = lwgeom_has_m(lwgeom);
+
+	switch (lwgeom->type)
+	{
+	case POINTTYPE: {
+		lwresult = (LWGEOM *)lwpoint_construct_empty(srid, hasz, hasm);
+		break;
+	}
+	case MULTIPOINTTYPE: {
+		lwresult = (LWGEOM *)lwmpoint_construct_empty(srid, hasz, hasm);
+		break;
+	}
+	case LINETYPE:
+	case CIRCSTRINGTYPE: {
+		if (lwgeom_is_closed(lwgeom))
+		{
+			lwresult = (LWGEOM *)lwmpoint_construct_empty(srid, hasz, hasm);
+		}
+		else
+		{
+			LWLINE *lwline = (LWLINE *)lwgeom;
+			LWMPOINT *lwmpoint = lwmpoint_construct_empty(srid, hasz, hasm);
+			POINT4D pt;
+			getPoint4d_p(lwline->points, 0, &pt);
+			lwmpoint_add_lwpoint(lwmpoint, lwpoint_make(srid, hasz, hasm, &pt));
+			getPoint4d_p(lwline->points, lwline->points->npoints - 1, &pt);
+			lwmpoint_add_lwpoint(lwmpoint, lwpoint_make(srid, hasz, hasm, &pt));
+
+			lwresult = (LWGEOM *)lwmpoint;
+		}
+
+		break;
+	}
+	case MULTILINETYPE:
+	case MULTICURVETYPE: {
+		LWMLINE *lwmline = (LWMLINE *)lwgeom;
+		POINT4D *out = lwalloc(sizeof(POINT4D) * lwmline->ngeoms * 2);
+		uint32_t n = 0;
+		uint32_t i, j, k;
+		for (i = 0; i < lwmline->ngeoms; i++)
+		{
+			LWMPOINT *points = lwgeom_as_lwmpoint(lwgeom_boundary((LWGEOM *)lwmline->geoms[i]));
+			if (!points)
+				continue;
+
+			for (k = 0; k < points->ngeoms; k++)
+			{
+				POINT4D pt;
+				getPoint4d_p(points->geoms[k]->point, 0, &pt);
+
+				int seen = LW_FALSE;
+				for (j = 0; j < n; j++)
+				{
+					if (memcmp(&(out[j]), &pt, sizeof(POINT4D)) == 0)
+					{
+						seen = LW_TRUE;
+						memcpy(&(out[j]), &(out[n - 1]), sizeof(POINT4D));
+						n--;
+						break;
+					}
+				}
+
+				if (!seen)
+				{
+					memcpy(&(out[n]), &pt, sizeof(POINT4D));
+					n++;
+				}
+			}
+		}
+
+		LWMPOINT *lwmpoint = lwmpoint_construct_empty(srid, hasz, hasm);
+		for (i = 0; i < n; i++)
+		{
+			lwmpoint_add_lwpoint(lwmpoint, lwpoint_make(srid, hasz, hasm, &(out[i])));
+		}
+
+		lwfree(out);
+
+		lwresult = (LWGEOM *)lwmpoint;
+
+		break;
+	}
+	case TRIANGLETYPE: {
+		LWTRIANGLE *lwtriangle = (LWTRIANGLE *)lwgeom;
+		POINTARRAY *points = ptarray_clone_deep(lwtriangle->points);
+		lwresult = (LWGEOM *)lwline_construct(srid, 0, points);
+		break;
+	}
+	case POLYGONTYPE: {
+		LWPOLY *lwpoly = (LWPOLY *)lwgeom;
+
+		if (lwpoly->nrings == 1)
+		{
+			POINTARRAY *ring = ptarray_clone_deep(lwpoly->rings[0]);
+			lwresult = (LWGEOM *)lwline_construct(srid, 0, ring);
+		}
+		else
+		{
+			LWMLINE *lwmline = lwmline_construct_empty(srid, hasz, hasm);
+			for (uint32_t i = 0; i < lwpoly->nrings; i++)
+			{
+				POINTARRAY *ring = ptarray_clone_deep(lwpoly->rings[i]);
+				lwmline_add_lwline(lwmline, lwline_construct(srid, 0, ring));
+			}
+
+			lwresult = (LWGEOM *)lwmline;
+		}
+
+		break;
+	}
+	case CURVEPOLYTYPE: {
+		LWCURVEPOLY *lwcurvepoly = (LWCURVEPOLY *)lwgeom;
+		LWCOLLECTION *lwcol = lwcollection_construct_empty(MULTICURVETYPE, srid, hasz, hasm);
+		for (uint32_t i = 0; i < lwcurvepoly->nrings; i++)
+		{
+			lwcol = lwcollection_add_lwgeom(lwcol, lwgeom_clone_deep(lwcurvepoly->rings[i]));
+		}
+
+		lwresult = (LWGEOM *)lwcol;
+
+		break;
+	}
+	case MULTIPOLYGONTYPE:
+	case TINTYPE: {
+		LWCOLLECTION *lwcol = (LWCOLLECTION *)lwgeom;
+
+		if (lwcol->ngeoms == 1)
+		{
+			lwresult = lwgeom_boundary(lwcol->geoms[0]);
+		}
+		else
+		{
+			LWCOLLECTION *lwcol_boundary = lwcollection_construct_empty(MULTILINETYPE, srid, hasz, hasm);
+			for (uint32_t i = 0; i < lwcol->ngeoms; i++)
+			{
+				lwcollection_add_lwgeom(lwcol_boundary, lwgeom_boundary(lwcol->geoms[i]));
+			}
+
+			lwresult = (LWGEOM *)lwcol_boundary;
+		}
+
+		break;
+	}
+	default:
+		lwerror("lwgeom_boundary: unsupported geometry type: %s", lwtype_name(lwgeom->type));
+		return NULL;
+	}
+
+	return lwresult;
+}
