@@ -105,7 +105,8 @@ int rt_raster_gdal_contour(
 	CPLErr cplerr;
 	OGRErr ogrerr;
 	GDALRasterBandH hBand;
-	int nfeatures = 0, i = 0, j = 0;
+	int nfeatures = 0, i = 0;
+	OGRFeatureH hFeat;
 
 	_rti_contour_arg arg;
 	_rti_contour_arg_init(&arg);
@@ -156,8 +157,8 @@ int rt_raster_gdal_contour(
 	//   void *hLayer, int iIDField, int iElevField,
 	//   GDALProgressFunc pfnProgress, void *pProgressArg );
 
-	static int use_no_data = 0;
-	static double no_data_value = 0.0;
+	int use_no_data = 0;
+	double no_data_value = GDALGetRasterNoDataValue(hBand, &use_no_data);;
 
 	/* Run the contouring routine, filling up the OGR layer */
 	cplerr = GDALContourGenerate(
@@ -179,14 +180,17 @@ int rt_raster_gdal_contour(
 		return _rti_contour_arg_destroy(&arg);
 
 	*contours = rtalloc(sizeof(struct rt_contour_t) * nfeatures);
-	for (i = 0; i < nfeatures; i++) {
+	OGR_L_ResetReading(arg.dst.lyr);
+	while ((hFeat = OGR_L_GetNextFeature(arg.dst.lyr))) {
 		size_t szWkb;
 		unsigned char *bufWkb;
 		struct rt_contour_t contour;
 		OGRGeometryH hGeom;
-		OGRFeatureH hFeat;
 		LWGEOM *geom;
-		if (!(hFeat = OGR_L_GetFeature(arg.dst.lyr, i))) continue;
+
+		/* Somehow we're still iterating, should not happen. */
+		if(i >= nfeatures) break;
+
 		/* Store elevation/id */
 		contour.id = OGR_F_GetFieldAsInteger(hFeat, 0);
 		contour.elevation = OGR_F_GetFieldAsDouble(hFeat, 1);
@@ -202,11 +206,11 @@ int rt_raster_gdal_contour(
 		contour.geom = gserialized_from_lwgeom(geom, NULL);
 		lwgeom_free(geom);
 		rtdealloc(bufWkb);
-		(*contours)[j++] = contour;
+		(*contours)[i++] = contour;
 	}
 
 	/* Return total number of contours saved */
-	*ncontours = j;
+	*ncontours = i;
 
 	/* Free all the non-database allocated structures */
 	_rti_contour_arg_destroy(&arg);
