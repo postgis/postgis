@@ -1379,9 +1379,9 @@ raster2pgsql \
 </refsection>
 </refentry>
 
-    <refentry id="RT_ST_GDALContour">
+    <refentry id="RT_ST_Contour">
       <refnamediv>
-        <refname>ST_GDALContour</refname>
+        <refname>ST_Contour</refname>
 
         <refpurpose>Generates a set of vector contours from the provided raster
             band, using the <ulink url="https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv421GDALContourGenerateEx15GDALRasterBandHPv12CSLConstList16GDALProgressFuncPv">GDAL contouring algorithm</ulink>.</refpurpose>
@@ -1390,7 +1390,7 @@ raster2pgsql \
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>setof record <function>ST_GDALContour</function></funcdef>
+            <funcdef>setof record <function>ST_Contour</function></funcdef>
             <paramdef><type>raster </type><parameter>rast</parameter></paramdef>
             <paramdef><type>integer </type><parameter>bandnumber</parameter></paramdef>
             <paramdef><type>double precision </type><parameter>level_interval</parameter></paramdef>
@@ -1438,19 +1438,26 @@ raster2pgsql \
         <title>Example</title>
 
         <programlisting>WITH c AS (
-SELECT (ST_GDALContour(rast, 1, fixed_levels => ARRAY[100.0, 200.0, 300.0])).*
+SELECT (ST_Contour(rast, 1, fixed_levels => ARRAY[100.0, 200.0, 300.0])).*
 FROM dem_grid WHERE rid = 1
 )
 SELECT st_astext(geom), id, value
 FROM c;</programlisting>
 
-</refsection>
+    </refsection>
+    <refsection>
+        <title>See Also</title>
+        <para>
+        <xref linkend="RT_ST_InterpolateRaster"/>
+        </para>
+    </refsection>
+
 </refentry>
 
 
-    <refentry id="RT_ST_GDALGrid">
+    <refentry id="RT_ST_InterpolateRaster">
       <refnamediv>
-        <refname>ST_GDALGrid</refname>
+        <refname>ST_InterpolateRaster</refname>
 
         <refpurpose>Interpolates a gridded surface based on an input set
         of 3-d points, using the X- and Y-values to position the points on
@@ -1461,7 +1468,7 @@ FROM c;</programlisting>
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>raster <function>ST_GDALGrid</function></funcdef>
+            <funcdef>raster <function>ST_InterpolateRaster</function></funcdef>
             <paramdef><type>geometry </type><parameter>input_points</parameter></paramdef>
             <paramdef><type>text </type><parameter>algorithm_options</parameter></paramdef>
             <paramdef><type>raster </type><parameter>template</parameter></paramdef>
@@ -1523,13 +1530,21 @@ FROM c;</programlisting>
       <refsection>
         <title>Example</title>
 
-<programlisting>SELECT ST_GDALGrid(
+<programlisting>SELECT ST_InterpolateRaster(
     'MULTIPOINT(10.5 9.5 1000, 11.5 8.5 1000, 10.5 8.5 500, 11.5 9.5 500)'::geometry,
     ST_AddBand(ST_MakeEmptyRaster(200, 400, 10, 10, 0.01, -0.005, 0, 0), '16BSI'),
     'invdist:smoothing:2.0'
 )</programlisting>
 
-</refsection>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para>
+            <xref linkend="RT_ST_Contour"/>
+            </para>
+        </refsection>
+
 </refentry>
 
 

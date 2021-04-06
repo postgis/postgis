@@ -536,7 +536,7 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
 
 
 /************************************************************************
- * ST_GDALContour(
+ * ST_Contour(
  *   rast raster,
  *   bandnumber integer DEFAULT 1,
  *   level_interval float8 DEFAULT 100.0,
@@ -547,8 +547,8 @@ Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS)
  * RETURNS table(geom geometry, value float8, id integer)
  ************************************************************************/
 
-PG_FUNCTION_INFO_V1(RASTER_GDALContour);
-Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_Contour);
+Datum RASTER_Contour(PG_FUNCTION_ARGS)
 {
 	/* For return values */
 	typedef struct gdal_contour_result_t {
@@ -720,9 +720,9 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
 }
 
 /************************************************************************
- *  RASTER_GDALGrid
+ *  RASTER_InterpolateRaster
  *
- * CREATE OR REPLACE FUNCTION ST_GDALGrid(
+ * CREATE OR REPLACE FUNCTION ST_InterpolateRaster(
  *   geom geometry,
  *   rast raster,
  *   options text,
@@ -732,8 +732,8 @@ Datum RASTER_GDALContour(PG_FUNCTION_ARGS)
  * https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv414GDALGridCreate17GDALGridAlgorithmPKv7GUInt32PKdPKdPKddddd7GUInt327GUInt3212GDALDataTypePv16GDALProgressFuncPv
  ************************************************************************/
 
-PG_FUNCTION_INFO_V1(RASTER_GDALGrid);
-Datum RASTER_GDALGrid(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_InterpolateRaster);
+Datum RASTER_InterpolateRaster(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *in_pgrast = NULL;
 	rt_pgraster *out_pgrast = NULL;
