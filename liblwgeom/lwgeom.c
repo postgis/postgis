@@ -2538,8 +2538,6 @@ void lwgeom_trim_bits_in_place(LWGEOM* geom, int32_t prec_x, int32_t prec_y, int
 LWGEOM *
 lwgeom_boundary(LWGEOM *lwgeom)
 {
-	LWGEOM *lwresult;
-
 	int32_t srid = lwgeom_get_srid(lwgeom);
 	uint8_t hasz = lwgeom_has_z(lwgeom);
 	uint8_t hasm = lwgeom_has_m(lwgeom);
@@ -2646,7 +2644,8 @@ lwgeom_boundary(LWGEOM *lwgeom)
 		return (LWGEOM *)lwcol;
 	}
 	case MULTIPOLYGONTYPE:
-	case TINTYPE: {
+	case TINTYPE:
+	case COLLECTIONTYPE: {
 		LWCOLLECTION *lwcol = (LWCOLLECTION *)lwgeom;
 		LWCOLLECTION *lwcol_boundary = lwcollection_construct_empty(MULTILINETYPE, srid, hasz, hasm);
 
