@@ -3184,20 +3184,13 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
-	/* Empty.Boundary() == Empty */
-	if (gserialized_is_empty(geom1))
-		PG_RETURN_POINTER(geom1);
+	/* Empty.Boundary() == Empty, but of other dimension, so can't shortcut */
 
 	lwgeom = lwgeom_from_gserialized(geom1);
-	if (!lwgeom)
-	{
-		lwpgerror("POSTGIS2GEOS: unable to deserialize input");
-		PG_RETURN_NULL();
-	}
-
 	lwresult = lwgeom_boundary(lwgeom);
-	if (lwresult == NULL)
+	if (!lwresult)
 	{
+		lwgeom_free(lwgeom);
 		PG_RETURN_NULL();
 	}
 
