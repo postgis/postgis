@@ -142,64 +142,88 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 		</refsection>
 	</refentry>
 
-		<refentry id="ST_CollectionHomogenize">
-			<refnamediv>
-				<refname>ST_CollectionHomogenize</refname>
+    <refentry id="ST_CollectionHomogenize">
+        <refnamediv>
+            <refname>ST_CollectionHomogenize</refname>
 
-				<refpurpose>
-	Given a geometry collection, return the "simplest" representation of the contents.
-				</refpurpose>
-			</refnamediv>
+            <refpurpose>
+Returns the simplest representation of a geometry collection.
+            </refpurpose>
+        </refnamediv>
 
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                <funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef>
+                <paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
 
-			<refsection>
-				<title>Description</title>
+        <refsection>
+            <title>Description</title>
 
-				<para>
-					Given a geometry collection, returns the "simplest" representation of the contents.  Singletons will be returned as singletons.  Collections that are homogeneous will be returned as the appropriate multi-type.
-				</para>
+            <para>
+            Given a geometry collection, returns the "simplest" representation of the contents.
+            Collections containing a single atomic element are returned as that element.
+            Homogeneous collections are returned as the appropriate multi-geometry.
+            Atomic geometries are returned unchanged.
+            </para>
 
-				<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
-			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
+            <warning><para>This function does not ensure that the result is valid.
+            In particular, a collection containing adjacent or overlapping Polygons
+            will create an invalid MultiPolygon.
+            This situation can be checked with <xref linkend="ST_IsValid" /> and repaired with <xref linkend="ST_MakeValid" />.
+            </para></warning>
 
+            <para>Availability: 2.0.0</para>
 
-				<para>Availability: 2.0.0</para>
+        </refsection>
 
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-
-				<programlisting>
+        <refsection>
+            <title>Examples</title>
+<para>Single-element collection converted to an atomic geometry</para>
+<programlisting>
   SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));
 
 	st_astext
 	------------
-	 POINT(0 0)
-	(1 row)
+	POINT(0 0)
+</programlisting>
 
+<para>Nested single-element collection converted to an atomic geometry</para>
+<programlisting>
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 0)))'));
+
+	st_astext
+	------------
+	POINT(0 0)
+</programlisting>
+
+<para>Collection converted to a multi-geometry</para>
+<programlisting>
   SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
 
 	st_astext
 	---------------------
-	 MULTIPOINT(0 0,1 1)
-	(1 row)
+	MULTIPOINT(0 0,1 1)
+</programlisting>
 
-				</programlisting>
-			</refsection>
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="ST_Multi" />, <xref linkend="ST_CollectionExtract" /></para>
-			</refsection>
-		</refentry>
+<para>Collection of Polygons converted to an invalid MultiPolygon</para>
+<programlisting>
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50, 50 50, 50 10, 10 10, 10 50)), POLYGON ((90 50, 90 10, 50 10, 50 50, 90 50)))'));
+
+	st_astext
+	---------------------
+	MULTIPOLYGON(((10 50,50 50,50 10,10 10,10 50)),((90 50,90 10,50 10,50 50,90 50)))
+</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_Multi" />, <xref linkend="ST_CollectionExtract" />,
+            <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" /></para>
+        </refsection>
+    </refentry>
 
     <refentry id="ST_CurveToLine">
       <refnamediv>
