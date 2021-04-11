@@ -4499,6 +4499,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
       e2sign = 0;
       _lwt_release_edges(edges, nedges);
       lwerror("Coding error: caseno=%d should never happen", caseno);
+      return -1;
       break;
   }
   newedge.geom = lwline_construct(topo->srid, NULL, pa);
