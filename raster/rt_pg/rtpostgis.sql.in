@@ -1506,6 +1506,34 @@ CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options tex
 	AS 'MODULE_PATHNAME', 'RASTER_asGDALRaster'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
+CREATE OR REPLACE FUNCTION ST_Contour(
+		rast raster,
+		bandnumber integer DEFAULT 1,
+		level_interval float8 DEFAULT 100.0,
+		level_base float8 DEFAULT 0.0,
+		fixed_levels float8[] DEFAULT ARRAY[]::float8[],
+		polygonize boolean DEFAULT false
+		)
+	RETURNS table(geom geometry, id integer, value float8)
+	AS 'MODULE_PATHNAME', 'RASTER_Contour'
+	LANGUAGE 'c'
+	IMMUTABLE STRICT
+	PARALLEL SAFE
+	COST 10000;
+
+CREATE OR REPLACE FUNCTION ST_InterpolateRaster(
+		geom geometry,
+		options text,
+		rast raster,
+		bandnumber integer DEFAULT 1
+		)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_InterpolateRaster'
+	LANGUAGE 'c'
+	IMMUTABLE STRICT
+	PARALLEL SAFE
+	COST 10000;
+
 -----------------------------------------------------------------------
 -- ST_AsTIFF
 -----------------------------------------------------------------------

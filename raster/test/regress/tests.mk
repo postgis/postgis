@@ -78,6 +78,7 @@ RASTER_TEST_UTILITY = \
 	$(topsrcdir)/raster/test/regress/rt_aspng \
 	$(topsrcdir)/raster/test/regress/rt_reclass \
 	$(topsrcdir)/raster/test/regress/rt_gdalwarp \
+	$(topsrcdir)/raster/test/regress/rt_gdalcontour \
 	$(topsrcdir)/raster/test/regress/rt_asraster \
 	$(topsrcdir)/raster/test/regress/rt_dumpvalues \
 	$(topsrcdir)/raster/test/regress/rt_makeemptycoverage \
