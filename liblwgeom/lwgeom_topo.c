@@ -6197,7 +6197,7 @@ _lwt_EdgeRingIterator_begin(LWT_EDGERING *er)
   if ( er->size ) ret->curelem = er->elems[0];
   else ret->curelem = NULL;
   ret->curelemidx = 0;
-  ret->curidx = ret->curelem->left ? 0 : ret->curelem->edge->geom->points->npoints - 1;
+  ret->curidx = (ret->curelem == NULL || ret->curelem->left) ? 0 : ret->curelem->edge->geom->points->npoints - 1;
   return ret;
 }
 
