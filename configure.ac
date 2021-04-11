@@ -503,6 +503,12 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
 
   AC_SUBST([PGSQL_BE_CPPFLAGS])
 
+  dnl Ensure that we can parse postgres.h
+  CPPFLAGS_SAVE="$CPPFLAGS"
+  CPPFLAGS="$PGSQL_FE_CPPFLAGS $PGSQL_BE_CPPFLAGS"
+  AC_CHECK_HEADER([postgres.h], [], [AC_MSG_ERROR([could not find postgres.h])])
+  CPPFLAGS="$CPPFLAGS_SAVE"
+
   dnl Extract the documentation and man page directories
   PGSQL_DOCDIR=`"$PG_CONFIG" --docdir`
   PGSQL_MANDIR=`"$PG_CONFIG" --mandir`
