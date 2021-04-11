@@ -17,6 +17,7 @@ PostGIS 3.1.2
   - #4876, Fix raster issues related to PostgreSQL 14 tablefunc changes
            (Paul Ramsey, Regina Obe)
   - #4877, mingw64 PostGIS / PostgreSQL 14 compile (Regina Obe, Tom Lane)
+  - #4838, Update to support Tiger 2020 (Regina Obe)
 
 
 PostGIS 3.1.1
