@@ -4499,6 +4499,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
       e2sign = 0;
       _lwt_release_edges(edges, nedges);
       lwerror("Coding error: caseno=%d should never happen", caseno);
+      return -1;
       break;
   }
   newedge.geom = lwline_construct(topo->srid, NULL, pa);
@@ -6196,7 +6197,7 @@ _lwt_EdgeRingIterator_begin(LWT_EDGERING *er)
   if ( er->size ) ret->curelem = er->elems[0];
   else ret->curelem = NULL;
   ret->curelemidx = 0;
-  ret->curidx = ret->curelem->left ? 0 : ret->curelem->edge->geom->points->npoints - 1;
+  ret->curidx = (ret->curelem == NULL || ret->curelem->left) ? 0 : ret->curelem->edge->geom->points->npoints - 1;
   return ret;
 }
 

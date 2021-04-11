@@ -104,6 +104,7 @@ static void geos_destroy(size_t count, ...) {
 			GEOSGeom_destroy(g);
 		}
 	}
+	va_end(ap);
 }
 
 /*
@@ -631,6 +632,7 @@ get_result_srid(size_t count, const char* funcname, ...)
 		if (!g)
 		{
 			lwerror("%s: Geometry is null", funcname);
+			va_end(ap);
 			return SRID_INVALID;
 		}
 		if (i == 0)
@@ -642,10 +644,12 @@ get_result_srid(size_t count, const char* funcname, ...)
 			if (g->srid != srid)
 			{
 				lwerror("%s: Operation on mixed SRID geometries (%d != %d)", funcname, srid, g->srid);
+				va_end(ap);
 				return SRID_INVALID;
 			}
 		}
 	}
+	va_end(ap);
 	return srid;
 }
 
