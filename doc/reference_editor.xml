@@ -74,7 +74,7 @@
 			<refname>ST_CollectionExtract</refname>
 
 			<refpurpose>
-Given a (multi)geometry, return a (multi)geometry consisting only of elements of the specified type.
+Given a geometry collection, returns a multi-geometry containing only elements of a specified type.
 			</refpurpose>
 		</refnamediv>
 
@@ -97,48 +97,78 @@ Given a (multi)geometry, return a (multi)geometry consisting only of elements of
 		<refsection>
 			<title>Description</title>
 
-			<para>Given a geometry collection, return a homogeneous multi-geometry.
-            If the type is specified, return a multi-geometry containing only that type, and an EMPTY multigeometry otherwise. If the type is not specified, return a multi-geometry containing only geometries of the highest coordinate dimension. So polygons are preferred over lines, which are preferred over points. Sub-geometries that are not the desired type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned. </para>
-            <para>Only points, lines and polygons are supported. The type numbers are:</para>
+			<para>Given a geometry collection, returns a homogeneous multi-geometry.</para>
+
+            <para>If the <parameter>type</parameter> is not specified, returns a multi-geometry containing only geometries of the highest dimension.
+            So polygons are preferred over lines, which are preferred over points.
+            </para>
+            <para>If the <parameter>type</parameter> is specified, returns a multi-geometry containing only that type.
+            If there are no sub-geometries of the right type, an EMPTY geometry is returned.
+            Only points, lines and polygons are supported. The type numbers are:</para>
             <itemizedlist>
             <listitem><para>1 == POINT</para></listitem>
             <listitem><para>2 == LINESTRING</para></listitem>
             <listitem><para>3 == POLYGON</para></listitem>
             </itemizedlist>
 
+            <para>For atomic geometry inputs, the geometry is retured unchanged
+            if the input type matches the requested type.
+            Otherwise, the result is an EMPTY geometry of the specified type.
+            If required, these can be converted to multi-geometries using <xref linkend="ST_Multi" />.
+            </para>
+
+			<warning><para>MultiPolygon results are not checked for validity.
+            If the polygon components are adjacent or overlapping the result will be invalid.
+            (For example, this can occur when applying this function to an <xref linkend="ST_Split" /> result.)
+            This situation can be checked with <xref linkend="ST_IsValid" /> and repaired with <xref linkend="ST_MakeValid" />.
+            </para></warning>
+
 			<para>Availability: 1.5.0</para>
 
 			<note><para>
-            Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type.
-            In 1.5.3 non-matching single geometries result in a NULL return.
-            In 2.0.0 every case of missing match results in a typed EMPTY return.
+            Prior to 1.5.3 this function returned atomic inputs unchaanged, no matter type.
+            In 1.5.3 non-matching single geometries returned a NULL result.
+            In 2.0.0 non-matching single geometries return an EMPTY result of the requested type.
 			</para></note>
-
-			<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
-			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
 
 		</refsection>
 
 		<refsection>
 			<title>Examples</title>
+<para>Extract highest-dimension type:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionExtract(
+        'GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(1 1, 2 2) )'));
+    st_astext
+    ---------------
+    MULTILINESTRING((1 1, 2 2))
+</programlisting>
 
-			<programlisting>-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON
-SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));
-st_astext
----------------
-MULTIPOINT(0 0)
-(1 row)
+<para>Extract points (type 1 == POINT):</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionExtract(
+        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',
+        1 ));
+    st_astext
+    ---------------
+    MULTIPOINT(0 0)
+</programlisting>
 
-SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))'),2));
-st_astext
----------------
-MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
-(1 row)
-			</programlisting>
+<para>Extract lines (type 2 == LINESTRING):</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionExtract(
+        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))',
+        2 ));
+    st_astext
+    ---------------
+    MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
+</programlisting>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Multi" />, <xref linkend="ST_Dump" />, <xref linkend="ST_CollectionHomogenize" /></para>
+			<para><xref linkend="ST_CollectionHomogenize" />, <xref linkend="ST_Multi" />,
+                <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" />
+            </para>
 		</refsection>
 	</refentry>
 
@@ -165,10 +195,13 @@ Returns the simplest representation of a geometry collection.
 
             <para>
             Given a geometry collection, returns the "simplest" representation of the contents.
-            Collections containing a single atomic element are returned as that element.
-            Homogeneous collections are returned as the appropriate multi-geometry.
-            Atomic geometries are returned unchanged.
             </para>
+            <itemizedlist>
+            <listitem><para>Homogeneous (uniform) collections are returned as the appropriate multi-geometry.</para></listitem>
+            <listitem><para>Heterogeneous (mixed) collections are flattend into a single GeometryCollection.</para></listitem>
+            <listitem><para>Collections containing a single atomic element are returned as that element.</para></listitem>
+            <listitem><para>Atomic geometries are returned unchanged.</para></listitem>
+            </itemizedlist>
 
             <warning><para>This function does not ensure that the result is valid.
             In particular, a collection containing adjacent or overlapping Polygons
@@ -191,27 +224,36 @@ Returns the simplest representation of a geometry collection.
 	POINT(0 0)
 </programlisting>
 
-<para>Nested single-element collection converted to an atomic geometry</para>
+<para>Nested single-element collection converted to an atomic geometry:</para>
 <programlisting>
-  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 0)))'));
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 0)))'));
 
 	st_astext
 	------------
 	POINT(0 0)
 </programlisting>
 
-<para>Collection converted to a multi-geometry</para>
+<para>Collection converted to a multi-geometry:</para>
 <programlisting>
-  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
 
 	st_astext
 	---------------------
 	MULTIPOINT(0 0,1 1)
 </programlisting>
 
-<para>Collection of Polygons converted to an invalid MultiPolygon</para>
+<para>Nested heterogeneous collection flattened to a GeometryCollection:</para>
 <programlisting>
-  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50, 50 50, 50 10, 10 10, 10 50)), POLYGON ((90 50, 90 10, 50 10, 50 50, 90 50)))'));
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0), GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2)))'));
+
+	st_astext
+	---------------------
+	GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 1,2 2))
+</programlisting>
+
+<para>Collection of Polygons converted to an (invalid) MultiPolygon:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50, 50 50, 50 10, 10 10, 10 50)), POLYGON ((90 50, 90 10, 50 10, 50 50, 90 50)))'));
 
 	st_astext
 	---------------------
@@ -220,7 +262,7 @@ Returns the simplest representation of a geometry collection.
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_Multi" />, <xref linkend="ST_CollectionExtract" />,
+            <para><xref linkend="ST_CollectionExtract" />,
             <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" /></para>
         </refsection>
     </refentry>
