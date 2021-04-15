@@ -203,7 +203,7 @@ Returns the simplest representation of a geometry collection.
             </para>
             <itemizedlist>
             <listitem><para>Homogeneous (uniform) collections are returned as the appropriate multi-geometry.</para></listitem>
-            <listitem><para>Heterogeneous (mixed) collections are flattend into a single GeometryCollection.</para></listitem>
+            <listitem><para>Heterogeneous (mixed) collections are flattened into a single GeometryCollection.</para></listitem>
             <listitem><para>Collections containing a single atomic element are returned as that element.</para></listitem>
             <listitem><para>Atomic geometries are returned unchanged.</para></listitem>
             </itemizedlist>
