@@ -27,7 +27,7 @@
 				<funcdef>geometry <function>ST_AddPoint</function></funcdef>
 				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
 				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
-				<paramdef><type>integer</type> <parameter>position</parameter></paramdef>
+				<paramdef><type>integer</type> <parameter>position = -1</parameter></paramdef>
 			  </funcprototype>
 			 </funcsynopsis>
 		  </refsynopsisdiv>
@@ -35,32 +35,37 @@
 		  <refsection>
 			<title>Description</title>
 
-			<para>Adds a point to a LineString before point &lt;position&gt;
-				(0-based index). Third parameter can be omitted or set to -1 for
-				appending.</para>
+			<para>Adds a point to a LineString before the index <parameter>position</parameter>
+				(using a 0-based index).
+                If the <parameter>position</parameter> parameter is omitted or is -1
+				the point is appended to the end of the LineString.</para>
 			<para>Availability: 1.1.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
 		  <refsection>
 			<title>Examples</title>
-			<programlisting>
-		--guarantee all linestrings in a table are closed
-		--by adding the start point of each linestring to the end of the line string
-		--only for those that are not closed
-		UPDATE sometable
-		SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
-		FROM sometable
-		WHERE ST_IsClosed(the_geom) = false;
 
-		--Adding point to a 3-d line
-		SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
+            <para>Add a point to the end of a 3D line</para>
+<programlisting>
+SELECT ST_AsEWKT(ST_AddPoint('LINESTRING(0 0 1, 1 1 1)', ST_MakePoint(1, 2, 3)));
 
-		--result
-		st_asewkt
-		----------
-		LINESTRING(0 0 1,1 1 1,1 2 3)
-			</programlisting>
+    st_asewkt
+    ----------
+    LINESTRING(0 0 1,1 1 1,1 2 3)
+</programlisting>
+
+<para>Guarantee all lines in a table are closed
+by adding the start point of each line to the end of the line
+only for those that are not closed.
+</para>
+<programlisting>
+UPDATE sometable
+SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
+FROM sometable
+WHERE ST_IsClosed(the_geom) = false;
+</programlisting>
+
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -1502,7 +1507,7 @@ digits  |                   encode                   |                st_astext
 	<refentry id="ST_RemovePoint">
 	  <refnamediv>
 		<refname>ST_RemovePoint</refname>
-		<refpurpose>Remove point from a linestring.</refpurpose>
+		<refpurpose>Remove a point from a linestring.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -1517,21 +1522,23 @@ digits  |                   encode                   |                st_astext
 	  <refsection>
 		<title>Description</title>
 
-		<para>Remove a point from a linestring, given its 0-based index. Useful for turning a closed ring into an open line string</para>
+		<para>Removes a point from a LineString, given its index (0-based).
+        Useful for turning a closed line (ring) into an open linestring.
+        </para>
 		<para>Availability: 1.1.0</para>
 		<para>&Z_support;</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>
---guarantee no LINESTRINGS are closed
---by removing the end point.  The below assumes the_geom is of type LINESTRING
+<para>Guarantees no lines are closed by removing the end point of closed lines (rings).
+Assumes geom is of type LINESTRING</para>
+<programlisting>
 UPDATE sometable
-	SET the_geom = ST_RemovePoint(the_geom, ST_NPoints(the_geom) - 1)
+	SET geom = ST_RemovePoint(geom, ST_NPoints(geom) - 1)
 	FROM sometable
-	WHERE ST_IsClosed(the_geom) = true;
-		</programlisting>
+	WHERE ST_IsClosed(geom);
+</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
