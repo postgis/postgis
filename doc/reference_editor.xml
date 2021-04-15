@@ -205,7 +205,8 @@ Returns the simplest representation of a geometry collection.
             <listitem><para>Homogeneous (uniform) collections are returned as the appropriate multi-geometry.</para></listitem>
             <listitem><para>Heterogeneous (mixed) collections are flattened into a single GeometryCollection.</para></listitem>
             <listitem><para>Collections containing a single atomic element are returned as that element.</para></listitem>
-            <listitem><para>Atomic geometries are returned unchanged.</para></listitem>
+            <listitem><para>Atomic geometries are returned unchanged.
+                If required, these can be converted to a multi-geometry using <xref linkend="ST_Multi" />.</para></listitem>
             </itemizedlist>
 
             <warning><para>This function does not ensure that the result is valid.
@@ -267,7 +268,7 @@ SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50, 5
         </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_CollectionExtract" />,
+            <para><xref linkend="ST_CollectionExtract" />, <xref linkend="ST_Multi" />,
             <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" /></para>
         </refsection>
     </refentry>
@@ -1236,7 +1237,7 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
 			<funcsynopsis>
 			  <funcprototype>
 				<funcdef>geometry <function>ST_Multi</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
@@ -1244,22 +1245,20 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the geometry as a MULTI* geometry. If the geometry
-				is already a MULTI*, it is returned unchanged.</para>
+			<para>Returns the geometry as a MULTI* geometry collection. If the geometry
+				is already a collection, it is returned unchanged.</para>
 
 		</refsection>
 
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-			743265 2967450,743265.625 2967416,743238 2967416))')));
-			st_astext
-			--------------------------------------------------------------------------------------------------
-			MULTIPOLYGON(((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,
-			743238 2967416)))
-			(1 row)
-			</programlisting>
+<programlisting>
+SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
+                    st_astext
+    -------------------------------------------------
+    MULTIPOLYGON(((10 30,30 30,30 10,10 10,10 30)))
+</programlisting>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
