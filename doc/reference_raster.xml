@@ -1472,7 +1472,7 @@ FROM c;</programlisting>
             <paramdef><type>geometry </type><parameter>input_points</parameter></paramdef>
             <paramdef><type>text </type><parameter>algorithm_options</parameter></paramdef>
             <paramdef><type>raster </type><parameter>template</parameter></paramdef>
-            <paramdef><type>integer </type><parameter>template_band_num</parameter></paramdef>
+            <paramdef choice="opt"><type>integer </type><parameter>template_band_num=1</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -1532,8 +1532,8 @@ FROM c;</programlisting>
 
 <programlisting>SELECT ST_InterpolateRaster(
     'MULTIPOINT(10.5 9.5 1000, 11.5 8.5 1000, 10.5 8.5 500, 11.5 9.5 500)'::geometry,
-    ST_AddBand(ST_MakeEmptyRaster(200, 400, 10, 10, 0.01, -0.005, 0, 0), '16BSI'),
-    'invdist:smoothing:2.0'
+    'invdist:smoothing:2.0',
+    ST_AddBand(ST_MakeEmptyRaster(200, 400, 10, 10, 0.01, -0.005, 0, 0), '16BSI')
 )</programlisting>
 
         </refsection>
