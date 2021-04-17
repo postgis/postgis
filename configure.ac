@@ -1004,6 +1004,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
 				PROTOBUF_CPPFLAGS="$PROTOBUFC_CFLAGS";
 				PROTOBUF_LDFLAGS="$PROTOBUFC_LIBS";
+				PROTOC_VERSION=`$PKG_CONFIG libprotobuf-c --modversion | sed 's/\([[0-9]]\).*\([[0-9]]\).*\([[0-9]]\)/\100\200\3/'`
 			], [
 				AC_MSG_RESULT([libprotobuf-c not found in pkg-config])
 			])
@@ -1054,7 +1055,10 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		[])
 
 	AC_MSG_CHECKING([protobuf-c version])
-	AC_PROTOBUFC_VERSION([PROTOC_VERSION])
+	dnl Return the protobuf-c version number if not detected by pkg-config
+	if test "x$PROTOC_VERSION" = "x"; then
+		AC_PROTOBUFC_VERSION([PROTOC_VERSION])
+	fi
         if test ! "$PROTOC_VERSION" -ge 1001000; then
                 AC_MSG_ERROR("Old protobuf-c release found but 1.1.0 is required. You can disable MVT and Geobuf support using --without-protobuf")
         fi
