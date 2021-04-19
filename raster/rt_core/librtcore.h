@@ -1360,6 +1360,27 @@ rt_errorstate rt_raster_geopoint_to_cell(
 	double *igt
 );
 
+
+/**
+ * Convert an xw,yw map point to a xr,yr raster point
+ *
+ * @param raster : the raster to get info from
+ * @param xw : X ordinate of the geographical point
+ * @param yw : Y ordinate of the geographical point
+ * @param xr : output parameter, the x ordinate in raster space
+ * @param yr : output parameter, the y ordinate in raster space
+ * @param igt : input/output parameter, inverse geotransform matrix
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate rt_raster_geopoint_to_rasterpoint(
+	rt_raster raster,
+	double xw, double yw,
+	double *xr, double *yr,
+	double *igt
+);
+
+
 /**
  * Get raster's convex hull.
  *
@@ -1395,6 +1416,72 @@ rt_errorstate rt_raster_get_envelope(rt_raster raster, rt_envelope *env);
  * @return ES_NONE if success, ES_ERROR if error
  */
 rt_errorstate rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env);
+
+/**
+ * Retrieve a point value from the raster using a world coordinate
+ * and bilinear interpolation.
+ *
+ * @param band : the band to read for values
+ * @param xr : x unrounded raster coordinate
+ * @param yr : y unrounded raster coordinate
+ * @param r_value : return pointer for point value
+ * @param r_nodata : return pointer for if this is a nodata
+ *
+ * @return ES_ERROR on error, otherwise ES_NONE
+ */
+rt_errorstate rt_band_get_pixel_bilinear(
+	rt_band band,
+	double xr, double yr,
+	double *r_value, int *r_nodata
+);
+
+typedef enum {
+	RT_NEAREST,
+	RT_BILINEAR
+} rt_resample_type;
+
+/**
+ * Retrieve a point value from the raster using a world coordinate
+ * and selected resampling method.
+ *
+ * @param band : the band to read for values
+ * @param xr : x unrounded raster coordinate
+ * @param yr : y unrounded raster coordinate
+ * @param resample : algorithm for reading raster (nearest or bilinear)
+ * @param r_value : return pointer for point value
+ * @param r_nodata : return pointer for if this is a nodata
+ *
+ * @return ES_ERROR on error, otherwise ES_NONE
+ */
+rt_errorstate rt_band_get_pixel_resample(
+	rt_band band,
+	double xr, double yr,
+	rt_resample_type resample,
+	double *r_value, int *r_nodata
+);
+
+/**
+ * Copy values from a raster to the points on a geometry
+ * using the requested interpolation type.
+ * and selected interpolation.
+ *
+ * @param raster : the raster to read for values
+ * @param bandnum : the band number to read from
+ * @param dim : the geometry dimension to copy values into 'Z' or 'M'
+ * @param resample : algorithm for reading raster (nearest or bilinear)
+ * @param lwgeom_in : the input geometry
+ * @param lwgeom_out : pointer for the output geometry
+ *
+ * @return ES_ERROR on error, otherwise ES_NONE
+ */
+rt_errorstate rt_raster_copy_to_geometry(
+	rt_raster raster,
+	uint32_t bandnum,
+	char dim, /* 'Z' or 'M' */
+	rt_resample_type resample,
+	const LWGEOM *lwgeom_in,
+	LWGEOM **lwgeom_out
+);
 
 /**
  * Get raster perimeter

@@ -10,11 +10,21 @@ PostGIS 3.2.0
            (Sandro Santilli)
   - #4827, Allow NaN coordinates in WKT input (Paul Ramsey)
   - #4870, Allow open options to be passed to GDAL drivers (Paul Ramsey)
+  - ST_Value() accepts resample parameter to add bilinear option (Paul Ramsey)
   - #3778, #4401, ST_Boundary now works for TIN and does not linearize curves (Aliaksandr Kalenik)
 
  * New features*
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)
   - #4851, TopoGeom_addTopoGeom function (Sandro Santilli)
+  - ST_InterpolateRaster() fills in raster cells between sample points
+    using one of a number of algorithms (inverse weighted distance, average, etc)
+    using algorithms from GDAL
+    (Paul Ramsey)
+  - ST_Contour() generates contour lines from raster values 
+    using algorithms from GDAL (Paul Ramsey)
+  - ST_SetZ()/ST_SetM() fills in z/m coordinates of a geometry using data read
+    from a raster (Paul Ramsey)
+
 
 PostGIS 3.1.0
 2020/12/18

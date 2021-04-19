@@ -4621,38 +4621,25 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, exclude_n
     AS $$ SELECT st_value($1, 1, $2, $3, $4) $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
-CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
-    RETURNS float8 AS
-    $$
-    DECLARE
-        x float8;
-        y float8;
-        gtype text;
-    BEGIN
-        gtype := @extschema@.ST_GeometryType(pt);
-        IF ( gtype != 'ST_Point' ) THEN
-            RAISE EXCEPTION 'Attempting to get the value of a pixel with a non-point geometry';
-        END IF;
+CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean DEFAULT TRUE, resample text DEFAULT 'nearest')
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'RASTER_getPixelValueResample'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
-				IF @extschema@.ST_SRID(pt) != @extschema@.ST_SRID(rast) THEN
-            RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
-				END IF;
-
-        x := @extschema@.ST_x(pt);
-        y := @extschema@.ST_y(pt);
-        RETURN @extschema@.ST_value(rast,
-                        band,
-                        @extschema@.ST_worldtorastercoordx(rast, x, y),
-                        @extschema@.ST_worldtorastercoordy(rast, x, y),
-                        exclude_nodata_value);
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION ST_Value(rast raster, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
-    AS $$ SELECT @extschema@.ST_value($1, 1, $2, $3) $$
+    AS $$ SELECT @extschema@.ST_value($1, 1, $2, $3, 'nearest') $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_setz(rast raster, geom geometry, resample text DEFAULT 'nearest', band integer default 1)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'RASTER_getGeometryValues'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION st_setm(rast raster, geom geometry, resample text DEFAULT 'nearest', band integer default 1)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'RASTER_getGeometryValues'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -----------------------------------------------------------------------
 -- ST_PixelOfValue()

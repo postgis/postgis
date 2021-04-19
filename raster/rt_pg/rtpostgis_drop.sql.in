@@ -120,3 +120,7 @@ DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, n
 DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, sample_percent double precision, quantile double precision);
 DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision);
 DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, quantile double precision);
+
+DROP FUNCTION IF EXISTS st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean);
+
+

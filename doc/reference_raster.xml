@@ -5260,6 +5260,151 @@ FROM (
 
         </refentry>
 
+        <refentry id="RT_ST_SetZ">
+            <refnamediv>
+                <refname>ST_SetZ</refname>
+                <refpurpose>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimension using the requested resample algorithm.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                   <funcprototype>
+                    <funcdef>geometry <function>ST_GetValues</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>resample=nearest</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimensions using the requested resample algorithm.</para>
+                <para>The <varname>resample</varname> parameter can be set to "nearest" to copy the values from the cell each vertex falls within, or "bilinear" to use <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to calculate a value that takes neighboring cells into account also.</para>
+            </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>--
+-- 2x2 test raster with values
+--
+-- 10 50
+-- 40 20
+--
+WITH test_raster AS (
+SELECT
+ST_SetValues(
+  ST_AddBand(
+    ST_MakeEmptyRaster(width => 2, height => 2,
+      upperleftx => 0, upperlefty => 2,
+      scalex => 1.0, scaley => -1.0,
+      skewx => 0, skewy => 0, srid => 4326),
+    index => 1, pixeltype => '16BSI',
+    initialvalue => 0,
+    nodataval => -999),
+  1,1,1,
+  newvalueset =>ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
+)
+SELECT
+ST_AsText(
+  ST_SetZ(
+    rast,
+    band => 1,
+    geom => 'SRID=4326;LINESTRING(1.0 1.9, 1.0 0.2)'::geometry,
+    resample => 'bilinear'
+))
+FROM test_raster
+
+            st_astext
+----------------------------------
+ LINESTRING Z (1 1.9 38,1 0.2 27)</programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_Value" />,
+                    <xref linkend="RT_ST_SetM" />
+                </para>
+            </refsection>
+        </refentry>
+
+
+        <refentry id="RT_ST_SetM">
+            <refnamediv>
+                <refname>ST_SetM</refname>
+                <refpurpose>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimension using the requested resample algorithm.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                   <funcprototype>
+                    <funcdef>geometry <function>ST_GetValues</function></funcdef>
+                    <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+                    <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>resample=nearest</parameter></paramdef>
+                    <paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+                  </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimensions using the requested resample algorithm.</para>
+                <para>The <varname>resample</varname> parameter can be set to "nearest" to copy the values from the cell each vertex falls within, or "bilinear" to use <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to calculate a value that takes neighboring cells into account also.</para>
+            </refsection>
+
+                <refsection>
+                    <title>Examples</title>
+                    <programlisting>--
+-- 2x2 test raster with values
+--
+-- 10 50
+-- 40 20
+--
+WITH test_raster AS (
+SELECT
+ST_SetValues(
+  ST_AddBand(
+    ST_MakeEmptyRaster(width => 2, height => 2,
+      upperleftx => 0, upperlefty => 2,
+      scalex => 1.0, scaley => -1.0,
+      skewx => 0, skewy => 0, srid => 4326),
+    index => 1, pixeltype => '16BSI',
+    initialvalue => 0,
+    nodataval => -999),
+  1,1,1,
+  newvalueset =>ARRAY[ARRAY[10.0::float8, 50.0::float8], ARRAY[40.0::float8, 20.0::float8]]) AS rast
+)
+SELECT
+ST_AsText(
+  ST_SetM(
+    rast,
+    band => 1,
+    geom => 'SRID=4326;LINESTRING(1.0 1.9, 1.0 0.2)'::geometry,
+    resample => 'bilinear'
+))
+FROM test_raster
+
+            st_astext
+----------------------------------
+ LINESTRING M (1 1.9 38,1 0.2 27)</programlisting>
+
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="RT_ST_Value" />,
+                    <xref linkend="RT_ST_SetZ" />
+                </para>
+            </refsection>
+        </refentry>
+
         <refentry id="RT_ST_Neighborhood">
             <refnamediv>
                 <refname>ST_Neighborhood</refname>
