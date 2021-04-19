@@ -1550,19 +1550,27 @@ void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
 /**************************************************************/
 
 static int
-point_cmp(const void *pn1, const void *pn2)
+cmp_point_x(const void *pa, const void *pb)
 {
-	LWPOINT *p1 = *((LWPOINT **)pn1);
-	LWPOINT *p2 = *((LWPOINT **)pn2);
+	LWPOINT *p1 = *((LWPOINT **)pa);
+	LWPOINT *p2 = *((LWPOINT **)pb);
 
-	GBOX b1, b2;
-	lwgeom_calculate_gbox((LWGEOM *)p1, &b1);
-	lwgeom_calculate_gbox((LWGEOM *)p2, &b2);
+	const POINT2D *pt1 = getPoint2d_cp(p1->point, 0);
+	const POINT2D *pt2 = getPoint2d_cp(p2->point, 0);
 
-	uint64_t h1, h2;
-	h1 = gbox_get_sortable_hash(&b1, 0);
-	h2 = gbox_get_sortable_hash(&b2, 0);
-	return h1 < h2 ? -1 : (h1 > h2 ? 1 : 0);
+	return (pt1->x > pt2->x) ? 1 : ((pt1->x < pt2->x) ? -1 : 0);
+}
+
+static int
+cmp_point_y(const void *pa, const void *pb)
+{
+	LWPOINT *p1 = *((LWPOINT **)pa);
+	LWPOINT *p2 = *((LWPOINT **)pb);
+
+	const POINT2D *pt1 = getPoint2d_cp(p1->point, 0);
+	const POINT2D *pt2 = getPoint2d_cp(p2->point, 0);
+
+	return (pt1->y > pt2->y) ? 1 : ((pt1->y < pt2->y) ? -1 : 0);
 }
 
 int
@@ -1623,26 +1631,43 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 		{
 			double tolsq = tolerance * tolerance;
 			LWMPOINT *mpt = (LWMPOINT *)geom;
-			qsort(mpt->geoms, mpt->ngeoms, sizeof(LWPOINT *), point_cmp);
 
-			uint32_t i = 0;
-			for (uint32_t j = 1; j < mpt->ngeoms; j++)
+			for (uint32_t dim = 0; dim < 2; dim++)
 			{
-				POINT2D ptj, pti;
-				getPoint2d_p(mpt->geoms[i]->point, 0, &pti);
-				getPoint2d_p(mpt->geoms[j]->point, 0, &ptj);
-				if (distance2d_sqr_pt_pt(&ptj, &pti) > tolsq)
+				qsort(mpt->geoms, mpt->ngeoms, sizeof(LWPOINT *), dim == 0 ? cmp_point_x : cmp_point_y);
+				for (uint32_t i = 0; i < mpt->ngeoms; i++)
 				{
-					mpt->geoms[++i] = mpt->geoms[j];
-				}
-				else
-				{
-					lwpoint_free(mpt->geoms[j]);
-				}
-			}
+					if (mpt->geoms[i] == NULL)
+						continue;
 
-			geometry_modified = mpt->ngeoms != i + 1;
-			mpt->ngeoms = i + 1;
+					const POINT2D *pti = getPoint2d_cp(mpt->geoms[i]->point, 0);
+					for (uint32_t j = i + 1; j < mpt->ngeoms; j++)
+					{
+						if (mpt->geoms[j] == NULL)
+							continue;
+
+						const POINT2D *ptj = getPoint2d_cp(mpt->geoms[j]->point, 0);
+						if ((dim == 0 ? ptj->x - pti->x : ptj->y - pti->y) > tolerance)
+							break;
+
+						if (distance2d_sqr_pt_pt(pti, ptj) <= tolsq)
+						{
+							lwpoint_free(mpt->geoms[j]);
+							mpt->geoms[j] = NULL;
+						}
+					}
+				}
+
+				uint32_t i = 0;
+				for (uint32_t j = 0; j < mpt->ngeoms; j++)
+				{
+					if (mpt->geoms[j] != NULL)
+						mpt->geoms[i++] = mpt->geoms[j];
+				}
+
+				geometry_modified |= mpt->ngeoms != i;
+				mpt->ngeoms = i;
+			}
 
 			break;
 		}
