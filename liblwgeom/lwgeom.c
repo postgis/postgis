@@ -1549,6 +1549,21 @@ void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
 
 /**************************************************************/
 
+static int
+point_cmp(const void *pn1, const void *pn2)
+{
+	LWPOINT *p1 = *((LWPOINT **)pn1);
+	LWPOINT *p2 = *((LWPOINT **)pn2);
+
+	GBOX b1, b2;
+	lwgeom_calculate_gbox((LWGEOM *)p1, &b1);
+	lwgeom_calculate_gbox((LWGEOM *)p2, &b2);
+
+	uint64_t h1, h2;
+	h1 = gbox_get_sortable_hash(&b1, 0);
+	h2 = gbox_get_sortable_hash(&b2, 0);
+	return h1 < h2 ? -1 : (h1 > h2 ? 1 : 0);
+}
 
 int
 lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
@@ -1606,55 +1621,29 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 		}
 		case MULTIPOINTTYPE:
 		{
-			double tolsq = tolerance*tolerance;
-			uint32_t i, j, n = 0;
-			LWMPOINT *mpt = (LWMPOINT *)(geom);
-			LWPOINT **out;
-			LWPOINT *out_stack[out_stack_size];
-			int use_heap = (mpt->ngeoms > out_stack_size);
+			double tolsq = tolerance * tolerance;
+			LWMPOINT *mpt = (LWMPOINT *)geom;
+			qsort(mpt->geoms, mpt->ngeoms, sizeof(LWPOINT *), point_cmp);
 
-			/* No-op on empty */
-			if (mpt->ngeoms < 2)
-				return geometry_modified;
-
-			/* We cannot write directly back to the multipoint */
-			/* geoms array because we're reading out of it still */
-			/* so we use a side array */
-			if (use_heap)
-				out = lwalloc(sizeof(LWMPOINT *) * mpt->ngeoms);
-			else
-				out = out_stack;
-
-			/* Inefficient O(n^2) implementation */
-			for (i = 0; i < mpt->ngeoms; i++)
+			uint32_t i = 0;
+			for (uint32_t j = 1; j < mpt->ngeoms; j++)
 			{
-				int seen = 0;
-				LWPOINT *p1 = mpt->geoms[i];
-				const POINT2D *pt1 = getPoint2d_cp(p1->point, 0);
-				for (j = 0; j < n; j++)
+				POINT2D ptj, pti;
+				getPoint2d_p(mpt->geoms[i]->point, 0, &pti);
+				getPoint2d_p(mpt->geoms[j]->point, 0, &ptj);
+				if (distance2d_sqr_pt_pt(&ptj, &pti) > tolsq)
 				{
-					LWPOINT *p2 = out[j];
-					const POINT2D *pt2 = getPoint2d_cp(p2->point, 0);
-					if (distance2d_sqr_pt_pt(pt1, pt2) <= tolsq)
-					{
-						seen = 1;
-						break;
-					}
+					mpt->geoms[++i] = mpt->geoms[j];
 				}
-				if (seen)
+				else
 				{
-					lwpoint_free(p1);
-					continue;
+					lwpoint_free(mpt->geoms[j]);
 				}
-				out[n++] = p1;
 			}
 
-			/* Copy remaining points back into the input */
-			/* array */
-			memcpy(mpt->geoms, out, sizeof(LWPOINT *) * n);
-			geometry_modified = mpt->ngeoms != n;
-			mpt->ngeoms = n;
-			if (use_heap) lwfree(out);
+			geometry_modified = mpt->ngeoms != i + 1;
+			mpt->ngeoms = i + 1;
+
 			break;
 		}
 
