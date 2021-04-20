@@ -403,6 +403,46 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
       </answer>
     </qandaentry>
 
+	<qandaentry id="overlay_inconsistent">
+      <question>
+        <para>Why are the results of overlay operations and spatial predicates sometimes inconsistent?</para>
+      </question>
+
+      <answer>
+        <para>This is usually presented as a specific case, such as
+            </para>
+        <itemizedlist>
+            <listitem>
+            <para>Why is <varname>ST_Contains( A, ST_Intersection(A, B) )</varname> false ?</para>
+            </listitem>
+            <listitem>
+            <para>Why is <varname>ST_Contains( ST_Union(A, B), A ) )</varname> false ?</para>
+            </listitem>
+            <listitem>
+            <para>Why is <varname>ST_Union( A, ST_Difference(A, B) )</varname> not equal to A ?</para>
+            </listitem>
+            <listitem>
+            <para>Why does <varname>ST_Difference(A, B)</varname> intersect the interior of <varname>B</varname> ?</para>
+            </listitem>
+        </itemizedlist>
+
+		<para>The reason is that PostGIS represents geometry and performs operations using finite-precision floating-point numbers.
+        This provides the illusion of computing using real numbers - but it's only an illusion.
+        Inevitably, small inaccuracies occur, which cause results of different operations to be slightly inconsistent.
+            </para>
+
+        <para>Furthermore, PostGIS operations contain error-prevention code which may peturb
+        input geometries by tiny amounts in order to prevent robustness errors from occuring.
+        These minor alterations also may produce computed results which are not fully consistent.
+            </para>
+
+        <para>The discrepancy between results should always be very small.
+        But queries should not rely on exact consistency when comparing overlay results.
+        Instead, consider using an area or distance-based tolerance in geometric comparisons.
+            </para>
+      </answer>
+    </qandaentry>
+
   </qandaset>
 
 </chapter>
