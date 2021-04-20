@@ -48,8 +48,6 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	in = PG_GETARG_GSERIALIZED_P_COPY(0);
 	lwgeom_in = lwgeom_from_gserialized(in);
 
-	POSTGIS_DEBUG(1, "ST_MakeValid enter");
-
 	switch ( lwgeom_in->type )
 	{
 	case POINTTYPE:
