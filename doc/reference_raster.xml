@@ -4932,7 +4932,7 @@ SELECT x, y, val, ST_AsText(geom)
                     <paramdef><type>integer </type> <parameter>band</parameter></paramdef>
                     <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
                     <paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-                    <paramdef choice="opt"><type>text </type> <parameter>resample=nearest</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>resample='nearest'</parameter></paramdef>
                   </funcprototype>
                   <funcprototype>
                     <funcdef>double precision <function>ST_Value</function></funcdef>
@@ -4959,6 +4959,7 @@ SELECT x, y, val, ST_AsText(geom)
                 <para>If <varname>exclude_nodata_value</varname> is set to true, then only non <varname>nodata</varname> pixels are considered.  If <varname>exclude_nodata_value</varname> is set to false, then all pixels are considered.</para>
                 <para>The allowed values of the <varname>resample</varname> parameter are "nearest" which performs the default nearest-neighbor resampling, and "bilinear" which performs a <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to estimate the value between pixel centers.</para>
 
+                <para>Enhanced: 3.2.0 resample optional argument was added.</para>
                 <para>Enhanced: 2.0.0 exclude_nodata_value optional argument was added.</para>
                 </refsection>
 
@@ -5285,6 +5286,8 @@ FROM (
 
                 <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimensions using the requested resample algorithm.</para>
                 <para>The <varname>resample</varname> parameter can be set to "nearest" to copy the values from the cell each vertex falls within, or "bilinear" to use <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to calculate a value that takes neighboring cells into account also.</para>
+
+                <para>Availability: 3.2.0</para>
             </refsection>
 
                 <refsection>
@@ -5358,6 +5361,8 @@ FROM test_raster
 
                 <para>Returns a geometry with the same X/Y coordinates as the input geometry, and values from the raster copied into the Z dimensions using the requested resample algorithm.</para>
                 <para>The <varname>resample</varname> parameter can be set to "nearest" to copy the values from the cell each vertex falls within, or "bilinear" to use <ulink url="https://en.wikipedia.org/wiki/Bilinear_interpolation">bilinear interpolation</ulink> to calculate a value that takes neighboring cells into account also.</para>
+
+                <para>Availability: 3.2.0</para>
             </refsection>
 
                 <refsection>
