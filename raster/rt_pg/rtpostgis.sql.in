@@ -4621,6 +4621,7 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, exclude_n
     AS $$ SELECT st_value($1, 1, $2, $3, $4) $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Changed: 3.2.0 added resample arg
 CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean DEFAULT TRUE, resample text DEFAULT 'nearest')
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'RASTER_getPixelValueResample'
@@ -4631,11 +4632,13 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, exclude_nodata_val
     AS $$ SELECT @extschema@.ST_value($1, 1, $2, $3, 'nearest') $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Availability: 3.2.0 added resample arg
 CREATE OR REPLACE FUNCTION st_setz(rast raster, geom geometry, resample text DEFAULT 'nearest', band integer default 1)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'RASTER_getGeometryValues'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Availability: 3.2.0 added resample arg
 CREATE OR REPLACE FUNCTION st_setm(rast raster, geom geometry, resample text DEFAULT 'nearest', band integer default 1)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'RASTER_getGeometryValues'
