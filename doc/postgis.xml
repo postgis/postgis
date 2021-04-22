@@ -67,7 +67,7 @@
    <imageobject><imagedata fileref='images/check.png' /></imageobject>
  </inlinemediaobject>
  This method implements the <ulink
- url='http://www.opengeospatial.org/standards/sfs'>OpenGIS Simple Features
+ url='http://www.opengeospatial.org/standards/sfs'>OGC Simple Features
  Implementation Specification for SQL 1.1.</ulink>">
 
 <!ENTITY sqlmm_compliant

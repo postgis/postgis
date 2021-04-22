@@ -6,18 +6,18 @@
 	<title>GIS Objects</title>
 
 	<para>The GIS objects supported by PostGIS are a superset of the "Simple
-	Features" standard defined by the OpenGIS Consortium (OGC).
+	Features" standard defined by the Open Geospatial Consortium (OGC).
 	PostGIS supports all the objects and functions specified in the OGC
 	"Simple Features for SQL" specification (SFS).</para>
 
 	<para>PostGIS extends the standard with support for embedded SRID information.</para>
 
 	<sect2 id="OpenGISWKBWKT">
-	  <title>OpenGIS WKB and WKT</title>
+	  <title>OGC WKB and WKT</title>
 
-	  <para>The OpenGIS specification defines two standard ways of expressing
-	  spatial objects: the Well-Known Text (WKT) form and the Well-Known
-	  Binary (WKB) form. Both WKT and WKB include information about the type
+	  <para>The OGC SFS specification defines two standard ways of expressing
+	  spatial objects: Well-Known Text (WKT) format and Well-Known
+	  Binary (WKB) format. Both WKT and WKB include information about the type
 	  of the object and the coordinates which form the object.</para>
 
 	  <para>Examples of the text representations (WKT) of the spatial objects
@@ -66,7 +66,7 @@
 		</listitem>
 	  </itemizedlist>
 
-	  <para>The OpenGIS specification also requires that the internal storage
+	  <para>The OGC specification requires that the internal storage
 	  format of spatial objects include a spatial referencing system
 	  identifier (SRID). The SRID is required when creating spatial objects
 	  for insertion into the database.</para>
@@ -89,31 +89,36 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 	<sect2 id="EWKB_EWKT">
 	  <title>PostGIS EWKB, EWKT and Canonical Forms</title>
 
-		<para>First OpenGIS specifications (prior to 1.2.0) only support 2D geometries,
-		and the associated SRID is *never* embedded in the input/output representations.</para>
+		<para>OGC specifications prior to 1.2.0 only support 2D geometries,
+		and the associated SRID is *never* included in the input/output representations.</para>
 
-		<para>Even though the last OpenGIS specification 1.2.1 supports 3DM and 3DZ coordinates
-		specifing ZM qualifiers, it does not include yet the associated SRID in the
+		<para>The OGC specification 1.2.1 (which is aligned with the ISO 19125 standard)
+        supports 3D (ZYZ and XYM) and 4D (XYZM) coordinates
+		via specifing ZM qualifiers.  But it still does not include the SRID in the
 		input/output representations.</para>
 
-		<para>PostGIS extended formats add 3DM, 3DZ, 4D coordinates support and embedded
-		SRID information. However, PostGIS EWKB/EWKT outputs have several peculiarities:</para>
+		<para>Because of these limitations PostGIS has implemented extended EWKB and EWKT formats.
+        They provide XYZ, XYM, and 4D (XYZM) coordinate support
+        and includes SRID information.
+        Including *all* geometry fields allows PostGIS to use EWKB as the format of record
+        (e.g. in DUMP files).
+        PostGIS EWKT outputs have a few differences to OGC WKT:</para>
 
 		<itemizedlist>
 			<listitem>
 				<para>For 3DZ geometries they will drop the Z qualifier:</para>
-				<para>OpenGIS: POINT Z (1 2 3)</para>
-				<para>EWKB/EWKT: POINT(1 2 3)</para>
+				<para>OGC: POINT Z (1 2 3)</para>
+				<para>EWKT: POINT(1 2 3)</para>
 			</listitem>
 			<listitem>
 				<para>For 3DM geometries they will keep the M qualifier:</para>
-				<para>OpenGIS: POINT M (1 2 3)</para>
-				<para>EWKB/EWKT: POINTM(1 2 3)</para>
+				<para>OGC: POINT M (1 2 3)</para>
+				<para>EWKT: POINTM(1 2 3)</para>
 			</listitem>
 			<listitem>
 				<para>For 4D geometries they will drop the ZM qualifiers:</para>
-				<para>OpenGIS: POINT ZM (1 2 3 4)</para>
-				<para>EWKB/EWKT: POINT(1 2 3 4)</para>
+				<para>OGC: POINT ZM (1 2 3 4)</para>
+				<para>EWKT: POINT(1 2 3 4)</para>
 			</listitem>
 		</itemizedlist>
 
@@ -133,9 +138,9 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 		</itemizedlist>
 
 		<caution>
-			<para>PostGIS extended formats are currently superset of the OGC one (every valid WKB/WKT is a valid EWKB/EWKT)
-			but this might vary in the future, specifically if OGC comes out with a new format conflicting with our
-			extensions. Thus you SHOULD NOT rely on this feature!</para>
+			<para>PostGIS extended formats are currently a superset of the OGC one, so that every valid OGC WKB/WKT is also valid EWKB/EWKT.
+			However, this might vary in the future, specifically if OGC comes out with a new format conflicting with the
+			extensions. Thus you SHOULD NOT rely on this compatibility!</para>
 		</caution>
 
 	  <para>Examples of the text representations (EWKT) of the extended

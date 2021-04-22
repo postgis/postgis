@@ -131,7 +131,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the <link linkend="OpenGISWKBWKT">Well-Known Text</link> (WKT) representation of the geometry/geography.
+			<para>Returns the OGC <link linkend="OpenGISWKBWKT">Well-Known Text</link> (WKT) representation of the geometry/geography.
             The optional <parameter>maxdecimaldigits</parameter> argument may be used to limit the number
 			of digits after the decimal point in output ordinates (defaults to 15).</para>
 
@@ -202,7 +202,7 @@ F000000000000000000000000000000000000000000000000');
 		  <refentry id="ST_AsBinary">
 		  <refnamediv>
 			<refname>ST_AsBinary</refname>
-			<refpurpose>Return the Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</refpurpose>
+			<refpurpose>Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -231,22 +231,21 @@ F000000000000000000000000000000000000000000000000');
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Binary representation of the geometry.  There are 2 variants of the function.  The first
+			<para>Returns the OGC/ISO <link linkend="OpenGISWKBWKT">Well-Known Binary</link> representation of the geometry.  There are 2 variants of the function.  The first
 			variant takes no endian encoding parameter and defaults to server machine endian.  The second variant takes a second argument
 			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
 			<para>This is useful in binary cursors to pull data out of the
 			database without converting it to a string representation.</para>
 
+			<para>To perform the inverse conversion of WKB to PostGIS geometry use <xref linkend="ST_GeomFromWKB" />.</para>
+
 			<note>
-			  <para>The WKB spec does not include the SRID.  To get the WKB with SRID format use ST_AsEWKB</para>
-			</note>
-			<note>
-			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
+			  <para>The OGC/ISO WKB does not include the SRID.  To get the EWKB format including SRID use <xref linkend="ST_AsEWKB" /></para>
 			</note>
 
 			<note>
-			  <para>The default behavior in PostgreSQL 9.0 has been changed to output bytea in hex encoding.  ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  If your GUI tools
-				require the old behavior, then SET bytea_output='escape' in your database.</para>
+			  <para>The default behavior in PostgreSQL 9.0 has been changed to output bytea in hex encoding.
+                If your GUI tools require the old behavior, then SET bytea_output='escape' in your database.</para>
 			</note>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
@@ -307,7 +306,7 @@ F000000000000000000000000000000000000000000000000');
 	<refentry id="ST_AsEWKB">
 		  <refnamediv>
 			<refname>ST_AsEWKB</refname>
-			<refpurpose>Return the Well-Known Binary (WKB) representation of the geometry with SRID meta data.</refpurpose>
+			<refpurpose>Return the Extended Well-Known Binary (EWKB) representation of the geometry with SRID meta data.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -326,17 +325,18 @@ F000000000000000000000000000000000000000000000000');
 
 		  <refsection>
 			<title>Description</title>
-			<para>Returns the Well-Known Binary representation of the geometry with SRID metadata.  There are 2 variants of the function.  The first
+			<para>Returns the <link linkend="EWKB_EWKT">Extended Well-Known Binary</link> (EWKB) representation of the geometry with SRID metadata.  There are 2 variants of the function.  The first
 			variant takes no endian encoding parameter and defaults to little endian.  The second variant takes a second argument
 			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
 			<para>This is useful in binary cursors to pull data out of the
 			database without converting it to a string representation.</para>
+
+			<para>To perform the inverse conversion of EWKB to PostGIS geometry use <xref linkend="ST_GeomFromEWKB" />.</para>
+
 			<note>
-			  <para>The WKB spec does not include the SRID.  To get the OGC WKB format use ST_AsBinary</para>
+			  <para>The OGC/ISO WKB spec does not include the SRID.  To get the OGC WKB format use <xref linkend="ST_AsBinary" /></para>
 			</note>
-			<note>
-			  <para>ST_AsEWKB is the reverse of ST_GeomFromEWKB.  Use ST_GeomFromEWKB to convert to a postgis geometry from ST_AsEWKB representation.</para>
-			</note>
+
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
@@ -352,32 +352,28 @@ F000000000000000000000000000000000000000000000000');
 
 		   st_asewkb
 --------------------------------
-\001\003\000\000 \346\020\000\000\001\000
-\000\000\005\000\000\000\000
-\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000
-\000\000\360?\000\000\000\000\000\000\360?
-\000\000\000\000\000\000\360?\000\000\000\000\000
-\000\360?\000\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000\000\000
-(1 row)</programlisting>
+\x0103000020e61000000100000005000000
+000000000000000000000000000000000000
+000000000000000000000000f03f00000000
+0000f03f000000000000f03f000000000000
+f03f000000000000000000000000000000000000000000000000
+</programlisting>
 		<programlisting>
 			SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
 		   st_asewkb
 --------------------------------
-\000 \000\000\003\000\000\020\346\000\000\000\001\000\000\000\005\000\000\000\000\
-000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000?
-\360\000\000\000\000\000\000?\360\000\000\000\000\000\000?\360\000\000\000\000
-\000\000?\360\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000\000\000
+\x0020000003000010e60000000100000005
+000000000000000000000000000000000000
+0000000000003ff00000000000003ff00000
+000000003ff00000000000003ff000000000
+0000000000000000000000000000000000000000000000000000
 		</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_SRID" /></para>
+			<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" />, <xref linkend="ST_SRID" /></para>
 		  </refsection>
 	</refentry>
 
