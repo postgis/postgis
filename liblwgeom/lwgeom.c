@@ -1632,22 +1632,22 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 			double tolsq = tolerance * tolerance;
 			LWMPOINT *mpt = (LWMPOINT *)geom;
 
-			for (uint32_t dim = 0; dim < 2; dim++)
+			for (uint8_t dim = 0; dim < 2; dim++)
 			{
-				qsort(mpt->geoms, mpt->ngeoms, sizeof(LWPOINT *), dim == 0 ? cmp_point_x : cmp_point_y);
+				qsort(mpt->geoms, mpt->ngeoms, sizeof(LWPOINT *), dim ? cmp_point_y : cmp_point_x);
 				for (uint32_t i = 0; i < mpt->ngeoms; i++)
 				{
-					if (mpt->geoms[i] == NULL)
+					if (!mpt->geoms[i])
 						continue;
 
 					const POINT2D *pti = getPoint2d_cp(mpt->geoms[i]->point, 0);
 					for (uint32_t j = i + 1; j < mpt->ngeoms; j++)
 					{
-						if (mpt->geoms[j] == NULL)
+						if (!mpt->geoms[j])
 							continue;
 
 						const POINT2D *ptj = getPoint2d_cp(mpt->geoms[j]->point, 0);
-						if ((dim == 0 ? ptj->x - pti->x : ptj->y - pti->y) > tolerance)
+						if ((dim ? ptj->y - pti->y : ptj->x - pti->x) > tolerance)
 							break;
 
 						if (distance2d_sqr_pt_pt(pti, ptj) <= tolsq)
@@ -1661,7 +1661,7 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 				uint32_t i = 0;
 				for (uint32_t j = 0; j < mpt->ngeoms; j++)
 				{
-					if (mpt->geoms[j] != NULL)
+					if (mpt->geoms[j])
 						mpt->geoms[i++] = mpt->geoms[j];
 				}
 
