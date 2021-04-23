@@ -274,7 +274,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_FrechetDistance);
 Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 37
+#if POSTGIS_GEOS_VERSION < 30700
 
 	lwpgerror("The GEOS version this PostGIS binary "
 					"was compiled against (%d) doesn't support "
@@ -282,7 +282,7 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 					POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 
-#else /* POSTGIS_GEOS_VERSION >= 37 */
+#else /* POSTGIS_GEOS_VERSION >= 30700 */
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1;
@@ -330,7 +330,7 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(result);
 
-#endif /* POSTGIS_GEOS_VERSION >= 37 */
+#endif /* POSTGIS_GEOS_VERSION >= 30700 */
 }
 
 
@@ -344,7 +344,7 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_MaximumInscribedCircle);
 Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 39
+#if POSTGIS_GEOS_VERSION < 30900
 
 	lwpgerror("The GEOS version this PostGIS binary "
 	          "was compiled against (%d) doesn't support "
@@ -352,7 +352,7 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 	          POSTGIS_GEOS_VERSION);
 	          PG_RETURN_NULL();
 
-#else /* POSTGIS_GEOS_VERSION >= 39 */
+#else /* POSTGIS_GEOS_VERSION >= 30900 */
 	GSERIALIZED* geom;
 	GSERIALIZED* center;
 	GSERIALIZED* nearest;
@@ -453,7 +453,7 @@ Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS)
 
 	PG_RETURN_DATUM(result);
 
-#endif /* POSTGIS_GEOS_VERSION >= 39 */
+#endif /* POSTGIS_GEOS_VERSION >= 30900 */
 }
 
 

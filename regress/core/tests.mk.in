@@ -131,20 +131,20 @@ ifeq ($(shell expr "$(POSTGIS_PGSQL_VERSION)" ">=" 120),1)
 		$(topsrcdir)/regress/core/computed_columns
 endif
 
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 37),1)
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30700),1)
 	# GEOS-3.7 adds:
 	# ST_FrechetDistance
 	TESTS += \
 		$(topsrcdir)/regress/core/frechet
 endif
 
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 38),1)
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30800),1)
 	# GEOS-3.8 adds stable pointonsurface implementation
 	TESTS += \
 		$(topsrcdir)/regress/core/geos38
 endif
 
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 39),1)
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30900),1)
 	# GEOS-3.0 adds stable maximuminscribedcircle implementation
 	TESTS += \
 		$(topsrcdir)/regress/core/geos39 \

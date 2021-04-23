@@ -37,7 +37,7 @@
 /* #define PARANOIA_LEVEL 2 */
 #undef LWGEOM_PROFILE_MAKEVALID
 
-#if POSTGIS_GEOS_VERSION < 38
+#if POSTGIS_GEOS_VERSION < 30800
 /*
  * Return Nth vertex in GEOSGeometry as a POINT.
  * May return NULL if the geometry has NO vertex.
@@ -360,7 +360,7 @@ lwcollection_make_geos_friendly(LWCOLLECTION* g)
 	return (LWGEOM*)ret;
 }
 
-#if POSTGIS_GEOS_VERSION < 38
+#if POSTGIS_GEOS_VERSION < 30800
 
 /*
  * Fully node given linework
@@ -932,7 +932,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		LWDEBUG(4, "geom converted to GEOS");
 	}
 
-#if POSTGIS_GEOS_VERSION < 38
+#if POSTGIS_GEOS_VERSION < 30800
 	geosout = LWGEOM_GEOS_makeValid(geosgeom);
 #else
 	geosout = GEOSMakeValid(geosgeom);
