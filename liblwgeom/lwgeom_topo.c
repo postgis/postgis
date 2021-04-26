@@ -5253,9 +5253,13 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 
 /* Return identifier of an equal edge, 0 if none or -1 on error
  * (and lwerror gets called on error)
+ *
+ * If an equal edge is found, specify, in "forward" variable whether
+ * the edge is also equal direction-wise
+ *
  */
 static LWT_ELEMID
-_lwt_GetEqualEdge( LWT_TOPOLOGY *topo, LWLINE *edge )
+_lwt_GetEqualEdge( LWT_TOPOLOGY *topo, LWLINE *edge, int *forward )
 {
   LWT_ELEMID id;
   LWT_ISO_EDGE *edges;
@@ -5307,6 +5311,40 @@ _lwt_GetEqualEdge( LWT_TOPOLOGY *topo, LWLINE *edge )
       if ( equals )
       {
         id = e->edge_id;
+        /* Check if direction also matches */
+        if ( forward )
+        {
+          /* If input line is closed, we use winding order */
+          if ( lwline_is_closed(edge) )
+          {
+            if ( ptarray_isccw(edge->points) == ptarray_isccw(e->geom->points) )
+            {
+              *forward = 1;
+            }
+            else
+            {
+              *forward = 0;
+            }
+          }
+          else
+          {
+            /* Input line is not closed, checking fist point is enough */
+            if (
+              memcmp(
+                  getPoint_internal(edge->points, 0),
+                  getPoint_internal(e->geom->points, 0),
+                  sizeof(POINT2D)
+              ) == 0
+            )
+            {
+              *forward = 1;
+            }
+            else
+            {
+              *forward = 0;
+            }
+          }
+        }
         GEOSGeom_destroy(edgeg);
         _lwt_release_edges(edges, num);
         return id;
@@ -5327,10 +5365,16 @@ _lwt_GetEqualEdge( LWT_TOPOLOGY *topo, LWLINE *edge )
  *        if the newly added edge would split a face and if so
  *        would create new faces accordingly. Otherwise it will
  *        set left_face and right_face to null (-1)
+ *
+ * @param forward output parameter, will be populated if
+ *        a pre-existing edge was found in the topology,
+ *        in which case a value of 1 means the incoming
+ *        line will have the same direction of the edge,
+ *        and 0 that the incomine line has opposite direction
  */
 static LWT_ELEMID
 _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
-                  int handleFaceSplit )
+                  int handleFaceSplit, int *forward )
 {
   LWCOLLECTION *col;
   LWPOINT *start_point, *end_point;
@@ -5456,7 +5500,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   }
 
   /* check if the so-snapped edge _now_ exists */
-  id = _lwt_GetEqualEdge ( topo, edge );
+  id = _lwt_GetEqualEdge ( topo, edge, forward );
   LWDEBUGF(1, "_lwt_GetEqualEdge returned %" LWTFMT_ELEMID, id);
   if ( id == -1 )
   {
@@ -5490,7 +5534,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
     }
 
     /* check if the so-decimated edge _now_ exists */
-    id = _lwt_GetEqualEdge ( topo, edge );
+    id = _lwt_GetEqualEdge ( topo, edge, forward );
     LWDEBUGF(1, "_lwt_GetEqualEdge returned %" LWTFMT_ELEMID, id);
     if ( id == -1 )
     {
@@ -5515,6 +5559,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol,
   }
   lwgeom_free(tmp); /* possibly takes "edge" down with it */
 
+  *forward = 1;
   return id;
 }
 
@@ -5557,6 +5602,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   uint64_t num, numedges = 0, numnodes = 0;
   uint64_t i;
   GBOX qbox;
+  int forward;
 
   *nedges = -1; /* error condition, by default */
 
@@ -5842,7 +5888,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     }
 #endif
 
-    id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit );
+    id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol, handleFaceSplit, &forward );
     LWDEBUGF(1, "_lwt_AddLineEdge returned %" LWTFMT_ELEMID, id);
     if ( id < 0 )
     {
@@ -5856,9 +5902,9 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
       continue;
     }
 
-    LWDEBUGF(1, "Component %d of split line is edge %" LWTFMT_ELEMID,
-                  i, id);
-    ids[num++] = id; /* TODO: skip duplicates */
+    LWDEBUGF(1, "Component %d of split line is %s edge %" LWTFMT_ELEMID,
+                  i, forward ? "forward" : "backward", id);
+    ids[num++] = forward ? id : -id; /* TODO: skip duplicates */
   }
 
   LWDEBUGG(1, noded, "Noded before free");

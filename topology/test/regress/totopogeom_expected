@@ -49,4 +49,7 @@ tgup1.3|5|200|4
 #3359.line.2|2
 #3359.area.1|1
 #3359.area.2|2
+#4884.setval|1|2|1
+#4884.l2r|MULTILINESTRING((0 0,1 0))
+#4884.r2l|MULTILINESTRING((1 0,0 0))
 Topology 'tt' dropped
