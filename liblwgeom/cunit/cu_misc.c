@@ -15,6 +15,7 @@
 #include "CUnit/Basic.h"
 
 #include "liblwgeom_internal.h"
+#include "optionlist.h"
 #include "cu_tester.h"
 
 
@@ -233,7 +234,30 @@ static void test_gbox_serialized_size(void)
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
 }
 
+static void test_optionlist(void)
+{
+	const char* value;
+	// zero out all the pointers so our list ends up null-terminated
+	char *olist[OPTION_LIST_SIZE];
+	char input[128];
+	memset(olist, 0, sizeof(olist));
+	// input string needs to be writeable because we are inserting nulls
+	strcpy(input, "key1=value1  key2=value2");
+	option_list_parse(input, olist);
 
+	value = option_list_search(olist, "key1");
+	// printf("value: %s\n", value);
+	CU_ASSERT_STRING_EQUAL("value1", value);
+	value = option_list_search(olist, "key2");
+	CU_ASSERT_STRING_EQUAL("value2", value);
+	value = option_list_search(olist, "key3");
+	CU_ASSERT_EQUAL(NULL, value);
+
+	memset(olist, 0, sizeof(olist));
+	strcpy(input, "  ");
+	option_list_parse(input, olist);
+	value = option_list_search(olist, "key1");
+}
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -251,4 +275,5 @@ void misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_clone);
 	PG_ADD_TEST(suite, test_lwmpoint_from_lwgeom);
 	PG_ADD_TEST(suite, test_gbox_serialized_size);
+	PG_ADD_TEST(suite, test_optionlist);
 }

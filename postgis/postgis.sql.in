@@ -3691,6 +3691,12 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_MakeValid'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -- ST_CleanGeometry(in geometry)
 --
 -- Make input:

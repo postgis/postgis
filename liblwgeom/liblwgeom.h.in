@@ -2488,6 +2488,7 @@ LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
  * Attempts to make an invalid geometries valid w/out losing points.
  */
 LWGEOM* lwgeom_make_valid(LWGEOM* geom);
+LWGEOM* lwgeom_make_valid_params(LWGEOM* geom, char *make_valid_params);
 
 /*
  * Split (multi)polygon by line; (multi)line by (multi)line,

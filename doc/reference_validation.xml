@@ -305,6 +305,11 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
             <funcdef>geometry <function>ST_MakeValid</function></funcdef>
             <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
           </funcprototype>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakeValid</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
+            <paramdef choice="opt"><type>text</type> <parameter>params</parameter></paramdef>
+          </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
 
@@ -331,12 +336,32 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
     <para>
     Single polygons may become multi-geometries in case of self-intersections.
     </para>
-        <para>Performed by the GEOS module.</para>
+
+    <para>
+    The <varname>params</varname> argument can be used to supply an options
+    string to select the method to use for building valid geometry.
+    The options string is in the format "key1=value2 key2=value2".
+    </para>
+    <para>The "method" key has two values. "linework" is the original
+        algorithm, and builds valid geometries by first extracting all lines,
+        noding that linework together, then building a value output from the
+        linework. "structure" is an algorithm that distinguishes between
+        interior and exterior rings, building new geometry by unioning
+        exterior rings, and then differencing all interior rings.
+    </para>
+    <para>The "keepcollapsed" is only valid for the "structure" algorithm,
+        and takes a value of "true" or "false". When set to "false",
+        geometry components that collapse to a lower dimensionality,
+        for example a one-point linestring would be dropped.
+    </para>
+
+    <para>Performed by the GEOS module.</para>
 
     <para>Availability: 2.0.0</para>
     <para>Enhanced: 2.0.1, speed improvements</para>
     <para>Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
     <para>Enhanced: 3.1.0, added removal of Coordinates with NaN values.</para>
+    <para>Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure'.</para>
 
     <para>&Z_support;</para>
 
@@ -402,6 +427,27 @@ FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
     </tbody>
     </tgroup>
 </informaltable>
+</refsection>
+<refsection>
+<title>Examples</title>
+<programlisting>SELECT ST_AsText(ST_MakeValid(
+    'LINESTRING(0 0, 0 0)',
+    'method=structure keepcollapsed=true'
+    ));
+
+ st_astext
+------------
+ POINT(0 0)
+
+
+SELECT ST_AsText(ST_MakeValid(
+    'LINESTRING(0 0, 0 0)',
+    'method=structure keepcollapsed=false'
+    ));
+
+    st_astext
+------------------
+ LINESTRING EMPTY</programlisting>
 </refsection>
           <refsection>
             <title>See Also</title>

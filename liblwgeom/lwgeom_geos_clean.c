@@ -29,6 +29,7 @@
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+#include "optionlist.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -897,6 +898,13 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 LWGEOM*
 lwgeom_make_valid(LWGEOM* lwgeom_in)
 {
+	return lwgeom_make_valid_params(lwgeom_in, NULL);
+}
+
+/* Exported. Uses GEOS internally */
+LWGEOM*
+lwgeom_make_valid_params(LWGEOM* lwgeom_in, char* make_valid_params)
+{
 	int is3d;
 	GEOSGeom geosgeom;
 	GEOSGeometry* geosout;
@@ -934,8 +942,56 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 
 #if POSTGIS_GEOS_VERSION < 30800
 	geosout = LWGEOM_GEOS_makeValid(geosgeom);
-#else
+#elif POSTGIS_GEOS_VERSION < 31000
 	geosout = GEOSMakeValid(geosgeom);
+#else
+	if (!make_valid_params) {
+		geosout = GEOSMakeValid(geosgeom);
+	}
+	else {
+		/*
+		* Set up a parameters object for this
+		* make valid operation before calling
+		* it
+		*/
+		const char *value;
+		char *param_list[OPTION_LIST_SIZE];
+		char param_list_text[OPTION_LIST_SIZE];
+		strncpy(param_list_text, make_valid_params, OPTION_LIST_SIZE);
+		memset(param_list, 0, sizeof(param_list));
+		option_list_parse(param_list_text, param_list);
+		GEOSMakeValidParams *params = GEOSMakeValidParams_create();
+		value = option_list_search(param_list, "method");
+		if (value) {
+			if (strcasecmp(value, "linework") == 0) {
+				GEOSMakeValidParams_setMethod(params, GEOS_MAKE_VALID_LINEWORK);
+			}
+			else if (strcasecmp(value, "structure") == 0) {
+				GEOSMakeValidParams_setMethod(params, GEOS_MAKE_VALID_STRUCTURE);
+			}
+			else
+			{
+				GEOSMakeValidParams_destroy(params);
+				lwerror("Unsupported value for 'method', '%s'. Use 'linework' or 'structure'.", value);
+			}
+		}
+		value = option_list_search(param_list, "keepcollapsed");
+		if (value) {
+			if (strcasecmp(value, "true") == 0) {
+				GEOSMakeValidParams_setKeepCollapsed(params, 1);
+			}
+			else if (strcasecmp(value, "false") == 0) {
+				GEOSMakeValidParams_setKeepCollapsed(params, 0);
+			}
+			else
+			{
+				GEOSMakeValidParams_destroy(params);
+				lwerror("Unsupported value for 'keepcollapsed', '%s'. Use 'true' or 'false'", value);
+			}
+		}
+		geosout = GEOSMakeValidWithParams(geosgeom, params);
+		GEOSMakeValidParams_destroy(params);
+	}
 #endif
 	GEOSGeom_destroy(geosgeom);
 	if (!geosout) return NULL;

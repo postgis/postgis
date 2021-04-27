@@ -26,6 +26,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "funcapi.h"
+#include "utils/builtins.h"
 
 
 #include "../postgis_config.h"
@@ -66,7 +67,14 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 		break;
 	}
 
-	lwgeom_out = lwgeom_make_valid(lwgeom_in);
+	if(PG_NARGS() > 1 && ! PG_ARGISNULL(1)) {
+		char *make_valid_params_str = text_to_cstring(PG_GETARG_TEXT_P(1));
+		lwgeom_out = lwgeom_make_valid_params(lwgeom_in, make_valid_params_str);
+	}
+	else {
+		lwgeom_out = lwgeom_make_valid(lwgeom_in);
+	}
+
 	if ( ! lwgeom_out )
 	{
 		PG_FREE_IF_COPY(in, 0);
