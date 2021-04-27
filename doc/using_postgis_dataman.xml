@@ -3,25 +3,122 @@
   <title>Data Management</title>
 
   <sect1 id="RefObject">
-	<title>GIS Objects</title>
+	<title>Geometry Type</title>
 
-	<para>The GIS objects supported by PostGIS are a superset of the "Simple
-	Features" standard defined by the Open Geospatial Consortium (OGC).
-	PostGIS supports all the objects and functions specified in the OGC
-	"Simple Features for SQL" specification (SFS).</para>
+    <para>The Open Geospatial Consortium (OGC) issued
+    the <emphasis>Simple Features Specification for SQL</emphasis> standard (SFS)
+    to provide a model for geospatial data.
+    It defines the fundamental spatial data type of Geometry, with
+    a set of subtypes that represent various kinds and dimensions of spatial objects.
+    </para>
 
-	<para>PostGIS extends the standard with support for embedded SRID information.</para>
+    <para>The core Geometry subtypes represent simple shapes on the 2-dimensional Cartesian coordinate plane:</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>Point - a 0-dimensional geometry that represents a single location in coordinate space</para>
+        </listitem>
+        <listitem>
+            <para>LineString - a 1-dimensional line formed by a contigous sequence of line segments</para>
+        </listitem>
+        <listitem>
+            <para>LinearRing - a LineString which is closed and simple (non-intersecting)</para>
+        </listitem>
+        <listitem>
+            <para>Polygon - a 2-dimensional planar region, delimited by an exterior boundary and zero or more interior boundaries (holes).
+            The boundaries are formed by LinearRings
+            </para>
+        </listitem>
+        <listitem>
+            <para>MultiPoint - a collection of Points</para>
+        </listitem>
+        <listitem>
+            <para>MultiLineString - a collection of LineStrings</para>
+        </listitem>
+        <listitem>
+            <para>MultiPolygon - a collection of non-overlapping polygons</para>
+        </listitem>
+        <listitem>
+            <para>GeometryCollection - a heterogenous (mixed) collection of geometries</para>
+        </listitem>
+    </itemizedlist>
+
+    <para>Subsequent spatial standards (including the SFS, SQL/MM, and ISO)
+    introduced additional Geometry subtypes
+    to model more complex kinds of geospatial data.
+    There are subtypes for shapes containing circular arcs (see <xref linkend="SQL_MM_Part3" />):</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>CircularString - a 1-dimensional curve formed by a contiguous sequence of circular arcs</para>
+        </listitem>
+        <listitem>
+            <para>CompoundCurve - a 1-dimensional curve formed by a contiguous sequence of LineStrings or CircularStrings</para>
+        </listitem>
+        <listitem>
+            <para>CurvePolygon - a 2-dimensional planar region delimited by a CompoundCurve outer boundary
+            and zero or more CompoundCurve interior boundaries (holes)</para>
+        </listitem>
+        <listitem>
+            <para>MultiCurve - a collection of LineStrings or CompoundCurves</para>
+        </listitem>
+        <listitem>
+            <para>MultiSurface - a collection of Polygons and CurvePolygons</para>
+        </listitem>
+    </itemizedlist>
+
+    <para>One subtype represents 3-dimensional polyhedral surfaces:</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>PolyhedralSurface - a surface consisting of a set of planar Polygons defined in 3-dimensional space</para>
+        </listitem>
+    </itemizedlist>
+
+    <para>The following subtypes represent triangulated planar surfaces:</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>Triangle - a planar triangle defined by 3 coordinates</para>
+        </listitem>
+        <listitem>
+            <para>Tin - a collection of non-overlapping Triangles</para>
+        </listitem>
+    </itemizedlist>
+
+    <para>The SFS standard also specifies that spatial objects include a Spatial Reference System
+    identifier (SRID). The SRID is required when creating spatial objects
+    for insertion into the database (it may be defaulted to 0).
+    See <xref linkend="spatial_ref_sys" /></para>
+
+	<para>PostGIS implements the OGC Simple Features model
+    by defining a PostgreSQL datatype called <varname>geometry</varname>.
+    It represents all of the OGC subtypes by using an internal type code.
+    </para>
+
+    <para>The <varname>geometry</varname> type is <emphasis>opaque</emphasis>,
+    which means that all access is done via invoking functions on geometry data objects.
+    PostGIS supports all the functions specified in the OGC
+	"Simple Features for SQL" (SFS) specification, and many others.
+    The functions allow creating geometry objects,
+    accessing or updating all internal fields,
+    and compute new geometry values.
+    See <xref linkend="reference" /> for the full list.</para>
+
+    <para>To make querying geometry efficient PostGIS defines
+    various kinds of spatial indexes.  See <xref linkend="build-indexes" /> for details.
+    </para>
 
 	<sect2 id="OpenGISWKBWKT">
 	  <title>OGC WKB and WKT</title>
 
-	  <para>The OGC SFS specification defines two standard ways of expressing
-	  spatial objects: Well-Known Text (WKT) format and Well-Known
-	  Binary (WKB) format. Both WKT and WKB include information about the type
-	  of the object and the coordinates which form the object.</para>
+	  <para>The OGC SFS specification defines two standard formats for representing
+	  geometry values for external use: Well-Known Text (WKT) and Well-Known
+	  Binary (WKB). Both WKT and WKB include information about the type
+	  of the object and the coordinates which define it.</para>
 
-	  <para>Examples of the text representations (WKT) of the spatial objects
-	  of the features are as follows:</para>
+	  <para>Well-Known Text (WKT) provides a standard textual representation of spatial data.
+      Examples of WKT representations of spatial objects are:</para>
 
 	  <itemizedlist>
 		<listitem>
@@ -66,64 +163,104 @@
 		</listitem>
 	  </itemizedlist>
 
-	  <para>The OGC specification requires that the internal storage
-	  format of spatial objects include a spatial referencing system
-	  identifier (SRID). The SRID is required when creating spatial objects
-	  for insertion into the database.</para>
+	  <para>Input and output of WKT is provided by the functions
+      <xref linkend="ST_AsText" /> and <xref linkend="ST_GeomFromText" />:</para>
 
-	  <para>Input/Output of these formats are available using the following
-	  interfaces:</para>
+	  <programlisting>text WKT = ST_AsText(geometry);
+geometry = ST_GeomFromText(text WKT, SRID);</programlisting>
 
-	  <programlisting>bytea WKB = ST_AsBinary(geometry);
-text WKT = ST_AsText(geometry);
-geometry = ST_GeomFromWKB(bytea WKB, SRID);
-geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
+	  <para>For example, a statement to create and insert a spatial object from WKT and a SRID is:</para>
 
-	  <para>For example, a valid insert statement to create and insert an OGC
-	  spatial object would be:</para>
-
-	  <programlisting>INSERT INTO geotable ( the_geom, the_name )
+	  <programlisting>INSERT INTO geotable ( geom, name )
   VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
+
+    <para>Well-Known Binary (WKB) provides a portable, faithful representation
+      of spatial data as binary data (arrays of bytes).
+      Examples of the WKB representations of spatial objects are:</para>
+
+    <itemizedlist>
+    <listitem>
+        <para>WKT: POINT(1 1)</para>
+        <para>WKB: 0101000000000000000000F03F000000000000F03</para>
+    </listitem>
+
+    <listitem>
+        <para>WKT: LINESTRING (2 2, 9 9)</para>
+        <para>WKB: 0102000000020000000000000000000040000000000000004000000000000022400000000000002240</para>
+    </listitem>
+    </itemizedlist>
+
+	<para>Input and output of WKB is provided by the functions
+    <xref linkend="ST_AsBinary" /> and <xref linkend="ST_GeomFromWKB" />:</para>
+
+	  <programlisting>
+bytea WKB = ST_AsBinary(geometry);
+geometry = ST_GeomFromWKB(bytea WKB, SRID);
+</programlisting>
+
+	  <para>For example, a statement to create and insert a
+	  spatial object from WKB is:</para>
+
+	  <programlisting>INSERT INTO geotable ( geom, name )
+  VALUES ( ST_GeomFromWKB('\x0101000000000000000000f03f000000000000f03f', 312), 'A Place');</programlisting>
 	</sect2>
 
 	<sect2 id="EWKB_EWKT">
-	  <title>PostGIS EWKB, EWKT and Canonical Forms</title>
+	  <title>PostGIS EWKB and EWKT</title>
 
-		<para>OGC specifications prior to 1.2.0 only support 2D geometries,
-		and the associated SRID is *never* included in the input/output representations.</para>
+		<para>OGC SFS specifications initially supported only 2D geometries,
+		and the geometry SRID is not included in the input/output representations.
+        The OGC SFS specification 1.2.1 (which aligns with the ISO 19125 standard)
+        adds support for 3D (ZYZ and XYM) and 4D (XYZM) coordinates,
+		but still does not include the SRID value.</para>
 
-		<para>The OGC specification 1.2.1 (which is aligned with the ISO 19125 standard)
-        supports 3D (ZYZ and XYM) and 4D (XYZM) coordinates
-		via specifing ZM qualifiers.  But it still does not include the SRID in the
-		input/output representations.</para>
-
-		<para>Because of these limitations PostGIS has implemented extended EWKB and EWKT formats.
-        They provide XYZ, XYM, and 4D (XYZM) coordinate support
-        and includes SRID information.
-        Including *all* geometry fields allows PostGIS to use EWKB as the format of record
+		<para>Because of these limitations PostGIS defined extended EWKB and EWKT formats.
+        They provide 3D (XYZ and XYM) and 4D (XYZM) coordinate support and include SRID information.
+        Including all geometry information allows PostGIS to use EWKB as the format of record
         (e.g. in DUMP files).
-        PostGIS EWKT outputs have a few differences to OGC WKT:</para>
+        </para>
+
+	    <para>EWKB and EWKT are used for the "canonical forms" of PostGIS data objects.
+        For input, the canonical form for binary data is EWKB,
+        and for text data either EWKB or EWKT is accepted.
+        This allows geometry values to be created by casting
+        a text value in either HEXEWKB or EWKT to a geometry value using <varname>::geometry</varname>.
+        For output, the canonical form for binary is EWKB, and for text
+        it is HEXEWKB (hex-encoded EWKB).
+        </para>
+
+        <para>For example this statement creates a geometry by casting from an EWKT text value,
+        and outputs it using the canonical form of HEXEWKB:</para>
+
+	  <programlisting>SELECT 'SRID=4;POINT(0 0)'::geometry;
+  geometry
+  ----------------------------------------------------
+  01010000200400000000000000000000000000000000000000
+</programlisting>
+
+        <para>PostGIS EWKT output has a few differences to OGC WKT:</para>
 
 		<itemizedlist>
 			<listitem>
-				<para>For 3DZ geometries they will drop the Z qualifier:</para>
+				<para>For 3DZ geometries the Z qualifier is omitted:</para>
 				<para>OGC: POINT Z (1 2 3)</para>
 				<para>EWKT: POINT(1 2 3)</para>
 			</listitem>
 			<listitem>
-				<para>For 3DM geometries they will keep the M qualifier:</para>
+				<para>For 3DM geometries the M qualifier is included:</para>
 				<para>OGC: POINT M (1 2 3)</para>
 				<para>EWKT: POINTM(1 2 3)</para>
 			</listitem>
 			<listitem>
-				<para>For 4D geometries they will drop the ZM qualifiers:</para>
+				<para>For 4D geometries the ZM qualifier is omitted:</para>
 				<para>OGC: POINT ZM (1 2 3 4)</para>
 				<para>EWKT: POINT(1 2 3 4)</para>
 			</listitem>
 		</itemizedlist>
 
-		<para>By doing this, PostGIS EWKB/EWKT avoids over-specifying dimensionality and a whole
-		categories of potential errors that ISO admits, e.g.:</para>
+		<para>EWKT avoids over-specifying dimensionality
+        and the inconsistencies that can occur with the OGC/ISO format, such as:
+        </para>
 
 		<itemizedlist>
 			<listitem>
@@ -138,13 +275,14 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 		</itemizedlist>
 
 		<caution>
-			<para>PostGIS extended formats are currently a superset of the OGC one, so that every valid OGC WKB/WKT is also valid EWKB/EWKT.
-			However, this might vary in the future, specifically if OGC comes out with a new format conflicting with the
-			extensions. Thus you SHOULD NOT rely on this compatibility!</para>
+			<para>PostGIS extended formats are currently a superset of the OGC ones,
+            so that every valid OGC WKB/WKT is also valid EWKB/EWKT.
+			However, this might vary in the future,
+            if the OGC extends a format in a way that conflicts with the PosGIS definition.
+            Thus you SHOULD NOT rely on this compatibility!</para>
 		</caution>
 
-	  <para>Examples of the text representations (EWKT) of the extended
-	  spatial objects of the features are as follows.</para>
+	  <para>Examples of the EWKT text representation of spatial objects are:</para>
 
 	  <itemizedlist>
 		<listitem>
@@ -206,45 +344,25 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 		</listitem>
 	  </itemizedlist>
 
-	  <para>Conversion between these formats is available using the following interfaces:</para>
+	  <para>Input and output using these formats is available using the following functions:</para>
 
 	  <programlisting>bytea EWKB = ST_AsEWKB(geometry);
 text EWKT = ST_AsEWKT(geometry);
 geometry = ST_GeomFromEWKB(bytea EWKB);
 geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 
-	  <para>For example, a valid insert statement to create and insert a
-	  PostGIS spatial object would be:</para>
+	  <para>For example, a statement to create and insert a PostGIS spatial object using EWKT is:</para>
 
-	  <programlisting>INSERT INTO geotable ( the_geom, the_name )
+	  <programlisting>INSERT INTO geotable ( geom, name )
   VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</programlisting>
 
-	  <para>The "canonical forms" of a PostgreSQL type are the representations
-	  you get with a simple query (without any function call) and the one
-	  which is guaranteed to be accepted with a simple insert, update or copy.
-	  For the PostGIS 'geometry' type these are:
-		<programlisting>- Output
-  - binary: EWKB
-	ascii: HEXEWKB (EWKB in hex form)
-- Input
-  - binary: EWKB
-	ascii: HEXEWKB|EWKT </programlisting></para>
-
-	  <para>For example this statement reads EWKT and returns HEXEWKB in the
-	  process of canonical ascii input/output:</para>
-
-	  <programlisting>=# SELECT 'SRID=4;POINT(0 0)'::geometry;
-
-geometry
-----------------------------------------------------
-01010000200400000000000000000000000000000000000000
-(1 row)</programlisting>
 	</sect2>
+
 	<sect2 id="SQL_MM_Part3">
-	  <title>SQL-MM Part 3</title>
+	  <title>SQL-MM Part 3 - Curves</title>
 
 	  <para>The SQL Multimedia Applications Spatial specification extends the
-	  simple features for SQL spec by defining a number of circularly
+	  OGC Simple Features for SQL standard by defining a number of types for circularly
 	  interpolated curves.</para>
 
 	  <para>The SQL-MM definitions include 3DM, 3DZ and 4D coordinates, but do
@@ -314,9 +432,9 @@ geometry
 	</sect2>
   </sect1>
   <sect1 id="PostGIS_Geography">
-	  <title>PostGIS Geography Type</title>
+	  <title>Geography Type</title>
 
-	  <para>The geography type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
+	  <para>The PostGIS <varname>geography</varname> type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
 
 	  <para>The basis for the PostGIS geometry type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors.</para>
 

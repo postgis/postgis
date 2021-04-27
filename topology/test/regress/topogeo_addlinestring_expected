@@ -71,7 +71,7 @@ crossover|E|LINESTRING(9 20,16.2 14)
 crossover|E|LINESTRING(9 14,9 18)
 crossover|E|LINESTRING(9 18,9 20)
 crossover_again|4
-contains|25
+contains|-25
 contains|46
 contains|47
 contains|N||POINT(7 36)
@@ -139,7 +139,7 @@ iso_ex_2segs|28
 #1650.2|N||POINT(0 0)
 #1650.2|N||POINT(0 1)
 #1650.2|E|LINESTRING(0 0,0 1)
-#1650.3|65
+#1650.3|-65
 #1650.3|66
 #1650.3|N||POINT(10 0)
 #1650.3|E|LINESTRING(0 0,10 0)

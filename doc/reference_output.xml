@@ -231,16 +231,19 @@ F000000000000000000000000000000000000000000000000');
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the OGC/ISO <link linkend="OpenGISWKBWKT">Well-Known Binary</link> representation of the geometry.  There are 2 variants of the function.  The first
-			variant takes no endian encoding parameter and defaults to server machine endian.  The second variant takes a second argument
-			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
-			<para>This is useful in binary cursors to pull data out of the
-			database without converting it to a string representation.</para>
+			<para>Returns the OGC/ISO <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) representation of the geometry.
+            The first function variant defaults to encoding using server machine endian.
+            The second function variant takes a text argument
+			specifying the endian encoding, either little-endian ('NDR') or big-endian ('XDR').</para>
+
+			<para>WKB format is useful to read geometry data from the
+			database and maintaining full numeric precision.
+            This avoids the precision rounding that can happen with text formats such as WKT.</para>
 
 			<para>To perform the inverse conversion of WKB to PostGIS geometry use <xref linkend="ST_GeomFromWKB" />.</para>
 
 			<note>
-			  <para>The OGC/ISO WKB does not include the SRID.  To get the EWKB format including SRID use <xref linkend="ST_AsEWKB" /></para>
+			  <para>The OGC/ISO WKB format does not include the SRID.  To get the EWKB format which does include the SRID use <xref linkend="ST_AsEWKB" /></para>
 			</note>
 
 			<note>
@@ -270,25 +273,17 @@ F000000000000000000000000000000000000000000000000');
 
 		   st_asbinary
 --------------------------------
-\001\003\000\000\000\001\000\000\000\005
-\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000
-\000\000\000\360?\000\000\000\000\000\000
-\360?\000\000\000\000\000\000\360?\000\000
-\000\000\000\000\360?\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000
-(1 row)</programlisting>
+\x01030000000100000005000000000000000000000000000000000000000000000000000000000000
+000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000
+00000000000000000000000000
+</programlisting>
 			<programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
 		   st_asbinary
 --------------------------------
-\000\000\000\000\003\000\000\000\001\000\000\000\005\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000
-\000?\360\000\000\000\000\000\000?\360\000\000\000\000\000\000?\360\000\000
-\000\000\000\000?\360\000\000\000\000\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000
-(1 row)</programlisting>
+\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
+00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
+00000000000000000000000000
+</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -325,16 +320,20 @@ F000000000000000000000000000000000000000000000000');
 
 		  <refsection>
 			<title>Description</title>
-			<para>Returns the <link linkend="EWKB_EWKT">Extended Well-Known Binary</link> (EWKB) representation of the geometry with SRID metadata.  There are 2 variants of the function.  The first
-			variant takes no endian encoding parameter and defaults to little endian.  The second variant takes a second argument
-			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
-			<para>This is useful in binary cursors to pull data out of the
-			database without converting it to a string representation.</para>
+			<para>Returns the <link linkend="EWKB_EWKT">Extended Well-Known Binary</link> (EWKB) representation of the geometry with SRID metadata.
+            The first function variant defaults to encoding using server machine endian.
+            The second function variant takes a text argument
+			specifying the endian encoding, either little-endian ('NDR') or big-endian ('XDR').</para>
+
+			<para>WKB format is useful to read geometry data from the
+			database and maintaining full numeric precision.
+            This avoids the precision rounding that can happen with text formats such as WKT.</para>
 
 			<para>To perform the inverse conversion of EWKB to PostGIS geometry use <xref linkend="ST_GeomFromEWKB" />.</para>
 
 			<note>
-			  <para>The OGC/ISO WKB spec does not include the SRID.  To get the OGC WKB format use <xref linkend="ST_AsBinary" /></para>
+			  <para>To get the OGC/ISO WKB format use <xref linkend="ST_AsBinary" />.
+              Note that OGC/ISO WKB format does not include the SRID.  </para>
 			</note>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
@@ -352,21 +351,17 @@ F000000000000000000000000000000000000000000000000');
 
 		   st_asewkb
 --------------------------------
-\x0103000020e61000000100000005000000
-000000000000000000000000000000000000
-000000000000000000000000f03f00000000
-0000f03f000000000000f03f000000000000
-f03f000000000000000000000000000000000000000000000000
+\x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
+00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000
+0000000000000000000000000000000000
 </programlisting>
 		<programlisting>
 			SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
 		   st_asewkb
 --------------------------------
-\x0020000003000010e60000000100000005
-000000000000000000000000000000000000
-0000000000003ff00000000000003ff00000
-000000003ff00000000000003ff000000000
-0000000000000000000000000000000000000000000000000000
+\x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
+003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000
+0000000000000000000000000000000000
 		</programlisting>
 		  </refsection>
 
