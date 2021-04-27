@@ -145,10 +145,15 @@ ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30800),1)
 endif
 
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 30900),1)
-	# GEOS-3.0 adds stable maximuminscribedcircle implementation
+	# GEOS-3.9 adds stable maximuminscribedcircle implementation
 	TESTS += \
 		$(topsrcdir)/regress/core/geos39 \
 		$(topsrcdir)/regress/core/fixedoverlay
+endif
+
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31000),1)
+	TESTS += \
+		$(topsrcdir)/regress/core/geos310 
 endif
 
 ifeq ($(INTERRUPTTESTS),yes)
