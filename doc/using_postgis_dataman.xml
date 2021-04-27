@@ -5,14 +5,15 @@
   <sect1 id="RefObject">
 	<title>Geometry Type</title>
 
-    <para>The Open Geospatial Consortium (OGC) issued
-    the <emphasis>Simple Features Specification for SQL</emphasis> standard (SFS)
-    to provide a model for geospatial data.
+    <para>The Open Geospatial Consortium (OGC) developed the
+    <ulink url="https://www.ogc.org/standards/sfa"><emphasis>Simple Features Access</emphasis></ulink>
+    standard (SFA) to provide a model for geospatial data.
     It defines the fundamental spatial data type of Geometry, with
-    a set of subtypes that represent various kinds and dimensions of spatial objects.
+    a set of subtypes that represent various kinds and dimensions of geometric shapes.
     </para>
 
-    <para>The core Geometry subtypes represent simple shapes on the 2-dimensional Cartesian coordinate plane:</para>
+    <para>The core Geometry subtypes model shapes on the 2-dimensional Cartesian coordinate plane
+    constructed from points and line segments:</para>
 
     <itemizedlist>
         <listitem>
@@ -43,10 +44,31 @@
         </listitem>
     </itemizedlist>
 
-    <para>Subsequent spatial standards (including the SFS, SQL/MM, and ISO)
-    introduced additional Geometry subtypes
-    to model more complex kinds of geospatial data.
-    There are subtypes for shapes containing circular arcs (see <xref linkend="SQL_MM_Part3" />):</para>
+    <para>The latest SFA standard
+    <ulink url="https://portal.ogc.org/files/?artifact_id=25355"><emphasis>Simple Features Access - Part 1: Common architecture v1.2.1</emphasis></ulink>
+    adds some more subtypes.
+    One subtype represents 3-dimensional polyhedral surfaces:</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>PolyhedralSurface - a 3-dimensional surface consisting of a set of planar Polygons defined in 3D space</para>
+        </listitem>
+    </itemizedlist>
+
+    <para>The following subtypes represent triangulated surfaces:</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>Triangle - a triangle defined by 3 distinct non-collinear coordinates</para>
+        </listitem>
+        <listitem>
+            <para>TIN - a collection of non-overlapping Triangles representing a triangulated irregular network</para>
+        </listitem>
+    </itemizedlist>
+
+    <para>The ISO SQL/MM standard introduced additional Geometry subtypes
+    to model geospatial data containing circular arcs
+    (see also <xref linkend="SQL_MM_Part3" />):</para>
 
     <itemizedlist>
         <listitem>
@@ -67,43 +89,34 @@
         </listitem>
     </itemizedlist>
 
-    <para>One subtype represents 3-dimensional polyhedral surfaces:</para>
-
-    <itemizedlist>
-        <listitem>
-            <para>PolyhedralSurface - a surface consisting of a set of planar Polygons defined in 3-dimensional space</para>
-        </listitem>
-    </itemizedlist>
-
-    <para>The following subtypes represent triangulated planar surfaces:</para>
-
-    <itemizedlist>
-        <listitem>
-            <para>Triangle - a planar triangle defined by 3 coordinates</para>
-        </listitem>
-        <listitem>
-            <para>Tin - a collection of non-overlapping Triangles</para>
-        </listitem>
-    </itemizedlist>
-
-    <para>The SFS standard also specifies that spatial objects include a Spatial Reference System
-    identifier (SRID). The SRID is required when creating spatial objects
-    for insertion into the database (it may be defaulted to 0).
-    See <xref linkend="spatial_ref_sys" /></para>
-
 	<para>PostGIS implements the OGC Simple Features model
     by defining a PostgreSQL datatype called <varname>geometry</varname>.
-    It represents all of the OGC subtypes by using an internal type code.
+    It represents all of the OGC subtypes by using an internal type code
+    (see <xref linkend="GeometryType" />).
     </para>
 
     <para>The <varname>geometry</varname> type is <emphasis>opaque</emphasis>,
     which means that all access is done via invoking functions on geometry data objects.
-    PostGIS supports all the functions specified in the OGC
-	"Simple Features for SQL" (SFS) specification, and many others.
     The functions allow creating geometry objects,
     accessing or updating all internal fields,
     and compute new geometry values.
+    PostGIS supports all the functions specified in the OGC
+	<ulink url="https://portal.ogc.org/files/?artifact_id=25354"><emphasis>Simple feature access - Part 2: SQL option</emphasis></ulink>
+    (SFS) specification, as well many others.
     See <xref linkend="reference" /> for the full list.</para>
+
+    <note>
+        <para>The SFA follows the ISO standard by prefixed spatial funtcions with "ST_".
+        Originally this was intended to stand for "Spatial and Temporal".
+        Since the temporal part of the standard was never developed,
+        it is more accurate to interpret this as "Spatial Type".
+        </para>
+    </note>
+
+    <para>The SFA standard specifies that spatial objects include a Spatial Reference System
+    identifier (SRID). The SRID is required when creating spatial objects
+    for insertion into the database (it may be defaulted to 0).
+    See <xref linkend="ST_SRID" /> and <xref linkend="spatial_ref_sys" /></para>
 
     <para>To make querying geometry efficient PostGIS defines
     various kinds of spatial indexes.  See <xref linkend="build-indexes" /> for details.
@@ -112,7 +125,7 @@
 	<sect2 id="OpenGISWKBWKT">
 	  <title>OGC WKB and WKT</title>
 
-	  <para>The OGC SFS specification defines two standard formats for representing
+	  <para>The OGC SFA specification defines two standard formats for representing
 	  geometry values for external use: Well-Known Text (WKT) and Well-Known
 	  Binary (WKB). Both WKT and WKB include information about the type
 	  of the object and the coordinates which define it.</para>
@@ -208,9 +221,9 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
 	<sect2 id="EWKB_EWKT">
 	  <title>PostGIS EWKB and EWKT</title>
 
-		<para>OGC SFS specifications initially supported only 2D geometries,
+		<para>OGC SFA specifications initially supported only 2D geometries,
 		and the geometry SRID is not included in the input/output representations.
-        The OGC SFS specification 1.2.1 (which aligns with the ISO 19125 standard)
+        The OGC SFA specification 1.2.1 (which aligns with the ISO 19125 standard)
         adds support for 3D (ZYZ and XYM) and 4D (XYZM) coordinates,
 		but still does not include the SRID value.</para>
 
@@ -359,17 +372,17 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 	</sect2>
 
 	<sect2 id="SQL_MM_Part3">
-	  <title>SQL-MM Part 3 - Curves</title>
+	  <title>SQL/MM Part 3 - Curves</title>
 
-	  <para>The SQL Multimedia Applications Spatial specification extends the
-	  OGC Simple Features for SQL standard by defining a number of types for circularly
-	  interpolated curves.</para>
+	  <para>The ISO/IEC 13249-3
+      <ulink url="https://www.iso.org/obp/ui/#iso:std:iso-iec:13249:-3:ed-5:v1:en"><emphasis>SQL Multimedia - Spatial</emphasis></ulink>
+      standard (SQL/MM) extends the
+	  OGC SFA to define Geometry subtypes containing curves with circular arcs.
+      The SQL/MM definitions include 3DM, 3DZ and 4D coordinates, but do
+	  not allow the embedding of SRID information.
+	  </para>
 
-	  <para>The SQL-MM definitions include 3DM, 3DZ and 4D coordinates, but do
-	  not allow the embedding of SRID information.</para>
-
-	  <para>The Well-Known Text extensions are not yet fully supported.
-	  Examples of some simple curved geometries are shown below:</para>
+	  <para>Examples of curved geometries are shown below:</para>
 
 	  <itemizedlist>
 		<listitem>
