@@ -33,6 +33,10 @@
 
 #include <math.h>
 
+#ifndef NAN
+# define NAN 0.0/0.0
+#endif
+
 /**
  * Construct a raster with given dimensions.
  *
@@ -1675,7 +1679,10 @@ rt_raster_copy_to_geometry(
 			resample,
 			&value, &nodata
 		);
-		if (err != ES_NONE) continue;
+
+		if (err != ES_NONE) {
+			value = NAN;
+		}
 
 		/* Copy in the raster value */
 		if (dim == 'z')
