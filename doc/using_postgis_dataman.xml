@@ -44,20 +44,15 @@
         </listitem>
     </itemizedlist>
 
-    <para>The latest SFA standard
+    <para>The subsequent SFA standard
     <ulink url="https://portal.ogc.org/files/?artifact_id=25355"><emphasis>Simple Features Access - Part 1: Common architecture v1.2.1</emphasis></ulink>
-    adds some more subtypes.
-    One subtype represents 3-dimensional polyhedral surfaces:</para>
+    added the following subtypes:
+    </para>
 
     <itemizedlist>
         <listitem>
             <para>PolyhedralSurface - a 3-dimensional surface consisting of a set of planar Polygons defined in 3D space</para>
         </listitem>
-    </itemizedlist>
-
-    <para>The following subtypes represent triangulated surfaces:</para>
-
-    <itemizedlist>
         <listitem>
             <para>Triangle - a triangle defined by 3 distinct non-collinear coordinates</para>
         </listitem>
@@ -66,7 +61,7 @@
         </listitem>
     </itemizedlist>
 
-    <para>The ISO SQL/MM standard introduced additional Geometry subtypes
+    <para>The ISO SQL/MM standard introduced Geometry subtypes
     to model geospatial data containing circular arcs
     (see also <xref linkend="SQL_MM_Part3" />):</para>
 
@@ -106,10 +101,10 @@
     See <xref linkend="reference" /> for the full list.</para>
 
     <note>
-        <para>The SFA follows the ISO standard by prefixed spatial funtcions with "ST_".
-        Originally this was intended to stand for "Spatial and Temporal".
-        Since the temporal part of the standard was never developed,
-        it is more accurate to interpret this as "Spatial Type".
+        <para>PostGIS follows the SFA standard by prefixing spatial functions with "ST_".
+        This was intended to stand for "Spatial and Temporal",
+        but the temporal part of the standard was never developed.
+        Instead it can be interpreted as "Spatial Type".
         </para>
     </note>
 
