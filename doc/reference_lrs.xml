@@ -6,8 +6,7 @@
 		  <refnamediv>
 			<refname>ST_LineInterpolatePoint</refname>
 
-			<refpurpose>Returns a point interpolated along a line. Second argument is a float8 between 0 and 1
-			representing fraction of total length of linestring the point has to be located.</refpurpose>
+			<refpurpose>Returns a point interpolated along a line at a fractional location.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -23,7 +22,7 @@
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a point interpolated along a line. First argument
+			<para>Returns a point interpolated along a line at a fractional location. First argument
 			must be a LINESTRING. Second argument is a float8 between 0 and 1
 			representing fraction of total linestring length the point has to be located.</para>
 
@@ -98,8 +97,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refnamediv>
 			<refname>ST_3DLineInterpolatePoint</refname>
 
-			<refpurpose>Returns a point interpolated along a line in 3D. Second argument is a float8 between 0 and 1
-			representing fraction of total length of linestring the point has to be located.</refpurpose>
+			<refpurpose>Returns a point interpolated along a 3D line at a fractional location.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -115,8 +113,8 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a point interpolated along a line. First argument
-			must be a LINESTRING. Second argument is a float8 between 0 and 1
+			<para>Returns a point interpolated along a 3D line at a fractional location.
+            First argument must be a LINESTRING. Second argument is a float8 between 0 and 1
 			representing fraction of total linestring length the point has to be located.</para>
 
 			<note>
@@ -162,7 +160,7 @@ SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))
 			<refname>ST_LineInterpolatePoints</refname>
 
 			<refpurpose>
-				Returns one or more points interpolated along a line.
+				Returns points interpolated along a line at a fractional interval.
 			</refpurpose>
 		  </refnamediv>
 
@@ -180,7 +178,8 @@ SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns one or more points interpolated along a line. First argument
+			<para>Returns one or more points interpolated along a line at a fractional interval.
+            First argument
 			must be a LINESTRING. Second argument is a float8 between 0 and 1
 			representing the spacing between the points as a fraction of total
 			LineString length. If the third argument is false, at most one point
@@ -230,9 +229,8 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 		  <refnamediv>
 			<refname>ST_LineLocatePoint</refname>
 
-			<refpurpose>Returns a float between 0 and 1 representing the location of
-			the closest point on LineString to the given Point, as a fraction
-			of total 2d line length.</refpurpose>
+			<refpurpose>Returns the fractional location of
+			the closest point on a line to a point.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -249,7 +247,7 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 			<title>Description</title>
 
 			 <para>Returns a float between 0 and 1 representing the location of
-			the closest point on LineString to the given Point, as a fraction
+			the closest point on a LineString to the given Point, as a fraction
 			of total <link linkend="ST_Length2D">2d line</link> length.</para>
 
 			<para>You can use the returned location to extract a Point (<xref linkend="ST_LineInterpolatePoint" />) or
@@ -311,10 +309,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refnamediv>
 			<refname>ST_LineSubstring</refname>
 
-			<refpurpose>Return a linestring being a substring of the input one
-			starting and ending at the given fractions of total 2d length.
-			Second and third arguments are float8 values between 0 and
-			1.</refpurpose>
+			<refpurpose>Returns the part of a line between two fractional locations.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -331,7 +326,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>Description</title>
 
-			<para>Return a linestring being a substring of the input one
+			<para>Returns a linestring being a substring of the input one
 			starting and ending at the given fractions of total 2d length.
 			Second and third arguments are float8 values between 0 and
 			1. This only works with LINESTRINGs.
@@ -410,9 +405,7 @@ WHERE n*100.00/length &lt; 1;
 	  <refnamediv>
 		<refname>ST_LocateAlong</refname>
 
-		<refpurpose>Return a derived geometry collection value with elements
-			that match the specified measure. Polygonal elements are not
-			supported.</refpurpose>
+		<refpurpose>Returns the point(s) on a geometry that match a measure value.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -429,11 +422,11 @@ WHERE n*100.00/length &lt; 1;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a derived geometry collection value with elements
-		that match the specified measure. Polygonal elements are not
+		<para>Returns the locations along a geometry (as a Point or MultiPoint)
+		that match the given measure. Polygonal elements are not
 		supported.</para>
 
-		<para>If an offset is provided, the resultant will be offset to the
+		<para>If an offset is provided, the result will be offset to the
 		left or right of the input line by the specified number of units.
 		A positive offset will be to the left, and a negative one to the
 		right.</para>
@@ -489,8 +482,7 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 	  <refnamediv>
 		<refname>ST_LocateBetween</refname>
 
-		<refpurpose>Return a derived geometry collection value with elements
-			that match the specified range of measures inclusively.</refpurpose>
+		<refpurpose>Returns the portions of a geometry that match a measure range.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -509,7 +501,7 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a derived geometry collection with elements that match the specified range of
+		<para>Return a geometry collection with elements that match the specified range of
 		measures inclusively.</para>
 
 		<para>Clipping a non-convex POLYGON may produce invalid geometry.</para>
@@ -574,8 +566,8 @@ FROM (
 	  <refnamediv>
 		<refname>ST_LocateBetweenElevations</refname>
 
-		<refpurpose>Return a derived geometry (collection) value with elements
-			that intersect the specified range of elevations inclusively.</refpurpose>
+		<refpurpose>Returns the portions of a geometry
+			that intersect an elevation range.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -593,7 +585,7 @@ FROM (
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a derived geometry (collection) value with elements
+		<para>Returns a geometry (collection) value with elements
 		that intersect the specified range of elevations inclusively.</para>
 
 		<para>Clipping a non-convex POLYGON may produce invalid geometry.</para>
@@ -645,7 +637,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 		  <refnamediv>
 			<refname>ST_InterpolatePoint</refname>
 
-			<refpurpose>Return the value of the measure dimension of a geometry at the point closed to the provided point.</refpurpose>
+			<refpurpose>Returns the interpolated measure of a geometry closest to a point.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -662,7 +654,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 		  <refsection>
 			<title>Description</title>
 
-			   <para>Return the value of the measure dimension of a geometry at the point closed to the provided point.</para>
+			   <para>Returns the value of the measure dimension of a geometry at the point closed to the provided point.</para>
 
 				<para>Availability: 2.0.0</para>
 
@@ -692,7 +684,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	  <refnamediv>
 		<refname>ST_AddMeasure</refname>
 
-		<refpurpose>Return a derived geometry with measure elements linearly interpolated between the start and end points.</refpurpose>
+		<refpurpose>Interpolates measures along a linear geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -710,7 +702,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	  <refsection>
 		<title>Description</title>
 
-		   <para>Return a derived geometry with measure elements linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>
+		   <para>Return a derived geometry with measure values linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>
 
 			<para>Availability: 1.5.0</para>
 
