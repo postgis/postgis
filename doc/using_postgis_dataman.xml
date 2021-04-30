@@ -1677,6 +1677,16 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
         </para>
       </listitem>
     </varlistentry>
+    <varlistentry>
+      <term>-Z</term>
+      <listitem>
+        <para>
+          When used, this flag will prevent the generation of <code>ANALYZE</code> statements.
+          Without the -Z flag (default behaviour), the <code>ANALYZE</code> statements will
+          be generated.
+        </para>
+      </listitem>
+    </varlistentry>
   </variablelist>
 
   <para>
