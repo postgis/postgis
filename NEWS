@@ -14,6 +14,7 @@ PostGIS 3.2.0
   - #3778, #4401, ST_Boundary now works for TIN and does not linearize curves (Aliaksandr Kalenik)
   - #4881, #4884, Store sign of edge_id for lineal TopoGeometry in relation table
            to retain direction (Sandro Santilli)
+  - #4628, Add an option to disable ANALYZE when loading shapefiles (Stefan Corneliu Petrea)
 
  * New features*
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)
