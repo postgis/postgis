@@ -1,2 +1,2 @@
 # Test loading a table with a schema.
--g the_geom {regdir}/loader/PointWithSchema pgreg.loadedshp
+-Z -g the_geom {regdir}/loader/PointWithSchema pgreg.loadedshp
