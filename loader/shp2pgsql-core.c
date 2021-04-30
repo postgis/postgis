@@ -763,6 +763,7 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->quoteidentifiers = 0;
 	config->forceint4 = 0;
 	config->createindex = 0;
+	config->analyze = 1;
 	config->readshape = 1;
 	config->force_output = FORCE_OUTPUT_DISABLE;
 	config->encoding = strdup(ENCODING_DEFAULT);
@@ -1925,13 +1926,17 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 		stringbuffer_aprintf(sb, "COMMIT;\n");
 	}
 
-	/* Always ANALYZE the resulting table, for better stats */
-	stringbuffer_aprintf(sb, "ANALYZE ");
-	if (state->config->schema)
+
+	if(state->config->analyze)
 	{
-		stringbuffer_aprintf(sb, "\"%s\".", state->config->schema);
+		/* Always ANALYZE the resulting table, for better stats */
+		stringbuffer_aprintf(sb, "ANALYZE ");
+		if (state->config->schema)
+		{
+			stringbuffer_aprintf(sb, "\"%s\".", state->config->schema);
+		}
+		stringbuffer_aprintf(sb, "\"%s\";\n", state->config->table);
 	}
-	stringbuffer_aprintf(sb, "\"%s\";\n", state->config->table);
 
 	/* Copy the string buffer into a new string, destroying the string buffer */
 	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
