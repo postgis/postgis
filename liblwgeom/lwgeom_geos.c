@@ -143,7 +143,7 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 	LWDEBUGF(4, " output dimensions: %d", dims);
 
 	pa = ptarray_construct((dims == 3), 0, size);
-#if POSTGIS_GEOS_VERSION >= 310
+#if POSTGIS_GEOS_VERSION >= 31000
 	GEOSCoordSeq_copyToBuffer(cs, (double*) pa->serialized_pointlist, (dims == 3), 0);
 	return pa;
 #else
@@ -275,7 +275,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 		}
 	}
 
-#if POSTGIS_GEOS_VERSION >= 310
+#if POSTGIS_GEOS_VERSION >= 31000
 	if (append_points == 0) {
 		sq = GEOSCoordSeq_copyFromBuffer((const double*) pa->serialized_pointlist, pa->npoints, FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags));
 		if (!sq)
