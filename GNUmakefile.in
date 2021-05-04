@@ -41,7 +41,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit check-regress docs-check check-news 
+check: check-no-trailing-blanks check-unit check-regress docs-check check-news
 
 staged-install: all
 	$(MAKE) -C regress staged-install
@@ -197,11 +197,9 @@ ifeq ($(HAVE_SFCGAL),yes)
 	include sfcgal/regress/tests.mk
 endif
 ifeq (@TOPOLOGY@,topology)
-	override RUNTESTFLAGS := $(RUNTESTFLAGS) --topology
 	include topology/test/tests.mk
 endif
 ifeq (@RASTER@,raster)
-	override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
 	include raster/test/regress/tests.mk
 endif
 

@@ -20,6 +20,10 @@ INTERRUPTTESTS=@INTERRUPTTESTS@
 
 current_dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
+RUNTESTFLAGS_INTERNAL += \
+  --before-upgrade-script $(topsrcdir)/regress/hooks/hook-before-upgrade.sql \
+  --after-upgrade-script  $(topsrcdir)/regress/hooks/hook-after-upgrade.sql
+
 TESTS += \
 	$(topsrcdir)/regress/core/affine \
 	$(topsrcdir)/regress/core/bestsrid \
@@ -153,7 +157,7 @@ endif
 
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31000),1)
 	TESTS += \
-		$(topsrcdir)/regress/core/geos310 
+		$(topsrcdir)/regress/core/geos310
 endif
 
 ifeq ($(INTERRUPTTESTS),yes)

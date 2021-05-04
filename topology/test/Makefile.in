@@ -39,9 +39,8 @@ check-regress: check-regress-deps
 
 check-regress-deps: topo_predicates.sql load_topology.sql load_topology-4326.sql
 
-override RUNTESTFLAGS := $(RUNTESTFLAGS) --topology
-
 topsrcdir = $(realpath ../../)
+srcdir = $(realpath .)
 
 include tests.mk
 include ../../regress/runtest.mk

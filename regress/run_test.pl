@@ -94,7 +94,7 @@ GetOptions (
 	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
 	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
 	'before-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE,
-	'after-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE
+	'after-upgrade-script=s' => \@OPT_HOOK_AFTER_UPGRADE
 	);
 
 if ( @ARGV < 1 )
@@ -297,114 +297,6 @@ sub semver_lessthan
 	return @bcomp ? 1 : 0;
 }
 
-sub create_upgrade_test_objects
-{
-
-  # TODO: replace the following with --before-upgrade-script usage
-
-  my $query = "create table upgrade_test(g1 geometry, g2 geography";
-  $query .= ", r raster" if ( $OPT_WITH_RASTER );
-  $query .= ")";
-  my $ret = sql($query);
-  unless ( $ret =~ /^CREATE/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong creating upgrade_test table: $ret.\n";
-    exit(1);
-  }
-
-  $query = "insert into upgrade_test(g1,g2) values ";
-	$query .= "('POINT(0 0)', 'LINESTRING(0 0, 1 1)'), ";
-	$query .= "('POINT(1 0)', 'LINESTRING(0 1, 1 1)');";
-  my $ret = sql($query);
-  unless ( $ret =~ /^INSERT/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong populating upgrade_test table: $ret.\n";
-    exit(1);
-  }
-
-
-  if ( $pgvernum >= 120000 ) {
-    # We know upgrading with an st_union() based view
-    # fails unless you're on PostgreSQL 12, so we don't
-    # even try that.
-    #
-    # We could re-enable this test IF we fix the upgrade
-    # in pre-12 versions. Refer to
-    # https://trac.osgeo.org/postgis/ticket/4386
-    #
-    $query = "create view upgrade_view_test as ";
-    $query .= "select st_union(g1) from upgrade_test;";
-    my $ret = sql($query);
-    unless ( $ret =~ /^CREATE/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
-      exit(1);
-    }
-  }
-
-  if ( $OPT_WITH_RASTER )
-  {
-    $query = "UPDATE upgrade_test SET r = ";
-    $query .= " ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);";
-    $ret = sql($query);
-    unless ( $ret =~ /^UPDATE/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong setting raster into upgrade_test table: $ret.\n";
-      exit(1);
-    }
-
-    $query = "set client_min_messages to error; select AddRasterConstraints('upgrade_test', 'r')";
-    $ret = sql($query);
-    unless ( $ret =~ /^t$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong adding raster constraints to upgrade_test: " . $ret . "\n";
-      exit(1);
-    }
-  }
-
-  if ( $OPT_WITH_TOPO )
-  {
-    $query = "select topology.createTopology('upgrade_test');";
-    $ret = sql($query);
-    unless ( $ret =~ /^[1-9][0-9]*$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong adding upgrade_test topology: " . $ret . "\n";
-      exit(1);
-    }
-  }
-}
-
-sub drop_upgrade_test_objects
-{
-  # TODO: allow passing the "upgrade-cleanup" script via commandline
-
-  my $ret = sql("drop view if exists upgrade_view_test;");
-  unless ( $ret =~ /^DROP/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong dropping spatial view: $ret.\n";
-    exit(1);
-  }
-
-  my $ret = sql("drop table upgrade_test;");
-  unless ( $ret =~ /^DROP/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong dropping spatial tables: $ret.\n";
-    exit(1);
-  }
-
-  if ( $OPT_WITH_TOPO )
-  {
-    my $query = "SELECT topology.DropTopology('upgrade_test');";
-    $ret = sql($query);
-    unless ( $ret =~ /^Topology 'upgrade_test' dropped$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong dropping upgrade_test topology: " . $ret . "\n";
-      exit(1);
-    }
-  }
-}
-
-
 if ( $OPT_UPGRADE )
 {
 	print "Upgrading from postgis $libver\n";
@@ -415,8 +307,6 @@ if ( $OPT_UPGRADE )
 		die unless load_sql_file($hook, 1);
 	}
 
-  create_upgrade_test_objects();
-
   if ( $OPT_EXTENSIONS )
   {
     upgrade_spatial_extensions();
@@ -426,11 +316,9 @@ if ( $OPT_UPGRADE )
 	  upgrade_spatial();
   }
 
-  drop_upgrade_test_objects();
-
 	foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
 	{
-		print "  Running after-upgrade-script $hook\n";
+		print "Running after-upgrade-script $hook\n";
 		die unless load_sql_file($hook, 1);
 	}
 

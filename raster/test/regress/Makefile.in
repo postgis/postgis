@@ -180,9 +180,8 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 	$(PERL) -lpe "s'\\\$$libdir'$(REGRESS_INSTALLDIR)/lib'g" $< > $@
 
 
-override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
-
 topsrcdir = $(realpath ../../../)
+srcdir = $(realpath .)
 
 include tests.mk
 include ../../../regress/runtest.mk
