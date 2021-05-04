@@ -970,6 +970,14 @@ sub run_loader_and_check_output
 			}
 		}
 
+		if ( $loader_options =~ m{^-Z } ) {
+			my $count = matching_lines_file($outfile, qr{^ANALYZE});
+			if ( $count =~ m{^\d+$} && $count != 0 ) {
+				fail(" $description: -Z was passed but ANALYZE statements were still present in loader-generated sql");
+				return 0;
+			};
+		}
+
 		# Run the loader SQL script.
 		show_progress();
 		$cmd = "psql $psql_opts -f $outfile $DB > $errfile 2>&1";
@@ -2005,4 +2013,19 @@ sub diff
 	close(OBT);
 	close(EXP);
 	return $diffstr;
+}
+
+sub matching_lines_file
+{
+	my ($file, $re) = @_;
+	open(OBT,"<",$file) || return "Cannot open $file";
+	my $count_matches = 0;
+	while(!eof(OBT)) {
+		my $line = <OBT>;
+		if($line =~ $re) {
+			$count_matches++;
+		}
+	};
+	close(OBT);
+	return $count_matches;
 }
