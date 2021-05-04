@@ -10,6 +10,12 @@
 # *
 # **********************************************************************
 
+override RUNTESTFLAGS := $(RUNTESTFLAGS) --topology
+
+RUNTESTFLAGS_INTERNAL += \
+  --before-upgrade-script $(topsrcdir)/topology/test/regress/hooks/hook-before-upgrade-topology.sql \
+  --after-upgrade-script  $(topsrcdir)/topology/test/regress/hooks/hook-after-upgrade-topology.sql
+
 TESTS += \
   $(topsrcdir)/topology/test/regress/addedge.sql \
 	$(topsrcdir)/topology/test/regress/addface2.5d.sql \
