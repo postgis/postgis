@@ -19,7 +19,7 @@ test:
     - ./configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
     - RUNTESTFLAGS=-v make check
-    - RUNTESTFLAGS="-v --dumprestore" make check
+    - RUNTESTFLAGS="-v --dumprestore" make check-regress
     - make install
     - RUNTESTFLAGS=-v make installcheck
     - RUNTESTFLAGS="-v --dumprestore" make installcheck
