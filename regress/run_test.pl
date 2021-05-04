@@ -970,7 +970,7 @@ sub run_loader_and_check_output
 			}
 		}
 
-		if ( $loader_options =~ m{^-Z } ) {
+		if ( $loader_options =~ m{^-Z|\s-Z\s} ) {
 			my $count = matching_lines_file($outfile, qr{^ANALYZE});
 			if ( $count =~ m{^\d+$} && $count != 0 ) {
 				fail(" $description: -Z was passed but ANALYZE statements were still present in loader-generated sql");
