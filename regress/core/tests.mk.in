@@ -23,7 +23,8 @@ current_dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 RUNTESTFLAGS_INTERNAL += \
   --before-upgrade-script $(topsrcdir)/regress/hooks/hook-before-upgrade.sql \
   --after-upgrade-script  $(topsrcdir)/regress/hooks/hook-after-upgrade.sql \
-  --after-create-script   $(topsrcdir)/regress/hooks/hook-after-create.sql
+  --after-create-script   $(topsrcdir)/regress/hooks/hook-after-create.sql \
+  --before-uninstall-script $(topsrcdir)/regress/hooks/hook-before-uninstall.sql
 
 TESTS += \
 	$(topsrcdir)/regress/core/affine \
