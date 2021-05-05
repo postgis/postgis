@@ -39,13 +39,10 @@
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
+            <note><para>&index_aware;</para></note>
+
 			<para>Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs.</para>
 			<para>Availability: 2.0.0</para>
-			<note>
-			  <para>This function call will automatically include a bounding box
-			  comparison that will make use of any indexes that are available on the
-			  geometries.</para>
-			</note>
 
 			<para>&Z_support;</para>
 			<!-- Optionally mention supports Polyhedral Surface  -->
@@ -115,6 +112,9 @@
         <para>ST_Contains is the inverse of <xref linkend="ST_Within"/>.
         So, <code>ST_Contains(A,B) = ST_Within(B,A)</code>.</para>
 
+        <note><para>&index_aware;
+        To avoid index use, use the function <function>_ST_Contains</function>.</para></note>
+
 		<para>Performed by the GEOS module</para>
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
@@ -125,11 +125,6 @@
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
-
-		<para>This function call will automatically include a bounding box
-			comparison that will make use of any indexes that are available on
-			the geometries. To avoid index use, use the function
-			<function>_ST_Contains</function>.</para>
 
 		<para>NOTE: this is the "allowable" version that returns a
 			boolean, not an integer.</para>
@@ -298,6 +293,9 @@ ST_Point      | t          | t              | f           | f
 	    wholly inside the area.  In these cases the intersection is	known a priori to be exactly the original test geometry.
 	    </para>
 
+		<note><para>&index_aware;
+         To avoid index use, use the function <function>_ST_ContainsProperly</function>.</para></note>
+
 		<note>
 		  <para>The advantage of this predicate over <xref linkend="ST_Contains" /> and <xref linkend="ST_Intersects" /> is that it can be computed
 	        more efficiently, with no need to compute topology at individual points.</para>
@@ -312,11 +310,6 @@ ST_Point      | t          | t              | f           | f
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
-
-		<para>This function call will automatically include a bounding box
-			comparison that will make use of any indexes that are available on
-			the geometries. To avoid index use, use the function
-			<function>_ST_ContainsProperly</function>.</para>
 
 	  </refsection>
 
@@ -399,6 +392,9 @@ ST_Point      | t          | t              | f           | f
             (i.e. intersects the interior or boundary of) geometry B.
             </para>
 
+		<note><para>&index_aware;
+         To avoid index use, use the function <function>_ST_CoveredBy</function>.</para></note>
+
 		<important>
 		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
@@ -408,10 +404,6 @@ ST_Point      | t          | t              | f           | f
 		</important>
 		<para>Performed by the GEOS module</para>
 		<para>Availability: 1.2.2</para>
-		<para>This function call will automatically include a bounding box
-			comparison that will make use of any indexes that are available on
-			the geometries. To avoid index use, use the function
-			<function>_ST_CoveredBy</function>.</para>
 
 		<para>NOTE: this is the "allowable" version that returns a
 			boolean, not an integer.</para>
@@ -481,6 +473,9 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
             (i.e. intersects the interior or boundary of) geometry A.
             </para>
 
+		<note><para>&index_aware;
+         To avoid index use, use the function <function>_ST_Covers</function>.</para></note>
+
 		<important>
 		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
@@ -488,11 +483,6 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
-
-		<para>This function call will automatically include a bounding box
-			comparison that will make use of any indexes that are available on
-			the geometries. To avoid index use, use the function
-			<function>_ST_Covers</function>.</para>
 
 		<para>Performed by the GEOS module</para>
     <para>Enhanced: 2.4.0 Support for polygon in polygon and line in polygon added for geography type</para>
@@ -611,15 +601,11 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
 		Area/Line situations as well. This makes the relation
 		symmetric.</para>
 
+	<note><para>&index_aware;</para></note>
+
 		<important>
 		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
-
-	<note>
-	  <para>This function call will automatically include a bounding box
-	  comparison that will make use of any indexes that are available on the
-	  geometries.</para>
-	</note>
 
 	<para>&sfs_compliant; s2.1.13.3</para>
 	<para>&sqlmm_compliant; SQL-MM 3: 5.1.29</para>
@@ -1083,16 +1069,13 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>
 
+			<note><para>&index_aware;</para></note>
+
 			<para>Changed: 3.0.0 SFCGAL version removed and native suppport for 2D TINS added.</para>
 			<para>Enhanced: 2.5.0 Supports GEOMETRYCOLLECTION.</para>
 			<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 			<para>Performed by the GEOS module (for geometry), geography is native</para>
 			<para>Availability: 1.5 support for geography was introduced.</para>
-			<note>
-			  <para>This function call will automatically include a bounding box
-			  comparison that will make use of any indexes that are available on the
-			  geometries.</para>
-			</note>
 			<note>
 			  <para>For geography, this function has a distance tolerance of about 0.00001 meters and uses the sphere rather
 				than spheroid calculation.</para>
@@ -1235,16 +1218,14 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 		<para>Returns TRUE if the Geometries "spatially
 			overlap".  By that we mean they intersect, but one does not completely contain another. </para>
 
-		 <para>Performed by the GEOS module</para>
+		<note><para>&index_aware;
+        To avoid index use, use the function <function>_ST_Overlaps</function>.</para></note>
+
+		<para>Performed by the GEOS module</para>
 
 		<important>
 		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
-
-		<para>This function call will automatically include a bounding box
-		comparison that will make use of any indexes that are available on
-		the geometries. To avoid index use, use the function
-		<function>_ST_Overlaps</function>.</para>
 
 		<para>NOTE: this is the "allowable" version that returns a
 			boolean, not an integer.</para>
@@ -1650,15 +1631,13 @@ SELECT pat.name AS relationship, pat.val AS pattern,
 		  </listitem>
 		</itemizedlist>
 
+		<note><para>&index_aware;
+        To avoid using an index, use <function>_ST_Touches</function> instead.</para>
+		</note>
+
 		<important>
 		  <para>Enhanced: 3.0.0 enabled support for <varname>GEOMETRYCOLLECTION</varname></para>
 		</important>
-
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
-		  the geometries.  To avoid using an index, use <function>_ST_Touches</function> instead.</para>
-		</note>
 
 		<para>&sfs_compliant; s2.1.1.2 // s2.1.13.3</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.28</para>
@@ -1789,6 +1768,9 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
         <para>ST_Within is the inverse of <xref linkend="ST_Contains"/>.
         So, <code>ST_Within(A,B) = ST_Contains(B,A)</code>.</para>
 
+		<note><para>&index_aware;
+        To avoid index use, use the function <function>_ST_Within</function>.</para></note>
+
 		<para>Performed by the GEOS module</para>
 
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
@@ -1800,11 +1782,6 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
 		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
-
-		<para>This function call will automatically include a bounding box
-			comparison that will make use of any indexes that are available on
-			the geometries. To avoid index use, use the function
-			<function>_ST_Within</function>.</para>
 
 		<para>NOTE: this is the "allowable" version that returns a
 			boolean, not an integer.</para>
@@ -1881,8 +1858,14 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 	  <refsection>
 		<title>Description</title>
 
-		<para>For geometry type returns true if the 3d distance between two objects is within distance_of_srid specified
-		projected units (spatial ref units). </para>
+		<para>Returns true if the 3D distance between two geometry values is no larger than
+        distance <varname>distance_of_srid</varname>.
+        The distance is specified in units defined by the spatial reference system of the geometries.
+        For this function to make sense
+        the source geometries must be in the same coordinate system (have the same SRID).
+        </para>
+
+		<note><para>&index_aware;</para></note>
 
         <para>&Z_support;</para>
         <!-- Optionally mention supports Polyhedral Surface  -->
@@ -1918,11 +1901,15 @@ ST_DWithin(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para>
+        <xref linkend="ST_3DDFullyWithin"/>,
+        <xref linkend="ST_DWithin"/>, <xref linkend="ST_DFullyWithin"/>,
+        <xref linkend="ST_3DDistance"/>, <xref linkend="ST_Distance"/>,
+        <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
-<refentry id="ST_3DDFullyWithin">
+    <refentry id="ST_3DDFullyWithin">
 	  <refnamediv>
 		<refname>ST_3DDFullyWithin</refname>
 
@@ -1955,11 +1942,7 @@ ST_DWithin(
 		sense, the source geometries must both be of the same coordinate projection,
 		having the same SRID.</para>
 
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
-		  the geometries.</para>
-		</note>
+		<note><para>&index_aware;</para></note>
 
 		<para>Availability: 2.0.0</para>
         <para>&Z_support;</para>
@@ -1986,7 +1969,9 @@ ST_DWithin(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_3DMaxDistance"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_DFullyWithin"/></para>
+		<para><xref linkend="ST_3DDWithin"/>,
+        <xref linkend="ST_DWithin"/>, <xref linkend="ST_DFullyWithin"/>,
+        <xref linkend="ST_3DMaxDistance"/></para>
 	  </refsection>
 	</refentry>
 
@@ -2023,11 +2008,7 @@ ST_DWithin(
 		sense, the source geometries must both be of the same coordinate projection,
 		having the same SRID.</para>
 
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on
-		  the geometries.</para>
-		</note>
+		<note><para>&index_aware;</para></note>
 
 		<para>Availability: 1.5.0</para>
 	  </refsection>
@@ -2046,7 +2027,8 @@ ST_DWithin(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_DWithin"/></para>
+		<para><xref linkend="ST_MaxDistance"/>,
+        <xref linkend="ST_DWithin"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DDFullyWithin"/></para>
 	  </refsection>
 	</refentry>
 
@@ -2111,16 +2093,15 @@ ST_DWithin(
 		  the geometries.</para>
 		</note>
 
-		<note>
-		  <para>Prior to 1.3, ST_Expand was commonly used in conjunction with &amp;&amp; and ST_Distance to
-		  test for distance, and in pre-1.3.4 this function used that logic.
-		  From 1.3.4, ST_DWithin uses a faster short-circuit distance function.</para>
-		</note>
-
 		<para>&sfs_compliant;</para>
 		<para>Availability: 1.5.0 support for geography was introduced</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
 		<para>Enhanced: 2.1.0 support for curved geometries was introduced.</para>
+
+        <para>Prior to 1.3, <xref linkend="ST_Expand"/> was commonly used in conjunction with &amp;&amp; and ST_Distance to
+        test for distance, and in pre-1.3.4 this function used that logic.
+        From 1.3.4, ST_DWithin uses a faster short-circuit distance function.</para>
+
 	  </refsection>
 
 	  <refsection>
@@ -2166,7 +2147,7 @@ SELECT b.tower_id, b.geom
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_Expand"/>, <xref linkend="ST_3DDWithin"/></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_3DDWithin"/></para>
 	  </refsection>
 	</refentry>
 

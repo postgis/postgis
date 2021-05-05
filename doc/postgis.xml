@@ -135,7 +135,13 @@
    </imageobject>
  </inlinemediaobject>
  This function supports Triangles and Triangulated Irregular Network Surfaces (TIN).">
+
+<!ENTITY index_aware
+"This function automatically includes a bounding box comparison
+that makes use of any spatial indexes that are available on the geometries.">
+
 ]>
+
 <book>
   <title>PostGIS &last_release_version; Manual</title>
 
