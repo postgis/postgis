@@ -1267,7 +1267,9 @@ sub count_postgis_objects
 sub create_db
 {
 	my $createcmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
-	return system($createcmd);
+    my $rv = system($createcmd);
+    system("psql -d $DB -f disable_autovacuum.sql ");
+	return $rv;
 }
 
 sub create_spatial
