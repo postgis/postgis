@@ -1,5 +1,5 @@
--- Checks if the table pgreg.loadedshp was analyzed by
--- querying the respective PostgreSQL system catalog
+-- Checks if the table was analyzed by looking at the table statistics
+-- in the pg system catalog
 SELECT COUNT(stanumbers1)
 FROM pg_statistic
-WHERE starelid = 'pgreg.loadedshp'::regclass AND stanumbers1 IS NOT NULL;
+WHERE starelid = 'loadedshp'::regclass AND stanumbers1 IS NOT NULL;
