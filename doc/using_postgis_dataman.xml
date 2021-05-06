@@ -3,7 +3,7 @@
   <title>Data Management</title>
 
   <sect1 id="RefObject">
-	<title>Geometry Type</title>
+	<title>Geometry Data Type</title>
 
     <para>The Open Geospatial Consortium (OGC) developed the
     <ulink url="https://www.ogc.org/standards/sfa"><emphasis>Simple Features Access</emphasis></ulink>
@@ -85,12 +85,12 @@
     </itemizedlist>
 
 	<para>PostGIS implements the OGC Simple Features model
-    by defining a PostgreSQL datatype called <varname>geometry</varname>.
+    by defining a PostgreSQL data type called <varname>geometry</varname>.
     It represents all of the OGC subtypes by using an internal type code
     (see <xref linkend="GeometryType" />).
     </para>
 
-    <para>The <varname>geometry</varname> type is <emphasis>opaque</emphasis>,
+    <para>The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>,
     which means that all access is done via invoking functions on geometry data objects.
     The functions allow creating geometry objects,
     accessing or updating all internal fields,
@@ -440,13 +440,13 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 	</sect2>
   </sect1>
   <sect1 id="PostGIS_Geography">
-	  <title>Geography Type</title>
+	  <title>Geography Data Type</title>
 
-	  <para>The PostGIS <varname>geography</varname> type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
+	  <para>The PostGIS <varname>geography</varname> data type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
 
-	  <para>The basis for the PostGIS geometry type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors.</para>
+	  <para>The basis for the PostGIS geometry data type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors.</para>
 
-	  <para>The basis for the PostGIS geographic type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account.</para>
+	  <para>The basis for the PostGIS geographic data type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account.</para>
 
 	  <para>Because the underlying mathematics is much more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand.</para>
 
@@ -581,9 +581,9 @@ LINE 1: SELECT 'SRID=26910;POINT(-123 34)'::geography;</programlisting></para>
 The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik and the straight line path from Seattle to London plotted on a flat map of the world. The nominal units of the result might be called "degrees", but the result doesn't correspond to any true angular difference between the points, so even calling them "degrees" is inaccurate.</para>
 	</sect2>
 	<sect2 id="PostGIS_GeographyVSGeometry">
-	  <title>When to use Geography Data type over Geometry data type</title>
-	  <para>The geography type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
-	  <para>The type you choose should be conditioned on the expected working area of the application you are building. Will your data span the globe or a large continental area, or is it local to a state, county or municipality? </para>
+	  <title>When to use the Geography data type</title>
+	  <para>The geography data type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute.</para>
+	  <para>The data type you choose should be determined by the expected working area of the application you are building. Will your data span the globe or a large continental area, or is it local to a state, county or municipality? </para>
 	  <itemizedlist>
 		<listitem><para>If your data is contained in a small area, you might find that choosing an appropriate projection and using GEOMETRY is the best solution, in terms of performance and functionality available.</para></listitem>
 		<listitem><para>If your data is global or covers a continental region, you may find that GEOGRAPHY allows you to build a system without having to worry about projection details.
@@ -669,7 +669,7 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	</sect2>
 
 	<sect2 id="geometry_columns">
-	  <title>The GEOMETRY_COLUMNS View</title>
+	  <title>GEOMETRY_COLUMNS View</title>
 
         <para>The OpenGIS "Simple Features Specification for SQL" defines
         the <varname>GEOMETRY_COLUMNS</varname> metadata table to describe geometry table structure.
