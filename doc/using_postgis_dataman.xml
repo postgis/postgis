@@ -3,122 +3,249 @@
   <title>Data Management</title>
 
   <sect1 id="RefObject">
-	<title>Geometry Data Type</title>
+	<title>Spatial Data Model</title>
+
+	<sect2 id="OGC_Geometry">
+	  <title>OGC Geometry</title>
 
     <para>The Open Geospatial Consortium (OGC) developed the
     <ulink url="https://www.ogc.org/standards/sfa"><emphasis>Simple Features Access</emphasis></ulink>
     standard (SFA) to provide a model for geospatial data.
     It defines the fundamental spatial data type of Geometry, with
     a set of subtypes that represent various kinds and dimensions of geometric shapes.
-    </para>
-
-    <para>The core Geometry subtypes model shapes on the 2-dimensional Cartesian coordinate plane
-    constructed from points and line segments:</para>
-
-    <itemizedlist>
-        <listitem>
-            <para>Point - a 0-dimensional geometry that represents a single location in coordinate space</para>
-        </listitem>
-        <listitem>
-            <para>LineString - a 1-dimensional line formed by a contigous sequence of line segments</para>
-        </listitem>
-        <listitem>
-            <para>LinearRing - a LineString which is closed and simple (non-intersecting)</para>
-        </listitem>
-        <listitem>
-            <para>Polygon - a 2-dimensional planar region, delimited by an exterior boundary and zero or more interior boundaries (holes).
-            The boundaries are formed by LinearRings
-            </para>
-        </listitem>
-        <listitem>
-            <para>MultiPoint - a collection of Points</para>
-        </listitem>
-        <listitem>
-            <para>MultiLineString - a collection of LineStrings</para>
-        </listitem>
-        <listitem>
-            <para>MultiPolygon - a collection of non-overlapping polygons</para>
-        </listitem>
-        <listitem>
-            <para>GeometryCollection - a heterogenous (mixed) collection of geometries</para>
-        </listitem>
-    </itemizedlist>
-
-    <para>The subsequent SFA standard
+    The latest SFA version
     <ulink url="https://portal.ogc.org/files/?artifact_id=25355"><emphasis>Simple Features Access - Part 1: Common architecture v1.2.1</emphasis></ulink>
-    added the following subtypes:
+    adds subtypes for the more complex geometric objects PolyhedralSurfaces, Triangles and TINs.
     </para>
 
-    <itemizedlist>
-        <listitem>
-            <para>PolyhedralSurface - a 3-dimensional surface consisting of a set of planar Polygons defined in 3D space</para>
-        </listitem>
-        <listitem>
-            <para>Triangle - a triangle defined by 3 distinct non-collinear coordinates</para>
-        </listitem>
-        <listitem>
-            <para>TIN - a collection of non-overlapping Triangles representing a triangulated irregular network</para>
-        </listitem>
-    </itemizedlist>
-
-    <para>The ISO SQL/MM standard introduced Geometry subtypes
-    to model geospatial data containing circular arcs
-    (see also <xref linkend="SQL_MM_Part3" />):</para>
-
-    <itemizedlist>
-        <listitem>
-            <para>CircularString - a 1-dimensional curve formed by a contiguous sequence of circular arcs</para>
-        </listitem>
-        <listitem>
-            <para>CompoundCurve - a 1-dimensional curve formed by a contiguous sequence of LineStrings or CircularStrings</para>
-        </listitem>
-        <listitem>
-            <para>CurvePolygon - a 2-dimensional planar region delimited by a CompoundCurve outer boundary
-            and zero or more CompoundCurve interior boundaries (holes)</para>
-        </listitem>
-        <listitem>
-            <para>MultiCurve - a collection of LineStrings or CompoundCurves</para>
-        </listitem>
-        <listitem>
-            <para>MultiSurface - a collection of Polygons and CurvePolygons</para>
-        </listitem>
-    </itemizedlist>
-
-	<para>PostGIS implements the OGC Simple Features model
-    by defining a PostgreSQL data type called <varname>geometry</varname>.
-    It represents all of the OGC subtypes by using an internal type code
-    (see <xref linkend="GeometryType" />).
+    <para>The geometry types model shapes on the 2-dimensional Cartesian plane
+    constructed from points and line segments.
+    The size and location of shapes are specified by their <emphasis role="bold">coordinates</emphasis>.
+    The points and line segments are defined by one or two coordinates in the plane.
+    Each coordinate has a X and Y value determining its location in the plane.
     </para>
 
-    <para>The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>,
-    which means that all access is done via invoking functions on geometry data objects.
-    The functions allow creating geometry objects,
-    accessing or updating all internal fields,
-    and compute new geometry values.
-    PostGIS supports all the functions specified in the OGC
-	<ulink url="https://portal.ogc.org/files/?artifact_id=25354"><emphasis>Simple feature access - Part 2: SQL option</emphasis></ulink>
-    (SFS) specification, as well many others.
-    See <xref linkend="reference" /> for the full list.</para>
+    <para>Coordinates may also contain optional Z and M ordinate values.
+    The Z ordinate is usually used to represent elevation above the plane.
+    The M ordinate can be used to contain a measure value,
+    which may represent time or distance.
+    If Z or M values are present in a geometry value, they must be defined for each point in the geometry.
+    If a geometry has Z or M ordinates the <emphasis role="bold">coordinate dimension</emphasis> is 3D;
+    if it has both Z and M the coordinate dimension is 4D.
+    </para>
 
-    <note>
-        <para>PostGIS follows the SFA standard by prefixing spatial functions with "ST_".
-        This was intended to stand for "Spatial and Temporal",
-        but the temporal part of the standard was never developed.
-        Instead it can be interpreted as "Spatial Type".
+    <para>Each geometry value is associated with a
+    <emphasis role="bold">spatial reference system</emphasis>
+    indicating the coordinate system in which it is embedded.
+    See <xref linkend="spatial_ref_sys" />.
+    The spatial reference system is identifed by a SRID number.
+    In <emphasis role="bold">planar</emphasis> reference systems the X and Y coordinates typically
+    represent easting and northing,
+    while in <emphasis role="bold">geodetic</emphasis> systems
+    they represent longitude and latitude.
+    The units of the X and Y axes are determined by the reference system.
+    SRID 0 represents an infinite Cartesian plane with no units assigned to its axes.
+    </para>
+
+    <para>The geometry <emphasis role="bold">dimension</emphasis> is a property of geometry types.
+    Point types have dimension 0, linear types have dimension 1,
+    and polygonal types have dimension 2.
+    Collections have the dimension of the maximum element dimension.
+    </para>
+
+    <para>A geometry value may be <emphasis role="bold">empty</emphasis>.
+    Empty values contain no vertices (for atomic geometry types)
+    or no elements (for collections).
+    </para>
+
+    <para>The geometry model allows evaluating topological spatial relationships as
+    described in  <xref linkend="DE-9IM" />.
+    To support this the concepts of
+    <emphasis role="bold">interior</emphasis>, <emphasis role="bold">boundary</emphasis>
+    and <emphasis role="bold">exterior</emphasis>
+    are defined for each geometry type.
+    </para>
+
+    <sect3 id="Point">
+        <title>Point</title>
+        <para>A Point is a 0-dimensional geometry that represents a single location in coordinate space.</para>
+        <programlisting>POINT (1 2)</programlisting>
+    </sect3>
+
+    <sect3 id="LineString">
+        <title>LineString</title>
+        <para>A LineString is a 1-dimensional line formed by a contigous sequence of line segments.
+        Each line segment is defined by two points, with the end point of one segment
+        forming the start point of the next segment.
+        A LineString must have at least two points.
+        LineStrings may cross themselves (self-intersect).
+        A LineString is closed if the start and end points are the same.
         </para>
-    </note>
+        <programlisting>LINESTRING (1 2, 3 4)</programlisting>
+    </sect3>
 
-    <para>The SFA standard specifies that spatial objects include a Spatial Reference System
-    identifier (SRID). The SRID is required when creating spatial objects
-    for insertion into the database (it may be defaulted to 0).
-    See <xref linkend="ST_SRID" /> and <xref linkend="spatial_ref_sys" /></para>
+    <sect3 id="LinearRing">
+        <title>LinearRing</title>
+        <para>A LinearRing is a LineString which is closed
+        and simple (non-intersecting).</para>
+        <programlisting>LINEARRING (0 0 0,4 0 0,4 4 0,0 4 0,0 0 0)</programlisting>
+    </sect3>
 
-    <para>To make querying geometry efficient PostGIS defines
-    various kinds of spatial indexes.  See <xref linkend="build-indexes" /> for details.
-    </para>
+    <sect3 id="Polygon">
+        <title>Polygon</title>
+        <para>A Polygon is a 2-dimensional planar region,
+        delimited by an exterior boundary (the shell)
+        and zero or more interior boundaries (holes).
+        The boundaries are formed by LinearRings.
+        </para>
+        <programlisting>POLYGON ((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))</programlisting>
+    </sect3>
+
+    <sect3 id="MultiPoint">
+        <title>MultiPoint</title>
+        <para>A MultiPoint is a collection of Points.</para>
+        <programlisting>MULTIPOINT ( (0 0), (1 2) )</programlisting>
+    </sect3>
+
+    <sect3 id="MultiLineString">
+        <title>MultiLineString</title>
+        <para>A MultiLineString is a collection of LineStrings.
+        A MultiLineString is closed if each of its element is closed.
+        </para>
+        <programlisting>MULTILINESTRING ( (0 0,1 1,1 2), (2 3,3 2,5 4) )</programlisting>
+    </sect3>
+
+    <sect3 id="MultiPolygon">
+        <title>MultiPolygon</title>
+        <para>A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons.
+        Polygons in the collection may touch in only a finite number of points.
+        </para>
+        <programlisting>MULTIPOLYGON (((1 5, 5 5, 5 1, 1 1, 1 5)), ((6 5, 9 1, 6 1, 6 5)))</programlisting>
+    </sect3>
+
+    <sect3 id="GeometryCollection">
+        <title>GeometryCollection</title>
+        <para>A GeometryCollection is a heterogenous (mixed) collection of geometries.</para>
+        <programlisting>GEOMETRYCOLLECTION ( POINT(2 3), LINESTRING(2 3,3 4))</programlisting>
+    </sect3>
+
+    <sect3 id="PolyhedralSurface">
+        <title>PolyhedralSurface</title>
+        <para>A PolyhedralSurface is a contiguous collection of patches or facets which share some edges.
+        Each patch is a planar Polygon.
+        If the Polygon coordinates have Z ordinates then the surface is 3-dimensional.</para>
+        <programlisting>POLYHEDRALSURFACE (
+  ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+  ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+  ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+  ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )</programlisting>
+    </sect3>
+
+    <sect3 id="Triangle">
+        <title>Triangle</title>
+        <para>A Triangle is a polygon defined by 3 distinct non-collinear points.</para>
+        <programlisting>TRIANGLE ((0 0, 0 9, 9 0, 0 0))</programlisting>
+    </sect3>
+
+    <sect3 id="Tin">
+        <title>Tin</title>
+        <para>A Tin is a collection of non-overlapping Triangles
+        representing a triangulated irregular network.</para>
+        <programlisting>TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )</programlisting>
+    </sect3>
+
+
+</sect2>
+
+	<sect2 id="SQL_MM_Part3">
+	  <title>SQL/MM Part 3 - Curves</title>
+
+	  <para>The
+      <ulink url="https://www.iso.org/obp/ui/#iso:std:iso-iec:13249:-3:ed-5:v1:en"><emphasis>ISO/IEC 13249-3 SQL Multimedia - Spatial</emphasis></ulink>
+      standard (SQL/MM) extends the
+	  OGC SFA to define Geometry subtypes containing curves with circular arcs.
+      The SQL/MM types supprt 3DM, 3DZ and 4D coordinates.
+	  </para>
+	  <note>
+		<para>All floating point comparisons within the SQL-MM implementation
+		are performed to a specified tolerance, currently 1E-8.</para>
+	  </note>
+
+    <sect3 id="CircularString">
+        <title>CircularString</title>
+
+        <para>CircularString is the basic curve type, similar to a
+        LineString in the linear world.  A single arc segment requires three
+        points: the start and end points (first and third) and some other
+        point on the arc.  The exception to this is for a closed circle,
+        where the start and end points are the same.  In this case the
+        second point MUST be the center of the arc, ie the opposite side of
+        the circle.  To chain arcs together, the last point of the previous
+        arc is the first point of the next arc, just like in a
+        LineString.  This means that a valid circular string must have an
+        odd number of points greater than 1.</para>
+
+		<programlisting>CIRCULARSTRING(0 0, 1 1, 1 0)
+
+CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
+    </sect3>
+    <sect3 id="CompoundCurve">
+        <title>CompoundCurve</title>
+        <para>A CompoundCurve is a single continuous curve that may contain both
+        circular arc segments and linear segments.  That means that
+        in addition to having well-formed components, the end point of
+        every component (except the last) must be coincident with the
+        start point of the following component.</para>
+
+		<programlisting>COMPOUNDCURVE( CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))</programlisting>
+    </sect3>
+    <sect3 id="CurvePolygon">
+        <title>CurvePolygon</title>
+        <para>A CurvePolygon is like a polygon, with an outer ring
+        and zero or more inner rings.  The difference is that a ring can be a
+        CircularString or CompoundCurve as well as a LineString.
+        </para>
+        <para>As of PostGIS 1.4 PostGIS supports compound curves in a curve polygon.</para>
+
+		<programlisting>CURVEPOLYGON(
+  CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),
+  (1 1, 3 3, 3 1, 1 1) )</programlisting>
+
+        <para>Example: A CurvePolygon with the shell defined by a CompoundCurve
+        containing a CircularString and a LineString,
+        and a hole defined by a CircularString</para>
+		  <programlisting>CURVEPOLYGON(
+  COMPOUNDCURVE( CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),
+                 (4 3, 4 5, 1 4, 0 0)),
+  CIRCULARSTRING(1.7 1, 1.4 0.4, 1.6 0.4, 1.6 0.5, 1.7 1) )</programlisting>
+
+    </sect3>
+    <sect3 id="MultiCurve">
+        <title>MultiCurve</title>
+        <para>A MultiCurve is a collection of curves which can include
+        LineStrings, CircularStrings or CompoundCurves.</para>
+
+        <programlisting>MULTICURVE( (0 0, 5 5), CIRCULARSTRING(4 0, 4 4, 8 4))</programlisting>
+    </sect3>
+    <sect3 id="MultiSurface">
+        <title>MultiSurface</title>
+        <para>A MultiSurface is a collection of surfaces, which can be (linear)
+        Polygons or CurvePolygons.</para>
+
+        <programlisting>MULTISURFACE(
+  CURVEPOLYGON(
+    CIRCULARSTRING( 0 0, 4 0, 4 4, 0 4, 0 0),
+    (1 1, 3 3, 3 1, 1 1)),
+  ((10 10, 14 12, 11 10, 10 10), (11 11, 11.5 11, 11 11.5, 11 11)))</programlisting>
+
+    </sect3>
+
+	</sect2>
 
 	<sect2 id="OpenGISWKBWKT">
-	  <title>OGC WKB and WKT</title>
+	  <title>WKT and WKB</title>
 
 	  <para>The OGC SFA specification defines two standard formats for representing
 	  geometry values for external use: Well-Known Text (WKT) and Well-Known
@@ -142,7 +269,15 @@
 		</listitem>
 
 		<listitem>
+		  <para>POINT EMPTY</para>
+		</listitem>
+
+		<listitem>
 		  <para>LINESTRING(0 0,1 1,1 2)</para>
+		</listitem>
+
+		<listitem>
+		  <para>LINESTRING EMPTY</para>
 		</listitem>
 
 		<listitem>
@@ -158,6 +293,10 @@
 		</listitem>
 
 		<listitem>
+		  <para>MULTIPOINT EMPTY</para>
+		</listitem>
+
+		<listitem>
 		  <para>MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))</para>
 		</listitem>
 
@@ -168,6 +307,10 @@
 
 		<listitem>
 		  <para>GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))</para>
+		</listitem>
+
+		<listitem>
+		  <para>GEOMETRYCOLLECTION EMPTY</para>
 		</listitem>
 	  </itemizedlist>
 
@@ -213,6 +356,47 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
   VALUES ( ST_GeomFromWKB('\x0101000000000000000000f03f000000000000f03f', 312), 'A Place');</programlisting>
 	</sect2>
 
+  </sect1>
+
+  <sect1 id="PostGIS_Geometry">
+	  <title>Geometry Data Type</title>
+
+	<para>PostGIS implements the OGC Simple Features model
+    by defining a PostgreSQL data type called <varname>geometry</varname>.
+    It represents all of the geometry subtypes by using an internal type code
+    (see <xref linkend="GeometryType" /> and <xref linkend="ST_GeometryType" />).
+    This allows modelling spatial features as rows of tables defined
+    with a column of type <varname>geometry</varname>.
+    </para>
+
+    <para>The <varname>geometry</varname> data type is <emphasis>opaque</emphasis>,
+    which means that all access is done via invoking functions on geometry values.
+    Functions allow creating geometry objects,
+    accessing or updating all internal fields,
+    and compute new geometry values.
+    PostGIS supports all the functions specified in the OGC
+	<ulink url="https://portal.ogc.org/files/?artifact_id=25354"><emphasis>Simple feature access - Part 2: SQL option</emphasis></ulink>
+    (SFS) specification, as well many others.
+    See <xref linkend="reference" /> for the full list of functions.</para>
+
+    <note>
+        <para>PostGIS follows the SFA standard by prefixing spatial functions with "ST_".
+        This was intended to stand for "Spatial and Temporal",
+        but the temporal part of the standard was never developed.
+        Instead it can be interpreted as "Spatial Type".
+        </para>
+    </note>
+
+    <para>The SFA standard specifies that spatial objects include a Spatial Reference System
+    identifier (SRID). The SRID is required when creating spatial objects
+    for insertion into the database (it may be defaulted to 0).
+    See <xref linkend="ST_SRID" /> and <xref linkend="spatial_ref_sys" /></para>
+
+    <para>To make querying geometry efficient PostGIS defines
+    various kinds of spatial indexes, and spatial operators to use them.
+    See <xref linkend="build-indexes" /> and <xref linkend="using-query-indexes" /> for details.
+    </para>
+
 	<sect2 id="EWKB_EWKT">
 	  <title>PostGIS EWKB and EWKT</title>
 
@@ -252,17 +436,17 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
 			<listitem>
 				<para>For 3DZ geometries the Z qualifier is omitted:</para>
 				<para>OGC: POINT Z (1 2 3)</para>
-				<para>EWKT: POINT(1 2 3)</para>
+				<para>EWKT: POINT (1 2 3)</para>
 			</listitem>
 			<listitem>
 				<para>For 3DM geometries the M qualifier is included:</para>
 				<para>OGC: POINT M (1 2 3)</para>
-				<para>EWKT: POINTM(1 2 3)</para>
+				<para>EWKT: POINTM (1 2 3)</para>
 			</listitem>
 			<listitem>
 				<para>For 4D geometries the ZM qualifier is omitted:</para>
 				<para>OGC: POINT ZM (1 2 3 4)</para>
-				<para>EWKT: POINT(1 2 3 4)</para>
+				<para>EWKT: POINT (1 2 3 4)</para>
 			</listitem>
 		</itemizedlist>
 
@@ -366,79 +550,8 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 
 	</sect2>
 
-	<sect2 id="SQL_MM_Part3">
-	  <title>SQL/MM Part 3 - Curves</title>
-
-	  <para>The ISO/IEC 13249-3
-      <ulink url="https://www.iso.org/obp/ui/#iso:std:iso-iec:13249:-3:ed-5:v1:en"><emphasis>SQL Multimedia - Spatial</emphasis></ulink>
-      standard (SQL/MM) extends the
-	  OGC SFA to define Geometry subtypes containing curves with circular arcs.
-      The SQL/MM definitions include 3DM, 3DZ and 4D coordinates, but do
-	  not allow the embedding of SRID information.
-	  </para>
-
-	  <para>Examples of curved geometries are shown below:</para>
-
-	  <itemizedlist>
-		<listitem>
-		  <para>CIRCULARSTRING(0 0, 1 1, 1 0)</para>
-		  <para>CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</para>
-		  <para>The CIRCULARSTRING is the basic curve type, similar to a
-		  LINESTRING in the linear world.  A single segment required three
-		  points, the start and end points (first and third) and any other
-		  point on the arc.  The exception to this is for a closed circle,
-		  where the start and end points are the same.  In this case the
-		  second point MUST be the center of the arc, ie the opposite side of
-		  the circle.  To chain arcs together, the last point of the previous
-		  arc becomes the first point of the next arc, just like in
-		  LINESTRING.  This means that a valid circular string must have an
-		  odd number of points greater than 1.</para>
-		</listitem>
-
-		<listitem>
-		  <para>COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))</para>
-		  <para>A compound curve is a single, continuous curve that has both
-		  curved (circular) segments and linear segments.  That means that
-		  in addition to having well-formed components, the end point of
-		  every component (except the last) must be coincident with the
-		  start point of the following component.</para>
-		</listitem>
-
-		<listitem>
-		  <para>CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3
-		  3, 3 1, 1 1))</para>
-		  <para>Example compound curve in a curve polygon:
-				CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0)),
-					CIRCULARSTRING(1.7 1, 1.4 0.4, 1.6 0.4, 1.6 0.5, 1.7 1) )
-		  </para>
-		  <para>A CURVEPOLYGON is just like a polygon, with an outer ring
-		  and zero or more inner rings.  The difference is that a ring can
-		  take the form of a circular string, linear string or compound
-		  string.</para>
-		  <para>As of PostGIS 1.4 PostGIS supports compound curves in a curve polygon.</para>
-		</listitem>
-
-		<listitem>
-		  <para>MULTICURVE((0 0, 5 5),CIRCULARSTRING(4 0, 4 4, 8 4))</para>
-		  <para>The MULTICURVE is a collection of curves, which can include
-		  linear strings, circular strings or compound strings.</para>
-		</listitem>
-
-		<listitem>
-		  <para>MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0
-		  0),(1 1, 3 3, 3 1, 1 1)),((10 10, 14 12, 11 10, 10 10),(11 11, 11.5
-		  11, 11 11.5, 11 11)))</para>
-		  <para>This is a collection of surfaces, which can be (linear)
-		  polygons or curve polygons.</para>
-		</listitem>
-	  </itemizedlist>
-
-	  <note>
-		<para>All floating point comparisons within the SQL-MM implementation
-		are performed to a specified tolerance, currently 1E-8.</para>
-	  </note>
-	</sect2>
   </sect1>
+
   <sect1 id="PostGIS_Geography">
 	  <title>Geography Data Type</title>
 
