@@ -1,0 +1,2 @@
+# Test with ANALYZE
+-g the_geom {regdir}/loader/TestSkipANALYZE loadedshp

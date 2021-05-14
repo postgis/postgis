@@ -37,4 +37,6 @@ TESTS += \
 	$(topsrcdir)/regress/loader/ReprojectPtsGeogD \
 	$(topsrcdir)/regress/loader/Latin1 \
 	$(topsrcdir)/regress/loader/Latin1-implicit \
-	$(topsrcdir)/regress/loader/mfile
+	$(topsrcdir)/regress/loader/mfile \
+	$(topsrcdir)/regress/loader/TestSkipANALYZE \
+	$(topsrcdir)/regress/loader/TestANALYZE
