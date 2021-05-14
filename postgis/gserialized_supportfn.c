@@ -283,7 +283,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 	 * Otherwise it will need look them up dynamically, which only works in the schema where Postgis
 	 * is installed is part of the search path (Trac #4739)
 	 */
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 
 	if (IsA(rawreq, SupportRequestSelectivity))
 	{
