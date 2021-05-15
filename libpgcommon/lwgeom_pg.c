@@ -75,14 +75,17 @@ postgis_get_extension_schema(Oid ext_oid)
 
 #if POSTGIS_PGSQL_VERSION < 120
     Relation rel = heap_open(state->foreigntableid, NoLock);
+    ScanKeyInit(&entry[0],
+	    ObjectIdAttributeNumber,
+        BTEqualStrategyNumber, F_OIDEQ,
+        ObjectIdGetDatum(ext_oid));
 #else
     Relation rel = table_open(state->foreigntableid, NoLock);
-#endif /* POSTGIS_PGSQL_VERSION */
-
     ScanKeyInit(&entry[0],
-                ObjectIdAttributeNumber,
-                BTEqualStrategyNumber, F_OIDEQ,
-                ObjectIdGetDatum(ext_oid));
+    	Anum_pg_extension_oid
+        BTEqualStrategyNumber, F_OIDEQ,
+        ObjectIdGetDatum(ext_oid));
+#endif /* POSTGIS_PGSQL_VERSION */
 
     scandesc = systable_beginscan(rel, ExtensionOidIndexId, true,
                                   NULL, 1, entry);
