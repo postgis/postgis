@@ -29,7 +29,9 @@
 #include <utils/guc.h>
 #include <utils/guc_tables.h>
 #include <utils/fmgroids.h>
+#if POSTGIS_PGSQL_VERSION > 96
 #include <utils/regproc.h>
+#endif
 #include <catalog/namespace.h>
 #include <catalog/pg_extension.h>
 #include <commands/extension.h>
