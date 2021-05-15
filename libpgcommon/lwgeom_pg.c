@@ -69,12 +69,15 @@ static Oid
 postgis_get_extension_schema(Oid ext_oid)
 {
     Oid         result;
-    Relation    rel;
     SysScanDesc scandesc;
     HeapTuple   tuple;
     ScanKeyData entry[1];
 
-    rel = heap_open(ExtensionRelationId, AccessShareLock);
+#if POSTGIS_PGSQL_VERSION < 120
+    Relation rel = heap_open(state->foreigntableid, NoLock);
+#else
+    Relation rel = table_open(state->foreigntableid, NoLock);
+#endif /* POSTGIS_PGSQL_VERSION */
 
     ScanKeyInit(&entry[0],
                 ObjectIdAttributeNumber,
