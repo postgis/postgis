@@ -74,15 +74,15 @@ postgis_get_extension_schema(Oid ext_oid)
     ScanKeyData entry[1];
 
 #if POSTGIS_PGSQL_VERSION < 120
-    Relation rel = heap_open(state->foreigntableid, NoLock);
+    Relation rel = heap_open(ExtensionRelationId, AccessShareLock);
     ScanKeyInit(&entry[0],
 	    ObjectIdAttributeNumber,
         BTEqualStrategyNumber, F_OIDEQ,
         ObjectIdGetDatum(ext_oid));
 #else
-    Relation rel = table_open(state->foreigntableid, NoLock);
+    Relation rel = table_open(ExtensionRelationId, AccessShareLock);
     ScanKeyInit(&entry[0],
-    	Anum_pg_extension_oid
+    	Anum_pg_extension_oid,
         BTEqualStrategyNumber, F_OIDEQ,
         ObjectIdGetDatum(ext_oid));
 #endif /* POSTGIS_PGSQL_VERSION */
@@ -100,7 +100,11 @@ postgis_get_extension_schema(Oid ext_oid)
 
     systable_endscan(scandesc);
 
+#if POSTGIS_PGSQL_VERSION < 120
     heap_close(rel, AccessShareLock);
+#else
+    table_close(rel, AccessShareLock);
+#endif
 
     return result;
 }
