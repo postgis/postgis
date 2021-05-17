@@ -149,12 +149,17 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 		lwgeom = node->geom;
 
 		POINTARRAY *points;
+		LWLINE *line;
+		LWPOLY *poly;
+		POINT4D pt_start, pt_end;
+		POINTARRAY *segment_pa;
+		LWLINE *segment;
 
-		if (!lwgeom_is_collection(lwgeom))
+		if (lwgeom->type == LINETYPE || lwgeom->type == POLYGONTYPE)
 		{
 			if (lwgeom->type == LINETYPE)
 			{
-				LWLINE *line = lwgeom_as_lwline(lwgeom);
+				line = lwgeom_as_lwline(lwgeom);
 
 				if (state->pt < line->points->npoints - 1)
 				{
@@ -170,7 +175,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 			}
 			if (lwgeom->type == POLYGONTYPE)
 			{
-				LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
+				poly = lwgeom_as_lwpoly(lwgeom);
 
 				if (state->pt == poly->rings[state->ring]->npoints)
 				{
@@ -201,15 +206,14 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 				}
 			}
 
-			POINT4D pt_start, pt_end;
 			getPoint4d_p(points, state->pt, &pt_start);
 			getPoint4d_p(points, state->pt + 1, &pt_end);
 
-			POINTARRAY *segment_pa = ptarray_construct(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
+			segment_pa = ptarray_construct(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
 			ptarray_set_point4d(segment_pa, 0, &pt_start);
 			ptarray_set_point4d(segment_pa, 1, &pt_end);
 
-			LWLINE *segment = lwline_construct(lwgeom->srid, NULL, segment_pa);
+			segment = lwline_construct(lwgeom->srid, NULL, segment_pa);
 
 			state->pt++;
 
