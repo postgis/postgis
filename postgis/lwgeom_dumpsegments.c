@@ -113,7 +113,6 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 		/*
 		 * Push a struct dumpnode on the state stack
 		 */
-
 		state->stack[0].idx = 0;
 		state->stack[0].geom = lwgeom;
 		state->stacklen++;
@@ -145,7 +144,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 
 	while (1)
 	{
-		POINTARRAY *points;
+		POINTARRAY *points = NULL;
 		LWLINE *line;
 		LWPOLY *poly;
 		POINT4D pt_start, pt_end;
@@ -165,13 +164,6 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 				{
 					points = line->points;
 				}
-				else
-				{
-					if (--state->stacklen == 0)
-						SRF_RETURN_DONE(funcctx);
-					state->pathlen--;
-					continue;
-				}
 			}
 			if (lwgeom->type == POLYGONTYPE)
 			{
@@ -188,43 +180,53 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 					state->path[state->pathlen] = Int32GetDatum(state->ring + 1);
 					state->pathlen++;
 				}
-				if (state->ring == poly->nrings)
+				if (state->ring < poly->nrings)
 				{
-					if (--state->stacklen == 0)
-						SRF_RETURN_DONE(funcctx);
-					state->pathlen--;
-					continue;
-				}
-				else if (state->pt < poly->rings[state->ring]->npoints - 1)
-				{
-					points = poly->rings[state->ring];
-				}
-				else
-				{
-					state->pt++;
-					continue;
+					if (state->pt < poly->rings[state->ring]->npoints - 1)
+					{
+						points = poly->rings[state->ring];
+					}
+					else
+					{
+						state->pt++;
+						continue;
+					}
 				}
 			}
 
-			getPoint4d_p(points, state->pt, &pt_start);
-			getPoint4d_p(points, state->pt + 1, &pt_end);
+			if (points)
+			{
+				getPoint4d_p(points, state->pt, &pt_start);
+				getPoint4d_p(points, state->pt + 1, &pt_end);
 
-			segment_pa = ptarray_construct(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
-			ptarray_set_point4d(segment_pa, 0, &pt_start);
-			ptarray_set_point4d(segment_pa, 1, &pt_end);
+				segment_pa = ptarray_construct(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
+				ptarray_set_point4d(segment_pa, 0, &pt_start);
+				ptarray_set_point4d(segment_pa, 1, &pt_end);
 
-			segment = lwline_construct(lwgeom->srid, NULL, segment_pa);
+				segment = lwline_construct(lwgeom->srid, NULL, segment_pa);
 
-			state->pt++;
+				state->pt++;
 
-			state->path[state->pathlen] = Int32GetDatum(state->pt);
-			pathpt[0] = PointerGetDatum(construct_array(
-			    state->path, state->pathlen + 1, INT4OID, state->typlen, state->byval, state->align));
-			pathpt[1] = PointerGetDatum(geometry_serialize((LWGEOM *)segment));
+				state->path[state->pathlen] = Int32GetDatum(state->pt);
+				pathpt[0] = PointerGetDatum(construct_array(state->path,
+									    state->pathlen + 1,
+									    INT4OID,
+									    state->typlen,
+									    state->byval,
+									    state->align));
+				pathpt[1] = PointerGetDatum(geometry_serialize((LWGEOM *)segment));
 
-			tuple = heap_form_tuple(funcctx->tuple_desc, pathpt, isnull);
-			result = HeapTupleGetDatum(tuple);
-			SRF_RETURN_NEXT(funcctx, result);
+				tuple = heap_form_tuple(funcctx->tuple_desc, pathpt, isnull);
+				result = HeapTupleGetDatum(tuple);
+				SRF_RETURN_NEXT(funcctx, result);
+			}
+			else
+			{
+				if (--state->stacklen == 0)
+					SRF_RETURN_DONE(funcctx);
+				state->pathlen--;
+				continue;
+			}
 		}
 
 		if (lwgeom->type == COLLECTIONTYPE || lwgeom->type == MULTILINETYPE || lwgeom->type == MULTIPOLYGONTYPE)

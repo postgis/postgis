@@ -2,15 +2,7 @@ SELECT 'dumpsegments01', path, ST_AsText(geom)
 FROM (
   SELECT (ST_DumpSegments(g.geom)).*
   FROM
-    (SELECT
-       'LINESTRING(
-                0 0,
-                0 9,
-                9 9,
-                9 0,
-                0 0
-            )'::geometry AS geom
-    ) AS g
+    (SELECT 'LINESTRING(0 0, 0 9, 9 9, 9 0, 0 0)'::geometry AS geom) AS g
   ) j;
 
 SELECT 'dumpsegments02', path, ST_AsText(geom)
@@ -35,38 +27,14 @@ SELECT 'dumpsegments08', path, ST_AsText(geom)
 FROM (
   SELECT (ST_DumpSegments(g.geom)).*
   FROM
-    (SELECT
-       'POLYGON((
-                4 4,
-                5 5,
-                6 6,
-                4 4
-            ), (
-                8 8,
-                9 9,
-                10 10,
-                8 8
-            ))'::geometry AS geom
-    ) AS g
+    (SELECT 'POLYGON((4 4, 5 5, 6 6, 4 4), (8 8, 9 9, 10 10, 8 8))'::geometry AS geom) AS g
   ) j;
 
 SELECT 'dumpsegments09', path, ST_AsText(geom)
 FROM (
   SELECT (ST_DumpSegments(g.geom)).*
   FROM
-    (SELECT
-       'MULTIPOLYGON(((
-                4 4,
-                5 5,
-                6 6,
-                4 4
-            )), ((
-                8 8,
-                9 9,
-                10 10,
-                8 8
-            )))'::geometry AS geom
-    ) AS g
+    (SELECT 'MULTIPOLYGON(((4 4, 5 5, 6 6, 4 4)), ((8 8, 9 9, 10 10, 8 8)))'::geometry AS geom) AS g
   ) j;
 
 SELECT 'dumpsegments10', path, ST_AsText(geom)
