@@ -1960,6 +1960,12 @@ CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+CREATE OR REPLACE FUNCTION ST_DumpSegments(geometry)
+	RETURNS SETOF geometry_dump
+	AS 'MODULE_PATHNAME', 'LWGEOM_dumpsegments'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -------------------------------------------------------------------
 -- SPATIAL_REF_SYS
 -------------------------------------------------------------------
