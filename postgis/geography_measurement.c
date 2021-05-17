@@ -86,7 +86,7 @@ Datum geography_distance_knn(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(g1, g2, __func__);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g1), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -157,7 +157,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(g1, g2, __func__);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g1), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -220,7 +220,7 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	gserialized_error_if_srid_mismatch(g1, g2, __func__);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g1), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -288,7 +288,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g1), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -360,7 +360,7 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g1), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -409,7 +409,7 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g1), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -506,7 +506,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(1);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g), &s);
 
 	lwgeom = lwgeom_from_gserialized(g);
 
@@ -596,7 +596,7 @@ Datum geography_perimeter(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(1);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g), &s);
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )
@@ -647,7 +647,7 @@ Datum geography_length(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(1);
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g), &s);
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )
@@ -984,7 +984,7 @@ Datum geography_project(PG_FUNCTION_ARGS)
 		azimuth = PG_GETARG_FLOAT8(2); /* Azimuth in Radians */
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g), &s);
 
 	/* Handle the zero distance case */
 	if( FP_EQUALS(distance, 0.0) )
@@ -1054,7 +1054,7 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 	}
 
 	/* Initialize spheroid */
-	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	spheroid_init_from_srid(gserialized_get_srid(g1), &s);
 
 	/* Calculate the direction */
 	azimuth = lwgeom_azumith_spheroid(lwgeom_as_lwpoint(lwgeom1), lwgeom_as_lwpoint(lwgeom2), &s);

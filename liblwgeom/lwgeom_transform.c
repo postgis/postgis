@@ -500,7 +500,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		c.xyzt = v;
 		PJ_COORD t = proj_trans(pj->pj, PJ_FWD, c);
 
-		int pj_errno_val = proj_errno(pj->pj);
+		int pj_errno_val = proj_errno_reset(pj->pj);
 		if (pj_errno_val)
 		{
 			lwerror("transform: %s (%d)", proj_errno_string(pj_errno_val), pj_errno_val);
@@ -543,7 +543,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 			return LW_FAILURE;
 		}
 
-		int pj_errno_val = proj_errno(pj->pj);
+		int pj_errno_val = proj_errno_reset(pj->pj);
 		if (pj_errno_val)
 		{
 			lwerror("transform: %s (%d)", proj_errno_string(pj_errno_val), pj_errno_val);

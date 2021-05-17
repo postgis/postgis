@@ -53,7 +53,7 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 	struct geobuf_agg_context *ctx;
 
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "pgis_asgeobuf_transfn: called in non-aggregate context");

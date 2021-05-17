@@ -61,7 +61,6 @@ void _PG_init(void);
 void
 _PG_init(void)
 {
-
   coreIntHandler = pqsignal(SIGINT, handleInterrupt);
 
 #ifdef WIN32
@@ -69,8 +68,8 @@ _PG_init(void)
   lwgeom_register_interrupt_callback(interruptCallback);
 #endif
 
-    /* install PostgreSQL handlers */
-    pg_install_lwgeom_handlers();
+  /* install PostgreSQL handlers */
+  pg_install_lwgeom_handlers();
 }
 
 /*

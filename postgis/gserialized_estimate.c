@@ -2310,7 +2310,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	int key_type;
 
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 
 	if ( PG_NARGS() == 4 )
 	{
@@ -2577,7 +2577,7 @@ Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS)
 	Oid idx_oid;
 
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 
 	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
 	if (!idx_oid)

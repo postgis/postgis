@@ -17,13 +17,28 @@
 #include <postgres.h>
 #include <fmgr.h>
 #include <miscadmin.h>
+#include <access/heapam.h>
+#include <access/htup.h>
+#include <access/htup_details.h>
+#include <access/skey.h>
+#include <access/genam.h>
+#include <access/sysattr.h>
+#include <catalog/indexing.h>
 #include <executor/spi.h>
-#include "utils/builtins.h"
+#include <utils/builtins.h>
 #include <utils/guc.h>
 #include <utils/guc_tables.h>
+#include <utils/fmgroids.h>
 #include <catalog/namespace.h>
+#include <catalog/pg_extension.h>
+#include <commands/extension.h>
 
 #include "../postgis_config.h"
+
+#if POSTGIS_PGSQL_VERSION >= 100
+#include <utils/regproc.h>
+#endif
+
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
@@ -49,27 +64,100 @@ static Oid TypenameNspGetTypid(const char *typname, Oid nsp_oid)
 	                       ObjectIdGetDatum(nsp_oid));
 }
 
+/*
+ * get_extension_schema - given an extension OID, fetch its extnamespace
+ *
+ * Returns InvalidOid if no such extension.
+ */
+static Oid
+postgis_get_extension_schema(Oid ext_oid)
+{
+    Oid         result;
+    SysScanDesc scandesc;
+    HeapTuple   tuple;
+    ScanKeyData entry[1];
+
+#if POSTGIS_PGSQL_VERSION < 120
+    Relation rel = heap_open(ExtensionRelationId, AccessShareLock);
+    ScanKeyInit(&entry[0],
+	    ObjectIdAttributeNumber,
+        BTEqualStrategyNumber, F_OIDEQ,
+        ObjectIdGetDatum(ext_oid));
+#else
+    Relation rel = table_open(ExtensionRelationId, AccessShareLock);
+    ScanKeyInit(&entry[0],
+    	Anum_pg_extension_oid,
+        BTEqualStrategyNumber, F_OIDEQ,
+        ObjectIdGetDatum(ext_oid));
+#endif /* POSTGIS_PGSQL_VERSION */
+
+    scandesc = systable_beginscan(rel, ExtensionOidIndexId, true,
+                                  NULL, 1, entry);
+
+    tuple = systable_getnext(scandesc);
+
+    /* We assume that there can be at most one matching tuple */
+    if (HeapTupleIsValid(tuple))
+        result = ((Form_pg_extension) GETSTRUCT(tuple))->extnamespace;
+    else
+        result = InvalidOid;
+
+    systable_endscan(scandesc);
+
+#if POSTGIS_PGSQL_VERSION < 120
+    heap_close(rel, AccessShareLock);
+#else
+    table_close(rel, AccessShareLock);
+#endif
+
+    return result;
+}
+
+static Oid
+postgis_get_full_version_schema()
+{
+	const char* proname = "postgis_full_version";
+	List* names = stringToQualifiedNameList(proname);
+	FuncCandidateList clist = FuncnameGetCandidates(names, -1, NIL, false, false, false);
+	if (!clist)
+		return InvalidOid;
+
+	return get_func_namespace(clist->oid);
+}
+
+
 /* Cache type lookups in per-session location */
 static postgisConstants *
-getPostgisConstants(FunctionCallInfo fcinfo)
+getPostgisConstants()
 {
-	char *nsp_name;
-	Oid nsp_oid;
-	postgisConstants *constants;
-
-	/* For some reason we have a hobbled fcinfo/flinfo */
-	if (!fcinfo || !fcinfo->flinfo) return NULL;
-
-	/* Allocate in the CacheContext so we don't lose this at the end of the statement */
-	constants = MemoryContextAlloc(CacheMemoryContext, sizeof(postgisConstants));
+	Oid nsp_oid = InvalidOid;
+	Oid ext_oid = get_extension_oid("postgis", true);
+	if (ext_oid != InvalidOid)
+	{
+		nsp_oid = postgis_get_extension_schema(ext_oid);
+	}
+	else
+	{
+		nsp_oid = postgis_get_full_version_schema();
+	}
 
 	/* early exit if we cannot lookup nsp_name, cf #4067 */
-	nsp_oid = get_func_namespace(fcinfo->flinfo->fn_oid);
-	if (!nsp_oid) return NULL;
-	nsp_name = get_namespace_name(nsp_oid);
+	if (nsp_oid == InvalidOid)
+		elog(ERROR, "Unable to determine 'postgis' install schema");
+
+	/* Put constants cache in a child of the CacheContext */
+	MemoryContext context = AllocSetContextCreate(
+	    CacheMemoryContext,
+	    "PostGIS Constants Context",
+	    ALLOCSET_SMALL_SIZES);
+
+	/* Allocate in the CacheContext so we don't lose this at the end of the statement */
+	postgisConstants* constants = MemoryContextAlloc(context, sizeof(postgisConstants));
+
+	/* Calculate fully qualified name of 'spatial_ref_sys' */
+	char *nsp_name = get_namespace_name(nsp_oid);
 	constants->install_nsp_oid = nsp_oid;
 	constants->install_nsp = MemoryContextStrdup(CacheMemoryContext, nsp_name);
-	elog(DEBUG4, "%s located %s in namespace %s", __func__, get_func_name(fcinfo->flinfo->fn_oid), nsp_name);
 
 	char *spatial_ref_sys_fullpath = quote_qualified_identifier(nsp_name, "spatial_ref_sys");
 	constants->spatial_ref_sys = MemoryContextStrdup(CacheMemoryContext, spatial_ref_sys_fullpath);
@@ -141,11 +229,11 @@ postgis_oid(postgisType typ)
 }
 
 void
-postgis_initialize_cache(FunctionCallInfo fcinfo)
+postgis_initialize_cache()
 {
 	/* Cache the info if we don't already have it */
 	if (!POSTGIS_CONSTANTS)
-		POSTGIS_CONSTANTS = getPostgisConstants(fcinfo);
+		POSTGIS_CONSTANTS = getPostgisConstants();
 }
 
 const char *

@@ -437,7 +437,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Read sensible precision defaults (about one meter) given the srs */
-	sp = srid_axis_precision(fcinfo, gserialized_get_srid(geom), TWKB_DEFAULT_PRECISION);
+	sp = srid_axis_precision(gserialized_get_srid(geom), TWKB_DEFAULT_PRECISION);
 
 	/* If user specified XY precision, use it */
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
@@ -577,7 +577,7 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	}
 
 	/* Read sensible precision defaults (about one meter) given the srs */
-	sp = srid_axis_precision(fcinfo, lwgeom_get_srid(lwcollection_as_lwgeom(col)), TWKB_DEFAULT_PRECISION);
+	sp = srid_axis_precision(lwgeom_get_srid(lwcollection_as_lwgeom(col)), TWKB_DEFAULT_PRECISION);
 
 	/* If user specified XY precision, use it */
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
