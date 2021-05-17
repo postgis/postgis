@@ -1,9 +1,9 @@
 SELECT 'dumpsegments01', path, ST_AsText(geom)
 FROM (
-  SELECT (ST_DumpPoints(g.geom)).*
+  SELECT (ST_DumpSegments(g.geom)).*
   FROM
     (SELECT
-       'LINESTRING (
+       'LINESTRING(
                 0 0,
                 0 9,
                 9 9,
@@ -15,7 +15,7 @@ FROM (
 
 SELECT 'dumpsegments02', path, ST_AsText(geom)
 FROM (
-  SELECT (ST_DumpPoints(g.geom)).*
+  SELECT (ST_DumpSegments(g.geom)).*
   FROM
     (SELECT
        'GEOMETRYCOLLECTION(
@@ -25,8 +25,27 @@ FROM (
     ) AS g
   ) j;
 
-SELECT 'dumpsegments03', ST_DumpPoints('POLYGON EMPTY'::geometry);
-SELECT 'dumpsegments04', ST_DumpPoints('MULTIPOLYGON EMPTY'::geometry);
-SELECT 'dumpsegments05', ST_DumpPoints('MULTILINESTRING EMPTY'::geometry);
-SELECT 'dumpsegments06', ST_DumpPoints('LINESTRING EMPTY'::geometry);
-SELECT 'dumpsegments07', ST_DumpPoints('GEOMETRYCOLLECTION EMPTY'::geometry);
+SELECT 'dumpsegments03', ST_DumpSegments('POLYGON EMPTY'::geometry);
+SELECT 'dumpsegments04', ST_DumpSegments('MULTIPOLYGON EMPTY'::geometry);
+SELECT 'dumpsegments05', ST_DumpSegments('MULTILINESTRING EMPTY'::geometry);
+SELECT 'dumpsegments06', ST_DumpSegments('LINESTRING EMPTY'::geometry);
+SELECT 'dumpsegments07', ST_DumpSegments('GEOMETRYCOLLECTION EMPTY'::geometry);
+
+SELECT 'dumpsegments08', path, ST_AsText(geom)
+FROM (
+  SELECT (ST_DumpSegments(g.geom)).*
+  FROM
+    (SELECT
+       'POLYGON((
+                4 4,
+                5 5,
+                6 6,
+                4 4
+            ), (
+                8 8,
+                9 9,
+                10 10,
+                8 8
+            ))'::geometry AS geom
+    ) AS g
+  ) j;
