@@ -49,3 +49,34 @@ FROM (
             ))'::geometry AS geom
     ) AS g
   ) j;
+
+SELECT 'dumpsegments09', path, ST_AsText(geom)
+FROM (
+  SELECT (ST_DumpSegments(g.geom)).*
+  FROM
+    (SELECT
+       'MULTIPOLYGON(((
+                4 4,
+                5 5,
+                6 6,
+                4 4
+            )), ((
+                8 8,
+                9 9,
+                10 10,
+                8 8
+            )))'::geometry AS geom
+    ) AS g
+  ) j;
+
+SELECT 'dumpsegments10', path, ST_AsText(geom)
+FROM (
+  SELECT (ST_DumpSegments(g.geom)).*
+  FROM
+    (SELECT
+       'GEOMETRYCOLLECTION(
+          LINESTRING(1 1, 3 3),
+          POLYGON((4 4, 5 5, 6 6, 4 4))
+        )'::geometry AS geom
+    ) AS g
+  ) j;
