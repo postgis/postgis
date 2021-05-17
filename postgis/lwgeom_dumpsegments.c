@@ -145,15 +145,15 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 
 	while (1)
 	{
-		node = &state->stack[state->stacklen - 1];
-		lwgeom = node->geom;
-
 		POINTARRAY *points;
 		LWLINE *line;
 		LWPOLY *poly;
 		POINT4D pt_start, pt_end;
 		POINTARRAY *segment_pa;
 		LWLINE *segment;
+
+		node = &state->stack[state->stacklen - 1];
+		lwgeom = node->geom;
 
 		if (lwgeom->type == LINETYPE || lwgeom->type == POLYGONTYPE)
 		{
