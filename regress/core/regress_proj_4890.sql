@@ -8,3 +8,5 @@ STABLE
 LANGUAGE SQL;
 
 SELECT 4890 AS id, ST_AsText(ST_SnapToGrid(ST_Centroid(ST_Collect(get_closest(g) )), 0.0001)) FROM points ;
+DROP TABLE points;
+DROP FUNCTION get_closest(geometry);
