@@ -77,7 +77,9 @@ TESTS += \
 	$(topsrcdir)/regress/core/regress_ogc \
 	$(topsrcdir)/regress/core/regress_ogc_cover \
 	$(topsrcdir)/regress/core/regress_ogc_prep \
-	$(topsrcdir)/regress/core/regress_proj \
+	$(topsrcdir)/regress/core/regress_proj_basic \
+	$(topsrcdir)/regress/core/regress_proj_cache_overflow \
+	$(topsrcdir)/regress/core/regress_proj_4890 \
 	$(topsrcdir)/regress/core/relate \
 	$(topsrcdir)/regress/core/remove_repeated_points \
 	$(topsrcdir)/regress/core/removepoint \
