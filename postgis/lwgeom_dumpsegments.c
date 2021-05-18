@@ -256,6 +256,5 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 		if (--state->stacklen == 0)
 			SRF_RETURN_DONE(funcctx);
 		state->pathlen--;
-		state->stack[state->stacklen - 1].idx++;
 	}
 }
