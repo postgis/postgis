@@ -146,6 +146,7 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 	{
 		POINTARRAY *points = NULL;
 		LWLINE *line;
+		LWTRIANGLE *tri;
 		LWPOLY *poly;
 		POINT4D pt_start, pt_end;
 		POINTARRAY *segment_pa;
@@ -154,20 +155,38 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 		node = &state->stack[state->stacklen - 1];
 		lwgeom = node->geom;
 
-		if (lwgeom->type == LINETYPE || lwgeom->type == POLYGONTYPE)
+		if (lwgeom->type == LINETYPE || lwgeom->type == TRIANGLETYPE || lwgeom->type == POLYGONTYPE)
 		{
 			if (lwgeom->type == LINETYPE)
 			{
-				line = lwgeom_as_lwline(lwgeom);
+				line = (LWLINE *)lwgeom;
 
 				if (state->pt < line->points->npoints - 1)
 				{
 					points = line->points;
 				}
 			}
+			if (lwgeom->type == TRIANGLETYPE)
+			{
+				tri = (LWTRIANGLE *)lwgeom;
+
+				if (state->pt == 0)
+				{
+					state->path[state->pathlen++] = Int32GetDatum(state->ring + 1);
+				}
+
+				if (state->pt < 3)
+				{
+					points = tri->points;
+				}
+				else
+				{
+					state->pathlen--;
+				}
+			}
 			if (lwgeom->type == POLYGONTYPE)
 			{
-				poly = lwgeom_as_lwpoly(lwgeom);
+				poly = (LWPOLY *)lwgeom;
 
 				if (state->pt == poly->rings[state->ring]->npoints)
 				{
@@ -175,13 +194,15 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 					state->ring++;
 					state->pathlen--;
 				}
-				if (state->pt == 0 && state->ring < poly->nrings)
-				{
-					state->path[state->pathlen] = Int32GetDatum(state->ring + 1);
-					state->pathlen++;
-				}
+
 				if (state->ring < poly->nrings)
 				{
+					if (state->pt == 0)
+					{
+						state->path[state->pathlen] = Int32GetDatum(state->ring + 1);
+						state->pathlen++;
+					}
+
 					if (state->pt < poly->rings[state->ring]->npoints - 1)
 					{
 						points = poly->rings[state->ring];
@@ -229,7 +250,8 @@ Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
 			}
 		}
 
-		if (lwgeom->type == COLLECTIONTYPE || lwgeom->type == MULTILINETYPE || lwgeom->type == MULTIPOLYGONTYPE)
+		if (lwgeom->type == COLLECTIONTYPE || lwgeom->type == MULTILINETYPE ||
+		    lwgeom->type == MULTIPOLYGONTYPE || lwgeom->type == TINTYPE)
 		{
 			lwcoll = (LWCOLLECTION *)node->geom;
 
