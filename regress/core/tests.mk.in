@@ -78,6 +78,7 @@ TESTS += \
 	$(topsrcdir)/regress/core/regress_ogc_cover \
 	$(topsrcdir)/regress/core/regress_ogc_prep \
 	$(topsrcdir)/regress/core/regress_proj_basic \
+	$(topsrcdir)/regress/core/regress_proj_adhoc \
 	$(topsrcdir)/regress/core/regress_proj_cache_overflow \
 	$(topsrcdir)/regress/core/regress_proj_4890 \
 	$(topsrcdir)/regress/core/relate \
