@@ -61,7 +61,7 @@ extern postgisConstants *POSTGIS_CONSTANTS;
 
 /* Infer the install location of postgis, and thus the namespace to use
  * when looking up the type name, and cache oids */
-void postgis_initialize_cache(FunctionCallInfo fcinfo);
+void postgis_initialize_cache();
 
 /* Useful if postgis_initialize_cache() has been called before.
  * Otherwise it tries to do a bare lookup */

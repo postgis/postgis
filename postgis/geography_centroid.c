@@ -82,7 +82,7 @@ Datum geography_centroid(PG_FUNCTION_ARGS)
 	}
 
     /* Initialize spheroid */
-    spheroid_init_from_srid(fcinfo, srid, &s);
+    spheroid_init_from_srid(srid, &s);
 
     /* Set to sphere if requested */
     use_spheroid = PG_GETARG_BOOL(1);

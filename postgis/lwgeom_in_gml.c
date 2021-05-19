@@ -117,7 +117,7 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	 * That function requires access to spatial_ref_sys, so in order to have it ready we need to ensure
 	 * the internal cache is initialized
 	 */
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 #endif
 	lwgeom = lwgeom_from_gml(xml, xml_size);
 	if ( root_srid != SRID_UNKNOWN )
