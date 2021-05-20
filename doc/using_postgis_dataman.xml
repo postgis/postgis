@@ -2025,10 +2025,10 @@ WHERE
     data in a single dimension.
     Data such as geometry which has 2 or more dimensions)
     requires an index method that supports range query across all the data dimensions.
-    (That said, it is possible to effectively index so-called XY data using a B-tree
+    (That said, it is possible to effectively index so-called XY (point) data using a B-tree
     and explict range searches.)
-    One of the main advantages of PostgreSQL for spatial data handling is that it offers several kinds of
-	indexes which work well for multi-dimensional data: GiST, BRIN and SP-GiST indexes.</para>
+    One of the key advantages of PostgreSQL for spatial data handling is that it offers several kinds of
+	index methods which work well for multi-dimensional data: GiST, BRIN and SP-GiST indexes.</para>
 
 	<itemizedlist>
 	  <listitem>
@@ -2061,25 +2061,29 @@ WHERE
 
     <para>For more information see the
     <ulink url="https://postgis.net/workshops/postgis-intro/indexing.html">PostGIS Workshop</ulink>,
-    and the <ulink url="https://www.postgresql.org/docs/current/indexes.html">PostgreSQL documentation</ulink>.
+    and the <ulink url="https://www.postgresql.org/docs/current/indexes.html">PostgreSQL manual</ulink>.
     </para>
 
 	<sect2 id="gist_indexes">
 	  <title>GiST Indexes</title>
 
 	  <para>GiST stands for "Generalized Search Tree" and is a generic form of
-	  indexing. In addition to GIS indexing, GiST is used to speed up searches
+	  indexing for multi-dimensional data.
+      PostGIS uses an R-Tree index implemented on top of GiST to index spatial data.
+      GiST is the most commonly-used and versatile spatial index method, and offers very good query performance.
+      Other implementations of GiST are used to speed up searches
 	  on all kinds of irregular data structures (integer arrays, spectral
-	  data, etc) which are not amenable to normal B-Tree indexing.</para>
+	  data, etc) which are not amenable to normal B-Tree indexing.
+      For more information see the <ulink url="https://www.postgresql.org/docs/current/gist.html">PostgreSQL manual</ulink>.
+      </para>
 
-	  <para>Once a GIS data table exceeds a few thousand rows, you will want
+	  <para>Once a spatial data table exceeds a few thousand rows, you will want
 	  to build an index to speed up spatial searches of the data (unless all
 	  your searches are based on attributes, in which case you'll want to
 	  build a normal index on the attribute fields).</para>
 
 	  <para>The syntax for building a GiST index on a "geometry" column is as
 	  follows:</para>
-
 
 	  <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] ); </programlisting></para>
 
@@ -2099,10 +2103,10 @@ WHERE
 	<sect2 id="brin_indexes">
 	<title>BRIN Indexes</title>
 
-    <para>BRIN stands for "Block Range Index". It is an general-purpose
-    <ulink url="https://www.postgresql.org/docs/current/brin.html">index method</ulink> introduced in PostgreSQL 9.5.
+    <para>BRIN stands for "Block Range Index". It is a general-purpose
+    index method introduced in PostgreSQL 9.5.
     BRIN is a <emphasis>lossy</emphasis>
-    index method, meaning that a a secondary check is required to confirm
+    index method, meaning that a secondary check is required to confirm
     that a record matches a given search condition
     (which is the case for all provided spatial indexes).
     It provides much faster index creation and much smaller index size,
@@ -2111,7 +2115,9 @@ WHERE
     on columns which have a correlation with their
     physical location within the table. In addition to spatial indexing,
     BRIN can speed up searches on various kinds of attribute data
-    structures (integer, arrays etc).</para>
+    structures (integer, arrays etc).
+    For more information see the <ulink url="https://www.postgresql.org/docs/current/brin.html">PostgreSQL manual</ulink>.
+    </para>
 
     <para>Once a spatial table exceeds a few thousand rows, you will want
     to build an index to speed up spatial searches of the data.
@@ -2230,7 +2236,8 @@ CREATE INDEX [indexname] ON [tablename]
     <listitem><para>Requires manual index maintenance.</para></listitem>
     <listitem><para>Most appropriate for very large tables,
     with low or no overlap (e.g. points),
-    and which are static or change infrequently.</para></listitem>
+    which are static or change infrequently.</para></listitem>
+    <listitem><para>More effective for queries which return relatively large numbers of data records.</para></listitem>
    </itemizedlist>
 
 	</sect2>
@@ -2239,12 +2246,16 @@ CREATE INDEX [indexname] ON [tablename]
 	 	<title>SP-GiST Indexes</title>
 
 		<para>SP-GiST stands for "Space-Partitioned Generalized Search Tree" and is
-		a generic form of indexing that supports partitioned search trees, such as
-		quad-trees, k-d trees, and radix trees (tries). The common feature of these
+		a generic form of indexing for multi-dimensional data types
+        that supports partitioned search trees, such as
+		quad-trees, k-d trees, and radix trees (tries).
+        The common feature of these
 		data structures is that they repeatedly divide the search space into
-		partitions that need not be of equal size. In addition to GIS indexing,
+		partitions that need not be of equal size. In addition to spatial indexing,
 		SP-GiST is used to speed up searches on many kinds of data, such as phone
-		routing, ip routing, substring search, etc. </para>
+		routing, ip routing, substring search, etc.
+        For more information see the <ulink url="https://www.postgresql.org/docs/current/spgist.html">PostgreSQL manual</ulink>.
+        </para>
 
     <para>As it is the case for GiST indexes, SP-GiST indexes are lossy, in the
 		sense that they store the bounding box enclosing spatial objects.
