@@ -19,6 +19,7 @@ PostGIS 3.1.2
   - #4877, mingw64 PostGIS / PostgreSQL 14 compile (Regina Obe, Tom Lane)
   - #4838, Update to support Tiger 2020 (Regina Obe)
   - #4890, Change Proj cache lifetime to last as long as connection (Paul Ramsey)
+  - #4845, Add Pg14 build support (Paul Ramsey)
 
 
 PostGIS 3.1.1
