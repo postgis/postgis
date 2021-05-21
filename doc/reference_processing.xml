@@ -634,28 +634,29 @@ POINT(0.5 1)
         It will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
         </para>
 
-        <para>The <varname>target_percent</varname> is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting.
-        One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. The
-        target_percent of 1 will give you the same answer as the convex hull.  A target_percent
-        between 0 and 0.99 will give you something that should have a smaller area than the convex hull.
-        This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
-
-        <para>It is usually used with MULTI and Geometry Collections.
-        It is not an aggregate function, but can be used
-        with <xref linkend="ST_Collect" /> or <xref linkend="ST_Union" /> to get the concave hull of a set of points/linestring/polygons
-        (e.g. <code>ST_ConcaveHull(ST_Collect(somepointfield), 0.80)</code>.</para>
-
-        <para>It is slower to compute than the convex hull
-        but generally has a smaller result area
+        <para>One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries.
+        This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.
+        It is slower to compute than the convex hull but generally has a smaller result area
         and represents a more natural bounds of the input geometry.</para>
 
-        <note><para>Note - If you are using with points, linestrings, or geometry collections use ST_Collect. If you are using with polygons, use ST_Union since
-            it may fail with invalid geometries.</para></note>
+        <para>The <varname>target_percent</varname> is the percentage of area of the convex hull the solution will try to approach.
+        A target_percent of 1 will give the same answer as the convex hull.  A target_percent
+        between 0 and 0.99 will produce a geometry that should have a smaller area than the convex hull.
+        </para>
 
-        <note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull and more likely to run into topological exceptions. Also the more
-            floating points and number of points you accrue.  First try a 0.99 which does a first hop, is usually very fast, sometimes as fast as computing the convex hull, and usually gives much better than 99% of shrink since it almost always overshoots. Second hope of 0.98 it slower, others get slower usually quadratically.
+        <note><para>The smaller the target percent, the longer it takes to process the concave hull, and the more likely to run into topological exceptions. Also the more
+            floating points and number of points you accrue.  First try 0.99 which does a single pass, is usually very fast, sometimes as fast as computing the convex hull, and usually gives much better than 99% of shrink since it almost always overshoots.
+            Second hope of 0.98 is slower, others get slower usually quadratically.
             To reduce precision and float points, use <xref linkend="ST_SimplifyPreserveTopology" /> or <xref linkend="ST_SnapToGrid" /> after ST_ConcaveHull. ST_SnapToGrid is a bit faster, but
-                could result in invalid geometries where as ST_SimplifyPreserveTopology almost always preserves the validity of the geometry.</para></note>
+            could result in invalid geometries whereas ST_SimplifyPreserveTopology almost always preserves the validity of the geometry.</para></note>
+
+       <para>This is not an aggregate function.
+        To compute the concave hull of a set of geometries, use with <xref linkend="ST_Collect" />
+        or <xref linkend="ST_Union" />
+        (e.g. <code>ST_ConcaveHull(ST_Collect(somepointfield), 0.80)</code>.</para>
+
+        <note><para>For use with sets of points or linestrings use <code>ST_Collect</code>.
+        Use <code>ST_Union</code> for polygons, since it may fail with invalid geometries.</para></note>
 
         <para>More real world examples and brief explanation of the technique are shown <ulink
         url="http://www.bostongis.com/postgis_concavehull.snippet">http://www.bostongis.com/postgis_concavehull.snippet</ulink></para>
@@ -843,10 +844,10 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
         The convex hull of two or more collinear points is a two-point LineString.
         The convex hull of one or more identical points is a Point.</para>
 
-        <para>It is usually used with Multi* and GeometryCollections.
-        It is not an aggregate function.
-        To compute the convex hull of a set of geometries,
-        use <xref linkend="ST_Collect" /> to aggregate them.</para>
+        <para>This is not an aggregate function.
+        To compute the convex hull of a set of geometries, use <xref linkend="ST_Collect" />
+        to aggregate them into a geometry collection
+        (e.g. <code>ST_ConvexHull(ST_Collect(geom))</code>.</para>
 
         <para>One can think of the convex hull as the geometry obtained by wrapping an elastic
             band around a set of geometries.  This is different from a concave hull
