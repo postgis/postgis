@@ -72,7 +72,7 @@ END;
 $$;
 
 -- There are 50000 points in the table with full extent being
--- BOX(0.0439142361 0.0197799355,999.955261 999.993652)
+-- BOX(0.001693 0.000185,999.968899 999.997026)
 CREATE TABLE sample_queries AS
 SELECT 1 as id, 5 as tol, 'ST_MakeEnvelope(125,125,135,135)' as box
  UNION ALL
