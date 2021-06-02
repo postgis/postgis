@@ -548,7 +548,7 @@ F000000000000000000000000000000000000000000000000');
 	  <refnamediv>
 		<refname>ST_AsGeoJSON</refname>
 
-		<refpurpose>Return the geometry as a GeoJSON element.</refpurpose>
+		<refpurpose>Return a geometry as a GeoJSON element.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -578,12 +578,14 @@ F000000000000000000000000000000000000000000000000');
 	  <refsection>
 		<title>Description</title>
 
-		  <para>Return the geometry as a GeoJSON "geometry" object, or the row as a GeoJSON "feature" object. (Cf <ulink
- url="https://tools.ietf.org/html/rfc7946">GeoJSON specifications RFC 7946</ulink>). 2D and 3D Geometries are both supported. GeoJSON only support SFS 1.1 geometry types (no curve support for example).</para>
+		  <para>Returns a geometry as a GeoJSON "geometry", or a row as a GeoJSON "feature".
+          (See the <ulink url="https://tools.ietf.org/html/rfc7946">GeoJSON specifications RFC 7946</ulink>).
+ 2D and 3D Geometries are both supported.
+ GeoJSON only support SFS 1.1 geometry types (no curve support for example).</para>
 
 			<para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 9). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
 
-			<para>The <varname>options</varname> argument could be used to add BBOX or CRS in GeoJSON output:
+			<para>The <varname>options</varname> argument can be used to add BBOX or CRS in GeoJSON output:
 			  <itemizedlist>
 				<listitem>
 				  <para>0: means no option</para>
@@ -607,6 +609,25 @@ F000000000000000000000000000000000000000000000000');
 			  </itemizedlist>
 			</para>
 
+            <para>The GeoJSON specification states that polygons are oriented using the Right-Hand Rule,
+            and some clients require this orientation.
+            This can be ensured by using <xref linkend="ST_ForcePolygonCCW"/>.
+            The specification also requires that geometry be in the WGS84 coordinate system
+            (SRID = 4326).
+            If necessary geometry can be projected into WGS84 using <xref linkend="ST_Transform"/>:
+            <code>ST_Transform( geom, 4326 )</code>.
+            </para>
+
+            <para>GeoJSON can be tested and viewed online at <ulink url="http://geojson.io/">geojson.io</ulink>
+            and <ulink url="http://geojson.io/">geojsonlint.com</ulink>.
+            It is widely supported by web mapping frameworks:
+                <itemizedlist>
+                <listitem><para><ulink url="https://openlayers.org/en/latest/examples/geojson.html">OpenLayers GeoJSON Example</ulink></para></listitem>
+                <listitem><para><ulink url="https://leafletjs.com/examples/geojson/">Leaflet GeoJSON Example</ulink></para></listitem>
+                <listitem><para><ulink url="https://www.mapbox.com/mapbox-gl-js/example/multiple-geometries/">Mapbox GL GeoJSON Example</ulink></para></listitem>
+                </itemizedlist>
+            </para>
+
 			<para>Availability: 1.3.4</para>
 			<para>Availability: 1.5.0 geography support was introduced.</para>
 			<para>Changed: 2.0.0 support default args and named args.</para>
@@ -618,58 +639,56 @@ F000000000000000000000000000000000000000000000000');
 	  <refsection>
 		<title>Examples</title>
 
-		<para>GeoJSON format is popular among web mapping frameworks.
-			<itemizedlist>
-			<listitem><para><ulink url="https://openlayers.org/en/latest/examples/geojson.html">OpenLayers GeoJSON Example</ulink></para></listitem>
-			<listitem><para><ulink url="https://leafletjs.com/examples/geojson/">Leaflet GeoJSON Example</ulink></para></listitem>
-			<listitem><para><ulink url="https://www.mapbox.com/mapbox-gl-js/example/multiple-geometries/">Mapbox GL GeoJSON Example</ulink></para></listitem>
-			</itemizedlist>
-		</para>
-		<para>You can test and view your GeoJSON data online on <ulink url="http://geojson.io/">geojson.io</ulink>.</para>
-
-<para>To build FeatureCollection:</para>
-<programlisting>select json_build_object(
+<para>Generate a FeatureCollection:</para>
+<programlisting>SELECT json_build_object(
     'type', 'FeatureCollection',
     'features', json_agg(ST_AsGeoJSON(t.*)::json)
     )
-from ( values (1, 'one', 'POINT(1 1)'::geometry),
+FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
               (2, 'two', 'POINT(2 2)'),
               (3, 'three', 'POINT(3 3)')
      ) as t(id, name, geom);</programlisting>
 <screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "properties": {"id": 1, "name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "properties": {"id": 2, "name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "properties": {"id": 3, "name": "three"}}]}</screen>
 
-<para>To get Features as records:</para>
+<para>Generate a Feature:</para>
 		<programlisting>SELECT ST_AsGeoJSON(t.*)
-FROM (VALUES
-  (1, 'one', 'POINT(1 1)'::geometry),
-  (2, 'two', 'POINT(2 2)'),
-  (3, 'three', 'POINT(3 3)'))
-AS t(id, name, geom);</programlisting>
+FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
 <screen>                                                  st_asgeojson
 -----------------------------------------------------------------------------------------------------------------
  {"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "properties": {"id": 1, "name": "one"}}
- {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "properties": {"id": 2, "name": "two"}}
- {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "properties": {"id": 3, "name": "three"}}
 </screen>
 
-<para>Don't forget to transform your data to WGS84 longitude, latitude to conform with RFC7946:</para>
+<para>An alternate way to generate Features with an <varname>id</varname> property
+is to use JSONB functions and operators:</para>
+		<programlisting>SELECT jsonb_build_object(
+    'type',       'Feature',
+    'id',         id,
+    'geometry',   ST_AsGeoJSON(geom)::jsonb,
+    'properties', to_jsonb( t.* ) - 'id' - 'geom'
+    ) AS json
+FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
+<screen>                                                  json
+-----------------------------------------------------------------------------------------------------------------
+ {"id": 1, "type": "Feature", "geometry": {"type": "Point", "coordinates": [1, 1]}, "properties": {"name": "one"}}
+</screen>
+
+<para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
 		<programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
 <screen>					   st_asgeojson
 -----------------------------------------------------------------------------------------------------------
 
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
-(1 row)</screen>
-<para>You can also use it with 3D geometries:</para>
+</screen>
+<para>3D geometries are supported:</para>
 <programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
 <screen>{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
 	  </refsection>
   <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_GeomFromGeoJSON" />, <xref linkend="ST_AsMVT" />, <xref linkend="ST_AsGeobuf" /></para>
+    <para><xref linkend="ST_GeomFromGeoJSON" />, <xref linkend="ST_ForcePolygonCCW" />, <xref linkend="ST_Transform" /> </para>
   </refsection>
-
 
 	</refentry>
 
