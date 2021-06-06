@@ -17,6 +17,7 @@ PostGIS 3.2.0
   - #4628, Add an option to disable ANALYZE when loading shapefiles (Stefan Corneliu Petrea)
   - #4924, Faster ST_RemoveRepeatedPoints on large multipoints, O(NlogN) instead of O(N^2)
            (Aliaksandr Kalenik, Darafei Praliaskouski)
+  - #4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)
 
  * New features*
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)
