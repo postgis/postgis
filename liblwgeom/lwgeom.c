@@ -1579,145 +1579,137 @@ lwgeom_remove_repeated_points_in_place(LWGEOM *geom, double tolerance)
 	int geometry_modified = LW_FALSE;
 	switch (geom->type)
 	{
-		/* No-op! Cannot remote points */
-		case POINTTYPE:
-		case TRIANGLETYPE:
-			return geometry_modified;
-		case LINETYPE:
+	/* No-op! Cannot remove points */
+	case POINTTYPE:
+	case TRIANGLETYPE:
+		return geometry_modified;
+	case LINETYPE: {
+		LWLINE *g = (LWLINE *)(geom);
+		POINTARRAY *pa = g->points;
+		uint32_t npoints = pa->npoints;
+		ptarray_remove_repeated_points_in_place(pa, tolerance, 2);
+		geometry_modified = npoints != pa->npoints;
+		/* Invalid input, discard the collapsed line */
+		if (pa->npoints < 2)
 		{
-			LWLINE *g = (LWLINE*)(geom);
-			POINTARRAY *pa = g->points;
+			pa->npoints = 0;
+			geometry_modified = LW_TRUE;
+		}
+		break;
+	}
+	case POLYGONTYPE: {
+		uint32_t j = 0;
+		LWPOLY *g = (LWPOLY *)(geom);
+		for (uint32_t i = 0; i < g->nrings; i++)
+		{
+			POINTARRAY *pa = g->rings[i];
 			uint32_t npoints = pa->npoints;
-			ptarray_remove_repeated_points_in_place(pa, tolerance, 2);
-			geometry_modified = npoints != pa->npoints;
-			/* Invalid output */
-			if (pa->npoints == 1 && pa->maxpoints > 1)
+			ptarray_remove_repeated_points_in_place(pa, tolerance, 4);
+			geometry_modified |= npoints != pa->npoints;
+			/* Drop collapsed rings */
+			if (pa->npoints < 4)
 			{
-				/* Use first point as last point */
-				pa->npoints = 2;
-				ptarray_copy_point(pa, 0, 1);
+				geometry_modified = LW_TRUE;
+				ptarray_free(pa);
+				continue;
 			}
-			break;
+			g->rings[j++] = pa;
 		}
-		case POLYGONTYPE:
-		{
-			uint32_t i, j = 0;
-			LWPOLY *g = (LWPOLY*)(geom);
-			for (i = 0; i < g->nrings; i++)
-			{
-				POINTARRAY *pa = g->rings[i];
-				int minpoints = 4;
-				uint32_t npoints = 0;
-				/* Skip zero'ed out rings */
-				if(!pa)
-					continue;
-				npoints = pa->npoints;
-				ptarray_remove_repeated_points_in_place(pa, tolerance, minpoints);
-				geometry_modified |= npoints != pa->npoints;
-				/* Drop collapsed rings */
-				if(pa->npoints < 4)
-				{
-					geometry_modified = LW_TRUE;
-					ptarray_free(pa);
-					continue;
-				}
-				g->rings[j++] = pa;
-			}
-			/* Update ring count */
-			g->nrings = j;
-			break;
-		}
-		case MULTIPOINTTYPE:
-		{
-			double tolsq = tolerance * tolerance;
-			LWMPOINT *mpt = (LWMPOINT *)geom;
+		/* Update ring count */
+		g->nrings = j;
+		break;
+	}
+	case MULTIPOINTTYPE: {
+		double tolsq = tolerance * tolerance;
+		LWMPOINT *mpt = (LWMPOINT *)geom;
 
-			for (uint8_t dim = 0; dim < 2; dim++)
+		for (uint8_t dim = 0; dim < 2; dim++)
+		{
+			/* sort by y, then by x - this way the result is sorted by x */
+			qsort(mpt->geoms, mpt->ngeoms, sizeof(LWPOINT *), dim ? cmp_point_x : cmp_point_y);
+			for (uint32_t i = 0; i < mpt->ngeoms; i++)
 			{
-				qsort(mpt->geoms, mpt->ngeoms, sizeof(LWPOINT *), dim ? cmp_point_y : cmp_point_x);
-				for (uint32_t i = 0; i < mpt->ngeoms; i++)
+				if (!mpt->geoms[i])
+					continue;
+
+				const POINT2D *pti = getPoint2d_cp(mpt->geoms[i]->point, 0);
+
+				/* check upcoming points if they're within tolerance of current one */
+				for (uint32_t j = i + 1; j < mpt->ngeoms; j++)
 				{
-					if (!mpt->geoms[i])
+					if (!mpt->geoms[j])
 						continue;
 
-					const POINT2D *pti = getPoint2d_cp(mpt->geoms[i]->point, 0);
-					for (uint32_t j = i + 1; j < mpt->ngeoms; j++)
+					const POINT2D *ptj = getPoint2d_cp(mpt->geoms[j]->point, 0);
+
+					/* check that the point is in the strip of tolerance around the point */
+					if ((dim ? ptj->x - pti->x : ptj->y - pti->y) > tolerance)
+						break;
+
+					/* remove any upcoming point that is within tolerance circle */
+					if (distance2d_sqr_pt_pt(pti, ptj) <= tolsq)
 					{
-						if (!mpt->geoms[j])
-							continue;
-
-						const POINT2D *ptj = getPoint2d_cp(mpt->geoms[j]->point, 0);
-						if ((dim ? ptj->y - pti->y : ptj->x - pti->x) > tolerance)
-							break;
-
-						if (distance2d_sqr_pt_pt(pti, ptj) <= tolsq)
-						{
-							lwpoint_free(mpt->geoms[j]);
-							mpt->geoms[j] = NULL;
-						}
+						lwpoint_free(mpt->geoms[j]);
+						mpt->geoms[j] = NULL;
+						geometry_modified = LW_TRUE;
 					}
 				}
-
-				uint32_t i = 0;
-				for (uint32_t j = 0; j < mpt->ngeoms; j++)
-				{
-					if (mpt->geoms[j])
-						mpt->geoms[i++] = mpt->geoms[j];
-				}
-
-				geometry_modified |= mpt->ngeoms != i;
-				mpt->ngeoms = i;
 			}
 
-			break;
+			/* compactify array of points */
+			uint32_t i = 0;
+			for (uint32_t j = 0; j < mpt->ngeoms; j++)
+				if (mpt->geoms[j])
+					mpt->geoms[i++] = mpt->geoms[j];
+			mpt->ngeoms = i;
 		}
 
-		case CIRCSTRINGTYPE:
-			/* Dunno how to handle these, will return untouched */
-			return geometry_modified;
+		break;
+	}
 
-		/* Can process most multi* types as generic collection */
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case TINTYPE:
-		case COLLECTIONTYPE:
-		/* Curve types we mostly ignore, but allow the linear */
-		/* portions to be processed by recursing into them */
-		case MULTICURVETYPE:
-		case CURVEPOLYTYPE:
-		case MULTISURFACETYPE:
-		case COMPOUNDTYPE:
+	case CIRCSTRINGTYPE:
+		/* Dunno how to handle these, will return untouched */
+		return geometry_modified;
+
+	/* Can process most multi* types as generic collection */
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case TINTYPE:
+	case COLLECTIONTYPE:
+	/* Curve types we mostly ignore, but allow the linear */
+	/* portions to be processed by recursing into them */
+	case MULTICURVETYPE:
+	case CURVEPOLYTYPE:
+	case MULTISURFACETYPE:
+	case COMPOUNDTYPE: {
+		uint32_t i, j = 0;
+		LWCOLLECTION *col = (LWCOLLECTION *)(geom);
+		for (i = 0; i < col->ngeoms; i++)
 		{
-			uint32_t i, j = 0;
-			LWCOLLECTION *col = (LWCOLLECTION*)(geom);
-			for (i = 0; i < col->ngeoms; i++)
+			LWGEOM *g = col->geoms[i];
+			if (!g)
+				continue;
+			geometry_modified |= lwgeom_remove_repeated_points_in_place(g, tolerance);
+			/* Drop zero'ed out geometries */
+			if (lwgeom_is_empty(g))
 			{
-				LWGEOM *g = col->geoms[i];
-				if (!g) continue;
-				geometry_modified |= lwgeom_remove_repeated_points_in_place(g, tolerance);
-				/* Drop zero'ed out geometries */
-				if(lwgeom_is_empty(g))
-				{
-					lwgeom_free(g);
-					continue;
-				}
-				col->geoms[j++] = g;
+				lwgeom_free(g);
+				continue;
 			}
-			/* Update geometry count */
-			col->ngeoms = j;
-			break;
+			col->geoms[j++] = g;
 		}
-		default:
-		{
-			lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(geom->type));
-			break;
-		}
+		/* Update geometry count */
+		col->ngeoms = j;
+		break;
+	}
+	default: {
+		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(geom->type));
+		break;
+	}
 	}
 
 	if (geometry_modified)
-	{
 		lwgeom_drop_bbox(geom);
-	}
 	return geometry_modified;
 }
 
