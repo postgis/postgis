@@ -32,6 +32,7 @@ distance3d_sqr_pt4d_pt4d(const POINT4D *p1, const POINT4D *p2)
 	return hside * hside + vside * vside + zside * zside;
 }
 
+/* Split the clusters that need to be split */
 static uint32_t
 improve_structure(POINT4D *objs,
 		  int *clusters,
@@ -95,6 +96,7 @@ improve_structure(POINT4D *objs,
 	return new_k;
 }
 
+/* Refresh mapping of point to closest cluster */
 static uint8_t
 update_r(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *radii, uint32_t k)
 {
@@ -132,10 +134,12 @@ update_r(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *rad
 	return converged;
 }
 
+/* Refresh cluster centroids based on all of their objects */
 static void
 update_means(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
 {
 	memset(centers, 0, sizeof(POINT4D) * k);
+	/* calculate weighted sum */
 	for (uint32_t i = 0; i < n; i++)
 	{
 		int cluster = clusters[i];
@@ -144,6 +148,7 @@ update_means(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_
 		centers[cluster].z += objs[i].z * objs[i].m;
 		centers[cluster].m += objs[i].m;
 	}
+	/* divide by weight to get average */
 	for (uint32_t i = 0; i < k; i++)
 	{
 		if (centers[i].m)
@@ -155,6 +160,7 @@ update_means(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_
 	}
 }
 
+/* Assign initial clusters centroids heuristically */
 static void
 kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 {
@@ -257,13 +263,12 @@ static uint32_t
 kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *radii, uint32_t min_k, double max_radius)
 {
 	uint8_t converged = LW_FALSE;
-	assert(max_k >= 2);
 	uint32_t cur_k = min_k;
 
 	kmeans_init(objs, n, centers, cur_k);
-
 	for (uint32_t t = 0; t < KMEANS_MAX_ITERATIONS; t++)
 	{
+		/* Standard KMeans loop */
 		for (uint32_t i = 0; i < KMEANS_MAX_ITERATIONS; i++)
 		{
 			LW_ON_INTERRUPT(break);
@@ -275,6 +280,8 @@ kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *radii
 		}
 		if (!converged)
 			break;
+
+		/* XMeans-inspired improve_structure pass to split clusters bigger than limit into 2 */
 		if (max_radius)
 		{
 			uint32_t new_k = improve_structure(objs, clusters, n, centers, radii, cur_k, min_k, max_radius);
@@ -358,7 +365,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_r
 		}
 		else if (!lwgeom_has_z(geom))
 		{
-			/* For 2D, we can take a centroid*/
+			/* For 2D, we can take a centroid */
 			LWGEOM *centroid = lwgeom_centroid(geom);
 			if (!centroid)
 				continue;
