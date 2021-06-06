@@ -183,3 +183,17 @@ SELECT '#2704', ST_DumpPoints('MULTIPOLYGON EMPTY'::geometry);
 SELECT '#2704', ST_DumpPoints('MULTILINESTRING EMPTY'::geometry);
 SELECT '#2704', ST_DumpPoints('LINESTRING EMPTY'::geometry);
 SELECT '#2704', ST_DumpPoints('GEOMETRYCOLLECTION EMPTY'::geometry);
+
+SELECT path, ST_AsText(geom)
+FROM (
+         SELECT (ST_DumpPoints(g.geom)).*
+         FROM (SELECT 'GEOMETRYCOLLECTION(
+          POINT(11 11),
+          GEOMETRYCOLLECTION EMPTY,
+          POINT(22 22),
+          GEOMETRYCOLLECTION EMPTY,
+          POINT(33 33),
+          POINT(44 44)
+        )'::geometry AS geom
+              ) AS g
+     ) j;
