@@ -1,6 +1,6 @@
 /*-------------------------------------------------------------------------
  *
- * Copyright (c) 2018-2020, Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (c) 2018-2021, Darafei Praliaskouski <me@komzpa.net>
  * Copyright (c) 2016, Paul Ramsey <pramsey@cleverelephant.ca>
  *
  *------------------------------------------------------------------------*/
@@ -19,16 +19,8 @@
  */
 #define KMEANS_MAX_ITERATIONS 1000
 
-static uint32_t kmeans(POINT4D *objs,
-		       int *clusters,
-		       uint32_t n,
-		       POINT4D *centers,
-		       double *radii,
-		       uint32_t min_k,
-		       uint32_t max_k,
-		       double max_radius,
-		       double max_weight,
-		       uint8_t we_had_a_split);
+static uint32_t
+kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *radii, uint32_t min_k, double max_radius);
 
 inline static double
 distance3d_sqr_pt4d_pt4d(const POINT4D *p1, const POINT4D *p2)
@@ -40,52 +32,6 @@ distance3d_sqr_pt4d_pt4d(const POINT4D *p1, const POINT4D *p2)
 	return hside * hside + vside * vside + zside * zside;
 }
 
-static double
-bayesian_information_criteria(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
-{
-	if (n < k)
-		return INFINITY;
-
-	/*	double total_weight = 0.0;
-		for (uint32_t i = 0; i < n; i++)
-			total_weight += objs[i].m;
-
-		if (total_weight < k)
-			return INFINITY;*/
-
-	/* estimation of the noise variance in the data set */
-	double sigma_sqrt = 0.0;
-	for (uint32_t i = 0; i < n; i++)
-		sigma_sqrt += distance3d_sqr_pt4d_pt4d(&objs[i], &centers[clusters[i]]);
-	sigma_sqrt /= (n - k);
-
-	/* in geography everything is flat */
-	double dimension = 2;
-	double p = (k - 1) + dimension * k + 1;
-
-	/* in case of the same points, sigma_sqrt can be zero */
-	double sigma_multiplier = 0.0;
-	if (sigma_sqrt <= 0.0)
-		sigma_multiplier = -INFINITY;
-	else
-		sigma_multiplier = dimension * 0.5 * log(sigma_sqrt);
-
-	/* splitting criterion */
-	double score = 0;
-	for (int cluster = 0; cluster < (int)k; cluster++)
-	{
-		double weight = centers[cluster].m;
-		/*double L = weight * log(weight) - weight * log(total_weight) - weight * 0.5 * log(2.0 * M_PI) - weight
-		 * * sigma_multiplier - (weight - k) * 0.5; */
-		double L = -weight * 0.5 * log(2.0 * M_PI) - weight * sigma_multiplier - (weight - k) / 2 +
-			   weight * log(weight) - weight * log((double)n);
-
-		/* BIC calculation */
-		score += L - p * 0.5 * log((double)n);
-	}
-	return score;
-}
-
 static uint32_t
 improve_structure(POINT4D *objs,
 		  int *clusters,
@@ -94,10 +40,7 @@ improve_structure(POINT4D *objs,
 		  double *radii,
 		  uint32_t k,
 		  uint32_t min_k,
-		  uint32_t max_k,
-		  double max_radius,
-		  double max_weight,
-		  uint8_t we_had_a_split)
+		  double max_radius)
 {
 	POINT4D *temp_objs = lwalloc(sizeof(POINT4D) * n);
 	int *temp_clusters = lwalloc(sizeof(int) * n);
@@ -108,19 +51,8 @@ improve_structure(POINT4D *objs,
 
 	for (int cluster = 0; cluster < (int)k; cluster++)
 	{
-		double mass = centers[cluster].m;
 		double radius = radii[cluster];
-		double initial_bic = 0, split_bic = 0;
-		// uint8_t force_split = (new_k < min_k && !we_had_a_split) || (max_weight>0 && mass > max_weight && !
-		// we_had_a_split) ||(max_weight>0 && mass > sqrt(2)*max_weight &&  we_had_a_split) || (!we_had_a_split
-		// && max_radius>0 && radius > (max_radius*max_radius)) ||(we_had_a_split && max_radius>0 && radius >
-		// (2*max_radius*max_radius)) ;
-		uint8_t force_split = (new_k < min_k && !we_had_a_split) || (max_weight > 0 && mass > max_weight) ||
-				      (max_radius > 0 && radius > (max_radius * max_radius));
-		if ((new_k >= max_k) && !force_split)
-			break;
-		if ((k >= cluster) && !force_split)
-			continue;
+		uint8_t force_split = (new_k < min_k) || (max_radius > 0 && radius > (max_radius * max_radius));
 		if (!force_split)
 			continue;
 
@@ -138,64 +70,24 @@ improve_structure(POINT4D *objs,
 		memset(temp_radii, 0, sizeof(double) * 2);
 		temp_centers[0] = centers[cluster];
 
-		/* calculate BIC for one cluster */
-		if (!force_split)
-			initial_bic = bayesian_information_criteria(
-			    temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, 1);
-
-		/* 2-means the cluster */
-		/* if you split a perfect circle of r=1 in two parts, distance from centroid of halfcircle to edge will
-		 * be 1.2513529646364838 */
-		/// uint32_t clusters_to_add = kmeans(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers,
-		/// temp_radii, 2, n-new_k, 1.2513529646364838*max_radius, max_weight, LW_TRUE);
-		uint32_t clusters_to_add = kmeans(temp_objs,
-						  temp_clusters,
-						  (uint32_t)cluster_size,
-						  temp_centers,
-						  temp_radii,
-						  2,
-						  n - new_k,
-						  max_radius,
-						  max_weight,
-						  LW_TRUE);
-
-		/* calculate BIC for 2-means */
-		if (!force_split)
-			split_bic = bayesian_information_criteria(
-			    temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, 2);
-
-		/* replace cluster with split if needed */
-		if (force_split) // || split_bic > initial_bic)
+		uint32_t clusters_to_add =
+		    kmeans(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, temp_radii, 2, max_radius);
+		/* replace cluster with split */
+		uint32_t d = 0;
+		for (uint32_t i = 0; i < n; i++)
 		{
-			lwnotice(
-			    "%s: splitting cluster %u into %u, bic orig = %f, bic split = %f, size = %d, mass = %f, radius = %f, forced = %u",
-			    __func__,
-			    cluster,
-			    clusters_to_add,
-			    initial_bic,
-			    split_bic,
-			    cluster_size,
-			    mass,
-			    sqrt(radius),
-			    force_split);
-			uint32_t d = 0;
-			for (uint32_t i = 0; i < n; i++)
-			{
-				if (clusters[i] == cluster)
-					if (temp_clusters[d++])
-						clusters[i] = new_k + clusters_to_add - 1;
-			}
-			centers[cluster] = temp_centers[0];
-			radii[cluster] = temp_radii[0];
-			for (int t = 1; t < clusters_to_add; t++)
-			{
-				centers[new_k + t - 1] = temp_centers[t];
-				radii[new_k + t - 1] = temp_radii[t];
-			}
-			new_k += clusters_to_add - 1;
-			we_had_a_split = LW_TRUE;
-			//	cluster--;
+			if (clusters[i] == cluster)
+				if (temp_clusters[d++])
+					clusters[i] = new_k + clusters_to_add - 1;
 		}
+		centers[cluster] = temp_centers[0];
+		radii[cluster] = temp_radii[0];
+		for (int t = 1; t < clusters_to_add; t++)
+		{
+			centers[new_k + t - 1] = temp_centers[t];
+			radii[new_k + t - 1] = temp_radii[t];
+		}
+		new_k += clusters_to_add - 1;
 	}
 	lwfree(temp_centers);
 	lwfree(temp_clusters);
@@ -361,30 +253,12 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 	}
 }
 
-static int
-cluster_centroid_cmp(const void *a, const void *b)
-{
-	POINT4D *p1 = (POINT4D *)a;
-	POINT4D *p2 = (POINT4D *)b;
-	return p2->m - p1->m;
-}
-
 static uint32_t
-kmeans(POINT4D *objs,
-       int *clusters,
-       uint32_t n,
-       POINT4D *centers,
-       double *radii,
-       uint32_t min_k,
-       uint32_t max_k,
-       double max_radius,
-       double max_weight,
-       uint8_t we_had_a_split)
+kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *radii, uint32_t min_k, double max_radius)
 {
 	uint8_t converged = LW_FALSE;
-	assert(max_k >= min_k);
 	assert(max_k >= 2);
-	uint32_t cur_k = 2;
+	uint32_t cur_k = min_k;
 
 	kmeans_init(objs, n, centers, cur_k);
 
@@ -399,19 +273,15 @@ kmeans(POINT4D *objs,
 				break;
 			update_means(objs, clusters, n, centers, cur_k);
 		}
-		if (!converged || cur_k >= max_k)
+		if (!converged)
 			break;
-		if (cur_k < min_k)
+		if (max_radius)
 		{
-			/* Renumber clusters and make most massive one first. */
-			qsort(centers, cur_k, sizeof(POINT4D), cluster_centroid_cmp);
-			converged = update_r(objs, clusters, n, centers, radii, cur_k);
+			uint32_t new_k = improve_structure(objs, clusters, n, centers, radii, cur_k, min_k, max_radius);
+			if (new_k == cur_k)
+				break;
+			cur_k = new_k;
 		}
-		uint32_t new_k = improve_structure(
-		    objs, clusters, n, centers, radii, cur_k, min_k, max_k, max_radius, max_weight, we_had_a_split);
-		if (new_k == cur_k)
-			break;
-		cur_k = new_k;
 	}
 
 	if (!converged)
@@ -423,15 +293,14 @@ kmeans(POINT4D *objs,
 }
 
 int *
-lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
+lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_radius)
 {
 	uint32_t num_non_empty = 0;
 	uint8_t converged = LW_FALSE;
-	double max_radius = 0; // 400000;
-	double max_weight = 10000000;
 
 	assert(k > 0);
 	assert(n > 0);
+	assert(max_radius >= 0);
 	assert(geoms);
 
 	if (n < k)
@@ -526,20 +395,11 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 		k = num_non_empty;
 	}
 
-	if (k > 1)
+	if (k > 1 || max_radius > 0)
 	{
 		int *clusters_dense = lwalloc(sizeof(int) * num_non_empty);
 		memset(clusters_dense, 0, sizeof(int) * num_non_empty);
-		converged = kmeans(objs,
-				   clusters_dense,
-				   num_non_empty,
-				   centers,
-				   radii,
-				   k,
-				   num_non_empty,
-				   max_radius,
-				   max_weight,
-				   LW_FALSE);
+		converged = kmeans(objs, clusters_dense, num_non_empty, centers, radii, k, max_radius);
 
 		if (converged)
 		{
