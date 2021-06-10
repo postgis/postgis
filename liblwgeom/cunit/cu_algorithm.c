@@ -1162,8 +1162,9 @@ test_geohash_bbox(void)
 
 static void test_lwgeom_remove_repeated_points(void)
 {
-	LWGEOM *g;
+	LWGEOM *g, *gn;
 	char *ewkt;
+	char *ewkt_exp;
 	int modified = LW_FALSE;
 
 	g = lwgeom_from_wkt("MULTIPOINT(0 0, 10 0, 10 10, 10 10, 0 10, 0 10, 0 10, 0 0, 0 0, 0 0, 5 5, 0 0, 5 5)", LW_PARSER_CHECK_NONE);
@@ -1182,14 +1183,23 @@ static void test_lwgeom_remove_repeated_points(void)
 	lwgeom_free(g);
 	lwfree(ewkt);
 
+	/* remove points */
 	g = lwgeom_from_wkt("MULTIPOINT(0 0,10 0,10 10,10 10,0 10,0 10,0 10,0 0,0 0,0 0,5 5,5 5,5 8,8 8,8 8,8 8,8 5,8 5,5 5,5 5,5 5,5 5,5 5,50 50,50 50,50 50,50 60,50 60,50 60,60 60,60 50,60 50,50 50,55 55,55 58,58 58,58 55,58 55,55 55)", LW_PARSER_CHECK_NONE);
 	modified = lwgeom_remove_repeated_points_in_place(g, 1);
 	ASSERT_INT_EQUAL(modified, LW_TRUE);
-	ewkt = lwgeom_to_ewkt(g);
-	ASSERT_STRING_EQUAL(
-	    ewkt, "MULTIPOINT(0 0,0 10,5 5,5 8,8 5,8 8,10 0,10 10,50 50,50 60,55 55,55 58,58 55,58 58,60 50,60 60)");
+	gn = lwgeom_normalize(g);
+	ewkt = lwgeom_to_ewkt(gn);
 	lwgeom_free(g);
+	lwgeom_free(gn);
+	/* build expected and normalize */
+	g = lwgeom_from_wkt("MULTIPOINT(0 0,0 10,5 5,5 8,8 5,8 8,10 0,10 10,50 50,50 60,55 55,55 58,58 55,58 58,60 50,60 60)", LW_PARSER_CHECK_NONE);
+	gn = lwgeom_normalize(g);
+	ewkt_exp = lwgeom_to_ewkt(gn);
+	ASSERT_STRING_EQUAL(ewkt, ewkt_exp);
+	lwgeom_free(g);
+	lwgeom_free(gn);
 	lwfree(ewkt);
+	lwfree(ewkt_exp);
 
 	g = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
 	modified = lwgeom_remove_repeated_points_in_place(g, 10000);
