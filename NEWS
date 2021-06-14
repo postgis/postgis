@@ -1,5 +1,12 @@
-PostGIS 3.1.2
+PostGIS 3.1.3
 2021/xx/xx
+
+* Bug Fixes
+  - #4927, Fix PostgreSQL 14 compile FuncnameGetCandidates changes
+           (Regina Obe, Julien Rouhaud)
+
+PostGIS 3.1.2
+2021/05/21
 
  * Bug Fixes
 
