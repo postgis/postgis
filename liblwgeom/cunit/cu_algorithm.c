@@ -1170,9 +1170,11 @@ static void test_lwgeom_remove_repeated_points(void)
 	g = lwgeom_from_wkt("MULTIPOINT(0 0, 10 0, 10 10, 10 10, 0 10, 0 10, 0 10, 0 0, 0 0, 0 0, 5 5, 0 0, 5 5)", LW_PARSER_CHECK_NONE);
 	modified = lwgeom_remove_repeated_points_in_place(g, 1);
 	ASSERT_INT_EQUAL(modified, LW_TRUE);
-	ewkt = lwgeom_to_ewkt(g);
-	ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(0 0,0 10,5 5,10 0,10 10)");
+	gn = lwgeom_normalize(g);
+	ewkt = lwgeom_to_ewkt(gn);
+	ASSERT_STRING_EQUAL(ewkt, "MULTIPOINT(10 10,10 0,5 5,0 10,0 0)");
 	lwgeom_free(g);
+	lwgeom_free(gn);
 	lwfree(ewkt);
 
 	g = lwgeom_from_wkt("LINESTRING(1612830.15445 4841287.12672,1612830.15824 4841287.12674,1612829.98813 4841274.56198)", LW_PARSER_CHECK_NONE);
