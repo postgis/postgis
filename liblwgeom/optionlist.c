@@ -58,8 +58,21 @@ option_list_search(char** olist, const char* key)
 	return NULL;
 }
 
+size_t
+option_list_length(char** olist)
+{
+	size_t i = 0;
+	char **iter = olist;
+	if (!olist) return 0;
+	while(*iter) {
+		i++;
+		iter++;
+	}
+	return i;
+}
+
 void
-option_list_parse(char* input, char **olist)
+option_list_parse(char* input, char** olist)
 {
 	const char *toksep = " ";
 	const char kvsep = '=';
@@ -90,6 +103,60 @@ option_list_parse(char* input, char **olist)
 		olist[i+1] = ++val;
 		/* all keys forced to lower case */
 		option_list_string_to_lower(key);
+	}
+}
+
+void
+option_list_gdal_parse(char* input, char** olist)
+{
+	const char *toksep = " ";
+	const char kvsep = '=';
+	const char q2 = '"';
+	const char q1 = '\'';
+	const char notspace = 0x1F;
+
+	char *key, *val;
+	int in_str = 0;
+	size_t i = 0, sz, input_sz;
+	char *ptr = input;
+
+	if (!input)
+		lwerror("Option string is null");
+	input_sz = strlen(input);
+
+	/* Temporarily hide quoted spaces */
+	while(*ptr) {
+		if (*ptr == q2 || *ptr == q1)
+			in_str = !in_str;
+		else if (in_str && *ptr == ' ')
+			*ptr = notspace;
+
+		ptr++;
+	}
+
+	/* Tokenize on spaces */
+	for (key = strtok(input, toksep); key; key = strtok(NULL, toksep)) {
+		if (i >= OPTION_LIST_SIZE) return;
+		olist[i++] = key;
+	}
+
+	/* Check that these are GDAL KEY=VALUE options */
+	sz = i;
+	for (i = 0; i < sz; ++i) {
+		if (i >= OPTION_LIST_SIZE) return;
+		key = olist[i];
+		/* find the key/value separator */
+		val = strchr(key, kvsep);
+		if (!val) {
+			lwerror("Option string entry '%s' lacks separator '%c'", key, kvsep);
+			return;
+		}
+	}
+
+	/* Unhide quoted space */
+	for (i = 0; i <= input_sz; ++i) {
+		if (input[i] == notspace)
+			input[i] = ' ';
 	}
 }
 

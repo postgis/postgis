@@ -256,4 +256,93 @@ SELECT pg_reload_conf();
 				</para>
 			</refsection>
 	</refentry>
+
+
+  <refentry id="postgis_gdal_config_options">
+            <refnamediv>
+                <refname>postgis.gdal_config_options</refname>
+                <refpurpose>
+                    A string configuration to set options used when working with an out-db raster.
+                </refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    A string configuration to set options used when working with an out-db raster. <ulink url="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration options</ulink> control things like how much space GDAL allocates to local data cache, whether to read overviews, and what access keys to use for remote out-db data sources.
+                </para>
+
+                <para>Availability: 3.2.0</para>
+
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <para>Set <varname>postgis.gdal_config_options</varname> for current session:</para>
+
+                <programlisting>
+SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
+                </programlisting>
+
+                <note>
+                    <para>
+                        The <varname>GDAL_SKIP</varname> configuration option cannot be set directly using the config options. Use the <xref linkend="postgis_gdal_enabled_drivers" /> configuration instead.
+                    </para>
+                </note>
+
+                <para>Set <varname>postgis.gdal_config_options</varname> just for the <emphasis>current transaction</emphasis>:</para>
+                <programlisting>
+SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';
+                </programlisting>
+            </refsection>
+
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="postgis_enable_outdb_rasters" />
+                    <xref linkend="postgis_gdal_enabled_drivers" />
+                    <xref linkend="postgis_gdal_open_options" />
+                </para>
+            </refsection>
+    </refentry>
+
+
+  <refentry id="postgis_gdal_open_options">
+            <refnamediv>
+                <refname>postgis.gdal_open_options</refname>
+                <refpurpose>
+                    A string of driver open options, for an out-db raster.
+                </refpurpose>
+            </refnamediv>
+
+            <refsection>
+                <title>Description</title>
+                <para>
+                    A string of driver open options, for an out-db raster. Open options apply to particular drivers, so check the <ulink url="https://gdal.org/drivers/raster/index.html">driver page</ulink> for the file you are accessing.
+                </para>
+
+                <para>Availability: 3.2.0</para>
+
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+                <para>Set <varname>postgis.gdal_open_options</varname> for current session:</para>
+
+                <programlisting>
+SET postgis.gdal_open_options = 'GEOREF_SOURCES=WORLDFILE,PAM,INTERNAL';
+                </programlisting>
+
+            </refsection>
+            <refsection>
+                <title>See Also</title>
+                <para>
+                    <xref linkend="postgis_enable_outdb_rasters" />
+                    <xref linkend="postgis_gdal_enabled_drivers" />
+                    <xref linkend="postgis_gdal_config_options" />
+                </para>
+            </refsection>
+    </refentry>
+
+
 </sect1>

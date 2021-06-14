@@ -29,6 +29,7 @@
 
 #include "librtcore.h"
 #include "librtcore_internal.h"
+#include "optionlist.h"
 
 uint8_t
 rt_util_clamp_to_1BB(double value) {
@@ -376,13 +377,58 @@ rt_util_gdal_driver_registered(const char *drv) {
 /* variable for PostgreSQL GUC: postgis.gdal_enabled_drivers */
 char *gdal_enabled_drivers = NULL;
 
-char ** gdal_open_options = NULL;
+
 
 /*
 	wrapper for GDALOpen and GDALOpenShared
 */
 GDALDatasetH
-rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
+rt_util_gdal_open(
+	const char *fn,
+	GDALAccess fn_access,
+	int shared
+) {
+	char **open_options = NULL;
+	char *open_options_str = rtoptions("gdal_open_options");
+	char *config_options_str = rtoptions("gdal_config_options");
+
+	/* Parse open options string */
+	if (open_options_str) {
+		char *olist[OPTION_LIST_SIZE];
+		rtinfo("postgis.gdal_open_options: %s", open_options_str);
+		memset(olist, 0, sizeof(olist));
+		option_list_gdal_parse(open_options_str, olist);
+		if (option_list_length(olist))
+			open_options = olist;
+	}
+
+	/* Parse config options string */
+	if (config_options_str) {
+		size_t sz;
+		char *olist[OPTION_LIST_SIZE];
+		rtinfo("postgis.gdal_config_options set");
+		// rtinfo("postgis.gdal_config_options: %s", config_options_str);
+		memset(olist, 0, sizeof(olist));
+		option_list_parse(config_options_str, olist);
+		sz = option_list_length(olist);
+		if (sz % 2 == 0) {
+			size_t i;
+			for (i = 0; i < sz/2; i++)
+			{
+				char *key = olist[2*i];
+				char *val = olist[2*i+1];
+				/* GDAL_SKIP is where the disallowed drivers are set */
+				/* We cannot allow user-level over-ride of that config option */
+				if (strcmp(key, "gdal_skip") == 0) {
+					rtwarn("Unable to set GDAL_SKIP config option");
+					continue;
+				}
+				rtinfo("CPLSetConfigOption(%s)", key);
+				CPLSetConfigOption(key, val);
+			}
+		}
+	}
+
 	unsigned int open_flags;
 	assert(NULL != fn);
 
@@ -409,7 +455,7 @@ rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
 		| (fn_access == GA_Update ? GDAL_OF_UPDATE : 0)
 		| (shared ? GDAL_OF_SHARED : 0);
 
-	return GDALOpenEx(fn, open_flags, NULL, (const char **)gdal_open_options, NULL);
+	return GDALOpenEx(fn, open_flags, NULL, (const char **)open_options, NULL);
 }
 
 void

@@ -239,6 +239,19 @@ rt_pg_debug(const char *fmt, va_list ap)
     ereport(DEBUG1, (errmsg_internal("%s", msg)));
 }
 
+static char *
+rt_pg_options(const char* varname)
+{
+	char optname[128];
+	snprintf(optname, 128, "postgis.%s", varname);
+	/* GetConfigOptionByName(name, found_name, missing_ok) */
+	char *optvalue = GetConfigOptionByName(optname, NULL, true);
+	if (optvalue && strlen(optvalue) == 0)
+		return NULL;
+	else
+		return optvalue;
+}
+
 
 /* ---------------------------------------------------------------- */
 /*  PostGIS raster GUCs                                             */
@@ -430,6 +443,7 @@ rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
 	/* do nothing for now */
 }
 
+
 /* Module load callback */
 void
 _PG_init(void) {
@@ -495,7 +509,9 @@ _PG_init(void) {
 	pg_install_lwgeom_handlers();
 
 	/* Install rtcore handlers */
-	rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error, rt_pg_debug, rt_pg_notice);
+	rt_set_handlers_options(rt_pg_alloc, rt_pg_realloc, rt_pg_free,
+		rt_pg_error, rt_pg_debug, rt_pg_notice,
+		rt_pg_options);
 
 	/* Define custom GUC variables. */
 	if ( postgis_guc_find_option("postgis.gdal_datapath") )

@@ -60,5 +60,14 @@ extern void option_list_parse(char* input, char **olist);
 */
 extern const char* option_list_search(char** olist, const char* key);
 
+/**
+* Returns the total number of keys and values in the list
+*/
+extern size_t option_list_length(char **olist);
+
+
+extern void option_list_gdal_parse(char* input, char** olist);
+
+
 #endif
 

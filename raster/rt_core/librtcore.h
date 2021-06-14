@@ -227,6 +227,7 @@ typedef enum {
 /**
 * Global functions for memory/logging handlers.
 */
+typedef char* (*rt_options)(const char* varname);
 typedef void* (*rt_allocator)(size_t size);
 typedef void* (*rt_reallocator)(void *mem, size_t size);
 typedef void  (*rt_deallocator)(void *mem);
@@ -260,6 +261,11 @@ void rterror(const char *fmt, ...);
 void rtinfo(const char *fmt, ...);
 void rtwarn(const char *fmt, ...);
 
+/**
+ * Wrappers used for options
+ */
+char* rtoptions(const char* varname);
+char* rtstrdup(const char *str);
 
 /**
 * The default memory/logging handlers installed by lwgeom_install_default_allocators()
@@ -270,7 +276,7 @@ void default_rt_deallocator(void * mem);
 void default_rt_error_handler(const char * fmt, va_list ap);
 void default_rt_warning_handler(const char * fmt, va_list ap);
 void default_rt_info_handler(const char * fmt, va_list ap);
-
+char * default_rt_options(const char* varname);
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -306,6 +312,11 @@ void default_rt_info_handler(const char * fmt, va_list ap);
 void rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
         rt_deallocator deallocator, rt_message_handler error_handler,
         rt_message_handler info_handler, rt_message_handler warning_handler);
+
+void rt_set_handlers_options(rt_allocator allocator, rt_reallocator reallocator,
+        rt_deallocator deallocator, rt_message_handler error_handler,
+        rt_message_handler info_handler, rt_message_handler warning_handler,
+        rt_options options_handler);
 
 
 
