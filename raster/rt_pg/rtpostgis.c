@@ -243,9 +243,10 @@ static char *
 rt_pg_options(const char* varname)
 {
 	char optname[128];
+	char *optvalue;
 	snprintf(optname, 128, "postgis.%s", varname);
 	/* GetConfigOptionByName(name, found_name, missing_ok) */
-	char *optvalue = GetConfigOptionByName(optname, NULL, true);
+	optvalue = GetConfigOptionByName(optname, NULL, true);
 	if (optvalue && strlen(optvalue) == 0)
 		return NULL;
 	else
