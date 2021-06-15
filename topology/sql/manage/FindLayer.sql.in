@@ -32,9 +32,13 @@ $$ LANGUAGE 'sql';
 CREATE OR REPLACE FUNCTION topology.FindLayer(layer_table regclass, feature_column name)
 RETURNS topology.layer
 AS $$
-    SELECT * FROM topology.layer
-    WHERE format('%I.%I', schema_name, table_name)::regclass = $1
-    AND feature_column = $2;
+    SELECT l.*
+    FROM topology.layer l, pg_class c, pg_namespace n
+    WHERE l.schema_name = n.nspname
+    AND l.table_name = c.relname
+    AND c.oid = $1
+    AND c.relnamespace = n.oid
+    AND l.feature_column = $2
 $$ LANGUAGE 'sql';
 --}
 
