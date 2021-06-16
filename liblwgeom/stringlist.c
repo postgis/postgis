@@ -50,8 +50,10 @@ void
 stringlist_release(stringlist_t *s)
 {
 	size_t i;
+	if (!s || !s->data) return;
 	for (i = 0; i < s->length; i++)
 		if (s->data[i]) lwfree(s->data[i]);
+	lwfree(s->data);
 	memset(s, 0, sizeof(stringlist_t));
 }
 
