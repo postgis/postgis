@@ -272,8 +272,8 @@ stringlist_t *vsi_option_stringlist = NULL;
 static void
 rt_pg_vsi_load_all_options(void)
 {
-	const char *gdaloption;
-	const char *gdaloptions[] = {
+	const char * gdaloption;
+	const char * const gdaloptions[] = {
 		"aws_access_key_id",
 		"aws_https",
 		"aws_max_keys",
@@ -324,7 +324,7 @@ rt_pg_vsi_load_all_options(void)
 		"vsis3_chunk_size",
 		NULL
 	};
-	const char* const* gdaloptionsptr = gdaloptions;
+	const char * const * gdaloptionsptr = gdaloptions;
 
 	vsi_option_stringlist = stringlist_create();
 	while((gdaloption = *gdaloptionsptr++))
@@ -383,8 +383,8 @@ rt_pg_vsi_load_options(const char* vsiname, stringlist_t *s)
 static void
 rt_pg_vsi_load_all_options(void)
 {
-	const char *vsiname;
-	char *vsilist[] = {
+	const char * vsiname;
+	const char * const vsilist[] = {
 		"/vsicurl/",
 		"/vsis3/",
 		"/vsigs/",
@@ -392,9 +392,11 @@ rt_pg_vsi_load_all_options(void)
 		"/vsioss/",
 		"/vsihdfs/",
 		"/vsiwebhdfs/",
+		"/vsiswift/",
+		"/vsiadls/",
 		NULL
 	};
-	char **vsilistptr = vsilist;
+	const char * const * vsilistptr = vsilist;
 
 	vsi_option_stringlist = stringlist_create();
 	while((vsiname = *vsilistptr++))
