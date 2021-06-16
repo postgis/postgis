@@ -139,6 +139,8 @@
 
 #include "rtpostgis.h"
 #include "rtpg_internal.h"
+#include "stringlist.h"
+#include "optionlist.h"
 
 #ifndef __GNUC__
 # define __attribute__ (x)
@@ -257,13 +259,88 @@ rt_pg_options(const char* varname)
 /*  GDAL allowed config options for VSI filesystems */
 /* ---------------------------------------------------------------- */
 
-#include <libxml/tree.h>
-#include <libxml/parser.h>
-#include "stringlist.h"
-#include "optionlist.h"
-
 stringlist_t *vsi_option_stringlist = NULL;
 
+
+#if POSTGIS_GDAL_VERSION < 23
+
+/*
+* For older versions of GDAL we  have extracted the list of options
+* that were available at the 2.2 release and use that
+* as our set of allowed VSI network file options.
+*/
+static void
+rt_pg_vsi_load_all_options(void)
+{
+	const char *gdaloption;
+	const char *gdaloptions[] = {
+		"aws_access_key_id",
+		"aws_https",
+		"aws_max_keys",
+		"aws_s3_endpoint",
+		"aws_region",
+		"aws_request_payer",
+		"aws_secret_access_key",
+		"aws_session_token",
+		"aws_timestamp",
+		"aws_virtual_hosting",
+		"cpl_gs_timestamp",
+		"cpl_gs_endpoint",
+		"gs_secret_access_key",
+		"gs_access_key_id",
+		"goa2_client_id",
+		"goa2_client_secret",
+		"cpl_curl_enable_vsimem",
+		"cpl_curl_gzip",
+		"cpl_curl_verbose",
+		"gdal_http_auth",
+		"gdal_http_connecttimeout",
+		"gdal_http_cookie",
+		"gdal_http_header_file",
+		"gdal_http_low_speed_time",
+		"gdal_http_low_speed_limit",
+		"gdal_http_max_retry",
+		"gdal_http_netrc",
+		"gdal_http_proxy",
+		"gdal_http_proxyuserpwd",
+		"gdal_http_retry_delay",
+		"gdal_http_userpwd",
+		"gdal_http_timeout",
+		"gdal_http_unsafessl",
+		"gdal_http_useragent",
+		"gdal_disable_readdir_on_open",
+		"gdal_proxy_auth",
+		"curl_ca_bundle",
+		"ssl_cert_file",
+		"vsi_cache_size",
+		"cpl_vsil_curl_use_head",
+		"cpl_vsil_curl_use_s3_redirect",
+		"cpl_vsil_curl_max_ranges",
+		"cpl_vsil_curl_use_cache",
+		"cpl_vsil_curl_allowed_filename",
+		"cpl_vsil_curl_allowed_extensions",
+		"cpl_vsil_curl_slow_get_size",
+		"vsi_cache",
+		"vsis3_chunk_size",
+		NULL
+	};
+	const char* const* gdaloptionsptr = gdaloptions;
+
+	vsi_option_stringlist = stringlist_create();
+	while((gdaloption = *gdaloptionsptr++))
+	{
+		stringlist_add_string_nosort(vsi_option_stringlist, gdaloption);
+	}
+	stringlist_sort(vsi_option_stringlist);
+}
+
+#else /* POSTGIS_GDAL_VERSION < 23 */
+
+/*
+* For newer versions of GDAL the VSIGetFileSystemOptions() call returns
+* all the allowed options for each VSI network file type, and we just have
+* to keep the list of VSI types statically in rt_pg_vsi_load_all_options().
+*/
 static void
 rt_pg_vsi_load_options(const char* vsiname, stringlist_t *s)
 {
@@ -288,6 +365,9 @@ rt_pg_vsi_load_options(const char* vsiname, stringlist_t *s)
 		if (option) {
 			char *optionstr = pstrdup(option);
 			char *ptr = optionstr;
+			/* The options parser used in rt_util_gdal_open()
+			   lowercases keys, so we'll lower case our list
+			   of options before storing them in the stringlist. */
 			while (*ptr) {
 				*ptr = tolower(*ptr);
 				ptr++;
@@ -324,7 +404,8 @@ rt_pg_vsi_load_all_options(void)
 	stringlist_sort(vsi_option_stringlist);
 }
 
-//typedef bool (*GucStringCheckHook) (char **newval, void **extra, GucSource source);
+#endif /* POSTGIS_GDAL_VERSION < 23 */
+
 
 static bool
 rt_pg_vsi_check_options(char **newval, void **extra, GucSource source)
