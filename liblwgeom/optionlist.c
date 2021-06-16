@@ -39,6 +39,17 @@ option_list_string_to_lower(char* key)
 	return;
 }
 
+// static void
+// option_list_string_to_upper(char* key)
+// {
+// 	if (!key) return;
+// 	while (*key) {
+// 		*key = toupper(*key);
+// 		key++;
+// 	}
+// 	return;
+// }
+
 const char*
 option_list_search(char** olist, const char* key)
 {

@@ -16,6 +16,7 @@
 
 #include "liblwgeom_internal.h"
 #include "optionlist.h"
+#include "stringlist.h"
 #include "cu_tester.h"
 
 
@@ -278,6 +279,34 @@ static void test_optionlist(void)
 	CU_ASSERT_STRING_EQUAL("key2='value2 value3'", olist[1]);
 }
 
+
+static void test_stringlist(void)
+{
+	stringlist_t s;
+	stringlist_init(&s);
+
+	CU_ASSERT_EQUAL(stringlist_length(&s), 0);
+	stringlist_add_string_nosort(&s, "first string");
+	stringlist_add_string_nosort(&s, "second string");
+	stringlist_add_string_nosort(&s, "third string");
+	CU_ASSERT_EQUAL(stringlist_length(&s), 3);
+	CU_ASSERT_STRING_EQUAL(stringlist_get(&s, 0), "first string");
+	stringlist_add_string_nosort(&s, "an initial string");
+	stringlist_sort(&s);
+	CU_ASSERT_STRING_EQUAL(stringlist_get(&s, 0), "an initial string");
+	CU_ASSERT_STRING_EQUAL(stringlist_find(&s, "third string"), "third string");
+	CU_ASSERT_EQUAL(stringlist_find(&s, "nothing_matches"), NULL);
+	stringlist_add_string_nosort(&s, "fourth string");
+	stringlist_add_string_nosort(&s, "fifth string");
+	stringlist_add_string_nosort(&s, "sixth string");
+	stringlist_add_string_nosort(&s, "seventh string");
+	stringlist_add_string_nosort(&s, "eighth string");
+	stringlist_sort(&s);
+	CU_ASSERT_STRING_EQUAL(stringlist_find(&s, "fifth string"), "fifth string");
+	stringlist_release(&s);
+}
+
+
 /*
 ** Used by the test harness to register the tests in this file.
 */
@@ -295,4 +324,5 @@ void misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwmpoint_from_lwgeom);
 	PG_ADD_TEST(suite, test_gbox_serialized_size);
 	PG_ADD_TEST(suite, test_optionlist);
+	PG_ADD_TEST(suite, test_stringlist);
 }

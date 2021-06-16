@@ -253,12 +253,122 @@ rt_pg_options(const char* varname)
 		return optvalue;
 }
 
+/* ---------------------------------------------------------------- */
+/*  GDAL allowed config options for VSI filesystems */
+/* ---------------------------------------------------------------- */
+
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include "stringlist.h"
+#include "optionlist.h"
+
+stringlist_t *vsi_option_stringlist = NULL;
+
+static void
+rt_pg_vsi_load_options(const char* vsiname, stringlist_t *s)
+{
+	CPLXMLNode *root, *optNode;
+	const char *xml = VSIGetFileSystemOptions(vsiname);
+	if (!xml) return;
+
+	root = CPLParseXMLString(xml);
+	if (!root) {
+		elog(ERROR, "%s: Unable to read options for VSI %s", __func__, vsiname);
+		return;
+	}
+	optNode = CPLSearchXMLNode(root, "Option");
+	if (!optNode) {
+		CPLDestroyXMLNode(root);
+		elog(ERROR, "%s: Unable to find <Option> in VSI XML %s", __func__, vsiname);
+		return;
+	}
+	while(optNode)
+	{
+		const char *option = CPLGetXMLValue(optNode, "name", NULL);
+		if (option) {
+			char *optionstr = pstrdup(option);
+			char *ptr = optionstr;
+			while (*ptr) {
+				*ptr = tolower(*ptr);
+				ptr++;
+			}
+			elog(DEBUG4, "GDAL %s option: %s", vsiname, optionstr);
+			stringlist_add_string_nosort(s, optionstr);
+		}
+		optNode = optNode->psNext;
+	}
+	CPLDestroyXMLNode(root);
+}
+
+static void
+rt_pg_vsi_load_all_options(void)
+{
+	const char *vsiname;
+	char *vsilist[] = {
+		"/vsicurl/",
+		"/vsis3/",
+		"/vsigs/",
+		"/vsiaz/",
+		"/vsioss/",
+		"/vsihdfs/",
+		"/vsiwebhdfs/",
+		NULL
+	};
+	char **vsilistptr = vsilist;
+
+	vsi_option_stringlist = stringlist_create();
+	while((vsiname = *vsilistptr++))
+	{
+		rt_pg_vsi_load_options(vsiname, vsi_option_stringlist);
+	}
+	stringlist_sort(vsi_option_stringlist);
+}
+
+//typedef bool (*GucStringCheckHook) (char **newval, void **extra, GucSource source);
+
+static bool
+rt_pg_vsi_check_options(char **newval, void **extra, GucSource source)
+{
+	size_t olist_sz, i;
+	char *olist[OPTION_LIST_SIZE];
+	const char *found = NULL;
+	char *newoptions;
+
+	memset(olist, 0, sizeof(olist));
+	if (!newval || !*newval)
+		return false;
+	newoptions = pstrdup(*newval);
+
+	/* Cache the legal options if they aren't already loaded */
+	if (!vsi_option_stringlist)
+		rt_pg_vsi_load_all_options();
+
+	elog(DEBUG5, "%s: processing VSI options: %s", __func__, newoptions);
+	option_list_parse(newoptions, olist);
+	olist_sz = option_list_length(olist);
+	if (olist_sz % 2 != 0)
+		return false;
+
+	for (i = 0; i < olist_sz; i += 2)
+	{
+		found = stringlist_find(vsi_option_stringlist, olist[i]);
+		if (!found)
+		{
+			elog(WARNING, "'%s' is not a legal VSI network file option", olist[i]);
+			pfree(newoptions);
+			return false;
+		}
+	}
+	return true;
+}
+
 
 /* ---------------------------------------------------------------- */
 /*  PostGIS raster GUCs                                             */
 /* ---------------------------------------------------------------- */
 
 static char *gdal_datapath = NULL;
+static char *gdal_vsi_options = NULL;
 extern char *gdal_enabled_drivers;
 extern bool enable_outdb_rasters;
 
@@ -578,8 +688,28 @@ _PG_init(void) {
 			boot_postgis_enable_outdb_rasters, /* bootValue */
 			PGC_SUSET, /* GucContext context */
 			0, /* int flags */
-			NULL, /* GucStringCheckHook check_hook */
+			NULL, /* GucBoolCheckHook check_hook */
 			rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
+
+	if ( postgis_guc_find_option("postgis.gdal_vsi_options") )
+	{
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_vsi_options");
+	}
+	else
+	{
+		DefineCustomStringVariable(
+			"postgis.gdal_vsi_options", /* name */
+			"VSI config options", /* short_desc */
+			"Set the config options to be used when opening /vsi/ network files", /* long_desc */
+			&gdal_vsi_options, /* valueAddr */
+			"", /* bootValue */
+			PGC_USERSET, /* GucContext context */
+			0, /* int flags */
+			rt_pg_vsi_check_options, /* GucStringCheckHook check_hook */
+			NULL, /* GucStringAssignHook assign_hook */
 			NULL  /* GucShowHook show_hook */
 		);
 	}

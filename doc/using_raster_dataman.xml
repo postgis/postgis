@@ -485,13 +485,10 @@ SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
 ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
     </programlisting>
     <para>
-        For non-public rasters, you may have to provide access keys to read from the cloud rasters. The same keys you used to write the <varname>raster2pgsql</varname> call can be set for use inside the database, with the <xref linkend="postgis_gdal_config_options" /> configuration. Note that multiple config options can be set by space-separating the <varname>key=value</varname> pairs.
+        For non-public rasters, you may have to provide access keys to read from the cloud rasters. The same keys you used to write the <varname>raster2pgsql</varname> call can be set for use inside the database, with the <xref linkend="postgis_gdal_vsi_options" /> configuration. Note that multiple options can be set by space-separating the <varname>key=value</varname> pairs.
     </para>
-    <programlisting>SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx
+    <programlisting>SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx
 AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting>
-    <para>
-        For formats that require open options, you can use <xref linkend="postgis_gdal_open_options" /> the same way.
-    </para>
     <para>
         Once you have the data loaded and permissions set you can interact with the raster table like any other raster table, using the same functions. The database will handle all the mechanics of connecting to the cloud data when it needs to read pixel data.
     </para>

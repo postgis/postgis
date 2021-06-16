@@ -130,6 +130,7 @@
 #include "cpl_vsi.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "cpl_minixml.h"
 #include "ogr_api.h"
 #include "ogr_srs_api.h"
 
