@@ -42,6 +42,7 @@
 #include "access/gist.h"    /* For GiST */
 #include "access/itup.h"
 #include "access/skey.h"
+#include "utils/sortsupport.h"    /* For index building sort support */
 
 #include "../postgis_config.h"
 
@@ -84,6 +85,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_union_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS);
+Datum gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS);
 
 /*
 ** GiST 2D operator prototypes
@@ -1302,6 +1304,79 @@ Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+/*
+ * Hash comparator of `GSERIALIZED` data type
+*/
+static int
+hash_cmp(Datum a, Datum b, SortSupport ssup)
+{
+	if (a > b)
+		return 1;
+	else if (a < b)
+		return -1;
+	else
+		return 0;
+}
+
+static bool
+hash_abbrev_abort(int memtupcount, SortSupport ssup)
+{
+	return false;
+}
+
+/*
+ * `GSERIALIZED`(geometry) data type converter
+*/
+static Datum
+hash_abbrev_convert(Datum origin, SortSupport ssup)
+{
+	GBOX gbox;
+  uint8_t type;
+	int32_t srid;
+	lwflags_t flags;
+	int is_empty = (gserialized_datum_get_internals_p(origin, &gbox, &flags, &type, &srid) == LW_FAILURE);
+	if (is_empty)
+		return (Datum)0;
+	else
+		return (Datum)gbox_get_sortable_hash(&gbox, srid);
+}
+
+static int
+hash_abbrev_full_cmp(Datum a, Datum b, SortSupport ssup)
+{
+  uint64_t hash_a = hash_abbrev_convert(a, ssup);
+  uint64_t hash_b = hash_abbrev_convert(b, ssup);
+
+	if (hash_a > hash_b)
+		return 1;
+	else if (hash_a < hash_b)
+		return -1;
+	else
+		return 0; 
+}
+
+/*
+ * TODO: 2d gist sort support function GiST support function
+*/
+PG_FUNCTION_INFO_V1(gserialized_gist_sortsupport_2d);
+Datum gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS)
+{
+	SortSupport ssup = (SortSupport) PG_GETARG_POINTER(0);
+	if (ssup->abbreviate)
+	{
+		ssup->comparator = hash_cmp;
+		ssup->abbrev_abort = hash_abbrev_abort;
+		ssup->abbrev_converter = hash_abbrev_convert;
+		ssup->abbrev_full_comparator = hash_abbrev_full_cmp;
+	}
+	else
+	{
+		ssup->comparator = hash_abbrev_full_cmp; 
+	}
+	PG_RETURN_VOID();
+}
+
+ 
 /*
  * Adjust BOX2DF b boundaries with insertion of addon.
  */

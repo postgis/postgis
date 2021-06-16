@@ -512,6 +512,13 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal)
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION geometry_gist_sortsupport_2d(internal)
+	RETURNS internal
+	AS '$libdir/postgis-3', 'gserialized_gist_sortsupport_2d'
+	LANGUAGE 'c' PARALLEL SAFE
+	COST 1;
+
 -----------------------------------------------------------------------------
 
 -- Availability: 2.1.0
@@ -802,7 +809,8 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	FUNCTION        4        geometry_gist_decompress_2d (internal),
 	FUNCTION        5        geometry_gist_penalty_2d (internal, internal, internal),
 	FUNCTION        6        geometry_gist_picksplit_2d (internal, internal),
-	FUNCTION        7        geometry_gist_same_2d (geom1 geometry, geom2 geometry, internal);
+	FUNCTION        7        geometry_gist_same_2d (geom1 geometry, geom2 geometry, internal),
+	FUNCTION        11       geometry_gist_sortsupport_2d(internal);
 
 -----------------------------------------------------------------------------
 -- GiST ND GEOMETRY-over-GSERIALIZED
