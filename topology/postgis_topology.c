@@ -1203,6 +1203,12 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
   *numelems = SPI_processed;
   if ( ! SPI_processed )
   {
+    cberror(
+      topo->be_data,
+      "No edge with id %" LWTFMT_ELEMID" in Topology \"%s\"",
+      ABS(edge),
+      topo->name
+    );
     return NULL;
   }
   if (limit && *numelems == (uint64_t)limit)
@@ -5056,8 +5062,8 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
     pfree(toponame);
     if ( ! topo )
     {
-      /* should never reach this point, as lwerror would raise an exception */
       SPI_finish();
+      lwpgerror("%s", cb_lastErrorMessage(&be_data));
       PG_RETURN_NULL();
     }
 
@@ -5068,8 +5074,8 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
 
     if ( ! elems )
     {
-      /* should never reach this point, as lwerror would raise an exception */
       SPI_finish();
+      lwpgerror("%s", cb_lastErrorMessage(&be_data));
       PG_RETURN_NULL();
     }
 
