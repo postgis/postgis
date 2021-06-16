@@ -15,20 +15,19 @@ https://trac.osgeo.org/postgis/
 
 ## Official chat room:
 
-Official chat room is the #postgis channel on the
-[freenode](https://freenode.net) network.
+Official chat room is the #postgis:osgeo.org room on the
+[Libera.chat](https://libera.chat) network.
 
 To participate, point your preferred
 [IRC client](https://en.wikipedia.org/wiki/Comparison_of_Internet_Relay_Chat_clients)
 to:
 
- irc://irc.freenode.net/#postgis
+ irc://irc.libera.chat/#postgis
 
 Or try a web IRC client like:
- - [qwebirc@freenode](https://webchat.freenode.net/?channels=#postgis)
- - [KiwiIRC](https://kiwiirc.com/client/irc.freenode.net/#postgis)
+ - [web.libera.chat](https://web.libera.chat/#postgis)
 
-Or join via [matrix](https://matrix.to/#/#postgis:matrix.org)
+Or join via [matrix](https://matrix.to/#/#postgis:osgeo.org)
 
 ## Official source tarball releases
 
