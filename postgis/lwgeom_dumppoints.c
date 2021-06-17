@@ -287,7 +287,6 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 		/* no more geometries in the current collection */
 		if (--state->stacklen == 0) SRF_RETURN_DONE(funcctx);
 		state->pathlen--;
-		state->stack[state->stacklen-1].idx++;
 	}
 }
 

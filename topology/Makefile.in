@@ -121,6 +121,7 @@ topology.sql: \
 	sql/query/GetNodeEdges.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/CopyTopology.sql.in \
+	sql/manage/FindLayer.sql.in \
 	sql/manage/FindTopology.sql.in \
 	sql/manage/ManageHelper.sql.in \
 	sql/topoelement/topoelement_agg.sql.in \

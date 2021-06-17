@@ -120,9 +120,12 @@ POINTARRAY*
 ptarray_from_GEOSCoordSeq(const GEOSCoordSequence* cs, uint8_t want3d)
 {
 	uint32_t dims = 2;
-	uint32_t size = 0, i;
 	POINTARRAY* pa;
+	uint32_t size = 0;
+#if POSTGIS_GEOS_VERSION < 31000
+	uint32_t i;
 	POINT4D point = { 0.0, 0.0, 0.0, 0.0 };
+#endif
 
 	LWDEBUG(2, "ptarray_fromGEOSCoordSeq called");
 
@@ -285,7 +288,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 		}
 		return sq;
 	}
-#else
+#endif
         if (!(sq = GEOSCoordSeq_create(pa->npoints + append_points, dims)))
 	{
 		lwerror("Error creating GEOS Coordinate Sequence");
@@ -342,7 +345,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY* pa, uint8_t fix_ring)
 	}
 
 	return sq;
-#endif
+
 }
 
 static inline GEOSGeometry*

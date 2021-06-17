@@ -1,0 +1,72 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2021 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+--  FindLayer(TopoGeometry)
+--
+-- Return a topology.layer record from a TopoGeometry
+--
+CREATE OR REPLACE FUNCTION topology.FindLayer(tg TopoGeometry)
+RETURNS topology.layer
+AS $$
+    SELECT * FROM topology.layer
+    WHERE topology_id = topology_id($1)
+    AND layer_id = layer_id($1)
+$$ LANGUAGE 'sql';
+--}
+
+--{
+--  FindLayer(layerRegclass, layerColumn)
+--
+-- Return a topology.layer record from a layer table/column
+--
+CREATE OR REPLACE FUNCTION topology.FindLayer(layer_table regclass, feature_column name)
+RETURNS topology.layer
+AS $$
+    SELECT l.*
+    FROM topology.layer l, pg_class c, pg_namespace n
+    WHERE l.schema_name = n.nspname
+    AND l.table_name = c.relname
+    AND c.oid = $1
+    AND c.relnamespace = n.oid
+    AND l.feature_column = $2
+$$ LANGUAGE 'sql';
+--}
+
+--{
+--  FindLayer(layerSchema, layerTable, layerColumn)
+--
+-- Return a topology.layer record from a layer schema/table/column
+--
+CREATE OR REPLACE FUNCTION topology.FindLayer(schema_name name, table_name name, feature_column name)
+RETURNS topology.layer
+AS $$
+    SELECT * FROM topology.layer
+    WHERE schema_name = $1
+    AND table_name = $2
+    AND feature_column = $3;
+$$ LANGUAGE 'sql';
+--}
+
+--{
+--  FindLayer(topoName)
+--
+-- Return a topology.layer record from a topology id and layer id
+--
+CREATE OR REPLACE FUNCTION topology.FindLayer(topology_id integer, layer_id integer)
+RETURNS topology.layer
+AS $$
+    SELECT * FROM topology.layer
+    WHERE topology_id = $1
+      AND layer_id = $2
+$$ LANGUAGE 'sql';
+--}

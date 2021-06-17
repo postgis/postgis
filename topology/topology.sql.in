@@ -2191,6 +2191,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/manage/TopologySummary.sql.in"
 #include "sql/manage/CopyTopology.sql.in"
 #include "sql/manage/FindTopology.sql.in"
+#include "sql/manage/FindLayer.sql.in"
 
 
 CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS text
