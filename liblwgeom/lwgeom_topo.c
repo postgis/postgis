@@ -2530,7 +2530,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   if ( newedge.face_left != newedge.face_right )
   {
     lwerror("Left(%" LWTFMT_ELEMID ")/right(%" LWTFMT_ELEMID ")"
-            "faces mismatch: invalid topology ?",
+            " faces mismatch: invalid topology ?",
             newedge.face_left, newedge.face_right);
     return -1;
   }
