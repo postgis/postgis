@@ -2367,7 +2367,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   for ( i=0; i<num_nodes; ++i )
   {
     LWT_ISO_NODE* node = &(endpoints[i]);
-    if ( node->containing_face != -1 )
+    if ( modFace != -1 && node->containing_face != -1 )
     {
       if ( newedge.face_left == -1 )
       {
@@ -2465,11 +2465,14 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     LWDEBUGF(1, "New edge %d is connected on start node, "
                 "next_right is %d, prev_left is %d",
                 newedge.edge_id, newedge.next_right, prev_left);
-    if ( newedge.face_right == -1 ) {
-      newedge.face_right = span.cwFace;
-    }
-    if ( newedge.face_left == -1 ) {
-      newedge.face_left = span.ccwFace;
+    if ( modFace != -1 )
+    {
+      if ( newedge.face_right == -1 ) {
+        newedge.face_right = span.cwFace;
+      }
+      if ( newedge.face_left == -1 ) {
+        newedge.face_left = span.ccwFace;
+      }
     }
   } else {
     span.was_isolated = 1;
@@ -2489,29 +2492,32 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     LWDEBUGF(1, "New edge %d is connected on end node, "
                 "next_left is %d, prev_right is %d",
                 newedge.edge_id, newedge.next_left, prev_right);
-    if ( newedge.face_right == -1 ) {
-      newedge.face_right = span.ccwFace;
-    } else if ( modFace != -1 && newedge.face_right != epan.ccwFace ) {
-      /* side-location conflict */
-      lwerror("Side-location conflict: "
-              "new edge starts in face"
-               " %" LWTFMT_ELEMID " and ends in face"
-               " %" LWTFMT_ELEMID,
-              newedge.face_right, epan.ccwFace
-      );
-      return -1;
-    }
-    if ( newedge.face_left == -1 ) {
-      newedge.face_left = span.cwFace;
-    } else if ( modFace != -1 && newedge.face_left != epan.cwFace ) {
-      /* side-location conflict */
-      lwerror("Side-location conflict: "
-              "new edge starts in face"
-               " %" LWTFMT_ELEMID " and ends in face"
-               " %" LWTFMT_ELEMID,
-              newedge.face_left, epan.cwFace
-      );
-      return -1;
+    if ( modFace != -1 )
+    {
+      if ( newedge.face_right == -1 ) {
+        newedge.face_right = span.ccwFace;
+      } else if ( newedge.face_right != epan.ccwFace ) {
+        /* side-location conflict */
+        lwerror("Side-location conflict: "
+                "new edge starts in face"
+                 " %" LWTFMT_ELEMID " and ends in face"
+                 " %" LWTFMT_ELEMID,
+                newedge.face_right, epan.ccwFace
+        );
+        return -1;
+      }
+      if ( newedge.face_left == -1 ) {
+        newedge.face_left = span.cwFace;
+      } else if ( newedge.face_left != epan.cwFace ) {
+        /* side-location conflict */
+        lwerror("Side-location conflict: "
+                "new edge starts in face"
+                 " %" LWTFMT_ELEMID " and ends in face"
+                 " %" LWTFMT_ELEMID,
+                newedge.face_left, epan.cwFace
+        );
+        return -1;
+      }
     }
   } else {
     epan.was_isolated = 1;
