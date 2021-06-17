@@ -3,7 +3,11 @@
 # Paul Ramsey <pramsey at cleverelephant dot ca>
 
 name: "CI"
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore:
+      - 'master'
+  pull_request: ~
 
 jobs:
   linux:
