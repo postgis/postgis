@@ -457,7 +457,7 @@ Available GDAL raster formats:
         from rasters that are <ulink url="https://gdal.org/user/virtual_file_systems.html#network-based-file-systems">stored remotely</ulink> in cloud "object stores" (e.g. AWS S3, Google Cloud Storage).
     </para>
     <para>
-        Efficient use of cloud stored rasters requires the use of a "cloud optimized" format. The most well-known and widely used is the "<ulink url="https://www.cogeo.org/">cloud optimized GeoTIFF</ulink>" format. Using a non-cloud format, like a JPEG, or an un-tiled TIFF will result in very poor performance, as the system will have to download the entire raster each time it needs to access a subset.
+        Efficient use of cloud stored rasters requires the use of a "cloud optimized" format. The most well-known and widely used is the "<ulink url="https://gdal.org/drivers/raster/cog.html">cloud optimized GeoTIFF</ulink>" format. Using a non-cloud format, like a JPEG, or an un-tiled TIFF will result in very poor performance, as the system will have to download the entire raster each time it needs to access a subset.
     </para>
     <para>
         First, load your raster into the cloud storage of your choice. Once it is loaded, you will have a URI to access it with, either an "http" URI, or sometimes a URI specific to the service. (e.g., "s3://bucket/object"). To access non-public buckets, you will need to supply GDAL config options to authenticate your connection. Note that this command is <emphasis>reading</emphasis> from the cloud raster and <emphasis>writing</emphasis> to the database.
@@ -473,7 +473,7 @@ raster2pgsql \
   your_table \
   | psql your_db</programlisting>
     <para>
-        Once the table is loaded, you need to give the database permission to read from remote rasters, by setting two permissions.
+        Once the table is loaded, you need to give the database permission to read from remote rasters, by setting two permissions, <xref linkend="postgis_enable_outdb_rasters" /> and <xref linkend="postgis_gdal_enabled_drivers" />.
     </para>
     <programlisting>SET postgis.enable_outdb_rasters = true;
 SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
@@ -484,6 +484,11 @@ SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
     <programlisting>ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;
 ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';
     </programlisting>
+    <para>
+        For non-public rasters, you may have to provide access keys to read from the cloud rasters. The same keys you used to write the <varname>raster2pgsql</varname> call can be set for use inside the database, with the <xref linkend="postgis_gdal_vsi_options" /> configuration. Note that multiple options can be set by space-separating the <varname>key=value</varname> pairs.
+    </para>
+    <programlisting>SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx
+AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting>
     <para>
         Once you have the data loaded and permissions set you can interact with the raster table like any other raster table, using the same functions. The database will handle all the mechanics of connecting to the cloud data when it needs to read pixel data.
     </para>

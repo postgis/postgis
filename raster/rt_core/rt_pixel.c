@@ -108,6 +108,8 @@ rt_pixtype_index_from_name(const char* pixname) {
 
 const char*
 rt_pixtype_name(rt_pixtype pixtype) {
+
+
 	switch (pixtype) {
 		case PT_1BB:
 			return "1BB";
