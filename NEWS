@@ -33,6 +33,8 @@ PostGIS 3.2.0
     using algorithms from GDAL (Paul Ramsey)
   - ST_SetZ()/ST_SetM() fills in z/m coordinates of a geometry using data read
     from a raster (Paul Ramsey)
+  - New postgis.gdal_vsi_options GUC allows out-db rasters on VSI network
+    services to be accessed with authentication keys, etc. (Paul Ramsey)
 
 
 PostGIS 3.1.0
