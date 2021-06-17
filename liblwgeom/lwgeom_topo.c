@@ -2527,18 +2527,21 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
    * a malformed topology (no containing_face on isolated nodes, no
    * left/right faces on adjacent edges or mismatching values)
    */
-  if ( newedge.face_left != newedge.face_right )
+  if ( modFace > -1 )
   {
-    lwerror("Left(%" LWTFMT_ELEMID ")/right(%" LWTFMT_ELEMID ")"
-            " faces mismatch: invalid topology ?",
-            newedge.face_left, newedge.face_right);
-    return -1;
-  }
-  else if ( newedge.face_left == -1 && modFace > -1 )
-  {
-    lwerror("Could not derive edge face from linked primitives:"
-            " invalid topology ?");
-    return -1;
+    if ( newedge.face_left != newedge.face_right )
+    {
+      lwerror("Left(%" LWTFMT_ELEMID ")/right(%" LWTFMT_ELEMID ")"
+              " faces mismatch: invalid topology ?",
+              newedge.face_left, newedge.face_right);
+      return -1;
+    }
+    else if ( newedge.face_left == -1 )
+    {
+      lwerror("Could not derive edge face from linked primitives:"
+              " invalid topology ?");
+      return -1;
+    }
   }
 
   /*
