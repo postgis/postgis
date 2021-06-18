@@ -1304,6 +1304,7 @@ Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(gserialized_gist_sortsupport_2d);
 /*
  * Hash comparator of `GSERIALIZED` data type
 */
@@ -1325,20 +1326,121 @@ hash_abbrev_abort(int memtupcount, SortSupport ssup)
 }
 
 /*
- * `GSERIALIZED`(geometry) data type converter
+ * `BOX2DF`(geometry) data type converter
 */
-static Datum
-hash_abbrev_convert(Datum origin, SortSupport ssup)
+
+inline static uint64_t
+uint64_interleave_2(uint64_t x, uint64_t y)
 {
-	GBOX gbox;
-  uint8_t type;
-	int32_t srid;
-	lwflags_t flags;
-	int is_empty = (gserialized_datum_get_internals_p(origin, &gbox, &flags, &type, &srid) == LW_FAILURE);
-	if (is_empty)
-		return (Datum)0;
-	else
-		return (Datum)gbox_get_sortable_hash(&gbox, srid);
+	x = (x | (x << 16)) & 0x0000FFFF0000FFFFULL;
+	x = (x | (x << 8)) & 0x00FF00FF00FF00FFULL;
+	x = (x | (x << 4)) & 0x0F0F0F0F0F0F0F0FULL;
+	x = (x | (x << 2)) & 0x3333333333333333ULL;
+	x = (x | (x << 1)) & 0x5555555555555555ULL;
+
+	y = (y | (y << 16)) & 0x0000FFFF0000FFFFULL;
+	y = (y | (y << 8)) & 0x00FF00FF00FF00FFULL;
+	y = (y | (y << 4)) & 0x0F0F0F0F0F0F0F0FULL;
+	y = (y | (y << 2)) & 0x3333333333333333ULL;
+	y = (y | (y << 1)) & 0x5555555555555555ULL;
+
+	return x | (y << 1);
+}
+
+/* Based on https://github.com/rawrunprotected/hilbert_curves Public Domain code */
+inline static uint64_t
+uint32_hilbert(uint32_t px, uint32_t py)
+{
+	uint64_t x = px;
+	uint64_t y = py;
+
+	uint64_t A, B, C, D;
+
+	// Initial prefix scan round, prime with x and y
+	{
+		uint64_t a = x ^ y;
+		uint64_t b = 0xFFFFFFFFULL ^ a;
+		uint64_t c = 0xFFFFFFFFULL ^ (x | y);
+		uint64_t d = x & (y ^ 0xFFFFFFFFULL);
+
+		A = a | (b >> 1);
+		B = (a >> 1) ^ a;
+		C = ((c >> 1) ^ (b & (d >> 1))) ^ c;
+		D = ((a & (c >> 1)) ^ (d >> 1)) ^ d;
+	}
+
+	{
+		uint64_t a = A;
+		uint64_t b = B;
+		uint64_t c = C;
+		uint64_t d = D;
+
+		A = ((a & (a >> 2)) ^ (b & (b >> 2)));
+		B = ((a & (b >> 2)) ^ (b & ((a ^ b) >> 2)));
+		C ^= ((a & (c >> 2)) ^ (b & (d >> 2)));
+		D ^= ((b & (c >> 2)) ^ ((a ^ b) & (d >> 2)));
+	}
+
+	{
+		uint64_t a = A;
+		uint64_t b = B;
+		uint64_t c = C;
+		uint64_t d = D;
+
+		A = ((a & (a >> 4)) ^ (b & (b >> 4)));
+		B = ((a & (b >> 4)) ^ (b & ((a ^ b) >> 4)));
+		C ^= ((a & (c >> 4)) ^ (b & (d >> 4)));
+		D ^= ((b & (c >> 4)) ^ ((a ^ b) & (d >> 4)));
+	}
+
+	{
+		uint64_t a = A;
+		uint64_t b = B;
+		uint64_t c = C;
+		uint64_t d = D;
+
+		A = ((a & (a >> 8)) ^ (b & (b >> 8)));
+		B = ((a & (b >> 8)) ^ (b & ((a ^ b) >> 8)));
+		C ^= ((a & (c >> 8)) ^ (b & (d >> 8)));
+		D ^= ((b & (c >> 8)) ^ ((a ^ b) & (d >> 8)));
+	}
+
+	{
+		uint64_t a = A;
+		uint64_t b = B;
+		uint64_t c = C;
+		uint64_t d = D;
+
+		C ^= ((a & (c >> 16)) ^ (b & (d >> 16)));
+		D ^= ((b & (c >> 16)) ^ ((a ^ b) & (d >> 16)));
+	}
+
+	// Undo transformation prefix scan
+	uint64_t a = C ^ (C >> 1);
+	uint64_t b = D ^ (D >> 1);
+
+	// Recover index bits
+	uint64_t i0 = x ^ y;
+	uint64_t i1 = b | (0xFFFFFFFFULL ^ (i0 | a));
+
+	return uint64_interleave_2(i0, i1);
+}
+
+static Datum
+hash_abbrev_convert(Datum original, SortSupport ssup)
+{
+	BOX2DF* box = (BOX2DF*)original;
+
+	union floatuint {
+		uint32_t u;
+		float f;
+	};
+
+	union floatuint x, y;
+	x.f = (box->xmax + box->xmin) / 2;
+	y.f = (box->ymax + box->ymin) / 2;
+
+	return (Datum)uint32_hilbert(y.u, x.u);
 }
 
 static int
@@ -1358,15 +1460,16 @@ hash_abbrev_full_cmp(Datum a, Datum b, SortSupport ssup)
 /*
  * TODO: 2d gist sort support function GiST support function
 */
-PG_FUNCTION_INFO_V1(gserialized_gist_sortsupport_2d);
-Datum gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS)
+Datum 
+gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS)
 {
 	SortSupport ssup = (SortSupport) PG_GETARG_POINTER(0);
+	
 	if (ssup->abbreviate)
 	{
 		ssup->comparator = hash_cmp;
-		ssup->abbrev_abort = hash_abbrev_abort;
 		ssup->abbrev_converter = hash_abbrev_convert;
+		ssup->abbrev_abort = hash_abbrev_abort;
 		ssup->abbrev_full_comparator = hash_abbrev_full_cmp;
 	}
 	else
