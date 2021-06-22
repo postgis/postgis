@@ -18,6 +18,7 @@ PostGIS 3.2.0
   - #4924, Faster ST_RemoveRepeatedPoints on large multipoints, O(NlogN) instead of O(N^2)
            (Aliaksandr Kalenik, Darafei Praliaskouski)
   - #4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)
+  - ST_Srid(topogeometry) override, to speedup lookups (Sandro Santilli)
 
  * New features*
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)

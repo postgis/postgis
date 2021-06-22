@@ -1,0 +1,19 @@
+t
+9
+22
+26
+1
+2
+3
+4
+features.big_parcels.the_geom SRID:0 TYPE:MULTIPOLYGON DIMS:2 
+5
+6
+features.big_signs.the_geom SRID:0 TYPE:MULTIPOINT DIMS:2 
+ST_Srid(traffic_signs)|MULTIPOINT
+ST_Srid(city_streets)|MULTILINESTRING
+ST_Srid(land_parcels)|MULTIPOLYGON
+ST_Srid(big_signs)|MULTIPOINT
+ST_Srid(big_streets)|MULTILINESTRING
+ST_Srid(big_parcels)|MULTIPOLYGON
+Topology 'city_data' dropped
