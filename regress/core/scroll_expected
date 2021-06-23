@@ -1,0 +1,6 @@
+ERROR:  First argument must be a line
+ERROR:  Second argument must be a point
+ERROR:  ptarray_scroll_in_place: input POINTARRAY is not closed
+SRID=4326;LINESTRING(0 0,10 0,5 5,0 0)
+SRID=4326;LINESTRING(5 5,0 0,10 0,5 5)
+SRID=4326;LINESTRING(10 0,5 5,0 0,10 0)
