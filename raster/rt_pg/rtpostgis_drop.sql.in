@@ -123,4 +123,5 @@ DROP FUNCTION IF EXISTS st_approxquantile(rastertable text, rastercolumn text, q
 
 DROP FUNCTION IF EXISTS st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean);
 
+DROP FUNCTION IF EXISTS st_gdalopenoptions(opts text[]);
 
