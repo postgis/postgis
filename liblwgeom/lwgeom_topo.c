@@ -5612,6 +5612,15 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   uint64_t i;
   GBOX qbox;
   int forward;
+  int input_was_closed = 0;
+  POINT4D originalStartPoint;
+
+  if ( lwline_is_closed(line) )
+  {
+    input_was_closed = 1;
+    getPoint4d_p( line->points, 0, &originalStartPoint);
+    LWDEBUGF(1, "Input line is closed, original point is %g,%g", originalStartPoint.x, originalStartPoint.y);
+  }
 
   *nedges = -1; /* error condition, by default */
 
@@ -5796,6 +5805,23 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     LWDEBUGG(1, tmp, "Linemerged");
     lwgeom_free(xset);
     xset = tmp;
+
+    if ( input_was_closed )
+    {{
+      LWLINE *scrolled = lwgeom_as_lwline(xset);
+      if (scrolled) {
+        if ( lwline_is_closed(scrolled) ) {
+          ptarray_scroll_in_place(scrolled->points, &originalStartPoint);
+        }
+        else {
+          LWDEBUGG(1, scrolled, "Linemerged intersected input is not closed anymore");
+        }
+      }
+      else {
+        LWDEBUGG(1, xset, "Linemerged intersected input is not a line anymore");
+      }
+    }}
+
 
     /*
      * Here we union the (linemerged) intersection with

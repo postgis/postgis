@@ -217,3 +217,7 @@ t4758.2|2
 t4758.2|4
 t4758.2|5
 t4758.end|Topology 't4758' dropped
+t2175.start|t
+t2175.1|1
+t2175.2|1
+t2175.end|Topology 'bug2175' dropped

@@ -19,8 +19,11 @@ PostGIS 3.2.0
            (Aliaksandr Kalenik, Darafei Praliaskouski)
   - #4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)
   - ST_Srid(topogeometry) override, to speedup lookups (Sandro Santilli)
+  - #2175, Avoid creating additional nodes when adding same closed
+           line to topology (Sandro Santilli)
 
  * New features*
+  - #2175, ST_Scroll (Sandro Santilli)
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)
   - #4869, FindLayer to quickly get a layer record (Sandro Santilli)
   - #4851, TopoGeom_addTopoGeom function (Sandro Santilli)
