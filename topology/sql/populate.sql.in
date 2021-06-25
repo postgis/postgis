@@ -740,3 +740,8 @@ END
 $$
 LANGUAGE 'plpgsql';
 --} TopoGeo_AddGeometry
+
+CREATE OR REPLACE FUNCTION topology._RegisterMissingFaces(atopology varchar)
+	RETURNS void AS
+	'MODULE_PATHNAME', 'RegisterMissingFaces'
+  LANGUAGE 'c' VOLATILE;

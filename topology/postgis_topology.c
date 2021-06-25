@@ -5509,3 +5509,44 @@ Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
   SPI_finish();
   PG_RETURN_INT32(face_id);
 }
+
+/*  RegisterMissingFaces(atopology) */
+Datum RegisterMissingFaces(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(RegisterMissingFaces);
+Datum RegisterMissingFaces(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_TOPOLOGY *topo;
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text_to_cstring(toponame_text);
+  PG_FREE_IF_COPY(toponame_text, 0);
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+
+  {
+    int pre = be_data.topoLoadFailMessageFlavor;
+    be_data.topoLoadFailMessageFlavor = 1;
+    topo = lwt_LoadTopology(be_iface, toponame);
+    be_data.topoLoadFailMessageFlavor = pre;
+  }
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_Polygonize");
+  lwt_Polygonize(topo);
+  POSTGIS_DEBUG(1, "lwt_Polygonize returned");
+  lwt_FreeTopology(topo);
+
+  SPI_finish();
+
+  PG_RETURN_NULL();
+}
