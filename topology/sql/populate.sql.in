@@ -3,7 +3,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2010-2012 Sandro Santilli <strk@kbt.io>
+-- Copyright (C) 2010-2024 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -698,12 +698,16 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 --} TopoGeo_AddPoint
 
 --{
---  TopoGeo_addLinestring(toponame, linegeom, tolerance)
+-- TopoGeo_addLinestring(toponame, linegeom, tolerance=0, skipFaceSplitDetection=false)
 --
---  Add a LineString into a topology
+-- Add a LineString into a topology
+--
+-- Availability: 2.0.0
+-- Changed: 3.5.0 - add skipFaceSplitDetection optional parameter
+-- Replaces TopoGeo_addLinestring(varchar, geometry, float8) deprecated in 3.5.0
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0, skipFaceSplitDetection bool DEFAULT false)
 	RETURNS SETOF int AS
 	'MODULE_PATHNAME', 'TopoGeo_AddLinestring'
   LANGUAGE 'c' VOLATILE;

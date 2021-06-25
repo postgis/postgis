@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2024 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -5069,6 +5069,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
   FACEEDGESSTATE *state;
   Datum result;
   LWT_ELEMID id;
+  bool skipFace = false;
 
   if (SRF_IS_FIRSTCALL())
   {
@@ -5131,9 +5132,18 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
       PG_RETURN_NULL();
     }
 
-    POSTGIS_DEBUG(1, "Calling lwt_AddLine");
-    elems = lwt_AddLine(topo, ln, tol, &nelems);
-    POSTGIS_DEBUG(1, "lwt_AddLine returned");
+    if ( PG_NARGS() > 3 ) {
+      skipFace = PG_GETARG_BOOL(3);
+    }
+
+    if ( skipFace ) {
+      POSTGIS_DEBUG(1, "Calling lwt_AddLineNoFace");
+      elems = lwt_AddLineNoFace(topo, ln, tol, &nelems);
+    } else {
+      POSTGIS_DEBUG(1, "Calling lwt_AddLine");
+      elems = lwt_AddLine(topo, ln, tol, &nelems);
+    }
+    POSTGIS_DEBUG(1, "lwt_AddLine* returned");
     lwgeom_free(lwgeom);
     PG_FREE_IF_COPY(geom, 1);
     lwt_FreeTopology(topo);
