@@ -48,6 +48,7 @@ check_enabled() {
 }
 
 check_enabled topology/test/tests.mk regress &&
+check_enabled regress/real/tests.mk &&
 check_enabled regress/loader/tests.mk &&
 check_enabled regress/dumper/tests.mk &&
 check_enabled sfcgal/regress/tests.mk &&

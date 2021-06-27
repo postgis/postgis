@@ -1,0 +1,3 @@
+DROP SCHEMA osm_china CASCADE;
+DROP SCHEMA tiger_data CASCADE;
+CREATE SCHEMA tiger_data;
