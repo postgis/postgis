@@ -61,6 +61,7 @@ my $OPT_NODROP = 0;
 my $OPT_NOCREATE = 0;
 my $OPT_UPGRADE = 0;
 my $OPT_DUMPRESTORE = 0;
+my $OPT_WITH_TIGER = 0;
 my $OPT_WITH_TOPO = 0;
 my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
@@ -85,6 +86,7 @@ GetOptions (
 	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
 	'dumprestore' => \$OPT_DUMPRESTORE,
 	'nocreate' => \$OPT_NOCREATE,
+	'tiger' => \$OPT_WITH_TIGER,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
 	'sfcgal' => \$OPT_WITH_SFCGAL,
@@ -537,6 +539,7 @@ Options:
   --schema        where to install/find PostGIS (relocatable) PostGIS
                   (defaults to "public")
   --raster        load also raster extension
+  --tiger      		load also tiger_geocoder extension
   --topology      load also topology extension
   --sfcgal        use also sfcgal backend
   --clean         cleanup test logs on exit
@@ -1370,6 +1373,23 @@ sub prepare_spatial_extensions
 		$rv = system($cmd);
   	if ( $rv ) {
   		fail "Error encountered creating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+  		die;
+		}
+ 	}
+
+	if ( $OPT_WITH_TIGER )
+	{
+		my $sql = "CREATE EXTENSION postgis_tiger_geocoder CASCADE";
+		if ( $OPT_UPGRADE_FROM ) {
+			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+		}
+
+		print "Preparing db '${DB}' using: ${sql}\n";
+
+ 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+		$rv = system($cmd);
+  	if ( $rv ) {
+  		fail "Error encountered creating EXTENSION POSTGIS_TIGER_GEOCODER", $REGRESS_LOG;
   		die;
 		}
  	}
