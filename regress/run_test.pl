@@ -1792,6 +1792,16 @@ sub drop_spatial_extensions
         $rv = system($cmd);
       	$ok = 0 if $rv;
     }
+    if ( $OPT_WITH_TIGER )
+    {
+        $cmd = "psql $psql_opts -c \"DROP EXTENSION IF EXISTS postgis_tiger_geocoder;
+                DROP EXTENSION IF EXISTS fuzzystrmatch;
+                DROP SCHEMA IF EXISTS tiger;
+                DROP SCHEMA IF EXISTS tiger_data;
+                \" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+      	$ok = 0 if $rv;
+    }
 
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
     $rv = system($cmd);

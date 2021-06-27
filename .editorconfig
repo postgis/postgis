@@ -26,6 +26,11 @@ indent_style = tab
 indent_style = space
 indent_size = 4
 
+# Exception: regress/run_test.pl uses 4-spaces indent
+[regress/run_test.pl]
+indent_style = space
+indent_size = 4
+
 # SQL files want tab indentation
 [*.{sql,sql.in}]
 indent_style = tab
