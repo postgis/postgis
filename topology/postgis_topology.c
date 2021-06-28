@@ -13,11 +13,11 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "c.h" /* for UINT64_FORMAT and uint64 */
-#include "utils/builtins.h"
+#include "utils/builtins.h" /* for cstring_to_text */
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for TopMemoryContext */
 #include "utils/array.h" /* for ArrayType */
-#include "catalog/pg_type.h" /* for INT4OID */
+#include "catalog/pg_type.h" /* for INT4OID, TEXTOID */
 #include "lib/stringinfo.h"
 #include "access/htup_details.h" /* for heap_form_tuple() */
 #include "access/xact.h" /* for RegisterXactCallback */
@@ -2792,8 +2792,9 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   Datum dat;
   LWT_ELEMID face_id;
   GSERIALIZED *pts;
-  Datum values[1];
-  Oid argtypes[1];
+  Datum values[2];
+  Oid argtypes[2];
+  text *toponameText;
 
   initStringInfo(sql);
 
@@ -2804,33 +2805,25 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
             __FILE__, __LINE__);
     return -2;
   }
-  /* TODO: call GetFaceGeometry internally, avoiding the round-trip to sql */
-  appendStringInfo(sql,
-                   "WITH faces AS ( SELECT face_id FROM \"%s\".face "
-                   "WHERE mbr && $1 ORDER BY ST_Area(mbr) ASC ) "
-                   "SELECT face_id FROM faces WHERE _ST_Contains("
-                   "topology.ST_GetFaceGeometry('%s', face_id), $1)"
-                   " LIMIT 1",
-                   topo->name, topo->name);
+  appendStringInfo(sql, "SELECT topology.GetFaceContainingPoint($1, $2)");
 
-  values[0] = PointerGetDatum(pts);
-  argtypes[0] = topo->geometryOID;
-  spi_result = SPI_execute_with_args(sql->data, 1, argtypes, values, NULL,
+  toponameText = cstring_to_text(topo->name);
+  values[0] = PointerGetDatum(toponameText);
+  argtypes[0] = TEXTOID;
+
+  values[1] = PointerGetDatum(pts);
+  argtypes[1] = topo->geometryOID;
+
+  spi_result = SPI_execute_with_args(sql->data, 2, argtypes, values, NULL,
                                      !topo->be_data->data_changed, 1);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   pfree(pts); /* not needed anymore */
-  if ( spi_result != SPI_OK_SELECT )
+  if ( spi_result != SPI_OK_SELECT || SPI_processed != 1 )
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
     pfree(sqldata.data);
     return -2;
-  }
-  pfree(sqldata.data);
-
-  if ( SPI_processed != 1 )
-  {
-    return -1; /* none found */
   }
 
   dat = SPI_getbinval( SPI_tuptable->vals[0],
@@ -2838,9 +2831,13 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   if ( isnull )
   {
     SPI_freetuptable(SPI_tuptable);
-    cberror(topo->be_data, "corrupted topology: face with NULL face_id");
+    cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+    pfree(sqldata.data);
     return -2;
   }
+
+  pfree(sqldata.data);
   face_id = DatumGetInt32(dat);
   SPI_freetuptable(SPI_tuptable);
   return face_id;
