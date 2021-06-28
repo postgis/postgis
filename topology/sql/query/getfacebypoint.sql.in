@@ -12,21 +12,23 @@
 
 --{
 --
--- Andrea Peri (27 Feb 2011) creation
---
 -- GetFaceByPoint(atopology, point, tol)
 --
--- Retrieve a Face ID given a POINT and a tolerance
--- tolerance = 0 mean exactly intersection
+-- Retrieve the ID of the face containing unambiguously referenced
+-- by the given POINT.
 --
--- Returns return the integer ID if there is a face on the Point.
+-- A face is unambiguously referenced by a point if a circle of radius
+-- tol1 around the point is fully covered by a single face of the
+-- topology.
 --
--- When the Point is even a Node it raise an exception.
--- This case is testable with the GetNodeByPoint(atopology, apoint, tol)
+-- In case of ambiguity (multiple faces cover the circle) this
+-- function will raise an exception
 --
--- If there isn't any face in the Point, GetFaceByPoint return 0.
+-- If the circle is completely outside any face, 0 is returned
+-- (the circle is contained in the Unviersal Face).
 --
--- if near the point there are two or more faces it throw an exception.
+-- Initial implementation by Andrea Peri (27 Feb 2011)
+--
 --
 CREATE OR REPLACE FUNCTION topology.GetFaceByPoint(atopology varchar, apoint geometry, tol1 float8)
 	RETURNS int AS
