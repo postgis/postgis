@@ -14,7 +14,7 @@ tiger_national.sql.bz2 - this requires the postgis_tiger_geocoder extension to b
 
 tiger_dc.sql.bz2 - this requires the postgis_tiger_geocoder extension.  Data sourced from https://www2.census.gov/geo/tiger/TIGER2020/ADDR/tl_2020_11*_*.zip files
 
-tiger_ma.sql.bz2 - this requires the postgis_tiger_geocoder extension.  Data sourced from https://www2.census.gov/geo/tiger/TIGER2020/ADDR/tl_2020_25*_*.zip files
+tiger_ma.sql.bz2 - this requires the postgis_tiger_geocoder extension.  Data sourced from https://www2.census.gov/geo/tiger/TIGER2020/*/tl_2020_25*_*.zip files
 
 osm_china.sql.bz2 - this is sourced from https://download.geofabrik.de/asia/china-140101-free.shp.zip dated 2018-05-03 16:26
 
@@ -44,7 +44,7 @@ How to add a regression test
 ----------------------------
 
 1. Add any needed data sources to download_data.sh (later we might break this up)
-2. Create a load_*_data.sql script and edit test.mk and add the script RUNTESTFLAGS_INTERNAL
+2. Add a psql load line to load_data.sql script and edit test.mk and add the script RUNTESTFLAGS_INTERNAL
 3. Write a <testname>.sql file with data and sql queries for testing
 4. Write a <testname>_expected or <testname>_expected.in file with
    expected results per query
