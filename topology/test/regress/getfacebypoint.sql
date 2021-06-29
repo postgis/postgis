@@ -27,6 +27,7 @@ SELECT 't1',
 FROM faces_and_query_points
 ORDER BY face_id;
 
+
 -- Ask for a point outside a face but with a tolerance sufficient to include one face
 SELECT 't2',
   topology.GetFaceByPoint('topo', 'POINT(6.5 13)', 0.5) =
@@ -40,6 +41,13 @@ SELECT 't3',
 
 -- ask for a Point where there isn't a Face
 SELECT 't4', topology.GetFaceByPoint('topo','POINT(5 14)', 0);
+
+-- Ask for a point whose closest point on closest edge
+-- is an endpoint
+SELECT 't5',
+  topology.GetFaceByPoint('topo', 'POINT(8 11)', 0) =
+  topology.GetFaceByPoint('topo', 'POINT(9 11)', 0)
+;
 
 -- Failing cases (should all raise exceptions) -------
 
