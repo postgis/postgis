@@ -5,6 +5,7 @@ PostGIS 3.2.0
   - #4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory to build with MVT support.
 
  * Enhancements *
+  - #4933, Speed up topology building in presence of big faces (Sandro Santilli)
   - #3233, ValidateTopology check for node's containing_face (Sandro Santilli)
   - #4830, ValidateTopology check for edges side face containment
            (Sandro Santilli)
@@ -23,6 +24,7 @@ PostGIS 3.2.0
            line to topology (Sandro Santilli)
 
  * New features*
+  - #4933, topology.GetFaceContainingPoint (Sandro Santilli)
   - #2175, ST_Scroll (Sandro Santilli)
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)
   - #4869, FindLayer to quickly get a layer record (Sandro Santilli)
