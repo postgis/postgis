@@ -2062,9 +2062,44 @@ ERROR:  Two or more faces found</programlisting>
 		<refsection>
 			<title>See Also</title>
 <para>
+<xref linkend="GetFaceContainingPoint" />,
 <xref linkend="AddFace" />,
 <xref linkend="GetNodeByPoint" />,
 <xref linkend="GetEdgeByPoint" />
+</para>
+		</refsection>
+	</refentry>
+
+        <refentry id="GetFaceContainingPoint">
+		<refnamediv>
+			<refname>GetFaceContainingPoint</refname>
+			<refpurpose>Finds the face containing a point.</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>integer <function>GetFaceContainingPoint</function></funcdef>
+					<paramdef><type>text </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+      <title>Description</title>
+
+			<para>Returns the id of the face containing a point.</para>
+			<para>An exception is thrown if the point falls on a face boundary.</para>
+
+			<note>
+				<para>The function relies on a valid topology, using edge linking and face labeling.</para>
+			</note>
+
+			<para>Availability: 3.2.0</para>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+<para>
+<xref linkend="ST_GetFaceGeometry"/>
 </para>
 		</refsection>
 	</refentry>
