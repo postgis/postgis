@@ -13,15 +13,17 @@ select ST_AddIsoNode(NULL, NULL, NULL);
 -- Wrong topology name
 select ST_AddIsoNode('wrong_name', 0, 'POINT(1 4)');
 select ST_AddIsoNode('', 0, 'POINT(1 4)');
--- Negative idface';
+-- Negative idface
 select ST_AddIsoNode('city_data', -1, 'POINT(1 4)');
 -- Wrong idface
 select ST_AddIsoNode('city_data', 5, 'POINT(5 33)'); -- in face 9
 select ST_AddIsoNode('city_data', 9, 'POINT(39 18)'); -- in face 5
---  Coincident nodes';
+-- Coincident nodes
 select ST_AddIsoNode('city_data', 0, 'POINT(21 22)');
 select ST_AddIsoNode('city_data', NULL, 'POINT(21 22)');
 select ST_AddIsoNode('city_data', 1, 'POINT(21 22)');
+-- Node on edge
+select 'node-on-edge', ST_AddIsoNode('city_data', NULL, 'POINT(28 14)');
 
 -- Smart creation ISO Node (without know idface)';
 
