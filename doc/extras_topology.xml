@@ -2018,7 +2018,7 @@ ERROR:  Two or more edges found</programlisting>
         <refentry id="GetFaceByPoint">
 		<refnamediv>
 			<refname>GetFaceByPoint</refname>
-			<refpurpose>Finds the face-id of a face that intersects a given point.</refpurpose>
+			<refpurpose>Finds face intersecting a given point.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 			<funcsynopsis>
@@ -2033,25 +2033,35 @@ ERROR:  Two or more edges found</programlisting>
 		<refsection>
       <title>Description</title>
 
-			<para>Retrieves the id of a face that intersects a Point.</para>
-			<para>The function returns an integer (id-face) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the face.</para>
-			<para>If <varname>apoint</varname> doesn't intersect a face, returns 0 (zero).</para>
-			<para>If use tolerance > 0 and there is more than one face near the point then an exception is thrown.</para>
-			<note>
-				<para>If tolerance = 0, the function uses ST_Intersects otherwise uses ST_DWithin.</para>
-			</note>
-			<para>Performed by the GEOS module.</para>
-			<para>Availability: 2.0.0</para>
+        <para>
+Finds a face referenced by a Point, with given tolerance.
+        </para>
+
+        <para>
+The function will effectively look for a face intersecting a
+circle having the point as center and the tolerance as radius.
+        </para>
+
+        <para>
+If no face intersects the given query location, 0 is returned (universal face).
+        </para>
+
+        <para>
+If more than one face intersect the query location an exception is thrown.
+        </para>
+
+        <para>Availability: 2.0.0</para>
+        <para>Enhanced: 3.2.0 more efficient implementation and clearer contract, stops working with invalid topologies.</para>
 		</refsection>
 		<refsection>
 			<title>Examples</title>
-			<para>These examples use edges faces created in <xref linkend="AddFace" /></para>
 			<programlisting>SELECT topology.GetFaceByPoint('ma_topo',geom, 10) As with1mtol, topology.GetFaceByPoint('ma_topo',geom,0) As withnotol
 	FROM ST_GeomFromEWKT('POINT(234604.6 899382.0)') As geom;
 
 	 with1mtol | withnotol
 	-----------+-----------
 			 1 |         0</programlisting>
+
 			<programlisting>SELECT topology.GetFaceByPoint('ma_topo',geom, 1) As nearnode
 	FROM ST_GeomFromEWKT('POINT(227591.9 893900.4)') As geom;
 
