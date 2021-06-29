@@ -2803,7 +2803,7 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   {
     cberror(topo->be_data, "%s:%d: could not serialize query point",
             __FILE__, __LINE__);
-    return -2;
+    return -1;
   }
   appendStringInfo(sql, "SELECT topology.GetFaceContainingPoint($1, $2)");
 
@@ -2823,7 +2823,7 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
     pfree(sqldata.data);
-    return -2;
+    return -1;
   }
 
   dat = SPI_getbinval( SPI_tuptable->vals[0],
@@ -2834,7 +2834,7 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
     pfree(sqldata.data);
-    return -2;
+    return -1;
   }
 
   pfree(sqldata.data);

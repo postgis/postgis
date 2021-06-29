@@ -543,7 +543,7 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
   if ( checkFace && ( face == -1 || ! skipISOChecks ) )
   {
     foundInFace = lwt_be_getFaceContainingPoint(topo, pt); /*x*/
-    if ( foundInFace == -2 ) {
+    if ( foundInFace == -1 ) {
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
       return -1;
     }
@@ -4784,7 +4784,7 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
   LWGEOM *qp = lwpoint_as_lwgeom(pt);
 
   id = lwt_be_getFaceContainingPoint(topo, pt);
-  if ( id == -2 ) {
+  if ( id == -1 ) {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
@@ -4793,7 +4793,11 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
   {
     return id;
   }
-  id = 0; /* or it'll be -1 for not found */
+
+  if ( tol == 0 )
+  {
+    return id;
+  }
 
   LWDEBUG(1, "No face properly contains query point,"
              " looking for edges");

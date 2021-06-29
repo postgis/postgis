@@ -362,9 +362,8 @@ typedef struct LWT_BE_CALLBACKS_T {
    * @param topo the topology to act upon
    * @param pt the query point
    *
-   * @return a face identifier, -1 if no face contains the point
-   *         (could be in universe face or on an edge)
-   *         or -2 on error (@see lastErrorMessage)
+   * @return a face identifier (0 if no face contains the point)
+   *         or -1 on error (@see lastErrorMessage)
    */
   LWT_ELEMID (*getFaceContainingPoint) (
       const LWT_BE_TOPOLOGY* topo,
