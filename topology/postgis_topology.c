@@ -4591,6 +4591,8 @@ Datum GetFaceByPoint(PG_FUNCTION_ARGS)
   LWPOINT *pt;
   LWT_TOPOLOGY *topo;
 
+  lwpgwarning("This function should not be hit, please upgrade your PostGIS install");
+
   toponame_text = PG_GETARG_TEXT_P(0);
   toponame = text_to_cstring(toponame_text);
   PG_FREE_IF_COPY(toponame_text, 0);
