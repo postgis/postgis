@@ -3,6 +3,7 @@ PostGIS 3.2.0
 
  * Breaking changes *
   - #4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory to build with MVT support.
+  - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
 
  * Enhancements *
   - #4933, Speed up topology building in presence of big faces (Sandro Santilli)
