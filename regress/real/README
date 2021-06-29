@@ -12,9 +12,11 @@ The data sources available there are as follows:
 
 tiger_national.sql.bz2 - this requires the postgis_tiger_geocoder extension to be loaded before hand as it inherits from the tables packaged with that. The data is from https://www2.census.gov/geo/tiger/TIGER2020/ (zcta5, state, county)
 
-tiger_dc.sql.bz2 - this requires the postgis_tiger_geocoder extension.  Data sourced from https://www2.census.gov/geo/tiger/TIGER2020/ADDR/tl_2020_11*_*.zip files
+tiger_dc.sql.bz2 - this requires the postgis_tiger_geocoder extension.  Data sourced from https://www2.census.gov/geo/tiger/TIGER2020/*/tl_2020_11*_*.zip files
 
 tiger_ma.sql.bz2 - this requires the postgis_tiger_geocoder extension.  Data sourced from https://www2.census.gov/geo/tiger/TIGER2020/*/tl_2020_25*_*.zip files
+
+osm_belarus.sql.bz2 - this is sourced fromhttps://download.geofabrik.de/europe/belarus-latest.osm.pbf dated 2021-06-28T20:21:42Z
 
 osm_china.sql.bz2 - this is sourced from https://download.geofabrik.de/asia/china-140101-free.shp.zip dated 2018-05-03 16:26
 

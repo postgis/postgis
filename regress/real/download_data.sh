@@ -11,8 +11,10 @@ echo $DOWNLOAD_DATADIR
 wget -nc ${TESTSITE}/tiger_national.sql.bz2 -O tiger_national.sql.bz2
 wget -nc ${TESTSITE}/tiger_dc.sql.bz2 -O tiger_dc.sql.bz2
 wget -nc ${TESTSITE}/osm_china.sql.bz2 -O osm_china.sql.bz2
+wget -nc ${TESTSITE}/osm_belarus.sql.bz2 -O osm_belarus.sql.bz2
 bzip2 -dk tiger_national.sql.bz2
 bzip2 -dk tiger_dc.sql.bz2
 bzip2 -dk osm_china.sql.bz2
+bzip2 -dk osm_belarus.sql.bz2
 echo "Done downloading data"
 export DOWNLOAD_DATADIR
