@@ -1,0 +1,109 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2021 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+-- Return the exterior ring of a topology face
+--
+--
+CREATE OR REPLACE FUNCTION topology.GetFaceMaximalOuterRing(atopology varchar, aface int)
+RETURNS GEOMETRY AS
+$BODY$
+DECLARE
+  sql TEXT;
+  outsidePoint GEOMETRY;
+  leftmostEdge INT;
+  shell GEOMETRY;
+BEGIN
+
+   sql := format(
+     $$
+      SELECT
+        ST_Translate(
+          ST_StartPoint( ST_BoundingDiagonal(mbr) ),
+          -1,
+          -1
+        )
+      FROM %1$I.face
+      WHERE face_id = $1
+    $$,
+    atopology
+  );
+  EXECUTE sql USING aface INTO outsidePoint;
+
+  sql := format(
+    $$
+      SELECT
+        CASE WHEN left_face = $1
+        THEN
+          edge_id
+        ELSE
+          -edge_id
+        END signed_edge_id
+      FROM %1$I.edge
+      WHERE left_face = $1 or right_face = $1
+      ORDER BY
+#if POSTGIS_PGSQL_VERSION < 95
+        ST_Distance(geom, $2)
+#else
+        geom <-> $2
+#endif
+      LIMIT 1
+    $$,
+    atopology
+  );
+  EXECUTE sql USING aface, outsidePoint INTO leftmostEdge;
+
+  sql := format(
+    $$
+      WITH RECURSIVE
+      edgering (signed_edge_id, geom, next) AS (
+        SELECT
+          $1,
+          geom,
+          CASE WHEN $1 > 0 THEN
+            next_left_edge
+          ELSE
+            next_right_edge
+          END
+        FROM %1$I.edge_data
+        WHERE edge_id = abs( $1 )
+          UNION
+        SELECT
+          p.next,
+          e.geom,
+          CASE WHEN p.next > 0 THEN
+            e.next_left_edge
+          ELSE
+            e.next_right_edge
+          END
+        FROM %1$I.edge_data e, edgering p
+        WHERE e.edge_id = abs(p.next)
+        AND ( left_face = $2 or right_face = $2 )
+      )
+      SELECT
+        ST_MakeLine(
+          CASE WHEN r.signed_edge_id > 0 THEN
+            r.geom
+          ELSE
+            ST_Reverse(r.geom)
+          END
+        )
+      FROM edgering r
+    $$,
+    atopology
+  );
+  EXECUTE sql USING leftmostEdge, aface INTO shell;
+
+  RETURN shell;
+END;
+$BODY$ LANGUAGE 'plpgsql' STABLE;
+--}

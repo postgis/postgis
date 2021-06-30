@@ -137,6 +137,8 @@ topology.sql: \
 	sql/query/GetNodeEdges.sql.in \
 	sql/query/GetFaceContainingPoint.sql.in \
 	sql/manage/AddTopoGeometryColumn.sql.in \
+	sql/query/GetFaceMaximalOuterRing.sql.in \
+	sql/manage/TopologySummary.sql.in \
 	sql/manage/CopyTopology.sql.in \
 	sql/manage/CreateTopology.sql.in \
 	sql/manage/FindLayer.sql.in \
