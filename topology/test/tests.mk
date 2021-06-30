@@ -35,6 +35,7 @@ TESTS += \
 	$(top_srcdir)/topology/test/regress/getedgebypoint.sql \
 	$(top_srcdir)/topology/test/regress/getfacebypoint.sql \
 	$(top_srcdir)/topology/test/regress/getfacecontainingpoint.sql \
+	$(top_srcdir)/topology/test/regress/getfacemaximalouterring.sql \
 	$(top_srcdir)/topology/test/regress/getnodebypoint.sql \
 	$(top_srcdir)/topology/test/regress/getnodeedges.sql \
 	$(top_srcdir)/topology/test/regress/getringedges.sql \
