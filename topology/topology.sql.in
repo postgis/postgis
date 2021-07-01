@@ -1438,12 +1438,15 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(topology.TopoGeometry) AS IMPLICIT;
 
 --{
---  ValidateTopology(toponame)
+--  ValidateTopology(toponame, [bbox])
 --
 --  Return a Set of ValidateTopology_ReturnType containing
 --  informations on all topology inconsistencies
 --
-CREATE OR REPLACE FUNCTION topology.ValidateTopology(toponame varchar)
+-- Availability: 1.0.0
+-- Changed: 3.2.0 - add bbox optional parameter
+--
+CREATE OR REPLACE FUNCTION topology.ValidateTopology(toponame varchar, bbox geometry DEFAULT NULL)
   RETURNS setof topology.ValidateTopology_ReturnType
 AS
 $$
@@ -1489,6 +1492,14 @@ BEGIN
       node b
     WHERE a.node_id < b.node_id
     AND ST_DWithin(a.geom, b.geom, 0) -- NOTE: see #1625 and #1789
+    AND (
+      bbox IS NULL
+      OR (
+        a.geom && bbox
+        AND
+        b.geom && bbox
+      )
+    )
   LOOP
     retrec.error = 'coincident nodes';
     retrec.id1 = rec.id1;
@@ -1507,6 +1518,14 @@ BEGIN
     WHERE e.start_node != n.node_id
     AND e.end_node != n.node_id
     AND ST_Within(n.geom, e.geom)
+    AND (
+      bbox IS NULL
+      OR (
+        n.geom && bbox
+        AND
+        e.geom && bbox
+      )
+    )
   LOOP
     retrec.error = 'edge crosses node';
     retrec.id1 = rec.eid; -- edge_id
@@ -1518,7 +1537,12 @@ BEGIN
   RAISE DEBUG 'Checking for invalid or not-simple edges';
   FOR rec IN
     SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face
-    FROM edge e ORDER BY edge_id
+    FROM edge e
+    WHERE (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
+    ORDER BY edge_id
   LOOP --{
 
     -- Any invalid edge becomes a cancer for higher level complexes
@@ -1575,6 +1599,14 @@ BEGIN
           NOT e1.edge_id = ANY (invalid_edges)
           AND
           NOT e2.edge_id = ANY (invalid_edges)
+        )
+      )
+      AND (
+        bbox IS NULL
+        OR (
+          e1.geom && bbox
+          AND
+          e2.geom && bbox
         )
       )
   LOOP --{
@@ -1642,6 +1674,10 @@ BEGIN
       node n
     WHERE e.start_node = n.node_id
     AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)
+    AND (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
   LOOP --{
     retrec.error = 'edge start node geometry mis-match';
     retrec.id1 = rec.id1;
@@ -1659,6 +1695,10 @@ BEGIN
       node n
     WHERE e.end_node = n.node_id
     AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)
+    AND (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
   LOOP --{
     retrec.error = 'edge end node geometry mis-match';
     retrec.id1 = rec.id1;
@@ -1671,7 +1711,12 @@ BEGIN
   FOR rec IN
     SELECT face_id as id1
     FROM face
-    WHERE face_id > 0 EXCEPT (
+    WHERE face_id > 0
+    AND (
+      bbox IS NULL
+      OR mbr && bbox
+    )
+    EXCEPT (
       SELECT left_face FROM edge
       UNION
       SELECT right_face FROM edge
@@ -1703,6 +1748,10 @@ BEGIN
       ELSE
         TRUE
       END
+    )
+    AND (
+      bbox IS NULL
+      OR mbr && bbox
     )
   ;
 
@@ -1783,13 +1832,16 @@ BEGIN
       ST_Equals(ST_EndPoint(e.geom), n.geom)
     )
     WHERE
-     (
-       e.edge_id IS NULL AND (
-        n.containing_face != f.face_id
-        OR ( n.containing_face IS NULL AND f.face_id IS NOT NULL )
-       )
-     )
-     OR ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL )
+     ( bbox IS NULL OR n.geom && bbox )
+     AND (
+      (
+        e.edge_id IS NULL AND (
+          n.containing_face != f.face_id
+          OR ( n.containing_face IS NULL AND f.face_id IS NOT NULL )
+        )
+      )
+      OR ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL)
+    )
     GROUP BY n.node_id, n.containing_face
   LOOP --{
     IF rec.edge_id IS NOT NULL THEN
@@ -1816,7 +1868,14 @@ BEGIN
         edge_data e
         LEFT JOIN face_check f ON ( ST_Covers(f.geom, e.geom) )
         -- skip invalid edges (toxic, and will be already reported previously)
-        WHERE invalid_edges IS NULL OR NOT e.edge_id = ANY(invalid_edges)
+        WHERE
+          (
+            invalid_edges IS NULL OR NOT e.edge_id = ANY(invalid_edges)
+          )
+          AND
+          (
+            bbox IS NULL OR e.geom && bbox
+          )
       GROUP BY
         e.edge_id, e.left_face, e.right_face
     )
@@ -1859,8 +1918,8 @@ BEGIN
   RETURN;
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
--- } ValidateTopology(toponame)
+LANGUAGE 'plpgsql' VOLATILE; -- NOTE: we need VOLATILE to use SHOW
+--} ValidateTopology(toponame, bbox)
 
 --{
 --  CreateTopology(name, SRID, precision, hasZ)
