@@ -40,6 +40,7 @@
 #include "access/gist.h" /* For GiST */
 #include "access/itup.h"
 #include "access/skey.h"
+#include "utils/sortsupport.h"    /* For index building sort support */
 
 #include "../postgis_config.h"
 
@@ -83,6 +84,7 @@ Datum gserialized_gist_union(PG_FUNCTION_ARGS);
 Datum gserialized_gist_same(PG_FUNCTION_ARGS);
 Datum gserialized_gist_distance(PG_FUNCTION_ARGS);
 Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS);
+Datum gserialized_gist_sortsupport(PG_FUNCTION_ARGS);
 
 /*
 ** ND Operator prototypes
@@ -1364,6 +1366,56 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(distance);
 }
+
+PG_FUNCTION_INFO_V1(gserialized_gist_sortsupport);
+static int
+hash_cmp(Datum a, Datum b, SortSupport ssup)
+{
+  if (a > b)
+    return 1;
+  else if (a < b)
+    return -1;
+  else
+    return 0;
+}
+
+static bool
+hash_abbrev_abort(int memtupcount, SortSupport SortSupport)
+{
+  return false;
+}
+
+static Datum
+hash_abbrev_convert(Datum original, SortSupport ssup)
+{
+
+}
+
+static int
+hash_abbrev_full_cmp(Datum a, Datum b, SortSupport ssup)
+{
+
+}
+
+Datum
+gserialized_gist_sortsupport(PG_FUNCTION_ARGS)
+{
+  SortSupport ssup = (SortSupport) PG_GETARG_POINTER(0);
+
+  if (ssup->abbreviate)
+  {
+		ssup->comparator = hash_cmp;
+		ssup->abbrev_converter = hash_abbrev_convert;
+		ssup->abbrev_abort = hash_abbrev_abort;
+		ssup->abbrev_full_comparator = hash_abbrev_full_cmp;
+  }
+  else
+  {
+    ssup->comparator = hash_abbrev_full_cmp;
+  }
+  PG_RETURN_VOID();
+}
+
 
 /*
 ** Utility function to add entries to the axis partition lists in the
