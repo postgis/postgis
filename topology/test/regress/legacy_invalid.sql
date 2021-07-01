@@ -53,7 +53,8 @@ SELECT '#4936', 'missing_count', count(*)
 FROM invalid_topology.missing_invalidities ;
 
 SELECT '#4936', 'missing', *
-FROM invalid_topology.missing_invalidities ;
+FROM invalid_topology.missing_invalidities
+ORDER BY error ASC;
 
 -- clean up
 SELECT topology.DropTopology('invalid_topology');
