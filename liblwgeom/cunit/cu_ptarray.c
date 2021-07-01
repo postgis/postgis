@@ -616,6 +616,43 @@ static void test_ptarray_scale()
   lwline_free(line);
 }
 
+static void test_ptarray_scroll()
+{
+  LWLINE *line;
+  POINTARRAY *pa;
+  POINT4D scroll;
+  const char *wkt;
+  char *wktout;
+	int rv;
+
+  wkt = "LINESTRING ZM (1 1 1 1,2 2 2 2,3 3 3 3,4 4 4 4,1 1 1 1)";
+  line = lwgeom_as_lwline(lwgeom_from_text(wkt));
+  pa = line->points;
+
+	scroll.x = scroll.y = scroll.z = scroll.m = 2;
+  rv = ptarray_scroll_in_place(pa, &scroll);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
+  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+  wkt = "LINESTRING ZM (2 2 2 2,3 3 3 3,4 4 4 4,1 1 1 1,2 2 2 2)";
+  ASSERT_STRING_EQUAL(wktout, wkt);
+  lwfree(wktout);
+
+	scroll.x = scroll.y = scroll.z = scroll.m = 1;
+  rv = ptarray_scroll_in_place(pa, &scroll);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
+  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+  wkt = "LINESTRING ZM (1 1 1 1,2 2 2 2,3 3 3 3,4 4 4 4,1 1 1 1)";
+  ASSERT_STRING_EQUAL(wktout, wkt);
+  lwfree(wktout);
+
+	scroll.x = scroll.y = scroll.z = scroll.m = 9;
+  rv = ptarray_scroll_in_place(pa, &scroll);
+	CU_ASSERT_EQUAL(rv, LW_FAILURE);
+	ASSERT_STRING_EQUAL(cu_error_msg, "ptarray_scroll_in_place: input POINTARRAY does not contain the given point");
+
+  lwline_free(line);
+}
+
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -633,4 +670,5 @@ void ptarray_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarray_contains_point);
 	PG_ADD_TEST(suite, test_ptarrayarc_contains_point);
 	PG_ADD_TEST(suite, test_ptarray_scale);
+	PG_ADD_TEST(suite, test_ptarray_scroll);
 }

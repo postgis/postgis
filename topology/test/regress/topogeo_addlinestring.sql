@@ -399,3 +399,11 @@ FROM topology.TopoGeo_addLinestring('t4758',
   'LINESTRING( 11.38330505 60.408239599999995, 11.3832721  60.408194249999994)') AS t
 ORDER BY t;
 SELECT 't4758.end', topology.DropTopology('t4758');
+
+-- See https://trac.osgeo.org/postgis/ticket/2175
+SELECT 't2175.start', topology.CreateTopology('bug2175') > 0;
+SELECT 't2175.1', count(*) from topology.TopoGeo_addLinestring('bug2175',
+  'LINESTRING(10 10,10 0,0 0,0 10,10 10)', 0);
+SELECT 't2175.2', count(*) from topology.TopoGeo_addLinestring('bug2175',
+  'LINESTRING(10 10,10 0,0 0,0 10,10 10)', 0);
+SELECT 't2175.end', topology.DropTopology('bug2175');

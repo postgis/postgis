@@ -119,6 +119,7 @@ topology.sql: \
 	sql/query/getfacebypoint.sql.in \
 	sql/query/GetRingEdges.sql.in \
 	sql/query/GetNodeEdges.sql.in \
+	sql/query/GetFaceContainingPoint.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/CopyTopology.sql.in \
 	sql/manage/FindLayer.sql.in \

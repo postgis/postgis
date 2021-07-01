@@ -543,7 +543,7 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
   if ( checkFace && ( face == -1 || ! skipISOChecks ) )
   {
     foundInFace = lwt_be_getFaceContainingPoint(topo, pt); /*x*/
-    if ( foundInFace == -2 ) {
+    if ( foundInFace == -1 ) {
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
       return -1;
     }
@@ -4784,7 +4784,7 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
   LWGEOM *qp = lwpoint_as_lwgeom(pt);
 
   id = lwt_be_getFaceContainingPoint(topo, pt);
-  if ( id == -2 ) {
+  if ( id == -1 ) {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
@@ -4793,7 +4793,11 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
   {
     return id;
   }
-  id = 0; /* or it'll be -1 for not found */
+
+  if ( tol == 0 )
+  {
+    return id;
+  }
 
   LWDEBUG(1, "No face properly contains query point,"
              " looking for edges");
@@ -5612,6 +5616,15 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   uint64_t i;
   GBOX qbox;
   int forward;
+  int input_was_closed = 0;
+  POINT4D originalStartPoint;
+
+  if ( lwline_is_closed(line) )
+  {
+    input_was_closed = 1;
+    getPoint4d_p( line->points, 0, &originalStartPoint);
+    LWDEBUGF(1, "Input line is closed, original point is %g,%g", originalStartPoint.x, originalStartPoint.y);
+  }
 
   *nedges = -1; /* error condition, by default */
 
@@ -5796,6 +5809,23 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     LWDEBUGG(1, tmp, "Linemerged");
     lwgeom_free(xset);
     xset = tmp;
+
+    if ( input_was_closed )
+    {{
+      LWLINE *scrolled = lwgeom_as_lwline(xset);
+      if (scrolled) {
+        if ( lwline_is_closed(scrolled) ) {
+          ptarray_scroll_in_place(scrolled->points, &originalStartPoint);
+        }
+        else {
+          LWDEBUGG(1, scrolled, "Linemerged intersected input is not closed anymore");
+        }
+      }
+      else {
+        LWDEBUGG(1, xset, "Linemerged intersected input is not a line anymore");
+      }
+    }}
+
 
     /*
      * Here we union the (linemerged) intersection with

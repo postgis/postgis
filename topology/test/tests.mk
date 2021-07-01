@@ -32,6 +32,7 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/geometry_cast.sql \
 	$(topsrcdir)/topology/test/regress/getedgebypoint.sql \
 	$(topsrcdir)/topology/test/regress/getfacebypoint.sql \
+	$(topsrcdir)/topology/test/regress/getfacecontainingpoint.sql \
 	$(topsrcdir)/topology/test/regress/getnodebypoint.sql \
 	$(topsrcdir)/topology/test/regress/getnodeedges.sql \
 	$(topsrcdir)/topology/test/regress/getringedges.sql \
