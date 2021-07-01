@@ -1457,6 +1457,24 @@ DECLARE
   search_path_backup text;
 BEGIN
 
+  IF NOT EXISTS (
+    SELECT oid
+    FROM pg_catalog.pg_namespace
+    WHERE nspname = toponame
+  )
+  THEN
+    RAISE EXCEPTION 'Topology schema % does not exist', toponame;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT id
+    FROM topology.topology
+    WHERE name = toponame
+  )
+  THEN
+    RAISE WARNING 'Topology % is not registered in topology.topology', toponame;
+  END IF;
+
   EXECUTE 'SHOW search_path' INTO search_path_backup;
   EXECUTE 'SET search_PATH TO ' || quote_ident(toponame) || ','
                                 || search_path_backup;
