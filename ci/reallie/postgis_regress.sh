@@ -8,7 +8,7 @@
 ## TODO: Determine what will trigger reallie to move
 
 export WORKSPACE=/home/jenkins/workspace
-
+export DOWNLOAD_DATADIR=${WORKSPACE}/download_data
 cd ${WORKSPACE}/PostGIS_Worker_Run/label/${label}/$BRANCH
 export OS_BUILD=64
 export PG_VER=14
