@@ -1331,7 +1331,7 @@ hash_abbrev_abort(int memtupcount, SortSupport ssup)
 static Datum
 hash_abbrev_convert(Datum original, SortSupport ssup)
 {
-	BOX2DF* box = (BOX2DF*)original;
+	BOX2DF *box = (BOX2DF *)original;
 
 	union floatuint {
 		uint32_t u;
@@ -1342,14 +1342,30 @@ hash_abbrev_convert(Datum original, SortSupport ssup)
 	x.f = (box->xmax + box->xmin) / 2;
 	y.f = (box->ymax + box->ymin) / 2;
 
-	return (Datum)uint32_hilbert(y.u, x.u);
+	// return (Datum)uint32_hilbert(y.u, x.u);
+	// return (Datum)uint32_morton(y.u, x.u);
+	return (Datum)uint32_x(y.u, x.u);
 }
 
 static int
 hash_abbrev_full_cmp(Datum a, Datum b, SortSupport ssup)
 {
-  uint64_t hash_a = hash_abbrev_convert(a, ssup);
-  uint64_t hash_b = hash_abbrev_convert(b, ssup);
+  union floatint {
+    uint32_t u;
+    float f;
+  };
+
+  BOX2DF* box_a = (BOX2DF *)a;
+  BOX2DF* box_b = (BOX2DF *)b;
+
+  union floatint x, y;
+  x.f = (box_a->xmax + box_a->xmin) / 2;
+  y.f = (box_a->ymax + box_a->ymin) / 2;
+  uint64_t hash_a = uint32_hilbert(y.u, x.u);
+
+  x.f = (box_b->xmax + box_b->xmin) / 2;
+  y.f = (box_b->ymax + box_b->ymin) / 2;
+  uint64_t hash_b = uint32_hilbert(y.u, x.u);
 
 	if (hash_a > hash_b)
 		return 1;
@@ -1359,9 +1375,6 @@ hash_abbrev_full_cmp(Datum a, Datum b, SortSupport ssup)
 		return 0; 
 }
 
-/*
- * TODO: 2d gist sort support function GiST support function
-*/
 Datum 
 gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS)
 {
