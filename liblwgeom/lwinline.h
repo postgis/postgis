@@ -255,6 +255,23 @@ uint64_interleave_2(uint64_t x, uint64_t y)
 	return x | (y << 1);
 }
 
+inline static uint64_t
+uint32_x(uint32_t px, uint32_t py)
+{
+	uint64_t x = px;
+	return x;
+}
+
+inline static uint64_t
+uint32_morton(uint32_t px, uint32_t py)
+{
+	uint64_t x = px;
+	uint64_t y = py;
+
+	return uint64_interleave_2(x, y);
+}
+
+
 /* Based on https://github.com/rawrunprotected/hilbert_curves Public Domain code */
 inline static uint64_t
 uint32_hilbert(uint32_t px, uint32_t py)
