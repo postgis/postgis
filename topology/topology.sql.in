@@ -1548,10 +1548,12 @@ BEGIN
     WHERE
       e1.edge_id < e2.edge_id
       AND e1.geom && e2.geom
-      AND invalid_edges IS NULL OR (
-        NOT e1.edge_id = ANY (invalid_edges)
-        AND
-        NOT e2.edge_id = ANY (invalid_edges)
+      AND (
+        invalid_edges IS NULL OR (
+          NOT e1.edge_id = ANY (invalid_edges)
+          AND
+          NOT e2.edge_id = ANY (invalid_edges)
+        )
       )
   LOOP
 
