@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2012-2021 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  **********************************************************************/
@@ -2082,3 +2082,79 @@ ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
 }
 
 
+/*
+ * Reorder the vertices of a closed pointarray so that the
+ * given point is the first/last one.
+ *
+ * Error out if pointarray is not closed or it does not
+ * contain the given point.
+ */
+int
+ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
+{
+	POINTARRAY *tmp;
+	int found;
+	uint32_t it;
+	int ptsize;
+
+	if ( ! ptarray_is_closed_2d(pa) )
+	{
+		lwerror("ptarray_scroll_in_place: input POINTARRAY is not closed");
+		return LW_FAILURE;
+	}
+
+	ptsize = ptarray_point_size(pa);
+
+	/* Find the point in the array */
+	found = 0;
+	for ( it = 0; it < pa->npoints; ++it )
+	{
+		if ( ! memcmp(getPoint_internal(pa, it), pt, ptsize) )
+		{
+			found = 1;
+			break;
+		}
+	}
+
+	if ( ! found )
+	{
+		lwerror("ptarray_scroll_in_place: input POINTARRAY does not contain the given point");
+		return LW_FAILURE;
+	}
+
+	if ( 0 == it )
+	{
+		/* Point is already the start/end point, just clone the input */
+		return LW_SUCCESS;
+	}
+
+	/* TODO: reduce allocations */
+	tmp = ptarray_construct(FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags), pa->npoints);
+
+	bzero(getPoint_internal(tmp, 0), ptsize * pa->npoints);
+	/* Copy the block from found point to last point into the output array */
+	memcpy(
+		getPoint_internal(tmp, 0),
+		getPoint_internal(pa, it),
+		ptsize * ( pa->npoints - it )
+	);
+
+	/* Copy the block from second point to the found point into the last portion of the
+   * return */
+	memcpy(
+		getPoint_internal(tmp, pa->npoints - it),
+		getPoint_internal(pa, 1),
+		ptsize * ( it )
+	);
+
+	/* Copy the resulting pointarray back to source one */
+	memcpy(
+		getPoint_internal(pa, 0),
+		getPoint_internal(tmp, 0),
+		ptsize * ( pa->npoints )
+	);
+
+	ptarray_free(tmp);
+
+	return LW_SUCCESS;
+}

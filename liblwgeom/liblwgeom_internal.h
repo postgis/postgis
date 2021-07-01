@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2011-2021 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2011 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2007-2008 Mark Cave-Ayland
  * Copyright (C) 2001-2006 Refractions Research Inc.
@@ -306,6 +306,11 @@ void affine_invert(AFFINE *affine);
 * Scale
 */
 void ptarray_scale(POINTARRAY *pa, const POINT4D *factor);
+
+/*
+* Scroll
+*/
+int ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *newbase);
 
 /*
 * PointArray

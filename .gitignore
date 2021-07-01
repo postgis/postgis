@@ -151,6 +151,8 @@ regress/core/Makefile
 regress/core/tests.mk
 regress/dumper/Makefile
 regress/loader/Makefile
+regress/real/download_data
+regress/real/Makefile
 regress/sfcgal/Makefile
 regress/postgis.sql
 regress/postgis_garden_result.txt

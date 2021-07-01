@@ -3,6 +3,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
+-- Copyright (C) 2021 Sandro Santilli <strk@kbt.io>
 -- Copyright (C) 2011 Andrea Peri <aperi2007@gmail.com>
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -12,25 +13,91 @@
 
 --{
 --
--- Andrea Peri (27 Feb 2011) creation
---
 -- GetFaceByPoint(atopology, point, tol)
 --
--- Retrieve a Face ID given a POINT and a tolerance
--- tolerance = 0 mean exactly intersection
+-- Retrieve the ID of a face unambiguously referenced by the given POINT.
 --
--- Returns return the integer ID if there is a face on the Point.
+-- A face is unambiguously referenced by a point if a circle of radius
+-- tol1 around the point intersects a single face of the topology.
 --
--- When the Point is even a Node it raise an exception.
--- This case is testable with the GetNodeByPoint(atopology, apoint, tol)
+-- In case of ambiguity (multiple faces intersect the circle)
+-- this function will raise an exception
 --
--- If there isn't any face in the Point, GetFaceByPoint return 0.
+-- If the circle is completely outside any face, 0 is returned
+-- (the circle is contained in the Universe Face).
 --
--- if near the point there are two or more faces it throw an exception.
+-- Initial implementation by Andrea Peri (27 Feb 2011)
+-- Rewrite by Sandro Santilli (29 Jun 2021)
 --
+-- }{
 CREATE OR REPLACE FUNCTION topology.GetFaceByPoint(atopology varchar, apoint geometry, tol1 float8)
 	RETURNS int AS
-	'MODULE_PATHNAME', 'GetFaceByPoint'
-	LANGUAGE 'c' STABLE STRICT;
+$BODY$ -- }{
+DECLARE
+  rec RECORD;
+  sql TEXT;
+  sideFaces INT[];
+BEGIN
+
+  -- Check if any edge intersects the query circle
+  sql := format(
+    $$
+      WITH edges_in_circle AS (
+        SELECT
+          left_face,
+          right_face
+        FROM
+          %1$I.edge
+        WHERE
+          ST_DWithin(geom, $1, $2)
+      ), side_faces AS (
+        SELECT left_face f FROM edges_in_circle
+          UNION
+        SELECT right_face FROM edges_in_circle
+      )
+      SELECT array_agg(f ORDER BY f) FROM side_faces;
+    $$,
+    atopology
+  );
+  EXECUTE sql
+  USING apoint, tol1
+  INTO sideFaces;
+
+  RAISE DEBUG 'Side faces: %', sideFaces;
+
+  IF array_upper(sideFaces, 1) = 1
+  THEN
+    -- Edges intersecting the circle
+    -- have a single side-face, our circle
+    -- is surely in that face
+    --
+    -- NOTE: this may also be the universe face
+    --
+    RETURN sideFaces[1];
+  END IF;
+
+  IF array_upper(sideFaces, 1) = 2
+  THEN
+    IF sideFaces[1] = 0
+    THEN
+      -- Edges intersecting the circle
+      -- have a single real side-face,
+      -- we'll consider our query to be in that face
+      RETURN sideFaces[2];
+    ELSE
+      -- Edges have multiple real side-faces
+      RAISE EXCEPTION 'Two or more faces found';
+    END IF;
+  END IF;
+
+  IF array_upper(sideFaces, 1) > 2
+  THEN
+      RAISE EXCEPTION 'Two or more faces found';
+  END IF;
+
+  -- No edge intersects the circle, check for containment
+  RETURN topology.GetFaceContainingPoint(atopology, apoint);
+END;
+$BODY$ LANGUAGE 'plpgsql' STABLE STRICT;
 --} GetFaceByPoint
 

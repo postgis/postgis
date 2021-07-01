@@ -2158,6 +2158,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/query/getnodebypoint.sql.in"
 #include "sql/query/getedgebypoint.sql.in"
 #include "sql/query/getfacebypoint.sql.in"
+#include "sql/query/GetFaceContainingPoint.sql.in"
 
 --  Populating
 #include "sql/populate.sql.in"
