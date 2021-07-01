@@ -3,6 +3,13 @@ set client_min_messages to WARNING;
 
 \i ../load_topology.sql
 
+-- Add holes touching shell defined in CW order
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(24 14, 23 17,25 17, 24 14)');
+
+-- Add holes touching shell defined in CCW order
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(32 14, 33 17,31 17, 32 14)');
+
+
 -- Get face containing the "point on surface" of each face's geometry
 SELECT 'pos', face_id, topology.GetFaceContainingPoint(
   'city_data',
@@ -34,6 +41,12 @@ SELECT 't5', topology.GetFaceContainingPoint('city_data', 'POINT(25 33)');
 
 -- Query point on a node of degree 2 incident to single face
 SELECT 't6', topology.GetFaceContainingPoint('city_data', 'POINT(57 33)');
+
+-- Query point in hole touching shell, near edge having hole on the left
+SELECT 't7', topology.GetFaceContainingPoint('city_data', 'POINT(32 16.9)');
+
+-- Query point in hole touching shell, near edge having hole on the right
+SELECT 't8', topology.GetFaceContainingPoint('city_data', 'POINT(24 16.9)');
 
 -- Query point on a node incident to multiple faces
 SELECT 'e1', topology.GetFaceContainingPoint('city_data', 'POINT(21 14)');
