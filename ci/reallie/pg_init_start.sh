@@ -1,11 +1,11 @@
-# reallie is a 64-bit Debian 11, residing in same host as debbie
+# Reallie is a 64-bit Debian 11, residing in same host as debbie
 # She will be used for testing real data tests (those in real folder)
 # This is script to launch custom compiled PostgreSQL
 # export label=reallie #this is passed in via Jenkins
 export WORKSPACE=/home/jenkins/workspace
 
 export OS_BUILD=64
-export PG_VER=13
+export PG_VER=14
 export PGPATH=${WORKSPACE}/pg/label/${label}/rel/pg${PG_VER}w${OS_BUILD}
 export PATH=${PATH}:${PGPATH}/bin:${PGPATH}/lib
 export PGPORT=55432
