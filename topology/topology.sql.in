@@ -1463,6 +1463,7 @@ BEGIN
 
 
   -- Check for coincident nodes
+  RAISE DEBUG 'Checking for coincident nodes';
   FOR rec IN
     SELECT a.node_id as id1, b.node_id as id2
     FROM
@@ -1479,6 +1480,7 @@ BEGIN
 
   -- Check for edge crossed nodes
   -- TODO: do this in the single edge loop
+  RAISE DEBUG 'Checking for edges crossing nodes';
   FOR rec IN
     SELECT n.node_id as nid, e.edge_id as eid
     FROM
@@ -1495,10 +1497,11 @@ BEGIN
   END LOOP;
 
   -- Scan all edges
+  RAISE DEBUG 'Checking for invalid or not-simple edges';
   FOR rec IN
     SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face
     FROM edge e ORDER BY edge_id
-  LOOP
+  LOOP --{
 
     -- Any invalid edge becomes a cancer for higher level complexes
     IF NOT ST_IsValid(rec.geom) THEN
@@ -1532,9 +1535,10 @@ BEGIN
       RETURN NEXT retrec;
     END IF;
 
-  END LOOP;
+  END LOOP; --}
 
   -- Check for edge crossing
+  RAISE DEBUG 'Checking for crossing edges';
   FOR rec IN
     SELECT
       e1.edge_id as id1,
@@ -1555,7 +1559,7 @@ BEGIN
           NOT e2.edge_id = ANY (invalid_edges)
         )
       )
-  LOOP
+  LOOP --{
 
     IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
       CONTINUE; -- no interior intersection
@@ -1608,10 +1612,11 @@ BEGIN
     retrec.id1 = rec.id1;
     retrec.id2 = rec.id2;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Check for edge start_node geometry mis-match
   -- TODO: move this in the first edge table scan
+  RAISE DEBUG 'Checking for edges start_node mismatch';
   FOR rec IN
     SELECT e.edge_id as id1, n.node_id as id2
     FROM
@@ -1619,15 +1624,16 @@ BEGIN
       node n
     WHERE e.start_node = n.node_id
     AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)
-  LOOP
+  LOOP --{
     retrec.error = 'edge start node geometry mis-match';
     retrec.id1 = rec.id1;
     retrec.id2 = rec.id2;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Check for edge end_node geometry mis-match
   -- TODO: move this in the first edge table scan
+  RAISE DEBUG 'Checking for edges end_node mismatch';
   FOR rec IN
     SELECT e.edge_id as id1, n.node_id as id2
     FROM
@@ -1635,14 +1641,15 @@ BEGIN
       node n
     WHERE e.end_node = n.node_id
     AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)
-  LOOP
+  LOOP --{
     retrec.error = 'edge end node geometry mis-match';
     retrec.id1 = rec.id1;
     retrec.id2 = rec.id2;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Check for faces w/out edges
+  RAISE DEBUG 'Checking for faces without edges';
   FOR rec IN
     SELECT face_id as id1
     FROM face
@@ -1651,15 +1658,17 @@ BEGIN
       UNION
       SELECT right_face FROM edge
     )
-  LOOP
+  LOOP --{
     retrec.error = 'face without edges';
     retrec.id1 = rec.id1;
     retrec.id2 = NULL;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Now create a temporary table to construct all face geometries
   -- for checking their consistency
+
+  RAISE DEBUG 'Constructing geometry of all faces';
 
   CREATE TEMP TABLE face_check ON COMMIT DROP AS
   SELECT
@@ -1686,19 +1695,21 @@ BEGIN
   CREATE INDEX "face_check_bt" ON face_check (face_id);
 
   -- Scan the table looking for NULL geometries
+  RAISE DEBUG 'Checking for faces with no rings';
   FOR rec IN
     SELECT face_id FROM face_check
     WHERE geom IS NULL OR ST_IsEmpty(geom)
-  LOOP
+  LOOP --{
     -- Face missing !
     retrec.error := 'face has no rings';
     retrec.id1 := rec.face_id;
     retrec.id2 := NULL;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Scan the table looking for overlap or containment
   -- TODO: also check for MBR consistency
+  RAISE DEBUG 'Checking for face-in-face';
   FOR rec IN
     SELECT
       f1.geom,
@@ -1710,7 +1721,7 @@ BEGIN
       face_check f2
       WHERE f1.face_id < f2.face_id
       AND f1.geom && f2.geom
-  LOOP
+  LOOP --{
 
     -- Face overlap
     IF ST_RelateMatch(rec.im, 'T*T***T**') THEN
@@ -1736,9 +1747,10 @@ BEGIN
     RETURN NEXT retrec;
     END IF;
 
-  END LOOP;
+  END LOOP; --}
 
   -- Check nodes have correct containing_face (#3233)
+  RAISE DEBUG 'Checking for node containing_face correctness';
   FOR rec IN
     SELECT
       n.node_id,
@@ -1761,7 +1773,7 @@ BEGIN
      )
      OR ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL )
     GROUP BY n.node_id, n.containing_face
-  LOOP
+  LOOP --{
     IF rec.edge_id IS NOT NULL THEN
       -- node is not really isolated
       retrec.error := 'not-isolated node has not-null containing_face';
@@ -1771,9 +1783,10 @@ BEGIN
     retrec.id1 := rec.node_id;
     retrec.id2 := NULL; -- TODO: write expected containing_face here ?
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Check edges are covered by their left-right faces (#4831)
+  RAISE DEBUG 'Checking for edges coverage';
   FOR rec IN
     WITH edge_coverage AS (
       SELECT
@@ -1801,7 +1814,7 @@ BEGIN
       OR
       ( right_face = 0 AND left_face = 0 AND covered_by[1] != 0 )
     ORDER BY edge_id
-  LOOP
+  LOOP --{
       retrec.id1 := rec.edge_id;
       retrec.id2 := NULL; -- TODO: write expected containing_face here ?
       IF rec.left_face = 0 AND rec.right_face = 0 THEN
@@ -1819,7 +1832,7 @@ BEGIN
 --          RETURN NEXT retrec;
 --        END IF;
       END IF;
-  END LOOP;
+  END LOOP; --}
 
   DROP TABLE face_check;
 
