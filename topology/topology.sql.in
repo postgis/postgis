@@ -1828,8 +1828,8 @@ BEGIN
     FROM node n
     LEFT JOIN face_check f ON ( ST_Contains(f.geom, n.geom) )
     LEFT JOIN edge e ON (
-      ST_Equals(ST_StartPoint(e.geom), n.geom) OR
-      ST_Equals(ST_EndPoint(e.geom), n.geom)
+      e.start_node = n.node_id OR
+      e.end_node = n.node_id
     )
     WHERE
      ( bbox IS NULL OR n.geom && bbox )
