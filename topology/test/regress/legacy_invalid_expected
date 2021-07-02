@@ -22,4 +22,7 @@ not-isolated node has not-null containing_face|4|
 edge not covered by both its side faces|27|
 edge not covered by both its side faces|28|
 edge not covered by both its side faces|30|
+#4936|missing_count|2
+#4936|missing|face has no rings|10|
+#4936|missing|face without edges|10|
 Topology 'invalid_topology' dropped

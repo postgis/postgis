@@ -8,6 +8,11 @@ It includes a download_data.sh script that downloads data from http://postgis.ne
 Data in http://postgis.net/extra/test-data is currently sourced from Census Tiger and OSM data sources and is packaged
 in a format suitable for load by psql.
 
+If you want to control where the data is downloaded to, set env variable
+export DOWNLOAD_DATADIR=/path/to_download_data
+
+If path is not set, a download_data folder will created in this folder and removed with make distclean
+
 The data sources available there are as follows:
 
 tiger_national.sql.bz2 - this requires the postgis_tiger_geocoder extension to be loaded before hand as it inherits from the tables packaged with that. The data is from https://www2.census.gov/geo/tiger/TIGER2020/ (zcta5, state, county)

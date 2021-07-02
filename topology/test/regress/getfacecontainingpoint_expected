@@ -7,12 +7,16 @@ pos|6|6
 pos|7|7
 pos|8|8
 pos|9|9
+pos|10|10
+pos|11|11
 t1|1
 t2|1
 t3|9
 t4|2
 t5|2
 t6|0
+t7|11
+t8|4
 ERROR:  Two or more faces found
 ERROR:  Two or more faces found
 ERROR:  Two or more faces found
