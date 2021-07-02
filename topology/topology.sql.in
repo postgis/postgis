@@ -1438,12 +1438,15 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(topology.TopoGeometry) AS IMPLICIT;
 
 --{
---  ValidateTopology(toponame)
+--  ValidateTopology(toponame, [bbox])
 --
 --  Return a Set of ValidateTopology_ReturnType containing
 --  informations on all topology inconsistencies
 --
-CREATE OR REPLACE FUNCTION topology.ValidateTopology(toponame varchar)
+-- Availability: 1.0.0
+-- Changed: 3.2.0 - add bbox optional parameter
+--
+CREATE OR REPLACE FUNCTION topology.ValidateTopology(toponame varchar, bbox geometry DEFAULT NULL)
   RETURNS setof topology.ValidateTopology_ReturnType
 AS
 $$
@@ -1454,15 +1457,49 @@ DECLARE
   i integer;
   invalid_edges integer[];
   invalid_faces integer[];
-  sql text;
+  search_path_backup text;
 BEGIN
 
+  IF NOT EXISTS (
+    SELECT oid
+    FROM pg_catalog.pg_namespace
+    WHERE nspname = toponame
+  )
+  THEN
+    RAISE EXCEPTION 'Topology schema % does not exist', toponame;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT id
+    FROM topology.topology
+    WHERE name = toponame
+  )
+  THEN
+    RAISE WARNING 'Topology % is not registered in topology.topology', toponame;
+  END IF;
+
+  EXECUTE 'SHOW search_path' INTO search_path_backup;
+  EXECUTE 'SET search_PATH TO ' || quote_ident(toponame) || ','
+                                || search_path_backup;
+
+
   -- Check for coincident nodes
-  FOR rec IN EXECUTE 'SELECT a.node_id as id1, b.node_id as id2 FROM '
-    || quote_ident(toponame) || '.node a, '
-    || quote_ident(toponame) || '.node b '
-       'WHERE a.node_id < b.node_id '
-       ' AND ST_DWithin(a.geom, b.geom, 0)' -- NOTE: see #1625 and #1789
+  RAISE DEBUG 'Checking for coincident nodes';
+  FOR rec IN
+    SELECT a.node_id as id1, b.node_id as id2
+    FROM
+      node a,
+      node b
+    WHERE a.node_id < b.node_id
+    AND ST_DWithin(a.geom, b.geom, 0) -- NOTE: see #1625 and #1789
+    AND (
+      bbox IS NULL
+      OR (
+        a.geom && bbox
+        AND
+        b.geom && bbox
+      )
+    )
   LOOP
     retrec.error = 'coincident nodes';
     retrec.id1 = rec.id1;
@@ -1472,12 +1509,23 @@ BEGIN
 
   -- Check for edge crossed nodes
   -- TODO: do this in the single edge loop
-  FOR rec IN EXECUTE 'SELECT n.node_id as nid, e.edge_id as eid FROM '
-    || quote_ident(toponame) || '.node n, '
-    || quote_ident(toponame) || '.edge e '
-       'WHERE e.start_node != n.node_id '
-       'AND e.end_node != n.node_id '
-       'AND ST_Within(n.geom, e.geom)'
+  RAISE DEBUG 'Checking for edges crossing nodes';
+  FOR rec IN
+    SELECT n.node_id as nid, e.edge_id as eid
+    FROM
+      node n,
+      edge e
+    WHERE e.start_node != n.node_id
+    AND e.end_node != n.node_id
+    AND ST_Within(n.geom, e.geom)
+    AND (
+      bbox IS NULL
+      OR (
+        n.geom && bbox
+        AND
+        e.geom && bbox
+      )
+    )
   LOOP
     retrec.error = 'edge crosses node';
     retrec.id1 = rec.eid; -- edge_id
@@ -1486,9 +1534,16 @@ BEGIN
   END LOOP;
 
   -- Scan all edges
-  FOR rec IN EXECUTE 'SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face FROM '
-    || quote_ident(toponame) || '.edge e ORDER BY edge_id'
-  LOOP
+  RAISE DEBUG 'Checking for invalid or not-simple edges';
+  FOR rec IN
+    SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face
+    FROM edge e
+    WHERE (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
+    ORDER BY edge_id
+  LOOP --{
 
     -- Any invalid edge becomes a cancer for higher level complexes
     IF NOT ST_IsValid(rec.geom) THEN
@@ -1522,25 +1577,39 @@ BEGIN
       RETURN NEXT retrec;
     END IF;
 
-  END LOOP;
+  END LOOP; --}
 
   -- Check for edge crossing
-  sql := 'SELECT e1.edge_id as id1, e2.edge_id as id2, '
-       ' e1.geom as g1, e2.geom as g2, '
-       'ST_Relate(e1.geom, e2.geom) as im FROM '
-    || quote_ident(toponame) || '.edge e1, '
-    || quote_ident(toponame) || '.edge e2 '
-       'WHERE e1.edge_id < e2.edge_id '
-       ' AND e1.geom && e2.geom ';
-  IF invalid_edges IS NOT NULL THEN
-    sql := sql || ' AND NOT e1.edge_id = ANY ('
-               || quote_literal(invalid_edges) || ')'
-               || ' AND NOT e2.edge_id = ANY ('
-               || quote_literal(invalid_edges) || ')';
-  END IF;
-
-  FOR rec IN EXECUTE sql
-  LOOP
+  RAISE DEBUG 'Checking for crossing edges';
+  FOR rec IN
+    SELECT
+      e1.edge_id as id1,
+      e2.edge_id as id2,
+      e1.geom as g1,
+      e2.geom as g2,
+      ST_Relate(e1.geom, e2.geom) as im
+    FROM
+      edge e1,
+      edge e2
+    WHERE
+      e1.edge_id < e2.edge_id
+      AND e1.geom && e2.geom
+      AND (
+        invalid_edges IS NULL OR (
+          NOT e1.edge_id = ANY (invalid_edges)
+          AND
+          NOT e2.edge_id = ANY (invalid_edges)
+        )
+      )
+      AND (
+        bbox IS NULL
+        OR (
+          e1.geom && bbox
+          AND
+          e2.geom && bbox
+        )
+      )
+  LOOP --{
 
     IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
       CONTINUE; -- no interior intersection
@@ -1593,86 +1662,121 @@ BEGIN
     retrec.id1 = rec.id1;
     retrec.id2 = rec.id2;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Check for edge start_node geometry mis-match
   -- TODO: move this in the first edge table scan
-  FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
-    || quote_ident(toponame) || '.edge e, '
-    || quote_ident(toponame) || '.node n '
-       'WHERE e.start_node = n.node_id '
-       'AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)'
-  LOOP
+  RAISE DEBUG 'Checking for edges start_node mismatch';
+  FOR rec IN
+    SELECT e.edge_id as id1, n.node_id as id2
+    FROM
+      edge e,
+      node n
+    WHERE e.start_node = n.node_id
+    AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)
+    AND (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
+  LOOP --{
     retrec.error = 'edge start node geometry mis-match';
     retrec.id1 = rec.id1;
     retrec.id2 = rec.id2;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Check for edge end_node geometry mis-match
   -- TODO: move this in the first edge table scan
-  FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
-    || quote_ident(toponame) || '.edge e, '
-    || quote_ident(toponame) || '.node n '
-       'WHERE e.end_node = n.node_id '
-       'AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)'
-  LOOP
+  RAISE DEBUG 'Checking for edges end_node mismatch';
+  FOR rec IN
+    SELECT e.edge_id as id1, n.node_id as id2
+    FROM
+      edge e,
+      node n
+    WHERE e.end_node = n.node_id
+    AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)
+    AND (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
+  LOOP --{
     retrec.error = 'edge end node geometry mis-match';
     retrec.id1 = rec.id1;
     retrec.id2 = rec.id2;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Check for faces w/out edges
-  FOR rec IN EXECUTE 'SELECT face_id as id1 FROM '
-    || quote_ident(toponame) || '.face '
-    || 'WHERE face_id > 0 EXCEPT ( SELECT left_face FROM '
-    || quote_ident(toponame) || '.edge '
-    || ' UNION SELECT right_face FROM '
-    || quote_ident(toponame) || '.edge '
-    || ')'
-  LOOP
+  RAISE DEBUG 'Checking for faces without edges';
+  FOR rec IN
+    SELECT face_id as id1
+    FROM face
+    WHERE face_id > 0
+    AND (
+      bbox IS NULL
+      OR mbr && bbox
+    )
+    EXCEPT (
+      SELECT left_face FROM edge
+      UNION
+      SELECT right_face FROM edge
+    )
+  LOOP --{
     retrec.error = 'face without edges';
     retrec.id1 = rec.id1;
     retrec.id2 = NULL;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Now create a temporary table to construct all face geometries
   -- for checking their consistency
 
-  sql := 'CREATE TEMP TABLE face_check ON COMMIT DROP AS '
-       'SELECT face_id, topology.ST_GetFaceGeometry('
-    || quote_literal(toponame) || ', face_id) as geom, mbr FROM '
-    || quote_ident(toponame) || '.face WHERE face_id > 0';
-  IF invalid_faces IS NOT NULL THEN
-    sql := sql || ' AND NOT face_id = ANY ('
-               || quote_literal(invalid_faces) || ')';
-  END IF;
-  EXECUTE sql;
+  RAISE DEBUG 'Constructing geometry of all faces';
+
+  CREATE TEMP TABLE face_check ON COMMIT DROP AS
+  SELECT
+    face_id,
+    topology.ST_GetFaceGeometry(toponame, face_id) AS geom,
+    mbr
+  FROM
+    face
+  WHERE
+    face_id > 0
+    AND (
+      CASE WHEN invalid_faces IS NOT NULL THEN
+        NOT face_id = ANY(invalid_faces)
+      ELSE
+        TRUE
+      END
+    )
+    AND (
+      bbox IS NULL
+      OR mbr && bbox
+    )
+  ;
 
   -- Build a gist index on geom
-  EXECUTE 'CREATE INDEX "face_check_gist" ON '
-       'face_check USING gist (geom);';
+  CREATE INDEX "face_check_gist" ON face_check USING gist (geom);
 
   -- Build a btree index on id
-  EXECUTE 'CREATE INDEX "face_check_bt" ON '
-       'face_check (face_id);';
+  CREATE INDEX "face_check_bt" ON face_check (face_id);
 
   -- Scan the table looking for NULL geometries
+  RAISE DEBUG 'Checking for faces with no rings';
   FOR rec IN
     SELECT face_id FROM face_check
     WHERE geom IS NULL OR ST_IsEmpty(geom)
-  LOOP
+  LOOP --{
     -- Face missing !
     retrec.error := 'face has no rings';
     retrec.id1 := rec.face_id;
     retrec.id2 := NULL;
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Scan the table looking for overlap or containment
   -- TODO: also check for MBR consistency
+  RAISE DEBUG 'Checking for face-in-face';
   FOR rec IN
     SELECT
       f1.geom,
@@ -1684,7 +1788,7 @@ BEGIN
       face_check f2
       WHERE f1.face_id < f2.face_id
       AND f1.geom && f2.geom
-  LOOP
+  LOOP --{
 
     -- Face overlap
     IF ST_RelateMatch(rec.im, 'T*T***T**') THEN
@@ -1710,38 +1814,36 @@ BEGIN
     RETURN NEXT retrec;
     END IF;
 
-  END LOOP;
+  END LOOP; --}
 
   -- Check nodes have correct containing_face (#3233)
-  FOR rec IN EXECUTE format(
-    $SQL$
-
-      SELECT
-        n.node_id,
-        -- in a corrupted topology multiple faces may contain the node
-        min(f.face_id) face_id,
-        -- multiple edges may contain the node
-        min(e.edge_id) edge_id
-
-      FROM %1$I.node n
-      LEFT JOIN face_check f ON ( ST_Contains(f.geom, n.geom) )
-      LEFT JOIN %1$I.edge e ON (
-        ST_Equals(ST_StartPoint(e.geom), n.geom) OR
-        ST_Equals(ST_EndPoint(e.geom), n.geom)
-      )
-
-      WHERE
-       (
-         e.edge_id IS NULL AND (
+  RAISE DEBUG 'Checking for node containing_face correctness';
+  FOR rec IN
+    SELECT
+      n.node_id,
+      -- in a corrupted topology multiple faces may contain the node
+      min(f.face_id) face_id,
+      -- multiple edges may contain the node
+      min(e.edge_id) edge_id
+    FROM node n
+    LEFT JOIN face_check f ON ( ST_Contains(f.geom, n.geom) )
+    LEFT JOIN edge e ON (
+      ST_Equals(ST_StartPoint(e.geom), n.geom) OR
+      ST_Equals(ST_EndPoint(e.geom), n.geom)
+    )
+    WHERE
+     ( bbox IS NULL OR n.geom && bbox )
+     AND (
+      (
+        e.edge_id IS NULL AND (
           n.containing_face != f.face_id
           OR ( n.containing_face IS NULL AND f.face_id IS NOT NULL )
-         )
-       )
-       OR ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL )
-
-      GROUP BY n.node_id, n.containing_face
-    $SQL$, toponame)
-  LOOP
+        )
+      )
+      OR ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL)
+    )
+    GROUP BY n.node_id, n.containing_face
+  LOOP --{
     IF rec.edge_id IS NOT NULL THEN
       -- node is not really isolated
       retrec.error := 'not-isolated node has not-null containing_face';
@@ -1751,39 +1853,45 @@ BEGIN
     retrec.id1 := rec.node_id;
     retrec.id2 := NULL; -- TODO: write expected containing_face here ?
     RETURN NEXT retrec;
-  END LOOP;
+  END LOOP; --}
 
   -- Check edges are covered by their left-right faces (#4831)
-  FOR rec IN EXECUTE format(
-    $SQL$
-      WITH edge_coverage AS (
-        SELECT
-          e.edge_id,
-          e.left_face,
-          e.right_face,
-          array_agg(COALESCE(f.face_id, 0)) covered_by
-        FROM
-          %1$I.edge_data e
-          LEFT JOIN face_check f ON ( ST_Covers(f.geom, e.geom) )
-          -- skip invalid edges (toxic, and will be already reported previously)
-          WHERE %2$L IS NULL OR NOT e.edge_id = ANY(%2$L)
-        GROUP BY
-          e.edge_id, e.left_face, e.right_face
-      )
+  RAISE DEBUG 'Checking for edges coverage';
+  FOR rec IN
+    WITH edge_coverage AS (
       SELECT
-         *,
-         left_face = ANY(covered_by) left_face_covered,
-         right_face = ANY(covered_by) right_face_covered
-         from edge_coverage
-      WHERE
-        ( left_face != 0 AND NOT left_face = ANY(covered_by) )
-        OR
-        ( right_face != 0 AND NOT right_face = ANY(covered_by) )
-        OR
-        ( right_face = 0 AND left_face = 0 AND covered_by[1] != 0 )
-      ORDER BY edge_id
-    $SQL$, toponame, invalid_edges)
-  LOOP
+        e.edge_id,
+        e.left_face,
+        e.right_face,
+        array_agg(COALESCE(f.face_id, 0)) covered_by
+      FROM
+        edge_data e
+        LEFT JOIN face_check f ON ( ST_Covers(f.geom, e.geom) )
+        -- skip invalid edges (toxic, and will be already reported previously)
+        WHERE
+          (
+            invalid_edges IS NULL OR NOT e.edge_id = ANY(invalid_edges)
+          )
+          AND
+          (
+            bbox IS NULL OR e.geom && bbox
+          )
+      GROUP BY
+        e.edge_id, e.left_face, e.right_face
+    )
+    SELECT
+       *,
+       left_face = ANY(covered_by) left_face_covered,
+       right_face = ANY(covered_by) right_face_covered
+       from edge_coverage
+    WHERE
+      ( left_face != 0 AND NOT left_face = ANY(covered_by) )
+      OR
+      ( right_face != 0 AND NOT right_face = ANY(covered_by) )
+      OR
+      ( right_face = 0 AND left_face = 0 AND covered_by[1] != 0 )
+    ORDER BY edge_id
+  LOOP --{
       retrec.id1 := rec.edge_id;
       retrec.id2 := NULL; -- TODO: write expected containing_face here ?
       IF rec.left_face = 0 AND rec.right_face = 0 THEN
@@ -1801,15 +1909,17 @@ BEGIN
 --          RETURN NEXT retrec;
 --        END IF;
       END IF;
-  END LOOP;
+  END LOOP; --}
 
   DROP TABLE face_check;
+
+  EXECUTE 'SET search_PATH TO ' || search_path_backup;
 
   RETURN;
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
--- } ValidateTopology(toponame)
+LANGUAGE 'plpgsql' VOLATILE; -- NOTE: we need VOLATILE to use SHOW
+--} ValidateTopology(toponame, bbox)
 
 --{
 --  CreateTopology(name, SRID, precision, hasZ)

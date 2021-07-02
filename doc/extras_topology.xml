@@ -558,7 +558,8 @@ FROM topology.layer;
 				<funcsynopsis>
 					<funcprototype>
 					<funcdef>setof validatetopology_returntype <function>ValidateTopology</function></funcdef>
-					<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></paramdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef choice="opt"><type>geometry</type> <parameter>bbox</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -566,7 +567,13 @@ FROM topology.layer;
 			<refsection>
                 <title>Description</title>
 
-                <para>Returns a set of <xref linkend="validatetopology_returntype"/> objects detailing issues with topology. List of possible errors and what the returned ids represent are displayed below:</para>
+                <para>
+Returns a set of <xref linkend="validatetopology_returntype"/> objects
+detailing issues with topology, optionally limiting the check to the
+area specified by the <varname>bbox</varname> parameter.
+                </para>
+
+                <para>List of possible errors and what the returned ids represent are displayed below:</para>
 
                   <informaltable rowsep="1" frame="all">
                     <tgroup cols="3">
@@ -631,6 +638,7 @@ FROM topology.layer;
 	<!-- use this format if not a new function but functionality enhanced -->
                 <para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
                 <para>Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' to be consistent with error description.</para>
+                <para>Changed: 3.2.0 added optional bbox parameter.</para>
 			</refsection>
 
 

@@ -153,6 +153,7 @@ regress/dumper/Makefile
 regress/loader/Makefile
 regress/real/download_data
 regress/real/Makefile
+regress/real/load_data.sql
 regress/sfcgal/Makefile
 regress/postgis.sql
 regress/postgis_garden_result.txt
