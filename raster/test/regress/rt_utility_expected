@@ -31,6 +31,7 @@ test 11.8|t
 test 11.9|t
 test 11.10|t
 test 11.11|t
+ERROR:  RASTER_minPossibleValue: Invalid pixel type: 
 Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)
     band 1 of pixtype 8BUI is in-db with NODATA value of 0
     band 2 of pixtype 32BF is in-db with NODATA value of -9999
