@@ -46,7 +46,7 @@ How to add a regression test
 ----------------------------
 
 1. Add any needed data sources to download_data.sh (later we might break this up)
-2. Add a psql load line to load_data.sql script and edit test.mk and add the script RUNTESTFLAGS_INTERNAL
+2. Add a psql load line to load_data.sql script and edit tests.mk and add the script RUNTESTFLAGS_INTERNAL
 3. Write a <testname>.sql file with data and sql queries for testing
 4. Write a <testname>_expected or <testname>_expected.in file with
    expected results per query
