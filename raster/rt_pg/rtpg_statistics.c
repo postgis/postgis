@@ -850,16 +850,6 @@ Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (NULL == state->stats) {
-		elog(ERROR, "RASTER_summaryStats_finalfn: Cannot compute coverage summary stats");
-		PG_RETURN_NULL();
-	}
-
-	if (NULL == state->stats->count) {
-		elog(ERROR, "RASTER_summaryStats_finalfn: Cannot compute coverage summary stats");
-		PG_RETURN_NULL();
-	}
-
 	/* coverage mean and deviation */
 	if (state->stats->count > 0) {
 		state->stats->mean = state->stats->sum / state->stats->count;
