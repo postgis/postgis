@@ -6,6 +6,7 @@ PostGIS 3.2.0
   - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
 
  * Enhancements *
+  - #3276, ValidateTopology check for face's mbr (Sandro Santilli)
   - #4936, Bounding box limited ValidateTopology (Sandro Santilli)
   - #4933, Speed up topology building in presence of big faces (Sandro Santilli)
   - #3233, ValidateTopology check for node's containing_face (Sandro Santilli)

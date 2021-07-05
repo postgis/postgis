@@ -1762,20 +1762,35 @@ BEGIN
   CREATE INDEX "face_check_bt" ON face_check (face_id);
 
   -- Scan the table looking for NULL geometries
-  RAISE DEBUG 'Checking for faces with no rings';
+  -- or geometries with wrong MBR consistency
+  RAISE DEBUG 'Checking faces';
   FOR rec IN
-    SELECT face_id FROM face_check
-    WHERE geom IS NULL OR ST_IsEmpty(geom)
+    SELECT * FROM face_check
   LOOP --{
-    -- Face missing !
-    retrec.error := 'face has no rings';
-    retrec.id1 := rec.face_id;
-    retrec.id2 := NULL;
-    RETURN NEXT retrec;
+
+    IF rec.geom IS NULL OR ST_IsEmpty(rec.geom)
+    THEN
+      -- Face missing !
+      retrec.error := 'face has no rings';
+      retrec.id1 := rec.face_id;
+      retrec.id2 := NULL;
+      RETURN NEXT retrec;
+    END IF;
+
+    IF NOT ST_Equals(rec.mbr, ST_Envelope(rec.geom))
+    THEN
+      RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(rec.mbr), ST_AsEWKT(ST_Envelope(rec.geom));
+      -- Inconsistent MBR!
+      retrec.error := 'face has wrong mbr';
+      retrec.id1 := rec.face_id;
+      retrec.id2 := NULL;
+      RETURN NEXT retrec;
+    END IF;
+
   END LOOP; --}
 
   -- Scan the table looking for overlap or containment
-  -- TODO: also check for MBR consistency
+  -- TODO: do this check as part of the earlier loop
   RAISE DEBUG 'Checking for face-in-face';
   FOR rec IN
     SELECT
