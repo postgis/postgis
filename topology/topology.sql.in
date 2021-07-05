@@ -1454,7 +1454,7 @@ DECLARE
   retrec topology.ValidateTopology_ReturnType;
   rec RECORD;
   rec2 RECORD;
-  i integer;
+  affected_rows integer;
   invalid_edges integer[];
   invalid_faces integer[];
   search_path_backup text;
@@ -1481,6 +1481,10 @@ BEGIN
   EXECUTE 'SHOW search_path' INTO search_path_backup;
   EXECUTE 'SET search_PATH TO ' || quote_ident(toponame) || ','
                                 || search_path_backup;
+
+  IF bbox IS NOT NULL THEN
+    RAISE DEBUG 'Limiting topology checking to bbox %', ST_AsEWKT(ST_Envelope(bbox));
+  END IF;
 
 
   -- Check for coincident nodes
@@ -1764,9 +1768,12 @@ BEGIN
   -- Scan the table looking for NULL geometries
   -- or geometries with wrong MBR consistency
   RAISE DEBUG 'Checking faces';
+  affected_rows := 0;
   FOR rec IN
     SELECT * FROM face_check
   LOOP --{
+
+    affected_rows := affected_rows + 1;
 
     IF rec.geom IS NULL OR ST_IsEmpty(rec.geom)
     THEN
@@ -1825,6 +1832,8 @@ BEGIN
     END LOOP; --}
 
   END LOOP; --}
+
+  RAISE DEBUG 'Checked % faces', affected_rows;
 
   -- Check nodes have correct containing_face (#3233)
   RAISE DEBUG 'Checking for node containing_face correctness';
