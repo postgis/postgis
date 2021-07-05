@@ -1787,47 +1787,42 @@ BEGIN
       RETURN NEXT retrec;
     END IF;
 
-  END LOOP; --}
+    FOR rec2 IN
+      SELECT
+        geom,
+        face_id,
+        ST_Relate(rec.geom, geom) as im
+      FROM
+        face_check
+        WHERE face_id > rec.face_id
+        AND geom && rec.geom
+    LOOP --{
 
-  -- Scan the table looking for overlap or containment
-  -- TODO: do this check as part of the earlier loop
-  RAISE DEBUG 'Checking for face-in-face';
-  FOR rec IN
-    SELECT
-      f1.geom,
-      f1.face_id as id1,
-      f2.face_id as id2,
-      ST_Relate(f1.geom, f2.geom) as im
-    FROM
-      face_check f1,
-      face_check f2
-      WHERE f1.face_id < f2.face_id
-      AND f1.geom && f2.geom
-  LOOP --{
+      -- Face overlap
+      IF ST_RelateMatch(rec2.im, 'T*T***T**') THEN
+        retrec.error = 'face overlaps face';
+        retrec.id1 = rec.face_id;
+        retrec.id2 = rec2.face_id;
+        RETURN NEXT retrec;
+      END IF;
 
-    -- Face overlap
-    IF ST_RelateMatch(rec.im, 'T*T***T**') THEN
-    retrec.error = 'face overlaps face';
-    retrec.id1 = rec.id1;
-    retrec.id2 = rec.id2;
-    RETURN NEXT retrec;
-    END IF;
+      -- Face 1 is within face 2
+      IF ST_RelateMatch(rec2.im, 'T*F**F***') THEN
+        retrec.error = 'face within face';
+        retrec.id1 = rec.face_id;
+        retrec.id2 = rec2.face_id;
+        RETURN NEXT retrec;
+      END IF;
 
-    -- Face 1 is within face 2
-    IF ST_RelateMatch(rec.im, 'T*F**F***') THEN
-    retrec.error = 'face within face';
-    retrec.id1 = rec.id1;
-    retrec.id2 = rec.id2;
-    RETURN NEXT retrec;
-    END IF;
+      -- Face 1 contains face 2
+      IF ST_RelateMatch(rec2.im, 'T*****FF*') THEN
+        retrec.error = 'face within face';
+        retrec.id1 = rec.face_id;
+        retrec.id2 = rec2.face_id;
+        RETURN NEXT retrec;
+      END IF;
 
-    -- Face 1 contains face 2
-    IF ST_RelateMatch(rec.im, 'T*****FF*') THEN
-    retrec.error = 'face within face';
-    retrec.id1 = rec.id2;
-    retrec.id2 = rec.id1;
-    RETURN NEXT retrec;
-    END IF;
+    END LOOP; --}
 
   END LOOP; --}
 
