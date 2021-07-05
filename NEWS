@@ -9,6 +9,7 @@ PostGIS 3.0.4dev
   - #4853, DBSCAN cluster not formed when recordset length equal to minPoints (Dan Baston)
   - #4844, Repair axis order handling for polar coordinate systems (Paul Ramsey)
   - #4863, Update bboxes after scale/affine coordinate changes (Paul Ramsey)
+  - #4918, Fix rare crash in st_minpossiblevalue() (Paul Ramsey)
 
 
 PostGIS 3.0.3
