@@ -27,6 +27,7 @@ PostGIS 3.2.0
            line to topology (Sandro Santilli)
 
  * New features*
+  - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
   - #4933, topology.GetFaceContainingPoint (Sandro Santilli)
   - #2175, ST_Scroll (Sandro Santilli)
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)

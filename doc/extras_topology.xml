@@ -658,6 +658,42 @@ face without edges |   0 |
 			</refsection>
 		</refentry>
 
+		<refentry id="ValidateTopologyRelation">
+			<refnamediv>
+				<refname>ValidateTopologyRelation</refname>
+
+				<refpurpose>Returns info about invalid topology relation records</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof record <function>ValidateTopologyRelation</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>
+Returns a set records giving information about invalidities in the
+relation table of the topology.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 3.2.0</para>
+			</refsection>
+
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ValidateTopology"/></para>
+			</refsection>
+		</refentry>
+
 		<refentry id="FindTopology">
 			<refnamediv>
 				<refname>FindTopology</refname>

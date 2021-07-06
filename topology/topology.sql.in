@@ -1812,6 +1812,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/manage/FindTopology.sql.in"
 #include "sql/manage/FindLayer.sql.in"
 #include "sql/manage/ValidateTopology.sql.in"
+#include "sql/manage/ValidateTopologyRelation.sql.in"
 
 
 CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS text
