@@ -460,7 +460,7 @@ BEGIN
     RETURN NEXT retrec;
   END LOOP; --}
 
-  -- Check edges are covered by their left-right faces (#4831)
+  -- Check edges are covered by their left-right faces (#4830)
   RAISE DEBUG 'Checking for edges coverage';
   FOR rec IN
     WITH edge_coverage AS (
