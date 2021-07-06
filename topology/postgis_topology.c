@@ -1258,7 +1258,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
       }
       nextedge = DatumGetInt32(dat);
       POSTGIS_DEBUGF(1, "Last component in ring of edge %"
-                        LWTFMT_ELEMID " (%" LWTFMT_ELEMID ") has next_%s_edge %d",
+                        LWTFMT_ELEMID " (%d) has next_%s_edge %d",
                         edge, val, sidetext, nextedge);
       if ( nextedge != edge )
       {
