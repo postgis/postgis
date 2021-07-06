@@ -883,9 +883,11 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
       /* NOTE: this is a geometry of which we want to take (and clone) the BBOX */
       geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
       g = lwgeom_from_gserialized(geom);
+      lwgeom_refresh_bbox(g); /* Ensure we use a fit mbr, see #4149 */
       box = lwgeom_get_bbox(g);
       if ( box )
       {
+        POSTGIS_DEBUGF(1, "Face %d bbox xmin is %.15g", face->face_id, box->xmin);
         face->mbr = gbox_clone(box);
       }
       else
