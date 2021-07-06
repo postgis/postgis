@@ -1786,7 +1786,7 @@ BEGIN
 
     IF NOT ST_Equals(rec.mbr, ST_Envelope(rec.geom))
     THEN
-      RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(rec.mbr), ST_AsEWKT(ST_Envelope(rec.geom));
+      RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(ST_Envelope(rec.geom)), ST_AsEWKT(ST_Envelope(rec.mbr));
       -- Inconsistent MBR!
       retrec.error := 'face has wrong mbr';
       retrec.id1 := rec.face_id;
