@@ -3,6 +3,7 @@ PostGIS 3.1.4
 
 * Bug Fixes
   - #4918, Fix rare crash in st_minpossiblevalue (Paul Ramsey)
+  - #4941, Fix loose mbr in topology.face on update (Sandro Santilli)
 
 
 PostGIS 3.1.3

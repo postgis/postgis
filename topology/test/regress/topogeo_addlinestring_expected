@@ -217,3 +217,6 @@ t4758.2|2
 t4758.2|4
 t4758.2|5
 t4758.end|Topology 't4758' dropped
+b4941|outer_ring|1
+b4941|inner_ring|1
+b4941|crossing_line|5
