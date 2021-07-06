@@ -22,3 +22,11 @@
 #4830.4|edge not covered by both its side faces|8|
 #4830.5|---||
 #4830.5|edge covered by some face has universal face on both sides|9|
+#3042.1|invalid next_right_edge|3|2
+#3042.1|invalid next_left_edge|3|-3
+#3042.1|invalid next_right_edge|19|-10
+#3042.1|invalid next_left_edge|10|-20
+#3042.1|invalid next_left_edge|20|-9
+#3042.1|invalid next_left_edge|9|19
+#3042.1|invalid next_right_edge|25|25
+#3042.1|invalid next_left_edge|25|-25

@@ -23,6 +23,45 @@ CREATE TYPE topology.ValidateTopology_ReturnType AS (
   id2 integer
 );
 
+CREATE OR REPLACE FUNCTION topology._CheckEdgeLinking(curedge ANYELEMENT, prevedge ANYELEMENT)
+RETURNS topology.ValidateTopology_ReturnType
+AS
+$BODY$
+DECLARE
+  retrec topology.ValidateTopology_ReturnType;
+BEGIN
+  IF prevedge.edge_id > 0
+  THEN -- previous was outgoing, this one should be next-right
+    IF prevedge.next_right_edge != curedge.edge_id THEN
+      RAISE DEBUG 'Edge % should be next-right of edge %, is % instead',
+        curedge.edge_id,
+        abs(prevedge.edge_id),
+        prevedge.next_right_edge
+      ;
+      retrec.error = 'invalid next_right_edge';
+      retrec.id1 = abs(prevedge.edge_id);
+      retrec.id2 = curedge.edge_id; -- we put the expected one here, for convenience
+      RETURN retrec;
+    END IF;
+  ELSE -- previous was incoming, this one should be next-left
+    IF prevedge.next_left_edge != curedge.edge_id THEN
+      RAISE DEBUG 'Edge % should be next-left of edge %, is % instead',
+        curedge.edge_id,
+        abs(prevedge.edge_id),
+        prevedge.next_left_edge
+      ;
+      retrec.error = 'invalid next_left_edge';
+      retrec.id1 = abs(prevedge.edge_id);
+      retrec.id2 = curedge.edge_id; -- we put the expected one here, for convenience
+      RETURN retrec;
+    END IF;
+  END IF;
+
+  RETURN retrec;
+END;
+$BODY$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
 --{
 --  ValidateTopology(toponame, [bbox])
 --
@@ -44,6 +83,9 @@ DECLARE
   invalid_edges integer[];
   invalid_faces integer[];
   search_path_backup text;
+  last_node_id int;
+  last_node_first_edge RECORD;
+  last_node_prev_edge RECORD;
 BEGIN
 
   IF NOT EXISTS (
@@ -317,6 +359,103 @@ BEGIN
     retrec.id2 = NULL;
     RETURN NEXT retrec;
   END LOOP; --}
+
+  RAISE DEBUG 'Checking edge linking';
+  -- NOTE: this check relies on correct start_node and end_node
+  --       for edges, if those are not correct the results
+  --       of this check do not make much sense.
+  FOR rec IN
+      WITH
+      nodes AS (
+        SELECT node_id
+        FROM node
+        WHERE containing_face IS NULL
+        AND (
+          bbox IS NULL
+          OR geom && bbox
+        )
+      ),
+      incident_edges AS (
+        SELECT
+          n.node_id,
+          e.edge_id,
+          e.start_node,
+          e.end_node,
+          e.next_left_edge,
+          e.next_right_edge,
+          ST_RemoveRepeatedPoints(e.geom) as edge_geom
+        FROM edge_data e, nodes n
+        WHERE e.start_node = n.node_id
+        or e.end_node = n.node_id
+      ),
+      edge_star AS (
+        SELECT
+          node_id,
+          edge_id,
+          next_left_edge,
+          next_right_edge,
+          ST_Azimuth(ST_StartPoint(edge_geom), ST_PointN(edge_geom, 2)) as az
+        FROM incident_edges
+        WHERE start_node = node_id
+          UNION ALL
+        SELECT
+          node_id,
+          -edge_id,
+          next_left_edge,
+          next_right_edge,
+          ST_Azimuth(ST_EndPoint(edge_geom), ST_PointN(edge_geom, ST_NumPoints(edge_geom)-1))
+        FROM incident_edges
+        WHERE end_node = node_id
+      ),
+      sequenced_edge_star AS (
+        SELECT
+          row_number() over (partition by node_id order by az, edge_id) seq,
+          *
+        FROM edge_star
+      )
+      SELECT * FROM sequenced_edge_star
+      ORDER BY node_id, seq
+  LOOP --{
+    IF last_node_id IS NULL OR last_node_id != rec.node_id
+    THEN --{
+      IF last_node_id IS NOT NULL
+      THEN
+        -- Check that last edge (CW from prev one) is correctly linked
+        retrec := topology._CheckEdgeLinking(last_node_first_edge, last_node_prev_edge);
+        IF retrec IS NOT NULL
+        THEN
+          RETURN NEXT retrec;
+        END IF;
+        --RAISE DEBUG 'Finished analisys of edge star around node %', last_node_id;
+      END IF;
+      --RAISE DEBUG 'Analyzing edge star around node %', rec.node_id;
+      last_node_id = rec.node_id;
+      last_node_first_edge = rec;
+    ELSE --{
+      -- Check that this edge (CW from last one) is correctly linked
+      retrec := topology._CheckEdgeLinking(rec, last_node_prev_edge);
+      IF retrec IS NOT NULL
+      THEN
+        RETURN NEXT retrec;
+      END IF;
+    END IF; --}
+    last_node_prev_edge = rec;
+  END LOOP; --}
+  IF last_node_id IS NOT NULL THEN
+    --RAISE DEBUG 'Out of loop: last_node_id: %', last_node_id;
+    --RAISE DEBUG 'Out of loop: last_node_first_edge edge_id:% next_left_edge:%', last_node_first_edge.edge_id, last_node_first_edge.next_left_edge;
+    --RAISE DEBUG 'Out of loop: last_node_prev_edge edge_id:% next_left_edge:%', last_node_prev_edge.edge_id, last_node_prev_edge.next_left_edge;
+    --RAISE DEBUG 'Out of loop: last_node_first_edge: %', last_node_first_edge;
+    -- Check that last edge (CW from prev one) is correctly linked
+    retrec := topology._CheckEdgeLinking(last_node_first_edge, last_node_prev_edge);
+    IF retrec IS NOT NULL
+    THEN
+      RETURN NEXT retrec;
+    END IF;
+    --RAISE DEBUG 'Finished analisys of edge star around node % (out of loop)', last_node_id;
+  END IF;
+
+
 
   -- Now create a temporary table to construct all face geometries
   -- for checking their consistency
