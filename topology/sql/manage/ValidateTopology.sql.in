@@ -62,6 +62,166 @@ END;
 $BODY$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
+-- NOTE: assumes search_path was set before calling this function
+CREATE OR REPLACE FUNCTION topology._ValidateTopologySideLabeling(bbox geometry DEFAULT NULL)
+RETURNS SETOF topology.ValidateTopology_ReturnType
+AS --{
+$BODY$
+DECLARE
+  retrec topology.ValidateTopology_ReturnType;
+  nextEdge INT;
+  rec RECORD;
+  affected_rows integer;
+BEGIN
+  RAISE DEBUG 'Gathering edges for side faces labeling';
+
+  -- NOTE: this check relies on correct edge linking,
+  --       if those are not correct the results
+  --       of this check do not make much sense.
+
+  -- Pick all edges ending on any node in the bbox
+  -- Those are the only edges we want to consider
+  CREATE TEMP TABLE side_label_check_edge AS
+  WITH edges_to_check AS (
+    SELECT DISTINCT e.edge_id
+    FROM edge_data e, node n
+    WHERE (
+      bbox IS NULL
+      OR n.geom && bbox
+    )
+    AND (
+      e.start_node = n.node_id
+      OR e.end_node = n.node_id
+    )
+  )
+  SELECT edge_id FROM edges_to_check
+    UNION
+  SELECT -edge_id FROM edges_to_check
+  ;
+
+  CREATE INDEX ON side_label_check_edge (edge_id); -- DROP ?
+
+  RAISE DEBUG 'Checking edge side faces labeling';
+
+  -- Find all rings that can be formed on both sides
+  -- of selected edges
+  affected_rows := 0;
+  LOOP --{
+    -- Fetch next unvisited edge
+    SELECT edge_id
+    FROM pg_temp.side_label_check_edge
+    LIMIT 1
+    INTO nextEdge;
+
+    IF nextEdge IS NULL THEN
+      EXIT; -- exit loop if no more unvisited edges found
+    END IF;
+
+    affected_rows := affected_rows + 1;
+
+    -- Gather side faces for the ring formed on nextEdge
+    -- NOTE: if edge linking is bogus the following query
+    --       won't make much sense
+    BEGIN
+
+      WITH RECURSIVE
+      edgering AS (
+        SELECT
+          nextEdge as signed_edge_id,
+          edge_id,
+          next_left_edge,
+          next_right_edge,
+          CASE WHEN nextEdge > 0 THEN
+            left_face
+          ELSE
+            right_face
+          END as side_face
+        FROM edge_data
+        WHERE edge_id = abs(nextEdge)
+          UNION
+        SELECT
+          CASE WHEN p.signed_edge_id < 0
+          THEN
+            p.next_right_edge
+          ELSE
+            p.next_left_edge
+          END, -- signed_edge_id
+          e.edge_id,
+          e.next_left_edge,
+          e.next_right_edge,
+          CASE WHEN p.signed_edge_id < 0
+          THEN
+            CASE WHEN p.next_right_edge > 0
+            THEN
+              e.left_face
+            ELSE
+              e.right_face
+            END
+          ELSE
+            CASE WHEN p.next_left_edge > 0
+            THEN
+              e.left_face
+            ELSE
+              e.right_face
+            END
+          END -- side_face
+        FROM edge_data e, edgering p
+        WHERE
+          e.edge_id = CASE
+            WHEN p.signed_edge_id < 0 THEN
+              abs(p.next_right_edge)
+            ELSE
+              abs(p.next_left_edge)
+            END
+      )
+      SELECT
+        array_agg(signed_edge_id) edges,
+        array_agg(DISTINCT side_face) side_faces
+      FROM edgering
+      INTO rec;
+
+      RAISE DEBUG 'Ring % - edges:[%], faces:[%]',
+        nextEdge,
+        array_to_string(rec.edges, ','),
+        array_to_string(rec.side_faces, ',')
+      ;
+
+      -- Check that there's a single face advertised
+      IF array_upper(rec.side_faces,1) != 1
+      THEN
+        RAISE DEBUG 'Side faces found on ring %: %', nextEdge, rec.side_faces;
+        retrec.error = 'Edgering side location conflict';
+        retrec.id1 = nextEdge;
+        retrec.id2 = NULL;
+        RETURN NEXT retrec;
+      END IF;
+    EXCEPTION WHEN OTHERS THEN
+        retrec.error = SQLERRM;
+        retrec.id1 = nextEdge;
+        retrec.id2 = NULL;
+        RETURN NEXT retrec;
+        -- Make sure this edge will be marked as visited
+        SELECT ARRAY[nextEdge] as edges INTO rec;
+    END;
+
+    -- TODO: Check that a single face is ever used
+    --       for each distinct CCW ring (shell)
+    -- NOTE: multiple CW rings (holes) can exist for a given face
+
+    DELETE FROM pg_temp.side_label_check_edge
+    WHERE edge_id = ANY (rec.edges);
+
+  END LOOP; --}
+
+  RAISE DEBUG 'Completed checking % rings for side faces labeling', affected_rows;
+
+  DROP TABLE pg_temp.side_label_check_edge;
+
+
+END;
+$BODY$ --}
+LANGUAGE 'plpgsql' VOLATILE;
+
 --{
 --  ValidateTopology(toponame, [bbox])
 --
@@ -364,7 +524,7 @@ BEGIN
   -- NOTE: this check relies on correct start_node and end_node
   --       for edges, if those are not correct the results
   --       of this check do not make much sense.
-  FOR rec IN
+  FOR rec IN --{
       WITH
       nodes AS (
         SELECT node_id
@@ -415,7 +575,7 @@ BEGIN
       )
       SELECT * FROM sequenced_edge_star
       ORDER BY node_id, seq
-  LOOP --{
+  LOOP --}{
     IF last_node_id IS NULL OR last_node_id != rec.node_id
     THEN --{
       IF last_node_id IS NOT NULL
@@ -436,7 +596,7 @@ BEGIN
       --RAISE DEBUG 'Analyzing edge star around node %', rec.node_id;
       last_node_id = rec.node_id;
       last_node_first_edge = rec;
-    ELSE --{
+    ELSE --}{
       -- Check that this edge (CW from last one) is correctly linked
       retrec := topology._CheckEdgeLinking(
         rec.edge_id,
@@ -451,7 +611,7 @@ BEGIN
     END IF; --}
     last_node_prev_edge = rec;
   END LOOP; --}
-  IF last_node_id IS NOT NULL THEN
+  IF last_node_id IS NOT NULL THEN --{
     --RAISE DEBUG 'Out of loop: last_node_id: %', last_node_id;
     --RAISE DEBUG 'Out of loop: last_node_first_edge edge_id:% next_left_edge:%', last_node_first_edge.edge_id, last_node_first_edge.next_left_edge;
     --RAISE DEBUG 'Out of loop: last_node_prev_edge edge_id:% next_left_edge:%', last_node_prev_edge.edge_id, last_node_prev_edge.next_left_edge;
@@ -468,8 +628,13 @@ BEGIN
       RETURN NEXT retrec;
     END IF;
     --RAISE DEBUG 'Finished analisys of edge star around node % (out of loop)', last_node_id;
-  END IF;
+  END IF; --}
 
+  --- Edge side-labeling check -------------------------------------------{
+
+  RETURN QUERY SELECT * FROM topology._ValidateTopologySideLabeling(bbox);
+
+  --- Edge side-labeling check -------------------------------------------}
 
 
   -- Now create a temporary table to construct all face geometries

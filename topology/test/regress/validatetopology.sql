@@ -118,11 +118,16 @@ SELECT '#4830.5', '---', null, null ORDER BY 1,2,3,4;
 ROLLBACK;
 SELECT null from ( select topology.DropTopology('t') ) as dt;
 
+-------------------------------------------------------------
+-- Following tests will use the city_data topology as a base
+-------------------------------------------------------------
+
+\i ../load_topology.sql
+SELECT 'unexpected_city_data_invalidities', * FROM ValidateTopology('city_data');
+
 -- Test correctness of edge linking
 -- See https://trac.osgeo.org/postgis/ticket/3042
-\i ../load_topology.sql
 --set client_min_messages to NOTICE;
-SELECT '#3042.0', * FROM ValidateTopology('city_data');
 BEGIN;
 -- Break edge linking for all edges around node 14
 UPDATE city_data.edge_data SET next_left_edge = -next_left_edge where edge_id in (9,10,20);
@@ -136,5 +141,17 @@ where edge_id in (3,25);
 set client_min_messages to WARNING;
 SELECT '#3042.1', * FROM ValidateTopology('city_data');
 ROLLBACK;
+
+-- Test correctness of side-labeling
+-- See https://trac.osgeo.org/postgis/ticket/4944
+BEGIN;
+-- Swap side-label of face-binding edge
+UPDATE city_data.edge_data
+  SET left_face = right_face, right_face = left_face
+  WHERE edge_id = 19;
+--set client_min_messages to DEBUG;
+SELECT '#4944', * FROM ValidateTopology('city_data');
+ROLLBACK;
+
 SELECT NULL FROM topology.DropTopology('city_data');
 
