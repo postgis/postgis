@@ -23,41 +23,40 @@ CREATE TYPE topology.ValidateTopology_ReturnType AS (
   id2 integer
 );
 
-CREATE OR REPLACE FUNCTION topology._CheckEdgeLinking(curedge_edge_id INT, prevedge_edge_id INT, prevedge_next_left_edge INT, prevedge_next_right_edge INT)
-RETURNS topology.ValidateTopology_ReturnType
+CREATE OR REPLACE FUNCTION topology._CheckAdjacentEdgesLinking(curedge ANYELEMENT, prevedge ANYELEMENT)
+RETURNS SETOF topology.ValidateTopology_ReturnType
 AS
 $BODY$
 DECLARE
   retrec topology.ValidateTopology_ReturnType;
 BEGIN
-  IF prevedge_edge_id > 0
+  IF prevedge.edge_id > 0
   THEN -- previous was outgoing, this one should be next-right
-    IF prevedge_next_right_edge != curedge_edge_id THEN
+    IF prevedge.next_right_edge != curedge.edge_id THEN
       RAISE DEBUG 'Edge % should be next-right of edge %, is % instead',
-        curedge_edge_id,
-        abs(prevedge_edge_id),
-        prevedge_next_right_edge
+        curedge.edge_id,
+        abs(prevedge.edge_id),
+        prevedge.next_right_edge
       ;
       retrec.error = 'invalid next_right_edge';
-      retrec.id1 = abs(prevedge_edge_id);
-      retrec.id2 = curedge_edge_id; -- we put the expected one here, for convenience
-      RETURN retrec;
+      retrec.id1 = abs(prevedge.edge_id);
+      retrec.id2 = curedge.edge_id; -- we put the expected one here, for convenience
+      RETURN NEXT retrec;
     END IF;
   ELSE -- previous was incoming, this one should be next-left
-    IF prevedge_next_left_edge != curedge_edge_id THEN
+    IF prevedge.next_left_edge != curedge.edge_id THEN
       RAISE DEBUG 'Edge % should be next-left of edge %, is % instead',
-        curedge_edge_id,
-        abs(prevedge_edge_id),
-        prevedge_next_left_edge
+        curedge.edge_id,
+        abs(prevedge.edge_id),
+        prevedge.next_left_edge
       ;
       retrec.error = 'invalid next_left_edge';
-      retrec.id1 = abs(prevedge_edge_id);
-      retrec.id2 = curedge_edge_id; -- we put the expected one here, for convenience
-      RETURN retrec;
+      retrec.id1 = abs(prevedge.edge_id);
+      retrec.id2 = curedge.edge_id; -- we put the expected one here, for convenience
+      RETURN NEXT retrec;
     END IF;
   END IF;
 
-  RETURN retrec;
 END;
 $BODY$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
@@ -421,16 +420,10 @@ BEGIN
       IF last_node_id IS NOT NULL
       THEN
         -- Check that last edge (CW from prev one) is correctly linked
-        retrec := topology._CheckEdgeLinking(
-          last_node_first_edge.edge_id,
-          last_node_prev_edge.edge_id,
-          last_node_prev_edge.next_left_edge,
-          last_node_prev_edge.next_right_edge
+        RETURN QUERY SELECT * FROM topology._CheckAdjacentEdgesLinking(
+          last_node_first_edge,
+          last_node_prev_edge
         );
-        IF retrec IS NOT NULL
-        THEN
-          RETURN NEXT retrec;
-        END IF;
         --RAISE DEBUG 'Finished analisys of edge star around node %', last_node_id;
       END IF;
       --RAISE DEBUG 'Analyzing edge star around node %', rec.node_id;
@@ -438,11 +431,9 @@ BEGIN
       last_node_first_edge = rec;
     ELSE --{
       -- Check that this edge (CW from last one) is correctly linked
-      retrec := topology._CheckEdgeLinking(
-        rec.edge_id,
-        last_node_prev_edge.edge_id,
-        last_node_prev_edge.next_left_edge,
-        last_node_prev_edge.next_right_edge
+      retrec := topology._CheckAdjacentEdgesLinking(
+        rec,
+        last_node_prev_edge
       );
       IF retrec IS NOT NULL
       THEN
@@ -457,11 +448,9 @@ BEGIN
     --RAISE DEBUG 'Out of loop: last_node_prev_edge edge_id:% next_left_edge:%', last_node_prev_edge.edge_id, last_node_prev_edge.next_left_edge;
     --RAISE DEBUG 'Out of loop: last_node_first_edge: %', last_node_first_edge;
     -- Check that last edge (CW from prev one) is correctly linked
-    retrec := topology._CheckEdgeLinking(
-      last_node_first_edge.edge_id,
-      last_node_prev_edge.edge_id,
-      last_node_prev_edge.next_left_edge,
-      last_node_prev_edge.next_right_edge
+    retrec := topology._CheckAdjacentEdgesLinking(
+      last_node_first_edge,
+      last_node_prev_edge
       );
     IF retrec IS NOT NULL
     THEN
