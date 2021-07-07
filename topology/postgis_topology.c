@@ -873,9 +873,11 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
       /* NOTE: this is a geometry of which we want to take (and clone) the BBOX */
       geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
       g = lwgeom_from_gserialized(geom);
+      lwgeom_refresh_bbox(g); /* Ensure we use a fit mbr, see #4149 */
       box = lwgeom_get_bbox(g);
       if ( box )
       {
+        POSTGIS_DEBUGF(1, "Face %d bbox xmin is %.15g", face->face_id, box->xmin);
         face->mbr = gbox_clone(box);
       }
       else
@@ -1258,7 +1260,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
       }
       nextedge = DatumGetInt32(dat);
       POSTGIS_DEBUGF(1, "Last component in ring of edge %"
-                        LWTFMT_ELEMID " (%" LWTFMT_ELEMID ") has next_%s_edge %d",
+                        LWTFMT_ELEMID " (%d) has next_%s_edge %d",
                         edge, val, sidetext, nextedge);
       if ( nextedge != edge )
       {

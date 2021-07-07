@@ -5818,7 +5818,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
           ptarray_scroll_in_place(scrolled->points, &originalStartPoint);
         }
         else {
-          LWDEBUGG(1, scrolled, "Linemerged intersected input is not closed anymore");
+          LWDEBUGG(1, lwline_as_lwgeom(scrolled), "Linemerged intersected input is not closed anymore");
         }
       }
       else {

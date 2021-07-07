@@ -10,12 +10,12 @@ CREATE TABLE features.big_parcels (
 	feature_name varchar primary key, fid serial
 ) ;
 
-SELECT topology.AddTopoGeometryColumn('city_data', 'features',
+SELECT NULL FROM topology.AddTopoGeometryColumn('city_data', 'features',
 	'big_parcels', 'feature', 'POLYGON',
 	1 -- the land_parcles
 );
 
-SELECT AddGeometryColumn('features','big_parcels','the_geom',-1,'MULTIPOLYGON',2);
+SELECT NULL FROM AddGeometryColumn('features','big_parcels','the_geom',-1,'MULTIPOLYGON',2);
 
 INSERT INTO features.big_parcels(feature_name, feature) VALUES ('P1P2', -- Feature name
   topology.CreateTopoGeom(
@@ -49,7 +49,7 @@ CREATE TABLE features.big_streets (
 	feature_name varchar primary key, fid serial
 ) ;
 
-SELECT topology.AddTopoGeometryColumn('city_data', 'features',
+SELECT NULL FROM topology.AddTopoGeometryColumn('city_data', 'features',
 	'big_streets', 'feature', 'LINE',
 	3 -- the city_streets layer id
 );
@@ -82,12 +82,12 @@ CREATE TABLE features.big_signs (
 	feature_name varchar primary key, fid serial
 ) ;
 
-SELECT topology.AddTopoGeometryColumn('city_data', 'features',
+SELECT NULL FROM topology.AddTopoGeometryColumn('city_data', 'features',
 	'big_signs', 'feature', 'POINT',
 	2 -- the traffic_signs
 );
 
-SELECT AddGeometryColumn('features','big_signs','the_geom',0,'MULTIPOINT',2);
+SELECT NULL FROM AddGeometryColumn('features','big_signs','the_geom',0,'MULTIPOINT',2);
 
 INSERT INTO features.big_signs(feature_name, feature) VALUES ('S1S2', -- Feature name
   topology.CreateTopoGeom(

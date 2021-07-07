@@ -72,12 +72,6 @@ SELECT null from ( select TopoGeo_addLineString('t',
 ) al;
 SELECT '#4830.0', (ValidateTopology('t')).* UNION
 SELECT '#4830.0', '---', null, null ORDER BY 1,2,3,4;
--- 0. Set edge 1 self-linking to avoid "face with no rings"
---    invalidity.
-UPDATE t.edge_data SET
-  next_left_edge = 1,
-  next_right_edge = -1
-  WHERE edge_id = 1;
 -- 1. Set wrong left_face for dangling inside edges
 BEGIN;
 UPDATE t.edge_data SET left_face = 2
@@ -123,3 +117,24 @@ SELECT '#4830.5', (ValidateTopology('t')).* UNION
 SELECT '#4830.5', '---', null, null ORDER BY 1,2,3,4;
 ROLLBACK;
 SELECT null from ( select topology.DropTopology('t') ) as dt;
+
+-- Test correctness of edge linking
+-- See https://trac.osgeo.org/postgis/ticket/3042
+\i ../load_topology.sql
+--set client_min_messages to NOTICE;
+SELECT '#3042.0', * FROM ValidateTopology('city_data');
+BEGIN;
+-- Break edge linking for all edges around node 14
+UPDATE city_data.edge_data SET next_left_edge = -next_left_edge where edge_id in (9,10,20);
+UPDATE city_data.edge_data SET next_right_edge = -next_right_edge where edge_id = 19;
+-- Break edge linking of dangling edges, including one around last node (3)
+UPDATE city_data.edge_data
+SET
+  next_left_edge = -next_left_edge,
+  next_right_edge = -next_right_edge
+where edge_id in (3,25);
+set client_min_messages to WARNING;
+SELECT '#3042.1', * FROM ValidateTopology('city_data');
+ROLLBACK;
+SELECT NULL FROM topology.DropTopology('city_data');
+

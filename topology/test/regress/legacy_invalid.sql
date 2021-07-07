@@ -4,8 +4,9 @@ set client_min_messages to WARNING;
 
 -- Validate full topology, store invalidities in a table
 CREATE TABLE invalid_topology.invalidities AS
-SELECT * from topology.validatetopology('invalid_topology');
-SELECT * FROM invalid_topology.invalidities;
+SELECT * FROM topology.validatetopology('invalid_topology');
+SELECT * FROM invalid_topology.invalidities
+ORDER BY 1,2,3;
 
 -- Test bbox-limited checking
 -- See https://trac.osgeo.org/postgis/ticket/4936
@@ -54,7 +55,7 @@ FROM invalid_topology.missing_invalidities ;
 
 SELECT '#4936', 'missing', *
 FROM invalid_topology.missing_invalidities
-ORDER BY error ASC;
+ORDER BY 1, 2, 3 ASC;
 
 -- clean up
 SELECT topology.DropTopology('invalid_topology');
