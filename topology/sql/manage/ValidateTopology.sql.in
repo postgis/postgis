@@ -180,11 +180,11 @@ BEGIN
       FROM edgering
       INTO rec;
 
-      RAISE DEBUG 'Ring % - edges:[%], faces:[%]',
-        nextEdge,
-        array_to_string(rec.edges, ','),
-        array_to_string(rec.side_faces, ',')
-      ;
+--      RAISE DEBUG 'Ring % - edges:[%], faces:[%]',
+--        nextEdge,
+--        array_to_string(rec.edges, ','),
+--        array_to_string(rec.side_faces, ',')
+--      ;
 
       -- Check that there's a single face advertised
       IF array_upper(rec.side_faces,1) != 1
