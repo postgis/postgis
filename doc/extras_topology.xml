@@ -629,6 +629,21 @@ area specified by the <varname>bbox</varname> parameter.
                                     <entry>inner face_id</entry>
                                     <entry>outer face_id</entry>
                             </row>
+                            <row>
+                                    <entry>invalid next_left_edge</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>expected next_left_edge value</entry>
+                            </row>
+                            <row>
+                                    <entry>invalid next_right_edge</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>expected next_right_edge value</entry>
+                            </row>
+                            <row>
+                                    <entry>mixed face labeling in ring</entry>
+                                    <entry>signed edge_id identifying the ring</entry>
+                                    <entry>null</entry>
+                            </row>
                          </tbody>
                         </tgroup>
                     </informaltable>
@@ -638,7 +653,7 @@ area specified by the <varname>bbox</varname> parameter.
 	<!-- use this format if not a new function but functionality enhanced -->
                 <para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
                 <para>Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' to be consistent with error description.</para>
-                <para>Changed: 3.2.0 added optional bbox parameter.</para>
+                <para>Changed: 3.2.0 added optional bbox parameter, perform face labeling and edge linking checks.</para>
 			</refsection>
 
 
