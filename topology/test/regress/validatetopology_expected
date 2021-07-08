@@ -9,38 +9,40 @@
 #3233.3|not-isolated node has not-null containing_face|1|
 #4830.0|---||
 #4830.1|---||
-#4830.1|Edgering side location conflict|3|
 #4830.1|edge not covered by both its side faces|4|
 #4830.1|edge not covered by both its side faces|6|
+#4830.1|mixed face labeling in ring|3|
 #4830.2|---||
-#4830.2|Edgering side location conflict|3|
 #4830.2|edge not covered by both its side faces|4|
 #4830.2|edge not covered by both its side faces|6|
+#4830.2|mixed face labeling in ring|3|
 #4830.3|---||
-#4830.3|Edgering side location conflict|-7|
 #4830.3|edge not covered by both its side faces|7|
 #4830.3|edge not covered by both its side faces|8|
+#4830.3|mixed face labeling in ring|-7|
 #4830.4|---||
-#4830.4|Edgering side location conflict|-7|
 #4830.4|edge not covered by both its side faces|7|
 #4830.4|edge not covered by both its side faces|8|
+#4830.4|mixed face labeling in ring|-7|
 #4830.5|---||
 #4830.5|edge covered by some face has universal face on both sides|9|
-#3042.1|invalid next_right_edge|3|2
-#3042.1|invalid next_left_edge|3|-3
-#3042.1|invalid next_right_edge|19|-10
-#3042.1|invalid next_left_edge|10|-20
-#3042.1|invalid next_left_edge|20|-9
-#3042.1|invalid next_left_edge|9|19
-#3042.1|invalid next_right_edge|25|25
-#3042.1|invalid next_left_edge|25|-25
-#3042.1|Edgering side location conflict|19|
-#3042.1|Edgering side location conflict|13|
-#3042.1|Edgering side location conflict|-22|
-#3042.1|Edgering side location conflict|-7|
-#3042.1|Edgering side location conflict|-10|
-#3042.1|Edgering side location conflict|-3|
-#3042.1|Edgering side location conflict|-9|
-#3042.1|Edgering side location conflict|-20|
-#4944|Edgering side location conflict|19|
-#4944|Edgering side location conflict|-19|
+#3042|---||
+#3042|invalid next_left_edge|3|-3
+#3042|invalid next_left_edge|9|19
+#3042|invalid next_left_edge|10|-20
+#3042|invalid next_left_edge|20|-9
+#3042|invalid next_left_edge|25|-25
+#3042|invalid next_right_edge|3|2
+#3042|invalid next_right_edge|19|-10
+#3042|invalid next_right_edge|25|25
+#3042|mixed face labeling in ring|-22|
+#3042|mixed face labeling in ring|-20|
+#3042|mixed face labeling in ring|-10|
+#3042|mixed face labeling in ring|-9|
+#3042|mixed face labeling in ring|-7|
+#3042|mixed face labeling in ring|-3|
+#3042|mixed face labeling in ring|13|
+#3042|mixed face labeling in ring|19|
+#4944|---||
+#4944|mixed face labeling in ring|-19|
+#4944|mixed face labeling in ring|19|

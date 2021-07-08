@@ -139,7 +139,10 @@ SET
   next_right_edge = -next_right_edge
 where edge_id in (3,25);
 set client_min_messages to WARNING;
-SELECT '#3042.1', * FROM ValidateTopology('city_data');
+SELECT '#3042', * FROM ValidateTopology('city_data')
+UNION
+SELECT '#3042', '---', null, null
+ORDER BY 1,2,3,4;
 ROLLBACK;
 
 -- Test correctness of side-labeling
@@ -150,7 +153,10 @@ UPDATE city_data.edge_data
   SET left_face = right_face, right_face = left_face
   WHERE edge_id = 19;
 --set client_min_messages to DEBUG;
-SELECT '#4944', * FROM ValidateTopology('city_data');
+SELECT '#4944', * FROM ValidateTopology('city_data')
+UNION
+SELECT '#4944', '---', null, null
+ORDER BY 1,2,3,4;
 ROLLBACK;
 
 SELECT NULL FROM topology.DropTopology('city_data');

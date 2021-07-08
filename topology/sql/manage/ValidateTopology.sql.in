@@ -338,7 +338,7 @@ BEGIN
       IF array_upper(rec.side_faces,1) != 1
       THEN
         RAISE DEBUG 'Side faces found on ring %: %', nextEdge, rec.side_faces;
-        retrec.error = 'Edgering side location conflict';
+        retrec.error = 'mixed face labeling in ring';
         retrec.id1 = nextEdge;
         retrec.id2 = NULL;
         RETURN NEXT retrec;
