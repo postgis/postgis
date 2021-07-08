@@ -1,10 +1,4 @@
 t
-Edgering side location conflict|-33|
-Edgering side location conflict|-32|
-Edgering side location conflict|-29|
-Edgering side location conflict|29|
-Edgering side location conflict|32|
-Edgering side location conflict|33|
 coincident nodes|1|23
 edge crosses edge|2|28
 edge crosses edge|2|29
@@ -43,6 +37,12 @@ invalid next_right_edge|27|-22
 invalid next_right_edge|28|-30
 invalid next_right_edge|29|7
 invalid next_right_edge|33|31
+mixed face labeling in ring|-33|
+mixed face labeling in ring|-32|
+mixed face labeling in ring|-29|
+mixed face labeling in ring|29|
+mixed face labeling in ring|32|
+mixed face labeling in ring|33|
 not-isolated node has not-null containing_face|4|
 #4936|missing_count|4
 #4936|missing|face has no rings|10|
