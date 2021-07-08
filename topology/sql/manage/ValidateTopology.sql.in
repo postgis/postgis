@@ -211,7 +211,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- NOTE: assumes search_path was set before calling this function
 --
-CREATE OR REPLACE FUNCTION topology._ValidateTopologySideLabeling(bbox geometry DEFAULT NULL)
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyRings(bbox geometry DEFAULT NULL)
 RETURNS SETOF topology.ValidateTopology_ReturnType
 AS --{
 $BODY$
@@ -220,12 +220,10 @@ DECLARE
   nextEdge INT;
   rec RECORD;
   affected_rows integer;
+  ring_poly GEOMETRY;
+  is_shell BOOLEAN;
 BEGIN
   RAISE DEBUG 'Gathering edges for side faces labeling';
-
-  -- NOTE: this check relies on correct edge linking,
-  --       if those are not correct the results
-  --       of this check do not make much sense.
 
   -- Pick all edges ending on any node in the bbox
   -- Those are the only edges we want to consider
@@ -249,7 +247,14 @@ BEGIN
 
   CREATE INDEX ON side_label_check_edge (edge_id);
 
-  RAISE DEBUG 'Checking edge side faces labeling';
+  CREATE TEMP TABLE ring_check (
+    ring_id int,
+    ring_geom geometry, -- polygon for shell, line for hole
+    is_shell boolean,
+    bound_face int
+  );
+
+  RAISE DEBUG 'Checking edge rings';
 
   -- Find all rings that can be formed on both sides
   -- of selected edges
@@ -258,6 +263,8 @@ BEGIN
     -- Fetch next unvisited edge
     SELECT edge_id
     FROM pg_temp.side_label_check_edge
+    -- TODO: order by <-> from -inf/-inf to ensure catching
+    --       shells before holes
     ORDER BY edge_id
     LIMIT 1
     INTO nextEdge;
@@ -268,66 +275,72 @@ BEGIN
 
     affected_rows := affected_rows + 1;
 
+    -- Build ring formed on nextEdge
     -- Gather side faces for the ring formed on nextEdge
-    -- NOTE: if edge linking is bogus the following query
-    --       won't make much sense
-    BEGIN
-
-      WITH RECURSIVE
-      edgering AS (
-        SELECT
-          nextEdge as signed_edge_id,
-          edge_id,
-          next_left_edge,
-          next_right_edge,
-          CASE WHEN nextEdge > 0 THEN
-            left_face
-          ELSE
-            right_face
-          END as side_face
-        FROM edge_data
-        WHERE edge_id = abs(nextEdge)
-          UNION
-        SELECT
-          CASE WHEN p.signed_edge_id < 0
-          THEN
-            p.next_right_edge
-          ELSE
-            p.next_left_edge
-          END, -- signed_edge_id
-          e.edge_id,
-          e.next_left_edge,
-          e.next_right_edge,
-          CASE WHEN p.signed_edge_id < 0
-          THEN
-            CASE WHEN p.next_right_edge > 0
-            THEN
-              e.left_face
-            ELSE
-              e.right_face
-            END
-          ELSE
-            CASE WHEN p.next_left_edge > 0
-            THEN
-              e.left_face
-            ELSE
-              e.right_face
-            END
-          END -- side_face
-        FROM edge_data e, edgering p
-        WHERE
-          e.edge_id = CASE
-            WHEN p.signed_edge_id < 0 THEN
-              abs(p.next_right_edge)
-            ELSE
-              abs(p.next_left_edge)
-            END
-      )
+    WITH RECURSIVE
+    edgering AS (
       SELECT
-        array_agg(signed_edge_id) edges,
-        array_agg(DISTINCT side_face) side_faces
-      FROM edgering
-      INTO rec;
+        nextEdge as signed_edge_id,
+        edge_id,
+        geom,
+        next_left_edge,
+        next_right_edge,
+        CASE WHEN nextEdge > 0 THEN
+          left_face
+        ELSE
+          right_face
+        END as side_face
+      FROM edge_data
+      WHERE edge_id = abs(nextEdge)
+        UNION
+      SELECT
+        CASE WHEN p.signed_edge_id < 0
+        THEN
+          p.next_right_edge
+        ELSE
+          p.next_left_edge
+        END, -- signed_edge_id
+        e.edge_id,
+        e.geom,
+        e.next_left_edge,
+        e.next_right_edge,
+        CASE WHEN p.signed_edge_id < 0
+        THEN
+          CASE WHEN p.next_right_edge > 0
+          THEN
+            e.left_face
+          ELSE
+            e.right_face
+          END
+        ELSE
+          CASE WHEN p.next_left_edge > 0
+          THEN
+            e.left_face
+          ELSE
+            e.right_face
+          END
+        END -- side_face
+      FROM edge_data e, edgering p
+      WHERE
+        e.edge_id = CASE
+          WHEN p.signed_edge_id < 0 THEN
+            abs(p.next_right_edge)
+          ELSE
+            abs(p.next_left_edge)
+          END
+    )
+    SELECT
+      ST_MakeLine(
+        CASE WHEN signed_edge_id > 0 THEN
+          geom
+        ELSE
+          ST_Reverse(geom)
+        END
+      ) ring_geom,
+      array_agg(signed_edge_id) edges,
+      array_agg(DISTINCT side_face) side_faces
+    FROM edgering
+    INTO rec;
 
 --      RAISE DEBUG 'Ring % - edges:[%], faces:[%]',
 --        nextEdge,
@@ -335,36 +348,87 @@ BEGIN
 --        array_to_string(rec.side_faces, ',')
 --      ;
 
-      -- Check that there's a single face advertised
-      IF array_upper(rec.side_faces,1) != 1
-      THEN
-        RAISE DEBUG 'Side faces found on ring %: %', nextEdge, rec.side_faces;
-        retrec.error = 'mixed face labeling in ring';
-        retrec.id1 = nextEdge;
-        retrec.id2 = NULL;
-        RETURN NEXT retrec;
-      END IF;
-    EXCEPTION WHEN OTHERS THEN
-        retrec.error = SQLERRM;
-        retrec.id1 = nextEdge;
-        retrec.id2 = NULL;
-        RETURN NEXT retrec;
-        -- Make sure this edge will be marked as visited
-        SELECT ARRAY[nextEdge] as edges INTO rec;
-    END;
+    -- Check that there's a single face advertised
+    IF array_upper(rec.side_faces,1) != 1
+    THEN --{
 
-    -- TODO: Check that a single face is ever used
-    --       for each distinct CCW ring (shell)
-    -- NOTE: multiple CW rings (holes) can exist for a given face
+      RAISE DEBUG 'Side faces found on ring %: %', nextEdge, rec.side_faces;
+      retrec.error = 'mixed face labeling in ring';
+      retrec.id1 = nextEdge;
+      retrec.id2 = NULL;
+      RETURN NEXT retrec;
+
+    ELSE --}{
+
+      -- Save ring that a single face is ever used
+      --       for each distinct CCW ring (shell)
+      -- NOTE: multiple CW rings (holes) can exist for a given face
+      --RAISE DEBUG 'Ring geom: %', ST_AsTexT(rec.ring_geom);
+      IF NOT ST_Equals(
+        ST_StartPoint(rec.ring_geom),
+        ST_EndPoint(rec.ring_geom)
+      )
+      THEN --{
+--        -- This should have been reported before,
+--        -- on the edge linking check
+--        retrec.error = 'non-closed ring';
+--        retrec.id1 = nextEdge;
+--        retrec.id2 = NULL;
+--        RETURN NEXT retrec;
+      ELSE --}{
+        is_shell := false;
+        IF ST_NPoints(rec.ring_geom) > 3 THEN
+          ring_poly := ST_MakePolygon(rec.ring_geom);
+          IF ST_IsPolygonCCW(ring_poly) THEN
+            is_shell := true;
+          END IF;
+        END IF;
+        INSERT INTO ring_check VALUES (
+          nextEdge,
+          CASE WHEN is_shell THEN
+            ring_poly
+          ELSE
+            rec.ring_geom
+          END,
+          is_shell,
+          rec.side_faces[1]
+        );
+      END IF; --}
+
+    END IF; --}
+
 
     DELETE FROM pg_temp.side_label_check_edge
     WHERE edge_id = ANY (rec.edges);
 
   END LOOP; --}
 
-  RAISE DEBUG 'Completed checking % rings for side faces labeling', affected_rows;
+  -- Check if any face has multiple shells
+  RAISE DEBUG 'Checking multi-shell faces';
+  FOR rec IN
+    SELECT
+      rc.bound_face,
+      count(rc.ring_id)
+    FROM ring_check rc
+    WHERE rc.is_shell
+    GROUP BY rc.bound_face
+    HAVING count(rc.ring_id) > 1
+  LOOP
+    retrec.error = 'face has multiple shells';
+    retrec.id1 = rec.bound_face;
+    retrec.id2 = NULL;
+    RETURN NEXT retrec;
+  END LOOP;
+
+  -- TODO: Check that holes really belong to the advertised shell
+  -- NOTE: when limited by bounding box we might be missing the
+  --       shell belonging to the most external holes, so for
+  --       those we would need to
+
+  RAISE DEBUG 'Completed checking % rings', affected_rows;
 
   DROP TABLE pg_temp.side_label_check_edge;
+  DROP TABLE pg_temp.ring_check;
 
 
 END;
@@ -669,8 +733,8 @@ BEGIN
   --- Validate edge linking
   RETURN QUERY SELECT * FROM topology._ValidateTopologyEdgeLinking(bbox);
 
-  --- Validate side-labeling
-  RETURN QUERY SELECT * FROM topology._ValidateTopologySideLabeling(bbox);
+  --- Validate edge rings
+  RETURN QUERY SELECT * FROM topology._ValidateTopologyRings(bbox);
 
 
   -- Now create a temporary table to construct all face geometries

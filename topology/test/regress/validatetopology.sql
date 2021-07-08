@@ -159,5 +159,25 @@ SELECT '#4944', '---', null, null
 ORDER BY 1,2,3,4;
 ROLLBACK;
 
+-- Test face with multiple shells is caught
+-- See https://trac.osgeo.org/postgis/ticket/4945
+BEGIN;
+UPDATE city_data.edge_data SET right_face = 3 WHERE edge_id IN (8, 17);
+UPDATE city_data.edge_data SET left_face = 3 WHERE edge_id IN (11, 15);
+-- To reduce the noise,
+-- set face 3 mbr to include the mbr of face 5
+-- and delete face 5
+UPDATE city_data.face SET mbr = (
+  SELECT ST_Envelope(ST_Collect(mbr))
+  FROM city_data.face
+  WHERE face_id IN ( 3, 5 )
+) WHERE face_id = 3;
+DELETE FROM city_data.face WHERE face_id = 5;
+SELECT '#4945', * FROM ValidateTopology('city_data')
+UNION
+SELECT '#4945', '---', null, null
+ORDER BY 1,2,3,4;
+ROLLBACK;
+
 SELECT NULL FROM topology.DropTopology('city_data');
 
