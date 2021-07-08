@@ -247,7 +247,7 @@ BEGIN
   SELECT -edge_id FROM edges_to_check
   ;
 
-  CREATE INDEX ON side_label_check_edge (edge_id); -- DROP ?
+  CREATE INDEX ON side_label_check_edge (edge_id);
 
   RAISE DEBUG 'Checking edge side faces labeling';
 
@@ -258,6 +258,7 @@ BEGIN
     -- Fetch next unvisited edge
     SELECT edge_id
     FROM pg_temp.side_label_check_edge
+    ORDER BY edge_id
     LIMIT 1
     INTO nextEdge;
 
