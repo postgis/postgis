@@ -259,11 +259,14 @@ BEGIN
 
   CREATE INDEX ON side_label_check_edge (edge_id);
 
-  CREATE TEMP TABLE ring_check (
-    ring_id int,
-    ring_geom geometry, -- polygon for shell, line for hole
-    is_shell boolean,
-    bound_face int
+  CREATE TEMP TABLE shell_check (
+    face_id int PRIMARY KEY,
+    shell geometry -- polygon
+  );
+
+  CREATE TEMP TABLE hole_check (
+    hole geometry, -- linestring
+    in_shell int
   );
 
   RAISE NOTICE 'Checking edge rings';
@@ -399,16 +402,24 @@ BEGIN
             is_shell := true;
           END IF;
         END IF;
-        INSERT INTO ring_check VALUES (
-          nextEdge,
-          CASE WHEN is_shell THEN
-            ring_poly
-          ELSE
-            rec.ring_geom
-          END,
-          is_shell,
-          rec.side_faces[1]
-        );
+        IF is_shell THEN
+          BEGIN
+            INSERT INTO shell_check VALUES (
+              rec.side_faces[1],
+              ring_poly
+            );
+          EXCEPTION WHEN unique_violation THEN
+            retrec.error = 'face has multiple shells';
+            retrec.id1 = rec.side_faces[1];
+            retrec.id2 = NULL;
+            RETURN NEXT retrec;
+          END;
+        ELSE -- }{ It's an hole (CW)
+          INSERT INTO hole_check VALUES (
+            rec.ring_geom,
+            rec.side_faces[1]
+          );
+        END IF; --} hole
       END IF; --}
 
     END IF; --}
@@ -419,32 +430,18 @@ BEGIN
 
   END LOOP; --}
 
-  -- Check if any face has multiple shells
-  RAISE NOTICE 'Checking multi-shell faces';
-  FOR rec IN
-    SELECT
-      rc.bound_face,
-      count(rc.ring_id)
-    FROM ring_check rc
-    WHERE rc.is_shell
-    GROUP BY rc.bound_face
-    HAVING count(rc.ring_id) > 1
-  LOOP
-    retrec.error = 'face has multiple shells';
-    retrec.id1 = rec.bound_face;
-    retrec.id2 = NULL;
-    RETURN NEXT retrec;
-  END LOOP;
-
-  -- TODO: Check that holes really belong to the advertised shell
-  -- NOTE: when limited by bounding box we might be missing the
-  --       shell belonging to the most external holes, so for
-  --       those we would need to
 
   RAISE NOTICE 'Completed checking % rings', affected_rows;
 
   DROP TABLE pg_temp.side_label_check_edge;
-  DROP TABLE pg_temp.ring_check;
+  DROP TABLE pg_temp.shell_check;
+
+  -- TODO: Check that holes really belong to the advertised shell
+  --       (instead of dropping the table)
+  -- NOTE: when limited by bounding box we might be missing the
+  --       shell belonging to the most external holes, so for
+  --       those we would need to
+  DROP TABLE pg_temp.hole_check;
 
 
 END;
@@ -896,6 +893,8 @@ BEGIN
     retrec.id2 := NULL; -- TODO: write expected containing_face here ?
     RETURN NEXT retrec;
   END LOOP; --}
+
+  RAISE NOTICE 'Checking for edges coverage';
 
   -- Check edges are covered by their left-right faces (#4830)
   RAISE NOTICE 'Checking for edges coverage';
