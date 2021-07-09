@@ -33,11 +33,13 @@ BEGIN
   IF prevedge_edge_id > 0
   THEN -- previous was outgoing, this one should be next-right
     IF prevedge_next_right_edge != curedge_edge_id THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Edge % should be next-right of edge %, is % instead',
         curedge_edge_id,
         abs(prevedge_edge_id),
         prevedge_next_right_edge
       ;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
       retrec.error = 'invalid next_right_edge';
       retrec.id1 = abs(prevedge_edge_id);
       retrec.id2 = curedge_edge_id; -- we put the expected one here, for convenience
@@ -45,11 +47,13 @@ BEGIN
     END IF;
   ELSE -- previous was incoming, this one should be next-left
     IF prevedge_next_left_edge != curedge_edge_id THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Edge % should be next-left of edge %, is % instead',
         curedge_edge_id,
         abs(prevedge_edge_id),
         prevedge_next_left_edge
       ;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
       retrec.error = 'invalid next_left_edge';
       retrec.id1 = abs(prevedge_edge_id);
       retrec.id2 = curedge_edge_id; -- we put the expected one here, for convenience
@@ -84,7 +88,7 @@ DECLARE
   last_node_first_edge RECORD;
   last_node_prev_edge RECORD;
 BEGIN
-  RAISE DEBUG 'Checking edge linking';
+  RAISE NOTICE 'Checking edge linking';
   -- NOTE: this check relies on correct start_node and end_node
   --       for edges, if those are not correct the results
   --       of this check do not make much sense.
@@ -155,9 +159,13 @@ BEGIN
         THEN
           RETURN NEXT retrec;
         END IF;
-        --RAISE DEBUG 'Finished analisys of edge star around node %', last_node_id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+        RAISE DEBUG 'Finished analisys of edge star around node %', last_node_id;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
       END IF;
-      --RAISE DEBUG 'Analyzing edge star around node %', rec.node_id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Analyzing edge star around node %', rec.node_id;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
       last_node_id = rec.node_id;
       last_node_first_edge = rec;
     ELSE --}{
@@ -176,10 +184,12 @@ BEGIN
     last_node_prev_edge = rec;
   END LOOP; --}
   IF last_node_id IS NOT NULL THEN --{
-    --RAISE DEBUG 'Out of loop: last_node_id: %', last_node_id;
-    --RAISE DEBUG 'Out of loop: last_node_first_edge edge_id:% next_left_edge:%', last_node_first_edge.edge_id, last_node_first_edge.next_left_edge;
-    --RAISE DEBUG 'Out of loop: last_node_prev_edge edge_id:% next_left_edge:%', last_node_prev_edge.edge_id, last_node_prev_edge.next_left_edge;
-    --RAISE DEBUG 'Out of loop: last_node_first_edge: %', last_node_first_edge;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Out of loop: last_node_id: %', last_node_id;
+    RAISE DEBUG 'Out of loop: last_node_first_edge edge_id:% next_left_edge:%', last_node_first_edge.edge_id, last_node_first_edge.next_left_edge;
+    RAISE DEBUG 'Out of loop: last_node_prev_edge edge_id:% next_left_edge:%', last_node_prev_edge.edge_id, last_node_prev_edge.next_left_edge;
+    RAISE DEBUG 'Out of loop: last_node_first_edge: %', last_node_first_edge;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
     -- Check that last edge (CW from prev one) is correctly linked
     retrec := topology._CheckEdgeLinking(
       last_node_first_edge.edge_id,
@@ -191,7 +201,9 @@ BEGIN
     THEN
       RETURN NEXT retrec;
     END IF;
-    --RAISE DEBUG 'Finished analisys of edge star around node % (out of loop)', last_node_id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Finished analisys of edge star around node % (out of loop)', last_node_id;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
   END IF; --}
 
 
@@ -223,7 +235,7 @@ DECLARE
   ring_poly GEOMETRY;
   is_shell BOOLEAN;
 BEGIN
-  RAISE DEBUG 'Gathering edges for side faces labeling';
+  RAISE NOTICE 'Gathering edges for side faces labeling';
 
   -- Pick all edges ending on any node in the bbox
   -- Those are the only edges we want to consider
@@ -254,7 +266,7 @@ BEGIN
     bound_face int
   );
 
-  RAISE DEBUG 'Checking edge rings';
+  RAISE NOTICE 'Checking edge rings';
 
   -- Find all rings that can be formed on both sides
   -- of selected edges
@@ -342,17 +354,21 @@ BEGIN
     FROM edgering
     INTO rec;
 
---      RAISE DEBUG 'Ring % - edges:[%], faces:[%]',
---        nextEdge,
---        array_to_string(rec.edges, ','),
---        array_to_string(rec.side_faces, ',')
---      ;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Ring % - edges:[%], faces:[%]',
+      nextEdge,
+      array_to_string(rec.edges, ','),
+      array_to_string(rec.side_faces, ',')
+    ;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
 
     -- Check that there's a single face advertised
     IF array_upper(rec.side_faces,1) != 1
     THEN --{
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Side faces found on ring %: %', nextEdge, rec.side_faces;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
       retrec.error = 'mixed face labeling in ring';
       retrec.id1 = nextEdge;
       retrec.id2 = NULL;
@@ -404,7 +420,7 @@ BEGIN
   END LOOP; --}
 
   -- Check if any face has multiple shells
-  RAISE DEBUG 'Checking multi-shell faces';
+  RAISE NOTICE 'Checking multi-shell faces';
   FOR rec IN
     SELECT
       rc.bound_face,
@@ -425,7 +441,7 @@ BEGIN
   --       shell belonging to the most external holes, so for
   --       those we would need to
 
-  RAISE DEBUG 'Completed checking % rings', affected_rows;
+  RAISE NOTICE 'Completed checking % rings', affected_rows;
 
   DROP TABLE pg_temp.side_label_check_edge;
   DROP TABLE pg_temp.ring_check;
@@ -481,12 +497,12 @@ BEGIN
                                 || search_path_backup;
 
   IF bbox IS NOT NULL THEN
-    RAISE DEBUG 'Limiting topology checking to bbox %', ST_AsEWKT(ST_Envelope(bbox));
+    RAISE NOTICE 'Limiting topology checking to bbox %', ST_AsEWKT(ST_Envelope(bbox));
   END IF;
 
 
   -- Check for coincident nodes
-  RAISE DEBUG 'Checking for coincident nodes';
+  RAISE NOTICE 'Checking for coincident nodes';
   FOR rec IN
     SELECT a.node_id as id1, b.node_id as id2
     FROM
@@ -511,7 +527,7 @@ BEGIN
 
   -- Check for edge crossed nodes
   -- TODO: do this in the single edge loop
-  RAISE DEBUG 'Checking for edges crossing nodes';
+  RAISE NOTICE 'Checking for edges crossing nodes';
   FOR rec IN
     SELECT n.node_id as nid, e.edge_id as eid
     FROM
@@ -536,7 +552,7 @@ BEGIN
   END LOOP;
 
   -- Scan all edges
-  RAISE DEBUG 'Checking for invalid or not-simple edges';
+  RAISE NOTICE 'Checking for invalid or not-simple edges';
   FOR rec IN
     SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face
     FROM edge e
@@ -582,7 +598,7 @@ BEGIN
   END LOOP; --}
 
   -- Check for edge crossing
-  RAISE DEBUG 'Checking for crossing edges';
+  RAISE NOTICE 'Checking for crossing edges';
   FOR rec IN
     SELECT
       e1.edge_id as id1,
@@ -668,7 +684,7 @@ BEGIN
 
   -- Check for edge start_node geometry mis-match
   -- TODO: move this in the first edge table scan
-  RAISE DEBUG 'Checking for edges start_node mismatch';
+  RAISE NOTICE 'Checking for edges start_node mismatch';
   FOR rec IN
     SELECT e.edge_id as id1, n.node_id as id2
     FROM
@@ -689,7 +705,7 @@ BEGIN
 
   -- Check for edge end_node geometry mis-match
   -- TODO: move this in the first edge table scan
-  RAISE DEBUG 'Checking for edges end_node mismatch';
+  RAISE NOTICE 'Checking for edges end_node mismatch';
   FOR rec IN
     SELECT e.edge_id as id1, n.node_id as id2
     FROM
@@ -709,7 +725,7 @@ BEGIN
   END LOOP; --}
 
   -- Check for faces w/out edges
-  RAISE DEBUG 'Checking for faces without edges';
+  RAISE NOTICE 'Checking for faces without edges';
   FOR rec IN
     SELECT face_id as id1
     FROM face
@@ -740,7 +756,7 @@ BEGIN
   -- Now create a temporary table to construct all face geometries
   -- for checking their consistency
 
-  RAISE DEBUG 'Constructing geometry of all faces';
+  RAISE NOTICE 'Constructing geometry of all faces';
 
   CREATE TEMP TABLE face_check ON COMMIT DROP AS
   SELECT
@@ -772,7 +788,7 @@ BEGIN
 
   -- Scan the table looking for NULL geometries
   -- or geometries with wrong MBR consistency
-  RAISE DEBUG 'Checking faces';
+  RAISE NOTICE 'Checking faces';
   affected_rows := 0;
   FOR rec IN
     SELECT * FROM face_check
@@ -791,7 +807,9 @@ BEGIN
 
     IF NOT ST_Equals(rec.mbr, ST_Envelope(rec.geom))
     THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(ST_Envelope(rec.geom)), ST_AsEWKT(ST_Envelope(rec.mbr));
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
       -- Inconsistent MBR!
       retrec.error := 'face has wrong mbr';
       retrec.id1 := rec.face_id;
@@ -838,10 +856,10 @@ BEGIN
 
   END LOOP; --}
 
-  RAISE DEBUG 'Checked % faces', affected_rows;
+  RAISE NOTICE 'Checked % faces', affected_rows;
 
   -- Check nodes have correct containing_face (#3233)
-  RAISE DEBUG 'Checking for node containing_face correctness';
+  RAISE NOTICE 'Checking for node containing_face correctness';
   FOR rec IN
     SELECT
       n.node_id,
@@ -880,7 +898,7 @@ BEGIN
   END LOOP; --}
 
   -- Check edges are covered by their left-right faces (#4830)
-  RAISE DEBUG 'Checking for edges coverage';
+  RAISE NOTICE 'Checking for edges coverage';
   FOR rec IN --{
     WITH
     face_coverage AS (
