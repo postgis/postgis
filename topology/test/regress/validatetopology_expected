@@ -9,23 +9,15 @@
 #3233.3|not-isolated node has not-null containing_face|1|
 #4830.0|---||
 #4830.1|---||
-#4830.1|edge not covered by both its side faces|4|
-#4830.1|edge not covered by both its side faces|6|
 #4830.1|mixed face labeling in ring|-6|
 #4830.2|---||
-#4830.2|edge not covered by both its side faces|4|
-#4830.2|edge not covered by both its side faces|6|
 #4830.2|mixed face labeling in ring|-6|
 #4830.3|---||
-#4830.3|edge not covered by both its side faces|7|
-#4830.3|edge not covered by both its side faces|8|
 #4830.3|mixed face labeling in ring|-8|
 #4830.4|---||
-#4830.4|edge not covered by both its side faces|7|
-#4830.4|edge not covered by both its side faces|8|
 #4830.4|mixed face labeling in ring|-8|
 #4830.5|---||
-#4830.5|edge covered by some face has universal face on both sides|9|
+#4830.5|hole not in advertised face|-9|
 #3042|---||
 #3042|invalid next_left_edge|3|-3
 #3042|invalid next_left_edge|9|19

@@ -223,6 +223,8 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- NOTE: assumes search_path was set before calling this function
 --
+-- Creates a pg_temp.hole_check table
+--
 CREATE OR REPLACE FUNCTION topology._ValidateTopologyRings(bbox geometry DEFAULT NULL)
 RETURNS SETOF topology.ValidateTopology_ReturnType
 AS --{
@@ -265,6 +267,7 @@ BEGIN
   );
 
   CREATE TEMP TABLE hole_check (
+    ring_id int,
     hole geometry, -- linestring
     in_shell int
   );
@@ -416,6 +419,7 @@ BEGIN
           END;
         ELSE -- }{ It's an hole (CW)
           INSERT INTO hole_check VALUES (
+            nextEdge,
             rec.ring_geom,
             rec.side_faces[1]
           );
@@ -436,12 +440,6 @@ BEGIN
   DROP TABLE pg_temp.side_label_check_edge;
   DROP TABLE pg_temp.shell_check;
 
-  -- TODO: Check that holes really belong to the advertised shell
-  --       (instead of dropping the table)
-  -- NOTE: when limited by bounding box we might be missing the
-  --       shell belonging to the most external holes, so for
-  --       those we would need to
-  DROP TABLE pg_temp.hole_check;
 
 
 END;
@@ -749,11 +747,11 @@ BEGIN
   --- Validate edge rings
   RETURN QUERY SELECT * FROM topology._ValidateTopologyRings(bbox);
 
-
   -- Now create a temporary table to construct all face geometries
   -- for checking their consistency
 
   RAISE NOTICE 'Constructing geometry of all faces';
+  -- TODO: only construct exterior ring
 
   CREATE TEMP TABLE face_check ON COMMIT DROP AS
   SELECT
@@ -814,43 +812,6 @@ BEGIN
       RETURN NEXT retrec;
     END IF;
 
-    FOR rec2 IN
-      SELECT
-        geom,
-        face_id,
-        ST_Relate(rec.geom, geom) as im
-      FROM
-        face_check
-        WHERE face_id > rec.face_id
-        AND geom && rec.geom
-    LOOP --{
-
-      -- Face overlap
-      IF ST_RelateMatch(rec2.im, 'T*T***T**') THEN
-        retrec.error = 'face overlaps face';
-        retrec.id1 = rec.face_id;
-        retrec.id2 = rec2.face_id;
-        RETURN NEXT retrec;
-      END IF;
-
-      -- Face 1 is within face 2
-      IF ST_RelateMatch(rec2.im, 'T*F**F***') THEN
-        retrec.error = 'face within face';
-        retrec.id1 = rec.face_id;
-        retrec.id2 = rec2.face_id;
-        RETURN NEXT retrec;
-      END IF;
-
-      -- Face 1 contains face 2
-      IF ST_RelateMatch(rec2.im, 'T*****FF*') THEN
-        retrec.error = 'face within face';
-        retrec.id1 = rec.face_id;
-        retrec.id2 = rec2.face_id;
-        RETURN NEXT retrec;
-      END IF;
-
-    END LOOP; --}
-
   END LOOP; --}
 
   RAISE NOTICE 'Checked % faces', affected_rows;
@@ -894,102 +855,31 @@ BEGIN
     RETURN NEXT retrec;
   END LOOP; --}
 
-  RAISE NOTICE 'Checking for edges coverage';
-
   -- Check edges are covered by their left-right faces (#4830)
-  RAISE NOTICE 'Checking for edges coverage';
-  FOR rec IN --{
-    WITH
-    face_coverage AS (
-      SELECT f.face_id, array_agg(e.edge_id) covered_edges
-      FROM face_check f, edge_data e
-      WHERE ST_Covers(f.geom, e.geom)
-      GROUP BY f.face_id
-    ),
-    edges_to_check AS (
-      SELECT
-        e.*
-      FROM edge_data e
-      WHERE ( bbox IS NULL OR e.geom && bbox )
-      AND e.edge_id NOT IN (
-        SELECT unnest(invalid_edges)
-      )
-    ),
-    edge_coverage AS (
-      SELECT
-        e.edge_id,
-        e.left_face,
-        e.right_face,
-        array_agg(DISTINCT fc.face_id)
-          filter (WHERE fc.face_id IS NOT NULL) faces_covering
-      FROM edges_to_check e
-      LEFT JOIN face_coverage fc ON (
-        e.edge_id = ANY(fc.covered_edges)
-      )
-      GROUP BY edge_id, left_face, right_face
-    )
-    SELECT *
-    FROM edge_coverage
-    WHERE
-      -- Edges dangling in universal face needs be
-      -- NOT covered by any face
-      (
-        left_face = 0 AND
-        right_face = 0 AND
-        faces_covering IS NOT NULL
-      )
-      OR
-      (
-        left_face != 0 AND
-        (
-          faces_covering IS NULL OR
-          NOT left_face = ANY(faces_covering)
-        )
-      )
-      OR
-      (
-        right_face != 0 AND
-        (
-          faces_covering IS NULL OR
-          NOT right_face = ANY(faces_covering)
-        )
-      )
-      OR
-      (
-        (
-          ( right_face = 0 AND left_face != 0 )
-          OR
-          ( right_face != 0 AND left_face = 0 )
-        )
-        AND
-        (
-          faces_covering IS NULL OR
-          array_upper(faces_covering, 1) != 1
-        )
-      )
-    ORDER BY edge_id
-  LOOP --}{
-      retrec.id1 := rec.edge_id;
-      retrec.id2 := NULL;
-      IF rec.left_face = 0
-         AND rec.right_face = 0
-      THEN
-        retrec.error := 'edge covered by some face has universal face on both sides';
-        --retrec.error := format('edge covered by faces %s has universal face on both sides', rec.faces_covering);
+  RAISE NOTICE 'Checking for holes coverage';
+  FOR rec IN
+    SELECT * FROM hole_check
+  LOOP --{
+    SELECT f.face_id
+    FROM face_check f
+    WHERE rec.hole @ f.geom
+    AND _ST_Contains(ST_MakePolygon(ST_ExteriorRing(f.geom)), rec.hole)
+    ORDER BY ST_Area(f.geom) ASC
+    LIMIT 1
+    INTO rec2;
+
+    IF ( NOT FOUND AND rec.in_shell != 0 )
+       OR ( rec2.face_id != rec.in_shell )
+    THEN
+        retrec.error := 'hole not in advertised face';
+        retrec.id1 := rec.ring_id;
+        retrec.id2 := NULL;
         RETURN NEXT retrec;
-      ELSE
-        retrec.error := 'edge not covered by both its side faces';
-        RETURN NEXT retrec;
---        IF rec.left_face != 0 AND NOT rec.left_face_covered THEN
---          retrec.error := 'edge not covered by its left face';
---          RETURN NEXT retrec;
---        END IF;
---        IF rec.right_face != 0 AND NOT rec.right_face_covered THEN
---          retrec.error := 'edge not covered by its right face';
---          RETURN NEXT retrec;
---        END IF;
-      END IF;
+    END IF;
+
   END LOOP; --}
+
+  DROP TABLE pg_temp.hole_check;
 
   DROP TABLE face_check;
 
