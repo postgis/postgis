@@ -11,16 +11,8 @@ edge crosses edge|30|32
 edge crosses node|1|23
 edge crosses node|27|14
 edge end node geometry mis-match|30|3
-edge not covered by both its side faces|27|
-edge not covered by both its side faces|28|
-edge not covered by both its side faces|30|
 edge not simple|28|
 edge start node geometry mis-match|30|4
-face has no rings|10|
-face has wrong mbr|3|
-face has wrong mbr|6|
-face overlaps face|2|12
-face within face|2|11
 face without edges|10|
 invalid edge|33|
 invalid next_left_edge|2|3
@@ -37,16 +29,6 @@ invalid next_right_edge|27|-22
 invalid next_right_edge|28|-30
 invalid next_right_edge|29|7
 invalid next_right_edge|33|31
-mixed face labeling in ring|-33|
-mixed face labeling in ring|-32|
-mixed face labeling in ring|-29|
-mixed face labeling in ring|29|
-mixed face labeling in ring|32|
-mixed face labeling in ring|33|
-not-isolated node has not-null containing_face|4|
-#4936|missing_count|4
-#4936|missing|face has no rings|10|
-#4936|missing|face overlaps face|2|12
-#4936|missing|face within face|2|11
+#4936|missing_count|1
 #4936|missing|face without edges|10|
 Topology 'invalid_topology' dropped
