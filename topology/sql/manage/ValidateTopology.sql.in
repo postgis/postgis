@@ -236,6 +236,8 @@ DECLARE
   affected_rows integer;
   ring_poly GEOMETRY;
   is_shell BOOLEAN;
+  found_shells INT := 0;
+  found_holes INT := 0;
 BEGIN
   RAISE NOTICE 'Gathering edges for side faces labeling';
 
@@ -382,22 +384,20 @@ BEGIN
 
     ELSE --}{
 
-      -- Save ring that a single face is ever used
-      --       for each distinct CCW ring (shell)
-      -- NOTE: multiple CW rings (holes) can exist for a given face
       --RAISE DEBUG 'Ring geom: %', ST_AsTexT(rec.ring_geom);
       IF NOT ST_Equals(
         ST_StartPoint(rec.ring_geom),
         ST_EndPoint(rec.ring_geom)
       )
       THEN --{
---        -- This should have been reported before,
---        -- on the edge linking check
---        retrec.error = 'non-closed ring';
---        retrec.id1 = nextEdge;
---        retrec.id2 = NULL;
---        RETURN NEXT retrec;
+        -- This should have been reported before,
+        -- on the edge linking check
+        retrec.error = 'non-closed ring';
+        retrec.id1 = nextEdge;
+        retrec.id2 = NULL;
+        RETURN NEXT retrec;
       ELSE --}{
+        -- Ring is valid, save it.
         is_shell := false;
         IF ST_NPoints(rec.ring_geom) > 3 THEN
           ring_poly := ST_MakePolygon(rec.ring_geom);
@@ -405,12 +405,15 @@ BEGIN
             is_shell := true;
           END IF;
         END IF;
-        IF is_shell THEN
+        IF is_shell THEN --{ It's a shell (CCW)
+          -- Check that a single face is ever used
+          --       for each distinct CCW ring (shell)
           BEGIN
             INSERT INTO shell_check VALUES (
               rec.side_faces[1],
               ring_poly
             );
+            found_shells := found_shells + 1;
           EXCEPTION WHEN unique_violation THEN
             retrec.error = 'face has multiple shells';
             retrec.id1 = rec.side_faces[1];
@@ -418,11 +421,13 @@ BEGIN
             RETURN NEXT retrec;
           END;
         ELSE -- }{ It's an hole (CW)
+        -- NOTE: multiple CW rings (holes) can exist for a given face
           INSERT INTO hole_check VALUES (
             nextEdge,
             rec.ring_geom,
             rec.side_faces[1]
           );
+          found_holes := found_holes + 1;
         END IF; --} hole
       END IF; --}
 
@@ -435,7 +440,8 @@ BEGIN
   END LOOP; --}
 
 
-  RAISE NOTICE 'Completed checking % rings', affected_rows;
+  RAISE NOTICE 'Completed computing % rings, found % valid shells and % holes',
+    affected_rows, found_shells, found_holes;
 
   DROP TABLE pg_temp.side_label_check_edge;
   DROP TABLE pg_temp.shell_check;
