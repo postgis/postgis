@@ -466,6 +466,8 @@ DECLARE
   affected_rows integer;
   invalid_edges integer[];
   invalid_faces integer[];
+  has_invalid_edge_linking BOOLEAN := false;
+  has_invalid_rings BOOLEAN := false;
   search_path_backup text;
 BEGIN
 
@@ -742,10 +744,26 @@ BEGIN
   END LOOP; --}
 
   --- Validate edge linking
-  RETURN QUERY SELECT * FROM topology._ValidateTopologyEdgeLinking(bbox);
+  FOR rec IN SELECT * FROM topology._ValidateTopologyEdgeLinking(bbox)
+  LOOP
+    RETURN next rec;
+    has_invalid_edge_linking := true;
+  END LOOP;
+
+  IF has_invalid_edge_linking THEN
+    RETURN; -- does not make sense to continue
+  END IF;
 
   --- Validate edge rings
-  RETURN QUERY SELECT * FROM topology._ValidateTopologyRings(bbox);
+  FOR rec IN SELECT * FROM topology._ValidateTopologyRings(bbox)
+  LOOP
+    RETURN next rec;
+    has_invalid_rings := true;
+  END LOOP;
+
+  IF has_invalid_rings THEN
+    RETURN; -- does not make sense to continue
+  END IF;
 
   -- Now create a temporary table to construct all face geometries
   -- for checking their consistency
