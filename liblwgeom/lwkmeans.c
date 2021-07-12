@@ -71,28 +71,9 @@ improve_structure(POINT4D *objs,
 		if (radii[cluster] <= (max_radius_sq + overshot))
 		{
 			if (radii[cluster] > max_radius_sq)
-			{
-				lwnotice("%s: overshot %f, not splitting %d of radius2 %f into %d",
-					 __func__,
-					 overshot,
-					 cluster,
-					 radii[cluster],
-					 new_k);
 				overshot -= radii[cluster] - max_radius_sq;
-			}
 			continue;
 		}
-		else
-		{
-			//		overshot += max_radius_sq - radii[cluster]/2;
-		}
-
-		lwnotice("%s: overshot %f, splitting %d of radius2 %f into %d",
-			 __func__,
-			 overshot,
-			 cluster,
-			 radii[cluster],
-			 new_k);
 
 		/* copy cluster alone */
 		int cluster_size = 0;
