@@ -17,6 +17,7 @@ jobs:
         ci:
         # Use the last stable releases to run more tests
         # - { tag: pg13-geos39-gdal31-proj71, mode: garden }
+        - { tag: pg14-geos39-gdal31-proj71, mode: debug }
         - { tag: pg13-geos39-gdal31-proj71, mode: tests }
         - { tag: pg13-geos39-gdal31-proj71, mode: debug }
         - { tag: pg13-geos39-gdal31-proj71, mode: coverage }
