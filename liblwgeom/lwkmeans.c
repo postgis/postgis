@@ -40,57 +40,88 @@ improve_structure(POINT4D *objs,
 		  POINT4D *centers,
 		  double *radii,
 		  uint32_t k,
-		  uint32_t min_k,
 		  double max_radius)
 {
+	/* Input check: radius limit should be measurable */
+	if (max_radius <= 0)
+		return k;
+
+	double max_radius_sq = max_radius * max_radius;
+
+	/* Do we have the big clusters to split at all? */
+	int first_cluster_to_split = 0;
+	for (; first_cluster_to_split < (int)k; first_cluster_to_split++)
+		if (radii[first_cluster_to_split] > max_radius_sq)
+			break;
+	if (first_cluster_to_split == k)
+		return k;
+
 	POINT4D *temp_objs = lwalloc(sizeof(POINT4D) * n);
 	int *temp_clusters = lwalloc(sizeof(int) * n);
 	double *temp_radii = lwalloc(sizeof(double) * n);
 	POINT4D *temp_centers = lwalloc(sizeof(POINT4D) * n);
+	double overshot = 0;
 
 	uint32_t new_k = k;
 
-	for (int cluster = 0; cluster < (int)k; cluster++)
+	for (int cluster = first_cluster_to_split; cluster < (int)k; cluster++)
 	{
-		double radius = radii[cluster];
-		uint8_t force_split = (new_k < min_k) || (max_radius > 0 && radius > (max_radius * max_radius));
-		if (!force_split)
+		if (overshot < 0)
+			overshot = 0;
+		if (radii[cluster] <= (max_radius_sq + overshot))
+		{
+			if (radii[cluster] > max_radius_sq)
+			{
+				lwnotice("%s: overshot %f, not splitting %d of radius2 %f into %d",
+					 __func__,
+					 overshot,
+					 cluster,
+					 radii[cluster],
+					 new_k);
+				overshot -= radii[cluster] - max_radius_sq;
+			}
 			continue;
+		}
+		else
+		{
+			//		overshot += max_radius_sq - radii[cluster]/2;
+		}
+
+		lwnotice("%s: overshot %f, splitting %d of radius2 %f into %d",
+			 __func__,
+			 overshot,
+			 cluster,
+			 radii[cluster],
+			 new_k);
 
 		/* copy cluster alone */
 		int cluster_size = 0;
 		for (uint32_t i = 0; i < n; i++)
 			if (clusters[i] == cluster)
 				temp_objs[cluster_size++] = objs[i];
-
-		/* clustering intention is to have less clusters than points.
-		 * split only if there are at least 3 points or absolutely needed to get enough clusters. */
-		if (cluster_size <= 2 || (force_split && cluster_size <= 1))
+		if (cluster_size <= 1)
 			continue;
-		memset(temp_clusters, 0, sizeof(int) * cluster_size);
-		memset(temp_radii, 0, sizeof(double) * 2);
-		temp_centers[0] = centers[cluster];
 
-		uint32_t clusters_to_add =
-		    kmeans(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, temp_radii, 2, max_radius);
+		/* run 2-means on the cluster */
+		kmeans(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, temp_radii, 2, 0);
+
 		/* replace cluster with split */
 		uint32_t d = 0;
 		for (uint32_t i = 0; i < n; i++)
-		{
 			if (clusters[i] == cluster)
 				if (temp_clusters[d++])
-					clusters[i] = new_k + clusters_to_add - 1;
-		}
+					clusters[i] = new_k;
+
 		centers[cluster] = temp_centers[0];
+		centers[new_k] = temp_centers[1];
 		radii[cluster] = temp_radii[0];
-		for (int t = 1; t < clusters_to_add; t++)
-		{
-			centers[new_k + t - 1] = temp_centers[t];
-			radii[new_k + t - 1] = temp_radii[t];
-		}
-		new_k += clusters_to_add - 1;
+		radii[new_k] = temp_radii[1];
+
+		overshot += max_radius_sq - temp_radii[0] - temp_radii[1];
+		new_k++;
 	}
 	lwfree(temp_centers);
+	lwfree(temp_radii);
 	lwfree(temp_clusters);
 	lwfree(temp_objs);
 	return new_k;
@@ -101,6 +132,8 @@ static uint8_t
 update_r(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *radii, uint32_t k)
 {
 	uint8_t converged = LW_TRUE;
+	double max_radius = 0;
+	memset(radii, 0, sizeof(double) * k);
 
 	for (uint32_t i = 0; i < n; i++)
 	{
@@ -259,6 +292,14 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 	}
 }
 
+static int
+cluster_centroid_cmp(const void *a, const void *b)
+{
+	POINT4D *p1 = (POINT4D *)a;
+	POINT4D *p2 = (POINT4D *)b;
+	return p1->m - p2->m;
+}
+
 static uint32_t
 kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *radii, uint32_t min_k, double max_radius)
 {
@@ -272,19 +313,23 @@ kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, double *radii
 		for (uint32_t i = 0; i < KMEANS_MAX_ITERATIONS; i++)
 		{
 			LW_ON_INTERRUPT(break);
-			memset(radii, sizeof(double), 0);
 			converged = update_r(objs, clusters, n, centers, radii, cur_k);
 			if (converged)
 				break;
 			update_means(objs, clusters, n, centers, cur_k);
 		}
-		if (!converged)
+		if (!converged || !max_radius)
 			break;
 
 		/* XMeans-inspired improve_structure pass to split clusters bigger than limit into 2 */
 		if (max_radius)
 		{
-			uint32_t new_k = improve_structure(objs, clusters, n, centers, radii, cur_k, min_k, max_radius);
+			for (int i = 0; i < cur_k; i++)
+				centers[i].m = radii[i];
+			qsort(centers, cur_k, sizeof(POINT4D), cluster_centroid_cmp);
+			update_r(objs, clusters, n, centers, radii, cur_k);
+
+			uint32_t new_k = improve_structure(objs, clusters, n, centers, radii, cur_k, max_radius);
 			if (new_k == cur_k)
 				break;
 			cur_k = new_k;
