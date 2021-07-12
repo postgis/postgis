@@ -270,7 +270,8 @@ BEGIN
 
   CREATE TEMP TABLE hole_check (
     ring_id int,
-    hole geometry, -- linestring
+    hole_mbr geometry, -- point
+    hole_point geometry, -- point
     in_shell int
   );
 
@@ -424,7 +425,14 @@ BEGIN
         -- NOTE: multiple CW rings (holes) can exist for a given face
           INSERT INTO hole_check VALUES (
             nextEdge,
-            rec.ring_geom,
+            ST_Envelope(rec.ring_geom),
+            ST_PointN(rec.ring_geom, 1),
+            -- NOTE: we don't incurr in the risk
+            --       of a ring touching the shell
+            --       because in those cases the
+            --       intruding "hole" will not really
+            --       be considered an hole as its ring
+            --       will not be CW
             rec.side_faces[1]
           );
           found_holes := found_holes + 1;
@@ -854,8 +862,8 @@ BEGIN
   LOOP --{
     SELECT f.face_id
     FROM face_check f
-    WHERE rec.hole @ f.shell
-    AND _ST_Contains(f.shell, rec.hole)
+    WHERE rec.hole_mbr @ f.shell
+    AND _ST_Contains(f.shell, rec.hole_point)
     ORDER BY ST_Area(f.shell) ASC
     LIMIT 1
     INTO rec2;
