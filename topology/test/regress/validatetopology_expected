@@ -4,7 +4,7 @@
 #3233.1|---||
 #3233.1|isolated node has wrong containing_face|2|
 #3233.2|---||
-#3233.2|isolated node has wrong containing_face|2|
+#3233.2|isolated node has null containing_face|2|
 #3233.3|---||
 #3233.3|not-isolated node has not-null containing_face|1|
 #3042|---||

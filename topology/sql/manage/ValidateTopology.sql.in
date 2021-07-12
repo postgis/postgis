@@ -475,6 +475,7 @@ DECLARE
   has_invalid_edge_linking BOOLEAN := false;
   has_invalid_rings BOOLEAN := false;
   search_path_backup text;
+  containing_face integer;
 BEGIN
 
   IF NOT EXISTS (
@@ -846,38 +847,61 @@ BEGIN
   FOR rec IN
     SELECT
       n.node_id,
-      -- in a corrupted topology multiple faces may contain the node
-      min(f.face_id) face_id,
-      -- multiple edges may contain the node
-      min(e.edge_id) edge_id
+      n.geom geom,
+      n.containing_face,
+      e.edge_id
     FROM node n
-    LEFT JOIN face_check f ON ( ST_Contains(f.geom, n.geom) )
     LEFT JOIN edge e ON (
       e.start_node = n.node_id OR
       e.end_node = n.node_id
     )
     WHERE
      ( bbox IS NULL OR n.geom && bbox )
-     AND (
-      (
-        e.edge_id IS NULL AND (
-          n.containing_face != f.face_id
-          OR ( n.containing_face IS NULL AND f.face_id IS NOT NULL )
-        )
-      )
-      OR ( n.containing_face IS NOT NULL AND e.edge_id IS NOT NULL)
-    )
-    GROUP BY n.node_id, n.containing_face
   LOOP --{
-    IF rec.edge_id IS NOT NULL THEN
-      -- node is not really isolated
-      retrec.error := 'not-isolated node has not-null containing_face';
-    ELSE
-      retrec.error := 'isolated node has wrong containing_face';
-    END IF;
-    retrec.id1 := rec.node_id;
-    retrec.id2 := NULL; -- TODO: write expected containing_face here ?
-    RETURN NEXT retrec;
+
+    IF rec.edge_id IS NOT NULL
+    THEN --{
+      -- Node is not isolated, make sure it
+      -- advertises itself as such
+      IF rec.containing_face IS NOT NULL
+      THEN --{
+        -- node is not really isolated
+        retrec.error := 'not-isolated node has not-null containing_face';
+        retrec.id1 := rec.node_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+      END IF; --}
+    ELSE -- }{
+      -- Node is isolated, make sure it
+      -- advertises itself as such
+      IF rec.containing_face IS NULL
+      THEN --{
+        -- isolated node advertises itself as non-isolated
+        retrec.error := 'isolated node has null containing_face';
+        retrec.id1 := rec.node_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+      ELSE -- }{
+        -- node is isolated and advertising a containing_face
+        -- now let's check it's really in contained by it
+        BEGIN
+          containing_face := topology.GetFaceContainingPoint(toponame, rec.geom);
+        EXCEPTION WHEN OTHERS THEN
+          RAISE NOTICE 'Got % (%)', SQLSTATE, SQLERRM;
+          retrec.error := format('got exception trying to find face containing node: %s', SQLERRM);
+          retrec.id1 := rec.node_id;
+          retrec.id2 := NULL;
+          RETURN NEXT retrec;
+        END;
+        IF containing_face != rec.containing_face THEN
+          retrec.error := 'isolated node has wrong containing_face';
+          retrec.id1 := rec.node_id;
+          retrec.id2 := NULL; -- TODO: write expected containing_face here ?
+          RETURN NEXT retrec;
+        END IF;
+      END IF; --}
+    END IF; --}
+
   END LOOP; --}
 
   -- Check edges are covered by their left-right faces (#4830)
