@@ -782,7 +782,11 @@ BEGIN
   CREATE TEMP TABLE face_check ON COMMIT DROP AS
   SELECT
     face_id,
-    topology.ST_GetFaceGeometry(toponame, face_id) AS geom,
+    ST_MakePolygon(
+      ST_ExteriorRing(
+        topology.ST_GetFaceGeometry(toponame, face_id)
+      )
+    ) AS shell,
     mbr
   FROM
     face
@@ -802,10 +806,10 @@ BEGIN
   ;
 
   -- Build a gist index on geom
-  CREATE INDEX "face_check_gist" ON face_check USING gist (geom);
+  CREATE INDEX ON face_check USING gist (shell);
 
   -- Build a btree index on id
-  CREATE INDEX "face_check_bt" ON face_check (face_id);
+  CREATE INDEX ON face_check (face_id);
 
   -- Scan the table looking for NULL geometries
   -- or geometries with wrong MBR consistency
@@ -817,7 +821,7 @@ BEGIN
 
     affected_rows := affected_rows + 1;
 
-    IF rec.geom IS NULL OR ST_IsEmpty(rec.geom)
+    IF rec.shell IS NULL OR ST_IsEmpty(rec.shell)
     THEN
       -- Face missing !
       retrec.error := 'face has no rings';
@@ -826,10 +830,10 @@ BEGIN
       RETURN NEXT retrec;
     END IF;
 
-    IF NOT ST_Equals(rec.mbr, ST_Envelope(rec.geom))
+    IF NOT ST_Equals(rec.mbr, ST_Envelope(rec.shell))
     THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(ST_Envelope(rec.geom)), ST_AsEWKT(ST_Envelope(rec.mbr));
+      RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(ST_Envelope(rec.shell)), ST_AsEWKT(ST_Envelope(rec.mbr));
 #endif /* POSTGIS_TOPOLOGY_DEBUG */
       -- Inconsistent MBR!
       retrec.error := 'face has wrong mbr';
@@ -842,7 +846,36 @@ BEGIN
 
   RAISE NOTICE 'Checked % faces', affected_rows;
 
+  -- Check edges are covered by their left-right faces (#4830)
+  RAISE NOTICE 'Checking for holes coverage';
+  affected_rows := 0;
+  FOR rec IN
+    SELECT * FROM hole_check
+  LOOP --{
+    SELECT f.face_id
+    FROM face_check f
+    WHERE rec.hole @ f.shell
+    AND _ST_Contains(f.shell, rec.hole)
+    ORDER BY ST_Area(f.shell) ASC
+    LIMIT 1
+    INTO rec2;
+
+    IF ( NOT FOUND AND rec.in_shell != 0 )
+       OR ( rec2.face_id != rec.in_shell )
+    THEN
+        retrec.error := 'hole not in advertised face';
+        retrec.id1 := rec.ring_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+    END IF;
+    affected_rows := affected_rows + 1;
+
+  END LOOP; --}
+
+  RAISE NOTICE 'Finished checking for coverage of % holes', affected_rows;
+
   -- Check nodes have correct containing_face (#3233)
+  -- NOTE: relies on correct edge linking
   RAISE NOTICE 'Checking for node containing_face correctness';
   FOR rec IN
     SELECT
@@ -904,33 +937,6 @@ BEGIN
 
   END LOOP; --}
 
-  -- Check edges are covered by their left-right faces (#4830)
-  RAISE NOTICE 'Checking for holes coverage';
-  affected_rows := 0;
-  FOR rec IN
-    SELECT * FROM hole_check
-  LOOP --{
-    SELECT f.face_id
-    FROM face_check f
-    WHERE rec.hole @ f.geom
-    AND _ST_Contains(ST_MakePolygon(ST_ExteriorRing(f.geom)), rec.hole)
-    ORDER BY ST_Area(f.geom) ASC
-    LIMIT 1
-    INTO rec2;
-
-    IF ( NOT FOUND AND rec.in_shell != 0 )
-       OR ( rec2.face_id != rec.in_shell )
-    THEN
-        retrec.error := 'hole not in advertised face';
-        retrec.id1 := rec.ring_id;
-        retrec.id2 := NULL;
-        RETURN NEXT retrec;
-    END IF;
-    affected_rows := affected_rows + 1;
-
-  END LOOP; --}
-
-  RAISE NOTICE 'Finished checking for coverage of % holes', affected_rows;
 
   DROP TABLE pg_temp.hole_check;
   DROP TABLE pg_temp.face_check;
