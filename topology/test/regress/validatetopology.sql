@@ -45,79 +45,6 @@ SELECT '#3233.3', (ValidateTopology('t')).* UNION
 SELECT '#3233.3', '---', null, null ORDER BY 1,2,3,4;
 SELECT null from ( select topology.DropTopology('t') ) as dt;
 
--- Test edges containment in their side faces
--- See https://trac.osgeo.org/postgis/ticket/4684
-
-SELECT null from ( select topology.CreateTopology('t') ) as ct;
-SELECT null from ( select TopoGeo_addPolygon('t',
-  'POLYGON((0 0,10 0,10 10,0 10,0 0))' -- face 1
-) ) af;
-SELECT null from ( select TopoGeo_addPolygon('t',
-  'POLYGON((20 0,30 0,30 10,20 10,20 0))' -- face 2
-) ) af;
-SELECT null from ( select TopoGeo_addLineString('t',
-  'LINESTRING(5 5, 10 5)') -- edge inside faces, touching on endpoint
-) al;
-SELECT null from ( select TopoGeo_addLineString('t',
-  'LINESTRING(10 6, 5 6)') -- edge inside faces, touching on startpoint
-) al;
-SELECT null from ( select TopoGeo_addLineString('t',
-  'LINESTRING(10 5, 15 5)') -- edge outside faces, touching on startpoint
-) al;
-SELECT null from ( select TopoGeo_addLineString('t',
-  'LINESTRING(15 6, 10 6)') -- edge outside faces, touching on endpoint
-) al;
-SELECT null from ( select TopoGeo_addLineString('t',
-  'LINESTRING(5 8, 6 8)') -- edge inside face1, isolated
-) al;
-SELECT '#4830.0', (ValidateTopology('t')).* UNION
-SELECT '#4830.0', '---', null, null ORDER BY 1,2,3,4;
--- 1. Set wrong left_face for dangling inside edges
-BEGIN;
-UPDATE t.edge_data SET left_face = 2
-  WHERE
-    ST_Equals(geom, 'LINESTRING(5 5, 10 5)') OR
-    ST_Equals(geom, 'LINESTRING(10 6, 5 6)');
-SELECT '#4830.1', (ValidateTopology('t')).* UNION
-SELECT '#4830.1', '---', null, null ORDER BY 1,2,3,4;
-ROLLBACK;
--- 2. Set wrong right_face for dangling inside edges
-BEGIN;
-UPDATE t.edge_data SET right_face = 2
-  WHERE
-    ST_Equals(geom, 'LINESTRING(5 5, 10 5)') OR
-    ST_Equals(geom, 'LINESTRING(10 6, 5 6)');
-SELECT '#4830.2', (ValidateTopology('t')).* UNION
-SELECT '#4830.2', '---', null, null ORDER BY 1,2,3,4;
-ROLLBACK;
--- 3. Set wrong left_face for dangling outside edges
-BEGIN;
-UPDATE t.edge_data SET left_face = 2
-  WHERE
-    ST_Equals(geom, 'LINESTRING(10 5, 15 5)') OR
-    ST_Equals(geom, 'LINESTRING(15 6, 10 6)');
-SELECT '#4830.3', (ValidateTopology('t')).* UNION
-SELECT '#4830.3', '---', null, null ORDER BY 1,2,3,4;
-ROLLBACK;
--- 4. Set wrong right_face for dangling outside edges
-BEGIN;
-UPDATE t.edge_data SET right_face = 2
-  WHERE
-    ST_Equals(geom, 'LINESTRING(10 5, 15 5)') OR
-    ST_Equals(geom, 'LINESTRING(15 6, 10 6)');
-SELECT '#4830.4', (ValidateTopology('t')).* UNION
-SELECT '#4830.4', '---', null, null ORDER BY 1,2,3,4;
-ROLLBACK;
--- 5. Set universal face on both sides of internal edge
-BEGIN;
-UPDATE t.edge_data SET left_face = 0, right_face = 0
-  WHERE
-    ST_Equals(geom, 'LINESTRING(5 8, 6 8)');
-SELECT '#4830.5', (ValidateTopology('t')).* UNION
-SELECT '#4830.5', '---', null, null ORDER BY 1,2,3,4;
-ROLLBACK;
-SELECT null from ( select topology.DropTopology('t') ) as dt;
-
 -------------------------------------------------------------
 -- Following tests will use the city_data topology as a base
 -------------------------------------------------------------
@@ -177,6 +104,45 @@ SELECT '#4945', * FROM ValidateTopology('city_data')
 UNION
 SELECT '#4945', '---', null, null
 ORDER BY 1,2,3,4;
+ROLLBACK;
+
+-- Test outer face labeling
+-- See https://trac.osgeo.org/postgis/ticket/4684
+
+-- 1. Set wrong outer face for isolated inside edges
+BEGIN;
+UPDATE city_data.edge_data SET left_face = 2, right_face = 2
+  WHERE edge_id = 25;
+SELECT '#4830.1', (ValidateTopology('city_data')).* UNION
+SELECT '#4830.1', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+-- 2. Set wrong outer face for isolated outside edge
+BEGIN;
+UPDATE city_data.edge_data SET left_face = 2, right_face = 2
+  WHERE edge_id IN (4, 5);
+SELECT '#4830.2', (ValidateTopology('city_data')).* UNION
+SELECT '#4830.2', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+-- 3. Set wrong outer face for face hole
+BEGIN;
+UPDATE city_data.edge_data SET right_face = 9
+  WHERE edge_id = 26;
+SELECT '#4830.3', (ValidateTopology('city_data')).* UNION
+SELECT '#4830.3', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+-- 4. Set universal outer face for isolated edge inside a face
+BEGIN;
+UPDATE city_data.edge_data SET left_face = 0, right_face = 0
+  WHERE edge_id = 25;
+SELECT '#4830.4', (ValidateTopology('city_data')).* UNION
+SELECT '#4830.4', '---', null, null ORDER BY 1,2,3,4;
+ROLLBACK;
+-- 5. Set universal outer face for face hole
+BEGIN;
+UPDATE city_data.edge_data SET right_face = 0
+  WHERE edge_id = 26;
+SELECT '#4830.5', (ValidateTopology('city_data')).* UNION
+SELECT '#4830.5', '---', null, null ORDER BY 1,2,3,4;
 ROLLBACK;
 
 SELECT NULL FROM topology.DropTopology('city_data');
