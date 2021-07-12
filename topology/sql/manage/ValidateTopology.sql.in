@@ -749,7 +749,8 @@ BEGIN
     RETURN NEXT retrec;
   END LOOP; --}
 
-  --- Validate edge linking
+  -- Validate edge linking
+  -- NOTE: relies on correct start_node/end_node on edges
   FOR rec IN SELECT * FROM topology._ValidateTopologyEdgeLinking(bbox)
   LOOP
     RETURN next rec;
@@ -881,6 +882,7 @@ BEGIN
 
   -- Check edges are covered by their left-right faces (#4830)
   RAISE NOTICE 'Checking for holes coverage';
+  affected_rows := 0;
   FOR rec IN
     SELECT * FROM hole_check
   LOOP --{
@@ -900,12 +902,14 @@ BEGIN
         retrec.id2 := NULL;
         RETURN NEXT retrec;
     END IF;
+    affected_rows := affected_rows + 1;
 
   END LOOP; --}
 
-  DROP TABLE pg_temp.hole_check;
+  RAISE NOTICE 'Finished checking for coverage of % holes', affected_rows;
 
-  DROP TABLE face_check;
+  DROP TABLE pg_temp.hole_check;
+  DROP TABLE pg_temp.face_check;
 
   EXECUTE 'SET search_PATH TO ' || search_path_backup;
 
