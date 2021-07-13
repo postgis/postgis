@@ -18,8 +18,8 @@ jobs:
         # Use the last stable releases to run more tests
         # - { tag: pg13-geos39-gdal31-proj71, mode: garden }
         - { tag: pg14-geos39-gdal31-proj71, mode: tests }
+        - { tag: pg14-clang-geosmain-gdal31-proj71, mode: usan_clang }
         - { tag: pg13-geos39-gdal31-proj71, mode: tests }
-        - { tag: pg14-geos39-gdal31-proj71, mode: debug }
         - { tag: pg13-geos39-gdal31-proj71, mode: coverage }
         - { tag: pg13-geos39-gdal31-proj71, mode: usan_gcc }
         - { tag: pg13-clang-geos39-gdal31-proj71, mode: usan_clang }
