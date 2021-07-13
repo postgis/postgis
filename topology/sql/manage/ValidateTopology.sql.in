@@ -778,6 +778,7 @@ BEGIN
   END LOOP;
 
   IF has_invalid_rings THEN
+    DROP TABLE IF EXISTS pg_temp.hole_check;
     RETURN; -- does not make sense to continue
   END IF;
 
