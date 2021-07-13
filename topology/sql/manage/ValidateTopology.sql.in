@@ -268,6 +268,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- NOTE: assumes search_path was set before calling this function
 --
 -- Creates a pg_temp.hole_check table
+-- Creates a pg_temp.shell_check table
 --
 CREATE OR REPLACE FUNCTION topology._ValidateTopologyRings(bbox geometry DEFAULT NULL)
 RETURNS SETOF topology.ValidateTopology_ReturnType
@@ -485,10 +486,6 @@ BEGIN
       rec.ring_id, rec.in_shell, ST_AsText(rec.hole_point), ST_AsText(rec.hole_mbr);
   END LOOP;
 #endif /* POSTGIS_TOPOLOGY_DEBUG */
-
-  DROP TABLE pg_temp.shell_check;
-
-
 
 END;
 $BODY$ --}
@@ -824,17 +821,33 @@ BEGIN
 
   CREATE TEMP TABLE face_check ON COMMIT DROP AS
   SELECT
-    face_id,
-    ST_MakePolygon(
-      ST_ExteriorRing(
-        topology.ST_GetFaceGeometry(toponame, face_id)
-      )
-    ) AS shell,
-    mbr
+    sc.face_id,
+    sc.ring_geom AS shell,
+    f.mbr
   FROM
-    face
+    pg_temp.shell_check sc, face f
   WHERE
-    face_id > 0
+    f.face_id = sc.face_id
+  ;
+
+  DROP TABLE pg_temp.shell_check;
+
+
+  IF bbox IS NOT NULL
+  THEN --{
+    INSERT INTO pg_temp.face_check
+    SELECT face_id,
+      ST_MakePolygon(
+        ST_ExteriorRing(
+          topology.ST_GetFaceGeometry(
+            toponame,
+            face_id
+          )
+        )
+      ),
+      mbr
+    FROM face
+    WHERE mbr && bbox
     AND (
       CASE WHEN invalid_faces IS NOT NULL THEN
         NOT face_id = ANY(invalid_faces)
@@ -842,11 +855,11 @@ BEGIN
         TRUE
       END
     )
-    AND (
-      bbox IS NULL
-      OR mbr && bbox
+    AND face_id NOT IN (
+      SELECT face_id FROM pg_temp.face_check
     )
-  ;
+    ;
+  END IF; --}
 
   -- Build a gist index on geom
   CREATE INDEX ON face_check USING gist (shell);
