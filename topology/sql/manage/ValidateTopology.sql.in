@@ -23,6 +23,50 @@ CREATE TYPE topology.ValidateTopology_ReturnType AS (
   id2 integer
 );
 
+-- Assumes search_path has topology schema first
+--{
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetRingEdges(starting_edge int)
+RETURNS int[]
+AS
+$BODY$
+DECLARE
+  ret int[];
+BEGIN
+  WITH RECURSIVE edgering AS (
+    SELECT
+      starting_edge as signed_edge_id,
+      edge_id,
+      next_left_edge,
+      next_right_edge
+    FROM edge_data
+    WHERE edge_id = abs(starting_edge)
+      UNION
+    SELECT
+      CASE WHEN p.signed_edge_id < 0 THEN
+        p.next_right_edge
+      ELSE
+        p.next_left_edge
+      END,
+      e.edge_id,
+      e.next_left_edge,
+      e.next_right_edge
+    FROM edge_data e, edgering p
+    WHERE e.edge_id =
+      CASE WHEN p.signed_edge_id < 0 THEN
+        abs(p.next_right_edge)
+      ELSE
+        abs(p.next_left_edge)
+      END
+  )
+  SELECT array_agg(signed_edge_id)
+  FROM edgering
+  INTO ret;
+
+  RETURN ret;
+END;
+$BODY$ LANGUAGE 'plpgsql';
+--}
+
 CREATE OR REPLACE FUNCTION topology._CheckEdgeLinking(curedge_edge_id INT, prevedge_edge_id INT, prevedge_next_left_edge INT, prevedge_next_right_edge INT)
 RETURNS topology.ValidateTopology_ReturnType
 AS
@@ -231,41 +275,17 @@ AS --{
 $BODY$
 DECLARE
   retrec topology.ValidateTopology_ReturnType;
-  nextEdge INT;
   rec RECORD;
-  affected_rows integer;
   ring_poly GEOMETRY;
   is_shell BOOLEAN;
+  found_rings INT := 0;
   found_shells INT := 0;
   found_holes INT := 0;
 BEGIN
-  RAISE NOTICE 'Gathering edges for side faces labeling';
-
-  -- Pick all edges ending on any node in the bbox
-  -- Those are the only edges we want to consider
-  CREATE TEMP TABLE side_label_check_edge AS
-  WITH edges_to_check AS (
-    SELECT DISTINCT e.edge_id
-    FROM edge_data e, node n
-    WHERE (
-      bbox IS NULL
-      OR n.geom && bbox
-    )
-    AND (
-      e.start_node = n.node_id
-      OR e.end_node = n.node_id
-    )
-  )
-  SELECT edge_id FROM edges_to_check
-    UNION
-  SELECT -edge_id FROM edges_to_check
-  ;
-
-  CREATE INDEX ON side_label_check_edge (edge_id);
 
   CREATE TEMP TABLE shell_check (
     face_id int PRIMARY KEY,
-    shell geometry -- polygon
+    ring_geom geometry
   );
 
   CREATE TEMP TABLE hole_check (
@@ -275,98 +295,106 @@ BEGIN
     in_shell int
   );
 
-  RAISE NOTICE 'Checking edge rings';
+  RAISE NOTICE 'Building edge rings';
 
   -- Find all rings that can be formed on both sides
   -- of selected edges
-  affected_rows := 0;
-  LOOP --{
-    -- Fetch next unvisited edge
-    SELECT edge_id
-    FROM pg_temp.side_label_check_edge
-    -- TODO: order by <-> from -inf/-inf to ensure catching
-    --       shells before holes
-    ORDER BY edge_id
-    LIMIT 1
-    INTO nextEdge;
-
-    IF nextEdge IS NULL THEN
-      EXIT; -- exit loop if no more unvisited edges found
-    END IF;
-
-    affected_rows := affected_rows + 1;
-
-    -- Build ring formed on nextEdge
-    -- Gather side faces for the ring formed on nextEdge
-    WITH RECURSIVE
-    edgering AS (
-      SELECT
-        nextEdge as signed_edge_id,
-        edge_id,
-        geom,
-        next_left_edge,
-        next_right_edge,
-        CASE WHEN nextEdge > 0 THEN
-          left_face
-        ELSE
-          right_face
-        END as side_face
-      FROM edge_data
-      WHERE edge_id = abs(nextEdge)
-        UNION
-      SELECT
-        CASE WHEN p.signed_edge_id < 0
-        THEN
-          p.next_right_edge
-        ELSE
-          p.next_left_edge
-        END, -- signed_edge_id
-        e.edge_id,
-        e.geom,
-        e.next_left_edge,
-        e.next_right_edge,
-        CASE WHEN p.signed_edge_id < 0
-        THEN
-          CASE WHEN p.next_right_edge > 0
-          THEN
-            e.left_face
-          ELSE
-            e.right_face
-          END
-        ELSE
-          CASE WHEN p.next_left_edge > 0
-          THEN
-            e.left_face
-          ELSE
-            e.right_face
-          END
-        END -- side_face
-      FROM edge_data e, edgering p
+  FOR rec IN
+    WITH --{
+    considered_edges AS (
+      SELECT e.* FROM edge_data e, node n
       WHERE
-        e.edge_id = CASE
-          WHEN p.signed_edge_id < 0 THEN
-            abs(p.next_right_edge)
+        ( e.start_node = n.node_id OR e.end_node = n.node_id )
+        AND
+        ( bbox IS NULL OR n.geom && bbox )
+    ),
+    forward_rings AS (
+      SELECT topology._ValidateTopologyGetRingEdges(e.edge_id) edges
+      FROM considered_edges e
+    ),
+    forward_rings_with_id AS (
+      SELECT
+        (select min(e) FROM unnest(edges) e) ring_id,
+        *
+      FROM forward_rings
+    ),
+    distinct_forward_rings AS (
+      SELECT
+        DISTINCT ON (ring_id)
+        *
+      FROM forward_rings_with_id
+    ),
+    backward_rings AS (
+      SELECT topology._ValidateTopologyGetRingEdges(-e.edge_id) edges
+      FROM considered_edges e
+      WHERE -edge_id NOT IN (
+        SELECT x FROM (
+          SELECT unnest(edges) x
+          FROM distinct_forward_rings
+        ) foo
+      )
+    ),
+    backward_rings_with_id AS (
+      SELECT
+        (select min(e) FROM unnest(edges) e) ring_id,
+        *
+      FROM backward_rings
+    ),
+    distinct_backward_rings AS (
+      SELECT
+        DISTINCT ON (ring_id)
+        *
+      FROM backward_rings_with_id
+    ),
+    all_rings AS (
+      SELECT * FROM distinct_forward_rings
+      UNION
+      SELECT * FROM distinct_backward_rings
+    ),
+    all_rings_with_ring_ordinal_edge AS (
+      SELECT
+        r.ring_id,
+        e.seq,
+        e.edge signed_edge_id
+      FROM all_rings r
+      LEFT JOIN LATERAL unnest(r.edges) WITH ORDINALITY AS e(edge, seq)
+      ON TRUE
+    ),
+    all_rings_with_ring_geom AS (
+      SELECT
+        r.ring_id,
+        ST_MakeLine(
+          CASE WHEN signed_edge_id > 0 THEN
+            e.geom
           ELSE
-            abs(p.next_left_edge)
+            ST_Reverse(e.geom)
           END
-    )
-    SELECT
-      ST_MakeLine(
-        CASE WHEN signed_edge_id > 0 THEN
-          geom
-        ELSE
-          ST_Reverse(geom)
-        END
-      ) ring_geom,
-      array_agg(signed_edge_id) edges,
-      array_agg(DISTINCT side_face) side_faces
-    FROM edgering
-    INTO rec;
+           -- TODO: how to make sure rows are ordered ?
+          ORDER BY seq
+        ) geom,
+        array_agg(
+          DISTINCT
+          CASE WHEN signed_edge_id > 0 THEN
+            e.left_face
+          ELSE
+            e.right_face
+          END
+        ) side_faces
+      FROM
+        all_rings_with_ring_ordinal_edge r,
+        edge_data e
+      WHERE e.edge_id = abs(r.signed_edge_id)
+      GROUP BY ring_id
+    ) --}{
+    SELECT ring_id, geom as ring_geom, side_faces
+    FROM all_rings_with_ring_geom
+  LOOP --{
+
+    found_rings := found_rings + 1;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Ring % - edges:[%], faces:[%]',
-      nextEdge,
-      array_to_string(rec.edges, ','),
+    RAISE DEBUG 'Ring % - faces:[%]',
+      rec.ring_id,
       array_to_string(rec.side_faces, ',')
     ;
 #endif /* POSTGIS_TOPOLOGY_DEBUG */
@@ -376,82 +404,88 @@ BEGIN
     THEN --{
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'Side faces found on ring %: %', nextEdge, rec.side_faces;
+      RAISE DEBUG 'Side faces found on ring %: %', rec.ring_id,
+       rec.side_faces;
 #endif /* POSTGIS_TOPOLOGY_DEBUG */
       retrec.error = 'mixed face labeling in ring';
-      retrec.id1 = nextEdge;
+      retrec.id1 = rec.ring_id;
       retrec.id2 = NULL;
       RETURN NEXT retrec;
-
-    ELSE --}{
-
-      --RAISE DEBUG 'Ring geom: %', ST_AsTexT(rec.ring_geom);
-      IF NOT ST_Equals(
-        ST_StartPoint(rec.ring_geom),
-        ST_EndPoint(rec.ring_geom)
-      )
-      THEN --{
-        -- This should have been reported before,
-        -- on the edge linking check
-        retrec.error = 'non-closed ring';
-        retrec.id1 = nextEdge;
-        retrec.id2 = NULL;
-        RETURN NEXT retrec;
-      ELSE --}{
-        -- Ring is valid, save it.
-        is_shell := false;
-        IF ST_NPoints(rec.ring_geom) > 3 THEN
-          ring_poly := ST_MakePolygon(rec.ring_geom);
-          IF ST_IsPolygonCCW(ring_poly) THEN
-            is_shell := true;
-          END IF;
-        END IF;
-        IF is_shell THEN --{ It's a shell (CCW)
-          -- Check that a single face is ever used
-          --       for each distinct CCW ring (shell)
-          BEGIN
-            INSERT INTO shell_check VALUES (
-              rec.side_faces[1],
-              ring_poly
-            );
-            found_shells := found_shells + 1;
-          EXCEPTION WHEN unique_violation THEN
-            retrec.error = 'face has multiple shells';
-            retrec.id1 = rec.side_faces[1];
-            retrec.id2 = NULL;
-            RETURN NEXT retrec;
-          END;
-        ELSE -- }{ It's an hole (CW)
-        -- NOTE: multiple CW rings (holes) can exist for a given face
-          INSERT INTO hole_check VALUES (
-            nextEdge,
-            ST_Envelope(rec.ring_geom),
-            ST_PointN(rec.ring_geom, 1),
-            -- NOTE: we don't incurr in the risk
-            --       of a ring touching the shell
-            --       because in those cases the
-            --       intruding "hole" will not really
-            --       be considered an hole as its ring
-            --       will not be CW
-            rec.side_faces[1]
-          );
-          found_holes := found_holes + 1;
-        END IF; --} hole
-      END IF; --}
+      CONTINUE;
 
     END IF; --}
 
+    --RAISE DEBUG 'Ring geom: %', ST_AsTexT(rec.ring_geom);
+    IF NOT ST_Equals(
+      ST_StartPoint(rec.ring_geom),
+      ST_EndPoint(rec.ring_geom)
+    )
+    THEN --{
+      -- This should have been reported before,
+      -- on the edge linking check
+      retrec.error = 'non-closed ring';
+      retrec.id1 = rec.ring_id;
+      retrec.id2 = NULL;
+      RETURN NEXT retrec;
+      CONTINUE;
+    END IF; --}
 
-    DELETE FROM pg_temp.side_label_check_edge
-    WHERE edge_id = ANY (rec.edges);
+    -- Ring is valid, save it.
+    is_shell := false;
+    IF ST_NPoints(rec.ring_geom) > 3 THEN
+      ring_poly := ST_MakePolygon(rec.ring_geom);
+      IF ST_IsPolygonCCW(ring_poly) THEN
+        is_shell := true;
+      END IF;
+    END IF;
+
+    IF is_shell THEN --{ It's a shell (CCW)
+      -- Check that a single face is ever used
+      --       for each distinct CCW ring (shell)
+      BEGIN
+        INSERT INTO shell_check VALUES (
+          rec.side_faces[1],
+          ring_poly
+        );
+        found_shells := found_shells + 1;
+      EXCEPTION WHEN unique_violation THEN
+        retrec.error = 'face has multiple shells';
+        retrec.id1 = rec.side_faces[1];
+        retrec.id2 = NULL;
+        RETURN NEXT retrec;
+      END;
+    ELSE -- }{ It's an hole (CW)
+    -- NOTE: multiple CW rings (holes) can exist for a given face
+      INSERT INTO hole_check VALUES (
+        rec.ring_id,
+        ST_Envelope(rec.ring_geom),
+        ST_PointN(rec.ring_geom, 1),
+        -- NOTE: we don't incurr in the risk
+        --       of a ring touching the shell
+        --       because in those cases the
+        --       intruding "hole" will not really
+        --       be considered an hole as its ring
+        --       will not be CW
+        rec.side_faces[1]
+      );
+      found_holes := found_holes + 1;
+    END IF; --} hole
 
   END LOOP; --}
 
+  RAISE NOTICE 'Found % rings, % valid shells, % valid holes',
+    found_rings, found_shells, found_holes
+  ;
 
-  RAISE NOTICE 'Completed computing % rings, found % valid shells and % holes',
-    affected_rows, found_shells, found_holes;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  FOR rec IN
+    SELECT * FROM hole_check
+  LOOP
+    RAISE DEBUG 'Hole % in_shell % point % mbr %',
+      rec.ring_id, rec.in_shell, ST_AsText(rec.hole_point), ST_AsText(rec.hole_mbr);
+  END LOOP;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
 
-  DROP TABLE pg_temp.side_label_check_edge;
   DROP TABLE pg_temp.shell_check;
 
 
