@@ -23,6 +23,100 @@ CREATE TYPE topology.ValidateTopology_ReturnType AS (
   id2 integer
 );
 
+--{
+-- Return the exterior ring of a topology face
+--
+--
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetFaceShell(atopology varchar, aface int)
+RETURNS GEOMETRY AS
+$BODY$
+DECLARE
+  sql TEXT;
+  outsidePoint GEOMETRY;
+  shell GEOMETRY;
+BEGIN
+
+  sql := format(
+    $$
+      SELECT
+        ST_Translate(
+          ST_StartPoint( ST_BoundingDiagonal(mbr) ),
+          -1,
+          -1
+        )
+      FROM %1$I.face
+      WHERE face_id = $1
+    $$,
+    atopology
+  );
+  EXECUTE sql USING aface INTO outsidePoint;
+
+  sql := format(
+    $$
+      WITH
+      outside_point AS (
+        SELECT ST_Translate(
+          ST_StartPoint( ST_BoundingDiagonal(mbr) ),
+          -1,
+          -1
+        )
+        FROM %1$I.face
+        WHERE face_id = $1
+      ),
+      leftmost_edge AS (
+        SELECT
+          CASE WHEN left_face = $1
+          THEN
+            edge_id
+          ELSE
+            -edge_id
+          END ring_id
+        FROM %1$I.edge
+        WHERE left_face = $1 or right_face = $1
+        ORDER BY
+#if POSTGIS_PGSQL_VERSION < 95
+          ST_Distance(geom, $2)
+#else
+          geom <-> $2
+#endif
+        LIMIT 1
+      ),
+      edgering AS (
+        SELECT *
+        FROM
+          GetRingEdges(
+            %1$L,
+            (SELECT ring_id FROM leftmost_edge)
+          )
+      )
+      SELECT
+        ST_MakeLine(
+          CASE WHEN r.edge > 0 THEN
+            e.geom
+          ELSE
+            ST_Reverse(e.geom)
+          END
+          ORDER BY r.sequence
+        ) outerRing
+      FROM edgering r, %1$I.edge e
+      WHERE e.edge_id = abs(r.edge)
+    $$,
+    atopology
+  );
+
+  --RAISE DEBUG 'SQL: %', sql;
+
+  EXECUTE sql USING aface, outsidePoint
+  INTO shell;
+
+  -- TODO: check if the ring is not closed
+
+  shell := ST_MakePolygon(shell);
+
+  RETURN shell;
+END;
+$BODY$ LANGUAGE 'plpgsql' STABLE; --}
+
 -- Assumes search_path has topology schema first
 --{
 CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetRingEdges(starting_edge int)
@@ -837,14 +931,7 @@ BEGIN
   THEN --{
     INSERT INTO pg_temp.face_check
     SELECT face_id,
-      ST_MakePolygon(
-        ST_ExteriorRing(
-          topology.ST_GetFaceGeometry(
-            toponame,
-            face_id
-          )
-        )
-      ),
+      topology._ValidateTopologyGetFaceShell(toponame, face_id),
       mbr
     FROM face
     WHERE mbr && bbox
