@@ -62,16 +62,18 @@ SELECT topology.DropTopology('city_data');
 -- Now test in presence of features
 
 SELECT topology.CreateTopology('t') > 1;
-CREATE TABLE t.f(id varchar);
-SELECT 'line_layer', topology.AddTopoGeometryColumn('t', 't', 'f','g', 'LINE');
-CREATE TABLE t.p(id varchar);
-SELECT 'point_layer', topology.AddTopoGeometryColumn('t', 't', 'p','g', 'POINT');
+CREATE TABLE t.f_lin(id varchar);
+SELECT 'lin_layer', topology.AddTopoGeometryColumn('t', 't', 'f_lin','g', 'LINE');
+CREATE TABLE t.f_poi(id varchar);
+SELECT 'poi_layer', topology.AddTopoGeometryColumn('t', 't', 'f_poi','g', 'POINT');
+CREATE TABLE t.f_mix(id varchar);
+SELECT 'mix_layer', topology.AddTopoGeometryColumn('t', 't', 'f_mix','g', 'COLLECTION');
 
 SELECT 'N'||topology.TopoGeo_AddPoint('t', 'POINT(2 8)');  -- 1
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(2 2, 2  8)');        -- 1
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(2  8,  8  8)');      -- 2
 
-INSERT INTO t.p VALUES ('F+N1',
+INSERT INTO t.f_poi VALUES ('F+N1',
   topology.CreateTopoGeom('t', 1, 2, '{{1,1}}'));
 
 -- This should be forbidden, as F+N1 above could not be
@@ -82,9 +84,30 @@ SELECT 'unexpected-success-with-orphaned-point-topogeom-1',
 SELECT 'unexpected-success-with-orphaned-point-topogeom-2',
   topology.ST_ModEdgeHeal('t', 2, 1);
 
-DELETE FROM t.p;
+WITH deleted AS (
+  DELETE FROM t.f_poi RETURNING g
+), clear AS (
+  SELECT ClearTopoGeom(g) FROM deleted
+) SELECT NULL FROM clear;
 
-INSERT INTO t.f VALUES ('F+E1',
+INSERT INTO t.f_mix VALUES ('F+N1',
+  topology.CreateTopoGeom('t', 4, 3, '{{1,1}}'));
+
+-- This should be forbidden, as F+N1 above could not be
+-- defined w/out the joining node
+-- See https://trac.osgeo.org/postgis/ticket/3239
+SELECT 'unexpected-success-with-orphaned-mix-topogeom-1',
+  topology.ST_ModEdgeHeal('t', 1, 2);
+SELECT 'unexpected-success-with-orphaned-mix-topogeom-2',
+  topology.ST_ModEdgeHeal('t', 2, 1);
+
+WITH deleted AS (
+  DELETE FROM t.f_mix RETURNING g
+), clear AS (
+  SELECT ClearTopoGeom(g) FROM deleted
+) SELECT NULL FROM clear;
+
+INSERT INTO t.f_lin VALUES ('F+E1',
   topology.CreateTopoGeom('t', 2, 1, '{{1,2}}'));
 
 -- This should be forbidden, as F+E1 above could not be
@@ -101,13 +124,13 @@ SELECT topology.ST_ModEdgeHeal('t', 100, 2);
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 5 0)');         -- 3
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(10 0, 5 0)');        -- 4
 
-INSERT INTO t.f VALUES ('F+E3-E4',
+INSERT INTO t.f_lin VALUES ('F+E3-E4',
   topology.CreateTopoGeom('t', 2, 1, '{{3,2},{-4,2}}'));
-INSERT INTO t.f VALUES ('F-E3+E4',
+INSERT INTO t.f_lin VALUES ('F-E3+E4',
   topology.CreateTopoGeom('t', 2, 1, '{{-3,2},{4,2}}'));
 
 SELECT r.topogeo_id, r.element_id
-  FROM t.relation r, t.f f WHERE
+  FROM t.relation r, t.f_lin f WHERE
   r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
   AND r.topogeo_id in (2,3)
   ORDER BY r.layer_id, r.topogeo_id, r.element_id;
@@ -120,7 +143,7 @@ SELECT 'MH(3,4)', topology.ST_ModEdgeHeal('t', 3, 4);
 SELECT topology.ST_ModEdgeHeal('t', 1, 3);
 
 SELECT r.topogeo_id, r.element_id
-  FROM t.relation r, t.f f WHERE
+  FROM t.relation r, t.f_lin f WHERE
   r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
   AND r.topogeo_id in (2,3)
   ORDER BY r.layer_id, r.topogeo_id, r.element_id;

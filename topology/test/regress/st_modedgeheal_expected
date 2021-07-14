@@ -96,15 +96,18 @@ N21
 N22
 Topology 'city_data' dropped
 t
-line_layer|1
-point_layer|2
+lin_layer|1
+poi_layer|2
+mix_layer|3
 N1
 E1
 E2
-ERROR:  TopoGeom 1 in layer 2 (t.p.g) cannot be represented healing edges 1 and 2
-ERROR:  TopoGeom 1 in layer 2 (t.p.g) cannot be represented healing edges 2 and 1
-ERROR:  TopoGeom 1 in layer 1 (t.f.g) cannot be represented healing edges 1 and 2
-ERROR:  TopoGeom 1 in layer 1 (t.f.g) cannot be represented healing edges 2 and 1
+ERROR:  TopoGeom 1 in layer 2 (t.f_poi.g) cannot be represented removing node 1 connecting edges 1 and 2
+ERROR:  TopoGeom 1 in layer 2 (t.f_poi.g) cannot be represented removing node 1 connecting edges 2 and 1
+ERROR:  TopoGeom 1 in layer 3 (t.f_mix.g) cannot be represented removing node 1 connecting edges 1 and 2
+ERROR:  TopoGeom 1 in layer 3 (t.f_mix.g) cannot be represented removing node 1 connecting edges 2 and 1
+ERROR:  TopoGeom 1 in layer 1 (t.f_lin.g) cannot be represented healing edges 1 and 2
+ERROR:  TopoGeom 1 in layer 1 (t.f_lin.g) cannot be represented healing edges 2 and 1
 ERROR:  SQL/MM Spatial exception - non-existent edge 200
 ERROR:  SQL/MM Spatial exception - non-existent edge 100
 E3

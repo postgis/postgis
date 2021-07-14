@@ -2622,7 +2622,7 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
                     "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
                     "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
                     " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
-                    "WHERE l.level = 0 and l.feature_type = 1 "
+                    "WHERE l.level = 0 and l.feature_type in ( 1, 4 ) "
                     "AND l.topology_id = %d"
                     " AND r.element_id = %" LWTFMT_ELEMID
                     " group by r.topogeo_id, r.layer_id, l.schema_name, "
@@ -2657,10 +2657,11 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
 
     cberror(topo->be_data, "TopoGeom %s in layer %s "
             "(%s.%s.%s) cannot be represented "
-            "healing edges %" LWTFMT_ELEMID
+            "removing node %" LWTFMT_ELEMID
+            " connecting edges %" LWTFMT_ELEMID
             " and %" LWTFMT_ELEMID,
             tg_id, layer_id, schema_name, table_name,
-            col_name, edge1, edge2);
+            col_name, rem_node, edge1, edge2);
     return 0;
   }
 
