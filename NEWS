@@ -6,6 +6,8 @@ PostGIS 3.2.0
   - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
 
  * Enhancements *
+  - #3231, Prevent removing isolated nodes if used in a TopoGeometry
+           (Sandro Santilli)
   - #3239, Prevent headling topology edges if the connecting node is
            used in the definition of a TopoGeometry (Sandro Santilli)
   - #4950, Speed up checking containing_face for nodes in ValidateTopology

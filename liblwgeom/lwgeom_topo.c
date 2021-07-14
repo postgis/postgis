@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015-2020 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -351,6 +351,12 @@ lwt_be_checkTopoGeomRemNode(LWT_TOPOLOGY* topo, LWT_ELEMID node_id,
                             LWT_ELEMID eid1, LWT_ELEMID eid2)
 {
   CBT3(topo, checkTopoGeomRemNode, node_id, eid1, eid2);
+}
+
+static int
+lwt_be_checkTopoGeomRemIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID node_id)
+{
+  CBT1(topo, checkTopoGeomRemIsoNode, node_id);
 }
 
 static int
@@ -3658,9 +3664,12 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
     return -1;
   }
 
-  /* TODO: notify to caller about node being removed ?
-   * See https://trac.osgeo.org/postgis/ticket/3231
-   */
+  if ( ! lwt_be_checkTopoGeomRemIsoNode(topo, nid) )
+  {
+    lwfree(node);
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
 
   lwfree(node);
   return 0; /* success */

@@ -96,17 +96,6 @@ SELECT '-- ST_AddIsoNode(2) ------------------------';
 -- ST_AddIsoNode edge-crossing node
 SELECT topology.ST_AddIsoNode('sqlmm_topology', NULL, 'POINT(5 9.5)');
 
--------------------------------------------------------------
--- ST_RemoveIsoNode
--------------------------------------------------------------
-
-SELECT '-- ST_RemoveIsoNode  ------------------------';
-
--- Isolated node
-SELECT topology.ST_RemoveIsoNode('sqlmm_topology', 3);
-
--- Non isolated node (is used by an edge);
-SELECT topology.ST_RemoveIsoNode('sqlmm_topology', 4);
 
 -------------------------------------------------------------
 -- ST_MoveIsoNode

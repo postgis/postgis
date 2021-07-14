@@ -2668,6 +2668,71 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
 }
 
 static int
+cb_checkTopoGeomRemIsoNode ( const LWT_BE_TOPOLOGY* topo, LWT_ELEMID rem_node )
+{
+  MemoryContext oldcontext = CurrentMemoryContext;
+  int spi_result;
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+  const char *tg_id, *layer_id;
+  const char *schema_name, *table_name, *col_name;
+  HeapTuple row;
+  TupleDesc tdesc;
+
+  initStringInfo(sql);
+
+  /* Check for puntual TopoGeometry objects being defined by the common
+   * node, see https://trac.osgeo.org/postgis/ticket/3231 */
+  resetStringInfo(sql);
+  appendStringInfo( sql, "SELECT t.* FROM ( SELECT r.topogeo_id, "
+                    "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
+                    "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
+                    " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+                    "WHERE l.level = 0 and l.feature_type in ( 1, 4 ) "
+                    "AND l.topology_id = %d"
+                    " AND r.element_id = %" LWTFMT_ELEMID
+                    " group by r.topogeo_id, r.layer_id, l.schema_name, "
+                    "l.table_name, l.feature_column ) t LIMIT 1",
+                    topo->name, topo->id,
+                    rem_node );
+
+  POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemIsoNode query 2: %s", sql->data);
+
+  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+  MemoryContextSwitchTo( oldcontext ); /* switch back */
+  if ( spi_result != SPI_OK_SELECT )
+  {
+    cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+    pfree(sqldata.data);
+    return 0;
+  }
+
+  if ( SPI_processed )
+  {
+    row = SPI_tuptable->vals[0];
+    tdesc = SPI_tuptable->tupdesc;
+
+    tg_id = SPI_getvalue(row, tdesc, 1);
+    layer_id = SPI_getvalue(row, tdesc, 2);
+    schema_name = SPI_getvalue(row, tdesc, 3);
+    table_name = SPI_getvalue(row, tdesc, 4);
+    col_name = SPI_getvalue(row, tdesc, 5);
+
+    SPI_freetuptable(SPI_tuptable);
+
+    cberror(topo->be_data, "TopoGeom %s in layer %s "
+            "(%s.%s.%s) cannot be represented "
+            "removing node %" LWTFMT_ELEMID,
+            tg_id, layer_id, schema_name, table_name,
+            col_name, rem_node);
+    return 0;
+  }
+
+  return 1;
+}
+
+static int
 cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
                             LWT_ELEMID face1, LWT_ELEMID face2, LWT_ELEMID newface )
 {
@@ -3269,7 +3334,8 @@ static LWT_BE_CALLBACKS be_callbacks =
   cb_updateTopoGeomFaceHeal,
   cb_checkTopoGeomRemNode,
   cb_updateTopoGeomEdgeHeal,
-  cb_getFaceWithinBox2D
+  cb_getFaceWithinBox2D,
+  cb_checkTopoGeomRemIsoNode
 };
 
 static void
