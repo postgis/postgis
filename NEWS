@@ -6,8 +6,10 @@ PostGIS 3.2.0
   - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
 
  * Enhancements *
+  - #3239, Prevent headling topology edges if the connecting node is
+           used in the definition of a TopoGeometry (Sandro Santilli)
   - #4950, Speed up checking containing_face for nodes in ValidateTopology
-    (Sandro Santilli)
+           (Sandro Santilli)
   - #4945, Multi-shell face check in ValidateTopology (Sandro Santilli)
   - #4944, Side-location conflict check in ValidateTopology (Sandro Santilli)
   - #3042, ValidateTopology check for edge linking (Sandro Santilli)

@@ -63,10 +63,26 @@ SELECT topology.DropTopology('city_data');
 
 SELECT topology.CreateTopology('t') > 1;
 CREATE TABLE t.f(id varchar);
-SELECT topology.AddTopoGeometryColumn('t', 't', 'f','g', 'LINE');
+SELECT 'line_layer', topology.AddTopoGeometryColumn('t', 't', 'f','g', 'LINE');
+CREATE TABLE t.p(id varchar);
+SELECT 'point_layer', topology.AddTopoGeometryColumn('t', 't', 'p','g', 'POINT');
 
+SELECT 'N'||topology.TopoGeo_AddPoint('t', 'POINT(2 8)');  -- 1
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(2 2, 2  8)');        -- 1
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(2  8,  8  8)');      -- 2
+
+INSERT INTO t.p VALUES ('F+N1',
+  topology.CreateTopoGeom('t', 1, 2, '{{1,1}}'));
+
+-- This should be forbidden, as F+N1 above could not be
+-- defined w/out the joining node
+-- See https://trac.osgeo.org/postgis/ticket/3239
+SELECT 'unexpected-success-with-orphaned-point-topogeom-1',
+  topology.ST_ModEdgeHeal('t', 1, 2);
+SELECT 'unexpected-success-with-orphaned-point-topogeom-2',
+  topology.ST_ModEdgeHeal('t', 2, 1);
+
+DELETE FROM t.p;
 
 INSERT INTO t.f VALUES ('F+E1',
   topology.CreateTopoGeom('t', 2, 1, '{{1,2}}'));

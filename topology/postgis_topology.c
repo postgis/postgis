@@ -2565,6 +2565,9 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
   TupleDesc tdesc;
 
   initStringInfo(sql);
+
+  /* 1: check for lineal TopoGeometry objects being defined by
+   * only one of the edges to be merged */
   appendStringInfo( sql, "SELECT t.* FROM ( SELECT r.topogeo_id, "
                     "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
                     "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
@@ -2574,7 +2577,7 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
                     " AND abs(r.element_id) = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
                     "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
                     "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%"
-                    LWTFMT_ELEMID ",%" LWTFMT_ELEMID "]::int4[]",
+                    LWTFMT_ELEMID ",%" LWTFMT_ELEMID "]::int4[] LIMIT 1",
                     topo->name, topo->id,
                     edge1, edge2, edge1, edge2 );
 
@@ -2612,8 +2615,54 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
     return 0;
   }
 
-  /* TODO: check for TopoGeometry objects being defined by the common
+  /* 2: check for puntual TopoGeometry objects being defined by the common
    * node, see https://trac.osgeo.org/postgis/ticket/3239 */
+  resetStringInfo(sql);
+  appendStringInfo( sql, "SELECT t.* FROM ( SELECT r.topogeo_id, "
+                    "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
+                    "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
+                    " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+                    "WHERE l.level = 0 and l.feature_type = 1 "
+                    "AND l.topology_id = %d"
+                    " AND r.element_id = %" LWTFMT_ELEMID
+                    " group by r.topogeo_id, r.layer_id, l.schema_name, "
+                    "l.table_name, l.feature_column ) t LIMIT 1",
+                    topo->name, topo->id,
+                    rem_node );
+
+  POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemNode query 2: %s", sql->data);
+
+  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+  MemoryContextSwitchTo( oldcontext ); /* switch back */
+  if ( spi_result != SPI_OK_SELECT )
+  {
+    cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+    pfree(sqldata.data);
+    return 0;
+  }
+
+  if ( SPI_processed )
+  {
+    row = SPI_tuptable->vals[0];
+    tdesc = SPI_tuptable->tupdesc;
+
+    tg_id = SPI_getvalue(row, tdesc, 1);
+    layer_id = SPI_getvalue(row, tdesc, 2);
+    schema_name = SPI_getvalue(row, tdesc, 3);
+    table_name = SPI_getvalue(row, tdesc, 4);
+    col_name = SPI_getvalue(row, tdesc, 5);
+
+    SPI_freetuptable(SPI_tuptable);
+
+    cberror(topo->be_data, "TopoGeom %s in layer %s "
+            "(%s.%s.%s) cannot be represented "
+            "healing edges %" LWTFMT_ELEMID
+            " and %" LWTFMT_ELEMID,
+            tg_id, layer_id, schema_name, table_name,
+            col_name, edge1, edge2);
+    return 0;
+  }
 
   return 1;
 }
