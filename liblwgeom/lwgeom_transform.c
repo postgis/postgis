@@ -261,43 +261,64 @@ proj_cs_get_simplecs(const PJ *pj_crs)
 	return NULL;
 }
 
+
+#define STR_EQUALS(A, B) strcmp((A), (B)) == 0
+#define STR_IEQUALS(A, B) (strcasecmp((A), (B)) == 0)
+#define STR_ISTARTS(A, B) (strncasecmp((A), (B), strlen((B))) == 0)
+
 static uint8_t
 proj_crs_is_swapped(const PJ *pj_crs)
 {
-	PJ *pj_cs;
-	uint8_t rv = LW_FALSE;
+    int axis_count;
+    PJ *pj_cs = proj_cs_get_simplecs(pj_crs);
+    if (!pj_cs)
+        lwerror("%s: proj_cs_get_simplecs returned NULL", __func__);
 
-	pj_cs = proj_cs_get_simplecs(pj_crs);
-	if (!pj_cs) {
-		lwerror("%s: proj_cs_get_simplecs returned NULL", __func__);
-	}
-	int axis_count = proj_cs_get_axis_count(NULL, pj_cs);
-	if (axis_count > 0)
-	{
-		const char *out_name, *out_abbrev, *out_direction;
-		double out_unit_conv_factor;
-		const char *out_unit_name, *out_unit_auth_name, *out_unit_code;
-		/* Read only first axis */
-		proj_cs_get_axis_info(NULL,
-				      pj_cs,
-				      0,
-				      &out_name,
-				      &out_abbrev,
-				      &out_direction,
-				      &out_unit_conv_factor,
-				      &out_unit_name,
-				      &out_unit_auth_name,
-				      &out_unit_code);
+    axis_count = proj_cs_get_axis_count(NULL, pj_cs);
+    if (axis_count >= 2)
+    {
+        const char *out_name1, *out_abbrev1, *out_direction1;
+        const char *out_name2, *out_abbrev2, *out_direction2;
+        /* Read first axis */
+        proj_cs_get_axis_info(NULL,
+            pj_cs, 0,
+            &out_name1, &out_abbrev1, &out_direction1,
+            NULL, NULL, NULL, NULL);
+        /* Read second axis */
+        proj_cs_get_axis_info(NULL,
+            pj_cs, 1,
+            &out_name2, &out_abbrev2, &out_direction2,
+            NULL, NULL, NULL, NULL);
 
-		/* Only swap Lat/Lon systems */
-		/* Use whatever ordering planar systems default to */
-		if (strcasecmp(out_abbrev, "Lat") == 0)
-			rv = LW_TRUE;
-		else
-			rv = LW_FALSE;
-	}
-	proj_destroy(pj_cs);
-	return rv;
+        proj_destroy(pj_cs);
+
+        /* Directions agree, this is a northing/easting CRS, so reverse it */
+        if(out_direction1 && STR_IEQUALS(out_direction1, "north") &&
+           out_direction2 && STR_IEQUALS(out_direction2, "east") )
+        {
+            return LW_TRUE;
+        }
+
+        /* Oddball case? Both axes north / both axes south, swap */
+        if(out_direction1 && out_direction2 &&
+           ((STR_IEQUALS(out_direction1, "north") && STR_IEQUALS(out_direction2, "north")) ||
+            (STR_IEQUALS(out_direction1, "south") && STR_IEQUALS(out_direction2, "south"))) &&
+           out_name1 && STR_ISTARTS(out_name1, "northing")  &&
+           out_name2 && STR_ISTARTS(out_name2, "easting"))
+        {
+            return LW_TRUE;
+        }
+
+        /* Any lat/lon system with Lat in first axis gets swapped */
+        if (STR_ISTARTS(out_abbrev1, "Lat"))
+            return LW_TRUE;
+
+        return LW_FALSE;
+    }
+
+    /* Failed the axis count test, leave quietly */
+    proj_destroy(pj_cs);
+    return LW_FALSE;
 }
 
 LWPROJ *
