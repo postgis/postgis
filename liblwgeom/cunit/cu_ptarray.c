@@ -657,11 +657,10 @@ static void test_ptarray_closest_vertex_2d()
 {
   LWLINE *line;
   POINTARRAY *pa;
-	double dist;
+  double dist;
   POINT2D qp;
   const char *wkt;
-  char *wktout;
-	int rv;
+  int rv;
 
   wkt = "LINESTRING (0 0 0, 1 0 0, 2 0 0, 3 0 10)";
   line = lwgeom_as_lwline(lwgeom_from_text(wkt));
