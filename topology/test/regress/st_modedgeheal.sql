@@ -73,47 +73,49 @@ SELECT 'N'||topology.TopoGeo_AddPoint('t', 'POINT(2 8)');  -- 1
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(2 2, 2  8)');        -- 1
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(2  8,  8  8)');      -- 2
 
+-- Cannot heal edges connected by node used in point TopoGeometry
+-- See https://trac.osgeo.org/postgis/ticket/3239
 INSERT INTO t.f_poi VALUES ('F+N1',
   topology.CreateTopoGeom('t', 1, 2, '{{1,1}}'));
-
--- This should be forbidden, as F+N1 above could not be
--- defined w/out the joining node
--- See https://trac.osgeo.org/postgis/ticket/3239
 SELECT 'unexpected-success-with-orphaned-point-topogeom-1',
   topology.ST_ModEdgeHeal('t', 1, 2);
 SELECT 'unexpected-success-with-orphaned-point-topogeom-2',
   topology.ST_ModEdgeHeal('t', 2, 1);
+WITH deleted AS ( DELETE FROM t.f_poi RETURNING g),
+     clear AS ( SELECT ClearTopoGeom(g) FROM deleted)
+     SELECT NULL FROM clear;
 
-WITH deleted AS (
-  DELETE FROM t.f_poi RETURNING g
-), clear AS (
-  SELECT ClearTopoGeom(g) FROM deleted
-) SELECT NULL FROM clear;
-
+-- Cannot heal edges connected by node used in collection TopoGeometry
+-- See https://trac.osgeo.org/postgis/ticket/3239
 INSERT INTO t.f_mix VALUES ('F+N1',
   topology.CreateTopoGeom('t', 4, 3, '{{1,1}}'));
-
--- This should be forbidden, as F+N1 above could not be
--- defined w/out the joining node
--- See https://trac.osgeo.org/postgis/ticket/3239
 SELECT 'unexpected-success-with-orphaned-mix-topogeom-1',
   topology.ST_ModEdgeHeal('t', 1, 2);
 SELECT 'unexpected-success-with-orphaned-mix-topogeom-2',
   topology.ST_ModEdgeHeal('t', 2, 1);
+WITH deleted AS ( DELETE FROM t.f_mix RETURNING g),
+     clear AS ( SELECT ClearTopoGeom(g) FROM deleted)
+     SELECT NULL FROM clear;
 
-WITH deleted AS (
-  DELETE FROM t.f_mix RETURNING g
-), clear AS (
-  SELECT ClearTopoGeom(g) FROM deleted
-) SELECT NULL FROM clear;
-
+---- Cannot heal edges when only one is used in line TopoGeometry
+---- defined w/out one of the edges
 INSERT INTO t.f_lin VALUES ('F+E1',
   topology.CreateTopoGeom('t', 2, 1, '{{1,2}}'));
-
--- This should be forbidden, as F+E1 above could not be
--- defined w/out one of the edges
 SELECT topology.ST_ModEdgeHeal('t', 1, 2);
 SELECT topology.ST_ModEdgeHeal('t', 2, 1);
+WITH deleted AS ( DELETE FROM t.f_lin RETURNING g),
+     clear AS ( SELECT ClearTopoGeom(g) FROM deleted)
+     SELECT NULL FROM clear;
+
+-- Cannot heal edges when only one is used in collection TopoGeometry
+-- defined w/out one of the edges
+INSERT INTO t.f_mix VALUES ('F+E1',
+  topology.CreateTopoGeom('t', 4, 3, '{{1,2}}'));
+SELECT topology.ST_ModEdgeHeal('t', 1, 2);
+SELECT topology.ST_ModEdgeHeal('t', 2, 1);
+WITH deleted AS ( DELETE FROM t.f_mix RETURNING g),
+     clear AS ( SELECT ClearTopoGeom(g) FROM deleted)
+     SELECT NULL FROM clear;
 
 -- This is for ticket #941
 SELECT topology.ST_ModEdgeHeal('t', 1, 200);

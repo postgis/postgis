@@ -2572,9 +2572,9 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
                     "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
                     "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
                     " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
-                    "WHERE l.level = 0 and l.feature_type = 2 "
+                    "WHERE l.level = 0 and l.feature_type in ( 2, 4 ) "
                     "AND l.topology_id = %d"
-                    " AND abs(r.element_id) = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
+                    " AND r.element_type = 2 AND abs(r.element_id) = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
                     "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
                     "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%"
                     LWTFMT_ELEMID ",%" LWTFMT_ELEMID "]::int4[] LIMIT 1",
@@ -2624,7 +2624,7 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
                     " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
                     "WHERE l.level = 0 and l.feature_type in ( 1, 4 ) "
                     "AND l.topology_id = %d"
-                    " AND r.element_id = %" LWTFMT_ELEMID
+                    " AND r.element_type = 1 AND r.element_id = %" LWTFMT_ELEMID
                     " group by r.topogeo_id, r.layer_id, l.schema_name, "
                     "l.table_name, l.feature_column ) t LIMIT 1",
                     topo->name, topo->id,
@@ -2691,7 +2691,7 @@ cb_checkTopoGeomRemIsoNode ( const LWT_BE_TOPOLOGY* topo, LWT_ELEMID rem_node )
                     " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
                     "WHERE l.level = 0 and l.feature_type in ( 1, 4 ) "
                     "AND l.topology_id = %d"
-                    " AND r.element_id = %" LWTFMT_ELEMID
+                    " AND r.element_type = 1 AND r.element_id = %" LWTFMT_ELEMID
                     " group by r.topogeo_id, r.layer_id, l.schema_name, "
                     "l.table_name, l.feature_column ) t LIMIT 1",
                     topo->name, topo->id,
