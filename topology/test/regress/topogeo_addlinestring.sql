@@ -401,12 +401,15 @@ ORDER BY t;
 SELECT 't4758.end', topology.DropTopology('t4758');
 
 -- See https://trac.osgeo.org/postgis/ticket/2175
-SELECT 't2175.start', topology.CreateTopology('bug2175') > 0;
+BEGIN;
+SELECT NULL FROM topology.CreateTopology('bug2175');
 SELECT 't2175.1', count(*) from topology.TopoGeo_addLinestring('bug2175',
   'LINESTRING(10 10,10 0,0 0,0 10,10 10)', 0);
 SELECT 't2175.2', count(*) from topology.TopoGeo_addLinestring('bug2175',
   'LINESTRING(10 10,10 0,0 0,0 10,10 10)', 0);
-SELECT 't2175.end', topology.DropTopology('bug2175');
+SELECT 't2175.3', count(*) from topology.TopoGeo_addLinestring('bug2175',
+  'LINESTRING(9.99 10,10 0,0 0,0 10,9.99 10)', 0.1);
+ROLLBACK;
 
 -- See https://trac.osgeo.org/postgis/ticket/4941
 SELECT NULL FROM createtopology('b4941');

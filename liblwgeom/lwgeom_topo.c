@@ -5748,6 +5748,16 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Elements-snapped");
+    if ( input_was_closed )
+    {{
+      /* Recompute start point in case it moved */
+      LWLINE *scrolled = lwgeom_as_lwline(noded);
+      if (scrolled)
+      {
+        getPoint4d_p( scrolled->points, 0, &originalStartPoint);
+        LWDEBUGF(1, "Closed input line start point after snap %g,%g", originalStartPoint.x, originalStartPoint.y);
+      }
+    }}
 
     /* will not release the geoms array */
     lwcollection_release(col);
