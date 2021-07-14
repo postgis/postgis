@@ -11,6 +11,7 @@ PostGIS 3.0.4dev
   - #4844, Repair axis order handling for polar coordinate systems (Paul Ramsey)
   - #4863, Update bboxes after scale/affine coordinate changes (Paul Ramsey)
   - #4918, Fix rare crash in st_minpossiblevalue() (Paul Ramsey)
+  - #4949, Swapped coordinates for N/E planar systems (Paul Ramsey)
 
 
 PostGIS 3.0.3

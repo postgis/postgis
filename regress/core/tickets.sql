@@ -1334,3 +1334,25 @@ SELECT '#4863', st_contains(geometry, st_scale(st_orientedenvelope(geometry),
  6755733.56891884,-141934.403428904 6755716.1146343,-141971.698204552
  6755713.77835553,-141972.789895508 6755731.24770785))'::geometry as
  geometry) x;
+
+-- New Zealand forward -- SRID=2193;POINT(1766289 5927325)
+SELECT '#4949', 'NZ forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=4326;POINT(174.863597538742 -36.785298415230315)'::geometry, 2193),0.1));
+--- New Zealand inverse (opposite EPSG order) -- SRID=4326;POINT(174.863598 -36.785298)
+SELECT '#4949', 'NZ inverse', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=2193;POINT(1766289 5927325)'::geometry, 4326),0.000001));
+-- British Columbia forward (respect EPSG order) -- SRID=3005;POINT(1286630.44 561883.98)
+SELECT '#4949', 'BC forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=4269;POINT(-122 50)'::geometry, 3005),0.01));
+-- British Columbia inverse (respect EPSG order) -- SRID=4269;POINT(-122 50)
+SELECT '#4949', 'BC inverse', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=3005;POINT(1286630.44 561883.98)'::geometry, 4269),0.000001));
+--  North Pole LAEA Europe inverse -- SRID=4326;POINT(19.4921659 69.7902258)
+SELECT '#4949', 'North Pole LAEA inverse', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=3575;POINT(370182 -2213980)'::geometry,4326),0.0000001));
+-- Polar Stereographic forward -- SRID=3413;POINT(2218082.1 -1409150)
+SELECT '#4949', 'Arctic Stereographic forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=4326;POINT(12.572160  66.081084)'::geometry,3413),0.1));
+-- Antarctic Polar Stereographic -- SRID=3031;POINT(-2399498.7 3213318.5)
+SELECT '#4949', 'Antarctic Stereographic forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=4326;POINT(-36.75 -54.25)'::geometry, 3031),0.1));
