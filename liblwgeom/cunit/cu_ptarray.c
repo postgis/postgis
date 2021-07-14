@@ -653,6 +653,39 @@ static void test_ptarray_scroll()
   lwline_free(line);
 }
 
+static void test_ptarray_closest_vertex_2d()
+{
+  LWLINE *line;
+  POINTARRAY *pa;
+	double dist;
+  POINT2D qp;
+  const char *wkt;
+  char *wktout;
+	int rv;
+
+  wkt = "LINESTRING (0 0 0, 1 0 0, 2 0 0, 3 0 10)";
+  line = lwgeom_as_lwline(lwgeom_from_text(wkt));
+  pa = line->points;
+
+	qp.x = qp.y = 0;
+	rv = ptarray_closest_vertex_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 0);
+	ASSERT_DOUBLE_EQUAL(dist, 0);
+
+	qp.x = qp.y = 1;
+	rv = ptarray_closest_vertex_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 1);
+	ASSERT_DOUBLE_EQUAL(dist, 1);
+
+	qp.x = 5; qp.y = 0;
+	rv = ptarray_closest_vertex_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 3);
+	ASSERT_DOUBLE_EQUAL(dist, 2);
+
+
+  lwline_free(line);
+}
+
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -671,4 +704,5 @@ void ptarray_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarrayarc_contains_point);
 	PG_ADD_TEST(suite, test_ptarray_scale);
 	PG_ADD_TEST(suite, test_ptarray_scroll);
+	PG_ADD_TEST(suite, test_ptarray_closest_vertex_2d);
 }

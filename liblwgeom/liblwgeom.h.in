@@ -1089,6 +1089,15 @@ extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
 extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2,
                                                           double tolerance);
 
+/**
+ * @param pa the subject pointarray
+ * @param qp the query point
+ * @param dist optional output for actual distance from vertex
+ */
+extern int ptarray_closest_vertex_2d(const POINTARRAY *pa,
+                                     const POINT2D *qp, double *dist);
+
+
 
 /**
 * Strip out the Z/M components of an #LWGEOM

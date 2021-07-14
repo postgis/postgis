@@ -1295,6 +1295,35 @@ closest_point_on_segment(const POINT4D *p, const POINT4D *A, const POINT4D *B, P
 	ret->m = A->m + ( (B->m - A->m) * r );
 }
 
+int
+ptarray_closest_vertex_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist)
+{
+	uint32_t t, pn=0;
+	POINT2D *p;
+	double mindist = DBL_MAX;
+
+	/* Loop through pointarray looking for nearest segment */
+	for (t=0; t<pa->npoints; t++)
+	{
+		double dist_sqr;
+		getPoint2d_p_ro(pa, t, &p);
+		dist_sqr = distance2d_sqr_pt_pt(p, qp);
+
+		if (dist_sqr < mindist)
+		{
+			mindist = dist_sqr;
+			pn = t;
+			if ( mindist == 0 )
+			{
+				LWDEBUG(3, "Breaking on mindist=0");
+				break;
+			}
+		}
+	}
+	if ( dist ) *dist = sqrt(mindist);
+	return pn;
+}
+
 /*
  * Given a point, returns the location of closest point on pointarray
  * and, optionally, it's actual distance from the point array.
