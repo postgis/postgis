@@ -1,7 +1,9 @@
-PostGIS 3.1.4
+PostGIS 3.1.4dev
 2021/xx/xx
 
 * Bug Fixes
+  - #4854, Fix type of TopoGeometry receiving different-type
+           TopoGeometry components (Sandro Santilli)
   - #4918, Fix rare crash in st_minpossiblevalue (Paul Ramsey)
   - #4941, Fix loose mbr in topology.face on update (Sandro Santilli)
 
