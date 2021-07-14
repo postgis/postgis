@@ -2450,8 +2450,8 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
                     "l.schema_name, l.table_name, l.feature_column FROM "
                     "topology.layer l INNER JOIN \"%s\".relation r "
                     "ON (l.layer_id = r.layer_id) WHERE l.level = 0 AND "
-                    "l.feature_type = 2 AND l.topology_id = %d"
-                    " AND abs(r.element_id) = %" LWTFMT_ELEMID,
+                    "l.feature_type IN ( 2, 4 ) AND l.topology_id = %d"
+                    " AND r.element_type = 2 AND abs(r.element_id) = %" LWTFMT_ELEMID,
                     topo->name, topo->id, rem_edge );
 
   POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemEdge query 1: %s", sql->data);
@@ -2503,9 +2503,9 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
                       "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
                       "array_agg(r.element_id) as elems FROM topology.layer l "
                       " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
-                      "WHERE l.level = 0 and l.feature_type = 3 "
+                      "WHERE l.level = 0 and l.feature_type IN (3, 4) "
                       "AND l.topology_id = %d"
-                      " AND r.element_id = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
+                      " AND r.element_type = 3 AND r.element_id = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
                       "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
                       "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%"
                       LWTFMT_ELEMID ",%" LWTFMT_ELEMID "]::int4[]",
