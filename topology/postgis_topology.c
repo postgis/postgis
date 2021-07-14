@@ -2812,8 +2812,10 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* this query can be optimized */
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
-                      "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 3"
+                      "USING topology.layer l WHERE l.level = 0"
+                      " AND l.feature_type IN (3,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
+                      " AND r.element_type = 3"
                       " AND abs(r.element_id) IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
                       " AND abs(r.element_id) != %" LWTFMT_ELEMID,
                       topo->name, topo->id, face1, face2, newface );
@@ -2835,8 +2837,10 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* delete face1 */
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
-                      "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 3"
+                      "USING topology.layer l WHERE l.level = 0"
+                      " AND l.feature_type IN (3,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
+                      " AND r.element_type = 3"
                       " AND abs(r.element_id) = %" LWTFMT_ELEMID,
                       topo->name, topo->id, face1 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 1: %s", sql->data);
@@ -2856,8 +2860,11 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     /* update face2 to newface */
     appendStringInfo( sql, "UPDATE \"%s\".relation r "
                       "SET element_id = %" LWTFMT_ELEMID " FROM topology.layer l "
-                      "WHERE l.level = 0 AND l.feature_type = 3 AND l.topology_id = %d"
-                      " AND l.layer_id = r.layer_id AND r.element_id = %" LWTFMT_ELEMID,
+                      "WHERE l.level = 0 AND l.feature_type IN (3,4)"
+                      " AND l.topology_id = %d"
+                      " AND l.layer_id = r.layer_id"
+                      " AND r.element_type = 3"
+                      " AND r.element_id = %" LWTFMT_ELEMID,
                       topo->name, newface, topo->id, face2 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 2: %s", sql->data);
 
@@ -2893,8 +2900,10 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* this query can be optimized */
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
-                      "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 2"
+                      "USING topology.layer l WHERE l.level = 0"
+                      " AND l.feature_type IN (2,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
+                      " AND r.element_type = 2"
                       " AND abs(r.element_id) IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
                       " AND abs(r.element_id) != %" LWTFMT_ELEMID,
                       topo->name, topo->id, edge1, edge2, newedge );
@@ -2916,8 +2925,10 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* delete edge1 */
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
-                      "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 2"
+                      "USING topology.layer l WHERE l.level = 0"
+                      " AND l.feature_type IN ( 2, 4 )"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
+                      " AND r.element_type = 2"
                       " AND abs(r.element_id) = %" LWTFMT_ELEMID,
                       topo->name, topo->id, edge2 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query 1: %s", sql->data);
@@ -2936,10 +2947,13 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* update edge2 to newedge */
     appendStringInfo( sql, "UPDATE \"%s\".relation r "
-                      "SET element_id = %" LWTFMT_ELEMID " *(element_id/%" LWTFMT_ELEMID
+                      "SET element_id = %" LWTFMT_ELEMID
+                      " *(element_id/%" LWTFMT_ELEMID
                       ") FROM topology.layer l "
-                      "WHERE l.level = 0 AND l.feature_type = 2 AND l.topology_id = %d"
-                      " AND l.layer_id = r.layer_id AND abs(r.element_id) = %" LWTFMT_ELEMID,
+                      "WHERE l.level = 0 AND l.feature_type IN (2,4)"
+                      " AND l.topology_id = %d AND l.layer_id = r.layer_id"
+                      " AND r.element_type = 2"
+                      " AND abs(r.element_id) = %" LWTFMT_ELEMID,
                       topo->name, newedge, edge1, topo->id, edge1 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query 2: %s", sql->data);
 
