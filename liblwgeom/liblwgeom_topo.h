@@ -832,6 +832,20 @@ typedef struct LWT_BE_CALLBACKS_T {
       LWT_ELEMID rem_node
   );
 
+  /**
+   * Check TopoGeometry objects before an isolated edge removal event
+   *
+   * @param topo the topology to act upon
+   * @param rem_edge identifier of the edge that's been removed
+   *
+   * @return 1 to allow, 0 to forbid the operation
+   *         (reporting reason via lastErrorMessage)
+   */
+  int (*checkTopoGeomRemIsoEdge) (
+      const LWT_BE_TOPOLOGY* topo,
+      LWT_ELEMID rem_edge
+  );
+
 } LWT_BE_CALLBACKS;
 
 

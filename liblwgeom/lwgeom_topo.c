@@ -347,6 +347,12 @@ lwt_be_checkTopoGeomRemEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
 }
 
 static int
+lwt_be_checkTopoGeomRemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id)
+{
+  CBT1(topo, checkTopoGeomRemIsoEdge, edge_id);
+}
+
+static int
 lwt_be_checkTopoGeomRemNode(LWT_TOPOLOGY* topo, LWT_ELEMID node_id,
                             LWT_ELEMID eid1, LWT_ELEMID eid2)
 {
@@ -3767,9 +3773,14 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
     return -1;
   }
 
-  /* TODO: notify to caller about edge being removed ?
+  /* Check that the edge can be safely removed
    * See https://trac.osgeo.org/postgis/ticket/3248
    */
+  if ( ! lwt_be_checkTopoGeomRemIsoEdge(topo, id) )
+  {
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
 
   return 0; /* success */
 }
