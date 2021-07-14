@@ -68,6 +68,10 @@
 #define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
 #define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
 
+#define STR_EQUALS(A, B) strcmp((A), (B)) == 0
+#define STR_IEQUALS(A, B) (strcasecmp((A), (B)) == 0)
+#define STR_ISTARTS(A, B) (strncasecmp((A), (B), strlen((B))) == 0)
+
 
 /*
 * this will change to NaN when I figure out how to
@@ -209,13 +213,13 @@ void ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts
 * The possible ways a pair of segments can interact. Returned by lw_segment_intersects
 */
 enum CG_SEGMENT_INTERSECTION_TYPE {
-    SEG_ERROR = -1,
-    SEG_NO_INTERSECTION = 0,
-    SEG_COLINEAR = 1,
-    SEG_CROSS_LEFT = 2,
-    SEG_CROSS_RIGHT = 3,
-    SEG_TOUCH_LEFT = 4,
-    SEG_TOUCH_RIGHT = 5
+		SEG_ERROR = -1,
+		SEG_NO_INTERSECTION = 0,
+		SEG_COLINEAR = 1,
+		SEG_CROSS_LEFT = 2,
+		SEG_CROSS_RIGHT = 3,
+		SEG_TOUCH_LEFT = 4,
+		SEG_TOUCH_RIGHT = 5
 };
 
 /*
@@ -462,14 +466,14 @@ extern uint8_t MULTITYPE[NUMTYPES];
 extern lwinterrupt_callback *_lwgeom_interrupt_callback;
 extern int _lwgeom_interrupt_requested;
 #define LW_ON_INTERRUPT(x) { \
-  if ( _lwgeom_interrupt_callback ) { \
-    (*_lwgeom_interrupt_callback)(); \
-  } \
-  if ( _lwgeom_interrupt_requested ) { \
-    _lwgeom_interrupt_requested = 0; \
-    lwnotice("liblwgeom code interrupted"); \
-    x; \
-  } \
+	if ( _lwgeom_interrupt_callback ) { \
+		(*_lwgeom_interrupt_callback)(); \
+	} \
+	if ( _lwgeom_interrupt_requested ) { \
+		_lwgeom_interrupt_requested = 0; \
+		lwnotice("liblwgeom code interrupted"); \
+		x; \
+	} \
 }
 
 int ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox);
