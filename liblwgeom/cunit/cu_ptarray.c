@@ -655,16 +655,16 @@ static void test_ptarray_scroll()
 
 static void test_ptarray_closest_vertex_2d()
 {
-  LWLINE *line;
-  POINTARRAY *pa;
-  double dist;
-  POINT2D qp;
-  const char *wkt;
-  int rv;
+	LWLINE *line;
+	POINTARRAY *pa;
+	double dist;
+	POINT2D qp;
+	const char *wkt;
+	int rv;
 
-  wkt = "LINESTRING (0 0 0, 1 0 0, 2 0 0, 3 0 10)";
-  line = lwgeom_as_lwline(lwgeom_from_text(wkt));
-  pa = line->points;
+	wkt = "LINESTRING (0 0 0, 1 0 0, 2 0 0, 3 0 10)";
+	line = lwgeom_as_lwline(lwgeom_from_text(wkt));
+	pa = line->points;
 
 	qp.x = qp.y = 0;
 	rv = ptarray_closest_vertex_2d(pa, &qp, &dist);
