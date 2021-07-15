@@ -55,6 +55,7 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/st_getfacegeometry.sql \
 	$(topsrcdir)/topology/test/regress/st_modedgeheal.sql \
 	$(topsrcdir)/topology/test/regress/st_modedgesplit.sql \
+	$(topsrcdir)/topology/test/regress/st_moveisonode.sql \
 	$(topsrcdir)/topology/test/regress/st_newedgeheal.sql \
 	$(topsrcdir)/topology/test/regress/st_newedgessplit.sql \
 	$(topsrcdir)/topology/test/regress/st_remedgemodface.sql \

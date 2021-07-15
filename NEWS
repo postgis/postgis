@@ -6,6 +6,8 @@ PostGIS 3.2.0
   - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
 
  * Enhancements *
+  - #3232, Prevent moving an isolated node to different face
+           (Sandro Santilli)
   - Consider collection TopoGeometries while editing topology primitives.
            (Sandro Santilli)
   - #3248, Prevent removing isolated edges if used in a TopoGeometry

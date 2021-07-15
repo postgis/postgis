@@ -3611,6 +3611,7 @@ lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
 {
   LWT_ISO_NODE *node;
   int ret;
+  int newPointFace;
 
   node = _lwt_GetIsoNode( topo, nid );
   if ( ! node ) return -1;
@@ -3629,9 +3630,19 @@ lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
     return -1;
   }
 
-  /* TODO: check that the new point is in the same containing face !
-   * See https://trac.osgeo.org/postgis/ticket/3232
-   */
+  /* Check that the new point is in the same containing face !
+   * See https://trac.osgeo.org/postgis/ticket/3232 */
+  newPointFace = lwt_be_getFaceContainingPoint(topo, pt);
+  if ( newPointFace == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( node->containing_face != newPointFace )
+  {
+    lwfree(node);
+    lwerror("Cannot move isolated node across faces");
+    return -1;
+  }
 
   node->node_id = nid;
   node->geom = pt;
