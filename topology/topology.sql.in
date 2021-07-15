@@ -1453,6 +1453,11 @@ BEGIN
   ndims = 2;
   IF hasZ THEN ndims = 3; END IF;
 
+  IF srid < 0 THEN
+    RAISE NOTICE 'SRID value % converted to the officially unknown SRID value 0', srid;
+    srid = 0;
+  END IF;
+
   ------ Fetch next id for the new topology
   FOR rec IN SELECT nextval('topology.topology_id_seq')
   LOOP

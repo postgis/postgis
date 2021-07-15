@@ -6,6 +6,8 @@ PostGIS 3.2.0
   - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
 
  * Enhancements *
+  - #2592, Do not allow CreateTopology to define topologies with SRID < 0
+           (Sandro Santilli)
   - #3232, Prevent moving an isolated node to different face
            (Sandro Santilli)
   - Consider collection TopoGeometries while editing topology primitives.
