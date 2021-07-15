@@ -23,3 +23,8 @@ DROP FUNCTION IF EXISTS topology._ST_AddFaceSplit(varchar, integer, integer, boo
 
 -- Added optional bbox parameter in 3.2.0
 DROP FUNCTION IF EXISTS topology.validatetopology(varchar);
+
+-- Merged the two function into one with both allowEdgeSplitting and setContainingFace parameters
+-- being optional (3.2.0)
+DROP FUNCTION IF EXISTS topology.AddNode(varchar, geometry);
+DROP FUNCTION IF EXISTS topology.AddNode(varchar, geometry, boolean, boolean);
