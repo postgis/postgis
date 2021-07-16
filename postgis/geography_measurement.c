@@ -45,7 +45,7 @@
 #define INVMINDIST 1.0e8
 #else
 /* round to 100 nm precision */
-#define INVMINDIST 1.0e9
+#define INVMINDIST 1.0e7
 #endif
 
 Datum geography_distance(PG_FUNCTION_ARGS);
