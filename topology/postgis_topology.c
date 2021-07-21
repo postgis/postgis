@@ -4247,9 +4247,6 @@ Datum ST_RemoveIsoNode(PG_FUNCTION_ARGS)
     PG_RETURN_NULL();
   }
 
-  /* TODO: check if any TopoGeometry exists including this point in
-   * its definition ! */
-
   SPI_finish();
 
   if ( snprintf(buf, 64, "Isolated node %" LWTFMT_ELEMID
@@ -4310,9 +4307,6 @@ Datum ST_RemIsoEdge(PG_FUNCTION_ARGS)
     SPI_finish();
     PG_RETURN_NULL();
   }
-
-  /* TODO: check if any TopoGeometry exists including this point in
-   * its definition ! */
 
   SPI_finish();
 
