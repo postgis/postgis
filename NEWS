@@ -3,6 +3,8 @@ YYYY/MM/DD
 
   * Bug Fixes and Enhancements *
 
+  - #4871, TopoGeometry::geometry cast returns NULL for empty
+           TopoGeometry objects (Sandro Santilli)
   - #4757, Handle line collapse due to snap-to-existing node (Sandro Santilli)
   - #4769, Fix segfault in st_addband (Raúl Marín)
   - #4727, Fix geocentric bounding box computation for rare case (Paul Ramsey)

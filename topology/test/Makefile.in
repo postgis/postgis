@@ -4,7 +4,7 @@ PSQL=psql
 PERL=@PERL@
 GEOS_NUMERIC_VERSION=@GEOS_NUMERIC_VERSION@
 
-all: 
+all:
 	@echo "Use 'make check' to run all tests"
 
 # TODO: make edit_topology.sql into a proper test
@@ -63,6 +63,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/createtopogeom.sql \
 	regress/createtopology.sql \
 	regress/gml.sql \
+	regress/geometry_cast.sql \
 	regress/getnodebypoint.sql \
 	regress/getedgebypoint.sql \
 	regress/getfacebypoint.sql \
@@ -79,7 +80,7 @@ ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">" 30308),1)
 else
 	cp regress/topogeo_addlinestring_expected_oldsnap regress/topogeo_addlinestring_expected
 endif
-	
+
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql $(TESTS) $(TESTS_EXPECTED)
 	$(MAKE) -C ../../regress staged-install

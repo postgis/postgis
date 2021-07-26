@@ -1238,13 +1238,14 @@ LANGUAGE 'plpgsql' STABLE STRICT;
 -- Geometry(TopoGeometry)
 --
 -- Construct a Geometry from a TopoGeometry.
--- 
+--
 -- }{
 CREATE OR REPLACE FUNCTION topology.Geometry(topogeom topology.TopoGeometry)
   RETURNS Geometry
 AS $$
 DECLARE
   toponame varchar;
+  toposrid int;
   geom geometry;
   rec RECORD;
   plyr RECORD;
@@ -1253,9 +1254,9 @@ DECLARE
 BEGIN
 
   -- Get topology name
-  SELECT name FROM topology.topology
+  SELECT name, srid FROM topology.topology
   WHERE id = topogeom.topology_id
-  INTO toponame;
+  INTO toponame, toposrid;
   IF toponame IS NULL THEN
     RAISE EXCEPTION 'Invalid TopoGeometry (unexistent topology id %)', topogeom.topology_id;
   END IF;
@@ -1384,6 +1385,7 @@ BEGIN
     ELSE
       geom := 'GEOMETRYCOLLECTION EMPTY';
     END IF;
+    geom := ST_SetSRID(geom, toposrid);
   END IF;
 
   RETURN geom;
