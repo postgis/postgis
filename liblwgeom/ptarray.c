@@ -943,7 +943,7 @@ ptarrayarc_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int c
 		}
 
 		/* Going "down"! */
-		if ( side > 0 && (seg2->y <= pt->y) && (pt->y < seg1->y) )
+		if ( side > 0 && (seg3->y <= pt->y) && (pt->y < seg1->y) )
 		{
 			wn--;
 		}
