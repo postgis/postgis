@@ -215,6 +215,13 @@ static void test_mindistance2d_tolerance(void)
 	DIST2DTEST("LINESTRING(10 0,11 1,12 2,13 3,14 4,15 5,16 6)",
 		"LINESTRING(1 1.5,2 3,3 4.5,4 6,5 7.5,6 9)",
 		8.3205, default_accepted_error);
+
+	/*
+	** Ticket 4326
+	*/
+	DIST2DTEST(
+		"CURVEPOLYGON(CIRCULARSTRING(7874821 8715927,8907663 8715927,8844683 7750316,7937800 7750316,7874821 8715927))",
+		"POINT(5433865 8243495)", 2271704.2698450615, default_accepted_error);
 }
 
 static void
