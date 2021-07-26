@@ -8,6 +8,7 @@ PostGIS 3.1.4dev
   - #4941, Fix loose mbr in topology.face on update (Sandro Santilli)
   - #4949, Swapped coordinates for N/E planar systems (Paul Ramsey)
   - GI617, Fix typo in setting of INVMINDIST (Charles Karney)
+  - #4326, Fix CircularPolygon area calculation (Paul Ramsey)
 
 
 PostGIS 3.1.3
