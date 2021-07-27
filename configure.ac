@@ -992,7 +992,7 @@ dnl Detect if protobuf-c installed
 dnl ===========================================================================
 
 CHECK_PROTOBUF=yes
-HAVE_PROTOBUF=yes
+HAVE_PROTOBUF=no
 HAVE_GEOBUF=no
 
 AC_ARG_WITH([protobuf],
@@ -1001,6 +1001,8 @@ AC_ARG_WITH([protobuf],
 
 dnl User didn't turn OFF protobuf support so...
 if test "$CHECK_PROTOBUF" != "no"; then
+
+	HAVE_PROTOBUF=yes
 
 	dnl Need to find libdir, incdir and protoc-c compiler
 
