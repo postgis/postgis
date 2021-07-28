@@ -211,6 +211,8 @@ projpj_from_string(const char *str1)
 
 #else /* POSTGIS_PROJ_VERION >= 60 */
 
+#if POSTGIS_PROJ_VERSION < 62
+
 static PJ *
 proj_cs_get_simplecs(const PJ *pj_crs)
 {
@@ -218,20 +220,20 @@ proj_cs_get_simplecs(const PJ *pj_crs)
 	if (proj_get_type(pj_crs) == PJ_TYPE_COMPOUND_CRS)
 	{
 		/* Sub-CRS[0] is the horizontal component */
-		pj_sub = proj_crs_get_sub_crs(NULL, pj_crs, 0);
+		pj_sub = proj_crs_get_sub_crs(PJ_DEFAULT_CTX, pj_crs, 0);
 		if (!pj_sub)
 			lwerror("%s: proj_crs_get_sub_crs(0) returned NULL", __func__);
 	}
 	else if (proj_get_type(pj_crs) == PJ_TYPE_BOUND_CRS)
 	{
-		pj_sub = proj_get_source_crs(NULL, pj_crs);
+		pj_sub = proj_get_source_crs(PJ_DEFAULT_CTX, pj_crs);
 		if (!pj_sub)
 			lwerror("%s: proj_get_source_crs returned NULL", __func__);
 	}
 	else
 	{
 		/* If this works, we have a CS so we can return */
-		pj_sub = proj_crs_get_coordinate_system(NULL, pj_crs);
+		pj_sub = proj_crs_get_coordinate_system(PJ_DEFAULT_CTX, pj_crs);
 		if (pj_sub)
 			return pj_sub;
 	}
@@ -241,13 +243,13 @@ proj_cs_get_simplecs(const PJ *pj_crs)
 	/* a CS from a generic CRS, then this is another case we don't */
 	/* handle */
 	if (!pj_sub)
-		lwerror("%s: %s", __func__, proj_errno_string(proj_context_errno(NULL)));
+		lwerror("%s: %s", __func__, proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
 
 	/* If the components are usable, we can extract the CS and return */
 	int pj_type = proj_get_type(pj_sub);
 	if (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS || pj_type == PJ_TYPE_PROJECTED_CRS)
 	{
-		PJ *pj_2d = proj_crs_get_coordinate_system(NULL, pj_sub);
+		PJ *pj_2d = proj_crs_get_coordinate_system(PJ_DEFAULT_CTX, pj_sub);
 		proj_destroy(pj_sub);
 		return pj_2d;
 	}
@@ -269,18 +271,18 @@ proj_crs_is_swapped(const PJ *pj_crs)
 	if (!pj_cs)
 		lwerror("%s: proj_cs_get_simplecs returned NULL", __func__);
 
-	axis_count = proj_cs_get_axis_count(NULL, pj_cs);
+	axis_count = proj_cs_get_axis_count(PJ_DEFAULT_CTX, pj_cs);
 	if (axis_count >= 2)
 	{
 		const char *out_name1, *out_abbrev1, *out_direction1;
 		const char *out_name2, *out_abbrev2, *out_direction2;
 		/* Read first axis */
-		proj_cs_get_axis_info(NULL,
+		proj_cs_get_axis_info(PJ_DEFAULT_CTX,
 			pj_cs, 0,
 			&out_name1, &out_abbrev1, &out_direction1,
 			NULL, NULL, NULL, NULL);
 		/* Read second axis */
-		proj_cs_get_axis_info(NULL,
+		proj_cs_get_axis_info(PJ_DEFAULT_CTX,
 			pj_cs, 1,
 			&out_name2, &out_abbrev2, &out_direction2,
 			NULL, NULL, NULL, NULL);
@@ -316,10 +318,12 @@ proj_crs_is_swapped(const PJ *pj_crs)
 	return LW_FALSE;
 }
 
+
+
 LWPROJ *
 lwproj_from_PJ(PJ *pj, int8_t extra_geography_data)
 {
-	PJ *pj_source_crs = proj_get_source_crs(NULL, pj);
+	PJ *pj_source_crs = proj_get_source_crs(PJ_DEFAULT_CTX, pj);
 	uint8_t source_is_latlong = LW_FALSE;
 	double out_semi_major_metre = DBL_MAX, out_semi_minor_metre = DBL_MAX;
 
@@ -330,7 +334,9 @@ lwproj_from_PJ(PJ *pj, int8_t extra_geography_data)
 	}
 	uint8_t source_swapped = proj_crs_is_swapped(pj_source_crs);
 
-	/* We only care about the extra values if there is no transformation */
+	/* We are using this function to in-fill major/minor axis data */
+	/* for spheroidal calculations in geography, so are calling */
+	/* it with two identical SRIDs */
 	if (!extra_geography_data)
 	{
 		proj_destroy(pj_source_crs);
@@ -350,14 +356,14 @@ lwproj_from_PJ(PJ *pj, int8_t extra_geography_data)
 		}
 		source_is_latlong = (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS) || (pj_type == PJ_TYPE_GEOGRAPHIC_3D_CRS);
 
-		pj_ellps = proj_get_ellipsoid(NULL, pj_source_crs);
+		pj_ellps = proj_get_ellipsoid(PJ_DEFAULT_CTX, pj_source_crs);
 		proj_destroy(pj_source_crs);
 		if (!pj_ellps)
 		{
 			lwerror("%s: unable to access source crs ellipsoid", __func__);
 			return NULL;
 		}
-		if (!proj_ellipsoid_get_parameters(NULL,
+		if (!proj_ellipsoid_get_parameters(PJ_DEFAULT_CTX,
 						   pj_ellps,
 						   &out_semi_major_metre,
 						   &out_semi_minor_metre,
@@ -371,7 +377,7 @@ lwproj_from_PJ(PJ *pj, int8_t extra_geography_data)
 		proj_destroy(pj_ellps);
 	}
 
-	PJ *pj_target_crs = proj_get_target_crs(NULL, pj);
+	PJ *pj_target_crs = proj_get_target_crs(PJ_DEFAULT_CTX, pj);
 	if (!pj_target_crs)
 	{
 		lwerror("%s: unable to access target crs", __func__);
@@ -394,17 +400,17 @@ lwproj_from_PJ(PJ *pj, int8_t extra_geography_data)
 int
 lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 {
-	PJ *pj = proj_create_crs_to_crs(NULL, instr, outstr, NULL);
+	PJ *pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX, instr, outstr, NULL);
 	if (!pj)
 	{
-		PJ *pj_in = proj_create(NULL, instr);
+		PJ *pj_in = proj_create(PJ_DEFAULT_CTX, instr);
 		if (!pj_in)
 		{
 			lwerror("could not parse proj string '%s'", instr);
 		}
 		proj_destroy(pj_in);
 
-		PJ *pj_out = proj_create(NULL, outstr);
+		PJ *pj_out = proj_create(PJ_DEFAULT_CTX, outstr);
 		if (!pj_out)
 		{
 			lwerror("could not parse proj string '%s'", outstr);
@@ -415,14 +421,116 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	}
 
 	LWPROJ *lp = lwproj_from_PJ(pj, LW_FALSE);
-
 	int ret = lwgeom_transform(geom, lp);
-
 	proj_destroy(pj);
 	lwfree(lp);
-
 	return ret;
 }
+
+#else // POSTGIS_PROJ_VERSION >= 62
+
+LWPROJ *
+lwproj_from_str(const char* str_in, const char* str_out)
+{
+	uint8_t source_is_latlong = LW_FALSE;
+	double semi_major_metre = DBL_MAX, semi_minor_metre = DBL_MAX;
+
+	/* Usable inputs? */
+	if (! (str_in && str_out))
+		return NULL;
+
+	PJ* pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX, str_in, str_out, NULL);
+	if (!pj)
+		return NULL;
+
+	/* Fill in geodetic parameter information when a null-transform */
+	/* is passed, because that's how we signal we want to store */
+	/* that info in the cache */
+	if (strcmp(str_in, str_out) == 0)
+	{
+		PJ *pj_source_crs = proj_get_source_crs(PJ_DEFAULT_CTX, pj);
+		PJ *pj_ellps;
+		PJ_TYPE pj_type = proj_get_type(pj_source_crs);
+		if (pj_type == PJ_TYPE_UNKNOWN)
+		{
+			proj_destroy(pj);
+			lwerror("%s: unable to access source crs type", __func__);
+			return NULL;
+		}
+		source_is_latlong = (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS) || (pj_type == PJ_TYPE_GEOGRAPHIC_3D_CRS);
+
+		pj_ellps = proj_get_ellipsoid(PJ_DEFAULT_CTX, pj_source_crs);
+		proj_destroy(pj_source_crs);
+		if (!pj_ellps)
+		{
+			proj_destroy(pj);
+			lwerror("%s: unable to access source crs ellipsoid", __func__);
+			return NULL;
+		}
+		if (!proj_ellipsoid_get_parameters(PJ_DEFAULT_CTX,
+						   pj_ellps,
+						   &semi_major_metre,
+						   &semi_minor_metre,
+						   NULL,
+						   NULL))
+		{
+			proj_destroy(pj_ellps);
+			proj_destroy(pj);
+			lwerror("%s: unable to access source crs ellipsoid parameters", __func__);
+			return NULL;
+		}
+		proj_destroy(pj_ellps);
+	}
+
+	/* Add in an axis swap if necessary */
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+	/* Swap failed for some reason? Fall back to coordinate operation */
+	if (!pj_norm)
+		pj_norm = pj;
+	/* Swap is not a copy of input? Clean up input */
+	else if (pj != pj_norm)
+		proj_destroy(pj);
+
+	/* Allocate and populate return value */
+	LWPROJ *lp = lwalloc(sizeof(LWPROJ));
+	lp->pj = pj_norm; /* Caller is going to have to explicitly proj_destroy this */
+	lp->source_swapped = LW_FALSE;
+	lp->target_swapped = LW_FALSE;
+	lp->source_is_latlong = LW_FALSE;
+	lp->source_is_latlong = source_is_latlong;
+	lp->source_semi_major_metre = semi_major_metre;
+	lp->source_semi_minor_metre = semi_minor_metre;
+	return lp;
+}
+
+int
+lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
+{
+	LWPROJ *lp = lwproj_from_str(instr, outstr);
+	if (!lp)
+	{
+		PJ *pj_in = proj_create(PJ_DEFAULT_CTX, instr);
+		if (!pj_in)
+		{
+			lwerror("could not parse proj string '%s'", instr);
+		}
+		proj_destroy(pj_in);
+
+		PJ *pj_out = proj_create(PJ_DEFAULT_CTX, outstr);
+		if (!pj_out)
+		{
+			lwerror("could not parse proj string '%s'", outstr);
+		}
+		proj_destroy(pj_out);
+		lwerror("%s: Failed to transform", __func__);
+		return LW_FAILURE;
+	}
+	int ret = lwgeom_transform(geom, lp);
+	proj_destroy(lp->pj);
+	return ret;
+}
+
+#endif // POSTGIS_PROJ_VERSION >= 62
 
 int
 lwgeom_transform(LWGEOM *geom, LWPROJ *pj)

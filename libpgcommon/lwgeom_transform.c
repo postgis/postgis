@@ -438,7 +438,7 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 		    "could not form projection from 'srid=%d' to 'srid=%d'",
 		    srid_from, srid_to);
 #else
-	PJ *projpj = NULL;
+	LWPROJ *projection = NULL;
 	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
 	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
@@ -450,16 +450,25 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 		pj_to_str   = pgstrs_get_entry(&to_strs,   i % 3);
 		if (!(pj_from_str && pj_to_str))
 			continue;
-		projpj = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
+
+#if POSTGIS_PROJ_VERSION < 62
+		projpj = proj_create_crs_to_crs(PJ_DEFAULT_CTX, pj_from_str, pj_to_str, NULL);
 		if (projpj && !proj_errno(projpj))
 			break;
+#else
+		projection = lwproj_from_str(pj_from_str, pj_to_str);
+		if (projection)
+			break;
 	}
+#endif
+#if POSTGIS_PROJ_VERSION < 62
 	if (!projpj)
 	{
 		elog(ERROR, "could not form projection (PJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
 		return NULL;
 	}
 	LWPROJ *projection = lwproj_from_PJ(projpj, srid_from == srid_to);
+#endif
 	if (!projection)
 	{
 		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);

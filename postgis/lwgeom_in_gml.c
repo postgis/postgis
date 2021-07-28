@@ -339,6 +339,7 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
  * lookups, and use the Proj 6+ EPSG catalogue and built-in SRID
  * lookups directly. Drop this ugly hack.
  */
+#if POSTGIS_PROJ_VERSION < 62
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 {
@@ -358,8 +359,8 @@ gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 
 	snprintf(text_in, 16, "EPSG:%d", epsg_in);
 	snprintf(text_out, 16, "EPSG:%d", epsg_out);
-	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
 
+	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
 	lwp = lwproj_from_PJ(pj, LW_FALSE);
 	if (!lwp)
 	{
@@ -379,6 +380,49 @@ gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 
 	return pa;
 }
+
+#else // POSTGIS_PROJ_VERSION >= 62
+
+static POINTARRAY *
+gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
+{
+	LWPROJ *lwp;
+	char text_in[16];
+	char text_out[16];
+
+	if (epsg_in == SRID_UNKNOWN)
+		return pa; /* nothing to do */
+
+	if (epsg_out == SRID_UNKNOWN)
+	{
+		gml_lwpgerror("invalid GML representation", 3);
+		return NULL;
+	}
+
+	snprintf(text_in, 16, "EPSG:%d", epsg_in);
+	snprintf(text_out, 16, "EPSG:%d", epsg_out);
+
+
+	lwp = lwproj_from_str(text_in, text_out);
+	if (!lwp)
+	{
+		gml_lwpgerror("Could not create LWPROJ*", 57);
+		return NULL;
+	}
+
+	if (ptarray_transform(pa, lwp) == LW_FAILURE)
+	{
+		elog(ERROR, "gml_reproject_pa: reprojection failed");
+		return NULL;
+	}
+	proj_destroy(lwp->pj);
+	pfree(lwp);
+
+	return pa;
+}
+
+#endif
+
 #endif /* POSTGIS_PROJ_VERSION */
 
 
