@@ -2450,6 +2450,13 @@ int lwgeom_is_simple(const LWGEOM *lwgeom);
  ******************************************************************************/
 
 int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr);
+/**
+ * Transform (reproject) a geometry in-place.
+ * @param geom the geometry to transform
+ * @param pj the transformation
+ */
+int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
+int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
 
 #if POSTGIS_PROJ_VERSION < 60
 /**
@@ -2460,13 +2467,6 @@ int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outst
 projPJ projpj_from_string(const char* txt);
 
 #else // POSTGIS_PROJ_VERSION >= 60
-/**
- * Transform (reproject) a geometry in-place.
- * @param geom the geometry to transform
- * @param pj the input and output
- */
-int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
-int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
 
 #if POSTGIS_PROJ_VERSION < 62
 /**

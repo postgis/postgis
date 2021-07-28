@@ -308,7 +308,7 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 {
-	PJ pj;
+	LWPROJ pj;
 	char *text_in, *text_out;
 
 	if (srid_in == SRID_UNKNOWN) return pa; /* nothing to do */

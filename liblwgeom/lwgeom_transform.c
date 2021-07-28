@@ -136,66 +136,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	return rv;
 }
 
-/**
- * Transform given LWGEOM geometry
- * from inpj projection to outpj projection
- */
-int
-lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
-{
-	uint32_t i;
 
-	/* No points to transform in an empty! */
-	if ( lwgeom_is_empty(geom) )
-		return LW_SUCCESS;
-
-	switch(geom->type)
-	{
-		case POINTTYPE:
-		case LINETYPE:
-		case CIRCSTRINGTYPE:
-		case TRIANGLETYPE:
-		{
-			LWLINE *g = (LWLINE*)geom;
-			if ( ! ptarray_transform(g->points, pj) ) return LW_FAILURE;
-			break;
-		}
-		case POLYGONTYPE:
-		{
-			LWPOLY *g = (LWPOLY*)geom;
-			for ( i = 0; i < g->nrings; i++ )
-			{
-				if ( ! ptarray_transform(g->rings[i], pj) ) return LW_FAILURE;
-			}
-			break;
-		}
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-		{
-			LWCOLLECTION *g = (LWCOLLECTION*)geom;
-			for ( i = 0; i < g->ngeoms; i++ )
-			{
-				if ( ! lwgeom_transform(g->geoms[i], pj) ) return LW_FAILURE;
-			}
-			break;
-		}
-		default:
-		{
-			lwerror("lwgeom_transform: Cannot handle type '%s'",
-			          lwtype_name(geom->type));
-			return LW_FAILURE;
-		}
-	}
-	return LW_SUCCESS;
-}
 
 projPJ
 projpj_from_string(const char *str1)
@@ -532,65 +473,6 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 
 #endif // POSTGIS_PROJ_VERSION >= 62
 
-int
-lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
-{
-	uint32_t i;
-
-	/* No points to transform in an empty! */
-	if (lwgeom_is_empty(geom))
-		return LW_SUCCESS;
-
-	switch(geom->type)
-	{
-		case POINTTYPE:
-		case LINETYPE:
-		case CIRCSTRINGTYPE:
-		case TRIANGLETYPE:
-		{
-			LWLINE *g = (LWLINE*)geom;
-			if (!ptarray_transform(g->points, pj))
-				return LW_FAILURE;
-			break;
-		}
-		case POLYGONTYPE:
-		{
-			LWPOLY *g = (LWPOLY*)geom;
-			for (i = 0; i < g->nrings; i++)
-			{
-				if (!ptarray_transform(g->rings[i], pj))
-					return LW_FAILURE;
-			}
-			break;
-		}
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-		{
-			LWCOLLECTION *g = (LWCOLLECTION*)geom;
-			for (i = 0; i < g->ngeoms; i++)
-			{
-				if (!lwgeom_transform(g->geoms[i], pj))
-					return LW_FAILURE;
-			}
-			break;
-		}
-		default:
-		{
-			lwerror("lwgeom_transform: Cannot handle type '%s'",
-			          lwtype_name(geom->type));
-			return LW_FAILURE;
-		}
-	}
-	return LW_SUCCESS;
-}
 
 int
 ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
@@ -692,3 +574,64 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 }
 
 #endif
+
+/**
+ * Transform given LWGEOM geometry
+ * from inpj projection to outpj projection
+ */
+int
+lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
+{
+	uint32_t i;
+
+	/* No points to transform in an empty! */
+	if ( lwgeom_is_empty(geom) )
+		return LW_SUCCESS;
+
+	switch(geom->type)
+	{
+		case POINTTYPE:
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case TRIANGLETYPE:
+		{
+			LWLINE *g = (LWLINE*)geom;
+			if ( ! ptarray_transform(g->points, pj) ) return LW_FAILURE;
+			break;
+		}
+		case POLYGONTYPE:
+		{
+			LWPOLY *g = (LWPOLY*)geom;
+			for ( i = 0; i < g->nrings; i++ )
+			{
+				if ( ! ptarray_transform(g->rings[i], pj) ) return LW_FAILURE;
+			}
+			break;
+		}
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		case COMPOUNDTYPE:
+		case CURVEPOLYTYPE:
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE:
+		case POLYHEDRALSURFACETYPE:
+		case TINTYPE:
+		{
+			LWCOLLECTION *g = (LWCOLLECTION*)geom;
+			for ( i = 0; i < g->ngeoms; i++ )
+			{
+				if ( ! lwgeom_transform(g->geoms[i], pj) ) return LW_FAILURE;
+			}
+			break;
+		}
+		default:
+		{
+			lwerror("lwgeom_transform: Cannot handle type '%s'",
+			          lwtype_name(geom->type));
+			return LW_FAILURE;
+		}
+	}
+	return LW_SUCCESS;
+}
