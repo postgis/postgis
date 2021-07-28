@@ -438,7 +438,12 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 		    "could not form projection from 'srid=%d' to 'srid=%d'",
 		    srid_from, srid_to);
 #else
+
+#if POSTGIS_PROJ_VERSION < 62
+	PJ *projpj = NULL;
+#else
 	LWPROJ *projection = NULL;
+#endif
 	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
 	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
@@ -459,8 +464,8 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 		projection = lwproj_from_str(pj_from_str, pj_to_str);
 		if (projection)
 			break;
-	}
 #endif
+	}
 #if POSTGIS_PROJ_VERSION < 62
 	if (!projpj)
 	{
