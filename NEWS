@@ -13,6 +13,7 @@ PostGIS 3.0.4dev
   - #4918, Fix rare crash in st_minpossiblevalue() (Paul Ramsey)
   - #4949, Swapped coordinates for N/E planar systems (Paul Ramsey)
   - #4326, Fix CircularPolygon area calculation (Paul Ramsey)
+  - #4917, Fix crasher with '-' regclass (Paul Ramsey)
 
 
 PostGIS 3.0.3
