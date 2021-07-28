@@ -57,16 +57,12 @@ typedef PJ LWPROJ;
  */
 typedef struct LWPROJ
 {
-	PJ* pj;
-        /* CRSs are swapped: Used in transformation calls */
-	uint8_t source_swapped;
-	uint8_t target_swapped;
-        /* Source crs is geographic: Used in geography calls (source srid == dst srid) */
-        uint8_t source_is_latlong;
-
-        /* Source ellipsoid parameters */
-        double source_semi_major_metre;
-        double source_semi_minor_metre;
+    PJ* pj;
+    /* Source crs is geographic: Used in geography calls (source srid == dst srid) */
+    uint8_t source_is_latlong;
+    /* Source ellipsoid parameters */
+    double source_semi_major_metre;
+    double source_semi_minor_metre;
 } LWPROJ;
 #endif
 

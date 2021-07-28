@@ -217,8 +217,6 @@ lwproj_from_str(const char* str_in, const char* str_out)
 	/* Allocate and populate return value */
 	LWPROJ *lp = lwalloc(sizeof(LWPROJ));
 	lp->pj = pj_norm; /* Caller is going to have to explicitly proj_destroy this */
-	lp->source_swapped = LW_FALSE;
-	lp->target_swapped = LW_FALSE;
 	lp->source_is_latlong = LW_FALSE;
 	lp->source_is_latlong = source_is_latlong;
 	lp->source_semi_major_metre = semi_major_metre;
@@ -273,9 +271,6 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 			to_rad(&p);
 		}
 	}
-
-	if (pj->source_swapped)
-		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
 	if (n_points == 1)
 	{
@@ -335,9 +330,6 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 			return LW_FAILURE;
 		}
 	}
-
-	if (pj->target_swapped)
-		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
 	/* Convert radians to degrees if necessary */
 	if (proj_angular_output(pj->pj, PJ_FWD))
