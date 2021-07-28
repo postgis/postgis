@@ -46,7 +46,7 @@ to_dec(POINT4D *pt)
 
 /***************************************************************************/
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 
 static int
 point4d_transform(POINT4D *pt, LWPROJ *pj)
@@ -136,66 +136,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	return rv;
 }
 
-/**
- * Transform given LWGEOM geometry
- * from inpj projection to outpj projection
- */
-int
-lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
-{
-	uint32_t i;
 
-	/* No points to transform in an empty! */
-	if ( lwgeom_is_empty(geom) )
-		return LW_SUCCESS;
-
-	switch(geom->type)
-	{
-		case POINTTYPE:
-		case LINETYPE:
-		case CIRCSTRINGTYPE:
-		case TRIANGLETYPE:
-		{
-			LWLINE *g = (LWLINE*)geom;
-			if ( ! ptarray_transform(g->points, pj) ) return LW_FAILURE;
-			break;
-		}
-		case POLYGONTYPE:
-		{
-			LWPOLY *g = (LWPOLY*)geom;
-			for ( i = 0; i < g->nrings; i++ )
-			{
-				if ( ! ptarray_transform(g->rings[i], pj) ) return LW_FAILURE;
-			}
-			break;
-		}
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-		{
-			LWCOLLECTION *g = (LWCOLLECTION*)geom;
-			for ( i = 0; i < g->ngeoms; i++ )
-			{
-				if ( ! lwgeom_transform(g->geoms[i], pj) ) return LW_FAILURE;
-			}
-			break;
-		}
-		default:
-		{
-			lwerror("lwgeom_transform: Cannot handle type '%s'",
-			          lwtype_name(geom->type));
-			return LW_FAILURE;
-		}
-	}
-	return LW_SUCCESS;
-}
 
 projPJ
 projpj_from_string(const char *str1)
@@ -209,202 +150,94 @@ projpj_from_string(const char *str1)
 
 /***************************************************************************/
 
-#else /* POSTGIS_PROJ_VERION >= 60 */
-
-static PJ *
-proj_cs_get_simplecs(const PJ *pj_crs)
-{
-	PJ *pj_sub = NULL;
-	if (proj_get_type(pj_crs) == PJ_TYPE_COMPOUND_CRS)
-	{
-		/* Sub-CRS[0] is the horizontal component */
-		pj_sub = proj_crs_get_sub_crs(NULL, pj_crs, 0);
-		if (!pj_sub)
-			lwerror("%s: proj_crs_get_sub_crs(0) returned NULL", __func__);
-	}
-	else if (proj_get_type(pj_crs) == PJ_TYPE_BOUND_CRS)
-	{
-		pj_sub = proj_get_source_crs(NULL, pj_crs);
-		if (!pj_sub)
-			lwerror("%s: proj_get_source_crs returned NULL", __func__);
-	}
-	else
-	{
-		/* If this works, we have a CS so we can return */
-		pj_sub = proj_crs_get_coordinate_system(NULL, pj_crs);
-		if (pj_sub)
-			return pj_sub;
-	}
-
-	/* Only sub-components of the Compound or Bound CRS's get here */
-	/* If we failed to get sub-components, or we failed to extract */
-	/* a CS from a generic CRS, then this is another case we don't */
-	/* handle */
-	if (!pj_sub)
-		lwerror("%s: %s", __func__, proj_errno_string(proj_context_errno(NULL)));
-
-	/* If the components are usable, we can extract the CS and return */
-	int pj_type = proj_get_type(pj_sub);
-	if (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS || pj_type == PJ_TYPE_PROJECTED_CRS)
-	{
-		PJ *pj_2d = proj_crs_get_coordinate_system(NULL, pj_sub);
-		proj_destroy(pj_sub);
-		return pj_2d;
-	}
-
-	/* If the components are *themselves* Bound/Compound, we can recurse */
-	if (pj_type == PJ_TYPE_COMPOUND_CRS || pj_type == PJ_TYPE_BOUND_CRS)
-		return proj_cs_get_simplecs(pj_sub);
-
-	/* This is a case we don't know how to handle */
-	lwerror("%s: un-handled CRS sub-type: %s", __func__, pj_type);
-	return NULL;
-}
-
-static uint8_t
-proj_crs_is_swapped(const PJ *pj_crs)
-{
-	int axis_count;
-	PJ *pj_cs = proj_cs_get_simplecs(pj_crs);
-	if (!pj_cs)
-		lwerror("%s: proj_cs_get_simplecs returned NULL", __func__);
-
-	axis_count = proj_cs_get_axis_count(NULL, pj_cs);
-	if (axis_count >= 2)
-	{
-		const char *out_name1, *out_abbrev1, *out_direction1;
-		const char *out_name2, *out_abbrev2, *out_direction2;
-		/* Read first axis */
-		proj_cs_get_axis_info(NULL,
-			pj_cs, 0,
-			&out_name1, &out_abbrev1, &out_direction1,
-			NULL, NULL, NULL, NULL);
-		/* Read second axis */
-		proj_cs_get_axis_info(NULL,
-			pj_cs, 1,
-			&out_name2, &out_abbrev2, &out_direction2,
-			NULL, NULL, NULL, NULL);
-
-		proj_destroy(pj_cs);
-
-		/* Directions agree, this is a northing/easting CRS, so reverse it */
-		if(out_direction1 && STR_IEQUALS(out_direction1, "north") &&
-		   out_direction2 && STR_IEQUALS(out_direction2, "east") )
-		{
-			return LW_TRUE;
-		}
-
-		/* Oddball case? Both axes north / both axes south, swap */
-		if(out_direction1 && out_direction2 &&
-		   ((STR_IEQUALS(out_direction1, "north") && STR_IEQUALS(out_direction2, "north")) ||
-		    (STR_IEQUALS(out_direction1, "south") && STR_IEQUALS(out_direction2, "south"))) &&
-		   out_name1 && STR_ISTARTS(out_name1, "northing")  &&
-		   out_name2 && STR_ISTARTS(out_name2, "easting"))
-		{
-			return LW_TRUE;
-		}
-
-		/* Any lat/lon system with Lat in first axis gets swapped */
-		if (STR_ISTARTS(out_abbrev1, "Lat"))
-			return LW_TRUE;
-
-		return LW_FALSE;
-	}
-
-	/* Failed the axis count test, leave quietly */
-	proj_destroy(pj_cs);
-	return LW_FALSE;
-}
+#else /* POSTGIS_PROJ_VERION >= 61 */
 
 LWPROJ *
-lwproj_from_PJ(PJ *pj, int8_t extra_geography_data)
+lwproj_from_str(const char* str_in, const char* str_out)
 {
-	PJ *pj_source_crs = proj_get_source_crs(NULL, pj);
 	uint8_t source_is_latlong = LW_FALSE;
-	double out_semi_major_metre = DBL_MAX, out_semi_minor_metre = DBL_MAX;
+	double semi_major_metre = DBL_MAX, semi_minor_metre = DBL_MAX;
 
-	if (!pj_source_crs)
-	{
-		lwerror("%s: unable to access source crs", __func__);
+	/* Usable inputs? */
+	if (! (str_in && str_out))
 		return NULL;
-	}
-	uint8_t source_swapped = proj_crs_is_swapped(pj_source_crs);
 
-	/* We only care about the extra values if there is no transformation */
-	if (!extra_geography_data)
+	PJ* pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX, str_in, str_out, NULL);
+	if (!pj)
+		return NULL;
+
+	/* Fill in geodetic parameter information when a null-transform */
+	/* is passed, because that's how we signal we want to store */
+	/* that info in the cache */
+	if (strcmp(str_in, str_out) == 0)
 	{
-		proj_destroy(pj_source_crs);
-	}
-	else
-	{
+		PJ *pj_source_crs = proj_get_source_crs(PJ_DEFAULT_CTX, pj);
 		PJ *pj_ellps;
-		double out_inv_flattening;
-		int out_is_semi_minor_computed;
-
 		PJ_TYPE pj_type = proj_get_type(pj_source_crs);
 		if (pj_type == PJ_TYPE_UNKNOWN)
 		{
-			proj_destroy(pj_source_crs);
+			proj_destroy(pj);
 			lwerror("%s: unable to access source crs type", __func__);
 			return NULL;
 		}
 		source_is_latlong = (pj_type == PJ_TYPE_GEOGRAPHIC_2D_CRS) || (pj_type == PJ_TYPE_GEOGRAPHIC_3D_CRS);
 
-		pj_ellps = proj_get_ellipsoid(NULL, pj_source_crs);
+		pj_ellps = proj_get_ellipsoid(PJ_DEFAULT_CTX, pj_source_crs);
 		proj_destroy(pj_source_crs);
 		if (!pj_ellps)
 		{
+			proj_destroy(pj);
 			lwerror("%s: unable to access source crs ellipsoid", __func__);
 			return NULL;
 		}
-		if (!proj_ellipsoid_get_parameters(NULL,
+		if (!proj_ellipsoid_get_parameters(PJ_DEFAULT_CTX,
 						   pj_ellps,
-						   &out_semi_major_metre,
-						   &out_semi_minor_metre,
-						   &out_is_semi_minor_computed,
-						   &out_inv_flattening))
+						   &semi_major_metre,
+						   &semi_minor_metre,
+						   NULL,
+						   NULL))
 		{
 			proj_destroy(pj_ellps);
+			proj_destroy(pj);
 			lwerror("%s: unable to access source crs ellipsoid parameters", __func__);
 			return NULL;
 		}
 		proj_destroy(pj_ellps);
 	}
 
-	PJ *pj_target_crs = proj_get_target_crs(NULL, pj);
-	if (!pj_target_crs)
-	{
-		lwerror("%s: unable to access target crs", __func__);
-		return NULL;
-	}
-	uint8_t target_swapped = proj_crs_is_swapped(pj_target_crs);
-	proj_destroy(pj_target_crs);
+	/* Add in an axis swap if necessary */
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+	/* Swap failed for some reason? Fall back to coordinate operation */
+	if (!pj_norm)
+		pj_norm = pj;
+	/* Swap is not a copy of input? Clean up input */
+	else if (pj != pj_norm)
+		proj_destroy(pj);
 
+	/* Allocate and populate return value */
 	LWPROJ *lp = lwalloc(sizeof(LWPROJ));
-	lp->pj = pj;
-	lp->source_swapped = source_swapped;
-	lp->target_swapped = target_swapped;
+	lp->pj = pj_norm; /* Caller is going to have to explicitly proj_destroy this */
+	lp->source_is_latlong = LW_FALSE;
 	lp->source_is_latlong = source_is_latlong;
-	lp->source_semi_major_metre = out_semi_major_metre;
-	lp->source_semi_minor_metre = out_semi_minor_metre;
-
+	lp->source_semi_major_metre = semi_major_metre;
+	lp->source_semi_minor_metre = semi_minor_metre;
 	return lp;
 }
 
 int
 lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 {
-	PJ *pj = proj_create_crs_to_crs(NULL, instr, outstr, NULL);
-	if (!pj)
+	LWPROJ *lp = lwproj_from_str(instr, outstr);
+	if (!lp)
 	{
-		PJ *pj_in = proj_create(NULL, instr);
+		PJ *pj_in = proj_create(PJ_DEFAULT_CTX, instr);
 		if (!pj_in)
 		{
 			lwerror("could not parse proj string '%s'", instr);
 		}
 		proj_destroy(pj_in);
 
-		PJ *pj_out = proj_create(NULL, outstr);
+		PJ *pj_out = proj_create(PJ_DEFAULT_CTX, outstr);
 		if (!pj_out)
 		{
 			lwerror("could not parse proj string '%s'", outstr);
@@ -413,75 +246,9 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 		lwerror("%s: Failed to transform", __func__);
 		return LW_FAILURE;
 	}
-
-	LWPROJ *lp = lwproj_from_PJ(pj, LW_FALSE);
-
 	int ret = lwgeom_transform(geom, lp);
-
-	proj_destroy(pj);
-	lwfree(lp);
-
+	proj_destroy(lp->pj);
 	return ret;
-}
-
-int
-lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
-{
-	uint32_t i;
-
-	/* No points to transform in an empty! */
-	if (lwgeom_is_empty(geom))
-		return LW_SUCCESS;
-
-	switch(geom->type)
-	{
-		case POINTTYPE:
-		case LINETYPE:
-		case CIRCSTRINGTYPE:
-		case TRIANGLETYPE:
-		{
-			LWLINE *g = (LWLINE*)geom;
-			if (!ptarray_transform(g->points, pj))
-				return LW_FAILURE;
-			break;
-		}
-		case POLYGONTYPE:
-		{
-			LWPOLY *g = (LWPOLY*)geom;
-			for (i = 0; i < g->nrings; i++)
-			{
-				if (!ptarray_transform(g->rings[i], pj))
-					return LW_FAILURE;
-			}
-			break;
-		}
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-		{
-			LWCOLLECTION *g = (LWCOLLECTION*)geom;
-			for (i = 0; i < g->ngeoms; i++)
-			{
-				if (!lwgeom_transform(g->geoms[i], pj))
-					return LW_FAILURE;
-			}
-			break;
-		}
-		default:
-		{
-			lwerror("lwgeom_transform: Cannot handle type '%s'",
-			          lwtype_name(geom->type));
-			return LW_FAILURE;
-		}
-	}
-	return LW_SUCCESS;
 }
 
 int
@@ -504,9 +271,6 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 			to_rad(&p);
 		}
 	}
-
-	if (pj->source_swapped)
-		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
 
 	if (n_points == 1)
 	{
@@ -567,9 +331,6 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		}
 	}
 
-	if (pj->target_swapped)
-		ptarray_swap_ordinates(pa, LWORD_X, LWORD_Y);
-
 	/* Convert radians to degrees if necessary */
 	if (proj_angular_output(pj->pj, PJ_FWD))
 	{
@@ -584,3 +345,64 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 }
 
 #endif
+
+/**
+ * Transform given LWGEOM geometry
+ * from inpj projection to outpj projection
+ */
+int
+lwgeom_transform(LWGEOM *geom, LWPROJ *pj)
+{
+	uint32_t i;
+
+	/* No points to transform in an empty! */
+	if ( lwgeom_is_empty(geom) )
+		return LW_SUCCESS;
+
+	switch(geom->type)
+	{
+		case POINTTYPE:
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case TRIANGLETYPE:
+		{
+			LWLINE *g = (LWLINE*)geom;
+			if ( ! ptarray_transform(g->points, pj) ) return LW_FAILURE;
+			break;
+		}
+		case POLYGONTYPE:
+		{
+			LWPOLY *g = (LWPOLY*)geom;
+			for ( i = 0; i < g->nrings; i++ )
+			{
+				if ( ! ptarray_transform(g->rings[i], pj) ) return LW_FAILURE;
+			}
+			break;
+		}
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		case COMPOUNDTYPE:
+		case CURVEPOLYTYPE:
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE:
+		case POLYHEDRALSURFACETYPE:
+		case TINTYPE:
+		{
+			LWCOLLECTION *g = (LWCOLLECTION*)geom;
+			for ( i = 0; i < g->ngeoms; i++ )
+			{
+				if ( ! lwgeom_transform(g->geoms[i], pj) ) return LW_FAILURE;
+			}
+			break;
+		}
+		default:
+		{
+			lwerror("lwgeom_transform: Cannot handle type '%s'",
+			          lwtype_name(geom->type));
+			return LW_FAILURE;
+		}
+	}
+	return LW_SUCCESS;
+}

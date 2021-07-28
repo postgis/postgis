@@ -67,8 +67,8 @@ static void
 PROJSRSDestroyPJ(void *projection)
 {
 	LWPROJ *pj = (LWPROJ *)projection;
-#if POSTGIS_PROJ_VERSION < 60
-/* Ape the Proj 6+ API for versions < 6 */
+#if POSTGIS_PROJ_VERSION < 61
+/* Ape the Proj 6+ API for versions < 6.1 */
 	if (pj->pj_from)
 	{
 		pj_free(pj->pj_from);
@@ -359,7 +359,7 @@ pjstrs_pfree(PjStrs *strs)
 		pfree(strs->srtext);
 }
 
-#if POSTGIS_PROJ_VERSION >= 60
+#if POSTGIS_PROJ_VERSION >= 61
 static char*
 pgstrs_get_entry(const PjStrs *strs, int n)
 {
@@ -377,7 +377,7 @@ pgstrs_get_entry(const PjStrs *strs, int n)
 }
 #endif
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 /*
 * Utility function for GML reader that still
 * needs proj4text access
@@ -421,7 +421,7 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 
 	oldContext = MemoryContextSwitchTo(PROJCache->PROJSRSCacheContext);
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 	PJ *projection = palloc(sizeof(PJ));
 	pj_from_str = from_strs.proj4text;
 	pj_to_str = to_strs.proj4text;
@@ -438,7 +438,8 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 		    "could not form projection from 'srid=%d' to 'srid=%d'",
 		    srid_from, srid_to);
 #else
-	PJ *projpj = NULL;
+
+	LWPROJ *projection = NULL;
 	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
 	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
@@ -450,16 +451,11 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 		pj_to_str   = pgstrs_get_entry(&to_strs,   i % 3);
 		if (!(pj_from_str && pj_to_str))
 			continue;
-		projpj = proj_create_crs_to_crs(NULL, pj_from_str, pj_to_str, NULL);
-		if (projpj && !proj_errno(projpj))
+
+		projection = lwproj_from_str(pj_from_str, pj_to_str);
+		if (projection)
 			break;
 	}
-	if (!projpj)
-	{
-		elog(ERROR, "could not form projection (PJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
-		return NULL;
-	}
-	LWPROJ *projection = lwproj_from_PJ(projpj, srid_from == srid_to);
 	if (!projection)
 	{
 		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
@@ -557,7 +553,7 @@ GetLWPROJ(int32_t srid_from, int32_t srid_to, LWPROJ **pj)
 static int
 proj_pj_is_latlong(const LWPROJ *pj)
 {
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 	return pj_is_latlong(pj->pj_from);
 #else
 	return pj->source_is_latlong;
@@ -611,14 +607,14 @@ int
 spheroid_init_from_srid(int32_t srid, SPHEROID *s)
 {
 	LWPROJ *pj;
-#if POSTGIS_PROJ_VERSION >= 48 && POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION >= 48 && POSTGIS_PROJ_VERSION < 61
 	double major_axis, minor_axis, eccentricity_squared;
 #endif
 
 	if ( GetLWPROJ(srid, srid, &pj) == LW_FAILURE)
 		return LW_FAILURE;
 
-#if POSTGIS_PROJ_VERSION >= 60
+#if POSTGIS_PROJ_VERSION >= 61
 	if (!pj->source_is_latlong)
 		return LW_FAILURE;
 	spheroid_init(s, pj->source_semi_major_metre, pj->source_semi_minor_metre);
