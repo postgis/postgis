@@ -553,7 +553,7 @@ GetLWPROJ(int32_t srid_from, int32_t srid_to, LWPROJ **pj)
 static int
 proj_pj_is_latlong(const LWPROJ *pj)
 {
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 	return pj_is_latlong(pj->pj_from);
 #else
 	return pj->source_is_latlong;
@@ -607,14 +607,14 @@ int
 spheroid_init_from_srid(int32_t srid, SPHEROID *s)
 {
 	LWPROJ *pj;
-#if POSTGIS_PROJ_VERSION >= 48 && POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION >= 48 && POSTGIS_PROJ_VERSION < 61
 	double major_axis, minor_axis, eccentricity_squared;
 #endif
 
 	if ( GetLWPROJ(srid, srid, &pj) == LW_FAILURE)
 		return LW_FAILURE;
 
-#if POSTGIS_PROJ_VERSION >= 60
+#if POSTGIS_PROJ_VERSION >= 61
 	if (!pj->source_is_latlong)
 		return LW_FAILURE;
 	spheroid_init(s, pj->source_semi_major_metre, pj->source_semi_minor_metre);
