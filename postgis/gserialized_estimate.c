@@ -2570,6 +2570,9 @@ Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS)
 	text *col = PG_GETARG_TEXT_P(1);
 	Oid idx_oid;
 
+	if(!tbl_oid)
+		PG_RETURN_NULL();
+
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
 	postgis_initialize_cache(fcinfo);
 
