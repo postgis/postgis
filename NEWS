@@ -14,6 +14,7 @@ PostGIS 3.0.4dev
   - #4949, Swapped coordinates for N/E planar systems (Paul Ramsey)
   - #4326, Fix CircularPolygon area calculation (Paul Ramsey)
   - #4917, Fix crasher with '-' regclass (Paul Ramsey)
+  - #4919, Rare crash in selectivity calculation (Paul Ramsey)
 
 
 PostGIS 3.0.3
