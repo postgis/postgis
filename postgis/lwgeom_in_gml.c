@@ -333,12 +333,9 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 
 	return pa;
 }
-#else
-/*
- * TODO: rework GML projection handling to skip the spatial_ref_sys
- * lookups, and use the Proj 6+ EPSG catalogue and built-in SRID
- * lookups directly. Drop this ugly hack.
- */
+
+#else /* POSTGIS_PROJ_VERSION >= 61 */
+
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 {

@@ -1,3 +1,4 @@
+*~
 *.a
 *.la
 .libs
@@ -29,7 +30,6 @@ doc/html/docbook.css
 doc/Makefile
 doc/Makefile.comments
 doc/po/*/*.xml
-doc/po/*/*.po~
 doc/po/*/html
 doc/po/*/xsl
 doc/po/*/*_comments.sql
