@@ -10,6 +10,7 @@ PostGIS 3.1.4dev
   - GI617, Fix typo in setting of INVMINDIST (Charles Karney)
   - #4326, Fix CircularPolygon area calculation (Paul Ramsey)
   - #4917, Fix crasher with '-' regclass (Paul Ramsey)
+  - #4919, Rare crash in selectivity calculation (Paul Ramsey)
 
 
 PostGIS 3.1.3
