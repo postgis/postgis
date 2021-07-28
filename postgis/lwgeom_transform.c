@@ -152,7 +152,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_proj_version);
 Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 	const char *ver = pj_get_release();
 	text *result = cstring_to_text(ver);
 #else

@@ -67,8 +67,8 @@ static void
 PROJSRSDestroyPJ(void *projection)
 {
 	LWPROJ *pj = (LWPROJ *)projection;
-#if POSTGIS_PROJ_VERSION < 60
-/* Ape the Proj 6+ API for versions < 6 */
+#if POSTGIS_PROJ_VERSION < 61
+/* Ape the Proj 6+ API for versions < 6.1 */
 	if (pj->pj_from)
 	{
 		pj_free(pj->pj_from);
@@ -359,7 +359,7 @@ pjstrs_pfree(PjStrs *strs)
 		pfree(strs->srtext);
 }
 
-#if POSTGIS_PROJ_VERSION >= 60
+#if POSTGIS_PROJ_VERSION >= 61
 static char*
 pgstrs_get_entry(const PjStrs *strs, int n)
 {
@@ -377,7 +377,7 @@ pgstrs_get_entry(const PjStrs *strs, int n)
 }
 #endif
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 /*
 * Utility function for GML reader that still
 * needs proj4text access
@@ -421,7 +421,7 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 
 	oldContext = MemoryContextSwitchTo(PROJCache->PROJSRSCacheContext);
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 	PJ *projection = palloc(sizeof(PJ));
 	pj_from_str = from_strs.proj4text;
 	pj_to_str = to_strs.proj4text;
@@ -439,11 +439,7 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 		    srid_from, srid_to);
 #else
 
-#if POSTGIS_PROJ_VERSION < 62
-	PJ *projpj = NULL;
-#else
 	LWPROJ *projection = NULL;
-#endif
 	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
 	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
@@ -456,24 +452,10 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 		if (!(pj_from_str && pj_to_str))
 			continue;
 
-#if POSTGIS_PROJ_VERSION < 62
-		projpj = proj_create_crs_to_crs(PJ_DEFAULT_CTX, pj_from_str, pj_to_str, NULL);
-		if (projpj && !proj_errno(projpj))
-			break;
-#else
 		projection = lwproj_from_str(pj_from_str, pj_to_str);
 		if (projection)
 			break;
-#endif
 	}
-#if POSTGIS_PROJ_VERSION < 62
-	if (!projpj)
-	{
-		elog(ERROR, "could not form projection (PJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);
-		return NULL;
-	}
-	LWPROJ *projection = lwproj_from_PJ(projpj, srid_from == srid_to);
-#endif
 	if (!projection)
 	{
 		elog(ERROR, "could not form projection (LWPROJ) from 'srid=%d' to 'srid=%d'", srid_from, srid_to);

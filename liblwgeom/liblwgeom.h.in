@@ -35,7 +35,11 @@
 
 #include "../postgis_config.h"
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
+
+/* For Proj 6.0 use of old API */
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+
 #include "proj_api.h"
 typedef struct PJ
 {

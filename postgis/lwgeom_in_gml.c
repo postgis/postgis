@@ -112,7 +112,7 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 	/* Internally lwgeom_from_gml calls gml_reproject_pa which, for PROJ before 6, called GetProj4String.
 	 * That function requires access to spatial_ref_sys, so in order to have it ready we need to ensure
 	 * the internal cache is initialized
@@ -303,7 +303,7 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
  * Use Proj to reproject a given POINTARRAY
  */
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
@@ -339,50 +339,6 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
  * lookups, and use the Proj 6+ EPSG catalogue and built-in SRID
  * lookups directly. Drop this ugly hack.
  */
-#if POSTGIS_PROJ_VERSION < 62
-static POINTARRAY *
-gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
-{
-	PJ *pj;
-	LWPROJ *lwp;
-	char text_in[16];
-	char text_out[16];
-
-	if (epsg_in == SRID_UNKNOWN)
-		return pa; /* nothing to do */
-
-	if (epsg_out == SRID_UNKNOWN)
-	{
-		gml_lwpgerror("invalid GML representation", 3);
-		return NULL;
-	}
-
-	snprintf(text_in, 16, "EPSG:%d", epsg_in);
-	snprintf(text_out, 16, "EPSG:%d", epsg_out);
-
-	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
-	lwp = lwproj_from_PJ(pj, LW_FALSE);
-	if (!lwp)
-	{
-		proj_destroy(pj);
-		gml_lwpgerror("Could not create LWPROJ*", 57);
-		return NULL;
-	}
-
-	if (ptarray_transform(pa, lwp) == LW_FAILURE)
-	{
-		proj_destroy(pj);
-		elog(ERROR, "gml_reproject_pa: reprojection failed");
-		return NULL;
-	}
-	proj_destroy(pj);
-	pfree(lwp);
-
-	return pa;
-}
-
-#else // POSTGIS_PROJ_VERSION >= 62
-
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 {
@@ -420,8 +376,6 @@ gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 
 	return pa;
 }
-
-#endif
 
 #endif /* POSTGIS_PROJ_VERSION */
 
