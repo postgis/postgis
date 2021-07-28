@@ -64,8 +64,10 @@ BEGIN
     $$,
     atopology
   );
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Query: %', sql;
   RAISE DEBUG 'Point: %', ST_AsEWKT(apoint);
+#endif
   EXECUTE sql
   USING apoint
   INTO closestEdge;
@@ -87,11 +89,13 @@ BEGIN
     closestNode := closestEdge.end_node;
   END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Closest edge is %, shortest line is % (length %)',
     closestEdge.edge_id,
     ST_AsEWKT(closestEdge.shortestLine),
     closestEdge.dist
   ;
+#endif
 
   IF closestNode IS NOT NULL
   THEN --{ Closest point is a node
@@ -127,7 +131,9 @@ BEGIN
         $$,
         atopology
       );
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'SQL: %', sql;
+#endif
       EXECUTE sql USING closestNode INTO rec;
       IF array_upper(rec.sideFaces, 1) > 1
       THEN

@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015-2020 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -347,10 +347,22 @@ lwt_be_checkTopoGeomRemEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
 }
 
 static int
+lwt_be_checkTopoGeomRemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id)
+{
+  CBT1(topo, checkTopoGeomRemIsoEdge, edge_id);
+}
+
+static int
 lwt_be_checkTopoGeomRemNode(LWT_TOPOLOGY* topo, LWT_ELEMID node_id,
                             LWT_ELEMID eid1, LWT_ELEMID eid2)
 {
   CBT3(topo, checkTopoGeomRemNode, node_id, eid1, eid2);
+}
+
+static int
+lwt_be_checkTopoGeomRemIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID node_id)
+{
+  CBT1(topo, checkTopoGeomRemIsoNode, node_id);
 }
 
 static int
@@ -3599,6 +3611,7 @@ lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
 {
   LWT_ISO_NODE *node;
   int ret;
+  int newPointFace;
 
   node = _lwt_GetIsoNode( topo, nid );
   if ( ! node ) return -1;
@@ -3617,9 +3630,19 @@ lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
     return -1;
   }
 
-  /* TODO: check that the new point is in the same containing face !
-   * See https://trac.osgeo.org/postgis/ticket/3232
-   */
+  /* Check that the new point is in the same containing face !
+   * See https://trac.osgeo.org/postgis/ticket/3232 */
+  newPointFace = lwt_be_getFaceContainingPoint(topo, pt);
+  if ( newPointFace == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( node->containing_face != newPointFace )
+  {
+    lwfree(node);
+    lwerror("Cannot move isolated node across faces");
+    return -1;
+  }
 
   node->node_id = nid;
   node->geom = pt;
@@ -3658,9 +3681,12 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
     return -1;
   }
 
-  /* TODO: notify to caller about node being removed ?
-   * See https://trac.osgeo.org/postgis/ticket/3231
-   */
+  if ( ! lwt_be_checkTopoGeomRemIsoNode(topo, nid) )
+  {
+    lwfree(node);
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
 
   lwfree(node);
   return 0; /* success */
@@ -3758,9 +3784,14 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
     return -1;
   }
 
-  /* TODO: notify to caller about edge being removed ?
+  /* Check that the edge can be safely removed
    * See https://trac.osgeo.org/postgis/ticket/3248
    */
+  if ( ! lwt_be_checkTopoGeomRemIsoEdge(topo, id) )
+  {
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
 
   return 0; /* success */
 }
@@ -5748,6 +5779,16 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Elements-snapped");
+    if ( input_was_closed )
+    {{
+      /* Recompute start point in case it moved */
+      LWLINE *scrolled = lwgeom_as_lwline(noded);
+      if (scrolled)
+      {
+        getPoint4d_p( scrolled->points, 0, &originalStartPoint);
+        LWDEBUGF(1, "Closed input line start point after snap %g,%g", originalStartPoint.x, originalStartPoint.y);
+      }
+    }}
 
     /* will not release the geoms array */
     lwcollection_release(col);
@@ -5818,7 +5859,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
           ptarray_scroll_in_place(scrolled->points, &originalStartPoint);
         }
         else {
-          LWDEBUGG(1, scrolled, "Linemerged intersected input is not closed anymore");
+          LWDEBUGG(1, lwline_as_lwgeom(scrolled), "Linemerged intersected input is not closed anymore");
         }
       }
       else {

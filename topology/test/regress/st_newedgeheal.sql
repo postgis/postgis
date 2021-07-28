@@ -62,19 +62,61 @@ SELECT topology.DropTopology('city_data');
 -- Now test in presence of features
 
 SELECT topology.CreateTopology('t') > 1;
-CREATE TABLE t.f(id varchar);
-SELECT topology.AddTopoGeometryColumn('t', 't', 'f','g', 'LINE');
+CREATE TABLE t.f_lin(id varchar);
+SELECT 'lin_layer', topology.AddTopoGeometryColumn('t', 't', 'f_lin','g', 'LINE');
+CREATE TABLE t.f_poi(id varchar);
+SELECT 'poi_layer', topology.AddTopoGeometryColumn('t', 't', 'f_poi','g', 'POINT');
+CREATE TABLE t.f_mix(id varchar);
+SELECT 'mix_layer', topology.AddTopoGeometryColumn('t', 't', 'f_mix','g', 'COLLECTION');
 
+SELECT 'N'||topology.TopoGeo_AddPoint('t', 'POINT(2 8)');  -- 1
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(2 2, 2  8)');        -- 1
 SELECT 'E'||topology.AddEdge('t', 'LINESTRING(2  8,  8  8)');      -- 2
 
-INSERT INTO t.f VALUES ('F+E1',
-  topology.CreateTopoGeom('t', 2, 1, '{{1,2}}'));
 
--- This should be forbidden, as F+E1 above could not be
+-- Cannot heal edges connected by node used in point TopoGeometry
+-- See https://trac.osgeo.org/postgis/ticket/3239
+INSERT INTO t.f_poi VALUES ('F+N1',
+  topology.CreateTopoGeom('t', 1, 2, '{{1,1}}'));
+SELECT 'unexpected-success-with-orphaned-point-topogeom-1',
+  topology.ST_NewEdgeHeal('t', 1, 2);
+SELECT 'unexpected-success-with-orphaned-point-topogeom-2',
+  topology.ST_NewEdgeHeal('t', 2, 1);
+WITH deleted AS ( DELETE FROM t.f_poi RETURNING g),
+     clear AS ( SELECT ClearTopoGeom(g) FROM deleted)
+     SELECT NULL FROM clear;
+
+-- Cannot heal edges connected by node used in collection TopoGeometry
+-- See https://trac.osgeo.org/postgis/ticket/3239
+INSERT INTO t.f_mix VALUES ('F+N1',
+  topology.CreateTopoGeom('t', 4, 3, '{{1,1}}'));
+SELECT 'unexpected-success-with-orphaned-mix-topogeom-1',
+  topology.ST_NewEdgeHeal('t', 1, 2);
+SELECT 'unexpected-success-with-orphaned-mix-topogeom-2',
+  topology.ST_NewEdgeHeal('t', 2, 1);
+WITH deleted AS ( DELETE FROM t.f_mix RETURNING g),
+     clear AS ( SELECT ClearTopoGeom(g) FROM deleted)
+     SELECT NULL FROM clear;
+
+-- Cannot heal edges when only one is used in line TopoGeometry
 -- defined w/out one of the edges
+INSERT INTO t.f_lin VALUES ('F+E1',
+  topology.CreateTopoGeom('t', 2, 1, '{{1,2}}'));
 SELECT topology.ST_NewEdgeHeal('t', 1, 2);
 SELECT topology.ST_NewEdgeHeal('t', 2, 1);
+WITH deleted AS ( DELETE FROM t.f_lin RETURNING g),
+     clear AS ( SELECT ClearTopoGeom(g) FROM deleted)
+     SELECT NULL FROM clear;
+
+---- Cannot heal edges when only one is used in collection TopoGeometry
+---- defined w/out one of the edges
+INSERT INTO t.f_mix VALUES ('F+E1',
+  topology.CreateTopoGeom('t', 4, 3, '{{1,2}}'));
+SELECT topology.ST_NewEdgeHeal('t', 1, 2);
+SELECT topology.ST_NewEdgeHeal('t', 2, 1);
+WITH deleted AS ( DELETE FROM t.f_mix RETURNING g),
+     clear AS ( SELECT ClearTopoGeom(g) FROM deleted)
+     SELECT NULL FROM clear;
 
 -- This is for ticket #941
 SELECT topology.ST_NewEdgeHeal('t', 1, 200);
@@ -82,32 +124,38 @@ SELECT topology.ST_NewEdgeHeal('t', 100, 2);
 
 -- Now see how signed edges are updated
 
-SELECT 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 5 0)');         -- 3
-SELECT 'E'||topology.AddEdge('t', 'LINESTRING(10 0, 5 0)');        -- 4
+SELECT 'tg-update', 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 5 0)');         -- 3
+SELECT 'tg-update', 'E'||topology.AddEdge('t', 'LINESTRING(10 0, 5 0)');        -- 4
 
-INSERT INTO t.f VALUES ('F+E3-E4',
+INSERT INTO t.f_lin VALUES ('F+E3-E4',
   topology.CreateTopoGeom('t', 2, 1, '{{3,2},{-4,2}}'));
-INSERT INTO t.f VALUES ('F-E3+E4',
+INSERT INTO t.f_lin VALUES ('F-E3+E4',
   topology.CreateTopoGeom('t', 2, 1, '{{-3,2},{4,2}}'));
 
-SELECT r.topogeo_id, r.element_id
-  FROM t.relation r, t.f f WHERE
+SELECT
+  'tg-update', 'before',
+  r.topogeo_id, r.element_id
+  FROM t.relation r, t.f_lin f WHERE
   r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
   AND r.topogeo_id in (2,3)
   ORDER BY r.layer_id, r.topogeo_id, r.element_id;
 
 -- This is fine, but will have to tweak definition of
 -- 'F+E3-E4' and 'F-E3+E4'
-SELECT 'MH(3,4)', topology.ST_NewEdgeHeal('t', 3, 4);
+SELECT 'tg-update', 'MH(3,4)', topology.ST_NewEdgeHeal('t', 3, 4);
 
--- This is for ticket #942
-SELECT topology.ST_NewEdgeHeal('t', 1, 5);
-
-SELECT r.topogeo_id, r.element_id
-  FROM t.relation r, t.f f WHERE
+SELECT
+  'tg-update', 'after',
+  r.topogeo_id, r.element_id
+  FROM t.relation r, t.f_lin f WHERE
   r.layer_id = layer_id(f.g) AND r.topogeo_id = id(f.g)
   AND r.topogeo_id in (2,3)
   ORDER BY r.layer_id, r.topogeo_id, r.element_id;
+
+-- This is for ticket #942 (non-connected edges)
+SELECT '#942', topology.ST_NewEdgeHeal('t', 1, 5);
+
+
 
 SELECT topology.DropTopology('t');
 

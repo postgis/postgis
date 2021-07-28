@@ -739,6 +739,137 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
             <xref linkend="ST_Dump" />, <xref linkend="ST_DumpRings" />, <xref linkend="ST_Points" /></para>
 		</refsection>
 	</refentry>
+
+	<refentry id="ST_DumpSegments">
+		<refnamediv>
+			<refname>ST_DumpSegments</refname>
+			<refpurpose>Returns a set of <varname>geometry_dump</varname> rows for the segments in a geometry.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+				<funcdef>geometry_dump[] <function>ST_DumpSegments</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+			<para>A set-returning function (SRF) that extracts the segments of a geometry.
+            It returns a set of
+			    <xref linkend="geometry_dump" /> rows,
+                each containing a geometry (<parameter>geom</parameter> field)
+                and an array of integers (<parameter>path</parameter> field).
+            </para>
+
+            <itemizedlist>
+            <listitem>
+                <para>the <parameter>geom</parameter> field
+                    <varname>LINESTRING</varname>s represent the segments of the supplied geometry.
+                </para>
+            </listitem>
+            <listitem>
+                <para>the <parameter>path</parameter> field (an <varname>integer[]</varname>)
+                    is an index enumerating the segment start point positions in the elements of the supplied geometry.
+                    The indices are 1-based.
+                    For example, for a <varname>LINESTRING</varname> the paths are <varname>{i}</varname>
+                    where <varname>i</varname> is the <varname>nth</varname>
+                    segment start point in the <varname>LINESTRING</varname>.
+                    For a <varname>POLYGON</varname> the paths are <varname>{i,j}</varname> where
+                    <varname>i</varname> is the ring number (1 is outer; inner rings follow)
+                    and <varname>j</varname> is the segment start point position in the ring.
+                </para>
+            </listitem>
+            </itemizedlist>
+
+            <para>Availability: 3.2.0</para>
+            <para>&T_support;</para>
+            <para>&Z_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>Standard Geometry Examples</title>
+
+			<programlisting>SELECT path, ST_AsText(geom)
+FROM (
+    SELECT (ST_DumpSegments(g.geom)).*
+    FROM (SELECT 'GEOMETRYCOLLECTION(
+    LINESTRING(1 1, 3 3, 4 4),
+    POLYGON((5 5, 6 6, 7 7, 5 5))
+)'::geometry AS geom
+        ) AS g
+) j;
+
+  path   │      st_astext
+---------------------------------
+ {1,1}   │ LINESTRING(1 1,3 3)
+ {1,2}   │ LINESTRING(3 3,4 4)
+ {2,1,1} │ LINESTRING(5 5,6 6)
+ {2,1,2} │ LINESTRING(6 6,7 7)
+ {2,1,3} │ LINESTRING(7 7,5 5)
+(5 rows)</programlisting>
+		</refsection>
+	<refsection>
+			<title>TIN and Triangle Examples</title>
+<programlisting>-- Triangle --
+SELECT path, ST_AsText(geom)
+FROM (
+    SELECT (ST_DumpSegments(g.geom)).*
+    FROM (SELECT 'TRIANGLE((
+        0 0,
+        0 9,
+        9 0,
+        0 0
+    ))'::geometry AS geom
+        ) AS g
+) j;
+
+ path  │      st_astext
+ ---------------------------------
+ {1,1} │ LINESTRING(0 0,0 9)
+ {1,2} │ LINESTRING(0 9,9 0)
+ {1,3} │ LINESTRING(9 0,0 0)
+(3 rows)
+</programlisting>
+<programlisting>-- TIN --
+SELECT path, ST_AsEWKT(geom)
+FROM (
+    SELECT (ST_DumpSegments(g.geom)).*
+    FROM (SELECT 'TIN(((
+        0 0 0,
+        0 0 1,
+        0 1 0,
+        0 0 0
+    )), ((
+        0 0 0,
+        0 1 0,
+        1 1 0,
+        0 0 0
+    ))
+    )'::geometry AS geom
+        ) AS g
+) j;
+
+  path   │        st_asewkt
+  ---------------------------------
+ {1,1,1} │ LINESTRING(0 0 0,0 0 1)
+ {1,1,2} │ LINESTRING(0 0 1,0 1 0)
+ {1,1,3} │ LINESTRING(0 1 0,0 0 0)
+ {2,1,1} │ LINESTRING(0 0 0,0 1 0)
+ {2,1,2} │ LINESTRING(0 1 0,1 1 0)
+ {2,1,3} │ LINESTRING(1 1 0,0 0 0)
+(6 rows)
+</programlisting>
+		</refsection>
+			<refsection>
+			<title>See Also</title>
+			<para><xref linkend="geometry_dump" />, <xref linkend="PostGIS_Geometry_DumpFunctions" />,
+            <xref linkend="ST_Dump" />, <xref linkend="ST_DumpRings" /></para>
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_DumpRings">
 	  <refnamediv>
 		<refname>ST_DumpRings</refname>

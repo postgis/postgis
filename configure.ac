@@ -1029,11 +1029,11 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		],[])
 
 	if test -n "$PROTOBUF_CPPFLAGS"; then
-		CPPFLAGS="$PROTOBUF_CPPFLAGS"
+		CPPFLAGS="$CPPFLAGS $PROTOBUF_CPPFLAGS"
 	fi
 
 	if test -n "$PROTOBUF_LDFLAGS"; then
-		LDFLAGS="$PROTOBUF_LDFLAGS"
+		LDFLAGS="$LDFLAGS $PROTOBUF_LDFLAGS"
 	fi
 
 	dnl confirm that discovered/configured include path works

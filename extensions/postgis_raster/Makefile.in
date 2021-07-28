@@ -92,7 +92,7 @@ unpackaged_check.sql: unpackaged_check.sql.in Makefile
 sql/rtpostgis.sql: sql/rtpostgis_for_extension.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-sql/rtpostgis_for_extension.sql: ../../raster/rt_pg/rtpostgis.sql.in | sql
+sql/rtpostgis_for_extension.sql: ../../raster/rt_pg/rtpostgis.sql.in ../../postgis_revision.h | sql
 	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 

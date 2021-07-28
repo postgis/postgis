@@ -85,7 +85,7 @@ $$ LANGUAGE 'plpgsql' STABLE STRICT;
 -- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry, allowEdgeSplitting boolean, setContainingFace boolean DEFAULT false)
+CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry, allowEdgeSplitting boolean DEFAULT false, setContainingFace boolean DEFAULT false)
 	RETURNS int
 AS
 $$
@@ -173,19 +173,6 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
---} AddNode
-
---{
---
--- AddNode(atopology, point)
---
-CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry)
-	RETURNS int
-AS
-$$
-  SELECT topology.AddNode($1, $2, false, false);
-$$
-LANGUAGE 'sql' VOLATILE;
 --} AddNode
 
 --{

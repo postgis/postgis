@@ -39,6 +39,7 @@ TESTS += \
 	$(topsrcdir)/regress/core/curvetoline \
 	$(topsrcdir)/regress/core/dump \
 	$(topsrcdir)/regress/core/dumppoints \
+	$(topsrcdir)/regress/core/dumpsegments \
 	$(topsrcdir)/regress/core/empty \
 	$(topsrcdir)/regress/core/estimatedextent \
 	$(topsrcdir)/regress/core/forcecurve \
