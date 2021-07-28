@@ -2462,7 +2462,7 @@ int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outst
 int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
 int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 /**
  * Get a projection from a string representation
  *
@@ -2470,18 +2470,14 @@ int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
  */
 projPJ projpj_from_string(const char* txt);
 
-#else // POSTGIS_PROJ_VERSION >= 60
+#else // POSTGIS_PROJ_VERSION >= 61
 
-#if POSTGIS_PROJ_VERSION < 62
 /**
  * Allocate a new LWPROJ containing the reference to the PROJ's PJ
  * If extra_geography_data is true, it will generate the following values for
  * the source srs: is_latlong (geometric or not) and spheroid values
  */
-LWPROJ *lwproj_from_PJ(PJ *pj, int8_t extra_geography_data);
-#else // POSTGIS_PROJ_VERSION >= 62
 LWPROJ *lwproj_from_str(const char* str_in, const char* str_out);
-#endif
 
 #endif
 
