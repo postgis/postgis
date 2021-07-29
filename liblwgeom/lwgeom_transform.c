@@ -217,7 +217,6 @@ lwproj_from_str(const char* str_in, const char* str_out)
 	/* Allocate and populate return value */
 	LWPROJ *lp = lwalloc(sizeof(LWPROJ));
 	lp->pj = pj_norm; /* Caller is going to have to explicitly proj_destroy this */
-	lp->source_is_latlong = LW_FALSE;
 	lp->source_is_latlong = source_is_latlong;
 	lp->source_semi_major_metre = semi_major_metre;
 	lp->source_semi_minor_metre = semi_minor_metre;
