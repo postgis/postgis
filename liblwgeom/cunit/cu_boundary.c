@@ -20,11 +20,11 @@
 	LWGEOM *gin, *gout, *gexp; \
 	cu_error_msg_reset(); \
 	gin = lwgeom_from_wkt( wkt_in, LW_PARSER_CHECK_NONE);  \
-	CU_ASSERT(gin != NULL);  \
+	CU_ASSERT_PTR_NOT_NULL_FATAL(gin); \
 	gexp = lwgeom_from_wkt( wkt_exp, LW_PARSER_CHECK_NONE);  \
-	CU_ASSERT(gexp != NULL);  \
+	CU_ASSERT_PTR_NOT_NULL_FATAL(gexp); \
 	gout = lwgeom_boundary(gin);  \
-	CU_ASSERT(gout != NULL);  \
+	CU_ASSERT_PTR_NOT_NULL_FATAL(gout); \
 	ASSERT_NORMALIZED_GEOM_SAME(gout, gexp);  \
 	lwgeom_free(gout);  \
 	lwgeom_free(gexp);  \
@@ -78,6 +78,30 @@ static void boundary_line(void)
 
 }
 
+static void boundary_polygon(void)
+{
+	BOUNDARY_TEST(
+		"POLYGON EMPTY",
+		"MULTILINESTRING EMPTY"
+	);
+
+	BOUNDARY_TEST(
+		"POLYGON((0 0, 5 5, 10 0, 0 0))",
+		"LINESTRING(0 0, 5 5, 10 0, 0 0)"
+	);
+
+	BOUNDARY_TEST(
+		"POLYGON((0 0, 5 5, 10 0, 0 0),(3 1,7 1,5 2,3 1))",
+		"MULTILINESTRING((0 0, 5 5, 10 0, 0 0),(3 1,7 1,5 2,3 1))"
+	);
+
+	BOUNDARY_TEST(
+		"MULTIPOLYGON(((0 0, 5 5, 10 0, 0 0),(3 1,7 1,5 2,3 1)),((20 0,20 5,25 5,20 0)))",
+		"MULTILINESTRING((0 0, 5 5, 10 0, 0 0),(3 1,7 1,5 2,3 1),(20 0,20 5,25 5,20 0))"
+	);
+
+}
+
 static void boundary_collection(void)
 {
 	/* See https://trac.osgeo.org/postgis/ticket/4956 */
@@ -94,8 +118,8 @@ void boundary_suite_setup(void)
 	CU_pSuite suite = CU_add_suite("boundary", NULL, NULL);
 	PG_ADD_TEST(suite,boundary_point);
 	PG_ADD_TEST(suite,boundary_line);
-#if 0 /* write these */
 	PG_ADD_TEST(suite,boundary_polygon);
+#if 0 /* write these */
 	PG_ADD_TEST(suite,boundary_tin);
 #endif
 	//PG_ADD_TEST(suite,boundary_collection);
