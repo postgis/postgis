@@ -11,6 +11,7 @@ PostGIS 3.1.4dev
   - #4326, Fix CircularPolygon area calculation (Paul Ramsey)
   - #4917, Fix crasher with '-' regclass (Paul Ramsey)
   - #4919, Rare crash in selectivity calculation (Paul Ramsey)
+  - #4926, Preserve SRID on unions of empty geometry (Paul Ramsey)
 
 
 PostGIS 3.1.3
