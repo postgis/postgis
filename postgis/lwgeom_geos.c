@@ -550,6 +550,7 @@ Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 			{
 				int type = lwgeom_get_type(geom);
 				empty_type = type > empty_type ? type : empty_type;
+				srid = (srid != SRID_UNKNOWN ? srid : lwgeom_get_srid(geom));
 			}
 		}
 	}
