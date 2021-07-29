@@ -2650,8 +2650,7 @@ lwgeom_boundary(LWGEOM *lwgeom)
 		return (LWGEOM *)lwcol;
 	}
 	case MULTIPOLYGONTYPE:
-	case TINTYPE:
-	case COLLECTIONTYPE: {
+	case TINTYPE: {
 		LWCOLLECTION *lwcol = (LWCOLLECTION *)lwgeom;
 		LWCOLLECTION *lwcol_boundary = lwcollection_construct_empty(MULTILINETYPE, srid, hasz, hasm);
 
@@ -2659,6 +2658,15 @@ lwgeom_boundary(LWGEOM *lwgeom)
 			lwcollection_add_lwgeom(lwcol_boundary, lwgeom_boundary(lwcol->geoms[i]));
 
 		return (LWGEOM *)lwcol_boundary;
+	}
+	case COLLECTIONTYPE: {
+		LWCOLLECTION *lwcol = (LWCOLLECTION *)lwgeom;
+		LWCOLLECTION *lwcol_boundary = lwcollection_construct_empty(COLLECTIONTYPE, srid, hasz, hasm);
+
+		for (uint32_t i = 0; i < lwcol->ngeoms; i++)
+			lwcollection_add_lwgeom(lwcol_boundary, lwgeom_boundary(lwcol->geoms[i]));
+
+		return lwgeom_homogenize((LWGEOM *)lwcol_boundary);
 	}
 	default:
 		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(lwgeom->type));
