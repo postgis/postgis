@@ -61,6 +61,21 @@ static void boundary_line(void)
 		"MULTIPOINT EMPTY"
 	);
 
+	BOUNDARY_TEST(
+		"LINESTRING(0 0, 5 5, 10 0, 0 0)",
+		"MULTIPOINT EMPTY"
+	);
+
+	BOUNDARY_TEST(
+		"LINESTRING(0 0, 5 0, 10 0)",
+		"MULTIPOINT(0 0, 10 0)"
+	);
+
+	BOUNDARY_TEST(
+		"MULTILINESTRING((0 0, 5 0, 10 0),(20 5, 20 6, 20 10))",
+		"MULTIPOINT(0 0, 10 0, 20 5, 20 10)"
+	);
+
 }
 
 static void boundary_collection(void)
