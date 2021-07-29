@@ -16,6 +16,8 @@ PostGIS 3.0.4dev
   - #4917, Fix crasher with '-' regclass (Paul Ramsey)
   - #4919, Rare crash in selectivity calculation (Paul Ramsey)
   - #4926, Preserve SRID on unions of empty geometry (Paul Ramsey)
+  - #4740, Round values in geography_distance_tree
+           as we do on geography_distance (Raúl Marín, Paul Ramsey, Regina Obe)
 
 
 PostGIS 3.0.3
