@@ -58,7 +58,7 @@ static void boundary_line(void)
 {
 	BOUNDARY_TEST(
 		"LINESTRING EMPTY",
-		"POINT EMPTY"
+		"MULTIPOINT EMPTY"
 	);
 
 }

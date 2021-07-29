@@ -2562,6 +2562,8 @@ lwgeom_boundary(LWGEOM *lwgeom)
 			return (LWGEOM *)lwmpoint_construct_empty(srid, hasz, hasm);
 		else
 		{
+			if ( lwgeom_is_empty(lwgeom) )
+				return (LWGEOM *)lwmpoint_construct_empty(srid, hasz, hasm);
 			LWLINE *lwline = (LWLINE *)lwgeom;
 			LWMPOINT *lwmpoint = lwmpoint_construct_empty(srid, hasz, hasm);
 			POINT4D pt;
