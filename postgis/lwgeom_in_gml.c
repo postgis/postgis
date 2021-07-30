@@ -899,7 +899,8 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 
 			if (gml_dim == dim)
 			{
-				ptarray_append_point(dpa, &pt, LW_FALSE);
+				/* Add to ptarray, allowing dupes */
+				ptarray_append_point(dpa, &pt, LW_TRUE);
 				pt.x = pt.y = pt.z = pt.m = 0.0;
 				gml_dim = 0;
 			}
