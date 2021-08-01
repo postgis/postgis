@@ -123,7 +123,7 @@ CREATE OR REPLACE FUNCTION drop_state_tables_generate_script(param_state text, p
 $$
 SELECT array_to_string(array_agg('DROP TABLE ' || quote_ident(table_schema) || '.' || quote_ident(table_name) || ';'),E'\n')
 	FROM (SELECT * FROM information_schema.tables
-	WHERE table_schema = $2 AND table_name like lower($1) || '_%' ORDER BY table_name) AS foo;
+	WHERE table_schema = $2 AND table_name like '~_%' ESCAPE '~'  ORDER BY table_name) AS foo;
 ;
 $$
   LANGUAGE sql VOLATILE;
