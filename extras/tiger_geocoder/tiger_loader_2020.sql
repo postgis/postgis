@@ -144,7 +144,7 @@ CREATE OR REPLACE FUNCTION drop_state_tables_generate_script(param_state text, p
 $$
 SELECT array_to_string(array_agg('DROP TABLE ' || quote_ident(table_schema) || '.' || quote_ident(table_name) || ';'),E'\n')
 	FROM (SELECT * FROM information_schema.tables
-	WHERE table_schema = $2 AND table_name like lower($1) || '_%' ORDER BY table_name) AS foo;
+	WHERE table_schema = $2 AND table_name like '~_%' ESCAPE '~'  ORDER BY table_name) AS foo;
 ;
 $$
   LANGUAGE sql VOLATILE;
@@ -357,7 +357,12 @@ VALUES(6, 'faces', 'faces', true, true, false,false, 'c',
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_tfid ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree (tfid);"
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${table_name}_countyfp ON ${data_schema}.${state_abbrev}_${table_name} USING btree (countyfp);"
 	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
-	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid'] );
+	${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid', 'geoid','cpi','suffix1ce', 'statefp00', 'statefp10', 'countyfp00','countyfp10'
+   ,'tractce00','tractce10', 'blkgrpce00', 'blkgrpce10', 'blockce00', 'blockce10'
+      , 'cousubfp00', 'submcdfp00', 'conctyfp00', 'placefp00', 'aiannhfp00', 'aiannhce00',
+       'comptyp00', 'trsubfp00', 'trsubce00', 'anrcfp00', 'elsdlea00', 'scsdlea00',
+       'unsdlea00', 'uace00', 'cd108fp', 'sldust00', 'sldlst00', 'vtdst00', 'zcta5ce00',
+       'tazce00', 'ugace00', 'puma5ce00','vtdst10','tazce10','uace10','puma5ce10','tazce', 'uace', 'vtdst',  'zcta5ce10', 'puma5ce', 'ugace10','pumace10', 'estatefp', 'ugace', 'blockce']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
 VALUES(7, 'featnames', 'featnames', true, true, false,false, 'a',
