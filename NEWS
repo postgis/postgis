@@ -13,6 +13,8 @@ PostGIS 3.1.4dev
   - #4919, Rare crash in selectivity calculation (Paul Ramsey)
   - #4926, Preserve SRID on unions of empty geometry (Paul Ramsey)
   - #4910, Allow repeated points in GML input poslists (Paul Ramsey)
+  - #4958, TIGER2020 fix faces and add Tabblock20 (Regina Obe)
+  - #4959, Drop Colorado state files also drops national county tables (Regina Obe)
 
 
 PostGIS 3.1.3
