@@ -123,10 +123,11 @@ CREATE OR REPLACE FUNCTION drop_state_tables_generate_script(param_state text, p
 $$
 SELECT array_to_string(array_agg('DROP TABLE ' || quote_ident(table_schema) || '.' || quote_ident(table_name) || ';'),E'\n')
 	FROM (SELECT * FROM information_schema.tables
-	WHERE table_schema = $2 AND table_name like lower($1) || '_%' ORDER BY table_name) AS foo;
+	WHERE table_schema = $2 AND table_name like lower($1) || '~_%' ESCAPE '~' ORDER BY table_name) AS foo;
 ;
 $$
   LANGUAGE sql VOLATILE;
+
 
 -- Helper function that generates script to drop all nation tables (county, state) in a particular schema
 -- This is useful for loading 2011 because state and county tables aren't broken out into separate state files
