@@ -2550,20 +2550,16 @@ lwgeom_boundary(LWGEOM *lwgeom)
 
 	switch (lwgeom->type)
 	{
-	case POINTTYPE: {
-		return (LWGEOM *)lwpoint_construct_empty(srid, hasz, hasm);
-	}
+	case POINTTYPE:
 	case MULTIPOINTTYPE: {
-		return (LWGEOM *)lwmpoint_construct_empty(srid, hasz, hasm);
+		return lwgeom_construct_empty(lwgeom->type, srid, hasz, hasm);
 	}
 	case LINETYPE:
 	case CIRCSTRINGTYPE: {
-		if (lwgeom_is_closed(lwgeom))
+		if (lwgeom_is_closed(lwgeom) || lwgeom_is_empty(lwgeom))
 			return (LWGEOM *)lwmpoint_construct_empty(srid, hasz, hasm);
 		else
 		{
-			if ( lwgeom_is_empty(lwgeom) )
-				return (LWGEOM *)lwmpoint_construct_empty(srid, hasz, hasm);
 			LWLINE *lwline = (LWLINE *)lwgeom;
 			LWMPOINT *lwmpoint = lwmpoint_construct_empty(srid, hasz, hasm);
 			POINT4D pt;
@@ -2625,22 +2621,14 @@ lwgeom_boundary(LWGEOM *lwgeom)
 	case POLYGONTYPE: {
 		LWPOLY *lwpoly = (LWPOLY *)lwgeom;
 
-		if (lwpoly->nrings == 1)
+		LWMLINE *lwmline = lwmline_construct_empty(srid, hasz, hasm);
+		for (uint32_t i = 0; i < lwpoly->nrings; i++)
 		{
-			POINTARRAY *ring = ptarray_clone_deep(lwpoly->rings[0]);
-			return (LWGEOM *)lwline_construct(srid, 0, ring);
+			POINTARRAY *ring = ptarray_clone_deep(lwpoly->rings[i]);
+			lwmline_add_lwline(lwmline, lwline_construct(srid, 0, ring));
 		}
-		else
-		{
-			LWMLINE *lwmline = lwmline_construct_empty(srid, hasz, hasm);
-			for (uint32_t i = 0; i < lwpoly->nrings; i++)
-			{
-				POINTARRAY *ring = ptarray_clone_deep(lwpoly->rings[i]);
-				lwmline_add_lwline(lwmline, lwline_construct(srid, 0, ring));
-			}
 
-			return (LWGEOM *)lwmline;
-		}
+		return lwgeom_homogenize((LWGEOM *)lwmline);
 	}
 	case CURVEPOLYTYPE: {
 		LWCURVEPOLY *lwcurvepoly = (LWCURVEPOLY *)lwgeom;
@@ -2652,16 +2640,8 @@ lwgeom_boundary(LWGEOM *lwgeom)
 		return (LWGEOM *)lwcol;
 	}
 	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
 	case TINTYPE: {
-		LWCOLLECTION *lwcol = (LWCOLLECTION *)lwgeom;
-		LWCOLLECTION *lwcol_boundary = lwcollection_construct_empty(MULTILINETYPE, srid, hasz, hasm);
-
-		for (uint32_t i = 0; i < lwcol->ngeoms; i++)
-			lwcollection_add_lwgeom(lwcol_boundary, lwgeom_boundary(lwcol->geoms[i]));
-
-		return (LWGEOM *)lwcol_boundary;
-	}
-	case COLLECTIONTYPE: {
 		LWCOLLECTION *lwcol = (LWCOLLECTION *)lwgeom;
 		LWCOLLECTION *lwcol_boundary = lwcollection_construct_empty(COLLECTIONTYPE, srid, hasz, hasm);
 
