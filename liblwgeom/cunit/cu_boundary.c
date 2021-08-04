@@ -62,7 +62,17 @@ static void boundary_line(void)
 	);
 
 	BOUNDARY_TEST(
+		"CIRCULARSTRING EMPTY",
+		"MULTIPOINT EMPTY"
+	);
+
+	BOUNDARY_TEST(
 		"LINESTRING(0 0, 5 5, 10 0, 0 0)",
+		"MULTIPOINT EMPTY"
+	);
+
+	BOUNDARY_TEST(
+		"CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)",
 		"MULTIPOINT EMPTY"
 	);
 
@@ -74,6 +84,11 @@ static void boundary_line(void)
 	BOUNDARY_TEST(
 		"MULTILINESTRING((0 0, 5 0, 10 0),(20 5, 20 6, 20 10))",
 		"MULTIPOINT(0 0, 10 0, 20 5, 20 10)"
+	);
+
+	BOUNDARY_TEST(
+		"MULTICURVE((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5))",
+		"MULTIPOINT(1 1 1,-1 1 1)"
 	);
 
 }
@@ -95,19 +110,66 @@ static void boundary_polygon(void)
 		"MULTILINESTRING((0 0, 5 5, 10 0, 0 0),(3 1,7 1,5 2,3 1))"
 	);
 
+	/* See https://trac.osgeo.org/postgis/ticket/4961 */
 	BOUNDARY_TEST(
 		"MULTIPOLYGON(((0 0, 5 5, 10 0, 0 0),(3 1,7 1,5 2,3 1)),((20 0,20 5,25 5,20 0)))",
 		"MULTILINESTRING((0 0, 5 5, 10 0, 0 0),(3 1,7 1,5 2,3 1),(20 0,20 5,25 5,20 0))"
 	);
 
+	BOUNDARY_TEST(
+		"CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0))",
+		"MULTICURVE(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0))"
+	);
+
+	BOUNDARY_TEST(
+		"CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1))",
+		"MULTICURVE(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1))"
+	);
+
+}
+
+static void boundary_triangle(void)
+{
+	BOUNDARY_TEST(
+		"TRIANGLE EMPTY",
+		"LINESTRING EMPTY"
+	);
+
+	BOUNDARY_TEST(
+		"TRIANGLE((1 1, 0 0, -1 1, 1 1))",
+		"LINESTRING(1 1, 0 0, -1 1, 1 1)"
+	);
+}
+
+static void boundary_tin(void)
+{
+	BOUNDARY_TEST(
+		"TIN EMPTY",
+		"GEOMETRYCOLLECTION EMPTY"
+	);
+
+	BOUNDARY_TEST(
+		"TIN(((0 0,0 -1,-1 1,0 0)))",
+		"LINESTRING(0 0,0 -1,-1 1,0 0)"
+	);
+
+	BOUNDARY_TEST(
+		"TIN(((0 0,0 -1,-1 1,0 0)),((0 0,1 0,0 -1,0 0)))",
+		"MULTILINESTRING((0 0,0 -1,-1 1,0 0),(0 0,1 0,0 -1,0 0))"
+	);
 }
 
 static void boundary_collection(void)
 {
+	BOUNDARY_TEST(
+		"GEOMETRYCOLLECTION EMPTY",
+		"GEOMETRYCOLLECTION EMPTY"
+	);
+
 	/* See https://trac.osgeo.org/postgis/ticket/4956 */
 	BOUNDARY_TEST(
-"GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2)),POLYGON((2 2,2 4,4 4,4 2,2 2)))",
-"MULTILINESTRING((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2),(2 2,2 4,4 4,4 2,2 2))"
+		"GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2)),POLYGON((2 2,2 4,4 4,4 2,2 2)))",
+		"MULTILINESTRING((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2),(2 2,2 4,4 4,4 2,2 2))"
 	);
 }
 
@@ -119,6 +181,9 @@ void boundary_suite_setup(void)
 	PG_ADD_TEST(suite,boundary_point);
 	PG_ADD_TEST(suite,boundary_line);
 	PG_ADD_TEST(suite,boundary_polygon);
+	PG_ADD_TEST(suite,boundary_triangle);
+	PG_ADD_TEST(suite,boundary_tin);
+	PG_ADD_TEST(suite,boundary_collection);
 #if 0 /* write these */
 	PG_ADD_TEST(suite,boundary_tin);
 #endif
