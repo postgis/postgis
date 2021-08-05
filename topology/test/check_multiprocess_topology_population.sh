@@ -82,10 +82,9 @@ done
 for pid in `cat pids.$$`; do
     wait $pid
 done
-rm -f pids.$$
 
 psql ${PSQL_OPTS} -c "SELECT TopologySummary('mt_topo')" | grep -v '^$'
-echo "-- INVALIDITIES START --"
-psql ${PSQL_OPTS} -c "SELECT * FROM ValidateTopology('mt_topo')" | grep -v '^$'
-echo "-- INVALIDITIES END --"
+echo " -- INVALIDITIES START --"
+psql ${PSQL_OPTS} -c "SELECT 'INVALIDITY', * FROM ValidateTopology('mt_topo')" | grep -v '^$'
+echo " -- INVALIDITIES END --"
 
