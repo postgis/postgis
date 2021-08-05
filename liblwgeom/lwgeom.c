@@ -2628,7 +2628,10 @@ lwgeom_boundary(LWGEOM *lwgeom)
 			lwmline_add_lwline(lwmline, lwline_construct(srid, 0, ring));
 		}
 
-		return lwgeom_homogenize((LWGEOM *)lwmline);
+		LWGEOM *lwout = lwgeom_homogenize((LWGEOM *)lwmline);
+		lwgeom_free((LWGEOM *)lwmline);
+
+		return lwout;
 	}
 	case CURVEPOLYTYPE: {
 		LWCURVEPOLY *lwcurvepoly = (LWCURVEPOLY *)lwgeom;
@@ -2648,7 +2651,10 @@ lwgeom_boundary(LWGEOM *lwgeom)
 		for (uint32_t i = 0; i < lwcol->ngeoms; i++)
 			lwcollection_add_lwgeom(lwcol_boundary, lwgeom_boundary(lwcol->geoms[i]));
 
-		return lwgeom_homogenize((LWGEOM *)lwcol_boundary);
+		LWGEOM *lwout = lwgeom_homogenize((LWGEOM *)lwcol_boundary);
+		lwgeom_free((LWGEOM *)lwcol_boundary);
+
+		return lwout;
 	}
 	default:
 		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(lwgeom->type));
