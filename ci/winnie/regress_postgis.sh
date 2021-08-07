@@ -124,6 +124,7 @@ echo PGIS_REG_TMPDIR IS $PGIS_REG_TMPDIR
 export XSLTPROCFLAGS=
 cd ${POSTGIS_SRC}
 if [ -e ./GNUMakefile ]; then
+  sh autogen.sh
 	make distclean
 fi
 
