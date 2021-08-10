@@ -877,7 +877,7 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
       box = lwgeom_get_bbox(g);
       if ( box )
       {
-        POSTGIS_DEBUGF(1, "Face %d bbox xmin is %.15g", face->face_id, box->xmin);
+        POSTGIS_DEBUGF(1, "Face %" LWTFMT_ELEMID " bbox xmin is %.15g", face->face_id, box->xmin);
         face->mbr = gbox_clone(box);
       }
       else
