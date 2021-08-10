@@ -1025,7 +1025,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	AC_ARG_WITH([protobuf-lib],
 		[AS_HELP_STRING([--with-protobuf-lib=PATH], [libprotobuf-c.so/dll/dylib library installation directory])], [
-			PROTOBUF_LDFLAGS="-L$withval -lprotobuf-c"
+			PROTOBUF_LDFLAGS="-L$withval"
 		],[])
 
 	if test -n "$PROTOBUF_CPPFLAGS"; then
@@ -1043,7 +1043,8 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	)
 
 	dnl confirm that discovered/configured library path works
-	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init], [],
+	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init],
+		[PROTOBUF_LDFLAGS="-lprotobuf-c"],
 		AC_MSG_ERROR([unable to link protobuf-c using $LDFLAGS. You can disable MVT and Geobuf support using --without-protobuf])
 		HAVE_PROTOBUF=no
 	)
