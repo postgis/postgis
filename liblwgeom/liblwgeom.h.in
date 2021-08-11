@@ -1097,6 +1097,16 @@ extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2,
 extern int ptarray_closest_vertex_2d(const POINTARRAY *pa,
                                      const POINT2D *qp, double *dist);
 
+/**
+ * @param pa the subject pointarray
+ * @param qp the query point
+ * @param dist optional output for actual distance from segment
+ * @return 0-based segment index for the closest segment
+ *         (earliest segment in case of same distance)
+ */
+extern int ptarray_closest_segment_2d(const POINTARRAY *pa,
+                                      const POINT2D *qp, double *dist);
+
 
 
 /**
