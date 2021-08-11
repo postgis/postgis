@@ -809,6 +809,10 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
       edge->geom = NULL;
     }
   }
+  else
+  {
+      edge->geom = NULL;
+  }
 }
 
 static void
