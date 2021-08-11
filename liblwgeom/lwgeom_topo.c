@@ -7056,7 +7056,7 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 {
   LWT_ISO_EDGE* closestEdge;
   LWT_ISO_EDGE* edges;
-  uint64_t numedges;
+  uint64_t numedges, i;
   LWGEOM *shortestLine;
   const POINT2D *shortestLineP0, *shortestLineP1;
   int closestSegmentIndex;
@@ -7068,7 +7068,6 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
   LWT_ELEMID closestNode = 0;
   double dist;
   int containingFace = -1;
-  int i;
 
   closestEdge = lwt_be_getClosestEdge( topo, pt, &numedges,
     LWT_COL_EDGE_GEOM|
