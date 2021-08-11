@@ -1827,4 +1827,9 @@ CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS
 -- Make sure topology is in database search path --
 SELECT topology.AddToSearchPath('topology');
 
+-- Make metadata tables publically visible
+-- See https://trac.osgeo.org/postgis/ticket/4575
+GRANT SELECT ON topology.topology TO PUBLIC;
+GRANT SELECT ON topology.layer TO PUBLIC;
+
 COMMIT;
