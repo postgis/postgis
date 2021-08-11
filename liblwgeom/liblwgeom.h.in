@@ -830,7 +830,7 @@ extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
 
 /**
 * Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
-* that are double aligned and suitable for direct reading using getPoint2d_p_ro
+* that are double aligned and suitable for direct reading using getPoint2d_cp
 */
 extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
 
@@ -1928,12 +1928,6 @@ extern int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox);
 * whether it is cartesian or geodetic.
 */
 extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
-
-/**
-* New function to read doubles directly from the double* coordinate array
-* of an aligned lwgeom #POINTARRAY (built by de-serializing a #GSERIALIZED).
-*/
-extern int getPoint2d_p_ro(const POINTARRAY *pa, uint32_t n, POINT2D **point);
 
 /**
 * Calculate geodetic (x/y/z) box and add values to gbox. Return #LW_SUCCESS on success.

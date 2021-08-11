@@ -1332,14 +1332,14 @@ int
 ptarray_closest_vertex_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist)
 {
 	uint32_t t, pn=0;
-	POINT2D *p;
+	const POINT2D *p;
 	double mindist = DBL_MAX;
 
 	/* Loop through pointarray looking for nearest segment */
 	for (t=0; t<pa->npoints; t++)
 	{
 		double dist_sqr;
-		getPoint2d_p_ro(pa, t, &p);
+		p = getPoint2d_cp(pa, t);
 		dist_sqr = distance2d_sqr_pt_pt(p, qp);
 
 		if (dist_sqr < mindist)

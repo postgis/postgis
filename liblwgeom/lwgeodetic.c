@@ -2873,24 +2873,6 @@ int lwline_covers_lwline(const LWLINE* lwline1, const LWLINE* lwline2)
 	return LW_TRUE;
 }
 
-/**
-* This function can only be used on LWGEOM that is built on top of
-* GSERIALIZED, otherwise alignment errors will ensue.
-*/
-int getPoint2d_p_ro(const POINTARRAY *pa, uint32_t n, POINT2D **point)
-{
-	uint8_t *pa_ptr = NULL;
-	assert(pa);
-	assert(n < pa->npoints);
-
-	pa_ptr = getPoint_internal(pa, n);
-	/* printf( "pa_ptr[0]: %g\n", *((double*)pa_ptr)); */
-	*point = (POINT2D*)pa_ptr;
-
-	return LW_SUCCESS;
-}
-
-
 int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 {
 	uint32_t i;
