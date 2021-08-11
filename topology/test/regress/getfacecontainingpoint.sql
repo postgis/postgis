@@ -48,6 +48,9 @@ SELECT 't7', topology.GetFaceContainingPoint('city_data', 'POINT(32 16.9)');
 -- Query point in hole touching shell, near edge having hole on the right
 SELECT 't8', topology.GetFaceContainingPoint('city_data', 'POINT(24 16.9)');
 
+-- Query point collinear with closest incoming segment (right of next one)
+SELECT 't9', topology.GetFaceContainingPoint('city_data', 'POINT(7.1 31)');
+
 -- Query point on a node incident to multiple faces
 SELECT 'e1', topology.GetFaceContainingPoint('city_data', 'POINT(21 14)');
 
@@ -59,6 +62,7 @@ SELECT 'e3', topology.GetFaceContainingPoint('city_data', 'POINT(28 14)');
 
 -- Query point on a non-dangling edge binding universe and proper face
 SELECT 'e4', topology.GetFaceContainingPoint('city_data', 'POINT(28 22)');
+
 
 
 SELECT NULL FROM topology.DropTopology('city_data');
