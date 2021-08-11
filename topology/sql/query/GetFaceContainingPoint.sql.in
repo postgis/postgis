@@ -109,38 +109,41 @@ BEGIN
       -- dangling, we can return their common
       -- side face, otherwise the point will be
       -- on multiple face boundaries
+
+      -- early exit if the closest edge has
+      -- left_face != right_face, don't bother
+      -- fetching more edges
+      IF closestEdge.left_face != closestEdge.right_face THEN
+        RAISE EXCEPTION 'Two or more faces found';
+      END IF;
+
       sql := format(
         $$
-          WITH incident_edges AS (
-            SELECT
-              left_face,
-              right_face
-            FROM %1$I.edge_data
-            WHERE start_node = $1
+          SELECT
+            left_face,
+            right_face
+          FROM %1$I.edge_data
+          WHERE (
+            start_node = $1
             OR end_node = $1
-          ),
-          side_faces AS (
-            SELECT left_face side_face
-            FROM incident_edges
-              UNION
-            SELECT right_face
-            FROM incident_edges
           )
-          SELECT array_agg(side_face) sideFaces
-          FROM side_faces
+          AND (
+            left_face != $2
+            OR right_face != $2
+          )
+          LIMIT 1
         $$,
         atopology
       );
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'SQL: %', sql;
 #endif
-      EXECUTE sql USING closestNode INTO rec;
-      IF array_upper(rec.sideFaces, 1) > 1
+      EXECUTE sql USING closestNode, closestEdge.left_face INTO rec;
+      IF FOUND
       THEN
         RAISE EXCEPTION 'Two or more faces found';
-      ELSE
-        RETURN rec.sideFaces[1];
       END IF;
+      RETURN closestEdge.left_face;
 
     END IF; --} query point is the node
 
