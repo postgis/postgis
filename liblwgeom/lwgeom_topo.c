@@ -7274,7 +7274,7 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 
     nextSegmentP0 = closestSegmentP1;
     /* This would be more of an assert...*/
-    if ( closestSegmentIndex + 1 > closestEdge->geom->points->npoints )
+    if ( closestSegmentIndex + 1 > (int)closestEdge->geom->points->npoints )
     {
       lwerror("closestSegmentIndex is unexpectedly the last one and we didn't exit earlier as it would be a node");
       return -1;
