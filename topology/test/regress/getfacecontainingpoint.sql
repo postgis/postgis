@@ -51,6 +51,18 @@ SELECT 't8', topology.GetFaceContainingPoint('city_data', 'POINT(24 16.9)');
 -- Query point collinear with closest incoming segment (right of next one)
 SELECT 't9', topology.GetFaceContainingPoint('city_data', 'POINT(7.1 31)');
 
+-- Query point on the right of the closest segment but left of ring
+SELECT 't10', topology.GetFaceContainingPoint('city_data', 'POINT(26 16.8)');
+
+-- Query point on the left of the closest segment and left of ring
+SELECT 't11', topology.GetFaceContainingPoint('city_data', 'POINT(26 17.2)');
+
+-- Query point on the left of the closest segment but right of ring
+SELECT 't12', topology.GetFaceContainingPoint('city_data', 'POINT(33.1 17.8)');
+
+-- Query point on the right of the closest segment and right of ring
+SELECT 't13', topology.GetFaceContainingPoint('city_data', 'POINT(33.1 17.2)');
+
 -- Query point on a node incident to multiple faces
 SELECT 'e1', topology.GetFaceContainingPoint('city_data', 'POINT(21 14)');
 
