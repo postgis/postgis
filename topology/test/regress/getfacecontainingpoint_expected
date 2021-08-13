@@ -9,6 +9,10 @@ pos|8|8
 pos|9|9
 pos|10|10
 pos|11|11
+ERROR:  Two or more faces found
+ERROR:  Two or more faces found
+ERROR:  Two or more faces found
+ERROR:  Two or more faces found
 t1|1
 t2|1
 t3|9
@@ -22,7 +26,4 @@ t10|10
 t11|10
 t12|10
 t13|10
-ERROR:  Two or more faces found
-ERROR:  Two or more faces found
-ERROR:  Two or more faces found
-ERROR:  Two or more faces found
+t14|1
