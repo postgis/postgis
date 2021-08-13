@@ -3005,20 +3005,9 @@ cb_getClosestEdge( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt, uint64_t *num
   initStringInfo(sql);
 
 
-  /* TODO: avoid executing ST_ShortestLine twice (to be confirmed it
-   *       if it is called twice
-   */
   appendStringInfoString(sql, "SELECT ");
   addEdgeFields(sql, fields, 0);
-  appendStringInfo(sql, " FROM \"%s\".edge_data ORDER BY ", topo->name);
-
-#if POSTGIS_PGSQL_VERSION < 95
-  appendStringInfo(sql, "ST_Length(ST_ShortestLine(geom, $1))");
-#else
-  appendStringInfo(sql, "geom <-> $1");
-#endif
-
-  appendStringInfo(sql, " ASC, edge_id ASC LIMIT 1");
+  appendStringInfo(sql, " FROM \"%s\".edge_data ORDER BY geom <-> $1 ASC, edge_id ASC LIMIT 1", topo->name);
 
   POSTGIS_DEBUGF(1, "cb_getClosestEdge query: %s", sql->data);
 
