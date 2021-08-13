@@ -9,6 +9,53 @@ SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(24 14, 
 -- Add holes touching shell defined in CCW order
 SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(32 14, 33 17,31 17, 32 14)');
 
+-- Add cluster of edges forming 2 adjacent faces
+-- and exposing a node of degree 3 on the upper-right
+-- corner where all edge-ends are on the lower-left
+-- quadrant and the central edge have the bounding box
+-- with smallest x/y
+--
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(11 8, 19 12)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(12 9, 19 12)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(12.42 8.2, 19 12)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(11 8, 12 9)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(11 8, 12.42 8.2)');
+
+-- Add cluster of edges forming 2 adjacent faces
+-- and exposing a node of degree 3 on the bottom-right
+-- corner where all edge-ends are on the upper-left
+-- quadrant and the central edge have the bounding box
+-- with smallest x and biggest y
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(11 20, 19 16)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(12 19, 19 16)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(12.42 19.8, 19 16)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(11 20, 12 19)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(11 20, 12.42 19.8)');
+
+-- Add cluster of edges forming 2 adjacent faces
+-- and exposing a node of degree 3 on the bottom-left
+-- corner where all edge-ends are on the upper-right
+-- quadrant and the central edge have the bounding box
+-- with biggest x/y
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(45 20, 37 16)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(44 19, 37 16)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(43.58 19.8, 37 16)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(45 20, 44 19)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(45 20, 43.58 19.8)');
+
+-- Add cluster of edges forming 2 adjacent faces
+-- and exposing a node of degree 3 on the upper-left
+-- corner where all edge-ends are on the bottomr-right
+-- quadrant and the central edge have the bounding box
+-- with biggest x and smallest y
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(45 8, 37 12)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(44 9, 37 12)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(43.58 8.2, 37 12)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(45 8, 44 9)');
+SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(45 8, 43.58 8.2)');
+
+
+
 
 -- Get face containing the "point on surface" of each face's geometry
 SELECT 'pos', face_id, topology.GetFaceContainingPoint(
@@ -65,7 +112,20 @@ INSERT INTO city_data.query_points VALUES
 -- Query point on the right of the closest segment and right of ring
 ( 13, 'POINT(33.1 17.2)' ),
 -- Query point near the start of a dangling edge
-( 14, 'POINT(8 36)' );
+( 14, 'POINT(8 36)' ),
+-- Query point near node of degree 3 with leftmost-bottommost edge
+-- not in query point face
+( 15, 'POINT(19.5 12.2)' ),
+-- Query point near node of degree 3 with leftmost-uppermost edge
+-- not in query point face
+( 16, 'POINT(19.5 15.8)' ),
+-- Query point near node of degree 3 with rightmost-uppermost edge
+-- not in query point face
+( 17, 'POINT(36.5 15.8)' ),
+-- Query point near node of degree 3 with rightmost-bottommost edge
+-- not in query point face
+( 18, 'POINT(36.5 12.2)' )
+;
 
 SELECT 't'||id, topology.GetFaceContainingPoint('city_data', g)
 FROM city_data.query_points
