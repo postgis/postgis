@@ -22,9 +22,9 @@ sh autogen.sh
 #make clean
 make
 export err_status=0
-make check RUNTESTFLAGS="-v"
 make install
-make check RUNTESTFLAGS="-v --extension"
+make check RUNTESTFLAGS="-v"
+#make check RUNTESTFLAGS="-v --extension"
 err_status=$?
 
 if [ -d $PGDATA/postmaster.pid ] ; then
