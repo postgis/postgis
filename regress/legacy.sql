@@ -6,7 +6,7 @@
 -- This file also serves as a testcase for uninstall_legacy.sql
 --
 
-SET client_min_messages TO WARNING;
+SET client_min_messages TO ERROR;
 
 \cd :scriptdir
 \i legacy.sql
