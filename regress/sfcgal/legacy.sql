@@ -7,6 +7,7 @@
 --
 
 SET postgis.backend = 'sfcgal';
+SET client_min_messages TO error;
 
 \cd :regdir
 \i legacy.sql
