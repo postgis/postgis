@@ -21,8 +21,8 @@
 /*
 ** Global variable to hold hex TWKB strings
 */
-char *s;
-char *w;
+static char *s;
+static char *w;
 
 /*
 ** The suite initialization function.
