@@ -16,6 +16,7 @@
 #include "cu_tester.h"
 #include "../postgis_config.h"
 
+char cu_error_msg[MAX_CUNIT_ERROR_LENGTH + 1] = {0};
 /* Internal funcs */
 static void
 cu_errorreporter(const char *fmt, va_list ap);
@@ -140,7 +141,7 @@ int main(int argc, char *argv[])
 	char *suite_name;
 	CU_pSuite suite_to_run;
 	char *test_name;
-	CU_pTest test_to_run;
+	CU_pTest test_to_run = NULL;
 	CU_ErrorCode errCode = 0;
 	CU_pTestRegistry registry;
 	int num_run;
@@ -206,7 +207,7 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				if (test_name != NULL)
+				if (test_name != NULL && test_to_run != NULL)
 				{
 					/* Run only this test. */
 					printf("\nRunning test '%s' in suite '%s'.\n", test_name, suite_name);

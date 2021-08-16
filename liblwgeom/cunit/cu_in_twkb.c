@@ -20,10 +20,10 @@
 /*
 ** Global variable to hold TWKB strings
 */
-char *hex_a;
-char *hex_b;
-uint8_t precision = 0;
-uint8_t variant = 0;
+static char *hex_a;
+static char *hex_b;
+static uint8_t precision = 0;
+static uint8_t variant = 0;
 
 /*
 ** The suite initialization function.
