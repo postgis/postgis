@@ -1388,13 +1388,13 @@ hash_abbrev_abort(int memtupcount, SortSupport SortSupport)
 static Datum
 hash_abbrev_convert(Datum original, SortSupport ssup)
 {
-
+	return (Datum)0;
 }
 
 static int
 hash_abbrev_full_cmp(Datum a, Datum b, SortSupport ssup)
 {
-
+	return 0;
 }
 
 Datum
