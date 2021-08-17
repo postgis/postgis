@@ -1,0 +1,8 @@
+ERROR:  SQL/MM Spatial exception - coincident node
+ERROR:  SQL/MM Spatial exception - edge crosses node.
+ERROR:  SQL/MM Spatial exception - not isolated node
+ERROR:  SQL/MM Spatial exception - invalid point
+ERROR:  Cannot move isolated node across faces
+ERROR:  Cannot move isolated node across faces
+Isolated Node 4 moved to location 21,37
+Isolated Node 4 moved to location 19,37

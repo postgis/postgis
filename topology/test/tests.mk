@@ -55,10 +55,12 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/st_getfacegeometry.sql \
 	$(topsrcdir)/topology/test/regress/st_modedgeheal.sql \
 	$(topsrcdir)/topology/test/regress/st_modedgesplit.sql \
+	$(topsrcdir)/topology/test/regress/st_moveisonode.sql \
 	$(topsrcdir)/topology/test/regress/st_newedgeheal.sql \
 	$(topsrcdir)/topology/test/regress/st_newedgessplit.sql \
 	$(topsrcdir)/topology/test/regress/st_remedgemodface.sql \
 	$(topsrcdir)/topology/test/regress/st_remedgenewface.sql \
+	$(topsrcdir)/topology/test/regress/st_removeisonode.sql \
 	$(topsrcdir)/topology/test/regress/st_simplify.sql \
 	$(topsrcdir)/topology/test/regress/topo2.5d.sql \
 	$(topsrcdir)/topology/test/regress/topoelementarray_agg.sql \

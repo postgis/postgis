@@ -739,6 +739,10 @@ sub run_simple_test
           . " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
           . " -tXAq -f $sqlfile $DB > $outfile 2>&1";
 	my $rv = system($cmd);
+    if ( $rv ) {
+        fail "psql exited with an error", $outfile;
+        die;
+    }
 
 	# Check for ERROR lines
 	open(FILE, "$outfile");

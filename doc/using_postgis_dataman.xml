@@ -166,7 +166,7 @@
       <ulink url="https://www.iso.org/obp/ui/#iso:std:iso-iec:13249:-3:ed-5:v1:en"><emphasis>ISO/IEC 13249-3 SQL Multimedia - Spatial</emphasis></ulink>
       standard (SQL/MM) extends the
 	  OGC SFA to define Geometry subtypes containing curves with circular arcs.
-      The SQL/MM types supprt 3DM, 3DZ and 4D coordinates.
+      The SQL/MM types support 3DM, 3DZ and 4D coordinates.
 	  </para>
 	  <note>
 		<para>All floating point comparisons within the SQL-MM implementation

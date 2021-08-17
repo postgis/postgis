@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015-2020 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -248,7 +248,7 @@ lwt_be_getNodeByFace(LWT_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numele
 
 LWT_ISO_EDGE *
 lwt_be_getEdgeWithinDistance2D(LWT_TOPOLOGY *topo,
-			       LWPOINT *pt,
+			       const LWPOINT *pt,
 			       double dist,
 			       uint64_t *numelems,
 			       int fields,
@@ -319,13 +319,6 @@ lwt_be_deleteEdges(LWT_TOPOLOGY* topo,
   CBT2(topo, deleteEdges, sel_edge, sel_fields);
 }
 
-LWT_ELEMID
-lwt_be_getFaceContainingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt)
-{
-  CBT1(topo, getFaceContainingPoint, pt);
-}
-
-
 int
 lwt_be_updateTopoGeomEdgeSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_edge, LWT_ELEMID new_edge1, LWT_ELEMID new_edge2)
 {
@@ -347,10 +340,22 @@ lwt_be_checkTopoGeomRemEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
 }
 
 static int
+lwt_be_checkTopoGeomRemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id)
+{
+  CBT1(topo, checkTopoGeomRemIsoEdge, edge_id);
+}
+
+static int
 lwt_be_checkTopoGeomRemNode(LWT_TOPOLOGY* topo, LWT_ELEMID node_id,
                             LWT_ELEMID eid1, LWT_ELEMID eid2)
 {
   CBT3(topo, checkTopoGeomRemNode, node_id, eid1, eid2);
+}
+
+static int
+lwt_be_checkTopoGeomRemIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID node_id)
+{
+  CBT1(topo, checkTopoGeomRemIsoNode, node_id);
 }
 
 static int
@@ -374,9 +379,6 @@ lwt_be_getRingEdges(LWT_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numedges, uin
 {
   CBT3(topo, getRingEdges, edge, numedges, limit);
 }
-
-
-/* wrappers of backend wrappers... */
 
 int
 lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, LWPOINT* pt)
@@ -402,6 +404,12 @@ lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt)
 		return 0;
 	}
   return exists;
+}
+
+static LWT_ISO_EDGE *
+lwt_be_getClosestEdge(const LWT_TOPOLOGY *topo, const LWPOINT *pt, uint64_t *numelems, int fields)
+{
+  CBT3(topo, getClosestEdge, pt, numelems, fields);
 }
 
 /************************************************************************
@@ -542,7 +550,7 @@ _lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
 
   if ( checkFace && ( face == -1 || ! skipISOChecks ) )
   {
-    foundInFace = lwt_be_getFaceContainingPoint(topo, pt); /*x*/
+    foundInFace = lwt_GetFaceContainingPoint(topo, pt); /*x*/
     if ( foundInFace == -1 ) {
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
       return -1;
@@ -3599,6 +3607,7 @@ lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
 {
   LWT_ISO_NODE *node;
   int ret;
+  int newPointFace;
 
   node = _lwt_GetIsoNode( topo, nid );
   if ( ! node ) return -1;
@@ -3617,9 +3626,19 @@ lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
     return -1;
   }
 
-  /* TODO: check that the new point is in the same containing face !
-   * See https://trac.osgeo.org/postgis/ticket/3232
-   */
+  /* Check that the new point is in the same containing face !
+   * See https://trac.osgeo.org/postgis/ticket/3232 */
+  newPointFace = lwt_GetFaceContainingPoint(topo, pt);
+  if ( newPointFace == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( node->containing_face != newPointFace )
+  {
+    lwfree(node);
+    lwerror("Cannot move isolated node across faces");
+    return -1;
+  }
 
   node->node_id = nid;
   node->geom = pt;
@@ -3658,9 +3677,12 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
     return -1;
   }
 
-  /* TODO: notify to caller about node being removed ?
-   * See https://trac.osgeo.org/postgis/ticket/3231
-   */
+  if ( ! lwt_be_checkTopoGeomRemIsoNode(topo, nid) )
+  {
+    lwfree(node);
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
 
   lwfree(node);
   return 0; /* success */
@@ -3758,9 +3780,14 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
     return -1;
   }
 
-  /* TODO: notify to caller about edge being removed ?
+  /* Check that the edge can be safely removed
    * See https://trac.osgeo.org/postgis/ticket/3248
    */
+  if ( ! lwt_be_checkTopoGeomRemIsoEdge(topo, id) )
+  {
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
 
   return 0; /* success */
 }
@@ -4772,7 +4799,7 @@ lwt_GetEdgeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
 }
 
 LWT_ELEMID
-lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
+lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, const LWPOINT *pt, double tol)
 {
   LWT_ELEMID id = 0;
   LWT_ISO_EDGE *elem;
@@ -4783,7 +4810,7 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
              LWT_COL_EDGE_FACE_RIGHT;
   LWGEOM *qp = lwpoint_as_lwgeom(pt);
 
-  id = lwt_be_getFaceContainingPoint(topo, pt);
+  id = lwt_GetFaceContainingPoint(topo, pt);
   if ( id == -1 ) {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -5748,6 +5775,16 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
     lwgeom_free(noded);
     noded = tmp;
     LWDEBUGG(1, noded, "Elements-snapped");
+    if ( input_was_closed )
+    {{
+      /* Recompute start point in case it moved */
+      LWLINE *scrolled = lwgeom_as_lwline(noded);
+      if (scrolled)
+      {
+        getPoint4d_p( scrolled->points, 0, &originalStartPoint);
+        LWDEBUGF(1, "Closed input line start point after snap %g,%g", originalStartPoint.x, originalStartPoint.y);
+      }
+    }}
 
     /* will not release the geoms array */
     lwcollection_release(col);
@@ -5818,7 +5855,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
           ptarray_scroll_in_place(scrolled->points, &originalStartPoint);
         }
         else {
-          LWDEBUGG(1, scrolled, "Linemerged intersected input is not closed anymore");
+          LWDEBUGG(1, lwline_as_lwgeom(scrolled), "Linemerged intersected input is not closed anymore");
         }
       }
       else {
@@ -7012,4 +7049,321 @@ lwt_Polygonize(LWT_TOPOLOGY* topo)
   LWT_EDGERING_ARRAY_CLEAN( &shells );
 
   return 0;
+}
+
+LWT_ELEMID
+lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
+{
+  LWT_ISO_EDGE* closestEdge;
+  LWT_ISO_EDGE* edges;
+  uint64_t numedges, i;
+  LWGEOM *shortestLine;
+  const POINT2D *shortestLineP0, *shortestLineP1;
+  int closestSegmentIndex;
+  int closestSegmentSide;
+  const POINT2D *closestSegmentP0, *closestSegmentP1;
+  double shortestLineAzimuth;
+  LWPOINT *closestPointOnEdge;
+  LWPOINT *closestEdgeEndpoint;
+  LWT_ELEMID closestNode = 0;
+  double dist;
+  int containingFace = -1;
+
+  closestEdge = lwt_be_getClosestEdge( topo, pt, &numedges,
+    LWT_COL_EDGE_GEOM|
+    LWT_COL_EDGE_EDGE_ID|
+    LWT_COL_EDGE_START_NODE|
+    LWT_COL_EDGE_END_NODE|
+    LWT_COL_EDGE_FACE_LEFT|
+    LWT_COL_EDGE_FACE_RIGHT
+  );
+  if (numedges == UINT64_MAX)
+  {
+	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    /* cberror(topo->be_data, "Error from cb_getClosestEdge"); */
+	  return -1;
+  }
+  if (numedges == 0)
+  {
+    /* If there are no edges the point is in the universal face */
+    return 0;
+  }
+
+
+  /* Compute shortest line from query point to closest edge */
+
+  shortestLine = lwgeom_closest_line(lwline_as_lwgeom(closestEdge->geom), lwpoint_as_lwgeom(pt));
+
+  LWDEBUGGF(1, shortestLine, "Shortest line to closest edge %d", closestEdge->edge_id);
+
+  /* Check if the closest point on the edge is an edge endpoint */
+
+  closestPointOnEdge = lwline_get_lwpoint(lwgeom_as_lwline(shortestLine), 0);
+
+  LWDEBUGG(1, lwpoint_as_lwgeom(closestPointOnEdge), "Closest point on closest edge");
+
+  closestEdgeEndpoint = lwline_get_lwpoint(closestEdge->geom, 0);
+  if ( lwpoint_same(closestEdgeEndpoint, closestPointOnEdge) ) {
+    closestNode = closestEdge->start_node;
+  } else if ( ! lwline_is_closed(closestEdge->geom) ) {
+    lwpoint_free(closestEdgeEndpoint);
+    closestEdgeEndpoint = lwline_get_lwpoint(closestEdge->geom, closestEdge->geom->points->npoints - 1);
+    if ( lwpoint_same(closestEdgeEndpoint, closestPointOnEdge) ) {
+      closestNode = closestEdge->end_node;
+    }
+  }
+  lwpoint_free(closestEdgeEndpoint);
+  lwpoint_free(closestPointOnEdge);
+
+  if ( closestNode != 0 )
+  {
+    LWDEBUGF(1, "Closest point is node %d", closestNode);
+    dist = lwgeom_length(shortestLine);
+    if ( dist == 0 )
+    {
+      lwgeom_free(shortestLine);
+      LWDEBUGF(1, "Query point is node %d", closestNode);
+      /* Query point is the node
+       *
+       * If all edges incident to the node are
+       * dangling, we can return their common
+       * side face, otherwise the point will be
+       * on multiple face boundaries
+       */
+      if ( closestEdge->face_left != closestEdge->face_right )
+      {
+        _lwt_release_edges(closestEdge, 1);
+        lwerror("Two or more faces found");
+        return -1;
+      }
+      containingFace = closestEdge->face_left;
+
+      /* Check other incident edges */
+      numedges = 1;
+      edges = lwt_be_getEdgeByNode( topo, &closestNode, &numedges, LWT_COL_EDGE_FACE_LEFT|LWT_COL_EDGE_FACE_RIGHT );
+      if (numedges == UINT64_MAX)
+      {
+        lwerror("Backend error from getEdgeByNode: %s", lwt_be_lastErrorMessage(topo->be_iface));
+        /* cberror(topo->be_data, "Error from cb_getClosestEdge"); */
+        _lwt_release_edges(closestEdge, 1);
+        return -1;
+      }
+      for (i=0; i<numedges; ++i)
+      {
+        if ( edges[i].face_left != containingFace ||
+             edges[i].face_right != containingFace )
+        {
+          _lwt_release_edges(edges, numedges);
+          _lwt_release_edges(closestEdge, 1);
+          lwerror("Two or more faces found");
+          return -1;
+        }
+      }
+      if (numedges < 1 )
+      {
+        lwerror("Unexpected backend return: getEdgeByNode(%d) returns no edges when we previously found edge %d ending on that node",
+          closestNode, closestEdge->edge_id);
+        _lwt_release_edges(edges, numedges);
+        _lwt_release_edges(closestEdge, 1);
+        return -1;
+      }
+      LWDEBUGF(1, "lwt_be_getEdgeByNode returned %d edges", numedges);
+      _lwt_release_edges(edges, numedges);
+      _lwt_release_edges(closestEdge, 1);
+      return containingFace;
+    }
+
+    /* Closest point is a node, but query point is NOT on the node */
+
+    /* let's do azimuth computation */
+    shortestLineP0 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 0);
+    shortestLineP1 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 1);
+    if ( ! azimuth_pt_pt(shortestLineP0, shortestLineP1, &shortestLineAzimuth) ) {
+      lwerror("error computing azimuth of shortestLine [%.15g %.15g,%.15g %.15g]",
+              shortestLineP0->x, shortestLineP0->y,
+              shortestLineP1->x, shortestLineP1->y);
+      lwgeom_free(shortestLine);
+      _lwt_release_edges(closestEdge, 1);
+      return -1;
+    }
+
+    LWDEBUGF(1, "ShortestLine azimuth is %g", shortestLineAzimuth);
+
+    edgeend ee;
+    ee.myaz = shortestLineAzimuth;
+    int found = _lwt_FindAdjacentEdges( topo, closestNode, &ee, NULL, -1 );
+    if ( ! found ) {
+        lwerror("Unexpected backend return: _lwt_FindAdjacentEdges(%d) found no edges when we previously found edge %d ending on that node",
+          closestNode, closestEdge->edge_id);
+        lwgeom_free(shortestLine);
+        _lwt_release_edges(closestEdge, 1);
+        return -1;
+    }
+
+    lwgeom_free(shortestLine);
+    _lwt_release_edges(closestEdge, 1);
+    return ee.cwFace;
+
+  }
+
+  LWDEBUGF(1, "Closest point is NOT a node", closestNode);
+
+  /* If this edge has the same face on the left and right sides
+   * we found the face containing our query point */
+  if ( closestEdge->face_left == closestEdge->face_right )
+  {
+    containingFace = closestEdge->face_left;
+    lwgeom_free(shortestLine);
+    _lwt_release_edges(closestEdge, 1);
+    return containingFace;
+  }
+
+  dist = lwgeom_length(shortestLine);
+  if ( dist == 0 )
+  {
+    /* We checked the dangling case above */
+    lwgeom_free(shortestLine);
+    _lwt_release_edges(closestEdge, 1);
+    lwerror("Two or more faces found");
+    return -1;
+  }
+
+  /* find closest segment on closestEdge and use lw_segment_side
+   * to determine on which side our query point falls */
+
+  shortestLineP1 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 1);
+  closestSegmentIndex = ptarray_closest_segment_2d(closestEdge->geom->points, shortestLineP1, NULL);
+  LWDEBUGF(1, "Closest segment to edge %d is %d", closestEdge->edge_id, closestSegmentIndex);
+  closestSegmentP0 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex);
+  closestSegmentP1 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex + 1);
+  LWDEBUGF(1, "Closest segment to edge %d is LINESTRING(%g %g, %g %g)",
+    closestEdge->edge_id,
+    closestSegmentP0->x,
+    closestSegmentP0->y,
+    closestSegmentP1->x,
+    closestSegmentP1->y
+  );
+
+  /* Find on which side of the segment the query point lays */
+  shortestLineP0 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 0);
+  if ( p2d_same(shortestLineP0, closestSegmentP0) )
+  {
+    /* Closest point is first point of closest segment (this should
+     * never happen as we'd have returned the previous segment in
+     * this case, unless it was the very first segment, and in that
+     * case we'd have cought this earlier, as it would be a NODE
+     *
+     * This would be more of an assert...
+     */
+    lwerror("Closest point is first point of closest segment, unexpectedly");
+    lwgeom_free(shortestLine);
+    _lwt_release_edges(closestEdge, 1);
+    return -1;
+  }
+  else if ( p2d_same(shortestLineP0, closestSegmentP1) )
+  {
+    /* Closest point is last point of the closest segment,
+     * so we need to check if rotating the closest segment
+     * clockwise around its last point we encounter
+     * the shortestLine first (which means it's on the left
+     * of the closest edge) or the next segment first (which
+     * means the shortestLine is on the right)
+     */
+    const POINT2D *nextSegmentP0, *nextSegmentP1;
+    double azS0, azS1, azSL;
+
+    nextSegmentP0 = closestSegmentP1;
+    /* This would be more of an assert...*/
+    if ( closestSegmentIndex + 1 > (int)closestEdge->geom->points->npoints )
+    {
+      lwerror("closestSegmentIndex is unexpectedly the last one and we didn't exit earlier as it would be a node");
+      return -1;
+    }
+    nextSegmentP1 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex + 2);
+
+    if ( ! azimuth_pt_pt(closestSegmentP1, closestSegmentP0, &azS0)) {
+      lwerror("error computing azimuth of reversse closest segment [%.15g %.15g,%.15g %.15g]",
+              closestSegmentP1->x, closestSegmentP1->y,
+              closestSegmentP0->x, closestSegmentP0->y);
+      lwgeom_free(shortestLine);
+      _lwt_release_edges(closestEdge, 1);
+      return -1;
+    }
+    if ( ! azimuth_pt_pt(nextSegmentP0, nextSegmentP1, &azS1)) {
+      lwerror("error computing azimuth of next segment [%.15g %.15g,%.15g %.15g]",
+              nextSegmentP0->x, nextSegmentP0->y,
+              nextSegmentP1->x, nextSegmentP1->y);
+      lwgeom_free(shortestLine);
+      _lwt_release_edges(closestEdge, 1);
+      return -1;
+    }
+    if ( ! azimuth_pt_pt(shortestLineP0, shortestLineP1, &azSL) ) {
+      lwerror("error computing azimuth of shortestLine [%.15g %.15g,%.15g %.15g]",
+              shortestLineP0->x, shortestLineP0->y,
+              shortestLineP1->x, shortestLineP1->y);
+      lwgeom_free(shortestLine);
+      _lwt_release_edges(closestEdge, 1);
+      return -1;
+    }
+
+    double angle_S0_S1 = azS1 - azS0;
+    if ( angle_S0_S1 < 0 ) angle_S0_S1 += 2 * M_PI;
+
+    double angle_S0_SL = azSL - azS0;
+    if ( angle_S0_SL < 0 ) angle_S0_SL += 2 * M_PI;
+
+    LWDEBUGF(1, "Azimuths from last point of closest segment: S0:%g, S1:%g (+%g), SL:%g (+%g)",
+      azS0,
+      azS1, angle_S0_S1,
+      azSL, angle_S0_SL
+    );
+    if ( angle_S0_SL < angle_S0_S1 )
+    {
+      /* shortest line was encountered first, is on the left */
+      containingFace = closestEdge->face_left;
+    }
+    else
+    {
+      /* shortest line NOT encountered first, is on the right */
+      containingFace = closestEdge->face_right;
+    }
+  }
+  else
+  {
+    /* Closest point is internal to closest segment, we can use
+     * lw_segment_side */
+
+    LWDEBUGF(1, "Calling lw_segment_side((%g,%g),(%g,%g),(%g,%g)",
+      closestSegmentP0->x,
+      closestSegmentP0->y,
+      closestSegmentP1->x,
+      closestSegmentP1->y,
+      shortestLineP1->x,
+      shortestLineP1->y
+    );
+
+    closestSegmentSide = lw_segment_side(closestSegmentP0, closestSegmentP1, shortestLineP1);
+    LWDEBUGF(1, "Side of closest segment query point falls on: %d", closestSegmentSide);
+
+    if ( closestSegmentSide == -1 ) /* left */
+    {
+      containingFace = closestEdge->face_left;
+    }
+    else if ( closestSegmentSide == 1 ) /* right */
+    {
+      containingFace = closestEdge->face_right;
+    }
+    else
+    {
+      lwerror("Unexpected collinearity reported from lw_segment_side");
+      _lwt_release_edges(closestEdge, 1);
+      lwgeom_free(shortestLine);
+      return -1;
+    }
+
+  }
+
+  _lwt_release_edges(closestEdge, 1);
+  lwgeom_free(shortestLine);
+  return containingFace;
 }

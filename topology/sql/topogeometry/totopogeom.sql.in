@@ -204,7 +204,7 @@ BEGIN
         'Layer "%" of topology "%" is %, cannot hold a puntal feature.',
         layer_info.layer_id, topology_info.name, layer_info.typename;
     END IF;
-    tg.type := 1;
+    tg.type := CASE WHEN tg.type = 1 THEN 1 ELSE 4 END;
   ELSIF typ = 'LINESTRING' or typ = 'MULTILINESTRING' THEN -- lineal
     --  A line can go in lineal or collection layer
     IF layer_info.feature_type != 4 and layer_info.feature_type != 2 THEN
@@ -212,7 +212,7 @@ BEGIN
         'Layer "%" of topology "%" is %, cannot hold a lineal feature.',
         layer_info.layer_id, topology_info.name, layer_info.typename;
     END IF;
-    tg.type := 2;
+    tg.type := CASE WHEN tg.type = 2 THEN 2 ELSE 4 END;
   ELSIF typ = 'POLYGON' OR typ = 'MULTIPOLYGON' THEN -- areal
     --  An area can go in areal or collection layer
     IF layer_info.feature_type != 4 and layer_info.feature_type != 3 THEN
@@ -220,7 +220,7 @@ BEGIN
         'Layer "%" of topology "%" is %, cannot hold an areal feature.',
         layer_info.layer_id, topology_info.name, layer_info.typename;
     END IF;
-    tg.type := 3;
+    tg.type := CASE WHEN tg.type = 3 THEN 3 ELSE 4 END;
   ELSE
       -- Should never happen
       RAISE EXCEPTION

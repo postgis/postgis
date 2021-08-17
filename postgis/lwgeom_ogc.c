@@ -241,11 +241,11 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	int32 ret = 1;
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	if ( lwgeom_is_empty(lwgeom) )
+	if (lwgeom_is_empty(lwgeom))
 	{
 		ret = 0;
 	}
-	else if ( lwgeom_is_collection(lwgeom) )
+	else if (lwgeom_is_collection(lwgeom))
 	{
 		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
 		ret = col->ngeoms;
@@ -273,10 +273,15 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	idx = PG_GETARG_INT32(1);
 	idx -= 1; /* index is 1-based */
 
+	if (gserialized_is_empty(geom))
+	{
+		PG_RETURN_NULL();
+	}
+
 	/* call is valid on multi* geoms only */
-	if (type==POINTTYPE || type==LINETYPE || type==CIRCSTRINGTYPE ||
-	        type==COMPOUNDTYPE || type==POLYGONTYPE ||
-		type==CURVEPOLYTYPE || type==TRIANGLETYPE)
+	if (type==POINTTYPE     || type==LINETYPE    || type==CIRCSTRINGTYPE ||
+	    type==COMPOUNDTYPE  || type==POLYGONTYPE ||
+	    type==CURVEPOLYTYPE || type==TRIANGLETYPE)
 	{
 		if ( idx == 0 ) PG_RETURN_POINTER(geom);
 		PG_RETURN_NULL();
