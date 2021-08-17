@@ -1306,7 +1306,8 @@ Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(gserialized_gist_sortsupport_2d);
 /*
- * Hash comparator of `GSERIALIZED` data type
+ * Hash comparator of `BOX2DF` data type
+ * Notice: the GSERIALIZED GiST uses BOX2DF as index elements
 */
 static int
 hash_cmp(Datum a, Datum b, SortSupport ssup)
@@ -1342,9 +1343,7 @@ hash_abbrev_convert(Datum original, SortSupport ssup)
 	x.f = (box->xmax + box->xmin) / 2;
 	y.f = (box->ymax + box->ymin) / 2;
 
-	// return (Datum)uint32_hilbert(y.u, x.u);
-	return (Datum)uint32_morton(y.u, x.u);
-	// return (Datum)uint32_x(y.u, x.u);
+	return (Datum)uint32_hilbert(y.u, x.u);
 }
 
 static int
