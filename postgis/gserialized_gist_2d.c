@@ -1343,8 +1343,8 @@ hash_abbrev_convert(Datum original, SortSupport ssup)
 	y.f = (box->ymax + box->ymin) / 2;
 
 	// return (Datum)uint32_hilbert(y.u, x.u);
-	// return (Datum)uint32_morton(y.u, x.u);
-	return (Datum)uint32_x(y.u, x.u);
+	return (Datum)uint32_morton(y.u, x.u);
+	// return (Datum)uint32_x(y.u, x.u);
 }
 
 static int
