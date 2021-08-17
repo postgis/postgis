@@ -30,7 +30,6 @@ PostGIS 3.2.0
   - #4830, ValidateTopology check for edges side face containment
            (Sandro Santilli)
   - #4827, Allow NaN coordinates in WKT input (Paul Ramsey)
-  - #4870, Allow open options to be passed to GDAL drivers (Paul Ramsey)
   - ST_Value() accepts resample parameter to add bilinear option (Paul Ramsey)
   - #3778, #4401, ST_Boundary now works for TIN and does not linearize curves (Aliaksandr Kalenik)
   - #4881, #4884, Store sign of edge_id for lineal TopoGeometry in relation table
