@@ -15,6 +15,7 @@ PostGIS 3.1.4dev
   - #4910, Allow repeated points in GML input poslists (Paul Ramsey)
   - #4958, TIGER2020 fix faces and add Tabblock20 (Regina Obe)
   - #4959, Drop Colorado state files also drops national county tables (Regina Obe)
+  - #4916, #4770, #4724, #4916, Crashes in aggregate functions (Paul Ramsey)
 
 
 PostGIS 3.1.3
