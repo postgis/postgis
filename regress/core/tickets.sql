@@ -1390,3 +1390,42 @@ SELECT '#4949', 'Arctic Stereographic forward', ST_AsEWKT(ST_SnapToGrid(ST_Trans
 SELECT '#4949', 'Antarctic Stereographic forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
   'SRID=4326;POINT(-36.75 -54.25)'::geometry, 3031),0.1));
 
+
+-- #4916, #4770, #4724, #4916, #4940
+
+
+SELECT '#4770.a',
+ ST_Union(NULL::geometry) OVER (ORDER BY b)
+FROM (VALUES ('A0006', 300),
+	         ('A0006', 302)) t(a, b);
+
+WITH w AS (
+  SELECT
+    ST_Union(g) OVER (PARTITION BY b ORDER BY a) AS g,
+    Sum(b) OVER (PARTITION BY b ORDER BY a) AS s
+  FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
+  	           ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b)
+)
+SELECT '#4770.b', ST_AsText(g), s FROM w;
+
+WITH w AS (
+  SELECT
+    ST_Union(g) OVER (PARTITION BY a ORDER BY b) AS g,
+    Sum(b) OVER (PARTITION BY a ORDER BY b) AS s
+  FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
+  	           ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b)
+)
+SELECT '#4770.c', ST_AsText(g), s FROM w;
+
+SELECT '#4916.a', ST_AsGeobuf(NULL::pg_class, 'g') over (order by b)
+FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
+	         ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b);
+
+SELECT '#4916.b', ST_AsGeobuf(NULL::pg_class) over (order by b)
+FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
+	         ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b);
+
+------
+
+
+
