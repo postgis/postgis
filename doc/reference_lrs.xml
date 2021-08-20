@@ -382,15 +382,15 @@ LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463
 --for better performance you can reduce the 10000
 --to match max number of segments you expect
 
-SELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,
+SELECT field1, field2, ST_LineSubstring(geom, 100.00*n/length,
   CASE
 	WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length
 	ELSE 1
-  END) As the_geom
+  END) As geom
 FROM
   (SELECT sometable.field1, sometable.field2,
-  ST_LineMerge(sometable.the_geom) AS the_geom,
-  ST_Length(sometable.the_geom) As length
+  ST_LineMerge(sometable.geom) AS geom,
+  ST_Length(sometable.geom) As length
   FROM sometable
   ) AS t
 CROSS JOIN generate_series(0,10000) AS n
@@ -451,11 +451,11 @@ WHERE n*100.00/length &lt; 1;
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsText(the_geom)
+		<programlisting>SELECT ST_AsText(geom)
 		FROM
 		(SELECT ST_LocateAlong(
 			ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
-		(1 2 3, 5 4 5))'),3) As the_geom) As foo;
+		(1 2 3, 5 4 5))'),3) As geom) As foo;
 
 						 st_asewkt
 -----------------------------------------------------------
@@ -463,11 +463,11 @@ WHERE n*100.00/length &lt; 1;
 
 --Geometry collections are difficult animals so dump them
 --to make them more digestable
-SELECT ST_AsText((ST_Dump(the_geom)).geom)
+SELECT ST_AsText((ST_Dump(geom)).geom)
 	FROM
 	(SELECT ST_LocateAlong(
 			ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
-	(1 2 3, 5 4 5))'),3) As the_geom) As foo;
+	(1 2 3, 5 4 5))'),3) As geom) As foo;
 
    st_asewkt
 ---------------
@@ -532,13 +532,13 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		<title>Examples</title>
 
 		<programlisting>
-SELECT ST_AsText(the_geom)
+SELECT ST_AsText(geom)
 FROM (
     SELECT ST_LocateBetween(
        'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),
        1.5,
        3
-    ) as the_geom
+    ) as geom
 ) As foo;
 
 							 st_asewkt
@@ -547,13 +547,13 @@ FROM (
 
 --Geometry collections are difficult animals so dump them
 --to make them more digestable
-SELECT ST_AsText((ST_Dump(the_geom)).geom)
+SELECT ST_AsText((ST_Dump(geom)).geom)
 FROM (
     SELECT ST_LocateBetween(
 	'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),
 	1.5,
 	3
-    ) As the_geom
+    ) As geom
 ) As foo;
 
 		   st_asewkt
@@ -621,9 +621,9 @@ GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))
 
 -- Geometry collections are difficult animals so dump them
 -- to make them more digestable
-SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
+SELECT ST_AsEWKT((ST_Dump(geom)).geom)
 	FROM
-	(SELECT ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 9)', 6, 9) as the_geom) As foo;
+	(SELECT ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 9)', 6, 9) as geom) As foo;
 
 		   st_asewkt
 --------------------------------

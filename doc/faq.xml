@@ -218,10 +218,10 @@ VALUES (
         <emphasis>might</emphasis> meet the condition of interest. The spatial
         functions are then use to test the condition exactly.</para>
 
-        <programlisting>SELECT id, the_geom
+        <programlisting>SELECT id, geom
 FROM thetable
 WHERE
-  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
+  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
       </answer>
     </qandaentry>
 
@@ -358,9 +358,9 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
         the geometries being reprojected must already have an SRID set on
         them. Once that is done, a reprojection is as simple as referring to
         the desired destination SRID. The below projects a geometry to NAD 83 long lat.
-		The below will only work if the srid of the_geom is not -1 (not undefined spatial ref)</para>
+		The below will only work if the srid of geom is not -1 (not undefined spatial ref)</para>
 
-        <programlisting>SELECT ST_Transform(the_geom,4269) FROM geotable;</programlisting>
+        <programlisting>SELECT ST_Transform(geom,4269) FROM geotable;</programlisting>
       </answer>
     </qandaentry>
 
@@ -375,7 +375,7 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
 
         <programlisting>
 				--To check number of geometries are really blank
-				SELECT count(gid) FROM geotable WHERE the_geom IS NULL;</programlisting>
+				SELECT count(gid) FROM geotable WHERE geom IS NULL;</programlisting>
       </answer>
     </qandaentry>
 

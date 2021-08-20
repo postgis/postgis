@@ -82,7 +82,7 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 	  <para>For example, a valid insert statement to create and insert an OGC
 	  spatial object would be:</para>
 
-	  <programlisting>INSERT INTO geotable ( the_geom, the_name )
+	  <programlisting>INSERT INTO geotable ( geom, the_name )
   VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
 	</sect3>
 
@@ -211,7 +211,7 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 	  <para>For example, a valid insert statement to create and insert a
 	  PostGIS spatial object would be:</para>
 
-	  <programlisting>INSERT INTO geotable ( the_geom, the_name )
+	  <programlisting>INSERT INTO geotable ( geom, the_name )
   VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</programlisting>
 
 	  <para>The "canonical forms" of a PostgreSQL type are the representations
@@ -1191,7 +1191,7 @@ gisdb=# SELECT
 
 	  <programlisting>ALTER TABLE mytable
   ADD CONSTRAINT geometry_valid_check
-	CHECK (ST_IsValid(the_geom));</programlisting>
+	CHECK (ST_IsValid(geom));</programlisting>
 
 	  <para>If you encounter any strange error messages such as "GEOS
 	  Intersection() threw an error!" when calling PostGIS functions with valid
@@ -2357,9 +2357,9 @@ and you want to map out the Mars planet for rehabitation,  you can use a non-ear
 	  operation. For example, the following query would be quite slow on a
 	  large table:</para>
 
-	  <programlisting>SELECT the_geom
+	  <programlisting>SELECT geom
 FROM geom_table
-WHERE ST_Distance(the_geom, 'SRID=312;POINT(100000 200000)') &lt; 100</programlisting>
+WHERE ST_Distance(geom, 'SRID=312;POINT(100000 200000)') &lt; 100</programlisting>
 
 	  <para>This query is selecting all the geometries in geom_table which are
 	  within 100 units of the point (100000, 200000). It will be slow because
@@ -2369,13 +2369,13 @@ WHERE ST_Distance(the_geom, 'SRID=312;POINT(100000 200000)') &lt; 100</programli
 		index accelerated function ST_DWithin to reduce the number of distance
 		calculations required:</para>
 
-	  <programlisting>SELECT the_geom
+	  <programlisting>SELECT geom
 FROM geom_table
-WHERE ST_DWithin(the_geom, 'SRID=312;POINT(100000 200000)', 100)
+WHERE ST_DWithin(geom, 'SRID=312;POINT(100000 200000)', 100)
 </programlisting>
 
 	  <para>This query selects the same geometries, but it does it in a more
-	  efficient way. Assuming there is a GiST index on the_geom, the query
+	  efficient way. Assuming there is a GiST index on geom, the query
 	  planner will recognize that it can use the index to reduce the number of
 	  rows before calculating the result of the <varname>ST_Distance()</varname>
 	  function. Notice that the <varname>ST_MakeEnvelope</varname> geometry which is
@@ -2399,7 +2399,7 @@ WHERE ST_DWithin(the_geom, 'SRID=312;POINT(100000 200000)', 100)
 ------------+-------------------+-------------------
 gid         | integer           | Unique ID
 name        | character varying | Road Name
-the_geom    | geometry          | Location Geometry (Linestring)</programlisting>
+geom    | geometry          | Location Geometry (Linestring)</programlisting>
 
 	  <para>The table definition for the <varname>bc_municipality</varname>
 	  table is:</para>
@@ -2409,7 +2409,7 @@ the_geom    | geometry          | Location Geometry (Linestring)</programlisting
 gid        | integer           | Unique ID
 code       | integer           | Unique ID
 name       | character varying | City / Town Name
-the_geom   | geometry          | Location Geometry (Polygon)</programlisting>
+geom   | geometry          | Location Geometry (Polygon)</programlisting>
 
 	  <qandaset>
 		<qandaentry id="qa_total_length_roads">
@@ -2422,7 +2422,7 @@ the_geom   | geometry          | Location Geometry (Polygon)</programlisting>
 			<para>You can answer this question with a very simple piece of
 			SQL:</para>
 
-			<programlisting>SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;
+			<programlisting>SELECT sum(ST_Length(geom))/1000 AS km_roads FROM bc_roads;
 
 km_roads
 ------------------
@@ -2442,7 +2442,7 @@ km_roads
 			area):</para>
 
 			<programlisting>SELECT
-  ST_Area(the_geom)/10000 AS hectares
+  ST_Area(geom)/10000 AS hectares
 FROM bc_municipality
 WHERE name = 'PRINCE GEORGE';
 
@@ -2466,7 +2466,7 @@ hectares
 
 			<programlisting>SELECT
   name,
-  ST_Area(the_geom)/10000 AS hectares
+  ST_Area(geom)/10000 AS hectares
 FROM
   bc_municipality
 ORDER BY hectares DESC
@@ -2502,12 +2502,12 @@ TUMBLER RIDGE  | 155020.02556131
 
 			<programlisting>SELECT
   m.name,
-  sum(ST_Length(r.the_geom))/1000 as roads_km
+  sum(ST_Length(r.geom))/1000 as roads_km
 FROM
   bc_roads AS r,
   bc_municipality AS m
 WHERE
-  ST_Contains(m.the_geom, r.the_geom)
+  ST_Contains(m.geom, r.geom)
 GROUP BY m.name
 ORDER BY roads_km;
 
@@ -2543,15 +2543,15 @@ PRINCE GEORGE               | 694.37554369147
 
 			<programlisting>CREATE TABLE pg_roads as
 SELECT
-  ST_Intersection(r.the_geom, m.the_geom) AS intersection_geom,
-  ST_Length(r.the_geom) AS rd_orig_length,
+  ST_Intersection(r.geom, m.geom) AS intersection_geom,
+  ST_Length(r.geom) AS rd_orig_length,
   r.*
 FROM
   bc_roads AS r,
   bc_municipality AS m
 WHERE
   m.name = 'PRINCE GEORGE'
-	AND ST_Intersects(r.the_geom, m.the_geom);</programlisting>
+	AND ST_Intersects(r.geom, m.geom);</programlisting>
 		  </answer>
 		</qandaentry>
 
@@ -2563,14 +2563,14 @@ WHERE
 
 		  <answer>
 			<programlisting>SELECT
-  sum(ST_Length(r.the_geom))/1000 AS kilometers
+  sum(ST_Length(r.geom))/1000 AS kilometers
 FROM
   bc_roads r,
   bc_municipality m
 WHERE
 	r.name = 'Douglas St'
 	AND m.name = 'VICTORIA'
-	AND ST_Intersects(m.the_geom, r.the_geom);
+	AND ST_Intersects(m.geom, r.geom);
 
 kilometers
 ------------------
@@ -2586,9 +2586,9 @@ kilometers
 		  </question>
 
 		  <answer>
-			<programlisting>SELECT gid, name, ST_Area(the_geom) AS area
+			<programlisting>SELECT gid, name, ST_Area(geom) AS area
 FROM bc_municipality
-WHERE ST_NRings(the_geom) &gt; 1
+WHERE ST_NRings(geom) &gt; 1
 ORDER BY area DESC LIMIT 1;
 
 gid  | name         | area
