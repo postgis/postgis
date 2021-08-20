@@ -139,25 +139,27 @@ from somegeogtable;</programlisting>
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the azimuth in radians of the segment defined by the given
-			point geometries, or NULL if the two points are coincident. The azimuth is angle is referenced from north, and is positive clockwise: North = 0; East = &#x03C0;/2; South = &#x03C0;; West = 3&#x03C0;/2.</para>
-			<para>For the geography type, the forward azimuth is solved as part of the inverse geodesic problem.</para>
-			<para>The azimuth is mathematical concept defined as the angle between a reference plane and a point, with angular units in radians.
-			Units can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para>
+			<para>Returns the azimuth in radians of the line segment defined by the given
+			point geometries, or NULL if the two points are coincident. The azimuth angle is referenced from north (the positive Y axis), and is positive clockwise: North = 0; East = &#x03C0;/2; South = &#x03C0;; West = 3&#x03C0;/2.</para>
+			<para>For the geography type, the azimuth solution is known as the
+                  <ulink url="https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid">inverse geodesic problem</ulink>.</para>
+			<para>The azimuth is a mathematical concept defined as the angle between a reference plane and a point, with angular units in radians.
+			The result value in radians can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.</para>
+
+			<para>Azimuth can be used in conjunction with <xref linkend="ST_Translate" /> to shift an object along its perpendicular axis. See
+				 the <varname>upgis_lineshift()</varname> function in the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">PostGIS wiki</ulink> for an implementation of this.</para>
 
 			<para>Availability: 1.1.0</para>
 			<para>Enhanced: 2.0.0 support for geography was introduced.</para>
 			<para>Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
-			<para>Azimuth is especially useful in conjunction with ST_Translate for shifting an object along its perpendicular axis. See
-				 upgis_lineshift <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
 		</refsection>
 
 		<refsection>
 		<title>Examples</title>
 		<para>Geometry Azimuth in degrees </para>
 <programlisting>
-SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
-	    degrees(ST_Azimuth(ST_Point(75, 100), ST_Point(25, 45))) AS degB_A;
+SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
+	   degrees(ST_Azimuth( ST_Point(75, 100), ST_Point(25, 45) )) AS degB_A;
 
       dega_b       |     degb_a
 ------------------+------------------
@@ -192,7 +194,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Point" />, <xref linkend="ST_Translate" />, <xref linkend="ST_Project" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
+			<para><xref linkend="ST_Angle" />, <xref linkend="ST_Point" />, <xref linkend="ST_Translate" />, <xref linkend="ST_Project" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
 		</refsection>
 
   </refentry>
@@ -237,7 +239,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
         defined by the start and end points of the input lines
         </para>
 
-			<para>The result is a positive angle between 0 and 2*Pi radians.
+			<para>The result is a positive angle between 0 and 2&#x03C0; radians.
             The radian result can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.
             </para>
 			<para>Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>.</para>
