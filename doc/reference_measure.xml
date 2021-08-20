@@ -227,9 +227,8 @@ SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
 			<para> Computes the clockwise angle between two vectors.
 			</para>
 
-        <para><emphasis role="bold">Variant 1:</emphasis> computes the angle enclosed by the points P1-P2-P3</para>
-		<para><emphasis role="bold">Variant 2:</emphasis> computes the angle between two vectors defined by points P1-P2 and P3-P4</para>
-		<para><emphasis role="bold">Variant 3:</emphasis> computes the angle between two vectors S1-E1 and S2-E2,
+        <para><emphasis role="bold">Variant 1:</emphasis> computes the angle enclosed by the points P1-P2-P3. If a 4th point provided computes the angle points P1-P2 and P3-P4</para>
+		<para><emphasis role="bold">Variant 2:</emphasis> computes the angle between two vectors S1-E1 and S2-E2,
         defined by the start and end points of the input lines
         </para>
 
