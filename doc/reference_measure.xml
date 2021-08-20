@@ -212,13 +212,7 @@ SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
 			  <paramdef><type>geometry </type><parameter>point1</parameter></paramdef>
 			  <paramdef><type>geometry </type><parameter>point2</parameter></paramdef>
 			  <paramdef><type>geometry </type><parameter>point3</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-			  <funcdef>float <function>ST_Angle</function></funcdef>
-			  <paramdef><type>geometry </type><parameter>point1</parameter></paramdef>
-			  <paramdef><type>geometry </type><parameter>point2</parameter></paramdef>
-			  <paramdef><type>geometry </type><parameter>point3</parameter></paramdef>
-			  <paramdef><type>geometry </type><parameter>point4</parameter></paramdef>
+			  <paramdef choice="opt"><type>geometry </type><parameter>point4=POINT(EMPTY)</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 			  <funcdef>float <function>ST_Angle</function></funcdef>
