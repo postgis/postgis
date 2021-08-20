@@ -90,9 +90,9 @@ actionsql
 DROP INDEX tiger.idx_tiger_countysub_lookup_lower_name;
 DROP INDEX tiger.idx_tiger_edges_countyfp;
 DROP INDEX tiger.idx_tiger_faces_countyfp;
-DROP INDEX tiger.tiger_place_geom_gist;
-DROP INDEX tiger.tiger_edges_geom_gist;
-DROP INDEX tiger.tiger_state_geom_gist;
+DROP INDEX tiger.tiger_place_the_geom_gist;
+DROP INDEX tiger.tiger_edges_the_geom_gist;
+DROP INDEX tiger.tiger_state_the_geom_gist;
 DROP INDEX tiger.idx_tiger_addr_least_address;
 DROP INDEX tiger.idx_tiger_addr_tlid;
 DROP INDEX tiger.idx_tiger_addr_zip;
@@ -101,13 +101,13 @@ DROP INDEX tiger.idx_tiger_county_lookup_lower_name;
 DROP INDEX tiger.idx_tiger_county_lookup_snd_name;
 DROP INDEX tiger.idx_tiger_county_lower_name;
 DROP INDEX tiger.idx_tiger_county_snd_name;
-DROP INDEX tiger.idx_tiger_county_geom_gist;
+DROP INDEX tiger.idx_tiger_county_the_geom_gist;
 DROP INDEX tiger.idx_tiger_countysub_lookup_snd_name;
 DROP INDEX tiger.idx_tiger_cousub_countyfp;
 DROP INDEX tiger.idx_tiger_cousub_cousubfp;
 DROP INDEX tiger.idx_tiger_cousub_lower_name;
 DROP INDEX tiger.idx_tiger_cousub_snd_name;
-DROP INDEX tiger.idx_tiger_cousub_geom_gist;
+DROP INDEX tiger.idx_tiger_cousub_the_geom_gist;
 DROP INDEX tiger_data.idx_tiger_data_ma_addr_least_address;
 DROP INDEX tiger_data.idx_tiger_data_ma_addr_tlid;
 DROP INDEX tiger_data.idx_tiger_data_ma_addr_zip;
@@ -354,7 +354,7 @@ SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,
     (addy).location As city, (addy).stateabbrev As st,(addy).zip
   FROM geocode('100 Federal Street, MA',
         3,
-        (SELECT ST_Union(geom)
+        (SELECT ST_Union(the_geom)
             FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry
         ) As g;
 
@@ -664,9 +664,9 @@ cd %STATEDIR%
 for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR%
 cd %TMPDIR%
 %PSQL% -c "CREATE TABLE tiger_data.MA_tract(CONSTRAINT pk_MA_tract PRIMARY KEY (tract_id) ) INHERITS(tiger.tract); "
-%SHP2PGSQL% -c -s 4269 -g geom   -W "latin1" tl_2010_25_tract10.dbf tiger_staging.ma_tract10 | %PSQL%
+%SHP2PGSQL% -c -s 4269 -g the_geom   -W "latin1" tl_2010_25_tract10.dbf tiger_staging.ma_tract10 | %PSQL%
 %PSQL% -c "ALTER TABLE tiger_staging.MA_tract10 RENAME geoid10 TO tract_id;  SELECT loader_load_staged_data(lower('MA_tract10'), lower('MA_tract')); "
-%PSQL% -c "CREATE INDEX tiger_data_MA_tract_geom_gist ON tiger_data.MA_tract USING gist(geom);"
+%PSQL% -c "CREATE INDEX tiger_data_MA_tract_the_geom_gist ON tiger_data.MA_tract USING gist(the_geom);"
 %PSQL% -c "VACUUM ANALYZE tiger_data.MA_tract;"
 %PSQL% -c "ALTER TABLE tiger_data.MA_tract ADD CONSTRAINT chk_statefp CHECK (statefp = '25');"
 : </programlisting>

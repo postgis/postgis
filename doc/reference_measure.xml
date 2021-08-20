@@ -697,14 +697,14 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,
-round(CAST(ST_Distance(ST_Transform(ST_Centroid(geom),32611),
+		<programlisting>SELECT round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
 		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters,
-round(CAST(ST_Distance(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric),5) As dist_degrees,
-round(CAST(ST_Distance(ST_Transform(geom,32611),
+round(CAST(ST_Distance(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric),5) As dist_degrees,
+round(CAST(ST_Distance(ST_Transform(the_geom,32611),
 		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As min_dist_line_point_meters
 FROM
-	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As geom) as foo;
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As the_geom) as foo;
 	 dist_meters | dist_utm11_meters | dist_degrees | min_dist_line_point_meters
 	-------------+-------------------+--------------+----------------------------
 		70424.47 |          70438.00 |      0.72900 |                   65871.18
@@ -760,13 +760,13 @@ FROM
 		<title>Examples</title>
 
 		<programlisting>SELECT round(CAST(
-		ST_DistanceSpheroid(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
+		ST_DistanceSpheroid(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
 			As numeric),2) As dist_meters_spheroid,
-		round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
-round(CAST(ST_Distance(ST_Transform(ST_Centroid(geom),32611),
+		round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
 		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters
 FROM
-	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As geom) as foo;
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As the_geom) as foo;
  dist_meters_spheroid | dist_meters_sphere | dist_utm11_meters
 ----------------------+--------------------+-------------------
 			 70454.92 |           70424.47 |          70438.00
@@ -1160,22 +1160,22 @@ ST_3DLength
 			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
 			  FROM geometry_table;
 
-SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,
-ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
-ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
+SELECT ST_LengthSpheroid( the_geom, sph_m ) As tot_len,
+ST_LengthSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
 			  FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
-	(-71.05957 42.3589 , -71.061 43))') As geom,
+	(-71.05957 42.3589 , -71.061 43))') As the_geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
 	tot_len      |    len_line1     |    len_line2
 ------------------+------------------+------------------
  85204.5207562955 | 13986.8725229309 | 71217.6482333646
 
  --3D
-SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,
-ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
-ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
+SELECT ST_LengthSpheroid( the_geom, sph_m ) As tot_len,
+ST_LengthSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
 			  FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
-	(-71.05957 42.3589 75, -71.061 43 90))') As geom,
+	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
 
 	 tot_len      |    len_line1    |    len_line2
@@ -1297,12 +1297,12 @@ LINESTRING(20 40,121.111404660392 186.629392246051)
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
-SELECT ST_AsText(ST_LongestLine(c.geom, c.geom)) As llinewkt,
-	ST_MaxDistance(c.geom,c.geom) As max_dist,
-	ST_Length(ST_LongestLine(c.geom, c.geom)) As lenll
-FROM (SELECT ST_BuildArea(ST_Collect(geom)) As geom
+SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt,
+	ST_MaxDistance(c.the_geom,c.the_geom) As max_dist,
+	ST_Length(ST_LongestLine(c.the_geom, c.the_geom)) As lenll
+FROM (SELECT ST_BuildArea(ST_Collect(the_geom)) As the_geom
 	FROM (SELECT ST_Translate(ST_SnapToGrid(ST_Buffer(ST_Point(50 ,generate_series(50,190, 50)
-			),40, 'quad_segs=2'),1), x, 0)  As geom
+			),40, 'quad_segs=2'),1), x, 0)  As the_geom
 			FROM generate_series(1,100,50) As x)  AS foo
 ) As c;
 
@@ -1832,9 +1832,9 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  <refsection>
 		<title>Examples</title>
 		<para>Perimeter of a slightly elevated polygon in the air in Massachusetts state plane feet</para>
-		<programlisting>SELECT ST_3DPerimeter(geom), ST_Perimeter2d(geom), ST_Perimeter(geom) FROM
+		<programlisting>SELECT ST_3DPerimeter(the_geom), ST_Perimeter2d(the_geom), ST_Perimeter(the_geom) FROM
 			(SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 2967416 2,743238 2967450 1,
-743265.625 2967416 1,743238 2967416 2))') As geom) As foo;
+743265.625 2967416 1,743238 2967416 2))') As the_geom) As foo;
 
   ST_3DPerimeter  |  st_perimeter2d  |   st_perimeter
 ------------------+------------------+------------------

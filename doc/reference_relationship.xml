@@ -689,7 +689,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 			  <entry><para> <informalexample>
 				  <programlisting>CREATE TABLE roads (
   id serial NOT NULL,
-  geom geometry,
+  the_geom geometry,
   CONSTRAINT roads_pkey PRIMARY KEY (road_id)
 );</programlisting>
 				</informalexample> </para></entry>
@@ -712,7 +712,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 	  <para><informalexample>
 		  <programlisting>SELECT roads.id
 FROM roads, highways
-WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
+WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 		</informalexample></para>
 	</refsection>
   </refentry>
@@ -884,9 +884,9 @@ FROM (SELECT
 </informaltable>
 
 <programlisting>
-SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)
-	FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.geom &amp;&amp; s2.geom )
-WHERE ST_CrossingDirection(s1.geom, s2.geom) > 0;
+SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.the_geom, s2.the_geom)
+	FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.the_geom &amp;&amp; s2.the_geom )
+WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
 </programlisting>
 	</refsection>
 
@@ -1415,8 +1415,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 SELECT l.* , b.name As poly_name
 	FROM polys As b
 INNER JOIN compounds As l
-ON (p.geom &amp;&amp; b.geom
-AND ST_Relate(l.geom, b.geom,'T********'));
+ON (p.the_geom &amp;&amp; b.the_geom
+AND ST_Relate(l.the_geom, b.the_geom,'T********'));
 
 SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2));
 st_relate
@@ -2043,7 +2043,7 @@ ST_DWithin(
 -- If the units of the spatial reference is meters then units would be meters
 SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.geom, h.hospital_name
 	FROM schools s
-		LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
+		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.geom, 3000)
 	ORDER BY s.gid, ST_Distance(s.geom, h.geom);
 
 -- The schools with no close hospitals

@@ -217,11 +217,11 @@ SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2
 		<para>Example of creating a partial functional index.  For tables where you are not sure all the geometries
 			will be filled in, its best to use a partial index that leaves out null geometries which will both conserve space and make your index smaller and more efficient.</para>
 		<programlisting>
-CREATE INDEX idx_geom_26986_parcels
+CREATE INDEX idx_the_geom_26986_parcels
   ON parcels
   USING gist
-  (ST_Transform(geom, 26986))
-  WHERE geom IS NOT NULL;
+  (ST_Transform(the_geom, 26986))
+  WHERE the_geom IS NOT NULL;
 		</programlisting>
 
 		<para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
