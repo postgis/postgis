@@ -120,7 +120,7 @@ from somegeogtable;</programlisting>
 		<refnamediv>
 		  <refname>ST_Azimuth</refname>
 
-		  <refpurpose>Returns the north-based azimuth as the angle in radians measured clockwise from the vertical on pointA to pointB.</refpurpose>
+		  <refpurpose>Returns the north-based azimuth of a line between two points.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -201,7 +201,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		<refnamediv>
 		  <refname>ST_Angle</refname>
 
-		  <refpurpose>Returns the angle between 3 points, or between 2 vectors (4 points or 2 lines).</refpurpose>
+		  <refpurpose>Returns the angle between two vectors defined by 3 or 4 points, or 2 lines.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -210,7 +210,13 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 			  <paramdef><type>geometry </type><parameter>point1</parameter></paramdef>
 			  <paramdef><type>geometry </type><parameter>point2</parameter></paramdef>
 			  <paramdef><type>geometry </type><parameter>point3</parameter></paramdef>
-			  <paramdef choice="opt"><type>geometry </type><parameter>point4</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+			  <funcdef>float <function>ST_Angle</function></funcdef>
+			  <paramdef><type>geometry </type><parameter>point1</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>point2</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>point3</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>point4</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 			  <funcdef>float <function>ST_Angle</function></funcdef>
@@ -222,45 +228,59 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		<refsection>
 			<title>Description</title>
 
-			<para> For 3 points, computes the angle measured clockwise of P1P2P3.
-			If input are 2 lines, get first and last point of the lines as 4 points.
-			For 4 points,compute the angle measured clockwise of P1P2,P3P4.
-			Results are always positive, between 0 and 2*Pi radians.
-
-			Uses azimuth of pairs or points.
+			<para> Computes the clockwise angle between two vectors.
 			</para>
-			<para>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</para>
-			<para>Result is in radian and can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para>
+
+        <para><emphasis role="bold">Variant 1:</emphasis> computes the angle enclosed by the points P1-P2-P3</para>
+		<para><emphasis role="bold">Variant 2:</emphasis> computes the angle between two vectors defined by points P1-P2 and P3-P4</para>
+		<para><emphasis role="bold">Variant 3:</emphasis> computes the angle between two vectors S1-E1 and S2-E2,
+        defined by the start and end points of the input lines
+        </para>
+
+			<para>The result is a positive angle between 0 and 2*Pi radians.
+            The radian result can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.
+            </para>
+			<para>Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>.</para>
 			<para>Availability: 2.5.0</para>
 		</refsection>
 
 		<refsection>
 		<title>Examples</title>
-		<para>Geometry Azimuth in degrees </para>
+
+        <para>Angle between three points</para>
 <programlisting>
-	WITH rand AS (
-		SELECT s, random() * 2 * PI() AS rad1
-			, random() * 2 * PI() AS rad2
-		FROM  generate_series(1,2,2) AS s
-	)
-	 , points AS (
-		SELECT s, rad1,rad2, ST_Point(cos1+s,sin1+s) as p1, ST_Point(s,s) AS p2, ST_Point(cos2+s,sin2+s) as p3
-		FROM rand
-			,cos(rad1) cos1, sin(rad1) sin1
-			,cos(rad2) cos2, sin(rad2) sin2
-	)
-	SELECT s, ST_AsText(ST_SnapToGrid(ST_MakeLine(ARRAY[p1,p2,p3]),0.001)) AS line
-		, degrees(ST_Angle(p1,p2,p3)) as computed_angle
-		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference
-		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference
-	FROM points ;
+SELECT degrees( ST_Angle('POINT(0 0)', 'POINT(10 10)', 'POINT(20 0)') );
 
-1 | line | computed_angle | reference
-------------------+------------------
-1 | LINESTRING(1.511 1.86,1 1,0.896 0.005) | 155.27033848688 | 155
-
+ degrees
+---------
+     270
 </programlisting>
+
+        <para>Angle between vectors defined by four points</para>
+<programlisting>
+SELECT degrees( ST_Angle('POINT (10 10)', 'POINT (0 0)', 'POINT(90 90)', 'POINT (100 80)') );
+
+      degrees
+-------------------
+ 269.9999999999999
+</programlisting>
+
+        <para>Angle between vectors defined by the start and end points of lines</para>
+<programlisting>
+SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0.5, 1 0)') );
+
+      degrees
+--------------
+           45
+</programlisting>
+
 		</refsection>
+
+	    <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Azimuth" /></para>
+        </refsection>
   </refentry>
 
 <refentry id="ST_ClosestPoint">
