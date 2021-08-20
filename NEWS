@@ -19,6 +19,7 @@ PostGIS 3.0.4dev
   - #4740, Round values in geography_distance_tree
            as we do on geography_distance (Raúl Marín, Paul Ramsey, Regina Obe)
   - #4968, Update autogen.sh to handle autoconf 2.71 issues (Raúl Marín, Regina Obe)
+  - #4916, #4770, #4724, #4916, Crashes in aggregate functions (Paul Ramsey)
 
 
 PostGIS 3.0.3
