@@ -406,31 +406,35 @@ SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333,
 
 
 <para>
-A query to cut a LineString into sections of length 100 or less.
-It uses <varname>generate_series()</varname> which creates an implicit JOIN LATERAL
+A query to cut a LineString into sections of length 100 or shorter.
+It uses <varname>generate_series()</varname> with a CROSS JOIN LATERAL
 to produce the equivalent of a FOR loop.
 </para>
 <programlisting>
 WITH data(id, geom) AS (VALUES
-    ( 'a1', 'LINESTRING (0 0, 250 0)'::geometry )
-)
-SELECT id, n, ST_AsText( ST_LineSubstring(geom, n * frac,
-                  CASE
-                  WHEN (n+1) * frac  &lt; 1 THEN (n+1) * frac
-                  ELSE 1
-                  END )) AS geom
-FROM
-  (SELECT id, geom, ST_Length(geom) AS len,
-          100.0 / ST_Length(geom) AS frac,
-          generate_series(0, floor(ST_Length(geom) / 100.0)::integer ) AS n
-  FROM data
-  ) AS t;
+        ( 'A', 'LINESTRING( 0 0, 200 0)'::geometry ),
+        ( 'B', 'LINESTRING( 0 100, 350 100)'::geometry ),
+        ( 'C', 'LINESTRING( 0 200, 50 200)'::geometry )
+    )
+SELECT id, i, ST_AsText( ST_LineSubstring( d.geom, startfrac, LEAST( endfrac, 1 )) ) AS geom
+FROM (SELECT id, geom, ST_Length(geom) len, 100 sublen FROM data) AS d
+CROSS JOIN LATERAL (
+    SELECT i, (sublen * i) / len AS startfrac,
+              (sublen * (i+1)) / len AS endfrac
+        FROM generate_series(0, floor( d.len / sublen )::integer ) AS t(i)
+        -- skip last i if line length is exact multiple of sublen
+        WHERE (sublen * i)/len <> 1.0
+    ) AS d2;
 
- id | n |          geom
-----+---+-------------------------
- a1 | 0 | LINESTRING(0 0,100 0)
- a1 | 1 | LINESTRING(100 0,200 0)
- a1 | 2 | LINESTRING(200 0,250 0)
+ id | i |            geom
+----+---+-----------------------------
+ A  | 0 | LINESTRING(0 0,100 0)
+ A  | 1 | LINESTRING(100 0,200 0)
+ B  | 0 | LINESTRING(0 100,100 100)
+ B  | 1 | LINESTRING(100 100,200 100)
+ B  | 2 | LINESTRING(200 100,300 100)
+ B  | 3 | LINESTRING(300 100,350 100)
+ C  | 0 | LINESTRING(0 200,50 200)
 </programlisting>
 		  </refsection>
 
