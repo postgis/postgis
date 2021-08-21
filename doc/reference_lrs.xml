@@ -25,7 +25,7 @@
 			<para>Returns a point interpolated along a line at a fractional location.
             First argument must be a LINESTRING.
             Second argument is a float between 0 and 1
-			representing the fraction of total linestring length
+			representing the fraction of line length
             where the point is to be located.
             The Z and M values are interpolated if present.
             </para>
@@ -132,8 +132,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 
 			<para>Returns a point interpolated along a 3D line at a fractional location.
             First argument must be a LINESTRING. Second argument is a float between 0 and 1
-			representing the fraction of linestring length
-            where the point is to be located.
+			representing the point location as a fraction of line length.
             The M value is interpolated if present.
             </para>
 
@@ -199,10 +198,10 @@ SELECT ST_AsText(
 			<title>Description</title>
 
 			<para>Returns one or more points interpolated along a line at a fractional interval.
-            First argument
-			must be a LINESTRING. Second argument is a float8 between 0 and 1
-			representing the spacing between the points as a fraction of total
-			LineString length. If the third argument is false, at most one point
+            The first argument
+			must be a LINESTRING. The second argument is a float8 between 0 and 1
+			representing the spacing between the points as a fraction of
+			line length. If the third argument is false, at most one point
 			will be constructed (the function will be equivalent to <xref linkend="ST_LineInterpolatePoint" />.)
 		</para>
 
@@ -268,7 +267,7 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 
 			 <para>Returns a float between 0 and 1 representing the location of
 			the closest point on a LineString to the given Point, as a fraction
-			of total <link linkend="ST_Length2D">2d line</link> length.</para>
+			of <link linkend="ST_Length2D">2d line</link> length.</para>
 
 			<para>You can use the returned location to extract a Point (<xref linkend="ST_LineInterpolatePoint" />) or
 			a substring (<xref linkend="ST_LineSubstring" />).</para>
@@ -346,21 +345,28 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a linestring being a substring of the input one
-			starting and ending at the given fractions of total 2d length.
-			Second and third arguments are float8 values between 0 and
-			1. This only works with LINESTRINGs.
-			To use with contiguous MULTILINESTRINGs use in conjunction with <xref linkend="ST_LineMerge" />.</para>
+			<para>Computes the line which is the section of the input line
+			starting and ending at the given fractional locations.
+            The first argument must be a LINESTRING.
+			The second and third arguments are values in the range [0, 1]
+            representing the start and end locations
+            as fractions of line length.
+            The Z and M values are interpolated for added endpoints if present.
+            </para>
 
-			<para>If 'start' and 'end' have the same value this is equivalent
+			<para>If <varname>startfraction</varname> and <varname>endfraction</varname>
+            have the same value this is equivalent
 			to <xref linkend="ST_LineInterpolatePoint" />.</para>
 
-			<para>See <xref linkend="ST_LineLocatePoint" /> for
-			computing the line location nearest to a Point.</para>
+			<note>
+			  <para>This only works with LINESTRINGs.
+			    To use on contiguous MULTILINESTRINGs
+                first join them with <xref linkend="ST_LineMerge" />.</para>
+			</note>
 
 			<note>
-			  <para>Since release 1.1.1 this function also interpolates M and
-			  Z values (when present), while prior releases set them to
+			  <para>Since release 1.1.1 this function interpolates M and
+			  Z values.  Prior releases set Z and M to
 			  unspecified values.</para>
 			</note>
 
@@ -380,37 +386,52 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			  </mediaobject>
 			</informalfigure>
 	<programlisting>
---Return the approximate 1/3 mid-range part of a linestring
-SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 125, 150 190)'), 0.333, 0.666));
+SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.666));
 
 										   st_astext
 ------------------------------------------------------------------------------------------------
 LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463138888)
+</programlisting>
 
---The below example simulates a while loop in
---SQL using PostgreSQL generate_series() to cut all
---linestrings in a table to 100 unit segments
--- of which no segment is longer than 100 units
--- units are measured in the SRID units of measurement
--- It also assumes all geometries are LINESTRING or contiguous MULTILINESTRING
---and no geometry is longer than 100 units*10000
---for better performance you can reduce the 10000
---to match max number of segments you expect
+<para>
+If start and end locations are the same, the result is a POINT.
+</para>
+<programlisting>
+SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.333));
 
-SELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,
-  CASE
-	WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length
-	ELSE 1
-  END) As the_geom
+                st_astext
+------------------------------------------
+ POINT(69.2846934853974 94.2846934853974)
+</programlisting>
+
+
+<para>
+A query to cut a LineString into sections of length 100 or less.
+It uses <varname>generate_series()</varname> which creates an implicit JOIN LATERAL
+to produce the equivalent of a FOR loop.
+</para>
+<programlisting>
+WITH data(id, geom) AS (VALUES
+    ( 'a1', 'LINESTRING (0 0, 250 0)'::geometry )
+)
+SELECT id, n, ST_AsText( ST_LineSubstring(geom, n * frac,
+                  CASE
+                  WHEN (n+1) * frac  &lt; 1 THEN (n+1) * frac
+                  ELSE 1
+                  END )) AS geom
 FROM
-  (SELECT sometable.field1, sometable.field2,
-  ST_LineMerge(sometable.the_geom) AS the_geom,
-  ST_Length(sometable.the_geom) As length
-  FROM sometable
-  ) AS t
-CROSS JOIN generate_series(0,10000) AS n
-WHERE n*100.00/length &lt; 1;
-			</programlisting>
+  (SELECT id, geom, ST_Length(geom) AS len,
+          100.0 / ST_Length(geom) AS frac,
+          generate_series(0, floor(ST_Length(geom) / 100.0)::integer ) AS n
+  FROM data
+  ) AS t;
+
+ id | n |          geom
+----+---+-------------------------
+ a1 | 0 | LINESTRING(0 0,100 0)
+ a1 | 1 | LINESTRING(100 0,200 0)
+ a1 | 2 | LINESTRING(200 0,250 0)
+</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
