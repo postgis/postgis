@@ -125,7 +125,6 @@ sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EX
 include ../upgrade-paths-rules.mk
 
 install: install-upgrade-paths-data-us
-install: install-upgrade-paths-data-us
 # address_standardizer is already defined, we have to additionally create
 # the upgrade path scripts for address_standardizer_data_us
 install-upgrade-paths-data-us:
