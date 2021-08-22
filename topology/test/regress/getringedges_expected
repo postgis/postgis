@@ -1,7 +1,6 @@
-t
-9
-22
-26
+ERROR:  No topology with name "non-existent" in topology.topology
+ERROR:  No edge with id 10000000 in Topology "city_data"
+ERROR:  No edge with id 10000000 in Topology "city_data"
 R1|1|1
 R2|1|2
 R2|2|3

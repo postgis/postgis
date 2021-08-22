@@ -1,0 +1,1094 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2010, 2021 Sandro Santilli <strk@kbt.io>
+-- Copyright (C) 2005 Refractions Research Inc.
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- Author: Sandro Santilli <strk@kbt.io>
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--
+-- Type returned by ValidateTopology
+--
+CREATE TYPE topology.ValidateTopology_ReturnType AS (
+  error varchar,
+  id1 integer,
+  id2 integer
+);
+
+--{
+-- Return the exterior ring of a topology face
+--
+--
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetFaceShellMaximalEdgeRing(atopology varchar, aface int)
+RETURNS GEOMETRY AS
+$BODY$
+DECLARE
+  sql TEXT;
+  outsidePoint GEOMETRY;
+  shell GEOMETRY;
+BEGIN
+
+  sql := format(
+    $$
+      SELECT
+        ST_Translate(
+          ST_StartPoint( ST_BoundingDiagonal(mbr) ),
+          -1,
+          -1
+        )
+      FROM %1$I.face
+      WHERE face_id = $1
+    $$,
+    atopology
+  );
+  EXECUTE sql USING aface INTO outsidePoint;
+
+  sql := format(
+    $$
+      WITH
+      outside_point AS (
+        SELECT ST_Translate(
+          ST_StartPoint( ST_BoundingDiagonal(mbr) ),
+          -1,
+          -1
+        )
+        FROM %1$I.face
+        WHERE face_id = $1
+      ),
+      leftmost_edge AS (
+        SELECT
+          CASE WHEN left_face = $1
+          THEN
+            edge_id
+          ELSE
+            -edge_id
+          END ring_id
+        FROM %1$I.edge
+        WHERE left_face = $1 or right_face = $1
+        ORDER BY
+#if POSTGIS_PGSQL_VERSION < 95
+          ST_Distance(geom, $2)
+#else
+          geom <-> $2
+#endif
+        LIMIT 1
+      ),
+      edgering AS (
+        SELECT *
+        FROM
+          GetRingEdges(
+            %1$L,
+            (SELECT ring_id FROM leftmost_edge)
+          )
+      )
+      SELECT
+        ST_MakeLine(
+          CASE WHEN r.edge > 0 THEN
+            e.geom
+          ELSE
+            ST_Reverse(e.geom)
+          END
+          ORDER BY r.sequence
+        ) outerRing
+      FROM edgering r, %1$I.edge e
+      WHERE e.edge_id = abs(r.edge)
+    $$,
+    atopology
+  );
+
+  --RAISE DEBUG 'SQL: %', sql;
+
+  EXECUTE sql USING aface, outsidePoint
+  INTO shell;
+
+  -- TODO: check if the ring is not closed
+
+  shell := ST_MakePolygon(shell);
+
+  RETURN shell;
+END;
+$BODY$ LANGUAGE 'plpgsql' STABLE; --}
+
+-- Assumes search_path has topology schema first
+--{
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyGetRingEdges(starting_edge int)
+RETURNS int[]
+AS
+$BODY$
+DECLARE
+  ret int[];
+BEGIN
+  WITH RECURSIVE edgering AS (
+    SELECT
+      starting_edge as signed_edge_id,
+      edge_id,
+      next_left_edge,
+      next_right_edge
+    FROM edge_data
+    WHERE edge_id = abs(starting_edge)
+      UNION
+    SELECT
+      CASE WHEN p.signed_edge_id < 0 THEN
+        p.next_right_edge
+      ELSE
+        p.next_left_edge
+      END,
+      e.edge_id,
+      e.next_left_edge,
+      e.next_right_edge
+    FROM edge_data e, edgering p
+    WHERE e.edge_id =
+      CASE WHEN p.signed_edge_id < 0 THEN
+        abs(p.next_right_edge)
+      ELSE
+        abs(p.next_left_edge)
+      END
+  )
+  SELECT array_agg(signed_edge_id)
+  FROM edgering
+  INTO ret;
+
+  RETURN ret;
+END;
+$BODY$ LANGUAGE 'plpgsql';
+--}
+
+CREATE OR REPLACE FUNCTION topology._CheckEdgeLinking(curedge_edge_id INT, prevedge_edge_id INT, prevedge_next_left_edge INT, prevedge_next_right_edge INT)
+RETURNS topology.ValidateTopology_ReturnType
+AS
+$BODY$
+DECLARE
+  retrec topology.ValidateTopology_ReturnType;
+BEGIN
+  IF prevedge_edge_id > 0
+  THEN -- previous was outgoing, this one should be next-right
+    IF prevedge_next_right_edge != curedge_edge_id THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Edge % should be next-right of edge %, is % instead',
+        curedge_edge_id,
+        abs(prevedge_edge_id),
+        prevedge_next_right_edge
+      ;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+      retrec.error = 'invalid next_right_edge';
+      retrec.id1 = abs(prevedge_edge_id);
+      retrec.id2 = curedge_edge_id; -- we put the expected one here, for convenience
+      RETURN retrec;
+    END IF;
+  ELSE -- previous was incoming, this one should be next-left
+    IF prevedge_next_left_edge != curedge_edge_id THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Edge % should be next-left of edge %, is % instead',
+        curedge_edge_id,
+        abs(prevedge_edge_id),
+        prevedge_next_left_edge
+      ;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+      retrec.error = 'invalid next_left_edge';
+      retrec.id1 = abs(prevedge_edge_id);
+      retrec.id2 = curedge_edge_id; -- we put the expected one here, for convenience
+      RETURN retrec;
+    END IF;
+  END IF;
+
+  RETURN retrec;
+END;
+$BODY$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+--
+-- Check that the edges incident to topology nodes
+-- (as advertised by their start_node/end_node)
+-- correctly link to the next incident node on each
+-- side (CW and CCW)
+--
+-- NOTE: if start_node/end_node values are incorrect the behavior
+--       of this function is undefined
+--
+-- NOTE: assumes search_path was set before calling this function
+--
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyEdgeLinking(bbox geometry DEFAULT NULL)
+RETURNS SETOF topology.ValidateTopology_ReturnType
+AS --{
+$BODY$
+DECLARE
+  retrec topology.ValidateTopology_ReturnType;
+  rec RECORD;
+  last_node_id int;
+  last_node_first_edge RECORD;
+  last_node_prev_edge RECORD;
+BEGIN
+  RAISE NOTICE 'Checking edge linking';
+  -- NOTE: this check relies on correct start_node and end_node
+  --       for edges, if those are not correct the results
+  --       of this check do not make much sense.
+  FOR rec IN --{
+      WITH
+      nodes AS (
+        SELECT node_id
+        FROM node
+        WHERE containing_face IS NULL
+        AND (
+          bbox IS NULL
+          OR geom && bbox
+        )
+      ),
+      incident_edges AS (
+        SELECT
+          n.node_id,
+          e.edge_id,
+          e.start_node,
+          e.end_node,
+          e.next_left_edge,
+          e.next_right_edge,
+          ST_RemoveRepeatedPoints(e.geom) as edge_geom
+        FROM edge_data e, nodes n
+        WHERE e.start_node = n.node_id
+        or e.end_node = n.node_id
+      ),
+      edge_star AS (
+        SELECT
+          node_id,
+          edge_id,
+          next_left_edge,
+          next_right_edge,
+          ST_Azimuth(ST_StartPoint(edge_geom), ST_PointN(edge_geom, 2)) as az
+        FROM incident_edges
+        WHERE start_node = node_id
+          UNION ALL
+        SELECT
+          node_id,
+          -edge_id,
+          next_left_edge,
+          next_right_edge,
+          ST_Azimuth(ST_EndPoint(edge_geom), ST_PointN(edge_geom, ST_NumPoints(edge_geom)-1))
+        FROM incident_edges
+        WHERE end_node = node_id
+      ),
+      sequenced_edge_star AS (
+        SELECT
+          row_number() over (partition by node_id order by az, edge_id) seq,
+          *
+        FROM edge_star
+      )
+      SELECT * FROM sequenced_edge_star
+      ORDER BY node_id, seq
+  LOOP --}{
+    IF last_node_id IS NULL OR last_node_id != rec.node_id
+    THEN --{
+      IF last_node_id IS NOT NULL
+      THEN
+        -- Check that last edge (CW from prev one) is correctly linked
+        retrec := topology._CheckEdgeLinking(
+          last_node_first_edge.edge_id,
+          last_node_prev_edge.edge_id,
+          last_node_prev_edge.next_left_edge,
+          last_node_prev_edge.next_right_edge
+        );
+        IF retrec IS NOT NULL
+        THEN
+          RETURN NEXT retrec;
+        END IF;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+        RAISE DEBUG 'Finished analisys of edge star around node %', last_node_id;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+      END IF;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Analyzing edge star around node %', rec.node_id;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+      last_node_id = rec.node_id;
+      last_node_first_edge = rec;
+    ELSE --}{
+      -- Check that this edge (CW from last one) is correctly linked
+      retrec := topology._CheckEdgeLinking(
+        rec.edge_id,
+        last_node_prev_edge.edge_id,
+        last_node_prev_edge.next_left_edge,
+        last_node_prev_edge.next_right_edge
+      );
+      IF retrec IS NOT NULL
+      THEN
+        RETURN NEXT retrec;
+      END IF;
+    END IF; --}
+    last_node_prev_edge = rec;
+  END LOOP; --}
+  IF last_node_id IS NOT NULL THEN --{
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Out of loop: last_node_id: %', last_node_id;
+    RAISE DEBUG 'Out of loop: last_node_first_edge edge_id:% next_left_edge:%', last_node_first_edge.edge_id, last_node_first_edge.next_left_edge;
+    RAISE DEBUG 'Out of loop: last_node_prev_edge edge_id:% next_left_edge:%', last_node_prev_edge.edge_id, last_node_prev_edge.next_left_edge;
+    RAISE DEBUG 'Out of loop: last_node_first_edge: %', last_node_first_edge;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+    -- Check that last edge (CW from prev one) is correctly linked
+    retrec := topology._CheckEdgeLinking(
+      last_node_first_edge.edge_id,
+      last_node_prev_edge.edge_id,
+      last_node_prev_edge.next_left_edge,
+      last_node_prev_edge.next_right_edge
+      );
+    IF retrec IS NOT NULL
+    THEN
+      RETURN NEXT retrec;
+    END IF;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Finished analisys of edge star around node % (out of loop)', last_node_id;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+  END IF; --}
+
+
+END;
+$BODY$ --}
+LANGUAGE 'plpgsql' VOLATILE;
+
+--
+-- Check that the edges forming all rings
+-- (as advertised by their next_right_edge/next_left_edge)
+-- consistently advertise the same face on the walking side
+-- (CW or CCW)
+--
+-- NOTE: if next_right_edge/next_left_edge values are incorrect
+--       the behavior of this function is undefined, use
+--       _ValidateTopologyEdgeLinking to verify that
+--
+-- NOTE: assumes search_path was set before calling this function
+--
+-- Creates a pg_temp.hole_check table
+-- Creates a pg_temp.shell_check table
+--
+CREATE OR REPLACE FUNCTION topology._ValidateTopologyRings(bbox geometry DEFAULT NULL)
+RETURNS SETOF topology.ValidateTopology_ReturnType
+AS --{
+$BODY$
+DECLARE
+  retrec topology.ValidateTopology_ReturnType;
+  rec RECORD;
+  ring_poly GEOMETRY;
+  is_shell BOOLEAN;
+  found_rings INT := 0;
+  found_shells INT := 0;
+  found_holes INT := 0;
+BEGIN
+
+  CREATE TEMP TABLE shell_check (
+    face_id int PRIMARY KEY,
+    ring_geom geometry
+  );
+
+  CREATE TEMP TABLE hole_check (
+    ring_id int,
+    hole_mbr geometry, -- point
+    hole_point geometry, -- point
+    in_shell int
+  );
+
+  RAISE NOTICE 'Building edge rings';
+
+  -- Find all rings that can be formed on both sides
+  -- of selected edges
+  FOR rec IN
+    WITH --{
+    considered_edges AS (
+      SELECT e.* FROM edge_data e, node n
+      WHERE
+        ( e.start_node = n.node_id OR e.end_node = n.node_id )
+        AND
+        ( bbox IS NULL OR n.geom && bbox )
+    ),
+    forward_rings AS (
+      SELECT topology._ValidateTopologyGetRingEdges(e.edge_id) edges
+      FROM considered_edges e
+    ),
+    forward_rings_with_id AS (
+      SELECT
+        (select min(e) FROM unnest(edges) e) ring_id,
+        *
+      FROM forward_rings
+    ),
+    distinct_forward_rings AS (
+      SELECT
+        DISTINCT ON (ring_id)
+        *
+      FROM forward_rings_with_id
+    ),
+    backward_rings AS (
+      SELECT topology._ValidateTopologyGetRingEdges(-e.edge_id) edges
+      FROM considered_edges e
+      WHERE -edge_id NOT IN (
+        SELECT x FROM (
+          SELECT unnest(edges) x
+          FROM distinct_forward_rings
+        ) foo
+      )
+    ),
+    backward_rings_with_id AS (
+      SELECT
+        (select min(e) FROM unnest(edges) e) ring_id,
+        *
+      FROM backward_rings
+    ),
+    distinct_backward_rings AS (
+      SELECT
+        DISTINCT ON (ring_id)
+        *
+      FROM backward_rings_with_id
+    ),
+    all_rings AS (
+      SELECT * FROM distinct_forward_rings
+      UNION
+      SELECT * FROM distinct_backward_rings
+    ),
+    all_rings_with_ring_ordinal_edge AS (
+      SELECT
+        r.ring_id,
+        e.seq,
+        e.edge signed_edge_id
+      FROM all_rings r
+      LEFT JOIN LATERAL unnest(r.edges) WITH ORDINALITY AS e(edge, seq)
+      ON TRUE
+    ),
+    all_rings_with_ring_geom AS (
+      SELECT
+        r.ring_id,
+        ST_MakeLine(
+          CASE WHEN signed_edge_id > 0 THEN
+            e.geom
+          ELSE
+            ST_Reverse(e.geom)
+          END
+           -- TODO: how to make sure rows are ordered ?
+          ORDER BY seq
+        ) geom,
+        array_agg(
+          DISTINCT
+          CASE WHEN signed_edge_id > 0 THEN
+            e.left_face
+          ELSE
+            e.right_face
+          END
+        ) side_faces
+      FROM
+        all_rings_with_ring_ordinal_edge r,
+        edge_data e
+      WHERE e.edge_id = abs(r.signed_edge_id)
+      GROUP BY ring_id
+    ) --}{
+    SELECT ring_id, geom as ring_geom, side_faces
+    FROM all_rings_with_ring_geom
+  LOOP --{
+
+    found_rings := found_rings + 1;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Ring % - faces:[%]',
+      rec.ring_id,
+      array_to_string(rec.side_faces, ',')
+    ;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+
+    -- Check that there's a single face advertised
+    IF array_upper(rec.side_faces,1) != 1
+    THEN --{
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Side faces found on ring %: %', rec.ring_id,
+       rec.side_faces;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+      retrec.error = 'mixed face labeling in ring';
+      retrec.id1 = rec.ring_id;
+      retrec.id2 = NULL;
+      RETURN NEXT retrec;
+      CONTINUE;
+
+    END IF; --}
+
+    --RAISE DEBUG 'Ring geom: %', ST_AsTexT(rec.ring_geom);
+    IF NOT ST_Equals(
+      ST_StartPoint(rec.ring_geom),
+      ST_EndPoint(rec.ring_geom)
+    )
+    THEN --{
+      -- This should have been reported before,
+      -- on the edge linking check
+      retrec.error = 'non-closed ring';
+      retrec.id1 = rec.ring_id;
+      retrec.id2 = NULL;
+      RETURN NEXT retrec;
+      CONTINUE;
+    END IF; --}
+
+    -- Ring is valid, save it.
+    is_shell := false;
+    IF ST_NPoints(rec.ring_geom) > 3 THEN
+      ring_poly := ST_MakePolygon(rec.ring_geom);
+      IF ST_IsPolygonCCW(ring_poly) THEN
+        is_shell := true;
+      END IF;
+    END IF;
+
+    IF is_shell THEN --{ It's a shell (CCW)
+      -- Check that a single face is ever used
+      --       for each distinct CCW ring (shell)
+      BEGIN
+        INSERT INTO shell_check VALUES (
+          rec.side_faces[1],
+          ring_poly
+        );
+        found_shells := found_shells + 1;
+      EXCEPTION WHEN unique_violation THEN
+        retrec.error = 'face has multiple shells';
+        retrec.id1 = rec.side_faces[1];
+        retrec.id2 = NULL;
+        RETURN NEXT retrec;
+      END;
+    ELSE -- }{ It's an hole (CW)
+    -- NOTE: multiple CW rings (holes) can exist for a given face
+      INSERT INTO hole_check VALUES (
+        rec.ring_id,
+        ST_Envelope(rec.ring_geom),
+        ST_PointN(rec.ring_geom, 1),
+        -- NOTE: we don't incurr in the risk
+        --       of a ring touching the shell
+        --       because in those cases the
+        --       intruding "hole" will not really
+        --       be considered an hole as its ring
+        --       will not be CW
+        rec.side_faces[1]
+      );
+      found_holes := found_holes + 1;
+    END IF; --} hole
+
+  END LOOP; --}
+
+  RAISE NOTICE 'Found % rings, % valid shells, % valid holes',
+    found_rings, found_shells, found_holes
+  ;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  FOR rec IN
+    SELECT * FROM hole_check
+  LOOP
+    RAISE DEBUG 'Hole % in_shell % point % mbr %',
+      rec.ring_id, rec.in_shell, ST_AsText(rec.hole_point), ST_AsText(rec.hole_mbr);
+  END LOOP;
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+
+END;
+$BODY$ --}
+LANGUAGE 'plpgsql' VOLATILE;
+
+--{
+--  ValidateTopology(toponame, [bbox])
+--
+--  Return a Set of ValidateTopology_ReturnType containing
+--  informations on all topology inconsistencies
+--
+-- Availability: 1.0.0
+-- Changed: 3.2.0 - add bbox optional parameter
+--
+CREATE OR REPLACE FUNCTION topology.ValidateTopology(toponame varchar, bbox geometry DEFAULT NULL)
+  RETURNS setof topology.ValidateTopology_ReturnType
+AS
+$$
+DECLARE
+  retrec topology.ValidateTopology_ReturnType;
+  rec RECORD;
+  rec2 RECORD;
+  affected_rows integer;
+  invalid_edges integer[];
+  invalid_faces integer[];
+  has_invalid_edge_linking BOOLEAN := false;
+  has_invalid_rings BOOLEAN := false;
+  search_path_backup text;
+  containing_face integer;
+BEGIN
+
+  IF NOT EXISTS (
+    SELECT oid
+    FROM pg_catalog.pg_namespace
+    WHERE nspname = toponame
+  )
+  THEN
+    RAISE EXCEPTION 'Topology schema % does not exist', toponame;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT id
+    FROM topology.topology
+    WHERE name = toponame
+  )
+  THEN
+    RAISE WARNING 'Topology % is not registered in topology.topology', toponame;
+  END IF;
+
+  EXECUTE 'SHOW search_path' INTO search_path_backup;
+  EXECUTE 'SET search_PATH TO ' || quote_ident(toponame) || ','
+                                || search_path_backup;
+
+  IF bbox IS NOT NULL THEN
+    RAISE NOTICE 'Limiting topology checking to bbox %', ST_AsEWKT(ST_Envelope(bbox));
+  END IF;
+
+
+  -- Check for coincident nodes
+  RAISE NOTICE 'Checking for coincident nodes';
+  FOR rec IN
+    SELECT a.node_id as id1, b.node_id as id2
+    FROM
+      node a,
+      node b
+    WHERE a.node_id < b.node_id
+    AND ST_DWithin(a.geom, b.geom, 0) -- NOTE: see #1625 and #1789
+    AND (
+      bbox IS NULL
+      OR (
+        a.geom && bbox
+        AND
+        b.geom && bbox
+      )
+    )
+  LOOP
+    retrec.error = 'coincident nodes';
+    retrec.id1 = rec.id1;
+    retrec.id2 = rec.id2;
+    RETURN NEXT retrec;
+  END LOOP;
+
+  -- Check for edge crossed nodes
+  -- TODO: do this in the single edge loop
+  RAISE NOTICE 'Checking for edges crossing nodes';
+  FOR rec IN
+    SELECT n.node_id as nid, e.edge_id as eid
+    FROM
+      node n,
+      edge e
+    WHERE e.start_node != n.node_id
+    AND e.end_node != n.node_id
+    AND ST_Within(n.geom, e.geom)
+    AND (
+      bbox IS NULL
+      OR (
+        n.geom && bbox
+        AND
+        e.geom && bbox
+      )
+    )
+  LOOP
+    retrec.error = 'edge crosses node';
+    retrec.id1 = rec.eid; -- edge_id
+    retrec.id2 = rec.nid; -- node_id
+    RETURN NEXT retrec;
+  END LOOP;
+
+  -- Scan all edges
+  RAISE NOTICE 'Checking for invalid or not-simple edges';
+  FOR rec IN
+    SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face
+    FROM edge e
+    WHERE (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
+    ORDER BY edge_id
+  LOOP --{
+
+    -- Any invalid edge becomes a cancer for higher level complexes
+    IF NOT ST_IsValid(rec.geom) THEN
+
+      retrec.error = 'invalid edge';
+      retrec.id1 = rec.id1;
+      retrec.id2 = NULL;
+      RETURN NEXT retrec;
+      invalid_edges := array_append(invalid_edges, rec.id1);
+
+      IF invalid_faces IS NULL OR NOT rec.left_face = ANY ( invalid_faces )
+      THEN
+        invalid_faces := array_append(invalid_faces, rec.left_face);
+      END IF;
+
+      IF rec.right_face != rec.left_face AND ( invalid_faces IS NULL OR
+            NOT rec.right_face = ANY ( invalid_faces ) )
+      THEN
+        invalid_faces := array_append(invalid_faces, rec.right_face);
+      END IF;
+
+      CONTINUE;
+
+    END IF;
+
+    -- Check edge being simple (ie: not self-intersecting)
+    IF NOT ST_IsSimple(rec.geom) THEN
+      retrec.error = 'edge not simple';
+      retrec.id1 = rec.id1;
+      retrec.id2 = NULL;
+      RETURN NEXT retrec;
+    END IF;
+
+  END LOOP; --}
+
+  -- Check for edge crossing
+  RAISE NOTICE 'Checking for crossing edges';
+  FOR rec IN
+    SELECT
+      e1.edge_id as id1,
+      e2.edge_id as id2,
+      e1.geom as g1,
+      e2.geom as g2,
+      ST_Relate(e1.geom, e2.geom) as im
+    FROM
+      edge e1,
+      edge e2
+    WHERE
+      e1.edge_id < e2.edge_id
+      AND e1.geom && e2.geom
+      AND (
+        invalid_edges IS NULL OR (
+          NOT e1.edge_id = ANY (invalid_edges)
+          AND
+          NOT e2.edge_id = ANY (invalid_edges)
+        )
+      )
+      AND (
+        bbox IS NULL
+        OR (
+          e1.geom && bbox
+          AND
+          e2.geom && bbox
+        )
+      )
+  LOOP --{
+
+    IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
+      CONTINUE; -- no interior intersection
+
+    --
+    -- Closed lines have no boundary, so endpoint
+    -- intersection would be considered interior
+    -- See http://trac.osgeo.org/postgis/ticket/770
+    -- See also full explanation in topology.AddEdge
+    --
+
+    ELSIF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
+      -- first line (g1) is open, second (g2) is closed
+      -- first boundary has puntual intersection with second interior
+      --
+      -- compute intersection, check it equals second endpoint
+      IF ST_Equals(ST_Intersection(rec.g2, rec.g1),
+                   ST_StartPoint(rec.g2))
+      THEN
+        CONTINUE;
+      END IF;
+
+    ELSIF ST_RelateMatch(rec.im, 'F01FFF102') THEN
+      -- second line (g2) is open, first (g1) is closed
+      -- second boundary has puntual intersection with first interior
+      --
+      -- compute intersection, check it equals first endpoint
+      IF ST_Equals(ST_Intersection(rec.g2, rec.g1),
+                   ST_StartPoint(rec.g1))
+      THEN
+        CONTINUE;
+      END IF;
+
+    ELSIF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
+      -- both lines are closed (boundary intersects nothing)
+      -- they have puntual intersection between interiors
+      --
+      -- compute intersection, check it's a single point
+      -- and equals first StartPoint _and_ second StartPoint
+      IF ST_Equals(ST_Intersection(rec.g1, rec.g2),
+                   ST_StartPoint(rec.g1)) AND
+         ST_Equals(ST_StartPoint(rec.g1), ST_StartPoint(rec.g2))
+      THEN
+        CONTINUE;
+      END IF;
+
+    END IF;
+
+    retrec.error = 'edge crosses edge';
+    retrec.id1 = rec.id1;
+    retrec.id2 = rec.id2;
+    RETURN NEXT retrec;
+  END LOOP; --}
+
+  -- Check for edge start_node geometry mis-match
+  -- TODO: move this in the first edge table scan
+  RAISE NOTICE 'Checking for edges start_node mismatch';
+  FOR rec IN
+    SELECT e.edge_id as id1, n.node_id as id2
+    FROM
+      edge e,
+      node n
+    WHERE e.start_node = n.node_id
+    AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)
+    AND (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
+  LOOP --{
+    retrec.error = 'edge start node geometry mis-match';
+    retrec.id1 = rec.id1;
+    retrec.id2 = rec.id2;
+    RETURN NEXT retrec;
+  END LOOP; --}
+
+  -- Check for edge end_node geometry mis-match
+  -- TODO: move this in the first edge table scan
+  RAISE NOTICE 'Checking for edges end_node mismatch';
+  FOR rec IN
+    SELECT e.edge_id as id1, n.node_id as id2
+    FROM
+      edge e,
+      node n
+    WHERE e.end_node = n.node_id
+    AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)
+    AND (
+      bbox IS NULL
+      OR e.geom && bbox
+    )
+  LOOP --{
+    retrec.error = 'edge end node geometry mis-match';
+    retrec.id1 = rec.id1;
+    retrec.id2 = rec.id2;
+    RETURN NEXT retrec;
+  END LOOP; --}
+
+  -- Check for faces w/out edges
+  RAISE NOTICE 'Checking for faces without edges';
+  FOR rec IN
+    SELECT face_id as id1
+    FROM face
+    WHERE face_id > 0
+    AND (
+      bbox IS NULL
+      OR mbr && bbox
+    )
+    EXCEPT (
+      SELECT left_face FROM edge
+      UNION
+      SELECT right_face FROM edge
+    )
+  LOOP --{
+    retrec.error = 'face without edges';
+    retrec.id1 = rec.id1;
+    retrec.id2 = NULL;
+    RETURN NEXT retrec;
+  END LOOP; --}
+
+  -- Validate edge linking
+  -- NOTE: relies on correct start_node/end_node on edges
+  FOR rec IN SELECT * FROM topology._ValidateTopologyEdgeLinking(bbox)
+  LOOP
+    RETURN next rec;
+    has_invalid_edge_linking := true;
+  END LOOP;
+
+  IF has_invalid_edge_linking THEN
+    RETURN; -- does not make sense to continue
+  END IF;
+
+  --- Validate edge rings
+  FOR rec IN SELECT * FROM topology._ValidateTopologyRings(bbox)
+  LOOP
+    RETURN next rec;
+    has_invalid_rings := true;
+  END LOOP;
+
+  IF has_invalid_rings THEN
+    DROP TABLE IF EXISTS pg_temp.hole_check;
+    RETURN; -- does not make sense to continue
+  END IF;
+
+  -- Now create a temporary table to construct all face geometries
+  -- for checking their consistency
+
+  RAISE NOTICE 'Constructing geometry of all faces';
+  -- TODO: only construct exterior ring
+
+  CREATE TEMP TABLE face_check ON COMMIT DROP AS
+  SELECT
+    sc.face_id,
+    sc.ring_geom AS shell,
+    f.mbr
+  FROM
+    pg_temp.shell_check sc, face f
+  WHERE
+    f.face_id = sc.face_id
+  ;
+
+  DROP TABLE pg_temp.shell_check;
+
+
+  IF bbox IS NOT NULL
+  THEN --{
+    INSERT INTO pg_temp.face_check
+    SELECT face_id,
+      topology._ValidateTopologyGetFaceShellMaximalEdgeRing(toponame, face_id),
+      mbr
+    FROM face
+    WHERE mbr && bbox
+    AND (
+      CASE WHEN invalid_faces IS NOT NULL THEN
+        NOT face_id = ANY(invalid_faces)
+      ELSE
+        TRUE
+      END
+    )
+    AND face_id NOT IN (
+      SELECT face_id FROM pg_temp.face_check
+    )
+    ;
+  END IF; --}
+
+  -- Build a gist index on geom
+  CREATE INDEX ON face_check USING gist (shell);
+
+  -- Build a btree index on id
+  CREATE INDEX ON face_check (face_id);
+
+  -- Scan the table looking for NULL geometries
+  -- or geometries with wrong MBR consistency
+  RAISE NOTICE 'Checking faces';
+  affected_rows := 0;
+  FOR rec IN
+    SELECT * FROM face_check
+  LOOP --{
+
+    affected_rows := affected_rows + 1;
+
+    IF rec.shell IS NULL OR ST_IsEmpty(rec.shell)
+    THEN
+      -- Face missing !
+      retrec.error := 'face has no rings';
+      retrec.id1 := rec.face_id;
+      retrec.id2 := NULL;
+      RETURN NEXT retrec;
+    END IF;
+
+    IF NOT ST_Equals(rec.mbr, ST_Envelope(rec.shell))
+    THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'MBR expected:% obtained:%', ST_AsEWKT(ST_Envelope(rec.shell)), ST_AsEWKT(ST_Envelope(rec.mbr));
+#endif /* POSTGIS_TOPOLOGY_DEBUG */
+      -- Inconsistent MBR!
+      retrec.error := 'face has wrong mbr';
+      retrec.id1 := rec.face_id;
+      retrec.id2 := NULL;
+      RETURN NEXT retrec;
+    END IF;
+
+  END LOOP; --}
+
+  RAISE NOTICE 'Checked % faces', affected_rows;
+
+  -- Check edges are covered by their left-right faces (#4830)
+  RAISE NOTICE 'Checking for holes coverage';
+  affected_rows := 0;
+  FOR rec IN
+    SELECT * FROM hole_check
+  LOOP --{
+    SELECT f.face_id
+    FROM face_check f
+    WHERE rec.hole_mbr @ f.shell
+    AND _ST_Contains(f.shell, rec.hole_point)
+    ORDER BY ST_Area(f.shell) ASC
+    LIMIT 1
+    INTO rec2;
+
+    IF ( NOT FOUND AND rec.in_shell != 0 )
+       OR ( rec2.face_id != rec.in_shell )
+    THEN
+        retrec.error := 'hole not in advertised face';
+        retrec.id1 := rec.ring_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+    END IF;
+    affected_rows := affected_rows + 1;
+
+  END LOOP; --}
+
+  RAISE NOTICE 'Finished checking for coverage of % holes', affected_rows;
+
+  -- Check nodes have correct containing_face (#3233)
+  -- NOTE: relies on correct edge linking
+  RAISE NOTICE 'Checking for node containing_face correctness';
+  FOR rec IN
+    SELECT
+      n.node_id,
+      n.geom geom,
+      n.containing_face,
+      e.edge_id
+    FROM node n
+    LEFT JOIN edge e ON (
+      e.start_node = n.node_id OR
+      e.end_node = n.node_id
+    )
+    WHERE
+     ( bbox IS NULL OR n.geom && bbox )
+  LOOP --{
+
+    IF rec.edge_id IS NOT NULL
+    THEN --{
+      -- Node is not isolated, make sure it
+      -- advertises itself as such
+      IF rec.containing_face IS NOT NULL
+      THEN --{
+        -- node is not really isolated
+        retrec.error := 'not-isolated node has not-null containing_face';
+        retrec.id1 := rec.node_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+      END IF; --}
+    ELSE -- }{
+      -- Node is isolated, make sure it
+      -- advertises itself as such
+      IF rec.containing_face IS NULL
+      THEN --{
+        -- isolated node advertises itself as non-isolated
+        retrec.error := 'isolated node has null containing_face';
+        retrec.id1 := rec.node_id;
+        retrec.id2 := NULL;
+        RETURN NEXT retrec;
+      ELSE -- }{
+        -- node is isolated and advertising a containing_face
+        -- now let's check it's really in contained by it
+        BEGIN
+          containing_face := topology.GetFaceContainingPoint(toponame, rec.geom);
+        EXCEPTION WHEN OTHERS THEN
+          RAISE NOTICE 'Got % (%)', SQLSTATE, SQLERRM;
+          retrec.error := format('got exception trying to find face containing node: %s', SQLERRM);
+          retrec.id1 := rec.node_id;
+          retrec.id2 := NULL;
+          RETURN NEXT retrec;
+        END;
+        IF containing_face != rec.containing_face THEN
+          retrec.error := 'isolated node has wrong containing_face';
+          retrec.id1 := rec.node_id;
+          retrec.id2 := NULL; -- TODO: write expected containing_face here ?
+          RETURN NEXT retrec;
+        END IF;
+      END IF; --}
+    END IF; --}
+
+  END LOOP; --}
+
+
+  DROP TABLE pg_temp.hole_check;
+  DROP TABLE pg_temp.face_check;
+
+  EXECUTE 'SET search_PATH TO ' || search_path_backup;
+
+  RETURN;
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE; -- NOTE: we need VOLATILE to use SHOW
+--} ValidateTopology(toponame, bbox)
+

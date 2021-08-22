@@ -171,12 +171,13 @@
 		containing the fields:</para>
 		<itemizedlist>
 		<listitem>
-			<para><varname>geom</varname> - a references to a component geometry</para>
+			<para><varname>geom</varname> - a geometry representing a component of the dumped geometry.
+                The geometry type depends on the originating function.</para>
 			</listitem>
 		<listitem>
-			<para><varname>path[]</varname> - a 1-dimensional integer array
+			<para><varname>path[]</varname> - an integer array
 			that defines the navigation path within the dumped geometry to the <varname>geom</varname> component.
-			The path array starts at 1 (e.g. <varname>path[1]</varname> is the first element.)</para>
+			The path array is 1-based (i.e. <varname>path[1]</varname> is the first element.)</para>
 			</listitem>
 		</itemizedlist>
 		<para>

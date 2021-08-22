@@ -34,7 +34,7 @@
 LWGEOM* GEOS2LWGEOM(const GEOSGeometry* geom, uint8_t want3d);
 GEOSGeometry* LWGEOM2GEOS(const LWGEOM* g, uint8_t autofix);
 GEOSGeometry* GBOX2GEOS(const GBOX* g);
-#if POSTGIS_GEOS_VERSION < 38
+#if POSTGIS_GEOS_VERSION < 30800
 GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry*);
 #endif

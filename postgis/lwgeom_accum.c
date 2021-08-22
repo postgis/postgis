@@ -72,6 +72,7 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 	LWGEOM *geom = NULL;
 	GSERIALIZED *gser = NULL;
 	Datum argType = get_fn_expr_argtype(fcinfo->flinfo, 1);
+	double gridSize = -1.0;
 
 	if (argType == InvalidOid)
 		ereport(ERROR,
@@ -92,6 +93,7 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 		state = MemoryContextAlloc(aggcontext, sizeof(CollectionBuildState));
 		state->geoms = NULL;
 		state->geomOid = argType;
+		state->gridSize = gridSize;
 
 		for (int i = 0; i < n; i++)
 		{
@@ -109,6 +111,13 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 	if (!PG_ARGISNULL(1))
 		gser = PG_GETARG_GSERIALIZED_P(1);
+
+	if (PG_NARGS()>2 && !PG_ARGISNULL(2))
+	{
+		gridSize = PG_GETARG_FLOAT8(2);
+		/*lwnotice("Passed gridSize %g", gridSize);*/
+		if ( gridSize > state->gridSize ) state->gridSize = gridSize;
+	}
 
 	/* Take a copy of the geometry into the aggregate context */
 	old = MemoryContextSwitchTo(aggcontext);

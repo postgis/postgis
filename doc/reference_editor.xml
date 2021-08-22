@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <sect1 id="Geometry_Editors">
+     <sect1info>
+        <abstract>
+        <para>These functions create modified geometries by changing type, structure or vertices.
+        </para>
+        </abstract>
+    </sect1info>
+
 	  <title>Geometry Editors</title>
 
 		<refentry id="ST_AddPoint">
@@ -20,7 +27,7 @@
 				<funcdef>geometry <function>ST_AddPoint</function></funcdef>
 				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
 				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
-				<paramdef><type>integer</type> <parameter>position</parameter></paramdef>
+				<paramdef><type>integer</type> <parameter>position = -1</parameter></paramdef>
 			  </funcprototype>
 			 </funcsynopsis>
 		  </refsynopsisdiv>
@@ -28,32 +35,37 @@
 		  <refsection>
 			<title>Description</title>
 
-			<para>Adds a point to a LineString before point &lt;position&gt;
-				(0-based index). Third parameter can be omitted or set to -1 for
-				appending.</para>
+			<para>Adds a point to a LineString before the index <parameter>position</parameter>
+				(using a 0-based index).
+                If the <parameter>position</parameter> parameter is omitted or is -1
+				the point is appended to the end of the LineString.</para>
 			<para>Availability: 1.1.0</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
 		  <refsection>
 			<title>Examples</title>
-			<programlisting>
-		--guarantee all linestrings in a table are closed
-		--by adding the start point of each linestring to the end of the line string
-		--only for those that are not closed
-		UPDATE sometable
-		SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
-		FROM sometable
-		WHERE ST_IsClosed(the_geom) = false;
 
-		--Adding point to a 3-d line
-		SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
+            <para>Add a point to the end of a 3D line</para>
+<programlisting>
+SELECT ST_AsEWKT(ST_AddPoint('LINESTRING(0 0 1, 1 1 1)', ST_MakePoint(1, 2, 3)));
 
-		--result
-		st_asewkt
-		----------
-		LINESTRING(0 0 1,1 1 1,1 2 3)
-			</programlisting>
+    st_asewkt
+    ----------
+    LINESTRING(0 0 1,1 1 1,1 2 3)
+</programlisting>
+
+<para>Guarantee all lines in a table are closed
+by adding the start point of each line to the end of the line
+only for those that are not closed.
+</para>
+<programlisting>
+UPDATE sometable
+SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
+FROM sometable
+WHERE ST_IsClosed(the_geom) = false;
+</programlisting>
+
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
@@ -67,7 +79,7 @@
 			<refname>ST_CollectionExtract</refname>
 
 			<refpurpose>
-Given a (multi)geometry, return a (multi)geometry consisting only of elements of the specified type.
+Given a geometry collection, returns a multi-geometry containing only elements of a specified type.
 			</refpurpose>
 		</refnamediv>
 
@@ -76,114 +88,387 @@ Given a (multi)geometry, return a (multi)geometry consisting only of elements of
 			  <funcprototype>
 				<funcdef>geometry <function>ST_CollectionExtract</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>type</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>geometry <function>ST_CollectionExtract</function></funcdef>
+                <paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+                <paramdef><type>integer </type> <parameter>type</parameter></paramdef>
+              </funcprototype>
+            </funcsynopsis>
 		</refsynopsisdiv>
 
 		<refsection>
 			<title>Description</title>
 
-			<para>
-Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
-Sub-geometries that are not the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned.
-Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.
-			</para>
+			<para>Given a geometry collection, returns a homogeneous multi-geometry.</para>
+
+            <para>If the <parameter>type</parameter> is not specified, returns a multi-geometry containing only geometries of the highest dimension.
+            So polygons are preferred over lines, which are preferred over points.
+            </para>
+            <para>If the <parameter>type</parameter> is specified, returns a multi-geometry containing only that type.
+            If there are no sub-geometries of the right type, an EMPTY geometry is returned.
+            Only points, lines and polygons are supported. The type numbers are:</para>
+            <itemizedlist>
+            <listitem><para>1 == POINT</para></listitem>
+            <listitem><para>2 == LINESTRING</para></listitem>
+            <listitem><para>3 == POLYGON</para></listitem>
+            </itemizedlist>
+
+            <para>For atomic geometry inputs, the geometry is retured unchanged
+            if the input type matches the requested type.
+            Otherwise, the result is an EMPTY geometry of the specified type.
+            If required, these can be converted to multi-geometries using <xref linkend="ST_Multi" />.
+            </para>
+
+			<warning><para>MultiPolygon results are not checked for validity.
+            If the polygon components are adjacent or overlapping the result will be invalid.
+            (For example, this can occur when applying this function to an <xref linkend="ST_Split" /> result.)
+            This situation can be checked with <xref linkend="ST_IsValid" /> and repaired with <xref linkend="ST_MakeValid" />.
+            </para></warning>
 
 			<para>Availability: 1.5.0</para>
 
 			<note><para>
-Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type.
-In 1.5.3 non-matching single geometries result in a NULL return.
-In of 2.0.0 every case of missing match results in a typed EMPTY return.
+            Prior to 1.5.3 this function returned atomic inputs unchaanged, no matter type.
+            In 1.5.3 non-matching single geometries returned a NULL result.
+            In 2.0.0 non-matching single geometries return an EMPTY result of the requested type.
 			</para></note>
-
-			<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
-			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
 
 		</refsection>
 
 		<refsection>
 			<title>Examples</title>
+<para>Extract highest-dimension type:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionExtract(
+        'GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(1 1, 2 2) )'));
+    st_astext
+    ---------------
+    MULTILINESTRING((1 1, 2 2))
+</programlisting>
 
-			<programlisting>-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON
-SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));
-st_astext
----------------
-MULTIPOINT(0 0)
-(1 row)
+<para>Extract points (type 1 == POINT):</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionExtract(
+        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',
+        1 ));
+    st_astext
+    ---------------
+    MULTIPOINT(0 0)
+</programlisting>
 
-SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))'),2));
-st_astext
----------------
-MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
-(1 row)
-			</programlisting>
+<para>Extract lines (type 2 == LINESTRING):</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionExtract(
+        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))',
+        2 ));
+    st_astext
+    ---------------
+    MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
+</programlisting>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Multi" />, <xref linkend="ST_Dump" />, <xref linkend="ST_CollectionHomogenize" /></para>
+			<para><xref linkend="ST_CollectionHomogenize" />, <xref linkend="ST_Multi" />,
+                <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" />
+            </para>
 		</refsection>
 	</refentry>
 
-		<refentry id="ST_CollectionHomogenize">
-			<refnamediv>
-				<refname>ST_CollectionHomogenize</refname>
+    <refentry id="ST_CollectionHomogenize">
+        <refnamediv>
+            <refname>ST_CollectionHomogenize</refname>
 
-				<refpurpose>
-	Given a geometry collection, return the "simplest" representation of the contents.
-				</refpurpose>
-			</refnamediv>
+            <refpurpose>
+Returns the simplest representation of a geometry collection.
+            </refpurpose>
+        </refnamediv>
 
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
+        <refsynopsisdiv>
+            <funcsynopsis>
+                <funcprototype>
+                <funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef>
+                <paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+                </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
 
-			<refsection>
-				<title>Description</title>
+        <refsection>
+            <title>Description</title>
 
-				<para>
-					Given a geometry collection, returns the "simplest" representation of the contents.  Singletons will be returned as singletons.  Collections that are homogeneous will be returned as the appropriate multi-type.
-				</para>
+            <para>
+            Given a geometry collection, returns the "simplest" representation of the contents.
+            </para>
+            <itemizedlist>
+            <listitem><para>Homogeneous (uniform) collections are returned as the appropriate multi-geometry.</para></listitem>
+            <listitem><para>Heterogeneous (mixed) collections are flattened into a single GeometryCollection.</para></listitem>
+            <listitem><para>Collections containing a single atomic element are returned as that element.</para></listitem>
+            <listitem><para>Atomic geometries are returned unchanged.
+                If required, these can be converted to a multi-geometry using <xref linkend="ST_Multi" />.</para></listitem>
+            </itemizedlist>
 
-				<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
-			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
+            <warning><para>This function does not ensure that the result is valid.
+            In particular, a collection containing adjacent or overlapping Polygons
+            will create an invalid MultiPolygon.
+            This situation can be checked with <xref linkend="ST_IsValid" /> and repaired with <xref linkend="ST_MakeValid" />.
+            </para></warning>
 
+            <para>Availability: 2.0.0</para>
 
-				<para>Availability: 2.0.0</para>
+        </refsection>
 
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-
-				<programlisting>
+        <refsection>
+            <title>Examples</title>
+<para>Single-element collection converted to an atomic geometry</para>
+<programlisting>
   SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));
 
 	st_astext
 	------------
-	 POINT(0 0)
-	(1 row)
+	POINT(0 0)
+</programlisting>
 
-  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
+<para>Nested single-element collection converted to an atomic geometry:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 0)))'));
+
+	st_astext
+	------------
+	POINT(0 0)
+</programlisting>
+
+<para>Collection converted to a multi-geometry:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));
 
 	st_astext
 	---------------------
-	 MULTIPOINT(0 0,1 1)
-	(1 row)
+	MULTIPOINT(0 0,1 1)
+</programlisting>
 
-				</programlisting>
-			</refsection>
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="ST_Multi" />, <xref linkend="ST_CollectionExtract" /></para>
-			</refsection>
-		</refentry>
+<para>Nested heterogeneous collection flattened to a GeometryCollection:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0), GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2)))'));
+
+	st_astext
+	---------------------
+	GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 1,2 2))
+</programlisting>
+
+<para>Collection of Polygons converted to an (invalid) MultiPolygon:</para>
+<programlisting>
+SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 50, 50 50, 50 10, 10 10, 10 50)), POLYGON ((90 50, 90 10, 50 10, 50 50, 90 50)))'));
+
+	st_astext
+	---------------------
+	MULTIPOLYGON(((10 50,50 50,50 10,10 10,10 50)),((90 50,90 10,50 10,50 50,90 50)))
+</programlisting>
+        </refsection>
+        <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_CollectionExtract" />, <xref linkend="ST_Multi" />,
+            <xref linkend="ST_IsValid" />, <xref linkend="ST_MakeValid" /></para>
+        </refsection>
+    </refentry>
+
+    <refentry id="ST_CurveToLine">
+      <refnamediv>
+        <refname>ST_CurveToLine</refname>
+
+        <refpurpose>Converts a geometry containing curves to a linear geometry.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_CurveToLine</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+            <paramdef choice="opt"><type>integer</type> <parameter>tolerance_type</parameter></paramdef>
+            <paramdef choice="opt"><type>integer</type> <parameter>flags</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Converts a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON or MULTISURFACE to MULTIPOLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
+
+        <para>Converts a given geometry to a linear geometry.
+        Each curved geometry or segment is converted into a linear
+approximation using the given `tolerance` and options (32 segments per
+quadrant and no options by default).</para>
+
+    <para>
+The 'tolerance_type' argument determines interpretation of the
+`tolerance` argument. It can take the following values:
+      <itemizedlist>
+        <listitem>
+          <para>0 (default): Tolerance is max segments per quadrant.</para>
+        </listitem>
+        <listitem>
+          <para>1: Tolerance is max-deviation of line from curve, in source units.</para>
+        </listitem>
+        <listitem>
+          <para>2: Tolerance is max-angle, in radians, between generating radii.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+The 'flags' argument is a bitfield. 0 by default.
+Supported bits are:
+      <itemizedlist>
+        <listitem>
+          <para>1: Symmetric (orientation idependent) output.</para>
+        </listitem>
+        <listitem>
+          <para>2: Retain angle, avoids reducing angles (segment lengths) when producing symmetric output. Has no effect when Symmetric flag is off.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+        <para>Availability: 1.3.0</para>
+    <para>Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and for symmetric output.</para>
+    <para>Enhanced: 3.0.0 implemented a minimum number of segments per linearized arc to prevent topological collapse.</para>
+
+        <para>&sfs_compliant;</para>
+        <para>&sqlmm_compliant; SQL-MM 3: 7.1.7</para>
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)')));
+
+--Result --
+ LINESTRING(220268 150415,220269.95064912 150416.539364228,220271.823415575 150418.17258804,220273.613787707 150419.895736857,
+ 220275.317452352 150421.704659462,220276.930305234 150423.594998003,220278.448460847 150425.562198489,
+ 220279.868261823 150427.60152176,220281.186287736 150429.708054909,220282.399363347 150431.876723113,
+ 220283.50456625 150434.10230186,220284.499233914 150436.379429536,220285.380970099 150438.702620341,220286.147650624 150441.066277505,
+ 220286.797428488 150443.464706771,220287.328738321 150445.892130112,220287.740300149 150448.342699654,
+ 220288.031122486 150450.810511759,220288.200504713 150453.289621251,220288.248038775 150455.77405574,
+ 220288.173610157 150458.257830005,220287.977398166 150460.734960415,220287.659875492 150463.199479347,
+ 220287.221807076 150465.64544956,220286.664248262 150468.066978495,220285.988542259 150470.458232479,220285.196316903 150472.81345077,
+ 220284.289480732 150475.126959442,220283.270218395 150477.39318505,220282.140985384 150479.606668057,
+ 220280.90450212 150481.762075989,220279.5637474 150483.85421628,220278.12195122 150485.87804878,
+ 220276.582586992 150487.828697901,220274.949363179 150489.701464356,220273.226214362 150491.491836488,
+ 220271.417291757 150493.195501133,220269.526953216 150494.808354014,220267.559752731 150496.326509628,
+ 220265.520429459 150497.746310603,220263.41389631 150499.064336517,220261.245228106 150500.277412127,
+ 220259.019649359 150501.38261503,220256.742521683 150502.377282695,220254.419330878 150503.259018879,
+ 220252.055673714 150504.025699404,220249.657244448 150504.675477269,220247.229821107 150505.206787101,
+ 220244.779251566 150505.61834893,220242.311439461 150505.909171266,220239.832329968 150506.078553494,
+ 220237.347895479 150506.126087555,220234.864121215 150506.051658938,220232.386990804 150505.855446946,
+ 220229.922471872 150505.537924272,220227.47650166 150505.099855856,220225.054972724 150504.542297043,
+ 220222.663718741 150503.86659104,220220.308500449 150503.074365683,
+ 220217.994991777 150502.167529512,220215.72876617 150501.148267175,
+ 220213.515283163 150500.019034164,220211.35987523 150498.7825509,
+ 220209.267734939 150497.441796181,220207.243902439 150496,
+ 220205.293253319 150494.460635772,220203.420486864 150492.82741196,220201.630114732 150491.104263143,
+ 220199.926450087 150489.295340538,220198.313597205 150487.405001997,220196.795441592 150485.437801511,
+ 220195.375640616 150483.39847824,220194.057614703 150481.291945091,220192.844539092 150479.123276887,220191.739336189 150476.89769814,
+ 220190.744668525 150474.620570464,220189.86293234 150472.297379659,220189.096251815 150469.933722495,
+ 220188.446473951 150467.535293229,220187.915164118 150465.107869888,220187.50360229 150462.657300346,
+ 220187.212779953 150460.189488241,220187.043397726 150457.710378749,220186.995863664 150455.22594426,
+ 220187.070292282 150452.742169995,220187.266504273 150450.265039585,220187.584026947 150447.800520653,
+ 220188.022095363 150445.35455044,220188.579654177 150442.933021505,220189.25536018 150440.541767521,
+ 220190.047585536 150438.18654923,220190.954421707 150435.873040558,220191.973684044 150433.60681495,
+ 220193.102917055 150431.393331943,220194.339400319 150429.237924011,220195.680155039 150427.14578372,220197.12195122 150425.12195122,
+ 220198.661315447 150423.171302099,220200.29453926 150421.298535644,220202.017688077 150419.508163512,220203.826610682 150417.804498867,
+ 220205.716949223 150416.191645986,220207.684149708 150414.673490372,220209.72347298 150413.253689397,220211.830006129 150411.935663483,
+ 220213.998674333 150410.722587873,220216.22425308 150409.61738497,220218.501380756 150408.622717305,220220.824571561 150407.740981121,
+ 220223.188228725 150406.974300596,220225.586657991 150406.324522731,220227 150406)
+
+--3d example
+SELECT ST_AsEWKT(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)')));
+Output
+------
+ LINESTRING(220268 150415 1,220269.95064912 150416.539364228 1.0181172856673,
+ 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 150419.895736857 1.05435185700189,....AD INFINITUM ....
+    220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)
+
+--use only 2 segments to approximate quarter circle
+SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),2));
+st_astext
+------------------------------
+ LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,
+ 220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 150462.657300346,
+ 220197.12195122 150425.12195122,220227 150406)
+
+-- Ensure approximated line is no further than 20 units away from
+-- original curve, and make the result direction-neutral
+SELECT ST_AsText(ST_CurveToLine(
+ 'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,
+    20, -- Tolerance
+    1, -- Above is max distance between curve and line
+    1  -- Symmetric flag
+));
+st_astext
+-------------------------------------------------------------------------------------------
+ LINESTRING(0 0,50 -86.6025403784438,150 -86.6025403784439,200 -1.1331077795296e-13,200 0)
+
+
+        </programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_LineToCurve" /></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="ST_FlipCoordinates">
+      <refnamediv>
+        <refname>ST_FlipCoordinates</refname>
+        <refpurpose>Returns a version of a geometry with X and Y axis flipped. </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_FlipCoordinates</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Returns a version of the given geometry with X and Y axis flipped.
+        Useful for fixing geometries which contain coordinates expressed as latitude/longitude (Y,X).</para>
+        <para>Availability: 2.0.0</para>
+        <para>&curve_support;</para>
+        <para>&Z_support;</para>
+        <para>&M_support;</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Example</title>
+        <programlisting><![CDATA[
+SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));
+ st_asewkt
+------------
+POINT(2 1)
+         ]]></programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para> <xref linkend="ST_SwapOrdinates" /> </para>
+      </refsection>
+
+    </refentry>
 
 	<refentry id="ST_Force2D">
 	  <refnamediv>
@@ -805,72 +1090,74 @@ GEOMETRYCOLLECTION(
 		</refsection>
 	</refentry>
 
-	<refentry id="ST_LineMerge">
-		<refnamediv>
-			<refname>ST_LineMerge</refname>
+    <refentry id="ST_LineToCurve">
+      <refnamediv>
+        <refname>ST_LineToCurve</refname>
 
-			<refpurpose>Return a (set of) LineString(s) formed by sewing together
-			a MULTILINESTRING.</refpurpose>
-		</refnamediv>
+        <refpurpose>Converts a linear geometry to a curved geometry.</refpurpose>
+      </refnamediv>
 
-		<refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>geometry <function>ST_LineMerge</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		</refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_LineToCurve</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-		<refsection>
-			<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-			<para>Returns a (set of) LineString(s) formed by sewing together
-			the constituent line work of a MULTILINESTRING. </para>
-			<note><para>Only use with MULTILINESTRING/LINESTRINGs. If you feed a polygon or geometry collection into this function, it
-			will return an empty GEOMETRYCOLLECTION</para></note>
-			<para>Performed by the GEOS module.</para>
-			<para>Availability: 1.1.0</para>
-			<warning><para>Will strip the M dimension.</para></warning>
-		</refsection>
+        <para>Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
+        <note><para>If the input LINESTRING/POLYGON is not curved enough to clearly represent a curve, the function will return the same input geometry.</para></note>
+        <para>Availability: 1.3.0</para>
+        <para>&Z_support;</para>
+        <para>&curve_support;</para>
+      </refsection>
 
-		<refsection>
-			<title>Examples</title>
 
-			<programlisting>SELECT ST_AsText(ST_LineMerge(
-ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))')
-		)
-);
-st_astext
---------------------------------------------------------------------------------------------------
-LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting> -- 2D Example
+SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo.the_geom) As non_curvedastext
+    FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As the_geom) As foo;
+
+curvedatext                                                            non_curvedastext
+--------------------------------------------------------------------|-----------------------------------------------------------------
+CURVEPOLYGON(CIRCULARSTRING(4 3,3.12132034355964 0.878679656440359, | POLYGON((4 3,3.94235584120969 2.41472903395162,3.77163859753386 1.85194970290473,
+1 0,-1.12132034355965 5.12132034355963,4 3))                        |  3.49440883690764 1.33328930094119,3.12132034355964 0.878679656440359,
+                                                                    |  2.66671069905881 0.505591163092366,2.14805029709527 0.228361402466141,
+                                                                    |  1.58527096604839 0.0576441587903094,1 0,
+                                                                    |  0.414729033951621 0.0576441587903077,-0.148050297095264 0.228361402466137,
+                                                                    |  -0.666710699058802 0.505591163092361,-1.12132034355964 0.878679656440353,
+                                                                    |  -1.49440883690763 1.33328930094119,-1.77163859753386 1.85194970290472
+                                                                    |  --ETC-- ,3.94235584120969 3.58527096604839,4 3))
+
+--3D example
+SELECT ST_AsText(ST_LineToCurve(geom)) As curved, ST_AsText(geom) AS not_curved
+FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2))),0,0,3) AS geom) AS foo;
+
+                        curved                        |               not_curved
+------------------------------------------------------+---------------------------------------------------------------------
+ CIRCULARSTRING Z (3 3 3,-1 2.99999999999999 3,3 3 3) | LINESTRING Z (3 3 3,2.4142135623731 1.58578643762691 3,1 1 3,
+                                                      | -0.414213562373092 1.5857864376269 3,-1 2.99999999999999 3,
+                                                      | -0.414213562373101 4.41421356237309 3,
+                                                      | 0.999999999999991 5 3,2.41421356237309 4.4142135623731 3,3 3 3)
 (1 row)
+</programlisting>
+    </refsection>
 
---If can't be merged - original MULTILINESTRING is returned
-SELECT ST_AsText(ST_LineMerge(
-ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 -32))')
-)
-);
-st_astext
-----------------
-MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 
--- example with Z dimension
-SELECT ST_AsText(ST_LineMerge(
-ST_GeomFromText('MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))')
-		)
-);
-st_astext
---------------------------------------------------------------------------------------------------
-LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11)
-(1 row)
-			</programlisting>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_Segmentize" />, <xref linkend="ST_LineSubstring" /></para>
-		</refsection>
-	</refentry>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_CurveToLine" /></para>
+      </refsection>
+    </refentry>
 
 	<refentry id="ST_Multi">
 		<refnamediv>
@@ -883,7 +1170,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 			<funcsynopsis>
 			  <funcprototype>
 				<funcdef>geometry <function>ST_Multi</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
@@ -891,22 +1178,20 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the geometry as a MULTI* geometry. If the geometry
-				is already a MULTI*, it is returned unchanged.</para>
+			<para>Returns the geometry as a MULTI* geometry collection. If the geometry
+				is already a collection, it is returned unchanged.</para>
 
 		</refsection>
 
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
-			743265 2967450,743265.625 2967416,743238 2967416))')));
-			st_astext
-			--------------------------------------------------------------------------------------------------
-			MULTIPOLYGON(((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,
-			743238 2967416)))
-			(1 row)
-			</programlisting>
+<programlisting>
+SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))'));
+                    st_astext
+    -------------------------------------------------
+    MULTIPOLYGON(((10 30,30 30,30 10,10 10,10 30)))
+</programlisting>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -1154,7 +1439,7 @@ digits  |                   encode                   |                st_astext
 	<refentry id="ST_RemovePoint">
 	  <refnamediv>
 		<refname>ST_RemovePoint</refname>
-		<refpurpose>Remove point from a linestring.</refpurpose>
+		<refpurpose>Remove a point from a linestring.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -1169,27 +1454,68 @@ digits  |                   encode                   |                st_astext
 	  <refsection>
 		<title>Description</title>
 
-		<para>Remove a point from a linestring, given its 0-based index. Useful for turning a closed ring into an open line string</para>
+		<para>Removes a point from a LineString, given its index (0-based).
+        Useful for turning a closed line (ring) into an open linestring.
+        </para>
 		<para>Availability: 1.1.0</para>
 		<para>&Z_support;</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>
---guarantee no LINESTRINGS are closed
---by removing the end point.  The below assumes the_geom is of type LINESTRING
+<para>Guarantees no lines are closed by removing the end point of closed lines (rings).
+Assumes geom is of type LINESTRING</para>
+<programlisting>
 UPDATE sometable
-	SET the_geom = ST_RemovePoint(the_geom, ST_NPoints(the_geom) - 1)
+	SET geom = ST_RemovePoint(geom, ST_NPoints(geom) - 1)
 	FROM sometable
-	WHERE ST_IsClosed(the_geom) = true;
-		</programlisting>
+	WHERE ST_IsClosed(geom);
+</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
 		<para><xref linkend="ST_AddPoint"/>, <xref linkend="ST_NPoints"/>, <xref linkend="ST_NumPoints"/></para>
 	  </refsection>
 	</refentry>
+
+    <refentry id="ST_RemoveRepeatedPoints">
+      <refnamediv>
+        <refname>ST_RemoveRepeatedPoints</refname>
+        <refpurpose>Returns a version of the given geometry with
+                duplicated points removed.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+            <paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Returns a version of the given geometry with
+                duplicated points removed. Will actually do something only with
+                (multi)lines, (multi)polygons and multipoints but you can safely call it with
+                any kind of geometry. Since simplification occurs on a
+                object-by-object basis you can also feed a GeometryCollection to
+                this function.</para>
+        <para>If the tolerance parameter is provided, vertices within the tolerance
+        of one another will be considered the "same" for the purposes of removal.</para>
+
+        <para>Availability: 2.2.0</para>
+        <para>&P_support;</para>
+        <para>&Z_support;</para>
+      </refsection>
+
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_Simplify" /></para>
+          </refsection>
+    </refentry>
 
 	<refentry id="ST_Reverse">
 	  <refnamediv>
@@ -1221,8 +1547,8 @@ UPDATE sometable
 		<programlisting>
 SELECT ST_AsText(the_geom) as line, ST_AsText(ST_Reverse(the_geom)) As reverseline
 FROM
-(SELECT ST_MakeLine(ST_MakePoint(1,2),
-		ST_MakePoint(1,10)) As the_geom) as foo;
+(SELECT ST_MakeLine(ST_Point(1,2),
+		ST_Point(1,10)) As the_geom) as foo;
 --result
 		line         |     reverseline
 ---------------------+----------------------
@@ -1356,6 +1682,134 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
 			<para><xref linkend="ST_AddPoint"/>, <xref linkend="ST_NPoints"/>, <xref linkend="ST_NumPoints"/>, <xref linkend="ST_PointN"/>, <xref linkend="ST_RemovePoint"/></para>
 		  </refsection>
 	</refentry>
+
+    <refentry id="ST_Shift_Longitude">
+      <refnamediv>
+        <refname>ST_ShiftLongitude</refname>
+
+        <refpurpose>Shifts a geometry with geographic coordinates between -180..180 and 0..360.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_ShiftLongitude</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Reads every point/vertex in a geometry, and if the longitude coordinate is &lt;0, adds 360
+            to it. The result is a 0-360 version of the data to be
+            plotted in a 180 centric map</para>
+        <note><para>This is only useful for data with coordinates in
+        longitude/latitude; e.g. SRID 4326 (WGS 84 geographic)</para></note>
+
+        <warning>
+            <para>Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with MULTIPOINT as well.</para>
+    </warning>
+
+        <para>&Z_support;</para>
+        <para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+    <para>NOTE: this function was renamed from "ST_Shift_Longitude" in 2.2.0</para>
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>--3d points
+SELECT ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;POINT(-118.58 38.38 10)'))) As geomA,
+    ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;POINT(241.42 38.38 10)'))) As geomb
+geomA                             geomB
+----------                        -----------
+SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)
+
+--regular line string
+SELECT ST_AsText(ST_ShiftLongitude(ST_GeomFromText('LINESTRING(-118.58 38.38, -118.20 38.45)')))
+
+st_astext
+----------
+LINESTRING(241.42 38.38,241.8 38.45)
+        </programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para>
+      <xref linkend="ST_WrapX" />
+    </para>
+      </refsection>
+    </refentry>
+
+    <refentry id="ST_WrapX">
+      <refnamediv>
+        <refname>ST_WrapX</refname>
+
+        <refpurpose>Wrap a geometry around an X value.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_WrapX</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+            <paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef>
+            <paramdef><type>float8 </type> <parameter>move</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+    <para>
+This function splits the input geometries and then moves every resulting
+component falling on the right (for negative 'move') or on the left (for
+positive 'move') of given 'wrap' line in the direction specified by the
+'move' parameter, finally re-unioning the pieces togheter.
+    </para>
+
+        <note><para>
+This is useful to "recenter" long-lat input to have features
+of interest not spawned from one side to the other.
+    </para></note>
+
+        <para>Availability: 2.3.0 requires GEOS</para>
+        <para>&Z_support;</para>
+<!-- TODO: check these
+        <para>&P_support;</para>
+        <para>&T_support;</para>
+-->
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+-- Move all components of the given geometries whose bounding box
+-- falls completely on the left of x=0 to +360
+select ST_WrapX(the_geom, 0, 360);
+
+-- Move all components of the given geometries whose bounding box
+-- falls completely on the left of x=-30 to +360
+select ST_WrapX(the_geom, -30, 360);
+        </programlisting>
+      </refsection>
+
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_Shift_Longitude" /></para>
+      </refsection>
+    </refentry>
 
 	<refentry id="ST_SnapToGrid">
 	  <refnamediv>

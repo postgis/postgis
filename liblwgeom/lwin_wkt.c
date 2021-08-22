@@ -869,7 +869,7 @@ wkt_parser_geometry_new(LWGEOM *geom, int32_t srid)
 		return;
 	}
 
-	if ( srid != SRID_UNKNOWN && srid < SRID_MAXIMUM )
+	if ( srid != SRID_UNKNOWN && srid <= SRID_MAXIMUM )
 		lwgeom_set_srid(geom, srid);
 	else
 		lwgeom_set_srid(geom, SRID_UNKNOWN);

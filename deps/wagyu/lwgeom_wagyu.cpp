@@ -54,29 +54,20 @@ ptarray_to_wglinearring(const POINTARRAY *pa, const wagyu_box &tile)
 	wagyu_coord_type min_y = min_x;
 	wagyu_coord_type max_y = max_x;
 
-	for (std::uint32_t i = 0; i < pa->npoints; i++)
+	size_t point_size = ptarray_point_size(pa);
+	size_t pa_size = pa->npoints;
+	uint8_t *buffer = pa->serialized_pointlist;
+	for (std::uint32_t i = 0; i < pa_size; i++)
 	{
-		const POINT2D *p2d = getPoint2d_cp(pa, i);
-		wagyu_point wp(static_cast<wagyu_coord_type>(p2d->x), static_cast<wagyu_coord_type>(p2d->y));
-		if (wp.x < min_x)
-		{
-			min_x = wp.x;
-		}
-		else if (wp.x > max_x)
-		{
-			max_x = wp.x;
-		}
+		const wagyu_coord_type x = static_cast<wagyu_coord_type>(*(double*) buffer);
+		const wagyu_coord_type y = static_cast<wagyu_coord_type>(((double*) buffer)[1]);
+		buffer += point_size;
+		min_x = std::min(min_x, x);
+		max_x = std::max(max_x, x);
+		min_y = std::min(min_y, y);
+		max_y = std::max(max_y, y);
 
-		if (wp.y < min_y)
-		{
-			min_y = wp.y;
-		}
-		else if (wp.y > max_y)
-		{
-			max_y = wp.y;
-		}
-
-		lr.push_back(std::move(wp));
+		lr.emplace_back(static_cast<wagyu_coord_type>(x), static_cast<wagyu_coord_type>(y));
 	}
 
 	/* Check how many sides of the calculated box are inside the tile */

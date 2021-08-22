@@ -38,6 +38,7 @@ typedef struct CollectionBuildState
 	List *geoms;  /* collected geometries */
 	Datum data[CollectionBuildStateDataSize];
 	Oid geomOid;
+	float8 gridSize;
 } CollectionBuildState;
 
 

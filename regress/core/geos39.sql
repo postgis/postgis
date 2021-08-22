@@ -37,3 +37,8 @@ WITH p AS (
 )
 SELECT 'mic-cte' AS name, ST_AsText(st_snaptogrid((ST_MaximumInscribedCircle(ply)).center,0.001))
 	FROM p;
+
+-- ST_ReducePrecision
+SELECT 'rp-1', ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));
+SELECT 'rp-2', ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 1.0));
+SELECT 'rp-3', ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));

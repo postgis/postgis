@@ -6,8 +6,7 @@
 		  <refnamediv>
 			<refname>ST_LineInterpolatePoint</refname>
 
-			<refpurpose>Returns a point interpolated along a line. Second argument is a float8 between 0 and 1
-			representing fraction of total length of linestring the point has to be located.</refpurpose>
+			<refpurpose>Returns a point interpolated along a line at a fractional location.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -23,12 +22,23 @@
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a point interpolated along a line. First argument
-			must be a LINESTRING. Second argument is a float8 between 0 and 1
-			representing fraction of total linestring length the point has to be located.</para>
+			<para>Returns a point interpolated along a line at a fractional location.
+            First argument must be a LINESTRING.
+            Second argument is a float between 0 and 1
+			representing the fraction of line length
+            where the point is to be located.
+            The Z and M values are interpolated if present.
+            </para>
 
 			<para>See <xref linkend="ST_LineLocatePoint" /> for
 			computing the line location nearest to a Point.</para>
+
+			<note>
+			  <para>This function computes points in 2D and then interpolates
+              values for Z and M,
+              while <xref linkend="ST_3DLineInterpolatePoint" /> computes points in 3D
+              and only interpolates the M value.</para>
+			</note>
 
 			<note>
 			  <para>Since release 1.1.1 this function also interpolates M and
@@ -51,31 +61,40 @@
 				<caption><para>A linestring with the interpolated point at 20% position (0.20) </para></caption>
 			  </mediaobject>
 			</informalfigure>
-			<programlisting>--Return point 20% along 2d line
-SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.20))
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') as the_line) As foo;
+			<programlisting>-- The point 20% along a line
+
+SELECT ST_AsEWKT(
+    ST_LineInterpolatePoint(
+        'LINESTRING(25 50, 100 125, 150 190)',
+        0.2 ));
+
    st_asewkt
 ----------------
  POINT(51.5974135047432 76.5974135047432)
-
 </programlisting>
+
+<para>The mid-point of a 3D line:</para>
 <programlisting>
---Return point mid-way of 3d line
-SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.5))
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') as the_line) As foo;
+SELECT ST_AsEWKT(
+    ST_LineInterpolatePoint('
+        LINESTRING(1 2 3, 4 5 6, 6 7 8)',
+        0.5 ));
 
 	st_asewkt
 --------------------
  POINT(3.5 4.5 5.5)
+</programlisting>
 
+<para>The closest point on a line to a point:</para>
+<programlisting>
+SELECT ST_AsText(
+    ST_LineInterpolatePoint( line.geom,
+        ST_LineLocatePoint( line.geom, 'POINT(4 3)')))
+FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 
---find closest point on a line to a point or other geometry
- SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
-FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
-   st_astext
-----------------
+ st_astext
+------------
  POINT(3 4)
-
 </programlisting>
 		  </refsection>
 
@@ -84,13 +103,10 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="ST_AsText" />,
-				<xref linkend="ST_AsEWKT" />,
-				<xref linkend="ST_Length" />,
-				<xref linkend="ST_LineInterpolatePoints" />
-				<xref linkend="ST_3DLineInterpolatePoint" />
+				<xref linkend="ST_LineInterpolatePoints" />,
+				<xref linkend="ST_3DLineInterpolatePoint" />,
 				<xref linkend="ST_LineLocatePoint" />
-			O</para>
+			</para>
 		  </refsection>
 		</refentry>
 
@@ -98,8 +114,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refnamediv>
 			<refname>ST_3DLineInterpolatePoint</refname>
 
-			<refpurpose>Returns a point interpolated along a line in 3D. Second argument is a float8 between 0 and 1
-			representing fraction of total length of linestring the point has to be located.</refpurpose>
+			<refpurpose>Returns a point interpolated along a 3D line at a fractional location.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -115,16 +130,19 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a point interpolated along a line. First argument
-			must be a LINESTRING. Second argument is a float8 between 0 and 1
-			representing fraction of total linestring length the point has to be located.</para>
+			<para>Returns a point interpolated along a 3D line at a fractional location.
+            First argument must be a LINESTRING. Second argument is a float between 0 and 1
+			representing the point location as a fraction of line length.
+            The M value is interpolated if present.
+            </para>
 
 			<note>
-			  <para><xref linkend="ST_LineInterpolatePoint" /> computes resulting point in 2D and then interpolates
-			  value for Z and M, while ST_3DLineInterpolatePoint computes directly point in 3D and only M value 
-			  is interpolated then.</para>
+			  <para><xref linkend="ST_LineInterpolatePoint" /> computes points in 2D
+              and then interpolates the values for Z and M,
+              while this function computes points in 3D
+              and only interpolates the M value.</para>
 			</note>
-			
+
 			<para>Availability: 3.0.0</para>
 		</refsection>
 
@@ -134,11 +152,13 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 
 			<para>Return point 20% along 3D line</para>
 			<programlisting>
-SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))
-	FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50 70, 100 125 90, 150 190 200)') as the_line) As foo;
-   st_asewkt
+SELECT ST_AsText(
+    ST_3DLineInterpolatePoint('LINESTRING(25 50 70, 100 125 90, 150 190 200)',
+        0.20));
+
+   st_asetext
 ----------------
- POINT(59.0675892910822 84.0675892910822 79.0846904776219)
+ POINT Z (59.0675892910822 84.0675892910822 79.0846904776219)
 </programlisting>
 		  </refsection>
 
@@ -147,11 +167,8 @@ SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="ST_AsText" />,
-				<xref linkend="ST_AsEWKT" />,
-				<xref linkend="ST_Length" />,
-				<xref linkend="ST_LineInterpolatePoint" />
-				<xref linkend="ST_LineInterpolatePoints" />
+				<xref linkend="ST_LineInterpolatePoint" />,
+				<xref linkend="ST_LineInterpolatePoints" />,
 				<xref linkend="ST_LineLocatePoint" />
 			</para>
 		  </refsection>
@@ -162,7 +179,7 @@ SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))
 			<refname>ST_LineInterpolatePoints</refname>
 
 			<refpurpose>
-				Returns one or more points interpolated along a line.
+				Returns points interpolated along a line at a fractional interval.
 			</refpurpose>
 		  </refnamediv>
 
@@ -180,10 +197,11 @@ SELECT ST_AsEWKT(ST_3DLineInterpolatePoint(the_line, 0.20))
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns one or more points interpolated along a line. First argument
-			must be a LINESTRING. Second argument is a float8 between 0 and 1
-			representing the spacing between the points as a fraction of total
-			LineString length. If the third argument is false, at most one point
+			<para>Returns one or more points interpolated along a line at a fractional interval.
+            The first argument
+			must be a LINESTRING. The second argument is a float8 between 0 and 1
+			representing the spacing between the points as a fraction of
+			line length. If the third argument is false, at most one point
 			will be constructed (the function will be equivalent to <xref linkend="ST_LineInterpolatePoint" />.)
 		</para>
 
@@ -230,9 +248,8 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 		  <refnamediv>
 			<refname>ST_LineLocatePoint</refname>
 
-			<refpurpose>Returns a float between 0 and 1 representing the location of
-			the closest point on LineString to the given Point, as a fraction
-			of total 2d line length.</refpurpose>
+			<refpurpose>Returns the fractional location of
+			the closest point on a line to a point.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -249,8 +266,8 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 			<title>Description</title>
 
 			 <para>Returns a float between 0 and 1 representing the location of
-			the closest point on LineString to the given Point, as a fraction
-			of total <link linkend="ST_Length2D">2d line</link> length.</para>
+			the closest point on a LineString to the given Point, as a fraction
+			of <link linkend="ST_Length2D">2d line</link> length.</para>
 
 			<para>You can use the returned location to extract a Point (<xref linkend="ST_LineInterpolatePoint" />) or
 			a substring (<xref linkend="ST_LineSubstring" />).</para>
@@ -277,7 +294,7 @@ SELECT ST_AsText(house_loc) As as_text_house_loc,
 			* ST_LineLocatePoint(street_line, house_loc) As integer) As street_num
 FROM
 (SELECT ST_GeomFromText('LINESTRING(1 2, 3 4)') As street_line,
-	ST_MakePoint(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,
+	ST_Point(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,
 		20 As endstreet_num
 FROM generate_series(1,3) x CROSS JOIN generate_series(2,4) As y)
 As foo
@@ -311,10 +328,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refnamediv>
 			<refname>ST_LineSubstring</refname>
 
-			<refpurpose>Return a linestring being a substring of the input one
-			starting and ending at the given fractions of total 2d length.
-			Second and third arguments are float8 values between 0 and
-			1.</refpurpose>
+			<refpurpose>Returns the part of a line between two fractional locations.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -331,21 +345,28 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>Description</title>
 
-			<para>Return a linestring being a substring of the input one
-			starting and ending at the given fractions of total 2d length.
-			Second and third arguments are float8 values between 0 and
-			1. This only works with LINESTRINGs.
-			To use with contiguous MULTILINESTRINGs use in conjunction with <xref linkend="ST_LineMerge" />.</para>
+			<para>Computes the line which is the section of the input line
+			starting and ending at the given fractional locations.
+            The first argument must be a LINESTRING.
+			The second and third arguments are values in the range [0, 1]
+            representing the start and end locations
+            as fractions of line length.
+            The Z and M values are interpolated for added endpoints if present.
+            </para>
 
-			<para>If 'start' and 'end' have the same value this is equivalent
+			<para>If <varname>startfraction</varname> and <varname>endfraction</varname>
+            have the same value this is equivalent
 			to <xref linkend="ST_LineInterpolatePoint" />.</para>
 
-			<para>See <xref linkend="ST_LineLocatePoint" /> for
-			computing the line location nearest to a Point.</para>
+			<note>
+			  <para>This only works with LINESTRINGs.
+			    To use on contiguous MULTILINESTRINGs
+                first join them with <xref linkend="ST_LineMerge" />.</para>
+			</note>
 
 			<note>
-			  <para>Since release 1.1.1 this function also interpolates M and
-			  Z values (when present), while prior releases set them to
+			  <para>Since release 1.1.1 this function interpolates M and
+			  Z values.  Prior releases set Z and M to
 			  unspecified values.</para>
 			</note>
 
@@ -365,37 +386,59 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			  </mediaobject>
 			</informalfigure>
 	<programlisting>
---Return the approximate 1/3 mid-range part of a linestring
-SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 125, 150 190)'), 0.333, 0.666));
+SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.666));
 
 										   st_astext
 ------------------------------------------------------------------------------------------------
 LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463138888)
+</programlisting>
 
---The below example simulates a while loop in
---SQL using PostgreSQL generate_series() to cut all
---linestrings in a table to 100 unit segments
--- of which no segment is longer than 100 units
--- units are measured in the SRID units of measurement
--- It also assumes all geometries are LINESTRING or contiguous MULTILINESTRING
---and no geometry is longer than 100 units*10000
---for better performance you can reduce the 10000
---to match max number of segments you expect
+<para>
+If start and end locations are the same, the result is a POINT.
+</para>
+<programlisting>
+SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.333));
 
-SELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,
-  CASE
-	WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length
-	ELSE 1
-  END) As the_geom
-FROM
-  (SELECT sometable.field1, sometable.field2,
-  ST_LineMerge(sometable.the_geom) AS the_geom,
-  ST_Length(sometable.the_geom) As length
-  FROM sometable
-  ) AS t
-CROSS JOIN generate_series(0,10000) AS n
-WHERE n*100.00/length &lt; 1;
-			</programlisting>
+                st_astext
+------------------------------------------
+ POINT(69.2846934853974 94.2846934853974)
+</programlisting>
+
+
+<para>
+A query to cut a LineString into sections of length 100 or shorter.
+It uses <varname>generate_series()</varname> with a CROSS JOIN LATERAL
+to produce the equivalent of a FOR loop.
+</para>
+<programlisting>
+WITH data(id, geom) AS (VALUES
+        ( 'A', 'LINESTRING( 0 0, 200 0)'::geometry ),
+        ( 'B', 'LINESTRING( 0 100, 350 100)'::geometry ),
+        ( 'C', 'LINESTRING( 0 200, 50 200)'::geometry )
+    )
+SELECT id, i,
+       ST_AsText( ST_LineSubstring( geom, startfrac, LEAST( endfrac, 1 )) ) AS geom
+FROM (
+    SELECT id, geom, ST_Length(geom) len, 100 sublen FROM data
+    ) AS d
+CROSS JOIN LATERAL (
+    SELECT i, (sublen * i) / len AS startfrac,
+              (sublen * (i+1)) / len AS endfrac
+    FROM generate_series(0, floor( len / sublen )::integer ) AS t(i)
+    -- skip last i if line length is exact multiple of sublen
+    WHERE (sublen * i) / len &lt;&gt; 1.0
+    ) AS d2;
+
+ id | i |            geom
+----+---+-----------------------------
+ A  | 0 | LINESTRING(0 0,100 0)
+ A  | 1 | LINESTRING(100 0,200 0)
+ B  | 0 | LINESTRING(0 100,100 100)
+ B  | 1 | LINESTRING(100 100,200 100)
+ B  | 2 | LINESTRING(200 100,300 100)
+ B  | 3 | LINESTRING(300 100,350 100)
+ C  | 0 | LINESTRING(0 200,50 200)
+</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -410,18 +453,16 @@ WHERE n*100.00/length &lt; 1;
 	  <refnamediv>
 		<refname>ST_LocateAlong</refname>
 
-		<refpurpose>Return a derived geometry collection value with elements
-			that match the specified measure. Polygonal elements are not
-			supported.</refpurpose>
+		<refpurpose>Returns the point(s) on a geometry that match a measure value.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geometry <function>ST_LocateAlong</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></paramdef>
-			<paramdef><type>float8 </type> <parameter>a_measure</parameter></paramdef>
-			<paramdef choice="opt"><type>float8 </type> <parameter>offset</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geom_with_measure</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure</parameter></paramdef>
+			<paramdef choice="opt"><type>float8 </type> <parameter>offset = 0</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -429,21 +470,20 @@ WHERE n*100.00/length &lt; 1;
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a derived geometry collection value with elements
-		that match the specified measure. Polygonal elements are not
-		supported.</para>
+		<para>Returns the locations along a measured geometry (as a Point or MultiPoint)
+		that match a measure value.
+        Polygonal elements are not supported.</para>
 
-		<para>If an offset is provided, the resultant will be offset to the
-		left or right of the input line by the specified number of units.
-		A positive offset will be to the left, and a negative one to the
-		right.</para>
+		<para>If the <varname>offset</varname> is provided, the result
+        is offset to the left or right of the input line by the specified distance.
+        A positive offset will be to the left, and a negative one to the right.</para>
 
-		<para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text
-		for Continuation CD Editing Meeting</para>
+		<note><para>Use this function only for geometries with an M component</para></note>
+
+		<para>The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</emphasis> standard.</para>
 
 		<para>Availability: 1.1.0 by old name ST_Locate_Along_Measure. </para>
-		<para>Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.  The old name has been deprecated and will be removed in the future but is still available.</para>
-		<note><para>Use this function only for geometries with an M component</para></note>
+		<para>Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.</para>
 
 		<para>&M_support;</para>
 	  </refsection>
@@ -451,37 +491,23 @@ WHERE n*100.00/length &lt; 1;
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsText(the_geom)
-		FROM
-		(SELECT ST_LocateAlong(
-			ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
-		(1 2 3, 5 4 5))'),3) As the_geom) As foo;
+<programlisting>
+SELECT ST_AsText(
+  ST_LocateAlong(
+    'MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'::geometry,
+    3 ));
 
-						 st_asewkt
------------------------------------------------------------
- MULTIPOINT M (1 2 3)
-
---Geometry collections are difficult animals so dump them
---to make them more digestable
-SELECT ST_AsText((ST_Dump(the_geom)).geom)
-	FROM
-	(SELECT ST_LocateAlong(
-			ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
-	(1 2 3, 5 4 5))'),3) As the_geom) As foo;
-
-   st_asewkt
----------------
- POINTM(1 2 3)
- POINTM(9 4 3)
- POINTM(1 2 3)
-	</programlisting>
+            st_astext
+----------------------------------
+ MULTIPOINT M (1 2 3,9 4 3,1 2 3)
+</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_LocateBetween" />, <xref linkend="ST_LocateBetweenElevations" /></para>
+		<para><xref linkend="ST_LocateBetween" />, <xref linkend="ST_LocateBetweenElevations" /></para>
 	  </refsection>
 	</refentry>
 
@@ -489,8 +515,7 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 	  <refnamediv>
 		<refname>ST_LocateBetween</refname>
 
-		<refpurpose>Return a derived geometry collection value with elements
-			that match the specified range of measures inclusively.</refpurpose>
+		<refpurpose>Returns the portions of a geometry that match a measure range.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -500,7 +525,7 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 			<paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef>
 			<paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef>
-			<paramdef choice="opt"><type>float8 </type> <parameter>offset</parameter></paramdef>
+			<paramdef choice="opt"><type>float8 </type> <parameter>offset = 0</parameter></paramdef>
 		  </funcprototype>
 
 		</funcsynopsis>
@@ -509,20 +534,19 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a derived geometry collection with elements that match the specified range of
-		measures inclusively.</para>
+		<para>Return a geometry (collection) with the portions of the input measured geometry
+        that match the specified measure range (inclusively).</para>
+
+		<para>If the <varname>offset</varname> is provided, the result
+        is offset to the left or right of the input line by the specified distance.
+        A positive offset will be to the left, and a negative one to the right.</para>
 
 		<para>Clipping a non-convex POLYGON may produce invalid geometry.</para>
 
-		<para>If an offset is provided, the resultant will be offset to the left or right of the
-		input line by the specified number of units. A positive offset will be to the left, and
-                a negative one to the right.</para>
-
-		<para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text for Continuation
-		CD Editing Meeting</para>
+		<para>The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</emphasis> standard.</para>
 
 		<para>Availability: 1.1.0 by old name ST_Locate_Between_Measures. </para>
-		<para>Changed: 2.0.0 - in prior versions this used to be called ST_Locate_Between_Measures.  The old name has been deprecated and will be removed in the future but is still available for backward compatibility.</para>
+		<para>Changed: 2.0.0 - in prior versions this used to be called ST_Locate_Between_Measures.</para>
 		<para>Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
 
 		<para>&M_support;</para>
@@ -531,42 +555,24 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-SELECT ST_AsText(the_geom)
-FROM (
-    SELECT ST_LocateBetween(
-       'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),
+<programlisting>
+SELECT ST_AsText(
+  ST_LocateBetween(
+       'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))':: geometry,
        1.5,
-       3
-    ) as the_geom
-) As foo;
+       3 ));
 
 							 st_asewkt
 ------------------------------------------------------------------------
  GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))
-
---Geometry collections are difficult animals so dump them
---to make them more digestable
-SELECT ST_AsText((ST_Dump(the_geom)).geom)
-FROM (
-    SELECT ST_LocateBetween(
-	'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),
-	1.5,
-	3
-    ) As the_geom
-) As foo;
-
-		   st_asewkt
---------------------------------
- LINESTRING M (1 2 3,3 4 2,9 4 3)
- POINT M (1 2 3)</programlisting>
+</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_LocateAlong" />, <xref linkend="ST_LocateBetweenElevations" /></para>
+		<para><xref linkend="ST_LocateAlong" />, <xref linkend="ST_LocateBetweenElevations" /></para>
 	  </refsection>
 	</refentry>
 
@@ -574,8 +580,8 @@ FROM (
 	  <refnamediv>
 		<refname>ST_LocateBetweenElevations</refname>
 
-		<refpurpose>Return a derived geometry (collection) value with elements
-			that intersect the specified range of elevations inclusively.</refpurpose>
+		<refpurpose>Returns the portions of a geometry
+			that lie in an elevation (Z) range.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -593,8 +599,8 @@ FROM (
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a derived geometry (collection) value with elements
-		that intersect the specified range of elevations inclusively.</para>
+		<para>Returns a geometry (collection) with the portions of a geometry
+		that lie in an elevations (Z) range.</para>
 
 		<para>Clipping a non-convex POLYGON may produce invalid geometry.</para>
 
@@ -607,28 +613,23 @@ FROM (
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_AsEWKT(ST_LocateBetweenElevations(
-			ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'), 2, 4)) As ewelev;
-								   ewelev
-----------------------------------------------------------------
-	MULTILINESTRING((1 2 3,2 3 4))
+<programlisting>SELECT ST_AsText(
+  ST_LocateBetweenElevations(
+    'LINESTRING(1 2 3, 4 5 6)'::geometry,
+    2, 4 ));
 
-SELECT ST_AsEWKT(ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 9)', 6, 9)) As ewelev;
+             st_astext
+-----------------------------------
+ MULTILINESTRING Z ((1 2 3,2 3 4))
 
-				ewelev
-----------------------------------------------------------------
-GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))
+SELECT ST_AsText(
+    ST_LocateBetweenElevations(
+      'LINESTRING(1 2 6, 4 5 -1, 7 8 9)',
+      6, 9)) As ewelev;
 
--- Geometry collections are difficult animals so dump them
--- to make them more digestable
-SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
-	FROM
-	(SELECT ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 9)', 6, 9) as the_geom) As foo;
-
-		   st_asewkt
---------------------------------
-POINT(1 2 6)
-LINESTRING(6.1 7.1 6,7 8 9)
+                                ewelev
+-----------------------------------------------------------------------
+ GEOMETRYCOLLECTION Z (POINT Z (1 2 6),LINESTRING Z (6.1 7.1 6,7 8 9))
 </programlisting>
 	  </refsection>
 
@@ -645,7 +646,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 		  <refnamediv>
 			<refname>ST_InterpolatePoint</refname>
 
-			<refpurpose>Return the value of the measure dimension of a geometry at the point closed to the provided point.</refpurpose>
+			<refpurpose>Returns the interpolated measure of a geometry closest to a point.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -662,7 +663,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 		  <refsection>
 			<title>Description</title>
 
-			   <para>Return the value of the measure dimension of a geometry at the point closed to the provided point.</para>
+			   <para>Returns the value of the measure dimension of a geometry at the point closed to the provided point.</para>
 
 				<para>Availability: 2.0.0</para>
 
@@ -675,7 +676,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 			<programlisting>SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');
  st_interpolatepoint
  ---------------------
-			            10
+         10
 	</programlisting>
 		  </refsection>
 
@@ -692,7 +693,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	  <refnamediv>
 		<refname>ST_AddMeasure</refname>
 
-		<refpurpose>Return a derived geometry with measure elements linearly interpolated between the start and end points.</refpurpose>
+		<refpurpose>Interpolates measures along a linear geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -710,7 +711,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	  <refsection>
 		<title>Description</title>
 
-		   <para>Return a derived geometry with measure elements linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>
+		   <para>Return a derived geometry with measure values linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>
 
 			<para>Availability: 1.5.0</para>
 

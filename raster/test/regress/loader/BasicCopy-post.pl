@@ -1,1 +1,1 @@
-unlink "loader/BasicCopy.tif";
+unlink $TEST . ".tif";

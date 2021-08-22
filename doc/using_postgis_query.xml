@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="using_postgis_query">
+  <title>Spatial Queries</title>
+
+	<para>The <emphasis>raison d'etre</emphasis> of spatial databases
+	is to perform queries inside the database which would
+	ordinarily require desktop GIS functionality. Using PostGIS effectively
+	requires knowing what spatial functions are available,
+    how to use them in queries, and ensuring that
+	appropriate indexes are in place to provide good performance.
+    </para>
+
+    <sect1 id="eval_spatial_rel">
+        <title>Determining Spatial Relationships</title>
+
+        <para>Spatial relationships indicate how two geometries interact with one another.
+        They are a fundamental capability for querying geometry.
+        </para>
+
+        <sect2 id="DE-9IM">
+          <title>Dimensionally Extended 9-Intersection Model</title>
+
+         <para>According to the <ulink
+          url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL</ulink>, "the basic
+          approach to comparing two geometries is to make pair-wise tests of
+          the intersections between the Interiors, Boundaries and Exteriors of
+          the two geometries and to classify the relationship between the two
+          geometries based on the entries in the resulting 'intersection'
+          matrix."</para>
+
+        <para>In the theory of point-set topology,
+        the points in a geometry embedded in 2-dimensional space are categorized into three sets:
+        </para>
+
+          <glosslist>
+            <glossentry>
+              <glossterm>Boundary</glossterm>
+
+              <glossdef>
+                <para>The boundary of a geometry is the set of geometries of
+                the next lower dimension. For <varname>POINT</varname>s, which
+                have a dimension of 0, the boundary is the empty set. The
+                boundary of a <varname>LINESTRING</varname> is the two
+                endpoints. For <varname>POLYGON</varname>s, the boundary is
+                the linework of the exterior and interior
+                rings.</para>
+              </glossdef>
+            </glossentry>
+
+            <glossentry>
+              <glossterm>Interior</glossterm>
+
+              <glossdef>
+                <para>The interior of a geometry are those points of a
+                geometry that are not in the boundary. For
+                <varname>POINT</varname>s, the interior is the
+                point itself. The interior of a
+                <varname>LINESTRING</varname> is the set of points
+                between the endpoints. For <varname>POLYGON</varname>s, the
+                interior is the areal surface inside the polygon.</para>
+              </glossdef>
+            </glossentry>
+
+            <glossentry>
+              <glossterm>Exterior</glossterm>
+
+              <glossdef>
+                <para>The exterior of a geometry is the rest of the space
+                in which the geometry is embedded;
+                in other words, all points not in the interior or on the boundary of the geometry.
+                It is a 2-dimensional non-closed surface.
+                </para>
+              </glossdef>
+            </glossentry>
+          </glosslist>
+
+        <para>The <ulink url="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</ulink>
+        (DE-9IM) describes the spatial relationship between two geometries
+        by specifying the dimensions of the 9 intersections between the above sets for each geometry.
+        The intersection dimensions can be formally represented
+        in a 3x3 <emphasis role="bold">intersection matrix</emphasis>.
+        </para>
+
+        <para>For a geometry <emphasis>g</emphasis>
+            the <emphasis>Interior</emphasis>, <emphasis>Boundary</emphasis>, and <emphasis>Exterior</emphasis>
+            are denoted using the notation
+          <emphasis>I(g)</emphasis>, <emphasis>B(g)</emphasis>, and
+          <emphasis>E(g)</emphasis>.
+          Also, <emphasis>dim(s)</emphasis> denotes the dimension of
+          a set <emphasis>s</emphasis> with the domain of
+          <literal>{0,1,2,F}</literal>:
+        </para>
+
+        <itemizedlist spacing="compact">
+        <listitem>
+            <para><literal>0</literal> =&gt; point</para>
+        </listitem>
+
+        <listitem>
+            <para><literal>1</literal> =&gt; line</para>
+        </listitem>
+
+        <listitem>
+            <para><literal>2</literal> =&gt; area</para>
+        </listitem>
+
+        <listitem>
+            <para><literal>F</literal> =&gt; empty set</para>
+        </listitem>
+
+        </itemizedlist>
+
+        <para>
+          Using this notation, the intersection matrix
+          for two geometries <emphasis>a</emphasis> and <emphasis>b</emphasis> is:</para>
+
+          <informaltable tabstyle="styledtable">
+            <tgroup align="center" cols="4">
+              <thead>
+                <row>
+                  <entry></entry>
+                  <entry><emphasis role="bold">Interior</emphasis></entry>
+                  <entry><emphasis role="bold">Boundary</emphasis></entry>
+                  <entry><emphasis role="bold">Exterior</emphasis></entry>
+                </row>
+              </thead>
+
+              <tbody>
+                <row>
+                  <entry><emphasis role="bold">Interior</emphasis></entry>
+                  <entry><emphasis>dim( I(a) ∩ I(b) )</emphasis></entry>
+                  <entry><emphasis>dim( I(a) ∩ B(b) )</emphasis></entry>
+                  <entry><emphasis>dim( I(a) ∩ E(b) )</emphasis></entry>
+                </row>
+                <row>
+                  <entry><emphasis role="bold">Boundary</emphasis></entry>
+                  <entry><emphasis>dim( B(a) ∩ I(b) )</emphasis></entry>
+                  <entry><emphasis>dim( B(a) ∩ B(b) )</emphasis></entry>
+                  <entry><emphasis>dim( B(a) ∩ E(b) )</emphasis></entry>
+                </row>
+                <row>
+                  <entry><emphasis role="bold">Exterior</emphasis></entry>
+                  <entry><emphasis>dim( E(a) ∩ I(b) )</emphasis></entry>
+                  <entry><emphasis>dim( E(a) ∩ B(b) )</emphasis></entry>
+                  <entry><emphasis>dim( E(a) ∩ E(b) )</emphasis></entry>
+                </row>
+              </tbody>
+
+            </tgroup>
+          </informaltable>
+
+         <para>Visually, for two overlapping polygonal geometries, this looks like:</para>
+
+          <informaltable frame="none" border="0">
+            <tgroup cols="2">
+              <colspec colwidth="80pt" />
+
+              <tbody>
+                <row>
+                  <entry></entry>
+
+                  <entry align="center"><para><informalfigure>
+                      <graphic align="center" fileref="images/de9im04.png"
+                               valign="middle" />
+                    </informalfigure></para></entry>
+                </row>
+
+                <row>
+                  <entry align="center" valign="middle"><para><informalfigure>
+                      <graphic align="center" fileref="images/de9im03.png"
+                               valign="middle" />
+                    </informalfigure></para></entry>
+
+                  <entry><para> <informaltable tabstyle="styledtable">
+                      <tgroup align="center" cols="4">
+                        <thead valign="middle">
+                          <row>
+                            <entry></entry>
+
+                            <entry><emphasis
+                            role="bold">Interior</emphasis></entry>
+
+                            <entry><emphasis
+                            role="bold">Boundary</emphasis></entry>
+
+                            <entry><emphasis
+                            role="bold">Exterior</emphasis></entry>
+                          </row>
+                        </thead>
+
+                        <tbody valign="middle">
+                          <row>
+                            <entry spanname="de9im_a" style=""><emphasis
+                            role="bold">Interior</emphasis></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im05.png" />
+                              </informalfigure></para><para><emphasis>dim( I(a) ∩ I(b) ) =
+                            </emphasis><emphasis
+                            role="bold">2</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im06.png" />
+                              </informalfigure></para><para><emphasis>dim( I(a) ∩ B(b)  =
+                            </emphasis><emphasis
+                            role="bold">1</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im07.png" />
+                              </informalfigure></para><para><emphasis>dim( I(a) ∩ E(b) ) =
+                            </emphasis><emphasis
+                            role="bold">2</emphasis></para></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold">Boundary</emphasis></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im08.png" />
+                              </informalfigure></para><para><emphasis>dim( B(a) ∩ I(b) ) =
+                            </emphasis><emphasis
+                            role="bold">1</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im09.png" />
+                              </informalfigure></para><para><emphasis>dim( B(a) ∩ B(b) ) =
+                            </emphasis><emphasis
+                            role="bold">0</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im10.png" />
+                              </informalfigure></para><para><emphasis>dim( B(a) ∩ E(b) ) =
+                            </emphasis><emphasis
+                            role="bold">1</emphasis></para></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold">Exterior</emphasis></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im11.png" />
+                              </informalfigure></para><para><emphasis>dim( E(a) ∩ I(b) ) =
+                            </emphasis><emphasis
+                            role="bold">2</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im12.png" />
+                              </informalfigure></para><para><emphasis>dim( E(a) ∩ B(b) ) =
+                            </emphasis><emphasis
+                            role="bold">1</emphasis></para></entry>
+
+                            <entry><para><informalfigure>
+                                <graphic fileref="images/de9im13.png" />
+                              </informalfigure></para><para><emphasis>dim( E(a) ∩ E(b)  =
+                            </emphasis><emphasis
+                            role="bold">2</emphasis></para></entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </informaltable></para></entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </informaltable>
+
+          <para>Reading from left to right and top to bottom, the intersection matrix is
+          represented as the text string '<emphasis role="bold">212101212</emphasis>'.</para>
+
+          <para>For more information, refer to:</para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL</ulink> (version 1.1, section 2.1.13.2)</para>
+            </listitem>
+
+            <listitem>
+                <para><ulink url="https://en.wikipedia.org/wiki/DE-9IM">Wikipedia: Dimensionally
+              Extended Nine-Intersection Model (DE-9IM)</ulink></para>
+            </listitem>
+            <listitem>
+              <para><ulink url="http://docs.geotools.org/latest/userguide/library/jts/dim9.html">GeoTools: Point Set Theory and the DE-9IM Matrix</ulink></para>
+            </listitem>
+          </itemizedlist>
+
+        </sect2>
+
+        <sect2 id="named-spatial-rel">
+          <title>Named Spatial Relationships</title>
+
+        <para>To make it easy to determine common spatial relationships,
+        the OGC SFS defines a set of <emphasis>named spatial relationship predicates</emphasis>.
+        PostGIS provides these as the functions
+            <xref linkend="ST_Contains" />,
+            <xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Equals" />,
+            <xref linkend="ST_Intersects" />, <xref linkend="ST_Overlaps" />,
+            <xref linkend="ST_Touches" />, <xref linkend="ST_Within" />.
+        It also defines the non-standard relationship predicates
+            <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />,
+            and <xref linkend="ST_ContainsProperly" />.
+        </para>
+        <para>Spatial predicates are usually used as conditions in SQL <code>WHERE</code> or <code>JOIN</code> clauses.
+        The named spatial predicates automatically use a spatial index if one is available,
+        so there is no need to use the bounding box operator <code>&amp;&amp;</code> as well.
+        For example:
+        </para>
+
+		<programlisting>
+SELECT city.name, state.name, city.geom
+FROM city JOIN state ON ST_Intersects(city.geom, state.geom);
+</programlisting>
+
+        <para>For more details and illustrations, see the
+        <ulink url="https://postgis.net/workshops/postgis-intro/spatial_relationships.html">PostGIS Workshop.</ulink></para>
+
+        </sect2>
+
+        <sect2 id="general-spatial-rel">
+          <title>General Spatial Relationships</title>
+
+        <para>In some cases the named spatial relationships
+        are insufficient to  provide a desired spatial filter condition.
+        </para>
+
+        <informaltable frame="none" border="0">
+          <tgroup cols="1">
+            <tbody>
+              <row>
+                <entry><para><informalfigure float="1" floatstyle="right">
+                    <graphic align="left" fileref="images/de9im01.png" />
+                  </informalfigure></para><para>For example, consider a linear
+                dataset representing a road network. It may be required
+                to identify all road segments that cross
+                each other, not at a point, but in a line (perhaps to validate some business rule).
+                In this case <xref linkend="ST_Crosses" /> does not
+                provide the necessary spatial filter, since for
+                linear features it returns <varname>true</varname> only where they cross at a point.
+                </para>
+                <para>A two-step solution
+                would be to first compute the actual intersection
+                (<xref linkend="ST_Intersection" />) of pairs of road lines that spatially
+                intersect (<xref linkend="ST_Intersects" />), and then check if the intersection's
+                <xref linkend="ST_GeometryType" /> is '<varname>LINESTRING</varname>' (properly
+                dealing with cases that return
+                <varname>GEOMETRYCOLLECTION</varname>s of
+                <varname>[MULTI]POINT</varname>s,
+                <varname>[MULTI]LINESTRING</varname>s, etc.).</para>
+                <para>Clearly, a simpler and faster solution is desirable.</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+
+        <informaltable frame="none" border="0">
+          <tgroup cols="1">
+            <tbody>
+              <row>
+                <entry><para> <informalfigure float="1" floatstyle="right">
+                    <graphic align="right" fileref="images/de9im02.png" />
+                  </informalfigure></para> <para>A second
+                example is locating
+                wharves that intersect a lake's boundary on a line and
+                where one end of the wharf is up on shore. In other
+                words, where a wharf is within but not completely contained by a
+                lake, intersects the boundary of a lake on a line, and where
+                exactly one of the wharf's endpoints is within or on the
+                boundary of the lake. It is possible to use a
+                combination of spatial predicates to find the required
+                features:</para> <itemizedlist>
+                    <listitem>
+                      <para><xref linkend="ST_Contains" />(lake, wharf) = TRUE</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><xref linkend="ST_ContainsProperly" />(lake, wharf) = FALSE</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><xref linkend="ST_GeometryType" />(<xref linkend="ST_Intersection" />(wharf, lake)) =
+                      'LINESTRING'</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><xref linkend="ST_NumGeometries" />(<xref linkend="ST_Multi" />(<xref linkend="ST_Intersection" />(<xref linkend="ST_Boundary" />(wharf),
+                      <xref linkend="ST_Boundary" />(lake)))) = 1</para>
+
+                      <para>... but needless to say, this is quite complicated.</para>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+
+        <para>These requirements can be met by computing the full DE-9IM intersection matrix.
+          PostGIS provides the <xref linkend="ST_Relate" /> function
+          to do this:
+          </para>
+
+          <programlisting>
+SELECT ST_Relate( 'LINESTRING (1 1, 5 5)',
+                  'POLYGON ((3 3, 3 7, 7 7, 7 3, 3 3))' );
+st_relate
+-----------
+1010F0212
+</programlisting>
+
+        <para>To test a particular spatial relationship,
+          an <emphasis role="bold">intersection matrix pattern</emphasis> is used.
+          This is the matrix representation augmented with the additional symbols
+          <literal>{T,*}</literal>:
+            </para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><literal>T</literal> =&gt;
+              intersection dimension is non-empty; i.e. is in <literal>{0,1,2}</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><literal>*</literal> =&gt; don't care</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Using intersection matrix patterns,
+          specific spatial relationships can be evaluated in a more succinct way.
+          The <xref linkend="ST_Relate" /> and the <xref linkend="ST_RelateMatch" />
+          functions can be used to test intersection matrix patterns.
+          For the first example above, the intersection matrix pattern specifying
+          two lines intersecting in a line is
+          '<emphasis role="bold">1*1***1**</emphasis>':</para>
+
+          <programlisting>-- Find road segments that intersect in a line
+SELECT a.id
+FROM roads a, roads b
+WHERE a.id != b.id
+      AND a.geom &amp;&amp; b.geom
+      AND ST_Relate(a.geom, b.geom, '1*1***1**');</programlisting>
+
+          <para>For the second example, the intersection matrix pattern
+          specifying a line partly inside and partly outside a polygon is
+          '<emphasis role="bold">102101FF2</emphasis>':</para>
+
+          <programlisting>-- Find wharves partly on a lake's shoreline
+SELECT a.lake_id, b.wharf_id
+FROM lakes a, wharfs b
+WHERE a.geom &amp;&amp; b.geom
+      AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
+
+        </sect2>
+    </sect1>
+
+	<sect1 id="using-query-indexes">
+    <title>Using Spatial Indexes</title>
+
+    <para>When constructing queries using spatial conditions,
+    for best performance it is important to
+    ensure that a spatial index is used, if one exists (see <xref linkend="build-indexes" />).
+    To do this, a spatial operator or index-aware function must be used
+    in a <code>WHERE</code> or <code>ON</code> clause of the query.
+    </para>
+    <para>Spatial operators include
+    the bounding box operators
+    (of which the most commonly used is <xref linkend="geometry_overlaps" />;
+    see <xref linkend="operators-bbox" /> for the full list)
+    and the distance operators used in nearest-neighbour queries
+    (the most common being <xref linkend="geometry_distance_knn" />;
+    see <xref linkend="operators-distance" /> for the full list.)
+    </para>
+    <para>Index-aware functions automatically add a bounding box operator
+    to the spatial condition.
+    Index-aware functions include the named spatial relationship predicates
+    <xref linkend="ST_Contains" />,
+    <xref linkend="ST_ContainsProperly" />,
+    <xref linkend="ST_CoveredBy" />,
+    <xref linkend="ST_Covers" />,
+    <xref linkend="ST_Crosses" />,
+    <xref linkend="ST_Intersects" />,
+    <xref linkend="ST_Overlaps" />,
+    <xref linkend="ST_Touches" />,
+    <xref linkend="ST_Within" />,
+    <xref linkend="ST_Within" />,
+    and <xref linkend="ST_3DIntersects" />,
+    and the distance predicates
+    <xref linkend="ST_DWithin" />,
+    <xref linkend="ST_DFullyWithin" />,
+    <xref linkend="ST_3DDFullyWithin" />,
+    and <xref linkend="ST_3DDWithin" />
+    .)
+    </para>
+    <para>Functions such as
+    <xref linkend="ST_Distance" /> do <emphasis>not</emphasis> use indexes to optimize their
+    operation. For example, the following query would be quite slow on a
+    large table:</para>
+
+	  <programlisting>SELECT geom
+FROM geom_table
+WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) &lt; 100</programlisting>
+
+    <para>This query selects all the geometries in <code>geom_table</code> which are
+    within 100 units of the point (100000, 200000). It will be slow because
+    it is calculating the distance between each point in the table and the
+    specified point, ie. one <varname>ST_Distance()</varname> calculation
+    is computed for <emphasis role="bold">every</emphasis> row in the table.
+    </para>
+    <para>
+    The number of rows processed can be reduced substantially by using the
+	index-aware function <xref linkend="ST_DWithin" />:</para>
+
+	  <programlisting>SELECT geom
+FROM geom_table
+WHERE ST_DWithin( geom, 'SRID=312;POINT(100000 200000)', 100 )
+</programlisting>
+
+    <para>This query selects the same geometries, but it does it in a more
+    efficient way.
+    This is enabled by <varname>ST_DWithin()</varname> using the
+    <varname>&amp;&amp;</varname> operator internally on an expanded bounding box
+    of the query geometry.
+    If there is a spatial index on <code>the_geom</code>, the query
+    planner will recognize that it can use the index to reduce the number of
+    rows scanned before calculating the distance.
+    The spatial index allows retrieving only records with geometries
+    whose bounding boxes overlap the expanded extent
+    and hence which <emphasis>might</emphasis> be within the required distance.
+    The actual distance is then computed to confirm whether to include the record in the result set.
+    </para>
+
+	</sect1>
+
+	<sect1 id="examples_spatial_sql">
+	  <title>Examples of Spatial SQL</title>
+
+	  <para>The examples in this section will make use of two tables, a table
+	  of linear roads, and a table of polygonal municipality boundaries. The
+	  table definitions for the <varname>bc_roads</varname> table is:</para>
+
+	  <programlisting>Column      | Type              | Description
+------------+-------------------+-------------------
+gid         | integer           | Unique ID
+name        | character varying | Road Name
+the_geom    | geometry          | Location Geometry (Linestring)</programlisting>
+
+	  <para>The table definition for the <varname>bc_municipality</varname>
+	  table is:</para>
+
+	  <programlisting>Column     | Type              | Description
+-----------+-------------------+-------------------
+gid        | integer           | Unique ID
+code       | integer           | Unique ID
+name       | character varying | City / Town Name
+the_geom   | geometry          | Location Geometry (Polygon)</programlisting>
+
+	  <qandaset>
+		<qandaentry id="qa_total_length_roads">
+		  <question>
+			<para>What is the total length of all roads, expressed in
+			kilometers?</para>
+		  </question>
+
+		  <answer>
+			<para>You can answer this question with a very simple piece of
+			SQL:</para>
+
+			<programlisting>SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;
+
+km_roads
+------------------
+70842.1243039643
+(1 row)</programlisting>
+		  </answer>
+		</qandaentry>
+
+		<qandaentry>
+		  <question>
+			<para>How large is the city of Prince George, in hectares?</para>
+		  </question>
+
+		  <answer>
+			<para>This query combines an attribute condition (on the
+			municipality name) with a spatial calculation (of the
+			area):</para>
+
+			<programlisting>SELECT
+  ST_Area(the_geom)/10000 AS hectares
+FROM bc_municipality
+WHERE name = 'PRINCE GEORGE';
+
+hectares
+------------------
+32657.9103824927
+(1 row)</programlisting>
+		  </answer>
+		</qandaentry>
+
+		<qandaentry>
+		  <question>
+			<para>What is the largest municipality in the province, by
+			area?</para>
+		  </question>
+
+		  <answer>
+			<para>This query brings a spatial measurement into the query
+			condition. There are several ways of approaching this problem, but
+			the most efficient is below:</para>
+
+			<programlisting>SELECT
+  name,
+  ST_Area(the_geom)/10000 AS hectares
+FROM
+  bc_municipality
+ORDER BY hectares DESC
+LIMIT 1;
+
+name           | hectares
+---------------+-----------------
+TUMBLER RIDGE  | 155020.02556131
+(1 row)</programlisting>
+
+			<para>Note that in order to answer this query we have to calculate
+			the area of every polygon. If we were doing this a lot it would
+			make sense to add an area column to the table that we could
+			separately index for performance. By ordering the results in a
+			descending direction, and them using the PostgreSQL "LIMIT"
+			command we can easily pick off the largest value without using an
+			aggregate function like max().</para>
+		  </answer>
+		</qandaentry>
+
+		<qandaentry>
+		  <question>
+			<para>What is the length of roads fully contained within each
+			municipality?</para>
+		  </question>
+
+		  <answer>
+			<para>This is an example of a "spatial join", because we are
+			bringing together data from two tables (doing a join) but using a
+			spatial interaction condition ("contained") as the join condition
+			rather than the usual relational approach of joining on a common
+			key:</para>
+
+			<programlisting>SELECT
+  m.name,
+  sum(ST_Length(r.the_geom))/1000 as roads_km
+FROM
+  bc_roads AS r,
+  bc_municipality AS m
+WHERE
+  ST_Contains(m.the_geom, r.the_geom)
+GROUP BY m.name
+ORDER BY roads_km;
+
+name                        | roads_km
+----------------------------+------------------
+SURREY                      | 1539.47553551242
+VANCOUVER                   | 1450.33093486576
+LANGLEY DISTRICT            | 833.793392535662
+BURNABY                     | 773.769091404338
+PRINCE GEORGE               | 694.37554369147
+...</programlisting>
+
+			<para>This query takes a while, because every road in the table is
+			summarized into the final result (about 250K roads for our
+			particular example table). For smaller overlays (several thousand
+			records on several hundred) the response can be very fast.</para>
+		  </answer>
+		</qandaentry>
+
+		<qandaentry>
+		  <question>
+			<para>Create a new table with all the roads within the city of
+			Prince George.</para>
+		  </question>
+
+		  <answer>
+			<para>This is an example of an "overlay", which takes in two
+			tables and outputs a new table that consists of spatially clipped
+			or cut resultants. Unlike the "spatial join" demonstrated above,
+			this query actually creates new geometries. An overlay is like a
+			turbo-charged spatial join, and is useful for more exact analysis
+			work:</para>
+
+			<programlisting>CREATE TABLE pg_roads as
+SELECT
+  ST_Intersection(r.the_geom, m.the_geom) AS intersection_geom,
+  ST_Length(r.the_geom) AS rd_orig_length,
+  r.*
+FROM
+  bc_roads AS r,
+  bc_municipality AS m
+WHERE
+  m.name = 'PRINCE GEORGE'
+	AND ST_Intersects(r.the_geom, m.the_geom);</programlisting>
+		  </answer>
+		</qandaentry>
+
+		<qandaentry>
+		  <question>
+			<para>What is the length in kilometers of "Douglas St" in
+			Victoria?</para>
+		  </question>
+
+		  <answer>
+			<programlisting>SELECT
+  sum(ST_Length(r.the_geom))/1000 AS kilometers
+FROM
+  bc_roads r,
+  bc_municipality m
+WHERE
+	r.name = 'Douglas St'
+	AND m.name = 'VICTORIA'
+	AND ST_Intersects(m.the_geom, r.the_geom);
+
+kilometers
+------------------
+4.89151904172838
+(1 row)</programlisting>
+		  </answer>
+		</qandaentry>
+
+		<qandaentry>
+		  <question>
+			<para>What is the largest municipality polygon that has a
+			hole?</para>
+		  </question>
+
+		  <answer>
+			<programlisting>SELECT gid, name, ST_Area(the_geom) AS area
+FROM bc_municipality
+WHERE ST_NRings(the_geom) &gt; 1
+ORDER BY area DESC LIMIT 1;
+
+gid  | name         | area
+-----+--------------+------------------
+12   | SPALLUMCHEEN | 257374619.430216
+(1 row)</programlisting>
+		  </answer>
+		</qandaentry>
+	  </qandaset>
+
+  </sect1>
+</chapter>

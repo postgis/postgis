@@ -458,23 +458,21 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 int
 gserialized_datum_get_internals_p(Datum gsdatum, GBOX *gbox, lwflags_t *flags, uint8_t *type, int32_t *srid)
 {
-	GSERIALIZED *gpart;
 	int result = LW_SUCCESS;
-
-	/*
-	** Because geometry is declared as "storage = main" anything large
-	** enough to take serious advantage of PG_DETOAST_DATUM_SLICE will have
-	** already been compressed, which means the entire object will be
-	** fetched and decompressed before a slice is taken, thus removing
-	** any efficiencies gained from slicing.
-	** As of Pg12 we can partially decompress a toasted object
-	** (though we still need to fully retrieve it from TOAST)
-	** which makes slicing worthwhile.
-	*/
-	gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
-	if (!gserialized_has_bbox(gpart) && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+	GSERIALIZED *gpart = NULL;
+	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST((struct varlena *)gsdatum);
+	if (need_detoast)
 	{
-		/* The headers don't contain a bbox and there is the object is larger than what we retrieved, so
+		gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	}
+	else
+	{
+		gpart = (GSERIALIZED *)gsdatum;
+	}
+
+	if (!gserialized_has_bbox(gpart) && need_detoast && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+	{
+		/* The headers don't contain a bbox and the object is larger than what we retrieved, so
 		 * we now detoast it completely */
 		POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
 		gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
@@ -506,14 +504,50 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 	return gserialized_datum_get_internals_p(gsdatum, gbox, &flags, &type, &srid);
 }
 
+/* Note that this duplicates code from gserialized_datum_get_internals_p. It does so because
+ * accessing only the BOX2DF (as floats) is faster and this is a hot path function in indexes
+ */
 int
 gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
-	GBOX gbox = {0};
-	if (gserialized_datum_get_gbox_p(gsdatum, &gbox) == LW_FAILURE)
-		return LW_FAILURE;
+	int result = LW_SUCCESS;
+	GSERIALIZED *gpart = NULL;
+	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST((struct varlena *)gsdatum);
+	if (need_detoast)
+	{
+		gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	}
+	else
+	{
+		gpart = (GSERIALIZED *)gsdatum;
+	}
 
-	return box2df_from_gbox_p(&gbox, box2df);
+	if (gserialized_has_bbox(gpart))
+	{
+		size_t box_ndims;
+		const float *f = gserialized_get_float_box_p(gpart, &box_ndims);
+		memcpy(box2df, f, sizeof(BOX2DF));
+		result = LW_SUCCESS;
+	}
+	else
+	{
+		GBOX gbox = {0};
+		if (need_detoast && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+		{
+			/* The headers don't contain a bbox and the object is larger than what we retrieved, so
+			 * we now detoast it completely and recheck */
+			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+			gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
+		}
+		result = gserialized_get_gbox_p(gpart, &gbox);
+		if (result == LW_SUCCESS)
+		{
+			result = box2df_from_gbox_p(&gbox, box2df);
+		}
+	}
+
+	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+	return result;
 }
 
 /**

@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <sect1 id="Geometry_Processing">
-        <title>Geometry Processing</title>
+    <sect1info>
+        <abstract>
+        <para>These functions compute geometric constructions,
+        or alter geometry size or shape.
+        </para>
+        </abstract>
+    </sect1info>
+
+    <title>Geometry Processing</title>
+
         <refentry id="ST_Buffer">
             <refnamediv>
                 <refname>ST_Buffer</refname>
 
                 <refpurpose>
-(T)
-Returns a geometry covering all points within a given distance
-from the input geometry.
+Computes a geometry covering all points within a given distance from a geometry.
             </refpurpose>
             </refnamediv>
 
@@ -19,7 +26,7 @@ from the input geometry.
                     <funcdef>geometry <function>ST_Buffer</function></funcdef>
                     <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
                     <paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
-                    <paramdef choice="opt"><type>text </type> <parameter>buffer_style_parameters=''</parameter></paramdef>
+                    <paramdef choice="opt"><type>text </type> <parameter>buffer_style_parameters = ''</parameter></paramdef>
                   </funcprototype>
 
                   <funcprototype>
@@ -49,52 +56,69 @@ from the input geometry.
               <refsection>
                 <title>Description</title>
 
-                <para>Returns a geometry/geography that represents all points whose distance
-            from this Geometry/geography is less than or equal to distance. </para>
-            <para>Geometry: Calculations
-            are in the Spatial Reference System of the geometry. Introduced in 1.5 support for
-            different end cap and mitre settings to control shape.</para>
-            <note><para>Negative radii: For polygons, a negative radius can be used, which will shrink the polygon rather than expanding it.</para></note>
-                <note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
-                    fits the bounding box of the geography object (favoring UTM, Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
-            <warning><para>
-            For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline</para></warning>
-                <para>Enhanced: 2.5.0 - ST_Buffer geometry support was enhanced to allow for side buffering specification <code>side=both|left|right</code>.</para>
-                <para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
-                    into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added.
-                </para>
-                <para>
-The optional third parameter (currently only applies to geometry) can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:
+                <para>Computes a a POLYGON or MULTIPOLYGON that represents all points whose distance
+            from a geometry/geography is less than or equal to a given distance.
+            A negative distance shrinks the geometry rather than expanding it.
+            A negative distance may shrink a polygon completely, in which case POLYGON EMPTY is returned.
+            For points and lines negative distances always return empty results.
+            </para>
+            <para>For geometry, the distance is specified in the units of the
+            Spatial Reference System of the geometry.
+            For geography, the distance is specified in meters.</para>
+
+            <para>The optional third parameter controls the buffer accuracy and style.
+The accuracy of circular arcs in the buffer is specified as the number of line segments
+used to approximate a quarter circle (default is 8).
+The buffer style can be specifed by
+providing a list of blank-separated key=value pairs as follows:
 <itemizedlist>
 <listitem>
-<para>'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).</para>
+<para>'quad_segs=#' : number of line segments used to approximate a quarter circle (default is 8).</para>
 </listitem>
 <listitem>
-<para>'endcap=round|flat|square' : endcap style (defaults to "round"). 'butt' is also accepted as a synonym for 'flat'.</para>
+<para>'endcap=round|flat|square' : endcap style (defaults to "round"). 'butt' is accepted as a synonym for 'flat'.</para>
 </listitem>
 <listitem>
-<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is also accepted as a synonym for 'mitre'.</para>
+<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is accepted as a synonym for 'mitre'.</para>
 </listitem>
 <listitem>
-<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.</para>
+<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is accepted as a synonym for 'mitre_limit'.</para>
 </listitem>
 <listitem>
 <para>'side=both|left|right' : 'left' or 'right' performs a single-sided buffer on the geometry, with the buffered side relative to the direction of the line.
-This is only really relevant to LINESTRING geometry and does not affect POINT or POLYGON geometries. By default end caps are square.</para>
+This is only applicable to LINESTRING geometry and does not affect POINT or POLYGON geometries. By default end caps are square.</para>
 </listitem>
 </itemizedlist>
                 </para>
 
-                <para>Units of radius are measured in units of the spatial reference system.</para>
-                <para>The inputs can be POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.</para>
-                <note><para>This function ignores the third dimension (z) and will always give a 2-d buffer even when presented with a 3d-geometry.</para></note>
+            <note><para>For geography, this is a wrapper around the geometry implementation.
+            It determines a planar spatial reference system that best fits the bounding box of the geography object
+            (trying UTM, Lambert Azimuthal Equal Area (LAEA) North/South pole, and finally Mercator ).
+            The buffer is computed in the planar space, and then transformed back to WGS84.
+            This may not produce the desired behaviour if the input object is much larger than a UTM zone or crosses the dateline
+            </para></note>
+
+            <note><para>Buffer output is always a valid polygonal geometry.
+            Buffer can handle invalid inputs,
+            so buffering by distance 0 is sometimes used as a way of repairing invalid polygons.
+            <xref linkend="ST_MakeValid" /> can also be used for this purpose.
+            </para></note>
+
+            <note><para>Buffering is sometimes used to perform a within-distance search.
+            For this use case it is more efficient to use <xref linkend="ST_DWithin" />.</para></note>
+
+            <note><para>This function ignores the Z dimension.
+It always gives a 2D result even when used on a 3D geometry.</para></note>
+
+                <para>Enhanced: 2.5.0 - ST_Buffer geometry support was enhanced to allow for side buffering specification <code>side=both|left|right</code>.</para>
+                <para>Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings
+                    into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added.
+                </para>
 
                 <para>Performed by the GEOS module.</para>
                 <para>&sfs_compliant; s2.1.1.3</para>
                 <para>&sqlmm_compliant; SQL-MM 3: 5.1.17</para>
 
-                <note><para>People often make the mistake of using this function to try to do radius searches.  Creating a
-                    buffer to a radius search is slow and pointless.  Use <xref linkend="ST_DWithin" /> instead.</para></note>
             </refsection>
 
               <refsection>
@@ -338,7 +362,7 @@ promisingcircle_pcount | lamecircle_pcount
 to Mass state plane meter and then buffer to get measurements in meters;
 SELECT ST_AsText(ST_Buffer(
 ST_Transform(
-ST_SetSRID(ST_MakePoint(-71.063526, 42.35785),4269), 26986)
+ST_SetSRID(ST_Point(-71.063526, 42.35785),4269), 26986)
 ,100,2)) As octagon;
 ----------------------
 POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
@@ -351,7 +375,7 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
               <refsection>
                 <title>See Also</title>
 
-                <para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_Union" /></para>
+                <para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_Union" />, <xref linkend="ST_MakeValid" /></para>
               </refsection>
         </refentry>
 
@@ -359,15 +383,14 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
           <refnamediv>
             <refname>ST_BuildArea</refname>
 
-            <refpurpose>Creates an areal geometry formed by the constituent linework
-            of given geometry</refpurpose>
+            <refpurpose>Creates a polygonal geometry formed by the linework of a geometry.</refpurpose>
           </refnamediv>
 
           <refsynopsisdiv>
             <funcsynopsis>
               <funcprototype>
                 <funcdef>geometry <function>ST_BuildArea</function></funcdef>
-                <paramdef><type>geometry </type> <parameter>A</parameter></paramdef>
+                <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
               </funcprototype>
             </funcsynopsis>
           </refsynopsisdiv>
@@ -376,11 +399,12 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
             <title>Description</title>
 
             <para>Creates an areal geometry formed by the constituent linework
-            of given geometry. The return type can be a Polygon or
-            MultiPolygon, depending on input. If the input lineworks do not
-            form polygons NULL is returned.  The inputs can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.
+            of the input geometry.
+            The input can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.
+            The result is a Polygon or MultiPolygon, depending on input.
+            If the input linework does not form polygons, NULL is returned.
             </para>
-            <para>This function will assume all inner geometries represent holes</para>
+            <para>This function assumes all inner geometries represent holes</para>
 
             <note>
                 <para>Input linework must be correctly noded for this function to work properly</para>
@@ -400,48 +424,25 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
                               <imageobject>
                                 <imagedata fileref="images/st_buildarea01.png" />
                               </imageobject>
-                              <caption><para>This will create a donut</para></caption>
+                              <caption><para>These will create a donut</para></caption>
                             </mediaobject>
                           </informalfigure>
-                <programlisting>
+                <programlisting>--using polygons
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
 FROM (SELECT
     ST_Buffer(
       ST_GeomFromText('POINT(100 90)'), 25) As smallc,
     ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;
                 </programlisting>
+
+                <programlisting>--using linestrings
+SELECT ST_BuildArea(ST_Collect(smallc,bigc))
+FROM (SELECT
+    ST_ExteriorRing(ST_Buffer(
+      ST_GeomFromText('POINT(100 90)'), 25)) As smallc,
+    ST_ExteriorRing(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As bigc) As foo;</programlisting>
                           </para></entry>
                     </row>
-                    <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_buildarea02.png" />
-                              </imageobject>
-                              <caption><para>This will create a gaping hole inside the circle with prongs sticking out</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>
-SELECT ST_BuildArea(ST_Collect(line,circle))
-FROM (SELECT
-    ST_Buffer(
-        ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),
-                5)  As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-
---this creates the same gaping hole
---but using linestrings instead of polygons
-SELECT ST_BuildArea(
-    ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))
-    )
-FROM (SELECT ST_Buffer(
-    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190))
-        ,5)  As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-
-                </programlisting>
-                        </para></entry>
-                      </row>
                     </tbody>
                   </tgroup>
             </informaltable>
@@ -453,9 +454,10 @@ FROM (SELECT ST_Buffer(
             <para>
             <xref linkend="ST_Node" />,
             <xref linkend="ST_MakePolygon" />,
+            <xref linkend="ST_MakeValid" />,
             <xref linkend="ST_BdPolyFromText" />,
-            <xref linkend="ST_BdMPolyFromText" />wrappers to
-            this function with standard OGC interface</para>
+            <xref linkend="ST_BdMPolyFromText" /> (wrappers to
+            this function with standard OGC interface)</para>
           </refsection>
     </refentry>
 
@@ -489,28 +491,32 @@ FROM (SELECT ST_Buffer(
     <refsection>
       <title>Description</title>
 
-      <para>Computes the geometric center of a geometry, or equivalently,
-      the center of mass of the geometry as a <varname>POINT</varname>. For
-      [<varname>MULTI</varname>]<varname>POINT</varname>s, this is computed
-      as the arithmetic mean of the input coordinates. For
-      [<varname>MULTI</varname>]<varname>LINESTRING</varname>s, this is
-      computed as the weighted length of each line segment. For
-      [<varname>MULTI</varname>]<varname>POLYGON</varname>s, "weight" is
-      thought in terms of area. If an empty geometry is supplied, an empty
-      <varname>GEOMETRYCOLLECTION</varname> is returned. If
-      <varname>NULL</varname> is supplied, <varname>NULL</varname> is
-      returned.
+      <para>Computes a point which is the geometric center of mass of a geometry.
+      For [<varname>MULTI</varname>]<varname>POINT</varname>s,
+      the centroid is the arithmetic mean of the input coordinates.
+      For [<varname>MULTI</varname>]<varname>LINESTRING</varname>s,
+      the centroid is computed using the weighted length of each line segment.
+      For [<varname>MULTI</varname>]<varname>POLYGON</varname>s,
+      the centroid is computed in terms of area.
+      If an empty geometry is supplied, an empty <varname>GEOMETRYCOLLECTION</varname> is returned.
+      If <varname>NULL</varname> is supplied, <varname>NULL</varname> is returned.
       If <varname>CIRCULARSTRING</varname> or <varname>COMPOUNDCURVE</varname>
       are supplied, they are converted to linestring wtih CurveToLine first,
       then same than for  <varname>LINESTRING</varname>
       </para>
-      <para>New in 2.3.0 : support <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
-
-      <para>Availability: 2.4.0 support for geography was introduced.</para>
-
-      <para>The centroid is equal to the centroid of the set of component
+      <para>For mixed-dimension input, the result is equal to the centroid of the component
       Geometries of highest dimension (since the lower-dimension geometries
       contribute zero "weight" to the centroid).</para>
+      <para>Note that for polygonal geometries the centroid does not necessarily
+      lie in the interior of the polygon.  For example, see the diagram below
+      of the centroid of a C-shaped polygon.
+      To construct a point guaranteed to lie in the interior
+      of a polygon use <xref linkend="ST_PointOnSurface" />.
+      </para>
+
+      <para>New in 2.3.0 : supports <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
+
+      <para>Availability: 2.4.0 support for geography was introduced.</para>
 
       <para>&sfs_compliant;</para>
       <para>&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5</para>
@@ -519,7 +525,7 @@ FROM (SELECT ST_Buffer(
     <refsection>
       <title>Examples</title>
 
-      <para>In each of the following illustrations, the green dot represents
+      <para>In the following illustrations the green dot is
       the centroid of the source geometry.</para>
 
       <informaltable>
@@ -603,100 +609,54 @@ POINT(0.5 1)
     </refsection>
   </refentry>
 
-    <refentry id="ST_ClipByBox2D">
-      <refnamediv>
-        <refname>ST_ClipByBox2D</refname>
-        <refpurpose>Returns the portion of a geometry falling within a rectangle.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-            <funcprototype>
-                <funcdef>geometry <function>ST_ClipByBox2D</function></funcdef>
-                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-                <paramdef><type>box2d</type> <parameter>box</parameter></paramdef>
-            </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>
-            Clips a geometry by a 2D box in a fast but possibly dirty way.
-            The output geometry is not guaranteed to be valid (self-intersections for a polygon may be introduced).
-            Topologically invalid input geometries do not result in exceptions being thrown.
-        </para>
-
-        <para>Performed by the GEOS module.</para>
-
-        <para>Availability: 2.2.0</para>
-
-      </refsection>
-
-      <refsection>
-        <title>Examples</title>
-            <programlisting>
--- Rely on implicit cast from geometry to box2d for the second parameter
-SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
-      </programlisting>
-      </refsection>
-      <refsection>
-        <title>See Also</title>
-        <para>
-<xref linkend="ST_Intersection" />,
-<xref linkend="ST_MakeBox2D" />,
-<xref linkend="ST_MakeEnvelope" />
-    </para>
-      </refsection>
-    </refentry>
-
-
     <refentry id="ST_ConcaveHull">
       <refnamediv>
         <refname>ST_ConcaveHull</refname>
-        <refpurpose>The concave hull of a geometry represents a possibly concave
-        geometry that encloses all geometries within the set.  You can think of it as shrink wrapping.</refpurpose>
+        <refpurpose>Computes a possibly concave geometry that encloses all input geometry vertices</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
         <funcsynopsis>
          <funcprototype>
             <funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
             <paramdef><type>float </type> <parameter>target_percent</parameter></paramdef>
-            <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes=false</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
 
       <refsection>
         <title>Description</title>
-            <para>The concave hull of a geometry represents a possibly concave
-        geometry that encloses all geometries within the set. Defaults to false for allowing polygons with holes.
-        The result is never higher than a single polygon.</para>
+            <para>A concave hull of a geometry represents a possibly concave
+        geometry that encloses the input geometry.
+        The result is a single polygon, line or point.
+        It will not contain holes unless the optional <varname>allow_holes</varname> argument is specified as true.
+        </para>
 
-        <para>The target_percent is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting.
-        One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. The
-            target_percent of 1 will give you the same answer as the convex hull.  A target_percent
-                between 0 and 0.99 will give you something that should have a smaller area than the convex hull.  This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
+        <para>One can think of a concave hull as a geometry obtained by "shrink-wrapping" a set of geometries.
+        This is different to the convex hull, which is more like wrapping a rubber band around the geometries.
+        It is slower to compute than the convex hull but generally has a smaller area
+        and represents a more natural boundary for the input geometry.</para>
 
-            <para>It is usually used with MULTI and Geometry Collections.
-        Although it is not an aggregate - you can use it in conjunction
-        with ST_Collect or ST_Union to get the concave hull of a set of points/linestring/polygons
-        ST_ConcaveHull(ST_Collect(somepointfield), 0.80).</para>
+        <para>The <varname>target_percent</varname> is the percentage of area of the convex hull the solution tries to approach.
+        A target_percent of 1 gives the same result as the convex hull.  A target_percent
+        between 0 and 0.99 produces a result that should have a smaller area than the convex hull.
+        </para>
 
-        <para>It is much slower to compute than convex hull but encloses the geometry better and is also useful for
-            image recognition.</para>
-
-        <para>Performed by the GEOS module</para>
-        <note><para>Note - If you are using with points, linestrings, or geometry collections use ST_Collect. If you are using with polygons, use ST_Union since
-            it may fail with invalid geometries.</para></note>
-
-        <note><para>Note - The smaller you make the target percent, the longer it takes to process the concave hull and more likely to run into topological exceptions. Also the more
-            floating points and number of points you accrue.  First try a 0.99 which does a first hop, is usually very fast, sometimes as fast as computing the convex hull, and usually gives much better than 99% of shrink since it almost always overshoots. Second hope of 0.98 it slower, others get slower usually quadratically.
+        <note><para>The smaller the target percent, the longer it takes to process the concave hull, and the more likely to run into topological exceptions. Also the more
+            floating points and number of points you accrue.  First try 0.99 which does a single pass, is usually very fast, sometimes as fast as computing the convex hull, and usually gives much better than 99% of shrink since it almost always overshoots.
+            Second hope of 0.98 is slower, others get slower usually quadratically.
             To reduce precision and float points, use <xref linkend="ST_SimplifyPreserveTopology" /> or <xref linkend="ST_SnapToGrid" /> after ST_ConcaveHull. ST_SnapToGrid is a bit faster, but
-                could result in invalid geometries where as ST_SimplifyPreserveTopology almost always preserves the validity of the geometry.</para></note>
+            could result in invalid geometries whereas ST_SimplifyPreserveTopology almost always preserves the validity of the geometry.</para></note>
+
+       <para>This is not an aggregate function.
+        To compute the concave hull of a set of geometries, use with <xref linkend="ST_Collect" />
+        or <xref linkend="ST_Union" />
+        (e.g. <code>ST_ConcaveHull(ST_Collect(somepointfield), 0.80)</code>.</para>
+
+        <note><para>For use with sets of points or linestrings use <code>ST_Collect</code>.
+        Use <code>ST_Union</code> for polygons, since it may fail with invalid geometries.</para></note>
 
         <para>More real world examples and brief explanation of the technique are shown <ulink
         url="http://www.bostongis.com/postgis_concavehull.snippet">http://www.bostongis.com/postgis_concavehull.snippet</ulink></para>
@@ -704,6 +664,8 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
         <para>Also check out Simon Greener's article on demonstrating ConcaveHull introduced in Oracle 11G R2. <ulink
         url="http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2">http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2</ulink>.
         The solution we get at 0.75 target percent of convex hull is similar to the shape Simon gets with  Oracle SDO_CONCAVEHULL_BOUNDARY.</para>
+
+        <para>Performed by the GEOS module</para>
 
         <para>Availability: 2.0.0</para>
       </refsection>
@@ -878,20 +840,20 @@ SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 
         The convex hull is the smallest convex
         geometry that encloses all geometries in the input.</para>
 
-        <para>In the general case the convex hull is a Polygon.
-        The convex hull of two or more collinear points is a two-point LineString.
-        The convex hull of one or more identical points is a Point.</para>
-
-        <para>It is usually used with Multi* and GeometryCollections.
-        It is not an aggregate function.
-        To compute the convex hull of a set of geometries,
-        use <xref linkend="ST_Collect" /> to aggregate them.</para>
-
-        <para>One can think of the convex hull as the geometry obtained by wrapping an elastic
+        <para>One can think of the convex hull as the geometry obtained by wrapping an rubber
             band around a set of geometries.  This is different from a concave hull
             which is analogous to "shrink-wrapping" the geometries.
             A convex hull is often used to
             determine an affected area based on a set of point observations.</para>
+
+        <para>In the general case the convex hull is a Polygon.
+        The convex hull of two or more collinear points is a two-point LineString.
+        The convex hull of one or more identical points is a Point.</para>
+
+        <para>This is not an aggregate function.
+        To compute the convex hull of a set of geometries, use <xref linkend="ST_Collect" />
+        to aggregate them into a geometry collection
+        (e.g. <code>ST_ConvexHull(ST_Collect(geom))</code>.</para>
 
         <para>Performed by the GEOS module</para>
 
@@ -940,164 +902,12 @@ SELECT d.disease_type,
       </refsection>
     </refentry>
 
-    <refentry id="ST_CurveToLine">
-      <refnamediv>
-        <refname>ST_CurveToLine</refname>
-
-        <refpurpose>Converts a CIRCULARSTRING/CURVEPOLYGON/MULTISURFACE to a LINESTRING/POLYGON/MULTIPOLYGON</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_CurveToLine</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
-            <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
-            <paramdef choice="opt"><type>integer</type> <parameter>tolerance_type</parameter></paramdef>
-            <paramdef choice="opt"><type>integer</type> <parameter>flags</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>Converts a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON or MULTISURFACE to MULTIPOLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
-
-        <para>Converts a given geometry to a linear geometry.
-        Each curved geometry or segment is converted into a linear
-approximation using the given `tolerance` and options (32 segments per
-quadrant and no options by default).</para>
-
-    <para>
-The 'tolerance_type' argument determines interpretation of the
-`tolerance` argument. It can take the following values:
-      <itemizedlist>
-        <listitem>
-          <para>0 (default): Tolerance is max segments per quadrant.</para>
-        </listitem>
-        <listitem>
-          <para>1: Tolerance is max-deviation of line from curve, in source units.</para>
-        </listitem>
-        <listitem>
-          <para>2: Tolerance is max-angle, in radians, between generating radii.</para>
-        </listitem>
-      </itemizedlist>
-    </para>
-
-    <para>
-The 'flags' argument is a bitfield. 0 by default.
-Supported bits are:
-      <itemizedlist>
-        <listitem>
-          <para>1: Symmetric (orientation idependent) output.</para>
-        </listitem>
-        <listitem>
-          <para>2: Retain angle, avoids reducing angles (segment lengths) when producing symmetric output. Has no effect when Symmetric flag is off.</para>
-        </listitem>
-      </itemizedlist>
-    </para>
-
-        <para>Availability: 1.3.0</para>
-    <para>Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and for symmetric output.</para>
-    <para>Enhanced: 3.0.0 implemented a minimum number of segments per linearized arc to prevent topological collapse.</para>
-
-        <para>&sfs_compliant;</para>
-        <para>&sqlmm_compliant; SQL-MM 3: 7.1.7</para>
-        <para>&Z_support;</para>
-        <para>&curve_support;</para>
-      </refsection>
-
-
-      <refsection>
-        <title>Examples</title>
-
-        <programlisting>SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)')));
-
---Result --
- LINESTRING(220268 150415,220269.95064912 150416.539364228,220271.823415575 150418.17258804,220273.613787707 150419.895736857,
- 220275.317452352 150421.704659462,220276.930305234 150423.594998003,220278.448460847 150425.562198489,
- 220279.868261823 150427.60152176,220281.186287736 150429.708054909,220282.399363347 150431.876723113,
- 220283.50456625 150434.10230186,220284.499233914 150436.379429536,220285.380970099 150438.702620341,220286.147650624 150441.066277505,
- 220286.797428488 150443.464706771,220287.328738321 150445.892130112,220287.740300149 150448.342699654,
- 220288.031122486 150450.810511759,220288.200504713 150453.289621251,220288.248038775 150455.77405574,
- 220288.173610157 150458.257830005,220287.977398166 150460.734960415,220287.659875492 150463.199479347,
- 220287.221807076 150465.64544956,220286.664248262 150468.066978495,220285.988542259 150470.458232479,220285.196316903 150472.81345077,
- 220284.289480732 150475.126959442,220283.270218395 150477.39318505,220282.140985384 150479.606668057,
- 220280.90450212 150481.762075989,220279.5637474 150483.85421628,220278.12195122 150485.87804878,
- 220276.582586992 150487.828697901,220274.949363179 150489.701464356,220273.226214362 150491.491836488,
- 220271.417291757 150493.195501133,220269.526953216 150494.808354014,220267.559752731 150496.326509628,
- 220265.520429459 150497.746310603,220263.41389631 150499.064336517,220261.245228106 150500.277412127,
- 220259.019649359 150501.38261503,220256.742521683 150502.377282695,220254.419330878 150503.259018879,
- 220252.055673714 150504.025699404,220249.657244448 150504.675477269,220247.229821107 150505.206787101,
- 220244.779251566 150505.61834893,220242.311439461 150505.909171266,220239.832329968 150506.078553494,
- 220237.347895479 150506.126087555,220234.864121215 150506.051658938,220232.386990804 150505.855446946,
- 220229.922471872 150505.537924272,220227.47650166 150505.099855856,220225.054972724 150504.542297043,
- 220222.663718741 150503.86659104,220220.308500449 150503.074365683,
- 220217.994991777 150502.167529512,220215.72876617 150501.148267175,
- 220213.515283163 150500.019034164,220211.35987523 150498.7825509,
- 220209.267734939 150497.441796181,220207.243902439 150496,
- 220205.293253319 150494.460635772,220203.420486864 150492.82741196,220201.630114732 150491.104263143,
- 220199.926450087 150489.295340538,220198.313597205 150487.405001997,220196.795441592 150485.437801511,
- 220195.375640616 150483.39847824,220194.057614703 150481.291945091,220192.844539092 150479.123276887,220191.739336189 150476.89769814,
- 220190.744668525 150474.620570464,220189.86293234 150472.297379659,220189.096251815 150469.933722495,
- 220188.446473951 150467.535293229,220187.915164118 150465.107869888,220187.50360229 150462.657300346,
- 220187.212779953 150460.189488241,220187.043397726 150457.710378749,220186.995863664 150455.22594426,
- 220187.070292282 150452.742169995,220187.266504273 150450.265039585,220187.584026947 150447.800520653,
- 220188.022095363 150445.35455044,220188.579654177 150442.933021505,220189.25536018 150440.541767521,
- 220190.047585536 150438.18654923,220190.954421707 150435.873040558,220191.973684044 150433.60681495,
- 220193.102917055 150431.393331943,220194.339400319 150429.237924011,220195.680155039 150427.14578372,220197.12195122 150425.12195122,
- 220198.661315447 150423.171302099,220200.29453926 150421.298535644,220202.017688077 150419.508163512,220203.826610682 150417.804498867,
- 220205.716949223 150416.191645986,220207.684149708 150414.673490372,220209.72347298 150413.253689397,220211.830006129 150411.935663483,
- 220213.998674333 150410.722587873,220216.22425308 150409.61738497,220218.501380756 150408.622717305,220220.824571561 150407.740981121,
- 220223.188228725 150406.974300596,220225.586657991 150406.324522731,220227 150406)
-
---3d example
-SELECT ST_AsEWKT(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)')));
-Output
-------
- LINESTRING(220268 150415 1,220269.95064912 150416.539364228 1.0181172856673,
- 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 150419.895736857 1.05435185700189,....AD INFINITUM ....
-    220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)
-
---use only 2 segments to approximate quarter circle
-SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),2));
-st_astext
-------------------------------
- LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,
- 220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 150462.657300346,
- 220197.12195122 150425.12195122,220227 150406)
-
--- Ensure approximated line is no further than 20 units away from
--- original curve, and make the result direction-neutral
-SELECT ST_AsText(ST_CurveToLine(
- 'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,
-    20, -- Tolerance
-    1, -- Above is max distance between curve and line
-    1  -- Symmetric flag
-));
-st_astext
--------------------------------------------------------------------------------------------
- LINESTRING(0 0,50 -86.6025403784438,150 -86.6025403784439,200 -1.1331077795296e-13,200 0)
-
-
-        </programlisting>
-      </refsection>
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-
-        <para><xref linkend="ST_LineToCurve" /></para>
-      </refsection>
-    </refentry>
-
     <refentry id="ST_DelaunayTriangles">
         <refnamediv>
             <refname>ST_DelaunayTriangles</refname>
 
             <refpurpose>
-Return a Delaunay triangulation around the given input points.
+Returns the Delaunay triangulation of the vertices of a geometry.
             </refpurpose>
         </refnamediv>
 
@@ -1116,12 +926,12 @@ Return a Delaunay triangulation around the given input points.
             <title>Description</title>
 
             <para>
-Return a <ulink
+Return the <ulink
 url="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay
-triangulation</ulink> around the vertices of the input geometry.
+triangulation</ulink> of the vertices of the input geometry.
 Output is a COLLECTION of polygons (for flags=0) or a MULTILINESTRING
 (for flags=1) or TIN (for flags=2).  The tolerance, if any, is used to snap input vertices
-togheter.
+together.
             </para>
             <para>Performed by the GEOS module.</para>
             <para>Availability: 2.1.0</para>
@@ -1241,158 +1051,65 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
         </refsection>
     </refentry>
 
-    <refentry id="ST_Difference">
+    <refentry id="ST_FilterByM">
       <refnamediv>
-        <refname>ST_Difference</refname>
-
-        <refpurpose>Returns a geometry that represents that part of geometry A
-            that does not intersect with geometry B.</refpurpose>
+        <refname>ST_FilterByM</refname>
+        <refpurpose>Removes vertices based on their M value</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>geometry <function>ST_Difference</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-            <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>Returns a geometry that represents that part of geometry A
-            that does not intersect with geometry B.  One can think of this as GeometryA - ST_Intersection(A,B).  If A is completely contained in B
-            then an empty geometry collection is returned.</para>
-        <note><para>Order matters. B - A will always return a portion of B</para></note>
-
-        <para>Performed by the GEOS module</para>
-
-        <para>&sfs_compliant; s2.1.1.3</para>
-        <para>&sqlmm_compliant; SQL-MM 3: 5.1.20</para>
-        <para>&Z_support; However it seems to only consider x y when
-          doing the difference and tacks back on the Z-Index</para>
-      </refsection>
-
-      <refsection>
-        <title>Examples</title>
-            <informaltable>
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry>
-                        <para>
-                            <informalfigure>
-                                <mediaobject>
-                                  <imageobject>
-                                    <imagedata fileref="images/st_symdifference01.png" />
-                                  </imageobject>
-                                  <caption><para>The original linestrings shown together. </para></caption>
-                                </mediaobject>
-                            </informalfigure>
-                        </para>
-                    </entry>
-
-                    <entry>
-                        <para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_difference01.png" />
-                              </imageobject>
-                              <caption><para>The difference of the two linestrings</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                    </para>
-                </entry>
-                  </row>
-        </tbody>
-    </tgroup>
-</informaltable>
-<para>Safe for 2D. This is same geometries as what is shown for st_symdifference</para>
-<programlisting>SELECT ST_AsText(
-    ST_Difference(
-            'LINESTRING(50 100, 50 200)'::geometry,
-            'LINESTRING(50 50, 50 150)'::geometry
-        )
-    );
-
-st_astext
----------
-LINESTRING(50 150,50 200)
-</programlisting>
-
-<para>When used in 3d doesn't quite do the right thing.</para>
-<programlisting>select ST_AsEWKT(
-           ST_Difference(
-               'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)' :: geometry,
-               'POINT(-118.614 38.281 5)' :: geometry
-               )
-    );
-st_asewkt
----------
-MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)</programlisting>
-      </refsection>
-
-      <refsection>
-        <title>See Also</title>
-
-        <para><xref linkend="ST_SymDifference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
-      </refsection>
-    </refentry>
-
-    <refentry id="ST_FlipCoordinates">
-      <refnamediv>
-        <refname>ST_FlipCoordinates</refname>
-        <refpurpose>Returns a version of the given geometry with
-                X and Y axis flipped. Useful for people
-                who have built latitude/longitude features
-                and need to fix them.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_FlipCoordinates</function></funcdef>
+            <funcdef>geometry <function>ST_FilterByM</function></funcdef>
             <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+            <paramdef><type>double precision</type> <parameter>min</parameter></paramdef>
+            <paramdef><type>double precision</type> <parameter>max = null</parameter></paramdef>
+            <paramdef><type>boolean</type> <parameter>returnM = false</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
 
       <refsection>
         <title>Description</title>
-        <para>Returns a version of the given geometry with X and Y axis flipped.</para>
-        <para>Availability: 2.0.0</para>
-        <para>&curve_support;</para>
-        <para>&Z_support;</para>
-        <para>&M_support;</para>
-        <para>&P_support;</para>
-        <para>&T_support;</para>
+        <para>Filters out vertex points based on their M-value. Returns a geometry with only
+            vertex points that have a M-value larger or equal to the min value and smaller or equal to
+            the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
+            will not be in the resulting geometry. If resulting geometry have too few vertex points left for its geometry type an empty
+            geometry will be returned. In a geometry collection
+            geometries without enough points will just be left out silently.</para>
+        <para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area
+            of a vertex in its m-value. With ST_FilterByM it then is possible to get a simplified version of the geometry without any calculations, just by filtering</para>
+
+        <note><para>There is a difference in what ST_SimplifyVW returns when not enough points meet the criteria compared to ST_FilterByM.
+                ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>
+        <note><para>Note that the returned geometry might be invalid</para></note>
+        <note><para>This function returns all dimensions, including the Z and M values</para></note>
+        <para>Availability: 2.5.0</para>
       </refsection>
 
-      <refsection>
-        <title>Example</title>
-        <programlisting><![CDATA[
-SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));
- st_asewkt
-------------
-POINT(2 1)
-         ]]></programlisting>
-      </refsection>
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-        <para> <xref linkend="ST_SwapOrdinates" /> </para>
-      </refsection>
-
+          <refsection>
+            <title>Examples</title>
+            <para>A linestring is filtered</para>
+                <programlisting>
+SELECT ST_AsText(ST_FilterByM(geom,30)) simplified
+FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;
+-result
+         simplified
+----------------------------
+ LINESTRING(5 2,7 25,10 10)
+                </programlisting>
+          </refsection>
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_SimplifyVW" /></para>
+          </refsection>
     </refentry>
 
     <refentry id="ST_GeneratePoints">
       <refnamediv>
         <refname>ST_GeneratePoints</refname>
 
-        <refpurpose>Converts a polygon or multi-polygon into a multi-point composed of randomly location points within the original areas.</refpurpose>
+        <refpurpose>Generates random points contained in a Polygon or MultiPolygon.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1410,18 +1127,9 @@ POINT(2 1)
           </funcprototype>
           <funcprototype>
             <funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
-            <paramdef>
-                <parameter>g</parameter>
-                <type>geometry</type>
-            </paramdef>
-            <paramdef>
-                <parameter>npoints</parameter>
-                <type>integer</type>
-            </paramdef>
-            <paramdef>
-                <parameter>seed</parameter>
-                <type>integer</type>
-            </paramdef>
+            <paramdef> <type>geometry</type> <parameter>g</parameter> </paramdef>
+            <paramdef> <type>integer</type> <parameter>npoints</parameter> </paramdef>
+            <paramdef> <type>integer</type> <parameter>seed</parameter> </paramdef>
           </funcprototype>
 
         </funcsynopsis>
@@ -1431,9 +1139,10 @@ POINT(2 1)
         <title>Description</title>
 
         <para>
-            ST_GeneratePoints generates pseudo-random points until the requested number are
-            found within the input area. The optional seed must be greater than zero,
-            and is used to regenerate a deterministic sequence of points.
+            ST_GeneratePoints generates a given number of pseudo-random points
+            which lie within the input area.
+            The optional <code>seed</code> is used to regenerate a deterministic sequence of points,
+            and must be greater than zero.
         </para>
 
         <para>Availability: 2.3.0</para>
@@ -1496,47 +1205,12 @@ FROM (
     <refsynopsisdiv>
       <funcsynopsis>
         <funcprototype>
-            <funcdef>geometry
-                <function>
-                    ST_GeometricMedian
-                </function>
-            </funcdef>
+            <funcdef>geometry <function>ST_GeometricMedian</function> </funcdef>
 
-            <paramdef>
-                <type>
-                    geometry
-                </type>
-                <parameter>
-                    g
-                </parameter>
-            </paramdef>
-
-            <paramdef>
-                <type>
-                    float8
-                </type>
-                <parameter>
-                    tolerance
-                </parameter>
-            </paramdef>
-
-            <paramdef>
-                <type>
-                    int
-                </type>
-                <parameter>
-                    max_iter
-                </parameter>
-            </paramdef>
-
-            <paramdef>
-                <type>
-                    boolean
-                </type>
-                <parameter>
-                    fail_if_not_converged
-                </parameter>
-            </paramdef>
+            <paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef>
+            <paramdef choice="opt"><type>float8</type> <parameter>tolerance = NULL</parameter></paramdef>
+            <paramdef choice="opt"><type>int</type> <parameter>max_iter = 10000</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean</type> <parameter>fail_if_not_converged = false</parameter></paramdef>
 
         </funcprototype>
       </funcsynopsis>
@@ -1547,23 +1221,24 @@ FROM (
 
     <para>
           Computes the approximate geometric median of a MultiPoint geometry
-          using the Weiszfeld algorithm.  The geometric median provides a
-          centrality measure that is less sensitive to outlier points than
-          the centroid.
+          using the Weiszfeld algorithm.
+          The geometric median is the point minimizing the sum of distances to the input points.
+          It provides a centrality measure
+          that is less sensitive to outlier points than the centroid (center of mass).
     </para>
     <para>
-          The algorithm will iterate until the distance change between
+          The algorithm iterates until the distance change between
           successive iterations is less than the supplied <varname>tolerance</varname>
           parameter.  If this condition has not been met after <varname>max_iterations</varname>
-          iterations, the function will produce an error and exit, unless <varname>fail_if_not_converged</varname>
-          is set to false.
+          iterations, the function produces an error and exits,
+          unless <varname>fail_if_not_converged</varname> is set to <code>false</code> (the default).
     </para>
     <para>
-          If a <varname>tolerance</varname> value is not provided, a default tolerance value
-          will be calculated based on the extent of the input geometry.
+          If a <varname>tolerance</varname> argument is not provided, the tolerance value
+          is calculated based on the extent of the input geometry.
     </para>
     <para>
-          M value of points, if present, is interpreted as their relative weight.
+          If present, the input point M values are interpreted as their relative weights.
     </para>
     <para>Availability: 2.3.0</para>
     <para>Enhanced: 2.5.0 Added support for M as weight of points.</para>
@@ -1610,304 +1285,79 @@ FROM test;
 
     </refentry>
 
-    <refentry id="ST_Intersection">
-        <refnamediv>
-            <refname>ST_Intersection</refname>
+	<refentry id="ST_LineMerge">
+		<refnamediv>
+			<refname>ST_LineMerge</refname>
 
-            <refpurpose>
-(T)
-Returns a geometry that represents the shared portion of geomA and geomB.
-            </refpurpose>
-        </refnamediv>
-        <refsynopsisdiv>
-            <funcsynopsis>
-                <funcprototype>
-                    <funcdef>geometry <function>ST_Intersection</function></funcdef>
-                    <paramdef>
-                        <type>geometry</type>
-                        <parameter>geomA</parameter>
-                    </paramdef>
-                    <paramdef>
-                        <type>geometry</type>
-                        <parameter>geomB</parameter>
-                    </paramdef>
-                </funcprototype>
-                <funcprototype>
-                    <funcdef>geography <function>ST_Intersection</function></funcdef>
-                    <paramdef>
-                        <type>geography</type>
-                        <parameter>geogA</parameter>
-                    </paramdef>
-                    <paramdef>
-                        <type>geography</type>
-                        <parameter>geogB</parameter>
-                    </paramdef>
-                </funcprototype>
-            </funcsynopsis>
-        </refsynopsisdiv>
-        <refsection>
-            <title>Description</title>
-            <para>Returns a geometry that represents the point set
-                intersection of the Geometries.</para>
+			<refpurpose>Return the lines formed by sewing together
+			a MultiLineString.</refpurpose>
+		</refnamediv>
 
-            <para>In other words - that portion of geometry A and geometry B
-            that is shared between the two geometries.</para>
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_LineMerge</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
 
-            <para>If the geometries do not share any space (are disjoint), then an empty geometry collection
-            is returned.</para>
-            <para>ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region
-                queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
+		<refsection>
+			<title>Description</title>
 
-            <note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
-                    fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario)  and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography.</para></note>
-
-        <warning><para>This function will drop the M coordinate values if present.</para></warning>
-
-          <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection" /> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate.</para></warning>
-
-          <para>Performed by the GEOS module</para>
-
-          <para>Availability: 1.5 support for geography data type was introduced.</para>
-            <para>Changed: 3.0.0 does not depend on SFCGAL.</para>
-
-          <para>&sfs_compliant; s2.1.1.3</para>
-          <para>&sqlmm_compliant; SQL-MM 3: 5.1.18</para>
-        </refsection>
-        <refsection>
-        <title>Examples</title>
-<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
- st_astext
----------------
-GEOMETRYCOLLECTION EMPTY
-
-SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry));
- st_astext
----------------
-POINT(0 0)</programlisting>
-<para>
-Clip all lines (trails) by country. Hhere we assume country geom are POLYGON or MULTIPOLYGONS.
-NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
-care about trails that just share a point. The dump is needed to expand a geometry collection into individual single MULT* parts.
-The below is fairly generic and will work for polys, etc. by just changing the where clause.</para>
-<programlisting>select clipped.gid, clipped.f_name, clipped_geom
-from (
-         select trails.gid, trails.f_name,
-             (ST_Dump(ST_Intersection(country.geom, trails.geom))).geom clipped_geom
-         from country
-              inner join trails on ST_Intersects(country.geom, trails.geom)
-     ) as clipped
-where ST_Dimension(clipped.clipped_geom) = 1;</programlisting>
-<para>For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0 except a polygon results in an empty geometry collection.
-(So a geometry collection containing polys, lines and points buffered by 0.0 would only leave the polygons and dissolve the collection shell.)</para>
-<programlisting>select poly.gid,
-    ST_Multi(
-        ST_Buffer(
-            ST_Intersection(country.geom, poly.geom),
-            0.0
-        )
-    ) clipped_geom
-from country
-     inner join poly on ST_Intersects(country.geom, poly.geom)
-where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), 0.0));</programlisting>
-        </refsection>
-
-        <refsection>
-        <title>Examples: 2.5Dish</title>
-        <para>Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection" />.</para>
-        <programlisting>
-select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
-from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
- CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
-
-               st_astext
----------------------------------------
- LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)
-        </programlisting>
-      </refsection>
-        <refsection>
-            <title>See Also</title>
-            <para><xref linkend="ST_3DIntersection" />, <xref linkend="ST_Difference"/>, <xref linkend="ST_Union"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
-        </refsection>
-    </refentry>
-
-    <refentry id="ST_LineToCurve">
-      <refnamediv>
-        <refname>ST_LineToCurve</refname>
-
-        <refpurpose>Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVEPOLYGON</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_LineToCurve</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
-        <note><para>If the input LINESTRING/POLYGON is not curved enough to clearly represent a curve, the function will return the same input geometry.</para></note>
-        <para>Availability: 1.3.0</para>
-        <para>&Z_support;</para>
-        <para>&curve_support;</para>
-      </refsection>
-
-
-      <refsection>
-        <title>Examples</title>
-
-        <programlisting> -- 2D Example
-SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo.the_geom) As non_curvedastext
-    FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As the_geom) As foo;
-
-curvedatext                                                            non_curvedastext
---------------------------------------------------------------------|-----------------------------------------------------------------
-CURVEPOLYGON(CIRCULARSTRING(4 3,3.12132034355964 0.878679656440359, | POLYGON((4 3,3.94235584120969 2.41472903395162,3.77163859753386 1.85194970290473,
-1 0,-1.12132034355965 5.12132034355963,4 3))                        |  3.49440883690764 1.33328930094119,3.12132034355964 0.878679656440359,
-                                                                    |  2.66671069905881 0.505591163092366,2.14805029709527 0.228361402466141,
-                                                                    |  1.58527096604839 0.0576441587903094,1 0,
-                                                                    |  0.414729033951621 0.0576441587903077,-0.148050297095264 0.228361402466137,
-                                                                    |  -0.666710699058802 0.505591163092361,-1.12132034355964 0.878679656440353,
-                                                                    |  -1.49440883690763 1.33328930094119,-1.77163859753386 1.85194970290472
-                                                                    |  --ETC-- ,3.94235584120969 3.58527096604839,4 3))
-
---3D example
-SELECT ST_AsText(ST_LineToCurve(geom)) As curved, ST_AsText(geom) AS not_curved
-FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2))),0,0,3) AS geom) AS foo;
-
-                        curved                        |               not_curved
-------------------------------------------------------+---------------------------------------------------------------------
- CIRCULARSTRING Z (3 3 3,-1 2.99999999999999 3,3 3 3) | LINESTRING Z (3 3 3,2.4142135623731 1.58578643762691 3,1 1 3,
-                                                      | -0.414213562373092 1.5857864376269 3,-1 2.99999999999999 3,
-                                                      | -0.414213562373101 4.41421356237309 3,
-                                                      | 0.999999999999991 5 3,2.41421356237309 4.4142135623731 3,3 3 3)
-(1 row)
-</programlisting>
-    </refsection>
-
-
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-
-        <para><xref linkend="ST_CurveToLine" /></para>
-      </refsection>
-    </refentry>
-
-    <refentry id="ST_MakeValid">
-      <refnamediv>
-        <refname>ST_MakeValid</refname>
-        <refpurpose>Attempts to make an invalid geometry valid without losing vertices.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_MakeValid</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-    <para>
-    The function attempts to create a valid representation of a given invalid
-    geometry without losing any of the input vertices.
-    Already-valid geometries are returned without further intervention.
-    </para>
-
-    <para>
-    Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS,
-    MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS and GEOMETRYCOLLECTIONS
-    containing any mix of them.
-    </para>
-
-    <para>
-    In case of full or partial dimensional collapses, the output geometry
-    may be a collection of lower-to-equal dimension geometries or a
-    geometry of lower dimension.
-    </para>
-
-    <para>
-    Single polygons may become multi-geometries in case of self-intersections.
-    </para>
-        <para>Performed by the GEOS module.</para>
-
-    <para>Availability: 2.0.0</para>
-    <para>Enhanced: 2.0.1, speed improvements</para>
-    <para>Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
-
-    <para>&Z_support;</para>
-
-          </refsection>
-
-          <refsection>
-            <title>See Also</title>
-            <para>
-                <xref linkend="ST_IsValid" />
-                <xref linkend="ST_CollectionExtract" />
+			<para>Returns a LineString or MultiLineString formed by joining together
+			the constituent line work of a MultiLineString.
+            Lines are joined at their endpoints at 2-way intersections.
+            Lines are not joined across intersections of 3-way or greater degree.
             </para>
-          </refsection>
-    </refentry>
 
-    <refentry id="ST_MemUnion">
-      <refnamediv>
-        <refname>ST_MemUnion</refname>
+			<note><para>Only use with MultiLineString/LineStrings. If you pass a Plygon or GeometryCollection into this function, it
+			returns an empty GeometryCollection</para></note>
+			<para>Performed by the GEOS module.</para>
+			<para>Availability: 1.1.0</para>
+			<warning><para>This function will strip the M dimension.</para></warning>
+		</refsection>
 
-        <refpurpose>Same as ST_Union, only memory-friendly (uses less memory
-            and more processor time).</refpurpose>
-      </refnamediv>
+		<refsection>
+			<title>Examples</title>
 
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_MemUnion</function></funcdef>
-            <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
-          </funcprototype>
-
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>Some useful description here.</para>
-
-        <!-- optionally mention that this function uses indexes if appropriate -->
-        <note>
-          <para>Same as ST_Union, only memory-friendly (uses less memory
-            and more processor time).  This aggregate function works by unioning the geometries one at a time to previous result as opposed to
-            ST_Union aggregate which first creates an array and then unions</para>
-        </note>
-
-        <para>&Z_support;</para>
-      </refsection>
-
-
-      <refsection>
-        <title>Examples</title>
-
-        <programlisting>See ST_Union</programlisting>
-      </refsection>
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-
-        <para><xref linkend="ST_Union" /></para>
-      </refsection>
-    </refentry>
+			<programlisting>SELECT ST_AsText(ST_LineMerge(
+'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))'
+		));
+st_astext
+--------------------------------------------------------------------------------------------------
+LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)
+</programlisting>
+<para>If merging is not possible due to non-touching lines,
+the original MultiLineString is returned.</para>
+<programlisting>
+SELECT ST_AsText(ST_LineMerge(
+'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 -32))'
+));
+st_astext
+----------------
+MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
+</programlisting>
+<para>Example showing Z-dimension handling.</para>
+<programlisting>
+SELECT ST_AsText(ST_LineMerge(
+      'MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))'
+        ));
+st_astext
+--------------------------------------------------------------------------------------------------
+LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11)
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Segmentize" />, <xref linkend="ST_LineSubstring" /></para>
+		</refsection>
+	</refentry>
 
     <refentry id="ST_MaximumInscribedCircle">
       <refnamediv>
         <refname>ST_MaximumInscribedCircle</refname>
-        <refpurpose>Finds the largest circle that can by fully contained within a geometry. Returns a record with the center point of that circle, the point on the geometry that is nearest to the center, and the radius of the circle.</refpurpose>
+        <refpurpose>Computes the largest circle that is fully contained within a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1921,9 +1371,13 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
 
       <refsection>
         <title>Description</title>
-            <para>Finds the largest circle that can by fully contained within a geometry. Returns a record with the center point of that circle, the point on the geometry that is nearest to the center, and the radius of the circle. </para>
+        <para>Finds the largest circle that is fully contained within a geometry.
+        Returns a record with the center point of the circle,
+        a point on the geometry that is nearest to the center, and the radius of the circle. </para>
 
-            <para>For polygonal inputs, the circle is inscribed within the external ring, using the internal rings as boundaries. For linear and point inputs, the circle is inscribed within the convex hull of the input, using the input as further boundaries.</para>
+        <para>For polygonal inputs, the circle is inscribed within the external ring, using the internal rings as boundaries.
+        For linear and point inputs, the circle is inscribed within the convex hull of the input, using the input as further boundaries.</para>
+
         <para>Availability: 3.1.0 - requires GEOS &gt;= 3.9.0.</para>
 
       </refsection>
@@ -1968,8 +1422,7 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
     <refentry id="ST_MinimumBoundingCircle">
       <refnamediv>
         <refname>ST_MinimumBoundingCircle</refname>
-        <refpurpose>Returns the smallest circle polygon that can fully contain a geometry. Default
-        uses 48 segments per quarter circle.</refpurpose>
+        <refpurpose>Returns the smallest circle polygon that contains a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1984,7 +1437,7 @@ FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2)))
 
       <refsection>
         <title>Description</title>
-            <para>Returns the smallest circle polygon that can fully contain a geometry. </para>
+            <para>Returns the smallest circle polygon that contains a geometry. </para>
             <note><para>The circle is approximated by a polygon with a default of 48 segments per quarter circle.  Because the polygon is an approximation of the minimum bounding circle, some points in the input geometry may not be contained within the polygon.  The approximation can be improved by increasing the number of segments, with little performance penalty.  For applications where a polygonal approximation is not suitable, ST_MinimumBoundingRadius may be used.</para></note>
 
             <para>It is often used with MULTI and Geometry Collections.
@@ -2040,7 +1493,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
     <refentry id="ST_MinimumBoundingRadius">
     <refnamediv>
         <refname>ST_MinimumBoundingRadius</refname>
-        <refpurpose>Returns the center point and radius of the smallest circle that can fully contain a geometry.</refpurpose>
+        <refpurpose>Returns the center point and radius of the smallest circle that contains a geometry.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -2054,8 +1507,8 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
     <refsection>
         <title>Description</title>
-        <para>Returns a record containing the center point and radius of the smallest circle that can fully contain a geometry.</para>
-        <para>Can be used in conjunction with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
+        <para>Returns a record containing the center point and radius of the smallest circle that contains a geometry.</para>
+        <para>Use in conjunction with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
         <para>Availability - 2.3.0</para>
     </refsection>
 
@@ -2079,7 +1532,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
     <refentry id="ST_OrientedEnvelope">
         <refnamediv>
             <refname>ST_OrientedEnvelope</refname>
-            <refpurpose>Returns a minimum rotated rectangle enclosing a geometry.</refpurpose>
+            <refpurpose>Returns a minimum-area rectangle containing a geometry.</refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
@@ -2097,8 +1550,8 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
         <refsection>
             <title>Description</title>
             <para>
-                Returns a mimimum rotated rectangle enclosing a geometry.
-                Note that more than one minimum rotated rectangle may exist.
+                Returns the mimimum-area rotated rectangle enclosing a geometry.
+                Note that more than one such rectangle may exist.
                 May return a Point or LineString in the case of degenerate inputs.
             </para>
             <para>
@@ -2146,191 +1599,50 @@ POLYGON((19.9999999999997 79.9999999999999,33.0769230769229 60.3846153846152,138
         </refsection>
     </refentry>
 
-    <refentry id="ST_Polygonize">
+    <refentry id="ST_OffsetCurve">
         <refnamediv>
-            <refname>ST_Polygonize</refname>
+            <refname>ST_OffsetCurve</refname>
 
-            <refpurpose>Aggregate. Creates a GeometryCollection containing possible
-            polygons formed from the constituent linework of a set of
-            geometries.</refpurpose>
+            <refpurpose>
+Returns an offset line at a given distance and side from an input line.
+        </refpurpose>
         </refnamediv>
 
         <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_Polygonize</function></funcdef>
-            <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
-          </funcprototype>
+            <funcsynopsis>
 
-          <funcprototype>
-            <funcdef>geometry <function>ST_Polygonize</function></funcdef>
-            <paramdef><type>geometry[]</type> <parameter>geom_array</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
+                <funcprototype>
+                <funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
+                <paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
+                <paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
+                <paramdef choice="opt"><type>text </type> <parameter>style_parameters=''</parameter></paramdef>
+                </funcprototype>
+
+            </funcsynopsis>
         </refsynopsisdiv>
 
         <refsection>
             <title>Description</title>
 
-            <para>Creates a GeometryCollection containing possible
-            polygons formed from the constituent linework of a set of
-            geometries.</para>
-
-            <note>
-                <para>Geometry Collections are often difficult to deal with with third party tools, so use ST_Polygonize in conjunction with  <xref linkend="ST_Dump" /> to dump the polygons
-                out into individual polygons.</para>
-            </note>
-
-            <note>
-                <para>Input linework must be correctly noded for this function to work properly</para>
-            </note>
-            <para>Performed by the GEOS module.</para>
-
-            <para>Availability: 1.0.0RC1</para>
-        </refsection>
-
-        <refsection>
-        <title>Examples: Polygonizing single linestrings</title>
-         <programlisting>
-SELECT ST_AsEWKT(ST_Polygonize(the_geom_4269)) As geomtextrep
-FROM (SELECT the_geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As foo;
-
-geomtextrep
--------------------------------------
- SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,-71.040878 42.285678)),
- POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358,-71.171794 42.354971,-71.170511 42.354855,
- -71.17112 42.354238,-71.17166 42.353675)))
-(1 row)
-
---Use ST_Dump to dump out the polygonize geoms into individual polygons
-SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep
-FROM (SELECT ST_Polygonize(the_geom_4269) As polycoll
-    FROM (SELECT the_geom_4269 FROM ma.suffolk_edges
-        ORDER BY tlid LIMIT 45) As foo) As foofoo;
-
-geomtextrep
-------------------------
- SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,
--71.040878 42.285678))
- SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358
-,-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 42.353675))
-(2 rows)
-
-              </programlisting>
-        </refsection>
-
-        <refsection>
-            <title>See Also</title>
             <para>
-            <xref linkend="ST_Node" />,
-            <xref linkend="ST_Dump" />
-            </para>
-        </refsection>
-    </refentry>
-
-    <refentry id="ST_Node">
-      <refnamediv>
-        <refname>ST_Node</refname>
-
-        <refpurpose>
-Node a set of linestrings.
-        </refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_Node</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-          </funcprototype>
-
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>
-Fully node a set of linestrings using the least possible number of nodes
-while preserving all of the input ones.
-        </para>
-
-        <para>&Z_support;</para>
-        <para>Performed by the GEOS module.</para>
-        <para>Availability: 2.0.0</para>
-
-        <para>
-Changed: 2.4.0 this function uses GEOSNode internally instead of GEOSUnaryUnion.
-This may cause the resulting linestrings to have a different order and direction compared to Postgis &lt; 2.4.
-        </para>
-      </refsection>
-      <refsection>
-        <title>Examples</title>
-        <programlisting>
-SELECT ST_AsText(
-        ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
-    ) As  output;
-output
------------
-MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))
-        </programlisting>
-      </refsection>
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-
-        <para>
-            <xref linkend="ST_UnaryUnion" />
-        </para>
-      </refsection>
-    </refentry>
-
-            <refentry id="ST_OffsetCurve">
-            <refnamediv>
-                <refname>ST_OffsetCurve</refname>
-
-                <refpurpose>
-Return an offset line at a given distance and side from an input line. Useful for computing parallel lines about a center line
-            </refpurpose>
-            </refnamediv>
-
-            <refsynopsisdiv>
-                <funcsynopsis>
-
-                  <funcprototype>
-                    <funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
-                    <paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
-                    <paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
-                    <paramdef choice="opt"><type>text </type> <parameter>style_parameters=''</parameter></paramdef>
-                  </funcprototype>
-
-                </funcsynopsis>
-            </refsynopsisdiv>
-
-              <refsection>
-                <title>Description</title>
-
-                <para>
 Return an offset line at a given distance and side from an input line.
 All points of the returned geometries are not further than the given
 distance from the input geometry.
-                </para>
+Useful for computing parallel lines about a center line.
+            </para>
 
-                <para>
-For positive distance the offset will be at the left side of the input line
-and retain the same direction. For a negative distance it'll be at the right
+            <para>
+For positive distance the offset is on the left side of the input line
+and retains the same direction. For a negative distance it is on the right
 side and in the opposite direction.
-                </para>
-                <para>
+            </para>
+            <para>
+Units of distance are measured in units of the spatial reference system.
+            </para>
+            <para>
 Note that output may be a MULTILINESTRING or EMPTY for some jigsaw-shaped input geometries.
-                </para>
-
-                <para>Performed by the GEOS module.</para>
-                <para>Availability: 2.0</para>
-                <para>Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING</para>
-
-                <para>
+            </para>
+            <para>
 The optional third parameter allows specifying a list of blank-separated
 key=value pairs to tweak operations as follows:
 <itemizedlist>
@@ -2346,15 +1658,12 @@ key=value pairs to tweak operations as follows:
 </itemizedlist>
                 </para>
 
-                <para>
-Units of distance are measured in units of the spatial reference system.
-                </para>
+            <para>Performed by the GEOS module.</para>
+            <para>Availability: 2.0</para>
+            <para>Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING</para>
 
-                <para>Performed by the GEOS module.</para>
-
-                <note><para>
-This function ignores the third dimension (z) and will always give a
-2-d result even when presented with a 3d-geometry.</para></note>
+            <note><para>This function ignores the Z dimension.
+It always gives a 2D result even when used on a 3D geometry.</para></note>
 
             </refsection>
 
@@ -2530,8 +1839,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
     <refentry id="ST_PointOnSurface">
       <refnamediv>
         <refname>ST_PointOnSurface</refname>
-
-        <refpurpose>Returns a <varname>POINT</varname> guaranteed to lie on the surface.</refpurpose>
+        <refpurpose>Computes a point guaranteed to lie in a polygon, or on a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2548,12 +1856,17 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
       <refsection>
         <title>Description</title>
 
-        <para>Returns a <varname>POINT</varname> guaranteed to intersect a surface.</para>
+        <para>Returns a <varname>POINT</varname> which is guaranteed to lie in the interior of a surface
+        (POLYGON, MULTIPOLYGON, and CURVED POLYGON).
+        In PostGIS this function also works on line and point geometries.
+        </para>
 
         <para>&sfs_compliant; s3.2.14.2 // s3.2.18.2</para>
         <para>&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6.
-         According to the specs, ST_PointOnSurface works for surface geometries (POLYGONs, MULTIPOLYGONS, CURVED POLYGONS).  So PostGIS seems to be extending what
-         the spec allows here.  Most databases Oracle,DB II, ESRI SDE seem to only support this function for surfaces.  SQL Server 2008 like PostGIS supports for all common geometries.</para>
+         The specifications define ST_PointOnSurface for surface geometries only.
+         PostGIS extends the function to support all common geometry types.
+         Other databases (Oracle, DB2, ArcSDE) seem to support this function only for surfaces.
+         SQL Server 2008 supports all common geometry types.</para>
         <para>&Z_support;</para>
       </refsection>
 
@@ -2564,72 +1877,205 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
  st_astext
 ------------
  POINT(0 5)
-(1 row)
 
 SELECT ST_AsText(ST_PointOnSurface('LINESTRING(0 5, 0 10)'::geometry));
  st_astext
 ------------
  POINT(0 5)
-(1 row)
 
 SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometry));
    st_astext
 ----------------
  POINT(2.5 2.5)
-(1 row)
 
 SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 10 2)')));
    st_asewkt
 ----------------
  POINT(0 0 1)
-(1 row)
 </programlisting>
       </refsection>
 
       <refsection>
         <title>See Also</title>
-
-        <para><xref linkend="ST_Centroid" />, <xref linkend="ST_PointInsideCircle" /></para>
+        <para><xref linkend="ST_Centroid" />, <xref linkend="ST_MaximumInscribedCircle" /></para>
       </refsection>
     </refentry>
 
-    <refentry id="ST_RemoveRepeatedPoints">
+    <refentry id="ST_Polygonize">
+        <refnamediv>
+            <refname>ST_Polygonize</refname>
+
+            <refpurpose>Computes a collection of polygons formed from the linework of a set of geometries.
+            </refpurpose>
+        </refnamediv>
+
+        <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Polygonize</function></funcdef>
+            <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>geometry <function>ST_Polygonize</function></funcdef>
+            <paramdef><type>geometry[]</type> <parameter>geom_array</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+        </refsynopsisdiv>
+
+        <refsection>
+            <title>Description</title>
+
+            <para>Creates a GeometryCollection containing the
+            polygons formed by the constituent linework of a set of geometries.
+            Input linework must be correctly noded for this function to work properly.</para>
+
+            <note>
+                <para>
+                To ensure input is fully noded use <xref linkend="ST_Node" /> on the input geometry
+                before polygonizing.
+                </para>
+            </note>
+
+            <note>
+                <para>GeometryCollections are often difficult to deal with with third party tools.
+                Use <xref linkend="ST_Dump" /> to convert the polygonize result
+                into separate polygons.</para>
+            </note>
+            <para>Performed by the GEOS module.</para>
+
+            <para>Availability: 1.0.0RC1</para>
+        </refsection>
+
+        <refsection>
+        <title>Examples: Polygonizing single linestrings</title>
+         <programlisting>
+SELECT ST_AsEWKT(ST_Polygonize(the_geom_4269)) As geomtextrep
+FROM (SELECT the_geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As foo;
+
+geomtextrep
+-------------------------------------
+ SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,-71.040878 42.285678)),
+ POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358,-71.171794 42.354971,-71.170511 42.354855,
+ -71.17112 42.354238,-71.17166 42.353675)))
+(1 row)
+
+--Use ST_Dump to dump out the polygonize geoms into individual polygons
+SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep
+FROM (SELECT ST_Polygonize(the_geom_4269) As polycoll
+    FROM (SELECT the_geom_4269 FROM ma.suffolk_edges
+        ORDER BY tlid LIMIT 45) As foo) As foofoo;
+
+geomtextrep
+------------------------
+ SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,
+-71.040878 42.285678))
+ SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358
+,-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 42.353675))
+(2 rows)
+
+              </programlisting>
+        </refsection>
+
+        <refsection>
+            <title>See Also</title>
+            <para>
+            <xref linkend="ST_Node" />,
+            <xref linkend="ST_Dump" />
+            </para>
+        </refsection>
+    </refentry>
+
+    <refentry id="ST_ReducePrecision">
       <refnamediv>
-        <refname>ST_RemoveRepeatedPoints</refname>
-        <refpurpose>Returns a version of the given geometry with
-                duplicated points removed.</refpurpose>
+        <refname>ST_ReducePrecision</refname>
+
+        <refpurpose>Returns a valid geometry with points rounded to a grid tolerance.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-            <paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+            <funcdef>geometry <function>ST_ReducePrecision</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g</parameter></paramdef>
+            <paramdef><type>float8 </type>
+            <parameter>gridsize</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
 
       <refsection>
         <title>Description</title>
-        <para>Returns a version of the given geometry with
-                duplicated points removed. Will actually do something only with
-                (multi)lines, (multi)polygons and multipoints but you can safely call it with
-                any kind of geometry. Since simplification occurs on a
-                object-by-object basis you can also feed a GeometryCollection to
-                this function.</para>
-        <para>If the tolerance parameter is provided, vertices within the tolerance
-        of one another will be considered the "same" for the purposes of removal.</para>
 
-        <para>Availability: 2.2.0</para>
-        <para>&P_support;</para>
-        <para>&Z_support;</para>
+        <para>Returns a valid geometry with all points rounded to the provided grid tolerance, and features below the tolerance removed.</para>
+
+        <para>Unlike <xref linkend="ST_SnapToGrid" /> the returned geometry will be valid, with no ring self-intersections or collapsed components.</para>
+
+		<para>
+        Precision reduction can be used to:
+        <itemizedlist>
+            <listitem><para>
+            match coordinate precision to the data accuracy
+            </para></listitem>
+            <listitem><para>
+            reduce the number of coordinates needed to represent a geometry
+            </para></listitem>
+            <listitem><para>
+            ensure valid geometry output to formats which use lower precision
+            (e.g. text formats such as WKT, GeoJSON or KML
+            when the number of output decimal places is limited).
+            </para></listitem>
+            <listitem><para>
+            export valid geometry to systems which use lower or limited precision
+            (e.g. SDE, Oracle tolerance value)
+            </para></listitem>
+        </itemizedlist>
+		</para>
+
+        <para>Availability: 3.1.0 - requires GEOS &gt;= 3.9.0. </para>
       </refsection>
 
-          <refsection>
-            <title>See Also</title>
-            <para><xref linkend="ST_Simplify" /></para>
-          </refsection>
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));
+    st_astext
+-----------------
+ POINT(1.4 19.3)
+
+SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 1.0));
+  st_astext
+-------------
+ POINT(1 19)
+
+SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 10));
+  st_astext
+-------------
+ POINT(0 20)
+</programlisting>
+
+<para>Precision reduction can reduce number of vertices</para>
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('LINESTRING (10 10, 19.6 30.1, 20 30, 20.3 30, 40 40)', 1));
+  st_astext
+-------------
+ LINESTRING (10 10, 20 30, 40 40)
+</programlisting>
+
+<para>Precision reduction splits polygons if needed to ensure validity</para>
+<programlisting>SELECT ST_AsText(ST_ReducePrecision('POLYGON ((10 10, 60 60.1, 70 30, 40 40, 50 10, 10 10))', 10));
+  st_astext
+-------------
+ MULTIPOLYGON (((60 60, 70 30, 40 40, 60 60)), ((40 40, 50 10, 10 10, 40 40)))
+</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_SnapToGrid" />, <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyVW" /></para>
+      </refsection>
     </refentry>
 
     <refentry id="ST_SharedPaths">
@@ -2733,138 +2179,10 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
       </refsection>
     </refentry>
 
-    <refentry id="ST_Shift_Longitude">
-      <refnamediv>
-        <refname>ST_ShiftLongitude</refname>
-
-        <refpurpose>Toggle geometry coordinates between -180..180 and 0..360 ranges.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_ShiftLongitude</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>Reads every point/vertex in every component of every feature
-            in a geometry, and if the longitude coordinate is &lt;0, adds 360
-            to it. The result would be a 0-360 version of the data to be
-            plotted in a 180 centric map</para>
-        <note><para>This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)</para></note>
-
-        <warning>
-            <para>Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with MULTIPOINT as well.</para>
-    </warning>
-
-        <para>&Z_support;</para>
-        <para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
-    <para>NOTE: this function was renamed from "ST_Shift_Longitude" in 2.2.0</para>
-        <para>&P_support;</para>
-        <para>&T_support;</para>
-      </refsection>
-
-
-      <refsection>
-        <title>Examples</title>
-
-        <programlisting>--3d points
-SELECT ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;POINT(-118.58 38.38 10)'))) As geomA,
-    ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;POINT(241.42 38.38 10)'))) As geomb
-geomA                             geomB
-----------                        -----------
-SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)
-
---regular line string
-SELECT ST_AsText(ST_ShiftLongitude(ST_GeomFromText('LINESTRING(-118.58 38.38, -118.20 38.45)')))
-
-st_astext
-----------
-LINESTRING(241.42 38.38,241.8 38.45)
-        </programlisting>
-      </refsection>
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-        <para>
-      <xref linkend="ST_WrapX" />
-    </para>
-      </refsection>
-    </refentry>
-
-    <refentry id="ST_WrapX">
-      <refnamediv>
-        <refname>ST_WrapX</refname>
-
-        <refpurpose>Wrap a geometry around an X value.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_WrapX</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-            <paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef>
-            <paramdef><type>float8 </type> <parameter>move</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-    <para>
-This function splits the input geometries and then moves every resulting
-component falling on the right (for negative 'move') or on the left (for
-positive 'move') of given 'wrap' line in the direction specified by the
-'move' parameter, finally re-unioning the pieces togheter.
-    </para>
-
-        <note><para>
-This is useful to "recenter" long-lat input to have features
-of interest not spawned from one side to the other.
-    </para></note>
-
-        <para>Availability: 2.3.0 requires GEOS</para>
-        <para>&Z_support;</para>
-<!-- TODO: check these
-        <para>&P_support;</para>
-        <para>&T_support;</para>
--->
-      </refsection>
-
-
-      <refsection>
-        <title>Examples</title>
-
-        <programlisting>
--- Move all components of the given geometries whose bounding box
--- falls completely on the left of x=0 to +360
-select ST_WrapX(the_geom, 0, 360);
-
--- Move all components of the given geometries whose bounding box
--- falls completely on the left of x=-30 to +360
-select ST_WrapX(the_geom, -30, 360);
-        </programlisting>
-      </refsection>
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-        <para><xref linkend="ST_Shift_Longitude" /></para>
-      </refsection>
-    </refentry>
-
     <refentry id="ST_Simplify">
       <refnamediv>
         <refname>ST_Simplify</refname>
-        <refpurpose>Returns a "simplified" version of the given geometry using
+        <refpurpose>Returns a simplified version of a geometry, using
                 the Douglas-Peucker algorithm.</refpurpose>
       </refnamediv>
 
@@ -2927,9 +2245,8 @@ select ST_WrapX(the_geom, -30, 360);
     <refentry id="ST_SimplifyPreserveTopology">
       <refnamediv>
         <refname>ST_SimplifyPreserveTopology</refname>
-        <refpurpose>Returns a "simplified" version of the given geometry using
-            the Douglas-Peucker algorithm. Will avoid creating derived
-            geometries (polygons in particular) that are invalid.</refpurpose>
+        <refpurpose>Returns a simplified and valid version of a geometry, using
+            the Douglas-Peucker algorithm.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2980,7 +2297,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
     <refentry id="ST_SimplifyVW">
       <refnamediv>
         <refname>ST_SimplifyVW</refname>
-        <refpurpose>Returns a "simplified" version of the given geometry using the Visvalingam-Whyatt algorithm</refpurpose>
+        <refpurpose>Returns a simplified version of a geometry, using the Visvalingam-Whyatt algorithm</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -3029,7 +2346,7 @@ LINESTRING(5 2,7 25,10 10)
     <refentry id="ST_ChaikinSmoothing">
       <refnamediv>
         <refname>ST_ChaikinSmoothing</refname>
-        <refpurpose>Returns a "smoothed" version of the given geometry using the Chaikin algorithm</refpurpose>
+        <refpurpose>Returns a smoothed version of a geometry, using the Chaikin algorithm</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -3079,68 +2396,11 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
           </refsection>
     </refentry>
 
-    <refentry id="ST_FilterByM">
-      <refnamediv>
-        <refname>ST_FilterByM</refname>
-        <refpurpose>Filters vertex points based on their m-value</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_FilterByM</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-            <paramdef><type>double precision</type> <parameter>min</parameter></paramdef>
-            <paramdef><type>double precision</type> <parameter>max = null</parameter></paramdef>
-            <paramdef><type>boolean</type> <parameter>returnM = false</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-        <para>Filters away vertex points based on their m-value. Returns a geometry with only
-            vertex points that have a m-value larger or equal to the min value and smaller or equal to
-            the max value. If max-value argument is left out only min value is considered. If fourth argument is left out the m-value
-            will not be in the resulting geometry. If resulting geometry have too few vertex points left for its geometry type an empty
-            geometry will be returned. In a geometry collection
-            geometries without enough points will just be left out silently.</para>
-        <para>This function is mainly intended to be used in conjunction with ST_SetEffectiveArea. ST_EffectiveArea sets the effective area
-            of a vertex in its m-value. With ST_FilterByM it then is possible to get a simplified version of the geometry without any calculations, just by filtering</para>
-
-        <note><para>There is a difference in what ST_SimplifyVW returns when not enough points meet the criteria compared to ST_FilterByM.
-                ST_SimplifyVW returns the geometry with enough points while ST_FilterByM returns an empty geometry</para></note>
-        <note><para>Note that the returned geometry might be invalid</para></note>
-        <note><para>This function returns all dimensions, also the z and m-value</para></note>
-        <para>Availability: 2.5.0</para>
-      </refsection>
-
-          <refsection>
-            <title>Examples</title>
-            <para>A linestring is filtered</para>
-                <programlisting>
-
-
-SELECT ST_AsText(ST_FilterByM(geom,30)) simplified
-FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry) geom) As foo;
--result
-         simplified
-----------------------------
- LINESTRING(5 2,7 25,10 10)
-
-                </programlisting>
-          </refsection>
-          <refsection>
-            <title>See Also</title>
-            <para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_SimplifyVW" /></para>
-          </refsection>
-    </refentry>
-
     <refentry id="ST_SetEffectiveArea">
       <refnamediv>
         <refname>ST_SetEffectiveArea</refname>
         <refpurpose>
-            Sets the effective area for each vertex, storing the value in the M ordinate.  A simplified geometry can then be generated by filtering on the M ordinate.
+            Sets the effective area for each vertex, using the Visvalingam-Whyatt algorithm.
         </refpurpose>
       </refnamediv>
 
@@ -3204,584 +2464,11 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
           </refsection>
     </refentry>
 
-    <refentry id="ST_Split">
-        <refnamediv>
-            <refname>ST_Split</refname>
-            <refpurpose>Returns a collection of geometries resulting by splitting a geometry.</refpurpose>
-        </refnamediv>
-
-        <refsynopsisdiv>
-            <funcsynopsis>
-              <funcprototype>
-                <funcdef>geometry <function>ST_Split</function></funcdef>
-                <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
-                <paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>
-              </funcprototype>
-            </funcsynopsis>
-        </refsynopsisdiv>
-
-        <refsection>
-            <title>Description</title>
-            <para>
-            The function supports splitting a line by (multi)point, (multi)line or (multi)polygon boundary, a (multi)polygon by line. The returned geometry is always a collection.
-            </para>
-
-            <para>
-            Think of this function as the opposite of ST_Union.
-            Theoretically applying ST_Union to the elements of the returned collection
-            should always yield the original geometry.
-            </para>
-
-            <para>Availability: 2.0.0 requires GEOS</para>
-            <para>Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or (multi)polygon boundary was introduced.</para>
-            <para>Enhanced: 2.5.0 support for splitting a polygon by a multiline was introduced.</para>
-
-            <note><para>To improve the robustness of ST_Split it may be convenient to <xref linkend="ST_Snap"/> the input to the blade in advance using a very low tolerance. Otherwise the internally used coordinate grid may cause tolerance problems, where coordinates of input and blade do not fall onto each other and the input is not being split correctly (see <ulink url="http://trac.osgeo.org/postgis/ticket/2192">#2192</ulink>).</para></note>
-
-            <note><para>
-When a (multi)polygon is passed as as the blade, its linear component
-(the boundary) is used for cutting the input.
-            </para></note>
-
-        </refsection>
-        <refsection>
-            <title>Examples</title>
-            <para>Polygon Cut by Line</para>
-            <informaltable>
-                <tgroup cols="2">
-                    <tbody>
-                      <row>
-                        <entry>
-                                               <para>
-                            <informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_split01.png" />
-                              </imageobject>
-                              <caption><para>Before Split</para></caption>
-                            </mediaobject>
-                            </informalfigure>
-                                               </para>
-                        </entry>
-                        <entry>
-                                               <para>
-                            <informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_split02.png" />
-                              </imageobject>
-                              <caption><para>After split</para></caption>
-                            </mediaobject>
-                            </informalfigure>
-                                              </para>
-                        </entry>
-                    </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
-            <programlisting>
--- this creates a geometry collection consisting of the 2 halves of the polygon
--- this is similar to the example we demonstrated in ST_BuildArea
-SELECT ST_Split(circle, line)
-FROM (SELECT
-    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-
--- result --
- GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))
-
--- To convert to individual polygons, you can use ST_Dump or ST_GeometryN
-SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt
-FROM (SELECT
-    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
-
--- result --
-wkt
----------------
-POLYGON((150 90,149.039264020162 80.2454838991936,..))
-POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.8060233744357 ..))
-            </programlisting>
-            <para>Multilinestring Cut by point</para>
-            <informaltable>
-                <tgroup cols="2">
-                    <tbody>
-                      <row>
-                        <entry>
-                                               <para>
-                            <informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_split03.png" />
-                              </imageobject>
-                              <caption><para>Before Split</para></caption>
-                            </mediaobject>
-                            </informalfigure>
-                                               </para>
-                        </entry>
-                        <entry>
-                                               <para>
-                            <informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_split04.png" />
-                              </imageobject>
-                              <caption><para>After split</para></caption>
-                            </mediaobject>
-                            </informalfigure>
-                                               </para>
-                        </entry>
-                    </row>
-                    </tbody>
-                </tgroup>
-            </informaltable>
-            <programlisting>
-SELECT ST_AsText(ST_Split(mline, pt)) As wktcut
-        FROM (SELECT
-    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))') As mline,
-    ST_Point(30,30) As pt) As foo;
-
-wktcut
-------
-GEOMETRYCOLLECTION(
-    LINESTRING(10 10,30 30),
-    LINESTRING(30 30,190 190),
-    LINESTRING(15 15,30 30),
-    LINESTRING(30 30,100 90)
-)
-            </programlisting>
-        </refsection>
-        <refsection>
-        <title>See Also</title>
-        <para>
-<xref linkend="ST_AsText" />,
-<xref linkend="ST_BuildArea" />,
-<xref linkend="ST_CollectionExtract" />,
-<xref linkend="ST_Dump" />,
-<xref linkend="ST_GeometryN" />,
-<xref linkend="ST_Subdivide" />,
-<xref linkend="ST_Union" />
-        </para>
-        </refsection>
-    </refentry>
-
-    <refentry id="ST_SymDifference">
-      <refnamediv>
-        <refname>ST_SymDifference</refname>
-
-        <refpurpose>Returns a geometry that represents the portions of A and B
-            that do not intersect. It is called a symmetric difference because
-            ST_SymDifference(A,B) = ST_SymDifference(B,A).</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_SymDifference</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-            <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>Returns a geometry that represents the portions of A and B
-            that do not intersect. It is called a symmetric difference because
-            ST_SymDifference(A,B) = ST_SymDifference(B,A). One can think of this as ST_Union(geomA,geomB) - ST_Intersection(A,B).
-            </para>
-
-        <para>Performed by the GEOS module</para>
-        <para>&sfs_compliant; s2.1.1.3</para>
-        <para>&sqlmm_compliant; SQL-MM 3: 5.1.21</para>
-        <para>&Z_support; However it seems to only consider x y when
-          doing the difference and tacks back on the Z-Index</para>
-      </refsection>
-
-
-      <refsection>
-        <title>Examples</title>
-
-        <informaltable>
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry>
-                        <para>
-                            <informalfigure>
-                                <mediaobject>
-                                  <imageobject>
-                                    <imagedata fileref="images/st_symdifference01.png" />
-                                  </imageobject>
-                                  <caption><para>The original linestrings shown together</para></caption>
-                                </mediaobject>
-                            </informalfigure>
-                        </para>
-                    </entry>
-
-                    <entry>
-                        <para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_symdifference02.png" />
-                              </imageobject>
-                              <caption><para>The symmetric difference of the two linestrings</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                    </para>
-                </entry>
-                  </row>
-        </tbody>
-    </tgroup>
-</informaltable>
-<programlisting>
---Safe for 2d - symmetric difference of 2 linestrings
-SELECT ST_AsText(
-    ST_SymDifference(
-        ST_GeomFromText('LINESTRING(50 100, 50 200)'),
-        ST_GeomFromText('LINESTRING(50 50, 50 150)')
-    )
-);
-
-st_astext
----------
-MULTILINESTRING((50 150,50 200),(50 50,50 100))
-</programlisting>
-
-<programlisting>
-
---When used in 3d doesn't quite do the right thing
-SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 2)'),
-    ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))
-
-st_astext
-------------
-MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
-        </programlisting>
-      </refsection>
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-
-        <para><xref linkend="ST_Difference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
-      </refsection>
-</refentry>
-
-
-    <refentry id="ST_Subdivide">
-      <refnamediv>
-        <refname>ST_Subdivide</refname>
-        <refpurpose>Returns a set of geometry where no geometry in the set has more than the specified number of vertices.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-            <funcprototype>
-                <funcdef>setof geometry <function>ST_Subdivide</function></funcdef>
-                <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-                <paramdef><type>integer</type> <parameter>max_vertices=256</parameter></paramdef>
-            </funcprototype>
-        </funcsynopsis>
-    </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>
-            Divides geometry into parts until a part can be represented using no more than <code>max_vertices</code>.
-            Point-in-polygon and other overlay operations are normally faster for indexed subdivided dataset:
-            "miss" cases are faster to check as boxes for all parts typically cover smaller area than original geometry box,
-            "hit" cases are faster because recheck operates on less points.
-            Uses the same envelope clipping as <code>ST_ClipByBox2D</code>.
-            <code>max_vertices</code> must be 5 or more, as 5 points are needed to represent a closed box.
-        </para>
-        <para>Performed by the GEOS module.</para>
-        <para>Availability: 2.2.0</para>
-        <para>Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is lowered from 8 to 5.</para>
-      </refsection>
-
-      <refsection>
-        <title>Examples</title>
-            <programlisting>-- Subdivide complex geometries in table, in place
-with complex_areas_to_subdivide as (
-    delete from polygons_table
-    where ST_NPoints(geom) > 255
-    returning id, column1, column2, column3, geom
-)
-insert into polygons_table (fid, column1, column2, column3, geom)
-    select
-        fid, column1, column2, column3,
-        ST_Subdivide(geom, 255) as geom
-    from complex_areas_to_subdivide;
- </programlisting>
-
-            <programlisting>-- Create a new subdivided table suitable for joining to the original
-CREATE TABLE subdivided_geoms AS
-SELECT pkey, ST_Subdivide(geom) AS geom
-FROM original_geoms;
- </programlisting>
-
-                <informaltable>
-                  <tgroup cols="1">
-                    <tbody>
-                      <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_subdivide01.png" />
-                              </imageobject>
-                              <caption><para>Subdivide max 10 vertices</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
-FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
-57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 122,
-190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::geometry,10))  As f(geom);</programlisting>
-<screen> rn │                                                      wkt
-────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-  1 │ POLYGON((119 23,85 35,68 29,66 28,32 56,22 64,29.8260869565217 100,119 100,119 23))
-  2 │ POLYGON((132 10,119 23,119 56,186 56,186 52,178 34,168 18,147 13,132 10))
-  3 │ POLYGON((119 56,119 100,190 100,185 79,186 56,119 56))
-  4 │ POLYGON((29.8260869565217 100,32 110,40 119,36 150,57 158,75 171,92 182,114 184,114 100,29.8260869565217 100))
-  5 │ POLYGON((114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,114 100,114 184))</screen>
-                          </para></entry>
-                      </row>
-                      <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_subdivide02.png" />
-                              </imageobject>
-                              <caption><para>Useful in conjunction with ST_Segmentize(geography) to create additional vertices that can then be used for splitting.</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                <programlisting>SELECT ST_AsText(ST_Subdivide(ST_Segmentize('LINESTRING(0 0, 85 85)'::geography,1200000)::geometry,8));</programlisting>
-                <screen>
-LINESTRING(0 0,0.487578359029357 5.57659056746196,0.984542144675897 11.1527721155093,1.50101059639722 16.7281035483571,1.94532113630331 21.25)
-LINESTRING(1.94532113630331 21.25,2.04869538062779 22.3020741387339,2.64204641967673 27.8740533545155,3.29994062412787 33.443216802941,4.04836719489742 39.0084282520239,4.59890468420694 42.5)
-LINESTRING(4.59890468420694 42.5,4.92498503922732 44.5680389206321,5.98737409390639 50.1195229244701,7.3290919767674 55.6587646879025,8.79638749938413 60.1969505994924)
-LINESTRING(8.79638749938413 60.1969505994924,9.11375579533779 61.1785363177625,11.6558166691368 66.6648504160202,15.642041247655 72.0867690601745,22.8716627200212 77.3609628116894,24.6991785131552 77.8939011989848)
-LINESTRING(24.6991785131552 77.8939011989848,39.4046096622744 82.1822848017636,44.7994523421035 82.5156766227011)
-LINESTRING(44.7994523421035 82.5156766227011,85 85)</screen>
-                          </para></entry>
-                      </row>
-                </tbody></tgroup></informaltable>
-      </refsection>
-      <refsection>
-        <title>See Also</title>
-        <para>
-<xref linkend="ST_AsText" />,
-<xref linkend="ST_ClipByBox2D" />,
-<xref linkend="ST_Segmentize" />,
-<xref linkend="ST_Split" />,
-<xref linkend="ST_NPoints" />
-    </para>
-      </refsection>
-    </refentry>
-
-<refentry id="ST_Union">
-  <refnamediv>
-    <refname>ST_Union</refname>
-    <refpurpose>Returns a geometry that represents the point set union of
-        the Geometries.</refpurpose>
-  </refnamediv>
-
-  <refsynopsisdiv>
-    <funcsynopsis>
-      <funcprototype>
-        <funcdef>geometry <function>ST_Union</function></funcdef>
-        <paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
-      </funcprototype>
-      <funcprototype>
-        <funcdef>geometry <function>ST_Union</function></funcdef>
-        <paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
-        <paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
-      </funcprototype>
-      <funcprototype>
-        <funcdef>geometry <function>ST_Union</function></funcdef>
-        <paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
-      </funcprototype>
-    </funcsynopsis>
-  </refsynopsisdiv>
-
-  <refsection>
-    <title>Description</title>
-    <para> Output type can be a MULTI*, single geometry, or Geometry Collection. Comes in 2 variants.  Variant 1 unions 2 geometries resulting in a new geometry with no intersecting regions.
-        Variant 2 is an aggregate function that takes a set of geometries and unions
-        them into a single ST_Geometry resulting in no intersecting regions.</para>
-
-    <para>Aggregate version: This function returns a MULTI geometry or NON-MULTI geometry
-        from a set of geometries. The ST_Union() function is an "aggregate"
-        function in the terminology of PostgreSQL. That means that it
-        operates on rows of data, in the same way the SUM() and AVG()
-        functions do and like most aggregates, it also ignores NULL geometries.</para>
-
-    <para>Non-Aggregate version: This function returns a geometry being a union of two
-        input geometries. Output type can be a MULTI*, NON-MULTI or
-        GEOMETRYCOLLECTION. If any are NULL, then NULL is returned.</para>
-
-    <note><para>ST_Collect and ST_Union are often interchangeable.
-        ST_Union is in general orders of magnitude slower than ST_Collect
-        because it tries to dissolve boundaries and reorder geometries to ensure that a constructed Multi* doesn't
-        have intersecting regions.</para></note>
-
-        <para>ST_Union will use the faster Cascaded Union algorithm described in <ulink
-        url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink></para>
-
-    <para>Performed by the GEOS module.</para>
-    <para>NOTE: this function was formerly called GeomUnion(), which
-        was renamed from "Union" because UNION is an SQL reserved
-        word.</para>
-    <para>Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was introduced and also faster aggregate collection in PostgreSQL.</para>
-    <para>Changed: 3.0.0 does not depend on SFCGAL.</para>
-
-    <para>&sfs_compliant; s2.1.1.3</para>
-    <note><para>Aggregate version is not explicitly defined in OGC SPEC.</para></note>
-    <para>&sqlmm_compliant; SQL-MM 3: 5.1.19
-        the z-index (elevation) when polygons are involved.</para>
-      </refsection>
-
-      <refsection>
-        <title>Examples</title>
-        <para>Aggregate example</para>
-            <programlisting>
-SELECT stusps,
-       ST_Union(f.geom) as singlegeom
-FROM sometable f
-GROUP BY stusps
-              </programlisting>
-        <para>Non-Aggregate example</para>
-            <programlisting>
-select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(-2 3)' :: geometry))
-
-st_astext
-----------
-MULTIPOINT(-2 3,1 2)
-
-select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(1 2)' :: geometry))
-
-st_astext
-----------
-POINT(1 2)</programlisting>
-<para>3D example - sort of supports 3D (and with mixed dimensions!)</para>
-<programlisting>select ST_AsEWKT(ST_Union(geom))
-from (
-         select 'POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3, -7 4.2))'::geometry geom
-         union all
-         select 'POINT(5 5 5)'::geometry geom
-         union all
-         select 'POINT(-2 3 1)'::geometry geom
-         union all
-         select 'LINESTRING(5 5 5, 10 10 10)'::geometry geom
-     ) as foo;
-
-st_asewkt
----------
-GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));
-</programlisting>
-<para>3d example not mixing dimensions</para>
-<programlisting>select ST_AsEWKT(ST_Union(geom))
-from (
-         select 'POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2, -7 4.2 2))'::geometry geom
-         union all
-         select 'POINT(5 5 5)'::geometry geom
-         union all
-         select 'POINT(-2 3 1)'::geometry geom
-         union all
-         select 'LINESTRING(5 5 5, 10 10 10)'::geometry geom
-     ) as foo;
-
-st_asewkt
----------
-GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))
-
---Examples using new Array construct
-SELECT ST_Union(ARRAY(SELECT the_geom FROM sometable));
-
-SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),
-            ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktunion;
-
---wktunion---
-MULTILINESTRING((3 4,4 5),(1 2,3 4))
-
-              </programlisting>
-      </refsection>
-      <refsection>
-        <title>See Also</title>
-        <para>
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_UnaryUnion" />,
-            <xref linkend="ST_Intersection" />,
-            <xref linkend="ST_Difference" />
-            <xref linkend="ST_SymDifference" />
-        </para>
-      </refsection>
-    </refentry>
-
-    <refentry id="ST_UnaryUnion">
-      <refnamediv>
-        <refname>ST_UnaryUnion</refname>
-
-        <refpurpose>Like ST_Union, but working at the geometry component level.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_UnaryUnion</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-          </funcprototype>
-
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>
-        Unlike ST_Union, ST_UnaryUnion does dissolve boundaries
-        between components of a multipolygon (invalid)
-        and does perform union between the components of a
-        geometrycollection.
-        Each components of the input geometry is assumed to be
-        valid, so you won't get a valid multipolygon out of a
-        bow-tie polygon (invalid).
-        </para>
-
-        <para>
-        You may use this function to node a set of linestrings.
-        You may mix ST_UnaryUnion with ST_Collect to fine-tune
-        how many geometries at once you want to dissolve to
-        be nice on both memory size and CPU time, finding the
-        balance between ST_Union and ST_MemUnion.
-        </para>
-
-        <para>&Z_support;</para>
-
-        <para>Availability: 2.0.0</para>
-      </refsection>
-
-
-      <!-- Optionally add a "See Also" section -->
-      <refsection>
-        <title>See Also</title>
-
-        <para>
-            <xref linkend="ST_Union" />,
-            <xref linkend="ST_MemUnion" />,
-            <xref linkend="ST_Collect" />,
-            <xref linkend="ST_Node" />
-        </para>
-      </refsection>
-    </refentry>
-
     <refentry id="ST_VoronoiLines">
       <refnamediv>
         <refname>ST_VoronoiLines</refname>
 
-        <refpurpose>Returns the boundaries between the cells of the Voronoi diagram constructed from the vertices of a geometry.</refpurpose>
+        <refpurpose>Returns the boundaries of the Voronoi diagram of the vertices of a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -3872,7 +2559,7 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
       <refnamediv>
         <refname>ST_VoronoiPolygons</refname>
 
-        <refpurpose>Returns the cells of the Voronoi diagram constructed from the vertices of a geometry.</refpurpose>
+        <refpurpose>Returns the cells of the Voronoi diagram of the vertices of a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>

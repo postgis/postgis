@@ -114,6 +114,9 @@ typedef struct shp_loader_config
 	/* 0 = no index, 1 = create index after load */
 	int createindex;
 
+    /* 0 = don't analyze tables , 1 = analyze tables */
+	int analyze;
+
 	/* 0 = load DBF file only, 1 = load everything */
 	int readshape;
 

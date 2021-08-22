@@ -1,12 +1,16 @@
 use File::Basename;
 use Cwd 'abs_path';
 
-my $REGDIR = abs_path(dirname($0));
-my $RASTERDIR = abs_path($REGDIR . "/../raster/test/regress");
-my $FILERASTER = $RASTERDIR . "/loader/testraster.tif";
+my $TARGETFILE = $TEST . '.tif';
 
-link "loader/testraster.tif", "loader/BasicOutDB.tif";
+my $FILERASTER = abs_path(dirname($TEST)) . "/testraster.tif";
 
-open(OPTS, '>', 'loader/BasicOutDB.opts');
+if ( ! -e $TARGETFILE ) {
+	link ("$FILERASTER", "$TARGETFILE") ||
+		die("Cannot link $FILERASTER to $TARGETFILE: $!");
+}
+
+my $OPTSFNAME = $TEST . '.opts';
+open(OPTS, '>', $OPTSFNAME) || die ('Cannot open ' . $OPTSFNAME. ": $1");
 print OPTS "-F -C -R \"$FILERASTER\"\n";
 close(OPTS);

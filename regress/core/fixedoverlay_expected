@@ -1,0 +1,6 @@
+intersection|LINESTRING(8 0,10 0)
+difference|LINESTRING(0 0,8 0)
+symdifference|LINESTRING(0 0,8 0)
+union|MULTILINESTRING((0 0,8 0),(8 0,10 0),(10 0,14 0))
+unaryunion|MULTILINESTRING((0 0,8 0),(8 0,10 0),(10 0,14 0))
+subdivide|3|MULTIPOLYGON(((0 0,0 10,10 10,10 6,100 5,10 5,10 0,0 0)),((100 0,100 5,100 10,110 10,110 0,100 0)))

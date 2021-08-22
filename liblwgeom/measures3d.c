@@ -1011,9 +1011,9 @@ lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl)
 			return lw_dist3d_pt_pt(p, B, dl);
 	}
 
-	if (r < 0) /*If the first vertex A is closest to the point p*/
+	if (r <= 0) /*If the first vertex A is closest to the point p*/
 		return lw_dist3d_pt_pt(p, A, dl);
-	if (r > 1) /*If the second vertex B is closest to the point p*/
+	if (r >= 1) /*If the second vertex B is closest to the point p*/
 		return lw_dist3d_pt_pt(p, B, dl);
 
 	/*else if the point p is closer to some point between a and b
@@ -1193,25 +1193,26 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 
 	/* Now we check if the projected closest point on the infinite lines is outside our segments. If so the
 	 * combinations with start and end points will be tested*/
-	if (s1k < 0.0 || s1k > 1.0 || s2k < 0.0 || s2k > 1.0)
+
+	if (s1k <= 0.0 || s1k >= 1.0 || s2k <= 0.0 || s2k >= 1.0)
 	{
-		if (s1k < 0.0)
+		if (s1k <= 0.0)
 		{
 			if (!lw_dist3d_pt_seg(s1p1, s2p1, s2p2, dl))
 				return LW_FALSE;
 		}
-		if (s1k > 1.0)
+		if (s1k >= 1.0)
 		{
 			if (!lw_dist3d_pt_seg(s1p2, s2p1, s2p2, dl))
 				return LW_FALSE;
 		}
-		if (s2k < 0.0)
+		if (s2k <= 0.0)
 		{
 			dl->twisted = ((dl->twisted) * (-1));
 			if (!lw_dist3d_pt_seg(s2p1, s1p1, s1p2, dl))
 				return LW_FALSE;
 		}
-		if (s2k > 1.0)
+		if (s2k >= 1.0)
 		{
 			dl->twisted = ((dl->twisted) * (-1));
 			if (!lw_dist3d_pt_seg(s2p2, s1p1, s1p2, dl))

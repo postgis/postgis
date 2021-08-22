@@ -32,6 +32,7 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
 DATA_built = \
 	$(EXTENSION).control \
 	sql/$(EXTENSION)--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--unpackaged.sql \
 	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
 	$(NULL)
 
@@ -102,6 +103,9 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_
 		| $(PERL) ../../utils/create_unpackaged.pl postgis \
 		>> $@
 
+sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
+	echo "-- Nothing to do here" > $@
+
 sql:
 	mkdir -p $@
 
@@ -123,7 +127,7 @@ sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_before_upgrade.sql 
 sql/postgis_upgrade_for_extension.sql.in: sql/postgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl | sql
 	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
-sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in | sql
+sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in ../../postgis_revision.h | sql
 	$(SQLPP) -I../../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe \
 		"s'MODULE_PATHNAME'\$(MODULEPATH)'g" \

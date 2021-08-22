@@ -1,8 +1,8 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
-\i load_topology.sql
-\i load_features.sql
+\i ../load_topology.sql
+\i ../load_features.sql
 
 SELECT 'relation before', count(distinct topogeo_id)
  FROM city_data.relation
@@ -33,4 +33,5 @@ SELECT 'relation after', count(distinct topogeo_id)
  FROM city_data.relation
  WHERE layer_id = 1;
 
-select droptopology('city_data');
+select NULL FROM droptopology('city_data');
+DROP SCHEMA features CASCADE;

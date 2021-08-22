@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2018 Regina Obe <lr@pcorp.us>
+ * Copyright (C) 2020 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -37,19 +38,23 @@
 
 #include "rtpostgis.h"
 
-/** obsolete as of 2.5.0 stubbing for smoother upgrade from 2.4 **/
+/* Removed in PostGIS 2.5.0 */
 Datum RASTER_to_binary(PG_FUNCTION_ARGS);
-
-/**
- *
- * Removed in PostGIS 2.5.0
- */
 PG_FUNCTION_INFO_V1(RASTER_to_binary);
 Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 {
-
 	elog(ERROR, "RASTER_to_binary: This function is out of date. Run: ALTER EXTENSION postgis UPDATE; SELECT PostGIS_Extensions_Upgrade();");
-
 }
 
+/* Removed in PostGIS 3.1.0 */
+PG_FUNCTION_INFO_V1(RASTER_histogramCoverage);
+Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
+{
+	elog(ERROR, "RASTER_histogramCoverage: This function is out of date. Run: ALTER EXTENSION postgis UPDATE; SELECT PostGIS_Extensions_Upgrade();");
+}
 
+PG_FUNCTION_INFO_V1(RASTER_quantileCoverage);
+Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
+{
+	elog(ERROR, "RASTER_quantileCoverage: This function is out of date. Run: ALTER EXTENSION postgis UPDATE; SELECT PostGIS_Extensions_Upgrade();");
+}

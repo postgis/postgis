@@ -20,7 +20,7 @@ The contract for each callback is fully specified in the header.
 The callbacks are as simple as possible while still allowing for
 backend-specific optimizations.
 
-The backend interface is an opaque object and callabcks are registered
+The backend interface is an opaque object and callbacks are registered
 into it using free functions. This is to allow for modifying the required
 set of callbacks between versions of the library without breaking backward
 compatibility.

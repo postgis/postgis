@@ -147,7 +147,16 @@ void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
 int
 gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 {
-	GSERIALIZED *gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	GSERIALIZED *gpart = NULL;
+	int need_detoast = PG_GSERIALIZED_DATUM_NEEDS_DETOAST((struct varlena *)gsdatum);
+	if (need_detoast)
+	{
+		gpart = (GSERIALIZED *)PG_DETOAST_DATUM_SLICE(gsdatum, 0, gserialized_max_header_size());
+	}
+	else
+	{
+		gpart = (GSERIALIZED *)gsdatum;
+	}
 
 	/* Do we even have a serialized bounding box? */
 	if (gserialized_has_bbox(gpart))
@@ -179,9 +188,9 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 		/* No, we need to calculate it from the full object. */
 		LWGEOM *lwgeom;
 		GBOX gbox;
-		/* If we haven't, read the whole gserialized object */
-		if (LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
+		if (need_detoast && LWSIZE_GET(gpart->size) >= gserialized_max_header_size())
 		{
+			/* If we haven't, read the whole gserialized object */
 			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
 			gpart = (GSERIALIZED *)PG_DETOAST_DATUM(gsdatum);
 		}

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -772,11 +772,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:348
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
-"ST_Locate_Along_Measure. The old name has been deprecated and will be "
-"removed in the future but is still available."
+"ST_Locate_Along_Measure."
 msgstr ""
 "변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Along_Measure라는 명칭이었습니다. "
 "예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 사용할 수 있습니다."
@@ -910,15 +909,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:405
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
-"ST_Locate_Between_Measures. The old name has been deprecated and will be "
-"removed in the future but is still available for backward compatibility."
+"ST_Locate_Between_Measures."
 msgstr ""
-"변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Between_Measures라는 명칭이었습니"
-"다. 예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 하위 호환성을 "
-"위해 사용할 수 있습니다."
+"변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Along_Measure라는 명칭이었습니다. "
+"예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 사용할 수 있습니다."
 
 #. Tag: para
 #: reference_lrs.xml:406 reference_lrs.xml:454
@@ -1276,6 +1273,15 @@ msgstr ""
 "                             ewelev\n"
 "-----------------------------------------------------------------\n"
 " MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"
+
+#~ msgid ""
+#~ "Changed: 2.0.0 - in prior versions this used to be called "
+#~ "ST_Locate_Between_Measures. The old name has been deprecated and will be "
+#~ "removed in the future but is still available for backward compatibility."
+#~ msgstr ""
+#~ "변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Between_Measures라는 명칭이었습"
+#~ "니다. 예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 하위 호환"
+#~ "성을 위해 사용할 수 있습니다."
 
 #~ msgid ""
 #~ "Return a derived geometry (collection) value with elements that intersect "

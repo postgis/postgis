@@ -1402,6 +1402,13 @@ CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CollectionExtract'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CollectionHomogenize(geometry)
 	RETURNS geometry
@@ -1483,6 +1490,13 @@ CREATE OR REPLACE FUNCTION ST_BoundingDiagonal(geom geometry, fits boolean DEFAU
 CREATE OR REPLACE FUNCTION ST_Reverse(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_reverse'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_Scroll(geometry, geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Scroll'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
@@ -1950,6 +1964,13 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
 	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dumppoints'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_DumpSegments(geometry)
+	RETURNS SETOF geometry_dump
+	AS 'MODULE_PATHNAME', 'LWGEOM_dumpsegments'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -2927,12 +2948,23 @@ BEGIN
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
 			THEN
-				--force install in same schema as postgis only if postgis extension is installed
-				IF rec.name NOT IN('postgis', 'postgis_topology', 'postgis_tiger_geocoder') AND EXISTS (SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'postgis') THEN
-					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged SCHEMA '
-					|| quote_ident( (SELECT ns.nspname FROM pg_catalog.pg_extension AS e INNER JOIN pg_catalog.pg_namespace AS ns ON e.extnamespace = ns.oid WHERE extname = 'postgis')) || ';';
+				-- Force install in same schema as postgis
+				SELECT INTO var_schema n.nspname
+				  FROM pg_namespace n, pg_proc p
+				  WHERE p.proname = 'postgis_full_version'
+				    AND n.oid = p.pronamespace
+				  LIMIT 1;
+				IF rec.name NOT IN('postgis_topology', 'postgis_tiger_geocoder')
+				THEN
+					sql := format(
+					          'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
+					          'ALTER EXTENSION %1$I UPDATE TO %3$I',
+					          rec.name, var_schema, rec.default_version);
 				ELSE
-					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged;';
+					sql := format(
+					         'CREATE EXTENSION %1$I VERSION unpackaged;'
+					         'ALTER EXTENSION %1$I UPDATE TO %2$I',
+					         rec.name, rec.default_version);
 				END IF;
 				RAISE NOTICE 'Packaging extension %', rec.name;
 				RAISE DEBUG '%', sql;
@@ -3422,7 +3454,8 @@ CREATE OR REPLACE FUNCTION ST_IsValidTrajectory(geometry)
 -- GEOS
 ---------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry)
+-- Changed: 3.1.0 to add gridSize default argument
+CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_Intersection'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -3563,8 +3596,9 @@ CREATE OR REPLACE FUNCTION ST_MaximumInscribedCircle(geometry, OUT center geomet
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
--- PostGIS equivalent function: difference(geom1 geometry, geom2 geometry)
-CREATE OR REPLACE FUNCTION ST_Difference(geom1 geometry, geom2 geometry)
+-- PostGIS equivalent function: ST_difference(geom1 geometry, geom2 geometry)
+-- Changed: 3.1.0 to add gridSize default argument
+CREATE OR REPLACE FUNCTION ST_Difference(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_Difference'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -3585,28 +3619,35 @@ CREATE OR REPLACE FUNCTION ST_Points(geometry)
 	_COST_MEDIUM;
 
 -- PostGIS equivalent function: symdifference(geom1 geometry, geom2 geometry)
-CREATE OR REPLACE FUNCTION ST_SymDifference(geom1 geometry, geom2 geometry)
+-- Changed: 3.1.0 to add gridSize default argument
+CREATE OR REPLACE FUNCTION ST_SymDifference(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','symdifference'
+	AS 'MODULE_PATHNAME','ST_SymDifference'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SymmetricDifference(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','symdifference'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_HIGH;
+	AS 'SELECT ST_SymDifference(geom1, geom2, -1.0);'
+	LANGUAGE 'sql';
 
--- PostGIS equivalent function: GeomUnion(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_Union'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry, gridSize float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','ST_Union'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry)
+-- Changed: 3.1.0 to add gridSize default argument
+CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_UnaryUnion'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -3633,11 +3674,18 @@ CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
 	_COST_MEDIUM;
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAULT 256)
+-- Changed: 3.1.0 to add gridSize default argument
+CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAULT 256, gridSize float8 DEFAULT -1.0)
 	RETURNS setof geometry
 	AS 'MODULE_PATHNAME', 'ST_Subdivide'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
+
+CREATE OR REPLACE FUNCTION ST_ReducePrecision(geom geometry, gridsize float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_ReducePrecision'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
 
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
@@ -3652,6 +3700,12 @@ CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAU
 --
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_MakeValid'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_MakeValid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -4005,6 +4059,15 @@ CREATE AGGREGATE ST_Union (geometry) (
 	parallel = safe,
 	finalfunc = pgis_geometry_union_finalfn
 	);
+
+-- Availability: 3.1.0
+CREATE AGGREGATE ST_Union (geometry, gridSize float8) (
+	sfunc = pgis_geometry_accum_transfn,
+	stype = internal,
+	parallel = safe,
+	finalfunc = pgis_geometry_union_finalfn
+	);
+
 
 -- Availability: 1.2.2
 -- Changed: 2.4.0: marked parallel safe
@@ -4927,6 +4990,14 @@ CREATE AGGREGATE ST_AsGeobuf(anyelement, text)
 CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars int4 DEFAULT 0)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME', 'ST_GeoHash'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+--
+-- Availability 3.1.0
+CREATE OR REPLACE FUNCTION _ST_SortableHash(geom geometry)
+	RETURNS bigint
+	AS 'MODULE_PATHNAME', '_ST_SortableHash'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 

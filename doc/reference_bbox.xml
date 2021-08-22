@@ -395,7 +395,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_3DExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="geometry_overlaps" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_3DExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 
@@ -449,7 +449,7 @@ FROM (SELECT ST_MakePoint(x,y,z) As the_geom
 
 --Get the extent of various elevated circular strings
 SELECT ST_3DExtent(foo.the_geom) As b3extent
-FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_MakePoint(x,y),1))),0,0,z) As the_geom
+FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1))),0,0,z) As the_geom
 	FROM generate_series(1,3) As x
 		CROSS JOIN generate_series(1,2) As y
 		CROSS JOIN generate_series(0,2) As Z) As foo;
@@ -507,7 +507,7 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_Point" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 

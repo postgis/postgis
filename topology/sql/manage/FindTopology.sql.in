@@ -1,0 +1,85 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2021 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+--  FindTopology(TopoGeometry)
+--
+-- Return a topology.topology record from a TopoGeometry
+--
+CREATE OR REPLACE FUNCTION topology.FindTopology(TopoGeometry)
+RETURNS topology.topology
+AS $$
+    SELECT * FROM topology.topology
+    WHERE id = topology_id($1);
+$$ LANGUAGE 'sql';
+--}
+
+--{
+--  FindTopology(layerRegclass, layerColumn)
+--
+-- Return a topology.topology record from a layer
+--
+CREATE OR REPLACE FUNCTION topology.FindTopology(regclass, name)
+RETURNS topology.topology
+AS $$
+    SELECT t.*
+    FROM topology.topology t
+    JOIN topology.layer l ON (t.id = l.topology_id)
+    WHERE format('%I.%I', l.schema_name, l.table_name)::regclass = $1
+    AND l.feature_column = $2;
+$$ LANGUAGE 'sql';
+--}
+
+--{
+--  FindTopology(layerSchema, layerTable, layerColumn)
+--
+-- Return a topology.topology record from a layer
+--
+CREATE OR REPLACE FUNCTION topology.FindTopology(name, name, name)
+RETURNS topology.topology
+AS $$
+    SELECT t.*
+    FROM topology.topology t
+    JOIN topology.layer l ON (t.id = l.topology_id)
+    WHERE l.schema_name = $1
+    AND l.table_name = $2
+    AND l.feature_column = $3;
+$$ LANGUAGE 'sql';
+--}
+
+--{
+--  FindTopology(topoName)
+--
+-- Return a topology.topology record from a topology name
+--
+CREATE OR REPLACE FUNCTION topology.FindTopology(text)
+RETURNS topology.topology
+AS $$
+    SELECT *
+    FROM topology.topology
+    WHERE name = $1
+$$ LANGUAGE 'sql';
+--}
+
+--{
+--  FindTopology(topoId)
+--
+-- Return a topology.topology record from a topology id
+--
+CREATE OR REPLACE FUNCTION topology.FindTopology(integer)
+RETURNS topology.topology
+AS $$
+    SELECT *
+    FROM topology.topology
+    WHERE id = $1
+$$ LANGUAGE 'sql';
+--}

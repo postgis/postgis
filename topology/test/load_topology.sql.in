@@ -24,7 +24,7 @@ BEGIN;
 --  topologies where created in the regress database
 --  so we just check it is a number greater than 0
 --
-SELECT topology.CreateTopology('city_data', @SRID@) > 0;
+SELECT NULL FROM topology.CreateTopology('city_data', @SRID@);
 
 -- 2. Load topology data (node, edge, and face tables).
 -- Use INSERT statements here instead of a bulk-load utility.
@@ -42,7 +42,7 @@ INSERT INTO city_data.face(face_id) VALUES(8); -- F8
 INSERT INTO city_data.face(face_id) VALUES(9); -- F9
 
 -- UPDATE Face id sequence
-SELECT setval('city_data.face_face_id_seq', 9);
+SELECT NULL FROM setval('city_data.face_face_id_seq', 9);
 
 -- 2B. Insert data into <topology_name>.NODE table.
 -- N1
@@ -113,7 +113,7 @@ INSERT INTO city_data.node(node_id, geom, containing_face)
 	VALUES(22, 'SRID=@SRID@;POINT(13 35)', NULL);
 
 -- UPDATE Node id sequence
-SELECT setval('city_data.node_node_id_seq', 22);
+SELECT NULL FROM setval('city_data.node_node_id_seq', 22);
 
 -- 2C. Insert data into <topology_name>.EDGE table.
 -- E1
@@ -190,7 +190,7 @@ INSERT INTO city_data.edge VALUES(26, 20, 20, 26, -26, 9, 1,
   'SRID=@SRID@;LINESTRING(4 31, 7 31, 7 34, 4 34, 4 31)');
 
 -- UPDATE Edge id sequence
-SELECT setval('city_data.edge_data_edge_id_seq', 26);
+SELECT NULL FROM setval('city_data.edge_data_edge_id_seq', 26);
 
 -- Set face minimum bounding rectangle
 UPDATE city_data.face set mbr = ST_SetSRID( ( select st_extent(geom) from city_data.edge where left_face = face_id or right_face = face_id ), @SRID@ ) where face_id != 0;

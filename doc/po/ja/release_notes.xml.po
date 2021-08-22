@@ -7243,7 +7243,7 @@ msgstr "リリース日: 2012/06/22"
 #, no-c-format
 msgid ""
 "This is a bug fix release, addressing issues that have been filed since the "
-"2.0.1 release."
+"2.0.0 release."
 msgstr ""
 "この版は誤り訂正版です。2.0.0版以降に送られた問題の処理が行われました。"
 

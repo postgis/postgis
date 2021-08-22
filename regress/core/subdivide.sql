@@ -52,7 +52,7 @@ create table big_polygon_sliced as (
 SELECT '4' As rn,
 	(select ST_Area(geom)::numeric(12,1) from big_polygon) as orig_area,
 	SUM(ST_Area(gs.geom))::numeric(12,1) as pieces_area,
-	COUNT(gs.geom) as num_pieces,
+--	COUNT(gs.geom) as num_pieces,
 	MAX(ST_NPoints(gs.geom)) as max_vert
 FROM big_polygon_sliced gs;
 

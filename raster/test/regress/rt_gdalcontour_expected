@@ -1,0 +1,6 @@
+NOTICE:  table "contour_raster" does not exist, skipping
+aa|ST_LineString|0|3
+ab|ST_LineString|0|2
+ac|ST_LineString|0|2
+ad|ST_LineString|0|6
+ae|ST_LineString|0|3

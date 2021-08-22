@@ -29,6 +29,7 @@
 
 #include "librtcore.h"
 #include "librtcore_internal.h"
+#include "optionlist.h"
 
 uint8_t
 rt_util_clamp_to_1BB(double value) {
@@ -376,11 +377,46 @@ rt_util_gdal_driver_registered(const char *drv) {
 /* variable for PostgreSQL GUC: postgis.gdal_enabled_drivers */
 char *gdal_enabled_drivers = NULL;
 
+
+
 /*
 	wrapper for GDALOpen and GDALOpenShared
 */
 GDALDatasetH
-rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
+rt_util_gdal_open(
+	const char *fn,
+	GDALAccess fn_access,
+	int shared
+) {
+	char *vsi_options_str = rtoptions("gdal_vsi_options");
+
+	/* Parse vsi options string */
+	if (vsi_options_str && strlen(vsi_options_str) > 0) {
+		size_t sz;
+		char *olist[OPTION_LIST_SIZE];
+		rtinfo("postgis.gdal_vsi_options is set");
+		memset(olist, 0, sizeof(olist));
+		option_list_parse(vsi_options_str, olist);
+		sz = option_list_length(olist);
+		if (sz % 2 == 0) {
+			size_t i;
+			for (i = 0; i < sz; i += 2)
+			{
+				char *key = olist[i];
+				char *val = olist[i+1];
+				/* GDAL_SKIP is where the disallowed drivers are set */
+				/* We cannot allow user-level over-ride of that config option */
+				if (strcmp(key, "gdal_skip") == 0) {
+					rtwarn("Unable to set GDAL_SKIP config option");
+					continue;
+				}
+				rtinfo("CPLSetConfigOption(%s)", key);
+				CPLSetConfigOption(key, val);
+			}
+		}
+	}
+
+	unsigned int open_flags;
 	assert(NULL != fn);
 
 	if (gdal_enabled_drivers != NULL) {
@@ -392,18 +428,26 @@ rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
 			/* do nothing */
 		}
 		else if (
-			(strstr(fn, "/vsicurl") != NULL) &&
+			(strstr(fn, "/vsi") != NULL) &&
+			(strstr(fn, "/vsimem") == NULL) &&
 			(strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL)
 		) {
-			rterror("rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
+			rterror("rt_util_gdal_open: Cannot open %s file. %s disabled", GDAL_VSICURL, GDAL_VSICURL);
 			return NULL;
 		}
 	}
 
-	if (shared)
-		return GDALOpenShared(fn, fn_access);
-	else
-		return GDALOpen(fn, fn_access);
+	open_flags = GDAL_OF_RASTER
+		| GDAL_OF_VERBOSE_ERROR
+		| (fn_access == GA_Update ? GDAL_OF_UPDATE : 0)
+		| (shared ? GDAL_OF_SHARED : 0);
+
+	return GDALOpenEx(fn /* filename */,
+		open_flags,
+		NULL, /* allowed drivers */
+		NULL, /* open options */
+		NULL  /* sibling files */
+		);
 }
 
 void

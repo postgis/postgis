@@ -19,23 +19,33 @@
  */
 #define KMEANS_MAX_ITERATIONS 1000
 
+inline static double
+distance3d_sqr_pt4d_pt4d(const POINT4D *p1, const POINT4D *p2)
+{
+	double hside = p2->x - p1->x;
+	double vside = p2->y - p1->y;
+	double zside = p2->z - p1->z;
+
+	return hside * hside + vside * vside + zside * zside;
+}
+
 static uint8_t
-update_r(POINT3D *objs, int *clusters, uint32_t n, POINT3D *centers, uint32_t k)
+update_r(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
 {
 	uint8_t converged = LW_TRUE;
 
 	for (uint32_t i = 0; i < n; i++)
 	{
-		POINT3D obj = objs[i];
+		POINT4D obj = objs[i];
 
 		/* Initialize with distance to first cluster */
-		double curr_distance = distance3d_sqr_pt_pt(&obj, &centers[0]);
+		double curr_distance = distance3d_sqr_pt4d_pt4d(&obj, &centers[0]);
 		int curr_cluster = 0;
 
 		/* Check all other cluster centers and find the nearest */
-		for (uint32_t cluster = 1; cluster < k; cluster++)
+		for (int cluster = 1; cluster < (int)k; cluster++)
 		{
-			double distance = distance3d_sqr_pt_pt(&obj, &centers[cluster]);
+			double distance = distance3d_sqr_pt4d_pt4d(&obj, &centers[cluster]);
 			if (distance < curr_distance)
 			{
 				curr_distance = distance;
@@ -44,44 +54,42 @@ update_r(POINT3D *objs, int *clusters, uint32_t n, POINT3D *centers, uint32_t k)
 		}
 
 		/* Store the nearest cluster this object is in */
-		if (clusters[i] != (int)curr_cluster)
+		if (clusters[i] != curr_cluster)
 		{
 			converged = LW_FALSE;
-			clusters[i] = (int)curr_cluster;
+			clusters[i] = curr_cluster;
 		}
 	}
 	return converged;
 }
 
 static void
-update_means(POINT3D *objs, int *clusters, uint32_t n, POINT3D *centers, uint32_t *weights, uint32_t k)
+update_means(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
 {
-	memset(weights, 0, sizeof(uint32_t) * k);
-	memset(centers, 0, sizeof(POINT3D) * k);
+	memset(centers, 0, sizeof(POINT4D) * k);
 	for (uint32_t i = 0; i < n; i++)
 	{
 		int cluster = clusters[i];
-		centers[cluster].x += objs[i].x;
-		centers[cluster].y += objs[i].y;
-		centers[cluster].z += objs[i].z;
-		weights[cluster] += 1;
+		centers[cluster].x += objs[i].x * objs[i].m;
+		centers[cluster].y += objs[i].y * objs[i].m;
+		centers[cluster].z += objs[i].z * objs[i].m;
+		centers[cluster].m += objs[i].m;
 	}
 	for (uint32_t i = 0; i < k; i++)
 	{
-		if (weights[i])
+		if (centers[i].m)
 		{
-			centers[i].x /= weights[i];
-			centers[i].y /= weights[i];
-			centers[i].z /= weights[i];
+			centers[i].x /= centers[i].m;
+			centers[i].y /= centers[i].m;
+			centers[i].z /= centers[i].m;
 		}
 	}
 }
 
 static uint8_t
-kmeans(POINT3D *objs, int *clusters, uint32_t n, POINT3D *centers, uint32_t k)
+kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
 {
 	uint8_t converged = LW_FALSE;
-	uint32_t *weights = lwalloc(sizeof(uint32_t) * k);
 
 	for (uint32_t i = 0; i < KMEANS_MAX_ITERATIONS; i++)
 	{
@@ -89,16 +97,15 @@ kmeans(POINT3D *objs, int *clusters, uint32_t n, POINT3D *centers, uint32_t k)
 		converged = update_r(objs, clusters, n, centers, k);
 		if (converged)
 			break;
-		update_means(objs, clusters, n, centers, weights, k);
+		update_means(objs, clusters, n, centers, k);
 	}
-	lwfree(weights);
 	if (!converged)
 		lwerror("%s did not converge after %d iterations", __func__, KMEANS_MAX_ITERATIONS);
 	return converged;
 }
 
 static void
-kmeans_init(POINT3D *objs, uint32_t n, POINT3D *centers, uint32_t k)
+kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 {
 	double *distances;
 	uint32_t p1 = 0, p2 = 0;
@@ -114,8 +121,8 @@ kmeans_init(POINT3D *objs, uint32_t n, POINT3D *centers, uint32_t k)
 	for (i = 1; i < n; i++)
 	{
 		/* if we found a larger distance, replace our choice */
-		dst_p1 = distance3d_sqr_pt_pt(&objs[i], &objs[p1]);
-		dst_p2 = distance3d_sqr_pt_pt(&objs[i], &objs[p2]);
+		dst_p1 = distance3d_sqr_pt4d_pt4d(&objs[i], &objs[p1]);
+		dst_p2 = distance3d_sqr_pt4d_pt4d(&objs[i], &objs[p2]);
 		if ((dst_p1 > max_dst) || (dst_p2 > max_dst))
 		{
 			if (dst_p1 > dst_p2)
@@ -152,7 +159,7 @@ kmeans_init(POINT3D *objs, uint32_t n, POINT3D *centers, uint32_t k)
 
 		/* initialize array with distance to first object */
 		for (j = 0; j < n; j++)
-			distances[j] = distance3d_sqr_pt_pt(&objs[j], &centers[0]);
+			distances[j] = distance3d_sqr_pt4d_pt4d(&objs[j], &centers[0]);
 		distances[p1] = -1;
 		distances[p2] = -1;
 
@@ -170,7 +177,7 @@ kmeans_init(POINT3D *objs, uint32_t n, POINT3D *centers, uint32_t k)
 					continue;
 
 				/* update minimal distance with previosuly accepted cluster */
-				current_distance = distance3d_sqr_pt_pt(&objs[j], &centers[i - 1]);
+				current_distance = distance3d_sqr_pt4d_pt4d(&objs[j], &centers[i - 1]);
 				if (current_distance < distances[j])
 					distances[j] = current_distance;
 
@@ -199,7 +206,7 @@ int *
 lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 {
 	uint32_t num_non_empty = 0;
-	uint8_t result = LW_FALSE;
+	uint8_t converged = LW_FALSE;
 
 	assert(k > 0);
 	assert(n > 0);
@@ -214,7 +221,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	}
 
 	/* An array of objects to be analyzed. */
-	POINT3D *objs = lwalloc(sizeof(POINT3D) * n);
+	POINT4D *objs = lwalloc(sizeof(POINT4D) * n);
 
 	/* Array to mark unclusterable objects. Will be returned as KMEANS_NULL_CLUSTER. */
 	uint8_t *geom_valid = lwalloc(sizeof(uint8_t) * n);
@@ -225,14 +232,15 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	memset(clusters, 0, sizeof(int) * n);
 
 	/* An array of clusters centers for the algorithm. */
-	POINT3D *centers = lwalloc(sizeof(POINT3D) * k);
-	memset(centers, 0, sizeof(POINT3D) * k);
+	POINT4D *centers = lwalloc(sizeof(POINT4D) * k);
+	memset(centers, 0, sizeof(POINT4D) * k);
 
 	/* Prepare the list of object pointers for K-means */
 	for (uint32_t i = 0; i < n; i++)
 	{
 		const LWGEOM *geom = geoms[i];
-		POINT3D out = {0, 0, 0};
+		/* Unset M values will be 1 */
+		POINT4D out = {0, 0, 0, 1};
 
 		/* Null/empty geometries get geom_valid=LW_FALSE set earlier with memset */
 		if ((!geom) || lwgeom_is_empty(geom))
@@ -245,6 +253,13 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 			out.y = lwpoint_get_y(lwgeom_as_lwpoint(geom));
 			if (lwgeom_has_z(geom))
 				out.z = lwpoint_get_z(lwgeom_as_lwpoint(geom));
+			if (lwgeom_has_m(geom))
+			{
+				out.m = lwpoint_get_m(lwgeom_as_lwpoint(geom));
+				if (out.m <= 0)
+					lwerror("%s has an input point geometry with weight in M less or equal to 0",
+						__func__);
+			}
 		}
 		else if (!lwgeom_has_z(geom))
 		{
@@ -291,9 +306,9 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 		memset(clusters_dense, 0, sizeof(int) * num_non_empty);
 
 		kmeans_init(objs, num_non_empty, centers, k);
-		result = kmeans(objs, clusters_dense, num_non_empty, centers, k);
+		converged = kmeans(objs, clusters_dense, num_non_empty, centers, k);
 
-		if (result)
+		if (converged)
 		{
 			uint32_t d = 0;
 			for (uint32_t i = 0; i < n; i++)
@@ -309,7 +324,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 		/* k=0: everything is unclusterable */
 		for (uint32_t i = 0; i < n; i++)
 			clusters[i] = KMEANS_NULL_CLUSTER;
-		result = LW_TRUE;
+		converged = LW_TRUE;
 	}
 	else
 	{
@@ -321,7 +336,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 			else
 				clusters[i] = 0;
 		}
-		result = LW_TRUE;
+		converged = LW_TRUE;
 	}
 
 	/* Before error handling, might as well clean up all the inputs */
@@ -330,7 +345,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	lwfree(geom_valid);
 
 	/* Good result */
-	if (result)
+	if (converged)
 		return clusters;
 
 	/* Bad result, not going to need the answer */

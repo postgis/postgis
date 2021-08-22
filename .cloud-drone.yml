@@ -13,9 +13,9 @@ kind: pipeline
 name: build
 clone: *clone
 steps:
-  - name: build-12
-    image: docker.osgeo.org/postgis/build-test:alpine-edge
+  - name: build-11
+    image: docker.osgeo.org/postgis/build-test:trisquel2
     pull: always
     commands:
-      - PGVER=12 sh ci/dronie/postgis_regress_alpine.sh
+      - PGVER=11 sh ci/dronie/postgis_regress.sh
 ...

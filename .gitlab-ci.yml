@@ -1,5 +1,7 @@
 test:
   image: debian:buster
+  except:
+    - master
   script:
     - apt-get update -qq && apt-get install -y
         bison flex
@@ -7,6 +9,7 @@ test:
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
         libproj-dev libgdal-dev libgeos-dev libjson-c-dev
+        libprotobuf-c1 libprotobuf-c-dev protobuf-c-compiler
     - lsb_release -a
     - uname -a
     - service postgresql start
@@ -18,7 +21,7 @@ test:
     - ./configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
     - RUNTESTFLAGS=-v make check
-    - RUNTESTFLAGS="-v --dumprestore" make check
+    - RUNTESTFLAGS="-v --dumprestore" make check-regress
     - make install
     - RUNTESTFLAGS=-v make installcheck
     - RUNTESTFLAGS="-v --dumprestore" make installcheck

@@ -46,15 +46,14 @@
 *
 **********************************************************************/
 
+#include "postgres.h"
+#include "executor/spi.h"
+#include "utils/builtins.h"
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
-
-#include "postgres.h"
-#include "executor/spi.h"
-#include "utils/builtins.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -113,12 +112,12 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 	/* Internally lwgeom_from_gml calls gml_reproject_pa which, for PROJ before 6, called GetProj4String.
 	 * That function requires access to spatial_ref_sys, so in order to have it ready we need to ensure
 	 * the internal cache is initialized
 	 */
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 #endif
 	lwgeom = lwgeom_from_gml(xml, xml_size);
 	if ( root_srid != SRID_UNKNOWN )
@@ -304,12 +303,12 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
  * Use Proj to reproject a given POINTARRAY
  */
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 {
-	PJ pj;
+	LWPROJ pj;
 	char *text_in, *text_out;
 
 	if (srid_in == SRID_UNKNOWN) return pa; /* nothing to do */
@@ -334,16 +333,12 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 
 	return pa;
 }
-#else
-/*
- * TODO: rework GML projection handling to skip the spatial_ref_sys
- * lookups, and use the Proj 6+ EPSG catalogue and built-in SRID
- * lookups directly. Drop this ugly hack.
- */
+
+#else /* POSTGIS_PROJ_VERSION >= 61 */
+
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 {
-	PJ *pj;
 	LWPROJ *lwp;
 	char text_in[16];
 	char text_out[16];
@@ -359,50 +354,49 @@ gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 
 	snprintf(text_in, 16, "EPSG:%d", epsg_in);
 	snprintf(text_out, 16, "EPSG:%d", epsg_out);
-	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
 
-	lwp = lwproj_from_PJ(pj, LW_FALSE);
+
+	lwp = lwproj_from_str(text_in, text_out);
 	if (!lwp)
 	{
-		proj_destroy(pj);
 		gml_lwpgerror("Could not create LWPROJ*", 57);
 		return NULL;
 	}
 
 	if (ptarray_transform(pa, lwp) == LW_FAILURE)
 	{
-		proj_destroy(pj);
 		elog(ERROR, "gml_reproject_pa: reprojection failed");
 		return NULL;
 	}
-	proj_destroy(pj);
+	proj_destroy(lwp->pj);
 	pfree(lwp);
 
 	return pa;
 }
+
 #endif /* POSTGIS_PROJ_VERSION */
 
 
 /**
- * Return 1 if given srid is planar (0 otherwise, i.e geocentric srid)
- * Return -1 if srid is not in spatial_ref_sys
+ * Return 1 if the SRS definition from the authority has a GIS friendly order,
+ * that is easting,northing. This is typically true for most projected CRS
+ * (but not all!), and this is false for EPSG geographic CRS.
  */
 static int
-gml_is_srid_planar(int32_t srid)
+gml_is_srs_axis_order_gis_friendly(int32_t srid)
 {
-	char *result;
+	char *srtext;
 	char query[256];
-	int is_planar, err;
+	int is_axis_order_gis_friendly, err;
 
 	if (SPI_OK_CONNECT != SPI_connect ())
-		lwpgerror("gml_is_srid_planar: could not connect to SPI manager");
+		lwpgerror("gml_is_srs_axis_order_gis_friendly: could not connect to SPI manager");
 
-	/* A way to find if this projection is planar or geocentric */
-	sprintf(query, "SELECT position('+units=m ' in proj4text) \
+	sprintf(query, "SELECT srtext \
                         FROM spatial_ref_sys WHERE srid='%d'", srid);
 
 	err = SPI_exec(query, 1);
-	if (err < 0) lwpgerror("gml_is_srid_planar: error executing query %d", err);
+	if (err < 0) lwpgerror("gml_is_srs_axis_order_gis_friendly: error executing query %d", err);
 
 	/* No entry in spatial_ref_sys */
 	if (SPI_processed <= 0)
@@ -411,11 +405,49 @@ gml_is_srid_planar(int32_t srid)
 		return -1;
 	}
 
-	result = SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1);
-	is_planar = atoi(result);
+	srtext = SPI_getvalue(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1);
+
+	is_axis_order_gis_friendly = 1;
+	if (srtext && srtext[0] != '\0')
+	{
+		char* ptr;
+		char* srtext_horizontal = (char*) malloc(strlen(srtext) + 1);
+		strcpy(srtext_horizontal, srtext);
+
+		/* Remove the VERT_CS part if we are in a COMPD_CS */
+		ptr = strstr(srtext_horizontal, ",VERT_CS[");
+		if (ptr)
+			*ptr = '\0';
+
+		if( strstr(srtext_horizontal, "AXIS[") == NULL &&
+		    strstr(srtext_horizontal, "GEOCCS[") == NULL )
+		{
+			/* If there is no axis definition, then due to how GDAL < 3
+			* generated the WKT, this means that the axis order is not
+			* GIS friendly */
+			is_axis_order_gis_friendly = 0;
+		}
+		else if( strstr(srtext_horizontal,
+		           "AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST]") != NULL )
+		{
+			is_axis_order_gis_friendly = 0;
+		}
+		else if( strstr(srtext_horizontal,
+		           "AXIS[\"Northing\",NORTH],AXIS[\"Easting\",EAST]") != NULL )
+		{
+			is_axis_order_gis_friendly = 0;
+		}
+		else if( strstr(srtext_horizontal,
+		           "AXIS[\"geodetic latitude (Lat)\",north,ORDER[1]") != NULL )
+		{
+			is_axis_order_gis_friendly = 0;
+		}
+
+		free(srtext_horizontal);
+	}
 	SPI_finish();
 
-	return is_planar;
+	return is_axis_order_gis_friendly;
 }
 
 
@@ -425,10 +457,10 @@ gml_is_srid_planar(int32_t srid)
 static void parse_gml_srs(xmlNodePtr xnode, gmlSrs *srs)
 {
 	char *p;
-	int is_planar;
+	int is_axis_order_gis_friendly;
 	xmlNodePtr node;
 	xmlChar *srsname;
-	bool latlon = false;
+	bool honours_authority_axis_order = false;
 	char sep = ':';
 
 	node = xnode;
@@ -466,20 +498,20 @@ static void parse_gml_srs(xmlNodePtr xnode, gmlSrs *srs)
 		if (!strncmp((char *) srsname, "EPSG:", 5))
 		{
 			sep = ':';
-			latlon = false;
+			honours_authority_axis_order = false;
 		}
 		else if (!strncmp((char *) srsname, "urn:ogc:def:crs:EPSG:", 21)
 		         || !strncmp((char *) srsname, "urn:x-ogc:def:crs:EPSG:", 23)
 		         || !strncmp((char *) srsname, "urn:EPSG:geographicCRS:", 23))
 		{
 			sep = ':';
-			latlon = true;
+			honours_authority_axis_order = true;
 		}
 		else if (!strncmp((char *) srsname,
 		                  "http://www.opengis.net/gml/srs/epsg.xml#", 40))
 		{
 			sep = '#';
-			latlon = false;
+			honours_authority_axis_order = false;
 		}
 		else gml_lwpgerror("unknown spatial reference system", 4);
 
@@ -491,12 +523,14 @@ static void parse_gml_srs(xmlNodePtr xnode, gmlSrs *srs)
 		srs->srid = atoi(++p);
 
 		/* Check into spatial_ref_sys that this SRID really exist */
-		is_planar = gml_is_srid_planar(srs->srid);
-		if (srs->srid == SRID_UNKNOWN || is_planar == -1)
+		is_axis_order_gis_friendly = gml_is_srs_axis_order_gis_friendly(srs->srid);
+		if (srs->srid == SRID_UNKNOWN || is_axis_order_gis_friendly == -1)
 			gml_lwpgerror("unknown spatial reference system", 6);
 
-		/* About lat/lon issue, Cf: http://tinyurl.com/yjpr55z */
-		srs->reverse_axis = !is_planar && latlon;
+		/* Reverse axis order if the srsName is meant to honour the axis
+		   order defined by the authority and if that axis order is not
+		   the GIS friendly one. */
+		srs->reverse_axis = !is_axis_order_gis_friendly && honours_authority_axis_order;
 
 		xmlFree(srsname);
 		return;
@@ -865,7 +899,8 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 
 			if (gml_dim == dim)
 			{
-				ptarray_append_point(dpa, &pt, LW_FALSE);
+				/* Add to ptarray, allowing dupes */
+				ptarray_append_point(dpa, &pt, LW_TRUE);
 				pt.x = pt.y = pt.z = pt.m = 0.0;
 				gml_dim = 0;
 			}

@@ -347,6 +347,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		LWCOLLECTION *col;
 		/* default to maxvertices < page size */
 		int maxvertices = 128;
+		double gridSize = -1;
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
@@ -369,9 +370,15 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 			maxvertices = PG_GETARG_INT32(1);
 
 		/*
+		* Get the gridSize value
+		*/
+		if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+			gridSize = PG_GETARG_FLOAT8(2);
+
+		/*
 		* Compute the subdivision of the geometry
 		*/
-		col = lwgeom_subdivide(geom, maxvertices);
+		col = lwgeom_subdivide_prec(geom, maxvertices, gridSize);
 
 		if ( ! col )
 			SRF_RETURN_DONE(funcctx);

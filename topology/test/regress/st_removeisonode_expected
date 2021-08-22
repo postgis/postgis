@@ -1,0 +1,4 @@
+ERROR:  SQL/MM Spatial exception - not isolated node
+iso|Isolated node 23 removed
+ERROR:  TopoGeom 1 in layer 1 (city_data.poi.tg) cannot be represented removing node 24
+ERROR:  TopoGeom 1 in layer 2 (city_data.mix.tg) cannot be represented removing node 25

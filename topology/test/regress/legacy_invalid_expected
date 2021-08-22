@@ -1,9 +1,5 @@
 t
 coincident nodes|1|23
-edge crosses node|1|23
-edge crosses node|27|14
-edge not simple|28|
-invalid edge|33|
 edge crosses edge|2|28
 edge crosses edge|2|29
 edge crosses edge|2|32
@@ -12,10 +8,27 @@ edge crosses edge|10|27
 edge crosses edge|19|27
 edge crosses edge|20|27
 edge crosses edge|30|32
-edge start node geometry mis-match|30|4
+edge crosses node|1|23
+edge crosses node|27|14
 edge end node geometry mis-match|30|3
+edge not simple|28|
+edge start node geometry mis-match|30|4
 face without edges|10|
-face has no rings|10|
-face within face|11|2
-face overlaps face|2|12
+invalid edge|33|
+invalid next_left_edge|2|3
+invalid next_left_edge|3|-29
+invalid next_left_edge|6|29
+invalid next_left_edge|18|-27
+invalid next_left_edge|27|10
+invalid next_left_edge|29|-33
+invalid next_left_edge|30|-3
+invalid next_left_edge|31|-28
+invalid next_left_edge|33|33
+invalid next_right_edge|9|27
+invalid next_right_edge|27|-22
+invalid next_right_edge|28|-30
+invalid next_right_edge|29|7
+invalid next_right_edge|33|31
+#4936|missing_count|1
+#4936|missing|face without edges|10|
 Topology 'invalid_topology' dropped

@@ -3,7 +3,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2013 Sandro Santilli <strk@kbt.io>
+-- Copyright (C) 2013-2020 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -33,7 +33,6 @@ DECLARE
   toponame text;
   json text;
   sql text;
-  bounds GEOMETRY;
   rec RECORD;
   rec2 RECORD;
   side int;
@@ -45,8 +44,6 @@ DECLARE
   old_search_path TEXT;
   all_faces int[];
   faces int[];
-  bounding_edges int[];
-  visited_face int;
   shell_faces int[];
   visited_edges int[];
   looking_for_holes BOOLEAN;
@@ -132,14 +129,29 @@ BEGIN
     looking_for_holes := false;
     shell_faces := ARRAY[]::int[];
 
-    SELECT array_agg(edge_id)
-    FROM edge_data e
+    CREATE TEMP TABLE _postgis_topology_astopojson_tmp_edges
+    ON COMMIT DROP
+    AS
+    SELECT
+         ROW_NUMBER() OVER (
+            ORDER BY
+              ST_XMin(e.geom),
+              ST_YMin(e.geom),
+              edge_id
+         ) leftmost_index,
+         e.edge_id,
+         e.left_face,
+         e.right_face,
+         e.next_right_edge,
+         e.next_left_edge
+    FROM edge e
     WHERE
-         ( e.left_face = ANY ( faces ) OR
-           e.right_face = ANY ( faces ) )
-    INTO bounding_edges;
+         ( e.left_face = ANY ( all_faces ) OR
+           e.right_face = ANY ( all_faces ) )
+    ;
+    CREATE INDEX on _postgis_topology_astopojson_tmp_edges (edge_id);
 
-    LOOP -- {
+    LOOP -- { until all edges were visited
 
       arcs := NULL;
       edges_found := false;
@@ -152,16 +164,19 @@ BEGIN
       FOR rec in -- {
 WITH RECURSIVE
 _edges AS (
-  SELECT e.*,
-         e.left_face = ANY ( faces ) as lf,
-         e.right_face = ANY ( faces ) as rf
-  FROM edge e
-  WHERE edge_id = ANY (bounding_edges)
-          AND NOT e.edge_id = ANY ( visited_edges )
+  SELECT
+     *,
+     left_face = ANY ( faces ) as lf,
+     right_face = ANY ( faces ) as rf
+  FROM
+    _postgis_topology_astopojson_tmp_edges
 ),
 _leftmost_non_dangling_edge AS (
-  SELECT e.* FROM _edges e WHERE e.lf != e.rf
-  ORDER BY ST_XMin(geom), ST_YMin(geom) LIMIT 1
+  SELECT e.edge_id
+    FROM _edges e WHERE e.lf != e.rf
+  ORDER BY
+    leftmost_index
+  LIMIT 1
 ),
 _edgepath AS (
   SELECT
@@ -206,7 +221,9 @@ _edgepath AS (
 SELECT abs(signed_edge_id) as edge_id, signed_edge_id, dangling,
         lf, rf, left_face, right_face
 FROM _edgepath
-      LOOP  -- }{
+      -- }
+
+      LOOP  -- { over recursive query
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
         RAISE DEBUG ' edge % lf:%(%) rf:%(%)' , rec.signed_edge_id, rec.lf, rec.left_face, rec.rf, rec.right_face;
@@ -256,13 +273,18 @@ FROM _edgepath
 
         arcs := arcid || arcs;
 
-      END LOOP; -- }
+      END LOOP; -- } over recursive query
+
+      DELETE from _postgis_topology_astopojson_tmp_edges
+      WHERE edge_id = ANY (visited_edges);
+      visited_edges := ARRAY[]::int[];
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       --RAISE DEBUG 'Edges found:%, visited faces: %, ARCS: %' , edges_found, shell_faces, arcs;
 #endif
 
-      IF NOT edges_found THEN
+      IF NOT edges_found THEN -- {
+
         IF looking_for_holes THEN
           looking_for_holes := false;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -275,7 +297,9 @@ FROM _edgepath
         ELSE
           EXIT; -- end of loop
         END IF;
-      ELSE
+
+      ELSE -- } edges found {
+
         faces := shell_faces;
         IF arcs IS NOT NULL THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -284,9 +308,12 @@ FROM _edgepath
           ringtxt := ringtxt || ( '[' || array_to_string(arcs,',') || ']' );
         END IF;
         looking_for_holes := true;
-      END IF;
+
+      END IF; -- }
 
     END LOOP; -- }
+
+    DROP TABLE _postgis_topology_astopojson_tmp_edges;
 
     json := json || array_to_string(comptxt, ',') || ']}';
 

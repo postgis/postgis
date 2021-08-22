@@ -26,16 +26,18 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "funcapi.h"
+#include "utils/builtins.h"
+
 
 #include "../postgis_config.h"
+/*#define POSTGIS_DEBUG_LEVEL 4*/
+
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
 #include <string.h>
 #include <assert.h>
-
-/* #define POSTGIS_DEBUG_LEVEL 4 */
 
 Datum ST_MakeValid(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_MakeValid);
@@ -44,7 +46,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	GSERIALIZED *in, *out;
 	LWGEOM *lwgeom_in, *lwgeom_out;
 
-	in = PG_GETARG_GSERIALIZED_P(0);
+	in = PG_GETARG_GSERIALIZED_P_COPY(0);
 	lwgeom_in = lwgeom_from_gserialized(in);
 
 	switch ( lwgeom_in->type )
@@ -65,7 +67,14 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 		break;
 	}
 
-	lwgeom_out = lwgeom_make_valid(lwgeom_in);
+	if(PG_NARGS() > 1 && ! PG_ARGISNULL(1)) {
+		char *make_valid_params_str = text_to_cstring(PG_GETARG_TEXT_P(1));
+		lwgeom_out = lwgeom_make_valid_params(lwgeom_in, make_valid_params_str);
+	}
+	else {
+		lwgeom_out = lwgeom_make_valid(lwgeom_in);
+	}
+
 	if ( ! lwgeom_out )
 	{
 		PG_FREE_IF_COPY(in, 0);
@@ -73,6 +82,10 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	}
 
 	out = geometry_serialize(lwgeom_out);
+	if ( lwgeom_out != lwgeom_in ) {
+		lwgeom_free(lwgeom_out);
+	}
+	PG_FREE_IF_COPY(in, 0);
 
 	PG_RETURN_POINTER(out);
 }

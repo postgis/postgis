@@ -3,8 +3,7 @@
     <sect1info>
     <abstract>
 			<para>These functions support working with trajectories.
-			A trajectory is a linear geometry with a measure (M value) on each coordinate.
-			The measure values must increase along the line.
+			A trajectory is a linear geometry with increasing measures (M value) on each coordinate.
 			Spatio-temporal data can be modelled by using relative times (such as the epoch)
 			as the measure values.
 			</para>
@@ -16,9 +15,7 @@
 
 		  <refnamediv>
 			<refname>ST_IsValidTrajectory</refname>
-			<refpurpose>
-Returns <varname>true</varname> if the geometry is a valid trajectory.
-      </refpurpose>
+			<refpurpose>Tests if the geometry is a valid trajectory.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -79,7 +76,7 @@ NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
 		  <refnamediv>
 			<refname>ST_ClosestPointOfApproach</refname>
 			<refpurpose>
-Returns the measure at which points interpolated along two trajectories are closest.
+Returns a measure at the closest point of approach of two trajectories.
       </refpurpose>
 		  </refnamediv>
 
@@ -231,7 +228,7 @@ SELECT ST_DistanceCPA(a,b) distance FROM inp;
 		  <refnamediv>
 			<refname>ST_CPAWithin</refname>
 			<refpurpose>
-Returns <varname>true</varname> if the closest point of approach of two trajectories
+Tests if the closest point of approach of two trajectories
 is within the specified distance.
       </refpurpose>
 		  </refnamediv>
@@ -242,7 +239,7 @@ is within the specified distance.
 				<funcdef>boolean <function>ST_CPAWithin</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
-				<paramdef><type>float8 </type> <parameter>maxdist</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>dist</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -251,8 +248,7 @@ is within the specified distance.
 			<title>Description</title>
 
 			<para>
-Checks whether two moving objects have ever been within the
-specified maximum distance.
+Tests whether two moving objects have ever been closer than the specified distance.
       </para>
 			<para>
 Inputs must be valid trajectories as checked by

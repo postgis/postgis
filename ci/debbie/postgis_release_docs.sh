@@ -35,7 +35,7 @@ CPPFLAGS="-I${PGPATH}/include"  \
 LDFLAGS="-L${PGPATH}/lib"  ./configure \
   --with-pgconfig=${PGPATH}/bin/pg_config \
   --with-geosconfig=${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/geos-config \
-  --without-raster --without-wagyu
+  --without-raster --without-protobuf
 make clean
 
 # generating postgis_revision.h in case hasn't been generated
@@ -70,7 +70,7 @@ cp html/images/* images
 make epub
 make -e chunked-html-web 2>&1 | tee -a doc-errors.log
 
-if [[ "$reference" == *"master"* ]]; then  #only do this for trunk because only trunk follows transifex
+if [[ "$reference" == *"main"* ]]; then  #only do this for main branch because only main follows transifex
   make update-pot
   make pull-tx
   make -C po/it_IT/ local-html

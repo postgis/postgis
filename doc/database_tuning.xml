@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <sect1 id="database_tuning_configuration">
-  <title>Tuning your configuration for performance</title>
+  <title>Performance Tuning</title>
 
-  <para>Tuning for PostGIS is much like tuning for any PostgreSQL workload.  The only additional note to keep in mind is that
-  geometries and rasters are heavy so memory related optimizations generally have more of an impact on PostGIS than other types of PostgreSQL queries.</para>
+  <para>Tuning for PostGIS performance is much like tuning for any PostgreSQL workload.
+  The only additional consideration is that geometries and rasters are usually large,
+  so memory-related optimizations generally have more of an impact on PostGIS than other types of PostgreSQL queries.</para>
 
   <para>For general details about optimizing PostgreSQL, refer to <ulink url="https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server">Tuning your PostgreSQL Server</ulink>.</para>
 
-  <para>For PostgreSQL 9.4+ all these can be set at the server level without touching postgresql.conf or postgresql.auto.conf
-  by using the <code>ALTER SYSTEM..</code> command.</para>
+  <para>For PostgreSQL 9.4+ configuration can be set at the server level without touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code>
+  by using the <code>ALTER SYSTEM</code> command.</para>
   <programlisting>ALTER SYSTEM SET work_mem = '256MB';
--- this will force, non-startup configs to take effect for new connections
+-- this forces non-startup configs to take effect for new connections
 SELECT pg_reload_conf();
 -- show current setting value
 -- use SHOW ALL to see all settings
 SHOW work_mem;</programlisting>
 
-<para>In addition to these settings, PostGIS also has some custom settings which you can find listed in <xref linkend="PostGIS_GUC" />.</para>
+<para>In addition to the Postgres settings, PostGIS has some custom settings which are listed in <xref linkend="PostGIS_GUC" />.</para>
 
     <sect2>
       <title>Startup</title>
 
       <para>
-        These settings are configured in postgresql.conf:
+        These settings are configured in <code>postgresql.conf</code>:
       </para>
 
       <para>
@@ -89,7 +90,8 @@ SHOW work_mem;</programlisting>
       <title>Runtime</title>
 
       <para>
-        <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-WORK-MEM">work_mem</ulink> (the memory used for sort operations and complex queries)
+        <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-WORK-MEM">work_mem</ulink>
+         - sets the size of memory used for sort operations and complex queries
       </para>
 
       <itemizedlist>
@@ -117,7 +119,8 @@ SHOW work_mem;</programlisting>
       </itemizedlist>
 
       <para>
-        <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</ulink> (used for VACUUM, CREATE INDEX, etc.)
+        <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</ulink>
+        - the memory size used for VACUUM, CREATE INDEX, etc.
       </para>
 
       <itemizedlist>
@@ -174,4 +177,3 @@ SHOW work_mem;</programlisting>
     </sect2>
 
 </sect1>
-

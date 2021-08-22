@@ -234,8 +234,9 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         <ulink url="https://en.wikipedia.org/wiki/K-means_clustering">K-means</ulink>
         cluster number for each input geometry. The distance used for clustering is the
         distance between the centroids for 2D geometries, and distance between bounding box centers for 3D geometries.
+        For POINT inputs, M coordinate will be treated as weight of input and has to be larger than 0.
       </para>
-      <para>Enhanced: 3.1.0 Support for 3D geometries</para>
+      <para>Enhanced: 3.1.0 Support for 3D geometries and weights</para>
       <para>Availability: 2.3.0</para>
     </refsection>
 

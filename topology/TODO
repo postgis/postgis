@@ -15,6 +15,7 @@
 - within
 - overlaps
 - contains
+- covers (#4879)
 - relate
 
 # Geometry editing

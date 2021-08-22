@@ -483,15 +483,18 @@ SELECT
 FROM (
 	SELECT
 		d.rid,
-		(ST_MetaData(d.rast)).*,
-		(ST_SummaryStats(d.rast)).*,
-		(ST_BandMetaData(d.rast)).*,
+		mda.*,
+		ssum.*,
+		bmd.*,
 		CASE
 			WHEN d.rid LIKE '4.%'
 				THEN ST_SameAlignment(ST_Transform(d.rast, 992163), r.rast)
 			ELSE NULL
 		END AS same_alignment
 	FROM raster_asraster_dst d
+		LEFT JOIN LATERAL ST_MetaData(d.rast) AS mda ON true
+		LEFT JOIN LATERAL ST_SummaryStats(d.rast) AS ssum ON true
+		LEFT JOIN LATERAL ST_BandMetaData(d.rast) AS bmd ON true
 	CROSS JOIN raster_asraster_rast r
 	ORDER BY d.rid
 ) foo;

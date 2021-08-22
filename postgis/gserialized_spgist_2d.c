@@ -291,7 +291,8 @@ PGDLLEXPORT Datum gserialized_spgist_config_2d(PG_FUNCTION_ARGS)
 {
 	spgConfigOut *cfg = (spgConfigOut *)PG_GETARG_POINTER(1);
 	Oid boxoid = InvalidOid;
-	postgis_initialize_cache(fcinfo);
+	/* We need to initialize the internal cache to access it later via postgis_oid() */
+	postgis_initialize_cache();
 	boxoid = postgis_oid(BOX2DFOID);
 
 	cfg->prefixType = boxoid;

@@ -119,7 +119,6 @@ XML_SOURCES = \
 	faq.xml \
 	installation.xml \
 	administration.xml \
-	usage.xml \
 	database_tuning.xml \
 	introduction.xml \
 	performance_tips.xml \
@@ -138,6 +137,7 @@ XML_SOURCES = \
 	reference_sfcgal.xml \
 	reference_operator.xml \
 	reference_output.xml \
+	reference_overlay.xml \
 	reference_processing.xml \
 	reference_raster.xml \
 	reference_relationship.xml \
@@ -154,6 +154,7 @@ XML_SOURCES = \
 	reporting.xml \
 	using_postgis_app.xml \
 	using_postgis_dataman.xml \
+	using_postgis_query.xml \
 	using_raster_dataman.xml
 
 XML_GENERATED_SOURCES = \
@@ -480,4 +481,3 @@ requirements_not_met_imagemagick:
 	@echo
 	@echo "  http://postgis.net/documentation"
 	@echo
-

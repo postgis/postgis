@@ -123,12 +123,14 @@
 
 #include "liblwgeom.h"
 
-#include "gdal_alg.h"
-#include "gdal_frmts.h"
 #include "gdal.h"
+#include "gdalgrid.h" /* for ParseAlgorithmAndOptions */
+#include "gdal_frmts.h"
 #include "gdalwarper.h"
 #include "cpl_vsi.h"
 #include "cpl_conv.h"
+#include "cpl_string.h"
+#include "cpl_minixml.h"
 #include "ogr_api.h"
 #include "ogr_srs_api.h"
 
@@ -226,6 +228,7 @@ typedef enum {
 /**
 * Global functions for memory/logging handlers.
 */
+typedef char* (*rt_options)(const char* varname);
 typedef void* (*rt_allocator)(size_t size);
 typedef void* (*rt_reallocator)(void *mem, size_t size);
 typedef void  (*rt_deallocator)(void *mem);
@@ -240,7 +243,6 @@ typedef void  (*rt_message_handler)(const char* string, va_list ap)
  * Apply the default memory management (malloc() and free()) and error handlers.
  */
 extern void rt_install_default_allocators(void);
-
 
 /**
  * Wrappers used for managing memory. They simply call the functions defined by
@@ -260,6 +262,11 @@ void rterror(const char *fmt, ...);
 void rtinfo(const char *fmt, ...);
 void rtwarn(const char *fmt, ...);
 
+/**
+ * Wrappers used for options
+ */
+char* rtoptions(const char* varname);
+char* rtstrdup(const char *str);
 
 /**
 * The default memory/logging handlers installed by lwgeom_install_default_allocators()
@@ -270,7 +277,7 @@ void default_rt_deallocator(void * mem);
 void default_rt_error_handler(const char * fmt, va_list ap);
 void default_rt_warning_handler(const char * fmt, va_list ap);
 void default_rt_info_handler(const char * fmt, va_list ap);
-
+char * default_rt_options(const char* varname);
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -306,6 +313,11 @@ void default_rt_info_handler(const char * fmt, va_list ap);
 void rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
         rt_deallocator deallocator, rt_message_handler error_handler,
         rt_message_handler info_handler, rt_message_handler warning_handler);
+
+void rt_set_handlers_options(rt_allocator allocator, rt_reallocator reallocator,
+        rt_deallocator deallocator, rt_message_handler error_handler,
+        rt_message_handler info_handler, rt_message_handler warning_handler,
+        rt_options options_handler);
 
 
 
@@ -1360,6 +1372,27 @@ rt_errorstate rt_raster_geopoint_to_cell(
 	double *igt
 );
 
+
+/**
+ * Convert an xw,yw map point to a xr,yr raster point
+ *
+ * @param raster : the raster to get info from
+ * @param xw : X ordinate of the geographical point
+ * @param yw : Y ordinate of the geographical point
+ * @param xr : output parameter, the x ordinate in raster space
+ * @param yr : output parameter, the y ordinate in raster space
+ * @param igt : input/output parameter, inverse geotransform matrix
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate rt_raster_geopoint_to_rasterpoint(
+	rt_raster raster,
+	double xw, double yw,
+	double *xr, double *yr,
+	double *igt
+);
+
+
 /**
  * Get raster's convex hull.
  *
@@ -1395,6 +1428,72 @@ rt_errorstate rt_raster_get_envelope(rt_raster raster, rt_envelope *env);
  * @return ES_NONE if success, ES_ERROR if error
  */
 rt_errorstate rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env);
+
+/**
+ * Retrieve a point value from the raster using a world coordinate
+ * and bilinear interpolation.
+ *
+ * @param band : the band to read for values
+ * @param xr : x unrounded raster coordinate
+ * @param yr : y unrounded raster coordinate
+ * @param r_value : return pointer for point value
+ * @param r_nodata : return pointer for if this is a nodata
+ *
+ * @return ES_ERROR on error, otherwise ES_NONE
+ */
+rt_errorstate rt_band_get_pixel_bilinear(
+	rt_band band,
+	double xr, double yr,
+	double *r_value, int *r_nodata
+);
+
+typedef enum {
+	RT_NEAREST,
+	RT_BILINEAR
+} rt_resample_type;
+
+/**
+ * Retrieve a point value from the raster using a world coordinate
+ * and selected resampling method.
+ *
+ * @param band : the band to read for values
+ * @param xr : x unrounded raster coordinate
+ * @param yr : y unrounded raster coordinate
+ * @param resample : algorithm for reading raster (nearest or bilinear)
+ * @param r_value : return pointer for point value
+ * @param r_nodata : return pointer for if this is a nodata
+ *
+ * @return ES_ERROR on error, otherwise ES_NONE
+ */
+rt_errorstate rt_band_get_pixel_resample(
+	rt_band band,
+	double xr, double yr,
+	rt_resample_type resample,
+	double *r_value, int *r_nodata
+);
+
+/**
+ * Copy values from a raster to the points on a geometry
+ * using the requested interpolation type.
+ * and selected interpolation.
+ *
+ * @param raster : the raster to read for values
+ * @param bandnum : the band number to read from
+ * @param dim : the geometry dimension to copy values into 'Z' or 'M'
+ * @param resample : algorithm for reading raster (nearest or bilinear)
+ * @param lwgeom_in : the input geometry
+ * @param lwgeom_out : pointer for the output geometry
+ *
+ * @return ES_ERROR on error, otherwise ES_NONE
+ */
+rt_errorstate rt_raster_copy_to_geometry(
+	rt_raster raster,
+	uint32_t bandnum,
+	char dim, /* 'Z' or 'M' */
+	rt_resample_type resample,
+	const LWGEOM *lwgeom_in,
+	LWGEOM **lwgeom_out
+);
 
 /**
  * Get raster perimeter
@@ -1631,6 +1730,40 @@ GDALDatasetH rt_raster_to_gdal_mem(
 	int count,
 	GDALDriverH *rtn_drv, int *destroy_rtn_drv
 );
+
+/*
+* Generate contour vectors from a raster input
+*/
+struct rt_contour_t {
+	GSERIALIZED *geom;
+	double elevation;
+	int id;
+};
+
+/**
+ * Return palloc'ed list of contours.
+ * @param src_raster : raster to generate contour from
+ * @param options : CSList of OPTION=VALUE strings for the
+ *   contour routine, see https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv419GDALContourGenerate15GDALRasterBandHddiPdidPvii16GDALProgressFuncPv
+ * @param src_srs : Coordinate reference system string for raster
+ * @param ncontours : Output parameter for length of contour list
+ * @param contours : palloc'ed list of contours, caller to free
+ */
+int rt_raster_gdal_contour(
+	/* input parameters */
+	rt_raster src_raster,
+	int src_band,
+	int src_srid,
+	const char* src_srs,
+	double contour_interval,
+	double contour_base,
+	int fixed_level_count,
+	double *fixed_levels,
+	int polygonize,
+	/* output parameters */
+	size_t *ncontours,
+	struct rt_contour_t **contours
+	);
 
 /**
  * Return a raster from a GDAL dataset
@@ -2189,6 +2322,7 @@ rt_util_gdal_driver_registered(const char *drv);
 */
 GDALDatasetH
 rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
+
 
 void
 rt_util_from_ogr_envelope(

@@ -1,10 +1,3 @@
-t
-9
-22
-26
-1
-2
-3
 S1-vanilla|<gml:TopoPoint><gml:directedNode><gml:Node gml:id="N14"><gml:pointProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">21 14</gml:pos></gml:Point></gml:pointProperty></gml:Node></gml:directedNode></gml:TopoPoint>
 S2-vanilla|<gml:TopoPoint><gml:directedNode><gml:Node gml:id="N13"><gml:pointProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">35 14</gml:pos></gml:Point></gml:pointProperty></gml:Node></gml:directedNode></gml:TopoPoint>
 S3-vanilla|<gml:TopoPoint><gml:directedNode><gml:Node gml:id="N6"><gml:pointProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="2">57 33</gml:pos></gml:Point></gml:pointProperty></gml:Node></gml:directedNode></gml:TopoPoint>

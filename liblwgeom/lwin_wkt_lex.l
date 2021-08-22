@@ -34,6 +34,17 @@ static void wkt_lexer_unknown()
 	LWDEBUGF(5,"lex: %s", wkt_yytext); \
 	} while (0);
 
+/*
+* Ensure we have a definition of NAN to use when encountering
+* NAN tokens.
+*/
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#include <math.h>
+#ifndef NAN
+#define NAN 0.0/0.0
+#endif
 
 %}
 
@@ -54,6 +65,13 @@ static void wkt_lexer_unknown()
 	yyless(wkt_yyleng-1);
 	return DOUBLE_TOK;
 	}
+
+([Nn][Aa][Nn])[ \,\)\t\n\r] {
+	LWDEBUG(5,"DOUBLE NAN");
+	wkt_yylval.doublevalue = NAN;
+	yyless(wkt_yyleng-1);
+	return DOUBLE_TOK;
+}
 
 SRID=-?[0-9]+ {
 	LWDEBUG(5,"SRID");

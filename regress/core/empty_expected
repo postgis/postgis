@@ -44,10 +44,12 @@ ST_Equals(empty1, empty2) == TRUE|t
 ST_IsSimple(empty) == TRUE|t
 ST_IsValid(empty) == TRUE|t
 ST_NumGeometries(empty) == 0|0
+ST_NumGeometries(emptycollection) == 0|0
 ST_NRings(empty) == 0|0
 ST_NumPoints(empty) == 0|0
 ST_NPoints(empty) == 0|0
-ST_GeometryN(empty, n) == empty|010300000000000000
+ST_GeometryN(empty, n) == NULL|
+ST_GeometryN(emptycollection, n) == NULL|
 ST_ExteriorRing(empty) == empty|010200000000000000
 ST_InteriorRingN(empty, n) == NULL|
 ST_Area(empty) == 0|0

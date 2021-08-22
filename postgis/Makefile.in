@@ -18,6 +18,7 @@
 # *
 # **********************************************************************
 # *
+# * Copyright 2020 Regina Obe
 # * Copyright 2008 Mark Cave-Ayland
 # *
 # **********************************************************************
@@ -38,35 +39,26 @@ SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql legacy.sql unins
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring pre-processing)
-SQL_objs=postgis.sql legacy.sql legacy_minimal.sql
+SQL_OBJS = \
+	postgis.sql \
+	legacy.sql \
+	legacy_minimal.sql
 
 GEOM_BACKEND_OBJ = lwgeom_geos.o
-SFCGAL_BACKEND_OBJ = lwgeom_sfcgal.o
 
-ifeq (@SFCGAL@,sfcgal)
-DATA_built=$(SQL_built) sfcgal.sql sfcgal_upgrade.sql uninstall_sfcgal.sql
-SQL_OBJS=$(SQL_objs) sfcgal.sql
-BACKEND_OBJ=$(GEOM_BACKEND_OBJ) $(SFCGAL_BACKEND_OBJ)
-else
 BACKEND_OBJ=$(GEOM_BACKEND_OBJ)
 DATA_built=$(SQL_built)
-SQL_OBJS=$(SQL_objs)
-endif
 
 ifeq (@HAVE_SPGIST@,yes)
 SPGIST_OBJ= gserialized_spgist_2d.o gserialized_spgist_3d.o gserialized_spgist_nd.o
 endif
 
-ifeq (@HAVE_PROTOBUF@,yes)
-PROTOBUF_OBJ = vector_tile.pb-c.o
-ifeq (@HAVE_GEOBUF@,yes)
-PROTOBUF_OBJ += geobuf.pb-c.o
-endif
-UTHASH_INCLUDE = -I../deps/uthash/include
-endif
-
 WAGYU_LIBPATH = ../deps/wagyu/@WAGYU_LIB@
-ifeq (@HAVE_WAGYU@,yes)
+
+ifeq (@HAVE_PROTOBUF@,yes)
+PROTOBUF_OBJ = vector_tile.pb-c.o geobuf.pb-c.o
+UTHASH_INCLUDE = -I../deps/uthash/include
+
 WAYGU_INCLUDE = -I../deps/wagyu
 WAYGU_LIB = $(WAGYU_LIBPATH) @WAGYU_LDFLAGS@
 WAGYU_DEP = $(WAGYU_LIBPATH)
@@ -146,12 +138,6 @@ OBJS=$(PG_OBJS)
 PG_CPPFLAGS += -I../liblwgeom @CFLAGS@ -I../libpgcommon $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = $(WAYGU_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
-# Add SFCGAL Flags if defined
-ifeq (@SFCGAL@,sfcgal)
-PG_CPPFLAGS += @SFCGAL_CPPFLAGS@
-SHLIB_LINK_F += @SFCGAL_LDFLAGS@
-endif
-
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS) \
 	uninstall_postgis.sql \
@@ -159,8 +145,6 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	uninstall_sfcgal.sql \
 	postgis_upgrade.sql.in \
 	postgis_upgrade.sql \
-	sfcgal_upgrade.sql.in \
-	sfcgal_upgrade.sql \
 	vector_tile.pb-c.c \
 	vector_tile.pb-c.h \
 	geobuf.pb-c.c \
@@ -231,10 +215,8 @@ geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
 ifeq (@HAVE_PROTOBUF@,yes)
 lwgeom_out_mvt.o: vector_tile.pb-c.h
 mvt.o: vector_tile.pb-c.h
-ifeq (@HAVE_GEOBUF@,yes)
 lwgeom_out_geobuf.o: geobuf.pb-c.h
 geobuf.o: geobuf.pb-c.h
-endif
 endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
@@ -254,12 +236,6 @@ postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_a
 	cat $^ >> $@
 	echo "COMMIT;" >> $@
 
-sfcgal_upgrade.sql.in: sfcgal.sql ../utils/postgis_proc_upgrade.pl
-	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
-
-sfcgal_upgrade.sql: sfcgal_upgrade.sql.in postgis_after_upgrade.sql
-	cat $^ > $@
-
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
 $(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 
@@ -269,9 +245,6 @@ uninstall_postgis.sql: postgis.sql ../utils/create_undef.pl
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 uninstall_legacy.sql: legacy.sql ../utils/create_undef.pl
-	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
-
-uninstall_sfcgal.sql: sfcgal.sql ../utils/create_undef.pl
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean

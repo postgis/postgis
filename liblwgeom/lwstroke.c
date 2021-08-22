@@ -72,8 +72,6 @@ lwgeom_has_arc(const LWGEOM *geom)
 	case TINTYPE:
 		return LW_FALSE;
 	case CIRCSTRINGTYPE:
-	case CURVEPOLYTYPE:
-	case COMPOUNDTYPE:
 		return LW_TRUE;
 	/* It's a collection that MAY contain an arc */
 	default:
@@ -87,7 +85,21 @@ lwgeom_has_arc(const LWGEOM *geom)
 	}
 }
 
-
+int
+lwgeom_type_arc(const LWGEOM *geom)
+{
+	switch (geom->type)
+	{
+	case COMPOUNDTYPE:
+	case CIRCSTRINGTYPE:
+	case CURVEPOLYTYPE:
+	case MULTISURFACETYPE:
+	case MULTICURVETYPE:
+		return LW_TRUE;
+	default:
+		return LW_FALSE;
+	}
+}
 
 /*******************************************************************************
  * Begin curve segmentize functions

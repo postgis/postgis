@@ -93,3 +93,129 @@ END
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- }
+
+
+-- {
+-- Add the component of a TopoGeometry to the definition of
+-- another TopoGeometry.
+--
+-- The two TopoGeometry objects need to be defined on the *same*
+-- topology and need to be compatible (both simple or built over
+-- the same child layer, and the target TopoGeometry needs to allow
+-- for holding components of the type found in the source TopoGeometry)
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.TopoGeom_addTopoGeom(tgt topology.TopoGeometry, src topology.TopoGeometry)
+  RETURNS topology.TopoGeometry
+AS
+$BODY$
+DECLARE
+  sql TEXT;
+  topo topology.topology;
+  srcElementTypes int[];
+  srcLayer topology.layer;
+  tgtLayer topology.layer;
+  maxElemType int;
+BEGIN
+
+  -- Get topology information
+  topo := topology.FindTopology(topology_id(src));
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Source TopoGeometry is "%", its topology_id is "%"', src, topo.id;
+#endif
+
+  IF topology_id(src) != topology_id(tgt) THEN
+    RAISE EXCEPTION 'Source and target TopoGeometry objects need be defined on the same topology';
+  END IF;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Target TopoGeometry is "%"', tgt;
+#endif
+
+  SELECT * FROM topology.layer
+  WHERE topology_id = topo.id
+    AND layer_id = layer_id(src)
+  INTO srcLayer;
+
+  SELECT * FROM topology.layer
+  WHERE topology_id = topo.id
+    AND layer_id = layer_id(tgt)
+  INTO tgtLayer;
+
+  -- Check simple/hierarchical compatibility
+  IF srcLayer.child_id IS NULL THEN
+    IF srcLayer.child_id IS NOT NULL THEN
+      RAISE EXCEPTION 'Cannot add components of hierarchical TopoGeometry to a non-hierarchical TopoGeometry';
+    END IF;
+  ELSIF tgtLayer.child_id IS NULL THEN
+      RAISE EXCEPTION 'Cannot add components of non-hierarchical TopoGeometry to a hierarchical TopoGeometry';
+  ELSIF tgtLayer.child_id != srcLayer.childId THEN
+      RAISE EXCEPTION 'Cannot add components of hierarchical TopoGeometry to a hierarchical TopoGeometry based on different layer';
+  END IF;
+
+  -- Add every element of the source TopoGeometry to
+  -- the definition of the target TopoGeometry
+  sql := format($$
+WITH inserted AS (
+  INSERT INTO %1$I.relation(
+    topogeo_id,
+    layer_id,
+    element_id,
+    element_type
+  )
+  SELECT %2$s, %3$s, element_id, element_type
+  FROM %1$I.relation
+  WHERE topogeo_id = %4$L
+  AND layer_id = %5$L
+  EXCEPT
+  SELECT %2$s, %3$s, element_id, element_type
+  FROM %1$I.relation
+  WHERE topogeo_id = %2$L
+  AND layer_id = %3$L
+  RETURNING element_type
+)
+SELECT array_agg(DISTINCT element_type) FROM inserted
+    $$,
+    topo.name,      -- %1
+    id(tgt),        -- %2
+    layer_id(tgt),  -- %3
+    id(src),        -- %4
+    layer_id(src)   -- %5
+  );
+
+  RAISE DEBUG 'SQL: %', sql;
+
+  EXECUTE sql INTO srcElementTypes;
+
+  -- TODO: Check layer's feature_type compatibility ?
+  -- or let the relationTrigger take care of it ?
+--  IF tgtLayer.feature_type != 4 THEN -- 'mixed' typed target can accept anything
+--    IF srcLayer.feature_type != tgtLayer.feature_type THEN
+--    END IF;
+--  END IF;
+
+  RAISE DEBUG 'Target type: %', type(tgt);
+  RAISE DEBUG 'Detected source element types: %', srcElementTypes;
+
+  -- Check if target TopoGeometry type needs be changed
+  IF type(tgt) != 4 -- collection TopoGeometry accept anything
+  THEN
+    IF array_upper(srcElementTypes, 1) > 1
+    OR srcElementTypes[1] != tgt.type
+    THEN
+      -- source is mixed-typed or typed differently from
+      -- target, so we turn target type to collection
+      RAISE DEBUG 'Changing target element type to collection';
+      tgt.type = 4;
+    END IF;
+  END IF;
+
+
+
+
+  RETURN tgt;
+END
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+-- }

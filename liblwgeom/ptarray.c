@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2012-2021 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  **********************************************************************/
@@ -941,7 +941,7 @@ ptarrayarc_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int c
 		}
 
 		/* Going "down"! */
-		if ( side > 0 && (seg2->y <= pt->y) && (pt->y < seg1->y) )
+		if ( side > 0 && (seg3->y <= pt->y) && (pt->y < seg1->y) )
 		{
 			wn--;
 		}
@@ -1293,6 +1293,68 @@ closest_point_on_segment(const POINT4D *p, const POINT4D *A, const POINT4D *B, P
 	ret->y = A->y + ( (B->y - A->y) * r );
 	ret->z = A->z + ( (B->z - A->z) * r );
 	ret->m = A->m + ( (B->m - A->m) * r );
+}
+
+int
+ptarray_closest_segment_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist)
+{
+	const POINT2D *start = getPoint2d_cp(pa, 0), *end = NULL;
+	uint32_t t, seg=0;
+	double mindist=DBL_MAX;
+
+	/* Loop through pointarray looking for nearest segment */
+	for (t=1; t<pa->npoints; t++)
+	{
+		double dist_sqr;
+		end = getPoint2d_cp(pa, t);
+		dist_sqr = distance2d_sqr_pt_seg(qp, start, end);
+
+		if (dist_sqr < mindist)
+		{
+			mindist = dist_sqr;
+			seg=t-1;
+			if ( mindist == 0 )
+			{
+				LWDEBUG(3, "Breaking on mindist=0");
+				break;
+			}
+		}
+
+		start = end;
+	}
+
+	if ( dist ) *dist = sqrt(mindist);
+	return seg;
+}
+
+
+int
+ptarray_closest_vertex_2d(const POINTARRAY *pa, const POINT2D *qp, double *dist)
+{
+	uint32_t t, pn=0;
+	const POINT2D *p;
+	double mindist = DBL_MAX;
+
+	/* Loop through pointarray looking for nearest segment */
+	for (t=0; t<pa->npoints; t++)
+	{
+		double dist_sqr;
+		p = getPoint2d_cp(pa, t);
+		dist_sqr = distance2d_sqr_pt_pt(p, qp);
+
+		if (dist_sqr < mindist)
+		{
+			mindist = dist_sqr;
+			pn = t;
+			if ( mindist == 0 )
+			{
+				LWDEBUG(3, "Breaking on mindist=0");
+				break;
+			}
+		}
+	}
+	if ( dist ) *dist = sqrt(mindist);
+	return pn;
 }
 
 /*
@@ -2082,3 +2144,79 @@ ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
 }
 
 
+/*
+ * Reorder the vertices of a closed pointarray so that the
+ * given point is the first/last one.
+ *
+ * Error out if pointarray is not closed or it does not
+ * contain the given point.
+ */
+int
+ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *pt)
+{
+	POINTARRAY *tmp;
+	int found;
+	uint32_t it;
+	int ptsize;
+
+	if ( ! ptarray_is_closed_2d(pa) )
+	{
+		lwerror("ptarray_scroll_in_place: input POINTARRAY is not closed");
+		return LW_FAILURE;
+	}
+
+	ptsize = ptarray_point_size(pa);
+
+	/* Find the point in the array */
+	found = 0;
+	for ( it = 0; it < pa->npoints; ++it )
+	{
+		if ( ! memcmp(getPoint_internal(pa, it), pt, ptsize) )
+		{
+			found = 1;
+			break;
+		}
+	}
+
+	if ( ! found )
+	{
+		lwerror("ptarray_scroll_in_place: input POINTARRAY does not contain the given point");
+		return LW_FAILURE;
+	}
+
+	if ( 0 == it )
+	{
+		/* Point is already the start/end point, just clone the input */
+		return LW_SUCCESS;
+	}
+
+	/* TODO: reduce allocations */
+	tmp = ptarray_construct(FLAGS_GET_Z(pa->flags), FLAGS_GET_M(pa->flags), pa->npoints);
+
+	bzero(getPoint_internal(tmp, 0), ptsize * pa->npoints);
+	/* Copy the block from found point to last point into the output array */
+	memcpy(
+		getPoint_internal(tmp, 0),
+		getPoint_internal(pa, it),
+		ptsize * ( pa->npoints - it )
+	);
+
+	/* Copy the block from second point to the found point into the last portion of the
+   * return */
+	memcpy(
+		getPoint_internal(tmp, pa->npoints - it),
+		getPoint_internal(pa, 1),
+		ptsize * ( it )
+	);
+
+	/* Copy the resulting pointarray back to source one */
+	memcpy(
+		getPoint_internal(pa, 0),
+		getPoint_internal(tmp, 0),
+		ptsize * ( pa->npoints )
+	);
+
+	ptarray_free(tmp);
+
+	return LW_SUCCESS;
+}

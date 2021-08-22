@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8.0
-	export GDAL_VER=2.4.4
-	export PROJ_VER=5.2.0
-	export SFCGAL_VER=1.3.8
+	export GEOS_VER=3.9.0
+	export GDAL_VER=3.2.0
+	export PROJ_VER=7.1.1
+	export SFCGAL_VER=1.3.9
 	export CGAL_VER=5.0.2
 	export ICON_VER=1.15
 	export ZLIB_VER=1.2.11
   export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
-	export PROJSO=libproj-13.dll
+	export PROJSO=libproj-19.dll
 fi;
 
 export PROTOBUF_VER=3.2.0
@@ -20,7 +20,7 @@ export JSON_VER=0.12
 export PCRE_VER=8.33
 
 if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.15
+  export ICON_VER=1.16
 fi;
 
 echo "ICON_VER ${ICON_VER}"
@@ -38,7 +38,7 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=4.11
+  export CGAL_VER=5.0
 fi;
 
 echo "ZLIB_VER $ZLIB_VER"
@@ -99,6 +99,9 @@ export PKG_CONFIG_PATH="${PROJECTS}/sqlite/rel-sqlite3w${OS_BUILD}${GCC_TYPE}/li
 export SHLIB_LINK="-static-libstdc++ -lstdc++ -Wl,-Bdynamic -lm"
 CPPFLAGS="-I${PGPATH}/include -I${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/include"
 
+#needed for proj.db to be found during cunit - for some reason on winnie it doesn't set
+export PROJ_LIB=${PROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/share/proj
+
 #add protobuf
 export PATH="${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 
@@ -131,10 +134,10 @@ fi
 
 if [ -n "$SFCGAL_VER" ]; then
 	##hard code versions of cgal etc. for now
-	export CGAL_VER=4.11
-	BOOST_VER=1.53.0
+	#export CGAL_VER=4.11
+	BOOST_VER=1.59.0
 	#BOOST_VER_WU=1_49_0
-	export BOOST_VER_WU=1_53_0
+	export BOOST_VER_WU=1_59_0
 	export PATH="${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/boost/rel-${BOOST_VER_WU}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 
 
@@ -188,6 +191,7 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  strip raster/rt_pg/postgis_raster-*.dll
  cp topology/*.dll ${PGPATHEDB}/lib
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
+ cp sfcgal/*.dll ${PGPATHEDB}/lib
  cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
  cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
  cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${PGPATHEDB}/share/extension

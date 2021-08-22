@@ -18,6 +18,8 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 
+topsrcdir = $(realpath ../)
+
 # Where we put our regression installation
 ifeq ($(MINGWBUILD),1)
 	srcdir=$(shell bash -c "pwd -W")
@@ -43,22 +45,26 @@ check: check-regress
 
 check-unit:
 
-check-regress: staged-install
-	$(MAKE) -C core check
-ifeq ($(HAVE_SFCGAL),yes)
-	$(MAKE) -C sfcgal check
-endif
+include core/tests.mk
+include loader/tests.mk
+include dumper/tests.mk
+
+include runtest.mk
 
 clean:
-	$(MAKE) -C core $@
-	$(MAKE) -C sfcgal $@
 	rm -rf $(REGRESS_INSTALLDIR)
 	rm -f postgis_garden_result.txt
 
 distclean: clean
-	$(MAKE) -C core $@
-	$(MAKE) -C sfcgal $@
 	rm -f Makefile
+	rm -f core/Makefile
+	rm -f loader/Makefile
+	rm -f dumper/Makefile
+
+staged-install-sfcgal:
+	@if test x"@SFCGAL@" != "x"; then \
+		$(MAKE) -C ../sfcgal REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
+	fi
 
 staged-install-topology:
 	@if test x"@TOPOLOGY@" != "x"; then \
@@ -70,11 +76,17 @@ staged-install-raster:
 		$(MAKE) -C ../raster/rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
 	fi
 
-staged-install: staged-install-raster staged-install-topology
+staged-install-core:
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 	$(MAKE) -C ../ REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) comments-install
-	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+
+staged-install:
+	$(MAKE) staged-install-core
+	$(MAKE) staged-install-raster
+	$(MAKE) staged-install-topology
+	$(MAKE) staged-install-sfcgal
+	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 
 garden: staged-install
 	createdb postgis_garden

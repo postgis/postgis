@@ -1,2 +1,2 @@
-unlink "loader/BasicOutDB.tif";
-unlink "loader/BasicOutDB.opts";
+unlink $TEST . ".tif";
+unlink $TEST . ".opts";
