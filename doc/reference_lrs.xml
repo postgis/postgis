@@ -416,14 +416,17 @@ WITH data(id, geom) AS (VALUES
         ( 'B', 'LINESTRING( 0 100, 350 100)'::geometry ),
         ( 'C', 'LINESTRING( 0 200, 50 200)'::geometry )
     )
-SELECT id, i, ST_AsText( ST_LineSubstring( d.geom, startfrac, LEAST( endfrac, 1 )) ) AS geom
-FROM (SELECT id, geom, ST_Length(geom) len, 100 sublen FROM data) AS d
+SELECT id, i,
+       ST_AsText( ST_LineSubstring( geom, startfrac, LEAST( endfrac, 1 )) ) AS geom
+FROM (
+    SELECT id, geom, ST_Length(geom) len, 100 sublen FROM data
+    ) AS d
 CROSS JOIN LATERAL (
     SELECT i, (sublen * i) / len AS startfrac,
               (sublen * (i+1)) / len AS endfrac
-        FROM generate_series(0, floor( d.len / sublen )::integer ) AS t(i)
-        -- skip last i if line length is exact multiple of sublen
-        WHERE (sublen * i)/len &lt;&gt; 1.0
+    FROM generate_series(0, floor( len / sublen )::integer ) AS t(i)
+    -- skip last i if line length is exact multiple of sublen
+    WHERE (sublen * i) / len &lt;&gt; 1.0
     ) AS d2;
 
  id | i |            geom
