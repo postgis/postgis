@@ -203,7 +203,7 @@ BEGIN
 EOF
         print "OR version_from_num IN ( ${missing} )" if ($missing);
         print <<"EOF";
-     FROM _postgis_upgrade_info
+     FROM _postgis_upgrade_info()
   THEN
       EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
   END IF;
@@ -286,7 +286,7 @@ BEGIN
     EXECUTE \$postgis_proc_upgrade_parsed_def\$ $pg12_def \$postgis_proc_upgrade_parsed_def\$;
   ELSIF $last_updated > version_from_num OR (
       $last_updated = version_from_num AND version_from_isdev
-    ) FROM _postgis_upgrade_info
+    ) FROM _postgis_upgrade_info()
   THEN
     EXECUTE 'DROP AGGREGATE IF EXISTS $aggsig';
     EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
@@ -322,7 +322,7 @@ EOF
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  --IF $last_updated > version_from_num FROM _postgis_upgrade_info
+  --IF $last_updated > version_from_num FROM _postgis_upgrade_info()
     --We trust presence of operator rather than version info
     IF NOT EXISTS (
         SELECT o.oprname
@@ -405,7 +405,7 @@ EOF
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info() THEN
     EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
   END IF;
 END
@@ -477,7 +477,7 @@ DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
 
-  IF $last_updated > version_from_num FROM _postgis_upgrade_info
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info()
   THEN
     EXECUTE \$postgis_proc_upgrade_parsed_def\$
     $def    \$postgis_proc_upgrade_parsed_def\$;
@@ -490,7 +490,7 @@ EOF
             print <<"EOF";
   $ELSE
     -- Last Updated: ${last_updated}
-    IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+    IF $last_updated > version_from_num FROM _postgis_upgrade_info() THEN
       EXECUTE \$postgis_proc_upgrade_parsed_def\$
         ALTER OPERATOR FAMILY ${opclassname} USING ${opcidx}
           ADD $def;
@@ -511,7 +511,7 @@ EOF
 
 close(INPUT);
 
-print "DROP TABLE _postgis_upgrade_info;\n";
+print "DROP FUNCTION _postgis_upgrade_info();\n";
 
 #print "COMMIT;\n";
 
@@ -525,6 +525,8 @@ DECLARE
     new_scripts text;
     old_maj text;
     new_maj text;
+    postgis_upgrade_info RECORD;
+    postgis_upgrade_info_func_code TEXT;
 BEGIN
     --
     -- This uses postgis_lib_version() rather then
@@ -557,24 +559,50 @@ BEGIN
     IF old_maj != new_maj THEN
         RAISE EXCEPTION 'Upgrade of MODULE from version % to version % requires a dump/reload. See PostGIS manual for instructions', old_scripts, new_scripts;
     END IF;
+
+    WITH versions AS (
+      SELECT 'NEWVERSION'::text as upgraded,
+      MODULE_scripts_installed() as installed
+    ) SELECT
+      upgraded as scripts_upgraded,
+      installed as scripts_installed,
+      substring(upgraded from '([0-9]+)\.')::int * 100 +
+      substring(upgraded from '[0-9]+\.([0-9]+)(\.|$)')::int
+        as version_to_num,
+      substring(installed from '([0-9]+)\.')::int * 100 +
+      substring(installed from '[0-9]+\.([0-9]+)(\.|$)')::int
+        as version_from_num,
+      installed ~ 'dev|alpha|beta'
+        as version_from_isdev
+      FROM versions INTO postgis_upgrade_info
+    ;
+
+    postgis_upgrade_info_func_code := format($func_code$
+        CREATE FUNCTION _postgis_upgrade_info(OUT scripts_upgraded TEXT,
+                                              OUT scripts_installed TEXT,
+                                              OUT version_to_num INT,
+                                              OUT version_from_num INT,
+                                              OUT version_from_isdev BOOLEAN)
+        AS
+        $postgis_upgrade_info$
+        BEGIN
+            scripts_upgraded := %L :: TEXT;
+            scripts_installed := %L :: TEXT;
+            version_to_num := %L :: INT;
+            version_from_num := %L :: INT;
+            version_from_isdev := %L :: BOOLEAN;
+            RETURN;
+        END
+        $postgis_upgrade_info$ LANGUAGE 'plpgsql' IMMUTABLE;
+        $func_code$,
+        postgis_upgrade_info.scripts_upgraded,
+        postgis_upgrade_info.scripts_installed,
+        postgis_upgrade_info.version_to_num,
+        postgis_upgrade_info.version_from_num,
+        postgis_upgrade_info.version_from_isdev);
+    RAISE DEBUG 'Creating function %', postgis_upgrade_info_func_code;
+    EXECUTE postgis_upgrade_info_func_code;
 END
 $$
 LANGUAGE 'plpgsql';
-
-CREATE TEMPORARY TABLE _postgis_upgrade_info AS WITH versions AS (
-  SELECT 'NEWVERSION'::text as upgraded,
-  MODULE_scripts_installed() as installed
-) SELECT
-  upgraded as scripts_upgraded,
-  installed as scripts_installed,
-  substring(upgraded from '([0-9]*)\.')::int * 100 +
-  substring(upgraded from '[0-9]*\.([0-9]*)\.')::int
-    as version_to_num,
-  substring(installed from '([0-9]*)\.')::int * 100 +
-  substring(installed from '[0-9]*\.([0-9]*)\.')::int
-    as version_from_num,
-  installed ~ 'dev|alpha|beta'
-    as version_from_isdev
-  FROM versions
-;
 

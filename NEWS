@@ -41,6 +41,9 @@ PostGIS 3.2.0
   - ST_Srid(topogeometry) override, to speedup lookups (Sandro Santilli)
   - #2175, Avoid creating additional nodes when adding same closed
            line to topology (Sandro Santilli)
+  - #4974, Upgrade path for address_standardizer_data_us
+    (Jan Katins of Aiven, Regina Obe)
+  - #4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)
 
  * New features*
   - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
