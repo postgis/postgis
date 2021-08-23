@@ -155,9 +155,9 @@ The optional <varname>flags</varname> parameter is a bitfield. It can have the f
 
 		<programlisting>
 --First 3 Rejects from a successful quintuplet experiment
-SELECT gid, reason(ST_IsValidDetail(the_geom)), ST_AsText(location(ST_IsValidDetail(the_geom))) as location
+SELECT gid, reason(ST_IsValidDetail(geom)), ST_AsText(location(ST_IsValidDetail(geom))) as location
 FROM
-(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
 FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
@@ -170,7 +170,7 @@ FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000
 	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
 ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
-WHERE ST_IsValid(the_geom) = false
+WHERE ST_IsValid(geom) = false
 ORDER BY gid
 LIMIT 3;
 
@@ -250,9 +250,9 @@ Self-intersection[150 150]
         </programlisting>
 		<programlisting>
 --First 3 Rejects from a successful quintuplet experiment
-SELECT gid, ST_IsValidReason(the_geom) as validity_info
+SELECT gid, ST_IsValidReason(geom) as validity_info
 FROM
-(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
 FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
@@ -265,7 +265,7 @@ FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000
 	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
 ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
-WHERE ST_IsValid(the_geom) = false
+WHERE ST_IsValid(geom) = false
 ORDER BY gid
 LIMIT 3;
 

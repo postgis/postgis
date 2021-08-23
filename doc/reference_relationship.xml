@@ -676,7 +676,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
         <entry><para> <informalexample>
           <programlisting>CREATE TABLE roads (
   id serial NOT NULL,
-  the_geom geometry,
+  geom geometry,
   CONSTRAINT roads_pkey PRIMARY KEY (road_id)
 );</programlisting>
         </informalexample> </para></entry>
@@ -699,7 +699,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     <para><informalexample>
       <programlisting>SELECT roads.id
 FROM roads, highways
-WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
+WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     </informalexample></para>
   </refsection>
   </refentry>
@@ -875,9 +875,9 @@ FROM (SELECT
 </informaltable>
 
 <programlisting>
-SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.the_geom, s2.the_geom)
-  FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.the_geom &amp;&amp; s2.the_geom )
-WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
+SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)
+  FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.geom &amp;&amp; s2.geom )
+WHERE ST_CrossingDirection(s1.geom, s2.geom) > 0;
 </programlisting>
   </refsection>
 
@@ -2110,7 +2110,7 @@ ST_DWithin(
 -- If the units of the spatial reference is meters then units would be meters
 SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.geom, h.hospital_name
   FROM schools s
-    LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.geom, 3000)
+    LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)
   ORDER BY s.gid, ST_Distance(s.geom, h.geom);
 
 -- The schools with no close hospitals

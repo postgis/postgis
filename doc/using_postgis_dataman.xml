@@ -1487,7 +1487,7 @@ gisdb=# SELECT
 
 	  <programlisting>ALTER TABLE mytable
   ADD CONSTRAINT geometry_valid_check
-	CHECK (ST_IsValid(the_geom));</programlisting>
+	CHECK (ST_IsValid(geom));</programlisting>
 
 	  <para>If you encounter any strange error messages such as "GEOS
 	  Intersection() threw an error!" when calling PostGIS functions with valid

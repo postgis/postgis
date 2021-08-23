@@ -96,7 +96,7 @@ MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
 <title>Examples - Array variant</title>
 <para>Using an array constructor for a subquery.</para>
 <programlisting>
-SELECT ST_Collect( ARRAY( SELECT the_geom FROM sometable ) );
+SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );
 </programlisting>
 <para>Using an array constructor for values.</para>
 <programlisting>
@@ -112,8 +112,8 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		<title>Examples - Aggregate variant</title>
 		<para>Creating multiple collections by grouping geometries in a table.</para>
 <programlisting>
-SELECT stusps, ST_Collect(f.the_geom) as geom
-	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom
+SELECT stusps, ST_Collect(f.geom) as geom
+	 FROM (SELECT stusps, (ST_Dump(geom)).geom As geom
 				FROM
 				somestatetable ) As f
 	GROUP BY stusps
@@ -309,7 +309,7 @@ SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));
 
 		<para>Create a line from an array formed by a subquery with ordering.</para>
 <programlisting>
-SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(the_geom) FROM visit_locations ORDER BY visit_time) );
+SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations ORDER BY visit_time) );
 </programlisting>
 
 		<para>Create a 3D line from an array of 3D points</para>
