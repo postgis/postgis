@@ -51,10 +51,10 @@ envelope01|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
 envelope02|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
 envelope03|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
 envelope04|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
-startPoint01|t
-startPoint02|t
-startPoint03|t
-startPoint04|t
+startPoint01|POINT(-2 0)
+startPoint02|POINT M (-2 0 0)
+startPoint03|POINT Z (-2 0 0)
+startPoint04|POINT ZM (-2 0 0 0)
 endPoint01|t
 endPoint02|t
 endPoint03|t

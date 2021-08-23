@@ -209,3 +209,8 @@ select 'ST_StartPoint2',ST_AsText(ST_StartPoint('CIRCULARSTRING(2 2, 1 1, 1 0)':
 select 'ST_StartPoint3',ST_AsText(ST_StartPoint('COMPOUNDCURVE(CIRCULARSTRING(3 3, 1 1, 1 0),(1 0, 0 1))'::geometry));
 select 'ST_StartPoint4',ST_AsText(ST_StartPoint('CURVEPOLYGON(CIRCULARSTRING(5 5, 4 0, 4 4, 0 4, 5 5),(1 1, 3 3, 3 1, 1 1))'::geometry));
 select 'ST_StartPoint5',ST_AsText(ST_StartPoint('POLYGON((0 0, 1 1, 0 1, 0 0))'::geometry));
+select 'ST_StartPoint6',ST_AsText(ST_StartPoint('POINT(1 1)'::geometry));
+select 'ST_StartPoint7',ST_AsText(ST_StartPoint('MULTIPOINT(1 1, 2 2)'::geometry));
+select 'ST_StartPoint8',ST_AsText(ST_StartPoint('MULTIPOLYGON(((1 1, 2 2, 3 3, 1 1)))'::geometry));
+select 'ST_StartPoint9',ST_AsText(ST_StartPoint('MULTILINESTRING((1 1, 2 2), (3 3, 4 4))'::geometry));
+select 'ST_StartPoint10',ST_AsText(ST_StartPoint('GEOMETRYCOLLECTION(POINT(1 2), LINESTRING(3 4, 5 6))'::geometry));
