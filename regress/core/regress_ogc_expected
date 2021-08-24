@@ -122,5 +122,10 @@ ST_Buffer(empty)|POLYGON EMPTY
 ST_StartPoint1|POINT(0 0)
 ST_StartPoint2|POINT(2 2)
 ST_StartPoint3|POINT(3 3)
-ST_StartPoint4|
-ST_StartPoint5|
+ST_StartPoint4|POINT(5 5)
+ST_StartPoint5|POINT(0 0)
+ST_StartPoint6|POINT(1 1)
+ST_StartPoint7|POINT(1 1)
+ST_StartPoint8|POINT(1 1)
+ST_StartPoint9|POINT(1 1)
+ST_StartPoint10|POINT(1 2)

@@ -18,4 +18,9 @@ steps:
     pull: always
     commands:
       - PGVER=11 sh ci/dronie/postgis_regress.sh
+
+trigger:
+  branch:
+    exclude:
+      - main
 ...
