@@ -6154,6 +6154,34 @@ CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_Point(float8, float8, srid integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointZ(XCoordinate float8, YCoordinate float8, ZCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointZ'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointM(XCoordinate float8, YCoordinate float8, MCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointM'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointZM(XCoordinate float8, YCoordinate float8, ZCoordinate float8, MCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointZM'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- PostGIS equivalent function: ST_MakePolygon(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	RETURNS geometry
