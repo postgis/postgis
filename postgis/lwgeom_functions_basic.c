@@ -119,6 +119,10 @@ Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS);
 Datum ST_WrapX(PG_FUNCTION_ARGS);
 Datum ST_Scroll(PG_FUNCTION_ARGS);
 Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS);
+Datum ST_Point(PG_FUNCTION_ARGS);
+Datum ST_PointZ(PG_FUNCTION_ARGS);
+Datum ST_PointM(PG_FUNCTION_ARGS);
+Datum ST_PointZM(PG_FUNCTION_ARGS);
 
 /*------------------------------------------------------------------*/
 
@@ -2222,6 +2226,55 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
+PG_FUNCTION_INFO_V1(ST_Point);
+Datum ST_Point(PG_FUNCTION_ARGS)
+{
+	double x = PG_GETARG_FLOAT8(0);
+	double y = PG_GETARG_FLOAT8(1);
+	int srid = PG_GETARG_INT32(2);
+	LWPOINT *point = lwpoint_make2d(srid, x, y);
+	GSERIALIZED *result = geometry_serialize((LWGEOM *)point);
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(ST_PointZ);
+Datum ST_PointZ(PG_FUNCTION_ARGS)
+{
+	double x = PG_GETARG_FLOAT8(0);
+	double y = PG_GETARG_FLOAT8(1);
+	double z = PG_GETARG_FLOAT8(2);
+	int srid = PG_GETARG_INT32(3);
+	LWPOINT *point = lwpoint_make3dz(srid, x, y, z);
+	GSERIALIZED *result = geometry_serialize((LWGEOM *)point);
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(ST_PointM);
+Datum ST_PointM(PG_FUNCTION_ARGS)
+{
+	double x = PG_GETARG_FLOAT8(0);
+	double y = PG_GETARG_FLOAT8(1);
+	double m = PG_GETARG_FLOAT8(2);
+	int srid = PG_GETARG_INT32(3);
+	LWPOINT *point = lwpoint_make3dm(srid, x, y, m);
+	GSERIALIZED *result = geometry_serialize((LWGEOM *)point);
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(ST_PointZM);
+Datum ST_PointZM(PG_FUNCTION_ARGS)
+{
+	double x = PG_GETARG_FLOAT8(0);
+	double y = PG_GETARG_FLOAT8(1);
+	double z = PG_GETARG_FLOAT8(2);
+	double m = PG_GETARG_FLOAT8(3);
+	int srid = PG_GETARG_INT32(4);
+	LWPOINT *point = lwpoint_make4d(srid, x, y, z, m);
+	GSERIALIZED *result = geometry_serialize((LWGEOM *)point);
+	PG_RETURN_POINTER(result);
+}
+
 
 PG_FUNCTION_INFO_V1(LWGEOM_makepoint3dm);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
