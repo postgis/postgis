@@ -2749,11 +2749,15 @@ MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)
 	  <para>&Z_support;</para>
 	  <para>&curve_support;</para>
 
-	  <note><para>Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
+	  <note>
+        <para>Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns NULLs if input was not a LineString.</para>
+      <para>Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
 	  versions of PostGIS a single-line MultiLineString would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other MultiLineString.
 	  The old behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
-	  may experience these returning NULL in 2.0.0.</para></note>
+	  may experience these returning NULL in 2.0.0.</para>
+
+      </note>
 
 	</refsection>
 
