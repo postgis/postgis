@@ -432,7 +432,7 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
             </para>
 
         <para>Furthermore, PostGIS operations contain error-prevention code which may peturb
-        input geometries by tiny amounts in order to prevent robustness errors from occuring.
+        input geometries by tiny amounts in order to prevent robustness errors from occurring.
         These minor alterations also may produce computed results which are not fully consistent.
             </para>
 

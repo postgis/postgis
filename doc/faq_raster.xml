@@ -37,7 +37,7 @@
       </question>
 
       <answer>
-        <para>PostGIS Raster is part of the PostGIS codebase and generally available with most PostGIS binary distributions.  Starting with PostGIS 3.0, PostGIS raster is now a separate extension and requires:  `CREATE EXTENSION postgis_raster;` to enable it in your database. If you are compiling your own PostGIS, you will need to compile with GDAL otherwise postgis_raster extension will not be builit.</para>
+        <para>PostGIS Raster is part of the PostGIS codebase and generally available with most PostGIS binary distributions.  Starting with PostGIS 3.0, PostGIS raster is now a separate extension and requires:  `CREATE EXTENSION postgis_raster;` to enable it in your database. If you are compiling your own PostGIS, you will need to compile with GDAL otherwise postgis_raster extension will not be built.</para>
         <para>Refer to <ulink url="http://postgis.net/install/">Download PostGIS binaries</ulink> for popular distributions of PostGIS that include raster support.</para>
       </answer>
     </qandaentry>
