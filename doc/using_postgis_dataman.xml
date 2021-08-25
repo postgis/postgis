@@ -2259,10 +2259,7 @@ CREATE INDEX [indexname] ON [tablename]
 
     <para>As it is the case for GiST indexes, SP-GiST indexes are lossy, in the
 		sense that they store the bounding box enclosing spatial objects.
-		SP-GiST indexes can be considered as an alternative to GiST indexes. The
-		performance tests reveal that SP-GiST indexes are especially beneficial
-		when there are many overlapping objects, that is, with so-called
-		“spaghetti data”.</para>
+		SP-GiST indexes can be considered as an alternative to GiST indexes.</para>
 
 		<para>Once a GIS data table exceeds a few thousand rows, an SP-GiST index
 		may be used to speed up spatial searches of the data. The syntax for
