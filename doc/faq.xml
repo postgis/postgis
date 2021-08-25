@@ -431,7 +431,7 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
         Inevitably, small inaccuracies occur, which cause results of different operations to be slightly inconsistent.
             </para>
 
-        <para>Furthermore, PostGIS operations contain error-prevention code which may perturb
+        <para>Furthermore, PostGIS operations contain error-prevention code which may peturb
         input geometries by tiny amounts in order to prevent robustness errors from occurring.
         These minor alterations also may produce computed results which are not fully consistent.
             </para>

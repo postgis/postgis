@@ -34,7 +34,7 @@
 
       <para>To see whether your suffer from this issue, use the "EXPLAIN
       ANALYZE" postgresql command. For more information and the technical
-      details, you can read the thread on the PostgreSQL performance mailing
+      details, you can read the thread on the postgres performance mailing
       list:
       <ulink url="http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</ulink></para>
 
