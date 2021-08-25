@@ -673,6 +673,7 @@ FROM provinces p;
 		<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.2</para>
+        <para>Enhanced: 3.2.0 now allows for a 3rd argument that is the srid</para>
 
 	  </refsection>
 
@@ -680,12 +681,14 @@ FROM provinces p;
 	  <refsection>
 		<title>Examples: Geometry</title>
 
-		<programlisting>SELECT ST_SetSRID( ST_Point( -71.104, 42.315), 4326)</programlisting>
+        <programlisting>SELECT ST_Point( -71.104, 42.315, 4326)</programlisting>
+		<programlisting>SELECT ST_Point( -71.104, 42.315)</programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples: Geography</title>
 
+		<programlisting>SELECT CAST(ST_Point(-71.104, 42.315, 4326) AS geography);</programlisting>
 		<programlisting>SELECT CAST(ST_SetSRID( ST_Point( -71.104, 42.315), 4326) AS geography);</programlisting>
 
 		<para>PostgreSQL also provides the <varname>::</varname> short-hand for casting</para>
@@ -730,6 +733,7 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Description</title>
         <para>Returns an Point with the given X, Y and Z coordinate values, and optionally an SRID number.</para>
+        <para>Availability: 3.2.0</para>
       </refsection>
 
       <refsection>
@@ -766,6 +770,7 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Description</title>
         <para>Returns an Point with the given X, Y and M coordinate values, and optionally an SRID number.</para>
+        <para>Availability: 3.2.0</para>
       </refsection>
 
       <refsection>
@@ -804,6 +809,7 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Description</title>
         <para>Returns an Point with the given X, Y, Z and M coordinate values, and optionally an SRID number.</para>
+        <para>Availability: 3.2.0</para>
       </refsection>
 
       <refsection>
