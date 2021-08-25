@@ -224,7 +224,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 		<refnamediv>
 		<refname>ST_MakeLine</refname>
 
-		<refpurpose>Creates a Linestring from Point, MultiPoint, or LineString geometries.</refpurpose>
+		<refpurpose>Creates a LineString from Point, MultiPoint, or LineString geometries.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -267,8 +267,8 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 
 		<para>&Z_support;</para>
 
-		<para>Availability: 2.3.0 -  Support for multipoint input elements was introduced</para>
-		<para>Availability: 2.0.0 -  Support for linestring input elements was introduced</para>
+		<para>Availability: 2.3.0 -  Support for MultiPoint input elements was introduced</para>
+		<para>Availability: 2.0.0 -  Support for LineString input elements was introduced</para>
 		<para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
 
 		</refsection>
@@ -329,7 +329,7 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 		and creates one record for each track.
 		The result geometries are LineStrings composed of the GPS track points in the order of travel.</para>
 
-<para>Using aggregate <varname>ORDER BY</varname> provides a correctly-ordered linestring.</para>
+<para>Using aggregate <varname>ORDER BY</varname> provides a correctly-ordered LineString.</para>
 		<programlisting>
 SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom
 	FROM gps_points As gps
@@ -593,7 +593,7 @@ FROM (SELECT ST_ExteriorRing(
     As required by <code>ST_MakePolygon</code>,
     the boundary is forced to be a single LineString by using <xref linkend="ST_LineMerge" />.
     (However, note that if a province has more than one region or has islands
-    this will produce an invallid polygon.)
+    this will produce an invalid polygon.)
     Using a LEFT JOIN ensures all provinces are included even if they have no lakes.
     </para>
 

@@ -1283,7 +1283,7 @@ SELECT
 
 		<para>Return a BOX2D from a GeoHash string.</para>
 
-		<para>If no <varname>precision</varname> is specficified ST_Box2dFromGeoHash returns a BOX2D based on full precision of the input GeoHash string.</para>
+		<para>If no <varname>precision</varname> is specified ST_Box2dFromGeoHash returns a BOX2D based on full precision of the input GeoHash string.</para>
 
 		<para>If <varname>precision</varname> is specified ST_Box2dFromGeoHash will use that many characters from the GeoHash to create the BOX2D. Lower precision values results in larger BOX2Ds and larger values increase the precision.</para>
 

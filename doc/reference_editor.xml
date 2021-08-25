@@ -131,7 +131,7 @@ Given a geometry collection, returns a multi-geometry containing only elements o
 			<para>Availability: 1.5.0</para>
 
 			<note><para>
-            Prior to 1.5.3 this function returned atomic inputs unchaanged, no matter type.
+            Prior to 1.5.3 this function returned atomic inputs unchanged, no matter type.
             In 1.5.3 non-matching single geometries returned a NULL result.
             In 2.0.0 non-matching single geometries return an EMPTY result of the requested type.
 			</para></note>
@@ -1318,7 +1318,7 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 				compressible storage type</ulink>. The function allows
 				specification of a different number of digits after the decimal
 				point in each dimension; unspecified dimensions are assumed to have
-				the precsion of the <code>x</code> dimension. Negative digits are
+				the precision of the <code>x</code> dimension. Negative digits are
 				interpreted to refer digits to the left of the decimal point, (i.e.,
 				<code>prec_x=-2</code> will preserve coordinate values to the
 				nearest 100.
@@ -1773,7 +1773,7 @@ LINESTRING(241.42 38.38,241.8 38.45)
 This function splits the input geometries and then moves every resulting
 component falling on the right (for negative 'move') or on the left (for
 positive 'move') of given 'wrap' line in the direction specified by the
-'move' parameter, finally re-unioning the pieces togheter.
+'move' parameter, finally re-unioning the pieces together.
     </para>
 
         <note><para>
