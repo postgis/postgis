@@ -46,6 +46,7 @@ PostGIS 3.2.0
     (Jan Katins of Aiven, Regina Obe)
   - #4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)
   - #4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)
+  - #4799, Include srs in GeoJSON where it exists in spatial_ref_sys.
 
 
  * New features*

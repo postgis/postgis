@@ -1390,10 +1390,7 @@ SELECT '#4949', 'Arctic Stereographic forward', ST_AsEWKT(ST_SnapToGrid(ST_Trans
 SELECT '#4949', 'Antarctic Stereographic forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
   'SRID=4326;POINT(-36.75 -54.25)'::geometry, 3031),0.1));
 
-
 -- #4916, #4770, #4724, #4916, #4940
-
-
 SELECT '#4770.a',
  ST_Union(NULL::geometry) OVER (ORDER BY b)
 FROM (VALUES ('A0006', 300),
@@ -1416,7 +1413,17 @@ WITH w AS (
   	           ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b)
 )
 SELECT '#4770.c', ST_AsText(g), s FROM w;
-------
 
+-- https://trac.osgeo.org/postgis/ticket/4799
+SELECT
+    '#4799', ST_AsGeoJSON(data.*, geom_column => 'geom2', maxdecimaldigits => 3)
+FROM
+    (SELECT
+        1 AS id,
+        ST_SnapToGrid(ST_Transform(geom, 3035), 1) geom1,
+        ST_SnapToGrid(ST_Transform(geom, 25832), 1) geom2
+    FROM
+        ST_SetSRID(ST_MakePoint(7, 51), 4326) geom
+    ) data;
 
 
