@@ -68,6 +68,8 @@ PostGIS 3.2.0
   - New postgis.gdal_vsi_options GUC allows out-db rasters on VSI network
     services to be accessed with authentication keys, etc. (Paul Ramsey)
   - ST_DumpSegments returns a set of segments of input geometry (Aliaksandr Kalenik)
+  - #4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructors 
+    with SRID parameter (Paul Ramsey)
 
 
 PostGIS 3.1.0
