@@ -53,7 +53,7 @@
 		SELECT LockRow('towns', '353', 'priscilla');
 		BEGIN TRANSACTION;
 			SELECT AddAuth('joey');
-			UPDATE towns SET the_geom = ST_Translate(the_geom,2,2) WHERE gid = 353;
+			UPDATE towns SET geom = ST_Translate(geom,2,2) WHERE gid = 353;
 		COMMIT;
 
 

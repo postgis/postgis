@@ -801,7 +801,7 @@ to take care of that.
 That the statistics updated by autovacuum
 will NOT be visible to transactions which started before autovacuum
 process completed, so long-running transactions will need to run
-ANALYZE themeselves, to use updated statistics.
+ANALYZE themselves, to use updated statistics.
 </para>
 </note>
 
