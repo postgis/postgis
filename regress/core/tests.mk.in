@@ -42,6 +42,7 @@ TESTS += \
 	$(topsrcdir)/regress/core/dumpsegments \
 	$(topsrcdir)/regress/core/empty \
 	$(topsrcdir)/regress/core/estimatedextent \
+	$(topsrcdir)/regress/core/flatgeobuf \
 	$(topsrcdir)/regress/core/forcecurve \
 	$(topsrcdir)/regress/core/geography \
 	$(topsrcdir)/regress/core/geometric_median \
