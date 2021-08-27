@@ -218,10 +218,10 @@ VALUES (
         <emphasis>might</emphasis> meet the condition of interest. The spatial
         functions are then use to test the condition exactly.</para>
 
-        <programlisting>SELECT id, the_geom
+        <programlisting>SELECT id, geom
 FROM thetable
 WHERE
-  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
+  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
       </answer>
     </qandaentry>
 
@@ -358,9 +358,9 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
         the geometries being reprojected must already have an SRID set on
         them. Once that is done, a reprojection is as simple as referring to
         the desired destination SRID. The below projects a geometry to NAD 83 long lat.
-		The below will only work if the srid of the_geom is not -1 (not undefined spatial ref)</para>
+		The below will only work if the srid of geom is not -1 (not undefined spatial ref)</para>
 
-        <programlisting>SELECT ST_Transform(the_geom,4269) FROM geotable;</programlisting>
+        <programlisting>SELECT ST_Transform(geom,4269) FROM geotable;</programlisting>
       </answer>
     </qandaentry>
 
@@ -375,7 +375,7 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
 
         <programlisting>
 				--To check number of geometries are really blank
-				SELECT count(gid) FROM geotable WHERE the_geom IS NULL;</programlisting>
+				SELECT count(gid) FROM geotable WHERE geom IS NULL;</programlisting>
       </answer>
     </qandaentry>
 
@@ -400,6 +400,46 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
         <para>Almost certainly not. As an example, consider Oracle database running on Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be distributed using the GPL? No. Similarly your software can use a PostgreSQL/PostGIS database as much as it wants and be under any license you like.</para>
 				<para>The only exception would be if you made changes to the PostGIS source code, and <emphasis>distributed your changed version</emphasis> of PostGIS. In that case you would have to share the code of your changed PostGIS (but not the code of applications running on top of it). Even in this limited case, you would still only have to distribute source code to people you distributed binaries to. The GPL does not require that you <emphasis>publish</emphasis> your source code, only that you share it with people you give binaries to.</para>
         <para>The above remains true even if you use PostGIS in conjunction with the optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of PostGIS already: using CGAL does not make PostGIS any more GPL than it was to start with.</para>
+      </answer>
+    </qandaentry>
+
+	<qandaentry id="overlay_inconsistent">
+      <question>
+        <para>Why are the results of overlay operations and spatial predicates sometimes inconsistent?</para>
+      </question>
+
+      <answer>
+        <para>This is usually presented as a specific case, such as
+            </para>
+        <itemizedlist>
+            <listitem>
+            <para>Why is <varname>ST_Contains( A, ST_Intersection(A, B) )</varname> false ?</para>
+            </listitem>
+            <listitem>
+            <para>Why is <varname>ST_Contains( ST_Union(A, B), A ) )</varname> false ?</para>
+            </listitem>
+            <listitem>
+            <para>Why is <varname>ST_Union( A, ST_Difference(A, B) )</varname> not equal to A ?</para>
+            </listitem>
+            <listitem>
+            <para>Why does <varname>ST_Difference(A, B)</varname> intersect the interior of <varname>B</varname> ?</para>
+            </listitem>
+        </itemizedlist>
+
+		<para>The reason is that PostGIS represents geometry and performs operations using finite-precision floating-point numbers.
+        This provides the illusion of computing using real numbers - but it's only an illusion.
+        Inevitably, small inaccuracies occur, which cause results of different operations to be slightly inconsistent.
+            </para>
+
+        <para>Furthermore, PostGIS operations contain error-prevention code which may perturb
+        input geometries by tiny amounts in order to prevent robustness errors from occurring.
+        These minor alterations also may produce computed results which are not fully consistent.
+            </para>
+
+        <para>The discrepancy between results should always be very small.
+        But queries should not rely on exact consistency when comparing overlay results.
+        Instead, consider using an area or distance-based tolerance in geometric comparisons.
+            </para>
       </answer>
     </qandaentry>
 

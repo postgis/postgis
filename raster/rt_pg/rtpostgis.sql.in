@@ -603,91 +603,6 @@ CREATE AGGREGATE st_summarystatsagg(raster, int, boolean) (
 	FINALFUNC = _st_summarystats_finalfn
 );
 
------------------------------------------------------------------------
--- ST_SummaryStats for table
------------------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION _st_summarystats(
-	rastertable text,
-	rastercolumn text,
-	nband integer DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 1
-)
-	RETURNS summarystats
-	AS $$
-	DECLARE
-		stats summarystats;
-	BEGIN
-		EXECUTE 'SELECT (stats).* FROM (SELECT @extschema@.ST_SummaryStatsAgg('
-			|| quote_ident($2) || ', '
-			|| $3 || ', '
-			|| $4 || ', '
-			|| $5 || ') AS stats '
-			|| 'FROM ' || quote_ident($1)
-			|| ') foo'
-			INTO stats;
-		RETURN stats;
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION st_summarystats(
-	rastertable text,
-	rastercolumn text,
-	nband integer DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE
-)
-	RETURNS summarystats
-	AS $$ SELECT @extschema@._ST_summarystats($1, $2, $3, $4, 1) $$
-	LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION st_summarystats(
-	rastertable text,
-	rastercolumn text,
-	exclude_nodata_value boolean
-)
-	RETURNS summarystats
-	AS $$ SELECT @extschema@._ST_summarystats($1, $2, 1, $3, 1) $$
-	LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION st_approxsummarystats(
-	rastertable text,
-	rastercolumn text,
-	nband integer DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 0.1
-)
-	RETURNS summarystats
-	AS $$ SELECT @extschema@._ST_summarystats($1, $2, $3, $4, $5) $$
-	LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION st_approxsummarystats(
-	rastertable text,
-	rastercolumn text,
-	nband integer,
-	sample_percent double precision
-)
-	RETURNS summarystats
-	AS $$ SELECT @extschema@._ST_summarystats($1, $2, $3, TRUE, $4) $$
-	LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION st_approxsummarystats(
-	rastertable text,
-	rastercolumn text,
-	exclude_nodata_value boolean
-)
-	RETURNS summarystats
-	AS $$ SELECT @extschema@._ST_summarystats($1, $2, 1, $3, 0.1) $$
-	LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION st_approxsummarystats(
-	rastertable text,
-	rastercolumn text,
-	sample_percent double precision
-)
-	RETURNS summarystats
-	AS $$ SELECT @extschema@._ST_summarystats($1, $2, 1, TRUE, $3) $$
-	LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE;
 
 -----------------------------------------------------------------------
 -- ST_Count and ST_ApproxCount
@@ -905,57 +820,6 @@ CREATE AGGREGATE st_countagg(raster, boolean) (
 );
 
 -----------------------------------------------------------------------
--- ST_Count for table
------------------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
-	RETURNS bigint
-	AS $$
-	DECLARE
-		count bigint;
-	BEGIN
-		EXECUTE 'SELECT @extschema@.ST_CountAgg('
-			|| quote_ident($2) || ', '
-			|| $3 || ', '
-			|| $4 || ', '
-			|| $5 || ') '
-			|| 'FROM ' || quote_ident($1)
-	 	INTO count;
-		RETURN count;
-	END;
- 	$$ LANGUAGE 'plpgsql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
-	RETURNS bigint
-	AS $$ SELECT @extschema@._ST_count($1, $2, $3, $4, 1) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, exclude_nodata_value boolean)
-	RETURNS bigint
-	AS $$ SELECT @extschema@._ST_count($1, $2, 1, $3, 1) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
-	RETURNS bigint
-	AS $$ SELECT @extschema@._ST_count($1, $2, $3, $4, $5) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, sample_percent double precision)
-	RETURNS bigint
-	AS $$ SELECT @extschema@._ST_count($1, $2, $3, TRUE, $4) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
-	RETURNS bigint
-	AS $$ SELECT @extschema@._ST_count($1, $2, 1, $3, $4) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, sample_percent double precision)
-	RETURNS bigint
-	AS $$ SELECT @extschema@._ST_count($1, $2, 1, TRUE, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
------------------------------------------------------------------------
 -- ST_Histogram and ST_ApproxHistogram
 -----------------------------------------------------------------------
 
@@ -1115,162 +979,6 @@ CREATE OR REPLACE FUNCTION st_approxhistogram(
 	AS $$ SELECT min, max, count, percent FROM @extschema@._ST_histogram($1, $2, TRUE, $3, $4, NULL, $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
--- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION _st_histogram(
-	rastertable text, rastercolumn text,
-	nband int DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 1,
-	bins int DEFAULT 0, width double precision[] DEFAULT NULL,
-	right boolean DEFAULT FALSE,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS 'MODULE_PATHNAME','RASTER_histogramCoverage'
-	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION st_histogram(
-	rastertable text, rastercolumn text, nband int DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	bins int DEFAULT 0, width double precision[] DEFAULT NULL,
-	right boolean DEFAULT FALSE,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, $4, 1, $5, $6, $7) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_histogram(
-	rastertable text, rastercolumn text, nband int,
-	exclude_nodata_value boolean,
-	bins int,
-	right boolean,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, $4, 1, $5, NULL, $6) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
--- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION st_histogram(
-	rastertable text, rastercolumn text, nband int,
-	bins int, width double precision[] DEFAULT NULL,
-	right boolean DEFAULT FALSE,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, TRUE, 1, $4, $5, $6) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_histogram(
-	rastertable text, rastercolumn text, nband int,
-	bins int,
-	right boolean,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, TRUE, 1, $4, NULL, $5) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
--- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION st_approxhistogram(
-	rastertable text, rastercolumn text,
-	nband int DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 0.1,
-	bins int DEFAULT 0, width double precision[] DEFAULT NULL,
-	right boolean DEFAULT FALSE,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, $4, $5, $6, $7, $8) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(
-	rastertable text, rastercolumn text, nband int,
-	exclude_nodata_value boolean,
-	sample_percent double precision,
-	bins int,
-	right boolean,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, $4, $5, $6, NULL, $7) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(
-	rastertable text, rastercolumn text, nband int,
-	sample_percent double precision,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, TRUE, $4, 0, NULL, FALSE) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(
-	rastertable text, rastercolumn text,
-	sample_percent double precision,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, 1, TRUE, $3, 0, NULL, FALSE) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
--- Cannot be strict as "width" can be NULL
-CREATE OR REPLACE FUNCTION st_approxhistogram(
-	rastertable text, rastercolumn text, nband int,
-	sample_percent double precision,
-	bins int, width double precision[] DEFAULT NULL,
-	right boolean DEFAULT FALSE,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, TRUE, $4, $5, $6, $7) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxhistogram(
-	rastertable text, rastercolumn text, nband int,
-	sample_percent double precision,
-	bins int,
-	right boolean,
-	OUT min double precision,
-	OUT max double precision,
-	OUT count bigint,
-	OUT percent double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_histogram($1, $2, $3, TRUE, $4, $5, NULL, $6) $$
-	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Quantile and ST_ApproxQuantile
@@ -1419,157 +1127,6 @@ CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, quantile double precis
 	AS $$ SELECT ( @extschema@._ST_quantile($1, 1, TRUE, 0.1, ARRAY[$2]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
--- Cannot be strict as "quantiles" can be NULL
-CREATE OR REPLACE FUNCTION _st_quantile(
-	rastertable text,
-	rastercolumn text,
-	nband int DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 1,
-	quantiles double precision[] DEFAULT NULL,
-	OUT quantile double precision,
-	OUT value double precision
-)
-	RETURNS SETOF record
-	AS 'MODULE_PATHNAME','RASTER_quantileCoverage'
-	LANGUAGE 'c' STABLE;
-
--- Cannot be strict as "quantiles" can be NULL
-CREATE OR REPLACE FUNCTION st_quantile(
-	rastertable text,
-	rastercolumn text,
-	nband int DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	quantiles double precision[] DEFAULT NULL,
-	OUT quantile double precision,
-	OUT value double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_quantile($1, $2, $3, $4, 1, $5) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_quantile(
-	rastertable text,
-	rastercolumn text,
-	nband int,
-	quantiles double precision[],
-	OUT quantile double precision,
-	OUT value double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_quantile($1, $2, $3, TRUE, 1, $4) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_quantile(
-	rastertable text,
-	rastercolumn text,
-	quantiles double precision[],
-	OUT quantile double precision,
-	OUT value double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_quantile($1, $2, 1, TRUE, 1, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, quantile double precision)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, $3, $4, 1, ARRAY[$5]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, nband int, quantile double precision)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, $3, TRUE, 1, ARRAY[$4]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE STRICT;
-
--- Cannot be strict as "quantile" can be NULL
-CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision DEFAULT NULL)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, 1, $3, 1, ARRAY[$4]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, quantile double precision)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, 1, TRUE, 1, ARRAY[$3]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE STRICT;
-
--- Cannot be strict as "quantiles" can be NULL
-CREATE OR REPLACE FUNCTION st_approxquantile(
-	rastertable text,
-	rastercolumn text,
-	nband int DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 0.1,
-	quantiles double precision[] DEFAULT NULL,
-	OUT quantile double precision,
-	OUT value double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_quantile($1, $2, $3, $4, $5, $6) $$
-	LANGUAGE 'sql' STABLE;
-
--- Cannot be strict as "quantiles" can be NULL
-CREATE OR REPLACE FUNCTION st_approxquantile(
-	rastertable text,
-	rastercolumn text,
-	nband int,
-	sample_percent double precision,
-	quantiles double precision[] DEFAULT NULL,
-	OUT quantile double precision,
-	OUT value double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_quantile($1, $2, $3, TRUE, $4, $5) $$
-	LANGUAGE 'sql' STABLE;
-
--- Cannot be strict as "quantiles" can be NULL
-CREATE OR REPLACE FUNCTION st_approxquantile(
-	rastertable text,
-	rastercolumn text,
-	sample_percent double precision,
-	quantiles double precision[] DEFAULT NULL,
-	OUT quantile double precision,
-	OUT value double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_quantile($1, $2, 1, TRUE, $3, $4) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_approxquantile(
-	rastertable text,
-	rastercolumn text,
-	quantiles double precision[],
-	OUT quantile double precision,
-	OUT value double precision
-)
-	RETURNS SETOF record
-	AS $$ SELECT @extschema@._ST_quantile($1, $2, 1, TRUE, 0.1, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, quantile double precision)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, $3, $4, $5, ARRAY[$6]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, nband int, sample_percent double precision, quantile double precision)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, $3, TRUE, $4, ARRAY[$5]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, sample_percent double precision, quantile double precision)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, 1, TRUE, $3, ARRAY[$4]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE STRICT;
-
--- Cannot be strict as "quantile" can be NULL
-CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision DEFAULT NULL)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, 1, $3, 0.1, ARRAY[$4]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, quantile double precision)
-	RETURNS double precision
-	AS $$ SELECT ( @extschema@._ST_quantile($1, $2, 1, TRUE, 0.1, ARRAY[$3]::double precision[])).value $$
-	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
 -- ST_ValueCount and ST_ValuePercent
@@ -1943,6 +1500,34 @@ CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options tex
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'RASTER_asGDALRaster'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION ST_Contour(
+		rast raster,
+		bandnumber integer DEFAULT 1,
+		level_interval float8 DEFAULT 100.0,
+		level_base float8 DEFAULT 0.0,
+		fixed_levels float8[] DEFAULT ARRAY[]::float8[],
+		polygonize boolean DEFAULT false
+		)
+	RETURNS table(geom geometry, id integer, value float8)
+	AS 'MODULE_PATHNAME', 'RASTER_Contour'
+	LANGUAGE 'c'
+	IMMUTABLE STRICT
+	PARALLEL SAFE
+	COST 10000;
+
+CREATE OR REPLACE FUNCTION ST_InterpolateRaster(
+		geom geometry,
+		options text,
+		rast raster,
+		bandnumber integer DEFAULT 1
+		)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_InterpolateRaster'
+	LANGUAGE 'c'
+	IMMUTABLE STRICT
+	PARALLEL SAFE
+	COST 10000;
 
 -----------------------------------------------------------------------
 -- ST_AsTIFF
@@ -4970,32 +4555,36 @@ CREATE OR REPLACE FUNCTION ST_BandPixelType(rast raster, band integer DEFAULT 1)
     AS 'MODULE_PATHNAME','RASTER_getBandPixelTypeName'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION ST_BandMetaData(
 	rast raster,
-	band int[],
-	OUT bandnum int,
-	OUT pixeltype text,
-	OUT nodatavalue double precision,
-	OUT isoutdb boolean,
-	OUT path text,
-	OUT outdbbandnum integer,
-	OUT filesize bigint,
-	OUT filetimestamp bigint
-)
+	band int[])
+	RETURNS TABLE(
+		bandnum int,
+		pixeltype text,
+		nodatavalue double precision,
+		isoutdb boolean,
+		path text,
+		outdbbandnum integer,
+		filesize bigint,
+		filetimestamp bigint
+	)
 	AS 'MODULE_PATHNAME','RASTER_bandmetadata'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION ST_BandMetaData(
 	rast raster,
-	band int DEFAULT 1,
-	OUT pixeltype text,
-	OUT nodatavalue double precision,
-	OUT isoutdb boolean,
-	OUT path text,
-	OUT outdbbandnum integer,
-	OUT filesize bigint,
-	OUT filetimestamp bigint
-)
+	band int DEFAULT 1)
+	RETURNS TABLE (
+		pixeltype text,
+		nodatavalue double precision,
+		isoutdb boolean,
+		path text,
+		outdbbandnum integer,
+		filesize bigint,
+		filetimestamp bigint
+	)
 	AS $$ SELECT pixeltype, nodatavalue, isoutdb, path, outdbbandnum, filesize, filetimestamp FROM @extschema@.ST_BandMetaData($1, ARRAY[$2]::int[]) LIMIT 1 $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
@@ -5022,43 +4611,33 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y inte
     AS 'MODULE_PATHNAME','RASTER_getPixelValue'
     LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Changed: 3.2.0 added resample arg
+CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean DEFAULT TRUE, resample text DEFAULT 'nearest')
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'RASTER_getPixelValueResample'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
 CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
-    AS $$ SELECT st_value($1, 1, $2, $3, $4) $$
+    AS $$ SELECT st_value($1, 1::integer, $2, $3, $4) $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
-CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
-    RETURNS float8 AS
-    $$
-    DECLARE
-        x float8;
-        y float8;
-        gtype text;
-    BEGIN
-        gtype := @extschema@.ST_GeometryType(pt);
-        IF ( gtype != 'ST_Point' ) THEN
-            RAISE EXCEPTION 'Attempting to get the value of a pixel with a non-point geometry';
-        END IF;
-
-				IF @extschema@.ST_SRID(pt) != @extschema@.ST_SRID(rast) THEN
-            RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
-				END IF;
-
-        x := @extschema@.ST_x(pt);
-        y := @extschema@.ST_y(pt);
-        RETURN @extschema@.ST_value(rast,
-                        band,
-                        @extschema@.ST_worldtorastercoordx(rast, x, y),
-                        @extschema@.ST_worldtorastercoordy(rast, x, y),
-                        exclude_nodata_value);
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION ST_Value(rast raster, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
-    AS $$ SELECT @extschema@.ST_value($1, 1, $2, $3) $$
+    AS $$ SELECT @extschema@.ST_value($1, 1::integer, $2, $3, 'nearest'::text) $$
     LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.2.0 added resample arg
+CREATE OR REPLACE FUNCTION st_setz(rast raster, geom geometry, resample text DEFAULT 'nearest', band integer default 1)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'RASTER_getGeometryValues'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.2.0 added resample arg
+CREATE OR REPLACE FUNCTION st_setm(rast raster, geom geometry, resample text DEFAULT 'nearest', band integer default 1)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'RASTER_getGeometryValues'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -----------------------------------------------------------------------
 -- ST_PixelOfValue()
@@ -5068,47 +4647,55 @@ CREATE OR REPLACE FUNCTION st_pixelofvalue(
 	rast raster,
 	nband integer,
 	search double precision[],
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT val double precision,
-	OUT x integer,
-	OUT y integer
-)
-	RETURNS SETOF record
+	exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS
+	TABLE(
+		val double precision,
+		x integer,
+		y integer
+	)
 	AS 'MODULE_PATHNAME', 'RASTER_pixelOfValue'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION ST_PixelofValue(
 	rast raster,
 	search double precision[],
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT val double precision,
-	OUT x integer,
-	OUT y integer
-)
-	RETURNS SETOF record
+	exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS TABLE (
+		val double precision,
+		x integer,
+		y integer
+	)
 	AS $$ SELECT val, x, y FROM @extschema@.ST_PixelOfValue($1, 1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION st_pixelofvalue(
 	rast raster,
 	nband integer,
 	search double precision,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT x integer,
-	OUT y integer
-)
-	RETURNS SETOF record
+	exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS TABLE (
+		x integer,
+		y integer
+	)
 	AS $$ SELECT x, y FROM @extschema@.ST_PixelofValue($1, $2, ARRAY[$3], $4) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION st_pixelofvalue(
 	rast raster,
 	search double precision,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT x integer,
-	OUT y integer
-)
-	RETURNS SETOF record
+	exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS TABLE (
+		x integer,
+		y integer
+	)
 	AS $$ SELECT x, y FROM @extschema@.ST_PixelOfValue($1, 1, ARRAY[$2], $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
@@ -5484,11 +5071,11 @@ CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1
 -----------------------------------------------------------------------
 -- ST_DumpValues
 -----------------------------------------------------------------------
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION st_dumpvalues(
-	rast raster, nband integer[] DEFAULT NULL, exclude_nodata_value boolean DEFAULT TRUE,
-	OUT nband integer, OUT valarray double precision[][]
-)
-	RETURNS SETOF record
+	rast raster, nband integer[] DEFAULT NULL, exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS TABLE(nband integer, valarray double precision[][])
 	AS 'MODULE_PATHNAME','RASTER_dumpValues'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
@@ -5511,31 +5098,35 @@ CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
 -- Should be called like this:
 -- SELECT (gv).geom, (gv).val FROM (SELECT ST_PixelAsPolygons(rast) gv FROM mytable) foo
 -----------------------------------------------------------------------
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION _st_pixelaspolygons(
 	rast raster,
 	band integer DEFAULT 1,
 	columnx integer DEFAULT NULL,
 	rowy integer DEFAULT NULL,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT geom geometry,
-	OUT val double precision,
-	OUT x integer,
-	OUT y integer
-)
-	RETURNS SETOF record
+	exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS TABLE(
+		geom geometry,
+		val double precision,
+		x integer,
+		y integer
+	)
 	AS 'MODULE_PATHNAME', 'RASTER_getPixelPolygons'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION st_pixelaspolygons(
 	rast raster,
 	band integer DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT geom geometry,
-	OUT val double precision,
-	OUT x int,
-	OUT y int
-)
-	RETURNS SETOF record
+	exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS TABLE (
+		geom geometry,
+		val double precision,
+		x int,
+		y int
+	)
 	AS $$ SELECT geom, val, x, y FROM @extschema@._ST_pixelaspolygons($1, $2, NULL, NULL, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
@@ -5551,17 +5142,18 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
 -----------------------------------------------------------------------
 -- ST_PixelAsPoints
 -----------------------------------------------------------------------
-
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION st_pixelaspoints(
 	rast raster,
 	band integer DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT geom geometry,
-	OUT val double precision,
-	OUT x int,
-	OUT y int
-)
-	RETURNS SETOF record
+	exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS TABLE (
+		geom geometry,
+		val double precision,
+		x int,
+		y int
+	)
 	AS $$ SELECT @extschema@.ST_PointN(  @extschema@.ST_ExteriorRing(geom), 1), val, x, y FROM @extschema@._ST_pixelaspolygons($1, $2, NULL, NULL, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
@@ -5577,17 +5169,17 @@ CREATE OR REPLACE FUNCTION st_pixelaspoint(rast raster, x integer, y integer)
 -----------------------------------------------------------------------
 -- ST_PixelAsCentroids
 -----------------------------------------------------------------------
-
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION st_pixelascentroids(
 	rast raster,
 	band integer DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT geom geometry,
-	OUT val double precision,
-	OUT x int,
-	OUT y int
-)
-	RETURNS SETOF record
+	exclude_nodata_value boolean DEFAULT TRUE)
+	RETURNS TABLE (
+		geom geometry,
+		val double precision,
+		x int,
+		y int
+	)
 	AS $$ SELECT @extschema@.ST_Centroid(geom), val, x, y FROM @extschema@._ST_pixelaspolygons($1, $2, NULL, NULL, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
@@ -5612,8 +5204,8 @@ CREATE OR REPLACE FUNCTION _st_worldtorastercoord(
 	rast raster,
 	longitude double precision DEFAULT NULL, latitude double precision DEFAULT NULL,
 	OUT columnx integer,
-	OUT rowy integer
-)
+	OUT rowy integer)
+	RETURNS record
 	AS 'MODULE_PATHNAME', 'RASTER_worldToRasterCoord'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
@@ -5627,8 +5219,8 @@ CREATE OR REPLACE FUNCTION st_worldtorastercoord(
 	rast raster,
 	longitude double precision, latitude double precision,
 	OUT columnx integer,
-	OUT rowy integer
-)
+	OUT rowy integer)
+	RETURNS record
 	AS $$ SELECT columnx, rowy FROM @extschema@._ST_worldtorastercoord($1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
@@ -5640,9 +5232,8 @@ CREATE OR REPLACE FUNCTION st_worldtorastercoord(
 CREATE OR REPLACE FUNCTION st_worldtorastercoord(
 	rast raster, pt geometry,
 	OUT columnx integer,
-	OUT rowy integer
-)
-	AS
+	OUT rowy integer)
+	RETURNS record AS
 	$$
 	DECLARE
 		rx integer;
@@ -5758,13 +5349,12 @@ CREATE OR REPLACE FUNCTION st_worldtorastercoordy(rast raster, pt geometry)
 ---------------------------------------------------------------------------------
 -- ST_RasterToWorldCoord
 ---------------------------------------------------------------------------------
-
 CREATE OR REPLACE FUNCTION _st_rastertoworldcoord(
 	rast raster,
 	columnx integer DEFAULT NULL, rowy integer DEFAULT NULL,
 	OUT longitude double precision,
 	OUT latitude double precision
-)
+	) RETURNS record
 	AS 'MODULE_PATHNAME', 'RASTER_rasterToWorldCoord'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
 
@@ -5775,12 +5365,13 @@ CREATE OR REPLACE FUNCTION _st_rastertoworldcoord(
 -- This function works even if the provided raster column and row are beyond or
 -- below the raster width and height.
 ---------------------------------------------------------------------------------
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION st_rastertoworldcoord(
 	rast raster,
 	columnx integer, rowy integer,
-	OUT longitude double precision,
+	OUT	longitude double precision,
 	OUT latitude double precision
-)
+	) RETURNS record
 	AS $$ SELECT longitude, latitude FROM @extschema@._ST_rastertoworldcoord($1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
@@ -8646,10 +8237,14 @@ CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refsc
 	LANGUAGE 'sql' STABLE
 	COST 100;
 
+-- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION _overview_constraint_info(
 	ovschema name, ovtable name, ovcolumn name,
-	OUT refschema name, OUT reftable name, OUT refcolumn name, OUT factor integer
-)
+		OUT refschema name,
+		OUT reftable name,
+		OUT refcolumn name,
+		OUT factor integer
+	)
 	AS $$
 	SELECT
 		split_part(split_part(s.consrc, '''::name', 1), '''', 2)::name,
@@ -8666,7 +8261,7 @@ CREATE OR REPLACE FUNCTION _overview_constraint_info(
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND a.attnum = ANY (s.conkey)
-		AND s.consrc LIKE '%_overview_constraint(%'
+		AND s.consrc LIKE '%_overview_constraint(%' LIMIT 1
 	$$ LANGUAGE sql STABLE STRICT
   COST 100;
 

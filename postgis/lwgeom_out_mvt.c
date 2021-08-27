@@ -133,7 +133,7 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 	mvt_agg_context *ctx;
 
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "%s called in non-aggregate context", __func__);

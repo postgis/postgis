@@ -183,11 +183,11 @@ instead.
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'the_geom');
+		<programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'geom');
 --result--
 BOX(-8877653 4912316,-8010225.5 5589284)
 
-SELECT ST_EstimatedExtent('feature_poly', 'the_geom');
+SELECT ST_EstimatedExtent('feature_poly', 'geom');
 --result--
 BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 		</programlisting>
@@ -271,7 +271,7 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 
 		<note>
 		  <para>Pre version 1.3, ST_Expand was used in conjunction with <xref linkend="ST_Distance" /> to do indexable distance queries.  For example,
-			<code>the_geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(the_geom, 'POINT(10 20)') &lt; 10</code>.
+			<code>geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(geom, 'POINT(10 20)') &lt; 10</code>.
 			This has been replaced by the easier <xref linkend="ST_DWithin" /> construct.</para>
 		</note>
 
@@ -343,7 +343,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 		<para>ST_Extent is similar in concept to Oracle Spatial/Locator's SDO_AGGR_MBR</para>
 		<note>
 		  <para>Since ST_Extent returns a bounding box, the SRID meta-data is lost.  Use ST_SetSRID to force it back into
-			a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the orginal geometries.</para>
+			a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the original geometries.</para>
 		</note>
 
 		<note>
@@ -365,14 +365,14 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 		<note><para>Examples below use Massachusetts State Plane ft (SRID=2249)</para></note>
 		<programlisting>
 
-SELECT ST_Extent(the_geom) as bextent FROM sometable;
+SELECT ST_Extent(geom) as bextent FROM sometable;
 					 st_bextent
 ------------------------------------
 BOX(739651.875 2908247.25,794875.8125 2970042.75)
 
 
 --Return extent of each category of geometries
-SELECT ST_Extent(the_geom) as bextent
+SELECT ST_Extent(geom) as bextent
 FROM sometable
 GROUP BY category ORDER BY category;
 
@@ -384,7 +384,7 @@ GROUP BY category ORDER BY category;
 
  --Force back into a geometry
  -- and render the extended text representation of that geometry
-SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
+SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
 
 				bextent
 --------------------------------------------------------------------------------
@@ -395,7 +395,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_3DExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="geometry_overlaps" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_3DExtent" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 
@@ -424,7 +424,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 
 		<note>
 		  <para>Since ST_3DExtent returns a bounding box, the SRID meta-data is lost.  Use ST_SetSRID to force it back into
-			a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the orginal geometries.</para>
+			a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the original geometries.</para>
 		</note>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
@@ -438,8 +438,8 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 	  <refsection>
 		<title>Examples</title>
 		<programlisting>
-SELECT ST_3DExtent(foo.the_geom) As b3extent
-FROM (SELECT ST_MakePoint(x,y,z) As the_geom
+SELECT ST_3DExtent(foo.geom) As b3extent
+FROM (SELECT ST_MakePoint(x,y,z) As geom
 	FROM generate_series(1,3) As x
 		CROSS JOIN generate_series(1,2) As y
 		CROSS JOIN generate_series(0,2) As Z) As foo;
@@ -448,8 +448,8 @@ FROM (SELECT ST_MakePoint(x,y,z) As the_geom
  BOX3D(1 1 0,3 2 2)
 
 --Get the extent of various elevated circular strings
-SELECT ST_3DExtent(foo.the_geom) As b3extent
-FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_MakePoint(x,y),1))),0,0,z) As the_geom
+SELECT ST_3DExtent(foo.geom) As b3extent
+FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1))),0,0,z) As geom
 	FROM generate_series(1,3) As x
 		CROSS JOIN generate_series(1,2) As y
 		CROSS JOIN generate_series(0,2) As Z) As foo;
@@ -497,9 +497,9 @@ FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_MakePoint(x,y
 		<programlisting>
 --Return all features that fall reside or partly reside in a US national atlas coordinate bounding box
 --It is assumed here that the geometries are stored with SRID = 2163 (US National atlas equal area)
-SELECT feature_id, feature_name, the_geom
+SELECT feature_id, feature_name, geom
 FROM features
-WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
+WHERE geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
 	ST_Point(-987121.375 ,529933.1875)),2163)</programlisting>
 	  </refsection>
 
@@ -507,7 +507,7 @@ WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_Point" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 
@@ -612,7 +612,7 @@ SELECT ST_XMax(CAST('BOX(-3 2, 3 4)' As box2d));
 st_xmax
 -------
 3
---Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+--Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
 SELECT ST_XMax('LINESTRING(1 3, 5 6)');
 
 --ERROR:  BOX3D parser - doesn't start with BOX3D(
@@ -680,7 +680,7 @@ SELECT ST_XMin(CAST('BOX(-3 2, 3 4)' As box2d));
 st_xmin
 -------
 -3
---Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+--Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
 SELECT ST_XMin('LINESTRING(1 3, 5 6)');
 
 --ERROR:  BOX3D parser - doesn't start with BOX3D(
@@ -748,7 +748,7 @@ SELECT ST_YMax(CAST('BOX(-3 2, 3 4)' As box2d));
 st_ymax
 -------
 4
---Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+--Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
 SELECT ST_YMax('LINESTRING(1 3, 5 6)');
 
 --ERROR:  BOX3D parser - doesn't start with BOX3D(
@@ -816,7 +816,7 @@ SELECT ST_YMin(CAST('BOX(-3 2, 3 4)' As box2d));
 st_ymin
 -------
 2
---Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+--Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
 SELECT ST_YMin('LINESTRING(1 3, 5 6)');
 
 --ERROR:  BOX3D parser - doesn't start with BOX3D(
@@ -884,7 +884,7 @@ SELECT ST_ZMax('BOX3D(-3 2 1, 3 4 1)' );
 st_zmax
 -------
 1
---Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+--Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
 SELECT ST_ZMax('LINESTRING(1 3 4, 5 6 7)');
 
 --ERROR:  BOX3D parser - doesn't start with BOX3D(
@@ -952,7 +952,7 @@ SELECT ST_ZMin('BOX3D(-3 2 1, 3 4 1)' );
 st_zmin
 -------
 1
---Observe THIS DOES NOT WORK because it will try to autocast the string representation to a BOX3D
+--Observe THIS DOES NOT WORK because it will try to auto-cast the string representation to a BOX3D
 SELECT ST_ZMin('LINESTRING(1 3 4, 5 6 7)');
 
 --ERROR:  BOX3D parser - doesn't start with BOX3D(

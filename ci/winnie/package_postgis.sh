@@ -16,17 +16,17 @@
 #otherwise use the ones jenkins passes thru
 #!/usr/bin/env bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.8.1
-	export GDAL_VER=2.4.4
-	export PROJ_VER=5.2.0
-	export SFCGAL_VER=1.3.2
-	export CGAL_VER=4.11
-	export ICON_VER=1.15
+	export GEOS_VER=3.9.0
+	export GDAL_VER=3.2.0
+	export PROJ_VER=7.1.1
+	export SFCGAL_VER=1.3.9
+	export CGAL_VER=5.0
+	export ICON_VER=1.16
 	export ZLIB_VER=1.2.11
-  	export PROTOBUF_VER=3.2.0
+  export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
-	export PROJSO=libproj-13.dll
+	export PROJSO=libproj-19.dll
 fi;
 
 export PROTOBUF_VER=3.2.0
@@ -53,7 +53,7 @@ fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=4.11
+  export CGAL_VER=5.0
 fi;
 
 echo "ZLIB_VER $ZLIB_VER"
@@ -195,10 +195,12 @@ cp ${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll
 
 cd ${POSTGIS_SRC}
 strip postgis/*.dll
+strip sfcgal/*.dll
 strip raster/rt_pg/*.dll
 strip liblwgeom/.libs/*.dll
 
 cp postgis/*.dll ${RELDIR}/${RELVERDIR}/lib
+cp sfcgal/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp topology/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp raster/rt_pg/*.dll ${RELDIR}/${RELVERDIR}/lib
 cp doc/*_comments.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
@@ -239,6 +241,8 @@ cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
 echo "GEOS VERSION: ${GEOS_VER} https://trac.osgeo.org/geos" >> $verfile
 echo "GDAL VERSION: ${GDAL_VER} https://gdal.org/download.html#current-releases" >> $verfile
 echo "PROJ VERSION: ${PROJ_VER} https://proj.org/download.html#current-release" >> $verfile
+
+echo "LIBICONV VERSION: ${ICON_VER} http://ftp.gnu.org/gnu/libiconv/libiconv-${ICONV_VER}.tar.gz" >> $verfile
 
 if [ -n "$SFCGAL_VER"  ]; then
     echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile

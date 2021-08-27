@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2011-2021 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2011 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2007-2008 Mark Cave-Ayland
  * Copyright (C) 2001-2006 Refractions Research Inc.
@@ -67,6 +67,10 @@
 #define FP_CONTAINS_INCL(A, X, B) (FP_LTEQ(A, X) && FP_LTEQ(X, B))
 #define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
 #define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
+
+#define STR_EQUALS(A, B) strcmp((A), (B)) == 0
+#define STR_IEQUALS(A, B) (strcasecmp((A), (B)) == 0)
+#define STR_ISTARTS(A, B) (strncasecmp((A), (B), strlen((B))) == 0)
 
 
 /*
@@ -209,13 +213,13 @@ void ptarray_simplify_in_place(POINTARRAY *pa, double tolerance, uint32_t minpts
 * The possible ways a pair of segments can interact. Returned by lw_segment_intersects
 */
 enum CG_SEGMENT_INTERSECTION_TYPE {
-    SEG_ERROR = -1,
-    SEG_NO_INTERSECTION = 0,
-    SEG_COLINEAR = 1,
-    SEG_CROSS_LEFT = 2,
-    SEG_CROSS_RIGHT = 3,
-    SEG_TOUCH_LEFT = 4,
-    SEG_TOUCH_RIGHT = 5
+		SEG_ERROR = -1,
+		SEG_NO_INTERSECTION = 0,
+		SEG_COLINEAR = 1,
+		SEG_CROSS_LEFT = 2,
+		SEG_CROSS_RIGHT = 3,
+		SEG_TOUCH_LEFT = 4,
+		SEG_TOUCH_RIGHT = 5
 };
 
 /*
@@ -306,6 +310,11 @@ void affine_invert(AFFINE *affine);
 * Scale
 */
 void ptarray_scale(POINTARRAY *pa, const POINT4D *factor);
+
+/*
+* Scroll
+*/
+int ptarray_scroll_in_place(POINTARRAY *pa, const POINT4D *newbase);
 
 /*
 * PointArray
@@ -457,14 +466,14 @@ extern uint8_t MULTITYPE[NUMTYPES];
 extern lwinterrupt_callback *_lwgeom_interrupt_callback;
 extern int _lwgeom_interrupt_requested;
 #define LW_ON_INTERRUPT(x) { \
-  if ( _lwgeom_interrupt_callback ) { \
-    (*_lwgeom_interrupt_callback)(); \
-  } \
-  if ( _lwgeom_interrupt_requested ) { \
-    _lwgeom_interrupt_requested = 0; \
-    lwnotice("liblwgeom code interrupted"); \
-    x; \
-  } \
+	if ( _lwgeom_interrupt_callback ) { \
+		(*_lwgeom_interrupt_callback)(); \
+	} \
+	if ( _lwgeom_interrupt_requested ) { \
+		_lwgeom_interrupt_requested = 0; \
+		lwnotice("liblwgeom code interrupted"); \
+		x; \
+	} \
 }
 
 int ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox);

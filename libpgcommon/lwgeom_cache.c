@@ -28,14 +28,13 @@
 
 #include "lwgeom_cache.h"
 
+
 /*
 * Generic statement caching infrastructure. We cache
 * the following kinds of objects:
 *
 *   geometries-with-trees
 *      PreparedGeometry, RTree, CIRC_TREE, RECT_TREE
-*   srids-with-projections
-*      projPJ
 *
 * Each GenericCache* has a type, and after that
 * some data. Similar to generic LWGEOM*. Test that
@@ -52,17 +51,12 @@ typedef struct {
 * cache entries, the actual trees stored in the
 * geometries-with-trees pattern are quite diverse,
 * and they might be used in combination, so we have
-* one slot for each tree type as well as a slot for
-* projections.
+* one slot for each tree type.
 */
 typedef struct {
 	GenericCache* entry[NUM_CACHE_ENTRIES];
 } GenericCacheCollection;
 
-/**
- * Utility function to read the upper memory context off a function call
- * info data.
- */
 MemoryContext
 PostgisCacheContext(FunctionCallInfo fcinfo)
 {
@@ -92,37 +86,6 @@ GetGenericCacheCollection(FunctionCallInfo fcinfo)
 	return internal_cache;
 }
 
-
-/**
-* Get the Proj entry from the generic cache if one exists.
-* If it doesn't exist, make a new empty one and return it.
-*/
-PROJPortalCache *
-GetPROJSRSCache(FunctionCallInfo fcinfo)
-{
-	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
-	PROJPortalCache* cache = (PROJPortalCache*)(generic_cache->entry[PROJ_CACHE_ENTRY]);
-
-	if ( ! cache )
-	{
-		/* Allocate in the upper context */
-		cache = MemoryContextAlloc(PostgisCacheContext(fcinfo), sizeof(PROJPortalCache));
-
-		if (cache)
-		{
-			POSTGIS_DEBUGF(3,
-				       "Allocating PROJCache for portal with transform() MemoryContext %p",
-				       PostgisCacheContext(fcinfo));
-			memset(cache->PROJSRSCache, 0, sizeof(PROJSRSCacheItem) * PROJ_CACHE_ITEMS);
-			cache->type = PROJ_CACHE_ENTRY;
-			cache->PROJSRSCacheCount = 0;
-
-			/* Store the pointer in GenericCache */
-			generic_cache->entry[PROJ_CACHE_ENTRY] = (GenericCache*)cache;
-		}
-	}
-	return cache;
-}
 
 /**
 * Get an appropriate (based on the entry type number)
@@ -310,7 +273,7 @@ getSRSbySRID(FunctionCallInfo fcinfo, int32_t srid, bool short_crs)
 	char query[512];
 	char *srs, *srscopy;
 	int size, err;
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 
 	if (SPI_OK_CONNECT != SPI_connect())
 	{
@@ -416,7 +379,7 @@ getSRIDbySRS(FunctionCallInfo fcinfo, const char *srs)
 	Datum values[] = {CStringGetDatum(srs)};
 	int32_t srid, err;
 
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 	snprintf(query,
 		 max_query_size,
 		 "SELECT srid "

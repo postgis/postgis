@@ -147,6 +147,24 @@ static void test_lwgeom_make_valid(void)
 
 	lwgeom_free(gout);
 	lwgeom_free(gin);
+
+	/* Test collection with empty component */
+
+	gin = lwgeom_from_hexwkb( "0106000020110F000000000000",
+		LW_PARSER_CHECK_NONE);
+	CU_ASSERT(gin != NULL);
+
+	gout = lwgeom_make_valid(gin);
+	CU_ASSERT(gout != NULL);
+
+	ewkt = lwgeom_to_ewkt(gout);
+	/* printf("c = %s\n", ewkt); */
+	ASSERT_STRING_EQUAL(ewkt, "SRID=3857;MULTIPOLYGON EMPTY");
+	lwfree(ewkt);
+
+	lwgeom_free(gout);
+	lwgeom_free(gin);
+
 }
 
 /* TODO: add more tests ! */

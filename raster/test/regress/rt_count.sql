@@ -85,11 +85,6 @@ CREATE TEMP TABLE test
 		SELECT generate_series(1, 10) AS id
 	) AS id
 		ON 1 = 1;
-SELECT ST_Count('test', 'rast', 1, TRUE);
-SELECT ST_Count('test', 'rast', 1, FALSE);
-SELECT ST_Count('test', 'rast', 1);
-SELECT ST_Count('test', 'rast', FALSE);
-SELECT ST_Count('test', 'rast');
 
 SELECT ST_CountAgg(rast, 1, TRUE, 1) FROM test;
 SELECT ST_CountAgg(rast, 1, TRUE, 0) FROM test;

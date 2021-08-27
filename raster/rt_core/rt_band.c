@@ -1206,6 +1206,160 @@ rt_errorstate rt_band_get_pixel_line(
 }
 
 /**
+ * Retrieve a point value from the raster using a world coordinate
+ * and selected interpolation.
+ *
+ * @param band : the band to read for values
+ * @param xr : x unrounded raster coordinate
+ * @param yr : y unrounded raster coordinate
+ * @param r_value : return pointer for point value
+ * @param r_nodata : return pointer for if this is a nodata
+ *
+ * @return ES_ERROR on error, otherwise ES_NONE
+ */
+rt_errorstate
+rt_band_get_pixel_resample(
+	rt_band band,
+	double xr, double yr,
+	rt_resample_type resample,
+	double *r_value, int *r_nodata
+)
+{
+	if (resample == RT_BILINEAR) {
+		return rt_band_get_pixel_bilinear(
+			band, xr, yr, r_value, r_nodata
+			);
+	}
+	else if (resample == RT_NEAREST) {
+		return rt_band_get_pixel(
+			band, floor(xr), floor(yr),
+			r_value, r_nodata
+			);
+	}
+	else {
+		rtwarn("Invalid resample type requested %d", resample);
+		return ES_ERROR;
+	}
+
+}
+
+/**
+ * Retrieve a point value from the raster using a world coordinate
+ * and bilinear interpolation.
+ *
+ * @param rast : the raster to read for values
+ * @param bandnum : the band to read for the values
+ * @param xw : x world coordinate in
+ * @param yw : y world coordinate in
+ * @param r_value : return pointer for point value
+ * @param r_nodata : return pointer for if this is a nodata
+ *
+ * @return ES_ERROR on error, otherwise ES_NONE
+ */
+rt_errorstate
+rt_band_get_pixel_bilinear(
+	rt_band band,
+	double xr, double yr,
+	double *r_value, int *r_nodata)
+{
+	rt_errorstate err;
+	double xcenter, ycenter;
+	double values[2][2];
+	double nodatavalue = 0.0;
+	int   nodatas[2][2];
+	int x[2][2];
+	int y[2][2];
+	int xcell, ycell;
+	int xdir, ydir;
+	int i, j;
+	uint16_t width, height;
+
+	/* Cell coordinates */
+	xcell = (int)floor(xr);
+	ycell = (int)floor(yr);
+	xcenter = xcell + 0.5;
+	ycenter = ycell + 0.5;
+
+	/* Raster geometry */
+	width = rt_band_get_width(band);
+	height = rt_band_get_height(band);
+
+	/* Reject out-of-range sample */
+	if(xcell < 0 || ycell < 0 || xcell >= width || ycell >= height) {
+		rtwarn("Attempting to get pixel value with out of range raster coordinates: (%d, %d)", xcell, ycell);
+		return ES_ERROR;
+	}
+
+	/* Quadrant of 2x2 grid the raster coordinate falls in */
+	xdir = xr < xcenter ? 1 : 0;
+	ydir = yr < ycenter ? 1 : 0;
+
+	err = rt_band_get_nodata(band, &nodatavalue);
+	if (err != ES_NONE) {
+		nodatavalue = 0.0;
+	}
+
+	/* Read the 2x2 values from the band */
+	for (i = 0; i < 2; i++) {
+		for (j = 0; j < 2; j++) {
+			double value = nodatavalue;
+			int nodata = 0;
+			int xij = xcell + (i - xdir);
+			int yij = ycell + (j - ydir);
+
+			if(xij < 0 || yij < 0 || xij >= width || yij >= height) {
+				nodata = 1;
+			}
+			else {
+				rt_errorstate err = rt_band_get_pixel(
+					band, xij, yij,
+					&value, &nodata
+					);
+				if (err != ES_NONE)
+					nodata = 1;
+			}
+			x[i][j] = xij;
+			y[i][j] = yij;
+			values[i][j] = value;
+			nodatas[i][j] = nodata;
+		}
+	}
+
+	/* Point falls in nodata cell, just return nodata */
+	if (nodatas[xdir][ydir]) {
+		*r_value = nodatavalue;
+		*r_nodata = 1;
+		return ES_NONE;
+	}
+
+	/* Normalize raster coordinate to the bottom left */
+	/* so we are working on a unit square */
+	xr = xr - (x[0][0] + 0.5);
+	yr = yr - (y[0][0] + 0.5);
+
+	/* Point is in cell with values, so we take nodata */
+	/* neighbors off the table by matching them to the */
+	/* most controlling cell */
+	for (i = 0; i < 2; i++) {
+		for (j = 0; j < 2; j++) {
+			if (nodatas[i][j])
+				values[i][j] = values[xdir][ydir];
+		}
+	}
+
+	/* Calculate bilinear value */
+	/* https://en.wikipedia.org/wiki/Bilinear_interpolation#Unit_square */
+	*r_nodata = 0;
+	*r_value = values[0][0] * (1-xr) * (1-yr) +
+	           values[1][0] * (1-yr) * xr +
+	           values[0][1] * (1-xr) * yr +
+	           values[1][1] * xr * yr;
+
+	return ES_NONE;
+}
+
+
+/**
  * Get pixel value. If band's isnodata flag is TRUE, value returned
  * will be the band's NODATA value
  *
@@ -1636,6 +1790,8 @@ uint32_t rt_band_get_nearest_pixel(
 
 	return count;
 }
+
+
 
 /**
  * Search band for pixel(s) with search values

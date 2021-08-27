@@ -33,6 +33,10 @@
 
 #include <math.h>
 
+#ifndef NAN
+# define NAN 0.0/0.0
+#endif
+
 /**
  * Construct a raster with given dimensions.
  *
@@ -789,7 +793,7 @@ rt_raster_cell_to_geopoint(
 }
 
 /**
- * Convert an xw,yw map point to a xr,yr raster point
+ * Convert an xw,yw map point to a xr,yr cell coordinate
  *
  * @param raster : the raster to get info from
  * @param xw : X ordinate of the geographical point
@@ -807,8 +811,51 @@ rt_raster_geopoint_to_cell(
 	double *xr, double *yr,
 	double *igt
 ) {
-	double _igt[6] = {0};
 	double rnd = 0;
+	rt_errorstate err;
+
+	err = rt_raster_geopoint_to_rasterpoint(raster, xw, yw, xr, yr, igt);
+	if (err != ES_NONE)
+		return err;
+
+	rnd = ROUND(*xr, 0);
+	if (FLT_EQ(rnd, *xr))
+		*xr = rnd;
+	else
+		*xr = floor(*xr);
+
+	rnd = ROUND(*yr, 0);
+	if (FLT_EQ(rnd, *yr))
+		*yr = rnd;
+	else
+		*yr = floor(*yr);
+
+	RASTER_DEBUGF(4, "Corrected GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
+		xw, yw, *xr, *yr);
+
+	return ES_NONE;
+}
+
+/**
+ * Convert an xw,yw map point to a xr,yr raster point
+ *
+ * @param raster : the raster to get info from
+ * @param xw : X ordinate of the geographical point
+ * @param yw : Y ordinate of the geographical point
+ * @param xr : output parameter, the x ordinate in raster space
+ * @param yr : output parameter, the y ordinate in raster space
+ * @param igt : input/output parameter, inverse geotransform matrix
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate
+rt_raster_geopoint_to_rasterpoint(
+	rt_raster raster,
+	double xw, double yw,
+	double *xr, double *yr,
+	double *igt
+) {
+	double _igt[6] = {0};
 
 	assert(NULL != raster);
 	assert(NULL != xr && NULL != yr);
@@ -835,23 +882,9 @@ rt_raster_geopoint_to_cell(
 	RASTER_DEBUGF(4, "GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
 		xw, yw, *xr, *yr);
 
-	rnd = ROUND(*xr, 0);
-	if (FLT_EQ(rnd, *xr))
-		*xr = rnd;
-	else
-		*xr = floor(*xr);
-
-	rnd = ROUND(*yr, 0);
-	if (FLT_EQ(rnd, *yr))
-		*yr = rnd;
-	else
-		*yr = floor(*yr);
-
-	RASTER_DEBUGF(4, "Corrected GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
-		xw, yw, *xr, *yr);
-
 	return ES_NONE;
 }
+
 
 /******************************************************************************
 * rt_raster_get_envelope()
@@ -1572,6 +1605,100 @@ rt_raster_clone(rt_raster raster, uint8_t deep) {
 
 	return rtn;
 }
+
+/******************************************************************************
+* rt_raster_copy_to_geometry()
+******************************************************************************/
+
+rt_errorstate
+rt_raster_copy_to_geometry(
+	rt_raster raster,
+	uint32_t bandnum,
+	char dim,
+	rt_resample_type resample,
+	const LWGEOM *lwgeom_in,
+	LWGEOM **lwgeom_out
+	)
+{
+	int has_z = lwgeom_has_z(lwgeom_in);
+	int has_m = lwgeom_has_m(lwgeom_in);
+	LWGEOM *lwgeom;
+	LWPOINTITERATOR* it;
+	POINT4D p;
+	double igt[6] = {0};
+	rt_errorstate err;
+	rt_band band = NULL;
+	double nodatavalue = 0.0;
+
+	/* Get the band reference and read the nodatavalue */
+	band = rt_raster_get_band(raster, bandnum);
+	if (!band) {
+		rterror("unable to read requested band");
+		return ES_ERROR;
+	}
+	rt_band_get_nodata(band, &nodatavalue);
+
+	/* Fluff up geometry to have space for our new dimension */
+	if (dim == 'z') {
+		if (has_z)
+			lwgeom = lwgeom_clone(lwgeom_in);
+		else if (has_m)
+			lwgeom = lwgeom_force_4d(lwgeom_in, nodatavalue, nodatavalue);
+		else
+			lwgeom = lwgeom_force_3dz(lwgeom_in, nodatavalue);
+	}
+	else if (dim == 'm') {
+		if (has_m)
+			lwgeom = lwgeom_clone(lwgeom_in);
+		if (has_z)
+			lwgeom = lwgeom_force_4d(lwgeom_in, nodatavalue, nodatavalue);
+		else
+			lwgeom = lwgeom_force_3dm(lwgeom_in, nodatavalue);
+	}
+	else {
+		rterror("unknown value for dim");
+		return ES_ERROR;
+	}
+
+	/* Read every point in the geometry */
+	it = lwpointiterator_create_rw(lwgeom);
+	while (lwpointiterator_has_next(it))
+	{
+		int nodata;
+		double xr, yr, value;
+		lwpointiterator_peek(it, &p);
+
+		/* Convert X/Y world coordinates into raster coordinates */
+		err = rt_raster_geopoint_to_rasterpoint(raster, p.x, p.y, &xr, &yr, igt);
+		if (err != ES_NONE) continue;
+
+		/* Read the raster value for this point */
+		err = rt_band_get_pixel_resample(
+			band,
+			xr, yr,
+			resample,
+			&value, &nodata
+		);
+
+		if (err != ES_NONE) {
+			value = NAN;
+		}
+
+		/* Copy in the raster value */
+		if (dim == 'z')
+			p.z = value;
+		if (dim == 'm')
+			p.m = value;
+
+		lwpointiterator_modify_next(it, &p);
+	}
+	lwpointiterator_destroy(it);
+
+	if (lwgeom_out)
+		*lwgeom_out = lwgeom;
+	return ES_NONE;
+}
+
 
 /******************************************************************************
 * rt_raster_to_gdal()

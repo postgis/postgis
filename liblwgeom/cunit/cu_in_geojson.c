@@ -40,6 +40,10 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs)
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, h);
 		CU_ASSERT_STRING_EQUAL(h, exp);
 	}
+	else
+	{
+		CU_ASSERT_STRING_EQUAL(h, exp);
+	}
 
 	if ( exp_srs )
 	{
@@ -198,6 +202,36 @@ static void in_geojson_test_geoms(void)
 	do_geojson_test(
 	    "GEOMETRYCOLLECTION EMPTY",
 	    "{\"type\":\"GeometryCollection\",\"geometries\":[]}",
+	    NULL);
+
+	/* Empty Point */
+	do_geojson_test(
+	    "POINT EMPTY",
+	    "{\"type\":\"Point\",\"coordinates\":[]}",
+	    NULL);
+
+	/* Empty LineString */
+	do_geojson_test(
+	    "LINESTRING EMPTY",
+	    "{\"type\":\"LineString\",\"coordinates\":[]}",
+	    NULL);
+
+	/* Empty Polygon */
+	do_geojson_test(
+	    "POLYGON EMPTY",
+	    "{\"type\":\"Polygon\",\"coordinates\":[]}",
+	    NULL);
+
+	/* Empty MultiPoint */
+	do_geojson_test(
+	    "MULTIPOINT EMPTY",
+	    "{\"type\":\"MultiPoint\",\"coordinates\":[]}",
+	    NULL);
+
+	/* Empty MultiPolygon */
+	do_geojson_test(
+	    "MULTIPOLYGON EMPTY",
+	    "{\"type\":\"MultiPolygon\",\"coordinates\":[]}",
 	    NULL);
 }
 

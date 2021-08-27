@@ -11,9 +11,10 @@ LDFLAGS_STD="-Wl,-Bsymbolic-functions -Wl,-z,relro"
 export CUNIT_WITH_VALGRIND=YES
 export CUNIT_VALGRIND_FLAGS="--leak-check=full --error-exitcode=1"
 
-/usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile start
+/usr/local/pgsql/bin/pg_ctl -c -l /tmp/logfile -o '-F' start
 ./autogen.sh
 
 # Standard build
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
-bash ./ci/travis/logbt -- make -j check RUNTESTFLAGS=--verbose
+bash ./ci/travis/logbt -- make -j
+bash ./ci/travis/logbt -- make check RUNTESTFLAGS=--verbose

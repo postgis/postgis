@@ -12,13 +12,13 @@ export OS_BUILD=32
 export PG_VER=12
 export PGPATH=${WORKSPACE}/pg/label/${label}/rel/pg${PG_VER}w${OS_BUILD}
 
-export PATH=${PATH}:${PGPATH}/bin:${PGPATH}/lib
+export PATH=${PGPATH}/bin:${PGPATH}/lib:${PATH}
 export PGPORT=55432
 export PGDATA=$PGPATH/data_${PGPORT}
 export PGHOST=localhost
 
 sh autogen.sh
-./configure --with-pgconfig=${PGPATH}/bin/pg_config
+./configure --with-pgconfig=${PGPATH}/bin/pg_config --without-protobuf
 #make clean
 make
 export err_status=0

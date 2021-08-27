@@ -49,4 +49,46 @@ SELECT '#1719.1', ST_AsEWKT(ST_MakeValid('POINT(0 0)'));
 SELECT '#1719.2', ST_AsEWKT(ST_Normalize(ST_MakeValid('GEOMETRYCOLLECTION(POINT(0 0),MULTIPOINT(3 4,5 2),LINESTRING(4 4, 4 4),POLYGON((0 0,10 10,0 10,10 0,0 0)))')));
 SELECT '#1719.3', ST_AsEWKT(ST_MakeValid('MULTIPOINT(3 4,5 2)'));
 
+
+SELECT '#4813.0', ST_AsEWKT(ST_MakeValid(ST_SetSRID(ST_MakePoint('NaN', 'NaN'), 4326)));
+SELECT '#4813.1', ST_AsEWKT(ST_MakeValid(ST_SetSRID(ST_Collect(p), 4326))) FROM (
+		SELECT ST_MakePoint('NaN', 'NaN') as p UNION ALL
+		SELECT ST_MakePoint(1, 0) as p UNION ALL
+		SELECT ST_MakePoint('NaN', 'NaN') UNION ALL
+		SELECT ST_MakePoint(10, 10) UNION ALL
+		SELECT ST_MakePoint('NaN', 'NaN') UNION ALL
+		SELECT ST_MakePoint('NaN', 'NaN') UNION ALL
+		SELECT ST_MakePoint('NaN', 'NaN')
+) foo;
+SELECT '#4813.10', ST_AsEWKT(ST_MakeValid(ST_SetSRID(ST_MakeLine(p), 4326))) FROM (
+	SELECT ST_MakePoint('NaN', 'NaN') as p
+) foo;
+SELECT '#4813.11', ST_AsEWKT(ST_MakeValid(ST_SetSRID(ST_MakeLine(p), 4326))) FROM (
+	SELECT ST_MakePoint(1, 0) as p UNION ALL
+	SELECT ST_MakePoint('NaN', 'NaN')
+) foo;
+SELECT '#4813.12', ST_AsEWKT(ST_MakeValid(ST_SetSRID(ST_MakeLine(p), 4326))) FROM (
+	SELECT ST_MakePoint(1, 0) as p UNION ALL
+	SELECT ST_MakePoint('NaN', 'NaN') UNION ALL
+	SELECT ST_MakePoint(2, 0)
+) foo;
+SELECT '#4813.13', ST_AsEWKT(ST_MakeValid(ST_SetSRID(ST_MakeLine(p), 4326))) FROM (
+	SELECT ST_MakePoint(1, 0) as p UNION ALL
+	SELECT ST_MakePoint(2, 0) UNION ALL
+	SELECT ST_MakePoint('NaN', 'NaN')
+) foo;
+SELECT '#4813.20', ST_AsEWKT(ST_MakeValid(ST_SetSRID(ST_MakePolygon(r), 4326))) FROM (
+	SELECT ST_MakeLine(p) as r FROM (
+			SELECT ST_MakePoint(1, 0) as p UNION ALL
+			SELECT ST_MakePoint(10, 0) UNION ALL
+			SELECT ST_MakePoint('NaN', 'NaN') UNION ALL
+			SELECT ST_MakePoint(10, 10) UNION ALL
+			SELECT ST_MakePoint('NaN', 'NaN') UNION ALL
+			SELECT ST_MakePoint(0, 10) UNION ALL
+			SELECT ST_MakePoint('NaN', 'NaN') UNION ALL
+			SELECT ST_MakePoint('NaN', 'NaN') UNION ALL
+			SELECT ST_MakePoint(1, 0)
+	) foo
+) bar;
+
 DROP TABLE clean_cases;

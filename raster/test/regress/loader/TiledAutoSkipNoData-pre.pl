@@ -1,2 +1,9 @@
-link "loader/testraster2.tif", "loader/TiledAutoSkipNoData.tif"
-unless -f "loader/TiledAutoSkipNoData.tif";
+my $TARGETFILE = $TEST . '.tif';
+
+if ( ! -e $TARGETFILE ) {
+	my $FILERASTER = dirname($TEST) . "/testraster2.tif";
+	link ("$FILERASTER", "$TARGETFILE") ||
+		die("Cannot link $FILERASTER to $TARGETFILE: $!");
+}
+
+1;

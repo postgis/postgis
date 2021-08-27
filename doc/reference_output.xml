@@ -56,8 +56,9 @@
 			<note>
 			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
-			<para>Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
             <para>Enhanced: 3.1.0 support for optional precision parameter.</para>
+			<para>Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
+
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
@@ -113,7 +114,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			  <funcprototype>
 				<funcdef>text <function>ST_AsText</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits = 15</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>text <function>ST_AsText</function></funcdef>
@@ -122,7 +123,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			  <funcprototype>
 				<funcdef>text <function>ST_AsText</function></funcdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits = 15</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -130,19 +131,24 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Text representation of the geometry/geography. Optional argument may be used to reduce the maximum number
-			of decimal digits after floating point used in output (defaults to 15).</para>
+			<para>Returns the OGC <link linkend="OpenGISWKBWKT">Well-Known Text</link> (WKT) representation of the geometry/geography.
+            The optional <parameter>maxdecimaldigits</parameter> argument may be used to limit the number
+			of digits after the decimal point in output ordinates (defaults to 15).</para>
+
+			<para>To perform the inverse conversion of WKT representation to PostGIS geometry
+            use <xref linkend="ST_GeomFromText" />.</para>
 
 			<note>
-			  <para>The WKT spec does not include the SRID.  To get the SRID as part of the data, use the non-standard
-				PostGIS <xref linkend="ST_AsEWKT" /></para>
+			  <para>The standard OGC WKT representation does not include the SRID.
+              To include the SRID as part of the output representation, use the non-standard
+				PostGIS function <xref linkend="ST_AsEWKT" /></para>
 			</note>
       <warning>
-			<para>WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.</para>
+			<para>The textual representation of numbers in WKT may not maintain full floating-point precision.
+            To ensure full accuracy for data storage or transport it is best to use
+            <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) format
+            (see  <xref linkend="ST_AsBinary" /> and <xref linkend="ST_AsEWKB" />).</para>
       </warning>
-			<note>
-			  <para>ST_AsText is the reverse of <xref linkend="ST_GeomFromText" />.  Use <xref linkend="ST_GeomFromText" /> to convert to a postgis geometry from ST_AsText representation.</para>
-			</note>
 
 			<para>Availability: 1.5 - support for geography was introduced.</para>
 			<para>Enhanced: 2.5 - optional parameter precision introduced.</para>
@@ -159,24 +165,24 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 F03F000000000000F03F000000000000F03F000000000000F03
 F000000000000000000000000000000000000000000000000');
 
-		   st_astext
+    st_astext
 --------------------------------
  POLYGON((0 0,0 1,1 1,1 0,0 0))
-(1 row)</programlisting>
+</programlisting>
 
-			<para>Providing the precision is optional.</para>
-
-			<programlisting>SELECT ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'))
-          st_astext
+<para>Full precision output is the default.</para>
+			<programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'));
+    st_astext
 ------------------------------
  POINT(111.1111111 1.1111111)
-(1 row)</programlisting>
+</programlisting>
 
-			<programlisting>SELECT ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'),2)
-st_astext
+<para>The <parameter>maxdecimaldigits</parameter> argument can be used to limit output precision.</para>
+			<programlisting>SELECT ST_AsText('POINT(111.1111111 1.1111111)'), 2);
+    st_astext
 --------------------
-POINT(111.11 1.11)
-(1 row)</programlisting>
+ POINT(111.11 1.11)
+</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -196,7 +202,7 @@ POINT(111.11 1.11)
 		  <refentry id="ST_AsBinary">
 		  <refnamediv>
 			<refname>ST_AsBinary</refname>
-			<refpurpose>Return the Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</refpurpose>
+			<refpurpose>Return the OGC/ISO Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -225,22 +231,24 @@ POINT(111.11 1.11)
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Binary representation of the geometry.  There are 2 variants of the function.  The first
-			variant takes no endian encoding parameter and defaults to server machine endian.  The second variant takes a second argument
-			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
-			<para>This is useful in binary cursors to pull data out of the
-			database without converting it to a string representation.</para>
+			<para>Returns the OGC/ISO <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) representation of the geometry.
+            The first function variant defaults to encoding using server machine endian.
+            The second function variant takes a text argument
+			specifying the endian encoding, either little-endian ('NDR') or big-endian ('XDR').</para>
+
+			<para>WKB format is useful to read geometry data from the
+			database and maintaining full numeric precision.
+            This avoids the precision rounding that can happen with text formats such as WKT.</para>
+
+			<para>To perform the inverse conversion of WKB to PostGIS geometry use <xref linkend="ST_GeomFromWKB" />.</para>
 
 			<note>
-			  <para>The WKB spec does not include the SRID.  To get the WKB with SRID format use ST_AsEWKB</para>
-			</note>
-			<note>
-			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
+			  <para>The OGC/ISO WKB format does not include the SRID.  To get the EWKB format which does include the SRID use <xref linkend="ST_AsEWKB" /></para>
 			</note>
 
 			<note>
-			  <para>The default behavior in PostgreSQL 9.0 has been changed to output bytea in hex encoding.  ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  If your GUI tools
-				require the old behavior, then SET bytea_output='escape' in your database.</para>
+			  <para>The default behavior in PostgreSQL 9.0 has been changed to output bytea in hex encoding.
+                If your GUI tools require the old behavior, then SET bytea_output='escape' in your database.</para>
 			</note>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
@@ -265,25 +273,17 @@ POINT(111.11 1.11)
 
 		   st_asbinary
 --------------------------------
-\001\003\000\000\000\001\000\000\000\005
-\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000
-\000\000\000\360?\000\000\000\000\000\000
-\360?\000\000\000\000\000\000\360?\000\000
-\000\000\000\000\360?\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000
-(1 row)</programlisting>
+\x01030000000100000005000000000000000000000000000000000000000000000000000000000000
+000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000
+00000000000000000000000000
+</programlisting>
 			<programlisting>SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
 		   st_asbinary
 --------------------------------
-\000\000\000\000\003\000\000\000\001\000\000\000\005\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000
-\000?\360\000\000\000\000\000\000?\360\000\000\000\000\000\000?\360\000\000
-\000\000\000\000?\360\000\000\000\000\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000
-(1 row)</programlisting>
+\x000000000300000001000000050000000000000000000000000000000000000000000000003ff000
+00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000
+00000000000000000000000000
+</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -301,7 +301,7 @@ POINT(111.11 1.11)
 	<refentry id="ST_AsEWKB">
 		  <refnamediv>
 			<refname>ST_AsEWKB</refname>
-			<refpurpose>Return the Well-Known Binary (WKB) representation of the geometry with SRID meta data.</refpurpose>
+			<refpurpose>Return the Extended Well-Known Binary (EWKB) representation of the geometry with SRID meta data.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -320,17 +320,22 @@ POINT(111.11 1.11)
 
 		  <refsection>
 			<title>Description</title>
-			<para>Returns the Well-Known Binary representation of the geometry with SRID metadata.  There are 2 variants of the function.  The first
-			variant takes no endian encoding parameter and defaults to little endian.  The second variant takes a second argument
-			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
-			<para>This is useful in binary cursors to pull data out of the
-			database without converting it to a string representation.</para>
+			<para>Returns the <link linkend="EWKB_EWKT">Extended Well-Known Binary</link> (EWKB) representation of the geometry with SRID metadata.
+            The first function variant defaults to encoding using server machine endian.
+            The second function variant takes a text argument
+			specifying the endian encoding, either little-endian ('NDR') or big-endian ('XDR').</para>
+
+			<para>WKB format is useful to read geometry data from the
+			database and maintaining full numeric precision.
+            This avoids the precision rounding that can happen with text formats such as WKT.</para>
+
+			<para>To perform the inverse conversion of EWKB to PostGIS geometry use <xref linkend="ST_GeomFromEWKB" />.</para>
+
 			<note>
-			  <para>The WKB spec does not include the SRID.  To get the OGC WKB format use ST_AsBinary</para>
+			  <para>To get the OGC/ISO WKB format use <xref linkend="ST_AsBinary" />.
+              Note that OGC/ISO WKB format does not include the SRID.  </para>
 			</note>
-			<note>
-			  <para>ST_AsEWKB is the reverse of ST_GeomFromEWKB.  Use ST_GeomFromEWKB to convert to a postgis geometry from ST_AsEWKB representation.</para>
-			</note>
+
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
@@ -346,32 +351,24 @@ POINT(111.11 1.11)
 
 		   st_asewkb
 --------------------------------
-\001\003\000\000 \346\020\000\000\001\000
-\000\000\005\000\000\000\000
-\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000
-\000\000\360?\000\000\000\000\000\000\360?
-\000\000\000\000\000\000\360?\000\000\000\000\000
-\000\360?\000\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000\000\000
-(1 row)</programlisting>
+\x0103000020e610000001000000050000000000000000000000000000000000000000000000000000
+00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000
+0000000000000000000000000000000000
+</programlisting>
 		<programlisting>
 			SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');
 		   st_asewkb
 --------------------------------
-\000 \000\000\003\000\000\020\346\000\000\000\001\000\000\000\005\000\000\000\000\
-000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000?
-\360\000\000\000\000\000\000?\360\000\000\000\000\000\000?\360\000\000\000\000
-\000\000?\360\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000
-\000\000\000\000\000\000\000\000\000\000\000\000\000
+\x0020000003000010e600000001000000050000000000000000000000000000000000000000000000
+003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000
+0000000000000000000000000000000000
 		</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_SRID" /></para>
+			<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" />, <xref linkend="ST_SRID" /></para>
 		  </refsection>
 	</refentry>
 
@@ -551,7 +548,7 @@ POINT(111.11 1.11)
 	  <refnamediv>
 		<refname>ST_AsGeoJSON</refname>
 
-		<refpurpose>Return the geometry as a GeoJSON element.</refpurpose>
+		<refpurpose>Return a geometry as a GeoJSON element.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -581,12 +578,14 @@ POINT(111.11 1.11)
 	  <refsection>
 		<title>Description</title>
 
-		  <para>Return the geometry as a GeoJSON "geometry" object, or the row as a GeoJSON "feature" object. (Cf <ulink
- url="https://tools.ietf.org/html/rfc7946">GeoJSON specifications RFC 7946</ulink>). 2D and 3D Geometries are both supported. GeoJSON only support SFS 1.1 geometry types (no curve support for example).</para>
+		  <para>Returns a geometry as a GeoJSON "geometry", or a row as a GeoJSON "feature".
+          (See the <ulink url="https://tools.ietf.org/html/rfc7946">GeoJSON specifications RFC 7946</ulink>).
+ 2D and 3D Geometries are both supported.
+ GeoJSON only support SFS 1.1 geometry types (no curve support for example).</para>
 
 			<para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 9). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
 
-			<para>The <varname>options</varname> argument could be used to add BBOX or CRS in GeoJSON output:
+			<para>The <varname>options</varname> argument can be used to add BBOX or CRS in GeoJSON output:
 			  <itemizedlist>
 				<listitem>
 				  <para>0: means no option</para>
@@ -610,6 +609,25 @@ POINT(111.11 1.11)
 			  </itemizedlist>
 			</para>
 
+            <para>The GeoJSON specification states that polygons are oriented using the Right-Hand Rule,
+            and some clients require this orientation.
+            This can be ensured by using <xref linkend="ST_ForcePolygonCCW"/>.
+            The specification also requires that geometry be in the WGS84 coordinate system
+            (SRID = 4326).
+            If necessary geometry can be projected into WGS84 using <xref linkend="ST_Transform"/>:
+            <code>ST_Transform( geom, 4326 )</code>.
+            </para>
+
+            <para>GeoJSON can be tested and viewed online at <ulink url="http://geojson.io/">geojson.io</ulink>
+            and <ulink url="http://geojson.io/">geojsonlint.com</ulink>.
+            It is widely supported by web mapping frameworks:
+                <itemizedlist>
+                <listitem><para><ulink url="https://openlayers.org/en/latest/examples/geojson.html">OpenLayers GeoJSON Example</ulink></para></listitem>
+                <listitem><para><ulink url="https://leafletjs.com/examples/geojson/">Leaflet GeoJSON Example</ulink></para></listitem>
+                <listitem><para><ulink url="https://www.mapbox.com/mapbox-gl-js/example/multiple-geometries/">Mapbox GL GeoJSON Example</ulink></para></listitem>
+                </itemizedlist>
+            </para>
+
 			<para>Availability: 1.3.4</para>
 			<para>Availability: 1.5.0 geography support was introduced.</para>
 			<para>Changed: 2.0.0 support default args and named args.</para>
@@ -621,58 +639,56 @@ POINT(111.11 1.11)
 	  <refsection>
 		<title>Examples</title>
 
-		<para>GeoJSON format is popular among web mapping frameworks.
-			<itemizedlist>
-			<listitem><para><ulink url="https://openlayers.org/en/latest/examples/geojson.html">OpenLayers GeoJSON Example</ulink></para></listitem>
-			<listitem><para><ulink url="https://leafletjs.com/examples/geojson/">Leaflet GeoJSON Example</ulink></para></listitem>
-			<listitem><para><ulink url="https://www.mapbox.com/mapbox-gl-js/example/multiple-geometries/">Mapbox GL GeoJSON Example</ulink></para></listitem>
-			</itemizedlist>
-		</para>
-		<para>You can test and view your GeoJSON data online on <ulink url="http://geojson.io/">geojson.io</ulink>.</para>
-
-<para>To build FeatureCollection:</para>
-<programlisting>select json_build_object(
+<para>Generate a FeatureCollection:</para>
+<programlisting>SELECT json_build_object(
     'type', 'FeatureCollection',
     'features', json_agg(ST_AsGeoJSON(t.*)::json)
     )
-from ( values (1, 'one', 'POINT(1 1)'::geometry),
+FROM ( VALUES (1, 'one', 'POINT(1 1)'::geometry),
               (2, 'two', 'POINT(2 2)'),
               (3, 'three', 'POINT(3 3)')
      ) as t(id, name, geom);</programlisting>
 <screen>{"type" : "FeatureCollection", "features" : [{"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "properties": {"id": 1, "name": "one"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "properties": {"id": 2, "name": "two"}}, {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "properties": {"id": 3, "name": "three"}}]}</screen>
 
-<para>To get Features as records:</para>
+<para>Generate a Feature:</para>
 		<programlisting>SELECT ST_AsGeoJSON(t.*)
-FROM (VALUES
-  (1, 'one', 'POINT(1 1)'::geometry),
-  (2, 'two', 'POINT(2 2)'),
-  (3, 'three', 'POINT(3 3)'))
-AS t(id, name, geom);</programlisting>
+FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
 <screen>                                                  st_asgeojson
 -----------------------------------------------------------------------------------------------------------------
  {"type": "Feature", "geometry": {"type":"Point","coordinates":[1,1]}, "properties": {"id": 1, "name": "one"}}
- {"type": "Feature", "geometry": {"type":"Point","coordinates":[2,2]}, "properties": {"id": 2, "name": "two"}}
- {"type": "Feature", "geometry": {"type":"Point","coordinates":[3,3]}, "properties": {"id": 3, "name": "three"}}
 </screen>
 
-<para>Don't forget to transform your data to WGS84 longitude, latitude to conform with RFC7946:</para>
+<para>An alternate way to generate Features with an <varname>id</varname> property
+is to use JSONB functions and operators:</para>
+		<programlisting>SELECT jsonb_build_object(
+    'type',       'Feature',
+    'id',         id,
+    'geometry',   ST_AsGeoJSON(geom)::jsonb,
+    'properties', to_jsonb( t.* ) - 'id' - 'geom'
+    ) AS json
+FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programlisting>
+<screen>                                                  json
+-----------------------------------------------------------------------------------------------------------------
+ {"id": 1, "type": "Feature", "geometry": {"type": "Point", "coordinates": [1, 1]}, "properties": {"name": "one"}}
+</screen>
+
+<para>Don't forget to transform your data to WGS84 longitude, latitude to conform with the GeoJSON specification:</para>
 		<programlisting>SELECT ST_AsGeoJSON(ST_Transform(geom,4326)) from fe_edges limit 1;</programlisting>
 <screen>					   st_asgeojson
 -----------------------------------------------------------------------------------------------------------
 
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
-(1 row)</screen>
-<para>You can also use it with 3D geometries:</para>
+</screen>
+<para>3D geometries are supported:</para>
 <programlisting>SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');</programlisting>
 <screen>{"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}</screen>
 	  </refsection>
   <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_GeomFromGeoJSON" />, <xref linkend="ST_AsMVT" />, <xref linkend="ST_AsGeobuf" /></para>
+    <para><xref linkend="ST_GeomFromGeoJSON" />, <xref linkend="ST_ForcePolygonCCW" />, <xref linkend="ST_Transform" /> </para>
   </refsection>
-
 
 	</refentry>
 
@@ -1571,13 +1587,13 @@ x3dfrag
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));
+		<programlisting><![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326));
 
 	 st_geohash
 ----------------------
  c0w3hf1s70w3hf1s70w3
 
-SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
+SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326),5);
 
  st_geohash
 ------------

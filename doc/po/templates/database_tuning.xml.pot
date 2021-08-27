@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 #. Tag: title
 #: database_tuning.xml:4
 #, no-c-format
-msgid "Tuning your configuration for performance"
+msgid "Performance Tuning"
 msgstr ""
 
 #. Tag: para
 #: database_tuning.xml:6
 #, no-c-format
 msgid ""
-"Tuning for PostGIS is much like tuning for any PostgreSQL workload. The only "
-"additional note to keep in mind is that geometries and rasters are heavy so "
-"memory related optimizations generally have more of an impact on PostGIS "
-"than other types of PostgreSQL queries."
+"Tuning for PostGIS performance is much like tuning for any PostgreSQL "
+"workload. The only additional consideration is that geometries and rasters "
+"are usually large, so memory-related optimizations generally have more of an "
+"impact on PostGIS than other types of PostgreSQL queries."
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:9
+#: database_tuning.xml:10
 #, no-c-format
 msgid ""
 "For general details about optimizing PostgreSQL, refer to <ulink url="
@@ -40,20 +40,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:11
+#: database_tuning.xml:12
 #, no-c-format
 msgid ""
-"For PostgreSQL 9.4+ all these can be set at the server level without "
-"touching postgresql.conf or postgresql.auto.conf by using the <code>ALTER "
-"SYSTEM..</code> command."
+"For PostgreSQL 9.4+ configuration can be set at the server level without "
+"touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
+"by using the <code>ALTER SYSTEM</code> command."
 msgstr ""
 
 #. Tag: programlisting
-#: database_tuning.xml:13
+#: database_tuning.xml:14
 #, no-c-format
 msgid ""
 "ALTER SYSTEM SET work_mem = '256MB';\n"
-"-- this will force, non-startup configs to take effect for new connections\n"
+"-- this forces non-startup configs to take effect for new connections\n"
 "SELECT pg_reload_conf();\n"
 "-- show current setting value\n"
 "-- use SHOW ALL to see all settings\n"
@@ -61,39 +61,39 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:15
+#: database_tuning.xml:16
 #, no-c-format
 msgid ""
-"In addition to these settings, PostGIS also has some custom settings which "
-"you can find listed in <xref linkend=\"PostGIS_GUC\"/>."
+"In addition to the Postgres settings, PostGIS has some custom settings which "
+"are listed in <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
 
 #. Tag: title
-#: database_tuning.xml:18
+#: database_tuning.xml:19
 #, no-c-format
 msgid "Startup"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:20
+#: database_tuning.xml:21
 #, no-c-format
-msgid "These settings are configured in postgresql.conf:"
+msgid "These settings are configured in <code>postgresql.conf</code>:"
 msgstr ""
 
 #. Tag: ulink
-#: database_tuning.xml:25
+#: database_tuning.xml:26
 #, no-c-format
 msgid "constraint_exclusion"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:30
+#: database_tuning.xml:31
 #, no-c-format
 msgid "Default: partition"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:35
+#: database_tuning.xml:36
 #, no-c-format
 msgid ""
 "This is generally used for table partitioning. The default for this is set "
@@ -103,19 +103,19 @@ msgid ""
 msgstr ""
 
 #. Tag: ulink
-#: database_tuning.xml:44
+#: database_tuning.xml:45
 #, no-c-format
 msgid "shared_buffers"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:49
+#: database_tuning.xml:50
 #, no-c-format
 msgid "Default: ~128MB in PostgreSQL 9.6"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:54
+#: database_tuning.xml:55
 #, no-c-format
 msgid ""
 "Set to about 25% to 40% of available RAM. On windows you may not be able to "
@@ -123,7 +123,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:61
+#: database_tuning.xml:62
 #, no-c-format
 msgid ""
 "<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
@@ -134,13 +134,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:69
+#: database_tuning.xml:70
 #, no-c-format
 msgid "Default: 8"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:74
+#: database_tuning.xml:75
 #, no-c-format
 msgid ""
 "Sets the maximum number of background processes that the system can support. "
@@ -148,73 +148,73 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: database_tuning.xml:84
+#: database_tuning.xml:85
 #, no-c-format
 msgid "Runtime"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:86
+#: database_tuning.xml:87
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-WORK-MEM\">work_mem</ulink> (the memory used for sort "
-"operations and complex queries)"
+"resource.html#GUC-WORK-MEM\">work_mem</ulink> - sets the size of memory used "
+"for sort operations and complex queries"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:92
+#: database_tuning.xml:94
 #, no-c-format
 msgid "Default: 1-4MB"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:97
+#: database_tuning.xml:99
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:102
+#: database_tuning.xml:104
 #, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:107
+#: database_tuning.xml:109
 #, no-c-format
 msgid "If you have lots of RAM and few developers:"
 msgstr ""
 
 #. Tag: programlisting
-#: database_tuning.xml:109
+#: database_tuning.xml:111
 #, no-c-format
 msgid "SET work_mem TO '256MB';"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:114
+#: database_tuning.xml:116
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
-"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> (used "
-"for VACUUM, CREATE INDEX, etc.)"
+"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> - the "
+"memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:120
+#: database_tuning.xml:123
 #, no-c-format
 msgid "Default: 16-64MB"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:125
+#: database_tuning.xml:128
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:130
+#: database_tuning.xml:133
 #, no-c-format
 msgid ""
 "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
@@ -222,19 +222,19 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: database_tuning.xml:133
+#: database_tuning.xml:136
 #, no-c-format
 msgid "SET maintenance_work_mem TO '1GB';"
 msgstr ""
 
 #. Tag: ulink
-#: database_tuning.xml:139
+#: database_tuning.xml:142
 #, no-c-format
 msgid "max_parallel_workers_per_gather"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:141
+#: database_tuning.xml:144
 #, no-c-format
 msgid ""
 "This setting is only available for PostgreSQL 9.6+ and will only affect "
@@ -248,13 +248,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:150
+#: database_tuning.xml:153
 #, no-c-format
 msgid "Default: 0"
 msgstr ""
 
 #. Tag: para
-#: database_tuning.xml:155
+#: database_tuning.xml:158
 #, no-c-format
 msgid ""
 "Sets the maximum number of workers that can be started by a single "

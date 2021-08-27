@@ -12,8 +12,8 @@ ERROR:  Unable to find 'coordinates' in GeoJSON string
 ERROR:  unexpected character (at offset 0)
 ERROR:  unexpected end of data (at offset 0)
 ERROR:  invalid GeoJSON representation
-ERROR:  Too few ordinates in GeoJSON
-ERROR:  Too few ordinates in GeoJSON
+#1434.5|0101000020E6100000000000000000F87F000000000000F87F
+#1434.6|0104000020E610000000000000
 ERROR:  Unable to find 'coordinates' in GeoJSON string
 ERROR:  Unable to find 'coordinates' in GeoJSON string
 #2130|50

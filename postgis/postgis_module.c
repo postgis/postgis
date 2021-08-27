@@ -35,7 +35,7 @@
 #include "lwgeom_pg.h"
 #include "geos_c.h"
 
-#ifdef HAVE_WAGYU
+#ifdef HAVE_LIBPROTOBUF
 #include "lwgeom_wagyu.h"
 #endif
 
@@ -61,7 +61,6 @@ void _PG_init(void);
 void
 _PG_init(void)
 {
-
   coreIntHandler = pqsignal(SIGINT, handleInterrupt);
 
 #ifdef WIN32
@@ -69,8 +68,8 @@ _PG_init(void)
   lwgeom_register_interrupt_callback(interruptCallback);
 #endif
 
-    /* install PostgreSQL handlers */
-    pg_install_lwgeom_handlers();
+  /* install PostgreSQL handlers */
+  pg_install_lwgeom_handlers();
 }
 
 /*
@@ -97,7 +96,7 @@ handleInterrupt(int sig)
 
   GEOS_interruptRequest();
 
-#ifdef HAVE_WAGYU
+#ifdef HAVE_LIBPROTOBUF
   lwgeom_wagyu_interruptRequest();
 #endif
 

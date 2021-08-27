@@ -1,9 +1,9 @@
 set client_min_messages to WARNING;
 
-\i load_topology.sql
-\i load_features.sql
-\i more_features.sql
-\i hierarchy.sql
+\i ../load_topology.sql
+\i ../load_features.sql
+\i ../more_features.sql
+\i ../hierarchy.sql
 
 SELECT DISTINCT 'GeometryType(traffic_signs)',
 	geometrytype(feature) FROM features.traffic_signs;

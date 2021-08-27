@@ -11,6 +11,8 @@ dnl **********************************************************************
 
 AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
+AH_TEMPLATE([HAVE_VASPRINTF])
+AH_TEMPLATE([HAVE_ASPRINTF])
 AC_CONFIG_MACRO_DIR([macros])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PROG_INSTALL
@@ -102,11 +104,6 @@ dnl =====================================================
 dnl Include minor version in postgis extension libraries
 dnl =====================================================
 LIBINCLUDEMINORVERSION="no"
-AC_ARG_WITH([library-minor-version],
-    [AS_HELP_STRING([--without-interrupt-tests],
-                    [Disable the interrupt tests (for CI servers)])],
-    [], [])
-
 AC_ARG_WITH([library-minor-version],
     [AS_HELP_STRING([--with-library-minor-version],
                     [Include minor version in the PostgreSQL PostGIS library files])],
@@ -711,14 +708,13 @@ if test "x$GEOS_PATCH_VERSION" = "x"; then
 	GEOS_PATCH_VERSION="0";
 fi
 GEOS_FULL_VERSION=`$GEOSCONFIG --version`
-POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
 GEOS_NUMERIC_PATCH_VERSION=`printf "%02d" $GEOS_PATCH_VERSION`
 GEOS_NUMERIC_MINOR_VERSION=`printf "%02d" $GEOS_MINOR_VERSION`
-GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_NUMERIC_MINOR_VERSION$GEOS_NUMERIC_PATCH_VERSION"
+POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_NUMERIC_MINOR_VERSION$GEOS_NUMERIC_PATCH_VERSION"
 
 dnl Ensure that we are using GEOS >= 3.6.0
 AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
-if test ! "$GEOS_NUMERIC_VERSION" -ge 30600; then
+if test ! "$POSTGIS_GEOS_VERSION" -ge 30600; then
 	AC_MSG_ERROR([PostGIS requires GEOS >= 3.6.0])
 fi
 
@@ -745,7 +741,6 @@ LIBS="$LIBS_SAVE"
 
 AC_DEFINE_UNQUOTED([POSTGIS_GEOS_VERSION], [$POSTGIS_GEOS_VERSION], [GEOS library version])
 AC_SUBST([POSTGIS_GEOS_VERSION])
-AC_SUBST([GEOS_NUMERIC_VERSION])
 
 
 dnl ===========================================================================
@@ -869,6 +864,7 @@ elif test ! -z "$PKG_CONFIG"; then
 		[
 			PROJ_CPPFLAGS="$PROJ_CFLAGS"
 			PROJ_LDFLAGS="$PROJ_LIBS"
+			POSTGIS_PROJ_VERSION=`$PKG_CONFIG proj --modversion | sed 's/\([[0-9]]\).*\([[0-9]]\).*\([[0-9]]\)/\1\2/'`
 		],
 		[
 			PROJ_LDFLAGS="-lproj"
@@ -890,8 +886,10 @@ AC_CHECK_HEADER([proj_api.h],
 		)]
 	)
 
-dnl Return the PROJ.4 version number
-AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
+dnl Return the PROJ.4 version number if not detected by pkg-config
+if test "x$POSTGIS_PROJ_VERSION" = "x"; then
+	AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
+fi
 AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ library version])
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
@@ -907,11 +905,14 @@ AC_SUBST([PROJ_LDFLAGS])
 dnl Ensure we can link against libproj
 LIBS_SAVE="$LIBS"
 LIBS="$PROJ_LDFLAGS"
-AC_CHECK_LIB([proj], [pj_get_release],
-	[],
-	[AC_MSG_ERROR([could not find libproj - you may need to specify the directory of a PROJ installation using --with-projdir])],
+AC_CHECK_LIB([proj], [pj_get_release], [],
+	[AC_CHECK_LIB([proj], [proj_info], [],
+		[AC_MSG_ERROR([could not find libproj - you may need to specify the directory of a PROJ installation using --with-projdir])],
+		[]
+		)],
 	[])
 LIBS="$LIBS_SAVE"
+
 
 dnl ===========================================================================
 dnl Detect if json-c installed
@@ -1001,6 +1002,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
 				PROTOBUF_CPPFLAGS="$PROTOBUFC_CFLAGS";
 				PROTOBUF_LDFLAGS="$PROTOBUFC_LIBS";
+				PROTOC_VERSION=`$PKG_CONFIG libprotobuf-c --modversion | sed 's/\([[0-9]]\).*\([[0-9]]\).*\([[0-9]]\)/\100\200\3/'`
 			], [
 				AC_MSG_RESULT([libprotobuf-c not found in pkg-config])
 			])
@@ -1011,7 +1013,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 			if test "x$withval" = "xyes"; then
 				AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/usr/local])
 			else
-				PROTOBUF_LDFLAGS="-L$withval/lib -lprotobuf-c";
+				PROTOBUF_LDFLAGS="-L$withval/lib";
 				PROTOBUF_CPPFLAGS="-I$withval/include"
 			fi
 		], [])
@@ -1023,15 +1025,15 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	AC_ARG_WITH([protobuf-lib],
 		[AS_HELP_STRING([--with-protobuf-lib=PATH], [libprotobuf-c.so/dll/dylib library installation directory])], [
-			PROTOBUF_LDFLAGS="-L$withval -lprotobuf-c"
+			PROTOBUF_LDFLAGS="-L$withval"
 		],[])
 
 	if test -n "$PROTOBUF_CPPFLAGS"; then
-		CPPFLAGS="$PROTOBUF_CPPFLAGS"
+		CPPFLAGS="$CPPFLAGS $PROTOBUF_CPPFLAGS"
 	fi
 
 	if test -n "$PROTOBUF_LDFLAGS"; then
-		LDFLAGS="$PROTOBUF_LDFLAGS"
+		LDFLAGS="$LDFLAGS $PROTOBUF_LDFLAGS"
 	fi
 
 	dnl confirm that discovered/configured include path works
@@ -1041,7 +1043,8 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	)
 
 	dnl confirm that discovered/configured library path works
-	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init], [],
+	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init],
+		[],
 		AC_MSG_ERROR([unable to link protobuf-c using $LDFLAGS. You can disable MVT and Geobuf support using --without-protobuf])
 		HAVE_PROTOBUF=no
 	)
@@ -1051,7 +1054,10 @@ if test "$CHECK_PROTOBUF" != "no"; then
 		[])
 
 	AC_MSG_CHECKING([protobuf-c version])
-	AC_PROTOBUFC_VERSION([PROTOC_VERSION])
+	dnl Return the protobuf-c version number if not detected by pkg-config
+	if test "x$PROTOC_VERSION" = "x"; then
+		AC_PROTOBUFC_VERSION([PROTOC_VERSION])
+	fi
         if test ! "$PROTOC_VERSION" -ge 1001000; then
                 AC_MSG_ERROR("Old protobuf-c release found but 1.1.0 is required. You can disable MVT and Geobuf support using --without-protobuf")
         fi
@@ -1133,6 +1139,8 @@ else
     AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
 fi
+
+AC_DEFINE([POSTGIS_DEBUG_LEVEL], [0], [Define debug level. Default 0])
 
 dnl ===========================================================================
 dnl Allow the developer to disable the automatic updates of postgis_revision.h
@@ -1266,13 +1274,8 @@ dnl interrupt tests
 dnl ====================================
 INTERRUPTTESTS="no"
 AC_ARG_WITH([interrupt-tests],
-    [AS_HELP_STRING([--without-interrupt-tests],
-                    [Disable the interrupt tests (for CI servers)])],
-    [], [])
-
-AC_ARG_WITH([interrupt-tests],
     [AS_HELP_STRING([--with-interrupt-tests],
-                    [Enable interrupt tests])],
+                    [Enable the interrupt tests])],
     [INTERRUPTTESTS="yes"], [])
 
 if test "x$with_interrupt_tests" = "xno"; then
@@ -1339,7 +1342,7 @@ if test "x$with_raster" != "xno"; then
 	LIBGDAL_DEPLIBS_LDFLAGS=""
 
 	dnl GDAL version constants, update here
-	GDAL_MIN_VERSION=1.8.0
+	GDAL_MIN_VERSION=2.0.0
 	GDAL_MIN_VERSION_NUMBER=180 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
 
 	AC_ARG_WITH(
@@ -1472,74 +1475,67 @@ dnl ===========================================================================
 
 dnl Wagyu will only be necessary if protobuf is present to build MVTs
 
-HAVE_WAGYU=no
 if test "x$HAVE_PROTOBUF" = "xyes"; then
-    AC_ARG_WITH([wagyu], AC_HELP_STRING([--without-wagyu], [Don't use the wagyu library]), [], [])
+    DEPS_SUBDIR="deps"
+    AC_SUBST([DEPS_SUBDIR])
 
-    if test "x$with_wagyu" != xno; then
-            AC_MSG_RESULT([WAGYU: Wagyu usage requested])
+    WAGYU_LIB=libwagyu.la
+    AC_SUBST([WAGYU_LIB])
 
-            DEPS_SUBDIR="deps"
-            AC_SUBST([DEPS_SUBDIR])
+    dnl ============================================================
+    dnl We force  to use the same compiler as Postgresql
+    dnl ============================================================
+    CXX_SAVE="$CXX"
+    CC_SAVE="$CC"
+    CFLAGS_SAVE="$CFLAGS"
+    CXXFLAGS_SAVE="$CXXFLAGS"
+    CPPFLAGS_SAVE="$CPPFLAGS"
+    LDFLAGS_SAVE="$LDFLAGS"
+    LIBS_SAVE="$LIBS"
 
-            WAGYU_LIB=libwagyu.la
-            AC_SUBST([WAGYU_LIB])
+    WAGYU_CXX=`"$PG_CONFIG" --cc`
+    CPPFLAGS="-x c++"
+    CFLAGS=""
+    LDFLAGS=""
+    LIBS=""
+    CXX="$WAGYU_CXX"
+    AC_PROG_CXX
+    AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+    WAGYU_CXX="$CXX -x c++"
 
-            dnl ============================================================
-            dnl We force  to use the same compiler as Postgresql
-            dnl ============================================================
-            CXX_SAVE="$CXX"
-            CC_SAVE="$CC"
-            CFLAGS_SAVE="$CFLAGS"
-            CXXFLAGS_SAVE="$CXXFLAGS"
-            CPPFLAGS_SAVE="$CPPFLAGS"
-            LDFLAGS_SAVE="$LDFLAGS"
-            LIBS_SAVE="$LIBS"
+    dnl ============================================================
+    dnl Check if we can declare the c++ stdlib
+    dnl ============================================================
+    CC="$WAGYU_CXX"
 
-            WAGYU_CXX=`"$PG_CONFIG" --cc`
-            CPPFLAGS="-x c++"
-            CFLAGS=""
-            LDFLAGS=""
-            LIBS=""
-            CXX="$WAGYU_CXX"
-            AC_PROG_CXX
-            AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
-            WAGYU_CXX="$CXX -x c++"
+    AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
+    AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
 
-            dnl ============================================================
-            dnl Check if we can declare the c++ stdlib
-            dnl ============================================================
-            CC="$WAGYU_CXX"
-
-            AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
-            AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
-
-            if test "x$HAVE_CPP" = "xyes"; then
-                WAGYU_LDFLAGS="-lc++"
-            elif test "x$HAVE_STDCPP" = "xyes"; then
-                WAGYU_LDFLAGS="-lstdc++"
-            else
-                AC_MSG_WARN("Could not find a C++ standard library")
-                WAGYU_LDFLAGS=""
-            fi
-
-            CXX="$CXX_SAVE"
-            CC="$CC_SAVE"
-            CFLAGS="$CFLAGS_SAVE"
-            CXXFLAGS="$CXXFLAGS_SAVE"
-            CPPFLAGS="$CPPFLAGS_SAVE"
-            LDFLAGS="$LDFLAGS_SAVE"
-            LIBS="$LIBS_SAVE"
-
-            HAVE_WAGYU=yes
-            AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
-            AC_SUBST([HAVE_WAGYU])
-            AC_SUBST([WAGYU_CXX])
-            AC_SUBST([WAGYU_LDFLAGS])
-
-            DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
-                    deps/wagyu/Makefile"
+    if test "x$HAVE_CPP" = "xyes"; then
+        WAGYU_LDFLAGS="-lc++"
+    elif test "x$HAVE_STDCPP" = "xyes"; then
+        WAGYU_LDFLAGS="-lstdc++"
+    else
+        AC_MSG_WARN("Could not find a C++ standard library")
+        WAGYU_LDFLAGS=""
     fi
+
+    CXX="$CXX_SAVE"
+    CC="$CC_SAVE"
+    CFLAGS="$CFLAGS_SAVE"
+    CXXFLAGS="$CXXFLAGS_SAVE"
+    CPPFLAGS="$CPPFLAGS_SAVE"
+    LDFLAGS="$LDFLAGS_SAVE"
+    LIBS="$LIBS_SAVE"
+
+    HAVE_WAGYU=yes
+    AC_DEFINE([HAVE_WAGYU], [1], [Define to 1 if wagyu is being built])
+    AC_SUBST([HAVE_WAGYU])
+    AC_SUBST([WAGYU_CXX])
+    AC_SUBST([WAGYU_LDFLAGS])
+
+    DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+            deps/wagyu/Makefile"
 fi
 
 dnl ===========================================================================
@@ -1599,13 +1595,17 @@ AC_OUTPUT([GNUmakefile
    postgis/Makefile
    postgis/sqldefines.h
 	 sfcgal/Makefile
+   sfcgal/regress/Makefile
    loader/Makefile
    loader/cunit/Makefile
    topology/Makefile
    topology/test/Makefile
    regress/Makefile
    regress/core/Makefile
-   regress/sfcgal/Makefile
+   regress/core/tests.mk
+   regress/dumper/Makefile
+   regress/loader/Makefile
+	 regress/real/Makefile
    doc/Makefile
    doc/Makefile.comments
    doc/html/image_src/Makefile
@@ -1670,7 +1670,6 @@ fi
 
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
-AC_MSG_RESULT([  Wagyu:                ${HAVE_WAGYU}])
 
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])
@@ -1706,14 +1705,14 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 30800; then
+if test "$POSTGIS_GEOS_VERSION" -lt 30900; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION}.])
 AC_MSG_WARN([])
 AC_MSG_WARN([  To take advantage of _all_ the features of ])
-AC_MSG_WARN([  PostGIS, GEOS 3.8.0 or higher is required.])
+AC_MSG_WARN([  PostGIS, GEOS 3.9.0 or higher is required.])
 AC_MSG_WARN([])
-AC_MSG_WARN([  For _most_ features, GEOS 3.6.0 is enough.])
+AC_MSG_WARN([  For _many_ features, GEOS 3.6.0 is enough.])
 AC_MSG_WARN([])
 AC_MSG_WARN([  We recommend GEOS 3.8.0 or higher])
 AC_MSG_WARN([])

@@ -1,0 +1,26 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2021 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- {
+--  Override ST_Srid() for topogeometry objects
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.ST_Srid(tg topology.TopoGeometry)
+	RETURNS INT
+AS
+$$
+	SELECT srid FROM topology.topology
+  WHERE id = id(tg);
+$$
+LANGUAGE 'sql' STABLE STRICT;
+-- }
+

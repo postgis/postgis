@@ -111,6 +111,10 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
  ) SELECT 'ST_NumGeometries(empty) == 0', ST_NumGeometries(empty) FROM inp;
+-- https://trac.osgeo.org/postgis/ticket/4736
+WITH inp AS (SELECT
+ 'GEOMETRYCOLLECTION(POLYGON EMPTY)'::geometry as empty
+ ) SELECT 'ST_NumGeometries(emptycollection) == 0', ST_NumGeometries(empty) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
  ) SELECT 'ST_NRings(empty) == 0', ST_NRings(empty) FROM inp;
@@ -123,7 +127,12 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  1 as n
- ) SELECT 'ST_GeometryN(empty, n) == empty', encode(ST_AsEWKB(ST_GeometryN(empty, n),'ndr'),'hex') FROM inp;
+ ) SELECT 'ST_GeometryN(empty, n) == NULL', encode(ST_AsEWKB(ST_GeometryN(empty, n),'ndr'),'hex') FROM inp;
+-- https://trac.osgeo.org/postgis/ticket/4736
+WITH inp AS (SELECT
+ 'GEOMETRYCOLLECTION(POLYGON EMPTY)'::geometry as empty,
+ 1 as n
+ ) SELECT 'ST_GeometryN(emptycollection, n) == NULL', encode(ST_AsEWKB(ST_GeometryN(empty, n),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
  ) SELECT 'ST_ExteriorRing(empty) == empty', encode(ST_AsEWKB(ST_ExteriorRing(empty),'ndr'),'hex') FROM inp;
@@ -137,6 +146,8 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'LINESTRING EMPTY'::geometry as empty
  ) SELECT 'ST_Length(empty) == 0', ST_Length(empty) FROM inp;
+
+
 
 -- Operators
 

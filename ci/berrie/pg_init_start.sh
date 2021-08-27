@@ -13,17 +13,17 @@ export PGPORT=55432
 export PGDATA=$PGPATH/data_${PGPORT}
 export PGLOG="$PGDATA/pgsql.log"
 # What to use to start up the postmaster
-DAEMON="$PGPATH/bin/pg_ctl -D $PGDATA -l logfile start"
+DAEMON="$PGPATH/bin/pg_ctl -D $PGDATA -o '-F' -l logfile start"
 
 # What to use to shut down the postmaster
 PGCTL="$PGPATH/bin/pg_ctl"
 
 # remove cluster if exists
 if [ -d $PGDATA ] ; then
-    if [ -d $PGDATA/postmaster.pid] ; then
+    if [ -d $PGDATA/postmaster.pid ] ; then
     	$PGCTL stop -D $PGDATA -s -m fast
     fi;
-	
+
     rm -rf $PGDATA
 fi;
 

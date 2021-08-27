@@ -31,18 +31,18 @@
 #include <fmgr.h>
 #include <funcapi.h> /* for SRF */
 #include <utils/builtins.h> /* for text_to_cstring() */
-#include "utils/lsyscache.h" /* for get_typlenbyvalalign */
-#include "utils/array.h" /* for ArrayType */
-#include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+#include <access/htup_details.h> /* for heap_form_tuple() */
+#include <utils/lsyscache.h> /* for get_typlenbyvalalign */
+#include <utils/array.h> /* for ArrayType */
+#include <utils/guc.h> /* for ArrayType */
+#include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+#include <utils/memutils.h> /* For TopMemoryContext */
 
 #include "../../postgis_config.h"
 
-
-#include "access/htup_details.h" /* for heap_form_tuple() */
-
-
 #include "rtpostgis.h"
 #include "rtpg_internal.h"
+#include "stringbuffer.h"
 
 /* convert GDAL raster to raster */
 Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS);
@@ -50,13 +50,14 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS);
 /* convert raster to GDAL raster */
 Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS);
 Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
+Datum RASTER_setGDALOpenOptions(PG_FUNCTION_ARGS);
 
 /* warp a raster using GDAL Warp API */
 Datum RASTER_GDALWarp(PG_FUNCTION_ARGS);
 
-/* ---------------------------------------------------------------- */
-/* Returns raster from GDAL raster                                  */
-/* ---------------------------------------------------------------- */
+/* ----------------------------------------------------------------
+ * Returns raster from GDAL raster
+ * ---------------------------------------------------------------- */
 PG_FUNCTION_INFO_V1(RASTER_fromGDALRaster);
 Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 {
@@ -441,9 +442,394 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 	}
 }
 
-/**
- * warp a raster using GDAL Warp API
- */
+/************************************************************************
+ * ST_Contour(
+ *   rast raster,
+ *   bandnumber integer DEFAULT 1,
+ *   level_interval float8 DEFAULT 100.0,
+ *   level_base float8 DEFAULT 0.0,
+ *   fixed_levels float8[] DEFAULT ARRAY[]::float8[],
+ *   polygonize boolean DEFAULT false
+ * )
+ * RETURNS table(geom geometry, value float8, id integer)
+ ************************************************************************/
+
+PG_FUNCTION_INFO_V1(RASTER_Contour);
+Datum RASTER_Contour(PG_FUNCTION_ARGS)
+{
+	/* For return values */
+	typedef struct gdal_contour_result_t {
+		size_t ncontours;
+		struct rt_contour_t *contours;
+	} gdal_contour_result_t;
+
+	FuncCallContext *funcctx;
+
+	if (SRF_IS_FIRSTCALL())
+	{
+		MemoryContext oldcontext;
+		TupleDesc tupdesc;
+		gdal_contour_result_t *result;
+		rt_pgraster *pgraster = NULL;
+
+		/* For reading the raster */
+		int src_srid = SRID_UNKNOWN;
+		char *src_srs = NULL;
+		rt_raster raster = NULL;
+		int num_bands;
+		int band, rv;
+
+		/* For reading the levels[] */
+		ArrayType *array;
+		size_t array_size = 0;
+
+		/* For the level parameters */
+		double level_base = 0.0;
+		double level_interval = 100.0;
+		double *fixed_levels = NULL;
+		size_t fixed_levels_count = 0;
+
+		/* for the polygonize flag */
+		bool polygonize = false;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/* To carry the output from rt_raster_gdal_contour */
+		result = palloc0(sizeof(gdal_contour_result_t));
+
+		/* Build a tuple descriptor for our return result */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			MemoryContextSwitchTo(oldcontext);
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
+		/* Read the raster */
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		num_bands = rt_raster_get_num_bands(raster);
+		src_srid = clamp_srid(rt_raster_get_srid(raster));
+		src_srs = rtpg_getSR(src_srid);
+
+		/* Read the band number */
+		band = PG_GETARG_INT32(1);
+		if (band < 1 || band > num_bands) {
+			elog(ERROR, "%s: band number must be between 1 and %u inclusive", __func__, num_bands);
+		}
+
+		/* Read the level_interval */
+		level_interval = PG_GETARG_FLOAT8(2);
+
+		/* Read the level_base */
+		level_base = PG_GETARG_FLOAT8(3);
+
+		if (level_interval <= 0.0) {
+			elog(ERROR, "%s: level interval must be greater than zero", __func__);
+		}
+
+		/* Read the polygonize flag */
+		polygonize = PG_GETARG_BOOL(5);
+
+		/* Read the levels array */
+		array = PG_GETARG_ARRAYTYPE_P(4);
+		array_size = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		if (array_size > 0) {
+			Datum value;
+			bool isnull;
+			ArrayIterator iterator = array_create_iterator(array, 0, NULL);
+			fixed_levels = palloc0(array_size * sizeof(double));
+			while (array_iterate(iterator, &value, &isnull))
+			{
+				/* Skip nulls */
+				if (isnull)
+					continue;
+
+				/* Can out if for some reason we are about to blow memory */
+				if (fixed_levels_count >= array_size)
+					break;
+
+				fixed_levels[fixed_levels_count++] = DatumGetFloat8(value);
+			}
+		}
+
+		/* Run the contouring routine */
+		rv = rt_raster_gdal_contour(
+			/* input parameters */
+			raster,
+			band,
+			src_srid,
+			src_srs,
+			level_interval,
+			level_base,
+			fixed_levels_count,
+			fixed_levels,
+			polygonize,
+			/* output parameters */
+			&(result->ncontours),
+			&(result->contours)
+			);
+
+		/* No-op on bad return */
+		if (rv == FALSE) {
+			funcctx = SRF_PERCALL_SETUP();
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		funcctx->user_fctx = result;
+		funcctx->max_calls = result->ncontours;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+
+	/* do when there is more left to send */
+	if (funcctx->call_cntr < funcctx->max_calls) {
+
+		HeapTuple tuple;
+		Datum srf_result;
+		Datum values[3] = {0, 0, 0};
+		bool nulls[3] = {0, 0, 0};
+
+		gdal_contour_result_t *result = funcctx->user_fctx;
+		struct rt_contour_t c = result->contours[funcctx->call_cntr];
+
+		if (c.geom) {
+			values[0] = PointerGetDatum(c.geom);
+			values[1] = Int32GetDatum(c.id);
+			values[2] = Float8GetDatum(c.elevation);
+		}
+		else {
+			nulls[0] = true;
+			nulls[1] = true;
+			nulls[2] = true;
+		}
+
+		/* return a tuple */
+		tuple = heap_form_tuple(funcctx->tuple_desc, values, nulls);
+		srf_result = HeapTupleGetDatum(tuple);
+		SRF_RETURN_NEXT(funcctx, srf_result);
+	}
+	else {
+		SRF_RETURN_DONE(funcctx);
+	}
+}
+
+/************************************************************************
+ *  RASTER_InterpolateRaster
+ *
+ * CREATE OR REPLACE FUNCTION ST_InterpolateRaster(
+ *   geom geometry,
+ *   rast raster,
+ *   options text,
+ *   bandnumber integer DEFAULT 1
+ * 	) RETURNS raster
+ *
+ * https://gdal.org/api/gdal_alg.html?highlight=contour#_CPPv414GDALGridCreate17GDALGridAlgorithmPKv7GUInt32PKdPKdPKddddd7GUInt327GUInt3212GDALDataTypePv16GDALProgressFuncPv
+ ************************************************************************/
+
+PG_FUNCTION_INFO_V1(RASTER_InterpolateRaster);
+Datum RASTER_InterpolateRaster(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *in_pgrast = NULL;
+	rt_pgraster *out_pgrast = NULL;
+	rt_raster in_rast = NULL;
+	rt_raster out_rast = NULL;
+	uint32_t out_rast_bands[1] = {0};
+	rt_band in_band = NULL;
+	rt_band out_band = NULL;
+	int band_number;
+	uint16_t in_band_width, in_band_height;
+	uint32_t npoints;
+	rt_pixtype in_band_pixtype;
+	GDALDataType in_band_gdaltype;
+	size_t in_band_gdaltype_size;
+
+	rt_envelope env;
+
+	GDALGridAlgorithm algorithm;
+	text *options_txt = NULL;
+	void *options_struct = NULL;
+	CPLErr err;
+	uint8_t *out_data;
+	rt_errorstate rterr;
+
+	/* Input points */
+	LWPOINTITERATOR *iterator;
+	POINT4D pt;
+	size_t coord_count = 0;
+	LWGEOM *lwgeom;
+	double *xcoords, *ycoords, *zcoords;
+
+	GSERIALIZED *gser = (GSERIALIZED*)PG_GETARG_POINTER(0);
+
+	/* Z value is required to drive the grid heights */
+	if (!gserialized_has_z(gser))
+		elog(ERROR, "%s: input geometry does not have Z values", __func__);
+
+	/* Cannot process empties */
+	if (gserialized_is_empty(gser))
+		PG_RETURN_NULL();
+
+	in_pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	in_rast = rt_raster_deserialize(in_pgrast, FALSE);
+	if (!in_rast)
+		elog(ERROR, "%s: Could not deserialize raster", __func__);
+
+	/* GDAL cannot grid a skewed raster */
+	if (rt_raster_get_x_skew(in_rast) != 0.0 ||
+	    rt_raster_get_y_skew(in_rast) != 0.0) {
+		elog(ERROR, "%s: Cannot generate a grid into a skewed raster",__func__);
+	}
+
+	/* Flat JSON map of options from user */
+	options_txt = PG_GETARG_TEXT_P(1);
+	/* 1-base band number from user */
+	band_number = PG_GETARG_INT32(3);
+	if (band_number < 1)
+		elog(ERROR, "%s: Invalid band number %d", __func__, band_number);
+
+	lwgeom = lwgeom_from_gserialized(gser);
+	npoints = lwgeom_count_vertices(lwgeom);
+	/* This shouldn't happen, but just in case... */
+	if (npoints < 1)
+		elog(ERROR, "%s: Geometry has no points", __func__);
+
+	in_band = rt_raster_get_band(in_rast, band_number-1);
+	if (!in_band)
+		elog(ERROR, "%s: Cannot access raster band %d", __func__, band_number);
+
+
+	rterr = rt_raster_get_envelope(in_rast, &env);
+	if (rterr == ES_ERROR)
+		elog(ERROR, "%s: Unable to calculate envelope", __func__);
+
+	/* Get geometry of input raster */
+	in_band_width = rt_band_get_width(in_band);
+	in_band_height = rt_band_get_height(in_band);
+	in_band_pixtype = rt_band_get_pixtype(in_band);
+	in_band_gdaltype = rt_util_pixtype_to_gdal_datatype(in_band_pixtype);
+	in_band_gdaltype_size = GDALGetDataTypeSize(in_band_gdaltype) / 8;
+
+	/* Quickly copy options struct into local memory context, so we */
+	/* don't have malloc'ed memory lying around */
+	// if (err == CE_None && options_struct) {
+	// 	void *tmp = options_struct;
+	// 	switch (algorithm) {
+	// 		case GGA_InverseDistanceToAPower:
+	// 			options_struct = palloc(sizeof(GDALGridInverseDistanceToAPowerOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridInverseDistanceToAPowerOptions));
+	// 			break;
+	// 		case GGA_InverseDistanceToAPowerNearestNeighbor:
+	// 			options_struct = palloc(sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions));
+	// 			break;
+	// 		case GGA_MovingAverage:
+	// 			options_struct = palloc(sizeof(GDALGridMovingAverageOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridMovingAverageOptions));
+	// 			break;
+	// 		case GGA_NearestNeighbor:
+	// 			options_struct = palloc(sizeof(GDALGridNearestNeighborOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridNearestNeighborOptions));
+	// 			break;
+	// 		case GGA_Linear:
+	// 			options_struct = palloc(sizeof(GDALGridLinearOptions));
+	// 			memcpy(options_struct, tmp, sizeof(GDALGridLinearOptions));
+	// 			break;
+	// 		default:
+	// 			elog(ERROR, "%s: Unsupported gridding algorithm %d", __func__, algorithm);
+	// 	}
+	// 	free(tmp);
+	// }
+
+	/* Prepare destination grid buffer for output */
+	out_data = palloc(in_band_gdaltype_size * in_band_width * in_band_height);
+
+	/* Prepare input points for processing */
+	xcoords = palloc(sizeof(double) * npoints);
+	ycoords = palloc(sizeof(double) * npoints);
+	zcoords = palloc(sizeof(double) * npoints);
+
+	/* Populate input points */
+	iterator = lwpointiterator_create(lwgeom);
+	while(lwpointiterator_next(iterator, &pt) == LW_SUCCESS) {
+		if (coord_count >= npoints)
+			elog(ERROR, "%s: More points from iterator than expected", __func__);
+		xcoords[coord_count] = pt.x;
+		ycoords[coord_count] = pt.y;
+		zcoords[coord_count] = pt.z;
+		coord_count++;
+	}
+	lwpointiterator_destroy(iterator);
+
+	/* Extract algorithm and options from options text */
+	/* This malloc's the options struct, so clean up right away */
+	err = ParseAlgorithmAndOptions(
+		text_to_cstring(options_txt),
+		&algorithm,
+		&options_struct);
+	if (err != CE_None) {
+		if (options_struct) free(options_struct);
+		elog(ERROR, "%s: Unable to parse options string: %s", __func__, CPLGetLastErrorMsg());
+	}
+
+	/* Run the gridding algorithm */
+	err = GDALGridCreate(
+	        algorithm, options_struct,
+	        npoints, xcoords, ycoords, zcoords,
+	        env.MinX, env.MaxX, env.MinY, env.MaxY,
+	        in_band_width, in_band_height,
+	        in_band_gdaltype, out_data,
+	        NULL, /* GDALProgressFunc */
+	        NULL /* ProgressArgs */
+	        );
+
+	/* Quickly clean up malloc'ed memory */
+	if (options_struct)
+		free(options_struct);
+
+	if (err != CE_None) {
+		elog(ERROR, "%s: GDALGridCreate failed: %s", __func__, CPLGetLastErrorMsg());
+	}
+
+	out_rast_bands[0] = band_number-1;
+	out_rast = rt_raster_from_band(in_rast, out_rast_bands, 1);
+	out_band = rt_raster_get_band(out_rast, 0);
+	if (!out_band)
+		elog(ERROR, "%s: Cannot access output raster band", __func__);
+
+	/* Copy the data from the output buffer into the destination band */
+	for (uint32_t y = 0; y < in_band_height; y++) {
+		size_t offset = (in_band_height-y-1) * (in_band_gdaltype_size * in_band_width);
+		rterr = rt_band_set_pixel_line(out_band, 0, y, out_data + offset, in_band_width);
+	}
+
+	out_pgrast = rt_raster_serialize(out_rast);
+	rt_raster_destroy(out_rast);
+	rt_raster_destroy(in_rast);
+
+	if (NULL == out_pgrast) PG_RETURN_NULL();
+
+	SET_VARSIZE(out_pgrast, out_pgrast->size);
+	PG_RETURN_POINTER(out_pgrast);
+}
+
+
+/************************************************************************
+ * Warp a raster using GDAL Warp API
+ ************************************************************************/
+
 PG_FUNCTION_INFO_V1(RASTER_GDALWarp);
 Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 {

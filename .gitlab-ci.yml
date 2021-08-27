@@ -1,5 +1,7 @@
 test:
   image: debian:buster
+  except:
+    - master
   script:
     - apt-get update -qq && apt-get install -y
         bison flex
@@ -19,7 +21,7 @@ test:
     - ./configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
     - RUNTESTFLAGS=-v make check
-    - RUNTESTFLAGS="-v --dumprestore" make check
+    - RUNTESTFLAGS="-v --dumprestore" make check-regress
     - make install
     - RUNTESTFLAGS=-v make installcheck
     - RUNTESTFLAGS="-v --dumprestore" make installcheck

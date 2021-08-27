@@ -45,6 +45,7 @@
  */
 
 Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS);
+Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS);
 
 struct dumpnode {
 	LWGEOM *geom;
@@ -287,8 +288,221 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 		/* no more geometries in the current collection */
 		if (--state->stacklen == 0) SRF_RETURN_DONE(funcctx);
 		state->pathlen--;
-		state->stack[state->stacklen-1].idx++;
 	}
 }
 
+PG_FUNCTION_INFO_V1(LWGEOM_dumpsegments);
+Datum LWGEOM_dumpsegments(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	MemoryContext oldcontext, newcontext;
 
+	GSERIALIZED *pglwgeom;
+	LWCOLLECTION *lwcoll;
+	LWGEOM *lwgeom;
+	struct dumpstate *state;
+	struct dumpnode *node;
+
+	HeapTuple tuple;
+	Datum pathpt[2];         /* used to construct the composite return value */
+	bool isnull[2] = {0, 0}; /* needed to say neither value is null */
+	Datum result;            /* the actual composite return value */
+
+	if (SRF_IS_FIRSTCALL())
+	{
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		newcontext = funcctx->multi_call_memory_ctx;
+		oldcontext = MemoryContextSwitchTo(newcontext);
+
+		pglwgeom = PG_GETARG_GSERIALIZED_P_COPY(0);
+		lwgeom = lwgeom_from_gserialized(pglwgeom);
+
+		/* return early if nothing to do */
+		if (!lwgeom || lwgeom_is_empty(lwgeom))
+		{
+			MemoryContextSwitchTo(oldcontext);
+			funcctx = SRF_PERCALL_SETUP();
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* Create function state */
+		state = lwalloc(sizeof *state);
+		state->root = lwgeom;
+		state->stacklen = 0;
+		state->pathlen = 0;
+		state->pt = 0;
+		state->ring = 0;
+
+		funcctx->user_fctx = state;
+
+		/*
+		 * Push a struct dumpnode on the state stack
+		 */
+		state->stack[0].idx = 0;
+		state->stack[0].geom = lwgeom;
+		state->stacklen++;
+
+		/*
+		 * get tuple description for return type
+		 */
+		if (get_call_result_type(fcinfo, 0, &funcctx->tuple_desc) != TYPEFUNC_COMPOSITE)
+		{
+			ereport(ERROR,
+				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				 errmsg("set-valued function called in context that cannot accept a set")));
+		}
+
+		BlessTupleDesc(funcctx->tuple_desc);
+
+		/* get and cache data for constructing int4 arrays */
+		get_typlenbyvalalign(INT4OID, &state->typlen, &state->byval, &state->align);
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+	newcontext = funcctx->multi_call_memory_ctx;
+
+	/* get state */
+	state = funcctx->user_fctx;
+
+	while (1)
+	{
+		POINTARRAY *points = NULL;
+		LWLINE *line;
+		LWTRIANGLE *tri;
+		LWPOLY *poly;
+		POINT4D pt_start, pt_end;
+		POINTARRAY *segment_pa;
+		LWLINE *segment;
+
+		node = &state->stack[state->stacklen - 1];
+		lwgeom = node->geom;
+
+		if (lwgeom->type == LINETYPE || lwgeom->type == TRIANGLETYPE || lwgeom->type == POLYGONTYPE)
+		{
+			if (lwgeom->type == LINETYPE)
+			{
+				line = (LWLINE *)lwgeom;
+
+				if (state->pt < line->points->npoints - 1)
+				{
+					points = line->points;
+				}
+			}
+			if (lwgeom->type == TRIANGLETYPE)
+			{
+				tri = (LWTRIANGLE *)lwgeom;
+
+				if (state->pt == 0)
+				{
+					state->path[state->pathlen++] = Int32GetDatum(state->ring + 1);
+				}
+
+				if (state->pt < 3)
+				{
+					points = tri->points;
+				}
+				else
+				{
+					state->pathlen--;
+				}
+			}
+			if (lwgeom->type == POLYGONTYPE)
+			{
+				poly = (LWPOLY *)lwgeom;
+
+				if (state->pt == poly->rings[state->ring]->npoints)
+				{
+					state->pt = 0;
+					state->ring++;
+					state->pathlen--;
+				}
+
+				if (state->ring < poly->nrings)
+				{
+					if (state->pt == 0)
+					{
+						state->path[state->pathlen] = Int32GetDatum(state->ring + 1);
+						state->pathlen++;
+					}
+
+					if (state->pt < poly->rings[state->ring]->npoints - 1)
+					{
+						points = poly->rings[state->ring];
+					}
+					else
+					{
+						state->pt++;
+						continue;
+					}
+				}
+			}
+
+			if (points)
+			{
+				getPoint4d_p(points, state->pt, &pt_start);
+				getPoint4d_p(points, state->pt + 1, &pt_end);
+
+				segment_pa = ptarray_construct(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
+				ptarray_set_point4d(segment_pa, 0, &pt_start);
+				ptarray_set_point4d(segment_pa, 1, &pt_end);
+
+				segment = lwline_construct(lwgeom->srid, NULL, segment_pa);
+
+				state->pt++;
+
+				state->path[state->pathlen] = Int32GetDatum(state->pt);
+				pathpt[0] = PointerGetDatum(construct_array(state->path,
+									    state->pathlen + 1,
+									    INT4OID,
+									    state->typlen,
+									    state->byval,
+									    state->align));
+				pathpt[1] = PointerGetDatum(geometry_serialize((LWGEOM *)segment));
+
+				tuple = heap_form_tuple(funcctx->tuple_desc, pathpt, isnull);
+				result = HeapTupleGetDatum(tuple);
+				SRF_RETURN_NEXT(funcctx, result);
+			}
+			else
+			{
+				if (--state->stacklen == 0)
+					SRF_RETURN_DONE(funcctx);
+				state->pathlen--;
+				continue;
+			}
+		}
+
+		if (lwgeom->type == COLLECTIONTYPE || lwgeom->type == MULTILINETYPE ||
+		    lwgeom->type == MULTIPOLYGONTYPE || lwgeom->type == TINTYPE)
+		{
+			lwcoll = (LWCOLLECTION *)node->geom;
+
+			/* if a collection and we have more geoms */
+			if (node->idx < lwcoll->ngeoms)
+			{
+				/* push the next geom on the path and the stack */
+				lwgeom = lwcoll->geoms[node->idx++];
+				state->path[state->pathlen++] = Int32GetDatum(node->idx);
+
+				node = &state->stack[state->stacklen++];
+				node->idx = 0;
+				node->geom = lwgeom;
+
+				state->pt = 0;
+				state->ring = 0;
+
+				/* loop back to beginning, which will then check whatever node we just pushed */
+				continue;
+			}
+		}
+
+		/* no more geometries in the current collection */
+		if (--state->stacklen == 0)
+			SRF_RETURN_DONE(funcctx);
+		state->pathlen--;
+	}
+}

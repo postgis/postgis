@@ -1,0 +1,2 @@
+# Test -Z skips ANALYZE
+-Z -g the_geom {regdir}/loader/TestSkipANALYZE loadedshp

@@ -52,9 +52,9 @@ DROP FUNCTION IF EXISTS geocode_address(norm_addy,integer); /** changed to inclu
 DROP FUNCTION IF EXISTS interpolate_from_address(integer, character varying, character varying, geometry); /** changed to use default args and added offset and side **/
 DROP FUNCTION IF EXISTS interpolate_from_address(integer, integer, integer, geometry); /**don't need this since got collapes into varchar version **/
 
--- this will fail if already exists, that is fine.  can't use IF NOT EXISTS until 9.1
+-- this will fail if already exists, that is fine.
 SELECT tiger.SetSearchPathForInstall('tiger');
-CREATE TABLE addrfeat
+CREATE TABLE IF NOT EXISTS addrfeat
 (
   gid serial not null primary key,
   tlid bigint,

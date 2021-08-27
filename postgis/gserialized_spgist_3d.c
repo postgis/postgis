@@ -375,7 +375,7 @@ PGDLLEXPORT Datum gserialized_spgist_config_3d(PG_FUNCTION_ARGS)
 
 	Oid boxoid = InvalidOid;
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
-	postgis_initialize_cache(fcinfo);
+	postgis_initialize_cache();
 	boxoid = postgis_oid(BOX3DOID);
 
 	cfg->prefixType = boxoid;

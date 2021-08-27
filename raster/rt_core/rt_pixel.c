@@ -78,7 +78,7 @@ rt_pixtype_alignment(rt_pixtype pixtype) {
 
 rt_pixtype
 rt_pixtype_index_from_name(const char* pixname) {
-	assert(pixname && strlen(pixname) > 0);
+	assert(pixname);
 
 	if (strcmp(pixname, "1BB") == 0)
 		return PT_1BB;
@@ -108,6 +108,8 @@ rt_pixtype_index_from_name(const char* pixname) {
 
 const char*
 rt_pixtype_name(rt_pixtype pixtype) {
+
+
 	switch (pixtype) {
 		case PT_1BB:
 			return "1BB";

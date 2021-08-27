@@ -22,20 +22,23 @@
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
+/*#define POSTGIS_DEBUG_LEVEL 4*/
+
 #include "liblwgeom.h"
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+#include "optionlist.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
 
-/* #define POSTGIS_DEBUG_LEVEL 4 */
 /* #define PARANOIA_LEVEL 2 */
 #undef LWGEOM_PROFILE_MAKEVALID
 
-#if POSTGIS_GEOS_VERSION < 38
+#if POSTGIS_GEOS_VERSION < 30800
 /*
  * Return Nth vertex in GEOSGeometry as a POINT.
  * May return NULL if the geometry has NO vertex.
@@ -116,6 +119,36 @@ LWGEOM* lwline_make_geos_friendly(LWLINE* line);
 LWGEOM* lwpoly_make_geos_friendly(LWPOLY* poly);
 POINTARRAY* ring_make_geos_friendly(POINTARRAY* ring);
 
+static void
+ptarray_strip_nan_coords_in_place(POINTARRAY *pa)
+{
+	uint32_t i, j = 0;
+	POINT4D *p, *np;
+	int ndims = FLAGS_NDIMS(pa->flags);
+	for ( i = 0; i < pa->npoints; i++ )
+	{
+		int isnan = 0;
+		p = (POINT4D *)(getPoint_internal(pa, i));
+		if ( isnan(p->x) || isnan(p->y) ) isnan = 1;
+		else if (ndims > 2 && isnan(p->z) ) isnan = 1;
+		else if (ndims > 3 && isnan(p->m) ) isnan = 1;
+		if ( isnan ) continue;
+
+		np = (POINT4D *)(getPoint_internal(pa, j++));
+		if ( np != p ) {
+			np->x = p->x;
+			np->y = p->y;
+			if (ndims > 2)
+				np->z = p->z;
+			if (ndims > 3)
+				np->m = p->m;
+		}
+	}
+	pa->npoints = j;
+}
+
+
+
 /*
  * Ensure the geometry is "structurally" valid
  * (enough for GEOS to accept it)
@@ -129,10 +162,8 @@ lwgeom_make_geos_friendly(LWGEOM* geom)
 	switch (geom->type)
 	{
 	case POINTTYPE:
-	case MULTIPOINTTYPE:
-		/* a point is always valid */
+		ptarray_strip_nan_coords_in_place(((LWPOINT*)geom)->point);
 		return geom;
-		break;
 
 	case LINETYPE:
 		/* lines need at least 2 points */
@@ -147,6 +178,7 @@ lwgeom_make_geos_friendly(LWGEOM* geom)
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
+	case MULTIPOINTTYPE:
 		return lwcollection_make_geos_friendly((LWCOLLECTION*)geom);
 		break;
 
@@ -170,8 +202,7 @@ lwgeom_make_geos_friendly(LWGEOM* geom)
  * constructed POINTARRAY.
  * TODO: move in ptarray.c
  */
-POINTARRAY* ptarray_close2d(POINTARRAY* ring);
-POINTARRAY*
+static POINTARRAY*
 ptarray_close2d(POINTARRAY* ring)
 {
 	POINTARRAY* newring;
@@ -192,6 +223,8 @@ ring_make_geos_friendly(POINTARRAY* ring)
 {
 	POINTARRAY* closedring;
 	POINTARRAY* ring_in = ring;
+
+	ptarray_strip_nan_coords_in_place(ring_in);
 
 	/* close the ring if not already closed (2d only) */
 	closedring = ptarray_close2d(ring);
@@ -259,6 +292,8 @@ lwline_make_geos_friendly(LWLINE* line)
 {
 	LWGEOM* ret;
 
+	ptarray_strip_nan_coords_in_place(line->points);
+
 	if (line->points->npoints == 1) /* 0 is fine, 2 is fine */
 	{
 #if 1
@@ -288,6 +323,11 @@ lwcollection_make_geos_friendly(LWCOLLECTION* g)
 	uint32_t i, new_ngeoms = 0;
 	LWCOLLECTION* ret;
 
+	if ( ! g->ngeoms ) {
+		LWDEBUG(3, "lwcollection_make_geos_friendly: returning input untouched");
+		return lwcollection_as_lwgeom(g);
+	}
+
 	/* enough space for all components */
 	new_geoms = lwalloc(sizeof(LWGEOM*) * g->ngeoms);
 
@@ -298,7 +338,12 @@ lwcollection_make_geos_friendly(LWCOLLECTION* g)
 	for (i = 0; i < g->ngeoms; i++)
 	{
 		LWGEOM* newg = lwgeom_make_geos_friendly(g->geoms[i]);
-		if (newg) new_geoms[new_ngeoms++] = newg;
+		if (!newg) continue;
+		if ( newg != g->geoms[i] ) {
+			new_geoms[new_ngeoms++] = newg;
+		} else {
+			new_geoms[new_ngeoms++] = lwgeom_clone(newg);
+		}
 	}
 
 	ret->bbox = NULL; /* recompute later... */
@@ -316,7 +361,7 @@ lwcollection_make_geos_friendly(LWCOLLECTION* g)
 	return (LWGEOM*)ret;
 }
 
-#if POSTGIS_GEOS_VERSION < 38
+#if POSTGIS_GEOS_VERSION < 30800
 
 /*
  * Fully node given linework
@@ -853,10 +898,19 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 LWGEOM*
 lwgeom_make_valid(LWGEOM* lwgeom_in)
 {
+	return lwgeom_make_valid_params(lwgeom_in, NULL);
+}
+
+/* Exported. Uses GEOS internally */
+LWGEOM*
+lwgeom_make_valid_params(LWGEOM* lwgeom_in, char* make_valid_params)
+{
 	int is3d;
 	GEOSGeom geosgeom;
 	GEOSGeometry* geosout;
 	LWGEOM* lwgeom_out;
+
+	LWDEBUG(1, "lwgeom_make_valid enter");
 
 	is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -867,37 +921,77 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
-	lwgeom_out = lwgeom_in;
+	lwgeom_out = lwgeom_make_geos_friendly(lwgeom_in);
+	if (!lwgeom_out) lwerror("Could not make a geos friendly geometry out of input");
+
+	LWDEBUGF(4, "Input geom %p made GEOS-valid as %p", lwgeom_in, lwgeom_out);
+
 	geosgeom = LWGEOM2GEOS(lwgeom_out, 1);
+	if ( lwgeom_in != lwgeom_out ) {
+		lwgeom_free(lwgeom_out);
+	}
 	if (!geosgeom)
 	{
-		LWDEBUGF(4,
-			 "Original geom can't be converted to GEOS (%s)"
-			 " - will try cleaning that up first",
-			 lwgeom_geos_errmsg);
-
-		lwgeom_out = lwgeom_make_geos_friendly(lwgeom_out);
-		if (!lwgeom_out) lwerror("Could not make a valid geometry out of input");
-
-		/* try again as we did cleanup now */
-		/* TODO: invoke LWGEOM2GEOS directly with autoclean ? */
-		geosgeom = LWGEOM2GEOS(lwgeom_out, 0);
-		if (!geosgeom)
-		{
-			lwerror("Couldn't convert POSTGIS geom to GEOS: %s", lwgeom_geos_errmsg);
-			return NULL;
-		}
+		lwerror("Couldn't convert POSTGIS geom to GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
 	}
 	else
 	{
-		LWDEBUG(4, "original geom converted to GEOS");
-		lwgeom_out = lwgeom_in;
+		LWDEBUG(4, "geom converted to GEOS");
 	}
 
-#if POSTGIS_GEOS_VERSION < 38
+#if POSTGIS_GEOS_VERSION < 30800
 	geosout = LWGEOM_GEOS_makeValid(geosgeom);
-#else
+#elif POSTGIS_GEOS_VERSION < 31000
 	geosout = GEOSMakeValid(geosgeom);
+#else
+	if (!make_valid_params) {
+		geosout = GEOSMakeValid(geosgeom);
+	}
+	else {
+		/*
+		* Set up a parameters object for this
+		* make valid operation before calling
+		* it
+		*/
+		const char *value;
+		char *param_list[OPTION_LIST_SIZE];
+		char param_list_text[OPTION_LIST_SIZE];
+		strncpy(param_list_text, make_valid_params, OPTION_LIST_SIZE);
+		memset(param_list, 0, sizeof(param_list));
+		option_list_parse(param_list_text, param_list);
+		GEOSMakeValidParams *params = GEOSMakeValidParams_create();
+		value = option_list_search(param_list, "method");
+		if (value) {
+			if (strcasecmp(value, "linework") == 0) {
+				GEOSMakeValidParams_setMethod(params, GEOS_MAKE_VALID_LINEWORK);
+			}
+			else if (strcasecmp(value, "structure") == 0) {
+				GEOSMakeValidParams_setMethod(params, GEOS_MAKE_VALID_STRUCTURE);
+			}
+			else
+			{
+				GEOSMakeValidParams_destroy(params);
+				lwerror("Unsupported value for 'method', '%s'. Use 'linework' or 'structure'.", value);
+			}
+		}
+		value = option_list_search(param_list, "keepcollapsed");
+		if (value) {
+			if (strcasecmp(value, "true") == 0) {
+				GEOSMakeValidParams_setKeepCollapsed(params, 1);
+			}
+			else if (strcasecmp(value, "false") == 0) {
+				GEOSMakeValidParams_setKeepCollapsed(params, 0);
+			}
+			else
+			{
+				GEOSMakeValidParams_destroy(params);
+				lwerror("Unsupported value for 'keepcollapsed', '%s'. Use 'true' or 'false'", value);
+			}
+		}
+		geosout = GEOSMakeValidWithParams(geosgeom, params);
+		GEOSMakeValidParams_destroy(params);
+	}
 #endif
 	GEOSGeom_destroy(geosgeom);
 	if (!geosout) return NULL;

@@ -419,7 +419,7 @@ around ST_StraightSkeleton (slower case).
             <programlisting>
 SELECT ST_MinkowskiSum(line, circle))
 FROM (SELECT
-    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,
+    ST_MakeLine(ST_Point(10, 10),ST_Point(100, 100)) As line,
     ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;
 
 -- wkt --
@@ -511,7 +511,7 @@ Output is a TIN.
 			<informaltable>
 				  <tgroup cols="2">
 					<tbody>
-					  <row>					
+					  <row>
 						  <entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
@@ -545,7 +545,7 @@ select ST_DelaunayTriangles(
                    )
 	   );
 </programlisting>
-						  </para></entry>						  
+						  </para></entry>
 			 </row>
 		</tbody>
 	</tgroup>

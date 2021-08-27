@@ -12,7 +12,7 @@
      organizations all over the world that gain great benefit from its functionality and versatility.</para>
 	<para>The PostGIS project development group plans on supporting and
   enhancing PostGIS to better support a range of important GIS functionality
-	in the areas of OpenGIS and SQL/MM spatial standards, advanced topological constructs (coverages,
+	in the areas of OGC and SQL/MM spatial standards, advanced topological constructs (coverages,
   surfaces, networks), data source for desktop user interface tools for viewing and editing
   GIS data, and web-based access tools.</para>
 

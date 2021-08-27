@@ -306,12 +306,12 @@ BEGIN
   -- We use the prequalabr (these are like Old, that may or may not appear in front of the street name)
   -- We also treat pretypabr as fetype since in normalize we treat these as streetypes  and highways usually have the type here
   -- In pprint_addy we changed to put it in front if it is a is_hw type
-    stmt := 'SELECT DISTINCT ON (sub.predirabrv,sub.fename,COALESCE(sub.suftypabrv, sub.pretypabrv) ,sub.sufdirabrv,coalesce(p.name,zip.city,cs.name,co.name),s.stusps,sub.zip)'
+    stmt := 'SELECT DISTINCT ON (sub.predirabrv,sub.fename,COALESCE(sub.suftypabrv, sub.pretypabrv) ,sub.sufdirabrv,coalesce(p.name,cs.name,zip.city,co.name),s.stusps,sub.zip)'
          || '    sub.predirabrv   as fedirp,'
          || '    sub.fename,'
          || '    COALESCE(sub.suftypabrv, sub.pretypabrv)   as fetype,'
          || '    sub.sufdirabrv   as fedirs,'
-         || '    coalesce(p.name,zip.city,cs.name,co.name)::varchar as place,'
+         || '    coalesce(p.name,cs.name,zip.city,co.name)::varchar as place,'
          || '    s.stusps as state,'
          || '    sub.zip as zip,'
          || '    interpolate_from_address($1, sub.fromhn,'
@@ -319,7 +319,7 @@ BEGIN
          || '       (sub.sub_rating + '
          || CASE WHEN parsed.zip > '' THEN '  least((coalesce(diff_zip($7 , sub.zip),0) *$9)::integer, coalesce(levenshtein_ignore_case($7, sub.zip)*$9,0) ) '
             ELSE '3' END::text
-         || ' + coalesce(least(levenshtein_ignore_case($3, coalesce(p.name,zip.city,cs.name,co.name)), levenshtein_ignore_case($3, coalesce(cs.name,co.name))),5) )::integer'
+         || ' + coalesce(least(levenshtein_ignore_case($3, coalesce(p.name,cs.name,zip.city,co.name)), levenshtein_ignore_case($3, coalesce(cs.name,co.name))),5) )::integer'
          || '    as sub_rating,'
          || '    sub.exact_address as exact_address '
          || ' FROM ('
@@ -431,6 +431,5 @@ BEGIN
   RETURN;
 END;
 $$
-  LANGUAGE 'plpgsql' STABLE COST 1000 ROWS 50;
-ALTER FUNCTION geocode_address(IN norm_addy, IN integer, IN geometry) SET join_collapse_limit='2';
+  LANGUAGE 'plpgsql' STABLE COST 1000 ROWS 50 PARALLEL SAFE;
 

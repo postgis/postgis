@@ -75,4 +75,5 @@ typedef struct rt_raster_serialized_t rt_pgraster;
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
 
+
 #endif /* RTPOSTGIS_H_INCLUDED */

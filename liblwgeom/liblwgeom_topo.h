@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015-2017 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -355,21 +355,6 @@ typedef struct LWT_BE_CALLBACKS_T {
    *         - error ("numelems" is set to -1)
    */
   LWT_ISO_FACE *(*getFaceById)(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t *numelems, int fields);
-
-  /**
-   * Get face containing point
-   *
-   * @param topo the topology to act upon
-   * @param pt the query point
-   *
-   * @return a face identifier, -1 if no face contains the point
-   *         (could be in universe face or on an edge)
-   *         or -2 on error (@see lastErrorMessage)
-   */
-  LWT_ELEMID (*getFaceContainingPoint) (
-      const LWT_BE_TOPOLOGY* topo,
-      const LWPOINT* pt
-  );
 
   /**
    * Update TopoGeometry objects after an edge split event
@@ -756,7 +741,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *
    * The operation should also be forbidden if the removed node
    * takes part in the definition of a TopoGeometry, although
-   * this wasn't the case yet as of PostGIS version 2.1.8:
+   * this wasn't the case yet as of PostGIS version 3.1:
    * https://trac.osgeo.org/postgis/ticket/3239
    *
    * @return 1 to allow, 0 to forbid the operation
@@ -814,6 +799,59 @@ typedef struct LWT_BE_CALLBACKS_T {
 				      uint64_t *numelems,
 				      int fields,
 				      int limit);
+
+  /**
+   * Check TopoGeometry objects before an isolated node removal event
+   *
+   * @param topo the topology to act upon
+   * @param rem_node identifier of the isolated node that's been removed
+   *
+   * The operation should be forbidden if the removed node
+   * takes part in the definition of a TopoGeometry.
+   *
+   * @return 1 to allow, 0 to forbid the operation
+   *         (reporting reason via lastErrorMessage)
+   *
+   */
+  int (*checkTopoGeomRemIsoNode) (
+      const LWT_BE_TOPOLOGY* topo,
+      LWT_ELEMID rem_node
+  );
+
+  /**
+   * Check TopoGeometry objects before an isolated edge removal event
+   *
+   * @param topo the topology to act upon
+   * @param rem_edge identifier of the edge that's been removed
+   *
+   * @return 1 to allow, 0 to forbid the operation
+   *         (reporting reason via lastErrorMessage)
+   */
+  int (*checkTopoGeomRemIsoEdge) (
+      const LWT_BE_TOPOLOGY* topo,
+      LWT_ELEMID rem_edge
+  );
+
+
+  /**
+   * Get closest edge to a given point
+   *
+   * @param topo the topology to act upon
+   * @param pt the query point
+   * @param numelems output parameter, gets number of elements found
+   *                 or UINT64_MAX on error (@see lastErrorMessage)
+   * @param fields fields to be filled in the returned structure, see
+   *               LWT_COL_EDGE_* macros
+   *
+   * @return an array of 1 edges or null in the following cases:
+	 *				 - no edges are in the topology ("numelems" is set to 0)
+   *         - error ("numelems" is set to UINT64_MAX)
+   *
+   */
+  LWT_ISO_EDGE *(*getClosestEdge)(const LWT_BE_TOPOLOGY *topo,
+					   const LWPOINT *pt,
+					   uint64_t *numelems,
+					   int fields);
 
 } LWT_BE_CALLBACKS;
 
@@ -962,7 +1000,20 @@ LWT_ELEMID lwt_GetEdgeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol);
  *         or edge).
  *         The liblwgeom error handler will be invoked in case of error.
  */
-LWT_ELEMID lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol);
+LWT_ELEMID lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, const LWPOINT *pt, double tol);
+
+/**
+ * Find the face-id of the face properly containing a given point
+ *
+ * @param topo the topology to operate on
+ * @param point the point to use for query
+ *
+ * @return a face identifier if one is found (0 if universe), -1
+ *         on error (point intersects non-dangling edge).
+ *         The liblwgeom error handler will be invoked in case of error.
+ */
+LWT_ELEMID lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt);
+
 
 
 /*******************************************************************

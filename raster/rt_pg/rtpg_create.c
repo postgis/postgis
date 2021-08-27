@@ -383,6 +383,17 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUG(4, "destination raster isn't NULL");
 	}
 
+	if (PG_ARGISNULL(1))
+	{
+		if (raster != NULL)
+		{
+			rt_raster_destroy(raster);
+			PG_RETURN_POINTER(pgraster);
+		}
+		else
+			PG_RETURN_NULL();
+	}
+
 	/* source rasters' band index, 1-based */
 	if (!PG_ARGISNULL(2))
 		srcnband = PG_GETARG_INT32(2);

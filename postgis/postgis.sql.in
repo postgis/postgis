@@ -1402,6 +1402,13 @@ CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.1.0
+CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CollectionExtract'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CollectionHomogenize(geometry)
 	RETURNS geometry
@@ -1483,6 +1490,13 @@ CREATE OR REPLACE FUNCTION ST_BoundingDiagonal(geom geometry, fits boolean DEFAU
 CREATE OR REPLACE FUNCTION ST_Reverse(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_reverse'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_Scroll(geometry, geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Scroll'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
@@ -1950,6 +1964,13 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
 	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dumppoints'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_DumpSegments(geometry)
+	RETURNS SETOF geometry_dump
+	AS 'MODULE_PATHNAME', 'LWGEOM_dumpsegments'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -2937,12 +2958,12 @@ BEGIN
 				THEN
 					sql := format(
 					          'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
-					          'ALTER EXTENSION %1%I UPDATE TO %3$I',
-					          rec.name, install_schema, rec.default_version);
+					          'ALTER EXTENSION %1$I UPDATE TO %3$I',
+					          rec.name, var_schema, rec.default_version);
 				ELSE
 					sql := format(
 					         'CREATE EXTENSION %1$I VERSION unpackaged;'
-					         'ALTER EXTENSION %1%I UPDATE TO %2$I',
+					         'ALTER EXTENSION %1$I UPDATE TO %2$I',
 					         rec.name, rec.default_version);
 				END IF;
 				RAISE NOTICE 'Packaging extension %', rec.name;
@@ -3660,6 +3681,12 @@ CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAU
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+CREATE OR REPLACE FUNCTION ST_ReducePrecision(geom geometry, gridsize float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_ReducePrecision'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
 --------------------------------------------------------------------------------
@@ -3673,6 +3700,12 @@ CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAU
 --
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_MakeValid'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_MakeValid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -5023,6 +5056,14 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars int4 DEFAULT 0)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+--
+-- Availability 3.1.0
+CREATE OR REPLACE FUNCTION _ST_SortableHash(geom geometry)
+	RETURNS bigint
+	AS 'MODULE_PATHNAME', '_ST_SortableHash'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -----------------------------------------------------------------------
 -- GeoHash input
 -- Availability: 2.0.?
@@ -6173,6 +6214,34 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_Point(float8, float8, srid integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointZ(XCoordinate float8, YCoordinate float8, ZCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointZ'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointM(XCoordinate float8, YCoordinate float8, MCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointM'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointZM(XCoordinate float8, YCoordinate float8, ZCoordinate float8, MCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointZM'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 

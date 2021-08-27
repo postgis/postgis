@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sect1>
-  <title id="using_postgis_applications">Using PostGIS Geometry: Building Applications</title>
-  <sect2 id="Using_MapServer">
+<chapter>
+  <title id="using_postgis_applications">Building Applications</title>
+  <sect1 id="Using_MapServer">
     <title>Using MapServer</title>
 
     <para>The Minnesota MapServer is an internet web-mapping server which
-    conforms to the OpenGIS Web Mapping Server specification.</para>
+    conforms to the OpenGIS Web Map Service specification.</para>
 
     <itemizedlist>
       <listitem>
@@ -14,17 +14,17 @@
       </listitem>
 
       <listitem>
-        <para>The OpenGIS Web Map Specification is at <ulink
+        <para>The OpenGIS Web Map Service specification is at <ulink
         url="http://www.opengeospatial.org/standards/wms">http://www.opengeospatial.org/standards/wms</ulink>.</para>
       </listitem>
     </itemizedlist>
 
-    <sect3>
+    <sect2>
       <title>Basic Usage</title>
 
-      <para>To use PostGIS with MapServer, you will need to know about how to
+      <para>To use PostGIS with MapServer, you need to know how to
       configure MapServer, which is beyond the scope of this documentation.
-      This section will cover specific PostGIS issues and configuration
+      This section covers specific PostGIS issues and configuration
       details.</para>
 
       <para>To use PostGIS with MapServer, you will need:</para>
@@ -40,7 +40,7 @@
       </itemizedlist>
 
       <para>MapServer accesses PostGIS/PostgreSQL data like any other
-      PostgreSQL client -- using the <filename>libpq</filename> interface. This means that
+      PostgreSQL client, using the <filename>libpq</filename> interface. This means that
       MapServer can be installed on any machine with network access to the
       PostGIS server, and use PostGIS as a source of data. The faster the connection
       between the systems, the better.</para>
@@ -168,9 +168,9 @@ END</programlisting>
           identifiers. Using the table primary key is the best practice.</para>
         </listitem>
       </orderedlist>
-    </sect3>
+    </sect2>
 
-    <sect3>
+    <sect2>
       <title>Frequently Asked Questions</title>
 
       <qandaset>
@@ -192,7 +192,7 @@ END</programlisting>
 
         <qandaentry>
           <question>
-            <para>The FILTER I use for my Shape files is not working for my
+            <para>The FILTER I use for my Shapefiles is not working for my
             PostGIS table of the same data.</para>
           </question>
 
@@ -207,13 +207,13 @@ END</programlisting>
 
         <qandaentry>
           <question>
-            <para>My PostGIS layer draws much slower than my Shape file layer,
+            <para>My PostGIS layer draws much slower than my Shapefile layer,
             is this normal?</para>
           </question>
 
           <answer>
             <para>In general, the more features you are drawing into a given map,
-            the more likely it is that PostGIS will be slower than Shape files.
+            the more likely it is that PostGIS will be slower than Shapefiles.
             For maps with relatively few features (100s), PostGIS will often be faster.
             For maps with high feature density (1000s), PostGIS will always be slower.
             </para>
@@ -266,9 +266,9 @@ postgis# VACUUM ANALYZE;</programlisting>
 
 
       </qandaset>
-    </sect3>
+    </sect2>
 
-    <sect3>
+    <sect2>
       <title>Advanced Usage</title>
 
       <para>The <varname>USING</varname> pseudo-SQL clause is used to add some
@@ -330,9 +330,9 @@ postgis# VACUUM ANALYZE;</programlisting>
         </varlistentry>
       </variablelist>
 
-    </sect3>
+    </sect2>
 
-    <sect3>
+    <sect2>
       <title>Examples</title>
 
       <para>Lets start with a simple example and work our way up. Consider the
@@ -435,10 +435,10 @@ END</programlisting>
       <para>This annotation layer adds green labels to all the roads when the
       scale gets down to 1:20000 or less. It also demonstrates how to use an
       SQL join in a <varname>DATA</varname> definition.</para>
-    </sect3>
-  </sect2>
+    </sect2>
+  </sect1>
 
-  <sect2>
+  <sect1>
     <title>Java Clients (JDBC)</title>
 
     <para>Java clients can access PostGIS "geometry" objects in the PostgreSQL
@@ -517,23 +517,23 @@ if( geom.getType() == Geometry.POLYGON ) {
 
     <para>The JavaDoc for the extension objects provides a reference for the
     various data accessor functions in the geometric objects.</para>
-  </sect2>
+  </sect1>
 
-  <sect2>
+  <sect1>
     <title>C Clients (libpq)</title>
 
     <para>...</para>
 
-    <sect3>
+    <sect2>
       <title>Text Cursors</title>
 
       <para>...</para>
-    </sect3>
+    </sect2>
 
-    <sect3>
+    <sect2>
       <title>Binary Cursors</title>
 
       <para>...</para>
-    </sect3>
-  </sect2>
-</sect1>
+    </sect2>
+  </sect1>
+</chapter>

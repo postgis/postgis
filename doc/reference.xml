@@ -28,6 +28,7 @@
   &reference_operator;
   &reference_relationship;
   &reference_measure;
+  &reference_overlay;
   &reference_processing;
   &reference_transformation;
   &reference_cluster;

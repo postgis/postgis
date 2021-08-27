@@ -8,7 +8,7 @@
 			using a garden variety of rasters.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.1.0</xsl:variable>
+	<xsl:variable name='testversion'>3.2.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddRasterColumn AddRasterConstraints DropRasterConstraints DropRasterColumn DropRasterTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
@@ -31,7 +31,7 @@
 	<xsl:variable name='var_rastercolumn'>'rast'</xsl:variable>
 	<xsl:variable name='var_rastertable'>'pgis_rgarden_1bb'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>raster_garden_log31</xsl:variable>
+	<xsl:variable name='var_logtable'>raster_garden_log32</xsl:variable>
 	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_algorithm'>'Lanczos'</xsl:variable>
@@ -71,48 +71,52 @@
 	<!--changed all to no skew so they pass the world tests -->
 	<pgis:pixeltypes>
 		 <pgis:pixeltype ID="1BB" PixType="1BB" createtable="true" nodata="0">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '1BB'), i, (i+1),0),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '1BB'), i, (i+1),0),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="2BUI" PixType="2BUI" createtable="true" nodata="2">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '2BUI'), i, (i+1),1),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '2BUI'), i, (i+1),1),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="4BUI" PixType="4BUI" createtable="true" nodata="15">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '4BUI'), i, (i+1),14),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '4BUI'), i, (i+1),14),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="8BSI" PixType="8BSI" createtable="true" nodata="-56">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '8BSI'), i, (i+1),-50),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '8BSI'), i, (i+1),-50),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="8BUI" PixType="8BUI" createtable="true" nodata="255">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '8BUI'), i, (i+1),150),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '8BUI'), i, (i+1),150),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="16BSI" PixType="16BSI" createtable="true" nodata="0">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '16BSI'), i, (i+1),-6000),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '16BSI'), i, (i+1),-6000),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="16BUI" PixType="16BUI" createtable="true" nodata="65535">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '16BUI'), i, (i+1),64567),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '16BUI'), i, (i+1),64567),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="32BSI" PixType="32BSI" createtable="true" nodata="-4294967295">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '32BSI'), i, (i+1),-429496),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '32BSI'), i, (i+1),-429496),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="32BUI" PixType="32BUI" createtable="true" nodata="4294967295">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '32BUI'), i, (i+1),42949),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '32BUI'), i, (i+1),42949),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		 <pgis:pixeltype ID="32BF" PixType="32BF" createtable="true" nodata="-4294.967295">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '32BF'), i, (i+1),-4294),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '32BF'), i, (i+1),-4294),4326) As rast
+		 		FROM generate_series(1,2) As i)
 		 </pgis:pixeltype>
 		  <pgis:pixeltype ID="64BF" PixType="64BF" createtable="true" nodata="429496.7295">
-		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 100, 100, (i-1)*100, (i-1)*100, 0.0005, -0.0005, 0*i, 0*i), '64BF'), i, (i+1),42949.12345),4326) As rast
-		 		FROM generate_series(1,10) As i)
+		 	(SELECT ST_SetSRID(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster( 10, 10, (i-1)*10, (i-1)*10, 0.0005, -0.0005, 0*i, 0*i), '64BF'), i, (i+1),42949.12345),4326) As rast
+		 		FROM generate_series(1,2) As i)
+		 </pgis:pixeltype>
+		 <pgis:pixeltype ID="NULLRaster" PixType="null" createtable="true" nodata="NULL">
+		 	(SELECT NULL::raster As rast
+		 		FROM generate_series(1,3) As i)
 		 </pgis:pixeltype>
 	</pgis:pixeltypes>
         <!-- We deal only with the reference chapter -->
@@ -123,7 +127,7 @@ DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />;
 CREATE TABLE <xsl:value-of select="$var_logtable" />(logid serial PRIMARY KEY, log_label text, spatial_class text DEFAULT 'raster', func text, g1 text, g2 text, log_start timestamp, log_end timestamp, log_sql text);
 DROP TABLE IF EXISTS <xsl:value-of select="$var_logtable" />_output;
 CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMARY KEY, log_output xml);
-                <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
+            <xsl:apply-templates select="/book/chapter[@id='RT_reference']" />
         </xsl:template>
 	<xsl:template match='chapter'>
 <!-- define a table we call pgis_rgarden_mega that will contain a raster column with a band for all types of pixels we support -->
@@ -240,10 +244,9 @@ COMMIT;
 				<xsl:variable name='fnargs'><xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
-				-- <xsl:value-of select="funcdef"/>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') ]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
-				<xsl:variable name='numparamrasts'><xsl:value-of select="count(paramdef/type[contains(text(),'raster')] )" /></xsl:variable>
+				<xsl:variable name='numparamrasts'><xsl:value-of select="count(paramdef/type[contains(text(),'raster') ] )" /></xsl:variable>
 				<xsl:variable name='log_label'><xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
 
 				<xsl:variable name="geoftype">
@@ -263,6 +266,7 @@ COMMIT;
 					</xsl:otherwise>
 				  </xsl:choose>
 				</xsl:variable>
+				SELECT 'Start Considering <xsl:value-of select="funcdef/function" /> <xsl:value-of select="$geoftype" />';
 
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
@@ -283,9 +287,10 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	</xsl:when>
 <!--Start Test aggregate and unary functions -->
 <!-- put functions that take only one raster no need to cross with another raster collection, these are unary raster, aggregates, and so forth -->
-	<xsl:when test="$numparamrasts = '1' and $numparamgeoms = '0'  and not(contains($fnexclude,funcdef/function))" >
+	<xsl:when test="$numparamrasts = '1' and $numparamgeoms = '0' and not(contains($fnexclude,funcdef/function))" >
+		SELECT '<xsl:value-of select="$fnname" />';
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
-		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@PixType" />';
+		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@PixType" /> with 1 rast param';
 			<xsl:choose>
 			  <xsl:when test="contains($fndef, 'raster ') or contains($fndef, 'geometry ')">
 	 <!-- If output is raster show ewkt convexhull rep -->
@@ -464,13 +469,13 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(type, 'raster[]') ">
 						<xsl:text>ARRAY[rast2.rast]</xsl:text>
 					</xsl:when>
-					<xsl:when test="(type = 'raster' or type = 'raster ' or contains(type, 'raster set') ) and (position() = 1) ">
+					<xsl:when test="(type = 'raster' or type = 'raster ' or contains(type, 'raster set') or contains(type, 'setof raster') ) and (position() = 1) ">
 						<xsl:text>rast1.rast</xsl:text>
 					</xsl:when>
-					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')">
+					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')or contains(type, 'setof raster')">
 						<xsl:text>rast2.rast</xsl:text>
 					</xsl:when>
-					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')">
+					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set') or contains(type, 'setof raster')">
 						<xsl:text>rast2.rast</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'geometry[]') and count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">

@@ -18,8 +18,8 @@
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">
 <!ENTITY administration SYSTEM "administration.xml">
-<!ENTITY usage SYSTEM "usage.xml">
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
+<!ENTITY using_postgis_query SYSTEM "using_postgis_query.xml">
 <!ENTITY using_raster_dataman SYSTEM "using_raster_dataman.xml">
 <!ENTITY using_postgis_app SYSTEM "using_postgis_app.xml">
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
@@ -43,6 +43,7 @@
 <!ENTITY reference_measure SYSTEM "reference_measure.xml">
 <!ENTITY reference_relationship SYSTEM "reference_relationship.xml">
 <!ENTITY reference_sfcgal SYSTEM "reference_sfcgal.xml">
+<!ENTITY reference_overlay SYSTEM "reference_overlay.xml">
 <!ENTITY reference_processing SYSTEM "reference_processing.xml">
 <!ENTITY reference_lrs SYSTEM "reference_lrs.xml">
 <!ENTITY reference_srs SYSTEM "reference_srs.xml">
@@ -66,7 +67,7 @@
    <imageobject><imagedata fileref='images/check.png' /></imageobject>
  </inlinemediaobject>
  This method implements the <ulink
- url='http://www.opengeospatial.org/standards/sfs'>OpenGIS Simple Features
+ url='http://www.opengeospatial.org/standards/sfs'>OGC Simple Features
  Implementation Specification for SQL 1.1.</ulink>">
 
 <!ENTITY sqlmm_compliant
@@ -134,7 +135,13 @@
    </imageobject>
  </inlinemediaobject>
  This function supports Triangles and Triangulated Irregular Network Surfaces (TIN).">
+
+<!ENTITY index_aware
+"This function automatically includes a bounding box comparison
+that makes use of any spatial indexes that are available on the geometries.">
+
 ]>
+
 <book>
   <title>PostGIS &last_release_version; Manual</title>
 
@@ -160,7 +167,7 @@
     <productnumber>&last_release_version;</productnumber>
 
     <abstract>
-      <para>PostGIS is an extension to the PostgreSQL object-relational
+      <para>PostGIS is an extension to the <ulink url="https://www.postgresql.org/">PostgreSQL</ulink> object-relational
       database system which allows GIS (Geographic Information Systems)
       objects to be stored in the database. PostGIS includes support for
       GiST-based R-Tree spatial indexes, and functions for analysis and
@@ -179,11 +186,17 @@
   &introduction;
   &installation;
   &administration;
-  &usage;
+  &using_postgis_dataman;
+  &using_postgis_query;
+  &performance_tips;
+  &using_postgis_app;
   &reference;
-  &reference_raster;
   &faq;
+  &extras_topology;
+  &using_raster_dataman;
+  &reference_raster;
   &faq_raster;
+  &extras;
   &postgis_aggs_mm;
   &reporting;
   &release_notes;

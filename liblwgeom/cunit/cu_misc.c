@@ -15,6 +15,8 @@
 #include "CUnit/Basic.h"
 
 #include "liblwgeom_internal.h"
+#include "optionlist.h"
+#include "stringlist.h"
 #include "cu_tester.h"
 
 
@@ -47,6 +49,36 @@ static void test_misc_simplify(void)
 	lwgeom_free(geom);
 	lwgeom_free(geom2d);
 	lwfree(wkt_out);
+}
+
+static void test_misc_startpoint(void)
+{
+	LWGEOM *geom;
+	POINT4D p = {0};
+
+	geom = lwgeom_from_wkt("POINT(1 2)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwgeom_startpoint(geom, &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 1);
+	CU_ASSERT_EQUAL(p.y, 2);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("LINESTRING(10 20, 30 40)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwgeom_startpoint(geom, &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 10);
+	CU_ASSERT_EQUAL(p.y, 20);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POLYGON((1 2, 3 4, 5 6, 1 2))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwgeom_startpoint(geom, &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 1);
+	CU_ASSERT_EQUAL(p.y, 2);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(LINESTRING(100 200, 300 400), POINT(10 20))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwgeom_startpoint(geom, &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 100);
+	CU_ASSERT_EQUAL(p.y, 200);
+	lwgeom_free(geom);
 }
 
 static void test_misc_count_vertices(void)
@@ -233,6 +265,76 @@ static void test_gbox_serialized_size(void)
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
 }
 
+static void test_optionlist(void)
+{
+	size_t sz;
+	const char* value;
+	// zero out all the pointers so our list ends up null-terminated
+	char *olist[OPTION_LIST_SIZE];
+	char input[128];
+	memset(olist, 0, sizeof(olist));
+	// input string needs to be writeable because we are inserting nulls
+	strcpy(input, "key1=value1  key2=value2  ");
+	option_list_parse(input, olist);
+
+	value = option_list_search(olist, "key1");
+	// printf("value: %s\n", value);
+	CU_ASSERT_STRING_EQUAL("value1", value);
+	value = option_list_search(olist, "key2");
+	CU_ASSERT_STRING_EQUAL("value2", value);
+	value = option_list_search(olist, "key3");
+	CU_ASSERT_EQUAL(NULL, value);
+
+	sz = option_list_length(olist);
+	CU_ASSERT_EQUAL(4, sz);
+
+	memset(olist, 0, sizeof(olist));
+	strcpy(input, "  ");
+	option_list_parse(input, olist);
+	value = option_list_search(olist, "key1");
+	CU_ASSERT_EQUAL(NULL, value);
+
+	memset(olist, 0, sizeof(olist));
+	strcpy(input, "  key3= ");
+	option_list_parse(input, olist);
+	sz = option_list_length(olist);
+	CU_ASSERT_EQUAL(2, sz);
+
+	strcpy(input, "  key1=value1  key2='value2 value3'  ");
+	memset(olist, 0, sizeof(olist));
+	option_list_gdal_parse(input, olist);
+	sz = option_list_length(olist);
+	CU_ASSERT_EQUAL(2, sz);
+	CU_ASSERT_STRING_EQUAL("key1=value1", olist[0]);
+	CU_ASSERT_STRING_EQUAL("key2='value2 value3'", olist[1]);
+}
+
+
+static void test_stringlist(void)
+{
+	stringlist_t s;
+	stringlist_init(&s);
+
+	CU_ASSERT_EQUAL(stringlist_length(&s), 0);
+	stringlist_add_string_nosort(&s, "first string");
+	stringlist_add_string_nosort(&s, "second string");
+	stringlist_add_string_nosort(&s, "third string");
+	CU_ASSERT_EQUAL(stringlist_length(&s), 3);
+	CU_ASSERT_STRING_EQUAL(stringlist_get(&s, 0), "first string");
+	stringlist_add_string_nosort(&s, "an initial string");
+	stringlist_sort(&s);
+	CU_ASSERT_STRING_EQUAL(stringlist_get(&s, 0), "an initial string");
+	CU_ASSERT_STRING_EQUAL(stringlist_find(&s, "third string"), "third string");
+	CU_ASSERT_EQUAL(stringlist_find(&s, "nothing_matches"), NULL);
+	stringlist_add_string_nosort(&s, "fourth string");
+	stringlist_add_string_nosort(&s, "fifth string");
+	stringlist_add_string_nosort(&s, "sixth string");
+	stringlist_add_string_nosort(&s, "seventh string");
+	stringlist_add_string_nosort(&s, "eighth string");
+	stringlist_sort(&s);
+	CU_ASSERT_STRING_EQUAL(stringlist_find(&s, "fifth string"), "fifth string");
+	stringlist_release(&s);
+}
 
 
 /*
@@ -243,6 +345,7 @@ void misc_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("miscellaneous", NULL, NULL);
 	PG_ADD_TEST(suite, test_misc_simplify);
+	PG_ADD_TEST(suite, test_misc_startpoint);
 	PG_ADD_TEST(suite, test_misc_count_vertices);
 	PG_ADD_TEST(suite, test_misc_area);
 	PG_ADD_TEST(suite, test_misc_wkb);
@@ -251,4 +354,6 @@ void misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_clone);
 	PG_ADD_TEST(suite, test_lwmpoint_from_lwgeom);
 	PG_ADD_TEST(suite, test_gbox_serialized_size);
+	PG_ADD_TEST(suite, test_optionlist);
+	PG_ADD_TEST(suite, test_stringlist);
 }

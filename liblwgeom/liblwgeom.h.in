@@ -35,7 +35,11 @@
 
 #include "../postgis_config.h"
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
+
+/* For Proj 6.0 use of old API */
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+
 #include "proj_api.h"
 typedef struct PJ
 {
@@ -53,16 +57,12 @@ typedef PJ LWPROJ;
  */
 typedef struct LWPROJ
 {
-	PJ* pj;
-        /* CRSs are swapped: Used in transformation calls */
-	uint8_t source_swapped;
-	uint8_t target_swapped;
-        /* Source crs is geographic: Used in geography calls (source srid == dst srid) */
-        uint8_t source_is_latlong;
-
-        /* Source ellipsoid parameters */
-        double source_semi_major_metre;
-        double source_semi_minor_metre;
+    PJ* pj;
+    /* Source crs is geographic: Used in geography calls (source srid == dst srid) */
+    uint8_t source_is_latlong;
+    /* Source ellipsoid parameters */
+    double source_semi_major_metre;
+    double source_semi_minor_metre;
 } LWPROJ;
 #endif
 
@@ -830,7 +830,7 @@ extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
 
 /**
 * Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
-* that are double aligned and suitable for direct reading using getPoint2d_p_ro
+* that are double aligned and suitable for direct reading using getPoint2d_cp
 */
 extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
 
@@ -1089,6 +1089,25 @@ extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
 extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2,
                                                           double tolerance);
 
+/**
+ * @param pa the subject pointarray
+ * @param qp the query point
+ * @param dist optional output for actual distance from vertex
+ */
+extern int ptarray_closest_vertex_2d(const POINTARRAY *pa,
+                                     const POINT2D *qp, double *dist);
+
+/**
+ * @param pa the subject pointarray
+ * @param qp the query point
+ * @param dist optional output for actual distance from segment
+ * @return 0-based segment index for the closest segment
+ *         (earliest segment in case of same distance)
+ */
+extern int ptarray_closest_segment_2d(const POINTARRAY *pa,
+                                      const POINT2D *qp, double *dist);
+
+
 
 /**
 * Strip out the Z/M components of an #LWGEOM
@@ -1197,10 +1216,7 @@ extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
  ******************************************************************/
 
 LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
-
-/* WARNING: the output will contain references to geometries in the input, */
-/* so the result must be carefully released, not freed. */
-LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
+LWCOLLECTION* lwcollection_extract(const LWCOLLECTION *col, uint32_t type);
 
 
 /******************************************************************
@@ -1914,12 +1930,6 @@ extern int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox);
 extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 
 /**
-* New function to read doubles directly from the double* coordinate array
-* of an aligned lwgeom #POINTARRAY (built by de-serializing a #GSERIALIZED).
-*/
-extern int getPoint2d_p_ro(const POINTARRAY *pa, uint32_t n, POINT2D **point);
-
-/**
 * Calculate geodetic (x/y/z) box and add values to gbox. Return #LW_SUCCESS on success.
 */
 extern int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox);
@@ -2277,12 +2287,30 @@ extern lwvarlena_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idli
  */
 extern void lwgeom_trim_bits_in_place(LWGEOM *geom, int32_t prec_x, int32_t prec_y, int32_t prec_z, int32_t prec_m);
 
+extern LWGEOM* lwgeom_boundary(LWGEOM* lwgeom);
+
 /*******************************************************************************
  * SQLMM internal functions
  ******************************************************************************/
 
+/**
+* Geometry includes at least one actual circular arc
+*/
 int lwgeom_has_arc(const LWGEOM *geom);
+/**
+* Geometry type is one of the potentially "arc containing"
+* types (circstring, multicurve, etc) but does not necessarily
+* contain an actual arc.
+*/
+int lwgeom_type_arc(const LWGEOM *geom);
+/**
+* Convert type with arcs into equivalent linearized type
+*/
 LWGEOM *lwgeom_stroke(const LWGEOM *geom, uint32_t perQuad);
+/**
+* Convert linearized type into arc type, de-linearizing the
+* strokes where possible.
+*/
 LWGEOM *lwgeom_unstroke(const LWGEOM *geom);
 
 /**
@@ -2370,6 +2398,7 @@ LWGEOM *lwgeom_difference_prec(const LWGEOM *geom1, const LWGEOM *geom2, double 
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
 LWGEOM *lwgeom_symdifference_prec(const LWGEOM* geom1, const LWGEOM* geom2, double gridSize);
 LWGEOM *lwgeom_pointonsurface(const LWGEOM* geom);
+LWGEOM *lwgeom_reduceprecision(const LWGEOM* geom, double gridSize);
 LWGEOM *lwgeom_centroid(const LWGEOM* geom);
 LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_union_prec(const LWGEOM *geom1, const LWGEOM *geom2, double gridSize);
@@ -2425,8 +2454,15 @@ int lwgeom_is_simple(const LWGEOM *lwgeom);
  ******************************************************************************/
 
 int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr);
+/**
+ * Transform (reproject) a geometry in-place.
+ * @param geom the geometry to transform
+ * @param pj the transformation
+ */
+int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
+int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 /**
  * Get a projection from a string representation
  *
@@ -2434,23 +2470,14 @@ int lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outst
  */
 projPJ projpj_from_string(const char* txt);
 
-#endif
-/**
- * Transform (reproject) a geometry in-place.
- * @param geom the geometry to transform
- * @param pj the input and output
- */
-int lwgeom_transform(LWGEOM *geom, LWPROJ* pj);
-int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
-
-#if POSTGIS_PROJ_VERSION >= 60
+#else // POSTGIS_PROJ_VERSION >= 61
 
 /**
  * Allocate a new LWPROJ containing the reference to the PROJ's PJ
  * If extra_geography_data is true, it will generate the following values for
  * the source srs: is_latlong (geometric or not) and spheroid values
  */
-LWPROJ *lwproj_from_PJ(PJ *pj, int8_t extra_geography_data);
+LWPROJ *lwproj_from_str(const char* str_in, const char* str_out);
 
 #endif
 
@@ -2472,6 +2499,7 @@ LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
  * Attempts to make an invalid geometries valid w/out losing points.
  */
 LWGEOM* lwgeom_make_valid(LWGEOM* geom);
+LWGEOM* lwgeom_make_valid_params(LWGEOM* geom, char *make_valid_params);
 
 /*
  * Split (multi)polygon by line; (multi)line by (multi)line,

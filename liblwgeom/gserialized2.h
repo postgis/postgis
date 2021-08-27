@@ -161,7 +161,7 @@ size_t gserialized2_from_lwgeom_size(const LWGEOM *geom);
 
 /**
 * Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
-* that are double aligned and suitable for direct reading using getPoint2d_p_ro
+* that are double aligned and suitable for direct reading using getPoint2d_cp
 */
 LWGEOM* lwgeom_from_gserialized2(const GSERIALIZED *g);
 

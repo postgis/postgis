@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <sect2 id="Tiger_Geocoder">
-     <sect2info>
+  <sect1 id="Tiger_Geocoder">
+     <sect1info>
         <abstract>
             <para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.   </para>
             <para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. </para>
@@ -42,7 +42,7 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
                 <note><para>The <varname>tiger</varname> schema must be added to the database search path for the functions to work properly.</para></note>
             </para>
         </abstract>
-     </sect2info>
+     </sect1info>
     <title>Tiger Geocoder</title>
 
      <para>There are a couple other open source geocoders for PostGIS, that unlike tiger geocoder have the advantage of multi-country geocoding support</para>
@@ -148,7 +148,7 @@ DROP INDEX tiger_data.idx_tiger_data_ma_county_snd_name;
       <refsection>
         <title>Description</title>
 
-        <para>Generates a script that drops all tables in the specified schema that start with <varname>county_all</varname>, <varname>state_all</varname> or stae code followed by <varname>county</varname> or <varname>state</varname>.  This is needed if you are upgrading from <varname>tiger_2010</varname> to <varname>tiger_2011</varname> data.</para>
+        <para>Generates a script that drops all tables in the specified schema that start with <varname>county_all</varname>, <varname>state_all</varname> or state code followed by <varname>county</varname> or <varname>state</varname>.  This is needed if you are upgrading from <varname>tiger_2010</varname> to <varname>tiger_2011</varname> data.</para>
 
 
         <para>Availability: 2.1.0</para>
@@ -514,7 +514,7 @@ false
         <title>Description</title>
 
         <para>Given a geometry will return the census tract location of that geometry. NAD 83 long lat is assumed if no spatial ref sys is specified.</para>
-        <note><para>This function uses the census <varname>tract</varname> whic is not loaded by default.  If you have already loaded your state table, you can load tract
+        <note><para>This function uses the census <varname>tract</varname> which is not loaded by default.  If you have already loaded your state table, you can load tract
         as well as bg, and tabblock using the <xref linkend="Loader_Generate_Census_Script" /> script.</para>
         <para>If you have not loaded your state data yet and want these additional tables loaded, do the following</para>
         <programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND lookup_name IN('tract', 'bg', 'tabblock');</programlisting>
@@ -1451,4 +1451,4 @@ true</programlisting>
         <para><xref linkend="Get_Geocode_Setting" /></para>
       </refsection>
     </refentry>
-  </sect2>
+  </sect1>

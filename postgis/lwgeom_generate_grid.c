@@ -247,7 +247,6 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 	{
 		MemoryContext oldcontext;
 		const char *func_name;
-		double bounds_width, bounds_height;
 		char gbounds_is_empty;
 		GBOX bounds;
 		double size;
@@ -258,12 +257,9 @@ Datum ST_ShapeGrid(PG_FUNCTION_ARGS)
 		size = PG_GETARG_FLOAT8(0);
 
 		gbounds_is_empty = (gserialized_get_gbox_p(gbounds, &bounds) == LW_FAILURE);
-		bounds_width = bounds.xmax - bounds.xmin;
-		bounds_height = bounds.ymax - bounds.ymin;
 
 		/* quick opt-out if we get nonsensical inputs  */
-		if (size <= 0.0 || gbounds_is_empty ||
-		    bounds_width <= 0.0 || bounds_height <= 0.0)
+		if (size <= 0.0 || gbounds_is_empty)
 		{
 			funcctx = SRF_PERCALL_SETUP();
 			SRF_RETURN_DONE(funcctx);
@@ -379,7 +375,7 @@ Datum ST_Hexagon(PG_FUNCTION_ARGS)
 		            lwgeom_get_srid(lworigin));
 
 	ghex = geometry_serialize(lwhex);
-	PG_FREE_IF_COPY(gorigin, 1);
+	PG_FREE_IF_COPY(gorigin, 3);
 	PG_RETURN_POINTER(ghex);
 }
 
@@ -417,6 +413,6 @@ Datum ST_Square(PG_FUNCTION_ARGS)
 		           lwgeom_get_srid(lworigin));
 
 	gsqr = geometry_serialize(lwsqr);
-	PG_FREE_IF_COPY(gorigin, 1);
+	PG_FREE_IF_COPY(gorigin, 3);
 	PG_RETURN_POINTER(gsqr);
 }

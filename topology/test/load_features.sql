@@ -33,9 +33,9 @@ CREATE TABLE features.traffic_signs ( -- Traffic signs (selected nodes)
 -- 4. Associate feature tables with the topology.
 --    Add the three topology geometry layers to the CITY_DATA topology.
 --    Any order is OK.
-SELECT topology.AddTopoGeometryColumn('city_data', 'features', 'land_parcels', 'feature', 'POLYGON');
-SELECT topology.AddTopoGeometryColumn('city_data', 'features', 'traffic_signs','feature', 'POINT');
-SELECT topology.AddTopoGeometryColumn('city_data', 'features', 'city_streets','feature', 'LINE');
+SELECT NULL FROM topology.AddTopoGeometryColumn('city_data', 'features', 'land_parcels', 'feature', 'POLYGON');
+SELECT NULL FROM topology.AddTopoGeometryColumn('city_data', 'features', 'traffic_signs','feature', 'POINT');
+SELECT NULL FROM topology.AddTopoGeometryColumn('city_data', 'features', 'city_streets','feature', 'LINE');
 
 --  As a result, Spatial generates a unique TG_LAYER_ID for each layer in
 --  the topology metadata (USER/ALL_SDO_TOPO_METADATA).

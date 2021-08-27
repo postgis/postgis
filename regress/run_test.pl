@@ -61,11 +61,16 @@ my $OPT_NODROP = 0;
 my $OPT_NOCREATE = 0;
 my $OPT_UPGRADE = 0;
 my $OPT_DUMPRESTORE = 0;
+my $OPT_WITH_TIGER = 0;
 my $OPT_WITH_TOPO = 0;
 my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
+my @OPT_HOOK_AFTER_CREATE;
+my @OPT_HOOK_BEFORE_UNINSTALL;
+my @OPT_HOOK_BEFORE_UPGRADE;
+my @OPT_HOOK_AFTER_UPGRADE;
 my $OPT_EXTVERSION = '';
 my $OPT_UPGRADE_PATH = '';
 our $OPT_UPGRADE_FROM = '';
@@ -81,12 +86,17 @@ GetOptions (
 	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
 	'dumprestore' => \$OPT_DUMPRESTORE,
 	'nocreate' => \$OPT_NOCREATE,
+	'tiger' => \$OPT_WITH_TIGER,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
 	'sfcgal' => \$OPT_WITH_SFCGAL,
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS,
-	'schema=s' => \$OPT_SCHEMA
+	'schema=s' => \$OPT_SCHEMA,
+	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
+	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
+	'before-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE,
+	'after-upgrade-script=s' => \@OPT_HOOK_AFTER_UPGRADE
 	);
 
 if ( @ARGV < 1 )
@@ -289,118 +299,15 @@ sub semver_lessthan
 	return @bcomp ? 1 : 0;
 }
 
-sub create_upgrade_test_objects
-{
-  # TODO: allow passing the "upgrade-init" script via commandline
-
-  my $query = "create table upgrade_test(g1 geometry, g2 geography";
-  $query .= ", r raster" if ( $OPT_WITH_RASTER );
-  $query .= ")";
-  my $ret = sql($query);
-  unless ( $ret =~ /^CREATE/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong creating upgrade_test table: $ret.\n";
-    exit(1);
-  }
-
-  $query = "insert into upgrade_test(g1,g2) values ";
-	$query .= "('POINT(0 0)', 'LINESTRING(0 0, 1 1)'), ";
-	$query .= "('POINT(1 0)', 'LINESTRING(0 1, 1 1)');";
-  my $ret = sql($query);
-  unless ( $ret =~ /^INSERT/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong populating upgrade_test table: $ret.\n";
-    exit(1);
-  }
-
-
-  if ( $pgvernum >= 120000 ) {
-    # We know upgrading with an st_union() based view
-    # fails unless you're on PostgreSQL 12, so we don't
-    # even try that.
-    #
-    # We could re-enable this test IF we fix the upgrade
-    # in pre-12 versions. Refer to
-    # https://trac.osgeo.org/postgis/ticket/4386
-    #
-    $query = "create view upgrade_view_test as ";
-    $query .= "select st_union(g1) from upgrade_test;";
-    my $ret = sql($query);
-    unless ( $ret =~ /^CREATE/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
-      exit(1);
-    }
-  }
-
-  if ( $OPT_WITH_RASTER )
-  {
-    $query = "UPDATE upgrade_test SET r = ";
-    $query .= " ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);";
-    $ret = sql($query);
-    unless ( $ret =~ /^UPDATE/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong setting raster into upgrade_test table: $ret.\n";
-      exit(1);
-    }
-
-    $query = "set client_min_messages to error; select AddRasterConstraints('upgrade_test', 'r')";
-    $ret = sql($query);
-    unless ( $ret =~ /^t$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong adding raster constraints to upgrade_test: " . $ret . "\n";
-      exit(1);
-    }
-  }
-
-  if ( $OPT_WITH_TOPO )
-  {
-    $query = "select topology.createTopology('upgrade_test');";
-    $ret = sql($query);
-    unless ( $ret =~ /^[1-9][0-9]*$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong adding upgrade_test topology: " . $ret . "\n";
-      exit(1);
-    }
-  }
-}
-
-sub drop_upgrade_test_objects
-{
-  # TODO: allow passing the "upgrade-cleanup" script via commandline
-
-  my $ret = sql("drop view if exists upgrade_view_test;");
-  unless ( $ret =~ /^DROP/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong dropping spatial view: $ret.\n";
-    exit(1);
-  }
-
-  my $ret = sql("drop table upgrade_test;");
-  unless ( $ret =~ /^DROP/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong dropping spatial tables: $ret.\n";
-    exit(1);
-  }
-
-  if ( $OPT_WITH_TOPO )
-  {
-    my $query = "SELECT topology.DropTopology('upgrade_test');";
-    $ret = sql($query);
-    unless ( $ret =~ /^Topology 'upgrade_test' dropped$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong dropping upgrade_test topology: " . $ret . "\n";
-      exit(1);
-    }
-  }
-}
-
-
 if ( $OPT_UPGRADE )
 {
-	print "  Upgrading from postgis $libver\n";
+	print "Upgrading from postgis $libver\n";
 
-  create_upgrade_test_objects();
+	foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
+	{
+		print "Running before-upgrade-script $hook\n";
+		die unless load_sql_file($hook, 1);
+	}
 
   if ( $OPT_EXTENSIONS )
   {
@@ -411,7 +318,11 @@ if ( $OPT_UPGRADE )
 	  upgrade_spatial();
   }
 
-  drop_upgrade_test_objects();
+	foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
+	{
+		print "Running after-upgrade-script $hook\n";
+		die unless load_sql_file($hook, 1);
+	}
 
   # Update libver
   $libver = sql("select postgis_lib_version()");
@@ -431,7 +342,6 @@ my $geosver =  sql("select postgis_geos_version()");
 my $projver = sql("select postgis_proj_version()");
 my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
-my $pgsqlvernum = sql("select current_setting('server_version_num')");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
 my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
 my $scriptver = sql("select postgis_scripts_installed()");
@@ -465,6 +375,13 @@ our $TEST = "";
 ##################################################################
 
 print "\nRunning tests\n\n";
+
+foreach my $hook (@OPT_HOOK_AFTER_CREATE)
+{
+	start_test("after-create-script $hook");
+	show_progress();
+	pass() if load_sql_file($hook, 1);
+}
 
 foreach $TEST (@ARGV)
 {
@@ -546,6 +463,13 @@ foreach $TEST (@ARGV)
 
 }
 
+foreach my $hook (@OPT_HOOK_BEFORE_UNINSTALL)
+{
+	start_test("before-uninstall-script $hook");
+	show_progress();
+	pass() if load_sql_file($hook, 1);
+}
+
 
 ###################################################################
 # Uninstall postgis (serves as an uninstall test)
@@ -615,11 +539,24 @@ Options:
   --schema        where to install/find PostGIS (relocatable) PostGIS
                   (defaults to "public")
   --raster        load also raster extension
+  --tiger      		load also tiger_geocoder extension
   --topology      load also topology extension
   --sfcgal        use also sfcgal backend
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
   --extension     load using extensions
+  --after-create-script <path>
+                  script to load after spatial db creation
+                  (multiple switches supported, to be run in given order)
+  --before-uninstall-script <path>
+                  script to load before spatial extension uninstall
+                  (multiple switches supported, to be run in given order)
+  --before-upgrade-script <path>
+                  script to load before upgrade
+                  (multiple switches supported, to be run in given order)
+  --after-upgrade-script <path>
+                  script to load after upgrade
+                  (multiple switches supported, to be run in given order)
 };
 
 }
@@ -699,7 +636,9 @@ sub run_simple_sql
 
 	# Dump output to a temp file.
 	my $tmpfile = sprintf("%s/test_%s_tmp", $TMPDIR, $RUN);
-	my $cmd = "psql -v \"VERBOSITY=terse\" -tXAq $DB < $sql > $tmpfile 2>&1";
+	my $cmd = "psql -v \"VERBOSITY=terse\" "
+		. " -v \"regdir=$REGDIR\""
+		. " -tXAq $DB < $sql > $tmpfile 2>&1";
 	#print($cmd);
 	my $rv = system($cmd);
 	# Check if psql errored out.
@@ -790,14 +729,20 @@ sub run_simple_test
 	chmod 0777, $betmpdir;
 
 	my $scriptdir = scriptdir($libver, $OPT_EXTENSIONS);
-	my $cmd = "psql -v \"VERBOSITY=terse\""
+
+	my ($sqlfile,$sqldir) = fileparse($sql);
+	my $cmd = "cd $sqldir; psql -v \"VERBOSITY=terse\""
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
           . " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
-          . " -tXAq -f $sql $DB > $outfile 2>&1";
+          . " -tXAq -f $sqlfile $DB > $outfile 2>&1";
 	my $rv = system($cmd);
+    if ( $rv ) {
+        fail "psql exited with an error", $outfile;
+        die;
+    }
 
 	# Check for ERROR lines
 	open(FILE, "$outfile");
@@ -806,7 +751,7 @@ sub run_simple_test
 
 	# Strip the lines we don't care about
 	@lines = grep(!/^\$/, @lines);
-	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT|COPY|DO)/, @lines);
+	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT [0-9]*|COPY|DO)$/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
 	@lines = grep(!/^(DROP|CREATE|ALTER|VACUUM)/, @lines);
 	@lines = grep(!/^(LOG|SET|TRUNCATE|DISCARD)/, @lines);
@@ -1360,7 +1305,8 @@ sub load_sql_file
 
 	if ( $strict && ! -e $file )
 	{
-		die "Unable to find $file\n";
+		fail "Unable to find $file";
+		return 0;
 	}
 
 	if ( -e $file )
@@ -1370,12 +1316,13 @@ sub load_sql_file
 		my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
 		$cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
 		$cmd .= " -Xf $file $DB >> $REGRESS_LOG 2>&1";
-		print "  $file\n" if $VERBOSE;
+		#print "  $file\n" if $VERBOSE;
 		my $rv = system($cmd);
 		if ( $rv )
 		{
 		  fail "Error encountered loading $file", $REGRESS_LOG;
-		  exit 1;
+		  #exit 1;
+			return 0;
 		}
 	}
 	return 1;
@@ -1430,6 +1377,23 @@ sub prepare_spatial_extensions
 		$rv = system($cmd);
   	if ( $rv ) {
   		fail "Error encountered creating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+  		die;
+		}
+ 	}
+
+	if ( $OPT_WITH_TIGER )
+	{
+		my $sql = "CREATE EXTENSION postgis_tiger_geocoder CASCADE";
+		if ( $OPT_UPGRADE_FROM ) {
+			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+		}
+
+		print "Preparing db '${DB}' using: ${sql}\n";
+
+ 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+		$rv = system($cmd);
+  	if ( $rv ) {
+  		fail "Error encountered creating EXTENSION POSTGIS_TIGER_GEOCODER", $REGRESS_LOG;
   		die;
 		}
  	}
@@ -1531,7 +1495,7 @@ sub package_extension_sql
 	my ($extname, $extver) = @_;
 	my $sql;
 
-	if ( $pgsqlvernum lt 130000 ) {
+	if ( $pgvernum lt 130000 ) {
 		$sql = "CREATE EXTENSION ${extname} VERSION '${extver}' FROM unpackaged;";
 	} else {
 		$sql = "CREATE EXTENSION ${extname} VERSION unpackaged;";
@@ -1832,6 +1796,16 @@ sub drop_spatial_extensions
         $rv = system($cmd);
       	$ok = 0 if $rv;
     }
+    if ( $OPT_WITH_TIGER )
+    {
+        $cmd = "psql $psql_opts -c \"DROP EXTENSION IF EXISTS postgis_tiger_geocoder;
+                DROP EXTENSION IF EXISTS fuzzystrmatch;
+                DROP SCHEMA IF EXISTS tiger;
+                DROP SCHEMA IF EXISTS tiger_data;
+                \" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+      	$ok = 0 if $rv;
+    }
 
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
     $rv = system($cmd);
@@ -1847,6 +1821,7 @@ sub drop_spatial_extensions
 sub uninstall_spatial
 {
 	my $ok;
+
 	start_test("uninstall");
 
 	if ( $OPT_EXTENSIONS )
@@ -1858,24 +1833,19 @@ sub uninstall_spatial
 		$ok = drop_spatial();
 	}
 
-	if ( $ok )
-	{
-		show_progress(); # on to objects count
-		$OBJ_COUNT_POST = count_db_objects();
+	return $ok if ! $ok;
 
-		if ( $OBJ_COUNT_POST != $OBJ_COUNT_PRE )
-		{
-			fail("Object count pre-install ($OBJ_COUNT_PRE) != post-uninstall ($OBJ_COUNT_POST)");
-			return 0;
-		}
-		else
-		{
-			pass("($OBJ_COUNT_PRE)");
-			return 1;
-		}
+	show_progress(); # on to objects count
+	$OBJ_COUNT_POST = count_db_objects();
+
+	if ( $OBJ_COUNT_POST != $OBJ_COUNT_PRE )
+	{
+		fail("Object count pre-install ($OBJ_COUNT_PRE) != post-uninstall ($OBJ_COUNT_POST)");
+		return 0;
 	}
 
-	return 0;
+	pass("($OBJ_COUNT_PRE)");
+	return 1;
 }
 
 # Dump and restore the database

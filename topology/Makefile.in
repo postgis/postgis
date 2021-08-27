@@ -37,8 +37,8 @@ SQLPP = @SQLPP@
 SQL_OBJS = \
   topology.sql \
   topology_upgrade.sql \
-  topology_drop_before.sql \
-  topology_drop_after.sql
+  topology_before_upgrade.sql \
+  topology_after_upgrade.sql
 
 # Objects to build using PGXS
 
@@ -94,7 +94,7 @@ endif
 
 
 
-# Generate any .sql file from .sql.in.c files by running them through the SQL pre-processor
+# Generate any .sql file from .sql.in files by running them through the SQL pre-processor
 %.sql: %.sql.in
 	$(SQLPP) $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
@@ -105,7 +105,7 @@ endif
 topology_upgrade.sql.in:  topology.sql
 	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 
-topology_upgrade.sql: topology_drop_before.sql topology_upgrade.sql.in topology_drop_after.sql
+topology_upgrade.sql: topology_before_upgrade.sql topology_upgrade.sql.in topology_after_upgrade.sql
 	cat $^ > $@
 
 topology.sql: \
@@ -119,9 +119,14 @@ topology.sql: \
 	sql/query/getfacebypoint.sql.in \
 	sql/query/GetRingEdges.sql.in \
 	sql/query/GetNodeEdges.sql.in \
+	sql/query/GetFaceContainingPoint.sql.in \
 	sql/manage/TopologySummary.sql.in \
 	sql/manage/CopyTopology.sql.in \
+	sql/manage/FindLayer.sql.in \
+	sql/manage/FindTopology.sql.in \
 	sql/manage/ManageHelper.sql.in \
+	sql/manage/ValidateTopology.sql.in \
+	sql/manage/ValidateTopologyRelation.sql.in \
 	sql/topoelement/topoelement_agg.sql.in \
 	sql/topogeometry/type.sql.in \
 	sql/topogeometry/totopogeom.sql.in \

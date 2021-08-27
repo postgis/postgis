@@ -102,6 +102,11 @@ default_rt_info_handler(const char *fmt, va_list ap) {
     va_end(ap);
 }
 
+char * default_rt_options(const char* varname) {
+	return NULL;
+}
+
+
 /**
  * Struct definition here
  */
@@ -112,6 +117,7 @@ struct rt_context_t {
     rt_message_handler err;
     rt_message_handler warn;
     rt_message_handler info;
+    rt_options options;
 };
 
 /* Static variable, to be used for all rt_core functions */
@@ -121,7 +127,8 @@ static struct rt_context_t ctx_t = {
     .dealloc = default_rt_deallocator,
     .err = default_rt_error_handler,
     .warn = default_rt_warning_handler,
-    .info = default_rt_info_handler
+    .info = default_rt_info_handler,
+    .options = default_rt_options
 };
 
 
@@ -140,6 +147,7 @@ rt_install_default_allocators(void)
     ctx_t.err = default_rt_error_handler;
     ctx_t.info = default_rt_info_handler;
     ctx_t.warn = default_rt_warning_handler;
+    ctx_t.options = default_rt_options;
 }
 
 
@@ -149,18 +157,30 @@ rt_install_default_allocators(void)
  */
 void
 rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
-        rt_deallocator deallocator, rt_message_handler error_handler,
-        rt_message_handler info_handler, rt_message_handler warning_handler) {
+    rt_deallocator deallocator, rt_message_handler error_handler,
+    rt_message_handler info_handler, rt_message_handler warning_handler)
+{
+    rt_set_handlers_options(allocator, reallocator, deallocator,
+    	error_handler, info_handler, warning_handler,
+        default_rt_options);
+}
 
-    ctx_t.alloc = allocator;
+void
+rt_set_handlers_options(rt_allocator allocator, rt_reallocator reallocator,
+    rt_deallocator deallocator, rt_message_handler error_handler,
+    rt_message_handler info_handler, rt_message_handler warning_handler,
+    rt_options options_handler)
+{
+    ctx_t.alloc   = allocator;
     ctx_t.realloc = reallocator;
     ctx_t.dealloc = deallocator;
 
-    ctx_t.err = error_handler;
+    ctx_t.err  = error_handler;
     ctx_t.info = info_handler;
     ctx_t.warn = warning_handler;
-}
 
+    ctx_t.options = options_handler;
+}
 
 /**
  * Raster core memory management functions.
@@ -230,4 +250,22 @@ rtwarn(const char *fmt, ...) {
     (*ctx_t.warn)(fmt, ap);
 
     va_end(ap);
+}
+
+char *
+rtoptions(const char *varname) {
+	if (!ctx_t.options)
+		return NULL;
+	return ctx_t.options(varname);
+}
+
+char *
+rtstrdup(const char *str) {
+	size_t sz;
+	char* dup;
+	if (!str) return NULL;
+	sz = strlen(str) + 1;
+	dup = rtalloc(sz);
+	memcpy(dup, str, sz);
+	return dup;
 }

@@ -2163,7 +2163,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(0)) {
 		POSTGIS_RT_DEBUG(3, "Creating state variable");
 		/* allocate container in aggcontext */
-		iwr = palloc(sizeof(struct rtpg_union_arg_t));
+		iwr = MemoryContextAlloc(aggcontext, sizeof(struct rtpg_union_arg_t));
 		if (iwr == NULL) {
 			MemoryContextSwitchTo(oldcontext);
 			elog(ERROR, "RASTER_union_transfn: Could not allocate memory for state variable");
@@ -2932,8 +2932,12 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 	}
 
 	/* cleanup */
-	pfree(itrset);
-	rtpg_union_arg_destroy(iwr);
+	/* For Windowing functions, it is important to leave */
+	/* the state intact, knowing that the aggcontext will be */
+	/* freed by PgSQL when the statement is complete. */
+	/* https://trac.osgeo.org/postgis/ticket/4770 */
+	// pfree(itrset);
+	// rtpg_union_arg_destroy(iwr);
 
 	if (!_rtn) PG_RETURN_NULL();
 

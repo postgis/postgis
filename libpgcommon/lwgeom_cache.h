@@ -21,16 +21,15 @@
 #include "lwgeom_pg.h"
 
 
-#define PROJ_CACHE_ENTRY 0
+#define TOAST_CACHE_ENTRY 0
 #define PREP_CACHE_ENTRY 1
 #define RTREE_CACHE_ENTRY 2
 #define CIRC_CACHE_ENTRY 3
 #define RECT_CACHE_ENTRY 4
-#define TOAST_CACHE_ENTRY 5
-#define SRSDESC_CACHE_ENTRY 6
-#define SRID_CACHE_ENTRY 7
+#define SRSDESC_CACHE_ENTRY 5
+#define SRID_CACHE_ENTRY 6
 
-#define NUM_CACHE_ENTRIES 8
+#define NUM_CACHE_ENTRIES 7
 
 /* Returns the MemoryContext used to store the caches */
 MemoryContext PostgisCacheContext(FunctionCallInfo fcinfo);
@@ -66,42 +65,6 @@ typedef struct {
 * PrepGeomCache - lwgeom_geos_prepared.h
 */
 
-/*
-* Proj4 caching has it's own mechanism, but is
-* integrated into the generic caching system because
-* some geography functions make cached SRID lookup
-* calls and also CircTree accelerated calls, so
-* there needs to be a management object on
-* fcinfo->flinfo->fn_extra to avoid collisions.
-*/
-
-/* An entry in the PROJ SRS cache */
-typedef struct struct_PROJSRSCacheItem
-{
-	int32_t srid_from;
-	int32_t srid_to;
-	uint64_t hits;
-	LWPROJ *projection;
-}
-PROJSRSCacheItem;
-
-/* PROJ 4 lookup transaction cache methods */
-#define PROJ_CACHE_ITEMS 128
-
-/*
-* The proj4 cache holds a fixed number of reprojection
-* entries. In normal usage we don't expect it to have
-* many entries, so we always linearly scan the list.
-*/
-typedef struct struct_PROJPortalCache
-{
-	int type;
-	PROJSRSCacheItem PROJSRSCache[PROJ_CACHE_ITEMS];
-	uint32_t PROJSRSCacheCount;
-	MemoryContext PROJSRSCacheContext;
-}
-PROJPortalCache;
-
 /**
 * Generic signature for functions to manage a geometry
 * cache structure.
@@ -117,7 +80,6 @@ typedef struct
 /*
 * Cache retrieval functions
 */
-PROJPortalCache *GetPROJSRSCache(FunctionCallInfo fcinfo);
 GeomCache *GetGeomCache(FunctionCallInfo fcinfo,
 			const GeomCacheMethods *cache_methods,
 			SHARED_GSERIALIZED *g1,

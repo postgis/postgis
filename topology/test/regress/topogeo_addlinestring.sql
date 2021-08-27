@@ -1,7 +1,7 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
-\i load_topology-4326.sql
+\i ../load_topology-4326.sql
 
 -- Save max node id
 select 'node'::text as what, max(node_id) INTO city_data.limits FROM city_data.node;
@@ -387,3 +387,83 @@ SELECT 't4757.0', topology.TopoGeo_addPoint('bug4757', 'POINT(0 0)');
 SELECT 't4757.1', topology.TopoGeo_addLinestring('bug4757',
   'LINESTRING(0 -0.1,1 0,1 1,0 1,0 -0.1)', 1);
 SELECT 't4757.end', topology.DropTopology('bug4757');
+
+-- See https://trac.osgeo.org/postgis/ticket/t4758
+select 't4758.start', topology.CreateTopology ('t4758', 0, 1e-06) > 0;
+select 't4758.0', topology.TopoGeo_addLinestring('t4758',
+  'LINESTRING(11.38327215  60.4081942, 11.3826176   60.4089484)');
+select 't4758.1', topology.TopoGeo_addLinestring('t4758',
+  'LINESTRING( 11.3832721  60.408194249999994, 11.38327215 60.4081942)');
+SELECT 't4758.2', t
+FROM topology.TopoGeo_addLinestring('t4758',
+  'LINESTRING( 11.38330505 60.408239599999995, 11.3832721  60.408194249999994)') AS t
+ORDER BY t;
+SELECT 't4758.end', topology.DropTopology('t4758');
+
+-- See https://trac.osgeo.org/postgis/ticket/2175
+BEGIN;
+SELECT NULL FROM topology.CreateTopology('bug2175');
+SELECT 't2175.1', count(*) from topology.TopoGeo_addLinestring('bug2175',
+  'LINESTRING(10 10,10 0,0 0,0 10,10 10)', 0);
+SELECT 't2175.2', count(*) from topology.TopoGeo_addLinestring('bug2175',
+  'LINESTRING(10 10,10 0,0 0,0 10,10 10)', 0);
+SELECT 't2175.3', count(*) from topology.TopoGeo_addLinestring('bug2175',
+  'LINESTRING(9.99 10,10 0,0 0,0 10,9.99 10)', 0.1);
+ROLLBACK;
+
+-- See https://trac.osgeo.org/postgis/ticket/4941
+SELECT NULL FROM createtopology('b4941');
+SELECT 'b4941', 'outer_ring', count(*) FROM (
+  SELECT TopoGeo_addLineString('b4941',
+  'LINESTRING(
+    12.123711265448206 65.12785021295713,
+    12.123711265448206 65.21007378815003,
+    12.208829785296102 65.12785021295713,
+    12.123711265448206 65.12785021295713)
+  ')
+) foo;
+SELECT 'b4941', 'mbr-invalid-before', face_id
+FROM b4941.face
+WHERE face_id > 0
+AND NOT ST_Equals(
+    mbr,
+    ST_Envelope(
+      ST_GetFaceGeometry('b4941', face_id)
+    )
+  );
+SELECT 'b4941', 'inner_ring', count(*) FROM (
+  SELECT TopoGeo_addLineString('b4941',
+    'LINESTRING(
+      12.164016376530826 65.16373151830707,
+      12.164026259700226 65.16368501062713,
+      12.164003720888175 65.16368611107725,
+      12.164016376530826 65.16373151830707
+    )')
+) foo;
+SELECT 'b4941', 'mbr-invalid-after-hole', face_id
+FROM b4941.face
+WHERE face_id > 0
+AND NOT ST_Equals(
+    mbr,
+    ST_Envelope(
+      ST_GetFaceGeometry('b4941', face_id)
+    )
+  );
+SELECT 'b4941', 'crossing_line', count(*) FROM (
+  SELECT TopoGeo_addLineString('b4941',
+    'LINESTRING(
+      12.123387 65.128411,
+      12.164015866 65.163701383,
+      12.168618 65.167537
+    )')
+) foo;
+SELECT 'b4941', 'mbr-invalid-after-cross', face_id
+FROM b4941.face
+WHERE face_id > 0
+AND NOT ST_Equals(
+    mbr,
+    ST_Envelope(
+      ST_GetFaceGeometry('b4941', face_id)
+    )
+  );
+SELECT NULL FROM topology.DropTopology('b4941');

@@ -5,8 +5,9 @@
 	  <sect1info>
 	    <abstract>
 			<para>These functions test whether geometries are valid according to
-			the OGC SFS standard.  They also provide information about
-			the nature and location of invalidity.
+			the OGC SFS standard.
+            They also provide information about the nature and location of invalidity.
+            There is also a function to create a valid geometry out of an invalid one.
 			</para>
    	</abstract>
     </sect1info>
@@ -41,17 +42,17 @@
 		<title>Description</title>
 
 		<para>
-                  Test if an ST_Geometry value is well-formed in 2D according to the OGC rules.
-		  For geometries that are invalid, the PostgreSQL NOTICE will provide details of why it is not valid.
-                  For geometries with 3 and 4 dimensions, the validity still only tested in 2 dimensions.
+        Tests if an ST_Geometry value is well-formed and valid in 2D according to the OGC rules.
+        For geometries with 3 and 4 dimensions, the validity is still only tested in 2 dimensions.
+		For geometries that are invalid, a PostgreSQL NOTICE is emitted providing details of why it is not valid.
                 </para>
 		<para>
-For the version with flags,
-supported <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />
+For the version with the <varname>flags</varname> parameter,
+supported values are documented in <xref linkend="ST_IsValidDetail" />
 This version does not print a NOTICE explaining invalidity.
 		</para>
 		<para>For more information on the definition of geometry validity, refer
-			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link>
+			to <xref linkend="OGC_Validity" />
 		</para>
 		<note>
 			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
@@ -95,7 +96,6 @@ NOTICE:  Self-intersection at or near point 0 0
 <xref linkend="ST_IsSimple" />,
 <xref linkend="ST_IsValidReason" />,
 <xref linkend="ST_IsValidDetail" />,
-<xref linkend="ST_Summary" />
 </para>
 	  </refsection>
 	</refentry>
@@ -105,7 +105,7 @@ NOTICE:  Self-intersection at or near point 0 0
 	  <refnamediv>
 		<refname>ST_IsValidDetail</refname>
 
-		<refpurpose>Returns a <varname>valid_detail</varname> row stating if a geometry is valid, and if not a reason why and a location.</refpurpose>
+		<refpurpose>Returns a <varname>valid_detail</varname> row stating if a geometry is valid or if not a reason and a location.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -121,20 +121,29 @@ NOTICE:  Self-intersection at or near point 0 0
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a valid_detail row, formed by a boolean (valid) stating if a geometry is valid, a varchar (reason) stating a reason why it is invalid and a geometry (location) pointing out where it is invalid.</para>
+		<para>Returns a <varname>valid_detail</varname> row,
+        containing a boolean (<varname>valid</varname>) stating if a geometry is valid,
+        a varchar (<varname>reason</varname>) stating a reason why it is invalid
+        and a geometry (<varname>location</varname>) pointing out where it is invalid.</para>
 
-		<para>Useful to substitute and improve the combination of ST_IsValid and ST_IsValidReason to generate a detailed report of invalid geometries.</para>
+		<para>Useful to improve on the combination of <xref linkend="ST_IsValid" /> and <xref linkend="ST_IsValidReason" /> to generate a detailed report of invalid geometries.</para>
 
 		<para>
-The 'flags' argument is a bitfield. It can have the following values:
-			<itemizedlist>
-				<listitem>
+The optional <varname>flags</varname> parameter is a bitfield. It can have the following values:
+		<itemizedlist>
+<listitem>
 <para>
-1: Consider self-intersecting rings forming holes as valid.
-   This is also know as "the ESRI flag".
-   Note that this is against the OGC model.
+0: Use usual OGC SFS validity semantics.
 </para>
-				</listitem>
+</listitem>
+<listitem>
+<para>
+1: Consider certain kinds of self-touching rings (inverted shells and exverted holes) as valid.
+   This is also known as "the ESRI flag", since this is the validity model used by those tools.
+   Note that this is invalid under the OGC model.
+</para>
+</listitem>
+
 			</itemizedlist>
 		</para>
 		<para>Performed by the GEOS module.</para>
@@ -146,22 +155,22 @@ The 'flags' argument is a bitfield. It can have the following values:
 
 		<programlisting>
 --First 3 Rejects from a successful quintuplet experiment
-SELECT gid, reason(ST_IsValidDetail(the_geom)), ST_AsText(location(ST_IsValidDetail(the_geom))) as location
+SELECT gid, reason(ST_IsValidDetail(geom)), ST_AsText(location(ST_IsValidDetail(geom))) as location
 FROM
-(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
-FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
+FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,8) z1
 	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
-	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line
+	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
 	FROM generate_series(-3,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,10) z1
 	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
 ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
-WHERE ST_IsValid(the_geom) = false
+WHERE ST_IsValid(geom) = false
 ORDER BY gid
 LIMIT 3;
 
@@ -204,12 +213,12 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 		  <funcprototype>
 			<funcdef>text <function>ST_IsValidReason</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
 			<funcdef>text <function>ST_IsValidReason</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>flags</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -217,9 +226,9 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns text stating if a geometry is valid or not an if not valid, a reason why.</para>
+		<para>Returns text stating if a geometry is valid, or if invalid a reason why.</para>
 
-		<para>Useful in combination with ST_IsValid to generate a detailed report of invalid geometries and reasons.</para>
+		<para>Useful in combination with <xref linkend="ST_IsValid" /> to generate a detailed report of invalid geometries and reasons.</para>
 
 		<para>
 Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDetail" />.
@@ -231,24 +240,32 @@ Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDeta
 	  <refsection>
 		<title>Examples</title>
 
+        <programlisting>-- invalid bow-tie polygon
+SELECT ST_IsValidReason(
+    'POLYGON ((100 200, 100 100, 200 200,
+     200 100, 100 200))'::geometry) as validity_info;
+validity_info
+--------------------------
+Self-intersection[150 150]
+        </programlisting>
 		<programlisting>
 --First 3 Rejects from a successful quintuplet experiment
-SELECT gid, ST_IsValidReason(the_geom) as validity_info
+SELECT gid, ST_IsValidReason(geom) as validity_info
 FROM
-(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As the_geom, gid
-FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
+(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, gid
+FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
 	FROM generate_series(-4,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,8) z1
 	WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e
-	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, z1*2) As line
+	INNER JOIN (SELECT ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) As line
 	FROM generate_series(-3,6) x1
 	CROSS JOIN generate_series(2,5) y1
 	CROSS JOIN generate_series(1,10) z1
 	WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f
 ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))
 GROUP BY gid, e.buff) As quintuplet_experiment
-WHERE ST_IsValid(the_geom) = false
+WHERE ST_IsValid(geom) = false
 ORDER BY gid
 LIMIT 3;
 
@@ -275,5 +292,197 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 		<para><xref linkend="ST_IsValid" />, <xref linkend="ST_Summary" /></para>
 	  </refsection>
 	</refentry>
+
+    <refentry id="ST_MakeValid">
+      <refnamediv>
+        <refname>ST_MakeValid</refname>
+        <refpurpose>Attempts to make an invalid geometry valid without losing vertices.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakeValid</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
+          </funcprototype>
+          <funcprototype>
+            <funcdef>geometry <function>ST_MakeValid</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>
+            <paramdef choice="opt"><type>text</type> <parameter>params</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+    <para>
+    The function attempts to create a valid representation of a given invalid
+    geometry without losing any of the input vertices.
+    Valid geometries are returned unchanged.
+    </para>
+
+    <para>
+    Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS,
+    MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS and GEOMETRYCOLLECTIONS
+    containing any mix of them.
+    </para>
+
+    <para>
+    In case of full or partial dimensional collapses, the output geometry
+    may be a collection of lower-to-equal dimension geometries,
+    or a geometry of lower dimension.
+    </para>
+
+    <para>
+    Single polygons may become multi-geometries in case of self-intersections.
+    </para>
+
+    <para>
+    The <varname>params</varname> argument can be used to supply an options
+    string to select the method to use for building valid geometry.
+    The options string is in the format "method=linework|structure keepcollapsed=true|false".
+    </para>
+
+    <para>The "method" key has two values.</para>
+
+    <itemizedlist>
+    <listitem>
+        <para>"linework" is the original algorithm, and builds valid geometries
+        by first extracting all lines, noding that linework together, then building
+        a value output from the linework.</para>
+    </listitem>
+    <listitem>
+        <para>"structure" is an algorithm that distinguishes between
+        interior and exterior rings, building new geometry by unioning
+        exterior rings, and then differencing all interior rings.</para>
+    </listitem>
+    </itemizedlist>
+
+    <para>The "keepcollapsed" key is only valid for the "structure" algorithm,
+    and takes a value of "true" or "false". When set to "false",
+    geometry components that collapse to a lower dimensionality,
+    for example a one-point linestring would be dropped.
+    </para>
+
+    <para>Performed by the GEOS module.</para>
+
+    <para>Availability: 2.0.0</para>
+    <para>Enhanced: 2.0.1, speed improvements</para>
+    <para>Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
+    <para>Enhanced: 3.1.0, added removal of Coordinates with NaN values.</para>
+    <para>Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure'.</para>
+
+    <para>&Z_support;</para>
+
+          </refsection>
+          <refsection>
+            <title>Examples</title>
+            <informaltable>
+                  <tgroup cols="1">
+                    <tbody>
+                    <row>
+                        <entry><para><informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_makevalid01.png" />
+                              </imageobject>
+                              <caption><para>before_geom: MULTIPOLYGON of 2 overlapping polygons</para></caption>
+                            </mediaobject>
+                          </informalfigure>
+                          <informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_makevalid02.png" />
+                              </imageobject>
+                              <caption><para>after_geom: MULTIPOLYGON of 4 non-overlapping polygons</para>
+                              </caption>
+                            </mediaobject>
+                          </informalfigure>
+                          <informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_makevalid05.png" />
+                              </imageobject>
+                              <caption><para>after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon</para>
+                              </caption>
+                            </mediaobject>
+                          </informalfigure>
+                <programlisting>SELECT f.geom AS before_geom, ST_MakeValid(f.geom) AS after_geom, ST_MakeValid(f.geom, 'method=structure') AS after_geom_structure
+FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,
+191 195,192 195,193 194,194 194,194 193,195 192,195 191,
+195 190,195 189,195 188,194 187,194 186,14 6,13 6,12 5,11 5,
+10 5,9 5,8 5,7 6,6 6,6 7,5 8,5 9,5 10,5 11,5 12,6 13,6 14,186 194)),
+((150 90,149 80,146 71,142 62,135 55,128 48,119 44,110 41,100 40,
+90 41,81 44,72 48,65 55,58 62,54 71,51 80,50 90,51 100,
+54 109,58 118,65 125,72 132,81 136,90 139,100 140,110 139,
+119 136,128 132,135 125,142 118,146 109,149 100,150 90)))'::geometry AS geom) AS f;</programlisting>
+            </para>
+            </entry>
+        </row>
+        <row>
+            <entry><para>
+                <informalfigure>
+                <mediaobject>
+                    <imageobject><imagedata fileref="images/st_makevalid03.png" /></imageobject>
+                    <caption><para>before_geom: MULTIPOLYGON of 6 overlapping polygons</para></caption>
+                </mediaobject>
+                </informalfigure>
+                <informalfigure>
+                <mediaobject>
+                    <imageobject><imagedata fileref="images/st_makevalid04.png" /></imageobject>
+                    <caption><para>after_geom: MULTIPOLYGON of 14 Non-overlapping polygons</para></caption>
+                </mediaobject>
+                </informalfigure>
+                <informalfigure>
+                <mediaobject>
+                    <imageobject><imagedata fileref="images/st_makevalid06.png" /></imageobject>
+                    <caption><para>after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon</para></caption>
+                </mediaobject>
+                </informalfigure>
+                <programlisting>SELECT c.geom AS before_geom,
+                    ST_MakeValid(c.geom) AS after_geom,
+                    ST_MakeValid(c.geom, 'method=structure') AS after_geom_structure
+	FROM (SELECT 'MULTIPOLYGON(((91 50,79 22,51 10,23 22,11 50,23 78,51 90,79 78,91 50)),
+		  ((91 100,79 72,51 60,23 72,11 100,23 128,51 140,79 128,91 100)),
+		  ((91 150,79 122,51 110,23 122,11 150,23 178,51 190,79 178,91 150)),
+		  ((141 50,129 22,101 10,73 22,61 50,73 78,101 90,129 78,141 50)),
+		  ((141 100,129 72,101 60,73 72,61 100,73 128,101 140,129 128,141 100)),
+		  ((141 150,129 122,101 110,73 122,61 150,73 178,101 190,129 178,141 150)))'::geometry AS geom) AS c;</programlisting>
+            </para></entry>
+        </row>
+    </tbody>
+    </tgroup>
+</informaltable>
+</refsection>
+<refsection>
+<title>Examples</title>
+<programlisting>SELECT ST_AsText(ST_MakeValid(
+    'LINESTRING(0 0, 0 0)',
+    'method=structure keepcollapsed=true'
+    ));
+
+ st_astext
+------------
+ POINT(0 0)
+
+
+SELECT ST_AsText(ST_MakeValid(
+    'LINESTRING(0 0, 0 0)',
+    'method=structure keepcollapsed=false'
+    ));
+
+    st_astext
+------------------
+ LINESTRING EMPTY</programlisting>
+</refsection>
+          <refsection>
+            <title>See Also</title>
+            <para>
+                <xref linkend="ST_IsValid" />,
+                <xref linkend="ST_Collect" />,
+                <xref linkend="ST_CollectionExtract" />
+            </para>
+          </refsection>
+    </refentry>
 
   </sect1>

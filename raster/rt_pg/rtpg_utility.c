@@ -146,4 +146,3 @@ Datum RASTER_memsize(PG_FUNCTION_ARGS)
   PG_RETURN_INT32(size);
 }
 
-

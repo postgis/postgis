@@ -360,7 +360,7 @@ static int gbox_check_poles(GBOX *gbox)
 		else if ((gbox->ymin < 0.0) && (gbox->ymax < 0.0))
 		{
 			LWDEBUG(4, "enclosed negative y axis");
-			gbox->ymax = -1.0;
+			gbox->ymin = -1.0;
 		}
 		else
 		{
@@ -1224,7 +1224,9 @@ double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *
 	/* Zero length edge, */
 	if ( geographic_point_equals(&(e->start), &(e->end)) )
 	{
-		*closest = e->start;
+		if (closest)
+			*closest = e->start;
+
 		return sphere_distance(&(e->start), gp);
 	}
 
@@ -2156,7 +2158,7 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROID *spheroid)
 {
 	GEOGRAPHIC_POINT g1, g2;
-	double x1, y1, x2, y2;
+	double x1, y1, x2, y2, az;
 
 	/* Convert r to a geodetic point */
 	x1 = lwpoint_get_x(r);
@@ -2175,7 +2177,10 @@ double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROI
 	}
 
 	/* Do the direction calculation */
-	return spheroid_direction(&g1, &g2, spheroid);
+	az = spheroid_direction(&g1, &g2, spheroid);
+	/* Ensure result is positive */
+	return az < -0 ? 2*M_PI + az : az;
+	// return az;
 }
 
 /**
@@ -2867,24 +2872,6 @@ int lwline_covers_lwline(const LWLINE* lwline1, const LWLINE* lwline2)
 	/* no uncovered point found */
 	return LW_TRUE;
 }
-
-/**
-* This function can only be used on LWGEOM that is built on top of
-* GSERIALIZED, otherwise alignment errors will ensue.
-*/
-int getPoint2d_p_ro(const POINTARRAY *pa, uint32_t n, POINT2D **point)
-{
-	uint8_t *pa_ptr = NULL;
-	assert(pa);
-	assert(n < pa->npoints);
-
-	pa_ptr = getPoint_internal(pa, n);
-	/* printf( "pa_ptr[0]: %g\n", *((double*)pa_ptr)); */
-	*point = (POINT2D*)pa_ptr;
-
-	return LW_SUCCESS;
-}
-
 
 int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 {

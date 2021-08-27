@@ -51,6 +51,8 @@ LEX=@LEX@
 # Standalone LWGEOM objects
 SA_OBJS = \
 	stringbuffer.o \
+	optionlist.o \
+	stringlist.o \
 	bytebuffer.o \
 	measures.o \
 	measures3d.o \

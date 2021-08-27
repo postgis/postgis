@@ -117,7 +117,12 @@ Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
 Datum ST_QuantizeCoordinates(PG_FUNCTION_ARGS);
 Datum ST_WrapX(PG_FUNCTION_ARGS);
+Datum ST_Scroll(PG_FUNCTION_ARGS);
 Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS);
+Datum ST_Point(PG_FUNCTION_ARGS);
+Datum ST_PointZ(PG_FUNCTION_ARGS);
+Datum ST_PointM(PG_FUNCTION_ARGS);
+Datum ST_PointZM(PG_FUNCTION_ARGS);
 
 /*------------------------------------------------------------------*/
 
@@ -185,18 +190,6 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 	char *ver = POSTGIS_LIB_VERSION;
 	text *result = cstring_to_text(ver);
 	PG_RETURN_TEXT_P(result);
-}
-
-/*
- * Deprecated as of version 3.1.0 but needs to be kept
- * around until 4.x as we use the same library filename
- * for any 3.x.x version of PostGIS and we don't want to
- * fail at loading the library due to missing symbol.
- */
-PG_FUNCTION_INFO_V1(postgis_svn_version);
-Datum postgis_svn_version(PG_FUNCTION_ARGS)
-{
-	return postgis_lib_revision(fcinfo);
 }
 
 PG_FUNCTION_INFO_V1(postgis_lib_revision);
@@ -1110,6 +1103,57 @@ Datum ST_WrapX(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom_in, 0);
 
 	PG_RETURN_POINTER(geom_out);
+}
+
+PG_FUNCTION_INFO_V1(ST_Scroll);
+Datum ST_Scroll(PG_FUNCTION_ARGS)
+{
+	Datum datum_line, datum_point;
+	GSERIALIZED *ser_line, *ser_point;
+	LWGEOM *lwgeom_line, *lwgeom_point;
+	LWLINE *line;
+	LWPOINT *point;
+	POINT4D p;
+	GSERIALIZED *ser_out;
+	int rv;
+
+	POSTGIS_DEBUG(2, "ST_Scroll called.");
+
+	datum_line = PG_GETARG_DATUM(0);
+	datum_point = PG_GETARG_DATUM(1);
+
+	ser_line = ((GSERIALIZED *)PG_DETOAST_DATUM(datum_line));
+	lwgeom_line = lwgeom_from_gserialized(ser_line);
+	line = lwgeom_as_lwline(lwgeom_line);
+	if ( ! line ) {
+		lwpgerror("First argument must be a line");
+		PG_RETURN_NULL();
+	}
+
+	ser_point = ((GSERIALIZED *)PG_DETOAST_DATUM(datum_point));
+	lwgeom_point = lwgeom_from_gserialized(ser_point);
+	point = lwgeom_as_lwpoint(lwgeom_point);
+	if ( ! point ) {
+		lwpgerror("Second argument must be a point");
+		PG_RETURN_NULL();
+	}
+	if ( ! lwpoint_getPoint4d_p(point, &p) ) {
+		lwpgerror("Second argument must be a non-empty point");
+		PG_RETURN_NULL();
+	}
+
+	rv = ptarray_scroll_in_place(line->points, &p);
+	if ( LW_FAILURE == rv ) {
+		PG_RETURN_NULL();
+	}
+
+	ser_out = geometry_serialize(lwgeom_line);
+
+	lwgeom_free(lwgeom_point);
+	PG_FREE_IF_COPY(ser_line, 0);
+	PG_FREE_IF_COPY(ser_point, 0);
+
+	PG_RETURN_POINTER(ser_out);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_inside_circle_point);
@@ -2183,6 +2227,55 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(ST_Point);
+Datum ST_Point(PG_FUNCTION_ARGS)
+{
+	double x = PG_GETARG_FLOAT8(0);
+	double y = PG_GETARG_FLOAT8(1);
+	int srid = PG_GETARG_INT32(2);
+	LWPOINT *point = lwpoint_make2d(srid, x, y);
+	GSERIALIZED *result = geometry_serialize((LWGEOM *)point);
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(ST_PointZ);
+Datum ST_PointZ(PG_FUNCTION_ARGS)
+{
+	double x = PG_GETARG_FLOAT8(0);
+	double y = PG_GETARG_FLOAT8(1);
+	double z = PG_GETARG_FLOAT8(2);
+	int srid = PG_GETARG_INT32(3);
+	LWPOINT *point = lwpoint_make3dz(srid, x, y, z);
+	GSERIALIZED *result = geometry_serialize((LWGEOM *)point);
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(ST_PointM);
+Datum ST_PointM(PG_FUNCTION_ARGS)
+{
+	double x = PG_GETARG_FLOAT8(0);
+	double y = PG_GETARG_FLOAT8(1);
+	double m = PG_GETARG_FLOAT8(2);
+	int srid = PG_GETARG_INT32(3);
+	LWPOINT *point = lwpoint_make3dm(srid, x, y, m);
+	GSERIALIZED *result = geometry_serialize((LWGEOM *)point);
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(ST_PointZM);
+Datum ST_PointZM(PG_FUNCTION_ARGS)
+{
+	double x = PG_GETARG_FLOAT8(0);
+	double y = PG_GETARG_FLOAT8(1);
+	double z = PG_GETARG_FLOAT8(2);
+	double m = PG_GETARG_FLOAT8(3);
+	int srid = PG_GETARG_INT32(4);
+	LWPOINT *point = lwpoint_make4d(srid, x, y, z, m);
+	GSERIALIZED *result = geometry_serialize((LWGEOM *)point);
+	PG_RETURN_POINTER(result);
+}
+
+
 PG_FUNCTION_INFO_V1(LWGEOM_makepoint3dm);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 {
@@ -2710,50 +2803,58 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 }
 
+PG_FUNCTION_INFO_V1(_ST_SortableHash);
+Datum _ST_SortableHash(PG_FUNCTION_ARGS)
+{
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	PG_RETURN_INT64(gserialized_get_sortable_hash(PG_GETARG_GSERIALIZED_P(0)));
+}
+
 PG_FUNCTION_INFO_V1(ST_CollectionExtract);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *input = PG_GETARG_GSERIALIZED_P(0);
-	GSERIALIZED *output;
-	LWGEOM *lwgeom = lwgeom_from_gserialized(input);
-	LWGEOM *lwcol = NULL;
-	int type = PG_GETARG_INT32(1);
-	int lwgeom_type = lwgeom->type;
+	GSERIALIZED *gser_in, *gser_out;
+	LWGEOM *lwg_in = NULL;
+	LWGEOM *lwg_out = NULL;
+	int extype = 0;
+
+	if (PG_NARGS() > 1)
+		extype = PG_GETARG_INT32(1);
 
 	/* Ensure the right type was input */
-	if (!(type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE))
+	if (!(extype == 0 || extype == POINTTYPE || extype == LINETYPE || extype == POLYGONTYPE))
 	{
-		lwgeom_free(lwgeom);
 		elog(ERROR, "ST_CollectionExtract: only point, linestring and polygon may be extracted");
 		PG_RETURN_NULL();
 	}
 
+	gser_in = PG_GETARG_GSERIALIZED_P(0);
+	lwg_in = lwgeom_from_gserialized(gser_in);
+
 	/* Mirror non-collections right back */
-	if (!lwgeom_is_collection(lwgeom))
+	if (!lwgeom_is_collection(lwg_in))
 	{
 		/* Non-collections of the matching type go back */
-		if (lwgeom_type == type)
+		if (lwg_in->type == extype || !extype)
 		{
-			lwgeom_free(lwgeom);
-			PG_RETURN_POINTER(input);
+			lwgeom_free(lwg_in);
+			PG_RETURN_POINTER(gser_in);
 		}
 		/* Others go back as EMPTY */
 		else
 		{
-			lwcol = lwgeom_construct_empty(
-			    type, lwgeom->srid, lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom));
+			lwg_out = lwgeom_construct_empty(extype, lwg_in->srid, lwgeom_has_z(lwg_in), lwgeom_has_m(lwg_in));
+			PG_RETURN_POINTER(geometry_serialize(lwg_out));
 		}
 	}
-	else
-	{
-		lwcol = lwcollection_as_lwgeom(lwcollection_extract((LWCOLLECTION *)lwgeom, type));
-	}
 
-	output = geometry_serialize((LWGEOM *)lwcol);
-	lwgeom_free(lwgeom);
-	lwgeom_free(lwcol);
+	lwg_out = (LWGEOM*)lwcollection_extract((LWCOLLECTION*)lwg_in, extype);
 
-	PG_RETURN_POINTER(output);
+	gser_out = geometry_serialize(lwg_out);
+	lwgeom_free(lwg_in);
+	lwgeom_free(lwg_out);
+	PG_RETURN_POINTER(gser_out);
 }
 
 PG_FUNCTION_INFO_V1(ST_CollectionHomogenize);
@@ -3177,4 +3278,31 @@ Datum LWGEOM_FilterByM(PG_FUNCTION_ARGS)
 	geom_out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);
 	PG_RETURN_POINTER(geom_out);
+}
+
+PG_FUNCTION_INFO_V1(boundary);
+Datum boundary(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom1;
+	GSERIALIZED *result;
+	LWGEOM *lwgeom, *lwresult;
+
+	geom1 = PG_GETARG_GSERIALIZED_P(0);
+
+	/* Empty.Boundary() == Empty, but of other dimension, so can't shortcut */
+
+	lwgeom = lwgeom_from_gserialized(geom1);
+	lwresult = lwgeom_boundary(lwgeom);
+	if (!lwresult)
+	{
+		lwgeom_free(lwgeom);
+		PG_RETURN_NULL();
+	}
+
+	result = geometry_serialize(lwresult);
+
+	lwgeom_free(lwgeom);
+	lwgeom_free(lwresult);
+
+	PG_RETURN_POINTER(result);
 }

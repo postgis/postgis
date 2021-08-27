@@ -22,7 +22,7 @@
 CREATE OR REPLACE FUNCTION topology.GetNodeEdges(atopology varchar, anode int)
 	RETURNS SETOF topology.GetFaceEdges_ReturnType
 AS
-$$
+$BODY$
 DECLARE
   curedge int;
   nextedge int;
@@ -33,19 +33,38 @@ DECLARE
 BEGIN
 
   n := 0;
-  sql :=
-    'WITH incident_edges AS ( SELECT edge_id, start_node, end_node, ST_RemoveRepeatedPoints(geom) as geom FROM '
-    || quote_ident(atopology)
-    || '.edge_data WHERE start_node = ' || anode
-    || ' or end_node = ' || anode
-    || ') SELECT edge_id, ST_Azimuth(ST_StartPoint(geom), ST_PointN(geom, 2)) as az FROM  incident_edges WHERE start_node = ' || anode
-    || ' UNION ALL SELECT -edge_id, ST_Azimuth(ST_EndPoint(geom), ST_PointN(geom, ST_NumPoints(geom)-1)) FROM incident_edges WHERE end_node = ' || anode
-    || ' ORDER BY az';
+  sql := format(
+    $$
+      WITH incident_edges AS (
+        SELECT
+          edge_id,
+          start_node,
+          end_node,
+          ST_RemoveRepeatedPoints(geom) as geom
+        FROM %1$I.edge_data
+        WHERE start_node = $1
+        or end_node = $1
+      )
+      SELECT
+        edge_id,
+        ST_Azimuth(ST_StartPoint(geom), ST_PointN(geom, 2)) as az
+      FROM incident_edges
+      WHERE start_node = $1
+        UNION ALL
+      SELECT
+        -edge_id,
+        ST_Azimuth(ST_EndPoint(geom), ST_PointN(geom, ST_NumPoints(geom)-1))
+      FROM incident_edges
+      WHERE end_node = $1
+      ORDER BY az
+    $$,
+    atopology
+  );
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'sql: %', sql;
 #endif
 
-  FOR rec IN EXECUTE sql
+  FOR rec IN EXECUTE sql USING anode
   LOOP -- incident edges {
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -58,6 +77,6 @@ BEGIN
   END LOOP; -- incident edges }
 
 END
-$$
+$BODY$
 LANGUAGE 'plpgsql' STABLE;
 --} GetNodeEdges

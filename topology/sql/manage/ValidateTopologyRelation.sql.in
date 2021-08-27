@@ -1,0 +1,134 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2021 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- Author: Sandro Santilli <strk@kbt.io>
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-- Invalidities are:
+--   - Referenced element does not exist
+--   - Same element listed twice
+--
+CREATE OR REPLACE FUNCTION topology.ValidateTopologyRelation(toponame varchar)
+RETURNS TABLE(error text, layer_id int, topogeo_id int, element_id int)
+AS
+$BODY$
+DECLARE
+  layerrec RECORD;
+  rel RECORD;
+  search_path_backup text;
+BEGIN
+  IF NOT EXISTS (
+    SELECT oid
+    FROM pg_catalog.pg_namespace
+    WHERE nspname = toponame
+  )
+  THEN
+    RAISE EXCEPTION 'Topology schema % does not exist', toponame;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT id
+    FROM topology.topology
+    WHERE name = toponame
+  )
+  THEN
+    RAISE WARNING 'Topology % is not registered in topology.topology', toponame;
+  END IF;
+
+  EXECUTE 'SHOW search_path' INTO search_path_backup;
+  EXECUTE 'SET search_PATH TO ' || quote_ident(toponame) || ','
+                                || search_path_backup;
+
+  FOR layerrec IN SELECT * FROM topology.layer
+  LOOP --{
+    IF layerrec.child_id IS NULL
+    THEN --{ Layer is simple
+
+      -- Check that all referenced nodes exist
+      FOR rel IN
+        SELECT r.layer_id, r.topogeo_id, r.element_id
+        FROM relation r
+        WHERE r.layer_id = layerrec.layer_id
+        AND r.element_type = 1
+        AND r.element_id NOT IN (
+          SELECT node_id FROM node
+        )
+      LOOP
+        error := 'TopoGeometry references unexistent node';
+        layer_id := rel.layer_id;
+        topogeo_id := rel.topogeo_id;
+        element_id := rel.element_id;
+        RETURN NEXT;
+      END LOOP;
+
+      -- Check that all referenced edges exist
+      FOR rel IN
+        SELECT r.layer_id, r.topogeo_id, r.element_id
+        FROM relation r
+        WHERE r.layer_id = layerrec.layer_id
+        AND r.element_type = 2
+        AND abs(r.element_id) NOT IN (
+          SELECT edge_id FROM edge_data
+        )
+      LOOP
+        error := 'TopoGeometry references unexistent edge';
+        layer_id := rel.layer_id;
+        topogeo_id := rel.topogeo_id;
+        element_id := rel.element_id;
+        RETURN NEXT;
+      END LOOP;
+
+      -- Check that all referenced faces exist
+      FOR rel IN
+        SELECT r.layer_id, r.topogeo_id, r.element_id
+        FROM relation r
+        WHERE r.layer_id = layerrec.layer_id
+        AND r.element_type = 3
+        AND r.element_id NOT IN (
+          SELECT face_id FROM face
+        )
+      LOOP
+        error := 'TopoGeometry references unexistent face';
+        layer_id := rel.layer_id;
+        topogeo_id := rel.topogeo_id;
+        element_id := rel.element_id;
+        RETURN NEXT;
+      END LOOP;
+
+    ELSE -- }{ Layer is hierarchical
+
+      --RAISE DEBUG 'Checking hierarchical layer %', layerrec.layer_id;
+
+      FOR rel IN
+        SELECT r.layer_id, r.topogeo_id, r.element_id
+        FROM relation r
+        WHERE r.layer_id = layerrec.layer_id
+        AND abs(r.element_id) NOT IN (
+          SELECT r2.topogeo_id
+          FROM relation r2
+          WHERE r2.layer_id = layerrec.child_id
+        )
+      LOOP
+        error := 'TopoGeometry references unexistent child';
+        layer_id := rel.layer_id;
+        topogeo_id := rel.topogeo_id;
+        element_id := rel.element_id;
+        RETURN NEXT;
+      END LOOP;
+
+    END IF; --} Layer is hierarchical
+  END LOOP; --}
+
+  EXECUTE 'SET search_PATH TO ' || search_path_backup;
+END;
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE STRICT;

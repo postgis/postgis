@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: 2019-03-11 09:10+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -19,8 +19,8 @@ msgstr ""
 
 #. Tag: title
 #: performance_tips.xml:3
-#, no-c-format
-msgid "Performance tips"
+#, fuzzy, no-c-format
+msgid "Performance Tips"
 msgstr "Performance Tipps"
 
 #. Tag: title
@@ -58,10 +58,10 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:19
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The problem appears if you happen to have a table with rather large "
-"geometries, but not too manyrows of them (like a table containing the "
+"geometries, but not too many rows of them (like a table containing the "
 "boundaries of all European countries in high resolution). Then the table "
 "itself is small, but it uses lots of TOAST space. In our example case, the "
 "table itself had about 80 rows and used only 3 data pages, but the TOAST "

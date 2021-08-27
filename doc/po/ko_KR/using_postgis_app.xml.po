@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:39+0000\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: 2016-07-23 00:05+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -19,8 +19,8 @@ msgstr ""
 
 #. Tag: title
 #: using_postgis_app.xml:3
-#, no-c-format
-msgid "Using PostGIS Geometry: Building Applications"
+#, fuzzy, no-c-format
+msgid "Building Applications"
 msgstr "PostGIS 도형 활용: 응용 프로그램 빌드"
 
 #. Tag: title
@@ -31,10 +31,10 @@ msgstr "MapServer 활용"
 
 #. Tag: para
 #: using_postgis_app.xml:7
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The Minnesota MapServer is an internet web-mapping server which conforms to "
-"the OpenGIS Web Mapping Server specification."
+"the OpenGIS Web Map Service specification."
 msgstr ""
 "미네소타 맵서버(Minnesota MapServer)는 OpenGIS 웹 매핑 서버 사양서를 준수하"
 "는 인터넷 웹 매핑 서버입니다."
@@ -51,9 +51,9 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_app.xml:17
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The OpenGIS Web Map Specification is at <ulink url=\"http://www."
+"The OpenGIS Web Map Service specification is at <ulink url=\"http://www."
 "opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/"
 "wms</ulink>."
 msgstr ""
@@ -69,11 +69,11 @@ msgstr "기본 활용"
 
 #. Tag: para
 #: using_postgis_app.xml:25
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"To use PostGIS with MapServer, you will need to know about how to configure "
-"MapServer, which is beyond the scope of this documentation. This section "
-"will cover specific PostGIS issues and configuration details."
+"To use PostGIS with MapServer, you need to know how to configure MapServer, "
+"which is beyond the scope of this documentation. This section covers "
+"specific PostGIS issues and configuration details."
 msgstr ""
 "MapServer와 함께 PostGIS를 사용하려면 MapServer 설정법을 알아야 하는데, "
 "MapServer 설정은 이 문서의 범위를 벗어납니다. 이 단원에서는 특정 PostGIS 문제"
@@ -99,10 +99,10 @@ msgstr "MapServer 3.5 이상 버전"
 
 #. Tag: para
 #: using_postgis_app.xml:42
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client "
-"-- using the <filename>libpq</filename> interface. This means that MapServer "
+"MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client, "
+"using the <filename>libpq</filename> interface. This means that MapServer "
 "can be installed on any machine with network access to the PostGIS server, "
 "and use PostGIS as a source of data. The faster the connection between the "
 "systems, the better."
@@ -399,9 +399,9 @@ msgstr "EXPRESSION ([numlanes] &gt;= 6)"
 
 #. Tag: para
 #: using_postgis_app.xml:168
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The FILTER I use for my Shape files is not working for my PostGIS table of "
+"The FILTER I use for my Shapefiles is not working for my PostGIS table of "
 "the same data."
 msgstr ""
 "제 shapefile에 사용하는 필터가 동일한 데이터를 가진 제 PostGIS 테이블에 대해"
@@ -427,19 +427,19 @@ msgstr "FILTER \"type = 'highway' and numlanes &gt;= 4\""
 
 #. Tag: para
 #: using_postgis_app.xml:183
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"My PostGIS layer draws much slower than my Shape file layer, is this normal?"
+"My PostGIS layer draws much slower than my Shapefile layer, is this normal?"
 msgstr ""
 "제 PostGIS 레이어를 그리는 속도가 제 shapefile 레이어보다 훨씬 느린데, 정상인"
 "가요?"
 
 #. Tag: para
 #: using_postgis_app.xml:188
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "In general, the more features you are drawing into a given map, the more "
-"likely it is that PostGIS will be slower than Shape files. For maps with "
+"likely it is that PostGIS will be slower than Shapefiles. For maps with "
 "relatively few features (100s), PostGIS will often be faster. For maps with "
 "high feature density (1000s), PostGIS will always be slower."
 msgstr ""

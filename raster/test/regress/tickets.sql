@@ -142,3 +142,21 @@ INSERT INTO ticket_4547 VALUES (null);
 INSERT INTO ticket_4547 SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
 SELECT '#4547.2', AddRasterConstraints('ticket_4547', 'r');
 DROP TABLE ticket_4547;
+
+-- #4769
+SELECT '#4769', st_addband(NULL, NULL::_raster, 1, 1);
+
+SELECT '#4770.a',
+ ST_Union(NULL::raster) OVER (ORDER BY b)
+FROM (VALUES ('A0006', 300), ('A0006', 302)) t(a,b);
+
+SELECT '#4770.b',
+ ST_Union(NULL::raster) OVER (PARTITION BY a ORDER BY b)
+FROM (VALUES ('A0006', 300),
+	         ('A0006', 302)) t(a, b);
+
+SELECT '#4724.a', ST_SummaryStatsAgg(NULL::raster, NULL::int4, NULL::bool)
+ OVER (ORDER BY q) FROM generate_series(1,2) AS e(q);
+
+SELECT '#4724.b', ST_SummaryStatsAgg(NULL::raster, NULL::int4, NULL::bool)
+ FROM generate_series(1,2) AS e(q);
