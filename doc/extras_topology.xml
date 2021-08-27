@@ -3409,12 +3409,12 @@ of the same child layer.
         <programlisting>
 -- Set an "overall" TopoGeometry value to be composed by all
 -- elements of specific TopoGeometry values
-UPDATE mylayer SET tg_overall = TopoGeom_addTopogeometry(
-    TopoGeom_addTopoGeometry(
+UPDATE mylayer SET tg_overall = TopoGeom_addTopogeom(
+    TopoGeom_addTopoGeom(
         clearTopoGeom(tg_overall),
         tg_specific1
     ),
-    tg_specific1
+    tg_specific2
 );
 				</programlisting>
 			</refsection>
