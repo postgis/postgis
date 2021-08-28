@@ -26,8 +26,9 @@ endif
 # ADD YOUR NEW TEST FILE HERE (1/1)
 OBJS=	\
 	cu_algorithm.o \
-	cu_bytebuffer.o \
+	cu_boundary.o \
 	cu_buildarea.o \
+	cu_bytebuffer.o \
 	cu_clean.o \
 	cu_print.o \
 	cu_minimum_bounding_circle.o \
