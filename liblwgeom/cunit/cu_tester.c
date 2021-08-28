@@ -32,6 +32,7 @@ cu_debuglogger(int level, const char *fmt, va_list ap);
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
 extern void print_suite_setup();
 extern void algorithms_suite_setup();
+extern void boundary_suite_setup();
 extern void buildarea_suite_setup();
 extern void clean_suite_setup();
 extern void clip_by_rect_suite_setup();
@@ -84,6 +85,7 @@ extern void wrapx_suite_setup(void);
 PG_SuiteSetup setupfuncs[] =
 {
 	algorithms_suite_setup,
+	boundary_suite_setup,
 	buildarea_suite_setup,
 	clean_suite_setup,
 	clip_by_rect_suite_setup,
