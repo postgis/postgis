@@ -247,7 +247,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 			/* Strip single-entry multi-geometries down to singletons */
 			if ( col->ngeoms == 1 )
 			{
-				hgeom = lwgeom_clone_deep((LWGEOM*)(col->geoms[0]));
+				hgeom = lwgeom_clone_deep((LWGEOM *)(col->geoms[0]));
 				hgeom->srid = geom->srid;
 				if (geom->bbox)
 					hgeom->bbox = gbox_copy(geom->bbox);

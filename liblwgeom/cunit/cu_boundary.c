@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2021 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2021 Aliaksandr Kalinik <kalenik.aliaksandr@gmail.com>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -16,22 +17,25 @@
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
 
-#define BOUNDARY_TEST(wkt_in, wkt_exp) do {\
-	LWGEOM *gin, *gout, *gexp; \
-	cu_error_msg_reset(); \
-	gin = lwgeom_from_wkt( wkt_in, LW_PARSER_CHECK_NONE);  \
-	CU_ASSERT_PTR_NOT_NULL_FATAL(gin); \
-	gexp = lwgeom_from_wkt( wkt_exp, LW_PARSER_CHECK_NONE);  \
-	CU_ASSERT_PTR_NOT_NULL_FATAL(gexp); \
-	gout = lwgeom_boundary(gin);  \
-	CU_ASSERT_PTR_NOT_NULL_FATAL(gout); \
-	ASSERT_NORMALIZED_GEOM_SAME(gout, gexp);  \
-	lwgeom_free(gout);  \
-	lwgeom_free(gexp);  \
-	lwgeom_free(gin);  \
-} while (0)
+#define BOUNDARY_TEST(wkt_in, wkt_exp) \
+	do \
+	{ \
+		LWGEOM *gin, *gout, *gexp; \
+		cu_error_msg_reset(); \
+		gin = lwgeom_from_wkt(wkt_in, LW_PARSER_CHECK_NONE); \
+		CU_ASSERT_PTR_NOT_NULL_FATAL(gin); \
+		gexp = lwgeom_from_wkt(wkt_exp, LW_PARSER_CHECK_NONE); \
+		CU_ASSERT_PTR_NOT_NULL_FATAL(gexp); \
+		gout = lwgeom_boundary(gin); \
+		CU_ASSERT_PTR_NOT_NULL_FATAL(gout); \
+		ASSERT_NORMALIZED_GEOM_SAME(gout, gexp); \
+		lwgeom_free(gout); \
+		lwgeom_free(gexp); \
+		lwgeom_free(gin); \
+	} while (0)
 
-static void boundary_point(void)
+static void
+boundary_point(void)
 {
 	BOUNDARY_TEST(
 		"POINT EMPTY",
@@ -54,7 +58,8 @@ static void boundary_point(void)
 	);
 }
 
-static void boundary_line(void)
+static void
+boundary_line(void)
 {
 	BOUNDARY_TEST(
 		"LINESTRING EMPTY",
@@ -93,7 +98,8 @@ static void boundary_line(void)
 
 }
 
-static void boundary_polygon(void)
+static void
+boundary_polygon(void)
 {
 	BOUNDARY_TEST(
 		"POLYGON EMPTY",
@@ -128,7 +134,8 @@ static void boundary_polygon(void)
 
 }
 
-static void boundary_triangle(void)
+static void
+boundary_triangle(void)
 {
 	BOUNDARY_TEST(
 		"TRIANGLE EMPTY",
@@ -141,7 +148,8 @@ static void boundary_triangle(void)
 	);
 }
 
-static void boundary_tin(void)
+static void
+boundary_tin(void)
 {
 	BOUNDARY_TEST(
 		"TIN EMPTY",
@@ -159,7 +167,8 @@ static void boundary_tin(void)
 	);
 }
 
-static void boundary_collection(void)
+static void
+boundary_collection(void)
 {
 	BOUNDARY_TEST(
 		"GEOMETRYCOLLECTION EMPTY",
@@ -193,19 +202,15 @@ static void boundary_collection(void)
 	);
 }
 
-
 void boundary_suite_setup(void);
-void boundary_suite_setup(void)
+void
+boundary_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("boundary", NULL, NULL);
-	PG_ADD_TEST(suite,boundary_point);
-	PG_ADD_TEST(suite,boundary_line);
-	PG_ADD_TEST(suite,boundary_polygon);
-	PG_ADD_TEST(suite,boundary_triangle);
-	PG_ADD_TEST(suite,boundary_tin);
-	PG_ADD_TEST(suite,boundary_collection);
-#if 0 /* write these */
-	PG_ADD_TEST(suite,boundary_tin);
-#endif
-	//PG_ADD_TEST(suite,boundary_collection);
+	PG_ADD_TEST(suite, boundary_point);
+	PG_ADD_TEST(suite, boundary_line);
+	PG_ADD_TEST(suite, boundary_polygon);
+	PG_ADD_TEST(suite, boundary_triangle);
+	PG_ADD_TEST(suite, boundary_tin);
+	PG_ADD_TEST(suite, boundary_collection);
 }

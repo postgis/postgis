@@ -2628,9 +2628,9 @@ lwgeom_boundary(LWGEOM *lwgeom)
 			lwmline_add_lwline(lwmline, lwline_construct(srid, 0, ring));
 		}
 
+		/* Homogenize the multilinestring to hopefully get a single LINESTRING */
 		LWGEOM *lwout = lwgeom_homogenize((LWGEOM *)lwmline);
 		lwgeom_free((LWGEOM *)lwmline);
-
 		return lwout;
 	}
 	case CURVEPOLYTYPE: {
