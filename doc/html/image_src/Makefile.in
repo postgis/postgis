@@ -107,6 +107,8 @@ IMAGES= \
 	../images/st_makevalid02.png \
 	../images/st_makevalid03.png \
 	../images/st_makevalid04.png \
+	../images/st_makevalid05.png \
+	../images/st_makevalid06.png \
 	../images/st_maximuminscribedcircle01.png \
 	../images/st_maximuminscribedcircle02.png \
 	../images/st_minimumboundingcircle01.png \

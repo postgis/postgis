@@ -47,7 +47,7 @@ DATA_built = \
 
 all:  sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql \
  sql/$(EXTENSION)_data_us.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql  sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql \
-sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql \
+sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql \
 sql/test-init-extensions.sql sql/test-parseaddress.sql sql/test-standardize_address_1.sql sql/test-standardize_address_2.sql
 
 EXTRA_CLEAN = sql/
@@ -118,7 +118,23 @@ sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
 	cat $(EXTENSION_UPGRADE_SCRIPTS) > $@
 
+sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
+	mkdir -p sql
+	cat $^ > $@
+
 include ../upgrade-paths-rules.mk
+
+install: install-upgrade-paths-data-us
+# address_standardizer is already defined, we have to additionally create
+# the upgrade path scripts for address_standardizer_data_us
+install-upgrade-paths-data-us:
+	tpl='$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql'; \
+	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
+	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql; \
+	ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql; \
+	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
+		ln -fs "$${tpl}" $(EXTDIR)/$(EXTENSION)_data_us--$$OLD_VERSION--$(EXTVERSION).sql; \
+	done
 
 mk-st-regexp: mk-st-regexp.pl
 	$(PERL) -c mk-st-regexp.pl

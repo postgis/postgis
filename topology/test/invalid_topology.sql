@@ -150,7 +150,20 @@ INSERT INTO invalid_topology.edge VALUES(32, 4, 4, 31, -31, 12, 12,
 INSERT INTO invalid_topology.edge VALUES(33, 3, 3, 28, 28, 13, 13,
   '01020000000100000000000000000039400000000000804140');
 
--- Validate topology
-SELECT * from topology.validatetopology('invalid_topology');
+-- Set face mbr based on referencing non-dangling edges
+UPDATE invalid_topology.face f
+SET mbr = (
+  WITH env AS (
+    SELECT ST_Envelope(ST_Union(ST_Envelope(e.geom))) env
+    FROM invalid_topology.edge e
+    WHERE
+      ( e.left_face = f.face_id OR e.right_face = f.face_id )
+      AND NOT e.left_face = e.right_face -- skip dangling
+  )
+  SELECT ST_MakeEnvelope(st_xmin(env), st_ymin(env), st_xmax(env), st_ymax(env))
+  FROM env
+)
+WHERE face_id > 0;
 
 END;
+

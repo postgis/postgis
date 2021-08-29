@@ -4,21 +4,30 @@
 #3233.1|---||
 #3233.1|isolated node has wrong containing_face|2|
 #3233.2|---||
-#3233.2|isolated node has wrong containing_face|2|
+#3233.2|isolated node has null containing_face|2|
 #3233.3|---||
 #3233.3|not-isolated node has not-null containing_face|1|
-#4830.0|---||
+#3042|---||
+#3042|invalid next_left_edge|3|-3
+#3042|invalid next_left_edge|9|19
+#3042|invalid next_left_edge|10|-20
+#3042|invalid next_left_edge|20|-9
+#3042|invalid next_left_edge|25|-25
+#3042|invalid next_right_edge|3|2
+#3042|invalid next_right_edge|19|-10
+#3042|invalid next_right_edge|25|25
+#4944|---||
+#4944|mixed face labeling in ring|-21|
+#4944|mixed face labeling in ring|-19|
+#4945|---||
+#4945|face has multiple shells|3|
 #4830.1|---||
-#4830.1|edge not covered by both its side faces|4|
-#4830.1|edge not covered by both its side faces|6|
+#4830.1|hole not in advertised face|-25|
 #4830.2|---||
-#4830.2|edge not covered by both its side faces|4|
-#4830.2|edge not covered by both its side faces|6|
+#4830.2|hole not in advertised face|-5|
 #4830.3|---||
-#4830.3|edge not covered by both its side faces|7|
-#4830.3|edge not covered by both its side faces|8|
+#4830.3|hole not in advertised face|-26|
 #4830.4|---||
-#4830.4|edge not covered by both its side faces|7|
-#4830.4|edge not covered by both its side faces|8|
+#4830.4|hole not in advertised face|-25|
 #4830.5|---||
-#4830.5|edge covered by some face has universal face on both sides|9|
+#4830.5|hole not in advertised face|-26|

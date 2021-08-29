@@ -1493,6 +1493,13 @@ CREATE OR REPLACE FUNCTION ST_Reverse(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_Scroll(geometry, geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Scroll'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_ForcePolygonCW(geometry)
 	RETURNS geometry
@@ -1957,6 +1964,13 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
 	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dumppoints'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_DumpSegments(geometry)
+	RETURNS SETOF geometry_dump
+	AS 'MODULE_PATHNAME', 'LWGEOM_dumpsegments'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
@@ -6138,6 +6152,34 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_Point(float8, float8, srid integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointZ(XCoordinate float8, YCoordinate float8, ZCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointZ'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointM(XCoordinate float8, YCoordinate float8, MCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointM'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_LOW;
+
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION ST_PointZM(XCoordinate float8, YCoordinate float8, ZCoordinate float8, MCoordinate float8, srid integer DEFAULT 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_PointZM'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 

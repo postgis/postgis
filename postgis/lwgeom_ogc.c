@@ -241,11 +241,11 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	int32 ret = 1;
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	if ( lwgeom_is_empty(lwgeom) )
+	if (lwgeom_is_empty(lwgeom))
 	{
 		ret = 0;
 	}
-	else if ( lwgeom_is_collection(lwgeom) )
+	else if (lwgeom_is_collection(lwgeom))
 	{
 		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
 		ret = col->ngeoms;
@@ -273,10 +273,15 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	idx = PG_GETARG_INT32(1);
 	idx -= 1; /* index is 1-based */
 
+	if (gserialized_is_empty(geom))
+	{
+		PG_RETURN_NULL();
+	}
+
 	/* call is valid on multi* geoms only */
-	if (type==POINTTYPE || type==LINETYPE || type==CIRCSTRINGTYPE ||
-	        type==COMPOUNDTYPE || type==POLYGONTYPE ||
-		type==CURVEPOLYTYPE || type==TRIANGLETYPE)
+	if (type==POINTTYPE     || type==LINETYPE    || type==CIRCSTRINGTYPE ||
+	    type==COMPOUNDTYPE  || type==POLYGONTYPE ||
+	    type==CURVEPOLYTYPE || type==TRIANGLETYPE)
 	{
 		if ( idx == 0 ) PG_RETURN_POINTER(geom);
 		PG_RETURN_NULL();
@@ -676,33 +681,31 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 
 /**
 * ST_StartPoint(GEOMETRY)
-* @return the first point of a linestring.
-* 		Return NULL if there is no LINESTRING
+* @return the first point of a geometry.
 */
 PG_FUNCTION_INFO_V1(LWGEOM_startpoint_linestring);
 Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *ret;
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	LWPOINT *lwpoint = NULL;
-	int type = lwgeom->type;
+	LWGEOM *lwpoint = NULL;
+	POINT4D pt;
 
-	if ( type == LINETYPE || type == CIRCSTRINGTYPE )
+	if (lwgeom_startpoint(lwgeom, &pt) == LW_FAILURE)
 	{
-		lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, 0);
-	}
-	else if ( type == COMPOUNDTYPE )
-	{
-		lwpoint = lwcompound_get_startpoint((LWCOMPOUND*)lwgeom);
+		PG_RETURN_NULL();
 	}
 
-	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
-	if ( ! lwpoint )
-		PG_RETURN_NULL();
+	lwpoint = (LWGEOM *)lwpoint_make(lwgeom->srid, lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), &pt);
+	ret = geometry_serialize(lwpoint);
 
-	PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(lwpoint)));
+	lwgeom_free(lwgeom);
+	lwgeom_free(lwpoint);
+
+	PG_RETURN_POINTER(ret);
 }
 
 /** EndPoint(GEOMETRY) -- find the first linestring in GEOMETRY,

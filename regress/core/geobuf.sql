@@ -28,3 +28,11 @@ WITH geom AS (
 	SELECT 'TRIANGLE EMPTY'::geometry geom
 )
 select '#4399', 'ST_AsGeobuf', ST_AsGeobuf(geom.*)::text from geom;
+
+SELECT '#4916.a', ST_AsGeobuf(NULL::pg_class, 'g') over (order by b)
+FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
+	         ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b);
+
+SELECT '#4916.b', ST_AsGeobuf(NULL::pg_class) over (order by b)
+FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
+	         ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b);

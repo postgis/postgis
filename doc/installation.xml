@@ -9,7 +9,7 @@
   <sect1 id="install_short_version">
 	<title>Short Version</title>
 	<para>To compile assuming you have all the dependencies in your search path:</para>
-	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
+	<programlisting>tar -xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
 ./configure
 make
@@ -1796,7 +1796,7 @@ If present the <xref linkend="Geocode" /> function can use it if a boundary filt
 The <xref linkend="Reverse_Geocode" /> function uses it if the returned address is missing a zip, which often happens with highway reverse geocoding.</para></listitem>
 			<listitem><para>Create a folder called <filename>gisdata</filename> on root of server or your local pc if you have a fast network connection to the server. This folder is
 where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</para></listitem>
-            <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or whereever you designated the <varname>staging_fold</varname> to be.  This will be
+            <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or wherever you designated the <varname>staging_fold</varname> to be.  This will be
 the folder where the loader extracts the downloaded tiger data.</para></listitem>
 			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" />  SQL function make sure to use the name of your custom profile and copy the script to a .sh or .bat file.  So for example to build  the nation load:</para>
 					<programlisting>psql -c "SELECT Loader_Generate_Nation_Script('debbie')" -d geocoder -tA > /gisdata/nation_script_load.sh</programlisting>

@@ -1,0 +1,41 @@
+pos|1|1
+pos|2|2
+pos|3|3
+pos|4|4
+pos|5|5
+pos|6|6
+pos|7|7
+pos|8|8
+pos|9|9
+pos|10|10
+pos|11|11
+pos|12|12
+pos|13|13
+pos|14|14
+pos|15|15
+pos|16|16
+pos|17|17
+pos|18|18
+pos|19|19
+ERROR:  Two or more faces found
+ERROR:  Two or more faces found
+ERROR:  Two or more faces found
+ERROR:  Two or more faces found
+t1|1
+t2|1
+t3|9
+t4|2
+t5|2
+t6|0
+t7|11
+t8|4
+t9|1
+t10|10
+t11|10
+t12|10
+t13|10
+t14|1
+t15|12
+t16|15
+t17|16
+t18|19

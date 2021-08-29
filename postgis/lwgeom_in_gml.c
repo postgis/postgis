@@ -112,7 +112,7 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 	/* Internally lwgeom_from_gml calls gml_reproject_pa which, for PROJ before 6, called GetProj4String.
 	 * That function requires access to spatial_ref_sys, so in order to have it ready we need to ensure
 	 * the internal cache is initialized
@@ -303,12 +303,12 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
  * Use Proj to reproject a given POINTARRAY
  */
 
-#if POSTGIS_PROJ_VERSION < 60
+#if POSTGIS_PROJ_VERSION < 61
 
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 {
-	PJ pj;
+	LWPROJ pj;
 	char *text_in, *text_out;
 
 	if (srid_in == SRID_UNKNOWN) return pa; /* nothing to do */
@@ -333,16 +333,12 @@ gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
 
 	return pa;
 }
-#else
-/*
- * TODO: rework GML projection handling to skip the spatial_ref_sys
- * lookups, and use the Proj 6+ EPSG catalogue and built-in SRID
- * lookups directly. Drop this ugly hack.
- */
+
+#else /* POSTGIS_PROJ_VERSION >= 61 */
+
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 {
-	PJ *pj;
 	LWPROJ *lwp;
 	char text_in[16];
 	char text_out[16];
@@ -358,27 +354,26 @@ gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 
 	snprintf(text_in, 16, "EPSG:%d", epsg_in);
 	snprintf(text_out, 16, "EPSG:%d", epsg_out);
-	pj = proj_create_crs_to_crs(NULL, text_in, text_out, NULL);
 
-	lwp = lwproj_from_PJ(pj, LW_FALSE);
+
+	lwp = lwproj_from_str(text_in, text_out);
 	if (!lwp)
 	{
-		proj_destroy(pj);
 		gml_lwpgerror("Could not create LWPROJ*", 57);
 		return NULL;
 	}
 
 	if (ptarray_transform(pa, lwp) == LW_FAILURE)
 	{
-		proj_destroy(pj);
 		elog(ERROR, "gml_reproject_pa: reprojection failed");
 		return NULL;
 	}
-	proj_destroy(pj);
+	proj_destroy(lwp->pj);
 	pfree(lwp);
 
 	return pa;
 }
+
 #endif /* POSTGIS_PROJ_VERSION */
 
 
@@ -904,7 +899,8 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 
 			if (gml_dim == dim)
 			{
-				ptarray_append_point(dpa, &pt, LW_FALSE);
+				/* Add to ptarray, allowing dupes */
+				ptarray_append_point(dpa, &pt, LW_TRUE);
 				pt.x = pt.y = pt.z = pt.m = 0.0;
 				gml_dim = 0;
 			}

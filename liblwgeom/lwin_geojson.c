@@ -111,6 +111,8 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 	{
 		json_object *poObjCoord = NULL;
 		const int nSize = json_object_array_length(poObj);
+		if (nSize == 0)
+			return LW_TRUE;
 		if (nSize < 2)
 		{
 			lwerror("Too few ordinates in GeoJSON");

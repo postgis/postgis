@@ -1,0 +1,4 @@
+ERROR:  TopoGeom 1 in layer 1 (city_data.f_lin.tg) cannot be represented dropping edge 25
+ERROR:  TopoGeom 1 in layer 2 (city_data.f_mix.tg) cannot be represented dropping edge 25
+ERROR:  SQL/MM Spatial exception - not isolated edge
+iso|Isolated edge 25 removed

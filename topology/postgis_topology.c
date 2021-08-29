@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -13,11 +13,11 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "c.h" /* for UINT64_FORMAT and uint64 */
-#include "utils/builtins.h"
+#include "utils/builtins.h" /* for cstring_to_text */
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for TopMemoryContext */
 #include "utils/array.h" /* for ArrayType */
-#include "catalog/pg_type.h" /* for INT4OID */
+#include "catalog/pg_type.h" /* for INT4OID, TEXTOID */
 #include "lib/stringinfo.h"
 #include "access/htup_details.h" /* for heap_form_tuple() */
 #include "access/xact.h" /* for RegisterXactCallback */
@@ -809,6 +809,10 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
       edge->geom = NULL;
     }
   }
+  else
+  {
+      edge->geom = NULL;
+  }
 }
 
 static void
@@ -873,9 +877,11 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
       /* NOTE: this is a geometry of which we want to take (and clone) the BBOX */
       geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
       g = lwgeom_from_gserialized(geom);
+      lwgeom_refresh_bbox(g); /* Ensure we use a fit mbr, see #4149 */
       box = lwgeom_get_bbox(g);
       if ( box )
       {
+        POSTGIS_DEBUGF(1, "Face %" LWTFMT_ELEMID " bbox xmin is %.15g", face->face_id, box->xmin);
         face->mbr = gbox_clone(box);
       }
       else
@@ -1258,7 +1264,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID edge, uint64_t *numelems
       }
       nextedge = DatumGetInt32(dat);
       POSTGIS_DEBUGF(1, "Last component in ring of edge %"
-                        LWTFMT_ELEMID " (%" LWTFMT_ELEMID ") has next_%s_edge %d",
+                        LWTFMT_ELEMID " (%d) has next_%s_edge %d",
                         edge, val, sidetext, nextedge);
       if ( nextedge != edge )
       {
@@ -2448,8 +2454,8 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
                     "l.schema_name, l.table_name, l.feature_column FROM "
                     "topology.layer l INNER JOIN \"%s\".relation r "
                     "ON (l.layer_id = r.layer_id) WHERE l.level = 0 AND "
-                    "l.feature_type = 2 AND l.topology_id = %d"
-                    " AND abs(r.element_id) = %" LWTFMT_ELEMID,
+                    "l.feature_type IN ( 2, 4 ) AND l.topology_id = %d"
+                    " AND r.element_type = 2 AND abs(r.element_id) = %" LWTFMT_ELEMID,
                     topo->name, topo->id, rem_edge );
 
   POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemEdge query 1: %s", sql->data);
@@ -2501,9 +2507,9 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
                       "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
                       "array_agg(r.element_id) as elems FROM topology.layer l "
                       " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
-                      "WHERE l.level = 0 and l.feature_type = 3 "
+                      "WHERE l.level = 0 and l.feature_type IN (3, 4) "
                       "AND l.topology_id = %d"
-                      " AND r.element_id = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
+                      " AND r.element_type = 3 AND r.element_id = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
                       "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
                       "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%"
                       LWTFMT_ELEMID ",%" LWTFMT_ELEMID "]::int4[]",
@@ -2550,6 +2556,66 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
 }
 
 static int
+cb_checkTopoGeomRemIsoEdge ( const LWT_BE_TOPOLOGY* topo,
+                          LWT_ELEMID rem_edge )
+{
+  MemoryContext oldcontext = CurrentMemoryContext;
+  int spi_result;
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+  const char *tg_id, *layer_id;
+  const char *schema_name, *table_name, *col_name;
+  HeapTuple row;
+  TupleDesc tdesc;
+
+  POSTGIS_DEBUG(1, "cb_checkTopoGeomRemIsoEdge enter ");
+
+  initStringInfo(sql);
+  appendStringInfo( sql, "SELECT r.topogeo_id, r.layer_id, "
+                    "l.schema_name, l.table_name, l.feature_column FROM "
+                    "topology.layer l INNER JOIN \"%s\".relation r "
+                    "ON (l.layer_id = r.layer_id) WHERE l.level = 0 AND "
+                    "l.feature_type IN ( 2, 4 ) AND l.topology_id = %d"
+                    " AND r.element_type = 2 AND abs(r.element_id) = %" LWTFMT_ELEMID,
+                    topo->name, topo->id, rem_edge );
+
+  POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemIsoEdge query 1: %s", sql->data);
+
+  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+  MemoryContextSwitchTo( oldcontext ); /* switch back */
+  if ( spi_result != SPI_OK_SELECT )
+  {
+    cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+    pfree(sqldata.data);
+    return 0;
+  }
+
+  if ( SPI_processed )
+  {
+    row = SPI_tuptable->vals[0];
+    tdesc = SPI_tuptable->tupdesc;
+
+    tg_id = SPI_getvalue(row, tdesc, 1);
+    layer_id = SPI_getvalue(row, tdesc, 2);
+    schema_name = SPI_getvalue(row, tdesc, 3);
+    table_name = SPI_getvalue(row, tdesc, 4);
+    col_name = SPI_getvalue(row, tdesc, 5);
+
+    SPI_freetuptable(SPI_tuptable);
+
+    cberror(topo->be_data, "TopoGeom %s in layer %s "
+            "(%s.%s.%s) cannot be represented "
+            "dropping edge %" LWTFMT_ELEMID,
+            tg_id, layer_id, schema_name, table_name,
+            col_name, rem_edge);
+    return 0;
+  }
+
+  return 1;
+}
+
+static int
 cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
                           LWT_ELEMID rem_node, LWT_ELEMID edge1, LWT_ELEMID edge2 )
 {
@@ -2563,16 +2629,19 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
   TupleDesc tdesc;
 
   initStringInfo(sql);
+
+  /* 1: check for lineal TopoGeometry objects being defined by
+   * only one of the edges to be merged */
   appendStringInfo( sql, "SELECT t.* FROM ( SELECT r.topogeo_id, "
                     "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
                     "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
                     " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
-                    "WHERE l.level = 0 and l.feature_type = 2 "
+                    "WHERE l.level = 0 and l.feature_type in ( 2, 4 ) "
                     "AND l.topology_id = %d"
-                    " AND abs(r.element_id) = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
+                    " AND r.element_type = 2 AND abs(r.element_id) = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
                     "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
                     "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%"
-                    LWTFMT_ELEMID ",%" LWTFMT_ELEMID "]::int4[]",
+                    LWTFMT_ELEMID ",%" LWTFMT_ELEMID "]::int4[] LIMIT 1",
                     topo->name, topo->id,
                     edge1, edge2, edge1, edge2 );
 
@@ -2610,8 +2679,120 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
     return 0;
   }
 
-  /* TODO: check for TopoGeometry objects being defined by the common
+  /* 2: check for puntual TopoGeometry objects being defined by the common
    * node, see https://trac.osgeo.org/postgis/ticket/3239 */
+  resetStringInfo(sql);
+  appendStringInfo( sql, "SELECT t.* FROM ( SELECT r.topogeo_id, "
+                    "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
+                    "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
+                    " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+                    "WHERE l.level = 0 and l.feature_type in ( 1, 4 ) "
+                    "AND l.topology_id = %d"
+                    " AND r.element_type = 1 AND r.element_id = %" LWTFMT_ELEMID
+                    " group by r.topogeo_id, r.layer_id, l.schema_name, "
+                    "l.table_name, l.feature_column ) t LIMIT 1",
+                    topo->name, topo->id,
+                    rem_node );
+
+  POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemNode query 2: %s", sql->data);
+
+  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+  MemoryContextSwitchTo( oldcontext ); /* switch back */
+  if ( spi_result != SPI_OK_SELECT )
+  {
+    cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+    pfree(sqldata.data);
+    return 0;
+  }
+
+  if ( SPI_processed )
+  {
+    row = SPI_tuptable->vals[0];
+    tdesc = SPI_tuptable->tupdesc;
+
+    tg_id = SPI_getvalue(row, tdesc, 1);
+    layer_id = SPI_getvalue(row, tdesc, 2);
+    schema_name = SPI_getvalue(row, tdesc, 3);
+    table_name = SPI_getvalue(row, tdesc, 4);
+    col_name = SPI_getvalue(row, tdesc, 5);
+
+    SPI_freetuptable(SPI_tuptable);
+
+    cberror(topo->be_data, "TopoGeom %s in layer %s "
+            "(%s.%s.%s) cannot be represented "
+            "removing node %" LWTFMT_ELEMID
+            " connecting edges %" LWTFMT_ELEMID
+            " and %" LWTFMT_ELEMID,
+            tg_id, layer_id, schema_name, table_name,
+            col_name, rem_node, edge1, edge2);
+    return 0;
+  }
+
+  return 1;
+}
+
+static int
+cb_checkTopoGeomRemIsoNode ( const LWT_BE_TOPOLOGY* topo, LWT_ELEMID rem_node )
+{
+  MemoryContext oldcontext = CurrentMemoryContext;
+  int spi_result;
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+  const char *tg_id, *layer_id;
+  const char *schema_name, *table_name, *col_name;
+  HeapTuple row;
+  TupleDesc tdesc;
+
+  initStringInfo(sql);
+
+  /* Check for puntual TopoGeometry objects being defined by the common
+   * node, see https://trac.osgeo.org/postgis/ticket/3231 */
+  resetStringInfo(sql);
+  appendStringInfo( sql, "SELECT t.* FROM ( SELECT r.topogeo_id, "
+                    "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
+                    "array_agg(abs(r.element_id)) as elems FROM topology.layer l "
+                    " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+                    "WHERE l.level = 0 and l.feature_type in ( 1, 4 ) "
+                    "AND l.topology_id = %d"
+                    " AND r.element_type = 1 AND r.element_id = %" LWTFMT_ELEMID
+                    " group by r.topogeo_id, r.layer_id, l.schema_name, "
+                    "l.table_name, l.feature_column ) t LIMIT 1",
+                    topo->name, topo->id,
+                    rem_node );
+
+  POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemIsoNode query 2: %s", sql->data);
+
+  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+  MemoryContextSwitchTo( oldcontext ); /* switch back */
+  if ( spi_result != SPI_OK_SELECT )
+  {
+    cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+    pfree(sqldata.data);
+    return 0;
+  }
+
+  if ( SPI_processed )
+  {
+    row = SPI_tuptable->vals[0];
+    tdesc = SPI_tuptable->tupdesc;
+
+    tg_id = SPI_getvalue(row, tdesc, 1);
+    layer_id = SPI_getvalue(row, tdesc, 2);
+    schema_name = SPI_getvalue(row, tdesc, 3);
+    table_name = SPI_getvalue(row, tdesc, 4);
+    col_name = SPI_getvalue(row, tdesc, 5);
+
+    SPI_freetuptable(SPI_tuptable);
+
+    cberror(topo->be_data, "TopoGeom %s in layer %s "
+            "(%s.%s.%s) cannot be represented "
+            "removing node %" LWTFMT_ELEMID,
+            tg_id, layer_id, schema_name, table_name,
+            col_name, rem_node);
+    return 0;
+  }
 
   return 1;
 }
@@ -2635,8 +2816,10 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* this query can be optimized */
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
-                      "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 3"
+                      "USING topology.layer l WHERE l.level = 0"
+                      " AND l.feature_type IN (3,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
+                      " AND r.element_type = 3"
                       " AND abs(r.element_id) IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
                       " AND abs(r.element_id) != %" LWTFMT_ELEMID,
                       topo->name, topo->id, face1, face2, newface );
@@ -2658,8 +2841,10 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* delete face1 */
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
-                      "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 3"
+                      "USING topology.layer l WHERE l.level = 0"
+                      " AND l.feature_type IN (3,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
+                      " AND r.element_type = 3"
                       " AND abs(r.element_id) = %" LWTFMT_ELEMID,
                       topo->name, topo->id, face1 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 1: %s", sql->data);
@@ -2679,8 +2864,11 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     /* update face2 to newface */
     appendStringInfo( sql, "UPDATE \"%s\".relation r "
                       "SET element_id = %" LWTFMT_ELEMID " FROM topology.layer l "
-                      "WHERE l.level = 0 AND l.feature_type = 3 AND l.topology_id = %d"
-                      " AND l.layer_id = r.layer_id AND r.element_id = %" LWTFMT_ELEMID,
+                      "WHERE l.level = 0 AND l.feature_type IN (3,4)"
+                      " AND l.topology_id = %d"
+                      " AND l.layer_id = r.layer_id"
+                      " AND r.element_type = 3"
+                      " AND r.element_id = %" LWTFMT_ELEMID,
                       topo->name, newface, topo->id, face2 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 2: %s", sql->data);
 
@@ -2716,8 +2904,10 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* this query can be optimized */
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
-                      "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 2"
+                      "USING topology.layer l WHERE l.level = 0"
+                      " AND l.feature_type IN (2,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
+                      " AND r.element_type = 2"
                       " AND abs(r.element_id) IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
                       " AND abs(r.element_id) != %" LWTFMT_ELEMID,
                       topo->name, topo->id, edge1, edge2, newedge );
@@ -2739,8 +2929,10 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* delete edge1 */
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
-                      "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 2"
+                      "USING topology.layer l WHERE l.level = 0"
+                      " AND l.feature_type IN ( 2, 4 )"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
+                      " AND r.element_type = 2"
                       " AND abs(r.element_id) = %" LWTFMT_ELEMID,
                       topo->name, topo->id, edge2 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query 1: %s", sql->data);
@@ -2759,10 +2951,13 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* update edge2 to newedge */
     appendStringInfo( sql, "UPDATE \"%s\".relation r "
-                      "SET element_id = %" LWTFMT_ELEMID " *(element_id/%" LWTFMT_ELEMID
+                      "SET element_id = %" LWTFMT_ELEMID
+                      " *(element_id/%" LWTFMT_ELEMID
                       ") FROM topology.layer l "
-                      "WHERE l.level = 0 AND l.feature_type = 2 AND l.topology_id = %d"
-                      " AND l.layer_id = r.layer_id AND abs(r.element_id) = %" LWTFMT_ELEMID,
+                      "WHERE l.level = 0 AND l.feature_type IN (2,4)"
+                      " AND l.topology_id = %d AND l.layer_id = r.layer_id"
+                      " AND r.element_type = 2"
+                      " AND abs(r.element_id) = %" LWTFMT_ELEMID,
                       topo->name, newedge, edge1, topo->id, edge1 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query 2: %s", sql->data);
 
@@ -2781,40 +2976,44 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
   return 1;
 }
 
-static LWT_ELEMID
-cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
+/* Return pointer to closest edge.
+ * NULL if no edges are in the topology (*numelems=0).
+ * or there's an error (*numedges=UINT64_MAX)
+ */
+static LWT_ISO_EDGE *
+cb_getClosestEdge( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt, uint64_t *numedges, int fields )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
+  HeapTuple row;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  bool isnull;
-  Datum dat;
-  LWT_ELEMID face_id;
   GSERIALIZED *pts;
   Datum values[1];
   Oid argtypes[1];
-
-  initStringInfo(sql);
+  LWT_ISO_EDGE* edges;
 
   pts = geometry_serialize(lwpoint_as_lwgeom(pt));
   if ( ! pts )
   {
     cberror(topo->be_data, "%s:%d: could not serialize query point",
             __FILE__, __LINE__);
-    return -2;
+    *numedges = UINT64_MAX;
+    return NULL;
   }
-  /* TODO: call GetFaceGeometry internally, avoiding the round-trip to sql */
-  appendStringInfo(sql,
-                   "WITH faces AS ( SELECT face_id FROM \"%s\".face "
-                   "WHERE mbr && $1 ORDER BY ST_Area(mbr) ASC ) "
-                   "SELECT face_id FROM faces WHERE _ST_Contains("
-                   "topology.ST_GetFaceGeometry('%s', face_id), $1)"
-                   " LIMIT 1",
-                   topo->name, topo->name);
+
+  initStringInfo(sql);
+
+
+  appendStringInfoString(sql, "SELECT ");
+  addEdgeFields(sql, fields, 0);
+  appendStringInfo(sql, " FROM \"%s\".edge_data ORDER BY geom <-> $1 ASC, edge_id ASC LIMIT 1", topo->name);
+
+  POSTGIS_DEBUGF(1, "cb_getClosestEdge query: %s", sql->data);
 
   values[0] = PointerGetDatum(pts);
   argtypes[0] = topo->geometryOID;
+
   spi_result = SPI_execute_with_args(sql->data, 1, argtypes, values, NULL,
                                      !topo->be_data->data_changed, 1);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -2824,26 +3023,27 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
     pfree(sqldata.data);
-    return -2;
-  }
-  pfree(sqldata.data);
-
-  if ( SPI_processed != 1 )
-  {
-    return -1; /* none found */
+    *numedges = UINT64_MAX;
+    return NULL;
   }
 
-  dat = SPI_getbinval( SPI_tuptable->vals[0],
-                       SPI_tuptable->tupdesc, 1, &isnull );
-  if ( isnull )
+  if ( SPI_processed == 0 )
   {
-    SPI_freetuptable(SPI_tuptable);
-    cberror(topo->be_data, "corrupted topology: face with NULL face_id");
-    return -2;
+    /* No edges in topology, point is in universal face */
+    pfree(sqldata.data);
+    *numedges = 0;
+    return NULL;
   }
-  face_id = DatumGetInt32(dat);
+
+  /* Got closest edge, return it */
+  *numedges = 1;
+
+  edges = palloc( sizeof(LWT_ISO_EDGE) );
+  row = SPI_tuptable->vals[0];
+  fillEdgeFields(edges, row, SPI_tuptable->tupdesc, fields);
   SPI_freetuptable(SPI_tuptable);
-  return face_id;
+
+  return edges;
 }
 
 static int
@@ -3197,7 +3397,6 @@ static LWT_BE_CALLBACKS be_callbacks =
   cb_insertEdges,
   cb_updateEdges,
   cb_getFacesById,
-  cb_getFaceContainingPoint,
   cb_updateTopoGeomEdgeSplit,
   cb_deleteEdges,
   cb_getNodeWithinBox2D,
@@ -3221,7 +3420,10 @@ static LWT_BE_CALLBACKS be_callbacks =
   cb_updateTopoGeomFaceHeal,
   cb_checkTopoGeomRemNode,
   cb_updateTopoGeomEdgeHeal,
-  cb_getFaceWithinBox2D
+  cb_getFaceWithinBox2D,
+  cb_checkTopoGeomRemIsoNode,
+  cb_checkTopoGeomRemIsoEdge,
+  cb_getClosestEdge
 };
 
 static void
@@ -4057,9 +4259,6 @@ Datum ST_RemoveIsoNode(PG_FUNCTION_ARGS)
     PG_RETURN_NULL();
   }
 
-  /* TODO: check if any TopoGeometry exists including this point in
-   * its definition ! */
-
   SPI_finish();
 
   if ( snprintf(buf, 64, "Isolated node %" LWTFMT_ELEMID
@@ -4120,9 +4319,6 @@ Datum ST_RemIsoEdge(PG_FUNCTION_ARGS)
     SPI_finish();
     PG_RETURN_NULL();
   }
-
-  /* TODO: check if any TopoGeometry exists including this point in
-   * its definition ! */
 
   SPI_finish();
 
@@ -4593,6 +4789,8 @@ Datum GetFaceByPoint(PG_FUNCTION_ARGS)
   LWGEOM *lwgeom;
   LWPOINT *pt;
   LWT_TOPOLOGY *topo;
+
+  lwpgwarning("This function should not be hit, please upgrade your PostGIS install");
 
   toponame_text = PG_GETARG_TEXT_P(0);
   toponame = text_to_cstring(toponame_text);
@@ -5123,4 +5321,65 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
   result = HeapTupleGetDatum(tuple);
 
   SRF_RETURN_NEXT(funcctx, result);
+}
+
+/*  GetFaceContainingPoint(atopology, point) */
+Datum GetFaceContainingPoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(GetFaceContainingPoint);
+Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID face_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text_to_cstring(toponame_text);
+  PG_FREE_IF_COPY(toponame_text, 0);
+
+  geom = PG_GETARG_GSERIALIZED_P(1);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt )
+  {
+    lwgeom_free(lwgeom);
+    PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Second argument must be a point geometry");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() )
+  {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo )
+  {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_GetFaceContainingPoint");
+  face_id = lwt_GetFaceContainingPoint(topo, pt);
+  POSTGIS_DEBUG(1, "lwt_GetFaceContainingPoint returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 1);
+  lwt_FreeTopology(topo);
+
+  if ( face_id == -1 )
+  {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(face_id);
 }

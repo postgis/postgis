@@ -3,13 +3,34 @@ PostGIS 3.2.0
 
  * Breaking changes *
   - #4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory to build with MVT support.
+  - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
+  - #4981, ST_StartPoint support any geometry. No longer returns null for non-linestrings.
 
  * Enhancements *
+  - #2592, Do not allow CreateTopology to define topologies with SRID < 0
+           (Sandro Santilli)
+  - #3232, Prevent moving an isolated node to different face
+           (Sandro Santilli)
+  - Consider collection TopoGeometries while editing topology primitives.
+           (Sandro Santilli)
+  - #3248, Prevent removing isolated edges if used in a TopoGeometry
+           (Sandro Santilli)
+  - #3231, Prevent removing isolated nodes if used in a TopoGeometry
+           (Sandro Santilli)
+  - #3239, Prevent headling topology edges if the connecting node is
+           used in the definition of a TopoGeometry (Sandro Santilli)
+  - #4950, Speed up checking containing_face for nodes in ValidateTopology
+           (Sandro Santilli)
+  - #4945, Multi-shell face check in ValidateTopology (Sandro Santilli)
+  - #4944, Side-location conflict check in ValidateTopology (Sandro Santilli)
+  - #3042, ValidateTopology check for edge linking (Sandro Santilli)
+  - #3276, ValidateTopology check for face's mbr (Sandro Santilli)
+  - #4936, Bounding box limited ValidateTopology (Sandro Santilli)
+  - #4933, Speed up topology building in presence of big faces (Sandro Santilli)
   - #3233, ValidateTopology check for node's containing_face (Sandro Santilli)
   - #4830, ValidateTopology check for edges side face containment
            (Sandro Santilli)
   - #4827, Allow NaN coordinates in WKT input (Paul Ramsey)
-  - #4870, Allow open options to be passed to GDAL drivers (Paul Ramsey)
   - ST_Value() accepts resample parameter to add bilinear option (Paul Ramsey)
   - #3778, #4401, ST_Boundary now works for TIN and does not linearize curves (Aliaksandr Kalenik)
   - #4881, #4884, Store sign of edge_id for lineal TopoGeometry in relation table
@@ -19,8 +40,19 @@ PostGIS 3.2.0
            (Aliaksandr Kalenik, Darafei Praliaskouski)
   - #4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)
   - ST_Srid(topogeometry) override, to speedup lookups (Sandro Santilli)
+  - #2175, Avoid creating additional nodes when adding same closed
+           line to topology (Sandro Santilli)
+  - #4974, Upgrade path for address_standardizer_data_us
+    (Jan Katins of Aiven, Regina Obe)
+  - #4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)
+  - #4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)
+  - #4799, Include srs in GeoJSON where it exists in spatial_ref_sys.
+
 
  * New features*
+  - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
+  - #4933, topology.GetFaceContainingPoint (Sandro Santilli)
+  - #2175, ST_Scroll (Sandro Santilli)
   - #4841, FindTopology to quickly get a topology record (Sandro Santilli)
   - #4869, FindLayer to quickly get a layer record (Sandro Santilli)
   - #4851, TopoGeom_addTopoGeom function (Sandro Santilli)
@@ -36,6 +68,9 @@ PostGIS 3.2.0
     from a raster (Paul Ramsey)
   - New postgis.gdal_vsi_options GUC allows out-db rasters on VSI network
     services to be accessed with authentication keys, etc. (Paul Ramsey)
+  - ST_DumpSegments returns a set of segments of input geometry (Aliaksandr Kalenik)
+  - #4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructors 
+    with SRID parameter (Paul Ramsey)
 
 
 PostGIS 3.1.0

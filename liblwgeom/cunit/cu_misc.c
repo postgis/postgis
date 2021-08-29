@@ -51,6 +51,36 @@ static void test_misc_simplify(void)
 	lwfree(wkt_out);
 }
 
+static void test_misc_startpoint(void)
+{
+	LWGEOM *geom;
+	POINT4D p = {0};
+
+	geom = lwgeom_from_wkt("POINT(1 2)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwgeom_startpoint(geom, &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 1);
+	CU_ASSERT_EQUAL(p.y, 2);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("LINESTRING(10 20, 30 40)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwgeom_startpoint(geom, &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 10);
+	CU_ASSERT_EQUAL(p.y, 20);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POLYGON((1 2, 3 4, 5 6, 1 2))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwgeom_startpoint(geom, &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 1);
+	CU_ASSERT_EQUAL(p.y, 2);
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(LINESTRING(100 200, 300 400), POINT(10 20))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(lwgeom_startpoint(geom, &p) == LW_SUCCESS);
+	CU_ASSERT_EQUAL(p.x, 100);
+	CU_ASSERT_EQUAL(p.y, 200);
+	lwgeom_free(geom);
+}
+
 static void test_misc_count_vertices(void)
 {
 	LWGEOM *geom;
@@ -315,6 +345,7 @@ void misc_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("miscellaneous", NULL, NULL);
 	PG_ADD_TEST(suite, test_misc_simplify);
+	PG_ADD_TEST(suite, test_misc_startpoint);
 	PG_ADD_TEST(suite, test_misc_count_vertices);
 	PG_ADD_TEST(suite, test_misc_area);
 	PG_ADD_TEST(suite, test_misc_wkb);

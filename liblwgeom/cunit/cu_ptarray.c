@@ -616,6 +616,112 @@ static void test_ptarray_scale()
   lwline_free(line);
 }
 
+static void test_ptarray_scroll()
+{
+  LWLINE *line;
+  POINTARRAY *pa;
+  POINT4D scroll;
+  const char *wkt;
+  char *wktout;
+	int rv;
+
+  wkt = "LINESTRING ZM (1 1 1 1,2 2 2 2,3 3 3 3,4 4 4 4,1 1 1 1)";
+  line = lwgeom_as_lwline(lwgeom_from_text(wkt));
+  pa = line->points;
+
+	scroll.x = scroll.y = scroll.z = scroll.m = 2;
+  rv = ptarray_scroll_in_place(pa, &scroll);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
+  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+  wkt = "LINESTRING ZM (2 2 2 2,3 3 3 3,4 4 4 4,1 1 1 1,2 2 2 2)";
+  ASSERT_STRING_EQUAL(wktout, wkt);
+  lwfree(wktout);
+
+	scroll.x = scroll.y = scroll.z = scroll.m = 1;
+  rv = ptarray_scroll_in_place(pa, &scroll);
+	CU_ASSERT_EQUAL(rv, LW_SUCCESS);
+  wktout = lwgeom_to_text(lwline_as_lwgeom(line));
+  wkt = "LINESTRING ZM (1 1 1 1,2 2 2 2,3 3 3 3,4 4 4 4,1 1 1 1)";
+  ASSERT_STRING_EQUAL(wktout, wkt);
+  lwfree(wktout);
+
+	scroll.x = scroll.y = scroll.z = scroll.m = 9;
+  rv = ptarray_scroll_in_place(pa, &scroll);
+	CU_ASSERT_EQUAL(rv, LW_FAILURE);
+	ASSERT_STRING_EQUAL(cu_error_msg, "ptarray_scroll_in_place: input POINTARRAY does not contain the given point");
+
+  lwline_free(line);
+}
+
+static void test_ptarray_closest_vertex_2d()
+{
+	LWLINE *line;
+	POINTARRAY *pa;
+	double dist;
+	POINT2D qp;
+	const char *wkt;
+	int rv;
+
+	wkt = "LINESTRING (0 0 0, 1 0 0, 2 0 0, 3 0 10)";
+	line = lwgeom_as_lwline(lwgeom_from_text(wkt));
+	pa = line->points;
+
+	qp.x = qp.y = 0;
+	rv = ptarray_closest_vertex_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 0);
+	ASSERT_DOUBLE_EQUAL(dist, 0);
+
+	qp.x = qp.y = 1;
+	rv = ptarray_closest_vertex_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 1);
+	ASSERT_DOUBLE_EQUAL(dist, 1);
+
+	qp.x = 5; qp.y = 0;
+	rv = ptarray_closest_vertex_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 3);
+	ASSERT_DOUBLE_EQUAL(dist, 2);
+
+
+  lwline_free(line);
+}
+
+static void test_ptarray_closest_segment_2d()
+{
+	LWLINE *line;
+	POINTARRAY *pa;
+	double dist;
+	POINT2D qp;
+	const char *wkt;
+	int rv;
+
+	wkt = "LINESTRING (0 0 0, 1 0 0, 2 0 0, 3 0 10)";
+	line = lwgeom_as_lwline(lwgeom_from_text(wkt));
+	pa = line->points;
+
+	qp.x = qp.y = 0;
+	rv = ptarray_closest_segment_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 0);
+	ASSERT_DOUBLE_EQUAL(dist, 0);
+
+	qp.x = 1;
+	rv = ptarray_closest_segment_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 0);
+	ASSERT_DOUBLE_EQUAL(dist, 0);
+
+	qp.y = 1;
+	rv = ptarray_closest_segment_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 0);
+	ASSERT_DOUBLE_EQUAL(dist, 1);
+
+	qp.x = 5; qp.y = 0;
+	rv = ptarray_closest_segment_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 2);
+	ASSERT_DOUBLE_EQUAL(dist, 2);
+
+
+  lwline_free(line);
+}
+
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -633,4 +739,7 @@ void ptarray_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarray_contains_point);
 	PG_ADD_TEST(suite, test_ptarrayarc_contains_point);
 	PG_ADD_TEST(suite, test_ptarray_scale);
+	PG_ADD_TEST(suite, test_ptarray_scroll);
+	PG_ADD_TEST(suite, test_ptarray_closest_vertex_2d);
+	PG_ADD_TEST(suite, test_ptarray_closest_segment_2d);
 }

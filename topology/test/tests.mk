@@ -32,6 +32,7 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/geometry_cast.sql \
 	$(topsrcdir)/topology/test/regress/getedgebypoint.sql \
 	$(topsrcdir)/topology/test/regress/getfacebypoint.sql \
+	$(topsrcdir)/topology/test/regress/getfacecontainingpoint.sql \
 	$(topsrcdir)/topology/test/regress/getnodebypoint.sql \
 	$(topsrcdir)/topology/test/regress/getnodeedges.sql \
 	$(topsrcdir)/topology/test/regress/getringedges.sql \
@@ -54,10 +55,12 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/st_getfacegeometry.sql \
 	$(topsrcdir)/topology/test/regress/st_modedgeheal.sql \
 	$(topsrcdir)/topology/test/regress/st_modedgesplit.sql \
+	$(topsrcdir)/topology/test/regress/st_moveisonode.sql \
 	$(topsrcdir)/topology/test/regress/st_newedgeheal.sql \
 	$(topsrcdir)/topology/test/regress/st_newedgessplit.sql \
 	$(topsrcdir)/topology/test/regress/st_remedgemodface.sql \
 	$(topsrcdir)/topology/test/regress/st_remedgenewface.sql \
+	$(topsrcdir)/topology/test/regress/st_removeisonode.sql \
 	$(topsrcdir)/topology/test/regress/st_simplify.sql \
 	$(topsrcdir)/topology/test/regress/topo2.5d.sql \
 	$(topsrcdir)/topology/test/regress/topoelementarray_agg.sql \

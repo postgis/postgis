@@ -1368,3 +1368,62 @@ SELECT '#4863', st_contains(geometry, st_scale(st_orientedenvelope(geometry),
  6755713.77835553,-141972.789895508 6755731.24770785))'::geometry as
  geometry) x;
 
+-- New Zealand forward -- SRID=2193;POINT(1766289 5927325)
+SELECT '#4949', 'NZ forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=4326;POINT(174.863597538742 -36.785298415230315)'::geometry, 2193),0.1));
+--- New Zealand inverse (opposite EPSG order) -- SRID=4326;POINT(174.863598 -36.785298)
+SELECT '#4949', 'NZ inverse', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=2193;POINT(1766289 5927325)'::geometry, 4326),0.000001));
+-- British Columbia forward (respect EPSG order) -- SRID=3005;POINT(1286630.44 561883.98)
+SELECT '#4949', 'BC forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=4269;POINT(-122 50)'::geometry, 3005),0.01));
+-- British Columbia inverse (respect EPSG order) -- SRID=4269;POINT(-122 50)
+SELECT '#4949', 'BC inverse', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=3005;POINT(1286630.44 561883.98)'::geometry, 4269),0.000001));
+--  North Pole LAEA Europe inverse -- SRID=4326;POINT(19.4921659 69.7902258)
+SELECT '#4949', 'North Pole LAEA inverse', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=3575;POINT(370182 -2213980)'::geometry,4326),0.0000001));
+-- Polar Stereographic forward -- SRID=3413;POINT(2218082.1 -1409150)
+SELECT '#4949', 'Arctic Stereographic forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=4326;POINT(12.572160  66.081084)'::geometry,3413),0.1));
+-- Antarctic Polar Stereographic -- SRID=3031;POINT(-2399498.7 3213318.5)
+SELECT '#4949', 'Antarctic Stereographic forward', ST_AsEWKT(ST_SnapToGrid(ST_Transform(
+  'SRID=4326;POINT(-36.75 -54.25)'::geometry, 3031),0.1));
+
+-- #4916, #4770, #4724, #4916, #4940
+SELECT '#4770.a',
+ ST_Union(NULL::geometry) OVER (ORDER BY b)
+FROM (VALUES ('A0006', 300),
+	         ('A0006', 302)) t(a, b);
+
+WITH w AS (
+  SELECT
+    ST_Union(g) OVER (PARTITION BY b ORDER BY a) AS g,
+    Sum(b) OVER (PARTITION BY b ORDER BY a) AS s
+  FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
+  	           ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b)
+)
+SELECT '#4770.b', ST_AsText(g), s FROM w;
+
+WITH w AS (
+  SELECT
+    ST_Union(g) OVER (PARTITION BY a ORDER BY b) AS g,
+    Sum(b) OVER (PARTITION BY a ORDER BY b) AS s
+  FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
+  	           ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b)
+)
+SELECT '#4770.c', ST_AsText(g), s FROM w;
+
+-- https://trac.osgeo.org/postgis/ticket/4799
+SELECT
+    '#4799', ST_AsGeoJSON(data.*, geom_column => 'geom2', maxdecimaldigits => 3)
+FROM
+    (SELECT
+        1 AS id,
+        ST_SnapToGrid(ST_Transform(geom, 3035), 1) geom1,
+        ST_SnapToGrid(ST_Transform(geom, 25832), 1) geom2
+    FROM
+        ST_SetSRID(ST_MakePoint(7, 51), 4326) geom
+    ) data;
+
+

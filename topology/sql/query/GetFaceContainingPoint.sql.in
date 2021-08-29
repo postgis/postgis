@@ -1,0 +1,30 @@
+-- This function finds the id of a face whose geometry
+-- would properly contain the given query point.
+--
+-- The implementation of this function relies on a properly built
+-- topology, so results against an invalid topology are unpredictable.
+--
+-- If the point falls on the boundary of any face an exception will be
+-- raised. Dangling edges will not be considered as face boundaries,
+-- which is consistent with ST_GetFaceGeometry.
+--
+-- The following query should always return true
+-- for non-boundary query points (:point)
+--
+--  ST_Contains(
+--    ST_GetFaceGeometry(
+--       :topo,
+--       ST_GetFaceContainingPoint(:topo, :point)
+--    ),
+--    :point
+--  )
+--
+--
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION topology.GetFaceContainingPoint(
+  atopology text,
+  apoint geometry
+)
+RETURNS INT AS
+	'MODULE_PATHNAME', 'GetFaceContainingPoint'
+LANGUAGE 'c' STABLE;

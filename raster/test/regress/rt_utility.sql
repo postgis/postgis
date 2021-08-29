@@ -401,6 +401,7 @@ SELECT 'test 11.8', st_minpossiblevalue('32BUI') = 0.;
 SELECT 'test 11.9', st_minpossiblevalue('32BSI') < 0.;
 SELECT 'test 11.10', st_minpossiblevalue('32BF') < 0.;
 SELECT 'test 11.11', st_minpossiblevalue('64BF') < 0.;
+SELECT '#4918', ST_MinPossibleValue('');
 
 DROP TABLE rt_utility_test;
 
