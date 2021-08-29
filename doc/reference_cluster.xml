@@ -223,6 +223,9 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
 			<paramdef><type>integer </type>
 			<parameter>number_of_clusters</parameter></paramdef>
+
+            <paramdef><type>float </type>
+			<parameter>max_radius</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -230,12 +233,15 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 	  <refsection>
       <title>Description</title>
 
-      <para>Returns 2D distance based
-        <ulink url="https://en.wikipedia.org/wiki/K-means_clustering">K-means</ulink>
+      <para>Returns <ulink url="https://en.wikipedia.org/wiki/K-means_clustering">K-means</ulink>
         cluster number for each input geometry. The distance used for clustering is the
         distance between the centroids for 2D geometries, and distance between bounding box centers for 3D geometries.
         For POINT inputs, M coordinate will be treated as weight of input and has to be larger than 0.
       </para>
+      <para><varname>max_radius</varname>, if set, will cause ST_ClusterKMeans to generate more clusters than
+        <varname>k</varname> ensuring that no cluster in output has radius larger than <varname>max_radius</varname>.
+        This is useful in reachability analysis. </para>
+      <para>Enhanced: 3.2.0 Support for <varname>max_radius</varname></para>
       <para>Enhanced: 3.1.0 Support for 3D geometries and weights</para>
       <para>Availability: 2.3.0</para>
     </refsection>
@@ -275,9 +281,8 @@ FROM
 						</mediaobject>
 					  </informalfigure>
 						<programlisting>SELECT ST_ClusterKMeans(geom, 5) OVER() AS cid, parcel_id, geom
-FROM parcels;
--- result
- cid | parcel_id |   geom
+FROM parcels;</programlisting>
+<screen> cid | parcel_id |   geom
 -----+-----------+---------------
    0 | 001       | 0103000000...
    0 | 002       | 0103000000...
@@ -286,18 +291,16 @@ FROM parcels;
    1 | 005       | 0103000000...
    2 | 006       | 0103000000...
    2 | 007       | 0103000000...
-(7 rows)</programlisting>
+(7 rows)</screen>
 					</para></entry>
 				  </row>
 			</tbody>
 			</tgroup>
 		</informaltable>
-
-		    <programlisting> -- Partitioning parcel clusters by type
-SELECT ST_ClusterKMeans(geom,3) over (PARTITION BY type) AS cid, parcel_id, type
-FROM parcels;
--- result
- cid | parcel_id |    type
+<para>Partitioning parcel clusters by type:</para>
+		    <programlisting>SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, type
+FROM parcels;</programlisting>
+<screen> cid | parcel_id |    type
 -----+-----------+-------------
    1 | 005       | commercial
    1 | 003       | commercial
@@ -306,28 +309,34 @@ FROM parcels;
    1 | 004       | residential
    0 | 002       | residential
    2 | 006       | residential
-(7 rows)</programlisting>
+(7 rows)</screen>
 
 
-		    <programlisting> -- Clustering points around antimeridian can be done in 3D XYZ CRS, EPSG:4978:
-
-SELECT ST_ClusterKMeans(ST_Transform(ST_Force3D(geom), 4978), 3) over () AS cid, parcel_id, type
-FROM parcels;
--- result
-┌─────┬───────────┬─────────────┐
-│ cid │ parcel_id │    type     │
-├─────┼───────────┼─────────────┤
-│   1 │ 001       │ commercial  │
-│   2 │ 002       │ residential │
-│   0 │ 003       │ commercial  │
-│   1 │ 004       │ residential │
-│   0 │ 005       │ commercial  │
-│   2 │ 006       │ residential │
-│   0 │ 007       │ commercial  │
-└─────┴───────────┴─────────────┘
-(7 rows)
-</programlisting>
-
+<para>Clustering preaggregated planetary scale data like population dataset may require using 3D clusering and weighting.
+Let's try to idenify 20-ish meta-regions based on <ulink url="https://data.humdata.org/dataset/kontur-population-dataset">Kontur Population</ulink> that will not span more than 3000 km from their center:</para>
+		    <programlisting>create table kontur_population_3000km_clusters as
+select
+    geom,
+    ST_ClusterKMeans(
+        ST_Force4D(
+            ST_Transform(ST_Force3D(geom), 4978), -- cluster in 3D XYZ CRS
+            mvalue := population -- set clustering to be weighed by population
+        ),
+        20,                      -- aim to generate at least 20 clusters
+        max_radius := 3000000    -- but generate more to make each under 3000 km radius
+    ) over () as cid
+from
+    kontur_population;
+    </programlisting>
+    <para><informalfigure>
+    <mediaobject>
+        <imageobject>
+        <imagedata fileref="images/st_clusterkmeans03.png" />
+        </imageobject>
+        <caption><para>World population clustered to above specs: 46 resulting clusters. Greenland is one cluster, there are island clusters that span across antimeridian, clusters are centered at well-populated regions (New York, Moscow), and edges follow Earth's curvature.</para></caption>
+    </mediaobject>
+    </informalfigure>
+    </para>
 
     </refsection>
 
@@ -336,7 +345,10 @@ FROM parcels;
           <para>
               <xref linkend="ST_ClusterDBSCAN"/>,
               <xref linkend="ST_ClusterIntersecting" />,
-              <xref linkend="ST_ClusterWithin" />, <xref linkend="ST_Subdivide" />
+              <xref linkend="ST_ClusterWithin" />,
+              <xref linkend="ST_Subdivide" />,
+              <xref linkend="ST_Force_3D" />,
+              <xref linkend="ST_Force_4D" />,
           </para>
 	  </refsection>
 	</refentry>

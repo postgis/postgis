@@ -65,20 +65,13 @@ improve_structure(POINT4D *objs,
 	uint32_t *temp_clusters = lwalloc(sizeof(uint32_t) * n);
 	double *temp_radii = lwalloc(sizeof(double) * n);
 	POINT4D *temp_centers = lwalloc(sizeof(POINT4D) * n);
-	double overshot = 0;
 
 	uint32_t new_k = k;
 
 	for (uint32_t cluster = first_cluster_to_split; cluster < k; cluster++)
 	{
-		if (overshot < 0)
-			overshot = 0;
-		if (radii[cluster] <= (max_radius_sq + overshot))
-		{
-			if (radii[cluster] > max_radius_sq)
-				overshot -= radii[cluster] - max_radius_sq;
+		if (radii[cluster] <= max_radius_sq)
 			continue;
-		}
 
 		/* copy cluster alone */
 		uint32_t cluster_size = 0;
@@ -102,8 +95,6 @@ improve_structure(POINT4D *objs,
 		centers[new_k] = temp_centers[1];
 		radii[cluster] = temp_radii[0];
 		radii[new_k] = temp_radii[1];
-
-		overshot += max_radius_sq - temp_radii[0] - temp_radii[1];
 		new_k++;
 	}
 	lwfree(temp_centers);
@@ -189,8 +180,13 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 	double max_dst = -1, current_distance;
 	double dst_p1, dst_p2;
 
-	/* k=0, k=1: "clustering" is just input validation */
-	assert(k > 1);
+	/* k=0, k=1: any point will do */
+	assert(n > 0);
+	if (k < 2)
+	{
+		centers[0] = objs[0];
+		return;
+	}
 
 	/* k >= 2: find two distant points greedily */
 	for (i = 1; i < n; i++)
@@ -298,6 +294,9 @@ kmeans(POINT4D *objs,
 	uint32_t cur_k = min_k;
 
 	kmeans_init(objs, n, centers, cur_k);
+	/* One iteration of kmeans needs to happen without shortcuts to fully initialize structures */
+	update_r(objs, clusters, n, centers, radii, cur_k);
+	update_means(objs, clusters, n, centers, cur_k);
 	for (uint32_t t = 0; t < KMEANS_MAX_ITERATIONS; t++)
 	{
 		/* Standard KMeans loop */
