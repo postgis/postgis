@@ -185,6 +185,7 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 	{
 		int       i, k, N;
 		bool      isnull, isout;
+		double max_radius = 0.0;
 		LWGEOM    **geoms;
 		int       *r;
 
@@ -206,11 +207,14 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
+		/* Maximum cluster radius. 0 if not set*/
+		max_radius = DatumGetFloat8(WinGetFuncArgCurrent(winobj, 2, &isnull));
+		if (isnull || max_radius <= 0)
+			max_radius = 0.0;
+
 		/* Error out if N < K */
 		if (N<k)
-		{
 			lwpgerror("K (%d) must be smaller than the number of rows in the group (%d)", k, N);
-		}
 
 		/* Read all the geometries from the partition window into a list */
 		geoms = palloc(sizeof(LWGEOM*) * N);
@@ -232,7 +236,7 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 		}
 
 		/* Calculate k-means on the list! */
-		r = lwgeom_cluster_kmeans((const LWGEOM **)geoms, N, k);
+		r = lwgeom_cluster_kmeans((const LWGEOM **)geoms, N, k, max_radius);
 
 		/* Clean up */
 		for (i = 0; i < N; i++)

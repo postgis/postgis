@@ -39,7 +39,7 @@ PostGIS 3.2.0
   - #4924, Faster ST_RemoveRepeatedPoints on large multipoints, O(NlogN) instead of O(N^2)
            (Aliaksandr Kalenik, Darafei Praliaskouski)
   - #4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)
-  - ST_Srid(topogeometry) override, to speedup lookups (Sandro Santilli)
+  - ST_SRID(topogeometry) override, to speedup lookups (Sandro Santilli)
   - #2175, Avoid creating additional nodes when adding same closed
            line to topology (Sandro Santilli)
   - #4974, Upgrade path for address_standardizer_data_us
@@ -47,7 +47,6 @@ PostGIS 3.2.0
   - #4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)
   - #4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)
   - #4799, Include srs in GeoJSON where it exists in spatial_ref_sys.
-
 
  * New features*
   - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
@@ -69,9 +68,10 @@ PostGIS 3.2.0
   - New postgis.gdal_vsi_options GUC allows out-db rasters on VSI network
     services to be accessed with authentication keys, etc. (Paul Ramsey)
   - ST_DumpSegments returns a set of segments of input geometry (Aliaksandr Kalenik)
-  - #4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructors 
+  - #4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructors
     with SRID parameter (Paul Ramsey)
-
+  - #4808, ST_ClusterKMeans now supports max_radius argument. Use it when you're not sure what is
+    the number of clusters but you know what the size of clusters should be. (Darafei Praliaskouski)
 
 PostGIS 3.1.0
 2020/12/18
