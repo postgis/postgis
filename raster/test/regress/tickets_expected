@@ -70,3 +70,10 @@ NOTICE:  Adding out-of-database constraint
 NOTICE:  Adding maximum extent constraint
 #4547.2|t
 #4769|
+#4770.a|
+#4770.a|
+#4770.b|
+#4770.b|
+#4724.a|(0,,,,,)
+#4724.a|(0,,,,,)
+#4724.b|(0,,,,,)

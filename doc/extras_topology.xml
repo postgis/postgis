@@ -801,7 +801,7 @@ to take care of that.
 That the statistics updated by autovacuum
 will NOT be visible to transactions which started before autovacuum
 process completed, so long-running transactions will need to run
-ANALYZE themeselves, to use updated statistics.
+ANALYZE themselves, to use updated statistics.
 </para>
 </note>
 
@@ -3409,12 +3409,12 @@ of the same child layer.
         <programlisting>
 -- Set an "overall" TopoGeometry value to be composed by all
 -- elements of specific TopoGeometry values
-UPDATE mylayer SET tg_overall = TopoGeom_addTopogeometry(
-    TopoGeom_addTopoGeometry(
+UPDATE mylayer SET tg_overall = TopoGeom_addTopogeom(
+    TopoGeom_addTopoGeom(
         clearTopoGeom(tg_overall),
         tg_specific1
     ),
-    tg_specific1
+    tg_specific2
 );
 				</programlisting>
 			</refsection>

@@ -1013,7 +1013,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 			if test "x$withval" = "xyes"; then
 				AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/usr/local])
 			else
-				PROTOBUF_LDFLAGS="-L$withval/lib -lprotobuf-c";
+				PROTOBUF_LDFLAGS="-L$withval/lib";
 				PROTOBUF_CPPFLAGS="-I$withval/include"
 			fi
 		], [])
@@ -1044,7 +1044,7 @@ if test "$CHECK_PROTOBUF" != "no"; then
 
 	dnl confirm that discovered/configured library path works
 	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init],
-		[PROTOBUF_LDFLAGS="-lprotobuf-c"],
+		[],
 		AC_MSG_ERROR([unable to link protobuf-c using $LDFLAGS. You can disable MVT and Geobuf support using --without-protobuf])
 		HAVE_PROTOBUF=no
 	)

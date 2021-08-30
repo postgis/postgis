@@ -379,7 +379,7 @@ DROP TABLE my_schema.my_spatial_table;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'the_geom_4269');
+		<programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');
 find_srid
 ----------
 4269
@@ -435,19 +435,19 @@ find_srid
 
 		<itemizedlist>
 		  <listitem>
-			<para><varname>enforce_dims_the_geom</varname> - ensures every
+			<para><varname>enforce_dims_geom</varname> - ensures every
 			geometry has the same dimension (see <xref
 			linkend="ST_NDims" />)</para>
 		  </listitem>
 
 		  <listitem>
-			<para><varname>enforce_geotype_the_geom</varname> - ensures every
+			<para><varname>enforce_geotype_geom</varname> - ensures every
 			geometry is of the same type (see <xref
 			linkend="GeometryType" />)</para>
 		  </listitem>
 
 		  <listitem>
-			<para><varname>enforce_srid_the_geom</varname> - ensures every
+			<para><varname>enforce_srid_geom</varname> - ensures every
 			geometry is in the same projection (see <xref
 			linkend="ST_SRID" />)</para>
 		  </listitem>

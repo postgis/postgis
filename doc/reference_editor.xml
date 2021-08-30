@@ -61,9 +61,9 @@ only for those that are not closed.
 </para>
 <programlisting>
 UPDATE sometable
-SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
+SET geom = ST_AddPoint(geom, ST_StartPoint(geom))
 FROM sometable
-WHERE ST_IsClosed(the_geom) = false;
+WHERE ST_IsClosed(geom) = false;
 </programlisting>
 
 		  </refsection>
@@ -131,7 +131,7 @@ Given a geometry collection, returns a multi-geometry containing only elements o
 			<para>Availability: 1.5.0</para>
 
 			<note><para>
-            Prior to 1.5.3 this function returned atomic inputs unchaanged, no matter type.
+            Prior to 1.5.3 this function returned atomic inputs unchanged, no matter type.
             In 1.5.3 non-matching single geometries returned a NULL result.
             In 2.0.0 non-matching single geometries return an EMPTY result of the requested type.
 			</para></note>
@@ -1121,8 +1121,8 @@ GEOMETRYCOLLECTION(
         <title>Examples</title>
 
         <programlisting> -- 2D Example
-SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo.the_geom) As non_curvedastext
-    FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As the_geom) As foo;
+SELECT ST_AsText(ST_LineToCurve(foo.geom)) As curvedastext,ST_AsText(foo.geom) As non_curvedastext
+    FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As geom) As foo;
 
 curvedatext                                                            non_curvedastext
 --------------------------------------------------------------------|-----------------------------------------------------------------
@@ -1318,7 +1318,7 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 				compressible storage type</ulink>. The function allows
 				specification of a different number of digits after the decimal
 				point in each dimension; unspecified dimensions are assumed to have
-				the precsion of the <code>x</code> dimension. Negative digits are
+				the precision of the <code>x</code> dimension. Negative digits are
 				interpreted to refer digits to the left of the decimal point, (i.e.,
 				<code>prec_x=-2</code> will preserve coordinate values to the
 				nearest 100.
@@ -1545,10 +1545,10 @@ UPDATE sometable
 	  <refsection>
 		<title>Examples</title>
 		<programlisting>
-SELECT ST_AsText(the_geom) as line, ST_AsText(ST_Reverse(the_geom)) As reverseline
+SELECT ST_AsText(geom) as line, ST_AsText(ST_Reverse(geom)) As reverseline
 FROM
 (SELECT ST_MakeLine(ST_Point(1,2),
-		ST_Point(1,10)) As the_geom) as foo;
+		ST_Point(1,10)) As geom) as foo;
 --result
 		line         |     reverseline
 ---------------------+----------------------
@@ -1662,8 +1662,8 @@ SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)'));
  LINESTRING(-1 1,-1 3)
 
 ---Change last point in a line string (lets play with 3d linestring this time)
-SELECT ST_AsEWKT(ST_SetPoint(foo.the_geom, ST_NumPoints(foo.the_geom) - 1, ST_GeomFromEWKT('POINT(-1 1 3)')))
-FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As the_geom) As foo;
+SELECT ST_AsEWKT(ST_SetPoint(foo.geom, ST_NumPoints(foo.geom) - 1, ST_GeomFromEWKT('POINT(-1 1 3)')))
+FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As geom) As foo;
 	   st_asewkt
 -----------------------
 LINESTRING(-1 2 3,-1 3 4,-1 1 3)
@@ -1773,7 +1773,7 @@ LINESTRING(241.42 38.38,241.8 38.45)
 This function splits the input geometries and then moves every resulting
 component falling on the right (for negative 'move') or on the left (for
 positive 'move') of given 'wrap' line in the direction specified by the
-'move' parameter, finally re-unioning the pieces togheter.
+'move' parameter, finally re-unioning the pieces together.
     </para>
 
         <note><para>
@@ -1796,11 +1796,11 @@ of interest not spawned from one side to the other.
         <programlisting>
 -- Move all components of the given geometries whose bounding box
 -- falls completely on the left of x=0 to +360
-select ST_WrapX(the_geom, 0, 360);
+select ST_WrapX(geom, 0, 360);
 
 -- Move all components of the given geometries whose bounding box
 -- falls completely on the left of x=-30 to +360
-select ST_WrapX(the_geom, -30, 360);
+select ST_WrapX(geom, -30, 360);
         </programlisting>
       </refsection>
 
@@ -1898,7 +1898,7 @@ select ST_WrapX(the_geom, -30, 360);
 		<programlisting>
 --Snap your geometries to a precision grid of 10^-3
 UPDATE mytable
-   SET the_geom = ST_SnapToGrid(the_geom, 0.001);
+   SET geom = ST_SnapToGrid(geom, 0.001);
 
 SELECT ST_AsText(ST_SnapToGrid(
 			ST_GeomFromText('LINESTRING(1.1115678 2.123, 4.111111 3.2374897, 4.11112 3.23748667)'),
