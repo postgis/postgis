@@ -2042,7 +2042,7 @@ Returns the distance between A and B trajectories at their closest point of appr
 The <varname>|=|</varname> operator returns the 3D distance between
 two trajectories (See <xref linkend="ST_IsValidTrajectory" />).
 This is the same as <xref linkend="ST_DistanceCPA" /> but as an operator
-it can be used for doing nearest neightbor searches using an N-dimensional
+it can be used for doing nearest neighbor searches using an N-dimensional
 index (requires PostgreSQL 9.5.0 or higher).
       </para>
 

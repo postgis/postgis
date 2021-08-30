@@ -258,7 +258,7 @@ SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 
 ---------------
 POINT(0 0)</programlisting>
 <para>
-Clip all lines (trails) by country. Hhere we assume country geom are POLYGON or MULTIPOLYGONS.
+Clip all lines (trails) by country. Here we assume country geom are POLYGON or MULTIPOLYGONS.
 NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
 care about trails that just share a point. The dump is needed to expand a geometry collection into individual single MULT* parts.
 The below is fairly generic and will work for polys, etc. by just changing the where clause.</para>
@@ -398,7 +398,7 @@ The resulting linework is dissolved (duplicate lines are removed).
 
         <para>
 Changed: 2.4.0 this function uses GEOSNode internally instead of GEOSUnaryUnion.
-This may cause the resulting linestrings to have a different order and direction compared to Postgis &lt; 2.4.
+This may cause the resulting linestrings to have a different order and direction compared to PostGIS &lt; 2.4.
         </para>
       </refsection>
       <refsection>
