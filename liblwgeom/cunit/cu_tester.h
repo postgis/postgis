@@ -41,6 +41,32 @@ typedef void (*PG_SuiteSetup)(void);
   CU_ASSERT_EQUAL(o,e); \
 } while (0);
 
+#define ASSERT_NORMALIZED_GEOM_SAME(gobt, gexp) \
+	do \
+	{ \
+		char *obt, *exp; \
+		LWGEOM *ngobt, *ngexp; \
+		ngobt = lwgeom_normalize(gobt); \
+		ngexp = lwgeom_normalize(gexp); \
+		if (!lwgeom_same((ngobt), (ngexp))) \
+		{ \
+			obt = lwgeom_to_wkt((ngobt), WKT_ISO, 8, NULL); \
+			exp = lwgeom_to_wkt((ngexp), WKT_ISO, 8, NULL); \
+			fprintf(stderr, "[%s:%d]\n Expected: %s\n Obtained: %s\n", __FILE__, __LINE__, exp, obt); \
+			free(obt); \
+			free(exp); \
+			lwgeom_free(ngobt); \
+			lwgeom_free(ngexp); \
+			CU_ASSERT(0); \
+		} \
+		else \
+		{ \
+			lwgeom_free(ngobt); \
+			lwgeom_free(ngexp); \
+			CU_ASSERT(1); \
+		} \
+	} while (0)
+
 static inline void
 assert_string_equal_impl(const char *obtained, const char *expected, const char *file, int line)
 {

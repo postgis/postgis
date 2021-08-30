@@ -1743,7 +1743,7 @@ static void test_kmeans(void)
 		}
 	}
 
-	r = lwgeom_cluster_kmeans((const LWGEOM **)geoms, N, num_clusters);
+	r = lwgeom_cluster_kmeans((const LWGEOM **)geoms, N, num_clusters, 0.0);
 
 	// for (i = 0; i < k; i++)
 	// {
