@@ -109,7 +109,8 @@ static uint8_t
 update_r(POINT4D *objs, uint32_t *clusters, uint32_t n, POINT4D *centers, double *radii, uint32_t k)
 {
 	uint8_t converged = LW_TRUE;
-	memset(radii, 0, sizeof(double) * k);
+	if (radii)
+		memset(radii, 0, sizeof(double) * k);
 
 	for (uint32_t i = 0; i < n; i++)
 	{
@@ -175,10 +176,8 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 {
 	double *distances;
 	uint32_t p1 = 0, p2 = 0;
-	uint32_t i, j;
 	uint32_t duplicate_count = 1; /* a point is a duplicate of itself */
-	double max_dst = -1, current_distance;
-	double dst_p1, dst_p2;
+	double max_dst = -1;
 
 	/* k=0, k=1: any point will do */
 	assert(n > 0);
@@ -189,11 +188,11 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 	}
 
 	/* k >= 2: find two distant points greedily */
-	for (i = 1; i < n; i++)
+	for (uint32_t i = 1; i < n; i++)
 	{
 		/* if we found a larger distance, replace our choice */
-		dst_p1 = distance3d_sqr_pt4d_pt4d(&objs[i], &objs[p1]);
-		dst_p2 = distance3d_sqr_pt4d_pt4d(&objs[i], &objs[p2]);
+		double dst_p1 = distance3d_sqr_pt4d_pt4d(&objs[i], &objs[p1]);
+		double dst_p2 = distance3d_sqr_pt4d_pt4d(&objs[i], &objs[p2]);
 		if ((dst_p1 > max_dst) || (dst_p2 > max_dst))
 		{
 			if (dst_p1 > dst_p2)
@@ -229,26 +228,26 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 		distances = lwalloc(sizeof(double) * n);
 
 		/* initialize array with distance to first object */
-		for (j = 0; j < n; j++)
+		for (uint32_t j = 0; j < n; j++)
 			distances[j] = distance3d_sqr_pt4d_pt4d(&objs[j], &centers[0]);
 		distances[p1] = -1;
 		distances[p2] = -1;
 
 		/* loop i on clusters, skip 0 and 1 as found already */
-		for (i = 2; i < k; i++)
+		for (uint32_t i = 2; i < k; i++)
 		{
 			uint32_t candidate_center = 0;
 			double max_distance = -DBL_MAX;
 
 			/* loop j on objs */
-			for (j = 0; j < n; j++)
+			for (uint32_t j = 0; j < n; j++)
 			{
 				/* empty objs and accepted clusters are already marked with distance = -1 */
 				if (distances[j] < 0)
 					continue;
 
 				/* update minimal distance with previosuly accepted cluster */
-				current_distance = distance3d_sqr_pt4d_pt4d(&objs[j], &centers[i - 1]);
+				double current_distance = distance3d_sqr_pt4d_pt4d(&objs[j], &centers[i - 1]);
 				if (current_distance < distances[j])
 					distances[j] = current_distance;
 
@@ -271,14 +270,6 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 		}
 		lwfree(distances);
 	}
-}
-
-static int
-cluster_centroid_cmp(const void *a, const void *b)
-{
-	POINT4D *p1 = (POINT4D *)a;
-	POINT4D *p2 = (POINT4D *)b;
-	return p1->m - p2->m;
 }
 
 static uint32_t
@@ -312,18 +303,10 @@ kmeans(POINT4D *objs,
 			break;
 
 		/* XMeans-inspired improve_structure pass to split clusters bigger than limit into 2 */
-		if (max_radius)
-		{
-			for (uint32_t i = 0; i < cur_k; i++)
-				centers[i].m = radii[i];
-			qsort(centers, cur_k, sizeof(POINT4D), cluster_centroid_cmp);
-			update_r(objs, clusters, n, centers, radii, cur_k);
-
-			uint32_t new_k = improve_structure(objs, clusters, n, centers, radii, cur_k, max_radius);
-			if (new_k == cur_k)
-				break;
-			cur_k = new_k;
-		}
+		uint32_t new_k = improve_structure(objs, clusters, n, centers, radii, cur_k, max_radius);
+		if (new_k == cur_k)
+			break;
+		cur_k = new_k;
 	}
 
 	if (!converged)
@@ -439,7 +422,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_r
 
 	if (k > 1 || max_radius > 0)
 	{
-		uint32_t *clusters_dense = lwalloc(sizeof(int) * num_non_empty);
+		uint32_t *clusters_dense = lwalloc(sizeof(uint32_t) * num_non_empty);
 		memset(clusters_dense, 0, sizeof(uint32_t) * num_non_empty);
 		converged = kmeans(objs, clusters_dense, num_non_empty, centers, radii, k, max_radius);
 
@@ -453,13 +436,6 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_r
 					clusters[i] = KMEANS_NULL_CLUSTER;
 		}
 		lwfree(clusters_dense);
-	}
-	else if (k == 0)
-	{
-		/* k=0: everything is unclusterable */
-		for (uint32_t i = 0; i < n; i++)
-			clusters[i] = KMEANS_NULL_CLUSTER;
-		converged = LW_TRUE;
 	}
 	else
 	{
