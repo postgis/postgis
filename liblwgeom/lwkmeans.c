@@ -82,7 +82,7 @@ improve_structure(POINT4D *objs,
 			continue;
 
 		/* run 2-means on the cluster */
-		kmeans(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, temp_radii, 2, 0);
+		kmeans(temp_objs, temp_clusters, cluster_size, temp_centers, temp_radii, 2, 0);
 
 		/* replace cluster with split */
 		uint32_t d = 0;
@@ -321,7 +321,6 @@ int *
 lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_radius)
 {
 	uint32_t num_non_empty = 0;
-	uint8_t converged = LW_FALSE;
 
 	assert(k > 0);
 	assert(n > 0);
@@ -337,7 +336,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_r
 	}
 
 	/* An array of objects to be analyzed. */
-	POINT4D *objs = lwalloc(sizeof(POINT4D) * n);
+	POINT4D *objs_dense = lwalloc(sizeof(POINT4D) * n);
 
 	/* Array to mark unclusterable objects. Will be returned as KMEANS_NULL_CLUSTER. */
 	uint8_t *geom_valid = lwalloc(sizeof(uint8_t) * n);
@@ -345,7 +344,8 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_r
 
 	/* Array to fill in with cluster numbers. */
 	int *clusters = lwalloc(sizeof(int) * n);
-	memset(clusters, 0, sizeof(int) * n);
+	for (uint32_t i = 0; i < n; i++)
+		clusters[i] = KMEANS_NULL_CLUSTER;
 
 	/* An array of clusters centers for the algorithm. */
 	POINT4D *centers = lwalloc(sizeof(POINT4D) * n);
@@ -407,7 +407,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_r
 			out.z = (box->zmax + box->zmin) / 2;
 		}
 		geom_valid[i] = LW_TRUE;
-		objs[num_non_empty++] = out;
+		objs_dense[num_non_empty++] = out;
 	}
 
 	if (num_non_empty < k)
@@ -420,38 +420,25 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_r
 		k = num_non_empty;
 	}
 
-	if (k > 1 || max_radius > 0)
+	uint8_t converged = LW_TRUE;
+
+	if (num_non_empty > 0)
 	{
 		uint32_t *clusters_dense = lwalloc(sizeof(uint32_t) * num_non_empty);
 		memset(clusters_dense, 0, sizeof(uint32_t) * num_non_empty);
-		converged = kmeans(objs, clusters_dense, num_non_empty, centers, radii, k, max_radius);
+		uint32_t output_cluster_count = kmeans(objs_dense, clusters_dense, num_non_empty, centers, radii, k, max_radius);
 
-		if (converged)
-		{
-			uint32_t d = 0;
-			for (uint32_t i = 0; i < n; i++)
-				if (geom_valid[i])
-					clusters[i] = (int)clusters_dense[d++];
-				else
-					clusters[i] = KMEANS_NULL_CLUSTER;
-		}
-		lwfree(clusters_dense);
-	}
-	else
-	{
-		/* k=1: mark up NULL and non-NULL */
+		uint32_t d = 0;
 		for (uint32_t i = 0; i < n; i++)
-		{
-			if (!geom_valid[i])
-				clusters[i] = KMEANS_NULL_CLUSTER;
-			else
-				clusters[i] = 0;
-		}
-		converged = LW_TRUE;
+			if (geom_valid[i])
+				clusters[i] = (int)clusters_dense[d++];
+
+		converged = output_cluster_count > 0;
+		lwfree(clusters_dense);
 	}
 
 	/* Before error handling, might as well clean up all the inputs */
-	lwfree(objs);
+	lwfree(objs_dense);
 	lwfree(centers);
 	lwfree(geom_valid);
 	lwfree(radii);
