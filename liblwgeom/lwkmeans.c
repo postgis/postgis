@@ -1,6 +1,6 @@
 /*-------------------------------------------------------------------------
  *
- * Copyright (c) 2018-2020, Darafei Praliaskouski <me@komzpa.net>
+ * Copyright (c) 2018-2021, Darafei Praliaskouski <me@komzpa.net>
  * Copyright (c) 2016, Paul Ramsey <pramsey@cleverelephant.ca>
  *
  *------------------------------------------------------------------------*/
@@ -19,6 +19,14 @@
  */
 #define KMEANS_MAX_ITERATIONS 1000
 
+static uint32_t kmeans(POINT4D *objs,
+		       uint32_t *clusters,
+		       uint32_t n,
+		       POINT4D *centers,
+		       double *radii,
+		       uint32_t min_k,
+		       double max_radius);
+
 inline static double
 distance3d_sqr_pt4d_pt4d(const POINT4D *p1, const POINT4D *p2)
 {
@@ -29,10 +37,79 @@ distance3d_sqr_pt4d_pt4d(const POINT4D *p1, const POINT4D *p2)
 	return hside * hside + vside * vside + zside * zside;
 }
 
+/* Split the clusters that need to be split */
+static uint32_t
+improve_structure(POINT4D *objs,
+		  uint32_t *clusters,
+		  uint32_t n,
+		  POINT4D *centers,
+		  double *radii,
+		  uint32_t k,
+		  double max_radius)
+{
+	/* Input check: radius limit should be measurable */
+	if (max_radius <= 0)
+		return k;
+
+	double max_radius_sq = max_radius * max_radius;
+
+	/* Do we have the big clusters to split at all? */
+	uint32_t first_cluster_to_split = 0;
+	for (; first_cluster_to_split < k; first_cluster_to_split++)
+		if (radii[first_cluster_to_split] > max_radius_sq)
+			break;
+	if (first_cluster_to_split == k)
+		return k;
+
+	POINT4D *temp_objs = lwalloc(sizeof(POINT4D) * n);
+	uint32_t *temp_clusters = lwalloc(sizeof(uint32_t) * n);
+	double *temp_radii = lwalloc(sizeof(double) * n);
+	POINT4D *temp_centers = lwalloc(sizeof(POINT4D) * n);
+
+	uint32_t new_k = k;
+
+	for (uint32_t cluster = first_cluster_to_split; cluster < k; cluster++)
+	{
+		if (radii[cluster] <= max_radius_sq)
+			continue;
+
+		/* copy cluster alone */
+		uint32_t cluster_size = 0;
+		for (uint32_t i = 0; i < n; i++)
+			if (clusters[i] == cluster)
+				temp_objs[cluster_size++] = objs[i];
+		if (cluster_size <= 1)
+			continue;
+
+		/* run 2-means on the cluster */
+		kmeans(temp_objs, temp_clusters, (uint32_t)cluster_size, temp_centers, temp_radii, 2, 0);
+
+		/* replace cluster with split */
+		uint32_t d = 0;
+		for (uint32_t i = 0; i < n; i++)
+			if (clusters[i] == cluster)
+				if (temp_clusters[d++])
+					clusters[i] = new_k;
+
+		centers[cluster] = temp_centers[0];
+		centers[new_k] = temp_centers[1];
+		radii[cluster] = temp_radii[0];
+		radii[new_k] = temp_radii[1];
+		new_k++;
+	}
+	lwfree(temp_centers);
+	lwfree(temp_radii);
+	lwfree(temp_clusters);
+	lwfree(temp_objs);
+	return new_k;
+}
+
+/* Refresh mapping of point to closest cluster */
 static uint8_t
-update_r(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
+update_r(POINT4D *objs, uint32_t *clusters, uint32_t n, POINT4D *centers, double *radii, uint32_t k)
 {
 	uint8_t converged = LW_TRUE;
+	memset(radii, 0, sizeof(double) * k);
 
 	for (uint32_t i = 0; i < n; i++)
 	{
@@ -40,10 +117,10 @@ update_r(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
 
 		/* Initialize with distance to first cluster */
 		double curr_distance = distance3d_sqr_pt4d_pt4d(&obj, &centers[0]);
-		int curr_cluster = 0;
+		uint32_t curr_cluster = 0;
 
 		/* Check all other cluster centers and find the nearest */
-		for (int cluster = 1; cluster < (int)k; cluster++)
+		for (uint32_t cluster = 1; cluster < k; cluster++)
 		{
 			double distance = distance3d_sqr_pt4d_pt4d(&obj, &centers[cluster]);
 			if (distance < curr_distance)
@@ -59,22 +136,28 @@ update_r(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
 			converged = LW_FALSE;
 			clusters[i] = curr_cluster;
 		}
+		if (radii)
+			if (radii[curr_cluster] < curr_distance)
+				radii[curr_cluster] = curr_distance;
 	}
 	return converged;
 }
 
+/* Refresh cluster centroids based on all of their objects */
 static void
-update_means(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
+update_means(POINT4D *objs, uint32_t *clusters, uint32_t n, POINT4D *centers, uint32_t k)
 {
 	memset(centers, 0, sizeof(POINT4D) * k);
+	/* calculate weighted sum */
 	for (uint32_t i = 0; i < n; i++)
 	{
-		int cluster = clusters[i];
+		uint32_t cluster = clusters[i];
 		centers[cluster].x += objs[i].x * objs[i].m;
 		centers[cluster].y += objs[i].y * objs[i].m;
 		centers[cluster].z += objs[i].z * objs[i].m;
 		centers[cluster].m += objs[i].m;
 	}
+	/* divide by weight to get average */
 	for (uint32_t i = 0; i < k; i++)
 	{
 		if (centers[i].m)
@@ -86,24 +169,7 @@ update_means(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_
 	}
 }
 
-static uint8_t
-kmeans(POINT4D *objs, int *clusters, uint32_t n, POINT4D *centers, uint32_t k)
-{
-	uint8_t converged = LW_FALSE;
-
-	for (uint32_t i = 0; i < KMEANS_MAX_ITERATIONS; i++)
-	{
-		LW_ON_INTERRUPT(break);
-		converged = update_r(objs, clusters, n, centers, k);
-		if (converged)
-			break;
-		update_means(objs, clusters, n, centers, k);
-	}
-	if (!converged)
-		lwerror("%s did not converge after %d iterations", __func__, KMEANS_MAX_ITERATIONS);
-	return converged;
-}
-
+/* Assign initial clusters centroids heuristically */
 static void
 kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 {
@@ -114,8 +180,13 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 	double max_dst = -1, current_distance;
 	double dst_p1, dst_p2;
 
-	/* k=0, k=1: "clustering" is just input validation */
-	assert(k > 1);
+	/* k=0, k=1: any point will do */
+	assert(n > 0);
+	if (k < 2)
+	{
+		centers[0] = objs[0];
+		return;
+	}
 
 	/* k >= 2: find two distant points greedily */
 	for (i = 1; i < n; i++)
@@ -202,14 +273,76 @@ kmeans_init(POINT4D *objs, uint32_t n, POINT4D *centers, uint32_t k)
 	}
 }
 
+static int
+cluster_centroid_cmp(const void *a, const void *b)
+{
+	POINT4D *p1 = (POINT4D *)a;
+	POINT4D *p2 = (POINT4D *)b;
+	return p1->m - p2->m;
+}
+
+static uint32_t
+kmeans(POINT4D *objs,
+       uint32_t *clusters,
+       uint32_t n,
+       POINT4D *centers,
+       double *radii,
+       uint32_t min_k,
+       double max_radius)
+{
+	uint8_t converged = LW_FALSE;
+	uint32_t cur_k = min_k;
+
+	kmeans_init(objs, n, centers, cur_k);
+	/* One iteration of kmeans needs to happen without shortcuts to fully initialize structures */
+	update_r(objs, clusters, n, centers, radii, cur_k);
+	update_means(objs, clusters, n, centers, cur_k);
+	for (uint32_t t = 0; t < KMEANS_MAX_ITERATIONS; t++)
+	{
+		/* Standard KMeans loop */
+		for (uint32_t i = 0; i < KMEANS_MAX_ITERATIONS; i++)
+		{
+			LW_ON_INTERRUPT(break);
+			converged = update_r(objs, clusters, n, centers, radii, cur_k);
+			if (converged)
+				break;
+			update_means(objs, clusters, n, centers, cur_k);
+		}
+		if (!converged || !max_radius)
+			break;
+
+		/* XMeans-inspired improve_structure pass to split clusters bigger than limit into 2 */
+		if (max_radius)
+		{
+			for (uint32_t i = 0; i < cur_k; i++)
+				centers[i].m = radii[i];
+			qsort(centers, cur_k, sizeof(POINT4D), cluster_centroid_cmp);
+			update_r(objs, clusters, n, centers, radii, cur_k);
+
+			uint32_t new_k = improve_structure(objs, clusters, n, centers, radii, cur_k, max_radius);
+			if (new_k == cur_k)
+				break;
+			cur_k = new_k;
+		}
+	}
+
+	if (!converged)
+	{
+		lwerror("%s did not converge after %d iterations", __func__, KMEANS_MAX_ITERATIONS);
+		return 0;
+	}
+	return cur_k;
+}
+
 int *
-lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
+lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_radius)
 {
 	uint32_t num_non_empty = 0;
 	uint8_t converged = LW_FALSE;
 
 	assert(k > 0);
 	assert(n > 0);
+	assert(max_radius >= 0);
 	assert(geoms);
 
 	if (n < k)
@@ -232,8 +365,12 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	memset(clusters, 0, sizeof(int) * n);
 
 	/* An array of clusters centers for the algorithm. */
-	POINT4D *centers = lwalloc(sizeof(POINT4D) * k);
-	memset(centers, 0, sizeof(POINT4D) * k);
+	POINT4D *centers = lwalloc(sizeof(POINT4D) * n);
+	memset(centers, 0, sizeof(POINT4D) * n);
+
+	/* An array of clusters radii for the algorithm. */
+	double *radii = lwalloc(sizeof(double) * n);
+	memset(radii, 0, sizeof(double) * n);
 
 	/* Prepare the list of object pointers for K-means */
 	for (uint32_t i = 0; i < n; i++)
@@ -263,7 +400,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 		}
 		else if (!lwgeom_has_z(geom))
 		{
-			/* For 2D, we can take a centroid*/
+			/* For 2D, we can take a centroid */
 			LWGEOM *centroid = lwgeom_centroid(geom);
 			if (!centroid)
 				continue;
@@ -300,20 +437,18 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 		k = num_non_empty;
 	}
 
-	if (k > 1)
+	if (k > 1 || max_radius > 0)
 	{
-		int *clusters_dense = lwalloc(sizeof(int) * num_non_empty);
-		memset(clusters_dense, 0, sizeof(int) * num_non_empty);
-
-		kmeans_init(objs, num_non_empty, centers, k);
-		converged = kmeans(objs, clusters_dense, num_non_empty, centers, k);
+		uint32_t *clusters_dense = lwalloc(sizeof(int) * num_non_empty);
+		memset(clusters_dense, 0, sizeof(uint32_t) * num_non_empty);
+		converged = kmeans(objs, clusters_dense, num_non_empty, centers, radii, k, max_radius);
 
 		if (converged)
 		{
 			uint32_t d = 0;
 			for (uint32_t i = 0; i < n; i++)
 				if (geom_valid[i])
-					clusters[i] = clusters_dense[d++];
+					clusters[i] = (int)clusters_dense[d++];
 				else
 					clusters[i] = KMEANS_NULL_CLUSTER;
 		}
@@ -343,6 +478,7 @@ lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k)
 	lwfree(objs);
 	lwfree(centers);
 	lwfree(geom_valid);
+	lwfree(radii);
 
 	/* Good result */
 	if (converged)

@@ -43,3 +43,5 @@ NOTICE:  lwgeom_cluster_kmeans: number of non-empty geometries (0) is less than 
 NOTICE:  kmeans_init: there are at least 3 duplicate inputs, number of output clusters may be less than you requested
 3d_support-3|1
 #4071|2|3|4
+weight-and-limit-support-1|1
+weight-and-limit-support-2|2
