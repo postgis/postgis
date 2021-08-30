@@ -172,7 +172,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 		the geometry.</para>
 
 		<note>
-		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
+		  <para>Requires PostGIS be compiled with PROJ support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have PROJ support compiled in.</para>
 		</note>
 
 		<note>
