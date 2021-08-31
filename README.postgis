@@ -170,6 +170,31 @@ Final lines of output contain a summary of test results: run, succeeded,
 failed. If you have any failure please file a bug report using the online bug
 tracker: http://trac.osgeo.org/postgis/report/3
 
+DEBUGGING
+---------
+
+The normal build and testing procedure might not be enough for development and
+debugging as that requires a debug build of PostgreSQL and other proper compilation
+flags throughout. A way to get such an environment is to use the same docker images
+as the PostGIS CI setup and that can be done on a *nix host by first running this
+in a cloned postgis repository to later get core dump log output:
+
+> sudo bash ./ci/travis/logbt --setup
+
+Then you can run the following to get a docker container up and running with the
+correct requirements already in place and the postgis repository (at /postgis)
+mounted into it:
+
+> docker run -it --mount type=bind,source=/postgis,target=/src/postgis \
+postgis/postgis-build-env:pg13-geos39-gdal31-proj71 /bin/bash
+
+And finally the following command inside the container will build and run all the
+postgis tests:
+
+> bash ./ci/travis/run_usan_gcc.sh
+
+You can make customized versions of `run_usan_gcc.sh` to run only specific tests
+and skip redundant steps.
 
 INSTALLATION
 ------------
