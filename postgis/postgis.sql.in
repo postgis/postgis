@@ -4123,7 +4123,7 @@ CREATE AGGREGATE ST_MakeLine (geometry) (
 
 -- Availability: 2.3.0
 -- Changed: 3.2.0 added max_radius parameter
-CREATE OR REPLACE FUNCTION ST_ClusterKMeans(geom geometry, k integer, max_radius float default null)
+CREATE OR REPLACE FUNCTION ST_ClusterKMeans(geom geometry, k integer, max_radius float8 default null)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'ST_ClusterKMeans'
 	LANGUAGE 'c' VOLATILE STRICT WINDOW
