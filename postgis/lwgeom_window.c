@@ -188,9 +188,11 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 		double max_radius = 0.0;
 		LWGEOM    **geoms;
 		int       *r;
+		Datum argdatum;
 
 		/* What is K? If it's NULL or invalid, we can't procede */
-		k = DatumGetInt32(WinGetFuncArgCurrent(winobj, 1, &isnull));
+		argdatum = WinGetFuncArgCurrent(winobj, 1, &isnull);
+		k = DatumGetInt32(argdatum);
 		if (isnull || k <= 0)
 		{
 			context->isdone = true;
@@ -208,7 +210,8 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 		}
 
 		/* Maximum cluster radius. 0 if not set*/
-		max_radius = DatumGetFloat8(WinGetFuncArgCurrent(winobj, 2, &isnull));
+		argdatum = WinGetFuncArgCurrent(winobj, 2, &isnull);
+		max_radius = DatumGetFloat8(argdatum);
 		if (isnull || max_radius <= 0)
 			max_radius = 0.0;
 
