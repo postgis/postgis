@@ -95,7 +95,7 @@ This is only applicable to LINESTRING geometry and does not affect POINT or POLY
             It determines a planar spatial reference system that best fits the bounding box of the geography object
             (trying UTM, Lambert Azimuthal Equal Area (LAEA) North/South pole, and finally Mercator ).
             The buffer is computed in the planar space, and then transformed back to WGS84.
-            This may not produce the desired behaviour if the input object is much larger than a UTM zone or crosses the dateline
+            This may not produce the desired behavior if the input object is much larger than a UTM zone or crosses the dateline
             </para></note>
 
             <note><para>Buffer output is always a valid polygonal geometry.

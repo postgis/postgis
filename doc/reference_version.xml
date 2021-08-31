@@ -14,7 +14,7 @@
 		<refname>PostGIS_Extensions_Upgrade</refname>
 
 		<refpurpose>
-Packages and upgrades postgis extensions (e.g. postgis_raster,
+Packages and upgrades PostGIS extensions (e.g. postgis_raster,
 postgis_topology, postgis_sfcgal) to latest available version.
     </refpurpose>
 	  </refnamediv>
@@ -32,12 +32,12 @@ postgis_topology, postgis_sfcgal) to latest available version.
 	  <refsection>
 		<title>Description</title>
 
-		<para>Packages and upgrades postgis extensions
+		<para>Packages and upgrades PostGIS extensions
 		to latest version. Only extensions you have installed in the
     database will be packaged and upgraded if needed.
-		Reports full postgis version and build configuration infos after.
+		Reports full PostGIS version and build configuration infos after.
     This is short-hand for doing multiple CREATE EXTENSION .. FROM
-    unpackaged and ALTER EXTENSION .. UPDATE for each postgis extension.
+    unpackaged and ALTER EXTENSION .. UPDATE for each PostGIS extension.
 		Currently only tries to upgrade extensions postgis,
     postgis_raster, postgis_sfcgal, postgis_topology, and postgis_tiger_geocoder.</para>
 
@@ -84,7 +84,7 @@ NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable for
 	  <refnamediv>
 		<refname>PostGIS_Full_Version</refname>
 
-		<refpurpose>Reports full postgis version and build configuration
+		<refpurpose>Reports full PostGIS version and build configuration
 		infos.</refpurpose>
 	  </refnamediv>
 
@@ -101,7 +101,7 @@ NOTICE:  Extension postgis_tiger_geocoder is not available or not packagable for
 	  <refsection>
 		<title>Description</title>
 
-		<para>Reports full postgis version and build configuration
+		<para>Reports full PostGIS version and build configuration
 		infos. Also informs about synchronization between
 		libraries and scripts suggesting upgrades as needed.</para>
 	  </refsection>
@@ -491,7 +491,7 @@ postgis_liblwgeom_version
 	  <refnamediv>
 		<refname>PostGIS_Scripts_Installed</refname>
 
-		<refpurpose>Returns version of the postgis scripts installed in this
+		<refpurpose>Returns version of the PostGIS scripts installed in this
 			database.</refpurpose>
 	  </refnamediv>
 
@@ -508,7 +508,7 @@ postgis_liblwgeom_version
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns version of the postgis scripts installed in this
+		<para>Returns version of the PostGIS scripts installed in this
 			database.</para>
 
 		<note>
@@ -544,7 +544,7 @@ postgis_liblwgeom_version
 		<refname>PostGIS_Scripts_Released</refname>
 
 		<refpurpose>Returns the version number of the postgis.sql script
-		released with the installed postgis lib.</refpurpose>
+		released with the installed PostGIS lib.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -561,7 +561,7 @@ postgis_liblwgeom_version
 		<title>Description</title>
 
 		<para>Returns the version number of the postgis.sql script
-		released with the installed postgis lib.</para>
+		released with the installed PostGIS lib.</para>
 
 		<note>
 		  <para>Starting with version 1.1.0 this function returns the same

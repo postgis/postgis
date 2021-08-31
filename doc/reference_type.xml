@@ -5,14 +5,14 @@
     <para>This section lists the custom PostgreSQL
 		data types installed by PostGIS to represent spatial data.
     </para>
-    <para>Each data type describes its type casting behaviour.
+    <para>Each data type describes its type casting behavior.
 		A <ulink url="https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS">type cast</ulink>
 		converts values of one data type into another type.
 		PostgreSQL allows defining casting behavior for custom types, along with the functions used to convert type values.
-		Casts can have <emphasis role="bold">automatic</emphasis> behaviour,
+		Casts can have <emphasis role="bold">automatic</emphasis> behavior,
 		which allows automatic conversion of a function argument to a type supported by the function.</para>
 		<para>
-		Some casts have <emphasis role="bold">explicit</emphasis> behaviour,
+		Some casts have <emphasis role="bold">explicit</emphasis> behavior,
 		which means the cast must be specified using the syntax <varname>CAST(myval As sometype)</varname>
 		or <varname>myval::sometype</varname>.
 		Explicit casting avoids the issue of ambiguous casts,
@@ -39,7 +39,7 @@
 				the two-dimensional enclosing box of a geometry or collection of geometries.
 				For example, the <xref linkend="ST_Extent" /> aggregate function returns a <varname>box2d</varname> object.</para>
 				<para>The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>.
-				These are the minimum and maxium values of the X and Y extents.
+				These are the minimum and maximum values of the X and Y extents.
 				</para>
       </refsection>
 
@@ -58,7 +58,7 @@
 
       <refsection>
         <title>Description</title>
-        <para><varname>box3d</varname> is a postgis spatial data type used to represent
+        <para><varname>box3d</varname> is a PostGIS spatial data type used to represent
 				the three-dimensional enclosing box of a geometry or collection of geometries.
 				For example, the <xref linkend="ST_3DExtent" /> aggregate function returns a <varname>box3d</varname> object.
 				</para>

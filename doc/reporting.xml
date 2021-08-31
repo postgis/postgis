@@ -10,7 +10,7 @@
     developers to reproduce it, so it would ideally contain a script
     triggering it and every information regarding the environment in which it
     was detected. Good enough info can be extracted running <code>SELECT
-    postgis_full_version()</code> [for postgis] and <code>SELECT
+    postgis_full_version()</code> [for PostGIS] and <code>SELECT
     version()</code> [for postgresql].</para>
 
     <para>If you aren't using the latest release, it's worth taking a look at

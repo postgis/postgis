@@ -466,7 +466,7 @@ WHERE a.geom &amp;&amp; b.geom
     the bounding box operators
     (of which the most commonly used is <xref linkend="geometry_overlaps" />;
     see <xref linkend="operators-bbox" /> for the full list)
-    and the distance operators used in nearest-neighbour queries
+    and the distance operators used in nearest-neighbor queries
     (the most common being <xref linkend="geometry_distance_knn" />;
     see <xref linkend="operators-distance" /> for the full list.)
     </para>

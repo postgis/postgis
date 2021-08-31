@@ -11,7 +11,7 @@
         The <varname>raster2pgsql</varname> is a raster loader executable that loads GDAL supported raster formats into sql suitable for loading into a PostGIS raster table.
         It is capable of loading folders of raster files as well as creating overviews of rasters. </para>
     <para>Since the raster2pgsql is compiled as part of PostGIS most often (unless you compile your own GDAL library), the raster types supported
-	by the executable will be the same as those compiled in the GDAL dependency library.  To get a list of raster types your particular raster2pgsql supports use the <varname>-G</varname> switch.  These should be the same as those provided by your PostGIS install documented here  <xref linkend="RT_ST_GDALDrivers" /> if you are using the same gdal library for both.</para>
+	by the executable will be the same as those compiled in the GDAL dependency library.  To get a list of raster types your particular raster2pgsql supports use the <varname>-G</varname> switch.  These should be the same as those provided by your PostGIS install documented here  <xref linkend="RT_ST_GDALDrivers" /> if you are using the same GDAL library for both.</para>
     <note>
 	<para>The older version of this tool was a python script.  The executable has replaced the python script.  If you still find the need for the Python script
         Examples of the python one can be found at <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">GDAL PostGIS Raster Driver Usage</ulink>.
@@ -619,7 +619,7 @@ AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';</programlisting
    </sect1>
    <sect1 id="RT_Raster_Applications">
 		<title>Building Custom Applications with PostGIS Raster</title>
-		<para>The fact that PostGIS raster provides you with SQL functions to render rasters in known image formats gives  you a lot of optoins for rendering them.
+		<para>The fact that PostGIS raster provides you with SQL functions to render rasters in known image formats gives  you a lot of options for rendering them.
 		For example you can use OpenOffice / LibreOffice for rendering as demonstrated in <ulink url="http://www.postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports.html">Rendering PostGIS Raster graphics with LibreOffice Base Reports</ulink>.  In addition you can use a wide variety of languages as demonstrated in this section.</para>
 		<sect2 id="RT_PHP_Output">
 			<title>PHP Example Outputting using ST_AsPNG in concert with other raster functions</title>

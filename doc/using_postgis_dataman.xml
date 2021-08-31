@@ -38,7 +38,7 @@
     <emphasis role="bold">spatial reference system</emphasis>
     indicating the coordinate system in which it is embedded.
     See <xref linkend="spatial_ref_sys" />.
-    The spatial reference system is identifed by a SRID number.
+    The spatial reference system is identified by a SRID number.
     In <emphasis role="bold">planar</emphasis> reference systems the X and Y coordinates typically
     represent easting and northing,
     while in <emphasis role="bold">geodetic</emphasis> systems
@@ -74,7 +74,7 @@
 
     <sect3 id="LineString">
         <title>LineString</title>
-        <para>A LineString is a 1-dimensional line formed by a contigous sequence of line segments.
+        <para>A LineString is a 1-dimensional line formed by a contiguous sequence of line segments.
         Each line segment is defined by two points, with the end point of one segment
         forming the start point of the next segment.
         A LineString must have at least two points.
@@ -125,7 +125,7 @@
 
     <sect3 id="GeometryCollection">
         <title>GeometryCollection</title>
-        <para>A GeometryCollection is a heterogenous (mixed) collection of geometries.</para>
+        <para>A GeometryCollection is a heterogeneous (mixed) collection of geometries.</para>
         <programlisting>GEOMETRYCOLLECTION ( POINT(2 3), LINESTRING(2 3,3 4))</programlisting>
     </sect3>
 
@@ -1795,7 +1795,7 @@ AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
       <listitem>
         <para>
           When used, this flag will prevent the generation of <code>ANALYZE</code> statements.
-          Without the -Z flag (default behaviour), the <code>ANALYZE</code> statements will
+          Without the -Z flag (default behavior), the <code>ANALYZE</code> statements will
           be generated.
         </para>
       </listitem>
