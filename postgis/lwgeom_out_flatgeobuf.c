@@ -81,6 +81,8 @@ Datum pgis_asflatgeobuf_finalfn(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
+	postgis_initialize_cache(fcinfo);
+
 	ctx = (struct flatgeobuf_encode_ctx *) PG_GETARG_POINTER(0);
 	buf = flatgeobuf_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
