@@ -42,6 +42,7 @@
 #include "access/gist.h"    /* For GiST */
 #include "access/itup.h"
 #include "access/skey.h"
+#include "utils/sortsupport.h"    /* For index building sort support */
 
 #include "../postgis_config.h"
 
@@ -84,6 +85,7 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_union_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS);
+Datum gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS);
 
 /*
 ** GiST 2D operator prototypes
@@ -448,6 +450,20 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 	}
 
 	return FLT_MAX;
+}
+
+static inline uint64_t
+box2df_get_sortable_hash(const BOX2DF *b)
+{
+	union floatuint {
+		uint32_t u;
+		float f;
+	} x, y;
+
+	x.f = (b->xmax + b->xmin) / 2;
+	y.f = (b->ymax + b->ymin) / 2;
+
+	return uint32_hilbert(y.u, x.u);
 }
 
 /**
@@ -1300,6 +1316,71 @@ Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS)
 	*result = box2df_equals(b1, b2);
 
 	PG_RETURN_POINTER(result);
+}
+
+static int
+gserialized_gist_cmp_abbrev_2d(Datum x, Datum y, SortSupport ssup)
+{
+	/* Empty is a special case */
+	if (x == 0 || y == 0 || x == y)
+		return 0; /* 0 means "ask bigger comparator" and not equality*/
+	else if (x > y)
+		return 1;
+	else
+		return -1;
+}
+
+static bool
+gserialized_gist_abbrev_abort_2d(int memtupcount, SortSupport ssup)
+{
+	return LW_FALSE;
+}
+
+static Datum
+gserialized_gist_abbrev_convert_2d(Datum original, SortSupport ssup)
+{
+	return box2df_get_sortable_hash((BOX2DF *)original);
+}
+
+static int
+gserialized_gist_cmp_full_2d(Datum a, Datum b, SortSupport ssup)
+{
+	BOX2DF *b1 = (BOX2DF *)a;
+	BOX2DF *b2 = (BOX2DF *)b;
+	uint64_t hash1, hash2;
+	int cmp;
+
+	cmp = memcmp(b1, b2, sizeof(BOX2DF));
+	if (cmp == 0)
+		return 0;
+
+	hash1 = box2df_get_sortable_hash(b1);
+	hash2 = box2df_get_sortable_hash(b2);
+	if (hash1 > hash2)
+		return 1;
+	else if (hash1 < hash2)
+		return -1;
+
+	return cmp > 0 ? 1 : -1;
+}
+
+PG_FUNCTION_INFO_V1(gserialized_gist_sortsupport_2d);
+Datum gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS)
+{
+	SortSupport ssup = (SortSupport)PG_GETARG_POINTER(0);
+
+	ssup->comparator = gserialized_gist_cmp_full_2d;
+	ssup->ssup_extra = NULL;
+	/* Enable sortsupport only on 64 bit Datum */
+	if (ssup->abbreviate && sizeof(Datum) == 8)
+	{
+		ssup->comparator = gserialized_gist_cmp_abbrev_2d;
+		ssup->abbrev_converter = gserialized_gist_abbrev_convert_2d;
+		ssup->abbrev_abort = gserialized_gist_abbrev_abort_2d;
+		ssup->abbrev_full_comparator = gserialized_gist_cmp_full_2d;
+	}
+
+	PG_RETURN_VOID();
 }
 
 /*

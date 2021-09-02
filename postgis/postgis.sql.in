@@ -512,6 +512,12 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal)
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
+-- Availability: 3.2.0
+CREATE OR REPLACE FUNCTION geometry_gist_sortsupport_2d(internal)
+	RETURNS void
+	AS 'MODULE_PATHNAME', 'gserialized_gist_sortsupport_2d'
+	LANGUAGE 'c' STRICT;
+
 -----------------------------------------------------------------------------
 
 -- Availability: 2.1.0
@@ -795,6 +801,10 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	OPERATOR        12       |&> ,
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
 	OPERATOR        14       <#> FOR ORDER BY pg_catalog.float_ops,
+#if POSTGIS_PGSQL_VERSION >= 140
+	-- Availability: 3.2.0
+	FUNCTION        11       geometry_gist_sortsupport_2d (internal),
+#endif
 	FUNCTION        8        geometry_gist_distance_2d (internal, geometry, int4),
 	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
 	FUNCTION        2        geometry_gist_union_2d (bytea, internal),

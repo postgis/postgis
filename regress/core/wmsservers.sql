@@ -23,12 +23,12 @@ SELECT 'Geoserver6', "id",substr(encode(ST_AsBinary(ST_Force2D("pt"),'XDR'),'bas
 
 -- MapServer 5.4 tests
 select 'MapServer1', attname from pg_attribute, pg_constraint, pg_class where pg_constraint.conrelid = pg_class.oid and pg_class.oid = pg_attribute.attrelid and pg_constraint.contype = 'p' and pg_constraint.conkey[1] = pg_attribute.attnum and pg_class.relname = 'wmstest' and pg_table_is_visible(pg_class.oid) and pg_constraint.conkey[2] is null;
-select 'MapServer2', "id",substr(encode(ST_AsBinary(ST_ForceCollection(ST_Force2D("pt")),'NDR'),'base64'),0,16) as geom,"id" from wmstest where pt && ST_GeomFromText('POLYGON((-98.5 32,-98.5 39,-91.5 39,-91.5 32,-98.5 32))',find_srid('','wmstest','pt'));
+select 'MapServer2', "id",substr(encode(ST_AsBinary(ST_ForceCollection(ST_Force2D("pt")),'NDR'),'base64'),0,16) as geom,"id" from wmstest where pt && ST_GeomFromText('POLYGON((-98.5 32,-98.5 39,-91.5 39,-91.5 32,-98.5 32))',find_srid('','wmstest','pt')) order by "id";
 
 -- MapServer 5.6 tests
 select * from wmstest where false limit 0;
 select 'MapServer3', attname from pg_attribute, pg_constraint, pg_class where pg_constraint.conrelid = pg_class.oid and pg_class.oid = pg_attribute.attrelid and pg_constraint.contype = 'p' and pg_constraint.conkey[1] = pg_attribute.attnum and pg_class.relname = 'wmstest' and pg_table_is_visible(pg_class.oid) and pg_constraint.conkey[2] is null;
-select 'MapServer4', "id",substr(encode(ST_AsBinary(ST_ForceCollection(ST_Force2D("pt")),'NDR'),'hex'),0,16) as geom,"id" from wmstest where pt && ST_GeomFromText('POLYGON((-98.5 32,-98.5 39,-91.5 39,-91.5 32,-98.5 32))',find_srid('','wmstest','pt'));
+select 'MapServer4', "id",substr(encode(ST_AsBinary(ST_ForceCollection(ST_Force2D("pt")),'NDR'),'hex'),0,16) as geom,"id" from wmstest where pt && ST_GeomFromText('POLYGON((-98.5 32,-98.5 39,-91.5 39,-91.5 32,-98.5 32))',find_srid('','wmstest','pt')) order by "id";
 
 -- Drop the data table
 SELECT 'Removing the data table...';
