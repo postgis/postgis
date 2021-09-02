@@ -48,7 +48,6 @@ check-unit:
 include core/tests.mk
 include loader/tests.mk
 include dumper/tests.mk
-include real/tests.mk
 
 include runtest.mk
 
@@ -61,7 +60,6 @@ distclean: clean
 	rm -f core/Makefile
 	rm -f loader/Makefile
 	rm -f dumper/Makefile
-	rm -f real/Makefile
 
 staged-install-sfcgal:
 	@if test x"@SFCGAL@" != "x"; then \
