@@ -43,10 +43,12 @@ PostGIS 3.2.0
   - #2175, Avoid creating additional nodes when adding same closed
            line to topology (Sandro Santilli)
   - #4974, Upgrade path for address_standardizer_data_us
-    (Jan Katins of Aiven, Regina Obe)
+           (Jan Katins of Aiven, Regina Obe)
   - #4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)
   - #4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)
   - #4799, Include srs in GeoJSON where it exists in spatial_ref_sys.
+  - #4986, GIST indexes on Postgres 14 are now created faster using Hilbert-sorting method.
+           (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski)
 
  * New features*
   - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
