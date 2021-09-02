@@ -808,9 +808,14 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	FUNCTION        4        geometry_gist_decompress_2d (internal),
 	FUNCTION        5        geometry_gist_penalty_2d (internal, internal, internal),
 	FUNCTION        6        geometry_gist_picksplit_2d (internal, internal),
-	FUNCTION        7        geometry_gist_same_2d (geom1 geometry, geom2 geometry, internal),
-	-- Availability: 3.2.0
-	FUNCTION        11       geometry_gist_sortsupport_2d (internal);
+	FUNCTION        7        geometry_gist_same_2d (geom1 geometry, geom2 geometry, internal);
+
+#if POSTGIS_PGSQL_VERSION >= 140
+
+-- Availability: 3.2.0
+ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist ADD FUNCTION 11 (geometry) geometry_gist_sortsupport_2d (internal);
+
+#endif
 
 -----------------------------------------------------------------------------
 -- GiST ND GEOMETRY-over-GSERIALIZED
