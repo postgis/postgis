@@ -182,7 +182,7 @@ in a cloned postgis repository to later get core dump log output:
 > sudo bash ./ci/travis/logbt --setup
 
 Then you can run the following to get a docker container up and running with the
-correct requirements already in place and the postgis repository (at /postgis)
+correct requirements already in place and the postgis repository (at `/postgis`)
 mounted into it:
 
 > docker run -it --mount type=bind,source=/postgis,target=/src/postgis \
@@ -195,6 +195,18 @@ postgis tests:
 
 You can make customized versions of `run_usan_gcc.sh` to run only specific tests
 and skip redundant steps.
+
+If you need to get debug level logging in the PostgreSQL logs you can get it by
+manipulating configuration in the container. Add these lines after the `./configure`
+step:
+
+```sh
+sed -i 's/POSTGIS_DEBUG_LEVEL [0-9]$/POSTGIS_DEBUG_LEVEL 4/' postgis_config.h
+sed -i 's/#log_min_messages = warning/log_min_messages = debug5/' \
+/var/lib/postgresql/postgresql.conf
+```
+
+Note that PostgreSQL logs are directed to `/tmp/logfile` in fx. `run_usan_gcc.sh`.
 
 INSTALLATION
 ------------
