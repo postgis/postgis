@@ -5,6 +5,9 @@ PostGIS 3.2.0
   - #4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory to build with MVT support.
   - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
   - #4981, ST_StartPoint support any geometry. No longer returns null for non-linestrings.
+  - #4149, ST_AsMVTGeom now preserves more of original geometry's details at scale close to target extent.
+           If you need previous simplifying behaviour, you can ST_Simplify the geometry in advance.
+           (Darafei Praliaskouski)
 
  * Enhancements *
   - #2592, Do not allow CreateTopology to define topologies with SRID < 0
