@@ -17,5 +17,4 @@ RUNTESTFLAGS_INTERNAL += \
 	--before-uninstall-script $(topsrcdir)/regress/real/drop_data.sql
 
 TESTS += \
-	$(topsrcdir)/regress/real/index_tiger_data \
-	$(topsrcdir)/regress/real/gist_presort
+	$(topsrcdir)/regress/real/index_tiger_data
