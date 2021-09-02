@@ -255,23 +255,6 @@ uint64_interleave_2(uint64_t x, uint64_t y)
 	return x | (y << 1);
 }
 
-inline static uint64_t
-uint32_x(uint32_t px, uint32_t py)
-{
-	uint64_t x = px;
-	return x;
-}
-
-inline static uint64_t
-uint32_morton(uint32_t px, uint32_t py)
-{
-	uint64_t x = px;
-	uint64_t y = py;
-
-	return uint64_interleave_2(x, y);
-}
-
-
 /* Based on https://github.com/rawrunprotected/hilbert_curves Public Domain code */
 inline static uint64_t
 uint32_hilbert(uint32_t px, uint32_t py)
@@ -280,13 +263,15 @@ uint32_hilbert(uint32_t px, uint32_t py)
 	uint64_t y = py;
 
 	uint64_t A, B, C, D;
+	uint64_t a, b, c, d;
+	uint64_t i0, i1;
 
 	// Initial prefix scan round, prime with x and y
 	{
-		uint64_t a = x ^ y;
-		uint64_t b = 0xFFFFFFFFULL ^ a;
-		uint64_t c = 0xFFFFFFFFULL ^ (x | y);
-		uint64_t d = x & (y ^ 0xFFFFFFFFULL);
+		a = x ^ y;
+		b = 0xFFFFFFFFULL ^ a;
+		c = 0xFFFFFFFFULL ^ (x | y);
+		d = x & (y ^ 0xFFFFFFFFULL);
 
 		A = a | (b >> 1);
 		B = (a >> 1) ^ a;
@@ -295,10 +280,10 @@ uint32_hilbert(uint32_t px, uint32_t py)
 	}
 
 	{
-		uint64_t a = A;
-		uint64_t b = B;
-		uint64_t c = C;
-		uint64_t d = D;
+		a = A;
+		b = B;
+		c = C;
+		d = D;
 
 		A = ((a & (a >> 2)) ^ (b & (b >> 2)));
 		B = ((a & (b >> 2)) ^ (b & ((a ^ b) >> 2)));
@@ -307,10 +292,10 @@ uint32_hilbert(uint32_t px, uint32_t py)
 	}
 
 	{
-		uint64_t a = A;
-		uint64_t b = B;
-		uint64_t c = C;
-		uint64_t d = D;
+		a = A;
+		b = B;
+		c = C;
+		d = D;
 
 		A = ((a & (a >> 4)) ^ (b & (b >> 4)));
 		B = ((a & (b >> 4)) ^ (b & ((a ^ b) >> 4)));
@@ -319,10 +304,10 @@ uint32_hilbert(uint32_t px, uint32_t py)
 	}
 
 	{
-		uint64_t a = A;
-		uint64_t b = B;
-		uint64_t c = C;
-		uint64_t d = D;
+		a = A;
+		b = B;
+		c = C;
+		d = D;
 
 		A = ((a & (a >> 8)) ^ (b & (b >> 8)));
 		B = ((a & (b >> 8)) ^ (b & ((a ^ b) >> 8)));
@@ -331,22 +316,22 @@ uint32_hilbert(uint32_t px, uint32_t py)
 	}
 
 	{
-		uint64_t a = A;
-		uint64_t b = B;
-		uint64_t c = C;
-		uint64_t d = D;
+		a = A;
+		b = B;
+		c = C;
+		d = D;
 
 		C ^= ((a & (c >> 16)) ^ (b & (d >> 16)));
 		D ^= ((b & (c >> 16)) ^ ((a ^ b) & (d >> 16)));
 	}
 
 	// Undo transformation prefix scan
-	uint64_t a = C ^ (C >> 1);
-	uint64_t b = D ^ (D >> 1);
+	a = C ^ (C >> 1);
+	b = D ^ (D >> 1);
 
 	// Recover index bits
-	uint64_t i0 = x ^ y;
-	uint64_t i1 = b | (0xFFFFFFFFULL ^ (i0 | a));
+	i0 = x ^ y;
+	i1 = b | (0xFFFFFFFFULL ^ (i0 | a));
 
 	return uint64_interleave_2(i0, i1);
 }

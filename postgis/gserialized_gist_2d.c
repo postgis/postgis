@@ -452,6 +452,20 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 	return FLT_MAX;
 }
 
+static inline uint64_t
+box2df_get_sortable_hash(const BOX2DF *b)
+{
+	union floatuint {
+		uint32_t u;
+		float f;
+	} x, y;
+
+	x.f = (b->xmax + b->xmin) / 2;
+	y.f = (b->ymax + b->ymin) / 2;
+
+	return uint32_hilbert(y.u, x.u);
+}
+
 /**
  * Peak into a #GSERIALIZED datum to find its bounding box and some other metadata. If the box is there, copy it out and
  * return it. If not, calculate the box from the full object and return the box based on that. If no box is available,
@@ -1304,96 +1318,71 @@ Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(gserialized_gist_sortsupport_2d);
-/*
- * Hash comparator of `BOX2DF` data type
- * Notice: the GSERIALIZED GiST uses BOX2DF as index elements
-*/
 static int
-hash_cmp(Datum a, Datum b, SortSupport ssup)
+gserialized_gist_cmp_abbrev_2d(Datum x, Datum y, SortSupport ssup)
 {
-	if (a > b)
+	/* Empty is a special case */
+	if (x == 0 || y == 0 || x == y)
+		return 0; /* 0 means "ask bigger comparator" and not equality*/
+	else if (x > y)
 		return 1;
-	else if (a < b)
-		return -1;
 	else
-		return 0;
+		return -1;
 }
 
 static bool
-hash_abbrev_abort(int memtupcount, SortSupport ssup)
+gserialized_gist_abbrev_abort_2d(int memtupcount, SortSupport ssup)
 {
-	return false;
+	return LW_FALSE;
 }
 
-/*
- * `BOX2DF`(geometry) data type converter
-*/
 static Datum
-hash_abbrev_convert(Datum original, SortSupport ssup)
+gserialized_gist_abbrev_convert_2d(Datum original, SortSupport ssup)
 {
-	BOX2DF *box = (BOX2DF *)original;
-
-	union floatuint {
-		uint32_t u;
-		float f;
-	};
-
-	union floatuint x, y;
-	x.f = (box->xmax + box->xmin) / 2;
-	y.f = (box->ymax + box->ymin) / 2;
-
-	return (Datum)uint32_hilbert(y.u, x.u);
+	return box2df_get_sortable_hash((BOX2DF *)original);
 }
 
 static int
-hash_abbrev_full_cmp(Datum a, Datum b, SortSupport ssup)
+gserialized_gist_cmp_full_2d(Datum a, Datum b, SortSupport ssup)
 {
-  union floatint {
-    uint32_t u;
-    float f;
-  };
+	BOX2DF *b1 = (BOX2DF *)a;
+	BOX2DF *b2 = (BOX2DF *)b;
+	uint64_t hash1, hash2;
+	int cmp;
 
-  BOX2DF* box_a = (BOX2DF *)a;
-  BOX2DF* box_b = (BOX2DF *)b;
+	cmp = memcmp(b1, b2, sizeof(BOX2DF));
+	if (cmp == 0)
+		return 0;
 
-  union floatint x, y;
-  x.f = (box_a->xmax + box_a->xmin) / 2;
-  y.f = (box_a->ymax + box_a->ymin) / 2;
-  uint64_t hash_a = uint32_hilbert(y.u, x.u);
-
-  x.f = (box_b->xmax + box_b->xmin) / 2;
-  y.f = (box_b->ymax + box_b->ymin) / 2;
-  uint64_t hash_b = uint32_hilbert(y.u, x.u);
-
-	if (hash_a > hash_b)
+	hash1 = box2df_get_sortable_hash(b1);
+	hash2 = box2df_get_sortable_hash(b2);
+	if (hash1 > hash2)
 		return 1;
-	else if (hash_a < hash_b)
+	else if (hash1 < hash2)
 		return -1;
-	else
-		return 0; 
+
+	return cmp > 0 ? 1 : -1;
 }
 
-Datum 
-gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(gserialized_gist_sortsupport_2d);
+Datum gserialized_gist_sortsupport_2d(PG_FUNCTION_ARGS)
 {
-	SortSupport ssup = (SortSupport) PG_GETARG_POINTER(0);
-	
-	if (ssup->abbreviate)
+	SortSupport ssup = (SortSupport)PG_GETARG_POINTER(0);
+
+	ssup->comparator = gserialized_gist_cmp_full_2d;
+	ssup->ssup_extra = NULL;
+	/* Enable sortsupport only on 64 bit Datum */
+	if (ssup->abbreviate && sizeof(Datum) == 8)
 	{
-		ssup->comparator = hash_cmp;
-		ssup->abbrev_converter = hash_abbrev_convert;
-		ssup->abbrev_abort = hash_abbrev_abort;
-		ssup->abbrev_full_comparator = hash_abbrev_full_cmp;
+		ssup->comparator = gserialized_gist_cmp_abbrev_2d;
+		ssup->abbrev_converter = gserialized_gist_abbrev_convert_2d;
+		ssup->abbrev_abort = gserialized_gist_abbrev_abort_2d;
+		ssup->abbrev_full_comparator = gserialized_gist_cmp_full_2d;
 	}
-	else
-	{
-		ssup->comparator = hash_abbrev_full_cmp; 
-	}
+
 	PG_RETURN_VOID();
 }
 
- 
 /*
  * Adjust BOX2DF b boundaries with insertion of addon.
  */
