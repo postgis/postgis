@@ -14,205 +14,205 @@
 #define flatbuffers_identifier 0
 #endif
 #ifndef flatbuffers_extension
-#define flatbuffers_extension ".bin"
+#define flatbuffers_extension "bin"
 #endif
 
-#define __GeometryType_formal_args , GeometryType_enum_t v0
-#define __GeometryType_call_args , v0
-__flatbuffers_build_scalar(flatbuffers_, GeometryType, GeometryType_enum_t)
-#define __ColumnType_formal_args , ColumnType_enum_t v0
-#define __ColumnType_call_args , v0
-__flatbuffers_build_scalar(flatbuffers_, ColumnType, ColumnType_enum_t)
+#define __FlatGeobuf_GeometryType_formal_args , FlatGeobuf_GeometryType_enum_t v0
+#define __FlatGeobuf_GeometryType_call_args , v0
+__flatbuffers_build_scalar(flatbuffers_, FlatGeobuf_GeometryType, FlatGeobuf_GeometryType_enum_t)
+#define __FlatGeobuf_ColumnType_formal_args , FlatGeobuf_ColumnType_enum_t v0
+#define __FlatGeobuf_ColumnType_call_args , v0
+__flatbuffers_build_scalar(flatbuffers_, FlatGeobuf_ColumnType, FlatGeobuf_ColumnType_enum_t)
 
-static const flatbuffers_voffset_t __Column_required[] = { 0, 0 };
-typedef flatbuffers_ref_t Column_ref_t;
-static Column_ref_t Column_clone(flatbuffers_builder_t *B, Column_table_t t);
-__flatbuffers_build_table(flatbuffers_, Column, 11)
+static const flatbuffers_voffset_t __FlatGeobuf_Column_required[] = { 0, 0 };
+typedef flatbuffers_ref_t FlatGeobuf_Column_ref_t;
+static FlatGeobuf_Column_ref_t FlatGeobuf_Column_clone(flatbuffers_builder_t *B, FlatGeobuf_Column_table_t t);
+__flatbuffers_build_table(flatbuffers_, FlatGeobuf_Column, 11)
 
-static const flatbuffers_voffset_t __Crs_required[] = { 0 };
-typedef flatbuffers_ref_t Crs_ref_t;
-static Crs_ref_t Crs_clone(flatbuffers_builder_t *B, Crs_table_t t);
-__flatbuffers_build_table(flatbuffers_, Crs, 6)
+static const flatbuffers_voffset_t __FlatGeobuf_Crs_required[] = { 0 };
+typedef flatbuffers_ref_t FlatGeobuf_Crs_ref_t;
+static FlatGeobuf_Crs_ref_t FlatGeobuf_Crs_clone(flatbuffers_builder_t *B, FlatGeobuf_Crs_table_t t);
+__flatbuffers_build_table(flatbuffers_, FlatGeobuf_Crs, 6)
 
-static const flatbuffers_voffset_t __Header_required[] = { 0 };
-typedef flatbuffers_ref_t Header_ref_t;
-static Header_ref_t Header_clone(flatbuffers_builder_t *B, Header_table_t t);
-__flatbuffers_build_table(flatbuffers_, Header, 14)
+static const flatbuffers_voffset_t __FlatGeobuf_Header_required[] = { 0 };
+typedef flatbuffers_ref_t FlatGeobuf_Header_ref_t;
+static FlatGeobuf_Header_ref_t FlatGeobuf_Header_clone(flatbuffers_builder_t *B, FlatGeobuf_Header_table_t t);
+__flatbuffers_build_table(flatbuffers_, FlatGeobuf_Header, 14)
 
-#define __Column_formal_args ,\
-  flatbuffers_string_ref_t v0, ColumnType_enum_t v1, flatbuffers_string_ref_t v2, flatbuffers_string_ref_t v3,\
+#define __FlatGeobuf_Column_formal_args ,\
+  flatbuffers_string_ref_t v0, FlatGeobuf_ColumnType_enum_t v1, flatbuffers_string_ref_t v2, flatbuffers_string_ref_t v3,\
   int32_t v4, int32_t v5, int32_t v6, flatbuffers_bool_t v7,\
   flatbuffers_bool_t v8, flatbuffers_bool_t v9, flatbuffers_string_ref_t v10
-#define __Column_call_args ,\
+#define __FlatGeobuf_Column_call_args ,\
   v0, v1, v2, v3,\
   v4, v5, v6, v7,\
   v8, v9, v10
-static inline Column_ref_t Column_create(flatbuffers_builder_t *B __Column_formal_args);
-__flatbuffers_build_table_prolog(flatbuffers_, Column, Column_file_identifier, Column_type_identifier)
+static inline FlatGeobuf_Column_ref_t FlatGeobuf_Column_create(flatbuffers_builder_t *B __FlatGeobuf_Column_formal_args);
+__flatbuffers_build_table_prolog(flatbuffers_, FlatGeobuf_Column, FlatGeobuf_Column_file_identifier, FlatGeobuf_Column_type_identifier)
 
-#define __Crs_formal_args ,\
+#define __FlatGeobuf_Crs_formal_args ,\
   flatbuffers_string_ref_t v0, int32_t v1, flatbuffers_string_ref_t v2, flatbuffers_string_ref_t v3, flatbuffers_string_ref_t v4, flatbuffers_string_ref_t v5
-#define __Crs_call_args ,\
+#define __FlatGeobuf_Crs_call_args ,\
   v0, v1, v2, v3, v4, v5
-static inline Crs_ref_t Crs_create(flatbuffers_builder_t *B __Crs_formal_args);
-__flatbuffers_build_table_prolog(flatbuffers_, Crs, Crs_file_identifier, Crs_type_identifier)
+static inline FlatGeobuf_Crs_ref_t FlatGeobuf_Crs_create(flatbuffers_builder_t *B __FlatGeobuf_Crs_formal_args);
+__flatbuffers_build_table_prolog(flatbuffers_, FlatGeobuf_Crs, FlatGeobuf_Crs_file_identifier, FlatGeobuf_Crs_type_identifier)
 
-#define __Header_formal_args ,\
-  flatbuffers_string_ref_t v0, flatbuffers_double_vec_ref_t v1, GeometryType_enum_t v2, flatbuffers_bool_t v3,\
-  flatbuffers_bool_t v4, flatbuffers_bool_t v5, flatbuffers_bool_t v6, Column_vec_ref_t v7,\
-  uint64_t v8, uint16_t v9, Crs_ref_t v10, flatbuffers_string_ref_t v11, flatbuffers_string_ref_t v12, flatbuffers_string_ref_t v13
-#define __Header_call_args ,\
+#define __FlatGeobuf_Header_formal_args ,\
+  flatbuffers_string_ref_t v0, flatbuffers_double_vec_ref_t v1, FlatGeobuf_GeometryType_enum_t v2, flatbuffers_bool_t v3,\
+  flatbuffers_bool_t v4, flatbuffers_bool_t v5, flatbuffers_bool_t v6, FlatGeobuf_Column_vec_ref_t v7,\
+  uint64_t v8, uint16_t v9, FlatGeobuf_Crs_ref_t v10, flatbuffers_string_ref_t v11, flatbuffers_string_ref_t v12, flatbuffers_string_ref_t v13
+#define __FlatGeobuf_Header_call_args ,\
   v0, v1, v2, v3,\
   v4, v5, v6, v7,\
   v8, v9, v10, v11, v12, v13
-static inline Header_ref_t Header_create(flatbuffers_builder_t *B __Header_formal_args);
-__flatbuffers_build_table_prolog(flatbuffers_, Header, Header_file_identifier, Header_type_identifier)
+static inline FlatGeobuf_Header_ref_t FlatGeobuf_Header_create(flatbuffers_builder_t *B __FlatGeobuf_Header_formal_args);
+__flatbuffers_build_table_prolog(flatbuffers_, FlatGeobuf_Header, FlatGeobuf_Header_file_identifier, FlatGeobuf_Header_type_identifier)
 
-__flatbuffers_build_string_field(0, flatbuffers_, Column_name, Column)
-__flatbuffers_build_scalar_field(1, flatbuffers_, Column_type, ColumnType, ColumnType_enum_t, 1, 1, UINT8_C(0), Column)
-__flatbuffers_build_string_field(2, flatbuffers_, Column_title, Column)
-__flatbuffers_build_string_field(3, flatbuffers_, Column_description, Column)
-__flatbuffers_build_scalar_field(4, flatbuffers_, Column_width, flatbuffers_int32, int32_t, 4, 4, INT32_C(-1), Column)
-__flatbuffers_build_scalar_field(5, flatbuffers_, Column_precision, flatbuffers_int32, int32_t, 4, 4, INT32_C(-1), Column)
-__flatbuffers_build_scalar_field(6, flatbuffers_, Column_scale, flatbuffers_int32, int32_t, 4, 4, INT32_C(-1), Column)
-__flatbuffers_build_scalar_field(7, flatbuffers_, Column_nullable, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(1), Column)
-__flatbuffers_build_scalar_field(8, flatbuffers_, Column_unique, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), Column)
-__flatbuffers_build_scalar_field(9, flatbuffers_, Column_primary_key, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), Column)
-__flatbuffers_build_string_field(10, flatbuffers_, Column_metadata, Column)
+__flatbuffers_build_string_field(0, flatbuffers_, FlatGeobuf_Column_name, FlatGeobuf_Column)
+__flatbuffers_build_scalar_field(1, flatbuffers_, FlatGeobuf_Column_type, FlatGeobuf_ColumnType, FlatGeobuf_ColumnType_enum_t, 1, 1, UINT8_C(0), FlatGeobuf_Column)
+__flatbuffers_build_string_field(2, flatbuffers_, FlatGeobuf_Column_title, FlatGeobuf_Column)
+__flatbuffers_build_string_field(3, flatbuffers_, FlatGeobuf_Column_description, FlatGeobuf_Column)
+__flatbuffers_build_scalar_field(4, flatbuffers_, FlatGeobuf_Column_width, flatbuffers_int32, int32_t, 4, 4, INT32_C(-1), FlatGeobuf_Column)
+__flatbuffers_build_scalar_field(5, flatbuffers_, FlatGeobuf_Column_precision, flatbuffers_int32, int32_t, 4, 4, INT32_C(-1), FlatGeobuf_Column)
+__flatbuffers_build_scalar_field(6, flatbuffers_, FlatGeobuf_Column_scale, flatbuffers_int32, int32_t, 4, 4, INT32_C(-1), FlatGeobuf_Column)
+__flatbuffers_build_scalar_field(7, flatbuffers_, FlatGeobuf_Column_nullable, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(1), FlatGeobuf_Column)
+__flatbuffers_build_scalar_field(8, flatbuffers_, FlatGeobuf_Column_unique, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), FlatGeobuf_Column)
+__flatbuffers_build_scalar_field(9, flatbuffers_, FlatGeobuf_Column_primary_key, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), FlatGeobuf_Column)
+__flatbuffers_build_string_field(10, flatbuffers_, FlatGeobuf_Column_metadata, FlatGeobuf_Column)
 
-static inline Column_ref_t Column_create(flatbuffers_builder_t *B __Column_formal_args)
+static inline FlatGeobuf_Column_ref_t FlatGeobuf_Column_create(flatbuffers_builder_t *B __FlatGeobuf_Column_formal_args)
 {
-    if (Column_start(B)
-        || Column_name_add(B, v0)
-        || Column_title_add(B, v2)
-        || Column_description_add(B, v3)
-        || Column_width_add(B, v4)
-        || Column_precision_add(B, v5)
-        || Column_scale_add(B, v6)
-        || Column_metadata_add(B, v10)
-        || Column_type_add(B, v1)
-        || Column_nullable_add(B, v7)
-        || Column_unique_add(B, v8)
-        || Column_primary_key_add(B, v9)) {
+    if (FlatGeobuf_Column_start(B)
+        || FlatGeobuf_Column_name_add(B, v0)
+        || FlatGeobuf_Column_title_add(B, v2)
+        || FlatGeobuf_Column_description_add(B, v3)
+        || FlatGeobuf_Column_width_add(B, v4)
+        || FlatGeobuf_Column_precision_add(B, v5)
+        || FlatGeobuf_Column_scale_add(B, v6)
+        || FlatGeobuf_Column_metadata_add(B, v10)
+        || FlatGeobuf_Column_type_add(B, v1)
+        || FlatGeobuf_Column_nullable_add(B, v7)
+        || FlatGeobuf_Column_unique_add(B, v8)
+        || FlatGeobuf_Column_primary_key_add(B, v9)) {
         return 0;
     }
-    return Column_end(B);
+    return FlatGeobuf_Column_end(B);
 }
 
-static Column_ref_t Column_clone(flatbuffers_builder_t *B, Column_table_t t)
+static FlatGeobuf_Column_ref_t FlatGeobuf_Column_clone(flatbuffers_builder_t *B, FlatGeobuf_Column_table_t t)
 {
     __flatbuffers_memoize_begin(B, t);
-    if (Column_start(B)
-        || Column_name_pick(B, t)
-        || Column_title_pick(B, t)
-        || Column_description_pick(B, t)
-        || Column_width_pick(B, t)
-        || Column_precision_pick(B, t)
-        || Column_scale_pick(B, t)
-        || Column_metadata_pick(B, t)
-        || Column_type_pick(B, t)
-        || Column_nullable_pick(B, t)
-        || Column_unique_pick(B, t)
-        || Column_primary_key_pick(B, t)) {
+    if (FlatGeobuf_Column_start(B)
+        || FlatGeobuf_Column_name_pick(B, t)
+        || FlatGeobuf_Column_title_pick(B, t)
+        || FlatGeobuf_Column_description_pick(B, t)
+        || FlatGeobuf_Column_width_pick(B, t)
+        || FlatGeobuf_Column_precision_pick(B, t)
+        || FlatGeobuf_Column_scale_pick(B, t)
+        || FlatGeobuf_Column_metadata_pick(B, t)
+        || FlatGeobuf_Column_type_pick(B, t)
+        || FlatGeobuf_Column_nullable_pick(B, t)
+        || FlatGeobuf_Column_unique_pick(B, t)
+        || FlatGeobuf_Column_primary_key_pick(B, t)) {
         return 0;
     }
-    __flatbuffers_memoize_end(B, t, Column_end(B));
+    __flatbuffers_memoize_end(B, t, FlatGeobuf_Column_end(B));
 }
 
-__flatbuffers_build_string_field(0, flatbuffers_, Crs_org, Crs)
-__flatbuffers_build_scalar_field(1, flatbuffers_, Crs_code, flatbuffers_int32, int32_t, 4, 4, INT32_C(0), Crs)
-__flatbuffers_build_string_field(2, flatbuffers_, Crs_name, Crs)
-__flatbuffers_build_string_field(3, flatbuffers_, Crs_description, Crs)
-__flatbuffers_build_string_field(4, flatbuffers_, Crs_wkt, Crs)
-__flatbuffers_build_string_field(5, flatbuffers_, Crs_code_string, Crs)
+__flatbuffers_build_string_field(0, flatbuffers_, FlatGeobuf_Crs_org, FlatGeobuf_Crs)
+__flatbuffers_build_scalar_field(1, flatbuffers_, FlatGeobuf_Crs_code, flatbuffers_int32, int32_t, 4, 4, INT32_C(0), FlatGeobuf_Crs)
+__flatbuffers_build_string_field(2, flatbuffers_, FlatGeobuf_Crs_name, FlatGeobuf_Crs)
+__flatbuffers_build_string_field(3, flatbuffers_, FlatGeobuf_Crs_description, FlatGeobuf_Crs)
+__flatbuffers_build_string_field(4, flatbuffers_, FlatGeobuf_Crs_wkt, FlatGeobuf_Crs)
+__flatbuffers_build_string_field(5, flatbuffers_, FlatGeobuf_Crs_code_string, FlatGeobuf_Crs)
 
-static inline Crs_ref_t Crs_create(flatbuffers_builder_t *B __Crs_formal_args)
+static inline FlatGeobuf_Crs_ref_t FlatGeobuf_Crs_create(flatbuffers_builder_t *B __FlatGeobuf_Crs_formal_args)
 {
-    if (Crs_start(B)
-        || Crs_org_add(B, v0)
-        || Crs_code_add(B, v1)
-        || Crs_name_add(B, v2)
-        || Crs_description_add(B, v3)
-        || Crs_wkt_add(B, v4)
-        || Crs_code_string_add(B, v5)) {
+    if (FlatGeobuf_Crs_start(B)
+        || FlatGeobuf_Crs_org_add(B, v0)
+        || FlatGeobuf_Crs_code_add(B, v1)
+        || FlatGeobuf_Crs_name_add(B, v2)
+        || FlatGeobuf_Crs_description_add(B, v3)
+        || FlatGeobuf_Crs_wkt_add(B, v4)
+        || FlatGeobuf_Crs_code_string_add(B, v5)) {
         return 0;
     }
-    return Crs_end(B);
+    return FlatGeobuf_Crs_end(B);
 }
 
-static Crs_ref_t Crs_clone(flatbuffers_builder_t *B, Crs_table_t t)
-{
-    __flatbuffers_memoize_begin(B, t);
-    if (Crs_start(B)
-        || Crs_org_pick(B, t)
-        || Crs_code_pick(B, t)
-        || Crs_name_pick(B, t)
-        || Crs_description_pick(B, t)
-        || Crs_wkt_pick(B, t)
-        || Crs_code_string_pick(B, t)) {
-        return 0;
-    }
-    __flatbuffers_memoize_end(B, t, Crs_end(B));
-}
-
-__flatbuffers_build_string_field(0, flatbuffers_, Header_name, Header)
-__flatbuffers_build_vector_field(1, flatbuffers_, Header_envelope, flatbuffers_double, double, Header)
-__flatbuffers_build_scalar_field(2, flatbuffers_, Header_geometry_type, GeometryType, GeometryType_enum_t, 1, 1, UINT8_C(0), Header)
-__flatbuffers_build_scalar_field(3, flatbuffers_, Header_hasZ, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), Header)
-__flatbuffers_build_scalar_field(4, flatbuffers_, Header_hasM, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), Header)
-__flatbuffers_build_scalar_field(5, flatbuffers_, Header_hasT, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), Header)
-__flatbuffers_build_scalar_field(6, flatbuffers_, Header_hasTM, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), Header)
-__flatbuffers_build_table_vector_field(7, flatbuffers_, Header_columns, Column, Header)
-__flatbuffers_build_scalar_field(8, flatbuffers_, Header_features_count, flatbuffers_uint64, uint64_t, 8, 8, UINT64_C(0), Header)
-__flatbuffers_build_scalar_field(9, flatbuffers_, Header_index_node_size, flatbuffers_uint16, uint16_t, 2, 2, UINT16_C(16), Header)
-__flatbuffers_build_table_field(10, flatbuffers_, Header_crs, Crs, Header)
-__flatbuffers_build_string_field(11, flatbuffers_, Header_title, Header)
-__flatbuffers_build_string_field(12, flatbuffers_, Header_description, Header)
-__flatbuffers_build_string_field(13, flatbuffers_, Header_metadata, Header)
-
-static inline Header_ref_t Header_create(flatbuffers_builder_t *B __Header_formal_args)
-{
-    if (Header_start(B)
-        || Header_features_count_add(B, v8)
-        || Header_name_add(B, v0)
-        || Header_envelope_add(B, v1)
-        || Header_columns_add(B, v7)
-        || Header_crs_add(B, v10)
-        || Header_title_add(B, v11)
-        || Header_description_add(B, v12)
-        || Header_metadata_add(B, v13)
-        || Header_index_node_size_add(B, v9)
-        || Header_geometry_type_add(B, v2)
-        || Header_hasZ_add(B, v3)
-        || Header_hasM_add(B, v4)
-        || Header_hasT_add(B, v5)
-        || Header_hasTM_add(B, v6)) {
-        return 0;
-    }
-    return Header_end(B);
-}
-
-static Header_ref_t Header_clone(flatbuffers_builder_t *B, Header_table_t t)
+static FlatGeobuf_Crs_ref_t FlatGeobuf_Crs_clone(flatbuffers_builder_t *B, FlatGeobuf_Crs_table_t t)
 {
     __flatbuffers_memoize_begin(B, t);
-    if (Header_start(B)
-        || Header_features_count_pick(B, t)
-        || Header_name_pick(B, t)
-        || Header_envelope_pick(B, t)
-        || Header_columns_pick(B, t)
-        || Header_crs_pick(B, t)
-        || Header_title_pick(B, t)
-        || Header_description_pick(B, t)
-        || Header_metadata_pick(B, t)
-        || Header_index_node_size_pick(B, t)
-        || Header_geometry_type_pick(B, t)
-        || Header_hasZ_pick(B, t)
-        || Header_hasM_pick(B, t)
-        || Header_hasT_pick(B, t)
-        || Header_hasTM_pick(B, t)) {
+    if (FlatGeobuf_Crs_start(B)
+        || FlatGeobuf_Crs_org_pick(B, t)
+        || FlatGeobuf_Crs_code_pick(B, t)
+        || FlatGeobuf_Crs_name_pick(B, t)
+        || FlatGeobuf_Crs_description_pick(B, t)
+        || FlatGeobuf_Crs_wkt_pick(B, t)
+        || FlatGeobuf_Crs_code_string_pick(B, t)) {
         return 0;
     }
-    __flatbuffers_memoize_end(B, t, Header_end(B));
+    __flatbuffers_memoize_end(B, t, FlatGeobuf_Crs_end(B));
+}
+
+__flatbuffers_build_string_field(0, flatbuffers_, FlatGeobuf_Header_name, FlatGeobuf_Header)
+__flatbuffers_build_vector_field(1, flatbuffers_, FlatGeobuf_Header_envelope, flatbuffers_double, double, FlatGeobuf_Header)
+__flatbuffers_build_scalar_field(2, flatbuffers_, FlatGeobuf_Header_geometry_type, FlatGeobuf_GeometryType, FlatGeobuf_GeometryType_enum_t, 1, 1, UINT8_C(0), FlatGeobuf_Header)
+__flatbuffers_build_scalar_field(3, flatbuffers_, FlatGeobuf_Header_has_z, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), FlatGeobuf_Header)
+__flatbuffers_build_scalar_field(4, flatbuffers_, FlatGeobuf_Header_has_m, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), FlatGeobuf_Header)
+__flatbuffers_build_scalar_field(5, flatbuffers_, FlatGeobuf_Header_has_t, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), FlatGeobuf_Header)
+__flatbuffers_build_scalar_field(6, flatbuffers_, FlatGeobuf_Header_has_tm, flatbuffers_bool, flatbuffers_bool_t, 1, 1, UINT8_C(0), FlatGeobuf_Header)
+__flatbuffers_build_table_vector_field(7, flatbuffers_, FlatGeobuf_Header_columns, FlatGeobuf_Column, FlatGeobuf_Header)
+__flatbuffers_build_scalar_field(8, flatbuffers_, FlatGeobuf_Header_features_count, flatbuffers_uint64, uint64_t, 8, 8, UINT64_C(0), FlatGeobuf_Header)
+__flatbuffers_build_scalar_field(9, flatbuffers_, FlatGeobuf_Header_index_node_size, flatbuffers_uint16, uint16_t, 2, 2, UINT16_C(16), FlatGeobuf_Header)
+__flatbuffers_build_table_field(10, flatbuffers_, FlatGeobuf_Header_crs, FlatGeobuf_Crs, FlatGeobuf_Header)
+__flatbuffers_build_string_field(11, flatbuffers_, FlatGeobuf_Header_title, FlatGeobuf_Header)
+__flatbuffers_build_string_field(12, flatbuffers_, FlatGeobuf_Header_description, FlatGeobuf_Header)
+__flatbuffers_build_string_field(13, flatbuffers_, FlatGeobuf_Header_metadata, FlatGeobuf_Header)
+
+static inline FlatGeobuf_Header_ref_t FlatGeobuf_Header_create(flatbuffers_builder_t *B __FlatGeobuf_Header_formal_args)
+{
+    if (FlatGeobuf_Header_start(B)
+        || FlatGeobuf_Header_features_count_add(B, v8)
+        || FlatGeobuf_Header_name_add(B, v0)
+        || FlatGeobuf_Header_envelope_add(B, v1)
+        || FlatGeobuf_Header_columns_add(B, v7)
+        || FlatGeobuf_Header_crs_add(B, v10)
+        || FlatGeobuf_Header_title_add(B, v11)
+        || FlatGeobuf_Header_description_add(B, v12)
+        || FlatGeobuf_Header_metadata_add(B, v13)
+        || FlatGeobuf_Header_index_node_size_add(B, v9)
+        || FlatGeobuf_Header_geometry_type_add(B, v2)
+        || FlatGeobuf_Header_has_z_add(B, v3)
+        || FlatGeobuf_Header_has_m_add(B, v4)
+        || FlatGeobuf_Header_has_t_add(B, v5)
+        || FlatGeobuf_Header_has_tm_add(B, v6)) {
+        return 0;
+    }
+    return FlatGeobuf_Header_end(B);
+}
+
+static FlatGeobuf_Header_ref_t FlatGeobuf_Header_clone(flatbuffers_builder_t *B, FlatGeobuf_Header_table_t t)
+{
+    __flatbuffers_memoize_begin(B, t);
+    if (FlatGeobuf_Header_start(B)
+        || FlatGeobuf_Header_features_count_pick(B, t)
+        || FlatGeobuf_Header_name_pick(B, t)
+        || FlatGeobuf_Header_envelope_pick(B, t)
+        || FlatGeobuf_Header_columns_pick(B, t)
+        || FlatGeobuf_Header_crs_pick(B, t)
+        || FlatGeobuf_Header_title_pick(B, t)
+        || FlatGeobuf_Header_description_pick(B, t)
+        || FlatGeobuf_Header_metadata_pick(B, t)
+        || FlatGeobuf_Header_index_node_size_pick(B, t)
+        || FlatGeobuf_Header_geometry_type_pick(B, t)
+        || FlatGeobuf_Header_has_z_pick(B, t)
+        || FlatGeobuf_Header_has_m_pick(B, t)
+        || FlatGeobuf_Header_has_t_pick(B, t)
+        || FlatGeobuf_Header_has_tm_pick(B, t)) {
+        return 0;
+    }
+    __flatbuffers_memoize_end(B, t, FlatGeobuf_Header_end(B));
 }
 
 #include "flatcc/flatcc_epilogue.h"

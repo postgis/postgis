@@ -18,67 +18,73 @@
 #define flatbuffers_identifier 0
 #endif
 #ifndef flatbuffers_extension
-#define flatbuffers_extension ".bin"
+#define flatbuffers_extension "bin"
 #endif
 
 
-typedef const struct Geometry_table *Geometry_table_t;
-typedef struct Geometry_table *Geometry_mutable_table_t;
-typedef const flatbuffers_uoffset_t *Geometry_vec_t;
-typedef flatbuffers_uoffset_t *Geometry_mutable_vec_t;
-typedef const struct Feature_table *Feature_table_t;
-typedef struct Feature_table *Feature_mutable_table_t;
-typedef const flatbuffers_uoffset_t *Feature_vec_t;
-typedef flatbuffers_uoffset_t *Feature_mutable_vec_t;
-#ifndef Geometry_file_identifier
-#define Geometry_file_identifier flatbuffers_identifier
+typedef const struct FlatGeobuf_Geometry_table *FlatGeobuf_Geometry_table_t;
+typedef struct FlatGeobuf_Geometry_table *FlatGeobuf_Geometry_mutable_table_t;
+typedef const flatbuffers_uoffset_t *FlatGeobuf_Geometry_vec_t;
+typedef flatbuffers_uoffset_t *FlatGeobuf_Geometry_mutable_vec_t;
+typedef const struct FlatGeobuf_Feature_table *FlatGeobuf_Feature_table_t;
+typedef struct FlatGeobuf_Feature_table *FlatGeobuf_Feature_mutable_table_t;
+typedef const flatbuffers_uoffset_t *FlatGeobuf_Feature_vec_t;
+typedef flatbuffers_uoffset_t *FlatGeobuf_Feature_mutable_vec_t;
+#ifndef FlatGeobuf_Geometry_file_identifier
+#define FlatGeobuf_Geometry_file_identifier 0
 #endif
-/* deprecated, use Geometry_file_identifier */
-#ifndef Geometry_identifier
-#define Geometry_identifier flatbuffers_identifier
+/* deprecated, use FlatGeobuf_Geometry_file_identifier */
+#ifndef FlatGeobuf_Geometry_identifier
+#define FlatGeobuf_Geometry_identifier 0
 #endif
-#define Geometry_type_hash ((flatbuffers_thash_t)0x243eddb1)
-#define Geometry_type_identifier "\xb1\xdd\x3e\x24"
-#ifndef Feature_file_identifier
-#define Feature_file_identifier flatbuffers_identifier
+#define FlatGeobuf_Geometry_type_hash ((flatbuffers_thash_t)0xe2c921c2)
+#define FlatGeobuf_Geometry_type_identifier "\xc2\x21\xc9\xe2"
+#ifndef FlatGeobuf_Geometry_file_extension
+#define FlatGeobuf_Geometry_file_extension "bin"
 #endif
-/* deprecated, use Feature_file_identifier */
-#ifndef Feature_identifier
-#define Feature_identifier flatbuffers_identifier
+#ifndef FlatGeobuf_Feature_file_identifier
+#define FlatGeobuf_Feature_file_identifier 0
 #endif
-#define Feature_type_hash ((flatbuffers_thash_t)0xfe9102dd)
-#define Feature_type_identifier "\xdd\x02\x91\xfe"
+/* deprecated, use FlatGeobuf_Feature_file_identifier */
+#ifndef FlatGeobuf_Feature_identifier
+#define FlatGeobuf_Feature_identifier 0
+#endif
+#define FlatGeobuf_Feature_type_hash ((flatbuffers_thash_t)0xa98fcf90)
+#define FlatGeobuf_Feature_type_identifier "\x90\xcf\x8f\xa9"
+#ifndef FlatGeobuf_Feature_file_extension
+#define FlatGeobuf_Feature_file_extension "bin"
+#endif
 
 
 
-struct Geometry_table { uint8_t unused__; };
+struct FlatGeobuf_Geometry_table { uint8_t unused__; };
 
-static inline size_t Geometry_vec_len(Geometry_vec_t vec)
+static inline size_t FlatGeobuf_Geometry_vec_len(FlatGeobuf_Geometry_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline Geometry_table_t Geometry_vec_at(Geometry_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(Geometry_table_t, vec, i, 0)
-__flatbuffers_table_as_root(Geometry)
+static inline FlatGeobuf_Geometry_table_t FlatGeobuf_Geometry_vec_at(FlatGeobuf_Geometry_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(FlatGeobuf_Geometry_table_t, vec, i, 0)
+__flatbuffers_table_as_root(FlatGeobuf_Geometry)
 
-__flatbuffers_define_vector_field(0, Geometry, ends, flatbuffers_uint32_vec_t, 0)
-__flatbuffers_define_vector_field(1, Geometry, xy, flatbuffers_double_vec_t, 0)
-__flatbuffers_define_vector_field(2, Geometry, z, flatbuffers_double_vec_t, 0)
-__flatbuffers_define_vector_field(3, Geometry, m, flatbuffers_double_vec_t, 0)
-__flatbuffers_define_vector_field(4, Geometry, t, flatbuffers_double_vec_t, 0)
-__flatbuffers_define_vector_field(5, Geometry, tm, flatbuffers_uint64_vec_t, 0)
-__flatbuffers_define_scalar_field(6, Geometry, type, GeometryType, GeometryType_enum_t, UINT8_C(0))
-__flatbuffers_define_vector_field(7, Geometry, parts, Geometry_vec_t, 0)
+__flatbuffers_define_vector_field(0, FlatGeobuf_Geometry, ends, flatbuffers_uint32_vec_t, 0)
+__flatbuffers_define_vector_field(1, FlatGeobuf_Geometry, xy, flatbuffers_double_vec_t, 0)
+__flatbuffers_define_vector_field(2, FlatGeobuf_Geometry, z, flatbuffers_double_vec_t, 0)
+__flatbuffers_define_vector_field(3, FlatGeobuf_Geometry, m, flatbuffers_double_vec_t, 0)
+__flatbuffers_define_vector_field(4, FlatGeobuf_Geometry, t, flatbuffers_double_vec_t, 0)
+__flatbuffers_define_vector_field(5, FlatGeobuf_Geometry, tm, flatbuffers_uint64_vec_t, 0)
+__flatbuffers_define_scalar_field(6, FlatGeobuf_Geometry, type, FlatGeobuf_GeometryType, FlatGeobuf_GeometryType_enum_t, UINT8_C(0))
+__flatbuffers_define_vector_field(7, FlatGeobuf_Geometry, parts, FlatGeobuf_Geometry_vec_t, 0)
 
-struct Feature_table { uint8_t unused__; };
+struct FlatGeobuf_Feature_table { uint8_t unused__; };
 
-static inline size_t Feature_vec_len(Feature_vec_t vec)
+static inline size_t FlatGeobuf_Feature_vec_len(FlatGeobuf_Feature_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline Feature_table_t Feature_vec_at(Feature_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(Feature_table_t, vec, i, 0)
-__flatbuffers_table_as_root(Feature)
+static inline FlatGeobuf_Feature_table_t FlatGeobuf_Feature_vec_at(FlatGeobuf_Feature_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(FlatGeobuf_Feature_table_t, vec, i, 0)
+__flatbuffers_table_as_root(FlatGeobuf_Feature)
 
-__flatbuffers_define_table_field(0, Feature, geometry, Geometry_table_t, 0)
-__flatbuffers_define_vector_field(1, Feature, properties, flatbuffers_uint8_vec_t, 0)
-__flatbuffers_define_vector_field(2, Feature, columns, Column_vec_t, 0)
+__flatbuffers_define_table_field(0, FlatGeobuf_Feature, geometry, FlatGeobuf_Geometry_table_t, 0)
+__flatbuffers_define_vector_field(1, FlatGeobuf_Feature, properties, flatbuffers_uint8_vec_t, 0)
+__flatbuffers_define_vector_field(2, FlatGeobuf_Feature, columns, FlatGeobuf_Column_vec_t, 0)
 
 
 #include "flatcc/flatcc_epilogue.h"

@@ -15,242 +15,251 @@
 #define flatbuffers_identifier 0
 #endif
 #ifndef flatbuffers_extension
-#define flatbuffers_extension ".bin"
+#define flatbuffers_extension "bin"
 #endif
 
 
-typedef const struct Column_table *Column_table_t;
-typedef struct Column_table *Column_mutable_table_t;
-typedef const flatbuffers_uoffset_t *Column_vec_t;
-typedef flatbuffers_uoffset_t *Column_mutable_vec_t;
-typedef const struct Crs_table *Crs_table_t;
-typedef struct Crs_table *Crs_mutable_table_t;
-typedef const flatbuffers_uoffset_t *Crs_vec_t;
-typedef flatbuffers_uoffset_t *Crs_mutable_vec_t;
-typedef const struct Header_table *Header_table_t;
-typedef struct Header_table *Header_mutable_table_t;
-typedef const flatbuffers_uoffset_t *Header_vec_t;
-typedef flatbuffers_uoffset_t *Header_mutable_vec_t;
-#ifndef Column_file_identifier
-#define Column_file_identifier flatbuffers_identifier
+typedef const struct FlatGeobuf_Column_table *FlatGeobuf_Column_table_t;
+typedef struct FlatGeobuf_Column_table *FlatGeobuf_Column_mutable_table_t;
+typedef const flatbuffers_uoffset_t *FlatGeobuf_Column_vec_t;
+typedef flatbuffers_uoffset_t *FlatGeobuf_Column_mutable_vec_t;
+typedef const struct FlatGeobuf_Crs_table *FlatGeobuf_Crs_table_t;
+typedef struct FlatGeobuf_Crs_table *FlatGeobuf_Crs_mutable_table_t;
+typedef const flatbuffers_uoffset_t *FlatGeobuf_Crs_vec_t;
+typedef flatbuffers_uoffset_t *FlatGeobuf_Crs_mutable_vec_t;
+typedef const struct FlatGeobuf_Header_table *FlatGeobuf_Header_table_t;
+typedef struct FlatGeobuf_Header_table *FlatGeobuf_Header_mutable_table_t;
+typedef const flatbuffers_uoffset_t *FlatGeobuf_Header_vec_t;
+typedef flatbuffers_uoffset_t *FlatGeobuf_Header_mutable_vec_t;
+#ifndef FlatGeobuf_Column_file_identifier
+#define FlatGeobuf_Column_file_identifier 0
 #endif
-/* deprecated, use Column_file_identifier */
-#ifndef Column_identifier
-#define Column_identifier flatbuffers_identifier
+/* deprecated, use FlatGeobuf_Column_file_identifier */
+#ifndef FlatGeobuf_Column_identifier
+#define FlatGeobuf_Column_identifier 0
 #endif
-#define Column_type_hash ((flatbuffers_thash_t)0x22c12a47)
-#define Column_type_identifier "\x47\x2a\xc1\x22"
-#ifndef Crs_file_identifier
-#define Crs_file_identifier flatbuffers_identifier
+#define FlatGeobuf_Column_type_hash ((flatbuffers_thash_t)0xb0d205e4)
+#define FlatGeobuf_Column_type_identifier "\xe4\x05\xd2\xb0"
+#ifndef FlatGeobuf_Column_file_extension
+#define FlatGeobuf_Column_file_extension "bin"
 #endif
-/* deprecated, use Crs_file_identifier */
-#ifndef Crs_identifier
-#define Crs_identifier flatbuffers_identifier
+#ifndef FlatGeobuf_Crs_file_identifier
+#define FlatGeobuf_Crs_file_identifier 0
 #endif
-#define Crs_type_hash ((flatbuffers_thash_t)0x55d10a89)
-#define Crs_type_identifier "\x89\x0a\xd1\x55"
-#ifndef Header_file_identifier
-#define Header_file_identifier flatbuffers_identifier
+/* deprecated, use FlatGeobuf_Crs_file_identifier */
+#ifndef FlatGeobuf_Crs_identifier
+#define FlatGeobuf_Crs_identifier 0
 #endif
-/* deprecated, use Header_file_identifier */
-#ifndef Header_identifier
-#define Header_identifier flatbuffers_identifier
+#define FlatGeobuf_Crs_type_hash ((flatbuffers_thash_t)0xbc7a2c64)
+#define FlatGeobuf_Crs_type_identifier "\x64\x2c\x7a\xbc"
+#ifndef FlatGeobuf_Crs_file_extension
+#define FlatGeobuf_Crs_file_extension "bin"
 #endif
-#define Header_type_hash ((flatbuffers_thash_t)0x114f9980)
-#define Header_type_identifier "\x80\x99\x4f\x11"
+#ifndef FlatGeobuf_Header_file_identifier
+#define FlatGeobuf_Header_file_identifier 0
+#endif
+/* deprecated, use FlatGeobuf_Header_file_identifier */
+#ifndef FlatGeobuf_Header_identifier
+#define FlatGeobuf_Header_identifier 0
+#endif
+#define FlatGeobuf_Header_type_hash ((flatbuffers_thash_t)0x93715c1f)
+#define FlatGeobuf_Header_type_identifier "\x1f\x5c\x71\x93"
+#ifndef FlatGeobuf_Header_file_extension
+#define FlatGeobuf_Header_file_extension "bin"
+#endif
 
-typedef uint8_t GeometryType_enum_t;
-__flatbuffers_define_integer_type(GeometryType, GeometryType_enum_t, 8)
-#define GeometryType_Unknown ((GeometryType_enum_t)UINT8_C(0))
-#define GeometryType_Point ((GeometryType_enum_t)UINT8_C(1))
-#define GeometryType_LineString ((GeometryType_enum_t)UINT8_C(2))
-#define GeometryType_Polygon ((GeometryType_enum_t)UINT8_C(3))
-#define GeometryType_MultiPoint ((GeometryType_enum_t)UINT8_C(4))
-#define GeometryType_MultiLineString ((GeometryType_enum_t)UINT8_C(5))
-#define GeometryType_MultiPolygon ((GeometryType_enum_t)UINT8_C(6))
-#define GeometryType_GeometryCollection ((GeometryType_enum_t)UINT8_C(7))
-#define GeometryType_CircularString ((GeometryType_enum_t)UINT8_C(8))
-#define GeometryType_CompoundCurve ((GeometryType_enum_t)UINT8_C(9))
-#define GeometryType_CurvePolygon ((GeometryType_enum_t)UINT8_C(10))
-#define GeometryType_MultiCurve ((GeometryType_enum_t)UINT8_C(11))
-#define GeometryType_MultiSurface ((GeometryType_enum_t)UINT8_C(12))
-#define GeometryType_Curve ((GeometryType_enum_t)UINT8_C(13))
-#define GeometryType_Surface ((GeometryType_enum_t)UINT8_C(14))
-#define GeometryType_PolyhedralSurface ((GeometryType_enum_t)UINT8_C(15))
-#define GeometryType_TIN ((GeometryType_enum_t)UINT8_C(16))
-#define GeometryType_Triangle ((GeometryType_enum_t)UINT8_C(17))
+typedef uint8_t FlatGeobuf_GeometryType_enum_t;
+__flatbuffers_define_integer_type(FlatGeobuf_GeometryType, FlatGeobuf_GeometryType_enum_t, 8)
+#define FlatGeobuf_GeometryType_Unknown ((FlatGeobuf_GeometryType_enum_t)UINT8_C(0))
+#define FlatGeobuf_GeometryType_Point ((FlatGeobuf_GeometryType_enum_t)UINT8_C(1))
+#define FlatGeobuf_GeometryType_LineString ((FlatGeobuf_GeometryType_enum_t)UINT8_C(2))
+#define FlatGeobuf_GeometryType_Polygon ((FlatGeobuf_GeometryType_enum_t)UINT8_C(3))
+#define FlatGeobuf_GeometryType_MultiPoint ((FlatGeobuf_GeometryType_enum_t)UINT8_C(4))
+#define FlatGeobuf_GeometryType_MultiLineString ((FlatGeobuf_GeometryType_enum_t)UINT8_C(5))
+#define FlatGeobuf_GeometryType_MultiPolygon ((FlatGeobuf_GeometryType_enum_t)UINT8_C(6))
+#define FlatGeobuf_GeometryType_GeometryCollection ((FlatGeobuf_GeometryType_enum_t)UINT8_C(7))
+#define FlatGeobuf_GeometryType_CircularString ((FlatGeobuf_GeometryType_enum_t)UINT8_C(8))
+#define FlatGeobuf_GeometryType_CompoundCurve ((FlatGeobuf_GeometryType_enum_t)UINT8_C(9))
+#define FlatGeobuf_GeometryType_CurvePolygon ((FlatGeobuf_GeometryType_enum_t)UINT8_C(10))
+#define FlatGeobuf_GeometryType_MultiCurve ((FlatGeobuf_GeometryType_enum_t)UINT8_C(11))
+#define FlatGeobuf_GeometryType_MultiSurface ((FlatGeobuf_GeometryType_enum_t)UINT8_C(12))
+#define FlatGeobuf_GeometryType_Curve ((FlatGeobuf_GeometryType_enum_t)UINT8_C(13))
+#define FlatGeobuf_GeometryType_Surface ((FlatGeobuf_GeometryType_enum_t)UINT8_C(14))
+#define FlatGeobuf_GeometryType_PolyhedralSurface ((FlatGeobuf_GeometryType_enum_t)UINT8_C(15))
+#define FlatGeobuf_GeometryType_TIN ((FlatGeobuf_GeometryType_enum_t)UINT8_C(16))
+#define FlatGeobuf_GeometryType_Triangle ((FlatGeobuf_GeometryType_enum_t)UINT8_C(17))
 
-static inline const char *GeometryType_name(GeometryType_enum_t value)
+static inline const char *FlatGeobuf_GeometryType_name(FlatGeobuf_GeometryType_enum_t value)
 {
     switch (value) {
-    case GeometryType_Unknown: return "Unknown";
-    case GeometryType_Point: return "Point";
-    case GeometryType_LineString: return "LineString";
-    case GeometryType_Polygon: return "Polygon";
-    case GeometryType_MultiPoint: return "MultiPoint";
-    case GeometryType_MultiLineString: return "MultiLineString";
-    case GeometryType_MultiPolygon: return "MultiPolygon";
-    case GeometryType_GeometryCollection: return "GeometryCollection";
-    case GeometryType_CircularString: return "CircularString";
-    case GeometryType_CompoundCurve: return "CompoundCurve";
-    case GeometryType_CurvePolygon: return "CurvePolygon";
-    case GeometryType_MultiCurve: return "MultiCurve";
-    case GeometryType_MultiSurface: return "MultiSurface";
-    case GeometryType_Curve: return "Curve";
-    case GeometryType_Surface: return "Surface";
-    case GeometryType_PolyhedralSurface: return "PolyhedralSurface";
-    case GeometryType_TIN: return "TIN";
-    case GeometryType_Triangle: return "Triangle";
+    case FlatGeobuf_GeometryType_Unknown: return "Unknown";
+    case FlatGeobuf_GeometryType_Point: return "Point";
+    case FlatGeobuf_GeometryType_LineString: return "LineString";
+    case FlatGeobuf_GeometryType_Polygon: return "Polygon";
+    case FlatGeobuf_GeometryType_MultiPoint: return "MultiPoint";
+    case FlatGeobuf_GeometryType_MultiLineString: return "MultiLineString";
+    case FlatGeobuf_GeometryType_MultiPolygon: return "MultiPolygon";
+    case FlatGeobuf_GeometryType_GeometryCollection: return "GeometryCollection";
+    case FlatGeobuf_GeometryType_CircularString: return "CircularString";
+    case FlatGeobuf_GeometryType_CompoundCurve: return "CompoundCurve";
+    case FlatGeobuf_GeometryType_CurvePolygon: return "CurvePolygon";
+    case FlatGeobuf_GeometryType_MultiCurve: return "MultiCurve";
+    case FlatGeobuf_GeometryType_MultiSurface: return "MultiSurface";
+    case FlatGeobuf_GeometryType_Curve: return "Curve";
+    case FlatGeobuf_GeometryType_Surface: return "Surface";
+    case FlatGeobuf_GeometryType_PolyhedralSurface: return "PolyhedralSurface";
+    case FlatGeobuf_GeometryType_TIN: return "TIN";
+    case FlatGeobuf_GeometryType_Triangle: return "Triangle";
     default: return "";
     }
 }
 
-static inline int GeometryType_is_known_value(GeometryType_enum_t value)
+static inline int FlatGeobuf_GeometryType_is_known_value(FlatGeobuf_GeometryType_enum_t value)
 {
     switch (value) {
-    case GeometryType_Unknown: return 1;
-    case GeometryType_Point: return 1;
-    case GeometryType_LineString: return 1;
-    case GeometryType_Polygon: return 1;
-    case GeometryType_MultiPoint: return 1;
-    case GeometryType_MultiLineString: return 1;
-    case GeometryType_MultiPolygon: return 1;
-    case GeometryType_GeometryCollection: return 1;
-    case GeometryType_CircularString: return 1;
-    case GeometryType_CompoundCurve: return 1;
-    case GeometryType_CurvePolygon: return 1;
-    case GeometryType_MultiCurve: return 1;
-    case GeometryType_MultiSurface: return 1;
-    case GeometryType_Curve: return 1;
-    case GeometryType_Surface: return 1;
-    case GeometryType_PolyhedralSurface: return 1;
-    case GeometryType_TIN: return 1;
-    case GeometryType_Triangle: return 1;
+    case FlatGeobuf_GeometryType_Unknown: return 1;
+    case FlatGeobuf_GeometryType_Point: return 1;
+    case FlatGeobuf_GeometryType_LineString: return 1;
+    case FlatGeobuf_GeometryType_Polygon: return 1;
+    case FlatGeobuf_GeometryType_MultiPoint: return 1;
+    case FlatGeobuf_GeometryType_MultiLineString: return 1;
+    case FlatGeobuf_GeometryType_MultiPolygon: return 1;
+    case FlatGeobuf_GeometryType_GeometryCollection: return 1;
+    case FlatGeobuf_GeometryType_CircularString: return 1;
+    case FlatGeobuf_GeometryType_CompoundCurve: return 1;
+    case FlatGeobuf_GeometryType_CurvePolygon: return 1;
+    case FlatGeobuf_GeometryType_MultiCurve: return 1;
+    case FlatGeobuf_GeometryType_MultiSurface: return 1;
+    case FlatGeobuf_GeometryType_Curve: return 1;
+    case FlatGeobuf_GeometryType_Surface: return 1;
+    case FlatGeobuf_GeometryType_PolyhedralSurface: return 1;
+    case FlatGeobuf_GeometryType_TIN: return 1;
+    case FlatGeobuf_GeometryType_Triangle: return 1;
     default: return 0;
     }
 }
 
-typedef uint8_t ColumnType_enum_t;
-__flatbuffers_define_integer_type(ColumnType, ColumnType_enum_t, 8)
-#define ColumnType_Byte ((ColumnType_enum_t)UINT8_C(0))
-#define ColumnType_UByte ((ColumnType_enum_t)UINT8_C(1))
-#define ColumnType_Bool ((ColumnType_enum_t)UINT8_C(2))
-#define ColumnType_Short ((ColumnType_enum_t)UINT8_C(3))
-#define ColumnType_UShort ((ColumnType_enum_t)UINT8_C(4))
-#define ColumnType_Int ((ColumnType_enum_t)UINT8_C(5))
-#define ColumnType_UInt ((ColumnType_enum_t)UINT8_C(6))
-#define ColumnType_Long ((ColumnType_enum_t)UINT8_C(7))
-#define ColumnType_ULong ((ColumnType_enum_t)UINT8_C(8))
-#define ColumnType_Float ((ColumnType_enum_t)UINT8_C(9))
-#define ColumnType_Double ((ColumnType_enum_t)UINT8_C(10))
-#define ColumnType_String ((ColumnType_enum_t)UINT8_C(11))
-#define ColumnType_Json ((ColumnType_enum_t)UINT8_C(12))
-#define ColumnType_DateTime ((ColumnType_enum_t)UINT8_C(13))
-#define ColumnType_Binary ((ColumnType_enum_t)UINT8_C(14))
+typedef uint8_t FlatGeobuf_ColumnType_enum_t;
+__flatbuffers_define_integer_type(FlatGeobuf_ColumnType, FlatGeobuf_ColumnType_enum_t, 8)
+#define FlatGeobuf_ColumnType_Byte ((FlatGeobuf_ColumnType_enum_t)UINT8_C(0))
+#define FlatGeobuf_ColumnType_UByte ((FlatGeobuf_ColumnType_enum_t)UINT8_C(1))
+#define FlatGeobuf_ColumnType_Bool ((FlatGeobuf_ColumnType_enum_t)UINT8_C(2))
+#define FlatGeobuf_ColumnType_Short ((FlatGeobuf_ColumnType_enum_t)UINT8_C(3))
+#define FlatGeobuf_ColumnType_UShort ((FlatGeobuf_ColumnType_enum_t)UINT8_C(4))
+#define FlatGeobuf_ColumnType_Int ((FlatGeobuf_ColumnType_enum_t)UINT8_C(5))
+#define FlatGeobuf_ColumnType_UInt ((FlatGeobuf_ColumnType_enum_t)UINT8_C(6))
+#define FlatGeobuf_ColumnType_Long ((FlatGeobuf_ColumnType_enum_t)UINT8_C(7))
+#define FlatGeobuf_ColumnType_ULong ((FlatGeobuf_ColumnType_enum_t)UINT8_C(8))
+#define FlatGeobuf_ColumnType_Float ((FlatGeobuf_ColumnType_enum_t)UINT8_C(9))
+#define FlatGeobuf_ColumnType_Double ((FlatGeobuf_ColumnType_enum_t)UINT8_C(10))
+#define FlatGeobuf_ColumnType_String ((FlatGeobuf_ColumnType_enum_t)UINT8_C(11))
+#define FlatGeobuf_ColumnType_Json ((FlatGeobuf_ColumnType_enum_t)UINT8_C(12))
+#define FlatGeobuf_ColumnType_DateTime ((FlatGeobuf_ColumnType_enum_t)UINT8_C(13))
+#define FlatGeobuf_ColumnType_Binary ((FlatGeobuf_ColumnType_enum_t)UINT8_C(14))
 
-static inline const char *ColumnType_name(ColumnType_enum_t value)
+static inline const char *FlatGeobuf_ColumnType_name(FlatGeobuf_ColumnType_enum_t value)
 {
     switch (value) {
-    case ColumnType_Byte: return "Byte";
-    case ColumnType_UByte: return "UByte";
-    case ColumnType_Bool: return "Bool";
-    case ColumnType_Short: return "Short";
-    case ColumnType_UShort: return "UShort";
-    case ColumnType_Int: return "Int";
-    case ColumnType_UInt: return "UInt";
-    case ColumnType_Long: return "Long";
-    case ColumnType_ULong: return "ULong";
-    case ColumnType_Float: return "Float";
-    case ColumnType_Double: return "Double";
-    case ColumnType_String: return "String";
-    case ColumnType_Json: return "Json";
-    case ColumnType_DateTime: return "DateTime";
-    case ColumnType_Binary: return "Binary";
+    case FlatGeobuf_ColumnType_Byte: return "Byte";
+    case FlatGeobuf_ColumnType_UByte: return "UByte";
+    case FlatGeobuf_ColumnType_Bool: return "Bool";
+    case FlatGeobuf_ColumnType_Short: return "Short";
+    case FlatGeobuf_ColumnType_UShort: return "UShort";
+    case FlatGeobuf_ColumnType_Int: return "Int";
+    case FlatGeobuf_ColumnType_UInt: return "UInt";
+    case FlatGeobuf_ColumnType_Long: return "Long";
+    case FlatGeobuf_ColumnType_ULong: return "ULong";
+    case FlatGeobuf_ColumnType_Float: return "Float";
+    case FlatGeobuf_ColumnType_Double: return "Double";
+    case FlatGeobuf_ColumnType_String: return "String";
+    case FlatGeobuf_ColumnType_Json: return "Json";
+    case FlatGeobuf_ColumnType_DateTime: return "DateTime";
+    case FlatGeobuf_ColumnType_Binary: return "Binary";
     default: return "";
     }
 }
 
-static inline int ColumnType_is_known_value(ColumnType_enum_t value)
+static inline int FlatGeobuf_ColumnType_is_known_value(FlatGeobuf_ColumnType_enum_t value)
 {
     switch (value) {
-    case ColumnType_Byte: return 1;
-    case ColumnType_UByte: return 1;
-    case ColumnType_Bool: return 1;
-    case ColumnType_Short: return 1;
-    case ColumnType_UShort: return 1;
-    case ColumnType_Int: return 1;
-    case ColumnType_UInt: return 1;
-    case ColumnType_Long: return 1;
-    case ColumnType_ULong: return 1;
-    case ColumnType_Float: return 1;
-    case ColumnType_Double: return 1;
-    case ColumnType_String: return 1;
-    case ColumnType_Json: return 1;
-    case ColumnType_DateTime: return 1;
-    case ColumnType_Binary: return 1;
+    case FlatGeobuf_ColumnType_Byte: return 1;
+    case FlatGeobuf_ColumnType_UByte: return 1;
+    case FlatGeobuf_ColumnType_Bool: return 1;
+    case FlatGeobuf_ColumnType_Short: return 1;
+    case FlatGeobuf_ColumnType_UShort: return 1;
+    case FlatGeobuf_ColumnType_Int: return 1;
+    case FlatGeobuf_ColumnType_UInt: return 1;
+    case FlatGeobuf_ColumnType_Long: return 1;
+    case FlatGeobuf_ColumnType_ULong: return 1;
+    case FlatGeobuf_ColumnType_Float: return 1;
+    case FlatGeobuf_ColumnType_Double: return 1;
+    case FlatGeobuf_ColumnType_String: return 1;
+    case FlatGeobuf_ColumnType_Json: return 1;
+    case FlatGeobuf_ColumnType_DateTime: return 1;
+    case FlatGeobuf_ColumnType_Binary: return 1;
     default: return 0;
     }
 }
 
 
 
-struct Column_table { uint8_t unused__; };
+struct FlatGeobuf_Column_table { uint8_t unused__; };
 
-static inline size_t Column_vec_len(Column_vec_t vec)
+static inline size_t FlatGeobuf_Column_vec_len(FlatGeobuf_Column_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline Column_table_t Column_vec_at(Column_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(Column_table_t, vec, i, 0)
-__flatbuffers_table_as_root(Column)
+static inline FlatGeobuf_Column_table_t FlatGeobuf_Column_vec_at(FlatGeobuf_Column_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(FlatGeobuf_Column_table_t, vec, i, 0)
+__flatbuffers_table_as_root(FlatGeobuf_Column)
 
-__flatbuffers_define_string_field(0, Column, name, 1)
-__flatbuffers_define_scalar_field(1, Column, type, ColumnType, ColumnType_enum_t, UINT8_C(0))
-__flatbuffers_define_string_field(2, Column, title, 0)
-__flatbuffers_define_string_field(3, Column, description, 0)
-__flatbuffers_define_scalar_field(4, Column, width, flatbuffers_int32, int32_t, INT32_C(-1))
-__flatbuffers_define_scalar_field(5, Column, precision, flatbuffers_int32, int32_t, INT32_C(-1))
-__flatbuffers_define_scalar_field(6, Column, scale, flatbuffers_int32, int32_t, INT32_C(-1))
-__flatbuffers_define_scalar_field(7, Column, nullable, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(1))
-__flatbuffers_define_scalar_field(8, Column, unique, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
-__flatbuffers_define_scalar_field(9, Column, primary_key, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
-__flatbuffers_define_string_field(10, Column, metadata, 0)
+__flatbuffers_define_string_field(0, FlatGeobuf_Column, name, 1)
+__flatbuffers_define_scalar_field(1, FlatGeobuf_Column, type, FlatGeobuf_ColumnType, FlatGeobuf_ColumnType_enum_t, UINT8_C(0))
+__flatbuffers_define_string_field(2, FlatGeobuf_Column, title, 0)
+__flatbuffers_define_string_field(3, FlatGeobuf_Column, description, 0)
+__flatbuffers_define_scalar_field(4, FlatGeobuf_Column, width, flatbuffers_int32, int32_t, INT32_C(-1))
+__flatbuffers_define_scalar_field(5, FlatGeobuf_Column, precision, flatbuffers_int32, int32_t, INT32_C(-1))
+__flatbuffers_define_scalar_field(6, FlatGeobuf_Column, scale, flatbuffers_int32, int32_t, INT32_C(-1))
+__flatbuffers_define_scalar_field(7, FlatGeobuf_Column, nullable, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(1))
+__flatbuffers_define_scalar_field(8, FlatGeobuf_Column, unique, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
+__flatbuffers_define_scalar_field(9, FlatGeobuf_Column, primary_key, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
+__flatbuffers_define_string_field(10, FlatGeobuf_Column, metadata, 0)
 
-struct Crs_table { uint8_t unused__; };
+struct FlatGeobuf_Crs_table { uint8_t unused__; };
 
-static inline size_t Crs_vec_len(Crs_vec_t vec)
+static inline size_t FlatGeobuf_Crs_vec_len(FlatGeobuf_Crs_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline Crs_table_t Crs_vec_at(Crs_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(Crs_table_t, vec, i, 0)
-__flatbuffers_table_as_root(Crs)
+static inline FlatGeobuf_Crs_table_t FlatGeobuf_Crs_vec_at(FlatGeobuf_Crs_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(FlatGeobuf_Crs_table_t, vec, i, 0)
+__flatbuffers_table_as_root(FlatGeobuf_Crs)
 
-__flatbuffers_define_string_field(0, Crs, org, 0)
-__flatbuffers_define_scalar_field(1, Crs, code, flatbuffers_int32, int32_t, INT32_C(0))
-__flatbuffers_define_string_field(2, Crs, name, 0)
-__flatbuffers_define_string_field(3, Crs, description, 0)
-__flatbuffers_define_string_field(4, Crs, wkt, 0)
-__flatbuffers_define_string_field(5, Crs, code_string, 0)
+__flatbuffers_define_string_field(0, FlatGeobuf_Crs, org, 0)
+__flatbuffers_define_scalar_field(1, FlatGeobuf_Crs, code, flatbuffers_int32, int32_t, INT32_C(0))
+__flatbuffers_define_string_field(2, FlatGeobuf_Crs, name, 0)
+__flatbuffers_define_string_field(3, FlatGeobuf_Crs, description, 0)
+__flatbuffers_define_string_field(4, FlatGeobuf_Crs, wkt, 0)
+__flatbuffers_define_string_field(5, FlatGeobuf_Crs, code_string, 0)
 
-struct Header_table { uint8_t unused__; };
+struct FlatGeobuf_Header_table { uint8_t unused__; };
 
-static inline size_t Header_vec_len(Header_vec_t vec)
+static inline size_t FlatGeobuf_Header_vec_len(FlatGeobuf_Header_vec_t vec)
 __flatbuffers_vec_len(vec)
-static inline Header_table_t Header_vec_at(Header_vec_t vec, size_t i)
-__flatbuffers_offset_vec_at(Header_table_t, vec, i, 0)
-__flatbuffers_table_as_root(Header)
+static inline FlatGeobuf_Header_table_t FlatGeobuf_Header_vec_at(FlatGeobuf_Header_vec_t vec, size_t i)
+__flatbuffers_offset_vec_at(FlatGeobuf_Header_table_t, vec, i, 0)
+__flatbuffers_table_as_root(FlatGeobuf_Header)
 
-__flatbuffers_define_string_field(0, Header, name, 0)
-__flatbuffers_define_vector_field(1, Header, envelope, flatbuffers_double_vec_t, 0)
-__flatbuffers_define_scalar_field(2, Header, geometry_type, GeometryType, GeometryType_enum_t, UINT8_C(0))
-__flatbuffers_define_scalar_field(3, Header, hasZ, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
-__flatbuffers_define_scalar_field(4, Header, hasM, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
-__flatbuffers_define_scalar_field(5, Header, hasT, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
-__flatbuffers_define_scalar_field(6, Header, hasTM, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
-__flatbuffers_define_vector_field(7, Header, columns, Column_vec_t, 0)
-__flatbuffers_define_scalar_field(8, Header, features_count, flatbuffers_uint64, uint64_t, UINT64_C(0))
-__flatbuffers_define_scalar_field(9, Header, index_node_size, flatbuffers_uint16, uint16_t, UINT16_C(16))
-__flatbuffers_define_table_field(10, Header, crs, Crs_table_t, 0)
-__flatbuffers_define_string_field(11, Header, title, 0)
-__flatbuffers_define_string_field(12, Header, description, 0)
-__flatbuffers_define_string_field(13, Header, metadata, 0)
+__flatbuffers_define_string_field(0, FlatGeobuf_Header, name, 0)
+__flatbuffers_define_vector_field(1, FlatGeobuf_Header, envelope, flatbuffers_double_vec_t, 0)
+__flatbuffers_define_scalar_field(2, FlatGeobuf_Header, geometry_type, FlatGeobuf_GeometryType, FlatGeobuf_GeometryType_enum_t, UINT8_C(0))
+__flatbuffers_define_scalar_field(3, FlatGeobuf_Header, has_z, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
+__flatbuffers_define_scalar_field(4, FlatGeobuf_Header, has_m, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
+__flatbuffers_define_scalar_field(5, FlatGeobuf_Header, has_t, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
+__flatbuffers_define_scalar_field(6, FlatGeobuf_Header, has_tm, flatbuffers_bool, flatbuffers_bool_t, UINT8_C(0))
+__flatbuffers_define_vector_field(7, FlatGeobuf_Header, columns, FlatGeobuf_Column_vec_t, 0)
+__flatbuffers_define_scalar_field(8, FlatGeobuf_Header, features_count, flatbuffers_uint64, uint64_t, UINT64_C(0))
+__flatbuffers_define_scalar_field(9, FlatGeobuf_Header, index_node_size, flatbuffers_uint16, uint16_t, UINT16_C(16))
+__flatbuffers_define_table_field(10, FlatGeobuf_Header, crs, FlatGeobuf_Crs_table_t, 0)
+__flatbuffers_define_string_field(11, FlatGeobuf_Header, title, 0)
+__flatbuffers_define_string_field(12, FlatGeobuf_Header, description, 0)
+__flatbuffers_define_string_field(13, FlatGeobuf_Header, metadata, 0)
 
 
 #include "flatcc/flatcc_epilogue.h"

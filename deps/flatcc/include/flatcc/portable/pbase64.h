@@ -24,7 +24,7 @@ extern "C" {
 /* Decoding ends at valid tail length but last byte has non-zero bits where it shouldn't have. */
 #define BASE64_EDIRTY 5
 
-static const char *base64_strerror(int err);
+static inline const char *base64_strerror(int err);
 
 /* All codecs are URL safe. Only Crockford allow for non-canocical decoding. */
 enum {
@@ -48,14 +48,14 @@ enum {
 };
 
 /* Encoded size with or without padding. */
-static size_t base64_encoded_size(size_t len, int mode);
+static inline size_t base64_encoded_size(size_t len, int mode);
 
 /*
  * Decoded size assuming no padding.
  * If `len` does include padding, the actual size may be less
  * when decoding, but never more.
  */
-static size_t base64_decoded_size(size_t len);
+static inline size_t base64_decoded_size(size_t len);
 
 /*
  * `dst` must hold ceil(len * 4 / 3) bytes.
@@ -76,7 +76,7 @@ static size_t base64_decoded_size(size_t len);
  * checksum must be separate from the main buffer and is not supported
  * by this library.
  */
-static int base64_encode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size_t *src_len, int mode);
+static inline int base64_encode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size_t *src_len, int mode);
 
 /*
  * Decodes according to mode while ignoring encoding modifiers.
@@ -96,9 +96,9 @@ static int base64_encode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size
  * without output holding the last full block, if any. BASE64_ETAIL is also
  * returned if the a valid length holds non-zero unused tail bits.
  */
-static int base64_decode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size_t *src_len, int mode);
+static inline int base64_decode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size_t *src_len, int mode);
 
-static const char *base64_strerror(int err)
+static inline const char *base64_strerror(int err)
 {
     switch (err) {
     case BASE64_EOK: return "ok";
@@ -111,7 +111,7 @@ static const char *base64_strerror(int err)
     }
 }
 
-static size_t base64_encoded_size(size_t len, int mode)
+static inline size_t base64_encoded_size(size_t len, int mode)
 {
     size_t k = len % 3;
     size_t n = (len * 4 / 3 + 3) & ~(size_t)3;
@@ -132,7 +132,7 @@ static size_t base64_encoded_size(size_t len, int mode)
     return n;
 }
 
-static size_t base64_decoded_size(size_t len)
+static inline size_t base64_decoded_size(size_t len)
 {
     size_t k = len % 4;
     size_t n = len / 4 * 3;
@@ -149,7 +149,7 @@ static size_t base64_decoded_size(size_t len)
     }
 }
 
-static int base64_encode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size_t *src_len, int mode)
+static inline int base64_encode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size_t *src_len, int mode)
 {
     const uint8_t *rfc4648_alphabet            = (const uint8_t *)
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -227,7 +227,7 @@ done:
     return ret;
 }
 
-static int base64_decode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size_t *src_len, int mode)
+static inline int base64_decode(uint8_t *dst, const uint8_t *src, size_t *dst_len, size_t *src_len, int mode)
 {
     static const uint8_t cinvalid = 64;
     static const uint8_t cignore = 65;

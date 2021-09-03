@@ -144,8 +144,8 @@ descend:
         /* Fall through comments needed to silence gcc 7 warnings. */
         switch (*buf) {
         case 0x0d: buf += (end - buf > 1 && buf[1] == 0x0a);
-            /* Fall through */
             /* Consume following LF or treating CR as LF. */
+            fallthrough;
         case 0x0a: ++ctx->line; ctx->line_start = ++buf; continue;
         case 0x09: ++buf; continue;
         case 0x20: goto again; /* Don't consume here, sync with power of 2 spaces. */
@@ -1268,7 +1268,7 @@ int flatcc_json_parser_table_as_root(flatcc_builder_t *B, flatcc_json_parser_t *
     ctx = ctx ? ctx : &_ctx;
     flatcc_json_parser_init(ctx, B, buf, buf + bufsiz, flags);
     if (flatcc_builder_start_buffer(B, fid, 0, builder_flags)) return -1;
-    parser(ctx, buf, buf + bufsiz, &root);
+    buf = parser(ctx, buf, buf + bufsiz, &root);
     if (ctx->error) {
         return ctx->error;
     }
@@ -1288,7 +1288,7 @@ int flatcc_json_parser_struct_as_root(flatcc_builder_t *B, flatcc_json_parser_t 
     ctx = ctx ? ctx : &_ctx;
     flatcc_json_parser_init(ctx, B, buf, buf + bufsiz, flags);
     if (flatcc_builder_start_buffer(B, fid, 0, builder_flags)) return -1;
-    parser(ctx, buf, buf + bufsiz, &root);
+    buf = parser(ctx, buf, buf + bufsiz, &root);
     if (ctx->error) {
         return ctx->error;
     }

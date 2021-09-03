@@ -17,100 +17,100 @@
 #define flatbuffers_identifier 0
 #endif
 #ifndef flatbuffers_extension
-#define flatbuffers_extension ".bin"
+#define flatbuffers_extension "bin"
 #endif
 
-static const flatbuffers_voffset_t __Geometry_required[] = { 0 };
-typedef flatbuffers_ref_t Geometry_ref_t;
-static Geometry_ref_t Geometry_clone(flatbuffers_builder_t *B, Geometry_table_t t);
-__flatbuffers_build_table(flatbuffers_, Geometry, 8)
+static const flatbuffers_voffset_t __FlatGeobuf_Geometry_required[] = { 0 };
+typedef flatbuffers_ref_t FlatGeobuf_Geometry_ref_t;
+static FlatGeobuf_Geometry_ref_t FlatGeobuf_Geometry_clone(flatbuffers_builder_t *B, FlatGeobuf_Geometry_table_t t);
+__flatbuffers_build_table(flatbuffers_, FlatGeobuf_Geometry, 8)
 
-static const flatbuffers_voffset_t __Feature_required[] = { 0 };
-typedef flatbuffers_ref_t Feature_ref_t;
-static Feature_ref_t Feature_clone(flatbuffers_builder_t *B, Feature_table_t t);
-__flatbuffers_build_table(flatbuffers_, Feature, 3)
+static const flatbuffers_voffset_t __FlatGeobuf_Feature_required[] = { 0 };
+typedef flatbuffers_ref_t FlatGeobuf_Feature_ref_t;
+static FlatGeobuf_Feature_ref_t FlatGeobuf_Feature_clone(flatbuffers_builder_t *B, FlatGeobuf_Feature_table_t t);
+__flatbuffers_build_table(flatbuffers_, FlatGeobuf_Feature, 3)
 
-#define __Geometry_formal_args ,\
+#define __FlatGeobuf_Geometry_formal_args ,\
   flatbuffers_uint32_vec_ref_t v0, flatbuffers_double_vec_ref_t v1, flatbuffers_double_vec_ref_t v2, flatbuffers_double_vec_ref_t v3,\
-  flatbuffers_double_vec_ref_t v4, flatbuffers_uint64_vec_ref_t v5, GeometryType_enum_t v6, Geometry_vec_ref_t v7
-#define __Geometry_call_args ,\
+  flatbuffers_double_vec_ref_t v4, flatbuffers_uint64_vec_ref_t v5, FlatGeobuf_GeometryType_enum_t v6, FlatGeobuf_Geometry_vec_ref_t v7
+#define __FlatGeobuf_Geometry_call_args ,\
   v0, v1, v2, v3,\
   v4, v5, v6, v7
-static inline Geometry_ref_t Geometry_create(flatbuffers_builder_t *B __Geometry_formal_args);
-__flatbuffers_build_table_prolog(flatbuffers_, Geometry, Geometry_file_identifier, Geometry_type_identifier)
+static inline FlatGeobuf_Geometry_ref_t FlatGeobuf_Geometry_create(flatbuffers_builder_t *B __FlatGeobuf_Geometry_formal_args);
+__flatbuffers_build_table_prolog(flatbuffers_, FlatGeobuf_Geometry, FlatGeobuf_Geometry_file_identifier, FlatGeobuf_Geometry_type_identifier)
 
-#define __Feature_formal_args , Geometry_ref_t v0, flatbuffers_uint8_vec_ref_t v1, Column_vec_ref_t v2
-#define __Feature_call_args , v0, v1, v2
-static inline Feature_ref_t Feature_create(flatbuffers_builder_t *B __Feature_formal_args);
-__flatbuffers_build_table_prolog(flatbuffers_, Feature, Feature_file_identifier, Feature_type_identifier)
+#define __FlatGeobuf_Feature_formal_args , FlatGeobuf_Geometry_ref_t v0, flatbuffers_uint8_vec_ref_t v1, FlatGeobuf_Column_vec_ref_t v2
+#define __FlatGeobuf_Feature_call_args , v0, v1, v2
+static inline FlatGeobuf_Feature_ref_t FlatGeobuf_Feature_create(flatbuffers_builder_t *B __FlatGeobuf_Feature_formal_args);
+__flatbuffers_build_table_prolog(flatbuffers_, FlatGeobuf_Feature, FlatGeobuf_Feature_file_identifier, FlatGeobuf_Feature_type_identifier)
 
-__flatbuffers_build_vector_field(0, flatbuffers_, Geometry_ends, flatbuffers_uint32, uint32_t, Geometry)
-__flatbuffers_build_vector_field(1, flatbuffers_, Geometry_xy, flatbuffers_double, double, Geometry)
-__flatbuffers_build_vector_field(2, flatbuffers_, Geometry_z, flatbuffers_double, double, Geometry)
-__flatbuffers_build_vector_field(3, flatbuffers_, Geometry_m, flatbuffers_double, double, Geometry)
-__flatbuffers_build_vector_field(4, flatbuffers_, Geometry_t, flatbuffers_double, double, Geometry)
-__flatbuffers_build_vector_field(5, flatbuffers_, Geometry_tm, flatbuffers_uint64, uint64_t, Geometry)
-__flatbuffers_build_scalar_field(6, flatbuffers_, Geometry_type, GeometryType, GeometryType_enum_t, 1, 1, UINT8_C(0), Geometry)
-__flatbuffers_build_table_vector_field(7, flatbuffers_, Geometry_parts, Geometry, Geometry)
+__flatbuffers_build_vector_field(0, flatbuffers_, FlatGeobuf_Geometry_ends, flatbuffers_uint32, uint32_t, FlatGeobuf_Geometry)
+__flatbuffers_build_vector_field(1, flatbuffers_, FlatGeobuf_Geometry_xy, flatbuffers_double, double, FlatGeobuf_Geometry)
+__flatbuffers_build_vector_field(2, flatbuffers_, FlatGeobuf_Geometry_z, flatbuffers_double, double, FlatGeobuf_Geometry)
+__flatbuffers_build_vector_field(3, flatbuffers_, FlatGeobuf_Geometry_m, flatbuffers_double, double, FlatGeobuf_Geometry)
+__flatbuffers_build_vector_field(4, flatbuffers_, FlatGeobuf_Geometry_t, flatbuffers_double, double, FlatGeobuf_Geometry)
+__flatbuffers_build_vector_field(5, flatbuffers_, FlatGeobuf_Geometry_tm, flatbuffers_uint64, uint64_t, FlatGeobuf_Geometry)
+__flatbuffers_build_scalar_field(6, flatbuffers_, FlatGeobuf_Geometry_type, FlatGeobuf_GeometryType, FlatGeobuf_GeometryType_enum_t, 1, 1, UINT8_C(0), FlatGeobuf_Geometry)
+__flatbuffers_build_table_vector_field(7, flatbuffers_, FlatGeobuf_Geometry_parts, FlatGeobuf_Geometry, FlatGeobuf_Geometry)
 
-static inline Geometry_ref_t Geometry_create(flatbuffers_builder_t *B __Geometry_formal_args)
+static inline FlatGeobuf_Geometry_ref_t FlatGeobuf_Geometry_create(flatbuffers_builder_t *B __FlatGeobuf_Geometry_formal_args)
 {
-    if (Geometry_start(B)
-        || Geometry_ends_add(B, v0)
-        || Geometry_xy_add(B, v1)
-        || Geometry_z_add(B, v2)
-        || Geometry_m_add(B, v3)
-        || Geometry_t_add(B, v4)
-        || Geometry_tm_add(B, v5)
-        || Geometry_parts_add(B, v7)
-        || Geometry_type_add(B, v6)) {
+    if (FlatGeobuf_Geometry_start(B)
+        || FlatGeobuf_Geometry_ends_add(B, v0)
+        || FlatGeobuf_Geometry_xy_add(B, v1)
+        || FlatGeobuf_Geometry_z_add(B, v2)
+        || FlatGeobuf_Geometry_m_add(B, v3)
+        || FlatGeobuf_Geometry_t_add(B, v4)
+        || FlatGeobuf_Geometry_tm_add(B, v5)
+        || FlatGeobuf_Geometry_parts_add(B, v7)
+        || FlatGeobuf_Geometry_type_add(B, v6)) {
         return 0;
     }
-    return Geometry_end(B);
+    return FlatGeobuf_Geometry_end(B);
 }
 
-static Geometry_ref_t Geometry_clone(flatbuffers_builder_t *B, Geometry_table_t t)
+static FlatGeobuf_Geometry_ref_t FlatGeobuf_Geometry_clone(flatbuffers_builder_t *B, FlatGeobuf_Geometry_table_t t)
 {
     __flatbuffers_memoize_begin(B, t);
-    if (Geometry_start(B)
-        || Geometry_ends_pick(B, t)
-        || Geometry_xy_pick(B, t)
-        || Geometry_z_pick(B, t)
-        || Geometry_m_pick(B, t)
-        || Geometry_t_pick(B, t)
-        || Geometry_tm_pick(B, t)
-        || Geometry_parts_pick(B, t)
-        || Geometry_type_pick(B, t)) {
+    if (FlatGeobuf_Geometry_start(B)
+        || FlatGeobuf_Geometry_ends_pick(B, t)
+        || FlatGeobuf_Geometry_xy_pick(B, t)
+        || FlatGeobuf_Geometry_z_pick(B, t)
+        || FlatGeobuf_Geometry_m_pick(B, t)
+        || FlatGeobuf_Geometry_t_pick(B, t)
+        || FlatGeobuf_Geometry_tm_pick(B, t)
+        || FlatGeobuf_Geometry_parts_pick(B, t)
+        || FlatGeobuf_Geometry_type_pick(B, t)) {
         return 0;
     }
-    __flatbuffers_memoize_end(B, t, Geometry_end(B));
+    __flatbuffers_memoize_end(B, t, FlatGeobuf_Geometry_end(B));
 }
 
-__flatbuffers_build_table_field(0, flatbuffers_, Feature_geometry, Geometry, Feature)
-__flatbuffers_build_vector_field(1, flatbuffers_, Feature_properties, flatbuffers_uint8, uint8_t, Feature)
-__flatbuffers_build_table_vector_field(2, flatbuffers_, Feature_columns, Column, Feature)
+__flatbuffers_build_table_field(0, flatbuffers_, FlatGeobuf_Feature_geometry, FlatGeobuf_Geometry, FlatGeobuf_Feature)
+__flatbuffers_build_vector_field(1, flatbuffers_, FlatGeobuf_Feature_properties, flatbuffers_uint8, uint8_t, FlatGeobuf_Feature)
+__flatbuffers_build_table_vector_field(2, flatbuffers_, FlatGeobuf_Feature_columns, FlatGeobuf_Column, FlatGeobuf_Feature)
 
-static inline Feature_ref_t Feature_create(flatbuffers_builder_t *B __Feature_formal_args)
+static inline FlatGeobuf_Feature_ref_t FlatGeobuf_Feature_create(flatbuffers_builder_t *B __FlatGeobuf_Feature_formal_args)
 {
-    if (Feature_start(B)
-        || Feature_geometry_add(B, v0)
-        || Feature_properties_add(B, v1)
-        || Feature_columns_add(B, v2)) {
+    if (FlatGeobuf_Feature_start(B)
+        || FlatGeobuf_Feature_geometry_add(B, v0)
+        || FlatGeobuf_Feature_properties_add(B, v1)
+        || FlatGeobuf_Feature_columns_add(B, v2)) {
         return 0;
     }
-    return Feature_end(B);
+    return FlatGeobuf_Feature_end(B);
 }
 
-static Feature_ref_t Feature_clone(flatbuffers_builder_t *B, Feature_table_t t)
+static FlatGeobuf_Feature_ref_t FlatGeobuf_Feature_clone(flatbuffers_builder_t *B, FlatGeobuf_Feature_table_t t)
 {
     __flatbuffers_memoize_begin(B, t);
-    if (Feature_start(B)
-        || Feature_geometry_pick(B, t)
-        || Feature_properties_pick(B, t)
-        || Feature_columns_pick(B, t)) {
+    if (FlatGeobuf_Feature_start(B)
+        || FlatGeobuf_Feature_geometry_pick(B, t)
+        || FlatGeobuf_Feature_properties_pick(B, t)
+        || FlatGeobuf_Feature_columns_pick(B, t)) {
         return 0;
     }
-    __flatbuffers_memoize_end(B, t, Feature_end(B));
+    __flatbuffers_memoize_end(B, t, FlatGeobuf_Feature_end(B));
 }
 
 #include "flatcc/flatcc_epilogue.h"

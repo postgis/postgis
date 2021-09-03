@@ -36,30 +36,30 @@
 #include <utils/builtins.h>
 #include "flatgeobuf.h"
 
-static char *get_pgtype(ColumnType_enum_t column_type) {
+static char *get_pgtype(FlatGeobuf_ColumnType_enum_t column_type) {
 	switch (column_type) {
-	case ColumnType_Bool:
+	case FlatGeobuf_ColumnType_Bool:
 		return "boolean";
-	case ColumnType_Byte:
-	case ColumnType_UByte:
+	case FlatGeobuf_ColumnType_Byte:
+	case FlatGeobuf_ColumnType_UByte:
 		return "smallint";
-	case ColumnType_Short:
+	case FlatGeobuf_ColumnType_Short:
 		return "smallint";
-	case ColumnType_Int:
+	case FlatGeobuf_ColumnType_Int:
 		return "integer";
-	case ColumnType_UInt:
-	case ColumnType_Long:
-	case ColumnType_ULong:
+	case FlatGeobuf_ColumnType_UInt:
+	case FlatGeobuf_ColumnType_Long:
+	case FlatGeobuf_ColumnType_ULong:
 		return "bigint";
-	case ColumnType_Float:
+	case FlatGeobuf_ColumnType_Float:
 		return "real";
-	case ColumnType_Double:
+	case FlatGeobuf_ColumnType_Double:
 		return "double precision";
-	case ColumnType_DateTime:
+	case FlatGeobuf_ColumnType_DateTime:
 		return "timestamptz";
-	case ColumnType_String:
+	case FlatGeobuf_ColumnType_String:
 		return "text";
-	case ColumnType_Binary:
+	case FlatGeobuf_ColumnType_Binary:
 		return "bytea";
 	/*case ColumnType_Json:
 		return "jsonb";*/
@@ -110,9 +110,9 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 	column_defs_total_len = 0;
 	POSTGIS_DEBUGF(2, "flatgeobuf: pgis_tablefromflatgeobuf found %ld columns", ctx->columns_len);
 	for (i = 0; i < ctx->columns_len; i++) {
-		Column_table_t column = Column_vec_at(ctx->columns, i);
-		flatbuffers_string_t name = Column_name(column);
-		ColumnType_enum_t column_type = Column_type(column);
+		FlatGeobuf_Column_table_t column = FlatGeobuf_Column_vec_at(ctx->columns, i);
+		flatbuffers_string_t name = FlatGeobuf_Column_name(column);
+		FlatGeobuf_ColumnType_enum_t column_type = FlatGeobuf_Column_type(column);
 		char *pgtype = get_pgtype(column_type);
 		size_t len = strlen(name) + strlen(pgtype) + 1;
 		column_defs[i] = palloc0(sizeof(char) * len);
@@ -187,6 +187,7 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		ctx = palloc(sizeof(*ctx));
 		ctx->tupdesc = tupdesc;
 		ctx->size = VARSIZE_ANY_EXHDR(data);
+		POSTGIS_DEBUGF(3, "flatgeobuf: pgis_fromflatgeobuf VARSIZE_ANY_EXHDR %ld", ctx->size);
 		ctx->buf = palloc(ctx->size);
 		memcpy(ctx->buf, VARDATA_ANY(data), ctx->size);
 		ctx->offset = 0;
@@ -195,18 +196,24 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 
 		funcctx->user_fctx = ctx;
 
-		if (ctx->size == 0)
+		if (ctx->size == 0) {
+			POSTGIS_DEBUGF(2, "flatgeobuf: no data, size %ld", ctx->size);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
+		}
 
 		flatgeobuf_check_magicbytes(ctx);
 		flatgeobuf_decode_header(ctx);
 
-		// no feature data
-		if (ctx->size == ctx->offset)
+		POSTGIS_DEBUGF(2, "flatgeobuf: header decoded now at offset, %ld", ctx->offset);
+
+		if (ctx->size == ctx->offset) {
+			POSTGIS_DEBUGF(2, "flatgeobuf: no feature data offset, %ld", ctx->offset);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
+		}
 
 		// TODO: get table and verify structure against header
-
 		MemoryContextSwitchTo(oldcontext);
 	}
 

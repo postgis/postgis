@@ -8,10 +8,10 @@ extern "C" {
 #include <stdio.h>
 
 /* Based on: http://stackoverflow.com/a/7776146 */
-static void hexdump(char *desc, void *addr, size_t len, FILE *fp) {
+static void hexdump(const char *desc, const void *addr, size_t len, FILE *fp) {
     unsigned int i;
     unsigned char buf[17];
-    unsigned char *pc = (unsigned char*)addr;
+    const unsigned char *pc = (const unsigned char*)addr;
 
     /* Output description if given. */
     if (desc != NULL) fprintf(fp, "%s:\n", desc);

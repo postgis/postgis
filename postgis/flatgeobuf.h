@@ -42,7 +42,9 @@
 #include "lwgeom_pg.h"
 #include "lwgeom_log.h"
 #include "header_builder.h"
+#include "header_verifier.h"
 #include "feature_builder.h"
+#include "feature_verifier.h"
 
 struct flatgeobuf_encode_ctx
 {
@@ -59,7 +61,7 @@ struct flatgeobuf_encode_ctx
 	uint64_t tmp_buf_size;
 	uint64_t offset;
 	uint8_t lwgeom_type;
-	GeometryType_enum_t geometry_type;
+	FlatGeobuf_GeometryType_enum_t geometry_type;
 	bool hasZ;
 	bool hasM;
 	bool hasT;
@@ -73,21 +75,21 @@ uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_encode_ctx *ctx);
 struct flatgeobuf_decode_ctx
 {
 	TupleDesc tupdesc;
-		uint8_t *buf;
-		uint64_t size;
+	uint8_t *buf;
+	uint64_t size;
 	uint64_t offset;
 	Datum result;
-		uint64_t fid;
+	uint64_t fid;
 	bool done;
-		Header_table_t header;
-		GeometryType_enum_t geometry_type;
-		bool hasZ;
-		bool hasM;
-		bool hasT;
-		bool hasTM;
-		Column_vec_t columns;
-		size_t columns_len;
-		Datum geom;
+	FlatGeobuf_Header_table_t header;
+	FlatGeobuf_GeometryType_enum_t geometry_type;
+	bool hasZ;
+	bool hasM;
+	bool hasT;
+	bool hasTM;
+	FlatGeobuf_Column_vec_t columns;
+	size_t columns_len;
+	Datum geom;
 };
 
 void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx);

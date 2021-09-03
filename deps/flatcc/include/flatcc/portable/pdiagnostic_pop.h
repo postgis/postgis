@@ -1,6 +1,3 @@
-#ifndef PDIAGNOSTIC_POP_H
-#define PDIAGNOSTIC_POP_H
-
 #if defined(PDIAGNOSTIC_PUSHED_MSVC)
 #if PDIAGNOSTIC_PUSHED_MSVC
 #pragma warning( pop )
@@ -21,5 +18,3 @@
 #endif // PDIAGNOSTIC_PUSHED_GCC
 #undef PDIAGNOSTIC_PUSHED_GCC
 #endif // defined(PDIAGNOSTIC_PUSHED_GCC)
-
-#endif /* PDIAGNOSTIC_POP_H */

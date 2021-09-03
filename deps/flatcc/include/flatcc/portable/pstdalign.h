@@ -30,7 +30,10 @@
  *
  * MSVC does not support <stdalign.h> at least up to MSVC 2015,
  * but does appear to support alignas and alignof keywords in
- * recent standard C++. 
+ * recent standard C++.
+ *
+ * TCC only supports alignas with a numeric argument like
+ * `alignas(4)`, but not `alignas(float)`.
  *
  * If stdalign.h is supported but heuristics in this file are
  * insufficient to detect this, try including <stdaligh.h> manually
@@ -124,6 +127,12 @@ extern "C" {
 
 #define _Alignas(t) __declspec (align(t))
 #define _Alignof(t) __alignof(t)
+
+#elif defined(__TINYC__)
+
+/* Supports `_Alignas(integer-expression)`, but not `_Alignas(type)`. */
+#define _Alignas(t) __attribute__(aligned(t))
+#define _Alignof(t) __alignof__(t)
 
 #else
 #error please update pstdalign.h with support for current compiler and library
