@@ -98,7 +98,9 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 
 	ctx = palloc(sizeof(*ctx));
 	ctx->size = VARSIZE_ANY_EXHDR(data);
-	ctx->buf = (uint8_t *) VARDATA_ANY(data);
+	POSTGIS_DEBUGF(3, "flatgeobuf: pgis_tablefromflatgeobuf bytea data size is %ld", ctx->size);
+	ctx->buf = palloc(ctx->size);
+	memcpy(ctx->buf, VARDATA_ANY(data), ctx->size);
 	ctx->offset = 0;
 
 	flatgeobuf_check_magicbytes(ctx);
@@ -185,7 +187,8 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		ctx = palloc(sizeof(*ctx));
 		ctx->tupdesc = tupdesc;
 		ctx->size = VARSIZE_ANY_EXHDR(data);
-		ctx->buf = (uint8_t *) VARDATA_ANY(data);
+		ctx->buf = palloc(ctx->size);
+		memcpy(ctx->buf, VARDATA_ANY(data), ctx->size);
 		ctx->offset = 0;
 		ctx->done = false;
 		ctx->fid = 0;
