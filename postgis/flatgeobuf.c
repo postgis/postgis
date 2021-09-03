@@ -103,7 +103,7 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 	TupleDesc tupdesc = lookup_rowtype_tupdesc(tupType, tupTypmod);
 	int natts = tupdesc->natts;
 	bool geom_found = false;
-	Column_ref_t *columns = lwalloc(sizeof(Column_ref_t) * natts);
+	Column_ref_t *columns = palloc(sizeof(Column_ref_t) * natts);
 
 	ctx->tupdesc = tupdesc;
 
@@ -232,7 +232,7 @@ static void encode_line_ppa(struct flatgeobuf_encode_ctx *ctx, POINTARRAY **ppa,
 {
 	POINT4D pt;
 	flatcc_builder_t *B = ctx->B;
-	uint32_t *ends = lwalloc(sizeof(uint32_t) * len);
+	uint32_t *ends = palloc(sizeof(uint32_t) * len);
 	uint32_t offset = 0;
 	uint32_t n, i;
 
@@ -334,7 +334,7 @@ static Geometry_ref_t encode_mline(struct flatgeobuf_encode_ctx *ctx, LWMLINE *l
 	if (ngeoms == 1) {
 		encode_line_pa(ctx, lwmline->geoms[0]->points);
 	} else {
-		ppa = lwalloc(sizeof(POINTARRAY *) * ngeoms);
+		ppa = palloc(sizeof(POINTARRAY *) * ngeoms);
 		for (i = 0; i < ngeoms; i++)
 			ppa[i] = lwmline->geoms[i]->points;
 		encode_line_ppa(ctx, ppa, ngeoms);
@@ -348,7 +348,7 @@ static Geometry_ref_t encode_mpoly(struct flatgeobuf_encode_ctx *ctx, LWMPOLY *l
 {
 	flatcc_builder_t *B = ctx->B;
 	uint32_t ngeoms = lwmpoly->ngeoms;
-	Geometry_ref_t *parts = lwalloc(sizeof(Geometry_ref_t) * ngeoms);
+	Geometry_ref_t *parts = palloc(sizeof(Geometry_ref_t) * ngeoms);
 	uint32_t i;
 
 	for (i = 0; i < ngeoms; i++)
@@ -366,7 +366,7 @@ static Geometry_ref_t encode_collection(struct flatgeobuf_encode_ctx *ctx, LWCOL
 {
 	flatcc_builder_t *B = ctx->B;
 	uint32_t ngeoms = lwcollection->ngeoms;
-	Geometry_ref_t *parts = lwalloc(sizeof(Geometry_ref_t) * ngeoms);
+	Geometry_ref_t *parts = palloc(sizeof(Geometry_ref_t) * ngeoms);
 	uint32_t i;
 
 	for (i = 0; i < ngeoms; i++)
@@ -421,10 +421,12 @@ static void ensure_tmp_buf_size(struct flatgeobuf_encode_ctx *ctx, size_t size)
 {
 	if (ctx->tmp_buf_size == 0) {
 		ctx->tmp_buf_size = 1024 * 4;
+		POSTGIS_DEBUGF(3, "flatgeobuf: allocating temp buffer to size %ld", ctx->tmp_buf_size);
 		ctx->tmp_buf = palloc(sizeof(uint8_t) * ctx->tmp_buf_size);
 	}
 	if (ctx->tmp_buf_size < size) {
 		ctx->tmp_buf_size = ctx->tmp_buf_size * 2;
+		POSTGIS_DEBUGF(3, "flatgeobuf: reallocating temp buffer to size %ld", ctx->tmp_buf_size);
 		ctx->tmp_buf = repalloc(ctx->tmp_buf, sizeof(uint8_t) * ctx->tmp_buf_size);
 		ensure_tmp_buf_size(ctx, size);
 	}
@@ -567,9 +569,9 @@ void flatgeobuf_decode_header(struct flatgeobuf_decode_ctx *ctx)
 	Column_vec_t columns;
 	size_t size;
 
-	POSTGIS_DEBUGF(3, "flatgeobuf: reading feature prefix at %ld", ctx->offset);
+	POSTGIS_DEBUGF(3, "flatgeobuf: reading header size prefix at %ld", ctx->offset);
 	flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
-	POSTGIS_DEBUGF(3, "flatgeobuf: feature size is %ld", size);
+	POSTGIS_DEBUGF(3, "flatgeobuf: header size is %ld", size);
 	ctx->offset += sizeof(flatbuffers_uoffset_t);
 
 	header = Header_as_root(ctx->buf + ctx->offset);
@@ -699,7 +701,7 @@ static LWPOLY *decode_poly(struct flatgeobuf_decode_ctx *ctx, Geometry_table_t g
 	if (ends != NULL)
 		nrings = flatbuffers_uint32_vec_len(ends);
 
-	ppa = lwalloc(sizeof(POINTARRAY *) * nrings);
+	ppa = palloc(sizeof(POINTARRAY *) * nrings);
 	for (i = 0; i < nrings; i++) {
 		if (ends != NULL)
 			end = flatbuffers_uint32_vec_at(ends, i);
