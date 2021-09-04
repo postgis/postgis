@@ -543,7 +543,7 @@ static int encode_properties(struct flatgeobuf_encode_ctx *ctx)
 	}
 
 	if (offset > 0) {
-		POSTGIS_DEBUGF(3, "flatgeobuf: FlatGeobuf_Feature_properties_create offset %ld", offset);
+		POSTGIS_DEBUGF(3, "offset %ld", offset);
 		return FlatGeobuf_Feature_properties_create(ctx->B, ctx->tmp_buf, offset);
 	}
 
@@ -572,7 +572,7 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 		FlatGeobuf_Geometry_xy_end(B);
 		FlatGeobuf_Feature_geometry_end(B);
 	}*/
-	//encode_properties(ctx);
+	encode_properties(ctx);
 	FlatGeobuf_Feature_end_as_root(B);
 	feature = flatcc_builder_finalize_aligned_buffer(B, &size);
 
@@ -631,7 +631,7 @@ void flatgeobuf_decode_header(struct flatgeobuf_decode_ctx *ctx)
 	ctx->columns_len = FlatGeobuf_Column_vec_len(ctx->columns);
 
 	POSTGIS_DEBUGF(2, "ctx->geometry_type: %d", ctx->geometry_type);
-	POSTGIS_DEBUGF(2, "ctx->columns_len: %d", ctx->columns_len);
+	POSTGIS_DEBUGF(2, "ctx->columns_len: %ld", ctx->columns_len);
 
 	ctx->header = header;
 }
