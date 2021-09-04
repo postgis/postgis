@@ -98,7 +98,7 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 
 	ctx = palloc(sizeof(*ctx));
 	ctx->size = VARSIZE_ANY_EXHDR(data);
-	POSTGIS_DEBUGF(3, "flatgeobuf: pgis_tablefromflatgeobuf bytea data size is %ld", ctx->size);
+	POSTGIS_DEBUGF(3, "bytea data size is %ld", ctx->size);
 	ctx->buf = palloc(ctx->size);
 	memcpy(ctx->buf, VARDATA_ANY(data), ctx->size);
 	ctx->offset = 0;
@@ -108,7 +108,7 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 
 	column_defs = palloc(sizeof(char *) * ctx->columns_len);
 	column_defs_total_len = 0;
-	POSTGIS_DEBUGF(2, "flatgeobuf: pgis_tablefromflatgeobuf found %ld columns", ctx->columns_len);
+	POSTGIS_DEBUGF(2, "found %ld columns", ctx->columns_len);
 	for (i = 0; i < ctx->columns_len; i++) {
 		FlatGeobuf_Column_table_t column = FlatGeobuf_Column_vec_at(ctx->columns, i);
 		flatbuffers_string_t name = FlatGeobuf_Column_name(column);
@@ -130,7 +130,7 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 			strcat(column_defs_str, ", ");
 	}
 
-	POSTGIS_DEBUGF(2, "flatgeobuf: pgis_tablefromflatgeobuf column_defs_str %s", column_defs_str);
+	POSTGIS_DEBUGF(2, "column_defs_str %s", column_defs_str);
 
 	// TODO: parameterize temp
 
@@ -182,7 +182,7 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		ctx = palloc(sizeof(*ctx));
 		ctx->tupdesc = tupdesc;
 		ctx->size = VARSIZE_ANY_EXHDR(data);
-		POSTGIS_DEBUGF(3, "flatgeobuf: pgis_fromflatgeobuf VARSIZE_ANY_EXHDR %ld", ctx->size);
+		POSTGIS_DEBUGF(3, "VARSIZE_ANY_EXHDR %ld", ctx->size);
 		ctx->buf = palloc(ctx->size);
 		memcpy(ctx->buf, VARDATA_ANY(data), ctx->size);
 		ctx->offset = 0;
@@ -192,7 +192,7 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		funcctx->user_fctx = ctx;
 
 		if (ctx->size == 0) {
-			POSTGIS_DEBUGF(2, "flatgeobuf: no data, size %ld", ctx->size);
+			POSTGIS_DEBUG(2, "no data");
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -200,10 +200,10 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 		flatgeobuf_check_magicbytes(ctx);
 		flatgeobuf_decode_header(ctx);
 
-		POSTGIS_DEBUGF(2, "flatgeobuf: header decoded now at offset, %ld", ctx->offset);
+		POSTGIS_DEBUGF(2, "header decoded now at offset %ld", ctx->offset);
 
 		if (ctx->size == ctx->offset) {
-			POSTGIS_DEBUGF(2, "flatgeobuf: no feature data offset, %ld", ctx->offset);
+			POSTGIS_DEBUGF(2, "no feature data offset %ld", ctx->offset);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -217,8 +217,10 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 
 	if (!ctx->done) {
 		flatgeobuf_decode_feature(ctx);
+		POSTGIS_DEBUG(2, "Calling SRF_RETURN_NEXT");
 		SRF_RETURN_NEXT(funcctx, ctx->result);
 	} else {
+		POSTGIS_DEBUG(2, "Calling SRF_RETURN_DONE");
 		SRF_RETURN_DONE(funcctx);
 	}
 }
