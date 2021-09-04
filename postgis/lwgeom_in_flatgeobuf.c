@@ -134,8 +134,8 @@ Datum pgis_tablefromflatgeobuf(PG_FUNCTION_ARGS)
 
 	// TODO: parameterize temp
 
-	format = "create temp table if not exists %s (id int, geom geometry%s) on commit drop";
-	//format = "create table %s.%s (id int, geom geometry)";
+	//format = "create temp table if not exists %s (id int, geom geometry%s) on commit drop";
+	format = "create table %s (id int, geom geometry%s)";
 	sql = palloc(strlen(format) + strlen(schema) + strlen(table));
 
 	sprintf(sql, format, table, column_defs_str);

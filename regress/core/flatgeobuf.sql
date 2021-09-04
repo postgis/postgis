@@ -1,4 +1,3 @@
-begin transaction;
 select ST_TableFromFlatGeobuf('public', 'flatgeobuf_t1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry) q));
 
 select '--- Null geometry ---';
@@ -124,4 +123,5 @@ select 'A1', id, ST_AsText(geom), bool_1, int_1, int_2, smallint_1, bigint_1, fl
     ) q)
 );
 
-commit;
+drop table if exists public.flatgeobuf_t1;
+drop table if exists public.flatgeobuf_a1;
