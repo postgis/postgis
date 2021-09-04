@@ -140,7 +140,8 @@ from somegeogtable;</programlisting>
 			<title>Description</title>
 
 			<para>Returns the azimuth in radians of the segment defined by the given
-			point geometries, or NULL if the two points are coincident. The azimuth is angle is referenced from north, and is positive clockwise: North = 0; East = &#x03C0;/2; South = &#x03C0;; West = 3&#x03C0;/2.</para>
+			point geometries, or NULL if the two points are coincident. The azimuth is angle is referenced from north, and is positive clockwise:  North = 0; Northeast = &#x03C0;/4; East = &#x03C0;/2; Southeast = 3&#x03C0;/4;
+            South = &#x03C0;; Southwest 5&#x03C0;/4; West = 3&#x03C0;/2; Northwest = 7&#x03C0;/4. </para>
 			<para>For the geography type, the forward azimuth is solved as part of the inverse geodesic problem.</para>
 			<para>The azimuth is mathematical concept defined as the angle between a reference plane and a point, with angular units in radians.
 			Units can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para>
