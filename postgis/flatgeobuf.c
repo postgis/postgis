@@ -158,7 +158,8 @@ static void encode_header(struct flatgeobuf_encode_ctx *ctx)
 	FlatGeobuf_Header_has_m_add(B, ctx->hasM);
 	//FlatGeobuf_Header_has_t_add(B, false);
 	//FlatGeobuf_Header_has_tm_add(B, false);
-	FlatGeobuf_Header_columns_create(B, columns, columns_len);
+	if (columns_len > 0)
+		FlatGeobuf_Header_columns_create(B, columns, columns_len);
 	FlatGeobuf_Header_end_as_root(B);
 
 	header = flatcc_builder_finalize_aligned_buffer(B, &size);
