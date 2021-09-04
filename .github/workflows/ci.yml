@@ -13,6 +13,7 @@ jobs:
   linux:
     name: "CI"
     strategy:
+      fail-fast: false
       matrix:
         ci:
         # Use the last stable releases to run more tests
