@@ -972,8 +972,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		params_text = palloc(VARHDRSZ);
-		SET_VARSIZE(params_text, 0);
+		params_text = cstring_to_text("");
 	}
 
 	/* Empty.Buffer() == Empty[polygon] */
