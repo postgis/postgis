@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.0.3
-:Date: 2020-11-19
+:Version: 3.0.4
+:Date: 2021-09-04
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -33,7 +33,7 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 9.5 and above.
+PostGIS is compatible with PostgreSQL 9.5 - 13.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
