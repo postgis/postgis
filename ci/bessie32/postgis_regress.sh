@@ -4,7 +4,7 @@ CC=gcc8   \
 CXX=g++8 \
 CXXFLAGS="-O2 -pipe  -fstack-protector-strong -Wl,-rpath=/usr/local/lib/gcc8  -nostdinc++ -isystem /usr/include/c++/v1 -Wl,-rpath=/usr/local/lib/gcc8" \
 CFLAGS="-Wall -Wmissing-prototypes -Wpointer-arith -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-trunc" \
- ./configure --with-libiconv=/usr/local --without-interrupt-tests
+ ./configure --with-libiconv=/usr/local --with-library-minor-version --without-interrupt-tests
 make clean
 make
 export PGUSER=postgres

@@ -1,6 +1,10 @@
+PostGIS 3.0.5
+2021/XX/XX
+* Bug Fixes and Enhancements *
+
 PostGIS 3.0.4
 2021/09/04
-
+* Bug Fixes and Enhancements *
   - #4941, Fix loose mbr in topology.face on update (Sandro Santilli)
   - #4871, TopoGeometry::geometry cast returns NULL for empty
            TopoGeometry objects (Sandro Santilli)
