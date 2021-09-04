@@ -140,7 +140,8 @@ from somegeogtable;</programlisting>
 			<title>Description</title>
 
 			<para>Returns the azimuth in radians of the line segment defined by the given
-			point geometries, or NULL if the two points are coincident. The azimuth angle is referenced from north (the positive Y axis), and is positive clockwise: North = 0; East = &#x03C0;/2; South = &#x03C0;; West = 3&#x03C0;/2.</para>
+			point geometries, or NULL if the two points are coincident. The azimuth angle is referenced from north (the positive Y axis), and is positive clockwise: North = 0; Northeast = &#x03C0;/4; East = &#x03C0;/2; Southeast = 3&#x03C0;/4;
+                South = &#x03C0;; Southwest 5&#x03C0;/4; West = 3&#x03C0;/2; Northwest = 7&#x03C0;/4.</para>
 			<para>For the geography type, the azimuth solution is known as the
                   <ulink url="https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid">inverse geodesic problem</ulink>.</para>
 			<para>The azimuth is a mathematical concept defined as the angle between a reference plane and a point, with angular units in radians.
