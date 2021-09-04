@@ -393,8 +393,8 @@ static FlatGeobuf_Geometry_ref_t encode_geometry_part(struct flatgeobuf_encode_c
 		return 0;
 	}
 
-	char *wkt = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 2, NULL);
-  	POSTGIS_DEBUGF(3, "flatgeobuf: encode_geometry_part wkt %s", wkt);
+	//char *wkt = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 2, NULL);
+  	//POSTGIS_DEBUGF(3, "flatgeobuf: encode_geometry_part wkt %s", wkt);
 
 	switch (lwgeom->type) {
 	case POINTTYPE:
@@ -463,7 +463,7 @@ static int encode_properties(struct flatgeobuf_encode_ctx *ctx)
 	double double_value;
 	char *string_value;
 
-	Jsonb *jb;
+	//Jsonb *jb;
 
 	for (i = 0; i < (uint32_t) ctx->tupdesc->natts; i++) {
 		if (ctx->geom_index == i)
@@ -558,13 +558,7 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 	geometry = encode_geometry(ctx);
 	FlatGeobuf_Feature_start_as_root_with_size(B);
 	FlatGeobuf_Feature_geometry_add(B, geometry);
-	//if (geometry) {
-		//FlatGeobuf_Feature_geometry_add(B, geometry);
-		//empty = false;
-	//}
-	//if (encode_properties(ctx))
-	//	empty = false;
-	//if (!empty)
+	encode_properties(ctx);
 	FlatGeobuf_Feature_end_as_root(B);
 	feature = flatcc_builder_finalize_aligned_buffer(B, &size);
 
@@ -600,7 +594,6 @@ void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx)
 void flatgeobuf_decode_header(struct flatgeobuf_decode_ctx *ctx)
 {
 	FlatGeobuf_Header_table_t header;
-	FlatGeobuf_Column_vec_t columns;
 	size_t size;
 
 	POSTGIS_DEBUGF(2, "flatgeobuf: reading header size prefix at %ld", ctx->offset);
@@ -627,7 +620,6 @@ void flatgeobuf_decode_header(struct flatgeobuf_decode_ctx *ctx)
 static LWPOINT *decode_point(struct flatgeobuf_decode_ctx *ctx, FlatGeobuf_Geometry_table_t geometry)
 {
 	POINTARRAY *pa;
-	LWGEOM *lwgeom;
 	POINT4D pt;
 
 	flatbuffers_double_vec_t xy = FlatGeobuf_Geometry_xy(geometry);
@@ -661,11 +653,9 @@ static LWPOINT *decode_point(struct flatgeobuf_decode_ctx *ctx, FlatGeobuf_Geome
 static POINTARRAY *decode_line_pa(struct flatgeobuf_decode_ctx *ctx, FlatGeobuf_Geometry_table_t geometry, uint32_t end, uint32_t offset)
 {
 	POINTARRAY *pa;
-	LWGEOM *lwgeom;
 	POINT4D pt;
 	flatbuffers_double_vec_t xy = FlatGeobuf_Geometry_xy(geometry);
 	uint32_t npoints;
-	size_t xy_len;
 	uint32_t i;
 
 	if (end != 0) {
@@ -814,7 +804,6 @@ static LWCOLLECTION *decode_collection(struct flatgeobuf_decode_ctx *ctx, FlatGe
 
 static LWGEOM *decode_geometry_part(struct flatgeobuf_decode_ctx *ctx, FlatGeobuf_Geometry_table_t geometry, FlatGeobuf_GeometryType_enum_t geometry_type)
 {
-	LWGEOM *lwgeom;
 	switch (geometry_type) {
 	case FlatGeobuf_GeometryType_Point:
 		return (LWGEOM *) decode_point(ctx, geometry);
@@ -839,16 +828,15 @@ static LWGEOM *decode_geometry_part(struct flatgeobuf_decode_ctx *ctx, FlatGeobu
 static Datum decode_geometry(struct flatgeobuf_decode_ctx *ctx, FlatGeobuf_Geometry_table_t geometry)
 {
 	LWGEOM *lwgeom = decode_geometry_part(ctx, geometry, ctx->geometry_type);
-	char *wkt = lwgeom_to_wkt((LWGEOM*)lwgeom, WKT_EXTENDED, 2, NULL);
-  	POSTGIS_DEBUGF(3, "flatgeobuf: decode_geometry wkt %s", wkt);
+	//char *wkt = lwgeom_to_wkt((LWGEOM*)lwgeom, WKT_EXTENDED, 2, NULL);
+  	//POSTGIS_DEBUGF(3, "flatgeobuf: decode_geometry wkt %s", wkt);
 	return (Datum) geometry_serialize(lwgeom);
 }
 
 static void decode_properties(struct flatgeobuf_decode_ctx *ctx, FlatGeobuf_Feature_table_t feature, Datum *values, bool *isnull)
 {
-	uint32_t natts = ctx->tupdesc->natts;
 	uint16_t i, ci;
-	uint32_t len, natti = 2;
+	uint32_t len;
 	flatbuffers_uoffset_t offset = 0;
 	flatbuffers_uint8_vec_t data = FlatGeobuf_Feature_properties(feature);
 	size_t size = flatbuffers_uint8_vec_len(data);
@@ -976,16 +964,12 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 {
 	size_t size;
 	FlatGeobuf_Feature_table_t feature;
-	GSERIALIZED *geom;
-	LWGEOM *lwgeom;
+	uint8_t *tmpbuf;
 	HeapTuple heapTuple;
 	uint32_t natts = ctx->tupdesc->natts;
-	POINTARRAY *pa;
-	POINT4D pt = { 0, 0, 0, 0 };
 	FlatGeobuf_Geometry_table_t geometry;
 	Datum *values = palloc(natts * sizeof(Datum *));
 	bool *isnull = palloc(natts * sizeof(bool *));
-	int ret;
 
 	values[0] = Int32GetDatum(ctx->fid);
 	isnull[0] = false;
@@ -998,7 +982,8 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 	if (FlatGeobuf_Feature_verify_as_root(ctx->buf + ctx->offset, size))
 		elog(ERROR, "flatgeobuf_decode_feature: buffer did not pass verification");
 
-	uint8_t *tmpbuf = palloc(size);
+	// NOTE: required due to alignment issues?
+	tmpbuf = palloc(size);
 	memcpy(tmpbuf, ctx->buf + ctx->offset, size);
 
 	feature = FlatGeobuf_Feature_as_root(tmpbuf);
@@ -1057,10 +1042,6 @@ struct flatgeobuf_encode_ctx *flatgeobuf_agg_init_context(const char *geom_name)
  */
 void flatgeobuf_agg_transfn(struct flatgeobuf_encode_ctx *ctx)
 {
-	size_t size;
-	flatcc_builder_t builder, *B;
-	uint8_t *feature;
-
 	LWGEOM *lwgeom = NULL;
 	bool isnull = false;
 	Datum datum;

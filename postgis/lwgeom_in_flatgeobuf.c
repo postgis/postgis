@@ -158,15 +158,10 @@ PG_FUNCTION_INFO_V1(pgis_fromflatgeobuf);
 Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
-	int				  call_cntr;
-	int				  max_calls;
 
 	TupleDesc tupdesc;
 	bytea *data;
-	HeapTuple tuple;
-	//AttInMetadata *attinmeta;
 	MemoryContext oldcontext;
-	Datum result;
 
 	struct flatgeobuf_decode_ctx *ctx;
 
