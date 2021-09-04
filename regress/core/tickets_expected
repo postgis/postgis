@@ -460,7 +460,3 @@ ERROR:  LWGEOM_addpoint: Invalid offset
 #4770.b|POINT(1 1)|302
 #4770.c|POINT(0 0)|300
 #4770.c|MULTIPOINT(0 0,1 1)|602
-#4916.a|
-#4916.a|
-#4916.b|
-#4916.b|

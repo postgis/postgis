@@ -596,15 +596,15 @@ select '#1580.1', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395
 
 do $$
 declare
-proj_version integer;       
+proj_version integer;
 err_str text;
 begin
 
     select ((regexp_matches(postgis_proj_version(), '(\d+)\.\d+'))[1])::integer into proj_version;
     select ST_Transform('SRID=4326;POINT(180 95)'::geometry, 3395); -- fails
 
-exception 
-when others then 
+exception
+when others then
     err_str := SQLERRM;
     if proj_version >= 8 and SQLERRM = 'transform: Invalid coordinate (2049)' then
         raise notice '#1580.2: Caught a PROJ error';
@@ -613,8 +613,8 @@ when others then
     else
     	raise notice '#1580.2: Unexpected PROJ Result. Proj version = %. Error string: %', proj_version, err_str;
     end if;
-    
-end; 
+
+end;
 $$ language 'plpgsql';
 
 select '#1580.3', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395));
@@ -1422,13 +1422,5 @@ WITH w AS (
                  ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b)
 )
 SELECT '#4770.c', ST_AsText(g), s FROM w;
-
-SELECT '#4916.a', ST_AsGeobuf(NULL::pg_class, 'g') over (order by b)
-FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
-           ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b);
-
-SELECT '#4916.b', ST_AsGeobuf(NULL::pg_class) over (order by b)
-FROM (VALUES ('POINT(0 0)'::geometry, 'A0006', 300),
-           ('POINT(1 1)'::geometry, 'A0006', 302)) t(g, a, b);
 
 ------
