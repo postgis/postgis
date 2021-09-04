@@ -1,5 +1,5 @@
-PostGIS 3.0.4dev
-2021/xx/xx
+PostGIS 3.0.4
+2021/09/04
 
   - #4941, Fix loose mbr in topology.face on update (Sandro Santilli)
   - #4871, TopoGeometry::geometry cast returns NULL for empty
