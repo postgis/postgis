@@ -2,6 +2,32 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+    <sect1>
+        <title>Release 3.1.4</title>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para>Release date: 2021/09/04</para>
+            <para>#4782, Have postgis_restore.pl use backup postgis schema by
+                default (Sandro Santilli)</para>
+            <para>#4854, Fix type of TopoGeometry receiving different-type
+                TopoGeometry components (Sandro Santilli)</para>
+            <para>#4918, Fix rare crash in st_minpossiblevalue (Paul Ramsey)</para>
+            <para>#4941, Fix loose mbr in topology.face on update (Sandro Santilli)</para>
+            <para>#4949, Swapped coordinates for N/E planar systems (Paul Ramsey)</para>
+            <para>#GI617, Fix typo in setting of INVMINDIST (Charles Karney)</para>
+            <para>#4326, Fix CircularPolygon area calculation (Paul Ramsey)</para>
+            <para>#4917, Fix crasher with '-' regclass (Paul Ramsey)</para>
+            <para>#4919, Rare crash in selectivity calculation (Paul Ramsey)</para>
+            <para>#4926, Preserve SRID on unions of empty geometry (Paul Ramsey)</para>
+            <para>#4910, Allow repeated points in GML input poslists (Paul Ramsey)</para>
+            <para>#4958, TIGER2020 fix faces and add Tabblock20 (Regina Obe)</para>
+            <para>#4959, Drop Colorado state files also drops national county tables (Regina Obe)</para>
+            <para>#4916, #4770, #4724, #4916, Crashes in aggregate functions (Paul Ramsey)</para>
+            <para>#4982, Problem when calling the buffer function from MobilityDB
+                (Esteban Zimanyi, MobilityDB)</para>
+        </simplesect>
+    </sect1>
     <sect1>
         <title>Release 3.1.3</title>
         <para>Release date: 2021/07/02</para>
