@@ -211,9 +211,12 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 
 		/* Maximum cluster radius. 0 if not set*/
 		argdatum = WinGetFuncArgCurrent(winobj, 2, &isnull);
-		max_radius = DatumGetFloat8(argdatum);
-		if (isnull || max_radius <= 0)
-			max_radius = 0.0;
+		if (!isnull)
+		{
+			max_radius = DatumGetFloat8(argdatum);
+			if (max_radius < 0)
+				max_radius = 0.0;
+		}
 
 		/* Error out if N < K */
 		if (N<k)
