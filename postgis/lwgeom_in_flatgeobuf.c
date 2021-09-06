@@ -179,7 +179,7 @@ Datum pgis_fromflatgeobuf(PG_FUNCTION_ARGS)
 
 		data = PG_GETARG_BYTEA_PP(1);
 
-		ctx = palloc(sizeof(*ctx));
+		ctx = palloc0(sizeof(*ctx));
 		ctx->tupdesc = tupdesc;
 		ctx->size = VARSIZE_ANY_EXHDR(data);
 		POSTGIS_DEBUGF(3, "VARSIZE_ANY_EXHDR %ld", ctx->size);
