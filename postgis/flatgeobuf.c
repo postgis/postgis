@@ -1040,7 +1040,7 @@ struct flatgeobuf_encode_ctx *flatgeobuf_agg_init_context(const char *geom_name)
 {
 	struct flatgeobuf_encode_ctx *ctx;
 	size_t size = VARHDRSZ + sizeof(magicbytes);
-	ctx = palloc(sizeof(*ctx));
+	ctx = palloc0(sizeof(*ctx));
 	ctx->buf = palloc(size);
 	ctx->tmp_buf = NULL;
 	ctx->tmp_buf_size = 0;
