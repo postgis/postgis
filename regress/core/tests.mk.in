@@ -42,7 +42,6 @@ TESTS += \
 	$(topsrcdir)/regress/core/dumpsegments \
 	$(topsrcdir)/regress/core/empty \
 	$(topsrcdir)/regress/core/estimatedextent \
-	$(topsrcdir)/regress/core/flatgeobuf \
 	$(topsrcdir)/regress/core/forcecurve \
 	$(topsrcdir)/regress/core/geography \
 	$(topsrcdir)/regress/core/geometric_median \
@@ -61,6 +60,7 @@ TESTS += \
 	$(topsrcdir)/regress/core/normalize \
 	$(topsrcdir)/regress/core/operators \
 	$(topsrcdir)/regress/core/orientation \
+	$(topsrcdir)/regress/core/out_flatgeobuf \
 	$(topsrcdir)/regress/core/out_geometry \
 	$(topsrcdir)/regress/core/out_geography \
 	$(topsrcdir)/regress/core/polygonize \
