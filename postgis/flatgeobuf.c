@@ -564,14 +564,6 @@ static void encode_feature(struct flatgeobuf_encode_ctx *ctx)
 	geometry = encode_geometry(ctx);
 	FlatGeobuf_Feature_start_as_root_with_size(B);
 	FlatGeobuf_Feature_geometry_add(B, geometry);
-	/*if (ctx->lwgeom != NULL) {
-		FlatGeobuf_Feature_geometry_start(B);
-		FlatGeobuf_Geometry_xy_start(B);
-		FlatGeobuf_Geometry_xy_push_create(B, 1.1);
-		FlatGeobuf_Geometry_xy_push_create(B, 2.2);
-		FlatGeobuf_Geometry_xy_end(B);
-		FlatGeobuf_Feature_geometry_end(B);
-	}*/
 	encode_properties(ctx);
 	FlatGeobuf_Feature_end_as_root(B);
 	feature = flatcc_builder_finalize_aligned_buffer(B, &size);
@@ -981,7 +973,7 @@ static void decode_properties(struct flatgeobuf_decode_ctx *ctx, FlatGeobuf_Feat
 
 void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 {
-	size_t size;
+	uint32_t size;
 	FlatGeobuf_Feature_table_t feature;
 	uint8_t *tmpbuf;
 	HeapTuple heapTuple;
@@ -993,10 +985,12 @@ void flatgeobuf_decode_feature(struct flatgeobuf_decode_ctx *ctx)
 	values[0] = Int32GetDatum(ctx->fid);
 	isnull[0] = false;
 
-	flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
-	POSTGIS_DEBUGF(3, "feature size is %ld", size);
-
+	// NOTE: can crash due to alignment issues?
+	//flatbuffers_read_size_prefix(ctx->buf + ctx->offset, &size);
+	// NOTE: hack
+	size = *(ctx->buf + ctx->offset);
 	ctx->offset += sizeof(flatbuffers_uoffset_t);
+	POSTGIS_DEBUGF(3, "feature size is %d", size);
 
 	// NOTE: will not verify due to alignment issues?
 	//if (FlatGeobuf_Feature_verify_as_root(ctx->buf + ctx->offset, size))
