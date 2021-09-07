@@ -43,13 +43,16 @@
 PG_FUNCTION_INFO_V1(pgis_asflatgeobuf_transfn);
 Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 {
-	MemoryContext aggcontext;
+	MemoryContext aggcontext, oldcontext;
 	char *geom_name = NULL;
 	struct flatgeobuf_encode_ctx *ctx;
 
+	/* We need to initialize the internal cache to access it later via postgis_oid() */
+	postgis_initialize_cache();
+
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "pgis_asflatgeobuf_transfn: called in non-aggregate context");
-	MemoryContextSwitchTo(aggcontext);
+	oldcontext = MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0)) {
 		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
@@ -64,6 +67,7 @@ Datum pgis_asflatgeobuf_transfn(PG_FUNCTION_ARGS)
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
 
 	flatgeobuf_agg_transfn(ctx);
+	MemoryContextSwitchTo(oldcontext);
 	PG_RETURN_POINTER(ctx);
 }
 
@@ -80,8 +84,6 @@ Datum pgis_asflatgeobuf_finalfn(PG_FUNCTION_ARGS)
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
-
-	postgis_initialize_cache(fcinfo);
 
 	ctx = (struct flatgeobuf_encode_ctx *) PG_GETARG_POINTER(0);
 	buf = flatgeobuf_agg_finalfn(ctx);
