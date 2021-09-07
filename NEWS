@@ -51,7 +51,7 @@ PostGIS 3.2.0
   - #4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)
   - #4799, Include srs in GeoJSON where it exists in spatial_ref_sys.
   - #4986, GIST indexes on Postgres 14 are now created faster using Hilbert-sorting method.
-           (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski)
+           (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski, Giuseppe Broccolo)
 
  * New features*
   - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
