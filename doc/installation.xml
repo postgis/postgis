@@ -166,11 +166,11 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	  <listitem>
 		<para>
-		  Proj4 reprojection library. Proj4 4.9 or above is required.
-			The Proj4 library is used to provide coordinate reprojection support within
-		  PostGIS. Proj4 is available for download from
-		  <ulink url="http://trac.osgeo.org/proj/">
-			http://trac.osgeo.org/proj/
+		  Proj reprojection library. Proj 4.9 or above is required.
+			The Proj library is used to provide coordinate reprojection support within
+		  PostGIS. Proj is available for download from
+		  <ulink url="https://proj.org/">
+			https://proj.org/
 		  </ulink>
 		  .
 		</para>
@@ -434,9 +434,9 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  <term><command>--with-projdir=DIR</command></term>
 		  <listitem>
 			<para>
-			  Proj4 is a reprojection library required by PostGIS. Use this
+			  Proj is a reprojection library required by PostGIS. Use this
 			  parameter (<command>--with-projdir=/path/to/projdir</command>) to
-			  manually specify a particular Proj4 installation directory that
+			  manually specify a particular Proj installation directory that
 			  PostGIS will build against.
 			</para>
 		  </listitem>
@@ -740,7 +740,7 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 	  <note>
 		<para>
 		  If you configured PostGIS using non-standard PostgreSQL, GEOS, or
-		  Proj4 locations, you may need to add their library locations to the
+		  Proj locations, you may need to add their library locations to the
 		  <varname>LD_LIBRARY_PATH</varname> environment variable.
 		</para>
 	  </note>
@@ -1265,7 +1265,7 @@ pretty_address
 
 	<para>
 	  Also check that configure has correctly detected the location and version
-	  of PostgreSQL, the Proj4 library and the GEOS library.
+	  of PostgreSQL, the Proj library and the GEOS library.
 	</para>
 
 	<orderedlist>

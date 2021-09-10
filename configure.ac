@@ -1595,7 +1595,6 @@ AC_OUTPUT([GNUmakefile
    regress/core/tests.mk
    regress/dumper/Makefile
    regress/loader/Makefile
-	 regress/real/Makefile
    doc/Makefile
    doc/Makefile.comments
    doc/html/image_src/Makefile
