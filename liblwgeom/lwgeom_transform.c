@@ -247,6 +247,7 @@ lwgeom_transform_from_str(LWGEOM *geom, const char* instr, const char* outstr)
 	}
 	int ret = lwgeom_transform(geom, lp);
 	proj_destroy(lp->pj);
+	lwfree(lp);
 	return ret;
 }
 
