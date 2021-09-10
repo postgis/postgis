@@ -15,14 +15,14 @@
 	  <refnamediv>
 		<refname>Box2D</refname>
 
-		<refpurpose>Returns a BOX2D representing the 2D extent of the geometry.</refpurpose>
+		<refpurpose>Returns a BOX2D representing the 2D extent of a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>box2d <function>Box2D</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -30,7 +30,7 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a BOX2D representing the 2D extent of the geometry.</para>
+		<para>Returns a <xref linkend="box2d_type" /> representing the 2D extent of the geometry.</para>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
@@ -41,16 +41,19 @@
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
-	box2d
-	---------
-	BOX(1 2,5 6)
+<programlisting>SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));
 
-	SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
-	box2d
-	--------
-	BOX(220186.984375 150406,220288.25 150506.140625)
-	</programlisting>
+box2d
+---------
+BOX(1 2,5 6)
+</programlisting>
+<programlisting>
+SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
+
+box2d
+--------
+BOX(220186.984375 150406,220288.25 150506.140625)
+</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -65,14 +68,14 @@
 	  <refnamediv>
 		<refname>Box3D</refname>
 
-		<refpurpose>Returns a BOX3D representing the 3D extent of the geometry.</refpurpose>
+		<refpurpose>Returns a BOX3D representing the 3D extent of a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>box3d <function>Box3D</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -80,7 +83,7 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns a BOX3D representing the 3D extent of the geometry.</para>
+		<para>Returns a <xref linkend="box3d_type" /> representing the 3D extent of the geometry.</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>&curve_support;</para>
 		<para>&P_support;</para>
@@ -92,16 +95,19 @@
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
-	Box3d
-	---------
-	BOX3D(1 2 3,5 6 5)
+<programlisting>SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));
 
-	SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
-	Box3d
-	--------
-	BOX3D(220227 150406 1,220268 150415 1)
-	</programlisting>
+Box3d
+---------
+BOX3D(1 2 3,5 6 5)
+</programlisting>
+<programlisting>
+SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));
+
+Box3d
+--------
+BOX3D(220227 150406 1,220268 150415 1)
+</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -116,7 +122,7 @@
 	  <refnamediv>
 		<refname>ST_EstimatedExtent</refname>
 
-		<refpurpose>Return the 'estimated' extent of a spatial table.</refpurpose>
+		<refpurpose>Returns the estimated extent of a spatial table.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -148,30 +154,30 @@
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the 'estimated' extent of the given spatial table.
-			The estimated is taken from the geometry column's statistics. The
-			current schema will be used if not specified. The default behavior
-			is to also use statistics collected from child tables (tables
-			with INHERITS) if available. If 'parent_only' is set to TRUE, only
-			statistics for the given table are used and child tables are
-			ignored.
+		<para>Returns the estimated extent of a spatial table as a <xref linkend="box2d_type" />.
+            The	current schema is used if not specified.
+			The estimated extent is taken from the geometry column's statistics.
+            This is usually much faster than computing the exact extent of the table
+            using <xref linkend="ST_Extent" /> or <xref linkend="ST_3DExtent" />.
+            </para>
+        <para>
+            The default behavior is to also use statistics collected from child tables (tables
+			with INHERITS) if available. If <varname>parent_only</varname> is set to TRUE, only
+			statistics for the given table are used and child tables are ignored.
 		</para>
 
-		<para>For PostgreSQL&gt;=8.0.0 statistics are gathered by VACUUM
-		ANALYZE and resulting extent will be about 95% of the real
-		one.</para>
+		<para>For PostgreSQL &gt;= 8.0.0 statistics are gathered by VACUUM
+		ANALYZE and the result extent will be about 95% of the actual one.
+        For PostgreSQL &lt; 8.0.0 statistics are gathered by running
+		<code>update_geometry_stats()</code> and the result extent is exact.
+        </para>
 
-                <note>
-                <para>
-In absence of statistics (empty table or no ANALYZE called) this function
-returns NULL.  Prior to version 1.5.4 an exception was thrown
-instead.
-		</para>
-                </note>
-
-
-		<para>For PostgreSQL&lt;8.0.0 statistics are gathered by
-		update_geometry_stats() and resulting extent will be exact.</para>
+        <note>
+            <para>
+            In the absence of statistics (empty table or no ANALYZE called) this function
+            returns NULL.  Prior to version 1.5.4 an exception was thrown instead.
+		    </para>
+        </note>
 
     <para>Availability: 1.0.0</para>
     <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent.</para>
@@ -197,9 +203,10 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Extent" /></para>
+		<para><xref linkend="ST_Extent" />, <xref linkend="ST_3DExtent" /></para>
 	  </refsection>
 	</refentry>
+
 	<refentry id="ST_Expand">
 	  <refnamediv>
 		<refname>ST_Expand</refname>
@@ -255,7 +262,7 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 	  <refsection>
 		<title>Description</title>
 
-		<para>This function returns a bounding box expanded from the bounding box of the input,
+		<para>Returns a bounding box expanded from the bounding box of the input,
 			either by specifying a single distance with which the box should be expanded on both
 			axes, or by specifying an expansion distance for each axis.
 
@@ -323,7 +330,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 	<refentry id="ST_Extent">
 	  <refnamediv>
 		<refname>ST_Extent</refname>
-		<refpurpose>an aggregate function that returns the bounding box that bounds rows of geometries.</refpurpose>
+		<refpurpose>Aggregate function that returns the bounding box of geometries.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -338,24 +345,23 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 	  <refsection>
 		<title>Description</title>
 
-		<para>ST_Extent returns a <xref linkend="box2d_type" /> bounding box that encloses a set of geometries.
-            The ST_Extent function is an "aggregate" function in the
-			terminology of SQL. That means that it operates on lists
-			of data, in the same way the SUM() and AVG() functions do.</para>
+		<para>An aggregate function that returns a <xref linkend="box2d_type" /> bounding box
+        that bounds a set of geometries.
+        </para>
 
 		<para>The bounding box coordinates are in the spatial reference system of the input geometries.</para>
 
 		<para>ST_Extent is similar in concept to Oracle Spatial/Locator's SDO_AGGR_MBR.</para>
 
 		<note>
-		  <para>The returned <code>box3d</code> value does not include a SRID.
-            Use <xref linkend="ST_SetSRID" /> to convert it into a geometry with SRID metadata.
-            The SRID is the same as the input geometries.</para>
+		  <para>ST_Extent returns boxes with only X and Y ordinates even with 3D geometries.
+          To return XYZ ordinates use <xref linkend="ST_3DExtent" />.</para>
 		</note>
 
 		<note>
-		  <para>ST_Extent returns boxes with only x and y ordinates even with 3D geometries.
-          To provide x,y,z use <xref linkend="ST_3DExtent" /> instead.</para>
+		  <para>The returned <code>box3d</code> value does not include a SRID.
+            Use <xref linkend="ST_SetSRID" /> to convert it into a geometry with SRID metadata.
+            The SRID is the same as the input geometries.</para>
 		</note>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
@@ -406,7 +412,7 @@ SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
 	<refentry id="ST_3DExtent">
 	  <refnamediv>
 		<refname>ST_3DExtent</refname>
-		<refpurpose>an aggregate function that returns the 3D bounding box that bounds rows of geometries.</refpurpose>
+		<refpurpose>Aggregate function that returns the 3D bounding box of geometries.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -421,9 +427,9 @@ SELECT ST_SetSRID(ST_Extent(geom),2249) as bextent FROM sometable;
 	  <refsection>
 		<title>Description</title>
 
-		<para>ST_3DExtent returns a <xref linkend="box3d_type" /> (includes Z coordinate) bounding box that encloses a set of geometries. The ST_3DExtent function is an "aggregate" function in the
-			terminology of SQL. That means that it operates on lists
-			of data, in the same way the SUM() and AVG() functions do.</para>
+		<para>An aggregate function that returns a <xref linkend="box3d_type" /> (includes Z ordinate) bounding box
+        that bounds a set of geometries.
+        </para>
 		<para>The bounding box coordinates are in the spatial reference system of the input geometries.</para>
 
 		<note>
@@ -491,8 +497,8 @@ FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_Point(x,y),1)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Creates a BOX2D defined by the given two point
-			geometries.  This is useful for doing range queries</para>
+		<para>Creates a <xref linkend="box2d_type" /> defined by two Point
+			geometries.  This is useful for doing range queries.</para>
 	  </refsection>
 
 
@@ -535,7 +541,7 @@ WHERE geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625
 	  <refsection>
 		<title>Description</title>
 
-		<para>Creates a BOX3D defined by the given two 3D point
+		<para>Creates a <xref linkend="box3d_type" /> defined by two 3D Point
 			geometries. </para>
 
 		<!-- Optionally mention 3D support -->
@@ -592,7 +598,7 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 
 		<note>
 		  <para>Although this function is only defined for box3d, it also works for box2d and geometry values due to automatic casting.
-			However it will not accept a geometry or box2d text representation, since those do not auto-cast.</para>
+			However, it will not accept a geometry or box2d text representation, since those do not auto-cast.</para>
 		</note>
 
 		<para>&Z_support;</para>
