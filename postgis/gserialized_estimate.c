@@ -2244,6 +2244,7 @@ gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
 
 	GBOX search_box;
 	float8 selectivity = 0;
+	Const *otherConst;
 
 	POSTGIS_DEBUGF(2, "%s: entered function", __func__);
 
@@ -2260,7 +2261,15 @@ gserialized_sel_internal(PlannerInfo *root, List *args, int varRelid, int mode)
 		return DEFAULT_ND_SEL;
 	}
 
-	if (!gserialized_datum_get_gbox_p(((Const*)other)->constvalue, &search_box))
+	otherConst = (Const*)other;
+	if ((!otherConst) || otherConst->constisnull)
+	{
+		ReleaseVariableStats(vardata);
+		POSTGIS_DEBUGF(2, "%s: constant argument is NULL", __func__);
+		return DEFAULT_ND_SEL;
+	}
+
+	if (!gserialized_datum_get_gbox_p(otherConst->constvalue, &search_box))
 	{
 		ReleaseVariableStats(vardata);
 		POSTGIS_DEBUGF(2, "%s: search box is EMPTY", __func__);
@@ -2579,6 +2588,9 @@ Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS)
 	Oid tbl_oid = PG_GETARG_DATUM(0);
 	text *col = PG_GETARG_TEXT_P(1);
 	Oid idx_oid;
+
+	if(!tbl_oid)
+		PG_RETURN_NULL();
 
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
 	postgis_initialize_cache();

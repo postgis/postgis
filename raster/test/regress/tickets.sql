@@ -145,3 +145,18 @@ DROP TABLE ticket_4547;
 
 -- #4769
 SELECT '#4769', st_addband(NULL, NULL::_raster, 1, 1);
+
+SELECT '#4770.a',
+ ST_Union(NULL::raster) OVER (ORDER BY b)
+FROM (VALUES ('A0006', 300), ('A0006', 302)) t(a,b);
+
+SELECT '#4770.b',
+ ST_Union(NULL::raster) OVER (PARTITION BY a ORDER BY b)
+FROM (VALUES ('A0006', 300),
+	         ('A0006', 302)) t(a, b);
+
+SELECT '#4724.a', ST_SummaryStatsAgg(NULL::raster, NULL::int4, NULL::bool)
+ OVER (ORDER BY q) FROM generate_series(1,2) AS e(q);
+
+SELECT '#4724.b', ST_SummaryStatsAgg(NULL::raster, NULL::int4, NULL::bool)
+ FROM generate_series(1,2) AS e(q);

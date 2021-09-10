@@ -1,5 +1,0 @@
-ALTER TABLE tiger.zcta5 DROP CONSTRAINT IF EXISTS enforce_geotype_the_geom;
-\i @DOWNLOAD_DATADIR@/tiger_national.sql
-\i @DOWNLOAD_DATADIR@/tiger_dc.sql
-\i @DOWNLOAD_DATADIR@/osm_china.sql
-\i @DOWNLOAD_DATADIR@/osm_belarus.sql

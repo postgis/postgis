@@ -5,14 +5,14 @@
     <para>This section lists the custom PostgreSQL
 		data types installed by PostGIS to represent spatial data.
     </para>
-    <para>Each data type describes its type casting behaviour.
+    <para>Each data type describes its type casting behavior.
 		A <ulink url="https://www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS">type cast</ulink>
 		converts values of one data type into another type.
 		PostgreSQL allows defining casting behavior for custom types, along with the functions used to convert type values.
-		Casts can have <emphasis role="bold">automatic</emphasis> behaviour,
+		Casts can have <emphasis role="bold">automatic</emphasis> behavior,
 		which allows automatic conversion of a function argument to a type supported by the function.</para>
 		<para>
-		Some casts have <emphasis role="bold">explicit</emphasis> behaviour,
+		Some casts have <emphasis role="bold">explicit</emphasis> behavior,
 		which means the cast must be specified using the syntax <varname>CAST(myval As sometype)</varname>
 		or <varname>myval::sometype</varname>.
 		Explicit casting avoids the issue of ambiguous casts,
@@ -29,19 +29,42 @@
 	<refentry id="box2d_type">
       <refnamediv>
         <refname>box2d</refname>
-        <refpurpose>A 2-dimensional bounding box.
-				Used to describe the 2D extent of a geometry or collection of geometries. </refpurpose>
+        <refpurpose>The type representing a 2-dimensional bounding box. </refpurpose>
       </refnamediv>
 
       <refsection>
         <title>Description</title>
         <para><varname>box2d</varname> is a spatial data type used to represent
-				the two-dimensional enclosing box of a geometry or collection of geometries.
-				For example, the <xref linkend="ST_Extent" /> aggregate function returns a <varname>box2d</varname> object.</para>
-				<para>The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>.
-				These are the minimum and maxium values of the X and Y extents.
-				</para>
+            the two-dimensional bounding box enclosing a geometry or collection of geometries.
+            For example, the <xref linkend="ST_Extent" /> aggregate function returns a <varname>box2d</varname> object.</para>
+
+            <para>The representation contains the values <varname>xmin, ymin, xmax, ymax</varname>.
+            These are the minimum and maximum values of the X and Y extents.
+            </para>
+
+            <para><varname>box2d</varname> objects have a text representation which looks like <code>BOX(1 2,5 6)</code>.
+            </para>
       </refsection>
+
+      <refsection>
+		<title>Casting Behavior</title>
+		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
+		<informaltable rowsep="1" frame="all">
+		<tgroup cols="2">
+			<tbody>
+			  <row>
+				<entry>Cast To</entry>  <entry>Behavior</entry>
+			  </row>
+			  <row>
+				<entry>box3d</entry>	<entry>automatic</entry>
+			  </row>
+			  <row>
+				<entry>geometry</entry>	<entry>automatic</entry>
+			  </row>
+			</tbody>
+		</tgroup>
+		</informaltable>
+		</refsection>
 
 		<refsection>
 			<title>See Also</title>
@@ -52,24 +75,27 @@
 	<refentry id="box3d_type">
       <refnamediv>
         <refname>box3d</refname>
-        <refpurpose>A 3-dimensional bounding box.
-				Used to describe the 3D extent of a geometry or collection of geometries. </refpurpose>
+        <refpurpose>The type representing a 3-dimensional bounding box. </refpurpose>
       </refnamediv>
 
       <refsection>
         <title>Description</title>
-        <para><varname>box3d</varname> is a postgis spatial data type used to represent
-				the three-dimensional enclosing box of a geometry or collection of geometries.
-				For example, the <xref linkend="ST_3DExtent" /> aggregate function returns a <varname>box3d</varname> object.
-				</para>
-				<para>The representation contains the values <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
-				These are the minimum and maxium values of the X, Y and Z extents.
-				</para>
-      </refsection>
+        <para><varname>box3d</varname> is a PostGIS spatial data type used to represent
+            the three-dimensional bounding box enclosing a geometry or collection of geometries.
+            For example, the <xref linkend="ST_3DExtent" /> aggregate function returns a <varname>box3d</varname> object.
+            </para>
+
+            <para>The representation contains the values <varname>xmin, ymin, zmin, xmax, ymax, zmax</varname>.
+            These are the minimum and maxium values of the X, Y and Z extents.
+            </para>
+
+            <para><varname>box3d</varname> objects have a text representation which looks like <code>BOX3D(1 2 3,5 6 5)</code>.
+            </para>
+        </refsection>
 
       <refsection>
 		<title>Casting Behavior</title>
-		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
+		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
 		<informaltable rowsep="1" frame="all">
 		<tgroup cols="2">
 			<tbody>
@@ -115,7 +141,7 @@
 
 		<refsection>
 		<title>Casting Behavior</title>
-		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
+		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
 		<informaltable rowsep="1" frame="all">
 		<tgroup cols="2">
 			<tbody>
@@ -209,7 +235,7 @@
 
 		<refsection>
 		<title>Casting Behavior</title>
-		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
+		<para>This table lists the automatic and explicit casts allowed for this data type:</para>
 		<informaltable rowsep="1" frame="all">
 		<tgroup cols="2">
 			<tbody>

@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.2.0dev
-:Date: 2021-xx-xx
+:Version: 3.2.0alpha1
+:Date: 2021-09-10
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -43,7 +43,7 @@ this to work.
   The PROJ4 catographic projection library is required if you want to use the
   ST_Transform() function to reproject features within the database.
 
-    http://trac.osgeo.org/proj/
+    https://proj.org
 
 * GEOS (Required, Version 3.6 or higher)
   - 3.9+ is needed to take advantage of
@@ -170,6 +170,43 @@ Final lines of output contain a summary of test results: run, succeeded,
 failed. If you have any failure please file a bug report using the online bug
 tracker: http://trac.osgeo.org/postgis/report/3
 
+DEBUGGING
+---------
+
+The normal build and testing procedure might not be enough for development and
+debugging as that requires a debug build of PostgreSQL and other proper compilation
+flags throughout. A way to get such an environment is to use the same docker images
+as the PostGIS CI setup and that can be done on a *nix host by first running this
+in a cloned postgis repository to later get core dump log output:
+
+> sudo bash ./ci/travis/logbt --setup
+
+Then you can run the following to get a docker container up and running with the
+correct requirements already in place and the postgis repository (at `/postgis`)
+mounted into it:
+
+> docker run -it --mount type=bind,source=/postgis,target=/src/postgis \
+postgis/postgis-build-env:pg13-geos39-gdal31-proj71 /bin/bash
+
+And finally the following command inside the container will build and run all the
+postgis tests:
+
+> bash ./ci/travis/run_usan_gcc.sh
+
+You can make customized versions of `run_usan_gcc.sh` to run only specific tests
+and skip redundant steps.
+
+If you need to get debug level logging in the PostgreSQL logs you can get it by
+manipulating configuration in the container. Add these lines after the `./configure`
+step:
+
+```sh
+sed -i 's/POSTGIS_DEBUG_LEVEL [0-9]$/POSTGIS_DEBUG_LEVEL 4/' postgis_config.h
+sed -i 's/#log_min_messages = warning/log_min_messages = debug5/' \
+/var/lib/postgresql/postgresql.conf
+```
+
+Note that PostgreSQL logs are directed to `/tmp/logfile` in fx. `run_usan_gcc.sh`.
 
 INSTALLATION
 ------------

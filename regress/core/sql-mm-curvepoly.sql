@@ -245,10 +245,10 @@ SELECT 'envelope02', ST_AsText(ST_snapToGrid(ST_envelope(the_geom_3dm), 'POINT(0
 SELECT 'envelope03', ST_AsText(ST_snapToGrid(ST_envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.curvepolygon;
 SELECT 'envelope04', ST_AsText(ST_snapToGrid(ST_envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.curvepolygon;
 
-SELECT 'startPoint01', (ST_startPoint(the_geom_2d) is null) FROM public.curvepolygon;
-SELECT 'startPoint02', (ST_startPoint(the_geom_3dm) is null) FROM public.curvepolygon;
-SELECT 'startPoint03', (ST_startPoint(the_geom_3dz) is null) FROM public.curvepolygon;
-SELECT 'startPoint04', (ST_startPoint(the_geom_4d) is null) FROM public.curvepolygon;
+SELECT 'startPoint01', ST_AsText(ST_startPoint(the_geom_2d)) FROM public.curvepolygon;
+SELECT 'startPoint02', ST_AsText(ST_startPoint(the_geom_3dm)) FROM public.curvepolygon;
+SELECT 'startPoint03', ST_AsText(ST_startPoint(the_geom_3dz)) FROM public.curvepolygon;
+SELECT 'startPoint04', ST_AsText(ST_startPoint(the_geom_4d)) FROM public.curvepolygon;
 
 SELECT 'endPoint01', (ST_endPoint(the_geom_2d) is null) FROM public.curvepolygon;
 SELECT 'endPoint02', (ST_endPoint(the_geom_3dm) is null) FROM public.curvepolygon;

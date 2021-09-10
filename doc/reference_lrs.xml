@@ -25,7 +25,7 @@
 			<para>Returns a point interpolated along a line at a fractional location.
             First argument must be a LINESTRING.
             Second argument is a float between 0 and 1
-			representing the fraction of total linestring length
+			representing the fraction of line length
             where the point is to be located.
             The Z and M values are interpolated if present.
             </para>
@@ -58,7 +58,7 @@
 				<imageobject>
 				  <imagedata fileref="images/st_line_interpolate_point01.png" />
 				</imageobject>
-				<caption><para>A linestring with the interpolated point at 20% position (0.20) </para></caption>
+				<caption><para>A LineString with the interpolated point at 20% position (0.20) </para></caption>
 			  </mediaobject>
 			</informalfigure>
 			<programlisting>-- The point 20% along a line
@@ -132,8 +132,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 
 			<para>Returns a point interpolated along a 3D line at a fractional location.
             First argument must be a LINESTRING. Second argument is a float between 0 and 1
-			representing the fraction of linestring length
-            where the point is to be located.
+			representing the point location as a fraction of line length.
             The M value is interpolated if present.
             </para>
 
@@ -199,10 +198,10 @@ SELECT ST_AsText(
 			<title>Description</title>
 
 			<para>Returns one or more points interpolated along a line at a fractional interval.
-            First argument
-			must be a LINESTRING. Second argument is a float8 between 0 and 1
-			representing the spacing between the points as a fraction of total
-			LineString length. If the third argument is false, at most one point
+            The first argument
+			must be a LINESTRING. The second argument is a float8 between 0 and 1
+			representing the spacing between the points as a fraction of
+			line length. If the third argument is false, at most one point
 			will be constructed (the function will be equivalent to <xref linkend="ST_LineInterpolatePoint" />.)
 		</para>
 
@@ -224,7 +223,7 @@ SELECT ST_AsText(
 				<imageobject>
 				  <imagedata fileref="images/st_line_interpolate_points01.png" />
 				</imageobject>
-				<caption><para>A linestring with the interpolated points every 20% </para></caption>
+				<caption><para>A LineString with the interpolated points every 20% </para></caption>
 			  </mediaobject>
 			</informalfigure>
 			<programlisting>--Return points each 20% along a 2D line
@@ -268,7 +267,7 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 
 			 <para>Returns a float between 0 and 1 representing the location of
 			the closest point on a LineString to the given Point, as a fraction
-			of total <link linkend="ST_Length2D">2d line</link> length.</para>
+			of <link linkend="ST_Length2D">2d line</link> length.</para>
 
 			<para>You can use the returned location to extract a Point (<xref linkend="ST_LineInterpolatePoint" />) or
 			a substring (<xref linkend="ST_LineSubstring" />).</para>
@@ -346,21 +345,28 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a linestring being a substring of the input one
-			starting and ending at the given fractions of total 2d length.
-			Second and third arguments are float8 values between 0 and
-			1. This only works with LINESTRINGs.
-			To use with contiguous MULTILINESTRINGs use in conjunction with <xref linkend="ST_LineMerge" />.</para>
+			<para>Computes the line which is the section of the input line
+			starting and ending at the given fractional locations.
+            The first argument must be a LINESTRING.
+			The second and third arguments are values in the range [0, 1]
+            representing the start and end locations
+            as fractions of line length.
+            The Z and M values are interpolated for added endpoints if present.
+            </para>
 
-			<para>If 'start' and 'end' have the same value this is equivalent
+			<para>If <varname>startfraction</varname> and <varname>endfraction</varname>
+            have the same value this is equivalent
 			to <xref linkend="ST_LineInterpolatePoint" />.</para>
 
-			<para>See <xref linkend="ST_LineLocatePoint" /> for
-			computing the line location nearest to a Point.</para>
+			<note>
+			  <para>This only works with LINESTRINGs.
+			    To use on contiguous MULTILINESTRINGs
+                first join them with <xref linkend="ST_LineMerge" />.</para>
+			</note>
 
 			<note>
-			  <para>Since release 1.1.1 this function also interpolates M and
-			  Z values (when present), while prior releases set them to
+			  <para>Since release 1.1.1 this function interpolates M and
+			  Z values.  Prior releases set Z and M to
 			  unspecified values.</para>
 			</note>
 
@@ -376,41 +382,63 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 				<imageobject>
 				  <imagedata fileref="images/st_line_substring01.png" />
 				</imageobject>
-				<caption><para>A linestring seen with 1/3 midrange overlaid (0.333, 0.666) </para></caption>
+				<caption><para>A LineString seen with 1/3 midrange overlaid (0.333, 0.666) </para></caption>
 			  </mediaobject>
 			</informalfigure>
 	<programlisting>
---Return the approximate 1/3 mid-range part of a linestring
-SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 125, 150 190)'), 0.333, 0.666));
+SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.666));
 
 										   st_astext
 ------------------------------------------------------------------------------------------------
 LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463138888)
+</programlisting>
 
---The below example simulates a while loop in
---SQL using PostgreSQL generate_series() to cut all
---linestrings in a table to 100 unit segments
--- of which no segment is longer than 100 units
--- units are measured in the SRID units of measurement
--- It also assumes all geometries are LINESTRING or contiguous MULTILINESTRING
---and no geometry is longer than 100 units*10000
---for better performance you can reduce the 10000
---to match max number of segments you expect
+<para>
+If start and end locations are the same, the result is a POINT.
+</para>
+<programlisting>
+SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.333));
 
-SELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,
-  CASE
-	WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length
-	ELSE 1
-  END) As the_geom
-FROM
-  (SELECT sometable.field1, sometable.field2,
-  ST_LineMerge(sometable.the_geom) AS the_geom,
-  ST_Length(sometable.the_geom) As length
-  FROM sometable
-  ) AS t
-CROSS JOIN generate_series(0,10000) AS n
-WHERE n*100.00/length &lt; 1;
-			</programlisting>
+                st_astext
+------------------------------------------
+ POINT(69.2846934853974 94.2846934853974)
+</programlisting>
+
+
+<para>
+A query to cut a LineString into sections of length 100 or shorter.
+It uses <varname>generate_series()</varname> with a CROSS JOIN LATERAL
+to produce the equivalent of a FOR loop.
+</para>
+<programlisting>
+WITH data(id, geom) AS (VALUES
+        ( 'A', 'LINESTRING( 0 0, 200 0)'::geometry ),
+        ( 'B', 'LINESTRING( 0 100, 350 100)'::geometry ),
+        ( 'C', 'LINESTRING( 0 200, 50 200)'::geometry )
+    )
+SELECT id, i,
+       ST_AsText( ST_LineSubstring( geom, startfrac, LEAST( endfrac, 1 )) ) AS geom
+FROM (
+    SELECT id, geom, ST_Length(geom) len, 100 sublen FROM data
+    ) AS d
+CROSS JOIN LATERAL (
+    SELECT i, (sublen * i) / len AS startfrac,
+              (sublen * (i+1)) / len AS endfrac
+    FROM generate_series(0, floor( len / sublen )::integer ) AS t(i)
+    -- skip last i if line length is exact multiple of sublen
+    WHERE (sublen * i) / len &lt;&gt; 1.0
+    ) AS d2;
+
+ id | i |            geom
+----+---+-----------------------------
+ A  | 0 | LINESTRING(0 0,100 0)
+ A  | 1 | LINESTRING(100 0,200 0)
+ B  | 0 | LINESTRING(0 100,100 100)
+ B  | 1 | LINESTRING(100 100,200 100)
+ B  | 2 | LINESTRING(200 100,300 100)
+ B  | 3 | LINESTRING(300 100,350 100)
+ C  | 0 | LINESTRING(0 200,50 200)
+</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->

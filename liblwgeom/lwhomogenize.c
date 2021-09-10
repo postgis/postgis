@@ -101,7 +101,7 @@ lwcollection_build_buffer(const LWCOLLECTION *col, HomogenizeBuffer *buffer)
 				buffer->buf[geom->type] = bufcol;
 			}
 			/* Add sub-geom to buffer */
-			lwcollection_add_lwgeom(buffer->buf[geom->type], lwgeom_clone(geom));
+			lwcollection_add_lwgeom(buffer->buf[geom->type], lwgeom_clone_deep(geom));
 			/* Increment count for this singleton type */
 			buffer->cnt[geom->type]++;
 			break;
@@ -217,7 +217,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 			return lwcollection_as_lwgeom(lwcollection_construct_empty(geom->type, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom)));
 		}
 
-		return lwgeom_clone(geom);
+		return lwgeom_clone_deep(geom);
 	}
 
 	switch (geom->type)
@@ -231,7 +231,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 		case TRIANGLETYPE:
 		case CURVEPOLYTYPE:
 		case POLYGONTYPE:
-			return lwgeom_clone(geom);
+			return lwgeom_clone_deep(geom);
 
 		/* Process homogeneous geometries lightly */
 		case MULTIPOINTTYPE:
@@ -247,7 +247,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 			/* Strip single-entry multi-geometries down to singletons */
 			if ( col->ngeoms == 1 )
 			{
-				hgeom = lwgeom_clone((LWGEOM*)(col->geoms[0]));
+				hgeom = lwgeom_clone_deep((LWGEOM *)(col->geoms[0]));
 				hgeom->srid = geom->srid;
 				if (geom->bbox)
 					hgeom->bbox = gbox_copy(geom->bbox);
@@ -255,7 +255,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 			}
 
 			/* Return proper multigeometry untouched */
-			return lwgeom_clone(geom);
+			return lwgeom_clone_deep(geom);
 		}
 
 		/* Work on anonymous collections separately */

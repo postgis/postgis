@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2021 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -809,6 +809,10 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
       edge->geom = NULL;
     }
   }
+  else
+  {
+      edge->geom = NULL;
+  }
 }
 
 static void
@@ -877,7 +881,7 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
       box = lwgeom_get_bbox(g);
       if ( box )
       {
-        POSTGIS_DEBUGF(1, "Face %d bbox xmin is %.15g", face->face_id, box->xmin);
+        POSTGIS_DEBUGF(1, "Face %" LWTFMT_ELEMID " bbox xmin is %.15g", face->face_id, box->xmin);
         face->mbr = gbox_clone(box);
       }
       else
@@ -2972,66 +2976,74 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
   return 1;
 }
 
-static LWT_ELEMID
-cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
+/* Return pointer to closest edge.
+ * NULL if no edges are in the topology (*numelems=0).
+ * or there's an error (*numedges=UINT64_MAX)
+ */
+static LWT_ISO_EDGE *
+cb_getClosestEdge( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt, uint64_t *numedges, int fields )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
+  HeapTuple row;
   int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
-  bool isnull;
-  Datum dat;
-  LWT_ELEMID face_id;
   GSERIALIZED *pts;
-  Datum values[2];
-  Oid argtypes[2];
-  text *toponameText;
-
-  initStringInfo(sql);
+  Datum values[1];
+  Oid argtypes[1];
+  LWT_ISO_EDGE* edges;
 
   pts = geometry_serialize(lwpoint_as_lwgeom(pt));
   if ( ! pts )
   {
     cberror(topo->be_data, "%s:%d: could not serialize query point",
             __FILE__, __LINE__);
-    return -1;
+    *numedges = UINT64_MAX;
+    return NULL;
   }
-  appendStringInfo(sql, "SELECT topology.GetFaceContainingPoint($1, $2)");
 
-  toponameText = cstring_to_text(topo->name);
-  values[0] = PointerGetDatum(toponameText);
-  argtypes[0] = TEXTOID;
+  initStringInfo(sql);
 
-  values[1] = PointerGetDatum(pts);
-  argtypes[1] = topo->geometryOID;
 
-  spi_result = SPI_execute_with_args(sql->data, 2, argtypes, values, NULL,
+  appendStringInfoString(sql, "SELECT ");
+  addEdgeFields(sql, fields, 0);
+  appendStringInfo(sql, " FROM \"%s\".edge_data ORDER BY geom <-> $1 ASC, edge_id ASC LIMIT 1", topo->name);
+
+  POSTGIS_DEBUGF(1, "cb_getClosestEdge query: %s", sql->data);
+
+  values[0] = PointerGetDatum(pts);
+  argtypes[0] = topo->geometryOID;
+
+  spi_result = SPI_execute_with_args(sql->data, 1, argtypes, values, NULL,
                                      !topo->be_data->data_changed, 1);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   pfree(pts); /* not needed anymore */
-  if ( spi_result != SPI_OK_SELECT || SPI_processed != 1 )
+  if ( spi_result != SPI_OK_SELECT )
   {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
     pfree(sqldata.data);
-    return -1;
+    *numedges = UINT64_MAX;
+    return NULL;
   }
 
-  dat = SPI_getbinval( SPI_tuptable->vals[0],
-                       SPI_tuptable->tupdesc, 1, &isnull );
-  if ( isnull )
+  if ( SPI_processed == 0 )
   {
-    SPI_freetuptable(SPI_tuptable);
-    cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
-            spi_result, sql->data);
+    /* No edges in topology, point is in universal face */
     pfree(sqldata.data);
-    return -1;
+    *numedges = 0;
+    return NULL;
   }
 
-  pfree(sqldata.data);
-  face_id = DatumGetInt32(dat);
+  /* Got closest edge, return it */
+  *numedges = 1;
+
+  edges = palloc( sizeof(LWT_ISO_EDGE) );
+  row = SPI_tuptable->vals[0];
+  fillEdgeFields(edges, row, SPI_tuptable->tupdesc, fields);
   SPI_freetuptable(SPI_tuptable);
-  return face_id;
+
+  return edges;
 }
 
 static int
@@ -3385,7 +3397,6 @@ static LWT_BE_CALLBACKS be_callbacks =
   cb_insertEdges,
   cb_updateEdges,
   cb_getFacesById,
-  cb_getFaceContainingPoint,
   cb_updateTopoGeomEdgeSplit,
   cb_deleteEdges,
   cb_getNodeWithinBox2D,
@@ -3411,7 +3422,8 @@ static LWT_BE_CALLBACKS be_callbacks =
   cb_updateTopoGeomEdgeHeal,
   cb_getFaceWithinBox2D,
   cb_checkTopoGeomRemIsoNode,
-  cb_checkTopoGeomRemIsoEdge
+  cb_checkTopoGeomRemIsoEdge,
+  cb_getClosestEdge
 };
 
 static void
@@ -5309,4 +5321,65 @@ Datum GetRingEdges(PG_FUNCTION_ARGS)
   result = HeapTupleGetDatum(tuple);
 
   SRF_RETURN_NEXT(funcctx, result);
+}
+
+/*  GetFaceContainingPoint(atopology, point) */
+Datum GetFaceContainingPoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(GetFaceContainingPoint);
+Datum GetFaceContainingPoint(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID face_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text_to_cstring(toponame_text);
+  PG_FREE_IF_COPY(toponame_text, 0);
+
+  geom = PG_GETARG_GSERIALIZED_P(1);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt )
+  {
+    lwgeom_free(lwgeom);
+    PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Second argument must be a point geometry");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() )
+  {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo )
+  {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_GetFaceContainingPoint");
+  face_id = lwt_GetFaceContainingPoint(topo, pt);
+  POSTGIS_DEBUG(1, "lwt_GetFaceContainingPoint returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 1);
+  lwt_FreeTopology(topo);
+
+  if ( face_id == -1 )
+  {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(face_id);
 }

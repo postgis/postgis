@@ -72,3 +72,7 @@ select '#4071', count(distinct a), count(distinct b), count(distinct c)  from
 	ST_ClusterKMeans(geom, 2) over () b,
 	ST_ClusterKMeans(geom, 3) over () c
 from (values (null::geometry), ('POINT(1 1)'), ('POINT EMPTY'), ('POINT(0 0)'), ('POINT(4 4)')) as g (geom)) z;
+
+
+select 'weight-and-limit-support-1', count(distinct cid) from (select ST_ClusterKMeans(ST_Force2D(geom), 1, 1) over () as cid from (values ('POINT(0 0 0 1)'::geometry), ('POINT(1 0 0 1)'), ('POINT(2 0 0 10000)')) g(geom)) kmeans;
+select 'weight-and-limit-support-2', count(distinct cid) from (select ST_ClusterKMeans(geom, 1, 1) over () as cid from (values ('POINT(0 0 0 1)'::geometry), ('POINT(1 0 0 1)'), ('POINT(2 0 0 10000)')) g(geom)) kmeans;

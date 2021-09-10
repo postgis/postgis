@@ -40,8 +40,8 @@
 			<title>Examples</title>
 
 			<programlisting>UPDATE sometable
- SET the_geom =  PostGIS_AddBBox(the_geom)
- WHERE PostGIS_HasBBox(the_geom) = false;</programlisting>
+ SET geom =  PostGIS_AddBBox(geom)
+ WHERE PostGIS_HasBBox(geom) = false;</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -93,12 +93,12 @@
 			--The force to ST_AsBinary before applying Box2D forces a recalculation of the box, and Box2D applied to the table geometry always
 			-- returns the cached bounding box.
 			UPDATE sometable
- SET the_geom =  PostGIS_DropBBox(the_geom)
- WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));
+ SET geom =  PostGIS_DropBBox(geom)
+ WHERE Not (Box2D(ST_AsBinary(geom)) = Box2D(geom));
 
 	UPDATE sometable
- SET the_geom =  PostGIS_AddBBox(the_geom)
- WHERE Not PostGIS_HasBBOX(the_geom);
+ SET geom =  PostGIS_AddBBox(geom)
+ WHERE Not PostGIS_HasBBOX(geom);
 
 
  </programlisting>
@@ -142,8 +142,8 @@
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT the_geom
-FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;</programlisting>
+		<programlisting>SELECT geom
+FROM sometable WHERE PostGIS_HasBBox(geom) = false;</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->

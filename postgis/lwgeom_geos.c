@@ -674,6 +674,7 @@ Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 			{
 				int type = lwgeom_get_type(geom);
 				empty_type = type > empty_type ? type : empty_type;
+				srid = (srid != SRID_UNKNOWN ? srid : lwgeom_get_srid(geom));
 			}
 		}
 	}
@@ -971,8 +972,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		params_text = palloc(VARHDRSZ);
-		SET_VARSIZE(params_text, 0);
+		params_text = cstring_to_text("");
 	}
 
 	/* Empty.Buffer() == Empty[polygon] */

@@ -1918,7 +1918,7 @@ sphere for geographies.
 
 			<note><para>This operand will make use of 2D GiST indexes that may be available on the geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
-			<para>Refer to <ulink url="https://postgis.net/workshops/postgis-intro/knn.html">PostGIS workshop: Nearest-Neighbour Searching</ulink> for a detailed example.</para>
+			<para>Refer to <ulink url="https://postgis.net/workshops/postgis-intro/knn.html">PostGIS workshop: Nearest-Neighbor Searching</ulink> for a detailed example.</para>
 
 			 <para>Enhanced: 2.2.0 -- True KNN ("K nearest neighbor") behavior for geometry and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere rather than spheroid.  For PostgreSQL 9.4 and below, geography support is new but only supports centroid box.</para>
 			 <para>Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, so you'll want to get rid of that hack if you are running your code only on PostGIS 2.2+ 9.5+.  See examples below.</para>
@@ -2042,7 +2042,7 @@ Returns the distance between A and B trajectories at their closest point of appr
 The <varname>|=|</varname> operator returns the 3D distance between
 two trajectories (See <xref linkend="ST_IsValidTrajectory" />).
 This is the same as <xref linkend="ST_DistanceCPA" /> but as an operator
-it can be used for doing nearest neightbor searches using an N-dimensional
+it can be used for doing nearest neighbor searches using an N-dimensional
 index (requires PostgreSQL 9.5.0 or higher).
       </para>
 

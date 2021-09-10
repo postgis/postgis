@@ -172,7 +172,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 		the geometry.</para>
 
 		<note>
-		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
+		  <para>Requires PostGIS be compiled with PROJ support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have PROJ support compiled in.</para>
 		</note>
 
 		<note>
@@ -217,11 +217,11 @@ SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2
 		<para>Example of creating a partial functional index.  For tables where you are not sure all the geometries
 			will be filled in, its best to use a partial index that leaves out null geometries which will both conserve space and make your index smaller and more efficient.</para>
 		<programlisting>
-CREATE INDEX idx_the_geom_26986_parcels
+CREATE INDEX idx_geom_26986_parcels
   ON parcels
   USING gist
-  (ST_Transform(the_geom, 26986))
-  WHERE the_geom IS NOT NULL;
+  (ST_Transform(geom, 26986))
+  WHERE geom IS NOT NULL;
 		</programlisting>
 
 		<para>Examples of using PROJ.4 text to transform with custom spatial references.</para>
@@ -246,13 +246,13 @@ CREATE INDEX idx_the_geom_26986_parcels
 
 	  </refsection>
 	  <refsection>
-		<title>Configuring transformation behaviour</title>
+		<title>Configuring transformation behavior</title>
 			<para>Sometimes coordinate transformation involving a grid-shift
 				can fail, for example if PROJ.4 has not been built with
 				grid-shift files or the coordinate does not lie within the
 				range for which the grid shift is defined. By default, PostGIS
 				will throw an error if a grid shift file is not present, but
-				this behaviour can be configured on a per-SRID basis either
+				this behavior can be configured on a per-SRID basis either
 				by testing different <varname>to_proj</varname> values of
 				PROJ.4 text, or altering the <varname>proj4text</varname> value
 				within the <varname>spatial_ref_sys</varname> table.

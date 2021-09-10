@@ -39,7 +39,7 @@
 		  To compute the area using the faster but less accurate spherical model use <varname>ST_Area(geog,false)</varname>.
 		  </para>
 			<para>Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
-			<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
+			<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
 			<para>Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
 			<para>&sfs_compliant;</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
@@ -120,7 +120,7 @@ from somegeogtable;</programlisting>
 		<refnamediv>
 		  <refname>ST_Azimuth</refname>
 
-		  <refpurpose>Returns the north-based azimuth as the angle in radians measured clockwise from the vertical on pointA to pointB.</refpurpose>
+		  <refpurpose>Returns the north-based azimuth of a line between two points.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -139,25 +139,28 @@ from somegeogtable;</programlisting>
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the azimuth in radians of the segment defined by the given
-			point geometries, or NULL if the two points are coincident. The azimuth is angle is referenced from north, and is positive clockwise: North = 0; East = &#x03C0;/2; South = &#x03C0;; West = 3&#x03C0;/2.</para>
-			<para>For the geography type, the forward azimuth is solved as part of the inverse geodesic problem.</para>
-			<para>The azimuth is mathematical concept defined as the angle between a reference plane and a point, with angular units in radians.
-			Units can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para>
+			<para>Returns the azimuth in radians of the line segment defined by the given
+			point geometries, or NULL if the two points are coincident. The azimuth angle is referenced from north (the positive Y axis), and is positive clockwise: North = 0; Northeast = &#x03C0;/4; East = &#x03C0;/2; Southeast = 3&#x03C0;/4;
+                South = &#x03C0;; Southwest 5&#x03C0;/4; West = 3&#x03C0;/2; Northwest = 7&#x03C0;/4.</para>
+			<para>For the geography type, the azimuth solution is known as the
+                  <ulink url="https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid">inverse geodesic problem</ulink>.</para>
+			<para>The azimuth is a mathematical concept defined as the angle between a reference plane and a point, with angular units in radians.
+			The result value in radians can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.</para>
+
+			<para>Azimuth can be used in conjunction with <xref linkend="ST_Translate" /> to shift an object along its perpendicular axis. See
+				 the <varname>upgis_lineshift()</varname> function in the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">PostGIS wiki</ulink> for an implementation of this.</para>
 
 			<para>Availability: 1.1.0</para>
 			<para>Enhanced: 2.0.0 support for geography was introduced.</para>
-			<para>Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
-			<para>Azimuth is especially useful in conjunction with ST_Translate for shifting an object along its perpendicular axis. See
-				 upgis_lineshift <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
+			<para>Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
 		</refsection>
 
 		<refsection>
 		<title>Examples</title>
 		<para>Geometry Azimuth in degrees </para>
 <programlisting>
-SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
-	    degrees(ST_Azimuth(ST_Point(75, 100), ST_Point(25, 45))) AS degB_A;
+SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS degA_B,
+	   degrees(ST_Azimuth( ST_Point(75, 100), ST_Point(25, 45) )) AS degB_A;
 
       dega_b       |     degb_a
 ------------------+------------------
@@ -192,7 +195,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Point" />, <xref linkend="ST_Translate" />, <xref linkend="ST_Project" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
+			<para><xref linkend="ST_Angle" />, <xref linkend="ST_Point" />, <xref linkend="ST_Translate" />, <xref linkend="ST_Project" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
 		</refsection>
 
   </refentry>
@@ -201,7 +204,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		<refnamediv>
 		  <refname>ST_Angle</refname>
 
-		  <refpurpose>Returns the angle between 3 points, or between 2 vectors (4 points or 2 lines).</refpurpose>
+		  <refpurpose>Returns the angle between two vectors defined by 3 or 4 points, or 2 lines.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -222,45 +225,58 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		<refsection>
 			<title>Description</title>
 
-			<para> For 3 points, computes the angle measured clockwise of P1P2P3.
-			If input are 2 lines, get first and last point of the lines as 4 points.
-			For 4 points,compute the angle measured clockwise of P1P2,P3P4.
-			Results are always positive, between 0 and 2*Pi radians.
-
-			Uses azimuth of pairs or points.
+			<para> Computes the clockwise angle between two vectors.
 			</para>
-			<para>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</para>
-			<para>Result is in radian and can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para>
+
+        <para><emphasis role="bold">Variant 1:</emphasis> computes the angle enclosed by the points P1-P2-P3. If a 4th point provided computes the angle points P1-P2 and P3-P4</para>
+		<para><emphasis role="bold">Variant 2:</emphasis> computes the angle between two vectors S1-E1 and S2-E2,
+        defined by the start and end points of the input lines
+        </para>
+
+			<para>The result is a positive angle between 0 and 2&#x03C0; radians.
+            The radian result can be converted to degrees using the PostgreSQL function <varname>degrees()</varname>.
+            </para>
+			<para>Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>.</para>
 			<para>Availability: 2.5.0</para>
 		</refsection>
 
 		<refsection>
 		<title>Examples</title>
-		<para>Geometry Azimuth in degrees </para>
+
+        <para>Angle between three points</para>
 <programlisting>
-	WITH rand AS (
-		SELECT s, random() * 2 * PI() AS rad1
-			, random() * 2 * PI() AS rad2
-		FROM  generate_series(1,2,2) AS s
-	)
-	 , points AS (
-		SELECT s, rad1,rad2, ST_Point(cos1+s,sin1+s) as p1, ST_Point(s,s) AS p2, ST_Point(cos2+s,sin2+s) as p3
-		FROM rand
-			,cos(rad1) cos1, sin(rad1) sin1
-			,cos(rad2) cos2, sin(rad2) sin2
-	)
-	SELECT s, ST_AsText(ST_SnapToGrid(ST_MakeLine(ARRAY[p1,p2,p3]),0.001)) AS line
-		, degrees(ST_Angle(p1,p2,p3)) as computed_angle
-		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference
-		, round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 AS reference
-	FROM points ;
+SELECT degrees( ST_Angle('POINT(0 0)', 'POINT(10 10)', 'POINT(20 0)') );
 
-1 | line | computed_angle | reference
-------------------+------------------
-1 | LINESTRING(1.511 1.86,1 1,0.896 0.005) | 155.27033848688 | 155
-
+ degrees
+---------
+     270
 </programlisting>
+
+        <para>Angle between vectors defined by four points</para>
+<programlisting>
+SELECT degrees( ST_Angle('POINT (10 10)', 'POINT (0 0)', 'POINT(90 90)', 'POINT (100 80)') );
+
+      degrees
+-------------------
+ 269.9999999999999
+</programlisting>
+
+        <para>Angle between vectors defined by the start and end points of lines</para>
+<programlisting>
+SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0.5, 1 0)') );
+
+      degrees
+--------------
+           45
+</programlisting>
+
 		</refsection>
+
+	    <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Azimuth" /></para>
+        </refsection>
   </refentry>
 
 <refentry id="ST_ClosestPoint">
@@ -509,7 +525,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</ulink> for details.</para>
 		<para>Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
-		<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness. Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
+		<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take advantage of the new feature.</para>
 		<para>Changed: 3.0.0 - does not depend on SFCGAL anymore.</para>
 	  </refsection>
 
@@ -697,14 +713,14 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,
-round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
+		<programlisting>SELECT round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(geom),32611),
 		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters,
-round(CAST(ST_Distance(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric),5) As dist_degrees,
-round(CAST(ST_Distance(ST_Transform(the_geom,32611),
+round(CAST(ST_Distance(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric),5) As dist_degrees,
+round(CAST(ST_Distance(ST_Transform(geom,32611),
 		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As min_dist_line_point_meters
 FROM
-	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As the_geom) as foo;
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As geom) as foo;
 	 dist_meters | dist_utm11_meters | dist_degrees | min_dist_line_point_meters
 	-------------+-------------------+--------------+----------------------------
 		70424.47 |          70438.00 |      0.72900 |                   65871.18
@@ -760,13 +776,13 @@ FROM
 		<title>Examples</title>
 
 		<programlisting>SELECT round(CAST(
-		ST_DistanceSpheroid(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
+		ST_DistanceSpheroid(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
 			As numeric),2) As dist_meters_spheroid,
-		round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
-round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
+		round(CAST(ST_DistanceSphere(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(geom),32611),
 		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters
 FROM
-	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As the_geom) as foo;
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As geom) as foo;
  dist_meters_spheroid | dist_meters_sphere | dist_utm11_meters
 ----------------------+--------------------+-------------------
 			 70454.92 |           70424.47 |          70438.00
@@ -1091,7 +1107,7 @@ FROM (SELECT ST_GeographyFromText(
 		<title>Description</title>
 
 		<para>Returns the 3-dimensional or 2-dimensional length of the geometry if it is a
-			linestring or multi-linestring. For 2-d lines it will just return the 2-d length (same as ST_Length and ST_Length2D)</para>
+			LineString or MultiLineString. For 2-d lines it will just return the 2-d length (same as ST_Length and ST_Length2D)</para>
 		<para>&Z_support;</para>
 		<para>Changed: 2.0.0 In prior versions this used to be called ST_Length3D</para>
 	  </refsection>
@@ -1160,22 +1176,22 @@ ST_3DLength
 			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
 			  FROM geometry_table;
 
-SELECT ST_LengthSpheroid( the_geom, sph_m ) As tot_len,
-ST_LengthSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
-ST_LengthSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,
+ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
 			  FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
-	(-71.05957 42.3589 , -71.061 43))') As the_geom,
+	(-71.05957 42.3589 , -71.061 43))') As geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
 	tot_len      |    len_line1     |    len_line2
 ------------------+------------------+------------------
  85204.5207562955 | 13986.8725229309 | 71217.6482333646
 
  --3D
-SELECT ST_LengthSpheroid( the_geom, sph_m ) As tot_len,
-ST_LengthSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
-ST_LengthSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,
+ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2
 			  FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
-	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom,
+	(-71.05957 42.3589 75, -71.061 43 90))') As geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
 
 	 tot_len      |    len_line1    |    len_line2
@@ -1401,7 +1417,7 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
 							  </para></entry>
 						  </row>
 						  <row>
-						  <entry><para>Multilinestring and polygon both 3d and 2d longest line
+						  <entry><para>MultiLineString and Polygon both 3d and 2d longest line
 					<programlisting>SELECT ST_AsEWKT(ST_3DLongestLine(poly, mline)) As lol3d,
     ST_AsEWKT(ST_LongestLine(poly, mline)) As lol2d
         FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,
@@ -1602,7 +1618,7 @@ SELECT ST_3DMaxDistance(
 		</para>
 
 		<para>
-		If no minimum clearance exists for a geometry (e.g. a single point, or a multipoint whose points are identical),
+		If no minimum clearance exists for a geometry (e.g. a single point, or a MultiPoint whose points are identical),
         the return value is <varname>Infinity</varname>.
 		</para>
 
@@ -1855,9 +1871,9 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  <refsection>
 		<title>Examples</title>
 		<para>Perimeter of a slightly elevated polygon in the air in Massachusetts state plane feet</para>
-		<programlisting>SELECT ST_3DPerimeter(the_geom), ST_Perimeter2d(the_geom), ST_Perimeter(the_geom) FROM
+		<programlisting>SELECT ST_3DPerimeter(geom), ST_Perimeter2d(geom), ST_Perimeter(geom) FROM
 			(SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 2967416 2,743238 2967450 1,
-743265.625 2967416 1,743238 2967416 2))') As the_geom) As foo;
+743265.625 2967416 1,743238 2967416 2))') As geom) As foo;
 
   ST_3DPerimeter  |  st_perimeter2d  |   st_perimeter
 ------------------+------------------+------------------
@@ -2111,7 +2127,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 							  </para></entry>
 						  </row>
 						  <row>
-						  <entry><para>Multilinestring and polygon both 3d and 2d shortest line
+						  <entry><para>MultiLineString and polygon both 3d and 2d shortest line
 					<programlisting>SELECT ST_AsEWKT(ST_3DShortestLine(poly, mline)) As shl3d,
     ST_AsEWKT(ST_ShortestLine(poly, mline)) As shl2d
         FROM (SELECT  ST_GeomFromEWKT('POLYGON((175 150 5, 20 40 5, 35 45 5, 50 60 5, 100 100 5, 175 150 5))') As poly,

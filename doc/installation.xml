@@ -9,7 +9,7 @@
   <sect1 id="install_short_version">
 	<title>Short Version</title>
 	<para>To compile assuming you have all the dependencies in your search path:</para>
-	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
+	<programlisting>tar -xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
 ./configure
 make
@@ -166,11 +166,11 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	  <listitem>
 		<para>
-		  Proj4 reprojection library. Proj4 4.9 or above is required.
-			The Proj4 library is used to provide coordinate reprojection support within
-		  PostGIS. Proj4 is available for download from
-		  <ulink url="http://trac.osgeo.org/proj/">
-			http://trac.osgeo.org/proj/
+		  Proj reprojection library. Proj 4.9 or above is required.
+			The Proj library is used to provide coordinate reprojection support within
+		  PostGIS. Proj is available for download from
+		  <ulink url="https://proj.org/">
+			https://proj.org/
 		  </ulink>
 		  .
 		</para>
@@ -434,9 +434,9 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  <term><command>--with-projdir=DIR</command></term>
 		  <listitem>
 			<para>
-			  Proj4 is a reprojection library required by PostGIS. Use this
+			  Proj is a reprojection library required by PostGIS. Use this
 			  parameter (<command>--with-projdir=/path/to/projdir</command>) to
-			  manually specify a particular Proj4 installation directory that
+			  manually specify a particular Proj installation directory that
 			  PostGIS will build against.
 			</para>
 		  </listitem>
@@ -740,7 +740,7 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 	  <note>
 		<para>
 		  If you configured PostGIS using non-standard PostgreSQL, GEOS, or
-		  Proj4 locations, you may need to add their library locations to the
+		  Proj locations, you may need to add their library locations to the
 		  <varname>LD_LIBRARY_PATH</varname> environment variable.
 		</para>
 	  </note>
@@ -759,8 +759,8 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
 	  </caution>
 
 	  <para>
-		If successful, the output of the test should be similar to the
-		following:
+		If successful, make check will produce the output of almost 500 tests.  The results will look similar to the
+		following (numerous lines omitted below):
 	  </para>
 
 	  <programlisting>
@@ -768,365 +768,9 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;
      CUnit - A unit testing framework for C - Version 2.1-3
      http://cunit.sourceforge.net/
 
-
-Suite: algorithm
-  Test: test_lw_segment_side ...passed
-  Test: test_lw_segment_intersects ...passed
-  Test: test_lwline_crossing_short_lines ...passed
-  Test: test_lwline_crossing_long_lines ...passed
-  Test: test_lwline_crossing_bugs ...passed
-  Test: test_lwpoint_set_ordinate ...passed
-  Test: test_lwpoint_get_ordinate ...passed
-  Test: test_point_interpolate ...passed
-  Test: test_lwline_interpolate_points ...passed
-  Test: test_lwline_interpolate_point_3d ...passed
-  Test: test_lwline_clip ...passed
-  Test: test_lwpoly_clip ...passed
-  Test: test_lwtriangle_clip ...passed
-  Test: test_lwline_clip_big ...passed
-  Test: test_lwmline_clip ...passed
-  Test: test_geohash_point ...passed
-  Test: test_geohash_precision ...passed
-  Test: test_geohash ...passed
-  Test: test_geohash_point_as_int ...passed
-  Test: test_isclosed ...passed
-  Test: test_lwgeom_simplify ...passed
-  Test: test_lw_arc_center ...passed
-  Test: test_point_density ...passed
-  Test: test_kmeans ...passed
-  Test: test_median_handles_3d_correctly ...passed
-  Test: test_median_robustness ...passed
-  Test: test_lwpoly_construct_circle ...passed
-  Test: test_trim_bits ...passed
-  Test: test_lwgeom_remove_repeated_points ...passed
-Suite: buildarea
-  Test: buildarea1 ...passed
-  Test: buildarea2 ...passed
-  Test: buildarea3 ...passed
-  Test: buildarea4 ...passed
-  Test: buildarea4b ...passed
-  Test: buildarea5 ...passed
-  Test: buildarea6 ...passed
-  Test: buildarea7 ...passed
-Suite: geometry_clean
-  Test: test_lwgeom_make_valid ...passed
-Suite: clip_by_rectangle
-  Test: test_lwgeom_clip_by_rect ...DEBUG1: lwgeom_clip_by_rect: GEOS Error: IllegalArgumentException: Invalid number of points in LinearRing found 3 - must be 0 or >= 4
-passed
-Suite: force_sfs
-  Test: test_sfs_11 ...passed
-  Test: test_sfs_12 ...passed
-  Test: test_sqlmm ...passed
-Suite: geodetic
-  Test: test_sphere_direction ...passed
-  Test: test_sphere_project ...passed
-  Test: test_lwgeom_area_sphere ...passed
-  Test: test_gbox_from_spherical_coordinates ...passed
-  Test: test_gserialized_get_gbox_geocentric ...passed
-  Test: test_clairaut ...passed
-  Test: test_edge_intersection ...passed
-  Test: test_edge_intersects ...passed
-  Test: test_edge_distance_to_point ...passed
-  Test: test_edge_distance_to_edge ...passed
-  Test: test_lwgeom_distance_sphere ...passed
-  Test: test_lwgeom_check_geodetic ...passed
-  Test: test_gserialized_from_lwgeom ...passed
-  Test: test_spheroid_distance ...passed
-  Test: test_spheroid_area ...passed
-  Test: test_lwpoly_covers_point2d ...passed
-  Test: test_gbox_utils ...passed
-  Test: test_vector_angle ...passed
-  Test: test_vector_rotate ...passed
-  Test: test_lwgeom_segmentize_sphere ...passed
-  Test: test_ptarray_contains_point_sphere ...passed
-  Test: test_ptarray_contains_point_sphere_iowa ...passed
-  Test: test_gbox_to_string_truncated ...passed
-Suite: geos
-  Test: test_geos_noop ...passed
-  Test: test_geos_subdivide ...passed
-  Test: test_geos_linemerge ...passed
-  Test: test_geos_offsetcurve ...passed
-  Test: test_geos_offsetcurve_crash ...passed
-  Test: test_geos_makevalid ...passed
-Suite: clustering
-  Test: basic_test ...passed
-  Test: nonsequential_test ...passed
-  Test: basic_distance_test ...passed
-  Test: single_input_test ...passed
-  Test: empty_inputs_test ...passed
-  Test: multipoint_test ...passed
-  Test: dbscan_test ...passed
-  Test: dbscan_test_3612a ...passed
-  Test: dbscan_test_3612b ...passed
-  Test: dbscan_test_3612c ...passed
-Suite: clustering_unionfind
-  Test: test_unionfind_create ...passed
-  Test: test_unionfind_union ...passed
-  Test: test_unionfind_ordered_by_cluster ...passed
-  Test: test_unionfind_path_compression ...passed
-  Test: test_unionfind_collapse_cluster_ids ...passed
-Suite: homogenize
-  Test: test_coll_point ...passed
-  Test: test_coll_line ...passed
-  Test: test_coll_poly ...passed
-  Test: test_coll_coll ...passed
-  Test: test_geom ...passed
-  Test: test_coll_curve ...passed
-Suite: encoded_polyline_input
-  Test: in_encoded_polyline_test_geoms ...passed
-  Test: in_encoded_polyline_test_precision ...passed
-Suite: geojson_input
-  Test: in_geojson_test_srid ...passed
-  Test: in_geojson_test_bbox ...passed
-  Test: in_geojson_test_geoms ...passed
-Suite: iterator
-  Test: test_point_count ...passed
-  Test: test_ordering ...passed
-  Test: test_modification ...passed
-  Test: test_mixed_rw_access ...passed
-  Test: test_cannot_modify_read_only ...passed
-  Test: test_no_memory_leaked_when_iterator_is_partially_used ...passed
-Suite: twkb_input
-  Test: test_twkb_in_point ...passed
-  Test: test_twkb_in_linestring ...passed
-  Test: test_twkb_in_polygon ...passed
-  Test: test_twkb_in_multipoint ...passed
-  Test: test_twkb_in_multilinestring ...passed
-  Test: test_twkb_in_multipolygon ...passed
-  Test: test_twkb_in_collection ...passed
-  Test: test_twkb_in_precision ...passed
-Suite: serialization/deserialization
-  Test: test_typmod_macros ...passed
-  Test: test_flags_macros ...passed
-  Test: test_serialized_srid ...NOTICE: SRID value -3005 converted to the officially unknown SRID value 0
-passed
-  Test: test_gserialized_from_lwgeom_size ...passed
-  Test: test_gbox_serialized_size ...passed
-  Test: test_lwgeom_from_gserialized ...passed
-  Test: test_lwgeom_count_vertices ...passed
-  Test: test_on_gser_lwgeom_count_vertices ...passed
-  Test: test_geometry_type_from_string ...passed
-  Test: test_lwcollection_extract ...passed
-  Test: test_lwgeom_free ...passed
-  Test: test_lwgeom_swap_ordinates ...passed
-  Test: test_f2d ...passed
-  Test: test_lwgeom_clone ...passed
-  Test: test_lwgeom_force_clockwise ...passed
-  Test: test_lwgeom_calculate_gbox ...passed
-  Test: test_lwgeom_is_empty ...passed
-  Test: test_lwgeom_same ...passed
-  Test: test_lwline_from_lwmpoint ...passed
-  Test: test_lwgeom_as_curve ...passed
-  Test: test_lwgeom_scale ...passed
-  Test: test_gserialized_is_empty ...passed
-  Test: test_gserialized_peek_gbox_p_no_box_when_empty ...passed
-  Test: test_gserialized_peek_gbox_p_gets_correct_box ...passed
-  Test: test_gserialized_peek_gbox_p_fails_for_unsupported_cases ...passed
-  Test: test_gbox_same_2d ...passed
-  Test: test_signum_macro ...passed
-Suite: lwstroke
-  Test: test_lwcurve_linearize ...passed
-  Test: test_unstroke ...passed
-Suite: measures
-  Test: test_mindistance2d_tolerance ...passed
-  Test: test_mindistance3d_tolerance ...NOTICE: One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
-NOTICE: One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
-passed
-  Test: test_rect_tree_contains_point ...passed
-  Test: test_rect_tree_intersects_tree ...passed
-  Test: test_lwgeom_segmentize2d ...NOTICE: ptarray.c:448 - ptarray_segmentize2d: Too many segments required (1.000000e+101)
-NOTICE: liblwgeom code interrupted
-NOTICE: liblwgeom code interrupted
-NOTICE: liblwgeom code interrupted
-NOTICE: liblwgeom code interrupted
-passed
-  Test: test_lwgeom_locate_along ...passed
-  Test: test_lw_dist2d_pt_arc ...passed
-  Test: test_lw_dist2d_seg_arc ...passed
-  Test: test_lw_dist2d_arc_arc ...passed
-  Test: test_lw_arc_length ...passed
-  Test: test_lw_dist2d_pt_ptarrayarc ...passed
-  Test: test_lw_dist2d_ptarray_ptarrayarc ...passed
-  Test: test_lwgeom_tcpa ...passed
-  Test: test_lwgeom_is_trajectory ...NOTICE: Geometry is not a LINESTRING
-NOTICE: Line does not have M dimension
-NOTICE: Measure of vertex 1 (1) not bigger than measure of vertex 0 (1)
-NOTICE: Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
-NOTICE: Measure of vertex 2 (2) not bigger than measure of vertex 1 (3)
-passed
-  Test: test_rect_tree_distance_tree ...passed
-Suite: effectivearea
-  Test: do_test_lwgeom_effectivearea_lines ...passed
-  Test: do_test_lwgeom_effectivearea_polys ...passed
-Suite: chaikin
-  Test: do_test_chaikin_lines ...passed
-  Test: do_test_chaikin_polygons ...passed
-Suite: filterm
-  Test: do_test_filterm_single_geometries ...passed
-  Test: do_test_filterm_collections ...passed
-Suite: minimum_bounding_circle
-  Test: basic_test ...passed
-  Test: test_empty ...passed
-Suite: miscellaneous
-  Test: test_misc_force_2d ...passed
-  Test: test_misc_simplify ...passed
-  Test: test_misc_count_vertices ...passed
-  Test: test_misc_area ...passed
-  Test: test_misc_wkb ...passed
-  Test: test_grid ...passed
-  Test: test_grid_in_place ...passed
-  Test: test_clone ...passed
-  Test: test_lwmpoint_from_lwgeom ...passed
-Suite: noding
-  Test: test_lwgeom_node ...passed
-Suite: encoded_polyline_output
-  Test: out_encoded_polyline_test_geoms ...passed
-  Test: out_encoded_polyline_test_srid ...passed
-  Test: out_encoded_polyline_test_precision ...passed
-Suite: geojson_output
-  Test: out_geojson_test_precision ...passed
-  Test: out_geojson_test_dims ...passed
-  Test: out_geojson_test_srid ...passed
-  Test: out_geojson_test_bbox ...passed
-  Test: out_geojson_test_geoms ...passed
-Suite: gml_output
-  Test: out_gml_test_precision ...passed
-  Test: out_gml_test_srid ...passed
-  Test: out_gml_test_dims ...passed
-  Test: out_gml_test_geodetic ...passed
-  Test: out_gml_test_geoms ...passed
-  Test: out_gml_test_geoms_prefix ...passed
-  Test: out_gml_test_geoms_nodims ...passed
-  Test: out_gml2_extent ...passed
-  Test: out_gml3_extent ...passed
-Suite: kml_output
-  Test: out_kml_test_precision ...passed
-  Test: out_kml_test_dims ...passed
-  Test: out_kml_test_geoms ...passed
-  Test: out_kml_test_prefix ...passed
-Suite: svg_output
-  Test: out_svg_test_precision ...passed
-  Test: out_svg_test_dims ...passed
-  Test: out_svg_test_relative ...passed
-  Test: out_svg_test_geoms ...passed
-  Test: out_svg_test_srid ...passed
-Suite: x3d_output
-  Test: out_x3d3_test_precision ...passed
-  Test: out_x3d3_test_geoms ...passed
-  Test: out_x3d3_test_option ...passed
-Suite: ptarray
-  Test: test_ptarray_append_point ...passed
-  Test: test_ptarray_append_ptarray ...passed
-  Test: test_ptarray_locate_point ...passed
-  Test: test_ptarray_isccw ...passed
-  Test: test_ptarray_signed_area ...passed
-  Test: test_ptarray_insert_point ...passed
-  Test: test_ptarray_contains_point ...passed
-  Test: test_ptarrayarc_contains_point ...passed
-  Test: test_ptarray_scale ...passed
-Suite: printing
-  Test: test_lwprint_default_format ...passed
-  Test: test_lwprint_format_orders ...passed
-  Test: test_lwprint_optional_format ...passed
-  Test: test_lwprint_oddball_formats ...passed
-  Test: test_lwprint_bad_formats ...passed
-Suite: sfcgal
-  Test: test_sfcgal_noop ...passed
-Suite: split
-  Test: test_lwline_split_by_point_to ...passed
-  Test: test_lwgeom_split ...passed
-Suite: stringbuffer
-  Test: test_stringbuffer_append ...passed
-  Test: test_stringbuffer_aprintf ...passed
-Suite: surface
-  Test: triangle_parse ...passed
-  Test: tin_parse ...passed
-  Test: polyhedralsurface_parse ...passed
-  Test: surface_dimension ...passed
-Suite: spatial_trees
-  Test: test_tree_circ_create ...passed
-  Test: test_tree_circ_pip ...passed
-  Test: test_tree_circ_pip2 ...passed
-  Test: test_tree_circ_distance ...passed
-  Test: test_tree_circ_distance_threshold ...passed
-Suite: triangulate
-  Test: test_lwgeom_delaunay_triangulation ...passed
-  Test: test_lwgeom_voronoi_diagram ...passed
-  Test: test_lwgeom_voronoi_diagram_expected_empty ...passed
-  Test: test_lwgeom_voronoi_diagram_custom_envelope ...passed
-Suite: twkb_output
-  Test: test_twkb_out_point ...passed
-  Test: test_twkb_out_linestring ...passed
-  Test: test_twkb_out_polygon ...passed
-  Test: test_twkb_out_multipoint ...passed
-  Test: test_twkb_out_multilinestring ...passed
-  Test: test_twkb_out_multipolygon ...passed
-  Test: test_twkb_out_collection ...passed
-  Test: test_twkb_out_idlist ...passed
-Suite: varint
-  Test: test_zigzag ...passed
-  Test: test_varint ...passed
-  Test: test_varint_roundtrip ...passed
-Suite: wkb_input
-  Test: test_wkb_in_point ...passed
-  Test: test_wkb_in_linestring ...passed
-  Test: test_wkb_in_polygon ...passed
-  Test: test_wkb_in_multipoint ...passed
-  Test: test_wkb_in_multilinestring ...passed
-  Test: test_wkb_in_multipolygon ...passed
-  Test: test_wkb_in_collection ...passed
-  Test: test_wkb_in_circularstring ...passed
-  Test: test_wkb_in_compoundcurve ...passed
-  Test: test_wkb_in_curvpolygon ...passed
-  Test: test_wkb_in_multicurve ...passed
-  Test: test_wkb_in_multisurface ...passed
-  Test: test_wkb_in_malformed ...passed
-Suite: wkb_output
-  Test: test_wkb_out_point ...passed
-  Test: test_wkb_out_linestring ...passed
-  Test: test_wkb_out_polygon ...passed
-  Test: test_wkb_out_multipoint ...passed
-  Test: test_wkb_out_multilinestring ...passed
-  Test: test_wkb_out_multipolygon ...passed
-  Test: test_wkb_out_collection ...passed
-  Test: test_wkb_out_circularstring ...passed
-  Test: test_wkb_out_compoundcurve ...passed
-  Test: test_wkb_out_curvpolygon ...passed
-  Test: test_wkb_out_multicurve ...passed
-  Test: test_wkb_out_multisurface ...passed
-  Test: test_wkb_out_polyhedralsurface ...passed
-Suite: wkt_input
-  Test: test_wkt_in_point ...passed
-  Test: test_wkt_in_linestring ...passed
-  Test: test_wkt_in_polygon ...passed
-  Test: test_wkt_in_multipoint ...passed
-  Test: test_wkt_in_multilinestring ...passed
-  Test: test_wkt_in_multipolygon ...passed
-  Test: test_wkt_in_collection ...passed
-  Test: test_wkt_in_circularstring ...passed
-  Test: test_wkt_in_compoundcurve ...passed
-  Test: test_wkt_in_curvpolygon ...passed
-  Test: test_wkt_in_multicurve ...passed
-  Test: test_wkt_in_multisurface ...passed
-  Test: test_wkt_in_tin ...passed
-  Test: test_wkt_in_polyhedralsurface ...passed
-  Test: test_wkt_in_errlocation ...passed
-  Test: test_wkt_double ...passed
-Suite: wkt_output
-  Test: test_wkt_out_point ...passed
-  Test: test_wkt_out_linestring ...passed
-  Test: test_wkt_out_polygon ...passed
-  Test: test_wkt_out_multipoint ...passed
-  Test: test_wkt_out_multilinestring ...passed
-  Test: test_wkt_out_multipolygon ...passed
-  Test: test_wkt_out_collection ...passed
-  Test: test_wkt_out_circularstring ...passed
-  Test: test_wkt_out_compoundcurve ...passed
-  Test: test_wkt_out_curvpolygon ...passed
-  Test: test_wkt_out_multicurve ...passed
-  Test: test_wkt_out_multisurface ...passed
-Suite: wrapx
-  Test: test_lwgeom_wrapx ...passed
+	.
+	.
+	.
 
 Run Summary:    Type  Total    Ran Passed Failed Inactive
               suites     44     44    n/a      0        0
@@ -1134,146 +778,15 @@ Run Summary:    Type  Total    Ran Passed Failed Inactive
              asserts   4215   4215   4215      0      n/a
 Elapsed time =    0.229 seconds
 
-PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
-  Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02
-  scripts 3.0.0dev r17081
-  GEOS: 3.7.0-CAPI-1.11.0 673b9939
-  PROJ: Rel. 5.2.0, September 15th, 2018
+	.
+	.
+	.
 
 Running tests
 
- ../loader/Point .............. ok
- ../loader/PointM .............. ok
- ../loader/PointZ .............. ok
- ../loader/MultiPoint .............. ok
- ../loader/MultiPointM .............. ok
- ../loader/MultiPointZ .............. ok
- ../loader/Arc .............. ok
- ../loader/ArcM .............. ok
- ../loader/ArcZ .............. ok
- ../loader/Polygon .............. ok
- ../loader/PolygonM .............. ok
- ../loader/PolygonZ .............. ok
- ../loader/TSTPolygon ......... ok
- ../loader/TSIPolygon ......... ok
- ../loader/TSTIPolygon ......... ok
- ../loader/PointWithSchema ..... ok
- ../loader/NoTransPoint ......... ok
- ../loader/NotReallyMultiPoint ......... ok
- ../loader/MultiToSinglePoint ......... ok
- ../loader/ReprojectPts ........ ok
- ../loader/ReprojectPtsGeog ........ ok
- ../loader/Latin1 .... ok
- ../loader/Latin1-implicit .... ok
- ../loader/mfile .... ok
- ../dumper/literalsrid ....... ok
- ../dumper/realtable ....... ok
- affine .. ok
- bestsrid .. ok
- binary .. ok
- boundary .. ok
- chaikin .. ok
- filterm .. ok
- cluster .. ok
- concave_hull .. ok
- concave_hull_hard .. ok
- ctors .. ok
- curvetoline .. ok
- dump .. ok
- dumppoints .. ok
- empty .. ok
- estimatedextent .. ok
- forcecurve .. ok
- geography .. ok
- geometric_median .. ok
- in_geohash .. ok
- in_gml .. ok
- in_kml .. ok
- in_encodedpolyline .. ok
- iscollection .. ok
- legacy .. ok
- long_xact .. ok
- lwgeom_regress .. ok
- measures .. ok
- minimum_bounding_circle .. ok
- normalize .. ok
- operators .. ok
- orientation .. ok
- out_geometry .. ok
- out_geography .. ok
- polygonize .. ok
- polyhedralsurface .. ok
- postgis_type_name .. ok
- quantize_coordinates .. ok
- regress .. ok
- regress_bdpoly .. ok
- regress_gist_index_nd .. ok
- regress_index .. ok
- regress_index_nulls .. ok
- regress_management .. ok
- regress_selectivity .. ok
- regress_lrs .. ok
- regress_ogc .. ok
- regress_ogc_cover .. ok
- regress_ogc_prep .. ok
- regress_proj .. ok
- relate .. ok
- remove_repeated_points .. ok
- removepoint .. ok
- reverse .. ok
- setpoint .. ok
- simplify .. ok
- simplifyvw .. ok
- size .. ok
- snaptogrid .. ok
- split .. ok
- sql-mm-serialize .. ok
- sql-mm-circularstring .. ok
- sql-mm-compoundcurve .. ok
- sql-mm-curvepoly .. ok
- sql-mm-general .. ok
- sql-mm-multicurve .. ok
- sql-mm-multisurface .. ok
- swapordinates .. ok
- summary .. ok
- temporal .. ok
- tickets .. ok
- twkb .. ok
- typmod .. ok
- wkb .. ok
- wkt .. ok
- wmsservers .. ok
- knn_recheck .. ok
- temporal_knn .. ok
- hausdorff .. ok
- regress_buffer_params .. ok
- frechet .. ok
- offsetcurve .. ok
- relatematch .. ok
- isvaliddetail .. ok
- sharedpaths .. ok
- snap .. ok
- node .. ok
- unaryunion .. ok
- clean .. ok
- relate_bnr .. ok
- delaunaytriangles .. ok
- clipbybox2d .. ok
- subdivide .. ok
- voronoi .. ok
- minimum_clearance .. ok
- oriented_envelope .. ok
- in_geojson .. ok
- regress_brin_index .. ok
- regress_brin_index_3d .. ok
- regress_brin_index_geography .. ok
- regress_spgist_index_2d .. ok
- regress_spgist_index_3d .. ok
- regress_spgist_index_nd .. ok
- mvt .. ok
- geobuf .. ok
- mvt_jsonb .. ok
- uninstall .. ok (4643)
+	.
+	.
+	.
 
 Run tests: 134
 Failed: 0
@@ -1281,304 +794,55 @@ Failed: 0
 
 -- if you build with SFCGAL
 
-PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
-  Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02
-  scripts 3.0.0dev r17081
-  GEOS: 3.7.0-CAPI-1.11.0 673b9939
-  PROJ: Rel. 5.2.0, September 15th, 2018
-  SFCGAL: 1.3.2
+	.
+	.
+	.
 
 Running tests
 
- regress_sfcgal .. ok
- empty .. ok
- geography .. ok
- legacy .. ok
- measures .. ok
- regress_ogc_prep .. ok
- regress_ogc .. ok
- regress .. ok
- tickets .. ok
- concave_hull .. ok
- wmsservers .. ok
- approximatemedialaxis .. ok
- uninstall .. ok (4643)
+	.
+	.
+	.
 
 Run tests: 13
 Failed: 0
 
 -- if you built with raster support
 
-
-
-     CUnit - A unit testing framework for C - Version 2.1-2
-     http://cunit.sourceforge.net/
-
-
-Suite: pixtype
-  Test: test_pixtype_size ...passed
-  Test: test_pixtype_alignment ...passed
-  Test: test_pixtype_name ...passed
-  Test: test_pixtype_index_from_name ...passed
-  Test: test_pixtype_get_min_value ...passed
-  Test: test_pixtype_compare_clamped_values ...passed
-Suite: raster_basics
-  Test: test_raster_new ...passed
-  Test: test_raster_empty ...passed
-  Test: test_raster_metadata ...passed
-  Test: test_raster_clone ...passed
-  Test: test_raster_from_band ...passed
-  Test: test_raster_replace_band ...passed
-Suite: band_basics
-  Test: test_band_metadata ...passed
-  Test: test_band_pixtype_1BB ...passed
-  Test: test_band_pixtype_2BUI ...passed
-  Test: test_band_pixtype_4BUI ...passed
-  Test: test_band_pixtype_8BUI ...passed
-  Test: test_band_pixtype_8BSI ...passed
-  Test: test_band_pixtype_16BUI ...passed
-  Test: test_band_pixtype_16BSI ...passed
-  Test: test_band_pixtype_32BUI ...passed
-  Test: test_band_pixtype_32BSI ...passed
-  Test: test_band_pixtype_32BF ...passed
-  Test: test_band_pixtype_64BF ...passed
-  Test: test_band_get_pixel_line ...WARNING: Limiting returning number values to 1
-WARNING: Attempting to get pixel values with out of range raster coordinates: (5, 5)
-passed
-  Test: test_band_new_offline_from_path ...passed
-Suite: raster_wkb
-  Test: test_raster_wkb ...SRID value -1 converted to the officially unknown SRID value 0
-SRID value -1 converted to the officially unknown SRID value 0
-SRID value -1 converted to the officially unknown SRID value 0
-SRID value -1 converted to the officially unknown SRID value 0
-SRID value -1 converted to the officially unknown SRID value 0
-SRID value -1 converted to the officially unknown SRID value 0
-passed
-Suite: gdal
-  Test: test_gdal_configured ...passed
-  Test: test_gdal_drivers ...passed
-  Test: test_gdal_rasterize ...passed
-  Test: test_gdal_polygonize ...passed
-  Test: test_raster_to_gdal ...Warning 6: PNG driver doesn't support data type Float64. Only eight bit (Byte) and sixteen bit (UInt16) bands supported. Defaulting to Byte
-
-passed
-  Test: test_gdal_to_raster ...passed
-  Test: test_gdal_warp ...passed
-Suite: raster_geometry
-  Test: test_raster_envelope ...passed
-  Test: test_raster_envelope_geom ...passed
-  Test: test_raster_convex_hull ...passed
-  Test: test_raster_surface ...INFO: Ring Self-intersection at or near point 2 -2
-INFO: Ring Self-intersection at or near point 3 -3
-passed
-  Test: test_raster_perimeter ...passed
-  Test: test_raster_pixel_as_polygon ...passed
-Suite: raster_misc
-  Test: test_raster_cell_to_geopoint ...passed
-  Test: test_raster_geopoint_to_cell ...passed
-  Test: test_raster_from_two_rasters ...passed
-  Test: test_raster_compute_skewed_raster ...passed
-Suite: band_stats
-  Test: test_band_stats ...passed
-  Test: test_band_value_count ...passed
-Suite: band_misc
-  Test: test_band_get_nearest_pixel ...passed
-  Test: test_band_get_pixel_of_value ...passed
-  Test: test_pixel_set_to_array ...passed
-Suite: mapalgebra
-  Test: test_raster_iterator ...passed
-  Test: test_band_reclass ...passed
-  Test: test_raster_colormap ...passed
-Suite: spatial_relationship
-  Test: test_raster_geos_overlaps ...passed
-  Test: test_raster_geos_touches ...passed
-  Test: test_raster_geos_contains ...passed
-  Test: test_raster_geos_contains_properly ...passed
-  Test: test_raster_geos_covers ...passed
-  Test: test_raster_geos_covered_by ...passed
-  Test: test_raster_within_distance ...passed
-  Test: test_raster_fully_within_distance ...passed
-  Test: test_raster_intersects ...passed
-  Test: test_raster_same_alignment ...passed
-Suite: misc
-  Test: test_rgb_to_hsv ...passed
-  Test: test_hsv_to_rgb ...passed
-  Test: test_util_gdal_open ...passed
+	.
+	.
+	.
 
 Run Summary:    Type  Total    Ran Passed Failed Inactive
               suites     12     12    n/a      0        0
                tests     65     65     65      0        0
              asserts  45896  45896  45896      0      n/a
 
-Elapsed time =    0.499 seconds
 
-Loading Raster into 'postgis_reg'
-PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
-  Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02
-  scripts 3.0.0dev r17081
-  raster scripts 3.0.0dev r17081
-  GEOS: 3.7.0-CAPI-1.11.0 673b9939
-  PROJ: Rel. 5.2.0, September 15th, 2018
-  GDAL: GDAL 2.3.1, released 2018/06/22
+	.
+	.
+	.
 
 Running tests
 
- check_gdal .. ok
- load_outdb ... ok
- check_raster_columns .. ok
- check_raster_overviews .. ok
- rt_io .. ok
- rt_bytea .. ok
- rt_wkb .. ok
- box3d .. ok
- rt_addband .. ok
- rt_band .. ok
- rt_tile .. ok
- rt_dimensions .. ok
- rt_scale .. ok
- rt_pixelsize .. ok
- rt_upperleft .. ok
- rt_rotation .. ok
- rt_georeference .. ok
- rt_set_properties .. ok
- rt_isempty .. ok
- rt_hasnoband .. ok
- rt_metadata .. ok
- rt_rastertoworldcoord .. ok
- rt_worldtorastercoord .. ok
- rt_convexhull .. ok
- rt_envelope .. ok
- rt_band_properties .. ok
- rt_set_band_properties .. ok
- rt_pixelaspolygons .. ok
- rt_pixelaspoints .. ok
- rt_pixelascentroids .. ok
- rt_setvalues_array .. ok
- rt_summarystats .. ok
- rt_count .. ok
- rt_histogram .. ok
- rt_quantile .. ok
- rt_valuecount .. ok
- rt_valuepercent .. ok
- rt_bandmetadata .. ok
- rt_pixelvalue .. ok
- rt_neighborhood .. ok
- rt_nearestvalue .. ok
- rt_pixelofvalue .. ok
- rt_polygon .. ok
- rt_setbandpath .. ok
- rt_utility .. ok
- rt_fromgdalraster .. ok
- rt_asgdalraster .. ok
- rt_astiff .. ok
- rt_asjpeg .. ok
- rt_aspng .. ok
- rt_reclass .. ok
- rt_gdalwarp .. ok
- rt_asraster .. ok
- rt_dumpvalues .. ok
- rt_makeemptycoverage .. ok
- rt_createoverview .. ok
- rt_mapalgebraexpr .. ok
- rt_mapalgebrafct .. ok
- rt_mapalgebraexpr_2raster .. ok
- rt_mapalgebrafct_2raster .. ok
- rt_mapalgebrafctngb .. ok
- rt_mapalgebrafctngb_userfunc .. ok
- rt_intersection .. ok
- rt_clip .. ok
- rt_mapalgebra .. ok
- rt_mapalgebra_expr .. ok
- rt_mapalgebra_mask .. ok
- rt_union .. ok
- rt_invdistweight4ma .. ok
- rt_4ma .. ok
- rt_setvalues_geomval .. ok
- rt_elevation_functions .. ok
- rt_colormap .. ok
- rt_grayscale .. ok
- rt_gist_relationships .. ok
- rt_intersects .. ok
- rt_samealignment .. ok
- rt_geos_relationships .. ok
- rt_iscoveragetile .. ok
- bug_test_car5 .. ok
- permitted_gdal_drivers .. ok
- tickets .. ok
- loader/Basic .. ok
- loader/Projected ... ok
- loader/BasicCopy .. ok
- loader/BasicFilename .. ok
- loader/BasicOutDB .. ok
- loader/Tiled10x10 .. ok
- loader/Tiled10x10Copy .. ok
- loader/Tiled8x8 .. ok
- clean .. ok
- uninstall .. ok (4643)
+	.
+	.
+	.
 
 Run tests: 101
 Failed: 0
 
 -- topology regress
-PostgreSQL 12devel on x86_64-w64-mingw32, compiled by gcc.exe (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0, 64-bit
-  Postgis 3.0.0dev - r17081 - 2018-11-28 18:50:02
-  scripts 3.0.0dev r17081
-  GEOS: 3.7.0-CAPI-1.11.0 673b9939
-  PROJ: Rel. 5.2.0, September 15th, 2018
+
+.
+.
+.
 
 Running tests
 
- regress/legacy_validate .. ok
- regress/legacy_predicate .. ok
- regress/legacy_invalid .. ok
- regress/sqlmm .. ok
- regress/legacy_query .. ok
- regress/addnode .. ok
- regress/addedge .. ok
- regress/addface .. ok
- regress/addface2.5d .. ok
- regress/addtopogeometrycolumn .. ok
- regress/polygonize .. ok
- regress/st_addisoedge .. ok
- regress/st_addisonode .. ok
- regress/st_addedgemodface .. ok
- regress/st_addedgenewfaces .. ok
- regress/st_changeedgegeom .. ok
- regress/st_createtopogeo .. ok
- regress/st_getfacegeometry .. ok
- regress/st_getfaceedges .. ok
- regress/st_modedgeheal .. ok
- regress/st_modedgesplit .. ok
- regress/st_newedgeheal .. ok
- regress/st_newedgessplit .. ok
- regress/st_remedgenewface .. ok
- regress/st_remedgemodface .. ok
- regress/st_simplify .. ok
- regress/topoelement .. ok
- regress/topoelementarray_agg .. ok
- regress/topogeo_addlinestring .. ok
- regress/topogeo_addpoint .. ok
- regress/topogeo_addpolygon .. ok
- regress/topogeom_edit .. ok
- regress/topogeometry_type .. ok
- regress/topojson .. ok
- regress/topologysummary .. ok
- regress/topo2.5d .. ok
- regress/totopogeom .. ok
- regress/droptopology .. ok
- regress/droptopogeometrycolumn .. ok
- regress/copytopology .. ok
- regress/createtopogeom .. ok
- regress/createtopology .. ok
- regress/gml .. ok
- regress/getnodebypoint .. ok
- regress/getedgebypoint .. ok
- regress/getfacebypoint .. ok
- regress/getringedges .. ok
- regress/gettopogeomelements .. ok
- regress/layertrigger .. ok
- regress/validatetopology .. ok
- uninstall .. ok (4643)
+	.
+	.
+	.
 
 Run tests: 51
 Failed: 0
@@ -1588,20 +852,16 @@ Failed: 0
      CUnit - A unit testing framework for C - Version 2.1-2
      http://cunit.sourceforge.net/
 
-
-Suite: Shapefile Loader File shp2pgsql Test
-  Test: test_ShpLoaderCreate() ...passed
-  Test: test_ShpLoaderDestroy() ...passed
-Suite: Shapefile Loader File pgsql2shp Test
-  Test: test_ShpDumperCreate() ...passed
-  Test: test_ShpDumperDestroy() ...passed
+	.
+	.
+	.
 
 Run Summary:    Type  Total    Ran Passed Failed Inactive
               suites      2      2    n/a      0        0
                tests      4      4      4      0        0
              asserts      4      4      4      0      n/a</programlisting>
 
-	  <para>The <varname>postgis_tiger_geocoder</varname> and <varname>address_standardizer</varname> extensions, currenlty only support the standard PostgreSQL installcheck.  To test these use the below.  Note: the make install is not necessary if you already did make install at root of PostGIS code folder.</para>
+	  <para>The <varname>postgis_tiger_geocoder</varname> and <varname>address_standardizer</varname> extensions, currently only support the standard PostgreSQL installcheck.  To test these use the below.  Note: the make install is not necessary if you already did make install at root of PostGIS code folder.</para>
 	  <para>For address_standardizer:
 	  <programlisting>cd extensions/address_standardizer
 make install
@@ -1796,7 +1056,7 @@ If present the <xref linkend="Geocode" /> function can use it if a boundary filt
 The <xref linkend="Reverse_Geocode" /> function uses it if the returned address is missing a zip, which often happens with highway reverse geocoding.</para></listitem>
 			<listitem><para>Create a folder called <filename>gisdata</filename> on root of server or your local pc if you have a fast network connection to the server. This folder is
 where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</para></listitem>
-            <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or whereever you designated the <varname>staging_fold</varname> to be.  This will be
+            <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or wherever you designated the <varname>staging_fold</varname> to be.  This will be
 the folder where the loader extracts the downloaded tiger data.</para></listitem>
 			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" />  SQL function make sure to use the name of your custom profile and copy the script to a .sh or .bat file.  So for example to build  the nation load:</para>
 					<programlisting>psql -c "SELECT Loader_Generate_Nation_Script('debbie')" -d geocoder -tA > /gisdata/nation_script_load.sh</programlisting>
@@ -2005,7 +1265,7 @@ pretty_address
 
 	<para>
 	  Also check that configure has correctly detected the location and version
-	  of PostgreSQL, the Proj4 library and the GEOS library.
+	  of PostgreSQL, the Proj library and the GEOS library.
 	</para>
 
 	<orderedlist>

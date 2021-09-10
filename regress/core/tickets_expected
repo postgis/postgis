@@ -452,3 +452,10 @@ ERROR:  LWGEOM_addpoint: Invalid offset
 #4949|North Pole LAEA inverse|SRID=4326;POINT(19.4921659 69.7902258)
 #4949|Arctic Stereographic forward|SRID=3413;POINT(2218082.1 -1409150)
 #4949|Antarctic Stereographic forward|SRID=3031;POINT(-2399498.7 3213318.5)
+#4770.a|
+#4770.a|
+#4770.b|POINT(0 0)|300
+#4770.b|POINT(1 1)|302
+#4770.c|POINT(0 0)|300
+#4770.c|MULTIPOINT(0 0,1 1)|602
+#4799|{"type": "Feature", "geometry": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:25832"}},"coordinates":[359667,5651729]}, "properties": {"id": 1, "geom1": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:3035"}},"coordinates":[4110471,3103061]}}}

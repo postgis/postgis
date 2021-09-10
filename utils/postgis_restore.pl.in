@@ -129,6 +129,16 @@ while( my $l = <DUMP> ) {
   my $sigHR = linesignature($l);
   my $sig = $sigHR; $sig =~ s/\s//g;
   $hasTopology = 1 if $sig eq 'SCHEMAtopology';
+
+	if ( not defined ($POSTGIS_SCHEMA) )
+	{
+		if ( $l =~ / TABLE DATA ([^ ]*) spatial_ref_sys / )
+		{
+			$POSTGIS_SCHEMA = $1;
+			print STDERR "Setting postgis schema to $POSTGIS_SCHEMA, as found in the dump";
+		}
+	}
+
   if ( $skip{$sig} ) {
     print STDERR "SKIP: $sigHR\n" if $DEBUG;
     next

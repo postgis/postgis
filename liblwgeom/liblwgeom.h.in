@@ -830,7 +830,7 @@ extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
 
 /**
 * Allocate a new #LWGEOM from a #GSERIALIZED. The resulting #LWGEOM will have coordinates
-* that are double aligned and suitable for direct reading using getPoint2d_p_ro
+* that are double aligned and suitable for direct reading using getPoint2d_cp
 */
 extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
 
@@ -1097,6 +1097,16 @@ extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2,
 extern int ptarray_closest_vertex_2d(const POINTARRAY *pa,
                                      const POINT2D *qp, double *dist);
 
+/**
+ * @param pa the subject pointarray
+ * @param qp the query point
+ * @param dist optional output for actual distance from segment
+ * @return 0-based segment index for the closest segment
+ *         (earliest segment in case of same distance)
+ */
+extern int ptarray_closest_segment_2d(const POINTARRAY *pa,
+                                      const POINT2D *qp, double *dist);
+
 
 
 /**
@@ -1193,10 +1203,7 @@ extern LWCURVEPOLY* lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly);
 extern int lwcollection_ngeoms(const LWCOLLECTION *col);
 
 /* Given a generic geometry/collection, return the "simplest" form.
- * The elements of the homogenized collection are references to the
- * input geometry; a deep clone is not performed.
- * TODO: consider returning a geometry that does not reference the
- * input
+ * The elements of the homogenized collection are deeply cloned
  * */
 extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
 
@@ -1920,12 +1927,6 @@ extern int lwgeom_calculate_gbox_cartesian(const LWGEOM *lwgeom, GBOX *gbox);
 extern int lwgeom_calculate_gbox(const LWGEOM *lwgeom, GBOX *gbox);
 
 /**
-* New function to read doubles directly from the double* coordinate array
-* of an aligned lwgeom #POINTARRAY (built by de-serializing a #GSERIALIZED).
-*/
-extern int getPoint2d_p_ro(const POINTARRAY *pa, uint32_t n, POINT2D **point);
-
-/**
 * Calculate geodetic (x/y/z) box and add values to gbox. Return #LW_SUCCESS on success.
 */
 extern int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox);
@@ -2541,8 +2542,9 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 * @param geoms the input array of LWGEOM pointers
 * @param ngeoms the number of elements in the array
 * @param k the number of clusters to calculate
+* @param max_radius maxmimum radius of cluster before it's split
 */
-int * lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t ngeoms, uint32_t k);
+int * lwgeom_cluster_kmeans(const LWGEOM **geoms, uint32_t n, uint32_t k, double max_radius);
 
 #include "lwinline.h"
 

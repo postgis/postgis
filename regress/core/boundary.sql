@@ -14,3 +14,7 @@ SELECT 'boundary13', ST_AsText(ST_Boundary(ST_GeomFromEWKT('TIN(((0 0,0 -1,-1 1,
 SELECT 'boundary14', ST_AsText(ST_Boundary(ST_GeomFromEWKT('TIN(((0 0,0 -1,-1 1,0 0)))')));
 SELECT 'boundary15', ST_AsText(ST_Boundary(ST_GeomFromEWKT('CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1))')));
 SELECT 'boundary16', ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTICURVE((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));
+SELECT 'boundary17', ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('GEOMETRYCOLLECTION(POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,4 4,2 4,2 2)),POLYGON((2 2,2 4,4 4,4 2,2 2)))')));
+SELECT 'boundary18', ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('GEOMETRYCOLLECTION(TIN(((0 0,0 -1,-1 1,0 0)),((0 0,1 0,0 -1,0 0))),TIN(((10 10,10 20,20 20,10 10))))')));
+SELECT 'boundary19', ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTIPOLYGON(((0 0, 5 5, 10 0, 0 0),(3 1,7 1,5 2,3 1)),((20 0,20 5,25 5,20 0)))')));
+SELECT 'boundary20', ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('LINESTRING EMPTY')));

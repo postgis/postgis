@@ -237,6 +237,105 @@ lwgeom_is_empty(const LWGEOM *geom)
 	}
 }
 
+inline static uint64_t
+uint64_interleave_2(uint64_t x, uint64_t y)
+{
+	x = (x | (x << 16)) & 0x0000FFFF0000FFFFULL;
+	x = (x | (x << 8)) & 0x00FF00FF00FF00FFULL;
+	x = (x | (x << 4)) & 0x0F0F0F0F0F0F0F0FULL;
+	x = (x | (x << 2)) & 0x3333333333333333ULL;
+	x = (x | (x << 1)) & 0x5555555555555555ULL;
+
+	y = (y | (y << 16)) & 0x0000FFFF0000FFFFULL;
+	y = (y | (y << 8)) & 0x00FF00FF00FF00FFULL;
+	y = (y | (y << 4)) & 0x0F0F0F0F0F0F0F0FULL;
+	y = (y | (y << 2)) & 0x3333333333333333ULL;
+	y = (y | (y << 1)) & 0x5555555555555555ULL;
+
+	return x | (y << 1);
+}
+
+/* Based on https://github.com/rawrunprotected/hilbert_curves Public Domain code */
+inline static uint64_t
+uint32_hilbert(uint32_t px, uint32_t py)
+{
+	uint64_t x = px;
+	uint64_t y = py;
+
+	uint64_t A, B, C, D;
+	uint64_t a, b, c, d;
+	uint64_t i0, i1;
+
+	// Initial prefix scan round, prime with x and y
+	{
+		a = x ^ y;
+		b = 0xFFFFFFFFULL ^ a;
+		c = 0xFFFFFFFFULL ^ (x | y);
+		d = x & (y ^ 0xFFFFFFFFULL);
+
+		A = a | (b >> 1);
+		B = (a >> 1) ^ a;
+		C = ((c >> 1) ^ (b & (d >> 1))) ^ c;
+		D = ((a & (c >> 1)) ^ (d >> 1)) ^ d;
+	}
+
+	{
+		a = A;
+		b = B;
+		c = C;
+		d = D;
+
+		A = ((a & (a >> 2)) ^ (b & (b >> 2)));
+		B = ((a & (b >> 2)) ^ (b & ((a ^ b) >> 2)));
+		C ^= ((a & (c >> 2)) ^ (b & (d >> 2)));
+		D ^= ((b & (c >> 2)) ^ ((a ^ b) & (d >> 2)));
+	}
+
+	{
+		a = A;
+		b = B;
+		c = C;
+		d = D;
+
+		A = ((a & (a >> 4)) ^ (b & (b >> 4)));
+		B = ((a & (b >> 4)) ^ (b & ((a ^ b) >> 4)));
+		C ^= ((a & (c >> 4)) ^ (b & (d >> 4)));
+		D ^= ((b & (c >> 4)) ^ ((a ^ b) & (d >> 4)));
+	}
+
+	{
+		a = A;
+		b = B;
+		c = C;
+		d = D;
+
+		A = ((a & (a >> 8)) ^ (b & (b >> 8)));
+		B = ((a & (b >> 8)) ^ (b & ((a ^ b) >> 8)));
+		C ^= ((a & (c >> 8)) ^ (b & (d >> 8)));
+		D ^= ((b & (c >> 8)) ^ ((a ^ b) & (d >> 8)));
+	}
+
+	{
+		a = A;
+		b = B;
+		c = C;
+		d = D;
+
+		C ^= ((a & (c >> 16)) ^ (b & (d >> 16)));
+		D ^= ((b & (c >> 16)) ^ ((a ^ b) & (d >> 16)));
+	}
+
+	// Undo transformation prefix scan
+	a = C ^ (C >> 1);
+	b = D ^ (D >> 1);
+
+	// Recover index bits
+	i0 = x ^ y;
+	i1 = b | (0xFFFFFFFFULL ^ (i0 | a));
+
+	return uint64_interleave_2(i0, i1);
+}
+
 /*
  * This macro is based on PG_FREE_IF_COPY, except that it accepts two pointers.
  * See PG_FREE_IF_COPY comment in src/include/fmgr.h in postgres source code

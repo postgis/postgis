@@ -437,7 +437,7 @@ ST_Dimension
 	  <refsection>
 		<title>Standard Examples</title>
 	<programlisting>SELECT sometable.field1, sometable.field1,
-      (ST_Dump(sometable.the_geom)).geom AS the_geom
+      (ST_Dump(sometable.geom)).geom AS geom
 FROM sometable;
 
 -- Break a compound curve into its constituent linestrings and circularstrings
@@ -911,18 +911,18 @@ FROM (
 		<title>Examples</title>
         <para>General form of query.</para>
 		<programlisting>SELECT polyTable.field1, polyTable.field1,
-	  (ST_DumpRings(polyTable.the_geom)).geom As the_geom
+	  (ST_DumpRings(polyTable.geom)).geom As geom
 FROM polyTable;
 </programlisting>
         <para>A polygon with a single hole.</para>
-<programlisting>SELECT path, ST_AsEWKT(geom) As the_geom
+<programlisting>SELECT path, ST_AsEWKT(geom) As geom
 	FROM ST_DumpRings(
 		ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
 		-8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
 		-8150305 5132788 1,-8149064 5133092 1),
 		(-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
 		)  as foo;
- path |                                            the_geom
+ path |                                            geom
 ----------------------------------------------------------------------------------------------------------------
   {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,
 	  |          -8148941 5132466 1,-8148924 5132394 1,
@@ -1159,13 +1159,13 @@ POLYGON((20 75,20 150,125 150,125 75,20 75))</programlisting>
 		<title>Examples</title>
 <programlisting>
 --If you have a table of polygons
-SELECT gid, ST_ExteriorRing(the_geom) AS ering
+SELECT gid, ST_ExteriorRing(geom) AS ering
 FROM sometable;
 
 --If you have a table of MULTIPOLYGONs
 --and want to return a MULTILINESTRING composed of the exterior rings of each polygon
-SELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings
-	FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom
+SELECT gid, ST_Collect(ST_ExteriorRing(geom)) AS erings
+	FROM (SELECT gid, (ST_Dump(geom)).geom As geom
 			FROM sometable) As foo
 GROUP BY gid;
 
@@ -1241,13 +1241,13 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<title>Standard Examples</title>
 
 		<programlisting>--Extracting a subset of points from a 3d multipoint
-SELECT n, ST_AsEWKT(ST_GeometryN(the_geom, n)) As geomewkt
+SELECT n, ST_AsEWKT(ST_GeometryN(geom, n)) As geomewkt
 FROM (
 VALUES (ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') ),
 ( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
-	)As foo(the_geom)
+	)As foo(geom)
 	CROSS JOIN generate_series(1,100) n
-WHERE n &lt;= ST_NumGeometries(the_geom);
+WHERE n &lt;= ST_NumGeometries(geom);
 
  n |               geomewkt
 ---+-----------------------------------------
@@ -1260,9 +1260,9 @@ WHERE n &lt;= ST_NumGeometries(the_geom);
 
 
 --Extracting all geometries (useful when you want to assign an id)
-SELECT gid, n, ST_GeometryN(the_geom, n)
+SELECT gid, n, ST_GeometryN(geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
-WHERE n &lt;= ST_NumGeometries(the_geom);</programlisting>
+WHERE n &lt;= ST_NumGeometries(geom);</programlisting>
 	  </refsection>
 
 <refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
@@ -1474,10 +1474,10 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 		<title>Examples</title>
 
 		<programlisting>
-SELECT ST_AsText(ST_InteriorRingN(the_geom, 1)) As the_geom
+SELECT ST_AsText(ST_InteriorRingN(geom, 1)) As geom
 FROM (SELECT ST_BuildArea(
 		ST_Collect(ST_Buffer(ST_Point(1,2), 20,3),
-			ST_Buffer(ST_Point(1, 2), 10,3))) As the_geom
+			ST_Buffer(ST_Point(1, 2), 10,3))) As geom
 		)  as foo;
 		</programlisting>
 	  </refsection>
@@ -1942,15 +1942,15 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 	<refsection>
 	  <title>Examples</title>
 
-	  <programlisting>SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
-FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS foo;
+	  <programlisting>SELECT ST_IsRing(geom), ST_IsClosed(geom), ST_IsSimple(geom)
+FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS geom) AS foo;
  st_isring | st_isclosed | st_issimple
 -----------+-------------+-------------
  t         | t           | t
 (1 row)
 
-SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
-FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo;
+SELECT ST_IsRing(geom), ST_IsClosed(geom), ST_IsSimple(geom)
+FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;
  st_isring | st_isclosed | st_issimple
 -----------+-------------+-------------
  f         | t           | f
@@ -1986,7 +1986,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 		<title>Description</title>
 
 		<para>Returns true if this Geometry has no anomalous geometric
-				points, such as self intersection or self tangency. For more
+				points, such as self-intersection or self-tangency. For more
 			information on the OGC's definition of geometry simplicity and validity, refer
 			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link></para>
 
@@ -2117,10 +2117,10 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 
 		<programlisting>
 --Return how much byte space Boston takes up  in our Mass data set
-SELECT pg_size_pretty(SUM(ST_MemSize(the_geom))) as totgeomsum,
-pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(the_geom) ELSE 0 END)) As bossum,
-CAST(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(the_geom) ELSE 0 END)*1.00 /
-		SUM(ST_MemSize(the_geom))*100 As numeric(10,2)) As perbos
+SELECT pg_size_pretty(SUM(ST_MemSize(geom))) as totgeomsum,
+pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)) As bossum,
+CAST(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)*1.00 /
+		SUM(ST_MemSize(geom))*100 As numeric(10,2)) As perbos
 FROM towns;
 
 totgeomsum	bossum	perbos
@@ -2134,8 +2134,8 @@ SELECT ST_MemSize(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,22
 73
 
 --What percentage of our table is taken up by just the geometry
-SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, sum(ST_MemSize(the_geom)) As geomsize,
-sum(ST_MemSize(the_geom))*1.00/pg_total_relation_size('public.neighborhoods')*100 As pergeom
+SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, sum(ST_MemSize(geom)) As geomsize,
+sum(ST_MemSize(geom))*1.00/pg_total_relation_size('public.neighborhoods')*100 As pergeom
 FROM neighborhoods;
 fulltable_size geomsize  pergeom
 ------------------------------------------------
@@ -2261,8 +2261,8 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As ninterrings
-					FROM (SELECT ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As the_geom) As foo;
+		<programlisting>SELECT ST_NRings(geom) As Nrings, ST_NumInteriorRings(geom) As ninterrings
+					FROM (SELECT ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As geom) As foo;
 	 nrings | ninterrings
 --------+-------------
 	  1 |           0
@@ -2365,13 +2365,13 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 
 			<programlisting>
 --If you have a regular polygon
-SELECT gid, field1, field2, ST_NumInteriorRings(the_geom) AS numholes
+SELECT gid, field1, field2, ST_NumInteriorRings(geom) AS numholes
 FROM sometable;
 
 --If you have multipolygons
 --And you want to know the total number of interior rings in the MULTIPOLYGON
-SELECT gid, field1, field2, SUM(ST_NumInteriorRings(the_geom)) AS numholes
-FROM (SELECT gid, field1, field2, (ST_Dump(the_geom)).geom As the_geom
+SELECT gid, field1, field2, SUM(ST_NumInteriorRings(geom)) AS numholes
+FROM (SELECT gid, field1, field2, (ST_Dump(geom)).geom As geom
 	FROM sometable) As foo
 GROUP BY gid, field1,field2;
 			</programlisting>
@@ -2470,8 +2470,8 @@ GROUP BY gid, field1,field2;
 		<title>Description</title>
 
 		<para>Return the number of points in an ST_LineString or
-		  ST_CircularString value. Prior to 1.4 only works with Linestrings as the specs state.  From 1.4 forward this is an alias for ST_NPoints which returns number of vertexes for
-		  not just line strings.
+		  ST_CircularString value. Prior to 1.4 only works with linestrings as the specs state.  From 1.4 forward this is an alias for ST_NPoints which returns number of vertexes for
+		  not just linestrings.
 		  Consider using ST_NPoints instead which is multi-purpose
 		  and works with many geometry types.</para>
 
@@ -2749,11 +2749,15 @@ MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)
 	  <para>&Z_support;</para>
 	  <para>&curve_support;</para>
 
-	  <note><para>Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
+	  <note>
+        <para>Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns NULLs if input was not a LineString.</para>
+      <para>Changed: 2.0.0 no longer works with single geometry MultiLineStrings.  In older
 	  versions of PostGIS a single-line MultiLineString would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other MultiLineString.
 	  The old behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
-	  may experience these returning NULL in 2.0.0.</para></note>
+	  may experience these returning NULL in 2.0.0.</para>
+
+      </note>
 
 	</refsection>
 

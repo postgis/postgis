@@ -6,13 +6,14 @@ name: "CI"
 on:
   push:
     branches-ignore:
-      - 'master'
+      - 'main'
   pull_request: ~
 
 jobs:
   linux:
     name: "CI"
     strategy:
+      fail-fast: false
       matrix:
         ci:
         # Use the last stable releases to run more tests

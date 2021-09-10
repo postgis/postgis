@@ -4,7 +4,7 @@
     <abstract>
 			<para>These functions support working with trajectories.
 			A trajectory is a linear geometry with increasing measures (M value) on each coordinate.
-			Spatio-temporal data can be modelled by using relative times (such as the epoch)
+			Spatio-temporal data can be modeled by using relative times (such as the epoch)
 			as the measure values.
 			</para>
     </abstract>

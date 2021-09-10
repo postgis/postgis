@@ -6798,7 +6798,7 @@ WHERE rid = 2;
                         <paramdef choice="opt"><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                     </funcprototype>
 
@@ -6819,7 +6819,7 @@ WHERE rid = 2;
                         <funcdef>raster <function>ST_Resample</function></funcdef>
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                         <paramdef choice="opt"><type>boolean </type> <parameter>usescale=true</parameter></paramdef>
                     </funcprototype>
@@ -6829,7 +6829,7 @@ WHERE rid = 2;
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
                         <paramdef><type>boolean </type> <parameter>usescale</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                     </funcprototype>
                 </funcsynopsis>
@@ -6907,7 +6907,7 @@ FROM (
                         <funcdef>raster <function>ST_Rescale</function></funcdef>
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>scalexy</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                     </funcprototype>
 
@@ -6916,7 +6916,7 @@ FROM (
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                     </funcprototype>
 
@@ -6988,7 +6988,7 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
                         <funcdef>raster <function>ST_Reskew</function></funcdef>
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>skewxy</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                     </funcprototype>
 
@@ -6997,7 +6997,7 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>skewx</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>skewy</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                     </funcprototype>
 
@@ -7061,7 +7061,7 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
                         <paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>scalex=DEFAULT 0</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>scaley=DEFAULT 0</parameter></paramdef>
@@ -7074,7 +7074,7 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
                         <paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                     </funcprototype>
 
@@ -7084,7 +7084,7 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
                         <paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
                         <paramdef><type>double precision </type> <parameter>scalexy</parameter></paramdef>
-                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+                        <paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
                         <paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
                     </funcprototype>
 
@@ -11477,7 +11477,7 @@ WITH pr AS
 (SELECT ST_Clip(rast,ST_Expand(geom,50) ) As rast, g.geom
     FROM aerials.o_2_boston AS r INNER JOIN
 -- union our parcels of interest so they form a single geometry we can later intersect with
-        (SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom
+        (SELECT ST_Union(ST_Transform(geom,26986)) AS geom
           FROM landparcels WHERE pid IN('0303890000', '0303900000')) As g
         ON ST_Intersects(rast::geometry, ST_Expand(g.geom,50))
 ),
