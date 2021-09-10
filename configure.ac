@@ -894,9 +894,9 @@ AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ librar
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
-dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath)
-if test ! "$POSTGIS_PROJ_VERSION" -ge 46; then
-	AC_MSG_ERROR([PostGIS requires PROJ >= 4.6.0])
+dnl Ensure that we are using PROJ >= 4.9.0 (requires pj_set_searchpath)
+if test ! "$POSTGIS_PROJ_VERSION" -ge 49; then
+	AC_MSG_ERROR([PostGIS requires PROJ >= 4.9.0])
 fi
 
 AC_SUBST([PROJ_CPPFLAGS])
