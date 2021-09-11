@@ -1,8 +1,8 @@
 PostGIS 3.2.0alpha1
-2021/09/xx
+2021/09/10
 
 This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
-Additional features are enabled if you are running GEOS 3.9, Proj 6.1+, and PostgreSQL 14+
+Additional features are enabled if you are running GEOS 3.9+, Proj 6.1+, and PostgreSQL 14+.
 
  * Breaking changes *
   - #4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory to build with MVT support.
@@ -11,6 +11,7 @@ Additional features are enabled if you are running GEOS 3.9, Proj 6.1+, and Post
   - #4149, ST_AsMVTGeom now preserves more of original geometry's details at scale close to target extent.
            If you need previous simplifying behaviour, you can ST_Simplify the geometry in advance.
            (Darafei Praliaskouski)
+  - Proj 4.9 or higher is required
 
  * Enhancements *
   - #2592, Do not allow CreateTopology to define topologies with SRID < 0
@@ -93,6 +94,7 @@ PostGIS 3.2.0
   - #4149, ST_AsMVTGeom now preserves more of original geometry's details at scale close to target extent.
            If you need previous simplifying behaviour, you can ST_Simplify the geometry in advance.
            (Darafei Praliaskouski)
+  - Proj 4.9 or higher is required
 
  * Enhancements *
   - #2592, Do not allow CreateTopology to define topologies with SRID < 0
@@ -137,6 +139,7 @@ PostGIS 3.2.0
   - #4799, Include srs in GeoJSON where it exists in spatial_ref_sys.
   - #4986, GIST indexes on Postgres 14 are now created faster using Hilbert-sorting method.
            (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski, Giuseppe Broccolo)
+  - #4949, Use proj_normalize_for_visualization to hand "axis swap" decisions (Paul Ramsey)
 
  * New features*
   - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
