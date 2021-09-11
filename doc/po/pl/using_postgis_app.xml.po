@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:49+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Milena Nowotarska <do.milenki@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -21,7 +21,7 @@ msgstr ""
 #. Tag: title
 #: using_postgis_app.xml:3
 #, no-c-format
-msgid "Using PostGIS Geometry: Building Applications"
+msgid "Building Applications"
 msgstr ""
 
 #. Tag: title
@@ -35,7 +35,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The Minnesota MapServer is an internet web-mapping server which conforms to "
-"the OpenGIS Web Mapping Server specification."
+"the OpenGIS Web Map Service specification."
 msgstr ""
 
 #. Tag: para
@@ -50,7 +50,7 @@ msgstr ""
 #: using_postgis_app.xml:17
 #, no-c-format
 msgid ""
-"The OpenGIS Web Map Specification is at <ulink url=\"http://www."
+"The OpenGIS Web Map Service specification is at <ulink url=\"http://www."
 "opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/"
 "wms</ulink>."
 msgstr ""
@@ -65,9 +65,9 @@ msgstr ""
 #: using_postgis_app.xml:25
 #, no-c-format
 msgid ""
-"To use PostGIS with MapServer, you will need to know about how to configure "
-"MapServer, which is beyond the scope of this documentation. This section "
-"will cover specific PostGIS issues and configuration details."
+"To use PostGIS with MapServer, you need to know how to configure MapServer, "
+"which is beyond the scope of this documentation. This section covers "
+"specific PostGIS issues and configuration details."
 msgstr ""
 
 #. Tag: para
@@ -92,8 +92,8 @@ msgstr ""
 #: using_postgis_app.xml:42
 #, no-c-format
 msgid ""
-"MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client "
-"-- using the <filename>libpq</filename> interface. This means that MapServer "
+"MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client, "
+"using the <filename>libpq</filename> interface. This means that MapServer "
 "can be installed on any machine with network access to the PostGIS server, "
 "and use PostGIS as a source of data. The faster the connection between the "
 "systems, the better."
@@ -320,7 +320,7 @@ msgstr ""
 #: using_postgis_app.xml:168
 #, no-c-format
 msgid ""
-"The FILTER I use for my Shape files is not working for my PostGIS table of "
+"The FILTER I use for my Shapefiles is not working for my PostGIS table of "
 "the same data."
 msgstr ""
 
@@ -343,7 +343,7 @@ msgstr ""
 #: using_postgis_app.xml:183
 #, no-c-format
 msgid ""
-"My PostGIS layer draws much slower than my Shape file layer, is this normal?"
+"My PostGIS layer draws much slower than my Shapefile layer, is this normal?"
 msgstr ""
 
 #. Tag: para
@@ -351,7 +351,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "In general, the more features you are drawing into a given map, the more "
-"likely it is that PostGIS will be slower than Shape files. For maps with "
+"likely it is that PostGIS will be slower than Shapefiles. For maps with "
 "relatively few features (100s), PostGIS will often be faster. For maps with "
 "high feature density (1000s), PostGIS will always be slower."
 msgstr ""

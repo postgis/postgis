@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2019-10-06 23:49+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -37,7 +37,7 @@ msgstr ""
 #: reference_version.xml:16
 #, no-c-format
 msgid ""
-"Packages and upgrades postgis extensions (e.g. postgis_raster, "
+"Packages and upgrades PostGIS extensions (e.g. postgis_raster, "
 "postgis_topology, postgis_sfcgal) to latest available version."
 msgstr ""
 
@@ -64,11 +64,11 @@ msgstr ""
 #: reference_version.xml:35
 #, no-c-format
 msgid ""
-"Packages and upgrades postgis extensions to latest version. Only extensions "
+"Packages and upgrades PostGIS extensions to latest version. Only extensions "
 "you have installed in the database will be packaged and upgraded if needed. "
-"Reports full postgis version and build configuration infos after. This is "
+"Reports full PostGIS version and build configuration infos after. This is "
 "short-hand for doing multiple CREATE EXTENSION .. FROM unpackaged and ALTER "
-"EXTENSION .. UPDATE for each postgis extension. Currently only tries to "
+"EXTENSION .. UPDATE for each PostGIS extension. Currently only tries to "
 "upgrade extensions postgis, postgis_raster, postgis_sfcgal, "
 "postgis_topology, and postgis_tiger_geocoder."
 msgstr ""
@@ -150,7 +150,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_version.xml:77
 #, no-c-format
-msgid "Reports full postgis version and build configuration infos."
+msgid "Reports full PostGIS version and build configuration infos."
 msgstr ""
 
 #. Tag: funcprototype
@@ -165,7 +165,7 @@ msgstr ""
 #: reference_version.xml:94
 #, no-c-format
 msgid ""
-"Reports full postgis version and build configuration infos. Also informs "
+"Reports full PostGIS version and build configuration infos. Also informs "
 "about synchronization between libraries and scripts suggesting upgrades as "
 "needed."
 msgstr ""
@@ -567,7 +567,7 @@ msgstr ""
 #: reference_version.xml:446
 #, no-c-format
 msgid ""
-"<refpurpose>Returns version of the postgis scripts installed in this "
+"<refpurpose>Returns version of the PostGIS scripts installed in this "
 "database.</refpurpose>"
 msgstr ""
 
@@ -583,7 +583,7 @@ msgstr ""
 #: reference_version.xml:463
 #, no-c-format
 msgid ""
-"<para>Returns version of the postgis scripts installed in this database.</"
+"<para>Returns version of the PostGIS scripts installed in this database.</"
 "para>"
 msgstr ""
 
@@ -633,7 +633,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the version number of the postgis.sql script released "
-"with the installed postgis lib.</refpurpose>"
+"with the installed PostGIS lib.</refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
@@ -649,7 +649,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<para>Returns the version number of the postgis.sql script released with the "
-"installed postgis lib.</para>"
+"installed PostGIS lib.</para>"
 msgstr ""
 
 #. Tag: para

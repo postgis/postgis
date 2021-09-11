@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2017-01-02 16:26+0000\n"
 "Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -26,11 +26,11 @@ msgstr "Extras de PostGIS"
 
 #. Tag: para
 #: extras.xml:5
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "This chapter documents features found in the extras folder of the PostGIS "
 "source tarballs and source repository. These are not always packaged with "
-"PostGIS binary releases, but are usually plpgsql based or standard shell "
+"PostGIS binary releases, but are usually PL/pgSQL based or standard shell "
 "scripts that can be run as is."
 msgstr ""
 "Este capítulo documenta las características encontradas en la carpeta Extras "
@@ -39,8 +39,12 @@ msgstr ""
 "generalmente plpgsql básicos o scripts de shell estándar que pueden ser "
 "ejectuados tal cual."
 
-#. Tag: sect1
+#. Tag: chapter
 #: extras.xml:6
 #, no-c-format
-msgid "&extras_tigergeocoder;"
-msgstr "&extras_tigergeocoder;"
+msgid "&extras_address_standardizer; &extras_tigergeocoder;"
+msgstr ""
+
+#, no-c-format
+#~ msgid "&extras_tigergeocoder;"
+#~ msgstr "&extras_tigergeocoder;"

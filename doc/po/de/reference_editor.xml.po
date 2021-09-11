@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-12-19 17:06+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2019-03-11 14:37+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -58,12 +58,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_editor.xml:26
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>point</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>position</parameter></paramdef>"
+"<paramdef><type>integer</type> <parameter>position = -1</parameter></"
+"paramdef>"
 msgstr ""
 "<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
@@ -71,150 +72,150 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>position</parameter></paramdef>"
 
 #. Tag: title
-#: reference_editor.xml:36 reference_editor.xml:82 reference_editor.xml:136
-#: reference_editor.xml:181 reference_editor.xml:260 reference_editor.xml:301
-#: reference_editor.xml:348 reference_editor.xml:393 reference_editor.xml:438
-#: reference_editor.xml:482 reference_editor.xml:533 reference_editor.xml:573
-#: reference_editor.xml:630 reference_editor.xml:675 reference_editor.xml:704
-#: reference_editor.xml:761 reference_editor.xml:806 reference_editor.xml:845
-#: reference_editor.xml:888 reference_editor.xml:923 reference_editor.xml:995
-#: reference_editor.xml:1099 reference_editor.xml:1134
-#: reference_editor.xml:1171 reference_editor.xml:1210
-#: reference_editor.xml:1253 reference_editor.xml:1291
-#: reference_editor.xml:1345 reference_editor.xml:1427
-#: reference_editor.xml:1505 reference_editor.xml:1643
+#: reference_editor.xml:36 reference_editor.xml:92 reference_editor.xml:168
+#: reference_editor.xml:235 reference_editor.xml:314 reference_editor.xml:355
+#: reference_editor.xml:402 reference_editor.xml:447 reference_editor.xml:492
+#: reference_editor.xml:536 reference_editor.xml:587 reference_editor.xml:627
+#: reference_editor.xml:684 reference_editor.xml:729 reference_editor.xml:758
+#: reference_editor.xml:815 reference_editor.xml:859 reference_editor.xml:902
+#: reference_editor.xml:937 reference_editor.xml:1009 reference_editor.xml:1113
+#: reference_editor.xml:1152 reference_editor.xml:1189
+#: reference_editor.xml:1228 reference_editor.xml:1271
+#: reference_editor.xml:1309 reference_editor.xml:1363
+#: reference_editor.xml:1445 reference_editor.xml:1523
+#: reference_editor.xml:1661
 #, no-c-format
 msgid "Description"
 msgstr "Beschreibung"
 
 #. Tag: para
 #: reference_editor.xml:38
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Adds a point to a LineString before point &lt;position&gt; (0-based index). "
-"Third parameter can be omitted or set to -1 for appending."
+"Adds a point to a LineString before the index <parameter>position</"
+"parameter> (using a 0-based index). If the <parameter>position</parameter> "
+"parameter is omitted or is -1 the point is appended to the end of the "
+"LineString."
 msgstr ""
 "Fügt einen Punkt zu einem Linienzug hinzu; vor point &lt;position&gt; (Index "
 "zählt von 0 weg). Der dritte Parameter kann weggelassen werden oder zum "
 "Anhängen auf -1 gesetzt werden."
 
 #. Tag: para
-#: reference_editor.xml:41 reference_editor.xml:813 reference_editor.xml:1102
-#: reference_editor.xml:1258
+#: reference_editor.xml:42 reference_editor.xml:1118 reference_editor.xml:1276
 #, no-c-format
 msgid "Availability: 1.1.0"
 msgstr "Verfügbarkeit: 1.1.0"
 
 #. Tag: para
-#: reference_editor.xml:42 reference_editor.xml:225 reference_editor.xml:265
-#: reference_editor.xml:312 reference_editor.xml:357 reference_editor.xml:401
-#: reference_editor.xml:488 reference_editor.xml:542 reference_editor.xml:583
-#: reference_editor.xml:639 reference_editor.xml:680 reference_editor.xml:719
-#: reference_editor.xml:770 reference_editor.xml:850 reference_editor.xml:1103
-#: reference_editor.xml:1146 reference_editor.xml:1176
-#: reference_editor.xml:1261 reference_editor.xml:1303
-#: reference_editor.xml:1360 reference_editor.xml:1458
-#: reference_editor.xml:1653
+#: reference_editor.xml:43 reference_editor.xml:279 reference_editor.xml:319
+#: reference_editor.xml:366 reference_editor.xml:411 reference_editor.xml:455
+#: reference_editor.xml:542 reference_editor.xml:596 reference_editor.xml:637
+#: reference_editor.xml:693 reference_editor.xml:734 reference_editor.xml:773
+#: reference_editor.xml:824 reference_editor.xml:864 reference_editor.xml:1119
+#: reference_editor.xml:1164 reference_editor.xml:1194
+#: reference_editor.xml:1279 reference_editor.xml:1321
+#: reference_editor.xml:1378 reference_editor.xml:1476
+#: reference_editor.xml:1671
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: title
-#: reference_editor.xml:46 reference_editor.xml:107 reference_editor.xml:151
-#: reference_editor.xml:231 reference_editor.xml:317 reference_editor.xml:362
-#: reference_editor.xml:407 reference_editor.xml:450 reference_editor.xml:494
-#: reference_editor.xml:589 reference_editor.xml:724 reference_editor.xml:776
-#: reference_editor.xml:818 reference_editor.xml:856 reference_editor.xml:896
-#: reference_editor.xml:941 reference_editor.xml:1066 reference_editor.xml:1107
-#: reference_editor.xml:1181 reference_editor.xml:1226
-#: reference_editor.xml:1265 reference_editor.xml:1312
-#: reference_editor.xml:1369 reference_editor.xml:1463
-#: reference_editor.xml:1541
+#: reference_editor.xml:47 reference_editor.xml:131 reference_editor.xml:192
+#: reference_editor.xml:285 reference_editor.xml:371 reference_editor.xml:416
+#: reference_editor.xml:461 reference_editor.xml:504 reference_editor.xml:548
+#: reference_editor.xml:643 reference_editor.xml:778 reference_editor.xml:830
+#: reference_editor.xml:870 reference_editor.xml:910 reference_editor.xml:955
+#: reference_editor.xml:1080 reference_editor.xml:1123
+#: reference_editor.xml:1199 reference_editor.xml:1244
+#: reference_editor.xml:1283 reference_editor.xml:1330
+#: reference_editor.xml:1387 reference_editor.xml:1481
+#: reference_editor.xml:1559
 #, no-c-format
 msgid "Examples"
 msgstr "Beispiele"
 
+#. Tag: para
+#: reference_editor.xml:49
+#, fuzzy, no-c-format
+msgid "Add a point to the end of a 3D line"
+msgstr "Fügt einem Linienzug einen Punkt hinzu."
+
 #. Tag: programlisting
-#: reference_editor.xml:47
+#: reference_editor.xml:50
+#, fuzzy, no-c-format
+msgid ""
+"SELECT ST_AsEWKT(ST_AddPoint('LINESTRING(0 0 1, 1 1 1)', ST_MakePoint(1, 2, "
+"3)));\n"
+"\n"
+"    st_asewkt\n"
+"    ----------\n"
+"    LINESTRING(0 0 1,1 1 1,1 2 3)"
+msgstr ""
+"SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n"
+"        st_asewkt\n"
+"        ---------\n"
+"        POINT(5 12 3)"
+
+#. Tag: para
+#: reference_editor.xml:52
 #, no-c-format
 msgid ""
-"--guarantee all linestrings in a table are closed\n"
-"                --by adding the start point of each linestring to the end of "
-"the line string\n"
-"                --only for those that are not closed\n"
-"                UPDATE sometable\n"
-"                SET the_geom = ST_AddPoint(the_geom, "
-"ST_StartPoint(the_geom))\n"
-"                FROM sometable\n"
-"                WHERE ST_IsClosed(the_geom) = false;\n"
-"\n"
-"                --Adding point to a 3-d line\n"
-"                SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 "
-"1, 1 1 1)'), ST_MakePoint(1, 2, 3)));\n"
-"\n"
-"                --result\n"
-"                st_asewkt\n"
-"                ----------\n"
-"                LINESTRING(0 0 1,1 1 1,1 2 3)"
+"Guarantee all lines in a table are closed by adding the start point of each "
+"line to the end of the line only for those that are not closed."
 msgstr ""
-"--sicherstellen, das alle Linienzüge in einer Tabelle geschlossen sind,\n"
-"--indem zu jedem nicht geschlossenen Linienzug, der Anfangspunkt als "
-"Endpunkt hinzugefügt wird\n"
-"                UPDATE sometable\n"
-"                SET the_geom = ST_AddPoint(the_geom, "
-"ST_StartPoint(the_geom))\n"
-"                FROM sometable\n"
-"                WHERE ST_IsClosed(the_geom) = false;\n"
-"\n"
-"                --Einen Punkt zu einer 3-D Linie hinzufügen\n"
-"                SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 "
-"1, 1 1 1)'), ST_MakePoint(1, 2, 3)));\n"
-"\n"
-"                --result\n"
-"                st_asewkt\n"
-"                ----------\n"
-"                LINESTRING(0 0 1,1 1 1,1 2 3)"
+
+#. Tag: programlisting
+#: reference_editor.xml:56
+#, no-c-format
+msgid ""
+"UPDATE sometable\n"
+"SET geom = ST_AddPoint(geom, ST_StartPoint(geom))\n"
+"FROM sometable\n"
+"WHERE ST_IsClosed(geom) = false;"
+msgstr ""
 
 #. Tag: title
-#: reference_editor.xml:50 reference_editor.xml:112 reference_editor.xml:156
-#: reference_editor.xml:238 reference_editor.xml:278 reference_editor.xml:324
-#: reference_editor.xml:369 reference_editor.xml:414 reference_editor.xml:457
-#: reference_editor.xml:501 reference_editor.xml:547 reference_editor.xml:598
-#: reference_editor.xml:644 reference_editor.xml:730 reference_editor.xml:782
-#: reference_editor.xml:823 reference_editor.xml:865 reference_editor.xml:901
-#: reference_editor.xml:946 reference_editor.xml:1075 reference_editor.xml:1111
-#: reference_editor.xml:1150 reference_editor.xml:1231
-#: reference_editor.xml:1269 reference_editor.xml:1319
-#: reference_editor.xml:1376 reference_editor.xml:1470
-#: reference_editor.xml:1616 reference_editor.xml:1666
+#: reference_editor.xml:60 reference_editor.xml:142 reference_editor.xml:209
+#: reference_editor.xml:292 reference_editor.xml:332 reference_editor.xml:378
+#: reference_editor.xml:423 reference_editor.xml:468 reference_editor.xml:511
+#: reference_editor.xml:555 reference_editor.xml:601 reference_editor.xml:652
+#: reference_editor.xml:698 reference_editor.xml:784 reference_editor.xml:836
+#: reference_editor.xml:879 reference_editor.xml:915 reference_editor.xml:960
+#: reference_editor.xml:1089 reference_editor.xml:1129
+#: reference_editor.xml:1168 reference_editor.xml:1249
+#: reference_editor.xml:1287 reference_editor.xml:1337
+#: reference_editor.xml:1394 reference_editor.xml:1488
+#: reference_editor.xml:1634 reference_editor.xml:1684
 #, no-c-format
 msgid "See Also"
 msgstr "Siehe auch"
 
 #. Tag: para
-#: reference_editor.xml:51
+#: reference_editor.xml:61
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetPoint\"/>"
 msgstr ", <xref linkend=\"ST_SetPoint\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:58
+#: reference_editor.xml:68
 #, no-c-format
 msgid "ST_CollectionExtract"
 msgstr "ST_CollectionExtract"
 
 #. Tag: refpurpose
-#: reference_editor.xml:60
-#, no-c-format
+#: reference_editor.xml:70
+#, fuzzy, no-c-format
 msgid ""
-"Given a (multi)geometry, return a (multi)geometry consisting only of "
-"elements of the specified type."
+"Given a geometry collection, returns a multi-geometry containing only "
+"elements of a specified type."
 msgstr ""
 "Von einer gegebenen (Sammel)Geometrie wird eine (Sammel)Geometrie "
 "zurückgegeben, welche nur die Elemente des vorgegebenen Datentyps enthält."
 
 #. Tag: funcprototype
-#: reference_editor.xml:67
+#: reference_editor.xml:77
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
@@ -224,7 +225,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
 
 #. Tag: funcprototype
-#: reference_editor.xml:73
+#: reference_editor.xml:83
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
@@ -238,55 +239,91 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:84
+#: reference_editor.xml:94
+#, fuzzy, no-c-format
+msgid "Given a geometry collection, returns a homogeneous multi-geometry."
+msgstr ""
+"Von einer gegebenen Sammelgeometrie wird die \"einfachste\" Darstellung der "
+"Inhalte zurückgegeben."
+
+#. Tag: para
+#: reference_editor.xml:96
 #, no-c-format
 msgid ""
-"Given a geometry collection, return a homogeneous multi-geometry. If the "
-"type is specified, return a multi-geometry containing only that type, and an "
-"EMPTY multigeometry otherwise. If the type is not specified, return a multi-"
-"geometry containing only geometries of the highest coordinate dimension. So "
-"polygons are preferred over lines, which are preferred over points. Sub-"
-"geometries that are not the desired type are ignored. If there are no sub-"
-"geometries of the right type, an EMPTY geometry will be returned."
+"If the <parameter>type</parameter> is not specified, returns a multi-"
+"geometry containing only geometries of the highest dimension. So polygons "
+"are preferred over lines, which are preferred over points."
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:86
-#, no-c-format
-msgid "Only points, lines and polygons are supported. The type numbers are:"
+#: reference_editor.xml:99
+#, fuzzy, no-c-format
+msgid ""
+"If the <parameter>type</parameter> is specified, returns a multi-geometry "
+"containing only that type. If there are no sub-geometries of the right type, "
+"an EMPTY geometry is returned. Only points, lines and polygons are "
+"supported. The type numbers are:"
 msgstr ""
+"Von einer (Sammel)Geometrie wird eine (Mehrfach)Geometrie zurückgegeben, "
+"welche nur die Elemente des vorgegebenen Datentyps enthält. Teilgeometrien, "
+"die nicht dem vorgegebenen Datentyp entsprechen, werden ausgelassen. Wenn "
+"keine der Teilgeometrien den richtigen Datentyp aufweist, wird eine LEERE "
+"Geometrie zurückgegeben. Es werden nur Punkte, Linien und Polygone "
+"unterstützt. Die Kennungen sind 1 == POINT, 2 == LINESTRING, 3 == POLYGON."
 
 #. Tag: para
-#: reference_editor.xml:88
+#: reference_editor.xml:103
 #, no-c-format
 msgid "1 == POINT"
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:89
+#: reference_editor.xml:104
 #, no-c-format
 msgid "2 == LINESTRING"
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:90
+#: reference_editor.xml:105
 #, no-c-format
 msgid "3 == POLYGON"
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:93
+#: reference_editor.xml:108
+#, no-c-format
+msgid ""
+"For atomic geometry inputs, the geometry is retured unchanged if the input "
+"type matches the requested type. Otherwise, the result is an EMPTY geometry "
+"of the specified type. If required, these can be converted to multi-"
+"geometries using <xref linkend=\"ST_Multi\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:114
+#, no-c-format
+msgid ""
+"MultiPolygon results are not checked for validity. If the polygon components "
+"are adjacent or overlapping the result will be invalid. (For example, this "
+"can occur when applying this function to an <xref linkend=\"ST_Split\"/> "
+"result.) This situation can be checked with <xref linkend=\"ST_IsValid\"/> "
+"and repaired with <xref linkend=\"ST_MakeValid\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:120
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "Verfügbarkeit: 1.5.0"
 
 #. Tag: para
-#: reference_editor.xml:95
+#: reference_editor.xml:122
 #, fuzzy, no-c-format
 msgid ""
-"Prior to 1.5.3 this function returned non-collection inputs untouched, no "
-"matter type. In 1.5.3 non-matching single geometries result in a NULL "
-"return. In 2.0.0 every case of missing match results in a typed EMPTY return."
+"Prior to 1.5.3 this function returned atomic inputs unchanged, no matter "
+"type. In 1.5.3 non-matching single geometries returned a NULL result. In "
+"2.0.0 non-matching single geometries return an EMPTY result of the requested "
+"type."
 msgstr ""
 "Vor 1.5.3 gab diese Funktion, wenn die Eingabe keine Sammelgeometrie war, "
 "diese unabhängig vom Datentyp unangetastet zurück. Bei 1.5.3 wurde bei "
@@ -294,82 +331,85 @@ msgstr ""
 "Übereinstimmung immer eine LEERE Ausgabe zurückgegeben."
 
 #. Tag: para
-#: reference_editor.xml:101 reference_editor.xml:142
+#: reference_editor.xml:132
 #, no-c-format
-msgid ""
-"When specifying 3 == POLYGON a multipolygon is returned even when the edges "
-"are shared. This results in an invalid multipolygon for many cases such as "
-"applying this function on an <xref linkend=\"ST_Split\"/> result."
+msgid "Extract highest-dimension type:"
 msgstr ""
-"Wenn 3 == POLYGON angegeben ist, wird ein Mehrfachpolygon zurückgegeben, "
-"sogar dann wenn die Kanten gemeinsam genutzt werden. Dies endet in vielen "
-"Fällen einem invaliden Mehrfachpolygon, zum Beispiel wenn diese Funktion auf "
-"ein <xref linkend=\"ST_Split\"/> Ergebnis angewendet wird."
 
 #. Tag: programlisting
-#: reference_editor.xml:109
+#: reference_editor.xml:133
 #, no-c-format
 msgid ""
-"-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
-"SELECT "
-"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
-"0)))'),1));\n"
-"st_astext\n"
-"---------------\n"
-"MULTIPOINT(0 0)\n"
-"(1 row)\n"
-"\n"
-"SELECT "
-"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
-"0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
-"st_astext\n"
-"---------------\n"
-"MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
-"(1 row)"
+"SELECT ST_AsText(ST_CollectionExtract(\n"
+"        'GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(1 1, 2 2) )'));\n"
+"    st_astext\n"
+"    ---------------\n"
+"    MULTILINESTRING((1 1, 2 2))"
 msgstr ""
-"-- Konstante: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
-"SELECT "
-"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
-"0)))'),1));\n"
-"st_astext\n"
-"---------------\n"
-"MULTIPOINT(0 0)\n"
-"(1 row)\n"
-"\n"
-"SELECT "
-"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
-"0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
-"st_astext\n"
-"---------------\n"
-"MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
-"(1 row)"
 
 #. Tag: para
-#: reference_editor.xml:113
+#: reference_editor.xml:135
+#, no-c-format
+msgid "Extract points (type 1 == POINT):"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_editor.xml:136
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_CollectionHomogenize\"/>"
+"SELECT ST_AsText(ST_CollectionExtract(\n"
+"        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',\n"
+"        1 ));\n"
+"    st_astext\n"
+"    ---------------\n"
+"    MULTIPOINT(0 0)"
 msgstr ""
-", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_CollectionHomogenize\"/>"
+
+#. Tag: para
+#: reference_editor.xml:138
+#, no-c-format
+msgid "Extract lines (type 2 == LINESTRING):"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_editor.xml:139
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_CollectionExtract(\n"
+"        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),"
+"LINESTRING(2 2, 3 3))',\n"
+"        2 ));\n"
+"    st_astext\n"
+"    ---------------\n"
+"    MULTILINESTRING((0 0, 1 1), (2 2, 3 3))"
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:143 reference_editor.xml:210
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"ST_Multi\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
+"linkend=\"ST_MakeValid\"/>"
+msgstr ""
+", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
+"linkend=\"ST_TransScale\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:119
+#: reference_editor.xml:151
 #, no-c-format
 msgid "ST_CollectionHomogenize"
 msgstr "ST_CollectionHomogenize"
 
 #. Tag: refpurpose
-#: reference_editor.xml:121
-#, no-c-format
-msgid ""
-"Given a geometry collection, return the \"simplest\" representation of the "
-"contents."
+#: reference_editor.xml:153
+#, fuzzy, no-c-format
+msgid "Returns the simplest representation of a geometry collection."
 msgstr ""
 "Von einer gegebenen Sammelgeometrie wird die \"einfachste\" Darstellung der "
 "Inhalte zurückgegeben."
 
 #. Tag: funcprototype
-#: reference_editor.xml:128
+#: reference_editor.xml:160
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
@@ -379,43 +419,122 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:138
-#, no-c-format
+#: reference_editor.xml:170
+#, fuzzy, no-c-format
 msgid ""
 "Given a geometry collection, returns the \"simplest\" representation of the "
-"contents. Singletons will be returned as singletons. Collections that are "
-"homogeneous will be returned as the appropriate multi-type."
+"contents."
 msgstr ""
-"Von einer Sammelgeometrie wird die \"einfachste\" Darstellung der Inhalte "
-"zurückgegeben. Einelementige Geometrien werden ebenso zurückgegeben. "
-"Einheitliche Sammelgeometrien werden, entsprechend dem Datentyp, als "
-"Mehrfachgeometrien ausgegeben"
+"Von einer gegebenen Sammelgeometrie wird die \"einfachste\" Darstellung der "
+"Inhalte zurückgegeben."
 
 #. Tag: para
-#: reference_editor.xml:146 reference_editor.xml:263 reference_editor.xml:1537
+#: reference_editor.xml:174
+#, no-c-format
+msgid ""
+"Homogeneous (uniform) collections are returned as the appropriate multi-"
+"geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:175
+#, no-c-format
+msgid ""
+"Heterogeneous (mixed) collections are flattened into a single "
+"GeometryCollection."
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:176
+#, no-c-format
+msgid ""
+"Collections containing a single atomic element are returned as that element."
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:177
+#, no-c-format
+msgid ""
+"Atomic geometries are returned unchanged. If required, these can be "
+"converted to a multi-geometry using <xref linkend=\"ST_Multi\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:181
+#, no-c-format
+msgid ""
+"This function does not ensure that the result is valid. In particular, a "
+"collection containing adjacent or overlapping Polygons will create an "
+"invalid MultiPolygon. This situation can be checked with <xref linkend="
+"\"ST_IsValid\"/> and repaired with <xref linkend=\"ST_MakeValid\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:187 reference_editor.xml:317 reference_editor.xml:1555
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Verfügbarkeit: 2.0.0"
 
-#. Tag: programlisting
-#: reference_editor.xml:153
+#. Tag: para
+#: reference_editor.xml:193
 #, no-c-format
+msgid "Single-element collection converted to an atomic geometry"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_editor.xml:194
+#, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
 "0))'));\n"
 "\n"
 "        st_astext\n"
 "        ------------\n"
-"         POINT(0 0)\n"
-"        (1 row)\n"
+"        POINT(0 0)"
+msgstr ""
+"SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n"
+"        st_asewkt\n"
+"        ---------\n"
+"        POINT(5 12 3)"
+
+#. Tag: para
+#: reference_editor.xml:196
+#, no-c-format
+msgid "Nested single-element collection converted to an atomic geometry:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_editor.xml:197
+#, fuzzy, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(MULTIPOINT((0 "
+"0)))'));\n"
 "\n"
-"  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),"
+"        st_astext\n"
+"        ------------\n"
+"        POINT(0 0)"
+msgstr ""
+"SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n"
+"        st_asewkt\n"
+"        ---------\n"
+"        POINT(5 12 3)"
+
+#. Tag: para
+#: reference_editor.xml:199
+#, no-c-format
+msgid "Collection converted to a multi-geometry:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_editor.xml:200
+#, fuzzy, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),"
 "POINT(1 1))'));\n"
 "\n"
 "        st_astext\n"
 "        ---------------------\n"
-"         MULTIPOINT(0 0,1 1)\n"
-"        (1 row)"
+"        MULTIPOINT(0 0,1 1)"
 msgstr ""
 "SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
 "0))'));\n"
@@ -434,25 +553,72 @@ msgstr ""
 "        (1 row)"
 
 #. Tag: para
-#: reference_editor.xml:157
+#: reference_editor.xml:202
 #, no-c-format
-msgid ", <xref linkend=\"ST_CollectionExtract\"/>"
-msgstr ", <xref linkend=\"ST_CollectionExtract\"/>"
+msgid "Nested heterogeneous collection flattened to a GeometryCollection:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_editor.xml:203
+#, fuzzy, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0), "
+"GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2)))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"        GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(1 1,2 2))"
+msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
+"0))'));\n"
+"\n"
+"        st_astext\n"
+"        ------------\n"
+"         POINT(0 0)\n"
+"        (1 row)\n"
+"\n"
+"  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),"
+"POINT(1 1))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"         MULTIPOINT(0 0,1 1)\n"
+"        (1 row)"
+
+#. Tag: para
+#: reference_editor.xml:205
+#, no-c-format
+msgid "Collection of Polygons converted to an (invalid) MultiPolygon:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_editor.xml:206
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION (POLYGON ((10 "
+"50, 50 50, 50 10, 10 10, 10 50)), POLYGON ((90 50, 90 10, 50 10, 50 50, 90 "
+"50)))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"        MULTIPOLYGON(((10 50,50 50,50 10,10 10,10 50)),((90 50,90 10,50 "
+"10,50 50,90 50)))"
+msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:163
+#: reference_editor.xml:217
 #, no-c-format
 msgid "ST_CurveToLine"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_editor.xml:165
+#: reference_editor.xml:219
 #, no-c-format
 msgid "Converts a geometry containing curves to a linear geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_editor.xml:170
+#: reference_editor.xml:224
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_CurveToLine</function></funcdef> "
@@ -470,7 +636,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:183
+#: reference_editor.xml:237
 #, no-c-format
 msgid ""
 "Converts a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON "
@@ -479,7 +645,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:185
+#: reference_editor.xml:239
 #, no-c-format
 msgid ""
 "Converts a given geometry to a linear geometry. Each curved geometry or "
@@ -488,7 +654,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:190
+#: reference_editor.xml:244
 #, no-c-format
 msgid ""
 "The 'tolerance_type' argument determines interpretation of the `tolerance` "
@@ -496,37 +662,37 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:195
+#: reference_editor.xml:249
 #, no-c-format
 msgid "0 (default): Tolerance is max segments per quadrant."
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:198
+#: reference_editor.xml:252
 #, no-c-format
 msgid "1: Tolerance is max-deviation of line from curve, in source units."
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:201
+#: reference_editor.xml:255
 #, no-c-format
 msgid "2: Tolerance is max-angle, in radians, between generating radii."
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:206
+#: reference_editor.xml:260
 #, no-c-format
 msgid "The 'flags' argument is a bitfield. 0 by default. Supported bits are:"
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:211
+#: reference_editor.xml:265
 #, no-c-format
 msgid "1: Symmetric (orientation idependent) output."
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:214
+#: reference_editor.xml:268
 #, no-c-format
 msgid ""
 "2: Retain angle, avoids reducing angles (segment lengths) when producing "
@@ -534,13 +700,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:219 reference_editor.xml:849
+#: reference_editor.xml:273 reference_editor.xml:863
 #, fuzzy, no-c-format
 msgid "Availability: 1.3.0"
 msgstr "Verfügbarkeit: 1.1.0"
 
 #. Tag: para
-#: reference_editor.xml:220
+#: reference_editor.xml:274
 #, no-c-format
 msgid ""
 "Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and "
@@ -548,7 +714,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:221
+#: reference_editor.xml:275
 #, no-c-format
 msgid ""
 "Enhanced: 3.0.0 implemented a minimum number of segments per linearized arc "
@@ -556,28 +722,28 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:223
+#: reference_editor.xml:277
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
 
 #. Tag: para
-#: reference_editor.xml:224
+#: reference_editor.xml:278
 #, fuzzy, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.7"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.6"
 
 #. Tag: para
-#: reference_editor.xml:226 reference_editor.xml:264 reference_editor.xml:310
-#: reference_editor.xml:356 reference_editor.xml:402 reference_editor.xml:445
-#: reference_editor.xml:489 reference_editor.xml:584 reference_editor.xml:679
-#: reference_editor.xml:772 reference_editor.xml:851 reference_editor.xml:1652
+#: reference_editor.xml:280 reference_editor.xml:318 reference_editor.xml:364
+#: reference_editor.xml:410 reference_editor.xml:456 reference_editor.xml:499
+#: reference_editor.xml:543 reference_editor.xml:638 reference_editor.xml:733
+#: reference_editor.xml:826 reference_editor.xml:865 reference_editor.xml:1670
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
 
 #. Tag: programlisting
-#: reference_editor.xml:233
+#: reference_editor.xml:287
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 "
@@ -697,19 +863,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:246
+#: reference_editor.xml:300
 #, fuzzy, no-c-format
 msgid "ST_FlipCoordinates"
 msgstr "ST_QuantizeCoordinates"
 
 #. Tag: refpurpose
-#: reference_editor.xml:247
+#: reference_editor.xml:301
 #, fuzzy, no-c-format
 msgid "Returns a version of a geometry with X and Y axis flipped."
 msgstr "Gibt die Geometrie in umgekehrter Knotenreihenfolge zurück."
 
 #. Tag: funcprototype
-#: reference_editor.xml:252
+#: reference_editor.xml:306
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
@@ -719,7 +885,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:261
+#: reference_editor.xml:315
 #, no-c-format
 msgid ""
 "Returns a version of the given geometry with X and Y axis flipped. Useful "
@@ -728,36 +894,36 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:266 reference_editor.xml:543 reference_editor.xml:640
-#: reference_editor.xml:1654
+#: reference_editor.xml:320 reference_editor.xml:597 reference_editor.xml:694
+#: reference_editor.xml:1672
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
 
 #. Tag: para
-#: reference_editor.xml:267 reference_editor.xml:311 reference_editor.xml:355
-#: reference_editor.xml:400 reference_editor.xml:582 reference_editor.xml:677
-#: reference_editor.xml:720 reference_editor.xml:1145 reference_editor.xml:1177
-#: reference_editor.xml:1306 reference_editor.xml:1655
+#: reference_editor.xml:321 reference_editor.xml:365 reference_editor.xml:409
+#: reference_editor.xml:454 reference_editor.xml:636 reference_editor.xml:731
+#: reference_editor.xml:774 reference_editor.xml:1163 reference_editor.xml:1195
+#: reference_editor.xml:1324 reference_editor.xml:1673
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
 #. Tag: para
-#: reference_editor.xml:268 reference_editor.xml:678 reference_editor.xml:1307
-#: reference_editor.xml:1656
+#: reference_editor.xml:322 reference_editor.xml:732 reference_editor.xml:1325
+#: reference_editor.xml:1674
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
 
 #. Tag: title
-#: reference_editor.xml:272 reference_editor.xml:1660
+#: reference_editor.xml:326 reference_editor.xml:1678
 #, fuzzy, no-c-format
 msgid "Example"
 msgstr "Beispiele"
 
 #. Tag: programlisting
-#: reference_editor.xml:273
+#: reference_editor.xml:327
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -769,19 +935,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:286
+#: reference_editor.xml:340
 #, no-c-format
 msgid "ST_Force2D"
 msgstr "ST_Force2D"
 
 #. Tag: refpurpose
-#: reference_editor.xml:288
+#: reference_editor.xml:342
 #, no-c-format
 msgid "Force the geometries into a \"2-dimensional mode\"."
 msgstr "Die Geometrien in einen \"2-dimensionalen Modus\" zwingen."
 
 #. Tag: funcprototype
-#: reference_editor.xml:293
+#: reference_editor.xml:347
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force2D</function></funcdef> "
@@ -791,7 +957,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:303
+#: reference_editor.xml:357
 #, no-c-format
 msgid ""
 "Forces the geometries into a \"2-dimensional mode\" so that all output "
@@ -803,8 +969,8 @@ msgstr ""
 "OGC-konforme Ausgabe zu erhalten (da OGC nur 2-D Geometrien spezifiziert)."
 
 #. Tag: para
-#: reference_editor.xml:308 reference_editor.xml:352 reference_editor.xml:397
-#: reference_editor.xml:578 reference_editor.xml:718
+#: reference_editor.xml:362 reference_editor.xml:406 reference_editor.xml:451
+#: reference_editor.xml:632 reference_editor.xml:772
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
 msgstr ""
@@ -812,7 +978,7 @@ msgstr ""
 "eingeführt."
 
 #. Tag: para
-#: reference_editor.xml:309
+#: reference_editor.xml:363
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D."
 msgstr ""
@@ -820,7 +986,7 @@ msgstr ""
 "bezeichnet."
 
 #. Tag: programlisting
-#: reference_editor.xml:319
+#: reference_editor.xml:373
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 "
@@ -850,20 +1016,20 @@ msgstr ""
 " POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))"
 
 #. Tag: refname
-#: reference_editor.xml:332
+#: reference_editor.xml:386
 #, no-c-format
 msgid "ST_Force3D"
 msgstr "ST_Force3D"
 
 #. Tag: refpurpose
-#: reference_editor.xml:334
+#: reference_editor.xml:388
 #, no-c-format
 msgid "Force the geometries into XYZ mode. This is an alias for ST_Force3DZ."
 msgstr ""
 "Zwingt die Geometrien in einen XYZ Modus. Dies ist ein Alias für ST_Force3DZ."
 
 #. Tag: funcprototype
-#: reference_editor.xml:339
+#: reference_editor.xml:393
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force3D</function></funcdef> "
@@ -875,7 +1041,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:350
+#: reference_editor.xml:404
 #, fuzzy, no-c-format
 msgid ""
 "Forces the geometries into XYZ mode. This is an alias for ST_Force3DZ. If a "
@@ -887,7 +1053,7 @@ msgstr ""
 "Koordinate mit dem Wert 0 angeheftet."
 
 #. Tag: para
-#: reference_editor.xml:353
+#: reference_editor.xml:407
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D."
 msgstr ""
@@ -895,7 +1061,7 @@ msgstr ""
 "bezeichnet."
 
 #. Tag: para
-#: reference_editor.xml:354 reference_editor.xml:399
+#: reference_editor.xml:408 reference_editor.xml:453
 #, fuzzy, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying a non-zero Z value."
 msgstr ""
@@ -903,7 +1069,7 @@ msgstr ""
 "eingeführt."
 
 #. Tag: programlisting
-#: reference_editor.xml:364
+#: reference_editor.xml:418
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
@@ -939,7 +1105,7 @@ msgstr ""
 " POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
-#: reference_editor.xml:371
+#: reference_editor.xml:425
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
@@ -949,19 +1115,19 @@ msgstr ""
 "linkend=\"ST_Force_3DZ\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:377
+#: reference_editor.xml:431
 #, no-c-format
 msgid "ST_Force3DZ"
 msgstr "ST_Force3DZ"
 
 #. Tag: refpurpose
-#: reference_editor.xml:379
+#: reference_editor.xml:433
 #, no-c-format
 msgid "Force the geometries into XYZ mode."
 msgstr "Zwingt die Geometrien in einen XYZ Modus."
 
 #. Tag: funcprototype
-#: reference_editor.xml:384
+#: reference_editor.xml:438
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force3DZ</function></funcdef> "
@@ -973,7 +1139,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:395
+#: reference_editor.xml:449
 #, fuzzy, no-c-format
 msgid ""
 "Forces the geometries into XYZ mode. If a geometry has no Z component, then "
@@ -984,7 +1150,7 @@ msgstr ""
 "Koordinate mit dem Wert 0 angeheftet."
 
 #. Tag: para
-#: reference_editor.xml:398
+#: reference_editor.xml:452
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ."
 msgstr ""
@@ -992,7 +1158,7 @@ msgstr ""
 "bezeichnet."
 
 #. Tag: programlisting
-#: reference_editor.xml:409
+#: reference_editor.xml:463
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
@@ -1026,7 +1192,7 @@ msgstr ""
 " POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
-#: reference_editor.xml:416 reference_editor.xml:503
+#: reference_editor.xml:470 reference_editor.xml:557
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
@@ -1036,19 +1202,19 @@ msgstr ""
 "linkend=\"ST_Force_3D\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:422
+#: reference_editor.xml:476
 #, no-c-format
 msgid "ST_Force3DM"
 msgstr "ST_Force3DM"
 
 #. Tag: refpurpose
-#: reference_editor.xml:424
+#: reference_editor.xml:478
 #, no-c-format
 msgid "Force the geometries into XYM mode."
 msgstr "Zwingt die Geometrien in einen XYM Modus."
 
 #. Tag: funcprototype
-#: reference_editor.xml:429
+#: reference_editor.xml:483
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force3DM</function></funcdef> "
@@ -1060,7 +1226,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:440
+#: reference_editor.xml:494
 #, fuzzy, no-c-format
 msgid ""
 "Forces the geometries into XYM mode. If a geometry has no M component, then "
@@ -1072,7 +1238,7 @@ msgstr ""
 "die Geometrie eine Z-Komponente aufweist, wird diese gelöscht."
 
 #. Tag: para
-#: reference_editor.xml:443
+#: reference_editor.xml:497
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM."
 msgstr ""
@@ -1080,7 +1246,7 @@ msgstr ""
 "bezeichnet."
 
 #. Tag: para
-#: reference_editor.xml:444
+#: reference_editor.xml:498
 #, fuzzy, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying a non-zero M value."
 msgstr ""
@@ -1088,7 +1254,7 @@ msgstr ""
 "eingeführt."
 
 #. Tag: programlisting
-#: reference_editor.xml:452
+#: reference_editor.xml:506
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
@@ -1122,7 +1288,7 @@ msgstr ""
 " POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
-#: reference_editor.xml:459 reference_editor.xml:600
+#: reference_editor.xml:513 reference_editor.xml:654
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
@@ -1132,19 +1298,19 @@ msgstr ""
 "linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:465
+#: reference_editor.xml:519
 #, no-c-format
 msgid "ST_Force4D"
 msgstr "ST_Force4D"
 
 #. Tag: refpurpose
-#: reference_editor.xml:467
+#: reference_editor.xml:521
 #, no-c-format
 msgid "Force the geometries into XYZM mode."
 msgstr "Zwingt die Geometrien in einen XYZM Modus."
 
 #. Tag: funcprototype
-#: reference_editor.xml:472
+#: reference_editor.xml:526
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Force4D</function></funcdef> "
@@ -1158,7 +1324,7 @@ msgstr ""
 "<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:484
+#: reference_editor.xml:538
 #, fuzzy, no-c-format
 msgid ""
 "Forces the geometries into XYZM mode. <parameter>Zvalue</parameter> and "
@@ -1169,7 +1335,7 @@ msgstr ""
 "wird eine 0 angeheftet."
 
 #. Tag: para
-#: reference_editor.xml:486
+#: reference_editor.xml:540
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D."
 msgstr ""
@@ -1177,13 +1343,13 @@ msgstr ""
 "bezeichnet."
 
 #. Tag: para
-#: reference_editor.xml:487
+#: reference_editor.xml:541
 #, no-c-format
 msgid "Changed: 3.1.0. Added support for supplying non-zero Z and M values."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:496
+#: reference_editor.xml:550
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
@@ -1221,13 +1387,13 @@ msgstr ""
 "1,1 1 0 1))"
 
 #. Tag: refname
-#: reference_editor.xml:509
+#: reference_editor.xml:563
 #, no-c-format
 msgid "ST_ForcePolygonCCW"
 msgstr "ST_ForcePolygonCCW"
 
 #. Tag: refpurpose
-#: reference_editor.xml:512
+#: reference_editor.xml:566
 #, no-c-format
 msgid ""
 "Orients all exterior rings counter-clockwise and all interior rings "
@@ -1237,7 +1403,7 @@ msgstr ""
 "mit dem Uhrzeigersinn aus."
 
 #. Tag: funcprototype
-#: reference_editor.xml:519
+#: reference_editor.xml:573
 #, no-c-format
 msgid ""
 "<funcdef> geometry <function>ST_ForcePolygonCCW</function> </funcdef> "
@@ -1247,7 +1413,7 @@ msgstr ""
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:535
+#: reference_editor.xml:589
 #, no-c-format
 msgid ""
 "Forces (Multi)Polygons to use a counter-clockwise orientation for their "
@@ -1259,13 +1425,13 @@ msgstr ""
 "unverändert zurückgegeben."
 
 #. Tag: para
-#: reference_editor.xml:541 reference_editor.xml:638
+#: reference_editor.xml:595 reference_editor.xml:692
 #, fuzzy, no-c-format
 msgid "Availability: 2.4.0"
 msgstr "Verfügbarkeit: 2.0.0"
 
 #. Tag: para
-#: reference_editor.xml:548 reference_editor.xml:645
+#: reference_editor.xml:602 reference_editor.xml:699
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
@@ -1273,19 +1439,19 @@ msgstr ""
 ", <xref linkend=\"ST_IsPolygonCCW\"/>, <xref linkend=\"ST_IsPolygonCW\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:558
+#: reference_editor.xml:612
 #, no-c-format
 msgid "ST_ForceCollection"
 msgstr "ST_ForceCollection"
 
 #. Tag: refpurpose
-#: reference_editor.xml:560
+#: reference_editor.xml:614
 #, no-c-format
 msgid "Convert the geometry into a GEOMETRYCOLLECTION."
 msgstr "Wandelt eine Geometrie in eine GEOMETRYCOLLECTION um."
 
 #. Tag: funcprototype
-#: reference_editor.xml:565
+#: reference_editor.xml:619
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ForceCollection</function></funcdef> "
@@ -1295,7 +1461,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:575
+#: reference_editor.xml:629
 #, no-c-format
 msgid ""
 "Converts the geometry into a GEOMETRYCOLLECTION. This is useful for "
@@ -1305,7 +1471,7 @@ msgstr ""
 "Darstellung zu vereinfachen."
 
 #. Tag: para
-#: reference_editor.xml:579
+#: reference_editor.xml:633
 #, no-c-format
 msgid ""
 "Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves. "
@@ -1315,7 +1481,7 @@ msgstr ""
 "Dies wurde mit 1.3.4+ behoben"
 
 #. Tag: para
-#: reference_editor.xml:580
+#: reference_editor.xml:634
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
 msgstr ""
@@ -1323,7 +1489,7 @@ msgstr ""
 "bezeichnet."
 
 #. Tag: programlisting
-#: reference_editor.xml:591
+#: reference_editor.xml:645
 #, no-c-format
 msgid ""
 "SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 "
@@ -1361,7 +1527,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: programlisting
-#: reference_editor.xml:593
+#: reference_editor.xml:647
 #, no-c-format
 msgid ""
 "-- POLYHEDRAL example --\n"
@@ -1405,13 +1571,13 @@ msgstr ""
 ")"
 
 #. Tag: refname
-#: reference_editor.xml:606
+#: reference_editor.xml:660
 #, no-c-format
 msgid "ST_ForcePolygonCW"
 msgstr "ST_ForcePolygonCW"
 
 #. Tag: refpurpose
-#: reference_editor.xml:609
+#: reference_editor.xml:663
 #, no-c-format
 msgid ""
 "Orients all exterior rings clockwise and all interior rings counter-"
@@ -1421,7 +1587,7 @@ msgstr ""
 "Uhrzeigersinn aus."
 
 #. Tag: funcprototype
-#: reference_editor.xml:616
+#: reference_editor.xml:670
 #, no-c-format
 msgid ""
 "<funcdef> geometry <function>ST_ForcePolygonCW</function> </funcdef> "
@@ -1431,7 +1597,7 @@ msgstr ""
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:632
+#: reference_editor.xml:686
 #, no-c-format
 msgid ""
 "Forces (Multi)Polygons to use a clockwise orientation for their exterior "
@@ -1443,19 +1609,19 @@ msgstr ""
 "unverändert zurückgegeben."
 
 #. Tag: refname
-#: reference_editor.xml:655
+#: reference_editor.xml:709
 #, no-c-format
 msgid "ST_ForceSFS"
 msgstr "ST_ForceSFS"
 
 #. Tag: refpurpose
-#: reference_editor.xml:657
+#: reference_editor.xml:711
 #, no-c-format
 msgid "Force the geometries to use SFS 1.1 geometry types only."
 msgstr "Erzwingt, dass Geometrien nur vom Typ SFS 1.1 sind."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:661
+#: reference_editor.xml:715
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef> "
@@ -1473,13 +1639,13 @@ msgstr ""
 "parameter></paramdef> </funcprototype>"
 
 #. Tag: refname
-#: reference_editor.xml:687
+#: reference_editor.xml:741
 #, no-c-format
 msgid "ST_ForceRHR"
 msgstr "ST_ForceRHR"
 
 #. Tag: refpurpose
-#: reference_editor.xml:689
+#: reference_editor.xml:743
 #, no-c-format
 msgid ""
 "Force the orientation of the vertices in a polygon to follow the Right-Hand-"
@@ -1489,7 +1655,7 @@ msgstr ""
 "folgen."
 
 #. Tag: funcprototype
-#: reference_editor.xml:695
+#: reference_editor.xml:749
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ForceRHR</function></funcdef> "
@@ -1499,7 +1665,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:706
+#: reference_editor.xml:760
 #, no-c-format
 msgid ""
 "Forces the orientation of the vertices in a polygon to follow a Right-Hand-"
@@ -1515,7 +1681,7 @@ msgstr ""
 "Diese Funktion ist ein Synonym für <xref linkend=\"ST_ForcePolygonCW\"/>"
 
 #. Tag: para
-#: reference_editor.xml:713
+#: reference_editor.xml:767
 #, no-c-format
 msgid ""
 "The above definition of the Right-Hand-Rule conflicts with definitions used "
@@ -1527,7 +1693,7 @@ msgstr ""
 "zu vermeiden, wird die Verwendung von ST_ForcePolygonCW empfohlen."
 
 #. Tag: programlisting
-#: reference_editor.xml:726
+#: reference_editor.xml:780
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(\n"
@@ -1553,7 +1719,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_editor.xml:732
+#: reference_editor.xml:786
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCW\"/>, <xref linkend=\"ST_IsPolygonCCW\"/"
@@ -1565,20 +1731,20 @@ msgstr ""
 "<xref linkend=\"ST_Polygonize\"/>, <xref linkend=\"ST_Reverse\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:745
+#: reference_editor.xml:799
 #, no-c-format
 msgid "ST_ForceCurve"
 msgstr "ST_ForceCurve"
 
 #. Tag: refpurpose
-#: reference_editor.xml:747
+#: reference_editor.xml:801
 #, no-c-format
 msgid "Upcast a geometry into its curved type, if applicable."
 msgstr ""
 "Wandelt einen geometrischen in einen Kurven Datentyp um, soweit anwendbar."
 
 #. Tag: funcprototype
-#: reference_editor.xml:752
+#: reference_editor.xml:806
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ForceCurve</function></funcdef> "
@@ -1588,7 +1754,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:763
+#: reference_editor.xml:817
 #, no-c-format
 msgid ""
 "Turns a geometry into its curved representation, if applicable: lines become "
@@ -1602,13 +1768,13 @@ msgstr ""
 "bereits in Kurvendarstellung vorliegt, wird sie unverändert zurückgegeben."
 
 #. Tag: para
-#: reference_editor.xml:769 reference_editor.xml:1144 reference_editor.xml:1651
+#: reference_editor.xml:823 reference_editor.xml:1162 reference_editor.xml:1669
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Verfügbarkeit: 2.2.0"
 
 #. Tag: programlisting
-#: reference_editor.xml:778
+#: reference_editor.xml:832
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -1634,154 +1800,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_editor.xml:790
-#, no-c-format
-msgid "ST_LineMerge"
-msgstr "ST_LineMerge"
-
-#. Tag: refpurpose
-#: reference_editor.xml:792
-#, no-c-format
-msgid ""
-"Return a (set of) LineString(s) formed by sewing together a MULTILINESTRING."
-msgstr ""
-"Gibt einen (Satz von) LineString(s) zurück, der aus einem MultiLinestring "
-"\"zusammengebastelt\" wird."
-
-#. Tag: funcprototype
-#: reference_editor.xml:798
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
-"paramdef>"
-msgstr ""
-"<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
-"paramdef>"
-
-#. Tag: para
-#: reference_editor.xml:808
-#, no-c-format
-msgid ""
-"Returns a (set of) LineString(s) formed by sewing together the constituent "
-"line work of a MULTILINESTRING."
-msgstr ""
-"Gibt einen (Satz von) LineString(s) zurück, der aus den Bestandteilen eines "
-"MultiLinestring zusammengesetzt wird."
-
-#. Tag: para
-#: reference_editor.xml:810
-#, no-c-format
-msgid ""
-"Only use with MULTILINESTRING/LINESTRINGs. If you feed a polygon or geometry "
-"collection into this function, it will return an empty GEOMETRYCOLLECTION"
-msgstr ""
-"Ist nur mit MULTILINESTRING/LINESTRING verwendbar. Wenn Sie ein Polygon oder "
-"eine Sammelgeometrie in diese Funktion einspeisen, wird eine leere "
-"GEOMETRYCOLLECTION zurückgegeben"
-
-#. Tag: para
-#: reference_editor.xml:812 reference_editor.xml:1536
-#, no-c-format
-msgid "Performed by the GEOS module."
-msgstr ""
-
-#. Tag: para
-#: reference_editor.xml:814
-#, no-c-format
-msgid "Will strip the M dimension."
-msgstr "Schneidet die Dimension M ab."
-
-#. Tag: programlisting
-#: reference_editor.xml:820
-#, no-c-format
-msgid ""
-"SELECT ST_AsText(ST_LineMerge(\n"
-"ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 "
-"-33,-46 -32))')\n"
-"                )\n"
-");\n"
-"st_astext\n"
-"--------------------------------------------------------------------------------------------------\n"
-"LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)\n"
-"(1 row)\n"
-"\n"
-"--If can't be merged - original MULTILINESTRING is returned\n"
-"SELECT ST_AsText(ST_LineMerge(\n"
-"ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 "
-"-33.2,-46 -32))')\n"
-")\n"
-");\n"
-"st_astext\n"
-"----------------\n"
-"MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))\n"
-"\n"
-"-- example with Z dimension\n"
-"SELECT ST_AsText(ST_LineMerge(\n"
-"ST_GeomFromText('MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 "
-"6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))')\n"
-"                )\n"
-");\n"
-"st_astext\n"
-"--------------------------------------------------------------------------------------------------\n"
-"LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 "
-"-32 11)\n"
-"(1 row)"
-msgstr ""
-"SELECT ST_AsText(ST_LineMerge(\n"
-"ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 "
-"-33,-46 -32))')\n"
-"                )\n"
-");\n"
-"st_astext\n"
-"--------------------------------------------------------------------------------------------------\n"
-"LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)\n"
-"(1 row)\n"
-"\n"
-"--Wenn eine Vereinigung nicht möglich ist, wird der urspüngliche "
-"MULTILINESTRING zurückgegeben\n"
-"SELECT ST_AsText(ST_LineMerge(\n"
-"ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 "
-"-33.2,-46 -32))')\n"
-")\n"
-");\n"
-"st_astext\n"
-"----------------\n"
-"MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))\n"
-"\n"
-"-- Beispiel mit Dimension Z\n"
-"SELECT ST_AsText(ST_LineMerge(\n"
-"ST_GeomFromText('MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 "
-"6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))')\n"
-"                )\n"
-");\n"
-"st_astext\n"
-"--------------------------------------------------------------------------------------------------\n"
-"LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 "
-"-32 11)\n"
-"(1 row)"
-
-#. Tag: para
-#: reference_editor.xml:824
-#, no-c-format
-msgid ", <xref linkend=\"ST_LineSubstring\"/>"
-msgstr ", <xref linkend=\"ST_LineSubstring\"/>"
-
-#. Tag: refname
-#: reference_editor.xml:830
+#: reference_editor.xml:844
 #, fuzzy, no-c-format
 msgid "ST_LineToCurve"
 msgstr "ST_LineMerge"
 
 #. Tag: refpurpose
-#: reference_editor.xml:832
+#: reference_editor.xml:846
 #, fuzzy, no-c-format
 msgid "Converts a linear geometry to a curved geometry."
 msgstr "Gibt die Geometrie als MULTI* Geometrie zurück."
 
 #. Tag: funcprototype
-#: reference_editor.xml:837
+#: reference_editor.xml:851
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
@@ -1792,7 +1823,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:847
+#: reference_editor.xml:861
 #, no-c-format
 msgid ""
 "Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons. "
@@ -1800,7 +1831,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:848
+#: reference_editor.xml:862
 #, no-c-format
 msgid ""
 "If the input LINESTRING/POLYGON is not curved enough to clearly represent a "
@@ -1808,13 +1839,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:858
+#: reference_editor.xml:872
 #, no-c-format
 msgid ""
 "-- 2D Example\n"
-"SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo."
-"the_geom) As non_curvedastext\n"
-"    FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As the_geom) As foo;\n"
+"SELECT ST_AsText(ST_LineToCurve(foo.geom)) As curvedastext,ST_AsText(foo."
+"geom) As non_curvedastext\n"
+"    FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As geom) As foo;\n"
 "\n"
 "curvedatext                                                            "
 "non_curvedastext\n"
@@ -1859,77 +1890,72 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:873
+#: reference_editor.xml:887
 #, no-c-format
 msgid "ST_Multi"
 msgstr "ST_Multi"
 
 #. Tag: refpurpose
-#: reference_editor.xml:875
+#: reference_editor.xml:889
 #, no-c-format
 msgid "Return the geometry as a MULTI* geometry."
 msgstr "Gibt die Geometrie als MULTI* Geometrie zurück."
 
 #. Tag: funcprototype
-#: reference_editor.xml:880
-#, no-c-format
+#: reference_editor.xml:894
+#, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Multi</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
 "<funcdef>geometry <function>ST_Multi</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:890
-#, no-c-format
+#: reference_editor.xml:904
+#, fuzzy, no-c-format
 msgid ""
-"Returns the geometry as a MULTI* geometry. If the geometry is already a "
-"MULTI*, it is returned unchanged."
+"Returns the geometry as a MULTI* geometry collection. If the geometry is "
+"already a collection, it is returned unchanged."
 msgstr ""
 "Gibt die Geometrie als MULTI* Geometrie zurück. Falls es sich bereits um "
 "eine MULTI* Geometrie handelt, bleibt diese unverändert."
 
 #. Tag: programlisting
-#: reference_editor.xml:898
-#, no-c-format
+#: reference_editor.xml:912
+#, fuzzy, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 "
-"2967450,\n"
-"                        743265 2967450,743265.625 2967416,743238 "
-"2967416))')));\n"
-"                        st_astext\n"
-"                        --------------------------------------------------------------------------------------------------\n"
-"                        MULTIPOLYGON(((743238 2967416,743238 2967450,743265 "
-"2967450,743265.625 2967416,\n"
-"                        743238 2967416)))\n"
-"                        (1 row)"
+"SELECT ST_AsText(ST_Multi('POLYGON ((10 30, 30 30, 30 10, 10 10, 10 "
+"30))'));\n"
+"                    st_astext\n"
+"    -------------------------------------------------\n"
+"    MULTIPOLYGON(((10 30,30 30,30 10,10 10,10 30)))"
 msgstr ""
-"SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 "
-"2967450,\n"
-"                        743265 2967450,743265.625 2967416,743238 "
-"2967416))')));\n"
-"                        st_astext\n"
-"                        --------------------------------------------------------------------------------------------------\n"
-"                        MULTIPOLYGON(((743238 2967416,743238 2967450,743265 "
-"2967450,743265.625 2967416,\n"
-"                        743238 2967416)))\n"
-"                        (1 row)"
+"SELECT ST_AsText(\n"
+"  ST_ForceCurve(\n"
+"        'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 "
+"2))'::geometry\n"
+"  )\n"
+");\n"
+"                              st_astext\n"
+"----------------------------------------------------------------------\n"
+" CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))\n"
+"(1 row)"
 
 #. Tag: refname
-#: reference_editor.xml:908
+#: reference_editor.xml:922
 #, no-c-format
 msgid "ST_Normalize"
 msgstr "ST_Normalize"
 
 #. Tag: refpurpose
-#: reference_editor.xml:910
+#: reference_editor.xml:924
 #, no-c-format
 msgid "Return the geometry in its canonical form."
 msgstr "Gibt die Geometrie in Normalform zurück."
 
 #. Tag: funcprototype
-#: reference_editor.xml:915
+#: reference_editor.xml:929
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Normalize</function></funcdef> "
@@ -1939,7 +1965,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:925
+#: reference_editor.xml:939
 #, no-c-format
 msgid ""
 "Returns the geometry in its normalized/canonical form. May reorder vertices "
@@ -1950,7 +1976,7 @@ msgstr ""
 "Mehrfachgeometrien neu gereiht."
 
 #. Tag: para
-#: reference_editor.xml:931
+#: reference_editor.xml:945
 #, no-c-format
 msgid ""
 "Mostly only useful for testing purposes (comparing expected and obtained "
@@ -1960,13 +1986,13 @@ msgstr ""
 "erhaltenen Ergebnissen)."
 
 #. Tag: para
-#: reference_editor.xml:936
+#: reference_editor.xml:950
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr "Verfügbarkeit: 2.3.0"
 
 #. Tag: programlisting
-#: reference_editor.xml:943
+#: reference_editor.xml:957
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Normalize(ST_GeomFromText(\n"
@@ -2004,25 +2030,25 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_editor.xml:947
+#: reference_editor.xml:961
 #, no-c-format
 msgid "<para>,</para>"
 msgstr "<para>,</para>"
 
 #. Tag: refname
-#: reference_editor.xml:955
+#: reference_editor.xml:969
 #, no-c-format
 msgid "ST_QuantizeCoordinates"
 msgstr "ST_QuantizeCoordinates"
 
 #. Tag: refpurpose
-#: reference_editor.xml:958
+#: reference_editor.xml:972
 #, no-c-format
 msgid "Sets least significant bits of coordinates to zero"
 msgstr "Setzt die niedrigwertigsten Bits der Koordinaten auf Null"
 
 #. Tag: funcprototype
-#: reference_editor.xml:965
+#: reference_editor.xml:979
 #, no-c-format
 msgid ""
 "<funcdef> geometry <function>ST_QuantizeCoordinates</function> </funcdef> "
@@ -2040,8 +2066,8 @@ msgstr ""
 "<paramdef> <type>int</type> <parameter>prec_m</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:996
-#, no-c-format
+#: reference_editor.xml:1010
+#, fuzzy, no-c-format
 msgid ""
 "<code>ST_QuantizeCoordinates</code> determines the number of bits (<code>N</"
 "code>) required to represent a coordinate value with a specified number of "
@@ -2053,7 +2079,7 @@ msgid ""
 "static/storage-toast.html#STORAGE-TOAST-ONDISK\"> compressible storage type</"
 "ulink>. The function allows specification of a different number of digits "
 "after the decimal point in each dimension; unspecified dimensions are "
-"assumed to have the precsion of the <code>x</code> dimension. Negative "
+"assumed to have the precision of the <code>x</code> dimension. Negative "
 "digits are interpreted to refer digits to the left of the decimal point, (i."
 "e., <code>prec_x=-2</code> will preserve coordinate values to the nearest "
 "100."
@@ -2075,7 +2101,7 @@ msgstr ""
 "auf die nächste Hundert)."
 
 #. Tag: para
-#: reference_editor.xml:1014
+#: reference_editor.xml:1028
 #, no-c-format
 msgid ""
 "The coordinates produced by <code>ST_QuantizeCoordinates</code> are "
@@ -2094,19 +2120,19 @@ msgstr ""
 "Koordinaten innerhalb der Geometrie zusammenfallen lassen."
 
 #. Tag: para
-#: reference_editor.xml:1023
+#: reference_editor.xml:1037
 #, no-c-format
 msgid "Availability: 2.5.0"
 msgstr "Verfügbarkeit: 2.5.0"
 
 #. Tag: title
-#: reference_editor.xml:1026
+#: reference_editor.xml:1040
 #, no-c-format
 msgid "Technical Background"
 msgstr "Technischer Hintergrund"
 
 #. Tag: para
-#: reference_editor.xml:1027
+#: reference_editor.xml:1041
 #, no-c-format
 msgid ""
 "PostGIS stores all coordinate values as double-precision floating point "
@@ -2126,7 +2152,7 @@ msgstr ""
 "signifikante Breitengrade erforderlich sind)."
 
 #. Tag: para
-#: reference_editor.xml:1036
+#: reference_editor.xml:1050
 #, no-c-format
 msgid ""
 "When 15 significant digits are available, there are many possible "
@@ -2161,7 +2187,7 @@ msgstr ""
 "das von PostgreSQL effizienter komprimiert wird."
 
 #. Tag: para
-#: reference_editor.xml:1056
+#: reference_editor.xml:1070
 #, no-c-format
 msgid ""
 "Only the on-disk size of the geometry is potentially affected by "
@@ -2175,7 +2201,7 @@ msgstr ""
 "vom von einer Geometrie belegten Speicherplatz den gleichen Wert zurück."
 
 #. Tag: programlisting
-#: reference_editor.xml:1068
+#: reference_editor.xml:1082
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_QuantizeCoordinates('POINT (100.123456 0)'::geometry, "
@@ -2191,7 +2217,7 @@ msgstr ""
 "POINT(100.123455047607 0)"
 
 #. Tag: programlisting
-#: reference_editor.xml:1070
+#: reference_editor.xml:1084
 #, no-c-format
 msgid ""
 "WITH test AS (SELECT 'POINT (123.456789123456 123.456789123456)'::geometry "
@@ -2315,19 +2341,19 @@ msgstr ""
 "-15     | 010100000000000000000058400000000000005840 | POINT(96 96)"
 
 #. Tag: refname
-#: reference_editor.xml:1085
+#: reference_editor.xml:1099
 #, no-c-format
 msgid "ST_RemovePoint"
 msgstr "ST_RemovePoint"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1086
-#, no-c-format
-msgid "Remove point from a linestring."
+#: reference_editor.xml:1100
+#, fuzzy, no-c-format
+msgid "Remove a point from a linestring."
 msgstr "Entfernt einen Punkt aus einem Linienzug."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1090
+#: reference_editor.xml:1104
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_RemovePoint</function></funcdef> "
@@ -2339,26 +2365,31 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>offset</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1101
-#, no-c-format
+#: reference_editor.xml:1115
+#, fuzzy, no-c-format
 msgid ""
-"Remove a point from a linestring, given its 0-based index. Useful for "
-"turning a closed ring into an open line string"
+"Removes a point from a LineString, given its index (0-based). Useful for "
+"turning a closed line (ring) into an open linestring."
 msgstr ""
 "Entfernt einen Punkt aus einem LineString; der Index beginnt mit 0. "
 "Nützlich, um einen geschlossenen Ring in einen offenen Linienzug umzuwandeln"
 
-#. Tag: programlisting
-#: reference_editor.xml:1108
+#. Tag: para
+#: reference_editor.xml:1124
 #, no-c-format
 msgid ""
-"--guarantee no LINESTRINGS are closed\n"
-"--by removing the end point.  The below assumes the_geom is of type "
-"LINESTRING\n"
+"Guarantees no lines are closed by removing the end point of closed lines "
+"(rings). Assumes geom is of type LINESTRING"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_editor.xml:1126
+#, fuzzy, no-c-format
+msgid ""
 "UPDATE sometable\n"
-"        SET the_geom = ST_RemovePoint(the_geom, ST_NPoints(the_geom) - 1)\n"
+"        SET geom = ST_RemovePoint(geom, ST_NPoints(geom) - 1)\n"
 "        FROM sometable\n"
-"        WHERE ST_IsClosed(the_geom) = true;"
+"        WHERE ST_IsClosed(geom);"
 msgstr ""
 "--stellt sicher, dass keine LINESTRINGS geschlossen sind,\n"
 "--indem der Endpunkt entfernt wird. Unten wird angenommen, dass the_geom vom "
@@ -2369,25 +2400,25 @@ msgstr ""
 "        WHERE ST_IsClosed(the_geom) = true;"
 
 #. Tag: para
-#: reference_editor.xml:1112
+#: reference_editor.xml:1130
 #, no-c-format
 msgid ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
 msgstr ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1118
+#: reference_editor.xml:1136
 #, fuzzy, no-c-format
 msgid "ST_RemoveRepeatedPoints"
 msgstr "ST_RemovePoint"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1119
+#: reference_editor.xml:1137
 #, fuzzy, no-c-format
 msgid "Returns a version of the given geometry with duplicated points removed."
 msgstr "Gibt die Geometrie in umgekehrter Knotenreihenfolge zurück."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1125
+#: reference_editor.xml:1143
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef> "
@@ -2400,7 +2431,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1135
+#: reference_editor.xml:1153
 #, no-c-format
 msgid ""
 "Returns a version of the given geometry with duplicated points removed. Will "
@@ -2411,7 +2442,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1141
+#: reference_editor.xml:1159
 #, no-c-format
 msgid ""
 "If the tolerance parameter is provided, vertices within the tolerance of one "
@@ -2419,19 +2450,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:1157
+#: reference_editor.xml:1175
 #, no-c-format
 msgid "ST_Reverse"
 msgstr "ST_Reverse"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1158
+#: reference_editor.xml:1176
 #, no-c-format
 msgid "Return the geometry with vertex order reversed."
 msgstr "Gibt die Geometrie in umgekehrter Knotenreihenfolge zurück."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1163
+#: reference_editor.xml:1181
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Reverse</function></funcdef> "
@@ -2441,7 +2472,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1173
+#: reference_editor.xml:1191
 #, no-c-format
 msgid "Can be used on any geometry and reverses the order of the vertexes."
 msgstr ""
@@ -2449,20 +2480,19 @@ msgstr ""
 "Reihenfolge der Knoten um"
 
 #. Tag: para
-#: reference_editor.xml:1175
+#: reference_editor.xml:1193
 #, no-c-format
 msgid "Enhanced: 2.4.0 support for curves was introduced."
 msgstr "Erweiterung: mit 2.4.0 wurde die Unterstützung für Kurven eingeführt."
 
 #. Tag: programlisting
-#: reference_editor.xml:1182
-#, no-c-format
+#: reference_editor.xml:1200
+#, fuzzy, no-c-format
 msgid ""
-"SELECT ST_AsText(the_geom) as line, ST_AsText(ST_Reverse(the_geom)) As "
-"reverseline\n"
+"SELECT ST_AsText(geom) as line, ST_AsText(ST_Reverse(geom)) As reverseline\n"
 "FROM\n"
-"(SELECT ST_MakeLine(ST_MakePoint(1,2),\n"
-"                ST_MakePoint(1,10)) As the_geom) as foo;\n"
+"(SELECT ST_MakeLine(ST_Point(1,2),\n"
+"                ST_Point(1,10)) As geom) as foo;\n"
 "--result\n"
 "                line         |     reverseline\n"
 "---------------------+----------------------\n"
@@ -2479,13 +2509,13 @@ msgstr ""
 "LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)"
 
 #. Tag: refname
-#: reference_editor.xml:1188
+#: reference_editor.xml:1206
 #, no-c-format
 msgid "ST_Segmentize"
 msgstr "ST_Segmentize"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1190
+#: reference_editor.xml:1208
 #, no-c-format
 msgid ""
 "Return a modified geometry/geography having no segment longer than the given "
@@ -2495,7 +2525,7 @@ msgstr ""
 "als der gegebene Abstand ist."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1195
+#: reference_editor.xml:1213
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Segmentize</function></"
@@ -2515,7 +2545,7 @@ msgstr ""
 "<parameter>max_segment_length</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1212
+#: reference_editor.xml:1230
 #, no-c-format
 msgid ""
 "Returns a modified geometry having no segment longer than the given "
@@ -2530,13 +2560,13 @@ msgstr ""
 "geographischen Datentyp ist die Einheit Meter."
 
 #. Tag: para
-#: reference_editor.xml:1215
+#: reference_editor.xml:1233
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr "Verfügbarkeit: 1.2.2"
 
 #. Tag: para
-#: reference_editor.xml:1216
+#: reference_editor.xml:1234
 #, no-c-format
 msgid "Enhanced: 3.0.0 Segmentize geometry now uses equal length segments"
 msgstr ""
@@ -2544,7 +2574,7 @@ msgstr ""
 "Segmente gleicher Länge"
 
 #. Tag: para
-#: reference_editor.xml:1217
+#: reference_editor.xml:1235
 #, no-c-format
 msgid "Enhanced: 2.3.0 Segmentize geography now uses equal length segments"
 msgstr ""
@@ -2552,7 +2582,7 @@ msgstr ""
 "nun Segmente gleicher Länge"
 
 #. Tag: para
-#: reference_editor.xml:1218
+#: reference_editor.xml:1236
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for geography was introduced."
 msgstr ""
@@ -2560,7 +2590,7 @@ msgstr ""
 "eingeführt."
 
 #. Tag: para
-#: reference_editor.xml:1219
+#: reference_editor.xml:1237
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 As a result of the introduction of geography support: The "
@@ -2579,7 +2609,7 @@ msgstr ""
 "code> für Ihre Geometrie-/Geographiespalte."
 
 #. Tag: para
-#: reference_editor.xml:1221
+#: reference_editor.xml:1239
 #, no-c-format
 msgid ""
 "This will only increase segments. It will not lengthen segments shorter than "
@@ -2589,7 +2619,7 @@ msgstr ""
 "als max_segment_length sind, wird nicht verändert."
 
 #. Tag: programlisting
-#: reference_editor.xml:1228
+#: reference_editor.xml:1246
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Segmentize(\n"
@@ -2635,19 +2665,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_editor.xml:1238
+#: reference_editor.xml:1256
 #, no-c-format
 msgid "ST_SetPoint"
 msgstr "ST_SetPoint"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1239
+#: reference_editor.xml:1257
 #, no-c-format
 msgid "Replace point of a linestring with a given point."
 msgstr "Einen Punkt eines Linienzuges durch einen gegebenen Punkt ersetzen."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1243
+#: reference_editor.xml:1261
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetPoint</function></funcdef> "
@@ -2663,7 +2693,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1255
+#: reference_editor.xml:1273
 #, no-c-format
 msgid ""
 "Replace point N of linestring with given point. Index is 0-based.Negative "
@@ -2678,14 +2708,14 @@ msgstr ""
 "erhalten will"
 
 #. Tag: para
-#: reference_editor.xml:1259
+#: reference_editor.xml:1277
 #, no-c-format
 msgid "Updated 2.3.0 : negative indexing"
 msgstr "Änderung: 2.3.0 : negatives Indizieren"
 
 #. Tag: programlisting
-#: reference_editor.xml:1266
-#, no-c-format
+#: reference_editor.xml:1284
+#, fuzzy, no-c-format
 msgid ""
 "--Change first point in line string from -1 3 to -1 1\n"
 "SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)'));\n"
@@ -2695,10 +2725,10 @@ msgid ""
 "\n"
 "---Change last point in a line string (lets play with 3d linestring this "
 "time)\n"
-"SELECT ST_AsEWKT(ST_SetPoint(foo.the_geom, ST_NumPoints(foo.the_geom) - 1, "
+"SELECT ST_AsEWKT(ST_SetPoint(foo.geom, ST_NumPoints(foo.geom) - 1, "
 "ST_GeomFromEWKT('POINT(-1 1 3)')))\n"
-"FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As "
-"the_geom) As foo;\n"
+"FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As geom) As "
+"foo;\n"
 "           st_asewkt\n"
 "-----------------------\n"
 "LINESTRING(-1 2 3,-1 3 4,-1 1 3)\n"
@@ -2733,7 +2763,7 @@ msgstr ""
 "LINESTRING(0 0,1 1,0 0,3 3,4 4)"
 
 #. Tag: para
-#: reference_editor.xml:1270
+#: reference_editor.xml:1288
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref "
@@ -2743,20 +2773,20 @@ msgstr ""
 "linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1276
+#: reference_editor.xml:1294
 #, no-c-format
 msgid "ST_ShiftLongitude"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_editor.xml:1278
+#: reference_editor.xml:1296
 #, no-c-format
 msgid ""
 "Shifts a geometry with geographic coordinates between -180..180 and 0..360."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_editor.xml:1283
+#: reference_editor.xml:1301
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef> "
@@ -2766,7 +2796,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1293
+#: reference_editor.xml:1311
 #, no-c-format
 msgid ""
 "Reads every point/vertex in a geometry, and if the longitude coordinate is "
@@ -2775,7 +2805,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1296
+#: reference_editor.xml:1314
 #, no-c-format
 msgid ""
 "This is only useful for data with coordinates in longitude/latitude; e.g. "
@@ -2783,7 +2813,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1300
+#: reference_editor.xml:1318
 #, no-c-format
 msgid ""
 "Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with "
@@ -2791,7 +2821,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1304
+#: reference_editor.xml:1322
 #, fuzzy, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr ""
@@ -2799,13 +2829,13 @@ msgstr ""
 "eingeführt."
 
 #. Tag: para
-#: reference_editor.xml:1305
+#: reference_editor.xml:1323
 #, no-c-format
 msgid "NOTE: this function was renamed from \"ST_Shift_Longitude\" in 2.2.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:1314
+#: reference_editor.xml:1332
 #, no-c-format
 msgid ""
 "--3d points\n"
@@ -2827,19 +2857,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:1328
+#: reference_editor.xml:1346
 #, no-c-format
 msgid "ST_WrapX"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_editor.xml:1330
+#: reference_editor.xml:1348
 #, no-c-format
 msgid "Wrap a geometry around an X value."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_editor.xml:1335
+#: reference_editor.xml:1353
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_WrapX</function></funcdef> "
@@ -2853,17 +2883,17 @@ msgstr ""
 "<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1347
+#: reference_editor.xml:1365
 #, no-c-format
 msgid ""
 "This function splits the input geometries and then moves every resulting "
 "component falling on the right (for negative 'move') or on the left (for "
 "positive 'move') of given 'wrap' line in the direction specified by the "
-"'move' parameter, finally re-unioning the pieces togheter."
+"'move' parameter, finally re-unioning the pieces together."
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1354
+#: reference_editor.xml:1372
 #, no-c-format
 msgid ""
 "This is useful to \"recenter\" long-lat input to have features of interest "
@@ -2871,38 +2901,38 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1359
+#: reference_editor.xml:1377
 #, fuzzy, no-c-format
 msgid "Availability: 2.3.0 requires GEOS"
 msgstr "Verfügbarkeit: 2.0.0 benötigt GEOS &gt;= 3.3.0."
 
 #. Tag: programlisting
-#: reference_editor.xml:1371
+#: reference_editor.xml:1389
 #, no-c-format
 msgid ""
 "-- Move all components of the given geometries whose bounding box\n"
 "-- falls completely on the left of x=0 to +360\n"
-"select ST_WrapX(the_geom, 0, 360);\n"
+"select ST_WrapX(geom, 0, 360);\n"
 "\n"
 "-- Move all components of the given geometries whose bounding box\n"
 "-- falls completely on the left of x=-30 to +360\n"
-"select ST_WrapX(the_geom, -30, 360);"
+"select ST_WrapX(geom, -30, 360);"
 msgstr ""
 
 #. Tag: refname
-#: reference_editor.xml:1383
+#: reference_editor.xml:1401
 #, no-c-format
 msgid "ST_SnapToGrid"
 msgstr "ST_SnapToGrid"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1385
+#: reference_editor.xml:1403
 #, no-c-format
 msgid "Snap all points of the input geometry to a regular grid."
 msgstr "Fängt alle Punkte der Eingabegeometrie auf einem regelmäßigen Gitter."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1391
+#: reference_editor.xml:1409
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></"
@@ -2952,7 +2982,7 @@ msgstr ""
 "<parameter>sizeM</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1429
+#: reference_editor.xml:1447
 #, no-c-format
 msgid ""
 "Variant 1,2,3: Snap all points of the input geometry to the grid defined by "
@@ -2971,7 +3001,7 @@ msgstr ""
 "verringern."
 
 #. Tag: para
-#: reference_editor.xml:1437
+#: reference_editor.xml:1455
 #, no-c-format
 msgid ""
 "Variant 4: Introduced 1.1.0 - Snap all points of the input geometry to the "
@@ -2985,7 +3015,7 @@ msgstr ""
 "an, die nicht auf den Gitterpunkten gefangen werden soll."
 
 #. Tag: para
-#: reference_editor.xml:1443
+#: reference_editor.xml:1461
 #, no-c-format
 msgid ""
 "The returned geometry might lose its simplicity (see <xref linkend="
@@ -2995,7 +3025,7 @@ msgstr ""
 "linkend=\"ST_IsSimple\"/>)."
 
 #. Tag: para
-#: reference_editor.xml:1448
+#: reference_editor.xml:1466
 #, no-c-format
 msgid ""
 "Before release 1.1.0 this function always returned a 2d geometry. Starting "
@@ -3010,24 +3040,24 @@ msgstr ""
 "sämtliche Grid-Dimensionen zu bestimmen."
 
 #. Tag: para
-#: reference_editor.xml:1455
+#: reference_editor.xml:1473
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
 msgstr "Verfügbarkeit: 1.0.0RC1"
 
 #. Tag: para
-#: reference_editor.xml:1456
+#: reference_editor.xml:1474
 #, no-c-format
 msgid "Availability: 1.1.0 - Z and M support"
 msgstr "Verfügbarkeit: 1.1.0, Unterstützung für Z und M"
 
 #. Tag: programlisting
-#: reference_editor.xml:1465
-#, no-c-format
+#: reference_editor.xml:1483
+#, fuzzy, no-c-format
 msgid ""
 "--Snap your geometries to a precision grid of 10^-3\n"
 "UPDATE mytable\n"
-"   SET the_geom = ST_SnapToGrid(the_geom, 0.001);\n"
+"   SET geom = ST_SnapToGrid(geom, 0.001);\n"
 "\n"
 "SELECT ST_AsText(ST_SnapToGrid(\n"
 "                        ST_GeomFromText('LINESTRING(1.1115678 2.123, "
@@ -3096,7 +3126,7 @@ msgstr ""
 " LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)"
 
 #. Tag: para
-#: reference_editor.xml:1472
+#: reference_editor.xml:1490
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
@@ -3108,13 +3138,13 @@ msgstr ""
 "linkend=\"ST_Simplify\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1485
+#: reference_editor.xml:1503
 #, no-c-format
 msgid "ST_Snap"
 msgstr "ST_Snap"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1487
+#: reference_editor.xml:1505
 #, no-c-format
 msgid ""
 "Snap segments and vertices of input geometry to vertices of a reference "
@@ -3124,7 +3154,7 @@ msgstr ""
 "Referenzgeometrie."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1495
+#: reference_editor.xml:1513
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Snap</function></funcdef> "
@@ -3138,7 +3168,7 @@ msgstr ""
 "<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1507
+#: reference_editor.xml:1525
 #, fuzzy, no-c-format
 msgid ""
 "Snaps the vertices and segments of a geometry to another Geometry's "
@@ -3152,7 +3182,7 @@ msgstr ""
 "Wenn kein Fangen auftritt, wird die Eingabegeometrie unverändert ausgegeben.."
 
 #. Tag: para
-#: reference_editor.xml:1514
+#: reference_editor.xml:1532
 #, no-c-format
 msgid ""
 "Snapping one geometry to another can improve robustness for overlay "
@@ -3165,7 +3195,7 @@ msgstr ""
 "Verschneidungsberechnung)."
 
 #. Tag: para
-#: reference_editor.xml:1521
+#: reference_editor.xml:1539
 #, no-c-format
 msgid ""
 "Too much snapping can result in invalid topology being created, so the "
@@ -3179,7 +3209,7 @@ msgstr ""
 "nicht gefangen werden."
 
 #. Tag: para
-#: reference_editor.xml:1530
+#: reference_editor.xml:1548
 #, no-c-format
 msgid ""
 "The returned geometry might lose its simplicity (see <xref linkend="
@@ -3192,11 +3222,17 @@ msgstr ""
 #. Tag: para
 #: reference_editor.xml:1554
 #, no-c-format
+msgid "Performed by the GEOS module."
+msgstr ""
+
+#. Tag: para
+#: reference_editor.xml:1572
+#, no-c-format
 msgid "A multipolygon shown with a linestring (before any snapping)"
 msgstr "Ein Mehrfachpolygon mit einem Linienzug (vor dem Fangen)"
 
 #. Tag: para
-#: reference_editor.xml:1565
+#: reference_editor.xml:1583
 #, no-c-format
 msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.01 of distance. The new "
@@ -3207,7 +3243,7 @@ msgstr ""
 "betreffenden Linienzug angezeigt."
 
 #. Tag: programlisting
-#: reference_editor.xml:1569
+#: reference_editor.xml:1587
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Snap(poly,line, ST_Distance(poly,line)*1.01)) AS "
@@ -3242,7 +3278,7 @@ msgstr ""
 " (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
 
 #. Tag: para
-#: reference_editor.xml:1576
+#: reference_editor.xml:1594
 #, no-c-format
 msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.25 of distance. The new "
@@ -3253,7 +3289,7 @@ msgstr ""
 "betreffenden Linienzug angezeigt."
 
 #. Tag: programlisting
-#: reference_editor.xml:1580
+#: reference_editor.xml:1598
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -3290,7 +3326,7 @@ msgstr ""
 "(51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
 
 #. Tag: para
-#: reference_editor.xml:1589
+#: reference_editor.xml:1607
 #, no-c-format
 msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.01 of "
@@ -3301,7 +3337,7 @@ msgstr ""
 "betreffenden Mehrfachpolygon angezeigt."
 
 #. Tag: programlisting
-#: reference_editor.xml:1593
+#: reference_editor.xml:1611
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -3335,7 +3371,7 @@ msgstr ""
 " LINESTRING(5 107,26 125,54 84,101 100)"
 
 #. Tag: para
-#: reference_editor.xml:1601
+#: reference_editor.xml:1619
 #, no-c-format
 msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.25 of "
@@ -3346,7 +3382,7 @@ msgstr ""
 "betreffenden Mehrfachpolygon angezeigt."
 
 #. Tag: programlisting
-#: reference_editor.xml:1605
+#: reference_editor.xml:1623
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -3378,20 +3414,20 @@ msgstr ""
 "LINESTRING(26 125,54 84,101 100)"
 
 #. Tag: refname
-#: reference_editor.xml:1626
+#: reference_editor.xml:1644
 #, fuzzy, no-c-format
 msgid "ST_SwapOrdinates"
 msgstr "ST_QuantizeCoordinates"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1627
+#: reference_editor.xml:1645
 #, fuzzy, no-c-format
 msgid ""
 "Returns a version of the given geometry with given ordinate values swapped."
 msgstr "Gibt die Geometrie in umgekehrter Knotenreihenfolge zurück."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1634
+#: reference_editor.xml:1652
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef> "
@@ -3403,13 +3439,13 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1644
+#: reference_editor.xml:1662
 #, fuzzy, no-c-format
 msgid "Returns a version of the given geometry with given ordinates swapped."
 msgstr "Gibt die Geometrie in umgekehrter Knotenreihenfolge zurück."
 
 #. Tag: para
-#: reference_editor.xml:1647
+#: reference_editor.xml:1665
 #, no-c-format
 msgid ""
 "The <varname>ords</varname> parameter is a 2-characters string naming the "
@@ -3417,7 +3453,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_editor.xml:1661
+#: reference_editor.xml:1679
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -3436,20 +3472,255 @@ msgid ""
 "                 ]]>"
 msgstr ""
 
+#, no-c-format
 #~ msgid ""
-#~ "Given a (multi)geometry, returns a (multi)geometry consisting only of "
-#~ "elements of the specified type. Sub-geometries that are not the specified "
-#~ "type are ignored. If there are no sub-geometries of the right type, an "
-#~ "EMPTY geometry will be returned. Only points, lines and polygons are "
-#~ "supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON."
+#~ "--guarantee all linestrings in a table are closed\n"
+#~ "                --by adding the start point of each linestring to the end "
+#~ "of the line string\n"
+#~ "                --only for those that are not closed\n"
+#~ "                UPDATE sometable\n"
+#~ "                SET the_geom = ST_AddPoint(the_geom, "
+#~ "ST_StartPoint(the_geom))\n"
+#~ "                FROM sometable\n"
+#~ "                WHERE ST_IsClosed(the_geom) = false;\n"
+#~ "\n"
+#~ "                --Adding point to a 3-d line\n"
+#~ "                SELECT "
+#~ "ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), "
+#~ "ST_MakePoint(1, 2, 3)));\n"
+#~ "\n"
+#~ "                --result\n"
+#~ "                st_asewkt\n"
+#~ "                ----------\n"
+#~ "                LINESTRING(0 0 1,1 1 1,1 2 3)"
 #~ msgstr ""
-#~ "Von einer (Sammel)Geometrie wird eine (Mehrfach)Geometrie zurückgegeben, "
-#~ "welche nur die Elemente des vorgegebenen Datentyps enthält. "
-#~ "Teilgeometrien, die nicht dem vorgegebenen Datentyp entsprechen, werden "
-#~ "ausgelassen. Wenn keine der Teilgeometrien den richtigen Datentyp "
-#~ "aufweist, wird eine LEERE Geometrie zurückgegeben. Es werden nur Punkte, "
-#~ "Linien und Polygone unterstützt. Die Kennungen sind 1 == POINT, 2 == "
-#~ "LINESTRING, 3 == POLYGON."
+#~ "--sicherstellen, das alle Linienzüge in einer Tabelle geschlossen sind,\n"
+#~ "--indem zu jedem nicht geschlossenen Linienzug, der Anfangspunkt als "
+#~ "Endpunkt hinzugefügt wird\n"
+#~ "                UPDATE sometable\n"
+#~ "                SET the_geom = ST_AddPoint(the_geom, "
+#~ "ST_StartPoint(the_geom))\n"
+#~ "                FROM sometable\n"
+#~ "                WHERE ST_IsClosed(the_geom) = false;\n"
+#~ "\n"
+#~ "                --Einen Punkt zu einer 3-D Linie hinzufügen\n"
+#~ "                SELECT "
+#~ "ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), "
+#~ "ST_MakePoint(1, 2, 3)));\n"
+#~ "\n"
+#~ "                --result\n"
+#~ "                st_asewkt\n"
+#~ "                ----------\n"
+#~ "                LINESTRING(0 0 1,1 1 1,1 2 3)"
+
+#, no-c-format
+#~ msgid ""
+#~ "When specifying 3 == POLYGON a multipolygon is returned even when the "
+#~ "edges are shared. This results in an invalid multipolygon for many cases "
+#~ "such as applying this function on an <xref linkend=\"ST_Split\"/> result."
+#~ msgstr ""
+#~ "Wenn 3 == POLYGON angegeben ist, wird ein Mehrfachpolygon zurückgegeben, "
+#~ "sogar dann wenn die Kanten gemeinsam genutzt werden. Dies endet in vielen "
+#~ "Fällen einem invaliden Mehrfachpolygon, zum Beispiel wenn diese Funktion "
+#~ "auf ein <xref linkend=\"ST_Split\"/> Ergebnis angewendet wird."
+
+#, no-c-format
+#~ msgid ""
+#~ "-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
+#~ "SELECT "
+#~ "ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
+#~ "0)))'),1));\n"
+#~ "st_astext\n"
+#~ "---------------\n"
+#~ "MULTIPOINT(0 0)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "SELECT "
+#~ "ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
+#~ "0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
+#~ "st_astext\n"
+#~ "---------------\n"
+#~ "MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "-- Konstante: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
+#~ "SELECT "
+#~ "ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
+#~ "0)))'),1));\n"
+#~ "st_astext\n"
+#~ "---------------\n"
+#~ "MULTIPOINT(0 0)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "SELECT "
+#~ "ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
+#~ "0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
+#~ "st_astext\n"
+#~ "---------------\n"
+#~ "MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_CollectionHomogenize\"/>"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_CollectionHomogenize\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Given a geometry collection, returns the \"simplest\" representation of "
+#~ "the contents. Singletons will be returned as singletons. Collections that "
+#~ "are homogeneous will be returned as the appropriate multi-type."
+#~ msgstr ""
+#~ "Von einer Sammelgeometrie wird die \"einfachste\" Darstellung der Inhalte "
+#~ "zurückgegeben. Einelementige Geometrien werden ebenso zurückgegeben. "
+#~ "Einheitliche Sammelgeometrien werden, entsprechend dem Datentyp, als "
+#~ "Mehrfachgeometrien ausgegeben"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_CollectionExtract\"/>"
+#~ msgstr ", <xref linkend=\"ST_CollectionExtract\"/>"
+
+#, no-c-format
+#~ msgid "ST_LineMerge"
+#~ msgstr "ST_LineMerge"
+
+#, no-c-format
+#~ msgid ""
+#~ "Return a (set of) LineString(s) formed by sewing together a "
+#~ "MULTILINESTRING."
+#~ msgstr ""
+#~ "Gibt einen (Satz von) LineString(s) zurück, der aus einem MultiLinestring "
+#~ "\"zusammengebastelt\" wird."
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
+#~ "paramdef>"
+#~ msgstr ""
+#~ "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
+#~ "paramdef>"
+
+#, no-c-format
+#~ msgid ""
+#~ "Returns a (set of) LineString(s) formed by sewing together the "
+#~ "constituent line work of a MULTILINESTRING."
+#~ msgstr ""
+#~ "Gibt einen (Satz von) LineString(s) zurück, der aus den Bestandteilen "
+#~ "eines MultiLinestring zusammengesetzt wird."
+
+#, no-c-format
+#~ msgid ""
+#~ "Only use with MULTILINESTRING/LINESTRINGs. If you feed a polygon or "
+#~ "geometry collection into this function, it will return an empty "
+#~ "GEOMETRYCOLLECTION"
+#~ msgstr ""
+#~ "Ist nur mit MULTILINESTRING/LINESTRING verwendbar. Wenn Sie ein Polygon "
+#~ "oder eine Sammelgeometrie in diese Funktion einspeisen, wird eine leere "
+#~ "GEOMETRYCOLLECTION zurückgegeben"
+
+#, no-c-format
+#~ msgid "Will strip the M dimension."
+#~ msgstr "Schneidet die Dimension M ab."
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText(ST_LineMerge(\n"
+#~ "ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 "
+#~ "-33,-46 -32))')\n"
+#~ "                )\n"
+#~ ");\n"
+#~ "st_astext\n"
+#~ "--------------------------------------------------------------------------------------------------\n"
+#~ "LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "--If can't be merged - original MULTILINESTRING is returned\n"
+#~ "SELECT ST_AsText(ST_LineMerge(\n"
+#~ "ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),"
+#~ "(-45.2 -33.2,-46 -32))')\n"
+#~ ")\n"
+#~ ");\n"
+#~ "st_astext\n"
+#~ "----------------\n"
+#~ "MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 "
+#~ "-33))\n"
+#~ "\n"
+#~ "-- example with Z dimension\n"
+#~ "SELECT ST_AsText(ST_LineMerge(\n"
+#~ "ST_GeomFromText('MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 "
+#~ "-33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))')\n"
+#~ "                )\n"
+#~ ");\n"
+#~ "st_astext\n"
+#~ "--------------------------------------------------------------------------------------------------\n"
+#~ "LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 "
+#~ "-32 11)\n"
+#~ "(1 row)"
+#~ msgstr ""
+#~ "SELECT ST_AsText(ST_LineMerge(\n"
+#~ "ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 "
+#~ "-33,-46 -32))')\n"
+#~ "                )\n"
+#~ ");\n"
+#~ "st_astext\n"
+#~ "--------------------------------------------------------------------------------------------------\n"
+#~ "LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)\n"
+#~ "(1 row)\n"
+#~ "\n"
+#~ "--Wenn eine Vereinigung nicht möglich ist, wird der urspüngliche "
+#~ "MULTILINESTRING zurückgegeben\n"
+#~ "SELECT ST_AsText(ST_LineMerge(\n"
+#~ "ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),"
+#~ "(-45.2 -33.2,-46 -32))')\n"
+#~ ")\n"
+#~ ");\n"
+#~ "st_astext\n"
+#~ "----------------\n"
+#~ "MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 "
+#~ "-33))\n"
+#~ "\n"
+#~ "-- Beispiel mit Dimension Z\n"
+#~ "SELECT ST_AsText(ST_LineMerge(\n"
+#~ "ST_GeomFromText('MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 "
+#~ "-33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))')\n"
+#~ "                )\n"
+#~ ");\n"
+#~ "st_astext\n"
+#~ "--------------------------------------------------------------------------------------------------\n"
+#~ "LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 "
+#~ "-32 11)\n"
+#~ "(1 row)"
+
+#, no-c-format
+#~ msgid ", <xref linkend=\"ST_LineSubstring\"/>"
+#~ msgstr ", <xref linkend=\"ST_LineSubstring\"/>"
+
+#, no-c-format
+#~ msgid ""
+#~ "SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 "
+#~ "2967450,\n"
+#~ "                        743265 2967450,743265.625 2967416,743238 "
+#~ "2967416))')));\n"
+#~ "                        st_astext\n"
+#~ "                        --------------------------------------------------------------------------------------------------\n"
+#~ "                        MULTIPOLYGON(((743238 2967416,743238 "
+#~ "2967450,743265 2967450,743265.625 2967416,\n"
+#~ "                        743238 2967416)))\n"
+#~ "                        (1 row)"
+#~ msgstr ""
+#~ "SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 "
+#~ "2967450,\n"
+#~ "                        743265 2967450,743265.625 2967416,743238 "
+#~ "2967416))')));\n"
+#~ "                        st_astext\n"
+#~ "                        --------------------------------------------------------------------------------------------------\n"
+#~ "                        MULTIPOLYGON(((743238 2967416,743238 "
+#~ "2967450,743265 2967450,743265.625 2967416,\n"
+#~ "                        743238 2967416)))\n"
+#~ "                        (1 row)"
 
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_Force3D</function></funcdef> "
@@ -3659,13 +3930,6 @@ msgstr ""
 #~ "-------------------------------\n"
 #~ " LINESTRING(-1 -2 -3,-1 -4 -3)\n"
 #~ "(1 row)"
-
-#~ msgid ""
-#~ ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-#~ "linkend=\"ST_TransScale\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-#~ "linkend=\"ST_TransScale\"/>"
 
 #~ msgid "requires GEOS &gt;= 2.1.0"
 #~ msgstr "benötigt GEOS &gt;= 2.1.0"
@@ -4555,19 +4819,6 @@ msgstr ""
 
 #~ msgid "Move a 3d point"
 #~ msgstr "Einen 3D-Punkt verschieben"
-
-#~ msgid ""
-#~ "SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, "
-#~ "12,3));\n"
-#~ "        st_asewkt\n"
-#~ "        ---------\n"
-#~ "        POINT(5 12 3)"
-#~ msgstr ""
-#~ "SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, "
-#~ "12,3));\n"
-#~ "        st_asewkt\n"
-#~ "        ---------\n"
-#~ "        POINT(5 12 3)"
 
 #~ msgid "Move a curve and a point"
 #~ msgstr "Eine Kurve und einen Punkt verschieben"

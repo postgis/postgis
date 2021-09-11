@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-12-19 17:06+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2019-03-11 13:48+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -58,13 +58,13 @@ msgstr ""
 
 #. Tag: para
 #: introduction.xml:13
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The PostGIS project development group plans on supporting and enhancing "
 "PostGIS to better support a range of important GIS functionality in the "
-"areas of OpenGIS and SQL/MM spatial standards, advanced topological "
-"constructs (coverages, surfaces, networks), data source for desktop user "
-"interface tools for viewing and editing GIS data, and web-based access tools."
+"areas of OGC and SQL/MM spatial standards, advanced topological constructs "
+"(coverages, surfaces, networks), data source for desktop user interface "
+"tools for viewing and editing GIS data, and web-based access tools."
 msgstr ""
 "Die PostGIS Project Develpment Group beabsichtigt durch die Unterstützung "
 "und Weiterentwicklung von PostGIS eine hohe Funktionsvielfalt zu erreichen. "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-07-18 20:51+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -53,8 +53,8 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_cluster.xml:35 reference_cluster.xml:137 reference_cluster.xml:182
-#: reference_cluster.xml:264
+#: reference_cluster.xml:35 reference_cluster.xml:137 reference_cluster.xml:185
+#: reference_cluster.xml:286
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -119,14 +119,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:72 reference_cluster.xml:190
+#: reference_cluster.xml:72 reference_cluster.xml:197
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr ""
 
 #. Tag: title
-#: reference_cluster.xml:76 reference_cluster.xml:145 reference_cluster.xml:194
-#: reference_cluster.xml:272
+#: reference_cluster.xml:76 reference_cluster.xml:145 reference_cluster.xml:201
+#: reference_cluster.xml:294
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -210,7 +210,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_cluster.xml:110 reference_cluster.xml:149
-#: reference_cluster.xml:237 reference_cluster.xml:276
+#: reference_cluster.xml:256 reference_cluster.xml:298
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -254,7 +254,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:141 reference_cluster.xml:268
+#: reference_cluster.xml:141 reference_cluster.xml:290
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr ""
@@ -310,33 +310,51 @@ msgid ""
 "<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
 "<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
 "paramdef> <paramdef><type>integer </type> <parameter>number_of_clusters</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>max_radius</"
 "parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:184
+#: reference_cluster.xml:187
 #, no-c-format
 msgid ""
-"Returns 2D distance based <ulink url=\"https://en.wikipedia.org/wiki/K-"
-"means_clustering\">K-means</ulink> cluster number for each input geometry. "
-"The distance used for clustering is the distance between the centroids for "
-"2D geometries, and distance between bounding box centers for 3D geometries."
+"Returns <ulink url=\"https://en.wikipedia.org/wiki/K-means_clustering\">K-"
+"means</ulink> cluster number for each input geometry. The distance used for "
+"clustering is the distance between the centroids for 2D geometries, and "
+"distance between bounding box centers for 3D geometries. For POINT inputs, M "
+"coordinate will be treated as weight of input and has to be larger than 0."
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:189
+#: reference_cluster.xml:192
 #, no-c-format
-msgid "Enhanced: 3.1.0 Support for 3D geometries"
+msgid ""
+"<varname>max_radius</varname>, if set, will cause ST_ClusterKMeans to "
+"generate more clusters than <varname>k</varname> ensuring that no cluster in "
+"output has radius larger than <varname>max_radius</varname>. This is useful "
+"in reachability analysis."
 msgstr ""
 
 #. Tag: para
 #: reference_cluster.xml:195
 #, no-c-format
+msgid "Enhanced: 3.2.0 Support for <varname>max_radius</varname>"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:196
+#, no-c-format
+msgid "Enhanced: 3.1.0 Support for 3D geometries and weights"
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:202
+#, no-c-format
 msgid "Generate dummy set of parcels for examples"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_cluster.xml:196
+#: reference_cluster.xml:203
 #, no-c-format
 msgid ""
 "CREATE TABLE parcels AS\n"
@@ -350,25 +368,30 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:208
+#: reference_cluster.xml:215
 #, no-c-format
 msgid "Original Parcels"
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:218
+#: reference_cluster.xml:225
 #, no-c-format
 msgid "Parcels color-coded by cluster number (cid)"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_cluster.xml:221
+#: reference_cluster.xml:228
 #, no-c-format
 msgid ""
 "SELECT ST_ClusterKMeans(geom, 5) OVER() AS cid, parcel_id, geom\n"
-"FROM parcels;\n"
-"-- result\n"
-" cid | parcel_id |   geom\n"
+"FROM parcels;"
+msgstr ""
+
+#. Tag: screen
+#: reference_cluster.xml:229
+#, no-c-format
+msgid ""
+"cid | parcel_id |   geom\n"
 "-----+-----------+---------------\n"
 "   0 | 001       | 0103000000...\n"
 "   0 | 002       | 0103000000...\n"
@@ -380,16 +403,26 @@ msgid ""
 "(7 rows)"
 msgstr ""
 
+#. Tag: para
+#: reference_cluster.xml:235
+#, no-c-format
+msgid "Partitioning parcel clusters by type:"
+msgstr ""
+
 #. Tag: programlisting
-#: reference_cluster.xml:228
+#: reference_cluster.xml:236
 #, no-c-format
 msgid ""
-"-- Partitioning parcel clusters by type\n"
-"SELECT ST_ClusterKMeans(geom,3) over (PARTITION BY type) AS cid, parcel_id, "
+"SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, "
 "type\n"
-"FROM parcels;\n"
-"-- result\n"
-" cid | parcel_id |    type\n"
+"FROM parcels;"
+msgstr ""
+
+#. Tag: screen
+#: reference_cluster.xml:237
+#, no-c-format
+msgid ""
+"cid | parcel_id |    type\n"
 "-----+-----------+-------------\n"
 "   1 | 005       | commercial\n"
 "   1 | 003       | commercial\n"
@@ -401,54 +434,72 @@ msgid ""
 "(7 rows)"
 msgstr ""
 
-#. Tag: programlisting
-#: reference_cluster.xml:231
+#. Tag: para
+#: reference_cluster.xml:240
 #, no-c-format
 msgid ""
-"-- Clustering points around antimeridian can be done in 3D XYZ CRS, "
-"EPSG:4978:\n"
-"\n"
-"SELECT ST_ClusterKMeans(ST_Transform(ST_Force3D(geom), 4978), 3) over () AS "
-"cid, parcel_id, type\n"
-"FROM parcels;\n"
-"-- result\n"
-"┌─────┬───────────┬─────────────┐\n"
-"│ cid │ parcel_id │    type     │\n"
-"├─────┼───────────┼─────────────┤\n"
-"│   1 │ 001       │ commercial  │\n"
-"│   2 │ 002       │ residential │\n"
-"│   0 │ 003       │ commercial  │\n"
-"│   1 │ 004       │ residential │\n"
-"│   0 │ 005       │ commercial  │\n"
-"│   2 │ 006       │ residential │\n"
-"│   0 │ 007       │ commercial  │\n"
-"└─────┴───────────┴─────────────┘\n"
-"(7 rows)"
+"Clustering preaggregated planetary scale data like population dataset may "
+"require using 3D clusering and weighting. Let's try to idenify 20-ish meta-"
+"regions based on <ulink url=\"https://data.humdata.org/dataset/kontur-"
+"population-dataset\">Kontur Population</ulink> that will not span more than "
+"3000 km from their center:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_cluster.xml:242
+#, no-c-format
+msgid ""
+"create table kontur_population_3000km_clusters as\n"
+"select\n"
+"    geom,\n"
+"    ST_ClusterKMeans(\n"
+"        ST_Force4D(\n"
+"            ST_Transform(ST_Force3D(geom), 4978), -- cluster in 3D XYZ CRS\n"
+"            mvalue := population -- set clustering to be weighed by "
+"population\n"
+"        ),\n"
+"        20,                      -- aim to generate at least 20 clusters\n"
+"        max_radius := 3000000    -- but generate more to make each under "
+"3000 km radius\n"
+"    ) over () as cid\n"
+"from\n"
+"    kontur_population;"
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:238
+#: reference_cluster.xml:248
+#, no-c-format
+msgid ""
+"World population clustered to above specs: 46 resulting clusters. Greenland "
+"is one cluster, there are island clusters that span across antimeridian, "
+"clusters are centered at well-populated regions (New York, Moscow), and "
+"edges follow Earth's curvature."
+msgstr ""
+
+#. Tag: para
+#: reference_cluster.xml:257
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref linkend="
-"\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>"
+"\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref linkend="
+"\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 msgstr ""
 
 #. Tag: refname
-#: reference_cluster.xml:248
+#: reference_cluster.xml:270
 #, no-c-format
 msgid "ST_ClusterWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_cluster.xml:250
+#: reference_cluster.xml:272
 #, no-c-format
 msgid ""
 "Aggregate function that clusters the input geometries by separation distance."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_cluster.xml:255
+#: reference_cluster.xml:277
 #, no-c-format
 msgid ""
 "<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
@@ -457,7 +508,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:266
+#: reference_cluster.xml:288
 #, no-c-format
 msgid ""
 "ST_ClusterWithin is an aggregate function that returns an array of "
@@ -467,7 +518,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_cluster.xml:273
+#: reference_cluster.xml:295
 #, no-c-format
 msgid ""
 "WITH testdata AS\n"
@@ -490,7 +541,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_cluster.xml:277
+#: reference_cluster.xml:299
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="

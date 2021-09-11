@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2020-01-16 16:27+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2013-11-28 21:06+0000\n"
 "Last-Translator: etrimaille <gustrimaille@yahoo.fr>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
@@ -31,14 +31,14 @@ msgstr "Rapporter un problème logiciel"
 
 #. Tag: para
 #: reporting.xml:8
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Reporting bugs effectively is a fundamental way to help PostGIS development. "
 "The most effective bug report is that enabling PostGIS developers to "
 "reproduce it, so it would ideally contain a script triggering it and every "
 "information regarding the environment in which it was detected. Good enough "
 "info can be extracted running <code>SELECT postgis_full_version()</code> "
-"[for postgis] and <code>SELECT version()</code> [for postgresql]."
+"[for PostGIS] and <code>SELECT version()</code> [for postgresql]."
 msgstr ""
 "Rapporter un problème est effectivement fondamental afin d'aider le "
 "développement de PostGIS. Un rapport de bug efficace permet à l'équipe des "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-12-15 21:12+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -593,45 +593,68 @@ msgstr ""
 #. Tag: title
 #: using_postgis_query.xml:439
 #, no-c-format
-msgid "Taking Advantage of Indexes"
+msgid "Using Spatial Indexes"
 msgstr ""
 
 #. Tag: para
 #: using_postgis_query.xml:441
 #, no-c-format
 msgid ""
-"When constructing queries using spatial conditions it is important to ensure "
-"that a spatial index is used, if one exists (see <xref linkend=\"build-"
-"indexes\"/>). To do this, an index-aware spatial operator or function must "
-"be used in the <code>WHERE</code> or <code>ON</code> clause. Spatial "
-"operators include the bounding box-based operators (of which the most "
-"commonly used is <xref linkend=\"geometry_overlaps\"/>) and the distance "
-"operators used in nearest-neighbour queries (the most common being <xref "
-"linkend=\"geometry_distance_knn\"/>.) Index-aware functions include most of "
-"the named spatial predicates (such as <xref linkend=\"ST_Intersects\"/>), "
-"and most of the distance predicates (such as <xref linkend=\"ST_DWithin\"/>.)"
+"When constructing queries using spatial conditions, for best performance it "
+"is important to ensure that a spatial index is used, if one exists (see "
+"<xref linkend=\"build-indexes\"/>). To do this, a spatial operator or index-"
+"aware function must be used in a <code>WHERE</code> or <code>ON</code> "
+"clause of the query."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:454
+#: using_postgis_query.xml:447
 #, no-c-format
 msgid ""
-"Functions such as <xref linkend=\"ST_Distance\"/> do not use indexes to "
-"optimize their operation. For example, the following query would be quite "
-"slow on a large table:"
+"Spatial operators include the bounding box operators (of which the most "
+"commonly used is <xref linkend=\"geometry_overlaps\"/>; see <xref linkend="
+"\"operators-bbox\"/> for the full list) and the distance operators used in "
+"nearest-neighbor queries (the most common being <xref linkend="
+"\"geometry_distance_knn\"/>; see <xref linkend=\"operators-distance\"/> for "
+"the full list.)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:455
+#, no-c-format
+msgid ""
+"Index-aware functions automatically add a bounding box operator to the "
+"spatial condition. Index-aware functions include the named spatial "
+"relationship predicates <xref linkend=\"ST_Contains\"/>, <xref linkend="
+"\"ST_ContainsProperly\"/>, <xref linkend=\"ST_CoveredBy\"/>, <xref linkend="
+"\"ST_Covers\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Overlaps\"/>, <xref linkend="
+"\"ST_Touches\"/>, <xref linkend=\"ST_Within\"/>, <xref linkend=\"ST_Within\"/"
+">, and <xref linkend=\"ST_3DIntersects\"/>, and the distance predicates "
+"<xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
+"linkend=\"ST_3DDFullyWithin\"/>, and <xref linkend=\"ST_3DDWithin\"/> .)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_query.xml:476
+#, no-c-format
+msgid ""
+"Functions such as <xref linkend=\"ST_Distance\"/> do <emphasis>not</"
+"emphasis> use indexes to optimize their operation. For example, the "
+"following query would be quite slow on a large table:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:460
+#: using_postgis_query.xml:481
 #, no-c-format
 msgid ""
-"SELECT the_geom\n"
+"SELECT geom\n"
 "FROM geom_table\n"
-"WHERE ST_Distance(the_geom, 'SRID=312;POINT(100000 200000)') &lt; 100"
+"WHERE ST_Distance( geom, 'SRID=312;POINT(100000 200000)' ) &lt; 100"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:462
+#: using_postgis_query.xml:483
 #, no-c-format
 msgid ""
 "This query selects all the geometries in <code>geom_table</code> which are "
@@ -642,24 +665,24 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:468
+#: using_postgis_query.xml:489
 #, no-c-format
 msgid ""
-"We can reduce the number of rows processed by using the index-aware function "
-"<xref linkend=\"ST_DWithin\"/>:"
+"The number of rows processed can be reduced substantially by using the index-"
+"aware function <xref linkend=\"ST_DWithin\"/>:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:472
+#: using_postgis_query.xml:493
 #, no-c-format
 msgid ""
-"SELECT the_geom\n"
+"SELECT geom\n"
 "FROM geom_table\n"
-"WHERE ST_DWithin(the_geom, 'SRID=312;POINT(100000 200000)', 100)"
+"WHERE ST_DWithin( geom, 'SRID=312;POINT(100000 200000)', 100 )"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:474
+#: using_postgis_query.xml:495
 #, no-c-format
 msgid ""
 "This query selects the same geometries, but it does it in a more efficient "
@@ -675,13 +698,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_query.xml:491
+#: using_postgis_query.xml:512
 #, no-c-format
 msgid "Examples of Spatial SQL"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:493
+#: using_postgis_query.xml:514
 #, no-c-format
 msgid ""
 "The examples in this section will make use of two tables, a table of linear "
@@ -690,7 +713,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:497
+#: using_postgis_query.xml:518
 #, no-c-format
 msgid ""
 "Column      | Type              | Description\n"
@@ -701,14 +724,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:499
+#: using_postgis_query.xml:520
 #, no-c-format
 msgid ""
 "The table definition for the <varname>bc_municipality</varname> table is:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:502
+#: using_postgis_query.xml:523
 #, no-c-format
 msgid ""
 "Column     | Type              | Description\n"
@@ -720,19 +743,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:507
+#: using_postgis_query.xml:528
 #, no-c-format
 msgid "What is the total length of all roads, expressed in kilometers?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:512
+#: using_postgis_query.xml:533
 #, no-c-format
 msgid "You can answer this question with a very simple piece of SQL:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:515
+#: using_postgis_query.xml:536
 #, no-c-format
 msgid ""
 "SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;\n"
@@ -744,13 +767,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:521
+#: using_postgis_query.xml:542
 #, no-c-format
 msgid "How large is the city of Prince George, in hectares?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:525
+#: using_postgis_query.xml:546
 #, no-c-format
 msgid ""
 "This query combines an attribute condition (on the municipality name) with a "
@@ -758,7 +781,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:529
+#: using_postgis_query.xml:550
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -773,13 +796,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:535
+#: using_postgis_query.xml:556
 #, no-c-format
 msgid "What is the largest municipality in the province, by area?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:540
+#: using_postgis_query.xml:561
 #, no-c-format
 msgid ""
 "This query brings a spatial measurement into the query condition. There are "
@@ -787,7 +810,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:544
+#: using_postgis_query.xml:565
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -805,7 +828,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:546
+#: using_postgis_query.xml:567
 #, no-c-format
 msgid ""
 "Note that in order to answer this query we have to calculate the area of "
@@ -817,13 +840,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:558
+#: using_postgis_query.xml:579
 #, no-c-format
 msgid "What is the length of roads fully contained within each municipality?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:563
+#: using_postgis_query.xml:584
 #, no-c-format
 msgid ""
 "This is an example of a \"spatial join\", because we are bringing together "
@@ -833,7 +856,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:569
+#: using_postgis_query.xml:590
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -858,7 +881,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:571
+#: using_postgis_query.xml:592
 #, no-c-format
 msgid ""
 "This query takes a while, because every road in the table is summarized into "
@@ -868,13 +891,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:580
+#: using_postgis_query.xml:601
 #, no-c-format
 msgid "Create a new table with all the roads within the city of Prince George."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:585
+#: using_postgis_query.xml:606
 #, no-c-format
 msgid ""
 "This is an example of an \"overlay\", which takes in two tables and outputs "
@@ -885,7 +908,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:592
+#: using_postgis_query.xml:613
 #, no-c-format
 msgid ""
 "CREATE TABLE pg_roads as\n"
@@ -902,13 +925,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:598
+#: using_postgis_query.xml:619
 #, no-c-format
 msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:603
+#: using_postgis_query.xml:624
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -928,13 +951,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:609
+#: using_postgis_query.xml:630
 #, no-c-format
 msgid "What is the largest municipality polygon that has a hole?"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:614
+#: using_postgis_query.xml:635
 #, no-c-format
 msgid ""
 "SELECT gid, name, ST_Area(the_geom) AS area\n"

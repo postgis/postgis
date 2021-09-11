@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2020-01-16 16:27+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-07-22 02:48+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -53,9 +53,9 @@ msgstr ""
 msgid ""
 "The PostGIS project development group plans on supporting and enhancing "
 "PostGIS to better support a range of important GIS functionality in the "
-"areas of OpenGIS and SQL/MM spatial standards, advanced topological "
-"constructs (coverages, surfaces, networks), data source for desktop user "
-"interface tools for viewing and editing GIS data, and web-based access tools."
+"areas of OGC and SQL/MM spatial standards, advanced topological constructs "
+"(coverages, surfaces, networks), data source for desktop user interface "
+"tools for viewing and editing GIS data, and web-based access tools."
 msgstr ""
 
 #. Tag: title
@@ -1120,95 +1120,101 @@ msgstr ""
 #. Tag: ulink
 #: introduction.xml:338
 #, no-c-format
-msgid "OSGeo"
+msgid "Norwegian Institute of Bioeconomy Research (NIBIO)"
 msgstr ""
 
 #. Tag: ulink
 #: introduction.xml:339
 #, no-c-format
-msgid "Oslandia"
+msgid "OSGeo"
 msgstr ""
 
 #. Tag: ulink
 #: introduction.xml:340
 #, no-c-format
-msgid "Palantir Technologies"
+msgid "Oslandia"
 msgstr ""
 
 #. Tag: ulink
 #: introduction.xml:341
 #, no-c-format
-msgid "Paragon Corporation"
+msgid "Palantir Technologies"
 msgstr ""
 
 #. Tag: ulink
 #: introduction.xml:342
 #, no-c-format
-msgid "R3 GIS"
+msgid "Paragon Corporation"
 msgstr ""
 
 #. Tag: ulink
 #: introduction.xml:343
 #, no-c-format
-msgid "Refractions Research"
+msgid "R3 GIS"
 msgstr ""
 
 #. Tag: ulink
 #: introduction.xml:344
 #, no-c-format
-msgid "Regione Toscana - SITA"
+msgid "Refractions Research"
 msgstr ""
 
 #. Tag: ulink
 #: introduction.xml:345
 #, no-c-format
+msgid "Regione Toscana - SITA"
+msgstr ""
+
+#. Tag: ulink
+#: introduction.xml:346
+#, no-c-format
 msgid "Safe Software"
 msgstr ""
 
 #. Tag: simpara
-#: introduction.xml:346
+#: introduction.xml:347
 #, no-c-format
 msgid "Sirius Corporation plc"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:347
+#: introduction.xml:348
 #, no-c-format
 msgid "Stadt Uster"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:348
+#: introduction.xml:349
 #, no-c-format
 msgid "UC Davis Center for Vectorborne Diseases"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:349
+#: introduction.xml:350
 #, no-c-format
 msgid "Université Laval"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:350
+#: introduction.xml:351
 #, no-c-format
 msgid "U.S. Department of State (HIU)"
 msgstr ""
 
 #. Tag: ulink
-#: introduction.xml:351
+#: introduction.xml:352
 #, no-c-format
 msgid "Zonar Systems"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:358
+#: introduction.xml:359
 #, no-c-format
 msgid "Crowd Funding Campaigns"
 msgstr "Kampanie corwdfundingowe"
 
 #. Tag: para
-#: introduction.xml:361
+#: introduction.xml:362
 #, no-c-format
 msgid ""
 "Crowd funding campaigns are campaigns we run to get badly wanted features "
@@ -1223,7 +1229,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:362
+#: introduction.xml:363
 #, no-c-format
 msgid ""
 "PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
@@ -1235,7 +1241,7 @@ msgstr ""
 "\">PledgeBank</ulink> i przeprowadzilśmy dwie udane kampanie."
 
 #. Tag: para
-#: introduction.xml:363
+#: introduction.xml:364
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role="
@@ -1249,7 +1255,7 @@ msgstr ""
 "topologii w wersji 2.0.0. To naprawdę się wydarzyło."
 
 #. Tag: para
-#: introduction.xml:364
+#: introduction.xml:365
 #, fuzzy, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
@@ -1263,13 +1269,13 @@ msgstr ""
 "topologii w wersji 2.0.0. To naprawdę się wydarzyło."
 
 #. Tag: term
-#: introduction.xml:369
+#: introduction.xml:370
 #, no-c-format
 msgid "Important Support Libraries"
 msgstr "Istotne biblioteki wspierające"
 
 #. Tag: para
-#: introduction.xml:372
+#: introduction.xml:373
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://geos.osgeo.org\">GEOS</ulink> geometry operations "
@@ -1277,7 +1283,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:375
+#: introduction.xml:376
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://www.gdal.org\">GDAL</ulink> Geospatial Data "
@@ -1287,7 +1293,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:380
+#: introduction.xml:381
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://www.proj4.org\">PROJ</ulink> cartographic "
@@ -1295,7 +1301,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:383
+#: introduction.xml:384
 #, no-c-format
 msgid ""
 "Last but not least, <ulink url=\"http://www.postgresql.org\">PostgreSQL</"

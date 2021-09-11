@@ -2,14 +2,14 @@
 #
 # Translators:
 # Daniel Quisbert <dani3l.quisb3rt@gmail.com>, 2017
-# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
+# Néstor, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
-"PO-Revision-Date: 2017-07-14 13:47+0000\n"
-"Last-Translator: Daniel Quisbert <dani3l.quisb3rt@gmail.com>\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"PO-Revision-Date: 2021-01-22 13:45+0000\n"
+"Last-Translator: Cláudia Rodrigues <claudia@bgeo.es>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
 "es/)\n"
 "Language: es\n"
@@ -33,6 +33,10 @@ msgid ""
 "url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/"
 "postgresql\">PAGC PostgreSQL Address Standardizer</ulink>)."
 msgstr ""
+"Esta es una bifurcación <ulink url=\"http://www.pagcgeo.org/docs/html/"
+"pagc-11.html\">del estandarizador PAGC</ulink> (el código original para esta "
+"parte era <ulink url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/"
+"sew-refactor/postgresql\">el estandarizador de direcciones PAGC PostgreSQL)."
 
 #. Tag: para
 #: extras_address_standardizer.xml:5
@@ -48,9 +52,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:6
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The code is built into a single postgresql extension library called "
+"The code is built into a single PostgreSQL extension library called "
 "<code>address_standardizer</code> which can be installed with <code>CREATE "
 "EXTENSION address_standardizer;</code>. In addition to the "
 "address_standardizer extension, a sample data extension called "
@@ -123,6 +127,8 @@ msgid ""
 "Assumed to be US or CA based on: postcode as US or Canada state/province as "
 "US or Canada else US"
 msgstr ""
+"Se supone que es de EE. UU. o CA según: código postal de estado/provincia "
+"como EE. UU. o Canadá,  como EE. UU. o Canadá más EE. UU. ."
 
 #. Tag: term
 #: extras_address_standardizer.xml:21
@@ -212,6 +218,10 @@ msgid ""
 "for elements are borrowed from <ulink url=\"http://www.pagcgeo.org/docs/html/"
 "pagc-12.html#ss12.1\">PAGC Postal Attributes</ulink>."
 msgstr ""
+"Un tipo compuesto que consta de elementos de una dirección. Este es el tipo "
+"de retorno de la <xref linkend=\"standardize_address\"/>función. Algunas "
+"descripciones de los elementos se han tomado de <ulink url=\"http://www."
+"pagcgeo.org/docs/html/pagc-12.html#ss12.1\">Atributos postales de PAGC."
 
 #. Tag: para
 #: extras_address_standardizer.xml:51
@@ -228,7 +238,7 @@ msgstr ""
 #: extras_address_standardizer.xml:655
 #, no-c-format
 msgid "&address_standardizer_required;"
-msgstr ""
+msgstr "& address_standardizer_required;"
 
 #. Tag: term
 #: extras_address_standardizer.xml:55
@@ -243,12 +253,15 @@ msgid ""
 "is text (token number <code>0</code>): Refers to building number or name. "
 "Unparsed building identifiers and types. Generally blank for most addresses."
 msgstr ""
+"Es texto (token número <code>0</code>): se refiere al número o nombre del "
+"edificio. Identificadores y tipos de edificios no analizados. Generalmente "
+"en blanco para la mayoría de direcciones."
 
 #. Tag: term
 #: extras_address_standardizer.xml:60
 #, no-c-format
 msgid "house_num"
-msgstr ""
+msgstr "house_num"
 
 #. Tag: para
 #: extras_address_standardizer.xml:62 extras_address_standardizer.xml:397
@@ -257,12 +270,14 @@ msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
+"Es un texto (ficha número <code>1</code>): este es el número de la calle en "
+"una calle. Ejemplo <emphasis>75</emphasis> en <code>75 State Street</code>."
 
 #. Tag: term
 #: extras_address_standardizer.xml:65 extras_address_standardizer.xml:400
 #, no-c-format
 msgid "predir"
-msgstr ""
+msgstr "predir"
 
 #. Tag: para
 #: extras_address_standardizer.xml:66 extras_address_standardizer.xml:401
@@ -271,12 +286,14 @@ msgid ""
 "is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as "
 "North, South, East, West etc."
 msgstr ""
+"Es texto (token número <code>2</code>): NOMBRE DE LA CALLE PRE-DIRECCIONAL "
+"como Norte, Sur, Este, Oeste, etc."
 
 #. Tag: term
 #: extras_address_standardizer.xml:68 extras_address_standardizer.xml:403
 #, no-c-format
 msgid "qual"
-msgstr ""
+msgstr "qual"
 
 #. Tag: para
 #: extras_address_standardizer.xml:70 extras_address_standardizer.xml:405
@@ -285,18 +302,20 @@ msgid ""
 "is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example "
 "<emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>."
 msgstr ""
+"Es texto (token número <code>3</code>): NOMBRE DE CALLE PRE-MODIFICADOR "
+"Ejemplo <emphasis>VIEJO</emphasis> en <code>3715 VIEJA CARRETERA 99</code>."
 
 #. Tag: term
 #: extras_address_standardizer.xml:73 extras_address_standardizer.xml:408
 #, no-c-format
 msgid "pretype"
-msgstr ""
+msgstr "pretipo"
 
 #. Tag: para
 #: extras_address_standardizer.xml:75 extras_address_standardizer.xml:410
 #, no-c-format
 msgid "is text (token number <code>4</code>): STREET PREFIX TYPE"
-msgstr ""
+msgstr "es texto (token número <code>4</code>): TIPO DE PREFIJO DE CALLE"
 
 #. Tag: term
 #: extras_address_standardizer.xml:78
@@ -308,7 +327,7 @@ msgstr "nombre"
 #: extras_address_standardizer.xml:80 extras_address_standardizer.xml:415
 #, no-c-format
 msgid "is text (token number <code>5</code>): STREET NAME"
-msgstr ""
+msgstr "es texto (token número <code>5</code>): NOMBRE DE LA CALLE"
 
 #. Tag: term
 #: extras_address_standardizer.xml:83 extras_address_standardizer.xml:418
@@ -324,6 +343,9 @@ msgid ""
 "street type following the root street name. Example <emphasis>STREET</"
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
+"es texto (token número <code>6</code>): TIPO DE POSTE DE CALLE, p. ej. St, "
+"Ave, Cir. Un tipo de calle que sigue al nombre de la calle raíz. Ejemplo "
+"<emphasis>STREET </emphasis> en <code>75 State Street</code>."
 
 #. Tag: term
 #: extras_address_standardizer.xml:88 extras_address_standardizer.xml:423
@@ -339,6 +361,9 @@ msgid ""
 "modifier that follows the street name.. Example <emphasis>WEST</emphasis> in "
 "<code>3715 TENTH AVENUE WEST</code>."
 msgstr ""
+"es texto (token número <code>7</code>): STREET POST-DIRECTIONAL Un "
+"modificador direccional que sigue al nombre de la calle. Ejemplo "
+"WEST<emphasis> en <code>3715 TENTH AVENUE WEST</code>."
 
 #. Tag: term
 #: extras_address_standardizer.xml:93
@@ -353,6 +378,8 @@ msgid ""
 "is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
 "emphasis> in <code>RR 7</code>."
 msgstr ""
+"Es texto (ficha número <code>8</code>): RUTA RURAL. Ejemplo <emphasis>7</"
+"emphasis> en <code>RR 7</code>."
 
 #. Tag: term
 #: extras_address_standardizer.xml:98
@@ -376,7 +403,7 @@ msgstr "ciudad"
 #: extras_address_standardizer.xml:105
 #, no-c-format
 msgid "is text (token number <code>10</code>): Example Boston."
-msgstr ""
+msgstr "es texto (token número <code>10</code>): Ejemplo Boston."
 
 #. Tag: term
 #: extras_address_standardizer.xml:108
@@ -390,6 +417,7 @@ msgstr "estado"
 msgid ""
 "is text (token number <code>11</code>): Example <code>MASSACHUSETTS</code>"
 msgstr ""
+"es texto (token número <code>11</code>: Ejemplo <code>MASSACHUSETTS</code>"
 
 #. Tag: term
 #: extras_address_standardizer.xml:113
@@ -401,7 +429,7 @@ msgstr "país"
 #: extras_address_standardizer.xml:115
 #, no-c-format
 msgid "is text (token number <code>12</code>): Example <code>USA</code>"
-msgstr ""
+msgstr "es texto (token número <code>12</code>): Ejemplo <code>EE. UU.</code>"
 
 #. Tag: term
 #: extras_address_standardizer.xml:118
@@ -416,6 +444,8 @@ msgid ""
 "is text POSTAL CODE (ZIP CODE) (token number <code>13</code>): Example "
 "<code>02109</code>"
 msgstr ""
+"es el texto CÓDIGO POSTAL (CÓDIGO POSTAL) (número de ficha <code>13</code>): "
+"Ejemplo <code>02109</code>"
 
 #. Tag: term
 #: extras_address_standardizer.xml:123
@@ -430,6 +460,8 @@ msgid ""
 "is text POSTAL BOX NUMBER (token number <code>14 and 15</code>): Example "
 "<code>02109</code>"
 msgstr ""
+"es el texto NÚMERO DE CAJA POSTAL (token número <code>14 y 15</code>): "
+"Ejemplo <code>02109</code>"
 
 #. Tag: term
 #: extras_address_standardizer.xml:128
@@ -1614,3 +1646,5 @@ msgid ""
 ", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
 "\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 msgstr ""
+", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
+"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"

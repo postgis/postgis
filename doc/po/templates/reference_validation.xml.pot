@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-12-19 17:06+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -55,8 +55,8 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_validation.xml:42 reference_validation.xml:116
-#: reference_validation.xml:178 reference_validation.xml:221
+#: reference_validation.xml:42 reference_validation.xml:115
+#: reference_validation.xml:186 reference_validation.xml:235
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -65,27 +65,27 @@ msgstr ""
 #: reference_validation.xml:44
 #, no-c-format
 msgid ""
-"Test if an ST_Geometry value is well-formed in 2D according to the OGC "
-"rules. For geometries that are invalid, the PostgreSQL NOTICE will provide "
-"details of why it is not valid. For geometries with 3 and 4 dimensions, the "
-"validity still only tested in 2 dimensions."
+"Tests if an ST_Geometry value is well-formed and valid in 2D according to "
+"the OGC rules. For geometries with 3 and 4 dimensions, the validity is still "
+"only tested in 2 dimensions. For geometries that are invalid, a PostgreSQL "
+"NOTICE is emitted providing details of why it is not valid."
 msgstr ""
 
 #. Tag: para
 #: reference_validation.xml:49
 #, no-c-format
 msgid ""
-"For the version with flags, supported <varname>flags</varname> are "
-"documented in <xref linkend=\"ST_IsValidDetail\"/> This version does not "
-"print a NOTICE explaining invalidity."
+"For the version with the <varname>flags</varname> parameter, supported "
+"values are documented in <xref linkend=\"ST_IsValidDetail\"/> This version "
+"does not print a NOTICE explaining invalidity."
 msgstr ""
 
 #. Tag: para
 #: reference_validation.xml:54
 #, no-c-format
 msgid ""
-"For more information on the definition of geometry validity, refer to <link "
-"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
+"For more information on the definition of geometry validity, refer to <xref "
+"linkend=\"OGC_Validity\"/>"
 msgstr ""
 
 #. Tag: para
@@ -97,8 +97,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:61 reference_validation.xml:134
-#: reference_validation.xml:187 reference_validation.xml:243
+#: reference_validation.xml:61 reference_validation.xml:142
+#: reference_validation.xml:195 reference_validation.xml:285
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr ""
@@ -130,8 +130,9 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_validation.xml:80 reference_validation.xml:139
-#: reference_validation.xml:192 reference_validation.xml:254
+#: reference_validation.xml:80 reference_validation.xml:147
+#: reference_validation.xml:200 reference_validation.xml:297
+#: reference_validation.xml:360
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -151,8 +152,8 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_validation.xml:86 reference_validation.xml:146
-#: reference_validation.xml:199 reference_validation.xml:302
+#: reference_validation.xml:86 reference_validation.xml:154
+#: reference_validation.xml:208 reference_validation.xml:364
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -161,26 +162,25 @@ msgstr ""
 #: reference_validation.xml:88
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/"
-">, <xref linkend=\"ST_Summary\"/>"
+", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail\"/>,"
 msgstr ""
 
 #. Tag: refname
-#: reference_validation.xml:100
+#: reference_validation.xml:99
 #, no-c-format
 msgid "ST_IsValidDetail"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_validation.xml:102
+#: reference_validation.xml:101
 #, no-c-format
 msgid ""
-"Returns a <varname>valid_detail</varname> row stating if a geometry is "
-"valid, and if not a reason why and a location."
+"Returns a <varname>valid_detail</varname> row stating if a geometry is valid "
+"or if not a reason and a location."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_validation.xml:107
+#: reference_validation.xml:106
 #, no-c-format
 msgid ""
 "<funcdef>valid_detail <function>ST_IsValidDetail</function></funcdef> "
@@ -190,68 +190,80 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:118
+#: reference_validation.xml:117
 #, no-c-format
 msgid ""
-"Returns a valid_detail row, formed by a boolean (valid) stating if a "
-"geometry is valid, a varchar (reason) stating a reason why it is invalid and "
-"a geometry (location) pointing out where it is invalid."
-msgstr ""
-
-#. Tag: para
-#: reference_validation.xml:120
-#, no-c-format
-msgid ""
-"Useful to substitute and improve the combination of ST_IsValid and "
-"ST_IsValidReason to generate a detailed report of invalid geometries."
+"Returns a <varname>valid_detail</varname> row, containing a boolean "
+"(<varname>valid</varname>) stating if a geometry is valid, a varchar "
+"(<varname>reason</varname>) stating a reason why it is invalid and a "
+"geometry (<varname>location</varname>) pointing out where it is invalid."
 msgstr ""
 
 #. Tag: para
 #: reference_validation.xml:122
 #, no-c-format
-msgid "The 'flags' argument is a bitfield. It can have the following values:"
+msgid ""
+"Useful to improve on the combination of <xref linkend=\"ST_IsValid\"/> and "
+"<xref linkend=\"ST_IsValidReason\"/> to generate a detailed report of "
+"invalid geometries."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:126
+#: reference_validation.xml:124
 #, no-c-format
 msgid ""
-"1: Consider self-intersecting rings forming holes as valid. This is also "
-"know as \"the ESRI flag\". Note that this is against the OGC model."
+"The optional <varname>flags</varname> parameter is a bitfield. It can have "
+"the following values:"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:135 reference_validation.xml:245
+#: reference_validation.xml:128
+#, no-c-format
+msgid "0: Use usual OGC SFS validity semantics."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:133
+#, no-c-format
+msgid ""
+"1: Consider certain kinds of self-touching rings (inverted shells and "
+"exverted holes) as valid. This is also known as \"the ESRI flag\", since "
+"this is the validity model used by those tools. Note that this is invalid "
+"under the OGC model."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:143 reference_validation.xml:287
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_validation.xml:141
+#: reference_validation.xml:149
 #, no-c-format
 msgid ""
 "--First 3 Rejects from a successful quintuplet experiment\n"
-"SELECT gid, reason(ST_IsValidDetail(the_geom)), "
-"ST_AsText(location(ST_IsValidDetail(the_geom))) as location\n"
+"SELECT gid, reason(ST_IsValidDetail(geom)), "
+"ST_AsText(location(ST_IsValidDetail(geom))) as location\n"
 "FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As "
-"the_geom, gid\n"
-"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
+"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, "
+"gid\n"
+"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
 "z1*1000 As gid\n"
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
 "        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
 "        INNER JOIN (SELECT "
-"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
-"z1*2) As line\n"
+"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) "
+"As line\n"
 "        FROM generate_series(-3,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,10) z1\n"
 "        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
 "ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
 "GROUP BY gid, e.buff) As quintuplet_experiment\n"
-"WHERE ST_IsValid(the_geom) = false\n"
+"WHERE ST_IsValid(geom) = false\n"
 "ORDER BY gid\n"
 "LIMIT 3;\n"
 "\n"
@@ -271,54 +283,53 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:148
+#: reference_validation.xml:156
 #, no-c-format
 msgid ", <xref linkend=\"ST_IsValidReason\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_validation.xml:157
+#: reference_validation.xml:165
 #, no-c-format
 msgid "ST_IsValidReason"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_validation.xml:159
+#: reference_validation.xml:167
 #, no-c-format
 msgid ""
 "Returns text stating if a geometry is valid, or a reason for invalidity."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_validation.xml:163
+#: reference_validation.xml:171
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_IsValidReason</function></"
 "funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>flags</parameter></"
 "paramdef> </funcprototype> <funcprototype> <funcdef>text "
 "<function>ST_IsValidReason</function></funcdef> <paramdef><type>geometry </"
-"type> <parameter>geomA</parameter></paramdef> </funcprototype>"
+"type> <parameter>geomA</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>flags</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:180
+#: reference_validation.xml:188
 #, no-c-format
 msgid ""
-"Returns text stating if a geometry is valid or not an if not valid, a reason "
-"why."
+"Returns text stating if a geometry is valid, or if invalid a reason why."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:182
+#: reference_validation.xml:190
 #, no-c-format
 msgid ""
-"Useful in combination with ST_IsValid to generate a detailed report of "
-"invalid geometries and reasons."
+"Useful in combination with <xref linkend=\"ST_IsValid\"/> to generate a "
+"detailed report of invalid geometries and reasons."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:184
+#: reference_validation.xml:192
 #, no-c-format
 msgid ""
 "Allowed <varname>flags</varname> are documented in <xref linkend="
@@ -326,42 +337,55 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:188
+#: reference_validation.xml:196
 #, no-c-format
 msgid "Availability: 1.4"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:189
+#: reference_validation.xml:197
 #, no-c-format
 msgid "Availability: 2.0 version taking flags."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_validation.xml:194
+#: reference_validation.xml:202
+#, no-c-format
+msgid ""
+"-- invalid bow-tie polygon\n"
+"SELECT ST_IsValidReason(\n"
+"    'POLYGON ((100 200, 100 100, 200 200,\n"
+"     200 100, 100 200))'::geometry) as validity_info;\n"
+"validity_info\n"
+"--------------------------\n"
+"Self-intersection[150 150]"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_validation.xml:203
 #, no-c-format
 msgid ""
 "--First 3 Rejects from a successful quintuplet experiment\n"
-"SELECT gid, ST_IsValidReason(the_geom) as validity_info\n"
+"SELECT gid, ST_IsValidReason(geom) as validity_info\n"
 "FROM\n"
-"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As "
-"the_geom, gid\n"
-"FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
+"(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), array_agg(f.line)) As geom, "
+"gid\n"
+"FROM (SELECT ST_Buffer(ST_Point(x1*10,y1), z1) As buff, x1*10 + y1*100 + "
 "z1*1000 As gid\n"
 "        FROM generate_series(-4,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,8) z1\n"
 "        WHERE x1 &gt; y1*0.5 AND z1 &lt; x1*y1) As e\n"
 "        INNER JOIN (SELECT "
-"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_MakePoint(x1*10,y1), z1)),y1*1, "
-"z1*2) As line\n"
+"ST_Translate(ST_ExteriorRing(ST_Buffer(ST_Point(x1*10,y1), z1)),y1*1, z1*2) "
+"As line\n"
 "        FROM generate_series(-3,6) x1\n"
 "        CROSS JOIN generate_series(2,5) y1\n"
 "        CROSS JOIN generate_series(1,10) z1\n"
 "        WHERE x1 &gt; y1*0.75 AND z1 &lt; x1*y1) As f\n"
 "ON (ST_Area(e.buff) &gt; 78 AND ST_Contains(e.buff, f.line))\n"
 "GROUP BY gid, e.buff) As quintuplet_experiment\n"
-"WHERE ST_IsValid(the_geom) = false\n"
+"WHERE ST_IsValid(geom) = false\n"
 "ORDER BY gid\n"
 "LIMIT 3;\n"
 "\n"
@@ -381,42 +405,46 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:201
+#: reference_validation.xml:210
 #, no-c-format
 msgid ", <xref linkend=\"ST_Summary\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_validation.xml:207
+#: reference_validation.xml:216
 #, no-c-format
 msgid "ST_MakeValid"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_validation.xml:208
+#: reference_validation.xml:217
 #, no-c-format
 msgid "Attempts to make an invalid geometry valid without losing vertices."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_validation.xml:213
+#. Tag: funcsynopsis
+#: reference_validation.xml:221
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
+"<funcprototype> <funcdef>geometry <function>ST_MakeValid</function></"
+"funcdef> <paramdef><type>geometry</type> <parameter>input</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_MakeValid</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>input</parameter></paramdef> <paramdef choice=\"opt\"><type>text</"
+"type> <parameter>params</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:222
+#: reference_validation.xml:236
 #, no-c-format
 msgid ""
 "The function attempts to create a valid representation of a given invalid "
-"geometry without losing any of the input vertices. Already-valid geometries "
-"are returned without further intervention."
+"geometry without losing any of the input vertices. Valid geometries are "
+"returned unchanged."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:228
+#: reference_validation.xml:242
 #, no-c-format
 msgid ""
 "Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, "
@@ -424,62 +452,119 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:234
+#: reference_validation.xml:248
 #, no-c-format
 msgid ""
 "In case of full or partial dimensional collapses, the output geometry may be "
-"a collection of lower-to-equal dimension geometries or a geometry of lower "
+"a collection of lower-to-equal dimension geometries, or a geometry of lower "
 "dimension."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:240
+#: reference_validation.xml:254
 #, no-c-format
 msgid ""
 "Single polygons may become multi-geometries in case of self-intersections."
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:246
+#: reference_validation.xml:258
 #, no-c-format
-msgid "Enhanced: 2.0.1, speed improvements"
-msgstr ""
-
-#. Tag: para
-#: reference_validation.xml:247
-#, no-c-format
-msgid "Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT."
-msgstr ""
-
-#. Tag: para
-#: reference_validation.xml:248
-#, no-c-format
-msgid "Enhanced: 3.1.0, added removal of Coordinates with NaN values."
-msgstr ""
-
-#. Tag: para
-#: reference_validation.xml:250
-#, no-c-format
-msgid "&Z_support;"
+msgid ""
+"The <varname>params</varname> argument can be used to supply an options "
+"string to select the method to use for building valid geometry. The options "
+"string is in the format \"method=linework|structure keepcollapsed=true|false"
+"\"."
 msgstr ""
 
 #. Tag: para
 #: reference_validation.xml:264
 #, no-c-format
+msgid "The \"method\" key has two values."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:268
+#, no-c-format
+msgid ""
+"\"linework\" is the original algorithm, and builds valid geometries by first "
+"extracting all lines, noding that linework together, then building a value "
+"output from the linework."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:273
+#, no-c-format
+msgid ""
+"\"structure\" is an algorithm that distinguishes between interior and "
+"exterior rings, building new geometry by unioning exterior rings, and then "
+"differencing all interior rings."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:279
+#, no-c-format
+msgid ""
+"The \"keepcollapsed\" key is only valid for the \"structure\" algorithm, and "
+"takes a value of \"true\" or \"false\". When set to \"false\", geometry "
+"components that collapse to a lower dimensionality, for example a one-point "
+"linestring would be dropped."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:288
+#, no-c-format
+msgid "Enhanced: 2.0.1, speed improvements"
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:289
+#, no-c-format
+msgid "Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:290
+#, no-c-format
+msgid "Enhanced: 3.1.0, added removal of Coordinates with NaN values."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:291
+#, no-c-format
+msgid "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure'."
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:293
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_validation.xml:307
+#, no-c-format
 msgid "before_geom: MULTIPOLYGON of 2 overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:272
+#: reference_validation.xml:315
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 4 non-overlapping polygons"
 msgstr ""
 
+#. Tag: para
+#: reference_validation.xml:324
+#, no-c-format
+msgid "after_geom_structure: MULTIPOLYGON of 1 non-overlapping polygon"
+msgstr ""
+
 #. Tag: programlisting
-#: reference_validation.xml:276
+#: reference_validation.xml:328
 #, no-c-format
 msgid ""
-"SELECT f.geom AS before_geom, ST_MakeValid( f.geom) AS after_geom\n"
+"SELECT f.geom AS before_geom, ST_MakeValid(f.geom) AS after_geom, "
+"ST_MakeValid(f.geom, 'method=structure') AS after_geom_structure\n"
 "FROM (SELECT 'MULTIPOLYGON(((186 194,187 194,188 195,189 195,190 195,\n"
 "191 195,192 195,193 194,194 194,194 193,195 192,195 191,\n"
 "195 190,195 189,195 188,194 187,194 186,14 6,13 6,12 5,11 5,\n"
@@ -492,22 +577,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:285
+#: reference_validation.xml:337
 #, no-c-format
 msgid "before_geom: MULTIPOLYGON of 6 overlapping polygons"
 msgstr ""
 
 #. Tag: para
-#: reference_validation.xml:291
+#: reference_validation.xml:343
 #, no-c-format
 msgid "after_geom: MULTIPOLYGON of 14 Non-overlapping polygons"
 msgstr ""
 
+#. Tag: para
+#: reference_validation.xml:349
+#, no-c-format
+msgid "after_geom_structure: MULTIPOLYGON of 1 Non-overlapping polygon"
+msgstr ""
+
 #. Tag: programlisting
-#: reference_validation.xml:294
+#: reference_validation.xml:352
 #, no-c-format
 msgid ""
-"SELECT c.geom AS before_geom, ST_MakeValid(c.geom) AS after_geom\n"
+"SELECT c.geom AS before_geom,\n"
+"                    ST_MakeValid(c.geom) AS after_geom,\n"
+"                    ST_MakeValid(c.geom, 'method=structure') AS "
+"after_geom_structure\n"
 "        FROM (SELECT 'MULTIPOLYGON(((91 50,79 22,51 10,23 22,11 50,23 78,51 "
 "90,79 78,91 50)),\n"
 "                  ((91 100,79 72,51 60,23 72,11 100,23 128,51 140,79 128,91 "
@@ -522,8 +616,32 @@ msgid ""
 "178,141 150)))'::geometry AS geom) AS c;"
 msgstr ""
 
+#. Tag: programlisting
+#: reference_validation.xml:361
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_MakeValid(\n"
+"    'LINESTRING(0 0, 0 0)',\n"
+"    'method=structure keepcollapsed=true'\n"
+"    ));\n"
+"\n"
+" st_astext\n"
+"------------\n"
+" POINT(0 0)\n"
+"\n"
+"\n"
+"SELECT ST_AsText(ST_MakeValid(\n"
+"    'LINESTRING(0 0, 0 0)',\n"
+"    'method=structure keepcollapsed=false'\n"
+"    ));\n"
+"\n"
+"    st_astext\n"
+"------------------\n"
+" LINESTRING EMPTY"
+msgstr ""
+
 #. Tag: para
-#: reference_validation.xml:303
+#: reference_validation.xml:365
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_CollectionExtract\"/>"

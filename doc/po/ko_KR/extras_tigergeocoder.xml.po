@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -523,10 +523,10 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:117
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Generates a script that drops all tables in the specified schema that start "
-"with <varname>county_all</varname>, <varname>state_all</varname> or stae "
+"with <varname>county_all</varname>, <varname>state_all</varname> or state "
 "code followed by <varname>county</varname> or <varname>state</varname>. This "
 "is needed if you are upgrading from <varname>tiger_2010</varname> to "
 "<varname>tiger_2011</varname> data."
@@ -1371,9 +1371,9 @@ msgstr ""
 #: extras_tigergeocoder.xml:364
 #, no-c-format
 msgid ""
-"This function uses the census <varname>tract</varname> whic is not loaded by "
-"default. If you have already loaded your state table, you can load tract as "
-"well as bg, and tabblock using the <xref linkend="
+"This function uses the census <varname>tract</varname> which is not loaded "
+"by default. If you have already loaded your state table, you can load tract "
+"as well as bg, and tabblock using the <xref linkend="
 "\"Loader_Generate_Census_Script\"/> script."
 msgstr ""
 

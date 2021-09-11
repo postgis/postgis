@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:39+0000\n"
+"POT-Creation-Date: 2020-12-19 17:06+0000\n"
 "PO-Revision-Date: 2014-02-08 23:56+0000\n"
 "Last-Translator: Carlos Barrios <gbarrios@aaa.upv.es>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
@@ -19,8 +19,8 @@ msgstr ""
 
 #. Tag: title
 #: using_postgis_app.xml:3
-#, no-c-format
-msgid "Using PostGIS Geometry: Building Applications"
+#, fuzzy, no-c-format
+msgid "Building Applications"
 msgstr "Usando PostGIS Geometry: Construyendo Aplicaciones"
 
 #. Tag: title
@@ -31,10 +31,10 @@ msgstr "Usando Mapserver"
 
 #. Tag: para
 #: using_postgis_app.xml:7
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The Minnesota MapServer is an internet web-mapping server which conforms to "
-"the OpenGIS Web Mapping Server specification."
+"the OpenGIS Web Map Service specification."
 msgstr ""
 "El Minnesota MapServer es un servidor web de mapas para internet que cumple "
 "la especificación OpenGIS  Web Mapping Server 'Servidor de Mapas Web'."
@@ -51,9 +51,9 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_app.xml:17
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The OpenGIS Web Map Specification is at <ulink url=\"http://www."
+"The OpenGIS Web Map Service specification is at <ulink url=\"http://www."
 "opengeospatial.org/standards/wms\">http://www.opengeospatial.org/standards/"
 "wms</ulink>."
 msgstr ""
@@ -69,11 +69,11 @@ msgstr "Uso Básico"
 
 #. Tag: para
 #: using_postgis_app.xml:25
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"To use PostGIS with MapServer, you will need to know about how to configure "
-"MapServer, which is beyond the scope of this documentation. This section "
-"will cover specific PostGIS issues and configuration details."
+"To use PostGIS with MapServer, you need to know how to configure MapServer, "
+"which is beyond the scope of this documentation. This section covers "
+"specific PostGIS issues and configuration details."
 msgstr ""
 "Para utilizar PostGIS con MapServer necesitará saber como configurar "
 "MapServer, lo cual está fuera del alcance de esta documentación. Esta "
@@ -100,10 +100,10 @@ msgstr "La versión 3.5 o posterior de MapServer."
 
 #. Tag: para
 #: using_postgis_app.xml:42
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client "
-"-- using the <filename>libpq</filename> interface. This means that MapServer "
+"MapServer accesses PostGIS/PostgreSQL data like any other PostgreSQL client, "
+"using the <filename>libpq</filename> interface. This means that MapServer "
 "can be installed on any machine with network access to the PostGIS server, "
 "and use PostGIS as a source of data. The faster the connection between the "
 "systems, the better."
@@ -408,9 +408,9 @@ msgstr "EXPRESSION ([numlanes] &gt;= 6)"
 
 #. Tag: para
 #: using_postgis_app.xml:168
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The FILTER I use for my Shape files is not working for my PostGIS table of "
+"The FILTER I use for my Shapefiles is not working for my PostGIS table of "
 "the same data."
 msgstr ""
 "El filtro que uso para mis ficheros 'shape' no funciona con mi tabla PostGIS "
@@ -436,19 +436,19 @@ msgstr "FILTER \"type = 'highway' and numlanes &gt;= 4\""
 
 #. Tag: para
 #: using_postgis_app.xml:183
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"My PostGIS layer draws much slower than my Shape file layer, is this normal?"
+"My PostGIS layer draws much slower than my Shapefile layer, is this normal?"
 msgstr ""
 "Mi capa PostGIS tarda mucho más en dibujarse que mi capa del fichero "
 "'shape'. ¿Es normal?"
 
 #. Tag: para
 #: using_postgis_app.xml:188
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "In general, the more features you are drawing into a given map, the more "
-"likely it is that PostGIS will be slower than Shape files. For maps with "
+"likely it is that PostGIS will be slower than Shapefiles. For maps with "
 "relatively few features (100s), PostGIS will often be faster. For maps with "
 "high feature density (1000s), PostGIS will always be slower."
 msgstr ""

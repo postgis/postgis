@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: nramire1 nramire1\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -240,10 +240,11 @@ msgstr "Postgis_Enable_History"
 
 #. Tag: refpurpose
 #: extras_historytable.xml:78
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Registers a tablein the history_information table for tracking and also adds "
-"in side line history table and insert, update, delete rules on the table."
+"Registers a table in the history_information table for tracking and also "
+"adds in side line history table and insert, update, delete rules on the "
+"table."
 msgstr ""
 "Registra una tabla en la tabla history_information para hacer un seguimiento "
 "y también añade en la linea lateral de la tabla de historial las reglas "

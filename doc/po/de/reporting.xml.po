@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:39+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2019-03-11 09:33+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -32,14 +32,14 @@ msgstr "Software Bugs melden"
 
 #. Tag: para
 #: reporting.xml:8
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Reporting bugs effectively is a fundamental way to help PostGIS development. "
 "The most effective bug report is that enabling PostGIS developers to "
 "reproduce it, so it would ideally contain a script triggering it and every "
 "information regarding the environment in which it was detected. Good enough "
 "info can be extracted running <code>SELECT postgis_full_version()</code> "
-"[for postgis] and <code>SELECT version()</code> [for postgresql]."
+"[for PostGIS] and <code>SELECT version()</code> [for postgresql]."
 msgstr ""
 "Effektive Fehlerberichte sind ein wesentlicher Beitrag zur Weiterentwicklung "
 "von PostGIS. Am wirksamsten ist ein Fehlerbericht dann, wenn er von den "

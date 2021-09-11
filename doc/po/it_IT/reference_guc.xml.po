@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-04-25 00:23+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: pibinko <pibinko@gmail.com>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
@@ -47,7 +47,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_guc.xml:18 reference_guc.xml:46 reference_guc.xml:96
-#: reference_guc.xml:188
+#: reference_guc.xml:188 reference_guc.xml:246
 #, no-c-format
 msgid "Description"
 msgstr "Descrizione"
@@ -70,7 +70,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_guc.xml:24 reference_guc.xml:70 reference_guc.xml:147
-#: reference_guc.xml:214
+#: reference_guc.xml:214 reference_guc.xml:256
 #, no-c-format
 msgid "Examples"
 msgstr "Esempi"
@@ -101,7 +101,7 @@ msgstr ""
 
 #. Tag: title
 #: reference_guc.xml:32 reference_guc.xml:80 reference_guc.xml:167
-#: reference_guc.xml:228
+#: reference_guc.xml:228 reference_guc.xml:266
 #, no-c-format
 msgid "See Also"
 msgstr "Si veda anche"
@@ -467,4 +467,66 @@ msgid ""
 "ALTER SYSTEM postgis.enable_outdb_rasters = true;\n"
 " --Reloads postgres conf\n"
 "SELECT pg_reload_conf();"
+msgstr ""
+
+#. Tag: refname
+#: reference_guc.xml:239
+#, no-c-format
+msgid "postgis.gdal_config_options"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_guc.xml:240
+#, no-c-format
+msgid ""
+"A string configuration to set options used when working with an out-db "
+"raster."
+msgstr ""
+
+#. Tag: para
+#: reference_guc.xml:247
+#, no-c-format
+msgid ""
+"A string configuration to set options used when working with an out-db "
+"raster. <ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions"
+"\">Configuration options</ulink> control things like how much space GDAL "
+"allocates to local data cache, whether to read overviews, and what access "
+"keys to use for remote out-db data sources."
+msgstr ""
+
+#. Tag: para
+#: reference_guc.xml:251
+#, no-c-format
+msgid "Availability: 3.2.0"
+msgstr ""
+
+#. Tag: para
+#: reference_guc.xml:257
+#, no-c-format
+msgid "Set <varname>postgis.gdal_vsi_options</varname> for current session:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:259
+#, no-c-format
+msgid ""
+"SET postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
+"AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
+msgstr ""
+
+#. Tag: para
+#: reference_guc.xml:261
+#, no-c-format
+msgid ""
+"Set <varname>postgis.gdal_vsi_options</varname> just for the "
+"<emphasis>current transaction</emphasis> using the <varname>LOCAL</varname> "
+"keyword:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:262
+#, no-c-format
+msgid ""
+"SET LOCAL postgis.gdal_config_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxx "
+"AWS_SECRET_ACCESS_KEY=yyyyyyyyyyyyyyyyyyyyyyyyyy';"
 msgstr ""

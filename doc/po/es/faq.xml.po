@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2020-01-16 16:27+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-10-18 12:55+0000\n"
 "Last-Translator: Manuel Retamozo <manuel@retamozo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -651,12 +651,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:210
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT id, the_geom\n"
+"SELECT id, geom\n"
 "FROM thetable\n"
 "WHERE\n"
-"  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
+"  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
 "SELECT id, the_geom\n"
 "FROM thetable\n"
@@ -922,14 +922,14 @@ msgstr "¿Como puedo realizar una reproyección como parte de una consulta?"
 
 #. Tag: para
 #: faq.xml:341
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "To perform a reprojection, both the source and destination coordinate "
 "systems must be defined in the SPATIAL_REF_SYS table, and the geometries "
 "being reprojected must already have an SRID set on them. Once that is done, "
 "a reprojection is as simple as referring to the desired destination SRID. "
 "The below projects a geometry to NAD 83 long lat. The below will only work "
-"if the srid of the_geom is not -1 (not undefined spatial ref)"
+"if the srid of geom is not -1 (not undefined spatial ref)"
 msgstr ""
 "Para realizar una reproyección, el sistema de coordenadas de las tablas "
 "origen y destino debe estar definido en la tabla SPATIAL_REF_SYS, y las "
@@ -941,8 +941,8 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:348
-#, no-c-format
-msgid "SELECT ST_Transform(the_geom,4269) FROM geotable;"
+#, fuzzy, no-c-format
+msgid "SELECT ST_Transform(geom,4269) FROM geotable;"
 msgstr "SELECT ST_Transform(the_geom,4269) FROM geotable;"
 
 #. Tag: para
@@ -970,11 +970,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:361
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
-"                                SELECT count(gid) FROM geotable WHERE "
-"the_geom IS NULL;"
+"                                SELECT count(gid) FROM geotable WHERE geom "
+"IS NULL;"
 msgstr ""
 "-- Para comprobar el numero de geometrías que están realmente en blanco\n"
 "                                SELECT count(gid) FROM geotable WHERE "
@@ -1066,3 +1066,76 @@ msgstr ""
 "funciones opcionales habilitadas para CGAL. Algunas partes de CGAL son GPL, "
 "pero también lo es todo PostGIS: usar CGAL no hace que PostGIS sea más GPL "
 "de lo que era para comenzar."
+
+#. Tag: para
+#: faq.xml:391
+#, no-c-format
+msgid ""
+"Why are the results of overlay operations and spatial predicates sometimes "
+"inconsistent?"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:395
+#, no-c-format
+msgid "This is usually presented as a specific case, such as"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:399
+#, no-c-format
+msgid ""
+"Why is <varname>ST_Contains( A, ST_Intersection(A, B) )</varname> false ?"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:402
+#, no-c-format
+msgid "Why is <varname>ST_Contains( ST_Union(A, B), A ) )</varname> false ?"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:405
+#, no-c-format
+msgid ""
+"Why is <varname>ST_Union( A, ST_Difference(A, B) )</varname> not equal to A ?"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:408
+#, no-c-format
+msgid ""
+"Why does <varname>ST_Difference(A, B)</varname> intersect the interior of "
+"<varname>B</varname> ?"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:412
+#, no-c-format
+msgid ""
+"The reason is that PostGIS represents geometry and performs operations using "
+"finite-precision floating-point numbers. This provides the illusion of "
+"computing using real numbers - but it's only an illusion. Inevitably, small "
+"inaccuracies occur, which cause results of different operations to be "
+"slightly inconsistent."
+msgstr ""
+
+#. Tag: para
+#: faq.xml:417
+#, no-c-format
+msgid ""
+"Furthermore, PostGIS operations contain error-prevention code which may "
+"perturb input geometries by tiny amounts in order to prevent robustness "
+"errors from occurring. These minor alterations also may produce computed "
+"results which are not fully consistent."
+msgstr ""
+
+#. Tag: para
+#: faq.xml:422
+#, no-c-format
+msgid ""
+"The discrepancy between results should always be very small. But queries "
+"should not rely on exact consistency when comparing overlay results. "
+"Instead, consider using an area or distance-based tolerance in geometric "
+"comparisons."
+msgstr ""

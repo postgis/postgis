@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -428,7 +428,7 @@ msgstr ""
 #: reference_management.xml:313
 #, no-c-format
 msgid ""
-"SELECT Find_SRID('public', 'tiger_us_state_2007', 'the_geom_4269');\n"
+"SELECT Find_SRID('public', 'tiger_us_state_2007', 'geom_4269');\n"
 "find_srid\n"
 "----------\n"
 "4269"
@@ -489,24 +489,24 @@ msgstr ""
 #: reference_management.xml:365
 #, no-c-format
 msgid ""
-"<varname>enforce_dims_the_geom</varname> - ensures every geometry has the "
-"same dimension (see <xref linkend=\"ST_NDims\"/>)"
+"<varname>enforce_dims_geom</varname> - ensures every geometry has the same "
+"dimension (see <xref linkend=\"ST_NDims\"/>)"
 msgstr ""
 
 #. Tag: para
 #: reference_management.xml:371
 #, no-c-format
 msgid ""
-"<varname>enforce_geotype_the_geom</varname> - ensures every geometry is of "
-"the same type (see <xref linkend=\"GeometryType\"/>)"
+"<varname>enforce_geotype_geom</varname> - ensures every geometry is of the "
+"same type (see <xref linkend=\"GeometryType\"/>)"
 msgstr ""
 
 #. Tag: para
 #: reference_management.xml:377
 #, no-c-format
 msgid ""
-"<varname>enforce_srid_the_geom</varname> - ensures every geometry is in the "
-"same projection (see <xref linkend=\"ST_SRID\"/>)"
+"<varname>enforce_srid_geom</varname> - ensures every geometry is in the same "
+"projection (see <xref linkend=\"ST_SRID\"/>)"
 msgstr ""
 
 #. Tag: para

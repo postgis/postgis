@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -52,9 +52,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:6
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The code is built into a single postgresql extension library called "
+"The code is built into a single PostgreSQL extension library called "
 "<code>address_standardizer</code> which can be installed with <code>CREATE "
 "EXTENSION address_standardizer;</code>. In addition to the "
 "address_standardizer extension, a sample data extension called "

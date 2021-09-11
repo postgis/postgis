@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -535,11 +535,11 @@ msgstr "합계 후"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:416
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(line, circle))\n"
 "FROM (SELECT\n"
-"    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,\n"
+"    ST_MakeLine(ST_Point(10, 10),ST_Point(100, 100)) As line,\n"
 "    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;\n"
 "\n"
 "-- wkt --\n"
@@ -1169,10 +1169,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:805
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Takes as input a surface such a MULTI(POLYGON) or POLYHEDRALSURFACE and "
-"returns a TIN representation via the process of tesselation using triangles."
+"returns a TIN representation via the process of tessellation using triangles."
 msgstr ""
 "[멀티]폴리곤 또는 다면체 표면 같은 표면 도형을 입력받아 삼각형을 이용한 다듬"
 "기(모자이크) 과정을 거친 TIN 표현식을 반환합니다."

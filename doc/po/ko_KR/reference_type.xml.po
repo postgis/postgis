@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:39+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -33,12 +33,12 @@ msgstr ""
 #: reference_type.xml:8
 #, no-c-format
 msgid ""
-"Each data type describes its type casting behaviour. A <ulink url=\"https://"
+"Each data type describes its type casting behavior. A <ulink url=\"https://"
 "www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS"
 "\">type cast</ulink> converts values of one data type into another type. "
 "PostgreSQL allows defining casting behavior for custom types, along with the "
 "functions used to convert type values. Casts can have <emphasis role=\"bold"
-"\">automatic</emphasis> behaviour, which allows automatic conversion of a "
+"\">automatic</emphasis> behavior, which allows automatic conversion of a "
 "function argument to a type supported by the function."
 msgstr ""
 
@@ -46,7 +46,7 @@ msgstr ""
 #: reference_type.xml:14
 #, no-c-format
 msgid ""
-"Some casts have <emphasis role=\"bold\">explicit</emphasis> behaviour, which "
+"Some casts have <emphasis role=\"bold\">explicit</emphasis> behavior, which "
 "means the cast must be specified using the syntax <varname>CAST(myval As "
 "sometype)</varname> or <varname>myval::sometype</varname>. Explicit casting "
 "avoids the issue of ambiguous casts, which can occur when using an "
@@ -79,28 +79,24 @@ msgstr "<refname>box2d</refname>"
 
 #. Tag: refpurpose
 #: reference_type.xml:32
-#, fuzzy, no-c-format
-msgid ""
-"A 2-dimensional bounding box. Used to describe the 2D extent of a geometry "
-"or collection of geometries."
+#, no-c-format
+msgid "The type representing a 2-dimensional bounding box."
 msgstr ""
-"xmin, ymin, zmin, xmax, ymax, zmax로 구성된 박스. 지오메트리 또는 지오메트리 "
-"컬렉션의 3차원 공간범위-3D Extent를 반환하는데 주로 사용됩니다."
 
 #. Tag: title
-#: reference_type.xml:37 reference_type.xml:60 reference_type.xml:111
-#: reference_type.xml:168 reference_type.xml:199
+#: reference_type.xml:36 reference_type.xml:82 reference_type.xml:137
+#: reference_type.xml:194 reference_type.xml:226
 #, no-c-format
 msgid "Description"
 msgstr "설명"
 
 #. Tag: para
-#: reference_type.xml:38
+#: reference_type.xml:37
 #, fuzzy, no-c-format
 msgid ""
 "<varname>box2d</varname> is a spatial data type used to represent the two-"
-"dimensional enclosing box of a geometry or collection of geometries. For "
-"example, the <xref linkend=\"ST_Extent\"/> aggregate function returns a "
+"dimensional bounding box enclosing a geometry or collection of geometries. "
+"For example, the <xref linkend=\"ST_Extent\"/> aggregate function returns a "
 "<varname>box2d</varname> object."
 msgstr ""
 "box3d 지오메트리 또는 지오메트리 셋의 범위를 표현하는데 사용되는 postgis 공"
@@ -111,38 +107,94 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The representation contains the values <varname>xmin, ymin, xmax, ymax</"
-"varname>. These are the minimum and maxium values of the X and Y extents."
+"varname>. These are the minimum and maximum values of the X and Y extents."
+msgstr ""
+
+#. Tag: para
+#: reference_type.xml:45
+#, no-c-format
+msgid ""
+"<varname>box2d</varname> objects have a text representation which looks like "
+"<code>BOX(1 2,5 6)</code>."
 msgstr ""
 
 #. Tag: title
-#: reference_type.xml:47 reference_type.xml:98 reference_type.xml:156
-#: reference_type.xml:187 reference_type.xml:229
+#: reference_type.xml:50 reference_type.xml:97 reference_type.xml:143
+#: reference_type.xml:237
+#, no-c-format
+msgid "Casting Behavior"
+msgstr "캐스팅 동작"
+
+#. Tag: para
+#: reference_type.xml:51 reference_type.xml:98 reference_type.xml:144
+#: reference_type.xml:238
+#, fuzzy, no-c-format
+msgid ""
+"This table lists the automatic and explicit casts allowed for this data type:"
+msgstr ""
+"이 섹션에는 자동 형변환 뿐만 아니라 이 데이터 유형에 허용되는 명시적 캐스팅"
+"이 나열됩니다. "
+
+#. Tag: entry
+#: reference_type.xml:56 reference_type.xml:103 reference_type.xml:149
+#: reference_type.xml:243
+#, no-c-format
+msgid "Cast To"
+msgstr "변환 대상"
+
+#. Tag: entry
+#: reference_type.xml:56 reference_type.xml:104 reference_type.xml:150
+#: reference_type.xml:244
+#, no-c-format
+msgid "Behavior"
+msgstr "동작"
+
+#. Tag: entry
+#: reference_type.xml:59 reference_type.xml:161
+#, no-c-format
+msgid "<entry>box3d</entry>"
+msgstr "<entry>box3d</entry>"
+
+#. Tag: entry
+#: reference_type.xml:59 reference_type.xml:62 reference_type.xml:108
+#: reference_type.xml:112 reference_type.xml:116 reference_type.xml:154
+#: reference_type.xml:158 reference_type.xml:162 reference_type.xml:166
+#: reference_type.xml:170 reference_type.xml:174
+#, no-c-format
+msgid "automatic"
+msgstr "자동적"
+
+#. Tag: entry
+#: reference_type.xml:62 reference_type.xml:115 reference_type.xml:247
+#, no-c-format
+msgid "<entry>geometry</entry>"
+msgstr "<entry>geometry</entry>"
+
+#. Tag: title
+#: reference_type.xml:70 reference_type.xml:124 reference_type.xml:182
+#: reference_type.xml:214 reference_type.xml:256
 #, no-c-format
 msgid "See Also"
 msgstr "관련 정보"
 
 #. Tag: refname
-#: reference_type.xml:54
+#: reference_type.xml:77
 #, no-c-format
 msgid "<refname>box3d</refname>"
 msgstr "<refname>box3d</refname>"
 
 #. Tag: refpurpose
-#: reference_type.xml:55
-#, fuzzy, no-c-format
-msgid ""
-"A 3-dimensional bounding box. Used to describe the 3D extent of a geometry "
-"or collection of geometries."
+#: reference_type.xml:78
+#, no-c-format
+msgid "The type representing a 3-dimensional bounding box."
 msgstr ""
-"xmin, ymin, zmin, xmax, ymax, zmax로 구성된 박스. 지오메트리 또는 지오메트리 "
-"컬렉션의 3차원 공간범위-3D Extent를 반환하는데 주로 사용됩니다."
 
 #. Tag: para
-#: reference_type.xml:61
+#: reference_type.xml:83
 #, fuzzy, no-c-format
 msgid ""
-"<varname>box3d</varname> is a postgis spatial data type used to represent "
-"the three-dimensional enclosing box of a geometry or collection of "
+"<varname>box3d</varname> is a PostGIS spatial data type used to represent "
+"the three-dimensional bounding box enclosing a geometry or collection of "
 "geometries. For example, the <xref linkend=\"ST_3DExtent\"/> aggregate "
 "function returns a <varname>box3d</varname> object."
 msgstr ""
@@ -150,7 +202,7 @@ msgstr ""
 "간 데이터 타입입니다. ST_3DExtent는 box3d 객체를 반환합니다."
 
 #. Tag: para
-#: reference_type.xml:65
+#: reference_type.xml:88
 #, no-c-format
 msgid ""
 "The representation contains the values <varname>xmin, ymin, zmin, xmax, "
@@ -158,68 +210,34 @@ msgid ""
 "and Z extents."
 msgstr ""
 
-#. Tag: title
-#: reference_type.xml:71 reference_type.xml:117 reference_type.xml:210
-#, no-c-format
-msgid "Casting Behavior"
-msgstr "캐스팅 동작"
-
 #. Tag: para
-#: reference_type.xml:72 reference_type.xml:118 reference_type.xml:211
+#: reference_type.xml:92
 #, no-c-format
 msgid ""
-"This section lists the automatic as well as explicit casts allowed for this "
-"data type"
+"<varname>box3d</varname> objects have a text representation which looks like "
+"<code>BOX3D(1 2 3,5 6 5)</code>."
 msgstr ""
-"이 섹션에는 자동 형변환 뿐만 아니라 이 데이터 유형에 허용되는 명시적 캐스팅"
-"이 나열됩니다. "
 
 #. Tag: entry
-#: reference_type.xml:77 reference_type.xml:123 reference_type.xml:216
-#, no-c-format
-msgid "Cast To"
-msgstr "변환 대상"
-
-#. Tag: entry
-#: reference_type.xml:78 reference_type.xml:124 reference_type.xml:217
-#, no-c-format
-msgid "Behavior"
-msgstr "동작"
-
-#. Tag: entry
-#: reference_type.xml:81 reference_type.xml:127
+#: reference_type.xml:107 reference_type.xml:153
 #, no-c-format
 msgid "<entry>box</entry>"
 msgstr "<entry>box</entry>"
 
 #. Tag: entry
-#: reference_type.xml:82 reference_type.xml:86 reference_type.xml:90
-#: reference_type.xml:128 reference_type.xml:132 reference_type.xml:136
-#: reference_type.xml:140 reference_type.xml:144 reference_type.xml:148
-#, no-c-format
-msgid "automatic"
-msgstr "자동적"
-
-#. Tag: entry
-#: reference_type.xml:85 reference_type.xml:131
+#: reference_type.xml:111 reference_type.xml:157
 #, no-c-format
 msgid "<entry>box2d</entry>"
 msgstr "<entry>box2d</entry>"
 
-#. Tag: entry
-#: reference_type.xml:89 reference_type.xml:220
-#, no-c-format
-msgid "<entry>geometry</entry>"
-msgstr "<entry>geometry</entry>"
-
 #. Tag: refname
-#: reference_type.xml:106
+#: reference_type.xml:132
 #, no-c-format
 msgid "<refname>geometry</refname>"
 msgstr "<refname>geometry</refname>"
 
 #. Tag: refpurpose
-#: reference_type.xml:107
+#: reference_type.xml:133
 #, fuzzy, no-c-format
 msgid "The type representing spatial features with planar coordinate systems."
 msgstr ""
@@ -227,7 +245,7 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#: reference_type.xml:112
+#: reference_type.xml:138
 #, fuzzy, no-c-format
 msgid ""
 "<varname>geometry</varname> is a fundamental PostGIS spatial data type used "
@@ -237,7 +255,7 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#: reference_type.xml:113
+#: reference_type.xml:139
 #, no-c-format
 msgid ""
 "All spatial operations on geometry use the units of the Spatial Reference "
@@ -245,49 +263,43 @@ msgid ""
 msgstr ""
 
 #. Tag: entry
-#: reference_type.xml:135
-#, no-c-format
-msgid "<entry>box3d</entry>"
-msgstr "<entry>box3d</entry>"
-
-#. Tag: entry
-#: reference_type.xml:139
+#: reference_type.xml:165
 #, no-c-format
 msgid "bytea"
 msgstr "bytea"
 
 #. Tag: entry
-#: reference_type.xml:143
+#: reference_type.xml:169
 #, no-c-format
 msgid "<entry>geography</entry>"
 msgstr "<entry>geography</entry>"
 
 #. Tag: entry
-#: reference_type.xml:147
+#: reference_type.xml:173
 #, no-c-format
 msgid "text"
 msgstr "text"
 
 #. Tag: para
-#: reference_type.xml:157
+#: reference_type.xml:183
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"PostGIS_SQLMM_Functions\"/>"
 msgstr ", <xref linkend=\"PostGIS_Geography\"/>"
 
 #. Tag: refname
-#: reference_type.xml:163
+#: reference_type.xml:189
 #, no-c-format
 msgid "geometry_dump"
 msgstr "geometry_dump"
 
 #. Tag: refpurpose
-#: reference_type.xml:164
+#: reference_type.xml:190
 #, no-c-format
 msgid "A composite type used to describe the parts of complex geometry."
 msgstr ""
 
 #. Tag: para
-#: reference_type.xml:169
+#: reference_type.xml:195
 #, no-c-format
 msgid ""
 "<varname>geometry_dump</varname> is a <ulink url=\"https://www.postgresql."
@@ -296,23 +308,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_type.xml:174
-#, no-c-format
-msgid "<varname>geom</varname> - a references to a component geometry"
-msgstr ""
-
-#. Tag: para
-#: reference_type.xml:177
+#: reference_type.xml:200
 #, no-c-format
 msgid ""
-"<varname>path[]</varname> - a 1-dimensional integer array that defines the "
-"navigation path within the dumped geometry to the <varname>geom</varname> "
-"component. The path array starts at 1 (e.g. <varname>path[1]</varname> is "
-"the first element.)"
+"<varname>geom</varname> - a geometry representing a component of the dumped "
+"geometry. The geometry type depends on the originating function."
 msgstr ""
 
 #. Tag: para
-#: reference_type.xml:182
+#: reference_type.xml:204
+#, no-c-format
+msgid ""
+"<varname>path[]</varname> - an integer array that defines the navigation "
+"path within the dumped geometry to the <varname>geom</varname> component. "
+"The path array is 1-based (i.e. <varname>path[1]</varname> is the first "
+"element.)"
+msgstr ""
+
+#. Tag: para
+#: reference_type.xml:209
 #, no-c-format
 msgid ""
 "It is used by the <varname>ST_Dump*</varname> family of functions as an "
@@ -320,13 +334,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_type.xml:194
+#: reference_type.xml:221
 #, no-c-format
 msgid "<refname>geography</refname>"
 msgstr "<refname>geography</refname>"
 
 #. Tag: refpurpose
-#: reference_type.xml:195
+#: reference_type.xml:222
 #, no-c-format
 msgid ""
 "The type representing spatial features with geodetic (ellipsoidal) "
@@ -334,7 +348,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_type.xml:200
+#: reference_type.xml:227
 #, fuzzy, no-c-format
 msgid ""
 "<varname>geography</varname> is a spatial data type used to represent a "
@@ -345,7 +359,7 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#: reference_type.xml:203
+#: reference_type.xml:230
 #, no-c-format
 msgid ""
 "Spatial operations on the geography type provide more accurate results by "
@@ -353,16 +367,32 @@ msgid ""
 msgstr ""
 
 #. Tag: entry
-#: reference_type.xml:221
+#: reference_type.xml:248
 #, no-c-format
 msgid "explicit"
 msgstr "명시적"
 
 #. Tag: para
-#: reference_type.xml:230
+#: reference_type.xml:257
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"PostGIS_GeographyFunctions\"/>"
 msgstr ", <xref linkend=\"PostGIS_Geography\"/>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "A 2-dimensional bounding box. Used to describe the 2D extent of a "
+#~ "geometry or collection of geometries."
+#~ msgstr ""
+#~ "xmin, ymin, zmin, xmax, ymax, zmax로 구성된 박스. 지오메트리 또는 지오메트"
+#~ "리 컬렉션의 3차원 공간범위-3D Extent를 반환하는데 주로 사용됩니다."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "A 3-dimensional bounding box. Used to describe the 3D extent of a "
+#~ "geometry or collection of geometries."
+#~ msgstr ""
+#~ "xmin, ymin, zmin, xmax, ymax, zmax로 구성된 박스. 지오메트리 또는 지오메트"
+#~ "리 컬렉션의 3차원 공간범위-3D Extent를 반환하는데 주로 사용됩니다."
 
 #~ msgid ""
 #~ "A Cast is when one type is coerced into another type. PostgreSQL is "

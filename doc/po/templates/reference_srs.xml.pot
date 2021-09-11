@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-12-19 17:06+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -270,8 +270,8 @@ msgstr ""
 #: reference_srs.xml:166
 #, no-c-format
 msgid ""
-"Requires PostGIS be compiled with Proj support. Use <xref linkend="
-"\"PostGIS_Full_Version\"/> to confirm you have proj support compiled in."
+"Requires PostGIS be compiled with PROJ support. Use <xref linkend="
+"\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled in."
 msgstr ""
 
 #. Tag: para
@@ -365,11 +365,11 @@ msgstr ""
 #: reference_srs.xml:190
 #, no-c-format
 msgid ""
-"CREATE INDEX idx_the_geom_26986_parcels\n"
+"CREATE INDEX idx_geom_26986_parcels\n"
 "  ON parcels\n"
 "  USING gist\n"
-"  (ST_Transform(the_geom, 26986))\n"
-"  WHERE the_geom IS NOT NULL;"
+"  (ST_Transform(geom, 26986))\n"
+"  WHERE geom IS NOT NULL;"
 msgstr ""
 
 #. Tag: para
@@ -408,7 +408,7 @@ msgstr ""
 #. Tag: title
 #: reference_srs.xml:197
 #, no-c-format
-msgid "Configuring transformation behaviour"
+msgid "Configuring transformation behavior"
 msgstr ""
 
 #. Tag: para
@@ -419,7 +419,7 @@ msgid ""
 "example if PROJ.4 has not been built with grid-shift files or the coordinate "
 "does not lie within the range for which the grid shift is defined. By "
 "default, PostGIS will throw an error if a grid shift file is not present, "
-"but this behaviour can be configured on a per-SRID basis either by testing "
+"but this behavior can be configured on a per-SRID basis either by testing "
 "different <varname>to_proj</varname> values of PROJ.4 text, or altering the "
 "<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
 "varname> table."

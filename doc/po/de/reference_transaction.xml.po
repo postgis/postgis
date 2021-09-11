@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:39+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2019-03-11 09:30+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -120,13 +120,13 @@ msgstr "Beispiele"
 
 #. Tag: programlisting
 #: reference_transaction.xml:52
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
 "                BEGIN TRANSACTION;\n"
 "                        SELECT AddAuth('joey');\n"
-"                        UPDATE towns SET the_geom = "
-"ST_Translate(the_geom,2,2) WHERE gid = 353;\n"
+"                        UPDATE towns SET geom = ST_Translate(geom,2,2) WHERE "
+"gid = 353;\n"
 "                COMMIT;\n"
 "\n"
 "\n"

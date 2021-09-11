@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2014-01-03 08:07+0000\n"
 "Last-Translator: Jakub Bobrowski <jb@5dstudio.pl>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/postgis-1/"
@@ -96,11 +96,11 @@ msgstr "Przykłady"
 
 #. Tag: programlisting
 #: reference_exception.xml:42
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "UPDATE sometable\n"
-" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE PostGIS_HasBBox(the_geom) = false;"
+" SET geom =  PostGIS_AddBBox(geom)\n"
+" WHERE PostGIS_HasBBox(geom) = false;"
 msgstr ""
 "UPDATE sometable\n"
 " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
@@ -176,12 +176,12 @@ msgid ""
 "always\n"
 "                        -- returns the cached bounding box.\n"
 "                        UPDATE sometable\n"
-" SET the_geom =  PostGIS_DropBBox(the_geom)\n"
-" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+" SET geom =  PostGIS_DropBBox(geom)\n"
+" WHERE Not (Box2D(ST_AsBinary(geom)) = Box2D(geom));\n"
 "\n"
 "        UPDATE sometable\n"
-" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE Not PostGIS_HasBBOX(the_geom);"
+" SET geom =  PostGIS_AddBBox(geom)\n"
+" WHERE Not PostGIS_HasBBOX(geom);"
 msgstr ""
 
 #. Tag: para
@@ -223,10 +223,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_exception.xml:131
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT the_geom\n"
-"FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
+"SELECT geom\n"
+"FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
 msgstr ""
 "SELECT the_geom\n"
 "FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"

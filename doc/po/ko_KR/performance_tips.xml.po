@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-12-19 17:06+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2016-07-20 06:55+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -99,7 +99,7 @@ msgstr ""
 msgid ""
 "To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the postgres performance mailing list: <ulink url="
+"read the thread on the PostgreSQL performance mailing list: <ulink url="
 "\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
 "\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
 "ulink>"
@@ -168,11 +168,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:63
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT "
 "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
+"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
 msgstr ""
 "SELECT "
 "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
@@ -259,11 +259,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:95
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
 "ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"the_geom\" NOT "
+"HINT: You may be able to work around this by marking column \"geom\" NOT "
 "NULL."
 msgstr ""
 "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
@@ -283,9 +283,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:100
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
+"lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
 "ALTER TABLE"
 msgstr ""
 "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
@@ -331,9 +331,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:118
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
+"UPDATE mytable SET geom = ST_Force2D(geom);\n"
 "VACUUM FULL ANALYZE mytable;"
 msgstr ""
 "UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
@@ -355,15 +355,15 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:126
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "In case of large tables, it may be wise to divide this UPDATE into smaller "
 "portions by constraining the UPDATE to a part of the table via a WHERE "
 "clause and your primary key or another feasible criteria, and running a "
 "simple \"VACUUM;\" between your UPDATEs. This drastically reduces the need "
 "for temporary disk space. Additionally, if you have mixed dimension "
-"geometries, restricting the UPDATE by \"WHERE dimension(the_geom)&gt;2\" "
-"skips re-writing of geometries that already are in 2D."
+"geometries, restricting the UPDATE by \"WHERE dimension(geom)&gt;2\" skips "
+"re-writing of geometries that already are in 2D."
 msgstr ""
 "대용량 테이블의 경우, 사용자의 기본 키 또는 또다른 사용 가능한 기준과 함께 "
 "WHERE 절을 이용해서 테이블의 일부분만 업데이트하도록 제한한 다음 업데이트마"

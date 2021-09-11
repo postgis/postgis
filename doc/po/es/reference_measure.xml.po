@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-02-01 19:38+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: nramire1 nramire1\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -56,19 +56,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:34 reference_measure.xml:97 reference_measure.xml:173
-#: reference_measure.xml:217 reference_measure.xml:291
-#: reference_measure.xml:372 reference_measure.xml:448
-#: reference_measure.xml:497 reference_measure.xml:544
-#: reference_measure.xml:600 reference_measure.xml:672
-#: reference_measure.xml:737 reference_measure.xml:794
-#: reference_measure.xml:826 reference_measure.xml:869
-#: reference_measure.xml:923 reference_measure.xml:1017
-#: reference_measure.xml:1084 reference_measure.xml:1131
-#: reference_measure.xml:1173 reference_measure.xml:1247
-#: reference_measure.xml:1294 reference_measure.xml:1345
-#: reference_measure.xml:1380 reference_measure.xml:1426
-#: reference_measure.xml:1482 reference_measure.xml:1559
+#: reference_measure.xml:34 reference_measure.xml:97 reference_measure.xml:176
+#: reference_measure.xml:237 reference_measure.xml:311
+#: reference_measure.xml:392 reference_measure.xml:468
+#: reference_measure.xml:517 reference_measure.xml:564
+#: reference_measure.xml:620 reference_measure.xml:692
+#: reference_measure.xml:757 reference_measure.xml:814
+#: reference_measure.xml:846 reference_measure.xml:889
+#: reference_measure.xml:943 reference_measure.xml:1038
+#: reference_measure.xml:1105 reference_measure.xml:1157
+#: reference_measure.xml:1199 reference_measure.xml:1283
+#: reference_measure.xml:1330 reference_measure.xml:1381
+#: reference_measure.xml:1416 reference_measure.xml:1462
+#: reference_measure.xml:1518 reference_measure.xml:1595
 #, no-c-format
 msgid "Description"
 msgstr "Descripción"
@@ -91,22 +91,22 @@ msgid "Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:42 reference_measure.xml:389
+#: reference_measure.xml:42 reference_measure.xml:409
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for "
-"improved accuracy and robustness. Requires Proj &gt;= 4.9.0 to take "
+"improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take "
 "advantage of the new feature."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:43 reference_measure.xml:390
+#: reference_measure.xml:43 reference_measure.xml:410
 #, no-c-format
 msgid "Changed: 3.0.0 - does not depend on SFCGAL anymore."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:44 reference_measure.xml:382
+#: reference_measure.xml:44 reference_measure.xml:402
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
@@ -118,9 +118,9 @@ msgid "&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:46 reference_measure.xml:298 reference_measure.xml:455
-#: reference_measure.xml:1029 reference_measure.xml:1138
-#: reference_measure.xml:1575
+#: reference_measure.xml:46 reference_measure.xml:318 reference_measure.xml:475
+#: reference_measure.xml:1050 reference_measure.xml:1164
+#: reference_measure.xml:1611
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
@@ -135,16 +135,16 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:52 reference_measure.xml:113 reference_measure.xml:188
-#: reference_measure.xml:227 reference_measure.xml:304
-#: reference_measure.xml:464 reference_measure.xml:511
-#: reference_measure.xml:561 reference_measure.xml:626
-#: reference_measure.xml:701 reference_measure.xml:836
-#: reference_measure.xml:886 reference_measure.xml:936
-#: reference_measure.xml:1033 reference_measure.xml:1096
-#: reference_measure.xml:1145 reference_measure.xml:1214
-#: reference_measure.xml:1259 reference_measure.xml:1390
-#: reference_measure.xml:1498 reference_measure.xml:1579
+#: reference_measure.xml:52 reference_measure.xml:116 reference_measure.xml:194
+#: reference_measure.xml:247 reference_measure.xml:324
+#: reference_measure.xml:484 reference_measure.xml:531
+#: reference_measure.xml:581 reference_measure.xml:646
+#: reference_measure.xml:721 reference_measure.xml:856
+#: reference_measure.xml:906 reference_measure.xml:956
+#: reference_measure.xml:1054 reference_measure.xml:1119
+#: reference_measure.xml:1171 reference_measure.xml:1247
+#: reference_measure.xml:1295 reference_measure.xml:1426
+#: reference_measure.xml:1534 reference_measure.xml:1615
 #, no-c-format
 msgid "Examples"
 msgstr "Ejemplos"
@@ -253,19 +253,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:71 reference_measure.xml:144 reference_measure.xml:262
-#: reference_measure.xml:330 reference_measure.xml:419
-#: reference_measure.xml:471 reference_measure.xml:518
-#: reference_measure.xml:568 reference_measure.xml:632
-#: reference_measure.xml:711 reference_measure.xml:772
-#: reference_measure.xml:803 reference_measure.xml:845
-#: reference_measure.xml:893 reference_measure.xml:989
-#: reference_measure.xml:1059 reference_measure.xml:1104
-#: reference_measure.xml:1151 reference_measure.xml:1220
-#: reference_measure.xml:1264 reference_measure.xml:1322
-#: reference_measure.xml:1357 reference_measure.xml:1397
-#: reference_measure.xml:1453 reference_measure.xml:1532
-#: reference_measure.xml:1605
+#: reference_measure.xml:71 reference_measure.xml:147 reference_measure.xml:208
+#: reference_measure.xml:282 reference_measure.xml:350
+#: reference_measure.xml:439 reference_measure.xml:491
+#: reference_measure.xml:538 reference_measure.xml:588
+#: reference_measure.xml:652 reference_measure.xml:731
+#: reference_measure.xml:792 reference_measure.xml:823
+#: reference_measure.xml:865 reference_measure.xml:913
+#: reference_measure.xml:1010 reference_measure.xml:1080
+#: reference_measure.xml:1130 reference_measure.xml:1177
+#: reference_measure.xml:1253 reference_measure.xml:1300
+#: reference_measure.xml:1358 reference_measure.xml:1393
+#: reference_measure.xml:1433 reference_measure.xml:1489
+#: reference_measure.xml:1568 reference_measure.xml:1641
 #, no-c-format
 msgid "See Also"
 msgstr "Ver también"
@@ -289,9 +289,7 @@ msgstr "ST_Azimuth"
 #. Tag: refpurpose
 #: reference_measure.xml:80
 #, no-c-format
-msgid ""
-"Returns the north-based azimuth as the angle in radians measured clockwise "
-"from the vertical on pointA to pointB."
+msgid "Returns the north-based azimuth of a line between two points."
 msgstr ""
 
 #. Tag: funcsynopsis
@@ -311,73 +309,78 @@ msgstr ""
 #: reference_measure.xml:99
 #, no-c-format
 msgid ""
-"Returns the azimuth in radians of the segment defined by the given point "
-"geometries, or NULL if the two points are coincident. The azimuth is angle "
-"is referenced from north, and is positive clockwise: North = 0; East = "
-"&#x03C0;/2; South = &#x03C0;; West = 3&#x03C0;/2."
-msgstr ""
-
-#. Tag: para
-#: reference_measure.xml:101
-#, no-c-format
-msgid ""
-"For the geography type, the forward azimuth is solved as part of the inverse "
-"geodesic problem."
+"Returns the azimuth in radians of the line segment defined by the given "
+"point geometries, or NULL if the two points are coincident. The azimuth "
+"angle is referenced from north (the positive Y axis), and is positive "
+"clockwise: North = 0; Northeast = &#x03C0;/4; East = &#x03C0;/2; Southeast = "
+"3&#x03C0;/4; South = &#x03C0;; Southwest 5&#x03C0;/4; West = 3&#x03C0;/2; "
+"Northwest = 7&#x03C0;/4."
 msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:102
 #, no-c-format
 msgid ""
-"The azimuth is mathematical concept defined as the angle between a reference "
-"plane and a point, with angular units in radians. Units can be converted to "
-"degrees using a built-in PostgreSQL function degrees(), as shown in the "
-"example."
+"For the geography type, the azimuth solution is known as the <ulink url="
+"\"https://en.wikipedia.org/wiki/Geodesics_on_an_ellipsoid\">inverse geodesic "
+"problem</ulink>."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:105
+#: reference_measure.xml:104
 #, no-c-format
-msgid "Availability: 1.1.0"
-msgstr "Disponibilidad: 1.1.0"
-
-#. Tag: para
-#: reference_measure.xml:106
-#, no-c-format
-msgid "Enhanced: 2.0.0 support for geography was introduced."
+msgid ""
+"The azimuth is a mathematical concept defined as the angle between a "
+"reference plane and a point, with angular units in radians. The result value "
+"in radians can be converted to degrees using the PostgreSQL function "
+"<varname>degrees()</varname>."
 msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:107
 #, no-c-format
 msgid ""
+"Azimuth can be used in conjunction with <xref linkend=\"ST_Translate\"/> to "
+"shift an object along its perpendicular axis. See the "
+"<varname>upgis_lineshift()</varname> function in the <ulink url=\"http://"
+"trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions\">PostGIS wiki</ulink> "
+"for an implementation of this."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:110
+#, no-c-format
+msgid "Availability: 1.1.0"
+msgstr "Disponibilidad: 1.1.0"
+
+#. Tag: para
+#: reference_measure.xml:111
+#, no-c-format
+msgid "Enhanced: 2.0.0 support for geography was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:112
+#, no-c-format
+msgid ""
 "Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for "
-"improved accuracy and robustness. Requires Proj &gt;= 4.9.0 to take "
+"improved accuracy and robustness. Requires PROJ &gt;= 4.9.0 to take "
 "advantage of the new feature."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:108
-#, no-c-format
-msgid ""
-"Azimuth is especially useful in conjunction with ST_Translate for shifting "
-"an object along its perpendicular axis. See upgis_lineshift <ulink url="
-"\"http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions"
-"\">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this."
-msgstr ""
-
-#. Tag: para
-#: reference_measure.xml:114 reference_measure.xml:189
+#: reference_measure.xml:117
 #, no-c-format
 msgid "Geometry Azimuth in degrees"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:115
+#: reference_measure.xml:118
 #, no-c-format
 msgid ""
-"SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,\n"
-"            degrees(ST_Azimuth(ST_Point(75, 100), ST_Point(25, 45))) AS "
+"SELECT degrees(ST_Azimuth( ST_Point(25, 45),  ST_Point(75, 100))) AS "
+"degA_B,\n"
+"           degrees(ST_Azimuth( ST_Point(75, 100), ST_Point(25, 45) )) AS "
 "degB_A;\n"
 "\n"
 "      dega_b       |     degb_a\n"
@@ -386,7 +389,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:125
+#: reference_measure.xml:128
 #, no-c-format
 msgid ""
 "Green: the start Point(25,45) with its vertical. Yellow: degA_B as the path "
@@ -394,7 +397,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:134
+#: reference_measure.xml:137
 #, no-c-format
 msgid ""
 "Green: the start Point(75,100) with its vertical. Yellow: degB_A as the path "
@@ -402,30 +405,29 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:145
+#: reference_measure.xml:148
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Translate\"/>, <xref linkend=\"ST_Project\"/>, <ulink "
-"url=\"http://www.postgresql.org/docs/current/interactive/functions-math.html"
-"\">PostgreSQL Math Functions</ulink>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
+"linkend=\"ST_Project\"/>, <ulink url=\"http://www.postgresql.org/docs/"
+"current/interactive/functions-math.html\">PostgreSQL Math Functions</ulink>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:152
+#: reference_measure.xml:155
 #, no-c-format
 msgid "ST_Angle"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:154
+#: reference_measure.xml:157
 #, no-c-format
 msgid ""
-"Returns the angle between 3 points, or between 2 vectors (4 points or 2 "
-"lines)."
+"Returns the angle between two vectors defined by 3 or 4 points, or 2 lines."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:157
+#: reference_measure.xml:160
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Angle</function></funcdef> "
@@ -440,73 +442,112 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:175
+#: reference_measure.xml:178
+#, no-c-format
+msgid "Computes the clockwise angle between two vectors."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:181
 #, no-c-format
 msgid ""
-"For 3 points, computes the angle measured clockwise of P1P2P3. If input are "
-"2 lines, get first and last point of the lines as 4 points. For 4 points,"
-"compute the angle measured clockwise of P1P2,P3P4. Results are always "
-"positive, between 0 and 2*Pi radians. Uses azimuth of pairs or points."
+"<emphasis role=\"bold\">Variant 1:</emphasis> computes the angle enclosed by "
+"the points P1-P2-P3. If a 4th point provided computes the angle points P1-P2 "
+"and P3-P4"
 msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:182
 #, no-c-format
-msgid "ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)"
+msgid ""
+"<emphasis role=\"bold\">Variant 2:</emphasis> computes the angle between two "
+"vectors S1-E1 and S2-E2, defined by the start and end points of the input "
+"lines"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:183
+#: reference_measure.xml:186
 #, no-c-format
 msgid ""
-"Result is in radian and can be converted to degrees using a built-in "
-"PostgreSQL function degrees(), as shown in the example."
+"The result is a positive angle between 0 and 2&#x03C0; radians. The radian "
+"result can be converted to degrees using the PostgreSQL function "
+"<varname>degrees()</varname>."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:184
+#: reference_measure.xml:189
+#, no-c-format
+msgid ""
+"Note that <varname>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</varname>."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:190
 #, no-c-format
 msgid "Availability: 2.5.0"
 msgstr ""
 
+#. Tag: para
+#: reference_measure.xml:196
+#, no-c-format
+msgid "Angle between three points"
+msgstr ""
+
 #. Tag: programlisting
-#: reference_measure.xml:190
+#: reference_measure.xml:197
 #, no-c-format
 msgid ""
-"WITH rand AS (\n"
-"                SELECT s, random() * 2 * PI() AS rad1\n"
-"                        , random() * 2 * PI() AS rad2\n"
-"                FROM  generate_series(1,2,2) AS s\n"
-"        )\n"
-"         , points AS (\n"
-"                SELECT s, rad1,rad2, ST_MakePoint(cos1+s,sin1+s) as p1, "
-"ST_MakePoint(s,s) AS p2, ST_MakePoint(cos2+s,sin2+s) as p3\n"
-"                FROM rand\n"
-"                        ,cos(rad1) cos1, sin(rad1) sin1\n"
-"                        ,cos(rad2) cos2, sin(rad2) sin2\n"
-"        )\n"
-"        SELECT s, ST_AsText(ST_SnapToGrid(ST_MakeLine(ARRAY[p1,p2,"
-"p3]),0.001)) AS line\n"
-"                , degrees(ST_Angle(p1,p2,p3)) as computed_angle\n"
-"                , round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 "
-"AS reference\n"
-"                , round(degrees(2*PI()-rad2 -2*PI()+rad1+2*PI()))::int%360 "
-"AS reference\n"
-"        FROM points ;\n"
+"SELECT degrees( ST_Angle('POINT(0 0)', 'POINT(10 10)', 'POINT(20 0)') );\n"
 "\n"
-"1 | line | computed_angle | reference\n"
-"------------------+------------------\n"
-"1 | LINESTRING(1.511 1.86,1 1,0.896 0.005) | 155.27033848688 | 155"
+" degrees\n"
+"---------\n"
+"     270"
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:199
+#, no-c-format
+msgid "Angle between vectors defined by four points"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_measure.xml:200
+#, no-c-format
+msgid ""
+"SELECT degrees( ST_Angle('POINT (10 10)', 'POINT (0 0)', 'POINT(90 90)', "
+"'POINT (100 80)') );\n"
+"\n"
+"      degrees\n"
+"-------------------\n"
+" 269.9999999999999"
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:202
+#, no-c-format
+msgid "Angle between vectors defined by the start and end points of lines"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_measure.xml:203
+#, no-c-format
+msgid ""
+"SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, "
+"0.2 0.5, 1 0)') );\n"
+"\n"
+"      degrees\n"
+"--------------\n"
+"           45"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:196
+#: reference_measure.xml:216
 #, no-c-format
 msgid "ST_ClosestPoint"
 msgstr "ST_ClosestPoint"
 
 #. Tag: refpurpose
-#: reference_measure.xml:198
+#: reference_measure.xml:218
 #, no-c-format
 msgid ""
 "Returns the 2D point on g1 that is closest to g2. This is the first point of "
@@ -514,7 +555,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:204
+#: reference_measure.xml:224
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ClosestPoint</function></funcdef> "
@@ -523,7 +564,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:219
+#: reference_measure.xml:239
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional point on g1 that is closest to g2. This is the "
@@ -531,7 +572,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:222
+#: reference_measure.xml:242
 #, no-c-format
 msgid ""
 "If you have a 3D Geometry, you may prefer to use <xref linkend="
@@ -539,15 +580,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:223 reference_measure.xml:696
-#: reference_measure.xml:931 reference_measure.xml:1093
-#: reference_measure.xml:1494
+#: reference_measure.xml:243 reference_measure.xml:716
+#: reference_measure.xml:951 reference_measure.xml:1116
+#: reference_measure.xml:1530
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "Disponibilidad: 1.5.0"
 
 #. Tag: para
-#: reference_measure.xml:237
+#: reference_measure.xml:257
 #, no-c-format
 msgid ""
 "Closest between point and linestring is the point itself, but closest point "
@@ -555,7 +596,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:241
+#: reference_measure.xml:261
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_ClosestPoint(pt,line)) AS cp_pt_line,\n"
@@ -572,13 +613,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:249
+#: reference_measure.xml:269
 #, no-c-format
 msgid "closest point on polygon A to polygon B"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:252
+#: reference_measure.xml:272
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -595,7 +636,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:264
+#: reference_measure.xml:284
 #, no-c-format
 msgid ""
 ",<xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
@@ -603,13 +644,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:270
+#: reference_measure.xml:290
 #, no-c-format
 msgid "ST_3DClosestPoint"
 msgstr "ST_3DClosestPoint"
 
 #. Tag: refpurpose
-#: reference_measure.xml:272
+#: reference_measure.xml:292
 #, no-c-format
 msgid ""
 "Returns the 3D point on g1 that is closest to g2. This is the first point of "
@@ -617,7 +658,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:278
+#: reference_measure.xml:298
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_3DClosestPoint</function></funcdef> "
@@ -629,7 +670,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
-#: reference_measure.xml:293
+#: reference_measure.xml:313
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional point on g1 that is closest to g2. This is the "
@@ -638,25 +679,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:296 reference_measure.xml:453
-#: reference_measure.xml:830 reference_measure.xml:882
-#: reference_measure.xml:1027 reference_measure.xml:1136
-#: reference_measure.xml:1384 reference_measure.xml:1573
+#: reference_measure.xml:316 reference_measure.xml:473
+#: reference_measure.xml:850 reference_measure.xml:902
+#: reference_measure.xml:1048 reference_measure.xml:1162
+#: reference_measure.xml:1420 reference_measure.xml:1609
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
-#: reference_measure.xml:299 reference_measure.xml:458
-#: reference_measure.xml:1025 reference_measure.xml:1140
-#: reference_measure.xml:1441 reference_measure.xml:1571
+#: reference_measure.xml:319 reference_measure.xml:478
+#: reference_measure.xml:1046 reference_measure.xml:1166
+#: reference_measure.xml:1477 reference_measure.xml:1607
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Disponibilidad: 2.0.0"
 
 #. Tag: para
-#: reference_measure.xml:300 reference_measure.xml:1026
-#: reference_measure.xml:1572
+#: reference_measure.xml:320 reference_measure.xml:1047
+#: reference_measure.xml:1608
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned "
@@ -665,13 +706,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:309
+#: reference_measure.xml:329
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d closest point"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:310
+#: reference_measure.xml:330
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,\n"
@@ -691,13 +732,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:314
+#: reference_measure.xml:334
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d closest point"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:315
+#: reference_measure.xml:335
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,\n"
@@ -714,13 +755,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:319
+#: reference_measure.xml:339
 #, no-c-format
 msgid "Multilinestring and polygon both 3d and 2d closest point"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:320
+#: reference_measure.xml:340
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DClosestPoint(poly, mline)) As cp3d,\n"
@@ -736,7 +777,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:332
+#: reference_measure.xml:352
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClosestPoint\"/>, <xref linkend=\"ST_3DDistance\"/>, "
@@ -744,19 +785,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:338
+#: reference_measure.xml:358
 #, no-c-format
 msgid "ST_Distance"
 msgstr "ST_Distance"
 
 #. Tag: refpurpose
-#: reference_measure.xml:340
+#: reference_measure.xml:360
 #, no-c-format
 msgid "Returns the distance between two geometry or geography values."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:343
+#: reference_measure.xml:363
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Distance</function></funcdef> "
@@ -765,12 +806,12 @@ msgid ""
 "funcprototype> <funcprototype> <funcdef>float <function>ST_Distance</"
 "function></funcdef> <paramdef><type>geography </type> <parameter>geog1</"
 "parameter></paramdef> <paramdef><type>geography </type> <parameter>geog2</"
-"parameter></paramdef> <paramdef choice=\"opt\">><type>boolean </type> "
+"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:374
+#: reference_measure.xml:394
 #, no-c-format
 msgid ""
 "For <xref linkend=\"geometry\"/> types returns the minimum 2D Cartesian "
@@ -779,7 +820,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:377
+#: reference_measure.xml:397
 #, no-c-format
 msgid ""
 "For <xref linkend=\"geography\"/> types defaults to return the minimum "
@@ -789,19 +830,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:383
+#: reference_measure.xml:403
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.23"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:384
+#: reference_measure.xml:404
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
 
 #. Tag: para
-#: reference_measure.xml:386
+#: reference_measure.xml:406
 #, no-c-format
 msgid ""
 "Availability: 1.5.0 geography support was introduced in 1.5. Speed "
@@ -809,7 +850,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:387
+#: reference_measure.xml:407
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://"
@@ -818,19 +859,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:388
+#: reference_measure.xml:408
 #, no-c-format
 msgid "Enhanced: 2.1.0 - support for curved geometries was introduced."
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:394
+#: reference_measure.xml:414
 #, no-c-format
 msgid "Basic Geometry Examples"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:396
+#: reference_measure.xml:416
 #, no-c-format
 msgid ""
 "Geometry example - units in planar degrees 4326 is WGS 84 long lat, units "
@@ -838,7 +879,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:397
+#: reference_measure.xml:417
 #, no-c-format
 msgid ""
 "SELECT ST_Distance(\n"
@@ -852,7 +893,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:399
+#: reference_measure.xml:419
 #, no-c-format
 msgid ""
 "Geometry example - units in meters (SRID: 3857, proportional to pixels on "
@@ -861,7 +902,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:402
+#: reference_measure.xml:422
 #, no-c-format
 msgid ""
 "SELECT ST_Distance(\n"
@@ -876,7 +917,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:404
+#: reference_measure.xml:424
 #, no-c-format
 msgid ""
 "Geometry example - units in meters (SRID: 3857 as above, but corrected by "
@@ -884,7 +925,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:405
+#: reference_measure.xml:425
 #, no-c-format
 msgid ""
 "SELECT ST_Distance(\n"
@@ -899,7 +940,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:407
+#: reference_measure.xml:427
 #, no-c-format
 msgid ""
 "Geometry example - units in meters (SRID: 26986 Massachusetts state plane "
@@ -907,7 +948,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:408
+#: reference_measure.xml:428
 #, no-c-format
 msgid ""
 "SELECT ST_Distance(\n"
@@ -922,7 +963,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:410
+#: reference_measure.xml:430
 #, no-c-format
 msgid ""
 "Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) "
@@ -930,7 +971,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:411
+#: reference_measure.xml:431
 #, no-c-format
 msgid ""
 "SELECT ST_Distance(\n"
@@ -946,13 +987,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:414 reference_measure.xml:767
+#: reference_measure.xml:434 reference_measure.xml:787
 #, no-c-format
 msgid "Geography Examples"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:415
+#: reference_measure.xml:435
 #, no-c-format
 msgid ""
 "Same as geometry example but note units in meters - use sphere for slightly "
@@ -960,7 +1001,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:416
+#: reference_measure.xml:436
 #, no-c-format
 msgid ""
 "SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) "
@@ -977,7 +1018,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:421
+#: reference_measure.xml:441
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DistanceSphere\"/>, "
@@ -987,13 +1028,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:428
+#: reference_measure.xml:448
 #, no-c-format
 msgid "ST_3DDistance"
 msgstr "ST_3DDistance"
 
 #. Tag: refpurpose
-#: reference_measure.xml:430
+#: reference_measure.xml:450
 #, no-c-format
 msgid ""
 "Returns the 3D cartesian minimum distance (based on spatial ref) between two "
@@ -1001,7 +1042,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:435
+#: reference_measure.xml:455
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_3DDistance</function></funcdef> "
@@ -1010,7 +1051,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:450
+#: reference_measure.xml:470
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional minimum cartesian distance between two geometries "
@@ -1018,13 +1059,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:456
+#: reference_measure.xml:476
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ?"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:459 reference_measure.xml:1141
+#: reference_measure.xml:479 reference_measure.xml:1167
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for "
@@ -1032,13 +1073,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:460
+#: reference_measure.xml:480
 #, no-c-format
 msgid "Changed: 3.0.0 - SFCGAL version removed"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:466
+#: reference_measure.xml:486
 #, no-c-format
 msgid ""
 "-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal "
@@ -1064,7 +1105,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:467
+#: reference_measure.xml:487
 #, no-c-format
 msgid ""
 "-- Multilinestring and polygon both 3d and 2d distance\n"
@@ -1081,7 +1122,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:473
+#: reference_measure.xml:493
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_3DClosestPoint\"/>, <xref linkend=\"ST_3DDWithin\"/>, "
@@ -1090,13 +1131,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:479
+#: reference_measure.xml:499
 #, no-c-format
 msgid "ST_DistanceSphere"
 msgstr "ST_DistanceSphere"
 
 #. Tag: refpurpose
-#: reference_measure.xml:481
+#: reference_measure.xml:501
 #, no-c-format
 msgid ""
 "Returns minimum distance in meters between two lon/lat geometries using a "
@@ -1104,7 +1145,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:488
+#: reference_measure.xml:508
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_DistanceSphere</function></funcdef> "
@@ -1114,7 +1155,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:499
+#: reference_measure.xml:519
 #, no-c-format
 msgid ""
 "Returns minimum distance in meters between two lon/lat points. Uses a "
@@ -1124,7 +1165,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:505 reference_measure.xml:555
+#: reference_measure.xml:525 reference_measure.xml:575
 #, no-c-format
 msgid ""
 "Availability: 1.5 - support for other geometry types besides points was "
@@ -1132,29 +1173,29 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:506
+#: reference_measure.xml:526
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:513
+#: reference_measure.xml:533
 #, no-c-format
 msgid ""
-"SELECT round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), "
+"SELECT round(CAST(ST_DistanceSphere(ST_Centroid(geom), "
 "ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,\n"
-"round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),\n"
+"round(CAST(ST_Distance(ST_Transform(ST_Centroid(geom),32611),\n"
 "                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) "
 "As numeric),2) As dist_utm11_meters,\n"
-"round(CAST(ST_Distance(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 "
-"38)', 4326)) As numeric),5) As dist_degrees,\n"
-"round(CAST(ST_Distance(ST_Transform(the_geom,32611),\n"
+"round(CAST(ST_Distance(ST_Centroid(geom), ST_GeomFromText('POINT(-118 38)', "
+"4326)) As numeric),5) As dist_degrees,\n"
+"round(CAST(ST_Distance(ST_Transform(geom,32611),\n"
 "                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) "
 "As numeric),2) As min_dist_line_point_meters\n"
 "FROM\n"
 "        (SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', "
-"4326) As the_geom) as foo;\n"
+"4326) As geom) as foo;\n"
 "         dist_meters | dist_utm11_meters | dist_degrees | "
 "min_dist_line_point_meters\n"
 "        -------------+-------------------+--------------"
@@ -1164,19 +1205,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:520
+#: reference_measure.xml:540
 #, no-c-format
 msgid ", <xref linkend=\"ST_Distance_Spheroid\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:526
+#: reference_measure.xml:546
 #, no-c-format
 msgid "ST_DistanceSpheroid"
 msgstr "ST_DistanceSpheroid"
 
 #. Tag: refpurpose
-#: reference_measure.xml:528
+#: reference_measure.xml:548
 #, no-c-format
 msgid ""
 "Returns the minimum distance between two lon/lat geometries using a "
@@ -1184,7 +1225,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:534
+#: reference_measure.xml:554
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_DistanceSpheroid</function></funcdef> "
@@ -1195,7 +1236,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:546
+#: reference_measure.xml:566
 #, no-c-format
 msgid ""
 "Returns minimum distance in meters between two lon/lat geometries given a "
@@ -1204,7 +1245,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:550
+#: reference_measure.xml:570
 #, no-c-format
 msgid ""
 "This function does not look at the SRID of the geometry. It assumes the "
@@ -1212,54 +1253,54 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:556
+#: reference_measure.xml:576
 #, no-c-format
 msgid "Changed: 2.2.0 In prior versions this was called ST_Distance_Spheroid"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:563
+#: reference_measure.xml:583
 #, no-c-format
 msgid ""
 "SELECT round(CAST(\n"
-"                ST_DistanceSpheroid(ST_Centroid(the_geom), "
+"                ST_DistanceSpheroid(ST_Centroid(geom), "
 "ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID[\"WGS "
 "84\",6378137,298.257223563]')\n"
 "                        As numeric),2) As dist_meters_spheroid,\n"
-"                round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), "
+"                round(CAST(ST_DistanceSphere(ST_Centroid(geom), "
 "ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As "
 "dist_meters_sphere,\n"
-"round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),\n"
+"round(CAST(ST_Distance(ST_Transform(ST_Centroid(geom),32611),\n"
 "                ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) "
 "As numeric),2) As dist_utm11_meters\n"
 "FROM\n"
 "        (SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', "
-"4326) As the_geom) as foo;\n"
+"4326) As geom) as foo;\n"
 " dist_meters_spheroid | dist_meters_sphere | dist_utm11_meters\n"
 "----------------------+--------------------+-------------------\n"
 "                         70454.92 |           70424.47 |          70438.00"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:570
+#: reference_measure.xml:590
 #, no-c-format
 msgid ", <xref linkend=\"ST_DistanceSphere\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:577
+#: reference_measure.xml:597
 #, no-c-format
 msgid "ST_FrechetDistance"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:579
+#: reference_measure.xml:599
 #, no-c-format
 msgid "Returns the Fréchet distance between two geometries."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:584
+#: reference_measure.xml:604
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
@@ -1270,7 +1311,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:602
+#: reference_measure.xml:622
 #, no-c-format
 msgid ""
 "Implements algorithm for computing the Fréchet distance restricted to "
@@ -1283,7 +1324,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:604
+#: reference_measure.xml:624
 #, no-c-format
 msgid ""
 "When the optional densifyFrac is specified, this function performs a segment "
@@ -1294,14 +1335,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:607 reference_measure.xml:682
+#: reference_measure.xml:627 reference_measure.xml:702
 #, no-c-format
 msgid ""
 "Units are in the units of the spatial reference system of the geometries."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:611 reference_measure.xml:686
+#: reference_measure.xml:631 reference_measure.xml:706
 #, no-c-format
 msgid ""
 "The current implementation supports only vertices as the discrete locations. "
@@ -1309,7 +1350,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:616
+#: reference_measure.xml:636
 #, no-c-format
 msgid ""
 "The smaller densifyFrac we specify, the more acurate Fréchet distance we "
@@ -1318,19 +1359,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:620 reference_measure.xml:1253
+#: reference_measure.xml:640 reference_measure.xml:1289
 #, fuzzy, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "Realizado por el módulo de GEOS"
 
 #. Tag: para
-#: reference_measure.xml:621
+#: reference_measure.xml:641
 #, no-c-format
 msgid "Availability: 2.4.0 - requires GEOS &gt;= 3.7.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:627
+#: reference_measure.xml:647
 #, no-c-format
 msgid ""
 "postgres=# SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, "
@@ -1342,7 +1383,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:628
+#: reference_measure.xml:648
 #, no-c-format
 msgid ""
 "SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING "
@@ -1354,19 +1395,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:640
+#: reference_measure.xml:660
 #, no-c-format
 msgid "ST_HausdorffDistance"
 msgstr "ST_HausdorffDistance"
 
 #. Tag: refpurpose
-#: reference_measure.xml:642
+#: reference_measure.xml:662
 #, no-c-format
 msgid "Returns the Hausdorff distance between two geometries."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:646
+#: reference_measure.xml:666
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_HausdorffDistance</function></"
@@ -1380,7 +1421,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:674
+#: reference_measure.xml:694
 #, no-c-format
 msgid ""
 "Returns the Hausdorff distance between two geometries, a measure of how "
@@ -1388,7 +1429,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:676
+#: reference_measure.xml:696
 #, no-c-format
 msgid ""
 "Implements algorithm for computing a distance metric which can be thought of "
@@ -1402,7 +1443,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:679
+#: reference_measure.xml:699
 #, no-c-format
 msgid ""
 "When densifyFrac is specified, this function performs a segment "
@@ -1413,7 +1454,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:691
+#: reference_measure.xml:711
 #, no-c-format
 msgid ""
 "This algorithm is NOT equivalent to the standard Hausdorff distance. "
@@ -1424,7 +1465,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:702
+#: reference_measure.xml:722
 #, no-c-format
 msgid ""
 "For each building, find the parcel that best represents it. First we require "
@@ -1434,7 +1475,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:704
+#: reference_measure.xml:724
 #, no-c-format
 msgid ""
 "SELECT DISTINCT ON(buildings.gid) buildings.gid, parcels.parcel_id\n"
@@ -1445,7 +1486,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:706
+#: reference_measure.xml:726
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_HausdorffDistance(\n"
@@ -1458,7 +1499,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:707
+#: reference_measure.xml:727
 #, no-c-format
 msgid ""
 "postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::"
@@ -1470,19 +1511,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:719
+#: reference_measure.xml:739
 #, no-c-format
 msgid "ST_Length"
 msgstr "ST_Length"
 
 #. Tag: refpurpose
-#: reference_measure.xml:721
+#: reference_measure.xml:741
 #, no-c-format
 msgid "Returns the 2D length of a linear geometry."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:724
+#: reference_measure.xml:744
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Length</function></funcdef> "
@@ -1495,7 +1536,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:739
+#: reference_measure.xml:759
 #, no-c-format
 msgid ""
 "For geometry types: returns the 2D Cartesian length of the geometry if it is "
@@ -1505,7 +1546,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:743
+#: reference_measure.xml:763
 #, no-c-format
 msgid ""
 "For geography types: computation is performed using the inverse geodesic "
@@ -1516,7 +1557,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:748
+#: reference_measure.xml:768
 #, no-c-format
 msgid ""
 "Currently for geometry this is an alias for ST_Length2D, but this may change "
@@ -1524,7 +1565,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:750
+#: reference_measure.xml:770
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 Breaking change -- in prior versions applying this to a MULTI/"
@@ -1535,7 +1576,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:753
+#: reference_measure.xml:773
 #, no-c-format
 msgid ""
 "For geography the calculation defaults to using a spheroidal model. To use "
@@ -1543,37 +1584,37 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:754 reference_measure.xml:1305
+#: reference_measure.xml:774 reference_measure.xml:1341
 #, no-c-format
 msgid "&sfs_compliant; s2.1.5.1"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:755
+#: reference_measure.xml:775
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:756
+#: reference_measure.xml:776
 #, no-c-format
 msgid "Availability: 1.5.0 geography support was introduced in 1.5."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:757
+#: reference_measure.xml:777
 #, no-c-format
 msgid "&sfcgal_enhanced;"
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:761
+#: reference_measure.xml:781
 #, no-c-format
 msgid "Geometry Examples"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:762
+#: reference_measure.xml:782
 #, no-c-format
 msgid ""
 "Return length in feet for line string. Note this is in feet because "
@@ -1581,7 +1622,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:764
+#: reference_measure.xml:784
 #, no-c-format
 msgid ""
 "SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 "
@@ -1608,13 +1649,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:768
+#: reference_measure.xml:788
 #, no-c-format
 msgid "Return length of WGS 84 geography line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:769
+#: reference_measure.xml:789
 #, no-c-format
 msgid ""
 "-- the default calculation uses a spheroid\n"
@@ -1631,7 +1672,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:773
+#: reference_measure.xml:793
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Length_Spheroid\"/"
@@ -1639,13 +1680,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:779
+#: reference_measure.xml:799
 #, no-c-format
 msgid "ST_Length2D"
 msgstr "ST_Length2D"
 
 #. Tag: refpurpose
-#: reference_measure.xml:781
+#: reference_measure.xml:801
 #, no-c-format
 msgid ""
 "Returns the 2D length of a linear geometry. Alias for <varname>ST_Length</"
@@ -1653,7 +1694,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:786
+#: reference_measure.xml:806
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Length2D</function></funcdef> "
@@ -1662,7 +1703,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:796
+#: reference_measure.xml:816
 #, no-c-format
 msgid ""
 "Returns the 2D length of the geometry if it is a linestring or multi-"
@@ -1670,25 +1711,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:805
+#: reference_measure.xml:825
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DLength\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:811
+#: reference_measure.xml:831
 #, no-c-format
 msgid "ST_3DLength"
 msgstr "ST_3DLength"
 
 #. Tag: refpurpose
-#: reference_measure.xml:813
+#: reference_measure.xml:833
 #, no-c-format
 msgid "Returns the 3D length of a linear geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:818
+#: reference_measure.xml:838
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_3DLength</function></funcdef> "
@@ -1697,22 +1738,22 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:828
+#: reference_measure.xml:848
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional or 2-dimensional length of the geometry if it is a "
-"linestring or multi-linestring. For 2-d lines it will just return the 2-d "
+"LineString or MultiLineString. For 2-d lines it will just return the 2-d "
 "length (same as ST_Length and ST_Length2D)"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:831
+#: reference_measure.xml:851
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Length3D"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:838
+#: reference_measure.xml:858
 #, no-c-format
 msgid ""
 "Return length in feet for a 3D cable. Note this is in feet because EPSG:2249 "
@@ -1720,7 +1761,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:840
+#: reference_measure.xml:860
 #, no-c-format
 msgid ""
 "SELECT ST_3DLength(ST_GeomFromText('LINESTRING(743238 2967416 1,743238 "
@@ -1732,26 +1773,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:847
+#: reference_measure.xml:867
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length2D\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:853
+#: reference_measure.xml:873
 #, no-c-format
 msgid "ST_LengthSpheroid"
 msgstr "ST_LengthSpheroid"
 
 #. Tag: refpurpose
-#: reference_measure.xml:855
+#: reference_measure.xml:875
 #, no-c-format
 msgid ""
 "Returns the 2D or 3D length/perimeter of a lon/lat geometry on a spheroid."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:860
+#: reference_measure.xml:880
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
@@ -1761,7 +1802,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:871
+#: reference_measure.xml:891
 #, no-c-format
 msgid ""
 "Calculates the length or perimeter of a geometry on an ellipsoid. This is "
@@ -1771,32 +1812,32 @@ msgid ""
 msgstr ""
 
 #. Tag: literallayout
-#: reference_measure.xml:876
+#: reference_measure.xml:896
 #, no-c-format
 msgid ""
 "SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:877
+#: reference_measure.xml:897
 #, fuzzy, no-c-format
 msgid "For example:"
 msgstr "Ejemplos"
 
 #. Tag: literallayout
-#: reference_measure.xml:878
+#: reference_measure.xml:898
 #, no-c-format
 msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:880
+#: reference_measure.xml:900
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr "Disponibilidad: 1.2.2"
 
 #. Tag: para
-#: reference_measure.xml:881
+#: reference_measure.xml:901
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this was called ST_Length_Spheroid and had "
@@ -1804,19 +1845,19 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:888
+#: reference_measure.xml:908
 #, no-c-format
 msgid ""
 "SELECT ST_LengthSpheroid( geometry_column,\n"
 "                          'SPHEROID[\"GRS_1980\",6378137,298.257222101]' )\n"
 "                          FROM geometry_table;\n"
 "\n"
-"SELECT ST_LengthSpheroid( the_geom, sph_m ) As tot_len,\n"
-"ST_LengthSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,\n"
-"ST_LengthSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2\n"
+"SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,\n"
+"ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,\n"
+"ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2\n"
 "                          FROM (SELECT "
 "ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),\n"
-"        (-71.05957 42.3589 , -71.061 43))') As the_geom,\n"
+"        (-71.05957 42.3589 , -71.061 43))') As geom,\n"
 "CAST('SPHEROID[\"GRS_1980\",6378137,298.257222101]' As spheroid) As sph_m)  "
 "as foo;\n"
 "        tot_len      |    len_line1     |    len_line2\n"
@@ -1824,12 +1865,12 @@ msgid ""
 " 85204.5207562955 | 13986.8725229309 | 71217.6482333646\n"
 "\n"
 " --3D\n"
-"SELECT ST_LengthSpheroid( the_geom, sph_m ) As tot_len,\n"
-"ST_LengthSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,\n"
-"ST_LengthSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2\n"
+"SELECT ST_LengthSpheroid( geom, sph_m ) As tot_len,\n"
+"ST_LengthSpheroid(ST_GeometryN(geom,1), sph_m) As len_line1,\n"
+"ST_LengthSpheroid(ST_GeometryN(geom,2), sph_m) As len_line2\n"
 "                          FROM (SELECT "
 "ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),\n"
-"        (-71.05957 42.3589 75, -71.061 43 90))') As the_geom,\n"
+"        (-71.05957 42.3589 75, -71.061 43 90))') As geom,\n"
 "CAST('SPHEROID[\"GRS_1980\",6378137,298.257222101]' As spheroid) As sph_m)  "
 "as foo;\n"
 "\n"
@@ -1839,25 +1880,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:895
+#: reference_measure.xml:915
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:902
+#: reference_measure.xml:922
 #, no-c-format
 msgid "ST_LongestLine"
 msgstr "ST_LongestLine"
 
 #. Tag: refpurpose
-#: reference_measure.xml:904
+#: reference_measure.xml:924
 #, no-c-format
 msgid "Returns the 2D longest line between two geometries."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:910
+#: reference_measure.xml:930
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LongestLine</function></funcdef> "
@@ -1866,13 +1907,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:925
+#: reference_measure.xml:945
 #, no-c-format
-msgid "Returns the 2-D longest line between the points of two geometries."
+msgid ""
+"Returns the 2-dimensional longest line between the points of two geometries."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:927
+#: reference_measure.xml:947
 #, no-c-format
 msgid ""
 "The function returns the first longest line if more than one is found. The "
@@ -1881,13 +1923,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:946
+#: reference_measure.xml:966
 #, no-c-format
-msgid "Longest line between point and line"
+msgid "Longest line between a point and a line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:949
+#: reference_measure.xml:969
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -1902,13 +1944,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:957
+#: reference_measure.xml:978
 #, no-c-format
-msgid "longest line between polygon and polygon"
+msgid "Longest line between two polygons"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:960
+#: reference_measure.xml:981
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -1925,26 +1967,27 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:976
+#: reference_measure.xml:997
 #, no-c-format
 msgid ""
-"longest straight distance to travel from one part of an elegant city to the "
-"other Note the max distance = to the length of the line."
+"Longest straight distance to travel from one part of a city to another. Note "
+"that the maximum distance is equal to the length of the line."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:980
+#: reference_measure.xml:1001
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt,\n"
-"        ST_MaxDistance(c.the_geom,c.the_geom) As max_dist,\n"
-"        ST_Length(ST_LongestLine(c.the_geom, c.the_geom)) As lenll\n"
-"FROM (SELECT ST_BuildArea(ST_Collect(the_geom)) As the_geom\n"
-"        FROM (SELECT ST_Translate(ST_SnapToGrid(ST_Buffer(ST_Point(50 ,"
-"generate_series(50,190, 50)\n"
-"                        ),40, 'quad_segs=2'),1), x, 0)  As the_geom\n"
-"                        FROM generate_series(1,100,50) As x)  AS foo\n"
-") As c;\n"
+"SELECT ST_AsText( ST_LongestLine(c.geom, c.geom)) AS llinewkt,\n"
+"       ST_MaxDistance( c.geom,c.geom) AS max_dist,\n"
+"       ST_Length( ST_LongestLine(c.geom, c.geom)) AS lenll\n"
+"FROM (SELECT ST_MakeValid( ST_Collect(geom)) AS geom\n"
+"      FROM (SELECT ST_Translate( ST_SnapToGrid(\n"
+"                ST_Buffer(\n"
+"                    ST_Point(50 ,generate_series(50,190, 50)),\n"
+"                    40, 'quad_segs=2'),1), x, 0) AS geom\n"
+"            FROM generate_series(1,100,50) As x) AS foo\n"
+"      ) AS c;\n"
 "\n"
 "          llinewkt          |     max_dist     |      lenll\n"
 "---------------------------+------------------+------------------\n"
@@ -1952,28 +1995,29 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:991
+#: reference_measure.xml:1012
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DLongestLine\"/>"
+", <xref linkend=\"ST_MakeValid\"/>, <xref linkend=\"ST_ShortestLine\"/>, "
+"<xref linkend=\"ST_3DLongestLine\"/>"
 msgstr ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
 "linkend=\"ST_MaxDistance\"/>"
 
 #. Tag: refname
-#: reference_measure.xml:997
+#: reference_measure.xml:1018
 #, no-c-format
 msgid "ST_3DLongestLine"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:999
+#: reference_measure.xml:1020
 #, no-c-format
 msgid "Returns the 3D longest line between two geometries"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1004
+#: reference_measure.xml:1025
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_3DLongestLine</function></funcdef> "
@@ -1982,24 +2026,23 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1019
+#: reference_measure.xml:1040
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional longest line between two geometries. The function "
-"will only return the first longest line if more than one. The line returned "
-"will always start in g1 and end in g2. The 3D length of the line this "
-"function returns will always be the same as <xref linkend=\"ST_3DMaxDistance"
-"\"/> returns for g1 and g2."
+"returns the first longest line if more than one. The line returned starts in "
+"g1 and ends in g2. The 3D length of the line is equal to the distance "
+"returned by <xref linkend=\"ST_3DMaxDistance\"/>."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1038
+#: reference_measure.xml:1059
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d longest line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1039
+#: reference_measure.xml:1060
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,\n"
@@ -2016,13 +2059,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1043
+#: reference_measure.xml:1064
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d longest line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1044
+#: reference_measure.xml:1065
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,\n"
@@ -2039,13 +2082,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1048
+#: reference_measure.xml:1069
 #, no-c-format
-msgid "Multilinestring and polygon both 3d and 2d longest line"
+msgid "MultiLineString and Polygon both 3d and 2d longest line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1049
+#: reference_measure.xml:1070
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DLongestLine(poly, mline)) As lol3d,\n"
@@ -2061,7 +2104,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1061
+#: reference_measure.xml:1082
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
@@ -2069,20 +2112,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1067
+#: reference_measure.xml:1088
 #, no-c-format
 msgid "ST_MaxDistance"
 msgstr "ST_MaxDistance"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1069
+#: reference_measure.xml:1090
 #, no-c-format
 msgid ""
 "Returns the 2D largest distance between two geometries in projected units."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1075
+#: reference_measure.xml:1096
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_MaxDistance</function></funcdef> "
@@ -2091,23 +2134,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1088
+#: reference_measure.xml:1108
 #, no-c-format
 msgid ""
-"Returns the 2-dimensional maximum distance between two geometries in "
-"projected units. If g1 and g2 is the same geometry the function will return "
-"the distance between the two vertices most far from each other in that "
-"geometry."
+"Returns the 2-dimensional maximum distance between two geometries, in "
+"projected units. The maximum distance always occurs between two vertices. "
+"This is the length of the line returned by <xref linkend=\"ST_LongestLine\"/"
+">."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1098
+#: reference_measure.xml:1112
 #, no-c-format
-msgid "Basic furthest distance the point is to any part of the line"
+msgid ""
+"If g1 and g2 are the same geometry, returns the distance between the two "
+"vertices farthest apart in that geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:1121
+#, no-c-format
+msgid "Maximum distance between a point and lines."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1099
+#: reference_measure.xml:1122
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 "
@@ -2115,31 +2166,46 @@ msgid ""
 "   st_maxdistance\n"
 "-----------------\n"
 " 2\n"
-"(1 row)\n"
 "\n"
 "postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 "
 "2 )'::geometry);\n"
 "  st_maxdistance\n"
 "------------------\n"
-" 2.82842712474619\n"
-"(1 row)"
+" 2.82842712474619"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1105
+#: reference_measure.xml:1124
+#, no-c-format
+msgid "Maximum distance between vertices of a geometry."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_measure.xml:1125
+#, no-c-format
+msgid ""
+"SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry,\n"
+"                      'POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry);\n"
+"  st_maxdistance\n"
+"------------------\n"
+" 14.142135623730951"
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:1131
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LongestLine\"/>, <xref linkend=\"ST_DFullyWithin\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1111
+#: reference_measure.xml:1137
 #, no-c-format
 msgid "ST_3DMaxDistance"
 msgstr "ST_3DMaxDistance"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1113
+#: reference_measure.xml:1139
 #, no-c-format
 msgid ""
 "Returns the 3D cartesian maximum distance (based on spatial ref) between two "
@@ -2147,7 +2213,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1118
+#: reference_measure.xml:1144
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_3DMaxDistance</function></funcdef> "
@@ -2156,7 +2222,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1133
+#: reference_measure.xml:1159
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional maximum cartesian distance between two geometries "
@@ -2164,7 +2230,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1147
+#: reference_measure.xml:1173
 #, no-c-format
 msgid ""
 "-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal "
@@ -2190,7 +2256,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1153
+#: reference_measure.xml:1179
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_3DDWithin\"/>, <xref linkend=\"ST_3DMaxDistance\"/>, "
@@ -2198,13 +2264,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1159
+#: reference_measure.xml:1185
 #, no-c-format
 msgid "ST_MinimumClearance"
 msgstr "ST_MinimumClearance"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1160
+#: reference_measure.xml:1186
 #, no-c-format
 msgid ""
 "Returns the minimum clearance of a geometry, a measure of a geometry's "
@@ -2212,7 +2278,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1165
+#: reference_measure.xml:1191
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
@@ -2220,45 +2286,43 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1175
+#: reference_measure.xml:1201
 #, no-c-format
 msgid ""
-"It is not uncommon to have a geometry that, while meeting the criteria for "
-"validity according to ST_IsValid (polygons) or ST_IsSimple (lines), would "
-"become invalid if one of the vertices moved by a slight distance, as can "
-"happen during conversion to text-based formats (such as WKT, KML, GML "
-"GeoJSON), or binary formats that do not use double-precision floating point "
-"coordinates (MapInfo TAB)."
+"It is possible for a geometry to meet the criteria for validity according to "
+"<xref linkend=\"ST_IsValid\"/> (polygons) or <xref linkend=\"ST_IsSimple\"/> "
+"(lines), but to become invalid if one of its vertices is moved by a small "
+"distance. This can happen due to loss of precision during conversion to text "
+"formats (such as WKT, KML, GML, GeoJSON), or binary formats that do not use "
+"double-precision floating point coordinates (e.g. MapInfo TAB)."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1182
+#: reference_measure.xml:1209
 #, no-c-format
 msgid ""
-"A geometry's \"minimum clearance\" is the smallest distance by which a "
-"vertex of the geometry could be moved to produce an invalid geometry. It can "
-"be thought of as a quantitative measure of a geometry's robustness, where "
-"increasing values of minimum clearance indicate increasing robustness."
+"The minimum clearance is a quantitative measure of a geometry's robustness "
+"to change in coordinate precision. It is the largest distance by which "
+"vertices of the geometry can be moved without creating an invalid geometry. "
+"Larger values of minimum clearance indicate greater robustness."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1188
+#: reference_measure.xml:1215
 #, no-c-format
-msgid ""
-"If a geometry has a minimum clearance of <varname>e</varname>, it can be "
-"said that:"
+msgid "If a geometry has a minimum clearance of <varname>e</varname>, then:"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1192
+#: reference_measure.xml:1219
 #, no-c-format
 msgid ""
-"No two distinct vertices in the geometry are separated by less than "
+"No two distinct vertices in the geometry are closer than the distance "
 "<varname>e</varname>."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1197
+#: reference_measure.xml:1224
 #, no-c-format
 msgid ""
 "No vertex is closer than <varname>e</varname> to a line segement of which it "
@@ -2266,22 +2330,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1204
+#: reference_measure.xml:1231
 #, no-c-format
 msgid ""
-"If no minimum clearance exists for a geometry (for example, a single point, "
-"or a multipoint whose points are identical), then ST_MinimumClearance will "
-"return Infinity."
+"If no minimum clearance exists for a geometry (e.g. a single point, or a "
+"MultiPoint whose points are identical), the return value is "
+"<varname>Infinity</varname>."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1209
+#: reference_measure.xml:1236
+#, no-c-format
+msgid ""
+"To avoid validity issues caused by precision loss, <xref linkend="
+"\"ST_ReducePrecision\"/> can reduce coordinate precision while ensuring that "
+"polygonal geometry remains valid."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:1242
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr "Disponibilidad: 2.3.0"
 
 #. Tag: programlisting
-#: reference_measure.xml:1215
+#: reference_measure.xml:1248
 #, no-c-format
 msgid ""
 "SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');\n"
@@ -2290,21 +2363,31 @@ msgid ""
 "             0.00032"
 msgstr ""
 
+#. Tag: para
+#: reference_measure.xml:1255
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_IsValid\"/>, <xref "
+"linkend=\"ST_ReducePrecision\"/>"
+msgstr ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
+"linkend=\"ST_MaxDistance\"/>"
+
 #. Tag: refname
-#: reference_measure.xml:1230
+#: reference_measure.xml:1266
 #, no-c-format
 msgid "ST_MinimumClearanceLine"
 msgstr "ST_MinimumClearanceLine"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1231
+#: reference_measure.xml:1267
 #, no-c-format
 msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1236
+#: reference_measure.xml:1272
 #, no-c-format
 msgid ""
 "<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
@@ -2312,7 +2395,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1249
+#: reference_measure.xml:1285
 #, no-c-format
 msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance. If "
@@ -2321,13 +2404,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1254
+#: reference_measure.xml:1290
 #, no-c-format
 msgid "Availability: 2.3.0 - requires GEOS &gt;= 3.6.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1260
+#: reference_measure.xml:1296
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0, 1 0, 1 1, 0.5 "
@@ -2338,20 +2421,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1275
+#: reference_measure.xml:1311
 #, no-c-format
 msgid "ST_Perimeter"
 msgstr "ST_Perimeter"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1277
+#: reference_measure.xml:1313
 #, no-c-format
 msgid ""
 "Returns the length of the boundary of a polygonal geometry or geography."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:1280
+#: reference_measure.xml:1316
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Perimeter</function></funcdef> "
@@ -2363,7 +2446,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1296
+#: reference_measure.xml:1332
 #, no-c-format
 msgid ""
 "Returns the 2D perimeter of the geometry/geography if it is a ST_Surface, "
@@ -2374,7 +2457,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1299
+#: reference_measure.xml:1335
 #, no-c-format
 msgid ""
 "For geography types, the calculations are performed using the inverse "
@@ -2385,7 +2468,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1303
+#: reference_measure.xml:1339
 #, no-c-format
 msgid ""
 "Currently this is an alias for ST_Perimeter2D, but this may change to "
@@ -2393,25 +2476,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1306
+#: reference_measure.xml:1342
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1307
+#: reference_measure.xml:1343
 #, no-c-format
 msgid "Availability 2.0.0: Support for geography was introduced"
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:1311
+#: reference_measure.xml:1347
 #, no-c-format
 msgid "Examples: Geometry"
 msgstr "Ejemplos: Geometry"
 
 #. Tag: para
-#: reference_measure.xml:1312
+#: reference_measure.xml:1348
 #, no-c-format
 msgid ""
 "Return perimeter in feet for Polygon and MultiPolygon. Note this is in feet "
@@ -2419,7 +2502,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1314
+#: reference_measure.xml:1350
 #, no-c-format
 msgid ""
 "SELECT ST_Perimeter(ST_GeomFromText('POLYGON((743238 2967416,743238 "
@@ -2449,13 +2532,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:1317
+#: reference_measure.xml:1353
 #, no-c-format
 msgid "Examples: Geography"
 msgstr "Ejemplos: Geography"
 
 #. Tag: para
-#: reference_measure.xml:1318
+#: reference_measure.xml:1354
 #, no-c-format
 msgid ""
 "Return perimeter in meters and feet for Polygon and MultiPolygon. Note this "
@@ -2463,7 +2546,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1319
+#: reference_measure.xml:1355
 #, no-c-format
 msgid ""
 "SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog)/0.3048 As "
@@ -2501,19 +2584,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1323
+#: reference_measure.xml:1359
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_Length\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1329
+#: reference_measure.xml:1365
 #, no-c-format
 msgid "ST_Perimeter2D"
 msgstr "ST_Perimeter2D"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1331
+#: reference_measure.xml:1367
 #, no-c-format
 msgid ""
 "Returns the 2D perimeter of a polygonal geometry. Alias for "
@@ -2521,7 +2604,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1337
+#: reference_measure.xml:1373
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
@@ -2529,13 +2612,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1347
+#: reference_measure.xml:1383
 #, no-c-format
 msgid "Returns the 2-dimensional perimeter of a polygonal geometry."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1351
+#: reference_measure.xml:1387
 #, no-c-format
 msgid ""
 "This is currently an alias for ST_Perimeter. In future versions ST_Perimeter "
@@ -2544,19 +2627,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1365
+#: reference_measure.xml:1401
 #, no-c-format
 msgid "ST_3DPerimeter"
 msgstr "ST_3DPerimeter"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1367
+#: reference_measure.xml:1403
 #, no-c-format
 msgid "Returns the 3D perimeter of a polygonal geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1372
+#: reference_measure.xml:1408
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
@@ -2564,7 +2647,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1382
+#: reference_measure.xml:1418
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional perimeter of the geometry, if it is a polygon or "
@@ -2573,13 +2656,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1385
+#: reference_measure.xml:1421
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Perimeter3D"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1391
+#: reference_measure.xml:1427
 #, no-c-format
 msgid ""
 "Perimeter of a slightly elevated polygon in the air in Massachusetts state "
@@ -2587,14 +2670,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1392
+#: reference_measure.xml:1428
 #, no-c-format
 msgid ""
-"SELECT ST_3DPerimeter(the_geom), ST_Perimeter2d(the_geom), "
-"ST_Perimeter(the_geom) FROM\n"
+"SELECT ST_3DPerimeter(geom), ST_Perimeter2d(geom), ST_Perimeter(geom) FROM\n"
 "                        (SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 "
 "2967416 2,743238 2967450 1,\n"
-"743265.625 2967416 1,743238 2967416 2))') As the_geom) As foo;\n"
+"743265.625 2967416 1,743238 2967416 2))') As geom) As foo;\n"
 "\n"
 "  ST_3DPerimeter  |  st_perimeter2d  |   st_perimeter\n"
 "------------------+------------------+------------------\n"
@@ -2602,19 +2684,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1399
+#: reference_measure.xml:1435
 #, no-c-format
 msgid ", <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Perimeter2D\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1405
+#: reference_measure.xml:1441
 #, no-c-format
 msgid "ST_Project"
 msgstr "ST_Project"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1407
+#: reference_measure.xml:1443
 #, no-c-format
 msgid ""
 "Returns a point projected from a start point by a distance and bearing "
@@ -2622,7 +2704,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1412
+#: reference_measure.xml:1448
 #, no-c-format
 msgid ""
 "<funcdef>geography <function>ST_Project</function></funcdef> "
@@ -2632,7 +2714,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1428
+#: reference_measure.xml:1464
 #, no-c-format
 msgid ""
 "Returns a point projected from a start point along a geodesic using a given "
@@ -2640,13 +2722,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1431
+#: reference_measure.xml:1467
 #, no-c-format
 msgid "The distance is given in meters. Negative values are supported."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1432
+#: reference_measure.xml:1468
 #, no-c-format
 msgid ""
 "The azimuth (also known as heading or bearing) is given in radians. It is "
@@ -2657,19 +2739,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1442
+#: reference_measure.xml:1478
 #, no-c-format
 msgid "Enhanced: 2.4.0 Allow negative distance and non-normalized azimuth."
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:1447
+#: reference_measure.xml:1483
 #, no-c-format
 msgid "Example: Projected point at 100,000 meters and bearing 45 degrees"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1449
+#: reference_measure.xml:1485
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, "
@@ -2682,7 +2764,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1455
+#: reference_measure.xml:1491
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <ulink url=\"http://www.postgresql.org/"
@@ -2691,19 +2773,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1462
+#: reference_measure.xml:1498
 #, no-c-format
 msgid "ST_ShortestLine"
 msgstr "ST_ShortestLine"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1464
+#: reference_measure.xml:1500
 #, no-c-format
 msgid "Returns the 2D shortest line between two geometries"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1469
+#: reference_measure.xml:1505
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ShortestLine</function></funcdef> "
@@ -2715,7 +2797,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
 
 #. Tag: para
-#: reference_measure.xml:1484
+#: reference_measure.xml:1520
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional shortest line between two geometries. The function "
@@ -2730,13 +2812,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1508
+#: reference_measure.xml:1544
 #, no-c-format
 msgid "Shortest line between point and linestring"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1511
+#: reference_measure.xml:1547
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -2751,13 +2833,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1519
+#: reference_measure.xml:1555
 #, no-c-format
 msgid "shortest line between polygon and polygon"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1522
+#: reference_measure.xml:1558
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -2773,7 +2855,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1534
+#: reference_measure.xml:1570
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
@@ -2783,19 +2865,19 @@ msgstr ""
 "linkend=\"ST_MaxDistance\"/>"
 
 #. Tag: refname
-#: reference_measure.xml:1539
+#: reference_measure.xml:1575
 #, no-c-format
 msgid "ST_3DShortestLine"
 msgstr "ST_3DShortestLine"
 
 #. Tag: refpurpose
-#: reference_measure.xml:1541
+#: reference_measure.xml:1577
 #, no-c-format
 msgid "Returns the 3D shortest line between two geometries"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1546
+#: reference_measure.xml:1582
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_3DShortestLine</function></funcdef> "
@@ -2804,7 +2886,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1561
+#: reference_measure.xml:1597
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional shortest line between two geometries. The function "
@@ -2819,13 +2901,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1584
+#: reference_measure.xml:1620
 #, no-c-format
 msgid "linestring and point -- both 3d and 2d shortest line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1585
+#: reference_measure.xml:1621
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,\n"
@@ -2845,13 +2927,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1589
+#: reference_measure.xml:1625
 #, no-c-format
 msgid "linestring and multipoint -- both 3d and 2d shortest line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1590
+#: reference_measure.xml:1626
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,\n"
@@ -2871,13 +2953,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1594
+#: reference_measure.xml:1630
 #, no-c-format
-msgid "Multilinestring and polygon both 3d and 2d shortest line"
+msgid "MultiLineString and polygon both 3d and 2d shortest line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1595
+#: reference_measure.xml:1631
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_3DShortestLine(poly, mline)) As shl3d,\n"
@@ -2896,12 +2978,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1607
+#: reference_measure.xml:1643
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
 "<xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ ", <xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_3DLongestLine\"/"
+#~ ">"
+#~ msgstr ""
+#~ ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, "
+#~ "<xref linkend=\"ST_MaxDistance\"/>"
 
 #~ msgid "Spatial Relationships and Measurements"
 #~ msgstr "Relaciones Espaciales y Mediciones"
