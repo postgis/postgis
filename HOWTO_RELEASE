@@ -98,7 +98,7 @@ Release procedure
   - Commit all changes
   - If this is a minor or major release (no branch exists):
 	   $ rev=x.x
-	   $ git checkout main; git checkout -b "$rev"; git push -u osgeo $rev
+	   $ git checkout master; git checkout -b "$rev"; git push -u osgeo $rev
 
 	   Go to: https://debbie.postgis.net and copy last branch version and make new job
 	   a) Replace PostGIS_* string params with new version

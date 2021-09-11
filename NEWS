@@ -1,8 +1,5 @@
-PostGIS 3.2.0alpha1
-2021/09/10
-
-This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
-Additional features are enabled if you are running GEOS 3.9+, Proj 6.1+, and PostgreSQL 14+.
+PostGIS 3.2.0
+2021/xx/xx
 
  * Breaking changes *
   - #4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory to build with MVT support.
@@ -83,9 +80,11 @@ Additional features are enabled if you are running GEOS 3.9+, Proj 6.1+, and Pos
   - #4808, ST_ClusterKMeans now supports max_radius argument. Use it when you're not sure what is
     the number of clusters but you know what the size of clusters should be. (Darafei Praliaskouski)
 
+PostGIS 3.2.0alpha1
+2021/09/10
 
-PostGIS 3.2.0
-2021/xx/xx
+This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+, Proj 6.1+, and PostgreSQL 14+.
 
  * Breaking changes *
   - #4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory to build with MVT support.
