@@ -495,6 +495,109 @@ F000000000000000000000000000000000000000000000000');
 		</refsection>
 	</refentry>
 
+	<refentry id="ST_TableFromFlatGeobuf">
+	  <refnamediv>
+		<refname>ST_TableFromFlatGeobuf</refname>
+
+		<refpurpose>Creates a table based on the structure of FlatGeobuf data.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		<funcprototype>
+				<funcdef>void <function>ST_TableFromFlatGeobuf</function></funcdef>
+				<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>tablename</parameter></paramdef>
+				<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+			Creates a table based on the structure of FlatGeobuf data. (<ulink url="http://flatgeobuf.org">http://flatgeobuf.org</ulink>).
+		</para>
+
+		<para><varname>schema</varname> Schema name.</para>
+		<para><varname>table</varname> Table name.</para>
+		<para><varname>data</varname> Input FlatGeobuf data.</para>
+
+		<para>Availability: 3.2.0</para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_FromFlatGeobuf">
+	  <refnamediv>
+		<refname>ST_FromFlatGeobuf</refname>
+
+		<refpurpose>Reads FlatGeobuf data.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		<funcprototype>
+				<funcdef>setof anyelement <function>ST_FromFlatGeobuf</function></funcdef>
+				<paramdef><type>anyelement </type> <parameter>Table reference</parameter></paramdef>
+				<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+			Reads FlatGeobuf data (<ulink url="http://flatgeobuf.org">http://flatgeobuf.org</ulink>).
+		</para>
+
+		<para><varname>tabletype</varname> reference to a table type.</para>
+		<para><varname>data</varname> input FlatGeobuf data.</para>
+
+		<para>Availability: 3.2.0</para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_AsFlatGeobuf">
+	  <refnamediv>
+		<refname>ST_AsFlatGeobuf</refname>
+
+		<refpurpose>Return a FlatGeobuf representation of a set of rows.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		<funcprototype>
+				<funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
+				<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
+				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+				<paramdef><type>bool </type> <parameter>index</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef>
+				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+				<paramdef><type>bool </type> <parameter>index</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+			Return a FlatGeobuf representation (<ulink url="http://flatgeobuf.org">http://flatgeobuf.org</ulink>) of a set of rows corresponding to a FeatureCollection.
+		</para>
+
+		<para><varname>row</varname> row data with at least a geometry column.</para>
+		<para><varname>index</varname> toggle spatial index creation. Default is false.</para>
+		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
+
+		<para>Availability: 3.2.0</para>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_AsGeobuf">
 	  <refnamediv>
 		<refname>ST_AsGeobuf</refname>
