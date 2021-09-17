@@ -64,6 +64,11 @@ WAYGU_LIB = $(WAGYU_LIBPATH) @WAGYU_LDFLAGS@
 WAGYU_DEP = $(WAGYU_LIBPATH)
 endif
 
+FLATGEOBUF_LIBPATH = ../deps/flatgeobuf/@FLATGEOBUF_LIB@
+FLATGEOBUF_INCLUDE = -I../deps/flatgeobuf
+FLATGEOBUF_LIB = $(FLATGEOBUF_LIBPATH) @FLATGEOBUF_LDFLAGS@
+FLATGEOBUF_DEP = $(FLATGEOBUF_LIBPATH)
+
 # SQL preprocessor
 SQLPP = @SQLPP@
 
@@ -123,6 +128,9 @@ PG_OBJS= \
 	geobuf.o \
 	lwgeom_out_geobuf.o \
 	lwgeom_out_geojson.o \
+	flatgeobuf.o \
+	lwgeom_in_flatgeobuf.o \
+	lwgeom_out_flatgeobuf.o \
 	postgis_legacy.o
 
 # Objects to build using PGXS
@@ -135,8 +143,8 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I../liblwgeom @CFLAGS@ -I../libpgcommon $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
-SHLIB_LINK_F = $(WAYGU_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
+PG_CPPFLAGS += -I../liblwgeom @CFLAGS@ -I../libpgcommon $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
+SHLIB_LINK_F = $(WAYGU_LIB) $(FLATGEOBUF_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS) \
@@ -187,7 +195,7 @@ endif
 # Also they are all dependent on postgis_config.h
 # and thus postgis_revision.h
 #
-$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h $(WAGYU_DEP)
+$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_revision.h $(WAGYU_DEP) $(FLATGEOBUF_DEP)
 
 ../postgis_revision.h:
 	$(MAKE) -C .. postgis_revision.h
@@ -200,6 +208,9 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 
 $(WAGYU_LIBPATH):
 	$(MAKE) -C ../deps/wagyu all
+
+$(FLATGEOBUF_LIBPATH):
+	$(MAKE) -C ../deps/flatgeobuf all
 
 # Get protobuf-c compiler command
 PROTOCC=@PROTOCC@

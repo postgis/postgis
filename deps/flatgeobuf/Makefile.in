@@ -18,39 +18,51 @@
 # *
 # **********************************************************************
 # *
-# * Copyright 2019 Raúl Marín
+# * Copyright 2021 Björn Harrtell
 # *
 # **********************************************************************/
 
-CC=@CC@
-CXX=@CXX@
-CFLAGS=-I../liblwgeom @CPPFLAGS@ @CFLAGS@ @PICFLAGS@
-CXXFLAGS=-I../liblwgeom @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
+CXX = @FLATGEOBUF_CXX@
+CXXFLAGS =-I../../liblwgeom -Iinclude @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@
 LIBTOOL = @LIBTOOL@
 
-all: @WAGYU_LIB@ @RYU_LIB@ @FLATGEOBUF_LIB@
+FLATGEOBUF_OBJS = \
+	flatgeobuf_c.o geometrywriter.o geometryreader.o packedrtree.o
 
-@WAGYU_LIB@:
-	$(MAKE) -C wagyu $@
+FLATGEOBUF_HEADERS = \
+	flatgeobuf_c.h \
+	geometrywriter.h \
+	geometryreader.h \
+	packedrtree.h \
+	include/flatbuffers/flatbuffers.h \
+	include/flatbuffers/base.h \
+	include/flatbuffers/stl_emulation.h
 
-@RYU_LIB@:
-	$(MAKE) -C ryu $@
+all: @FLATGEOBUF_LIB@
 
-@FLATGEOBUF_LIB@:
-	$(MAKE) -C flatgeobuf $@
+@FLATGEOBUF_LIB@: $(FLATGEOBUF_OBJS)
+	ar rs @FLATGEOBUF_LIB@ $(FLATGEOBUF_OBJS)
+
+$(FLATGEOBUF_OBJS): %.o: %.cpp ../../liblwgeom/liblwgeom.h $(FLATGEOBUF_HEADERS)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+../../liblwgeom/liblwgeom.h:
+	$(MAKE) -C ../../liblwgeom liblwgeom.h
 
 clean:
-	$(MAKE) -C wagyu $@
-	$(MAKE) -C ryu $@
-	$(MAKE) -C flatgeobuf $@
+	rm -f @FLATGEOBUF_LIB@ $(FLATGEOBUF_OBJS)
 
 distclean: clean
-	$(MAKE) -C wagyu $@
-	$(MAKE) -C ryu $@
-	$(MAKE) -C flatgeobuf $@
 	rm -f Makefile
 
-.PHONY: install uninstall check check-unit check-regress
+
+install:
+
+uninstall:
+
+check:
+
+.PHONY: clean distclean install uninstall check

@@ -1549,6 +1549,73 @@ DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
 
 
 dnl ===========================================================================
+dnl FlatGeobuf
+dnl ===========================================================================
+
+DEPS_SUBDIR="deps"
+AC_SUBST([DEPS_SUBDIR])
+
+FLATGEOBUF_LIB=libflatgeobuf.la
+AC_SUBST([FLATGEOBUF_LIB])
+
+dnl ============================================================
+dnl We force  to use the same compiler as Postgresql
+dnl ============================================================
+CXX_SAVE="$CXX"
+CC_SAVE="$CC"
+CFLAGS_SAVE="$CFLAGS"
+CXXFLAGS_SAVE="$CXXFLAGS"
+CPPFLAGS_SAVE="$CPPFLAGS"
+LDFLAGS_SAVE="$LDFLAGS"
+LIBS_SAVE="$LIBS"
+
+FLATGEOBUF_CXX=`"$PG_CONFIG" --cc`
+CPPFLAGS="-x c++"
+CFLAGS=""
+LDFLAGS=""
+LIBS=""
+CXX="$FLATGEOBUF_CXX"
+AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+FLATGEOBUF_CXX="$CXX -x c++"
+
+dnl ============================================================
+dnl Check if we can declare the c++ stdlib
+dnl ============================================================
+CC="$FLATGEOBUF_CXX"
+
+AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
+AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
+
+if test "x$HAVE_CPP" = "xyes"; then
+	WFLATGEOBUF_LDFLAGS="-lc++"
+elif test "x$HAVE_STDCPP" = "xyes"; then
+	FLATGEOBUF_LDFLAGS="-lstdc++"
+else
+	AC_MSG_WARN("Could not find a C++ standard library")
+	FLATGEOBUF_LDFLAGS=""
+fi
+
+CXX="$CXX_SAVE"
+CC="$CC_SAVE"
+CFLAGS="$CFLAGS_SAVE"
+CXXFLAGS="$CXXFLAGS_SAVE"
+CPPFLAGS="$CPPFLAGS_SAVE"
+LDFLAGS="$LDFLAGS_SAVE"
+LIBS="$LIBS_SAVE"
+
+HAVE_FLATGEOBUF=yes
+AC_DEFINE([HAVE_FLATGEOBUF], [1], [Define to 1 if FlatGeobuf is being built])
+AC_SUBST([HAVE_FLATGEOBUF])
+AC_SUBST([FLATGEOBUF_CXX])
+AC_SUBST([FLATGEOBUF_LDFLAGS])
+
+DEPS_MAKEFILE_LIST="$DEPS_MAKEFILE_LIST
+		deps/flatgeobuf/Makefile"
+
+
+
+dnl ===========================================================================
 dnl See if we have the requirements for building the extensions, namely
 dnl the xlstproc tool for generating the comments SQL file.
 dnl ===========================================================================
@@ -1613,6 +1680,9 @@ AC_MSG_RESULT([ -------------- Compiler Info ------------- ])
 AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
 if test "x$HAVE_WAGYU" = "xyes"; then
     AC_MSG_RESULT([  C++ compiler (Wagyu): ${WAGYU_CXX} ${CXXFLAGS}])
+fi
+if test "x$HAVE_FLATGEOBUF" = "xyes"; then
+    AC_MSG_RESULT([  C++ compiler (FlatGeobuf): ${FLATGEOBUF_CXX} ${CXXFLAGS}])
 fi
 AC_MSG_RESULT([  CPPFLAGS:             $CPPFLAGS])
 AC_MSG_RESULT([  LDFLAGS:              $LDFLAGS])
