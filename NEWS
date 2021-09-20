@@ -11,6 +11,7 @@ PostGIS 3.2.0
   - Proj 4.9 or higher is required
 
  * Enhancements *
+  - #4997, FlatGeobuf format input/output (Björn Harrtell)
   - #2592, Do not allow CreateTopology to define topologies with SRID < 0
            (Sandro Santilli)
   - #3232, Prevent moving an isolated node to different face
