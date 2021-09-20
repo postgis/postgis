@@ -23,7 +23,7 @@
 # **********************************************************************/
 
 CXX = @FLATGEOBUF_CXX@
-CXXFLAGS =-I../../liblwgeom -I./ -Iflatbuffers @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
+CXXFLAGS =-I../../liblwgeom -Iinclude @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
 LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
 libdir = @libdir@
@@ -37,8 +37,9 @@ FLATGEOBUF_HEADERS = \
 	geometrywriter.h \
 	geometryreader.h \
 	packedrtree.h \
-	flatbuffers/flatbuffers.h \
-	flatbuffers/stl_emulation.h
+	include/flatbuffers/flatbuffers.h \
+	include/flatbuffers/base.h \
+	include/flatbuffers/stl_emulation.h
 
 all: @FLATGEOBUF_LIB@
 
