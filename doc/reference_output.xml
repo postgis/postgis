@@ -525,7 +525,10 @@ F000000000000000000000000000000000000000000000000');
 		<title>Description</title>
 
 		<para>
-			Return a FlatGeobuf representation (<ulink url="http://flatgeobuf.org">http://flatgeobuf.org</ulink>) of a set of rows corresponding to a FeatureCollection.
+			Return a FlatGeobuf representation (<ulink url="http://flatgeobuf.org">http://flatgeobuf.org</ulink>)
+			of a set of rows corresponding to a FeatureCollection.
+
+			NOTE: PostgreSQL bytea cannot exceed 1GB.
 		</para>
 
 		<para><varname>row</varname> row data with at least a geometry column.</para>

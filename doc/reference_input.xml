@@ -1874,6 +1874,8 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 
 		<para>
 			Reads FlatGeobuf data (<ulink url="http://flatgeobuf.org">http://flatgeobuf.org</ulink>).
+
+			NOTE: PostgreSQL bytea cannot exceed 1GB.
 		</para>
 
 		<para><varname>tabletype</varname> reference to a table type.</para>
