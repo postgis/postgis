@@ -1,4 +1,5 @@
 --set client_min_messages to DEBUG3;
+set timezone to UTC;
 select ST_TableFromFlatGeobuf('public', 'flatgeobuf_t1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry) q));
 
 select '--- Null geometry ---';
