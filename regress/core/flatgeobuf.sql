@@ -36,6 +36,10 @@ select 'P4', id, ST_AsEWKT(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
 select 'P5', id, ST_AsEWKT(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     select ST_AsFlatGeobuf(q, true) fgb from (select ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326)) q)
 );
+-- Empty Point
+select 'P6', id, ST_AsEWKT(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
+    select ST_AsFlatGeobuf(q, true) fgb from (select ST_GeomFromText('POINT EMPTY')) q)
+);
 
 -- 2D LineString
 select 'L1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (

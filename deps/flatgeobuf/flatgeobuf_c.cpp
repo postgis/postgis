@@ -112,7 +112,7 @@ int flatgeobuf_encode_feature(ctx *ctx)
     Offset<Geometry> geometry = 0;
     Offset<Vector<uint8_t>> properties = 0;
 
-    if (ctx->lwgeom != NULL) {
+    if (ctx->lwgeom != NULL && !lwgeom_is_empty(ctx->lwgeom)) {
         LWDEBUGG(3, ctx->lwgeom, "GeometryWriter input LWGEOM");
         GeometryWriter writer(fbb, ctx->lwgeom, (GeometryType) ctx->geometry_type, ctx->has_z, ctx->has_m);
         geometry = writer.write(0);
@@ -142,11 +142,14 @@ int flatgeobuf_encode_feature(ctx *ctx)
 
     if (ctx->create_index) {
         auto item = (flatgeobuf_item *) lwalloc(sizeof(flatgeobuf_item));
-        auto gbox = lwgeom_get_bbox(ctx->lwgeom);
-        item->xmin = gbox->xmin;
-        item->xmax = gbox->xmax;
-        item->ymin = gbox->ymin;
-        item->ymax = gbox->ymax;
+        memset(item, 0, sizeof(flatgeobuf_item));
+        if (ctx->lwgeom != NULL && !lwgeom_is_empty(ctx->lwgeom)) {
+            auto gbox = lwgeom_get_bbox(ctx->lwgeom);
+            item->xmin = gbox->xmin;
+            item->xmax = gbox->xmax;
+            item->ymin = gbox->ymin;
+            item->ymax = gbox->ymax;
+        }
         item->offset = ctx->offset;
         item->size = size;
         ctx->items[ctx->features_count] = item;
