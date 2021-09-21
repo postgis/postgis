@@ -10,7 +10,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>3.2.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable ST_AsFlatGeobuf ST_AsMVT</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -481,7 +481,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	</xsl:for-each>
 <!--End test on operators -->
 <!-- Start regular function checks excluding operators -->
-		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]/refentry">
+		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]//refentry">
 		<xsl:sort select="@id"/>
 
 			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
@@ -511,11 +511,11 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				  </xsl:choose>
 				</xsl:variable>
 
-				<!-- is a window function -->
+				<!-- is a window or aggregate function -->
 				<xsl:variable name='over_clause'>
 					 <xsl:choose>
-					 	<xsl:when test="paramdef/type[contains(text(),'winset')]">
-					 		<xsl:value-of select="'OVER()'"/>
+					 	<xsl:when test="paramdef/type[contains(text(),'set')]">
+					 		<xsl:value-of select="'OVER(ORDER BY random())'"/>
 					 	</xsl:when>
 					<xsl:otherwise>
 					  <xsl:value-of select="''"/>

@@ -185,7 +185,7 @@ COMMIT;
 
 
 <!--Start test on operators  -->
-	<xsl:for-each select="sect1[contains(@id,'RT_Operator')]/refentry">
+	<xsl:for-each select="sect1[contains(@id,'RT_Operator')]//refentry">
 		<xsl:sort select="@id"/>
 		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 			<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
@@ -266,6 +266,19 @@ COMMIT;
 					</xsl:otherwise>
 				  </xsl:choose>
 				</xsl:variable>
+
+				<!-- is a window or aggregate function -->
+				<xsl:variable name='over_clause'>
+					 <xsl:choose>
+					 	<xsl:when test="paramdef/type[contains(text(),'set')]">
+					 		<xsl:value-of select="'OVER(ORDER BY random())'"/>
+					 	</xsl:when>
+					<xsl:otherwise>
+					  <xsl:value-of select="''"/>
+					</xsl:otherwise>
+				  </xsl:choose>
+				</xsl:variable>
+
 				SELECT 'Start Considering <xsl:value-of select="funcdef/function" /> <xsl:value-of select="$geoftype" />';
 
 				<!-- For each function prototype generate a test sql statement -->
@@ -296,7 +309,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	 <!-- If output is raster show ewkt convexhull rep -->
 	 		INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql)
 			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@PixType" />', clock_timestamp(),
-			  		'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1">SELECT ST_AsEWKT(ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))) FROM (<xsl:value-of select="." />) As rast1 LIMIT 3;</xsl:with-param></xsl:call-template>'
+			  		'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1">SELECT ST_AsEWKT(ST_ConvexHull(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) <xsl:value-of select="$over_clause" />)) FROM (<xsl:value-of select="." />) As rast1 LIMIT 3;</xsl:with-param></xsl:call-template>'
 			  	);
 			  </xsl:when>
 			  <xsl:otherwise>
