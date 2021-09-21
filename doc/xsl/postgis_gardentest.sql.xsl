@@ -10,7 +10,7 @@
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>3.2.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable ST_AsFlatGeobuf ST_AsMVT</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable ST_AsMVT</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
