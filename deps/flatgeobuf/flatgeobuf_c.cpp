@@ -33,7 +33,7 @@ using namespace FlatGeobuf;
 
 typedef flatgeobuf_ctx ctx;
 
-uint8_t flatgeobuf_magicbytes[] = { 0x66, 0x67, 0x62, 0x03, 0x66, 0x67, 0x62, 0x00 };
+uint8_t flatgeobuf_magicbytes[] = { 0x66, 0x67, 0x62, 0x03, 0x66, 0x67, 0x62, 0x01 };
 uint8_t FLATGEOBUF_MAGICBYTES_SIZE = sizeof(flatgeobuf_magicbytes);
 uint8_t FLATGEOBUF_MAGICBYTES_LEN = (sizeof(flatgeobuf_magicbytes) / sizeof((flatgeobuf_magicbytes)[0]));
 
@@ -45,6 +45,7 @@ struct FeatureItem : FlatGeobuf::Item {
 int flatgeobuf_encode_header(ctx *ctx)
 {
     FlatBufferBuilder fbb;
+    fbb.TrackMinAlign(8);
 
     // inspect first geometry
 	if (ctx->lwgeom != NULL) {
@@ -111,6 +112,8 @@ int flatgeobuf_encode_feature(ctx *ctx)
     FlatBufferBuilder fbb;
     Offset<Geometry> geometry = 0;
     Offset<Vector<uint8_t>> properties = 0;
+
+    fbb.TrackMinAlign(8);
 
     if (ctx->lwgeom != NULL && !lwgeom_is_empty(ctx->lwgeom)) {
         LWDEBUGG(3, ctx->lwgeom, "GeometryWriter input LWGEOM");
