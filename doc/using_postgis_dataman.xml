@@ -13,9 +13,8 @@
     standard (SFA) to provide a model for geospatial data.
     It defines the fundamental spatial data type of Geometry, with
     a set of subtypes that represent various kinds and dimensions of geometric shapes.
-    The latest SFA version
-    <ulink url="https://portal.ogc.org/files/?artifact_id=25355"><emphasis>Simple Features Access - Part 1: Common architecture v1.2.1</emphasis></ulink>
-    adds subtypes for the more complex geometric objects PolyhedralSurfaces, Triangles and TINs.
+    The <ulink url="https://portal.ogc.org/files/?artifact_id=25355"><emphasis>Simple Features Access - Part 1: Common architecture v1.2.1</emphasis></ulink>
+    adds subtypes for the geometric objects PolyhedralSurfaces, Triangles and TINs.
     </para>
 
     <para>The geometry types model shapes on the 2-dimensional Cartesian plane
@@ -66,10 +65,23 @@
     are defined for each geometry type.
     </para>
 
+    <para>The OGC geometry model defines validity rules for each geometry type.
+    These rules are intended to ensure that geometry represents realistic
+    situations (e.g. it is possible to specify a polygon
+    with a hole lying outside the shell, but this makes no sense geometrically
+    and is thus invalid).
+    However, PostGIS allows storing and manipulating invalid geometry values
+    to allow detecting and fixing them if needed.
+    For more information see <xref linkend="OGC_Validity" />
+    </para>
+
     <sect3 id="Point">
         <title>Point</title>
         <para>A Point is a 0-dimensional geometry that represents a single location in coordinate space.</para>
-        <programlisting>POINT (1 2)</programlisting>
+<programlisting>POINT (1 2)
+POINT Z (1 2 3)
+POINT ZM (1 2 3 4)
+</programlisting>
     </sect3>
 
     <sect3 id="LineString">
@@ -77,17 +89,19 @@
         <para>A LineString is a 1-dimensional line formed by a contiguous sequence of line segments.
         Each line segment is defined by two points, with the end point of one segment
         forming the start point of the next segment.
-        A LineString must have at least two points.
+        An OGC-valid LineString has either zero or two or more points,
+        but PostGIS also allows single-point LineStrings.
         LineStrings may cross themselves (self-intersect).
-        A LineString is closed if the start and end points are the same.
+        A LineString is <emphasis role="bold">closed</emphasis> if the start and end points are the same.
+        A LineString is <emphasis role="bold">simple</emphasis> if it does not self-intersect.
         </para>
-        <programlisting>LINESTRING (1 2, 3 4)</programlisting>
+        <programlisting>LINESTRING (1 2, 3 4, 5 6)</programlisting>
     </sect3>
 
     <sect3 id="LinearRing">
         <title>LinearRing</title>
         <para>A LinearRing is a LineString which is closed
-        and simple (non-intersecting).</para>
+        and simple.</para>
         <programlisting>LINEARRING (0 0 0,4 0 0,4 4 0,0 4 0,0 0 0)</programlisting>
     </sect3>
 
@@ -97,6 +111,7 @@
         delimited by an exterior boundary (the shell)
         and zero or more interior boundaries (holes).
         The boundaries are formed by LinearRings.
+        Holes must not extend outside the shell.
         </para>
         <programlisting>POLYGON ((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))</programlisting>
     </sect3>
@@ -126,7 +141,7 @@
     <sect3 id="GeometryCollection">
         <title>GeometryCollection</title>
         <para>A GeometryCollection is a heterogeneous (mixed) collection of geometries.</para>
-        <programlisting>GEOMETRYCOLLECTION ( POINT(2 3), LINESTRING(2 3,3 4))</programlisting>
+        <programlisting>GEOMETRYCOLLECTION ( POINT(2 3), LINESTRING(2 3, 3 4))</programlisting>
     </sect3>
 
     <sect3 id="PolyhedralSurface">
@@ -134,7 +149,7 @@
         <para>A PolyhedralSurface is a contiguous collection of patches or facets which share some edges.
         Each patch is a planar Polygon.
         If the Polygon coordinates have Z ordinates then the surface is 3-dimensional.</para>
-        <programlisting>POLYHEDRALSURFACE (
+        <programlisting>POLYHEDRALSURFACE Z (
   ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
   ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
   ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
@@ -150,10 +165,11 @@
     </sect3>
 
     <sect3 id="Tin">
-        <title>Tin</title>
-        <para>A Tin is a collection of non-overlapping Triangles
-        representing a triangulated irregular network.</para>
-        <programlisting>TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )</programlisting>
+        <title>TIN</title>
+        <para>A TIN is a collection of non-overlapping Triangles representing a
+            <ulink url="https://en.wikipedia.org/wiki/Triangulated_irregular_network">Triangulated Irregular Network</ulink>.
+        </para>
+        <programlisting>TIN Z ( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )</programlisting>
     </sect3>
 
 
@@ -1497,12 +1513,9 @@ gisdb=# SELECT
 		valid input.</para>
 
 	  <note>
-		<para>Strictly compliant OGC geometries cannot have Z or M values. The
-		<link linkend="ST_IsValid">ST_IsValid()</link> function won't consider
-		higher dimensioned geometries invalid! Invocations of <link
-		linkend="AddGeometryColumn">AddGeometryColumn()</link> will add a
-		constraint checking geometry dimensions, so it is enough to specify 2
-		there.</para>
+		<para>The <link linkend="ST_IsValid">ST_IsValid()</link>
+        function does not check the Z and M dimensions.
+        </para>
 	  </note>
 </sect1>
 
