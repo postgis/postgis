@@ -24,26 +24,25 @@
     Each coordinate has a X and Y value determining its location in the plane.
     </para>
 
-    <para>Coordinates may also contain optional Z and M ordinate values.
-    The Z ordinate is usually used to represent elevation above the plane.
-    The M ordinate can be used to contain a measure value,
-    which may represent time or distance.
+    <para>Coordinates may contain optional Z and M ordinate values.
+    The Z ordinate is usually used to represent elevation.
+    The M ordinate contains a measure value, which may represent time or distance.
     If Z or M values are present in a geometry value, they must be defined for each point in the geometry.
     If a geometry has Z or M ordinates the <emphasis role="bold">coordinate dimension</emphasis> is 3D;
     if it has both Z and M the coordinate dimension is 4D.
     </para>
 
-    <para>Each geometry value is associated with a
+    <para>Geometry values are associated with a
     <emphasis role="bold">spatial reference system</emphasis>
     indicating the coordinate system in which it is embedded.
-    See <xref linkend="spatial_ref_sys" />.
-    The spatial reference system is identified by a SRID number.
+    The spatial reference system is identified by the geometry SRID number.
+    The units of the X and Y axes are determined by the spatial reference system.
     In <emphasis role="bold">planar</emphasis> reference systems the X and Y coordinates typically
     represent easting and northing,
     while in <emphasis role="bold">geodetic</emphasis> systems
     they represent longitude and latitude.
-    The units of the X and Y axes are determined by the reference system.
     SRID 0 represents an infinite Cartesian plane with no units assigned to its axes.
+    See also <xref linkend="spatial_ref_sys" />.
     </para>
 
     <para>The geometry <emphasis role="bold">dimension</emphasis> is a property of geometry types.
@@ -70,9 +69,9 @@
     situations (e.g. it is possible to specify a polygon
     with a hole lying outside the shell, but this makes no sense geometrically
     and is thus invalid).
-    However, PostGIS allows storing and manipulating invalid geometry values
-    to allow detecting and fixing them if needed.
-    For more information see <xref linkend="OGC_Validity" />
+    However, PostGIS allows storing and manipulating invalid geometry values.
+    This allows detecting and fixing them if needed.
+    See also <xref linkend="OGC_Validity" />
     </para>
 
     <sect3 id="Point">
@@ -111,7 +110,6 @@ POINT ZM (1 2 3 4)
         delimited by an exterior boundary (the shell)
         and zero or more interior boundaries (holes).
         The boundaries are formed by LinearRings.
-        Holes must not extend outside the shell.
         </para>
         <programlisting>POLYGON ((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))</programlisting>
     </sect3>
@@ -133,7 +131,7 @@ POINT ZM (1 2 3 4)
     <sect3 id="MultiPolygon">
         <title>MultiPolygon</title>
         <para>A MultiPolygon is a collection of non-overlapping, non-adjacent Polygons.
-        Polygons in the collection may touch in only a finite number of points.
+        Polygons in the collection may touch only at a finite number of points.
         </para>
         <programlisting>MULTIPOLYGON (((1 5, 5 5, 5 1, 1 1, 1 5)), ((6 5, 9 1, 6 1, 6 5)))</programlisting>
     </sect3>
