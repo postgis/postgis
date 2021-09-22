@@ -736,6 +736,9 @@ lwpoly_clip_to_ordinate_range(const LWPOLY *poly, char ordinate, double from, do
 		/* Ret number of points */
 		POINTARRAY *pa = ptarray_clamp_to_ordinate_range(poly->rings[i], ordinate, from, to, LW_TRUE);
 
+		if (!pa)
+			return NULL;
+
 		if (pa->npoints >= 4)
 			lwpoly_add_ring(poly_res, pa);
 		else
@@ -763,6 +766,9 @@ lwtriangle_clip_to_ordinate_range(const LWTRIANGLE *tri, char ordinate, double f
 	char hasz = FLAGS_GET_Z(tri->flags), hasm = FLAGS_GET_M(tri->flags);
 	LWCOLLECTION *lwgeom_out = lwcollection_construct_empty(TINTYPE, tri->srid, hasz, hasm);
 	POINTARRAY *pa = ptarray_clamp_to_ordinate_range(tri->points, ordinate, from, to, LW_TRUE);
+
+	if (!pa)
+		return NULL;
 
 	if (pa->npoints >= 4)
 	{
