@@ -900,6 +900,9 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         </para></note>
 
     <para>Performed by the GEOS module.</para>
+    <para>ST_Union creates MultiLineString and does not sew LineStrings into a single LineString.
+        Use <xref linkend="ST_LineMerge" /> to sew LineStrings.</para>
+        
     <para>NOTE: this function was formerly called GeomUnion(), which
         was renamed from "Union" because UNION is an SQL reserved
         word.</para>
