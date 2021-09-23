@@ -986,6 +986,7 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
         <para>
             <xref linkend="ST_Collect" />,
             <xref linkend="ST_UnaryUnion" />,
+            <xref linkend="ST_MemUnion" />,
             <xref linkend="ST_Intersection" />,
             <xref linkend="ST_Difference" />,
             <xref linkend="ST_SymDifference" />
