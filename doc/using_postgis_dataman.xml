@@ -11,21 +11,44 @@
     <para>The Open Geospatial Consortium (OGC) developed the
     <ulink url="https://www.ogc.org/standards/sfa"><emphasis>Simple Features Access</emphasis></ulink>
     standard (SFA) to provide a model for geospatial data.
-    It defines the fundamental spatial data type of Geometry, with
-    a set of subtypes that represent various kinds and dimensions of geometric shapes.
+    It defines the fundamental spatial datatype of <emphasis role="bold">Geometry</emphasis>,
+    along with operations which manipulate and transform geometry values
+    to perform spatial analysis tasks.
+    PostGIS implements the OGC Geometry model as the PostgreSQL data types
+    <link linkend="PostGIS_Geometry">geometry</link> and
+    <link linkend="PostGIS_Geography">geography</link>.
+    </para>
+    <para>
+    Geometry is an <emphasis>abstract</emphasis> datatype,
+    so geometry values always belong to one of the <emphasis>concrete</emphasis> subtypes
+    which represent various kinds and dimensions of geometric shapes.
+    These include the <emphasis role="bold">atomic</emphasis> types
+    <link linkend="Point">Point</link>,
+    <link linkend="LineString">LineString</link>,
+    <link linkend="LinearRing">LinearRing</link> and
+    <link linkend="Polygon">Polygon</link>,
+    and the <emphasis role="bold">collection</emphasis> types
+    <link linkend="MultiPoint">MultiPoint</link>,
+    <link linkend="MultiLineString">MultiLineString</link>,
+    <link linkend="MultiPolygon">MultiPolygon</link> and
+    <link linkend="GeometryCollection">GeometryCollection</link>.
     The <ulink url="https://portal.ogc.org/files/?artifact_id=25355"><emphasis>Simple Features Access - Part 1: Common architecture v1.2.1</emphasis></ulink>
-    adds subtypes for the geometric objects PolyhedralSurfaces, Triangles and TINs.
+    adds subtypes for the structures
+    <link linkend="PolyhedralSurface">PolyhedralSurface</link>,
+    <link linkend="Triangle">Triangle</link> and
+    <link linkend="TIN">TIN</link>.
     </para>
 
-    <para>The geometry types model shapes on the 2-dimensional Cartesian plane
-    constructed from points and line segments.
+    <para>The geometry types model shapes in the 2-dimensional Cartesian plane
+    (the PolyhedralSurface, Triangle, and TIN types also allow values in 3-dimensional space).
     The size and location of shapes are specified by their <emphasis role="bold">coordinates</emphasis>.
-    The points and line segments are defined by one or two coordinates in the plane.
-    Each coordinate has a X and Y value determining its location in the plane.
+    Each coordinate has a X and Y <emphasis role="bold">ordinate</emphasis> value determining its location in the plane.
+    Shapes are constructed from points or line segments, with points specified by a single coordinate,
+    and line segments by two coordinates.
     </para>
 
     <para>Coordinates may contain optional Z and M ordinate values.
-    The Z ordinate is usually used to represent elevation.
+    The Z ordinate is often used to represent elevation.
     The M ordinate contains a measure value, which may represent time or distance.
     If Z or M values are present in a geometry value, they must be defined for each point in the geometry.
     If a geometry has Z or M ordinates the <emphasis role="bold">coordinate dimension</emphasis> is 3D;
@@ -42,7 +65,7 @@
     while in <emphasis role="bold">geodetic</emphasis> systems
     they represent longitude and latitude.
     SRID 0 represents an infinite Cartesian plane with no units assigned to its axes.
-    See also <xref linkend="spatial_ref_sys" />.
+    See <xref linkend="spatial_ref_sys" />.
     </para>
 
     <para>The geometry <emphasis role="bold">dimension</emphasis> is a property of geometry types.
@@ -55,6 +78,14 @@
     Empty values contain no vertices (for atomic geometry types)
     or no elements (for collections).
     </para>
+
+    <para>An important concept of geometry values is their spatial
+    <emphasis role="bold">extent</emphasis> or <emphasis role="bold">bounding box</emphasis>,
+    which the OGC model calls <emphasis role="bold">envelope</emphasis>.
+    This is the 2 or 3-dimensional box which encloses the coordinates of a geometry.
+    It is used as an efficient way to determine a geometry's
+    location in space and to check whether two geometries interact.
+   </para>
 
     <para>The geometry model allows evaluating topological spatial relationships as
     described in  <xref linkend="DE-9IM" />.
@@ -71,7 +102,7 @@
     and is thus invalid).
     However, PostGIS allows storing and manipulating invalid geometry values.
     This allows detecting and fixing them if needed.
-    See also <xref linkend="OGC_Validity" />
+    See <xref linkend="OGC_Validity" />
     </para>
 
     <sect3 id="Point">
@@ -99,9 +130,9 @@ POINT ZM (1 2 3 4)
 
     <sect3 id="LinearRing">
         <title>LinearRing</title>
-        <para>A LinearRing is a LineString which is closed
-        and simple.</para>
-        <programlisting>LINEARRING (0 0 0,4 0 0,4 4 0,0 4 0,0 0 0)</programlisting>
+        <para>A LinearRing is a LineString which is both closed and simple.
+        The first and last points must be equal, and the line must not self-intersect.</para>
+        <programlisting>LINEARRING (0 0 0, 4 0 0, 4 4 0, 0 4 0, 0 0 0)</programlisting>
     </sect3>
 
     <sect3 id="Polygon">
@@ -109,7 +140,7 @@ POINT ZM (1 2 3 4)
         <para>A Polygon is a 2-dimensional planar region,
         delimited by an exterior boundary (the shell)
         and zero or more interior boundaries (holes).
-        The boundaries are formed by LinearRings.
+        Each boundary is a <link linkend="LinearRing">LinearRing</link>.
         </para>
         <programlisting>POLYGON ((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))</programlisting>
     </sect3>
@@ -158,13 +189,17 @@ POINT ZM (1 2 3 4)
 
     <sect3 id="Triangle">
         <title>Triangle</title>
-        <para>A Triangle is a polygon defined by 3 distinct non-collinear points.</para>
+        <para>A Triangle is a polygon defined by three distinct non-collinear vertices.
+            Because a Triangle is a polygon it is specified by four coordinates,
+            with the first and fourth being equal.
+        </para>
         <programlisting>TRIANGLE ((0 0, 0 9, 9 0, 0 0))</programlisting>
     </sect3>
 
-    <sect3 id="Tin">
+    <sect3 id="TIN">
         <title>TIN</title>
-        <para>A TIN is a collection of non-overlapping Triangles representing a
+        <para>A TIN is a collection of non-overlapping
+            <link linkend="Triangle">Triangle</link>s representing a
             <ulink url="https://en.wikipedia.org/wiki/Triangulated_irregular_network">Triangulated Irregular Network</ulink>.
         </para>
         <programlisting>TIN Z ( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )</programlisting>
@@ -261,7 +296,7 @@ CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)</programlisting>
 	<sect2 id="OpenGISWKBWKT">
 	  <title>WKT and WKB</title>
 
-	  <para>The OGC SFA specification defines two standard formats for representing
+	  <para>The OGC SFA specification defines two formats for representing
 	  geometry values for external use: Well-Known Text (WKT) and Well-Known
 	  Binary (WKB). Both WKT and WKB include information about the type
 	  of the object and the coordinates which define it.</para>
@@ -339,7 +374,7 @@ geometry = ST_GeomFromText(text WKT, SRID);</programlisting>
 	  <programlisting>INSERT INTO geotable ( geom, name )
   VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
 
-    <para>Well-Known Binary (WKB) provides a portable, faithful representation
+    <para>Well-Known Binary (WKB) provides a portable, full-precision representation
       of spatial data as binary data (arrays of bytes).
       Examples of the WKB representations of spatial objects are:</para>
 
@@ -417,7 +452,7 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
 		<para>OGC SFA specifications initially supported only 2D geometries,
 		and the geometry SRID is not included in the input/output representations.
         The OGC SFA specification 1.2.1 (which aligns with the ISO 19125 standard)
-        adds support for 3D (ZYZ and XYM) and 4D (XYZM) coordinates,
+        adds support for 3D (ZYZ) and measured (XYM and XYZM) coordinates,
 		but still does not include the SRID value.</para>
 
 		<para>Because of these limitations PostGIS defined extended EWKB and EWKT formats.
@@ -2034,10 +2069,8 @@ WHERE
     <para>The B-tree index method commonly used for attribute data
     is not very useful for spatial data, since it only supports storing and querying
     data in a single dimension.
-    Data such as geometry which has 2 or more dimensions)
+    Data such as geometry (which has 2 or more dimensions)
     requires an index method that supports range query across all the data dimensions.
-    (That said, it is possible to effectively index so-called XY (point) data using a B-tree
-    and explict range searches.)
     One of the key advantages of PostgreSQL for spatial data handling is that it offers several kinds of
 	index methods which work well for multi-dimensional data: GiST, BRIN and SP-GiST indexes.</para>
 
