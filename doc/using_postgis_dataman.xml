@@ -11,7 +11,7 @@
     <para>The Open Geospatial Consortium (OGC) developed the
     <ulink url="https://www.ogc.org/standards/sfa"><emphasis>Simple Features Access</emphasis></ulink>
     standard (SFA) to provide a model for geospatial data.
-    It defines the fundamental spatial datatype of <emphasis role="bold">Geometry</emphasis>,
+    It defines the fundamental spatial type of <emphasis role="bold">Geometry</emphasis>,
     along with operations which manipulate and transform geometry values
     to perform spatial analysis tasks.
     PostGIS implements the OGC Geometry model as the PostgreSQL data types
@@ -19,8 +19,8 @@
     <link linkend="PostGIS_Geography">geography</link>.
     </para>
     <para>
-    Geometry is an <emphasis>abstract</emphasis> datatype,
-    so geometry values always belong to one of the <emphasis>concrete</emphasis> subtypes
+    Geometry is an <emphasis>abstract</emphasis> type.
+    Geometry values belong to one of its <emphasis>concrete</emphasis> subtypes
     which represent various kinds and dimensions of geometric shapes.
     These include the <emphasis role="bold">atomic</emphasis> types
     <link linkend="Point">Point</link>,
@@ -39,8 +39,8 @@
     <link linkend="TIN">TIN</link>.
     </para>
 
-    <para>The geometry types model shapes in the 2-dimensional Cartesian plane
-    (the PolyhedralSurface, Triangle, and TIN types also allow values in 3-dimensional space).
+    <para>Geometry models shapes in the 2-dimensional Cartesian plane.
+    The PolyhedralSurface, Triangle, and TIN types can also represent shapes in 3-dimensional space.
     The size and location of shapes are specified by their <emphasis role="bold">coordinates</emphasis>.
     Each coordinate has a X and Y <emphasis role="bold">ordinate</emphasis> value determining its location in the plane.
     Shapes are constructed from points or line segments, with points specified by a single coordinate,
@@ -79,28 +79,31 @@
     or no elements (for collections).
     </para>
 
-    <para>An important concept of geometry values is their spatial
+    <para>An important property of geometry values is their spatial
     <emphasis role="bold">extent</emphasis> or <emphasis role="bold">bounding box</emphasis>,
     which the OGC model calls <emphasis role="bold">envelope</emphasis>.
     This is the 2 or 3-dimensional box which encloses the coordinates of a geometry.
-    It is used as an efficient way to determine a geometry's
-    location in space and to check whether two geometries interact.
+    It is an efficient way to represent a geometry's
+    extent in coordinate space and to check whether two geometries interact.
    </para>
 
     <para>The geometry model allows evaluating topological spatial relationships as
     described in  <xref linkend="DE-9IM" />.
     To support this the concepts of
-    <emphasis role="bold">interior</emphasis>, <emphasis role="bold">boundary</emphasis>
-    and <emphasis role="bold">exterior</emphasis>
+    <emphasis role="bold">interior</emphasis>,
+    <emphasis role="bold">boundary</emphasis> and
+    <emphasis role="bold">exterior</emphasis>
     are defined for each geometry type.
+    Geometries are topologically closed, so they always contain their boundary.
+    The boundary is a geometry of dimension one less than that of the geometry itself.
     </para>
 
     <para>The OGC geometry model defines validity rules for each geometry type.
-    These rules are intended to ensure that geometry represents realistic
+    These rules ensure that geometry values represents realistic
     situations (e.g. it is possible to specify a polygon
     with a hole lying outside the shell, but this makes no sense geometrically
     and is thus invalid).
-    However, PostGIS allows storing and manipulating invalid geometry values.
+    PostGIS also allows storing and manipulating invalid geometry values.
     This allows detecting and fixing them if needed.
     See <xref linkend="OGC_Validity" />
     </para>
@@ -154,7 +157,7 @@ POINT ZM (1 2 3 4)
     <sect3 id="MultiLineString">
         <title>MultiLineString</title>
         <para>A MultiLineString is a collection of LineStrings.
-        A MultiLineString is closed if each of its element is closed.
+        A MultiLineString is closed if each of its elements is closed.
         </para>
         <programlisting>MULTILINESTRING ( (0 0,1 1,1 2), (2 3,3 2,5 4) )</programlisting>
     </sect3>
