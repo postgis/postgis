@@ -72,7 +72,7 @@
     size_t sz; \
     char *wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
     /* char *wkt = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz); */ \
-    LWDEBUGF(level, fmt ": " wkt, __VA_ARGS__); \
+    LWDEBUGF(level, fmt ": %s", __VA_ARGS__, wkt); \
     lwfree(wkt); \
   } while (0);
 

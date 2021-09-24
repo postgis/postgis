@@ -7094,7 +7094,7 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 
   shortestLine = lwgeom_closest_line(lwline_as_lwgeom(closestEdge->geom), lwpoint_as_lwgeom(pt));
 
-  LWDEBUGGF(1, shortestLine, "Shortest line to closest edge %d", closestEdge->edge_id);
+  LWDEBUGGF(1, shortestLine, "Shortest line to closest edge %" LWTFMT_ELEMID, closestEdge->edge_id);
 
   /* Check if the closest point on the edge is an edge endpoint */
 
