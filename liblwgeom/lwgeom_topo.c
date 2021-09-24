@@ -7233,10 +7233,10 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
 
   shortestLineP1 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 1);
   closestSegmentIndex = ptarray_closest_segment_2d(closestEdge->geom->points, shortestLineP1, NULL);
-  LWDEBUGF(1, "Closest segment to edge %d is %d", closestEdge->edge_id, closestSegmentIndex);
+  LWDEBUGF(1, "Closest segment on edge %" LWTFMT_ELEMID " is %d", closestEdge->edge_id, closestSegmentIndex);
   closestSegmentP0 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex);
   closestSegmentP1 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex + 1);
-  LWDEBUGF(1, "Closest segment to edge %d is LINESTRING(%g %g, %g %g)",
+  LWDEBUGF(1, "Closest segment on edge %" LWTFMT_ELEMID " is LINESTRING(%g %g, %g %g)",
     closestEdge->edge_id,
     closestSegmentP0->x,
     closestSegmentP0->y,
@@ -7282,7 +7282,7 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     nextSegmentP1 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex + 2);
 
     if ( ! azimuth_pt_pt(closestSegmentP1, closestSegmentP0, &azS0)) {
-      lwerror("error computing azimuth of reversse closest segment [%.15g %.15g,%.15g %.15g]",
+      lwerror("error computing azimuth of reverse closest segment [%.15g %.15g,%.15g %.15g]",
               closestSegmentP1->x, closestSegmentP1->y,
               closestSegmentP0->x, closestSegmentP0->y);
       lwgeom_free(shortestLine);
