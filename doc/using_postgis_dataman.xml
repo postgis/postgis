@@ -229,14 +229,15 @@ POINT ZM (1 2 3 4)
         <title>CircularString</title>
 
         <para>CircularString is the basic curve type, similar to a
-        LineString in the linear world.  A single arc segment requires three
+        LineString in the linear world.  A single arc segment is specified by three
         points: the start and end points (first and third) and some other
-        point on the arc.  The exception to this is for a closed circle,
-        where the start and end points are the same.  In this case the
-        second point MUST be the center of the arc, ie the opposite side of
-        the circle.  To chain arcs together, the last point of the previous
-        arc is the first point of the next arc, just like in a
-        LineString.  This means that a valid circular string must have an
+        point on the arc.
+        To specify a closed circle the start and end points are the same
+        and the middle point is the opposite point on the circle diameter
+        (which is the center of the arc).
+        In a sequence of arcs the end point of the previous
+        arc is the start point of the next arc, just like the segments of a LineString.
+        This means that a CircularString must have an
         odd number of points greater than 1.</para>
 
 		<programlisting>CIRCULARSTRING(0 0, 1 1, 1 0)
@@ -2061,13 +2062,13 @@ WHERE
   </sect1>
 
   <sect1 id="build-indexes">
-	<title>Building Spatial Indexes</title>
+	<title>Spatial Indexes</title>
 
-	<para>Indexes make using a spatial database for large data sets
-	possible. Without indexing, a search for features would require a
+	<para>Spatial indexes make using a spatial database for large data sets
+	possible. Without indexing, a search for features requires a
 	sequential scan of every record in the database. Indexing speeds up
 	searching by organizing the data into a structure which can be quickly
-	traversed to find records.
+	traversed to find matching records.
     </para>
     <para>The B-tree index method commonly used for attribute data
     is not very useful for spatial data, since it only supports storing and querying
@@ -2106,8 +2107,16 @@ WHERE
 	  </listitem>
 	</itemizedlist>
 
-    <para>For more information see the
-    <ulink url="https://postgis.net/workshops/postgis-intro/indexing.html">PostGIS Workshop</ulink>,
+    <para>Spatial indexes store only the bounding box of geometries.
+    Spatial queries use the index as a <emphasis role="bold">primary filter</emphasis>
+    to quickly determine a set of geometries potentially matching the query condition.
+    Most spatial queries require a <emphasis role="bold">secondary filter</emphasis>
+    that uses a spatial predicate function to test a more specific spatial condition.
+    For more information on queying with spatial predicates see <xref linkend="using-query-indexes" />.
+    </para>
+
+    <para>See also the
+    <ulink url="https://postgis.net/workshops/postgis-intro/indexing.html">PostGIS Workshop section on spatial indexes</ulink>,
     and the <ulink url="https://www.postgresql.org/docs/current/indexes.html">PostgreSQL manual</ulink>.
     </para>
 

@@ -529,6 +529,10 @@ WHERE ST_DWithin( geom, 'SRID=312;POINT(100000 200000)', 100 )
     The actual distance is then computed to confirm whether to include the record in the result set.
     </para>
 
+    <para>For more information and examples see the
+        <ulink url="https://postgis.net/workshops/postgis-intro/indexing.html">PostGIS Workshop</ulink>.
+    </para>
+
 	</sect1>
 
 	<sect1 id="examples_spatial_sql">
