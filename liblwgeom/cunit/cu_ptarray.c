@@ -719,7 +719,16 @@ static void test_ptarray_closest_segment_2d()
 	ASSERT_DOUBLE_EQUAL(dist, 2);
 
 
-  lwline_free(line);
+	lwline_free(line);
+
+	/* See https://trac.osgeo.org/postgis/ticket/4990 */
+	wkt = "LINESTRING(4 31,7 31,7 34,4 34,4 31)";
+	line = lwgeom_as_lwline(lwgeom_from_text(wkt));
+	pa = line->points;
+	qp.x = 7.1; qp.y = 31;
+	rv = ptarray_closest_segment_2d(pa, &qp, &dist);
+	ASSERT_INT_EQUAL(rv, 0);
+	lwline_free(line);
 }
 
 
