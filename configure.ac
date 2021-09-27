@@ -1132,6 +1132,9 @@ dnl
 AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable debugging code and flags]),
 	[ENABLE_DEBUG=1], [ENABLE_DEBUG=0])
 
+dnl Add -Wall to CFLAGS
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [CFLAGS="$CFLAGS -Wall"], [])
+
 if test $ENABLE_DEBUG -eq 1; then
     AC_DEFINE([PARANOIA_LEVEL], [10], [Enable use of memory checks])
     CFLAGS="$CFLAGS -g"

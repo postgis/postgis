@@ -957,7 +957,8 @@ lwgeom_make_valid_params(LWGEOM* lwgeom_in, char* make_valid_params)
 		const char *value;
 		char *param_list[OPTION_LIST_SIZE];
 		char param_list_text[OPTION_LIST_SIZE];
-		strncpy(param_list_text, make_valid_params, OPTION_LIST_SIZE);
+		strncpy(param_list_text, make_valid_params, OPTION_LIST_SIZE-1);
+		param_list_text[OPTION_LIST_SIZE-1] = '\0'; /* ensure null-termination */
 		memset(param_list, 0, sizeof(param_list));
 		option_list_parse(param_list_text, param_list);
 		GEOSMakeValidParams *params = GEOSMakeValidParams_create();
