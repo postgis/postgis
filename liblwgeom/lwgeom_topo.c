@@ -7057,14 +7057,12 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
   LWT_ISO_EDGE* closestEdge;
   LWT_ISO_EDGE* edges;
   uint64_t numedges, i;
-  LWGEOM *shortestLine;
-  const POINT2D *shortestLineP0, *shortestLineP1;
+  const POINT2D *queryPoint;
+  const POINT2D *closestPointOnEdge = NULL;
   int closestSegmentIndex;
   int closestSegmentSide;
+  int closestPointVertex = -1;
   const POINT2D *closestSegmentP0, *closestSegmentP1;
-  double shortestLineAzimuth;
-  LWPOINT *closestPointOnEdge;
-  LWPOINT *closestEdgeEndpoint;
   LWT_ELEMID closestNode = 0;
   double dist;
   int containingFace = -1;
@@ -7089,39 +7087,64 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     return 0;
   }
 
+  LWDEBUGGF(2, lwline_as_lwgeom(closestEdge->geom), "Closest edge %" LWTFMT_ELEMID, closestEdge->edge_id);
 
-  /* Compute shortest line from query point to closest edge */
+  /* Find closest segment of edge to the point */
+  queryPoint = getPoint2d_cp(pt->point, 0);
+  closestSegmentIndex = ptarray_closest_segment_2d(closestEdge->geom->points, queryPoint, &dist);
+  LWDEBUGF(1, "Closest segment on edge %" LWTFMT_ELEMID " is %d (dist %g)", closestEdge->edge_id, closestSegmentIndex, dist);
+  closestSegmentP0 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex);
+  closestSegmentP1 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex + 1);
+  LWDEBUGF(1, "Closest segment on edge %" LWTFMT_ELEMID " is LINESTRING(%g %g, %g %g)",
+    closestEdge->edge_id,
+    closestSegmentP0->x,
+    closestSegmentP0->y,
+    closestSegmentP1->x,
+    closestSegmentP1->y
+  );
 
-  shortestLine = lwgeom_closest_line(lwline_as_lwgeom(closestEdge->geom), lwpoint_as_lwgeom(pt));
-
-  LWDEBUGGF(1, shortestLine, "Shortest line to closest edge %" LWTFMT_ELEMID, closestEdge->edge_id);
-
-  /* Check if the closest point on the edge is an edge endpoint */
-
-  closestPointOnEdge = lwline_get_lwpoint(lwgeom_as_lwline(shortestLine), 0);
-
-  LWDEBUGG(1, lwpoint_as_lwgeom(closestPointOnEdge), "Closest point on closest edge");
-
-  closestEdgeEndpoint = lwline_get_lwpoint(closestEdge->geom, 0);
-  if ( lwpoint_same(closestEdgeEndpoint, closestPointOnEdge) ) {
-    closestNode = closestEdge->start_node;
-  } else if ( ! lwline_is_closed(closestEdge->geom) ) {
-    lwpoint_free(closestEdgeEndpoint);
-    closestEdgeEndpoint = lwline_get_lwpoint(closestEdge->geom, closestEdge->geom->points->npoints - 1);
-    if ( lwpoint_same(closestEdgeEndpoint, closestPointOnEdge) ) {
+	/*
+	 * We use comp.graphics.algorithms Frequently Asked Questions method
+	 *
+	 * (1)           AC dot AB
+	 *           r = ----------
+	 *                ||AB||^2
+	 *	r has the following meaning:
+	 *	r=0 P = A
+	 *	r=1 P = B
+	 *	r<0 P is on the backward extension of AB
+	 *	r>1 P is on the forward extension of AB
+	 *	0<r<1 P is interior to AB
+	 *
+	 */
+  const POINT2D *p = queryPoint;
+  const POINT2D *A = closestSegmentP0;
+  const POINT2D *B = closestSegmentP1;
+  double r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+  if ( r <= 0 )
+  {
+    closestPointOnEdge = A;
+    closestPointVertex = closestSegmentIndex;
+    if ( closestSegmentIndex == 0 )
+    {
+      closestNode = closestEdge->start_node;
+    }
+  }
+  else if (r >= 1 )
+  {
+    closestPointOnEdge = B;
+    closestPointVertex = closestSegmentIndex + 1;
+    if ( closestSegmentIndex + 2 == closestEdge->geom->points->npoints )
+    {
       closestNode = closestEdge->end_node;
     }
   }
-  lwpoint_free(closestEdgeEndpoint);
-  lwpoint_free(closestPointOnEdge);
 
   if ( closestNode != 0 )
   {
     LWDEBUGF(1, "Closest point is node %d", closestNode);
-    dist = lwgeom_length(shortestLine);
     if ( dist == 0 )
     {
-      lwgeom_free(shortestLine);
       LWDEBUGF(1, "Query point is node %d", closestNode);
       /* Query point is the node
        *
@@ -7176,132 +7199,117 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     /* Closest point is a node, but query point is NOT on the node */
 
     /* let's do azimuth computation */
-    shortestLineP0 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 0);
-    shortestLineP1 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 1);
-    if ( ! azimuth_pt_pt(shortestLineP0, shortestLineP1, &shortestLineAzimuth) ) {
-      lwerror("error computing azimuth of shortestLine [%.15g %.15g,%.15g %.15g]",
-              shortestLineP0->x, shortestLineP0->y,
-              shortestLineP1->x, shortestLineP1->y);
-      lwgeom_free(shortestLine);
+    edgeend ee;
+    if ( ! azimuth_pt_pt(closestPointOnEdge, queryPoint, &ee.myaz) ) {
+      lwerror("error computing azimuth of query point [%.15g %.15g,%.15g %.15g]",
+              closestPointOnEdge->x, closestPointOnEdge->y,
+              queryPoint->x, queryPoint->y);
       _lwt_release_edges(closestEdge, 1);
       return -1;
     }
 
-    LWDEBUGF(1, "ShortestLine azimuth is %g", shortestLineAzimuth);
+    LWDEBUGF(1, "Query point azimuth is %g", ee.myaz);
 
-    edgeend ee;
-    ee.myaz = shortestLineAzimuth;
     int found = _lwt_FindAdjacentEdges( topo, closestNode, &ee, NULL, -1 );
     if ( ! found ) {
         lwerror("Unexpected backend return: _lwt_FindAdjacentEdges(%d) found no edges when we previously found edge %d ending on that node",
           closestNode, closestEdge->edge_id);
-        lwgeom_free(shortestLine);
         _lwt_release_edges(closestEdge, 1);
         return -1;
     }
 
-    lwgeom_free(shortestLine);
     _lwt_release_edges(closestEdge, 1);
     return ee.cwFace;
 
   }
 
-  LWDEBUGF(1, "Closest point is NOT a node", closestNode);
+  LWDEBUG(1, "Closest point is NOT a node");
 
   /* If this edge has the same face on the left and right sides
    * we found the face containing our query point */
   if ( closestEdge->face_left == closestEdge->face_right )
   {
     containingFace = closestEdge->face_left;
-    lwgeom_free(shortestLine);
     _lwt_release_edges(closestEdge, 1);
     return containingFace;
   }
 
-  dist = lwgeom_length(shortestLine);
   if ( dist == 0 )
   {
     /* We checked the dangling case above */
-    lwgeom_free(shortestLine);
     _lwt_release_edges(closestEdge, 1);
     lwerror("Two or more faces found");
     return -1;
   }
 
-  /* find closest segment on closestEdge and use lw_segment_side
-   * to determine on which side our query point falls */
-
-  shortestLineP1 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 1);
-  closestSegmentIndex = ptarray_closest_segment_2d(closestEdge->geom->points, shortestLineP1, NULL);
-  LWDEBUGF(1, "Closest segment on edge %" LWTFMT_ELEMID " is %d", closestEdge->edge_id, closestSegmentIndex);
-  closestSegmentP0 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex);
-  closestSegmentP1 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex + 1);
-  LWDEBUGF(1, "Closest segment on edge %" LWTFMT_ELEMID " is LINESTRING(%g %g, %g %g)",
-    closestEdge->edge_id,
-    closestSegmentP0->x,
-    closestSegmentP0->y,
-    closestSegmentP1->x,
-    closestSegmentP1->y
-  );
-
   /* Find on which side of the segment the query point lays */
-  shortestLineP0 = getPoint2d_cp(((LWLINE *)shortestLine)->points, 0);
-  if ( p2d_same(shortestLineP0, closestSegmentP0) )
+  if ( closestPointVertex != -1 )
   {
-    /* Closest point is first point of closest segment (this should
-     * never happen as we'd have returned the previous segment in
-     * this case, unless it was the very first segment, and in that
-     * case we'd have cought this earlier, as it would be a NODE
-     *
-     * This would be more of an assert...
-     */
-    lwerror("Closest point is first point of closest segment, unexpectedly");
-    lwgeom_free(shortestLine);
-    _lwt_release_edges(closestEdge, 1);
-    return -1;
-  }
-  else if ( p2d_same(shortestLineP0, closestSegmentP1) )
-  {
-    /* Closest point is last point of the closest segment,
-     * so we need to check if rotating the closest segment
-     * clockwise around its last point we encounter
-     * the shortestLine first (which means it's on the left
-     * of the closest edge) or the next segment first (which
-     * means the shortestLine is on the right)
-     */
-    const POINT2D *nextSegmentP0, *nextSegmentP1;
-    double azS0, azS1, azSL;
+    /* Closest point is a vertex of the closest segment */
+    LWDEBUGF(1, "Closest point is vertex %d of closest segment", closestPointVertex);
 
-    nextSegmentP0 = closestSegmentP1;
-    /* This would be more of an assert...*/
-    if ( closestSegmentIndex + 1 > (int)closestEdge->geom->points->npoints )
-    {
-      lwerror("closestSegmentIndex is unexpectedly the last one and we didn't exit earlier as it would be a node");
-      return -1;
-    }
-    nextSegmentP1 = getPoint2d_cp(closestEdge->geom->points, closestSegmentIndex + 2);
+    /*
+     * We need to check if rotating clockwise the line
+     * from previous vertex to closest vertex clockwise
+     * around the closest vertex encounters
+     * the line to query point first (which means it's on the left
+     * of the closest edge) or the line to next vertex first (which
+     * means the query point is on the right)
+     */
 
-    if ( ! azimuth_pt_pt(closestSegmentP1, closestSegmentP0, &azS0)) {
-      lwerror("error computing azimuth of reverse closest segment [%.15g %.15g,%.15g %.15g]",
-              closestSegmentP1->x, closestSegmentP1->y,
-              closestSegmentP0->x, closestSegmentP0->y);
-      lwgeom_free(shortestLine);
+    int prevVertexIndex = closestPointVertex > 0 ?
+      closestPointVertex - 1 :
+      closestEdge->geom->points->npoints - 2; /* last vertex would be == first vertex, this being a closed edge */
+
+    const POINT2D *prevVertex = getPoint2d_cp(
+      closestEdge->geom->points,
+      prevVertexIndex
+    );
+
+    LWDEBUGF(1, "Previous vertex %d is POINT(%.15g %.15g)",
+      prevVertexIndex,
+      prevVertex->x,
+      prevVertex->y
+    );
+
+    int nextVertexIndex = closestPointVertex == closestEdge->geom->points->npoints - 1 ?
+      1 : /* first point would be == last point, this being a closed edge */
+      closestPointVertex + 1;
+
+    const POINT2D *nextVertex = getPoint2d_cp(
+      closestEdge->geom->points,
+      nextVertexIndex
+    );
+
+    LWDEBUGF(1, "Next vertex %d is POINT(%.15g %.15g)",
+      nextVertexIndex,
+      nextVertex->x,
+      nextVertex->y
+    );
+
+
+    double azS0; /* azimuth from previous vertex to closestPointVertex */
+    double azS1; /* azimuth from closestPointVertex to next vertex */
+    double azSL; /* azimuth from closestPointVertex to query point */
+
+    if ( ! azimuth_pt_pt(closestPointOnEdge, prevVertex, &azS0)) {
+      lwerror("error computing azimuth of segment to closest point [%.15g %.15g,%.15g %.15g]",
+              closestPointOnEdge->x, closestPointOnEdge->y,
+              prevVertex->x, prevVertex->y);
       _lwt_release_edges(closestEdge, 1);
       return -1;
     }
-    if ( ! azimuth_pt_pt(nextSegmentP0, nextSegmentP1, &azS1)) {
-      lwerror("error computing azimuth of next segment [%.15g %.15g,%.15g %.15g]",
-              nextSegmentP0->x, nextSegmentP0->y,
-              nextSegmentP1->x, nextSegmentP1->y);
-      lwgeom_free(shortestLine);
+    if ( ! azimuth_pt_pt(closestPointOnEdge, nextVertex, &azS1)) {
+      lwerror("error computing azimuth of segment from closest point [%.15g %.15g,%.15g %.15g]",
+              closestPointOnEdge->x, closestPointOnEdge->y,
+              nextVertex->x, nextVertex->y);
       _lwt_release_edges(closestEdge, 1);
       return -1;
     }
-    if ( ! azimuth_pt_pt(shortestLineP0, shortestLineP1, &azSL) ) {
-      lwerror("error computing azimuth of shortestLine [%.15g %.15g,%.15g %.15g]",
-              shortestLineP0->x, shortestLineP0->y,
-              shortestLineP1->x, shortestLineP1->y);
-      lwgeom_free(shortestLine);
+    if ( ! azimuth_pt_pt(closestPointOnEdge, queryPoint, &azSL) ) {
+      lwerror("error computing azimuth of queryPoint [%.15g %.15g,%.15g %.15g]",
+              closestPointOnEdge->x, closestPointOnEdge->y,
+              queryPoint->x, queryPoint->y);
       _lwt_release_edges(closestEdge, 1);
       return -1;
     }
@@ -7312,19 +7320,19 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     double angle_S0_SL = azSL - azS0;
     if ( angle_S0_SL < 0 ) angle_S0_SL += 2 * M_PI;
 
-    LWDEBUGF(1, "Azimuths from last point of closest segment: S0:%g, S1:%g (+%g), SL:%g (+%g)",
+    LWDEBUGF(1, "Azimuths from closest (vertex) point: P:%g, N:%g (+%g), Q:%g (+%g)",
       azS0,
       azS1, angle_S0_S1,
       azSL, angle_S0_SL
     );
     if ( angle_S0_SL < angle_S0_S1 )
     {
-      /* shortest line was encountered first, is on the left */
+      /* line to query point was encountered first, is on the left */
       containingFace = closestEdge->face_left;
     }
     else
     {
-      /* shortest line NOT encountered first, is on the right */
+      /* line to query point was NOT encountered first, is on the right */
       containingFace = closestEdge->face_right;
     }
   }
@@ -7333,16 +7341,16 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     /* Closest point is internal to closest segment, we can use
      * lw_segment_side */
 
-    LWDEBUGF(1, "Calling lw_segment_side((%g,%g),(%g,%g),(%g,%g)",
+    LWDEBUGF(1, "Closest point is internal to closest segment, calling lw_segment_side((%g,%g),(%g,%g),(%g,%g)",
       closestSegmentP0->x,
       closestSegmentP0->y,
       closestSegmentP1->x,
       closestSegmentP1->y,
-      shortestLineP1->x,
-      shortestLineP1->y
+      queryPoint->x,
+      queryPoint->y
     );
 
-    closestSegmentSide = lw_segment_side(closestSegmentP0, closestSegmentP1, shortestLineP1);
+    closestSegmentSide = lw_segment_side(closestSegmentP0, closestSegmentP1, queryPoint);
     LWDEBUGF(1, "Side of closest segment query point falls on: %d", closestSegmentSide);
 
     if ( closestSegmentSide == -1 ) /* left */
@@ -7357,13 +7365,11 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     {
       lwerror("Unexpected collinearity reported from lw_segment_side");
       _lwt_release_edges(closestEdge, 1);
-      lwgeom_free(shortestLine);
       return -1;
     }
 
   }
 
   _lwt_release_edges(closestEdge, 1);
-  lwgeom_free(shortestLine);
   return containingFace;
 }
