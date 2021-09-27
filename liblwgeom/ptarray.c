@@ -1278,12 +1278,12 @@ closest_point_on_segment(const POINT4D *p, const POINT4D *A, const POINT4D *B, P
 	 */
 	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
 
-	if (r<0)
+	if (r<=0)
 	{
 		*ret = *A;
 		return;
 	}
-	if (r>1)
+	if (r>=1)
 	{
 		*ret = *B;
 		return;

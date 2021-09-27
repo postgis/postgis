@@ -731,6 +731,108 @@ static void test_ptarray_closest_segment_2d()
 	lwline_free(line);
 }
 
+static void test_ptarray_closest_point_on_segment(void)
+{
+	LWLINE *line;
+	double loc, dist;
+	POINT4D s0, s1, qp, cp;
+
+	s0.x = s0.y = 0; s0.z = 10; s0.m = 20;
+	s1.x = 0; s1.y = 10; s1.z = 0; s1.m = 10;
+
+	/* Closest is bottom point */
+
+	qp.x = -0.1; qp.y = 0;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 0);
+	ASSERT_DOUBLE_EQUAL(cp.z, 10);
+	ASSERT_DOUBLE_EQUAL(cp.m, 20);
+
+	qp.x = 0.1; qp.y = 0;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 0);
+	ASSERT_DOUBLE_EQUAL(cp.z, 10);
+	ASSERT_DOUBLE_EQUAL(cp.m, 20);
+
+	qp.x = 0; qp.y = -0.1;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 0);
+	ASSERT_DOUBLE_EQUAL(cp.z, 10);
+	ASSERT_DOUBLE_EQUAL(cp.m, 20);
+
+	/* Closest is top point */
+
+	qp.x = 0; qp.y = 10.1;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 10);
+	ASSERT_DOUBLE_EQUAL(cp.z, 0);
+	ASSERT_DOUBLE_EQUAL(cp.m, 10);
+
+	qp.x = 0.1; qp.y = 10;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 10);
+	ASSERT_DOUBLE_EQUAL(cp.z, 0);
+	ASSERT_DOUBLE_EQUAL(cp.m, 10);
+
+	qp.x = -0.1; qp.y = 10;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 10);
+	ASSERT_DOUBLE_EQUAL(cp.z, 0);
+	ASSERT_DOUBLE_EQUAL(cp.m, 10);
+
+	/* Closest is mid point */
+
+	qp.x = 0.1; qp.y = 5;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 5);
+	ASSERT_DOUBLE_EQUAL(cp.z, 5);
+	ASSERT_DOUBLE_EQUAL(cp.m, 15);
+
+	qp.x = -0.1; qp.y = 5;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 5);
+	ASSERT_DOUBLE_EQUAL(cp.z, 5);
+	ASSERT_DOUBLE_EQUAL(cp.m, 15);
+
+	qp.x = 0.1; qp.y = 2;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 2);
+	ASSERT_DOUBLE_EQUAL(cp.z, 8);
+	ASSERT_DOUBLE_EQUAL(cp.m, 18);
+
+	qp.x = -0.1; qp.y = 2;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 2);
+	ASSERT_DOUBLE_EQUAL(cp.z, 8);
+	ASSERT_DOUBLE_EQUAL(cp.m, 18);
+
+	qp.x = 0.1; qp.y = 8;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 8);
+	ASSERT_DOUBLE_EQUAL(cp.z, 2);
+	ASSERT_DOUBLE_EQUAL(cp.m, 12);
+
+	qp.x = -0.1; qp.y = 8;
+	closest_point_on_segment(&qp, &s0, &s1, &cp);
+	ASSERT_DOUBLE_EQUAL(cp.x, 0);
+	ASSERT_DOUBLE_EQUAL(cp.y, 8);
+	ASSERT_DOUBLE_EQUAL(cp.z, 2);
+	ASSERT_DOUBLE_EQUAL(cp.m, 12);
+
+
+}
+
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -751,4 +853,5 @@ void ptarray_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarray_scroll);
 	PG_ADD_TEST(suite, test_ptarray_closest_vertex_2d);
 	PG_ADD_TEST(suite, test_ptarray_closest_segment_2d);
+	PG_ADD_TEST(suite, test_ptarray_closest_point_on_segment);
 }
