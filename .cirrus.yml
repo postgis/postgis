@@ -5,8 +5,8 @@ freebsd_instance:
 
 task:
   install_script:
-    - ASSUME_ALWAYS_YES=yes pkg bootstrap -f ; pkg upgrade -y
     - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
+    - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
     - pkg install -y bison postgresql12-server gmake libxml2 autoconf automake libtool pkgconf iconv pcre proj gdal sfcgal geos libxslt cunit protobuf-c json-c postgresql12-contrib
 
   patch_script:
