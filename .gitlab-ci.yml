@@ -1,8 +1,7 @@
-test:
-  image: debian:buster
+.build_definition: &build_definition
   except:
     - main
-  script:
+  before_script:
     - apt-get update -qq && apt-get install -y
         bison flex
         postgresql-11 postgresql-server-dev-11
@@ -12,8 +11,10 @@ test:
         libprotobuf-c1 libprotobuf-c-dev protobuf-c-compiler
     - lsb_release -a
     - uname -a
+    - echo "LONG INT is "`getconf LONG_BIT`"bit"
     - service postgresql start
     - su -l postgres -c "createuser -s `whoami`"
+  script:
     - ./autogen.sh
     - ./configure
     - make maintainer-clean
@@ -25,3 +26,11 @@ test:
     - make install
     - RUNTESTFLAGS=-v make installcheck
     - RUNTESTFLAGS="-v --dumprestore" make installcheck
+
+test:
+  image: debian:buster
+  <<: *build_definition
+
+test32:
+  image: i386/debian:buster
+  <<: *build_definition
