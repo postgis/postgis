@@ -483,7 +483,7 @@ BEGIN
     ) --}{
     SELECT ring_id, geom as ring_geom, side_faces
     FROM all_rings_with_ring_geom
-  LOOP --{
+  LOOP --}{
 
     found_rings := found_rings + 1;
 
@@ -546,7 +546,7 @@ BEGIN
       EXCEPTION WHEN unique_violation THEN
         retrec.error = 'face has multiple shells';
         retrec.id1 = rec.side_faces[1];
-        retrec.id2 = NULL;
+        retrec.id2 = rec.ring_id;
         RETURN NEXT retrec;
       END;
     ELSE -- }{ It's an hole (CW)
