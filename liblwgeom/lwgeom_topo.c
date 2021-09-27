@@ -7059,9 +7059,9 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
   uint64_t numedges, i;
   const POINT2D *queryPoint;
   const POINT2D *closestPointOnEdge = NULL;
-  int closestSegmentIndex;
+  uint32_t closestSegmentIndex;
   int closestSegmentSide;
-  int closestPointVertex = -1;
+  uint32_t closestPointVertex;
   const POINT2D *closestSegmentP0, *closestSegmentP1;
   LWT_ELEMID closestNode = 0;
   double dist;
@@ -7138,6 +7138,10 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
     {
       closestNode = closestEdge->end_node;
     }
+  }
+  else
+  {
+    closestPointVertex = closestEdge->geom->points->npoints;
   }
 
   if ( closestNode != 0 )
@@ -7243,7 +7247,7 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
   }
 
   /* Find on which side of the segment the query point lays */
-  if ( closestPointVertex != -1 )
+  if ( closestPointVertex != closestEdge->geom->points->npoints )
   {
     /* Closest point is a vertex of the closest segment */
     LWDEBUGF(1, "Closest point is vertex %d of closest segment", closestPointVertex);
@@ -7257,31 +7261,31 @@ lwt_GetFaceContainingPoint(LWT_TOPOLOGY* topo, const LWPOINT* pt)
      * means the query point is on the right)
      */
 
-    int prevVertexIndex = closestPointVertex > 0 ?
-      closestPointVertex - 1 :
-      closestEdge->geom->points->npoints - 2; /* last vertex would be == first vertex, this being a closed edge */
+    uint32_t prevVertexIndex = closestPointVertex > 0 ?
+      closestPointVertex - 1u :
+      closestEdge->geom->points->npoints - 2u; /* last vertex would be == first vertex, this being a closed edge */
 
     const POINT2D *prevVertex = getPoint2d_cp(
       closestEdge->geom->points,
       prevVertexIndex
     );
 
-    LWDEBUGF(1, "Previous vertex %d is POINT(%.15g %.15g)",
+    LWDEBUGF(1, "Previous vertex %u is POINT(%.15g %.15g)",
       prevVertexIndex,
       prevVertex->x,
       prevVertex->y
     );
 
-    int nextVertexIndex = closestPointVertex == closestEdge->geom->points->npoints - 1 ?
-      1 : /* first point would be == last point, this being a closed edge */
-      closestPointVertex + 1;
+    uint32_t nextVertexIndex = closestPointVertex == closestEdge->geom->points->npoints - 1u ?
+      1u : /* first point would be == last point, this being a closed edge */
+      closestPointVertex + 1u;
 
     const POINT2D *nextVertex = getPoint2d_cp(
       closestEdge->geom->points,
       nextVertexIndex
     );
 
-    LWDEBUGF(1, "Next vertex %d is POINT(%.15g %.15g)",
+    LWDEBUGF(1, "Next vertex %u is POINT(%.15g %.15g)",
       nextVertexIndex,
       nextVertex->x,
       nextVertex->y
