@@ -610,26 +610,41 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 
 	  <para>The PostGIS <varname>geography</varname> data type provides native support for spatial features represented on "geographic" coordinates (sometimes called "geodetic" coordinates, or "lat/lon", or "lon/lat"). Geographic coordinates are spherical coordinates expressed in angular units (degrees). </para>
 
-	  <para>The basis for the PostGIS geometry data type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors.</para>
+	  <para>The basis for the PostGIS geometry data type is a plane.
+      The shortest path between two points on the plane is a straight line.
+      That means functions on geometries (areas, distances, lengths, intersections, etc)
+      are calculated using straight line vectors and cartesian mathematics.
+      This makes them simpler to implement and faster to execute,
+      but also makes them inaccurate for data on the spheroidal surface of the earth.
+      </para>
 
-	  <para>The basis for the PostGIS geographic data type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account.</para>
+	  <para>The PostGIS geography data type is based on a spherical model.
+      The shortest path between two points on the sphere is a great circle arc.
+      Functions on geographies (areas, distances, lengths, intersections, etc) are calculated using arcs on the sphere.
+      By taking the spheroidal shape of the world into account, the functions provide more accurate results.</para>
 
-		<para>It uses a data type called <varname>geography</varname>. None of the GEOS functions support the <varname>geography</varname>
-	  type. As a workaround one can convert back and forth between geometry and geography types.</para>
+	  <para>Because the underlying mathematics is more complicated, there are fewer functions defined for the geography type than for the geometry type.
+      Over time, as new algorithms are added the capabilities of the geography type will expand.
+      As a workaround one can convert back and forth between geometry and geography types.</para>
 
-	  <para>Because the underlying mathematics is more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand.</para>
-
-	  <para>Any geodetic (long/lat based) spatial reference system defined in the <varname>spatial_ref_sys</varname> table can be used.
+	  <para>Like the geometry data type, geography data is associated
+      with a spatial reference system via a spatial reference system identifier (SRID).
+        Any geodetic (long/lat based) spatial reference system defined in the <varname>spatial_ref_sys</varname> table can be used.
         (Prior to PostGIS 2.2, the geography type supported only WGS 84 geodetic (SRID:4326)).
-		You can add your own custom spheroidal spatial reference system as described in <xref linkend="user-spatial-ref-sys" />.</para>
+		You can add your own custom geodetic spatial reference system as described in <xref linkend="user-spatial-ref-sys" />.</para>
 
-	  <para>Regardless which spatial reference system is used, the units returned by the measurement (<xref linkend="ST_Distance" />, <xref linkend="ST_Length" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Area" />) and for input of <xref linkend="ST_DWithin" /> are in meters.</para>
+	  <para>For all spatial reference systems the units returned by measurement functions
+      (e.g. <xref linkend="ST_Distance" />, <xref linkend="ST_Length" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Area" />)
+      and for the distance argument of <xref linkend="ST_DWithin" /> are in meters.</para>
 
 	<sect2 id="Create_Geography_Tables">
 		<title>Creating Geography Tables</title>
 
-		<para>You can create a table to store geography data using the <code>CREATE TABLE</code> statement
-        with a column of type <varname>geography</varname>:</para>
+		<para>You can create a table to store geography data using the
+        <ulink url="https://www.postgresql.org/docs/current/sql-createtable.html">CREATE TABLE</ulink>
+        SQL statement with a column of type <varname>geography</varname>.
+        The following example creates a table with a geography column storing 2D LineStrings
+        in the WGS84 geodetic coordinate system (SRID 4326):</para>
 
 <programlisting>CREATE TABLE global_points (
     id SERIAL PRIMARY KEY,
@@ -644,7 +659,7 @@ geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
         <para>the spatial type modifier restricts the kind of shapes and dimensions allowed in the column.
 		Values allowed for the spatial type are: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION.
         The geography type does not support curves, TINS, or POLYHEDRALSURFACEs.
-        The modifier also supports dimensionality restrictions through suffixes: Z, M and ZM.
+        The modifier supports coordinate dimensionality restrictions by adding suffixes: Z, M and ZM.
         For example, a modifier of 'LINESTRINGM' only allows linestrings with three dimensions, and treats the third dimension as a measure.
 		Similarly, 'POINTZM' requires four dimensional (XYZM) data.
         </para>
@@ -798,8 +813,8 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 		Simply load your data up as longitude/latitude and go from there.</para></listitem>
 	</itemizedlist>
 	<para>Refer to <xref linkend="PostGIS_TypeFunctionMatrix" /> for compare between
-			what is supported for Geography vs. Geometry.  For a brief listing and description of Geography functions, refer to
-				<xref linkend="PostGIS_GeographyFunctions" />
+		what is supported for Geography vs. Geometry.  For a brief listing and description of Geography functions, refer to
+		<xref linkend="PostGIS_GeographyFunctions" />
 		</para>
 	</sect2>
 	<sect2 id="PostGIS_Geography_AdvancedFAQ">
@@ -866,25 +881,83 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 	<sect2 id="Create_Spatial_Table">
 	  <title>Creating a Spatial Table</title>
 
-	  <para>Creating a table with spatial data, can be done in one step. As shown in the following example
-	  which creates a roads table with a 2D linestring geometry column in WGS84 long lat</para>
-	  <programlisting>CREATE TABLE ROADS (ID serial, ROAD_NAME text, geom geometry(LINESTRING,4326) );</programlisting>
+		<para>You can create a table to store geometry data using the
+        <ulink url="https://www.postgresql.org/docs/current/sql-createtable.html">CREATE TABLE</ulink>
+        SQL statement with a column of type <varname>geometry</varname>.
+        The following example creates a table with a geometry column storing 2D (XY) LineStrings
+        in the BC-Albers coordinate system (SRID 3005):</para>
 
-	  <para>We can add additional columns using standard ALTER TABLE command as we do in this next example where we add a 3-D linestring.</para>
+<programlisting>CREATE TABLE roads (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(64),
+    geom geometry(LINESTRING,3005)
+  );</programlisting>
+
+		<para>The <varname>geometry</varname> type supports two optional <emphasis role="bold">type modifiers</emphasis>:</para>
+
+        <itemizedlist>
+		<listitem>
+        <para>the <emphasis role="bold">spatial type modifier</emphasis>
+        restricts the kind of shapes and dimensions allowed in the column.
+		The value can be any of the supported
+        <link linkend="RefObject">geometry subtypes</link>
+        (e.g. POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION, etc).
+        The modifier supports coordinate dimensionality restrictions by adding suffixes: Z, M and ZM.
+        For example, a modifier of 'LINESTRINGM' allows only linestrings with three dimensions, and treats the third dimension as a measure.
+		Similarly, 'POINTZM' requires four dimensional (XYZM) data.
+        </para>
+		</listitem>
+		<listitem>
+        <para>the <emphasis role="bold">SRID modifier</emphasis> restricts the
+        <link linkend="spatial_ref_sys">spatial reference system</link> SRID to a particular number.
+        If omitted, the SRID defaults to 0.
+        </para>
+		</listitem>
+		</itemizedlist>
+
+		<para></para>
+
+        <para>Examples of creating tables with geometry columns:</para>
+		<itemizedlist>
+		<listitem>
+		  <para>Create a table holding any kind of geometry with the default SRID:</para>
+		  <para><programlisting>CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry );</programlisting></para>
+		</listitem>
+		<listitem>
+		  <para>Create a table with 2D POINT geometry with the default SRID:</para>
+		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT) );</programlisting></para>
+		</listitem>
+		<listitem>
+		  <para>Create a table with 3D (XYZ) POINTs and an explicit SRID of 3005:</para>
+		  <para><programlisting>CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ,3005) );</programlisting></para>
+		</listitem>
+		<listitem>
+			<para>Create a table with 4D (XYZM) LINESTRING geometry with the default SRID:</para>
+			<para><programlisting>CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM) );</programlisting></para>
+		</listitem>
+		<listitem>
+			<para>Create a table with 2D POLYGON geometry with the SRID 4267 (NAD 1927 long lat):</para>
+			<para><programlisting>CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON,4267) );</programlisting></para>
+		</listitem>
+		</itemizedlist>
+
+	  <para>It is possible to have more than one geometry column in a table.
+        This can be specified when the table is created, or a column can be added using the
+        <ulink url="https://www.postgresql.org/docs/current/sql-altertable.html">ALTER TABLE</ulink>
+        SQL statement.
+        This example adds a column that can hold 3D LineStrings:</para>
+
 	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
 	</sect2>
 
 	<sect2 id="geometry_columns">
 	  <title>GEOMETRY_COLUMNS View</title>
 
-        <para>The OpenGIS "Simple Features Specification for SQL" defines
-        the <varname>GEOMETRY_COLUMNS</varname> metadata table to describe geometry table structure.
-        In order to ensure that metadata remains consistent,
-        operations such as creating and removing a spatial column are carried out
-        through special procedures defined by OpenGIS.</para>
-
-	  <para>In PostGIS <varname>geometry_columns</varname> is a view reading from database system catalog tables.
-	  Its structure is:</para>
+      <para>The OGC <emphasis>Simple Features Specification for SQL</emphasis> defines
+      the <varname>GEOMETRY_COLUMNS</varname> metadata table to describe geometry table structure.
+      In PostGIS <varname>geometry_columns</varname> is a view reading from database system catalog tables.
+      This ensures that the spatial metadata information is always consistent with the currently defined tables and views.
+	  The view structure is:</para>
 
 	  <programlisting>\d geometry_columns</programlisting>
 <screen>             View "public.geometry_columns"
@@ -906,9 +979,8 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 
 		  <listitem>
 			<para>The fully qualified name of the feature table containing the
-			geometry column. Note that the terms "catalog" and "schema" are
-			Oracle-ish. There is no PostgreSQL analogue of "catalog" so that
-			column is left blank . For "schema" the PostgreSQL schema name is
+			geometry column. There is no PostgreSQL analogue of "catalog" so that
+			column is left blank. For "schema" the PostgreSQL schema name is
 			used (<varname>public</varname> is the default).</para>
 		  </listitem>
 		</varlistentry>
@@ -925,8 +997,7 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 		  <term>coord_dimension</term>
 
 		  <listitem>
-			<para>The spatial dimension (2, 3 or 4 dimensional) of the
-			column.</para>
+			<para>The coordinate dimension (2, 3 or 4) of the column.</para>
 		  </listitem>
 		</varlistentry>
 
@@ -952,12 +1023,6 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 			MULTIPOINTM, MULTILINESTRINGM, MULTIPOLYGONM, GEOMETRYCOLLECTIONM.
 			For heterogeneous (mixed-type) collections, you can use "GEOMETRY"
 			as the type.</para>
-
-			<note>
-			  <para>This attribute is (probably) not part of the OpenGIS
-			  specification, but is required for ensuring type
-			  homogeneity.</para>
-			</note>
 		  </listitem>
 		</varlistentry>
 	  </variablelist>
