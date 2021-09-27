@@ -4,13 +4,6 @@ freebsd_instance:
   memory: 16G
 
 task:
-  timeout_in: 320m
-  sysinfo_script:
-    - mount
-    - df -h
-    - sysctl hw.model hw.ncpu hw.physmem
-    - freebsd-version
-
   install_script:
     - ASSUME_ALWAYS_YES=yes pkg bootstrap -f ; pkg upgrade -y
     - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
