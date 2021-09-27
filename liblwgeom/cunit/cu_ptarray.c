@@ -733,8 +733,6 @@ static void test_ptarray_closest_segment_2d()
 
 static void test_ptarray_closest_point_on_segment(void)
 {
-	LWLINE *line;
-	double loc, dist;
 	POINT4D s0, s1, qp, cp;
 
 	s0.x = s0.y = 0; s0.z = 10; s0.m = 20;
