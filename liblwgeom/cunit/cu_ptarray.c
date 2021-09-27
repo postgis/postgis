@@ -818,14 +818,14 @@ static void test_ptarray_closest_point_on_segment(void)
 	closest_point_on_segment(&qp, &s0, &s1, &cp);
 	ASSERT_DOUBLE_EQUAL(cp.x, 0);
 	ASSERT_DOUBLE_EQUAL(cp.y, 8);
-	ASSERT_DOUBLE_EQUAL(cp.z, 2);
+	ASSERT_DOUBLE_EQUAL_TOLERANCE(cp.z, 2, 1e-5);
 	ASSERT_DOUBLE_EQUAL(cp.m, 12);
 
 	qp.x = -0.1; qp.y = 8;
 	closest_point_on_segment(&qp, &s0, &s1, &cp);
 	ASSERT_DOUBLE_EQUAL(cp.x, 0);
 	ASSERT_DOUBLE_EQUAL(cp.y, 8);
-	ASSERT_DOUBLE_EQUAL(cp.z, 2);
+	ASSERT_DOUBLE_EQUAL_TOLERANCE(cp.z, 2, 1e-5);
 	ASSERT_DOUBLE_EQUAL(cp.m, 12);
 
 
