@@ -704,7 +704,7 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="Geography_Basics" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_PointZ" />, <xref linkend="ST_PointM" />, <xref linkend="ST_PointZM" /></para>
+		<para><xref linkend="PostGIS_Geography" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_PointZ" />, <xref linkend="ST_PointM" />, <xref linkend="ST_PointZM" /></para>
 	  </refsection>
 	</refentry>
 

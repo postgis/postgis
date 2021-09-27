@@ -151,7 +151,7 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
         <para>First, you need to create a table with a column of type
         "geometry" or "geography" to hold your GIS data.
 		Storing geography type data is a little different than storing geometry.  Refer
-		to <xref linkend="Geography_Basics" /> for details on storing geography. </para>
+		to <xref linkend="PostGIS_Geography" /> for details on storing geography. </para>
 		<para>
 		For geometry: Connect to your database with
         <filename>psql</filename> and try the following SQL:</para>
