@@ -1053,6 +1053,7 @@ sub run_loader_test
 	# If we have some expected files to compare with, run in wkt mode.
 	if ( ! run_loader_and_check_output("wkt test", $tblname, "${TEST}-w.sql.expected", "${TEST}-w.select.expected", "-w $custom_opts") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	drop_table($tblname);
@@ -1060,11 +1061,13 @@ sub run_loader_test
 	# If we have some expected files to compare with, run in geography mode.
 	if ( ! run_loader_and_check_output("geog test", $tblname, "${TEST}-G.sql.expected", "${TEST}-G.select.expected", "-G $custom_opts") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	# If we have some expected files to compare with, run the dumper and compare shape files.
 	if ( ! run_dumper_and_check_output("dumper geog test", $tblname, "${TEST}-G.shp.expected") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	drop_table($tblname);
@@ -1072,11 +1075,13 @@ sub run_loader_test
 	# Always run in wkb ("normal") mode, even if there are no expected files to compare with.
 	if( ! run_loader_and_check_output("wkb test", $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", "$custom_opts", "true") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	# If we have some expected files to compare with, run the dumper and compare shape files.
 	if( ! run_dumper_and_check_output("dumper wkb test", $tblname, "${TEST}.shp.expected") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	drop_table($tblname);
@@ -1087,6 +1092,7 @@ sub run_loader_test
 		# If we have some expected files to compare with, run in wkt dump mode.
 		if ( ! run_loader_and_check_output("wkt dump test", $tblname, "${TEST}-wD.sql.expected") )
 		{
+			drop_table($tblname) unless $OPT_NODROP;
 			return 0;
 		}
 		drop_table($tblname);
@@ -1094,6 +1100,7 @@ sub run_loader_test
 		# If we have some expected files to compare with, run in wkt dump mode.
 		if ( ! run_loader_and_check_output("geog dump test", $tblname, "${TEST}-GD.sql.expected") )
 		{
+			drop_table($tblname) unless $OPT_NODROP;
 			return 0;
 		}
 		drop_table($tblname);
@@ -1101,6 +1108,7 @@ sub run_loader_test
 		# If we have some expected files to compare with, run in wkb dump mode.
 		if ( ! run_loader_and_check_output("wkb dump test", $tblname, "${TEST}-D.sql.expected") )
 		{
+			drop_table($tblname) unless $OPT_NODROP;
 			return 0;
 		}
 		drop_table($tblname);
