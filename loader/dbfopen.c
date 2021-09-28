@@ -1750,7 +1750,7 @@ int SHPAPI_CALL DBFIsRecordDeleted( DBFHandle psDBF, int iShape )
 /* -------------------------------------------------------------------- */
 /*	Have we read the record?					*/
 /* -------------------------------------------------------------------- */
-    if( psDBF->nRecords > 0 && !DBFLoadRecord( psDBF, iShape ) )
+    if( !DBFLoadRecord( psDBF, iShape ) )
         return FALSE;
 
 /* -------------------------------------------------------------------- */
