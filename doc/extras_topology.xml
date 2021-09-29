@@ -712,7 +712,7 @@ area specified by the <varname>bbox</varname> parameter.
 				<programlisting>SELECT * FROM  topology.ValidateTopology('ma_topo');
       error        | id1 | id2
 -------------------+-----+-----
-face without edges |   0 |
+face without edges |   1 |
 				</programlisting>
 			</refsection>
 
