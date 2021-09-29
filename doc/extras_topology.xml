@@ -580,6 +580,11 @@ area specified by the <varname>bbox</varname> parameter.
                         <thead><row><entry>Error</entry><entry>id1</entry><entry>id2</entry></row></thead>
                         <tbody>
                             <row>
+                                    <entry>coincident nodes</entry>
+                                    <entry>node_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
                                     <entry>edge crosses node</entry>
                                     <entry>edge_id</entry>
                                     <entry>node_id</entry>
@@ -615,14 +620,59 @@ area specified by the <varname>bbox</varname> parameter.
                                     <entry>null</entry>
                             </row>
                             <row>
-                                    <entry>face has multiple shells</entry>
-                                    <entry>face_id</entry>
-                                    <entry>signed edge_id</entry>
-                            </row>
-                            <row>
                                     <entry>face has no rings</entry>
                                     <entry>face_id</entry>
                                     <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>face has wrong mbr</entry>
+                                    <entry>face_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>hole not in advertised face</entry>
+                                    <entry>signed edge_id identifying the ring</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>not-isolated node has not-null containing_face</entry>
+                                    <entry>node_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>isolated node has null containing_face</entry>
+                                    <entry>node_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>isolated node has wrong containing_face</entry>
+                                    <entry>node_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>invalid next_right_edge</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>invalid next_left_edge</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>mixed face labeling in ring</entry>
+                                    <entry>signed edge_id identifying the ring</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>non-closed ring</entry>
+                                    <entry>signed edge_id identifying the ring</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>face has multiple shells</entry>
+                                    <entry>face_id</entry>
+                                    <entry>signed edge_id identifying the ring</entry>
                             </row>
                             <row>
                                     <entry>face overlaps face</entry>
@@ -643,11 +693,6 @@ area specified by the <varname>bbox</varname> parameter.
                                     <entry>invalid next_right_edge</entry>
                                     <entry>edge_id</entry>
                                     <entry>expected next_right_edge value</entry>
-                            </row>
-                            <row>
-                                    <entry>mixed face labeling in ring</entry>
-                                    <entry>signed edge_id identifying the ring</entry>
-                                    <entry>null</entry>
                             </row>
                          </tbody>
                         </tgroup>
