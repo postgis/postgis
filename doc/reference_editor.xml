@@ -467,7 +467,7 @@ SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Normalize"/>, <xref linkend="ST_Normalize" /></para>
+        <para><xref linkend="ST_Normalize" /></para>
       </refsection>
 </refentry>
 
