@@ -615,6 +615,11 @@ area specified by the <varname>bbox</varname> parameter.
                                     <entry>null</entry>
                             </row>
                             <row>
+                                    <entry>face has multiple shells</entry>
+                                    <entry>face_id</entry>
+                                    <entry>signed edge_id</entry>
+                            </row>
+                            <row>
                                     <entry>face has no rings</entry>
                                     <entry>face_id</entry>
                                     <entry>null</entry>
