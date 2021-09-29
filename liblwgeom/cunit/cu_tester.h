@@ -36,7 +36,7 @@ typedef void (*PG_SuiteSetup)(void);
 } while (0);
 
 #define ASSERT_DOUBLE_EQUAL_TOLERANCE(o,e,t) do { \
-  if ( o != e ) \
+  if ( fabs(o-e) > t ) \
     fprintf(stderr, "[%s:%d]\n Expected: %g\n Obtained: %g\n Difference: %.15g\n Tolerated: %.15g\n", __FILE__, __LINE__, (double)(e), (o), fabs((o)-(e)), (t)); \
   CU_ASSERT_DOUBLE_EQUAL(o,e,t); \
 } while (0);
