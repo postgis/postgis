@@ -425,6 +425,52 @@ st_astext
       </refsection>
     </refentry>
 
+    <refentry id="ST_Scroll">
+      <refnamediv>
+        <refname>ST_Scroll</refname>
+        <refpurpose>Change start point of a closed LineString.</refpurpose>
+      </refnamediv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Scroll</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+            <paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
+          </funcprototype>
+         </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>
+Changes the start/end point of a closed LineString to
+the given vertex <parameter>point</parameter>.
+        </para>
+        <para>Availability: 3.2.0</para>
+        <para>&Z_support;</para>
+        <para>&M_support;</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <para>Make e closed line start at its 3rd vertex</para>
+<programlisting>
+SELECT ST_AsEWKT(ST_Scroll('SRID=4326;LINESTRING(0 0 0 1, 10 0 2 0, 5 5 4 2,0 0 0 1)', 'POINT(5 5 4 2)'));
+
+st_asewkt
+----------
+SRID=4326;LINESTRING(5 5 4 2,0 0 0 1,10 0 2 0,5 5 4 2)
+</programlisting>
+
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_Normalize"/>, <xref linkend="ST_Normalize" /></para>
+      </refsection>
+</refentry>
+
     <refentry id="ST_FlipCoordinates">
       <refnamediv>
         <refname>ST_FlipCoordinates</refname>
