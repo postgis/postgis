@@ -44,18 +44,29 @@
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Text representation of the geometry prefixed with the SRID. Optional argument may be used to reduce the maximum number
+			<para>Returns the Well-Known Text representation of the geometry prefixed with the SRID.
+            The optional <parameter>maxdecimaldigits</parameter> argument may be used to reduce the maximum number
 			of decimal digits after floating point used in output (defaults to 15).</para>
 
+            <para>To perform the inverse conversion of EWKT representation to PostGIS geometry
+                use <xref linkend="ST_GeomFromEWKT" />.</para>
+
+      <warning>
+			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+            can cause output geometry to become invalid.
+            To avoid this use <xref linkend="ST_ReducePrecision" />
+            with a suitable gridsize first.
+            </para>
+      </warning>
+
 			<note>
-			  <para>The WKT spec does not include the SRID.  To get the OGC WKT format use ST_AsText.</para>
+			  <para>The WKT spec does not include the SRID.  To get the OGC WKT format use <xref linkend="ST_AsText" />.</para>
 			</note>
 			<warning>
-        <para>WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.</para>
+        <para>WKT format does not maintain precision so to prevent floating truncation,
+        use <xref linkend="ST_AsBinary" /> or <xref linkend="ST_AsEWKB" /> format for transport.</para>
 			</warning>
-			<note>
-			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
-			</note>
+
             <para>Enhanced: 3.1.0 support for optional precision parameter.</para>
 			<para>Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and TIN was introduced.</para>
 
@@ -147,7 +158,15 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			<para>The textual representation of numbers in WKT may not maintain full floating-point precision.
             To ensure full accuracy for data storage or transport it is best to use
             <link linkend="OpenGISWKBWKT">Well-Known Binary</link> (WKB) format
-            (see  <xref linkend="ST_AsBinary" /> and <xref linkend="ST_AsEWKB" />).</para>
+            (see  <xref linkend="ST_AsBinary" /> and <parameter>maxdecimaldigits</parameter>).</para>
+      </warning>
+
+      <warning>
+			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+            can cause output geometry to become invalid.
+            To avoid this use <xref linkend="ST_ReducePrecision" />
+            with a suitable gridsize first.
+            </para>
       </warning>
 
 			<para>Availability: 1.5 - support for geography was introduced.</para>
@@ -629,6 +648,14 @@ F000000000000000000000000000000000000000000000000');
 
 			<para>The <varname>maxdecimaldigits</varname> argument may be used to reduce the maximum number of decimal places used in output (defaults to 9). If you are using EPSG:4326 and are outputting the geometry only for display, <varname>maxdecimaldigits</varname>=6 can be a good choice for many maps.</para>
 
+      <warning>
+			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+            can cause output geometry to become invalid.
+            To avoid this use <xref linkend="ST_ReducePrecision" />
+            with a suitable gridsize first.
+            </para>
+      </warning>
+
 			<para>The <varname>options</varname> argument can be used to add BBOX or CRS in GeoJSON output:
 			  <itemizedlist>
 				<listitem>
@@ -791,6 +818,15 @@ FROM (VALUES (1, 'one', 'POINT(1 1)'::geometry)) AS t(id, name, geom);</programl
 			specified then the default is assumed to be 2. The <varname>maxdecimaldigits</varname> argument
 			may be used to reduce the maximum number of decimal places
 			used in output (defaults to 15).</para>
+
+      <warning>
+			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+            can cause output geometry to become invalid.
+            To avoid this use <xref linkend="ST_ReducePrecision" />
+            with a suitable gridsize first.
+            </para>
+      </warning>
+
 		<para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
 		<para>The 'options' argument is a bitfield. It could be used to define CRS output type
 					in GML output, and to declare data as lat/lon:
@@ -972,6 +1008,14 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		<para>Return the geometry as a Keyhole Markup Language (KML) element. There are several variants of this function.
 			maximum number of decimal places used in
 			output (defaults to 15), version default to 2 and default namespace is no prefix.</para>
+
+      <warning>
+			<para>Using the <parameter>maxdecimaldigits</parameter> parameter
+            can cause output geometry to become invalid.
+            To avoid this use <xref linkend="ST_ReducePrecision" />
+            with a suitable gridsize first.
+            </para>
+      </warning>
 
 		<para>Version 1: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / maxdecimaldigits=15 </para>
 		<para>Version 2: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) maxdecimaldigits=15 / nprefix=NULL </para>
