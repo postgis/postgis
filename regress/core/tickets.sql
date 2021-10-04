@@ -1427,3 +1427,8 @@ FROM
     ) data;
 
 
+-- https://trac.osgeo.org/postgis/ticket/5008
+SELECT
+	'#5008',
+	ST_DWithin('POINT EMPTY', 'POINT(0 0)', 'Inf'),
+	ST_DWithin('POINT(1 1)', 'POLYGON EMPTY', 'Inf');

@@ -743,6 +743,11 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 
 	gserialized_error_if_srid_mismatch(geom1, geom2, __func__);
 
+	if (lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2))
+	{
+		PG_RETURN_BOOL(false);
+	}
+
 	mindist = lwgeom_mindistance2d_tolerance(lwgeom1, lwgeom2, tolerance);
 
 	PG_FREE_IF_COPY(geom1, 0);
