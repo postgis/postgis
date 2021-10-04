@@ -2,6 +2,8 @@ PostGIS 3.2.0
 2021/xx/xx
 
  * Breaking changes *
+  - #5008, Empty geometries are not reported as being within Infinite
+           distance by ST_DWithin (Sandro Santilli)
   - #4824, Removed `--without-wagyu` build option. Using Wagyu is now mandatory to build with MVT support.
   - #4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.
   - #4981, ST_StartPoint support any geometry. No longer returns null for non-linestrings.
