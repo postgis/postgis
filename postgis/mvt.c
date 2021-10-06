@@ -1069,8 +1069,8 @@ static VectorTile__Tile * mvt_ctx_to_tile(mvt_agg_context *ctx)
 
 static bytea *mvt_ctx_to_bytea(mvt_agg_context *ctx)
 {
-	/* Fill out the file slot, if it's not already filled. */
-	/* We should only have a filled slow when all the work of building */
+	/* Fill out the tile slot, if it's not already filled. */
+	/* We should only have a filled slot when all the work of building */
 	/* out the data is complete, so after a serialize/deserialize cycle */
 	/* or after a context combine */
 	size_t len;
