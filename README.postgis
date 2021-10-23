@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.2.0alpha1
-:Date: 2021-09-10
+:Version: 3.2.0beta1
+:Date: 2021-10-23
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -46,6 +46,7 @@ this to work.
     https://proj.org
 
 * GEOS (Required, Version 3.6 or higher)
+  - 3/10+ for ST_MakeValid enhancements
   - 3.9+ is needed to take advantage of
     fixed precision enhancements in overlay functions
   - 3.7+ is needed just for the ST_FrechetDistance function

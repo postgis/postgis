@@ -3,6 +3,33 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>Release 3.2.0beta1</title>
+        <para>Release date: 2021/10/23</para>
+        <para>This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+
+(and ST_MakeValid enhancements with 3.10+),
+Proj 6.1+, and PostgreSQL 14+.</para>
+        <simplesect>
+            <title>Bug Fixes and Breaking Changes</title>
+            <para>5012, Clean regress against released GEOS 3.10.0
+                (Regina Obe, Paul Ramsey)</para>
+            <para>5000, Turn off Window support in ST_AsMVT aggregate
+                    as no real use-case for it and it crashes with random input
+                    (Paul Ramsey)</para>
+            <para>4994, shp2pgsql is sometimes missing the INSERT statements
+                (Sandro Santilli)</para>
+            <para>4990, getfacecontainingpoint fails on i386 (Sandro Santilli)</para>
+            <para>5008, Have ST_DWithin with EMPTY operand always return false
+                (Sandro Santilli)</para>
+            <para>5002, liblwgeom should build with warning flags by default
+                (Sandro Santilli)</para>
+        </simplesect>
+        <simplesect>
+            <title>Enhancements</title>
+                <para>4997, FlatGeobuf format input/output (Björn Harrtell)</para>
+        </simplesect>
+    </sect1>
+    <sect1>
         <title>Release 3.2.0alpha1</title>
         <para>Release date: 2021/09/10</para>
         <para>This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9 or higher

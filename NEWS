@@ -1,3 +1,31 @@
+PostGIS 3.2.0beta1
+2021/10/23
+
+This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+
+(and ST_MakeValid enhancements with 3.10+),
+Proj 6.1+, and PostgreSQL 14+.
+
+Changes since PostGIS 3.2.0alpa1 release:
+
+  * Bug Fixes and Breaking Changes *
+    - #5012, Clean regress against released GEOS 3.10.0
+      (Regina Obe, Paul Ramsey)
+    - #5000, Turn off Window support in ST_AsMVT aggregate
+        as no real use-case for it and it crashes with random input
+        (Paul Ramsey)
+    - #4994, shp2pgsql is sometimes missing the INSERT statements
+      (Sandro Santilli)
+    - #4990, getfacecontainingpoint fails on i386 (Sandro Santilli)
+    - #5008, Have ST_DWithin with EMPTY operand always return false
+      (Sandro Santilli)
+    - #5002, liblwgeom should build with warning flags by default
+      (Sandro Santilli)
+
+  * Enhancements *
+    - #4997, FlatGeobuf format input/output (Björn Harrtell)
+
+
 PostGIS 3.2.0
 2021/xx/xx
 
