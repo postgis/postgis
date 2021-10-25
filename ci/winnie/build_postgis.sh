@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.9.0
-	export GDAL_VER=3.2.0
-	export PROJ_VER=7.1.1
+	export GEOS_VER=3.10.0
+	export GDAL_VER=3.3.2
+	export PROJ_VER=7.2.1
 	export SFCGAL_VER=1.4.0
 	export CGAL_VER=5.3
 	export ICON_VER=1.16

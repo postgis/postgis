@@ -16,9 +16,9 @@
 #otherwise use the ones jenkins passes thru
 #!/usr/bin/env bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.9.1
-	export GDAL_VER=3.2.3
-	export PROJ_VER=7.1.1
+	export GEOS_VER=3.10.0
+	export GDAL_VER=3.3.2
+	export PROJ_VER=7.2.1
 	export SFCGAL_VER=1.4.0
 	export CGAL_VER=5.3
 	export ICON_VER=1.16
@@ -27,6 +27,7 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
 	export PROJSO=libproj-19.dll
+	export CURL_VER=7.73
 fi;
 
 export PROTOBUF_VER=3.2.0
@@ -39,6 +40,12 @@ if  [[ "${ICON_VER}" == '' ]] ; then
 fi;
 
 echo "ICON_VER ${ICON_VER}"
+
+if  [[ "${CURL_VER}" == '' ]] ; then
+  export CURL_VER=7.73
+fi;
+
+echo "CURL_VER ${CURL_VER}"
 
 #set to something even if override is on but not set
 if  [[ "${ZLIB_VER}" == '' ]] ; then
@@ -60,6 +67,7 @@ echo "ZLIB_VER $ZLIB_VER"
 echo "PROJ_VER $PROJ_VER"
 echo "LIBXML_VER $LIBXML_VER"
 echo "CGAL_VER $CGAL_VER"
+
 
 export PROJECTS=/projects
 export PROJECTS=/projects
@@ -190,6 +198,7 @@ fi;
 
 echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
 echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
+echo "CURL VERSION: ${CURL_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
 cp ${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/
 #cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
