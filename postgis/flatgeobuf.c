@@ -547,7 +547,7 @@ uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_agg_ctx *ctx)
 	POSTGIS_DEBUGF(3, "called at offset %ld", ctx->ctx->offset);
 	if (ctx == NULL)
 		flatgeobuf_agg_ctx_init(NULL, false);
-	
+
 	if (ctx->ctx->features_count != 0 && ctx->ctx->create_index) {
 		ctx->ctx->index_node_size = 16;
 		flatgeobuf_create_index(ctx->ctx);
