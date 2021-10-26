@@ -505,6 +505,7 @@ struct flatgeobuf_agg_ctx *flatgeobuf_agg_ctx_init(const char *geom_name, const 
 	ctx->ctx->offset = size;
 	ctx->tupdesc = NULL;
 	ctx->ctx->create_index = create_index;
+	encode_header(ctx);
 	return ctx;
 }
 
@@ -530,9 +531,6 @@ void flatgeobuf_agg_transfn(struct flatgeobuf_agg_ctx *ctx)
 
 	ctx->ctx->lwgeom = lwgeom;
 
-	if (ctx->ctx->features_count == 0)
-		encode_header(ctx);
-
 	encode_properties(ctx);
 	if (ctx->ctx->create_index)
 		ensure_items_len(ctx);
@@ -549,11 +547,8 @@ uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_agg_ctx *ctx)
 	POSTGIS_DEBUGF(3, "called at offset %ld", ctx->ctx->offset);
 	if (ctx == NULL)
 		flatgeobuf_agg_ctx_init(NULL, false);
-	// header only result
-	if (ctx->ctx->features_count == 0) {
-		encode_header(ctx);
-	}
-	else if (ctx->ctx->create_index) {
+	
+	if (ctx->ctx->features_count != 0 && ctx->ctx->create_index) {
 		ctx->ctx->index_node_size = 16;
 		flatgeobuf_create_index(ctx->ctx);
 	}
