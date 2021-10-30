@@ -2,7 +2,7 @@
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.10.0
-	export GDAL_VER=3.2.3
+	export GDAL_VER=3.3.3
 	export PROJ_VER=7.2.1
 	export SFCGAL_VER=1.4.0
 	export CGAL_VER=5.3.0
