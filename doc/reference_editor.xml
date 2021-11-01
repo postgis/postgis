@@ -1733,7 +1733,7 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
       <refnamediv>
         <refname>ST_ShiftLongitude</refname>
 
-        <refpurpose>Swaps longitude coordinates of a geometry between -180..180 and 0..360.</refpurpose>
+        <refpurpose>Shifts the longitude coordinates of a geometry between -180..180 and 0..360.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1748,8 +1748,8 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
       <refsection>
         <title>Description</title>
 
-        <para>Reads every point/vertex in a geometry, and swaps its longitude coordinate from -180..0 to 180..360 and vice versa if between these ranges.
-            This function is symmetrical so the result is a 0..360 version of a -180..180 data and -180..180 version of a 0..360 data.
+        <para>Reads every point/vertex in a geometry, and shifts its longitude coordinate from -180..0 to 180..360 and vice versa if between these ranges.
+            This function is symmetrical so the result is a 0..360 representation of a -180..180 data and a -180..180 representation of a 0..360 data.
             </para>
         <note><para>This is only useful for data with coordinates in
         longitude/latitude; e.g. SRID 4326 (WGS 84 geographic)</para></note>
