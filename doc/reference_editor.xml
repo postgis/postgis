@@ -1769,20 +1769,28 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
       <refsection>
         <title>Examples</title>
 
-        <programlisting>--forward transform
-SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;LINESTRING(179.2 12.2, 180.3 12.8)'::geometry))
+        <programlisting>--single point forward transformation
+SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;POINT(270 0)'::geometry))
 
 st_astext
 ----------
-LINESTRING(179.2 12.2,-179.7 12.8)
+POINT(-90 0)
 
 
---reverse transform
-SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;LINESTRING(179.2 12.2,-179.7 12.8)'::geometry))
+--single point reverse transformation
+SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;POINT(-90 0)'::geometry))
 
 st_astext
 ----------
-LINESTRING(179.2 12.2, 180.3 12.8)
+POINT(270 0)
+
+
+--for linestrings the functions affects only to the sufficient coordinates
+SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;LINESTRING(174 12, 182 13)'::geometry))
+
+st_astext
+----------
+LINESTRING(174 12,-178 13)
         </programlisting>
       </refsection>
 
