@@ -1682,14 +1682,14 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
       <refnamediv>
         <refname>ST_ShiftLongitude</refname>
 
-        <refpurpose>Shifts a geometry with geographic coordinates between -180..180 and 0..360.</refpurpose>
+        <refpurpose>Shifts the longitude coordinates of a geometry between -180..180 and 0..360.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
             <funcdef>geometry <function>ST_ShiftLongitude</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -1697,9 +1697,9 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
       <refsection>
         <title>Description</title>
 
-        <para>Reads every point/vertex in a geometry, and if the longitude coordinate is &lt;0, adds 360
-            to it. The result is a 0-360 version of the data to be
-            plotted in a 180 centric map</para>
+        <para>Reads every point/vertex in a geometry, and shifts its longitude coordinate from -180..0 to 180..360 and vice versa if between these ranges.
+            This function is symmetrical so the result is a 0..360 representation of a -180..180 data and a -180..180 representation of a 0..360 data.
+            </para>
         <note><para>This is only useful for data with coordinates in
         longitude/latitude; e.g. SRID 4326 (WGS 84 geographic)</para></note>
 
@@ -1718,19 +1718,28 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
       <refsection>
         <title>Examples</title>
 
-        <programlisting>--3d points
-SELECT ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;POINT(-118.58 38.38 10)'))) As geomA,
-    ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;POINT(241.42 38.38 10)'))) As geomb
-geomA                             geomB
-----------                        -----------
-SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)
-
---regular line string
-SELECT ST_AsText(ST_ShiftLongitude(ST_GeomFromText('LINESTRING(-118.58 38.38, -118.20 38.45)')))
+        <programlisting>--single point forward transformation
+SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;POINT(270 0)'::geometry))
 
 st_astext
 ----------
-LINESTRING(241.42 38.38,241.8 38.45)
+POINT(-90 0)
+
+
+--single point reverse transformation
+SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;POINT(-90 0)'::geometry))
+
+st_astext
+----------
+POINT(270 0)
+
+
+--for linestrings the functions affects only to the sufficient coordinates
+SELECT ST_AsText(ST_ShiftLongitude('SRID=4326;LINESTRING(174 12, 182 13)'::geometry))
+
+st_astext
+----------
+LINESTRING(174 12,-178 13)
         </programlisting>
       </refsection>
 
