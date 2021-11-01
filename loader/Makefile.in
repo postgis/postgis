@@ -28,6 +28,8 @@ SHELL = @SHELL@
 INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
 
+LDFLAGS = @LDFLAGS@
+
 # Filenames with extension as determined by the OS
 POSTGIS-CLI=postgis@EXESUFFIX@
 PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
