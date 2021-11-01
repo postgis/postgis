@@ -1,5 +1,7 @@
-PostGIS 3.2.0rc1
+PostGIS 3.2.0beta2
 2021/xx/xx
+  * Breaking changes / fixes *
+  - loader: Respect LDFLAGS (Greg Troxel)
 
 PostGIS 3.2.0
 2021/xx/xx
