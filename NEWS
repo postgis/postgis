@@ -3,6 +3,7 @@ PostGIS 3.1.5
 
 * Bug Fixes
   - #4994, Random missing INSERT in shp2pgsql (Sandro Santilli)
+  - loader: Respect LDFLAGS (Greg Troxel)
 
 
 
