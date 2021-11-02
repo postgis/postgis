@@ -1,0 +1,35 @@
+freebsd_instance:
+  image: freebsd-12-2-release-amd64
+  cpu: 8
+  memory: 16G
+
+task:
+  only_if: $BRANCH != 'main'
+  install_script:
+    - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
+    - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
+    - pkg install -y bison postgresql12-server gmake libxml2 autoconf automake libtool pkgconf iconv pcre proj gdal sfcgal geos libxslt cunit protobuf-c json-c postgresql12-contrib
+
+  patch_script:
+    # will be removed
+    - find . -name "*.pl" | xargs sed -i -r 's|/usr/bin/perl|/usr/bin/env perl|'
+  configure_script:
+    - ./autogen.sh
+    - ./configure PKG_CONFIG=/usr/local/bin/pkgconf CFLAGS="-isystem /usr/local/include -Wall -fno-omit-frame-pointer -Werror" LDFLAGS="-L/usr/local/lib" --with-libiconv-prefix=/usr/local --without-gui --without-interrupt-tests --with-topology --without-raster  --with-sfcgal=/usr/local/bin/sfcgal-config --with-address-standardizer --with-protobuf
+    - service postgresql oneinitdb
+    - service postgresql onestart
+    - su -l postgres -c "createuser -s `whoami`"
+  build_script:
+    - gmake -j8
+  check_script:
+    - gmake -j8 check
+    - gmake -j8 install
+    - gmake -j8 check RUNTESTFLAGS="-v --extension"
+    - gmake -j8 check RUNTESTFLAGS="-v --dumprestore"
+  matrix:
+    - name: freebsd12-amd64
+      freebsd_instance:
+          image: freebsd-12-2-release-amd64
+    - name: freebsd13-amd64
+      freebsd_instance:
+          image: freebsd-13-0-release-amd64
