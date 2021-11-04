@@ -1,28 +1,12 @@
-Debbie:
-   [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_3.1)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_3.1/)
-Winnie:
- [![Build Status](https://winnie.postgis.net:444/buildStatus/icon?job=PostGIS_3.1)](https://winnie.postgis.net:444/view/PostGIS/job/PostGIS_3.1/)
-Dronie:
- [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=stable-3.1)](https://dronie.osgeo.org/postgis/postgis?branch=stable-3.1)
-
-Bessie:
- [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=bessie&build=last:${params.reference=refs/heads/stable-3.1)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie)
-Bessie32:
- [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=bessie32&build=last:${params.reference=refs/heads/stable-3.1)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie32)
-Berrie64:
- [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie64&build=last:${params.reference=refs/heads/stable-3.1)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie64)
-Berrie:
- [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie&build=last:${params.reference=refs/heads/stable-3.1)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie)
-
-
-GitHub Actions:
- [![Github Actions](https://github.com/postgis/postgis/workflows/CI/badge.svg?branch=stable-3.1)](https://github.com/postgis/postgis/actions?query=branch%3Astable-3.1)
-GitLab-CI:
- [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-3.1/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/stable-3.1)
-Drone.io:
- [![Build Status](https://cloud.drone.io/api/badges/postgis/postgis/status.svg?branch=stable-3.1)](https://cloud.drone.io/postgis/postgis?branch=stable-3.1)
-Cirrus-Ci:
-  [![Build Status](https://api.cirrus-ci.com/github/postgis/postgis.svg?branch=stable-3.1)](http://cirrus-ci.com/github/postgis/postgis)
+| **GitHub** | **GitLab** | **Drone.io** ||
+| :---: | :---: | :---: | :---: |
+| [![CI](https://github.com/postgis/postgis/workflows/CI/badge.svg?branch=stable-3.1)](https://github.com/postgis/postgis/actions?query=branch%3Astable-3.1) |  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-3.1/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/stable-3.1) |  [![Build Status](https://cloud.drone.io/api/badges/postgis/postgis/status.svg?branch=stable-3.1)](https://cloud.drone.io/postgis/postgis?branch=stable-3.1) ||
+| **Debbie** | **Winnie** | **Dronie** ||
+| [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_3.1)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_3.1/) | [![Build Status](https://winnie.postgis.net:444/buildStatus/icon?job=PostGIS_3.1)](https://winnie.postgis.net:444/view/PostGIS/job/PostGIS_3.1/) | [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=stable-3.1)](https://dronie.osgeo.org/postgis/postgis?branch=stable-3.1) ||
+| **Bessie** | **Bessie32** | **Cirrus-ci** |  |
+|  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie/) |  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run%2Flabel%3Dbessie32)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=bessie32/) |  [![Build Status](https://api.cirrus-ci.com/github/postgis/postgis.svg?branch=stable-3.1)](http://cirrus-ci.com/github/postgis/postgis) |  |
+| **Berrie** | **Berrie64** | | |
+|  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie&build=last:${params.reference=refs/heads/stable-3.1})](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie/) |  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Worker_Run/label=berrie64&build=last:${params.reference=refs/heads/stable-3.1})](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Worker_Run/label=berrie64/) | | |
 
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
