@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -1796,7 +1796,8 @@ msgstr ""
 #: reference_processing.xml:1141
 #, no-c-format
 msgid ""
-"Returns the smallest circle polygon that contains a geometry."
+"<refpurpose>Returns the smallest circle polygon that contains a geometry.</"
+"refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
@@ -1813,7 +1814,7 @@ msgstr ""
 #: reference_processing.xml:1156
 #, no-c-format
 msgid ""
-"Returns the smallest circle polygon that contains a geometry."
+"<para>Returns the smallest circle polygon that contains a geometry.</para>"
 msgstr ""
 
 #. Tag: para

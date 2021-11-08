@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -68,7 +68,7 @@ msgstr ""
 #: reference_input.xml:1070 reference_input.xml:1104 reference_input.xml:1145
 #: reference_input.xml:1188 reference_input.xml:1273 reference_input.xml:1314
 #: reference_input.xml:1363 reference_input.xml:1402 reference_input.xml:1433
-#: reference_input.xml:1474
+#: reference_input.xml:1474 reference_input.xml:1514 reference_input.xml:1545
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -2389,4 +2389,101 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
 "\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_input.xml:1498
+#, no-c-format
+msgid "ST_TableFromFlatGeobuf"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1500
+#, no-c-format
+msgid "Creates a table based on the structure of FlatGeobuf data."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_input.xml:1504
+#, no-c-format
+msgid ""
+"<funcdef>void <function>ST_TableFromFlatGeobuf</function></funcdef> "
+"<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
+"<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1516
+#, no-c-format
+msgid ""
+"Creates a table based on the structure of FlatGeobuf data. (<ulink url="
+"\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1520
+#, no-c-format
+msgid "<varname>schema</varname> Schema name."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1521
+#, no-c-format
+msgid "<varname>table</varname> Table name."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1522
+#, no-c-format
+msgid "<varname>data</varname> Input FlatGeobuf data."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1524 reference_input.xml:1556
+#, no-c-format
+msgid "Availability: 3.2.0"
+msgstr ""
+
+#. Tag: refname
+#: reference_input.xml:1530
+#, no-c-format
+msgid "ST_FromFlatGeobuf"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_input.xml:1532
+#, no-c-format
+msgid "Reads FlatGeobuf data."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_input.xml:1536
+#, no-c-format
+msgid ""
+"<funcdef>setof anyelement <function>ST_FromFlatGeobuf</function></funcdef> "
+"<paramdef><type>anyelement </type> <parameter>Table reference</parameter></"
+"paramdef> <paramdef><type>bytea </type> <parameter>FlatGeobuf input data</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1547
+#, no-c-format
+msgid ""
+"Reads FlatGeobuf data (<ulink url=\"http://flatgeobuf.org\">http://"
+"flatgeobuf.org</ulink>). NOTE: PostgreSQL bytea cannot exceed 1GB."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1553
+#, no-c-format
+msgid "<varname>tabletype</varname> reference to a table type."
+msgstr ""
+
+#. Tag: para
+#: reference_input.xml:1554
+#, no-c-format
+msgid "<varname>data</varname> input FlatGeobuf data."
 msgstr ""

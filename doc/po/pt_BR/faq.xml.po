@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: 2018-07-22 04:06+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -463,12 +463,12 @@ msgstr "Como insiro um objeto GIS dentro do banco de dados?"
 
 #. Tag: para
 #: faq.xml:148
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
 "\"geography\" to hold your GIS data. Storing geography type data is a little "
-"different than storing geometry. Refer to <xref linkend=\"Geography_Basics\"/"
-"> for details on storing geography."
+"different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
+"\"/> for details on storing geography."
 msgstr ""
 "Primeiramente, você precisa criar uma tabela com uma coluna do tipo "
 "\"geometry\" ou \"geography\" para armazenar seus dados GIS. O armazenamento "

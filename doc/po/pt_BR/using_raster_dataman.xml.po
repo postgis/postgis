@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: 2017-01-31 20:27+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -385,8 +385,8 @@ msgstr ""
 
 #. Tag: term
 #: using_raster_dataman.xml:178
-#, no-c-format
-msgid "-l <varname>OVERVIEW_FACTOR</varname>"
+#, fuzzy, no-c-format
+msgid "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
 msgstr "-l <varname>OVERVIEW_FACTOR</varname>"
 
 #. Tag: para

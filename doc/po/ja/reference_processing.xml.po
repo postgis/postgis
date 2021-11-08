@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -2179,8 +2179,10 @@ msgstr "ST_MinimumBoundingCircle"
 #: reference_processing.xml:1141
 #, fuzzy, no-c-format
 msgid ""
-"<refpurpose>Returns the smallest circle polygon that contains a geometry.</refpurpose>"
-msgstr "<refpurpose>ジオメトリを完全に含む最小の円ポリゴンを返します。</refpurpose>"
+"<refpurpose>Returns the smallest circle polygon that contains a geometry.</"
+"refpurpose>"
+msgstr ""
+"<refpurpose>ジオメトリを完全に含む最小の円ポリゴンを返します。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_processing.xml:1146
@@ -2200,7 +2202,7 @@ msgstr ""
 #: reference_processing.xml:1156
 #, fuzzy, no-c-format
 msgid ""
-"Returns the smallest circle polygon that contains a geometry."
+"<para>Returns the smallest circle polygon that contains a geometry.</para>"
 msgstr "ジオメトリを完全に含む最小の円ポリゴンを返します。"
 
 #. Tag: para

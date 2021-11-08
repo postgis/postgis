@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: 2018-10-18 01:53+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -444,12 +444,12 @@ msgstr "GISオブジェクトをデータベースに挿入するにはどうし
 
 #. Tag: para
 #: faq.xml:148
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
 "\"geography\" to hold your GIS data. Storing geography type data is a little "
-"different than storing geometry. Refer to <xref linkend=\"Geography_Basics\"/"
-"> for details on storing geography."
+"different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
+"\"/> for details on storing geography."
 msgstr ""
 "まず、GISデータを保持するために\"geometry\"または\"geogprahy\"カラムを持つ"
 "テーブルを作成します。ジオグラフィデータ型の格納は、ジオメトリデータ型とは若"

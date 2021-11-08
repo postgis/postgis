@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -697,14 +697,22 @@ msgid ""
 "confirm whether to include the record in the result set."
 msgstr ""
 
+#. Tag: para
+#: using_postgis_query.xml:509
+#, no-c-format
+msgid ""
+"For more information and examples see the <ulink url=\"https://postgis.net/"
+"workshops/postgis-intro/indexing.html\">PostGIS Workshop</ulink>."
+msgstr ""
+
 #. Tag: title
-#: using_postgis_query.xml:512
+#: using_postgis_query.xml:516
 #, no-c-format
 msgid "Examples of Spatial SQL"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:514
+#: using_postgis_query.xml:518
 #, no-c-format
 msgid ""
 "The examples in this section will make use of two tables, a table of linear "
@@ -713,7 +721,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:518
+#: using_postgis_query.xml:522
 #, no-c-format
 msgid ""
 "Column      | Type              | Description\n"
@@ -724,14 +732,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:520
+#: using_postgis_query.xml:524
 #, no-c-format
 msgid ""
 "The table definition for the <varname>bc_municipality</varname> table is:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:523
+#: using_postgis_query.xml:527
 #, no-c-format
 msgid ""
 "Column     | Type              | Description\n"
@@ -743,19 +751,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:528
+#: using_postgis_query.xml:532
 #, no-c-format
 msgid "What is the total length of all roads, expressed in kilometers?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:533
+#: using_postgis_query.xml:537
 #, no-c-format
 msgid "You can answer this question with a very simple piece of SQL:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:536
+#: using_postgis_query.xml:540
 #, no-c-format
 msgid ""
 "SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;\n"
@@ -767,13 +775,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:542
+#: using_postgis_query.xml:546
 #, no-c-format
 msgid "How large is the city of Prince George, in hectares?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:546
+#: using_postgis_query.xml:550
 #, no-c-format
 msgid ""
 "This query combines an attribute condition (on the municipality name) with a "
@@ -781,7 +789,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:550
+#: using_postgis_query.xml:554
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -796,13 +804,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:556
+#: using_postgis_query.xml:560
 #, no-c-format
 msgid "What is the largest municipality in the province, by area?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:561
+#: using_postgis_query.xml:565
 #, no-c-format
 msgid ""
 "This query brings a spatial measurement into the query condition. There are "
@@ -810,7 +818,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:565
+#: using_postgis_query.xml:569
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -828,7 +836,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:567
+#: using_postgis_query.xml:571
 #, no-c-format
 msgid ""
 "Note that in order to answer this query we have to calculate the area of "
@@ -840,13 +848,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:579
+#: using_postgis_query.xml:583
 #, no-c-format
 msgid "What is the length of roads fully contained within each municipality?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:584
+#: using_postgis_query.xml:588
 #, no-c-format
 msgid ""
 "This is an example of a \"spatial join\", because we are bringing together "
@@ -856,7 +864,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:590
+#: using_postgis_query.xml:594
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -881,7 +889,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:592
+#: using_postgis_query.xml:596
 #, no-c-format
 msgid ""
 "This query takes a while, because every road in the table is summarized into "
@@ -891,13 +899,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:601
+#: using_postgis_query.xml:605
 #, no-c-format
 msgid "Create a new table with all the roads within the city of Prince George."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:606
+#: using_postgis_query.xml:610
 #, no-c-format
 msgid ""
 "This is an example of an \"overlay\", which takes in two tables and outputs "
@@ -908,7 +916,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:613
+#: using_postgis_query.xml:617
 #, no-c-format
 msgid ""
 "CREATE TABLE pg_roads as\n"
@@ -925,13 +933,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:619
+#: using_postgis_query.xml:623
 #, no-c-format
 msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:624
+#: using_postgis_query.xml:628
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -951,13 +959,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_query.xml:630
+#: using_postgis_query.xml:634
 #, no-c-format
 msgid "What is the largest municipality polygon that has a hole?"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_query.xml:635
+#: using_postgis_query.xml:639
 #, no-c-format
 msgid ""
 "SELECT gid, name, ST_Area(the_geom) AS area\n"
