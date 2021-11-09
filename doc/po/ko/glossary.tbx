@@ -12,6 +12,10 @@
         <body>
             <termEntry id="PostgreSQL">
                 <langSet xml:lang="en"><tig><term>PostgreSQL</term></tig></langSet>
+                <langSet xml:lang="ko"><tig><term/></tig></langSet>
+            </termEntry>
+            <termEntry id="PostGIS">
+                <langSet xml:lang="en"><tig><term>PostGIS</term></tig></langSet>
                 <langSet xml:lang="ko"><tig><term></term></tig></langSet>
             </termEntry>
         </body>
