@@ -17,7 +17,7 @@ https://trac.osgeo.org/postgis/
 
 ## Official chat room:
 
-Official chat room is the [#postgis:osgeo.org](href="https://matrix.to/#/#postgis:osgeo.org)
+Official chat room is the [#postgis:osgeo.org](https://matrix.to/#/#postgis:osgeo.org)
 Matrix room, also bridged to the irc://irc.libera.chat/#postgis
 [IRC](https://en.wikipedia.org/wiki/Comparison_of_Internet_Relay_Chat_clients) channel
 ([web client](https://web.libera.chat/#postgis) may be useful)
