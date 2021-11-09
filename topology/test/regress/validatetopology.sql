@@ -145,5 +145,16 @@ SELECT '#4830.5', (ValidateTopology('city_data')).* UNION
 SELECT '#4830.5', '---', null, null ORDER BY 1,2,3,4;
 ROLLBACK;
 
+-- Test ability to call twice in a transaction
+-- in presence of mixed face labeling
+-- See https://trac.osgeo.org/postgis/ticket/5017
+BEGIN;
+SELECT '#5017.0', (ValidateTopology('city_data'));
+SELECT '#5017.1', (ValidateTopology('city_data'));
+update city_data.edge_data SET left_face = 8 WHERE edge_id = 10;
+SELECT '#5017.2', (ValidateTopology('city_data')).error;
+SELECT '#5017.3', (ValidateTopology('city_data')).error;
+ROLLBACK;
+
 SELECT NULL FROM topology.DropTopology('city_data');
 

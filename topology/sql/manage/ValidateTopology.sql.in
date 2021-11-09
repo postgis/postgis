@@ -892,6 +892,8 @@ BEGIN
   END LOOP;
 
   IF has_invalid_edge_linking THEN
+    DROP TABLE IF EXISTS pg_temp.hole_check;
+    DROP TABLE IF EXISTS pg_temp.shell_check;
     RETURN; -- does not make sense to continue
   END IF;
 
@@ -904,6 +906,7 @@ BEGIN
 
   IF has_invalid_rings THEN
     DROP TABLE IF EXISTS pg_temp.hole_check;
+    DROP TABLE IF EXISTS pg_temp.shell_check;
     RETURN; -- does not make sense to continue
   END IF;
 
