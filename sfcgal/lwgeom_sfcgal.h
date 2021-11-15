@@ -49,6 +49,7 @@ Datum sfcgal_distance(PG_FUNCTION_ARGS);
 Datum sfcgal_distance3D(PG_FUNCTION_ARGS);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS);
 Datum sfcgal_is_solid(PG_FUNCTION_ARGS);
+Datum sfcgal_convexhull3D(PG_FUNCTION_ARGS);
 
 /* Initialize sfcgal with PostGIS error handlers */
 void sfcgal_postgis_init(void);
