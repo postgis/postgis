@@ -3076,7 +3076,7 @@ BEGIN
 			RAISE DEBUG 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
 	END;
 	BEGIN
-		SELECT @extschema@.postgis_sfcgal_version() INTO sfcgalver;
+		SELECT @extschema@.postgis_sfcgal_full_version() INTO sfcgalver;
 		BEGIN
 			SELECT @extschema@.postgis_sfcgal_scripts_installed() INTO sfcgal_scr_ver;
 		EXCEPTION
