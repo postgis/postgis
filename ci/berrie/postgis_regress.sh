@@ -9,7 +9,7 @@ export WORKSPACE=/home/jenkins/workspace
 
 cd ${WORKSPACE}/PostGIS_Worker_Run/label/${label}/$BRANCH
 export OS_BUILD=32
-export PG_VER=12
+export PG_VER=14
 export PGPATH=${WORKSPACE}/pg/label/${label}/rel/pg${PG_VER}w${OS_BUILD}
 
 export PATH=${PGPATH}/bin:${PGPATH}/lib:${PATH}

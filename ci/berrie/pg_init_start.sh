@@ -6,7 +6,7 @@ export WORKSPACE=/home/jenkins/workspace
 
 
 export OS_BUILD=32
-export PG_VER=12
+export PG_VER=14
 export PGPATH=${WORKSPACE}/pg/label/${label}/rel/pg${PG_VER}w${OS_BUILD}
 export PATH=${PATH}:${PGPATH}/bin:${PGPATH}/lib
 export PGPORT=55432
