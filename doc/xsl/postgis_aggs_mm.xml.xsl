@@ -34,14 +34,11 @@
 				</xsl:variable>
 
 			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
-				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-					<xsl:choose>
-						<xsl:when test="contains(paramdef/type,' set') or contains(paramdef/type,'geography set') or contains(paramdef/type,'raster set')">
+						<xsl:if test=".//paramdef[contains(type,' set')] or .//paramdef[contains(type,'geography set')] or
+						.//paramdef[contains(type,'raster set')]">
 							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
-						</xsl:when>
-					</xsl:choose>
+						</xsl:if>
 				</xsl:for-each>
-			</xsl:for-each>
 			</itemizedlist>
 		</sect1>
 
@@ -583,7 +580,7 @@
 				</itemizedlist>
 				</xsl:if>
 			</sect2>
-						
+
 			<sect2 id="NewFunctions_3_0">
 				<title>PostGIS Functions new or enhanced in 3.0</title>
 				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
