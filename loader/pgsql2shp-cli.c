@@ -136,9 +136,12 @@ main(int argc, char **argv)
 	   it's a user-defined query then set that instead */
 	if (pgis_optind < argc)
 	{
-		/* User-defined queries begin with SELECT */
-		if (!strncmp(argv[pgis_optind], "SELECT ", 7) ||
-			!strncmp(argv[pgis_optind], "select ", 7))
+		/* User-defined queries begin with SELECT or WITH */
+		if ( !strncmp(argv[pgis_optind], "SELECT ", 7) ||
+			!strncmp(argv[pgis_optind], "select ", 7) ||
+			!strncmp(argv[pgis_optind], "WITH ", 5) ||
+			!strncmp(argv[pgis_optind], "with ", 5)
+		)
 		{
 			config->usrquery = argv[pgis_optind];
 		}

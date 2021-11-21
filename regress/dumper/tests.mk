@@ -15,4 +15,5 @@ TESTS += \
 	$(topsrcdir)/regress/dumper/literalsrid \
 	$(topsrcdir)/regress/dumper/realtable \
 	$(topsrcdir)/regress/dumper/nullsintable \
-	$(topsrcdir)/regress/dumper/null3d
+	$(topsrcdir)/regress/dumper/null3d \
+	$(topsrcdir)/regress/dumper/withclause
