@@ -1,7 +1,8 @@
 PostGIS 3.2.0beta2
 2021/xx/xx
   * Breaking changes / fixes *
-  - loader: Respect LDFLAGS (Greg Troxel)
+  - #5016, loader (shp2pgsq): Respect LDFLAGS (Greg Troxel)
+  - #5018, pgsql2shp basic support for WITH CTE clause (Regina Obe)
 
 PostGIS 3.2.0
 2021/xx/xx
