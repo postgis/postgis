@@ -371,7 +371,7 @@ WITH geometry AS
 	100, 0, true))) as g
 )
 SELECT 'PG57',
-        g = 'POLYGON((0 1,0 100,100 100,100 0,1 0,0 1))' OR g = 'POLYGON((0 0,0 1,0 100,100 100,100 0,0 0))'
+        g = 'POLYGON((0 1,0 100,100 100,100 0,1 0,0 1))' OR g = 'POLYGON((0 0,0 1,0 100,100 100,100 0,0 0))' OR g = 'POLYGON((0 0,0 100,100 100,100 0,0 0))'
 FROM geometry;
 
 -- Geometrycollection test
