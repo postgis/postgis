@@ -655,6 +655,44 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
 }
 
 /******************************************************************************
+* rt_raster_pixel_as_centroid_point()
+******************************************************************************/
+
+/**
+ * Get a raster pixel centroid point.
+ *
+ * @param raster : the raster to get pixel from
+ * @param x : the column number
+ * @param y : the row number
+ *
+ * @return the pixel centroid point, or NULL on error.
+ */
+LWPOINT*
+rt_raster_pixel_as_centroid_point(rt_raster rast, int x, int y)
+{
+    double scale_x, scale_y;
+    double skew_x, skew_y;
+    double ul_x, ul_y;
+    int32_t srid;
+    double center_x, center_y;
+    LWPOINT* point;
+
+    scale_x = rt_raster_get_x_scale(rast);
+    scale_y = rt_raster_get_y_scale(rast);
+    skew_x = rt_raster_get_x_skew(rast);
+    skew_y = rt_raster_get_y_skew(rast);
+    ul_x = rt_raster_get_x_offset(rast);
+    ul_y = rt_raster_get_y_offset(rast);
+    srid = rt_raster_get_srid(rast);
+
+    center_x = scale_x * x + skew_x * y + ul_x + (scale_x + skew_x) * 0.5;
+    center_y = scale_y * y + skew_y * x + ul_y + (scale_y + skew_y) * 0.5;
+    point = lwpoint_make2d(srid, center_x, center_y);
+
+    return point;
+}
+
+/******************************************************************************
 * rt_raster_get_envelope_geom()
 ******************************************************************************/
 
