@@ -668,6 +668,7 @@ Datum RASTER_getPixelCentroids(PG_FUNCTION_ARGS)
 	rt_pixel pix = NULL;
 	rt_pixel pix2;
 	int call_cntr;
+	int max_calls;
 	int i = 0;
 
 	if (SRF_IS_FIRSTCALL()) {
@@ -925,11 +926,12 @@ Datum RASTER_getPixelCentroids(PG_FUNCTION_ARGS)
 	funcctx = SRF_PERCALL_SETUP();
 
 	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
 	tupdesc = funcctx->tuple_desc;
 	pix2 = funcctx->user_fctx;
 
 	/* do when there is more left to send */
-	if (call_cntr < funcctx->max_calls) {
+	if (call_cntr < max_calls) {
 		Datum values[VALUES_LENGTH];
 		bool nulls[VALUES_LENGTH];
 		HeapTuple tuple;
