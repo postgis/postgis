@@ -28,8 +28,8 @@ make check RUNTESTFLAGS="-v --extension"
 err_status=$?
 
 
-make garden
-err_status=$?
+#make garden
+#err_status=$?
 
 
 if [ -d $PGDATA/postmaster.pid ] ; then
