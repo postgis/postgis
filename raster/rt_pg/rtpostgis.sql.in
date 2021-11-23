@@ -5169,6 +5169,22 @@ CREATE OR REPLACE FUNCTION st_pixelaspoint(rast raster, x integer, y integer)
 -----------------------------------------------------------------------
 -- ST_PixelAsCentroids
 -----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_pixelascentroids(
+	rast raster,
+	band integer DEFAULT 1,
+	columnx integer DEFAULT NULL,
+	rowy integer DEFAULT NULL,
+	exclude_nodata_value boolean DEFAULT TRUE
+	)
+	RETURNS TABLE(
+		geom geometry,
+		val double precision,
+		x integer,
+		y integer
+	)
+	AS 'MODULE_PATHNAME', 'RASTER_getPixelCentroids'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE;
+
 -- Changed: 3.1.2
 CREATE OR REPLACE FUNCTION st_pixelascentroids(
 	rast raster,
@@ -5180,7 +5196,7 @@ CREATE OR REPLACE FUNCTION st_pixelascentroids(
 		x int,
 		y int
 	)
-	AS $$ SELECT @extschema@.ST_Centroid(geom), val, x, y FROM @extschema@._ST_pixelaspolygons($1, $2, NULL, NULL, $3) $$
+	AS $$ SELECT geom, val, x, y FROM @extschema@._ST_pixelascentroids($1, $2, NULL, NULL, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -----------------------------------------------------------------------
@@ -5189,7 +5205,7 @@ CREATE OR REPLACE FUNCTION st_pixelascentroids(
 
 CREATE OR REPLACE FUNCTION st_pixelascentroid(rast raster, x integer, y integer)
 	RETURNS geometry
-	AS $$ SELECT @extschema@.ST_Centroid(geom) FROM @extschema@._ST_pixelaspolygons($1, NULL, $2, $3) $$
+	AS $$ SELECT geom FROM @extschema@._ST_pixelascentroids($1, NULL, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -----------------------------------------------------------------------
