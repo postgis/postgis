@@ -65,4 +65,13 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM raster_pixelascentroids;
 SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 2)) FROM raster_pixelascentroids;
 SELECT ST_AsText(ST_PixelAsCentroid(rast, -1, -1)) FROM raster_pixelascentroids;
 
+
+TRUNCATE TABLE raster_pixelascentroids;
+INSERT INTO raster_pixelascentroids VALUES(
+	ST_AddBand(
+		ST_MakeEmptyRaster(3, 3, 0, 0, 2, 2, -1, 1, 0),
+		1, '32BUI', 0, 0));
+SELECT x, y, ST_AsText(geom) FROM raster_pixelascentroids, lateral ST_PixelAsCentroids(rast, 1, FALSE) foo;
+
+
 DROP TABLE IF EXISTS raster_pixelascentroids;
