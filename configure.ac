@@ -1222,18 +1222,18 @@ if test "x$with_address_standardizer" != "xno"; then
                         AC_MSG_RESULT([found pcre2.h])
                     ],
                     [
-                		AC_CHECK_FILE("$PCREDIR/include/pcre.h",
-                		[
-	                        PCRE_CPPFLAGS="-I$PCREDIR/include"
-	                        PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre"
-	                        HAVE_PCRE1=yes
-	                        ADDRESS_STANDARDIZER="address_standardizer"
+                        AC_CHECK_FILE("$PCREDIR/include/pcre.h",
+                        [
+	                          PCRE_CPPFLAGS="-I$PCREDIR/include"
+	                          PCRE_LDFLAGS="-L$PCREDIR/lib -lpcre"
+	                          HAVE_PCRE1=yes
+	                          ADDRESS_STANDARDIZER="address_standardizer"
                             AC_MSG_RESULT([found pcre.h])
-                		],
-                		[
+                        ],
+                        [
                             AC_MSG_RESULT([no])
-                			AC_MSG_ERROR(["Could not find PCRE header in $PCREDIR/include"])
-                		])
+                            AC_MSG_ERROR(["Could not find PCRE header in $PCREDIR/include"])
+                        ])
                     ])
             else
                 AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
@@ -1241,19 +1241,20 @@ if test "x$with_address_standardizer" != "xno"; then
         fi
     elif test ! -z "$PKG_CONFIG"; then
         PKG_CHECK_MODULES([PCRE2], [libpcre2-8], [
-                PCRE_CPPFLAGS="$PCRE2_CFLAGS"
-                PCRE_LDFLAGS="$PCRE2_LIBS"
+            PCRE_CPPFLAGS="$PCRE2_CFLAGS"
+            PCRE_LDFLAGS="$PCRE2_LIBS"
+            ADDRESS_STANDARDIZER="address_standardizer"
+            HAVE_PCRE2=yes
+        ],[
+            PKG_CHECK_MODULES([PCRE], [libpcre], [
+                PCRE_CPPFLAGS="$PCRE_CFLAGS"
+                PCRE_LDFLAGS="$PCRE_LIBS"
                 ADDRESS_STANDARDIZER="address_standardizer"
-                HAVE_PCRE2=yes
-            ],
-            [
-                PKG_CHECK_MODULES([PCRE], [libpcre], [
-                    PCRE_CPPFLAGS="$PCRE_CFLAGS"
-                    PCRE_LDFLAGS="$PCRE_LIBS"
-                    ADDRESS_STANDARDIZER="address_standardizer"
-                    HAVE_PCRE1=yes
-                    ],[])
+                HAVE_PCRE1=yes
+            ],[
+                ADDRESS_STANDARDIZER=""
             ])
+        ])
     fi
 
     if test "x$HAVE_PCRE2" = "xyes"; then
