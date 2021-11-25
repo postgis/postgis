@@ -846,7 +846,8 @@ Datum RASTER_getPixelCentroids(PG_FUNCTION_ARGS)
 				/* allocate space for new point */
 				if (!pixcount) {
 					pix = palloc(sizeof(struct rt_pixel_t) * (pixcount + 1));
-				} {
+				}
+				else {
 					pix = repalloc(pix, sizeof(struct rt_pixel_t) * (pixcount + 1));
 				}
 				if (pix == NULL) {
