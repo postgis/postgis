@@ -66,7 +66,7 @@ static uint8_t get_column_type(Oid typoid) {
 		typoid);
 }
 
-static void encode_header(struct flatgeobuf_agg_ctx *ctx)
+static void inspect_table(struct flatgeobuf_agg_ctx *ctx)
 {
 	flatgeobuf_column *c;
 	flatgeobuf_column **columns;
@@ -77,7 +77,7 @@ static void encode_header(struct flatgeobuf_agg_ctx *ctx)
 	int natts = tupdesc->natts;
 	bool geom_found = false;
 
-	POSTGIS_DEBUG(2, "calling encode_header");
+	POSTGIS_DEBUG(2, "calling inspect_table");
 
 	columns = palloc(sizeof(flatgeobuf_column *) * natts);
 	ctx->tupdesc = tupdesc;
@@ -91,13 +91,13 @@ static void encode_header(struct flatgeobuf_agg_ctx *ctx)
 		if (ctx->geom_name == NULL) {
 			if (!geom_found && typoid == postgis_oid(GEOMETRYOID)) {
 				ctx->geom_index = i;
-				geom_found = 1;
+				geom_found = true;
 				continue;
 			}
 		} else {
 			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
 				ctx->geom_index = i;
-				geom_found = 1;
+				geom_found = true;
 				continue;
 			}
 		}
@@ -114,8 +114,6 @@ static void encode_header(struct flatgeobuf_agg_ctx *ctx)
 		ctx->ctx->columns = columns;
 		ctx->ctx->columns_size = columns_size;
 	}
-
-	flatgeobuf_encode_header(ctx->ctx);
 }
 
 // ensure properties has room for at least size
@@ -522,16 +520,18 @@ void flatgeobuf_agg_transfn(struct flatgeobuf_agg_ctx *ctx)
 	Datum datum;
 	GSERIALIZED *gs;
 
+	if (ctx->ctx->features_count == 0)
+		inspect_table(ctx);
+
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
 	if (!isnull) {
 		gs = (GSERIALIZED *) PG_DETOAST_DATUM_COPY(datum);
 		lwgeom = lwgeom_from_gserialized(gs);
 	}
-
 	ctx->ctx->lwgeom = lwgeom;
 
 	if (ctx->ctx->features_count == 0)
-		encode_header(ctx);
+		flatgeobuf_encode_header(ctx->ctx);
 
 	encode_properties(ctx);
 	if (ctx->ctx->create_index)
@@ -551,9 +551,8 @@ uint8_t *flatgeobuf_agg_finalfn(struct flatgeobuf_agg_ctx *ctx)
 		flatgeobuf_agg_ctx_init(NULL, false);
 	// header only result
 	if (ctx->ctx->features_count == 0) {
-		encode_header(ctx);
-	}
-	else if (ctx->ctx->create_index) {
+		flatgeobuf_encode_header(ctx->ctx);
+	} else if (ctx->ctx->create_index) {
 		ctx->ctx->index_node_size = 16;
 		flatgeobuf_create_index(ctx->ctx);
 	}
