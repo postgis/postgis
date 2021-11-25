@@ -1,8 +1,5 @@
-t
-t
-t
-t
 Topology 't1' dropped
 Topology 't2' dropped
+Topology 't3' dropped
 ERROR:  Topology 'topology' does not exist
 ERROR:  Topology 'doesnotexist' does not exist
