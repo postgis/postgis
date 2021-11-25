@@ -1,13 +1,13 @@
+#!/usr/bin/env bash
 #Berrie64 is a 64-bit Rasberry Pi Arm managed by Bruce Rindahl
 #This is script to launch custom compiled PostgreSQL
 #export label=berrie64 #this is passed in via Jenkins
-export WORKSPACE=/home/jenkins/workspace
-
-export OS_BUILD=64
-export PG_VER=14
-export PGPATH=${WORKSPACE}/pg/label/${label}/rel/pg${PG_VER}w${OS_BUILD}
-export PATH=${PATH}:${PGPATH}/bin:${PGPATH}/lib
-export PGPORT=55432
+SCRIPT=$(readlink -f "$0")
+export CUR_DIR=$(dirname "$SCRIPT")
+echo $CUR_DIR
+export CONFIG_FILE="$CUR_DIR/configs.sh"
+. $CONFIG_FILE
+echo $PATH
 export PGDATA=$PGPATH/data_${PGPORT}
 export PGLOG="$PGDATA/pgsql.log"
 # What to use to start up the postmaster
