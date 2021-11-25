@@ -20,7 +20,16 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
-#include <pcre.h>
+
+#if PCRE_VERSION <= 1
+# include <pcre.h>
+# define PARSE_CASELESS PCRE_CASELESS
+#else
+# define PCRE2_CODE_UNIT_WIDTH 8
+# include <pcre2.h>
+# define PARSE_CASELESS PCRE2_CASELESS
+#endif
+
 #include "parseaddress-api.h"
 
 #undef DEBUG
@@ -87,6 +96,7 @@ void strtoupper(char *s)
         s[i] = toupper(s[i]);
 }
 
+#if PCRE_VERSION <= 1
 int match(char *pattern, char *s, int *ovect, int options)
 {
     const char *error;
@@ -101,10 +111,51 @@ int match(char *pattern, char *s, int *ovect, int options)
     free(re);
 
     if (rc < 0) return rc;
-    else if (rc == 0) rc = OVECCOUNT/3;
+    else if (rc == 0) rc = OVECPAIRS; // more matches than ovect can hold
 
     return rc;
 }
+#else
+int match(char *pattern, char *s, int *ovect, int options)
+{
+    int errorcode;
+    PCRE2_SIZE erroffset;
+    pcre2_code *re;
+    int rc;
+    pcre2_match_data *match_data;
+    PCRE2_SIZE *ovect2;
+    int i;
+
+    re = pcre2_compile((PCRE2_SPTR8)pattern, PCRE2_ZERO_TERMINATED, options, &errorcode, &erroffset, NULL);
+    if (!re) return -99;
+
+    match_data = pcre2_match_data_create(OVECPAIRS, NULL);
+
+    rc = pcre2_match(re, (PCRE2_SPTR8)s, strlen(s), 0, 0, match_data, NULL);
+
+    if (rc < 0) { // no match or error
+        pcre2_code_free(re);
+        pcre2_match_data_free(match_data);
+        return rc;
+    }
+
+    if (rc == 0) { // more matches than ovect can hold
+        rc = OVECPAIRS;
+    }
+
+    // copy the results out so we can free everything
+    // before returning
+    ovect2 = pcre2_get_ovector_pointer(match_data);
+    for (i = 0; i < rc; i++) {
+        ovect[2*i] = ovect2[2*i];
+        ovect[2*i + 1] = ovect2[2*i + 1];
+    }
+
+    pcre2_code_free(re);
+    pcre2_match_data_free(match_data);
+    return rc;
+}
+#endif
 
 #define RET_ERROR(a,e) if (!a) {*reterr = e; return NULL;}
 
@@ -180,7 +231,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     }
     /* get canada zipcode components */
     else {
-        rc = match("\\b([a-z]\\d[a-z]\\s?\\d[a-z]\\d)$", s, ovect, PCRE_CASELESS);
+        rc = match("\\b([a-z]\\d[a-z]\\s?\\d[a-z]\\d)$", s, ovect, PARSE_CASELESS);
         if (rc >= 1) {
             ret->zip = (char *) palloc0((ovect[1]-ovect[0]+1) * sizeof(char));
             strncpy(ret->zip, s+ovect[0], ovect[1]-ovect[0]);
@@ -199,7 +250,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     caregx = "^(?-xism:(?i:(?=[abmnopqsy])(?:n[ltsu]|[am]b|[bq]c|on|pe|sk|yt)))$";
     stregx = "\\b(?-xism:(?i:(?=[abcdfghiklmnopqrstuvwy])(?:a(?:l(?:a(?:bam|sk)a|berta)?|mer(?:ican)?\\ samoa|r(?:k(?:ansas)?|izona)?|[kszb])|s(?:a(?:moa|skatchewan)|outh\\ (?:carolin|dakot)a|\\ (?:carolin|dakot)a|[cdk])|c(?:a(?:lif(?:ornia)?)?|o(?:nn(?:ecticut)?|lorado)?|t)|d(?:e(?:la(?:ware)?)?|istrict\\ of\\ columbia|c)|f(?:l(?:(?:orid)?a)?|ederal\\ states\\ of\\ micronesia|m)|m(?:i(?:c(?:h(?:igan)?|ronesia)|nn(?:esota)?|ss(?:(?:issipp|our)i)?)?|a(?:r(?:shall(?:\\ is(?:l(?:and)?)?)?|yland)|ss(?:achusetts)?|ine|nitoba)?|o(?:nt(?:ana)?)?|[ehdnstpb])|g(?:u(?:am)?|(?:eorgi)?a)|h(?:awai)?i|i(?:d(?:aho)?|l(?:l(?:inois)?)?|n(?:d(?:iana)?)?|(?:ow)?a)|k(?:(?:ansa)?s|(?:entuck)?y)|l(?:a(?:bordor)?|ouisiana)|n(?:e(?:w(?:\\ (?:foundland(?:\\ and\\ labordor)?|hampshire|jersey|mexico|(?:yor|brunswic)k)|foundland)|(?:brask|vad)a)?|o(?:rth(?:\\ (?:mariana(?:\\ is(?:l(?:and)?)?)?|(?:carolin|dakot)a)|west\\ territor(?:ies|y))|va\\ scotia)|\\ (?:carolin|dakot)a|u(?:navut)?|[vhjmycdblsf]|w?t)|o(?:h(?:io)?|k(?:lahoma)?|r(?:egon)?|n(?:t(?:ario)?)?)|p(?:a(?:lau)?|e(?:nn(?:sylvania)?|i)?|r(?:ince\\ edward\\ island)?|w|uerto\\ rico)|r(?:hode\\ island|i)|t(?:e(?:nn(?:essee)?|xas)|[nx])|ut(?:ah)?|v(?:i(?:rgin(?:\\ islands|ia))?|(?:ermon)?t|a)|w(?:a(?:sh(?:ington)?)?|i(?:sc(?:onsin)?)?|y(?:oming)?|(?:est)?\\ virginia|v)|b(?:ritish\\ columbia|c)|q(?:uebe)?c|y(?:ukon|t))))$";
 
-    rc = match(stregx, s, ovect, PCRE_CASELESS);
+    rc = match(stregx, s, ovect, PARSE_CASELESS);
     if (rc > 0) {
         state = (char *) palloc0((ovect[1]-ovect[0]+1) * sizeof(char));
         strncpy(state, s+ovect[0], ovect[1]-ovect[0]);
@@ -229,7 +280,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
         }
 
         /* check if it a Canadian Province */
-        rc = match(caregx, ret->st, ovect, PCRE_CASELESS);
+        rc = match(caregx, ret->st, ovect, PARSE_CASELESS);
         if (rc > 0) {
             strcpy(ret->cc, "CA");
             // if (ret->cc) printf("  CC: %s\n", ret->cc);
