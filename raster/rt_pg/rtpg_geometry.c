@@ -243,7 +243,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		numbands = rt_raster_get_num_bands(raster);
 
 		if (nband < 1 || nband > numbands) {
-			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+			elog(NOTICE, "Invalid band index (must use 1-based). Returning empty set");
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -255,7 +255,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 		/* see if band is NODATA */
 		if (rt_band_get_isnodata_flag(rt_raster_get_band(raster, nband - 1))) {
-			POSTGIS_RT_DEBUGF(3, "Band at index %d is NODATA. Returning NULL", nband);
+			POSTGIS_RT_DEBUGF(3, "Band at index %d is NODATA. Returning empty set", nband);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -436,9 +436,9 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 
-		/* raster empty, return NULL */
+		/* raster empty, return empty set */
 		if (rt_raster_is_empty(raster)) {
-			elog(NOTICE, "Raster is empty. Returning NULL");
+			elog(NOTICE, "Raster is empty. Returning empty set");
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -452,7 +452,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 			POSTGIS_RT_DEBUGF(3, "# of bands %d", numbands);
 
 			if (nband < 1 || nband > numbands) {
-				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning empty set");
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
 				MemoryContextSwitchTo(oldcontext);
@@ -461,7 +461,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 			band = rt_raster_get_band(raster, nband - 1);
 			if (!band) {
-				elog(NOTICE, "Could not find band at index %d. Returning NULL", nband);
+				elog(NOTICE, "Could not find band at index %d. Returning empty set", nband);
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
 				MemoryContextSwitchTo(oldcontext);
@@ -742,9 +742,9 @@ Datum RASTER_getPixelCentroids(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 
-		/* raster empty, return NULL */
+		/* raster empty, return empty set */
 		if (rt_raster_is_empty(raster)) {
-			elog(NOTICE, "Raster is empty. Returning NULL");
+			elog(NOTICE, "Raster is empty. Returning empty set");
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -759,7 +759,7 @@ Datum RASTER_getPixelCentroids(PG_FUNCTION_ARGS)
 
 			/* check band index */
 			if (nband < 1 || nband > numbands) {
-				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning empty set");
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
 				MemoryContextSwitchTo(oldcontext);
@@ -769,7 +769,7 @@ Datum RASTER_getPixelCentroids(PG_FUNCTION_ARGS)
 			/* get band */
 			band = rt_raster_get_band(raster, nband - 1);
 			if (!band) {
-				elog(NOTICE, "Could not find band at index %d. Returning NULL", nband);
+				elog(NOTICE, "Could not find band at index %d. Returning empty set", nband);
 
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
