@@ -16,6 +16,10 @@ Changes since PostGIS 3.2.0beta1 release:
   * Enhancements *
   - #5018, pgsql2shp basic support for WITH CTE clause (Regina Obe)
   - #5019, address_standardizer: Add support for pcre2 (Paul Ramsey)
+  - ST_AsMVTGeom now uses faster clipping (Aliaksandr Kalenik)
+  - ST_PixelAsCentroids, ST_PixelAsCentroid reimplemented in C (Sergei Shoulbakov)
+
+
 
 PostGIS 3.2.0
 2021/xx/xx
@@ -78,6 +82,7 @@ PostGIS 3.2.0
            (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski, Giuseppe Broccolo)
   - #4949, Use proj_normalize_for_visualization to hand "axis swap" decisions (Paul Ramsey)
   - ST_PixelAsCentroids, ST_PixelAsCentroid reimplemented on top of a C function (Sergei Shoulbakov)
+  - ST_AsMVTGeom now uses faster clipping (Aliaksandr Kalenik)
 
  * New features*
   - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
