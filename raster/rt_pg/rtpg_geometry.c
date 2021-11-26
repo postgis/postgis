@@ -50,6 +50,9 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS);
 /* Get pixel geographical shape */
 Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS);
 
+/* Get pixel centroid points */
+Datum RASTER_getPixelCentroids(PG_FUNCTION_ARGS);
+
 /* Get raster band's polygon */
 Datum RASTER_getPolygon(PG_FUNCTION_ARGS);
 
@@ -240,7 +243,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		numbands = rt_raster_get_num_bands(raster);
 
 		if (nband < 1 || nband > numbands) {
-			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+			elog(NOTICE, "Invalid band index (must use 1-based). Returning empty set");
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -252,7 +255,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 		/* see if band is NODATA */
 		if (rt_band_get_isnodata_flag(rt_raster_get_band(raster, nband - 1))) {
-			POSTGIS_RT_DEBUGF(3, "Band at index %d is NODATA. Returning NULL", nband);
+			POSTGIS_RT_DEBUGF(3, "Band at index %d is NODATA. Returning empty set", nband);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -433,9 +436,9 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 
-		/* raster empty, return NULL */
+		/* raster empty, return empty set */
 		if (rt_raster_is_empty(raster)) {
-			elog(NOTICE, "Raster is empty. Returning NULL");
+			elog(NOTICE, "Raster is empty. Returning empty set");
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -449,7 +452,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 			POSTGIS_RT_DEBUGF(3, "# of bands %d", numbands);
 
 			if (nband < 1 || nband > numbands) {
-				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning empty set");
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
 				MemoryContextSwitchTo(oldcontext);
@@ -458,7 +461,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 			band = rt_raster_get_band(raster, nband - 1);
 			if (!band) {
-				elog(NOTICE, "Could not find band at index %d. Returning NULL", nband);
+				elog(NOTICE, "Could not find band at index %d. Returning empty set", nband);
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
 				MemoryContextSwitchTo(oldcontext);
@@ -628,6 +631,325 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		gser = gserialized_from_lwgeom(pix2[call_cntr].geom, &gser_size);
 		lwgeom_free(pix2[call_cntr].geom);
 
+		values[0] = PointerGetDatum(gser);
+		if (pix2[call_cntr].nodata)
+			nulls[1] = TRUE;
+		else
+			values[1] = Float8GetDatum(pix2[call_cntr].value);
+		values[2] = Int32GetDatum(pix2[call_cntr].x);
+		values[3] = Int32GetDatum(pix2[call_cntr].y);
+
+		/* build a tuple */
+		tuple = heap_form_tuple(tupdesc, values, nulls);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		pfree(pix2);
+		SRF_RETURN_DONE(funcctx);
+	}
+}
+
+#undef VALUES_LENGTH
+#define VALUES_LENGTH 4
+
+/**
+ * Return centroid points of all pixels
+ */
+PG_FUNCTION_INFO_V1(RASTER_getPixelCentroids);
+Datum RASTER_getPixelCentroids(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+	rt_pixel pix = NULL;
+	rt_pixel pix2;
+	int call_cntr;
+	int max_calls;
+	int i = 0;
+
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int nband = 1;
+		int numbands;
+		bool hasband = FALSE;
+		bool exclude_nodata_value = TRUE;
+		bool nocolumnx = TRUE;
+		bool norowy = TRUE;
+		int x = 0;
+		int y = 0;
+		int bounds[4] = {0};
+		int pixcount = 0;
+		double value = 0;
+		int isnodata = 0;
+
+		LWPOINT* point = NULL;
+
+		POSTGIS_RT_DEBUG(3, "RASTER_getPixelCentroids first call");
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/* raster */
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		/* band */
+		if (!PG_ARGISNULL(1)) {
+			nband = PG_GETARG_INT32(1);
+			hasband = TRUE;
+		}
+
+		/* column */
+		if (!PG_ARGISNULL(2)) {
+			bounds[0] = PG_GETARG_INT32(2);
+			bounds[1] = bounds[0];
+			nocolumnx = FALSE;
+		}
+
+		/* row */
+		if (!PG_ARGISNULL(3)) {
+			bounds[2] = PG_GETARG_INT32(3);
+			bounds[3] = bounds[2];
+			norowy = FALSE;
+		}
+
+		/* exclude NODATA */
+		if (!PG_ARGISNULL(4))
+			exclude_nodata_value = PG_GETARG_BOOL(4);
+
+		/* deserialize raster */
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			PG_FREE_IF_COPY(pgraster, 0);
+			ereport(ERROR, (
+				errcode(ERRCODE_OUT_OF_MEMORY),
+				errmsg("Could not deserialize raster")
+			));
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* raster empty, return empty set */
+		if (rt_raster_is_empty(raster)) {
+			elog(NOTICE, "Raster is empty. Returning empty set");
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* band specified, load band and info */
+		if (hasband) {
+			numbands = rt_raster_get_num_bands(raster);
+			POSTGIS_RT_DEBUGF(3, "band %d", nband);
+			POSTGIS_RT_DEBUGF(3, "# of bands %d", numbands);
+
+			/* check band index */
+			if (nband < 1 || nband > numbands) {
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning empty set");
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			/* get band */
+			band = rt_raster_get_band(raster, nband - 1);
+			if (!band) {
+				elog(NOTICE, "Could not find band at index %d. Returning empty set", nband);
+
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			if (!rt_band_get_hasnodata_flag(band))
+				exclude_nodata_value = FALSE;
+		}
+
+		/* set bounds if columnx, rowy not set */
+		if (nocolumnx) {
+			bounds[0] = 1;
+			bounds[1] = rt_raster_get_width(raster);
+		}
+		if (norowy) {
+			bounds[2] = 1;
+			bounds[3] = rt_raster_get_height(raster);
+		}
+		POSTGIS_RT_DEBUGF(3, "bounds (min x, max x, min y, max y) = (%d, %d, %d, %d)",
+			bounds[0], bounds[1], bounds[2], bounds[3]);
+
+		/* rowy */
+		pixcount = 0;
+		for (y = bounds[2]; y <= bounds[3]; y++) {
+			/* columnx */
+			for (x = bounds[0]; x <= bounds[1]; x++) {
+
+				value = 0;
+				isnodata = TRUE;
+
+				if (hasband) {
+					if (rt_band_get_pixel(band, x - 1, y - 1, &value, &isnodata) != ES_NONE) {
+						/* free already created centroid points */
+						for (i = 0; i < pixcount; i++)
+							lwgeom_free(pix[i].geom);
+						if (pixcount) pfree(pix);
+
+						rt_band_destroy(band);
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 0);
+
+						MemoryContextSwitchTo(oldcontext);
+						elog(ERROR, "RASTER_getPixelCentroids: Could not get pixel value");
+						SRF_RETURN_DONE(funcctx);
+					}
+
+					/* don't continue if pixel is NODATA and to exclude NODATA */
+					if (isnodata && exclude_nodata_value) {
+						POSTGIS_RT_DEBUG(5, "pixel value is NODATA and exclude_nodata_value = TRUE");
+						continue;
+					}
+				}
+
+				/* geometry */
+				point = rt_raster_pixel_as_centroid_point(raster, x - 1, y - 1);
+				if (!point) {
+					/*  free already created centroid points */
+					for (i = 0; i < pixcount; i++)
+						lwgeom_free(pix[i].geom);
+					if (pixcount) pfree(pix);
+
+					if (hasband) rt_band_destroy(band);
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+
+					MemoryContextSwitchTo(oldcontext);
+					elog(ERROR, "RASTER_getPixelCentroids: Could not get pixel centroid");
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				/* allocate space for new point */
+				if (!pixcount) {
+					pix = palloc(sizeof(struct rt_pixel_t) * (pixcount + 1));
+				}
+				else {
+					pix = repalloc(pix, sizeof(struct rt_pixel_t) * (pixcount + 1));
+				}
+				if (pix == NULL) {
+					lwpoint_free(point);
+
+					if (hasband) rt_band_destroy(band);
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+
+					MemoryContextSwitchTo(oldcontext);
+					elog(ERROR, "RASTER_getPixelCentroids: Could not allocate memory for storing pixel centroids");
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				/* set pixel geometry */
+				pix[pixcount].geom = (LWGEOM *) point;
+				POSTGIS_RT_DEBUGF(5, "point @ %p", point);
+				POSTGIS_RT_DEBUGF(5, "geom @ %p", pix[pixcount].geom);
+
+				/* set pixel coordinates */
+				pix[pixcount].x = x;
+				pix[pixcount].y = y;
+
+				/* set pixel value */
+				pix[pixcount].value = value;
+
+				/* NODATA */
+				if (hasband) {
+					if (exclude_nodata_value)
+						pix[pixcount].nodata = isnodata;
+					else
+						pix[pixcount].nodata = FALSE;
+				}
+				else {
+					pix[pixcount].nodata = isnodata;
+				}
+
+				/* update pixcount*/
+				pixcount++;
+			}
+		}
+
+		/* cleanup */
+		if (hasband) rt_band_destroy(band);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+
+		/* shortcut if no pixcount */
+		if (pixcount < 1) {
+			elog(NOTICE, "No pixels found for band %d", nband);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* store pixel data */
+		funcctx->user_fctx = pix;
+
+		/* set total number of tuples to be returned */
+		funcctx->max_calls = pixcount;
+		POSTGIS_RT_DEBUGF(3, "pixcount = %d", pixcount);
+
+		/* build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg("function returning record called in context that cannot accept type record")
+			));
+		}
+		/* set tuple descriptor */
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	tupdesc = funcctx->tuple_desc;
+	pix2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		Datum values[VALUES_LENGTH];
+		bool nulls[VALUES_LENGTH];
+		HeapTuple tuple;
+		Datum result;
+
+		GSERIALIZED *gser = NULL;
+		size_t gser_size = 0;
+
+		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
+
+		memset(nulls, FALSE, sizeof(bool) * VALUES_LENGTH);
+
+		/* convert LWGEOM go GSERIALIZED */
+		gser = gserialized_from_lwgeom(pix2[call_cntr].geom, &gser_size);
+		lwgeom_free(pix2[call_cntr].geom); /* free geometry object */
+
+		/* set result tuple data */
 		values[0] = PointerGetDatum(gser);
 		if (pix2[call_cntr].nodata)
 			nulls[1] = TRUE;
