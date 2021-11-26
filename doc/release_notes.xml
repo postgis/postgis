@@ -3,6 +3,33 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>Release 3.2.0beta2</title>
+        <para>Release date: 2021/11/26</para>
+        <para>This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+
+(and ST_MakeValid enhancements with 3.10+),
+Proj 6.1+, and PostgreSQL 14+.
+
+Changes since PostGIS 3.2.0beta1 release:</para>
+        <simplesect>
+            <title> Breaking changes / fixes</title>
+            <para>5016, loader (shp2pgsq): Respect LDFLAGS (Greg Troxel)</para>
+            <para>5005, ST_AsFlatGeoBuf crashes on tables when geometry
+                    column is not the first column (Björn Harrtell)</para>
+            <para>5017, topology.ValidateTopology error relation "shell_check"
+                    already exists (Sandro Santilli)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Enhancements</title>
+            <para>5018, pgsql2shp basic support for WITH CTE clause (Regina Obe)</para>
+            <para>5019, address_standardizer: Add support for pcre2 (Paul Ramsey)</para>
+            <para>GH647, ST_AsMVTGeom now uses faster clipping (Aliaksandr Kalenik)</para>
+            <para>GH648, ST_PixelAsCentroids, ST_PixelAsCentroid reimplemented on top of a C function (Sergei Shoulbakov)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
         <title>Release 3.2.0beta1</title>
         <para>Release date: 2021/10/23</para>
         <para>This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
