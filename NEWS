@@ -77,6 +77,7 @@ PostGIS 3.2.0
   - #4986, GIST indexes on Postgres 14 are now created faster using Hilbert-sorting method.
            (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski, Giuseppe Broccolo)
   - #4949, Use proj_normalize_for_visualization to hand "axis swap" decisions (Paul Ramsey)
+  - ST_PixelAsCentroids, ST_PixelAsCentroid reimplemented on top of a C function (Sergei Shoulbakov)
 
  * New features*
   - #4923, topology.ValidateTopologyRelation (Sandro Santilli)
