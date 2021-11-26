@@ -1550,6 +1550,17 @@ rt_raster_compute_skewed_raster(
 LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
 
 /**
+ * Get a raster pixel centroid point.
+ *
+ * @param raster : the raster to get pixel from
+ * @param x : the column number
+ * @param y : the row number
+ *
+ * @return the pixel centroid point, or NULL on error.
+ */
+LWPOINT* rt_raster_pixel_as_centroid_point(rt_raster rast, int x, int y);
+
+/**
  * Get a raster as a surface (multipolygon).  If a band is specified,
  * those pixels with value (not NODATA) contribute to the area
  * of the output multipolygon.
