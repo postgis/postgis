@@ -1,8 +1,21 @@
 PostGIS 3.2.0beta2
-2021/xx/xx
+2021/11/xx
+This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+
+(and ST_MakeValid enhancements with 3.10+),
+Proj 6.1+, and PostgreSQL 14+.
+
+Changes since PostGIS 3.2.0beta1 release:
   * Breaking changes / fixes *
   - #5016, loader (shp2pgsq): Respect LDFLAGS (Greg Troxel)
+  - #5005, ST_AsFlatGeoBuf crashes on tables when geometry
+           column is not the first column (Björn Harrtell)
+  - #5017, topology.ValidateTopology error relation "shell_check"
+           already exists (Sandro Santilli)
+
+  * Enhancements *
   - #5018, pgsql2shp basic support for WITH CTE clause (Regina Obe)
+  - #5019, address_standardizer: Add support for pcre2 (Paul Ramsey)
 
 PostGIS 3.2.0
 2021/xx/xx
