@@ -104,6 +104,15 @@ select 'P1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
     ) q)
 );
 
+-- Multiple 2D points and a polygon
+select 'PL1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
+    select ST_AsFlatGeobuf(q) from (values
+        ('POINT (1 2)'::geometry),
+        ('POINT (3 4)'::geometry),
+        ('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'::geometry)
+    ) q)
+);
+
 select '--- Attribute roundtrips ---';
 
 select ST_TableFromFlatGeobuf('public', 'flatgeobuf_a1', (select ST_AsFlatGeobuf(q) fgb from (select

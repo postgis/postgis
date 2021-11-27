@@ -35,7 +35,6 @@ typedef flatgeobuf_ctx ctx;
 
 uint8_t flatgeobuf_magicbytes[] = { 0x66, 0x67, 0x62, 0x03, 0x66, 0x67, 0x62, 0x01 };
 uint8_t FLATGEOBUF_MAGICBYTES_SIZE = sizeof(flatgeobuf_magicbytes);
-uint8_t FLATGEOBUF_MAGICBYTES_LEN = (sizeof(flatgeobuf_magicbytes) / sizeof((flatgeobuf_magicbytes)[0]));
 
 struct FeatureItem : FlatGeobuf::Item {
     uoffset_t size;
@@ -53,6 +52,7 @@ int flatgeobuf_encode_header(ctx *ctx)
             ctx->srid = ctx->lwgeom->srid;
 		ctx->has_z = lwgeom_has_z(ctx->lwgeom);
 		ctx->has_m = lwgeom_has_m(ctx->lwgeom);
+        ctx->lwgeom_type = ctx->lwgeom->type;
 		ctx->geometry_type = (uint8_t) GeometryWriter::get_geometrytype(ctx->lwgeom);
 	} else {
 		LWDEBUG(2, "ctx->lwgeom is null");
@@ -121,6 +121,10 @@ int flatgeobuf_encode_feature(ctx *ctx)
 
     if (ctx->lwgeom != NULL && !lwgeom_is_empty(ctx->lwgeom)) {
         LWDEBUGG(3, ctx->lwgeom, "GeometryWriter input LWGEOM");
+        if (ctx->lwgeom_type != ctx->lwgeom->type) {
+            lwerror("mixed geometry type is not supported");
+            return -1;
+        }
         GeometryWriter writer(fbb, ctx->lwgeom, (GeometryType) ctx->geometry_type, ctx->has_z, ctx->has_m);
         geometry = writer.write(0);
     }
@@ -192,19 +196,19 @@ void flatgeobuf_create_index(ctx *ctx)
     // allocate new buffer and write magicbytes
     auto oldbuf = ctx->buf;
     auto oldoffset = ctx->offset;
-    ctx->buf = (uint8_t *) lwalloc(sizeof(signed int) + sizeof(flatgeobuf_magicbytes));
-    memcpy(ctx->buf + sizeof(signed int), flatgeobuf_magicbytes, sizeof(flatgeobuf_magicbytes));
-    ctx->offset = sizeof(signed int) + sizeof(flatgeobuf_magicbytes);
+    ctx->buf = (uint8_t *) lwalloc(sizeof(signed int) + FLATGEOBUF_MAGICBYTES_SIZE);
+    memcpy(ctx->buf + sizeof(signed int), flatgeobuf_magicbytes, FLATGEOBUF_MAGICBYTES_SIZE);
+    ctx->offset = sizeof(signed int) + FLATGEOBUF_MAGICBYTES_SIZE;
     // write new header
     flatgeobuf_encode_header(ctx);
     // create and write index
+    PackedRTree tree(items, extent, ctx->index_node_size);
     const auto writeData = [&ctx] (const void *data, const size_t size) {
         ctx->buf = (uint8_t *) lwrealloc(ctx->buf, ctx->offset + size);
         memcpy(ctx->buf + ctx->offset, data, size);
+        ctx->offset += size;
     };
-    PackedRTree tree(items, extent, ctx->index_node_size);
     tree.streamWrite(writeData);
-    ctx->offset += tree.size();
     // read items and write in sorted order
     for (auto item : items) {
         auto featureItem = std::static_pointer_cast<FeatureItem>(item);
@@ -235,13 +239,6 @@ int flatgeobuf_decode_feature(ctx *ctx)
 
     const auto geometry = feature->geometry();
     if (geometry != nullptr) {
-        if (geometry->ends() != nullptr) {
-            LWDEBUGF(3, "ENDS: %d", geometry->ends()->size());
-            for (uint32_t i = 0; i < geometry->ends()->size(); i++) {
-                LWDEBUGF(3, "ENDS: %d", geometry->ends()->Get(i));
-            }
-        }
-
         LWDEBUGF(3, "Constructing GeometryReader with geometry_type %d has_z %d haz_m %d", ctx->geometry_type, ctx->has_z, ctx->has_m);
         GeometryReader reader(geometry, (GeometryType) ctx->geometry_type, ctx->has_z, ctx->has_m);
         ctx->lwgeom = reader.read();
