@@ -70,7 +70,6 @@ int flatgeobuf_encode_header(ctx *ctx)
             columns.push_back(CreateColumnDirect(fbb, c->name, (ColumnType) c->type));
         }
     }
-
     if (columns.size() > 0)
         pColumns = &columns;
 
@@ -78,11 +77,16 @@ int flatgeobuf_encode_header(ctx *ctx)
     if (ctx->srid > 0)
         crs = CreateCrsDirect(fbb, nullptr, ctx->srid);
 
+    std::vector<double> envelope;
     std::vector<double> *pEnvelope = nullptr;
     if (ctx->has_extent) {
-        std::vector<double> envelope = { ctx->xmin, ctx->ymin, ctx->xmax, ctx->ymax };
-        pEnvelope = &envelope;
+        envelope.push_back(ctx->xmin);
+        envelope.push_back(ctx->ymin);
+        envelope.push_back(ctx->xmax);
+        envelope.push_back(ctx->ymax);
     }
+    if (envelope.size() > 0)
+        pEnvelope = &envelope;
 
     const auto header = CreateHeaderDirect(
         fbb, ctx->name, pEnvelope, (GeometryType) ctx->geometry_type, ctx->has_z, ctx->has_m, ctx->has_t, ctx->has_tm, pColumns, ctx->features_count, ctx->index_node_size, crs);
