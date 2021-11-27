@@ -201,6 +201,13 @@ void flatgeobuf_create_index(ctx *ctx)
     ctx->offset = sizeof(signed int) + FLATGEOBUF_MAGICBYTES_SIZE;
     // write new header
     flatgeobuf_encode_header(ctx);
+    // calculate new offsets
+    uint64_t featureOffset = 0;
+    for (auto item : items) {
+        auto featureItem = std::static_pointer_cast<FeatureItem>(item);
+        featureItem->nodeItem.offset = featureOffset;
+        featureOffset += featureItem->size;
+    }
     // create and write index
     PackedRTree tree(items, extent, ctx->index_node_size);
     const auto writeData = [&ctx] (const void *data, const size_t size) {
