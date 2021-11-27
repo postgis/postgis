@@ -34,7 +34,6 @@ extern "C" {
 
 extern uint8_t flatgeobuf_magicbytes[];
 extern uint8_t FLATGEOBUF_MAGICBYTES_SIZE;
-extern uint8_t FLATGEOBUF_MAGICBYTES_LEN;
 
 // need c compatible variant of this enum
 #define flatgeobuf_column_type_byte UINT8_C(0)
@@ -104,6 +103,7 @@ typedef struct flatgeobuf_ctx
     uint64_t size;
 
     LWGEOM *lwgeom;
+	uint8_t lwgeom_type;
     uint8_t *properties;
 	uint32_t properties_len;
     uint32_t properties_size;

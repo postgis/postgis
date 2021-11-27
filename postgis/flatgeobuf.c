@@ -268,10 +268,10 @@ void flatgeobuf_check_magicbytes(struct flatgeobuf_decode_ctx *ctx)
 	uint8_t *buf = ctx->ctx->buf + ctx->ctx->offset;
 	uint32_t i;
 
-	for (i = 0; i < FLATGEOBUF_MAGICBYTES_LEN / 2; i++)
+	for (i = 0; i < FLATGEOBUF_MAGICBYTES_SIZE / 2; i++)
 		if (buf[i] != flatgeobuf_magicbytes[i])
 			elog(ERROR, "Data is not FlatGeobuf");
-	ctx->ctx->offset += FLATGEOBUF_MAGICBYTES_LEN;
+	ctx->ctx->offset += FLATGEOBUF_MAGICBYTES_SIZE;
 }
 
 static void decode_properties(struct flatgeobuf_decode_ctx *ctx, Datum *values, bool *isnull)
