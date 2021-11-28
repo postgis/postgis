@@ -1,4 +1,4 @@
-PostGIS 3.2.0rc1
+PostGIS 3.2.0beta3
 2021/xx/xx
 This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
 Additional features are enabled if you are running GEOS 3.9+
@@ -6,7 +6,9 @@ Additional features are enabled if you are running GEOS 3.9+
 Proj 6.1+, and PostgreSQL 14+.
 Changes since PostGIS 3.2.0beta2 release:
   * Fixes *
-
+  - #5028, ST_AsFlatGeobuf crashes on mixed geometry input
+  - #5029, ST_AsFlatGeobuf indexed output corruption
+  - #5014, Crash on ST_TableFromFlatGeobuf
   * Enhancements *
 
 PostGIS 3.2.0beta2
