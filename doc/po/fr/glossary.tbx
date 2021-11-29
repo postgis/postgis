@@ -1,23 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
-<martif type="TBX" xml:lang="en">
-    <martifHeader>
-        <fileDesc>
-            <sourceDesc>
-                <p>Translate Toolkit</p>
-            </sourceDesc>
-        </fileDesc>
-    </martifHeader>
-    <text>
-        <body>
-            <termEntry id="PostgreSQL">
-                <langSet xml:lang="en"><tig><term>PostgreSQL</term></tig></langSet>
-                <langSet xml:lang="fr"><tig><term/></tig></langSet>
-            </termEntry>
-            <termEntry id="PostGIS">
-                <langSet xml:lang="en"><tig><term>PostGIS</term></tig></langSet>
-                <langSet xml:lang="fr"><tig><term></term></tig></langSet>
-            </termEntry>
-        </body>
-    </text>
+<martif type="TBX">
+<martifHeader>
+<fileDesc>
+<sourceDesc><p>Translate Toolkit</p></sourceDesc>
+</fileDesc>
+</martifHeader>
+<text><body></body></text>
 </martif>
