@@ -1821,16 +1821,16 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_TableFromFlatGeobuf">
+	<refentry id="ST_FromFlatGeobufToTable">
 	  <refnamediv>
-		<refname>ST_TableFromFlatGeobuf</refname>
+		<refname>ST_FromFlatGeobufToTable</refname>
 
 		<refpurpose>Creates a table based on the structure of FlatGeobuf data.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		<funcprototype>
-				<funcdef>void <function>ST_TableFromFlatGeobuf</function></funcdef>
+				<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef>
 				<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>tablename</parameter></paramdef>
 				<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></paramdef>

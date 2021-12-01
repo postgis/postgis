@@ -5079,7 +5079,7 @@ CREATE AGGREGATE ST_AsFlatGeobuf(anyelement, bool, text)
 -----------------------------------------------------------------------
 
 -- Availability: 3.2.0
-CREATE OR REPLACE FUNCTION ST_TableFromFlatGeobuf(text, text, bytea)
+CREATE OR REPLACE FUNCTION ST_FromFlatGeobufToTable(text, text, bytea)
 	RETURNS void
 	AS 'MODULE_PATHNAME','pgis_tablefromflatgeobuf'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE

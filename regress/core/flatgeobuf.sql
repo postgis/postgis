@@ -1,6 +1,6 @@
 --set client_min_messages to DEBUG3;
 set timezone to UTC;
-select ST_TableFromFlatGeobuf('public', 'flatgeobuf_t1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry) q));
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_t1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry) q));
 
 select '--- Null geometry ---';
 
@@ -115,7 +115,7 @@ select 'PL1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1, (
 
 select '--- Attribute roundtrips ---';
 
-select ST_TableFromFlatGeobuf('public', 'flatgeobuf_a1', (select ST_AsFlatGeobuf(q) fgb from (select
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_a1', (select ST_AsFlatGeobuf(q) fgb from (select
         null::geometry,
         null::boolean as bool_1,
         null::integer as int_1,
@@ -145,7 +145,7 @@ select 'A1', id, ST_AsText(geom), bool_1, int_1, int_2, smallint_1, bigint_1, fl
 select '--- Exotic roundtrips ---';
 
 -- 2D Point geometry at column index 2
-select ST_TableFromFlatGeobuf('public', 'flatgeobuf_e1', (select ST_AsFlatGeobuf(q) fgb from (select
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_e1', (select ST_AsFlatGeobuf(q) fgb from (select
         true::boolean as bool_1,
         ST_MakePoint(1.1, 2.1),
         false::boolean as bool_2
