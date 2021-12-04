@@ -2,13 +2,14 @@
 #
 # Translators:
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2016-07-22 07:51+0000\n"
-"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
+"PO-Revision-Date: 2021-11-28 22:35+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
 "language/ko_KR/)\n"
 "Language: ko_KR\n"
@@ -61,7 +62,7 @@ msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Since the raster2pgsql is compiled as part of PostGIS most often (unless you "
 "compile your own GDAL library), the raster types supported by the executable "
@@ -71,13 +72,6 @@ msgid ""
 "PostGIS install documented here <xref linkend=\"RT_ST_GDALDrivers\"/> if you "
 "are using the same GDAL library for both."
 msgstr ""
-"raster2pgsql이 (사용자 스스로 GDAL 라이브러리를 컴파일하지 않는 한)  가장 흔"
-"히 PostGIS의 일부로서 컴파일되는 파일이기 때문에, 이 실행 파일이 지원하는 래"
-"스터 형식은 GDAL 의존성 라이브러리 안에 컴파일되는 래스터 형식과 동일할 것입"
-"니다. 사용자 자신의 raster2pgsql이 지원하는 래스터 형식의 목록을 보려면 "
-"<varname>-G</varname> 스위치를 사용하십시오. 사용자가 양쪽 모두에서 동일한 "
-"GDAL 라이브러리를 사용하고 있다면, <xref linkend=\"RT_ST_GDALDrivers\"/> 에 "
-"문서화된, 사용자 PostGIS 설치가 제공하는 지원 목록과 동일해야 합니다."
 
 #. Tag: para
 #: using_raster_dataman.xml:16
@@ -376,9 +370,9 @@ msgstr ""
 
 #. Tag: term
 #: using_raster_dataman.xml:178
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
-msgstr "-l <varname>OVERVIEW_FACTOR</varname>"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:179
@@ -1018,9 +1012,9 @@ msgstr ""
 
 #. Tag: title
 #: using_raster_dataman.xml:354
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Using \"out db\" cloud rasters"
-msgstr "raster2pgsql을 이용해 래스터를 로드하기"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:355
@@ -1631,7 +1625,7 @@ msgstr "PostGIS 래스터를 이용하는 사용자 지정 응용 프로그램 �
 
 #. Tag: para
 #: using_raster_dataman.xml:508
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The fact that PostGIS raster provides you with SQL functions to render "
 "rasters in known image formats gives you a lot of options for rendering "
@@ -1642,13 +1636,6 @@ msgid ""
 "ulink>. In addition you can use a wide variety of languages as demonstrated "
 "in this section."
 msgstr ""
-"PostGIS 래스터가 알려진 이미지 형식으로 래스터를 렌더링하는 SQL 함수를 제공하"
-"기 때문에, 래스터 렌더링 옵션이 많습니다. 예를 들어 <ulink url=\"http://www."
-"postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-graphics-"
-"with-LibreOffice-Base-Reports.html\">리브레오피스 기본 리포트로 PostGIS 래스"
-"터 그래픽을 렌더링하기</ulink> 에서 설명하는 대로 오픈오피스/리브레오피스를 "
-"이용해서 렌더링할 수도 있습니다. 또한 이 단원에서 설명하는 대로 광범위한 언어"
-"를 이용할 수도 있습니다."
 
 #. Tag: title
 #: using_raster_dataman.xml:511
@@ -2332,6 +2319,3 @@ msgstr ""
 "\n"
 "-- 이 구문은 DB에 있는 대용량 객체 저장소에서 파일을 삭제합니다.\n"
 "SELECT lo_unlink(2630819);"
-
-#~ msgid "Wrap PostgreSQL identifiers in quotes"
-#~ msgstr "PostgreSQL 식별자를 따옴표로 감쌉니다."

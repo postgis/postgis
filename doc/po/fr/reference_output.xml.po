@@ -3,13 +3,14 @@
 # Translators:
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
+# Vincent Picavet <vincent.ml@oslandia.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2021-11-28 22:06+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
 "fr/)\n"
 "Language: fr\n"
@@ -54,7 +55,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_output.xml:22
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
@@ -69,18 +70,6 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
-"<function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type> "
-"<parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>bytea <function>ST_AsBinary</function></funcdef> "
-"<paramdef><type>geography </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: title
 #: reference_output.xml:45 reference_output.xml:127 reference_output.xml:219
@@ -92,7 +81,7 @@ msgstr ""
 #: reference_output.xml:1319
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #. Tag: para
 #: reference_output.xml:47
@@ -159,28 +148,28 @@ msgstr ""
 #: reference_output.xml:843 reference_output.xml:1274
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_output.xml:74 reference_output.xml:160 reference_output.xml:249
 #: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1333
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_output.xml:75 reference_output.xml:250 reference_output.xml:316
 #: reference_output.xml:754 reference_output.xml:1276
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_output.xml:76 reference_output.xml:251 reference_output.xml:317
 #: reference_output.xml:755 reference_output.xml:1279
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: title
 #: reference_output.xml:81 reference_output.xml:164 reference_output.xml:257
@@ -191,7 +180,7 @@ msgstr ""
 #: reference_output.xml:1337
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: programlisting
 #: reference_output.xml:83
@@ -243,7 +232,7 @@ msgstr ""
 #: reference_output.xml:1341
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Voir aussi"
 
 #. Tag: para
 #: reference_output.xml:89
@@ -269,7 +258,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_output.xml:104
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
@@ -284,18 +273,6 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>maxdecimaldigits = 15</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
-"<function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type> "
-"<parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>bytea <function>ST_AsBinary</function></funcdef> "
-"<paramdef><type>geography </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:129
@@ -352,7 +329,7 @@ msgstr ""
 #: reference_output.xml:158 reference_output.xml:247
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.1"
 
 #. Tag: para
 #: reference_output.xml:159
@@ -362,7 +339,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:166
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText('01030000000100000005000000000000000000\n"
 "000000000000000000000000000000000000000000000000\n"
@@ -373,15 +350,6 @@ msgid ""
 "--------------------------------\n"
 " POLYGON((0 0,0 1,1 1,1 0,0 0))"
 msgstr ""
-"SELECT ST_AsText('01030000000100000005000000000000000000\n"
-"000000000000000000000000000000000000000000000000\n"
-"F03F000000000000F03F000000000000F03F000000000000F03\n"
-"F000000000000000000000000000000000000000000000000');\n"
-"\n"
-"                   st_astext\n"
-"--------------------------------\n"
-" POLYGON((0 0,0 1,1 1,1 0,0 0))\n"
-"(1 row)"
 
 #. Tag: para
 #: reference_output.xml:168
@@ -391,17 +359,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:169
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText('POINT(111.1111111 1.1111111)'));\n"
 "    st_astext\n"
 "------------------------------\n"
 " POINT(111.1111111 1.1111111)"
 msgstr ""
-"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));\n"
-"      st_aslatlontext       \n"
-"----------------------------\n"
-" 2°19'29.928\"S 3°14'3.243\"W"
 
 #. Tag: para
 #: reference_output.xml:171
@@ -413,17 +377,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:172
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText('POINT(111.1111111 1.1111111)'), 2);\n"
 "    st_astext\n"
 "--------------------\n"
 " POINT(111.11 1.11)"
 msgstr ""
-"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));\n"
-"      st_aslatlontext       \n"
-"----------------------------\n"
-" 2°19'29.928\"S 3°14'3.243\"W"
 
 #. Tag: para
 #: reference_output.xml:179
@@ -537,6 +497,8 @@ msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
 msgstr ""
+"Amélioration: 2.0.0 introduction du support TIN, Triangles et surfaces "
+"polyhédriques. "
 
 #. Tag: para
 #: reference_output.xml:242
@@ -578,7 +540,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:259
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
 "\n"
@@ -588,24 +550,10 @@ msgid ""
 "000000f03f000000000000f03f000000000000f03f000000000000f03f0000000000000000000000\n"
 "00000000000000000000000000"
 msgstr ""
-"SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
-"\n"
-"                   st_asbinary\n"
-"--------------------------------\n"
-"\\001\\003\\000\\000\\000\\001\\000\\000\\000\\005\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\360?\\000\\000\\000\\000\\000\\000\n"
-"\\360?\\000\\000\\000\\000\\000\\000\\360?\\000\\000\n"
-"\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"(1 row)"
 
 #. Tag: programlisting
 #: reference_output.xml:260
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), "
 "'XDR');\n"
@@ -615,18 +563,6 @@ msgid ""
 "00000000003ff00000000000003ff00000000000003ff00000000000000000000000000000000000\n"
 "00000000000000000000000000"
 msgstr ""
-"SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), "
-"'XDR');\n"
-"                   st_asbinary\n"
-"--------------------------------\n"
-"\\000\\000\\000\\000\\003\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"\\000?\\360\\000\\000\\000\\000\\000\\000?"
-"\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\n"
-"\\000\\000\\000\\000?"
-"\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"(1 row)"
 
 #. Tag: para
 #: reference_output.xml:266
@@ -697,7 +633,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:324
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
 "\n"
@@ -707,22 +643,10 @@ msgid ""
 "00000000000000f03f000000000000f03f000000000000f03f000000000000f03f00000000000000\n"
 "0000000000000000000000000000000000"
 msgstr ""
-"SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), "
-"'XDR');\n"
-"                   st_asewkb\n"
-"--------------------------------\n"
-"\\000 "
-"\\000\\000\\003\\000\\000\\020\\346\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\\n"
-"000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000?\n"
-"\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?"
-"\\360\\000\\000\\000\\000\n"
-"\\000\\000?"
-"\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000"
 
 #. Tag: programlisting
 #: reference_output.xml:325
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), "
 "'XDR');\n"
@@ -732,26 +656,12 @@ msgid ""
 "003ff00000000000003ff00000000000003ff00000000000003ff000000000000000000000000000\n"
 "0000000000000000000000000000000000"
 msgstr ""
-"SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), "
-"'XDR');\n"
-"                   st_asewkb\n"
-"--------------------------------\n"
-"\\000 "
-"\\000\\000\\003\\000\\000\\020\\346\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\\n"
-"000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000?\n"
-"\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?"
-"\\360\\000\\000\\000\\000\n"
-"\\000\\000?"
-"\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
-"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000"
 
 #. Tag: para
 #: reference_output.xml:331
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromEWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
-"linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refname
 #: reference_output.xml:337
@@ -870,7 +780,7 @@ msgstr ""
 #: reference_output.xml:407 reference_output.xml:1159
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilité : 2.2.0"
 
 #. Tag: para
 #: reference_output.xml:412
@@ -937,15 +847,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:425
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_Segmentize\"/>"
-msgstr ", <xref linkend=\"ST_AsGML\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_output.xml:431
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_AsFlatGeobuf"
-msgstr "ST_AsGeoJSON"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_output.xml:433
@@ -955,7 +865,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_output.xml:436
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>bytea <function>ST_AsFlatGeobuf</function></"
 "funcdef> <paramdef><type>anyelement set </type> <parameter>row</parameter></"
@@ -969,18 +879,6 @@ msgid ""
 "<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
-"<function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type> "
-"<parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>bytea <function>ST_AsBinary</function></funcdef> "
-"<paramdef><type>geography </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:458
@@ -1020,9 +918,9 @@ msgstr ""
 
 #. Tag: refname
 #: reference_output.xml:475
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_AsGeobuf"
-msgstr "ST_AsGeoJSON"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_output.xml:477
@@ -1032,7 +930,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_output.xml:480
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>bytea <function>ST_AsGeobuf</function></funcdef> "
 "<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef> "
@@ -1041,12 +939,6 @@ msgid ""
 "parameter></paramdef> <paramdef><type>text </type> <parameter>geom_name</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>bytea <function>ST_AsEWKB</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsEWKB</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</"
-"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:496
@@ -1093,7 +985,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_output.xml:523
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
 "<paramdef><type>record </type> <parameter>feature</parameter></paramdef> "
@@ -1113,29 +1005,6 @@ msgid ""
 "\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</"
-"function></funcdef> <paramdef><type>geography </type> <parameter>geog</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</"
-"function></funcdef> <paramdef><type>integer </type> <parameter>gj_version</"
-"parameter></paramdef> <paramdef><type>geometry </type> <parameter>geom</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</"
-"function></funcdef> <paramdef><type>integer </type> <parameter>gj_version</"
-"parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:549
@@ -1307,27 +1176,13 @@ msgstr ""
 
 #. Tag: screen
 #: reference_output.xml:624
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "st_asgeojson\n"
 "-----------------------------------------------------------------------------------------------------------------\n"
 " {\"type\": \"Feature\", \"geometry\": {\"type\":\"Point\",\"coordinates\":"
 "[1,1]}, \"properties\": {\"id\": 1, \"name\": \"one\"}}"
 msgstr ""
-"SELECT ST_AsGeoJSON(the_geom) from fe_edges limit 1;\n"
-"                                           st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------\n"
-"\n"
-"{\"type\":\"MultiLineString\",\"coordinates\":"
-"[[[-89.734634999999997,31.492072000000000],\n"
-"[-89.734955999999997,31.492237999999997]]]}\n"
-"(1 row)\n"
-"--3d point\n"
-"SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');\n"
-"\n"
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------\n"
-" {\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
 
 #. Tag: para
 #: reference_output.xml:626
@@ -1352,27 +1207,13 @@ msgstr ""
 
 #. Tag: screen
 #: reference_output.xml:629
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "json\n"
 "-----------------------------------------------------------------------------------------------------------------\n"
 " {\"id\": 1, \"type\": \"Feature\", \"geometry\": {\"type\": \"Point\", "
 "\"coordinates\": [1, 1]}, \"properties\": {\"name\": \"one\"}}"
 msgstr ""
-"SELECT ST_AsGeoJSON(the_geom) from fe_edges limit 1;\n"
-"                                           st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------\n"
-"\n"
-"{\"type\":\"MultiLineString\",\"coordinates\":"
-"[[[-89.734634999999997,31.492072000000000],\n"
-"[-89.734955999999997,31.492237999999997]]]}\n"
-"(1 row)\n"
-"--3d point\n"
-"SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');\n"
-"\n"
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------\n"
-" {\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
 
 #. Tag: para
 #: reference_output.xml:631
@@ -1390,7 +1231,7 @@ msgstr ""
 
 #. Tag: screen
 #: reference_output.xml:633
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "st_asgeojson\n"
 "-----------------------------------------------------------------------------------------------------------\n"
@@ -1399,20 +1240,6 @@ msgid ""
 "[[[-89.734634999999997,31.492072000000000],\n"
 "[-89.734955999999997,31.492237999999997]]]}"
 msgstr ""
-"SELECT ST_AsGeoJSON(the_geom) from fe_edges limit 1;\n"
-"                                           st_asgeojson\n"
-"-----------------------------------------------------------------------------------------------------------\n"
-"\n"
-"{\"type\":\"MultiLineString\",\"coordinates\":"
-"[[[-89.734634999999997,31.492072000000000],\n"
-"[-89.734955999999997,31.492237999999997]]]}\n"
-"(1 row)\n"
-"--3d point\n"
-"SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');\n"
-"\n"
-"st_asgeojson\n"
-"-----------------------------------------------------------------------------------------\n"
-" {\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
 
 #. Tag: para
 #: reference_output.xml:634
@@ -1434,12 +1261,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:641
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ForcePolygonCCW\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
-"linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refname
 #: reference_output.xml:649
@@ -1455,7 +1280,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_output.xml:654
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -1489,29 +1314,6 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
 "<parameter>id=null</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</"
-"function></funcdef> <paramdef><type>geography </type> <parameter>geog</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</"
-"function></funcdef> <paramdef><type>integer </type> <parameter>gj_version</"
-"parameter></paramdef> <paramdef><type>geometry </type> <parameter>geom</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</"
-"function></funcdef> <paramdef><type>integer </type> <parameter>gj_version</"
-"parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:696
@@ -1782,7 +1584,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_output.xml:788
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -1796,16 +1598,6 @@ msgid ""
 "\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>rel=0</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> "
-"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>rel=0</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:810
@@ -1984,17 +1776,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:905
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));\n"
 "      st_aslatlontext\n"
 "----------------------------\n"
 " 2°19'29.928\"S 3°14'3.243\"W"
 msgstr ""
-"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));\n"
-"      st_aslatlontext       \n"
-"----------------------------\n"
-" 2°19'29.928\"S 3°14'3.243\"W"
 
 #. Tag: para
 #: reference_output.xml:906
@@ -2004,17 +1792,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:907
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"C'));\n"
 "      st_aslatlontext\n"
 "----------------------------\n"
 " 2°19'29.928\"S 3°14'3.243\"W"
 msgstr ""
-"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"C'));\n"
-"      st_aslatlontext       \n"
-"----------------------------\n"
-" 2°19'29.928\"S 3°14'3.243\"W"
 
 #. Tag: para
 #: reference_output.xml:908
@@ -2024,7 +1808,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:909
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M "
 "minutes, S seconds to the C'));\n"
@@ -2033,12 +1817,6 @@ msgid ""
 " 2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds "
 "to the W"
 msgstr ""
-"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M "
-"minutes, S seconds to the C'));\n"
-"                                   st_aslatlontext                                    \n"
-"--------------------------------------------------------------------------------------\n"
-" 2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds "
-"to the W"
 
 #. Tag: para
 #: reference_output.xml:910
@@ -2048,17 +1826,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:911
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"'));\n"
 "      st_aslatlontext\n"
 "----------------------------\n"
 " -2°19'29.928\" -3°14'3.243\""
 msgstr ""
-"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"'));\n"
-"      st_aslatlontext       \n"
-"----------------------------\n"
-" -2°19'29.928\" -3°14'3.243\""
 
 #. Tag: para
 #: reference_output.xml:912
@@ -2068,7 +1842,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:913
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees "
 "C'));\n"
@@ -2076,11 +1850,6 @@ msgid ""
 "-----------------------------------\n"
 " 2.3250 degrees S 3.2342 degrees W"
 msgstr ""
-"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees "
-"C'));\n"
-"          st_aslatlontext          \n"
-"-----------------------------------\n"
-" 2.3250 degrees S 3.2342 degrees W"
 
 #. Tag: para
 #: reference_output.xml:914
@@ -2090,23 +1859,19 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:915
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));\n"
 "        st_aslatlontext\n"
 "-------------------------------\n"
 " 72°19'29.928\"S 57°45'56.757\"E"
 msgstr ""
-"SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));\n"
-"        st_aslatlontext        \n"
-"-------------------------------\n"
-" 72°19'29.928\"S 57°45'56.757\"E"
 
 #. Tag: refname
 #: reference_output.xml:924
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_AsMVTGeom"
-msgstr "ST_AsSVG"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_output.xml:926
@@ -2118,7 +1883,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_output.xml:930
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -2128,12 +1893,6 @@ msgid ""
 "<parameter>buffer=256</parameter></paramdef> <paramdef choice=\"opt"
 "\"><type>boolean </type> <parameter>clip_geom=true</parameter></paramdef>"
 msgstr ""
-"<funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>ST_AsHEXEWKB</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
-"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:944
@@ -2211,19 +1970,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:968
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_TileEnvelope\"/>, <xref linkend=\"PostGIS_Wagyu_Version"
 "\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
-"linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refname
 #: reference_output.xml:978
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_AsMVT"
-msgstr "ST_AsGML"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_output.xml:980
@@ -2235,7 +1992,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_output.xml:983
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>bytea <function>ST_AsMVT</function></funcdef> "
 "<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef> "
@@ -2260,27 +2017,6 @@ msgid ""
 "paramdef> <paramdef><type>text </type> <parameter>feature_id_name</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-"<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</function></"
-"funcdef> <paramdef><type>integer </type> <parameter>version</parameter></"
-"paramdef> <paramdef><type>geography </type> <parameter>geog</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:1020
@@ -2389,9 +2125,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:1065
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_TileEnvelope\"/>"
-msgstr ", <xref linkend=\"ST_AsGML\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_output.xml:1073
@@ -2462,7 +2198,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:1116
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsSVG('POLYGON((0 0,0 1,1 1,1 0,0 0))');\n"
 "\n"
@@ -2470,11 +2206,6 @@ msgid ""
 "                --------\n"
 "                M 0 0 L 0 -1 1 -1 1 0 Z"
 msgstr ""
-"SELECT ST_AsSVG(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
-"\n"
-"                st_assvg\n"
-"                --------\n"
-"                M 0 0 L 0 -1 1 -1 1 0 Z"
 
 #. Tag: refname
 #: reference_output.xml:1121
@@ -2605,13 +2336,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:1174
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_AsEWKB\"/>, <xref "
 "linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
-"linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refname
 #: reference_output.xml:1180
@@ -2736,7 +2465,7 @@ msgstr ""
 #: reference_output.xml:1235
 #, no-c-format
 msgid "LINESTRING"
-msgstr ""
+msgstr "LINESTRING"
 
 #. Tag: entry
 #: reference_output.xml:1236 reference_output.xml:1241
@@ -2754,7 +2483,7 @@ msgstr ""
 #: reference_output.xml:1240
 #, no-c-format
 msgid "MULTILINESTRING"
-msgstr ""
+msgstr "MULTILINESTRING"
 
 #. Tag: entry
 #: reference_output.xml:1242
@@ -2766,7 +2495,7 @@ msgstr ""
 #: reference_output.xml:1245
 #, no-c-format
 msgid "MULTIPOINT"
-msgstr ""
+msgstr "MULTIPOINT"
 
 #. Tag: entry
 #: reference_output.xml:1246
@@ -3083,7 +2812,7 @@ msgstr ""
 #: reference_output.xml:1327
 #, no-c-format
 msgid "Availability: 1.4.0"
-msgstr ""
+msgstr "Disponibilité: 1.4.0"
 
 #. Tag: para
 #: reference_output.xml:1330
@@ -3095,7 +2824,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:1338
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326));\n"
 "\n"
@@ -3110,148 +2839,3 @@ msgid ""
 " c0w3h\n"
 "                ]]>"
 msgstr ""
-"<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));\n"
-"\n"
-"         st_geohash\n"
-"----------------------\n"
-" c0w3hf1s70w3hf1s70w3\n"
-"\n"
-"SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);\n"
-"\n"
-" st_geohash\n"
-"------------\n"
-" c0w3h\n"
-"                ]]>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-#~ "funcprototype> <funcprototype> <funcdef>text <function>ST_AsEWKT</"
-#~ "function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-#~ "parameter></paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-#~ "funcprototype> <funcprototype> <funcdef>text <function>ST_AsEWKT</"
-#~ "function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-#~ "parameter></paramdef> </funcprototype>"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
-#~ "linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_SRID\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
-#~ "linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_SRID\"/>"
-
-#, fuzzy
-#~ msgid ""
-#~ "Version 1: ST_AsGeoJSON(geom) / maxdecimaldigits=15 version=1 options=0"
-#~ msgstr "Version 1: ST_AsGeoJSON(geom) / precision=15 version=1 options=0"
-
-#, fuzzy
-#~ msgid ""
-#~ "Version 2: ST_AsGeoJSON(geom, maxdecimaldigits) / version=1 options=0"
-#~ msgstr "Version 1: ST_AsGeoJSON(geom) / precision=15 version=1 options=0"
-
-#, fuzzy
-#~ msgid "Version 3: ST_AsGeoJSON(geom, maxdecimaldigits, options) / version=1"
-#~ msgstr "Version 3: ST_AsGeoJSON(geom, precision, options) / version=1"
-
-#, fuzzy
-#~ msgid ""
-#~ "Version 4: ST_AsGeoJSON(gj_version, geom) / maxdecimaldigits=15 options=0"
-#~ msgstr "Version 5: ST_AsGeoJSON(gj_version, geom, precision) /options=0"
-
-#, fuzzy
-#~ msgid ""
-#~ "Version 5: ST_AsGeoJSON(gj_version, geom, maxdecimaldigits) / options=0"
-#~ msgstr "Version 5: ST_AsGeoJSON(gj_version, geom, precision) /options=0"
-
-#, fuzzy
-#~ msgid "Version 6: ST_AsGeoJSON(gj_version, geom, maxdecimaldigits, options)"
-#~ msgstr "Version 6: ST_AsGeoJSON(gj_version, geom, precision,options)"
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
-#~ "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-#~ "<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
-#~ "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-#~ "<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice="
-#~ "\"opt\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> "
-#~ "</funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</"
-#~ "function></funcdef> <paramdef><type>integer </type> <parameter>version</"
-#~ "parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</"
-#~ "parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice="
-#~ "\"opt\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> "
-#~ "</funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
-#~ "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-#~ "<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
-#~ "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
-#~ "<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice="
-#~ "\"opt\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> "
-#~ "</funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</"
-#~ "function></funcdef> <paramdef><type>integer </type> <parameter>version</"
-#~ "parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</"
-#~ "parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice="
-#~ "\"opt\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> "
-#~ "</funcprototype>"
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-#~ "funcprototype> <funcprototype> <funcdef>text <function>ST_AsText</"
-#~ "function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-#~ "parameter></paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
-#~ "funcprototype> <funcprototype> <funcdef>text <function>ST_AsText</"
-#~ "function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-#~ "parameter></paramdef> </funcprototype>"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcdef>bytea <function>ST_AsGeobuf</function></funcdef> "
-#~ "<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> "
-#~ "<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>text <function>ST_GeoHash</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcdef>bytea <function>ST_AsMVT</function></funcdef> "
-#~ "<paramdef><type>text </type> <parameter>name</parameter></paramdef> "
-#~ "<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> "
-#~ "<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> "
-#~ "<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>text <function>ST_AsX3D</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>integer </type> "
-#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice="
-#~ "\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef>"

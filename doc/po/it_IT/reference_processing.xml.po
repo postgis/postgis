@@ -2,13 +2,14 @@
 #
 # Translators:
 # pibinko <pibinko@gmail.com>, 2014
+# pibinko <pibinko@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"PO-Revision-Date: 2021-11-28 22:08+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
 "language/it_IT/)\n"
 "Language: it_IT\n"
@@ -47,7 +48,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:23
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
@@ -71,23 +72,6 @@ msgid ""
 "type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Buffer</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Buffer</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>text </"
-"type> <parameter>buffer_style_parameters</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geography <function>ST_Buffer</"
-"function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer_in_meters</parameter></paramdef> </funcprototype>"
 
 #. Tag: title
 #: reference_processing.xml:57 reference_processing.xml:308
@@ -441,17 +425,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:230
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 " ST_GeomFromText(\n"
 "  'LINESTRING(50 50,150 150,150 50)'\n"
 " ), 10, 'side=left');"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: para
 #: reference_processing.xml:238
@@ -461,17 +441,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:241
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 " ST_GeomFromText(\n"
 "  'LINESTRING(50 50,150 150,150 50)'\n"
 " ), 10, 'side=right');"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: para
 #: reference_processing.xml:249
@@ -481,17 +457,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:252
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 " ST_GeomFromText(\n"
 "  'LINESTRING(50 50,150 150,150 50)'\n"
 " ), 10, 'side=left join=mitre');"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: para
 #: reference_processing.xml:261
@@ -501,7 +473,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:264
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 "ST_ForceRHR(\n"
@@ -510,10 +482,6 @@ msgid ""
 "'POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))'))),\n"
 " ), 20, 'side=left');"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: para
 #: reference_processing.xml:271
@@ -523,7 +491,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:274
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 "ST_ForceRHR(\n"
@@ -532,10 +500,6 @@ msgid ""
 "'POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))'))\n"
 "), 20,'side=right')"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: programlisting
 #: reference_processing.xml:281
@@ -593,14 +557,12 @@ msgstr "Si veda anche"
 
 #. Tag: para
 #: reference_processing.xml:287
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
 "\"ST_MakeValid\"/>"
 msgstr ""
-", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:293
@@ -616,13 +578,11 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:300
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:310
@@ -650,9 +610,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:322 reference_processing.xml:1058
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.1.0"
-msgstr "Disponibilità: 1.5.0"
+msgstr "Disponibilità: 1.1.0"
 
 #. Tag: para
 #: reference_processing.xml:336
@@ -662,7 +622,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:339
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--using polygons\n"
 "SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
@@ -671,15 +631,10 @@ msgid ""
 "      ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
 "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 msgstr ""
-"SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
-"FROM (SELECT\n"
-"        ST_Buffer(\n"
-"          ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
-"        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 
 #. Tag: programlisting
 #: reference_processing.xml:341
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--using linestrings\n"
 "SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
@@ -689,29 +644,21 @@ msgid ""
 "    ST_ExteriorRing(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As "
 "bigc) As foo;"
 msgstr ""
-"SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
-"FROM (SELECT\n"
-"        ST_Buffer(\n"
-"          ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
-"        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 
 #. Tag: para
 #: reference_processing.xml:352
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_MakeValid\"/>, "
 "<xref linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/"
 "> (wrappers to this function with standard OGC interface)"
 msgstr ""
-", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_BdPolyFromText\"/>, "
-"<xref linkend=\"ST_BdMPolyFromText\"/>wrappers to this function with "
-"standard OGC interface"
 
 #. Tag: refname
 #: reference_processing.xml:364
 #, no-c-format
 msgid "ST_Centroid"
-msgstr ""
+msgstr "ST_Centroid"
 
 #. Tag: refpurpose
 #: reference_processing.xml:366
@@ -721,7 +668,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:370
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Centroid</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
@@ -730,13 +677,6 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_CurveToLine</function></"
-"funcdef> <paramdef><type>geometry</type> <parameter>curveGeom</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</"
-"type> <parameter>curveGeom</parameter></paramdef> <paramdef><type>integer</"
-"type> <parameter>segments_per_qtr_circle</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: para
 #: reference_processing.xml:392
@@ -797,9 +737,9 @@ msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_processing.xml:420
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
-msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 
 #. Tag: para
 #: reference_processing.xml:426
@@ -813,25 +753,25 @@ msgstr ""
 #: reference_processing.xml:439
 #, no-c-format
 msgid "Centroid of a <varname>MULTIPOINT</varname>"
-msgstr ""
+msgstr "Centroide di un <varname>MULTIPOINT</varname>"
 
 #. Tag: para
 #: reference_processing.xml:450
 #, no-c-format
 msgid "Centroid of a <varname>LINESTRING</varname>"
-msgstr ""
+msgstr "Centroide di una <varname>LINESTRING</varname>"
 
 #. Tag: para
 #: reference_processing.xml:463
 #, no-c-format
 msgid "Centroid of a <varname>POLYGON</varname>"
-msgstr ""
+msgstr "Centroide di un <varname>POLYGON</varname>"
 
 #. Tag: para
 #: reference_processing.xml:474
 #, no-c-format
 msgid "Centroid of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr ""
+msgstr "Centroide di una <varname>GEOMETRYCOLLECTION</varname>"
 
 #. Tag: programlisting
 #: reference_processing.xml:483
@@ -860,9 +800,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:489
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_GeometricMedian\"/>"
-msgstr ", <xref linkend=\"ST_ConvexHull\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:495
@@ -880,7 +820,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:501
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -888,11 +828,6 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>allow_holes = false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>target_percent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:512
@@ -997,7 +932,7 @@ msgstr "Disponibilità: 2.0"
 
 #. Tag: programlisting
 #: reference_processing.xml:556
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--Get estimate of infected area based on point observations\n"
 "SELECT d.disease_type,\n"
@@ -1005,10 +940,6 @@ msgid ""
 "    FROM disease_obs As d\n"
 "    GROUP BY d.disease_type;"
 msgstr ""
-"SELECT d.disease_type,\n"
-"        ST_MinimumBoundingCircle(ST_Collect(d.the_geom)) As the_geom\n"
-"        FROM disease_obs As d\n"
-"        GROUP BY d.disease_type;"
 
 #. Tag: para
 #: reference_processing.xml:566
@@ -1018,7 +949,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:569
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- geometries overlaid with concavehull\n"
 "-- at target 100% shrink (this is the same as convex hull - since no "
@@ -1031,13 +962,6 @@ msgid ""
 "        ), 1)\n"
 "     As convexhull;"
 msgstr ""
-"SELECT \n"
-"        ST_DelaunayTriangles(\n"
-"                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                ),0.001,1) \n"
-"         As  dtriag;"
 
 #. Tag: para
 #: reference_processing.xml:576
@@ -1048,7 +972,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:580
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- geometries overlaid with concavehull at target 90% shrink\n"
 "SELECT\n"
@@ -1059,13 +983,6 @@ msgid ""
 "        ), 0.9)\n"
 "     As target_90;"
 msgstr ""
-"SELECT \n"
-"        ST_DelaunayTriangles(\n"
-"                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                ),0.001,1) \n"
-"         As  dtriag;"
 
 #. Tag: para
 #: reference_processing.xml:589
@@ -1136,7 +1053,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:635
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 "
 "70,82 112,130 94,\n"
@@ -1148,15 +1065,6 @@ msgid ""
 "190 122,182 148,178 170,176 184,156 164,146 178,\n"
 "132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)"
 msgstr ""
-"SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 "
-"70,82 112,130 94,\n"
-"        130 62,122 40,156 32,162 76,172 88),\n"
-"(132 178,134 148,128 136,96 128,132 108,150 130,\n"
-"170 142,174 110,156 96,158 90,158 88),\n"
-"(22 64,66 28,94 38,94 68,114 76,112 30,\n"
-"132 10,168 18,178 34,186 52,184 74,190 100,\n"
-"190 122,182 148,178 170,176 184,156 164,146 178,\n"
-"132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)"
 
 #. Tag: para
 #: reference_processing.xml:645
@@ -1248,7 +1156,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:704
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_ConvexHull(\n"
 "    ST_Collect(\n"
@@ -1258,15 +1166,6 @@ msgid ""
 "---st_astext--\n"
 "POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))"
 msgstr ""
-"SELECT ST_AsText(ST_ConvexHull(\n"
-"        ST_Collect(\n"
-"                ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, 20 "
-"30))'),\n"
-"                        ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, 10 "
-"10)')\n"
-"                        )) );\n"
-"---st_astext--\n"
-"POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))"
 
 #. Tag: para
 #: reference_processing.xml:707
@@ -1276,7 +1175,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:709
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--Get estimate of infected area based on point observations\n"
 "SELECT d.disease_type,\n"
@@ -1284,10 +1183,6 @@ msgid ""
 "    FROM disease_obs As d\n"
 "    GROUP BY d.disease_type;"
 msgstr ""
-"SELECT d.disease_type,\n"
-"        ST_MinimumBoundingCircle(ST_Collect(d.the_geom)) As the_geom\n"
-"        FROM disease_obs As d\n"
-"        GROUP BY d.disease_type;"
 
 #. Tag: para
 #: reference_processing.xml:714
@@ -1334,9 +1229,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:750
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.1.0"
-msgstr "Disponibilità: 2.0"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:752
@@ -1358,7 +1253,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:768
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- our original geometry --\n"
 "    ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
@@ -1366,11 +1261,6 @@ msgid ""
 "        ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
 "        )"
 msgstr ""
-"--la geometria originale --\n"
-"        ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                )"
 
 #. Tag: para
 #: reference_processing.xml:776
@@ -1382,7 +1272,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:779
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- geometries overlaid multilinestring triangles\n"
 "SELECT\n"
@@ -1393,13 +1283,6 @@ msgid ""
 "        ))\n"
 "     As  dtriag;"
 msgstr ""
-"SELECT \n"
-"        ST_DelaunayTriangles(\n"
-"                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                ),0.001,1) \n"
-"         As  dtriag;"
 
 #. Tag: para
 #: reference_processing.xml:786
@@ -1409,7 +1292,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:789
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    ST_DelaunayTriangles(\n"
@@ -1419,13 +1302,6 @@ msgid ""
 "        ),0.001,1)\n"
 "     As  dtriag;"
 msgstr ""
-"SELECT \n"
-"        ST_DelaunayTriangles(\n"
-"                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                ),0.001,1) \n"
-"         As  dtriag;"
 
 #. Tag: para
 #: reference_processing.xml:797
@@ -1483,13 +1359,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:814
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_Tesselate\"/>"
 msgstr ""
-", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
-"\"ST_MinimumBoundingCircle\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:821
@@ -1505,7 +1379,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:827
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_FilterByM</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -1514,11 +1388,6 @@ msgid ""
 "parameter></paramdef> <paramdef><type>boolean</type> <parameter>returnM = "
 "false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>target_percent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:839
@@ -1568,9 +1437,9 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:852 reference_processing.xml:1252
 #: reference_processing.xml:1852
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.5.0"
-msgstr "Disponibilità: 2.0"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:857
@@ -1593,15 +1462,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:862 reference_processing.xml:1862
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_SimplifyVW\"/>"
-msgstr ", <xref linkend=\"ST_Dump\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:868
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_GeneratePoints"
-msgstr "ST_RemoveRepeatedPoints"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:870
@@ -1611,7 +1480,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:874
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_GeneratePoints</function></"
 "funcdef> <paramdef> <parameter>g</parameter> <type>geometry</type> </"
@@ -1622,13 +1491,6 @@ msgid ""
 "<parameter>npoints</parameter> </paramdef> <paramdef> <type>integer</type> "
 "<parameter>seed</parameter> </paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_CurveToLine</function></"
-"funcdef> <paramdef><type>geometry</type> <parameter>curveGeom</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</"
-"type> <parameter>curveGeom</parameter></paramdef> <paramdef><type>integer</"
-"type> <parameter>segments_per_qtr_circle</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: para
 #: reference_processing.xml:899
@@ -1642,9 +1504,9 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:906 reference_processing.xml:995
 #: reference_processing.xml:1973 reference_processing.xml:2064
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.3.0"
-msgstr "Disponibilità: 2.0"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:907
@@ -1668,7 +1530,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:937
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_GeneratePoints(geom, 12, 1996)\n"
 "FROM (\n"
@@ -1678,10 +1540,6 @@ msgid ""
 "        10, 'endcap=round join=round') AS geom\n"
 ") AS s;"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'endcap=round join=round');"
 
 #. Tag: refname
 #: reference_processing.xml:948
@@ -1697,7 +1555,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:959
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_GeometricMedian</function> </funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -1707,11 +1565,6 @@ msgid ""
 "\"><type>boolean</type> <parameter>fail_if_not_converged = false</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>target_percent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:974
@@ -1761,7 +1614,7 @@ msgstr ""
 #: reference_processing.xml:998
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: para
 #: reference_processing.xml:1010
@@ -1789,9 +1642,9 @@ msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:1031
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_LineMerge"
-msgstr "ST_LineToCurve"
+msgstr "ST_LineMerge"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1033
@@ -1801,14 +1654,15 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1039
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+"<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1049
@@ -1889,15 +1743,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1074
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LineSubstring\"/>"
-msgstr ", <xref linkend=\"ST_Union\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:1080
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_MaximumInscribedCircle"
-msgstr "ST_MinimumBoundingCircle"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:1081
@@ -1907,14 +1761,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1086
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>(geometry, geometry, double precision) "
 "<function>ST_MaximumInscribedCircle</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1095
@@ -1973,9 +1825,9 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:1134 reference_processing.xml:1171
 #: reference_processing.xml:1189
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_MinimumBoundingRadius\"/>"
-msgstr ", <xref linkend=\"ST_Union\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:1140
@@ -2045,23 +1897,19 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1166
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.4.0"
-msgstr "Disponibilità: 1.5.0"
+msgstr "Disponibilità: 1.4.0"
 
 #. Tag: programlisting
 #: reference_processing.xml:1176
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT d.disease_type,\n"
 "    ST_MinimumBoundingCircle(ST_Collect(d.geom)) As geom\n"
 "    FROM disease_obs As d\n"
 "    GROUP BY d.disease_type;"
 msgstr ""
-"SELECT d.disease_type,\n"
-"        ST_MinimumBoundingCircle(ST_Collect(d.the_geom)) As the_geom\n"
-"        FROM disease_obs As d\n"
-"        GROUP BY d.disease_type;"
 
 #. Tag: para
 #: reference_processing.xml:1182
@@ -2073,7 +1921,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1185
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MinimumBoundingCircle(\n"
 "        ST_Collect(\n"
@@ -2102,38 +1950,12 @@ msgid ""
 "150.054896839789,130.79416296937 139.146232909101,134.384753327498 "
 "127.309642789079,135.59714732062 115))"
 msgstr ""
-"SELECT ST_AsText(ST_MinimumBoundingCircle(\n"
-"                ST_Collect(\n"
-"                        ST_GeomFromEWKT('LINESTRING(55 75,125 150)'),\n"
-"                                ST_Point(20, 80)), 8\n"
-"                                )) As wktmbc;\n"
-"wktmbc\n"
-"-----------\n"
-"POLYGON((135.59714732062 115,134.384753327498 "
-"102.690357210921,130.79416296937 90.8537670908995,124.963360620072 "
-"79.9451031602111,117.116420743937 70.3835792560632,107.554896839789 "
-"62.5366393799277,96.6462329091006 56.70583703063,84.8096427890789 "
-"53.115246672502,72.5000000000001 51.9028526793802,60.1903572109213 "
-"53.1152466725019,48.3537670908996 56.7058370306299,37.4451031602112 "
-"62.5366393799276,27.8835792560632 70.383579256063,20.0366393799278 "
-"79.9451031602109,14.20583703063 90.8537670908993,10.615246672502 "
-"102.690357210921,9.40285267938019 115,10.6152466725019 "
-"127.309642789079,14.2058370306299 139.1462329091,20.0366393799275 "
-"150.054896839789,27.883579256063 159.616420743937,\n"
-"37.4451031602108 167.463360620072,48.3537670908992 "
-"173.29416296937,60.190357210921 176.884753327498,\n"
-"72.4999999999998 178.09714732062,84.8096427890786 "
-"176.884753327498,96.6462329091003 173.29416296937,107.554896839789 "
-"167.463360620072,\n"
-"117.116420743937 159.616420743937,124.963360620072 "
-"150.054896839789,130.79416296937 139.146232909101,134.384753327498 "
-"127.309642789079,135.59714732062 115))"
 
 #. Tag: refname
 #: reference_processing.xml:1195
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_MinimumBoundingRadius"
-msgstr "ST_MinimumBoundingCircle"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:1196
@@ -2145,14 +1967,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1201
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>(geometry, double precision) <function>ST_MinimumBoundingRadius</"
 "function></funcdef> <paramdef><type>geometry</type> <parameter>geom</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1210
@@ -2172,15 +1992,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1212
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability - 2.3.0"
-msgstr "Disponibilità: 2.0"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1217
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_MinimumBoundingCircle\"/>"
-msgstr ", <xref linkend=\"ST_Union\"/>"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1222
@@ -2209,13 +2029,11 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1235
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_OrientedEnvelope</function></funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1247
@@ -2356,7 +2174,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1342
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.0"
 msgstr "Disponibilità: 2.0"
 
@@ -2375,7 +2193,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1353
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Union(\n"
 " ST_OffsetCurve(f.geom,  f.width/2, 'quad_segs=4 join=round'),\n"
@@ -2383,11 +2201,6 @@ msgid ""
 ") as track\n"
 "FROM someroadstable;"
 msgstr ""
-"SELECT ST_Union(\n"
-" ST_OffsetCurve(f.the_geom,  f.width/2, 'quad_segs=4 join=round'),\n"
-" ST_OffsetCurve(f.the_geom, -f.width/2, 'quad_segs=4 join=round')\n"
-") as track\n"
-"FROM someroadstable;"
 
 #. Tag: para
 #: reference_processing.xml:1363
@@ -2397,7 +2210,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1367
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
 "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
@@ -2411,17 +2224,6 @@ msgid ""
 "    5.39339828220179 7.39339828220179,\n"
 "    2.14180701233067 12.2597485145237,1 18,1 195)"
 msgstr ""
-"SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)'),\n"
-"        15, 'quad_segs=4 join=round'));\n"
-"--output --\n"
-"LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,\n"
-"        7.39339828220179 5.39339828220179,\n"
-"        5.39339828220179 7.39339828220179,\n"
-"        2.14180701233067 12.2597485145237,1 18,1 195)"
 
 #. Tag: para
 #: reference_processing.xml:1374
@@ -2431,7 +2233,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1378
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(geom,\n"
 "    -15, 'quad_segs=4 join=round')) As notsocurvy\n"
@@ -2443,15 +2245,6 @@ msgid ""
 "-- notsocurvy --\n"
 "LINESTRING(31 195,31 31,164 31)"
 msgstr ""
-"SELECT ST_AsText(ST_OffsetCurve(geom,\n"
-"        -15, 'quad_segs=4 join=round')) As notsocurvy\n"
-"        FROM ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
-"-- notsocurvy --\n"
-"LINESTRING(31 195,31 31,164 31)"
 
 #. Tag: para
 #: reference_processing.xml:1387
@@ -2463,7 +2256,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1390
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
 "    -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As "
@@ -2478,18 +2271,6 @@ msgid ""
 "35.3933982822018 35.3933982822018,\n"
 "32.1418070123307 40.2597485145237,31 46,31 195)"
 msgstr ""
-"SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
-"        -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As "
-"morecurvy\n"
-"        FROM ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
-"-- morecurvy --\n"
-"LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,\n"
-"35.3933982822018 35.3933982822018,\n"
-"32.1418070123307 40.2597485145237,31 46,31 195)"
 
 #. Tag: para
 #: reference_processing.xml:1397
@@ -2501,7 +2282,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1400
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
 "    ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'),\n"
@@ -2522,24 +2303,6 @@ msgid ""
 "35.3933982822018,\n"
 "32.1418070123307 40.2597485145237,31 46,31 195))"
 msgstr ""
-"SELECT ST_AsText(ST_Collect(\n"
-"        ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'), \n"
-"        ST_OffsetCurve(ST_OffsetCurve(geom,\n"
-"        -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')\n"
-"        )\n"
-") As parallel_curves\n"
-"        FROM ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
-"-- parallel curves  --\n"
-"MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,\n"
-"7.39339828220179 5.39339828220179,5.39339828220179 7.39339828220179,\n"
-"2.14180701233067 12.2597485145237,1 18,1 195),\n"
-"(164 31,46 31,40.2597485145236 32.1418070123307,35.3933982822018 "
-"35.3933982822018,\n"
-"32.1418070123307 40.2597485145237,31 46,31 195))"
 
 #. Tag: para
 #: reference_processing.xml:1409
@@ -2549,7 +2312,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1412
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
 "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
@@ -2561,15 +2324,6 @@ msgid ""
 "LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,\n"
 "    5.39339828220179 7.39339828220179,1 18,1 195)"
 msgstr ""
-"SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)'), \n"
-"                15, 'quad_segs=4 join=bevel'));\n"
-"-- output --\n"
-"LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,\n"
-"        5.39339828220179 7.39339828220179,1 18,1 195)"
 
 #. Tag: para
 #: reference_processing.xml:1420
@@ -2579,7 +2333,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1423
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
 "    ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),\n"
@@ -2594,24 +2348,12 @@ msgid ""
 "MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),\n"
 "    (31 195,31 31,164 31))"
 msgstr ""
-"SELECT ST_AsText(ST_Collect(\n"
-"        ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),\n"
-"        ST_OffsetCurve(geom, -15, 'quad_segs=4 join=mitre mitre_limit=2.2')\n"
-"        ) )\n"
-"        FROM ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
-"-- output --\n"
-"MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),\n"
-"        (31 195,31 31,164 31))"
 
 #. Tag: refname
 #: reference_processing.xml:1440
 #, no-c-format
 msgid "ST_PointOnSurface"
-msgstr ""
+msgstr "ST_PointOnSurface"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1441
@@ -2621,13 +2363,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1446
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+"<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1458
@@ -2640,9 +2382,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1463
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
-msgstr "&sfs_compliant; s2.1.1.3"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1464
@@ -2684,9 +2426,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1480
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_MaximumInscribedCircle\"/>"
-msgstr ", <xref linkend=\"ST_Union\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:1486
@@ -2746,9 +2488,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1527
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr "Disponibilità: 1.5.0"
+msgstr "Disponibilità: dalla versione 1.0.0RC1"
 
 #. Tag: title
 #: reference_processing.xml:1531
@@ -2811,15 +2553,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1553
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ReducePrecision</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>gridsize</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1567
@@ -2929,9 +2668,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1610
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
-msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:1616
@@ -2991,7 +2730,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1664
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
 "  ST_SharedPaths(\n"
@@ -3008,24 +2747,10 @@ msgid ""
 "GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),\n"
 " (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
 msgstr ""
-"SELECT ST_AsText(\n"
-"  ST_SharedPaths(\n"
-"    ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 "
-"125),\n"
-"            (51 150,101 150,76 175,51 150))'),\n"
-"         ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,90 161, 76 "
-"175)')\n"
-"         )\n"
-"  ) As wkt\n"
-"\n"
-"                                wkt\n"
-"-------------------------------------------------------------\n"
-"GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),\n"
-" (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
 
 #. Tag: programlisting
 #: reference_processing.xml:1670
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- same example but linestring orientation flipped\n"
 "SELECT ST_AsText(\n"
@@ -3041,20 +2766,6 @@ msgid ""
 "GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,\n"
 "MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
 msgstr ""
-"SELECT ST_AsText(\n"
-"  ST_SharedPaths(\n"
-"    ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 "
-"125),\n"
-"            (51 150,101 150,76 175,51 150))'),\n"
-"         ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,90 161, 76 "
-"175)')\n"
-"         )\n"
-"  ) As wkt\n"
-"\n"
-"                                wkt\n"
-"-------------------------------------------------------------\n"
-"GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),\n"
-" (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
 
 #. Tag: para
 #: reference_processing.xml:1680
@@ -3080,7 +2791,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1697
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
@@ -3088,11 +2799,6 @@ msgid ""
 "<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>target_percent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1708
@@ -3148,7 +2854,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1731
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Npoints(geom) AS np_before,\n"
 "       ST_NPoints(ST_Simplify(geom,0.1)) AS np01_notbadcircle,\n"
@@ -3166,20 +2872,6 @@ msgid ""
 "        49 |                33 |                  17 |           9 "
 "|             4 | t"
 msgstr ""
-"SELECT ST_Npoints(the_geom) As np_before, "
-"ST_NPoints(ST_Simplify(the_geom,0.1)) As np01_notbadcircle, "
-"ST_NPoints(ST_Simplify(the_geom,0.5)) As np05_notquitecircle,\n"
-"ST_NPoints(ST_Simplify(the_geom,1)) As np1_octagon, "
-"ST_NPoints(ST_Simplify(the_geom,10)) As np10_triangle,\n"
-"(ST_Simplify(the_geom,100) is null) As  np100_geometrygoesaway\n"
-"FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;\n"
-"-result\n"
-" np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | "
-"np10_triangle | np100_geometrygoesaway\n"
-"-----------+-------------------+---------------------+-------------"
-"+---------------+------------------------\n"
-"                49 |                33 |                  17 |           9 "
-"|             4 | t"
 
 #. Tag: para
 #: reference_processing.xml:1735
@@ -3243,7 +2935,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1773
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Npoints(geom) As np_before, "
 "ST_NPoints(ST_SimplifyPreserveTopology(geom,0.1)) As np01_notbadcircle, "
@@ -3261,22 +2953,6 @@ msgid ""
 "        49 |                33 |                  17 |           9 "
 "|             5 |                 5"
 msgstr ""
-"SELECT ST_Npoints(the_geom) As np_before, "
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.1)) As np01_notbadcircle, "
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.5)) As "
-"np05_notquitecircle,\n"
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,1)) As np1_octagon, "
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,10)) As np10_square,\n"
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,100)) As  np100_stillsquare\n"
-"FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;\n"
-"\n"
-"--result--\n"
-" np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | "
-"np10_square | np100_stillsquare\n"
-"-----------+-------------------+---------------------+-------------"
-"+---------------+-------------------\n"
-"                49 |                33 |                  17 |           9 "
-"|             5 |                 5"
 
 #. Tag: refname
 #: reference_processing.xml:1783
@@ -3367,7 +3043,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1829
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -3375,11 +3051,6 @@ msgid ""
 "paramdef> <paramdef><type>boolean</type> <parameter>preserveEndPoints = "
 "false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>target_percent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1840
@@ -3455,18 +3126,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1876
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>threshold = 0</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>style_parameters=''</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1887
@@ -3539,9 +3205,9 @@ msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:1927
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_VoronoiLines"
-msgstr "ST_CurveToLine"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:1929
@@ -3552,7 +3218,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1934
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> <paramdef> "
 "<parameter>g1</parameter> <type>geometry</type> </paramdef> <paramdef choice="
@@ -3560,11 +3226,6 @@ msgid ""
 "<paramdef choice=\"opt\"> <parameter>extend_to</parameter> <type>geometry</"
 "type> </paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>style_parameters=''</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1955
@@ -3631,16 +3292,16 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:2005
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_VoronoiPolygons\"/>, <xref linkend=\"ST_Collect\"/>"
-msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:2015
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_VoronoiPolygons"
-msgstr "ST_Polygonize"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:2017
@@ -3650,7 +3311,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:2022
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef> "
 "<paramdef> <parameter>g1</parameter> <type>geometry</type> </paramdef> "
@@ -3658,11 +3319,6 @@ msgid ""
 "type> </paramdef> <paramdef choice=\"opt\"> <parameter>extend_to</parameter> "
 "<type>geometry</type> </paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>style_parameters=''</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:2044
@@ -3750,1221 +3406,6 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:2124
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
-msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-
-#~ msgid "ST_CurveToLine"
-#~ msgstr "ST_CurveToLine"
-
-#, fuzzy
-#~ msgid ""
-#~ "Converts a CIRCULARSTRING/CURVEPOLYGON/MULTISURFACE to a LINESTRING/"
-#~ "POLYGON/MULTIPOLYGON"
-#~ msgstr "Converte un CIRCULARSTRING/CURVEDPOLYGON in LINESTRING/POLYGON"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_CurveToLine</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>curveGeom</parameter></"
-#~ "paramdef> <paramdef><type>float</type> <parameter>tolerance</parameter></"
-#~ "paramdef> <paramdef choice=\"opt\"><type>integer</type> "
-#~ "<parameter>tolerance_type</parameter></paramdef> <paramdef choice=\"opt"
-#~ "\"><type>integer</type> <parameter>flags</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-#~ "<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-#~ "paramdef> <paramdef choice=\"opt\"><type>text </type> "
-#~ "<parameter>style_parameters=''</parameter></paramdef>"
-
-#, fuzzy
-#~ msgid "Availability: 1.3.0"
-#~ msgstr "Disponibilità: 1.5.0"
-
-#~ msgid "&sqlmm_compliant; SQL-MM 3: 7.1.7"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
-
-#~ msgid "&curve_support;"
-#~ msgstr "&curve_support;"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 "
-#~ "150415,220227 150505,220227 150406)')));\n"
-#~ "\n"
-#~ "--Result --\n"
-#~ " LINESTRING(220268 150415,220269.95064912 "
-#~ "150416.539364228,220271.823415575 150418.17258804,220273.613787707 "
-#~ "150419.895736857,\n"
-#~ " 220275.317452352 150421.704659462,220276.930305234 "
-#~ "150423.594998003,220278.448460847 150425.562198489,\n"
-#~ " 220279.868261823 150427.60152176,220281.186287736 "
-#~ "150429.708054909,220282.399363347 150431.876723113,\n"
-#~ " 220283.50456625 150434.10230186,220284.499233914 "
-#~ "150436.379429536,220285.380970099 150438.702620341,220286.147650624 "
-#~ "150441.066277505,\n"
-#~ " 220286.797428488 150443.464706771,220287.328738321 "
-#~ "150445.892130112,220287.740300149 150448.342699654,\n"
-#~ " 220288.031122486 150450.810511759,220288.200504713 "
-#~ "150453.289621251,220288.248038775 150455.77405574,\n"
-#~ " 220288.173610157 150458.257830005,220287.977398166 "
-#~ "150460.734960415,220287.659875492 150463.199479347,\n"
-#~ " 220287.221807076 150465.64544956,220286.664248262 "
-#~ "150468.066978495,220285.988542259 150470.458232479,220285.196316903 "
-#~ "150472.81345077,\n"
-#~ " 220284.289480732 150475.126959442,220283.270218395 "
-#~ "150477.39318505,220282.140985384 150479.606668057,\n"
-#~ " 220280.90450212 150481.762075989,220279.5637474 "
-#~ "150483.85421628,220278.12195122 150485.87804878,\n"
-#~ " 220276.582586992 150487.828697901,220274.949363179 "
-#~ "150489.701464356,220273.226214362 150491.491836488,\n"
-#~ " 220271.417291757 150493.195501133,220269.526953216 "
-#~ "150494.808354014,220267.559752731 150496.326509628,\n"
-#~ " 220265.520429459 150497.746310603,220263.41389631 "
-#~ "150499.064336517,220261.245228106 150500.277412127,\n"
-#~ " 220259.019649359 150501.38261503,220256.742521683 "
-#~ "150502.377282695,220254.419330878 150503.259018879,\n"
-#~ " 220252.055673714 150504.025699404,220249.657244448 "
-#~ "150504.675477269,220247.229821107 150505.206787101,\n"
-#~ " 220244.779251566 150505.61834893,220242.311439461 "
-#~ "150505.909171266,220239.832329968 150506.078553494,\n"
-#~ " 220237.347895479 150506.126087555,220234.864121215 "
-#~ "150506.051658938,220232.386990804 150505.855446946,\n"
-#~ " 220229.922471872 150505.537924272,220227.47650166 "
-#~ "150505.099855856,220225.054972724 150504.542297043,\n"
-#~ " 220222.663718741 150503.86659104,220220.308500449 150503.074365683,\n"
-#~ " 220217.994991777 150502.167529512,220215.72876617 150501.148267175,\n"
-#~ " 220213.515283163 150500.019034164,220211.35987523 150498.7825509,\n"
-#~ " 220209.267734939 150497.441796181,220207.243902439 150496,\n"
-#~ " 220205.293253319 150494.460635772,220203.420486864 "
-#~ "150492.82741196,220201.630114732 150491.104263143,\n"
-#~ " 220199.926450087 150489.295340538,220198.313597205 "
-#~ "150487.405001997,220196.795441592 150485.437801511,\n"
-#~ " 220195.375640616 150483.39847824,220194.057614703 "
-#~ "150481.291945091,220192.844539092 150479.123276887,220191.739336189 "
-#~ "150476.89769814,\n"
-#~ " 220190.744668525 150474.620570464,220189.86293234 "
-#~ "150472.297379659,220189.096251815 150469.933722495,\n"
-#~ " 220188.446473951 150467.535293229,220187.915164118 "
-#~ "150465.107869888,220187.50360229 150462.657300346,\n"
-#~ " 220187.212779953 150460.189488241,220187.043397726 "
-#~ "150457.710378749,220186.995863664 150455.22594426,\n"
-#~ " 220187.070292282 150452.742169995,220187.266504273 "
-#~ "150450.265039585,220187.584026947 150447.800520653,\n"
-#~ " 220188.022095363 150445.35455044,220188.579654177 "
-#~ "150442.933021505,220189.25536018 150440.541767521,\n"
-#~ " 220190.047585536 150438.18654923,220190.954421707 "
-#~ "150435.873040558,220191.973684044 150433.60681495,\n"
-#~ " 220193.102917055 150431.393331943,220194.339400319 "
-#~ "150429.237924011,220195.680155039 150427.14578372,220197.12195122 "
-#~ "150425.12195122,\n"
-#~ " 220198.661315447 150423.171302099,220200.29453926 "
-#~ "150421.298535644,220202.017688077 150419.508163512,220203.826610682 "
-#~ "150417.804498867,\n"
-#~ " 220205.716949223 150416.191645986,220207.684149708 "
-#~ "150414.673490372,220209.72347298 150413.253689397,220211.830006129 "
-#~ "150411.935663483,\n"
-#~ " 220213.998674333 150410.722587873,220216.22425308 "
-#~ "150409.61738497,220218.501380756 150408.622717305,220220.824571561 "
-#~ "150407.740981121,\n"
-#~ " 220223.188228725 150406.974300596,220225.586657991 "
-#~ "150406.324522731,220227 150406)\n"
-#~ "\n"
-#~ "--3d example\n"
-#~ "SELECT ST_AsEWKT(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(220268 "
-#~ "150415 1,220227 150505 2,220227 150406 3)')));\n"
-#~ "Output\n"
-#~ "------\n"
-#~ " LINESTRING(220268 150415 1,220269.95064912 150416.539364228 "
-#~ "1.0181172856673,\n"
-#~ " 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 "
-#~ "150419.895736857 1.05435185700189,....AD INFINITUM ....\n"
-#~ "    220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)\n"
-#~ "\n"
-#~ "--use only 2 segments to approximate quarter circle\n"
-#~ "SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 "
-#~ "150415,220227 150505,220227 150406)'),2));\n"
-#~ "st_astext\n"
-#~ "------------------------------\n"
-#~ " LINESTRING(220268 150415,220287.740300149 "
-#~ "150448.342699654,220278.12195122 150485.87804878,\n"
-#~ " 220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 "
-#~ "150462.657300346,\n"
-#~ " 220197.12195122 150425.12195122,220227 150406)\n"
-#~ "\n"
-#~ "-- Ensure approximated line is no further than 20 units away from\n"
-#~ "-- original curve, and make the result direction-neutral\n"
-#~ "SELECT ST_AsText(ST_CurveToLine(\n"
-#~ " 'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,\n"
-#~ "    20, -- Tolerance\n"
-#~ "    1, -- Above is max distance between curve and line\n"
-#~ "    1  -- Symmetric flag\n"
-#~ "));\n"
-#~ "st_astext\n"
-#~ "-------------------------------------------------------------------------------------------\n"
-#~ " LINESTRING(0 0,50 -86.6025403784438,150 -86.6025403784439,200 "
-#~ "-1.1331077795296e-13,200 0)"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 "
-#~ "150415,220227 150505,220227 150406)')));\n"
-#~ "\n"
-#~ "--Result --\n"
-#~ " LINESTRING(220268 150415,220269.95064912 "
-#~ "150416.539364228,220271.823415575 150418.17258804,220273.613787707 "
-#~ "150419.895736857,\n"
-#~ " 220275.317452352 150421.704659462,220276.930305234 "
-#~ "150423.594998003,220278.448460847 150425.562198489,\n"
-#~ " 220279.868261823 150427.60152176,220281.186287736 "
-#~ "150429.708054909,220282.399363347 150431.876723113,\n"
-#~ " 220283.50456625 150434.10230186,220284.499233914 "
-#~ "150436.379429536,220285.380970099 150438.702620341,220286.147650624 "
-#~ "150441.066277505,\n"
-#~ " 220286.797428488 150443.464706771,220287.328738321 "
-#~ "150445.892130112,220287.740300149 150448.342699654,\n"
-#~ " 220288.031122486 150450.810511759,220288.200504713 "
-#~ "150453.289621251,220288.248038775 150455.77405574,\n"
-#~ " 220288.173610157 150458.257830005,220287.977398166 "
-#~ "150460.734960415,220287.659875492 150463.199479347,\n"
-#~ " 220287.221807076 150465.64544956,220286.664248262 "
-#~ "150468.066978495,220285.988542259 150470.458232479,220285.196316903 "
-#~ "150472.81345077,\n"
-#~ " 220284.289480732 150475.126959442,220283.270218395 "
-#~ "150477.39318505,220282.140985384 150479.606668057,\n"
-#~ " 220280.90450212 150481.762075989,220279.5637474 "
-#~ "150483.85421628,220278.12195122 150485.87804878,\n"
-#~ " 220276.582586992 150487.828697901,220274.949363179 "
-#~ "150489.701464356,220273.226214362 150491.491836488,\n"
-#~ " 220271.417291757 150493.195501133,220269.526953216 "
-#~ "150494.808354014,220267.559752731 150496.326509628,\n"
-#~ " 220265.520429459 150497.746310603,220263.41389631 "
-#~ "150499.064336517,220261.245228106 150500.277412127,\n"
-#~ " 220259.019649359 150501.38261503,220256.742521683 "
-#~ "150502.377282695,220254.419330878 150503.259018879,\n"
-#~ " 220252.055673714 150504.025699404,220249.657244448 "
-#~ "150504.675477269,220247.229821107 150505.206787101,\n"
-#~ " 220244.779251566 150505.61834893,220242.311439461 "
-#~ "150505.909171266,220239.832329968 150506.078553494,\n"
-#~ " 220237.347895479 150506.126087555,220234.864121215 "
-#~ "150506.051658938,220232.386990804 150505.855446946,\n"
-#~ " 220229.922471872 150505.537924272,220227.47650166 "
-#~ "150505.099855856,220225.054972724 150504.542297043,\n"
-#~ " 220222.663718741 150503.86659104,220220.308500449 150503.074365683,\n"
-#~ " 220217.994991777 150502.167529512,220215.72876617 150501.148267175,\n"
-#~ " 220213.515283163 150500.019034164,220211.35987523 150498.7825509,\n"
-#~ " 220209.267734939 150497.441796181,220207.243902439 150496,\n"
-#~ " 220205.293253319 150494.460635772,220203.420486864 "
-#~ "150492.82741196,220201.630114732 150491.104263143,\n"
-#~ " 220199.926450087 150489.295340538,220198.313597205 "
-#~ "150487.405001997,220196.795441592 150485.437801511,\n"
-#~ " 220195.375640616 150483.39847824,220194.057614703 "
-#~ "150481.291945091,220192.844539092 150479.123276887,220191.739336189 "
-#~ "150476.89769814,\n"
-#~ " 220190.744668525 150474.620570464,220189.86293234 "
-#~ "150472.297379659,220189.096251815 150469.933722495,\n"
-#~ " 220188.446473951 150467.535293229,220187.915164118 "
-#~ "150465.107869888,220187.50360229 150462.657300346,\n"
-#~ " 220187.212779953 150460.189488241,220187.043397726 "
-#~ "150457.710378749,220186.995863664 150455.22594426,\n"
-#~ " 220187.070292282 150452.742169995,220187.266504273 "
-#~ "150450.265039585,220187.584026947 150447.800520653,\n"
-#~ " 220188.022095363 150445.35455044,220188.579654177 "
-#~ "150442.933021505,220189.25536018 150440.541767521,\n"
-#~ " 220190.047585536 150438.18654923,220190.954421707 "
-#~ "150435.873040558,220191.973684044 150433.60681495,\n"
-#~ " 220193.102917055 150431.393331943,220194.339400319 "
-#~ "150429.237924011,220195.680155039 150427.14578372,220197.12195122 "
-#~ "150425.12195122,\n"
-#~ " 220198.661315447 150423.171302099,220200.29453926 "
-#~ "150421.298535644,220202.017688077 150419.508163512,220203.826610682 "
-#~ "150417.804498867,\n"
-#~ " 220205.716949223 150416.191645986,220207.684149708 "
-#~ "150414.673490372,220209.72347298 150413.253689397,220211.830006129 "
-#~ "150411.935663483,\n"
-#~ " 220213.998674333 150410.722587873,220216.22425308 "
-#~ "150409.61738497,220218.501380756 150408.622717305,220220.824571561 "
-#~ "150407.740981121,\n"
-#~ " 220223.188228725 150406.974300596,220225.586657991 "
-#~ "150406.324522731,220227 150406)\n"
-#~ "\n"
-#~ "--3d example\n"
-#~ "SELECT ST_AsEWKT(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(220268 "
-#~ "150415 1,220227 150505 2,220227 150406 3)')));\n"
-#~ "Output\n"
-#~ "------\n"
-#~ " LINESTRING(220268 150415 1,220269.95064912 150416.539364228 "
-#~ "1.0181172856673,\n"
-#~ " 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 "
-#~ "150419.895736857 1.05435185700189,....AD INFINITUM ....\n"
-#~ "        220225.586657991 150406.324522731 1.32611114201132,220227 150406 "
-#~ "3)\n"
-#~ "\n"
-#~ "--use only 2 segments to approximate quarter circle\n"
-#~ "SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 "
-#~ "150415,220227 150505,220227 150406)'),2));\n"
-#~ "st_astext\n"
-#~ "------------------------------\n"
-#~ " LINESTRING(220268 150415,220287.740300149 "
-#~ "150448.342699654,220278.12195122 150485.87804878,\n"
-#~ " 220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 "
-#~ "150462.657300346,\n"
-#~ " 220197.12195122 150425.12195122,220227 150406)"
-
-#~ msgid "ST_Difference"
-#~ msgstr "ST_Difference"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_Difference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_Difference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-
-#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.20"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.20"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT ST_AsText(\n"
-#~ "    ST_Difference(\n"
-#~ "            'LINESTRING(50 100, 50 200)'::geometry,\n"
-#~ "            'LINESTRING(50 50, 50 150)'::geometry\n"
-#~ "        )\n"
-#~ "    );\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "---------\n"
-#~ "LINESTRING(50 150,50 200)"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_ConvexHull(\n"
-#~ "        ST_Collect(\n"
-#~ "                ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, "
-#~ "20 30))'),\n"
-#~ "                        ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, "
-#~ "10 10)')\n"
-#~ "                        )) );\n"
-#~ "---st_astext--\n"
-#~ "POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))"
-
-#~ msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-#~ msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-
-#~ msgid "ST_FlipCoordinates"
-#~ msgstr "ST_FlipCoordinates"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-
-#~ msgid "&P_support;"
-#~ msgstr "&P_support;"
-
-#~ msgid "Example"
-#~ msgstr "Esempio"
-
-#, fuzzy
-#~ msgid ""
-#~ "<![CDATA[\n"
-#~ "SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));\n"
-#~ " st_asewkt\n"
-#~ "------------\n"
-#~ "POINT(2 1)\n"
-#~ "         ]]>"
-#~ msgstr ""
-#~ "<![CDATA[\n"
-#~ "SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));\n"
-#~ " st_asewkt  \n"
-#~ "------------\n"
-#~ "POINT(2 1)\n"
-#~ "                 ]]>"
-
-#~ msgid "ST_Intersection"
-#~ msgstr "ST_Intersection"
-
-#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.18"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.18"
-
-#, fuzzy
-#~ msgid "Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVEPOLYGON"
-#~ msgstr "Converte un CIRCULARSTRING/CURVEDPOLYGON in LINESTRING/POLYGON"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
-#~ "paramdef>"
-
-#~ msgid "ST_MakeValid"
-#~ msgstr "ST_MakeValid"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
-
-#~ msgid "ST_MemUnion"
-#~ msgstr "ST_MemUnion"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-#~ "paramdef>"
-
-#~ msgid "See ST_Union"
-#~ msgstr "Si veda ST_Union"
-
-#, fuzzy
-#~ msgid "Availability: 3.1.0"
-#~ msgstr "Disponibilità: 1.5.0"
-
-#~ msgid "ST_Node"
-#~ msgstr "ST_Node"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT ST_AsText(\n"
-#~ "        ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::"
-#~ "geometry)\n"
-#~ "    ) As  output;\n"
-#~ "output\n"
-#~ "-----------\n"
-#~ "MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 "
-#~ "4.5,10 0 3))"
-#~ msgstr ""
-#~ "SELECT ST_AsEWKT(\n"
-#~ "                ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::"
-#~ "geometry)\n"
-#~ "        ) As  output;\n"
-#~ "output\n"
-#~ "-----------\n"
-#~ "MULTILINESTRING((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 "
-#~ "4.5,10 0 3))"
-
-#~ msgid "ST_RemoveRepeatedPoints"
-#~ msgstr "ST_RemoveRepeatedPoints"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_WrapX</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef> "
-#~ "<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>float </type> <parameter>target_percent</parameter></"
-#~ "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-#~ "<parameter>allow_holes=false</parameter></paramdef>"
-
-#~ msgid "ST_Split"
-#~ msgstr "ST_Split"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_Split</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-#~ "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_Split</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-#~ "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
-#~ "        FROM (SELECT\n"
-#~ "    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 "
-#~ "90))') As mline,\n"
-#~ "    ST_Point(30,30) As pt) As foo;\n"
-#~ "\n"
-#~ "wktcut\n"
-#~ "------\n"
-#~ "GEOMETRYCOLLECTION(\n"
-#~ "    LINESTRING(10 10,30 30),\n"
-#~ "    LINESTRING(30 30,190 190),\n"
-#~ "    LINESTRING(15 15,30 30),\n"
-#~ "    LINESTRING(30 30,100 90)\n"
-#~ ")"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
-#~ "        FROM (SELECT \n"
-#~ "    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 "
-#~ "90))') As mline,\n"
-#~ "    ST_Point(30,30) As pt) As foo;\n"
-#~ "    \n"
-#~ "wktcut\n"
-#~ "------\n"
-#~ "GEOMETRYCOLLECTION(\n"
-#~ "    LINESTRING(10 10,30 30),\n"
-#~ "    LINESTRING(30 30,190 190),\n"
-#~ "    LINESTRING(15 15,30 30),\n"
-#~ "    LINESTRING(30 30,100 90)\n"
-#~ ")"
-
-#, fuzzy
-#~ msgid ""
-#~ ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_CollectionExtract"
-#~ "\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_GeometryN\"/>, "
-#~ "<xref linkend=\"ST_Subdivide\"/>, <xref linkend=\"ST_Union\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>"
-
-#~ msgid "ST_SymDifference"
-#~ msgstr "ST_SymDifference"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-
-#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
-
-#, fuzzy
-#~ msgid ""
-#~ "--Safe for 2d - symmetric difference of 2 linestrings\n"
-#~ "SELECT ST_AsText(\n"
-#~ "    ST_SymDifference(\n"
-#~ "        ST_GeomFromText('LINESTRING(50 100, 50 200)'),\n"
-#~ "        ST_GeomFromText('LINESTRING(50 50, 50 150)')\n"
-#~ "    )\n"
-#~ ");\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "---------\n"
-#~ "MULTILINESTRING((50 150,50 200),(50 50,50 100))"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_ConvexHull(\n"
-#~ "        ST_Collect(\n"
-#~ "                ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, "
-#~ "20 30))'),\n"
-#~ "                        ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, "
-#~ "10 10)')\n"
-#~ "                        )) );\n"
-#~ "---st_astext--\n"
-#~ "POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))"
-
-#, fuzzy
-#~ msgid ""
-#~ ", <xref linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Segmentize\"/>, "
-#~ "<xref linkend=\"ST_Split\"/>, <xref linkend=\"ST_NPoints\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>"
-
-#~ msgid "ST_Union"
-#~ msgstr "ST_Union"
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>g1field</parameter></"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Union</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>g1field</parameter></"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Union</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT stusps,\n"
-#~ "       ST_Union(f.geom) as singlegeom\n"
-#~ "FROM sometable f\n"
-#~ "GROUP BY stusps"
-#~ msgstr ""
-#~ "SELECT stusps,\n"
-#~ "           ST_Multi(ST_Union(f.the_geom)) as singlegeom\n"
-#~ "         FROM sometable As f\n"
-#~ "GROUP BY stusps"
-
-#, fuzzy
-#~ msgid ""
-#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_Intersection\"/>, "
-#~ "<xref linkend=\"ST_Difference\"/> <xref linkend=\"ST_SymDifference\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>"
-
-#~ msgid "ST_UnaryUnion"
-#~ msgstr "ST_UnaryUnion"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-
-#~ msgid "ST_Collect"
-#~ msgstr "ST_Collect"
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
-#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Collect</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
-#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Collect</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT stusps, ST_Collect(f.the_geom) as singlegeom\n"
-#~ "         FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom\n"
-#~ "                                FROM\n"
-#~ "                                somestatetable ) As f\n"
-#~ "GROUP BY stusps"
-#~ msgstr ""
-#~ "SELECT stusps,\n"
-#~ "           ST_Multi(ST_Collect(f.the_geom)) as singlegeom\n"
-#~ "         FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom\n"
-#~ "                                FROM\n"
-#~ "                                somestatetable ) As f\n"
-#~ "GROUP BY stusps"
-
-#~ msgid ""
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "        ST_GeomFromText('POINT(-2 3)') ));\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(1 2,-2 3)\n"
-#~ "\n"
-#~ "--Collect 2 d points\n"
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "                ST_GeomFromText('POINT(1 2)') ) );\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(1 2,1 2)\n"
-#~ "\n"
-#~ "--Collect 3d points\n"
-#~ "SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),\n"
-#~ "                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
-#~ "\n"
-#~ "                st_asewkt\n"
-#~ "-------------------------\n"
-#~ " MULTIPOINT(1 2 3,1 2 4)\n"
-#~ "\n"
-#~ " --Example with curves\n"
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 "
-#~ "150415,220227 150505,220227 150406)'),\n"
-#~ "ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 "
-#~ "150406)')));\n"
-#~ "                                                                                                                                st_astext\n"
-#~ "------------------------------------------------------------------------------------\n"
-#~ " GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 "
-#~ "150406),\n"
-#~ " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))\n"
-#~ "\n"
-#~ "--New ST_Collect array construct\n"
-#~ "SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));\n"
-#~ "\n"
-#~ "SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 "
-#~ "4)'),\n"
-#~ "                        ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As "
-#~ "wktcollect;\n"
-#~ "\n"
-#~ "--wkt collect --\n"
-#~ "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "        ST_GeomFromText('POINT(-2 3)') ));\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(1 2,-2 3)\n"
-#~ "\n"
-#~ "--Recupera punti 2D\n"
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "                ST_GeomFromText('POINT(1 2)') ) );\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(1 2,1 2)\n"
-#~ "\n"
-#~ "--recupera punti 3D\n"
-#~ "SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),\n"
-#~ "                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
-#~ "\n"
-#~ "                st_asewkt\n"
-#~ "-------------------------\n"
-#~ " MULTIPOINT(1 2 3,1 2 4)\n"
-#~ "\n"
-#~ " --esempio con curve\n"
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 "
-#~ "150415,220227 150505,220227 150406)'),\n"
-#~ "ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 "
-#~ "150406)')));\n"
-#~ "                                                                                                                                st_astext\n"
-#~ "------------------------------------------------------------------------------------\n"
-#~ " GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 "
-#~ "150406),\n"
-#~ " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))\n"
-#~ "\n"
-#~ "--nuova costruzione di  ST_Collect array\n"
-#~ "SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));\n"
-#~ "\n"
-#~ "SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 "
-#~ "4)'),\n"
-#~ "                        ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As "
-#~ "wktcollect;\n"
-#~ "\n"
-#~ "--wkt collect --\n"
-#~ "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
-
-#~ msgid "ST_Dump"
-#~ msgstr "ST_Dump"
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-
-#~ msgid "Standard Examples"
-#~ msgstr "Esempi standard"
-
-#, fuzzy
-#~ msgid ""
-#~ "-- TIN --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0,\n"
-#~ "                0 0 1,\n"
-#~ "                0 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0,\n"
-#~ "                0 1 0,\n"
-#~ "                1 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ " path |                 wkt\n"
-#~ "------+-------------------------------------\n"
-#~ " {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
-#~ " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
-#~ msgstr ""
-#~ "-- TIN --                \n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT \n"
-#~ "       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0, \n"
-#~ "                0 0 1, \n"
-#~ "                0 1 0, \n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0, \n"
-#~ "                0 1 0, \n"
-#~ "                1 1 0, \n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ " path |                 wkt\n"
-#~ "------+-------------------------------------\n"
-#~ " {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
-#~ " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
-
-#~ msgid ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Collect\"/>, <xref linkend=\"ST_Collect\"/>, <xref linkend="
-#~ "\"ST_GeometryN\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Collect\"/>, <xref linkend=\"ST_Collect\"/>, <xref linkend="
-#~ "\"ST_GeometryN\"/>"
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-
-#~ msgid "Availability: 1.5.0"
-#~ msgstr "Disponibilità: 1.5.0"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT path, ST_AsText(geom)\n"
-#~ "FROM (\n"
-#~ "  SELECT (ST_DumpPoints(g.geom)).*\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       'GEOMETRYCOLLECTION(\n"
-#~ "          POINT ( 0 1 ),\n"
-#~ "          LINESTRING ( 0 3, 3 4 ),\n"
-#~ "          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
-#~ "          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ),\n"
-#~ "                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
-#~ "          MULTIPOLYGON (\n"
-#~ "                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ),\n"
-#~ "                   ( 1 6, 3 6, 2 7, 1 6 )),\n"
-#~ "                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
-#~ "          )\n"
-#~ "        )'::geometry AS geom\n"
-#~ "    ) AS g\n"
-#~ "  ) j;\n"
-#~ "\n"
-#~ "   path    | st_astext\n"
-#~ "-----------+------------\n"
-#~ " {1,1}     | POINT(0 1)\n"
-#~ " {2,1}     | POINT(0 3)\n"
-#~ " {2,2}     | POINT(3 4)\n"
-#~ " {3,1,1}   | POINT(2 0)\n"
-#~ " {3,1,2}   | POINT(2 3)\n"
-#~ " {3,1,3}   | POINT(0 2)\n"
-#~ " {3,1,4}   | POINT(2 0)\n"
-#~ " {4,1,1}   | POINT(3 0)\n"
-#~ " {4,1,2}   | POINT(3 3)\n"
-#~ " {4,1,3}   | POINT(6 3)\n"
-#~ " {4,1,4}   | POINT(6 0)\n"
-#~ " {4,1,5}   | POINT(3 0)\n"
-#~ " {4,2,1}   | POINT(5 1)\n"
-#~ " {4,2,2}   | POINT(4 2)\n"
-#~ " {4,2,3}   | POINT(5 2)\n"
-#~ " {4,2,4}   | POINT(5 1)\n"
-#~ " {5,1,1,1} | POINT(0 5)\n"
-#~ " {5,1,1,2} | POINT(0 8)\n"
-#~ " {5,1,1,3} | POINT(4 8)\n"
-#~ " {5,1,1,4} | POINT(4 5)\n"
-#~ " {5,1,1,5} | POINT(0 5)\n"
-#~ " {5,1,2,1} | POINT(1 6)\n"
-#~ " {5,1,2,2} | POINT(3 6)\n"
-#~ " {5,1,2,3} | POINT(2 7)\n"
-#~ " {5,1,2,4} | POINT(1 6)\n"
-#~ " {5,2,1,1} | POINT(5 4)\n"
-#~ " {5,2,1,2} | POINT(5 8)\n"
-#~ " {5,2,1,3} | POINT(6 7)\n"
-#~ " {5,2,1,4} | POINT(5 4)\n"
-#~ "(29 rows)"
-#~ msgstr ""
-#~ "SELECT path, ST_AsText(geom) \n"
-#~ "FROM (\n"
-#~ "  SELECT (ST_DumpPoints(g.geom)).* \n"
-#~ "  FROM\n"
-#~ "    (SELECT \n"
-#~ "       'GEOMETRYCOLLECTION(\n"
-#~ "          POINT ( 0 1 ), \n"
-#~ "          LINESTRING ( 0 3, 3 4 ),\n"
-#~ "          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
-#~ "          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ), \n"
-#~ "                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
-#~ "          MULTIPOLYGON (\n"
-#~ "                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ), \n"
-#~ "                   ( 1 6, 3 6, 2 7, 1 6 )), \n"
-#~ "                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
-#~ "          )\n"
-#~ "        )'::geometry AS geom\n"
-#~ "    ) AS g\n"
-#~ "  ) j;\n"
-#~ "  \n"
-#~ "   path    | st_astext  \n"
-#~ "-----------+------------\n"
-#~ " {1,1}     | POINT(0 1)\n"
-#~ " {2,1}     | POINT(0 3)\n"
-#~ " {2,2}     | POINT(3 4)\n"
-#~ " {3,1,1}   | POINT(2 0)\n"
-#~ " {3,1,2}   | POINT(2 3)\n"
-#~ " {3,1,3}   | POINT(0 2)\n"
-#~ " {3,1,4}   | POINT(2 0)\n"
-#~ " {4,1,1}   | POINT(3 0)\n"
-#~ " {4,1,2}   | POINT(3 3)\n"
-#~ " {4,1,3}   | POINT(6 3)\n"
-#~ " {4,1,4}   | POINT(6 0)\n"
-#~ " {4,1,5}   | POINT(3 0)\n"
-#~ " {4,2,1}   | POINT(5 1)\n"
-#~ " {4,2,2}   | POINT(4 2)\n"
-#~ " {4,2,3}   | POINT(5 2)\n"
-#~ " {4,2,4}   | POINT(5 1)\n"
-#~ " {5,1,1,1} | POINT(0 5)\n"
-#~ " {5,1,1,2} | POINT(0 8)\n"
-#~ " {5,1,1,3} | POINT(4 8)\n"
-#~ " {5,1,1,4} | POINT(4 5)\n"
-#~ " {5,1,1,5} | POINT(0 5)\n"
-#~ " {5,1,2,1} | POINT(1 6)\n"
-#~ " {5,1,2,2} | POINT(3 6)\n"
-#~ " {5,1,2,3} | POINT(2 7)\n"
-#~ " {5,1,2,4} | POINT(1 6)\n"
-#~ " {5,2,1,1} | POINT(5 4)\n"
-#~ " {5,2,1,2} | POINT(5 8)\n"
-#~ " {5,2,1,3} | POINT(6 7)\n"
-#~ " {5,2,1,4} | POINT(5 4)\n"
-#~ "(29 rows)"
-
-#, fuzzy
-#~ msgid ""
-#~ "-- Polyhedral surface cube --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, "
-#~ "0 1 1, 0 1 0, 0 0 0)),\n"
-#~ "((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 "
-#~ "0)),\n"
-#~ "((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-#~ "((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 "
-#~ "1)) )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ "  path   |     wkt\n"
-#~ "---------+--------------\n"
-#~ " {1,1,1} | POINT(0 0 0)\n"
-#~ " {1,1,2} | POINT(0 0 1)\n"
-#~ " {1,1,3} | POINT(0 1 1)\n"
-#~ " {1,1,4} | POINT(0 1 0)\n"
-#~ " {1,1,5} | POINT(0 0 0)\n"
-#~ " {2,1,1} | POINT(0 0 0)\n"
-#~ " {2,1,2} | POINT(0 1 0)\n"
-#~ " {2,1,3} | POINT(1 1 0)\n"
-#~ " {2,1,4} | POINT(1 0 0)\n"
-#~ " {2,1,5} | POINT(0 0 0)\n"
-#~ " {3,1,1} | POINT(0 0 0)\n"
-#~ " {3,1,2} | POINT(1 0 0)\n"
-#~ " {3,1,3} | POINT(1 0 1)\n"
-#~ " {3,1,4} | POINT(0 0 1)\n"
-#~ " {3,1,5} | POINT(0 0 0)\n"
-#~ " {4,1,1} | POINT(1 1 0)\n"
-#~ " {4,1,2} | POINT(1 1 1)\n"
-#~ " {4,1,3} | POINT(1 0 1)\n"
-#~ " {4,1,4} | POINT(1 0 0)\n"
-#~ " {4,1,5} | POINT(1 1 0)\n"
-#~ " {5,1,1} | POINT(0 1 0)\n"
-#~ " {5,1,2} | POINT(0 1 1)\n"
-#~ " {5,1,3} | POINT(1 1 1)\n"
-#~ " {5,1,4} | POINT(1 1 0)\n"
-#~ " {5,1,5} | POINT(0 1 0)\n"
-#~ " {6,1,1} | POINT(0 0 1)\n"
-#~ " {6,1,2} | POINT(1 0 1)\n"
-#~ " {6,1,3} | POINT(1 1 1)\n"
-#~ " {6,1,4} | POINT(0 1 1)\n"
-#~ " {6,1,5} | POINT(0 0 1)\n"
-#~ "(30 rows)"
-#~ msgstr ""
-#~ "SELECT path, ST_AsText(geom) \n"
-#~ "FROM (\n"
-#~ "  SELECT (ST_DumpPoints(g.geom)).* \n"
-#~ "  FROM\n"
-#~ "    (SELECT \n"
-#~ "       'GEOMETRYCOLLECTION(\n"
-#~ "          POINT ( 0 1 ), \n"
-#~ "          LINESTRING ( 0 3, 3 4 ),\n"
-#~ "          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
-#~ "          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ), \n"
-#~ "                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
-#~ "          MULTIPOLYGON (\n"
-#~ "                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ), \n"
-#~ "                   ( 1 6, 3 6, 2 7, 1 6 )), \n"
-#~ "                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
-#~ "          )\n"
-#~ "        )'::geometry AS geom\n"
-#~ "    ) AS g\n"
-#~ "  ) j;\n"
-#~ "  \n"
-#~ "   path    | st_astext  \n"
-#~ "-----------+------------\n"
-#~ " {1,1}     | POINT(0 1)\n"
-#~ " {2,1}     | POINT(0 3)\n"
-#~ " {2,2}     | POINT(3 4)\n"
-#~ " {3,1,1}   | POINT(2 0)\n"
-#~ " {3,1,2}   | POINT(2 3)\n"
-#~ " {3,1,3}   | POINT(0 2)\n"
-#~ " {3,1,4}   | POINT(2 0)\n"
-#~ " {4,1,1}   | POINT(3 0)\n"
-#~ " {4,1,2}   | POINT(3 3)\n"
-#~ " {4,1,3}   | POINT(6 3)\n"
-#~ " {4,1,4}   | POINT(6 0)\n"
-#~ " {4,1,5}   | POINT(3 0)\n"
-#~ " {4,2,1}   | POINT(5 1)\n"
-#~ " {4,2,2}   | POINT(4 2)\n"
-#~ " {4,2,3}   | POINT(5 2)\n"
-#~ " {4,2,4}   | POINT(5 1)\n"
-#~ " {5,1,1,1} | POINT(0 5)\n"
-#~ " {5,1,1,2} | POINT(0 8)\n"
-#~ " {5,1,1,3} | POINT(4 8)\n"
-#~ " {5,1,1,4} | POINT(4 5)\n"
-#~ " {5,1,1,5} | POINT(0 5)\n"
-#~ " {5,1,2,1} | POINT(1 6)\n"
-#~ " {5,1,2,2} | POINT(3 6)\n"
-#~ " {5,1,2,3} | POINT(2 7)\n"
-#~ " {5,1,2,4} | POINT(1 6)\n"
-#~ " {5,2,1,1} | POINT(5 4)\n"
-#~ " {5,2,1,2} | POINT(5 8)\n"
-#~ " {5,2,1,3} | POINT(6 7)\n"
-#~ " {5,2,1,4} | POINT(5 4)\n"
-#~ "(29 rows)"
-
-#, fuzzy
-#~ msgid ""
-#~ "-- Triangle --\n"
-#~ "SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((\n"
-#~ "                0 0,\n"
-#~ "                0 9,\n"
-#~ "                9 0,\n"
-#~ "                0 0\n"
-#~ "            ))') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ " path |    wkt\n"
-#~ "------+------------\n"
-#~ " {1}  | POINT(0 0)\n"
-#~ " {2}  | POINT(0 9)\n"
-#~ " {3}  | POINT(9 0)\n"
-#~ " {4}  | POINT(0 0)"
-#~ msgstr ""
-#~ "-- TIN --                \n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT \n"
-#~ "       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0, \n"
-#~ "                0 0 1, \n"
-#~ "                0 1 0, \n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0, \n"
-#~ "                0 1 0, \n"
-#~ "                1 1 0, \n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ " path |                 wkt\n"
-#~ "------+-------------------------------------\n"
-#~ " {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
-#~ " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
-
-#, fuzzy
-#~ msgid ""
-#~ "-- TIN --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0,\n"
-#~ "                0 0 1,\n"
-#~ "                0 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0,\n"
-#~ "                0 1 0,\n"
-#~ "                1 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ "  path   |     wkt\n"
-#~ "---------+--------------\n"
-#~ " {1,1,1} | POINT(0 0 0)\n"
-#~ " {1,1,2} | POINT(0 0 1)\n"
-#~ " {1,1,3} | POINT(0 1 0)\n"
-#~ " {1,1,4} | POINT(0 0 0)\n"
-#~ " {2,1,1} | POINT(0 0 0)\n"
-#~ " {2,1,2} | POINT(0 1 0)\n"
-#~ " {2,1,3} | POINT(1 1 0)\n"
-#~ " {2,1,4} | POINT(0 0 0)\n"
-#~ "(8 rows)"
-#~ msgstr ""
-#~ "-- TIN --                \n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT \n"
-#~ "       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0, \n"
-#~ "                0 0 1, \n"
-#~ "                0 1 0, \n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0, \n"
-#~ "                0 1 0, \n"
-#~ "                1 1 0, \n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ " path |                 wkt\n"
-#~ "------+-------------------------------------\n"
-#~ " {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
-#~ " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
-
-#~ msgid ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
-
-#~ msgid "ST_DumpRings"
-#~ msgstr "ST_DumpRings"
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></"
-#~ "paramdef>"
-
-#~ msgid ""
-#~ "SELECT sometable.field1, sometable.field1,\n"
-#~ "          (ST_DumpRings(sometable.the_geom)).geom As the_geom\n"
-#~ "FROM sometableOfpolys;\n"
-#~ "\n"
-#~ "SELECT ST_AsEWKT(geom) As the_geom, path\n"
-#~ "        FROM ST_DumpRings(\n"
-#~ "                ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 "
-#~ "5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 "
-#~ "1,-8148941 5132466 1,-8148924 5132394 1,\n"
-#~ "                -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 "
-#~ "1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 "
-#~ "5132394 1,\n"
-#~ "                -8150305 5132788 1,-8149064 5133092 1),\n"
-#~ "                (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 "
-#~ "1,-8149695 5132675 1,-8149362 5132394 1))')\n"
-#~ "                )  as foo;\n"
-#~ " path |                                            the_geom\n"
-#~ "----------------------------------------------------------------------------------------------------------------\n"
-#~ "  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 "
-#~ "1,-8148972 5132767 1,-8148958 5132508 1,\n"
-#~ "          |          -8148941 5132466 1,-8148924 5132394 1,\n"
-#~ "          |          -8148903 5132210 1,-8148930 5131967 1,\n"
-#~ "          |          -8148992 5131978 1,-8149237 5132093 1,\n"
-#~ "          |          -8149404 5132211 1,-8149647 5132310 1,-8149757 "
-#~ "5132394 1,-8150305 5132788 1,-8149064 5133092 1))\n"
-#~ "  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,\n"
-#~ "          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 "
-#~ "5132394 1))"
-#~ msgstr ""
-#~ "SELECT sometable.field1, sometable.field1,\n"
-#~ "          (ST_DumpRings(sometable.the_geom)).geom As the_geom\n"
-#~ "FROM sometableOfpolys;\n"
-#~ "\n"
-#~ "SELECT ST_AsEWKT(geom) As the_geom, path\n"
-#~ "        FROM ST_DumpRings(\n"
-#~ "                ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 "
-#~ "5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 "
-#~ "1,-8148941 5132466 1,-8148924 5132394 1,\n"
-#~ "                -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 "
-#~ "1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 "
-#~ "5132394 1,\n"
-#~ "                -8150305 5132788 1,-8149064 5133092 1),\n"
-#~ "                (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 "
-#~ "1,-8149695 5132675 1,-8149362 5132394 1))')\n"
-#~ "                )  as foo;\n"
-#~ " path |                                            the_geom\n"
-#~ "----------------------------------------------------------------------------------------------------------------\n"
-#~ "  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 "
-#~ "1,-8148972 5132767 1,-8148958 5132508 1,\n"
-#~ "          |          -8148941 5132466 1,-8148924 5132394 1,\n"
-#~ "          |          -8148903 5132210 1,-8148930 5131967 1,\n"
-#~ "          |          -8148992 5131978 1,-8149237 5132093 1,\n"
-#~ "          |          -8149404 5132211 1,-8149647 5132310 1,-8149757 "
-#~ "5132394 1,-8150305 5132788 1,-8149064 5133092 1))\n"
-#~ "  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,\n"
-#~ "          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 "
-#~ "5132394 1))"
-
-#~ msgid ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend="
-#~ "\"ST_InteriorRingN\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend="
-#~ "\"ST_InteriorRingN\"/>"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_GeneratePoints</function></funcdef> "
-#~ "<paramdef> <parameter>g</parameter> <type>geometry</type> </paramdef> "
-#~ "<paramdef> <parameter>npoints</parameter> <type>numeric</type> </paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_CurveToLine</function></"
-#~ "funcdef> <paramdef><type>geometry</type> <parameter>curveGeom</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</"
-#~ "type> <parameter>curveGeom</parameter></paramdef> "
-#~ "<paramdef><type>integer</type> <parameter>segments_per_qtr_circle</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</"
-#~ "type> <parameter>curveGeom</parameter></paramdef> <paramdef><type>float</"
-#~ "type> <parameter>tolerance</parameter></paramdef> "
-#~ "<paramdef><type>integer</type> <parameter>tolerance_type</parameter></"
-#~ "paramdef> <paramdef><type>integer</type> <parameter>flags</parameter></"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
-#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Collect</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-
-#~ msgid ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_AsEWKT\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_AsEWKT\"/>"
+msgstr ""

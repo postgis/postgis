@@ -2,13 +2,14 @@
 #
 # Translators:
 # Vincent Picavet <vincent.ml@oslandia.com>, 2015
+# Vincent Picavet <vincent.ml@oslandia.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2015-09-29 12:25+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2021-11-28 22:35+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
 "fr/)\n"
 "Language: fr\n"
@@ -325,9 +326,9 @@ msgstr ""
 
 #. Tag: term
 #: using_raster_dataman.xml:178
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
-msgstr "-l <varname>OVERVIEW_FACTOR</varname>"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:179
@@ -436,7 +437,7 @@ msgstr ""
 #: using_raster_dataman.xml:254
 #, no-c-format
 msgid "<term>-k</term>"
-msgstr ""
+msgstr "<term>-k</term>"
 
 #. Tag: para
 #: using_raster_dataman.xml:256

@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-07-23 18:01+0000\n"
-"Last-Translator: Jakub Bobrowski <jbobrowski@geoinfor.pl>\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"PO-Revision-Date: 2021-11-28 22:08+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
 "pl/)\n"
 "Language: pl\n"
@@ -580,9 +580,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:322 reference_processing.xml:1058
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.1.0"
-msgstr "Dostępność: 1.5.0"
+msgstr "Dostępność: 1.1.0"
 
 #. Tag: para
 #: reference_processing.xml:336
@@ -1193,9 +1193,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:750
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.1.0"
-msgstr "Dostępność: 2.0.0"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:752
@@ -1401,9 +1401,9 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:852 reference_processing.xml:1252
 #: reference_processing.xml:1852
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.5.0"
-msgstr "Dostępność: 2.0.0"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:857
@@ -1608,7 +1608,7 @@ msgstr ""
 #: reference_processing.xml:1031
 #, no-c-format
 msgid "ST_LineMerge"
-msgstr ""
+msgstr "ST_LineMerge"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1033
@@ -1624,6 +1624,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1049
@@ -1750,9 +1753,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1102 reference_processing.xml:1592
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.1.0 - requires GEOS &gt;= 3.9.0."
-msgstr "Dostępność: 1.1.0 - wymaga GEOS &gt;= 2.1.0."
+msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1112
@@ -1854,9 +1857,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1166
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.4.0"
-msgstr "Dostępność: 1.5.0"
+msgstr "Dostępność: 1.4.0"
 
 #. Tag: programlisting
 #: reference_processing.xml:1176
@@ -2126,9 +2129,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1342
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.0"
-msgstr "Dostępność: 2.0.0"
+msgstr "Dostępność: 2.0"
 
 #. Tag: para
 #: reference_processing.xml:1343
@@ -2433,9 +2436,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1527
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr "Dostępność: 1.5.0"
+msgstr "Dostępność: 1.0.0RC1"
 
 #. Tag: title
 #: reference_processing.xml:1531
@@ -3347,24 +3350,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ""
-
-#, fuzzy, no-c-format
-#~ msgid "Availability: 1.3.0"
-#~ msgstr "Dostępność: 1.5.0"
-
-#, no-c-format
-#~ msgid "&curve_support;"
-#~ msgstr "&curve_support;"
-
-#, no-c-format
-#~ msgid "&P_support;"
-#~ msgstr "&P_support;"
-
-#~ msgid "Availability: 1.5.0"
-#~ msgstr "Dostępność: 1.5.0"
-
-#~ msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-#~ msgstr "Dostępność: 2.0.0 - wymaga GEOS &gt;= 3.3.0."
-
-#~ msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
-#~ msgstr "Dostępność: 2.0.0 wymaga GEOS &gt;= 3.3.0."

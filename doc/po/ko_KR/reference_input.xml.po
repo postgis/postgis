@@ -1,19 +1,25 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+# Translators:
+# Kwon.Yongchan <ruvyn@naver.com>, 2019
+# Regina Obe, 2019
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2019-08-03 21:25+0000\n"
+"Last-Translator: Regina Obe, 2019\n"
+"Language-Team: Korean (Korea) (https://www.transifex.com/postgis/teams/3227/"
+"ko_KR/)\n"
+"Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: para
 #: reference_input.xml:6
@@ -39,7 +45,7 @@ msgstr ""
 #: reference_input.xml:17
 #, no-c-format
 msgid "ST_BdPolyFromText"
-msgstr ""
+msgstr "ST_BdPolyFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:19
@@ -48,6 +54,8 @@ msgid ""
 "<refpurpose>Construct a Polygon given an arbitrary collection of closed "
 "linestrings as a MultiLineString Well-Known text representation.</refpurpose>"
 msgstr ""
+"<refpurpose>멀티라인스트링 WKT 텍스트 표현식으로 주어진 임의의 폐쇄형 라인스"
+"트링 집합으로 폴리곤을 작성합니다.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_input.xml:25
@@ -57,6 +65,9 @@ msgid ""
 "<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: title
 #: reference_input.xml:34 reference_input.xml:84 reference_input.xml:131
@@ -72,7 +83,7 @@ msgstr ""
 #: reference_input.xml:1474 reference_input.xml:1514 reference_input.xml:1545
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "설명"
 
 #. Tag: para
 #: reference_input.xml:36
@@ -81,6 +92,8 @@ msgid ""
 "<para>Construct a Polygon given an arbitrary collection of closed "
 "linestrings as a MultiLineString Well-Known text representation.</para>"
 msgstr ""
+"<para>멀티라인스트링 WKT 텍스트 표현식으로 주어진 임의의 폐쇄형 라인스트링 집"
+"합으로 폴리곤을 작성합니다.</para>"
 
 #. Tag: para
 #: reference_input.xml:41
@@ -90,6 +103,9 @@ msgid ""
 "is a MULTIPOLYGON; use ST_BdMPolyFromText in that case, or see "
 "ST_BuildArea() for a postgis-specific approach."
 msgstr ""
+"WKT가 멀티라인스트링이 아닐 경우 오류가 발생합니다. 출력물이 멀티폴리곤일 경"
+"우 오류가 발생하는데 이런 경우 ST_BdMPolyFromText를 사용하거나, 또는 PostGIS "
+"특화 접근법을 사용하려면 ST_BuildArea()를 참조하십시오."
 
 #. Tag: para
 #: reference_input.xml:47 reference_input.xml:100 reference_input.xml:209
@@ -97,19 +113,19 @@ msgstr ""
 #: reference_input.xml:681 reference_input.xml:918 reference_input.xml:984
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2"
-msgstr ""
+msgstr "&sfs_compliant; s3.2.6.2"
 
 #. Tag: para
 #: reference_input.xml:48 reference_input.xml:101
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "GEOS 모듈로 실행"
 
 #. Tag: para
 #: reference_input.xml:49 reference_input.xml:102
 #, no-c-format
 msgid "Availability: 1.1.0"
-msgstr ""
+msgstr "1.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: title
 #: reference_input.xml:60 reference_input.xml:112 reference_input.xml:141
@@ -125,19 +141,19 @@ msgstr ""
 #: reference_input.xml:1490
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "관련 정보"
 
 #. Tag: para
 #: reference_input.xml:61
 #, no-c-format
 msgid ", <xref linkend=\"ST_BdMPolyFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_BdMPolyFromText\"/>"
 
 #. Tag: refname
 #: reference_input.xml:67
 #, no-c-format
 msgid "ST_BdMPolyFromText"
-msgstr ""
+msgstr "ST_BdMPolyFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:68
@@ -146,6 +162,8 @@ msgid ""
 "Construct a MultiPolygon given an arbitrary collection of closed linestrings "
 "as a MultiLineString text representation Well-Known text representation."
 msgstr ""
+"멀티라인스트링 WKT 텍스트 표현식으로 주어진 임의의 폐쇄형 라인스트링 집합으"
+"로 멀티폴리곤을 작성합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:75
@@ -155,6 +173,9 @@ msgid ""
 "<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_BdMPolyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:86
@@ -163,6 +184,8 @@ msgid ""
 "Construct a Polygon given an arbitrary collection of closed linestrings, "
 "polygons, MultiLineStrings as Well-Known text representation."
 msgstr ""
+"멀티라인스트링 WKT 텍스트 표현식으로 주어진 임의의 폐쇄형 라인스트링 집합으"
+"로 멀티폴리곤을 작성합니다."
 
 #. Tag: para
 #: reference_input.xml:91
@@ -174,18 +197,24 @@ msgid ""
 "single POLYGON will result from operation, or see <link linkend="
 "\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific approach."
 msgstr ""
+"WKT가 멀티라인스트링이 아닐 경우 오류가 발생합니다. 출력물이 단일 폴리곤으로 "
+"이루어졌을 경우에도 멀티폴리곤으로 강제합니다. 해당 연산시 단일 폴리곤을 출력"
+"할 것이라고 확신한다면 <link linkend=\"ST_BdPolyFromText"
+"\">ST_BdPolyFromText</link> 를 사용하거나, 또는 PostGIS 특화 접근법을 사용하"
+"려 할 경우 <link linkend=\"ST_BuildArea\">ST_BuildArea()</link> 를 참조하십시"
+"오."
 
 #. Tag: para
 #: reference_input.xml:113
 #, no-c-format
 msgid ", <xref linkend=\"ST_BdPolyFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_BdPolyFromText\"/>"
 
 #. Tag: refname
 #: reference_input.xml:119
 #, no-c-format
 msgid "ST_GeogFromText"
-msgstr ""
+msgstr "ST_GeogFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:120 reference_input.xml:149
@@ -193,7 +222,7 @@ msgstr ""
 msgid ""
 "Return a specified geography value from Well-Known Text representation or "
 "extended (WKT)."
-msgstr ""
+msgstr "WKT (확장) 표현식으로부터 지정된 지리형 값을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:124
@@ -202,6 +231,8 @@ msgid ""
 "<funcdef>geography <function>ST_GeogFromText</function></funcdef> "
 "<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 msgstr ""
+"<funcdef>geography <function>ST_GeogFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:132
@@ -211,6 +242,9 @@ msgid ""
 "representation. SRID 4326 is assumed if unspecified. This is an alias for "
 "ST_GeographyFromText. Points are always expressed in long lat form."
 msgstr ""
+"WKT 표현식 또는 확장 WKT 표현식으로부터 지리형 객체를 반환합니다.  투영체를 "
+"따로 설정하지 않은 경우 SRID 4326으로 가정합니다. 이 함수는 "
+"ST_GeographyFromText와 동일합니다. 포인트는 항상 경위도 형식으로 표현됩니다."
 
 #. Tag: title
 #: reference_input.xml:137 reference_input.xml:216 reference_input.xml:259
@@ -223,7 +257,7 @@ msgstr ""
 #: reference_input.xml:1486
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "예시"
 
 #. Tag: programlisting
 #: reference_input.xml:138
@@ -237,18 +271,25 @@ msgid ""
 "--- specify a geography point using EPSG:4267, NAD27\n"
 "SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));"
 msgstr ""
+"--- 경위도 좌표를 지리형으로 변환하기\n"
+"ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);\n"
+"UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' "
+"|| lat || ')');\n"
+"\n"
+"--- EPSG:4267, NAD27을 이용해서 지리형 포인트를 지정하기\n"
+"SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));"
 
 #. Tag: para
 #: reference_input.xml:142
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeographyFromText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeographyFromText\"/>"
 
 #. Tag: refname
 #: reference_input.xml:148
 #, no-c-format
 msgid "ST_GeographyFromText"
-msgstr ""
+msgstr "ST_GeographyFromText"
 
 #. Tag: funcprototype
 #: reference_input.xml:153
@@ -257,6 +298,8 @@ msgid ""
 "<funcdef>geography <function>ST_GeographyFromText</function></funcdef> "
 "<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 msgstr ""
+"<funcdef>geography <function>ST_GeographyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:161
@@ -265,18 +308,20 @@ msgid ""
 "Returns a geography object from the well-known text representation. SRID "
 "4326 is assumed if unspecified."
 msgstr ""
+"WKT 표현식으로부터 지리형 객체를 반환합니다.  투영체를 따로 설정하지 않은 경"
+"우 SRID 4326으로 가정합니다."
 
 #. Tag: para
 #: reference_input.xml:166
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refname
 #: reference_input.xml:172
 #, no-c-format
 msgid "ST_GeomCollFromText"
-msgstr ""
+msgstr "ST_GeomCollFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:174
@@ -297,6 +342,12 @@ msgid ""
 "<function>ST_GeomCollFromText</function></funcdef> <paramdef><type>text </"
 "type> <parameter>WKT</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_GeomCollFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeomCollFromText</function></funcdef> <paramdef><type>text </"
+"type> <parameter>WKT</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:197
@@ -312,12 +363,14 @@ msgstr ""
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite"
 msgstr ""
+"OGC 사양 3.2.6.2 - 선택적인 SRID를 적합성 스위트(conformance suite)로부터 가"
+"져오십시오."
 
 #. Tag: para
 #: reference_input.xml:202
 #, no-c-format
 msgid "Returns null if the WKT is not a GEOMETRYCOLLECTION"
-msgstr ""
+msgstr "WKT가 도형 집합(GEOMETRYCOLLECTION)이 아닌 경우 null을 반환합니다."
 
 #. Tag: para
 #: reference_input.xml:204
@@ -327,12 +380,14 @@ msgid ""
 "use this function. It is slower than ST_GeomFromText since it adds an "
 "additional validation step."
 msgstr ""
+"사용자 WKT 도형이 모두 집합이라고 확신한다면, 이 함수를 사용하지 마십시오. "
+"이 함수는 추가적인 유효성 검사 단계를 거치므로 ST_GeomFromText보다 느립니다."
 
 #. Tag: para
 #: reference_input.xml:210
 #, no-c-format
 msgid "&sqlmm_compliant;"
-msgstr ""
+msgstr "&sqlmm_compliant;"
 
 #. Tag: programlisting
 #: reference_input.xml:218
@@ -341,18 +396,20 @@ msgid ""
 "SELECT ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(1 2, 3 "
 "4))');"
 msgstr ""
+"SELECT ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(1 2, 3 "
+"4))');"
 
 #. Tag: para
 #: reference_input.xml:225 reference_input.xml:589
 #, no-c-format
 msgid ", <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_input.xml:231
 #, no-c-format
 msgid "ST_GeomFromEWKT"
-msgstr ""
+msgstr "ST_GeomFromEWKT"
 
 #. Tag: refpurpose
 #: reference_input.xml:232
@@ -361,6 +418,7 @@ msgid ""
 "Return a specified ST_Geometry value from Extended Well-Known Text "
 "representation (EWKT)."
 msgstr ""
+"EWKT(Extended Well-Known Text)로부터 지정된 ST_Geometry 값을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:237
@@ -369,6 +427,8 @@ msgid ""
 "<funcdef>geometry <function>ST_GeomFromEWKT</function></funcdef> "
 "<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeomFromEWKT</function></funcdef> "
+"<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:246
@@ -377,6 +437,8 @@ msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
 "text (EWKT) representation."
 msgstr ""
+"OGC EWKT(Extended Well-Known Text) 표현식으로부터 PostGIS ST_Geometry 객체를 "
+"작성합니다."
 
 #. Tag: para
 #: reference_input.xml:248
@@ -385,6 +447,8 @@ msgid ""
 "The EWKT format is not an OGC standard, but an PostGIS specific format that "
 "includes the spatial reference system (SRID) identifier"
 msgstr ""
+"EWKT 형식이 OGC 표준은 아니지만, SRID(공간 참조 시스템 식별자)를 포함하는 "
+"PostGIS 특화 형식입니다."
 
 #. Tag: para
 #: reference_input.xml:251 reference_input.xml:792 reference_input.xml:1208
@@ -392,32 +456,34 @@ msgstr ""
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr ""
+"개선 사항: 2.0.0 버전부터 다면체 표면(polyhedral surface) 및 TIN을 지원합니"
+"다."
 
 #. Tag: para
 #: reference_input.xml:252 reference_input.xml:793 reference_input.xml:1038
 #: reference_input.xml:1210 reference_input.xml:1282 reference_input.xml:1328
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_input.xml:253 reference_input.xml:333 reference_input.xml:754
 #: reference_input.xml:794 reference_input.xml:852 reference_input.xml:1039
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_input.xml:254 reference_input.xml:795 reference_input.xml:1211
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_input.xml:255 reference_input.xml:796 reference_input.xml:1212
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: programlisting
 #: reference_input.xml:260
@@ -461,6 +527,43 @@ msgid ""
 "-71.1043443253471 42.3150676015829,-71.1043850704575 "
 "42.3150793250568,-71.1043632495873 42.315113108546)))');"
 msgstr ""
+"SELECT ST_GeomFromEWKT('SRID=4269;LINESTRING(-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932)');\n"
+"SELECT ST_GeomFromEWKT('SRID=4269;MULTILINESTRING((-71.160281 "
+"42.258729,-71.160837 42.259113,-71.161144 42.25932))');\n"
+"\n"
+"SELECT ST_GeomFromEWKT('SRID=4269;POINT(-71.064544 42.28787)');\n"
+"\n"
+"SELECT ST_GeomFromEWKT('SRID=4269;POLYGON((-71.1776585052917 "
+"42.3902909739571,-71.1776820268866 42.3903701743239,\n"
+"-71.1776063012595 42.3903825660754,-71.1775826583081 "
+"42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
+"\n"
+"SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 "
+"42.3152774590236,\n"
+"-71.1031627617667 42.3152960829043,-71.102923838298 42.3149156848307,\n"
+"-71.1023097974109 42.3151969047397,-71.1019285062273 42.3147384934248,\n"
+"-71.102505233663 42.3144722937587,-71.10277487471 42.3141658254797,\n"
+"-71.103113945163 42.3142739188902,-71.10324876416 42.31402489987,\n"
+"-71.1033002961013 42.3140393340215,-71.1033488797549 42.3139495090772,\n"
+"-71.103396240451 42.3138632439557,-71.1041521907712 42.3141153348029,\n"
+"-71.1041411411543 42.3141545014533,-71.1041287795912 42.3142114839058,\n"
+"-71.1041188134329 42.3142693656241,-71.1041112482575 42.3143272556118,\n"
+"-71.1041072845732 42.3143851580048,-71.1041057218871 42.3144430686681,\n"
+"-71.1041065602059 42.3145009876017,-71.1041097995362 42.3145589148055,\n"
+"-71.1041166403905 42.3146168544148,-71.1041258822717 42.3146748022936,\n"
+"-71.1041375307579 42.3147318674446,-71.1041492906949 42.3147711126569,\n"
+"-71.1041598612795 42.314808571739,-71.1042515013869 42.3151287620809,\n"
+"-71.1041173835118 42.3150739481917,-71.1040809891419 42.3151344119048,\n"
+"-71.1040438678912 42.3151191367447,-71.1040194562988 42.3151832057859,\n"
+"-71.1038734225584 42.3151140942995,-71.1038446938243 42.3151006300338,\n"
+"-71.1038315271889 42.315094347535,-71.1037393329282 42.315054824985,\n"
+"-71.1035447555574 42.3152608696313,-71.1033436658644 42.3151648370544,\n"
+"-71.1032580383161 42.3152269126061,-71.103223066939 42.3152517403219,\n"
+"-71.1031880899493 42.3152774590236)),\n"
+"((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,\n"
+"-71.1043443253471 42.3150676015829,-71.1043850704575 "
+"42.3150793250568,-71.1043632495873 42.315113108546)))');"
 
 #. Tag: programlisting
 #: reference_input.xml:261
@@ -470,6 +573,9 @@ msgid ""
 "SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
 "2,220227 150406 3)');"
 msgstr ""
+"-- 3D 원형 스트링\n"
+"SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)');"
 
 #. Tag: programlisting
 #: reference_input.xml:262
@@ -485,6 +591,15 @@ msgid ""
 "        ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))\n"
 ")');"
 msgstr ""
+"-- 다면체 표면 예시\n"
+"SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
+"        ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"        ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"        ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))\n"
+")');"
 
 #. Tag: para
 #: reference_input.xml:266
@@ -492,12 +607,13 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
 #: reference_input.xml:272
 #, no-c-format
 msgid "ST_GeometryFromText"
-msgstr ""
+msgstr "ST_GeometryFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:273 reference_input.xml:702
@@ -506,6 +622,8 @@ msgid ""
 "Return a specified ST_Geometry value from Well-Known Text representation "
 "(WKT). This is an alias name for ST_GeomFromText"
 msgstr ""
+"WKT(Well-Known Text)로부터 지정된 ST_Geometry 값을 반환합니다. 이 함수는 "
+"ST_GeomFromText 함수와 동일합니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:276
@@ -518,24 +636,30 @@ msgid ""
 "type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_GeometryFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeometryFromText</function></funcdef> <paramdef><type>text </"
+"type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:290
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_input.xml:291 reference_input.xml:332
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.40"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.40"
 
 #. Tag: refname
 #: reference_input.xml:301
 #, no-c-format
 msgid "ST_GeomFromText"
-msgstr ""
+msgstr "ST_GeomFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:302
@@ -543,7 +667,7 @@ msgstr ""
 msgid ""
 "Return a specified ST_Geometry value from Well-Known Text representation "
 "(WKT)."
-msgstr ""
+msgstr "WKT 표현식으로부터 지정된 ST_Geometry 값을 반환합니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:305
@@ -556,6 +680,12 @@ msgid ""
 "<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeomFromText</function></funcdef> <paramdef><type>text </type> "
+"<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:321
@@ -564,6 +694,8 @@ msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC Well-Known text "
 "representation."
 msgstr ""
+"OGC WKT(Well-Known Text) 표현식으로부터 PostGIS ST_Geometry 객체를 작성합니"
+"다."
 
 #. Tag: para
 #: reference_input.xml:325
@@ -574,12 +706,18 @@ msgid ""
 "The second takes a SRID as the second argument and returns a geometry that "
 "includes this SRID as part of its metadata."
 msgstr ""
+"ST_GeomFromText 함수의 변종이 2개 있는데, 첫 번째는 SRID를 입력받지 않고 공"
+"간 참조 시스템이 정의되지 않은(SRID=0) 도형을 반환합니다. 두 번째는 SRID를 "
+"두 번째 인수로 입력받아 해당 SRID를 자체 메타데이터의 일부로 포함하는 도형을 "
+"반환합니다."
 
 #. Tag: para
 #: reference_input.xml:331 reference_input.xml:633
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite."
 msgstr ""
+"&sfs_compliant; 사양 3.2.6.2 - 선택적인 SRID를 적합성 스위트(conformance "
+"suite)로부터 가져오십시오."
 
 #. Tag: para
 #: reference_input.xml:334
@@ -601,6 +739,11 @@ msgid ""
 "illegal in PostGIS 2.0.0 to better conform with SQL/MM standards. This "
 "should now be written as ST_GeomFromText('GEOMETRYCOLLECTION EMPTY')"
 msgstr ""
+"변경 사항: PostGIS 2.0.0 미만 버전에서는 "
+"ST_GeomFromText('GEOMETRYCOLLECTION(EMPTY)') 를 사용할 수 있었습니다. "
+"PostGIS 2.0.0 버전부터, SQL/MM 표준을 더 잘 준수하기 위해 이런 사용법은 금지"
+"됐습니다. 이제는 ST_GeomFromText('GEOMETRYCOLLECTION EMPTY') 라고 작성해야 합"
+"니다."
 
 #. Tag: programlisting
 #: reference_input.xml:342
@@ -649,18 +792,60 @@ msgid ""
 "SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 "
 "150406)');"
 msgstr ""
+"SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932)');\n"
+"SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932)',4269);\n"
+"\n"
+"SELECT ST_GeomFromText('MULTILINESTRING((-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932))');\n"
+"\n"
+"SELECT ST_GeomFromText('POINT(-71.064544 42.28787)');\n"
+"\n"
+"SELECT ST_GeomFromText('POLYGON((-71.1776585052917 "
+"42.3902909739571,-71.1776820268866 42.3903701743239,\n"
+"-71.1776063012595 42.3903825660754,-71.1775826583081 "
+"42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
+"\n"
+"SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,\n"
+"-71.1031627617667 42.3152960829043,-71.102923838298 42.3149156848307,\n"
+"-71.1023097974109 42.3151969047397,-71.1019285062273 42.3147384934248,\n"
+"-71.102505233663 42.3144722937587,-71.10277487471 42.3141658254797,\n"
+"-71.103113945163 42.3142739188902,-71.10324876416 42.31402489987,\n"
+"-71.1033002961013 42.3140393340215,-71.1033488797549 42.3139495090772,\n"
+"-71.103396240451 42.3138632439557,-71.1041521907712 42.3141153348029,\n"
+"-71.1041411411543 42.3141545014533,-71.1041287795912 42.3142114839058,\n"
+"-71.1041188134329 42.3142693656241,-71.1041112482575 42.3143272556118,\n"
+"-71.1041072845732 42.3143851580048,-71.1041057218871 42.3144430686681,\n"
+"-71.1041065602059 42.3145009876017,-71.1041097995362 42.3145589148055,\n"
+"-71.1041166403905 42.3146168544148,-71.1041258822717 42.3146748022936,\n"
+"-71.1041375307579 42.3147318674446,-71.1041492906949 42.3147711126569,\n"
+"-71.1041598612795 42.314808571739,-71.1042515013869 42.3151287620809,\n"
+"-71.1041173835118 42.3150739481917,-71.1040809891419 42.3151344119048,\n"
+"-71.1040438678912 42.3151191367447,-71.1040194562988 42.3151832057859,\n"
+"-71.1038734225584 42.3151140942995,-71.1038446938243 42.3151006300338,\n"
+"-71.1038315271889 42.315094347535,-71.1037393329282 42.315054824985,\n"
+"-71.1035447555574 42.3152608696313,-71.1033436658644 42.3151648370544,\n"
+"-71.1032580383161 42.3152269126061,-71.103223066939 42.3152517403219,\n"
+"-71.1031880899493 42.3152774590236)),\n"
+"((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,\n"
+"-71.1043443253471 42.3150676015829,-71.1043850704575 "
+"42.3150793250568,-71.1043632495873 42.315113108546)))',4326);\n"
+"\n"
+"SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 "
+"150406)');"
 
 #. Tag: para
 #: reference_input.xml:346
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromWKB\"/>, <xref linkend=\"ST_SRID\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromWKB\"/>, <xref linkend=\"ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_input.xml:353
 #, no-c-format
 msgid "ST_LineFromText"
-msgstr ""
+msgstr "ST_LineFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:355
@@ -669,6 +854,8 @@ msgid ""
 "Makes a Geometry from WKT representation with the given SRID. If SRID is not "
 "given, it defaults to 0."
 msgstr ""
+"주어진 SRID와 함께 WKT 표현식으로부터 도형을 만듭니다. SRID가 주어지지 않은 "
+"경우, 기본값인 0을 씁니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:360
@@ -681,6 +868,12 @@ msgid ""
 "<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_LineFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_LineFromText</function></funcdef> <paramdef><type>text </type> "
+"<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:377
@@ -695,6 +888,8 @@ msgstr ""
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite."
 msgstr ""
+"OGC 사양 3.2.6.2 - 선택적인 SRID를 적합성 스위트(conformance suite)로부터 가"
+"져오십시오."
 
 #. Tag: para
 #: reference_input.xml:386
@@ -704,12 +899,15 @@ msgid ""
 "use ST_GeomFromText. This just calls ST_GeomFromText and adds additional "
 "validation that it returns a linestring."
 msgstr ""
+"사용자 도형이 모두 라인스트링이란 걸 알고 있다면, 그냥 ST_GeomFromText 함수"
+"를 쓰는 편이 더 효율적입니다. 이 함수는 ST_GeomFromText만 호출하고, 라인스트"
+"링을 반환한다는 유효성 검사를 추가합니다."
 
 #. Tag: para
 #: reference_input.xml:392
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.8"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.8"
 
 #. Tag: programlisting
 #: reference_input.xml:400
@@ -721,18 +919,23 @@ msgid ""
 "------------------------------------------------\n"
 "010200000002000000000000000000F ... | t"
 msgstr ""
+"SELECT ST_LineFromText('LINESTRING(1 2, 3 4)') AS aline, "
+"ST_LineFromText('POINT(1 2)') AS null_return;\n"
+"aline                            | null_return\n"
+"------------------------------------------------\n"
+"010200000002000000000000000000F ... | t"
 
 #. Tag: refname
 #: reference_input.xml:413
 #, no-c-format
 msgid "ST_MLineFromText"
-msgstr ""
+msgstr "ST_MLineFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:415
 #, no-c-format
 msgid "Return a specified ST_MultiLineString value from WKT representation."
-msgstr ""
+msgstr "WKT 표현식으로부터 지정된 ST_MultiLineString 값을 반환합니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:419
@@ -745,6 +948,12 @@ msgid ""
 "function></funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></"
 "paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_MLineFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_MLineFromText</"
+"function></funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:437
@@ -758,7 +967,7 @@ msgstr ""
 #: reference_input.xml:443
 #, no-c-format
 msgid "Returns null if the WKT is not a MULTILINESTRING"
-msgstr ""
+msgstr "WKT가 멀티라인스트링이 아닌 경우 null을 반환합니다."
 
 #. Tag: para
 #: reference_input.xml:446 reference_input.xml:507
@@ -768,24 +977,26 @@ msgid ""
 "this function. It is slower than ST_GeomFromText since it adds an additional "
 "validation step."
 msgstr ""
+"사용자 WKT 도형이 모두 포인트라고 확신한다면, 이 함수를 사용하지 마십시오. "
+"이 함수는 추가적인 유효성 검사 단계를 거치므로 ST_GeomFromText보다 느립니다."
 
 #. Tag: para
 #: reference_input.xml:452
 #, no-c-format
 msgid "&sqlmm_compliant;SQL-MM 3: 9.4.4"
-msgstr ""
+msgstr "&sqlmm_compliant;SQL-MM 3: 9.4.4"
 
 #. Tag: programlisting
 #: reference_input.xml:460
 #, no-c-format
 msgid "SELECT ST_MLineFromText('MULTILINESTRING((1 2, 3 4), (4 5, 6 7))');"
-msgstr ""
+msgstr "SELECT ST_MLineFromText('MULTILINESTRING((1 2, 3 4), (4 5, 6 7))');"
 
 #. Tag: refname
 #: reference_input.xml:473
 #, no-c-format
 msgid "ST_MPointFromText"
-msgstr ""
+msgstr "ST_MPointFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:475 reference_input.xml:651
@@ -806,6 +1017,12 @@ msgid ""
 "<function>ST_MPointFromText</function></funcdef> <paramdef><type>text </"
 "type> <parameter>WKT</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_MPointFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_MPointFromText</function></funcdef> <paramdef><type>text </"
+"type> <parameter>WKT</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:498
@@ -819,19 +1036,19 @@ msgstr ""
 #: reference_input.xml:504
 #, no-c-format
 msgid "Returns null if the WKT is not a MULTIPOINT"
-msgstr ""
+msgstr "WKT가 멀티포인트가 아닌 경우 null을 반환합니다."
 
 #. Tag: para
 #: reference_input.xml:512
 #, no-c-format
 msgid "&sfs_compliant; 3.2.6.2"
-msgstr ""
+msgstr "&sfs_compliant; 3.2.6.2"
 
 #. Tag: para
 #: reference_input.xml:513
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.2.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.2.4"
 
 #. Tag: programlisting
 #: reference_input.xml:521
@@ -841,12 +1058,15 @@ msgid ""
 "SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', "
 "4326);"
 msgstr ""
+"SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');\n"
+"SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', "
+"4326);"
 
 #. Tag: refname
 #: reference_input.xml:534
 #, no-c-format
 msgid "ST_MPolyFromText"
-msgstr ""
+msgstr "ST_MPolyFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:536
@@ -867,6 +1087,12 @@ msgid ""
 "function></funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></"
 "paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_MPolyFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_MPolyFromText</"
+"function></funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:559
@@ -880,7 +1106,7 @@ msgstr ""
 #: reference_input.xml:565
 #, no-c-format
 msgid "Throws an error if the WKT is not a MULTIPOLYGON"
-msgstr ""
+msgstr "WKT가 멀티폴리곤이 아닌 경우 오류가 발생합니다."
 
 #. Tag: para
 #: reference_input.xml:568
@@ -890,12 +1116,15 @@ msgid ""
 "use this function. It is slower than ST_GeomFromText since it adds an "
 "additional validation step."
 msgstr ""
+"사용자 WKT 도형이 모두 멀티폴리곤이라고 확신한다면, 이 함수를 사용하지 마십시"
+"오. 이 함수는 추가적인 유효성 검사 단계를 거치므로 ST_GeomFromText보다 느립니"
+"다."
 
 #. Tag: para
 #: reference_input.xml:574
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.6.4"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 9.6.4"
 
 #. Tag: programlisting
 #: reference_input.xml:582
@@ -919,12 +1148,29 @@ msgid ""
 "42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,\n"
 "        -70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);"
 msgstr ""
+"SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),"
+"(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))');\n"
+"SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 "
+"42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 "
+"42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 "
+"42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 "
+"42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 "
+"42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 "
+"42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 "
+"42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 "
+"42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 "
+"42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 "
+"42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 "
+"42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 "
+"42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 "
+"42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,\n"
+"        -70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);"
 
 #. Tag: refname
 #: reference_input.xml:595
 #, no-c-format
 msgid "ST_PointFromText"
-msgstr ""
+msgstr "ST_PointFromText"
 
 #. Tag: refpurpose
 #: reference_input.xml:596
@@ -933,6 +1179,8 @@ msgid ""
 "Makes a point Geometry from WKT with the given SRID. If SRID is not given, "
 "it defaults to unknown."
 msgstr ""
+"주어진 SRID와 함께 WKT 표현식으로부터 포인트 도형을 만듭니다. SRID가 주어지"
+"지 않은 경우, 기본값인 0을 씁니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:600
@@ -945,6 +1193,12 @@ msgid ""
 "<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_PointFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_PointFromText</function></funcdef> <paramdef><type>text </type> "
+"<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:616
@@ -966,6 +1220,10 @@ msgid ""
 "ST_Geometry that includes this srid as part of its meta-data. The srid must "
 "be defined in the spatial_ref_sys table."
 msgstr ""
+"ST_PointFromText 함수의 변종이 2개 있는데, 첫 번째는 SRID를 입력받지 않고 공"
+"간 참조 시스템이 정의되지 않은 도형을 반환합니다. 두 번째는 SRID를 두 번째 인"
+"수로 입력받아 자체 메타데이터의 일부로 해당 SRID를 포함하는 ST_Geometry를 반"
+"환합니다. spatial_ref_sys 테이블에 정의되어 있는 SRID여야 합니다."
 
 #. Tag: para
 #: reference_input.xml:629
@@ -978,12 +1236,17 @@ msgid ""
 "linkend=\"ST_MakePoint\"/> or OGC compliant alias <xref linkend=\"ST_Point\"/"
 ">."
 msgstr ""
+"사용자 WKT 도형이 모두 포인트라고 확신한다면, 이 함수를 사용하지 마십시오. "
+"이 함수는 추가적인 유효성 검사 단계를 거치므로 ST_GeomFromText보다 느립니다. "
+"사용자가 경위도 좌표로부터 포인트를 빌드하고 OGC 준수 여부보다 성능 및 정확도"
+"에 더 관심이 있다면, <xref linkend=\"ST_MakePoint\"/> 또는 OGC를 준수하는 동"
+"일한 <xref linkend=\"ST_Point\"/> 함수를 이용하십시오."
 
 #. Tag: para
 #: reference_input.xml:634
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.8"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.8"
 
 #. Tag: programlisting
 #: reference_input.xml:639
@@ -992,6 +1255,8 @@ msgid ""
 "SELECT ST_PointFromText('POINT(-71.064544 42.28787)');\n"
 "SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);"
 msgstr ""
+"SELECT ST_PointFromText('POINT(-71.064544 42.28787)');\n"
+"SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);"
 
 #. Tag: para
 #: reference_input.xml:643
@@ -1000,12 +1265,14 @@ msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
 "linkend=\"ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_input.xml:649
 #, no-c-format
 msgid "ST_PolygonFromText"
-msgstr ""
+msgstr "ST_PolygonFromText"
 
 #. Tag: funcsynopsis
 #: reference_input.xml:656
@@ -1018,6 +1285,12 @@ msgid ""
 "type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_PolygonFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_PolygonFromText</function></funcdef> <paramdef><type>text </"
+"type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:672
@@ -1035,12 +1308,14 @@ msgid ""
 "this function. It is slower than ST_GeomFromText since it adds an additional "
 "validation step."
 msgstr ""
+"사용자 WKT 도형이 모두 폴리곤이라고 확신한다면, 이 함수를 사용하지 마십시오. "
+"이 함수는 추가적인 유효성 검사 단계를 거치므로 ST_GeomFromText보다 느립니다."
 
 #. Tag: para
 #: reference_input.xml:682
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.6"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.3.6"
 
 #. Tag: programlisting
 #: reference_input.xml:688
@@ -1061,12 +1336,26 @@ msgid ""
 "----------\n"
 "t"
 msgstr ""
+"SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 "
+"42.3902909739571,-71.1776820268866 42.3903701743239,\n"
+"-71.1776063012595 42.3903825660754,-71.1775826583081 "
+"42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
+"st_polygonfromtext\n"
+"------------------\n"
+"010300000001000000050000006...\n"
+"\n"
+"\n"
+"SELECT ST_PolygonFromText('POINT(1 2)') IS NULL as point_is_notpoly;\n"
+"\n"
+"point_is_not_poly\n"
+"----------\n"
+"t"
 
 #. Tag: refname
 #: reference_input.xml:701
 #, no-c-format
 msgid "ST_WKTToSQL"
-msgstr ""
+msgstr "ST_WKTToSQL"
 
 #. Tag: funcprototype
 #: reference_input.xml:706
@@ -1075,12 +1364,14 @@ msgid ""
 "<funcdef>geometry <function>ST_WKTToSQL</function></funcdef> "
 "<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_WKTToSQL</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:714
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.34"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.34"
 
 #. Tag: title
 #: reference_input.xml:726
@@ -1092,7 +1383,7 @@ msgstr ""
 #: reference_input.xml:730
 #, no-c-format
 msgid "ST_GeogFromWKB"
-msgstr ""
+msgstr "ST_GeogFromWKB"
 
 #. Tag: refpurpose
 #: reference_input.xml:731
@@ -1101,6 +1392,7 @@ msgid ""
 "Creates a geography instance from a Well-Known Binary geometry "
 "representation (WKB) or extended Well Known Binary (EWKB)."
 msgstr ""
+"WKB 도형 표현식 또는 EWKB(확장 WKB)로부터 지리형 인스턴스를 생성합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:737
@@ -1109,6 +1401,8 @@ msgid ""
 "<funcdef>geography <function>ST_GeogFromWKB</function></funcdef> "
 "<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
 msgstr ""
+"<funcdef>geography <function>ST_GeogFromWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:747
@@ -1119,12 +1413,15 @@ msgid ""
 "instance of the appropriate geography type. This function plays the role of "
 "the Geometry Factory in SQL."
 msgstr ""
+"<varname>ST_GeogFromWKB</varname> 함수는 도형의 WKB 표현식 또는 PostGIS 확장 "
+"WKB를 받아 적절한 지리형 유형의 인스턴스를 생성합니다. 이 함수는 SQL에서 도"
+"형 공장(Geometry Factory) 역할을 합니다."
 
 #. Tag: para
 #: reference_input.xml:752
 #, no-c-format
 msgid "If SRID is not specified, it defaults to 4326 (WGS 84 long lat)."
-msgstr ""
+msgstr "SRID를 설정하지 않은 경우, 기본값으로 4326(WGS84 경위도)을 씁니다."
 
 #. Tag: programlisting
 #: reference_input.xml:761
@@ -1143,18 +1440,30 @@ msgid ""
 " LINESTRING(-113.98 39.198,-113.981 39.195)\n"
 "(1 row)"
 msgstr ""
+"-- bytea 표현식이 단일한 역슬래시(\\)를 포함하긴 해도, 테이블 삽입시에는 빼놓"
+"아야 합니다.\n"
+"SELECT ST_AsText(\n"
+"ST_GeogFromWKB(E'\\\\001\\\\002\\\\000\\\\000\\\\000\\\\002\\\\000\\\\000\\"
+"\\000\\\\037\\\\205\\\\353Q\\\\270~\\\\\\\\\\\\300\\\\323Mb\\\\020X\\\\231C@"
+"\\\\020X9\\\\264\\\\310~\\\\\\\\\\\\300)\\\\\\\\\\\\217\\\\302\\\\365\\"
+"\\230C@')\n"
+");\n"
+"                                          st_astext\n"
+"------------------------------------------------------\n"
+" LINESTRING(-113.98 39.198,-113.981 39.195)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_input.xml:766
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsBinary\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsBinary\"/>"
 
 #. Tag: refname
 #: reference_input.xml:772
 #, no-c-format
 msgid "ST_GeomFromEWKB"
-msgstr ""
+msgstr "ST_GeomFromEWKB"
 
 #. Tag: refpurpose
 #: reference_input.xml:773
@@ -1163,6 +1472,7 @@ msgid ""
 "Return a specified ST_Geometry value from Extended Well-Known Binary "
 "representation (EWKB)."
 msgstr ""
+"EWKB(Extended Well-Known Binary)로부터 지정된 ST_Geometry 값을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:778
@@ -1171,6 +1481,8 @@ msgid ""
 "<funcdef>geometry <function>ST_GeomFromEWKB</function></funcdef> "
 "<paramdef><type>bytea </type> <parameter>EWKB</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeomFromEWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>EWKB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:787
@@ -1179,6 +1491,8 @@ msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC Extended Well-Known "
 "binary (EWKT) representation."
 msgstr ""
+"OGC EWKB(Extended Well-Known Binary) 표현식으로부터 PostGIS ST_Geometry 객체"
+"를 작성합니다."
 
 #. Tag: para
 #: reference_input.xml:789
@@ -1187,6 +1501,8 @@ msgid ""
 "The EWKB format is not an OGC standard, but a PostGIS specific format that "
 "includes the spatial reference system (SRID) identifier"
 msgstr ""
+"EWKB 형식이 OGC 표준은 아니지만, SRID(공간 참조 시스템 식별자)를 포함하는 "
+"PostGIS 특화 형식입니다."
 
 #. Tag: para
 #: reference_input.xml:801
@@ -1195,6 +1511,8 @@ msgid ""
 "line string binary rep 0f LINESTRING(-71.160281 42.258729,-71.160837 "
 "42.259113,-71.161144 42.25932) in NAD 83 long lat (4269)."
 msgstr ""
+"NAD83 경위도(SRID 4269)로 투영된 LINESTRING(-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932)의 라인스트링 바이너리 표현식"
 
 #. Tag: para
 #: reference_input.xml:803
@@ -1204,6 +1522,9 @@ msgid ""
 "to escape both out with \\ and '' if standard_conforming_strings is off. So "
 "it does not look exactly like its AsEWKB representation."
 msgstr ""
+"주의: 바이트 배열이 역슬래시(\\)로 구분되고 작은따옴표(')를 가지고 있을 수도 "
+"있지만, standard_conforming_strings가 비활성화돼 있을 경우 \\ 및 \" 둘 다 빼"
+"놓아야 합니다. 그래야만 AsEWKB 표현식과 똑같이 보이지 않기 때문입니다."
 
 #. Tag: programlisting
 #: reference_input.xml:805
@@ -1215,6 +1536,11 @@ msgid ""
 "\\\\312Q\\\\300\\\\366{b\\\\235*!E@\\\\225|\\\\354.P\\\\312Q\n"
 "\\\\300p\\\\231\\\\323e1!E@');"
 msgstr ""
+"SELECT ST_GeomFromEWKB(E'\\\\001\\\\002\\\\000\\\\000 \\\\255\\\\020\\\\000\\"
+"\\000\\\\003\\\\000\\\\000\\\\000\\\\344J=\n"
+"\\\\013B\\\\312Q\\\\300n\\\\303(\\\\010\\\\036!E@''\\\\277E''K\n"
+"\\\\312Q\\\\300\\\\366{b\\\\235*!E@\\\\225|\\\\354.P\\\\312Q\n"
+"\\\\300p\\\\231\\\\323e1!E@');"
 
 #. Tag: para
 #: reference_input.xml:807
@@ -1237,18 +1563,23 @@ msgid ""
 "    \\312Q\\300n\\303(\\010\\036!E@''\\277E''K\\012\\312Q\\300\\366{b\\235*!"
 "E@\\225|\\354.P\\312Q\\012\\300p\\231\\323e1')"
 msgstr ""
+"set standard_conforming_strings = on;\n"
+"SELECT ST_GeomFromEWKB('\\001\\002\\000\\000 "
+"\\255\\020\\000\\000\\003\\000\\000\\000\\344J=\\012\\013B\n"
+"\\312Q\\300n\\303(\\010\\036!E@''\\277E''K\\012\\312Q\\300\\366{b\\235*!E@"
+"\\225|\\354.P\\312Q\\012\\300p\\231\\323e1')"
 
 #. Tag: para
 #: reference_input.xml:814
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_GeomFromWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_GeomFromWKB\"/>"
 
 #. Tag: refname
 #: reference_input.xml:820
 #, no-c-format
 msgid "ST_GeomFromWKB"
-msgstr ""
+msgstr "ST_GeomFromWKB"
 
 #. Tag: refpurpose
 #: reference_input.xml:821
@@ -1257,6 +1588,8 @@ msgid ""
 "Creates a geometry instance from a Well-Known Binary geometry representation "
 "(WKB) and optional SRID."
 msgstr ""
+"WKB(Well-Known Binary) 도형 표현식과 선택적인 SRID로부터 도형 인스턴스를 생성"
+"합니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:826 reference_input.xml:1010
@@ -1269,6 +1602,12 @@ msgid ""
 "<parameter>geom</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromWKB</function></"
+"funcdef> <paramdef><type>bytea </type> <parameter>geom</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeomFromWKB</function></funcdef> <paramdef><type>bytea </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:843
@@ -1280,12 +1619,16 @@ msgid ""
 "geometry type. This function plays the role of the Geometry Factory in SQL. "
 "This is an alternate name for ST_WKBToSQL."
 msgstr ""
+"<varname>ST_GeogFromWKB</varname> 함수는 도형의 WKB 표현식과 <varname>SRID</"
+"varname>(공간 참조 시스템 ID)를 받아 적절한 도형 유형의 인스턴스를 생성합니"
+"다. 이 함수는 SQL에서 도형 공장(Geometry Factory) 역할을 합니다. 이 함수는 "
+"ST_WKBToSQL 함수를 대체할 수 있습니다."
 
 #. Tag: para
 #: reference_input.xml:849
 #, no-c-format
 msgid "If SRID is not specified, it defaults to 0 (Unknown)."
-msgstr ""
+msgstr "SRID를 설정하지 않은 경우, 기본값으로 0(unkown)을 씁니다."
 
 #. Tag: para
 #: reference_input.xml:850
@@ -1293,12 +1636,14 @@ msgstr ""
 msgid ""
 "&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite"
 msgstr ""
+"&sfs_compliant; s3.2.7.2 - 선택적인 SRID를 적합성 스위트(conformance suite)로"
+"부터 가져오십시오."
 
 #. Tag: para
 #: reference_input.xml:851
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.41"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.41"
 
 #. Tag: programlisting
 #: reference_input.xml:859
@@ -1329,24 +1674,49 @@ msgid ""
 " POINT(2 5)\n"
 "(1 row)"
 msgstr ""
+"-- standard_conforming_strings이 활성화돼 있지 않은 경우\n"
+"                -- bytea 표현식이 단일한 역슬래시(\\)를 포함하긴 해도, 테이"
+"블 삽입시에는 빼놓아야 합니다.\n"
+"SELECT ST_AsEWKT(\n"
+"ST_GeomFromWKB(E'\\\\001\\\\002\\\\000\\\\000\\\\000\\\\002\\\\000\\\\000\\"
+"\\000\\\\037\\\\205\\\\353Q\\\\270~\\\\\\\\\\\\300\\\\323Mb\\\\020X\\\\231C@"
+"\\\\020X9\\\\264\\\\310~\\\\\\\\\\\\300)\\\\\\\\\\\\217\\\\302\\\\365\\"
+"\\230C@',4326)\n"
+");\n"
+"                                          st_asewkt\n"
+"------------------------------------------------------\n"
+" SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)\n"
+"(1 row)\n"
+"\n"
+"SELECT\n"
+"  ST_AsText(\n"
+"        ST_GeomFromWKB(\n"
+"          ST_AsEWKB('POINT(2 5)'::geometry)\n"
+"        )\n"
+"  );\n"
+" st_astext\n"
+"------------\n"
+" POINT(2 5)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_input.xml:866
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_GeomFromEWKB\"/>"
 
 #. Tag: refname
 #: reference_input.xml:872
 #, no-c-format
 msgid "ST_LineFromWKB"
-msgstr ""
+msgstr "ST_LineFromWKB"
 
 #. Tag: refpurpose
 #: reference_input.xml:874
 #, no-c-format
 msgid "Makes a <varname>LINESTRING</varname> from WKB with the given SRID"
 msgstr ""
+"주어진 SRID와 함께 WKB로부터 <varname>LINESTRING</varname> 을 만듭니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:878
@@ -1359,6 +1729,12 @@ msgid ""
 "parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_LineFromWKB</function></"
+"funcdef> <paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry <function>ST_LineFromWKB</"
+"function></funcdef> <paramdef><type>bytea </type> <parameter>WKB</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:895
@@ -1370,6 +1746,10 @@ msgid ""
 "case, a <varname>LINESTRING</varname> geometry. This function plays the role "
 "of the Geometry Factory in SQL."
 msgstr ""
+"<varname>ST_LineFromWKB</varname> 함수는 도형의 WKB 표현식과 <varname>SRID</"
+"varname>(공간 참조 시스템 ID)를 받아 적절한 도형 유형의 인스턴스 - 이 경우, "
+"<varname>LINESTRING</varname> 도형 - 를 생성합니다. 이 함수는 SQL에서 도형 공"
+"장(Geometry Factory) 역할을 합니다."
 
 #. Tag: para
 #: reference_input.xml:901
@@ -1379,6 +1759,8 @@ msgid ""
 "returned if the input <varname>bytea</varname> does not represent a "
 "<varname>LINESTRING</varname>."
 msgstr ""
+"SRID를 설정하지 않은 경우, 기본값인 0을 씁니다. 입력된 <varname>bytea</"
+"varname>가 라인스트링이 아닌 경우, <varname>NULL</varname>을 반환합니다."
 
 #. Tag: para
 #: reference_input.xml:911
@@ -1389,12 +1771,16 @@ msgid ""
 "calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation that "
 "it returns a linestring."
 msgstr ""
+"사용자 도형이 모두 <varname>LINESTRING</varname>이란 걸 알고 있다면, 그냥 "
+"<xref linkend=\"ST_GeomFromWKB\"/> 함수를 쓰는 편이 더 효율적입니다. 이 함수"
+"는 <xref linkend=\"ST_GeomFromWKB\"/> 만 호출하고, 라인스트링을 반환한다는 유"
+"효성 검사를 추가합니다."
 
 #. Tag: para
 #: reference_input.xml:919 reference_input.xml:985
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.2.9"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 7.2.9"
 
 #. Tag: programlisting
 #: reference_input.xml:927
@@ -1408,24 +1794,31 @@ msgid ""
 "------------------------------------------------\n"
 "010200000002000000000000000000F ... | t"
 msgstr ""
+"SELECT ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) "
+"AS aline,\n"
+"                ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) "
+"IS NULL AS null_return;\n"
+"aline                            | null_return\n"
+"------------------------------------------------\n"
+"010200000002000000000000000000F ... | t"
 
 #. Tag: para
 #: reference_input.xml:934
 #, no-c-format
 msgid ", <xref linkend=\"ST_LinestringFromWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LinestringFromWKB\"/>"
 
 #. Tag: refname
 #: reference_input.xml:940
 #, no-c-format
 msgid "ST_LinestringFromWKB"
-msgstr ""
+msgstr "ST_LinestringFromWKB"
 
 #. Tag: refpurpose
 #: reference_input.xml:942
 #, no-c-format
 msgid "Makes a geometry from WKB with the given SRID."
-msgstr ""
+msgstr "주어진 SRID와 함께 WKB로부터 도형을 만듭니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:946
@@ -1438,6 +1831,12 @@ msgid ""
 "type> <parameter>WKB</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_LinestringFromWKB</function></"
+"funcdef> <paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_LinestringFromWKB</function></funcdef> <paramdef><type>bytea </"
+"type> <parameter>WKB</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:963
@@ -1449,6 +1848,10 @@ msgid ""
 "geometry type - in this case, a <varname>LINESTRING</varname> geometry. This "
 "function plays the role of the Geometry Factory in SQL."
 msgstr ""
+"<varname>ST_LinestringFromWKB</varname> 함수는 도형의 WKB 표현식과 "
+"<varname>SRID</varname>(공간 참조 시스템 ID)를 받아 적절한 도형 유형의 인스턴"
+"스 - 이 경우, <varname>LINESTRING</varname> 도형 - 를 생성합니다. 이 함수는 "
+"SQL에서 도형 공장(Geometry Factory) 역할을 합니다."
 
 #. Tag: para
 #: reference_input.xml:969
@@ -1459,12 +1862,17 @@ msgid ""
 "<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="
 "\"ST_LineFromWKB\"/>."
 msgstr ""
+"SRID를 설정하지 않은 경우, 기본값인 0을 씁니다. 입력된 <varname>bytea</"
+"varname>가 <varname>LINESTRING</varname> 도형이 아닌 경우, <varname>NULL</"
+"varname>을 반환합니다."
 
 #. Tag: para
 #: reference_input.xml:974
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - optional SRID is from the conformance suite."
 msgstr ""
+"OGC 사양 3.2.6.2 - 선택적인 SRID를 적합성 스위트(conformance suite)로부터 가"
+"져오십시오."
 
 #. Tag: para
 #: reference_input.xml:978
@@ -1475,6 +1883,10 @@ msgid ""
 "just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation "
 "that it returns a <varname>LINESTRING</varname>."
 msgstr ""
+"사용자 도형이 모두 <varname>LINESTRING</varname>이란 걸 알고 있다면, 그냥 "
+"<xref linkend=\"ST_GeomFromWKB\"/> 함수를 쓰는 편이 더 효율적입니다. 이 함수"
+"는 <xref linkend=\"ST_GeomFromWKB\"/> 만 호출하고, <varname>LINESTRING</"
+"varname>을 반환한다는 유효성 검사를 추가합니다."
 
 #. Tag: programlisting
 #: reference_input.xml:991
@@ -1491,24 +1903,34 @@ msgid ""
 "------------------------------------------------\n"
 "010200000002000000000000000000F ... | t"
 msgstr ""
+"SELECT\n"
+"  ST_LineStringFromWKB(\n"
+"        ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))\n"
+"  ) AS aline,\n"
+"  ST_LinestringFromWKB(\n"
+"        ST_AsBinary(ST_GeomFromText('POINT(1 2)'))\n"
+"  ) IS NULL AS null_return;\n"
+"   aline                            | null_return\n"
+"------------------------------------------------\n"
+"010200000002000000000000000000F ... | t"
 
 #. Tag: para
 #: reference_input.xml:998 reference_input.xml:1052
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineFromWKB\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_LineFromWKB\"/>"
 
 #. Tag: refname
 #: reference_input.xml:1004
 #, no-c-format
 msgid "ST_PointFromWKB"
-msgstr ""
+msgstr "ST_PointFromWKB"
 
 #. Tag: refpurpose
 #: reference_input.xml:1006
 #, no-c-format
 msgid "Makes a geometry from WKB with the given SRID"
-msgstr ""
+msgstr "주어진 SRID와 함께 WKB로부터 도형을 만듭니다."
 
 #. Tag: para
 #: reference_input.xml:1027
@@ -1520,6 +1942,10 @@ msgid ""
 "case, a <varname>POINT</varname> geometry. This function plays the role of "
 "the Geometry Factory in SQL."
 msgstr ""
+"<varname>ST_PointFromWKB</varname> 함수는 도형의 WKB 표현식과 <varname>SRID</"
+"varname>(공간 참조 시스템 ID)를 받아 적절한 도형 유형의 인스턴스 - 이 경우, "
+"<varname>POINT</varname> 도형 - 를 생성합니다. 이 함수는 SQL에서 도형 공장"
+"(Geometry Factory) 역할을 합니다."
 
 #. Tag: para
 #: reference_input.xml:1033
@@ -1529,18 +1955,20 @@ msgid ""
 "returned if the input <varname>bytea</varname> does not represent a "
 "<varname>POINT</varname> geometry."
 msgstr ""
+"SRID를 설정하지 않은 경우, 기본값인 0을 씁니다. 입력된 <varname>bytea</"
+"varname>가 포인트가 아닌 경우, <varname>NULL</varname>을 반환합니다."
 
 #. Tag: para
 #: reference_input.xml:1036
 #, no-c-format
 msgid "&sfs_compliant; s3.2.7.2"
-msgstr ""
+msgstr "&sfs_compliant; s3.2.7.2"
 
 #. Tag: para
 #: reference_input.xml:1037
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.9"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.9"
 
 #. Tag: programlisting
 #: reference_input.xml:1045
@@ -1568,12 +1996,33 @@ msgid ""
 "\n"
 "(1 row)"
 msgstr ""
+"SELECT\n"
+"  ST_AsText(\n"
+"        ST_PointFromWKB(\n"
+"          ST_AsEWKB('POINT(2 5)'::geometry)\n"
+"        )\n"
+"  );\n"
+" st_astext\n"
+"------------\n"
+" POINT(2 5)\n"
+"(1 row)\n"
+"\n"
+"SELECT\n"
+"  ST_AsText(\n"
+"        ST_PointFromWKB(\n"
+"          ST_AsEWKB('LINESTRING(2 5, 2 6)'::geometry)\n"
+"        )\n"
+"  );\n"
+" st_astext\n"
+"-----------\n"
+"\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_input.xml:1058
 #, no-c-format
 msgid "ST_WKBToSQL"
-msgstr ""
+msgstr "ST_WKBToSQL"
 
 #. Tag: refpurpose
 #: reference_input.xml:1059
@@ -1582,6 +2031,8 @@ msgid ""
 "Return a specified ST_Geometry value from Well-Known Binary representation "
 "(WKB). This is an alias name for ST_GeomFromWKB that takes no srid"
 msgstr ""
+"WKB(Well-Known Binary) 표현식으로부터 지정된 ST_Geometry 값을 반환합니다. 이 "
+"함수는 SRID를 입력받지 않는 ST_GeomFromWKB 함수와 동일합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:1063
@@ -1590,12 +2041,14 @@ msgid ""
 "<funcdef>geometry <function>ST_WKBToSQL</function></funcdef> "
 "<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_WKBToSQL</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1071
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.36"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.36"
 
 #. Tag: title
 #: reference_input.xml:1084
@@ -1607,13 +2060,13 @@ msgstr ""
 #: reference_input.xml:1088
 #, no-c-format
 msgid "ST_Box2dFromGeoHash"
-msgstr ""
+msgstr "ST_Box2dFromGeoHash"
 
 #. Tag: refpurpose
 #: reference_input.xml:1090
 #, no-c-format
 msgid "<refpurpose>Return a BOX2D from a GeoHash string.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>GeoHash 스트링으로부터 BOX2D를 반환합니다.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_input.xml:1095
@@ -1624,12 +2077,16 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 msgstr ""
+"<funcdef>box2d <function>ST_Box2dFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1106
 #, no-c-format
 msgid "<para>Return a BOX2D from a GeoHash string.</para>"
-msgstr ""
+msgstr "<para>GeoHash 스트링으로부터 BOX2D를 반환합니다.</para>"
 
 #. Tag: para
 #: reference_input.xml:1108
@@ -1647,12 +2104,15 @@ msgid ""
 "that many characters from the GeoHash to create the BOX2D. Lower precision "
 "values results in larger BOX2Ds and larger values increase the precision."
 msgstr ""
+"<varname>precision</varname> 을 설정한 경우, ST_Box2dFromGeoHash가 GeoHash에"
+"서 나온 그만큼의 문자를 이용해서 BOX2D를 생성합니다. 정확도 값이 낮을수록 "
+"BOX2D의 용량이 커지고 값이 높을수록 정확도가 올라갑니다."
 
 #. Tag: para
 #: reference_input.xml:1112 reference_input.xml:1153 reference_input.xml:1482
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "2.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
 #: reference_input.xml:1117
@@ -1676,6 +2136,23 @@ msgid ""
 " BOX(-115.17282128334 36.1146408319473,-115.172810554504 36.1146461963654)\n"
 "                ]]>"
 msgstr ""
+"<![CDATA[SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');\n"
+"\n"
+"                st_geomfromgeohash\n"
+"--------------------------------------------------\n"
+" BOX(-115.172816 36.114646,-115.172816 36.114646)\n"
+"\n"
+"SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);\n"
+"\n"
+" st_box2dfromgeohash\n"
+"----------------------\n"
+" BOX(-180 -90,180 90)\n"
+"\n"
+" SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10);\n"
+"                            st_box2dfromgeohash\n"
+"---------------------------------------------------------------------------\n"
+" BOX(-115.17282128334 36.1146408319473,-115.172810554504 36.1146461963654)\n"
+"                ]]>"
 
 #. Tag: para
 #: reference_input.xml:1122
@@ -1684,18 +2161,20 @@ msgid ""
 ", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
 "\"/>"
 msgstr ""
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 
 #. Tag: refname
 #: reference_input.xml:1129
 #, no-c-format
 msgid "ST_GeomFromGeoHash"
-msgstr ""
+msgstr "ST_GeomFromGeoHash"
 
 #. Tag: refpurpose
 #: reference_input.xml:1131
 #, no-c-format
 msgid "Return a geometry from a GeoHash string."
-msgstr ""
+msgstr "GeoHash 스트링으로부터 도형을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:1136
@@ -1706,6 +2185,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeomFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1147
@@ -1714,6 +2197,8 @@ msgid ""
 "Return a geometry from a GeoHash string. The geometry will be a polygon "
 "representing the GeoHash bounds."
 msgstr ""
+"GeoHash 스트링으로부터 도형을 반환합니다. 해당 도형은 GeoHash 범위를 표현하"
+"는 폴리곤이 될 것입니다."
 
 #. Tag: para
 #: reference_input.xml:1149
@@ -1722,6 +2207,8 @@ msgid ""
 "If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a "
 "polygon based on full precision of the input GeoHash string."
 msgstr ""
+"<varname>precision</varname> 을 설정하지 않은 경우, ST_GeomFromGeoHash가 입"
+"력 GeoHash 스트링의 전체 정확도를 기반으로 폴리곤을 반환합니다."
 
 #. Tag: para
 #: reference_input.xml:1151
@@ -1730,6 +2217,8 @@ msgid ""
 "If <varname>precision</varname> is specified ST_GeomFromGeoHash will use "
 "that many characters from the GeoHash to create the polygon."
 msgstr ""
+"<varname>precision</varname> 을 설정한 경우, ST_GeomFromGeoHash가 GeoHash에"
+"서 나온 그만큼의 문자를 이용해서 폴리곤을 생성합니다."
 
 #. Tag: programlisting
 #: reference_input.xml:1158
@@ -1755,6 +2244,25 @@ msgid ""
 "36.1146408319473,-115.17282128334 36.1146408319473))\n"
 "                ]]>"
 msgstr ""
+"<![CDATA[SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));\n"
+"                                                        st_astext\n"
+"--------------------------------------------------------------------------------------------------------------------------\n"
+" POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 "
+"36.114646,-115.172816 36.114646,-115.172816 36.114646))\n"
+"\n"
+"SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));\n"
+"                                                          st_astext\n"
+"------------------------------------------------------------------------------------------------------------------------------\n"
+" POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 "
+"36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625))\n"
+"\n"
+"SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));\n"
+"                                                                                       st_astext\n"
+"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
+" POLYGON((-115.17282128334 36.1146408319473,-115.17282128334 "
+"36.1146461963654,-115.172810554504 36.1146461963654,-115.172810554504 "
+"36.1146408319473,-115.17282128334 36.1146408319473))\n"
+"                ]]>"
 
 #. Tag: para
 #: reference_input.xml:1163
@@ -1763,12 +2271,14 @@ msgid ""
 ",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
 "\"/>"
 msgstr ""
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 
 #. Tag: refname
 #: reference_input.xml:1169
 #, no-c-format
 msgid "ST_GeomFromGML"
-msgstr ""
+msgstr "ST_GeomFromGML"
 
 #. Tag: refpurpose
 #: reference_input.xml:1170
@@ -1776,7 +2286,7 @@ msgstr ""
 msgid ""
 "Takes as input GML representation of geometry and outputs a PostGIS geometry "
 "object"
-msgstr ""
+msgstr "도형의 GML 표현식을 입력받아 PostGIS 도형 객체를 출력합니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:1174
@@ -1789,13 +2299,19 @@ msgid ""
 "<parameter>geomgml</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromGML</function></"
+"funcdef> <paramdef><type>text </type> <parameter>geomgml</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeomFromGML</function></funcdef> <paramdef><type>text </type> "
+"<parameter>geomgml</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:1189
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC GML representation."
-msgstr ""
+msgstr "OGC GML 표현식으로부터 PostGIS ST_Geometry 객체를 작성합니다."
 
 #. Tag: para
 #: reference_input.xml:1190
@@ -1804,6 +2320,8 @@ msgid ""
 "ST_GeomFromGML works only for GML Geometry fragments. It throws an error if "
 "you try to use it on a whole GML document."
 msgstr ""
+"ST_GeomFromGML은 GML 도형 조각(geometry fragment)에 대해서만 작동합니다. 완전"
+"한 GML 문서를 사용하려 할 경우 오류가 발생합니다."
 
 #. Tag: para
 #: reference_input.xml:1191
@@ -1816,18 +2334,24 @@ msgid ""
 "GML standards, cf: <ulink url=\"http://www.opengeospatial.org/standards/gml"
 "\">http://www.opengeospatial.org/standards/gml</ulink>:"
 msgstr ""
+"지원하는 OGC GML 버전은 다음과 같습니다: <itemizedlist> <listitem> <para>GML "
+"3.2.1 네임스페이스</para> </listitem> <listitem> <para>GML 3.1.1 단순 피처 프"
+"로파일 SF-2 (GML 3.1.0 및 3.0.0 하위 호환)</para> </listitem> <listitem> "
+"<para>GML 2.1.2</para> </listitem> </itemizedlist> OGC GML 표준: <ulink url="
+"\"http://www.opengeospatial.org/standards/gml\">http://www.opengeospatial."
+"org/standards/gml</ulink>"
 
 #. Tag: para
 #: reference_input.xml:1207 reference_input.xml:1404
 #, no-c-format
 msgid "Availability: 1.5, requires libxml2 1.6+"
-msgstr ""
+msgstr "1.5 버전부터 사용할 수 있습니다. LibXML2 1.6 이상 버전이 필요합니다."
 
 #. Tag: para
 #: reference_input.xml:1209 reference_input.xml:1406
 #, no-c-format
 msgid "Enhanced: 2.0.0 default srid optional parameter added."
-msgstr ""
+msgstr "개선 사항: 2.0.0 버전에서 선택적인 기본 SRID 파라미터가 추가됐습니다."
 
 #. Tag: para
 #: reference_input.xml:1213
@@ -1837,6 +2361,9 @@ msgid ""
 "instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole "
 "geometry to 2D if a missing Z dimension is found once."
 msgstr ""
+"GML은 혼합 차원을 (예를 들어 동일한 멀티 도형(MultiGeometry) 안에서 2D와 3D"
+"를 함께) 쓸 수 있습니다. PostGIS 도형은 그렇지 않기 때문에, 사라진 Z 차원을 "
+"찾은 경우 ST_GeomFromGML이 전체 도형을 2D로 변환합니다."
 
 #. Tag: para
 #: reference_input.xml:1215
@@ -1847,6 +2374,10 @@ msgid ""
 "root node. If no srsName attribute available for the GML root node, the "
 "function throw an error."
 msgstr ""
+"GML은 동일한 멀티 도형 안에서 혼합 SRS를 지원합니다. PostGIS 도형은 그렇지 않"
+"기 때문에, 이 경우 ST_GeomFromGML이 모든 하위 도형들을 SRS 루트 노드로 재투영"
+"합니다. GML 루트 노드로 쓸 수 있는 srsName 속성이 없을 경우, 오류가 발생합니"
+"다."
 
 #. Tag: para
 #: reference_input.xml:1217
@@ -1856,18 +2387,21 @@ msgid ""
 "could avoid to mention it explicitly for common usages. But you need it if "
 "you want to use XLink feature inside GML."
 msgstr ""
+"ST_GeomFromGML은 분명한 GML 네임스페이스를 꼼꼼히 따지지 않습니다. 일반적인 "
+"사용시에는 네임스페이스를 명시적으로 언급하지 않아도 됩니다. 하지만 GML 내부"
+"에 XLink 피처를 사용하고 싶다면 그래야 합니다."
 
 #. Tag: para
 #: reference_input.xml:1219
 #, no-c-format
 msgid "ST_GeomFromGML function not support SQL/MM curves geometries."
-msgstr ""
+msgstr "ST_GeomFromGML 함수는 SQL/MM 만곡 도형을 지원하지 않습니다."
 
 #. Tag: title
 #: reference_input.xml:1225 reference_input.xml:1336
 #, no-c-format
 msgid "Examples - A single geometry with srsName"
-msgstr ""
+msgstr "예시: srsName을 가진 단일 도형"
 
 #. Tag: programlisting
 #: reference_input.xml:1226
@@ -1881,12 +2415,19 @@ msgid ""
 "                        </gml:coordinates>\n"
 "                </gml:LineString>']]>);"
 msgstr ""
+"SELECT ST_GeomFromGML('<![CDATA[\n"
+"                <gml:LineString srsName=\"EPSG:4269\">\n"
+"                        <gml:coordinates>\n"
+"                                -71.16028,42.258729 -71.160837,42.259112 "
+"-71.161143,42.25932\n"
+"                        </gml:coordinates>\n"
+"                </gml:LineString>']]>);"
 
 #. Tag: title
 #: reference_input.xml:1230
 #, no-c-format
 msgid "Examples - XLink usage"
-msgstr ""
+msgstr "예시: XLink 사용"
 
 #. Tag: programlisting
 #: reference_input.xml:1231
@@ -1908,12 +2449,27 @@ msgid ""
 "                        </gml:pointProperty>\n"
 "                </gml:LineString>');]]>);"
 msgstr ""
+"SELECT <![CDATA[ST_GeomFromGML('\n"
+"                <gml:LineString xmlns:gml=\"http://www.opengis.net/gml\"\n"
+"                                xmlns:xlink=\"http://www.w3.org/1999/xlink"
+"\"\n"
+"                                srsName=\"urn:ogc:def:crs:EPSG::4269\">\n"
+"                        <gml:pointProperty>\n"
+"                                <gml:Point gml:id=\"p1\"><gml:pos>42.258729 "
+"-71.16028</gml:pos></gml:Point>\n"
+"                        </gml:pointProperty>\n"
+"                        <gml:pos>42.259112 -71.160837</gml:pos>\n"
+"                        <gml:pointProperty>\n"
+"                                <gml:Point xlink:type=\"simple\" xlink:href="
+"\"#p1\"/>\n"
+"                        </gml:pointProperty>\n"
+"                </gml:LineString>');]]>);"
 
 #. Tag: title
 #: reference_input.xml:1235
 #, no-c-format
 msgid "Examples - Polyhedral Surface"
-msgstr ""
+msgstr "예시: 다면체 표면"
 
 #. Tag: programlisting
 #: reference_input.xml:1236
@@ -1969,18 +2525,67 @@ msgid ""
 " ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n"
 " ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))"
 msgstr ""
+"SELECT ST_AsEWKT(<![CDATA[ST_GeomFromGML('\n"
+"<gml:PolyhedralSurface>\n"
+"<gml:polygonPatches>\n"
+"  <gml:PolygonPatch>\n"
+"    <gml:exterior>\n"
+"      <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 0 0 1 0 1 1 0 1 "
+"0 0 0 0</gml:posList></gml:LinearRing>\n"
+"    </gml:exterior>\n"
+"  </gml:PolygonPatch>\n"
+"  <gml:PolygonPatch>\n"
+"    <gml:exterior>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 0 1 0 1 1 0 1 "
+"0 0 0 0 0</gml:posList></gml:LinearRing>\n"
+"    </gml:exterior>\n"
+"  </gml:PolygonPatch>\n"
+"  <gml:PolygonPatch>\n"
+"    <gml:exterior>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 1 0 0 1 0 1 0 "
+"0 1 0 0 0</gml:posList></gml:LinearRing>\n"
+"    </gml:exterior>\n"
+"  </gml:PolygonPatch>\n"
+"  <gml:PolygonPatch>\n"
+"    <gml:exterior>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">1 1 0 1 1 1 1 0 1 1 "
+"0 0 1 1 0</gml:posList></gml:LinearRing>\n"
+"    </gml:exterior>\n"
+"  </gml:PolygonPatch>\n"
+"  <gml:PolygonPatch>\n"
+"    <gml:exterior>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 1 0 0 1 1 1 1 1 1 "
+"1 0 0 1 0</gml:posList></gml:LinearRing>\n"
+"    </gml:exterior>\n"
+"  </gml:PolygonPatch>\n"
+"  <gml:PolygonPatch>\n"
+"    <gml:exterior>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 1 1 0 1 1 1 1 0 "
+"1 1 0 0 1</gml:posList></gml:LinearRing>\n"
+"    </gml:exterior>\n"
+"  </gml:PolygonPatch>\n"
+"</gml:polygonPatches>\n"
+"</gml:PolyhedralSurface>']]>));\n"
+"\n"
+"-- 결과 --\n"
+" POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),\n"
+" ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),\n"
+" ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),\n"
+" ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),\n"
+" ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n"
+" ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))"
 
 #. Tag: para
 #: reference_input.xml:1242
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsGML\"/>, <xref linkend=\"ST_GMLToSQL\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsGML\"/>, <xref linkend=\"ST_GMLToSQL\"/>"
 
 #. Tag: refname
 #: reference_input.xml:1248
 #, no-c-format
 msgid "ST_GeomFromGeoJSON"
-msgstr ""
+msgstr "ST_GeomFromGeoJSON"
 
 #. Tag: refpurpose
 #: reference_input.xml:1249
@@ -1988,7 +2593,7 @@ msgstr ""
 msgid ""
 "Takes as input a geojson representation of a geometry and outputs a PostGIS "
 "geometry object"
-msgstr ""
+msgstr "GeoJSON 표현식을 입력받아 PostGIS 도형 객체를 출력합니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:1253
@@ -2008,7 +2613,7 @@ msgstr ""
 #: reference_input.xml:1274
 #, no-c-format
 msgid "Constructs a PostGIS geometry object from the GeoJSON representation."
-msgstr ""
+msgstr "GeoJSON 표현식으로부터 PostGIS 도형 객체를 작성합니다."
 
 #. Tag: para
 #: reference_input.xml:1275
@@ -2017,6 +2622,8 @@ msgid ""
 "ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an "
 "error if you try to use it on a whole JSON document."
 msgstr ""
+"ST_GeomFromGML은 JSON 도형 조각(geometry fragment)에 대해서만 작동합니다. 완"
+"전한 JSON 문서를 사용하려 할 경우 오류가 발생합니다."
 
 #. Tag: para
 #: reference_input.xml:1277
@@ -2036,7 +2643,7 @@ msgstr ""
 #: reference_input.xml:1279
 #, no-c-format
 msgid "Availability: 2.0.0 requires - JSON-C &gt;= 0.9"
-msgstr ""
+msgstr "2.0.0 버전부터 사용할 수 있습니다. JSON-C 0.9 이상 버전이 필요합니다."
 
 #. Tag: para
 #: reference_input.xml:1280
@@ -2047,6 +2654,10 @@ msgid ""
 "path/to/json-c. See <xref linkend=\"installation_configuration\"/> for "
 "details."
 msgstr ""
+"JSON-C 지원을 활성화시키지 않았다면, 출력물 대신 오류 메시지를 보게 될 것입니"
+"다. JSON-C를 활성화하려면, \"--with-jsondir=/path/to/json-c\" 인자와 함께 설"
+"정하십시오. 자세한 내용은 <xref linkend=\"installation_configuration\"/> 을 "
+"참조하십시오."
 
 #. Tag: programlisting
 #: reference_input.xml:1287
@@ -2058,6 +2669,11 @@ msgid ""
 "------\n"
 "POINT(-48.23456 20.12345)"
 msgstr ""
+"SELECT ST_AsText(ST_GeomFromGeoJSON('{\"type\":\"Point\",\"coordinates\":"
+"[-48.23456,20.12345]}')) As wkt;\n"
+"wkt\n"
+"------\n"
+"POINT(-48.23456 20.12345)"
 
 #. Tag: programlisting
 #: reference_input.xml:1288
@@ -2071,6 +2687,13 @@ msgid ""
 "-------------------\n"
 "LINESTRING(1 2,4 5,7 8)"
 msgstr ""
+"-- a 3D linestring\n"
+"SELECT ST_AsText(ST_GeomFromGeoJSON('{\"type\":\"LineString\",\"coordinates"
+"\":[[1,2,3],[4,5,6],[7,8,9]]}')) As wkt;\n"
+"\n"
+"wkt\n"
+"-------------------\n"
+"LINESTRING(1 2,4 5,7 8)"
 
 #. Tag: para
 #: reference_input.xml:1294
@@ -2079,12 +2702,14 @@ msgid ""
 ", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend="
 "\"installation_configuration\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend="
+"\"installation_configuration\"/>"
 
 #. Tag: refname
 #: reference_input.xml:1300
 #, no-c-format
 msgid "ST_GeomFromKML"
-msgstr ""
+msgstr "ST_GeomFromKML"
 
 #. Tag: refpurpose
 #: reference_input.xml:1301
@@ -2092,7 +2717,7 @@ msgstr ""
 msgid ""
 "Takes as input KML representation of geometry and outputs a PostGIS geometry "
 "object"
-msgstr ""
+msgstr "도형의 KML 표현식을 입력받아 PostGIS 도형 객체를 출력합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:1306
@@ -2101,13 +2726,15 @@ msgid ""
 "<funcdef>geometry <function>ST_GeomFromKML</function></funcdef> "
 "<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeomFromKML</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geomkml</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1315
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry object from the OGC KML representation."
-msgstr ""
+msgstr "OGC KML 표현식으로부터 PostGIS ST_Geometry 객체를 작성합니다."
 
 #. Tag: para
 #: reference_input.xml:1316
@@ -2116,6 +2743,8 @@ msgid ""
 "ST_GeomFromKML works only for KML Geometry fragments. It throws an error if "
 "you try to use it on a whole KML document."
 msgstr ""
+"ST_GeomFromKML은 KML 도형 조각(geometry fragment)에 대해서만 작동합니다. 완전"
+"한 KML 문서를 사용하려 할 경우 오류가 발생합니다."
 
 #. Tag: para
 #: reference_input.xml:1317
@@ -2126,6 +2755,10 @@ msgid ""
 "url=\"http://www.opengeospatial.org/standards/kml\">http://www."
 "opengeospatial.org/standards/kml</ulink>:"
 msgstr ""
+"지원하는 OGC KML 버전은 다음과 같습니다: <itemizedlist> <listitem> <para>KML "
+"2.2.0 네임스페이스</para> </listitem> </itemizedlist> OGC KML 표준: <ulink "
+"url=\"http://www.opengeospatial.org/standards/kml\">http://www."
+"opengeospatial.org/standards/kml</ulink>"
 
 #. Tag: para
 #: reference_input.xml:1327
@@ -2137,7 +2770,7 @@ msgstr ""
 #: reference_input.xml:1330
 #, no-c-format
 msgid "ST_GeomFromKML function not support SQL/MM curves geometries."
-msgstr ""
+msgstr "ST_GeomFromKML 함수는 SQL/MM 만곡 도형을 지원하지 않습니다."
 
 #. Tag: programlisting
 #: reference_input.xml:1337
@@ -2149,18 +2782,23 @@ msgid ""
 "                                -71.1667,42.2616</coordinates>\n"
 "                </LineString>']]>);"
 msgstr ""
+"SELECT ST_GeomFromKML('<![CDATA[\n"
+"                <LineString>\n"
+"                        <coordinates>-71.1663,42.2614\n"
+"                                -71.1667,42.2616</coordinates>\n"
+"                </LineString>']]>);"
 
 #. Tag: para
 #: reference_input.xml:1342
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsKML\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_AsKML\"/>"
 
 #. Tag: refname
 #: reference_input.xml:1348
 #, no-c-format
 msgid "ST_GeomFromTWKB"
-msgstr ""
+msgstr "ST_GeomFromTWKB"
 
 #. Tag: refpurpose
 #: reference_input.xml:1349
@@ -2170,6 +2808,9 @@ msgid ""
 "TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</ulink>\") "
 "geometry representation."
 msgstr ""
+"TWKB(\"<ulink url=\"https://github.com/TWKB/Specification/blob/master/twkb.md"
+"\">Tiny Well-Known Binary</ulink>\") 도형 표현식으로부터 도형 인스턴스를 생성"
+"합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:1355
@@ -2178,6 +2819,8 @@ msgid ""
 "<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef> "
 "<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef> "
+"<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1365
@@ -2188,6 +2831,9 @@ msgid ""
 "Known Binary</ulink>\") geometry representation (WKB) and creates an "
 "instance of the appropriate geometry type."
 msgstr ""
+"<varname>ST_GeomFromTWKB</varname> 함수는 TWKB(\"<ulink url=\"https://github."
+"com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</ulink>"
+"\") 도형 표현식(WKB)을 받아 적절한 도형 유형의 인스턴스를 생성합니다."
 
 #. Tag: programlisting
 #: reference_input.xml:1374
@@ -2210,12 +2856,28 @@ msgid ""
 "LINESTRING(-113.98 39.198,-113.981 39.195)\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::"
+"geometry)));\n"
+"\n"
+"         st_astext\n"
+"-----------------------------\n"
+" LINESTRING(126 34, 127 35)\n"
+"(1 row)\n"
+"\n"
+"\n"
+"SELECT ST_AsEWKT(\n"
+"  ST_GeomFromTWKB(E'\\\\x620002f7f40dbce4040105')\n"
+");\n"
+"                                          st_asewkt\n"
+"------------------------------------------------------\n"
+"LINESTRING(-113.98 39.198,-113.981 39.195)\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_input.xml:1385
 #, no-c-format
 msgid "ST_GMLToSQL"
-msgstr ""
+msgstr "ST_GMLToSQL"
 
 #. Tag: refpurpose
 #: reference_input.xml:1386
@@ -2224,6 +2886,8 @@ msgid ""
 "Return a specified ST_Geometry value from GML representation. This is an "
 "alias name for ST_GeomFromGML"
 msgstr ""
+"GML로부터 지정된 ST_Geometry 값을 반환합니다. 이 함수는 ST_GeomFromGML 함수"
+"와 동일합니다."
 
 #. Tag: funcsynopsis
 #: reference_input.xml:1389
@@ -2236,30 +2900,36 @@ msgid ""
 "parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_GMLToSQL</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_GMLToSQL</"
+"function></funcdef> <paramdef><type>text </type> <parameter>geomgml</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_input.xml:1403
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support)."
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.50 (만곡 도형 지원 제외)"
 
 #. Tag: para
 #: reference_input.xml:1410
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_GeomFromGML\"/>, <xref linkend=\"ST_AsGML\"/>"
 
 #. Tag: refname
 #: reference_input.xml:1417
 #, no-c-format
 msgid "ST_LineFromEncodedPolyline"
-msgstr ""
+msgstr "ST_LineFromEncodedPolyline"
 
 #. Tag: refpurpose
 #: reference_input.xml:1419
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline."
-msgstr ""
+msgstr "인코딩된 폴리라인(polyline)으로부터 라인스트링을 생성합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:1424
@@ -2270,12 +2940,16 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_LineFromEncodedPolyline</function></funcdef> "
+"<paramdef><type>text </type> <parameter>polyline</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1435
 #, no-c-format
 msgid "Creates a LineString from an Encoded Polyline string."
-msgstr ""
+msgstr "인코딩된 폴리라인 스트링으로부터 라인스트링을 생성합니다."
 
 #. Tag: para
 #: reference_input.xml:1436
@@ -2293,12 +2967,14 @@ msgid ""
 "See http://developers.google.com/maps/documentation/utilities/"
 "polylinealgorithm"
 msgstr ""
+"참조: http://developers.google.com/maps/documentation/utilities/"
+"polylinealgorithm"
 
 #. Tag: para
 #: reference_input.xml:1439
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
 #: reference_input.xml:1445
@@ -2321,13 +2997,13 @@ msgstr ""
 #: reference_input.xml:1458
 #, no-c-format
 msgid "ST_PointFromGeoHash"
-msgstr ""
+msgstr "ST_PointFromGeoHash"
 
 #. Tag: refpurpose
 #: reference_input.xml:1460
 #, no-c-format
 msgid "Return a point from a GeoHash string."
-msgstr ""
+msgstr "GeoHash 스트링으로부터 포인트를 반환합니다."
 
 #. Tag: funcprototype
 #: reference_input.xml:1465
@@ -2338,6 +3014,10 @@ msgid ""
 "<paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 msgstr ""
+"<funcdef>point <function>ST_PointFromGeoHash</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geohash</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1476
@@ -2346,6 +3026,8 @@ msgid ""
 "Return a point from a GeoHash string. The point represents the center point "
 "of the GeoHash."
 msgstr ""
+"GeoHash 스트링으로부터 포인트를 반환합니다. 해당 포인트는 GeoHash의 중심점입"
+"니다."
 
 #. Tag: para
 #: reference_input.xml:1478
@@ -2354,6 +3036,8 @@ msgid ""
 "If no <varname>precision</varname> is specified ST_PointFromGeoHash returns "
 "a point based on full precision of the input GeoHash string."
 msgstr ""
+"<varname>precision</varname> 을 설정하지 않은 경우, ST_PointFromGeoHash가 입"
+"력 GeoHash 스트링의 전체 정확도를 기반으로 포인트를 반환합니다."
 
 #. Tag: para
 #: reference_input.xml:1480
@@ -2362,6 +3046,8 @@ msgid ""
 "If <varname>precision</varname> is specified ST_PointFromGeoHash will use "
 "that many characters from the GeoHash to create the point."
 msgstr ""
+"<varname>precision</varname> 을 설정한 경우, ST_PointFromGeoHash가 GeoHash에"
+"서 나온 그만큼의 문자를 이용해서 포인트를 생성합니다."
 
 #. Tag: programlisting
 #: reference_input.xml:1487
@@ -2383,6 +3069,21 @@ msgid ""
 " POINT(-115.172815918922 36.1146435141563)\n"
 "                ]]>"
 msgstr ""
+"<![CDATA[SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));\n"
+"          st_astext\n"
+"------------------------------\n"
+" POINT(-115.172816 36.114646)\n"
+"\n"
+"SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));\n"
+"             st_astext\n"
+"-----------------------------------\n"
+" POINT(-115.13671875 36.123046875)\n"
+"\n"
+"SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));\n"
+"                 st_astext\n"
+"-------------------------------------------\n"
+" POINT(-115.172815918922 36.1146435141563)\n"
+"                ]]>"
 
 #. Tag: para
 #: reference_input.xml:1492
@@ -2391,11 +3092,13 @@ msgid ""
 ", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
 "\"/>"
 msgstr ""
+", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
+"\"/>"
 
 #. Tag: refname
 #: reference_input.xml:1498
 #, no-c-format
-msgid "ST_FromFlatGeobufToTable"
+msgid "ST_TableFromFlatGeobuf"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2408,7 +3111,7 @@ msgstr ""
 #: reference_input.xml:1504
 #, no-c-format
 msgid ""
-"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
+"<funcdef>void <function>ST_TableFromFlatGeobuf</function></funcdef> "
 "<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
 "<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"

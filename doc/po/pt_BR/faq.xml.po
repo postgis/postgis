@@ -2,8 +2,8 @@
 #
 # Translators:
 # Dauro Lima Sobrinho <daurolima@gmail.com>, 2013-2014
-# georgersilva <georger.silva@gmail.com>, 2013
-# georgersilva <georger.silva@gmail.com>, 2013-2014
+# George Silva <georger.silva@gmail.com>, 2013
+# George Silva <georger.silva@gmail.com>, 2013-2014
 # Marcelo Soares Souza <marcelo@juntadados.org>, 2014
 # Omar Fernando Pessoa <omar.pessoa@gmail.com>, 2013
 # Poliana Palhares <p.palhares@plamu.com.br>, 2016
@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2018-07-22 04:06+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
+"PO-Revision-Date: 2021-11-28 21:23+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
 "language/pt_BR/)\n"
 "Language: pt_BR\n"
@@ -39,17 +39,13 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:12
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A step by step tutorial guide workshop <ulink url=\"http://postgis.net/"
 "workshops/postgis-intro/\">Introduction to PostGIS</ulink>. It includes "
 "packaged data as well as intro to working with OpenGeo Suite. It is probably "
 "the best tutorial on PostGIS."
 msgstr ""
-"OpenGeo tem uma oficina passo a passo <ulink url=\"http://workshops."
-"boundlessgeo.com/postgis-intro/\">Introdução ao PostGIS</ulink>. Inclui "
-"dados para testes e uma introdução sobre como trabalhar com a OpenGeo Suite. "
-"Possivelmente o melhor tutorial sobre PostGIS."
 
 #. Tag: para
 #: faq.xml:13
@@ -463,17 +459,13 @@ msgstr "Como insiro um objeto GIS dentro do banco de dados?"
 
 #. Tag: para
 #: faq.xml:148
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
 "\"geography\" to hold your GIS data. Storing geography type data is a little "
 "different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
 "\"/> for details on storing geography."
 msgstr ""
-"Primeiramente, você precisa criar uma tabela com uma coluna do tipo "
-"\"geometry\" ou \"geography\" para armazenar seus dados GIS. O armazenamento "
-"do dado do tipo \"geography\" é um pouco diferente do tipo \"geometry\". "
-"Consulte o documento <xref linkend=\"Geography_Basics\"/> para detalhes."
 
 #. Tag: para
 #: faq.xml:152
@@ -645,17 +637,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:210
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT id, geom\n"
 "FROM thetable\n"
 "WHERE\n"
 "  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
-"SELECT id, the_geom\n"
-"FROM thetable\n"
-"WHERE\n"
-"  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -912,7 +900,7 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:341
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To perform a reprojection, both the source and destination coordinate "
 "systems must be defined in the SPATIAL_REF_SYS table, and the geometries "
@@ -921,18 +909,12 @@ msgid ""
 "The below projects a geometry to NAD 83 long lat. The below will only work "
 "if the srid of geom is not -1 (not undefined spatial ref)"
 msgstr ""
-"Para realizar uma reprojeção, ambos as coordenadas fonte e destino devem "
-"estar definidas na tabela SPATIAL_REF_SYS, e a geometria reprojetada deve já "
-"ter um SRID setado para ela. Uma vez isso feito, a reprojeção é taõ simples "
-"quanto referenciar um SRID de destino desejado. The below projects a "
-"geometry to NAD 83 long lat. Abaixo apenas trabalhará se o srid do the_geom "
-"não for -1 (não indefinido spatial ref)"
 
 #. Tag: programlisting
 #: faq.xml:348
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "SELECT ST_Transform(geom,4269) FROM geotable;"
-msgstr "SELECT ST_Transform(the_geom,4269) FROM geotable;"
+msgstr ""
 
 #. Tag: para
 #: faq.xml:354
@@ -959,15 +941,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:361
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
 "                                SELECT count(gid) FROM geotable WHERE geom "
 "IS NULL;"
 msgstr ""
-"Para verificar o de geometrias que realmente estão vazias:\n"
-"\n"
-"SELECT count(gid) FROM geotable WHERE the_geom IS NULL;"
 
 #. Tag: para
 #: faq.xml:367

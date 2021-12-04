@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2018-07-23 18:01+0000\n"
-"Last-Translator: pibinko <pibinko@gmail.com>\n"
+"PO-Revision-Date: 2021-11-28 21:13+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
 "language/it_IT/)\n"
 "Language: it_IT\n"
@@ -152,12 +152,9 @@ msgstr "getfaceedges_returntype"
 
 #. Tag: refpurpose
 #: extras_topology.xml:28
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A composite type that consists of a sequence number and an edge number."
 msgstr ""
-"Un tipo composito che consiste in un numero sequenziale e un numero di "
-"\"bordo\". E' il tipo ritornato dalla funzione <varname>ST_GetFaceEdges</"
-"varname>."
 
 #. Tag: title
 #: extras_topology.xml:34 extras_topology.xml:58 extras_topology.xml:107
@@ -188,15 +185,12 @@ msgstr "Descrizione"
 
 #. Tag: para
 #: extras_topology.xml:35
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A composite type that consists of a sequence number and an edge number. This "
 "is the return type for <varname>ST_GetFaceEdges</varname> and "
 "<varname>GetNodeEdges</varname> functions."
 msgstr ""
-"Un tipo composito che consiste in un numero sequenziale e un numero di "
-"\"bordo\". E' il tipo ritornato dalla funzione <varname>ST_GetFaceEdges</"
-"varname>."
 
 #. Tag: para
 #: extras_topology.xml:43
@@ -345,15 +339,12 @@ msgstr "validatetopology_returntype"
 
 #. Tag: refpurpose
 #: extras_topology.xml:104
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A composite type that consists of an error message and id1 and id2 to denote "
 "location of error. This is the return type for <varname>ValidateTopology</"
 "varname>."
 msgstr ""
-"Un tipo composito che consiste in un numero sequenziale e un numero di "
-"\"bordo\". E' il tipo ritornato dalla funzione <varname>ST_GetFaceEdges</"
-"varname>."
 
 #. Tag: para
 #: extras_topology.xml:108
@@ -721,13 +712,11 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:298
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"toTopoGeom\"/>, <xref linkend=\"CreateTopology\"/>, <xref "
 "linkend=\"CreateTopoGeom\"/>"
 msgstr ""
-", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
-"<xref linkend=\"GetTopologyID\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:308
@@ -1002,16 +991,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:475
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>setof validatetopology_returntype <function>ValidateTopology</"
 "function></funcdef> <paramdef><type>varchar </type> <parameter>toponame</"
 "parameter></paramdef> <paramdef choice=\"opt\"><type>geometry</type> "
 "<parameter>bbox</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>AddEdge</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:486
@@ -1271,17 +1257,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_topology.xml:628
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT * FROM  topology.ValidateTopology('ma_topo');\n"
 "      error        | id1 | id2\n"
 "-------------------+-----+-----\n"
 "face without edges |   1 |"
 msgstr ""
-"SELECT * FROM  topology.ValidateTopology('ma_topo');\n"
-"      error        | id1 | id2\n"
-"-------------------+-----+-----\n"
-"face without edges |   0 |"
 
 #. Tag: para
 #: extras_topology.xml:634
@@ -1291,9 +1273,9 @@ msgstr ", <xref linkend=\"Topology_Load_Tiger\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:640
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ValidateTopologyRelation"
-msgstr "ValidateTopology"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:642
@@ -1303,14 +1285,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:647
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>setof record <function>ValidateTopologyRelation</function></"
 "funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>integer <function>GetTopologyID</function></funcdef> "
-"<paramdef><type>varchar</type> <parameter>toponame</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:657
@@ -1322,15 +1302,15 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:663 extras_topology.xml:716 extras_topology.xml:2032
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.2.0"
-msgstr "Disponibilità: 2.0"
+msgstr ""
 
 #. Tag: refname
 #: extras_topology.xml:676
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "FindTopology"
-msgstr "Topologia"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:678
@@ -1340,7 +1320,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: extras_topology.xml:682
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>topology <function>FindTopology</function></"
 "funcdef> <paramdef><type>TopoGeometry</type> <parameter>topogeom</"
@@ -1359,16 +1339,6 @@ msgid ""
 "<paramdef><type>int</type> <parameter>id</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>topogeometry <function>CreateTopoGeom</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>tg_type</parameter></"
-"paramdef> <paramdef><type>integer</type> <parameter>layer_id</parameter></"
-"paramdef> <paramdef><type>topoelementarray</type> <parameter>tg_objs</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>topogeometry "
-"<function>CreateTopoGeom</function></funcdef> <paramdef><type>varchar </"
-"type> <parameter>toponame</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>tg_type</parameter></paramdef> <paramdef><type>integer</"
-"type> <parameter>layer_id</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: extras_topology.xml:712
@@ -1792,7 +1762,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:989
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
@@ -1800,11 +1770,6 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1001
@@ -1841,7 +1806,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:1033
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
@@ -1849,11 +1814,6 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1045
@@ -1899,7 +1859,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:1082
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>SETOF integer <function>TopoGeo_AddPolygon</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
@@ -1907,11 +1867,6 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1094
@@ -2872,17 +2827,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:1906
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>GetEdgeByPoint</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>GetEdgeByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1919
@@ -2988,17 +2939,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:1959
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>GetFaceByPoint</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>GetFaceByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1970
@@ -3063,18 +3010,17 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1999
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"AddFace\"/>, <xref linkend=\"GetNodeByPoint\"/>, <xref "
 "linkend=\"GetEdgeByPoint\"/>"
 msgstr ""
-", <xref linkend=\"GetNodeByPoint\"/>, <xref linkend=\"GetEdgeByPoint\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:2010
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "GetFaceContainingPoint"
-msgstr "GetFaceByPoint"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:2011
@@ -3084,15 +3030,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2015
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>GetFaceContainingPoint</function></funcdef> "
 "<paramdef><type>text </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>AddEdge</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2025
@@ -3128,17 +3071,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2051
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>GetNodeByPoint</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>GetNodeByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2064
@@ -3610,9 +3549,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2421
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
-msgstr ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_Within\"/>"
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2435
@@ -4010,15 +3949,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2660
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
 "<paramdef><type>TopoGeometry</type> <parameter>tg</parameter></paramdef> "
 "<paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2670
@@ -4612,9 +4548,9 @@ msgstr ""
 
 #. Tag: refname
 #: extras_topology.xml:3026
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "TopoGeom_addTopoGeom"
-msgstr "TopoGeo_AddPolygon"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:3027
@@ -4625,15 +4561,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:3031
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>topogeometry <function>TopoGeom_addTopoGeom</function></funcdef> "
 "<paramdef><type>topogeometry </type> <parameter>tgt</parameter></paramdef> "
 "<paramdef><type>topogeometry </type> <parameter>src</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_GetFaceGeometry</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>aface</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:3042
@@ -4655,9 +4588,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:3055
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.2"
-msgstr "Disponibilità: 2.0"
+msgstr ""
 
 #. Tag: programlisting
 #: extras_topology.xml:3059
@@ -4676,9 +4609,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:3065
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"clearTopoGeom\"/>, <xref linkend=\"CreateTopoGeom\"/>"
-msgstr ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:3076
@@ -4688,9 +4621,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:3080
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Refer to <xref linkend=\"toTopoGeom\"/>."
-msgstr ", <xref linkend=\"CreateTopoGeom\"/>"
+msgstr ""
 
 #. Tag: title
 #: extras_topology.xml:3090
@@ -5330,17 +5263,3 @@ msgid ""
 "topologies. Also not currently supported for hierarchichal topogeometries "
 "(topogeometries composed of other topogeometries)."
 msgstr ""
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>setof validatetopology_returntype <function>ValidateTopology</"
-#~ "function></funcdef> <paramdef><type>varchar </type> "
-#~ "<parameter>topology_schema_name</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>setof validatetopology_returntype <function>ValidateTopology</"
-#~ "function></funcdef> <paramdef><type>varchar </type> "
-#~ "<parameter>topology_schema_name</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_Azimuth\"/>"
-#~ msgstr ", <xref linkend=\"ST_Azimuth\"/>"

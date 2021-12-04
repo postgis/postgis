@@ -3,13 +3,14 @@
 # Translators:
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
+# Vincent Picavet <vincent.ml@oslandia.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"PO-Revision-Date: 2021-11-28 22:08+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
 "fr/)\n"
 "Language: fr\n"
@@ -48,7 +49,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:23
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
@@ -72,23 +73,6 @@ msgid ""
 "type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Buffer</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Buffer</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>text </"
-"type> <parameter>buffer_style_parameters</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geography <function>ST_Buffer</"
-"function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer_in_meters</parameter></paramdef> </funcprototype>"
 
 #. Tag: title
 #: reference_processing.xml:57 reference_processing.xml:308
@@ -106,7 +90,7 @@ msgstr ""
 #: reference_processing.xml:1954 reference_processing.xml:2042
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #. Tag: para
 #: reference_processing.xml:59
@@ -276,7 +260,7 @@ msgstr ""
 #: reference_processing.xml:2069
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: para
 #: reference_processing.xml:136
@@ -540,7 +524,7 @@ msgstr ""
 #: reference_processing.xml:2122
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Voir aussi"
 
 #. Tag: para
 #: reference_processing.xml:287
@@ -565,13 +549,11 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:300
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:310
@@ -601,7 +583,7 @@ msgstr ""
 #: reference_processing.xml:322 reference_processing.xml:1058
 #, no-c-format
 msgid "Availability: 1.1.0"
-msgstr ""
+msgstr "Disponibilité: 1.1.0"
 
 #. Tag: para
 #: reference_processing.xml:336
@@ -647,7 +629,7 @@ msgstr ""
 #: reference_processing.xml:364
 #, no-c-format
 msgid "ST_Centroid"
-msgstr ""
+msgstr "ST_Centroid"
 
 #. Tag: refpurpose
 #: reference_processing.xml:366
@@ -657,7 +639,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:370
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Centroid</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
@@ -666,13 +648,6 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_CurveToLine</function></"
-"funcdef> <paramdef><type>geometry</type> <parameter>curveGeom</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</"
-"type> <parameter>curveGeom</parameter></paramdef> <paramdef><type>integer</"
-"type> <parameter>segments_per_qtr_circle</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: para
 #: reference_processing.xml:392
@@ -729,7 +704,7 @@ msgstr ""
 #: reference_processing.xml:419
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_processing.xml:420
@@ -816,7 +791,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:501
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -824,11 +799,6 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>allow_holes = false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>target_percent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:512
@@ -923,13 +893,13 @@ msgstr ""
 #: reference_processing.xml:549 reference_processing.xml:685
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Réalisé par le module GEOS"
 
 #. Tag: para
 #: reference_processing.xml:551 reference_processing.xml:1637
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Disponibilité: 2.0.0"
 
 #. Tag: programlisting
 #: reference_processing.xml:556
@@ -1145,7 +1115,7 @@ msgstr ""
 #: reference_processing.xml:997 reference_processing.xml:1469
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_processing.xml:701
@@ -1232,13 +1202,13 @@ msgstr ""
 #: reference_processing.xml:750
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Disponibilité: 2.1.0"
 
 #. Tag: para
 #: reference_processing.xml:752
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: title
 #: reference_processing.xml:756
@@ -1380,7 +1350,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:827
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_FilterByM</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -1389,10 +1359,6 @@ msgid ""
 "parameter></paramdef> <paramdef><type>boolean</type> <parameter>returnM = "
 "false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:839
@@ -1485,7 +1451,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:874
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_GeneratePoints</function></"
 "funcdef> <paramdef> <parameter>g</parameter> <type>geometry</type> </"
@@ -1496,13 +1462,6 @@ msgid ""
 "<parameter>npoints</parameter> </paramdef> <paramdef> <type>integer</type> "
 "<parameter>seed</parameter> </paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Intersection</function></"
-"funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </"
-"paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geography "
-"<function>ST_Intersection</function></funcdef> <paramdef> <type>geography</"
-"type> <parameter>geogA</parameter> </paramdef> <paramdef> <type>geography</"
-"type> <parameter>geogB</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_processing.xml:899
@@ -1567,7 +1526,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:959
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_GeometricMedian</function> </funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -1577,10 +1536,6 @@ msgid ""
 "\"><type>boolean</type> <parameter>fail_if_not_converged = false</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:974
@@ -1630,7 +1585,7 @@ msgstr ""
 #: reference_processing.xml:998
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: para
 #: reference_processing.xml:1010
@@ -1670,14 +1625,15 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1039
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>"
+"<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1049
@@ -1776,14 +1732,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1086
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>(geometry, geometry, double precision) "
 "<function>ST_MaximumInscribedCircle</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1095
@@ -1916,7 +1870,7 @@ msgstr ""
 #: reference_processing.xml:1166
 #, no-c-format
 msgid "Availability: 1.4.0"
-msgstr ""
+msgstr "Disponibilité: 1.4.0"
 
 #. Tag: programlisting
 #: reference_processing.xml:1176
@@ -1984,14 +1938,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1201
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>(geometry, double precision) <function>ST_MinimumBoundingRadius</"
 "function></funcdef> <paramdef><type>geometry</type> <parameter>geom</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1210
@@ -2048,13 +2000,11 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1235
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_OrientedEnvelope</function></funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1247
@@ -2374,7 +2324,7 @@ msgstr ""
 #: reference_processing.xml:1440
 #, no-c-format
 msgid "ST_PointOnSurface"
-msgstr ""
+msgstr "ST_PointOnSurface"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1441
@@ -2384,13 +2334,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1446
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+"<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1458
@@ -2511,7 +2461,7 @@ msgstr ""
 #: reference_processing.xml:1527
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr ""
+msgstr "Disponibilité: 1.0.0RC1"
 
 #. Tag: title
 #: reference_processing.xml:1531
@@ -2574,15 +2524,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1553
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ReducePrecision</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>gridsize</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1567
@@ -2814,7 +2761,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1697
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
@@ -2822,10 +2769,6 @@ msgid ""
 "<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1708
@@ -3026,7 +2969,7 @@ msgstr ""
 #: reference_processing.xml:1807 reference_processing.xml:1909
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilité : 2.2.0"
 
 #. Tag: para
 #: reference_processing.xml:1812
@@ -3070,7 +3013,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1829
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -3078,10 +3021,6 @@ msgid ""
 "paramdef> <paramdef><type>boolean</type> <parameter>preserveEndPoints = "
 "false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1840
@@ -3157,17 +3096,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1876
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>threshold = 0</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1887
@@ -3253,7 +3188,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1934
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> <paramdef> "
 "<parameter>g1</parameter> <type>geometry</type> </paramdef> <paramdef choice="
@@ -3261,11 +3196,6 @@ msgid ""
 "<paramdef choice=\"opt\"> <parameter>extend_to</parameter> <type>geometry</"
 "type> </paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>style_parameters=''</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1955
@@ -3351,7 +3281,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:2022
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef> "
 "<paramdef> <parameter>g1</parameter> <type>geometry</type> </paramdef> "
@@ -3359,11 +3289,6 @@ msgid ""
 "type> </paramdef> <paramdef choice=\"opt\"> <parameter>extend_to</parameter> "
 "<type>geometry</type> </paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>text </type> "
-"<parameter>style_parameters=''</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:2044
@@ -3454,233 +3379,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ""
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_CurveToLine</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>curveGeom</parameter></"
-#~ "paramdef> <paramdef><type>float</type> <parameter>tolerance</parameter></"
-#~ "paramdef> <paramdef choice=\"opt\"><type>integer</type> "
-#~ "<parameter>tolerance_type</parameter></paramdef> <paramdef choice=\"opt"
-#~ "\"><type>integer</type> <parameter>flags</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-#~ "<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-#~ "paramdef> <paramdef choice=\"opt\"><type>text </type> "
-#~ "<parameter>style_parameters=''</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_Difference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_Difference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Intersection</function></"
-#~ "funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </"
-#~ "paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geography "
-#~ "<function>ST_Intersection</function></funcdef> <paramdef> "
-#~ "<type>geography</type> <parameter>geogA</parameter> </paramdef> "
-#~ "<paramdef> <type>geography</type> <parameter>geogB</parameter> </"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Intersection</function></"
-#~ "funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </"
-#~ "paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geography "
-#~ "<function>ST_Intersection</function></funcdef> <paramdef> "
-#~ "<type>geography</type> <parameter>geogA</parameter> </paramdef> "
-#~ "<paramdef> <type>geography</type> <parameter>geogB</parameter> </"
-#~ "paramdef> </funcprototype>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
-#~ "paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-#~ "paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_Node</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_Node</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_WrapX</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef> "
-#~ "<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-#~ "<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef> "
-#~ "<paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_Split</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-#~ "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_Split</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-#~ "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>g1field</parameter></"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Union</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>g1field</parameter></"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Union</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
-#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Collect</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
-#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Collect</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></"
-#~ "paramdef>"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_GeneratePoints</function></funcdef> "
-#~ "<paramdef> <parameter>g</parameter> <type>geometry</type> </paramdef> "
-#~ "<paramdef> <parameter>npoints</parameter> <type>numeric</type> </paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_CurveToLine</function></"
-#~ "funcdef> <paramdef><type>geometry</type> <parameter>curveGeom</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</"
-#~ "type> <parameter>curveGeom</parameter></paramdef> "
-#~ "<paramdef><type>integer</type> <parameter>segments_per_qtr_circle</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</"
-#~ "type> <parameter>curveGeom</parameter></paramdef> <paramdef><type>float</"
-#~ "type> <parameter>tolerance</parameter></paramdef> "
-#~ "<paramdef><type>integer</type> <parameter>tolerance_type</parameter></"
-#~ "paramdef> <paramdef><type>integer</type> <parameter>flags</parameter></"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
-#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Collect</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
