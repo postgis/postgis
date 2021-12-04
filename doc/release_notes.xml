@@ -2,6 +2,45 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+    <sect1>
+        <title>PostGIS 3.2.0beta3</title>
+        <para>2021/12/04</para>
+        <para>This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+
+(and ST_MakeValid enhancements with 3.10+),
+Proj 6.1+, and PostgreSQL 14+.</para>
+    <para>Due to some query performance degradation
+    with the new PG14 fast index build ,
+    we have decided to disable the feature by default
+    until we get more user testing
+    as to the true impact of real-world queries.
+    If you are running PG14+, you can reenable it by doing:</para>
+
+    <programlisting>ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist
+        ADD FUNCTION 11 (geometry)
+        geometry_gist_sortsupport_2d (internal);
+    </programlisting>
+    <para>To revert the change:</para>
+    <programlisting>ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist
+     DROP FUNCTION 11 (geometry);</programlisting>
+
+    <para>and then reindex your gist indexes</para>
+
+    <para>Changes since PostGIS 3.2.0beta2 release:</para>
+    <simplesect>
+        <title>Breaking changes / fixes</title>
+        <para>5028, ST_AsFlatGeobuf crashes on mixed geometry input
+            (Björn Harrtell)</para>
+        <para>5029, ST_AsFlatGeobuf indexed output corruption
+            (Björn Harrtell)</para>
+        <para>5014, Crash on ST_TableFromFlatGeobuf (Björn Harrtell)</para>
+        <para>Rename ST_TableFromFlatGeobuf to ST_FromFlatGeobufToTable
+                (Björn Harrtell)</para>
+         <para>PG14 fast index building disabled by default. (Paul Ramsey)</para>
+    </simplesect>
+    </sect1>
+
     <sect1>
         <title>Release 3.2.0beta2</title>
         <para>Release date: 2021/11/26</para>
@@ -12,7 +51,7 @@ Proj 6.1+, and PostgreSQL 14+.
 
 Changes since PostGIS 3.2.0beta1 release:</para>
         <simplesect>
-            <title> Breaking changes / fixes</title>
+            <title>Breaking changes / fixes</title>
             <para>5016, loader (shp2pgsq): Respect LDFLAGS (Greg Troxel)</para>
             <para>5005, ST_AsFlatGeoBuf crashes on tables when geometry
                     column is not the first column (Björn Harrtell)</para>

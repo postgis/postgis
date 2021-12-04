@@ -1,15 +1,36 @@
 PostGIS 3.2.0beta3
-2021/xx/xx
+2021/12/04
 This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
 Additional features are enabled if you are running GEOS 3.9+
 (and ST_MakeValid enhancements with 3.10+),
 Proj 6.1+, and PostgreSQL 14+.
+Due to some query performance degradation
+with the new fast index build that requires PG14,
+we have decided to disable the feature by default
+until we get more user testing
+as to the true impact of real-world queries.
+If you are running PG14+, you can reenable it by doing
+
+ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist
+     ADD FUNCTION 11 (geometry)
+     geometry_gist_sortsupport_2d (internal);
+
+To revert the change:
+   ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist
+     DROP FUNCTION 11 (geometry);
+
+and then reindex your gist indexes.
+
 Changes since PostGIS 3.2.0beta2 release:
-  * Fixes *
+  * Breaking changes / fixes *
   - #5028, ST_AsFlatGeobuf crashes on mixed geometry input
+    (Björn Harrtell)
   - #5029, ST_AsFlatGeobuf indexed output corruption
-  - #5014, Crash on ST_TableFromFlatGeobuf
-  * Enhancements *
+    (Björn Harrtell)
+  - #5014, Crash on ST_TableFromFlatGeobuf (Björn Harrtell)
+  - Rename ST_TableFromFlatGeobuf to ST_FromFlatGeobufToTable
+    (Björn Harrtell)
+  - PG14 fast index building disabled by default. (Paul Ramsey)
 
 PostGIS 3.2.0beta2
 2021/11/26
