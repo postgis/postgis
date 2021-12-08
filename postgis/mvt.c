@@ -322,7 +322,7 @@ static void parse_column_keys(mvt_agg_context *ctx)
 		}
 		else
 		{
-			if (!geom_found && strcmp(tkey, ctx->geom_name) == 0)
+			if (!geom_found && strcasecmp(tkey, ctx->geom_name) == 0)
 			{
 				ctx->geom_index = i;
 				geom_found = true;
