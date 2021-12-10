@@ -311,7 +311,7 @@ union_if_available(UNIONFIND* uf, uint32_t p, uint32_t q, char* is_in_core, char
 
 /* An optimized DBSCAN union for the case where min_points == 1.
  * If min_points == 1, then we don't care how many neighbors we find; we can union clusters
- * on the fly, as as we go through the distance calculations.  This potentially allows us
+ * on the fly, as we go through the distance calculations.  This potentially allows us
  * to avoid some distance computations altogether.
  */
 static int
