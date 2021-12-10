@@ -4741,6 +4741,7 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FRO
             <refsection>
                 <title>Description</title>
                 <para>Returns the centroid (point geometry) of the area represented by a pixel.</para>
+                <para>Enhanced: 3.2.0 Faster now implemented in C.</para>
                 <para>Availability: 2.1.0</para>
             </refsection>
 
@@ -4801,8 +4802,9 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
                     </para>
                 </note>
 
-                <para>Availability: 2.1.0</para>
+                <para>Enhanced: 3.2.0 Faster now implemented in C.</para>
                 <para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
+                <para>Availability: 2.1.0</para>
             </refsection>
 
             <refsection>
