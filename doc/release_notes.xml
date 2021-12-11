@@ -2,7 +2,123 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1>
+        <title>PostGIS 3.2.0rc1</title>
+        <para>2021/12/10</para>
+        <para>This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
+            Additional features are enabled if you are running GEOS 3.9+
+            (and ST_MakeValid enhancements with 3.10+),
+            Proj 6.1+, and PostgreSQL 14+.</para>
+        <para>Due to some query performance degradation
+        with the new PG14 fast index build ,
+        we have decided to disable the feature by default
+        until we get more user testing
+        as to the true impact of real-world queries.
+        If you are running PG14+, you can reenable it by doing:</para>
+        <programlisting>ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist
+            ADD FUNCTION 11 (geometry)
+            geometry_gist_sortsupport_2d (internal);
+        </programlisting>
+        <para>To revert the change:</para>
+        <programlisting>ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist
+        DROP FUNCTION 11 (geometry);</programlisting>
+        <para>and then reindex your gist indexes</para>
+        <simplesect>
+            <title>Breaking changes</title>
+            <para>5008, Empty geometries are not reported as being within Infinite
+                    distance by ST_DWithin (Sandro Santilli)</para>
+            <para>4824, Removed <code>--without-wagyu</code> build option. Using Wagyu is now mandatory to build with MVT support.</para>
+            <para>4933, topology.GetFaceByPoint will not work with topologies having invalid edge linking.</para>
+            <para>4981, ST_StartPoint support any geometry. No longer returns null for non-linestrings.</para>
+            <para>4149, ST_AsMVTGeom now preserves more of original geometry's details at scale close to target extent.
+                    If you need previous simplifying behaviour, you can ST_Simplify the geometry in advance.
+                    (Darafei Praliaskouski)</para>
+            <para>- Proj 4.9 or higher is required</para>
+            <para>5000, Turn off Window support in ST_AsMVT aggregate
+                    as no real use-case for it and it crashes with random input
+                    (Paul Ramsey)</para>
+    </simplesect>
 
+    <simplesect>
+    <title>Enhancements</title>
+        <para>4997, FlatGeobuf format input/output (Björn Harrtell)</para>
+        <para>4575, GRANT SELECT on topology metadata tables to PUBLIC (Sandro Santilli)</para>
+        <para>2592, Do not allow CreateTopology to define topologies with SRID &lt; 0
+                (Sandro Santilli)</para>
+        <para>3232, Prevent moving an isolated node to different face
+                (Sandro Santilli)</para>
+        <para>- Consider collection TopoGeometries while editing topology primitives.
+                (Sandro Santilli)</para>
+        <para>3248, Prevent removing isolated edges if used in a TopoGeometry
+                (Sandro Santilli)</para>
+        <para>3231, Prevent removing isolated nodes if used in a TopoGeometry
+                (Sandro Santilli)</para>
+        <para>3239, Prevent headling topology edges if the connecting node is
+                used in the definition of a TopoGeometry (Sandro Santilli)</para>
+        <para>4950, Speed up checking containing_face for nodes in ValidateTopology
+                (Sandro Santilli)</para>
+        <para>4945, Multi-shell face check in ValidateTopology (Sandro Santilli)</para>
+        <para>4944, Side-location conflict check in ValidateTopology (Sandro Santilli)</para>
+        <para>3042, ValidateTopology check for edge linking (Sandro Santilli)</para>
+        <para>3276, ValidateTopology check for face's mbr (Sandro Santilli)</para>
+        <para>4936, Bounding box limited ValidateTopology (Sandro Santilli)</para>
+        <para>4933, Speed up topology building in presence of big faces (Sandro Santilli)</para>
+        <para>3233, ValidateTopology check for node's containing_face (Sandro Santilli)</para>
+        <para>4830, ValidateTopology check for edges side face containment
+                (Sandro Santilli)</para>
+        <para>4827, Allow NaN coordinates in WKT input (Paul Ramsey)</para>
+        <para>- ST_Value() accepts resample parameter to add bilinear option (Paul Ramsey)</para>
+        <para>3778, #4401, ST_Boundary now works for TIN and does not linearize curves (Aliaksandr Kalenik)</para>
+        <para>4881, #4884, Store sign of edge_id for lineal TopoGeometry in relation table
+                to retain direction (Sandro Santilli)</para>
+        <para>4628, Add an option to disable ANALYZE when loading shapefiles (Stefan Corneliu Petrea)</para>
+        <para>4924, Faster ST_RemoveRepeatedPoints on large multipoints, O(NlogN) instead of O(N^2)
+                (Aliaksandr Kalenik, Darafei Praliaskouski)</para>
+        <para>4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)</para>
+        <para>- ST_SRID(topogeometry) override, to speedup lookups (Sandro Santilli)</para>
+        <para>2175, Avoid creating additional nodes when adding same closed
+                line to topology (Sandro Santilli)</para>
+        <para>4974, Upgrade path for address_standardizer_data_us
+                (Jan Katins of Aiven, Regina Obe)</para>
+        <para>4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)</para>
+        <para>4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)</para>
+        <para>4799, Include srs in GeoJSON where it exists in spatial_ref_sys.</para>
+        <para>4986, GIST indexes on Postgres 14 are now created faster using Hilbert-sorting method.
+                (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski, Giuseppe Broccolo)</para>
+        <para>4949, Use proj_normalize_for_visualization to hand "axis swap" decisions (Paul Ramsey)</para>
+        <para>- GH647, ST_PixelAsCentroids, ST_PixelAsCentroid reimplemented on top of a C function (Sergei Shoulbakov)</para>
+        <para>- GH648, ST_AsMVTGeom now uses faster clipping (Aliaksandr Kalenik)</para>
+        <para>5018, pgsql2shp basic support for WITH CTE clause (Regina Obe)</para>
+        <para>5019, address_standardizer: Add support for pcre2 (Paul Ramsey)</para>
+    </simplesect>
+
+    <simplesect>
+        <title>New features</title>
+            <para>4923, topology.ValidateTopologyRelation (Sandro Santilli)</para>
+            <para>4933, topology.GetFaceContainingPoint (Sandro Santilli)</para>
+            <para>2175, ST_Scroll (Sandro Santilli)</para>
+            <para>4841, FindTopology to quickly get a topology record (Sandro Santilli)</para>
+            <para>4869, FindLayer to quickly get a layer record (Sandro Santilli)</para>
+            <para>4851, TopoGeom_addTopoGeom function (Sandro Santilli)</para>
+            <para>ST_MakeValid(geometry, options) allows alternative validity building
+                algorithms with GEOS 3.10 (Paul Ramsey)</para>
+            <para>ST_InterpolateRaster() fills in raster cells between sample points
+                using one of a number of algorithms (inverse weighted distance, average, etc)
+                using algorithms from GDAL
+                (Paul Ramsey)</para>
+            <para>ST_Contour() generates contour lines from raster values
+                using algorithms from GDAL (Paul Ramsey)</para>
+            <para>ST_SetZ()/ST_SetM() fills in z/m coordinates of a geometry using data read
+                from a raster (Paul Ramsey)</para>
+            <para>New postgis.gdal_vsi_options GUC allows out-db rasters on VSI network
+                services to be accessed with authentication keys, etc. (Paul Ramsey)</para>
+            <para>ST_DumpSegments returns a set of segments of input geometry (Aliaksandr Kalenik)</para>
+            <para>4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructors
+                with SRID parameter (Paul Ramsey)</para>
+            <para>4808, ST_ClusterKMeans now supports max_radius argument. Use it when you're not sure what is
+                the number of clusters but you know what the size of clusters should be. (Darafei Praliaskouski)</para>
+            </simplesect>
+    </sect1>
     <sect1>
         <title>PostGIS 3.2.0beta3</title>
         <para>2021/12/04</para>
