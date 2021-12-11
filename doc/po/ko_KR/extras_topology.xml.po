@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2018-07-23 18:01+0000\n"
-"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
+"PO-Revision-Date: 2021-11-28 21:13+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
 "language/ko_KR/)\n"
 "Language: ko_KR\n"
@@ -159,11 +159,9 @@ msgstr "getfaceedges_returntype"
 
 #. Tag: refpurpose
 #: extras_topology.xml:28
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A composite type that consists of a sequence number and an edge number."
 msgstr ""
-"배열(sequence) 번호와 경계선(edge) 번호로 이루어진 합성 유형입니다. "
-"<varname>ST_GetFaceEdges</varname> 함수가 이 유형을 반환합니다."
 
 #. Tag: title
 #: extras_topology.xml:34 extras_topology.xml:58 extras_topology.xml:107
@@ -194,14 +192,12 @@ msgstr "설명"
 
 #. Tag: para
 #: extras_topology.xml:35
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A composite type that consists of a sequence number and an edge number. This "
 "is the return type for <varname>ST_GetFaceEdges</varname> and "
 "<varname>GetNodeEdges</varname> functions."
 msgstr ""
-"순차(sequence) 번호와 경계선(edge) 번호로 이루어진 합성 유형입니다. "
-"<varname>ST_GetFaceEdges</varname> 함수가 이 유형을 반환합니다."
 
 #. Tag: para
 #: extras_topology.xml:43
@@ -227,9 +223,9 @@ msgstr "TopoGeometry"
 
 #. Tag: refpurpose
 #: extras_topology.xml:55
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A composite type representing a topologically defined geometry."
-msgstr "위상기하학적으로 정의된 도형을 표현하는 합성 유형입니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:59
@@ -361,14 +357,12 @@ msgstr "validatetopology_returntype"
 
 #. Tag: refpurpose
 #: extras_topology.xml:104
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A composite type that consists of an error message and id1 and id2 to denote "
 "location of error. This is the return type for <varname>ValidateTopology</"
 "varname>."
 msgstr ""
-"오류 메시지 및 오류의 위치를 나타내는 id1과 id2로 이루어진 합성 유형입니다. "
-"<varname>ValidateTopology</varname> 함수가 이 유형을 반환합니다."
 
 #. Tag: para
 #: extras_topology.xml:108
@@ -587,9 +581,9 @@ msgstr "TopoElementArray"
 
 #. Tag: refpurpose
 #: extras_topology.xml:191
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "An array of TopoElement objects."
-msgstr "TopoElement 객체들의 배열입니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:195
@@ -843,13 +837,11 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:298
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"toTopoGeom\"/>, <xref linkend=\"CreateTopology\"/>, <xref "
 "linkend=\"CreateTopoGeom\"/>"
 msgstr ""
-", <xref linkend=\"DropTopology\"/>, <xref linkend=\"GetTopologyName\"/>, "
-"<xref linkend=\"GetTopologyID\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:308
@@ -1065,13 +1057,11 @@ msgstr "TopologySummary"
 
 #. Tag: refpurpose
 #: extras_topology.xml:433
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<refpurpose>Takes a topology name and provides summary totals of types of "
 "objects in topology.</refpurpose>"
 msgstr ""
-"<refpurpose>지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 "
-"반환합니다.</refpurpose>"
 
 #. Tag: funcprototype
 #: extras_topology.xml:438
@@ -1087,13 +1077,11 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:448
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<para>Takes a topology name and provides summary totals of types of objects "
 "in topology.</para>"
 msgstr ""
-"<para>지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합"
-"니다.</para>"
 
 #. Tag: para
 #: extras_topology.xml:451 extras_topology.xml:870 extras_topology.xml:1008
@@ -1154,49 +1142,38 @@ msgstr "ValidateTopology"
 
 #. Tag: refpurpose
 #: extras_topology.xml:470
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of validatetopology_returntype objects detailing issues with "
 "topology."
 msgstr ""
-"지형이 가지고 있는 문제점들을 상세하게 열거하는 validatetopology_returntype "
-"객체 집합을 반환합니다."
 
 #. Tag: funcprototype
 #: extras_topology.xml:475
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>setof validatetopology_returntype <function>ValidateTopology</"
 "function></funcdef> <paramdef><type>varchar </type> <parameter>toponame</"
 "parameter></paramdef> <paramdef choice=\"opt\"><type>geometry</type> "
 "<parameter>bbox</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>AddEdge</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:486
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of <xref linkend=\"validatetopology_returntype\"/> objects "
 "detailing issues with topology, optionally limiting the check to the area "
 "specified by the <varname>bbox</varname> parameter."
 msgstr ""
-"지형이 가지고 있는 문제점들을 상세하게 열거하는 <xref linkend="
-"\"validatetopology_returntype\"/> 객체 집합을 반환합니다. 다음 표는 가능한 오"
-"류 목록 및 반환된 ID가 어떤 의미를 가지는지 보여줍니다."
 
 #. Tag: para
 #: extras_topology.xml:492
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "List of possible errors and what the returned ids represent are displayed "
 "below:"
 msgstr ""
-"지형이 가지고 있는 문제점들을 상세하게 열거하는 <xref linkend="
-"\"validatetopology_returntype\"/> 객체 집합을 반환합니다. 다음 표는 가능한 오"
-"류 목록 및 반환된 ID가 어떤 의미를 가지는지 보여줍니다."
 
 #. Tag: entry
 #: extras_topology.xml:496
@@ -1306,9 +1283,9 @@ msgstr "face has no rings(고리가 없는 표면)"
 
 #. Tag: entry
 #: extras_topology.xml:544
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "face has wrong mbr"
-msgstr "face has no rings(고리가 없는 표면)"
+msgstr ""
 
 #. Tag: entry
 #: extras_topology.xml:549
@@ -1343,15 +1320,15 @@ msgstr ""
 
 #. Tag: entry
 #: extras_topology.xml:569 extras_topology.xml:609
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "invalid next_right_edge"
-msgstr "invalid edge(유효하지 않은 경계선)"
+msgstr ""
 
 #. Tag: entry
 #: extras_topology.xml:574 extras_topology.xml:604
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "invalid next_left_edge"
-msgstr "invalid edge(유효하지 않은 경계선)"
+msgstr ""
 
 #. Tag: entry
 #: extras_topology.xml:579
@@ -1443,17 +1420,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_topology.xml:628
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT * FROM  topology.ValidateTopology('ma_topo');\n"
 "      error        | id1 | id2\n"
 "-------------------+-----+-----\n"
 "face without edges |   1 |"
 msgstr ""
-"SELECT * FROM  topology.ValidateTopology('ma_topo');\n"
-"      error        | id1 | id2\n"
-"-------------------+-----+-----\n"
-"face without edges |   0 |"
 
 #. Tag: para
 #: extras_topology.xml:634
@@ -1463,9 +1436,9 @@ msgstr ", <xref linkend=\"Topology_Load_Tiger\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:640
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ValidateTopologyRelation"
-msgstr "ValidateTopology"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:642
@@ -1475,14 +1448,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:647
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>setof record <function>ValidateTopologyRelation</function></"
 "funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>integer <function>GetTopologyID</function></funcdef> "
-"<paramdef><type>varchar</type> <parameter>toponame</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:657
@@ -1494,15 +1465,15 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:663 extras_topology.xml:716 extras_topology.xml:2032
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.2.0"
-msgstr "2.0 버전부터 사용할 수 있습니다."
+msgstr ""
 
 #. Tag: refname
 #: extras_topology.xml:676
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "FindTopology"
-msgstr "지형(topology)"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:678
@@ -1512,7 +1483,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: extras_topology.xml:682
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>topology <function>FindTopology</function></"
 "funcdef> <paramdef><type>TopoGeometry</type> <parameter>topogeom</"
@@ -1531,22 +1502,6 @@ msgid ""
 "<paramdef><type>int</type> <parameter>id</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>integer <function>AddTopoGeometryColumn</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>topology_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>column_name</parameter></paramdef> <paramdef><type>varchar "
-"</type> <parameter>feature_type</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>integer <function>AddTopoGeometryColumn</function></"
-"funcdef> <paramdef><type>varchar </type> <parameter>topology_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> "
-"<parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </"
-"type> <parameter>column_name</parameter></paramdef> <paramdef><type>varchar "
-"</type> <parameter>feature_type</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>child_layer</parameter></"
-"paramdef> </funcprototype>"
 
 #. Tag: para
 #: extras_topology.xml:712
@@ -1577,9 +1532,9 @@ msgstr ""
 
 #. Tag: title
 #: extras_topology.xml:738
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Topology Statistics Management"
-msgstr "지형 및 TopoGeometry 관리"
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:740
@@ -2032,7 +1987,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:989
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
@@ -2040,23 +1995,15 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1001
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Adds a point to an existing topology and returns its identifier. The given "
 "point will snap to existing nodes or edges within given tolerance. An "
 "existing edge may be split by the snapped point."
 msgstr ""
-"기존 지형에 포인트를 추가하고 해당 포인트의 식별자를 반환합니다. 이 포인트는 "
-"입력 허용 오차 안에 있는 기존 노드 또는 경계선에 스냅할 것입니다. 스냅된 포인"
-"트가 기존 경계선을 분할할 수도 있습니다."
 
 #. Tag: para
 #: extras_topology.xml:1015
@@ -2076,17 +2023,15 @@ msgstr "TopoGeo_AddLineString"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1028
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Adds a linestring to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces. Returns edge identifiers."
 msgstr ""
-"허용 오차를 이용해서 그리고 기존 경계선/표면을 분할(split)하기도 해서 기존 지"
-"형에 라인스트링을 추가합니다. 경계선 식별자를 반환합니다."
 
 #. Tag: funcprototype
 #: extras_topology.xml:1033
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
@@ -2094,25 +2039,16 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1045
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Adds a linestring to an existing topology and returns a set of edge "
 "identifiers forming it up. The given line will snap to existing nodes or "
 "edges within given tolerance. Existing edges and faces may be split by the "
 "line."
 msgstr ""
-"기존 지형에 라인스트링을 추가하고 해당 라인스트링을 형성하는 경계선의 식별자 "
-"집합을 반환합니다. 이 라인스트링은 입력 허용 오차 안에 있는 기존 노드 또는 경"
-"계선에 스냅할 것입니다. 스냅된 라인스트링이 기존 경계선과 표면을 분할할 수도 "
-"있습니다."
 
 #. Tag: para
 #: extras_topology.xml:1051 extras_topology.xml:1100
@@ -2140,17 +2076,15 @@ msgstr "TopoGeo_AddPolygon"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1077
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Adds a polygon to an existing topology using a tolerance and possibly "
 "splitting existing edges/faces. Returns face identifiers."
 msgstr ""
-"허용 오차를 이용해서 그리고 기존 경계선/표면을 분할(split)하기도 해서 기존 지"
-"형에 라인스트링을 추가합니다. 경계선 식별자를 반환합니다."
 
 #. Tag: funcprototype
 #: extras_topology.xml:1082
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>SETOF integer <function>TopoGeo_AddPolygon</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
@@ -2158,25 +2092,16 @@ msgid ""
 "<paramdef choice=\"opt\"><type>float8 </type> <parameter>tolerance</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>TopoGeo_AddPolygon</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float8 </type> <parameter>atolerance</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1094
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Adds a polygon to an existing topology and returns a set of face identifiers "
 "forming it up. The boundary of the given polygon will snap to existing nodes "
 "or edges within given tolerance. Existing edges and faces may be split by "
 "the boundary of the new polygon."
 msgstr ""
-"기존 지형에 폴리곤을 추가하고 해당 폴리곤을 형성하는 표면의 식별자 집합을 반"
-"환합니다. 이 폴리곤의 외곽선은 입력 허용 오차 안에 있는 기존 노드 또는 경계선"
-"에 스냅할 것입니다. 새 폴리곤의 외곽선이 기존 경계선과 표면을 분할할 수도 있"
-"습니다."
 
 #. Tag: para
 #: extras_topology.xml:1113
@@ -2912,13 +2837,11 @@ msgstr "ST_ModEdgeHeal"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1611
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Heals two edges by deleting the node connecting them, modifying the first "
 "edge and deleting the second edge. Returns the id of the deleted node."
 msgstr ""
-"두 경계선을 연결하는 노드를 삭제한 다음, 첫 번째 경계선을 수정하고 두 번째 경"
-"계선을 삭제해서 두 경계선을 붙입니다. 삭제한 노드의 ID를 반환합니다."
 
 #. Tag: funcprototype
 #: extras_topology.xml:1619
@@ -2936,15 +2859,12 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1631
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Heals two edges by deleting the node connecting them, modifying the first "
 "edge and deleting the second edge. Returns the id of the deleted node. "
 "Updates all existing joined edges and relationships accordingly."
 msgstr ""
-"두 경계선을 연결하는 노드를 삭제한 다음, 첫 번째 경계선을 수정하고 두 번째 경"
-"계선을 삭제해서 두 경계선을 붙입니다. 삭제한 노드의 ID를 반환합니다. 기존의 "
-"모든 결합된 경계선들 및 관계성을 삭제된 노드에 맞춰 업데이트합니다."
 
 #. Tag: refname
 #: extras_topology.xml:1656
@@ -2954,14 +2874,12 @@ msgstr "ST_NewEdgeHeal"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1658
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Heals two edges by deleting the node connecting them, deleting both edges, "
 "and replacing them with an edge whose direction is the same as the first "
 "edge provided."
 msgstr ""
-"두 경계선을 연결하는 노드를 삭제한 다음, 두 경계선을 모두 삭제하고 첫 번째 경"
-"계선과 동일한 방향인 경계선으로 교체합니다."
 
 #. Tag: funcprototype
 #: extras_topology.xml:1667
@@ -2979,17 +2897,13 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1679
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Heals two edges by deleting the node connecting them, deleting both edges, "
 "and replacing them with an edge whose direction is the same as the first "
 "edge provided. Returns the id of the new edge replacing the healed ones. "
 "Updates all existing joined edges and relationships accordingly."
 msgstr ""
-"두 경계선을 연결하는 노드를 삭제한 다음, 두 경계선을 모두 삭제하고 첫 번째 경"
-"계선과 동일한 방향인 경계선으로 교체합니다. 교체한 새 경계선의 ID를 반환합니"
-"다. 기존의 모든 결합된 경계선들 및 관계성을 교체된 경계선에 맞춰 업데이트합니"
-"다."
 
 #. Tag: refname
 #: extras_topology.xml:1707
@@ -3032,7 +2946,7 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1727
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If any arguments are null, the <varname>apoint</varname> is not a point, the "
 "existing node is not isolated (is a start or end point of an existing edge), "
@@ -3040,9 +2954,6 @@ msgid ""
 "the new location is in a different face (since 3.2.0) then an exception is "
 "thrown."
 msgstr ""
-"어떤 인수가 NULL일 경우, <varname>apoint</varname>가 포인트 도형이 아닐 경"
-"우, 기존 노드가 고립 노드가 아닐 (기존 경계선의 시작점 또는 종단점일) 경우, "
-"새 노드 위치가 기존 경계선과 (종단점에서라도) 교차할 경우 예외가 발생합니다."
 
 #. Tag: para
 #: extras_topology.xml:1733
@@ -3307,29 +3218,25 @@ msgstr "GetEdgeByPoint"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1901
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Finds the edge-id of an edge that intersects a given point."
-msgstr "입력 포인트와 교차하는 경계선의 경계선 ID(edgeid)를 탐색합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:1906
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>GetEdgeByPoint</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>GetEdgeByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1919
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Retrieves the id of an edge that intersects a Point."
-msgstr "포인트와 교차하는 경계선의 ID를 검색합니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1920
@@ -3343,10 +3250,10 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1921
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect an edge, returns 0 (zero)."
-msgstr "포인트와 경계선이 교차하지 않을 경우, 0을 반환합니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1922
@@ -3431,23 +3338,19 @@ msgstr "GetFaceByPoint"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1955
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Finds face intersecting a given point."
-msgstr "입력 포인트와 교차하는 표면의 표면 ID(faceid)를 탐색합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:1959
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>GetFaceByPoint</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>GetFaceByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1970
@@ -3473,12 +3376,10 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1983
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If more than one face intersect the query location an exception is thrown."
 msgstr ""
-"0보다 큰 허용 오차를 설정했는데 포인트 가까이에 하나 이상의 표면이 있을 경우 "
-"예외가 발생합니다."
 
 #. Tag: para
 #: extras_topology.xml:1988
@@ -3526,42 +3427,38 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:1999
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"AddFace\"/>, <xref linkend=\"GetNodeByPoint\"/>, <xref "
 "linkend=\"GetEdgeByPoint\"/>"
 msgstr ""
-", <xref linkend=\"GetNodeByPoint\"/>, <xref linkend=\"GetEdgeByPoint\"/>"
 
 #. Tag: refname
 #: extras_topology.xml:2010
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "GetFaceContainingPoint"
-msgstr "GetFaceByPoint"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:2011
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Finds the face containing a point."
-msgstr "입력 포인트와 교차하는 표면의 표면 ID(faceid)를 탐색합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2015
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>GetFaceContainingPoint</function></funcdef> "
 "<paramdef><type>text </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>AddEdge</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2025
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the id of the face containing a point."
-msgstr "포인트와 교차하는 표면의 ID를 검색합니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2026
@@ -3585,58 +3482,49 @@ msgstr "GetNodeByPoint"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2046
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Finds the node-id of a node at a point location."
-msgstr "입력 포인트 위치에 있는 노드의 ID를 탐색합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2051
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>GetNodeByPoint</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>tol1</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>GetNodeByPoint</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef> "
-"<paramdef><type>float8 </type> <parameter>tol</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2064
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Retrieves the id of a node at a point location."
-msgstr "입력 포인트 위치에 있는 노드의 ID를 검색합니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2065
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The function returns an integer (id-node) given a topology, a POINT and a "
 "tolerance. If tolerance = 0 means exact intersection, otherwise retrieves "
 "the node from an interval."
 msgstr ""
-"이 함수는 지형, 포인트, 그리고 허용 오차를 입력받아 정수(nodeid)를 반환합니"
-"다. tolerance = 0일 경우 정확히 교차점을 의미하고, 그렇지 않을 경우 간격"
-"(interval)으로부터 노드를 검색합니다."
 
 #. Tag: para
 #: extras_topology.xml:2066
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If <varname>apoint</varname> doesn't intersect a node, returns 0 (zero)."
-msgstr "포인트와 경계선이 교차하지 않을 경우, 0을 반환합니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2067
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If use tolerance > 0 and there is more than one node near the point then an "
 "exception is thrown."
 msgstr ""
-"0보다 큰 허용 오차를 설정했는데 포인트 가까이에 하나 이상의 경계선이 있을 경"
-"우 예외가 발생합니다."
 
 #. Tag: programlisting
 #: extras_topology.xml:2079
@@ -4160,9 +4048,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2421
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"GetRingEdges\"/>, <xref linkend=\"ST_Azimuth\"/>"
-msgstr ", <xref linkend=\"ST_IsSimple\"/>, <xref linkend=\"ST_Within\"/>"
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2435
@@ -4188,9 +4076,9 @@ msgstr "Polygonize"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2442
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Finds and registers all faces defined by topology edges."
-msgstr "지형 경계선이 정의하는 모든 표면을 찾아 등록합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2446
@@ -4204,9 +4092,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2456
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Registers all faces that can be built out a topology edge primitives."
-msgstr "지형 경계선 원시형으로 확장될 수 있는 모든 표면을 등록합니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2457
@@ -4675,15 +4563,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2660
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
 "<paramdef><type>TopoGeometry</type> <parameter>tg</parameter></paramdef> "
 "<paramdef><type>float8</type> <parameter>tolerance</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-"<paramdef><type>TopoGeometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2670
@@ -4783,26 +4668,21 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:2725
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a topogeometry object for layer denoted by <varname>layer_id</"
 "varname> and registers it in the relations table in the <varname>toponame</"
 "varname> schema."
 msgstr ""
-"layer_id가 지정하는 레이어에 TopoGeometry 객체를 생성하고, "
-"<varname>toponame</varname> 스키마의 관계성 테이블에 새 객체를 등록합니다."
 
 #. Tag: para
 #: extras_topology.xml:2726
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>tg_type</varname> is an integer: 1:[multi]point (punctal), 2:"
 "[multi]line (lineal), 3:[multi]poly (areal), 4:collection. "
 "<varname>layer_id</varname> is the layer id in the topology.layer table."
 msgstr ""
-"tg_type은 정수형입니다. 1: [멀티]포인트(점형, punctal), 2: [멀티]라인(선형, "
-"lineal), 3: [멀티]폴리곤(면형, areal), 4: 도형 집합. layer_id는 topology."
-"layer 테이블에 있는 레이어 ID입니다."
 
 #. Tag: para
 #: extras_topology.xml:2727
@@ -4918,7 +4798,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_topology.xml:2748
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--the world is rarely perfect allow for some error\n"
 "--count the face if 50% of it falls\n"
@@ -4951,36 +4831,6 @@ msgid ""
 "-- are now aligned with my tiger street centerlines\n"
 "UPDATE boston.blockgroups SET new_geom = topo::geometry;"
 msgstr ""
-"-- 일부 오류를 허용할 정도로 세계가 완벽한 경우는 드뭅니다.\n"
-"-- 블록 그룹의 경계선으로 생각되는 범위에\n"
-"-- 50% 이상 들어가는 표면의 개수를 집계합니다.\n"
-"UPDATE boston.blockgroups AS bg\n"
-"        SET topo = topology.CreateTopoGeom('topo_boston'\n"
-"        ,3,1\n"
-"        , foo.bfaces)\n"
-"FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As "
-"bfaces\n"
-"        FROM boston.blockgroups As b\n"
-"            INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr\n"
-"        WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f."
-"face_id))\n"
-"        OR\n"
-" (  ST_Intersects(b.geom, topology.ST_GetFaceGeometry('topo_boston', f."
-"face_id))\n"
-"            AND ST_Area(ST_Intersection(b.geom, topology."
-"ST_GetFaceGeometry('topo_boston', f.face_id) ) ) >\n"
-"                ST_Area(topology.ST_GetFaceGeometry('topo_boston', f."
-"face_id))*0.5\n"
-"                )\n"
-"            GROUP BY b.gid) As foo\n"
-"WHERE foo.gid = bg.gid;\n"
-"\n"
-"-- TopoGeometry를 표면 및 경계선과 정렬된\n"
-"-- 비정규화 도형으로 다시 변환하고자 할 경우\n"
-"-- TopoGeometry를 도형으로 형변환합니다.\n"
-"-- 진짜 멋진 일은 새 도형들이 이제\n"
-"-- TIGER 거리 중심선과 정렬됐다는 사실입니다.\n"
-"UPDATE boston.blockgroups SET new_geom = topo::geometry;"
 
 #. Tag: para
 #: extras_topology.xml:2754
@@ -5002,9 +4852,9 @@ msgstr "toTopoGeom"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2769
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Converts a simple Geometry into a topo geometry."
-msgstr "단순 도형을 지형 도형으로 변환합니다."
+msgstr ""
 
 #. Tag: funcsynopsis
 #: extras_topology.xml:2773
@@ -5221,13 +5071,11 @@ msgstr "TopoElementArray_Agg"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2855
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a <varname>topoelementarray</varname> for a set of element_id, type "
 "arrays (topoelements)."
 msgstr ""
-"element_id, 유형 배열(topoelement)들의 집합에 대해 "
-"<varname>topoelementarray</varname> 를 반환합니다."
 
 #. Tag: funcprototype
 #: extras_topology.xml:2860
@@ -5295,9 +5143,9 @@ msgstr "clearTopoGeom"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2900
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Clears the content of a topo geometry."
-msgstr "지형 도형의 내용을 지웁니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2905
@@ -5349,9 +5197,9 @@ msgstr "TopoGeom_addElement"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2942
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Adds an element to the definition of a TopoGeometry."
-msgstr "TopoGeometry의 정의에 요소를 추가합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2946
@@ -5405,9 +5253,9 @@ msgstr "TopoGeom_remElement"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2985
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Removes an element from the definition of a TopoGeometry."
-msgstr "TopoGeometry의 정의에서 요소를 제거합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:2990
@@ -5442,39 +5290,34 @@ msgstr ""
 
 #. Tag: refname
 #: extras_topology.xml:3026
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "TopoGeom_addTopoGeom"
-msgstr "TopoGeom_addElement"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:3027
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Adds element of a TopoGeometry to the definition of another TopoGeometry."
-msgstr "TopoGeometry의 정의에 요소를 추가합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: extras_topology.xml:3031
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>topogeometry <function>TopoGeom_addTopoGeom</function></funcdef> "
 "<paramdef><type>topogeometry </type> <parameter>tgt</parameter></paramdef> "
 "<paramdef><type>topogeometry </type> <parameter>src</parameter></paramdef>"
 msgstr ""
-"<funcdef>topogeometry <function>TopoGeom_addElement</function></funcdef> "
-"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
-"<paramdef><type>topoelement </type> <parameter>el</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:3042
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Adds the elements of a <xref linkend=\"topogeometry\"/> to the definition of "
 "another TopoGeometry, possibly changing its cached type (type attribute) to "
 "a collection, if needed to hold all elements in the source object."
 msgstr ""
-"TopoGeometry 객체의 정의에 <xref linkend=\"topoelement\"/> 를 추가합니다. 해"
-"당 요소가 정의에 이미 존재하더라도 오류가 발생하지 않습니다."
 
 #. Tag: para
 #: extras_topology.xml:3048
@@ -5487,9 +5330,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:3055
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.2"
-msgstr "2.3.0 버전부터 사용할 수 있습니다."
+msgstr ""
 
 #. Tag: programlisting
 #: extras_topology.xml:3059
@@ -5508,21 +5351,21 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:3065
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"clearTopoGeom\"/>, <xref linkend=\"CreateTopoGeom\"/>"
-msgstr ", <xref linkend=\"CreateTopology\"/>, <xref linkend=\"DropTopology\"/>"
+msgstr ""
 
 #. Tag: refpurpose
 #: extras_topology.xml:3076
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Adds a geometry shape to an existing topo geometry."
-msgstr "기존 지형 도형에 도형 형상을 추가합니다."
+msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:3080
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Refer to <xref linkend=\"toTopoGeom\"/>."
-msgstr "<xref linkend=\"toTopoGeom\"/> 을 참조하십시오."
+msgstr ""
 
 #. Tag: title
 #: extras_topology.xml:3090
@@ -5538,14 +5381,12 @@ msgstr "GetTopoGeomElementArray"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3096
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a <varname>topoelementarray</varname> (an array of topoelements) "
 "containing the topological elements and type of the given TopoGeometry "
 "(primitive elements)."
 msgstr ""
-"지형의 요소 및 입력 TopoGeometry의 유형(원시형 요소)를 담고 있는 "
-"<varname>topoelementarray</varname> (topoelement의 배열)을 반환합니다."
 
 #. Tag: funcprototype
 #: extras_topology.xml:3101
@@ -5606,14 +5447,12 @@ msgstr "GetTopoGeomElements"
 
 #. Tag: refpurpose
 #: extras_topology.xml:3144
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of <varname>topoelement</varname> objects containing the "
 "topological element_id,element_type of the given TopoGeometry (primitive "
 "elements)."
 msgstr ""
-"입력 TopoGeometry의 지형 element_id, element_type(원시형 요소)을 담고 있는 "
-"<varname>topoelement</varname> 객체 집합을 반환합니다."
 
 #. Tag: funcprototype
 #: extras_topology.xml:3149
@@ -6368,82 +6207,3 @@ msgstr ""
 "이 함수는 도형 집합인 TopoGeometry를 지원하지 않습니다. 또 서로 다른 지형으"
 "로 이루어진 두 TopoGeometry를 비교하지 못 합니다. 또한 현재 계층 "
 "TopoGeometry(다른 TopoGeometry들로 구성된 TopoGeometry)도 지원하지 않습니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "<funcdef>setof validatetopology_returntype <function>ValidateTopology</"
-#~ "function></funcdef> <paramdef><type>varchar </type> "
-#~ "<parameter>topology_schema_name</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>setof validatetopology_returntype <function>ValidateTopology</"
-#~ "function></funcdef> <paramdef><type>varchar </type> "
-#~ "<parameter>topology_schema_name</parameter></paramdef>"
-
-#, no-c-format
-#~ msgid ""
-#~ "The function returns an integer (id-face) given a topology, a POINT and a "
-#~ "tolerance. If tolerance = 0 then the point has to intersect the face."
-#~ msgstr ""
-#~ "이 함수는 지형, 포인트, 그리고 허용 오차를 입력받아 정수(faceid)를 반환합"
-#~ "니다. tolerance = 0일 경우 포인트와 표면이 교차해야 합니다."
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "If <varname>apoint</varname> doesn't intersect a face, returns 0 (zero)."
-#~ msgstr "포인트와 표면이 교차하지 않을 경우, 0을 반환합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "These examples use edges faces created in <xref linkend=\"AddFace\"/>"
-#~ msgstr ""
-#~ "다음 예시들은 <xref linkend=\"AddFace\"/> 에서 생성한 표면들을 사용합니다."
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_Azimuth\"/>"
-#~ msgstr ", <xref linkend=\"ST_Azimuth\"/>"
-
-#~ msgid ""
-#~ "Takes a topology name and provides summary totals of types of objects in "
-#~ "topology"
-#~ msgstr ""
-#~ "지형 명칭을 받아 지형 내부에 있는 객체들의 유형 전체의 요약문을 반환합니"
-#~ "다."
-
-#~ msgid ""
-#~ "Adds a polygon to an existing topology using a tolerance and possibly "
-#~ "splitting existing edges/faces."
-#~ msgstr ""
-#~ "허용 오차를 이용해서 그리고 기존 경계선/표면을 분할(split)하기도 해서 기"
-#~ "존 지형에 폴리곤을 추가합니다."
-
-#~ msgid ""
-#~ "If tolerance = 0, the function use ST_Intersects otherwise uses "
-#~ "ST_DWithin."
-#~ msgstr ""
-#~ "이 함수는 tolerance = 0일 경우 ST_Intersects를, 그렇지 않을 경우 "
-#~ "ST_DWithin을 이용합니다."
-
-#~ msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-#~ msgstr ""
-#~ "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이상 버전이 필요합니다."
-
-#~ msgid "If there isn't a node at the point, it return 0 (zero)."
-#~ msgstr "포인트 위치에 노드가 없을 경우 0을 반환합니다."
-
-#~ msgid ""
-#~ "If use tolerance > 0 and near the point there are more than one node it "
-#~ "throw an exception."
-#~ msgstr ""
-#~ "0보다 큰 허용 오차를 설정했는데 포인트 가까이에 하나 이상의 노드가 있을 경"
-#~ "우 예외가 발생합니다."
-
-#~ msgid ""
-#~ "If tolerance = 0, the function use ST_Intersects otherwise will use "
-#~ "ST_DWithin."
-#~ msgstr ""
-#~ "이 함수는 tolerance = 0일 경우 ST_Intersects를, 그렇지 않을 경우 "
-#~ "ST_DWithin을 이용합니다."
-
-#~ msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
-#~ msgstr ""
-#~ "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이상 버전이 필요합니다."

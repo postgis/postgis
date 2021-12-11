@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2018-10-18 01:53+0000\n"
+"PO-Revision-Date: 2021-11-30 08:28+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -34,17 +34,17 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:12
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A step by step tutorial guide workshop <ulink url=\"http://postgis.net/"
 "workshops/postgis-intro/\">Introduction to PostGIS</ulink>. It includes "
 "packaged data as well as intro to working with OpenGeo Suite. It is probably "
 "the best tutorial on PostGIS."
 msgstr ""
-"OpenGeoが手順ごとのチュートリアルガイドワークショップ<ulink url=\"http://"
-"workshops.boundlessgeo.com/postgis-intro/\">Introduction to PostGIS</ulink>を"
-"出しています。OpenGeo Suiteでの作業の入門編だけでなく梱包されたデータもありま"
-"す。PostGISの最善のチュートリアルかも知れません。"
+"手順ごとのチュートリアルガイドワークショップ<ulink url=\"http://postgis.net/"
+"workshops/postgis-intro/\">Introduction to PostGIS</ulink>があります。"
+"OpenGeo Suiteでの作業の入門編だけでなく梱包されたデータもあります。多分"
+"PostGISの最善のチュートリアルです。"
 
 #. Tag: para
 #: faq.xml:13
@@ -444,7 +444,7 @@ msgstr "GISオブジェクトをデータベースに挿入するにはどうし
 
 #. Tag: para
 #: faq.xml:148
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
 "\"geography\" to hold your GIS data. Storing geography type data is a little "
@@ -453,8 +453,8 @@ msgid ""
 msgstr ""
 "まず、GISデータを保持するために\"geometry\"または\"geogprahy\"カラムを持つ"
 "テーブルを作成します。ジオグラフィデータ型の格納は、ジオメトリデータ型とは若"
-"干異なります。ジオグラフィの格納については<xref linkend=\"Geography_Basics\"/"
-">を参照して下さい。"
+"干異なります。ジオグラフィの格納については<xref linkend=\"PostGIS_Geography"
+"\"/>を参照して下さい。"
 
 #. Tag: para
 #: faq.xml:152
@@ -625,17 +625,17 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:210
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT id, geom\n"
 "FROM thetable\n"
 "WHERE\n"
 "  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
-"SELECT id, the_geom\n"
+"SELECT id, geom\n"
 "FROM thetable\n"
 "WHERE\n"
-"  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
+"  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -886,7 +886,7 @@ msgstr "クエリの一部として投影変換を実現するにはどうしま
 
 #. Tag: para
 #: faq.xml:341
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To perform a reprojection, both the source and destination coordinate "
 "systems must be defined in the SPATIAL_REF_SYS table, and the geometries "
@@ -895,17 +895,17 @@ msgid ""
 "The below projects a geometry to NAD 83 long lat. The below will only work "
 "if the srid of geom is not -1 (not undefined spatial ref)"
 msgstr ""
-"投影変換を行うには、変換元と変換先双方の座標系がSPATIAL_REF_SYSテーブルに定義"
-"されていて、 かつ投影変換されるジオメトリがそのSRIDを持っている必要がありま"
-"す。これが行われていると、投影変換は求める変換先SRIDを参照するのと同じぐらい"
-"簡単です。次のクエリは、ジオメトリをNAD 83経度緯度に投影しています。このクエ"
-"リはthe_geomが-1 (空間参照系が定義されていない)でない場合のみ動作します。"
+"投影変換を実行するには、変換前座標系と変換後座標系の両方がSPATIAL_REF_SYSテー"
+"ブル上に定義されていて、かつ、変換されるジオメトリはSRIDが設定されている必要"
+"があります。それが完了していると、投影変換は変換後SRIDを参照する程度の手間で"
+"実行できます。次ではジオメトリをNAD 83経度緯度に変換していて、SRIDが未定義を"
+"示す-1 (訳注: PostGIS 2以降は0です)に設定されていないなら動作します。"
 
 #. Tag: programlisting
 #: faq.xml:348
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "SELECT ST_Transform(geom,4269) FROM geotable;"
-msgstr "SELECT ST_Transform(the_geom,4269) FROM geotable;"
+msgstr "SELECT ST_Transform(geom,4269) FROM geotable;"
 
 #. Tag: para
 #: faq.xml:354
@@ -931,15 +931,15 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:361
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
 "                                SELECT count(gid) FROM geotable WHERE geom "
 "IS NULL;"
 msgstr ""
-"-- 本当に空のジオメトリの数を検索します\n"
-"                                SELECT count(gid) FROM geotable WHERE "
-"the_geom IS NULL;"
+"-- ジオメトリが本当に存在しない行数の確認\n"
+"                                SELECT count(gid) FROM geotable WHERE geom "
+"IS NULL;"
 
 #. Tag: para
 #: faq.xml:367
@@ -1028,13 +1028,13 @@ msgstr ""
 msgid ""
 "Why are the results of overlay operations and spatial predicates sometimes "
 "inconsistent?"
-msgstr ""
+msgstr "オーバレイ操作と空間述語の結果が時々矛盾するのはなぜですか ?"
 
 #. Tag: para
 #: faq.xml:395
 #, no-c-format
 msgid "This is usually presented as a specific case, such as"
-msgstr ""
+msgstr "これは次のように特定のケースとして表せます。"
 
 #. Tag: para
 #: faq.xml:399
@@ -1042,12 +1042,16 @@ msgstr ""
 msgid ""
 "Why is <varname>ST_Contains( A, ST_Intersection(A, B) )</varname> false ?"
 msgstr ""
+"なぜ<varname>ST_Contains( A, ST_Intersection(A, B) )</varname>がFALSEになるの"
+"ですか ?"
 
 #. Tag: para
 #: faq.xml:402
 #, no-c-format
 msgid "Why is <varname>ST_Contains( ST_Union(A, B), A ) )</varname> false ?"
 msgstr ""
+"なぜ<varname>ST_Contains( ST_Union(A, B), A ) )</varname>がFALSEになるのです"
+"か ?"
 
 #. Tag: para
 #: faq.xml:405
@@ -1055,6 +1059,8 @@ msgstr ""
 msgid ""
 "Why is <varname>ST_Union( A, ST_Difference(A, B) )</varname> not equal to A ?"
 msgstr ""
+"なぜ<varname>ST_Union( A, ST_Difference(A, B) )</varname>とAが同じにならない"
+"のですか ?"
 
 #. Tag: para
 #: faq.xml:408
@@ -1063,6 +1069,8 @@ msgid ""
 "Why does <varname>ST_Difference(A, B)</varname> intersect the interior of "
 "<varname>B</varname> ?"
 msgstr ""
+"なぜ<varname>ST_Difference(A, B)</varname>が<varname>B</varname>とインタセク"
+"トしないのでしょうか ?"
 
 #. Tag: para
 #: faq.xml:412
@@ -1074,6 +1082,10 @@ msgid ""
 "inaccuracies occur, which cause results of different operations to be "
 "slightly inconsistent."
 msgstr ""
+"これは、PostGISが有限精度の浮動小数点数を使ってジオメトリを表現し、操作を実行"
+"しているためです。このため、実数を使う計算で錯覚を引き起こしますが、錯覚にす"
+"ぎません、必然的に、不正確の小さい問題が発生するため、異なる操作の結果の間で"
+"若干矛盾することになります。"
 
 #. Tag: para
 #: faq.xml:417
@@ -1084,6 +1096,9 @@ msgid ""
 "errors from occurring. These minor alterations also may produce computed "
 "results which are not fully consistent."
 msgstr ""
+"さらに、PostGISの操作には、エラー回避コードが含まれていて、そのコードは、堅牢"
+"性エラーを防ぐために少量で入力ジオメトリを混乱させることがあります。これらの"
+"小さな変更でも、完全な一貫性を持たない結果を算出する原因となりえます。"
 
 #. Tag: para
 #: faq.xml:422
@@ -1094,3 +1109,6 @@ msgid ""
 "Instead, consider using an area or distance-based tolerance in geometric "
 "comparisons."
 msgstr ""
+"結果の差は、常に、ごく小さいものです。しかし、オーバレイ結果を比較する時に、"
+"クエリは正確に矛盾が無いことを前提にすべきではありません。代わりに、幾何的比"
+"較で面積や距離の許容値を使用することを検討して下さい。"

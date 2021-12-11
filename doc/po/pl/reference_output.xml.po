@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2018-07-23 18:00+0000\n"
-"Last-Translator: Milena Nowotarska <do.milenki@gmail.com>\n"
+"PO-Revision-Date: 2021-11-28 22:06+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
 "pl/)\n"
 "Language: pl\n"
@@ -865,9 +865,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:469
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.2.0"
-msgstr "Dostępność: 2.0"
+msgstr ""
 
 #. Tag: refname
 #: reference_output.xml:475

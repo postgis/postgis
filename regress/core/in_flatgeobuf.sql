@@ -1,5 +1,5 @@
 --set client_min_messages to DEBUG3;
-select ST_TableFromFlatGeobuf('public', 'flatgeobuf_t1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry) q));
+select ST_FromFlatGeobufToTable('public', 'flatgeobuf_t1', (select ST_AsFlatGeobuf(q) fgb from (select null::geometry) q));
 
 select 'T1', id, ST_AsText(geom) from ST_FromFlatGeobuf(null::flatgeobuf_t1,
     '\x6667620366676200240000001000000000000a000c000800000007000a000000000000010400000000000000000000003c00000010000000000000000000060008000400060000000c00000008000800000004000800000004000000020000009a9999999999f13fcdcccccccccc0040'::bytea

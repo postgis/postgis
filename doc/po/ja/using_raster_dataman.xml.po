@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2016-11-25 11:46+0000\n"
+"PO-Revision-Date: 2021-11-30 08:26+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -61,7 +61,7 @@ msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Since the raster2pgsql is compiled as part of PostGIS most often (unless you "
 "compile your own GDAL library), the raster types supported by the executable "
@@ -71,12 +71,12 @@ msgid ""
 "PostGIS install documented here <xref linkend=\"RT_ST_GDALDrivers\"/> if you "
 "are using the same GDAL library for both."
 msgstr ""
-"raster2pgsqlは、ほとんどの場合、PostGISの一部としてコンパイルされます (GDALラ"
-"イブラリをコンパイルしている場合)が、バイナリファイルによってサポートされるラ"
-"スタタイプは、GDALでコンパイルされたのと同じです。raster2pgsqlがサポートする"
-"ラスタタイプの一覧を得るには、<varname>-G</varname>スイッチを使います。この一"
-"覧は、インストールした PostGIS が提供する<xref linkend=\"RT_ST_GDALDrivers\"/"
-">と同じになるはずです。"
+"raster2pgsqlは、多くの場合 (別のGDALライブラリをコンパイルしていない場合)、"
+"PostGISの一部としてコンパイルされるので、実行ファイルがサポートするラスタタイ"
+"プは依存ライブラリGDALでコンパイルされたものと同じになります。raster2pgsqlが"
+"対応するラスタタイプの一覧を得るには、<varname>-G</varname>スイッチを使いま"
+"す。同じGDALライブラリを使っている場合には、<xref linkend=\"RT_ST_GDALDrivers"
+"\"/>で示される,、インストールしたPostGISが提供するものと同じです。"
 
 #. Tag: para
 #: using_raster_dataman.xml:16
@@ -367,9 +367,9 @@ msgstr ""
 
 #. Tag: term
 #: using_raster_dataman.xml:178
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
-msgstr "-l <varname>OVERVIEW_FACTOR</varname>"
+msgstr "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
 
 #. Tag: para
 #: using_raster_dataman.xml:179
@@ -1007,9 +1007,9 @@ msgstr ""
 
 #. Tag: title
 #: using_raster_dataman.xml:354
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Using \"out db\" cloud rasters"
-msgstr "raster2pgsqlを使ってラスタをロードする"
+msgstr "「データベース外」クラウドラスタの使用"
 
 #. Tag: para
 #: using_raster_dataman.xml:355
@@ -1021,6 +1021,11 @@ msgid ""
 "html#network-based-file-systems\">stored remotely</ulink> in cloud \"object "
 "stores\" (e.g. AWS S3, Google Cloud Storage)."
 msgstr ""
+"<varname>raster2pgsql</varname>ツールはGDALを使用してラスタデータにアクセスし"
+"ます。また、クラウドの「オブジェクト保存」 (AWS S3やGoogle Cloud Storage等)に"
+"<ulink url=\"https://gdal.org/user/virtual_file_systems.html#network-based-"
+"file-systems\">リモート格納</ulink>されたラスタを読む能力という、重要なGDAL機"
+"能の利点を享受することができます。"
 
 #. Tag: para
 #: using_raster_dataman.xml:359
@@ -1033,6 +1038,12 @@ msgid ""
 "very poor performance, as the system will have to download the entire raster "
 "each time it needs to access a subset."
 msgstr ""
+"クラウドストレージの効率的な仕様には、「クラウド最適化」された書式の使用が必"
+"要です。最も知られて幅広く使われているものは、 \"<ulink url=\"https://gdal."
+"org/drivers/raster/cog.html\">cloud optimized GeoTIFF</ulink>\"です。JPEGや非"
+"タイル化TIFFなどの非クラウド書式を使うと、発揮される能力は非常に貧弱になりま"
+"す。システムがラスタの一部分にアクセスする必要に迫られるたびに全体をダウン"
+"ロードするためです。"
 
 #. Tag: para
 #: using_raster_dataman.xml:362
@@ -1046,6 +1057,12 @@ msgid ""
 "emphasis> from the cloud raster and <emphasis>writing</emphasis> to the "
 "database."
 msgstr ""
+"まず、ラスタをあなたが選択したクラウドストレージに保存します。保存したら、ア"
+"クセスに使うURIが得られます。\"http\"URIか、時々特別なサービスを示すURI "
+"( \"s3://bucket/object\"等)です。非公開バケットにアクセスするには、接続認証の"
+"ためのGDALコンフィギュレーションオプションが必要になります。このコマンドはク"
+"ラウドラスタから<emphasis>読み</emphasis>、データベースに<emphasis>書き</"
+"emphasis>ます。"
 
 #. Tag: programlisting
 #: using_raster_dataman.xml:365
@@ -1062,6 +1079,16 @@ msgid ""
 "  your_table \\\n"
 "  | psql your_db"
 msgstr ""
+"AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx \\\n"
+"AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \\\n"
+"raster2pgsql \\\n"
+"  -s 990000 \\\n"
+"  -t 256x256 \\\n"
+"  -I \\\n"
+"  -R \\\n"
+"  /vsis3/your.bucket.com/your_file.tif \\\n"
+"  your_table \\\n"
+"  | psql your_db"
 
 #. Tag: para
 #: using_raster_dataman.xml:366
@@ -1072,6 +1099,10 @@ msgid ""
 "\"postgis_enable_outdb_rasters\"/> and <xref linkend="
 "\"postgis_gdal_enabled_drivers\"/>."
 msgstr ""
+"テーブルがロードされたら、データベースにリモートラスタらか読むためのアクセス"
+"許可を与えます。<xref linkend=\"postgis_enable_outdb_rasters\"/>と<xref "
+"linkend=\"postgis_gdal_enabled_drivers\"/>の、二つのアクセス許可を設定しま"
+"す。"
 
 #. Tag: programlisting
 #: using_raster_dataman.xml:369
@@ -1080,6 +1111,8 @@ msgid ""
 "SET postgis.enable_outdb_rasters = true;\n"
 "SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 msgstr ""
+"SET postgis.enable_outdb_rasters = true;\n"
+"SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 
 #. Tag: para
 #: using_raster_dataman.xml:370
@@ -1088,6 +1121,8 @@ msgid ""
 "To make the changes sticky, set them directly on your database. You will "
 "need to re-connect to experience the new settings."
 msgstr ""
+"確実に変更するには、データベースに直接設定します。新しい設定を使うには再接続"
+"が必要です。"
 
 #. Tag: programlisting
 #: using_raster_dataman.xml:373
@@ -1096,6 +1131,8 @@ msgid ""
 "ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;\n"
 "ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 msgstr ""
+"ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;\n"
+"ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 
 #. Tag: para
 #: using_raster_dataman.xml:374
@@ -1107,6 +1144,11 @@ msgid ""
 "\"postgis_gdal_vsi_options\"/> configuration. Note that multiple options can "
 "be set by space-separating the <varname>key=value</varname> pairs."
 msgstr ""
+"非公開ラスタの場合、クラウドラスタから読み取るアクセスキーを与えなければなら"
+"ない場合があります。<varname>raster2pgsql</varname>の書き込みに使用したのと同"
+"じキーを、データベース内で<xref linkend=\"postgis_gdal_vsi_options\"/>設定と"
+"共に使用するように設定できます。<varname>key=value</varname>ペアをスペースで"
+"区切ることで、複数のオプションを設定できることに注意してください。"
 
 #. Tag: programlisting
 #: using_raster_dataman.xml:377
@@ -1115,6 +1157,8 @@ msgid ""
 "SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx\n"
 "AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';"
 msgstr ""
+"SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx\n"
+"AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';"
 
 #. Tag: para
 #: using_raster_dataman.xml:378
@@ -1125,6 +1169,10 @@ msgid ""
 "database will handle all the mechanics of connecting to the cloud data when "
 "it needs to read pixel data."
 msgstr ""
+"データをロードし、パーミッションが設定されると、ラスタテーブルは他のラスタ"
+"テーブルとおなじように、同じ関数を使って、対話的処理が可能となります。データ"
+"ベースは、ピクセルデータの読み取りが必要なら、クラウドへの接続の全てを扱いま"
+"す。"
 
 #. Tag: title
 #: using_raster_dataman.xml:384
@@ -1612,7 +1660,7 @@ msgstr "PostGISラスタを使ったカスタムアプリケーションの構�
 
 #. Tag: para
 #: using_raster_dataman.xml:508
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The fact that PostGIS raster provides you with SQL functions to render "
 "rasters in known image formats gives you a lot of options for rendering "
@@ -1623,13 +1671,13 @@ msgid ""
 "ulink>. In addition you can use a wide variety of languages as demonstrated "
 "in this section."
 msgstr ""
-"PostGISラスタには、対応イメージ書式のラスタをレンダリングするSQL関数があり、"
-"レンダリングを行うための多数の選択肢があります。たとえば、<ulink url="
-"\"http://www.postgresonline.com/journal/archives/244-Rendering-PostGIS-"
-"Raster-graphics-with-LibreOffice-Base-Reports.html\">Rendering PostGIS "
-"Raster graphics with LibreOffice Base Reports</ulink>で例を挙げている通り、"
-"OpenOffice/LibreOfficeを使うことができます。さらに、ここで示すように、幅広い"
-"言語で使うことができます。"
+"PostGISラスタに知られている画像書式でラスタをレンダリングするためのSQL関数が"
+"あります。このことから多数のレンダリングの選択肢が使えます。たとえば、"
+"OpenOffice/LibreOfficeを使ってレンダリングが可能で、<ulink url=\"http://www."
+"postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-graphics-"
+"with-LibreOffice-Base-Reports.html\">Rendering PostGIS Raster graphics with "
+"LibreOffice Base Reports</ulink>にデモンストレーションがあります。さらに、本"
+"節で示す通り、多種多様な言語を使用できます。"
 
 #. Tag: title
 #: using_raster_dataman.xml:511
@@ -2310,6 +2358,3 @@ msgstr ""
 "\n"
 "-- db上のラージオブジェクトストレージからファイルを削除します\n"
 "SELECT lo_unlink(2630819);"
-
-#~ msgid "Wrap PostgreSQL identifiers in quotes"
-#~ msgstr "PostgreSQL識別子に引用符を付けます。"

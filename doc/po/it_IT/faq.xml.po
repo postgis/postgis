@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2018-07-22 04:06+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
+"PO-Revision-Date: 2021-11-28 21:23+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
 "language/it_IT/)\n"
 "Language: it_IT\n"
@@ -395,18 +395,13 @@ msgstr "Come posso inserire un oggetto GIS nel database?"
 
 #. Tag: para
 #: faq.xml:148
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
 "\"geography\" to hold your GIS data. Storing geography type data is a little "
 "different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
 "\"/> for details on storing geography."
 msgstr ""
-"Anzitutto devi creare una tabella con una colonna di tipo \"geometry\" o "
-"\"geography\" per contenere i dati GIS. Memorizzare i dati di tipo "
-"geografico e un po' diverso dal memorizzare dati geometrici. Ti rimandiamo a "
-"<xref linkend=\"Geography_Basics\"/> per i dettagli sulla gestione dei dati "
-"geografici."
 
 #. Tag: para
 #: faq.xml:152
@@ -820,7 +815,7 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:341
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To perform a reprojection, both the source and destination coordinate "
 "systems must be defined in the SPATIAL_REF_SYS table, and the geometries "
@@ -829,19 +824,12 @@ msgid ""
 "The below projects a geometry to NAD 83 long lat. The below will only work "
 "if the srid of geom is not -1 (not undefined spatial ref)"
 msgstr ""
-"Per eseguire una riproiezione, sia il sistema di riferimento di coordinate "
-"di origine che quello di destinazione devono essere definiti nella tabella "
-"SPATIAL_REF_SYS, e le geometrie da riproiettare devono già avere uno SRID "
-"assegnato. Fatto questo, la riproiezione è semplice come riferirsi allo SRID "
-"desiderato per la destinazione. L'esempio proietta una geometria in NAD 83 "
-"long lat. Il caso sotto funzionerà solamente se lo SRID di the_geom non è -1 "
-"(il riferimento spaziale non deve essere indefinito)."
 
 #. Tag: programlisting
 #: faq.xml:348
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "SELECT ST_Transform(geom,4269) FROM geotable;"
-msgstr "SELECT ST_Transform(geom,4269) FROM geotable;"
+msgstr ""
 
 #. Tag: para
 #: faq.xml:354
@@ -868,15 +856,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:361
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
 "                                SELECT count(gid) FROM geotable WHERE geom "
 "IS NULL;"
 msgstr ""
-"--Per verificare il numero di geometrie che sono effettivamente vuote\n"
-"                                SELECT count(gid) FROM geotable WHERE "
-"the_geom IS NULL;"
 
 #. Tag: para
 #: faq.xml:367

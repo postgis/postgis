@@ -724,7 +724,7 @@ DECLARE
   result text;
 BEGIN
 
-        -- Get layer and topology info
+  -- Get layer and topology info
   ok = false;
   FOR rec IN EXECUTE 'SELECT t.name as toponame, l.* FROM '
        'topology.topology t, topology.layer l '
@@ -774,12 +774,11 @@ BEGIN
   END LOOP;
 
   IF ok THEN
-    -- Set feature column to NULL to bypass referential integrity
-    -- checks
-    EXECUTE 'UPDATE ' || quote_ident(schema) || '.'
+    -- Drop the layer column
+    EXECUTE 'ALTER TABLE ' || quote_ident(schema) || '.'
       || quote_ident(tbl)
-      || ' SET ' || quote_ident(col)
-      || ' = NULL';
+      || ' DROP ' || quote_ident(col)
+      || ' cascade';
   END IF;
 
   -- Delete the layer record
@@ -787,13 +786,6 @@ BEGIN
        ' WHERE topology_id = ' || lyrinfo.topology_id
     || ' AND layer_id = ' || lyrinfo.layer_id;
 
-  IF ok THEN
-    -- Drop the layer column
-    EXECUTE 'ALTER TABLE ' || quote_ident(schema) || '.'
-      || quote_ident(tbl)
-      || ' DROP ' || quote_ident(col)
-      || ' cascade';
-  END IF;
 
   result = 'Layer ' || lyrinfo.layer_id || ' ('
     || schema || '.' || tbl || '.' || col

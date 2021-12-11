@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-07-23 18:00+0000\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"PO-Revision-Date: 2021-11-28 22:08+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
 "language/ko_KR/)\n"
@@ -40,17 +40,15 @@ msgstr "ST_Buffer"
 
 #. Tag: refpurpose
 #: reference_processing.xml:17
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Computes a geometry covering all points within a given distance from a "
 "geometry."
 msgstr ""
-"입력 도형으로부터 주어진 거리 안에 있는 모든 포인트들을 커버하는 도형을 반환"
-"합니다."
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:23
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
@@ -74,34 +72,6 @@ msgid ""
 "type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Buffer</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Buffer</"
-"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>text </"
-"type> <parameter>buffer_style_parameters</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geography <function>ST_Buffer</"
-"function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer_in_meters</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geography <function>ST_Buffer</"
-"function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>num_seg_quarter_circle</parameter></paramdef> </"
-"funcprototype> <funcprototype> <funcdef>geography <function>ST_Buffer</"
-"function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>text </"
-"type> <parameter>buffer_style_parameters</parameter></paramdef> </"
-"funcprototype>"
 
 #. Tag: title
 #: reference_processing.xml:57 reference_processing.xml:308
@@ -144,7 +114,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:69
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The optional third parameter controls the buffer accuracy and style. The "
 "accuracy of circular arcs in the buffer is specified as the number of line "
@@ -152,51 +122,38 @@ msgid ""
 "style can be specifed by providing a list of blank-separated key=value pairs "
 "as follows:"
 msgstr ""
-"선택적인 (현재 도형에만 적용되는) 세 번째 파라미터는 다음과 같이 사분원"
-"(quarter circle)의 근사치를 계산하는 데 쓰이는 선분의 개수(정수형, 기본값은 "
-"8)를 설정하거나, 또는 연산을 조정하기 위한 공백으로 구분된 키=값 쌍의 목록(문"
-"자열)을 설정할 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:76
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "'quad_segs=#' : number of line segments used to approximate a quarter circle "
 "(default is 8)."
 msgstr ""
-"'quad_segs=#' : 사분원(quarter circle)의 근사치를 계산하는 데 쓰이는 선분의 "
-"개수(기본값은 8)"
 
 #. Tag: para
 #: reference_processing.xml:79
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "'endcap=round|flat|square' : endcap style (defaults to \"round\"). 'butt' is "
 "accepted as a synonym for 'flat'."
 msgstr ""
-"'endcap=round|flat|square' : 끝모양 스타일(기본값은 \"원형(round)\"으로 다른 "
-"값을 쓰려면 GEOS 3.2 이상 버전이 필요합니다). '절단형(flat)'의 동의어로 '밑동"
-"(butt)'도 쓸 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:82
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 "accepted as a synonym for 'mitre'."
 msgstr ""
-"'join=round|mitre|bevel' : 접합 스타일(기본값은 \"원형(round)\"). '마이터"
-"(mitre)'의 동의어로 '마이터(miter)'도 쓸 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:85
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). "
 "'miter_limit' is accepted as a synonym for 'mitre_limit'."
 msgstr ""
-"'mitre_limit=#.#' : 마이터 비율 제한(마이터 접합 스타일만 영향을 받습니다). "
-"'mitre_limit'의 동의어로 'miter_limit'도 쓸 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:88
@@ -210,7 +167,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:94
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For geography, this is a wrapper around the geometry implementation. It "
 "determines a planar spatial reference system that best fits the bounding box "
@@ -220,11 +177,6 @@ msgid ""
 "desired behavior if the input object is much larger than a UTM zone or "
 "crosses the dateline"
 msgstr ""
-"지리형: 지리형에 대해, 이 함수는 도형 구현을 둘러싼 정말로 얇은 래퍼입니다. "
-"이 함수는 먼저 지리형 객체의 경계 상자에 가장 어울리는 SRID를 (UTM 또는 람베"
-"르트 북극/남극 방위정적도법(Lambert Azimuthal Equal Area)을 선호하며, 최악의 "
-"경우 메르카토르 도법에 의지해서) 결정한 다음 해당 평면 공간 참조 시스템 상에"
-"서 버퍼를 준 다음 WGS84 지리형으로 다시 변환합니다."
 
 #. Tag: para
 #: reference_processing.xml:101
@@ -246,13 +198,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:110 reference_processing.xml:1345
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This function ignores the Z dimension. It always gives a 2D result even when "
 "used on a 3D geometry."
 msgstr ""
-"이 함수는 3차원 도형을 입력받더라도 세 번째 차원(Z)을 무시하고 언제나 2차원 "
-"결과를 반환할 것입니다."
 
 #. Tag: para
 #: reference_processing.xml:113
@@ -264,18 +214,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:114
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and "
 "join types. These are useful for example to convert road linestrings into "
 "polygon roads with flat or square edges instead of rounded edges. Thin "
 "wrapper for geography was added."
 msgstr ""
-"1.5 버전부터 사용할 수 있습니다. ST_Buffer 함수가 다양한 끝모양(endcap) 및 접"
-"합(join) 유형을 지원하도록 개선됐습니다. 예를 들어 도로 라인스트링을 원형"
-"(rounded) 대신 절단형(flat) 또는 돌출 사각형(square) 끝모양을 가진 폴리곤 도"
-"로로 변환시키는 데 유용합니다. 지리형을 위한 얇은 래퍼도 추가됐습니다. 고급 "
-"도형 기능성의 장점을 취하려면 GEOS 3.2 이상 버전이 필요합니다."
 
 #. Tag: para
 #: reference_processing.xml:118 reference_processing.xml:749
@@ -480,17 +425,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:230
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 " ST_GeomFromText(\n"
 "  'LINESTRING(50 50,150 150,150 50)'\n"
 " ), 10, 'side=left');"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: para
 #: reference_processing.xml:238
@@ -500,17 +441,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:241
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 " ST_GeomFromText(\n"
 "  'LINESTRING(50 50,150 150,150 50)'\n"
 " ), 10, 'side=right');"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: para
 #: reference_processing.xml:249
@@ -520,17 +457,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:252
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 " ST_GeomFromText(\n"
 "  'LINESTRING(50 50,150 150,150 50)'\n"
 " ), 10, 'side=left join=mitre');"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: para
 #: reference_processing.xml:261
@@ -540,7 +473,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:264
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 "ST_ForceRHR(\n"
@@ -549,10 +482,6 @@ msgid ""
 "'POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))'))),\n"
 " ), 20, 'side=left');"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: para
 #: reference_processing.xml:271
@@ -562,7 +491,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:274
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(\n"
 "ST_ForceRHR(\n"
@@ -571,10 +500,6 @@ msgid ""
 "'POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))'))\n"
 "), 20,'side=right')"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'join=bevel');"
 
 #. Tag: programlisting
 #: reference_processing.xml:281
@@ -632,14 +557,12 @@ msgstr "참고"
 
 #. Tag: para
 #: reference_processing.xml:287
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
 "\"ST_MakeValid\"/>"
 msgstr ""
-", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:293
@@ -649,23 +572,21 @@ msgstr "ST_BuildArea"
 
 #. Tag: refpurpose
 #: reference_processing.xml:295
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Creates a polygonal geometry formed by the linework of a geometry."
-msgstr "주어진 도형의 선분 구성 요소로 이루어진 면 도형을 생성합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:300
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_BuildArea</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:310
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates an areal geometry formed by the constituent linework of the input "
 "geometry. The input can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, "
@@ -673,16 +594,12 @@ msgid ""
 "MultiPolygon, depending on input. If the input linework does not form "
 "polygons, NULL is returned."
 msgstr ""
-"주어진 도형의 선분 구성 요소로 이루어진 면 도형을 생성합니다. 반환된 유형은 "
-"입력 도형에 따라 폴리곤 또는 멀티폴리곤이 될 수 있습니다. 입력 선분이 폴리곤"
-"을 형성시키지 못 할 경우 NULL을 반환합니다. 라인스트링, 멀티라인스트링, 폴리"
-"곤, 멀티폴리곤 그리고 도형 집합을 입력받을 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:316
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "This function assumes all inner geometries represent holes"
-msgstr "이 함수는 모든 내부(inner) 도형이 구멍을 나타낸다고 가정할 것입니다."
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:319
@@ -694,19 +611,19 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:322 reference_processing.xml:1058
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.1.0"
-msgstr "1.3.3 버전부터 사용할 수 있습니다."
+msgstr "1.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:336
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "These will create a donut"
-msgstr "다음 쿼리는 도넛 모양을 생성할 겁니다."
+msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:339
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--using polygons\n"
 "SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
@@ -715,15 +632,10 @@ msgid ""
 "      ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
 "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 msgstr ""
-"SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
-"FROM (SELECT\n"
-"        ST_Buffer(\n"
-"          ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
-"        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 
 #. Tag: programlisting
 #: reference_processing.xml:341
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--using linestrings\n"
 "SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
@@ -733,39 +645,31 @@ msgid ""
 "    ST_ExteriorRing(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As "
 "bigc) As foo;"
 msgstr ""
-"SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
-"FROM (SELECT\n"
-"        ST_Buffer(\n"
-"          ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
-"        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 
 #. Tag: para
 #: reference_processing.xml:352
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_MakeValid\"/>, "
 "<xref linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/"
 "> (wrappers to this function with standard OGC interface)"
 msgstr ""
-", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_BdPolyFromText\"/>, "
-"<xref linkend=\"ST_BdMPolyFromText\"/> 이 함수에 대해 표준 OGC 인터페이스를 "
-"가진 래퍼(wrapper)들"
 
 #. Tag: refname
 #: reference_processing.xml:364
 #, no-c-format
 msgid "ST_Centroid"
-msgstr ""
+msgstr "ST_Centroid"
 
 #. Tag: refpurpose
 #: reference_processing.xml:366
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the geometric center of a geometry."
-msgstr "도형을 분해(split)해서 나오는 도형들의 집합을 반환합니다."
+msgstr "도형의 기하학적 중심을 반환합니다."
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:370
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Centroid</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
@@ -774,13 +678,6 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Intersection</function></"
-"funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </"
-"paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geography "
-"<function>ST_Intersection</function></funcdef> <paramdef> <type>geography</"
-"type> <parameter>geogA</parameter> </paramdef> <paramdef> <type>geography</"
-"type> <parameter>geogB</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_processing.xml:392
@@ -829,9 +726,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:417
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.4.0 support for geography was introduced."
-msgstr "1.5 버전부터 지리형 데이터형을 지원합니다."
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:419
@@ -841,9 +738,9 @@ msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_processing.xml:420
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
-msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
+msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 
 #. Tag: para
 #: reference_processing.xml:426
@@ -857,25 +754,25 @@ msgstr ""
 #: reference_processing.xml:439
 #, no-c-format
 msgid "Centroid of a <varname>MULTIPOINT</varname>"
-msgstr ""
+msgstr "<varname>MULTIPOINT</varname> 의 중심점"
 
 #. Tag: para
 #: reference_processing.xml:450
 #, no-c-format
 msgid "Centroid of a <varname>LINESTRING</varname>"
-msgstr ""
+msgstr "<varname>LINESTRING</varname> 의 중심점"
 
 #. Tag: para
 #: reference_processing.xml:463
 #, no-c-format
 msgid "Centroid of a <varname>POLYGON</varname>"
-msgstr ""
+msgstr "<varname>POLYGON</varname> 의 중심점"
 
 #. Tag: para
 #: reference_processing.xml:474
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Centroid of a <varname>GEOMETRYCOLLECTION</varname>"
-msgstr "<varname>GEOMETRYCOLLECTION</varname> 을 인수로 호출하지 마십시오."
+msgstr "<varname>GEOMETRYCOLLECTION</varname> 의 중심점"
 
 #. Tag: programlisting
 #: reference_processing.xml:483
@@ -904,9 +801,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:489
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_GeometricMedian\"/>"
-msgstr ", <xref linkend=\"ST_Union\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:495
@@ -924,7 +821,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:501
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -932,28 +829,20 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>allow_holes = false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>target_percent</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
-"<parameter>allow_holes=false</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:512
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A concave hull of a geometry represents a possibly concave geometry that "
 "encloses the input geometry. The result is a single polygon, line or point. "
 "It will not contain holes unless the optional <varname>allow_holes</varname> "
 "argument is specified as true."
 msgstr ""
-"도형의 오목 껍질(concave hull)이란 집합 내부의 모든 도형들을 둘러싸는 오목할 "
-"수도 있는 도형을 말합니다. 구멍을 가진 폴리곤을 사용할지에 대한 파라미터의 기"
-"본값은 거짓입니다. 산출물은 절대로 단일 폴리곤을 넘지 않습니다."
 
 #. Tag: para
 #: reference_processing.xml:518
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "One can think of a concave hull as a geometry obtained by \"shrink-wrapping"
 "\" a set of geometries. This is different to the convex hull, which is more "
@@ -961,30 +850,20 @@ msgid ""
 "than the convex hull but generally has a smaller area and represents a more "
 "natural boundary for the input geometry."
 msgstr ""
-"볼록 껍질을 도형들의 집합 주위로 고무줄을 둘러서 얻게 되는 도형이라고 생각할 "
-"수 있습니다. 사용자 도형들을 진공 수축 포장하는 것에 가까운 오목 껍질과는 다"
-"릅니다."
 
 #. Tag: para
 #: reference_processing.xml:523
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>target_percent</varname> is the percentage of area of the "
 "convex hull the solution tries to approach. A target_percent of 1 gives the "
 "same result as the convex hull. A target_percent between 0 and 0.99 produces "
 "a result that should have a smaller area than the convex hull."
 msgstr ""
-"target_percent는 PostGIS 솔루션이 포기 또는 종료하기 전에 접근하려 할 볼록 껍"
-"질(convex hull) 면적의 목표 퍼센트입니다. 도형들의 집합을  둘러싼 봉지를 진공"
-"청소기로 빨아들여 봉한 도형을 오목 껍질이라고 생각해볼 수 있습니다. "
-"target_percent를 1로 설정하면 볼록 껍질과 동일한 답을 얻을 것입니다. "
-"target_percent를 0에서 0.99 사이의 값으로 설정하면 볼록 껍질보다 적은 면적을 "
-"가진 무언가를 얻을 것입니다. 오목 껍질은 도형들의 집합 주위로 고무줄을 두른 "
-"것에 가까운 볼록 껍질과 이렇게 다릅니다."
 
 #. Tag: para
 #: reference_processing.xml:528
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The smaller the target percent, the longer it takes to process the concave "
 "hull, and the more likely to run into topological exceptions. Also the more "
@@ -998,42 +877,25 @@ msgid ""
 "geometries whereas ST_SimplifyPreserveTopology almost always preserves the "
 "validity of the geometry."
 msgstr ""
-"주의: 목표 퍼센트를 적게 만들수록, 처리 시간이 더 오래 걸리며 위상기하학적 예"
-"외가 발생할 가능성이 커집니다. 또 부동소수점이 많을수록 누적되는 포인트의 개"
-"수도 많아집니다. 먼저 첫 단계인 0.99로 설정해보십시오. 보통 매우 빠르고, 어"
-"떨 때는 볼록 껍질 계산만큼 빠르며, 거의 언제나 초과 작업을 하기 때문에 일반적"
-"으로 수축(shrink)의 99%보다 더 잘 반환합니다. 두 번째 단계인 0.98은 더 느리"
-"고, 단계가 올라갈수록 보통 2차급수적으로(quadratically) 느려집니다. 부동소수"
-"점과 정확도를 줄이려면, ST_ConcaveHull 실행 후 <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/> 또는 <xref linkend=\"ST_SnapToGrid\"/> 를 "
-"이용하십시오. ST_SnapToGrid가 조금 더 빠르지만, 유효하지 않은 도형을 반환할 "
-"수도 있는 반면 ST_SimplifyPreserveTopology는 거의 언제나 도형의 유효성을 보전"
-"합니다."
 
 #. Tag: para
 #: reference_processing.xml:534
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This is not an aggregate function. To compute the concave hull of a set of "
 "geometries, use with <xref linkend=\"ST_Collect\"/> or <xref linkend="
 "\"ST_Union\"/> (e.g. <code>ST_ConcaveHull(ST_Collect(somepointfield), 0.80)</"
 "code>."
 msgstr ""
-"이 함수는 주로 멀티 도형 및 도형 집합을 입력받습니다. 비록 종합 함수는 아니지"
-"만, ST_Collect 또는 ST_Union과 결합해서 포인트/라인스트링/폴리곤 집합의 오목 "
-"껍질을 얻을 수 있습니다. 예: ST_ConcaveHull(ST_Collect(somepointfield), 0.80)"
 
 #. Tag: para
 #: reference_processing.xml:539
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For use with sets of points or linestrings use <code>ST_Collect</code>. Use "
 "<code>ST_Union</code> for polygons, since it may fail with invalid "
 "geometries."
 msgstr ""
-"주의: 포인트, 라인스트링 또는 도형 집합을 입력받을 경우 ST_Collect 함수를 이"
-"용하십시오. 폴리곤을 입력받을 경우, 유효하지 않은 도형이 오류를 일으킬 수도 "
-"있으므로 ST_Union 함수를 이용하십시오."
 
 #. Tag: para
 #: reference_processing.xml:542
@@ -1082,7 +944,7 @@ msgstr "2.0.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
 #: reference_processing.xml:556
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--Get estimate of infected area based on point observations\n"
 "SELECT d.disease_type,\n"
@@ -1090,11 +952,6 @@ msgid ""
 "    FROM disease_obs As d\n"
 "    GROUP BY d.disease_type;"
 msgstr ""
-"-- 포인트 관찰에 기반한 영향 면적 추산하기\n"
-"SELECT d.disease_type,\n"
-"        ST_ConcaveHull(ST_Collect(d.pnt_geom), 0.99) As geom\n"
-"        FROM disease_obs As d\n"
-"        GROUP BY d.disease_type;"
 
 #. Tag: para
 #: reference_processing.xml:566
@@ -1104,7 +961,7 @@ msgstr "목표 100% 수축 오목 껍질에 둘러싸인 두 폴리곤의 ST_Con
 
 #. Tag: programlisting
 #: reference_processing.xml:569
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- geometries overlaid with concavehull\n"
 "-- at target 100% shrink (this is the same as convex hull - since no "
@@ -1117,15 +974,6 @@ msgid ""
 "        ), 1)\n"
 "     As convexhull;"
 msgstr ""
-"-- 오목 껍질과 중첩한 도형들\n"
-"-- 목표 100% 수축(수축이 없으므로 볼록 껍질과 동일함)\n"
-"SELECT\n"
-"        ST_ConcaveHull(\n"
-"                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                ), 1)\n"
-"         As convexhull;"
 
 #. Tag: para
 #: reference_processing.xml:576
@@ -1136,7 +984,7 @@ msgstr "-- 볼록 껍질 면적의 목표 90%에서 오목 껍질과 중첩한 �
 
 #. Tag: programlisting
 #: reference_processing.xml:580
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- geometries overlaid with concavehull at target 90% shrink\n"
 "SELECT\n"
@@ -1147,14 +995,6 @@ msgid ""
 "        ), 0.9)\n"
 "     As target_90;"
 msgstr ""
-"-- 목표 90% 수축에서 오목 껍질과 중첩한 도형들\n"
-"SELECT\n"
-"        ST_ConcaveHull(\n"
-"                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                ), 0.9)\n"
-"         As target_90;"
 
 #. Tag: para
 #: reference_processing.xml:589
@@ -1164,7 +1004,7 @@ msgstr "볼록 껍질과 중첩한 L 형상 포인트들"
 
 #. Tag: programlisting
 #: reference_processing.xml:592
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- this produces a table of 42 points that form an L shape\n"
 "SELECT (ST_DumpPoints(ST_GeomFromText(\n"
@@ -1178,17 +1018,6 @@ msgid ""
 "SELECT ST_ConvexHull(ST_Collect(geom))\n"
 "FROM l_shape;"
 msgstr ""
-"-- 이 쿼리는 L 형상을 이루고 있는 포인트 42개의 테이블을 생성합니다.\n"
-"SELECT (ST_DumpPoints(ST_GeomFromText(\n"
-"'MULTIPOINT(14 14,34 14,54 14,74 14,94 14,114 14,134 14,\n"
-"150 14,154 14,154 6,134 6,114 6,94 6,74 6,54 6,34 6,\n"
-"14 6,10 6,8 6,7 7,6 8,6 10,6 30,6 50,6 70,6 90,6 110,6 130,\n"
-"6 150,6 170,6 190,6 194,14 194,14 174,14 154,14 134,14 114,\n"
-"14 94,14 74,14 54,14 34,14 14)'))).geom\n"
-"        INTO TABLE l_shape;\n"
-"\n"
-"SELECT ST_ConvexHull(ST_Collect(geom))\n"
-"FROM l_shape;"
 
 #. Tag: para
 #: reference_processing.xml:599
@@ -1198,13 +1027,11 @@ msgstr "볼록 껍질의 목표 99%에서 L 형상의 ST_ConcaveHull"
 
 #. Tag: programlisting
 #: reference_processing.xml:602
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_ConcaveHull(ST_Collect(geom), 0.99)\n"
 "    FROM l_shape;"
 msgstr ""
-"SELECT ST_ConcaveHull(ST_Collect(geom), 0.99)\n"
-"        FROM l_shape;"
 
 #. Tag: para
 #: reference_processing.xml:611
@@ -1214,16 +1041,13 @@ msgstr "볼록 껍질 면적의 목표 80%에서 L 형상 포인트들의 오목
 
 #. Tag: programlisting
 #: reference_processing.xml:614
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Concave Hull L shape points\n"
 "    -- at target 80% of convexhull\n"
 "    SELECT ST_ConcaveHull(ST_Collect(geom), 0.80)\n"
 "    FROM l_shape;"
 msgstr ""
-"-- 볼록 껍질의 목표 80%에서 L 형상 포인트들의 오목 껍질\n"
-"SELECT ST_ConcaveHull(ST_Collect(geom), 0.80)\n"
-"        FROM l_shape;"
 
 #. Tag: para
 #: reference_processing.xml:623
@@ -1241,7 +1065,7 @@ msgstr "목표 99% 라인스트링의 오목 껍질과 중첩한 멀티라인스
 
 #. Tag: programlisting
 #: reference_processing.xml:635
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 "
 "70,82 112,130 94,\n"
@@ -1253,15 +1077,6 @@ msgid ""
 "190 122,182 148,178 170,176 184,156 164,146 178,\n"
 "132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)"
 msgstr ""
-"SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 "
-"70,82 112,130 94,\n"
-"        130 62,122 40,156 32,162 76,172 88),\n"
-"(132 178,134 148,128 136,96 128,132 108,150 130,\n"
-"170 142,174 110,156 96,158 90,158 88),\n"
-"(22 64,66 28,94 38,94 68,114 76,112 30,\n"
-"132 10,168 18,178 34,186 52,184 74,190 100,\n"
-"190 122,182 148,178 170,176 184,156 164,146 178,\n"
-"132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)"
 
 #. Tag: para
 #: reference_processing.xml:645
@@ -1297,17 +1112,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:666
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Computes the convex hull of a geometry. The convex hull is the smallest "
 "convex geometry that encloses all geometries in the input."
 msgstr ""
-"<para>도형의 볼록 껍질(convex hull)은 집합 내부의 모든 도형들을 둘러싸는 최"
-"소 볼록 도형을 의미합니다.</para>"
 
 #. Tag: para
 #: reference_processing.xml:670
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "One can think of the convex hull as the geometry obtained by wrapping an "
 "rubber band around a set of geometries. This is different from a concave "
@@ -1315,9 +1128,6 @@ msgid ""
 "is often used to determine an affected area based on a set of point "
 "observations."
 msgstr ""
-"볼록 껍질을 도형들의 집합 주위로 고무줄을 둘러서 얻게 되는 도형이라고 생각할 "
-"수 있습니다. 사용자 도형들을 진공 수축 포장하는 것에 가까운 오목 껍질과는 다"
-"릅니다."
 
 #. Tag: para
 #: reference_processing.xml:676
@@ -1330,15 +1140,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:680
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This is not an aggregate function. To compute the convex hull of a set of "
 "geometries, use <xref linkend=\"ST_Collect\"/> to aggregate them into a "
 "geometry collection (e.g. <code>ST_ConvexHull(ST_Collect(geom))</code>."
 msgstr ""
-"이 함수는 주로 멀티 도형 및 도형 집합을 입력받습니다. 비록 종합 함수는 아니지"
-"만, ST_Collect과 결합해서 포인트 집합의 볼록 껍질을 얻을 수 있습니다. 예: "
-"ST_ConvexHull(ST_Collect(somepointfield))"
 
 #. Tag: para
 #: reference_processing.xml:688
@@ -1355,15 +1162,13 @@ msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_processing.xml:701
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Convex Hull of a MultiLinestring and a MultiPoint"
 msgstr ""
-"멀티라인스트링과 멀티포인트와 함께 표출된 멀티라인스트링 및 멀티포인트의 볼"
-"록 껍질"
 
 #. Tag: programlisting
 #: reference_processing.xml:704
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_ConvexHull(\n"
 "    ST_Collect(\n"
@@ -1373,15 +1178,6 @@ msgid ""
 "---st_astext--\n"
 "POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))"
 msgstr ""
-"SELECT ST_AsText(ST_ConvexHull(\n"
-"        ST_Collect(\n"
-"                ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, 20 "
-"30))'),\n"
-"                        ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, 10 "
-"10)')\n"
-"                        )) );\n"
-"-- st_astext --\n"
-"POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))"
 
 #. Tag: para
 #: reference_processing.xml:707
@@ -1391,7 +1187,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:709
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--Get estimate of infected area based on point observations\n"
 "SELECT d.disease_type,\n"
@@ -1399,11 +1195,6 @@ msgid ""
 "    FROM disease_obs As d\n"
 "    GROUP BY d.disease_type;"
 msgstr ""
-"-- 포인트 관찰에 기반한 영향 면적 추산하기\n"
-"SELECT d.disease_type,\n"
-"        ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom\n"
-"        FROM disease_obs As d\n"
-"        GROUP BY d.disease_type;"
 
 #. Tag: para
 #: reference_processing.xml:714
@@ -1423,11 +1214,9 @@ msgstr "ST_DelaunayTriangles"
 
 #. Tag: refpurpose
 #: reference_processing.xml:722
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the Delaunay triangulation of the vertices of a geometry."
 msgstr ""
-"주어진 입력 포인트들을 둘러싼 들로네 삼각망(Delaunay triangulation)을 반환합"
-"니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:729
@@ -1445,7 +1234,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:741
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the <ulink url=\"http://en.wikipedia.org/wiki/Delaunay_triangulation"
 "\">Delaunay triangulation</ulink> of the vertices of the input geometry. "
@@ -1453,17 +1242,12 @@ msgid ""
 "flags=1) or TIN (for flags=2). The tolerance, if any, is used to snap input "
 "vertices together."
 msgstr ""
-"입력 도형의 꼭짓점들을 둘러싼 <ulink url=\"http://en.wikipedia.org/wiki/"
-"Delaunay_triangulation\">들로네 삼각망</ulink> 을 반환합니다. 폴리곤 집합"
-"(flags=0인 경우), 멀티라인스트링(flags=1인 경우), 또는 TIN(flags=2인 경우)을 "
-"출력합니다. 허용 오차가 있을 경우, 입력 꼭짓점들을 서로 스냅시키는 데 이용합"
-"니다."
 
 #. Tag: para
 #: reference_processing.xml:750
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.1.0"
-msgstr "2.0.0 버전부터 사용할 수 있습니다."
+msgstr "2.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:752
@@ -1485,7 +1269,7 @@ msgstr "원본 폴리곤"
 
 #. Tag: programlisting
 #: reference_processing.xml:768
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- our original geometry --\n"
 "    ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
@@ -1493,11 +1277,6 @@ msgid ""
 "        ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
 "        )"
 msgstr ""
-"-- 원본 도형 --\n"
-"        ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                )"
 
 #. Tag: para
 #: reference_processing.xml:776
@@ -1511,7 +1290,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:779
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- geometries overlaid multilinestring triangles\n"
 "SELECT\n"
@@ -1522,14 +1301,6 @@ msgid ""
 "        ))\n"
 "     As  dtriag;"
 msgstr ""
-"-- 멀티라인스트링 삼각형과 중첩한 도형\n"
-"SELECT\n"
-"        ST_DelaunayTriangles(\n"
-"                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                ))\n"
-"         As  dtriag;"
 
 #. Tag: para
 #: reference_processing.xml:786
@@ -1539,7 +1310,7 @@ msgstr "-- 멀티라인스트링인 들로네 삼각형"
 
 #. Tag: programlisting
 #: reference_processing.xml:789
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    ST_DelaunayTriangles(\n"
@@ -1549,13 +1320,6 @@ msgid ""
 "        ),0.001,1)\n"
 "     As  dtriag;"
 msgstr ""
-"SELECT\n"
-"        ST_DelaunayTriangles(\n"
-"                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
-"                        50 60, 125 100, 175 150))'),\n"
-"                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
-"                ),0.001,1)\n"
-"         As  dtriag;"
 
 #. Tag: para
 #: reference_processing.xml:797
@@ -1565,7 +1329,7 @@ msgstr "-- 삼각형 폴리곤 55개인 포인트 45개의 들로네 삼각형"
 
 #. Tag: programlisting
 #: reference_processing.xml:800
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- this produces a table of 42 points that form an L shape\n"
 "SELECT (ST_DumpPoints(ST_GeomFromText(\n"
@@ -1590,28 +1354,6 @@ msgid ""
 ":\n"
 ":"
 msgstr ""
-"-- 이 쿼리는 L 형상을 이루고 있는 포인트 42개의 테이블을 생성합니다.\n"
-"SELECT (ST_DumpPoints(ST_GeomFromText(\n"
-"'MULTIPOINT(14 14,34 14,54 14,74 14,94 14,114 14,134 14,\n"
-"150 14,154 14,154 6,134 6,114 6,94 6,74 6,54 6,34 6,\n"
-"14 6,10 6,8 6,7 7,6 8,6 10,6 30,6 50,6 70,6 90,6 110,6 130,\n"
-"6 150,6 170,6 190,6 194,14 194,14 174,14 154,14 134,14 114,\n"
-"14 94,14 74,14 54,14 34,14 14)'))).geom\n"
-"        INTO TABLE l_shape;\n"
-"-- 개별 삼각형 폴리곤으로 출력\n"
-"SELECT ST_AsText((ST_Dump(geom)).geom) As wkt\n"
-"FROM ( SELECT ST_DelaunayTriangles(ST_Collect(geom)) As geom\n"
-"FROM l_shape) As foo;\n"
-"\n"
-"-- WKT --\n"
-"POLYGON((6 194,6 190,14 194,6 194))\n"
-"POLYGON((14 194,6 190,14 174,14 194))\n"
-"POLYGON((14 194,14 174,154 14,14 194))\n"
-"POLYGON((154 14,14 174,14 154,154 14))\n"
-"POLYGON((154 14,14 154,150 14,154 14))\n"
-"POLYGON((154 14,150 14,154 6,154 14))\n"
-":\n"
-":"
 
 #. Tag: title
 #: reference_processing.xml:809
@@ -1643,13 +1385,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:814
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_Tesselate\"/>"
 msgstr ""
-", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
-"linkend=\"ST_Node\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:821
@@ -1665,7 +1405,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:827
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_FilterByM</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -1674,11 +1414,6 @@ msgid ""
 "parameter></paramdef> <paramdef><type>boolean</type> <parameter>returnM = "
 "false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:839
@@ -1728,9 +1463,9 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:852 reference_processing.xml:1252
 #: reference_processing.xml:1852
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.5.0"
-msgstr "2.0.0 버전부터 사용할 수 있습니다."
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:857
@@ -1740,7 +1475,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:858
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_FilterByM(geom,30)) simplified\n"
 "FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::"
@@ -1750,19 +1485,12 @@ msgid ""
 "----------------------------\n"
 " LINESTRING(5 2,7 25,10 10)"
 msgstr ""
-"select ST_AsText(ST_SimplifyVW(geom,30)) simplified\n"
-"FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As "
-"foo;\n"
-"-- 결과 --\n"
-" simplified\n"
-"-----------+-------------------+\n"
-"LINESTRING(5 2,7 25,10 10)"
 
 #. Tag: para
 #: reference_processing.xml:862 reference_processing.xml:1862
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_SimplifyVW\"/>"
-msgstr ", <xref linkend=\"ST_Dump\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:868
@@ -1778,7 +1506,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:874
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_GeneratePoints</function></"
 "funcdef> <paramdef> <parameter>g</parameter> <type>geometry</type> </"
@@ -1789,24 +1517,15 @@ msgid ""
 "<parameter>npoints</parameter> </paramdef> <paramdef> <type>integer</type> "
 "<parameter>seed</parameter> </paramdef> </funcprototype>"
 msgstr ""
-"<funcprototype> <funcdef>geometry <function>ST_Intersection</function></"
-"funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </"
-"paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geography "
-"<function>ST_Intersection</function></funcdef> <paramdef> <type>geography</"
-"type> <parameter>geogA</parameter> </paramdef> <paramdef> <type>geography</"
-"type> <parameter>geogB</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_processing.xml:899
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ST_GeneratePoints generates a given number of pseudo-random points which lie "
 "within the input area. The optional <code>seed</code> is used to regenerate "
 "a deterministic sequence of points, and must be greater than zero."
 msgstr ""
-"ST_GeneratePoints 함수는 요청한 개수가 될 때까지 입력된 면 내부에 의사무작위"
-"(pseudo-random) 포인트를 생성합니다."
 
 #. Tag: para
 #: reference_processing.xml:906 reference_processing.xml:995
@@ -1829,15 +1548,15 @@ msgstr "원본 폴리곤"
 
 #. Tag: para
 #: reference_processing.xml:934
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Generated 12 Points overlaid on top of original polygon using a random seed "
 "value 1996"
-msgstr "원본 폴리곤 위에 중첩한 포인트 12개를 생성"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:937
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_GeneratePoints(geom, 12, 1996)\n"
 "FROM (\n"
@@ -1847,27 +1566,22 @@ msgid ""
 "        10, 'endcap=round join=round') AS geom\n"
 ") AS s;"
 msgstr ""
-"SELECT ST_GeneratePoints(\n"
-"        ST_Buffer(\n"
-"                ST_GeomFromText(\n"
-"                'LINESTRING(50 50,150 150,150 50)'\n"
-"                ), 10, 'endcap=round join=round'), 12);"
 
 #. Tag: refname
 #: reference_processing.xml:948
 #, no-c-format
 msgid "ST_GeometricMedian"
-msgstr ""
+msgstr "ST_GeometricMedian"
 
 #. Tag: refpurpose
 #: reference_processing.xml:952
 #, no-c-format
 msgid "Returns the geometric median of a MultiPoint."
-msgstr ""
+msgstr "멀티 포인트의 기하학적 중심값(median)을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:959
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_GeometricMedian</function> </funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -1877,11 +1591,6 @@ msgid ""
 "\"><type>boolean</type> <parameter>fail_if_not_converged = false</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:974
@@ -1940,6 +1649,8 @@ msgid ""
 "Comparison of the centroid (turquoise point) and geometric median (red "
 "point) of a four-point MultiPoint (yellow points)."
 msgstr ""
+"포인트 4개로 이루어진 멀티포인트(노란색 포인트들)의 중심점(청록색 포인트)과 "
+"기하학적 중심값(빨간색 포인트)의 비교"
 
 #. Tag: programlisting
 #: reference_processing.xml:1018
@@ -1956,12 +1667,22 @@ msgid ""
 " POINT(50.75 50.75) | POINT(1.9761550281255 1.9761550281255)\n"
 "(1 row)"
 msgstr ""
+"WITH test AS (\n"
+"SELECT 'MULTIPOINT((0 0), (1 1), (2 2), (200 200))'::geometry geom)\n"
+"SELECT\n"
+"  ST_AsText(ST_Centroid(geom)) centroid,\n"
+"  ST_AsText(ST_GeometricMedian(geom)) median\n"
+"FROM test;\n"
+"      centroid      |                 median\n"
+"--------------------+----------------------------------------\n"
+" POINT(50.75 50.75) | POINT(1.9761550281255 1.9761550281255)\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_processing.xml:1031
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_LineMerge"
-msgstr "ST_LineToCurve"
+msgstr "ST_LineMerge"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1033
@@ -1971,14 +1692,15 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1039
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+"<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1049
@@ -2059,33 +1781,30 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1074
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LineSubstring\"/>"
-msgstr ", <xref linkend=\"ST_Dump\"/>"
+msgstr ", <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:1080
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_MaximumInscribedCircle"
-msgstr "ST_MinimumBoundingCircle"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:1081
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Computes the largest circle that is fully contained within a geometry."
-msgstr "도형 전체를 담을 수 있는 가장 작은 원형 폴리곤을 반환합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1086
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>(geometry, geometry, double precision) "
 "<function>ST_MaximumInscribedCircle</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
-"<funcdef>(geometry, double precision) <function>ST_MinimumBoundingRadius</"
-"function></funcdef> <paramdef><type>geometry</type> <parameter>geom</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1095
@@ -2108,9 +1827,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1102 reference_processing.xml:1592
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.1.0 - requires GEOS &gt;= 3.9.0."
-msgstr "2.1.0 버전부터 사용할 수 있습니다. GEOS 3.4.0 이상 버전이 필요합니다."
+msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1112
@@ -2156,10 +1875,11 @@ msgstr "ST_MinimumBoundingCircle"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1141
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Returns the smallest circle polygon that contains a geometry."
-msgstr "도형 전체를 담을 수 있는 가장 작은 원형 폴리곤을 반환합니다."
+"<refpurpose>Returns the smallest circle polygon that contains a geometry.</"
+"refpurpose>"
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1146
@@ -2177,10 +1897,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1156
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Returns the smallest circle polygon that contains a geometry."
-msgstr "도형 전체를 담을 수 있는 가장 작은 원형 폴리곤을 반환합니다."
+"<para>Returns the smallest circle polygon that contains a geometry.</para>"
+msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1157
@@ -2226,23 +1946,19 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1166
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.4.0"
-msgstr "1.3.3 버전부터 사용할 수 있습니다."
+msgstr "유효버전: 1.4.0"
 
 #. Tag: programlisting
 #: reference_processing.xml:1176
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT d.disease_type,\n"
 "    ST_MinimumBoundingCircle(ST_Collect(d.geom)) As geom\n"
 "    FROM disease_obs As d\n"
 "    GROUP BY d.disease_type;"
 msgstr ""
-"SELECT d.disease_type,\n"
-"        ST_MinimumBoundingCircle(ST_Collect(d.the_geom)) As the_geom\n"
-"        FROM disease_obs As d\n"
-"        GROUP BY d.disease_type;"
 
 #. Tag: para
 #: reference_processing.xml:1182
@@ -2256,7 +1972,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1185
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MinimumBoundingCircle(\n"
 "        ST_Collect(\n"
@@ -2285,32 +2001,6 @@ msgid ""
 "150.054896839789,130.79416296937 139.146232909101,134.384753327498 "
 "127.309642789079,135.59714732062 115))"
 msgstr ""
-"SELECT ST_AsText(ST_MinimumBoundingCircle(\n"
-"                ST_Collect(\n"
-"                        ST_GeomFromEWKT('LINESTRING(55 75,125 150)'),\n"
-"                                ST_Point(20, 80)), 8\n"
-"                                )) As wktmbc;\n"
-"wktmbc\n"
-"-----------\n"
-"POLYGON((135.59714732062 115,134.384753327498 "
-"102.690357210921,130.79416296937 90.8537670908995,124.963360620072 "
-"79.9451031602111,117.116420743937 70.3835792560632,107.554896839789 "
-"62.5366393799277,96.6462329091006 56.70583703063,84.8096427890789 "
-"53.115246672502,72.5000000000001 51.9028526793802,60.1903572109213 "
-"53.1152466725019,48.3537670908996 56.7058370306299,37.4451031602112 "
-"62.5366393799276,27.8835792560632 70.383579256063,20.0366393799278 "
-"79.9451031602109,14.20583703063 90.8537670908993,10.615246672502 "
-"102.690357210921,9.40285267938019 115,10.6152466725019 "
-"127.309642789079,14.2058370306299 139.1462329091,20.0366393799275 "
-"150.054896839789,27.883579256063 159.616420743937,\n"
-"37.4451031602108 167.463360620072,48.3537670908992 "
-"173.29416296937,60.190357210921 176.884753327498,\n"
-"72.4999999999998 178.09714732062,84.8096427890786 "
-"176.884753327498,96.6462329091003 173.29416296937,107.554896839789 "
-"167.463360620072,\n"
-"117.116420743937 159.616420743937,124.963360620072 "
-"150.054896839789,130.79416296937 139.146232909101,134.384753327498 "
-"127.309642789079,135.59714732062 115))"
 
 #. Tag: refname
 #: reference_processing.xml:1195
@@ -2320,12 +2010,11 @@ msgstr "ST_MinimumBoundingRadius"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1196
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the center point and radius of the smallest circle that contains a "
 "geometry."
 msgstr ""
-"도형 전체를 담을 수 있는 가장 작은 원의 중심 포인트 및 반지름을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:1201
@@ -2341,23 +2030,19 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1210
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a record containing the center point and radius of the smallest "
 "circle that contains a geometry."
 msgstr ""
-"도형 전체를 담을 수 있는 가장 작은 원의 중심 포인트 및 반지름을 담고 있는 레"
-"코드를 반환합니다."
 
 #. Tag: para
 #: reference_processing.xml:1211
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Use in conjunction with <xref linkend=\"ST_Collect\"/> to get the minimum "
 "bounding circle of a set of geometries."
 msgstr ""
-"도형들의 집합의 최소 경계 원을 얻기 위해 이 함수와 <xref linkend=\"ST_Collect"
-"\"/> 함수를 결합해서 이용할 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:1212
@@ -2399,19 +2084,17 @@ msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:1230
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a minimum-area rectangle containing a geometry."
-msgstr "도형을 분해(split)해서 나오는 도형들의 집합을 반환합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1235
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_OrientedEnvelope</function></funcdef> "
 "<paramdef> <type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1247
@@ -2464,11 +2147,9 @@ msgstr "ST_OffsetCurve"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1286
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns an offset line at a given distance and side from an input line."
 msgstr ""
-"입력라인으로부터 주어진 거리 및 방향에 있는 오프셋 라인을 반환합니다. 중심선"
-"을 기준으로 평행한 라인들을 계산하는 데 유용합니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:1294
@@ -2488,27 +2169,22 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1307
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return an offset line at a given distance and side from an input line. All "
 "points of the returned geometries are not further than the given distance "
 "from the input geometry. Useful for computing parallel lines about a center "
 "line."
 msgstr ""
-"입력라인으로부터 주어진 거리 및 방향에 있는 오프셋 라인을 반환합니다. 반환된 "
-"도형의 모든 포인트들은 입력 도형으로부터 주어진 거리를 넘지 않습니다."
 
 #. Tag: para
 #: reference_processing.xml:1314
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For positive distance the offset is on the left side of the input line and "
 "retains the same direction. For a negative distance it is on the right side "
 "and in the opposite direction."
 msgstr ""
-"양의 거리를 설정한 경우 오프셋은 입력 라인의 왼쪽에 생성되며 동일한 방향을 유"
-"지할 것입니다. 음의 거리를 설정하면 오른쪽에 생성되며 반대 방향을 향할 것입니"
-"다."
 
 #. Tag: para
 #: reference_processing.xml:1319
@@ -2567,17 +2243,16 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1342
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.0"
-msgstr "2.0.0 버전부터 사용할 수 있습니다."
+msgstr "2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
 #: reference_processing.xml:1343
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING"
 msgstr ""
-"개선 사항: 2.1.0 버전부터 도형 집합 및 멀티포인트를 지원하기 시작했습니다."
 
 #. Tag: para
 #: reference_processing.xml:1352
@@ -2587,7 +2262,7 @@ msgstr "도로 주위로 열린 버퍼를 계산합니다."
 
 #. Tag: programlisting
 #: reference_processing.xml:1353
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Union(\n"
 " ST_OffsetCurve(f.geom,  f.width/2, 'quad_segs=4 join=round'),\n"
@@ -2595,11 +2270,6 @@ msgid ""
 ") as track\n"
 "FROM someroadstable;"
 msgstr ""
-"SELECT ST_Union(\n"
-" ST_OffsetCurve(f.the_geom,  f.width/2, 'quad_segs=4 join=round'),\n"
-" ST_OffsetCurve(f.the_geom, -f.width/2, 'quad_segs=4 join=round')\n"
-") as track\n"
-"FROM someroadstable;"
 
 #. Tag: para
 #: reference_processing.xml:1363
@@ -2609,7 +2279,7 @@ msgstr "거리 15, 원본 라인에서 'quad_segs=4 join=round' 및 오프셋은
 
 #. Tag: programlisting
 #: reference_processing.xml:1367
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
 "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
@@ -2623,17 +2293,6 @@ msgid ""
 "    5.39339828220179 7.39339828220179,\n"
 "    2.14180701233067 12.2597485145237,1 18,1 195)"
 msgstr ""
-"SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)'),\n"
-"        15, 'quad_segs=4 join=round'));\n"
-"-- 출력물 --\n"
-"LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,\n"
-"        7.39339828220179 5.39339828220179,\n"
-"        5.39339828220179 7.39339828220179,\n"
-"        2.14180701233067 12.2597485145237,1 18,1 195)"
 
 #. Tag: para
 #: reference_processing.xml:1374
@@ -2643,7 +2302,7 @@ msgstr "거리 -15, 원본 라인에서 'quad_segs=4 join=round' 및 오프셋�
 
 #. Tag: programlisting
 #: reference_processing.xml:1378
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(geom,\n"
 "    -15, 'quad_segs=4 join=round')) As notsocurvy\n"
@@ -2655,15 +2314,6 @@ msgid ""
 "-- notsocurvy --\n"
 "LINESTRING(31 195,31 31,164 31)"
 msgstr ""
-"SELECT ST_AsText(ST_OffsetCurve(geom,\n"
-"        -15, 'quad_segs=4 join=round')) As notsocurvy\n"
-"        FROM ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
-"-- notsocurvy --\n"
-"LINESTRING(31 195,31 31,164 31)"
 
 #. Tag: para
 #: reference_processing.xml:1387
@@ -2677,7 +2327,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1390
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
 "    -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As "
@@ -2692,18 +2342,6 @@ msgid ""
 "35.3933982822018 35.3933982822018,\n"
 "32.1418070123307 40.2597485145237,31 46,31 195)"
 msgstr ""
-"SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
-"        -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As "
-"morecurvy\n"
-"        FROM ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
-"-- morecurvy --\n"
-"LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,\n"
-"35.3933982822018 35.3933982822018,\n"
-"32.1418070123307 40.2597485145237,31 46,31 195)"
 
 #. Tag: para
 #: reference_processing.xml:1397
@@ -2717,7 +2355,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1400
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
 "    ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'),\n"
@@ -2738,24 +2376,6 @@ msgid ""
 "35.3933982822018,\n"
 "32.1418070123307 40.2597485145237,31 46,31 195))"
 msgstr ""
-"SELECT ST_AsText(ST_Collect(\n"
-"        ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'),\n"
-"        ST_OffsetCurve(ST_OffsetCurve(geom,\n"
-"        -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')\n"
-"        )\n"
-") As parallel_curves\n"
-"        FROM ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
-"-- 평행 곡선 --\n"
-"MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,\n"
-"7.39339828220179 5.39339828220179,5.39339828220179 7.39339828220179,\n"
-"2.14180701233067 12.2597485145237,1 18,1 195),\n"
-"(164 31,46 31,40.2597485145236 32.1418070123307,35.3933982822018 "
-"35.3933982822018,\n"
-"32.1418070123307 40.2597485145237,31 46,31 195))"
 
 #. Tag: para
 #: reference_processing.xml:1409
@@ -2765,7 +2385,7 @@ msgstr "거리 15, 원본 라인과 함께 표출된 'quad_segs=4 join=round'"
 
 #. Tag: programlisting
 #: reference_processing.xml:1412
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
 "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
@@ -2777,15 +2397,6 @@ msgid ""
 "LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,\n"
 "    5.39339828220179 7.39339828220179,1 18,1 195)"
 msgstr ""
-"SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)'),\n"
-"                15, 'quad_segs=4 join=bevel'));\n"
-"-- 출력 --\n"
-"LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,\n"
-"        5.39339828220179 7.39339828220179,1 18,1 195)"
 
 #. Tag: para
 #: reference_processing.xml:1420
@@ -2795,7 +2406,7 @@ msgstr "수집된 15, -15. join=mitre mitre_limit=2.1"
 
 #. Tag: programlisting
 #: reference_processing.xml:1423
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
 "    ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),\n"
@@ -2810,40 +2421,28 @@ msgid ""
 "MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),\n"
 "    (31 195,31 31,164 31))"
 msgstr ""
-"SELECT ST_AsText(ST_Collect(\n"
-"        ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),\n"
-"        ST_OffsetCurve(geom, -15, 'quad_segs=4 join=mitre mitre_limit=2.2')\n"
-"        ) )\n"
-"        FROM ST_GeomFromText(\n"
-"'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
-"        44 16,24 16,20 16,18 16,17 17,\n"
-"        16 18,16 20,16 40,16 60,16 80,16 100,\n"
-"        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
-"-- 출력물 --\n"
-"MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),\n"
-"        (31 195,31 31,164 31))"
 
 #. Tag: refname
 #: reference_processing.xml:1440
 #, no-c-format
 msgid "ST_PointOnSurface"
-msgstr ""
+msgstr "ST_PointOnSurface"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1441
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Computes a point guaranteed to lie in a polygon, or on a geometry."
-msgstr "도형을 분해(split)해서 나오는 도형들의 집합을 반환합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1446
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Node</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+"<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1458
@@ -2856,9 +2455,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1463
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
-msgstr "&sfs_compliant; s2.1.1.3"
+msgstr "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
 
 #. Tag: para
 #: reference_processing.xml:1464
@@ -2900,9 +2499,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1480
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_MaximumInscribedCircle\"/>"
-msgstr ", <xref linkend=\"ST_MinimumBoundingCircle\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:1486
@@ -2912,13 +2511,11 @@ msgstr "ST_Polygonize"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1488
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Computes a collection of polygons formed from the linework of a set of "
 "geometries."
 msgstr ""
-"도형들의 집합의 선분 구성 요소로부터 형성될 수 있는 폴리곤들을 담고 있는 도"
-"형 집합을 생성합니다."
 
 #. Tag: funcsynopsis
 #: reference_processing.xml:1493
@@ -2938,14 +2535,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1509
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a GeometryCollection containing the polygons formed by the "
 "constituent linework of a set of geometries. Input linework must be "
 "correctly noded for this function to work properly."
 msgstr ""
-"도형들의 집합의 선분 구성 요소로부터 형성될 수 있는 폴리곤들을 담고 있는 도"
-"형 집합을 생성합니다."
 
 #. Tag: para
 #: reference_processing.xml:1514
@@ -2957,21 +2552,18 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1521
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "GeometryCollections are often difficult to deal with with third party tools. "
 "Use <xref linkend=\"ST_Dump\"/> to convert the polygonize result into "
 "separate polygons."
 msgstr ""
-"도형 집합은 종종 제 3자 도구로 처리하기 어렵기 때문에, 폴리곤들을 개별 폴리곤"
-"으로 덤프하기 위해 ST_Polygonize를 <xref linkend=\"ST_Dump\"/> 와 결합해서 이"
-"용하곤 합니다."
 
 #. Tag: para
 #: reference_processing.xml:1527
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.0.0RC1"
-msgstr "1.3.3 버전부터 사용할 수 있습니다."
+msgstr "유효버전: 1.0.0RC1"
 
 #. Tag: title
 #: reference_processing.xml:1531
@@ -2981,7 +2573,7 @@ msgstr "예시: 단일 라인스트링의 폴리곤화"
 
 #. Tag: programlisting
 #: reference_processing.xml:1532
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_Polygonize(geom_4269)) As geomtextrep\n"
 "FROM (SELECT geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As "
@@ -3013,35 +2605,6 @@ msgid ""
 "42.353675))\n"
 "(2 rows)"
 msgstr ""
-"SELECT ST_AsEWKT(ST_Polygonize(the_geom_4269)) As geomtextrep\n"
-"FROM (SELECT the_geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As "
-"foo;\n"
-"\n"
-"geomtextrep\n"
-"-------------------------------------\n"
-" SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 "
-"42.2856,-71.04096 42.285752,-71.040878 42.285678)),\n"
-" POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 "
-"42.354358,-71.171794 42.354971,-71.170511 42.354855,\n"
-" -71.17112 42.354238,-71.17166 42.353675)))\n"
-"(1 row)\n"
-"\n"
-"-- ST_Dump를 통해 폴리곤화시킨 도형들을 개별 폴리곤으로 덤프합니다.\n"
-"SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep\n"
-"FROM (SELECT ST_Polygonize(the_geom_4269) As polycoll\n"
-"        FROM (SELECT the_geom_4269 FROM ma.suffolk_edges\n"
-"                ORDER BY tlid LIMIT 45) As foo) As foofoo;\n"
-"\n"
-"geomtextrep\n"
-"------------------------\n"
-" SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 "
-"42.285752,\n"
-"-71.040878 42.285678))\n"
-" SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 "
-"42.354358\n"
-",-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 "
-"42.353675))\n"
-"(2 rows)"
 
 #. Tag: para
 #: reference_processing.xml:1537
@@ -3063,15 +2626,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1553
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ReducePrecision</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>gridsize</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Difference</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1567
@@ -3181,11 +2741,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:1610
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
 msgstr ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, 위상(topology) <xref "
-"linkend=\"TP_ST_Simplify\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:1616
@@ -3250,7 +2808,7 @@ msgstr "멀티라인스트링과 라인스트링이 공유하는 경로와 원�
 
 #. Tag: programlisting
 #: reference_processing.xml:1664
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
 "  ST_SharedPaths(\n"
@@ -3267,24 +2825,10 @@ msgid ""
 "GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),\n"
 " (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
 msgstr ""
-"SELECT ST_AsText(\n"
-"  ST_SharedPaths(\n"
-"    ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 "
-"125),\n"
-"           (51 150,101 150,76 175,51 150))'),\n"
-"        ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,90 161, 76 "
-"175)')\n"
-"        )\n"
-"  ) As wkt\n"
-"\n"
-"                                wkt\n"
-"-------------------------------------------------------------\n"
-"GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),\n"
-" (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
 
 #. Tag: programlisting
 #: reference_processing.xml:1670
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- same example but linestring orientation flipped\n"
 "SELECT ST_AsText(\n"
@@ -3300,19 +2844,6 @@ msgid ""
 "GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,\n"
 "MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
 msgstr ""
-"-- 동일한 예시에서 라인스트링의 방향만 역전\n"
-"SELECT ST_AsText(\n"
-"  ST_SharedPaths(\n"
-"   ST_GeomFromText('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)'),\n"
-"   ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),\n"
-"           (51 150,101 150,76 175,51 150))')\n"
-"        )\n"
-"  ) As wkt\n"
-"\n"
-"                                wkt\n"
-"-------------------------------------------------------------\n"
-"GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,\n"
-"MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
 
 #. Tag: para
 #: reference_processing.xml:1680
@@ -3330,13 +2861,11 @@ msgstr "ST_Simplify"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1691
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a simplified version of a geometry, using the Douglas-Peucker "
 "algorithm."
 msgstr ""
-"더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화\"된 "
-"버전을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:1697
@@ -3423,7 +2952,7 @@ msgstr "원을 너무 단순화시키면 팔각형을 거쳐 삼각형이 되고
 
 #. Tag: programlisting
 #: reference_processing.xml:1731
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Npoints(geom) AS np_before,\n"
 "       ST_NPoints(ST_Simplify(geom,0.1)) AS np01_notbadcircle,\n"
@@ -3441,20 +2970,6 @@ msgid ""
 "        49 |                33 |                  17 |           9 "
 "|             4 | t"
 msgstr ""
-"SELECT ST_Npoints(the_geom) As np_before, "
-"ST_NPoints(ST_Simplify(the_geom,0.1)) As np01_notbadcircle, "
-"ST_NPoints(ST_Simplify(the_geom,0.5)) As np05_notquitecircle,\n"
-"ST_NPoints(ST_Simplify(the_geom,1)) As np1_octagon, "
-"ST_NPoints(ST_Simplify(the_geom,10)) As np10_triangle,\n"
-"(ST_Simplify(the_geom,100) is null) As  np100_geometrygoesaway\n"
-"FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;\n"
-"-- 결과 --\n"
-" np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | "
-"np10_triangle | np100_geometrygoesaway\n"
-"-----------+-------------------+---------------------+-------------"
-"+---------------+------------------------\n"
-"                49 |                33 |                  17 |           9 "
-"|             4 | t"
 
 #. Tag: para
 #: reference_processing.xml:1735
@@ -3474,13 +2989,11 @@ msgstr "ST_SimplifyPreserveTopology"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1742
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a simplified and valid version of a geometry, using the Douglas-"
 "Peucker algorithm."
 msgstr ""
-"더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화\"된 "
-"버전을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:1748
@@ -3530,7 +3043,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1773
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Npoints(geom) As np_before, "
 "ST_NPoints(ST_SimplifyPreserveTopology(geom,0.1)) As np01_notbadcircle, "
@@ -3548,22 +3061,6 @@ msgid ""
 "        49 |                33 |                  17 |           9 "
 "|             5 |                 5"
 msgstr ""
-"SELECT ST_Npoints(the_geom) As np_before, "
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.1)) As np01_notbadcircle, "
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.5)) As "
-"np05_notquitecircle,\n"
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,1)) As np1_octagon, "
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,10)) As np10_square,\n"
-"ST_NPoints(ST_SimplifyPreserveTopology(the_geom,100)) As  np100_stillsquare\n"
-"FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;\n"
-"\n"
-"-- 결과 --\n"
-" np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | "
-"np10_square | np100_stillsquare\n"
-"-----------+-------------------+---------------------+-------------"
-"+---------------+-------------------\n"
-"                49 |                33 |                  17 |           9 "
-"|             5 |                 5"
 
 #. Tag: refname
 #: reference_processing.xml:1783
@@ -3573,13 +3070,11 @@ msgstr "ST_SimplifyVW"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1784
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
 "algorithm"
 msgstr ""
-"비스베일링검-와이어트(Visvalingam-Whyatt) 알고리즘을 이용해서 입력 도형의 "
-"\"단순화\"된 버전을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:1789
@@ -3631,7 +3126,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_processing.xml:1813
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "select ST_AsText(ST_SimplifyVW(geom,30)) simplified\n"
 "FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As "
@@ -3641,13 +3136,6 @@ msgid ""
 "------------------------------\n"
 "LINESTRING(5 2,7 25,10 10)"
 msgstr ""
-"select ST_AsText(ST_SimplifyVW(geom,30)) simplified\n"
-"FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As "
-"foo;\n"
-"-- 결과 --\n"
-" simplified\n"
-"-----------+-------------------+\n"
-"LINESTRING(5 2,7 25,10 10)"
 
 #. Tag: para
 #: reference_processing.xml:1817
@@ -3669,15 +3157,13 @@ msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:1824
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a smoothed version of a geometry, using the Chaikin algorithm"
 msgstr ""
-"비스베일링검-와이어트(Visvalingam-Whyatt) 알고리즘을 이용해서 입력 도형의 "
-"\"단순화\"된 버전을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:1829
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -3685,11 +3171,6 @@ msgid ""
 "paramdef> <paramdef><type>boolean</type> <parameter>preserveEndPoints = "
 "false</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef> "
-"<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_processing.xml:1840
@@ -3757,13 +3238,11 @@ msgstr "ST_SetEffectiveArea"
 
 #. Tag: refpurpose
 #: reference_processing.xml:1869
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
 "algorithm."
 msgstr ""
-"비스베일링검-와이어트(Visvalingam-Whyatt) 알고리즘을 이용해서 입력 도형의 "
-"\"단순화\"된 버전을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_processing.xml:1876
@@ -3880,10 +3359,10 @@ msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:1929
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the boundaries of the Voronoi diagram of the vertices of a geometry."
-msgstr "도형을 분해(split)해서 나오는 도형들의 집합을 반환합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:1934
@@ -3981,9 +3460,9 @@ msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:2017
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the cells of the Voronoi diagram of the vertices of a geometry."
-msgstr "도형을 분해(split)해서 나오는 도형들의 집합을 반환합니다."
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:2022
@@ -4107,2729 +3586,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ""
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a geometry/geography that represents all points whose distance "
-#~ "from this Geometry/geography is less than or equal to distance."
-#~ msgstr ""
-#~ "해당 도형/지리형으로부터의 거리가 주어진 거리보다 짧거나 동등한 모든 포인"
-#~ "트들을 표현하는 도형/지리형을 반환합니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Geometry: Calculations are in the Spatial Reference System of the "
-#~ "geometry. Introduced in 1.5 support for different end cap and mitre "
-#~ "settings to control shape."
-#~ msgstr ""
-#~ "도형: 도형의 공간 참조 시스템 단위로 계산합니다. 1.5 버전부터 형상을 제어"
-#~ "하기 위한 서로 다른 끝모양(endcap) 및 마이터(mitre) 설정을 지원하고 있습니"
-#~ "다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Negative radii: For polygons, a negative radius can be used, which will "
-#~ "shrink the polygon rather than expanding it."
-#~ msgstr ""
-#~ "음의 반경(negative radius): 폴리곤에 대해 음의 반경을 쓸 수 있습니다. 음"
-#~ "의 반경은 폴리곤을 늘어나게 하기 보다는 줄어들게 할 것입니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "For geography this may not behave as expected if object is sufficiently "
-#~ "large that it falls between two UTM zones or crosses the dateline"
-#~ msgstr ""
-#~ "지리형의 경우, 두 UTM 구역에 걸치거나, 날짜변경선을 지나는 등 해당 객체가 "
-#~ "충분히 크다면 정상적으로 동작하지 않을 수도 있습니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "Units of radius are measured in units of the spatial reference system."
-#~ msgstr "반경의 단위는 공간 참조 시스템의 단위로 측정됩니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "The inputs can be POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, "
-#~ "POLYGONS, MULTIPOLYGONS, and GeometryCollections."
-#~ msgstr ""
-#~ "포인트, 멀티포인트, 라인스트링, 멀티라인스트링, 폴리곤, 멀티폴리곤 그리고 "
-#~ "도형 집합을 입력받을 수 있습니다."
-
-#, no-c-format
-#~ msgid ""
-#~ "This function ignores the third dimension (z) and will always give a 2-d "
-#~ "buffer even when presented with a 3d-geometry."
-#~ msgstr ""
-#~ "이 함수는 3차원 도형을 입력받더라도 세 번째 차원(Z)을 무시하고 언제나 2차"
-#~ "원 버퍼를 반환할 것입니다."
-
-#~ msgid ""
-#~ "This will create a gaping hole inside the circle with prongs sticking out"
-#~ msgstr ""
-#~ "다음 쿼리는 삐죽 튀어나온 막대와 함께 원 안에 벌어진 구멍을 만들 겁니다."
-
-#~ msgid ""
-#~ "SELECT ST_BuildArea(ST_Collect(line,circle))\n"
-#~ "FROM (SELECT\n"
-#~ "        ST_Buffer(\n"
-#~ "                ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, "
-#~ "190)),\n"
-#~ "                                5)  As line,\n"
-#~ "        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As "
-#~ "foo;\n"
-#~ "\n"
-#~ "--this creates the same gaping hole\n"
-#~ "--but using linestrings instead of polygons\n"
-#~ "SELECT ST_BuildArea(\n"
-#~ "        ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))\n"
-#~ "        )\n"
-#~ "FROM (SELECT ST_Buffer(\n"
-#~ "        ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190))\n"
-#~ "                ,5)  As line,\n"
-#~ "        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;"
-#~ msgstr ""
-#~ "SELECT ST_BuildArea(ST_Collect(line,circle))\n"
-#~ "FROM (SELECT\n"
-#~ "        ST_Buffer(\n"
-#~ "                ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, "
-#~ "190)),\n"
-#~ "                                5)  As line,\n"
-#~ "        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As "
-#~ "foo;\n"
-#~ "\n"
-#~ "-- 다음 쿼리는 동일한 구멍을 생성하지만\n"
-#~ "-- 폴리곤 대신 라인스트링을 이용합니다.\n"
-#~ "SELECT ST_BuildArea(\n"
-#~ "        ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))\n"
-#~ "        )\n"
-#~ "FROM (SELECT ST_Buffer(\n"
-#~ "        ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190))\n"
-#~ "                ,5)  As line,\n"
-#~ "        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;"
-
-#~ msgid "ST_ClipByBox2D"
-#~ msgstr "ST_ClipByBox2D"
-
-#~ msgid "Returns the portion of a geometry falling within a rectangle."
-#~ msgstr "직사각형 안에 들어오는 도형의 부분을 반환합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_ClipByBox2D</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_ClipByBox2D</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>"
-
-#~ msgid ""
-#~ "Clips a geometry by a 2D box in a fast but possibly dirty way. The output "
-#~ "geometry is not guaranteed to be valid (self-intersections for a polygon "
-#~ "may be introduced). Topologically invalid input geometries do not result "
-#~ "in exceptions being thrown."
-#~ msgstr ""
-#~ "빠르지만 지저분할 수도 있는 방법으로 2차원 상자가 도형을 잘라냅니다. 출력 "
-#~ "도형이 유효하지 않을 수도 있습니다(폴리곤의 경우 스스로 교차할 수도 있습니"
-#~ "다). 위상기하학적으로 유효하지 않은 도형을 입력해도 예외 상태에 빠지지는 "
-#~ "않습니다."
-
-#~ msgid ""
-#~ "-- Rely on implicit cast from geometry to box2d for the second parameter\n"
-#~ "SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;"
-#~ msgstr ""
-#~ "-- 두 번째 파라미터의 경우 도형을 무조건적으로 2차원 상자로 지정한다는 사"
-#~ "실에 의존합니다.\n"
-#~ "SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;"
-
-#~ msgid ""
-#~ ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
-
-#~ msgid ""
-#~ "The concave hull of a geometry represents a possibly concave geometry "
-#~ "that encloses all geometries within the set. You can think of it as "
-#~ "shrink wrapping."
-#~ msgstr ""
-#~ "도형의 오목 껍질(concave hull)이란 집합 내부의 모든 도형들을 둘러싸는 오목"
-#~ "할 수도 있는 도형을 말합니다. 진공 수축 포장이라는 식으로 생각할 수 있습니"
-#~ "다."
-
-#~ msgid ""
-#~ "It is much slower to compute than convex hull but encloses the geometry "
-#~ "better and is also useful for image recognition."
-#~ msgstr ""
-#~ "계산하는 데 볼록 껍질보다 더 오래 걸리지만 도형을 더 잘 둘러싸고 또 시각적"
-#~ "으로 인식하는 데에도 유용합니다."
-
-#~ msgid "ST_CurveToLine"
-#~ msgstr "ST_CurveToLine"
-
-#, fuzzy
-#~ msgid ""
-#~ "Converts a CIRCULARSTRING/CURVEPOLYGON/MULTISURFACE to a LINESTRING/"
-#~ "POLYGON/MULTIPOLYGON"
-#~ msgstr ""
-#~ "원호 스트링(CIRCULARSTRING)/만곡 폴리곤(CURVEPOLYGON)을 라인스트링/폴리곤"
-#~ "으로 변환합니다."
-
-#, fuzzy
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_CurveToLine</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>curveGeom</parameter></"
-#~ "paramdef> <paramdef><type>float</type> <parameter>tolerance</parameter></"
-#~ "paramdef> <paramdef choice=\"opt\"><type>integer</type> "
-#~ "<parameter>tolerance_type</parameter></paramdef> <paramdef choice=\"opt"
-#~ "\"><type>integer</type> <parameter>flags</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-#~ "<paramdef><type>float </type> <parameter>signed_distance</parameter></"
-#~ "paramdef> <paramdef choice=\"opt\"><type>text </type> "
-#~ "<parameter>style_parameters=''</parameter></paramdef>"
-
-#, fuzzy
-#~ msgid "Availability: 1.3.0"
-#~ msgstr "1.3.3 버전부터 사용할 수 있습니다."
-
-#~ msgid "&sqlmm_compliant; SQL-MM 3: 7.1.7"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
-
-#~ msgid "&curve_support;"
-#~ msgstr "&curve_support;"
-
-#~ msgid "ST_Difference"
-#~ msgstr "ST_Difference"
-
-#~ msgid ""
-#~ "Returns a geometry that represents that part of geometry A that does not "
-#~ "intersect with geometry B."
-#~ msgstr ""
-#~ "도형 A에서 도형 B와 교차하지 않는 부분을 표현하는 도형을 반환합니다."
-
-#~ msgid ""
-#~ "Returns a geometry that represents that part of geometry A that does not "
-#~ "intersect with geometry B. One can think of this as GeometryA - "
-#~ "ST_Intersection(A,B). If A is completely contained in B then an empty "
-#~ "geometry collection is returned."
-#~ msgstr ""
-#~ "도형 A에서 도형 B와 교차하지 않는 부분을 표현하는 도형을 반환합니다. 도형 "
-#~ "A에서 ST_Intersection(A,B)를 빼고 남은 부분이라고 생각할 수 있습니다. 도"
-#~ "형 A가 도형 B에 완전히 담겨 있을 경우 텅 빈 도형 집합을 반환합니다."
-
-#, fuzzy
-#~ msgid "Order matters. B - A will always return a portion of B"
-#~ msgstr ""
-#~ "주의: 순서가 중요합니다. B에서 A를 빼면 언제나 B의 일부분을 반환할 것입니"
-#~ "다."
-
-#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.20"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.20"
-
-#~ msgid ""
-#~ "&Z_support; However it seems to only consider x y when doing the "
-#~ "difference and tacks back on the Z-Index"
-#~ msgstr ""
-#~ "&Z_support; 하지만 이 함수는 빼기 작업시 XY만 고려하고 작업후 Z-인덱스를 "
-#~ "다시 붙이는 것으로 보입니다."
-
-#~ msgid "The original linestrings shown together."
-#~ msgstr "함께 표출된 원본 라인스트링들"
-
-#~ msgid "The difference of the two linestrings"
-#~ msgstr "두 라인스트링의 차(difference)"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT ST_AsText(\n"
-#~ "        ST_Difference(\n"
-#~ "                        'LINESTRING(50 100, 50 200)'::geometry,\n"
-#~ "                        'LINESTRING(50 50, 50 150)'::geometry\n"
-#~ "                )\n"
-#~ "        );\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "---------\n"
-#~ "LINESTRING(50 150,50 200)"
-#~ msgstr ""
-#~ "-- 2D 도형에 대해 안전합니다. ST_SymDifference 에서 보여주는 것과 동일한 "
-#~ "도형입니다.\n"
-#~ "SELECT ST_AsText(\n"
-#~ "        ST_Difference(\n"
-#~ "                        ST_GeomFromText('LINESTRING(50 100, 50 200)'),\n"
-#~ "                        ST_GeomFromText('LINESTRING(50 50, 50 150)')\n"
-#~ "                )\n"
-#~ "        );\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "---------\n"
-#~ "LINESTRING(50 150,50 200)"
-
-#, fuzzy
-#~ msgid ""
-#~ "select ST_AsEWKT(\n"
-#~ "           ST_Difference(\n"
-#~ "               'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 "
-#~ "38.281 7)' :: geometry,\n"
-#~ "               'POINT(-118.614 38.281 5)' :: geometry\n"
-#~ "               )\n"
-#~ "    );\n"
-#~ "st_asewkt\n"
-#~ "---------\n"
-#~ "MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)"
-#~ msgstr ""
-#~ "-- 3차원 도형 입력시 제대로 동작하지 않습니다.\n"
-#~ "SELECT ST_AsEWKT(ST_Difference(ST_GeomFromEWKT('MULTIPOINT(-118.58 38.38 "
-#~ "5,-118.60 38.329 6,-118.614 38.281 7)'), ST_GeomFromEWKT('POINT(-118.614 "
-#~ "38.281 5)')));\n"
-#~ "st_asewkt\n"
-#~ "---------\n"
-#~ "MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)"
-
-#~ msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-#~ msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-
-#~ msgid "ST_FlipCoordinates"
-#~ msgstr "ST_FlipCoordinates"
-
-#~ msgid ""
-#~ "Returns a version of the given geometry with X and Y axis flipped. Useful "
-#~ "for people who have built latitude/longitude features and need to fix "
-#~ "them."
-#~ msgstr ""
-#~ "입력 도형을 X축과 Y축을 뒤집은 상태로 반환합니다. 위도/경도 피처를 빌드해"
-#~ "서 수정해야 하는 경우 유용합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-
-#~ msgid "Returns a version of the given geometry with X and Y axis flipped."
-#~ msgstr "입력 도형을 X축과 Y축을 뒤집은 상태로 반환합니다. "
-
-#~ msgid "&P_support;"
-#~ msgstr "&P_support;"
-
-#~ msgid "Example"
-#~ msgstr "예시"
-
-#~ msgid ""
-#~ "<![CDATA[\n"
-#~ "SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));\n"
-#~ " st_asewkt\n"
-#~ "------------\n"
-#~ "POINT(2 1)\n"
-#~ "                 ]]>"
-#~ msgstr ""
-#~ "<![CDATA[\n"
-#~ "SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));\n"
-#~ " st_asewkt\n"
-#~ "------------\n"
-#~ "POINT(2 1)\n"
-#~ "                 ]]>"
-
-#~ msgid ""
-#~ "Converts a polygon or multi-polygon into a multi-point composed of "
-#~ "randomly location points within the original areas."
-#~ msgstr ""
-#~ "폴리곤 또는 멀티폴리곤을 원본 면의 내부에 임의로 배치한 포인트들로 구성된 "
-#~ "멀티포인트로 변환합니다."
-
-#~ msgid "ST_Intersection"
-#~ msgstr "ST_Intersection"
-
-#~ msgid ""
-#~ "(T) Returns a geometry that represents the shared portion of geomA and "
-#~ "geomB."
-#~ msgstr "geomA와 geomB의 공유 부분을 표현하는 도형을 반환합니다."
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Intersection</function></"
-#~ "funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </"
-#~ "paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geography "
-#~ "<function>ST_Intersection</function></funcdef> <paramdef> "
-#~ "<type>geography</type> <parameter>geogA</parameter> </paramdef> "
-#~ "<paramdef> <type>geography</type> <parameter>geogB</parameter> </"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Intersection</function></"
-#~ "funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </"
-#~ "paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geography "
-#~ "<function>ST_Intersection</function></funcdef> <paramdef> "
-#~ "<type>geography</type> <parameter>geogA</parameter> </paramdef> "
-#~ "<paramdef> <type>geography</type> <parameter>geogB</parameter> </"
-#~ "paramdef> </funcprototype>"
-
-#~ msgid ""
-#~ "Returns a geometry that represents the point set intersection of the "
-#~ "Geometries."
-#~ msgstr "도형들의 포인트 집합 교차 부분을 표현하는 도형을 반환합니다."
-
-#~ msgid ""
-#~ "In other words - that portion of geometry A and geometry B that is shared "
-#~ "between the two geometries."
-#~ msgstr "다시 말해서, 도형 A와 도형 B가 공유하는 부분을 반환합니다."
-
-#~ msgid ""
-#~ "If the geometries do not share any space (are disjoint), then an empty "
-#~ "geometry collection is returned."
-#~ msgstr ""
-#~ "도형들이 어떤 공간도 공유하지 않을 (분리돼 있을) 경우, 텅 빈 도형 집합을 "
-#~ "반환합니다."
-
-#~ msgid ""
-#~ "ST_Intersection in conjunction with ST_Intersects is very useful for "
-#~ "clipping geometries such as in bounding box, buffer, region queries where "
-#~ "you only want to return that portion of a geometry that sits in a country "
-#~ "or region of interest."
-#~ msgstr ""
-#~ "ST_Intersection 함수를 ST_Intersects 함수와 결합하면, 관심 지역 또는 국가"
-#~ "에 들어가는 도형의 일부분만 반환받고자 할 때 경계 상자, 버퍼, 지역 쿼리 내"
-#~ "부와 같은 잘라내기(clipping) 도형을 생성하는 데 매우 유용합니다."
-
-#~ msgid ""
-#~ "Geography: For geography this is really a thin wrapper around the "
-#~ "geometry implementation. It first determines the best SRID that fits the "
-#~ "bounding box of the 2 geography objects (if geography objects are within "
-#~ "one half zone UTM but not same UTM will pick one of those) (favoring UTM "
-#~ "or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back "
-#~ "on mercator in worst case scenario) and then intersection in that best "
-#~ "fit planar spatial ref and retransforms back to WGS84 geography."
-#~ msgstr ""
-#~ "지리형: 지리형에 대해, 이 함수는 도형 구현을 둘러싼 정말로 얇은 래퍼입니"
-#~ "다. 이 함수는 먼저 (지리형 객체들이 절반의 UTM 구역 내부에 있지만 동일한 "
-#~ "UTM이 어떤 도형도 선택하지 않을 경우) 두 지리형 객체들의 경계 상자에 가장 "
-#~ "어울리는 SRID를 (UTM 또는 람베르트 북극/남극 방위정적도법(Lambert "
-#~ "Azimuthal Equal Area)을 선호하며, 최악의 경우 메르카토르 도법에 의지해서) "
-#~ "결정한 다음 가장 어울리는 평면 공간 참조 시스템 상에서 교차시킨 다음 "
-#~ "WGS84 지리형으로 다시 변환합니다."
-
-#, fuzzy
-#~ msgid ""
-#~ "If working with 3D geometries, you may want to use SFGCAL based <xref "
-#~ "linkend=\"ST_3DIntersection\"/> which does a proper 3D intersection for "
-#~ "3D geometries. Although this function works with Z-coordinate, it does an "
-#~ "averaging of Z-Coordinate."
-#~ msgstr ""
-#~ "3차원 도형을 작업할 경우, 3차원 도형에 대해 제대로 된 3차원 교차 작업을 하"
-#~ "는 SFCGAL 기반 <xref linkend=\"ST_3DIntersection\"/> 을 이용하는 편이 좋"
-#~ "을 수도 있습니다. 비록 이 함수가 Z 좌표를 처리하기는 하지만, "
-#~ "<code>postgis.backend=geos</code> 로 설정했을 때 Z 좌표값의 평균을 냅니"
-#~ "다. <code>postgis.backend=sfcgal</code> 로 설정하면, Z 좌표에 상관없이 2차"
-#~ "원 도형을 반환할 것입니다. 자세한 내용은 <xref linkend=\"postgis_backend"
-#~ "\"/> 를 참조하십시오."
-
-#~ msgid "Availability: 1.5 support for geography data type was introduced."
-#~ msgstr "1.5 버전부터 지리형 데이터형을 지원합니다."
-
-#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.18"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.18"
-
-#~ msgid "Examples: 2.5Dish"
-#~ msgstr "예시: 대략 2.5차원"
-
-#, fuzzy
-#~ msgid ""
-#~ "Note this is not a true intersection, compare to the same example using "
-#~ "<xref linkend=\"ST_3DIntersection\"/>."
-#~ msgstr ""
-#~ "따로 설정하지 않았다면 GEOS가 기본 백엔드입니다. 이 함수는 진정한 교차가 "
-#~ "아니라는 점에 주의하십시오. <xref linkend=\"ST_3DIntersection\"/> 함수로 "
-#~ "동일한 예시를 실행해서 비교해보십시오."
-
-#, fuzzy
-#~ msgid ""
-#~ "select ST_AsText(ST_Intersection(linestring, polygon)) As wkt\n"
-#~ "from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 "
-#~ "10)') AS linestring\n"
-#~ " CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 "
-#~ "8))') AS polygon;\n"
-#~ "\n"
-#~ "               st_astext\n"
-#~ "---------------------------------------\n"
-#~ " LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)"
-#~ msgstr ""
-#~ "set postgis.backend=geos;\n"
-#~ "select ST_AsText(ST_Intersection(linestring, polygon)) As wkt\n"
-#~ "from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 "
-#~ "10)') AS linestring\n"
-#~ " CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 "
-#~ "8))') AS polygon;\n"
-#~ "\n"
-#~ "               st_astext\n"
-#~ "---------------------------------------\n"
-#~ " LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)"
-
-#, fuzzy
-#~ msgid ""
-#~ ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-#~ "linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
-#~ "\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref linkend="
-#~ "\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Dimension\"/>, "
-#~ "<xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_Force2D\"/>, <xref "
-#~ "linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref "
-#~ "linkend=\"ST_Multi\"/>"
-
-#~ msgid "Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVEPOLYGON"
-#~ msgstr "라인스트링/폴리곤을 원호 스트링/만곡 폴리곤으로 변환합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_LineToCurve</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></"
-#~ "paramdef>"
-
-#~ msgid "ST_MakeValid"
-#~ msgstr "ST_MakeValid"
-
-#~ msgid "Attempts to make an invalid geometry valid without losing vertices."
-#~ msgstr ""
-#~ "유효하지 않은 도형을 꼭짓점을 버리지 않고 유효한 도형으로 바꾸려고 시도합"
-#~ "니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_MakeValid</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
-
-#~ msgid ""
-#~ "The function attempts to create a valid representation of a given invalid "
-#~ "geometry without losing any of the input vertices. Already-valid "
-#~ "geometries are returned without further intervention."
-#~ msgstr ""
-#~ "이 함수는 주어진 유효하지 않은 도형을 입력 꼭짓점 하나도 버리지 않은 채 유"
-#~ "효한 표현식으로 생성하려 시도합니다. 이미 유효한 도형을 입력하면 아무 것"
-#~ "도 바꾸지 않은 채 반환합니다."
-
-#~ msgid ""
-#~ "Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, "
-#~ "POLYGONS, MULTIPOLYGONS and GEOMETRYCOLLECTIONS containing any mix of "
-#~ "them."
-#~ msgstr ""
-#~ "포인트, 멀티포인트, 라인스트링, 멀티라인스트링, 폴리곤, 멀티폴리곤 및 이들"
-#~ "의 어떤 조합이건 담고 있는 도형 집합을 입력받을 수 있습니다."
-
-#~ msgid ""
-#~ "In case of full or partial dimensional collapses, the output geometry may "
-#~ "be a collection of lower-to-equal dimension geometries or a geometry of "
-#~ "lower dimension."
-#~ msgstr ""
-#~ "전체 또는 일부 차원이 붕괴한 경우, 낮거나 동등한 차원을 가진 도형들의 집"
-#~ "합 또는 낮은 차원의 도형을 출력할 수도 있습니다."
-
-#~ msgid ""
-#~ "Single polygons may become multi-geometries in case of self-intersections."
-#~ msgstr "스스로 교차하는 경우 단일 폴리곤이 멀티 도형이 될 수도 있습니다."
-
-#, fuzzy
-#~ msgid "Enhanced: 2.0.1, speed improvements"
-#~ msgstr ""
-#~ "개선 사항: 2.1.0 버전에서 속도가 향상됐습니다. GEOS 3.3.4 버전이 필요합니"
-#~ "다."
-
-#, fuzzy
-#~ msgid ""
-#~ "Enhanced: 2.1.0, added support for GEOMETRYCOLLECTION and MULTIPOINT."
-#~ msgstr ""
-#~ "개선 사항: 2.1.0 버전부터 도형 집합 및 멀티포인트를 지원하기 시작했습니다."
-
-#~ msgid "ST_MemUnion"
-#~ msgstr "ST_MemUnion"
-
-#~ msgid ""
-#~ "Same as ST_Union, only memory-friendly (uses less memory and more "
-#~ "processor time)."
-#~ msgstr ""
-#~ "메모리 친화적이라는 점만 제외하면 ST_Union 함수와 동일합니다(메모리를 덜 "
-#~ "사용하고 CPU 시간을 더 사용합니다)."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
-#~ "paramdef>"
-
-#~ msgid "Some useful description here."
-#~ msgstr "쓸 만한 설명을 추가바랍니다."
-
-#~ msgid ""
-#~ "Same as ST_Union, only memory-friendly (uses less memory and more "
-#~ "processor time). This aggregate function works by unioning the geometries "
-#~ "one at a time to previous result as opposed to ST_Union aggregate which "
-#~ "first creates an array and then unions"
-#~ msgstr ""
-#~ "메모리 친화적이라는 점만 제외하면 ST_Union 함수와 동일합니다(메모리를 덜 "
-#~ "사용하고 CPU 시간을 더 사용합니다). 먼저 배열을 생성한 다음 통합하는 "
-#~ "ST_Union 종합 함수와는 달리, 이 종합 합수는 이전 단계의 결과물에 도형을 하"
-#~ "나씩 통합하는 식으로 동작합니다."
-
-#~ msgid "See ST_Union"
-#~ msgstr "ST_Union 참고"
-
-#~ msgid ""
-#~ "Returns the smallest circle polygon that can fully contain a geometry. "
-#~ "Default uses 48 segments per quarter circle."
-#~ msgstr ""
-#~ "도형 전체를 담을 수 있는 가장 작은 원형 폴리곤을 반환합니다. 기본값은 사분"
-#~ "원 당 구간 48개를 사용하는 것입니다."
-
-#~ msgid ""
-#~ "Aggregate. Creates a GeometryCollection containing possible polygons "
-#~ "formed from the constituent linework of a set of geometries."
-#~ msgstr ""
-#~ "종합 함수입니다. 도형들의 집합의 선분 구성 요소로부터 형성될 수 있는 폴리"
-#~ "곤들을 담고 있는 도형 집합을 생성합니다."
-
-#~ msgid "ST_Node"
-#~ msgstr "ST_Node"
-
-#~ msgid "Node a set of linestrings."
-#~ msgstr "라인스트링들의 집합에 노드를 적용합니다."
-
-#~ msgid ""
-#~ "Fully node a set of linestrings using the least possible number of nodes "
-#~ "while preserving all of the input ones."
-#~ msgstr ""
-#~ "입력 라인스트링의 모든 노드를 보전하면서 가능한 한 가장 적은 개수의 노드"
-#~ "를 이용해서 라인스트링 집합 전체에 노드를 적용합니다."
-
-#~ msgid "ST_RemoveRepeatedPoints"
-#~ msgstr "ST_RemoveRepeatedPoints"
-
-#~ msgid ""
-#~ "Returns a version of the given geometry with duplicated points removed."
-#~ msgstr "입력 도형을 중복된 포인트들을 제거한 상태로 반환합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>float8</type> <parameter>tolerance</"
-#~ "parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef choice=\"opt\"><type>float8</type> <parameter>tolerance</"
-#~ "parameter></paramdef>"
-
-#~ msgid ""
-#~ "Returns a version of the given geometry with duplicated points removed. "
-#~ "Will actually do something only with (multi)lines, (multi)polygons and "
-#~ "multipoints but you can safely call it with any kind of geometry. Since "
-#~ "simplification occurs on a object-by-object basis you can also feed a "
-#~ "GeometryCollection to this function."
-#~ msgstr ""
-#~ "입력 도형을 중복된 포인트들을 제거한 상태로 반환합니다. 실제로는 [멀티]포"
-#~ "인트, [멀티]라인, [멀티]폴리곤과만 작동하지만, 어떤 종류의 도형도 입력할 "
-#~ "수 있다고 해도 과언은 아닙니다. 객체별 기반으로 단순화 작업을 하기 때문에 "
-#~ "이 함수에 도형 집합도 입력할 수 있습니다."
-
-#~ msgid ""
-#~ "If the tolerance parameter is provided, vertices within the tolerance of "
-#~ "one another will be considered the \"same\" for the purposes of removal."
-#~ msgstr ""
-#~ "허용 오차 파라미터를 설정할 경우, 서로 허용 오차 거리 안에 있는 꼭짓점들"
-#~ "을 \"동일\"하다고 간주, 제거할 것입니다."
-
-#~ msgid "ST_ShiftLongitude"
-#~ msgstr "ST_ShiftLongitude"
-
-#~ msgid "Toggle geometry coordinates between -180..180 and 0..360 ranges."
-#~ msgstr "도형의 좌표를 -180 ~ 180 범위와 0 ~ 360 범위 간에 전환합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-
-#~ msgid ""
-#~ "Reads every point/vertex in every component of every feature in a "
-#~ "geometry, and if the longitude coordinate is &lt;0, adds 360 to it. The "
-#~ "result would be a 0-360 version of the data to be plotted in a 180 "
-#~ "centric map"
-#~ msgstr ""
-#~ "도형 안에 있는 모든 피처의 모든 구성 요소 안의 모든 포인트/꼭짓점을 읽어 "
-#~ "들여, 경도 좌표가 0 미만일 경우 360을 더합니다. 그 결과 0에서 360 사이의 "
-#~ "값을 가지는 데이터를 180을 중심으로 하는 맵에 그리게 됩니다."
-
-#~ msgid "This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)"
-#~ msgstr ""
-#~ "이 함수는 SRID:4326(WGS84 경위도) 같은 경위도 데이터에 대해서만 쓸모가 있"
-#~ "습니다."
-
-#~ msgid ""
-#~ "Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works "
-#~ "with MULTIPOINT as well."
-#~ msgstr ""
-#~ "1.3.4 미만 버전에서는 버그 때문에 멀티포인트를 입력받지 못 했습니다. "
-#~ "1.3.4 버전부터 멀티포인트도 입력할 수 있습니다."
-
-#~ msgid ""
-#~ "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
-#~ msgstr ""
-#~ "개선 사항: 2.0.0 버전부터 다면체 표면(polyhedral surface) 및 TIN을 지원합"
-#~ "니다."
-
-#~ msgid "NOTE: this function was renamed from \"ST_Shift_Longitude\" in 2.2.0"
-#~ msgstr ""
-#~ "주의: 2.2.0 미만 버전에서, 이 함수의 명칭은 \"ST_Shift_Longitude\"였습니"
-#~ "다."
-
-#~ msgid ""
-#~ "--3d points\n"
-#~ "SELECT ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;"
-#~ "POINT(-118.58 38.38 10)'))) As geomA,\n"
-#~ "        ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;"
-#~ "POINT(241.42 38.38 10)'))) As geomb\n"
-#~ "geomA                                                          geomB\n"
-#~ "----------                                                  -----------\n"
-#~ "SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)\n"
-#~ "\n"
-#~ "--regular line string\n"
-#~ "SELECT ST_AsText(ST_ShiftLongitude(ST_GeomFromText('LINESTRING(-118.58 "
-#~ "38.38, -118.20 38.45)')))\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "LINESTRING(241.42 38.38,241.8 38.45)"
-#~ msgstr ""
-#~ "-- 3D 포인트\n"
-#~ "SELECT ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;"
-#~ "POINT(-118.58 38.38 10)'))) As geomA,\n"
-#~ "        ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;"
-#~ "POINT(241.42 38.38 10)'))) As geomb\n"
-#~ "geomA                                                          geomB\n"
-#~ "----------                                                  -----------\n"
-#~ "SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)\n"
-#~ "\n"
-#~ "-- 정규 라인스트링\n"
-#~ "SELECT ST_AsText(ST_ShiftLongitude(ST_GeomFromText('LINESTRING(-118.58 "
-#~ "38.38, -118.20 38.45)')))\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "LINESTRING(241.42 38.38,241.8 38.45)"
-
-#~ msgid "ST_WrapX"
-#~ msgstr "ST_WrapX"
-
-#~ msgid "Wrap a geometry around an X value."
-#~ msgstr "X값 근처에서 도형을 래핑합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_WrapX</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef> "
-#~ "<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_WrapX</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef> "
-#~ "<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
-
-#~ msgid ""
-#~ "This function splits the input geometries and then moves every resulting "
-#~ "component falling on the right (for negative 'move') or on the left (for "
-#~ "positive 'move') of given 'wrap' line in the direction specified by the "
-#~ "'move' parameter, finally re-unioning the pieces togheter."
-#~ msgstr ""
-#~ "이 함수는 입력 도형을 쪼갠 다음 주어진 '래핑(wrap)' 라인을 기준으로 (move"
-#~ "가 음일 경우) 오른쪽 또는 (move가 양일 경우) 왼쪽에 떨어지는 모든 산출 구"
-#~ "성 요소를 'move' 파라미터가 지정하는 방향으로 이동시키고, 마지막으로 조각"
-#~ "들을 다시 통합시킵니다."
-
-#~ msgid ""
-#~ "This is useful to \"recenter\" long-lat input to have features of "
-#~ "interest not spawned from one side to the other."
-#~ msgstr ""
-#~ "이 함수는 경위도 입력물이 한 편에서 다른 편으로 걸쳐 있지 않은 관심 피처"
-#~ "를 갖도록 하는 데 유용합니다."
-
-#~ msgid ""
-#~ "-- Move all components of the given geometries whose bounding box\n"
-#~ "-- falls completely on the left of x=0 to +360\n"
-#~ "select ST_WrapX(the_geom, 0, 360);\n"
-#~ "\n"
-#~ "-- Move all components of the given geometries whose bounding box\n"
-#~ "-- falls completely on the left of x=-30 to +360\n"
-#~ "select ST_WrapX(the_geom, -30, 360);"
-#~ msgstr ""
-#~ "-- x=0~360 범위의 왼쪽에 경계 상자가 완전히 떨어지는\n"
-#~ "-- 입력 도형의 모든 구성 요소를 이동시킵니다.\n"
-#~ "select ST_WrapX(the_geom, 0, 360);\n"
-#~ "\n"
-#~ "-- x=-30~360 범위의 왼쪽에 경계 상자가 완전히 떨어지는\n"
-#~ "-- 입력 도형의 모든 구성 요소를 이동시킵니다.\n"
-#~ "select ST_WrapX(the_geom, -30, 360);"
-
-#~ msgid ""
-#~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
-#~ "Peucker algorithm. Will avoid creating derived geometries (polygons in "
-#~ "particular) that are invalid."
-#~ msgstr ""
-#~ "더글러스-패커(Douglas-Peucker) 알고리즘을 이용해서 입력 도형의 \"단순화"
-#~ "\"된 버전을 반환합니다. 유효하지 않은 파생 도형(특히 폴리곤)을 생성하지 않"
-#~ "을 것입니다."
-
-#~ msgid ""
-#~ "Sets the effective area for each vertex, storing the value in the M "
-#~ "ordinate. A simplified geometry can then be generated by filtering on the "
-#~ "M ordinate."
-#~ msgstr ""
-#~ "M 세로 좌표(ordinate)에 값을 저장해서 각 꼭짓점에 대한 유효 범위"
-#~ "(effective area)를 설정합니다. 그 다음 M 세로 좌표에 대해 필터링해서 단순"
-#~ "화시킨 도형을 생성할 수 있습니다."
-
-#~ msgid "ST_Split"
-#~ msgstr "ST_Split"
-
-#~ msgid ""
-#~ "Returns a collection of geometries resulting by splitting a geometry."
-#~ msgstr "도형을 분해(split)해서 나오는 도형들의 집합을 반환합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_Split</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-#~ "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_Split</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
-#~ "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
-
-#~ msgid ""
-#~ "The function supports splitting a line by (multi)point, (multi)line or "
-#~ "(multi)polygon boundary, a (multi)polygon by line. The returned geometry "
-#~ "is always a collection."
-#~ msgstr ""
-#~ "이 함수는 [멀티]포인트, [멀티]라인, 또는 [멀티]폴리곤 경계선으로 라인을, "
-#~ "그리고 라인으로 [멀티]폴리곤을 분해합니다. 언제나 도형 집합을 반환합니다."
-
-#~ msgid ""
-#~ "Think of this function as the opposite of ST_Union. Theoretically "
-#~ "applying ST_Union to the elements of the returned collection should "
-#~ "always yield the original geometry."
-#~ msgstr ""
-#~ "이 함수를 ST_Union의 역함수로 생각하십시오. 이론적으로, 반환된 도형의 구"
-#~ "성 요소에 ST_Union을 적용하면 언제나 원본 도형을 출력해야 합니다."
-
-#, fuzzy
-#~ msgid ""
-#~ "Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint "
-#~ "or (multi)polygon boundary was introduced."
-#~ msgstr ""
-#~ "변경 사항: 2.2.0 버전부터 [멀티]포인트, [멀티]라인, 또는 [멀티]폴리곤 경계"
-#~ "선으로 라인을 분해할 수 있습니다."
-
-#, fuzzy
-#~ msgid ""
-#~ "Enhanced: 2.5.0 support for splitting a polygon by a multiline was "
-#~ "introduced."
-#~ msgstr ""
-#~ "변경 사항: 2.2.0 버전부터 [멀티]포인트, [멀티]라인, 또는 [멀티]폴리곤 경계"
-#~ "선으로 라인을 분해할 수 있습니다."
-
-#~ msgid ""
-#~ "To improve the robustness of ST_Split it may be convenient to <xref "
-#~ "linkend=\"ST_Snap\"/> the input to the blade in advance using a very low "
-#~ "tolerance. Otherwise the internally used coordinate grid may cause "
-#~ "tolerance problems, where coordinates of input and blade do not fall onto "
-#~ "each other and the input is not being split correctly (see <ulink url="
-#~ "\"http://trac.osgeo.org/postgis/ticket/2192\">#2192</ulink>)."
-#~ msgstr ""
-#~ "ST_Split 함수의 강력함을 향상시키려면, 매우 낮은 허용 오차를 이용해서 입"
-#~ "력 도형을 날(blade)에 <xref linkend=\"ST_Snap\"/> 시키는 편이 편리할 수도 "
-#~ "있습니다. 그렇지 않을 경우 내부적으로 사용되는 좌표 그리드가 허용 오차 문"
-#~ "제를 일으킬 수도 있는데, 입력 도형의 좌표와 날이 서로 일치하지 않아 입력 "
-#~ "도형이 정확히 분해되지 않는 문제를 말합니다(<ulink url=\"http://trac."
-#~ "osgeo.org/postgis/ticket/2192\">#2192</ulink> 참조)."
-
-#~ msgid ""
-#~ "When a (multi)polygon is passed as as the blade, its linear component "
-#~ "(the boundary) is used for cutting the input."
-#~ msgstr ""
-#~ "[멀티]폴리곤을 날로서 입력할 경우, 폴리곤의 선형 구성 요소(경계선)가 입력 "
-#~ "도형을 자르는 데 쓰입니다."
-
-#~ msgid "Polygon Cut by Line"
-#~ msgstr "라인으로 폴리곤을 분해"
-
-#~ msgid "Before Split"
-#~ msgstr "분해 전"
-
-#~ msgid "After split"
-#~ msgstr "분해 후"
-
-#~ msgid ""
-#~ "-- this creates a geometry collection consisting of the 2 halves of the "
-#~ "polygon\n"
-#~ "-- this is similar to the example we demonstrated in ST_BuildArea\n"
-#~ "SELECT ST_Split(circle, line)\n"
-#~ "FROM (SELECT\n"
-#~ "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,\n"
-#~ "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
-#~ "\n"
-#~ "-- result --\n"
-#~ " GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 "
-#~ "80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))\n"
-#~ "\n"
-#~ "-- To convert to individual polygons, you can use ST_Dump or "
-#~ "ST_GeometryN\n"
-#~ "SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt\n"
-#~ "FROM (SELECT\n"
-#~ "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,\n"
-#~ "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
-#~ "\n"
-#~ "-- result --\n"
-#~ "wkt\n"
-#~ "---------------\n"
-#~ "POLYGON((150 90,149.039264020162 80.2454838991936,..))\n"
-#~ "POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 "
-#~ "62.2214883490198,53.8060233744357 ..))"
-#~ msgstr ""
-#~ "-- 이 쿼리는 폴리곤의 절반 2개로 이루어진 도형 집합을 생성합니다.\n"
-#~ "-- 이 쿼리는 ST_BuildArea 함수에서 봤던 예시와 유사합니다.\n"
-#~ "SELECT ST_Split(circle, line)\n"
-#~ "FROM (SELECT\n"
-#~ "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,\n"
-#~ "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
-#~ "\n"
-#~ "-- 결과 --\n"
-#~ " GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 "
-#~ "80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))\n"
-#~ "\n"
-#~ "-- 개별 폴리곤들로 변환하려면, ST_Dump 또는 ST_GeometryN 함수를 쓰면 됩니"
-#~ "다.\n"
-#~ "SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt\n"
-#~ "FROM (SELECT\n"
-#~ "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,\n"
-#~ "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
-#~ "\n"
-#~ "-- 결과 --\n"
-#~ "wkt\n"
-#~ "---------------\n"
-#~ "POLYGON((150 90,149.039264020162 80.2454838991936,..))\n"
-#~ "POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 "
-#~ "62.2214883490198,53.8060233744357 ..))"
-
-#~ msgid "Multilinestring Cut by point"
-#~ msgstr "포인트로 멀티라인스트링을 분해"
-
-#~ msgid ""
-#~ "SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
-#~ "        FROM (SELECT\n"
-#~ "    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 "
-#~ "90))') As mline,\n"
-#~ "    ST_Point(30,30) As pt) As foo;\n"
-#~ "\n"
-#~ "wktcut\n"
-#~ "------\n"
-#~ "GEOMETRYCOLLECTION(\n"
-#~ "    LINESTRING(10 10,30 30),\n"
-#~ "    LINESTRING(30 30,190 190),\n"
-#~ "    LINESTRING(15 15,30 30),\n"
-#~ "    LINESTRING(30 30,100 90)\n"
-#~ ")"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
-#~ "        FROM (SELECT\n"
-#~ "    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 "
-#~ "90))') As mline,\n"
-#~ "    ST_Point(30,30) As pt) As foo;\n"
-#~ "\n"
-#~ "wktcut\n"
-#~ "------\n"
-#~ "GEOMETRYCOLLECTION(\n"
-#~ "    LINESTRING(10 10,30 30),\n"
-#~ "    LINESTRING(30 30,190 190),\n"
-#~ "    LINESTRING(15 15,30 30),\n"
-#~ "    LINESTRING(30 30,100 90)\n"
-#~ ")"
-
-#, fuzzy
-#~ msgid ""
-#~ ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_CollectionExtract"
-#~ "\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_GeometryN\"/>, "
-#~ "<xref linkend=\"ST_Subdivide\"/>, <xref linkend=\"ST_Union\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-#~ "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
-#~ "\"ST_Subdivide\"/>"
-
-#~ msgid "ST_SymDifference"
-#~ msgstr "ST_SymDifference"
-
-#~ msgid ""
-#~ "Returns a geometry that represents the portions of A and B that do not "
-#~ "intersect. It is called a symmetric difference because ST_SymDifference(A,"
-#~ "B) = ST_SymDifference(B,A)."
-#~ msgstr ""
-#~ "도형 A와 B의 서로 교차하지 않는 부분들을 표현하는 도형을 반환합니다. "
-#~ "ST_SymDifference(A,B) = ST_SymDifference(B,A)이기 때문에 이를 대칭차"
-#~ "(symmetric difference)라고 합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
-
-#~ msgid ""
-#~ "Returns a geometry that represents the portions of A and B that do not "
-#~ "intersect. It is called a symmetric difference because ST_SymDifference(A,"
-#~ "B) = ST_SymDifference(B,A). One can think of this as ST_Union(geomA,"
-#~ "geomB) - ST_Intersection(A,B)."
-#~ msgstr ""
-#~ "도형 A와 B의 서로 교차하지 않는 부분들을 표현하는 도형을 반환합니다. "
-#~ "ST_SymDifference(A,B) = ST_SymDifference(B,A)이기 때문에 이를 대칭차"
-#~ "(symmetric difference)라고 합니다. ST_Union(geomA,geomB)에서 "
-#~ "ST_Intersection(A,B)를 뺀 것으로 생각할 수도 있습니다."
-
-#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
-#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
-
-#~ msgid "The original linestrings shown together"
-#~ msgstr "함께 표출된 원본 라인스트링들"
-
-#~ msgid "The symmetric difference of the two linestrings"
-#~ msgstr "두 라인스트링의 대칭차(symmetric difference)"
-
-#~ msgid ""
-#~ "--Safe for 2d - symmetric difference of 2 linestrings\n"
-#~ "SELECT ST_AsText(\n"
-#~ "        ST_SymDifference(\n"
-#~ "                ST_GeomFromText('LINESTRING(50 100, 50 200)'),\n"
-#~ "                ST_GeomFromText('LINESTRING(50 50, 50 150)')\n"
-#~ "        )\n"
-#~ ");\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "---------\n"
-#~ "MULTILINESTRING((50 150,50 200),(50 50,50 100))"
-#~ msgstr ""
-#~ "-- 2D 도형에 대해 안전합니다. 두 도형의 대칭차입니다.\n"
-#~ "SELECT ST_AsText(\n"
-#~ "        ST_SymDifference(\n"
-#~ "                ST_GeomFromText('LINESTRING(50 100, 50 200)'),\n"
-#~ "                ST_GeomFromText('LINESTRING(50 50, 50 150)')\n"
-#~ "        )\n"
-#~ ");\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "---------\n"
-#~ "MULTILINESTRING((50 150,50 200),(50 50,50 100))"
-
-#~ msgid ""
-#~ "--When used in 3d doesn't quite do the right thing\n"
-#~ "SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 "
-#~ "2)'),\n"
-#~ "        ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "------------\n"
-#~ "MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))"
-#~ msgstr ""
-#~ "-- 3차원에서 이용할 경우 제대로 동작하지 않습니다.\n"
-#~ "SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 "
-#~ "2)'),\n"
-#~ "        ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "------------\n"
-#~ "MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))"
-
-#~ msgid "ST_Subdivide"
-#~ msgstr "ST_Subdivide"
-
-#~ msgid ""
-#~ "Returns a set of geometry where no geometry in the set has more than the "
-#~ "specified number of vertices."
-#~ msgstr ""
-#~ "집합 내의 모든 도형이 설정된 개수 이하의 꼭짓점을 가지는 도형 집합을 반환"
-#~ "합니다."
-
-#~ msgid ""
-#~ "<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></"
-#~ "paramdef>"
-
-#~ msgid ""
-#~ "-- Create a new subdivided table suitable for joining to the original\n"
-#~ "CREATE TABLE subdivided_geoms AS\n"
-#~ "SELECT pkey, ST_Subdivide(geom) AS geom\n"
-#~ "FROM original_geoms;"
-#~ msgstr ""
-#~ "-- 원본에 결합시키는 데 적합하게 세분화된 새 테이블을 생성합니다.\n"
-#~ "CREATE TABLE subdivided_geoms AS\n"
-#~ "SELECT pkey, ST_Subdivide(geom) AS geom\n"
-#~ "FROM original_geoms;"
-
-#~ msgid "Subdivide max 10 vertices"
-#~ msgstr "최대 꼭짓점 10개로 세분화"
-
-#~ msgid ""
-#~ "SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt\n"
-#~ "FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 "
-#~ "42,32 56,22 64,32 110,40 119,36 150,\n"
-#~ "57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 "
-#~ "122,\n"
-#~ "190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::"
-#~ "geometry,10))  As f(geom);"
-#~ msgstr ""
-#~ "SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt\n"
-#~ "FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 "
-#~ "42,32 56,22 64,32 110,40 119,36 150,\n"
-#~ "57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 "
-#~ "122,\n"
-#~ "190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::"
-#~ "geometry,10))  As f(geom);"
-
-#, fuzzy
-#~ msgid ""
-#~ "Useful in conjunction with ST_Segmentize(geography) to create additional "
-#~ "vertices that can then be used for splitting."
-#~ msgstr ""
-#~ "ST_Segmentize와 결합해서 이후 분해 작업에 이용할 수 있는 추가 꼭짓점들을 "
-#~ "생성하는 데 유용합니다."
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT ST_AsText(ST_Subdivide(ST_Segmentize('LINESTRING(0 0, 85 85)'::"
-#~ "geography,1200000)::geometry,8));"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100, 150 "
-#~ "150)'::geometry,10),8));"
-
-#, fuzzy
-#~ msgid ""
-#~ ", <xref linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Segmentize\"/>, "
-#~ "<xref linkend=\"ST_Split\"/>, <xref linkend=\"ST_NPoints\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Segmentize\"/>, "
-#~ "<xref linkend=\"ST_Split\"/>"
-
-#~ msgid "ST_Union"
-#~ msgstr "ST_Union"
-
-#~ msgid ""
-#~ "Returns a geometry that represents the point set union of the Geometries."
-#~ msgstr "도형들의 포인트들을 통합한 집합을 표현하는 도형을 반환합니다."
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>g1field</parameter></"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Union</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry set</type> <parameter>g1field</parameter></"
-#~ "paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Union</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Union</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-
-#~ msgid ""
-#~ "Output type can be a MULTI*, single geometry, or Geometry Collection. "
-#~ "Comes in 2 variants. Variant 1 unions 2 geometries resulting in a new "
-#~ "geometry with no intersecting regions. Variant 2 is an aggregate function "
-#~ "that takes a set of geometries and unions them into a single ST_Geometry "
-#~ "resulting in no intersecting regions."
-#~ msgstr ""
-#~ "멀티 도형, 단일 도형 또는 도형 집합을 출력할 수 있습니다. 두 가지 변종이 "
-#~ "존재합니다. 변종 1은 도형 2개를 통합해서 교차 지역이 없는 새 도형을 출력합"
-#~ "니다. 변종 2는 도형들의 집합을 입력받아 교차 지역이 없는 단일 ST_Geometry"
-#~ "로 통합하는 종합 함수입니다."
-
-#~ msgid ""
-#~ "Aggregate version: This function returns a MULTI geometry or NON-MULTI "
-#~ "geometry from a set of geometries. The ST_Union() function is an "
-#~ "\"aggregate\" function in the terminology of PostgreSQL. That means that "
-#~ "it operates on rows of data, in the same way the SUM() and AVG() "
-#~ "functions do and like most aggregates, it also ignores NULL geometries."
-#~ msgstr ""
-#~ "종합 버전: 이 함수는 도형들의 집합으로부터 멀티 또는 멀티가 아닌 도형을 반"
-#~ "환합니다. ST_Union() 함수는 PostgreSQL 전문 용어로 \"종합(aggregate)\" 함"
-#~ "수입니다. 즉 SUM() 및 AVG() 함수와 마찬가지로 데이터 행들을 대상으로 연산"
-#~ "한다는 뜻입니다. 또 대부분의 종합 함수와 마찬가지로, NULL 도형을 무시합니"
-#~ "다."
-
-#~ msgid ""
-#~ "Non-Aggregate version: This function returns a geometry being a union of "
-#~ "two input geometries. Output type can be a MULTI*, NON-MULTI or "
-#~ "GEOMETRYCOLLECTION. If any are NULL, then NULL is returned."
-#~ msgstr ""
-#~ "비(非)종합 버전: 이 함수는 입력 도형 2개를 통합한 도형을 반환합니다. 멀티 "
-#~ "도형, 멀티가 아닌 도형 또는 도형 집합 유형을 출력할 수 있습니다. 입력 도"
-#~ "형 가운데 NULL 도형이 있을 경우, NULL 도형을 반환합니다."
-
-#~ msgid ""
-#~ "ST_Collect and ST_Union are often interchangeable. ST_Union is in general "
-#~ "orders of magnitude slower than ST_Collect because it tries to dissolve "
-#~ "boundaries and reorder geometries to ensure that a constructed Multi* "
-#~ "doesn't have intersecting regions."
-#~ msgstr ""
-#~ "종종 ST_Union와 ST_Collect를 서로 바꿔 사용할 수 있습니다. 일반적인 자릿수"
-#~ "의 경우 ST_Union이 ST_Collect보다 더 느린데, ST_Union이 작성된 멀티 도형"
-#~ "에 교차하는 부분이 없는 것을 입증하려고 도형들을 재정렬하고 경계선을 없애"
-#~ "려 하기 때문입니다."
-
-#, fuzzy
-#~ msgid ""
-#~ "ST_Union will use the faster Cascaded Union algorithm described in <ulink "
-#~ "url=\"http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-"
-#~ "postgis-14.html\">http://blog.cleverelephant.ca/2009/01/must-faster-"
-#~ "unions-in-postgis-14.html</ulink>"
-#~ msgstr ""
-#~ "1.4.0 버전부터 사용할 수 있습니다. ST_Union 함수가 개선됐습니다. 도형 배"
-#~ "열 유형을 지원하기 시작했고, PostgreSQL에서 집합을 더 빨리 종합할 수 있게 "
-#~ "됐습니다. GEOS 3.1.0 이상 버전을 사용하고 있다면 ST_Union 함수가 <ulink "
-#~ "url=\"http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-"
-#~ "postgis-14.html\">http://blog.cleverelephant.ca/2009/01/must-faster-"
-#~ "unions-in-postgis-14.html</ulink> 에 설명돼 있는 더 빠른 종속 통합"
-#~ "(Cascaded Union) 알고리즘을 이용할 것입니다."
-
-#~ msgid ""
-#~ "NOTE: this function was formerly called GeomUnion(), which was renamed "
-#~ "from \"Union\" because UNION is an SQL reserved word."
-#~ msgstr ""
-#~ "주의: 이 함수는 이전에 GeomUnion()이라는 명칭이었는데, UNION이 SQL이 보유"
-#~ "한 용어이기 때문에 \"Union\"으로 재명명됐습니다."
-
-#, fuzzy
-#~ msgid ""
-#~ "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
-#~ "introduced and also faster aggregate collection in PostgreSQL."
-#~ msgstr ""
-#~ "1.4.0 버전부터 사용할 수 있습니다. 이 버전부터 도형 배열을 입력받을 수 있"
-#~ "습니다. 더 많은 도형들을 더 빨리 처리하도록 ST_Collect를 개선했습니다."
-
-#~ msgid "Aggregate version is not explicitly defined in OGC SPEC."
-#~ msgstr "종합 버전은 OGC 사양서에 명확하게 정의돼 있지 않습니다."
-
-#~ msgid ""
-#~ "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons "
-#~ "are involved."
-#~ msgstr ""
-#~ "&sqlmm_compliant; SQL-MM 3: 5.1.19 폴리곤이 연관된 경우 Z-인덱스(고도)"
-
-#~ msgid "Aggregate example"
-#~ msgstr "종합 버전 예시"
-
-#, fuzzy
-#~ msgid ""
-#~ "SELECT stusps,\n"
-#~ "             ST_Union(f.geom) as singlegeom\n"
-#~ "FROM sometable f\n"
-#~ "GROUP BY stusps"
-#~ msgstr ""
-#~ "SELECT stusps,\n"
-#~ "           ST_Multi(ST_Union(f.the_geom)) as singlegeom\n"
-#~ "         FROM sometable As f\n"
-#~ "GROUP BY stusps"
-
-#~ msgid "Non-Aggregate example"
-#~ msgstr "비(非)종합 버전 예시"
-
-#, fuzzy
-#~ msgid ""
-#~ ", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_Intersection\"/>, "
-#~ "<xref linkend=\"ST_Difference\"/> <xref linkend=\"ST_SymDifference\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-#~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>"
-
-#~ msgid "ST_UnaryUnion"
-#~ msgstr "ST_UnaryUnion"
-
-#~ msgid "Like ST_Union, but working at the geometry component level."
-#~ msgstr "ST_Union과 비슷하지만, 도형 구성 요소 레벨에서 동작합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-
-#~ msgid ""
-#~ "Unlike ST_Union, ST_UnaryUnion does dissolve boundaries between "
-#~ "components of a multipolygon (invalid) and does perform union between the "
-#~ "components of a geometrycollection. Each components of the input geometry "
-#~ "is assumed to be valid, so you won't get a valid multipolygon out of a "
-#~ "bow-tie polygon (invalid)."
-#~ msgstr ""
-#~ "ST_Union과는 달리, ST_UnaryUnion은 (유효하지 않은) 멀티폴리곤의 구성 요소"
-#~ "들 사이의 경계선을 없애지 않고 도형 집합의 구성 요소들 사이에서 통합 작업"
-#~ "을 수행합니다. 입력 도형의 각 구성 요소를 유효하다고 가정하기 때문에, (유"
-#~ "효하지 않은) 나비 넥타이 모양의 폴리곤으로부터 유효한 멀티폴리곤을 얻을 수"
-#~ "는 없을 겁니다."
-
-#~ msgid ""
-#~ "You may use this function to node a set of linestrings. You may mix "
-#~ "ST_UnaryUnion with ST_Collect to fine-tune how many geometries at once "
-#~ "you want to dissolve to be nice on both memory size and CPU time, finding "
-#~ "the balance between ST_Union and ST_MemUnion."
-#~ msgstr ""
-#~ "라인스트링들의 집합에 노드를 적용하는 데 이 함수를 쓸 수도 있습니다. "
-#~ "ST_UnaryUnion을 ST_Collect와 결합해서, ST_Union과 ST_MemUnion 사이의 균형"
-#~ "을 맞춰서 메모리 용량 및 CPU 시간 양쪽 모두 만족시키며 한꺼번에 얼마나 많"
-#~ "은 도형을 통합할지 상세하게 조정할 수도 있습니다."
-
-#~ msgid ""
-#~ ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
-#~ "linkend=\"ST_Node\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
-#~ "linkend=\"ST_Node\"/>"
-
-#, fuzzy
-#~ msgid ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
-#~ "\"ST_MinimumBoundingCircle\"/>"
-
-#~ msgid ""
-#~ "'join=round|mitre|bevel' : join style (defaults to \"round\", needs "
-#~ "GEOS-3.2 or higher for a different value). 'miter' is also accepted as a "
-#~ "synonym for 'mitre'."
-#~ msgstr ""
-#~ "'join=round|mitre|bevel' : 접합 스타일(기본값은 \"원형(round)\"으로 다른 "
-#~ "값을 쓰려면 GEOS 3.2 이상 버전이 필요합니다). '마이터(mitre)'의 동의어로 "
-#~ "'마이터(miter)'도 쓸 수 있습니다."
-
-#~ msgid "Availability: 1.1.0 - requires GEOS &gt;= 2.1.0."
-#~ msgstr ""
-#~ "1.1.0 버전부터 사용할 수 있습니다. GEOS 2.1.0 이상 버전이 필요합니다."
-
-#~ msgid "Requires GEOS 3.5.0+"
-#~ msgstr "GEOS 3.5.0 이상 버전이 필요합니다."
-
-#~ msgid "Availability: 2.2.0 - requires GEOS &gt;= 3.5.0."
-#~ msgstr ""
-#~ "2.2.0 버전부터 사용할 수 있습니다. GEOS 3.5.0 이상 버전이 필요합니다."
-
-#~ msgid "ST_Collect"
-#~ msgstr "ST_Collect"
-
-#~ msgid ""
-#~ "Return a specified ST_Geometry value from a collection of other "
-#~ "geometries."
-#~ msgstr "다른 도형들의 집합으로부터 설정된 ST_Geometry 값을 반환합니다."
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
-#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Collect</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>geometry <function>ST_Collect</function></"
-#~ "funcdef> <paramdef><type>geometry set</type> <parameter>g1field</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
-#~ "<function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> "
-#~ "<funcdef>geometry <function>ST_Collect</function></funcdef> "
-#~ "<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></"
-#~ "paramdef> </funcprototype>"
-
-#~ msgid ""
-#~ "Output type can be a MULTI* or a GEOMETRYCOLLECTION. Comes in 2 variants. "
-#~ "Variant 1 collects 2 geometries. Variant 2 is an aggregate function that "
-#~ "takes a set of geometries and collects them into a single ST_Geometry."
-#~ msgstr ""
-#~ "멀티 도형 또는 도형 집합 유형을 출력할 수 있습니다. 두 가지 변종이 존재합"
-#~ "니다. 변종 1은 도형 2개를 수집합니다. 변종 2는 도형들의 집합을 입력받아 단"
-#~ "일 ST_Geometry로 수집하는 종합 함수입니다."
-
-#~ msgid ""
-#~ "Aggregate version: This function returns a GEOMETRYCOLLECTION or a MULTI "
-#~ "object from a set of geometries. The ST_Collect() function is an "
-#~ "\"aggregate\" function in the terminology of PostgreSQL. That means that "
-#~ "it operates on rows of data, in the same way the SUM() and AVG() "
-#~ "functions do. For example, \"SELECT ST_Collect(GEOM) FROM GEOMTABLE GROUP "
-#~ "BY ATTRCOLUMN\" will return a separate GEOMETRYCOLLECTION for each "
-#~ "distinct value of ATTRCOLUMN."
-#~ msgstr ""
-#~ "종합 버전: 이 함수는 도형들의 집합으로부터 도형 집합 또는 멀티 유형의 객체"
-#~ "를 반환합니다. ST_Collect() 함수는 PostgreSQL 전문 용어로 \"종합"
-#~ "(aggregate)\" 함수입니다. 즉 SUM() 및 AVG() 함수와 마찬가지로 데이터 행들"
-#~ "을 대상으로 연산한다는 뜻입니다. 예를 들어, \"SELECT ST_Collect(GEOM) "
-#~ "FROM GEOMTABLE GROUP BY ATTRCOLUMN\" 쿼리는 ATTRCOLUMN의 각 개별적인 값에 "
-#~ "대해 별개의 도형 집합을 반환할 것입니다."
-
-#~ msgid ""
-#~ "Non-Aggregate version: This function returns a geometry being a "
-#~ "collection of two input geometries. Output type can be a MULTI* or a "
-#~ "GEOMETRYCOLLECTION."
-#~ msgstr ""
-#~ "비(非)종합 버전: 이 함수는 입력 도형 2개의 집합인 도형을 반환합니다. 멀티 "
-#~ "도형 또는 도형 집합 유형을 출력할 수 있습니다."
-
-#~ msgid ""
-#~ "&curve_support; This method supports Circular Strings and Curves, but "
-#~ "will never return a MULTICURVE or MULTI as one would expect and PostGIS "
-#~ "does not currently support those."
-#~ msgstr ""
-#~ "&curve_support; 이 메소드는 원호 스트링 및 만곡 도형을 지원하지만, 사용자"
-#~ "가 기대할 만한 멀티커브 또는 멀티 도형을 반환하지는 않습니다. 현재 PostGIS"
-#~ "는 이들을 지원하지 않습니다."
-
-#~ msgid ""
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "        ST_GeomFromText('POINT(-2 3)') ));\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(1 2,-2 3)\n"
-#~ "\n"
-#~ "--Collect 2 d points\n"
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "                ST_GeomFromText('POINT(1 2)') ) );\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(1 2,1 2)\n"
-#~ "\n"
-#~ "--Collect 3d points\n"
-#~ "SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),\n"
-#~ "                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
-#~ "\n"
-#~ "                st_asewkt\n"
-#~ "-------------------------\n"
-#~ " MULTIPOINT(1 2 3,1 2 4)\n"
-#~ "\n"
-#~ " --Example with curves\n"
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 "
-#~ "150415,220227 150505,220227 150406)'),\n"
-#~ "ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 "
-#~ "150406)')));\n"
-#~ "                                                                                                                                st_astext\n"
-#~ "------------------------------------------------------------------------------------\n"
-#~ " GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 "
-#~ "150406),\n"
-#~ " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))\n"
-#~ "\n"
-#~ "--New ST_Collect array construct\n"
-#~ "SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));\n"
-#~ "\n"
-#~ "SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 "
-#~ "4)'),\n"
-#~ "                        ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As "
-#~ "wktcollect;\n"
-#~ "\n"
-#~ "--wkt collect --\n"
-#~ "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "        ST_GeomFromText('POINT(-2 3)') ));\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(1 2,-2 3)\n"
-#~ "\n"
-#~ "-- 2차원 포인트 수집\n"
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "                ST_GeomFromText('POINT(1 2)') ) );\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(1 2,1 2)\n"
-#~ "\n"
-#~ "-- 3차원 포인트 수집\n"
-#~ "SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),\n"
-#~ "                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
-#~ "\n"
-#~ "                st_asewkt\n"
-#~ "-------------------------\n"
-#~ " MULTIPOINT(1 2 3,1 2 4)\n"
-#~ "\n"
-#~ " -- 만곡 도형 예시\n"
-#~ "SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 "
-#~ "150415,220227 150505,220227 150406)'),\n"
-#~ "ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 "
-#~ "150406)')));\n"
-#~ "                                                                                                                                st_astext\n"
-#~ "------------------------------------------------------------------------------------\n"
-#~ " GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 "
-#~ "150406),\n"
-#~ " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))\n"
-#~ "\n"
-#~ "-- 새로운 ST_Collect 배열 구조\n"
-#~ "SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));\n"
-#~ "\n"
-#~ "SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 "
-#~ "4)'),\n"
-#~ "                        ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As "
-#~ "wktcollect;\n"
-#~ "\n"
-#~ "-- WKT 수집 --\n"
-#~ "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
-
-#~ msgid ""
-#~ "<refpurpose>The convex hull of a geometry represents the minimum convex "
-#~ "geometry that encloses all geometries within the set.</refpurpose>"
-#~ msgstr ""
-#~ "<refpurpose>도형의 볼록 껍질(convex hull)은 집합 내부의 모든 도형들을 둘러"
-#~ "싸는 최소 볼록 도형을 의미합니다.</refpurpose>"
-
-#~ msgid ""
-#~ "It is often used to determine an affected area based on a set of point "
-#~ "observations."
-#~ msgstr ""
-#~ "이 함수는 포인트 집합 관찰에 기반한 영향 면적을 추산하는 데 자주 쓰입니다."
-
-#~ msgid "Do not call with a GeometryCollection as an argument"
-#~ msgstr "도형 집합을 인수로 호출하지 마십시오."
-
-#~ msgid "ST_Dump"
-#~ msgstr "ST_Dump"
-
-#~ msgid ""
-#~ "Returns a set of geometry_dump (geom,path) rows, that make up a geometry "
-#~ "g1."
-#~ msgstr ""
-#~ "도형 g1을 구성하고 있는 geometry_dump(도형, 경로) 행들의 집합을 반환합니"
-#~ "다."
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-
-#~ msgid ""
-#~ "This is a set-returning function (SRF). It returns a set of geometry_dump "
-#~ "rows, formed by a geometry (geom) and an array of integers (path). When "
-#~ "the input geometry is a simple type (POINT,LINESTRING,POLYGON) a single "
-#~ "record will be returned with an empty path array and the input geometry "
-#~ "as geom. When the input geometry is a collection or multi it will return "
-#~ "a record for each of the collection components, and the path will express "
-#~ "the position of the component inside the collection."
-#~ msgstr ""
-#~ "집합을 반환하는 함수(SRF; set-returning function)입니다. 이 함수는 도형"
-#~ "(geom) 및 정수 배열(경로)로 이루어진 geometry_dump 행들의 집합을 반환합니"
-#~ "다. 입력 도형이 단순 유형(포인트, 라인스트링, 폴리곤)일 경우 텅 빈 경로 배"
-#~ "열과 geom으로 입력 도형을 가진 단일 레코드를 반환할 것입니다. 입력 도형이 "
-#~ "도형 집합 또는 멀티 유형일 경우, 각 집합 구성 요소 및 집합 내에서 해당 요"
-#~ "소의 위치를 표현하는 경로로 이루어진 레코드를 반환할 것입니다."
-
-#~ msgid ""
-#~ "ST_Dump is useful for expanding geometries. It is the reverse of a GROUP "
-#~ "BY in that it creates new rows. For example it can be use to expand "
-#~ "MULTIPOLYGONS into POLYGONS."
-#~ msgstr ""
-#~ "ST_Dump는 도형들을 확장하는 데 유용합니다. 새 행들을 생성한다는 점에서 "
-#~ "GROUP BY의 역함수라고 할 수 있습니다. 예를 들어 멀티폴리곤을 폴리곤으로 확"
-#~ "장하는 데 이 함수를 쓸 수 있습니다."
-
-#~ msgid ""
-#~ "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
-#~ "introduced."
-#~ msgstr ""
-#~ "개선 사항: 2.0.0 버전부터 다면체 표면, 삼각형 및 TIN을 지원하기 시작했습니"
-#~ "다."
-
-#~ msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
-#~ msgstr ""
-#~ "PostGIS 1.0.0RC1 버전부터 사용할 수 있습니다. PostgreSQL 7.3 이상 버전이 "
-#~ "필요합니다."
-
-#~ msgid ""
-#~ "Prior to 1.3.4, this function crashes if used with geometries that "
-#~ "contain CURVES. This is fixed in 1.3.4+"
-#~ msgstr ""
-#~ "1.3.4 미만 버전에서 이 함수에 만곡 도형(curve)을 담고 있는 도형을 입력하"
-#~ "면 충돌이 일어났습니다. 1.3.4 버전부터 이 버그가 해결됐습니다."
-
-#~ msgid "Standard Examples"
-#~ msgstr "표준 예시"
-
-#~ msgid ""
-#~ "SELECT sometable.field1, sometable.field1,\n"
-#~ "      (ST_Dump(sometable.the_geom)).geom AS the_geom\n"
-#~ "FROM sometable;\n"
-#~ "\n"
-#~ "-- Break a compound curve into its constituent linestrings and "
-#~ "circularstrings\n"
-#~ "SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)\n"
-#~ "  FROM ( SELECT (ST_Dump(p_geom)).geom AS geom\n"
-#~ "         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, "
-#~ "1 1, 1 0),(1 0, 0 1))') AS p_geom) AS b\n"
-#~ "        ) AS a;\n"
-#~ "          st_asewkt          | st_hasarc\n"
-#~ "-----------------------------+----------\n"
-#~ " CIRCULARSTRING(0 0,1 1,1 0) | t\n"
-#~ " LINESTRING(1 0,0 1)         | f\n"
-#~ "(2 rows)"
-#~ msgstr ""
-#~ "SELECT sometable.field1, sometable.field1,\n"
-#~ "      (ST_Dump(sometable.the_geom)).geom AS the_geom\n"
-#~ "FROM sometable;\n"
-#~ "\n"
-#~ "-- 복심곡선을 그 구성 요소인 라인스트링과 원호 스트링으로 분해합니다.\n"
-#~ "SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)\n"
-#~ "  FROM ( SELECT (ST_Dump(p_geom)).geom AS geom\n"
-#~ "         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, "
-#~ "1 1, 1 0),(1 0, 0 1))') AS p_geom) AS b\n"
-#~ "        ) AS a;\n"
-#~ "          st_asewkt          | st_hasarc\n"
-#~ "-----------------------------+----------\n"
-#~ " CIRCULARSTRING(0 0,1 1,1 0) | t\n"
-#~ " LINESTRING(1 0,0 1)         | f\n"
-#~ "(2 rows)"
-
-#~ msgid "Polyhedral Surfaces, TIN and Triangle Examples"
-#~ msgstr "다면체 표면, TIN 및 삼각형 예시"
-
-#~ msgid ""
-#~ "-- Polyhedral surface example\n"
-#~ "-- Break a Polyhedral surface into its faces\n"
-#~ "SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As "
-#~ "geom_ewkt\n"
-#~ "  FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
-#~ "((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-#~ "((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 "
-#~ "0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-#~ "((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 "
-#~ "1))\n"
-#~ ")') ) AS p_geom )  AS a;\n"
-#~ "\n"
-#~ " path |                geom_ewkt\n"
-#~ "------+------------------------------------------\n"
-#~ "    1 | POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0))\n"
-#~ "    2 | POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))\n"
-#~ "    3 | POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))\n"
-#~ "    4 | POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0))\n"
-#~ "    5 | POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0))\n"
-#~ "    6 | POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))"
-#~ msgstr ""
-#~ "-- 다면체 표면 예시\n"
-#~ "-- 다면체 표면을 각 면으로 분해\n"
-#~ "SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As "
-#~ "geom_ewkt\n"
-#~ "  FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
-#~ "((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-#~ "((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 "
-#~ "0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-#~ "((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 "
-#~ "1))\n"
-#~ ")') ) AS p_geom )  AS a;\n"
-#~ "\n"
-#~ " path |                geom_ewkt\n"
-#~ "------+------------------------------------------\n"
-#~ "    1 | POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0))\n"
-#~ "    2 | POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))\n"
-#~ "    3 | POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))\n"
-#~ "    4 | POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0))\n"
-#~ "    5 | POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0))\n"
-#~ "    6 | POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))"
-
-#~ msgid ""
-#~ "-- TIN --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0,\n"
-#~ "                0 0 1,\n"
-#~ "                0 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0,\n"
-#~ "                0 1 0,\n"
-#~ "                1 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ " path |                 wkt\n"
-#~ "------+-------------------------------------\n"
-#~ " {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
-#~ " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
-#~ msgstr ""
-#~ "-- TIN --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0,\n"
-#~ "                0 0 1,\n"
-#~ "                0 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0,\n"
-#~ "                0 1 0,\n"
-#~ "                1 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- 결과 --\n"
-#~ " path |                 wkt\n"
-#~ "------+-------------------------------------\n"
-#~ " {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
-#~ " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
-
-#~ msgid ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Collect\"/>, <xref linkend=\"ST_Collect\"/>, <xref linkend="
-#~ "\"ST_GeometryN\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Collect\"/>, <xref linkend=\"ST_Collect\"/>, <xref linkend="
-#~ "\"ST_GeometryN\"/>"
-
-#~ msgid "ST_DumpPoints"
-#~ msgstr "ST_DumpPoints"
-
-#~ msgid ""
-#~ "Returns a set of geometry_dump (geom,path) rows of all points that make "
-#~ "up a geometry."
-#~ msgstr ""
-#~ "도형을 구성하는 모든 포인트의 geometry_dump(도형, 경로) 행들의 집합을 반환"
-#~ "합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
-
-#~ msgid ""
-#~ "This set-returning function (SRF) returns a set of "
-#~ "<varname>geometry_dump</varname> rows formed by a geometry "
-#~ "(<varname>geom</varname>) and an array of integers (<varname>path</"
-#~ "varname>)."
-#~ msgstr ""
-#~ "이 집합 반환 함수(SRF)는 도형(<varname>geom</varname>) 및 정수 배열"
-#~ "(<varname>path</varname>)로 이루어진 <varname>geometry_dump</varname> 행들"
-#~ "의 집합을 반환합니다."
-
-#~ msgid ""
-#~ "The <parameter>geom</parameter> component of <varname>geometry_dump</"
-#~ "varname> are all the <varname>POINT</varname>s that make up the supplied "
-#~ "geometry"
-#~ msgstr ""
-#~ "<varname>geometry_dump</varname> 의 <parameter>geom</parameter> 구성 요소"
-#~ "는 모두 입력 도형을 구성하는 <varname>POINT</varname> 들입니다."
-
-#~ msgid ""
-#~ "The <parameter>path</parameter> component of <varname>geometry_dump</"
-#~ "varname> (an <varname>integer[]</varname>) is an index reference "
-#~ "enumerating the <varname>POINT</varname>s of the supplied geometry. For "
-#~ "example, if a <varname>LINESTRING</varname> is supplied, a path of "
-#~ "<varname>{i}</varname> is returned where <varname>i</varname> is the "
-#~ "<varname>nth</varname> coordinate in the <varname>LINESTRING</varname>. "
-#~ "If a <varname>POLYGON</varname> is supplied, a path of <varname>{i,j}</"
-#~ "varname> is returned where <varname>i</varname> is the ring number (1 is "
-#~ "outer; inner rings follow) and <varname>j</varname> enumerates the "
-#~ "<varname>POINT</varname>s (again 1-based index)."
-#~ msgstr ""
-#~ "<varname>geometry_dump</varname> (<varname>integer[]</varname>)의 "
-#~ "<parameter>path</parameter> 구성 요소는 입력 도형의 <varname>POINT</"
-#~ "varname> 들을 열거하는 참조 인덱스입니다. 예를 들어 <varname>LINESTRING</"
-#~ "varname> 을 입력할 경우, <varname>i</varname> 가 <varname>LINESTRING</"
-#~ "varname> 에 있는 <varname>nth</varname> 좌표인 <varname>{i}</varname> 의 "
-#~ "경로를 반환합니다. <varname>POLYGON</varname> 을 입력할 경우, <varname>i</"
-#~ "varname> 가 고리 번호(1이 외곽 고리이며, 내곽 고리들은 순차적으로 다음 숫"
-#~ "자)이며 <varname>j</varname> 가 <varname>POINT</varname> 들을 (1-기반 인덱"
-#~ "스에 대해) 열거하는 <varname>{i,j}</varname> 의 경로를 반환합니다."
-
-#~ msgid "Enhanced: 2.1.0 Faster speed. Reimplemented as native-C."
-#~ msgstr ""
-#~ "개선 사항: 2.1.0 버전에서 속도가 향상됐습니다. native-C로 재구현됐습니다."
-
-#~ msgid "Availability: 1.5.0"
-#~ msgstr "1.5.0 버전부터 사용할 수 있습니다."
-
-#~ msgid "Classic Explode a Table of LineStrings into nodes"
-#~ msgstr "라인스트링 테이블을 노드로 분해하는 전형적인 예시"
-
-#~ msgid ""
-#~ "SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode\n"
-#~ "FROM (SELECT 1 As edge_id\n"
-#~ "        , ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) "
-#~ "AS dp\n"
-#~ "     UNION ALL\n"
-#~ "     SELECT 2 As edge_id\n"
-#~ "        , ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS "
-#~ "dp\n"
-#~ "   ) As foo;\n"
-#~ " edge_id | index |    wktnode\n"
-#~ "---------+-------+--------------\n"
-#~ "       1 |     1 | POINT(1 2)\n"
-#~ "       1 |     2 | POINT(3 4)\n"
-#~ "       1 |     3 | POINT(10 10)\n"
-#~ "       2 |     1 | POINT(3 5)\n"
-#~ "       2 |     2 | POINT(5 6)\n"
-#~ "       2 |     3 | POINT(9 10)"
-#~ msgstr ""
-#~ "SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode\n"
-#~ "FROM (SELECT 1 As edge_id\n"
-#~ "        , ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) "
-#~ "AS dp\n"
-#~ "     UNION ALL\n"
-#~ "     SELECT 2 As edge_id\n"
-#~ "        , ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS "
-#~ "dp\n"
-#~ "   ) As foo;\n"
-#~ " edge_id | index |    wktnode\n"
-#~ "---------+-------+--------------\n"
-#~ "       1 |     1 | POINT(1 2)\n"
-#~ "       1 |     2 | POINT(3 4)\n"
-#~ "       1 |     3 | POINT(10 10)\n"
-#~ "       2 |     1 | POINT(3 5)\n"
-#~ "       2 |     2 | POINT(5 6)\n"
-#~ "       2 |     3 | POINT(9 10)"
-
-#~ msgid "Standard Geometry Examples"
-#~ msgstr "표준 도형 예시"
-
-#~ msgid ""
-#~ "SELECT path, ST_AsText(geom)\n"
-#~ "FROM (\n"
-#~ "  SELECT (ST_DumpPoints(g.geom)).*\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       'GEOMETRYCOLLECTION(\n"
-#~ "          POINT ( 0 1 ),\n"
-#~ "          LINESTRING ( 0 3, 3 4 ),\n"
-#~ "          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
-#~ "          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ),\n"
-#~ "                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
-#~ "          MULTIPOLYGON (\n"
-#~ "                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ),\n"
-#~ "                   ( 1 6, 3 6, 2 7, 1 6 )),\n"
-#~ "                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
-#~ "          )\n"
-#~ "        )'::geometry AS geom\n"
-#~ "    ) AS g\n"
-#~ "  ) j;\n"
-#~ "\n"
-#~ "   path    | st_astext\n"
-#~ "-----------+------------\n"
-#~ " {1,1}     | POINT(0 1)\n"
-#~ " {2,1}     | POINT(0 3)\n"
-#~ " {2,2}     | POINT(3 4)\n"
-#~ " {3,1,1}   | POINT(2 0)\n"
-#~ " {3,1,2}   | POINT(2 3)\n"
-#~ " {3,1,3}   | POINT(0 2)\n"
-#~ " {3,1,4}   | POINT(2 0)\n"
-#~ " {4,1,1}   | POINT(3 0)\n"
-#~ " {4,1,2}   | POINT(3 3)\n"
-#~ " {4,1,3}   | POINT(6 3)\n"
-#~ " {4,1,4}   | POINT(6 0)\n"
-#~ " {4,1,5}   | POINT(3 0)\n"
-#~ " {4,2,1}   | POINT(5 1)\n"
-#~ " {4,2,2}   | POINT(4 2)\n"
-#~ " {4,2,3}   | POINT(5 2)\n"
-#~ " {4,2,4}   | POINT(5 1)\n"
-#~ " {5,1,1,1} | POINT(0 5)\n"
-#~ " {5,1,1,2} | POINT(0 8)\n"
-#~ " {5,1,1,3} | POINT(4 8)\n"
-#~ " {5,1,1,4} | POINT(4 5)\n"
-#~ " {5,1,1,5} | POINT(0 5)\n"
-#~ " {5,1,2,1} | POINT(1 6)\n"
-#~ " {5,1,2,2} | POINT(3 6)\n"
-#~ " {5,1,2,3} | POINT(2 7)\n"
-#~ " {5,1,2,4} | POINT(1 6)\n"
-#~ " {5,2,1,1} | POINT(5 4)\n"
-#~ " {5,2,1,2} | POINT(5 8)\n"
-#~ " {5,2,1,3} | POINT(6 7)\n"
-#~ " {5,2,1,4} | POINT(5 4)\n"
-#~ "(29 rows)"
-#~ msgstr ""
-#~ "SELECT path, ST_AsText(geom)\n"
-#~ "FROM (\n"
-#~ "  SELECT (ST_DumpPoints(g.geom)).*\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       'GEOMETRYCOLLECTION(\n"
-#~ "          POINT ( 0 1 ),\n"
-#~ "          LINESTRING ( 0 3, 3 4 ),\n"
-#~ "          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
-#~ "          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ),\n"
-#~ "                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
-#~ "          MULTIPOLYGON (\n"
-#~ "                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ),\n"
-#~ "                   ( 1 6, 3 6, 2 7, 1 6 )),\n"
-#~ "                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
-#~ "          )\n"
-#~ "        )'::geometry AS geom\n"
-#~ "    ) AS g\n"
-#~ "  ) j;\n"
-#~ "\n"
-#~ "   path    | st_astext\n"
-#~ "-----------+------------\n"
-#~ " {1,1}     | POINT(0 1)\n"
-#~ " {2,1}     | POINT(0 3)\n"
-#~ " {2,2}     | POINT(3 4)\n"
-#~ " {3,1,1}   | POINT(2 0)\n"
-#~ " {3,1,2}   | POINT(2 3)\n"
-#~ " {3,1,3}   | POINT(0 2)\n"
-#~ " {3,1,4}   | POINT(2 0)\n"
-#~ " {4,1,1}   | POINT(3 0)\n"
-#~ " {4,1,2}   | POINT(3 3)\n"
-#~ " {4,1,3}   | POINT(6 3)\n"
-#~ " {4,1,4}   | POINT(6 0)\n"
-#~ " {4,1,5}   | POINT(3 0)\n"
-#~ " {4,2,1}   | POINT(5 1)\n"
-#~ " {4,2,2}   | POINT(4 2)\n"
-#~ " {4,2,3}   | POINT(5 2)\n"
-#~ " {4,2,4}   | POINT(5 1)\n"
-#~ " {5,1,1,1} | POINT(0 5)\n"
-#~ " {5,1,1,2} | POINT(0 8)\n"
-#~ " {5,1,1,3} | POINT(4 8)\n"
-#~ " {5,1,1,4} | POINT(4 5)\n"
-#~ " {5,1,1,5} | POINT(0 5)\n"
-#~ " {5,1,2,1} | POINT(1 6)\n"
-#~ " {5,1,2,2} | POINT(3 6)\n"
-#~ " {5,1,2,3} | POINT(2 7)\n"
-#~ " {5,1,2,4} | POINT(1 6)\n"
-#~ " {5,2,1,1} | POINT(5 4)\n"
-#~ " {5,2,1,2} | POINT(5 8)\n"
-#~ " {5,2,1,3} | POINT(6 7)\n"
-#~ " {5,2,1,4} | POINT(5 4)\n"
-#~ "(29 rows)"
-
-#~ msgid ""
-#~ "-- Polyhedral surface cube --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, "
-#~ "0 1 1, 0 1 0, 0 0 0)),\n"
-#~ "((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 "
-#~ "0)),\n"
-#~ "((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-#~ "((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 "
-#~ "1)) )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ "  path   |     wkt\n"
-#~ "---------+--------------\n"
-#~ " {1,1,1} | POINT(0 0 0)\n"
-#~ " {1,1,2} | POINT(0 0 1)\n"
-#~ " {1,1,3} | POINT(0 1 1)\n"
-#~ " {1,1,4} | POINT(0 1 0)\n"
-#~ " {1,1,5} | POINT(0 0 0)\n"
-#~ " {2,1,1} | POINT(0 0 0)\n"
-#~ " {2,1,2} | POINT(0 1 0)\n"
-#~ " {2,1,3} | POINT(1 1 0)\n"
-#~ " {2,1,4} | POINT(1 0 0)\n"
-#~ " {2,1,5} | POINT(0 0 0)\n"
-#~ " {3,1,1} | POINT(0 0 0)\n"
-#~ " {3,1,2} | POINT(1 0 0)\n"
-#~ " {3,1,3} | POINT(1 0 1)\n"
-#~ " {3,1,4} | POINT(0 0 1)\n"
-#~ " {3,1,5} | POINT(0 0 0)\n"
-#~ " {4,1,1} | POINT(1 1 0)\n"
-#~ " {4,1,2} | POINT(1 1 1)\n"
-#~ " {4,1,3} | POINT(1 0 1)\n"
-#~ " {4,1,4} | POINT(1 0 0)\n"
-#~ " {4,1,5} | POINT(1 1 0)\n"
-#~ " {5,1,1} | POINT(0 1 0)\n"
-#~ " {5,1,2} | POINT(0 1 1)\n"
-#~ " {5,1,3} | POINT(1 1 1)\n"
-#~ " {5,1,4} | POINT(1 1 0)\n"
-#~ " {5,1,5} | POINT(0 1 0)\n"
-#~ " {6,1,1} | POINT(0 0 1)\n"
-#~ " {6,1,2} | POINT(1 0 1)\n"
-#~ " {6,1,3} | POINT(1 1 1)\n"
-#~ " {6,1,4} | POINT(0 1 1)\n"
-#~ " {6,1,5} | POINT(0 0 1)\n"
-#~ "(30 rows)"
-#~ msgstr ""
-#~ "-- 다면체 표면 정육면체 --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, "
-#~ "0 1 1, 0 1 0, 0 0 0)),\n"
-#~ "((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 "
-#~ "0)),\n"
-#~ "((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-#~ "((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 "
-#~ "1)) )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- 결과 --\n"
-#~ "  path   |     wkt\n"
-#~ "---------+--------------\n"
-#~ " {1,1,1} | POINT(0 0 0)\n"
-#~ " {1,1,2} | POINT(0 0 1)\n"
-#~ " {1,1,3} | POINT(0 1 1)\n"
-#~ " {1,1,4} | POINT(0 1 0)\n"
-#~ " {1,1,5} | POINT(0 0 0)\n"
-#~ " {2,1,1} | POINT(0 0 0)\n"
-#~ " {2,1,2} | POINT(0 1 0)\n"
-#~ " {2,1,3} | POINT(1 1 0)\n"
-#~ " {2,1,4} | POINT(1 0 0)\n"
-#~ " {2,1,5} | POINT(0 0 0)\n"
-#~ " {3,1,1} | POINT(0 0 0)\n"
-#~ " {3,1,2} | POINT(1 0 0)\n"
-#~ " {3,1,3} | POINT(1 0 1)\n"
-#~ " {3,1,4} | POINT(0 0 1)\n"
-#~ " {3,1,5} | POINT(0 0 0)\n"
-#~ " {4,1,1} | POINT(1 1 0)\n"
-#~ " {4,1,2} | POINT(1 1 1)\n"
-#~ " {4,1,3} | POINT(1 0 1)\n"
-#~ " {4,1,4} | POINT(1 0 0)\n"
-#~ " {4,1,5} | POINT(1 1 0)\n"
-#~ " {5,1,1} | POINT(0 1 0)\n"
-#~ " {5,1,2} | POINT(0 1 1)\n"
-#~ " {5,1,3} | POINT(1 1 1)\n"
-#~ " {5,1,4} | POINT(1 1 0)\n"
-#~ " {5,1,5} | POINT(0 1 0)\n"
-#~ " {6,1,1} | POINT(0 0 1)\n"
-#~ " {6,1,2} | POINT(1 0 1)\n"
-#~ " {6,1,3} | POINT(1 1 1)\n"
-#~ " {6,1,4} | POINT(0 1 1)\n"
-#~ " {6,1,5} | POINT(0 0 1)\n"
-#~ "(30 rows)"
-
-#~ msgid ""
-#~ "-- Triangle --\n"
-#~ "SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((\n"
-#~ "                0 0,\n"
-#~ "                0 9,\n"
-#~ "                9 0,\n"
-#~ "                0 0\n"
-#~ "            ))') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ " path |    wkt\n"
-#~ "------+------------\n"
-#~ " {1}  | POINT(0 0)\n"
-#~ " {2}  | POINT(0 9)\n"
-#~ " {3}  | POINT(9 0)\n"
-#~ " {4}  | POINT(0 0)"
-#~ msgstr ""
-#~ "-- 삼각형 --\n"
-#~ "SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((\n"
-#~ "                0 0,\n"
-#~ "                0 9,\n"
-#~ "                9 0,\n"
-#~ "                0 0\n"
-#~ "            ))') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- 결과 --\n"
-#~ " path |    wkt\n"
-#~ "------+------------\n"
-#~ " {1}  | POINT(0 0)\n"
-#~ " {2}  | POINT(0 9)\n"
-#~ " {3}  | POINT(9 0)\n"
-#~ " {4}  | POINT(0 0)"
-
-#~ msgid ""
-#~ "-- TIN --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0,\n"
-#~ "                0 0 1,\n"
-#~ "                0 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0,\n"
-#~ "                0 1 0,\n"
-#~ "                1 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- result --\n"
-#~ "  path   |     wkt\n"
-#~ "---------+--------------\n"
-#~ " {1,1,1} | POINT(0 0 0)\n"
-#~ " {1,1,2} | POINT(0 0 1)\n"
-#~ " {1,1,3} | POINT(0 1 0)\n"
-#~ " {1,1,4} | POINT(0 0 0)\n"
-#~ " {2,1,1} | POINT(0 0 0)\n"
-#~ " {2,1,2} | POINT(0 1 0)\n"
-#~ " {2,1,3} | POINT(1 1 0)\n"
-#~ " {2,1,4} | POINT(0 0 0)\n"
-#~ "(8 rows)"
-#~ msgstr ""
-#~ "-- TIN --\n"
-#~ "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
-#~ "  FROM\n"
-#~ "    (SELECT\n"
-#~ "       ST_DumpPoints( ST_GeomFromEWKT('TIN (((\n"
-#~ "                0 0 0,\n"
-#~ "                0 0 1,\n"
-#~ "                0 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            )), ((\n"
-#~ "                0 0 0,\n"
-#~ "                0 1 0,\n"
-#~ "                1 1 0,\n"
-#~ "                0 0 0\n"
-#~ "            ))\n"
-#~ "            )') ) AS gdump\n"
-#~ "    ) AS g;\n"
-#~ "-- 결과 --\n"
-#~ "  path   |     wkt\n"
-#~ "---------+--------------\n"
-#~ " {1,1,1} | POINT(0 0 0)\n"
-#~ " {1,1,2} | POINT(0 0 1)\n"
-#~ " {1,1,3} | POINT(0 1 0)\n"
-#~ " {1,1,4} | POINT(0 0 0)\n"
-#~ " {2,1,1} | POINT(0 0 0)\n"
-#~ " {2,1,2} | POINT(0 1 0)\n"
-#~ " {2,1,3} | POINT(1 1 0)\n"
-#~ " {2,1,4} | POINT(0 0 0)\n"
-#~ "(8 rows)"
-
-#~ msgid ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
-
-#~ msgid "ST_DumpRings"
-#~ msgstr "ST_DumpRings"
-
-#~ msgid ""
-#~ "Returns a set of <varname>geometry_dump</varname> rows, representing the "
-#~ "exterior and interior rings of a polygon."
-#~ msgstr ""
-#~ "폴리곤의 외곽 및 내곽 고리를 표현하는 <varname>geometry_dump</varname> 행"
-#~ "들의 집합을 반환합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></"
-#~ "paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
-#~ "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></"
-#~ "paramdef>"
-
-#~ msgid ""
-#~ "This is a set-returning function (SRF). It returns a set of "
-#~ "<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</"
-#~ "varname> and a <varname>geometry</varname>, aliased \"path\" and \"geom\" "
-#~ "respectively. The \"path\" field holds the polygon ring index containing "
-#~ "a single integer: 0 for the shell, >0 for holes. The \"geom\" field "
-#~ "contains the corresponding ring as a polygon."
-#~ msgstr ""
-#~ "집합 반환 함수(SRF)입니다. 각각 \"path\"와 \"geom\"이라는 변수명으로 불리"
-#~ "는 <varname>integer[]</varname> 와 <varname>geometry</varname> 로 정의되"
-#~ "는 <varname>geometry_dump</varname> 행들의 집합을 반환합니다. \"path\" 항"
-#~ "목은 단일 정수를 담고 있는 폴리곤 고리 인덱스를 들고 있습니다. 외곽 고리"
-#~ "일 경우 이 정수가 0, 구멍일 경우 양수가 됩니다. \"geom\" 항목은 각각 상응"
-#~ "하는 고리를 폴리곤으로 담고 있습니다."
-
-#~ msgid "Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher."
-#~ msgstr ""
-#~ "PostGIS 1.1.3 버전부터 사용할 수 있습니다. PostgreSQL 7.3 이상 버전이 필요"
-#~ "합니다."
-
-#~ msgid ""
-#~ "This only works for POLYGON geometries. It will not work for MULTIPOLYGONS"
-#~ msgstr ""
-#~ "이 함수는 폴리곤만 입력받을 수 있습니다. 멀티폴리곤은 입력받지 못 합니다."
-
-#~ msgid ""
-#~ "SELECT sometable.field1, sometable.field1,\n"
-#~ "          (ST_DumpRings(sometable.the_geom)).geom As the_geom\n"
-#~ "FROM sometableOfpolys;\n"
-#~ "\n"
-#~ "SELECT ST_AsEWKT(geom) As the_geom, path\n"
-#~ "        FROM ST_DumpRings(\n"
-#~ "                ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 "
-#~ "5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 "
-#~ "1,-8148941 5132466 1,-8148924 5132394 1,\n"
-#~ "                -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 "
-#~ "1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 "
-#~ "5132394 1,\n"
-#~ "                -8150305 5132788 1,-8149064 5133092 1),\n"
-#~ "                (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 "
-#~ "1,-8149695 5132675 1,-8149362 5132394 1))')\n"
-#~ "                )  as foo;\n"
-#~ " path |                                            the_geom\n"
-#~ "----------------------------------------------------------------------------------------------------------------\n"
-#~ "  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 "
-#~ "1,-8148972 5132767 1,-8148958 5132508 1,\n"
-#~ "          |          -8148941 5132466 1,-8148924 5132394 1,\n"
-#~ "          |          -8148903 5132210 1,-8148930 5131967 1,\n"
-#~ "          |          -8148992 5131978 1,-8149237 5132093 1,\n"
-#~ "          |          -8149404 5132211 1,-8149647 5132310 1,-8149757 "
-#~ "5132394 1,-8150305 5132788 1,-8149064 5133092 1))\n"
-#~ "  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,\n"
-#~ "          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 "
-#~ "5132394 1))"
-#~ msgstr ""
-#~ "SELECT sometable.field1, sometable.field1,\n"
-#~ "          (ST_DumpRings(sometable.the_geom)).geom As the_geom\n"
-#~ "FROM sometableOfpolys;\n"
-#~ "\n"
-#~ "SELECT ST_AsEWKT(geom) As the_geom, path\n"
-#~ "        FROM ST_DumpRings(\n"
-#~ "                ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 "
-#~ "5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 "
-#~ "1,-8148941 5132466 1,-8148924 5132394 1,\n"
-#~ "                -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 "
-#~ "1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 "
-#~ "5132394 1,\n"
-#~ "                -8150305 5132788 1,-8149064 5133092 1),\n"
-#~ "                (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 "
-#~ "1,-8149695 5132675 1,-8149362 5132394 1))')\n"
-#~ "                )  as foo;\n"
-#~ " path |                                            the_geom\n"
-#~ "----------------------------------------------------------------------------------------------------------------\n"
-#~ "  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 "
-#~ "1,-8148972 5132767 1,-8148958 5132508 1,\n"
-#~ "          |          -8148941 5132466 1,-8148924 5132394 1,\n"
-#~ "          |          -8148903 5132210 1,-8148930 5131967 1,\n"
-#~ "          |          -8148992 5131978 1,-8149237 5132093 1,\n"
-#~ "          |          -8149404 5132211 1,-8149647 5132310 1,-8149757 "
-#~ "5132394 1,-8150305 5132788 1,-8149064 5133092 1))\n"
-#~ "  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,\n"
-#~ "          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 "
-#~ "5132394 1))"
-
-#~ msgid ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend="
-#~ "\"ST_InteriorRingN\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-#~ "\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend="
-#~ "\"ST_InteriorRingN\"/>"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_GeneratePoints</function></funcdef> "
-#~ "<paramdef> <parameter>g</parameter> <type>geometry</type> </paramdef> "
-#~ "<paramdef> <parameter>npoints</parameter> <type>numeric</type> </paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_GeneratePoints</function></funcdef> "
-#~ "<paramdef> <parameter>g</parameter> <type>geometry</type> </paramdef> "
-#~ "<paramdef> <parameter>npoints</parameter> <type>numeric</type> </paramdef>"
-
-#~ msgid "&sfcgal_enhanced;"
-#~ msgstr "&sfcgal_enhanced;"
-
-#~ msgid ""
-#~ "SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 "
-#~ "0, 0 2 )'::geometry));\n"
-#~ " st_astext\n"
-#~ "---------------\n"
-#~ "GEOMETRYCOLLECTION EMPTY\n"
-#~ "(1 row)\n"
-#~ "SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 "
-#~ "0, 0 2 )'::geometry));\n"
-#~ " st_astext\n"
-#~ "---------------\n"
-#~ "POINT(0 0)\n"
-#~ "(1 row)\n"
-#~ "\n"
-#~ "---Clip all lines (trails) by country (here we assume country geom are "
-#~ "POLYGON or MULTIPOLYGONS)\n"
-#~ "-- NOTE: we are only keeping intersections that result in a LINESTRING or "
-#~ "MULTILINESTRING because we don't\n"
-#~ "-- care about trails that just share a point\n"
-#~ "-- the dump is needed to expand a geometry collection into individual "
-#~ "single MULT* parts\n"
-#~ "-- the below is fairly generic and will work for polys, etc. by just "
-#~ "changing the where clause\n"
-#~ "SELECT clipped.gid, clipped.f_name, clipped_geom\n"
-#~ "FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country."
-#~ "the_geom, trails.the_geom))).geom As clipped_geom\n"
-#~ "FROM country\n"
-#~ "        INNER JOIN trails\n"
-#~ "        ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped\n"
-#~ "        WHERE ST_Dimension(clipped.clipped_geom) = 1 ;\n"
-#~ "\n"
-#~ "--For polys e.g. polygon landmarks, you can also use the sometimes faster "
-#~ "hack that buffering anything by 0.0\n"
-#~ "-- except a polygon results in an empty geometry collection\n"
-#~ "--(so a geometry collection containing polys, lines and points)\n"
-#~ "-- buffered by 0.0 would only leave the polygons and dissolve the "
-#~ "collection shell\n"
-#~ "SELECT poly.gid,  ST_Multi(ST_Buffer(\n"
-#~ "                                ST_Intersection(country.the_geom, poly."
-#~ "the_geom),\n"
-#~ "                                0.0)\n"
-#~ "                                ) As clipped_geom\n"
-#~ "FROM country\n"
-#~ "        INNER JOIN poly\n"
-#~ "        ON ST_Intersects(country.the_geom, poly.the_geom)\n"
-#~ "        WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, "
-#~ "poly.the_geom),0.0));"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 "
-#~ "0, 0 2 )'::geometry));\n"
-#~ " st_astext\n"
-#~ "---------------\n"
-#~ "GEOMETRYCOLLECTION EMPTY\n"
-#~ "(1 row)\n"
-#~ "SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 "
-#~ "0, 0 2 )'::geometry));\n"
-#~ " st_astext\n"
-#~ "---------------\n"
-#~ "POINT(0 0)\n"
-#~ "(1 row)\n"
-#~ "\n"
-#~ "-- 지자체 경계선으로 모든 라인(길)을 잘라냅니다(이때 지자체 도형이 폴리곤 "
-#~ "또는 멀티폴리곤이라고 가정합니다).\n"
-#~ "-- 주의: 라인스트링 또는 멀티라인스트링으로 출력되는 교차점만 유지합니"
-#~ "다.\n"
-#~ "-- 포인트만을 공유하는 길에는 관심이 없기 때문입니다.\n"
-#~ "-- 도형 집합을 개별 멀티 도형 부분들로 확장하기 위해 덤프를 받아야 합니"
-#~ "다.\n"
-#~ "-- 다음은 꽤 일반적인 쿼리로 WHERE 절을 변경하는 것만으로 여러 유형들을 작"
-#~ "업할 수 있습니다.\n"
-#~ "SELECT clipped.gid, clipped.f_name, clipped_geom\n"
-#~ "FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country."
-#~ "the_geom, trails.the_geom))).geom As clipped_geom\n"
-#~ "FROM country\n"
-#~ "        INNER JOIN trails\n"
-#~ "        ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped\n"
-#~ "        WHERE ST_Dimension(clipped.clipped_geom) = 1 ;\n"
-#~ "\n"
-#~ "-- 폴리곤 랜드마크 같은 폴리곤의 경우, 텅 빈 도형 집합으로 출력되는 폴리곤"
-#~ "을 제외한 (즉 폴리곤, 라인 및 포인트를 담고 있는 도형 집합의) 모든 것에 버"
-#~ "퍼를 0.0으로 적용하는 더 빠른 꼼수를 쓸 수도 있습니다.\n"
-#~ "-- 버퍼를 0.0으로 적용하면 집합 구조를 없애고 폴리곤만 남기게 됩니다.\n"
-#~ "SELECT poly.gid,  ST_Multi(ST_Buffer(\n"
-#~ "                                ST_Intersection(country.the_geom, poly."
-#~ "the_geom),\n"
-#~ "                                0.0)\n"
-#~ "                                ) As clipped_geom\n"
-#~ "FROM country\n"
-#~ "        INNER JOIN poly\n"
-#~ "        ON ST_Intersects(country.the_geom, poly.the_geom)\n"
-#~ "        WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, "
-#~ "poly.the_geom),0.0));"
-
-#~ msgid ""
-#~ "If your PostGIS is compiled with sfcgal support, have option of using "
-#~ "sfcgal, but note if basically cases down both geometries to 2D before "
-#~ "doing intersection and returns the ST_Force2D equivalent result which is "
-#~ "a 2D geometry"
-#~ msgstr ""
-#~ "SFCGAL 지원과 함께 사용자 PostGIS를 컴파일한 경우, SFCGAL을 사용하도록 선"
-#~ "택할 수 있습니다. 그러나 기본적으로, 교차 작업을 하기 전에 도형을 2차원으"
-#~ "로 변환하거나, ST_Force2D와 동등한, 2차원 도형인 결과를 반환하거나 하는 "
-#~ "두 가지 경우로 압축됩니다."
-
-#~ msgid ""
-#~ "set postgis.backend=sfcgal;\n"
-#~ "select ST_AsText(ST_Intersection(linestring, polygon)) As wkt\n"
-#~ "from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 "
-#~ "10)') AS linestring\n"
-#~ " CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 "
-#~ "8))') AS polygon;\n"
-#~ "\n"
-#~ "                     wkt\n"
-#~ "----------------------------------------------\n"
-#~ " MULTILINESTRING((0.5 0.5,0 0),(1 1,0.5 0.5))"
-#~ msgstr ""
-#~ "set postgis.backend=sfcgal;\n"
-#~ "select ST_AsText(ST_Intersection(linestring, polygon)) As wkt\n"
-#~ "from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 "
-#~ "10)') AS linestring\n"
-#~ " CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 "
-#~ "8))') AS polygon;\n"
-#~ "\n"
-#~ "                     wkt\n"
-#~ "----------------------------------------------\n"
-#~ " MULTILINESTRING((0.5 0.5,0 0),(1 1,0.5 0.5))"
-
-#~ msgid "Availability: 2.0.0, requires GEOS-3.3.0"
-#~ msgstr "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 버전이 필요합니다."
-
-#~ msgid "Availability: 1.4.0 - requires GEOS"
-#~ msgstr "1.4.0 버전부터 사용할 수 있습니다. GEOS가 필요합니다."
-
-#~ msgid "Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0."
-#~ msgstr ""
-#~ "1.0.0RC1 버전부터 사용할 수 있습니다. GEOS 2.1.0 이상 버전이 필요합니다."
-
-#~ msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-#~ msgstr ""
-#~ "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이상 버전이 필요합니다."
-
-#~ msgid ""
-#~ "Due to a bug in GEOS up to 3.3.1 this function fails to node self-"
-#~ "intersecting lines. This is fixed with GEOS 3.3.2 or higher."
-#~ msgstr ""
-#~ "GEOS 3.3.1 버전까지의 버그 때문에 이 함수가 자체 교차하는 라인에 노드를 적"
-#~ "용할 수 없었습니다. GEOS 3.3.2 버전부터 이 버그가 수정됐습니다."
-
-#~ msgid ""
-#~ "Availability: 2.0 - requires GEOS &gt;= 3.2, improved with GEOS &gt;= 3.3"
-#~ msgstr ""
-#~ "2.0 버전부터 사용할 수 있습니다. GEOS 3.2 이상 버전이 필요합니다. GEOS "
-#~ "3.3 버전에서 개선됐습니다."
-
-#~ msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
-#~ msgstr ""
-#~ "2.0.0 버전부터 사용할 수 있습니다. GEOS 3.3.0 이상 버전이 필요합니다."
-
-#~ msgid "Requires GEOS 3.0.0+"
-#~ msgstr "GEOS 3.0.0 이상 버전이 필요합니다."
-
-#, fuzzy
-#~ msgid ""
-#~ "select ST_AsText(ST_ChaikinSmoothing(geom)) smoothed\n"
-#~ "FROM (SELECT  'LINESTRING(0 0, 8 8, 0 16)'::geometry geom) As foo;\n"
-#~ "-result\n"
-#~ " smoothed\n"
-#~ "------------------------------\n"
-#~ "LINESTRING(0 0,6 6,6 10,0 16)"
-#~ msgstr ""
-#~ "select ST_AsText(ST_SimplifyVW(geom,30)) simplified\n"
-#~ "FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) "
-#~ "As foo;\n"
-#~ "-- 결과 --\n"
-#~ " simplified\n"
-#~ "-----------+-------------------+\n"
-#~ "LINESTRING(5 2,7 25,10 10)"
-
-#~ msgid "Availability: 2.2.0 requires GEOS &gt;= 3.5.0."
-#~ msgstr ""
-#~ "2.2.0 버전부터 사용할 수 있습니다. GEOS 3.5.0 이상 버전이 필요합니다."
-
-#~ msgid "ST_SwapOrdinates"
-#~ msgstr "ST_SwapOrdinates"
-
-#~ msgid ""
-#~ "Returns a version of the given geometry with given ordinate values "
-#~ "swapped."
-#~ msgstr "입력 도형을 좌표값을 뒤바꾼 상태로 반환합니다."
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-#~ "<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>"
-
-#~ msgid ""
-#~ "Returns a version of the given geometry with given ordinates swapped."
-#~ msgstr "입력 도형을 좌표값을 뒤바꾼 상태로 반환합니다."
-
-#~ msgid ""
-#~ "The <varname>ords</varname> parameter is a 2-characters string naming the "
-#~ "ordinates to swap. Valid names are: x,y,z and m."
-#~ msgstr ""
-#~ "<varname>ords</varname> 파라미터는 뒤바꿀 좌표를 명명하는 문자 2개 길이의 "
-#~ "스트링입니다. 유효한 명칭은 x, y, z, 그리고 m입니다."
-
-#~ msgid ""
-#~ "<![CDATA[\n"
-#~ "-- Scale M value by 2\n"
-#~ "SELECT ST_AsText(\n"
-#~ "  ST_SwapOrdinates(\n"
-#~ "    ST_Scale(\n"
-#~ "      ST_SwapOrdinates(g,'xm'),\n"
-#~ "      2, 1\n"
-#~ "    ),\n"
-#~ "  'xm')\n"
-#~ ") FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;\n"
-#~ "     st_astext\n"
-#~ "--------------------\n"
-#~ " POINT ZM (0 0 0 4)\n"
-#~ "                 ]]>"
-#~ msgstr ""
-#~ "<![CDATA[\n"
-#~ "-- M값을 2배로 만듭니다.\n"
-#~ "SELECT ST_AsText(\n"
-#~ "  ST_SwapOrdinates(\n"
-#~ "    ST_Scale(\n"
-#~ "      ST_SwapOrdinates(g,'xm'),\n"
-#~ "      2, 1\n"
-#~ "    ),\n"
-#~ "  'xm')\n"
-#~ ") FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;\n"
-#~ "     st_astext\n"
-#~ "--------------------\n"
-#~ " POINT ZM (0 0 0 4)\n"
-#~ "                 ]]>"
-
-#~ msgid ""
-#~ "SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "        ST_GeomFromText('POINT(-2 3)') ) )\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(-2 3,1 2)\n"
-#~ "\n"
-#~ "\n"
-#~ "SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "                ST_GeomFromText('POINT(1 2)') ) );\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "POINT(1 2)\n"
-#~ "\n"
-#~ "--3d example - sort of supports 3d (and with mixed dimensions!)\n"
-#~ "SELECT ST_AsEWKT(st_union(the_geom))\n"
-#~ "FROM\n"
-#~ "(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3,\n"
-#~ "-7 4.2))') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "        SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as "
-#~ "foo;\n"
-#~ "\n"
-#~ "st_asewkt\n"
-#~ "---------\n"
-#~ "GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 "
-#~ "4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));\n"
-#~ "\n"
-#~ "--3d example not mixing dimensions\n"
-#~ "SELECT ST_AsEWKT(st_union(the_geom))\n"
-#~ "FROM\n"
-#~ "(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,\n"
-#~ "-7 4.2 2))') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "        SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as "
-#~ "foo;\n"
-#~ "\n"
-#~ "st_asewkt\n"
-#~ "---------\n"
-#~ "GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 "
-#~ "4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))\n"
-#~ "\n"
-#~ "--Examples using new Array construct\n"
-#~ "SELECT ST_Union(ARRAY(SELECT the_geom FROM sometable));\n"
-#~ "\n"
-#~ "SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
-#~ "                        ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As "
-#~ "wktunion;\n"
-#~ "\n"
-#~ "--wktunion---\n"
-#~ "MULTILINESTRING((3 4,4 5),(1 2,3 4))"
-#~ msgstr ""
-#~ "SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "        ST_GeomFromText('POINT(-2 3)') ) )\n"
-#~ "\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "MULTIPOINT(-2 3,1 2)\n"
-#~ "\n"
-#~ "\n"
-#~ "SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),\n"
-#~ "                ST_GeomFromText('POINT(1 2)') ) );\n"
-#~ "st_astext\n"
-#~ "----------\n"
-#~ "POINT(1 2)\n"
-#~ "\n"
-#~ "-- 3D 예시: 3D를 (혼합 차원도!) 지원하는 편입니다.\n"
-#~ "SELECT ST_AsEWKT(st_union(the_geom))\n"
-#~ "FROM\n"
-#~ "(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3,\n"
-#~ "-7 4.2))') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "        SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as "
-#~ "foo;\n"
-#~ "\n"
-#~ "st_asewkt\n"
-#~ "---------\n"
-#~ "GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 "
-#~ "4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));\n"
-#~ "\n"
-#~ "-- 3D 예시: 혼합 차원 아님\n"
-#~ "SELECT ST_AsEWKT(st_union(the_geom))\n"
-#~ "FROM\n"
-#~ "(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,\n"
-#~ "-7 4.2 2))') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "        SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom\n"
-#~ "UNION ALL\n"
-#~ "SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as "
-#~ "foo;\n"
-#~ "\n"
-#~ "st_asewkt\n"
-#~ "---------\n"
-#~ "GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 "
-#~ "4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))\n"
-#~ "\n"
-#~ "-- 새로운 배열 구조를 이용한 예시\n"
-#~ "SELECT ST_Union(ARRAY(SELECT the_geom FROM sometable));\n"
-#~ "\n"
-#~ "SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
-#~ "                        ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As "
-#~ "wktunion;\n"
-#~ "\n"
-#~ "--wktunion---\n"
-#~ "MULTILINESTRING((3 4,4 5),(1 2,3 4))"
-
-#~ msgid "Availability: 2.3.0 - requires GEOS &gt;= 3.5.0."
-#~ msgstr ""
-#~ "2.3.0 버전부터 사용할 수 있습니다. GEOS 3.5.0 이상 버전이 필요합니다."
-
-#~ msgid "Availability: 1.2.2?"
-#~ msgstr "1.2.2 버전(?)부터 사용할 수 있습니다."
-
-#~ msgid "The inputs can only be LINESTRINGS."
-#~ msgstr "라인스트링만 입력할 수 있습니다."
-
-#~ msgid ""
-#~ "Turns a single geometry into a set in which each element has fewer than "
-#~ "the maximum allowed number of vertices. Useful for converting excessively "
-#~ "large polygons and other objects into small portions that fit within the "
-#~ "database page size. Uses the same envelope clipping as ST_ClipByBox2D "
-#~ "does, recursively subdividing the input geometry until all portions have "
-#~ "less than the maximum vertex count. Minimum vertice count allowed is 8 "
-#~ "and if you try to specify lower than 8, it will throw an error."
-#~ msgstr ""
-#~ "단일 도형을 최대 허용 개수 이하의 꼭짓점을 가지는 각 구성 요소로 이루어진 "
-#~ "집합으로 바꿉니다. 과도하게 대용량인 폴리곤 및 다른 객체들을 데이터베이스"
-#~ "의 페이지 용량에 맞는 작은 부분들로 변환하는 데 유용합니다. "
-#~ "ST_ClipByBox2D 함수와 동일한 엔벨로프 클리핑을 이용하는데, 모든 부분들이 "
-#~ "최대 허용 개수보다 적은 꼭짓점을 가질 때까지 입력 도형을 반복해서 세분화합"
-#~ "니다. 최소 꼭짓점 허용 개수는 8로, 8보다 적은 수로 설정하려 하면 오류를 일"
-#~ "으킬 것입니다."
-
-#~ msgid "Clipping performed by the GEOS module."
-#~ msgstr "GEOS 모듈로 클리핑 실행"
-
-#~ msgid ""
-#~ "rn |                          wkt\n"
-#~ "---"
-#~ "+---------------------------------------------------------------------------\n"
-#~ " 1 | POLYGON((22 64,29.3913043478263 98.000000000001,106.000000000001 "
-#~ "98.00000000001,\n"
-#~ "        106.000000000001 27.5882352941173,85 35,68 29,66 28,49 42,32 "
-#~ "56,22 64))\n"
-#~ " 2 | POLYGON((29.3913043478263 98.000000000001,32 110,40 119,36 150,57 "
-#~ "158,\n"
-#~ "        75 11,92 182,106.000000000001 183.272727272727,106.000000000001 "
-#~ "98.000000000001,\n"
-#~ "        29.913043478263 98.000000000001))\n"
-#~ " 3 | POLYGON((106.000000000001 27.5882352941173,106.000000000001 "
-#~ "98.00000000000,\n"
-#~ " 189.52380952381 98.000000000001,185 79,186 56,186 52,178 34,168 18,147 "
-#~ "13,\n"
-#~ " 132 0,119 23,106.000000000001 27.5882352941173))\n"
-#~ " 4 | POLYGON((106.000000000001 98.000000000001,106.000000000001 "
-#~ "183.27272727272,\n"
-#~ "    114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 "
-#~ "100,189.5238095238\n"
-#~ " 98.000000000001,106.000000000001 98.000000000001))"
-#~ msgstr ""
-#~ "rn |                          wkt\n"
-#~ "---"
-#~ "+---------------------------------------------------------------------------\n"
-#~ " 1 | POLYGON((22 64,29.3913043478263 98.000000000001,106.000000000001 "
-#~ "98.00000000001,\n"
-#~ "        106.000000000001 27.5882352941173,85 35,68 29,66 28,49 42,32 "
-#~ "56,22 64))\n"
-#~ " 2 | POLYGON((29.3913043478263 98.000000000001,32 110,40 119,36 150,57 "
-#~ "158,\n"
-#~ "        75 11,92 182,106.000000000001 183.272727272727,106.000000000001 "
-#~ "98.000000000001,\n"
-#~ "        29.913043478263 98.000000000001))\n"
-#~ " 3 | POLYGON((106.000000000001 27.5882352941173,106.000000000001 "
-#~ "98.00000000000,\n"
-#~ " 189.52380952381 98.000000000001,185 79,186 56,186 52,178 34,168 18,147 "
-#~ "13,\n"
-#~ " 132 0,119 23,106.000000000001 27.5882352941173))\n"
-#~ " 4 | POLYGON((106.000000000001 98.000000000001,106.000000000001 "
-#~ "183.27272727272,\n"
-#~ "    114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 "
-#~ "100,189.5238095238\n"
-#~ " 98.000000000001,106.000000000001 98.000000000001))"
-
-#~ msgid ""
-#~ "LINESTRING(0 0,7.07106781186547 7.07106781186547,14.1421356237309 "
-#~ "14.1421356237309,21.2132034355964 21.2132034355964,28.2842712474619 "
-#~ "28.2842712474619,35.3553390593274 35.3553390593274,37.499999999998 "
-#~ "37.499999999998)\n"
-#~ "LINESTRING(37.499999999998 37.499999999998,42.4264068711929 "
-#~ "42.4264068711929,49.4974746830583 49.4974746830583,56.5685424949238 "
-#~ "56.5685424949238,63.6396103067893 63.6396103067893,70.7106781186548 "
-#~ "70.7106781186548,74.999999999998 74.999999999998)\n"
-#~ "LINESTRING(74.999999999998 74.999999999998,77.7817459305202 "
-#~ "77.7817459305202,84.8528137423857 84.8528137423857,91.9238815542512 "
-#~ "91.9238815542512,98.9949493661167 98.9949493661167,100 "
-#~ "100,107.071067811865 107.071067811865,112.499999999998 112.499999999998)\n"
-#~ "LINESTRING(112.499999999998 112.499999999998,114.142135623731 "
-#~ "114.142135623731,121.213203435596 121.213203435596,128.284271247462 "
-#~ "128.284271247462,135.355339059327 135.355339059327,142.426406871193 "
-#~ "142.426406871193,149.497474683058 149.497474683058,149.999999999998 "
-#~ "149.999999999998)"
-#~ msgstr ""
-#~ "LINESTRING(0 0,7.07106781186547 7.07106781186547,14.1421356237309 "
-#~ "14.1421356237309,21.2132034355964 21.2132034355964,28.2842712474619 "
-#~ "28.2842712474619,35.3553390593274 35.3553390593274,37.499999999998 "
-#~ "37.499999999998)\n"
-#~ "LINESTRING(37.499999999998 37.499999999998,42.4264068711929 "
-#~ "42.4264068711929,49.4974746830583 49.4974746830583,56.5685424949238 "
-#~ "56.5685424949238,63.6396103067893 63.6396103067893,70.7106781186548 "
-#~ "70.7106781186548,74.999999999998 74.999999999998)\n"
-#~ "LINESTRING(74.999999999998 74.999999999998,77.7817459305202 "
-#~ "77.7817459305202,84.8528137423857 84.8528137423857,91.9238815542512 "
-#~ "91.9238815542512,98.9949493661167 98.9949493661167,100 "
-#~ "100,107.071067811865 107.071067811865,112.499999999998 112.499999999998)\n"
-#~ "LINESTRING(112.499999999998 112.499999999998,114.142135623731 "
-#~ "114.142135623731,121.213203435596 121.213203435596,128.284271247462 "
-#~ "128.284271247462,135.355339059327 135.355339059327,142.426406871193 "
-#~ "142.426406871193,149.497474683058 149.497474683058,149.999999999998 "
-#~ "149.999999999998)"

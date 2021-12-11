@@ -1503,6 +1503,7 @@ digits  |                   encode                   |                st_astext
 		<para>Removes a point from a LineString, given its index (0-based).
         Useful for turning a closed line (ring) into an open linestring.
         </para>
+        <para>Enhanced: 3.2.0</para>
 		<para>Availability: 1.1.0</para>
 		<para>&Z_support;</para>
 	  </refsection>
@@ -1552,6 +1553,7 @@ UPDATE sometable
         <para>If the tolerance parameter is provided, vertices within the tolerance
         of one another will be considered the "same" for the purposes of removal.</para>
 
+        <para>Enhanced: 3.2.0</para>
         <para>Availability: 2.2.0</para>
         <para>&P_support;</para>
         <para>&Z_support;</para>

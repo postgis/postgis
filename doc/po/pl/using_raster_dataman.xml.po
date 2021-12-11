@@ -7,16 +7,17 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2015-09-29 12:25+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2021-11-28 22:35+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
 "pl/)\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
+"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
+"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #. Tag: title
 #: using_raster_dataman.xml:3
@@ -64,7 +65,7 @@ msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Since the raster2pgsql is compiled as part of PostGIS most often (unless you "
 "compile your own GDAL library), the raster types supported by the executable "
@@ -74,13 +75,6 @@ msgid ""
 "PostGIS install documented here <xref linkend=\"RT_ST_GDALDrivers\"/> if you "
 "are using the same GDAL library for both."
 msgstr ""
-"Ponieważ raster2pgsql jest kompilowany najczęściej jako część PostGIS (z "
-"wyłączeniem sytuacji, kiedy użytkownik sam kompiluje bibliotekę GDAL), "
-"obsługiwane przez niego formaty rastrów będą zgodne zależną biblioteką GDAL. "
-"Aby uzyskać listę obsługiwanych formatów należy użyć opcji  <varname>-G</"
-"varname>. Lista obsługiwanych formatów, zakładając, że w obu przypadkach "
-"używana jest ta sama wersja biblioteki GDAL, powinna być zgodna z "
-"dokumentacją PostGIS dostępną tutaj  <xref linkend=\"RT_ST_GDALDrivers\"/>."
 
 #. Tag: para
 #: using_raster_dataman.xml:16
@@ -375,9 +369,9 @@ msgstr ""
 
 #. Tag: term
 #: using_raster_dataman.xml:178
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<code>-l</code> <varname>OVERVIEW_FACTOR</varname>"
-msgstr "-l <varname>WSPÓŁCZYNNIK</varname>"
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:179
@@ -862,9 +856,9 @@ msgstr ""
 
 #. Tag: title
 #: using_raster_dataman.xml:354
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Using \"out db\" cloud rasters"
-msgstr "Wykorzystanie raster2pgsql do wczytywania plików rastrowych."
+msgstr ""
 
 #. Tag: para
 #: using_raster_dataman.xml:355
@@ -1801,6 +1795,3 @@ msgid ""
 "-- this deletes the file from large object storage on db\n"
 "SELECT lo_unlink(2630819);"
 msgstr ""
-
-#~ msgid "Wrap PostgreSQL identifiers in quotes"
-#~ msgstr "Opakowuje identyfikatory PostgreSQL w cudzysłowy"

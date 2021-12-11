@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2018-07-22 04:06+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
+"PO-Revision-Date: 2021-11-28 21:23+0000\n"
+"Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
 "language/ko_KR/)\n"
 "Language: ko_KR\n"
@@ -37,17 +37,13 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:12
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A step by step tutorial guide workshop <ulink url=\"http://postgis.net/"
 "workshops/postgis-intro/\">Introduction to PostGIS</ulink>. It includes "
 "packaged data as well as intro to working with OpenGeo Suite. It is probably "
 "the best tutorial on PostGIS."
 msgstr ""
-"OpenGeo가 단계별 예제 지침 워크숍 <ulink url=\"http://workshops.boundlessgeo."
-"com/postgis-intro/\">PostGIS 개론</ulink> 을 제공하고 있습니다. 이 워크숍은 "
-"패키징된 데이터는 물론 OpenGeo 스위트(suite) 활용법에 대한 소개를 포함하고 있"
-"습니다. 아마도 PostGIS에 대한 최고의 예제일 겁니다."
 
 #. Tag: para
 #: faq.xml:13
@@ -455,17 +451,13 @@ msgstr "어떻게 GIS 객체를 데이터베이스에 삽입할 수 있나요?"
 
 #. Tag: para
 #: faq.xml:148
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
 "\"geography\" to hold your GIS data. Storing geography type data is a little "
 "different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
 "\"/> for details on storing geography."
 msgstr ""
-"첫째로 GIS 데이터를 보관하기 위해 “geometry” 또는 “geography”의 컬럼을 가진 "
-"테이블을 생성하셔야 합니다. geography 타입 데이터를 저장하는 것은 geometry를 "
-"저장하는 것과는 조금 다릅니다. Geography를 저장하는 것에 관한 보다 자세한 설"
-"명은 <xref linkend=\"Geography_Basics\"/>을 참조하십시오."
 
 #. Tag: para
 #: faq.xml:152
@@ -634,17 +626,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:210
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT id, geom\n"
 "FROM thetable\n"
 "WHERE\n"
 "  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
-"SELECT id, the_geom\n"
-"FROM thetable\n"
-"WHERE\n"
-"  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -896,7 +884,7 @@ msgstr "어떻게 쿼리의 일부로 좌표계 변환을 수행할 수 있습�
 
 #. Tag: para
 #: faq.xml:341
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To perform a reprojection, both the source and destination coordinate "
 "systems must be defined in the SPATIAL_REF_SYS table, and the geometries "
@@ -905,17 +893,12 @@ msgid ""
 "The below projects a geometry to NAD 83 long lat. The below will only work "
 "if the srid of geom is not -1 (not undefined spatial ref)"
 msgstr ""
-"좌표계 변환을 수행하기 위해서는, 원본과 대상 좌표계가 모두 SPATIAL_REF_SYS 테"
-"이블에 정의되어 있어야 하며, 좌표계 변환될 지오메트리가 SRID를 미리 가지고 있"
-"어야 합니다. 이것이 만족된다면, 좌표계 변환은 원하는 SRID를 물어보는 것 만큼"
-"이나 쉽습니다. 아래에서 지오메트리를 NAD 83 경위도로 투영합니다. 다음은 "
-"the_geom 의 srid가 -1(정의되지 않은 좌표계)이 아닌 경우에만 동작합니다."
 
 #. Tag: programlisting
 #: faq.xml:348
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "SELECT ST_Transform(geom,4269) FROM geotable;"
-msgstr "SELECT ST_Transform(the_geom,4269) FROM geotable;"
+msgstr ""
 
 #. Tag: para
 #: faq.xml:354
@@ -941,14 +924,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:361
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
 "                                SELECT count(gid) FROM geotable WHERE geom "
 "IS NULL;"
 msgstr ""
-"--정말로 비어있는 지오메트리의 수 확인 \n"
-"SELECT count(gid) FROM geotable WHERE the_geom IS NULL;"
 
 #. Tag: para
 #: faq.xml:367
