@@ -394,9 +394,17 @@ foreach $TEST (@ARGV)
 
 	if ( "${TEST}" eq '-' )
 	{
+		my $scriptdir = scriptdir($libver, $OPT_EXTENSIONS);
 		print "-- Entering interactive shell --\n";
 		# TODO: add more variables?
-		my $cmd = "psql -q -v \"regdir=$REGDIR\"";
+		my $cmd = "psql -Xq"
+		  . " -v \"regdir=$REGDIR\""
+		  . " -v \"scriptdir=$scriptdir\""
+		  . " -v \"schema=$OPT_SCHEMA.\""
+		  # TODO: inject search_path somehow
+		  #. " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
+		  . " ${DB}"
+		;
 		my $rv = system($cmd);
 		print "-- Moving on with tests, if any --\n";
 		next;
