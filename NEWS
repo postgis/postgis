@@ -1,3 +1,10 @@
+PostGIS 3.2.1dev
+YYYY/MM/DD
+
+* Bug Fixes *
+  - #5033, allow upgrades in presence of views using deprecated
+           functions (Sandro Santilli)
+
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
 This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher
