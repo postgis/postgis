@@ -7,6 +7,8 @@ PostGIS 3.1.5
   - #5018, pgsql2shp basic support for WITH CTE clause (Regina Obe)
   - #5026, fix DropTopology in presence of UPDATE triggers on
            topology layers (Sandro Santilli)
+  - #5033, allow upgrades in presence of views using deprecated
+           functions (Sandro Santilli)
 
 PostGIS 3.1.4
 2021/09/04
