@@ -19,8 +19,31 @@ BEGIN
 	IF vernum >= 120000
 	THEN
 		RAISE DEBUG '12+ server (%)', vernum;
-    CREATE VIEW upgrade_view_test AS
+    CREATE VIEW upgrade_view_test_union AS
     SELECT ST_Union(g1) FROM upgrade_test;
 	END IF;
 END;
 $BODY$ LANGUAGE 'plpgsql';
+
+-- Add view using overlay functions
+CREATE VIEW upgrade_view_test_overlay AS
+SELECT
+	ST_Intersection(g1, g1) as geometry_intersection,
+	ST_Intersection(g2, g2) as geography_intersection,
+	ST_Difference(g1, g1) as geometry_difference,
+	ST_SymDifference(g1, g1) as geometry_symdifference
+FROM upgrade_test;
+
+-- Add view using unaryunion function
+-- NOTE: 2.0.0 introduced ST_UnaryUnion
+CREATE VIEW upgrade_view_test_unaryunion AS
+SELECT
+	ST_UnaryUnion(g1) as geometry_unaryunion
+FROM upgrade_test;
+
+-- Add view using unaryunion function
+-- NOTE: 2.2.0 introduced ST_Subdivide
+CREATE VIEW upgrade_view_test_subdivide AS
+SELECT
+	ST_Subdivide(g1, 256) as geometry_subdivide
+FROM upgrade_test;

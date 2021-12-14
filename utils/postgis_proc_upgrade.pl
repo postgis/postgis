@@ -4,7 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2014 Sandro Santilli <strk@kbt.io>
+# Copyright (C) 2014-2021 Sandro Santilli <strk@kbt.io>
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
 # Copyright (C) 2005 Refractions Research Inc.
 #
@@ -49,6 +49,25 @@ sub parse_last_updated
     return 0;
 }
 
+sub parse_replaces
+{
+    my @replaces = ();
+    my $comment = shift;
+    my ($name, $args, $ver);
+    foreach my $line ( split /\n/, $comment )
+    {
+        if ( $line =~ m/.*Replaces\s\s*([^\(]*)\(([^\)]*)\)\s\s*deprecated in\s\s*([^\.]*)\.([^.]*)/ )
+        {
+            $name = $1;
+            $args = $2;
+            $ver = $3*100 + $4;
+            my @r = ($name, $args, $ver);
+            push @replaces, \@r;
+        }
+    }
+    return @replaces;
+}
+
 sub parse_missing
 {
     my $comment = shift;
@@ -77,6 +96,8 @@ my $version_from = $ARGV[1];
 my $version_from_num = 0;
 my $schema = "";
 $schema = $ARGV[2] if @ARGV > 2;
+
+my @renamed_deprecated_functions = ();
 
 die "Unable to open input SQL file $sql_file\n"
   if ( !-f $sql_file );
@@ -168,14 +189,80 @@ while(<INPUT>)
 
     if (/^create or replace function/i)
     {
-        print $_;
+        my $def .= $_;
+        my @replaced_array = parse_replaces($comment);
         my $endfunc = 0;
         while(<INPUT>)
         {
-            print $_;
+            $def .= $_;
             $endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /;
             last if ( $endfunc && /\;/ );
         }
+        foreach my $replaced (@replaced_array)
+        {
+            my ($name, $args, $ver) = @$replaced;
+            $name = lc($name); # lowercase the name
+            my $renamed = $name . '_deprecated_by_postgis_' . ${ver};
+            my $replacement = "${renamed}(${args})";
+            push @renamed_deprecated_functions, ${renamed};
+            print <<"EOF";
+-- Rename $name ( $args ) deprecated in PostGIS $ver
+DO LANGUAGE 'plpgsql'
+\$postgis_proc_upgrade\$
+DECLARE
+    replaced_proc regprocedure;
+    rec RECORD;
+    new_view_def TEXT;
+    sql TEXT;
+    detail TEXT;
+BEGIN
+    -- Check if the old function signature, exists
+    BEGIN
+        replaced_proc := '$name($args)'::regprocedure;
+    EXCEPTION
+    -- Catch the "function does not exist"
+    WHEN undefined_function THEN
+        RAISE DEBUG 'Function $name($args) does not exist';
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+        RAISE EXCEPTION 'Got % (%)', SQLERRM, SQLSTATE
+            USING DETAIL = detail;
+    END;
+
+    IF replaced_proc IS NULL THEN
+        $def
+        RETURN;
+    END IF;
+
+    -- Old function signature exists
+
+    -- Rename old function, to avoid ambiguities and eventually drop
+    ALTER FUNCTION $name( $args ) RENAME TO ${renamed};
+
+    -- Drop the function from any extension it is part of
+    -- so dump/reloads still work
+    FOR rec IN
+        SELECT e.extname
+        FROM
+            pg_extension e,
+            pg_depend d
+        WHERE
+            d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass AND
+            d.refobjid = e.oid AND
+            d.classid = 'pg_proc'::regclass AND
+            d.objid = replaced_proc::oid
+    LOOP
+        RAISE DEBUG 'Unpackaging ${renamed} from extension %', rec.extname;
+        sql := format('ALTER EXTENSION %I DROP FUNCTION ${renamed}(${args})', rec.extname);
+        EXECUTE sql;
+    END LOOP;
+
+
+END;
+\$postgis_proc_upgrade\$;
+EOF
+        }
+        print $def;
     }
 
     if (/^create type (\w+)/i)
@@ -508,6 +595,91 @@ EOF
 
     $comment = '';
 }
+
+# If any deprecated function still exist, drop it now
+my $deprecated_names = '{' . ( join ',', @renamed_deprecated_functions) . '}';
+print <<"EOF";
+-- Drop deprecated functions if possible
+DO LANGUAGE 'plpgsql'
+\$postgis_proc_upgrade\$
+DECLARE
+    deprecated_functions regprocedure[];
+    rec RECORD;
+    sql TEXT;
+    detail TEXT;
+    hint TEXT;
+BEGIN
+    -- Fetch a list of deprecated functions
+
+    SELECT array_agg(oid::regprocedure)
+    FROM pg_catalog.pg_proc
+    WHERE proname = ANY ('${deprecated_names}'::name[])
+    INTO deprecated_functions;
+
+    -- Rewrite views using deprecated functions
+    -- to improve the odds of being able to drop them
+
+    FOR rec IN
+        SELECT n.nspname AS schemaname,
+            c.relname AS viewname,
+            pg_get_userbyid(c.relowner) AS viewowner,
+            pg_get_viewdef(c.oid) AS definition,
+            CASE
+                WHEN 'check_option=cascaded' = ANY (c.reloptions) THEN 'WITH CASCADED CHECK OPTION'
+                WHEN 'check_option=local' = ANY (c.reloptions) THEN 'WITH LOCAL CHECK OPTION'
+                ELSE ''
+            END::text AS check_option
+        FROM pg_class c
+        LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+        WHERE c.relkind = 'v'
+        AND pg_get_viewdef(c.oid) ~ 'deprecated_by_postgis'
+    LOOP
+        sql := format('CREATE OR REPLACE VIEW %I.%I AS %s %s',
+            rec.schemaname,
+            rec.viewname,
+            regexp_replace(rec.definition, '_deprecated_by_postgis_[^(]*', '', 'g'),
+            rec.check_option
+        );
+        RAISE NOTICE 'Updating view % to not use deprecated signatures', rec.viewname;
+        BEGIN
+            EXECUTE sql;
+        EXCEPTION
+        WHEN OTHERS THEN
+                GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+                RAISE WARNING 'Could not rewrite view % using deprecated functions', rec.viewname
+                        USING DETAIL = format('%s: %s', SQLERRM, detail);
+        END;
+    END LOOP;
+
+    -- Try to drop all deprecated functions, raising a warning
+    -- for each one which cannot be drop
+
+    FOR rec IN SELECT unnest(deprecated_functions) as proc
+    LOOP --{
+
+        sql := format('DROP FUNCTION %s', rec.proc);
+        --RAISE DEBUG 'SQL: %', sql;
+        BEGIN
+            EXECUTE sql;
+        EXCEPTION
+        WHEN OTHERS THEN
+            hint = 'Resolve the issue';
+            GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+            IF detail LIKE '%view % depends%' THEN
+                hint = format(
+                    'Replace the view changing all occurrences of %s in its definition with %s',
+                    rec.proc,
+                    regexp_replace(rec.proc::text, '_deprecated_by_postgis[^(]*', '')
+                );
+            END IF;
+            hint = hint || ' and upgrade again';
+            RAISE WARNING 'Deprecated function % left behind: %', rec.proc, SQLERRM
+            USING DETAIL = detail, HINT = hint;
+        END;
+    END LOOP; --}
+END
+\$postgis_proc_upgrade\$;
+EOF
 
 close(INPUT);
 
