@@ -552,7 +552,7 @@ Options:
                          to specify a script version to start from.
                   <to> can be specified as ":auto" to request
                        upgrades to default version, and be appended
-                       a question mark (ie: ":auto!" or "3.0.0!") to
+                       an exclamation mark (ie: ":auto!" or "3.0.0!") to
                        request upgrade via postgis_extensions_upgrade()
                        if available.
   --dumprestore   dump and restore spatially-enabled db before running tests
