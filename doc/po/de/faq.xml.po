@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2020
 # Andreas Schild <schildandreas1@gmail.com>, 2015
@@ -12,11 +12,12 @@ msgstr ""
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: 2021-11-28 21:23+0000\n"
 "Last-Translator: Regina Obe\n"
-"Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
+"Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
+"de/)\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: title
@@ -30,27 +31,32 @@ msgstr "Häufige Fragen zu PostGIS"
 #, no-c-format
 msgid ""
 "Where can I find tutorials, guides and workshops on working with PostGIS"
-msgstr "Wo kann ich Lernprogramme, Anleitungen und Seminare für die Arbeit mit PostGIS finden?"
+msgstr ""
+"Wo kann ich Lernprogramme, Anleitungen und Seminare für die Arbeit mit "
+"PostGIS finden?"
 
 #. Tag: para
 #: faq.xml:12
 #, no-c-format
 msgid ""
-"A step by step tutorial guide workshop <ulink "
-"url=\"http://postgis.net/workshops/postgis-intro/\">Introduction to "
-"PostGIS</ulink>. It includes packaged data as well as intro to working with "
-"OpenGeo Suite. It is probably the best tutorial on PostGIS."
+"A step by step tutorial guide workshop <ulink url=\"http://postgis.net/"
+"workshops/postgis-intro/\">Introduction to PostGIS</ulink>. It includes "
+"packaged data as well as intro to working with OpenGeo Suite. It is probably "
+"the best tutorial on PostGIS."
 msgstr ""
 
 #. Tag: para
 #: faq.xml:13
 #, no-c-format
 msgid ""
-"BostonGIS also has a <ulink "
-"url=\"http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01\">PostGIS"
-" almost idiot's guide on getting started</ulink>. That one is more focused "
-"on the windows user."
-msgstr "Außerdem hat BostonGIS ein <ulink url=\"http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01\">PostGIS almost idiot's guide on getting started</ulink>. Dieser ist eher für Windows-Benutzer gedacht."
+"BostonGIS also has a <ulink url=\"http://www.bostongis.com/PrinterFriendly."
+"aspx?content_name=postgis_tut01\">PostGIS almost idiot's guide on getting "
+"started</ulink>. That one is more focused on the windows user."
+msgstr ""
+"Außerdem hat BostonGIS ein <ulink url=\"http://www.bostongis.com/"
+"PrinterFriendly.aspx?content_name=postgis_tut01\">PostGIS almost idiot's "
+"guide on getting started</ulink>. Dieser ist eher für Windows-Benutzer "
+"gedacht."
 
 #. Tag: para
 #: faq.xml:18
@@ -58,23 +64,35 @@ msgstr "Außerdem hat BostonGIS ein <ulink url=\"http://www.bostongis.com/Printe
 msgid ""
 "My applications and desktop tools worked with PostGIS 1.5,but they don't "
 "work with PostGIS 2.0. How do I fix this?"
-msgstr "Meine Anwendungen und Desktop-Tools funktionierten mit PostGIS 1.5, nicht jedoch mit PostGIS 2.0. Wie kann ich dies beheben?"
+msgstr ""
+"Meine Anwendungen und Desktop-Tools funktionierten mit PostGIS 1.5, nicht "
+"jedoch mit PostGIS 2.0. Wie kann ich dies beheben?"
 
 #. Tag: para
 #: faq.xml:22
 #, no-c-format
 msgid ""
 "A lot of deprecated functions were removed from the PostGIS code base in "
-"PostGIS 2.0. This has affected applications in addition to third-party tools"
-" such as Geoserver, MapServer, QuantumGIS, and OpenJump to name a few. There"
-" are a couple of ways to resolve this. For the third-party apps, you can try"
-" to upgrade to the latest versions of these which have many of these issues "
+"PostGIS 2.0. This has affected applications in addition to third-party tools "
+"such as Geoserver, MapServer, QuantumGIS, and OpenJump to name a few. There "
+"are a couple of ways to resolve this. For the third-party apps, you can try "
+"to upgrade to the latest versions of these which have many of these issues "
 "fixed. For your own code, you can change your code to not use the functions "
 "removed. Most of these functions are non ST_ aliases of ST_Union, ST_Length "
-"etc. and as a last resort, install the whole of "
-"<varname>legacy.sql</varname> or just the portions of "
-"<varname>legacy.sql</varname> you need."
-msgstr "Viele überholte Funktionen wurden aus der Codebasis von PostGIS 2.0 entfernt. Dies betraf Anwendungen sowie Werkzeuge von Drittanbietern wie Geoserver, MapServer, QuantumGIS und OpenJump, um nur ein paar zu nennen. Es gibt mehrere Möglichkeiten dieses Problem zu lösen. Bei Anwendungen von Drittanbietern können Sie versuchen diese auf die neuste Version zu aktualisieren, bei der viele dieser Probleme bereits fixiert wurden. Ihren eigenen Code können Sie so ändern, dass er die überholten Funktionen nicht mehr benutzt. Die meisten dieser Funktionen sind Pseudonyme von ST_Union, ST_Length etc. ohne den Präfix \"ST_\". Als letzten Ausweg können Sie die gesamte <varname>legacy.sql</varname> oder die benötigten Teile davon ausführen. "
+"etc. and as a last resort, install the whole of <varname>legacy.sql</"
+"varname> or just the portions of <varname>legacy.sql</varname> you need."
+msgstr ""
+"Viele überholte Funktionen wurden aus der Codebasis von PostGIS 2.0 "
+"entfernt. Dies betraf Anwendungen sowie Werkzeuge von Drittanbietern wie "
+"Geoserver, MapServer, QuantumGIS und OpenJump, um nur ein paar zu nennen. Es "
+"gibt mehrere Möglichkeiten dieses Problem zu lösen. Bei Anwendungen von "
+"Drittanbietern können Sie versuchen diese auf die neuste Version zu "
+"aktualisieren, bei der viele dieser Probleme bereits fixiert wurden. Ihren "
+"eigenen Code können Sie so ändern, dass er die überholten Funktionen nicht "
+"mehr benutzt. Die meisten dieser Funktionen sind Pseudonyme von ST_Union, "
+"ST_Length etc. ohne den Präfix \"ST_\". Als letzten Ausweg können Sie die "
+"gesamte <varname>legacy.sql</varname> oder die benötigten Teile davon "
+"ausführen. "
 
 #. Tag: para
 #: faq.xml:28
@@ -84,16 +102,23 @@ msgid ""
 "postgis.sql. You can install this file after you have installed postgis.sql "
 "and spatial_ref_sys.sql to get back all the 200 some-odd old functions we "
 "removed."
-msgstr "Die Datei <varname>legacy.sql</varname> liegt im selben Verzeichnis wie »postgis.sql«. Sie können diese Datei nach der Installation von »postgis.sql« und »spatial_ref_sys.sql« installieren, um alle 200 alten Funktionen wieder herzustellen, die entfernt wurden."
+msgstr ""
+"Die Datei <varname>legacy.sql</varname> liegt im selben Verzeichnis wie "
+"»postgis.sql«. Sie können diese Datei nach der Installation von »postgis."
+"sql« und »spatial_ref_sys.sql« installieren, um alle 200 alten Funktionen "
+"wieder herzustellen, die entfernt wurden."
 
 #. Tag: para
 #: faq.xml:35
 #, no-c-format
 msgid ""
 "When I load OpenStreetMap data with osm2pgsql, I'm getting an error failed: "
-"ERROR: operator class \"gist_geometry_ops\" does not exist for access method"
-" \"gist\" Error occurred. This worked fine in PostGIS 1.5."
-msgstr "Wenn ich OpenStreetMap-Daten mit »osm2pgsql« lade, bekomme ich eine Fehlermeldung: »operator class \"gist_geometry_ops\" does not exist for access method \"gist\" Error occurred.« In PostGIS 1.5 klappte das gut."
+"ERROR: operator class \"gist_geometry_ops\" does not exist for access method "
+"\"gist\" Error occurred. This worked fine in PostGIS 1.5."
+msgstr ""
+"Wenn ich OpenStreetMap-Daten mit »osm2pgsql« lade, bekomme ich eine "
+"Fehlermeldung: »operator class \"gist_geometry_ops\" does not exist for "
+"access method \"gist\" Error occurred.« In PostGIS 1.5 klappte das gut."
 
 #. Tag: para
 #: faq.xml:40
@@ -103,17 +128,26 @@ msgid ""
 "changed to gist_geometry_ops_2d and the gist_geometry_ops was completely "
 "removed. This was done because PostGIS 2 also introduced Nd spatial indexes "
 "for 3D support and the old name was deemed confusing and a misnomer."
-msgstr "In PostGIS 2 wurde die Standardgeometrieoperatorklasse »gist_geometry_ops« in »gist_geometry_ops_2d« geändert und »gist_geometry_ops« wurde vollständig entfernt. Grund ist, dass PostGIS auch räumliche Nd-Indizes für 3D-Unterstützung einführt und der alte Name als verwirrend und fehlerhaft angesehen wurde. "
+msgstr ""
+"In PostGIS 2 wurde die Standardgeometrieoperatorklasse »gist_geometry_ops« "
+"in »gist_geometry_ops_2d« geändert und »gist_geometry_ops« wurde vollständig "
+"entfernt. Grund ist, dass PostGIS auch räumliche Nd-Indizes für 3D-"
+"Unterstützung einführt und der alte Name als verwirrend und fehlerhaft "
+"angesehen wurde. "
 
 #. Tag: para
 #: faq.xml:41
 #, no-c-format
 msgid ""
 "Some older applications that as part of the process create tables and "
-"indexes, explicitly referenced the operator class name. This was unnecessary"
-" if you want the default 2D index. So if you manage said good, change index "
+"indexes, explicitly referenced the operator class name. This was unnecessary "
+"if you want the default 2D index. So if you manage said good, change index "
 "creation from:"
-msgstr "Einige ältere Anwendungen, die als Teil des Prozesses Tabellen und Indizes erstellen, referenzieren explizit den Operatorklassennamen. Dies ist nicht nötig, wenn Sie den Standard-2D-Index wollten. Falls Sie dies erreichen möchten, ändern Sie die Indexerstellung von: "
+msgstr ""
+"Einige ältere Anwendungen, die als Teil des Prozesses Tabellen und Indizes "
+"erstellen, referenzieren explizit den Operatorklassennamen. Dies ist nicht "
+"nötig, wenn Sie den Standard-2D-Index wollten. Falls Sie dies erreichen "
+"möchten, ändern Sie die Indexerstellung von: "
 
 #. Tag: para
 #: faq.xml:42
@@ -127,7 +161,9 @@ msgstr "SCHLECHT:"
 msgid ""
 "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
 "gist_geometry_ops);"
-msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom gist_geometry_ops);"
+msgstr ""
+"CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
+"gist_geometry_ops);"
 
 #. Tag: para
 #: faq.xml:44
@@ -147,7 +183,9 @@ msgstr "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
 msgid ""
 "The only case where you WILL need to specify the operator class is if you "
 "want a 3D spatial index as follows:"
-msgstr "Der einzige Fall, in dem Sie die Operatorklasse angeben müssen, ist, wenn Sie einen räumlichen 3D-Index wie folgt möchten:"
+msgstr ""
+"Der einzige Fall, in dem Sie die Operatorklasse angeben müssen, ist, wenn "
+"Sie einen räumlichen 3D-Index wie folgt möchten:"
 
 #. Tag: programlisting
 #: faq.xml:48
@@ -155,7 +193,9 @@ msgstr "Der einzige Fall, in dem Sie die Operatorklasse angeben müssen, ist, we
 msgid ""
 "CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
 "gist_geometry_ops_nd);"
-msgstr "CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom gist_geometry_ops_nd);"
+msgstr ""
+"CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
+"gist_geometry_ops_nd);"
 
 #. Tag: para
 #: faq.xml:50
@@ -167,7 +207,15 @@ msgid ""
 "However if you use this fix, you are advised to at a later point drop the "
 "index and recreate it without the operator class. This will save you grief "
 "in the future when you need to upgrade again."
-msgstr "Falls Sie unglücklicherweise kompilierten Code, den Sie nicht mehr ändern können, am Hals haben und bei dem altes »gist_geometry_ops« hart codiert ist, können Sie die alte Klasse mittels des in PostGIS 2.0.2+ paketierten <filename>legacy_gist.sql</filename> erstellen. Falls Sie jedoch diese Fehlerbehebung verwenden, wird Ihnen dringend empfohlen, zu einem späteren Zeitpunkt den Index zu löschen und ihn ohne die Operatorklasse neu zu erstellen. Dies wird Ihnen in Zukunft Probleme ersparen, wenn Sie erneut ein Upgrade durchführen müssen."
+msgstr ""
+"Falls Sie unglücklicherweise kompilierten Code, den Sie nicht mehr ändern "
+"können, am Hals haben und bei dem altes »gist_geometry_ops« hart codiert "
+"ist, können Sie die alte Klasse mittels des in PostGIS 2.0.2+ paketierten "
+"<filename>legacy_gist.sql</filename> erstellen. Falls Sie jedoch diese "
+"Fehlerbehebung verwenden, wird Ihnen dringend empfohlen, zu einem späteren "
+"Zeitpunkt den Index zu löschen und ihn ohne die Operatorklasse neu zu "
+"erstellen. Dies wird Ihnen in Zukunft Probleme ersparen, wenn Sie erneut ein "
+"Upgrade durchführen müssen."
 
 #. Tag: para
 #: faq.xml:56
@@ -175,7 +223,9 @@ msgstr "Falls Sie unglücklicherweise kompilierten Code, den Sie nicht mehr änd
 msgid ""
 "I'm running PostgreSQL 9.0 and I can no longer read/view geometries in "
 "OpenJump, Safe FME, and some other tools?"
-msgstr "Ich führe PostgreSQL 9.0 aus und kann Geometrien nicht länger in OpenJump, Safe FME und einigen anderen Werkzeugen lesen/schreiben."
+msgstr ""
+"Ich führe PostgreSQL 9.0 aus und kann Geometrien nicht länger in OpenJump, "
+"Safe FME und einigen anderen Werkzeugen lesen/schreiben."
 
 #. Tag: para
 #: faq.xml:60
@@ -183,31 +233,46 @@ msgstr "Ich führe PostgreSQL 9.0 aus und kann Geometrien nicht länger in OpenJ
 msgid ""
 "In PostgreSQL 9.0+, the default encoding for bytea data has been changed to "
 "hex and older JDBC drivers still assume escape format. This has affected "
-"some applications such as Java applications using older JDBC drivers or .NET"
-" applications that use the older npgsql driver that expect the old behavior "
+"some applications such as Java applications using older JDBC drivers or .NET "
+"applications that use the older npgsql driver that expect the old behavior "
 "of ST_AsBinary. There are two approaches to getting this to work again."
-msgstr "In PostgreSQL 9.0+ wurde die Standardcodierung für »bytea«-Daten in hexadezimal geändert und ältere JDBC-Treiber gehen immer noch vom Escape-Format aus. Dies beeinflusste einige Anwendungen wie Java-Programme, die ältere JDBC-Treiber benutzen oder .NET-Anwendungen, die ältere »npgsql«-Treiber verwenden, die das frühere Verhalten von ST_AsBinary erwarten. Es gibt zwei Herangehensweisen, dies wieder zum Laufen zu bringen."
+msgstr ""
+"In PostgreSQL 9.0+ wurde die Standardcodierung für »bytea«-Daten in "
+"hexadezimal geändert und ältere JDBC-Treiber gehen immer noch vom Escape-"
+"Format aus. Dies beeinflusste einige Anwendungen wie Java-Programme, die "
+"ältere JDBC-Treiber benutzen oder .NET-Anwendungen, die ältere »npgsql«-"
+"Treiber verwenden, die das frühere Verhalten von ST_AsBinary erwarten. Es "
+"gibt zwei Herangehensweisen, dies wieder zum Laufen zu bringen."
 
 #. Tag: para
 #: faq.xml:64
 #, no-c-format
 msgid ""
 "You can upgrade your JDBC driver to the latest PostgreSQL 9.0 version which "
-"you can get from <ulink "
-"url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>"
-msgstr "Sie können Ihren JDBC-Treiber auf die neuste PostgreSQL-9.0-Version aktualisieren. Diese erhalten Sie unter <ulink url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>. "
+"you can get from <ulink url=\"http://jdbc.postgresql.org/download.html"
+"\">http://jdbc.postgresql.org/download.html</ulink>"
+msgstr ""
+"Sie können Ihren JDBC-Treiber auf die neuste PostgreSQL-9.0-Version "
+"aktualisieren. Diese erhalten Sie unter <ulink url=\"http://jdbc.postgresql."
+"org/download.html\">http://jdbc.postgresql.org/download.html</ulink>. "
 
 #. Tag: para
 #: faq.xml:66
 #, no-c-format
 msgid ""
-"If you are running a .NET app, you can use Npgsql 2.0.11 or higher which you"
-" can download from <ulink "
-"url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>"
-" and as described on <ulink "
-"url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Francisco"
-" Figueiredo's NpgSQL 2.0.11 released blog entry</ulink>"
-msgstr "Falls Sie eine .NET-Anwendung ausführen, können Sie Npgsql 2.0.11 oder neuer verwenden. Dies können Sie von <ulink url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>, wie im <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Blog-Eintrag von Francisco Figueiredo zur Veröffentlichung von NpgSQL 2.0.11</ulink> beschrieben, herunterladen. "
+"If you are running a .NET app, you can use Npgsql 2.0.11 or higher which you "
+"can download from <ulink url=\"http://pgfoundry.org/frs/?"
+"group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink> and as "
+"described on <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-"
+"released.html\">Francisco Figueiredo's NpgSQL 2.0.11 released blog entry</"
+"ulink>"
+msgstr ""
+"Falls Sie eine .NET-Anwendung ausführen, können Sie Npgsql 2.0.11 oder neuer "
+"verwenden. Dies können Sie von <ulink url=\"http://pgfoundry.org/frs/?"
+"group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>, wie "
+"im <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html"
+"\">Blog-Eintrag von Francisco Figueiredo zur Veröffentlichung von NpgSQL "
+"2.0.11</ulink> beschrieben, herunterladen. "
 
 #. Tag: para
 #: faq.xml:70
@@ -215,7 +280,10 @@ msgstr "Falls Sie eine .NET-Anwendung ausführen, können Sie Npgsql 2.0.11 oder
 msgid ""
 "If upgrading your PostgreSQL driver is not an option, then you can set the "
 "default back to the old behavior with the following change:"
-msgstr "Falls das Aktualisieren Ihres PostgreSQL-Treibers nicht in Frage kommt, können Sie die Voreinstellung mit der folgenden Änderung auf das vorherige Verhalten zurücksetzen:"
+msgstr ""
+"Falls das Aktualisieren Ihres PostgreSQL-Treibers nicht in Frage kommt, "
+"können Sie die Voreinstellung mit der folgenden Änderung auf das vorherige "
+"Verhalten zurücksetzen:"
 
 #. Tag: programlisting
 #: faq.xml:71
@@ -229,7 +297,9 @@ msgstr "ALTER DATABASE mypostgisdb SET bytea_output='escape';"
 msgid ""
 "I tried to use PgAdmin to view my geometry column and it is blank, what "
 "gives?"
-msgstr "Ich habe versucht, meine Geometriespalte mit PgAdmin anzusehen, aber sie ist leer. Was ist los?"
+msgstr ""
+"Ich habe versucht, meine Geometriespalte mit PgAdmin anzusehen, aber sie ist "
+"leer. Was ist los?"
 
 #. Tag: para
 #: faq.xml:82
@@ -237,7 +307,9 @@ msgstr "Ich habe versucht, meine Geometriespalte mit PgAdmin anzusehen, aber sie
 msgid ""
 "PgAdmin doesn't show anything for large geometries. The best ways to verify "
 "you do have data in your geometry columns are?"
-msgstr "PgAdmin zeigt bei großen Geometrien nichts an. Was ist der beste Weg, um zu prüfen, ob sich in Ihren Geometriespalten Daten befinden?"
+msgstr ""
+"PgAdmin zeigt bei großen Geometrien nichts an. Was ist der beste Weg, um zu "
+"prüfen, ob sich in Ihren Geometriespalten Daten befinden?"
 
 #. Tag: programlisting
 #: faq.xml:85
@@ -245,16 +317,25 @@ msgstr "PgAdmin zeigt bei großen Geometrien nichts an. Was ist der beste Weg, u
 msgid ""
 "-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
-msgstr "-- Wenn alle Geometriefelder ausgefüllt sind, dann sollte diese Abfrage keine Datensätze zurückgeben \nSELECT somefield FROM mytable WHERE geom IS NULL;"
+msgstr ""
+"-- Wenn alle Geometriefelder ausgefüllt sind, dann sollte diese Abfrage "
+"keine Datensätze zurückgeben \n"
+"SELECT somefield FROM mytable WHERE geom IS NULL;"
 
 #. Tag: programlisting
 #: faq.xml:87
 #, no-c-format
 msgid ""
 "-- To tell just how large your geometry is do a query of the form\n"
-"--which will tell you the most number of points you have in any of your geometry columns\n"
+"--which will tell you the most number of points you have in any of your "
+"geometry columns\n"
 "SELECT MAX(ST_NPoints(geom)) FROM sometable;"
-msgstr "-- Um lediglich die Größe einer Geometrie festzustellen, können Sie eine Abfrage in der folgenden Form ausführen.\n-- Sie wird Ihnen die Höchstzahl von Punkten mitteilen, die Sie in Ihren Geometriespalten haben.\nSELECT MAX(ST_NPoints(geom)) FROM sometable;"
+msgstr ""
+"-- Um lediglich die Größe einer Geometrie festzustellen, können Sie eine "
+"Abfrage in der folgenden Form ausführen.\n"
+"-- Sie wird Ihnen die Höchstzahl von Punkten mitteilen, die Sie in Ihren "
+"Geometriespalten haben.\n"
+"SELECT MAX(ST_NPoints(geom)) FROM sometable;"
 
 #. Tag: para
 #: faq.xml:93
@@ -270,70 +351,115 @@ msgid ""
 "MultiPolygon, and GeometryCollection geometries. In PostGIS 2.0 and above "
 "you can also store TINS and Polyhedral Surfaces in the basic geometry type. "
 "These are specified in the Open GIS Well Known Text Format (with Z, M, and "
-"ZM extensions). There are three data types currently supported. The standard"
-" OGC geometry data type which uses a planar coordinate system for "
+"ZM extensions). There are three data types currently supported. The standard "
+"OGC geometry data type which uses a planar coordinate system for "
 "measurement, the geography data type which uses a geodetic coordinate "
 "system, with calculations on either a sphere or spheroid. The newest family "
 "member of the PostGIS spatial type family is raster for storing and "
-"analyzing raster data. Raster has its very own FAQ. Refer to <xref "
-"linkend=\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
-msgstr "Sie können Punkte, Linien, Polygone, Objekte aus mehreren Punkten, Linien und Polygonen, sowie Geometriesammlungen speichern. In PostGIS 2.0 und höher können Sie auch TINs und Polyederoberflächen im Basistyp »geometry« speichern. Diese werden im »Well-known Text«-Open-GIS-Textformat (mit XYZ-, XYM- und XYZM-Erweiterungen) angegeben. Derzeit werden drei Datentypen unterstützt: Der Standard-OGC-Datentyp »geometry«, der für die Messung ein flaches Koordinatensystem verwendet, der Datentyp »geography«, der ein geodätisches Koordinatensystem benutzt (nicht OGC, aber Sie finden einen ähnlichen Typ in Microsoft SQL Server 2008+). Nur WGS 84 long lat (SRID:4326) wird vom Datentyp »geography« unterstützt. Das neuste Familienmitglied der räumlichen PostGIS-Typenfamilie ist »raster« zum Speichern und Analysieren von Rasterdaten. »raster« hat seine eigene FAQ. Weitere Einzelheiten finden Sie unter <xref linkend=\"RT_FAQ\"/> und <xref linkend=\"RT_reference\"/>."
+"analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="
+"\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
+msgstr ""
+"Sie können Punkte, Linien, Polygone, Objekte aus mehreren Punkten, Linien "
+"und Polygonen, sowie Geometriesammlungen speichern. In PostGIS 2.0 und höher "
+"können Sie auch TINs und Polyederoberflächen im Basistyp »geometry« "
+"speichern. Diese werden im »Well-known Text«-Open-GIS-Textformat (mit XYZ-, "
+"XYM- und XYZM-Erweiterungen) angegeben. Derzeit werden drei Datentypen "
+"unterstützt: Der Standard-OGC-Datentyp »geometry«, der für die Messung ein "
+"flaches Koordinatensystem verwendet, der Datentyp »geography«, der ein "
+"geodätisches Koordinatensystem benutzt (nicht OGC, aber Sie finden einen "
+"ähnlichen Typ in Microsoft SQL Server 2008+). Nur WGS 84 long lat "
+"(SRID:4326) wird vom Datentyp »geography« unterstützt. Das neuste "
+"Familienmitglied der räumlichen PostGIS-Typenfamilie ist »raster« zum "
+"Speichern und Analysieren von Rasterdaten. »raster« hat seine eigene FAQ. "
+"Weitere Einzelheiten finden Sie unter <xref linkend=\"RT_FAQ\"/> und <xref "
+"linkend=\"RT_reference\"/>."
 
 #. Tag: para
 #: faq.xml:110
 #, no-c-format
 msgid "I'm all confused. Which data store should I use geometry or geography?"
-msgstr "Ich bin verwirrt. Welchen Datenspeicher soll ich verwenden, »geometry« oder »geography«?"
+msgstr ""
+"Ich bin verwirrt. Welchen Datenspeicher soll ich verwenden, »geometry« oder "
+"»geography«?"
 
 #. Tag: para
 #: faq.xml:114
 #, no-c-format
 msgid ""
 "Short Answer: geography is a newer data type that supports long range "
-"distances measurements, but most computations on it are slower than they are"
-" on geometry. If you use geography, you don't need to learn much about "
-"planar coordinate systems. Geography is generally best if all you care about"
-" is measuring distances and lengths and you have data from all over the "
-"world. Geometry data type is an older data type that has many more functions"
-" supporting it, enjoys greater support from third party tools, and "
-"operations on it are generally faster -- sometimes as much as 10 fold faster"
-" for larger geometries. Geometry is best if you are pretty comfortable with "
-"spatial reference systems or you are dealing with localized data where all "
-"your data fits in a single <link linkend=\"spatial_ref_sys\">spatial "
-"reference system (SRID)</link>, or you need to do a lot of spatial "
-"processing. Note: It is fairly easy to do one-off conversions between the "
-"two types to gain the benefits of each. Refer to <xref "
-"linkend=\"PostGIS_TypeFunctionMatrix\"/> to see what is currently supported "
-"and what is not."
-msgstr "Kurze Antwort: »geography« ist ein neuer Datentyp, der Distanzmessungen über weite Bereiche hinweg unterstützt; allerdings sind die meisten Berechnungen damit derzeit langsamer als bei »geometry«. Wenn Sie den Datentyp »geography« benutzen, dann müssen Sie nicht viel über ebene Koordinatenreferenzsysteme lernen. Der Datentyp »geography« ist im Allgemeinen dann am besten geeignet, wenn Sie weltweite Daten haben und Sie nur am Messen von Entfernungen und Längen interessiert sind. Der Datentyp »geometry« ist ein alter Datentyp, der von wesentlich mehr Funktionen unterstützt wird, der eine größere Unterstützung von Werkzeugen Dritter genießt und mit dem Transaktionen generell schneller sind; bei einer großen Geometrie manchmal bis zum Zehnfachen schneller. Der Datentyp »geometry« ist die beste Wahl, wenn Sie sich in räumlichen Bezugssystemen sicher fühlen oder Sie mit lokalen Daten arbeiten, bei denen alle Ihre Daten in ein einziges <link linkend=\"spatial_ref_sys\">räumliches Bezugssystem (spatial reference system/SRID)</link> passen oder falls Sie eine große Menge räumlicher Daten verarbeiten wollen. Hinweis: Es ist ziemlich einfach, einmalige Umwandlungen zwischen den zwei Typen vorzunehmen, um von den Vorteilen beider zu profitieren. Was derzeit unterstützt wird und was nicht, erfahren Sie unter <xref linkend=\"PostGIS_TypeFunctionMatrix\"/>."
+"distances measurements, but most computations on it are slower than they are "
+"on geometry. If you use geography, you don't need to learn much about planar "
+"coordinate systems. Geography is generally best if all you care about is "
+"measuring distances and lengths and you have data from all over the world. "
+"Geometry data type is an older data type that has many more functions "
+"supporting it, enjoys greater support from third party tools, and operations "
+"on it are generally faster -- sometimes as much as 10 fold faster for larger "
+"geometries. Geometry is best if you are pretty comfortable with spatial "
+"reference systems or you are dealing with localized data where all your data "
+"fits in a single <link linkend=\"spatial_ref_sys\">spatial reference system "
+"(SRID)</link>, or you need to do a lot of spatial processing. Note: It is "
+"fairly easy to do one-off conversions between the two types to gain the "
+"benefits of each. Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> to "
+"see what is currently supported and what is not."
+msgstr ""
+"Kurze Antwort: »geography« ist ein neuer Datentyp, der Distanzmessungen über "
+"weite Bereiche hinweg unterstützt; allerdings sind die meisten Berechnungen "
+"damit derzeit langsamer als bei »geometry«. Wenn Sie den Datentyp "
+"»geography« benutzen, dann müssen Sie nicht viel über ebene "
+"Koordinatenreferenzsysteme lernen. Der Datentyp »geography« ist im "
+"Allgemeinen dann am besten geeignet, wenn Sie weltweite Daten haben und Sie "
+"nur am Messen von Entfernungen und Längen interessiert sind. Der Datentyp "
+"»geometry« ist ein alter Datentyp, der von wesentlich mehr Funktionen "
+"unterstützt wird, der eine größere Unterstützung von Werkzeugen Dritter "
+"genießt und mit dem Transaktionen generell schneller sind; bei einer großen "
+"Geometrie manchmal bis zum Zehnfachen schneller. Der Datentyp »geometry« ist "
+"die beste Wahl, wenn Sie sich in räumlichen Bezugssystemen sicher fühlen "
+"oder Sie mit lokalen Daten arbeiten, bei denen alle Ihre Daten in ein "
+"einziges <link linkend=\"spatial_ref_sys\">räumliches Bezugssystem (spatial "
+"reference system/SRID)</link> passen oder falls Sie eine große Menge "
+"räumlicher Daten verarbeiten wollen. Hinweis: Es ist ziemlich einfach, "
+"einmalige Umwandlungen zwischen den zwei Typen vorzunehmen, um von den "
+"Vorteilen beider zu profitieren. Was derzeit unterstützt wird und was nicht, "
+"erfahren Sie unter <xref linkend=\"PostGIS_TypeFunctionMatrix\"/>."
 
 #. Tag: para
 #: faq.xml:125
 #, no-c-format
 msgid ""
-"Long Answer: Refer to our more lengthy discussion in the <xref "
-"linkend=\"PostGIS_GeographyVSGeometry\"/> and <link "
-"linkend=\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
-msgstr "Lange Antwort: Eine ausführlichere Erörterung finden Sie unter <xref linkend=\"PostGIS_GeographyVSGeometry\"/> und <link linkend=\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
+"Long Answer: Refer to our more lengthy discussion in the <xref linkend="
+"\"PostGIS_GeographyVSGeometry\"/> and <link linkend="
+"\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
+msgstr ""
+"Lange Antwort: Eine ausführlichere Erörterung finden Sie unter <xref linkend="
+"\"PostGIS_GeographyVSGeometry\"/> und <link linkend="
+"\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
 
 #. Tag: para
 #: faq.xml:133
 #, no-c-format
 msgid ""
 "I have more intense questions about geography, such as how big of a "
-"geographic region can I stuff in a geography column and still get reasonable"
-" answers. Are there limitations such as poles, everything in the field must "
+"geographic region can I stuff in a geography column and still get reasonable "
+"answers. Are there limitations such as poles, everything in the field must "
 "fit in a hemisphere (like SQL Server 2008 has), speed etc?"
-msgstr "Ich habe tiefergehende Fragen über »geography«, wie beispielsweise welche Größe einer geografischen Region kann ich in eine »geography«-Spalte stopfen und trotzdem noch vernünftige Antworten erhalten. Gibt es Beschränkungen wie Pole, etwas im Feld, das in eine Hemisphäre passen muss (wie bei SQL Server 2008), Geschwindigkeit etc.?"
+msgstr ""
+"Ich habe tiefergehende Fragen über »geography«, wie beispielsweise welche "
+"Größe einer geografischen Region kann ich in eine »geography«-Spalte stopfen "
+"und trotzdem noch vernünftige Antworten erhalten. Gibt es Beschränkungen wie "
+"Pole, etwas im Feld, das in eine Hemisphäre passen muss (wie bei SQL Server "
+"2008), Geschwindigkeit etc.?"
 
 #. Tag: para
 #: faq.xml:137
 #, no-c-format
 msgid ""
 "Your questions are too deep and complex to be adequately answered in this "
-"section. Please refer to our <xref "
+"section. Please refer to our <xref linkend=\"PostGIS_Geography_AdvancedFAQ\"/"
+">."
+msgstr ""
+"Ihre Fragen sind zu tiefgehend und komplex, um in diesem Abschnitt "
+"angemessen beantwortet werden zu können. Bitte lesen Sie unsere <xref "
 "linkend=\"PostGIS_Geography_AdvancedFAQ\"/>."
-msgstr "Ihre Fragen sind zu tiefgehend und komplex, um in diesem Abschnitt angemessen beantwortet werden zu können. Bitte lesen Sie unsere <xref linkend=\"PostGIS_Geography_AdvancedFAQ\"/>."
 
 #. Tag: para
 #: faq.xml:144
@@ -346,9 +472,9 @@ msgstr "Wie füge ich ein GIS-Objekt in die Datenbank ein?"
 #, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
-"\"geography\" to hold your GIS data. Storing geography type data is a little"
-" different than storing geometry. Refer to <xref "
-"linkend=\"PostGIS_Geography\"/> for details on storing geography."
+"\"geography\" to hold your GIS data. Storing geography type data is a little "
+"different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
+"\"/> for details on storing geography."
 msgstr ""
 
 #. Tag: para
@@ -357,7 +483,9 @@ msgstr ""
 msgid ""
 "For geometry: Connect to your database with <filename>psql</filename> and "
 "try the following SQL:"
-msgstr "Für »geometry«: Verbinden Sie Ihre Datenbank mit <filename>psql</filename> und probieren Sie folgenden SQL-Befehl:"
+msgstr ""
+"Für »geometry«: Verbinden Sie Ihre Datenbank mit <filename>psql</filename> "
+"und probieren Sie folgenden SQL-Befehl:"
 
 #. Tag: programlisting
 #: faq.xml:156
@@ -365,7 +493,9 @@ msgstr "Für »geometry«: Verbinden Sie Ihre Datenbank mit <filename>psql</file
 msgid ""
 "CREATE TABLE gtest (id serial primary key, name varchar(20), geom "
 "geometry(LINESTRING));"
-msgstr "CREATE TABLE gtest (id serial primary key, name varchar(20), geom geometry(LINESTRING));"
+msgstr ""
+"CREATE TABLE gtest (id serial primary key, name varchar(20), geom "
+"geometry(LINESTRING));"
 
 #. Tag: para
 #: faq.xml:158
@@ -374,16 +504,23 @@ msgid ""
 "If the geometry column definition fails, you probably have not loaded the "
 "PostGIS functions and objects into this database or are using a pre-2.0 "
 "version of PostGIS. See the <xref linkend=\"PGInstall\"/>."
-msgstr "Falls die Definition der Spalte »geometry« fehlschlägt, haben Sie wahrscheinlich die PostGIS-Funktionen und -Objekte nicht in Ihre Datenbank geladen oder Sie verwenden eine Version von PostGIS vor 2.0. Siehe <xref linkend=\"PGInstall\"/>."
+msgstr ""
+"Falls die Definition der Spalte »geometry« fehlschlägt, haben Sie "
+"wahrscheinlich die PostGIS-Funktionen und -Objekte nicht in Ihre Datenbank "
+"geladen oder Sie verwenden eine Version von PostGIS vor 2.0. Siehe <xref "
+"linkend=\"PGInstall\"/>."
 
 #. Tag: para
 #: faq.xml:162
 #, no-c-format
 msgid ""
-"Then, you can insert a geometry into the table using a SQL insert statement."
-" The GIS object itself is formatted using the OpenGIS Consortium \"well-"
-"known text\" format:"
-msgstr "Dann können Sie mittels eines SQL-INSERT-Befehls eine Geometrie in Ihre Tabelle einfügen. Das GIS-Objekt selbst ist mit dem Format »well-known-text« des OpenGIS-Konsortiums formatiert:"
+"Then, you can insert a geometry into the table using a SQL insert statement. "
+"The GIS object itself is formatted using the OpenGIS Consortium \"well-known "
+"text\" format:"
+msgstr ""
+"Dann können Sie mittels eines SQL-INSERT-Befehls eine Geometrie in Ihre "
+"Tabelle einfügen. Das GIS-Objekt selbst ist mit dem Format »well-known-text« "
+"des OpenGIS-Konsortiums formatiert:"
 
 #. Tag: programlisting
 #: faq.xml:166
@@ -395,15 +532,23 @@ msgid ""
 "  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
-msgstr "INSERT INTO gtest (ID, NAME, GEOM)\nVALUES (\n  1,\n  'First Geometry',\n  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n);"
+msgstr ""
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
+"VALUES (\n"
+"  1,\n"
+"  'First Geometry',\n"
+"  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
+");"
 
 #. Tag: para
 #: faq.xml:168
 #, no-c-format
 msgid ""
-"For more information about other GIS objects, see the <link "
-"linkend=\"RefObject\">object reference</link>."
-msgstr "Mehr Informationen über weitere GIS-Objekte finden Sie in der <link linkend=\"RefObject\">Objektreferenz</link>."
+"For more information about other GIS objects, see the <link linkend="
+"\"RefObject\">object reference</link>."
+msgstr ""
+"Mehr Informationen über weitere GIS-Objekte finden Sie in der <link linkend="
+"\"RefObject\">Objektreferenz</link>."
 
 #. Tag: para
 #: faq.xml:171
@@ -431,7 +576,11 @@ msgid ""
 "----+----------------+-----------------------------\n"
 "  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
-msgstr "id | name           | geom\n----+----------------+-----------------------------\n  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n(1 row)"
+msgstr ""
+"id | name           | geom\n"
+"----+----------------+-----------------------------\n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
+"(1 row)"
 
 #. Tag: para
 #: faq.xml:183
@@ -445,41 +594,58 @@ msgstr "Wie erstelle ich eine räumliche Abfrage?"
 msgid ""
 "The same way you construct any other database query, as an SQL combination "
 "of return values, functions, and boolean tests."
-msgstr "Auf die gleiche Weise, wie alle anderen Datenbankabfragen erstellt werden, als Kombination von Rückgabewerten, Funktionen und booleschen Tests."
+msgstr ""
+"Auf die gleiche Weise, wie alle anderen Datenbankabfragen erstellt werden, "
+"als Kombination von Rückgabewerten, Funktionen und booleschen Tests."
 
 #. Tag: para
 #: faq.xml:190
 #, no-c-format
 msgid ""
-"For spatial queries, there are two issues that are important to keep in mind"
-" while constructing your query: is there a spatial index you can make use "
-"of; and, are you doing expensive calculations on a large number of "
-"geometries."
-msgstr "Es gibt bei räumlichen Abfragen zwei Aspekte, die Sie beim Erstellen Ihrer Abfrage im Hinterkopf behalten sollten: Es gibt einen räumlichen Index, von dem Sie Gebrauch machen können, und führen Sie aufwendige Berechnungen auf einer großen Zahl von Geometrien durch?"
+"For spatial queries, there are two issues that are important to keep in mind "
+"while constructing your query: is there a spatial index you can make use of; "
+"and, are you doing expensive calculations on a large number of geometries."
+msgstr ""
+"Es gibt bei räumlichen Abfragen zwei Aspekte, die Sie beim Erstellen Ihrer "
+"Abfrage im Hinterkopf behalten sollten: Es gibt einen räumlichen Index, von "
+"dem Sie Gebrauch machen können, und führen Sie aufwendige Berechnungen auf "
+"einer großen Zahl von Geometrien durch?"
 
 #. Tag: para
 #: faq.xml:195
 #, no-c-format
 msgid ""
 "In general, you will want to use the \"intersects operator\" (&amp;&amp;) "
-"which tests whether the bounding boxes of features intersect. The reason the"
-" &amp;&amp; operator is useful is because if a spatial index is available to"
-" speed up the test, the &amp;&amp; operator will make use of this. This can "
+"which tests whether the bounding boxes of features intersect. The reason the "
+"&amp;&amp; operator is useful is because if a spatial index is available to "
+"speed up the test, the &amp;&amp; operator will make use of this. This can "
 "make queries much much faster."
-msgstr "Im Allgemeinen werden Sie den »Überschneidungsoperator« (&amp;&amp;) benutzen wollen, der prüft, ob sich die Hüllquader der Objekte überschneiden. Der Hauptnutzen des &amp;&amp;-Operators besteht darin, dass er, falls ein räumlicher Index zum Beschleunigen des Tests verfügbar ist, Gebrauch davon macht. Dies kann Abfragen sehr stark beschleunigen."
+msgstr ""
+"Im Allgemeinen werden Sie den »Überschneidungsoperator« (&amp;&amp;) "
+"benutzen wollen, der prüft, ob sich die Hüllquader der Objekte "
+"überschneiden. Der Hauptnutzen des &amp;&amp;-Operators besteht darin, dass "
+"er, falls ein räumlicher Index zum Beschleunigen des Tests verfügbar ist, "
+"Gebrauch davon macht. Dies kann Abfragen sehr stark beschleunigen."
 
 #. Tag: para
 #: faq.xml:202
 #, no-c-format
 msgid ""
 "You will also make use of spatial functions, such as Distance(), "
-"ST_Intersects(), ST_Contains() and ST_Within(), among others, to narrow down"
-" the results of your search. Most spatial queries include both an indexed "
+"ST_Intersects(), ST_Contains() and ST_Within(), among others, to narrow down "
+"the results of your search. Most spatial queries include both an indexed "
 "test and a spatial function test. The index test serves to limit the number "
 "of return tuples to only tuples that <emphasis>might</emphasis> meet the "
 "condition of interest. The spatial functions are then use to test the "
 "condition exactly."
-msgstr "Sie werden auch von räumlichen Funktionen wie Distance(), ST_Intersects(), ST_Contains() und ST_Within() Gebrauch machen, um die Ergebnisse Ihrer Suche einzugrenzen. Die meisten räumlichen Abfragen enthalten sowohl einen indizierten als auch einen räumlichen Funktionstest. Der Indextest begrenzt die Auswahl von Tupeln auf nur diejenigen Tupel, die die Bedingung, die von Interesse ist, treffen <emphasis>könnten</emphasis>. Die räumlichen Funktionen werden dann verwendet, um die Bedingung genau zu prüfen."
+msgstr ""
+"Sie werden auch von räumlichen Funktionen wie Distance(), ST_Intersects(), "
+"ST_Contains() und ST_Within() Gebrauch machen, um die Ergebnisse Ihrer Suche "
+"einzugrenzen. Die meisten räumlichen Abfragen enthalten sowohl einen "
+"indizierten als auch einen räumlichen Funktionstest. Der Indextest begrenzt "
+"die Auswahl von Tupeln auf nur diejenigen Tupel, die die Bedingung, die von "
+"Interesse ist, treffen <emphasis>könnten</emphasis>. Die räumlichen "
+"Funktionen werden dann verwendet, um die Bedingung genau zu prüfen."
 
 #. Tag: programlisting
 #: faq.xml:210
@@ -502,9 +668,12 @@ msgstr "Wie kann ich räumliche Abfragen auf großen Tabellen beschleunigen?"
 #, no-c-format
 msgid ""
 "Fast queries on large tables is the <emphasis>raison d'etre</emphasis> of "
-"spatial databases (along with transaction support) so having a good index is"
-" important."
-msgstr "Schnelle Abfragen großer Tabellen sind die <emphasis>Daseinsberechtigung</emphasis> räumlicher Datenbanken (neben der Unterstützung von Transaktionen). Daher ist es wichtig, über einen guten Index zu verfügen."
+"spatial databases (along with transaction support) so having a good index is "
+"important."
+msgstr ""
+"Schnelle Abfragen großer Tabellen sind die <emphasis>Daseinsberechtigung</"
+"emphasis> räumlicher Datenbanken (neben der Unterstützung von "
+"Transaktionen). Daher ist es wichtig, über einen guten Index zu verfügen."
 
 #. Tag: para
 #: faq.xml:224
@@ -512,22 +681,28 @@ msgstr "Schnelle Abfragen großer Tabellen sind die <emphasis>Daseinsberechtigun
 msgid ""
 "To build a spatial index on a table with a <varname>geometry</varname> "
 "column, use the \"CREATE INDEX\" function as follows:"
-msgstr "Um einen räumlichen Index für eine Tablle mit einer <varname>geometry</varname>-Spalte zu erstellen, benutzen Sie die Funktion »CREATE INDEX« wie folgt:"
+msgstr ""
+"Um einen räumlichen Index für eine Tablle mit einer <varname>geometry</"
+"varname>-Spalte zu erstellen, benutzen Sie die Funktion »CREATE INDEX« wie "
+"folgt:"
 
 #. Tag: programlisting
 #: faq.xml:228
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
-msgstr "CREATE INDEX [indexname] ON [tabellenname] USING GIST ( [geometry_spalte] );"
+msgstr ""
+"CREATE INDEX [indexname] ON [tabellenname] USING GIST ( [geometry_spalte] );"
 
 #. Tag: para
 #: faq.xml:230
 #, no-c-format
 msgid ""
-"The \"USING GIST\" option tells the server to use a GiST (Generalized Search"
-" Tree) index."
-msgstr "Die Option »USING GIST« teilt dem Server mit, dass er einen GiST-Index (Generalized Search Tree/Verallgemeinerter Suchbaum) verwenden soll."
+"The \"USING GIST\" option tells the server to use a GiST (Generalized Search "
+"Tree) index."
+msgstr ""
+"Die Option »USING GIST« teilt dem Server mit, dass er einen GiST-Index "
+"(Generalized Search Tree/Verallgemeinerter Suchbaum) verwenden soll."
 
 #. Tag: para
 #: faq.xml:234
@@ -535,7 +710,10 @@ msgstr "Die Option »USING GIST« teilt dem Server mit, dass er einen GiST-Index
 msgid ""
 "GiST indexes are assumed to be lossy. Lossy indexes uses a proxy object (in "
 "the spatial case, a bounding box) for building the index."
-msgstr "Es wird von GiST-Indizes angenommen, dass sie verlustbehaftet sind. Verlustbehaftete Indizes verwenden ein Ersatzobjekt (im Fall räumlicher Objekte einen Hüllquader), um einen Index zu erstellen."
+msgstr ""
+"Es wird von GiST-Indizes angenommen, dass sie verlustbehaftet sind. "
+"Verlustbehaftete Indizes verwenden ein Ersatzobjekt (im Fall räumlicher "
+"Objekte einen Hüllquader), um einen Index zu erstellen."
 
 #. Tag: para
 #: faq.xml:239
@@ -544,15 +722,21 @@ msgid ""
 "You should also ensure that the PostgreSQL query planner has enough "
 "information about your index to make rational decisions about when to use "
 "it. To do this, you have to \"gather statistics\" on your geometry tables."
-msgstr "Sie sollten außerdem sicherstellen, dass das PostgreSQL-Abfrageplanungsprogramm ausreichende Informationen über Ihren Index hat, um vernünftige Entscheidungen treffen zu können, wann er benutzt wird. Zu diesem Zweck müssen Sie für Ihre Geometrietabellen »Statistiken erstellen«."
+msgstr ""
+"Sie sollten außerdem sicherstellen, dass das PostgreSQL-"
+"Abfrageplanungsprogramm ausreichende Informationen über Ihren Index hat, um "
+"vernünftige Entscheidungen treffen zu können, wann er benutzt wird. Zu "
+"diesem Zweck müssen Sie für Ihre Geometrietabellen »Statistiken erstellen«."
 
 #. Tag: para
 #: faq.xml:244
 #, no-c-format
 msgid ""
-"For PostgreSQL 8.0.x and greater, just run the <command>VACUUM "
-"ANALYZE</command> command."
-msgstr "Unter PostgeSQL 8.0.x und neuer führen Sie einfach den Befehl <command>VACUUM ANALYZE</command> aus."
+"For PostgreSQL 8.0.x and greater, just run the <command>VACUUM ANALYZE</"
+"command> command."
+msgstr ""
+"Unter PostgeSQL 8.0.x und neuer führen Sie einfach den Befehl "
+"<command>VACUUM ANALYZE</command> aus."
 
 #. Tag: para
 #: faq.xml:247
@@ -560,7 +744,9 @@ msgstr "Unter PostgeSQL 8.0.x und neuer führen Sie einfach den Befehl <command>
 msgid ""
 "For PostgreSQL 7.4.x and below, run the <command>SELECT "
 "UPDATE_GEOMETRY_STATS()</command> command."
-msgstr "Unter PostgreSQL 7.4.x und älter führen Sie den Befehl <command>SELECT UPDATE_GEOMETRY_STATS()</command> aus."
+msgstr ""
+"Unter PostgreSQL 7.4.x und älter führen Sie den Befehl <command>SELECT "
+"UPDATE_GEOMETRY_STATS()</command> aus."
 
 #. Tag: para
 #: faq.xml:254
@@ -575,7 +761,10 @@ msgid ""
 "Early versions of PostGIS used the PostgreSQL R-Tree indexes. However, "
 "PostgreSQL R-Trees have been completely discarded since version 0.6, and "
 "spatial indexing is provided with an R-Tree-over-GiST scheme."
-msgstr "Ältere Versionen von PostGIS verwendeten die PostgreSQL-R-Baum-Indizes. PostgreSQL-R-Bäume wurden jedoch seit Version 0.6 komplett ausrangiert und räumliche Indizierung wird mit dem Schema »R-Tree-over-GiST« bereitgestellt."
+msgstr ""
+"Ältere Versionen von PostGIS verwendeten die PostgreSQL-R-Baum-Indizes. "
+"PostgreSQL-R-Bäume wurden jedoch seit Version 0.6 komplett ausrangiert und "
+"räumliche Indizierung wird mit dem Schema »R-Tree-over-GiST« bereitgestellt."
 
 #. Tag: para
 #: faq.xml:263
@@ -586,16 +775,25 @@ msgid ""
 "undesirable for use with GIS features (note that these limitations are due "
 "to the current PostgreSQL native R-Tree implementation, not the R-Tree "
 "concept in general):"
-msgstr "Unsere Tests haben gezeigt, dass die Suchgeschwindigkeit für native R-Bäume und GiST vergleichbar ist. Native PostgreSQL-R-Bäume haben zwei Einschränkungen, wegen der sie für den Gebrauch mit GIS-Objekten unerwünscht sind (beachten Sie, dass diese Einschränkungen aufgrund der Implementierung nativer PostgreSQL-R-Bäume und nicht wegen des Konzepts der R-Bäume im Allgemeinen bestehen):"
+msgstr ""
+"Unsere Tests haben gezeigt, dass die Suchgeschwindigkeit für native R-Bäume "
+"und GiST vergleichbar ist. Native PostgreSQL-R-Bäume haben zwei "
+"Einschränkungen, wegen der sie für den Gebrauch mit GIS-Objekten unerwünscht "
+"sind (beachten Sie, dass diese Einschränkungen aufgrund der Implementierung "
+"nativer PostgreSQL-R-Bäume und nicht wegen des Konzepts der R-Bäume im "
+"Allgemeinen bestehen):"
 
 #. Tag: para
 #: faq.xml:271
 #, no-c-format
 msgid ""
-"R-Tree indexes in PostgreSQL cannot handle features which are larger than 8K"
-" in size. GiST indexes can, using the \"lossy\" trick of substituting the "
+"R-Tree indexes in PostgreSQL cannot handle features which are larger than 8K "
+"in size. GiST indexes can, using the \"lossy\" trick of substituting the "
 "bounding box for the feature itself."
-msgstr "R-Baum-Indizes können in PostgreSQL nicht mit Objekten umgehen, die größer als 8k sind. GiST-Indizes können dies mittels des »verlustbehafteten« Tricks, das Objekt selbst durch seinen Hüllquader zu ersetzen."
+msgstr ""
+"R-Baum-Indizes können in PostgreSQL nicht mit Objekten umgehen, die größer "
+"als 8k sind. GiST-Indizes können dies mittels des »verlustbehafteten« "
+"Tricks, das Objekt selbst durch seinen Hüllquader zu ersetzen."
 
 #. Tag: para
 #: faq.xml:278
@@ -603,28 +801,41 @@ msgstr "R-Baum-Indizes können in PostgreSQL nicht mit Objekten umgehen, die gr�
 msgid ""
 "R-Tree indexes in PostgreSQL are not \"null safe\", so building an index on "
 "a geometry column which contains null geometries will fail."
-msgstr "R-Baum-Indizes sind in PostgreSQL nicht »nullsicher«, daher wird das Bilden eines Index auf einer »geometry«-Spalte, die Null-Geometrien enthält, scheitern."
+msgstr ""
+"R-Baum-Indizes sind in PostgreSQL nicht »nullsicher«, daher wird das Bilden "
+"eines Index auf einer »geometry«-Spalte, die Null-Geometrien enthält, "
+"scheitern."
 
 #. Tag: para
 #: faq.xml:288
 #, no-c-format
 msgid ""
-"Why should I use the <varname>AddGeometryColumn()</varname> function and all"
-" the other OpenGIS stuff?"
-msgstr "Warum soll ich die Funktion <varname>AddGeometryColumn()</varname> und all das andere OpenGIS-Zeug verwenden?"
+"Why should I use the <varname>AddGeometryColumn()</varname> function and all "
+"the other OpenGIS stuff?"
+msgstr ""
+"Warum soll ich die Funktion <varname>AddGeometryColumn()</varname> und all "
+"das andere OpenGIS-Zeug verwenden?"
 
 #. Tag: para
 #: faq.xml:293
 #, no-c-format
 msgid ""
-"If you do not want to use the OpenGIS support functions, you do not have to."
-" Simply create tables as in older versions, defining your geometry columns "
-"in the CREATE statement. All your geometries will have SRIDs of -1, and the "
+"If you do not want to use the OpenGIS support functions, you do not have to. "
+"Simply create tables as in older versions, defining your geometry columns in "
+"the CREATE statement. All your geometries will have SRIDs of -1, and the "
 "OpenGIS meta-data tables will <emphasis>not</emphasis> be filled in "
 "properly. However, this will cause most applications based on PostGIS to "
 "fail, and it is generally suggested that you do use "
 "<varname>AddGeometryColumn()</varname> to create geometry tables."
-msgstr "Falls Sie keine OpenGIS-Hilfsfunktionen nutzen möchten, müssen Sie dies nicht. Erstellen Sie einfach Ihre Tabellen in älteren Versionen, indem Sie Ihre »geometry«-Spalten im CREATE-Befehl erstellen. Alle Ihre Geometrien werden SRIDs von -1 haben und die OpenGIS-Metadatentabellen werden <emphasis>nicht</emphasis> ordentlich gefüllt. Dies wird jedoch die meistenAnwendungen, die auf PostGIS basieren, zum Abstürzen bringen und es wird generell empfohlen, dass Sie zum Erstellen von »geometry«-Tabellen <varname>AddGeometryColumn()</varname> verwenden."
+msgstr ""
+"Falls Sie keine OpenGIS-Hilfsfunktionen nutzen möchten, müssen Sie dies "
+"nicht. Erstellen Sie einfach Ihre Tabellen in älteren Versionen, indem Sie "
+"Ihre »geometry«-Spalten im CREATE-Befehl erstellen. Alle Ihre Geometrien "
+"werden SRIDs von -1 haben und die OpenGIS-Metadatentabellen werden "
+"<emphasis>nicht</emphasis> ordentlich gefüllt. Dies wird jedoch die "
+"meistenAnwendungen, die auf PostGIS basieren, zum Abstürzen bringen und es "
+"wird generell empfohlen, dass Sie zum Erstellen von »geometry«-Tabellen "
+"<varname>AddGeometryColumn()</varname> verwenden."
 
 #. Tag: para
 #: faq.xml:302
@@ -634,34 +845,50 @@ msgid ""
 "<varname>geometry_columns</varname> meta-data. Specifically, MapServer can "
 "use the SRID of the geometry column to do on-the-fly reprojection of "
 "features into the correct map projection."
-msgstr "MapServer ist eine dieser Anwendungen, die Gebrauch von <varname>geometry_columns</varname>-Metadaten machen. Insbesondere kann MapServer die SRID der »geometry«-Spalte nutzen, um direkt eine Rückprojektion von Objekten in die korrekte Abbildungsprojektion vorzunehmen."
+msgstr ""
+"MapServer ist eine dieser Anwendungen, die Gebrauch von "
+"<varname>geometry_columns</varname>-Metadaten machen. Insbesondere kann "
+"MapServer die SRID der »geometry«-Spalte nutzen, um direkt eine "
+"Rückprojektion von Objekten in die korrekte Abbildungsprojektion vorzunehmen."
 
 #. Tag: para
 #: faq.xml:311
 #, no-c-format
 msgid ""
 "What is the best way to find all objects within a radius of another object?"
-msgstr "Was ist der beste Weg, alle Objekte innerhalb eines Radius eines anderen Objekts zu finden?"
+msgstr ""
+"Was ist der beste Weg, alle Objekte innerhalb eines Radius eines anderen "
+"Objekts zu finden?"
 
 #. Tag: para
 #: faq.xml:316
 #, no-c-format
 msgid ""
 "To use the database most efficiently, it is best to do radius queries which "
-"combine the radius test with a bounding box test: the bounding box test uses"
-" the spatial index, giving fast access to a subset of data which the radius "
+"combine the radius test with a bounding box test: the bounding box test uses "
+"the spatial index, giving fast access to a subset of data which the radius "
 "test is then applied to."
-msgstr "Um die Datenbank möglichst effizient zu nutzen, ist es am besten Radiusabfragen zu verwenden. Diese kombinieren den Radiustest mit einem Hüllquadertest: Der Hüllquadertest benutzt den räumlichen Index, der schnellen Zugriff auf eine Untermenge von Daten gewährt, auf die dann der Radiustest angewendet wird."
+msgstr ""
+"Um die Datenbank möglichst effizient zu nutzen, ist es am besten "
+"Radiusabfragen zu verwenden. Diese kombinieren den Radiustest mit einem "
+"Hüllquadertest: Der Hüllquadertest benutzt den räumlichen Index, der "
+"schnellen Zugriff auf eine Untermenge von Daten gewährt, auf die dann der "
+"Radiustest angewendet wird."
 
 #. Tag: para
 #: faq.xml:321
 #, no-c-format
 msgid ""
 "The <varname>ST_DWithin(geometry, geometry, distance)</varname> function is "
-"a handy way of performing an indexed distance search. It works by creating a"
-" search rectangle large enough to enclose the distance radius, then "
+"a handy way of performing an indexed distance search. It works by creating a "
+"search rectangle large enough to enclose the distance radius, then "
 "performing an exact distance search on the indexed subset of results."
-msgstr "Die Funktion <varname>ST_DWithin(geometry, geometry, distance)</varname> ist eine praktische Art, eine Entfernungssuche per Index durchzuführen. Dazu wird ein Suchrechteck erstellt, das groß genug ist, um den Entfernungsradius einzuschließen. Dann wird in der indizitierten Untermenge der Ergebnisse die genaue Entfernung gesucht."
+msgstr ""
+"Die Funktion <varname>ST_DWithin(geometry, geometry, distance)</varname> ist "
+"eine praktische Art, eine Entfernungssuche per Index durchzuführen. Dazu "
+"wird ein Suchrechteck erstellt, das groß genug ist, um den Entfernungsradius "
+"einzuschließen. Dann wird in der indizitierten Untermenge der Ergebnisse die "
+"genaue Entfernung gesucht."
 
 #. Tag: para
 #: faq.xml:327
@@ -669,7 +896,9 @@ msgstr "Die Funktion <varname>ST_DWithin(geometry, geometry, distance)</varname>
 msgid ""
 "For example, to find all objects with 100 meters of POINT(1000 1000) the "
 "following query would work well:"
-msgstr "Um zum Beispiel alle Objekte mit 100 Metern Entfernung zu POINT(1000 1000) zu finden, wäre die folgende Abfrage gut geeignet:"
+msgstr ""
+"Um zum Beispiel alle Objekte mit 100 Metern Entfernung zu POINT(1000 1000) "
+"zu finden, wäre die folgende Abfrage gut geeignet:"
 
 #. Tag: programlisting
 #: faq.xml:330
@@ -677,13 +906,17 @@ msgstr "Um zum Beispiel alle Objekte mit 100 Metern Entfernung zu POINT(1000 100
 msgid ""
 "SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
-msgstr "SELECT * FROM geotable\nWHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
+msgstr ""
+"SELECT * FROM geotable\n"
+"WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 
 #. Tag: para
 #: faq.xml:336
 #, no-c-format
 msgid "How do I perform a coordinate reprojection as part of a query?"
-msgstr "Wie kann ich die Koordinaten-Rückprojektion als Teil einer Abfrage durchführen?"
+msgstr ""
+"Wie kann ich die Koordinaten-Rückprojektion als Teil einer Abfrage "
+"durchführen?"
 
 #. Tag: para
 #: faq.xml:341
@@ -707,9 +940,11 @@ msgstr ""
 #: faq.xml:354
 #, no-c-format
 msgid ""
-"I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned"
-" blank field. What gives?"
-msgstr "Ich führte ein ST_AsEWKT und ST_AsText auf meiner eher großen Geometrie aus und erhielt ein leeres Feld zurück. Was ist passiert?"
+"I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned "
+"blank field. What gives?"
+msgstr ""
+"Ich führte ein ST_AsEWKT und ST_AsText auf meiner eher großen Geometrie aus "
+"und erhielt ein leeres Feld zurück. Was ist passiert?"
 
 #. Tag: para
 #: faq.xml:358
@@ -718,23 +953,30 @@ msgid ""
 "You are probably using PgAdmin or some other tool that doesn't output large "
 "text. If your geometry is big enough, it will appear blank in these tools. "
 "Use PSQL if you really need to see it or output it in WKT."
-msgstr "Sie verwenden vermutlich PgAdmin oder irgendein anderes Werkzeug, das keine großen Texte ausgibt. Falls Ihre Geometrie groß genug ist, wird sie in diesen Werkzeugen leer erscheinen. Falls Sie sie wirklich sehen oder in WKT ausgeben möchten, verwenden Sie PSQL."
+msgstr ""
+"Sie verwenden vermutlich PgAdmin oder irgendein anderes Werkzeug, das keine "
+"großen Texte ausgibt. Falls Ihre Geometrie groß genug ist, wird sie in "
+"diesen Werkzeugen leer erscheinen. Falls Sie sie wirklich sehen oder in WKT "
+"ausgeben möchten, verwenden Sie PSQL."
 
 #. Tag: programlisting
 #: faq.xml:361
 #, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
-"                                SELECT count(gid) FROM geotable WHERE geom IS NULL;"
+"                                SELECT count(gid) FROM geotable WHERE geom "
+"IS NULL;"
 msgstr ""
 
 #. Tag: para
 #: faq.xml:367
 #, no-c-format
 msgid ""
-"When I do an ST_Intersects, it says my two geometries don't intersect when I"
-" KNOW THEY DO. What gives?"
-msgstr "ST_Intersects ergibt, dass sich meine beiden geometrischen Objekte nicht überschneiden, obwohl ICH WEISS, DASS SIE DIES TUN. Was ist passiert?"
+"When I do an ST_Intersects, it says my two geometries don't intersect when I "
+"KNOW THEY DO. What gives?"
+msgstr ""
+"ST_Intersects ergibt, dass sich meine beiden geometrischen Objekte nicht "
+"überschneiden, obwohl ICH WEISS, DASS SIE DIES TUN. Was ist passiert?"
 
 #. Tag: para
 #: faq.xml:371
@@ -744,16 +986,23 @@ msgid ""
 "check <xref linkend=\"ST_IsValid\"/> or you are assuming they intersect "
 "because ST_AsText truncates the numbers and you have lots of decimals after "
 "it is not showing you."
-msgstr "Im Allgemeinen kommt das in zwei Fällen vor. Ihre Geometrie ist ungültig – prüfen Sie dies mit <xref linkend=\"ST_IsValid\"/> oder Sie gehen davon aus, dass sie sich überschneiden, da ST_AsText die Zahlen rundet und Sie viele Dezimalstellen dahinter haben, die Ihnen nicht angezeigt werden."
+msgstr ""
+"Im Allgemeinen kommt das in zwei Fällen vor. Ihre Geometrie ist ungültig – "
+"prüfen Sie dies mit <xref linkend=\"ST_IsValid\"/> oder Sie gehen davon aus, "
+"dass sie sich überschneiden, da ST_AsText die Zahlen rundet und Sie viele "
+"Dezimalstellen dahinter haben, die Ihnen nicht angezeigt werden."
 
 #. Tag: para
 #: faq.xml:379
 #, no-c-format
 msgid ""
-"I am releasing software that uses PostGIS, does that mean my software has to"
-" be licensed using the GPL like PostGIS? Will I have to publish all my code "
+"I am releasing software that uses PostGIS, does that mean my software has to "
+"be licensed using the GPL like PostGIS? Will I have to publish all my code "
 "if I use PostGIS?"
-msgstr "Ich veröffentliche Software, die PostGIS verwendet. Bedeutet das, dass meine Software wie PostGIS unter der GPL lizenziert werden muss? Muss ich all meinen Code veröffentlichen, falls ich PostGIS benutze?"
+msgstr ""
+"Ich veröffentliche Software, die PostGIS verwendet. Bedeutet das, dass meine "
+"Software wie PostGIS unter der GPL lizenziert werden muss? Muss ich all "
+"meinen Code veröffentlichen, falls ich PostGIS benutze?"
 
 #. Tag: para
 #: faq.xml:383
@@ -761,10 +1010,15 @@ msgstr "Ich veröffentliche Software, die PostGIS verwendet. Bedeutet das, dass 
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
 "Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be "
-"distributed using the GPL? No. Similarly your software can use a "
-"PostgreSQL/PostGIS database as much as it wants and be under any license you"
-" like."
-msgstr "Höchstwahrscheinlich nicht. Oracle-Datenbanken laufen zum Beispiel unter Linux. Linux steht unter der GPL, Oracles Datenbank nicht. Muss Oracles Datenbank, die unter Linux läuft, unter der GPL verteilt werden? Nein. In ähnlicher Weise kann Ihre Software die PostgreSQL/PostGIS Datenbank soviel nutzen wie sie will, und kann unter irgendeiner, von Ihnen gewünschten Lizenz vorliegen. "
+"distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
+"PostGIS database as much as it wants and be under any license you like."
+msgstr ""
+"Höchstwahrscheinlich nicht. Oracle-Datenbanken laufen zum Beispiel unter "
+"Linux. Linux steht unter der GPL, Oracles Datenbank nicht. Muss Oracles "
+"Datenbank, die unter Linux läuft, unter der GPL verteilt werden? Nein. In "
+"ähnlicher Weise kann Ihre Software die PostgreSQL/PostGIS Datenbank soviel "
+"nutzen wie sie will, und kann unter irgendeiner, von Ihnen gewünschten "
+"Lizenz vorliegen. "
 
 #. Tag: para
 #: faq.xml:384
@@ -778,7 +1032,15 @@ msgid ""
 "distributed binaries to. The GPL does not require that you "
 "<emphasis>publish</emphasis> your source code, only that you share it with "
 "people you give binaries to."
-msgstr "Die einzige Ausnahme wäre, wenn Sie Veränderungen am PostGIS-Quellcode vorgenommen hätten und die <emphasis>veränderte Version verteilen</emphasis> würden. In diesem Fall müssten Sie den Code Ihres veränderten PostGIS freigeben (aber nicht den Code von Anwendungen, die darauf laufen). Sogar in diesem begrenzten Fall müssten Sie nur den Quellcode an Leute verteilen, denen Sie Binärcode weitergegeben haben. Die GPL verlangt nicht, dass Sie Ihren Quellcode <emphasis>veröffentlichen</emphasis>, nur dass Sie ihn mit Leuten teilen, denen Sie Binärcode geben. "
+msgstr ""
+"Die einzige Ausnahme wäre, wenn Sie Veränderungen am PostGIS-Quellcode "
+"vorgenommen hätten und die <emphasis>veränderte Version verteilen</emphasis> "
+"würden. In diesem Fall müssten Sie den Code Ihres veränderten PostGIS "
+"freigeben (aber nicht den Code von Anwendungen, die darauf laufen). Sogar in "
+"diesem begrenzten Fall müssten Sie nur den Quellcode an Leute verteilen, "
+"denen Sie Binärcode weitergegeben haben. Die GPL verlangt nicht, dass Sie "
+"Ihren Quellcode <emphasis>veröffentlichen</emphasis>, nur dass Sie ihn mit "
+"Leuten teilen, denen Sie Binärcode geben. "
 
 #. Tag: para
 #: faq.xml:385
@@ -788,7 +1050,11 @@ msgid ""
 "optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of "
 "PostGIS already: using CGAL does not make PostGIS any more GPL than it was "
 "to start with."
-msgstr "Die oberen Angaben treffen auch zu, wenn Sie PostGIS in Verbindung mit den optionalen CGAL-aktivierten Funktionen nutzen. Teile von CGAL liegen unter GPL vor, so wie bereits das gesamte PostGIS: die Verwendung von CGAL macht PostGIS nicht mehr GPL als es bereits von vornherein ist."
+msgstr ""
+"Die oberen Angaben treffen auch zu, wenn Sie PostGIS in Verbindung mit den "
+"optionalen CGAL-aktivierten Funktionen nutzen. Teile von CGAL liegen unter "
+"GPL vor, so wie bereits das gesamte PostGIS: die Verwendung von CGAL macht "
+"PostGIS nicht mehr GPL als es bereits von vornherein ist."
 
 #. Tag: para
 #: faq.xml:391
@@ -821,8 +1087,7 @@ msgstr ""
 #: faq.xml:405
 #, no-c-format
 msgid ""
-"Why is <varname>ST_Union( A, ST_Difference(A, B) )</varname> not equal to A "
-"?"
+"Why is <varname>ST_Union( A, ST_Difference(A, B) )</varname> not equal to A ?"
 msgstr ""
 
 #. Tag: para
@@ -837,8 +1102,8 @@ msgstr ""
 #: faq.xml:412
 #, no-c-format
 msgid ""
-"The reason is that PostGIS represents geometry and performs operations using"
-" finite-precision floating-point numbers. This provides the illusion of "
+"The reason is that PostGIS represents geometry and performs operations using "
+"finite-precision floating-point numbers. This provides the illusion of "
 "computing using real numbers - but it's only an illusion. Inevitably, small "
 "inaccuracies occur, which cause results of different operations to be "
 "slightly inconsistent."

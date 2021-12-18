@@ -2813,7 +2813,7 @@ msgstr ""
 #. Tag: refname
 #: reference_input.xml:1498
 #, no-c-format
-msgid "ST_TableFromFlatGeobuf"
+msgid "ST_FromFlatGeobufToTable"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2824,14 +2824,17 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_input.xml:1504
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<funcdef>void <function>ST_TableFromFlatGeobuf</function></funcdef> "
+"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
 "<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
 "<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef> "
+"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1516

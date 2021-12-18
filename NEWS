@@ -1,5 +1,5 @@
-PostGIS 3.2.0rc1
-2021/12/11
+PostGIS 3.2.0
+2021/12/XX
 This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher
 , and Proj 4.9+.
 Additional features are enabled if you are running GEOS 3.9+
