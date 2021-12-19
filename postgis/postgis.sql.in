@@ -1382,6 +1382,7 @@ CREATE OR REPLACE FUNCTION ST_Force2D(geometry)
 
 -- Availability: 2.1.0
 -- Changed: 3.1.0 - add zvalue=0.0 parameter
+-- Replaces ST_Force3DZ(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DZ(geom geometry, zvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
@@ -1390,6 +1391,7 @@ CREATE OR REPLACE FUNCTION ST_Force3DZ(geom geometry, zvalue float8 default 0.0)
 
 -- Availability: 2.1.0
 -- Changed: 3.1.0 - add zvalue=0.0 parameter
+-- Replaces ST_Force3D(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force3D(geom geometry, zvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Force3DZ($1, $2)'
@@ -1398,6 +1400,7 @@ CREATE OR REPLACE FUNCTION ST_Force3D(geom geometry, zvalue float8 default 0.0)
 
 -- Availability: 2.1.0
 -- Changed: 3.1.0 - add mvalue=0.0 parameter
+-- Replaces ST_Force3DM(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DM(geom geometry, mvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
@@ -1406,6 +1409,7 @@ CREATE OR REPLACE FUNCTION ST_Force3DM(geom geometry, mvalue float8 default 0.0)
 
 -- Availability: 2.1.0
 -- Changed: 3.1.0 - add zvalue=0.0 and mvalue=0.0 parameters
+-- Replaces ST_Force4D(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force4D(geom geometry, zvalue float8 default 0.0, mvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
