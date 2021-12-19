@@ -452,6 +452,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 
 -- AsKML(geography,precision)
 -- Changed: 2.0.0 to use default args and named args
+-- Replaces ST_AsKML(geography, int4) deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_kml'
