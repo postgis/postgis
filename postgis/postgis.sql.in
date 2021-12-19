@@ -4764,6 +4764,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(version integer, geom geometry, maxdecimaldi
 
 -- Availability: 1.2.2
 -- Changed: 2.0.0 to use default args and allow named args
+-- Replaces ST_AsKML(geometry, int4) deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits integer DEFAULT 15, nprefix TEXT default '')
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asKML'

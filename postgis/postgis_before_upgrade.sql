@@ -191,12 +191,6 @@ SELECT _postgis_drop_function_if_needed
     );
 
 
--- FUNCTION st_askml changed to add defaults in 3.0 / r17357
--- These signatures were superseeded
-DROP FUNCTION IF EXISTS st_askml(geometry, integer); -- Does not conflict
-DROP FUNCTION IF EXISTS st_askml(geography, integer); -- Does not conflict
-
-
 -- FUNCTION st_buffer changed to add defaults in 3.0
 -- This signature was superseeded
 DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not conflict

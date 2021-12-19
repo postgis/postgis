@@ -24,3 +24,45 @@ BEGIN
 	END IF;
 END;
 $BODY$ LANGUAGE 'plpgsql';
+
+-- Add view using overlay functions
+CREATE VIEW upgrade_view_test_overlay AS
+SELECT
+	ST_Intersection(g1, g1) as geometry_intersection,
+	ST_Intersection(g2, g2) as geography_intersection,
+	ST_Difference(g1, g1) as geometry_difference,
+	ST_SymDifference(g1, g1) as geometry_symdifference
+FROM upgrade_test;
+
+-- Add view using unaryunion function
+-- NOTE: 2.0.0 introduced ST_UnaryUnion
+CREATE VIEW upgrade_view_test_unaryunion AS
+SELECT
+	ST_UnaryUnion(g1) as geometry_unaryunion
+FROM upgrade_test;
+
+-- Add view using unaryunion function
+-- NOTE: 2.2.0 introduced ST_Subdivide
+CREATE VIEW upgrade_view_test_subdivide AS
+SELECT
+	ST_Subdivide(g1, 256) as geometry_subdivide
+FROM upgrade_test;
+
+-- Add view using ST_ForceX function
+-- NOTE: 3.1.0 changed them from taking only geometry
+--       to also take optional zvalue/mvalue params
+CREATE VIEW upgrade_view_test_force_dims AS
+SELECT
+	ST_Force3D(g1) as geometry_force3d,
+	ST_Force3DZ(g1) as geometry_force3dz,
+	ST_Force3DM(g1) as geometry_force3dm,
+	ST_Force4D(g1) as geometry_force4d
+FROM upgrade_test;
+
+-- Add view using ST_AsKML function
+-- NOTE: 2.0.0 changed them to add default params
+CREATE VIEW upgrade_view_test_askml AS
+SELECT
+	ST_AsKML(g1) as geometry_askml,
+	ST_AsKML(g2) as geography_askml
+FROM upgrade_test;
