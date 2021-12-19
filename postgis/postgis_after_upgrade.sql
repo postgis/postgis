@@ -197,7 +197,6 @@ DROP FUNCTION IF EXISTS ST_Distance(geography, geography, float8, boolean);
 DROP FUNCTION IF EXISTS ST_Buffer(geometry, float8, cstring);
 DROP FUNCTION IF EXISTS ST_IsValidDetail(geometry);
 DROP FUNCTION IF EXISTS ST_AsKML(int4, geometry, int4, text);
-DROP FUNCTION IF EXISTS ST_AsKML(geometry, int4);
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4, geometry, int4, int4);
 DROP FUNCTION IF EXISTS _ST_AsGeoJson(int4, geometry, int4, int4);
 
