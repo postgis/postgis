@@ -239,24 +239,6 @@ BEGIN
     -- Rename old function, to avoid ambiguities and eventually drop
     ALTER FUNCTION $name( $args ) RENAME TO ${renamed};
 
-    -- Drop the function from any extension it is part of
-    -- so dump/reloads still work
-    FOR rec IN
-        SELECT e.extname
-        FROM
-            pg_extension e,
-            pg_depend d
-        WHERE
-            d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass AND
-            d.refobjid = e.oid AND
-            d.classid = 'pg_proc'::regclass AND
-            d.objid = replaced_proc::oid
-    LOOP
-        RAISE DEBUG 'Unpackaging ${renamed} from extension %', rec.extname;
-        sql := format('ALTER EXTENSION %I DROP FUNCTION ${renamed}(${args})', rec.extname);
-        EXECUTE sql;
-    END LOOP;
-
 
 END;
 \$postgis_proc_upgrade\$;
@@ -605,6 +587,8 @@ DO LANGUAGE 'plpgsql'
 DECLARE
     deprecated_functions regprocedure[];
     rec RECORD;
+    extrec RECORD;
+    procrec RECORD;
     sql TEXT;
     detail TEXT;
     hint TEXT;
@@ -651,11 +635,48 @@ BEGIN
 --        END;
 --    END LOOP;
 
-    -- Try to drop all deprecated functions, raising a warning
-    -- for each one which cannot be drop
+    -- Try to drop all deprecated functions, or rewrite those
+    -- who cannot be drop and rewrite them in SQL
 
     FOR rec IN SELECT unnest(deprecated_functions) as proc
     LOOP --{
+
+        -- Rewrite the function as an SQL WRAPPER
+
+        SELECT pg_get_functiondef(oid) def, pronargs
+        FROM pg_proc WHERE oid = rec.proc
+        INTO procrec;
+
+        -- Force LANGUAGE to be SQL
+        sql := regexp_replace(procrec.def, 'LANGUAGE [^ \n]*', 'LANGUAGE sql');
+
+        --RAISE DEBUG 'SQL (LANGUAGE): %', sql;
+
+        -- Change body to be a wrapper
+        sql := regexp_replace(
+            sql,
+			-- Find a stricted match here ?
+            'AS .*',
+            format(
+                -- TODO: have the function raise a warning too ?
+                'AS \$\$ SELECT %s(%s) \$\$',
+                regexp_replace(
+                    rec.proc::text,
+                    '_deprecated_by_postgis[^(]*\\(.*',
+                    ''
+                ),
+                (
+                    SELECT array_to_string(
+                        array_agg('\$' || x),
+                        ','
+                    )
+                    FROM generate_series(1, procrec.pronargs) x
+                )
+            )
+        );
+
+        RAISE DEBUG 'SQL: %', sql;
+        EXECUTE sql;
 
         sql := format('DROP FUNCTION %s', rec.proc);
         --RAISE DEBUG 'SQL: %', sql;
@@ -673,8 +694,26 @@ BEGIN
                 );
             END IF;
             hint = hint || ' and upgrade again';
-            RAISE WARNING 'Deprecated function % left behind: %', rec.proc, SQLERRM
+            RAISE WARNING 'Deprecated function % left behind as a wrapper: %', rec.proc, SQLERRM
             USING DETAIL = detail, HINT = hint;
+
+            -- Drop the function from any extension it is part of
+            -- so dump/reloads still work
+            FOR extrec IN
+                SELECT e.extname
+                FROM
+                    pg_extension e,
+                    pg_depend d
+                WHERE
+                    d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass AND
+                    d.refobjid = e.oid AND
+                    d.classid = 'pg_proc'::regclass AND
+                    d.objid = rec.proc::oid
+            LOOP
+                RAISE DEBUG 'Unpackaging % from extension %', rec.proc, extrec.extname;
+                sql := format('ALTER EXTENSION %I DROP FUNCTION %s', extrec.extname, rec.proc);
+                EXECUTE sql;
+            END LOOP;
         END;
     END LOOP; --}
 END
