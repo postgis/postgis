@@ -66,3 +66,11 @@ SELECT
 	ST_AsKML(g1) as geometry_askml,
 	ST_AsKML(g2) as geography_askml
 FROM upgrade_test;
+
+-- Add view using ST_DWithin function
+-- NOTE: 2.0.0 changed them to add default params
+CREATE VIEW upgrade_view_test_dwithin AS
+SELECT
+	ST_DWithin(g1::text, g1::text, 1) as text_dwithin,
+	ST_DWithin(g2, g2, 1) as geography_dwithin
+FROM upgrade_test;
