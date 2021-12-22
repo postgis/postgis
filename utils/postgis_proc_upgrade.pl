@@ -616,40 +616,40 @@ BEGIN
     WHERE proname = ANY ('${deprecated_names}'::name[])
     INTO deprecated_functions;
 
-    -- Rewrite views using deprecated functions
-    -- to improve the odds of being able to drop them
-
-    FOR rec IN
-        SELECT n.nspname AS schemaname,
-            c.relname AS viewname,
-            pg_get_userbyid(c.relowner) AS viewowner,
-            pg_get_viewdef(c.oid) AS definition,
-            CASE
-                WHEN 'check_option=cascaded' = ANY (c.reloptions) THEN 'WITH CASCADED CHECK OPTION'
-                WHEN 'check_option=local' = ANY (c.reloptions) THEN 'WITH LOCAL CHECK OPTION'
-                ELSE ''
-            END::text AS check_option
-        FROM pg_class c
-        LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
-        WHERE c.relkind = 'v'
-        AND pg_get_viewdef(c.oid) ~ 'deprecated_by_postgis'
-    LOOP
-        sql := format('CREATE OR REPLACE VIEW %I.%I AS %s %s',
-            rec.schemaname,
-            rec.viewname,
-            regexp_replace(rec.definition, '_deprecated_by_postgis_[^(]*', '', 'g'),
-            rec.check_option
-        );
-        RAISE NOTICE 'Updating view % to not use deprecated signatures', rec.viewname;
-        BEGIN
-            EXECUTE sql;
-        EXCEPTION
-        WHEN OTHERS THEN
-                GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
-                RAISE WARNING 'Could not rewrite view % using deprecated functions', rec.viewname
-                        USING DETAIL = format('%s: %s', SQLERRM, detail);
-        END;
-    END LOOP;
+--    -- Rewrite views using deprecated functions
+--    -- to improve the odds of being able to drop them
+--
+--    FOR rec IN
+--        SELECT n.nspname AS schemaname,
+--            c.relname AS viewname,
+--            pg_get_userbyid(c.relowner) AS viewowner,
+--            pg_get_viewdef(c.oid) AS definition,
+--            CASE
+--                WHEN 'check_option=cascaded' = ANY (c.reloptions) THEN 'WITH CASCADED CHECK OPTION'
+--                WHEN 'check_option=local' = ANY (c.reloptions) THEN 'WITH LOCAL CHECK OPTION'
+--                ELSE ''
+--            END::text AS check_option
+--        FROM pg_class c
+--        LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+--        WHERE c.relkind = 'v'
+--        AND pg_get_viewdef(c.oid) ~ 'deprecated_by_postgis'
+--    LOOP
+--        sql := format('CREATE OR REPLACE VIEW %I.%I AS %s %s',
+--            rec.schemaname,
+--            rec.viewname,
+--            regexp_replace(rec.definition, '_deprecated_by_postgis_[^(]*', '', 'g'),
+--            rec.check_option
+--        );
+--        RAISE NOTICE 'Updating view % to not use deprecated signatures', rec.viewname;
+--        BEGIN
+--            EXECUTE sql;
+--        EXCEPTION
+--        WHEN OTHERS THEN
+--                GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
+--                RAISE WARNING 'Could not rewrite view % using deprecated functions', rec.viewname
+--                        USING DETAIL = format('%s: %s', SQLERRM, detail);
+--        END;
+--    END LOOP;
 
     -- Try to drop all deprecated functions, raising a warning
     -- for each one which cannot be drop
