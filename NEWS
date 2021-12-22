@@ -2,7 +2,7 @@ PostGIS 3.2.1dev
 YYYY/MM/DD
 
 * Bug Fixes *
-  - #5033, allow upgrades in presence of views using deprecated
+  - #5033, #5035, allow upgrades in presence of views using deprecated
            functions (Sandro Santilli)
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
