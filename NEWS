@@ -5,7 +5,7 @@ PostGIS 3.3.0dev
   - ...
 
  * Enhancements *
-  - ...
+  - #5037, add convexhull 3D (Loïc Bartoletti)
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
