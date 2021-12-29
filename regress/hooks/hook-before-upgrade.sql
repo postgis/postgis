@@ -68,7 +68,7 @@ SELECT
 FROM upgrade_test;
 
 -- Add view using ST_DWithin function
--- NOTE: 2.0.0 changed them to add default params
+-- NOTE: 3.0.0 changed them to add default params
 CREATE VIEW upgrade_view_test_dwithin AS
 SELECT
 	ST_DWithin(g1::text, g1::text, 1) as text_dwithin,
