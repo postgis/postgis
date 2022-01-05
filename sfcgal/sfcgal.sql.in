@@ -147,3 +147,11 @@ CREATE OR REPLACE FUNCTION ST_ConstrainedDelaunayTriangles(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 COMMIT;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION ST_3DConvexHull(geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'sfcgal_convexhull3D'
+       LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+       COST 100;
+COMMIT;

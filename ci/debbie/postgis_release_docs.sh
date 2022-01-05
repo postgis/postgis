@@ -19,6 +19,7 @@ POSTGIS_MAJOR_VERSION=`grep ^POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`
 POSTGIS_MINOR_VERSION=`grep ^POSTGIS_MINOR_VERSION Version.config | cut -d= -f2`
 POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
 
+mkdir -p /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 echo $PATH
 
@@ -70,7 +71,7 @@ cp html/images/* images
 make epub
 make -e chunked-html-web 2>&1 | tee -a doc-errors.log
 
-if [[ "$reference" == *"main"* ]]; then  #only do this for main branch because only main follows transifex
+if [[ "$reference" == *"master"* ]]; then  #only do this for master branch because only master follows transifex
   make update-pot
   make pull-tx
   make -C po/it_IT/ local-html

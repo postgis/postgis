@@ -194,19 +194,6 @@ SELECT _postgis_drop_function_if_needed
     'zoom integer, x integer, y integer, bounds geometry DEFAULT ''0102000020110F00000200000052107C45F81B73C152107C45F81B73C152107C45F81B734152107C45F81B7341''::geometry'
     );
 
--- FUNCTION ST_Force3D, ST_Force3DZ, ST_Force3DM, ST_Force4DZ changed to add defaults in 3.1
--- These signatures were superseeded
-DROP FUNCTION IF EXISTS ST_Force3D(geometry); -- Does not conflict
-DROP FUNCTION IF EXISTS ST_Force3DZ(geometry); -- Does not conflict
-DROP FUNCTION IF EXISTS ST_Force3DM(geometry); -- Does not conflict
-DROP FUNCTION IF EXISTS ST_Force4D(geometry); -- Does not conflict
-
-
--- FUNCTION st_askml changed to add defaults in 3.0 / r17357
--- These signatures were superseeded
-DROP FUNCTION IF EXISTS st_askml(geometry, integer); -- Does not conflict
-DROP FUNCTION IF EXISTS st_askml(geography, integer); -- Does not conflict
-
 
 -- FUNCTION st_buffer changed to add defaults in 3.0
 -- This signature was superseeded
@@ -216,13 +203,6 @@ DROP FUNCTION IF EXISTS st_buffer(geometry, double precision); -- Does not confl
 -- These signatures were superseeded
 DROP FUNCTION IF EXISTS ST_CurveToLine(geometry, integer); -- Does not conflict
 DROP FUNCTION IF EXISTS ST_CurveToLine(geometry); -- Does not conflict
-
-DROP FUNCTION IF EXISTS st_intersection(geometry, geometry); -- replaced in 3.1.0 by 3 args version
-DROP FUNCTION IF EXISTS st_subdivide(geometry, integer); -- replaced in 3.1.0 by 3 args version
-DROP FUNCTION IF EXISTS st_difference(geometry, geometry); -- replaced in 3.1.0 by 3 args version
-DROP FUNCTION IF EXISTS st_symdifference(geometry, geometry); -- replaced in 3.1.0 by 3 args version
-DROP FUNCTION IF EXISTS st_unaryunion(geometry); -- replaced in 3.1.0 by 3 args version
-DROP FUNCTION IF EXISTS ST_ClusterKMeans(geometry, integer); -- replaced in 3.2.0 by 3 args version
 
 -- geometry_columns changed parameter types so we verify if it needs to be dropped
 -- We check the catalog to see if the view (geometry_columns) has a column

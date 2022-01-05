@@ -1105,5 +1105,39 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	</refentry>
 
 
+	<refentry id="ST_3DConvexHull">
+	  <refnamediv>
+		<refname>ST_3DConvexHull</refname>
+
+		<refpurpose>Computes the 3D convex hull of a geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry<function>ST_3DConvexHull</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 3.3.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Example</title>
+          <programlisting>SELECT ST_AsText(ST_3DConvexHull('MULTIPOINTZ(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)')) As 3DHull;</programlisting>
+          <para>ST_AsText output</para>
+          <screen>POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
+	  </refsection>
+
+	</refentry>
 
 </sect1>

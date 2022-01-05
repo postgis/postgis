@@ -117,6 +117,7 @@ Datum sfcgal_minkowski_sum(PG_FUNCTION_ARGS);
 Datum sfcgal_make_solid(PG_FUNCTION_ARGS);
 Datum sfcgal_is_solid(PG_FUNCTION_ARGS);
 Datum postgis_sfcgal_noop(PG_FUNCTION_ARGS);
+Datum sfcgal_convexhull3D(PG_FUNCTION_ARGS);
 
 GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 char *text_to_cstring(const text *textptr);
@@ -615,5 +616,29 @@ Datum postgis_sfcgal_noop(PG_FUNCTION_ARGS)
 
 	output = geometry_serialize(result);
 	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(output);
+}
+
+PG_FUNCTION_INFO_V1(sfcgal_convexhull3D);
+Datum sfcgal_convexhull3D(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input, *output;
+	sfcgal_geometry_t *geom;
+	sfcgal_geometry_t *result;
+	srid_t srid;
+
+	sfcgal_postgis_init();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	geom = POSTGIS2SFCGALGeometry(input);
+	PG_FREE_IF_COPY(input, 0);
+
+	result = sfcgal_geometry_convexhull_3d(geom);
+	sfcgal_geometry_delete(geom);
+
+	output = SFCGALGeometry2POSTGIS(result, 0, srid);
+	sfcgal_geometry_delete(result);
+
 	PG_RETURN_POINTER(output);
 }

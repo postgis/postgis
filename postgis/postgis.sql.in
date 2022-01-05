@@ -1382,6 +1382,7 @@ CREATE OR REPLACE FUNCTION ST_Force2D(geometry)
 
 -- Availability: 2.1.0
 -- Changed: 3.1.0 - add zvalue=0.0 parameter
+-- Replaces ST_Force3DZ(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DZ(geom geometry, zvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
@@ -1390,6 +1391,7 @@ CREATE OR REPLACE FUNCTION ST_Force3DZ(geom geometry, zvalue float8 default 0.0)
 
 -- Availability: 2.1.0
 -- Changed: 3.1.0 - add zvalue=0.0 parameter
+-- Replaces ST_Force3D(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force3D(geom geometry, zvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'SELECT @extschema@.ST_Force3DZ($1, $2)'
@@ -1398,6 +1400,7 @@ CREATE OR REPLACE FUNCTION ST_Force3D(geom geometry, zvalue float8 default 0.0)
 
 -- Availability: 2.1.0
 -- Changed: 3.1.0 - add mvalue=0.0 parameter
+-- Replaces ST_Force3DM(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DM(geom geometry, mvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
@@ -1406,6 +1409,7 @@ CREATE OR REPLACE FUNCTION ST_Force3DM(geom geometry, mvalue float8 default 0.0)
 
 -- Availability: 2.1.0
 -- Changed: 3.1.0 - add zvalue=0.0 and mvalue=0.0 parameters
+-- Replaces ST_Force4D(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force4D(geom geometry, zvalue float8 default 0.0, mvalue float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
@@ -2926,7 +2930,10 @@ $$ LANGUAGE 'sql' STABLE;
 -- Changed: 3.0.0 also upgrade postgis_raster if it exists
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
-DECLARE rec record; sql text; var_schema text;
+DECLARE
+	rec record;
+	sql text;
+	var_schema text;
 BEGIN
 
 	FOR rec IN
@@ -2940,7 +2947,7 @@ BEGIN
 			'postgis_tiger_geocoder'
 		)
 		ORDER BY length(name) -- this is to make sure 'postgis' is first !
-	LOOP
+	LOOP --{
 		IF rec.installed_version IS NULL THEN
 			-- If the support installed by available extension
 			-- is found unpackaged, we package it
@@ -3020,7 +3027,7 @@ BEGIN
 			EXECUTE sql;
 		END IF;
 
-	END LOOP;
+	END LOOP; --}
 
 	RETURN 'Upgrade completed, run SELECT postgis_full_version(); for details';
 
@@ -3209,6 +3216,12 @@ BEGIN
 
 	IF sfcgal_scr_ver IS NOT NULL AND sfcgal_scr_ver != relproc THEN
 		fullver = fullver || ' (sfcgal procs from "' || sfcgal_scr_ver || '" need upgrade)';
+	END IF;
+
+	-- Check for the presence of deprecated functions
+	IF EXISTS ( SELECT oid FROM pg_catalog.pg_proc WHERE proname LIKE '%_deprecated_by_postgis_%' )
+	THEN
+		fullver = fullver || ' (deprecated functions exist, upgrade is not complete)';
 	END IF;
 
 	RETURN fullver;
@@ -3479,6 +3492,7 @@ CREATE OR REPLACE FUNCTION ST_IsValidTrajectory(geometry)
 ---------------------------------------------------------------
 
 -- Changed: 3.1.0 to add gridSize default argument
+-- Replaces ST_Intersection(geometry, geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_Intersection'
@@ -3622,6 +3636,7 @@ CREATE OR REPLACE FUNCTION ST_MaximumInscribedCircle(geometry, OUT center geomet
 
 -- PostGIS equivalent function: ST_difference(geom1 geometry, geom2 geometry)
 -- Changed: 3.1.0 to add gridSize default argument
+-- Replaces ST_Difference(geometry, geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Difference(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_Difference'
@@ -3644,6 +3659,7 @@ CREATE OR REPLACE FUNCTION ST_Points(geometry)
 
 -- PostGIS equivalent function: symdifference(geom1 geometry, geom2 geometry)
 -- Changed: 3.1.0 to add gridSize default argument
+-- Replaces ST_SymDifference(geometry, geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_SymDifference(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_SymDifference'
@@ -3671,6 +3687,7 @@ CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry, gridSize flo
 
 -- Availability: 2.0.0
 -- Changed: 3.1.0 to add gridSize default argument
+-- Replaces ST_UnaryUnion(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_UnaryUnion'
@@ -3699,6 +3716,7 @@ CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
 
 -- Availability: 2.2.0
 -- Changed: 3.1.0 to add gridSize default argument
+-- Replaces ST_Subdivide(geometry, integer) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAULT 256, gridSize float8 DEFAULT -1.0)
 	RETURNS setof geometry
 	AS 'MODULE_PATHNAME', 'ST_Subdivide'
@@ -4147,6 +4165,7 @@ CREATE AGGREGATE ST_MakeLine (geometry) (
 
 -- Availability: 2.3.0
 -- Changed: 3.2.0 added max_radius parameter
+-- Replaces ST_ClusterKMeans(geometry, integer) deprecated in 3.2.0
 CREATE OR REPLACE FUNCTION ST_ClusterKMeans(geom geometry, k integer, max_radius float8 default null)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'ST_ClusterKMeans'
@@ -4320,6 +4339,7 @@ CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(line1 geometry, line2 geomet
 	_COST_HIGH;
 
 -- Availability: 1.3.4
+-- Replaces ST_DWithin(text, text, float8) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin'
@@ -4770,6 +4790,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigit
 
 -- Availability: 1.2.2
 -- Changed: 2.0.0 to use default args and allow named args
+-- Replaces ST_AsKML(geometry, int4) deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix TEXT default '')
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asKML'

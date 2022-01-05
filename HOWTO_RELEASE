@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2020-02-23
+Date: 2021-11-18
 
 Versioning Scheme
 -----------------
@@ -145,7 +145,7 @@ Release procedure
     - postgis-users@lists.osgeo.org
     - postgis-devel@lists.osgeo.org
     - discuss@lists.osgeo.org
-    - pgsql-announce@postgresql.org (send email just to them, not with other ccs, they reject if others in cc)
+    - pgsql-announce@postgresql.org (no longer accepts direct posts) need to log in and post https://www.postgresql.org/account/edit/news/
     - david@fetter.org to be included in Weekly news
 
   - External web sites

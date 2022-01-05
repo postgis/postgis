@@ -452,6 +452,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 
 -- AsKML(geography,precision)
 -- Changed: 2.0.0 to use default args and named args
+-- Replaces ST_AsKML(geography, int4) deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_kml'
@@ -808,6 +809,8 @@ CREATE OR REPLACE FUNCTION ST_Covers(geog1 geography, geog2 geography)
 	_COST_HIGH;
 
 -- Availability: 1.5.0
+-- Changed: 3.0.0 to use default and named args
+-- Replaces ST_DWithin(geography, geography, float8) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geog1 geography, geog2 geography, tolerance float8, use_spheroid boolean DEFAULT true)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','geography_dwithin'
@@ -831,7 +834,7 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geog1 geography, geog2 geography)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
-#else
+#else /* POSTGIS_PGSQL_VERSION < 120 */
 
 -- Only implemented for polygon-over-point
 -- Availability: 1.5.0
@@ -848,6 +851,8 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(geog1 geography, geog2 geography)
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 1.5.0
+-- Changed: 3.0.0 to use default and named args
+-- Replaces ST_DWithin(geography, geography, float8) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geog1 geography, geog2 geography, tolerance float8, use_spheroid boolean DEFAULT true)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@._ST_Expand($1,$3) AND @extschema@._ST_DWithin($1, $2, $3, $4)'
@@ -858,7 +863,7 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@.ST_Distance($1, $2, false) < 0.00001'
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
 
-#endif
+#endif /* POSTGIS_PGSQL_VERSION < 120 */
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Covers(text, text)

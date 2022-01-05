@@ -1,5 +1,14 @@
-PostGIS 3.2.0rc1
-2021/12/XX
+PostGIS 3.3.0dev
+2022/MM/DD
+
+ * Breaking changes *
+  - ...
+
+ * Enhancements *
+  - #5037, add convexhull 3D (Loïc Bartoletti)
+
+PostGIS 3.2.0 (Olivier Courtin Edition)
+2021/12/17
 This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher
 , and Proj 4.9+.
 Additional features are enabled if you are running GEOS 3.9+
@@ -168,8 +177,6 @@ Changes since PostGIS 3.2.0beta1 release:
   - GH647, ST_AsMVTGeom now uses faster clipping (Aliaksandr Kalenik)
   - GH648, ST_PixelAsCentroids, ST_PixelAsCentroid
            reimplemented in C (Sergei Shoulbakov)
-
-
 
 
 PostGIS 3.2.0beta1
