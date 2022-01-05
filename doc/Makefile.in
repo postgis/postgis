@@ -38,6 +38,7 @@ INSTALL_DATA=@INSTALL_DATA@
 
 XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
+CAN_UPDATE_TRANSLATIONS=@CAN_UPDATE_TRANSLATIONS@
 XMLLINT=@XMLLINT@
 CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
 PERL=@PERL@
@@ -82,10 +83,10 @@ DBLATEX=@DBLATEX@
 IMAGEMAGICK=@IMAGEMAGICK@
 
 # Gettext for translated documentation
-MSGMERGE=msgmerge
+MSGMERGE=@MSGMERGE@
 
 # XML gettext tools
-XML2POT=xml2pot
+XML2POT=@XML2POT@
 
 # DOCBOOK to EPUB
 DBTOEPUB=dbtoepub
@@ -166,6 +167,9 @@ XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
 XML_INPUTS_POT = $(XML_SOURCES:%.xml=po/templates/%.xml.pot)
 
 .PHONY: $(XML_INPUTS_POT)
+ifeq ($(XML2POT),)
+$(XML_INPUTS_POT): requirements_not_met_xml2pot
+else
 $(XML_INPUTS_POT): po/templates/%.xml.pot: %.xml
 	@if test -f $@; then \
 	  $(XML2POT) $< > $@.tmp; \
@@ -180,11 +184,15 @@ $(XML_INPUTS_POT): po/templates/%.xml.pot: %.xml
   else \
 	  $(XML2POT) $< > $@; \
   fi;
+endif
 
 # Update translation templates
 update-pot: $(XML_INPUTS_POT)
 
 # Creates or updates translation files
+ifeq ($(MSGMERGE),)
+update-po: requirements_not_met_msgmerge
+else
 update-po: $(XML_INPUTS_POT)
 	@for lang in $(translations); do \
     echo "Creating po files for language $$lang..." ; \
@@ -198,6 +206,7 @@ update-po: $(XML_INPUTS_POT)
       fi; \
     done; \
   done
+endif
 
 pull-tx:
 	tx pull --all
@@ -480,4 +489,16 @@ requirements_not_met_imagemagick:
 	@echo "refer to online manual:"
 	@echo
 	@echo "  http://postgis.net/documentation"
+	@echo
+
+requirements_not_met_gettext:
+	@echo
+	@echo "configure was unable to find both gettext's 'msgmerge' utility program."
+	@echo "To update the translation templates, install gettext and then re-run configure."
+	@echo
+
+requirements_not_met_xml2pot:
+	@echo
+	@echo "configure was unable to find the 'xml2pot' utility program."
+	@echo "To update the translation templates, install poxml and then re-run configure."
 	@echo
