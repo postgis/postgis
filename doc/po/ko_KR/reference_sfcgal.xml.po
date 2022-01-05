@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-04 23:52+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -72,7 +72,7 @@ msgstr "text <function>postgis_sfcgal_version</function>"
 #: reference_sfcgal.xml:340 reference_sfcgal.xml:369 reference_sfcgal.xml:474
 #: reference_sfcgal.xml:541 reference_sfcgal.xml:617 reference_sfcgal.xml:691
 #: reference_sfcgal.xml:766 reference_sfcgal.xml:804 reference_sfcgal.xml:902
-#: reference_sfcgal.xml:943 reference_sfcgal.xml:971
+#: reference_sfcgal.xml:943 reference_sfcgal.xml:971 reference_sfcgal.xml:1000
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -91,7 +91,7 @@ msgstr "2.1.0 버전부터 사용할 수 있습니다."
 #: reference_sfcgal.xml:343 reference_sfcgal.xml:379 reference_sfcgal.xml:482
 #: reference_sfcgal.xml:544 reference_sfcgal.xml:620 reference_sfcgal.xml:695
 #: reference_sfcgal.xml:769 reference_sfcgal.xml:807 reference_sfcgal.xml:905
-#: reference_sfcgal.xml:946 reference_sfcgal.xml:974
+#: reference_sfcgal.xml:946 reference_sfcgal.xml:974 reference_sfcgal.xml:1003
 #, no-c-format
 msgid "&sfcgal_required;"
 msgstr "&sfcgal_required;"
@@ -102,7 +102,7 @@ msgstr "&sfcgal_required;"
 #: reference_sfcgal.xml:344 reference_sfcgal.xml:484 reference_sfcgal.xml:545
 #: reference_sfcgal.xml:621 reference_sfcgal.xml:696 reference_sfcgal.xml:770
 #: reference_sfcgal.xml:808 reference_sfcgal.xml:906 reference_sfcgal.xml:947
-#: reference_sfcgal.xml:975
+#: reference_sfcgal.xml:975 reference_sfcgal.xml:1004
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -112,7 +112,7 @@ msgstr "&Z_support;"
 #: reference_sfcgal.xml:230 reference_sfcgal.xml:287 reference_sfcgal.xml:345
 #: reference_sfcgal.xml:546 reference_sfcgal.xml:622 reference_sfcgal.xml:697
 #: reference_sfcgal.xml:771 reference_sfcgal.xml:809 reference_sfcgal.xml:907
-#: reference_sfcgal.xml:948 reference_sfcgal.xml:976
+#: reference_sfcgal.xml:948 reference_sfcgal.xml:976 reference_sfcgal.xml:1005
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
@@ -122,7 +122,7 @@ msgstr "&P_support;"
 #: reference_sfcgal.xml:231 reference_sfcgal.xml:288 reference_sfcgal.xml:346
 #: reference_sfcgal.xml:547 reference_sfcgal.xml:623 reference_sfcgal.xml:698
 #: reference_sfcgal.xml:772 reference_sfcgal.xml:810 reference_sfcgal.xml:908
-#: reference_sfcgal.xml:949 reference_sfcgal.xml:977
+#: reference_sfcgal.xml:949 reference_sfcgal.xml:977 reference_sfcgal.xml:1006
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -1278,7 +1278,7 @@ msgstr ""
 "160, 120 190, 10 190 ))'::geometry);"
 
 #. Tag: para
-#: reference_sfcgal.xml:859
+#: reference_sfcgal.xml:859 reference_sfcgal.xml:1012
 #, no-c-format
 msgid "ST_AsText output"
 msgstr "ST_AsText 출력물:"
@@ -1334,7 +1334,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: title
-#: reference_sfcgal.xml:912
+#: reference_sfcgal.xml:912 reference_sfcgal.xml:1010
 #, no-c-format
 msgid "Example"
 msgstr "예시"
@@ -1435,6 +1435,52 @@ msgid ""
 msgstr ""
 "<funcdef>boolean<function>ST_IsSolid</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+
+#. Tag: refname
+#: reference_sfcgal.xml:985
+#, no-c-format
+msgid "ST_3DConvexHull"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:987
+#, fuzzy, no-c-format
+msgid "Computes the 3D convex hull of a geometry."
+msgstr "면 도형의 근사 중심축을 계산합니다."
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:992
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>geometry<function>ST_3DConvexHull</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:1002
+#, fuzzy, no-c-format
+msgid "Availability: 3.3.0"
+msgstr "2.1.0 버전부터 사용할 수 있습니다."
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:1011
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_3DConvexHull('MULTIPOINTZ(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 "
+"7 5, 6 3 5)')) As 3DHull;"
+msgstr ""
+
+#. Tag: screen
+#: reference_sfcgal.xml:1013
+#, no-c-format
+msgid ""
+"POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),"
+"((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 "
+"6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 "
+"7 5,9 5 3,1 5 3)))"
+msgstr ""
 
 #, fuzzy
 #~ msgid ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>"
