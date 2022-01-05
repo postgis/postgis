@@ -187,6 +187,16 @@ if test "x$XSLTPROC" = "x"; then
   CAN_BUILD_COMMENTS=no
 fi
 
+AC_PATH_PROG([XML2POT], [xml2pot], [])
+if test "x$XML2POT" = "x"; then
+	AC_MSG_WARN([xml2pot is not installed so translations cannot be updated])
+fi
+
+AC_PATH_PROG([MSGMERGE], [msgmerge], [])
+if test "x$MSGMERGE" = "x"; then
+	AC_MSG_WARN([msgmerge is not installed so translations cannot be updated])
+fi
+
 CAN_BUILD_PDF=${CAN_BUILD_COMMENTS}
 
 AC_PATH_PROG([IMAGEMAGICK], [convert], [])
