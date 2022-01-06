@@ -79,9 +79,6 @@ CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 # DBLatex's dblatex script for PDF generation from DocBook
 DBLATEX=@DBLATEX@
 
-# Imagemagick's convert utility program for generated images used in the documentation
-IMAGEMAGICK=@IMAGEMAGICK@
-
 # Gettext for translated documentation
 MSGMERGE=@MSGMERGE@
 
@@ -478,15 +475,6 @@ requirements_not_met_xslbase:
 	@echo "Install the Docbook XSL stylesheets and/or re-run configure "
 	@echo "with the --with-xsldir option."
 	@echo "Alternatively refer to online manual:"
-	@echo
-	@echo "  http://postgis.net/documentation"
-	@echo
-
-requirements_not_met_imagemagick:
-	@echo
-	@echo "configure was unable to find the ImageMagick's 'convert' utility program."
-	@echo "To build the documentation, install ImageMagick and then re-run configure. Alternatively "
-	@echo "refer to online manual:"
 	@echo
 	@echo "  http://postgis.net/documentation"
 	@echo
