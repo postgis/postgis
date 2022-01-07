@@ -99,6 +99,10 @@ handleInterrupt(int sig)
 
 Datum postgis_sfcgal_version(PG_FUNCTION_ARGS);
 
+#if POSTGIS_SFCGAL_VERSION >= 10400
+Datum postgis_sfcgal_full_version(PG_FUNCTION_ARGS);
+#endif
+
 Datum sfcgal_from_ewkt(PG_FUNCTION_ARGS);
 Datum sfcgal_area3D(PG_FUNCTION_ARGS);
 Datum sfcgal_intersection3D(PG_FUNCTION_ARGS);
@@ -561,6 +565,16 @@ Datum postgis_sfcgal_version(PG_FUNCTION_ARGS)
 	text *result = cstring_to_text(ver);
 	PG_RETURN_POINTER(result);
 }
+
+#if POSTGIS_SFCGAL_VERSION >= 10400
+PG_FUNCTION_INFO_V1(postgis_sfcgal_full_version);
+Datum postgis_sfcgal_full_version(PG_FUNCTION_ARGS)
+{
+	const char *ver = lwgeom_sfcgal_full_version();
+	text *result = cstring_to_text(ver);
+	PG_RETURN_POINTER(result);
+}
+#endif
 
 PG_FUNCTION_INFO_V1(sfcgal_is_solid);
 Datum sfcgal_is_solid(PG_FUNCTION_ARGS)

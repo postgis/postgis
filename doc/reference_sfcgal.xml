@@ -33,15 +33,56 @@
 	  <refsection>
 		<title>Description</title>
 
+        <para>Returns the version of SFCGAL in use</para>
+
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
+	  <refsection>
+				<title>See Also</title>
+
+				<para><xref linkend="postgis_sfcgal_full_version" /></para>
+		</refsection>
 
 	</refentry>
 
+	<refentry id="postgis_sfcgal_full_version">
+	  <refnamediv>
+		<refname>postgis_sfcgal_full_version</refname>
+
+		<refpurpose>Returns the full version of SFCGAL in use including CGAL and Boost versions</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>postgis_sfcgal_full_version</function></funcdef>
+                        <void/>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+        <para>Returns the full version of SFCGAL in use including CGAL and Boost versions</para>
+
+		<para>Availability: 3.3.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+	  <refsection>
+				<title>See Also</title>
+
+				<para><xref linkend="postgis_sfcgal_version" /></para>
+		</refsection>
+
+	</refentry>
 
 	<refentry id="ST_Extrude">
 	  <refnamediv>

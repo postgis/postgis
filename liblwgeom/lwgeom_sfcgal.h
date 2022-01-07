@@ -28,6 +28,9 @@
 /* return SFCGAL version string */
 const char *lwgeom_sfcgal_version(void);
 
+/* return SFCGAL full version string */
+const char *lwgeom_sfcgal_full_version(void);
+
 /* Convert SFCGAL structure to lwgeom PostGIS */
 LWGEOM *SFCGAL2LWGEOM(const sfcgal_geometry_t *geom, int force3D, int32_t SRID);
 

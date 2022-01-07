@@ -102,13 +102,6 @@
 		</varlistentry>
 
 		<varlistentry>
-			<term>Olivier Courtin</term>
-			<listitem>
-			  <para>Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
 			<term>Martin Davis</term>
 			<listitem>
 			  <para>GEOS enhancements and documentation</para>
@@ -147,6 +140,13 @@
 			<listitem>
 				<para>Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
 					and new function enhancements.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Olivier Courtin</term>
+			<listitem>
+			  <para>(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
 

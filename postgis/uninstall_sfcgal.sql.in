@@ -16,6 +16,8 @@ BEGIN;
 
 DROP FUNCTION IF EXISTS postgis_sfcgal_version();
 
+DROP FUNCTION IF EXISTS postgis_sfcgal_full_version();
+
 DROP FUNCTION IF EXISTS ST_3DIntersection(geom1 geometry, geom2 geometry);
 
 DROP FUNCTION IF EXISTS ST_Tesselate(geometry);

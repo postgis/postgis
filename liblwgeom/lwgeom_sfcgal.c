@@ -23,6 +23,7 @@
  **********************************************************************/
 
 #include "lwgeom_sfcgal.h"
+#include <stdio.h>
 
 static int SFCGAL_type_to_lwgeom_type(sfcgal_geometry_type_t type);
 static POINTARRAY *ptarray_from_SFCGAL(const sfcgal_geometry_t *geom, int force3D);
@@ -33,6 +34,20 @@ const char *
 lwgeom_sfcgal_version()
 {
 	const char *version = sfcgal_version();
+	return version;
+}
+
+#define MAX_LENGTH_SFCGAL_FULL_VERSION 50
+/* Return SFCGAL full version string */
+const char *
+lwgeom_sfcgal_full_version()
+{
+#if POSTGIS_SFCGAL_VERSION >= 10400
+	const char *version = sfcgal_full_version();
+#else
+	char *version = (char*)malloc(MAX_LENGTH_SFCGAL_FULL_VERSION);
+	snprintf(version, MAX_LENGTH_SFCGAL_FULL_VERSION, "SFCGAL=\"%s\" CGAL=\"Unknown\" Boost=\"Unknown\"", sfcgal_version());
+#endif
 	return version;
 }
 
