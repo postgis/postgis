@@ -30,7 +30,7 @@ AC_ARG_ENABLE(gtktest, [  --disable-gtktest       do not try to compile and run 
     if pkg-config --atleast-pkgconfig-version 0.7 ; then
       :
     else
-      echo "*** pkg-config too old; version 0.7 or better required."
+      echo *** pkg-config too old; version 0.7 or better required.
       no_gtk=yes
       PKG_CONFIG=no
     fi
@@ -74,7 +74,7 @@ dnl Now check if the installed GTK+ is sufficiently new. (Also sanity
 dnl checks the results of pkg-config to some extent)
 dnl
       rm -f conf.gtktest
-      AC_TRY_RUN([
+      AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -145,7 +145,7 @@ main ()
     }
   return 1;
 }
-],, no_gtk=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+]])],[],[no_gtk=yes],[echo $ac_n "cross compiling; assumed OK... $ac_c"])
        CFLAGS="$ac_save_CFLAGS"
        LIBS="$ac_save_LIBS"
      fi
@@ -167,11 +167,10 @@ main ()
 	  ac_save_LIBS="$LIBS"
           CFLAGS="$CFLAGS $GTK_CFLAGS"
           LIBS="$LIBS $GTK_LIBS"
-          AC_TRY_LINK([
+          AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <gtk/gtk.h>
 #include <stdio.h>
-],      [ return ((gtk_major_version) || (gtk_minor_version) || (gtk_micro_version)); ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
+]], [[ return ((gtk_major_version) || (gtk_minor_version) || (gtk_micro_version)); ]])],[ echo "*** The test program compiled, but did not run. This usually means"
           echo "*** that the run-time linker is not finding GTK+ or finding the wrong"
           echo "*** version of GTK+. If it is not finding GTK+, you'll need to set your"
           echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
@@ -179,8 +178,7 @@ main ()
           echo "*** is required on your system"
 	  echo "***"
           echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH" ],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
+          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH" ],[ echo "*** The test program failed to compile or link. See the file config.log for the"
           echo "*** exact error that occured. This usually means GTK+ is incorrectly installed."])
           CFLAGS="$ac_save_CFLAGS"
           LIBS="$ac_save_LIBS"
@@ -192,33 +190,5 @@ main ()
   fi
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
-
-dnl
-dnl test for OS/X GTK installation
-dnl
-  _gdk_tgt=`$PKG_CONFIG --variable=target gdk-2.0`
-  if test "x$_gdk_tgt" = xquartz; then 
-    AC_MSG_CHECKING([for ige-mac-integration])
-    if $PKG_CONFIG --exists "ige-mac-integration" ; then
-      AC_MSG_RESULT([yes])
-
-      AC_MSG_CHECKING([for IGE_MAC_CFLAGS])
-      IGE_MAC_CFLAGS=`$PKG_CONFIG --cflags "ige-mac-integration"`
-      AC_MSG_RESULT($IGE_MAC_CFLAGS)
-
-      AC_MSG_CHECKING([for IGE_MAC_LIBS])
-      IGE_MAC_LIBS=`$PKG_CONFIG --libs "ige-mac-integration"`
-      AC_MSG_RESULT($IGE_MAC_LIBS)
-
-    else
-      IGE_MAC_CFLAGS=""
-      IGE_MAC_LIBS=""
-      AC_MSG_RESULT([no])
-    fi
-
-  fi
-  AC_SUBST(IGE_MAC_CFLAGS)
-  AC_SUBST(IGE_MAC_LIBS)
-
   rm -f conf.gtktest
 ])
