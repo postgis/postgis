@@ -104,6 +104,7 @@ SA_OBJS = \
 	lwtree.o \
 	lwout_gml.o \
 	lwout_kml.o \
+	lwout_marc21.o \
 	lwout_geojson.o \
 	lwout_svg.o \
 	lwout_x3d.o \

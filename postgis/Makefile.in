@@ -92,6 +92,8 @@ PG_OBJS= \
 	lwgeom_export.o \
 	lwgeom_in_gml.o \
 	lwgeom_in_kml.o \
+	lwgeom_in_marc21.o \
+	lwgeom_out_marc21.o \
 	lwgeom_in_geohash.o \
 	lwgeom_in_geojson.o \
 	lwgeom_in_encoded_polyline.o \
