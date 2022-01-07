@@ -28,7 +28,7 @@ CREATE OR REPLACE FUNCTION postgis_sfcgal_version() RETURNS text
         LANGUAGE 'c' IMMUTABLE;
 
 #if POSTGIS_SFCGAL_VERSION >= 10400
--- Availability: 3.2.0
+-- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION postgis_sfcgal_full_version() RETURNS text
         AS 'MODULE_PATHNAME'
         LANGUAGE 'c' IMMUTABLE;

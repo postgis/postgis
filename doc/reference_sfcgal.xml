@@ -70,7 +70,7 @@
 
         <para>Returns the full version of SFCGAL in use including CGAL and Boost versions</para>
 
-		<para>Availability: 3.2.0</para>
+		<para>Availability: 3.3.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>

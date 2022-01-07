@@ -1,7 +1,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
 	 ********************************************************************
-	 Copyright 2010-2021, Regina Obe
+	 Copyright 2010-2022, Regina Obe
 	 License: BSD
 	 Purpose: This is an xsl transform that generates file postgis_aggs_mm.xml which
 	 includes index listing of aggregate functions and mm /sql compliant functions as well as what is new in each release
@@ -483,6 +483,106 @@
 
 	   <sect1 id="NewFunctions">
 			<title>New, Enhanced or changed PostGIS Functions</title>
+						<sect2 id="NewFunctions_3_3">
+				<title>PostGIS Functions new or enhanced in 3.3</title>
+				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
+        <xsl:if test="//para[contains(text(),'Availability: 3.3')]">
+				<para>Functions new in PostGIS 3.3</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="refnamediv/refname"/>
+						<xsl:variable name='comment'>
+							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+						</xsl:variable>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+
+
+				<!-- For each section if there is note about availability in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Availability: 3.3')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
+        </xsl:if>
+
+				<xsl:if test="//para[contains(text(),'Enhanced: 3.3')]">
+				<para>Functions enhanced in PostGIS 3.3</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="refnamediv/refname"/>
+						<xsl:variable name='comment'>
+							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+						</xsl:variable>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+
+
+				<!-- For each section if there is note about availability in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Enhanced: 3.3')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
+			</xsl:if>
+
+			<para>Functions changed in PostGIS 3.3</para>
+				<xsl:if test="//para[contains(text(),'Changed: 3.3')]">
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="refnamediv/refname"/>
+						<xsl:variable name='comment'>
+							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+						</xsl:variable>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+
+
+				<!-- For each section if there is note about availability in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Changed: 3.2')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
+				</xsl:if>
+			</sect2>
+
 			<sect2 id="NewFunctions_3_2">
 				<title>PostGIS Functions new or enhanced in 3.2</title>
 				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
