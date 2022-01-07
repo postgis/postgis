@@ -12,15 +12,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-10-18 13:20+0000\n"
-"Last-Translator: Manuel Retamozo <manuel@retamozo.com.ar>\n"
-"Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
-"es/)\n"
+"PO-Revision-Date: 2022-01-08 03:27+0000\n"
+"Last-Translator: robe <regina@arrival3d.com>\n"
+"Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
+"installationxml/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.9.1\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -246,22 +247,22 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:96
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Alternatively, checkout the source from the <ulink url=\"https://git-scm.com/"
 "\"> git </ulink> repository <ulink url=\"https://git.osgeo.org/gitea/postgis/"
 "postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </ulink> ."
 msgstr ""
-"De forma alternativa se puede obtener el código fuente del repositorio "
-"<ulink url=\"http://subversion.apache.org/\"> svn </ulink>  <ulink url="
-"\"http://svn.osgeo.org/postgis/trunk/\"> http://svn.osgeo.org/postgis/trunk/ "
-"</ulink> ."
+"De forma alternativa se puede obtener el código fuente del  <ulink url="
+"\"https://git-scm.com/\"> git </ulink>  repositorio <ulink url=\"https://git."
+"osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/gitea/postgis/"
+"postgis/ </ulink> ."
 
 #. Tag: programlisting
 #: installation.xml:108
 #, no-c-format
 msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis"
-msgstr ""
+msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis"
 
 #. Tag: para
 #: installation.xml:110
