@@ -1277,8 +1277,8 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		</para>
 
 		<para>
-		Tiles with multiple layers
-		can be created by concatenating multiple calls to this function	using <varname>||</varname>.
+		Tiles with multiple layers can be created by concatenating multiple calls to this function
+		using <varname>||</varname> or <varname>STRING_AGG</varname>.
 		</para>
 
 		<important>
