@@ -9,7 +9,7 @@ dnl * the terms of the GNU General Public Licence. See the COPYING file.
 dnl *
 dnl **********************************************************************
 
-AC_INIT()
+AC_INIT
 AC_CONFIG_HEADERS([postgis_config.h])
 AH_TEMPLATE([HAVE_VASPRINTF])
 AH_TEMPLATE([HAVE_ASPRINTF])
@@ -20,7 +20,7 @@ AC_PROG_INSTALL
 
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
 dnl flags required to build liblwgeom
-AC_PROG_LIBTOOL
+LT_INIT
 
 dnl
 dnl Compilers
@@ -61,9 +61,9 @@ dnl
 PICFLAGS="$lt_prog_compiler_pic"
 AC_SUBST([PICFLAGS])
 
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -std=gnu99], [_cv_std], -std=gnu99, [], [CFLAGS="-std=gnu99 $CFLAGS"], [])
+_LT_COMPILER_OPTION([if $compiler supports -fno-math-errno], [_cv_nomatherrno], [-fno-math-errno], [], [CFLAGS="$CFLAGS -fno-math-errno"], [])
+_LT_COMPILER_OPTION([if $compiler supports -fno-signed-zeros], [_cv_nosignedzeros], [-fno-signed-zeros], [], [CFLAGS="$CFLAGS -fno-signed-zeros"], [])
+_LT_COMPILER_OPTION([if $compiler supports -std=gnu99], [_cv_std], -std=gnu99, [], [CFLAGS="-std=gnu99 $CFLAGS"], [])
 
 
 dnl
@@ -76,7 +76,7 @@ dnl Exporting used library symbols in the module is a source of issues,
 dnl see https://trac.osgeo.org/postgis/ticket/3281
 dnl
 EXCLUDELIBS_LDFLAGS=""
-AC_LIBTOOL_LINKER_OPTION([if $compiler supports --exclude-libs], [_cv_exclude_libs], [[-Wl,--exclude-libs,ALL]], [EXCLUDELIBS_LDFLAGS="-Wl,--exclude-libs,ALL"])
+_LT_LINKER_OPTION([if $compiler supports --exclude-libs], [_cv_exclude_libs], [[-Wl,--exclude-libs,ALL]], [EXCLUDELIBS_LDFLAGS="-Wl,--exclude-libs,ALL"])
 AC_SUBST([EXCLUDELIBS_LDFLAGS])
 
 dnl
@@ -131,7 +131,7 @@ dnl
 dnl Search for flex/bison to build the parser
 dnl
 
-AC_PROG_LEX
+AC_PROG_LEX(noyywrap)
 AC_PATH_PROG(YACC, bison)
 AC_SUBST([LEX])
 AC_SUBST([YACC])
@@ -1139,11 +1139,11 @@ dnl Allow the developer to turn on expensive checks and debugging flags
 dnl with --enable-debug
 dnl
 
-AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable debugging code and flags]),
+AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug], [Enable debugging code and flags]),
 	[ENABLE_DEBUG=1], [ENABLE_DEBUG=0])
 
 dnl Add -Wall to CFLAGS
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [CFLAGS="$CFLAGS -Wall"], [])
+_LT_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [CFLAGS="$CFLAGS -Wall"], [])
 
 if test $ENABLE_DEBUG -eq 1; then
     AC_DEFINE([PARANOIA_LEVEL], [10], [Enable use of memory checks])
@@ -1159,7 +1159,7 @@ dnl ===========================================================================
 dnl Allow the developer to disable the automatic updates of postgis_revision.h
 dnl with --without-phony-revision
 dnl
-AC_ARG_WITH([phony-revision], AC_HELP_STRING([--without-phony-revision], [Disable automatic updates of postgis_revision.h]), [], [])
+AC_ARG_WITH([phony-revision], AS_HELP_STRING([--without-phony-revision], [Disable automatic updates of postgis_revision.h]), [], [])
 if test "x$with_phony_revision" != "xno"; then
     PHONY_REVISION="yes"
 else
@@ -1349,7 +1349,7 @@ dnl raster stuff
 dnl ====================================
 AC_ARG_WITH(
 	[raster],
-	AC_HELP_STRING([--without-raster], [Disable the raster extension]),
+	AS_HELP_STRING([--without-raster], [Disable the raster extension]),
 	[], [])
 
 if test "x$with_raster" != "xno"; then
@@ -1363,7 +1363,7 @@ if test "x$with_raster" != "xno"; then
 	dnl ===========================================================================
 	AC_ARG_WITH(
 		[raster-dblwarning],
-		AC_HELP_STRING([--with-raster-dblwarning], [output double truncation warnings.  Only used with --with-raster]),
+		AS_HELP_STRING([--with-raster-dblwarning], [output double truncation warnings.  Only used with --with-raster]),
 		[POSTGIS_RASTER_WARN_ON_TRUNCATION=1],
 		[POSTGIS_RASTER_WARN_ON_TRUNCATION=0])
 
@@ -1395,7 +1395,7 @@ if test "x$with_raster" != "xno"; then
 
 	AC_ARG_WITH(
 		[gdalconfig],
-		AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path).  Only used with --with-raster]),
+		AS_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path).  Only used with --with-raster]),
 		[GDAL_CONFIG="$withval"],
 		[AC_PATH_PROG([GDAL_CONFIG], [gdal-config], [])]
   )
@@ -1684,7 +1684,7 @@ dnl ===========================================================================
 dnl Output the relevant files
 dnl ===========================================================================
 
-AC_OUTPUT([GNUmakefile
+AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
    extensions/postgis_raster/Makefile
@@ -1716,6 +1716,8 @@ AC_OUTPUT([GNUmakefile
    utils/Makefile
    $RT_MAKEFILE_LIST
    $DEPS_MAKEFILE_LIST])
+
+AC_OUTPUT
 
 dnl ===========================================================================
 dnl Display the configuration status information
