@@ -10,14 +10,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2021-11-28 21:13+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/es/)\n"
+"PO-Revision-Date: 2022-01-10 05:06+0000\n"
+"Last-Translator: jsanz <jsanz@osgeo.org>\n"
+"Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
+"extras_topologyxml/es/>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -136,6 +138,7 @@ msgstr "getfaceedges_returntype"
 msgid ""
 "A composite type that consists of a sequence number and an edge number."
 msgstr ""
+"Un tipo compuesto que necesita un número de secuencia y un número de eje."
 
 #. Tag: title
 #: extras_topology.xml:34 extras_topology.xml:58 extras_topology.xml:107
@@ -172,6 +175,9 @@ msgid ""
 " is the return type for <varname>ST_GetFaceEdges</varname> and "
 "<varname>GetNodeEdges</varname> functions."
 msgstr ""
+"Un tipo compuesto que consiste de un número de secuencia y de un número de "
+"eje. Es el tipo devuelto por las funciones <varname>ST_GetFaceEdges</"
+"varname> y <varname>GetNodeEdges</varname> ."
 
 #. Tag: para
 #: extras_topology.xml:43
@@ -320,7 +326,10 @@ msgid ""
 "A composite type that consists of an error message and id1 and id2 to denote"
 " location of error. This is the return type for "
 "<varname>ValidateTopology</varname>."
-msgstr " Un tipo compuesto que consta de un mensaje de error e id1 e id2 para denotar la ubicación del error. Este es el tipo de valor devuelto para<varname>ValidateTopology</varname>."
+msgstr ""
+"Un tipo compuesto que consta de un mensaje de error e id1 e id2 para denotar "
+"la ubicación del error. Este es el tipo de valor devuelto por "
+"<varname>ValidateTopology</varname>."
 
 #. Tag: para
 #: extras_topology.xml:108
