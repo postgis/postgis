@@ -81,6 +81,7 @@ DBLATEX=@DBLATEX@
 
 # Gettext for translated documentation
 MSGMERGE=@MSGMERGE@
+MSGINIT=@MSGINIT@
 
 # XML gettext tools
 XML2POT=@XML2POT@
@@ -199,7 +200,7 @@ update-po: $(XML_INPUTS_POT)
       if test -f $$po; then \
         $(MSGMERGE) --update $$po $$pot; \
       else \
-        cp $$pot $$po; \
+        $(MSGINIT) -i $$pot -o $$po -l $$lang --no-translator; \
       fi; \
     done; \
   done
