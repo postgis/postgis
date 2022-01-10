@@ -225,3 +225,19 @@ source_lang = en
 file_filter = po/<lang>/administration.xml.po
 source_file = po/templates/administration.xml.pot
 source_lang = en
+
+[postgis.database_tuningxmlpot]
+file_filter = po/<lang>/database_tuning.xml.po
+source_file = po/templates/database_tuning.xml.pot
+source_lang = en
+
+[postgis.reference_overlayxmlpot]
+file_filter = po/<lang>/reference_overlay.xml.po
+source_file = po/templates/reference_overlay.xml.pot
+source_lang = en
+
+[postgis.using_postgis_queryxmlpot]
+file_filter = po/<lang>/using_postgis_query.xml.po
+source_file = po/templates/using_postgis_query.xml.pot
+source_lang = en
+
