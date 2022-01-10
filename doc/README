@@ -58,7 +58,7 @@ Requirements
 
 To generate the html files and the comments:
  * xsltproc - http://xmlsoft.org/xslt/xsltproc2.html
- * DocBook XSL stylesheets
+ * DocBook XSL stylesheets - https://docbook.org/tools/
  * MathML 3 DTD - http://www.w3.org/Math/DTD/
 
 To generate the images:
