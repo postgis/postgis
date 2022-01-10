@@ -517,10 +517,11 @@ msgstr "ST_ContainsProperly"
 #: reference_relationship.xml:226
 #, fuzzy, no-c-format
 msgid ""
-"Returns true if B intersects the interior of A but not the boundary or exterior."
+"<refpurpose>Returns true if B intersects the interior of A but not the "
+"boundary or exterior.</refpurpose>"
 msgstr ""
-"BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合には"
-"TRUEを返します。"
+"<para>BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合"
+"には</para>TRUEを返します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:231
@@ -538,10 +539,11 @@ msgstr ""
 #: reference_relationship.xml:246
 #, fuzzy, no-c-format
 msgid ""
-"Returns true if B intersects the interior of A but not the boundary or exterior."
+"<para>Returns true if B intersects the interior of A but not the boundary or "
+"exterior.</para>"
 msgstr ""
-"BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合には"
-"TRUEを返します。"
+"<para>BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合"
+"には</para>TRUEを返します。"
 
 #. Tag: para
 #: reference_relationship.xml:248
@@ -3395,6 +3397,14 @@ msgstr ""
 " st_pointinsidecircle\n"
 "------------------------\n"
 " t"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Returns true if B intersects the interior of A but not the boundary or "
+#~ "exterior."
+#~ msgstr ""
+#~ "BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合に"
+#~ "はTRUEを返します。"
 
 #, no-c-format
 #~ msgid ""
