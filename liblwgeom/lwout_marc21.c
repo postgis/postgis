@@ -34,17 +34,16 @@ lwvarlena_t *
 lwgeom_to_marc21(const LWGEOM *geom, int precision)
 {
 
-	lwdebug(1,"lwgeom_to_marc21 started: geom %d with %d ",geom->type,precision);
+	//lwdebug(1,"lwgeom_to_marc21 started: geom %d with %d ",geom->type,precision);
 
 	if( lwgeom_is_empty(geom) )	return NULL;
 
 	char* ns = "http://www.loc.gov/MARC21/slim";
-	int rv;
 	stringbuffer_t *sb;
 	GBOX box;
 
 	sb = stringbuffer_create();
-	lwdebug(1,"lwgeom_to_marc21 -> stringbuffer created");
+	//lwdebug(1,"lwgeom_to_marc21 -> stringbuffer created");
 
 	/**
 	 * Opens the MARX21/XML record
@@ -54,7 +53,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 	if(lwgeom_is_collection(geom)){
 
-		lwdebug(1,"lwgeom_to_marc21 -> geom is collection (%d)",geom->type);
+		//lwdebug(1,"lwgeom_to_marc21 -> geom is collection (%d)",geom->type);
 
 		int i;
 		LWCOLLECTION * coll = (LWCOLLECTION *)geom;
@@ -70,7 +69,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 			if(gbox_to_marc21_sb(box, precision, sb)==LW_FAILURE) {
 				stringbuffer_destroy(sb);
-				lwerror("failed to create MARC21/XML for a geometry in the collection: %s",lwgeom_get_type(coll->geoms[i]));
+				//lwerror("failed to create MARC21/XML for a geometry in the collection: %s",lwgeom_get_type(coll->geoms[i]));
 			}
 
 		}
@@ -78,7 +77,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 	} else {
 
-		lwdebug(1,"lwgeom_to_marc21 -> geom is a single feature (%d)",geom->type);
+		//lwdebug(1,"lwgeom_to_marc21 -> geom is a single feature (%d)",geom->type);
 
 		if (lwgeom_calculate_gbox(geom, &box) == LW_FAILURE) {
 
@@ -88,7 +87,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 		}
 
-		lwdebug(1,"lwgeom_to_marc21 -> bbox calculated ");
+		//lwdebug(1,"lwgeom_to_marc21 -> bbox calculated ");
 
 		if(gbox_to_marc21_sb(box, precision, sb)==LW_FAILURE){
 
@@ -130,7 +129,7 @@ format_marc21_literal(double coordinate,int precision)
 		if(ds<=-100) sprintf(res, "%.*f",precision,coordinate);
 	}
 
-	lwdebug(1,"format_marc21_literal got coordinate (%.*f) and returned (%s)", precision, coordinate, res);
+	//lwdebug(1,"format_marc21_literal got coordinate (%.*f) and returned (%s)", precision, coordinate, res);
 
 	return res;
 
@@ -147,7 +146,7 @@ gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb)
 	if ( stringbuffer_aprintf(sb, "<subfield code=\"g\">%s</subfield>", format_marc21_literal(box.ymin,precision)) < 0 ) return LW_FAILURE;
 	if ( stringbuffer_aprintf(sb, "</datafield>") < 0 ) return LW_FAILURE;
 
-	lwdebug(1,"gbox_to_marc21_sb: bbox values formatted");
+	//lwdebug(1,"gbox_to_marc21_sb: bbox values formatted");
 
 	return LW_SUCCESS;
 }

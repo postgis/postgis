@@ -37,12 +37,13 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 {
 	lwvarlena_t *marc21;
 	int32_t srid;
-
+	LWPROJ *lwproj;
+	LWGEOM *lwgeom;
 	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P_COPY(0);
 	int precision = PG_GETARG_INT32(1);
 	srid = gserialized_get_srid(gs);
 
-	lwdebug(1,"LWGEOM_asMARC21 called: %d precision %d",gserialized_get_type(gs),precision);
+	//lwdebug(1,"LWGEOM_asMARC21 called: %d precision %d",gserialized_get_type(gs),precision);
 
 	if ( srid == SRID_UNKNOWN )
 	{
@@ -52,7 +53,6 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 
 	}
 
-	LWPROJ *lwproj;
 
 	if ( GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
 		
@@ -71,14 +71,14 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 
 	if (precision < 0) precision = 0;
 
-	lwdebug(1,"GetLWPROJ returned %d for srid %d",lwproj->source_is_latlong,srid);
+//	lwdebug(1,"GetLWPROJ returned %d for srid %d",lwproj->source_is_latlong,srid);
 
-	lwdebug(1,"LWGEOM_asMARC21 calling lwgeom_from_gserialized: gs %d",gserialized_get_type(gs));
+//	lwdebug(1,"LWGEOM_asMARC21 calling lwgeom_from_gserialized: gs %d",gserialized_get_type(gs));
 
-	LWGEOM *lwgeom;
+
 	lwgeom = lwgeom_from_gserialized(gs);
 
-	lwdebug(1,"LWGEOM_asMARC21 calling lwgeom_to_marc21: lwgeom %d precision %d",lwgeom->type,precision);
+//	lwdebug(1,"LWGEOM_asMARC21 calling lwgeom_to_marc21: lwgeom %d precision %d",lwgeom->type,precision);
 
 	marc21 = lwgeom_to_marc21(lwgeom, precision);
 

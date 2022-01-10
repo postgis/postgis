@@ -18,17 +18,14 @@
  *
  **********************************************************************/
 
-/**
+/**********************************************************************
  * Ability to parse geographic data contained in MARC21/XML documents
  * to return an LWGEOM or an error message. It returns NULL if the
  * document does not contain any geographic data (datafield:034)
- *
  * MARC21/XML version supported: 1.1
- * Cf: <https://www.loc.gov/standards/marcxml/>
  *
- * Copyright 2021 University of Münster, Germany (WWU)
- * Written by Jim Jones <jim.jones@uni-muenster.de>
- *
+ * Copyright (C) 2021 University of Münster (WWU), Germany
+ * Author: Jim Jones <jim.jones@uni-muenster.de>
  **********************************************************************/
 
 #include "postgres.h"
@@ -36,22 +33,17 @@
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
-#include <libxml/xpath.h>
+//#include <libxml/xpath.h>
 #include <string.h>
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-//#include <regex.h>
-
-
-Datum geom_from_marc21(PG_FUNCTION_ARGS);
-static LWGEOM* parse_marc21_xpath(xmlNodePtr xnode);
+//Datum geom_from_marc21(PG_FUNCTION_ARGS);
 static LWGEOM* parse_marc21(xmlNodePtr xnode);
 
-#define MARC21_NS		((char *) "http://www.loc.gov/MARC21/slim")
-
+//#define MARC21_NS		((char *) "http://www.loc.gov/MARC21/slim")
 
 /**
  * Ability to parse geographic data contained in MARC21/XML documents
@@ -62,12 +54,11 @@ PG_FUNCTION_INFO_V1(geom_from_marc21);
 Datum geom_from_marc21(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
-	LWGEOM *lwgeom, *hlwgeom;
+	LWGEOM *lwgeom;
 	xmlDocPtr xmldoc;
 	text *xml_input;
 	int xml_size;
 	char *xml;
-	//bool hasz=true;
 	xmlNodePtr xmlroot=NULL;
 
 	/* Get the MARC21/XML stream */
@@ -104,61 +95,26 @@ Datum geom_from_marc21(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(geom);
 }
 
-static xmlNodeSetPtr* parse_xml_node(xmlNodePtr xnode, char* xpath_expr){
+static int
+is_literal_valid(char* literal){
 
-	xmlXPathContextPtr context;
-	xmlXPathObjectPtr result;
-	xmlChar *xpath = (xmlChar*) xpath_expr;
-	context = xmlXPathNewContext(xnode);
-
-	xmlXPathRegisterNs(context,  BAD_CAST "mx", BAD_CAST "http://www.loc.gov/MARC21/slim");
-
-	if (context == NULL) {
-		lwdebug(1,"Error in xmlXPathNewContext\n");
-		return NULL;
-	}
-
-	result = xmlXPathEvalExpression(xpath, context);
-
-	xmlXPathFreeContext(context);
-
-	if(result) {
-
-		return result->nodesetval;
-
-	} else {
-
-		if (result == NULL) {
-			lwdebug(1,"Error in xmlXPathEvalExpression\n");
-		}
-
-		if(xmlXPathNodeSetIsEmpty(result->nodesetval)){
-			lwdebug(1,"Datafield empty. \n");
-		}
-
-		xmlXPathFreeObject (result);
-		return NULL;
-
-	}
-}
-
-
-int is_literal_valid(char* literal){
+	int j;
+	int coord_start;
 
 	if(strlen(literal)<3) return LW_FAILURE;
 
-	int coord_start = 0;
+	coord_start = 0;
 
 	if(literal[0]=='N' || literal[0]=='E' ||
-	   literal[0]=='S' || literal[0]=='W' ||
-	   literal[0]=='+' || literal[0]=='-' ) {
+			literal[0]=='S' || literal[0]=='W' ||
+			literal[0]=='+' || literal[0]=='-' ) {
 
 		if(strlen(literal)<4) return LW_FAILURE;
 
 		coord_start = 1;
 	}
 
-	int j;
+
 
 	for (j=coord_start; j < strlen(literal); j++) {
 
@@ -175,171 +131,237 @@ int is_literal_valid(char* literal){
 
 }
 
-//static int is_literal_valid_regex(char* literal){
+//static char *
+//substr(char *string, int position, int length)
+//{
+//	char *p;
+//	int c;
 //
+//	//TODO: free p (memory leak)
 //
+//	p = palloc(length+1);
 //
-//	regex_t regex;
-//	int reti;
-//
-//
-//	//TEST VALIDATE STRING BY PARSING INSTEAD OF REGEX! TOO SLOW.
-//
-//	/**
-//	 * regex validation reads:
-//	 *
-//	 *   - starts with either a digit (0-9), a plus sign (+), a minus sign (-),
-//	 *     or one of the following characters (hemispheres): ESWN
-//	 *   - contains exact three digits after the starting character (degree)
-//	 *   - after the degree it may contain further digits or/and a period/comma(./,)
-//	 */
-//	reti = regcomp(&regex, "^[0-9ESWN+-]{1}[0-9]{3}([\.\,]{,1}[0-9])?*$", REG_EXTENDED);
-//
-//	if (reti) {
-//		lwpgerror(1, "Could not compile regex\n");
-//		return 1;
+//	if (p == NULL)	{
+//		lwpgerror("Unable to allocate memory");
 //	}
 //
-//	reti = regexec(&regex, literal, 0, NULL, 0);
+//	for (c = 0; c < length; c++) {
+//		*(p+c) = *(string+position-1);
+//		string++;
+//	}
 //
-//	regfree(&regex);
-//	return reti;
+//	*(p+c) = '\0';
+//
+//	return p;
+//
 //}
 
-char *substr(char *string, int position, int length)
-{
-	char *p;
-	int c;
 
-	p = palloc(length+1);
+static double
+parse_geo_literal2(char* literal){
 
-	if (p == NULL)	{
-		lwpgerror("Unable to allocate memory");
-	}
+	char dgr[3];
+	char* min;
+	char* sec;
+	char* dec;
+	char* csl;
 
-	for (c = 0; c < length; c++) {
-		*(p+c) = *(string+position-1);
-		string++;
-	}
+	int literal_length;
 
-	*(p+c) = '\0';
-
-	return p;
-
-}
-
-static double parse_geo_literal(char* literal){
-
-	double coords;
 	char hemisphere_sign = literal[0];
 	int start_literal = 0;
+	double result = 0.0;
+
+	literal_length = strlen(literal);
 
 	if(isdigit(hemisphere_sign)) start_literal=1;
+
+	//lwpgnotice("entered literal parser (%s)",literal);
 
 	/**
 	 * degrees/minutes/seconds: hdddmmss (hemisphere-degrees-minutes-seconds)
 	 */
-	double degrees = atof(substr(literal,(2-start_literal),3));
+
+	strncpy(dgr,&literal[1-start_literal],3);
 
 	if(strchr(literal,'.')==NULL && strchr(literal,',')==NULL) {
 
+		//lwnotice("	lat/lon literal detected");
+		//lwnotice("	lat/lon degrees: %s",dgr);
 
-		double minutes = 0;
+		min = malloc(literal_length-5);
 
-		if(strlen(literal)>(4-start_literal)){
-			minutes = atof(substr(literal,(5-start_literal),2));
+		if(literal_length>(4-start_literal)){
+
+			strncpy(min,&literal[(start_literal+4)],2);
+			min[2]='\0';
 		}
 
-		double seconds = 0;
+		//lwnotice("	lat/lon minutes: %s",min);
 
-		if(strlen(literal)>(7-start_literal)){
-			seconds = atof(substr(literal,(7-start_literal),strlen(literal)-(6-start_literal)));
+		sec = malloc(literal_length-5);
+
+		if(literal_length > (7-start_literal)){
+
+			strncpy(sec,&literal[6-start_literal],literal_length-(6-start_literal));
+			sec[literal_length-(6-start_literal)]='\0';
 		}
 
-		coords = degrees + minutes/60 + seconds/3600;
+		//lwnotice("	lat/lon seconds: %s",sec);
 
-		if(hemisphere_sign=='S' || hemisphere_sign=='W' || hemisphere_sign=='-' ) {
-			coords = coords *-1;
-		}
+		result = atof(dgr);
+		if(min) result = result + atof(min)/60;
 
+		if(sec) result = result + atof(sec)/3600;
+
+		if(hemisphere_sign=='S' || hemisphere_sign=='W' || hemisphere_sign=='-' ) result = result*-1;
+
+		free(min);
+		free(sec);
 
 	} else {
 
-		/**
-		 * Changes the literal decimal sign from comma to period to avoid problems with atof.
-		 * In MARC21/XML coordinates, the decimal sign may be either a period or a comma.
-		 **/
+
+		//lwnotice("	decimal literal detected");
+
 		if(strchr(literal,',')){
 
-			char* frmtliteral = substr(literal, 1, strlen(literal)-strlen(strchr(literal,',')));
-			strcat(frmtliteral,".");
-			strcat(frmtliteral,strchr(literal,',')+1);
-			literal = frmtliteral;
+			/**
+			 * Changes the literal decimal sign from comma to period to avoid problems with atof.
+			 * In MARC21/XML coordinates, the decimal sign may be either a period or a comma.
+			 **/
+
+			//frmtliteral = malloc(literal_length-strlen(strchr(literal,',')));
+			csl = malloc(literal_length);
+
+			strncpy(csl,&literal[0],literal_length-strlen(strchr(literal,',')));
+			csl[literal_length-strlen(strchr(literal,','))]='\0';
+
+			strcat(csl,".");
+			strcat(csl,strchr(literal,',')+1);
+
+			//literal = csl;
+
+			strncpy(literal,&csl[0],literal_length);
+			free(csl);
+
+			//lwnotice("	new literal value -> %s (comma to point)",literal);
+			//free(frmtliteral);
+
+			//TODO:
+			// * copy content of frmtliteral literal |
+			// * rename frmtliteral
+			// * create debug scheme
 
 		}
 
-		/**
-		 * decimal degrees: hddd.dddddd (hemisphere-degrees.decimal degrees)
-		 */
-		if (strcmp(substr(literal,5-start_literal,1),".") ==0 ){
+		if (literal[start_literal+4]=='.'){
 
-			coords = atof(substr(literal,(2-start_literal),strlen(literal)-start_literal));
+			/**
+			 * decimal degrees: hddd.dddddd (hemisphere-degrees.decimal degrees)
+			 * Ex. W05212.9999
+			 *     ||    |_ indicates decimal degrees
+			 *     ||_ degrees
+			 *     |_ start_literal (hemisphere)
+			 */
+
+			dec = malloc(literal_length-start_literal);
+
+			strncpy(dec,&literal[1-start_literal],literal_length-start_literal);
+
+			result = atof(dec);
+			//lwnotice("	decimal degrees: %s",dec);
+			free(dec);
+
+
+		} else if (literal[start_literal+6]=='.'){
 
 			/**
 			 * decimal minutes: hdddmm.mmmm (hemisphere-degrees-minutes.decimal minutes)
+			 * Ex. W052123.9999
+			 *     ||  |  |_ indicates decimal minutes
+			 *     ||  |_ minutes
+			 *     ||_ degrees
+			 *     |_ start_literal (hemisphere)
 			 */
-		} else if (strcmp(substr(literal,7-start_literal,1),".") ==0 ){
 
-			double decimal = atof(substr(literal,(5-start_literal),strlen(literal)-(5-start_literal)))/100;
-			coords = degrees+decimal;
+			dec = malloc(literal_length-(4-start_literal));
+			strncpy(dec,&literal[4-start_literal],literal_length-(4-start_literal));
+
+			result = atof(dgr)+(atof(dec)/100);
+			//lwnotice("	decimal minutes: %s",dec);
+			free(dec);
+
+		} else if (literal[start_literal+8]=='.'){
 
 			/**
 			 * decimal seconds: hdddmmss.sss (hemisphere-degrees-minutes-seconds.decimal seconds)
+			 * Ex. W05212312.9999
+			 *     ||  | |  |_ indicates decimal seconds
+			 *     ||  | |_ seconds
+			 *     ||  |_ minutes
+			 *     ||_ degrees
+			 *     |_ start_literal (hemisphere)
 			 */
-		} else if (strcmp(substr(literal,9-start_literal,1),".") ==0 ){
 
-			double decimal = atof(substr(literal,(5-start_literal),strlen(literal)-(5-start_literal)))/100;
-			coords = degrees+(decimal/100);
+			dec = malloc(literal_length-(6-start_literal));
+			strncpy(dec,&literal[6-start_literal],literal_length-(6-start_literal));
+
+			result =  atof(dgr)+(atof(dec)/100);
+			//lwnotice("	decimal seconds: %s",dec);
+			free(dec);
 
 		}
 
 	}
 
-	return coords;
+	//lwnotice("	==> parser result: %f (in decimal degrees)\n",result);
+
+	return result;
 }
 
 
-static LWGEOM* parse_marc21(xmlNodePtr xnode) {
+static LWGEOM*
+parse_marc21(xmlNodePtr xnode) {
 
-
-	int ngeoms = 0;
-	uint8_t result_type;
+	int ngeoms;
+	int i;
 	xmlNodePtr datafield;
+	xmlNodePtr subfield;
 	LWGEOM *result;
 	LWGEOM **lwgeoms = (LWGEOM **) lwalloc(sizeof(LWGEOM *));
+	uint8_t geometry_type;
+	uint8_t result_type;
+	char* code;
+	char* literal;
+
+
+	result_type = 0;
+	ngeoms = 0;
 
 	for (datafield = xnode->children ; datafield != NULL ; datafield = datafield->next) {
 
-		if (datafield->type != XML_ELEMENT_NODE) continue;
-
-		if (strcmp((char *) datafield->name, "datafield")!=0 || strcmp((char *) xmlGetProp(datafield,"tag"), "034")!=0)  continue;
-
-		xmlNodePtr subfield;
 		char* lw = NULL;
 		char* le = NULL;
 		char* ln = NULL;
 		char* ls = NULL;
+
+		if (datafield->type != XML_ELEMENT_NODE) continue;
+
+		if (strcmp((char *) datafield->name, "datafield")!=0 || strcmp((char *) xmlGetProp(datafield,(xmlChar *)"tag"), "034")!=0)  continue;
+
+
 
 		for (subfield = datafield->children ; subfield != NULL ; subfield = subfield->next){
 
 			if (subfield->type != XML_ELEMENT_NODE) continue;
 			if (strcmp((char *)subfield->name, "subfield")!=0) continue;
 
-			char* code = xmlGetProp(subfield,"code");
+			code = (char *) xmlGetProp(subfield,(xmlChar *)"code");
 
 			if ((strcmp(code, "d")!=0 && strcmp(code, "e")!=0 && strcmp(code, "f")!=0 && strcmp(code, "g"))!=0) continue;
 
-			char* literal = xmlNodeGetContent(subfield);
+			literal = (char *) xmlNodeGetContent(subfield);
 
 			if(is_literal_valid(literal)==LW_SUCCESS) {
 
@@ -361,12 +383,11 @@ static LWGEOM* parse_marc21(xmlNodePtr xnode) {
 
 		if(lw && le && ln && ls){
 
-			double w = parse_geo_literal(lw);
-			double n = parse_geo_literal(ln);
-			double e = parse_geo_literal(le);
-			double s = parse_geo_literal(ls);
-
-			uint8_t geometry_type;
+			double w = parse_geo_literal2(lw);
+			double n = parse_geo_literal2(ln);
+			double e = parse_geo_literal2(le);
+			double s = parse_geo_literal2(ls);
+			geometry_type = 0;
 
 			if(ngeoms>0) lwgeoms = (LWGEOM**) lwrealloc(lwgeoms,sizeof(LWGEOM*) * (ngeoms+1));
 
@@ -405,19 +426,13 @@ static LWGEOM* parse_marc21(xmlNodePtr xnode) {
 
 	xmlFreeNode(datafield);
 
-	if(!ngeoms) {
-
-		return NULL;
-
-	} else if (ngeoms == 1){
+	if (ngeoms == 1){
 
 		return lwgeoms[0];
 
 	} else if (ngeoms > 1){
 
 		result = (LWGEOM *)lwcollection_construct_empty(result_type, SRID_UNKNOWN, 0, 0);
-
-		int i;
 
 		for (i=0; i < ngeoms; i++) {
 
@@ -428,6 +443,8 @@ static LWGEOM* parse_marc21(xmlNodePtr xnode) {
 		return result;
 
 	}
+
+	return NULL;
 
 }
 
