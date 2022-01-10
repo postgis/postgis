@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-04 23:52+0000\n"
+"POT-Creation-Date: 2022-01-10 06:28+0000\n"
 "PO-Revision-Date: 2021-11-28 22:06+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -2257,7 +2257,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Tiles with multiple layers can be created by concatenating multiple calls to "
-"this function using <varname>||</varname>."
+"this function using <varname>||</varname> or <varname>STRING_AGG</varname>."
 msgstr ""
 
 #. Tag: para

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-10 06:28+0000\n"
 "PO-Revision-Date: 2021-01-05 03:44+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -249,35 +249,23 @@ msgstr ""
 #. Tag: term
 #: introduction.xml:105
 #, no-c-format
-msgid "Olivier Courtin"
-msgstr "Olivier Courtin"
-
-#. Tag: para
-#: introduction.xml:107
-#, no-c-format
-msgid "Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes."
-msgstr "XML (KML, GML)/GeoJSON入出力関数と3次元対応と誤り修正。"
-
-#. Tag: term
-#: introduction.xml:112
-#, no-c-format
 msgid "Martin Davis"
 msgstr "Martin Davis"
 
 #. Tag: para
-#: introduction.xml:114
+#: introduction.xml:107
 #, no-c-format
 msgid "GEOS enhancements and documentation"
 msgstr "GEOS機能強化と文書"
 
 #. Tag: term
-#: introduction.xml:119
+#: introduction.xml:112
 #, no-c-format
 msgid "Björn Harrtell"
 msgstr "Björn Harrtell"
 
 #. Tag: para
-#: introduction.xml:122
+#: introduction.xml:115
 #, no-c-format
 msgid ""
 "MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
@@ -285,13 +273,13 @@ msgid ""
 msgstr "MapBox Vector Tile関数とGeoBuf関数、Gogsの試験とGitLabの実験。"
 
 #. Tag: term
-#: introduction.xml:128
+#: introduction.xml:121
 #, no-c-format
 msgid "Mateusz Loskot"
 msgstr "Mateusz Loskot"
 
 #. Tag: para
-#: introduction.xml:130
+#: introduction.xml:123
 #, no-c-format
 msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
@@ -301,31 +289,31 @@ msgstr ""
 "の構築。"
 
 #. Tag: term
-#: introduction.xml:135
+#: introduction.xml:128
 #, no-c-format
 msgid "Pierre Racine"
 msgstr "Pierre Racine"
 
 #. Tag: para
-#: introduction.xml:137
+#: introduction.xml:130
 #, no-c-format
 msgid "Raster overall architecture, prototyping, programming support"
 msgstr "ラスタ全体のアーキテクチャ、プロトタイピング、プログラミング支援。"
 
 #. Tag: title
-#: introduction.xml:143
+#: introduction.xml:136
 #, no-c-format
 msgid "Core Contributors Past"
 msgstr "過去の中核貢献者"
 
 #. Tag: term
-#: introduction.xml:146
+#: introduction.xml:139
 #, no-c-format
 msgid "Mark Cave-Ayland"
 msgstr "Mark Cave-Ayland"
 
 #. Tag: para
-#: introduction.xml:148
+#: introduction.xml:141
 #, no-c-format
 msgid ""
 "Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial "
@@ -335,6 +323,20 @@ msgstr ""
 "以前のPSCメンバ。誤り修正とメンテナンスの活動、空間インデックス選択性とバイン"
 "ディング、ローダ/ダンパ、およびシェープファイルGUIローダの調整、新機能の統合"
 "と強化。"
+
+#. Tag: term
+#: introduction.xml:147
+#, no-c-format
+msgid "Olivier Courtin"
+msgstr "Olivier Courtin"
+
+#. Tag: para
+#: introduction.xml:149
+#, fuzzy, no-c-format
+msgid ""
+"(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug "
+"fixes."
+msgstr "XML (KML, GML)/GeoJSON入出力関数と3次元対応と誤り修正。"
 
 #. Tag: term
 #: introduction.xml:154
