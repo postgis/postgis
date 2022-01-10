@@ -38,6 +38,11 @@ msgid ""
 "Victoria, British Columbia, Canada, specializing in data integration and "
 "custom software development."
 msgstr ""
+"PostGIS e' un'estensione spaziale per il database relazionale PostgreSQL "
+"creata da Refractions Research Inc. come progetto di ricerca tecnologica "
+"sui database spaziali. Refractions e' una societa' di consulenza su GIS "
+"e basi di dati con base a Victoria, in British Columbia, Canada, "
+"specializzata nell'integrazione dei dati e nello sviluppo di software."
 
 #. Tag: para
 #: introduction.xml:11
