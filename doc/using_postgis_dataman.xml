@@ -580,7 +580,7 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
 		</listitem>
 
 		<listitem>
-		  <para>TRIANGLE ((0 0, 0 9, 9 0, 0 0))</para>
+		  <para>TRIANGLE ((0 0, 0 10, 10 0, 0 0))</para>
 		</listitem>
 
 		<listitem>
