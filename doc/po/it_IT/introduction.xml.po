@@ -52,7 +52,7 @@ msgid ""
 "by many FOSS4G developers and organizations all over the world that gain "
 "great benefit from its functionality and versatility."
 msgstr ""
-"PostGIS ora e' un progetto della OSGeo Foundation ed e' sviluppato e "
+"PostGIS ora è un progetto della OSGeo Foundation ed è sviluppato e "
 "finanziato da molti sviluppatori ed organizzazioni FOSS4G da tutto il mondo "
 "che beneficiano in modo significativo dalla sua funzionalita'."
 
