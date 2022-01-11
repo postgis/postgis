@@ -113,6 +113,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 static char*
 format_marc21_literal(double coordinate,int precision)
 {
+	char *r;
 	char *res = malloc(sizeof(coordinate)*2);
 	double ds;
 	modf(coordinate, &ds);
@@ -131,7 +132,11 @@ format_marc21_literal(double coordinate,int precision)
 
 	//lwdebug(1,"format_marc21_literal got coordinate (%.*f) and returned (%s)", precision, coordinate, res);
 
+	strncpy(r,&res[0],strlen(res));
+	//free(res);
+
 	return res;
+	//return r;
 
 }
 

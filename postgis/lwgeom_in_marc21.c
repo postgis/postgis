@@ -26,6 +26,7 @@
  *
  * Copyright (C) 2021 University of Münster (WWU), Germany
  * Author: Jim Jones <jim.jones@uni-muenster.de>
+ *
  **********************************************************************/
 
 #include "postgres.h"
@@ -48,7 +49,7 @@ static LWGEOM* parse_marc21(xmlNodePtr xnode);
 /**
  * Ability to parse geographic data contained in MARC21/XML documents
  * to return an LWGEOM or an error message. It returns NULL if the
- * document does not contain any geographic data (datafield:034)
+ * document does not contain any geographic data (MARC 034)
  */
 PG_FUNCTION_INFO_V1(geom_from_marc21);
 Datum geom_from_marc21(PG_FUNCTION_ARGS)
@@ -114,8 +115,6 @@ is_literal_valid(char* literal){
 		coord_start = 1;
 	}
 
-
-
 	for (j=coord_start; j < strlen(literal); j++) {
 
 		if(!isdigit(literal[j])){
@@ -131,34 +130,8 @@ is_literal_valid(char* literal){
 
 }
 
-//static char *
-//substr(char *string, int position, int length)
-//{
-//	char *p;
-//	int c;
-//
-//	//TODO: free p (memory leak)
-//
-//	p = palloc(length+1);
-//
-//	if (p == NULL)	{
-//		lwpgerror("Unable to allocate memory");
-//	}
-//
-//	for (c = 0; c < length; c++) {
-//		*(p+c) = *(string+position-1);
-//		string++;
-//	}
-//
-//	*(p+c) = '\0';
-//
-//	return p;
-//
-//}
-
-
 static double
-parse_geo_literal2(char* literal){
+parse_geo_literal(char* literal){
 
 	char dgr[3];
 	char* min;
@@ -172,11 +145,13 @@ parse_geo_literal2(char* literal){
 	int start_literal = 0;
 	double result = 0.0;
 
+	POSTGIS_DEBUGF(2,"parse_geo_literal called (%s)",literal);
+
 	literal_length = strlen(literal);
 
 	if(isdigit(hemisphere_sign)) start_literal=1;
 
-	//lwpgnotice("entered literal parser (%s)",literal);
+
 
 	/**
 	 * degrees/minutes/seconds: hdddmmss (hemisphere-degrees-minutes-seconds)
@@ -186,9 +161,12 @@ parse_geo_literal2(char* literal){
 
 	if(strchr(literal,'.')==NULL && strchr(literal,',')==NULL) {
 
-		//lwnotice("	lat/lon literal detected");
-		//lwnotice("	lat/lon degrees: %s",dgr);
+		//level 3
+		POSTGIS_DEBUGF(2,"  lat/lon literal detected > %s",literal);
+		POSTGIS_DEBUGF(2,"  degrees: %s",dgr);
 
+		//level 5
+		POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length-5);
 		min = malloc(literal_length-5);
 
 		if(literal_length>(4-start_literal)){
@@ -197,8 +175,10 @@ parse_geo_literal2(char* literal){
 			min[2]='\0';
 		}
 
-		//lwnotice("	lat/lon minutes: %s",min);
+		//level 3
+		POSTGIS_DEBUGF(2,"  lat/lon minutes: %s",min);
 
+		POSTGIS_DEBUGF(5,"  sec = malloc(%d)",literal_length-5);
 		sec = malloc(literal_length-5);
 
 		if(literal_length > (7-start_literal)){
@@ -207,22 +187,23 @@ parse_geo_literal2(char* literal){
 			sec[literal_length-(6-start_literal)]='\0';
 		}
 
-		//lwnotice("	lat/lon seconds: %s",sec);
-
+		//level 3
+		POSTGIS_DEBUGF(2,"  lat/lon seconds: %s",sec);
 		result = atof(dgr);
 		if(min) result = result + atof(min)/60;
-
 		if(sec) result = result + atof(sec)/3600;
-
-		if(hemisphere_sign=='S' || hemisphere_sign=='W' || hemisphere_sign=='-' ) result = result*-1;
+		if(hemisphere_sign=='S' || hemisphere_sign=='W' || hemisphere_sign=='-') result = result*-1;
 
 		free(min);
+		POSTGIS_DEBUG(5,"  free(min)");
 		free(sec);
+		POSTGIS_DEBUG(5,"  free(sec)");
 
 	} else {
 
 
-		//lwnotice("	decimal literal detected");
+		//level 3
+		POSTGIS_DEBUG(2,"  decimal literal detected");
 
 		if(strchr(literal,',')){
 
@@ -230,8 +211,6 @@ parse_geo_literal2(char* literal){
 			 * Changes the literal decimal sign from comma to period to avoid problems with atof.
 			 * In MARC21/XML coordinates, the decimal sign may be either a period or a comma.
 			 **/
-
-			//frmtliteral = malloc(literal_length-strlen(strchr(literal,',')));
 			csl = malloc(literal_length);
 
 			strncpy(csl,&literal[0],literal_length-strlen(strchr(literal,',')));
@@ -240,83 +219,95 @@ parse_geo_literal2(char* literal){
 			strcat(csl,".");
 			strcat(csl,strchr(literal,',')+1);
 
-			//literal = csl;
-
 			strncpy(literal,&csl[0],literal_length);
 			free(csl);
 
-			//lwnotice("	new literal value -> %s (comma to point)",literal);
-			//free(frmtliteral);
-
-			//TODO:
-			// * copy content of frmtliteral literal |
-			// * rename frmtliteral
-			// * create debug scheme
+			//level 3
+			POSTGIS_DEBUGF(2,"  new literal value (replaced comma): %s",literal);
 
 		}
+
+		POSTGIS_DEBUGF(2,"  degrees: %s",dgr);
 
 		if (literal[start_literal+4]=='.'){
 
 			/**
 			 * decimal degrees: hddd.dddddd (hemisphere-degrees.decimal degrees)
-			 * Ex. W05212.9999
-			 *     ||    |_ indicates decimal degrees
+			 * Ex. E079.533265
+			 *     +079.533265
+			 *     ||  |_ indicates decimal degrees
 			 *     ||_ degrees
 			 *     |_ start_literal (hemisphere)
 			 */
-
+			POSTGIS_DEBUGF(5,"  dec = malloc(%d)",literal_length-start_literal);
 			dec = malloc(literal_length-start_literal);
 
 			strncpy(dec,&literal[1-start_literal],literal_length-start_literal);
 
 			result = atof(dec);
-			//lwnotice("	decimal degrees: %s",dec);
+			POSTGIS_DEBUGF(2,"  decimal degrees: %s",dec);
+			POSTGIS_DEBUG(5,"  free(dec)");
 			free(dec);
-
 
 		} else if (literal[start_literal+6]=='.'){
 
 			/**
 			 * decimal minutes: hdddmm.mmmm (hemisphere-degrees-minutes.decimal minutes)
-			 * Ex. W052123.9999
-			 *     ||  |  |_ indicates decimal minutes
+			 * Ex. E07932.5332
+			 *     ||  | |_ indicates decimal minutes
 			 *     ||  |_ minutes
 			 *     ||_ degrees
 			 *     |_ start_literal (hemisphere)
 			 */
+			POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length-(4-start_literal));
+			min = malloc(literal_length-(4-start_literal));
+			strncpy(min,&literal[4-start_literal],literal_length-(4-start_literal));
 
-			dec = malloc(literal_length-(4-start_literal));
-			strncpy(dec,&literal[4-start_literal],literal_length-(4-start_literal));
-
-			result = atof(dgr)+(atof(dec)/100);
-			//lwnotice("	decimal minutes: %s",dec);
-			free(dec);
+			result = atof(dgr)+(atof(min)/100);
+			//level 3
+			POSTGIS_DEBUGF(2,"  decimal minutes: %s",min);
+			POSTGIS_DEBUG(5,"  free(min)");
+			free(min);
 
 		} else if (literal[start_literal+8]=='.'){
 
 			/**
 			 * decimal seconds: hdddmmss.sss (hemisphere-degrees-minutes-seconds.decimal seconds)
-			 * Ex. W05212312.9999
-			 *     ||  | |  |_ indicates decimal seconds
-			 *     ||  | |_ seconds
-			 *     ||  |_ minutes
-			 *     ||_ degrees
-			 *     |_ start_literal (hemisphere)
+			 * Ex. E0793235.575
+			 *     ||  | | |_indicates decimal seconds
+			 *     ||  | |_seconds
+			 *     ||  |_minutes
+			 *     ||_degrees
+			 *     |_start_literal (hemisphere)
 			 */
 
-			dec = malloc(literal_length-(6-start_literal));
-			strncpy(dec,&literal[6-start_literal],literal_length-(6-start_literal));
+			POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length-(4-start_literal));
+			min = malloc(literal_length);
+			strncpy(min,&literal[4-start_literal],2);
+			//min[sizeof(min)] = '\0';
 
-			result =  atof(dgr)+(atof(dec)/100);
-			//lwnotice("	decimal seconds: %s",dec);
-			free(dec);
+			POSTGIS_DEBUGF(5,"  sec = malloc(%d)",literal_length-(6-start_literal));
+			sec = malloc(literal_length);
+			strncpy(sec,&literal[6-start_literal],literal_length-(6-start_literal));
+			//sec[literal_length-(6-start_literal)] = '\0';
+
+			result =  atof(dgr)+(atof(min)/100)+(atof(sec)/10000);
+			//level 3
+			POSTGIS_DEBUGF(2,"  minutes: %s",min);
+			POSTGIS_DEBUGF(2,"  decimal seconds: %s",sec);
+
+			POSTGIS_DEBUG(5,"  free(min)");
+			free(min);
+			POSTGIS_DEBUG(5,"  free(dec)");
+			free(sec);
+
 
 		}
 
 	}
 
-	//lwnotice("	==> parser result: %f (in decimal degrees)\n",result);
-
+	//level 2
+	POSTGIS_DEBUGF(2,"=> parse_geo_literal returned: %f (in decimal degrees)",result);
 	return result;
 }
 
@@ -383,10 +374,10 @@ parse_marc21(xmlNodePtr xnode) {
 
 		if(lw && le && ln && ls){
 
-			double w = parse_geo_literal2(lw);
-			double n = parse_geo_literal2(ln);
-			double e = parse_geo_literal2(le);
-			double s = parse_geo_literal2(ls);
+			double w = parse_geo_literal(lw);
+			double n = parse_geo_literal(ln);
+			double e = parse_geo_literal(le);
+			double s = parse_geo_literal(ls);
 			geometry_type = 0;
 
 			if(ngeoms>0) lwgeoms = (LWGEOM**) lwrealloc(lwgeoms,sizeof(LWGEOM*) * (ngeoms+1));
