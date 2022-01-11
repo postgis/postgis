@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-10 06:28+0000\n"
-"PO-Revision-Date: 2021-11-28 22:06+0000\n"
+"POT-Creation-Date: 2022-01-10 13:02+0000\n"
+"PO-Revision-Date: 2022-01-11 01:17+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -104,6 +104,9 @@ msgid ""
 "used to reduce the maximum number of decimal digits after floating point "
 "used in output (defaults to 15)."
 msgstr ""
+"SRIDを前に置いたジオメトリのWell-Known Text表現を返します。任意引数"
+"<parameter>maxdecimaldigits</parameter>で、出力で使用される小数点以下の最大桁"
+"数を減らすことができます (デフォルトは15です)。"
 
 #. Tag: para
 #: reference_output.xml:51
@@ -112,6 +115,8 @@ msgid ""
 "To perform the inverse conversion of EWKT representation to PostGIS geometry "
 "use <xref linkend=\"ST_GeomFromEWKT\"/>."
 msgstr ""
+"EWKT表現をPostGISジオメトリに逆変換するには<xref linkend=\"ST_GeomFromEWKT\"/"
+">を使用します。"
 
 #. Tag: para
 #: reference_output.xml:55 reference_output.xml:149 reference_output.xml:557
@@ -122,6 +127,9 @@ msgid ""
 "geometry to become invalid. To avoid this use <xref linkend="
 "\"ST_ReducePrecision\"/> with a suitable gridsize first."
 msgstr ""
+"任意引数<parameter>maxdecimaldigits</parameter>を使用することで、出力ジオメト"
+"リが不正になる可能性があります。これを回避するには、前もって<xref linkend="
+"\"ST_ReducePrecision\"/>に適切なグリッドサイズを与えてこれを使用します。"
 
 #. Tag: para
 #: reference_output.xml:63
@@ -130,6 +138,8 @@ msgid ""
 "The WKT spec does not include the SRID. To get the OGC WKT format use <xref "
 "linkend=\"ST_AsText\"/>."
 msgstr ""
+"WKT仕様はSRIDを含みません。OGC WKT書式を得るには<xref linkend=\"ST_AsText\"/>"
+"を使用します。"
 
 #. Tag: para
 #: reference_output.xml:66
@@ -139,6 +149,8 @@ msgid ""
 "use <xref linkend=\"ST_AsBinary\"/> or <xref linkend=\"ST_AsEWKB\"/> format "
 "for transport."
 msgstr ""
+"WKT書式は精度を維持しないので、切り捨てを防ぐには、データ転送に<xref linkend="
+"\"ST_AsBinary\"/>または<xref linkend=\"ST_AsEWKB\"/>を使用します。"
 
 #. Tag: para
 #: reference_output.xml:70
@@ -350,6 +362,10 @@ msgid ""
 "format (see <xref linkend=\"ST_AsBinary\"/> and <parameter>maxdecimaldigits</"
 "parameter>)."
 msgstr ""
+"WKTにおける数字の文字表現では、完全な浮動小数点数の精度を維持しないことがあり"
+"ます。データ保存や転送で完全な精度を得るには<link linkend=\"OpenGISWKBWKT"
+"\">Well-Known Binary</link> (WKB)書式を使用するのが最善です (<xref linkend="
+"\"ST_AsBinary\"/>および<parameter>maxdecimaldigits</parameter>をご覧下さい)。"
 
 #. Tag: para
 #: reference_output.xml:156
@@ -1025,13 +1041,13 @@ msgstr ", <xref linkend=\"ST_Segmentize\"/>"
 #: reference_output.xml:431
 #, no-c-format
 msgid "ST_AsFlatGeobuf"
-msgstr ""
+msgstr "ST_AsFlatGeobuf"
 
 #. Tag: refpurpose
 #: reference_output.xml:433
 #, no-c-format
 msgid "Return a FlatGeobuf representation of a set of rows."
-msgstr ""
+msgstr "行の集合のFlatGeobuf表現を返します。"
 
 #. Tag: funcsynopsis
 #: reference_output.xml:436
@@ -1049,6 +1065,17 @@ msgid ""
 "<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>bytea <function>ST_AsFlatGeobuf</function></"
+"funcdef> <paramdef><type>anyelement set </type> <parameter>row</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsFlatGeobuf</function></funcdef> <paramdef><type>anyelement </"
+"type> <parameter>row</parameter></paramdef> <paramdef><type>bool </type> "
+"<parameter>index</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>bytea <function>ST_AsFlatGeobuf</function></funcdef> "
+"<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef> "
+"<paramdef><type>bool </type> <parameter>index</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> </"
+"funcprototype>"
 
 #. Tag: para
 #: reference_output.xml:458
@@ -1058,6 +1085,9 @@ msgid ""
 "\">http://flatgeobuf.org</ulink>) of a set of rows corresponding to a "
 "FeatureCollection. NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
+"FeatureCollectionに対応する行の集合のFlatGeobuf表現 (<ulink url=\"http://"
+"flatgeobuf.org\">http://flatgeobuf.org</ulink>) を返します。ご注意: "
+"PostgreSQLのbytea型は1GBを超えられません。"
 
 #. Tag: para
 #: reference_output.xml:465 reference_output.xml:502 reference_output.xml:1042
@@ -1071,6 +1101,8 @@ msgstr "<varname>row</varname> 少なくとも一つのジオメトリカラム�
 msgid ""
 "<varname>index</varname> toggle spatial index creation. Default is false."
 msgstr ""
+"<varname>index</varname> 空間インデックスの生成の切り替え。デフォルトはFALSE"
+"です。"
 
 #. Tag: para
 #: reference_output.xml:467 reference_output.xml:503
@@ -1982,9 +2014,9 @@ msgstr "ST_AsKML"
 
 #. Tag: refpurpose
 #: reference_output.xml:784
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Return the geometry as a KML element."
-msgstr "ジオメトリをGeoJSON要素として返します。"
+msgstr "ジオメトリをKML要素として返します。"
 
 #. Tag: funcsynopsis
 #: reference_output.xml:788
@@ -2016,14 +2048,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:810
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the geometry as a Keyhole Markup Language (KML) element. default "
 "maximum number of decimal places is 15, default namespace is no prefix."
 msgstr ""
-"ジオメトリをKeyhole Markup Language (KML)要素で返します。この関数にはいくつか"
-"の形式があります。出力に使われる小数位の最大数のデフォルトは15で、デフォルト"
-"のバージョンは2で、デフォルトの名前空間はプリフィクス無しです。"
+"ジオメトリをKeyhole Markup Language (KML)要素として返します。デフォルトの最大"
+"の小数点以下の桁数は15で、デフォルトの名前空間はプリフィクス無しです。"
 
 #. Tag: para
 #: reference_output.xml:823
@@ -2045,17 +2076,17 @@ msgstr "Availability: 1.2.2 - versionパラメータが付く形式は1.3.2か�
 
 #. Tag: para
 #: reference_output.xml:830
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Enhanced: 2.0.0 - Add prefix namespace, use default and named args"
 msgstr ""
-"Enhanced: 2.0.0 - プレフィクス名前空間を追加しました。デフォルトではプリフィ"
-"クス無しです。"
+"Enhanced: 2.0.0 - プレフィクスの名前空間の追加、デフォルト値と名前付き引数の"
+"追加"
 
 #. Tag: para
 #: reference_output.xml:833
 #, no-c-format
 msgid "Changed: 3.0.0 - Removed the \"versioned\" variant signature"
-msgstr ""
+msgstr "Changed: 3.0.0 - \"version\"の付いた形式の削除"
 
 #. Tag: para
 #: reference_output.xml:837
@@ -2559,13 +2590,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:1032
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Tiles with multiple layers can be created by concatenating multiple calls to "
 "this function using <varname>||</varname> or <varname>STRING_AGG</varname>."
 msgstr ""
-"複数レイヤのタイルは、この関数の複数の呼び出しを<varname>||</varname>で繋げて"
-"作成することができます。"
+"この関数への複数の呼び出しを<varname>||</varname>や<varname>STRING_AGG</"
+"varname>で繋げることで、複数レイヤのタイルを作ることができます。"
 
 #. Tag: para
 #: reference_output.xml:1038
@@ -3609,31 +3640,3 @@ msgstr ""
 "------------\n"
 " c0w3h\n"
 "                ]]>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Return the geometry as a KML element. Several variants. Default "
-#~ "version=2, default maxdecimaldigits=15"
-#~ msgstr ""
-#~ "KML要素としてジオメトリを返します。いくつかの形式があります。デフォルトは"
-#~ "version=2, maxdecimaldigits=15です。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Version 1: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / "
-#~ "maxdecimaldigits=15"
-#~ msgstr ""
-#~ "一つ目の形式: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / "
-#~ "maxdecimaldigits=15 "
-
-#, no-c-format
-#~ msgid ""
-#~ "Version 2: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) "
-#~ "maxdecimaldigits=15 / nprefix=NULL"
-#~ msgstr ""
-#~ "二つ目の形式: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) "
-#~ "maxdecimaldigits=15 / nprefix=NULL"
-
-#, no-c-format
-#~ msgid "Changed: 2.0.0 - uses default args and supports named args"
-#~ msgstr "Changed: 2.0.0 - デフォルト引数と名前付き引数に対応しました。"
