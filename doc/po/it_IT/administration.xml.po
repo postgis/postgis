@@ -19,7 +19,7 @@ msgstr ""
 #: administration.xml:3
 #, no-c-format
 msgid "PostGIS Administration"
-msgstr ""
+msgstr "Amministrazione di PostGIS"
 
 #. Tag: chapter
 #: administration.xml:3
@@ -31,7 +31,7 @@ msgstr ""
 #: administration.xml:9
 #, no-c-format
 msgid "Configuring raster support"
-msgstr ""
+msgstr "Configurare il supporto raster"
 
 #. Tag: para
 #: administration.xml:11
@@ -40,6 +40,8 @@ msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
 msgstr ""
+"Se hai abilitato il supporto per i raster vorrai leggere la prossima "
+"sezione per configurarlo correttamente."
 
 #. Tag: para
 #: administration.xml:16
@@ -52,12 +54,21 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"A partire da PostGIS 2.1.3, per default sono disabilitati tutti i "
+"raster driver ed il supporto per i raster offline. "
+"Per ri-abilitarli, puoi dare un valore alle seguenti variabili "
+"ambientali (nell'ambiente del server): "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> e "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>."
+"A partire da PostGIS 2.2, puoi usare l'approccio più combatibile "
+"tra varie piattaforme usando le <xref linkend=\"PostGIS_GUC\"/> "
+"corrispondenti."
 
 #. Tag: para
 #: administration.xml:19
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr ""
+msgstr "Se vuoi abilitare il supporto per i raster offline:"
 
 #. Tag: programlisting
 #: administration.xml:20
@@ -70,6 +81,8 @@ msgstr ""
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
 msgstr ""
+"Qualunque altro valore, o l'assenza di valore, disabilita il "
+"supporto per i raster offline (out-of-db)."
 
 #. Tag: para
 #: administration.xml:22
@@ -78,6 +91,8 @@ msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
 msgstr ""
+"Per abilitare tutti i driver GDAL disponibili nella tua installazione, "
+"valorizza la seguente variabile come segue"
 
 #. Tag: programlisting
 #: administration.xml:23
@@ -92,6 +107,7 @@ msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
 msgstr ""
+"Se vuoi abilitare solo degli specifici driver, valorizza la variabile cosí:"
 
 #. Tag: programlisting
 #: administration.xml:25
@@ -103,7 +119,7 @@ msgstr ""
 #: administration.xml:27
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr ""
+msgstr "Su Windows, non usare le virgolette"
 
 #. Tag: para
 #: administration.xml:29
