@@ -11,6 +11,28 @@ files to be in sync with the source code, ``make html-localized`` or
 ``make pdf-localized`` to build the localized html or pdf manual for
 all enabled languages
 
+Adding languages
+----------------
+
+Adding new languages implies (relative to doc/ dir):
+
+  - Adding the language to the `translations` variable
+    in Makefile.in
+
+  - Re-running ./configure
+
+  - Running `make update-po`
+
+  - Adding a Makefile under the new language directory
+    (take the Makefile from another language as a template,
+    and only change the DOCSUFFIX)
+
+  - Check the new language works:
+    make -C po/<newlanguage>
+
+  - Add to the git repository the changes in the Makefile.in
+    and all the new files in the po/<newlanguage>/
+
 Using transifex
 ---------------
 
