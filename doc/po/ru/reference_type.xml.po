@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,12 +8,15 @@ msgstr ""
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2021-09-11 04:34+0000\n"
 "Last-Translator: Regina Obe\n"
-"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/"
+"ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: para
 #: reference_type.xml:5
@@ -27,14 +30,13 @@ msgstr ""
 #: reference_type.xml:8
 #, no-c-format
 msgid ""
-"Each data type describes its type casting behavior. A <ulink "
-"url=\"https://www.postgresql.org/docs/current/sql-expressions.html#SQL-"
-"SYNTAX-TYPE-CASTS\">type cast</ulink> converts values of one data type into "
-"another type. PostgreSQL allows defining casting behavior for custom types, "
-"along with the functions used to convert type values. Casts can have "
-"<emphasis role=\"bold\">automatic</emphasis> behavior, which allows "
-"automatic conversion of a function argument to a type supported by the "
-"function."
+"Each data type describes its type casting behavior. A <ulink url=\"https://"
+"www.postgresql.org/docs/current/sql-expressions.html#SQL-SYNTAX-TYPE-CASTS"
+"\">type cast</ulink> converts values of one data type into another type. "
+"PostgreSQL allows defining casting behavior for custom types, along with the "
+"functions used to convert type values. Casts can have <emphasis role=\"bold"
+"\">automatic</emphasis> behavior, which allows automatic conversion of a "
+"function argument to a type supported by the function."
 msgstr ""
 
 #. Tag: para
@@ -56,8 +58,8 @@ msgstr ""
 #: reference_type.xml:24
 #, no-c-format
 msgid ""
-"All data types can be cast to <varname>text</varname>, so this does not need"
-" to be specified explicitly."
+"All data types can be cast to <varname>text</varname>, so this does not need "
+"to be specified explicitly."
 msgstr ""
 
 #. Tag: title
@@ -99,17 +101,16 @@ msgstr ""
 #: reference_type.xml:41
 #, no-c-format
 msgid ""
-"The representation contains the values <varname>xmin, ymin, xmax, "
-"ymax</varname>. These are the minimum and maximum values of the X and Y "
-"extents."
+"The representation contains the values <varname>xmin, ymin, xmax, ymax</"
+"varname>. These are the minimum and maximum values of the X and Y extents."
 msgstr ""
 
 #. Tag: para
 #: reference_type.xml:45
 #, no-c-format
 msgid ""
-"<varname>box2d</varname> objects have a text representation which looks like"
-" <code>BOX(1 2,5 6)</code>."
+"<varname>box2d</varname> objects have a text representation which looks like "
+"<code>BOX(1 2,5 6)</code>."
 msgstr ""
 
 #. Tag: title
@@ -124,8 +125,7 @@ msgstr ""
 #: reference_type.xml:238
 #, no-c-format
 msgid ""
-"This table lists the automatic and explicit casts allowed for this data "
-"type:"
+"This table lists the automatic and explicit casts allowed for this data type:"
 msgstr ""
 
 #. Tag: entry
@@ -205,8 +205,8 @@ msgstr ""
 #: reference_type.xml:92
 #, no-c-format
 msgid ""
-"<varname>box3d</varname> objects have a text representation which looks like"
-" <code>BOX3D(1 2 3,5 6 5)</code>."
+"<varname>box3d</varname> objects have a text representation which looks like "
+"<code>BOX3D(1 2 3,5 6 5)</code>."
 msgstr ""
 
 #. Tag: entry
@@ -289,9 +289,9 @@ msgstr ""
 #: reference_type.xml:195
 #, no-c-format
 msgid ""
-"<varname>geometry_dump</varname> is a <ulink "
-"url=\"https://www.postgresql.org/docs/current/rowtypes.html\">composite data"
-" type</ulink> containing the fields:"
+"<varname>geometry_dump</varname> is a <ulink url=\"https://www.postgresql."
+"org/docs/current/rowtypes.html\">composite data type</ulink> containing the "
+"fields:"
 msgstr ""
 
 #. Tag: para

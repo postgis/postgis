@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,12 +8,15 @@ msgstr ""
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2021-09-11 03:54+0000\n"
 "Last-Translator: Regina Obe\n"
-"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/"
+"ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: title
 #: reference_constructor.xml:3
@@ -40,13 +43,12 @@ msgstr ""
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Collect</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Collect</function></funcdef> <paramdef><type>geometry[]</type> "
-"<parameter>g1_array</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Collect</function></funcdef> "
-"<paramdef><type>geometry set</type> "
-"<parameter>g1field</parameter></paramdef> </funcprototype>"
+"<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Collect</"
+"function></funcdef> <paramdef><type>geometry[]</type> <parameter>g1_array</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Collect</function></funcdef> <paramdef><type>geometry set</"
+"type> <parameter>g1field</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: title
@@ -76,7 +78,8 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:38 reference_constructor.xml:208
 #, no-c-format
-msgid "<emphasis role=\"bold\">Variant 1:</emphasis> accepts two input geometries"
+msgid ""
+"<emphasis role=\"bold\">Variant 1:</emphasis> accepts two input geometries"
 msgstr ""
 
 #. Tag: para
@@ -90,8 +93,8 @@ msgstr ""
 #: reference_constructor.xml:40
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a"
-" rowset of geometries."
+"<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a "
+"rowset of geometries."
 msgstr ""
 
 #. Tag: para
@@ -101,8 +104,8 @@ msgid ""
 "If any of the input geometries are collections (Multi* or "
 "GeometryCollection) ST_Collect returns a GeometryCollection (since that is "
 "the only type which can contain nested collections). To prevent this, use "
-"<xref linkend=\"ST_Dump\"/> in a subquery to expand the input collections to"
-" their atomic elements (see example below)."
+"<xref linkend=\"ST_Dump\"/> in a subquery to expand the input collections to "
+"their atomic elements (see example below)."
 msgstr ""
 
 #. Tag: para
@@ -190,8 +193,10 @@ msgstr ""
 #: reference_constructor.xml:71
 #, no-c-format
 msgid ""
-"SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 150505,220227 150406)',\n"
-"                'CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));\n"
+"SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 "
+"150505,220227 150406)',\n"
+"                'CIRCULARSTRING(220227 150406,2220227 150407,220227 "
+"150406)'));\n"
 "\n"
 "                st_astext\n"
 "------------------------------------------------------------------------------------\n"
@@ -229,7 +234,8 @@ msgstr ""
 msgid ""
 "SELECT ST_AsText(  ST_Collect(\n"
 "                ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
-"                        ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As wktcollect;\n"
+"                        ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As "
+"wktcollect;\n"
 "\n"
 "--wkt collect --\n"
 "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
@@ -296,8 +302,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef> "
-"<paramdef><type>geometry </type> "
-"<parameter>aMultiPoint</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>aMultiPoint</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -310,8 +316,8 @@ msgstr ""
 #: reference_constructor.xml:113
 #, no-c-format
 msgid ""
-"Use <xref linkend=\"ST_MakeLine\"/> to create lines from Point or LineString"
-" inputs."
+"Use <xref linkend=\"ST_MakeLine\"/> to create lines from Point or LineString "
+"inputs."
 msgstr ""
 
 #. Tag: title
@@ -333,7 +339,8 @@ msgstr ""
 #: reference_constructor.xml:122
 #, no-c-format
 msgid ""
-"SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  ));\n"
+"SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 "
+"9)')  ));\n"
 "\n"
 "--result--\n"
 "LINESTRING(1 2 3,4 5 6,7 8 9)"
@@ -366,8 +373,8 @@ msgid ""
 "<paramdef><type>float</type> <parameter>ymin</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>xmax</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>ymax</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer</type> <parameter>srid=unknown</"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -390,8 +397,8 @@ msgstr ""
 #: reference_constructor.xml:161
 #, no-c-format
 msgid ""
-"Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was"
-" introduced."
+"Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was "
+"introduced."
 msgstr ""
 
 #. Tag: title
@@ -415,8 +422,8 @@ msgstr ""
 #: reference_constructor.xml:171
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>, <xref"
-" linkend=\"ST_TileEnvelope\"/>"
+", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>, <xref "
+"linkend=\"ST_TileEnvelope\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -435,15 +442,15 @@ msgstr ""
 #: reference_constructor.xml:183
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef>"
-" <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_MakeLine</function></funcdef> <paramdef><type>geometry[]</type>"
-" <parameter>geoms_array</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef>"
-" <paramdef><type>geometry set</type> <parameter>geoms</parameter></paramdef>"
-" </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_MakeLine</"
+"function></funcdef> <paramdef><type>geometry[]</type> "
+"<parameter>geoms_array</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>geoms</parameter></paramdef> "
+"</funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -458,8 +465,8 @@ msgstr ""
 #: reference_constructor.xml:210
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a"
-" rowset of geometries. To ensure the order of the input geometries use "
+"<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a "
+"rowset of geometries. To ensure the order of the input geometries use "
 "<varname>ORDER BY</varname> in the function call, or a subquery with an "
 "<varname>ORDER BY</varname> clause."
 msgstr ""
@@ -546,7 +553,8 @@ msgstr ""
 #: reference_constructor.xml:238
 #, no-c-format
 msgid ""
-"select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)' ) );\n"
+"select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 "
+"3)' ) );\n"
 "\n"
 "          st_astext\n"
 "-----------------------------\n"
@@ -584,7 +592,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT( ST_MakeLine(\n"
-"          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), ST_MakePoint(6,6,6) ]  ));\n"
+"          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), "
+"ST_MakePoint(6,6,6) ]  ));\n"
 "\n"
 "                st_asewkt\n"
 "-------------------------\n"
@@ -601,9 +610,9 @@ msgstr ""
 #: reference_constructor.xml:253
 #, no-c-format
 msgid ""
-"This example queries time-based sequences of GPS points from a set of tracks"
-" and creates one record for each track. The result geometries are "
-"LineStrings composed of the GPS track points in the order of travel."
+"This example queries time-based sequences of GPS points from a set of tracks "
+"and creates one record for each track. The result geometries are LineStrings "
+"composed of the GPS track points in the order of travel."
 msgstr ""
 
 #. Tag: para
@@ -637,7 +646,8 @@ msgstr ""
 msgid ""
 "SELECT gps.track_id, ST_MakeLine(gps.geom) As geom\n"
 "        FROM ( SELECT track_id, gps_time, geom\n"
-"                        FROM gps_points ORDER BY track_id, gps_time ) As gps\n"
+"                        FROM gps_points ORDER BY track_id, gps_time ) As "
+"gps\n"
 "        GROUP BY track_id;"
 msgstr ""
 
@@ -701,7 +711,8 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:317
 #, no-c-format
-msgid "Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
+msgid ""
+"Use <xref linkend=\"ST_MakePointM\"/> to make points with XYM coordinates."
 msgstr ""
 
 #. Tag: para
@@ -709,9 +720,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more "
-"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
-"linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
-"coordinate values."
+"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref linkend="
+"\"ST_PointFromText\"/>. It is also easier to use for numeric coordinate "
+"values."
 msgstr ""
 
 #. Tag: para
@@ -719,8 +730,8 @@ msgstr ""
 #: reference_constructor.xml:510
 #, no-c-format
 msgid ""
-"For geodetic coordinates, <varname>X</varname> is longitude and "
-"<varname>Y</varname> is latitude"
+"For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</"
+"varname> is latitude"
 msgstr ""
 
 #. Tag: programlisting
@@ -805,7 +816,8 @@ msgstr ""
 #: reference_constructor.xml:375
 #, no-c-format
 msgid ""
-"SELECT ST_AsEWKT(  ST_MakePointM(-71.1043443253471, 42.3150676015829, 10)  );\n"
+"SELECT ST_AsEWKT(  ST_MakePointM(-71.1043443253471, 42.3150676015829, "
+"10)  );\n"
 "\n"
 "                                   st_asewkt\n"
 "-----------------------------------------------\n"
@@ -877,10 +889,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
-"<paramdef><type>geometry</type> "
-"<parameter>outerlinestring</parameter></paramdef> "
-"<paramdef><type>geometry[]</type> "
-"<parameter>interiorlinestrings</parameter></paramdef>"
+"<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></"
+"paramdef> <paramdef><type>geometry[]</type> <parameter>interiorlinestrings</"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -902,8 +913,8 @@ msgstr ""
 #: reference_constructor.xml:419
 #, no-c-format
 msgid ""
-"<emphasis role=\"bold\">Variant 2:</emphasis> Accepts a shell LineString and"
-" an array of inner (hole) LineStrings. A geometry array can be constructed "
+"<emphasis role=\"bold\">Variant 2:</emphasis> Accepts a shell LineString and "
+"an array of inner (hole) LineStrings. A geometry array can be constructed "
 "using the PostgreSQL array_agg(), ARRAY[] or ARRAY() constructs."
 msgstr ""
 
@@ -911,9 +922,9 @@ msgstr ""
 #: reference_constructor.xml:423 reference_constructor.xml:685
 #, no-c-format
 msgid ""
-"This function does not accept MultiLineStrings. Use <xref "
-"linkend=\"ST_LineMerge\"/> to generate a LineString, or <xref "
-"linkend=\"ST_Dump\"/> to extract LineStrings."
+"This function does not accept MultiLineStrings. Use <xref linkend="
+"\"ST_LineMerge\"/> to generate a LineString, or <xref linkend=\"ST_Dump\"/> "
+"to extract LineStrings."
 msgstr ""
 
 #. Tag: title
@@ -940,17 +951,19 @@ msgstr ""
 #: reference_constructor.xml:435
 #, no-c-format
 msgid ""
-"Create a Polygon from an open LineString, using <xref "
-"linkend=\"ST_StartPoint\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
+"Create a Polygon from an open LineString, using <xref linkend=\"ST_StartPoint"
+"\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
 msgstr ""
 
 #. Tag: programlisting
 #: reference_constructor.xml:437
 #, no-c-format
 msgid ""
-"SELECT ST_MakePolygon( ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)) )\n"
+"SELECT ST_MakePolygon( ST_AddPoint(foo.open_line, ST_StartPoint(foo."
+"open_line)) )\n"
 "FROM (\n"
-"  SELECT ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)') As open_line) As foo;"
+"  SELECT ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)') As "
+"open_line) As foo;"
 msgstr ""
 
 #. Tag: para
@@ -963,7 +976,8 @@ msgstr ""
 #: reference_constructor.xml:440
 #, no-c-format
 msgid ""
-"SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));\n"
+"SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRING(75.15 29.53 1,77 29 1,77.6 "
+"29.5 1, 75.15 29.53 1)'));\n"
 "\n"
 "st_asewkt\n"
 "-----------\n"
@@ -980,7 +994,8 @@ msgstr ""
 #: reference_constructor.xml:442
 #, no-c-format
 msgid ""
-"SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)' ));\n"
+"SELECT ST_AsEWKT( ST_MakePolygon( 'LINESTRINGM(75.15 29.53 1,77 29 1,77.6 "
+"29.5 2, 75.15 29.53 2)' ));\n"
 "\n"
 "st_asewkt\n"
 "----------\n"
@@ -1015,15 +1030,15 @@ msgstr ""
 #: reference_constructor.xml:449
 #, no-c-format
 msgid ""
-"Create a set of province boundaries with holes representing lakes. The input"
-" is a table of province Polygons/MultiPolygons and a table of water "
-"linestrings. Lines forming lakes are determined by using <xref "
-"linkend=\"ST_IsClosed\"/>. The province linework is extracted by using <xref"
-" linkend=\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the "
-"boundary is forced to be a single LineString by using <xref "
-"linkend=\"ST_LineMerge\"/>. (However, note that if a province has more than "
-"one region or has islands this will produce an invalid polygon.) Using a "
-"LEFT JOIN ensures all provinces are included even if they have no lakes."
+"Create a set of province boundaries with holes representing lakes. The input "
+"is a table of province Polygons/MultiPolygons and a table of water "
+"linestrings. Lines forming lakes are determined by using <xref linkend="
+"\"ST_IsClosed\"/>. The province linework is extracted by using <xref linkend="
+"\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the boundary "
+"is forced to be a single LineString by using <xref linkend=\"ST_LineMerge\"/"
+">. (However, note that if a province has more than one region or has islands "
+"this will produce an invalid polygon.) Using a LEFT JOIN ensures all "
+"provinces are included even if they have no lakes."
 msgstr ""
 
 #. Tag: para
@@ -1106,8 +1121,7 @@ msgid ""
 "<funcdef>geometry <function>ST_Point</function></funcdef> "
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"<paramdef><type>integer</type> <parameter>srid=unknown</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1167,17 +1181,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If the point coordinates are not in a geodetic coordinate system (such as "
-"WGS84), then they must be reprojected before casting to a geography. In this"
-" example a point in Pennsylvania State Plane feet (SRID 2273) is projected "
-"to WGS84 (SRID 4326)."
+"WGS84), then they must be reprojected before casting to a geography. In this "
+"example a point in Pennsylvania State Plane feet (SRID 2273) is projected to "
+"WGS84 (SRID 4326)."
 msgstr ""
 
 #. Tag: programlisting
 #: reference_constructor.xml:535
 #, no-c-format
 msgid ""
-"SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), "
-"4326)::geography;"
+"SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::"
+"geography;"
 msgstr ""
 
 #. Tag: para
@@ -1185,8 +1199,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-"linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1210,16 +1224,16 @@ msgid ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:567
 #, no-c-format
 msgid ""
-"Returns an Point with the given X, Y and Z coordinate values, and optionally"
-" an SRID number."
+"Returns an Point with the given X, Y and Z coordinate values, and optionally "
+"an SRID number."
 msgstr ""
 
 #. Tag: programlisting
@@ -1244,8 +1258,8 @@ msgstr ""
 #: reference_constructor.xml:579
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
-"linkend=\"ST_PointZM\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
+"\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1262,16 +1276,16 @@ msgid ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:603
 #, no-c-format
 msgid ""
-"Returns an Point with the given X, Y and M coordinate values, and optionally"
-" an SRID number."
+"Returns an Point with the given X, Y and M coordinate values, and optionally "
+"an SRID number."
 msgstr ""
 
 #. Tag: programlisting
@@ -1296,8 +1310,8 @@ msgstr ""
 #: reference_constructor.xml:615
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
-"linkend=\"ST_PointZM\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+"\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1315,8 +1329,8 @@ msgid ""
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer</type> "
-"<parameter>srid=unknown</parameter></paramdef>"
+"choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1349,8 +1363,8 @@ msgstr ""
 #: reference_constructor.xml:653
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
-"linkend=\"ST_PointZ\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
+"\"ST_PointZ\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1370,9 +1384,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Polygon</function></funcdef> "
-"<paramdef><type>geometry </type> "
-"<parameter>lineString</parameter></paramdef> <paramdef><type>integer </type>"
-" <parameter>srid</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>lineString</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1395,8 +1409,8 @@ msgstr ""
 #: reference_constructor.xml:681
 #, no-c-format
 msgid ""
-"To create polygons with holes use <xref linkend=\"ST_MakePolygon\"/> Variant"
-" 2 and then <xref linkend=\"ST_SetSRID\"/>."
+"To create polygons with holes use <xref linkend=\"ST_MakePolygon\"/> Variant "
+"2 and then <xref linkend=\"ST_SetSRID\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1421,7 +1435,8 @@ msgstr ""
 #: reference_constructor.xml:699
 #, no-c-format
 msgid ""
-"SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::geometry, 4326) );\n"
+"SELECT ST_AsText( ST_Polygon('LINESTRING(75 29, 77 29, 77 29, 75 29)'::"
+"geometry, 4326) );\n"
 "\n"
 "-- result --\n"
 "POLYGON((75 29, 77 29, 77 29, 75 29))"
@@ -1437,7 +1452,8 @@ msgstr ""
 #: reference_constructor.xml:701
 #, no-c-format
 msgid ""
-"SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, 77 29 3, 75 29 1)'), 4326) );\n"
+"SELECT ST_AsEWKT( ST_Polygon( ST_GeomFromEWKT('LINESTRING(75 29 1, 77 29 2, "
+"77 29 3, 75 29 1)'), 4326) );\n"
 "\n"
 "-- result --\n"
 "SRID=4326;POLYGON((75 29 1, 77 29 2, 77 29 3, 75 29 1))"
@@ -1462,9 +1478,8 @@ msgstr ""
 #: reference_constructor.xml:716
 #, no-c-format
 msgid ""
-"Creates a rectangular Polygon in <ulink "
-"url=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web "
-"Mercator</ulink> (SRID:3857) using the <ulink "
+"Creates a rectangular Polygon in <ulink url=\"https://en.wikipedia.org/wiki/"
+"Web_Mercator_projection\">Web Mercator</ulink> (SRID:3857) using the <ulink "
 "url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</ulink>."
 msgstr ""
 
@@ -1476,26 +1491,24 @@ msgid ""
 "<paramdef><type>integer</type> <parameter>tileZoom</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>tileX</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> "
-"<parameter>bounds=SRID=3857;LINESTRING(-20037508.342789 "
-"-20037508.342789,20037508.342789 20037508.342789)</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>float</type> "
-"<parameter>margin=0.0</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>geometry</type> <parameter>bounds=SRID=3857;"
+"LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 "
+"20037508.342789)</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>float</type> <parameter>margin=0.0</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:735
 #, no-c-format
 msgid ""
-"Creates a rectangular Polygon in <ulink "
-"url=\"https://en.wikipedia.org/wiki/Web_Mercator_projection\">Web "
-"Mercator</ulink> (SRID:3857) using the <ulink "
-"url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</ulink>."
-" By default, the bounds are the in EPSG:3857 using the standard range of the"
-" Web Mercator system (-20037508.342789, 20037508.342789). The optional "
-"bounds parameter can be used to generate envelopes for any tiling scheme: "
-"provide a geometry that has the SRID and extent of the initial \"zoom level "
-"zero\" square within which the tile system is to be inscribed."
+"Creates a rectangular Polygon in <ulink url=\"https://en.wikipedia.org/wiki/"
+"Web_Mercator_projection\">Web Mercator</ulink> (SRID:3857) using the <ulink "
+"url=\"https://en.wikipedia.org/wiki/Tiled_web_map\">XYZ tile system</ulink>. "
+"By default, the bounds are the in EPSG:3857 using the standard range of the "
+"Web Mercator system (-20037508.342789, 20037508.342789). The optional bounds "
+"parameter can be used to generate envelopes for any tiling scheme: provide a "
+"geometry that has the SRID and extent of the initial \"zoom level zero\" "
+"square within which the tile system is to be inscribed."
 msgstr ""
 
 #. Tag: para
@@ -1504,17 +1517,16 @@ msgstr ""
 msgid ""
 "The optional margin parameter can be used to grow a tile by the given "
 "percentage, e.g. margin=0.125 grows the tile by 12.5%, which is equivalent "
-"to buffer=512 when extent is 4096, as used in <xref "
-"linkend=\"ST_AsMVTGeom\"/>. This is useful to create a tile buffer -- to "
-"include data lying outside of the tile's visible area, but whose existence "
-"affects current tile's rendering. For example, a city name (a geopoint) "
-"could be near an edge of a tile, but the text would need to render on two "
-"tiles, even though the geopoint is located in the visible area of just one "
-"tile. Using an expanded tile in a search would include the city geopoint for"
-" both tiles. Use negative value to shrink the tile instead. Values less than"
-" -0.5 are prohibited because that would eliminate the tile completely. Do "
-"not use margin with ST_AsMVTGeom(). See example in <xref "
-"linkend=\"ST_AsMVT\"/>."
+"to buffer=512 when extent is 4096, as used in <xref linkend=\"ST_AsMVTGeom\"/"
+">. This is useful to create a tile buffer -- to include data lying outside "
+"of the tile's visible area, but whose existence affects current tile's "
+"rendering. For example, a city name (a geopoint) could be near an edge of a "
+"tile, but the text would need to render on two tiles, even though the "
+"geopoint is located in the visible area of just one tile. Using an expanded "
+"tile in a search would include the city geopoint for both tiles. Use "
+"negative value to shrink the tile instead. Values less than -0.5 are "
+"prohibited because that would eliminate the tile completely. Do not use "
+"margin with ST_AsMVTGeom(). See example in <xref linkend=\"ST_AsMVT\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1543,9 +1555,11 @@ msgid ""
 "\n"
 " st_astext\n"
 "------------------------------\n"
-" POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 10018754.1713945,0 0,-10018754.1713945 0))\n"
+" POLYGON((-10018754.1713945 0,-10018754.1713945 10018754.1713945,0 "
+"10018754.1713945,0 0,-10018754.1713945 0))\n"
 "\n"
-"SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, 90, 4326) ) );\n"
+"SELECT ST_AsText( ST_TileEnvelope(3, 1, 1, ST_MakeEnvelope(-180, -90, 180, "
+"90, 4326) ) );\n"
 "\n"
 "                      st_astext\n"
 "------------------------------------------------------\n"
@@ -1580,12 +1594,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Starts with the concept of a hexagon tiling of the plane. (Not a hexagon "
-"tiling of the globe, this is not the <ulink "
-"url=\"https://github.com/uber/h3\">H3</ulink> tiling scheme.) For a given "
-"planar SRS, and a given edge size, starting at the origin of the SRS, there "
-"is one unique hexagonal tiling of the plane, Tiling(SRS, Size). This "
-"function answers the question: what hexagons in a given Tiling(SRS, Size) "
-"overlap with a given bounds."
+"tiling of the globe, this is not the <ulink url=\"https://github.com/uber/"
+"h3\">H3</ulink> tiling scheme.) For a given planar SRS, and a given edge "
+"size, starting at the origin of the SRS, there is one unique hexagonal "
+"tiling of the plane, Tiling(SRS, Size). This function answers the question: "
+"what hexagons in a given Tiling(SRS, Size) overlap with a given bounds."
 msgstr ""
 
 #. Tag: para
@@ -1601,8 +1614,7 @@ msgstr ""
 msgid ""
 "Doubling or tripling the edge size of the hexagon generates a new parent "
 "tiling that fits with the origin tiling. Unfortunately, it is not possible "
-"to generate parent hexagon tilings that the child tiles perfectly fit "
-"inside."
+"to generate parent hexagon tilings that the child tiles perfectly fit inside."
 msgstr ""
 
 #. Tag: para
@@ -1654,8 +1666,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If we generate a set of hexagons for each polygon boundary and filter out "
-"those that do not intersect their hexagons, we end up with a tiling for each"
-" polygon."
+"those that do not intersect their hexagons, we end up with a tiling for each "
+"polygon."
 msgstr ""
 
 #. Tag: para
@@ -1670,8 +1682,8 @@ msgstr ""
 #: reference_constructor.xml:815
 #, no-c-format
 msgid ""
-"The LATERAL keyword is implied for set-returning functions when referring to"
-" a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just "
+"The LATERAL keyword is implied for set-returning functions when referring to "
+"a prior table in the FROM list. So CROSS JOIN LATERAL, CROSS JOIN, or just "
 "plain , are equivalent constructs for this example."
 msgstr ""
 
@@ -1720,8 +1732,8 @@ msgid ""
 "<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> "
-"<parameter>origin</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1737,8 +1749,8 @@ msgstr ""
 #: reference_constructor.xml:849
 #, no-c-format
 msgid ""
-"Hexagons are generated with no SRID set, so use <xref "
-"linkend=\"ST_SetSRID\"/> to set the SRID to the one you expect."
+"Hexagons are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
+"> to set the SRID to the one you expect."
 msgstr ""
 
 #. Tag: title
@@ -1910,8 +1922,8 @@ msgstr ""
 #: reference_constructor.xml:920
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_HexagonGrid\"/> , <xref "
-"linkend=\"ST_EstimatedExtent\"/> , <xref linkend=\"ST_SetSRID\"/>"
+", <xref linkend=\"ST_HexagonGrid\"/> , <xref linkend=\"ST_EstimatedExtent\"/"
+"> , <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1936,8 +1948,8 @@ msgid ""
 "<paramdef><type>float8</type> <parameter>size</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_i</parameter></paramdef> "
 "<paramdef><type>integer</type> <parameter>cell_j</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry</type> "
-"<parameter>origin</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>geometry</type> <parameter>origin</"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1953,8 +1965,8 @@ msgstr ""
 #: reference_constructor.xml:951
 #, no-c-format
 msgid ""
-"Squares are generated with no SRID set, so use <xref "
-"linkend=\"ST_SetSRID\"/> to set the SRID to the one you expect."
+"Squares are generated with no SRID set, so use <xref linkend=\"ST_SetSRID\"/"
+"> to set the SRID to the one you expect."
 msgstr ""
 
 #. Tag: title

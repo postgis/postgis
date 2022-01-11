@@ -1,0 +1,1368 @@
+# Russian translations for PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"PO-Revision-Date: 2021-11-08 06:12+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#. Tag: para
+#: reference_overlay.xml:5
+#, no-c-format
+msgid ""
+"These functions compute results arising from the overlay of two geometries. "
+"These are also known as point-set theoretic boolean operations. Some related "
+"functions are also provided."
+msgstr ""
+
+#. Tag: title
+#: reference_overlay.xml:12
+#, no-c-format
+msgid "Overlay Functions"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:16
+#, no-c-format
+msgid "ST_ClipByBox2D"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:17
+#, no-c-format
+msgid "Computes the portion of a geometry falling within a rectangle."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_overlay.xml:22
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ClipByBox2D</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_overlay.xml:31 reference_overlay.xml:80 reference_overlay.xml:192
+#: reference_overlay.xml:272 reference_overlay.xml:326
+#: reference_overlay.xml:384 reference_overlay.xml:512
+#: reference_overlay.xml:597 reference_overlay.xml:689
+#: reference_overlay.xml:777
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:33
+#, no-c-format
+msgid ""
+"Clips a geometry by a 2D box in a fast and tolerant but possibly invalid "
+"way. Topologically invalid input geometries do not result in exceptions "
+"being thrown. The output geometry is not guaranteed to be valid (in "
+"particular, self-intersections for a polygon may be introduced)."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:40 reference_overlay.xml:338 reference_overlay.xml:522
+#: reference_overlay.xml:817
+#, no-c-format
+msgid "Performed by the GEOS module."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:42 reference_overlay.xml:523
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr ""
+
+#. Tag: title
+#: reference_overlay.xml:47 reference_overlay.xml:106 reference_overlay.xml:229
+#: reference_overlay.xml:293 reference_overlay.xml:347
+#: reference_overlay.xml:410 reference_overlay.xml:529
+#: reference_overlay.xml:623 reference_overlay.xml:838
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:48
+#, no-c-format
+msgid ""
+"-- Rely on implicit cast from geometry to box2d for the second parameter\n"
+"SELECT ST_ClipByBox2D(geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;"
+msgstr ""
+
+#. Tag: title
+#: reference_overlay.xml:51 reference_overlay.xml:147 reference_overlay.xml:248
+#: reference_overlay.xml:300 reference_overlay.xml:359
+#: reference_overlay.xml:481 reference_overlay.xml:566
+#: reference_overlay.xml:664 reference_overlay.xml:729
+#: reference_overlay.xml:849
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:52
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeBox2D\"/>, <xref linkend=\"ST_MakeEnvelope\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:62
+#, no-c-format
+msgid "ST_Difference"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:64
+#, no-c-format
+msgid ""
+"Computes a geometry representing the part of geometry A that does not "
+"intersect geometry B."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_overlay.xml:70
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Difference</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:82
+#, no-c-format
+msgid ""
+"Returns a geometry representing the part of geometry A that does not "
+"intersect geometry B. This is equivalent to <code>A - ST_Intersection(A,B)</"
+"code>. If A is completely contained in B then an empty atomic geometry of "
+"appropriate type is returned."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:87
+#, no-c-format
+msgid ""
+"This is the only overlay function where input order matters. "
+"ST_Difference(A, B) always returns a portion of A."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:90 reference_overlay.xml:201 reference_overlay.xml:605
+#: reference_overlay.xml:713
+#, no-c-format
+msgid ""
+"If the optional <code>gridSize</code> argument is provided, the inputs are "
+"snapped to a grid of the given size, and the result vertices are computed on "
+"that same grid. (Requires GEOS-3.9.0 or higher)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:611
+#, no-c-format
+msgid "Performed by the GEOS module"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:613
+#: reference_overlay.xml:721 reference_overlay.xml:825
+#, no-c-format
+msgid "Enhanced: 3.1.0 accept a gridSize parameter - requires GEOS &gt;= 3.9.0"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:99 reference_overlay.xml:223 reference_overlay.xml:615
+#: reference_overlay.xml:829
+#, no-c-format
+msgid "&sfs_compliant; s2.1.1.3"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:100
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.20"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:101 reference_overlay.xml:225
+#: reference_overlay.xml:287 reference_overlay.xml:617
+#: reference_overlay.xml:719 reference_overlay.xml:833
+#, no-c-format
+msgid ""
+"&Z_support; However, the result is computed using XY only. The result Z "
+"values are copied, averaged or interpolated."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:118
+#, no-c-format
+msgid "The input linestrings"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:130
+#, no-c-format
+msgid "The difference of the two linestrings"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:139
+#, no-c-format
+msgid "The difference of 2D linestrings."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:140
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(\n"
+"    ST_Difference(\n"
+"            'LINESTRING(50 100, 50 200)'::geometry,\n"
+"            'LINESTRING(50 50, 50 150)'::geometry\n"
+"        )\n"
+"    );\n"
+"\n"
+"st_astext\n"
+"---------\n"
+"LINESTRING(50 150,50 200)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:142
+#, no-c-format
+msgid "The difference of 3D points."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:143
+#, no-c-format
+msgid ""
+"SELECT ST_AsEWKT( ST_Difference(\n"
+"                   'MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 "
+"38.281 7)' :: geometry,\n"
+"                   'POINT(-118.614 38.281 5)' :: geometry\n"
+"                  ) );\n"
+"\n"
+"st_asewkt\n"
+"---------\n"
+"MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:149 reference_overlay.xml:666
+#, no-c-format
+msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:155
+#, no-c-format
+msgid "ST_Intersection"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:157
+#, no-c-format
+msgid ""
+"Computes a geometry representing the shared portion of geometries A and B."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_overlay.xml:162
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>geometry <function>ST_Intersection</function></"
+"funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </"
+"paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </"
+"paramdef> <paramdef choice=\"opt\"> <type>float8</type> <parameter>gridSize "
+"= -1</parameter> </paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geography <function>ST_Intersection</function></funcdef> <paramdef> "
+"<type>geography</type> <parameter>geogA</parameter> </paramdef> <paramdef> "
+"<type>geography</type> <parameter>geogB</parameter> </paramdef> </"
+"funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:193
+#, no-c-format
+msgid ""
+"Returns a geometry representing the point-set intersection of two "
+"geometries. In other words, that portion of geometry A and geometry B that "
+"is shared between the two geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:198
+#, no-c-format
+msgid ""
+"If the geometries have no points in common (i.e. are disjoint) then an empty "
+"atomic geometry of appropriate type is returned."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:207
+#, no-c-format
+msgid ""
+"ST_Intersection in conjunction with <xref linkend=\"ST_Intersects\"/> is "
+"useful for clipping geometries such as in bounding box, buffer, or region "
+"queries where you only require the portion of a geometry that is inside a "
+"country or region of interest."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:210
+#, no-c-format
+msgid ""
+"Geography: For geography this is really a thin wrapper around the geometry "
+"implementation. It first determines the best SRID that fits the bounding box "
+"of the 2 geography objects (if geography objects are within one half zone "
+"UTM but not same UTM will pick one of those) (favoring UTM or Lambert "
+"Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator "
+"in worst case scenario) and then intersection in that best fit planar "
+"spatial ref and retransforms back to WGS84 geography."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:213
+#, no-c-format
+msgid "This function will drop the M coordinate values if present."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:215
+#, no-c-format
+msgid ""
+"If working with 3D geometries, you may want to use SFGCAL based <xref "
+"linkend=\"ST_3DIntersection\"/> which does a proper 3D intersection for 3D "
+"geometries. Although this function works with Z-coordinate, it does an "
+"averaging of Z-Coordinate."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:220 reference_overlay.xml:826
+#, no-c-format
+msgid "Changed: 3.0.0 does not depend on SFCGAL."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:221
+#, no-c-format
+msgid "Availability: 1.5 support for geography data type was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:224
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.18"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:230
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, "
+"0 2 )'::geometry));\n"
+" st_astext\n"
+"---------------\n"
+"GEOMETRYCOLLECTION EMPTY\n"
+"\n"
+"SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, "
+"0 2 )'::geometry));\n"
+" st_astext\n"
+"---------------\n"
+"POINT(0 0)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:231
+#, no-c-format
+msgid ""
+"Clip all lines (trails) by country. Here we assume country geom are POLYGON "
+"or MULTIPOLYGONS. NOTE: we are only keeping intersections that result in a "
+"LINESTRING or MULTILINESTRING because we don't care about trails that just "
+"share a point. The dump is needed to expand a geometry collection into "
+"individual single MULT* parts. The below is fairly generic and will work for "
+"polys, etc. by just changing the where clause."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:236
+#, no-c-format
+msgid ""
+"select clipped.gid, clipped.f_name, clipped_geom\n"
+"from (\n"
+"         select trails.gid, trails.f_name,\n"
+"             (ST_Dump(ST_Intersection(country.geom, trails.geom))).geom "
+"clipped_geom\n"
+"         from country\n"
+"              inner join trails on ST_Intersects(country.geom, trails.geom)\n"
+"     ) as clipped\n"
+"where ST_Dimension(clipped.clipped_geom) = 1;"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:237
+#, no-c-format
+msgid ""
+"For polys e.g. polygon landmarks, you can also use the sometimes faster hack "
+"that buffering anything by 0.0 except a polygon results in an empty geometry "
+"collection. (So a geometry collection containing polys, lines and points "
+"buffered by 0.0 would only leave the polygons and dissolve the collection "
+"shell.)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:239
+#, no-c-format
+msgid ""
+"select poly.gid,\n"
+"    ST_Multi(\n"
+"        ST_Buffer(\n"
+"            ST_Intersection(country.geom, poly.geom),\n"
+"            0.0\n"
+"        )\n"
+"    ) clipped_geom\n"
+"from country\n"
+"     inner join poly on ST_Intersects(country.geom, poly.geom)\n"
+"where not ST_IsEmpty(ST_Buffer(ST_Intersection(country.geom, poly.geom), "
+"0.0));"
+msgstr ""
+
+#. Tag: title
+#: reference_overlay.xml:243
+#, no-c-format
+msgid "Examples: 2.5Dish"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:244
+#, no-c-format
+msgid ""
+"Note this is not a true intersection, compare to the same example using "
+"<xref linkend=\"ST_3DIntersection\"/>."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:245
+#, no-c-format
+msgid ""
+"select ST_AsText(ST_Intersection(linestring, polygon)) As wkt\n"
+"from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 "
+"10)') AS linestring\n"
+" CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') "
+"AS polygon;\n"
+"\n"
+"               st_astext\n"
+"---------------------------------------\n"
+" LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:249
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
+"\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:256
+#, no-c-format
+msgid "ST_MemUnion"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:258
+#, no-c-format
+msgid ""
+"Aggregate function which unions geometries in a memory-efficent but slower "
+"way"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_overlay.xml:263
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_MemUnion</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>geomfield</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:274
+#, no-c-format
+msgid ""
+"An aggregate function that unions the input geometries, merging them to "
+"produce a result geometry with no overlaps. The output may be a single "
+"geometry, a MultiGeometry, or a Geometry Collection."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:280
+#, no-c-format
+msgid ""
+"Produces the same result as <xref linkend=\"ST_Union\"/>, but uses less "
+"memory and more processor time. This aggregate function works by unioning "
+"the geometries incrementally, as opposed to the ST_Union aggregate which "
+"first accumulates an array and then unions the contents using a fast "
+"algorithm."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:295
+#, no-c-format
+msgid ""
+"SELECT id,\n"
+"       ST_MemUnion(geom) as singlegeom\n"
+"FROM sometable f\n"
+"GROUP BY id;"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:308
+#, no-c-format
+msgid "ST_Node"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:310
+#, no-c-format
+msgid "Nodes a collection of lines."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_overlay.xml:317
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Node</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:328
+#, no-c-format
+msgid ""
+"Returns a (Multi)LineString representing the fully noded version of a "
+"collection of linestrings. The noding preserves all of the input nodes, and "
+"introduces the least possible number of new nodes. The resulting linework is "
+"dissolved (duplicate lines are removed)."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:335
+#, no-c-format
+msgid ""
+"This is a good way to create fully-noded linework suitable for use as input "
+"to <xref linkend=\"ST_Polygonize\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:337
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:339 reference_overlay.xml:722
+#, no-c-format
+msgid "Availability: 2.0.0"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:341
+#, no-c-format
+msgid ""
+"Changed: 2.4.0 this function uses GEOSNode internally instead of "
+"GEOSUnaryUnion. This may cause the resulting linestrings to have a different "
+"order and direction compared to PostGIS &lt; 2.4."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:348
+#, no-c-format
+msgid "Noding a 3D LineString which self-intersects"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:349
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(\n"
+"        ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)\n"
+"    ) As  output;\n"
+"output\n"
+"-----------\n"
+"MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 "
+"4.5,10 0 3))"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:351
+#, no-c-format
+msgid ""
+"Noding two LineStrings which share common linework. Note that the result "
+"linework is dissolved."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:353
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(\n"
+"        ST_Node('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))'::"
+"geometry)\n"
+"    ) As  output;\n"
+"output\n"
+"-----------\n"
+"MULTILINESTRING((2 5,2 3),(2 3,2 1,4 1),(4 1,2 3),(4 1,6 1),(6 1,7 1))"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:369
+#, no-c-format
+msgid "ST_Split"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:370
+#, no-c-format
+msgid ""
+"Returns a collection of geometries created by splitting a geometry by "
+"another geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_overlay.xml:375
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Split</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>input</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:385
+#, no-c-format
+msgid ""
+"The function supports splitting a LineString by a (Multi)Point, "
+"(Multi)LineString or (Multi)Polygon boundary, or a (Multi)Polygon by a "
+"LineString. The result geometry is always a collection."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:391
+#, no-c-format
+msgid ""
+"This function is in a sense the opposite of <xref linkend=\"ST_Union\"/>. "
+"Applying ST_Union to the returned collection should theoretically yield the "
+"original geometry (although due to numerical rounding this may not be "
+"exactly the case)."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:397
+#, no-c-format
+msgid "Availability: 2.0.0 requires GEOS"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:398
+#, no-c-format
+msgid ""
+"Enhanced: 2.2.0 support for splitting a line by a multiline, a multipoint or "
+"(multi)polygon boundary was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:399
+#, no-c-format
+msgid ""
+"Enhanced: 2.5.0 support for splitting a polygon by a multiline was "
+"introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:401
+#, no-c-format
+msgid ""
+"To improve the robustness of ST_Split it may be convenient to <xref linkend="
+"\"ST_Snap\"/> the input to the blade in advance using a very low tolerance. "
+"Otherwise the internally used coordinate grid may cause tolerance problems, "
+"where coordinates of input and blade do not fall onto each other and the "
+"input is not being split correctly (see <ulink url=\"http://trac.osgeo.org/"
+"postgis/ticket/2192\">#2192</ulink>)."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:403
+#, no-c-format
+msgid ""
+"When a (Multi)Polygon is passed as as the blade, its linear components (the "
+"boundary) are used for cutting the input."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:411
+#, no-c-format
+msgid "Polygon Cut by Line"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:423 reference_overlay.xml:457
+#, no-c-format
+msgid "Before Split"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:435 reference_overlay.xml:469
+#, no-c-format
+msgid "After split"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:444
+#, no-c-format
+msgid ""
+"-- this creates a geometry collection consisting of the 2 halves of the "
+"polygon\n"
+"-- this is similar to the example we demonstrated in ST_BuildArea\n"
+"SELECT ST_Split(circle, line)\n"
+"FROM (SELECT\n"
+"    ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) As line,\n"
+"    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
+"\n"
+"-- result --\n"
+" GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 "
+"80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))\n"
+"\n"
+"-- To convert to individual polygons, you can use ST_Dump or ST_GeometryN\n"
+"SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt\n"
+"FROM (SELECT\n"
+"    ST_MakeLine(ST_Point(10, 10),ST_Point(190, 190)) As line,\n"
+"    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
+"\n"
+"-- result --\n"
+"wkt\n"
+"---------------\n"
+"POLYGON((150 90,149.039264020162 80.2454838991936,..))\n"
+"POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 "
+"62.2214883490198,53.8060233744357 ..))"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:445
+#, no-c-format
+msgid "Multilinestring Cut by point"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:478
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
+"        FROM (SELECT\n"
+"    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 "
+"90))') As mline,\n"
+"    ST_Point(30,30) As pt) As foo;\n"
+"\n"
+"wktcut\n"
+"------\n"
+"GEOMETRYCOLLECTION(\n"
+"    LINESTRING(10 10,30 30),\n"
+"    LINESTRING(30 30,190 190),\n"
+"    LINESTRING(15 15,30 30),\n"
+"    LINESTRING(30 30,100 90)\n"
+")"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:482
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_CollectionExtract\"/"
+">, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_GeometryN\"/>, <xref "
+"linkend=\"ST_Subdivide\"/>, <xref linkend=\"ST_Union\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:496
+#, no-c-format
+msgid "ST_Subdivide"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:497
+#, no-c-format
+msgid "Computes a rectilinear subdivision of a geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_overlay.xml:502
+#, no-c-format
+msgid ""
+"<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float8</type> <parameter>gridSize = "
+"-1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:514
+#, no-c-format
+msgid ""
+"Divides geometry into parts using rectilinear lines, until each part can be "
+"represented using no more than <code>max_vertices</code>. Point-in-polygon "
+"and other spatial operations are normally faster for indexed subdivided "
+"dataset: \"miss\" cases are faster to check as boxes for all parts typically "
+"cover smaller area than original geometry box, \"hit\" cases are faster "
+"because recheck operates on less points. <code>max_vertices</code> must be 5 "
+"or more, as 5 points are needed to represent a closed box. <code>gridSize</"
+"code> can be specified to have clipping work in fixed-precision space "
+"(requires GEOS-3.9.0+)."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:524
+#, no-c-format
+msgid ""
+"Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is "
+"lowered from 8 to 5."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:525
+#, no-c-format
+msgid ""
+"Enhanced: 3.1.0 accept a gridSize parameter, requires GEOS &gt;= 3.9.0 to "
+"use this new feature."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:530
+#, no-c-format
+msgid ""
+"-- Subdivide complex geometries in table, in place\n"
+"with complex_areas_to_subdivide as (\n"
+"    delete from polygons_table\n"
+"    where ST_NPoints(geom) > 255\n"
+"    returning id, column1, column2, column3, geom\n"
+")\n"
+"insert into polygons_table (fid, column1, column2, column3, geom)\n"
+"    select\n"
+"        fid, column1, column2, column3,\n"
+"        ST_Subdivide(geom, 255) as geom\n"
+"    from complex_areas_to_subdivide;"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:532
+#, no-c-format
+msgid ""
+"-- Create a new subdivided table suitable for joining to the original\n"
+"CREATE TABLE subdivided_geoms AS\n"
+"SELECT pkey, ST_Subdivide(geom) AS geom\n"
+"FROM original_geoms;"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:543
+#, no-c-format
+msgid "Subdivide max 10 vertices"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:546
+#, no-c-format
+msgid ""
+"SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt\n"
+"FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 "
+"42,32 56,22 64,32 110,40 119,36 150,\n"
+"57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 "
+"122,\n"
+"190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::geometry,10))  "
+"As f(geom);"
+msgstr ""
+
+#. Tag: screen
+#: reference_overlay.xml:547
+#, no-c-format
+msgid ""
+"rn │                                                      wkt\n"
+"────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n"
+"  1 │ POLYGON((119 23,85 35,68 29,66 28,32 56,22 64,29.8260869565217 100,119 "
+"100,119 23))\n"
+"  2 │ POLYGON((132 10,119 23,119 56,186 56,186 52,178 34,168 18,147 13,132 "
+"10))\n"
+"  3 │ POLYGON((119 56,119 100,190 100,185 79,186 56,119 56))\n"
+"  4 │ POLYGON((29.8260869565217 100,32 110,40 119,36 150,57 158,75 171,92 "
+"182,114 184,114 100,29.8260869565217 100))\n"
+"  5 │ POLYGON((114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 "
+"100,114 100,114 184))"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:556
+#, no-c-format
+msgid ""
+"Useful in conjunction with ST_Segmentize(geography) to create additional "
+"vertices that can then be used for splitting."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:559
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_Subdivide(ST_Segmentize('LINESTRING(0 0, 85 85)'::"
+"geography,1200000)::geometry,8));"
+msgstr ""
+
+#. Tag: screen
+#: reference_overlay.xml:560
+#, no-c-format
+msgid ""
+"LINESTRING(0 0,0.487578359029357 5.57659056746196,0.984542144675897 "
+"11.1527721155093,1.50101059639722 16.7281035483571,1.94532113630331 21.25)\n"
+"LINESTRING(1.94532113630331 21.25,2.04869538062779 "
+"22.3020741387339,2.64204641967673 27.8740533545155,3.29994062412787 "
+"33.443216802941,4.04836719489742 39.0084282520239,4.59890468420694 42.5)\n"
+"LINESTRING(4.59890468420694 42.5,4.92498503922732 "
+"44.5680389206321,5.98737409390639 50.1195229244701,7.3290919767674 "
+"55.6587646879025,8.79638749938413 60.1969505994924)\n"
+"LINESTRING(8.79638749938413 60.1969505994924,9.11375579533779 "
+"61.1785363177625,11.6558166691368 66.6648504160202,15.642041247655 "
+"72.0867690601745,22.8716627200212 77.3609628116894,24.6991785131552 "
+"77.8939011989848)\n"
+"LINESTRING(24.6991785131552 77.8939011989848,39.4046096622744 "
+"82.1822848017636,44.7994523421035 82.5156766227011)\n"
+"LINESTRING(44.7994523421035 82.5156766227011,85 85)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:567
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Segmentize\"/>, "
+"<xref linkend=\"ST_Split\"/>, <xref linkend=\"ST_NPoints\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:579
+#, no-c-format
+msgid "ST_SymDifference"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:581
+#, no-c-format
+msgid ""
+"Computes a geometry representing the portions of geometries A and B that do "
+"not intersect."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_overlay.xml:587
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:599
+#, no-c-format
+msgid ""
+"Returns a geometry representing the portions of geonetries A and B that do "
+"not intersect. This is equivalent to <code>ST_Union(A,B) - ST_Intersection(A,"
+"B)</code>. It is called a symmetric difference because "
+"<code>ST_SymDifference(A,B) = ST_SymDifference(B,A)</code>."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:616
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:636
+#, no-c-format
+msgid "The original linestrings shown together"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:648
+#, no-c-format
+msgid "The symmetric difference of the two linestrings"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:657
+#, no-c-format
+msgid ""
+"--Safe for 2d - symmetric difference of 2 linestrings\n"
+"SELECT ST_AsText(\n"
+"    ST_SymDifference(\n"
+"        ST_GeomFromText('LINESTRING(50 100, 50 200)'),\n"
+"        ST_GeomFromText('LINESTRING(50 50, 50 150)')\n"
+"    )\n"
+");\n"
+"\n"
+"st_astext\n"
+"---------\n"
+"MULTILINESTRING((50 150,50 200),(50 50,50 100))"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:659
+#, no-c-format
+msgid ""
+"--When used in 3d doesn't quite do the right thing\n"
+"SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 "
+"2)'),\n"
+"    ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))\n"
+"\n"
+"st_astext\n"
+"------------\n"
+"MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:672
+#, no-c-format
+msgid "ST_UnaryUnion"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:674
+#, no-c-format
+msgid "Computes the union of the components of a single geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_overlay.xml:679
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>float8 </type> <parameter>gridSize = -1</"
+"parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:691
+#, no-c-format
+msgid ""
+"A single-input variant of <xref linkend=\"ST_Union\"/>. The input may be a "
+"single geometry, a MultiGeometry, or a GeometryCollection. The union is "
+"applied to the individual components of the input. This allow using this "
+"function to fix MultiPolygons which are invalid due to overlapping "
+"components. (However, the input components must each be valid. An invalid "
+"input component such as a bow-tie polygon may cause an error.)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:701
+#, no-c-format
+msgid ""
+"Another use of this function is to node and dissolve a collection of "
+"linestrings. (This can also be done with <xref linkend=\"ST_Node\"/>.)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:706
+#, no-c-format
+msgid ""
+"It is possible to mix ST_UnaryUnion with <xref linkend=\"ST_Collect\"/> to "
+"fine-tune how many geometries are be unioned at once. This allows trading "
+"off between memory usage and compute time, striking a balance between "
+"ST_Union and <xref linkend=\"ST_MemUnion\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:731
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
+"linkend=\"ST_Node\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_overlay.xml:742
+#, no-c-format
+msgid "ST_Union"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_overlay.xml:743
+#, no-c-format
+msgid ""
+"Computes a geometry representing the point-set union of the input geometries."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_overlay.xml:748
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Union</"
+"function></funcdef> <paramdef><type>geometry</type> <parameter>g1</"
+"parameter></paramdef> <paramdef><type>geometry</type> <parameter>g2</"
+"parameter></paramdef> <paramdef><type>float8</type> <parameter>gridSize</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Union</function></funcdef> <paramdef><type>geometry[]</type> "
+"<parameter>g1_array</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geometry <function>ST_Union</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>g1field</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Union</function></funcdef> <paramdef><type>geometry set</type> "
+"<parameter>g1field</parameter></paramdef> <paramdef><type>float8</type> "
+"<parameter>gridSize</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:778
+#, no-c-format
+msgid ""
+"Unions the input geometries, merging geometry to produce a result geometry "
+"with no overlaps. The output may be an atomic geometry, a MultiGeometry, or "
+"a Geometry Collection. Comes in several variants:"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:783
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">Two-input variant:</emphasis> returns a geometry "
+"that is the union of two input geometries. If either input is NULL, then "
+"NULL is returned."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:788
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">Array variant:</emphasis> returns a geometry that is "
+"the union of an array of geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:792
+#, no-c-format
+msgid ""
+"<emphasis role=\"bold\">Aggregate variant:</emphasis> returns a geometry "
+"that is the union of a rowset of geometries. The ST_Union() function is an "
+"\"aggregate\" function in the terminology of PostgreSQL. That means that it "
+"operates on rows of data, in the same way the SUM() and AVG() functions do "
+"and like most aggregates, it also ignores NULL geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:799
+#, no-c-format
+msgid ""
+"See <xref linkend=\"ST_UnaryUnion\"/> for a non-aggregate, single-input "
+"variant."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:801
+#, no-c-format
+msgid ""
+"The ST_Union array and set variants use the fast Cascaded Union algorithm "
+"described in <ulink url=\"http://blog.cleverelephant.ca/2009/01/must-faster-"
+"unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/must-"
+"faster-unions-in-postgis-14.html</ulink>"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:805
+#, no-c-format
+msgid ""
+"A <code>gridSize</code> can be specified to work in fixed-precision space. "
+"The inputs are snapped to a grid of the given size, and the result vertices "
+"are computed on that same grid. (Requires GEOS-3.9.0 or higher)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:811
+#, no-c-format
+msgid ""
+"may sometimes be used in place of ST_Union, if the result is not required to "
+"be non-overlapping. ST_Collect is usually faster than ST_Union because it "
+"performs no processing on the collected geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:818
+#, no-c-format
+msgid ""
+"ST_Union creates MultiLineString and does not sew LineStrings into a single "
+"LineString. Use <xref linkend=\"ST_LineMerge\"/> to sew LineStrings."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:821
+#, no-c-format
+msgid ""
+"NOTE: this function was formerly called GeomUnion(), which was renamed from "
+"\"Union\" because UNION is an SQL reserved word."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:827
+#, no-c-format
+msgid ""
+"Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
+"introduced and also faster aggregate collection in PostgreSQL."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:830
+#, no-c-format
+msgid "Aggregate version is not explicitly defined in OGC SPEC."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:831
+#, no-c-format
+msgid ""
+"&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
+"involved."
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:839
+#, no-c-format
+msgid "Aggregate example"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:840
+#, no-c-format
+msgid ""
+"SELECT id,\n"
+"       ST_Union(geom) as singlegeom\n"
+"FROM sometable f\n"
+"GROUP BY id;"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:841
+#, no-c-format
+msgid "Non-Aggregate example"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:842
+#, no-c-format
+msgid ""
+"select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(-2 3)' :: "
+"geometry))\n"
+"\n"
+"st_astext\n"
+"----------\n"
+"MULTIPOINT(-2 3,1 2)\n"
+"\n"
+"select ST_AsText(ST_Union('POINT(1 2)' :: geometry, 'POINT(1 2)' :: "
+"geometry))\n"
+"\n"
+"st_astext\n"
+"----------\n"
+"POINT(1 2)"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:843
+#, no-c-format
+msgid "3D example - sort of supports 3D (and with mixed dimensions!)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:844
+#, no-c-format
+msgid ""
+"select ST_AsEWKT(ST_Union(geom))\n"
+"from (\n"
+"         select 'POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3, -7 4.2))'::geometry "
+"geom\n"
+"         union all\n"
+"         select 'POINT(5 5 5)'::geometry geom\n"
+"         union all\n"
+"         select 'POINT(-2 3 1)'::geometry geom\n"
+"         union all\n"
+"         select 'LINESTRING(5 5 5, 10 10 10)'::geometry geom\n"
+"     ) as foo;\n"
+"\n"
+"st_asewkt\n"
+"---------\n"
+"GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 "
+"5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:845
+#, no-c-format
+msgid "3d example not mixing dimensions"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_overlay.xml:846
+#, no-c-format
+msgid ""
+"select ST_AsEWKT(ST_Union(geom))\n"
+"from (\n"
+"         select 'POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2, -7 4.2 2))'::"
+"geometry geom\n"
+"         union all\n"
+"         select 'POINT(5 5 5)'::geometry geom\n"
+"         union all\n"
+"         select 'POINT(-2 3 1)'::geometry geom\n"
+"         union all\n"
+"         select 'LINESTRING(5 5 5, 10 10 10)'::geometry geom\n"
+"     ) as foo;\n"
+"\n"
+"st_asewkt\n"
+"---------\n"
+"GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 "
+"2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))\n"
+"\n"
+"--Examples using new Array construct\n"
+"SELECT ST_Union(ARRAY(SELECT geom FROM sometable));\n"
+"\n"
+"SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
+"            ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktunion;\n"
+"\n"
+"--wktunion---\n"
+"MULTILINESTRING((3 4,4 5),(1 2,3 4))"
+msgstr ""
+
+#. Tag: para
+#: reference_overlay.xml:850
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_UnaryUnion\"/>, <xref linkend=\"ST_MemUnion\"/>, <xref "
+"linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Difference\"/>, <xref "
+"linkend=\"ST_SymDifference\"/>"
+msgstr ""

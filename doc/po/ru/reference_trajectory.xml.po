@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -9,11 +9,13 @@ msgstr ""
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2019-08-03 21:26+0000\n"
 "Language-Team: Russian (https://www.transifex.com/postgis/teams/3227/ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: para
 #: reference_trajectory.xml:5
@@ -63,8 +65,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Tests if a geometry encodes a valid trajectory. A valid trajectory is "
-"represented as a <varname>LINESTRING</varname> with measures (M values). The"
-" measure values must increase from each vertex to the next."
+"represented as a <varname>LINESTRING</varname> with measures (M values). The "
+"measure values must increase from each vertex to the next."
 msgstr ""
 
 #. Tag: para
@@ -108,7 +110,8 @@ msgid ""
 " t\n"
 "\n"
 "-- An invalid trajectory\n"
-"SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), ST_MakePointM(0,1,0)));\n"
+"SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), "
+"ST_MakePointM(0,1,0)));\n"
 "NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)\n"
 " st_isvalidtrajectory\n"
 "----------------------\n"
@@ -131,8 +134,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_trajectory.xml:64
 #, no-c-format
-msgid ""
-"Returns a measure at the closest point of approach of two trajectories."
+msgid "Returns a measure at the closest point of approach of two trajectories."
 msgstr ""
 
 #. Tag: funcprototype
@@ -156,9 +158,9 @@ msgstr ""
 #: reference_trajectory.xml:86 reference_trajectory.xml:142
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref "
-"linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do "
-"not overlap in their M ranges."
+"Inputs must be valid trajectories as checked by <xref linkend="
+"\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do not "
+"overlap in their M ranges."
 msgstr ""
 
 #. Tag: para
@@ -242,7 +244,8 @@ msgstr ""
 #: reference_trajectory.xml:155
 #, no-c-format
 msgid ""
-"-- Return the minimum distance of two objects moving between 10:00 and 11:00\n"
+"-- Return the minimum distance of two objects moving between 10:00 and "
+"11:00\n"
 "WITH inp AS ( SELECT\n"
 "  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
 "    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
@@ -264,8 +267,8 @@ msgstr ""
 #: reference_trajectory.xml:160
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
-"linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -304,9 +307,9 @@ msgstr ""
 #: reference_trajectory.xml:196
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref "
-"linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do"
-" not overlap in their M ranges."
+"Inputs must be valid trajectories as checked by <xref linkend="
+"\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do not "
+"overlap in their M ranges."
 msgstr ""
 
 #. Tag: programlisting
@@ -334,6 +337,6 @@ msgstr ""
 #: reference_trajectory.xml:215
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
-"linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""

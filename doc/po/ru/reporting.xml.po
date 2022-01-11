@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,12 +8,15 @@ msgstr ""
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2021-09-11 04:42+0000\n"
 "Last-Translator: Regina Obe\n"
-"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/"
+"ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: title
 #: reporting.xml:3
@@ -31,8 +34,8 @@ msgstr ""
 #: reporting.xml:8
 #, no-c-format
 msgid ""
-"Reporting bugs effectively is a fundamental way to help PostGIS development."
-" The most effective bug report is that enabling PostGIS developers to "
+"Reporting bugs effectively is a fundamental way to help PostGIS development. "
+"The most effective bug report is that enabling PostGIS developers to "
 "reproduce it, so it would ideally contain a script triggering it and every "
 "information regarding the environment in which it was detected. Good enough "
 "info can be extracted running <code>SELECT postgis_full_version()</code> "
@@ -44,29 +47,29 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If you aren't using the latest release, it's worth taking a look at its "
-"<ulink "
-"url=\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/NEWS\">release"
-" changelog</ulink> first, to find out if your bug has already been fixed."
+"<ulink url=\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/"
+"NEWS\">release changelog</ulink> first, to find out if your bug has already "
+"been fixed."
 msgstr ""
 
 #. Tag: para
 #: reporting.xml:21
 #, no-c-format
 msgid ""
-"Using the <ulink url=\"http://trac.osgeo.org/postgis/\">PostGIS bug "
-"tracker</ulink> will ensure your reports are not discarded, and will keep "
-"you informed on its handling process. Before reporting a new bug please "
-"query the database to see if it is a known one, and if it is please add any "
-"new information you have about it."
+"Using the <ulink url=\"http://trac.osgeo.org/postgis/\">PostGIS bug tracker</"
+"ulink> will ensure your reports are not discarded, and will keep you "
+"informed on its handling process. Before reporting a new bug please query "
+"the database to see if it is a known one, and if it is please add any new "
+"information you have about it."
 msgstr ""
 
 #. Tag: para
 #: reporting.xml:28
 #, no-c-format
 msgid ""
-"You might want to read Simon Tatham's paper about <ulink "
-"url=\"http://www.chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report "
-"Bugs Effectively</ulink> before filing a new report."
+"You might want to read Simon Tatham's paper about <ulink url=\"http://www."
+"chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report Bugs Effectively</"
+"ulink> before filing a new report."
 msgstr ""
 
 #. Tag: title
@@ -79,8 +82,8 @@ msgstr ""
 #: reporting.xml:36
 #, no-c-format
 msgid ""
-"The documentation should accurately reflect the features and behavior of the"
-" software. If it doesn't, it could be because of a software bug or because "
+"The documentation should accurately reflect the features and behavior of the "
+"software. If it doesn't, it could be because of a software bug or because "
 "the documentation is in error or deficient."
 msgstr ""
 
@@ -88,8 +91,8 @@ msgstr ""
 #: reporting.xml:40
 #, no-c-format
 msgid ""
-"Documentation issues can also be reported to the <ulink "
-"url=\"http://trac.osgeo.org/postgis\">PostGIS bug tracker</ulink>."
+"Documentation issues can also be reported to the <ulink url=\"http://trac."
+"osgeo.org/postgis\">PostGIS bug tracker</ulink>."
 msgstr ""
 
 #. Tag: para
@@ -146,8 +149,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Note that the documentation is written in DocBook XML rather than HTML, so "
-"if you are not familiar with it please follow the example of the rest of the"
-" documentation."
+"if you are not familiar with it please follow the example of the rest of the "
+"documentation."
 msgstr ""
 
 #. Tag: para

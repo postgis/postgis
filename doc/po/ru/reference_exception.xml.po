@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,12 +8,15 @@ msgstr ""
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2021-09-11 04:00+0000\n"
 "Last-Translator: Regina Obe\n"
-"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/"
+"ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: title
 #: reference_exception.xml:3
@@ -61,8 +64,8 @@ msgstr ""
 #: reference_exception.xml:26
 #, no-c-format
 msgid ""
-"Add bounding box to the geometry. This would make bounding box based queries"
-" faster, but will increase the size of the geometry."
+"Add bounding box to the geometry. This would make bounding box based queries "
+"faster, but will increase the size of the geometry."
 msgstr ""
 
 #. Tag: para
@@ -138,8 +141,8 @@ msgid ""
 "Drop the bounding box cache from the geometry. This reduces geometry size, "
 "but makes bounding-box based queries slower. It is also used to drop a "
 "corrupt bounding box. A tale-tell sign of a corrupt cached bounding box is "
-"when your ST_Intersects and other relation queries leave out geometries that"
-" rightfully should return true."
+"when your ST_Intersects and other relation queries leave out geometries that "
+"rightfully should return true."
 msgstr ""
 
 #. Tag: para
@@ -161,7 +164,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "--This example drops bounding boxes where the cached box is not correct\n"
-"                        --The force to ST_AsBinary before applying Box2D forces a recalculation of the box, and Box2D applied to the table geometry always\n"
+"                        --The force to ST_AsBinary before applying Box2D "
+"forces a recalculation of the box, and Box2D applied to the table geometry "
+"always\n"
 "                        -- returns the cached bounding box.\n"
 "                        UPDATE sometable\n"
 " SET geom =  PostGIS_DropBBox(geom)\n"
@@ -203,8 +208,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise. Use "
-"<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/>"
-" to control caching."
+"<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/> "
+"to control caching."
 msgstr ""
 
 #. Tag: programlisting

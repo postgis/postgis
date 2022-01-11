@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,21 +8,24 @@ msgstr ""
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2021-09-11 04:31+0000\n"
 "Last-Translator: Regina Obe\n"
-"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/"
+"ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: para
 #: reference_transaction.xml:6
 #, no-c-format
 msgid ""
 "These functions implement a row locking mechanism to support long "
-"transactions. They are provided primarily for implementors of the <ulink "
-"url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
-"Service</ulink> specification."
+"transactions. They are provided primarily for implementors of the <ulink url="
+"\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</ulink> "
+"specification."
 msgstr ""
 
 #. Tag: title
@@ -35,10 +38,10 @@ msgstr ""
 #: reference_transaction.xml:16
 #, no-c-format
 msgid ""
-"For the locking mechanism to operate correctly the <emphasis "
-"role=\"bold\">serializable</emphasis> <ulink "
-"url=\"http://www.postgresql.org/docs/current/static/transaction-iso.html\"> "
-"transaction isolation level</ulink> must be used."
+"For the locking mechanism to operate correctly the <emphasis role=\"bold"
+"\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/docs/"
+"current/static/transaction-iso.html\"> transaction isolation level</ulink> "
+"must be used."
 msgstr ""
 
 #. Tag: refname
@@ -59,8 +62,8 @@ msgstr ""
 #: reference_transaction.xml:31
 #, no-c-format
 msgid ""
-"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text"
-" </type> <parameter>auth_token</parameter></paramdef>"
+"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
+"</type> <parameter>auth_token</parameter></paramdef>"
 msgstr ""
 
 #. Tag: title
@@ -75,8 +78,8 @@ msgstr ""
 #: reference_transaction.xml:41
 #, no-c-format
 msgid ""
-"<para>Adds an authorization token to be used in the current "
-"transaction.</para>"
+"<para>Adds an authorization token to be used in the current transaction.</"
+"para>"
 msgstr ""
 
 #. Tag: para
@@ -110,12 +113,14 @@ msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
 "                BEGIN TRANSACTION;\n"
 "                        SELECT AddAuth('joey');\n"
-"                        UPDATE towns SET geom = ST_Translate(geom,2,2) WHERE gid = 353;\n"
+"                        UPDATE towns SET geom = ST_Translate(geom,2,2) WHERE "
+"gid = 353;\n"
 "                COMMIT;\n"
 "\n"
 "\n"
 "                ---Error--\n"
-"                ERROR:  UPDATE where \"gid\" = '353' requires authorization 'priscilla'"
+"                ERROR:  UPDATE where \"gid\" = '353' requires authorization "
+"'priscilla'"
 msgstr ""
 
 #. Tag: title
@@ -145,13 +150,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> "
-"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef>"
-" <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>"
-" <paramdef><type>text </type> "
-"<parameter>a_key_column_name</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> "
+"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> "
-"<paramdef><type>text </type> "
+"<paramdef><type>text </type> <parameter>a_key_column_name</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>integer "
+"<function>CheckAuth</function></funcdef> <paramdef><type>text </type> "
+"<parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> "
 "<parameter>a_key_column_name</parameter></paramdef> </funcprototype>"
 msgstr ""
 
@@ -168,8 +172,7 @@ msgstr ""
 #: reference_transaction.xml:93
 #, no-c-format
 msgid ""
-"If a_schema_name is not passed in, then searches for table in current "
-"schema."
+"If a_schema_name is not passed in, then searches for table in current schema."
 msgstr ""
 
 #. Tag: para
@@ -220,8 +223,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Disables long transaction support. This function removes the long "
-"transaction support metadata tables, and drops all triggers attached to "
-"lock-checked tables."
+"transaction support metadata tables, and drops all triggers attached to lock-"
+"checked tables."
 msgstr ""
 
 #. Tag: para
@@ -305,18 +308,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>integer <function>LockRow</function></funcdef> "
-"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef>"
-" <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>"
-" <paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef> "
 "<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef> "
-"<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef>"
-" </funcprototype> <funcprototype> <funcdef>integer "
-"<function>LockRow</function></funcdef> <paramdef><type>text </type> "
-"<parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>a_row_key</parameter></paramdef> <paramdef><type>text</type> "
-"<parameter>an_auth_token</parameter></paramdef> "
-"<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef>"
-" </funcprototype> <funcprototype> <funcdef>integer "
+"<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>integer <function>LockRow</"
+"function></funcdef> <paramdef><type>text </type> <parameter>a_table_name</"
+"parameter></paramdef> <paramdef><type>text </type> <parameter>a_row_key</"
+"parameter></paramdef> <paramdef><type>text</type> <parameter>an_auth_token</"
+"parameter></paramdef> <paramdef><type>timestamp</type> <parameter>expire_dt</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>integer "
 "<function>LockRow</function></funcdef> <paramdef><type>text </type> "
 "<parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> "
 "<parameter>a_row_key</parameter></paramdef> <paramdef><type>text</type> "
@@ -328,10 +330,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Sets lock/authorization for a specific row in a table. "
-"<varname>an_auth_token</varname> is a text value. "
-"<varname>expire_dt</varname> is a timestamp which defaults to "
-"<emphasis>now() + 1 hour</emphasis>. Returns 1 if lock has been assigned, 0 "
-"otherwise (i.e. row is already locked by another auth.)"
+"<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
+"varname> is a timestamp which defaults to <emphasis>now() + 1 hour</"
+"emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
+"already locked by another auth.)"
 msgstr ""
 
 #. Tag: programlisting

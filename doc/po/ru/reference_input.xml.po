@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -9,11 +9,13 @@ msgstr ""
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: 2019-08-03 21:25+0000\n"
 "Language-Team: Russian (https://www.transifex.com/postgis/teams/3227/ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: para
 #: reference_input.xml:6
@@ -46,8 +48,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<refpurpose>Construct a Polygon given an arbitrary collection of closed "
-"linestrings as a MultiLineString Well-Known text "
-"representation.</refpurpose>"
+"linestrings as a MultiLineString Well-Known text representation.</refpurpose>"
 msgstr ""
 
 #. Tag: funcprototype
@@ -144,8 +145,8 @@ msgstr ""
 #: reference_input.xml:68
 #, no-c-format
 msgid ""
-"Construct a MultiPolygon given an arbitrary collection of closed linestrings"
-" as a MultiLineString text representation Well-Known text representation."
+"Construct a MultiPolygon given an arbitrary collection of closed linestrings "
+"as a MultiLineString text representation Well-Known text representation."
 msgstr ""
 
 #. Tag: funcprototype
@@ -172,9 +173,8 @@ msgid ""
 "Throws an error if WKT is not a MULTILINESTRING. Forces MULTIPOLYGON output "
 "even when result is really only composed by a single POLYGON; use <link "
 "linkend=\"ST_BdPolyFromText\">ST_BdPolyFromText</link> if you're sure a "
-"single POLYGON will result from operation, or see <link "
-"linkend=\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific "
-"approach."
+"single POLYGON will result from operation, or see <link linkend="
+"\"ST_BuildArea\">ST_BuildArea()</link> for a postgis-specific approach."
 msgstr ""
 
 #. Tag: para
@@ -233,7 +233,8 @@ msgstr ""
 msgid ""
 "--- converting lon lat coords to geography\n"
 "ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);\n"
-"UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');\n"
+"UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' "
+"|| lat || ')');\n"
 "\n"
 "--- specify a geography point using EPSG:4267, NAD27\n"
 "SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));"
@@ -283,21 +284,20 @@ msgstr ""
 #: reference_input.xml:174
 #, no-c-format
 msgid ""
-"Makes a collection Geometry from collection WKT with the given SRID. If SRID"
-" is not given, it defaults to 0."
+"Makes a collection Geometry from collection WKT with the given SRID. If SRID "
+"is not given, it defaults to 0."
 msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_input.xml:179
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_GeomCollFromText</function></funcdef> <paramdef><type>text "
-"</type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>srid</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_GeomCollFromText</function></funcdef> <paramdef><type>text "
-"</type> <parameter>WKT</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_GeomCollFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeomCollFromText</function></funcdef> <paramdef><type>text </"
+"type> <parameter>WKT</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -392,8 +392,7 @@ msgstr ""
 #: reference_input.xml:251 reference_input.xml:792 reference_input.xml:1208
 #: reference_input.xml:1405
 #, no-c-format
-msgid ""
-"Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr ""
 
 #. Tag: para
@@ -426,15 +425,20 @@ msgstr ""
 #: reference_input.xml:260
 #, no-c-format
 msgid ""
-"SELECT ST_GeomFromEWKT('SRID=4269;LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)');\n"
-"SELECT ST_GeomFromEWKT('SRID=4269;MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))');\n"
+"SELECT ST_GeomFromEWKT('SRID=4269;LINESTRING(-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932)');\n"
+"SELECT ST_GeomFromEWKT('SRID=4269;MULTILINESTRING((-71.160281 "
+"42.258729,-71.160837 42.259113,-71.161144 42.25932))');\n"
 "\n"
 "SELECT ST_GeomFromEWKT('SRID=4269;POINT(-71.064544 42.28787)');\n"
 "\n"
-"SELECT ST_GeomFromEWKT('SRID=4269;POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,\n"
-"-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
+"SELECT ST_GeomFromEWKT('SRID=4269;POLYGON((-71.1776585052917 "
+"42.3902909739571,-71.1776820268866 42.3903701743239,\n"
+"-71.1776063012595 42.3903825660754,-71.1775826583081 "
+"42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
 "\n"
-"SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590236,\n"
+"SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 "
+"42.3152774590236,\n"
 "-71.1031627617667 42.3152960829043,-71.102923838298 42.3149156848307,\n"
 "-71.1023097974109 42.3151969047397,-71.1019285062273 42.3147384934248,\n"
 "-71.102505233663 42.3144722937587,-71.10277487471 42.3141658254797,\n"
@@ -456,7 +460,8 @@ msgid ""
 "-71.1032580383161 42.3152269126061,-71.103223066939 42.3152517403219,\n"
 "-71.1031880899493 42.3152774590236)),\n"
 "((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,\n"
-"-71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))');"
+"-71.1043443253471 42.3150676015829,-71.1043850704575 "
+"42.3150793250568,-71.1043632495873 42.315113108546)))');"
 msgstr ""
 
 #. Tag: programlisting
@@ -464,7 +469,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "--3d circular string\n"
-"SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');"
+"SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 "
+"2,220227 150406 3)');"
 msgstr ""
 
 #. Tag: programlisting
@@ -485,7 +491,8 @@ msgstr ""
 #. Tag: para
 #: reference_input.xml:266
 #, no-c-format
-msgid ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
+msgid ""
+", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -506,13 +513,12 @@ msgstr ""
 #: reference_input.xml:276
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_GeometryFromText</function></funcdef> <paramdef><type>text "
-"</type> <parameter>WKT</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_GeometryFromText</function></funcdef> <paramdef><type>text "
-"</type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>srid</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_GeometryFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeometryFromText</function></funcdef> <paramdef><type>text </"
+"type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -545,13 +551,12 @@ msgstr ""
 #: reference_input.xml:305
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
 "<function>ST_GeomFromText</function></funcdef> <paramdef><type>text </type> "
-"<parameter>WKT</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_GeomFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> "
-"</funcprototype>"
+"<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -584,9 +589,9 @@ msgstr ""
 msgid ""
 "While not OGC-compliant, <xref linkend=\"ST_MakePoint\"/> is faster than "
 "ST_GeomFromText and ST_PointFromText. It is also easier to use for numeric "
-"coordinate values. <xref linkend=\"ST_Point\"/> is another option similar in"
-" speed to <xref linkend=\"ST_MakePoint\"/> and is OGC-compliant, but doesn't"
-" support anything but 2D points."
+"coordinate values. <xref linkend=\"ST_Point\"/> is another option similar in "
+"speed to <xref linkend=\"ST_MakePoint\"/> and is OGC-compliant, but doesn't "
+"support anything but 2D points."
 msgstr ""
 
 #. Tag: para
@@ -603,15 +608,20 @@ msgstr ""
 #: reference_input.xml:342
 #, no-c-format
 msgid ""
-"SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)');\n"
-"SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)',4269);\n"
+"SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932)');\n"
+"SELECT ST_GeomFromText('LINESTRING(-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932)',4269);\n"
 "\n"
-"SELECT ST_GeomFromText('MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932))');\n"
+"SELECT ST_GeomFromText('MULTILINESTRING((-71.160281 42.258729,-71.160837 "
+"42.259113,-71.161144 42.25932))');\n"
 "\n"
 "SELECT ST_GeomFromText('POINT(-71.064544 42.28787)');\n"
 "\n"
-"SELECT ST_GeomFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,\n"
-"-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
+"SELECT ST_GeomFromText('POLYGON((-71.1776585052917 "
+"42.3902909739571,-71.1776820268866 42.3903701743239,\n"
+"-71.1776063012595 42.3903825660754,-71.1775826583081 "
+"42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
 "\n"
 "SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,\n"
 "-71.1031627617667 42.3152960829043,-71.102923838298 42.3149156848307,\n"
@@ -635,9 +645,11 @@ msgid ""
 "-71.1032580383161 42.3152269126061,-71.103223066939 42.3152517403219,\n"
 "-71.1031880899493 42.3152774590236)),\n"
 "((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,\n"
-"-71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))',4326);\n"
+"-71.1043443253471 42.3150676015829,-71.1043850704575 "
+"42.3150793250568,-71.1043632495873 42.315113108546)))',4326);\n"
 "\n"
-"SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)');"
+"SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 "
+"150406)');"
 msgstr ""
 
 #. Tag: para
@@ -656,21 +668,20 @@ msgstr ""
 #: reference_input.xml:355
 #, no-c-format
 msgid ""
-"Makes a Geometry from WKT representation with the given SRID. If SRID is not"
-" given, it defaults to 0."
+"Makes a Geometry from WKT representation with the given SRID. If SRID is not "
+"given, it defaults to 0."
 msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_input.xml:360
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
+"<funcprototype> <funcdef>geometry <function>ST_LineFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
 "<function>ST_LineFromText</function></funcdef> <paramdef><type>text </type> "
-"<parameter>WKT</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_LineFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> "
-"</funcprototype>"
+"<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -706,7 +717,8 @@ msgstr ""
 #: reference_input.xml:400
 #, no-c-format
 msgid ""
-"SELECT ST_LineFromText('LINESTRING(1 2, 3 4)') AS aline, ST_LineFromText('POINT(1 2)') AS null_return;\n"
+"SELECT ST_LineFromText('LINESTRING(1 2, 3 4)') AS aline, "
+"ST_LineFromText('POINT(1 2)') AS null_return;\n"
 "aline                            | null_return\n"
 "------------------------------------------------\n"
 "010200000002000000000000000000F ... | t"
@@ -728,13 +740,12 @@ msgstr ""
 #: reference_input.xml:419
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_MLineFromText</function></funcdef> <paramdef><type>text </type>"
-" <parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>srid</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_MLineFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"</funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_MLineFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_MLineFromText</"
+"function></funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></"
+"paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -756,8 +767,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are points, don't use "
-"this function. It is slower than ST_GeomFromText since it adds an additional"
-" validation step."
+"this function. It is slower than ST_GeomFromText since it adds an additional "
+"validation step."
 msgstr ""
 
 #. Tag: para
@@ -790,13 +801,12 @@ msgstr ""
 #: reference_input.xml:480
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_MPointFromText</function></funcdef> <paramdef><type>text "
-"</type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>srid</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_MPointFromText</function></funcdef> <paramdef><type>text "
-"</type> <parameter>WKT</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_MPointFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_MPointFromText</function></funcdef> <paramdef><type>text </"
+"type> <parameter>WKT</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -830,7 +840,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');\n"
-"SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326);"
+"SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', "
+"4326);"
 msgstr ""
 
 #. Tag: refname
@@ -851,13 +862,12 @@ msgstr ""
 #: reference_input.xml:541
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_MPolyFromText</function></funcdef> <paramdef><type>text </type>"
-" <parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>srid</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_MPolyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"</funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_MPolyFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_MPolyFromText</"
+"function></funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></"
+"paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -893,8 +903,22 @@ msgstr ""
 #: reference_input.xml:582
 #, no-c-format
 msgid ""
-"SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))');\n"
-"SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,\n"
+"SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),"
+"(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))');\n"
+"SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 "
+"42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 "
+"42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 "
+"42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 "
+"42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 "
+"42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 "
+"42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 "
+"42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 "
+"42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 "
+"42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 "
+"42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 "
+"42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 "
+"42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 "
+"42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,\n"
 "        -70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);"
 msgstr ""
 
@@ -916,13 +940,12 @@ msgstr ""
 #: reference_input.xml:600
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_PointFromText</function></funcdef> <paramdef><type>text </type>"
-" <parameter>WKT</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_PointFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> "
-"</funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_PointFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_PointFromText</function></funcdef> <paramdef><type>text </type> "
+"<parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -951,11 +974,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are points, don't use "
-"this function. It is slower than ST_GeomFromText since it adds an additional"
-" validation step. If you are building points from long lat coordinates and "
+"this function. It is slower than ST_GeomFromText since it adds an additional "
+"validation step. If you are building points from long lat coordinates and "
 "care more about performance and accuracy than OGC compliance, use <xref "
-"linkend=\"ST_MakePoint\"/> or OGC compliant alias <xref "
-"linkend=\"ST_Point\"/>."
+"linkend=\"ST_MakePoint\"/> or OGC compliant alias <xref linkend=\"ST_Point\"/"
+">."
 msgstr ""
 
 #. Tag: para
@@ -990,13 +1013,12 @@ msgstr ""
 #: reference_input.xml:656
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_PolygonFromText</function></funcdef> <paramdef><type>text "
-"</type> <parameter>WKT</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_PolygonFromText</function></funcdef> <paramdef><type>text "
-"</type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>srid</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_PolygonFromText</function></"
+"funcdef> <paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_PolygonFromText</function></funcdef> <paramdef><type>text </"
+"type> <parameter>WKT</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -1012,8 +1034,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are polygons, don't use "
-"this function. It is slower than ST_GeomFromText since it adds an additional"
-" validation step."
+"this function. It is slower than ST_GeomFromText since it adds an additional "
+"validation step."
 msgstr ""
 
 #. Tag: para
@@ -1026,8 +1048,10 @@ msgstr ""
 #: reference_input.xml:688
 #, no-c-format
 msgid ""
-"SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,\n"
-"-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
+"SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 "
+"42.3902909739571,-71.1776820268866 42.3903701743239,\n"
+"-71.1776063012595 42.3903825660754,-71.1775826583081 "
+"42.3903033653531,-71.1776585052917 42.3902909739571))');\n"
 "st_polygonfromtext\n"
 "------------------\n"
 "010300000001000000050000006...\n"
@@ -1108,9 +1132,13 @@ msgstr ""
 #: reference_input.xml:761
 #, no-c-format
 msgid ""
-"--Although bytea rep contains single \\, these need to be escaped when inserting into a table\n"
+"--Although bytea rep contains single \\, these need to be escaped when "
+"inserting into a table\n"
 "SELECT ST_AsText(\n"
-"ST_GeogFromWKB(E'\\\\001\\\\002\\\\000\\\\000\\\\000\\\\002\\\\000\\\\000\\\\000\\\\037\\\\205\\\\353Q\\\\270~\\\\\\\\\\\\300\\\\323Mb\\\\020X\\\\231C@\\\\020X9\\\\264\\\\310~\\\\\\\\\\\\300)\\\\\\\\\\\\217\\\\302\\\\365\\\\230C@')\n"
+"ST_GeogFromWKB(E'\\\\001\\\\002\\\\000\\\\000\\\\000\\\\002\\\\000\\\\000\\"
+"\\000\\\\037\\\\205\\\\353Q\\\\270~\\\\\\\\\\\\300\\\\323Mb\\\\020X\\\\231C@"
+"\\\\020X9\\\\264\\\\310~\\\\\\\\\\\\300)\\\\\\\\\\\\217\\\\302\\\\365\\"
+"\\230C@')\n"
 ");\n"
 "                                          st_astext\n"
 "------------------------------------------------------\n"
@@ -1183,7 +1211,8 @@ msgstr ""
 #: reference_input.xml:805
 #, no-c-format
 msgid ""
-"SELECT ST_GeomFromEWKB(E'\\\\001\\\\002\\\\000\\\\000 \\\\255\\\\020\\\\000\\\\000\\\\003\\\\000\\\\000\\\\000\\\\344J=\n"
+"SELECT ST_GeomFromEWKB(E'\\\\001\\\\002\\\\000\\\\000 \\\\255\\\\020\\\\000\\"
+"\\000\\\\003\\\\000\\\\000\\\\000\\\\344J=\n"
 "\\\\013B\\\\312Q\\\\300n\\\\303(\\\\010\\\\036!E@''\\\\277E''K\n"
 "\\\\312Q\\\\300\\\\366{b\\\\235*!E@\\\\225|\\\\354.P\\\\312Q\n"
 "\\\\300p\\\\231\\\\323e1!E@');"
@@ -1205,8 +1234,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "set standard_conforming_strings = on;\n"
-"SELECT ST_GeomFromEWKB('\\001\\002\\000\\000 \\255\\020\\000\\000\\003\\000\\000\\000\\344J=\\012\\013B\n"
-"    \\312Q\\300n\\303(\\010\\036!E@''\\277E''K\\012\\312Q\\300\\366{b\\235*!E@\\225|\\354.P\\312Q\\012\\300p\\231\\323e1')"
+"SELECT ST_GeomFromEWKB('\\001\\002\\000\\000 "
+"\\255\\020\\000\\000\\003\\000\\000\\000\\344J=\\012\\013B\n"
+"    \\312Q\\300n\\303(\\010\\036!E@''\\277E''K\\012\\312Q\\300\\366{b\\235*!"
+"E@\\225|\\354.P\\312Q\\012\\300p\\231\\323e1')"
 msgstr ""
 
 #. Tag: para
@@ -1225,21 +1256,20 @@ msgstr ""
 #: reference_input.xml:821
 #, no-c-format
 msgid ""
-"Creates a geometry instance from a Well-Known Binary geometry representation"
-" (WKB) and optional SRID."
+"Creates a geometry instance from a Well-Known Binary geometry representation "
+"(WKB) and optional SRID."
 msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_input.xml:826 reference_input.xml:1010
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromWKB</function></"
+"funcdef> <paramdef><type>bytea </type> <parameter>geom</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
 "<function>ST_GeomFromWKB</function></funcdef> <paramdef><type>bytea </type> "
-"<parameter>geom</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_GeomFromWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> "
-"</funcprototype>"
+"<parameter>geom</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -1276,10 +1306,14 @@ msgstr ""
 #: reference_input.xml:859
 #, no-c-format
 msgid ""
-"--Although bytea rep contains single \\, these need to be escaped when inserting into a table\n"
+"--Although bytea rep contains single \\, these need to be escaped when "
+"inserting into a table\n"
 "                -- unless standard_conforming_strings is set to on.\n"
 "SELECT ST_AsEWKT(\n"
-"ST_GeomFromWKB(E'\\\\001\\\\002\\\\000\\\\000\\\\000\\\\002\\\\000\\\\000\\\\000\\\\037\\\\205\\\\353Q\\\\270~\\\\\\\\\\\\300\\\\323Mb\\\\020X\\\\231C@\\\\020X9\\\\264\\\\310~\\\\\\\\\\\\300)\\\\\\\\\\\\217\\\\302\\\\365\\\\230C@',4326)\n"
+"ST_GeomFromWKB(E'\\\\001\\\\002\\\\000\\\\000\\\\000\\\\002\\\\000\\\\000\\"
+"\\000\\\\037\\\\205\\\\353Q\\\\270~\\\\\\\\\\\\300\\\\323Mb\\\\020X\\\\231C@"
+"\\\\020X9\\\\264\\\\310~\\\\\\\\\\\\300)\\\\\\\\\\\\217\\\\302\\\\365\\"
+"\\230C@',4326)\n"
 ");\n"
 "                                          st_asewkt\n"
 "------------------------------------------------------\n"
@@ -1320,13 +1354,12 @@ msgstr ""
 #: reference_input.xml:878
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_LineFromWKB</function></funcdef> <paramdef><type>bytea </type> "
-"<parameter>WKB</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_LineFromWKB</function></funcdef> "
-"<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> "
-"</funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_LineFromWKB</function></"
+"funcdef> <paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry <function>ST_LineFromWKB</"
+"function></funcdef> <paramdef><type>bytea </type> <parameter>WKB</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
+"parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -1334,10 +1367,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The <varname>ST_LineFromWKB</varname> function, takes a well-known binary "
-"representation of geometry and a Spatial Reference System ID "
-"(<varname>SRID</varname>) and creates an instance of the appropriate "
-"geometry type - in this case, a <varname>LINESTRING</varname> geometry. This"
-" function plays the role of the Geometry Factory in SQL."
+"representation of geometry and a Spatial Reference System ID (<varname>SRID</"
+"varname>) and creates an instance of the appropriate geometry type - in this "
+"case, a <varname>LINESTRING</varname> geometry. This function plays the role "
+"of the Geometry Factory in SQL."
 msgstr ""
 
 #. Tag: para
@@ -1353,10 +1386,10 @@ msgstr ""
 #: reference_input.xml:911
 #, no-c-format
 msgid ""
-"If you know all your geometries are <varname>LINESTRING</varname>s, its more"
-" efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function "
-"just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation"
-" that it returns a linestring."
+"If you know all your geometries are <varname>LINESTRING</varname>s, its more "
+"efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function just "
+"calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation that "
+"it returns a linestring."
 msgstr ""
 
 #. Tag: para
@@ -1369,8 +1402,10 @@ msgstr ""
 #: reference_input.xml:927
 #, no-c-format
 msgid ""
-"SELECT ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) AS aline,\n"
-"                ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;\n"
+"SELECT ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) "
+"AS aline,\n"
+"                ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) "
+"IS NULL AS null_return;\n"
 "aline                            | null_return\n"
 "------------------------------------------------\n"
 "010200000002000000000000000000F ... | t"
@@ -1398,13 +1433,12 @@ msgstr ""
 #: reference_input.xml:946
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_LinestringFromWKB</function></funcdef> <paramdef><type>bytea "
-"</type> <parameter>WKB</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_LinestringFromWKB</function></funcdef> <paramdef><type>bytea "
-"</type> <parameter>WKB</parameter></paramdef> <paramdef><type>integer "
-"</type> <parameter>srid</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_LinestringFromWKB</function></"
+"funcdef> <paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_LinestringFromWKB</function></funcdef> <paramdef><type>bytea </"
+"type> <parameter>WKB</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -1414,8 +1448,8 @@ msgid ""
 "The <varname>ST_LinestringFromWKB</varname> function, takes a well-known "
 "binary representation of geometry and a Spatial Reference System ID "
 "(<varname>SRID</varname>) and creates an instance of the appropriate "
-"geometry type - in this case, a <varname>LINESTRING</varname> geometry. This"
-" function plays the role of the Geometry Factory in SQL."
+"geometry type - in this case, a <varname>LINESTRING</varname> geometry. This "
+"function plays the role of the Geometry Factory in SQL."
 msgstr ""
 
 #. Tag: para
@@ -1424,8 +1458,8 @@ msgstr ""
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
 "returned if the input <varname>bytea</varname> does not represent a "
-"<varname>LINESTRING</varname> geometry. This an alias for <xref "
-"linkend=\"ST_LineFromWKB\"/>."
+"<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="
+"\"ST_LineFromWKB\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1439,9 +1473,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If you know all your geometries are <varname>LINESTRING</varname>s, it's "
-"more efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function"
-" just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional "
-"validation that it returns a <varname>LINESTRING</varname>."
+"more efficient to just use <xref linkend=\"ST_GeomFromWKB\"/>. This function "
+"just calls <xref linkend=\"ST_GeomFromWKB\"/> and adds additional validation "
+"that it returns a <varname>LINESTRING</varname>."
 msgstr ""
 
 #. Tag: programlisting
@@ -1483,10 +1517,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The <varname>ST_PointFromWKB</varname> function, takes a well-known binary "
-"representation of geometry and a Spatial Reference System ID "
-"(<varname>SRID</varname>) and creates an instance of the appropriate "
-"geometry type - in this case, a <varname>POINT</varname> geometry. This "
-"function plays the role of the Geometry Factory in SQL."
+"representation of geometry and a Spatial Reference System ID (<varname>SRID</"
+"varname>) and creates an instance of the appropriate geometry type - in this "
+"case, a <varname>POINT</varname> geometry. This function plays the role of "
+"the Geometry Factory in SQL."
 msgstr ""
 
 #. Tag: para
@@ -1649,8 +1683,8 @@ msgstr ""
 #: reference_input.xml:1122
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref "
-"linkend=\"ST_PointFromGeoHash\"/>"
+", <xref linkend=\"ST_GeomFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1687,8 +1721,8 @@ msgstr ""
 #: reference_input.xml:1149
 #, no-c-format
 msgid ""
-"If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a"
-" polygon based on full precision of the input GeoHash string."
+"If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a "
+"polygon based on full precision of the input GeoHash string."
 msgstr ""
 
 #. Tag: para
@@ -1706,17 +1740,21 @@ msgid ""
 "<![CDATA[SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));\n"
 "                                                        st_astext\n"
 "--------------------------------------------------------------------------------------------------------------------------\n"
-" POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646))\n"
+" POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 "
+"36.114646,-115.172816 36.114646,-115.172816 36.114646))\n"
 "\n"
 "SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));\n"
 "                                                          st_astext\n"
 "------------------------------------------------------------------------------------------------------------------------------\n"
-" POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625))\n"
+" POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 "
+"36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625))\n"
 "\n"
 "SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));\n"
 "                                                                                       st_astext\n"
 "----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
-" POLYGON((-115.17282128334 36.1146408319473,-115.17282128334 36.1146461963654,-115.172810554504 36.1146461963654,-115.172810554504 36.1146408319473,-115.17282128334 36.1146408319473))\n"
+" POLYGON((-115.17282128334 36.1146408319473,-115.17282128334 "
+"36.1146461963654,-115.172810554504 36.1146461963654,-115.172810554504 "
+"36.1146408319473,-115.17282128334 36.1146408319473))\n"
 "                ]]>"
 msgstr ""
 
@@ -1724,8 +1762,8 @@ msgstr ""
 #: reference_input.xml:1163
 #, no-c-format
 msgid ""
-",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
-"linkend=\"ST_PointFromGeoHash\"/>"
+",<xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_PointFromGeoHash"
+"\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1738,21 +1776,20 @@ msgstr ""
 #: reference_input.xml:1170
 #, no-c-format
 msgid ""
-"Takes as input GML representation of geometry and outputs a PostGIS geometry"
-" object"
+"Takes as input GML representation of geometry and outputs a PostGIS geometry "
+"object"
 msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_input.xml:1174
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromGML</function></"
+"funcdef> <paramdef><type>text </type> <parameter>geomgml</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
 "<function>ST_GeomFromGML</function></funcdef> <paramdef><type>text </type> "
-"<parameter>geomgml</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_GeomFromGML</function></funcdef> "
-"<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef> "
-"</funcprototype>"
+"<parameter>geomgml</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>srid</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -1776,10 +1813,10 @@ msgstr ""
 msgid ""
 "OGC GML versions supported: <itemizedlist> <listitem> <para>GML 3.2.1 "
 "Namespace</para> </listitem> <listitem> <para>GML 3.1.1 Simple Features "
-"profile SF-2 (with GML 3.1.0 and 3.0.0 backward compatibility)</para> "
-"</listitem> <listitem> <para>GML 2.1.2</para> </listitem> </itemizedlist> "
-"OGC GML standards, cf: <ulink "
-"url=\"http://www.opengeospatial.org/standards/gml\">http://www.opengeospatial.org/standards/gml</ulink>:"
+"profile SF-2 (with GML 3.1.0 and 3.0.0 backward compatibility)</para> </"
+"listitem> <listitem> <para>GML 2.1.2</para> </listitem> </itemizedlist> OGC "
+"GML standards, cf: <ulink url=\"http://www.opengeospatial.org/standards/gml"
+"\">http://www.opengeospatial.org/standards/gml</ulink>:"
 msgstr ""
 
 #. Tag: para
@@ -1817,8 +1854,8 @@ msgstr ""
 #: reference_input.xml:1217
 #, no-c-format
 msgid ""
-"ST_GeomFromGML function is not pedantic about an explicit GML namespace. You"
-" could avoid to mention it explicitly for common usages. But you need it if "
+"ST_GeomFromGML function is not pedantic about an explicit GML namespace. You "
+"could avoid to mention it explicitly for common usages. But you need it if "
 "you want to use XLink feature inside GML."
 msgstr ""
 
@@ -1841,7 +1878,8 @@ msgid ""
 "SELECT ST_GeomFromGML('<![CDATA[\n"
 "                <gml:LineString srsName=\"EPSG:4269\">\n"
 "                        <gml:coordinates>\n"
-"                                -71.16028,42.258729 -71.160837,42.259112 -71.161143,42.25932\n"
+"                                -71.16028,42.258729 -71.160837,42.259112 "
+"-71.161143,42.25932\n"
 "                        </gml:coordinates>\n"
 "                </gml:LineString>']]>);"
 msgstr ""
@@ -1858,14 +1896,17 @@ msgstr ""
 msgid ""
 "SELECT <![CDATA[ST_GeomFromGML('\n"
 "                <gml:LineString xmlns:gml=\"http://www.opengis.net/gml\"\n"
-"                                xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n"
+"                                xmlns:xlink=\"http://www.w3.org/1999/xlink"
+"\"\n"
 "                                srsName=\"urn:ogc:def:crs:EPSG::4269\">\n"
 "                        <gml:pointProperty>\n"
-"                                <gml:Point gml:id=\"p1\"><gml:pos>42.258729 -71.16028</gml:pos></gml:Point>\n"
+"                                <gml:Point gml:id=\"p1\"><gml:pos>42.258729 "
+"-71.16028</gml:pos></gml:Point>\n"
 "                        </gml:pointProperty>\n"
 "                        <gml:pos>42.259112 -71.160837</gml:pos>\n"
 "                        <gml:pointProperty>\n"
-"                                <gml:Point xlink:type=\"simple\" xlink:href=\"#p1\"/>\n"
+"                                <gml:Point xlink:type=\"simple\" xlink:href="
+"\"#p1\"/>\n"
 "                        </gml:pointProperty>\n"
 "                </gml:LineString>');]]>);"
 msgstr ""
@@ -1885,32 +1926,38 @@ msgid ""
 "<gml:polygonPatches>\n"
 "  <gml:PolygonPatch>\n"
 "    <gml:exterior>\n"
-"      <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList></gml:LinearRing>\n"
+"      <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 0 0 1 0 1 1 0 1 "
+"0 0 0 0</gml:posList></gml:LinearRing>\n"
 "    </gml:exterior>\n"
 "  </gml:PolygonPatch>\n"
 "  <gml:PolygonPatch>\n"
 "    <gml:exterior>\n"
-"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList></gml:LinearRing>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 0 1 0 1 1 0 1 "
+"0 0 0 0 0</gml:posList></gml:LinearRing>\n"
 "    </gml:exterior>\n"
 "  </gml:PolygonPatch>\n"
 "  <gml:PolygonPatch>\n"
 "    <gml:exterior>\n"
-"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList></gml:LinearRing>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 0 1 0 0 1 0 1 0 "
+"0 1 0 0 0</gml:posList></gml:LinearRing>\n"
 "    </gml:exterior>\n"
 "  </gml:PolygonPatch>\n"
 "  <gml:PolygonPatch>\n"
 "    <gml:exterior>\n"
-"        <gml:LinearRing><gml:posList srsDimension=\"3\">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList></gml:LinearRing>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">1 1 0 1 1 1 1 0 1 1 "
+"0 0 1 1 0</gml:posList></gml:LinearRing>\n"
 "    </gml:exterior>\n"
 "  </gml:PolygonPatch>\n"
 "  <gml:PolygonPatch>\n"
 "    <gml:exterior>\n"
-"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList></gml:LinearRing>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 1 0 0 1 1 1 1 1 1 "
+"1 0 0 1 0</gml:posList></gml:LinearRing>\n"
 "    </gml:exterior>\n"
 "  </gml:PolygonPatch>\n"
 "  <gml:PolygonPatch>\n"
 "    <gml:exterior>\n"
-"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList></gml:LinearRing>\n"
+"        <gml:LinearRing><gml:posList srsDimension=\"3\">0 0 1 1 0 1 1 1 1 0 "
+"1 1 0 0 1</gml:posList></gml:LinearRing>\n"
 "    </gml:exterior>\n"
 "  </gml:PolygonPatch>\n"
 "</gml:polygonPatches>\n"
@@ -1949,15 +1996,14 @@ msgstr ""
 #: reference_input.xml:1253
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_GeomFromGeoJSON</function></funcdef> <paramdef><type>text "
-"</type> <parameter>geomjson</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_GeomFromGeoJSON</function></funcdef> <paramdef><type>json "
-"</type> <parameter>geomjson</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_GeomFromGeoJSON</function></funcdef> <paramdef><type>jsonb "
-"</type> <parameter>geomjson</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromGeoJSON</function></"
+"funcdef> <paramdef><type>text </type> <parameter>geomjson</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_GeomFromGeoJSON</function></funcdef> <paramdef><type>json </"
+"type> <parameter>geomjson</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_GeomFromGeoJSON</function></"
+"funcdef> <paramdef><type>jsonb </type> <parameter>geomjson</parameter></"
+"paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -1999,16 +2045,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If you do not have JSON-C enabled, support you will get an error notice "
-"instead of seeing an output. To enable JSON-C, run configure --with-"
-"jsondir=/path/to/json-c. See <xref linkend=\"installation_configuration\"/> "
-"for details."
+"instead of seeing an output. To enable JSON-C, run configure --with-jsondir=/"
+"path/to/json-c. See <xref linkend=\"installation_configuration\"/> for "
+"details."
 msgstr ""
 
 #. Tag: programlisting
 #: reference_input.xml:1287
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_GeomFromGeoJSON('{\"type\":\"Point\",\"coordinates\":[-48.23456,20.12345]}')) As wkt;\n"
+"SELECT ST_AsText(ST_GeomFromGeoJSON('{\"type\":\"Point\",\"coordinates\":"
+"[-48.23456,20.12345]}')) As wkt;\n"
 "wkt\n"
 "------\n"
 "POINT(-48.23456 20.12345)"
@@ -2019,7 +2066,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "-- a 3D linestring\n"
-"SELECT ST_AsText(ST_GeomFromGeoJSON('{\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6],[7,8,9]]}')) As wkt;\n"
+"SELECT ST_AsText(ST_GeomFromGeoJSON('{\"type\":\"LineString\",\"coordinates"
+"\":[[1,2,3],[4,5,6],[7,8,9]]}')) As wkt;\n"
 "\n"
 "wkt\n"
 "-------------------\n"
@@ -2030,8 +2078,8 @@ msgstr ""
 #: reference_input.xml:1294
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsGeoJSON\"/>, <xref "
-"linkend=\"installation_configuration\"/>"
+", <xref linkend=\"ST_AsGeoJSON\"/>, <xref linkend="
+"\"installation_configuration\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -2044,8 +2092,8 @@ msgstr ""
 #: reference_input.xml:1301
 #, no-c-format
 msgid ""
-"Takes as input KML representation of geometry and outputs a PostGIS geometry"
-" object"
+"Takes as input KML representation of geometry and outputs a PostGIS geometry "
+"object"
 msgstr ""
 
 #. Tag: funcprototype
@@ -2077,7 +2125,8 @@ msgstr ""
 msgid ""
 "OGC KML versions supported: <itemizedlist> <listitem> <para>KML 2.2.0 "
 "Namespace</para> </listitem> </itemizedlist> OGC KML standards, cf: <ulink "
-"url=\"http://www.opengeospatial.org/standards/kml\">http://www.opengeospatial.org/standards/kml</ulink>:"
+"url=\"http://www.opengeospatial.org/standards/kml\">http://www."
+"opengeospatial.org/standards/kml</ulink>:"
 msgstr ""
 
 #. Tag: para
@@ -2119,9 +2168,9 @@ msgstr ""
 #: reference_input.xml:1349
 #, no-c-format
 msgid ""
-"Creates a geometry instance from a TWKB (\"<ulink "
-"url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">Tiny Well-"
-"Known Binary</ulink>\") geometry representation."
+"Creates a geometry instance from a TWKB (\"<ulink url=\"https://github.com/"
+"TWKB/Specification/blob/master/twkb.md\">Tiny Well-Known Binary</ulink>\") "
+"geometry representation."
 msgstr ""
 
 #. Tag: funcprototype
@@ -2146,7 +2195,8 @@ msgstr ""
 #: reference_input.xml:1374
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometry)));\n"
+"SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::"
+"geometry)));\n"
 "\n"
 "         st_astext\n"
 "-----------------------------\n"
@@ -2181,12 +2231,12 @@ msgstr ""
 #: reference_input.xml:1389
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_GMLToSQL</function></funcdef>"
-" <paramdef><type>text </type> <parameter>geomgml</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_GMLToSQL</function></funcdef> <paramdef><type>text </type> "
-"<parameter>geomgml</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>srid</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_GMLToSQL</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_GMLToSQL</"
+"function></funcdef> <paramdef><type>text </type> <parameter>geomgml</"
+"parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
+"parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
@@ -2219,8 +2269,8 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_LineFromEncodedPolyline</function></funcdef> "
 "<paramdef><type>text </type> <parameter>polyline</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> "
-"<parameter>precision=5</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -2233,8 +2283,8 @@ msgstr ""
 #: reference_input.xml:1436
 #, no-c-format
 msgid ""
-"Optional <varname>precision</varname> specifies how many decimal places will"
-" be preserved in Encoded Polyline. Value should be the same on encoding and "
+"Optional <varname>precision</varname> specifies how many decimal places will "
+"be preserved in Encoded Polyline. Value should be the same on encoding and "
 "decoding, or coordinates will be incorrect."
 msgstr ""
 
@@ -2242,8 +2292,8 @@ msgstr ""
 #: reference_input.xml:1438
 #, no-c-format
 msgid ""
-"See "
-"http://developers.google.com/maps/documentation/utilities/polylinealgorithm"
+"See http://developers.google.com/maps/documentation/utilities/"
+"polylinealgorithm"
 msgstr ""
 
 #. Tag: para
@@ -2257,12 +2307,14 @@ msgstr ""
 #, no-c-format
 msgid ""
 "-- Create a line string from a polyline\n"
-"SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));\n"
+"SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|"
+"U_ulLnnqC_mqNvxq`@'));\n"
 "-- result --\n"
 "SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)\n"
 "\n"
 "-- Select different precision that was used for polyline encoding\n"
-"SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@',6));\n"
+"SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|"
+"U_ulLnnqC_mqNvxq`@',6));\n"
 "-- result --\n"
 "SRID=4326;LINESTRING(-12.02 3.85,-12.095 4.07,-12.6453 4.3252)"
 msgstr ""
@@ -2338,14 +2390,14 @@ msgstr ""
 #: reference_input.xml:1492
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref "
-"linkend=\"ST_GeomFromGeoHash\"/>"
+", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
+"\"/>"
 msgstr ""
 
 #. Tag: refname
 #: reference_input.xml:1498
 #, no-c-format
-msgid "ST_TableFromFlatGeobuf"
+msgid "ST_FromFlatGeobufToTable"
 msgstr ""
 
 #. Tag: refpurpose
@@ -2358,19 +2410,19 @@ msgstr ""
 #: reference_input.xml:1504
 #, no-c-format
 msgid ""
-"<funcdef>void <function>ST_TableFromFlatGeobuf</function></funcdef> "
+"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
 "<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
-"<paramdef><type>bytea </type> <parameter>FlatGeobuf input "
-"data</parameter></paramdef>"
+"<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1516
 #, no-c-format
 msgid ""
-"Creates a table based on the structure of FlatGeobuf data. (<ulink "
-"url=\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)."
+"Creates a table based on the structure of FlatGeobuf data. (<ulink url="
+"\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)."
 msgstr ""
 
 #. Tag: para
@@ -2414,18 +2466,17 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>setof anyelement <function>ST_FromFlatGeobuf</function></funcdef> "
-"<paramdef><type>anyelement </type> <parameter>Table "
-"reference</parameter></paramdef> <paramdef><type>bytea </type> "
-"<parameter>FlatGeobuf input data</parameter></paramdef>"
+"<paramdef><type>anyelement </type> <parameter>Table reference</parameter></"
+"paramdef> <paramdef><type>bytea </type> <parameter>FlatGeobuf input data</"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
 #: reference_input.xml:1547
 #, no-c-format
 msgid ""
-"Reads FlatGeobuf data (<ulink "
-"url=\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>). NOTE: "
-"PostgreSQL bytea cannot exceed 1GB."
+"Reads FlatGeobuf data (<ulink url=\"http://flatgeobuf.org\">http://"
+"flatgeobuf.org</ulink>). NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
 
 #. Tag: para

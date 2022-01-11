@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -9,17 +9,18 @@ msgstr ""
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2019-08-03 21:25+0000\n"
 "Language-Team: Russian (https://www.transifex.com/postgis/teams/3227/ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: para
 #: reference_cluster.xml:5
 #, no-c-format
-msgid ""
-"These functions implement clustering algorithms for sets of geometries."
+msgid "These functions implement clustering algorithms for sets of geometries."
 msgstr ""
 
 #. Tag: title
@@ -47,15 +48,15 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
-"<paramdef><type>geometry winset </type> "
-"<parameter>geom</parameter></paramdef> <paramdef><type>float8 </type> "
-"<parameter>eps</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>minpoints</parameter></paramdef>"
+"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>eps</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>minpoints</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: title
-#: reference_cluster.xml:35 reference_cluster.xml:137
-#: reference_cluster.xml:185 reference_cluster.xml:286
+#: reference_cluster.xml:35 reference_cluster.xml:137 reference_cluster.xml:185
+#: reference_cluster.xml:286
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -64,13 +65,13 @@ msgstr ""
 #: reference_cluster.xml:37
 #, no-c-format
 msgid ""
-"Returns cluster number for each input geometry, based on a 2D implementation"
-" of the <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-based "
+"Returns cluster number for each input geometry, based on a 2D implementation "
+"of the <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-based "
 "spatial clustering of applications with noise (DBSCAN)</ulink> algorithm. "
 "Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require the number "
-"of clusters to be specified, but instead uses the desired <link "
-"linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density"
-" (<varname>minpoints</varname>) parameters to construct each cluster."
+"of clusters to be specified, but instead uses the desired <link linkend="
+"\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
+"(<varname>minpoints</varname>) parameters to construct each cluster."
 msgstr ""
 
 #. Tag: para
@@ -83,25 +84,25 @@ msgstr ""
 #: reference_cluster.xml:48
 #, no-c-format
 msgid ""
-"A \"core\" geometry, that is within <varname>eps</varname> <link "
-"linkend=\"ST_Distance\">distance</link> of at least "
-"<varname>minpoints</varname> input geometries (including itself) or"
+"A \"core\" geometry, that is within <varname>eps</varname> <link linkend="
+"\"ST_Distance\">distance</link> of at least <varname>minpoints</varname> "
+"input geometries (including itself) or"
 msgstr ""
 
 #. Tag: para
 #: reference_cluster.xml:53
 #, no-c-format
 msgid ""
-"A \"border\" geometry, that is within <varname>eps</varname> <link "
-"linkend=\"ST_Distance\">distance</link> of a core geometry."
+"A \"border\" geometry, that is within <varname>eps</varname> <link linkend="
+"\"ST_Distance\">distance</link> of a core geometry."
 msgstr ""
 
 #. Tag: para
 #: reference_cluster.xml:60
 #, no-c-format
 msgid ""
-"Note that border geometries may be within <varname>eps</varname> distance of"
-" core geometries in more than one cluster; in this case, either assignment "
+"Note that border geometries may be within <varname>eps</varname> distance of "
+"core geometries in more than one cluster; in this case, either assignment "
 "would be correct, and the border geometry will be arbitrarily asssigned to "
 "one of the available clusters. In these cases, it is possible for a correct "
 "cluster to be generated with fewer than <varname>minpoints</varname> "
@@ -126,8 +127,8 @@ msgid "Availability: 2.3.0"
 msgstr ""
 
 #. Tag: title
-#: reference_cluster.xml:76 reference_cluster.xml:145
-#: reference_cluster.xml:201 reference_cluster.xml:294
+#: reference_cluster.xml:76 reference_cluster.xml:145 reference_cluster.xml:201
+#: reference_cluster.xml:294
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -150,7 +151,8 @@ msgstr ""
 #: reference_cluster.xml:92
 #, no-c-format
 msgid ""
-"SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS cid\n"
+"SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS "
+"cid\n"
 "FROM boston_polys\n"
 "WHERE name > '' AND building > ''\n"
 "        AND ST_DWithin(geom,\n"
@@ -200,8 +202,10 @@ msgstr ""
 #: reference_cluster.xml:106
 #, no-c-format
 msgid ""
-"SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS ids_in_cluster FROM (\n"
-"    SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) over () AS cid, geom\n"
+"SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS "
+"ids_in_cluster FROM (\n"
+"    SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) "
+"over () AS cid, geom\n"
 "    FROM parcels) sq\n"
 "GROUP BY cid;"
 msgstr ""
@@ -217,8 +221,8 @@ msgstr ""
 #: reference_cluster.xml:111
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
-"linkend=\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -266,7 +270,8 @@ msgid ""
 "                       'LINESTRING (5 5, 4 4)'::geometry,\n"
 "                       'LINESTRING (6 6, 7 7)'::geometry,\n"
 "                       'LINESTRING (0 0, -1 -1)'::geometry,\n"
-"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)\n"
+"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS "
+"geom)\n"
 "\n"
 "SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;\n"
 "\n"
@@ -274,14 +279,16 @@ msgid ""
 "\n"
 "st_astext\n"
 "---------\n"
-"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
+"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
+"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
 "GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
 msgstr ""
 
 #. Tag: para
 #: reference_cluster.xml:150
 #, no-c-format
-msgid ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
+msgid ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -303,22 +310,21 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
-"<paramdef><type>geometry winset </type> "
-"<parameter>geom</parameter></paramdef> <paramdef><type>integer </type> "
-"<parameter>number_of_clusters</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>max_radius</parameter></paramdef>"
+"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>number_of_clusters</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>max_radius</"
+"parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
 #: reference_cluster.xml:187
 #, no-c-format
 msgid ""
-"Returns <ulink "
-"url=\"https://en.wikipedia.org/wiki/K-means_clustering\">K-means</ulink> "
-"cluster number for each input geometry. The distance used for clustering is "
-"the distance between the centroids for 2D geometries, and distance between "
-"bounding box centers for 3D geometries. For POINT inputs, M coordinate will "
-"be treated as weight of input and has to be larger than 0."
+"Returns <ulink url=\"https://en.wikipedia.org/wiki/K-means_clustering\">K-"
+"means</ulink> cluster number for each input geometry. The distance used for "
+"clustering is the distance between the centroids for 2D geometries, and "
+"distance between bounding box centers for 3D geometries. For POINT inputs, M "
+"coordinate will be treated as weight of input and has to be larger than 0."
 msgstr ""
 
 #. Tag: para
@@ -326,9 +332,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<varname>max_radius</varname>, if set, will cause ST_ClusterKMeans to "
-"generate more clusters than <varname>k</varname> ensuring that no cluster in"
-" output has radius larger than <varname>max_radius</varname>. This is useful"
-" in reachability analysis."
+"generate more clusters than <varname>k</varname> ensuring that no cluster in "
+"output has radius larger than <varname>max_radius</varname>. This is useful "
+"in reachability analysis."
 msgstr ""
 
 #. Tag: para
@@ -355,9 +361,11 @@ msgstr ""
 msgid ""
 "CREATE TABLE parcels AS\n"
 "SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,\n"
-"('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As type\n"
+"('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As "
+"type\n"
 "FROM\n"
-"    ST_Subdivide(ST_Buffer('SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 90)'::geometry,\n"
+"    ST_Subdivide(ST_Buffer('SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 "
+"90)'::geometry,\n"
 "    40, 'endcap=square'),12) As geom;"
 msgstr ""
 
@@ -407,7 +415,8 @@ msgstr ""
 #: reference_cluster.xml:236
 #, no-c-format
 msgid ""
-"SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, type\n"
+"SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, "
+"type\n"
 "FROM parcels;"
 msgstr ""
 
@@ -448,10 +457,12 @@ msgid ""
 "    ST_ClusterKMeans(\n"
 "        ST_Force4D(\n"
 "            ST_Transform(ST_Force3D(geom), 4978), -- cluster in 3D XYZ CRS\n"
-"            mvalue := population -- set clustering to be weighed by population\n"
+"            mvalue := population -- set clustering to be weighed by "
+"population\n"
 "        ),\n"
 "        20,                      -- aim to generate at least 20 clusters\n"
-"        max_radius := 3000000    -- but generate more to make each under 3000 km radius\n"
+"        max_radius := 3000000    -- but generate more to make each under "
+"3000 km radius\n"
 "    ) over () as cid\n"
 "from\n"
 "    kontur_population;"
@@ -471,9 +482,9 @@ msgstr ""
 #: reference_cluster.xml:257
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref "
-"linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref "
-"linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
+", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref linkend="
+"\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref linkend="
+"\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 msgstr ""
 
 #. Tag: refname
@@ -486,8 +497,7 @@ msgstr ""
 #: reference_cluster.xml:272
 #, no-c-format
 msgid ""
-"Aggregate function that clusters the input geometries by separation "
-"distance."
+"Aggregate function that clusters the input geometries by separation distance."
 msgstr ""
 
 #. Tag: funcprototype
@@ -518,7 +528,8 @@ msgid ""
 "                       'LINESTRING (5 5, 4 4)'::geometry,\n"
 "                       'LINESTRING (6 6, 7 7)'::geometry,\n"
 "                       'LINESTRING (0 0, -1 -1)'::geometry,\n"
-"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)\n"
+"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS "
+"geom)\n"
 "\n"
 "SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;\n"
 "\n"
@@ -526,7 +537,8 @@ msgid ""
 "\n"
 "st_astext\n"
 "---------\n"
-"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
+"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
+"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
 "GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
 msgstr ""
 
@@ -534,6 +546,6 @@ msgstr ""
 #: reference_cluster.xml:299
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
-"linkend=\"ST_ClusterIntersecting\"/>"
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>"
 msgstr ""
