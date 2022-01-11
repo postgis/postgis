@@ -6,33 +6,35 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2021-09-11 01:55+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-01-11 22:18+0000\n"
+"Last-Translator: robe <regina@arrival3d.com>\n"
+"Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
+"administrationxml/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: administration.xml:3
 #, no-c-format
 msgid "PostGIS Administration"
-msgstr ""
+msgstr "Администрация ПостГИС"
 
 #. Tag: chapter
 #: administration.xml:3
 #, no-c-format
 msgid "&database_tuning;"
-msgstr ""
+msgstr "&database_tuning;"
 
 #. Tag: title
 #: administration.xml:9
 #, no-c-format
 msgid "Configuring raster support"
-msgstr ""
+msgstr "Настройка поддержки растра"
 
 #. Tag: para
 #: administration.xml:11
@@ -41,6 +43,8 @@ msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
 msgstr ""
+"Если вы включили поддержку растров, вы можете прочитать ниже, как правильно "
+"настроить ее."
 
 #. Tag: para
 #: administration.xml:16
@@ -53,6 +57,12 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Начиная с PostGIS 2.1.3, растры вне базы данных и все растровые драйверы по "
+"умолчанию отключены. Чтобы повторно включить их, вам необходимо установить "
+"следующие переменные среды <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> и "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> в среде сервера. Для PostGIS "
+"2.2 вы можете использовать более кросс-платформенный подход, установив "
+"соответствующий <xref linkend=\"PostGIS_GUC\"/>."
 
 #. Tag: para
 #: administration.xml:19
