@@ -1,19 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-01-12 23:53+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"reference_relationshipxml/it/>\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
@@ -70,7 +72,7 @@ msgstr ""
 #: reference_relationship.xml:1743
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #. Tag: para
 #: reference_relationship.xml:38
@@ -100,14 +102,14 @@ msgstr ""
 #: reference_relationship.xml:1512 reference_relationship.xml:1567
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Disponibilità: 2.0.0"
 
 #. Tag: para
 #: reference_relationship.xml:47 reference_relationship.xml:1507
 #: reference_relationship.xml:1568
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_relationship.xml:49 reference_relationship.xml:1509
@@ -183,7 +185,7 @@ msgstr ""
 #: reference_relationship.xml:1764
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Si veda anche"
 
 #. Tag: refname
 #: reference_relationship.xml:70
@@ -325,7 +327,7 @@ msgstr ""
 #: reference_relationship.xml:1757
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Esempi"
 
 #. Tag: para
 #: reference_relationship.xml:132
@@ -502,7 +504,7 @@ msgstr ""
 #: reference_relationship.xml:264
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "Eseguito dal modulo GEOS."
 
 #. Tag: para
 #: reference_relationship.xml:265
