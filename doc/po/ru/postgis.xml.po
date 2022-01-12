@@ -42,8 +42,8 @@ msgid ""
 "address>"
 msgstr ""
 "<orgname><ulink url=\"http://www.cleverelephant.ca\">умный слон</ulink></"
-"orgname> <address><city>Виктория</city> <state>Британская Колумбия</state> < "
-"country>Канада</country> <email>pramsey@cleverelephant.ca</email></address>"
+"orgname> <address><city>Виктория</city> <state>Британская Колумбия</state> "
+"<country>Канада</country> <email>pramsey@cleverelephant.ca</email></address>"
 
 #. Tag: para
 #: postgis.xml:170
