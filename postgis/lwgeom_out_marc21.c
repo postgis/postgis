@@ -53,7 +53,6 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 
 	}
 
-
 	if ( GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
 		
 		PG_FREE_IF_COPY(gs, 0);
@@ -75,10 +74,7 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 
 //	lwdebug(1,"LWGEOM_asMARC21 calling lwgeom_from_gserialized: gs %d",gserialized_get_type(gs));
 
-
 	lwgeom = lwgeom_from_gserialized(gs);
-
-//	lwdebug(1,"LWGEOM_asMARC21 calling lwgeom_to_marc21: lwgeom %d precision %d",lwgeom->type,precision);
 
 	marc21 = lwgeom_to_marc21(lwgeom, precision);
 

@@ -63,7 +63,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 			if (lwgeom_calculate_gbox(coll->geoms[i], &box) == LW_FAILURE) {
 
 				stringbuffer_destroy(sb);
-				lwerror("failed to calculate bbox for a geometry in the collection: %s",lwgeom_get_type(coll->geoms[i]));
+				lwerror("failed to calculate bbox for a geometry in the collection: %s",lwtype_name(lwgeom_get_type(coll->geoms[i])));
 
 			}
 
@@ -82,7 +82,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 		if (lwgeom_calculate_gbox(geom, &box) == LW_FAILURE) {
 
 			stringbuffer_destroy(sb);
-			lwerror("failed to calculate bbox for %s",lwgeom_get_type(geom));
+			lwerror("failed to calculate bbox for %s",lwtype_name(lwgeom_get_type(geom)));
 
 
 		}
@@ -92,7 +92,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 		if(gbox_to_marc21_sb(box, precision, sb)==LW_FAILURE){
 
 			stringbuffer_destroy(sb);
-			lwerror("failed to create MARC21/XML for %s",lwgeom_get_type(geom));
+			lwerror("failed to create MARC21/XML for %s",lwtype_name(lwgeom_get_type(geom)));
 
 		}
 
@@ -132,7 +132,9 @@ format_marc21_literal(double coordinate,int precision)
 
 	//lwdebug(1,"format_marc21_literal got coordinate (%.*f) and returned (%s)", precision, coordinate, res);
 
-	strncpy(r,&res[0],strlen(res));
+	//TODO: free(res)
+
+	//strncpy(r,&res[0],strlen(res));
 	//free(res);
 
 	return res;
