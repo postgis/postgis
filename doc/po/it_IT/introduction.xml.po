@@ -12,15 +12,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-10 13:02+0000\n"
-"PO-Revision-Date: 2018-07-22 02:48+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
-"language/it_IT/)\n"
+"PO-Revision-Date: 2022-01-12 22:41+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"introductionxml/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: introduction.xml:3
@@ -40,7 +41,7 @@ msgid ""
 msgstr ""
 "PostGIS è un'estensione spaziale per il database relazionale PostgreSQL "
 "creata da Refractions Research Inc. come progetto di ricerca tecnologica sui "
-"database spaziali. Refractions è una societa' di consulenza su GIS e basi di "
+"database spaziali. Refractions è una società di consulenza su GIS e basi di "
 "dati con base a Victoria, in British Columbia, Canada, specializzata "
 "nell'integrazione dei dati e nello sviluppo di software."
 
@@ -54,7 +55,7 @@ msgid ""
 msgstr ""
 "PostGIS ora è un progetto della OSGeo Foundation ed è sviluppato e "
 "finanziato da molti sviluppatori ed organizzazioni FOSS4G da tutto il mondo "
-"che beneficiano in modo significativo dalla sua funzionalita'."
+"che beneficiano in modo significativo dalla sua funzionalità."
 
 #. Tag: para
 #: introduction.xml:13
@@ -94,9 +95,9 @@ msgstr ""
 
 #. Tag: term
 #: introduction.xml:31
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Raúl Marín Rodríguez"
-msgstr ""
+msgstr "Raúl Marín Rodríguez"
 
 #. Tag: para
 #: introduction.xml:33
@@ -105,6 +106,9 @@ msgid ""
 "MVT support, Bug fixing, Performance and stability improvements, GitHub "
 "curation, alignment of PostGIS with PostgreSQL releases"
 msgstr ""
+"Supporto di MVT, risoluzione bachi, migliorie nelle performance e nella "
+"stabilità, cura di GitHub, allineamento di PostGIS con i rilasci di "
+"PostgreSQL"
 
 #. Tag: term
 #: introduction.xml:39
@@ -1266,8 +1270,8 @@ msgid ""
 "successful campaigns out of it."
 msgstr ""
 "PostGIS 2.0.0 è stata la prima release con cui abbiamo tentato questa "
-"strategia. Abbiamo utilizzato <ulink url=\"http://www.pledgebank.com"
-"\">PledgeBank</ulink>, realizzando due campagne di successo."
+"strategia. Abbiamo utilizzato <ulink url=\"http://www.pledgebank.com\""
+">PledgeBank</ulink>, realizzando due campagne di successo."
 
 #. Tag: para
 #: introduction.xml:364
