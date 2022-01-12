@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-12-11 05:14+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
+"PO-Revision-Date: 2022-01-12 23:53+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
-"language/it_IT/)\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"reference_rasterxml/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: reference_raster.xml:3
@@ -498,7 +499,7 @@ msgstr ""
 #: reference_raster.xml:181
 #, no-c-format
 msgid "Casting Behavior"
-msgstr ""
+msgstr "Comportamento in caso di CAST"
 
 #. Tag: para
 #: reference_raster.xml:182
@@ -507,18 +508,20 @@ msgid ""
 "This section lists the automatic as well as explicit casts allowed for this "
 "data type"
 msgstr ""
+"Questa sezione illustra le modalità di CAST - automatici e espliciti - "
+"permessi per questo tipo di dato"
 
 #. Tag: entry
 #: reference_raster.xml:187
 #, no-c-format
 msgid "Cast To"
-msgstr ""
+msgstr "Cast verso"
 
 #. Tag: entry
 #: reference_raster.xml:188
 #, no-c-format
 msgid "Behavior"
-msgstr ""
+msgstr "Comportamento"
 
 #. Tag: entry
 #: reference_raster.xml:191
@@ -530,7 +533,7 @@ msgstr ""
 #: reference_raster.xml:192
 #, no-c-format
 msgid "automatic"
-msgstr ""
+msgstr "automatico"
 
 #. Tag: refname
 #: reference_raster.xml:207
@@ -1089,7 +1092,7 @@ msgstr ""
 #: reference_raster.xml:10564 reference_raster.xml:11383
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilità: 2.0"
+msgstr "Disponibilità: 2.0.0"
 
 #. Tag: title
 #: reference_raster.xml:571
