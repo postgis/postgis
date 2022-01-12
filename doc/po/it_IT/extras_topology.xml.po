@@ -11,15 +11,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2021-11-28 21:13+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
-"language/it_IT/)\n"
+"PO-Revision-Date: 2022-01-12 23:53+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"extras_topologyxml/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -81,10 +82,10 @@ msgid ""
 msgstr ""
 "Il modulo topologico era presente in versioni precedenti di PostGIS ma non "
 "era mai stato parte della documentazione ufficiale. A partire da PostGIS "
-"2.0.0 e' in corso una ripulitura generale per rimuovere le funzioni "
-"deprecate, risolvere noti problemi di usabilita', migliorare la "
-"documentazione delle funzioni, aggiungere funzioni e aumentare la "
-"conformita' con gli standard SQL-MM."
+"2.0.0 è in corso una ripulitura generale per rimuovere le funzioni "
+"deprecate, risolvere noti problemi di usabilità, migliorare la "
+"documentazione delle funzioni, aggiungere funzioni e aumentare la conformità "
+"con gli standard SQL-MM."
 
 #. Tag: para
 #: extras_topology.xml:10
@@ -94,7 +95,7 @@ msgid ""
 "postgis/wiki/UsersWikiPostgisTopology\">PostGIS Topology Wiki</ulink>"
 msgstr ""
 "Dettagli del progetto si possono trovare sul <ulink url=\"http://trac.osgeo."
-"org/postgis/wiki/UsersWikiPostgisTopology\">PostGIS Topology Wiki</ulink>."
+"org/postgis/wiki/UsersWikiPostgisTopology\">PostGIS Topology Wiki</ulink>"
 
 #. Tag: para
 #: extras_topology.xml:11
@@ -199,7 +200,7 @@ msgid ""
 "<varname>sequence</varname> is an integer: Refers to a topology defined in "
 "the topology.topology table which defines the topology schema and srid."
 msgstr ""
-"<varname>sequence</varname> e' un intero: si riferisce ad una topologia "
+"<varname>sequence</varname> è un intero: si riferisce ad una topologia "
 "definita nella tabella topology.topology, che definisce lo schema e lo srid "
 "per la topologia."
 
@@ -207,7 +208,7 @@ msgstr ""
 #: extras_topology.xml:46
 #, no-c-format
 msgid "<varname>edge</varname> is an integer: The identifier of an edge."
-msgstr "<varname>edge</varname> e' un intero: l'identificativo di un bordo."
+msgstr "<varname>edge</varname> è un intero: l'identificativo di un bordo."
 
 #. Tag: refname
 #: extras_topology.xml:54
@@ -278,7 +279,7 @@ msgid ""
 "This section lists the automatic as well as explicit casts allowed for this "
 "data type"
 msgstr ""
-"Questa sezione illustra le modalità di CAST - automatici e espliciti -  "
+"Questa sezione illustra le modalità di CAST - automatici e espliciti - "
 "permessi per questo tipo di dato"
 
 #. Tag: entry
@@ -742,8 +743,8 @@ msgid ""
 "paramdef>"
 msgstr ""
 "<funcdef>integer <function>DropTopology</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
-"paramdef>"
+"<paramdef><type>varchar </type> "
+"<parameter>topology_schema_name</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:325
@@ -798,8 +799,8 @@ msgstr ""
 "<funcdef>text <function>DropTopoGeometryColumn</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>schema_name</parameter></"
 "paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>column_name</"
-"parameter></paramdef>"
+"paramdef> <paramdef><type>varchar </type> "
+"<parameter>column_name</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:367
@@ -930,8 +931,8 @@ msgid ""
 "paramdef>"
 msgstr ""
 "<funcdef>text <function>TopologySummary</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
-"paramdef>"
+"<paramdef><type>varchar </type> "
+"<parameter>topology_schema_name</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:448
@@ -950,7 +951,7 @@ msgstr ""
 #: extras_topology.xml:2873 extras_topology.xml:3171 extras_topology.xml:3283
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilità: 2.0"
+msgstr "Disponibilità: 2.0.0"
 
 #. Tag: programlisting
 #: extras_topology.xml:457
@@ -1544,9 +1545,9 @@ msgid ""
 "parameter></paramdef>"
 msgstr ""
 "<funcdef>integer <function>CopyTopology</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>existing_topology_name</"
-"parameter></paramdef> <paramdef><type>varchar </type> <parameter>new_name</"
-"parameter></paramdef>"
+"<paramdef><type>varchar </type> "
+"<parameter>existing_topology_name</parameter></paramdef> "
+"<paramdef><type>varchar </type> <parameter>new_name</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:861
@@ -1609,8 +1610,8 @@ msgid ""
 "paramdef>"
 msgstr ""
 "<funcdef>text <function>ST_InitTopoGeo</function></funcdef> "
-"<paramdef><type>varchar </type> <parameter>topology_schema_name</parameter></"
-"paramdef>"
+"<paramdef><type>varchar </type> "
+"<parameter>topology_schema_name</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:909
@@ -1667,8 +1668,8 @@ msgid ""
 msgstr ""
 "<funcdef>text <function>ST_CreateTopoGeo</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>acollection</parameter></"
-"paramdef>"
+"<paramdef><type>geometry </type> "
+"<parameter>acollection</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:953
@@ -2006,8 +2007,8 @@ msgstr ""
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>anothernode</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>alinestring</"
-"parameter></paramdef>"
+"paramdef> <paramdef><type>geometry </type> "
+"<parameter>alinestring</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1200
@@ -2089,8 +2090,8 @@ msgstr ""
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>anothernode</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>acurve</parameter></"
-"paramdef>"
+"paramdef> <paramdef><type>geometry </type> "
+"<parameter>acurve</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1247
@@ -2163,8 +2164,8 @@ msgstr ""
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>anode</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>anothernode</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>acurve</parameter></"
-"paramdef>"
+"paramdef> <paramdef><type>geometry </type> "
+"<parameter>acurve</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:1304
@@ -2876,7 +2877,7 @@ msgstr ""
 #: extras_topology.xml:2676
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr "Eseguito dal modulo GEOS"
+msgstr "Eseguito dal modulo GEOS."
 
 #. Tag: para
 #: extras_topology.xml:1935 extras_topology.xml:2078
@@ -3315,8 +3316,8 @@ msgid ""
 msgstr ""
 "<funcdef>getfaceedges_returntype <function>ST_GetFaceEdges</function></"
 "funcdef> <paramdef><type>varchar </type> <parameter>atopology</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>aface</parameter></"
-"paramdef>"
+"paramdef> <paramdef><type>integer </type> "
+"<parameter>aface</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2241
@@ -3462,8 +3463,8 @@ msgstr ""
 "<funcdef>getfaceedges_returntype <function>GetRingEdges</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>aring</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>integer </type> <parameter>max_edges=null</"
-"parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>max_edges=null</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2336
@@ -3655,8 +3656,8 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>allowEdgeSplitting=false</parameter></paramdef> <paramdef choice="
-"\"opt\"><type>boolean </type> <parameter>computeContainingFace=false</"
-"parameter></paramdef>"
+"\"opt\"><type>boolean </type> "
+"<parameter>computeContainingFace=false</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2497
@@ -3703,8 +3704,8 @@ msgid ""
 "--------\n"
 " 4"
 msgstr ""
-"SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 "
-"893816.5)', 26986) ) As nodeid;\n"
+"SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)"
+"', 26986) ) As nodeid;\n"
 "-- result --\n"
 "nodeid\n"
 "--------\n"
@@ -3827,8 +3828,8 @@ msgstr ""
 "<funcdef>integer <function>AddFace</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>apolygon</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>boolean </type> <parameter>force_new=false</"
-"parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>force_new=false</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2599
@@ -4036,12 +4037,13 @@ msgstr ""
 "funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
 "paramdef> <paramdef><type>integer </type> <parameter>tg_type</parameter></"
 "paramdef> <paramdef><type>integer</type> <parameter>layer_id</parameter></"
-"paramdef> <paramdef><type>topoelementarray</type> <parameter>tg_objs</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>topogeometry "
-"<function>CreateTopoGeom</function></funcdef> <paramdef><type>varchar </"
-"type> <parameter>toponame</parameter></paramdef> <paramdef><type>integer </"
-"type> <parameter>tg_type</parameter></paramdef> <paramdef><type>integer</"
-"type> <parameter>layer_id</parameter></paramdef> </funcprototype>"
+"paramdef> <paramdef><type>topoelementarray</type> "
+"<parameter>tg_objs</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>topogeometry <function>CreateTopoGeom</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>tg_type</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: extras_topology.xml:2725
@@ -4368,8 +4370,8 @@ msgid ""
 "parameter></paramdef>"
 msgstr ""
 "<funcdef>topoelementarray <function>TopoElementArray_Agg</function></"
-"funcdef> <paramdef><type>topoelement set</type> <parameter>tefield</"
-"parameter></paramdef>"
+"funcdef> <paramdef><type>topoelement set</type> "
+"<parameter>tefield</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:2870
@@ -4659,8 +4661,8 @@ msgstr ""
 "<funcdef>topoelementarray <function>GetTopoGeomElementArray</function></"
 "funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
 "paramdef> <paramdef><type>integer </type> <parameter>layer_id</parameter></"
-"paramdef> <paramdef><type>integer</type> <parameter>tg_id</parameter></"
-"paramdef>"
+"paramdef> <paramdef><type>integer</type> "
+"<parameter>tg_id</parameter></paramdef>"
 
 #. Tag: funcprototype
 #: extras_topology.xml:3109
@@ -4670,9 +4672,9 @@ msgid ""
 "function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>topoelementarray topoelement <function>GetTopoGeomElementArray</"
-"function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
-"parameter></paramdef>"
+"<funcdef>topoelementarray topoelement "
+"<function>GetTopoGeomElementArray</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:3119
@@ -4720,8 +4722,8 @@ msgstr ""
 "<funcdef>setof topoelement <function>GetTopoGeomElements</function></"
 "funcdef> <paramdef><type>varchar </type> <parameter>toponame</parameter></"
 "paramdef> <paramdef><type>integer </type> <parameter>layer_id</parameter></"
-"paramdef> <paramdef><type>integer</type> <parameter>tg_id</parameter></"
-"paramdef>"
+"paramdef> <paramdef><type>integer</type> "
+"<parameter>tg_id</parameter></paramdef>"
 
 #. Tag: funcprototype
 #: extras_topology.xml:3157
@@ -4732,8 +4734,8 @@ msgid ""
 "paramdef>"
 msgstr ""
 "<funcdef>setof topoelement <function>GetTopoGeomElements</function></"
-"funcdef> <paramdef><type>topogeometry </type> <parameter>tg</parameter></"
-"paramdef>"
+"funcdef> <paramdef><type>topogeometry </type> "
+"<parameter>tg</parameter></paramdef>"
 
 #. Tag: para
 #: extras_topology.xml:3167
@@ -4820,26 +4822,34 @@ msgstr ""
 "funcprototype> <funcprototype> <funcdef>text <function>AsGML</function></"
 "funcdef> <paramdef><type>topogeometry </type> <parameter>tg</parameter></"
 "paramdef> <paramdef><type>text </type> <parameter>nsprefix_in</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>text <function>AsGML</"
-"function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
-"parameter></paramdef> <paramdef><type>regclass </type> "
+"paramdef> </funcprototype> <funcprototype> <funcdef>text "
+"<function>AsGML</function></funcdef> <paramdef><type>topogeometry </type> "
+"<parameter>tg</parameter></paramdef> <paramdef><type>regclass </type> "
 "<parameter>visitedTable</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>text <function>AsGML</function></funcdef> "
 "<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
 "<paramdef><type>regclass </type> <parameter>visitedTable</parameter></"
 "paramdef> <paramdef><type>text </type> <parameter>nsprefix</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>text <function>AsGML</"
-"function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>nsprefix_in</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>precision</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>options</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text "
+"paramdef> </funcprototype> <funcprototype> <funcdef>text "
+"<function>AsGML</function></funcdef> <paramdef><type>topogeometry </type> "
+"<parameter>tg</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>nsprefix_in</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>precision</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>options</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>AsGML</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>precision</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>options</parameter></paramdef> "
+"<paramdef><type>regclass </type> <parameter>visitedTable</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>text "
 "<function>AsGML</function></funcdef> <paramdef><type>topogeometry </type> "
 "<parameter>tg</parameter></paramdef> <paramdef><type>text </type> "
 "<parameter>nsprefix_in</parameter></paramdef> <paramdef><type>integer </"
 "type> <parameter>precision</parameter></paramdef> <paramdef><type>integer </"
 "type> <parameter>options</parameter></paramdef> <paramdef><type>regclass </"
-"type> <parameter>visitedTable</parameter></paramdef> </funcprototype> "
+"type> <parameter>visitedTable</parameter></paramdef> <paramdef><type>text </"
+"type> <parameter>idprefix</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>text <function>AsGML</function></funcdef> "
 "<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>nsprefix_in</parameter></paramdef> "
@@ -4847,15 +4857,8 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>options</parameter></paramdef> "
 "<paramdef><type>regclass </type> <parameter>visitedTable</parameter></"
 "paramdef> <paramdef><type>text </type> <parameter>idprefix</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>text <function>AsGML</"
-"function></funcdef> <paramdef><type>topogeometry </type> <parameter>tg</"
-"parameter></paramdef> <paramdef><type>text </type> <parameter>nsprefix_in</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>precision</"
-"parameter></paramdef> <paramdef><type>integer </type> <parameter>options</"
-"parameter></paramdef> <paramdef><type>regclass </type> "
-"<parameter>visitedTable</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>idprefix</parameter></paramdef> <paramdef><type>int </type> "
-"<parameter>gmlversion</parameter></paramdef> </funcprototype>"
+"paramdef> <paramdef><type>int </type> <parameter>gmlversion</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: extras_topology.xml:3267
