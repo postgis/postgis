@@ -1,19 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-01-12 22:41+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"administrationxml/it/>\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: administration.xml:3
@@ -40,8 +42,8 @@ msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
 msgstr ""
-"Se hai abilitato il supporto per i raster vorrai leggere la prossima "
-"sezione per configurarlo correttamente."
+"Se hai abilitato il supporto per i raster vorrai leggere la prossima sezione "
+"per configurarlo correttamente."
 
 #. Tag: para
 #: administration.xml:16
@@ -54,15 +56,13 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"A partire da PostGIS 2.1.3, per default sono disabilitati tutti i "
-"raster driver ed il supporto per i raster offline. "
-"Per ri-abilitarli, puoi dare un valore alle seguenti variabili "
-"ambientali (nell'ambiente del server): "
+"A partire da PostGIS 2.1.3, per default sono disabilitati tutti i raster "
+"driver ed il supporto per i raster offline. Per ri-abilitarli, puoi dare un "
+"valore alle seguenti variabili ambientali (nell'ambiente del server): "
 "<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> e "
-"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>."
-"A partire da PostGIS 2.2, puoi usare l'approccio più combatibile "
-"tra varie piattaforme usando le <xref linkend=\"PostGIS_GUC\"/> "
-"corrispondenti."
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>.A partire da PostGIS 2.2, "
+"puoi usare l'approccio più combatibile tra varie piattaforme usando le <xref "
+"linkend=\"PostGIS_GUC\"/> corrispondenti."
 
 #. Tag: para
 #: administration.xml:19
@@ -81,8 +81,8 @@ msgstr ""
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
 msgstr ""
-"Qualunque altro valore, o l'assenza di valore, disabilita il "
-"supporto per i raster offline (out-of-db)."
+"Qualunque altro valore, o l'assenza di valore, disabilita il supporto per i "
+"raster offline (out-of-db)."
 
 #. Tag: para
 #: administration.xml:22
@@ -131,6 +131,12 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
+"Come settare variabili ambientali dipende dal sistema operativo. Se "
+"postgreSQL è stato installato su Ubuntu o Debian via apt-postgresql, il "
+"metodo preferito è modificare <filename>/etc/postgresql/"
+"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
+"filename> dove 10 si riferisce alla versione di PostgreSQL e main si "
+"riferisce al nome del cluster."
 
 #. Tag: para
 #: administration.xml:32
@@ -151,6 +157,8 @@ msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
 msgstr ""
+"Dopo aver settato le variabili ambientali, affinché le modifiche abbiano "
+"effetto dovrai far ripartire il servizio PostgreSQL."
 
 #. Tag: title
 #: administration.xml:39
