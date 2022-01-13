@@ -74,3 +74,13 @@ SELECT
 	ST_DWithin(g1::text, g1::text, 1) as text_dwithin,
 	ST_DWithin(g2, g2, 1) as geography_dwithin
 FROM upgrade_test;
+
+-- Break probin of all postgis functions, as we expect
+-- the upgrade procedure to replace them all
+UPDATE pg_proc SET probin = probin || '-uninstalled' WHERE probin like '%postgis%'
+-- Some function have DEFAULT values for GEOMETRY type, which
+-- makes pg_get_function_arguments choke. This should be fixed!
+-- See https://trac.osgeo.org/postgis/ticket/5046#comment:5
+-- When ticket #5046 is fixed we can ALSO break geometry_out
+AND proname NOT IN ( 'geometry_out')
+;
