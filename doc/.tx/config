@@ -101,11 +101,6 @@ file_filter = po/<lang>/reference_sfcgal.xml.po
 source_file = po/templates/reference_sfcgal.xml.pot
 source_lang = en
 
-[postgis.reference_miscxmlpot]
-file_filter = po/<lang>/reference_misc.xml.po
-source_file = po/templates/reference_misc.xml.pot
-source_lang = en
-
 [postgis.reference_operatorxmlpot]
 file_filter = po/<lang>/reference_operator.xml.po
 source_file = po/templates/reference_operator.xml.pot
