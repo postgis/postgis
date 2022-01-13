@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-13 20:20+0000\n"
-"PO-Revision-Date: 2022-01-13 20:14+0000\n"
+"PO-Revision-Date: 2022-01-13 20:26+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reportingxml/it/>\n"
@@ -134,16 +134,15 @@ msgstr ""
 
 #. Tag: para
 #: reporting.xml:47
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If your changes are more extensive, a patch is definitely preferred. This is "
 "a four step process on Unix (assuming you already have <ulink url=\"https://"
 "git-scm.com/\">git</ulink> installed):"
 msgstr ""
-"Se i cambiamenti sono più estesi, è preferibile  mandare una patch per "
-"Subversion. In Unix, si tratta di un processo in 4 fasi (assumendo di avere "
-"<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> già "
-"installato):"
+"Se i cambiamenti sono più estesi, è preferibile mandare una patch. In Unix, "
+"si tratta di un processo in 4 fasi (assumendo di avere <ulink url=\"https"
+"://git-scm.com/\">git</ulink> già installato):"
 
 #. Tag: para
 #: reporting.xml:54
