@@ -350,6 +350,15 @@ sub create_upgrade_test_objects
       exit(1);
     }
   }
+
+  # Break current binary postgis functions
+  $query = "UPDATE pg_proc SET probin = probin || '-uninstalled' WHERE probin like '%postgis%'";
+  my $ret = sql($query);
+  unless ( $ret =~ /^UPDATE/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong breaking postgis funx probin: $ret.\n";
+    exit(1);
+  }
 }
 
 sub drop_upgrade_test_objects
