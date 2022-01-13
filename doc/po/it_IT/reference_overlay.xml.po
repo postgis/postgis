@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2022-01-12 23:53+0000\n"
+"PO-Revision-Date: 2022-01-13 16:44+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/it/>\n"
@@ -176,7 +176,7 @@ msgstr ""
 #: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:611
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Eseguito dal modulo GEOS"
 
 #. Tag: para
 #: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:613
