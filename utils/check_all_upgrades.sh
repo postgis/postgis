@@ -88,6 +88,8 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     echo "SKIP: don't know where to find regress tests for extension ${EXT}"
   fi
 
+  USERTESTFLAGS=${RUNTESTFLAGS}
+
   # Check extension->extension upgrades
   files=`'ls' ${EXT}--* | grep -v -- '--.*--' | sed "s/^${EXT}--\(.*\)\.sql/\1/"`
   for fname in $files; do
@@ -102,7 +104,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     fi
     if test -e ${UPGRADE_FILE}; then
       echo "Testing ${EXT} upgrade $UPGRADE_PATH"
-      export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
+      RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
       make -C ${REGDIR} check && {
         echo "PASS: upgrade $UPGRADE_PATH"
       } || {
@@ -124,7 +126,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
       continue
     fi
     echo "Testing ${EXT} upgrade $UPGRADE_PATH"
-    export RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH}"
+    RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
     make -C ${REGDIR} check && {
       echo "PASS: upgrade $UPGRADE_PATH"
     } || {
