@@ -16,5 +16,7 @@ psql -c "select version()" template1
 RUNTESTFLAGS=-v make check
 make install
 RUNTESTFLAGS=-v make installcheck
-utils/check_all_upgrades.sh -s \
-  `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
+
+CURRENTVERSION=`grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
+utils/check_all_upgrades.sh -s ${CURRENTVERSION}
+utils/check_all_upgrades.sh -s ${CURRENTVERSION}!
