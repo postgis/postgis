@@ -44,9 +44,9 @@
     <para>If your revision is trivial, just describe it in a new bug tracker
     issue, being specific about its location in the documentation.</para>
 
-    <para>If your changes are more extensive, a Subversion patch is definitely
+    <para>If your changes are more extensive, a patch is definitely
     preferred. This is a four step process on Unix (assuming you already have
-    <ulink url="http://subversion.apache.org/">Subversion</ulink>
+    <ulink url="https://git-scm.com/">git</ulink>
     installed):</para>
 
     <orderedlist>
