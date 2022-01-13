@@ -33,54 +33,17 @@ Adding new languages implies (relative to doc/ dir):
   - Add to the git repository the changes in the Makefile.in
     and all the new files in the po/<newlanguage>/
 
-Using transifex
----------------
-
-Transifex web-ui to translation was setup here:
-https://www.transifex.com/projects/p/postgis
-
-Run ``make update-tx`` from the parent (doc) directory to
-update the transifex command-line tool configuration,
-found in ../.tx/config (only needed when new doc sources
-are added);
-
-Run ``make pull-tx`` to import remotely updated translations
-and ``make push-tx`` to upload the locally update ones, after
-making sure they are well-formed (``make html-localized`` succeeds).
-
-NOTE: the recommended workflow is:
-
- make pull-tx
- do:
-  make html-localized || edit
- until success
- if edits:
-  make push-tx
-  make pull-tx
-  commit changes to repo
- fi
-
-Using weblate [EXPERIMENTAL]
-----------------------------
+Using weblate
+-------------
 
 Weblate web-ui to translation was setup here:
 https://weblate.osgeo.org/projects/postgis
 
 Translations made via Weblate will automatically be pushed
-to the a configured repository (currently robe's fork) with
-'weblate' as a committer, see commit 2d5247b0c as an example.
+to the master branch of the official repository.
 
-Changes to the templates should be automatically fetched by Weblate
-via webhook, see https://git.osgeo.org/gitea/postgis/postgis/settings/hooks
-(currently broken because the configured repository does not match the
-URL of the official repository)
-
-Local changes to the translation files can be uploaded manually
-to weblate with a command like the following:
-
-  wlc upload \
-    postgis/introductionxml/it \
-    --input po/it_IT/introduction.xml.po
-
-NOTE: wlc 1.2 is known to be not functional, while wlc 1.12
-      (current latest when installed via pip) seems fine
+Translation directly pushed to the master branch of the
+official reporitory will be automatically pulled by Weblate,
+as well as changes to the templates (.pot files).
+Pulling is triggered by a webhook, see
+https://git.osgeo.org/gitea/postgis/postgis/settings/hooks

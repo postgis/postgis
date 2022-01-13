@@ -206,24 +206,6 @@ update-po: $(XML_INPUTS_POT)
   done
 endif
 
-pull-tx:
-	tx pull --all
-	$(MAKE) update-po
-
-push-tx:
-	tx push -s -t --skip
-
-# Register transifex resources, run when adding a new .xml file
-update-tx:
-	for f in $(XML_INPUTS_POT); do \
-    f=`basename $${f} .pot`; \
-    res=`echo "$${f}" | sed 's/\.//g'`pot; \
-    tx set --auto-local -r postgis.$${res} "po/<lang>/$${f}.po" \
-           --source-lang en --source-file "po/templates/$${f}.pot" \
-           --execute; \
-  done
-
-
 ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
