@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-13 20:20+0000\n"
 "PO-Revision-Date: 2022-01-13 20:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -61,9 +61,9 @@ msgid ""
 "been fixed."
 msgstr ""
 "Se non si sta usando l'ultima release, vale la pena leggerne il <ulink url="
-"\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/NEWS\""
-">release changelog</ulink>, per scoprire se il bug in questione è già stato "
-"risolto."
+"\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/NEWS"
+"\">release changelog</ulink>, per scoprire se il bug in questione è già "
+"stato risolto."
 
 #. Tag: para
 #: reporting.xml:21
@@ -134,11 +134,11 @@ msgstr ""
 
 #. Tag: para
 #: reporting.xml:47
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"If your changes are more extensive, a Subversion patch is definitely "
-"preferred. This is a four step process on Unix (assuming you already have "
-"<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> installed):"
+"If your changes are more extensive, a patch is definitely preferred. This is "
+"a four step process on Unix (assuming you already have <ulink url=\"https://"
+"git-scm.com/\">git</ulink> installed):"
 msgstr ""
 "Se i cambiamenti sono più estesi, è preferibile  mandare una patch per "
 "Subversion. In Unix, si tratta di un processo in 4 fasi (assumendo di avere "

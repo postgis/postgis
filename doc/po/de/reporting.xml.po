@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-13 20:20+0000\n"
 "PO-Revision-Date: 2019-03-11 09:33+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -133,11 +133,11 @@ msgstr ""
 
 #. Tag: para
 #: reporting.xml:47
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"If your changes are more extensive, a Subversion patch is definitely "
-"preferred. This is a four step process on Unix (assuming you already have "
-"<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> installed):"
+"If your changes are more extensive, a patch is definitely preferred. This is "
+"a four step process on Unix (assuming you already have <ulink url=\"https://"
+"git-scm.com/\">git</ulink> installed):"
 msgstr ""
 "Wenn es sich um umfangreichere Änderungen handelt, ist ein Subversion Patch "
 "zweifellos die bessere Wahl. Dabei handelt es sich um einen vierstufigen "
