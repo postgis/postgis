@@ -9,6 +9,7 @@ PostGIS 3.1.5
            topology layers (Sandro Santilli)
   - #5033, #5035, allow upgrades in presence of views using deprecated
            functions (Sandro Santilli)
+  - #5046, Fix upgrades in absence of old library (Sandro Santilli)
 
 PostGIS 3.1.4
 2021/09/04
