@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-12 23:53+0000\n"
+"PO-Revision-Date: 2022-01-13 16:44+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_transformationxml/it/>\n"
@@ -131,6 +131,8 @@ msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
 msgstr ""
+"Migliorato: Nella 2.0.0 è stato introdotto il supporto per le superfici "
+"poliedriche, i triangoli e i TIN."
 
 #. Tag: para
 #: reference_transformation.xml:69
@@ -154,7 +156,7 @@ msgstr ""
 #: reference_transformation.xml:287 reference_transformation.xml:371
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_transformation.xml:73 reference_transformation.xml:139
@@ -162,7 +164,7 @@ msgstr ""
 #: reference_transformation.xml:288 reference_transformation.xml:374
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: para
 #: reference_transformation.xml:74 reference_transformation.xml:136
@@ -179,7 +181,7 @@ msgstr "&Z_support;"
 #: reference_transformation.xml:428 reference_transformation.xml:485
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_transformation.xml:80 reference_transformation.xml:145
@@ -613,7 +615,7 @@ msgstr ""
 #: reference_transformation.xml:375
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: programlisting
 #: reference_transformation.xml:382
