@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-12 23:53+0000\n"
+"PO-Revision-Date: 2022-01-13 16:44+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/it/>\n"
@@ -116,13 +116,13 @@ msgstr "&Z_support;"
 #: reference_relationship.xml:1570
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_relationship.xml:50 reference_relationship.xml:903
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: para
 #: reference_relationship.xml:51
@@ -134,7 +134,7 @@ msgstr ""
 #: reference_relationship.xml:52
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: ?"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: ?"
 
 #. Tag: title
 #: reference_relationship.xml:55 reference_relationship.xml:906
@@ -257,7 +257,7 @@ msgstr ""
 #: reference_relationship.xml:1219 reference_relationship.xml:1428
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Eseguito dal modulo GEOS"
 
 #. Tag: para
 #: reference_relationship.xml:110 reference_relationship.xml:886
@@ -1363,7 +1363,7 @@ msgstr ""
 #: reference_relationship.xml:901
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: programlisting
 #: reference_relationship.xml:907
@@ -2433,7 +2433,7 @@ msgstr ""
 #: reference_relationship.xml:1700
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_relationship.xml:1701
