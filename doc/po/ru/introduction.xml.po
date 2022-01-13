@@ -1,28 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
+# lvv83, 2016
+# lvv83 <vlozhkin83@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-10 13:02+0000\n"
-"PO-Revision-Date: 2021-09-11 03:42+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/"
-"ru/)\n"
-"Language: ru\n"
+"PO-Revision-Date: 2022-01-13 15:49+0000\n"
+"Last-Translator: Александр Иутин <alexmapmaker@gmail.com>\n"
+"Language-Team: Russian (Russia) (http://www.transifex.com/postgis/postgis/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Language: ru_RU\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. Tag: title
 #: introduction.xml:3
 #, no-c-format
 msgid "Introduction"
-msgstr ""
+msgstr "Введение"
 
 #. Tag: para
 #: introduction.xml:5
@@ -33,14 +32,14 @@ msgid ""
 "research project. Refractions is a GIS and database consulting company in "
 "Victoria, British Columbia, Canada, specializing in data integration and "
 "custom software development."
-msgstr ""
+msgstr "PostGIS - это пространственное расширение для СУБД PostgreSQL, созданное компанией Refractions Research в качестве исследовательского проекта по технологиям пространственных баз данных.  Refractions - это консалтинговая компания в области ГИС и баз данных (базируется в Виктории, Британская Колумбия, Канада), специализирующаяся на интеграции данных и разработке программного обеспечения."
 
 #. Tag: para
 #: introduction.xml:11
 #, no-c-format
 msgid ""
-"PostGIS is now a project of the OSGeo Foundation and is developed and funded "
-"by many FOSS4G developers and organizations all over the world that gain "
+"PostGIS is now a project of the OSGeo Foundation and is developed and funded"
+" by many FOSS4G developers and organizations all over the world that gain "
 "great benefit from its functionality and versatility."
 msgstr ""
 
@@ -113,7 +112,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Raster development, integration with GDAL, raster loader, user support, "
-"general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)"
+"general bug fixing, testing on various OS (Slackware, Mac, Windows, and "
+"more)"
 msgstr ""
 
 #. Tag: term
@@ -126,8 +126,8 @@ msgstr ""
 #: introduction.xml:56
 #, no-c-format
 msgid ""
-"Index improvements, bug fixing and geometry/geography function improvements, "
-"SFCGAL, raster, GitHub curation, and Travis bot maintenance."
+"Index improvements, bug fixing and geometry/geography function improvements,"
+" SFCGAL, raster, GitHub curation, and Travis bot maintenance."
 msgstr ""
 
 #. Tag: term
@@ -159,8 +159,8 @@ msgstr ""
 msgid ""
 "Bug fixes and maintenance, buildbot maintenance, git mirror management, "
 "management functions, integration of new GEOS functionality and alignment "
-"with GEOS releases, topology support, and raster framework and low level API "
-"functions."
+"with GEOS releases, topology support, and raster framework and low level API"
+" functions."
 msgstr ""
 
 #. Tag: title
@@ -1205,10 +1205,10 @@ msgid ""
 "specifically focused on a particular feature or set of features. Each "
 "sponsor chips in a small fraction of the needed funding and with enough "
 "people/organizations contributing, we have the funds to pay for the work "
-"that will help many. If you have an idea for a feature you think many others "
-"would be willing to co-fund, please post to the <ulink url=\"https://lists."
-"osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</ulink> your "
-"thoughts and together we can make it happen."
+"that will help many. If you have an idea for a feature you think many others"
+" would be willing to co-fund, please post to the <ulink "
+"url=\"https://lists.osgeo.org/mailman/listinfo/postgis-users\">PostGIS "
+"newsgroup</ulink> your thoughts and together we can make it happen."
 msgstr ""
 
 #. Tag: para
@@ -1224,8 +1224,8 @@ msgstr ""
 #: introduction.xml:364
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role="
-"\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
+"<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis "
+"role=\"bold\">postgistopology</emphasis></ulink> - 10 plus sponsors each "
 "contributed $250 USD to build toTopoGeometry function and beef up topology "
 "support in 2.0.0. It happened."
 msgstr ""
@@ -1234,9 +1234,9 @@ msgstr ""
 #: introduction.xml:365
 #, no-c-format
 msgid ""
-"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
-"\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each "
-"contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
+"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis "
+"role=\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each"
+" contributed $100 USD to pay for the work needed to work out PostGIS 64-bit "
 "issues on windows. It happened."
 msgstr ""
 
@@ -1276,8 +1276,9 @@ msgstr ""
 #: introduction.xml:384
 #, no-c-format
 msgid ""
-"Last but not least, <ulink url=\"http://www.postgresql.org\">PostgreSQL</"
-"ulink>, the giant that PostGIS stands on. Much of the speed and flexibility "
-"of PostGIS would not be possible without the extensibility, great query "
-"planner, GIST index, and plethora of SQL features provided by PostgreSQL."
+"Last but not least, <ulink "
+"url=\"http://www.postgresql.org\">PostgreSQL</ulink>, the giant that PostGIS"
+" stands on. Much of the speed and flexibility of PostGIS would not be "
+"possible without the extensibility, great query planner, GIST index, and "
+"plethora of SQL features provided by PostgreSQL."
 msgstr ""
