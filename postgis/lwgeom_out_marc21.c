@@ -43,8 +43,6 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 	int precision = PG_GETARG_INT32(1);
 	srid = gserialized_get_srid(gs);
 
-	//lwdebug(1,"LWGEOM_asMARC21 called: %d precision %d",gserialized_get_type(gs),precision);
-
 	if ( srid == SRID_UNKNOWN )
 	{
 		PG_FREE_IF_COPY(gs, 0);
@@ -70,12 +68,7 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 
 	if (precision < 0) precision = 0;
 
-//	lwdebug(1,"GetLWPROJ returned %d for srid %d",lwproj->source_is_latlong,srid);
-
-//	lwdebug(1,"LWGEOM_asMARC21 calling lwgeom_from_gserialized: gs %d",gserialized_get_type(gs));
-
 	lwgeom = lwgeom_from_gserialized(gs);
-
 	marc21 = lwgeom_to_marc21(lwgeom, precision);
 
 	if (marc21)	PG_RETURN_TEXT_P(marc21);

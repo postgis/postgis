@@ -36,6 +36,9 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 	//lwdebug(1,"lwgeom_to_marc21 started: geom %d with %d ",geom->type,precision);
 
+	//POSTGIS_DEBUGF(2,"lwgeom_to_marc21 called: %s with %d ",lwtype_name(lwgeom_get_type(geom)),precision);
+	//LWDEBUGF(2," xxxxxxxxxxxxxxxxx lwgeom_to_marc21 called: %s with %d ",lwtype_name(lwgeom_get_type(geom)),precision);
+
 	if( lwgeom_is_empty(geom) )	return NULL;
 
 	char* ns = "http://www.loc.gov/MARC21/slim";

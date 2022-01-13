@@ -4688,7 +4688,7 @@ CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 
 -- Availability: 3.2.3
 
-CREATE OR REPLACE FUNCTION ST_GeomFromMARC21(xml)
+CREATE OR REPLACE FUNCTION ST_GeomFromMARC21(marc21xml text)
 	RETURNS geometry
 	AS '$libdir/postgis-3','geom_from_marc21'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
