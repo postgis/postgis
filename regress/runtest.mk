@@ -11,15 +11,14 @@ check-regress:
 
 	@$(PERL) $(topsrcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
 
-	#
-	# Will now run upgrade test if RUNTESTFLAGS was not already doing that
-	#
-
 	@if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
+		echo "Running upgrade test as RUNTESTFLAGS did not contain that"; \
 		$(PERL) $(topsrcdir)/regress/run_test.pl \
       --upgrade \
       $(RUNTESTFLAGS) \
       $(TESTS); \
+	else \
+		echo "Skipping upgrade test as RUNTESTFLAGS already requested upgrades"; \
 	fi
 
 check-long:
