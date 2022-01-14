@@ -12,9 +12,10 @@
 
 override RUNTESTFLAGS := $(RUNTESTFLAGS) --topology
 
-RUNTESTFLAGS_INTERNAL += \
+override RUNTESTFLAGS_INTERNAL := \
   --before-upgrade-script $(topsrcdir)/topology/test/regress/hooks/hook-before-upgrade-topology.sql \
-  --after-upgrade-script  $(topsrcdir)/topology/test/regress/hooks/hook-after-upgrade-topology.sql
+  $(RUNTESTFLAGS_INTERNAL) \
+  --after-upgrade-script $(topsrcdir)/topology/test/regress/hooks/hook-after-upgrade-topology.sql
 
 TESTS += \
   $(topsrcdir)/topology/test/regress/addedge.sql \
