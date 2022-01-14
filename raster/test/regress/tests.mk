@@ -12,9 +12,10 @@
 
 override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
 
-RUNTESTFLAGS_INTERNAL += \
+override RUNTESTFLAGS_INTERNAL := \
   --before-upgrade-script $(topsrcdir)/raster/test/regress/hooks/hook-before-upgrade-raster.sql \
-  --after-upgrade-script  $(topsrcdir)/raster/test/regress/hooks/hook-after-upgrade-raster.sql
+  $(RUNTESTFLAGS_INTERNAL) \
+  --after-upgrade-script $(topsrcdir)/raster/test/regress/hooks/hook-after-upgrade-raster.sql
 
 RASTER_TEST_FIRST = \
 	$(topsrcdir)/raster/test/regress/check_gdal \
