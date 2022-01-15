@@ -23,45 +23,45 @@
  *
  **********************************************************************/
 
-#include "lwgeom_log.h"
 #include "liblwgeom_internal.h"
 #include "stringbuffer.h"
+#include "lwgeom_log.h"
 
 static char* format_marc21_literal(double coordinate,int precision);
 static int gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb);
+static int is_geometry_supported(const LWGEOM *geom);
 
 lwvarlena_t *
 lwgeom_to_marc21(const LWGEOM *geom, int precision)
 {
 
-	//lwdebug(1,"lwgeom_to_marc21 started: geom %d with %d ",geom->type,precision);
+	LWDEBUGF(2,"lwgeom_to_marc21 called: %s with precision %d ",lwtype_name(lwgeom_get_type(geom)),precision);
 
-	//POSTGIS_DEBUGF(2,"lwgeom_to_marc21 called: %s with %d ",lwtype_name(lwgeom_get_type(geom)),precision);
-	//LWDEBUGF(2," xxxxxxxxxxxxxxxxx lwgeom_to_marc21 called: %s with %d ",lwtype_name(lwgeom_get_type(geom)),precision);
-
-	if( lwgeom_is_empty(geom) )	return NULL;
+	if(lwgeom_is_empty(geom) )	return NULL;
 
 	char* ns = "http://www.loc.gov/MARC21/slim";
 	stringbuffer_t *sb;
 	GBOX box;
 
+	LWDEBUG(3,"creating stringbuffer");
 	sb = stringbuffer_create();
-	//lwdebug(1,"lwgeom_to_marc21 -> stringbuffer created");
 
-	/**
-	 * Opens the MARX21/XML record
-	 */
+	LWDEBUGF(3,"opening MARC21/XML record: %s",lwtype_name(lwgeom_get_type(geom)));
 
 	if (stringbuffer_aprintf(sb, "<record xmlns=\"%s\">",ns) < 0 ) return NULL;
 
 	if(lwgeom_is_collection(geom)){
 
-		//lwdebug(1,"lwgeom_to_marc21 -> geom is collection (%d)",geom->type);
+		LWDEBUGF(3,"  collection detected: %s",lwtype_name(lwgeom_get_type(geom)));
 
 		int i;
 		LWCOLLECTION * coll = (LWCOLLECTION *)geom;
 
+		if(!is_geometry_supported(geom)) lwerror("collection type not supported: %s",lwtype_name(lwgeom_get_type(geom)));
+
 		for (i=0; i<coll->ngeoms; i++) {
+
+			if(!is_geometry_supported(coll->geoms[i])) lwerror("collection contains an unsupported geometry: %s",lwtype_name(lwgeom_get_type(coll->geoms[i])));
 
 			if (lwgeom_calculate_gbox(coll->geoms[i], &box) == LW_FAILURE) {
 
@@ -71,8 +71,10 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 			}
 
 			if(gbox_to_marc21_sb(box, precision, sb)==LW_FAILURE) {
+
 				stringbuffer_destroy(sb);
-				//lwerror("failed to create MARC21/XML for a geometry in the collection: %s",lwgeom_get_type(coll->geoms[i]));
+				lwerror("failed to create MARC21/XML for a geometry in the collection: %s",lwtype_name(lwgeom_get_type(coll->geoms[i])));
+
 			}
 
 		}
@@ -80,8 +82,9 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 	} else {
 
-		//lwdebug(1,"lwgeom_to_marc21 -> geom is a single feature (%d)",geom->type);
+		if(!is_geometry_supported(geom)) lwerror("geometry type not supported: %s",lwtype_name(lwgeom_get_type(geom)));
 
+		LWDEBUGF(3,"  calculating gbox: %s",lwtype_name(lwgeom_get_type(geom)));
 		if (lwgeom_calculate_gbox(geom, &box) == LW_FAILURE) {
 
 			stringbuffer_destroy(sb);
@@ -90,8 +93,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 		}
 
-		//lwdebug(1,"lwgeom_to_marc21 -> bbox calculated ");
-
+		LWDEBUGF(3,"  creating MARC21/XML datafield: %s",lwtype_name(lwgeom_get_type(geom)));
 		if(gbox_to_marc21_sb(box, precision, sb)==LW_FAILURE){
 
 			stringbuffer_destroy(sb);
@@ -102,9 +104,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 	}
 
-	/**
-	 * Closes the MARX21/XML record
-	 */
+	LWDEBUG(3,"  closing MARC21/XML record");
 	if ( stringbuffer_aprintf(sb, "</record>") < 0 ) return LW_FAILURE;
 
 	lwvarlena_t *v = stringbuffer_getvarlenacopy(sb);
@@ -113,10 +113,32 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 	return v;
 }
 
+static int
+is_geometry_supported(const LWGEOM *geom){
+
+	if(lwgeom_get_type(geom)!=MULTIPOINTTYPE &&
+	   lwgeom_get_type(geom)!=MULTIPOLYGONTYPE &&
+	   lwgeom_get_type(geom)!=MULTILINETYPE &&
+	   lwgeom_get_type(geom)!=COLLECTIONTYPE &&
+
+	   lwgeom_get_type(geom)!=LINETYPE &&
+	   lwgeom_get_type(geom)!=POINTTYPE &&
+	   lwgeom_get_type(geom)!=POLYGONTYPE)	{
+
+		return LW_FALSE;
+
+	}
+
+	return LW_TRUE;
+
+}
+
 static char*
 format_marc21_literal(double coordinate,int precision)
 {
-	char *r;
+
+	LWDEBUGF(2,"format_marc21_literal called: %.*f",precision, coordinate);
+	LWDEBUGF(5,"format_marc21_literal char *res = malloc(%d);",sizeof(coordinate)*2);
 	char *res = malloc(sizeof(coordinate)*2);
 	double ds;
 	modf(coordinate, &ds);
@@ -133,21 +155,18 @@ format_marc21_literal(double coordinate,int precision)
 		if(ds<=-100) sprintf(res, "%.*f",precision,coordinate);
 	}
 
-	//lwdebug(1,"format_marc21_literal got coordinate (%.*f) and returned (%s)", precision, coordinate, res);
-
 	//TODO: free(res)
 
-	//strncpy(r,&res[0],strlen(res));
-	//free(res);
-
+	LWDEBUGF(2,"=> format_marc21_literal returns: %s",res);
 	return res;
-	//return r;
 
 }
 
 static int
 gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb)
 {
+
+	LWDEBUG(2,"gbox_to_marc21_sb called");
 
 	if ( stringbuffer_aprintf(sb, "<datafield tag=\"034\" ind1=\"1\" ind2=\" \">") < 0 ) return LW_FAILURE;
 	if ( stringbuffer_aprintf(sb, "<subfield code=\"d\">%s</subfield>", format_marc21_literal(box.xmin,precision)) < 0 ) return LW_FAILURE;
@@ -156,7 +175,7 @@ gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb)
 	if ( stringbuffer_aprintf(sb, "<subfield code=\"g\">%s</subfield>", format_marc21_literal(box.ymin,precision)) < 0 ) return LW_FAILURE;
 	if ( stringbuffer_aprintf(sb, "</datafield>") < 0 ) return LW_FAILURE;
 
-	//lwdebug(1,"gbox_to_marc21_sb: bbox values formatted");
+	LWDEBUG(2,"=> gbox_to_marc21_sb returns LW_SUCCESS");
 
 	return LW_SUCCESS;
 }
