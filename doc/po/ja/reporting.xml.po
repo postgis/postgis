@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-13 20:20+0000\n"
-"PO-Revision-Date: 2016-02-11 14:13+0000\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"PO-Revision-Date: 2022-01-14 03:14+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -30,7 +30,7 @@ msgstr "ソフトウェアのバグを報告する"
 
 #. Tag: para
 #: reporting.xml:8
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Reporting bugs effectively is a fundamental way to help PostGIS development. "
 "The most effective bug report is that enabling PostGIS developers to "
@@ -42,21 +42,22 @@ msgstr ""
 "効率的なバグの報告はPostGISの開発を助ける本質的な方法です。最も効率的なバグ報"
 "告は、PostGIS開発者がそれを再現できるようにすることで、それの引き金となったス"
 "クリプトと検出された環境に沿った全ての情報を含んでいるのが理想です。"
-"<code>SELECT postgis_full_version()</code>[PostGIS]と<code>SELECT version()</"
-"code>[PostgreSQL]とを実行することで十分に良い情報を得ることができます。"
+"<code>SELECT postgis_full_version()</code> [PostGIS]と<code>SELECT "
+"version()</code> [PostgreSQL]とを実行することで十分に良い情報を得ることができ"
+"ます。"
 
 #. Tag: para
 #: reporting.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you aren't using the latest release, it's worth taking a look at its "
 "<ulink url=\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/"
 "NEWS\">release changelog</ulink> first, to find out if your bug has already "
 "been fixed."
 msgstr ""
-"最新版を使っていない場合には<ulink url=\"http://svn.osgeo.org/postgis/trunk/"
-"NEWS\">release changelog</ulink>をまず見て、既にバグフィクスされていないかを"
-"探すのは価値のあることです。"
+"最新版を使っていない場合には<ulink url=\"https://git.osgeo.org/gitea/postgis/"
+"postgis/raw/branch/master/NEWS\">release changelog</ulink>をまず見て、既にバ"
+"グフィクスされていないかを探すのは価値のあることです。"
 
 #. Tag: para
 #: reporting.xml:21
@@ -128,33 +129,31 @@ msgstr ""
 #: reporting.xml:47
 #, fuzzy, no-c-format
 msgid ""
-"If your changes are more extensive, a patch is definitely preferred. This is "
-"a four step process on Unix (assuming you already have <ulink url=\"https://"
-"git-scm.com/\">git</ulink> installed):"
+"If your changes are more extensive, a Subversion patch is definitely "
+"preferred. This is a four step process on Unix (assuming you already have "
+"<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> installed):"
 msgstr ""
-"変更が大きい場合は、Subversion パッチが確実に好まれます。Unix上で次の4ステッ"
-"プの処理を行います (既に<ulink url=\"http://subversion.apache.org/"
-"\">Subversion</ulink>をインストールしていると仮定します)。"
+"変更が大きい場合は、パッチが確実に好まれます。Unix上で次の4ステップの処理を行"
+"います (既に<ulink url=\"https://git-scm.com/\">git</ulink>をインストールして"
+"いると仮定します)。"
 
 #. Tag: para
 #: reporting.xml:54
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Clone the PostGIS' git repository. On Unix, type:"
-msgstr ""
-"PostGISのSubversionトランクをチェックアウトします。Unixでは次のように入力しま"
-"す。"
+msgstr "PostGISのgitリポジトリを複製します。UNIXでは次のように入力します。"
 
 #. Tag: command
 #: reporting.xml:57
 #, no-c-format
 msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
-msgstr ""
+msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
 
 #. Tag: para
 #: reporting.xml:60
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "This will be stored in the directory postgis"
-msgstr "これで./trunkディレクトリに格納されます。"
+msgstr "これでpostgisディレクトリに格納されます"
 
 #. Tag: para
 #: reporting.xml:64
@@ -168,9 +167,9 @@ msgstr ""
 
 #. Tag: command
 #: reporting.xml:67
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "vim doc/postgis.xml"
-msgstr "vim trunk/doc/postgis.xml"
+msgstr "vim doc/postgis.xml"
 
 #. Tag: para
 #: reporting.xml:69
@@ -195,15 +194,12 @@ msgstr ""
 
 #. Tag: command
 #: reporting.xml:78
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "git diff doc/postgis.xml &gt; doc.patch"
-msgstr "svn diff trunk/doc/postgis.xml &gt; doc.patch"
+msgstr "git diff doc/postgis.xml &gt; doc.patch"
 
 #. Tag: para
 #: reporting.xml:83
 #, no-c-format
 msgid "Attach the patch to a new issue in bug tracker."
 msgstr "バグトラッカ内の新しい問題にパッチが取り付けられます。"
-
-#~ msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
-#~ msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/"

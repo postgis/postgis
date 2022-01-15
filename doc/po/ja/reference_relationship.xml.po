@@ -3,7 +3,8 @@
 #
 # Translators:
 # Kayama Yoichi <yoichi.kayama@gmail.com>, 2019
-# TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2020
+# TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2021
+# Sandro Santilli <strk@kbt.io>, 2022
 #
 #, fuzzy
 msgid ""
@@ -12,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
 "PO-Revision-Date: 2019-08-03 21:26+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2020\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>, 2022\n"
 "Language-Team: Japanese (https://www.transifex.com/postgis/teams/3227/ja/)\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -100,7 +101,7 @@ msgstr ""
 #: reference_relationship.xml:1565 reference_relationship.xml:1621
 #, no-c-format
 msgid "&index_aware;"
-msgstr ""
+msgstr "&index_aware;"
 
 #. Tag: para
 #: reference_relationship.xml:44
@@ -157,7 +158,7 @@ msgstr "ジオメトリの例"
 
 #. Tag: programlisting
 #: reference_relationship.xml:56
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_3DIntersects(pt, line), ST_Intersects(pt, line)\n"
 "  FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::"
@@ -168,8 +169,8 @@ msgid ""
 "(1 row)"
 msgstr ""
 "SELECT ST_3DIntersects(pt, line), ST_Intersects(pt, line)\n"
-"        FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 "
-"3)'::geometry As line) As foo;\n"
+"  FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::"
+"geometry As line) As foo;\n"
 " st_3dintersects | st_intersects\n"
 "-----------------+---------------\n"
 " f               | t\n"
@@ -220,13 +221,13 @@ msgstr "ST_Contains"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:72
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns true if no points of B lie in the exterior of A, and A and B have at "
 "least one interior point in common."
 msgstr ""
-"Bの点がAの外部に無く、かつBの内部の少なくとも一つの点がAの内部にある場合に"
-"限って、TRUEを返します。"
+"Aの外部にBのポイントが無く、かつAとBが内部に少なくとも一つのポイントを共有す"
+"る場合にはTRUEを返します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:77
@@ -242,14 +243,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:92
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns TRUE if geometry B is completely inside geometry A. A contains B if "
 "and only if no points of B lie in the exterior of A, and at least one point "
 "of the interior of B lies in the interior of A."
 msgstr ""
-"Bの点がAの外部に無く、かつBの内部の少なくとも一つの点がAの内部にある場合に"
-"限って、TRUEを返します。"
+"ジオメトリBが完全にジオメトリAの内部にある場合にはTRUEを返します。ジオメトリA"
+"がジオメトリBを含むのは、BのポイントがAの外部に無く、かつBの内部の少なくとも"
+"一つのポイントがAの内部にある場合に限ります。"
 
 #. Tag: para
 #: reference_relationship.xml:95
@@ -265,6 +267,14 @@ msgid ""
 "<xref linkend=\"ST_ContainsProperly\"/> predicate a geometry does "
 "<emphasis>not</emphasis> properly contain itself.)"
 msgstr ""
+"この定義は、ジオメトリに境界が含まれていない点で微妙です。これは、ポリゴンと"
+"ラインに境界であるラインとポイントを<emphasis>含まない</emphasis>ことを意味し"
+"ます。詳細については、<ulink url=\"http://lin-ear-th-inking.blogspot."
+"com/2007/06/subtleties-of-ogc-covers-spatial.html\">Subtleties of OGC "
+"Covers, Contains, Within</ulink>をご覧下さい (<xref linkend=\"ST_Covers\"/>"
+"は、より包括的な関係を提供します)。しかし、ジオメトリ自体は含まれます (対して"
+"<xref linkend=\"ST_ContainsProperly\"/>ではジオメトリは自身を<emphasis>正しく"
+"含むことにはなりません</emphasis>)。"
 
 #. Tag: para
 #: reference_relationship.xml:103
@@ -273,6 +283,8 @@ msgid ""
 "ST_Contains is the inverse of <xref linkend=\"ST_Within\"/>. So, "
 "<code>ST_Contains(A,B) = ST_Within(B,A)</code>."
 msgstr ""
+"ST_Containsは<xref linkend=\"ST_Within\"/>の逆です。つまり"
+"<code>ST_Contains(A,B) = ST_Within(B,A)</code>となります。"
 
 #. Tag: para
 #: reference_relationship.xml:106
@@ -281,6 +293,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Contains</"
 "function>."
 msgstr ""
+"&index_aware; インデックスの使用を避けるには<function>_ST_Contains</function>"
+"関数を使います。"
 
 #. Tag: para
 #: reference_relationship.xml:109 reference_relationship.xml:338
@@ -422,7 +436,7 @@ msgstr "<varname>POLYGON</varname> / <varname>MULTIPOINT</varname>"
 
 #. Tag: programlisting
 #: reference_relationship.xml:213
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- A circle within a circle\n"
 "SELECT ST_Contains(smallc, bigc) As smallcontainsbig,\n"
@@ -459,16 +473,15 @@ msgid ""
 "ST_LineString | t          | f              | f           | f\n"
 "ST_Point      | t          | t              | f           | f"
 msgstr ""
-"-- 円の中にある円\n"
+"-- 円内の円\n"
 "SELECT ST_Contains(smallc, bigc) As smallcontainsbig,\n"
-"           ST_Contains(bigc,smallc) As bigcontainssmall,\n"
-"           ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,\n"
-"           ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,\n"
-"           ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,\n"
-"           ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior\n"
+"     ST_Contains(bigc,smallc) As bigcontainssmall,\n"
+"     ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,\n"
+"     ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,\n"
+"     ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,\n"
+"     ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior\n"
 "FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,\n"
-"                         ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As "
-"bigc) As foo;\n"
+"       ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;\n"
 "\n"
 "-- 結果\n"
 "  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | "
@@ -484,9 +497,9 @@ msgstr ""
 "   ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, "
 "ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba\n"
 "FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),\n"
-"                         ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),\n"
-"                         ( ST_Point(1,1) )\n"
-"          ) As foo(geomA);\n"
+"       ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),\n"
+"       ( ST_Point(1,1) )\n"
+"    ) As foo(geomA);\n"
 "\n"
 "  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba\n"
 "--------------+------------+----------------+-------------"
@@ -515,13 +528,13 @@ msgstr "ST_ContainsProperly"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:226
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<refpurpose>Returns true if B intersects the interior of A but not the "
 "boundary or exterior.</refpurpose>"
 msgstr ""
-"<para>BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合"
-"には</para>TRUEを返します。"
+"<refpurpose>BがAの内部とインタセクトするがAの境界と外部とインタセクトしない場"
+"合にはTRUEを返します。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:231
@@ -537,19 +550,19 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:246
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<para>Returns true if B intersects the interior of A but not the boundary or "
 "exterior.</para>"
 msgstr ""
-"<para>BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合"
-"には</para>TRUEを返します。"
+"<para>BがAの内部とインタセクトするがAの境界と外部とインタセクトしない場合には"
+"TRUEを返します。</para>"
 
 #. Tag: para
 #: reference_relationship.xml:248
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A does not properly contain itself, but does contain itself."
-msgstr "Aは自身には、ContainsProperlyではありませんが、Containsです。"
+msgstr "Aは自身を正しく含むことはありませんが、自身を含みます。"
 
 #. Tag: para
 #: reference_relationship.xml:249
@@ -585,18 +598,20 @@ msgid ""
 "&index_aware; To avoid index use, use the function "
 "<function>_ST_ContainsProperly</function>."
 msgstr ""
+"&index_aware; インデックスの使用を避けるには<function>_ST_ContainsProperly</"
+"function>関数を使います。"
 
 #. Tag: para
 #: reference_relationship.xml:261
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The advantage of this predicate over <xref linkend=\"ST_Contains\"/> and "
 "<xref linkend=\"ST_Intersects\"/> is that it can be computed more "
 "efficiently, with no need to compute topology at individual points."
 msgstr ""
-"JTS文書からわずかに言い換えると、<xref linkend=\"ST_Contains\"/>と<xref "
-"linkend=\"ST_Intersects\"/>でこの述語を併用する利点は、個々のポイントでのトポ"
-"ロジの計算が必要なく、効率的に計算されることです。"
+"この関数は、個々のポイントでトポロジを計算する必要が無く、より効率的に計算で"
+"きる点で、<xref linkend=\"ST_Contains\"/>と<xref linkend=\"ST_Intersects\"/>"
+"より優れています。"
 
 #. Tag: para
 #: reference_relationship.xml:264
@@ -612,7 +627,7 @@ msgstr "Availability: 1.4.0"
 
 #. Tag: programlisting
 #: reference_relationship.xml:279
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--a circle within a circle\n"
 "  SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,\n"
@@ -649,19 +664,17 @@ msgid ""
 "ST_LineString | t          | f              | f           | f\n"
 "ST_Point      | t          | t              | f           | f"
 msgstr ""
-"-- 円の中にある円\n"
-"        SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,\n"
-"        ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,\n"
-"        ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as "
+"-- 円内の円\n"
+"  SELECT ST_ContainsProperly(smallc, bigc) As smallcontainspropbig,\n"
+"  ST_ContainsProperly(bigc,smallc) As bigcontainspropsmall,\n"
+"  ST_ContainsProperly(bigc, ST_Union(smallc, bigc)) as "
 "bigcontainspropunion,\n"
-"        ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,\n"
-"        ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,\n"
-"        ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As "
-"bigcontainsexterior\n"
-"        FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As "
-"smallc,\n"
-"        ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;\n"
-"        -- 結果\n"
+"  ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,\n"
+"  ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,\n"
+"  ST_ContainsProperly(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior\n"
+"  FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,\n"
+"  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;\n"
+"  -- 結果\n"
 "  smallcontainspropbig | bigcontainspropsmall | bigcontainspropunion | "
 "bigisunion | bigcoversexterior | bigcontainsexterior\n"
 "------------------+------------------+------------------+------------"
@@ -669,15 +682,15 @@ msgstr ""
 " f                     | t                    | f                    | "
 "t          | t                 | f\n"
 "\n"
-"-- ST_ContainsとST_ContainsProperlyとの違いを示す例\n"
+" -- ST_ContainsとST_ContainsProperlyとの違いを示す例\n"
 " SELECT ST_GeometryType(geomA) As geomtype, ST_Contains(geomA,geomA) AS "
 "acontainsa, ST_ContainsProperly(geomA, geomA) AS acontainspropa,\n"
 " ST_Contains(geomA, ST_Boundary(geomA)) As acontainsba, "
 "ST_ContainsProperly(geomA, ST_Boundary(geomA)) As acontainspropba\n"
 " FROM (VALUES ( ST_Buffer(ST_Point(1,1), 5,1) ),\n"
-"                  ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),\n"
-"                  ( ST_Point(1,1) )\n"
-"        ) As foo(geomA);\n"
+"      ( ST_MakeLine(ST_Point(1,1), ST_Point(-1,-1) ) ),\n"
+"      ( ST_Point(1,1) )\n"
+"  ) As foo(geomA);\n"
 "\n"
 "  geomtype    | acontainsa | acontainspropa | acontainsba | acontainspropba\n"
 "--------------+------------+----------------+-------------"
@@ -706,9 +719,9 @@ msgstr "ST_CoveredBy"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:292
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns true if no point in A is outside B"
-msgstr "BのポイントがAの外側に存在しない場合にはTRUEを返します。"
+msgstr "AのポイントがBの外部に存在しない場合にはTRUEを返します。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:296
@@ -738,6 +751,10 @@ msgid ""
 "outside Geometry/Geography B. Equivalently, tests if every point of geometry "
 "A is inside (i.e. intersects the interior or boundary of) geometry B."
 msgstr ""
+"ジオメトリ/ジオグラフィAのポイントがジオメトリ/ジオグラフィBの外側に存在しな"
+"い場合には<varname>TRUE</varname>を返します。ジオメトリAの全てのポイントがジ"
+"オメトリBの内側にある (内部または境界とインタセクトする)かを見るのと同じで"
+"す。"
 
 #. Tag: para
 #: reference_relationship.xml:328
@@ -746,6 +763,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_CoveredBy</"
 "function>."
 msgstr ""
+"&index_aware; インデックスの使用を避けるには<function>_ST_CoveredBy</"
+"function>関数を使います。"
 
 #. Tag: para
 #: reference_relationship.xml:339 reference_relationship.xml:412
@@ -761,7 +780,7 @@ msgstr "これはOGC標準と違いますがOracleは持っています。"
 
 #. Tag: programlisting
 #: reference_relationship.xml:349
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--a circle coveredby a circle\n"
 "SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,\n"
@@ -777,14 +796,14 @@ msgid ""
 " t            | t                 | t                    | f\n"
 "(1 row)"
 msgstr ""
-"-- 円にカバーされる円\n"
+"-- 円に覆われる円\n"
 "SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,\n"
-"        ST_CoveredBy(smallc, bigc) As smallcoveredbybig,\n"
-"        ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,\n"
-"        ST_Within(ST_ExteriorRing(bigc),bigc) As exeriorwithinbig\n"
+"  ST_CoveredBy(smallc, bigc) As smallcoveredbybig,\n"
+"  ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,\n"
+"  ST_Within(ST_ExteriorRing(bigc),bigc) As exeriorwithinbig\n"
 "FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,\n"
-"        ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;\n"
-"        -- 結果\n"
+"  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;\n"
+"  -- 結果\n"
 " smallinsmall | smallcoveredbybig | exteriorcoveredbybig | exeriorwithinbig\n"
 "--------------+-------------------+----------------------"
 "+------------------\n"
@@ -841,6 +860,10 @@ msgid ""
 "outside Geometry/Geography A. Equivalently, tests if every point of geometry "
 "B is inside (i.e. intersects the interior or boundary of) geometry A."
 msgstr ""
+"ジオメトリ/ジオグラフィBのポイントがジオメトリ/ジオグラフィAの外側に存在しな"
+"い場合には<varname>TRUE</varname>を返します。ジオメトリBの全てのポイントがジ"
+"オメトリAの内側にある (内部または境界とインタセクトする)かを見るのと同じで"
+"す。"
 
 #. Tag: para
 #: reference_relationship.xml:397
@@ -849,6 +872,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Covers</"
 "function>."
 msgstr ""
+"&index_aware; インデックスの使用を避けるには<function>_ST_Covers</function>関"
+"数を使います。"
 
 #. Tag: para
 #: reference_relationship.xml:409
@@ -887,7 +912,7 @@ msgstr "ジオメトリの例"
 
 #. Tag: programlisting
 #: reference_relationship.xml:423
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--a circle covering a circle\n"
 "SELECT ST_Covers(smallc,smallc) As smallinsmall,\n"
@@ -902,14 +927,14 @@ msgid ""
 " t            | f              | t                 | f\n"
 "(1 row)"
 msgstr ""
-"-- 円をカバーする円\n"
+"-- 円を覆う円\n"
 "SELECT ST_Covers(smallc,smallc) As smallinsmall,\n"
-"        ST_Covers(smallc, bigc) As smallcoversbig,\n"
-"        ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,\n"
-"        ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior\n"
+"  ST_Covers(smallc, bigc) As smallcoversbig,\n"
+"  ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,\n"
+"  ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior\n"
 "FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,\n"
-"        ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;\n"
-"        -- 結果\n"
+"  ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;\n"
+"  -- 結果\n"
 " smallinsmall | smallcoversbig | bigcoversexterior | bigcontainsexterior\n"
 "--------------+----------------+-------------------+---------------------\n"
 " t            | f              | t                 | f\n"
@@ -923,7 +948,7 @@ msgstr "ジオグラフィの例"
 
 #. Tag: programlisting
 #: reference_relationship.xml:425
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- a point with a 300 meter buffer compared to a point, a point and its 10 "
 "meter buffer\n"
@@ -938,14 +963,14 @@ msgid ""
 "----------------+------------------\n"
 " f              | t"
 msgstr ""
-"-- ポイントと、別のポイントから300メートル範囲のバッファとの比較と\n"
-"-- ポイントと、そこから10メートル範囲のバッファとの比較\n"
+"-- 300mバッファを持つポイントとポイントとの比較と、10メートルバッファを持つポ"
+"イントとポイントとの比較\n"
 "SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,\n"
-"        ST_Covers(ST_Buffer(geog_pt,10), geog_pt) As buff_10m_covers_cent\n"
-"        FROM (SELECT ST_Buffer(ST_GeogFromText('SRID=4326;POINT(-99.327 "
+"  ST_Covers(ST_Buffer(geog_pt,10), geog_pt) As buff_10m_covers_cent\n"
+"  FROM (SELECT ST_Buffer(ST_GeogFromText('SRID=4326;POINT(-99.327 "
 "31.4821)'), 300) As geog_poly,\n"
-"                                ST_GeogFromText('SRID=4326;POINT(-99.33 "
-"31.483)') As geog_pt ) As foo;\n"
+"        ST_GeogFromText('SRID=4326;POINT(-99.33 31.483)') As geog_pt ) As "
+"foo;\n"
 "\n"
 " poly_covers_pt | buff_10m_covers_cent\n"
 "----------------+------------------\n"
@@ -987,7 +1012,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:457
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<function>ST_Crosses</function> takes two geometry objects and returns "
 "<varname>true</varname> if their intersection \"spatially cross\", that is, "
@@ -999,12 +1024,12 @@ msgid ""
 "<varname>false</varname>."
 msgstr ""
 "<function>ST_Crosses</function>は、二つのジオメトリをとり、インタセクションが"
-"「空間的にクロスする」、すなわちジオメトリが共通の内部の点を持ち、かつそうで"
-"ない点を持つ場合に<varname>TRUE</varname>を返します。ジオメトリの内部のインタ"
-"セクションは、空集合であってはならず、二つのジオメトリの最大次元より低い次元"
-"でなければなりません。さらに言うと、二つのジオメトリのインタセクションは、元"
-"のジオメトリのいずれとも一致してはなりません。これらを満たさない場合には"
-"<varname>FALSE</varname>を返します。"
+"「空間的にクロスする」、すなわちジオメトリが共通の内部のポイントを持ち、かつ"
+"全ての内部のポイントが共通のポイントにはならない場合に<varname>TRUE</varname>"
+"を返します。ジオメトリの内部のインタセクションは、空集合であってはならず、二"
+"つのジオメトリの最大次元より低い次元でなければなりません。さらに言うと、二つ"
+"のジオメトリのインタセクションは、元のジオメトリのいずれとも一致してはなりま"
+"せん。これらを満たさない場合には<varname>FALSE</varname>を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:466
@@ -1116,7 +1141,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_relationship.xml:576
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE TABLE roads (\n"
 "  id serial NOT NULL,\n"
@@ -1126,7 +1151,7 @@ msgid ""
 msgstr ""
 "CREATE TABLE roads (\n"
 "  id serial NOT NULL,\n"
-"  the_geom geometry,\n"
+"  geom geometry,\n"
 "  CONSTRAINT roads_pkey PRIMARY KEY (road_id)\n"
 ");"
 
@@ -1156,7 +1181,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_relationship.xml:591
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT roads.id\n"
 "FROM roads, highways\n"
@@ -1164,7 +1189,7 @@ msgid ""
 msgstr ""
 "SELECT roads.id\n"
 "FROM roads, highways\n"
-"WHERE ST_Crosses(roads.the_geom, highways.the_geom);"
+"WHERE ST_Crosses(roads.geom, highways.geom);"
 
 #. Tag: refname
 #: reference_relationship.xml:598
@@ -1268,7 +1293,7 @@ msgstr "ライン1 (緑)とライン2 (青)、円が始点、三角が終点。�
 
 #. Tag: programlisting
 #: reference_relationship.xml:668
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
 "    ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
@@ -1283,12 +1308,12 @@ msgid ""
 "           3 |          -3"
 msgstr ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
-"          ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
+"    ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
 "FROM (\n"
 "SELECT\n"
 " ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,\n"
 " ST_GeomFromText('LINESTRING(171 154,20 140,71 74,161 53)') As line2\n"
-"        ) As foo;\n"
+"  ) As foo;\n"
 "\n"
 " l1_cross_l2 | l2_cross_l1\n"
 "-------------+-------------\n"
@@ -1305,7 +1330,7 @@ msgstr "ライン1 (緑)とライン2 (青)、円が始点、三角が終点。�
 
 #. Tag: programlisting
 #: reference_relationship.xml:682
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
 "    ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
@@ -1321,7 +1346,7 @@ msgid ""
 "           2 |          -2"
 msgstr ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
-"          ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
+"    ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
 "FROM (\n"
 " SELECT\n"
 "  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,\n"
@@ -1335,7 +1360,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_relationship.xml:696
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "  ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
@@ -1351,8 +1376,8 @@ msgid ""
 "          -1 |          1"
 msgstr ""
 "SELECT\n"
-"        ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
-"        ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
+"  ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
+"  ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
 "FROM (\n"
 " SELECT\n"
 "  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,\n"
@@ -1365,7 +1390,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_relationship.xml:710
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
 "    ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
@@ -1379,12 +1404,11 @@ msgid ""
 "          -2 |          2"
 msgstr ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
-"          ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
+"    ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1\n"
 "FROM (SELECT\n"
-"        ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,\n"
-"        ST_GeomFromText('LINESTRING(2.99 90.16,71 74,20 140,171 154)') As "
-"line2\n"
-"        ) As foo;\n"
+"  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,\n"
+"  ST_GeomFromText('LINESTRING(2.99 90.16,71 74,20 140,171 154)') As line2\n"
+"  ) As foo;\n"
 "\n"
 " l1_cross_l2 | l2_cross_l1\n"
 "-------------+-------------\n"
@@ -1392,17 +1416,17 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_relationship.xml:718
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)\n"
 "  FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.geom "
 "&amp;&amp; s2.geom )\n"
 "WHERE ST_CrossingDirection(s1.geom, s2.geom) > 0;"
 msgstr ""
-"SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.the_geom, s2.the_geom)\n"
-"        FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1."
-"the_geom &amp;&amp; s2.the_geom )\n"
-"WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;"
+"SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)\n"
+"  FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.geom "
+"&amp;&amp; s2.geom )\n"
+"WHERE ST_CrossingDirection(s1.geom, s2.geom) > 0;"
 
 #. Tag: refname
 #: reference_relationship.xml:731
@@ -1412,13 +1436,13 @@ msgstr "ST_Disjoint"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:733
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns true if two geometries do not intersect (they have no point in "
 "common)."
 msgstr ""
-"二つのジオメトリが空間的にインタセクトしていない (共有ポイントを持たない)場合"
-"にはTRUEを返します。"
+"二つのジオメトリがインタセクトしていなし (共有しているポイントが存在しない)場"
+"合にはTRUEを返します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:739
@@ -1500,10 +1524,10 @@ msgstr "ST_Equals"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:791
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns true if two geometries include the same set of points."
 msgstr ""
-"二つのジオメトリが同じポイント集合を空間に持っている場合にはTRUEを返します。"
+"二つのジオメトリが同じポイントの集合でできている場合にはTRUEを返します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:796
@@ -1560,7 +1584,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_relationship.xml:827
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Equals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
 "    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));\n"
@@ -1577,14 +1601,14 @@ msgid ""
 "(1 row)"
 msgstr ""
 "SELECT ST_Equals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
-"                ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));\n"
+"    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));\n"
 " st_equals\n"
 "-----------\n"
 " t\n"
 "(1 row)\n"
 "\n"
 "SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),\n"
-"                ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));\n"
+"    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));\n"
 " st_equals\n"
 "-----------\n"
 " t\n"
@@ -1608,13 +1632,13 @@ msgstr "ST_Intersects"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:843
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns true if two geometries intersect (they have at least one point in "
 "common)."
 msgstr ""
-"二つのジオメトリが空間的にインタセクトしていない (共有ポイントを持たない)場合"
-"にはTRUEを返します。"
+"二つのジオメトリがインタセクトしている (少なくとも一つのポイントを共有してい"
+"る)場合にはTRUEを返します。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:848
@@ -1662,10 +1686,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:884
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Changed: 3.0.0 SFCGAL version removed and native support for 2D TINS added."
-msgstr "Changed: 3.0.0 2次元TINのSFCGAL版の削除とネイティブ対応の追加。"
+msgstr ""
+"Changed: 3.0.0 SFCGAL版を削除し、2次元TINのネイティブ対応を追加しました。"
 
 #. Tag: para
 #: reference_relationship.xml:885
@@ -1777,7 +1802,7 @@ msgstr "ジオグラフィの例"
 
 #. Tag: programlisting
 #: reference_relationship.xml:911
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Intersects(\n"
 "    'SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'::geography,\n"
@@ -1789,10 +1814,9 @@ msgid ""
 "t"
 msgstr ""
 "SELECT ST_Intersects(\n"
-"                'SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'::"
-"geography,\n"
-"                'SRID=4326;POINT(-43.23456 72.4567772)'::geography\n"
-"                );\n"
+"    'SRID=4326;LINESTRING(-43.23456 72.4567,-43.23456 72.4568)'::geography,\n"
+"    'SRID=4326;POINT(-43.23456 72.4567772)'::geography\n"
+"    );\n"
 "\n"
 " st_intersects\n"
 "---------------\n"
@@ -1864,7 +1888,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.43"
 
 #. Tag: programlisting
 #: reference_relationship.xml:955
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_OrderingEquals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
 "    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));\n"
@@ -1889,14 +1913,14 @@ msgid ""
 "(1 row)"
 msgstr ""
 "SELECT ST_OrderingEquals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
-"                ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));\n"
+"    ST_GeomFromText('LINESTRING(0 0, 5 5, 10 10)'));\n"
 " st_orderingequals\n"
 "-----------\n"
 " f\n"
 "(1 row)\n"
 "\n"
 "SELECT ST_OrderingEquals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
-"                ST_GeomFromText('LINESTRING(0 0, 0 0, 10 10)'));\n"
+"    ST_GeomFromText('LINESTRING(0 0, 0 0, 10 10)'));\n"
 " st_orderingequals\n"
 "-----------\n"
 " t\n"
@@ -1904,7 +1928,7 @@ msgstr ""
 "\n"
 "SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 "
 "10)')),\n"
-"                ST_GeomFromText('LINESTRING(0 0, 0 0, 10 10)'));\n"
+"    ST_GeomFromText('LINESTRING(0 0, 0 0, 10 10)'));\n"
 " st_orderingequals\n"
 "-----------\n"
 " f\n"
@@ -1961,6 +1985,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Overlaps</"
 "function>."
 msgstr ""
+"&index_aware; インデックスの使用を避けるには<function>_ST_Overlaps</function>"
+"関数を使います。"
 
 #. Tag: para
 #: reference_relationship.xml:998 reference_relationship.xml:1148
@@ -1983,7 +2009,7 @@ msgstr "<varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname>"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1039
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--a point on a line is contained by the line and is of a lower dimension, "
 "and therefore does not overlap the line\n"
@@ -2040,14 +2066,12 @@ msgid ""
 msgstr ""
 "-- 線上にある点は、線に含まれていますが\n"
 "-- 低い次元ですので、線とオーバラップもクロスもしません\n"
-"\n"
 "SELECT ST_Overlaps(a,b) As a_overlap_b,\n"
-"        ST_Crosses(a,b) As a_crosses_b,\n"
-"                ST_Intersects(a, b) As a_intersects_b, ST_Contains(b,a) As "
-"b_contains_a\n"
+"  ST_Crosses(a,b) As a_crosses_b,\n"
+"    ST_Intersects(a, b) As a_intersects_b, ST_Contains(b,a) As b_contains_a\n"
 "FROM (SELECT ST_GeomFromText('POINT(1 0.5)') As a, "
 "ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)')  As b)\n"
-"        As foo\n"
+"  As foo\n"
 "\n"
 "a_overlap_b | a_crosses_b | a_intersects_b | b_contains_a\n"
 "------------+-------------+----------------+--------------\n"
@@ -2057,11 +2081,11 @@ msgstr ""
 "ん\n"
 "-- 次元の違いからオーバラップしません\n"
 "SELECT ST_Overlaps(a,b) As a_overlap_b, ST_Crosses(a,b) As a_crosses_b,\n"
-"        ST_Intersects(a, b) As a_intersects_b,\n"
-"        ST_Contains(a,b) As a_contains_b\n"
+"  ST_Intersects(a, b) As a_intersects_b,\n"
+"  ST_Contains(a,b) As a_contains_b\n"
 "FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a, "
 "ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)')  As b)\n"
-"        As foo;\n"
+"  As foo;\n"
 "\n"
 " a_overlap_b | a_crosses_b | a_intersects_b | a_contains_b\n"
 "-------------+-------------+----------------+--------------\n"
@@ -2078,8 +2102,8 @@ msgstr ""
 "ST_Dimension(a) As dim_a, ST_Dimension(b) as dim_b, "
 "ST_Dimension(ST_Intersection(a,b)) As dima_intersection_b\n"
 "FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,\n"
-"        ST_Buffer(ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)'),0.5)  As b)\n"
-"        As foo;\n"
+"  ST_Buffer(ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)'),0.5)  As b)\n"
+"  As foo;\n"
 "\n"
 " a_overlap_b | a_crosses_b | a_intersects_b | b_contains_a | dim_a | dim_b | "
 "dima_intersection_b\n"
@@ -2106,7 +2130,7 @@ msgstr "ST_Relate"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1055
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Tests if two geometries have a topological relationship matching an "
 "Intersection Matrix pattern, or computes their Intersection Matrix"
@@ -2559,15 +2583,15 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1251
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Touches</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 msgstr ""
 "<funcdef>boolean <function>ST_Touches</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>A</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:1266
@@ -2579,20 +2603,27 @@ msgid ""
 "Point inputs the relationship is always <varname>FALSE</varname>, since "
 "points do not have a boundary."
 msgstr ""
+"AとBがインタセクトするがAの内部とBの内部がインタセクトしない場合には"
+"<varname>TRUE</varname>を返します。AとBが少なくとも一つの共有点があり、共有点"
+"が境界同士でインタセクトした箇所に存在することと同じです。ポイント/ポイント入"
+"力では、ポイントは境界を持たないため、常に<varname>FALSE</varname>を返しま"
+"す。"
 
 #. Tag: para
 #: reference_relationship.xml:1272
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "In mathematical terms, this relationship is expressed as:"
-msgstr "数学用語で言うと、この述語は次のように表現されます。"
+msgstr "数学的に述べると、この関係は次のようになります。"
 
 #. Tag: para
 #: reference_relationship.xml:1282
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This relationship holds if the DE-9IM Intersection Matrix for the two "
 "geometries matches one of:"
-msgstr "DE-9IMでは次のようになります。"
+msgstr ""
+"この関係は、二つのジオメトリのDE-9IM交差行列がどれか一つに合致すると、関係が"
+"保持されていることになります。"
 
 #. Tag: markup
 #: reference_relationship.xml:1286
@@ -2619,6 +2650,8 @@ msgid ""
 "&index_aware; To avoid using an index, use <function>_ST_Touches</function> "
 "instead."
 msgstr ""
+"&index_aware; インデックスの使用を避けるには<function>_ST_Touches</function>"
+"を代わりに使います。"
 
 #. Tag: para
 #: reference_relationship.xml:1307
@@ -2676,13 +2709,13 @@ msgstr "ST_Within"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:1391
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns true if no points of A lie in the exterior of B, and A and B have at "
 "least one interior point in common."
 msgstr ""
-"Bの点がAの外部に無く、かつBの内部の少なくとも一つの点がAの内部にある場合に"
-"限って、TRUEを返します。"
+"Aの外部にBのポイントが無く、かつAとBが内部に少なくとも一つのポイントを共有す"
+"る場合にはTRUEを返します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1396
@@ -2723,6 +2756,12 @@ msgid ""
 "Covers, Contains, Within</ulink>. (The <xref linkend=\"ST_CoveredBy\"/> "
 "predicate provides a more inclusive relationship)."
 msgstr ""
+"この定義の微妙な点は、ジオメトリの境界はジオメトリの内部に存在しないことで"
+"す。これは、ポリゴンやラインの境界にあるラインやポイントはジオメトリの内部に"
+"<emphasis>ありません</emphasis>。詳細情報については<ulink url=\"http://lin-"
+"ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html"
+"\">Subtleties of OGC Covers, Contains, Within</ulink>をご覧下さい (<xref "
+"linkend=\"ST_CoveredBy\"/>は、より包括的な関係を提供します)。"
 
 #. Tag: para
 #: reference_relationship.xml:1422
@@ -2731,6 +2770,8 @@ msgid ""
 "ST_Within is the inverse of <xref linkend=\"ST_Contains\"/>. So, "
 "<code>ST_Within(A,B) = ST_Contains(B,A)</code>."
 msgstr ""
+"ST_Withinは<xref linkend=\"ST_Contains\"/>の逆です。つまり<code>ST_Within(A,"
+"B) = ST_Contains(B,A)</code>となります。"
 
 #. Tag: para
 #: reference_relationship.xml:1425
@@ -2739,6 +2780,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Within</"
 "function>."
 msgstr ""
+"&index_aware; インデックスの使用を避けるには<function>_ST_Within</function>関"
+"数を使います。"
 
 #. Tag: para
 #: reference_relationship.xml:1443
@@ -2754,7 +2797,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.30"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1451
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--a circle within a circle\n"
 "SELECT ST_Within(smallc,smallc) As smallinsmall,\n"
@@ -2775,17 +2818,17 @@ msgid ""
 " t            | t          | f          | t          | t          | t\n"
 "(1 row)"
 msgstr ""
-"-- 円の中にある円\n"
+"-- 円内の円\n"
 "SELECT ST_Within(smallc,smallc) As smallinsmall,\n"
-"        ST_Within(smallc, bigc) As smallinbig,\n"
-"        ST_Within(bigc,smallc) As biginsmall,\n"
-"        ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,\n"
-"        ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,\n"
-"        ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion\n"
+"  ST_Within(smallc, bigc) As smallinbig,\n"
+"  ST_Within(bigc,smallc) As biginsmall,\n"
+"  ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,\n"
+"  ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,\n"
+"  ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion\n"
 "FROM\n"
 "(\n"
 "SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,\n"
-"        ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;\n"
+"  ST_Buffer(ST_GeomFromText('POINT(50 50)'), 40) As bigc) As foo;\n"
 "-- 結果\n"
 " smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | "
 "bigisunion\n"
@@ -2796,13 +2839,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:1462
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
 "linkend=\"ST_IsValid\"/>"
 msgstr ""
-", <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
-"linkend=\"ST_Within\"/>"
+", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Equals\"/>, <xref "
+"linkend=\"ST_IsValid\"/>"
 
 #. Tag: title
 #: reference_relationship.xml:1470
@@ -2841,7 +2884,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:1498
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns true if the 3D distance between two geometry values is no larger "
 "than distance <varname>distance_of_srid</varname>. The distance is specified "
@@ -2849,10 +2892,10 @@ msgid ""
 "function to make sense the source geometries must be in the same coordinate "
 "system (have the same SRID)."
 msgstr ""
-"3次元ジオメトリが他のジオメトリとの距離が、完全に指定した範囲内ならtrueを返し"
-"ます。距離の単位はジオメトリの空間参照系で定義されているものとされます。この"
-"関数が意味を持つためには、与えられるジオメトリは両方とも同じ座標系で同じSRID"
-"を持つ必要があります。"
+"二つのジオメトリ値の3次元距離が<varname>distance_of_srid</varname>以下なら"
+"<varname>TRUE</varname>を返します。距離の単位はジオメトリの空間参照系の単位で"
+"す。この関数から意味のある結果を得るには、引数に使うジオメトリを同じ空間系 "
+"(同じSRIDを持つ)にしなければなりません。"
 
 #. Tag: para
 #: reference_relationship.xml:1510
@@ -2862,7 +2905,7 @@ msgstr "&sqlmm_compliant; SQL-MM ?"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1518
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Geometry example - units in meters (SRID: 2163 US National Atlas Equal "
 "area) (3D point and line compared 2D point and line)\n"
@@ -2887,24 +2930,25 @@ msgid ""
 "----------------+----------------\n"
 " f              | t"
 msgstr ""
-"-- ジオメトリの例 - メートル単位(SRID: 2163 米国ナショナルアトラス正積図法)\n"
-"-- (3次元ポイントとラインの距離と、2次元ポイントとラインの距離とを比較)\n"
-"-- ご注意: 現在は垂直データムに対応していないので、\n"
-"-- Zは変換されずに、最終的に同じであると仮定されます。\n"
+"-- ジオメトリの例 - 単位はメートル (SRID: 2163 米国ナショナルアトラス正積図"
+"法)\n"
+"-- (2次元のポイントとラインとに比較される3次元のポイントとライン)\n"
+"-- ご注意: 現在垂直データムに対応しておらず、Z値は変換されず、同じ単位と仮定"
+"されます。\n"
 "SELECT ST_3DDWithin(\n"
-"                        ST_Transform(ST_GeomFromEWKT('SRID=4326;"
-"POINT(-72.1235 42.3521 4)'),2163),\n"
-"                        ST_Transform(ST_GeomFromEWKT('SRID=4326;"
-"LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),\n"
-"                        126.8\n"
-"                ) As within_dist_3d,\n"
+"      ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 "
+"4)'),2163),\n"
+"      ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, "
+"-72.123 42.1546 20)'),2163),\n"
+"      126.8\n"
+"    ) As within_dist_3d,\n"
 "ST_DWithin(\n"
-"                        ST_Transform(ST_GeomFromEWKT('SRID=4326;"
-"POINT(-72.1235 42.3521 4)'),2163),\n"
-"                        ST_Transform(ST_GeomFromEWKT('SRID=4326;"
-"LINESTRING(-72.1260 42.45 15, -72.123 42.1546 20)'),2163),\n"
-"                        126.8\n"
-"                ) As within_dist_2d;\n"
+"      ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT(-72.1235 42.3521 "
+"4)'),2163),\n"
+"      ST_Transform(ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45 15, "
+"-72.123 42.1546 20)'),2163),\n"
+"      126.8\n"
+"    ) As within_dist_2d;\n"
 "\n"
 " within_dist_3d | within_dist_2d\n"
 "----------------+----------------\n"
@@ -2912,14 +2956,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:1524
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
 "linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref linkend="
 "\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
-", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
-"linkend=\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
+"linkend=\"ST_3DDistance\"/>, <xref linkend=\"ST_Distance\"/>, <xref linkend="
+"\"ST_3DMaxDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 
 #. Tag: refname
 #: reference_relationship.xml:1534
@@ -2969,7 +3014,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_relationship.xml:1576
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- This compares the difference between fully within and distance within as "
 "well\n"
@@ -2986,33 +3031,29 @@ msgid ""
 "------------------+-------------+------------------+------------------\n"
 " f                | t           | t                | f"
 msgstr ""
-"-- 完全に中に入るかどうか (ST_3DDFullyWithin)と、\n"
-"-- 中に入るかどうか (ST_3DDWithin)との比較を示します。\n"
-"-- また、\n"
-"-- ライン/ポイントを2次元にした場合に完全に中に入るかどうか (ST_DFullyWithin)"
-"と、\n"
-"-- 3次元長のままで完全に中に入るかどうか (ST_3DDFullyWithin)との比較も\n"
-"-- 示します。\n"
-"                SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as "
-"D3DFullyWithin10, ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10,\n"
-"        ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,\n"
-"        ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from\n"
-"                (select ST_GeomFromEWKT('POINT(1 1 2)') as geom_a,\n"
-"                ST_GeomFromEWKT('LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 "
-"3)') as geom_b) t1;\n"
+"-- 完全な範囲内にあるかを見る関数と、範囲内にあるかを見るの比較と\n"
+"    -- ライン/ポイントの2次元投影の完全な範囲内を見る関数と3次元のままで完全"
+"に範囲内にあるかを見る関数の比較\n"
+"    SELECT ST_3DDFullyWithin(geom_a, geom_b, 10) as D3DFullyWithin10, "
+"ST_3DDWithin(geom_a, geom_b, 10) as D3DWithin10,\n"
+"  ST_DFullyWithin(geom_a, geom_b, 20) as D2DFullyWithin20,\n"
+"  ST_3DDFullyWithin(geom_a, geom_b, 20) as D3DFullyWithin20 from\n"
+"    (select ST_GeomFromEWKT('POINT(1 1 2)') as geom_a,\n"
+"    ST_GeomFromEWKT('LINESTRING(1 5 2, 2 7 20, 1 9 100, 14 12 3)') as "
+"geom_b) t1;\n"
 " d3dfullywithin10 | d3dwithin10 | d2dfullywithin20 | d3dfullywithin20\n"
 "------------------+-------------+------------------+------------------\n"
 " f                | t           | t                | f"
 
 #. Tag: para
 #: reference_relationship.xml:1582
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
 "linkend=\"ST_3DMaxDistance\"/>"
 msgstr ""
-", <xref linkend=\"ST_3DDWithin\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
-"linkend=\"ST_DFullyWithin\"/>"
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DFullyWithin\"/>, <xref "
+"linkend=\"ST_3DMaxDistance\"/>"
 
 #. Tag: refname
 #: reference_relationship.xml:1590
@@ -3066,7 +3107,7 @@ msgstr "Availability: 1.5.0"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1628
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, "
 "ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, "
@@ -3082,7 +3123,7 @@ msgstr ""
 "postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, "
 "ST_DWithin(geom_a, geom_b, 10) as DWithin10, ST_DFullyWithin(geom_a, geom_b, "
 "20) as DFullyWithin20 from\n"
-"                (select ST_GeomFromText('POINT(1 1)') as geom_a,"
+"    (select ST_GeomFromText('POINT(1 1)') as geom_a,"
 "ST_GeomFromText('LINESTRING(1 5, 2 7, 1 9, 14 12)') as geom_b) t1;\n"
 "\n"
 "-----------------\n"
@@ -3092,13 +3133,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_relationship.xml:1634
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_3DDWithin\"/>, <xref "
 "linkend=\"ST_3DDFullyWithin\"/>"
 msgstr ""
-", <xref linkend=\"ST_3DDWithin\"/>, <xref linkend=\"ST_DWithin\"/>, <xref "
-"linkend=\"ST_DFullyWithin\"/>"
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_3DDWithin\"/>, <xref "
+"linkend=\"ST_3DDFullyWithin\"/>"
 
 #. Tag: refname
 #: reference_relationship.xml:1641
@@ -3219,20 +3260,21 @@ msgstr "Enhanced: 2.1.0 曲線ジオメトリ対応が導入されました。"
 
 #. Tag: para
 #: reference_relationship.xml:1705
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Prior to 1.3, <xref linkend=\"ST_Expand\"/> was commonly used in conjunction "
 "with &amp;&amp; and ST_Distance to test for distance, and in pre-1.3.4 this "
 "function used that logic. From 1.3.4, ST_DWithin uses a faster short-circuit "
 "distance function."
 msgstr ""
-"1.3以前では、距離を見るためにST_Expandと&amp;&amp;とST_Distanceとを併用してい"
-"て、1.3.4より前では、この関数はそのロジックを使用していました。1.3.4から"
-"ST_DWithinは、早くなった短縮版の距離関数を使うようになりました。"
+"1.3以前の<xref linkend=\"ST_Expand\"/>は、 距離をテストするために、&amp;&amp;"
+"と、ST_Distanceとを一般的に併用していました。1.3.4より前では、この関数はその"
+"ロジックを使っていました。1.3.4からST_DWithinは、より速いショートサーキットを"
+"使った距離関数を使います。"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1713
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Find the nearest hospital to each school\n"
 "-- that is within 3000 units of the school.\n"
@@ -3279,18 +3321,18 @@ msgstr ""
 "-- インデックスを使えないST_Distanceで処理します。\n"
 "-- 空間参照系の単位がメートルならここで言う単位はメートルです。\n"
 "SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.geom, h.hospital_name\n"
-"        FROM schools s\n"
-"                LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.geom, "
-"3000)\n"
-"        ORDER BY s.gid, ST_Distance(s.geom, h.geom);\n"
+"  FROM schools s\n"
+"    LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)\n"
+"  ORDER BY s.gid, ST_Distance(s.geom, h.geom);\n"
 "\n"
 "-- 病院が近くにない学校\n"
 "-- 3000単位以内に病院が無い学校を全て見つけます。\n"
 "-- 単位は空間参照系の単位です (メートル、フィート、度など)\n"
 "SELECT s.gid, s.school_name\n"
-"        FROM schools s\n"
-"                LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)\n"
-"        WHERE h.gid IS NULL;\n"
+"  FROM schools s\n"
+"    LEFT JOIN hospitals h ON ST_DWithin(s.geom, h.geom, 3000)\n"
+"  WHERE h.gid IS NULL;\n"
+"\n"
 "\n"
 "-- 受信可能距離の制限を持つ受信機が受信できる放送塔を見つけます。\n"
 "-- データは球面メルカトル (SRID=3857)のジオメトリで、範囲は近似的なものとして"
@@ -3311,14 +3353,14 @@ msgstr ""
 "SELECT b.tower_id, b.geom\n"
 "  FROM broadcasting_towers b\n"
 "  WHERE ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', 4000)\n"
-"          AND ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', b."
+"    AND ST_DWithin(b.geom, 'SRID=3857;POINT(3072163.4 7159374.1)', b."
 "sending_range);"
 
 #. Tag: para
 #: reference_relationship.xml:1719
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_3DDWithin\"/>"
-msgstr ", <xref linkend=\"ST_DWithin\"/>"
+msgstr ", <xref linkend=\"ST_3DDWithin\"/>"
 
 #. Tag: refname
 #: reference_relationship.xml:1725
@@ -3397,227 +3439,3 @@ msgstr ""
 " st_pointinsidecircle\n"
 "------------------------\n"
 " t"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Returns true if B intersects the interior of A but not the boundary or "
-#~ "exterior."
-#~ msgstr ""
-#~ "BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合に"
-#~ "はTRUEを返します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "This function call will automatically include a bounding box comparison "
-#~ "that will make use of any indexes that are available on the geometries."
-#~ msgstr ""
-#~ "この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウ"
-#~ "ンディングボックスの比較が自動的に行われます。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Geometry A contains Geometry B if and only if no points of B lie in the "
-#~ "exterior of A, and at least one point of the interior of B lies in the "
-#~ "interior of A. An important subtlety of this definition is that A does "
-#~ "not contain its boundary, but A does contain itself. Contrast that to "
-#~ "<xref linkend=\"ST_ContainsProperly\"/> where geometry A does not Contain "
-#~ "Properly itself."
-#~ msgstr ""
-#~ "ジオメトリAがジオメトリBを含むのは、Bの点がAの外部に無く、かつBの内部の少"
-#~ "なくとも一つの点がAの内部にある場合に限ります。この定義の重要で微妙なとこ"
-#~ "ろは、AはAの境界を含まないと判断するのに、AはA自身を含むと判断することで"
-#~ "す。ジオメトリAはA自身を含まないと判断をする<xref linkend="
-#~ "\"ST_ContainsProperly\"/>と対照的です。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns TRUE if geometry B is completely inside geometry A. For this "
-#~ "function to make sense, the source geometries must both be of the same "
-#~ "coordinate projection, having the same SRID. ST_Contains is the inverse "
-#~ "of ST_Within. So ST_Contains(A,B) implies ST_Within(B,A) except in the "
-#~ "case of invalid geometries where the result is always false regardless or "
-#~ "not defined."
-#~ msgstr ""
-#~ "ジオメトリBが完全にジオメトリAの内側になる場合はTRUEを返します。この関数が"
-#~ "意味のあるものにするためには、元のジオメトリは同じ投影座標である、同じSRID"
-#~ "を持っている必要があります。ST_ContainsはST_Withinの逆のものです。"
-#~ "ST_Contains(A,B)はST_Within(B,A)を意味します。ただし、結果が常にFALSEにな"
-#~ "る、不用意な、または定義されていない不正なジオメトリの場合を除きます。"
-
-#, no-c-format
-#~ msgid ""
-#~ "This function call will automatically include a bounding box comparison "
-#~ "that will make use of any indexes that are available on the geometries. "
-#~ "To avoid index use, use the function _ST_Contains."
-#~ msgstr ""
-#~ "この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウ"
-#~ "ンディングボックスの比較が自動的に行われます。インデクスの使用を避けるに"
-#~ "は、_ST_Containsを使います。"
-
-#, no-c-format
-#~ msgid ""
-#~ "There are certain subtleties to ST_Contains and ST_Within that are not "
-#~ "intuitively obvious. For details check out <ulink url=\"http://lin-ear-th-"
-#~ "inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html"
-#~ "\">Subtleties of OGC Covers, Contains, Within</ulink>"
-#~ msgstr ""
-#~ "直感的に分かりにくいST_ContainsとST_Withinの微妙な違いがあります。詳細につ"
-#~ "いては、<ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/"
-#~ "subtleties-of-ogc-covers-spatial.html\">Subtleties of OGC Covers, "
-#~ "Contains, Within</ulink>をご覧ください。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns true if B intersects the interior of A but not the boundary (or "
-#~ "exterior). A does not contain properly itself, but does contain itself."
-#~ msgstr ""
-#~ "BがAの内部にインタセクトするが境界 (または外部)にインタセクトしない場合に"
-#~ "はTRUEを返します。Aは自身には、ContainsProperlyではありませんが、Contains"
-#~ "です。"
-
-#, no-c-format
-#~ msgid ""
-#~ "This function call will automatically include a bounding box comparison "
-#~ "that will make use of any indexes that are available on the geometries. "
-#~ "To avoid index use, use the function _ST_ContainsProperly."
-#~ msgstr ""
-#~ "この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウ"
-#~ "ンディングボックスの比較が自動的に行われます。インデクスの使用を避けるに"
-#~ "は、_ST_ContainsProperlyを使います。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns 1 (TRUE) if no point in Geometry/Geography B is outside Geometry/"
-#~ "Geography A"
-#~ msgstr ""
-#~ "ジオメトリ/ジオグラフィBにジオメトリ/ジオグラフィAの外となるポイントが無い"
-#~ "場合には1 (TRUE)を返します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "This function call will automatically include a bounding box comparison "
-#~ "that will make use of any indexes that are available on the geometries. "
-#~ "To avoid index use, use the function _ST_Covers."
-#~ msgstr ""
-#~ "この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウ"
-#~ "ンディングボックスの比較が自動的に行われます。インデクスの使用を避けるに"
-#~ "は、_ST_Coversを使います。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns true if no point in Geometry/Geography A is outside Geometry/"
-#~ "Geography B"
-#~ msgstr ""
-#~ "ジオメトリ/ジオグラフィAのポイントがジオメトリ/ジオグラフィBの外側に存在し"
-#~ "ない場合にはTRUEを返します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns 1 (TRUE) if no point in Geometry/Geography A is outside Geometry/"
-#~ "Geography B"
-#~ msgstr ""
-#~ "ジオメトリ/ジオグラフィAのポイントがジオメトリ/ジオグラフィBの外側に存在し"
-#~ "ない場合には1 (TRUE)を返します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "This function call will automatically include a bounding box comparison "
-#~ "that will make use of any indexes that are available on the geometries. "
-#~ "To avoid index use, use the function _ST_CoveredBy."
-#~ msgstr ""
-#~ "この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウ"
-#~ "ンディングボックスの比較が自動的に行われます。インデクスの使用を避けるに"
-#~ "は、_ST_CoveredByを使います。"
-
-#, no-c-format
-#~ msgid ""
-#~ "TODO: Insert appropriate MathML markup here or use a gif. Simple HTML "
-#~ "markup does not work well in both IE and Firefox."
-#~ msgstr ""
-#~ "TODO:適切なMathMLマークアップかgif画像をここに挿入する.単純なHTMLマーク"
-#~ "アップはIEとFirefoxではうまく動作しない. "
-
-#, no-c-format
-#~ msgid ""
-#~ "This function will return false if either geometry is invalid except in "
-#~ "the case where they are binary equal."
-#~ msgstr ""
-#~ "この関数は、バイナリで同じ場合を除いて、どちらのジオメトリも不正である場合"
-#~ "はFALSEを返します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns true if two Geometries/Geography spatially intersect in 2D (have "
-#~ "at least one point in common)."
-#~ msgstr ""
-#~ "二つのジオメトリ/ジオグラフィが2次元で空間的にインタセクトする (少なくとも"
-#~ "一つの共有ポイントを持つ)場合にはTRUEを返します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "This function call will automatically include a bounding box comparison "
-#~ "that will make use of any indexes that are available on the geometries. "
-#~ "To avoid index use, use the function _ST_Overlaps."
-#~ msgstr ""
-#~ "この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウ"
-#~ "ンディングボックスの比較が自動的に行われます。インデクスの使用を避けるには"
-#~ "_ST_Overlapsを使います。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns <varname>TRUE</varname> if the only points in common between "
-#~ "<parameter>g1</parameter> and <parameter>g2</parameter> lie in the union "
-#~ "of the boundaries of <parameter>g1</parameter> and <parameter>g2</"
-#~ "parameter>. The <function>ST_Touches</function> relation applies to all "
-#~ "Area/Area, Line/Line, Line/Area, Point/Area and Point/Line pairs of "
-#~ "relationships, but <emphasis>not</emphasis> to the Point/Point pair."
-#~ msgstr ""
-#~ "<parameter>g1</parameter>と<parameter>g2</parameter>の共通部分の点が"
-#~ "<parameter>g1</parameter>と<parameter>g2</parameter>の境界の結合上にある場"
-#~ "合にはTRUEを返します。ST_Touchesは、面/面, 線/線, 線/面, 点/面, 点/線の全"
-#~ "てを受け付けますが、点/点は<emphasis>受け付けません</emphasis>。"
-
-#, no-c-format
-#~ msgid ""
-#~ "The allowable DE-9IM Intersection Matrices for the two geometries are:"
-#~ msgstr "二つのジオメトリに対して許されるDE-9IMは次のようになります。"
-
-#, no-c-format
-#~ msgid ""
-#~ "This function call will automatically include a bounding box comparison "
-#~ "that will make use of any indexes that are available on the geometries. "
-#~ "To avoid using an index, use <function>_ST_Touches</function> instead."
-#~ msgstr ""
-#~ "この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウ"
-#~ "ンディングボックスの比較が自動的に行われます。インデクスの使用を避けるには"
-#~ "<function>_ST_Touches</function>を使います。"
-
-#, no-c-format
-#~ msgid "Returns true if geometry A is completely inside geometry B"
-#~ msgstr "ジオメトリAが完全にジオメトリBの内側にある場合にはTRUEを返します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "This function call will automatically include a bounding box comparison "
-#~ "that will make use of any indexes that are available on the geometries. "
-#~ "To avoid index use, use the function _ST_Within."
-#~ msgstr ""
-#~ "この関数の呼び出しによって、ジオメトリで使用可能なインデクスを使用したバウ"
-#~ "ンディングボックスの比較が自動的に行われます。インデクスの使用を避けるには"
-#~ "_ST_Withinを使います。"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_IsValid\"/>"
-#~ msgstr ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_IsValid\"/>"
-
-#, no-c-format
-#~ msgid ""
-#~ "For geometry type returns true if the 3d distance between two objects is "
-#~ "within distance_of_srid specified projected units (spatial ref units)."
-#~ msgstr ""
-#~ "ジオメトリ型について、二つのオブジェクト間の距離が、投影法の単位 (空間参照"
-#~ "系の単位)でdistance_of_srid内にある場合にtrueを返します。"
-
-#, no-c-format
-#~ msgid ", <xref linkend=\"ST_Expand\"/>, <xref linkend=\"ST_3DDWithin\"/>"
-#~ msgstr ", <xref linkend=\"ST_Expand\"/>, <xref linkend=\"ST_3DDWithin\"/>"
