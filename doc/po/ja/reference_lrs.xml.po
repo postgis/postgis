@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-07-26 04:26+0000\n"
+"PO-Revision-Date: 2021-12-22 02:59+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -31,9 +31,9 @@ msgstr "ST_LineInterpolatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:9
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a point interpolated along a line at a fractional location."
-msgstr "線に沿った内挿点を一つ以上返します。"
+msgstr "ラインに沿って、割合で示された位置の補間ポイントを返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:14
@@ -60,16 +60,17 @@ msgstr "説明"
 
 #. Tag: para
 #: reference_lrs.xml:25
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a point interpolated along a line at a fractional location. First "
 "argument must be a LINESTRING. Second argument is a float between 0 and 1 "
 "representing the fraction of line length where the point is to be located. "
 "The Z and M values are interpolated if present."
 msgstr ""
-"線に沿った内挿点を返します。第1引数は LINESTRINGでなければなりません。第2引数"
-"はfloat8で0から1の区間で、そのポイントが位置するラインストリングの総延長に対"
-"する割合です。"
+"ラインに沿って、割合で示された位置の補間ポイントを返します。一つ目の引数は"
+"LINESTRINGです。二つ目の引数は0から1の間の浮動小数点数で、ライン長に対するポ"
+"イントの位置の割合を表現します。Z値とM値が存在する場合には補間計算を行いま"
+"す。"
 
 #. Tag: para
 #: reference_lrs.xml:33
@@ -89,6 +90,9 @@ msgid ""
 "M, while <xref linkend=\"ST_3DLineInterpolatePoint\"/> computes points in 3D "
 "and only interpolates the M value."
 msgstr ""
+"この関数は2次元のポイントとして計算して、Z値とM値は補間値を計算します。<xref "
+"linkend=\"ST_3DLineInterpolatePoint\"/>は3次元のポイントとして計算して、M値の"
+"み補間値を計算します。"
 
 #. Tag: para
 #: reference_lrs.xml:44
@@ -131,13 +135,13 @@ msgstr "例"
 
 #. Tag: para
 #: reference_lrs.xml:61
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A LineString with the interpolated point at 20% position (0.20)"
-msgstr "ラインストリングの20% (0.20)位置の内挿点"
+msgstr "ラインストリングの20% (0.20)位置の補完ポイント"
 
 #. Tag: programlisting
 #: reference_lrs.xml:64
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- The point 20% along a line\n"
 "\n"
@@ -150,23 +154,26 @@ msgid ""
 "----------------\n"
 " POINT(51.5974135047432 76.5974135047432)"
 msgstr ""
-"-- 2次元ラインに沿った20%ポイント\n"
-"SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.20))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') "
-"as the_line) As foo;\n"
+"-- ラインに沿った20%位置\n"
+"\n"
+"SELECT ST_AsEWKT(\n"
+"    ST_LineInterpolatePoint(\n"
+"        'LINESTRING(25 50, 100 125, 150 190)',\n"
+"        0.2 ));\n"
+"\n"
 "   st_asewkt\n"
 "----------------\n"
 " POINT(51.5974135047432 76.5974135047432)"
 
 #. Tag: para
 #: reference_lrs.xml:66
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The mid-point of a 3D line:"
-msgstr "線に沿った内挿点を一つ以上返します。"
+msgstr "3次元ラインの中間点"
 
 #. Tag: programlisting
 #: reference_lrs.xml:67
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(\n"
 "    ST_LineInterpolatePoint('\n"
@@ -177,19 +184,20 @@ msgid ""
 "--------------------\n"
 " POINT(3.5 4.5 5.5)"
 msgstr ""
-"-- 2次元ラインに沿った20%ポイント\n"
-"SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.20))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') "
-"as the_line) As foo;\n"
-"   st_asewkt\n"
-"----------------\n"
-" POINT(51.5974135047432 76.5974135047432)"
+"SELECT ST_AsEWKT(\n"
+"    ST_LineInterpolatePoint('\n"
+"        LINESTRING(1 2 3, 4 5 6, 6 7 8)',\n"
+"        0.5 ));\n"
+"\n"
+"        st_asewkt\n"
+"--------------------\n"
+" POINT(3.5 4.5 5.5)"
 
 #. Tag: para
 #: reference_lrs.xml:69
 #, no-c-format
 msgid "The closest point on a line to a point:"
-msgstr ""
+msgstr "ライン上のポイントに最も近いポイント"
 
 #. Tag: programlisting
 #: reference_lrs.xml:70
@@ -204,6 +212,14 @@ msgid ""
 "------------\n"
 " POINT(3 4)"
 msgstr ""
+"SELECT ST_AsText(\n"
+"    ST_LineInterpolatePoint( line.geom,\n"
+"        ST_LineLocatePoint( line.geom, 'POINT(4 3)')))\n"
+"FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;\n"
+"\n"
+" st_astext\n"
+"------------\n"
+" POINT(3 4)"
 
 #. Tag: title
 #: reference_lrs.xml:75 reference_lrs.xml:131 reference_lrs.xml:197
@@ -215,52 +231,52 @@ msgstr "関連情報"
 
 #. Tag: para
 #: reference_lrs.xml:77
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref linkend="
 "\"ST_LineLocatePoint\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref linkend="
+"\"ST_LineLocatePoint\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:87
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_3DLineInterpolatePoint"
-msgstr "ST_LineInterpolatePoint"
+msgstr "ST_3DLineInterpolatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:89
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a point interpolated along a 3D line at a fractional location."
-msgstr "線に沿った内挿点を一つ以上返します。"
+msgstr "3次元ラインに沿って、割合で示された位置の補間ポイントを返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:94
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_3DLineInterpolatePoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
 "paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
+"<funcdef>geometry <function>ST_3DLineInterpolatePoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
 "paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
 "paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:105
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a point interpolated along a 3D line at a fractional location. First "
 "argument must be a LINESTRING. Second argument is a float between 0 and 1 "
 "representing the point location as a fraction of line length. The M value is "
 "interpolated if present."
 msgstr ""
-"線に沿った内挿点を返します。第1引数は LINESTRINGでなければなりません。第2引数"
-"はfloat8で0から1の区間で、そのポイントが位置するラインストリングの総延長に対"
-"する割合です。"
+"3次元ラインに沿って、割合で示された位置の補間ポイントを返します。一つ目の引数"
+"はLINESTRINGです。二つ目の引数は0から1の間の浮動小数点数で、ライン長に対する"
+"ポイントの位置の割合を表現します。M値が存在する場合には補間計算を行います。"
 
 #. Tag: para
 #: reference_lrs.xml:112
@@ -269,22 +285,24 @@ msgid ""
 "computes points in 2D and then interpolates the values for Z and M, while "
 "this function computes points in 3D and only interpolates the M value."
 msgstr ""
+"2次元ポイントの計算とZ値とM値の補間値を計算しますが、この関数は3次元ポイント"
+"を計算し、M値だけ補間計算を行います。"
 
 #. Tag: para
 #: reference_lrs.xml:118
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.0.0"
-msgstr "Availability: 2.0.0"
+msgstr "Availability: 3.0.0"
 
 #. Tag: para
 #: reference_lrs.xml:125
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Return point 20% along 3D line"
-msgstr "線に沿った内挿点を一つ以上返します。"
+msgstr "3次元ラインに沿って20%のポイントを返します"
 
 #. Tag: programlisting
 #: reference_lrs.xml:126
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
 "    ST_3DLineInterpolatePoint('LINESTRING(25 50 70, 100 125 90, 150 190 "
@@ -295,23 +313,24 @@ msgid ""
 "----------------\n"
 " POINT Z (59.0675892910822 84.0675892910822 79.0846904776219)"
 msgstr ""
-"-- 2次元ラインに沿った20%ポイント\n"
-"SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.20))\n"
-"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(25 50, 100 125, 150 190)') "
-"as the_line) As foo;\n"
-"   st_asewkt\n"
+"SELECT ST_AsText(\n"
+"    ST_3DLineInterpolatePoint('LINESTRING(25 50 70, 100 125 90, 150 190 "
+"200)',\n"
+"        0.20));\n"
+"\n"
+"   st_asetext\n"
 "----------------\n"
-" POINT(51.5974135047432 76.5974135047432)"
+" POINT Z (59.0675892910822 84.0675892910822 79.0846904776219)"
 
 #. Tag: para
 #: reference_lrs.xml:133
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref linkend="
 "\"ST_LineLocatePoint\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref linkend="
+"\"ST_LineLocatePoint\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:143
@@ -321,9 +340,9 @@ msgstr "ST_LineInterpolatePoints"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:145
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns points interpolated along a line at a fractional interval."
-msgstr "線に沿った内挿点を一つ以上返します。"
+msgstr "ラインに沿って、割合で示された複数の位置の補間ポイントを返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:152
@@ -343,7 +362,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:164
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns one or more points interpolated along a line at a fractional "
 "interval. The first argument must be a LINESTRING. The second argument is a "
@@ -352,10 +371,11 @@ msgid ""
 "will be constructed (the function will be equivalent to <xref linkend="
 "\"ST_LineInterpolatePoint\"/>.)"
 msgstr ""
-"線に沿った内挿点を一つ以上返します。第1引数は LINESTRINGでなければなりませ"
-"ん。第2引数はfloat8で0から1の区間で、そのポイントが位置するラインストリングの"
-"総延長に対する割合です。第3引数がFALSEの場合には、たかだか一つのポイントが構"
-"築されます (これは <xref linkend=\"ST_LineInterpolatePoint\"/>と同じです)。"
+"ラインに沿って、割合で示された位置の、一つ以上の補間ポイントを返します。一つ"
+"目の引数はLINESTRINGです。二つ目の引数は0から1の間の浮動小数点数で、ライン長"
+"に対するポイント間隔割合を表現します。三つ目の引数がFALSEの場合には、一つのポ"
+"イントが構築されます (<xref linkend=\"ST_LineInterpolatePoint\"/>と同じで"
+"す)。f"
 
 #. Tag: para
 #: reference_lrs.xml:172
@@ -381,9 +401,9 @@ msgstr "&M_support;"
 
 #. Tag: para
 #: reference_lrs.xml:190
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A LineString with the interpolated points every 20%"
-msgstr "20% (0.20)位置ごとの内挿点を持ったラインストリング"
+msgstr "ラインストリングの 20%ごとの補間"
 
 #. Tag: programlisting
 #: reference_lrs.xml:193
@@ -418,7 +438,7 @@ msgstr "ST_LineLocatePoint"
 #, no-c-format
 msgid ""
 "Returns the fractional location of the closest point on a line to a point."
-msgstr ""
+msgstr "ポイントに最も近いライン上のポイントの位置を割合で返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:216
@@ -436,7 +456,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:227
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a float between 0 and 1 representing the location of the closest "
 "point on a LineString to the given Point, as a fraction of <link linkend="
@@ -479,7 +499,7 @@ msgstr "Changed: 2.1.0 2.0.xまでではST_Line_Locate_Pointと呼んでいま�
 
 #. Tag: programlisting
 #: reference_lrs.xml:244
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--Rough approximation of finding the street number of a point along the "
 "street\n"
@@ -516,8 +536,14 @@ msgid ""
 " POINT(3 4)"
 msgstr ""
 "-- ストリートに沿った、ストリート番号の点の、粗い探索です。\n"
-"-- なお、foo全体は住居の重心と通りのように見えるダミーデータです。\n"
+"-- なお、foo全体は住居の重心とストリートのように見えるダミーデータです。\n"
 "-- ST_DWithInで対象とする通りから大きく外れる住居を除外しています。\n"
+"--Rough approximation of finding the street number of a point along the "
+"street\n"
+"--Note the whole foo thing is just to generate dummy data that looks\n"
+"--like house centroids and street\n"
+"--We use ST_DWithin to exclude\n"
+"--houses too far away from the street to be considered on the street\n"
 "SELECT ST_AsText(house_loc) As as_text_house_loc,\n"
 "        startstreet_num +\n"
 "                CAST( (endstreet_num - startstreet_num)\n"
@@ -525,7 +551,7 @@ msgstr ""
 "integer) As street_num\n"
 "FROM\n"
 "(SELECT ST_GeomFromText('LINESTRING(1 2, 3 4)') As street_line,\n"
-"        ST_MakePoint(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,\n"
+"        ST_Point(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,\n"
 "                20 As endstreet_num\n"
 "FROM generate_series(1,3) x CROSS JOIN generate_series(2,4) As y)\n"
 "As foo\n"
@@ -566,7 +592,7 @@ msgstr "ST_LineSubstring"
 #: reference_lrs.xml:259
 #, no-c-format
 msgid "Returns the part of a line between two fractional locations."
-msgstr ""
+msgstr "二つの割合位置からラインの一部を返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:264
@@ -594,17 +620,21 @@ msgid ""
 "the start and end locations as fractions of line length. The Z and M values "
 "are interpolated for added endpoints if present."
 msgstr ""
+"与えられた割合位置を開始点と終了点とした、入力ラインの一部を計算します。一つ"
+"目の引数はLINESTRINGでなければなりません。二つ目と三つ目の引数は[0, 1]の範囲"
+"内で、開始点と終了点の、ライン長に対する割合の位置です。Z値とM値が存在する場"
+"合には、追加された終了点に対して補間計算を行います。"
 
 #. Tag: para
 #: reference_lrs.xml:285
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If <varname>startfraction</varname> and <varname>endfraction</varname> have "
 "the same value this is equivalent to <xref linkend=\"ST_LineInterpolatePoint"
 "\"/>."
 msgstr ""
-"startfractionとendfractionが同じ値を持つ場合には、<xref linkend="
-"\"ST_LineInterpolatePoint\"/>と等価になります。"
+"<varname>startfraction</varname>と<varname>endfraction</varname>が同じ値であ"
+"る場合には、<xref linkend=\"ST_LineInterpolatePoint\"/>と同じになります。"
 
 #. Tag: para
 #: reference_lrs.xml:290
@@ -613,16 +643,18 @@ msgid ""
 "This only works with LINESTRINGs. To use on contiguous MULTILINESTRINGs "
 "first join them with <xref linkend=\"ST_LineMerge\"/>."
 msgstr ""
+"この関数はLINESTRINGに対してのみ動作します。連続するMULTILINESTRINGで使うに"
+"は、先に<xref linkend=\"ST_LineMerge\"/>で結合させます。"
 
 #. Tag: para
 #: reference_lrs.xml:296
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Since release 1.1.1 this function interpolates M and Z values. Prior "
 "releases set Z and M to unspecified values."
 msgstr ""
-"1.1.1から、この関数はM軸やZ軸の内挿点も (存在するなら)計算するようになりまし"
-"た。それより前の版では不定値となります。"
+"1.1.1リリースからは、この関数はM値とZ値を補間します。それより前のリリースで"
+"は、Z値とM値は不定値になります。"
 
 #. Tag: para
 #: reference_lrs.xml:301
@@ -638,9 +670,9 @@ msgstr "Changed: 2.1.0 2.0.xではST_Line_Substringと呼ばれていました�
 
 #. Tag: para
 #: reference_lrs.xml:313
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A LineString seen with 1/3 midrange overlaid (0.333, 0.666)"
-msgstr "1/3の真ん中 (0.333, 0.666)のラインストリング"
+msgstr "中心の1/3区間 (0.333, 0.666)"
 
 #. Tag: programlisting
 #: reference_lrs.xml:316
@@ -654,12 +686,19 @@ msgid ""
 "LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 "
 "140.210463138888)"
 msgstr ""
+"SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', "
+"0.333, 0.666));\n"
+"\n"
+"                                                                                   st_astext\n"
+"------------------------------------------------------------------------------------------------\n"
+"LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 "
+"140.210463138888)"
 
 #. Tag: para
 #: reference_lrs.xml:318
 #, no-c-format
 msgid "If start and end locations are the same, the result is a POINT."
-msgstr ""
+msgstr "開始点と終了点とが同じ場合には、結果はPOINTになります。"
 
 #. Tag: programlisting
 #: reference_lrs.xml:321
@@ -672,6 +711,12 @@ msgid ""
 "------------------------------------------\n"
 " POINT(69.2846934853974 94.2846934853974)"
 msgstr ""
+"SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', "
+"0.333, 0.333));\n"
+"\n"
+"                st_astext\n"
+"------------------------------------------\n"
+" POINT(69.2846934853974 94.2846934853974)"
 
 #. Tag: para
 #: reference_lrs.xml:324
@@ -681,6 +726,9 @@ msgid ""
 "<varname>generate_series()</varname> with a CROSS JOIN LATERAL to produce "
 "the equivalent of a FOR loop."
 msgstr ""
+"LINESTRINGを長さ100以下の断片に分解するクエリ。FORループと同等のものを生成す"
+"るために<varname>generate_series()</varname>とCROSS JOIN LATERALとを併用して"
+"います。"
 
 #. Tag: programlisting
 #: reference_lrs.xml:329
@@ -715,6 +763,34 @@ msgid ""
 " B  | 3 | LINESTRING(300 100,350 100)\n"
 " C  | 0 | LINESTRING(0 200,50 200)"
 msgstr ""
+"WITH data(id, geom) AS (VALUES\n"
+"        ( 'A', 'LINESTRING( 0 0, 200 0)'::geometry ),\n"
+"        ( 'B', 'LINESTRING( 0 100, 350 100)'::geometry ),\n"
+"        ( 'C', 'LINESTRING( 0 200, 50 200)'::geometry )\n"
+"    )\n"
+"SELECT id, i,\n"
+"       ST_AsText( ST_LineSubstring( geom, startfrac, LEAST( endfrac, 1 )) ) "
+"AS geom\n"
+"FROM (\n"
+"    SELECT id, geom, ST_Length(geom) len, 100 sublen FROM data\n"
+"    ) AS d\n"
+"CROSS JOIN LATERAL (\n"
+"    SELECT i, (sublen * i) / len AS startfrac,\n"
+"              (sublen * (i+1)) / len AS endfrac\n"
+"    FROM generate_series(0, floor( len / sublen )::integer ) AS t(i)\n"
+"    -- ライン長がsublenの整数倍なら最後のiを飛ばします\n"
+"    WHERE (sublen * i) / len &lt;&gt; 1.0\n"
+"    ) AS d2;\n"
+"\n"
+" id | i |            geom\n"
+"----+---+-----------------------------\n"
+" A  | 0 | LINESTRING(0 0,100 0)\n"
+" A  | 1 | LINESTRING(100 0,200 0)\n"
+" B  | 0 | LINESTRING(0 100,100 100)\n"
+" B  | 1 | LINESTRING(100 100,200 100)\n"
+" B  | 2 | LINESTRING(200 100,300 100)\n"
+" B  | 3 | LINESTRING(300 100,350 100)\n"
+" C  | 0 | LINESTRING(0 200,50 200)"
 
 #. Tag: para
 #: reference_lrs.xml:336
@@ -736,11 +812,11 @@ msgstr "ST_LocateAlong"
 #: reference_lrs.xml:344
 #, no-c-format
 msgid "Returns the point(s) on a geometry that match a measure value."
-msgstr ""
+msgstr "M値に一致するジオメトリ上のポイントを返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:349
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom_with_measure</parameter></"
@@ -749,31 +825,32 @@ msgid ""
 "0</parameter></paramdef>"
 msgstr ""
 "<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>a_measure</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
-"parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>geom_with_measure</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>measure</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset = "
+"0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:361
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the locations along a measured geometry (as a Point or MultiPoint) "
 "that match a measure value. Polygonal elements are not supported."
 msgstr ""
-"<para>指定したM値に一致する要素からなる、派生ジオメトリコレクション値を返しま"
-"す。ポリゴン要素には対応していません。</para>"
+"M値を持つジオメトリに沿った、与えられたM値に合致する位置を (POINTOまたは"
+"MULTIPOINTで)返します。ポリゴン系要素には対応していません。"
 
 #. Tag: para
 #: reference_lrs.xml:365 reference_lrs.xml:419
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If the <varname>offset</varname> is provided, the result is offset to the "
 "left or right of the input line by the specified distance. A positive offset "
 "will be to the left, and a negative one to the right."
 msgstr ""
-"offsetを与えた場合には、結果は入力ラインの右または左に、指定した数字分ずれま"
-"す。正のオフセットでは左に、負のオフセットでは右にずれます。"
+"<varname>offset</varname>が与えられた場合には、結果は、入力ラインの左または右"
+"に、指定された距離だけ移動します。正のオフセット値で左に、負の値で右にそれぞ"
+"れ移動します。"
 
 #. Tag: para
 #: reference_lrs.xml:369
@@ -788,6 +865,8 @@ msgid ""
 "The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</"
 "emphasis> standard."
 msgstr ""
+"<emphasis>ISO/IEC 13249-3 SQL/MM 空間標準</emphasis>で規定されているため、こ"
+"のような意味になります。"
 
 #. Tag: para
 #: reference_lrs.xml:373
@@ -797,13 +876,11 @@ msgstr "Availability: 1.1.0 それまではST_Locale_Along_Measureでした。"
 
 #. Tag: para
 #: reference_lrs.xml:374
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
 "ST_Locate_Along_Measure."
-msgstr ""
-"Changed: 2.0.0 以前の版ではST_Locate_Along_Measureと呼ばれていましたが、古い"
-"名前は非推奨となり、将来的には削除しますが現時点では有効です。"
+msgstr "Changed: 2.0.0 以前の版ではST_Locate_Along_Measureと呼ばれていました。"
 
 #. Tag: programlisting
 #: reference_lrs.xml:382
@@ -818,13 +895,20 @@ msgid ""
 "----------------------------------\n"
 " MULTIPOINT M (1 2 3,9 4 3,1 2 3)"
 msgstr ""
+"SELECT ST_AsText(\n"
+"  ST_LocateAlong(\n"
+"    'MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'::geometry,\n"
+"    3 ));\n"
+"\n"
+"            st_astext\n"
+"----------------------------------\n"
+" MULTIPOINT M (1 2 3,9 4 3,1 2 3)"
 
 #. Tag: para
 #: reference_lrs.xml:389 reference_lrs.xml:444
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
-msgstr ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgstr ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:395
@@ -836,11 +920,11 @@ msgstr "ST_LocateBetween"
 #: reference_lrs.xml:397
 #, no-c-format
 msgid "Returns the portions of a geometry that match a measure range."
-msgstr ""
+msgstr "M値の範囲に合致する部分ジオメトリを返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:402
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -850,27 +934,27 @@ msgid ""
 "0</parameter></paramdef>"
 msgstr ""
 "<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>measure_start</parameter></"
 "paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
-"parameter></paramdef>"
+"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset = "
+"0</parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:416
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return a geometry (collection) with the portions of the input measured "
 "geometry that match the specified measure range (inclusively)."
 msgstr ""
-"指定したM値の範囲内にある要素からなる、派生ジオメトリコレクションを返します。"
-"ポリゴン要素には対応していません。"
+"指定された範囲のM値を持つ入力ジオメトリの部分ジオメトリとなるジオメトリ (コレ"
+"クション)を全て返します。"
 
 #. Tag: para
 #: reference_lrs.xml:423 reference_lrs.xml:474
 #, no-c-format
 msgid "Clipping a non-convex POLYGON may produce invalid geometry."
-msgstr ""
+msgstr "凸でないPOLYGONを抜き出すと不正なジオメトリを返すことがあります。"
 
 #. Tag: para
 #: reference_lrs.xml:427
@@ -880,19 +964,18 @@ msgstr "Availability: 1.1.0 それより前はST_Locate_Between_Measuresでし�
 
 #. Tag: para
 #: reference_lrs.xml:428
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
 "ST_Locate_Between_Measures."
 msgstr ""
-"Changed: 2.0.0 以前の版ではST_Locate_Along_Measureと呼ばれていましたが、古い"
-"名前は非推奨となり、将来的には削除しますが現時点では有効です。"
+"Changed: 2.0.0 以前の版ではST_Locate_Between_Measuresと呼ばれていました。"
 
 #. Tag: para
 #: reference_lrs.xml:429 reference_lrs.xml:477
 #, no-c-format
 msgid "Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE."
-msgstr ""
+msgstr "Enhanced: 3.0.0 - POLYGON, TIN, TRIANGLEへの対応が追加されました。"
 
 #. Tag: programlisting
 #: reference_lrs.xml:437
@@ -909,6 +992,16 @@ msgid ""
 "------------------------------------------------------------------------\n"
 " GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))"
 msgstr ""
+"SELECT ST_AsText(\n"
+"  ST_LocateBetween(\n"
+"       'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))':: "
+"geometry,\n"
+"       1.5,\n"
+"       3 ));\n"
+"\n"
+"                                                         st_asewkt\n"
+"------------------------------------------------------------------------\n"
+" GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))"
 
 #. Tag: refname
 #: reference_lrs.xml:450
@@ -920,11 +1013,11 @@ msgstr "ST_LocateBetweenElevations"
 #: reference_lrs.xml:452
 #, no-c-format
 msgid "Returns the portions of a geometry that lie in an elevation (Z) range."
-msgstr ""
+msgstr "標高 (Z値)範囲にある部分ジオメトリを返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:458
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -933,10 +1026,10 @@ msgid ""
 "parameter></paramdef>"
 msgstr ""
 "<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float8 </type> <parameter>elevation_start</"
-"parameter></paramdef> <paramdef><type>float8 </type> "
-"<parameter>elevation_end</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>elevation_start</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>elevation_end</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:471
@@ -945,6 +1038,7 @@ msgid ""
 "Returns a geometry (collection) with the portions of a geometry that lie in "
 "an elevations (Z) range."
 msgstr ""
+"標高 (Z値)範囲にある部分ジオメトリとなるジオメトリ (コレクション)を返します。"
 
 #. Tag: para
 #: reference_lrs.xml:476
@@ -974,13 +1068,29 @@ msgid ""
 "-----------------------------------------------------------------------\n"
 " GEOMETRYCOLLECTION Z (POINT Z (1 2 6),LINESTRING Z (6.1 7.1 6,7 8 9))"
 msgstr ""
+"SELECT ST_AsText(\n"
+"  ST_LocateBetweenElevations(\n"
+"    'LINESTRING(1 2 3, 4 5 6)'::geometry,\n"
+"    2, 4 ));\n"
+"\n"
+"             st_astext\n"
+"-----------------------------------\n"
+" MULTILINESTRING Z ((1 2 3,2 3 4))\n"
+"\n"
+"SELECT ST_AsText(\n"
+"    ST_LocateBetweenElevations(\n"
+"      'LINESTRING(1 2 6, 4 5 -1, 7 8 9)',\n"
+"      6, 9)) As ewelev;\n"
+"\n"
+"                                ewelev\n"
+"-----------------------------------------------------------------------\n"
+" GEOMETRYCOLLECTION Z (POINT Z (1 2 6),LINESTRING Z (6.1 7.1 6,7 8 9))"
 
 #. Tag: para
 #: reference_lrs.xml:492
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
-msgstr ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+msgstr ", <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:499
@@ -990,11 +1100,9 @@ msgstr "ST_InterpolatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:501
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the interpolated measure of a geometry closest to a point."
-msgstr ""
-"<para>ジオメトリの、指定したポイントに近いポイントにおけるM値を返します。</"
-"para>"
+msgstr "ジオメトリのポイントに最も近いポイント上の補間M値を返します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:506
@@ -1010,13 +1118,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:518
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the value of the measure dimension of a geometry at the point closed "
 "to the provided point."
 msgstr ""
-"<para>ジオメトリの、指定したポイントに近いポイントにおけるM値を返します。</"
-"para>"
+"指定されたポイントに最も近いジオメトリにおけるジオメトリの補間M値を返します。"
 
 #. Tag: para
 #: reference_lrs.xml:520
@@ -1026,7 +1133,7 @@ msgstr "Availability: 2.0.0"
 
 #. Tag: programlisting
 #: reference_lrs.xml:528
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
 " st_interpolatepoint\n"
@@ -1036,7 +1143,7 @@ msgstr ""
 "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
 " st_interpolatepoint\n"
 " ---------------------\n"
-"                                    10"
+"         10"
 
 #. Tag: para
 #: reference_lrs.xml:534
@@ -1056,7 +1163,7 @@ msgstr "ST_AddMeasure"
 #: reference_lrs.xml:544
 #, no-c-format
 msgid "Interpolates measures along a linear geometry."
-msgstr ""
+msgstr "ラインに沿ったM値を補間します。"
 
 #. Tag: funcprototype
 #: reference_lrs.xml:549
@@ -1076,16 +1183,16 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:562
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return a derived geometry with measure values linearly interpolated between "
 "the start and end points. If the geometry has no measure dimension, one is "
 "added. If the geometry has a measure dimension, it is over-written with new "
 "values. Only LINESTRINGS and MULTILINESTRINGS are supported."
 msgstr ""
-"始点と終点の間を線型補完した、M値を持つ派生ジオメトリを返します。ジオメトリに"
-"M値が無い場合には、1が追加されます。ジオメトリがM値を持つ場合には、新しい値で"
-"上書きされます。LINESTRINGとMULTILINESTRINGのみ対応しています。"
+"開始点と終了点の間で線形補間したM値を持つ派生ジオメトリを返します。ジオメトリ"
+"がM値を持たない場合にはM値が追加されます。ジオメトリがM値を持つ場合には新値に"
+"置き換えられます。LINESTRINGとMULTILINESTRINGだけに対応しています。"
 
 #. Tag: para
 #: reference_lrs.xml:564
@@ -1146,444 +1253,3 @@ msgstr ""
 "                             ewelev\n"
 "-----------------------------------------------------------------\n"
 " MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a point interpolated along a line. Second argument is a float8 "
-#~ "between 0 and 1 representing fraction of total length of linestring the "
-#~ "point has to be located."
-#~ msgstr ""
-#~ "線に沿った内挿点を返します。第2引数はfloat8で0から1の区間で、そのポイント"
-#~ "が位置するラインストリングの総延長についての割合です。"
-
-#, no-c-format
-#~ msgid ""
-#~ "--Return point mid-way of 3d line\n"
-#~ "SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.5))\n"
-#~ "        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') "
-#~ "as the_line) As foo;\n"
-#~ "\n"
-#~ "        st_asewkt\n"
-#~ "--------------------\n"
-#~ " POINT(3.5 4.5 5.5)\n"
-#~ "\n"
-#~ "\n"
-#~ "--find closest point on a line to a point or other geometry\n"
-#~ " SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, "
-#~ "ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
-#~ "FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As "
-#~ "foo;\n"
-#~ "   st_astext\n"
-#~ "----------------\n"
-#~ " POINT(3 4)"
-#~ msgstr ""
-#~ "-- 3次元線の中点\n"
-#~ "SELECT ST_AsEWKT(ST_LineInterpolatePoint(the_line, 0.5))\n"
-#~ "        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') "
-#~ "as the_line) As foo;\n"
-#~ "\n"
-#~ "        st_asewkt\n"
-#~ "--------------------\n"
-#~ " POINT(3.5 4.5 5.5)\n"
-#~ "\n"
-#~ "\n"
-#~ "-- ポイントまたは他のジオメトリへの、ライン上の最短点の探索\n"
-#~ " SELECT ST_AsText(ST_LineInterpolatePoint(foo.the_line, "
-#~ "ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))\n"
-#~ "FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As "
-#~ "foo;\n"
-#~ "   st_astext\n"
-#~ "----------------\n"
-#~ " POINT(3 4)"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-#~ "linkend=\"ST_LineInterpolatePoints\"/> <xref linkend="
-#~ "\"ST_3DLineInterpolatePoint\"/> <xref linkend=\"ST_LineLocatePoint\"/> O"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-#~ "linkend=\"ST_LineInterpolatePoints\"/> <xref linkend=\"ST_LineLocatePoint"
-#~ "\"/> O"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Returns a point interpolated along a line in 3D. Second argument is a "
-#~ "float8 between 0 and 1 representing fraction of total length of "
-#~ "linestring the point has to be located."
-#~ msgstr ""
-#~ "線に沿った内挿点を返します。第2引数はfloat8で0から1の区間で、そのポイント"
-#~ "が位置するラインストリングの総延長についての割合です。"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-#~ "linkend=\"ST_LineInterpolatePoint\"/> <xref linkend="
-#~ "\"ST_LineInterpolatePoints\"/> <xref linkend=\"ST_LineLocatePoint\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-#~ "linkend=\"ST_LineInterpolatePoints\"/> <xref linkend=\"ST_LineLocatePoint"
-#~ "\"/> O"
-
-#, no-c-format
-#~ msgid ""
-#~ "Returns a float between 0 and 1 representing the location of the closest "
-#~ "point on LineString to the given Point, as a fraction of total 2d line "
-#~ "length."
-#~ msgstr ""
-#~ "ラインストリング上の、与えたポイントへの最短点を、2次元長に対する割合とし"
-#~ "て0から1の区間で返します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Return a linestring being a substring of the input one starting and "
-#~ "ending at the given fractions of total 2d length. Second and third "
-#~ "arguments are float8 values between 0 and 1."
-#~ msgstr ""
-#~ "次元長に対する割合で示された開始位置と終了位置で切り取られた部分ラインスト"
-#~ "リングを返します。第2引数と第3引数は、float8で0から1の区間です。"
-
-#, no-c-format
-#~ msgid ""
-#~ "Return a linestring being a substring of the input one starting and "
-#~ "ending at the given fractions of total 2d length. Second and third "
-#~ "arguments are float8 values between 0 and 1. This only works with "
-#~ "LINESTRINGs. To use with contiguous MULTILINESTRINGs use in conjunction "
-#~ "with <xref linkend=\"ST_LineMerge\"/>."
-#~ msgstr ""
-#~ "2次元長に対する割合で示された開始位置と終了位置で切り取られた部分ラインス"
-#~ "トリングを返します。第2引数と第3引数は、float8で0から1の区間です。この関数"
-#~ "はLINESTRINGでのみ動作します。MULTILINESTRINGで使用するには、<xref "
-#~ "linkend=\"ST_LineMerge\"/>と併用します。"
-
-#, no-c-format
-#~ msgid ""
-#~ "--Return the approximate 1/3 mid-range part of a linestring\n"
-#~ "SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 "
-#~ "125, 150 190)'), 0.333, 0.666));\n"
-#~ "\n"
-#~ "                                                                                   st_astext\n"
-#~ "------------------------------------------------------------------------------------------------\n"
-#~ "LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 "
-#~ "140.210463138888)\n"
-#~ "\n"
-#~ "--The below example simulates a while loop in\n"
-#~ "--SQL using PostgreSQL generate_series() to cut all\n"
-#~ "--linestrings in a table to 100 unit segments\n"
-#~ "-- of which no segment is longer than 100 units\n"
-#~ "-- units are measured in the SRID units of measurement\n"
-#~ "-- It also assumes all geometries are LINESTRING or contiguous "
-#~ "MULTILINESTRING\n"
-#~ "--and no geometry is longer than 100 units*10000\n"
-#~ "--for better performance you can reduce the 10000\n"
-#~ "--to match max number of segments you expect\n"
-#~ "\n"
-#~ "SELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,\n"
-#~ "  CASE\n"
-#~ "        WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length\n"
-#~ "        ELSE 1\n"
-#~ "  END) As the_geom\n"
-#~ "FROM\n"
-#~ "  (SELECT sometable.field1, sometable.field2,\n"
-#~ "  ST_LineMerge(sometable.the_geom) AS the_geom,\n"
-#~ "  ST_Length(sometable.the_geom) As length\n"
-#~ "  FROM sometable\n"
-#~ "  ) AS t\n"
-#~ "CROSS JOIN generate_series(0,10000) AS n\n"
-#~ "WHERE n*100.00/length &lt; 1;"
-#~ msgstr ""
-#~ "-- ラインストリングの概ね1/3の真ん中の線を返します\n"
-#~ "SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(25 50, 100 "
-#~ "125, 150 190)'), 0.333, 0.666));\n"
-#~ "\n"
-#~ "                                                                                   st_astext\n"
-#~ "------------------------------------------------------------------------------------------------\n"
-#~ "LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 "
-#~ "140.210463138888)\n"
-#~ "\n"
-#~ "--次に示す例では、PostgreSQLのgenerate_series()を\n"
-#~ "--使ったwhileループに似たことを行って、\n"
-#~ "--テーブル内の全てのラインストリングを100単位の\n"
-#~ "--区分にカットしています。\n"
-#~ "--単位はSRIDで決まります。\n"
-#~ "--全てのジオメトリがラインストリングまたは\n"
-#~ "--隣接するマルチラインストリングで、\n"
-#~ "--100単位*10000より長いジオメトリが無いと仮定します。\n"
-#~ "--パフォーマンスを良くするために、10000を減らして、\n"
-#~ "--期待する最大区分数にあわせることができます。\n"
-#~ "\n"
-#~ "SELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,\n"
-#~ "  CASE\n"
-#~ "        WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length\n"
-#~ "        ELSE 1\n"
-#~ "  END) As the_geom\n"
-#~ "FROM\n"
-#~ "  (SELECT sometable.field1, sometable.field2,\n"
-#~ "  ST_LineMerge(sometable.the_geom) AS the_geom,\n"
-#~ "  ST_Length(sometable.the_geom) As length\n"
-#~ "  FROM sometable\n"
-#~ "  ) AS t\n"
-#~ "CROSS JOIN generate_series(0,10000) AS n\n"
-#~ "WHERE n*100.00/length &lt; 1;"
-
-#, no-c-format
-#~ msgid ""
-#~ "<refpurpose>Return a derived geometry collection value with elements that "
-#~ "match the specified measure. Polygonal elements are not supported.</"
-#~ "refpurpose>"
-#~ msgstr ""
-#~ "<refpurpose>指定したM値に一致する要素からなる、派生ジオメトリコレクション"
-#~ "値を返します。ポリゴン要素には対応していません。</refpurpose>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text for "
-#~ "Continuation CD Editing Meeting"
-#~ msgstr ""
-#~ "意味は ISO/IEC CD 13249-3:200x(E) - Text for Continuation CD Editing "
-#~ "Meeting で決められています。"
-
-#, no-c-format
-#~ msgid ""
-#~ "SELECT ST_AsText(the_geom)\n"
-#~ "                FROM\n"
-#~ "                (SELECT ST_LocateAlong(\n"
-#~ "                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, "
-#~ "9 4 3),\n"
-#~ "                (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n"
-#~ "\n"
-#~ "                                                 st_asewkt\n"
-#~ "-----------------------------------------------------------\n"
-#~ " MULTIPOINT M (1 2 3)\n"
-#~ "\n"
-#~ "--Geometry collections are difficult animals so dump them\n"
-#~ "--to make them more digestable\n"
-#~ "SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
-#~ "        FROM\n"
-#~ "        (SELECT ST_LocateAlong(\n"
-#~ "                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, "
-#~ "9 4 3),\n"
-#~ "        (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n"
-#~ "\n"
-#~ "   st_asewkt\n"
-#~ "---------------\n"
-#~ " POINTM(1 2 3)\n"
-#~ " POINTM(9 4 3)\n"
-#~ " POINTM(1 2 3)"
-#~ msgstr ""
-#~ "SELECT ST_AsText(the_geom)\n"
-#~ "                FROM\n"
-#~ "                (SELECT ST_LocateAlong(\n"
-#~ "                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, "
-#~ "9 4 3),\n"
-#~ "                (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n"
-#~ "\n"
-#~ "                                                 st_asewkt\n"
-#~ "-----------------------------------------------------------\n"
-#~ " MULTIPOINT M (1 2 3)\n"
-#~ "\n"
-#~ "-- ジオメトリコレクションは難しいものですので、\n"
-#~ "-- 簡略化するためにダンプしています。\n"
-#~ "SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
-#~ "        FROM\n"
-#~ "        (SELECT ST_LocateAlong(\n"
-#~ "                        ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, "
-#~ "9 4 3),\n"
-#~ "        (1 2 3, 5 4 5))'),3) As the_geom) As foo;\n"
-#~ "\n"
-#~ "   st_asewkt\n"
-#~ "---------------\n"
-#~ " POINTM(1 2 3)\n"
-#~ " POINTM(9 4 3)\n"
-#~ " POINTM(1 2 3)"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_LocateBetween\"/>, <xref linkend="
-#~ "\"ST_LocateBetweenElevations\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_LocateBetween\"/>, <xref linkend="
-#~ "\"ST_LocateBetweenElevations\"/>"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "Return a derived geometry collection value with elements that match the "
-#~ "specified range of measures inclusively."
-#~ msgstr ""
-#~ "指定したM値の範囲内にある要素からなる、派生ジオメトリコレクション値を返し"
-#~ "ます。ポリゴン要素には対応していません。"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "SELECT ST_AsText(the_geom)\n"
-#~ "FROM (\n"
-#~ "    SELECT ST_LocateBetween(\n"
-#~ "       'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),\n"
-#~ "       1.5,\n"
-#~ "       3\n"
-#~ "    ) as the_geom\n"
-#~ ") As foo;\n"
-#~ "\n"
-#~ "                                                         st_asewkt\n"
-#~ "------------------------------------------------------------------------\n"
-#~ " GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))\n"
-#~ "\n"
-#~ "--Geometry collections are difficult animals so dump them\n"
-#~ "--to make them more digestable\n"
-#~ "SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
-#~ "FROM (\n"
-#~ "    SELECT ST_LocateBetween(\n"
-#~ "        'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'),\n"
-#~ "        1.5,\n"
-#~ "        3\n"
-#~ "    ) As the_geom\n"
-#~ ") As foo;\n"
-#~ "\n"
-#~ "                   st_asewkt\n"
-#~ "--------------------------------\n"
-#~ " LINESTRING M (1 2 3,3 4 2,9 4 3)\n"
-#~ " POINT M (1 2 3)"
-#~ msgstr ""
-#~ "SELECT ST_AsText(the_geom)\n"
-#~ "                FROM\n"
-#~ "                (SELECT ST_LocateBetween(\n"
-#~ "                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 "
-#~ "2, 9 4 3),\n"
-#~ "                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n"
-#~ "\n"
-#~ "                                                         st_asewkt\n"
-#~ "------------------------------------------------------------------------\n"
-#~ " GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))\n"
-#~ "\n"
-#~ "-- ジオメトリコレクションは難しいものですので、\n"
-#~ "-- 簡略化するためにダンプしています。\n"
-#~ "SELECT ST_AsText((ST_Dump(the_geom)).geom)\n"
-#~ "                FROM\n"
-#~ "                (SELECT ST_LocateBetween(\n"
-#~ "                        ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 "
-#~ "2, 9 4 3),\n"
-#~ "                (1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;\n"
-#~ "\n"
-#~ "                   st_asewkt\n"
-#~ "--------------------------------\n"
-#~ " LINESTRING M (1 2 3,3 4 2,9 4 3)\n"
-#~ " POINT M (1 2 3)"
-
-#, no-c-format
-#~ msgid ""
-#~ ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend="
-#~ "\"ST_LocateBetweenElevations\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend="
-#~ "\"ST_LocateBetweenElevations\"/>"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "<refpurpose>Return a derived geometry (collection) value with elements "
-#~ "that intersect the specified range of elevations inclusively.</refpurpose>"
-#~ msgstr ""
-#~ "<refpurpose>指定したM値に一致する要素からなる、派生ジオメトリコレクション"
-#~ "値を返します。ポリゴン要素には対応していません。</refpurpose>"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "<para>Return a derived geometry (collection) value with elements that "
-#~ "intersect the specified range of elevations inclusively.</para>"
-#~ msgstr ""
-#~ "<para>指定したM値に一致する要素からなる、派生ジオメトリコレクション値を返"
-#~ "します。ポリゴン要素には対応していません。</para>"
-
-#, fuzzy, no-c-format
-#~ msgid ""
-#~ "SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-#~ "                        ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'), 2, "
-#~ "4)) As ewelev;\n"
-#~ "                                                                   ewelev\n"
-#~ "----------------------------------------------------------------\n"
-#~ "        MULTILINESTRING((1 2 3,2 3 4))\n"
-#~ "\n"
-#~ "SELECT ST_AsEWKT(ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 "
-#~ "8 9)', 6, 9)) As ewelev;\n"
-#~ "\n"
-#~ "                                ewelev\n"
-#~ "----------------------------------------------------------------\n"
-#~ "GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))\n"
-#~ "\n"
-#~ "-- Geometry collections are difficult animals so dump them\n"
-#~ "-- to make them more digestable\n"
-#~ "SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)\n"
-#~ "        FROM\n"
-#~ "        (SELECT ST_LocateBetweenElevations('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-#~ "9)', 6, 9) as the_geom) As foo;\n"
-#~ "\n"
-#~ "                   st_asewkt\n"
-#~ "--------------------------------\n"
-#~ "POINT(1 2 6)\n"
-#~ "LINESTRING(6.1 7.1 6,7 8 9)"
-#~ msgstr ""
-#~ "SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-#~ "                        ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'),2,4)) "
-#~ "As ewelev;\n"
-#~ "                                                                   ewelev\n"
-#~ "----------------------------------------------------------------\n"
-#~ "        MULTILINESTRING((1 2 3,2 3 4))\n"
-#~ "\n"
-#~ "SELECT ST_AsEWKT(ST_LocateBetweenElevations(\n"
-#~ "                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-#~ "9)'),6,9)) As ewelev;\n"
-#~ "\n"
-#~ "                                ewelev\n"
-#~ "----------------------------------------------------------------\n"
-#~ "GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))\n"
-#~ "\n"
-#~ "-- ジオメトリコレクションは難しいものですので、\n"
-#~ "-- 簡略化するためにダンプしています。\n"
-#~ "SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)\n"
-#~ "                FROM\n"
-#~ "                (SELECT ST_LocateBetweenElevations(\n"
-#~ "                        ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 "
-#~ "9)'),6,9) As the_geom) As foo;\n"
-#~ "\n"
-#~ "                   st_asewkt\n"
-#~ "--------------------------------\n"
-#~ "POINT(1 2 6)\n"
-#~ "LINESTRING(6.1 7.1 6,7 8 9)"
-
-#, no-c-format
-#~ msgid ""
-#~ "<refpurpose>Return the value of the measure dimension of a geometry at "
-#~ "the point closed to the provided point.</refpurpose>"
-#~ msgstr ""
-#~ "<refpurpose>ジオメトリの、指定したポイントに近いポイントにおけるM値を返し"
-#~ "ます。</refpurpose>"
-
-#, no-c-format
-#~ msgid ""
-#~ "Return a derived geometry with measure elements linearly interpolated "
-#~ "between the start and end points."
-#~ msgstr "始点と終点の間を線型補完した、M値を持つ派生ジオメトリを返します。"
-
-#~ msgid ""
-#~ "Changed: 2.0.0 - in prior versions this used to be called "
-#~ "ST_Locate_Between_Measures. The old name has been deprecated and will be "
-#~ "removed in the future but is still available for backward compatibility."
-#~ msgstr ""
-#~ "Changed: 2.0.0 以前の版でST_Locate_Between_Measuresと呼ばれていましたが、"
-#~ "古い名前は非推奨となり、将来的には削除しますが現時点では後方互換のため有効"
-#~ "になっています。"
-
-#~ msgid ""
-#~ "Return a derived geometry (collection) value with elements that intersect "
-#~ "the specified range of elevations inclusively. Only 3D, 4D LINESTRINGS "
-#~ "and MULTILINESTRINGS are supported."
-#~ msgstr ""
-#~ "指定したZ値の範囲内にある要素からなる、派生ジオメトリ (コレクション)値を返"
-#~ "します。3次元、4次元のLINESTRINGSとMULTILINESTRINGSのみに対応しています。"
-
-#~ msgid ""
-#~ "Return a derived geometry (collection) value with elements that intersect "
-#~ "the specified range of elevations inclusively. Only 3D, 3DM LINESTRINGS "
-#~ "and MULTILINESTRINGS are supported."
-#~ msgstr ""
-#~ "指定したZ値の範囲内にある要素からなる、派生ジオメトリ (コレクション)値を返"
-#~ "します。3次元、4次元のLINESTRINGSとMULTILINESTRINGSのみに対応しています。"
