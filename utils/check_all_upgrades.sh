@@ -19,6 +19,8 @@ to_version=$to_version_param
 if expr $to_version : ':auto' >/dev/null; then
   export PGDATABASE=template1
   to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
+elif expr $to_version : '.*!$' >/dev/null; then
+  to_version=$(echo "${to_version}" | sed 's/\!$//')
 fi
 
 
@@ -103,12 +105,16 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
       continue
     fi
     if test -e ${UPGRADE_FILE}; then
-      echo "Testing ${EXT} upgrade $UPGRADE_PATH"
+      if expr $to_version_param : ':auto' >/dev/null; then
+        echo "Testing ${EXT} upgrade $UPGRADE_PATH ($to_version)"
+      else
+        echo "Testing ${EXT} upgrade $UPGRADE_PATH"
+      fi
       RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
       make -C ${REGDIR} check && {
-        echo "PASS: upgrade $UPGRADE_PATH"
+        echo "PASS: ${EXT} upgrade $UPGRADE_PATH"
       } || {
-        echo "FAIL: upgrade $UPGRADE_PATH"
+        echo "FAIL: ${EXT} upgrade $UPGRADE_PATH"
         failed
       }
     else
@@ -119,18 +125,27 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   # Check unpackaged->extension upgrades
   for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
     UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
+    UPGRADE_FILE="${EXT}--unpackaged--${to_version}.sql"
+    if ! test -e ${UPGRADE_FILE}; then
+      echo "SKIP: ${EXT} upgrade $UPGRADE_FILE is missing"
+      continue
+    fi
     # only consider versions older than ${to_version_param}
-    cmp=`semver_compare "${majmin}" "${to_version_param}"`
+    cmp=`semver_compare "${majmin}" "${to_version}"`
     if test $cmp -ge 0; then
       echo "SKIP: upgrade $UPGRADE_PATH ($to_version_param is not newer than $majmin)"
       continue
     fi
-    echo "Testing ${EXT} upgrade $UPGRADE_PATH"
+    if expr $to_version_param : ':auto' >/dev/null; then
+      echo "Testing ${EXT} upgrade $UPGRADE_PATH ($to_version)"
+    else
+      echo "Testing ${EXT} upgrade $UPGRADE_PATH"
+    fi
     RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
     make -C ${REGDIR} check && {
-      echo "PASS: upgrade $UPGRADE_PATH"
+      echo "PASS: ${EXT} upgrade $UPGRADE_PATH"
     } || {
-      echo "FAIL: upgrade $UPGRADE_PATH"
+      echo "FAIL: ${EXT} upgrade $UPGRADE_PATH"
       failed
     }
   done
