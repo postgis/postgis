@@ -44,7 +44,7 @@
 //Datum geom_from_marc21(PG_FUNCTION_ARGS);
 static LWGEOM* parse_marc21(xmlNodePtr xnode);
 
-//#define MARC21_NS		((char *) "http://www.loc.gov/MARC21/slim")
+#define MARC21_NS		((char *) "http://www.loc.gov/MARC21/slim")
 
 /**
  * Ability to parse geographic data contained in MARC21/XML documents
@@ -345,14 +345,10 @@ parse_marc21(xmlNodePtr xnode) {
 	char* literal;
 
 
-	POSTGIS_DEBUG(2,"parse_marc21 called");
+	POSTGIS_DEBUGF(2,"parse_marc21 called: root '<%s>', namespace '\"%s\"' ",xnode->name,xnode->ns->href);
 
-
-
-	/** TODO: validate MARC21/XML document
-	 *  - has <record>?
-	 *  - has namespace?
-	 */
+	if (xmlStrcmp(xnode->name, (const xmlChar*)"record")) lwpgerror("invalid MARC21/XML root tag: <%s>",xnode->name);
+	if (xmlStrcmp(xnode->ns->href, (const xmlChar*)MARC21_NS)) lwpgerror("invalid MARC21/XML namespace: \"%s\"",xnode->ns->href);
 
 	result_type = 0;
 	ngeoms = 0;
