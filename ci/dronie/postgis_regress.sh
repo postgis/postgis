@@ -18,5 +18,7 @@ make install
 RUNTESTFLAGS=-v make installcheck
 
 CURRENTVERSION=`grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
-utils/check_all_upgrades.sh -s ${CURRENTVERSION}
-utils/check_all_upgrades.sh -s ${CURRENTVERSION}!
+utils/check_all_upgrades.sh -s ${CURRENTVERSION} | tee check.log
+utils/check_all_upgrades.sh -s ${CURRENTVERSION}! | tee -a check.log
+echo "-- Summary of upgrade tests --"
+egrep '(PASS|FAIL)' check.log
