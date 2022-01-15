@@ -2,26 +2,28 @@
 #
 # Translators:
 # David Martinez Morata, 2013-2014
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2014-10-14 22:36+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
-"language/es/)\n"
+"PO-Revision-Date: 2022-01-15 01:45+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/postgis/"
+"es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: postgis.xml:146
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
-msgstr "Manual PostGIS &last_release_version; "
+msgstr "Manual PostGIS &last_release_version;"
 
 #. Tag: corpauthor
 #: postgis.xml:150
@@ -45,7 +47,7 @@ msgstr ""
 
 #. Tag: para
 #: postgis.xml:170
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "PostGIS is an extension to the <ulink url=\"https://www.postgresql.org/"
 "\">PostgreSQL</ulink> object-relational database system which allows GIS "
@@ -53,10 +55,11 @@ msgid ""
 "PostGIS includes support for GiST-based R-Tree spatial indexes, and "
 "functions for analysis and processing of GIS objects."
 msgstr ""
-"PostGIS es una extension del sistema de base de datos relacional PostgreSQL "
-"que permite almacenar objetos SIG (Sistemas de Información Geografica) en la "
-"base de datos. PostGIS incluye soporte de indices de tipos basados en GiST R-"
-"Tree, y funciones de análisis y procesado de objetos SIG."
+"PostGIS es una extension del sistema de base de datos relacional <ulink url="
+"\"https://www.postgresql.org/\">PostgreSQL</ulink> que permite almacenar "
+"objetos SIG (Sistemas de Información Geografica) en la base de datos. "
+"PostGIS incluye soporte de indices de tipos basados en GiST R-Tree, y "
+"funciones de análisis y procesado de objetos SIG."
 
 #. Tag: para
 #: postgis.xml:179
