@@ -103,7 +103,11 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
       continue
     fi
     if test -e ${UPGRADE_FILE}; then
-      echo "Testing ${EXT} upgrade $UPGRADE_PATH"
+      if expr $to_version_param : ':auto' >/dev/null; then
+        echo "Testing ${EXT} upgrade $UPGRADE_PATH ($to_version)"
+      else
+        echo "Testing ${EXT} upgrade $UPGRADE_PATH"
+      fi
       RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
       make -C ${REGDIR} check && {
         echo "PASS: upgrade $UPGRADE_PATH"
