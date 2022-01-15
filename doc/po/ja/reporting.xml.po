@@ -6,15 +6,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-15 20:24+0000\n"
-"PO-Revision-Date: 2022-01-14 03:14+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-01-16 20:45+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"reportingxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: reporting.xml:3
@@ -127,15 +128,14 @@ msgstr ""
 
 #. Tag: para
 #: reporting.xml:47
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If your changes are more extensive, a patch is definitely preferred. This is "
 "a four step process on Unix (assuming you already have <ulink url=\"https://"
 "git-scm.com/\">git</ulink> installed):"
 msgstr ""
-"変更が大きい場合は、パッチが確実に好まれます。Unix上で次の4ステップの処理を行"
-"います (既に<ulink url=\"https://git-scm.com/\">git</ulink>をインストールして"
-"いると仮定します)。"
+"変更が大きい場合は、パッチが確実に好まれます。Unix上で次の4ステップの処理を行います (既に<ulink url=\"https://git-scm."
+"com/\">git</ulink>をインストールしていると仮定します)。"
 
 #. Tag: para
 #: reporting.xml:54
