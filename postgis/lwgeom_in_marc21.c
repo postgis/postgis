@@ -90,7 +90,9 @@ Datum geom_from_marc21(PG_FUNCTION_ARGS)
 
 	}
 
+	//lwgeom_force_clockwise(lwgeom);
 	geom = geometry_serialize(lwgeom);
+
 	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(geom);
@@ -275,9 +277,10 @@ parse_geo_literal(char* literal){
 			min = malloc(literal_length);
 			strncpy(min,&literal[start_literal+3],literal_length-(start_literal+3));
 			min[literal_length-(start_literal+3)]='\0';
+			POSTGIS_DEBUGF(2,"  decimal minutes: %s",min);
 
 			result = atof(dgr)+(atof(min)/100);
-			POSTGIS_DEBUGF(2,"  decimal minutes: %s",min);
+
 			POSTGIS_DEBUG(5,"  free(min)");
 			free(min);
 
@@ -318,10 +321,11 @@ parse_geo_literal(char* literal){
 
 	if(hemisphere_sign=='S' || hemisphere_sign=='W' || hemisphere_sign=='-') {
 		POSTGIS_DEBUGF(2,"  switching sign due to start character: '%c'",hemisphere_sign);
-		result = result*-1;
+		//result = result*-1.0;
+		result =-result;
 	}
 
-	POSTGIS_DEBUGF(2,"=> parse_geo_literal returns: %f (in decimal degrees)",result);
+	POSTGIS_DEBUGF(2,"=> parse_geo_literal returns: %.*f (in decimal degrees)",literal_length-(3+start_literal),result);
 	return result;
 }
 
@@ -342,6 +346,13 @@ parse_marc21(xmlNodePtr xnode) {
 
 
 	POSTGIS_DEBUG(2,"parse_marc21 called");
+
+
+
+	/** TODO: validate MARC21/XML document
+	 *  - has <record>?
+	 *  - has namespace?
+	 */
 
 	result_type = 0;
 	ngeoms = 0;
@@ -439,6 +450,7 @@ parse_marc21(xmlNodePtr xnode) {
 	if (ngeoms == 1){
 
 		POSTGIS_DEBUGF(2,"=> parse_marc21 returns single geometry: %s",lwtype_name(lwgeom_get_type(lwgeoms[0])));
+		lwgeom_force_clockwise(lwgeoms[0]);
 		return lwgeoms[0];
 
 	} else if (ngeoms > 1){
@@ -448,7 +460,7 @@ parse_marc21(xmlNodePtr xnode) {
 		for (i=0; i < ngeoms; i++) {
 
 			POSTGIS_DEBUGF(3,"  adding geometry to result set: %s",lwtype_name(lwgeom_get_type(lwgeoms[i])));
-
+			lwgeom_force_clockwise(lwgeoms[i]);
 			result = (LWGEOM*)lwcollection_add_lwgeom((LWCOLLECTION*)result, lwgeoms[i]);
 
 		}
