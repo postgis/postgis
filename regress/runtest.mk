@@ -16,6 +16,7 @@ check-regress:
 		$(PERL) $(topsrcdir)/regress/run_test.pl \
       --upgrade \
       $(RUNTESTFLAGS) \
+      $(RUNTESTFLAGS_INTERNAL) \
       $(TESTS); \
 	else \
 		echo "Skipping upgrade test as RUNTESTFLAGS already requested upgrades"; \
