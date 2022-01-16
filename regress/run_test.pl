@@ -309,22 +309,24 @@ if ( $OPT_UPGRADE )
 	foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
 	{
 		print "Running before-upgrade-script $hook\n";
-		die unless load_sql_file($hook, 1);
+		fail("before-upgrade-script $hook", $REGRESS_LOG)
+		    unless load_sql_file($hook, 1);
 	}
 
-  if ( $OPT_EXTENSIONS )
-  {
-    upgrade_spatial_extensions();
-  }
-  else
-  {
-	  upgrade_spatial();
-  }
+	if ( $OPT_EXTENSIONS )
+	{
+		upgrade_spatial_extensions();
+	}
+	else
+	{
+		upgrade_spatial();
+	}
 
 	foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
 	{
 		print "Running after-upgrade-script $hook\n";
-		die unless load_sql_file($hook, 1);
+		fail("after-upgrade-script $hook", $REGRESS_LOG)
+		    unless load_sql_file($hook, 1);
 	}
 
   # Update libver
@@ -1540,27 +1542,31 @@ sub upgrade_spatial
 
     my $script = "${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql";
     print "Upgrading core\n";
-    die unless load_sql_file($script, 1);
+    fail('core upgrading', $REGRESS_LOG)
+        unless load_sql_file($script, 1);
 
     if ( $OPT_WITH_TOPO )
     {
         $script = "${STAGED_SCRIPTS_DIR}/topology_upgrade.sql";
         print "Upgrading topology\n";
-        die unless load_sql_file($script, 1);
+        fail('topology upgrade', $REGRESS_LOG)
+			unless load_sql_file($script, 1);
     }
 
     if ( $OPT_WITH_RASTER )
     {
         $script = "${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade.sql";
         print "Upgrading raster\n";
-        die unless load_sql_file($script, 1);
+        fail('raster upgrade', $REGRESS_LOG)
+			unless load_sql_file($script, 1);
     }
 
     if ( $OPT_WITH_SFCGAL )
     {
         $script = "${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql";
         print "Upgrading sfcgal\n";
-        die unless load_sql_file($script, 1);
+        fail('sfcgal upgrade', $REGRESS_LOG)
+			unless load_sql_file($script, 1);
     }
 
     return 1;
