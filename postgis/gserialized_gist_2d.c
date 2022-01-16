@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2017-2019 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2017-2022 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -54,11 +54,11 @@
 #include <float.h> /* For FLT_MAX */
 #include <math.h>
 
-/*
-** When is a node split not so good? If more than 90% of the entries
-** end up in one of the children.
-*/
-#define LIMIT_RATIO 0.1
+/* When is a node split not so good? Prefer to not split 2 pages into more than 3 pages in index. */
+#define LIMIT_RATIO 0.3333333333333333
+
+/* How many index tuples does one page fit? Recursive splits will target this. */
+#define INDEX_TUPLES_PER_PAGE 291
 
 /*
 ** For debugging
@@ -2044,6 +2044,22 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		 * groups, to reach LIMIT_RATIO.
 		 */
 		int			m = ceil(LIMIT_RATIO * (double) nentries);
+
+		/* Recursive picksplit called, splitting full page at least */
+		if (nentries > INDEX_TUPLES_PER_PAGE)
+		{
+			if (nentries <= 2 * INDEX_TUPLES_PER_PAGE)
+			{
+				/* If this is going to be the last split, make sure we split into 2 parts */
+				m = Max(m, nentries - INDEX_TUPLES_PER_PAGE);
+			}
+			else
+			{
+				/* Make sure we'll be filling the smaller side until the end of the page at least */
+				m = ((Max(Min(v->spl_nleft, v->spl_nright), m) / INDEX_TUPLES_PER_PAGE) + 1) *
+				    INDEX_TUPLES_PER_PAGE;
+			}
+		}
 
 		/*
 		 * Calculate delta between penalties of join "common entries" to
