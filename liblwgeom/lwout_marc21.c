@@ -28,7 +28,7 @@
 #include "lwgeom_log.h"
 
 static int gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb);
-static int is_geometry_supported(const LWGEOM *geom);
+//static int is_geometry_supported(const LWGEOM *geom);
 
 lwvarlena_t *
 lwgeom_to_marc21(const LWGEOM *geom, int precision)
