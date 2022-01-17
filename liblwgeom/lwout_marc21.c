@@ -27,7 +27,6 @@
 #include "stringbuffer.h"
 #include "lwgeom_log.h"
 
-static char* format_marc21_literal(double coordinate,int precision);
 static int gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb);
 static int is_geometry_supported(const LWGEOM *geom);
 
@@ -57,11 +56,11 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 		int i;
 		LWCOLLECTION * coll = (LWCOLLECTION *)geom;
 
-		if(!is_geometry_supported(geom)) lwerror("collection type not supported: %s",lwtype_name(lwgeom_get_type(geom)));
+		//if(!is_geometry_supported(geom)) lwerror("collection type not supported: %s",lwtype_name(lwgeom_get_type(geom)));
 
 		for (i=0; i<coll->ngeoms; i++) {
 
-			if(!is_geometry_supported(coll->geoms[i])) lwerror("collection contains an unsupported geometry: %s",lwtype_name(lwgeom_get_type(coll->geoms[i])));
+			//if(!is_geometry_supported(coll->geoms[i])) lwerror("collection contains an unsupported geometry: %s",lwtype_name(lwgeom_get_type(coll->geoms[i])));
 
 			if (lwgeom_calculate_gbox(coll->geoms[i], &box) == LW_FAILURE) {
 
@@ -82,7 +81,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 
 	} else {
 
-		if(!is_geometry_supported(geom)) lwerror("geometry type not supported: %s",lwtype_name(lwgeom_get_type(geom)));
+		//if(!is_geometry_supported(geom)) lwerror("geometry type not supported: %s",lwtype_name(lwgeom_get_type(geom)));
 
 		LWDEBUGF(3,"  calculating gbox: %s",lwtype_name(lwgeom_get_type(geom)));
 		if (lwgeom_calculate_gbox(geom, &box) == LW_FAILURE) {
@@ -113,6 +112,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision)
 	return v;
 }
 
+/**
 static int
 is_geometry_supported(const LWGEOM *geom){
 
@@ -139,7 +139,9 @@ format_marc21_literal(double coordinate,int precision)
 
 	LWDEBUGF(2,"format_marc21_literal called: %.*f",precision, coordinate);
 	LWDEBUGF(5,"format_marc21_literal char *res = malloc(%d);",sizeof(coordinate)*2);
-	char *res = malloc(sizeof(coordinate)*2);
+	//char *res = malloc(sizeof(coordinate)*2);
+	char *res = malloc(precision+4);
+	//char res[sizeof(coordinate)];
 	double ds;
 	modf(coordinate, &ds);
 
@@ -155,11 +157,36 @@ format_marc21_literal(double coordinate,int precision)
 		if(ds<=-100) sprintf(res, "%.*f",precision,coordinate);
 	}
 
-	//TODO: free(res)
-
 	LWDEBUGF(2,"=> format_marc21_literal returns: %s",res);
 	return res;
 
+}
+**/
+
+static int
+corner_to_subfield_sb(stringbuffer_t *sb, double coordinate,int precision, char subfield){
+
+	char *res = malloc(precision+4);
+	double ds;
+	modf(coordinate, &ds);
+
+	sprintf(res, "%.*f",precision,coordinate);
+
+	if(ds<100){
+
+		sprintf(res, "0%.*f",precision,coordinate);
+
+		if(ds>=0 && ds<10) sprintf(res, "00%.*f",precision,coordinate);
+		if(ds<=-0 && ds>-10) sprintf(res, "-00%.*f",precision,coordinate*-1);
+		if(ds<=-10 && ds>-100) sprintf(res, "-0%.*f",precision,coordinate*-1);
+		if(ds<=-100) sprintf(res, "%.*f",precision,coordinate);
+	}
+
+	if ( stringbuffer_aprintf(sb, "<subfield code=\"%c\">%s</subfield>",subfield,res) < 0 ) return LW_FAILURE;
+
+	//free(////res)
+	free(res);
+	return LW_SUCCESS;
 }
 
 static int
@@ -168,12 +195,18 @@ gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb)
 
 	LWDEBUG(2,"gbox_to_marc21_sb called");
 
-	if ( stringbuffer_aprintf(sb, "<datafield tag=\"034\" ind1=\"1\" ind2=\" \">") < 0 ) return LW_FAILURE;
-	if ( stringbuffer_aprintf(sb, "<subfield code=\"d\">%s</subfield>", format_marc21_literal(box.xmin,precision)) < 0 ) return LW_FAILURE;
-	if ( stringbuffer_aprintf(sb, "<subfield code=\"e\">%s</subfield>", format_marc21_literal(box.xmax,precision)) < 0 ) return LW_FAILURE;
-	if ( stringbuffer_aprintf(sb, "<subfield code=\"f\">%s</subfield>", format_marc21_literal(box.ymax,precision)) < 0 ) return LW_FAILURE;
-	if ( stringbuffer_aprintf(sb, "<subfield code=\"g\">%s</subfield>", format_marc21_literal(box.ymin,precision)) < 0 ) return LW_FAILURE;
-	if ( stringbuffer_aprintf(sb, "</datafield>") < 0 ) return LW_FAILURE;
+	if (stringbuffer_aprintf(sb, "<datafield tag=\"034\" ind1=\"1\" ind2=\" \">") < 0 ) return LW_FAILURE;
+	if(!corner_to_subfield_sb(sb, box.xmin, precision, 'd')) return LW_FAILURE;
+	if(!corner_to_subfield_sb(sb, box.xmax, precision, 'e')) return LW_FAILURE;
+	if(!corner_to_subfield_sb(sb, box.ymax, precision, 'f')) return LW_FAILURE;
+	if(!corner_to_subfield_sb(sb, box.ymin, precision, 'g')) return LW_FAILURE;
+	if (stringbuffer_aprintf(sb, "</datafield>") < 0 ) return LW_FAILURE;
+
+	//if ( stringbuffer_aprintf(sb, "<subfield code=\"d\">%s</subfield>", format_marc21_literal(box.xmin,precision)) < 0 ) return LW_FAILURE;
+	//if ( stringbuffer_aprintf(sb, "<subfield code=\"e\">%s</subfield>", format_marc21_literal(box.xmax,precision)) < 0 ) return LW_FAILURE;
+	//if ( stringbuffer_aprintf(sb, "<subfield code=\"f\">%s</subfield>", format_marc21_literal(box.ymax,precision)) < 0 ) return LW_FAILURE;
+	//if ( stringbuffer_aprintf(sb, "<subfield code=\"g\">%s</subfield>", format_marc21_literal(box.ymin,precision)) < 0 ) return LW_FAILURE;
+
 
 	LWDEBUG(2,"=> gbox_to_marc21_sb returns LW_SUCCESS");
 
