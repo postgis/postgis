@@ -164,7 +164,7 @@ SELECT _postgis_drop_function_if_needed
 SELECT _postgis_drop_function_if_needed
 	(
 	'ST_AsGeoJson',
-	$args$r record, geom_column text DEFAULT ''::text, maxdecimaldigits integer DEFAULT 15, pretty_print boolean DEFAULT false$args$
+	$args$r record, geom_column text, maxdecimaldigits integer, pretty_print boolean$args$
 	);
 
 -- FUNCTION _st_orderingequals changed argument names in 3.0
@@ -182,7 +182,6 @@ SELECT _postgis_drop_function_if_needed
 	'st_orderingequals',
 	'GeometryA geometry, GeometryB geometry'
 	);
-
 
 -- FUNCTION st_askml changed to add defaults in 3.0 / r17357
 -- These signatures were superseeded
