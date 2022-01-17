@@ -34,7 +34,6 @@
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
-//#include <libxml/xpath.h>
 #include <string.h>
 
 #include "../postgis_config.h"
@@ -44,12 +43,12 @@
 //Datum geom_from_marc21(PG_FUNCTION_ARGS);
 static LWGEOM* parse_marc21(xmlNodePtr xnode);
 
-#define MARC21_NS		((char *) "http://www.loc.gov/MARC21/slim")
+#define MARC21_NS		((xmlChar *) "http://www.loc.gov/MARC21/slim")
 
 /**
  * Ability to parse geographic data contained in MARC21/XML documents
  * to return an LWGEOM or an error message. It returns NULL if the
- * document does not contain any geographic data (MARC 034)
+ * MARC21/XML document is valid but does not contain any geographic data ($034)
  */
 PG_FUNCTION_INFO_V1(geom_from_marc21);
 Datum geom_from_marc21(PG_FUNCTION_ARGS)
@@ -90,7 +89,6 @@ Datum geom_from_marc21(PG_FUNCTION_ARGS)
 
 	}
 
-	//lwgeom_force_clockwise(lwgeom);
 	geom = geometry_serialize(lwgeom);
 
 	lwgeom_free(lwgeom);
@@ -177,6 +175,12 @@ parse_geo_literal(char* literal){
 
 		/**
 		 * degrees/minutes/seconds: hdddmmss (hemisphere-degrees-minutes-seconds)
+		 * Ex. +0793235
+	  	 *     E0793235
+		 *     ||  | |_seconds
+		 *     ||  |_minutes
+		 *     ||_degrees
+		 *     |_start_literal (hemisphere)
 		 */
 
 		POSTGIS_DEBUG(2,"  lat/lon literal detected");
@@ -197,7 +201,6 @@ parse_geo_literal(char* literal){
 
 		if(literal_length >= (start_literal+5)){
 
-			//strncpy(sec,&literal[start_literal+5],literal_length-(start_literal+5));
 			strncpy(sec,&literal[start_literal+5],2);
 			sec[2]='\0';
 		}
@@ -206,7 +209,6 @@ parse_geo_literal(char* literal){
 		result = atof(dgr);
 		if(min) result = result + atof(min)/60;
 		if(sec) result = result + atof(sec)/3600;
-		//if(hemisphere_sign=='S' || hemisphere_sign=='W' || hemisphere_sign=='-') result = result*-1;
 
 		free(min);
 		POSTGIS_DEBUG(5,"  free(min)");
@@ -319,9 +321,11 @@ parse_geo_literal(char* literal){
 
 	}
 
+	/**
+	 * “+” for N and E, “-“ for S and W; the plus sign is optional.
+	 */
 	if(hemisphere_sign=='S' || hemisphere_sign=='W' || hemisphere_sign=='-') {
 		POSTGIS_DEBUGF(2,"  switching sign due to start character: '%c'",hemisphere_sign);
-		//result = result*-1.0;
 		result =-result;
 	}
 
@@ -344,11 +348,10 @@ parse_marc21(xmlNodePtr xnode) {
 	char* code;
 	char* literal;
 
-
 	POSTGIS_DEBUGF(2,"parse_marc21 called: root '<%s>', namespace '\"%s\"' ",xnode->name,xnode->ns->href);
 
-	if (xmlStrcmp(xnode->name, (const xmlChar*)"record")) lwpgerror("invalid MARC21/XML root tag: <%s>",xnode->name);
-	if (xmlStrcmp(xnode->ns->href, (const xmlChar*)MARC21_NS)) lwpgerror("invalid MARC21/XML namespace: \"%s\"",xnode->ns->href);
+	if (xmlStrcmp(xnode->name, (xmlChar*)"record")) lwpgerror("invalid MARC21/XML root tag: <%s>",xnode->name);
+	if (xmlStrcmp(xnode->ns->href, MARC21_NS)) lwpgerror("invalid MARC21/XML namespace: \"%s\"",xnode->ns->href);
 
 	result_type = 0;
 	ngeoms = 0;
@@ -362,14 +365,15 @@ parse_marc21(xmlNodePtr xnode) {
 
 		if (datafield->type != XML_ELEMENT_NODE) continue;
 
-		if (strcmp((char *) datafield->name, "datafield")!=0 || strcmp((char *) xmlGetProp(datafield,(xmlChar *)"tag"), "034")!=0)  continue;
+
+		if (xmlStrcmp(datafield->name, (xmlChar*)"datafield")!=0 || xmlStrcmp(xmlGetProp(datafield,(xmlChar *)"tag"), (xmlChar*)"034")!=0)  continue;
 
 		POSTGIS_DEBUG(3,"  datafield found");
 
 		for (subfield = datafield->children ; subfield != NULL ; subfield = subfield->next){
 
 			if (subfield->type != XML_ELEMENT_NODE) continue;
-			if (strcmp((char *)subfield->name, "subfield")!=0) continue;
+			if (xmlStrcmp(subfield->name, (xmlChar*)"subfield")!=0) continue;
 
 			code = (char *) xmlGetProp(subfield,(xmlChar *)"code");
 
@@ -391,6 +395,7 @@ parse_marc21(xmlNodePtr xnode) {
 				xmlFreeNode(subfield);
 				lwpgerror("parse error - invalid literal at 034$%s: %s",code,literal);
 				return NULL;
+
 			}
 
 		}
