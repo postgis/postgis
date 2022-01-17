@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-17 17:45+0000\n"
-"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"PO-Revision-Date: 2022-01-18 14:46+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/ja/>\n"
 "Language: ja\n"
@@ -25,7 +25,7 @@ msgstr "PostGIS管理"
 
 #. Tag: chapter
 #: administration.xml:3
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&database_tuning;"
 msgstr "&database_tuning;"
 
@@ -67,7 +67,7 @@ msgstr "データベース外ラスタを有効にするには次のようにし
 
 #. Tag: programlisting
 #: administration.xml:20
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
 msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
 
@@ -87,7 +87,7 @@ msgstr "インストールしたGDALのドライバを有効にするには、�
 
 #. Tag: programlisting
 #: administration.xml:23
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
 msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
 
@@ -101,7 +101,7 @@ msgstr "一部のドライバのみ有効にしたい場合には、環境変数
 
 #. Tag: programlisting
 #: administration.xml:25
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
 msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
 
@@ -193,7 +193,7 @@ msgstr "空間データベースにしたいデータベース上で次のSQLを
 
 #. Tag: programlisting
 #: administration.xml:57
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
 "      CREATE EXTENSION postgis;\n"
