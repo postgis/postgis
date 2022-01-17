@@ -1,37 +1,39 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-01-17 17:45+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"administrationxml/ja/>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: administration.xml:3
 #, no-c-format
 msgid "PostGIS Administration"
-msgstr ""
+msgstr "PostGIS管理"
 
 #. Tag: chapter
 #: administration.xml:3
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&database_tuning;"
-msgstr ""
+msgstr "&database_tuning;"
 
 #. Tag: title
 #: administration.xml:9
 #, no-c-format
 msgid "Configuring raster support"
-msgstr ""
+msgstr "ラスタ機能の設定"
 
 #. Tag: para
 #: administration.xml:11
@@ -39,7 +41,7 @@ msgstr ""
 msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
-msgstr ""
+msgstr "ラスタ機能を有効にしたら、下に示す確実な設定方法を読んだ方がいいです。"
 
 #. Tag: para
 #: administration.xml:16
@@ -52,24 +54,28 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"PostGIS 2.1.3以降では、データベース外ラスタと全てのラスタドライバは、デフォルトでは無効になっています。これらを有効にするには、サーバ上で、"
+"環境変数 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>と<varname>POSTGIS_ENABLE_"
+"OUTDB_RASTERS</varname>を設定します。PostGIS 2.2では、<xref linkend=\"PostGIS_GUC\""
+"/>に従って設定する、クロスプラットフォームな手法があります。"
 
 #. Tag: para
 #: administration.xml:19
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr ""
+msgstr "データベース外ラスタを有効にするには次のようにします。"
 
 #. Tag: programlisting
 #: administration.xml:20
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-msgstr ""
+msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
 
 #. Tag: para
 #: administration.xml:21
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
-msgstr ""
+msgstr "他の値を入れたり、値を入れない場合には、データベース外ラスタは無効になります。"
 
 #. Tag: para
 #: administration.xml:22
@@ -77,13 +83,13 @@ msgstr ""
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr ""
+msgstr "インストールしたGDALのドライバを有効にするには、次の環境変数を設定します。"
 
 #. Tag: programlisting
 #: administration.xml:23
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-msgstr ""
+msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
 
 #. Tag: para
 #: administration.xml:24
@@ -91,19 +97,19 @@ msgstr ""
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr ""
+msgstr "一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します。"
 
 #. Tag: programlisting
 #: administration.xml:25
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
-msgstr ""
+msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
 
 #. Tag: para
 #: administration.xml:27
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr ""
+msgstr "Windows上の場合は、ドライバリストに引用符をつけないで下さい。"
 
 #. Tag: para
 #: administration.xml:29
@@ -115,6 +121,10 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
+"環境変数の設定はOSによって異なります。UbuntuまたはDebian上でapt-"
+"postgresqlを経由したPostgreSQLのインストールについては、<filename>/etc/postgresql/<replaceable>"
+"10</replaceable>/<replaceable>main</replaceable>/environment</filename>を編集するの"
+"が好ましい方法です。 ここで、10はPostgreSQLのバージョンを指し、mainはクラスタを指します。"
 
 #. Tag: para
 #: administration.xml:32
@@ -127,6 +137,10 @@ msgid ""
 "clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment "
 "Variables</emphasis> and adding new system variables."
 msgstr ""
+"Windowsでサービスとして実行している場合には、システム変数で設定します。Windows "
+"7では、コンピュータを右クリックしてプロパティをクリックするか、エクスプローラの検索バーにコントロール パネル\\すべての<varname>コントロール "
+"パネル項目\\システム</varname>を指定します。 <emphasis>システムの詳細設定 -&gt; 詳細設定 -&gt; 環境変数 "
+"</emphasis>を順にクリックして、新しいシステム環境変数を追加します。"
 
 #. Tag: para
 #: administration.xml:34
@@ -134,19 +148,19 @@ msgstr ""
 msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
-msgstr ""
+msgstr "環境変数を設定した後は、設定を反映させるために、PostgreSQLサービスの再起動が必要です。"
 
 #. Tag: title
 #: administration.xml:39
 #, no-c-format
 msgid "Creating spatial databases"
-msgstr ""
+msgstr "空間データベースの作成"
 
 #. Tag: title
 #: administration.xml:42
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr ""
+msgstr "エクステンションを使って空間データベースを有効にする"
 
 #. Tag: para
 #: administration.xml:44
@@ -156,6 +170,8 @@ msgid ""
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
 msgstr ""
+"PostgreSQL 9.1以上を使っていて、エクステンションのPostGISモジュールをコンパイル、インストールしている場合には、エクステンションという"
+"メカニズムを使用して、データベースを空間データベースに切り替えることができます。"
 
 #. Tag: para
 #: administration.xml:49
@@ -165,23 +181,29 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
+"中核となるPostGISエクステンションには、ジオメトリ、ジオグラフィ、spatial_ref_sysおよび全ての関数とコメントが含まれています。ラスタと"
+"トポロジは別のエクステンションになっています。"
 
 #. Tag: para
 #: administration.xml:55
 #, no-c-format
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
-msgstr ""
+msgstr "空間データベースにしたいデータベース上で次のSQLを実行します。"
 
 #. Tag: programlisting
 #: administration.xml:57
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
 "      CREATE EXTENSION postgis;\n"
 "      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
 "      CREATE EXTENSION postgis_topology; -- OPTIONAL"
 msgstr ""
+"CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
+"      CREATE EXTENSION postgis;\n"
+"      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
+"      CREATE EXTENSION postgis_topology; -- OPTIONAL"
 
 #. Tag: title
 #: administration.xml:63
