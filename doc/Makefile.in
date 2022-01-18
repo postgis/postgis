@@ -171,7 +171,10 @@ else
 $(XML_INPUTS_POT): po/templates/%.xml.pot: %.xml
 	@if test -f $@; then \
 	  $(XML2POT) $< > $@.tmp; \
-    changed=`diff $@.tmp $@ | grep -v '^[<>] "POT-Creation-Date:' | wc -l`; \
+    changed=`diff $@.tmp $@ \
+			| grep -v '^[<>] "POT-Creation-Date:' \
+			| grep -v '^[<>] "Report-Msgid-Bugs-To:' \
+			| wc -l`; \
     if expr $${changed} \> 3 >/dev/null; then \
       echo "$@ updated"; \
       mv $@.tmp $@; \
