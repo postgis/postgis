@@ -32,6 +32,19 @@
 #include "liblwgeom.h"
 #include "lwgeom_transform.h"
 
+/**********************************************************************
+ * Ability to serialise MARC21/XML Records from geometries. The coordinates
+ * are returned in decimal degrees.
+ *
+ * MARC21/XML version supported: 1.1
+ * MARC21/XML Cartographic Mathematical Data Definition:
+ *    https://www.loc.gov/marc/bibliographic/bd034.html
+ *
+ * Copyright (C) 2021 University of Münster (WWU), Germany
+ * Author: Jim Jones <jim.jones@uni-muenster.de>
+ *
+ **********************************************************************/
+
 PG_FUNCTION_INFO_V1(LWGEOM_asMARC21);
 Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 {
@@ -65,6 +78,14 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 		lwerror("ST_AsMARC21: Unsupported SRID (%d). Only lon/lat coordinate systems are supported in MARC21/XML Documents.",srid);		
 		PG_RETURN_NULL();
 	}
+
+//	if (precision > 15){
+//
+//		PG_FREE_IF_COPY(gs, 0);
+//		lwerror("ST_AsMARC21: The given precision exceeds the maximum allowed (15): %d",precision);
+//		PG_RETURN_NULL();
+//	}
+
 
 	if (precision < 0) precision = 0;
 

@@ -18,17 +18,6 @@
  *
  **********************************************************************/
 
-/**********************************************************************
- * Ability to parse geographic data contained in MARC21/XML documents
- * to return an LWGEOM or an error message. It returns NULL if the
- * document does not contain any geographic data (datafield:034)
- * MARC21/XML version supported: 1.1
- *
- * Copyright (C) 2021 University of Münster (WWU), Germany
- * Author: Jim Jones <jim.jones@uni-muenster.de>
- *
- **********************************************************************/
-
 #include "postgres.h"
 #include "utils/builtins.h"
 
@@ -40,16 +29,24 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-//Datum geom_from_marc21(PG_FUNCTION_ARGS);
 static LWGEOM* parse_marc21(xmlNodePtr xnode);
 
-#define MARC21_NS		((xmlChar *) "http://www.loc.gov/MARC21/slim")
-
-/**
+/**********************************************************************
  * Ability to parse geographic data contained in MARC21/XML documents
  * to return an LWGEOM or an error message. It returns NULL if the
- * MARC21/XML document is valid but does not contain any geographic data ($034)
- */
+ * MARC21/XML record  is valid but does not contain any geographic
+ * data (datafield:034).
+ *
+ * MARC21/XML version supported: 1.1
+ * MARC21/XML Cartographic Mathematical Data Definition:
+ *    https://www.loc.gov/marc/bibliographic/bd034.html
+ *
+ * Copyright (C) 2021 University of Münster (WWU), Germany
+ * Author: Jim Jones <jim.jones@uni-muenster.de>
+ *
+ **********************************************************************/
+
+
 PG_FUNCTION_INFO_V1(geom_from_marc21);
 Datum geom_from_marc21(PG_FUNCTION_ARGS)
 {
@@ -100,22 +97,24 @@ static int
 is_literal_valid(char* literal){
 
 	int j;
+	int num_dec_sep;
 	int coord_start;
 	int literal_length = strlen(literal);
 
 	POSTGIS_DEBUGF(2,"is_literal_valid called (%s)",literal);
 
-	if(literal_length<3) return LW_FAILURE;
+	if(literal_length<3) return LW_FALSE;
 
 	coord_start = 0;
+	num_dec_sep = 0;
 
 	if(literal[0]=='N' || literal[0]=='E' ||
-			literal[0]=='S' || literal[0]=='W' ||
-			literal[0]=='+' || literal[0]=='-' ) {
+	   literal[0]=='S' || literal[0]=='W' ||
+	   literal[0]=='+' || literal[0]=='-' ) {
 
 		if(literal_length<4) {
-			POSTGIS_DEBUGF(3,"  invalid literal length (%d): %s",literal_length,literal);
-			return LW_FAILURE;
+			POSTGIS_DEBUGF(3,"  invalid literal length (%d): \"%s\"",literal_length,literal);
+			return LW_FALSE;
 		}
 
 		coord_start = 1;
@@ -126,26 +125,49 @@ is_literal_valid(char* literal){
 		if(!isdigit(literal[j])){
 
 			if(j<3) {
-				POSTGIS_DEBUGF(3,"  invalid character '%c' at the degrees section: %s",literal[j],literal);
-				return LW_FAILURE;
+
+				POSTGIS_DEBUGF(3,"  invalid character '%c' at the degrees section: \"%s\"",literal[j],literal);
+				return LW_FALSE;
+
 			}
 
-			if(literal[j]!='.' && literal[j] !=',') {
-				POSTGIS_DEBUGF(3,"  invalid character '%c' in %d: %s",literal[j],j,literal);
-				return LW_FAILURE;
+			if(literal[j]=='.' || literal[j] ==',') {
+
+				num_dec_sep++;
+
+				if(num_dec_sep>1) return LW_FALSE;
+
+
+			} else {
+				POSTGIS_DEBUGF(3,"  invalid character '%c' in %d: \"%s\"",literal[j],j,literal);
+				return LW_FALSE;
+
 			}
+
 
 		}
 
 	}
 
-	POSTGIS_DEBUGF(2,"=> is_literal_valid returns LW_SUCCESS for %s",literal);
-	return LW_SUCCESS;
+	POSTGIS_DEBUGF(2,"=> is_literal_valid returns LW_TRUE for \"%s\"",literal);
+	return LW_TRUE;
 
 }
 
 static double
 parse_geo_literal(char* literal){
+
+	/**
+	 * Coordinate formats supported by MARC21/XML:
+	 *
+	 *  -> hdddmmss (hemisphere-degrees-minutes-seconds)
+	 *  -> hddd.dddddd (hemisphere-degrees.decimal degrees)
+	 *  -> +-ddd.dddddd (hemisphere[+/-]-degrees.decimal degrees)
+	 *     (“+” for N and E, “-“ for S and W; the plus sign is optional)
+	 *  -> hdddmm.mmmm (hemisphere-degrees-minutes.decimal minutes):
+	 *  -> hdddmmss.sss (hemisphere-degrees-minutes-seconds.decimal seconds)
+	 *
+	 */
 
 	char dgr[3];
 	char* min;
@@ -165,9 +187,11 @@ parse_geo_literal(char* literal){
 	literal_length = strlen(literal);
 
 	if(!isdigit(hemisphere_sign)) {
+
 		start_literal=1;
 	}
-	POSTGIS_DEBUGF(2,"    start_literal val=%d",start_literal);
+
+	POSTGIS_DEBUGF(2,"    var start_literal=%d",start_literal);
 
 	strncpy(dgr,&literal[start_literal],3);
 
@@ -224,7 +248,7 @@ parse_geo_literal(char* literal){
 
 			/**
 			 * Changes the literal decimal sign from comma to period to avoid problems with atof.
-			 * In MARC21/XML coordinates, the decimal sign may be either a period or a comma.
+			 * -> In MARC21/XML coordinates, the decimal sign may be either a period or a comma.
 			 **/
 			csl = malloc(literal_length);
 
@@ -274,8 +298,8 @@ parse_geo_literal(char* literal){
 			 *     ||_ degrees
 			 *     |_ start_literal (hemisphere)
 			 */
-			POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length-(start_literal+5));
-			//min = malloc(literal_length-(start_literal+5));
+			POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length);
+
 			min = malloc(literal_length);
 			strncpy(min,&literal[start_literal+3],literal_length-(start_literal+3));
 			min[literal_length-(start_literal+3)]='\0';
@@ -297,12 +321,12 @@ parse_geo_literal(char* literal){
 			 *     ||_degrees
 			 *     |_start_literal (hemisphere)
 			 */
-			POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length-(4-start_literal));
+			POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length);
 			min = malloc(literal_length);
 			strncpy(min,&literal[start_literal+3],2);
 			min[2] = '\0';
 
-			POSTGIS_DEBUGF(5,"  sec = malloc(%d)",literal_length-(start_literal+5));
+			POSTGIS_DEBUGF(5,"  sec = malloc(%d)",literal_length);
 			sec = malloc(literal_length);
 			strncpy(sec,&literal[start_literal+5],literal_length-(start_literal+5));
 			sec[literal_length-(start_literal+5)] = '\0';
@@ -322,7 +346,8 @@ parse_geo_literal(char* literal){
 	}
 
 	/**
-	 * “+” for N and E, “-“ for S and W; the plus sign is optional.
+	 * “+” for N and E (the plus sign is optional)
+	 * “-“ for S and W
 	 */
 	if(hemisphere_sign=='S' || hemisphere_sign=='W' || hemisphere_sign=='-') {
 		POSTGIS_DEBUGF(2,"  switching sign due to start character: '%c'",hemisphere_sign);
@@ -348,10 +373,14 @@ parse_marc21(xmlNodePtr xnode) {
 	char* code;
 	char* literal;
 
-	POSTGIS_DEBUGF(2,"parse_marc21 called: root '<%s>', namespace '\"%s\"' ",xnode->name,xnode->ns->href);
+	POSTGIS_DEBUGF(2,"parse_marc21 called: root '<%s>'",xnode->name);
 
-	if (xmlStrcmp(xnode->name, (xmlChar*)"record")) lwpgerror("invalid MARC21/XML root tag: <%s>",xnode->name);
-	if (xmlStrcmp(xnode->ns->href, MARC21_NS)) lwpgerror("invalid MARC21/XML namespace: \"%s\"",xnode->ns->href);
+	/**
+	 * MARC21/XML documents must have <record> as top level element.
+	 * https://www.loc.gov/standards/marcxml/xml/spy/spy.html
+	 */
+
+	if (xmlStrcmp(xnode->name, (xmlChar*)"record")) lwpgerror("invalid MARC21/XML document. Root element <record> expected but <%s> found.",xnode->name);
 
 	result_type = 0;
 	ngeoms = 0;
@@ -364,7 +393,6 @@ parse_marc21(xmlNodePtr xnode) {
 		char* ls = NULL;
 
 		if (datafield->type != XML_ELEMENT_NODE) continue;
-
 
 		if (xmlStrcmp(datafield->name, (xmlChar*)"datafield")!=0 || xmlStrcmp(xmlGetProp(datafield,(xmlChar *)"tag"), (xmlChar*)"034")!=0)  continue;
 
@@ -383,7 +411,7 @@ parse_marc21(xmlNodePtr xnode) {
 
 			POSTGIS_DEBUGF(3,"    subfield code '%s': %s",code,literal);
 
-			if(is_literal_valid(literal)==LW_SUCCESS) {
+			if(is_literal_valid(literal)==LW_TRUE) {
 
 				if(strcmp(code,"d")==0)	lw = literal;
 				else if(strcmp(code,"e")==0) le = literal;
@@ -393,8 +421,8 @@ parse_marc21(xmlNodePtr xnode) {
 			} else {
 
 				xmlFreeNode(subfield);
-				lwpgerror("parse error - invalid literal at 034$%s: %s",code,literal);
-				return NULL;
+				lwpgerror("parse error - invalid literal at 034$%s: \"%s\"",code,literal);
+				//return NULL;
 
 			}
 
@@ -413,6 +441,12 @@ parse_marc21(xmlNodePtr xnode) {
 			if(ngeoms>0) lwgeoms = (LWGEOM**) lwrealloc(lwgeoms,sizeof(LWGEOM*) * (ngeoms+1));
 
 			if(fabs(w-e)<0.0000001f && fabs(n-s)<0.0000001f ){
+
+				/**
+				 *  If the coordinates are given in terms of a center point rather than outside limits,
+				 *  the longitude and latitude which form the central axis are recorded twice (in subfields
+				 *  $d and $e and in $f and $g, respectively).
+				 */
 
 				lwgeoms[ngeoms] = (LWGEOM *) lwpoint_make2d(SRID_UNKNOWN, w, s);
 				geometry_type = MULTIPOINTTYPE;
@@ -466,7 +500,7 @@ parse_marc21(xmlNodePtr xnode) {
 
 		}
 
-		POSTGIS_DEBUGF(2,"=> parse_marc21 returs collection: %s",lwtype_name(lwgeom_get_type(result)));
+		POSTGIS_DEBUGF(2,"=> parse_marc21 returns a collection: %s",lwtype_name(lwgeom_get_type(result)));
 		return result;
 
 	}
