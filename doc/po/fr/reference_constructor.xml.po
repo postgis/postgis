@@ -1375,15 +1375,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:542
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
 "\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
-", <xref linkend=\"ST_Accum\"/>, <xref linkend=\"ST_AddPoint\"/>, <xref "
-"linkend=\"ST_GeometryType\"/>, <xref linkend=\"ST_IsClosed\"/>, <xref "
-"linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_BuildArea\"/>"
+", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:549
