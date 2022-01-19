@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-19 00:25+0000\n"
+"POT-Creation-Date: 2022-01-19 03:22+0000\n"
 "PO-Revision-Date: 2021-11-28 22:06+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
@@ -1856,8 +1856,9 @@ msgstr "크기 및 경계 상자 파라미터는 객체의 인코딩된 길이 �
 
 #. Tag: para
 #: reference_output.xml:1150
-#, no-c-format
-msgid "The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url=\"http://www.postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function."
+#, fuzzy, no-c-format
+#| msgid "The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url=\"http://www.postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function."
+msgid "The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url=\"https://www.postgresql.org/docs/current/functions-aggregate.html\">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function."
 msgstr "이 함수의 배열 입력 형식은 도형 집합 및 유일 식별자를 식별자를 보전하는 TWKB 집합으로 변환하는 데 쓰입니다. 집합의 압축을 풀어 그 안에 있는 객체들에 대한 상세 정보에 접근하는 기능을 가진 클라이언트에 유용합니다. <ulink url=\"http://www.postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink> 함수를 이용해서 배열을 생성할 수 있습니다. 다른 파라미터들은 이 함수의 단순 형태의 경우와 동일하게 실행됩니다."
 
 #. Tag: para

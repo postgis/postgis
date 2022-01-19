@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-19 00:25+0000\n"
+"POT-Creation-Date: 2022-01-19 03:22+0000\n"
 "PO-Revision-Date: 2022-01-11 01:17+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
@@ -1957,8 +1957,9 @@ msgstr "include_sizesとinclude_bounding_boxesパラメータによって、符�
 
 #. Tag: para
 #: reference_output.xml:1150
-#, no-c-format
-msgid "The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url=\"http://www.postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function."
+#, fuzzy, no-c-format
+#| msgid "The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url=\"http://www.postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function."
+msgid "The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url=\"https://www.postgresql.org/docs/current/functions-aggregate.html\">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function."
 msgstr "配列入力の形式は、ジオメトリのコレクションを変換して、一意の識別子をTWKBコレクションに持たせるためのものです。これは、コレクションを展開して、オブジェクト内部に関する情報にさらにアクセスするのに使えます。<ulink url=\"http://www.postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink>関数を使用して配列を生成できます。他のパラメータは、単純な形式のものと同じです。"
 
 #. Tag: para
