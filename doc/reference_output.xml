@@ -1289,7 +1289,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 	  <para><varname>row</varname> row data with at least a geometry column.</para>
 		<para><varname>name</varname> is the name of the layer. Default is the string "default".</para>
 		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. Default is 4096.</para>
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data. Default is the first geometry column.</para>
+		<para><varname>geom_name</varname> is the name of the geometry column in the row data. Default is the first geometry column. Note that PostgreSQL by default automatically <ulink url="https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">folds unquoted identifiers to lower case</ulink>, which means that unless the geometry column is quoted, e.g. <varname>"MyMVTGeom"</varname>, this parameter must be provided as lowercase.</para>
 		<para><varname>feature_id_name</varname> is the name of the Feature ID column in the row data. If NULL or negative the Feature ID is not set. The first column matching name and valid type (smallint, integer, bigint) will be used as Feature ID, and any subsequent column will be added as a property. JSON properties are not supported.</para>
 
 
