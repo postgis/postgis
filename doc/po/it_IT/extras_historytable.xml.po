@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-12 23:53+0000\n"
+"PO-Revision-Date: 2022-01-19 10:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "extras_historytablexml/it/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: extras_historytable.xml:3
 #, no-c-format
 msgid "History Tracking"
-msgstr ""
+msgstr "Tracciamento Storico"
 
 #. Tag: para
 #: extras_historytable.xml:6
@@ -65,7 +65,7 @@ msgid ""
 msgstr ""
 "L'estensione <varname>history_table</varname> era compresa anche in PosGIS "
 "1.5, ma aggiunta alla documentazione in PostGIS 2.0. Questo pacchetto è "
-"scritto in plpgsql e ubicato nella cartella  <varname>extras/history_table</"
+"scritto in plpgsql e ubicato nella cartella <varname>extras/history_table</"
 "varname> del file sorgente tar o nella repository."
 
 #. Tag: para
@@ -92,6 +92,13 @@ msgid ""
 "\"current_user\"()\n"
 " current_version | text                        | not null"
 msgstr ""
+"history_id      | integer                     | not null default\n"
+" date_added      | timestamp without time zone | not null default now()\n"
+" date_deleted    | timestamp without time zone |\n"
+" last_operation  | character varying(30)       | not null\n"
+" active_user     | character varying(90)       | not null default "
+"\"current_user\"()\n"
+" current_version | text                        | not null"
 
 #. Tag: para
 #: extras_historytable.xml:20
@@ -137,7 +144,7 @@ msgid ""
 "With this information maintained, it is possible to retrieve the history of "
 "any record in the roads table:"
 msgstr ""
-"Mantenendo queste informazioni, e possibile ricostruire la storia di "
+"Mantenendo queste informazioni, è possibile ricostruire la storia di "
 "qualsiasi record nella tabella strade:"
 
 #. Tag: programlisting
@@ -162,6 +169,9 @@ msgid ""
 "    WHERE date_added &lt; 'January 1, 2001' AND\n"
 "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
 msgstr ""
+"SELECT * FROM roads_history\n"
+"    WHERE date_added &lt; 'January 1, 2001' AND\n"
+"        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
 
 #. Tag: refname
 #: extras_historytable.xml:38
@@ -203,8 +213,8 @@ msgid ""
 "tables. Creates a table called <varname>historic_information</varname>"
 msgstr ""
 "Crea una tabella che conterrà diversi valori interessanti per la gestione "
-"delle tabelle storiche. La tabella è chiamata <varname>historic_information</"
-"varname>"
+"delle tabelle storiche. La tabella è chiamata "
+"<varname>historic_information</varname>"
 
 #. Tag: para
 #: extras_historytable.xml:58 extras_historytable.xml:100
@@ -238,7 +248,7 @@ msgstr "Postgis_Enable_History"
 
 #. Tag: refpurpose
 #: extras_historytable.xml:78
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Registers a table in the history_information table for tracking and also "
 "adds in side line history table and insert, update, delete rules on the "
@@ -270,6 +280,12 @@ msgid ""
 "insert, update, delete rules on the table. Any inserts,updates,deletes of "
 "the geometry are recorded in the history table."
 msgstr ""
+"Registra una tabella nella tabella history_information per il tracciamento e "
+"aggiunge anche una tabella con lo stesso nome della tabella data ma col "
+"prefisso <varname>history</varname> nello stesso schema della tabella "
+"originale. Aggiunge regole di insert, update e delete alla tabella. Ogni "
+"inserimento, aggiornamento o cancellazione della geometria viene registrato "
+"nella tabella storica."
 
 #. Tag: para
 #: extras_historytable.xml:97
@@ -279,6 +295,9 @@ msgid ""
 "<varname>geometry_columns</varname> and fails if the geometry column is not "
 "present in <varname>geometry_columns</varname> table."
 msgstr ""
+"Questa funzione al momento dipende dalla registrazione di una colonna "
+"geometrica in <varname>geometry_columns</varname> e fallisce se la colonna "
+"non è registrata in tale tabella."
 
 #. Tag: programlisting
 #: extras_historytable.xml:107
@@ -305,3 +324,23 @@ msgid ""
 "------------------------+----------------+-----------------\n"
 " 2011-02-07 12:44:36.92 | INSERT         | 2"
 msgstr ""
+"CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));\n"
+"SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);\n"
+"\n"
+"SELECT postgis_enable_history('public', 'roads', 'geom') As register_table;\n"
+"register_table\n"
+"--------------\n"
+"t\n"
+"\n"
+"INSERT INTO roads(road_name, geom)\n"
+"  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 "
+"832202,231627.5 832250.5)',26986));\n"
+"\n"
+"-- controlla i dettagli della transaction  --\n"
+"SELECT date_added, last_operation, current_version\n"
+"FROM roads_history\n"
+"WHERE road_name = 'Test Street' ORDER BY date_added DESC;\n"
+"\n"
+"       date_added       | last_operation | current_version\n"
+"------------------------+----------------+-----------------\n"
+" 2011-02-07 12:44:36.92 | INSERT         | 2"
