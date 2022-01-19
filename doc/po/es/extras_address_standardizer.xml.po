@@ -36,7 +36,8 @@ msgstr ""
 "Esta es una bifurcación <ulink url=\"http://www.pagcgeo.org/docs/html/"
 "pagc-11.html\">del estandarizador PAGC</ulink> (el código original para esta "
 "parte era <ulink url=\"http://sourceforge.net/p/pagc/code/360/tree/branches/"
-"sew-refactor/postgresql\">el estandarizador de direcciones PAGC PostgreSQL)."
+"sew-refactor/postgresql\">el estandarizador de direcciones PAGC PostgreSQL"
+"</ulink>)."
 
 #. Tag: para
 #: extras_address_standardizer.xml:5
@@ -222,6 +223,7 @@ msgstr ""
 "de retorno de la <xref linkend=\"standardize_address\"/>función. Algunas "
 "descripciones de los elementos se han tomado de <ulink url=\"http://www."
 "pagcgeo.org/docs/html/pagc-12.html#ss12.1\">Atributos postales de PAGC."
+"</ulink>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:51
@@ -238,7 +240,7 @@ msgstr ""
 #: extras_address_standardizer.xml:655
 #, no-c-format
 msgid "&address_standardizer_required;"
-msgstr "& address_standardizer_required;"
+msgstr "&address_standardizer_required;"
 
 #. Tag: term
 #: extras_address_standardizer.xml:55
@@ -363,7 +365,7 @@ msgid ""
 msgstr ""
 "es texto (token número <code>7</code>): STREET POST-DIRECTIONAL Un "
 "modificador direccional que sigue al nombre de la calle. Ejemplo "
-"WEST<emphasis> en <code>3715 TENTH AVENUE WEST</code>."
+"<emphasis>WEST</emphasis> en <code>3715 TENTH AVENUE WEST</code>."
 
 #. Tag: term
 #: extras_address_standardizer.xml:93
