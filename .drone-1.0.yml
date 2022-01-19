@@ -14,21 +14,32 @@ kind: pipeline
 name: build
 clone: *clone
 steps:
+
+  - name: autogen
+    image: *test-image
+    pull: always
+    commands:
+      - ./autogen.sh
+    depends_on: [ clone ]
+
   - name: build-9.6
     image: *test-image
     pull: always
     commands:
       - PGVER=9.6 sh ci/dronie/postgis_regress.sh
+    depends_on: [ autogen ]
 
   - name: build-10
     image: *test-image
     pull: always
     commands:
       - PGVER=10 sh ci/dronie/postgis_regress.sh
+    depends_on: [ autogen ]
 
   - name: build-11
     image: *test-image
     pull: always
     commands:
       - PGVER=11 sh ci/dronie/postgis_regress.sh
+    depends_on: [ autogen ]
 ...

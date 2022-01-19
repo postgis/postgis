@@ -7,17 +7,44 @@ service postgresql start $PGVER
 export PGPORT=`grep ^port /etc/postgresql/$PGVER/main/postgresql.conf | awk '{print $3}'`
 export PATH=/usr/lib/postgresql/$PGVER/bin:$PATH
 psql --version
-./autogen.sh
-./configure CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests
-make clean
+
+#-----------------------------------------------
+# Out of tree build for given PostgreSQL version
+#-----------------------------------------------
+
+SRCDIR=$PWD
+BUILDDIR=/tmp/postgis-build/${PGVER}
+mkdir -p "${BUILDDIR}"
+cd "${BUILDDIR}"
+${SRCDIR}/configure CFLAGS="-O2 -Wall -fno-omit-frame-pointer -Werror" --without-interrupt-tests
 make -j
+
 # we should maybe wait for postgresql service to startup here...
 psql -c "select version()" template1
+
+#-----------------------------------------------
+# Pre-install tests
+#-----------------------------------------------
+
 RUNTESTFLAGS=-v make check
+
+#-----------------------------------------------
+# Install
+#-----------------------------------------------
+
 make install
+
+#-----------------------------------------------
+# Post-install tests
+#-----------------------------------------------
+
 RUNTESTFLAGS=-v make installcheck
 
-CURRENTVERSION=`grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
-utils/check_all_upgrades.sh -s ${CURRENTVERSION}! | tee check.log
+#-----------------------------------------------
+# Upgrade tests
+#-----------------------------------------------
+
+CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
+${SRCDIR}/utils/check_all_upgrades.sh -s ${CURRENTVERSION}! | tee check.log
 echo "-- Summary of upgrade tests --"
 egrep '(PASS|FAIL)' check.log
