@@ -2,7 +2,9 @@
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
+# *
 # * Copyright 2008 Mark Cave-Ayland
+# * Copyright (c) 2020 Sandro Santilli <strk@kbt.io>
 # *
 # * This is free software; you can redistribute and/or modify it under
 # * the terms of the GNU General Public Licence. See the COPYING file.
@@ -19,11 +21,16 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
+top_builddir = @top_builddir@
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+
+VPATH = $(srcdir)
+
 # Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
 # version which is not what we want.
 CC=@CC@
-CFLAGS= -I ../liblwgeom @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ @PROJ_CPPFLAGS@
-top_builddir = @top_builddir@
+CFLAGS= -I$(top_srcdir)/liblwgeom -I$(top_builddir)/liblwgeom @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ @PROJ_CPPFLAGS@
 SHELL = @SHELL@
 INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
@@ -104,7 +111,7 @@ $(PGSQL2SHP-CLI): $(SHPLIB_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM)
 	  $(CC) $(CFLAGS) $^ $(LDFLAGS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@
 
 $(POSTGIS-CLI): postgis.pl
-	cp postgis.pl postgis; chmod +x postgis
+	cp $< $@; chmod +x $@
 
 $(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM)
 	$(LIBTOOL) --mode=link \

@@ -7,7 +7,7 @@
 #
 # PostGIS documentation build Makefile
 #
-# Copyright 2003-2012 Sandro Santilli <strk@kbt.io>
+# Copyright 2003-2022 Sandro Santilli <strk@kbt.io>
 # Copyright 2004-2012 Paul Ramsey <pramsey@cleverelephant.ca>
 # Copyright 2009-2011 Regina Obe <lr@pcorp.us>
 # Copyright 2008-2010 Mark Cave-Ayland
@@ -22,6 +22,11 @@
 #
 
 translations = it_IT pt_BR fr es pl ko_KR de ja ru
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+builddir = @builddir@
+top_builddir = @top_builddir@
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -164,6 +169,8 @@ XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
 
 XML_INPUTS_POT = $(XML_SOURCES:%.xml=po/templates/%.xml.pot)
 
+VPATH = $(srcdir)
+
 .PHONY: $(XML_INPUTS_POT)
 ifeq ($(XML2POT),)
 $(XML_INPUTS_POT): requirements_not_met_xml2pot
@@ -213,44 +220,45 @@ ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl Makefile postgis-out.xml $(XML_SOURCES)
-	$(XSLTPROC) --novalid ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
 endif
 
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/postgis_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/postgis_comments.sql.xsl postgis-out.xml > $@
 
 postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
 
 raster_comments.sql: ./xsl/raster_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/raster_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/raster_comments.sql.xsl postgis-out.xml > $@
 
 raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
 
 topology_comments.sql: ./xsl/topology_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/topology_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/topology_comments.sql.xsl postgis-out.xml > $@
 
 topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
 
 sfcgal_comments.sql: ./xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/sfcgal_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/sfcgal_comments.sql.xsl postgis-out.xml > $@
 
 sfcgal_cheatsheet.html: ./xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/sfcgal_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/sfcgal_cheatsheet.html.xsl postgis-out.xml > $@
 
 tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
 
 tiger_geocoder_cheatsheet.html: ./xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
 
 postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@
 
 chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
+		--path $(srcdir)
 		--output html/ \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<

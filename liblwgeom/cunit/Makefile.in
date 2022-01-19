@@ -2,6 +2,8 @@
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
+# *
+# * Copyright 2022 Sandro Santilli <strk@kbt.io>
 # * Copyright 2008 Paul Ramsey, Mark Cave-Ayland
 # *
 # * This is free software; you can redistribute and/or modify it under
@@ -9,15 +11,20 @@
 # *
 # **********************************************************************
 
-CC=@CC@
 top_builddir = @top_builddir@
+builddir = @builddir@
+srcdir = @srcdir@
+
+CC=@CC@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=-I.. @CUNIT_CPPFLAGS@ @CPPFLAGS@
+CUNIT_CPPFLAGS = -I$(srcdir)/.. -I$(builddir)/.. @CUNIT_CPPFLAGS@ @CPPFLAGS@
 CFLAGS=$(CUNIT_CPPFLAGS) @CFLAGS@
 LDFLAGS = @GEOS_LDFLAGS@ $(CUNIT_LDFLAGS)
+
+VPATH = $(srcdir)
 
 ifeq ($(CUNIT_WITH_VALGRIND), YES)
 	LIBTOOL_VALGRIND := valgrind $(CUNIT_VALGRIND_FLAGS)

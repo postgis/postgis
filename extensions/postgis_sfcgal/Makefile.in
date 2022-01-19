@@ -1,4 +1,4 @@
-include ../upgradeable_versions.mk
+include @srcdir@/../upgradeable_versions.mk
 
 EXTENSION    = postgis_sfcgal
 EXTVERSION    = @POSTGIS_LIB_VERSION@
@@ -32,19 +32,19 @@ DATA_built = \
 # Scripts making up the extension minor upgrade file
 # NOTE: order matters
 EXTENSION_UPGRADE_SCRIPTS = \
-	sql_bits/sfcgal_upgrade_minor.sql
+	sql/sfcgal_upgrade_minor.sql
 
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
-	sql_bits/sfcgal.sql \
+	sql/sfcgal.sql \
 	../../utils/create_unpackaged.pl
 
 # Scripts making up the extension file
 # NOTE: order matters
 EXTENSION_SCRIPTS = \
-	sql_bits/sfcgal.sql \
-	sql_bits/sfcgal_comments.sql
+	sql/sfcgal.sql \
+	sql/sfcgal_comments.sql
 
 EXTRA_CLEAN = sql
 
@@ -63,15 +63,13 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ > $@
 
-sql_bits/sfcgal.sql: ../../sfcgal/sfcgal.sql
-	mkdir -p sql_bits
+sql/sfcgal.sql: ../../sfcgal/sfcgal.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 ../../doc/sfcgal_comments.sql:
 	$(MAKE) -C ../../doc comments
 
-sql_bits/sfcgal_comments.sql: ../../doc/sfcgal_comments.sql
-	mkdir -p sql_bits
+sql/sfcgal_comments.sql: ../../doc/sfcgal_comments.sql | sql
 	cp $< $@
 
 sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
@@ -84,22 +82,20 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_
 	# Ensure version is correct
 	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
 	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
-		| $(PERL) ../../utils/create_unpackaged.pl ${EXTENSION} \
+		| $(PERL) @top_srcdir@/utils/create_unpackaged.pl ${EXTENSION} \
 		>> $@
 
-sql_bits/sfcgal_upgrade.sql : ../../sfcgal/sfcgal_upgrade.sql
-	mkdir -p sql_bits
+sql/sfcgal_upgrade.sql : ../../sfcgal/sfcgal_upgrade.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-sql_bits/sfcgal_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/sfcgal_upgrade.sql ../../doc/sfcgal_comments.sql ../postgis_extension_helper_uninstall.sql
-	mkdir -p sql_bits
+sql/sfcgal_upgrade_minor.sql: ../postgis_extension_helper.sql sql/sfcgal_upgrade.sql ../../doc/sfcgal_comments.sql ../postgis_extension_helper_uninstall.sql | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
 	cat $(EXTENSION_UPGRADE_SCRIPTS) > $@
 
-include ../upgrade-paths-rules.mk
+include @srcdir@/../upgrade-paths-rules.mk
 
 distclean: clean
 	rm Makefile
@@ -108,3 +104,5 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@
+
+VPATH = @srcdir@

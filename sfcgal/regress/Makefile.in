@@ -3,20 +3,25 @@
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
 # *
-# * Copyright (C) 2020 Sandro Santilli <strk@kbt.io>
+# * Copyright (C) 2020-2022 Sandro Santilli <strk@kbt.io>
 # *
 # * This is free software; you can redistribute and/or modify it under
 # * the terms of the GNU General Public Licence. See the COPYING file.
 # *
 # **********************************************************************
 
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+builddir = @builddir@
+
 PERL=@PERL@
 
 override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
 
-topsrcdir = $(realpath ../../)
+# TODO: drop this variable, use top_srcdir directly
+topsrcdir = $(top_srcdir)
 
-include tests.mk
-include ../../regress/runtest.mk
+include $(srcdir)/tests.mk
+include $(top_srcdir)/regress/runtest.mk
 
 check: check-regress

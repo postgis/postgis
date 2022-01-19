@@ -34,7 +34,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#include "../../postgis/sqldefines.h"
+#include "sqldefines.h"
 
 -- INSTALL VERSION: POSTGIS_LIB_VERSION
 

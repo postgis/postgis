@@ -1,15 +1,27 @@
-abstopsrcdir := $(realpath $(topsrcdir))
+# **********************************************************************
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.net
+# *
+# * Copyright (C) 2020-2022 Sandro Santilli <strk@kbt.io>
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+abstopsrcdir := $(realpath $(top_srcdir))
 abssrcdir := $(realpath .)
 
 TESTS := $(patsubst $(topsrcdir)/%,$(abstopsrcdir)/%,$(TESTS))
 TESTS := $(patsubst $(abssrcdir)/%,./%,$(TESTS))
 
+.PHONY: check-regress
 check-regress:
-
 	@echo "RUNTESTFLAGS: $(RUNTESTFLAGS)"
 	@echo "RUNTESTFLAGS_INTERNAL: $(RUNTESTFLAGS_INTERNAL)"
 
-	@$(PERL) $(topsrcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
+	POSTGIS_TOP_BUILD_DIR=$(top_builddir) $(PERL) $(topsrcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
 
 	@if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		echo "Running upgrade test as RUNTESTFLAGS did not contain that"; \

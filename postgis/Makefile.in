@@ -36,7 +36,7 @@ endif
 
 # Files to be copied to the contrib/ directory
 SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
-DATA=../spatial_ref_sys.sql
+DATA=@top_srcdir@/spatial_ref_sys.sql
 
 # SQL objects (files requiring pre-processing)
 SQL_OBJS = \
@@ -57,15 +57,15 @@ WAGYU_LIBPATH = ../deps/wagyu/@WAGYU_LIB@
 
 ifeq (@HAVE_PROTOBUF@,yes)
 PROTOBUF_OBJ = vector_tile.pb-c.o geobuf.pb-c.o
-UTHASH_INCLUDE = -I../deps/uthash/include
+UTHASH_INCLUDE = -I@top_srcdir@/deps/uthash/include
 
-WAYGU_INCLUDE = -I../deps/wagyu
+WAYGU_INCLUDE = -I@top_srcdir@/deps/wagyu
 WAYGU_LIB = $(WAGYU_LIBPATH) @WAGYU_LDFLAGS@
 WAGYU_DEP = $(WAGYU_LIBPATH)
 endif
 
 FLATGEOBUF_LIBPATH = ../deps/flatgeobuf/@FLATGEOBUF_LIB@
-FLATGEOBUF_INCLUDE = -I../deps/flatgeobuf
+FLATGEOBUF_INCLUDE = -I@top_srcdir@/deps/flatgeobuf
 FLATGEOBUF_LIB = $(FLATGEOBUF_LIBPATH) @FLATGEOBUF_LDFLAGS@
 FLATGEOBUF_DEP = $(FLATGEOBUF_LIBPATH)
 
@@ -143,7 +143,7 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I../liblwgeom @CFLAGS@ -I../libpgcommon $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
+PG_CPPFLAGS += -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom @CFLAGS@ -I@top_srcdir@/libpgcommon $(FLATGEOBUF_INCLUDE) $(WAYGU_INCLUDE) $(UTHASH_INCLUDE) @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = $(WAYGU_LIB) $(FLATGEOBUF_LIB) ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
@@ -165,6 +165,8 @@ PGXS := @PGXS@
 # http://www.postgresql.org/message-id/CAB7nPqTsR5o3g-fBi6jbsVdhfPiLFWQ_0cGU5=94Rv_8W3qvFA@mail.gmail.com
 NO_TEMP_INSTALL=yes
 include $(PGXS)
+
+VPATH := @srcdir@
 
 # Set PERL _after_ the include of PGXS
 PERL=@PERL@
@@ -217,11 +219,11 @@ PROTOCC=@PROTOCC@
 
 # Generate Mapbox Vector Tile encoder/decoder using protobuf-c compiler
 vector_tile.pb-c.c vector_tile.pb-c.h: vector_tile.proto
-	$(PROTOCC) --c_out=. $<
+	$(PROTOCC) -I@srcdir@ --c_out=. $<
 
 # Generate Geobuf encoder/decoder using protobuf-c compiler
 geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
-	$(PROTOCC) --c_out=. $<
+	$(PROTOCC) -I@srcdir@ --c_out=. $<
 
 ifeq (@HAVE_PROTOBUF@,yes)
 lwgeom_out_mvt.o: vector_tile.pb-c.h
@@ -234,12 +236,12 @@ endif
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
+	$(SQLPP) -I@top_srcdir@/libpgcommon -I@builddir@ $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
 #this is redundant but trying to fold in with extension just hangs
 postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
-	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+	$(PERL) @top_srcdir@/utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 
 postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql
@@ -253,10 +255,10 @@ $(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 #postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c
 
 uninstall_postgis.sql: postgis.sql ../utils/create_undef.pl
-	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 uninstall_legacy.sql: legacy.sql ../utils/create_undef.pl
-	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean
 	rm -f Makefile

@@ -9,12 +9,17 @@
 # *
 # **********************************************************************
 
+srcdir = @srcdir@
+top_builddir = @top_builddir@
+
 CC=@CC@
-CFLAGS= -I../liblwgeom @CPPFLAGS@ @CFLAGS@ @PGSQL_BE_CPPFLAGS@ @PROJ_CPPFLAGS@ @PICFLAGS@ @GETTEXT_CFLAGS@
+CFLAGS= -I$(srcdir)/../liblwgeom -I$(top_builddir)/liblwgeom @CPPFLAGS@ @CFLAGS@ @PGSQL_BE_CPPFLAGS@ @PROJ_CPPFLAGS@ @PICFLAGS@ @GETTEXT_CFLAGS@
 LDFLAGS=@GETTEXT_LDFLAGS@ @LIBINTL@
 
 YACC=@YACC@
 LEX=@LEX@
+
+VPATH = $(srcdir)
 
 # Standalone COMMON objects
 SA_OBJS = \

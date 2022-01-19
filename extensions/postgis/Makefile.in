@@ -1,4 +1,4 @@
-include ../upgradeable_versions.mk
+include @srcdir@/../upgradeable_versions.mk
 
 EXTENSION     = postgis
 EXTVERSION    = @POSTGIS_LIB_VERSION@
@@ -67,6 +67,8 @@ EXTRA_CLEAN = sql/
 
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
+VPATH = @srcdir@
+
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql
 
 $(EXTENSION).control: $(EXTENSION).control.in Makefile
@@ -84,24 +86,22 @@ sql/raster_unpackage.sql: ../../utils/create_extension_unpackage.pl
 sql/raster_unpackage.sql: unpackage_raster_if_needed.sql
 sql/raster_unpackage.sql: $(RASTER_DROP_SCRIPTS) | sql
 
-	sed '/UNPACKAGE_CODE/q' unpackage_raster_if_needed.sql > $@
+	sed '/UNPACKAGE_CODE/q' @srcdir@/unpackage_raster_if_needed.sql > $@
 
-	cat $(RASTER_DROP_SCRIPTS) \
-		| $(PERL) ../../utils/create_extension_unpackage.pl postgis >> $@
+	cat $^ \
+		| $(PERL) @top_srcdir@/utils/create_extension_unpackage.pl postgis >> $@
 
 	sed -ne '/UNPACKAGE_CODE/{s///; :a' -e 'n;p;ba' -e '}' \
-		unpackage_raster_if_needed.sql  >> $@
+		@srcdir@/unpackage_raster_if_needed.sql  >> $@
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile sql
 	# Ensure version is correct
 	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
-	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
-		| $(PERL) ../../utils/create_unpackaged.pl postgis \
-		>> $@
+	cat $^ | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis >> $@
 
 sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 	echo "-- Nothing to do here" > $@
@@ -117,7 +117,7 @@ sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql
 	$(MAKE) -C ../../doc comments
 
 sql/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql
-	$(PERL) ../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
+	$(PERL) @top_srcdir@/utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
 sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_before_upgrade.sql sql/postgis_upgrade_for_extension.sql.in ../../postgis/postgis_after_upgrade.sql | sql
 	#strip BEGIN/COMMIT since these are not allowed in extensions
@@ -125,10 +125,10 @@ sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_before_upgrade.sql 
 	cat $^ | $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
 
 sql/postgis_upgrade_for_extension.sql.in: sql/postgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl | sql
-	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+	$(PERL) @top_srcdir@/utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in ../../postgis_revision.h | sql
-	$(SQLPP) -I../../libpgcommon $< | grep -v '^#' | \
+	$(SQLPP) -I@builddir@/../../postgis $< | grep -v '^#' | \
 	$(PERL) -lpe \
 		"s'MODULE_PATHNAME'\$(MODULEPATH)'g" \
 		| $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
@@ -139,9 +139,9 @@ sql/postgis_upgrade.sql: sql/postgis_upgrade_for_extension.sql | sql
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
-	cat $(EXTENSION_UPGRADE_SCRIPTS) >> $@
+	cat $^ >> $@
 
-include ../upgrade-paths-rules.mk
+include @srcdir@/../upgrade-paths-rules.mk
 
 distclean: clean
 	rm -f Makefile
