@@ -6,15 +6,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-19 03:22+0000\n"
-"PO-Revision-Date: 2022-01-11 01:17+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-01-19 10:25+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"reference_outputxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: para
 #: reference_output.xml:6
@@ -2897,7 +2898,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:1150
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The array-input form of the function is used to convert a collection of "
 "geometries and unique identifiers into a TWKB collection that preserves the "
@@ -2907,12 +2908,10 @@ msgid ""
 "functions-aggregate.html\">array_agg</ulink> function. The other parameters "
 "operate the same as for the simple form of the function."
 msgstr ""
-"配列入力の形式は、ジオメトリのコレクションを変換して、一意の識別子をTWKBコレ"
-"クションに持たせるためのものです。これは、コレクションを展開して、オブジェク"
-"ト内部に関する情報にさらにアクセスするのに使えます。<ulink url=\"http://www."
-"postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink>関"
-"数を使用して配列を生成できます。他のパラメータは、単純な形式のものと同じで"
-"す。"
+"配列入力の形式は、ジオメトリのコレクションを変換して、一意の識別子をTWKBコレクションに持たせるためのものです。これは、コレクションを展開して、オブジェ"
+"クト内部に関する情報にさらにアクセスするのに使えます。<ulink url=\"http://www.postgresql.org/docs/"
+"current/functions-aggregate.html\""
+">array_agg</ulink>関数を使用して配列を生成できます。他のパラメータは、単純な形式のものと同じです。"
 
 #. Tag: para
 #: reference_output.xml:1152
