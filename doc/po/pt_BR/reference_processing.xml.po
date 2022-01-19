@@ -562,6 +562,9 @@ msgid ""
 "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
 "\"ST_MakeValid\"/>"
 msgstr ""
+", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
+"\"ST_MakeValid\"/>"
 
 #. Tag: refname
 #: reference_processing.xml:293

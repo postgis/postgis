@@ -265,7 +265,7 @@ msgstr ""
 #: reference_overlay.xml:149 reference_overlay.xml:666
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
 #: reference_overlay.xml:155
@@ -479,6 +479,10 @@ msgid ""
 "\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref linkend="
 "\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 msgstr ""
+", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
+"\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref linkend="
+"\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 
 #. Tag: refname
 #: reference_overlay.xml:256
@@ -798,6 +802,9 @@ msgid ""
 ">, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_GeometryN\"/>, <xref "
 "linkend=\"ST_Subdivide\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_CollectionExtract\"/"
+">, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_GeometryN\"/>, <xref "
+"linkend=\"ST_Subdivide\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
 #: reference_overlay.xml:496
