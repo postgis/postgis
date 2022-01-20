@@ -26,7 +26,7 @@ check-regress:
 
 	@if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		echo "Running upgrade test as RUNTESTFLAGS did not contain that"; \
-		$(PERL) $(topsrcdir)/regress/run_test.pl \
+		POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(topsrcdir)/regress/run_test.pl \
       --upgrade \
       $(RUNTESTFLAGS) \
       $(RUNTESTFLAGS_INTERNAL) \
