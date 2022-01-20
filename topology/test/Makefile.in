@@ -41,14 +41,14 @@ edit:
 	$(PSQL) -X -f edit_topology.sql $(DATABASE)
 
 
-topo_predicates.sql: predicates.sql.in
-	cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:feature:g;s:@SCHEMA@:topology.:g' > topo_predicates.sql
+topo_predicates.sql: predicates.sql.in Makefile
+	cpp -P -traditional-cpp $< | sed -e 's:@COLUMN@:feature:g;s:@SCHEMA@:topology.:g' > $@
 
-load_topology.sql: load_topology.sql.in
-	cpp -P -traditional-cpp load_topology.sql.in | sed -e 's:@SRID@:-1:g' > load_topology.sql
+load_topology.sql: load_topology.sql.in Makefile
+	cpp -P -traditional-cpp $< | sed -e 's:@SRID@:-1:g' > $@
 
-load_topology-4326.sql: load_topology.sql.in
-	cpp -P -traditional-cpp load_topology.sql.in | sed -e 's:@SRID@:4326:g' > load_topology-4326.sql
+load_topology-4326.sql: load_topology.sql.in Makefile
+	cpp -P -traditional-cpp $< | sed -e 's:@SRID@:4326:g' > $@
 
 clean distclean:
 	rm -f topo_predicates.sql load_topology.sql load_topology-4326.sql

@@ -2,7 +2,7 @@
 set client_min_messages to ERROR;
 
 -- Import city_data
-\i ../load_topology-4326.sql
+\i :top_builddir/topology/test/load_topology-4326.sql
 
 -- Utility functions for the test {
 
@@ -375,7 +375,7 @@ SELECT topology.DropTopology('city_data');
 -- {
 
 -- Import city_data
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
 \i ../load_features.sql
 \i ../cache_geometries.sql
 

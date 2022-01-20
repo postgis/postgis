@@ -2,7 +2,7 @@ set client_min_messages to WARNING;
 
 -- Tests TopoGeometry->Geometry cast and id(TopoGeometry)
 
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
 \i ../load_features.sql
 \i ../more_features.sql
 \i ../hierarchy.sql

@@ -2,7 +2,7 @@
 set client_min_messages to ERROR;
 
 -- Import city_data
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
 
 CREATE TABLE city_data.f_lin(id serial primary key);
 SELECT NULL FROM AddTopoGeometryColumn('city_data', 'city_data', 'f_lin', 'tg', 'LINE');

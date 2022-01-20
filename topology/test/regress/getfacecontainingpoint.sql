@@ -1,7 +1,7 @@
 \set VERBOSITY terse
 set client_min_messages to WARNING;
 
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
 
 -- Add holes touching shell defined in CW order
 SELECT NULL FROM topology.TopoGeo_addLineString('city_data', 'LINESTRING(24 14, 23 17,25 17, 24 14)');
