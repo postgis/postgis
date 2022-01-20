@@ -37,8 +37,7 @@ EXTENSION_UPGRADE_SCRIPTS = \
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
-	sql/sfcgal.sql \
-	../../utils/create_unpackaged.pl
+	sql/sfcgal.sql
 
 # Scripts making up the extension file
 # NOTE: order matters
@@ -78,10 +77,10 @@ sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 #grep all lines that start with CREATE OR REPLACE FUNCTION, TRIGGER...
 #then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
 #then remove default values and extra junk
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql/sfcgal.sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
 	# Ensure version is correct
 	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
-	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
+	cat $< \
 		| $(PERL) @top_srcdir@/utils/create_unpackaged.pl ${EXTENSION} \
 		>> $@
 
