@@ -59,8 +59,6 @@ EXTRA_CLEAN = sql
 
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
-VPATH = @srcdir@
-
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 
 sql:
@@ -131,3 +129,6 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@
+
+VPATH = @srcdir@
+
