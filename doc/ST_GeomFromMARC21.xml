@@ -23,21 +23,19 @@
     <refsection>
         <title>Description</title>
         <para>
-            Constructs a PostGIS geometry from a MARC21/XML record, which can be a <varname>POINT</varname> or a <varname>POLYGON</varname>.
-            In case there are multiple entries for geographic data in the same MARC21/XML record, a <varname>MULTIPOINT</varname> or <varname>MULTIPOLYGON</varname> will be returned. 
+            Constructs a PostGIS geometry from a MARC21/XML record, which can be a <varname>POINT</varname> or a <varname>POLYGON</varname>. 
+            In case of multiple geographic data entries in the same MARC21/XML record, a <varname>MULTIPOINT</varname> or <varname>MULTIPOLYGON</varname> will be returned. 
             If the record contains mixed geometry types, a <varname>GEOMETRYCOLLECTION</varname> will be returned.
             It returns NULL if the MARC21/XML record does not contain any geographic data (datafield:034).
         </para>
 
         <para>
-            MARC21/XML versions supported:
+            LOC MARC21/XML versions supported:
             <itemizedlist>
                 <listitem>
-                    <para>MARC21/XML 1.1</para>
+                    <para><ulink url="https://www.loc.gov/standards/marcxml/">MARC21/XML 1.1</ulink></para>
                 </listitem>
             </itemizedlist>
-            MARC21/XML Standard:
-            <ulink url="https://www.loc.gov/standards/marcxml/">https://www.loc.gov/standards/marcxml/</ulink>            
         </para>
 
         <para>Availability: XXXX, requires libxml2 2.6+</para>
@@ -55,7 +53,7 @@
         
         <title>Examples</title>
         
-        <para>Converting MARC21/XML geographic data containing a single geometry (POINT) encoded as  <varname>hddd.dddddd</varname>  </para>
+        <para>Converting MARC21/XML geographic data containing a single <varname>POINT</varname> encoded as  <varname>hddd.dddddd</varname>  </para>
         <programlisting>
             SELECT
               ST_AsText(
@@ -78,7 +76,7 @@
 
         </programlisting>
 
-        <para>Converting MARC21/XML geographic data containing a single geometry (POLYGON) encoded as <varname>hdddmmss</varname></para>
+        <para>Converting MARC21/XML geographic data containing a single <varname>POLYGON</varname> encoded as <varname>hdddmmss</varname></para>
         
         <programlisting>
 
