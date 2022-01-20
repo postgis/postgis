@@ -157,7 +157,7 @@ $ENV{"PGOPTIONS"} = $PGOPTIONS;
 my $PATH = $ENV{"PATH"}; # this is useless
 
 # Calculate the regression directory locations
-my $STAGED_INSTALL_DIR = $REGDIR . "/00-regress-install";
+my $STAGED_INSTALL_DIR = $TOP_BUILDDIR . "/regress/00-regress-install";
 my $STAGED_SCRIPTS_DIR = $STAGED_INSTALL_DIR . "/share/contrib/postgis";
 
 my $OBJ_COUNT_PRE = 0;
