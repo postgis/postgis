@@ -400,6 +400,7 @@ foreach $TEST (@ARGV)
 		# TODO: add more variables?
 		my $cmd = "psql -Xq"
 		  . " -v \"regdir=$REGDIR\""
+		  . " -v \"top_builddir=$TOP_BUILDDIR\""
 		  . " -v \"scriptdir=$scriptdir\""
 		  . " -v \"schema=$OPT_SCHEMA.\""
 		  # TODO: inject search_path somehow
@@ -660,6 +661,7 @@ sub run_simple_sql
 	my $tmpfile = sprintf("%s/test_%s_tmp", $TMPDIR, $RUN);
 	my $cmd = "psql -v \"VERBOSITY=terse\" "
 		. " -v \"regdir=$REGDIR\""
+		. " -v \"top_builddir=$TOP_BUILDDIR\""
 		. " -tXAq $DB < $sql > $tmpfile 2>&1";
 	#print($cmd);
 	my $rv = system($cmd);
@@ -757,6 +759,7 @@ sub run_simple_test
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
+          . " -v \"top_builddir=$TOP_BUILDDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
           . " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
           . " -tXAq -f $sqlfile $DB > $outfile 2>&1";
