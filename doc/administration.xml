@@ -190,7 +190,7 @@ environment).</para></note>
 	  not using extensions.  If you have extensions and try to
 	  upgrade with this approach you'll get messages like:</para>
 
-		<programlisting>can't drop ... because postgis extension depends on it</programlisting>
+		<programlisting>can't drop … because postgis extension depends on it</programlisting>
 
 		<para>NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from
 		PostGIS 2.* prior to r7409, you cannot use this procedure but
@@ -248,7 +248,7 @@ environment).</para></note>
 		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;";
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
-			<programlisting>No migration path defined for ... to &last_release_version;</programlisting>
+			<programlisting>No migration path defined for … to &last_release_version;</programlisting>
 		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup on top of this new database.</para>
     <para>If you get a notice message like:</para>
     <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>

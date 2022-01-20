@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-20 18:53+0000\n"
 "PO-Revision-Date: 2022-01-18 14:46+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -54,10 +54,12 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
-"PostGIS 2.1.3以降では、データベース外ラスタと全てのラスタドライバは、デフォルトでは無効になっています。これらを有効にするには、サーバ上で、"
-"環境変数 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>と<varname>POSTGIS_ENABLE_"
-"OUTDB_RASTERS</varname>を設定します。PostGIS 2.2では、<xref linkend=\"PostGIS_GUC\""
-"/>に従って設定する、クロスプラットフォームな手法があります。"
+"PostGIS 2.1.3以降では、データベース外ラスタと全てのラスタドライバは、デフォル"
+"トでは無効になっています。これらを有効にするには、サーバ上で、環境変数 "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname>と"
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>を設定します。PostGIS 2.2で"
+"は、<xref linkend=\"PostGIS_GUC\"/>に従って設定する、クロスプラットフォームな"
+"手法があります。"
 
 #. Tag: para
 #: administration.xml:19
@@ -75,7 +77,9 @@ msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
 #: administration.xml:21
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
-msgstr "他の値を入れたり、値を入れない場合には、データベース外ラスタは無効になります。"
+msgstr ""
+"他の値を入れたり、値を入れない場合には、データベース外ラスタは無効になりま"
+"す。"
 
 #. Tag: para
 #: administration.xml:22
@@ -83,7 +87,8 @@ msgstr "他の値を入れたり、値を入れない場合には、データベ
 msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
-msgstr "インストールしたGDALのドライバを有効にするには、次の環境変数を設定します。"
+msgstr ""
+"インストールしたGDALのドライバを有効にするには、次の環境変数を設定します。"
 
 #. Tag: programlisting
 #: administration.xml:23
@@ -97,7 +102,8 @@ msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr "一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します。"
+msgstr ""
+"一部のドライバのみ有効にしたい場合には、環境変数を次のように設定します。"
 
 #. Tag: programlisting
 #: administration.xml:25
@@ -121,10 +127,11 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
-"環境変数の設定はOSによって異なります。UbuntuまたはDebian上でapt-"
-"postgresqlを経由したPostgreSQLのインストールについては、<filename>/etc/postgresql/<replaceable>"
-"10</replaceable>/<replaceable>main</replaceable>/environment</filename>を編集するの"
-"が好ましい方法です。 ここで、10はPostgreSQLのバージョンを指し、mainはクラスタを指します。"
+"環境変数の設定はOSによって異なります。UbuntuまたはDebian上でapt-postgresqlを"
+"経由したPostgreSQLのインストールについては、<filename>/etc/postgresql/"
+"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
+"filename>を編集するのが好ましい方法です。 ここで、10はPostgreSQLのバージョン"
+"を指し、mainはクラスタを指します。"
 
 #. Tag: para
 #: administration.xml:32
@@ -137,10 +144,12 @@ msgid ""
 "clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment "
 "Variables</emphasis> and adding new system variables."
 msgstr ""
-"Windowsでサービスとして実行している場合には、システム変数で設定します。Windows "
-"7では、コンピュータを右クリックしてプロパティをクリックするか、エクスプローラの検索バーにコントロール パネル\\すべての<varname>コントロール "
-"パネル項目\\システム</varname>を指定します。 <emphasis>システムの詳細設定 -&gt; 詳細設定 -&gt; 環境変数 "
-"</emphasis>を順にクリックして、新しいシステム環境変数を追加します。"
+"Windowsでサービスとして実行している場合には、システム変数で設定します。"
+"Windows 7では、コンピュータを右クリックしてプロパティをクリックするか、エクス"
+"プローラの検索バーにコントロール パネル\\すべての<varname>コントロール パネル"
+"項目\\システム</varname>を指定します。 <emphasis>システムの詳細設定 -&gt; 詳"
+"細設定 -&gt; 環境変数 </emphasis>を順にクリックして、新しいシステム環境変数を"
+"追加します。"
 
 #. Tag: para
 #: administration.xml:34
@@ -148,7 +157,9 @@ msgstr ""
 msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
-msgstr "環境変数を設定した後は、設定を反映させるために、PostgreSQLサービスの再起動が必要です。"
+msgstr ""
+"環境変数を設定した後は、設定を反映させるために、PostgreSQLサービスの再起動が"
+"必要です。"
 
 #. Tag: title
 #: administration.xml:39
@@ -170,8 +181,9 @@ msgid ""
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
 msgstr ""
-"PostgreSQL 9.1以上を使っていて、エクステンションのPostGISモジュールをコンパイル、インストールしている場合には、エクステンションという"
-"メカニズムを使用して、データベースを空間データベースに切り替えることができます。"
+"PostgreSQL 9.1以上を使っていて、エクステンションのPostGISモジュールをコンパイ"
+"ル、インストールしている場合には、エクステンションというメカニズムを使用し"
+"て、データベースを空間データベースに切り替えることができます。"
 
 #. Tag: para
 #: administration.xml:49
@@ -181,8 +193,9 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
-"中核となるPostGISエクステンションには、ジオメトリ、ジオグラフィ、spatial_ref_sysおよび全ての関数とコメントが含まれています。ラスタと"
-"トポロジは別のエクステンションになっています。"
+"中核となるPostGISエクステンションには、ジオメトリ、ジオグラフィ、"
+"spatial_ref_sysおよび全ての関数とコメントが含まれています。ラスタとトポロジは"
+"別のエクステンションになっています。"
 
 #. Tag: para
 #: administration.xml:55
@@ -209,7 +222,8 @@ msgstr ""
 #: administration.xml:63
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
-msgstr "エクステンションを使わずに空間データベースを有効にする (お勧めできません)"
+msgstr ""
+"エクステンションを使わずに空間データベースを有効にする (お勧めできません)"
 
 #. Tag: para
 #: administration.xml:65
@@ -219,8 +233,9 @@ msgid ""
 "installed in the PostgreSQL extension directory (for example during testing, "
 "development or in a restricted environment)."
 msgstr ""
-"これは、通常はPostgreSQLのエクステンションのディレクトリ内にPostGISをインストールできないか、したくない場合 "
-"(たとえばテスト中や開発中、または制限のある環境内)にのみ必要となります。"
+"これは、通常はPostgreSQLのエクステンションのディレクトリ内にPostGISをインス"
+"トールできないか、したくない場合 (たとえばテスト中や開発中、または制限のある"
+"環境内)にのみ必要となります。"
 
 #. Tag: para
 #: administration.xml:70
@@ -230,8 +245,9 @@ msgid ""
 "by loading the various sql files located in <filename>[prefix]/share/"
 "contrib</filename> as specified during the build phase."
 msgstr ""
-"ビルドの際に指定した<filename>[prefix]/share/"
-"contrib</filename>内にある様々なSQLファイルをロードしてPostGISオブジェクトと関数の定義をデータベースに追加します。"
+"ビルドの際に指定した<filename>[prefix]/share/contrib</filename>内にある様々な"
+"SQLファイルをロードしてPostGISオブジェクトと関数の定義をデータベースに追加し"
+"ます。"
 
 #. Tag: para
 #: administration.xml:77
@@ -242,10 +258,10 @@ msgid ""
 "objects are in the <filename>rtpostgis.sql</filename> script. Topology "
 "objects are in the <filename>topology.sql</filename> script."
 msgstr ""
-"中核のPostGISオブジェクト (ジオメトリ型とジオグラフィ型、これらに対応する関数)は<filename>postgis."
-"sql</filename>スクリプトにあります。ラスタオブジェクトは<filename>rtpostgis."
-"sql</filename>スクリプトにあります。トポロジオブジェクトは<filename>topology."
-"sql</filename>スクリプトにあります。"
+"中核のPostGISオブジェクト (ジオメトリ型とジオグラフィ型、これらに対応する関"
+"数)は<filename>postgis.sql</filename>スクリプトにあります。ラスタオブジェクト"
+"は<filename>rtpostgis.sql</filename>スクリプトにあります。トポロジオブジェク"
+"トは<filename>topology.sql</filename>スクリプトにあります。"
 
 #. Tag: para
 #: administration.xml:85
@@ -256,9 +272,10 @@ msgid ""
 "populate the <varname>spatial_ref_sys</varname> table. This will permit you "
 "to perform ST_Transform() operations on geometries."
 msgstr ""
-"完全なEPSG座標系定義IDセットについては、<filename>spatial_ref_sys.sql</filename>定義ファイルをロードして<v"
-"arname>spatial_ref_sys</varname>テーブルを生成して下さい。これによりジオメトリ関数ST_Transform()が実行できる"
-"ようになります。"
+"完全なEPSG座標系定義IDセットについては、<filename>spatial_ref_sys.sql</"
+"filename>定義ファイルをロードして<varname>spatial_ref_sys</varname>テーブルを"
+"生成して下さい。これによりジオメトリ関数ST_Transform()が実行できるようになり"
+"ます。"
 
 #. Tag: para
 #: administration.xml:92
@@ -269,9 +286,10 @@ msgid ""
 "by simply typing <command>\\dd [function_name]</command> from a "
 "<command>psql</command> terminal window."
 msgstr ""
-"PostGIS関数にコメントを追加したい場合には、<filename>postgis_comments.sql</filename>スクリプト内のコメント"
-"が見つかると思います。コメントは<command>psql</command>のターミナルウィンドウから単に<command>\\dd "
-"[関数名]</command>と打ち込むだけで見ることができます。"
+"PostGIS関数にコメントを追加したい場合には、<filename>postgis_comments.sql</"
+"filename>スクリプト内のコメントが見つかると思います。コメントは"
+"<command>psql</command>のターミナルウィンドウから単に<command>\\dd [関数名]</"
+"command>と打ち込むだけで見ることができます。"
 
 #. Tag: para
 #: administration.xml:99
@@ -334,10 +352,13 @@ msgid ""
 "the database user must have been granted the privilege to create new "
 "databases."
 msgstr ""
-"PostGISのディストリビューション (特にPostGIS &gt;= 1.1.5のWin32インストーラ)の中には、<varname>template"
-"_postgis</varname>というテンプレートにPostGIS関数をロードしていることがあります。PostgreSQLに<varname>temp"
-"late_postgis</varname>データベースが存在するなら、ユーザやアプリケーションは、空間データベースの生成をコマンドひとつで済ませられます"
-"。この2種類のやり方のどちらを使うににしても、データベースユーザは、新しいデータベースを作成する権限を与えられている必要があります。"
+"PostGISのディストリビューション (特にPostGIS &gt;= 1.1.5のWin32インストーラ)"
+"の中には、<varname>template_postgis</varname>というテンプレートにPostGIS関数"
+"をロードしていることがあります。PostgreSQLに<varname>template_postgis</"
+"varname>データベースが存在するなら、ユーザやアプリケーションは、空間データ"
+"ベースの生成をコマンドひとつで済ませられます。この2種類のやり方のどちらを使う"
+"ににしても、データベースユーザは、新しいデータベースを作成する権限を与えられ"
+"ている必要があります。"
 
 #. Tag: para
 #: administration.xml:120
@@ -375,7 +396,9 @@ msgstr "空間データベースのアップグレード"
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
-msgstr "既存の空間データベースのアップグレードは、新しいPostGISオブジェクト定義の置き換えや導入を必要とするとき、慎重を要することがあります。"
+msgstr ""
+"既存の空間データベースのアップグレードは、新しいPostGISオブジェクト定義の置き"
+"換えや導入を必要とするとき、慎重を要することがあります。"
 
 #. Tag: para
 #: administration.xml:143
@@ -383,7 +406,9 @@ msgstr "既存の空間データベースのアップグレードは、新しい
 msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
 "so sometimes your best bet is a dump/reload process."
-msgstr "不幸なことに、定義の全てが実行中のデータベース内で簡単には置き換えられるわけではないので、ダンプ/リロードが最善策となることがあります。"
+msgstr ""
+"不幸なことに、定義の全てが実行中のデータベース内で簡単には置き換えられるわけ"
+"ではないので、ダンプ/リロードが最善策となることがあります。"
 
 #. Tag: para
 #: administration.xml:148
@@ -392,8 +417,9 @@ msgid ""
 "PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
 "a HARD UPGRADE procedure for major releases."
 msgstr ""
-"PostGISには、マイナーバージョンアップやバグフィクスリリースの場合に使うソフトアップグレードと、メジャーアップグレードで使うハードアップグレードが用"
-"意されています。"
+"PostGISには、マイナーバージョンアップやバグフィクスリリースの場合に使うソフト"
+"アップグレードと、メジャーアップグレードで使うハードアップグレードが用意され"
+"ています。"
 
 #. Tag: para
 #: administration.xml:153
@@ -403,8 +429,9 @@ msgid ""
 "data. If you use the -Fc flag to pg_dump you will always be able to restore "
 "the dump with a HARD UPGRADE."
 msgstr ""
-"PostGISをアップグレードしようとする前にデータのバックアップを取ることは、常に価値のあるものです。pg_dumpで -Fc "
-"フラグを使うと、ハードアップグレードによってダンプを常にリストアすることができます。"
+"PostGISをアップグレードしようとする前にデータのバックアップを取ることは、常に"
+"価値のあるものです。pg_dumpで -Fc フラグを使うと、ハードアップグレードによっ"
+"てダンプを常にリストアすることができます。"
 
 #. Tag: title
 #: administration.xml:160
@@ -421,8 +448,9 @@ msgid ""
 "way, then you should upgrade using the sql script way. Please refer to the "
 "appropriate."
 msgstr ""
-"エクステンションを使ってインストールした場合は、エクステンションモデルでアップグレードしなければなりません。 "
-"古いSQLスクリプトを使ってインストールした場合は、SQLスクリプトでアップグレードすべきです。適切な方を参照して下さい。"
+"エクステンションを使ってインストールした場合は、エクステンションモデルでアッ"
+"プグレードしなければなりません。 古いSQLスクリプトを使ってインストールした場"
+"合は、SQLスクリプトでアップグレードすべきです。適切な方を参照して下さい。"
 
 #. Tag: title
 #: administration.xml:166
@@ -438,12 +466,13 @@ msgid ""
 "extensions. If you have extensions and try to upgrade with this approach "
 "you'll get messages like:"
 msgstr ""
-"PostGISをエクステンションを使わずにインストールした人向けです。エクステンションを使っていてこの方法を使うと、次のようなメッセージが現れます。"
+"PostGISをエクステンションを使わずにインストールした人向けです。エクステンショ"
+"ンを使っていてこの方法を使うと、次のようなメッセージが現れます。"
 
 #. Tag: programlisting
 #: administration.xml:172
 #, fuzzy, no-c-format
-msgid "can't drop ... because postgis extension depends on it"
+msgid "can't drop … because postgis extension depends on it"
 msgstr "can't drop ... because postgis extension depends on it"
 
 #. Tag: para
@@ -454,8 +483,9 @@ msgid ""
 "prior to r7409, you cannot use this procedure but would rather need to do a "
 "<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
-"ご注意: PostGIS 1.*またはr7429以前のPostGIS 2.*へ移行する場合には、この手続きを使うことができませんが、<link "
-"linkend=\"hard_upgrade\">ハードアップグレード</link>を実行する必要があります。"
+"ご注意: PostGIS 1.*またはr7429以前のPostGIS 2.*へ移行する場合には、この手続き"
+"を使うことができませんが、<link linkend=\"hard_upgrade\">ハードアップグレード"
+"</link>を実行する必要があります。"
 
 #. Tag: para
 #: administration.xml:180
@@ -465,8 +495,9 @@ msgid ""
 "<filename>*_upgrade.sql</filename> files in the installation folders. You "
 "can list them all with:"
 msgstr ""
-"コンパイルとインストール (make install)の実行後に、インストール先フォルダ内にある<filename>*_upgrade."
-"sql</filename>のファイルの集合を見つけておくべきです。次のコマンドで一覧を得られます。"
+"コンパイルとインストール (make install)の実行後に、インストール先フォルダ内に"
+"ある<filename>*_upgrade.sql</filename>のファイルの集合を見つけておくべきで"
+"す。次のコマンドで一覧を得られます。"
 
 #. Tag: programlisting
 #: administration.xml:187
@@ -501,9 +532,10 @@ msgid ""
 "<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
 "filename> respectively. If you need them:"
 msgstr ""
-"同じ手続きをラスタ、トポロジ、SFCGALエクステンションに適用します。それぞれのファイル名は<filename>rtpostgis_upgrade."
-"sql</filename>, <filename>topology_upgrade.sql</filename>, "
-"<filename>sfcgal_upgrade.sql</filename>になります。次のように実行します。"
+"同じ手続きをラスタ、トポロジ、SFCGALエクステンションに適用します。それぞれの"
+"ファイル名は<filename>rtpostgis_upgrade.sql</filename>, "
+"<filename>topology_upgrade.sql</filename>, <filename>sfcgal_upgrade.sql</"
+"filename>になります。次のように実行します。"
 
 #. Tag: programlisting
 #: administration.xml:204
@@ -531,9 +563,10 @@ msgid ""
 "upgrading your version you are using a version too early for a soft upgrade "
 "and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
 msgstr ""
-"求める版へのアップグレードに使う特定の<filename>postgis_upgrade."
-"sql</filename>が発見できない場合には、ソフトアップグレードを実行するにはあまりに前の版を使っています。<link linkend="
-"\"hard_upgrade\">ハードアップグレード</link>が必要です。"
+"求める版へのアップグレードに使う特定の<filename>postgis_upgrade.sql</"
+"filename>が発見できない場合には、ソフトアップグレードを実行するにはあまりに前"
+"の版を使っています。<link linkend=\"hard_upgrade\">ハードアップグレード</"
+"link>が必要です。"
 
 #. Tag: para
 #: administration.xml:218
@@ -543,8 +576,9 @@ msgid ""
 "about the need to run this kind of upgrade using a \"procs need upgrade\" "
 "message."
 msgstr ""
-"<xref linkend=\"PostGIS_Full_Version\"/>関数の\"procs need upgrade\"というメッセージで"
-"、この種のアップグレードを実行する必要性についての情報が得られます。"
+"<xref linkend=\"PostGIS_Full_Version\"/>関数の\"procs need upgrade\"という"
+"メッセージで、この種のアップグレードを実行する必要性についての情報が得られま"
+"す。"
 
 #. Tag: title
 #: administration.xml:225
@@ -560,8 +594,9 @@ msgid ""
 "upgrade using extensions as well. Doing a minor upgrade with extensions, is "
 "fairly painless."
 msgstr ""
-"エクステンションを使ってPostGISをインストールした場合には、エクステンションを使ってアップグレードする必要があります。エクステンションを使ったマイナ"
-"ーアップグレードはかなり楽です。"
+"エクステンションを使ってPostGISをインストールした場合には、エクステンションを"
+"使ってアップグレードする必要があります。エクステンションを使ったマイナーアッ"
+"プグレードはかなり楽です。"
 
 #. Tag: programlisting
 #: administration.xml:227
@@ -580,7 +615,7 @@ msgstr "次のようなエラー通知が表示されることがあります。
 #. Tag: programlisting
 #: administration.xml:229
 #, no-c-format
-msgid "No migration path defined for ... to &last_release_version;"
+msgid "No migration path defined for … to &last_release_version;"
 msgstr ""
 
 #. Tag: para
