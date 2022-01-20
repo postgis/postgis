@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2022-01-20 20:56+0000\n"
 "PO-Revision-Date: 2018-07-24 02:44+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -2131,7 +2131,7 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
-"efficient and works for atomoic geometrie."
+"efficient and works for atomic geometries."
 msgstr ""
 "一つのジオメトリから全てのジオメトリを抽出したい場合は、ST_Dumpを使う方が効果"
 "的ですし、単一ジオメトリにも対応しています。"
@@ -4934,11 +4934,9 @@ msgstr ""
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
-#, no-c-format
 #~ msgid "Only works with POLYGON geometry types"
 #~ msgstr "POLYGONタイプでのみ動作します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
 #~ "(MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, "
@@ -4948,7 +4946,7 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "(MULTI)POLYGON, POLYHEDRALSURFACEの場合には、1始まりでN番目のジオメトリを"
 #~ "返します。それ以外の場合にはNULLを返します。"
 
-#, fuzzy, no-c-format
+#, fuzzy
 #~ msgid ""
 #~ "Returns the Nth interior linestring ring of the polygon geometry. Returns "
 #~ "NULL if the geometry is not a polygon or the given N is out of range. The "
@@ -4957,7 +4955,6 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "ポリゴンのN番目の内環となるラインストリングを返します。ジオメトリがポリゴ"
 #~ "ンでないかNが範囲外の場合はNULLを返します。1始まりです。"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 #~ "linkend=\"ST_NumInteriorRing\"/>,"

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2022-01-20 20:56+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: nramire1 nramire1\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -2151,7 +2151,7 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
-"efficient and works for atomoic geometrie."
+"efficient and works for atomic geometries."
 msgstr ""
 "Si quieres extraer todas las geometrías de una geometría, ST_Dump es mas "
 "eficiente y funcionará con geometrías simples."
@@ -4998,7 +4998,7 @@ msgstr ""
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
-#, fuzzy, no-c-format
+#, fuzzy
 #~ msgid ""
 #~ "Returns the last point of a LINESTRING as a POINT. Returns <varname>NULL</"
 #~ "varname> if the input is not a LINESTRING."
@@ -5007,7 +5007,6 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "como <varname>POINT</varname> o <varname>NULL</varname> si el parametro "
 #~ "de entrada no es una <varname>LINESTRING</varname>."
 
-#, no-c-format
 #~ msgid ""
 #~ "postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::"
 #~ "geometry));\n"
@@ -5049,11 +5048,9 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ " POINT(0 0 5)\n"
 #~ "(1 row)"
 
-#, no-c-format
 #~ msgid "Only works with POLYGON geometry types"
 #~ msgstr "Solo funciona con geometrias de tipo POLYGON"
 
-#, no-c-format
 #~ msgid ""
 #~ "Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
 #~ "(MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, "
@@ -5063,7 +5060,7 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "GEOMETRYCOLLECTION, un (MULTI)POINT, una (MULTI)LINESTRING, una "
 #~ "MULTICURVE o un (MULTI)POLYGON, una POLYHEDRALSURFACE si no devuelve NULL."
 
-#, fuzzy, no-c-format
+#, fuzzy
 #~ msgid ""
 #~ "Returns the Nth interior linestring ring of the polygon geometry. Returns "
 #~ "NULL if the geometry is not a polygon or the given N is out of range. The "
@@ -5073,7 +5070,6 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "NULL si la geometría no es un polígono o el indice N dado esta fuera de "
 #~ "rango. El indice empieza en 1."
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 #~ "linkend=\"ST_NumInteriorRing\"/>,"
@@ -5081,7 +5077,6 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 #~ "linkend=\"ST_NumInteriorRing\"/>,"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));\n"
 #~ " st_astext\n"

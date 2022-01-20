@@ -961,14 +961,10 @@ msgstr ""
 "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> "
 "errors.txt"
 
-#. Tag: programlisting
-#: administration.xml:172
-#, fuzzy, no-c-format
-msgid "can't drop ... because postgis extension depends on it"
-msgstr "can't drop ... because postgis extension depends on it"
+#, fuzzy
+#~ msgid "can't drop ... because postgis extension depends on it"
+#~ msgstr "can't drop ... because postgis extension depends on it"
 
-#. Tag: programlisting
-#: administration.xml:229
-#, fuzzy, no-c-format
-msgid "No migration path defined for ... to &last_release_version;"
-msgstr "No migration path defined for ... to &last_release_version;"
+#, fuzzy
+#~ msgid "No migration path defined for ... to &last_release_version;"
+#~ msgstr "No migration path defined for ... to &last_release_version;"

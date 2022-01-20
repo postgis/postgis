@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2022-01-20 20:56+0000\n"
 "PO-Revision-Date: 2019-03-11 09:12+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -2167,7 +2167,7 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
-"efficient and works for atomoic geometrie."
+"efficient and works for atomic geometries."
 msgstr ""
 "Falls Sie alle Geometrien einer Geometrie entnehmen wollen, so ist ST_Dump "
 "wesentlich leistungsfähiger und es funktioniert auch mit Einzelgeometrien."
@@ -5032,11 +5032,9 @@ msgstr ""
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
-#, no-c-format
 #~ msgid "Only works with POLYGON geometry types"
 #~ msgstr "Funktioniert nur mit dem Geometrietyp POLYGON"
 
-#, no-c-format
 #~ msgid ""
 #~ "Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
 #~ "(MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, "
@@ -5047,7 +5045,7 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "MULTICURVE oder (MULTI)POLYGON, POLYHEDRALSURFACE handelt. Anderenfalls "
 #~ "wird NULL zurückgegeben."
 
-#, fuzzy, no-c-format
+#, fuzzy
 #~ msgid ""
 #~ "Returns the Nth interior linestring ring of the polygon geometry. Returns "
 #~ "NULL if the geometry is not a polygon or the given N is out of range. The "
@@ -5058,7 +5056,6 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "Polygon handelt, oder sich das angegebene N außerhalb des zulässigen "
 #~ "Bereiches befindet. Der Zeiger beginnt mit der Zahl 1."
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 #~ "linkend=\"ST_NumInteriorRing\"/>,"
