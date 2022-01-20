@@ -1223,7 +1223,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		</note>
 
 		<note>
-		  <para>To extract all elements of a geometry, <xref linkend="ST_Dump" /> is more efficient and works for atomoic geometrie.</para>
+		  <para>To extract all elements of a geometry, <xref linkend="ST_Dump" /> is more efficient and works for atomic geometries.</para>
 		</note>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 		<para>Changed: 2.0.0 Prior versions would return NULL for singular geometries.  This was changed to return the geometry for ST_GeometryN(..,1) case.</para>
