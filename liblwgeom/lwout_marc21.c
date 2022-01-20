@@ -137,6 +137,7 @@ gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb)
 	LWDEBUG(2,"gbox_to_marc21_sb called");
 
 	if (stringbuffer_aprintf(sb, "<datafield tag=\"034\" ind1=\"1\" ind2=\" \">") < 0 ) return LW_FAILURE;
+	if (stringbuffer_aprintf(sb, "<subfield code=\"a\">a</subfield>") < 0 ) return LW_FAILURE;
 	if(!corner_to_subfield_sb(sb, box.xmin, precision, 'd')) return LW_FAILURE;
 	if(!corner_to_subfield_sb(sb, box.xmax, precision, 'e')) return LW_FAILURE;
 	if(!corner_to_subfield_sb(sb, box.ymax, precision, 'f')) return LW_FAILURE;

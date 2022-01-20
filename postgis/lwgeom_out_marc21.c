@@ -59,17 +59,17 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 	}
 
 	if ( GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
-		
+
 		PG_FREE_IF_COPY(gs, 0);
 		lwerror("ST_AsMARC21: Failure reading projections from spatial_ref_sys.");
 		PG_RETURN_NULL();
-		
+
 	}
 
 	if (!lwproj->source_is_latlong){
 
 		PG_FREE_IF_COPY(gs, 0);
-		lwerror("ST_AsMARC21: Unsupported SRID (%d). Only lon/lat coordinate systems are supported in MARC21/XML Documents.",srid);		
+		lwerror("ST_AsMARC21: Unsupported SRID (%d). Only lon/lat coordinate systems are supported in MARC21/XML Documents.", srid);
 		PG_RETURN_NULL();
 	}
 
