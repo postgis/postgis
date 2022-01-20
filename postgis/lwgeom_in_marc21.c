@@ -252,13 +252,13 @@ parse_geo_literal(char* literal){
 			 **/
 			csl = malloc(literal_length);
 
-			strncpy(csl,&literal[0],literal_length-strlen(strchr(literal,',')));
+			memcpy(csl,&literal[0],literal_length-strlen(strchr(literal,',')));
 			csl[literal_length-strlen(strchr(literal,','))]='\0';
 
 			strcat(csl,".");
 			strcat(csl,strchr(literal,',')+1);
 
-			strncpy(literal,&csl[0],literal_length);
+			memcpy(literal,&csl[0],literal_length);
 			free(csl);
 
 			POSTGIS_DEBUGF(3,"  new literal value (replaced comma): %s",literal);
@@ -280,7 +280,7 @@ parse_geo_literal(char* literal){
 			POSTGIS_DEBUGF(5,"  dec = malloc(%d)",literal_length-start_literal);
 			dec = malloc(literal_length-start_literal);
 
-			strncpy(dec,&literal[start_literal],literal_length-start_literal);
+			memcpy(dec,&literal[start_literal],literal_length-start_literal);
 			dec[literal_length-start_literal] = '\0';
 
 			result = atof(dec);
@@ -301,7 +301,7 @@ parse_geo_literal(char* literal){
 			POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length);
 
 			min = malloc(literal_length);
-			strncpy(min,&literal[start_literal+3],literal_length-(start_literal+3));
+			memcpy(min,&literal[start_literal+3],literal_length-(start_literal+3));
 			min[literal_length-(start_literal+3)]='\0';
 			POSTGIS_DEBUGF(2,"  decimal minutes: %s",min);
 
@@ -323,12 +323,12 @@ parse_geo_literal(char* literal){
 			 */
 			POSTGIS_DEBUGF(5,"  min = malloc(%d)",literal_length);
 			min = malloc(literal_length);
-			strncpy(min,&literal[start_literal+3],2);
+			memcpy(min,&literal[start_literal+3],2);
 			min[2] = '\0';
 
 			POSTGIS_DEBUGF(5,"  sec = malloc(%d)",literal_length);
 			sec = malloc(literal_length);
-			strncpy(sec,&literal[start_literal+5],literal_length-(start_literal+5));
+			memcpy(sec,&literal[start_literal+5],literal_length-(start_literal+5));
 			sec[literal_length-(start_literal+5)] = '\0';
 
 			result =  atof(dgr)+(atof(min)/100)+(atof(sec)/10000);
