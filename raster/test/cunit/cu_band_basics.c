@@ -33,7 +33,7 @@ static void test_band_metadata() {
 	int height = 5;
 	int temp = 0;
 	double val = 0;
-	char *path = "../regress/loader/testraster.tif";
+	char *path = POSTGIS_TOP_SRC_DIR "/raster/test/regress/loader/testraster.tif";
 	uint8_t extband = 0;
 	int x;
 	int y;
@@ -1263,7 +1263,7 @@ static void test_band_new_offline_from_path() {
 	rt_band band = NULL;
 	int width = 10;
 	int height = 10;
-	char *path = "../regress/loader/testraster.tif";
+	char *path = POSTGIS_TOP_SRC_DIR "/raster/test/regress/loader/testraster.tif";
 	uint8_t extband = 0;
 
 	/* offline band */
