@@ -35,6 +35,8 @@ VPATH = $(srcdir)
 
 CC=@CC@
 CFLAGS = \
+	-I$(top_builddir) \
+	-I$(top_builddir)/raster \
 	-I$(builddir) \
 	-I$(builddir)/.. \
 	$(LIBLWGEOM_CFLAGS) \
