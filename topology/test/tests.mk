@@ -23,12 +23,13 @@ TESTS += \
   $(topsrcdir)/topology/test/regress/addface.sql \
 	$(topsrcdir)/topology/test/regress/addnode.sql \
 	$(topsrcdir)/topology/test/regress/addtopogeometrycolumn.sql \
-	$(topsrcdir)/topology/test/regress/copytopology.sql \
 	$(topsrcdir)/topology/test/regress/cleartopogeom.sql \
+	$(topsrcdir)/topology/test/regress/copytopology.sql \
 	$(topsrcdir)/topology/test/regress/createtopogeom.sql \
 	$(topsrcdir)/topology/test/regress/createtopology.sql \
 	$(topsrcdir)/topology/test/regress/droptopogeometrycolumn.sql \
 	$(topsrcdir)/topology/test/regress/droptopology.sql \
+	$(topsrcdir)/topology/test/regress/findlayer.sql \
 	$(topsrcdir)/topology/test/regress/findtopology.sql \
 	$(topsrcdir)/topology/test/regress/geometry_cast.sql \
 	$(topsrcdir)/topology/test/regress/getedgebypoint.sql \
@@ -61,6 +62,7 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/st_newedgessplit.sql \
 	$(topsrcdir)/topology/test/regress/st_remedgemodface.sql \
 	$(topsrcdir)/topology/test/regress/st_remedgenewface.sql \
+	$(topsrcdir)/topology/test/regress/st_removeisoedge.sql \
 	$(topsrcdir)/topology/test/regress/st_removeisonode.sql \
 	$(topsrcdir)/topology/test/regress/st_simplify.sql \
 	$(topsrcdir)/topology/test/regress/topo2.5d.sql \
@@ -69,11 +71,11 @@ TESTS += \
 	$(topsrcdir)/topology/test/regress/topogeo_addlinestring.sql \
 	$(topsrcdir)/topology/test/regress/topogeo_addpoint.sql \
 	$(topsrcdir)/topology/test/regress/topogeo_addpolygon.sql \
-  $(topsrcdir)/topology/test/regress/topogeom_edit.sql \
-  $(topsrcdir)/topology/test/regress/topogeom_addtopogeom.sql \
+	$(topsrcdir)/topology/test/regress/topogeom_addtopogeom.sql \
+	$(topsrcdir)/topology/test/regress/topogeom_edit.sql \
+	$(topsrcdir)/topology/test/regress/topogeometry_srid.sql \
 	$(topsrcdir)/topology/test/regress/topogeometry_type.sql \
 	$(topsrcdir)/topology/test/regress/topojson.sql \
-  $(topsrcdir)/topology/test/regress/topologysummary.sql \
+	$(topsrcdir)/topology/test/regress/topologysummary.sql \
 	$(topsrcdir)/topology/test/regress/totopogeom.sql \
 	$(topsrcdir)/topology/test/regress/validatetopology.sql
-
