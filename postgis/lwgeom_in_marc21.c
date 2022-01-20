@@ -32,9 +32,9 @@
 static LWGEOM* parse_marc21(xmlNodePtr xnode);
 
 /**********************************************************************
- * Ability to parse geographic data contained in MARC21/XML documents
+ * Ability to parse geographic data contained in MARC21/XML records
  * to return an LWGEOM or an error message. It returns NULL if the
- * MARC21/XML record  is valid but does not contain any geographic
+ * MARC21/XML record is valid but does not contain any geographic
  * data (datafield:034).
  *
  * MARC21/XML version supported: 1.1
