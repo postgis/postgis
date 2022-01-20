@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-05 22:37+0000\n"
-"Last-Translator: robe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-01-19 00:27+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/de/>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: administration.xml:3
@@ -27,7 +27,7 @@ msgstr "PostGIS Verwaltung"
 #: administration.xml:3
 #, no-c-format
 msgid "&database_tuning;"
-msgstr ""
+msgstr "&database_tuning;"
 
 #. Tag: title
 #: administration.xml:9

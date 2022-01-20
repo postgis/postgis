@@ -8,16 +8,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2014-10-20 15:20+0000\n"
+"POT-Creation-Date: 2022-01-13 20:20+0000\n"
+"PO-Revision-Date: 2022-01-13 20:26+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/postgis/"
-"language/it_IT/)\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"reportingxml/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: reporting.xml:3
@@ -33,7 +34,7 @@ msgstr "Segnalare Bug del Software"
 
 #. Tag: para
 #: reporting.xml:8
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Reporting bugs effectively is a fundamental way to help PostGIS development. "
 "The most effective bug report is that enabling PostGIS developers to "
@@ -47,12 +48,12 @@ msgstr ""
 "sviluppatori PostGIS di replicarlo, quindi idealmente contiene uno script "
 "che lo rende evidente e un elenco di informazioni sull'ambiente in cui si "
 "verifica. Le informazioni indispensabili possono essere estratte eseguendo "
-"<code>SELECT postgis_full_version()</code> [per postgis] and <code>SELECT "
+"<code>SELECT postgis_full_version()</code> [per PostGIS] and <code>SELECT "
 "version()</code> [per postgresql]."
 
 #. Tag: para
 #: reporting.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you aren't using the latest release, it's worth taking a look at its "
 "<ulink url=\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/"
@@ -60,8 +61,9 @@ msgid ""
 "been fixed."
 msgstr ""
 "Se non si sta usando l'ultima release, vale la pena leggerne il <ulink url="
-"\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</ulink>, per "
-"scoprire se il bug in questione è già stato risolto."
+"\"https://git.osgeo.org/gitea/postgis/postgis/raw/branch/master/NEWS"
+"\">release changelog</ulink>, per scoprire se il bug in questione è già "
+"stato risolto."
 
 #. Tag: para
 #: reporting.xml:21
@@ -87,7 +89,7 @@ msgid ""
 "chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report Bugs Effectively</"
 "ulink> before filing a new report."
 msgstr ""
-"Consigliamo la lettura del paper di Simon Tatham su  <ulink url=\"http://www."
+"Consigliamo la lettura del paper di Simon Tatham su <ulink url=\"http://www."
 "chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report Bugs Effectively</"
 "ulink> (Come riportare bug in modo efficiente) prima di compilare un nuovo "
 "bug report."
@@ -134,33 +136,31 @@ msgstr ""
 #: reporting.xml:47
 #, no-c-format
 msgid ""
-"If your changes are more extensive, a Subversion patch is definitely "
-"preferred. This is a four step process on Unix (assuming you already have "
-"<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> installed):"
+"If your changes are more extensive, a patch is definitely preferred. This is "
+"a four step process on Unix (assuming you already have <ulink url=\"https://"
+"git-scm.com/\">git</ulink> installed):"
 msgstr ""
-"Se i cambiamenti sono più estesi, è preferibile  mandare una patch per "
-"Subversion. In Unix, si tratta di un processo in 4 fasi (assumendo di avere "
-"<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> già "
-"installato):"
+"Se i cambiamenti sono più estesi, è preferibile mandare una patch. In Unix, "
+"si tratta di un processo in 4 fasi (assumendo di avere <ulink url=\"https"
+"://git-scm.com/\">git</ulink> già installato):"
 
 #. Tag: para
 #: reporting.xml:54
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Clone the PostGIS' git repository. On Unix, type:"
-msgstr ""
-"Eseguire il checkout del trunk di PostGIS da Subversion. In Unix, digitare:"
+msgstr "Ottieni un clone del repository git di PostGIS. In Unix, digita:"
 
 #. Tag: command
 #: reporting.xml:57
 #, no-c-format
 msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
-msgstr ""
+msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git"
 
 #. Tag: para
 #: reporting.xml:60
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "This will be stored in the directory postgis"
-msgstr "I file saranno salvati nella cartella ./trunk"
+msgstr "I file saranno salvati nella cartella postgis"
 
 #. Tag: para
 #: reporting.xml:64
@@ -174,9 +174,9 @@ msgstr ""
 
 #. Tag: command
 #: reporting.xml:67
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "vim doc/postgis.xml"
-msgstr "vim trunk/doc/postgis.xml"
+msgstr "vim doc/postgis.xml"
 
 #. Tag: para
 #: reporting.xml:69
@@ -202,9 +202,9 @@ msgstr ""
 
 #. Tag: command
 #: reporting.xml:78
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "git diff doc/postgis.xml &gt; doc.patch"
-msgstr "svn diff trunk/doc/postgis.xml &gt; doc.patch"
+msgstr "git diff doc/postgis.xml &gt; doc.patch"
 
 #. Tag: para
 #: reporting.xml:83

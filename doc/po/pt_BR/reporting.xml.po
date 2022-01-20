@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-13 20:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -104,9 +104,9 @@ msgstr ""
 #: reporting.xml:47
 #, no-c-format
 msgid ""
-"If your changes are more extensive, a Subversion patch is definitely "
-"preferred. This is a four step process on Unix (assuming you already have "
-"<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> installed):"
+"If your changes are more extensive, a patch is definitely preferred. This is "
+"a four step process on Unix (assuming you already have <ulink url=\"https://"
+"git-scm.com/\">git</ulink> installed):"
 msgstr ""
 
 #. Tag: para

@@ -3,7 +3,7 @@
 #
 # Translators:
 # Sandro Santilli <strk@kbt.io>, 2019
-# TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2021
+# TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2022
 #
 #, fuzzy
 msgid ""
@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
 "PO-Revision-Date: 2019-08-03 21:25+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2021\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2022\n"
 "Language-Team: Japanese (https://www.transifex.com/postgis/teams/3227/ja/)\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -3143,17 +3143,17 @@ msgstr ""
 #: reference_input.xml:1498
 #, no-c-format
 msgid "ST_FromFlatGeobufToTable"
-msgstr ""
+msgstr "ST_FromFlatGeobufToTable"
 
 #. Tag: refpurpose
 #: reference_input.xml:1500
 #, no-c-format
 msgid "Creates a table based on the structure of FlatGeobuf data."
-msgstr ""
+msgstr "FlatGeobufデータの構造に基づいてテーブルを生成します。"
 
 #. Tag: funcprototype
 #: reference_input.xml:1504
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
 "<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
@@ -3161,9 +3161,11 @@ msgid ""
 "<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef> "
-"<paramdef><type>text </type> <parameter>WKT</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+"<funcdef>void <function>ST_FromFlatGeobufToTable</function></funcdef> "
+"<paramdef><type>text </type> <parameter>schemaname</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>tablename</parameter></paramdef> "
+"<paramdef><type>bytea </type> <parameter>FlatGeobuf input data</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1516
@@ -3172,24 +3174,26 @@ msgid ""
 "Creates a table based on the structure of FlatGeobuf data. (<ulink url="
 "\"http://flatgeobuf.org\">http://flatgeobuf.org</ulink>)."
 msgstr ""
+"FlatGeobufデータの構造に基づいてテーブルを生成します (<ulink url=\"http://"
+"flatgeobuf.org\">http://flatgeobuf.org</ulink>)。"
 
 #. Tag: para
 #: reference_input.xml:1520
 #, no-c-format
 msgid "<varname>schema</varname> Schema name."
-msgstr ""
+msgstr "<varname>schema</varname> スキーマ名。"
 
 #. Tag: para
 #: reference_input.xml:1521
 #, no-c-format
 msgid "<varname>table</varname> Table name."
-msgstr ""
+msgstr "<varname>table</varname> テーブル名。"
 
 #. Tag: para
 #: reference_input.xml:1522
 #, no-c-format
 msgid "<varname>data</varname> Input FlatGeobuf data."
-msgstr ""
+msgstr "<varname>data</varname>入力FlatGeobufデータ。"
 
 #. Tag: para
 #: reference_input.xml:1524 reference_input.xml:1556
@@ -3201,13 +3205,13 @@ msgstr "Availability: 3.2.0"
 #: reference_input.xml:1530
 #, no-c-format
 msgid "ST_FromFlatGeobuf"
-msgstr ""
+msgstr "ST_FromFlatGeobuf"
 
 #. Tag: refpurpose
 #: reference_input.xml:1532
 #, no-c-format
 msgid "Reads FlatGeobuf data."
-msgstr ""
+msgstr "FlatGeobufデータを読みます。"
 
 #. Tag: funcprototype
 #: reference_input.xml:1536
@@ -3218,6 +3222,10 @@ msgid ""
 "paramdef> <paramdef><type>bytea </type> <parameter>FlatGeobuf input data</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>setof anyelement <function>ST_FromFlatGeobuf</function></funcdef> "
+"<paramdef><type>anyelement </type> <parameter>Table reference</parameter></"
+"paramdef> <paramdef><type>bytea </type> <parameter>FlatGeobuf input data</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_input.xml:1547
@@ -3226,15 +3234,17 @@ msgid ""
 "Reads FlatGeobuf data (<ulink url=\"http://flatgeobuf.org\">http://"
 "flatgeobuf.org</ulink>). NOTE: PostgreSQL bytea cannot exceed 1GB."
 msgstr ""
+"FlatGeobufデータを読みます (<ulink url=\"http://flatgeobuf.org\">http://"
+"flatgeobuf.org</ulink>)。 ご注意: PostgreSQLのbytea型は1GBを超えられません。"
 
 #. Tag: para
 #: reference_input.xml:1553
 #, no-c-format
 msgid "<varname>tabletype</varname> reference to a table type."
-msgstr ""
+msgstr "<varname>tabletype</varname> テーブルタイプへの参照。"
 
 #. Tag: para
 #: reference_input.xml:1554
 #, no-c-format
 msgid "<varname>data</varname> input FlatGeobuf data."
-msgstr ""
+msgstr "<varname>data</varname> 入力FlatGeobufデータ。"

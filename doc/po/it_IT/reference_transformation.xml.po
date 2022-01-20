@@ -1,19 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-01-13 16:44+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"reference_transformationxml/it/>\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: para
 #: reference_transformation.xml:5
@@ -78,7 +80,7 @@ msgstr ""
 #: reference_transformation.xml:419 reference_transformation.xml:471
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #. Tag: para
 #: reference_transformation.xml:54
@@ -129,6 +131,8 @@ msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
 "introduced."
 msgstr ""
+"Migliorato: Nella 2.0.0 è stato introdotto il supporto per le superfici "
+"poliedriche, i triangoli e i TIN."
 
 #. Tag: para
 #: reference_transformation.xml:69
@@ -152,7 +156,7 @@ msgstr ""
 #: reference_transformation.xml:287 reference_transformation.xml:371
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_transformation.xml:73 reference_transformation.xml:139
@@ -160,7 +164,7 @@ msgstr ""
 #: reference_transformation.xml:288 reference_transformation.xml:374
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: para
 #: reference_transformation.xml:74 reference_transformation.xml:136
@@ -169,7 +173,7 @@ msgstr ""
 #: reference_transformation.xml:427 reference_transformation.xml:484
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_transformation.xml:75 reference_transformation.xml:137
@@ -177,7 +181,7 @@ msgstr ""
 #: reference_transformation.xml:428 reference_transformation.xml:485
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_transformation.xml:80 reference_transformation.xml:145
@@ -186,7 +190,7 @@ msgstr ""
 #: reference_transformation.xml:432 reference_transformation.xml:490
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Esempi"
 
 #. Tag: programlisting
 #: reference_transformation.xml:82
@@ -222,7 +226,7 @@ msgstr ""
 #: reference_transformation.xml:445 reference_transformation.xml:497
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Si veda anche"
 
 #. Tag: para
 #: reference_transformation.xml:89
@@ -611,7 +615,7 @@ msgstr ""
 #: reference_transformation.xml:375
 #, no-c-format
 msgid "&M_support;"
-msgstr ""
+msgstr "&M_support;"
 
 #. Tag: programlisting
 #: reference_transformation.xml:382

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-04 23:52+0000\n"
+"POT-Creation-Date: 2022-01-10 13:02+0000\n"
 "PO-Revision-Date: 2017-05-29 14:56+0000\n"
 "Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -54,7 +54,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_sfcgal.xml:21
 #, no-c-format
-msgid "Returns the version of SFCGAL in use"
+msgid "<refpurpose>Returns the version of SFCGAL in use</refpurpose>"
 msgstr ""
 
 #. Tag: funcdef
@@ -64,80 +64,133 @@ msgid "text <function>postgis_sfcgal_version</function>"
 msgstr ""
 
 #. Tag: title
-#: reference_sfcgal.xml:34 reference_sfcgal.xml:66 reference_sfcgal.xml:159
-#: reference_sfcgal.xml:218 reference_sfcgal.xml:282 reference_sfcgal.xml:311
-#: reference_sfcgal.xml:340 reference_sfcgal.xml:369 reference_sfcgal.xml:474
-#: reference_sfcgal.xml:541 reference_sfcgal.xml:617 reference_sfcgal.xml:691
-#: reference_sfcgal.xml:766 reference_sfcgal.xml:804 reference_sfcgal.xml:902
-#: reference_sfcgal.xml:943 reference_sfcgal.xml:971 reference_sfcgal.xml:1000
+#: reference_sfcgal.xml:34 reference_sfcgal.xml:69 reference_sfcgal.xml:107
+#: reference_sfcgal.xml:200 reference_sfcgal.xml:259 reference_sfcgal.xml:323
+#: reference_sfcgal.xml:352 reference_sfcgal.xml:381 reference_sfcgal.xml:410
+#: reference_sfcgal.xml:515 reference_sfcgal.xml:582 reference_sfcgal.xml:658
+#: reference_sfcgal.xml:732 reference_sfcgal.xml:807 reference_sfcgal.xml:845
+#: reference_sfcgal.xml:943 reference_sfcgal.xml:984 reference_sfcgal.xml:1012
+#: reference_sfcgal.xml:1041
 #, no-c-format
 msgid "Description"
 msgstr "Descripción"
 
 #. Tag: para
-#: reference_sfcgal.xml:36 reference_sfcgal.xml:68 reference_sfcgal.xml:161
-#: reference_sfcgal.xml:315 reference_sfcgal.xml:342 reference_sfcgal.xml:378
-#: reference_sfcgal.xml:543 reference_sfcgal.xml:768 reference_sfcgal.xml:806
+#: reference_sfcgal.xml:36
+#, no-c-format
+msgid "<para>Returns the version of SFCGAL in use</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:38 reference_sfcgal.xml:109 reference_sfcgal.xml:202
+#: reference_sfcgal.xml:356 reference_sfcgal.xml:383 reference_sfcgal.xml:419
+#: reference_sfcgal.xml:584 reference_sfcgal.xml:809 reference_sfcgal.xml:847
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr "Disponibilidad: 2.1.0"
 
 #. Tag: para
-#: reference_sfcgal.xml:37 reference_sfcgal.xml:69 reference_sfcgal.xml:162
-#: reference_sfcgal.xml:228 reference_sfcgal.xml:285 reference_sfcgal.xml:316
-#: reference_sfcgal.xml:343 reference_sfcgal.xml:379 reference_sfcgal.xml:482
-#: reference_sfcgal.xml:544 reference_sfcgal.xml:620 reference_sfcgal.xml:695
-#: reference_sfcgal.xml:769 reference_sfcgal.xml:807 reference_sfcgal.xml:905
-#: reference_sfcgal.xml:946 reference_sfcgal.xml:974 reference_sfcgal.xml:1003
+#: reference_sfcgal.xml:39 reference_sfcgal.xml:74 reference_sfcgal.xml:110
+#: reference_sfcgal.xml:203 reference_sfcgal.xml:269 reference_sfcgal.xml:326
+#: reference_sfcgal.xml:357 reference_sfcgal.xml:384 reference_sfcgal.xml:420
+#: reference_sfcgal.xml:523 reference_sfcgal.xml:585 reference_sfcgal.xml:661
+#: reference_sfcgal.xml:736 reference_sfcgal.xml:810 reference_sfcgal.xml:848
+#: reference_sfcgal.xml:946 reference_sfcgal.xml:987 reference_sfcgal.xml:1015
+#: reference_sfcgal.xml:1044
 #, no-c-format
 msgid "&sfcgal_required;"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:38 reference_sfcgal.xml:70 reference_sfcgal.xml:163
-#: reference_sfcgal.xml:229 reference_sfcgal.xml:286 reference_sfcgal.xml:317
-#: reference_sfcgal.xml:344 reference_sfcgal.xml:484 reference_sfcgal.xml:545
-#: reference_sfcgal.xml:621 reference_sfcgal.xml:696 reference_sfcgal.xml:770
-#: reference_sfcgal.xml:808 reference_sfcgal.xml:906 reference_sfcgal.xml:947
-#: reference_sfcgal.xml:975 reference_sfcgal.xml:1004
+#: reference_sfcgal.xml:40 reference_sfcgal.xml:75 reference_sfcgal.xml:111
+#: reference_sfcgal.xml:204 reference_sfcgal.xml:270 reference_sfcgal.xml:327
+#: reference_sfcgal.xml:358 reference_sfcgal.xml:385 reference_sfcgal.xml:525
+#: reference_sfcgal.xml:586 reference_sfcgal.xml:662 reference_sfcgal.xml:737
+#: reference_sfcgal.xml:811 reference_sfcgal.xml:849 reference_sfcgal.xml:947
+#: reference_sfcgal.xml:988 reference_sfcgal.xml:1016 reference_sfcgal.xml:1045
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
-#: reference_sfcgal.xml:39 reference_sfcgal.xml:71 reference_sfcgal.xml:164
-#: reference_sfcgal.xml:230 reference_sfcgal.xml:287 reference_sfcgal.xml:345
-#: reference_sfcgal.xml:546 reference_sfcgal.xml:622 reference_sfcgal.xml:697
-#: reference_sfcgal.xml:771 reference_sfcgal.xml:809 reference_sfcgal.xml:907
-#: reference_sfcgal.xml:948 reference_sfcgal.xml:976 reference_sfcgal.xml:1005
+#: reference_sfcgal.xml:41 reference_sfcgal.xml:76 reference_sfcgal.xml:112
+#: reference_sfcgal.xml:205 reference_sfcgal.xml:271 reference_sfcgal.xml:328
+#: reference_sfcgal.xml:386 reference_sfcgal.xml:587 reference_sfcgal.xml:663
+#: reference_sfcgal.xml:738 reference_sfcgal.xml:812 reference_sfcgal.xml:850
+#: reference_sfcgal.xml:948 reference_sfcgal.xml:989 reference_sfcgal.xml:1017
+#: reference_sfcgal.xml:1046
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
 #. Tag: para
-#: reference_sfcgal.xml:40 reference_sfcgal.xml:72 reference_sfcgal.xml:165
-#: reference_sfcgal.xml:231 reference_sfcgal.xml:288 reference_sfcgal.xml:346
-#: reference_sfcgal.xml:547 reference_sfcgal.xml:623 reference_sfcgal.xml:698
-#: reference_sfcgal.xml:772 reference_sfcgal.xml:810 reference_sfcgal.xml:908
-#: reference_sfcgal.xml:949 reference_sfcgal.xml:977 reference_sfcgal.xml:1006
+#: reference_sfcgal.xml:42 reference_sfcgal.xml:77 reference_sfcgal.xml:113
+#: reference_sfcgal.xml:206 reference_sfcgal.xml:272 reference_sfcgal.xml:329
+#: reference_sfcgal.xml:387 reference_sfcgal.xml:588 reference_sfcgal.xml:664
+#: reference_sfcgal.xml:739 reference_sfcgal.xml:813 reference_sfcgal.xml:851
+#: reference_sfcgal.xml:949 reference_sfcgal.xml:990 reference_sfcgal.xml:1018
+#: reference_sfcgal.xml:1047
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
 
+#. Tag: title
+#: reference_sfcgal.xml:45 reference_sfcgal.xml:80 reference_sfcgal.xml:176
+#: reference_sfcgal.xml:298 reference_sfcgal.xml:559 reference_sfcgal.xml:704
+#: reference_sfcgal.xml:779 reference_sfcgal.xml:822 reference_sfcgal.xml:918
+#: reference_sfcgal.xml:960
+#, no-c-format
+msgid "See Also"
+msgstr "Ver también"
+
 #. Tag: refname
-#: reference_sfcgal.xml:48
+#: reference_sfcgal.xml:54
+#, no-c-format
+msgid "postgis_sfcgal_full_version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:56
+#, no-c-format
+msgid ""
+"<refpurpose>Returns the full version of SFCGAL in use including CGAL and "
+"Boost versions</refpurpose>"
+msgstr ""
+
+#. Tag: funcdef
+#: reference_sfcgal.xml:62
+#, no-c-format
+msgid "text <function>postgis_sfcgal_full_version</function>"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:71
+#, no-c-format
+msgid ""
+"<para>Returns the full version of SFCGAL in use including CGAL and Boost "
+"versions</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:73 reference_sfcgal.xml:1043
+#, fuzzy, no-c-format
+msgid "Availability: 3.3.0"
+msgstr "Disponibilidad: 2.1.0"
+
+#. Tag: refname
+#: reference_sfcgal.xml:89
 #, no-c-format
 msgid "ST_Extrude"
 msgstr "ST_Extrude"
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:50
+#: reference_sfcgal.xml:91
 #, no-c-format
 msgid "Extrude a surface to a related volume"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:55
+#: reference_sfcgal.xml:96
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Extrude</function></funcdef> "
@@ -148,17 +201,17 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_sfcgal.xml:75 reference_sfcgal.xml:168 reference_sfcgal.xml:234
-#: reference_sfcgal.xml:382 reference_sfcgal.xml:487 reference_sfcgal.xml:551
-#: reference_sfcgal.xml:627 reference_sfcgal.xml:702 reference_sfcgal.xml:775
-#: reference_sfcgal.xml:813
+#: reference_sfcgal.xml:116 reference_sfcgal.xml:209 reference_sfcgal.xml:275
+#: reference_sfcgal.xml:423 reference_sfcgal.xml:528 reference_sfcgal.xml:592
+#: reference_sfcgal.xml:668 reference_sfcgal.xml:743 reference_sfcgal.xml:816
+#: reference_sfcgal.xml:854
 #, no-c-format
 msgid "Examples"
 msgstr "Ejemplos"
 
 #. Tag: para
-#: reference_sfcgal.xml:76 reference_sfcgal.xml:552 reference_sfcgal.xml:628
-#: reference_sfcgal.xml:703
+#: reference_sfcgal.xml:117 reference_sfcgal.xml:593 reference_sfcgal.xml:669
+#: reference_sfcgal.xml:744
 #, no-c-format
 msgid ""
 "3D images were generated using PostGIS <xref linkend=\"ST_AsX3D\"/> and "
@@ -167,7 +220,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:83
+#: reference_sfcgal.xml:124
 #, no-c-format
 msgid ""
 "SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
@@ -175,13 +228,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:89
+#: reference_sfcgal.xml:130
 #, no-c-format
 msgid "Original octagon formed from buffering point"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:94
+#: reference_sfcgal.xml:135
 #, no-c-format
 msgid ""
 "ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
@@ -189,25 +242,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:100
+#: reference_sfcgal.xml:141
 #, no-c-format
 msgid "Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:108
+#: reference_sfcgal.xml:149
 #, no-c-format
 msgid "SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:114
+#: reference_sfcgal.xml:155
 #, no-c-format
 msgid "Original linestring"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:119
+#: reference_sfcgal.xml:160
 #, no-c-format
 msgid ""
 "SELECT ST_Extrude(\n"
@@ -215,33 +268,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:125
+#: reference_sfcgal.xml:166
 #, no-c-format
 msgid "LineString Extruded along Z produces a PolyhedralSurfaceZ"
 msgstr ""
 
-#. Tag: title
-#: reference_sfcgal.xml:135 reference_sfcgal.xml:257 reference_sfcgal.xml:518
-#: reference_sfcgal.xml:663 reference_sfcgal.xml:738 reference_sfcgal.xml:781
-#: reference_sfcgal.xml:877 reference_sfcgal.xml:919
-#, no-c-format
-msgid "See Also"
-msgstr "Ver también"
-
 #. Tag: refname
-#: reference_sfcgal.xml:144
+#: reference_sfcgal.xml:185
 #, no-c-format
 msgid "ST_StraightSkeleton"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:146
+#: reference_sfcgal.xml:187
 #, no-c-format
 msgid "Compute a straight skeleton from a geometry"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:151
+#: reference_sfcgal.xml:192
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
@@ -249,7 +294,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:169
+#: reference_sfcgal.xml:210
 #, no-c-format
 msgid ""
 "SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 "
@@ -257,31 +302,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:180 reference_sfcgal.xml:852
+#: reference_sfcgal.xml:221 reference_sfcgal.xml:893
 #, no-c-format
 msgid "Original polygon"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:189
+#: reference_sfcgal.xml:230
 #, no-c-format
 msgid "Straight Skeleton of polygon"
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:203
+#: reference_sfcgal.xml:244
 #, no-c-format
 msgid "ST_ApproximateMedialAxis"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:205
+#: reference_sfcgal.xml:246
 #, no-c-format
 msgid "Compute the approximate medial axis of an areal geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:210
+#: reference_sfcgal.xml:251
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> "
@@ -289,7 +334,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:220
+#: reference_sfcgal.xml:261
 #, no-c-format
 msgid ""
 "Return an approximate medial axis for the areal input based on its straight "
@@ -299,14 +344,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:227 reference_sfcgal.xml:619 reference_sfcgal.xml:694
-#: reference_sfcgal.xml:904 reference_sfcgal.xml:945 reference_sfcgal.xml:973
+#: reference_sfcgal.xml:268 reference_sfcgal.xml:660 reference_sfcgal.xml:735
+#: reference_sfcgal.xml:945 reference_sfcgal.xml:986 reference_sfcgal.xml:1014
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Disponibilidad: 2.2.0"
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:235
+#: reference_sfcgal.xml:276
 #, no-c-format
 msgid ""
 "SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, "
@@ -314,25 +359,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:246
+#: reference_sfcgal.xml:287
 #, no-c-format
 msgid "A polygon and its approximate medial axis"
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:267
+#: reference_sfcgal.xml:308
 #, no-c-format
 msgid "ST_IsPlanar"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:269
+#: reference_sfcgal.xml:310
 #, no-c-format
 msgid "Check if a surface is or not planar"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:274
+#: reference_sfcgal.xml:315
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
@@ -340,7 +385,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:284
+#: reference_sfcgal.xml:325
 #, no-c-format
 msgid ""
 "Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
@@ -348,19 +393,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:296
+#: reference_sfcgal.xml:337
 #, no-c-format
 msgid "ST_Orientation"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:298
+#: reference_sfcgal.xml:339
 #, no-c-format
 msgid "Determine surface orientation"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:303
+#: reference_sfcgal.xml:344
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_Orientation</function></funcdef> "
@@ -368,7 +413,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:313
+#: reference_sfcgal.xml:354
 #, no-c-format
 msgid ""
 "The function only applies to polygons. It returns -1 if the polygon is "
@@ -376,19 +421,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:325
+#: reference_sfcgal.xml:366
 #, no-c-format
 msgid "ST_ForceLHR"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:327
+#: reference_sfcgal.xml:368
 #, no-c-format
 msgid "Force LHR orientation"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:332
+#: reference_sfcgal.xml:373
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
@@ -396,19 +441,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:353
+#: reference_sfcgal.xml:394
 #, no-c-format
 msgid "ST_MinkowskiSum"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:355
+#: reference_sfcgal.xml:396
 #, no-c-format
 msgid "Performs Minkowski sum"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:360
+#: reference_sfcgal.xml:401
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef> "
@@ -417,7 +462,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:371
+#: reference_sfcgal.xml:412
 #, no-c-format
 msgid ""
 "This function performs a 2D minkowski sum of a point, line or polygon with a "
@@ -425,7 +470,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:372
+#: reference_sfcgal.xml:413
 #, no-c-format
 msgid ""
 "A minkowski sum of two geometries A and B is the set of all points that are "
@@ -435,7 +480,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:373
+#: reference_sfcgal.xml:414
 #, no-c-format
 msgid ""
 "The first parameter can be any 2D geometry (point, linestring, polygon). If "
@@ -445,7 +490,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:375
+#: reference_sfcgal.xml:416
 #, no-c-format
 msgid ""
 "Implementation utilizes <ulink url=\"http://doc.cgal.org/latest/"
@@ -453,7 +498,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:383
+#: reference_sfcgal.xml:424
 #, no-c-format
 msgid ""
 "Minkowski Sum of Linestring and circle polygon where Linestring cuts thru "
@@ -461,19 +506,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:395 reference_sfcgal.xml:430
+#: reference_sfcgal.xml:436 reference_sfcgal.xml:471
 #, no-c-format
 msgid "Before Summing"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:407
+#: reference_sfcgal.xml:448
 #, no-c-format
 msgid "After summing"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:416
+#: reference_sfcgal.xml:457
 #, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(line, circle))\n"
@@ -503,20 +548,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:418
+#: reference_sfcgal.xml:459
 #, no-c-format
 msgid "Minkowski Sum of a polygon and multipoint"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:442
+#: reference_sfcgal.xml:483
 #, no-c-format
 msgid ""
 "After summing: polygon is duplicated and translated to position of points"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:451
+#: reference_sfcgal.xml:492
 #, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(mp, poly)\n"
@@ -533,20 +578,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:457
+#: reference_sfcgal.xml:498
 #, no-c-format
 msgid "ST_ConstrainedDelaunayTriangles"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:459
+#: reference_sfcgal.xml:500
 #, no-c-format
 msgid ""
 "Return a constrained Delaunay triangulation around the given input geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:466
+#: reference_sfcgal.xml:507
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConstrainedDelaunayTriangles</function></"
@@ -555,7 +600,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:476
+#: reference_sfcgal.xml:517
 #, no-c-format
 msgid ""
 "Return a <ulink url=\"https://en.wikipedia.org/wiki/"
@@ -564,19 +609,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:483
+#: reference_sfcgal.xml:524
 #, fuzzy, no-c-format
 msgid "Availability: 3.0.0"
 msgstr "Disponibilidad: 2.1.0"
 
 #. Tag: para
-#: reference_sfcgal.xml:497
+#: reference_sfcgal.xml:538
 #, no-c-format
 msgid "ST_ConstrainedDelaunayTriangles of 2 polygons"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:500
+#: reference_sfcgal.xml:541
 #, no-c-format
 msgid ""
 "select ST_ConstrainedDelaunayTriangles(\n"
@@ -589,13 +634,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:507
+#: reference_sfcgal.xml:548
 #, no-c-format
 msgid "of 2 polygons. Triangle edges cross polygon boundaries."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:510
+#: reference_sfcgal.xml:551
 #, no-c-format
 msgid ""
 "select ST_DelaunayTriangles(\n"
@@ -608,7 +653,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:519
+#: reference_sfcgal.xml:560
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_ConcaveHull\"/>, "
@@ -616,19 +661,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:525
+#: reference_sfcgal.xml:566
 #, no-c-format
 msgid "ST_3DIntersection"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:527
+#: reference_sfcgal.xml:568
 #, no-c-format
 msgid "Perform 3D intersection"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:532
+#: reference_sfcgal.xml:573
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_3DIntersection</function></funcdef> "
@@ -637,13 +682,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:542
+#: reference_sfcgal.xml:583
 #, no-c-format
 msgid "Return a geometry that is the shared portion between geom1 and geom2."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:558 reference_sfcgal.xml:634 reference_sfcgal.xml:709
+#: reference_sfcgal.xml:599 reference_sfcgal.xml:675 reference_sfcgal.xml:750
 #, no-c-format
 msgid ""
 "SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
@@ -653,13 +698,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:564
+#: reference_sfcgal.xml:605
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is shown semi-transparent"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:569
+#: reference_sfcgal.xml:610
 #, no-c-format
 msgid ""
 "SELECT ST_3DIntersection(geom1,geom2)\n"
@@ -670,19 +715,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:575
+#: reference_sfcgal.xml:616
 #, no-c-format
 msgid "Intersection of geom1 and geom2"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:584
+#: reference_sfcgal.xml:625
 #, no-c-format
 msgid "3D linestrings and polygons"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:585
+#: reference_sfcgal.xml:626
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt\n"
@@ -697,13 +742,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:587
+#: reference_sfcgal.xml:628
 #, no-c-format
 msgid "Cube (closed Polyhedral Surface) and Polygon Z"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:588
+#: reference_sfcgal.xml:629
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_3DIntersection(\n"
@@ -718,14 +763,14 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_sfcgal.xml:589
+#: reference_sfcgal.xml:630
 #, no-c-format
 msgid ""
 "TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:591
+#: reference_sfcgal.xml:632
 #, no-c-format
 msgid ""
 "Intersection of 2 solids that result in volumetric intersection is also a "
@@ -733,7 +778,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:592
+#: reference_sfcgal.xml:633
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::"
@@ -742,7 +787,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_sfcgal.xml:593
+#: reference_sfcgal.xml:634
 #, no-c-format
 msgid ""
 "POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 "
@@ -775,19 +820,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:601
+#: reference_sfcgal.xml:642
 #, no-c-format
 msgid "ST_3DDifference"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:603
+#: reference_sfcgal.xml:644
 #, no-c-format
 msgid "Perform 3D difference"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:608
+#: reference_sfcgal.xml:649
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_3DDifference</function></funcdef> "
@@ -796,20 +841,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:618
+#: reference_sfcgal.xml:659
 #, no-c-format
 msgid "Returns that part of geom1 that is not part of geom2."
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:640
+#: reference_sfcgal.xml:681
 #, no-c-format
 msgid ""
 "Original 3D geometries overlaid. geom2 is the part that will be removed."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:645
+#: reference_sfcgal.xml:686
 #, no-c-format
 msgid ""
 "SELECT ST_3DDifference(geom1,geom2)\n"
@@ -820,13 +865,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:651
+#: reference_sfcgal.xml:692
 #, no-c-format
 msgid "What's left after removing geom2"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:665
+#: reference_sfcgal.xml:706
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
@@ -834,19 +879,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:675
+#: reference_sfcgal.xml:716
 #, no-c-format
 msgid "ST_3DUnion"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:677
+#: reference_sfcgal.xml:718
 #, no-c-format
 msgid "Perform 3D union"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:682
+#: reference_sfcgal.xml:723
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_3DUnion</function></funcdef> "
@@ -855,13 +900,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:715
+#: reference_sfcgal.xml:756
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is the one with transparency."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:720
+#: reference_sfcgal.xml:761
 #, no-c-format
 msgid ""
 "SELECT ST_3DUnion(geom1,geom2)\n"
@@ -872,13 +917,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:726
+#: reference_sfcgal.xml:767
 #, no-c-format
 msgid "Union of geom1 and geom2"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:740
+#: reference_sfcgal.xml:781
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
@@ -886,19 +931,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:751
+#: reference_sfcgal.xml:792
 #, no-c-format
 msgid "ST_3DArea"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:753
+#: reference_sfcgal.xml:794
 #, no-c-format
 msgid "Computes area of 3D surface geometries. Will return 0 for solids."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:758
+#: reference_sfcgal.xml:799
 #, no-c-format
 msgid ""
 "<funcdef>float<function>ST_3DArea</function></funcdef> "
@@ -906,7 +951,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:776
+#: reference_sfcgal.xml:817
 #, no-c-format
 msgid ""
 "Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
@@ -914,7 +959,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:777
+#: reference_sfcgal.xml:818
 #, no-c-format
 msgid ""
 "SELECT ST_3DArea(geom) As cube_surface_area,\n"
@@ -932,7 +977,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:783
+#: reference_sfcgal.xml:824
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
@@ -940,13 +985,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:789
+#: reference_sfcgal.xml:830
 #, no-c-format
 msgid "ST_Tesselate"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:791
+#: reference_sfcgal.xml:832
 #, no-c-format
 msgid ""
 "Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
@@ -954,7 +999,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:796
+#: reference_sfcgal.xml:837
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
@@ -962,7 +1007,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:805
+#: reference_sfcgal.xml:846
 #, no-c-format
 msgid ""
 "Takes as input a surface such a MULTI(POLYGON) or POLYHEDRALSURFACE and "
@@ -970,7 +1015,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:819
+#: reference_sfcgal.xml:860
 #, no-c-format
 msgid ""
 "SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
@@ -983,13 +1028,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:825
+#: reference_sfcgal.xml:866
 #, no-c-format
 msgid "Original Cube"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:830
+#: reference_sfcgal.xml:871
 #, no-c-format
 msgid ""
 "SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 "
@@ -1002,13 +1047,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:831
+#: reference_sfcgal.xml:872
 #, no-c-format
 msgid "ST_AsText output:"
 msgstr ""
 
 #. Tag: screen
-#: reference_sfcgal.xml:832
+#: reference_sfcgal.xml:873
 #, no-c-format
 msgid ""
 "TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),\n"
@@ -1021,13 +1066,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:838
+#: reference_sfcgal.xml:879
 #, no-c-format
 msgid "Tesselated Cube with triangles colored"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:846
+#: reference_sfcgal.xml:887
 #, no-c-format
 msgid ""
 "SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, "
@@ -1035,7 +1080,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:857
+#: reference_sfcgal.xml:898
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -1044,13 +1089,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:859 reference_sfcgal.xml:1012
+#: reference_sfcgal.xml:900 reference_sfcgal.xml:1053
 #, no-c-format
 msgid "ST_AsText output"
 msgstr ""
 
 #. Tag: screen
-#: reference_sfcgal.xml:860
+#: reference_sfcgal.xml:901
 #, no-c-format
 msgid ""
 "TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),\n"
@@ -1059,25 +1104,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:866
+#: reference_sfcgal.xml:907
 #, no-c-format
 msgid "Tesselated Polygon"
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:879
+#: reference_sfcgal.xml:920
 #, no-c-format
 msgid ", <xref linkend=\"ST_DelaunayTriangles\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:887
+#: reference_sfcgal.xml:928
 #, no-c-format
 msgid "ST_Volume"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:889
+#: reference_sfcgal.xml:930
 #, no-c-format
 msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
@@ -1085,7 +1130,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:894
+#: reference_sfcgal.xml:935
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Volume</function></funcdef> "
@@ -1093,13 +1138,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_sfcgal.xml:912 reference_sfcgal.xml:1010
+#: reference_sfcgal.xml:953 reference_sfcgal.xml:1051
 #, no-c-format
 msgid "Example"
 msgstr "Ejemplo"
 
 #. Tag: para
-#: reference_sfcgal.xml:913
+#: reference_sfcgal.xml:954
 #, no-c-format
 msgid ""
 "When closed surfaces are created with WKT, they are treated as areal rather "
@@ -1108,7 +1153,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:915
+#: reference_sfcgal.xml:956
 #, no-c-format
 msgid ""
 "SELECT ST_Volume(geom) As cube_surface_vol,\n"
@@ -1126,19 +1171,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:921
+#: reference_sfcgal.xml:962
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:928
+#: reference_sfcgal.xml:969
 #, no-c-format
 msgid "ST_MakeSolid"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:930
+#: reference_sfcgal.xml:971
 #, no-c-format
 msgid ""
 "Cast the geometry into a solid. No check is performed. To obtain a valid "
@@ -1147,7 +1192,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:935
+#: reference_sfcgal.xml:976
 #, no-c-format
 msgid ""
 "<funcdef>geometry<function>ST_MakeSolid</function></funcdef> "
@@ -1155,19 +1200,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:956
+#: reference_sfcgal.xml:997
 #, no-c-format
 msgid "ST_IsSolid"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:958
+#: reference_sfcgal.xml:999
 #, no-c-format
 msgid "Test if the geometry is a solid. No validity check is performed."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:963
+#: reference_sfcgal.xml:1004
 #, no-c-format
 msgid ""
 "<funcdef>boolean<function>ST_IsSolid</function></funcdef> "
@@ -1175,33 +1220,27 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_sfcgal.xml:985
+#: reference_sfcgal.xml:1026
 #, no-c-format
 msgid "ST_3DConvexHull"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_sfcgal.xml:987
+#: reference_sfcgal.xml:1028
 #, no-c-format
 msgid "Computes the 3D convex hull of a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_sfcgal.xml:992
+#: reference_sfcgal.xml:1033
 #, no-c-format
 msgid ""
 "<funcdef>geometry<function>ST_3DConvexHull</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 msgstr ""
 
-#. Tag: para
-#: reference_sfcgal.xml:1002
-#, fuzzy, no-c-format
-msgid "Availability: 3.3.0"
-msgstr "Disponibilidad: 2.1.0"
-
 #. Tag: programlisting
-#: reference_sfcgal.xml:1011
+#: reference_sfcgal.xml:1052
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_3DConvexHull('MULTIPOINTZ(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 "
@@ -1209,7 +1248,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_sfcgal.xml:1013
+#: reference_sfcgal.xml:1054
 #, no-c-format
 msgid ""
 "POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),"

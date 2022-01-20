@@ -1,0 +1,284 @@
+# SOME DESCRIPTIVE TITLE.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"PO-Revision-Date: 2021-09-11 03:45+0000\n"
+"Last-Translator: Regina Obe\n"
+"Language-Team: Russian (http://www.transifex.com/postgis/postgis/language/"
+"ru/)\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#. Tag: title
+#: performance_tips.xml:3
+#, no-c-format
+msgid "Performance Tips"
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:6
+#, no-c-format
+msgid "Small tables of large geometries"
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:9
+#, no-c-format
+msgid "Problem description"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:11
+#, no-c-format
+msgid ""
+"Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
+"weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
+"\" used to store large (in the sense of data size) values that do not fit "
+"into normal data pages (like long texts, images or complex geometries with "
+"lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/current/"
+"static/storage-toast.html\">the PostgreSQL Documentation for TOAST</ulink> "
+"for more information)."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:19
+#, no-c-format
+msgid ""
+"The problem appears if you happen to have a table with rather large "
+"geometries, but not too many rows of them (like a table containing the "
+"boundaries of all European countries in high resolution). Then the table "
+"itself is small, but it uses lots of TOAST space. In our example case, the "
+"table itself had about 80 rows and used only 3 data pages, but the TOAST "
+"table used 8225 pages."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:26
+#, no-c-format
+msgid ""
+"Now issue a query where you use the geometry operator &amp;&amp; to search "
+"for a bounding box that matches only very few of those rows. Now the query "
+"optimizer sees that the table has only 3 pages and 80 rows. It estimates "
+"that a sequential scan on such a small table is much faster than using an "
+"index. And so it decides to ignore the GIST index. Usually, this estimation "
+"is correct. But in our case, the &amp;&amp; operator has to fetch every "
+"geometry from disk to compare the bounding boxes, thus reading all TOAST "
+"pages, too."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:35
+#, no-c-format
+msgid ""
+"To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
+"postgresql command. For more information and the technical details, you can "
+"read the thread on the PostgreSQL performance mailing list: <ulink url="
+"\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
+"ulink>"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:41
+#, no-c-format
+msgid ""
+"and newer thread on PostGIS <ulink url=\"https://lists.osgeo.org/pipermail/"
+"postgis-devel/2017-June/026209.html\">https://lists.osgeo.org/pipermail/"
+"postgis-devel/2017-June/026209.html</ulink>"
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:45
+#, no-c-format
+msgid "Workarounds"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:47
+#, no-c-format
+msgid ""
+"The PostgreSQL people are trying to solve this issue by making the query "
+"estimation TOAST-aware. For now, here are two workarounds:"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:50
+#, no-c-format
+msgid ""
+"The first workaround is to force the query planner to use the index. Send "
+"\"SET enable_seqscan TO off;\" to the server before issuing the query. This "
+"basically forces the query planner to avoid sequential scans whenever "
+"possible. So it uses the GIST index as usual. But this flag has to be set on "
+"every connection, and it causes the query planner to make misestimations in "
+"other cases, so you should \"SET enable_seqscan TO on;\" after the query."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:58
+#, no-c-format
+msgid ""
+"The second workaround is to make the sequential scan as fast as the query "
+"planner thinks. This can be achieved by creating an additional column that "
+"\"caches\" the bbox, and matching against this. In our example, the commands "
+"are like:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:63
+#, no-c-format
+msgid ""
+"SELECT "
+"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
+"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(geom));"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:65
+#, no-c-format
+msgid ""
+"Now change your query to use the &amp;&amp; operator against bbox instead of "
+"geom_column, like:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:68
+#, no-c-format
+msgid ""
+"SELECT geom_column\n"
+"FROM mytable\n"
+"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:70
+#, no-c-format
+msgid ""
+"Of course, if you change or add rows to mytable, you have to keep the bbox "
+"\"in sync\". The most transparent way to do this would be triggers, but you "
+"also can modify your application to keep the bbox column current or run the "
+"UPDATE query above after every modification."
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:79
+#, no-c-format
+msgid "CLUSTERing on geometry indices"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:81
+#, no-c-format
+msgid ""
+"For tables that are mostly read-only, and where a single index is used for "
+"the majority of queries, PostgreSQL offers the CLUSTER command. This command "
+"physically reorders all the data rows in the same order as the index "
+"criteria, yielding two performance advantages: First, for index range scans, "
+"the number of seeks on the data table is drastically reduced. Second, if "
+"your working set concentrates to some small intervals on the indices, you "
+"have a more efficient caching because the data rows are spread along fewer "
+"data pages. (Feel invited to read the CLUSTER command documentation from the "
+"PostgreSQL manual at this point.)"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:91
+#, no-c-format
+msgid ""
+"However, currently PostgreSQL does not allow clustering on PostGIS GIST "
+"indices because GIST indices simply ignores NULL values, you get an error "
+"message like:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:95
+#, no-c-format
+msgid ""
+"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
+"ERROR: cannot cluster when index access method does not handle null values\n"
+"HINT: You may be able to work around this by marking column \"geom\" NOT "
+"NULL."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:97
+#, no-c-format
+msgid ""
+"As the HINT message tells you, one can work around this deficiency by adding "
+"a \"not null\" constraint to the table:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:100
+#, no-c-format
+msgid ""
+"lwgeom=# ALTER TABLE my_table ALTER COLUMN geom SET not null;\n"
+"ALTER TABLE"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:102
+#, no-c-format
+msgid ""
+"Of course, this will not work if you in fact need NULL values in your "
+"geometry column. Additionally, you must use the above method to add the "
+"constraint, using a CHECK constraint like \"ALTER TABLE blubb ADD CHECK "
+"(geometry is not null);\" will not work."
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:109
+#, no-c-format
+msgid "Avoiding dimension conversion"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:111
+#, no-c-format
+msgid ""
+"Sometimes, you happen to have 3D or 4D data in your table, but always access "
+"it using OpenGIS compliant ST_AsText() or ST_AsBinary() functions that only "
+"output 2D geometries. They do this by internally calling the ST_Force2D() "
+"function, which introduces a significant overhead for large geometries. To "
+"avoid this overhead, it may be feasible to pre-drop those additional "
+"dimensions once and forever:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:118
+#, no-c-format
+msgid ""
+"UPDATE mytable SET geom = ST_Force2D(geom);\n"
+"VACUUM FULL ANALYZE mytable;"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:120
+#, no-c-format
+msgid ""
+"Note that if you added your geometry column using AddGeometryColumn() "
+"there'll be a constraint on geometry dimension. To bypass it you will need "
+"to drop the constraint. Remember to update the entry in the geometry_columns "
+"table and recreate the constraint afterwards."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:126
+#, no-c-format
+msgid ""
+"In case of large tables, it may be wise to divide this UPDATE into smaller "
+"portions by constraining the UPDATE to a part of the table via a WHERE "
+"clause and your primary key or another feasible criteria, and running a "
+"simple \"VACUUM;\" between your UPDATEs. This drastically reduces the need "
+"for temporary disk space. Additionally, if you have mixed dimension "
+"geometries, restricting the UPDATE by \"WHERE dimension(geom)&gt;2\" skips "
+"re-writing of geometries that already are in 2D."
+msgstr ""

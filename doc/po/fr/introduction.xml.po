@@ -10,16 +10,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-07-22 02:48+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
-"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
-"fr/)\n"
+"POT-Creation-Date: 2022-01-10 06:28+0000\n"
+"PO-Revision-Date: 2022-01-12 22:41+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"introductionxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: introduction.xml:3
@@ -86,7 +87,7 @@ msgstr ""
 #: introduction.xml:31
 #, no-c-format
 msgid "Raúl Marín Rodríguez"
-msgstr ""
+msgstr "Raúl Marín Rodríguez"
 
 #. Tag: para
 #: introduction.xml:33
@@ -222,37 +223,23 @@ msgstr ""
 #. Tag: term
 #: introduction.xml:105
 #, no-c-format
-msgid "Olivier Courtin"
-msgstr "Olivier Courtin"
-
-#. Tag: para
-#: introduction.xml:107
-#, fuzzy, no-c-format
-msgid "Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes."
-msgstr ""
-"Fonctions d'entrée/sortie XML (KML,GML) et fonctions GeoJSON, support 3D et "
-"correction de bugs."
-
-#. Tag: term
-#: introduction.xml:112
-#, no-c-format
 msgid "Martin Davis"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:114
+#: introduction.xml:107
 #, no-c-format
 msgid "GEOS enhancements and documentation"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:119
+#: introduction.xml:112
 #, no-c-format
 msgid "Björn Harrtell"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:122
+#: introduction.xml:115
 #, no-c-format
 msgid ""
 "MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
@@ -260,13 +247,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:128
+#: introduction.xml:121
 #, no-c-format
 msgid "Mateusz Loskot"
 msgstr "Mateusz Loskot"
 
 #. Tag: para
-#: introduction.xml:130
+#: introduction.xml:123
 #, no-c-format
 msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
@@ -274,38 +261,54 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:135
+#: introduction.xml:128
 #, no-c-format
 msgid "Pierre Racine"
 msgstr "Pierre Racine"
 
 #. Tag: para
-#: introduction.xml:137
+#: introduction.xml:130
 #, no-c-format
 msgid "Raster overall architecture, prototyping, programming support"
 msgstr ""
 "Architecture générale des raster, prototypage, support à la programmation."
 
 #. Tag: title
-#: introduction.xml:143
+#: introduction.xml:136
 #, no-c-format
 msgid "Core Contributors Past"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:146
+#: introduction.xml:139
 #, no-c-format
 msgid "Mark Cave-Ayland"
 msgstr "Mark Cave-Ayland"
 
 #. Tag: para
-#: introduction.xml:148
+#: introduction.xml:141
 #, no-c-format
 msgid ""
 "Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial "
 "index selectivity and binding, loader/dumper, and Shapefile GUI Loader, "
 "integration of new and new function enhancements."
 msgstr ""
+
+#. Tag: term
+#: introduction.xml:147
+#, no-c-format
+msgid "Olivier Courtin"
+msgstr "Olivier Courtin"
+
+#. Tag: para
+#: introduction.xml:149
+#, fuzzy, no-c-format
+msgid ""
+"(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug "
+"fixes."
+msgstr ""
+"Fonctions d'entrée/sortie XML (KML,GML) et fonctions GeoJSON, support 3D et "
+"correction de bugs."
 
 #. Tag: term
 #: introduction.xml:154

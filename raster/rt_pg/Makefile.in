@@ -66,17 +66,27 @@ OBJS = \
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
 #
-LIBLWGEOM_LDFLAGS=../../liblwgeom/.libs/liblwgeom.a
-LIBLWGEOM_CFLAGS="-I../../liblwgeom"
-LIBPGCOMMON_CFLAGS="-I../../libpgcommon"
-LIBPGCOMMON_LDFLAGS=../../libpgcommon/libpgcommon.a
+LIBLWGEOM_LDFLAGS = @top_builddir@/liblwgeom/.libs/liblwgeom.a
+LIBLWGEOM_CFLAGS = -I@top_srcdir@/liblwgeom -I@top_builddir@/liblwgeom
+LIBPGCOMMON_CFLAGS = -I@top_srcdir@/libpgcommon
+LIBPGCOMMON_LDFLAGS = @top_builddir@/libpgcommon/libpgcommon.a
 LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
 LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
 LIBPROJ_CFLAGS=@PROJ_CPPFLAGS@
 
 CC = @CC@
-PG_CPPFLAGS+= $(LIBLWGEOM_CFLAGS) @CPPFLAGS@ @CFLAGS@ $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
-SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@
+PG_CPPFLAGS += \
+	$(LIBLWGEOM_CFLAGS) \
+	@CPPFLAGS@ \
+	@CFLAGS@ \
+	$(LIBGDAL_CFLAGS) \
+	$(LIBPGCOMMON_CFLAGS) \
+	$(LIBPROJ_CFLAGS) \
+	-I@srcdir@/../rt_core \
+	-I@builddir@ \
+	-I@builddir@/.. \
+	-I@top_builddir@
+SHLIB_LINK_F = @builddir@/../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql.in
@@ -88,6 +98,8 @@ PGXS := @PGXS@
 # http://www.postgresql.org/message-id/CAB7nPqTsR5o3g-fBi6jbsVdhfPiLFWQ_0cGU5=94Rv_8W3qvFA@mail.gmail.com
 NO_TEMP_INSTALL=yes
 include $(PGXS)
+
+VPATH = @srcdir@
 
 # Utility rule for use from outside
 sql_objs: $(DATA_built)
@@ -113,7 +125,7 @@ endif
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(SQLPP) -I@top_builddir@/postgis/ $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
 ../../liblwgeom/.libs/liblwgeom.a:
@@ -135,7 +147,7 @@ $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_revision.h
 
 #this is redundant but trying to fold in with the  other just hangs
 rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
-	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+	$(PERL) @top_srcdir@/utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql
 	echo 'BEGIN;' > $@
@@ -143,7 +155,7 @@ rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rt
 	echo 'COMMIT;' >> $@
 
 uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl
-	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean
 	rm -f Makefile

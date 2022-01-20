@@ -19,15 +19,21 @@
 # **********************************************************************
 # *
 # * Copyright 2021 Björn Harrtell
+# * Copyright 2022 Sandro Santilli <strk@kbt.io>
 # *
 # **********************************************************************/
 
-CXX = @FLATGEOBUF_CXX@
-CXXFLAGS =-I../../liblwgeom -Iinclude @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
-LDFLAGS = @LDFLAGS@
 top_builddir = @top_builddir@
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
 libdir = @libdir@
+
+CXX = @FLATGEOBUF_CXX@
+CXXFLAGS =-I$(top_srcdir)/liblwgeom -I$(top_builddir)/liblwgeom -I$(srcdir)/include @CPPFLAGS@ @CXXFLAGS@ @PICFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
+
+VPATH = $(srcdir)
 
 FLATGEOBUF_OBJS = \
 	flatgeobuf_c.o geometrywriter.o geometryreader.o packedrtree.o

@@ -1,19 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-01-19 00:27+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"reference_srsxml/it/>\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: para
 #: reference_srs.xml:5
@@ -54,7 +56,7 @@ msgstr ""
 #: reference_srs.xml:34 reference_srs.xml:81 reference_srs.xml:145
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #. Tag: para
 #: reference_srs.xml:36
@@ -78,19 +80,19 @@ msgstr ""
 #: reference_srs.xml:45
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_srs.xml:46 reference_srs.xml:89 reference_srs.xml:179
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_srs.xml:50 reference_srs.xml:94 reference_srs.xml:185
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Esempi"
 
 #. Tag: para
 #: reference_srs.xml:51
@@ -129,7 +131,7 @@ msgstr ""
 #: reference_srs.xml:58 reference_srs.xml:99 reference_srs.xml:219
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Si veda anche"
 
 #. Tag: para
 #: reference_srs.xml:60
@@ -181,7 +183,7 @@ msgstr ""
 #: reference_srs.xml:87
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.1"
 
 #. Tag: para
 #: reference_srs.xml:88
@@ -296,6 +298,8 @@ msgstr ""
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
 msgstr ""
+"Miglioramento: nella versione 2.0.0 è stato introdotto il supporto per le "
+"superfici poliedriche."
 
 #. Tag: para
 #: reference_srs.xml:177
@@ -313,7 +317,7 @@ msgstr ""
 #: reference_srs.xml:180
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_srs.xml:186

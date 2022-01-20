@@ -25,6 +25,8 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
+VPATH := @srcdir@
+
 SHELL = @SHELL@
 INSTALL = $(SHELL) ../build-aux/install-sh
 
@@ -42,7 +44,6 @@ SRID_MAXIMUM = @SRID_MAX@
 SRID_USER_MAXIMUM = @SRID_USR_MAX@
 
 all: postgis_restore.pl
-	chmod +x $(SCRIPTS)
 
 DROP_FILES = \
   ../raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
@@ -72,6 +73,7 @@ update-restore:
 
 postgis_restore.pl: postgis_restore.pl.in
 	sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' $< >$@
+	chmod +x $@
 
 distclean: clean
 	rm -f Makefile

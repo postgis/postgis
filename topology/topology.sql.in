@@ -188,7 +188,7 @@
 -- Let people decide about that
 -- DROP SCHEMA topology CASCADE;
 
-#include "../postgis/sqldefines.h"
+#include "sqldefines.h"
 
 CREATE SCHEMA topology;
 COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';

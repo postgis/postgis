@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-12-18 00:06+0000\n"
-"PO-Revision-Date: 2021-12-13 09:17+0000\n"
+"PO-Revision-Date: 2022-01-11 01:37+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -33,13 +33,13 @@ msgstr "リリースノート"
 #: release_notes.xml:6
 #, no-c-format
 msgid "PostGIS 3.2.0 (Olivier Courtin Edition)"
-msgstr ""
+msgstr "PostGIS 3.2.0 (Olivier Courtin版)"
 
 #. Tag: para
 #: release_notes.xml:7
 #, no-c-format
 msgid "2021/12/18"
-msgstr ""
+msgstr "2021/12/18"
 
 #. Tag: para
 #: release_notes.xml:8 release_notes.xml:122 release_notes.xml:183
@@ -62,6 +62,10 @@ msgid ""
 "user testing as to the true impact of real-world queries. If you are running "
 "PG14+, you can reenable it by doing:"
 msgstr ""
+"新しいPostgreSQL 14の高速インデックス構築で能率が低下するクエリがあるため、現"
+"実世界のクエリの本当の影響を見るユーザ試験が増えるまで、デフォルトでは機能を"
+"無効化することにしました。PostgreSQL 14以降を実行する場合には、次の操作を行う"
+"ことで再有効化が可能です。"
 
 #. Tag: programlisting
 #: release_notes.xml:18
@@ -71,12 +75,15 @@ msgid ""
 "            ADD FUNCTION 11 (geometry)\n"
 "            geometry_gist_sortsupport_2d (internal);"
 msgstr ""
+"ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist\n"
+"            ADD FUNCTION 11 (geometry)\n"
+"            geometry_gist_sortsupport_2d (internal);"
 
 #. Tag: para
 #: release_notes.xml:19 release_notes.xml:134
 #, no-c-format
 msgid "To revert the change:"
-msgstr ""
+msgstr "変更を戻すには次のようにします。"
 
 #. Tag: programlisting
 #: release_notes.xml:20
@@ -85,12 +92,14 @@ msgid ""
 "ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist\n"
 "        DROP FUNCTION 11 (geometry);"
 msgstr ""
+"ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist\n"
+"        DROP FUNCTION 11 (geometry);"
 
 #. Tag: para
 #: release_notes.xml:21 release_notes.xml:137
 #, no-c-format
 msgid "and then reindex your gist indexes"
-msgstr ""
+msgstr "そして、GiSTインデックスの再構築を行います。"
 
 #. Tag: title
 #: release_notes.xml:24 release_notes.xml:213 release_notes.xml:304
@@ -106,54 +115,57 @@ msgid ""
 "5008, Empty geometries are not reported as being within Infinite distance by "
 "ST_DWithin (Sandro Santilli)"
 msgstr ""
+"5008, Empty geometries are not reported as being within Infinite distance by "
+"ST_DWithinで、空ジオメトリに対しては無限遠にあると正しく報告されない (Sandro "
+"Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:27
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4824, Removed <code>--without-wagyu</code> build option. Using Wagyu is now "
 "mandatory to build with MVT support."
 msgstr ""
-"#4824, `--without-wagyu`ビルドオプションを削除しました。WagyuはMVT対応のビル"
-"ドでは必須になっているためです。"
+"4824, <code>--without-wagyu</code>ビルドオプションを削除しました。WagyuはMVT"
+"対応のビルドでは必須になっているためです。"
 
 #. Tag: para
 #: release_notes.xml:28
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4933, topology.GetFaceByPoint will not work with topologies having invalid "
 "edge linking."
 msgstr ""
-"#4933, topology.GetFaceByPointは、不正なエッジリンクを持つトポロジでは動作し"
-"なくなります。"
+"4933, topology.GetFaceByPointは、不正なエッジリンクを持つトポロジでは動作しな"
+"くなります。"
 
 #. Tag: para
 #: release_notes.xml:29
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4981, ST_StartPoint support any geometry. No longer returns null for non-"
 "linestrings."
 msgstr ""
-"#4981, ST_StartPointが全てのジオメトリに対応しました。ラインストリング以外で"
+"4981, ST_StartPointが全てのジオメトリに対応しました。ラインストリング以外で"
 "NULLを返すことがなくなりました。"
 
 #. Tag: para
 #: release_notes.xml:30
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4149, ST_AsMVTGeom now preserves more of original geometry's details at "
 "scale close to target extent. If you need previous simplifying behaviour, "
 "you can ST_Simplify the geometry in advance. (Darafei Praliaskouski)"
 msgstr ""
-"#4149, ST_AsMVTGeomは、対象範囲に近い縮尺で元のジオメトリの詳細データを以前よ"
+"4149, ST_AsMVTGeomは、対象範囲に近い縮尺で元のジオメトリの詳細データを以前よ"
 "り多く保存するようになりました。以前の単純化の振る舞いが必要な場合には、事前"
 "にST_Simplifyを実行します。 (Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #: release_notes.xml:33
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "- Proj 4.9 or higher is required"
-msgstr "Proj 4.9以上が必要です。"
+msgstr "- Proj 4.9以上が必要です。"
 
 #. Tag: para
 #: release_notes.xml:34 release_notes.xml:191
@@ -190,288 +202,290 @@ msgstr "4997, FlatGeobuf書式による入出力 (Björn Harrtellさん)"
 msgid ""
 "4575, GRANT SELECT on topology metadata tables to PUBLIC (Sandro Santilli)"
 msgstr ""
+"4575, トポロジのメタテーブルに対してGRANT SELECT ... TO PUBLICを実行 (Sandro "
+"Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:43
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "2592, Do not allow CreateTopology to define topologies with SRID &lt; 0 "
 "(Sandro Santilli)"
 msgstr ""
-"#2592, CreateTopologyにおいてSRID &gt; 0でトポロジを定義できないようになりま"
-"した (Sandro Santilliさん)"
+"2592, CreateTopologyにおいてSRID &lt; 0でトポロジを定義できないようになりまし"
+"た (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:45
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "3232, Prevent moving an isolated node to different face (Sandro Santilli)"
 msgstr ""
-"#3232, 孤立ノードを異なるフェイスに移動できないようにしました (Sandro "
-"Santilliさん)"
+"3232, 孤立ノードを異なるフェイスに移動できないようにしました (Sandro Santilli"
+"さん)"
 
 #. Tag: para
 #: release_notes.xml:47
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "- Consider collection TopoGeometries while editing topology primitives. "
 "(Sandro Santilli)"
 msgstr ""
-"トポロジ編集時にコレクションのTopoGeometryを考慮するようになりました (Sandro "
-"Santilliさん)"
+"- トポロジ編集時にコレクションのTopoGeometryを考慮するようになりました "
+"(Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:49
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "3248, Prevent removing isolated edges if used in a TopoGeometry (Sandro "
 "Santilli)"
 msgstr ""
-"#3248, TopoGeometryで使われている孤立エッジを削除できないようにしました "
+"3248, TopoGeometryで使われている孤立エッジを削除できないようにしました "
 "(Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:51
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "3231, Prevent removing isolated nodes if used in a TopoGeometry (Sandro "
 "Santilli)"
 msgstr ""
-"#3231, TopoGeometryで使われている孤立ノードを削除できないようにしました "
-"(Sandro Santilli)"
+"3231, TopoGeometryで使われている孤立ノードを削除できないようにしました "
+"(Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:53
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "3239, Prevent headling topology edges if the connecting node is used in the "
 "definition of a TopoGeometry (Sandro Santilli)"
 msgstr ""
-"#3239, 接続しているノードがTopoGeometryの定義に使われているエッジの修復をでき"
+"3239, 接続しているノードがTopoGeometryの定義に使われているエッジの修復をでき"
 "ないようにしました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:55
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4950, Speed up checking containing_face for nodes in ValidateTopology "
 "(Sandro Santilli)"
 msgstr ""
-"#4950, ValidateTopologyでノード用のcontaining_faceチェックの速度向上 (Sandro "
+"4950, ValidateTopologyでノード用のcontaining_faceチェックの速度向上 (Sandro "
 "Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:57
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4945, Multi-shell face check in ValidateTopology (Sandro Santilli)"
 msgstr ""
-"#4945, ValidateTopologyで複数の外殻を持つフェイスのチェック (Sandro Santilli"
-"さん)"
+"4945, ValidateTopologyで複数の外殻を持つフェイスのチェック (Sandro Santilliさ"
+"ん)"
 
 #. Tag: para
 #: release_notes.xml:58
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4944, Side-location conflict check in ValidateTopology (Sandro Santilli)"
-msgstr "#4944, ValidateTopologyで側面位置矛盾のチェック (Sandro Santilliさん)"
+msgstr "4944, ValidateTopologyで側面位置矛盾のチェック (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:59
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "3042, ValidateTopology check for edge linking (Sandro Santilli)"
-msgstr "#3042, ValidateTopologyでエッジ接続のチェック (Sandro Santilliさん)"
+msgstr "3042, ValidateTopologyでエッジ接続のチェック (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:60
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "3276, ValidateTopology check for face's mbr (Sandro Santilli)"
-msgstr "#3276, ValidateTopologyでフェイスのMBRのチェック (Sandro Santilliさん)"
+msgstr "3276, ValidateTopologyでフェイスのMBRのチェック (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:61
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4936, Bounding box limited ValidateTopology (Sandro Santilli)"
 msgstr ""
-"#4936, ValidateTopologyをバウンディングボックスで制限できるようにしました "
+"4936, ValidateTopologyをバウンディングボックスで制限できるようにしました "
 "(Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:62
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4933, Speed up topology building in presence of big faces (Sandro Santilli)"
-msgstr ""
-"#4933, 巨大フェイス支配下のトポロジ構築の速度向上 (Sandro Santilliさん)"
+msgstr "4933, 巨大フェイス支配下のトポロジ構築の速度向上 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:63
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "3233, ValidateTopology check for node's containing_face (Sandro Santilli)"
 msgstr ""
-"#3233, ValidateTopologyがノードのcontaining_faceをチェックするようになりまし"
+"3233, ValidateTopologyがノードのcontaining_faceをチェックするようになりまし"
 "た (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:64
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4830, ValidateTopology check for edges side face containment (Sandro "
 "Santilli)"
 msgstr ""
-"#4830, ValidateTopologyが、エッジが両側のフェイスに囲まれているかをチェックす"
+"4830, ValidateTopologyが、エッジが両側のフェイスに囲まれているかをチェックす"
 "るようになりました (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:66
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4827, Allow NaN coordinates in WKT input (Paul Ramsey)"
-msgstr "#4827, WKT入力でNaN座標値を許すようになりました (Paul Ramsey)"
+msgstr "4827, WKT入力でNaN座標値を許すようになりました (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:67
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "- ST_Value() accepts resample parameter to add bilinear option (Paul Ramsey)"
 msgstr ""
-"ST_Value()がリサンプリングパラメータを受け付けるようになり、バイリニアのオプ"
-"ションを追加しました。 (Paul Ramseyさん)"
+"- ST_Value()がリサンプリングパラメータを受け付けるようになり、バイリニアのオ"
+"プションを追加しました。 (Paul Ramseyさん)"
 
 #. Tag: para
 #: release_notes.xml:68
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "3778, #4401, ST_Boundary now works for TIN and does not linearize curves "
 "(Aliaksandr Kalenik)"
 msgstr ""
-"#3778, #4401, ST_BoundaryがTINで動作し、曲線を線形化しなくなりました "
+"3778, #4401, ST_BoundaryがTINで動作し、曲線を線形化しなくなりました "
 "(Aliaksandr Kalenikさん)"
 
 #. Tag: para
 #: release_notes.xml:69
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4881, #4884, Store sign of edge_id for lineal TopoGeometry in relation table "
 "to retain direction (Sandro Santilli)"
 msgstr ""
-"#4881, #4884, 方向を保持するために、relationテーブル内の線のTopoGeometryに対"
-"応するedge_idの符号を格納 (Sandro Santilliさん)"
+"4881, #4884, 方向を保持するために、relationテーブル内の線のTopoGeometryに対応"
+"するedge_idの符号を格納 (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:71
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4628, Add an option to disable ANALYZE when loading shapefiles (Stefan "
 "Corneliu Petrea)"
 msgstr ""
-"#4628, シェープファイルのロード時にANALYZEを無効にするオプションを追加 "
+"4628, シェープファイルのロード時にANALYZEを無効にするオプションを追加 "
 "(Stefan Corneliu Petreaさん)"
 
 #. Tag: para
 #: release_notes.xml:72
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4924, Faster ST_RemoveRepeatedPoints on large multipoints, O(NlogN) instead "
 "of O(N^2) (Aliaksandr Kalenik, Darafei Praliaskouski)"
 msgstr ""
-"#4924, 大きなマルチポイントでの動作がO(N^2) からO(NlogN)に早くなった"
+"4924, 大きなマルチポイントでの動作がO(N^2) からO(NlogN)に早くなった"
 "ST_RemoveRepeatedPoints (Aliaksandr Kalenikさん, Darafei Praliaskouskiさん)"
 
 #. Tag: para
 #: release_notes.xml:74
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4925, fix ST_DumpPoints to not overlook points (Aliaksandr Kalenik)"
 msgstr ""
-"#4925, ポイントを見落とさないようST_DumpPointsを修正 (Aliaksandr Kalenikさん)"
+"4925, ポイントを見落とさないようST_DumpPointsを修正 (Aliaksandr Kalenikさん)"
 
 #. Tag: para
 #: release_notes.xml:75
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "- ST_SRID(topogeometry) override, to speedup lookups (Sandro Santilli)"
 msgstr ""
-"検索速度向上のためST_SRID(topogeometry)を無効にしました (Sandro Santilliさん)"
+"- 検索速度向上のためST_SRID(topogeometry)を無効にしました (Sandro Santilliさ"
+"ん)"
 
 #. Tag: para
 #: release_notes.xml:76
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "2175, Avoid creating additional nodes when adding same closed line to "
 "topology (Sandro Santilli)"
 msgstr ""
-"#2175, 同じ閉じた線をトポロジに追加する時に追加ノードを生成しないようにしまし"
+"2175, 同じ閉じた線をトポロジに追加する時に追加ノードを生成しないようにしまし"
 "た (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:78
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4974, Upgrade path for address_standardizer_data_us (Jan Katins of Aiven, "
 "Regina Obe)"
 msgstr ""
-"#4974, address_standardizer_data_usのパスを更新しました (AivenのJan Katinsさ"
+"4974, address_standardizer_data_usのパスを更新しました (AivenのJan Katinsさ"
 "ん, Regina Obeさん)"
 
 #. Tag: para
 #: release_notes.xml:80
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4975, PostGIS upgrade change to not use temp tables (Jan Katins of Aiven)"
 msgstr ""
-"#4975, PostGISアップグレードで一時テーブルを使わないように変更しました (Avien"
+"4975, PostGISアップグレードで一時テーブルを使わないように変更しました (Avien"
 "のJan Katinsさん)"
 
 #. Tag: para
 #: release_notes.xml:81
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4981, ST_StartPoint support any geometry (Aliaksandr Kalenik)"
 msgstr ""
-"#4981, ST_StartPointがどのジオメトリもサポートするようになりました "
+"4981, ST_StartPointがどのジオメトリもサポートするようになりました "
 "(Aliaksandr Kalenikさん)"
 
 #. Tag: para
 #: release_notes.xml:82
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4799, Include srs in GeoJSON where it exists in spatial_ref_sys."
-msgstr "#4799, spatial_ref_sysにあるSRSをGeoJSONに取り込めるようになりました。"
+msgstr "4799, spatial_ref_sysにあるSRSをGeoJSONに取り込めるようになりました。"
 
 #. Tag: para
 #: release_notes.xml:83
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4986, GIST indexes on Postgres 14 are now created faster using Hilbert-"
 "sorting method. (Han Wang, Aliaksandr Kalenik, Darafei Praliaskouski, "
 "Giuseppe Broccolo)"
 msgstr ""
-"#4986, PostgreSQL 14のGiSTインデックスが、ヒルベルトソートで早くなりました。 "
+"4986, PostgreSQL 14のGiSTインデックスが、ヒルベルトソートで早くなりました。 "
 "(Han Wangさん, Aliaksandr Kalenikさん, Darafei Praliaskouskiさん, Giuseppe "
 "Broccoloさん)"
 
 #. Tag: para
 #: release_notes.xml:85
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4949, Use proj_normalize_for_visualization to hand \"axis swap\" decisions "
 "(Paul Ramsey)"
 msgstr ""
-"#4949, 座標軸の交換の有無を渡すためにproj_normalize_for_visualizationを使いま"
+"4949, 座標軸の交換の有無を渡すためにproj_normalize_for_visualizationを使いま"
 "す (Paul Ramseyさん)"
 
 #. Tag: para
 #: release_notes.xml:86
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "- GH647, ST_PixelAsCentroids, ST_PixelAsCentroid reimplemented on top of a C "
 "function (Sergei Shoulbakov)"
 msgstr ""
-"GH648, ST_PixelAsCentroids, ST_PixelAsCentroidをC関数の上に再実装 (Sergei "
+"- GH647, ST_PixelAsCentroids, ST_PixelAsCentroidをC関数の上に再実装 (Sergei "
 "Shoulbakovさん)"
 
 #. Tag: para
 #: release_notes.xml:87
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "- GH648, ST_AsMVTGeom now uses faster clipping (Aliaksandr Kalenik)"
 msgstr ""
-"GH647, ST_AsMVTGeomは現在より早いクリッピングを使っています (Aliaksandr "
+"- GH648, ST_AsMVTGeomは現在より早いクリッピングを使っています (Aliaksandr "
 "Kalenikさん)"
 
 #. Tag: para
@@ -495,39 +509,39 @@ msgstr "新機能"
 
 #. Tag: para
 #: release_notes.xml:94
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4923, topology.ValidateTopologyRelation (Sandro Santilli)"
-msgstr "#4923, topology.ValidateTopologyRelation (Sandro Santilliさん)"
+msgstr "4923, topology.ValidateTopologyRelation (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:95
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4933, topology.GetFaceContainingPoint (Sandro Santilli)"
-msgstr "#4933, topology.GetFaceContainingPoint (Sandro Santilliさん)"
+msgstr "4933, topology.GetFaceContainingPoint (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:96
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "2175, ST_Scroll (Sandro Santilli)"
-msgstr "#2175, ST_Scroll (Sandro Santilliさん)"
+msgstr "2175, ST_Scroll (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:97
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4841, FindTopology to quickly get a topology record (Sandro Santilli)"
-msgstr "#4841, トポロジ行を早く取得するFindTopology (Sandro Santilliさん)"
+msgstr "4841, トポロジ行を早く取得するFindTopology (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:98
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4869, FindLayer to quickly get a layer record (Sandro Santilli)"
-msgstr "#4869, レイヤ行を早く取得するFindLayer (Sandro Santilli)"
+msgstr "4869, レイヤ行を早く取得するFindLayer (Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:99
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4851, TopoGeom_addTopoGeom function (Sandro Santilli)"
-msgstr "#4851, TopoGeom_addTopoGeom関数(Sandro Santilliさん)"
+msgstr "4851, TopoGeom_addTopoGeom関数(Sandro Santilliさん)"
 
 #. Tag: para
 #: release_notes.xml:100 release_notes.xml:276
@@ -591,36 +605,36 @@ msgstr "入力ジオメトリの辺の集合を返すST_DumpSegments (Aliaksandr
 
 #. Tag: para
 #: release_notes.xml:113
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZM, constructors with SRID "
 "parameter (Paul Ramsey)"
 msgstr ""
-"#4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZMのSRIDパラメータを持つコンス"
+"4859, ST_Point, ST_PointZ, ST_PointM, ST_PointZMのSRIDパラメータを持つコンス"
 "トラクタ (Paul Ramseyさん)"
 
 #. Tag: para
 #: release_notes.xml:115
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4808, ST_ClusterKMeans now supports max_radius argument. Use it when you're "
 "not sure what is the number of clusters but you know what the size of "
 "clusters should be. (Darafei Praliaskouski)"
 msgstr ""
-"#4808, ST_ClusterKMeansはmax_radius引数に対応しました。クラスタ数が不明だがク"
+"4808, ST_ClusterKMeansはmax_radius引数に対応しました。クラスタ数が不明だがク"
 "ラスタのサイズが分かっている場合に使います。(Darafei Praliaskouskiさん)"
 
 #. Tag: title
 #: release_notes.xml:120
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "PostGIS 3.2.0beta3"
-msgstr "リリース 3.2.0beta2"
+msgstr "PostGIS 3.2.0beta3"
 
 #. Tag: para
 #: release_notes.xml:121
 #, no-c-format
 msgid "2021/12/04"
-msgstr ""
+msgstr "2021/12/04"
 
 #. Tag: programlisting
 #: release_notes.xml:133
@@ -630,6 +644,9 @@ msgid ""
 "        ADD FUNCTION 11 (geometry)\n"
 "        geometry_gist_sortsupport_2d (internal);"
 msgstr ""
+"ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist\n"
+"        ADD FUNCTION 11 (geometry)\n"
+"        geometry_gist_sortsupport_2d (internal);"
 
 #. Tag: programlisting
 #: release_notes.xml:135
@@ -638,12 +655,14 @@ msgid ""
 "ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist\n"
 "     DROP FUNCTION 11 (geometry);"
 msgstr ""
+"ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist\n"
+"     DROP FUNCTION 11 (geometry);"
 
 #. Tag: para
 #: release_notes.xml:139
 #, no-c-format
 msgid "Changes since PostGIS 3.2.0beta2 release:"
-msgstr ""
+msgstr "PostGIS 3.2.0beta2 リリース以降の変更点は次の通りです。"
 
 #. Tag: title
 #: release_notes.xml:141 release_notes.xml:163
@@ -653,23 +672,23 @@ msgstr "大幅な変更/修正"
 
 #. Tag: para
 #: release_notes.xml:142
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "5028, ST_AsFlatGeobuf crashes on mixed geometry input (Björn Harrtell)"
 msgstr ""
-"5005, ジオメトリカラムが最初の列でない時にテーブルでST_AsFlatGeoBufが異常終了"
-"する (Björn Harrtellさん)"
+"5028, 混合ジオメトリ入力でST_AsFlatGeoBufが異常終了する (Björn Harrtellさん)"
 
 #. Tag: para
 #: release_notes.xml:144
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "5029, ST_AsFlatGeobuf indexed output corruption (Björn Harrtell)"
-msgstr "4997, FlatGeobuf書式による入出力 (Björn Harrtellさん)"
+msgstr ""
+"5029, ST_AsFlatGeobufのインデックス付き出力での破損 (Björn Harrtellさん)"
 
 #. Tag: para
 #: release_notes.xml:146
 #, no-c-format
 msgid "5014, Crash on ST_TableFromFlatGeobuf (Björn Harrtell)"
-msgstr ""
+msgstr "5014, ST_TableFromFlatGeobufで異常終了する (Björn Harrtellさん)"
 
 #. Tag: para
 #: release_notes.xml:147
@@ -677,12 +696,16 @@ msgstr ""
 msgid ""
 "Rename ST_TableFromFlatGeobuf to ST_FromFlatGeobufToTable (Björn Harrtell)"
 msgstr ""
+"ST_TableFromFlatGeobufをST_FromFlatGeobufToTableに名称変更 (Björn Harrtellさ"
+"ん)"
 
 #. Tag: para
 #: release_notes.xml:149
 #, no-c-format
 msgid "PG14 fast index building disabled by default. (Paul Ramsey)"
 msgstr ""
+"PostgreSQL 14の高速インデックス構築はデフォルトで無効化しました。 (Paul "
+"Ramseyさん)"
 
 #. Tag: title
 #: release_notes.xml:154

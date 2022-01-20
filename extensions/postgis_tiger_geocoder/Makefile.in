@@ -1,4 +1,4 @@
-include ../upgradeable_versions.mk
+include @srcdir@/../upgradeable_versions.mk
 
 EXTENSION    = postgis_tiger_geocoder
 EXTVERSION    = @POSTGIS_LIB_VERSION@
@@ -82,7 +82,7 @@ sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_object
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql | sql
 	cat $^ > $@
 	echo "SELECT postgis_extension_drop_if_exists('${EXTENSION}', 'DROP SCHEMA tiger_data');" >> $@
-	cat ../postgis_extension_helper_uninstall.sql  >> $@
+	cat @srcdir@/../postgis_extension_helper_uninstall.sql  >> $@
 
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql | sql
 	cp $< $@
@@ -91,7 +91,7 @@ sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTV
 #strip CREATE SCHEMA since we force extension
 # to create schema by setting schema to tiger_geocoder in control
 #also remove tiger_data from extension if it is part of it
-sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_path.sql \
+sql/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_path.sql \
   sql_bits/upgrade_before.sql.in \
   	../../extras/tiger_geocoder/geocode_settings.sql \
   ../../extras/tiger_geocoder/tiger_loader_2020.sql \
@@ -121,8 +121,8 @@ sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_se
 	../../extras/tiger_geocoder/geocode/geocode_intersection.sql \
 	../../extras/tiger_geocoder/geocode/geocode.sql \
 	../../extras/tiger_geocoder/geocode/reverse_geocode.sql \
-	../../extras/tiger_geocoder/geocode/census_tracts_functions.sql
-	mkdir -p sql_bits
+	../../extras/tiger_geocoder/geocode/census_tracts_functions.sql \
+	| sql
 	cat $^ > $@
 
 #also remove tiger_data from extension if it is part of it so data gets backed up
@@ -165,7 +165,7 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	mkdir -p sql_bits
 	cat $^ > $@
 	echo "SELECT postgis_extension_drop_if_exists('${EXTENSION}', 'DROP SCHEMA tiger_data');" >> $@
-	cat ../postgis_extension_helper_uninstall.sql  >> $@
+	cat @srcdir@/../postgis_extension_helper_uninstall.sql  >> $@
 
 sql_bits/tiger_geocoder.sql: sql_bits/tiger_geocoder.sql.in
 	mkdir -p sql_bits
@@ -210,7 +210,7 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/tiger_geocoder--unpack
 #aggregates are special
 #they can be dropped but we need to remove
 #them from the extension first
-sql/tiger_geocoder_upgrade_minor.sql:  sql_bits/tiger_geocoder_minor.sql.in | sql
+sql/tiger_geocoder_upgrade_minor.sql:  sql/tiger_geocoder_minor.sql.in | sql
 	sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
@@ -251,3 +251,5 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 PERL=@PERL@
+
+VPATH = @srcdir@

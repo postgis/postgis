@@ -5,21 +5,21 @@
 # pibinko <pibinko@gmail.com>, 2019
 # Tommaso Di Bucchianico, 2019
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2019-08-03 21:25+0000\n"
-"Last-Translator: Tommaso Di Bucchianico, 2019\n"
-"Language-Team: Italian (Italy) (https://www.transifex.com/postgis/teams/3227/"
-"it_IT/)\n"
+"PO-Revision-Date: 2022-01-13 16:44+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"reference_inputxml/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: para
 #: reference_input.xml:6
@@ -121,7 +121,7 @@ msgstr "&sfs_compliant; s3.2.6.2"
 #: reference_input.xml:48 reference_input.xml:101
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr "Eseguito dal modulo GEOS"
+msgstr "Eseguito dal modulo GEOS."
 
 #. Tag: para
 #: reference_input.xml:49 reference_input.xml:102

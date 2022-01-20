@@ -1,4 +1,4 @@
-include ../upgradeable_versions.mk
+include @srcdir@/../upgradeable_versions.mk
 OBJS = \
     address_parser.o \
     address_standardizer.o \
@@ -66,7 +66,7 @@ REGRESS = test-init-extensions test-parseaddress test-standardize_address_1 test
 # and adding the version number
 sql/%.sql: %.sql.in
 	mkdir -p sql
-	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
+	$(SQLPP) -I@buiddir@/../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
 %.control: %.control.in Makefile
@@ -122,7 +122,7 @@ sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EX
 	mkdir -p sql
 	cat $^ > $@
 
-include ../upgrade-paths-rules.mk
+include @srcdir@/../upgrade-paths-rules.mk
 
 install: install-upgrade-paths-data-us
 # address_standardizer is already defined, we have to additionally create
@@ -208,3 +208,5 @@ PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@
+
+VPATH = @srcdir@

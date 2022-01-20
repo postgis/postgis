@@ -9,15 +9,17 @@
 # *
 # **********************************************************************
 
-CC=@CC@
 top_builddir = @top_builddir@
+top_srcdir = @top_srcdir@
+builddir = @builddir@
+srcdir = @srcdir@
+
+CC=@CC@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
-RT_CORE=../../rt_core
-
 LIBLWGEOM_LDFLAGS=../../../liblwgeom/.libs/liblwgeom.a
-LIBLWGEOM_CFLAGS=-I../../../liblwgeom
+LIBLWGEOM_CFLAGS = -I$(top_srcdir)/liblwgeom -I$(top_builddir)/liblwgeom
 LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
 LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
 PROJ_CFLAGS=@PROJ_CPPFLAGS@
@@ -26,12 +28,17 @@ GEOS_CFLAGS=@GEOS_CPPFLAGS@
 GEOS_LDFLAGS=@GEOS_LDFLAGS@
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 
-RTCORE_CFLAGS=-I$(RT_CORE)
-RTCORE_LDFLAGS=$(RT_CORE)/librtcore.a
+RTCORE_CFLAGS = -I$(top_srcdir)/raster/rt_core
+RTCORE_LDFLAGS = $(top_builddir)/raster/rt_core/librtcore.a
+
+VPATH = $(srcdir)
 
 CC=@CC@
 CFLAGS = \
-	-I.. \
+	-I$(top_builddir) \
+	-I$(top_builddir)/raster \
+	-I$(builddir) \
+	-I$(builddir)/.. \
 	$(LIBLWGEOM_CFLAGS) \
 	$(RTCORE_CFLAGS) \
 	$(PROJ_CFLAGS) \
@@ -80,15 +87,15 @@ check: cu_tester
 endif
 
 # Build the main unit test executable
-cu_tester: $(RT_CORE)/librtcore.a $(OBJS)
+cu_tester: $(top_builddir)/raster/rt_core/librtcore.a $(OBJS)
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(CUNIT_LDFLAGS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(RT_CORE)/librtcore.a:
-	$(MAKE) -C ../../rt_core
+$(top_builddir)/raster/rt_core/librtcore.a:
+	$(MAKE) -C $(top_builddir)/raster/rt_core
 
 # Clean target
 clean:

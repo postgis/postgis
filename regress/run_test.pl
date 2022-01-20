@@ -50,9 +50,10 @@ BEGIN {
 
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = abs_path(dirname($0));
-our $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
-our $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
-our $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
+our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${REGDIR} . '/..';
+our $SHP2PGSQL = $TOP_BUILDDIR . "/loader/shp2pgsql";
+our $PGSQL2SHP = $TOP_BUILDDIR . "/loader/pgsql2shp";
+our $RASTER2PGSQL = $TOP_BUILDDIR . "/raster/loader/raster2pgsql";
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
@@ -1538,62 +1539,29 @@ sub upgrade_spatial
 {
     print "Upgrading PostGIS in '${DB}' \n" ;
 
-    my $script = `ls ${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql`;
-    chomp($script);
-
-    if ( -e $script )
-    {
-        print "Upgrading core\n";
-        load_sql_file($script);
-    }
-    else
-    {
-        die "$script not found\n";
-    }
+    my $script = "${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql";
+    print "Upgrading core\n";
+    die unless load_sql_file($script, 1);
 
     if ( $OPT_WITH_TOPO )
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/topology_upgrade.sql`;
-        chomp($script);
-        if ( -e $script )
-        {
-            print "Upgrading topology\n";
-            load_sql_file($script);
-        }
-        else
-        {
-            die "$script not found\n";
-        }
+        $script = "${STAGED_SCRIPTS_DIR}/topology_upgrade.sql";
+        print "Upgrading topology\n";
+        die unless load_sql_file($script, 1);
     }
 
     if ( $OPT_WITH_RASTER )
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade.sql`;
-        chomp($script);
-        if ( -e $script )
-        {
-            print "Upgrading raster\n";
-            load_sql_file($script);
-        }
-        else
-        {
-            die "$script not found\n";
-        }
+        $script = "${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade.sql";
+        print "Upgrading raster\n";
+        die unless load_sql_file($script, 1);
     }
 
     if ( $OPT_WITH_SFCGAL )
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql`;
-        chomp($script);
-        if ( -e $script )
-        {
-            print "Upgrading sfcgal\n";
-            load_sql_file($script);
-        }
-        else
-        {
-            die "$script not found\n";
-        }
+        $script = "${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql";
+        print "Upgrading sfcgal\n";
+        die unless load_sql_file($script, 1);
     }
 
     return 1;

@@ -24,6 +24,9 @@
 #
 #############################################################################
 
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+
 POSTGIS_SRC=../../..
 PERL=@PERL@
 
@@ -180,10 +183,10 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 	$(PERL) -lpe "s'\\\$$libdir'$(REGRESS_INSTALLDIR)/lib'g" $< > $@
 
 
-topsrcdir = $(realpath ../../../)
-srcdir = $(realpath .)
+# TODO: drop this variable, use top_srcdir directly
+topsrcdir = $(top_srcdir)
 
-include tests.mk
-include ../../../regress/runtest.mk
+include $(srcdir)/tests.mk
+include $(top_srcdir)/regress/runtest.mk
 
 check: check-regress

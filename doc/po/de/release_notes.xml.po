@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-12-18 00:06+0000\n"
-"PO-Revision-Date: 2021-11-28 22:22+0000\n"
-"Last-Translator: Regina Obe\n"
+"PO-Revision-Date: 2022-01-10 13:38+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
 "de/)\n"
 "Language: de\n"
@@ -254,15 +254,15 @@ msgstr ""
 
 #. Tag: para
 #: release_notes.xml:60
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "3276, ValidateTopology check for face's mbr (Sandro Santilli)"
-msgstr "populate_topology_layer (Sandro Santilli)"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:61
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4936, Bounding box limited ValidateTopology (Sandro Santilli)"
-msgstr "populate_topology_layer (Sandro Santilli)"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:62
@@ -353,13 +353,11 @@ msgstr ""
 
 #. Tag: para
 #: release_notes.xml:78
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "4974, Upgrade path for address_standardizer_data_us (Jan Katins of Aiven, "
 "Regina Obe)"
 msgstr ""
-"4420, update path does not exists for address_standardizer extension (Regina "
-"Obe)"
 
 #. Tag: para
 #: release_notes.xml:80
@@ -432,9 +430,9 @@ msgstr ""
 
 #. Tag: para
 #: release_notes.xml:94
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4923, topology.ValidateTopologyRelation (Sandro Santilli)"
-msgstr "populate_topology_layer (Sandro Santilli)"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:95
@@ -444,17 +442,15 @@ msgstr ""
 
 #. Tag: para
 #: release_notes.xml:96
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "2175, ST_Scroll (Sandro Santilli)"
-msgstr "#1758, ST_Normalize (Sandro Santilli)"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:97
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4841, FindTopology to quickly get a topology record (Sandro Santilli)"
 msgstr ""
-"#3234, Leere Punkte/EMPTY Points nicht als topologische Knoten akzeptieren "
-"(Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:98
@@ -464,9 +460,9 @@ msgstr ""
 
 #. Tag: para
 #: release_notes.xml:99
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "4851, TopoGeom_addTopoGeom function (Sandro Santilli)"
-msgstr "TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:100 release_notes.xml:276
@@ -583,9 +579,9 @@ msgstr ""
 
 #. Tag: para
 #: release_notes.xml:144
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "5029, ST_AsFlatGeobuf indexed output corruption (Björn Harrtell)"
-msgstr "#3599, Geobuf Ausgabe via ST_AsGeobuf (Björn Harrtell)"
+msgstr ""
 
 #. Tag: para
 #: release_notes.xml:146

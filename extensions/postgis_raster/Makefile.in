@@ -1,4 +1,4 @@
-include ../upgradeable_versions.mk
+include @srcdir@/../upgradeable_versions.mk
 
 EXTENSION     = postgis_raster
 EXTVERSION    = @POSTGIS_LIB_VERSION@
@@ -59,6 +59,8 @@ EXTRA_CLEAN = sql
 
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
+VPATH = @srcdir@
+
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 
 sql:
@@ -78,10 +80,10 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 	echo "-- Nothing to do here" > $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) ../../utils/create_unpackaged.pl sql/$(EXTENSION)--ANY--$(EXTVERSION).sql Makefile | sql
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | ../../utils/create_unpackaged.pl sql/$(EXTENSION)--ANY--$(EXTVERSION).sql Makefile sql
 	# Ensure version is correct
 	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
-	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | $(PERL) ../../utils/create_unpackaged.pl postgis_raster >> $@
+	cat $^ | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis_raster >> $@
 
 unpackaged_check.sql: unpackaged_check.sql.in Makefile
 	cat $< \
@@ -93,7 +95,7 @@ sql/rtpostgis.sql: sql/rtpostgis_for_extension.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 sql/rtpostgis_for_extension.sql: ../../raster/rt_pg/rtpostgis.sql.in ../../postgis_revision.h | sql
-	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(SQLPP) -I@builddir@/../../postgis/ -I../../ $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
 sql/rtpostgis_upgrade.sql: sql/rtpostgis_upgrade_for_extension.sql | sql
@@ -107,7 +109,7 @@ sql/rtpostgis_upgrade_for_extension.sql: ../../raster/rt_pg/rtpostgis_upgrade_cl
 
 
 sql/rtpostgis_upgrade_for_extension.sql.in: sql/rtpostgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl | sql
-	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+	$(PERL) @top_srcdir@/utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 
 ../../doc/raster_comments.sql:
@@ -118,9 +120,9 @@ sql/raster_comments.sql: ../../doc/raster_comments.sql | sql
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
-	cat $(EXTENSION_UPGRADE_SCRIPTS) >> $@
+	cat $^ >> $@
 
-include ../upgrade-paths-rules.mk
+include @srcdir@/../upgrade-paths-rules.mk
 
 distclean: clean
 	rm -f Makefile

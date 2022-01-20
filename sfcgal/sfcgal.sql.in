@@ -27,11 +27,15 @@ CREATE OR REPLACE FUNCTION postgis_sfcgal_version() RETURNS text
         AS 'MODULE_PATHNAME'
         LANGUAGE 'c' IMMUTABLE;
 
-#if POSTGIS_SFCGAL_VERSION >= 10400
 -- Availability: 3.3.0
+#if POSTGIS_SFCGAL_VERSION >= 10400
 CREATE OR REPLACE FUNCTION postgis_sfcgal_full_version() RETURNS text
         AS 'MODULE_PATHNAME'
         LANGUAGE 'c' IMMUTABLE;
+#else
+CREATE OR REPLACE FUNCTION postgis_sfcgal_full_version() RETURNS text AS
+'SELECT @extschema@.postgis_sfcgal_version();'
+LANGUAGE 'sql' IMMUTABLE;
 #endif
 
 -- Availability: 3.0.0

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"POT-Creation-Date: 2022-01-10 14:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -1078,7 +1078,7 @@ msgstr ""
 #. Tag: para
 #: using_postgis_dataman.xml:553
 #, no-c-format
-msgid "TRIANGLE ((0 0, 0 9, 9 0, 0 0))"
+msgid "TRIANGLE ((0 0, 0 10, 10 0, 0 0))"
 msgstr ""
 
 #. Tag: para

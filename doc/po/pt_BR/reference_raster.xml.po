@@ -17052,6 +17052,10 @@ msgid ""
 "<xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue"
 "\"/>, <xref linkend=\"RT_ST_Union\"/>"
 msgstr ""
+", <xref linkend=\"RT_ST_AsRaster\"/> <xref linkend=\"RT_ST_MapAlgebra\"/>, "
+"<xref linkend=\"RT_ST_Grayscale\"/> <xref linkend=\"RT_ST_NumBands\"/>, "
+"<xref linkend=\"RT_ST_Reclass\"/>, <xref linkend=\"RT_ST_SetBandNoDataValue"
+"\"/>, <xref linkend=\"RT_ST_Union\"/>"
 
 #. Tag: refname
 #: reference_raster.xml:7047

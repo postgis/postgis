@@ -71,16 +71,7 @@ cp html/images/* images
 make epub
 make -e chunked-html-web 2>&1 | tee -a doc-errors.log
 
-if [[ "$reference" == *"master"* ]]; then  #only do this for master branch because only master follows transifex
-  make update-pot
-  make pull-tx
-  make -C po/it_IT/ local-html
-  make -C po/pt_BR/ local-html
-  make -C po/ja/ local-html
-  make -C po/de/ local-html
-  make -C po/ko_KR/ local-html
-  #make pdf-localized
-fi
+make -C doc/ html-localized
 
 package="doc-html-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.tar.gz"
 

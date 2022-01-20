@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2021-11-28 22:08+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
-"language/it_IT/)\n"
+"PO-Revision-Date: 2022-01-13 16:44+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"reference_processingxml/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: para
 #: reference_processing.xml:5
@@ -230,7 +231,7 @@ msgstr ""
 #: reference_processing.xml:1972 reference_processing.xml:2063
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr "Eseguito dal modulo GEOS"
+msgstr "Eseguito dal modulo GEOS."
 
 #. Tag: para
 #: reference_processing.xml:119 reference_processing.xml:687
@@ -928,7 +929,7 @@ msgstr "Eseguito dal modulo GEOS"
 #: reference_processing.xml:551 reference_processing.xml:1637
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilità: 2.0"
+msgstr "Disponibilità: 2.0.0"
 
 #. Tag: programlisting
 #: reference_processing.xml:556

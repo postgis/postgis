@@ -19,15 +19,20 @@
 # **********************************************************************
 # *
 # * Copyright 2019 Raúl Marín
+# * Copyright 2022 Sandro Santilli <strk@kbt.io>
 # *
 # **********************************************************************/
 
-CC=@CC@
-CFLAGS = -I.. @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ -DRYU_NO_TRAILING_ZEROS
 top_builddir = @top_builddir@
+srcdir = @srcdir@
+
+CC=@CC@
+CFLAGS = -I$(srcdir)/.. @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ -DRYU_NO_TRAILING_ZEROS
 SHELL = @SHELL@
 INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
+
+VPATH = $(srcdir)
 
 RYU_OBJS = d2s.o
 LT_RYU_OBJS =  $(RYU_OBJS:.o=.lo)

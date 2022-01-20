@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-10 13:02+0000\n"
 "PO-Revision-Date: 2019-03-11 13:48+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -267,37 +267,23 @@ msgstr ""
 #. Tag: term
 #: introduction.xml:105
 #, no-c-format
-msgid "Olivier Courtin"
-msgstr "Olivier Courtin"
-
-#. Tag: para
-#: introduction.xml:107
-#, fuzzy, no-c-format
-msgid "Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes."
-msgstr ""
-"Ein- und Ausgabefunktionen für XML (KML,GML)/GeoJSON, 3D Unterstützng und "
-"Bugfixes."
-
-#. Tag: term
-#: introduction.xml:112
-#, no-c-format
 msgid "Martin Davis"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:114
+#: introduction.xml:107
 #, no-c-format
 msgid "GEOS enhancements and documentation"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:119
+#: introduction.xml:112
 #, no-c-format
 msgid "Björn Harrtell"
 msgstr "Björn Harrtell"
 
 #. Tag: para
-#: introduction.xml:122
+#: introduction.xml:115
 #, no-c-format
 msgid ""
 "MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab "
@@ -306,13 +292,13 @@ msgstr ""
 "MapBox Vector Tile und GeoBuf Funktionen. Gogs Tests und GitLab Experimente."
 
 #. Tag: term
-#: introduction.xml:128
+#: introduction.xml:121
 #, no-c-format
 msgid "Mateusz Loskot"
 msgstr "Mateusz Loskot"
 
 #. Tag: para
-#: introduction.xml:130
+#: introduction.xml:123
 #, fuzzy, no-c-format
 msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
@@ -322,13 +308,13 @@ msgstr ""
 "Laders in Python und systemnahe Funktionen der Raster-API"
 
 #. Tag: term
-#: introduction.xml:135
+#: introduction.xml:128
 #, no-c-format
 msgid "Pierre Racine"
 msgstr "Pierre Racine"
 
 #. Tag: para
-#: introduction.xml:137
+#: introduction.xml:130
 #, no-c-format
 msgid "Raster overall architecture, prototyping, programming support"
 msgstr ""
@@ -336,19 +322,19 @@ msgstr ""
 "Programmierung"
 
 #. Tag: title
-#: introduction.xml:143
+#: introduction.xml:136
 #, no-c-format
 msgid "Core Contributors Past"
 msgstr "Frühere Kernentwickler"
 
 #. Tag: term
-#: introduction.xml:146
+#: introduction.xml:139
 #, no-c-format
 msgid "Mark Cave-Ayland"
 msgstr "Mark Cave-Ayland"
 
 #. Tag: para
-#: introduction.xml:148
+#: introduction.xml:141
 #, fuzzy, no-c-format
 msgid ""
 "Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial "
@@ -359,6 +345,22 @@ msgstr ""
 "Anbindung von räumlichen Indizes, den Loader/Dumper und die Shapfile Loader "
 "GUI, die Einbindung von neuen Funktionen sowie die Verbesserung von neuen "
 "Funktionen."
+
+#. Tag: term
+#: introduction.xml:147
+#, no-c-format
+msgid "Olivier Courtin"
+msgstr "Olivier Courtin"
+
+#. Tag: para
+#: introduction.xml:149
+#, fuzzy, no-c-format
+msgid ""
+"(Emeritus) Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug "
+"fixes."
+msgstr ""
+"Ein- und Ausgabefunktionen für XML (KML,GML)/GeoJSON, 3D Unterstützng und "
+"Bugfixes."
 
 #. Tag: term
 #: introduction.xml:154

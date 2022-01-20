@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-04 23:52+0000\n"
+"POT-Creation-Date: 2022-01-19 03:22+0000\n"
 "PO-Revision-Date: 2021-11-28 22:06+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -2257,7 +2257,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Tiles with multiple layers can be created by concatenating multiple calls to "
-"this function using <varname>||</varname>."
+"this function using <varname>||</varname> or <varname>STRING_AGG</varname>."
 msgstr ""
 
 #. Tag: para
@@ -2290,7 +2290,12 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<varname>geom_name</varname> is the name of the geometry column in the row "
-"data. Default is the first geometry column."
+"data. Default is the first geometry column. Note that PostgreSQL by default "
+"automatically <ulink url=\"https://www.postgresql.org/docs/current/sql-"
+"syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS\">folds unquoted identifiers to "
+"lower case</ulink>, which means that unless the geometry column is quoted, e."
+"g. <varname>\"MyMVTGeom\"</varname>, this parameter must be provided as "
+"lowercase."
 msgstr ""
 
 #. Tag: para
@@ -2532,13 +2537,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_output.xml:1150
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The array-input form of the function is used to convert a collection of "
 "geometries and unique identifiers into a TWKB collection that preserves the "
 "identifiers. This is useful for clients that expect to unpack a collection "
 "and then access further information about the objects inside. You can create "
-"the arrays using the <ulink url=\"http://www.postgresql.org/docs/9.4/static/"
+"the arrays using the <ulink url=\"https://www.postgresql.org/docs/current/"
 "functions-aggregate.html\">array_agg</ulink> function. The other parameters "
 "operate the same as for the simple form of the function."
 msgstr ""

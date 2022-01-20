@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-07-23 18:00+0000\n"
-"Last-Translator: pibinko <pibinko@gmail.com>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
-"language/it_IT/)\n"
+"PO-Revision-Date: 2022-01-19 10:14+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"reference_accessorxml/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: reference_accessor.xml:4
@@ -98,7 +99,7 @@ msgid ""
 "This function also indicates if the geometry is measured, by returning a "
 "string of the form 'POINTM'."
 msgstr ""
-"Questa funzione indica anche se la geometria viene misurata, restituendo una "
+"Questa funzione indica anche se la geometria è misurata, restituendo una "
 "stringa nella forma 'POINTM'."
 
 #. Tag: para
@@ -443,8 +444,8 @@ msgid ""
 "----------\n"
 "MULTIPOINT(-1 1 1,1 1 0.75)"
 msgstr ""
-"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 "
-"1)')));\n"
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));"
+"\n"
 "st_astext\n"
 "-----------\n"
 "MULTIPOINT(1 1,-1 1)\n"
@@ -631,8 +632,8 @@ msgid ""
 "                        --result--\n"
 "                                2"
 msgstr ""
-"SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 "
-"13)');\n"
+"SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 13)');"
+"\n"
 "                        ---result--\n"
 "                                3\n"
 "\n"
@@ -695,7 +696,7 @@ msgid ""
 "longer throws an exception if given empty geometry."
 msgstr ""
 "Miglioramento: nella versione 2.0.0 è stato introdotto il supporto per le "
-"supefici poliedriche e i TIN. Non viene più generata un'eccezione se viene "
+"superfici poliedriche e i TIN. Non viene più generata un'eccezione se viene "
 "data una geometria vuota."
 
 #. Tag: para
@@ -962,9 +963,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:420
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.5.0"
-msgstr "Disponibilità: 2.0"
+msgstr "Disponibilità: 1.5.0"
 
 #. Tag: title
 #: reference_accessor.xml:427
@@ -2035,7 +2036,7 @@ msgid ""
 "is measured."
 msgstr ""
 "Restituisce il tipo di geometria come stringa. P. es.: 'ST_LineString', "
-"'ST_Polygon','ST_MultiPolygon' ecc. Questa funzione differisce da  "
+"'ST_Polygon','ST_MultiPolygon' ecc. Questa funzione differisce da "
 "GeometryType(geometry) per il prefisso ST che viene restituito, così come "
 "per il fatto che non indica se la geometria è misurata."
 
@@ -2283,9 +2284,9 @@ msgid ""
 "SQL-MM defines the result of <function>ST_IsClosed(<varname>NULL</varname>)</"
 "function> to be 0, while PostGIS returns <varname>NULL</varname>."
 msgstr ""
-"SQL-MM definisce il risultato di <function>ST_IsClosed(<varname>NULL</"
-"varname>)</function> come 0, mentre PostGIS restituisce <varname>NULL</"
-"varname>."
+"SQL-MM definisce il risultato di "
+"<function>ST_IsClosed(<varname>NULL</varname>)</function> come 0, mentre "
+"PostGIS restituisce <varname>NULL</varname>."
 
 #. Tag: title
 #: reference_accessor.xml:997
@@ -2454,7 +2455,7 @@ msgid ""
 "return <varname>TRUE</varname> on collections that are empty or that contain "
 "a single element."
 msgstr ""
-"Questa funzione analizza il tipo di geometria. Significa che restituirà  "
+"Questa funzione analizza il tipo di geometria. Significa che restituirà "
 "<varname>TRUE</varname> sulle collezioni che sono vuote o contengono un "
 "singolo elemento."
 
@@ -2517,8 +2518,8 @@ msgstr ""
 " t\n"
 "(1 row)\n"
 "\n"
-"postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::"
-"geometry);\n"
+"postgis=# SELECT ST_IsCollection('GEOMETRYCOLLECTION(POINT(0 0))'::geometry);"
+"\n"
 " st_iscollection\n"
 "-------------\n"
 " t\n"
@@ -2637,8 +2638,8 @@ msgstr ""
 " f\n"
 "(1 row)\n"
 "\n"
-" SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = "
-"false;\n"
+" SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = false;"
+"\n"
 " ?column?\n"
 "----------\n"
 " t\n"
@@ -2781,10 +2782,10 @@ msgid ""
 "linkend=\"ST_IsSimple\"/> (does not self intersect)."
 msgstr ""
 "Restituisce <varname>TRUE</varname> se questa <varname>LINESTRING</varname> "
-"è sia <xref linkend=\"ST_IsClosed\"/> (<function>ST_StartPoint(<parameter>g</"
-"parameter>)</function> <function>~=</function> "
-"<function>ST_Endpoint(<parameter>g</parameter>)</function>) che <xref "
-"linkend=\"ST_IsSimple\"/> (non interseca se stessa)."
+"è sia <xref linkend=\"ST_IsClosed\"/> "
+"(<function>ST_StartPoint(<parameter>g</parameter>)</function> <function>~=</"
+"function> <function>ST_Endpoint(<parameter>g</parameter>)</function>) che "
+"<xref linkend=\"ST_IsSimple\"/> (non interseca se stessa)."
 
 #. Tag: para
 #: reference_accessor.xml:1278
@@ -2992,8 +2993,8 @@ msgid ""
 ", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
 ">"
 msgstr ""
-", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/"
-">"
+", <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\""
+"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1397
@@ -3154,8 +3155,7 @@ msgstr ""
 #: reference_accessor.xml:1470
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ""
-", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
+msgstr ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1476
@@ -3205,7 +3205,7 @@ msgstr ""
 "--result\n"
 "4\n"
 "\n"
-"--Poligono nello spazio 3D\n"
+"--Polygon in 3D space\n"
 "SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 "
 "0,77.27 29.31 -1,77.29 29.07 3)'))\n"
 "--result\n"
@@ -3464,7 +3464,7 @@ msgstr ""
 #: reference_accessor.xml:1677 reference_accessor.xml:1770
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr "Disponibilità: 2.0"
+msgstr "Disponibilità: 2.0.0"
 
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771

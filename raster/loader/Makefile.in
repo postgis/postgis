@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2011 Regents of the University of California
 #   <bkpark@ucdavis.edu>
-# Copyright (c) 2009 Sandro Santilli <strk@kbt.io>
+# Copyright (c) 2009-2022 Sandro Santilli <strk@kbt.io>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,10 +20,14 @@
 #
 #############################################################################
 
-# Set CFLAGS after PGXS, otherwise it will get overwritten with the PGXS
-# version which is not what we want.
-CC=@CC@
 top_builddir = @top_builddir@
+builddir = @builddir@
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+
+VPATH = $(srcdir)
+
+CC=@CC@
 SHELL = @SHELL@
 INSTALL = @INSTALL@
 LIBTOOL = @LIBTOOL@
@@ -34,10 +38,8 @@ RASTER2PGSQL=raster2pgsql@EXESUFFIX@
 # PostgreSQL executable directory
 PGSQL_BINDIR=@PGSQL_BINDIR@
 
-RT_CORE=../rt_core
-
-LIBLWGEOM_LDFLAGS= -static ../../liblwgeom/liblwgeom.la
-LIBLWGEOM_CFLAGS=-I../../liblwgeom
+LIBLWGEOM_LDFLAGS = -static $(top_builddir)/liblwgeom/liblwgeom.la
+LIBLWGEOM_CFLAGS = -I$(top_builddir)/liblwgeom -I$(top_srcdir)/liblwgeom
 LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
 LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
 LIBGDAL_DEPLIBS_LDFLAGS=@LIBGDAL_DEPLIBS_LDFLAGS@
@@ -45,8 +47,8 @@ PROJ_CFLAGS=@PROJ_CPPFLAGS@
 GEOS_CFLAGS=@GEOS_CPPFLAGS@
 GEOS_LDFLAGS=@GEOS_LDFLAGS@
 
-RTCORE_CFLAGS=-I$(RT_CORE)
-RTCORE_LDFLAGS=$(RT_CORE)/librtcore.a
+RTCORE_CFLAGS = -I$(srcdir)/../rt_core -I$(builddir)/.. -I$(builddir) -I$(top_builddir)
+RTCORE_LDFLAGS = $(builddir)/../rt_core/librtcore.a
 
 # GetText includes and libraries
 GETTEXT_CFLAGS = @GETTEXT_CFLAGS@
@@ -80,7 +82,7 @@ all: $(RASTER2PGSQL)
 raster2pgsql.o: raster2pgsql.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 
-$(RASTER2PGSQL): $(RT_CORE)/librtcore.a raster2pgsql.o
+$(RASTER2PGSQL): ../rt_core/librtcore.a raster2pgsql.o
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 installdir:
@@ -92,8 +94,8 @@ install: installdir
 uninstall:
 	$(LIBTOOL) --mode=uninstall $(RM) "$(DESTDIR)$(PGSQL_BINDIR)/$(RASTER2PGSQL)"
 
-$(RT_CORE)/librtcore.a:
-	$(MAKE) -C ../rt_core
+../rt_core/librtcore.a:
+	$(MAKE) -C $(buidldir)/../rt_core
 
 clean:
 	rm -rf .libs

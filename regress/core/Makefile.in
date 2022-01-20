@@ -10,11 +10,16 @@
 # *
 # **********************************************************************
 
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+builddir = @builddir@
+
 PERL=@PERL@
 
-topsrcdir = $(realpath ../../)
+# TODO: drop this variable, use top_srcdir directly
+topsrcdir = $(top_srcdir)
 
-include tests.mk
-include ../runtest.mk
+include $(builddir)/tests.mk
+include $(top_srcdir)/regress/runtest.mk
 
 check: check-regress
