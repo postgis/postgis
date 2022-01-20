@@ -30,7 +30,7 @@
         <title>Description</title>
 
         <para>Return the geometry bounding box as a MARC21/XML <ulink url="https://www.loc.gov/marc/bibliographic/bd034.html">Coded Cartographic Mathematical Data</ulink>. The coordinates in subfields <varname>$d</varname>,<varname>$e</varname>,<varname>$f</varname> and <varname>$g</varname> will be encoded as decimal degrees.</para>
-        <para>ST_AsMARC21 will drop Z and M dimensions.</para>
+        <para>It ignores the Z and M dimensions.</para>
 
         <para>
             LOC MARC21/XML versions supported:
@@ -41,7 +41,7 @@
             </itemizedlist>
         </para>
 
-        <para>Availability: 0.0.0 </para>
+        <para>Availability: 3.3.0 </para>
         
         <warning>
             <para>

@@ -38,7 +38,7 @@
             </itemizedlist>
         </para>
 
-        <para>Availability: XXXX, requires libxml2 2.6+</para>
+        <para>Availability: 3.3.0, requires libxml2 2.6+</para>
 
         <note>
             <para>
