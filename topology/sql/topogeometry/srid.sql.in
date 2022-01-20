@@ -19,8 +19,8 @@ CREATE OR REPLACE FUNCTION topology.ST_Srid(tg topology.TopoGeometry)
 AS
 $$
 	SELECT srid FROM topology.topology
-  WHERE id = id(tg);
+  WHERE id = topology_id(tg);
 $$
-LANGUAGE 'sql' STABLE STRICT;
+LANGUAGE 'sql' VOLATILE STRICT;
 -- }
 
