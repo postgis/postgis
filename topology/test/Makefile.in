@@ -12,12 +12,15 @@
 
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
+top_builddir = @top_builddir@
 builddir = @builddir@
 
 DATABASE=postgis_topo_regress
 
 PSQL=psql
 PERL=@PERL@
+
+VPATH = $(srcdir)
 
 # MingW hack: rather than use PGSQL_BINDIR directly, we change to the directory and
 # then use "pwd" to return the path. This ensures that the returned path is in MSYS
