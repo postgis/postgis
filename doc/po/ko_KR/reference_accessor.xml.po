@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2022-01-20 20:56+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -2129,7 +2129,7 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
-"efficient and works for atomoic geometrie."
+"efficient and works for atomic geometries."
 msgstr ""
 "모든 도형들을 추출하고자 한다면 ST_Dump 함수가 더 효율적이며, 단일 도형에 대"
 "해서도 작동할 것입니다."
@@ -4932,11 +4932,9 @@ msgstr ""
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
-#, no-c-format
 #~ msgid "Only works with POLYGON geometry types"
 #~ msgstr "오직 <varname>POLYGON</varname> 도형 유형만 입력받습니다."
 
-#, no-c-format
 #~ msgid ""
 #~ "Return the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, "
 #~ "(MULTI)POINT, (MULTI)LINESTRING, MULTICURVE or (MULTI)POLYGON, "
@@ -4946,7 +4944,7 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "(multicurve) 또는 (멀티)폴리곤이나 다면체 표면일 경우 1-기반 N번째 도형을 "
 #~ "반환하며, 그 외의 경우 NULL을 반환합니다."
 
-#, fuzzy, no-c-format
+#, fuzzy
 #~ msgid ""
 #~ "Returns the Nth interior linestring ring of the polygon geometry. Returns "
 #~ "NULL if the geometry is not a polygon or the given N is out of range. The "
@@ -4956,7 +4954,6 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "니거나 주어진 N이 범위(range)를 벗어난 경우 NULL을 반환합니다. 인덱스는 1"
 #~ "에서 시작합니다."
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 #~ "linkend=\"ST_NumInteriorRing\"/>,"

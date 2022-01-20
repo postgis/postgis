@@ -39,6 +39,7 @@ CFLAGS = \
 	-I$(top_builddir)/raster \
 	-I$(builddir) \
 	-I$(builddir)/.. \
+	-DPOSTGIS_TOP_SRC_DIR='"$(realpath $(top_srcdir))"' \
 	$(LIBLWGEOM_CFLAGS) \
 	$(RTCORE_CFLAGS) \
 	$(PROJ_CFLAGS) \

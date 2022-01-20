@@ -1,6 +1,6 @@
 #############################################################################
 #
-# Copyright (c) 2009-2020 Sandro Santilli <strk@kbt.io>
+# Copyright (c) 2009-2022 Sandro Santilli <strk@kbt.io>
 # Copyright (c) 2009 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 # Copyright (c) 2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 # Copyright (c) 2011-2013 Regents of the University of California
@@ -26,6 +26,7 @@
 
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
+top_builddir = @top_builddir@
 
 POSTGIS_SRC=../../..
 PERL=@PERL@
@@ -37,7 +38,7 @@ PERL=@PERL@
 PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
 
 # Where we put our regression installation
-REGRESS_INSTALLDIR=$(POSTGIS_SRC)/regress/00-regress-install
+REGRESS_INSTALLDIR = $(realpath $(top_builddir) )/regress/00-regress-install
 
 #
 # Put path from pg_config into front of search path

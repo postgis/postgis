@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-20 18:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -381,7 +381,7 @@ msgstr ""
 #. Tag: programlisting
 #: administration.xml:172
 #, no-c-format
-msgid "can't drop ... because postgis extension depends on it"
+msgid "can't drop … because postgis extension depends on it"
 msgstr ""
 
 #. Tag: para
@@ -502,7 +502,7 @@ msgstr ""
 #. Tag: programlisting
 #: administration.xml:229
 #, no-c-format
-msgid "No migration path defined for ... to &last_release_version;"
+msgid "No migration path defined for … to &last_release_version;"
 msgstr ""
 
 #. Tag: para

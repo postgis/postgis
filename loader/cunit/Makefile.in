@@ -2,6 +2,8 @@
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
+# *
+# * Copyright 2022 Sandro Santilli <strk@kbt.io>
 # * Copyright 2008 Paul Ramsey, Mark Cave-Ayland
 # *
 # * This is free software; you can redistribute and/or modify it under
@@ -10,13 +12,22 @@
 # **********************************************************************
 
 top_builddir = @top_builddir@
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+
 CC=@CC@
 CFLAGS=@CFLAGS@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=-I.. @CUNIT_CPPFLAGS@ @CPPFLAGS@
+CUNIT_CPPFLAGS = \
+	-I$(srcdir)/.. \
+	-I$(top_builddir)/liblwgeom \
+	-I$(top_srcdir)/liblwgeom \
+	-I.. \
+	@CUNIT_CPPFLAGS@ \
+	@CPPFLAGS@
 
 # GTK includes and libraries
 GTK_CFLAGS = @GTK_CFLAGS@ @IGE_MAC_CFLAGS@
@@ -28,7 +39,7 @@ PGSQL_FE_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
 PGSQL_FE_LDFLAGS=@PGSQL_FE_LDFLAGS@
 
 # liblwgeom
-LIBLWGEOM=../../liblwgeom/.libs/liblwgeom.la
+LIBLWGEOM = $(top_builddir)/liblwgeom/.libs/liblwgeom.la
 
 # iconv flags
 ICONV_LDFLAGS=@ICONV_LDFLAGS@
@@ -47,6 +58,8 @@ CFLAGS += $(GETTEXT_CFLAGS) $(ICONV_CFLAGS) $(PROJ_CFLAGS)
 
 # Build full linking line
 LDFLAGS = $(GEOS_LDFLAGS) $(GETTEXT_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(ICONV_LDFLAGS) $(CUNIT_LDFLAGS) $(PROJ_LDFLAGS)
+
+VPATH = $(srcdir)
 
 # Object files
 OBJS=	\

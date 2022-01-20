@@ -49,7 +49,7 @@ staged-install: all
 	$(MAKE) -C regress staged-install
 
 check-news:
-	utils/check_news.sh
+	$(top_srcdir)/utils/check_news.sh $(top_srcdir)
 
 check-unit check-regress docs-check: all
 
@@ -212,7 +212,7 @@ include $(top_srcdir)/regress/runtest.mk
 check-regress: staged-install check-regress-deps
 
 check-tests-enabled:
-	utils/check_tests_enabled.sh
+	$(top_srcdir)/utils/check_tests_enabled.sh $(top_srcdir)
 
 check-regress-deps:
 ifeq (@TOPOLOGY@,topology)

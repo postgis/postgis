@@ -1,13 +1,14 @@
 # Russian translations for PACKAGE package.
 # Automatically generated, 2022.
 #
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-12 22:41+0000\n"
-"Last-Translator: robe <regina@arrival3d.com>\n"
+"POT-Creation-Date: 2022-01-20 18:53+0000\n"
+"PO-Revision-Date: 2022-01-20 20:57+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/ru/>\n"
 "Language: ru\n"
@@ -134,13 +135,13 @@ msgid ""
 msgstr ""
 "Установка переменных среды зависит от ОС. Для PostgreSQL, установленного в "
 "Ubuntu или Debian через apt-postgresql, предпочтительным способом является "
-"редактирование <filename>/etc/postgresql/"
-"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
-"filename>, где 10 относится к версии PostgreSQL, а main относится к кластеру."
+"редактирование <filename>/etc/postgresql/<replaceable>10</replaceable>/"
+"<replaceable>main</replaceable>/environment</filename>, где 10 относится к "
+"версии PostgreSQL, а main относится к кластеру."
 
 #. Tag: para
 #: administration.xml:32
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "On windows, if you are running as a service, you can set via System "
 "variables which for Windows 7 you can get to by right-clicking on Computer-"
@@ -152,10 +153,10 @@ msgstr ""
 "В Windows, если вы работаете как служба, вы можете установить с помощью "
 "системных переменных, которые для Windows 7 вы можете получить, щелкнув "
 "правой кнопкой мыши «Компьютер-> Свойства» «Дополнительные параметры системы»"
-" или в проводнике, перейдя к <varname> Панель управления\\Все "
-"Элементы панели управления\\Система</varname>. Затем нажмите "
-"<emphasis>Дополнительные параметры системы ->Дополнительно->Переменные "
-"среды</emphasis> и добавьте новые системные переменные."
+" или в проводнике, перейдя к <varname> Панель управления\\Все Элементы "
+"панели управления\\Система</varname>. Затем нажмите <emphasis>Дополнительные "
+"параметры системы ->Дополнительно->Переменные среды</emphasis> и добавьте "
+"новые системные переменные."
 
 #. Tag: para
 #: administration.xml:34
@@ -418,7 +419,7 @@ msgstr ""
 #. Tag: programlisting
 #: administration.xml:172
 #, no-c-format
-msgid "can't drop ... because postgis extension depends on it"
+msgid "can't drop … because postgis extension depends on it"
 msgstr ""
 
 #. Tag: para
@@ -539,7 +540,7 @@ msgstr ""
 #. Tag: programlisting
 #: administration.xml:229
 #, no-c-format
-msgid "No migration path defined for ... to &last_release_version;"
+msgid "No migration path defined for … to &last_release_version;"
 msgstr ""
 
 #. Tag: para

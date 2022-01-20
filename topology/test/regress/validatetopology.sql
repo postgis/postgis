@@ -49,7 +49,8 @@ SELECT null from ( select topology.DropTopology('t') ) as dt;
 -- Following tests will use the city_data topology as a base
 -------------------------------------------------------------
 
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
+
 SELECT 'unexpected_city_data_invalidities', * FROM ValidateTopology('city_data');
 
 -- Test correctness of edge linking

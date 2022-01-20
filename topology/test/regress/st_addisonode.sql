@@ -3,7 +3,7 @@ set client_min_messages to WARNING;
 
 -- Usual city_data input
 
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
 
 -- NULL exceptions
 select ST_AddIsoNode(NULL, 0, 'POINT(1 4)');

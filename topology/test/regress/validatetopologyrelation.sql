@@ -2,7 +2,7 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
 \i ../load_features.sql
 \i ../hierarchy.sql
 --\i ../more_features.sql

@@ -12,6 +12,7 @@
 
 abstopsrcdir := $(realpath $(top_srcdir))
 abssrcdir := $(realpath .)
+abs_top_builddir := $(realpath $(top_builddir))
 
 TESTS := $(patsubst $(topsrcdir)/%,$(abstopsrcdir)/%,$(TESTS))
 TESTS := $(patsubst $(abssrcdir)/%,./%,$(TESTS))
@@ -21,11 +22,11 @@ check-regress:
 	@echo "RUNTESTFLAGS: $(RUNTESTFLAGS)"
 	@echo "RUNTESTFLAGS_INTERNAL: $(RUNTESTFLAGS_INTERNAL)"
 
-	POSTGIS_TOP_BUILD_DIR=$(top_builddir) $(PERL) $(topsrcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
+	POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(topsrcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
 
 	@if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		echo "Running upgrade test as RUNTESTFLAGS did not contain that"; \
-		$(PERL) $(topsrcdir)/regress/run_test.pl \
+		POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(topsrcdir)/regress/run_test.pl \
       --upgrade \
       $(RUNTESTFLAGS) \
       $(RUNTESTFLAGS_INTERNAL) \

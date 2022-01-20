@@ -2,7 +2,7 @@
 set client_min_messages to ERROR;
 
 -- Import city_data
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
 
 -- Non isolated node (is used by an edge);
 SELECT 'non-iso', topology.ST_RemoveIsoNode('city_data', 1);

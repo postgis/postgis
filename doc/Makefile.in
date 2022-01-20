@@ -432,7 +432,7 @@ ifeq ($(XMLLINT),)
 check-unit: requirements_not_met_xmllint
 else
 check-unit: $(XML_INPUTS)
-	$(XMLLINT) --loaddtd --xinclude --valid postgis-out.xml > /dev/null
+	$(XMLLINT) --loaddtd --path $(srcdir) --xinclude --valid postgis-out.xml > /dev/null
 endif
 
 check-localized:

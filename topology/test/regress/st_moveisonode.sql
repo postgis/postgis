@@ -2,7 +2,7 @@
 set client_min_messages to ERROR;
 
 -- Import city_data
-\i ../load_topology.sql
+\i :top_builddir/topology/test/load_topology.sql
 
 -- Isolated node to invalid location (coincident)
 SELECT 'coincident_node', topology.ST_MoveIsoNode('city_data', 4, 'POINT(25 35)');
