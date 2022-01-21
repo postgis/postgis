@@ -36,7 +36,7 @@ endif
 
 # Files to be copied to the contrib/ directory
 SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
-DATA=@top_srcdir@/spatial_ref_sys.sql
+DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring pre-processing)
 SQL_OBJS = \
@@ -166,7 +166,8 @@ PGXS := @PGXS@
 NO_TEMP_INSTALL=yes
 include $(PGXS)
 
-VPATH := @srcdir@
+srcdir := @srcdir@
+VPATH := $(srcdir)
 
 # Set PERL _after_ the include of PGXS
 PERL=@PERL@
