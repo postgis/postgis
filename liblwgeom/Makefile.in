@@ -226,14 +226,14 @@ lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
 			echo "No yacc found, cannot build parser" >&2; \
 			false; \
 	}
-	$(YACC) -p wkt_yy -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
+	$(YACC) -p wkt_yy -o'lwin_wkt_parse.c' -d $<
 
 lwin_wkt_lex.c: lwin_wkt_lex.l
 	@test -n "$(LEX)" || { \
 			echo "No lex found, cannot build parser" >&2; \
 			false; \
 	}
-	$(LEX) -i lwin_wkt_lex.l
+	$(LEX) -i $<
 
 liblwgeom.h: liblwgeom.h.in
 	cd $(top_builddir) && ./config.status
