@@ -471,7 +471,7 @@ parse_marc21(xmlNodePtr xnode) {
 
 			if(lw || le || ln || ls) {
 
-				lwpgerror("parse error - the Coded Cartographic Mathematical Data (034) on the given MARC21/XML is invalid:\n - 034$d: %s\n - 034$e: %s \n - 034$f: %s \n - 034$g: %s",lw,le,ln,ls);
+				lwpgerror("parse error - the Coded Cartographic Mathematical Data (datafield:034) on the given MARC21/XML is invalid:\n - 034$d: %s\n - 034$e: %s \n - 034$f: %s \n - 034$g: %s",lw,le,ln,ls);
 			}
 
 		}
