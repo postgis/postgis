@@ -17,7 +17,6 @@
  * along with PostGIS.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "utils/builtins.h"
@@ -40,8 +39,7 @@
  **********************************************************************/
 
 PG_FUNCTION_INFO_V1(LWGEOM_asMARC21);
-Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
-{
+Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 	lwvarlena_t *marc21;
 	int32_t srid;
 	LWPROJ *lwproj;
@@ -50,35 +48,39 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS)
 	int precision = PG_GETARG_INT32(1);
 	srid = gserialized_get_srid(gs);
 
-	if ( srid == SRID_UNKNOWN )
-	{
+	if (srid == SRID_UNKNOWN) {
 		PG_FREE_IF_COPY(gs, 0);
 		lwerror("ST_AsMARC21: Input geometry has unknown (%d) SRID", srid);
 		PG_RETURN_NULL();
 
 	}
 
-	if ( GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
+	if (GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
 
 		PG_FREE_IF_COPY(gs, 0);
-		lwerror("ST_AsMARC21: Failure reading projections from spatial_ref_sys.");
+		lwerror(
+				"ST_AsMARC21: Failure reading projections from spatial_ref_sys.");
 		PG_RETURN_NULL();
 
 	}
 
-	if (!lwproj->source_is_latlong){
+	if (!lwproj->source_is_latlong) {
 
 		PG_FREE_IF_COPY(gs, 0);
-		lwerror("ST_AsMARC21: Unsupported SRID (%d). Only lon/lat coordinate systems are supported in MARC21/XML Documents.", srid);
+		lwerror(
+				"ST_AsMARC21: Unsupported SRID (%d). Only lon/lat coordinate systems are supported in MARC21/XML Documents.",
+				srid);
 		PG_RETURN_NULL();
 	}
 
-	if (precision < 0) precision = 0;
+	if (precision < 0)
+		precision = 0;
 
 	lwgeom = lwgeom_from_gserialized(gs);
 	marc21 = lwgeom_to_marc21(lwgeom, precision);
 
-	if (marc21)	PG_RETURN_TEXT_P(marc21);
+	if (marc21)
+		PG_RETURN_TEXT_P(marc21);
 
 	PG_RETURN_NULL();
 }
