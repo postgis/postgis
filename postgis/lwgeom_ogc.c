@@ -697,14 +697,13 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	PG_FREE_IF_COPY(geom, 0);
-
 	lwpoint = (LWGEOM *)lwpoint_make(lwgeom->srid, lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), &pt);
 	ret = geometry_serialize(lwpoint);
 
 	lwgeom_free(lwgeom);
 	lwgeom_free(lwpoint);
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(ret);
 }
 
