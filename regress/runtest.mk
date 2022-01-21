@@ -19,6 +19,7 @@ check-regress:
 		$(PERL) $(topsrcdir)/regress/run_test.pl \
       --upgrade \
       $(RUNTESTFLAGS) \
+      $(RUNTESTFLAGS_INTERNAL) \
       $(TESTS); \
 	fi
 

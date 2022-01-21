@@ -89,6 +89,7 @@ TESTS += \
 	$(topsrcdir)/regress/core/remove_repeated_points \
 	$(topsrcdir)/regress/core/removepoint \
 	$(topsrcdir)/regress/core/reverse \
+	$(topsrcdir)/regress/core/scroll \
 	$(topsrcdir)/regress/core/setpoint \
 	$(topsrcdir)/regress/core/simplify \
 	$(topsrcdir)/regress/core/simplifyvw \

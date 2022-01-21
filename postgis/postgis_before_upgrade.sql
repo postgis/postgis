@@ -37,34 +37,29 @@ CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
 	function_name text,
 	function_arguments text) RETURNS void AS $$
 DECLARE
-	frec RECORD;
 	sql_drop text;
+	postgis_namespace OID;
+	matching_function REGPROCEDURE;
 BEGIN
-	FOR frec IN
-		SELECT  p.oid as oid,
-				n.nspname as schema,
-				n.oid as schema_oid,
-				p.proname as name,
-				pg_catalog.pg_get_function_arguments(p.oid) as arguments,
-				pg_catalog.pg_get_function_identity_arguments(p.oid) as identity_arguments
-			FROM pg_catalog.pg_proc p
-			LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
-			WHERE
-				n.oid = (
-					SELECT n.oid
-					FROM pg_proc p
-					JOIN pg_namespace n ON p.pronamespace = n.oid
-					WHERE proname = 'postgis_full_version'
-					) AND
-				LOWER(p.proname) = LOWER(function_name) AND
-				LOWER(pg_catalog.pg_get_function_arguments(p.oid)) ~ LOWER(function_arguments) AND
-				pg_catalog.pg_function_is_visible(p.oid)
-			ORDER BY 1, 2, 4
-	LOOP
-		sql_drop := 'DROP FUNCTION ' || quote_ident(frec.schema) || '.' || quote_ident(frec.name) || ' ( ' || frec.identity_arguments || ' ) ';
-		RAISE DEBUG 'Name (%): %', frec.oid, frec.name;
-		RAISE DEBUG 'Arguments: %', frec.arguments;
-		RAISE DEBUG 'Identity arguments: %', frec.identity_arguments;
+
+	-- Fetch install namespace for PostGIS
+	SELECT n.oid
+	FROM pg_catalog.pg_proc p
+	JOIN pg_catalog.pg_namespace n ON p.pronamespace = n.oid
+	WHERE proname = 'postgis_full_version'
+	INTO postgis_namespace;
+
+	-- Find a function matching the given signature
+	SELECT oid
+	FROM pg_catalog.pg_proc p
+	WHERE pronamespace = postgis_namespace
+	AND LOWER(p.proname) = LOWER(function_name)
+	AND pg_catalog.pg_function_is_visible(p.oid)
+	AND LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ LOWER(function_arguments)
+	INTO matching_function;
+
+	IF matching_function IS NOT NULL THEN
+		sql_drop := 'DROP FUNCTION ' || matching_function;
 		RAISE DEBUG 'SQL query: %', sql_drop;
 		BEGIN
 			EXECUTE sql_drop;
@@ -72,7 +67,8 @@ BEGIN
 			WHEN OTHERS THEN
 				RAISE EXCEPTION 'Could not drop function %. You might need to drop dependant objects. Postgres error: %', function_name, SQLERRM;
 		END;
-	END LOOP;
+	END IF;
+
 END;
 $$ LANGUAGE plpgsql;
 
@@ -168,7 +164,7 @@ SELECT _postgis_drop_function_if_needed
 SELECT _postgis_drop_function_if_needed
 	(
 	'ST_AsGeoJson',
-	$args$r record, geom_column text DEFAULT ''::text, maxdecimaldigits integer DEFAULT 15, pretty_print boolean DEFAULT false$args$
+	$args$r record, geom_column text, maxdecimaldigits integer, pretty_print boolean$args$
 	);
 
 -- FUNCTION _st_orderingequals changed argument names in 3.0
@@ -191,7 +187,7 @@ SELECT _postgis_drop_function_if_needed
 SELECT _postgis_drop_function_if_needed
     (
     'st_tileenvelope',
-    'zoom integer, x integer, y integer, bounds geometry DEFAULT ''0102000020110F00000200000052107C45F81B73C152107C45F81B73C152107C45F81B734152107C45F81B7341''::geometry'
+    'zoom integer, x integer, y integer, bounds geometry'
     );
 
 
