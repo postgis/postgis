@@ -4,6 +4,7 @@ YYYY/MM/DD
 * Bug Fixes *
   - #5033, #5035, allow upgrades in presence of views using deprecated
            functions (Sandro Santilli)
+  - #3056, spurious notice on ST_StartPoint(empty) (Paul Ramsey)
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
