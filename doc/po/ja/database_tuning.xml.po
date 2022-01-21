@@ -1,25 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2020-12-19 17:06+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-01-22 06:52+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"database_tuningxml/ja/>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: database_tuning.xml:4
 #, no-c-format
 msgid "Performance Tuning"
-msgstr ""
+msgstr "パフォーマンスチューニング"
 
 #. Tag: para
 #: database_tuning.xml:6
@@ -30,6 +32,8 @@ msgid ""
 "are usually large, so memory-related optimizations generally have more of an "
 "impact on PostGIS than other types of PostgreSQL queries."
 msgstr ""
+"PostGISの調整はPostgreSQLの作業量の調整と非常に似ています。ジオメトリとラスタは重く、メモリ関連の最適化は他のPostgreSQLクエリと"
+"比べて影響が大きい点だけは留意して下さい。"
 
 #. Tag: para
 #: database_tuning.xml:10
@@ -39,6 +43,8 @@ msgid ""
 "\"https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">Tuning "
 "your PostgreSQL Server</ulink>."
 msgstr ""
+"PostgreSQLの最適化に関する一般的な詳細は、 <ulink url=\"https://wiki.postgresql.org/wiki/"
+"Tuning_Your_PostgreSQL_Server\">Tuning your PostgreSQL Server</ulink>をご覧ください。"
 
 #. Tag: para
 #: database_tuning.xml:12
@@ -48,6 +54,8 @@ msgid ""
 "touching <code>postgresql.conf</code> or <code>postgresql.auto.conf</code> "
 "by using the <code>ALTER SYSTEM</code> command."
 msgstr ""
+"PostgreSQL 9.4以上では、<code>ALTER SYSTEM</code>を使うことで、<code>postgresql."
+"conf</code>や<code>postgresql.auto.conf</code>を触ることなくサーバレベルで設定できます。"
 
 #. Tag: programlisting
 #: database_tuning.xml:14
@@ -60,6 +68,12 @@ msgid ""
 "-- use SHOW ALL to see all settings\n"
 "SHOW work_mem;"
 msgstr ""
+"ALTER SYSTEM SET work_mem = '256MB';\n"
+"-- 起動時設定でない設定を強制します。新規接続に影響を与えます。\n"
+"SELECT pg_reload_conf();\n"
+"-- 現在の設定値を表示\n"
+"-- 全ての設定を見るにはSHOW ALLを使います\n"
+"SHOW work_mem;"
 
 #. Tag: para
 #: database_tuning.xml:16
@@ -68,30 +82,31 @@ msgid ""
 "In addition to the Postgres settings, PostGIS has some custom settings which "
 "are listed in <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"PostgreSQLの設定に加えて、PostGISには <xref linkend=\"PostGIS_GUC\"/>で挙げる独自設定があります。"
 
 #. Tag: title
 #: database_tuning.xml:19
 #, no-c-format
 msgid "Startup"
-msgstr ""
+msgstr "起動時"
 
 #. Tag: para
 #: database_tuning.xml:21
 #, no-c-format
 msgid "These settings are configured in <code>postgresql.conf</code>:"
-msgstr ""
+msgstr "次に示す設定は<code>postgresql.conf</code>にあります。"
 
 #. Tag: ulink
 #: database_tuning.xml:26
 #, no-c-format
 msgid "constraint_exclusion"
-msgstr ""
+msgstr "constraint_exclusion"
 
 #. Tag: para
 #: database_tuning.xml:31
 #, no-c-format
 msgid "Default: partition"
-msgstr ""
+msgstr "デフォルト: partition"
 
 #. Tag: para
 #: database_tuning.xml:36
