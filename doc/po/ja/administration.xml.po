@@ -1,12 +1,11 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-20 18:53+0000\n"
-"PO-Revision-Date: 2022-01-18 14:46+0000\n"
+"PO-Revision-Date: 2022-01-22 06:52+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/ja/>\n"
@@ -368,7 +367,7 @@ msgstr "シェルからの実行は次の通りです。"
 
 #. Tag: programlisting
 #: administration.xml:124
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "# createdb -T template_postgis my_spatial_db"
 msgstr "# createdb -T template_postgis my_spatial_db"
 
@@ -380,7 +379,7 @@ msgstr "SQLからの実行は次の通りです。"
 
 #. Tag: programlisting
 #: administration.xml:130
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
 msgstr "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
 
@@ -471,7 +470,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: administration.xml:172
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "can't drop … because postgis extension depends on it"
 msgstr "can't drop ... because postgis extension depends on it"
 
@@ -501,7 +500,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: administration.xml:187
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade."
 "sql"
@@ -600,7 +599,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: administration.xml:227
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
 "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
@@ -618,7 +617,7 @@ msgstr "次のようなエラー通知が表示されることがあります。
 #: administration.xml:229
 #, no-c-format
 msgid "No migration path defined for … to &last_release_version;"
-msgstr ""
+msgstr "No migration path defined for … to &last_release_version;"
 
 #. Tag: para
 #: administration.xml:230
@@ -640,7 +639,7 @@ msgstr "次のようなメッセージを得ることがあります。"
 
 #. Tag: programlisting
 #: administration.xml:232
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Version \"&last_release_version;\" of extension \"postgis\" is already "
 "installed"
@@ -665,7 +664,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: administration.xml:239
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
 "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;next\";"
@@ -704,7 +703,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: administration.xml:250
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "DROP EXTENSION postgis_raster;"
 msgstr "DROP EXTENSION postgis_raster;"
 
@@ -778,7 +777,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: administration.xml:298
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
 "backup\" olddb"
@@ -847,7 +846,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: administration.xml:345
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost "
 "-p 5432 -U postgres newdb 2> errors.txt"
@@ -953,7 +952,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: administration.xml:420
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> "
 "errors.txt"
