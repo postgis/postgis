@@ -46,6 +46,12 @@
                 this function will always return a geometry with <varname>SRID 0</varname>.
             </para>
         </note>
+        
+        <note>
+           <para>
+                Returned <varname>POLYGON</varname> geometries will always use a clockwise direction. 
+           </para>
+        </note>
 
     </refsection>
 
