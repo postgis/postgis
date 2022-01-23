@@ -7,6 +7,8 @@ PostGIS 3.3.0dev
  * Enhancements *
   - #5037, add convexhull 3D (Loïc Bartoletti)
   - #5040, add postgis_sfcgal_full_version (Loïc Bartoletti)
+  - GH655, GiST: balance the tree splits better in recursive calls (Darafei Praliaskouski)
+  - GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
