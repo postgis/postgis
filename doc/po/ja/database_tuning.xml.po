@@ -1,12 +1,11 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2020-12-19 17:06+0000\n"
-"PO-Revision-Date: 2022-01-22 06:52+0000\n"
+"PO-Revision-Date: 2022-01-24 18:52+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "database_tuningxml/ja/>\n"
@@ -117,18 +116,21 @@ msgid ""
 "force the planner to only analyze tables for constraint consideration if "
 "they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
+"一般的にテーブルのパーティショニングに使われます。デフォルトとして\"partition\"に設定されています"
+"。継承階層内にあり、プランナにペナルティ以外を払わないなら、クエリプランナにテーブルの制約条件の解析だけを行わせるので、PostgreSQL 8."
+"4以上ではこれが理想的です。"
 
 #. Tag: ulink
 #: database_tuning.xml:45
 #, no-c-format
 msgid "shared_buffers"
-msgstr ""
+msgstr "shared_buffers"
 
 #. Tag: para
 #: database_tuning.xml:50
 #, no-c-format
 msgid "Default: ~128MB in PostgreSQL 9.6"
-msgstr ""
+msgstr "デフォルト: PostgreSQL 9.6では128MB以下"
 
 #. Tag: para
 #: database_tuning.xml:55
@@ -136,7 +138,7 @@ msgstr ""
 msgid ""
 "Set to about 25% to 40% of available RAM. On windows you may not be able to "
 "set as high."
-msgstr ""
+msgstr "利用可能なRAMの25%から40%を設定します。Windowsでは高く設定することができないかも知れません。"
 
 #. Tag: para
 #: database_tuning.xml:62
@@ -148,12 +150,16 @@ msgid ""
 "setting has additional importance in that it controls the max number of "
 "processes you can have for parallel queries."
 msgstr ""
+"<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</ulink> これは、"
+"PostgreSQL 9.4以上で有効です。PostgreSQL 9."
+"6以上では、パラレルクエリ処理に使うプロセス数の最大値の制御で、さらに重要なものとなっています。"
 
 #. Tag: para
 #: database_tuning.xml:70
 #, no-c-format
 msgid "Default: 8"
-msgstr ""
+msgstr "デフォルト: 8"
 
 #. Tag: para
 #: database_tuning.xml:75
@@ -161,13 +167,13 @@ msgstr ""
 msgid ""
 "Sets the maximum number of background processes that the system can support. "
 "This parameter can only be set at server start."
-msgstr ""
+msgstr "システムが対応できるバックグラウンドプロセスの最大値を設定します。このパラメータはサーバ起動時のみ設定できます。"
 
 #. Tag: title
 #: database_tuning.xml:85
 #, no-c-format
 msgid "Runtime"
-msgstr ""
+msgstr "実行時"
 
 #. Tag: para
 #: database_tuning.xml:87
@@ -177,36 +183,38 @@ msgid ""
 "resource.html#GUC-WORK-MEM\">work_mem</ulink> - sets the size of memory used "
 "for sort operations and complex queries"
 msgstr ""
+"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-WORK-MEM\">work_mem</ulink> - 並べ替えや複雑なクエリに使われるメモリのサイズの設定"
 
 #. Tag: para
 #: database_tuning.xml:94
 #, no-c-format
 msgid "Default: 1-4MB"
-msgstr ""
+msgstr "デフォルト: 1-4MB"
 
 #. Tag: para
 #: database_tuning.xml:99
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
-msgstr ""
+msgstr "大きなデータベースの場合や、複雑なクエリの場合、RAMが多い場合は値を大きくするように調整します。"
 
 #. Tag: para
 #: database_tuning.xml:104
 #, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
-msgstr ""
+msgstr "同時接続ユーザ数が多い場合や、RAMが少ない場合には値を小さくするように調整します。"
 
 #. Tag: para
 #: database_tuning.xml:109
 #, no-c-format
 msgid "If you have lots of RAM and few developers:"
-msgstr ""
+msgstr "たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにします。"
 
 #. Tag: programlisting
 #: database_tuning.xml:111
 #, no-c-format
 msgid "SET work_mem TO '256MB';"
-msgstr ""
+msgstr "SET work_mem TO '256MB';"
 
 #. Tag: para
 #: database_tuning.xml:116
@@ -216,18 +224,21 @@ msgid ""
 "resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> - the "
 "memory size used for VACUUM, CREATE INDEX, etc."
 msgstr ""
+"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> - "
+"VACUUM, CREATE INDEX等で使われるメモリのサイズ"
 
 #. Tag: para
 #: database_tuning.xml:123
 #, no-c-format
 msgid "Default: 16-64MB"
-msgstr ""
+msgstr "デフォルト: 16-64MB"
 
 #. Tag: para
 #: database_tuning.xml:128
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
-msgstr ""
+msgstr "一般的には低すぎます - メモリスワップの間、入出力が拘束され、オブジェクトがロックされます。"
 
 #. Tag: para
 #: database_tuning.xml:133
@@ -236,18 +247,20 @@ msgid ""
 "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
 "the # of concurrent users. If you have lots of RAM and few developers:"
 msgstr ""
+"たくさんのRAMを持つ本番サーバでは32MBから1GBが推奨ですが、同時接続ユーザ数に依存します。たくさんのRAMを持ち、少数の開発者しかいない場合は次の"
+"ようにします。"
 
 #. Tag: programlisting
 #: database_tuning.xml:136
 #, no-c-format
 msgid "SET maintenance_work_mem TO '1GB';"
-msgstr ""
+msgstr "SET maintenance_work_mem TO '1GB';"
 
 #. Tag: ulink
 #: database_tuning.xml:142
 #, no-c-format
 msgid "max_parallel_workers_per_gather"
-msgstr ""
+msgstr "max_parallel_workers_per_gather"
 
 #. Tag: para
 #: database_tuning.xml:144
@@ -262,12 +275,16 @@ msgid ""
 "make sure to bump up <code>max_worker_processes</code> to at least as high "
 "as this number."
 msgstr ""
+"この設定はPostgreSQL 9.6以上で使用でき、並列クエリに対応しているPostGIS 2.3以上に影響は限られます。0より大きい値に設定すると、<"
+"code>ST_Intersects</code>といった関係関数を含むクエリで、複数プロセッサが使われるようにできます。その時、2倍を超える速度が出る可"
+"能性があります。予備のプロセッサが多数ある場合には、この値をプロセッサ数に変更するべきです。また、<code>max_worker_processes</"
+"code>をこの値と同じにするようにします。"
 
 #. Tag: para
 #: database_tuning.xml:153
 #, no-c-format
 msgid "Default: 0"
-msgstr ""
+msgstr "デフォルト: 0"
 
 #. Tag: para
 #: database_tuning.xml:158
@@ -281,3 +298,7 @@ msgid ""
 "may be inefficient. Setting this value to 0, which is the default, disables "
 "parallel query execution."
 msgstr ""
+"単一の<varname>Gather</varname>ノードが開始できるワーカの最大数を設定します。並列ワーカは、<varname>max_worker"
+"_processes</varname>で確立されたプロセスのプールから取得されます。要求したワーカ数は、実際には実行可能になっていない場合があることに注"
+"意して下さい。これが発生する場合には、想定より少ないワーカでプランが実行され、非効率になります。これの値を0 "
+"(デフォルト値)にすると、パラレルクエリ実行が無効になります。"
