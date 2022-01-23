@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2017-2019 Darafei Praliaskouski <me@komzpa.net>
+ * Copyright 2017-2022 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -54,11 +54,11 @@
 #include <float.h> /* For FLT_MAX */
 #include <math.h>
 
-/*
-** When is a node split not so good? If more than 90% of the entries
-** end up in one of the children.
-*/
-#define LIMIT_RATIO 0.1
+/* When is a node split not so good? Prefer to not split 2 pages into more than 3 pages in index. */
+#define LIMIT_RATIO 0.3333333333333333
+
+/* How many index tuples does one page fit? Recursive splits will target this. */
+#define INDEX_TUPLES_PER_PAGE 291
 
 /*
 ** For debugging
@@ -2039,11 +2039,12 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 	 */
 	if (commonEntriesCount > 0)
 	{
-		/*
-		 * Calculate minimum number of entries that must be placed in both
-		 * groups, to reach LIMIT_RATIO.
-		 */
-		int			m = ceil(LIMIT_RATIO * (double) nentries);
+		/* Calculate minimum number of entries that must be placed in both groups, to reach LIMIT_RATIO. */
+		int m = ceil(LIMIT_RATIO * (double)nentries);
+
+		/* Recursive picksplit called, this is going to be the last split, keep split into 2 parts */
+		if (nentries > INDEX_TUPLES_PER_PAGE && nentries <= 2 * INDEX_TUPLES_PER_PAGE)
+			m = Max(m, nentries - INDEX_TUPLES_PER_PAGE);
 
 		/*
 		 * Calculate delta between penalties of join "common entries" to
@@ -2067,25 +2068,39 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 		 */
 		for (i = 0; i < commonEntriesCount; i++)
 		{
-			box = (BOX2DF *) DatumGetPointer(entryvec->vector[
-												commonEntries[i].index].key);
+			float right_penalty, left_penalty;
+			bool place_right = true;
+			box = (BOX2DF *)DatumGetPointer(entryvec->vector[commonEntries[i].index].key);
 
-			/*
-			 * Check if we have to place this entry in either group to achieve
-			 * LIMIT_RATIO.
-			 */
-			if (v->spl_nleft + (commonEntriesCount - i) <= m)
-				PLACE_LEFT(box, commonEntries[i].index);
+			/* Recheck penalties. After we put undecided tuples to some side they're changed */
+			left_penalty = box2df_penalty(leftBox, box);
+			right_penalty = box2df_penalty(rightBox, box);
+
+			/* Check if penalty is absolutely telling a tuple should go to some side */
+			if (right_penalty > 0 && left_penalty == 0)
+				place_right = false;
+			else if (right_penalty == 0 && left_penalty > 0)
+				place_right = true;
+			/* Check if we have to place this entry in either group to achieve LIMIT_RATIO */
+			else if (v->spl_nleft + (commonEntriesCount - i) <= m)
+				place_right = false;
 			else if (v->spl_nright + (commonEntriesCount - i) <= m)
+				place_right = true;
+			/* Otherwise select the group by smaller penalty */
+			else if (left_penalty < right_penalty)
+				place_right = false;
+			else if (right_penalty < left_penalty)
+				place_right = true;
+			/* or just put tuple into smaller group */
+			else if (v->spl_nleft < v->spl_nright)
+				place_right = false;
+			else
+				place_right = true;
+
+			if (place_right)
 				PLACE_RIGHT(box, commonEntries[i].index);
 			else
-			{
-				/* Otherwise select the group by minimal penalty */
-				if (box2df_penalty(leftBox, box) < box2df_penalty(rightBox, box))
-					PLACE_LEFT(box, commonEntries[i].index);
-				else
-					PLACE_RIGHT(box, commonEntries[i].index);
-			}
+				PLACE_LEFT(box, commonEntries[i].index);
 		}
 	}
 	v->spl_ldatum = PointerGetDatum(leftBox);
