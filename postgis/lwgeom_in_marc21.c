@@ -124,8 +124,7 @@ static int is_literal_valid(char *literal) {
 
 			if (j < 3) {
 
-				POSTGIS_DEBUGF(3,
-						"  invalid character '%c' at the degrees section: \"%s\"",
+				POSTGIS_DEBUGF(3,"  invalid character '%c' at the degrees section: \"%s\"",
 						literal[j], literal);
 				return LW_FALSE;
 
@@ -253,8 +252,7 @@ static double parse_geo_literal(char *literal) {
 			 **/
 			csl = malloc(literal_length);
 
-			memcpy(csl, &literal[0],
-					literal_length - strlen(strchr(literal, ',')));
+			memcpy(csl, &literal[0],literal_length - strlen(strchr(literal, ',')));
 			csl[literal_length - strlen(strchr(literal, ','))] = '\0';
 
 			strcat(csl, ".");
@@ -263,8 +261,7 @@ static double parse_geo_literal(char *literal) {
 			memcpy(literal, &csl[0], literal_length);
 			free(csl);
 
-			POSTGIS_DEBUGF(3, "  new literal value (replaced comma): %s",
-					literal);
+			POSTGIS_DEBUGF(3, "  new literal value (replaced comma): %s",literal);
 
 		}
 
@@ -280,12 +277,10 @@ static double parse_geo_literal(char *literal) {
 			 *     ||_ degrees
 			 *     |_ start_literal (hemisphere)
 			 */
-			POSTGIS_DEBUGF(5, "  dec = malloc(%d)",
-					literal_length-start_literal);
+			POSTGIS_DEBUGF(5, "  dec = malloc(%d)",literal_length-start_literal);
 			dec = malloc(literal_length - start_literal);
 
-			memcpy(dec, &literal[start_literal],
-					literal_length - start_literal);
+			memcpy(dec, &literal[start_literal],literal_length - start_literal);
 			dec[literal_length - start_literal] = '\0';
 
 			result = atof(dec);
@@ -306,8 +301,7 @@ static double parse_geo_literal(char *literal) {
 			POSTGIS_DEBUGF(5, "  min = malloc(%d)", literal_length);
 
 			min = malloc(literal_length);
-			memcpy(min, &literal[start_literal + 3],
-					literal_length - (start_literal + 3));
+			memcpy(min, &literal[start_literal + 3],literal_length - (start_literal + 3));
 			min[literal_length - (start_literal + 3)] = '\0';
 			POSTGIS_DEBUGF(2, "  decimal minutes: %s", min);
 
@@ -334,8 +328,7 @@ static double parse_geo_literal(char *literal) {
 
 			POSTGIS_DEBUGF(5, "  sec = malloc(%d)", literal_length);
 			sec = malloc(literal_length);
-			memcpy(sec, &literal[start_literal + 5],
-					literal_length - (start_literal + 5));
+			memcpy(sec, &literal[start_literal + 5],literal_length - (start_literal + 5));
 			sec[literal_length - (start_literal + 5)] = '\0';
 
 			result = atof(dgr) + (atof(min) / 100) + (atof(sec) / 10000);
@@ -389,15 +382,12 @@ parse_marc21(xmlNodePtr xnode) {
 	 */
 
 	if (xmlStrcmp(xnode->name, (xmlChar*) "record"))
-		lwpgerror(
-				"invalid MARC21/XML document. Root element <record> expected but <%s> found.",
-				xnode->name);
+		lwpgerror("invalid MARC21/XML document. Root element <record> expected but <%s> found.",xnode->name);
 
 	result_type = 0;
 	ngeoms = 0;
 
-	for (datafield = xnode->children; datafield != NULL;
-			datafield = datafield->next) {
+	for (datafield = xnode->children; datafield != NULL; datafield = datafield->next) {
 
 		char *lw = NULL;
 		char *le = NULL;
@@ -407,26 +397,19 @@ parse_marc21(xmlNodePtr xnode) {
 		if (datafield->type != XML_ELEMENT_NODE)
 			continue;
 
-		if (xmlStrcmp(datafield->name, (xmlChar*) "datafield") != 0
-				|| xmlStrcmp(xmlGetProp(datafield, (xmlChar*) "tag"),
-						(xmlChar*) "034") != 0)
-			continue;
+		if (xmlStrcmp(datafield->name, (xmlChar*) "datafield") != 0	|| xmlStrcmp(xmlGetProp(datafield, (xmlChar*) "tag"),(xmlChar*) "034") != 0) continue;
 
 		POSTGIS_DEBUG(3, "  datafield found");
 
 		for (subfield = datafield->children; subfield != NULL; subfield =
 				subfield->next) {
 
-			if (subfield->type != XML_ELEMENT_NODE)
-				continue;
-			if (xmlStrcmp(subfield->name, (xmlChar*) "subfield") != 0)
-				continue;
+			if (subfield->type != XML_ELEMENT_NODE)	continue;
+			if (xmlStrcmp(subfield->name, (xmlChar*) "subfield") != 0) continue;
 
 			code = (char*) xmlGetProp(subfield, (xmlChar*) "code");
 
-			if ((strcmp(code, "d") != 0 && strcmp(code, "e") != 0
-					&& strcmp(code, "f") != 0 && strcmp(code, "g")) != 0)
-				continue;
+			if ((strcmp(code, "d") != 0 && strcmp(code, "e") != 0 && strcmp(code, "f") != 0 && strcmp(code, "g")) != 0)	continue;
 
 			literal = (char*) xmlNodeGetContent(subfield);
 
@@ -464,9 +447,7 @@ parse_marc21(xmlNodePtr xnode) {
 			double s = parse_geo_literal(ls);
 			geometry_type = 0;
 
-			if (ngeoms > 0)
-				lwgeoms = (LWGEOM**) lwrealloc(lwgeoms,
-						sizeof(LWGEOM*) * (ngeoms + 1));
+			if (ngeoms > 0)	lwgeoms = (LWGEOM**) lwrealloc(lwgeoms,	sizeof(LWGEOM*) * (ngeoms + 1));
 
 			if (fabs(w - e) < 0.0000001f && fabs(n - s) < 0.0000001f) {
 
@@ -481,8 +462,7 @@ parse_marc21(xmlNodePtr xnode) {
 
 			} else {
 
-				lwgeoms[ngeoms] = (LWGEOM*) lwpoly_construct_envelope(
-						SRID_UNKNOWN, w, n, e, s);
+				lwgeoms[ngeoms] = (LWGEOM*) lwpoly_construct_envelope(SRID_UNKNOWN, w, n, e, s);
 				geometry_type = MULTIPOLYGONTYPE;
 
 			}
@@ -499,9 +479,7 @@ parse_marc21(xmlNodePtr xnode) {
 
 			if (lw || le || ln || ls) {
 
-				lwpgerror(
-						"parse error - the Coded Cartographic Mathematical Data (datafield:034) on the given MARC21/XML is invalid:\n - 034$d: %s\n - 034$e: %s \n - 034$f: %s \n - 034$g: %s",
-						lw, le, ln, ls);
+				lwpgerror("parse error - the Coded Cartographic Mathematical Data (datafield:034) on the given MARC21/XML is invalid:\n - 034$d: %s\n - 034$e: %s \n - 034$f: %s \n - 034$g: %s", lw, le, ln, ls);
 			}
 
 		}
@@ -513,28 +491,23 @@ parse_marc21(xmlNodePtr xnode) {
 
 	if (ngeoms == 1) {
 
-		POSTGIS_DEBUGF(2, "=> parse_marc21 returns single geometry: %s",
-				lwtype_name(lwgeom_get_type(lwgeoms[0])));
+		POSTGIS_DEBUGF(2, "=> parse_marc21 returns single geometry: %s",lwtype_name(lwgeom_get_type(lwgeoms[0])));
 		lwgeom_force_clockwise(lwgeoms[0]);
 		return lwgeoms[0];
 
 	} else if (ngeoms > 1) {
 
-		result = (LWGEOM*) lwcollection_construct_empty(result_type,
-				SRID_UNKNOWN, 0, 0);
+		result = (LWGEOM*) lwcollection_construct_empty(result_type,SRID_UNKNOWN, 0, 0);
 
 		for (i = 0; i < ngeoms; i++) {
 
-			POSTGIS_DEBUGF(3, "  adding geometry to result set: %s",
-					lwtype_name(lwgeom_get_type(lwgeoms[i])));
+			POSTGIS_DEBUGF(3, "  adding geometry to result set: %s",lwtype_name(lwgeom_get_type(lwgeoms[i])));
 			lwgeom_force_clockwise(lwgeoms[i]);
-			result = (LWGEOM*) lwcollection_add_lwgeom((LWCOLLECTION*) result,
-					lwgeoms[i]);
+			result = (LWGEOM*) lwcollection_add_lwgeom((LWCOLLECTION*) result,lwgeoms[i]);
 
 		}
 
-		POSTGIS_DEBUGF(2, "=> parse_marc21 returns a collection: %s",
-				lwtype_name(lwgeom_get_type(result)));
+		POSTGIS_DEBUGF(2, "=> parse_marc21 returns a collection: %s", lwtype_name(lwgeom_get_type(result)));
 		return result;
 
 	}
