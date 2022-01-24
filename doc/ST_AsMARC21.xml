@@ -1,5 +1,5 @@
 
-<refentry id="ST_AsKML">
+<refentry id="ST_AsMARC21">
     <refnamediv>
         <refname>ST_AsMARC21</refname>
         <refpurpose>Return the geometry as a MARC21/XML record with a geographic datafield (034).</refpurpose>
