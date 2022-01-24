@@ -3,7 +3,8 @@
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
 # *
-# * Copyright 2008 Mark Cave-Ayland
+# * Copyright (C) 2012-2022 Sandro Santilli <strk@kbt.io>
+# * Copyright (C) 2008 Mark Cave-Ayland
 # *
 # * This is free software; you can redistribute and/or modify it under
 # * the terms of the GNU General Public Licence. See the COPYING file.
@@ -28,7 +29,7 @@ include $(PGXS)
 VPATH := @srcdir@
 
 SHELL = @SHELL@
-INSTALL = $(SHELL) ../build-aux/install-sh
+INSTALL = $(SHELL) @top_srcdir@/build-aux/install-sh
 
 SCRIPTS_built = postgis_restore.pl
 

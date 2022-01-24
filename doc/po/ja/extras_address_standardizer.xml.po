@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2016-12-19 08:04+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-01-24 18:52+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"extras_address_standardizerxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
@@ -210,9 +212,9 @@ msgid ""
 "for elements are borrowed from <ulink url=\"http://www.pagcgeo.org/docs/html/"
 "pagc-12.html#ss12.1\">PAGC Postal Attributes</ulink>."
 msgstr ""
-"住所の要素からなる複合型です。<varname>standardize_address</varname>関数が返"
-"す型です。要素の記述のいくつかは<ulink url=\"http://www.pagcgeo.org/docs/"
-"html/pagc-12.html#ss12.1\">PAGC Postal Attributes</ulink>から借りています。"
+"住所の要素からなる複合型です。<xref linkend=\"standardize_address\"/> 関数が返す型です。"
+"要素の記述のいくつかは<ulink url=\"http://www.pagcgeo.org/docs/html/pagc-12.html#ss12."
+"1\">PAGC Postal Attributes</ulink>から借りています。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:51
@@ -259,8 +261,8 @@ msgid ""
 "is a text (token number <code>1</code>): This is the street number on a "
 "street. Example <emphasis>75</emphasis> in <code>75 State Street</code>."
 msgstr ""
-"文字列 (トークン番号<code>1</code>): ストリートの番号です。<code>75 State "
-"Street</code>では<emphasis>75</emphasis>にあたります。"
+"文字列 (トークン番号<code>1</code>): ストリートの番号です。<code>75 State Street</code>では "
+"<emphasis>75</emphasis>にあたります。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:65 extras_address_standardizer.xml:400
@@ -641,8 +643,7 @@ msgstr "AMPERS"
 msgid ""
 "(13). The ampersand (&amp;) is frequently used to abbreviate the word \"and"
 "\"."
-msgstr ""
-"(13) アンパサンド (&amp;)は、\"and\"という語を短縮するために、よく使われます"
+msgstr "(13) アンパサンド (&amp;)は、\"and\"という語を短縮するために、よく使われます。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:186
@@ -726,7 +727,7 @@ msgstr ""
 #: extras_address_standardizer.xml:230
 #, no-c-format
 msgid "(18). A single letter."
-msgstr "(18) 一つの文字"
+msgstr "(18) 一つの文字。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:235
@@ -1308,8 +1309,8 @@ msgid ""
 "with (a) input tokens ( See <xref linkend=\"rule_input_tokens\"/>) and (b) "
 "standardized representations."
 msgstr ""
-"lexテーブルは英数字の入力をクラス分けして (a) 入力トークン (<xref linkend="
-"\"rule_input_tokens\"/> 参照)と (b)  標準化表現 とに関連付けます。"
+"lexテーブルは英数字の入力をクラス分けして (a) 入力トークン (<xref linkend=\"rule_input_tokens\"/> 参照)"
+"と (b) 標準化表現 とに関連付けます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:487
@@ -1320,8 +1321,9 @@ msgid ""
 "standardized representations. Things you will find in these tables are "
 "<code>ONE</code> mapped to stdword: <code>1</code>."
 msgstr ""
-"lex (lexiconの略語)テーブルは、英数入力を分類し、入力を (a) <xref linkend="
-"\"rule_input_tokens\"/>および (b) 標準化された表現、に関連付けます。"
+"lex (lexiconの略語)テーブルは、英数入力を分類し、入力を (a) <xref linkend=\"rule_input_tokens\"/"
+">および (b) 標準化された表現、に関連付けます。これらのテーブルで発見した物は、\n"
+"<code>ONE</code>がstdwordでは<code>1</code>に対応付けされます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:489
