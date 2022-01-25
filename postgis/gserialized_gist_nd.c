@@ -1123,12 +1123,12 @@ Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
 	if (GIST_LEAF(entry))
 	{
 		result =
-		    gserialized_gist_consistent_leaf((GIDX *)DatumGetPointer(entry->key), query_gbox_index, strategy);
+		    gserialized_gist_consistent_leaf((GIDX *)PG_DETOAST_DATUM(entry->key), query_gbox_index, strategy);
 	}
 	else
 	{
 		result = gserialized_gist_consistent_internal(
-		    (GIDX *)DatumGetPointer(entry->key), query_gbox_index, strategy);
+		    (GIDX *)PG_DETOAST_DATUM(entry->key), query_gbox_index, strategy);
 	}
 
 	PG_RETURN_BOOL(result);
@@ -1196,6 +1196,9 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 		float size_orig = gidx_volume(gbox_index_orig);
 		float volume_extension = size_union - size_orig;
 
+		gbox_index_orig = (GIDX *)PG_DETOAST_DATUM(origentry->key);
+		gbox_index_new = (GIDX *)PG_DETOAST_DATUM(newentry->key);
+
 		/* REALM 1: Area extension is nonzero, return it */
 		if (volume_extension > FLT_EPSILON)
 			*result = pack_float(volume_extension, 1);
@@ -1227,13 +1230,13 @@ Datum gserialized_gist_union(PG_FUNCTION_ARGS)
 
 	numranges = entryvec->n;
 
-	box_cur = (GIDX *)DatumGetPointer(entryvec->vector[0].key);
+	box_cur = (GIDX *)PG_DETOAST_DATUM(entryvec->vector[0].key);
 
 	box_union = gidx_copy(box_cur);
 
 	for (i = 1; i < numranges; i++)
 	{
-		box_cur = (GIDX *)DatumGetPointer(entryvec->vector[i].key);
+		box_cur = (GIDX *)PG_DETOAST_DATUM(entryvec->vector[i].key);
 		gidx_merge(&box_union, box_cur);
 	}
 
@@ -1294,7 +1297,7 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 		*recheck = true;
 
 	/* Get the entry box */
-	entry_box = (GIDX *)DatumGetPointer(entry->key);
+	entry_box = (GIDX *)PG_DETOAST_DATUM(entry->key);
 
 	/* Return distances from key-based tests should always be */
 	/* the minimum possible distance, box-to-box */
@@ -1353,7 +1356,7 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 	}
 
 	/* Get the entry box */
-	entry_box = (GIDX *)DatumGetPointer(entry->key);
+	entry_box = (GIDX *)PG_DETOAST_DATUM(entry->key);
 
 	/* Strategy 20 is |=| */
 	distance = gidx_distance(entry_box, query_box, strategy == 20);
@@ -1433,7 +1436,7 @@ gserialized_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
-		GIDX *cur = (GIDX *)DatumGetPointer(entryvec->vector[i].key);
+		GIDX *cur = (GIDX *)PG_DETOAST_DATUM(entryvec->vector[i].key);
 
 		if (i <= (maxoff - FirstOffsetNumber + 1) / 2)
 		{
@@ -1456,12 +1459,12 @@ gserialized_gist_picksplit_fallback(GistEntryVector *entryvec, GIST_SPLITVEC *v)
 	}
 
 	if (v->spl_ldatum_exists)
-		gidx_merge(&unionL, (GIDX *)DatumGetPointer(v->spl_ldatum));
+		gidx_merge(&unionL, (GIDX *)PG_DETOAST_DATUM(v->spl_ldatum));
 
 	v->spl_ldatum = PointerGetDatum(unionL);
 
 	if (v->spl_rdatum_exists)
-		gidx_merge(&unionR, (GIDX *)DatumGetPointer(v->spl_rdatum));
+		gidx_merge(&unionR, (GIDX *)PG_DETOAST_DATUM(v->spl_rdatum));
 
 	v->spl_rdatum = PointerGetDatum(unionR);
 	v->spl_ldatum_exists = v->spl_rdatum_exists = false;
@@ -1490,10 +1493,10 @@ gserialized_gist_picksplit_constructsplit(GIST_SPLITVEC *v,
 			GIDX *RLr = gidx_copy(*union1);
 			double sizeLR, sizeRL;
 
-			gidx_merge(&LRl, (GIDX *)DatumGetPointer(v->spl_ldatum));
-			gidx_merge(&LRr, (GIDX *)DatumGetPointer(v->spl_rdatum));
-			gidx_merge(&RLl, (GIDX *)DatumGetPointer(v->spl_ldatum));
-			gidx_merge(&RLr, (GIDX *)DatumGetPointer(v->spl_rdatum));
+			gidx_merge(&LRl, (GIDX *)PG_DETOAST_DATUM(v->spl_ldatum));
+			gidx_merge(&LRr, (GIDX *)PG_DETOAST_DATUM(v->spl_rdatum));
+			gidx_merge(&RLl, (GIDX *)PG_DETOAST_DATUM(v->spl_ldatum));
+			gidx_merge(&RLr, (GIDX *)PG_DETOAST_DATUM(v->spl_rdatum));
 
 			sizeLR = gidx_inter_volume(LRl, LRr);
 			sizeRL = gidx_inter_volume(RLl, RLr);
@@ -1542,10 +1545,10 @@ gserialized_gist_picksplit_constructsplit(GIST_SPLITVEC *v,
 		v->spl_nleft = nlist1;
 		v->spl_nright = nlist2;
 		if (v->spl_ldatum_exists)
-			gidx_merge(union1, (GIDX *)DatumGetPointer(v->spl_ldatum));
+			gidx_merge(union1, (GIDX *)PG_DETOAST_DATUM(v->spl_ldatum));
 		v->spl_ldatum = PointerGetDatum(*union1);
 		if (v->spl_rdatum_exists)
-			gidx_merge(union2, (GIDX *)DatumGetPointer(v->spl_rdatum));
+			gidx_merge(union2, (GIDX *)PG_DETOAST_DATUM(v->spl_rdatum));
 		v->spl_rdatum = PointerGetDatum(*union2);
 	}
 	else
@@ -1555,10 +1558,10 @@ gserialized_gist_picksplit_constructsplit(GIST_SPLITVEC *v,
 		v->spl_nleft = nlist2;
 		v->spl_nright = nlist1;
 		if (v->spl_ldatum_exists)
-			gidx_merge(union2, (GIDX *)DatumGetPointer(v->spl_ldatum));
+			gidx_merge(union2, (GIDX *)PG_DETOAST_DATUM(v->spl_ldatum));
 		v->spl_ldatum = PointerGetDatum(*union2);
 		if (v->spl_rdatum_exists)
-			gidx_merge(union1, (GIDX *)DatumGetPointer(v->spl_rdatum));
+			gidx_merge(union1, (GIDX *)PG_DETOAST_DATUM(v->spl_rdatum));
 		v->spl_rdatum = PointerGetDatum(*union1);
 	}
 
@@ -1604,13 +1607,13 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 	*/
 
 	max_offset = entryvec->n - 1;
-	box_current = (GIDX *)DatumGetPointer(entryvec->vector[FirstOffsetNumber].key);
+	box_current = (GIDX *)PG_DETOAST_DATUM(entryvec->vector[FirstOffsetNumber].key);
 	box_pageunion = gidx_copy(box_current);
 
 	/* Calculate the containing box (box_pageunion) for the whole page we are going to split. */
 	for (i = OffsetNumberNext(FirstOffsetNumber); i <= max_offset; i = OffsetNumberNext(i))
 	{
-		box_current = (GIDX *)DatumGetPointer(entryvec->vector[i].key);
+		box_current = (GIDX *)PG_DETOAST_DATUM(entryvec->vector[i].key);
 
 		if (all_entries_equal && !gidx_equals(box_pageunion, box_current))
 			all_entries_equal = false;
@@ -1653,7 +1656,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(4, "[GIST] 'picksplit' calculating best split axis");
 	for (i = FirstOffsetNumber; i <= max_offset; i = OffsetNumberNext(i))
 	{
-		box_current = (GIDX *)DatumGetPointer(entryvec->vector[i].key);
+		box_current = (GIDX *)PG_DETOAST_DATUM(entryvec->vector[i].key);
 
 		for (d = 0; d < ndims_pageunion; d++)
 		{
@@ -1689,7 +1692,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 
 		for (i = FirstOffsetNumber; i <= max_offset; i = OffsetNumberNext(i))
 		{
-			box_current = (GIDX *)DatumGetPointer(entryvec->vector[i].key);
+			box_current = (GIDX *)PG_DETOAST_DATUM(entryvec->vector[i].key);
 			for (d = 0; d < ndims_pageunion; d++)
 				avgCenter[d] += (GIDX_GET_MAX(box_current, d) + GIDX_GET_MIN(box_current, d)) / 2.0;
 		}
@@ -1704,7 +1707,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 		for (i = FirstOffsetNumber; i <= max_offset; i = OffsetNumberNext(i))
 		{
 			double center;
-			box_current = (GIDX *)DatumGetPointer(entryvec->vector[i].key);
+			box_current = (GIDX *)PG_DETOAST_DATUM(entryvec->vector[i].key);
 
 			for (d = 0; d < ndims_pageunion; d++)
 			{
