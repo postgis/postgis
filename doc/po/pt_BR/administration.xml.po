@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-20 18:53+0000\n"
+"POT-Creation-Date: 2022-01-25 19:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -359,125 +359,18 @@ msgstr ""
 msgid ""
 "If you installed your database using extensions, you'll need to upgrade "
 "using the extension model as well. If you installed using the old sql script "
-"way, then you should upgrade using the sql script way. Please refer to the "
-"appropriate."
+"way, you are advised to switch your install to extensions because the script "
+"way is no longer supported."
 msgstr ""
 
 #. Tag: title
-#: administration.xml:166
-#, no-c-format
-msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr ""
-
-#. Tag: para
-#: administration.xml:168
-#, no-c-format
-msgid ""
-"This section applies only to those who installed PostGIS not using "
-"extensions. If you have extensions and try to upgrade with this approach "
-"you'll get messages like:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:172
-#, no-c-format
-msgid "can't drop … because postgis extension depends on it"
-msgstr ""
-
-#. Tag: para
-#: administration.xml:174
-#, no-c-format
-msgid ""
-"NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
-"prior to r7409, you cannot use this procedure but would rather need to do a "
-"<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
-
-#. Tag: para
-#: administration.xml:180
-#, no-c-format
-msgid ""
-"After compiling and installing (make install) you should find a set of "
-"<filename>*_upgrade.sql</filename> files in the installation folders. You "
-"can list them all with:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:187
-#, no-c-format
-msgid ""
-"ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade."
-"sql"
-msgstr ""
-
-#. Tag: para
-#: administration.xml:189
-#, no-c-format
-msgid ""
-"Load them all in turn, starting from <filename>postgis_upgrade.sql</"
-"filename>."
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:193
-#, no-c-format
-msgid "psql -f postgis_upgrade.sql -d your_spatial_database"
-msgstr ""
-
-#. Tag: para
-#: administration.xml:195
-#, no-c-format
-msgid ""
-"The same procedure applies to raster, topology and sfcgal extensions, with "
-"upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
-"<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
-"filename> respectively. If you need them:"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:204
-#, no-c-format
-msgid "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:205
-#, no-c-format
-msgid "psql -f topology_upgrade.sql -d your_spatial_database"
-msgstr ""
-
-#. Tag: programlisting
-#: administration.xml:206
-#, no-c-format
-msgid "psql -f sfcgal_upgrade.sql -d your_spatial_database"
-msgstr ""
-
-#. Tag: para
-#: administration.xml:209
-#, no-c-format
-msgid ""
-"If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
-"upgrading your version you are using a version too early for a soft upgrade "
-"and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
-msgstr ""
-
-#. Tag: para
-#: administration.xml:218
-#, no-c-format
-msgid ""
-"The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
-"about the need to run this kind of upgrade using a \"procs need upgrade\" "
-"message."
-msgstr ""
-
-#. Tag: title
-#: administration.xml:225
+#: administration.xml:164
 #, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:226
+#: administration.xml:165
 #, no-c-format
 msgid ""
 "If you originally installed PostGIS with extensions, then you need to "
@@ -485,8 +378,47 @@ msgid ""
 "fairly painless."
 msgstr ""
 
+#. Tag: para
+#: administration.xml:166
+#, no-c-format
+msgid ""
+"If you are running PostGIS 3 or above, then you should use the <xref linkend="
+"\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest version "
+"you have installed."
+msgstr ""
+
 #. Tag: programlisting
-#: administration.xml:227
+#: administration.xml:167
+#, no-c-format
+msgid "SELECT postgis_extensions_upgrade();"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:169
+#, no-c-format
+msgid "If you are running PostGIS 2.5 or lower, then do the following:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:170
+#, no-c-format
+msgid ""
+"ALTER EXTENSION postgis UPDATE;\n"
+"SELECT postgis_extensions_upgrade();\n"
+"-- This second call is needed to rebundle postgis_raster extension\n"
+"SELECT postgis_extensions_upgrade();"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:172
+#, no-c-format
+msgid ""
+"If you have multiple versions of PostGIS installed, and you don't want to "
+"upgrade to the latest, you can explicitly specify the version as follows:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:173
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
@@ -494,19 +426,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:228
+#: administration.xml:174
 #, no-c-format
 msgid "If you get an error notice something like:"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:229
+#: administration.xml:175
 #, no-c-format
 msgid "No migration path defined for … to &last_release_version;"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:230
+#: administration.xml:176
 #, no-c-format
 msgid ""
 "Then you'll need to backup your database, create a fresh one as described in "
@@ -515,13 +447,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:231
+#: administration.xml:177
 #, no-c-format
 msgid "If you get a notice message like:"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:232
+#: administration.xml:178
 #, no-c-format
 msgid ""
 "Version \"&last_release_version;\" of extension \"postgis\" is already "
@@ -529,7 +461,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:233
+#: administration.xml:179
 #, no-c-format
 msgid ""
 "Then everything is already up to date and you can safely ignore it. "
@@ -540,7 +472,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:239
+#: administration.xml:185
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
@@ -548,7 +480,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:240
+#: administration.xml:186
 #, no-c-format
 msgid ""
 "If you installed PostGIS originally without a version specified, you can "
@@ -558,30 +490,147 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:244
+#: administration.xml:190
 #, no-c-format
 msgid ""
-"If you are upgrading PostGIS extension from a version prior to 3.0.0 you'll "
-"end up with an unpackaged PostGIS Raster support. You can repackage the "
-"raster support using: <programlisting>\n"
-"    CREATE EXTENSION postgis_raster FROM unpackaged;\n"
-"    </programlisting> And then, if you don't need it, drop it with:"
+"If you are upgrading PostGIS extension from a version prior to 3.0.0, you "
+"will have a new extension <emphasis>postgis_raster</emphasis> which you can "
+"safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:250
+#: administration.xml:192
 #, no-c-format
 msgid "DROP EXTENSION postgis_raster;"
 msgstr ""
 
 #. Tag: title
-#: administration.xml:259
+#: administration.xml:198
+#, no-c-format
+msgid "Soft Upgrade Pre 9.1+ or without extensions"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:200
+#, no-c-format
+msgid ""
+"This section applies only to those who installed PostGIS not using "
+"extensions. If you have extensions and try to upgrade with this approach "
+"you'll get messages like:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:204
+#, no-c-format
+msgid "can't drop … because postgis extension depends on it"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:206
+#, no-c-format
+msgid ""
+"NOTE: if you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* "
+"prior to r7409, you cannot use this procedure but would rather need to do a "
+"<link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:212
+#, no-c-format
+msgid ""
+"After compiling and installing (make install) you should find a set of "
+"<filename>*_upgrade.sql</filename> files in the installation folders. You "
+"can list them all with:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:219
+#, no-c-format
+msgid ""
+"ls `pg_config --sharedir`/contrib/postgis-&last_release_version;/*_upgrade."
+"sql"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:221
+#, no-c-format
+msgid ""
+"Load them all in turn, starting from <filename>postgis_upgrade.sql</"
+"filename>."
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:225
+#, no-c-format
+msgid "psql -f postgis_upgrade.sql -d your_spatial_database"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:227
+#, no-c-format
+msgid ""
+"The same procedure applies to raster, topology and sfcgal extensions, with "
+"upgrade files named <filename>rtpostgis_upgrade.sql</filename>, "
+"<filename>topology_upgrade.sql</filename> and <filename>sfcgal_upgrade.sql</"
+"filename> respectively. If you need them:"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:236
+#, no-c-format
+msgid "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:237
+#, no-c-format
+msgid "psql -f topology_upgrade.sql -d your_spatial_database"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:238
+#, no-c-format
+msgid "psql -f sfcgal_upgrade.sql -d your_spatial_database"
+msgstr ""
+
+#. Tag: para
+#: administration.xml:240
+#, no-c-format
+msgid "You are advised to switch to an extension based install by running"
+msgstr ""
+
+#. Tag: programlisting
+#: administration.xml:241
+#, no-c-format
+msgid "psql -c \"SELECT postgis_extensions_upgrade();\""
+msgstr ""
+
+#. Tag: para
+#: administration.xml:244
+#, no-c-format
+msgid ""
+"If you can't find the <filename>postgis_upgrade.sql</filename> specific for "
+"upgrading your version you are using a version too early for a soft upgrade "
+"and need to do a <link linkend=\"hard_upgrade\">HARD UPGRADE</link>."
+msgstr ""
+
+#. Tag: para
+#: administration.xml:253
+#, no-c-format
+msgid ""
+"The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
+"about the need to run this kind of upgrade using a \"procs need upgrade\" "
+"message."
+msgstr ""
+
+#. Tag: title
+#: administration.xml:263
 #, no-c-format
 msgid "Hard upgrade"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:261
+#: administration.xml:265
 #, no-c-format
 msgid ""
 "By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. You "
@@ -592,7 +641,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:270
+#: administration.xml:274
 #, no-c-format
 msgid ""
 "The dump/reload process is assisted by the postgis_restore.pl script which "
@@ -603,7 +652,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:279
+#: administration.xml:283
 #, no-c-format
 msgid ""
 "Supplementary instructions for windows users are available at <ulink url="
@@ -612,13 +661,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:282
+#: administration.xml:286
 #, no-c-format
 msgid "The Procedure is as follows:"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:290
+#: administration.xml:294
 #, no-c-format
 msgid ""
 "Create a \"custom-format\" dump of the database you want to upgrade (let's "
@@ -628,7 +677,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:298
+#: administration.xml:302
 #, no-c-format
 msgid ""
 "pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
@@ -636,7 +685,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:304
+#: administration.xml:308
 #, no-c-format
 msgid ""
 "Do a fresh install of PostGIS in a new database -- we'll refer to this "
@@ -646,7 +695,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:311
+#: administration.xml:315
 #, no-c-format
 msgid ""
 "The spatial_ref_sys entries found in your dump will be restored, but they "
@@ -657,7 +706,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:321
+#: administration.xml:325
 #, no-c-format
 msgid ""
 "If your database is really old or you know you've been using long deprecated "
@@ -670,7 +719,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:337
+#: administration.xml:341
 #, no-c-format
 msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
@@ -679,7 +728,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:345
+#: administration.xml:349
 #, no-c-format
 msgid ""
 "perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost "
@@ -687,13 +736,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:351
+#: administration.xml:355
 #, no-c-format
 msgid "Errors may arise in the following cases:"
 msgstr ""
 
 #. Tag: para
-#: administration.xml:357
+#: administration.xml:361
 #, no-c-format
 msgid ""
 "Some of your views or functions make use of deprecated PostGIS objects. In "
@@ -706,7 +755,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:369
+#: administration.xml:373
 #, no-c-format
 msgid ""
 "Some custom records of spatial_ref_sys in dump file have an invalid SRID "
@@ -720,7 +769,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: administration.xml:383
+#: administration.xml:387
 #, no-c-format
 msgid ""
 "In order to fix this you should copy your custom SRS to a SRID with a valid "
@@ -748,7 +797,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: administration.xml:420
+#: administration.xml:424
 #, no-c-format
 msgid ""
 "psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> "

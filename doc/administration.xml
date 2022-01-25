@@ -180,10 +180,48 @@ environment).</para></note>
 	<sect2 id="soft_upgrade">
 	  <title>Soft upgrade</title>
 
-	  <para>If you installed your database using extensions, you'll need to upgrade using the extension model as well.  If you installed using the old sql script way,
-	  then you should upgrade using the sql script way. Please refer to the appropriate.</para>
+	  <para>If you installed your database using extensions, you'll need to upgrade using the extension model as well.  If you installed using the old sql script way, you are advised to switch your install to extensions because the script way is no longer supported. </para>
 
-	  <sect3 id="soft_upgrade_sql_script">
+	<sect3 id="soft_upgrade_extensions"><title>Soft Upgrade 9.1+ using extensions</title>
+		<para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions, is fairly painless.</para>
+        <para>If you are running PostGIS 3 or above, then you should use the <xref linkend="PostGIS_Extensions_Upgrade" /> function to upgrade to the latest version you have installed.</para>
+        <programlisting>SELECT postgis_extensions_upgrade();</programlisting>
+
+        <para>If you are running PostGIS 2.5 or lower, then do the following:</para>
+        <programlisting>ALTER EXTENSION postgis UPDATE;
+SELECT postgis_extensions_upgrade();
+-- This second call is needed to rebundle postgis_raster extension
+SELECT postgis_extensions_upgrade();
+</programlisting>
+
+        <para>If you have multiple versions of PostGIS installed, and you don't want to upgrade to the latest, you can explicitly specify the version as follows:</para>
+		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;";
+ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
+		<para>If you get an error notice something like:</para>
+			<programlisting>No migration path defined for … to &last_release_version;</programlisting>
+		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup on top of this new database.</para>
+    <para>If you get a notice message like:</para>
+    <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
+    <para>
+Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
+you're attempting to upgrade from an development version to the next (which
+doesn't get a new version number); in that case you can append "next" to the version
+string, and next time you'll need to drop the "next" suffix again:
+    </para>
+		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
+ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
+		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
+		picks up the newest latest version during restore.</para></note>
+
+    <note>
+    <para>If you are upgrading PostGIS extension from a version prior to 3.0.0, you will have a new extension <emphasis>postgis_raster</emphasis>
+    which you can safely drop, if you don't need raster support.  You can drop as follows:</para>
+    <programlisting>DROP EXTENSION postgis_raster;</programlisting>
+    </note>
+
+	</sect3>
+
+     <sect3 id="soft_upgrade_sql_script">
 		<title>Soft Upgrade Pre 9.1+ or without extensions</title>
 
 	  <para>This section applies only to those who installed PostGIS
@@ -226,6 +264,9 @@ environment).</para></note>
 		<programlisting>psql -f topology_upgrade.sql -d your_spatial_database</programlisting>
 		<programlisting>psql -f sfcgal_upgrade.sql -d your_spatial_database</programlisting>
 
+        <para>You are advised to switch to an extension based install by running</para>
+        <programlisting>psql -c "SELECT postgis_extensions_upgrade();"</programlisting>
+
 	  <note>
 		<para>
 		  If you can't find the
@@ -242,43 +283,6 @@ environment).</para></note>
 		upgrade using a "procs need upgrade" message.
 	  </para>
 	  </sect3>
-
-	<sect3 id="soft_upgrade_extensions"><title>Soft Upgrade 9.1+ using extensions</title>
-		<para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions, is fairly painless.</para>
-		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;";
-ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
-		<para>If you get an error notice something like:</para>
-			<programlisting>No migration path defined for … to &last_release_version;</programlisting>
-		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup on top of this new database.</para>
-    <para>If you get a notice message like:</para>
-    <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
-    <para>
-Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
-you're attempting to upgrade from an development version to the next (which
-doesn't get a new version number); in that case you can append "next" to the version
-string, and next time you'll need to drop the "next" suffix again:
-    </para>
-		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
-ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
-		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
-		picks up the newest latest version during restore.</para></note>
-
-    <note>
-    <para>
-    If you are upgrading PostGIS extension from a version prior to 3.0.0
-    you'll end up with an unpackaged PostGIS Raster support. You can
-    repackage the raster support using:
-    <programlisting>
-    CREATE EXTENSION postgis_raster FROM unpackaged;
-    </programlisting>
-    And then, if you don't need it, drop it with:
-    <programlisting>
-    DROP EXTENSION postgis_raster;
-    </programlisting>
-    </para>
-    </note>
-
-	</sect3>
 
 	</sect2>
 
