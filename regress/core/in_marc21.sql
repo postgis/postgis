@@ -1,8 +1,7 @@
 
--- ## BEGIN stress test ##
+-- BEGIN stress test 
 
 -- Creates random unicode strings with a given length 
-
 CREATE OR REPLACE FUNCTION public.random_unicode_string(int)
 RETURNS text LANGUAGE 'plpgsql'
 AS $$
@@ -50,10 +49,11 @@ BEGIN
   END LOOP;
 END;$$;
 
--- ## END stress test ##
-
-
+-- END stress test
 -- ##############################################################
+
+
+
 
 -- ERROR: Empty string
 SELECT 'empty_string',ST_GeomFromMARC21('');
@@ -230,6 +230,124 @@ SELECT 'invalid_hemisphere_g',
 	</record>');
 
 
+-- ERROR: - and W sign together in subfield "f"
+SELECT '-_and_W_hemisphere',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1504600</subfield>
+		<subfield code="e">-W1202600</subfield>
+		<subfield code="f">N0354700</subfield>
+		<subfield code="g">N0354700</subfield>
+	  </datafield>
+	</record>');
+
+-- ERROR: - and W sign together in subfield "g"
+SELECT '+_and_N_hemisphere',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1504600</subfield>
+		<subfield code="e">W1202600</subfield>
+		<subfield code="f">N+0354700</subfield>
+		<subfield code="g">N0354700</subfield>
+	  </datafield>
+	</record>');
+
+
+-- ERROR: double ++ in subfield "g"
+SELECT '++_hemisphere',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1504600</subfield>
+		<subfield code="e">W1202600</subfield>
+		<subfield code="f">N0354700</subfield>
+		<subfield code="g">++0354700</subfield>
+	  </datafield>
+	</record>');
+
+-- ERROR: double -- in subfield "e"
+SELECT '++_hemisphere',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1504600</subfield>
+		<subfield code="e">--1202600</subfield>
+		<subfield code="f">N0354700</subfield>
+		<subfield code="g">0354700</subfield>
+	  </datafield>
+	</record>');
+
+-- ERROR: coordinates with spaces
+SELECT 'spaces_between_numbers',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W150 4600</subfield>
+		<subfield code="e">W120 2600</subfield>
+		<subfield code="f">N035 4700</subfield>
+		<subfield code="g">N048 4700</subfield>
+	  </datafield>
+	</record>');
+
+-- ERROR: + sign betwee numbers in subfield "f"
+SELECT '+_between_numbers',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1504600</subfield>
+		<subfield code="e">W1202600</subfield>
+		<subfield code="f">N035+4700</subfield>
+		<subfield code="g">N0484700</subfield>
+	  </datafield>
+	</record>');
+
+-- ERROR: - sign between numbers in subfield "d"
+SELECT '-_between_numbers',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W150-4600</subfield>
+		<subfield code="e">W1202600</subfield>
+		<subfield code="f">N0354700</subfield>
+		<subfield code="g">N0484700</subfield>
+	  </datafield>
+	</record>');
+
+-- ERROR: / between numbers in subfield "d"
+SELECT '/_between_numbers',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1504600</subfield>
+		<subfield code="e">W1202600</subfield>
+		<subfield code="f">N0354700</subfield>
+		<subfield code="g">N048/4700</subfield>
+	  </datafield>
+	</record>');
+	
+-- ERROR: * between numbers in subfield "d"
+SELECT '*_between_numbers',
+ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1504600</subfield>
+		<subfield code="e">W1202600</subfield>
+		<subfield code="f">N0354700</subfield>
+		<subfield code="g">N048*4700</subfield>
+	  </datafield>
+	</record>');
+
 -- ERROR: invalid value in subfield "d" (multiple decimal separators)
 SELECT 'multiple_separators_d',
   ST_GeomFromMARC21('
@@ -367,7 +485,7 @@ SELECT 'broken_xml_2',
     
 
 -- PASS: valid parameter in subfield "d" wrapped in a CDATA block
-SELECT 'CDATA_d',
+SELECT 'polygon_1',
   ST_AsText(ST_GeomFromMARC21('
   <record>
    <datafield tag="034" ind1="0" ind2=" ">
@@ -380,7 +498,7 @@ SELECT 'CDATA_d',
   </record>'));
 
 -- PASS: valid parameter in subfield "e" wrapped in a CDATA block
-SELECT 'CDATA_e', 
+SELECT 'polygon_2', 
   ST_AsText(ST_GeomFromMARC21('
   <record>
    <datafield tag="034" ind1="0" ind2=" ">
@@ -393,7 +511,7 @@ SELECT 'CDATA_e',
   </record>'));
 
 -- PASS: valid parameter in subfield "f" wrapped in a CDATA block
-SELECT 'CDATA_f', 
+SELECT 'polygon_3', 
   ST_AsText(ST_GeomFromMARC21('
   <record>
    <datafield tag="034" ind1="0" ind2=" ">
@@ -406,7 +524,7 @@ SELECT 'CDATA_f',
   </record>'));
 
 -- PASS: valid parameter in subfield "g" wrapped in a CDATA block
-SELECT 'CDATA_g', 
+SELECT 'polygon_4', 
   ST_AsText(ST_GeomFromMARC21('
   <record>
    <datafield tag="034" ind1="0" ind2=" ">
@@ -420,7 +538,7 @@ SELECT 'CDATA_g',
 
 
 -- PASS: valid parameters in all subfields wrapped in CDATA blocks
-SELECT 'CDATA_all',
+SELECT 'polygon_5',
   ST_AsText(ST_GeomFromMARC21('
   <record>
    <datafield tag="034" ind1="0" ind2=" ">
@@ -446,8 +564,8 @@ SELECT '034_without_geo', ST_GeomFromMARC21('
   </record>');
   
   
-  
-SELECT rpad('polygon',20,' '),'hdddmmss',
+-- PASS: coordinates format "hdddmmss"
+SELECT 'polygon_6',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>01643cem a2200373 a 4500</leader>
@@ -461,8 +579,8 @@ SELECT rpad('polygon',20,' '),'hdddmmss',
     </datafield>
   </record>'));
 
-
-SELECT rpad('polygon',20,' '),'[WE]dddmmss_+dddmmss_dddmmss',
+-- PASS: coordinates formats [WE]dddmmss, +dddmmss, dddmmss
+SELECT 'polygon_7',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
@@ -474,7 +592,8 @@ SELECT rpad('polygon',20,' '),'[WE]dddmmss_+dddmmss_dddmmss',
 	</datafield>
   </record>'));
 
-SELECT rpad('polygon',20,' '),'[WS]dddmmss',
+-- PASS: coordinates formats [WS]dddmmss'
+SELECT 'polygon_8',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
@@ -486,7 +605,8 @@ SELECT rpad('polygon',20,' '),'[WS]dddmmss',
 	</datafield>
   </record>'));
   
-SELECT rpad('polygon',20,' '),'[WS]dddmmss_-dddmmss',
+-- PASS: coordinates formats [WS]dddmmss, -dddmmss
+SELECT 'polygon_9',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
@@ -498,7 +618,8 @@ SELECT rpad('polygon',20,' '),'[WS]dddmmss_-dddmmss',
 	</datafield>
   </record>'));  
   
-SELECT rpad('polygon',20,' '),'[EN]ddd.dddddd',
+-- PASS: coordinates format [EN]ddd.dddddd 
+SELECT 'polygon_10',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
@@ -509,8 +630,9 @@ SELECT rpad('polygon',20,' '),'[EN]ddd.dddddd',
 	  <subfield code="g">N049.618333</subfield>
 	</datafield>
   </record>'));   
-  
-SELECT rpad('polygon',20,' '),'[EN]ddd,dddddd',
+
+-- PASS: coordinates format [EN]ddd,dddddd
+SELECT 'polygon_11',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
@@ -522,7 +644,8 @@ SELECT rpad('polygon',20,' '),'[EN]ddd,dddddd',
 	</datafield>
   </record>'));
 
-SELECT rpad('polygon',20,' '),'[EN]ddd.dddddd | +ddd.dddddd | ddd.dddddd',
+-- PASS: coordinates formats [EN]ddd.dddddd, +ddd.dddddd, ddd.dddddd
+SELECT 'polygon_13',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
@@ -533,8 +656,9 @@ SELECT rpad('polygon',20,' '),'[EN]ddd.dddddd | +ddd.dddddd | ddd.dddddd',
 	  <subfield code="g">N049.618333</subfield>
 	</datafield>
   </record>'));    
-  
-SELECT rpad('polygon',20,' '),'[EN]dddmm.mmmmm | +dddmm.mmmmm | dddmm.mmmmm',
+
+-- PASS: coordinates formats [EN]dddmm.mmmmm, +dddmm.mmmmm, dddmm.mmmmm
+SELECT 'polygon_14',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
@@ -546,8 +670,8 @@ SELECT rpad('polygon',20,' '),'[EN]dddmm.mmmmm | +dddmm.mmmmm | dddmm.mmmmm',
 	</datafield>
   </record>'));      
   
-  
-SELECT rpad('polygon',20,' '),'[EN]dddmmss.sssss | +dddmmss.sssss | dddmmss.sssss',
+-- PASS: coordinates formats [EN]dddmmss.sssss, +dddmmss.sssss, dddmmss.sssss
+SELECT 'polygon_15',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <datafield tag="034" ind1="1" ind2=" ">
@@ -559,7 +683,61 @@ SELECT rpad('polygon',20,' '),'[EN]dddmmss.sssss | +dddmmss.sssss | dddmmss.ssss
 	</datafield>
   </record>'));      
 
-SELECT rpad('point',20,' '), '[EN]ddd.ddddd',
+-- PASS: very large number encoded as hdddmmss+
+SELECT 'polygon_16',
+ST_AsText(ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1542654165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="e">W1202600165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="f">N0354700165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="g">N0484700165434046468468471164764064646468713100465189461014404600</subfield>
+	  </datafield>
+	</record>'));
+
+-- PASS: very large number encoded with decimal degrees
+SELECT 'polygon_17',
+ST_AsText(ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W154.2654165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="e">W120.2600165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="f">N035.4700165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="g">N048.4700165434046468468471164764064646468713100465189461014404600</subfield>
+	  </datafield>
+	</record>'));
+
+-- PASS: very large number encoded with decimal minutes
+SELECT 'polygon_18',
+ST_AsText(ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W15426.54165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="e">W12026.00165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="f">N03547.00165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="g">N04847.00165434046468468471164764064646468713100465189461014404600</subfield>
+	  </datafield>
+	</record>'));
+
+-- PASS: very large number encoded with decimal minutes
+SELECT 'polygon_19',
+ST_AsText(ST_GeomFromMARC21('
+	<record>
+	 <datafield tag="034" ind1="0" ind2=" ">
+		<subfield code="a">a</subfield>
+		<subfield code="d">W1542654165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="e">W1202600.165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="f">N0354700.165434046468468471164764064646468713100465189461014404600</subfield>
+		<subfield code="g">N0484700.165434046468468471164764064646468713100465189461014404600</subfield>
+	  </datafield>
+	</record>'));
+
+
+-- PASS: coordinates format [EN]ddd.ddddd
+SELECT 'point_1',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>01643cem a2200373 a 4500</leader>
@@ -573,7 +751,8 @@ SELECT rpad('point',20,' '), '[EN]ddd.ddddd',
     </datafield>
   </record>'));     
 
-SELECT rpad('point',20,' '), '[EN]dddmm.mmmmm',
+-- PASS: coordinates format [EN]dddmm.mmmmm
+SELECT 'point_2',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>01643cem a2200373 a 4500</leader>
@@ -587,7 +766,8 @@ SELECT rpad('point',20,' '), '[EN]dddmm.mmmmm',
     </datafield>
   </record>'));     
 
-SELECT rpad('point',20,' '), '[EN]dddmmss.sssss',
+-- PASS: coordinates format [EN]dddmmss.sssss
+SELECT 'point_3',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>01643cem a2200373 a 4500</leader>
@@ -601,7 +781,8 @@ SELECT rpad('point',20,' '), '[EN]dddmmss.sssss',
     </datafield>
   </record>'));  
   
-SELECT rpad('multipolygon',20,' '),'[EN]dddmmss.sssss | +dddmmss.sssss | dddmmss.sssss',
+-- PASS: coordinates formats [EN]dddmmss.sssss, +dddmmss.sssss, dddmmss.sssss  
+SELECT 'multipolygon_1',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>01643cem a2200373 a 4500</leader>
@@ -622,8 +803,8 @@ SELECT rpad('multipolygon',20,' '),'[EN]dddmmss.sssss | +dddmmss.sssss | dddmmss
 	</datafield>
   </record>'));      
 
-
-SELECT rpad('multipoint',20,' '), '[ENW]ddd.ddddd',
+-- PASS: coordinates formats [ENW]ddd.ddddd
+SELECT 'multipoint_1',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>01643cem a2200373 a 4500</leader>
@@ -644,8 +825,8 @@ SELECT rpad('multipoint',20,' '), '[ENW]ddd.ddddd',
 	</datafield>
   </record>'));      
 
-
-SELECT rpad('geometrycollection',20,' '),'[ENW]ddd.ddddd',
+-- PASS: coordinates formats [ENW]ddd.ddddd
+SELECT 'geocollection_1',
   ST_AsText(ST_GeomFromMARC21('
   <record xmlns="http://www.loc.gov/MARC21/slim">
     <leader>01643cem a2200373 a 4500</leader>
