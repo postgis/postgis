@@ -147,11 +147,6 @@ WHERE ST_GeometryType(geom_origin_dumped) <> 'ST_Point'
 ORDER BY gid,path_origin[1];
 
 
-
-
---TODO:
--- fazer exemplo com todos os tipos de geometrias (criar INSERTS)
-
 SELECT 'self-intersection polygon',ST_AsMARC21('SRID=4326;POLYGON((0 0, 0 1, 2 1, 2 2, 1 2, 1 0, 0 0))');
 SELECT 'point(0 0)',ST_AsMARC21('SRID=4326;POINT(0 0)');
 SELECT 'empty_polygon',ST_AsMARC21('SRID=4326;POLYGON EMPTY');
