@@ -19,6 +19,7 @@
     - ./configure
     - make maintainer-clean
     - ./autogen.sh
+    - chmod -R a-w .
     - export SRCDIR="${PWD}"
     - echo "SRCDIR is ${SRCDIR}"
     - mkdir /tmp/build && cd /tmp/build
