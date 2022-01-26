@@ -258,7 +258,7 @@ postgis-out.xml: postgis.xml Makefile
 
 chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--path $(srcdir)
+		--path $(srcdir) \
 		--output html/ \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
