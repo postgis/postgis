@@ -1,3 +1,7 @@
+--
+-- GeomFromMARC21 regression test
+-- Copyright (C) 2021 University of Münster (WWU), Germany
+-- Written by Jim Jones <jim.jones@uni-muenster.de>
 
 -- BEGIN stress test 
 

@@ -1,3 +1,9 @@
+--
+-- AsMARC21 regression test
+-- Copyright (C) 2021 University of Münster (WWU), Germany
+-- Written by Jim Jones <jim.jones@uni-muenster.de>
+
+
 DROP TABLE IF EXISTS asmarc21_rt;
 CREATE TABLE asmarc21_rt (gid int, geom geometry);
 INSERT INTO asmarc21_rt (gid,geom) VALUES
