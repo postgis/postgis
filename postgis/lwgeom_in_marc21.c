@@ -205,8 +205,8 @@ static double parse_geo_literal(char *literal) {
 
 	POSTGIS_DEBUGF(2, "    var start_literal=%d", start_literal);
 
-	memset(dgr, 0, 3);
-	memcpy(dgr, &literal[start_literal], 3);
+	memset(dgr, '\0', sizeof(dgr));
+	strncpy(dgr, &literal[start_literal], 3);
 
 	if (strchr(literal, '.') == NULL && strchr(literal, ',') == NULL) {
 
