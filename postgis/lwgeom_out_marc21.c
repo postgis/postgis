@@ -49,6 +49,7 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 	srid = gserialized_get_srid(gs);
 
 	if (srid == SRID_UNKNOWN) {
+
 		PG_FREE_IF_COPY(gs, 0);
 		lwerror("ST_AsMARC21: Input geometry has unknown (%d) SRID", srid);
 		PG_RETURN_NULL();
@@ -58,8 +59,7 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 	if (GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
 
 		PG_FREE_IF_COPY(gs, 0);
-		lwerror(
-				"ST_AsMARC21: Failure reading projections from spatial_ref_sys.");
+		lwerror("ST_AsMARC21: Failure reading projections from spatial_ref_sys.");
 		PG_RETURN_NULL();
 
 	}
@@ -77,8 +77,7 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 	lwgeom = lwgeom_from_gserialized(gs);
 	marc21 = lwgeom_to_marc21(lwgeom, precision);
 
-	if (marc21)
-		PG_RETURN_TEXT_P(marc21);
+	if (marc21)	PG_RETURN_TEXT_P(marc21);
 
 	PG_RETURN_NULL();
 }
