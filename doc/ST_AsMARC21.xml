@@ -2,7 +2,7 @@
 <refentry id="ST_AsMARC21">
     <refnamediv>
         <refname>ST_AsMARC21</refname>
-        <refpurpose>Return the geometry as a MARC21/XML record with a geographic datafield (034).</refpurpose>
+        <refpurpose>Returns geometry as a MARC21/XML record with a geographic datafield (034).</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -29,8 +29,9 @@
     <refsection>
         <title>Description</title>
 
-        <para>Return the geometry bounding box as a MARC21/XML <ulink url="https://www.loc.gov/marc/bibliographic/bd034.html">Coded Cartographic Mathematical Data</ulink>. The coordinates in subfields <varname>$d</varname>,<varname>$e</varname>,<varname>$f</varname> and <varname>$g</varname> will be encoded as decimal degrees.</para>
-        <para>It ignores the Z and M dimensions.</para>
+        <para>This function returns a MARC21/XML record with <ulink url="https://www.loc.gov/marc/bibliographic/bd034.html">Coded Cartographic Mathematical Data</ulink> representing the bounding box of a given geometry. 
+        The coordinates in subfields <varname>$d</varname>,<varname>$e</varname>,<varname>$f</varname> and <varname>$g</varname> will be encoded in decimal degrees.</para>
+        <para>This function ignores the Z and M dimensions.</para>
 
         <para>
             LOC MARC21/XML versions supported:
@@ -42,15 +43,15 @@
         </para>
 
         <para>Availability: 3.3.0 </para>
-        
-        <warning>
-            <para>
-                As of January 2022, the MARC21/XML Standard does not provide any means to annotate the coordinates spatial reference system. If needed, use <xref linkend="ST_SRID"/> straight from the geometry.
-            </para>
-        </warning>
 
         <note>
-            <para>This function only works with lon/lat geometries, as dictated by the MARC21/XML Standard.</para>
+            <para>This function does not support non lon/lat geometries, as they are not supported by the MARC21/XML standard (Coded Cartographic Mathematical Data).</para>
+        </note>
+        
+        <note>
+            <para>
+                As of January 2022, the MARC21/XML Standard does not provide any means to annotate the spatial reference system for Coded Cartographic Mathematical Data, which means that this information will be lost after conversion to MARC21/XML.
+            </para>
         </note>
 
     </refsection>

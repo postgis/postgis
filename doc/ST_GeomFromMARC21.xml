@@ -23,7 +23,7 @@
     <refsection>
         <title>Description</title>
         <para>
-            Constructs a PostGIS geometry from a MARC21/XML record, which can be a <varname>POINT</varname> or a <varname>POLYGON</varname>. 
+            This function creates a PostGIS geometry from a MARC21/XML record, which can contain a <varname>POINT</varname> or a <varname>POLYGON</varname>. 
             In case of multiple geographic data entries in the same MARC21/XML record, a <varname>MULTIPOINT</varname> or <varname>MULTIPOLYGON</varname> will be returned. 
             If the record contains mixed geometry types, a <varname>GEOMETRYCOLLECTION</varname> will be returned.
             It returns NULL if the MARC21/XML record does not contain any geographic data (datafield:034).
@@ -49,7 +49,7 @@
         
         <note>
            <para>
-                Returned <varname>POLYGON</varname> geometries will always use a clockwise direction. 
+                Returned <varname>POLYGON</varname> geometries will always be clockwise oriented. 
            </para>
         </note>
 
