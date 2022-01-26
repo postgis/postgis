@@ -54,7 +54,7 @@ EXTRA_CLEAN = sql/
 
 
 
-DOCS = README.address_standardizer
+DOCS = @srcdir@/README.address_standardizer
 PG_CPPFLAGS = @CFLAGS@ @CPPFLAGS@ -DPCRE_VERSION=@PCRE_VERSION@
 
 SHLIB_LINK = @SHLIB_LINK@ @PCRE_LDFLAGS@
