@@ -205,7 +205,8 @@ static double parse_geo_literal(char *literal) {
 
 	POSTGIS_DEBUGF(2, "    var start_literal=%d", start_literal);
 
-	strncpy(dgr, &literal[start_literal], 3);
+	memset(dgr, 0, 3);
+	memcpy(dgr, &literal[start_literal], 3);
 
 	if (strchr(literal, '.') == NULL && strchr(literal, ',') == NULL) {
 
@@ -227,7 +228,7 @@ static double parse_geo_literal(char *literal) {
 
 		if (literal_length > (start_literal + 3)) {
 
-			strncpy(min, &literal[start_literal + 3], 2);
+			memcpy(min, &literal[start_literal + 3], 2);
 			min[2] = '\0';
 		}
 
@@ -237,7 +238,7 @@ static double parse_geo_literal(char *literal) {
 
 		if (literal_length >= (start_literal + 5)) {
 
-			strncpy(sec, &literal[start_literal + 5], 2);
+			memcpy(sec, &literal[start_literal + 5], 2);
 			sec[2] = '\0';
 		}
 
