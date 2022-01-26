@@ -2117,7 +2117,7 @@ lwgeom_construct_empty(uint8_t type, int32_t srid, char hasz, char hasm)
 int
 lwgeom_startpoint(const LWGEOM *lwgeom, POINT4D *pt)
 {
-	if ( ! lwgeom )
+	if ( ! lwgeom || lwgeom_is_empty(lwgeom) )
 		return LW_FAILURE;
 
 	switch( lwgeom->type )

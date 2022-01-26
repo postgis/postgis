@@ -6,20 +6,21 @@
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2021
 # Sandro Santilli <strk@kbt.io>, 2022
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2019-08-03 21:26+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>, 2022\n"
-"Language-Team: Japanese (https://www.transifex.com/postgis/teams/3227/ja/)\n"
+"PO-Revision-Date: 2022-01-26 08:44+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"reference_relationshipxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
