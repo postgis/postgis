@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-10 13:02+0000\n"
-"PO-Revision-Date: 2022-01-19 09:24+0000\n"
+"PO-Revision-Date: 2022-01-26 08:44+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/ja/>\n"
@@ -116,9 +116,9 @@ msgstr "&Z_support;"
 #: reference_sfcgal.xml:738 reference_sfcgal.xml:812 reference_sfcgal.xml:850
 #: reference_sfcgal.xml:948 reference_sfcgal.xml:989 reference_sfcgal.xml:1017
 #: reference_sfcgal.xml:1046
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&P_support;"
-msgstr "&Z_support;"
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:42 reference_sfcgal.xml:77 reference_sfcgal.xml:113
@@ -170,9 +170,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:73 reference_sfcgal.xml:1043
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.3.0"
-msgstr "Availability: 2.3.0"
+msgstr "Availability: 3.3.0"
 
 #. Tag: refname
 #: reference_sfcgal.xml:89
@@ -274,15 +274,13 @@ msgstr "元のポリゴン"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:160
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Extrude(\n"
 " ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));"
 msgstr ""
-"SELECT ST_Buffer(\n"
-" ST_GeomFromText(\n"
-"  'LINESTRING(50 50,150 150,150 50)'\n"
-" ), 10, 'side=left');"
+"SELECT ST_Extrude(\n"
+" ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));"
 
 #. Tag: para
 #: reference_sfcgal.xml:166
@@ -417,9 +415,9 @@ msgstr ""
 
 #. Tag: refname
 #: reference_sfcgal.xml:337
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_Orientation"
-msgstr "ST_OrientedEnvelope"
+msgstr "ST_Orientation"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:339
