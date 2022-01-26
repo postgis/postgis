@@ -85,6 +85,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision) {
 		}
 
 		LWDEBUGF(3, "  creating MARC21/XML datafield: %s", lwtype_name(lwgeom_get_type(geom)));
+
 		if (gbox_to_marc21_sb(box, precision, sb) == LW_FAILURE) {
 
 			stringbuffer_destroy(sb);
@@ -108,7 +109,6 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double coordinate,	int prec
 	char *res = malloc(precision + 4);
 	double ds;
 	modf(coordinate, &ds);
-
 	sprintf(res, "%.*f", precision, coordinate);
 
 	if (ds < 100) {
@@ -116,7 +116,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double coordinate,	int prec
 		sprintf(res, "0%.*f", precision, coordinate);
 
 		if (ds >= 0 && ds < 10)	sprintf(res, "00%.*f", precision, coordinate);
-		if (ds <= -0 && ds > -10) sprintf(res, "-00%.*f", precision, coordinate * -1);
+		if (ds <  0 && ds > -10) sprintf(res, "-00%.*f", precision, coordinate * -1);
 		if (ds <= -10 && ds > -100) sprintf(res, "-0%.*f", precision, coordinate * -1);
 		if (ds <= -100) sprintf(res, "%.*f", precision, coordinate);
 	}
