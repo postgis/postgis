@@ -42,7 +42,7 @@ static LWGEOM* parse_marc21(xmlNodePtr xnode);
  *    https://www.loc.gov/marc/bibliographic/bd034.html
  *
  * Copyright (C) 2021 University of Münster (WWU), Germany
- * Author: Jim Jones <jim.jones@uni-muenster.de>
+ * Written by Jim Jones <jim.jones@uni-muenster.de>
  *
  **********************************************************************/
 
@@ -56,9 +56,11 @@ Datum geom_from_marc21(PG_FUNCTION_ARGS) {
 	char *xml;
 	xmlNodePtr xmlroot = NULL;
 
-	/* Get the MARC21/XML stream */
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
+	/*
+	 * Get the MARC21/XML stream
+	 */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+
 	xml_input = PG_GETARG_TEXT_P(0);
 	xml = text_to_cstring(xml_input);
 	xml_size = VARSIZE_ANY_EXHDR(xml_input);
@@ -100,18 +102,24 @@ static int is_literal_valid(char *literal) {
 
 	POSTGIS_DEBUGF(2, "is_literal_valid called (%s)", literal);
 
-	if (literal_length < 3)
-		return LW_FALSE;
+	if (literal_length < 3)	return LW_FALSE;
 
 	coord_start = 0;
 	num_dec_sep = 0;
 
-	if (literal[0] == 'N' || literal[0] == 'E' || literal[0] == 'S'
-			|| literal[0] == 'W' || literal[0] == '+' || literal[0] == '-') {
+	/**
+	 * Shortest allowed literal:
+	 *   containing hemisphere sign >  hemisphere sign + degree with 3 digits
+	 *   no hemisphere sign >  degree with 3 digits
+	 *
+	 * The variable "coord_start" stores the position where the coordinates start (0 or 1),
+	 * so that the script can identify where each literal element begins to validate its content.
+	 */
+
+	if (literal[0] == 'N' || literal[0] == 'E' || literal[0] == 'S'	|| literal[0] == 'W' || literal[0] == '+' || literal[0] == '-') {
 
 		if (literal_length < 4) {
-			POSTGIS_DEBUGF(3, "  invalid literal length (%d): \"%s\"",
-					literal_length, literal);
+			POSTGIS_DEBUGF(3, "  invalid literal length (%d): \"%s\"", literal_length, literal);
 			return LW_FALSE;
 		}
 
@@ -122,24 +130,30 @@ static int is_literal_valid(char *literal) {
 
 		if (!isdigit(literal[j])) {
 
+
 			if (j < 3) {
 
-				POSTGIS_DEBUGF(3,"  invalid character '%c' at the degrees section: \"%s\"",
-						literal[j], literal);
+				/**
+				 * The first three characters represent the degrees and they must be numeric.
+				 */
+
+				POSTGIS_DEBUGF(3,"  invalid character '%c' at the degrees section: \"%s\"",	literal[j], literal);
 				return LW_FALSE;
 
 			}
 
+			/**
+			 * Decimal degrees are encoded with after the 3rd character with either a dot or a comma.
+			 * Only one decimal separator is allowed.
+			 */
 			if (literal[j] == '.' || literal[j] == ',') {
 
 				num_dec_sep++;
 
-				if (num_dec_sep > 1)
-					return LW_FALSE;
+				if (num_dec_sep > 1) return LW_FALSE;
 
 			} else {
-				POSTGIS_DEBUGF(3, "  invalid character '%c' in %d: \"%s\"",
-						literal[j], j, literal);
+				POSTGIS_DEBUGF(3, "  invalid character '%c' in %d: \"%s\"",	literal[j], j, literal);
 				return LW_FALSE;
 
 			}
@@ -148,8 +162,7 @@ static int is_literal_valid(char *literal) {
 
 	}
 
-	POSTGIS_DEBUGF(2, "=> is_literal_valid returns LW_TRUE for \"%s\"",
-			literal);
+	POSTGIS_DEBUGF(2, "=> is_literal_valid returns LW_TRUE for \"%s\"",	literal);
 	return LW_TRUE;
 
 }
@@ -348,15 +361,14 @@ static double parse_geo_literal(char *literal) {
 	 * “+” for N and E (the plus sign is optional)
 	 * “-“ for S and W
 	 */
-	if (hemisphere_sign == 'S' || hemisphere_sign == 'W'
-			|| hemisphere_sign == '-') {
-		POSTGIS_DEBUGF(2, "  switching sign due to start character: '%c'",
-				hemisphere_sign);
+	if (hemisphere_sign == 'S' || hemisphere_sign == 'W' || hemisphere_sign == '-') {
+
+		POSTGIS_DEBUGF(2, "  switching sign due to start character: '%c'", hemisphere_sign);
 		result = -result;
+
 	}
 
-	POSTGIS_DEBUGF(2, "=> parse_geo_literal returns: %.*f (in decimal degrees)",
-			literal_length-(3+start_literal), result);
+	POSTGIS_DEBUGF(2, "=> parse_geo_literal returns: %.*f (in decimal degrees)", literal_length-(3+start_literal), result);
 	return result;
 }
 
@@ -381,8 +393,7 @@ parse_marc21(xmlNodePtr xnode) {
 	 * https://www.loc.gov/standards/marcxml/xml/spy/spy.html
 	 */
 
-	if (xmlStrcmp(xnode->name, (xmlChar*) "record"))
-		lwpgerror("invalid MARC21/XML document. Root element <record> expected but <%s> found.",xnode->name);
+	if (xmlStrcmp(xnode->name, (xmlChar*) "record")) lwpgerror("invalid MARC21/XML document. Root element <record> expected but <%s> found.",xnode->name);
 
 	result_type = 0;
 	ngeoms = 0;
@@ -394,15 +405,13 @@ parse_marc21(xmlNodePtr xnode) {
 		char *ln = NULL;
 		char *ls = NULL;
 
-		if (datafield->type != XML_ELEMENT_NODE)
-			continue;
+		if (datafield->type != XML_ELEMENT_NODE) continue;
 
 		if (xmlStrcmp(datafield->name, (xmlChar*) "datafield") != 0	|| xmlStrcmp(xmlGetProp(datafield, (xmlChar*) "tag"),(xmlChar*) "034") != 0) continue;
 
 		POSTGIS_DEBUG(3, "  datafield found");
 
-		for (subfield = datafield->children; subfield != NULL; subfield =
-				subfield->next) {
+		for (subfield = datafield->children; subfield != NULL; subfield = subfield->next) {
 
 			if (subfield->type != XML_ELEMENT_NODE)	continue;
 			if (xmlStrcmp(subfield->name, (xmlChar*) "subfield") != 0) continue;
@@ -417,21 +426,15 @@ parse_marc21(xmlNodePtr xnode) {
 
 			if (is_literal_valid(literal) == LW_TRUE) {
 
-				if (strcmp(code, "d") == 0)
-					lw = literal;
-				else if (strcmp(code, "e") == 0)
-					le = literal;
-				else if (strcmp(code, "f") == 0)
-					ln = literal;
-				else if (strcmp(code, "g") == 0)
-					ls = literal;
+				if (strcmp(code, "d") == 0) lw = literal;
+				else if (strcmp(code, "e") == 0) le = literal;
+				else if (strcmp(code, "f") == 0) ln = literal;
+				else if (strcmp(code, "g") == 0) ls = literal;
 
 			} else {
 
 				xmlFreeNode(subfield);
-				lwpgerror("parse error - invalid literal at 034$%s: \"%s\"",
-						code, literal);
-				//return NULL;
+				lwpgerror("parse error - invalid literal at 034$%s: \"%s\"", code, literal);
 
 			}
 
@@ -512,6 +515,9 @@ parse_marc21(xmlNodePtr xnode) {
 
 	}
 
+	/**
+	 * MARC21/XML Document has a <record> but no <datafield:034>
+	 */
 	POSTGIS_DEBUG(2, "=> parse_marc21 returns NULL");
 	return NULL;
 

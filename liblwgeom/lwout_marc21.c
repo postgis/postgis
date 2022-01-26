@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2021 University of Münster (WWU), Germany
- * Author: Jim Jones <jim.jones@uni-muenster.de>
+ * Written by Jim Jones <jim.jones@uni-muenster.de>*
  *
  **********************************************************************/
 
