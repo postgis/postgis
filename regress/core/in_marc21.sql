@@ -522,7 +522,7 @@ SELECT 'polygon_3',
     <subfield code="a">a</subfield>
     <subfield code="d">N0454700</subfield>
     <subfield code="e">N0354700</subfield>
-    <subfield code="f"><![CDATA[N0354700]]></subfield>
+    <subfield code="f"><![CDATA[N0834700]]></subfield>
     <subfield code="g">N0524700</subfield>
     </datafield>
   </record>'));
