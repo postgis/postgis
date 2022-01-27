@@ -2,6 +2,8 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
+ *
+ * Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
  * Copyright 2008 Kevin Neufeld
  *
  * This is free software; you can redistribute and/or modify it under
@@ -334,26 +336,33 @@ int main( int argc, const char* argv[] )
 	char *filename;
 	int layerCount;
 	LAYERSTYLE *styles;
-	char *image_path = "../images/";
+	const char *image_src;
+
+	if ( argc < 2 || strlen(argv[1]) < 3)
+	{
+		lwerror("Usage: %s <source_wktfile> [<output_pngfile>]", argv[0]);
+		return -1;
+	}
+
+	image_src = argv[1];
+
+	if ( (pfile = fopen(image_src, "r")) == NULL)
+	{
+		perror ( image_src );
+		return -1;
+	}
 
 	getStyles(&styles);
 
-	if ( argc != 2 || strlen(argv[1]) < 3)
+	if ( argc > 2 )
 	{
-		lwerror("You must specify a wkt filename to convert, and it must be 3 or more characters long.\n");
-		return -1;
+		filename = strdup(argv[2]);
 	}
-
-	if ( (pfile = fopen(argv[1], "r")) == NULL)
+	else
 	{
-		perror ( argv[1] );
-		return -1;
+		filename = strdup(image_src);
+		sprintf(filename + strlen(image_src) - 3, "png" );
 	}
-
-	filename = malloc( strlen(argv[1]) + strlen(image_path) + 1 );
-	strcpy( filename, image_path );
-	strncat( filename, argv[1], strlen(argv[1])-3 );
-	strncat( filename, "png", 3 );
 
 	printf( "generating %s\n", filename );
 
@@ -390,7 +399,7 @@ int main( int argc, const char* argv[] )
 
 		ptr += sprintf( ptr, "-flip tmp%d.png", layerCount );
 
-		lwfree( lwgeom );
+		lwgeom_free( lwgeom );
 
 		LWDEBUGF( 4, "%s", output );
 		checked_system(output);
