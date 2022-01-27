@@ -20,7 +20,7 @@
 
 
 void
-getStyles( LAYERSTYLE **headRef )
+getStyles( const char *filename, LAYERSTYLE **headRef )
 {
 	char line [128];
 	FILE* pFile;
@@ -28,9 +28,9 @@ getStyles( LAYERSTYLE **headRef )
 
 	*headRef = NULL;
 
-	if ((pFile = fopen("styles.conf", "r")) == NULL)
+	if ((pFile = fopen(filename, "r")) == NULL)
 	{
-		perror ( "styles.conf: No such file or directory" );
+		perror ( filename );
 		return;
 	}
 

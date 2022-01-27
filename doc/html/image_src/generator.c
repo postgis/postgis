@@ -336,7 +336,10 @@ int main( int argc, const char* argv[] )
 	char *filename;
 	int layerCount;
 	LAYERSTYLE *styles;
+	char *stylefile_path;
 	const char *image_src;
+	char *ptr;
+	const char *stylefilename = "styles.conf";
 
 	if ( argc < 2 || strlen(argv[1]) < 3)
 	{
@@ -352,7 +355,23 @@ int main( int argc, const char* argv[] )
 		return -1;
 	}
 
-	getStyles(&styles);
+	/* Get style */
+	ptr = rindex( image_src, '/' );
+	if ( ptr ) /* source image file has a slash */
+	{
+		size_t dirname_len = (ptr - image_src);
+		stylefile_path = malloc( strlen(stylefilename) + dirname_len + 2);
+		/* copy the directory name */
+		memcpy(stylefile_path, image_src, dirname_len);
+		sprintf(stylefile_path + dirname_len, "/%s", stylefilename);
+	}
+	else /* source image file has no slash, use CWD */
+	{
+		stylefile_path = strdup(stylefilename);
+	}
+	printf("reading styles from %s\n", stylefile_path);
+	getStyles(stylefile_path, &styles);
+	free(stylefile_path);
 
 	if ( argc > 2 )
 	{
