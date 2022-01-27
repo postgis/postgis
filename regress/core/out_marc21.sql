@@ -3,8 +3,6 @@
 -- Copyright (C) 2021 University of Münster (WWU), Germany
 -- Written by Jim Jones <jim.jones@uni-muenster.de>
 
-
-DROP TABLE IF EXISTS asmarc21_rt;
 CREATE TABLE asmarc21_rt (gid int, geom geometry);
 INSERT INTO asmarc21_rt (gid,geom) VALUES
 	(1,'SRID=4326;GEOMETRYCOLLECTION(
@@ -162,7 +160,4 @@ SELECT 'srid 0',ST_AsMARC21('POINT(1 1)');
 -- ERROR: Unsupported SRID (3587). Only lon/lat coordinate systems are supported in MARC21/XML Documents.
 SELECT 'non lon/lat srs',ST_AsMARC21('SRID=3587;POINT(10472963.740359407 3586596.632100969)');
 
-
-
-
-
+DROP TABLE asmarc21_rt;

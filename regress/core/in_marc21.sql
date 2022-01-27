@@ -853,6 +853,4 @@ SELECT 'geocollection_1',
 
 
 
---E013.416669 E013.416669 N052.500000 N052.500000 geonames http://sws.geonames.org/2950157 A:dgx
-
---select * from gnd_geo_corrected limit 1
+DROP FUNCTION public.random_unicode_string(int);
