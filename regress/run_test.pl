@@ -445,7 +445,20 @@ foreach $TEST (@ARGV)
 	}
 	elsif ( -r "${TEST}.tif" )
 	{
-		my $rv = run_raster_loader_test();
+		my $rv = run_raster_loader_test("${TEST}.tif");
+		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if $rv;
+	}
+	elsif ( -r "${TEST}.tif.ref" )
+	{
+		open(REF, "${TEST}.tif.ref");
+		my $raster_ref = <REF>;
+		close(REF);
+		chop $raster_ref;
+		#print "Raster ref: [$raster_ref]\n";
+		# Resolve raster_ref relative to ${TEST} dirname
+		my $raster_path = dirname(${TEST}) . '/' . $raster_ref;
+		#print "Raster path: [$raster_path]\n";
+		my $rv = run_raster_loader_test($raster_path);
 		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if $rv;
 	}
 	elsif ( -r "${TEST}.sql" )
@@ -983,6 +996,7 @@ sub run_dumper_and_check_output
 sub run_raster_loader_and_check_output
 {
 	my $description = shift;
+	my $raster_file = shift;
 	my $tblname = shift;
 	my $expected_sql_file = shift;
 	my $expected_select_results_file = shift;
@@ -1001,7 +1015,7 @@ sub run_raster_loader_and_check_output
 		show_progress();
 
 		# Produce the output SQL file.
-		$cmd = "$RASTER2PGSQL $loader_options ${TEST}.tif $tblname > $outfile 2> $errfile";
+		$cmd = "$RASTER2PGSQL $loader_options $raster_file $tblname > $outfile 2> $errfile";
 		$rv = system($cmd);
 
 		if ( $rv )
@@ -1234,6 +1248,7 @@ sub run_dumper_test
 ##################################################################
 sub run_raster_loader_test
 {
+	my $raster_file = shift;
 	# See if there is a custom command-line options file
 	my $opts_file = "${TEST}.opts";
 	my $custom_opts="";
@@ -1251,7 +1266,7 @@ sub run_raster_loader_test
 	my $tblname="loadedrast";
 
 	# If we have some expected files to compare with, run in geography mode.
-	if ( ! run_raster_loader_and_check_output("test", $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", $custom_opts, "true") )
+	if ( ! run_raster_loader_and_check_output("test", $raster_file, $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", $custom_opts, "true") )
 	{
 		return 0;
 	}
