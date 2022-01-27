@@ -44,6 +44,7 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 	int32_t srid;
 	LWPROJ *lwproj;
 	LWGEOM *lwgeom;
+	uint8_t is_latlong;
 	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P_COPY(0);
 	int precision = PG_GETARG_INT32(1);
 	srid = gserialized_get_srid(gs);
@@ -64,7 +65,15 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 
 	}
 
-	if (!lwproj->source_is_latlong) {
+#if POSTGIS_PROJ_VERSION < 61
+	is_latlong = pj_is_latlong(lwproj->pj_from);
+#else
+	is_latlong = lwproj->source_is_latlong;
+#endif
+
+
+	//if (!lwproj->source_is_latlong) {
+	if (!is_latlong) {
 
 		PG_FREE_IF_COPY(gs, 0);
 		lwerror("ST_AsMARC21: Unsupported SRID (%d). Only lon/lat coordinate systems are supported in MARC21/XML Documents.", srid);
