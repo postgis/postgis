@@ -27,6 +27,7 @@
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
+#include <math.h>
 #include "liblwgeom.h"
 
 static LWGEOM* parse_marc21(xmlNodePtr xnode);
@@ -207,7 +208,7 @@ static double parse_geo_literal(char *literal) {
 	POSTGIS_DEBUGF(2, "    var start_literal=%d", start_literal);
 
 	//memset(dgr, '\0', sizeof(dgr));
-	dgr = malloc(3);
+	dgr = malloc(literal_length);
 	memcpy(dgr, &literal[start_literal], 3);
 	dgr[3]='\0';
 
