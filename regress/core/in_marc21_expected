@@ -7,26 +7,10 @@ ERROR:  parse error - invalid literal at 034$d: "N42"
 ERROR:  parse error - invalid literal at 034$e: "N42"
 ERROR:  parse error - invalid literal at 034$f: "N42"
 ERROR:  parse error - invalid literal at 034$g: "N42"
-ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) on the given MARC21/XML is invalid:
- - 034$d: (null)
- - 034$e: W1504600 
- - 034$f: W1202600 
- - 034$g: N0354700
-ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) on the given MARC21/XML is invalid:
- - 034$d: W1504600
- - 034$e: (null) 
- - 034$f: W1202600 
- - 034$g: N0354700
-ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) on the given MARC21/XML is invalid:
- - 034$d: W1504600
- - 034$e: W1202600 
- - 034$f: (null) 
- - 034$g: N0354700
-ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) on the given MARC21/XML is invalid:
- - 034$d: W1504600
- - 034$e: W1202600 
- - 034$f: N0354700 
- - 034$g: (null)
+ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) in the given MARC21/XML is incomplete. Coordinates for subfields "$d","$e","$f" and "$g" are expected.
+ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) in the given MARC21/XML is incomplete. Coordinates for subfields "$d","$e","$f" and "$g" are expected.
+ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) in the given MARC21/XML is incomplete. Coordinates for subfields "$d","$e","$f" and "$g" are expected.
+ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) in the given MARC21/XML is incomplete. Coordinates for subfields "$d","$e","$f" and "$g" are expected.
 ERROR:  parse error - invalid literal at 034$d: "x1204600"
 ERROR:  parse error - invalid literal at 034$e: " 1202600"
 ERROR:  parse error - invalid literal at 034$f: "f0354700"
