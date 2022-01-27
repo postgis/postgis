@@ -19,7 +19,7 @@
     - ./configure
     - make maintainer-clean
     - ./autogen.sh
-    - chmod -R a-w .
+    - chattr -R +i . # mark source tree as immutable
     - export SRCDIR="${PWD}"
     - echo "SRCDIR is ${SRCDIR}"
     - mkdir /tmp/build && cd /tmp/build
