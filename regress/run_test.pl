@@ -1255,11 +1255,16 @@ sub run_raster_loader_test
 
 	if ( -r $opts_file )
 	{
+		my $regdir = abs_path(dirname(${TEST}));
 		open(FILE, $opts_file);
-		my @opts = <FILE>;
+		my @opts;
+		while (<FILE>) {
+			next if /^\s*#/;
+			chop;
+			s/{regdir}/$regdir/;
+			push @opts, $_;
+		}
 		close(FILE);
-		@opts = grep(!/^\s*#/, @opts);
-		map(s/\n//, @opts);
 		$custom_opts = join(" ", @opts);
 	}
 
