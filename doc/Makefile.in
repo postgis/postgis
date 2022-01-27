@@ -57,6 +57,7 @@ ifeq ($(XSLTPROCFLAGS),)
 endif
 
 XSLTPROC_COMMONOPTS= \
+	--path $(srcdir) \
 	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
 	--param chunk.section.depth 0 \
@@ -258,7 +259,6 @@ postgis-out.xml: postgis.xml Makefile
 
 chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--path $(srcdir) \
 		--output html/ \
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
