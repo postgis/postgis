@@ -9,14 +9,18 @@
 # *
 # **********************************************************************
 
+top_builddir = @top_builddir@
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+
 CC=@CC@
 CFLAGS=@CFLAGS@ @PROJ_CPPFLAGS@
-top_builddir = @top_builddir@
+CPPFLAGS = -I$(top_builddir)/liblwgeom -I$(top_srcdir)/liblwgeom @CPPFLAGS@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
+LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ @PROJ_LDFLAGS@
 
-CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=-I../../../liblwgeom @CUNIT_CPPFLAGS@
+VPATH = $(srcdir)
 
 IMAGES= \
 	../images/de9im01.png \
@@ -182,7 +186,7 @@ images: $(IMAGES) $(IMAGES_RESIZED)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
-	$(CC) $(CUNIT_CPPFLAGS) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 # Command to build each of the .wkt files
 $(IMAGES): ../images/%.png: %.wkt generator styles.conf
@@ -194,9 +198,9 @@ $(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
 	convert $@ -resize 100x100 $@
 
 # Build the main executable
-generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
+generator: $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a
 	$(LIBTOOL) --mode=link \
-	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.la $(CUNIT_LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Build liblwgeom
 ../../../liblwgeom/.libs/liblwgeom.a:
