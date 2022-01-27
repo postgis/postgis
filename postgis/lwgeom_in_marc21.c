@@ -181,7 +181,8 @@ static double parse_geo_literal(char *literal) {
 	 *
 	 */
 
-	char dgr[3];
+	//char dgr[3];
+	char *dgr;
 	char *min;
 	char *sec;
 	char *dec;
@@ -205,8 +206,10 @@ static double parse_geo_literal(char *literal) {
 
 	POSTGIS_DEBUGF(2, "    var start_literal=%d", start_literal);
 
-	memset(dgr, '\0', sizeof(dgr));
-	strncpy(dgr, &literal[start_literal], 3);
+	//memset(dgr, '\0', sizeof(dgr));
+	dgr = malloc(3);
+	memcpy(dgr, &literal[start_literal], 3);
+	dgr[3]='\0';
 
 	if (strchr(literal, '.') == NULL && strchr(literal, ',') == NULL) {
 
@@ -362,6 +365,9 @@ static double parse_geo_literal(char *literal) {
 	 * “+” for N and E (the plus sign is optional)
 	 * “-“ for S and W
 	 */
+
+	free(dgr);
+
 	if (hemisphere_sign == 'S' || hemisphere_sign == 'W' || hemisphere_sign == '-') {
 
 		POSTGIS_DEBUGF(2, "  switching sign due to start character: '%c'", hemisphere_sign);
