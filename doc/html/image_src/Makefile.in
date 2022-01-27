@@ -2,6 +2,8 @@
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
+# *
+# * Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
 # * Copyright 2008 Kevin Neufeld
 # *
 # * This is free software; you can redistribute and/or modify it under
@@ -181,6 +183,9 @@ OBJS=styles.o generator.o
 # Build the generator
 all: generator
 
+images_dir:
+	mkdir -p ../images
+
 # generate the images
 images: $(IMAGES) $(IMAGES_RESIZED)
 
@@ -189,12 +194,12 @@ $(OBJS): %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 # Command to build each of the .wkt files
-$(IMAGES): ../images/%.png: %.wkt generator styles.conf
-	@./generator $<
+$(IMAGES): ../images/%.png: %.wkt generator styles.conf | images_dir
+	@./generator $< $@
 
 # Command to resize each of the images
-$(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
-	@./generator $<
+$(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf | images_dir
+	@./generator $< $@
 	convert $@ -resize 100x100 $@
 
 # Build the main executable
