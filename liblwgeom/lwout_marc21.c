@@ -52,10 +52,9 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision) {
 
 		LWDEBUGF(3, "  collection detected: %s", lwtype_name(lwgeom_get_type(geom)));
 
-		int i;
 		LWCOLLECTION *coll = (LWCOLLECTION*) geom;
 
-		for (i = 0; i < coll->ngeoms; i++) {
+		for (uint32_t i = 0; i < coll->ngeoms; i++) {
 
 			if (lwgeom_calculate_gbox(coll->geoms[i], &box) == LW_FAILURE) {
 
