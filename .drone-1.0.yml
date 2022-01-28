@@ -24,29 +24,28 @@ steps:
 
   - name: build-9.6
     image: *test-image
-    pull: always
+    pull: never
     commands:
       - PGVER=9.6 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
 
   - name: build-10
     image: *test-image
-    pull: always
+    pull: never
     commands:
       - PGVER=10 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
 
   - name: build-11
     image: *test-image
-    pull: always
+    pull: never
     commands:
       - PGVER=11 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
 
   - name: build-12
     image: *test-image
-    pull: always
+    pull: never
     commands:
       - PGVER=12 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
-...
