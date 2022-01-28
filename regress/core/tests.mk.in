@@ -34,7 +34,6 @@ TESTS += \
 	$(topsrcdir)/regress/core/chaikin \
 	$(topsrcdir)/regress/core/filterm \
 	$(topsrcdir)/regress/core/cluster \
-	$(topsrcdir)/regress/core/concave_hull\
 	$(topsrcdir)/regress/core/ctors \
 	$(topsrcdir)/regress/core/curvetoline \
 	$(topsrcdir)/regress/core/dump \
@@ -168,6 +167,12 @@ endif
 ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31000),1)
 	TESTS += \
 		$(topsrcdir)/regress/core/geos310
+endif
+
+# Only run the internal concavehull tests for GEOS < 3.11
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" "<" 31100),1)
+	TESTS += \
+		$(topsrcdir)/regress/core/concave_hull
 endif
 
 ifeq ($(INTERRUPTTESTS),yes)

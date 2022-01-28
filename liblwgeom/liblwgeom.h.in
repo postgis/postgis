@@ -2536,6 +2536,20 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int3
 LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges);
 
 /**
+ * Take a geometry and build the concave hull. The concave
+ * hull is smaller than the convex hull, but still encompasses all the points
+ * of the input. For polygon input the hull encompasses all the input
+ * area. For line input the hull encompasses all the input lines.
+ *
+ * @param g the input geometry
+ * @param ratio proportion of output vs input
+ * @param allow_holes can there be holes in the output. large performance penalty.
+ */
+#if POSTGIS_GEOS_VERSION >= 31100
+LWGEOM* lwgeom_concavehull(const LWGEOM* geom, double ratio, uint32_t allow_holes);
+#endif
+
+/**
 * Take a list of LWGEOMs and a number of clusters and return an integer
 * array indicating which cluster each geometry is in.
 *
