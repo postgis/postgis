@@ -49,3 +49,14 @@ steps:
     commands:
       - PGVER=12 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
+
+  - name: build-localized-docs
+    image: *test-image
+    pull: never
+    commands:
+      - apt update -qq && apt install -y poxml libsfcgal-dev
+      - mkdir /tmp/pgis-docs - && cp -a * /tmp/pgis-docs
+      - cd /tmp/pgis-docs # out-of-build html-localized is broken...
+      - ./configure
+      - make docs-localized
+    depends_on: [ autogen ]
