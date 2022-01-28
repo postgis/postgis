@@ -24,11 +24,11 @@ steps:
       - ./autogen.sh
     depends_on: [ clone ]
 
-  - name: build-11
+  - name: build-12
     image: *test-image
     pull: never
     commands:
-      - PGVER=11 sh ci/dronie/postgis_regress.sh
+      - PGVER=12 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
 
 trigger:
