@@ -180,7 +180,7 @@ flags throughout. A way to get such an environment is to use the same docker ima
 as the PostGIS CI setup and that can be done on a *nix host by first running this
 in a cloned postgis repository to later get core dump log output:
 
-> sudo bash ./ci/travis/logbt --setup
+> sudo bash ./ci/github/logbt --setup
 
 Then you can run the following to get a docker container up and running with the
 correct requirements already in place and the postgis repository (at `/postgis`)
@@ -192,7 +192,7 @@ postgis/postgis-build-env:pg13-geos39-gdal31-proj71 /bin/bash
 And finally the following command inside the container will build and run all the
 postgis tests:
 
-> bash ./ci/travis/run_usan_gcc.sh
+> bash ./ci/github/run_usan_gcc.sh
 
 You can make customized versions of `run_usan_gcc.sh` to run only specific tests
 and skip redundant steps.

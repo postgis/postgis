@@ -35,7 +35,6 @@ SET statement_timeout TO 100;
 select ST_Buffer(g,100) from _inputs WHERE id = 1;
 --( select (st_dumppoints(st_buffer(st_makepoint(0,0),10000,100000))).geom g) foo;
 -- it may take some more to interrupt st_buffer, see
--- https://travis-ci.org/postgis/postgis/builds/40211116#L2222-L2223
 SELECT _timecheck('buffer', '200ms');
 
 -- Not affected by old timeout
