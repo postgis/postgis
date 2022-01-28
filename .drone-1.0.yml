@@ -42,4 +42,11 @@ steps:
     commands:
       - PGVER=11 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
+
+  - name: build-12
+    image: *test-image
+    pull: always
+    commands:
+      - PGVER=12 sh ci/dronie/postgis_regress.sh
+    depends_on: [ autogen ]
 ...
