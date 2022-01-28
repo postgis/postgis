@@ -131,6 +131,9 @@ templategis-uninstall:
 docs:
 	$(MAKE) -C doc html
 
+docs-localized: postgis_revision.h
+	$(MAKE) -C doc html-localized
+
 docs-clean:
 	$(MAKE) -C doc clean
 
