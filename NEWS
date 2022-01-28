@@ -10,9 +10,10 @@ PostGIS 3.3.0dev
   - GH655, GiST: balance the tree splits better in recursive calls (Darafei Praliaskouski)
   - GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)
   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
+  - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
 
  * New features*
-  - ST_Letters creates geometries that look like letters.
+  - ST_Letters creates geometries that look like letters
 
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
