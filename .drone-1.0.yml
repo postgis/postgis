@@ -55,8 +55,9 @@ steps:
     pull: never
     commands:
       - apt update -qq && apt install -y poxml libsfcgal-dev
-      - mkdir /tmp/pgis-docs - && cp -a * /tmp/pgis-docs
-      - cd /tmp/pgis-docs # out-of-build html-localized is broken...
-      - ./configure
+      - mkdir -p /tmp/postgis-build/docs
+      - pwd > /tmp/postgis-build/docs/.srcdir
+      - cd /tmp/postgis-build/docs
+      - sh `cat .srcdir`/configure
       - make docs-localized
     depends_on: [ autogen ]
