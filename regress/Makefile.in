@@ -23,7 +23,14 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 
-REGRESS_INSTALLDIR = $(realpath $(builddir) )/00-regress-install
+# Where we put our regression installation
+# See https://trac.osgeo.org/postgis/ticket/5066
+ifeq ($(MINGWBUILD),1)
+       abs_builddir=$(shell bash -c "pwd -W")
+else
+       abs_builddir=$(shell pwd)
+endif
+REGRESS_INSTALLDIR = $(abs_builddir)/00-regress-install
 
 # MingW hack: rather than use PGSQL_BINDIR directly, we change to the directory and
 # then use "pwd" to return the path. This ensures that the returned path is in MSYS
