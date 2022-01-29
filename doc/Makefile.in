@@ -220,39 +220,39 @@ endif
 ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
-postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl Makefile postgis-out.xml $(XML_SOURCES)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
+postgis_aggs_mm.xml: xsl/postgis_aggs_mm.xml.xsl Makefile postgis-out.xml $(XML_SOURCES)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 endif
 
-postgis_comments.sql: ./xsl/postgis_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/postgis_comments.sql.xsl postgis-out.xml > $@
+postgis_comments.sql: xsl/postgis_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $<  postgis-out.xml > $@
 
-postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
+postgis_cheatsheet.html: xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-raster_comments.sql: ./xsl/raster_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/raster_comments.sql.xsl postgis-out.xml > $@
+raster_comments.sql: xsl/raster_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
 raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-topology_comments.sql: ./xsl/topology_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/topology_comments.sql.xsl postgis-out.xml > $@
+topology_comments.sql: xsl/topology_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
+topology_cheatsheet.html: xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-sfcgal_comments.sql: ./xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/sfcgal_comments.sql.xsl postgis-out.xml > $@
+sfcgal_comments.sql: xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-sfcgal_cheatsheet.html: ./xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/sfcgal_cheatsheet.html.xsl postgis-out.xml > $@
+sfcgal_cheatsheet.html: xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
+tiger_geocoder_comments.sql: xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
-tiger_geocoder_cheatsheet.html: ./xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) --novalid --path $(srcdir) $(srcdir)/xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
+tiger_geocoder_cheatsheet.html: xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid --path $(srcdir) $< postgis-out.xml > $@
 
 postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g;s'@@POSTGIS_DOWNLOAD_URL@@'${POSTGIS_DOWNLOAD_URL}'g;" $< > $@
@@ -279,7 +279,6 @@ chunked-html-web-mobile: postgis-out.xml Makefile images $(XML_INPUTS)
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 	$(PERL) -pi -e 's/<head>/<head><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">/g' $(HTML_BITS)
-
 
 html: html/postgis$(DOCSUFFIX).html
 
@@ -360,6 +359,9 @@ clean:
 distclean: clean
 	$(MAKE) -C html/image_src distclean
 	rm -f Makefile Makefile.comments html/image_src/Makefile
+	for lang in $(translations); do \
+		rm -f po/$$lang/Makefile; \
+	done
 
 maintainer-clean: clean images-clean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql sfcgal_comments.sql
@@ -438,7 +440,7 @@ endif
 check-localized:
 	@for lang in $(translations); do \
     echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang local-check; \
+    $(MAKE) -C po/$$lang local-check || exit 1; \
   done
 
 

@@ -1,0 +1,3 @@
+DOCSUFFIX=-de
+include @srcdir@/../Makefile.local
+srcdir=@srcdir@
