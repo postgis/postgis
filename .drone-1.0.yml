@@ -50,14 +50,14 @@ steps:
       - PGVER=12 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
 
-  - name: build-localized-docs
+  - name: build-docs
     image: *test-image
     pull: never
     commands:
-      - apt update -qq && apt install -y poxml libsfcgal-dev
-      - mkdir -p /tmp/postgis-build/docs
-      - pwd > /tmp/postgis-build/docs/.srcdir
-      - cd /tmp/postgis-build/docs
-      - sh `cat .srcdir`/configure
+      - mkdir -p build-docs && cd build-docs
+      - ../configure
+      - make docs
+      - make -C doc check
       - make docs-localized
+      - make -C doc/ check-localized
     depends_on: [ autogen ]
