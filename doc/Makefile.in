@@ -209,7 +209,7 @@ update-po: $(XML_INPUTS_POT)
       mkdir -p po/$$lang; \
       po=po/$$lang/`basename $$pot .pot`.po; \
       if test -f $$po; then \
-        $(MSGMERGE) --update $$po $$pot; \
+        $(MSGMERGE) --no-fuzzy-matching --update $$po $$pot; \
       else \
         $(MSGINIT) -i $$pot -o $$po -l $$lang --no-translator; \
       fi; \
