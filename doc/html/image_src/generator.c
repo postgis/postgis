@@ -70,7 +70,7 @@ pointarrayToString(char *output, POINTARRAY *pa)
 {
 	char x[OUT_DOUBLE_BUFFER_SIZE];
 	char y[OUT_DOUBLE_BUFFER_SIZE];
-	int i;
+	unsigned int i;
 	char *ptr = output;
 
 	for ( i=0; i < pa->npoints; i++ )
@@ -160,7 +160,7 @@ static size_t
 drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
 {
 	char *ptr = output;
-	int i;
+	unsigned int i;
 
 	LWDEBUGF(4, "%s", "drawPolygon called");
 	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
@@ -191,7 +191,7 @@ static size_t
 drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
 {
 	char *ptr = output;
-	int i;
+	unsigned int i;
 	int type = lwgeom->type;
 
 	switch (type)
