@@ -277,10 +277,10 @@ msgid ""
 "transaction support metadata tables, and drops all triggers attached to lock-"
 "checked tables."
 msgstr ""
-"<para>Désactive le support des transactions longues. Cette fonction supprime "
+"Désactive le support des transactions longues. Cette fonction supprime "
 "les tables de métadonnées du support de transactions longues, et supprime "
 "également tous les déclencheurs attachés aux tables pour lesquelles il y a "
-"une vérification de verrou.</para>"
+"une vérification de verrou."
 
 #. Tag: para
 #: reference_transaction.xml:139
@@ -336,10 +336,10 @@ msgid ""
 "metadata tables. It must be called once before using the other functions in "
 "this section. Calling it twice is harmless."
 msgstr ""
-"<para>Active le support des transactions longues. Cette fonction crée les "
+"Active le support des transactions longues. Cette fonction crée les "
 "tables de métadonnées nécessaires. Elle doit être appelée une fois avant "
 "d'utiliser les autres fonctions de cette section. L'appeler deux fois ou "
-"plus n'a aucun effet.</para>"
+"plus n'a aucun effet."
 
 #. Tag: para
 #: reference_transaction.xml:185
@@ -484,8 +484,8 @@ msgid ""
 "Removes all locks held by specified authorization token. Returns the number "
 "of locks released."
 msgstr ""
-"<para>Supprime tous les verrous que possède l'autorisation spécifiée. "
-"Retourne le nombre de verrous supprimés.</para>"
+"Supprime tous les verrous que possède l'autorisation spécifiée. "
+"Retourne le nombre de verrous supprimés."
 
 #. Tag: programlisting
 #: reference_transaction.xml:300

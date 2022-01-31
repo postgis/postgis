@@ -349,7 +349,7 @@ msgstr "Exemples"
 #: reference_constructor.xml:121
 #, fuzzy, no-c-format
 msgid "Create a 3D line string from a 3D MultiPoint"
-msgstr "<para>Crée une LineString à partir d'une géométrie MultiPoint.</para>"
+msgstr "Crée une LineString à partir d'une géométrie MultiPoint."
 
 #. Tag: programlisting
 #: reference_constructor.xml:122
@@ -476,7 +476,7 @@ msgstr "ST_MakeLine"
 #: reference_constructor.xml:179
 #, fuzzy, no-c-format
 msgid "Creates a LineString from Point, MultiPoint, or LineString geometries."
-msgstr "<para>Crée une LineString à partir d'une géométrie MultiPoint.</para>"
+msgstr "Crée une LineString à partir d'une géométrie MultiPoint."
 
 #. Tag: funcsynopsis
 #: reference_constructor.xml:183
