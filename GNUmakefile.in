@@ -130,7 +130,7 @@ templategis-install:
 templategis-uninstall:
 	$(MAKE) -C extras/template_gis uninstall
 
-docs:
+docs: postgis_revision.h
 	$(MAKE) -C doc html
 
 docs-localized: postgis_revision.h
