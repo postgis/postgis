@@ -308,9 +308,7 @@ getStyleName(char **styleName, char* line)
 	char *ptr = strrchr(line, ';');
 	if (ptr == NULL)
 	{
-		*styleName = malloc( 8 );
-		strncpy(*styleName, "Default", 7);
-		(*styleName)[7] = '\0';
+		*styleName = strdup("Default");
 		return 1;
 	}
 	else
