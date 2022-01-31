@@ -51,7 +51,9 @@ staged-install: all
 check-news:
 	$(top_srcdir)/utils/check_news.sh $(top_srcdir)
 
-check-unit check-regress docs-check: all
+check-unit check-regress: all
+
+docs-check: docs
 
 check-no-trailing-blanks:
 	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
