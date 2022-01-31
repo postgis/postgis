@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Terminate documentation generator strings without truncation (Sandro Santilli)
  - Fix signed comparisons in the documentation image generator (Sandro Santilli)
  - Correct the definition of ST_Touches in the manual (Martin Davis)
  - Report missing TopoGeometries with an incorrect layer ID (Sandro Santilli)
