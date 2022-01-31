@@ -2250,7 +2250,7 @@ msgstr ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 #: reference_constructor.xml:970
 #, no-c-format
 msgid "ST_Letters"
-msgstr ""
+msgstr "ST_Letters"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:971
@@ -2272,11 +2272,13 @@ msgid ""
 "paramdef> <paramdef choice=\"opt\"><type>json</type> <parameter> font</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>double precision</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>double precision</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>double precision</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Letters</function></funcdef> "
+"<paramdef><type>text</type> <parameter> letters</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision</type> <parameter> "
+"text_height=100.0</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>geometry</type> <parameter> start_position=POINT(0 0)</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>json</type> <parameter> font</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:988
