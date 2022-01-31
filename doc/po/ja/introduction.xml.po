@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-10 13:02+0000\n"
+"POT-Creation-Date: 2022-01-31 00:29+0000\n"
 "PO-Revision-Date: 2022-01-11 01:10+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -147,10 +147,10 @@ msgstr "Darafei Praliaskouski"
 
 #. Tag: para
 #: introduction.xml:56
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
-"SFCGAL, raster, GitHub curation, and Travis bot maintenance."
+"SFCGAL, raster, GitHub curation, and bot maintenance."
 msgstr ""
 "インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラス"
 "タ、GitHubキュレーション、Travis Botのメンテナンス。"
