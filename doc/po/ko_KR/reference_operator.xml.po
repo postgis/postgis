@@ -229,14 +229,15 @@ msgstr "참고"
 
 #. Tag: para
 #: reference_operator.xml:77
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
 "<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
 "\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
 "linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
+"<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
 "\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
 "linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 
@@ -1172,7 +1173,7 @@ msgstr ""
 #: reference_operator.xml:791
 #, no-c-format
 msgid "&#61;"
-msgstr "<refname>=</refname>"
+msgstr "&#61;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:793

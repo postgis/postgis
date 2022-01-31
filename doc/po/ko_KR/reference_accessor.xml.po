@@ -80,8 +80,8 @@ msgid ""
 "Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT', etc."
 msgstr ""
-"<para>도형의 유형을 스트링으로 반환합니다. 예: 'LINESTRING', 'POLYGON', "
-"'MULTIPOINT' 등등.</para>"
+"도형의 유형을 스트링으로 반환합니다. 예: 'LINESTRING', 'POLYGON', "
+"'MULTIPOINT' 등등."
 
 #. Tag: para
 #: reference_accessor.xml:28
@@ -659,7 +659,7 @@ msgstr "ST_CoordDim"
 #: reference_accessor.xml:220
 #, fuzzy, no-c-format
 msgid "Return the coordinate dimension of a geometry."
-msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
+msgstr "ST_Geometry 값의 좌표 차원을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:225
@@ -675,7 +675,7 @@ msgstr ""
 #: reference_accessor.xml:235
 #, fuzzy, no-c-format
 msgid "Return the coordinate dimension of the ST_Geometry value."
-msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
+msgstr "ST_Geometry 값의 좌표 차원을 반환합니다."
 
 #. Tag: para
 #: reference_accessor.xml:237
@@ -722,7 +722,7 @@ msgstr "ST_Dimension"
 #: reference_accessor.xml:266
 #, fuzzy, no-c-format
 msgid "Returns the topological dimension of a geometry."
-msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
+msgstr "ST_Geometry 값의 좌표 차원을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:271
@@ -1006,7 +1006,7 @@ msgstr "ST_NumPoints"
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the coordinates "
 "in a geometry."
-msgstr "<para>도형의 내용을 요약한 텍스트를 반환합니다.</para>"
+msgstr "도형의 내용을 요약한 텍스트를 반환합니다."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:378
@@ -1339,7 +1339,7 @@ msgstr "ST_NumPoints"
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the segments in a "
 "geometry."
-msgstr "<para>도형의 내용을 요약한 텍스트를 반환합니다.</para>"
+msgstr "도형의 내용을 요약한 텍스트를 반환합니다."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:464
@@ -3312,8 +3312,8 @@ msgid ""
 "Return the M coordinate of a Point, or NULL if not available. Input must be "
 "a Point."
 msgstr ""
-"<para>포인트의 M 좌표를 반환합니다. M 좌표가 없는 경우 NULL을 반환합니다. 포"
-"인트만 입력받을 수 있습니다.</para>"
+"포인트의 M 좌표를 반환합니다. M 좌표가 없는 경우 NULL을 반환합니다. 포"
+"인트만 입력받을 수 있습니다."
 
 #. Tag: para
 #: reference_accessor.xml:1372
@@ -3470,7 +3470,7 @@ msgstr "ST_NDims"
 #: reference_accessor.xml:1442
 #, fuzzy, no-c-format
 msgid "Returns the coordinate dimension of a geometry."
-msgstr "<para>ST_Geometry 값의 좌표 차원을 반환합니다.</para>"
+msgstr "ST_Geometry 값의 좌표 차원을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1447
@@ -4446,7 +4446,7 @@ msgstr "ST_Summary"
 #: reference_accessor.xml:1980
 #, fuzzy, no-c-format
 msgid "Returns a text summary of the contents of a geometry."
-msgstr "<para>도형의 내용을 요약한 텍스트를 반환합니다.</para>"
+msgstr "도형의 내용을 요약한 텍스트를 반환합니다."
 
 #. Tag: funcsynopsis
 #: reference_accessor.xml:1985
@@ -4468,7 +4468,7 @@ msgstr ""
 #: reference_accessor.xml:2000
 #, fuzzy, no-c-format
 msgid "Returns a text summary of the contents of the geometry."
-msgstr "<para>도형의 내용을 요약한 텍스트를 반환합니다.</para>"
+msgstr "도형의 내용을 요약한 텍스트를 반환합니다."
 
 #. Tag: para
 #: reference_accessor.xml:2002
@@ -4637,8 +4637,8 @@ msgid ""
 "Return the X coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<para>포인트의 X 좌표를 반환합니다. X 좌표가 없는 경우 NULL을 반환합니다. 포"
-"인트만 입력받을 수 있습니다.</para>"
+"포인트의 X 좌표를 반환합니다. X 좌표가 없는 경우 NULL을 반환합니다. 포"
+"인트만 입력받을 수 있습니다."
 
 #. Tag: para
 #: reference_accessor.xml:2076
@@ -4723,8 +4723,8 @@ msgid ""
 "Return the Y coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<para>포인트의 Y 좌표를 반환합니다. Y 좌표가 없는 경우 NULL을 반환합니다. 포"
-"인트만 입력받을 수 있습니다.</para>"
+"포인트의 Y 좌표를 반환합니다. Y 좌표가 없는 경우 NULL을 반환합니다. 포"
+"인트만 입력받을 수 있습니다."
 
 #. Tag: para
 #: reference_accessor.xml:2120
@@ -4809,8 +4809,8 @@ msgid ""
 "Return the Z coordinate of the point, or NULL if not available. Input must "
 "be a point."
 msgstr ""
-"<para>포인트의 Z 좌표를 반환합니다. Z 좌표가 없는 경우 NULL을 반환합니다. 포"
-"인트만 입력받을 수 있습니다.</para>"
+"포인트의 Z 좌표를 반환합니다. Z 좌표가 없는 경우 NULL을 반환합니다. 포"
+"인트만 입력받을 수 있습니다."
 
 #. Tag: para
 #: reference_accessor.xml:2165
