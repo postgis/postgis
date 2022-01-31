@@ -1059,23 +1059,7 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geo
         <refsection>
             <title>Examples</title>
 
-            <informaltable>
-              <tgroup cols="2">
-                <tbody>
-                  <row>
-                    <entry>
-                        <para><informalfigure>
-                        <mediaobject>
-                          <imageobject>
-                            <imagedata fileref="images/st_generatepoints01.png" />
-                          </imageobject>
-                          <caption><para>Original Polygon</para></caption>
-                        </mediaobject>
-                        </informalfigure>
-                        </para>
-                    </entry>
-
-                    <entry><para><informalfigure>
+<para><informalfigure>
                         <mediaobject>
                           <imageobject>
                             <imagedata fileref="images/st_generatepoints02.png" />
@@ -1090,11 +1074,7 @@ FROM (
         'LINESTRING(50 50,150 150,150 50)'),
         10, 'endcap=round join=round') AS geom
 ) AS s;</programlisting>
-                    </para></entry>
-                  </row>
-            </tbody>
-            </tgroup>
-        </informaltable>
+            </para>
         </refsection>
     </refentry>
 
