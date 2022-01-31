@@ -1062,7 +1062,7 @@ FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geo
 <para><informalfigure>
                         <mediaobject>
                           <imageobject>
-                            <imagedata fileref="images/st_generatepoints02.png" />
+                            <imagedata fileref="images/st_generatepoints01.png" />
                           </imageobject>
                           <caption><para>Generated 12 Points overlaid on top of original polygon using a random seed value 1996</para></caption>
                         </mediaobject>
@@ -1143,8 +1143,8 @@ FROM (
 
                     <caption>
                         <para>
-                        Comparison of the centroid (turquoise point) and geometric
-                        median (red point) of a four-point MultiPoint (yellow points).
+                        Comparison of the geometric median (red)
+                        and centroid (turquoise) of a MultiPoint.
                         </para>
                     </caption>
               </mediaobject>
@@ -1152,14 +1152,15 @@ FROM (
       </para>
       <programlisting>
 WITH test AS (
-SELECT 'MULTIPOINT((0 0), (1 1), (2 2), (200 200))'::geometry geom)
+SELECT 'MULTIPOINT((10 10), (10 40), (40 10), (190 190))'::geometry geom)
 SELECT
   ST_AsText(ST_Centroid(geom)) centroid,
   ST_AsText(ST_GeometricMedian(geom)) median
 FROM test;
+
       centroid      |                 median
 --------------------+----------------------------------------
- POINT(50.75 50.75) | POINT(1.9761550281255 1.9761550281255)
+   POINT(62.5 62.5) | POINT(25.01778421249728 25.01778421249728)
 (1 row)
       </programlisting>
     </refsection>
