@@ -421,7 +421,8 @@ int main( int argc, const char* argv[] )
 		LWDEBUGF( 4, "%s", output );
 		checked_system(output);
 
-		addHighlight( layerCount );
+		//-- (MD) disable highlighting since it doesn't work well with opacity
+		//addHighlight( layerCount );
 		// addDropShadow( layerCount );
 		layerCount++;
 		free(styleName);
