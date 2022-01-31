@@ -6,15 +6,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2016-01-20 02:16+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-01-31 10:53+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"reference_transactionxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: para
 #: reference_transaction.xml:6
@@ -37,7 +38,7 @@ msgstr "ロングトランザクション機能"
 
 #. Tag: para
 #: reference_transaction.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "For the locking mechanism to operate correctly the <emphasis role=\"bold"
 "\">serializable</emphasis> <ulink url=\"http://www.postgresql.org/docs/"
@@ -45,8 +46,7 @@ msgid ""
 "must be used."
 msgstr ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/transaction-iso."
-"html\">serializable transaction level</ulink>を使わなければなりません。さもな"
-"くばロック機構が壊れます。"
+"html\">serializable transaction level</ulink>を使わなければなりません。さもなくばロック機構が壊れます。"
 
 #. Tag: refname
 #: reference_transaction.xml:24
@@ -259,15 +259,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:136
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Disables long transaction support. This function removes the long "
 "transaction support metadata tables, and drops all triggers attached to lock-"
 "checked tables."
 msgstr ""
-"<para>ロングトランザクション機能を無効にします。この関数によって、ロングトラ"
-"ンザクション機能のためのメタデータテーブルが削除され、ロックチェックテーブル"
-"に付けられた全てのトリガが削除されます。</para>"
+"ロングトランザクション機能を無効にします。この関数によって、ロングトランザクション機能のためのメタデータテーブルが削除され、ロックチェックテーブルに付けら"
+"れた全てのトリガが削除されます。"
 
 #. Tag: para
 #: reference_transaction.xml:139
@@ -317,15 +316,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:180
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Enables long transaction support. This function creates the required "
 "metadata tables. It must be called once before using the other functions in "
 "this section. Calling it twice is harmless."
 msgstr ""
-"<para>ロングトランザクション機能を有効にします。この関数によって、必要なメタ"
-"データテーブルが生成されます。このセクションにある他の関数を呼ぶ前に、一度呼"
-"ぶ必要があります。二度呼んでも構いません。</para>"
+"ロングトランザクション機能を有効にします。この関数によって、必要なメタデータテーブルが生成されます。このセクションにある他の関数を呼ぶ前に、一度呼ぶ必要が"
+"あります。二度呼んでも構いません。"
 
 #. Tag: para
 #: reference_transaction.xml:185
@@ -465,13 +463,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:290
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Removes all locks held by specified authorization token. Returns the number "
 "of locks released."
-msgstr ""
-"<para>指定した認証IDが保持するロックを全て削除します。解放されたロックの数が"
-"返されます。</para>"
+msgstr "指定した認証IDが保持するロックを全て削除します。解放されたロックの数が返されます。"
 
 #. Tag: programlisting
 #: reference_transaction.xml:300

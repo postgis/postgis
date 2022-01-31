@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-26 08:44+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-01-31 10:53+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_measurexml/ja/>\n"
 "Language: ja\n"
@@ -60,8 +60,8 @@ msgstr ""
 "<paramdef><type>geometry </type><parameter>g1</parameter></paramdef> </"
 "funcprototype> <funcprototype> <funcdef>float <function>ST_Area</function></"
 "funcdef> <paramdef><type>geography </type><parameter>geog</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>boolean </"
-"type><parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
+"paramdef> <paramdef choice=\"opt\"><type>boolean "
+"</type><parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 
 #. Tag: title
 #: reference_measure.xml:34 reference_measure.xml:97 reference_measure.xml:176
@@ -2175,13 +2175,13 @@ msgstr "ST_Length2D"
 
 #. Tag: refpurpose
 #: reference_measure.xml:801
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the 2D length of a linear geometry. Alias for <varname>ST_Length</"
 "varname>"
 msgstr ""
-"<para>LINESTRINGまたはMULTILINESTRINGに対して、ジオメトリの2次元長を返しま"
-"す。これは<varname>ST_Length</varname>の別名です。</para>"
+"LINESTRINGまたはMULTILINESTRINGに対して、ジオメトリの2次元長を返します。これは<varname>ST_Length</varna"
+"me>の別名です。"
 
 #. Tag: funcprototype
 #: reference_measure.xml:806
@@ -2197,13 +2197,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:816
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the 2D length of the geometry if it is a linestring or multi-"
 "linestring. This is an alias for <varname>ST_Length</varname>"
 msgstr ""
-"<para>LINESTRINGまたはMULTILINESTRINGに対して、ジオメトリの2次元長を返しま"
-"す。これは<varname>ST_Length</varname>の別名です。</para>"
+"LINESTRINGまたはMULTILINESTRINGに対して、ジオメトリの2次元長を返します。これは<varname>ST_Length</varna"
+"me>の別名です。"
 
 #. Tag: para
 #: reference_measure.xml:825

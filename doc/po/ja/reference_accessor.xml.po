@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-20 20:56+0000\n"
-"PO-Revision-Date: 2022-01-26 08:44+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-01-31 10:53+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/ja/>\n"
 "Language: ja\n"
@@ -74,13 +74,11 @@ msgstr "説明"
 
 #. Tag: para
 #: reference_accessor.xml:25
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT', etc."
-msgstr ""
-"<para>ジオメトリ型を'LINESTRING', 'POLYGON', 'MULTIPOINT'などの文字列で返しま"
-"す。</para>"
+msgstr "ジオメトリ型を'LINESTRING', 'POLYGON', 'MULTIPOINT'などの文字列で返します。"
 
 #. Tag: para
 #: reference_accessor.xml:28
@@ -655,9 +653,9 @@ msgstr "ST_CoordDim"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:220
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Return the coordinate dimension of a geometry."
-msgstr "<para>ST_Geometry値の座標次元を返します。</para>"
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_accessor.xml:225
@@ -671,9 +669,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:235
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Return the coordinate dimension of the ST_Geometry value."
-msgstr "<para>ST_Geometry値の座標次元を返します。</para>"
+msgstr "ST_Geometry値の座標次元を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:237
@@ -717,9 +715,9 @@ msgstr "ST_Dimension"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:266
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the topological dimension of a geometry."
-msgstr "<para>ST_Geometry値の座標次元を返します。</para>"
+msgstr "ST_Geometry値の座標次元を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:271
@@ -999,11 +997,11 @@ msgstr "ST_NumPoints"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:373
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the coordinates "
 "in a geometry."
-msgstr "<para>ジオメトリについての要約文を返します。</para>"
+msgstr "ジオメトリについての要約文を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:378
@@ -1332,11 +1330,11 @@ msgstr "ST_NumPoints"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:459
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the segments in a "
 "geometry."
-msgstr "<para>ジオメトリについての要約文を返します。</para>"
+msgstr "ジオメトリについての要約文を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:464
@@ -3320,13 +3318,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1368
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the M coordinate of a Point, or NULL if not available. Input must be "
 "a Point."
-msgstr ""
-"<para>ポイントのM座標値を返し、有効でないならNULLを返します。入力はポイントで"
-"なければなりません。 </para>"
+msgstr "ポイントのM座標値を返し、有効でないならNULLを返します。入力はポイントでなければなりません。"
 
 #. Tag: para
 #: reference_accessor.xml:1372
@@ -3481,9 +3477,9 @@ msgstr "ST_NDims"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1442
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the coordinate dimension of a geometry."
-msgstr "<para>ST_Geometry値の座標次元を返します。</para>"
+msgstr "ST_Geometry値の座標次元を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1447
@@ -4450,9 +4446,9 @@ msgstr "ST_Summary"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1980
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a text summary of the contents of a geometry."
-msgstr "<para>ジオメトリについての要約文を返します。</para>"
+msgstr "ジオメトリについての要約文を返します。"
 
 #. Tag: funcsynopsis
 #: reference_accessor.xml:1985
@@ -4472,9 +4468,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:2000
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a text summary of the contents of the geometry."
-msgstr "<para>ジオメトリについての要約文を返します。</para>"
+msgstr "ジオメトリについての要約文を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:2002
@@ -4635,13 +4631,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:2073
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the X coordinate of the point, or NULL if not available. Input must "
 "be a point."
-msgstr ""
-"<para>ポイントのX座標値を返し、有効でないならNULLを返します。入力はポイントで"
-"なければなりません。</para>"
+msgstr "ポイントのX座標値を返し、有効でないならNULLを返します。入力はポイントでなければなりません。"
 
 #. Tag: para
 #: reference_accessor.xml:2076
@@ -4721,13 +4715,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:2117
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the Y coordinate of the point, or NULL if not available. Input must "
 "be a point."
-msgstr ""
-"<para>ポイントのY座標値を返し、有効でないならNULLを返します。入力はポイントで"
-"なければなりません。</para>"
+msgstr "ポイントのY座標値を返し、有効でないならNULLを返します。入力はポイントでなければなりません。"
 
 #. Tag: para
 #: reference_accessor.xml:2120
@@ -4807,13 +4799,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:2162
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the Z coordinate of the point, or NULL if not available. Input must "
 "be a point."
-msgstr ""
-"<para>ポイントのZ座標値を返し、有効でないならNULLを返します。入力はポイントで"
-"なければなりません。</para>"
+msgstr "ポイントのZ座標値を返し、有効でないならNULLを返します。入力はポイントでなければなりません。"
 
 #. Tag: para
 #: reference_accessor.xml:2165
