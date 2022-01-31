@@ -756,9 +756,8 @@ msgid ""
 "Returns the locations along a measured geometry (as a Point or MultiPoint) "
 "that match a measure value. Polygonal elements are not supported."
 msgstr ""
-"<para>Devuelve un valor de la colección Geometry derivado con elementos que "
-"coinciden con la medida especificada. No se admiten elementos poligonales.</"
-"para>"
+"Devuelve un valor de la colección Geometry derivado con elementos que "
+"coinciden con la medida especificada. No se admiten elementos poligonales."
 
 #. Tag: para
 #: reference_lrs.xml:365 reference_lrs.xml:419
@@ -862,9 +861,8 @@ msgid ""
 "Return a geometry (collection) with the portions of the input measured "
 "geometry that match the specified measure range (inclusively)."
 msgstr ""
-"<para>Devuelve un valor de la colección Geometry derivado con elementos que "
-"coinciden con la medida especificada. No se admiten elementos poligonales.</"
-"para>"
+"Devuelve un valor de la colección Geometry derivado con elementos que "
+"coinciden con la medida especificada. No se admiten elementos poligonales."
 
 #. Tag: para
 #: reference_lrs.xml:423 reference_lrs.xml:474
@@ -994,8 +992,8 @@ msgstr "ST_InterpolatePoint"
 #, fuzzy, no-c-format
 msgid "Returns the interpolated measure of a geometry closest to a point."
 msgstr ""
-"<para>Devuelve el valor de la dimensión medida de una geometría en el punto "
-"cerrado al punto proporcionado.</para>"
+"Devuelve el valor de la dimensión medida de una geometría en el punto "
+"cerrado al punto proporcionado."
 
 #. Tag: funcprototype
 #: reference_lrs.xml:506
@@ -1016,8 +1014,8 @@ msgid ""
 "Returns the value of the measure dimension of a geometry at the point closed "
 "to the provided point."
 msgstr ""
-"<para>Devuelve el valor de la dimensión medida de una geometría en el punto "
-"cerrado al punto proporcionado.</para>"
+"Devuelve el valor de la dimensión medida de una geometría en el punto "
+"cerrado al punto proporcionado."
 
 #. Tag: para
 #: reference_lrs.xml:520
