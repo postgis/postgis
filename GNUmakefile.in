@@ -53,8 +53,6 @@ check-news:
 
 check-unit check-regress: all
 
-docs-check: docs
-
 check-no-trailing-blanks:
 	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
 		grep -v lwin_wkt_lex.c | \
