@@ -7,6 +7,8 @@ YYYY/MM/DD
   - #5046, Fix upgrades in absence of old library (Sandro Santilli)
   - #5063, Fix ST_Srid(TopoGeometry) against a set (Sandro Santilli)
   - #3056, spurious notice on ST_StartPoint(empty) (Paul Ramsey)
+  - #5041, postgis_tiger_geocoder: loader_generate_script
+           generates script with invalid syntax (Regna Obe)
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
