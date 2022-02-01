@@ -39,7 +39,7 @@ CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
 DECLARE
 	sql_drop text;
 	postgis_namespace OID;
-	matching_function REGPROCEDURE;
+	matching_function pg_catalog.REGPROCEDURE;
 BEGIN
 
 	-- Fetch install namespace for PostGIS
@@ -53,9 +53,9 @@ BEGIN
 	SELECT oid
 	FROM pg_catalog.pg_proc p
 	WHERE pronamespace = postgis_namespace
-	AND LOWER(p.proname) = LOWER(function_name)
+	AND pg_catalog.LOWER(p.proname) = pg_catalog.LOWER(function_name)
 	AND pg_catalog.pg_function_is_visible(p.oid)
-	AND LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ LOWER(function_arguments)
+	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ pg_catalog.LOWER(function_arguments)
 	INTO matching_function;
 
 	IF matching_function IS NOT NULL THEN
@@ -108,24 +108,24 @@ SELECT _postgis_drop_function_if_needed
 DO  language 'plpgsql' $$
 BEGIN
 	-- fix geometry ops --
-	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprrest::text = 'geometry_gist_sel_2d') THEN
+	IF EXISTS(SELECT oprname from pg_catalog.pg_operator where oprname = '&&' AND oprrest::text = 'geometry_gist_sel_2d') THEN
 	--it is bound to old name, drop new, rename old to new, install will fix body of code
 		DROP FUNCTION IF EXISTS gserialized_gist_sel_2d(internal, oid, internal, int4) ;
 		ALTER FUNCTION geometry_gist_sel_2d(internal, oid, internal, int4) RENAME TO gserialized_gist_sel_2d;
 	END IF;
-	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprjoin::text = 'geometry_gist_joinsel_2d') THEN
+	IF EXISTS(SELECT oprname from pg_catalog.pg_operator where oprname = '&&' AND oprjoin::text = 'geometry_gist_joinsel_2d') THEN
 	--it is bound to old name, drop new, rename old to new,  install will fix body of code
 		DROP FUNCTION IF EXISTS gserialized_gist_joinsel_2d(internal, oid, internal, smallint) ;
 		ALTER FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, smallint) RENAME TO gserialized_gist_joinsel_2d;
 	END IF;
 	-- fix geography ops --
-	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprrest::text = 'geography_gist_selectivity') THEN
+	IF EXISTS(SELECT oprname from pg_catalog.pg_operator where oprname = '&&' AND oprrest::text = 'geography_gist_selectivity') THEN
 	--it is bound to old name, drop new, rename old to new, install will fix body of code
 		DROP FUNCTION IF EXISTS gserialized_gist_sel_nd(internal, oid, internal, int4) ;
 		ALTER FUNCTION geography_gist_selectivity(internal, oid, internal, int4) RENAME TO gserialized_gist_sel_nd;
 	END IF;
 
-	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprjoin::text = 'geography_gist_join_selectivity') THEN
+	IF EXISTS(SELECT oprname from pg_catalog.pg_operator where oprname = '&&' AND oprjoin::text = 'geography_gist_join_selectivity') THEN
 	--it is bound to old name, drop new, rename old to new, install will fix body of code
 		DROP FUNCTION IF EXISTS gserialized_gist_joinsel_nd(internal, oid, internal, smallint) ;
 		ALTER FUNCTION geography_gist_join_selectivity(internal, oid, internal, smallint) RENAME TO gserialized_gist_joinsel_nd;

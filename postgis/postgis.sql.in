@@ -29,15 +29,15 @@ DO $$
 DECLARE
 	pgver text;
 BEGIN
-	SELECT substring(version(), 'PostgreSQL ([0-9\.]+)') INTO pgver;
+	SELECT pg_catalog.substring(version(), 'PostgreSQL ([0-9\.]+)') INTO pgver;
 
 	IF POSTGIS_PGSQL_VERSION::text != ( SELECT CASE
-		WHEN split_part(s,'.',1)::integer > 9
-			THEN split_part(s,'.',1) || '0'
+		WHEN pg_catalog.split_part(s,'.',1)::integer > 9
+			THEN pg_catalog.split_part(s,'.',1) || '0'
 		ELSE
-			split_part(s,'.', 1) || split_part(s,'.', 2)
+			pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2)
 		END
-		FROM substring(version(), 'PostgreSQL ([0-9\.]+)') AS s )
+		FROM pg_catalog.substring(version(), 'PostgreSQL ([0-9\.]+)') AS s )
 	THEN
 		RAISE EXCEPTION 'PostGIS built for PostgreSQL % cannot be loaded in PostgreSQL %',
 			POSTGIS_PGSQL_HR_VERSION, pgver;
@@ -52,7 +52,7 @@ DECLARE
   rec RECORD;
 BEGIN
   FOR rec IN
-    SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
+    SELECT n.nspname, p.proname FROM pg_catalog.pg_proc p, pg_catalog.pg_namespace n
     WHERE p.proname = 'postgis_version'
     AND p.pronamespace = n.oid
   LOOP
@@ -73,9 +73,9 @@ BEGIN
   -- a WARNING if in a previous version (only up to minor version checked)
   --
     curver_text := POSTGIS_LIB_VERSION;
-    IF split_part(curver_text,'.',1)::int > split_part(version,'.',1)::int OR
-       ( split_part(curver_text,'.',1) = split_part(version,'.',1) AND
-         split_part(curver_text,'.',2) != split_part(version,'.',2) )
+    IF pg_catalog.split_part(curver_text,'.',1)::int > pg_catalog.split_part(version,'.',1)::int OR
+       ( pg_catalog.split_part(curver_text,'.',1) = pg_catalog.split_part(version,'.',1) AND
+         pg_catalog.split_part(curver_text,'.',2) != pg_catalog.split_part(version,'.',2) )
     THEN
       RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
     ELSE
@@ -2016,7 +2016,7 @@ BEGIN
 	FROM pg_class c,
 		 pg_attribute a,
 		 pg_type t,
-		 pg_namespace n
+		 pg_catalog.pg_namespace n
 	WHERE c.relkind IN('r','v','f', 'p')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
@@ -2033,7 +2033,7 @@ BEGIN
 		FROM pg_class c,
 			 pg_attribute a,
 			 pg_type t,
-			 pg_namespace n
+			 pg_catalog.pg_namespace n
 		WHERE c.relkind IN( 'r', 'f', 'p')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
@@ -2104,7 +2104,7 @@ BEGIN
 		FROM pg_class c,
 			 pg_attribute a,
 			 pg_type t,
-			 pg_namespace n
+			 pg_catalog.pg_namespace n
 		WHERE c.relkind IN('r', 'f', 'p')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
@@ -2287,7 +2287,7 @@ BEGIN
 
 	-- Verify schema
 	IF ( schema_name IS NOT NULL AND schema_name != '' ) THEN
-		sql := 'SELECT nspname FROM pg_namespace ' ||
+		sql := 'SELECT nspname FROM pg_catalog.pg_namespace ' ||
 			'WHERE text(nspname) = ' || quote_literal(schema_name) ||
 			'LIMIT 1';
 		RAISE DEBUG '%', sql;
@@ -2883,8 +2883,8 @@ CREATE OR REPLACE FUNCTION _postgis_scripts_pgsql_version() RETURNS text
 
 CREATE OR REPLACE FUNCTION _postgis_pgsql_version() RETURNS text
 AS $$
-	SELECT CASE WHEN split_part(s,'.',1)::integer > 9 THEN split_part(s,'.',1) || '0' ELSE split_part(s,'.', 1) || split_part(s,'.', 2) END AS v
-	FROM substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
+	SELECT CASE WHEN pg_catalog.split_part(s,'.',1)::integer > 9 THEN pg_catalog.split_part(s,'.',1) || '0' ELSE pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2) END AS v
+	FROM pg_catalog.substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0
@@ -2893,9 +2893,9 @@ $$ LANGUAGE 'sql' STABLE;
 CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
 AS $$
 DECLARE
-	rec record;
-	sql text;
-	var_schema text;
+	rec pg_catalog.record;
+	sql pg_catalog.text;
+	var_schema pg_catalog.text;
 BEGIN
 
 	FOR rec IN
@@ -2943,18 +2943,18 @@ BEGIN
 			THEN
 				-- Force install in same schema as postgis
 				SELECT INTO var_schema n.nspname
-				  FROM pg_namespace n, pg_proc p
+				  FROM pg_catalog.pg_namespace n, pg_catalog.pg_proc p
 				  WHERE p.proname = 'postgis_full_version'
 				    AND n.oid = p.pronamespace
 				  LIMIT 1;
 				IF rec.name NOT IN('postgis_topology', 'postgis_tiger_geocoder')
 				THEN
-					sql := format(
+					sql := pg_catalog.format(
 					          'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
 					          'ALTER EXTENSION %1$I UPDATE TO %3$I',
 					          rec.name, var_schema, rec.default_version);
 				ELSE
-					sql := format(
+					sql := pg_catalog.format(
 					         'CREATE EXTENSION %1$I VERSION unpackaged;'
 					         'ALTER EXTENSION %1$I UPDATE TO %2$I',
 					         rec.name, rec.default_version);
@@ -2968,7 +2968,7 @@ BEGIN
 		ELSIF rec.default_version != rec.installed_version
 		THEN
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version)   || ';';
+						pg_catalog.quote_ident(rec.default_version)   || ';';
 			RAISE NOTICE 'Updating extension % from % to %',
 				rec.name, rec.installed_version, rec.default_version;
 			RAISE DEBUG '%', sql;
@@ -2980,11 +2980,11 @@ BEGIN
 			RAISE NOTICE 'Updating extension % %',
 				rec.name, rec.installed_version;
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version || 'next')   || ';';
+						pg_catalog.quote_ident(rec.default_version || 'next')   || ';';
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version)   || ';';
+						pg_catalog.quote_ident(rec.default_version)   || ';';
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
 		END IF;
@@ -3000,28 +3000,28 @@ $$ LANGUAGE plpgsql VOLATILE;
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
-	libver text;
-	librev text;
-	projver text;
-	geosver text;
-	sfcgalver text;
-	gdalver text := NULL;
-	libxmlver text;
-	liblwgeomver text;
-	dbproc text;
-	relproc text;
-	fullver text;
-	rast_lib_ver text := NULL;
-	rast_scr_ver text := NULL;
-	topo_scr_ver text := NULL;
-	json_lib_ver text;
-	protobuf_lib_ver text;
-	wagyu_lib_ver text;
-	sfcgal_lib_ver text;
-	sfcgal_scr_ver text;
-	pgsql_scr_ver text;
-	pgsql_ver text;
-	core_is_extension bool;
+	libver pg_catalog.text;
+	librev pg_catalog.text;
+	projver pg_catalog.text;
+	geosver pg_catalog.text;
+	sfcgalver pg_catalog.text;
+	gdalver pg_catalog.text := NULL;
+	libxmlver pg_catalog.text;
+	liblwgeomver pg_catalog.text;
+	dbproc pg_catalog.text;
+	relproc pg_catalog.text;
+	fullver pg_catalog.text;
+	rast_lib_ver pg_catalog.text := NULL;
+	rast_scr_ver pg_catalog.text := NULL;
+	topo_scr_ver pg_catalog.text := NULL;
+	json_lib_ver pg_catalog.text;
+	protobuf_lib_ver pg_catalog.text;
+	wagyu_lib_ver pg_catalog.text;
+	sfcgal_lib_ver pg_catalog.text;
+	sfcgal_scr_ver pg_catalog.text;
+	pgsql_scr_ver pg_catalog.text;
+	pgsql_ver pg_catalog.text;
+	core_is_extension pg_catalog.bool;
 BEGIN
 	SELECT @extschema@.postgis_lib_version() INTO libver;
 	SELECT @extschema@.postgis_proj_version() INTO projver;
@@ -3066,7 +3066,7 @@ BEGIN
 	END;
 
 	BEGIN
-		SELECT postgis_raster_scripts_installed() INTO rast_scr_ver;
+		SELECT @extschema@.postgis_raster_scripts_installed() INTO rast_scr_ver;
 	EXCEPTION
 		WHEN undefined_function THEN
 			RAISE DEBUG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';
@@ -5964,7 +5964,7 @@ LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 -- TODO: Can't deprecate this because UpdateGeometrySRID still uses them
 CREATE OR REPLACE FUNCTION postgis_constraint_dims(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
 $$
-SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
+SELECT  replace(pg_catalog.split_part(s.consrc, ' = ', 2), ')', '')::integer
 		 FROM pg_class c, pg_namespace n, pg_attribute a
 		 , (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
@@ -5985,7 +5985,7 @@ LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 -- TODO: Can't deprecate this because UpdateGeometrySRID still uses them
 CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
 $$
-SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
+SELECT  replace(pg_catalog.split_part(s.consrc, '''', 2), ')', '')::varchar
 		 FROM pg_class c, pg_namespace n, pg_attribute a
 		 , (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 			FROM pg_constraint) AS s
@@ -6013,14 +6013,14 @@ CREATE OR REPLACE VIEW geometry_columns AS
     a.attname AS f_geometry_column,
     COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
     COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
-    replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text)::character varying(30) AS type
-   FROM pg_class c
-     JOIN pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
-     JOIN pg_namespace n ON c.relnamespace = n.oid
-     JOIN pg_type t ON a.atttypid = t.oid
+    pg_catalog.replace(pg_catalog.replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text)::character varying(30) AS type
+   FROM pg_catalog.pg_class c
+     JOIN pg_catalog.pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
+     JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid
+     JOIN pg_catalog.pg_type t ON a.atttypid = t.oid
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
-            s.conkey, replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
+            s.conkey, pg_catalog.replace(pg_catalog.split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
            FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 				FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%geometrytype(% = %'::text
@@ -6028,7 +6028,7 @@ CREATE OR REPLACE VIEW geometry_columns AS
 ) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
-            s.conkey, replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
+            s.conkey, pg_catalog.replace(pg_catalog.split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
            FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 		    FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%ndims(% = %'::text
@@ -6036,7 +6036,7 @@ CREATE OR REPLACE VIEW geometry_columns AS
 ) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
      LEFT JOIN ( SELECT s.connamespace,
             s.conrelid,
-            s.conkey, replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
+            s.conkey, pg_catalog.replace(pg_catalog.replace(pg_catalog.split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
            FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 		    FROM pg_constraint) AS s
           WHERE s.consrc ~~* '%srid(% = %'::text

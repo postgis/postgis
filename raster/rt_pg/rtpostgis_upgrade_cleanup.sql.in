@@ -95,10 +95,10 @@ BEGIN
 			SELECT
 				proname
 			FROM pg_proc f
-			JOIN pg_type r
+			JOIN pg_catalog.pg_type r
 				ON r.typname = 'raster'
 					AND (f.proargtypes::oid[])[0] = r.oid
-			JOIN pg_type g
+			JOIN pg_catalog.pg_type g
 				ON g.typname = 'geometry'
 					AND (f.proargtypes::oid[])[1] = g.oid
 			WHERE proname = 'raster_contained_by_geometry'
@@ -118,10 +118,10 @@ BEGIN
 			SELECT
 				proname
 			FROM pg_proc f
-			JOIN pg_type r
+			JOIN pg_catalog.pg_type r
 				ON r.typname = 'raster'
 					AND (f.proargtypes::oid[])[1] = r.oid
-			JOIN pg_type g
+			JOIN pg_catalog.pg_type g
 				ON g.typname = 'geometry'
 					AND (f.proargtypes::oid[])[0] = g.oid
 			WHERE proname = 'geometry_contained_by_raster'
@@ -362,8 +362,8 @@ CREATE OR REPLACE FUNCTION _rename_raster_tables()
 		cnt int;
 	BEGIN
 		SELECT count(*) INTO cnt
-		FROM pg_class c
-		JOIN pg_namespace n
+		FROM pg_catalog.pg_class c
+		JOIN pg_catalog.pg_namespace n
 			ON c.relnamespace = n.oid
 		WHERE c.relname = 'raster_columns'
 			AND c.relkind = 'r'::char
@@ -374,8 +374,8 @@ CREATE OR REPLACE FUNCTION _rename_raster_tables()
 		END IF;
 
 		SELECT count(*) INTO cnt
-		FROM pg_class c
-		JOIN pg_namespace n
+		FROM pg_catalog.pg_class c
+		JOIN pg_catalog.pg_namespace n
 			ON c.relnamespace = n.oid
 		WHERE c.relname = 'raster_overviews'
 			AND c.relkind = 'r'::char
@@ -587,7 +587,7 @@ BEGIN
 		count(*)
 	INTO cnt
 	FROM pg_proc f
-	JOIN pg_type t
+	JOIN pg_catalog.pg_type t
 		ON f.prorettype = t.oid
 	WHERE lower(f.proname) = '_raster_constraint_nodata_values'
 		AND f.pronargs = 1

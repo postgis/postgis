@@ -24,7 +24,7 @@ SELECT 'ALTER EXTENSION ' || extname || ' DROP ' ||
     E'\\\\1 using \\\\2'
   ) || ';' AS sqladd
 FROM pg_catalog.pg_depend AS d
-INNER JOIN pg_extension AS e ON (d.refobjid = e.oid)
+INNER JOIN pg_catalog.pg_extension AS e ON (d.refobjid = e.oid)
 WHERE d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass
 AND deptype = 'e' AND e.extname = '${ext}' ORDER BY sqladd;
 

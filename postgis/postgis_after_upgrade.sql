@@ -231,7 +231,7 @@ DROP FUNCTION IF EXISTS st_distance_sphere(geometry, geometry);
 DROP FUNCTION IF EXISTS pgis_geometry_union_transfn(internal, geometry);
 
 -- #4394
-update pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = 'geometry_eq'::regproc;
+update pg_catalog.pg_operator set oprcanhash = true, oprcanmerge = true where oprname = '=' and oprcode = 'geometry_eq'::pg_catalog.regproc;
 
 
 DO language 'plpgsql'
@@ -240,7 +240,7 @@ BEGIN
 IF _postgis_scripts_pgsql_version()::integer >= 96 THEN
 -- mark ST_Union agg as parallel safe if it is not already
         BEGIN
-            UPDATE pg_proc SET proparallel = 's'
+            UPDATE pg_catalog.pg_proc SET proparallel = 's'
             WHERE oid = 'st_union(geometry)'::regprocedure AND proparallel = 'u';
         EXCEPTION WHEN OTHERS THEN
             RAISE DEBUG 'Could not update st_union(geometry): %', SQLERRM;

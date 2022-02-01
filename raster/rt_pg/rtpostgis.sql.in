@@ -47,7 +47,7 @@ DECLARE
   rec RECORD;
 BEGIN
   FOR rec IN
-    SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
+    SELECT n.nspname, p.proname FROM pg_catalog.pg_proc p, pg_catalog.pg_namespace n
     WHERE p.proname = 'postgis_raster_lib_version'
     AND p.pronamespace = n.oid
   LOOP
@@ -63,7 +63,7 @@ DECLARE
   nsp TEXT;
 BEGIN
   SELECT n.nspname
-	INTO nsp FROM pg_proc p, pg_namespace n
+	INTO nsp FROM pg_catalog.pg_proc p, pg_catalog.pg_namespace n
   WHERE p.proname = 'postgis_lib_version'
   AND p.pronamespace = n.oid;
 
@@ -8298,8 +8298,8 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		current_database() AS r_table_catalog,
 		split_part(split_part(s.consrc, '''::name', 1), '''', 2)::name AS r_table_schema,
 		split_part(split_part(s.consrc, '''::name', 2), '''', 2)::name AS r_table_name,
-		split_part(split_part(s.consrc, '''::name', 3), '''', 2)::name AS r_raster_column,
-		trim(both from split_part(s.consrc, ',', 2))::integer AS overview_factor
+		pg_catalog.split_part(pg_catalog.split_part(s.consrc, '''::name', 3), '''', 2)::name AS r_raster_column,
+		trim(both from pg_catalog.split_part(s.consrc, ',', 2))::integer AS overview_factor
 	FROM
 		pg_class c,
 		pg_attribute a,
