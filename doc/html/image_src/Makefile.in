@@ -126,6 +126,9 @@ IMAGES= \
 	../images/st_overlaps01.png \
 	../images/st_overlaps02.png \
 	../images/st_overlaps03.png \
+	../images/st_overlaps04.png \
+	../images/st_overlaps05.png \
+	../images/st_overlaps06.png \
 	../images/st_sharedpaths01.png \
 	../images/st_sharedpaths02.png \
 	../images/st_shortestline01.png \
