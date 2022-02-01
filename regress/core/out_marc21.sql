@@ -74,7 +74,28 @@ UPDATE asmarc21_rt SET geom = ST_AsEWKT(geom,15);
 
 
 -- Converts to geometries to MARC21/XML
-SELECT gid,ST_AsMARC21(geom) AS marc21 FROM asmarc21_rt;
+SELECT gid,ST_AsMARC21(geom,'hdddmmss') AS marc21 FROM asmarc21_rt;
+
+-- Converts to geometries to MARC21/XML
+SELECT 'hdddmmss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')) AS marc21 FROM asmarc21_rt;
+SELECT 'hddd.dddddd',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd.dddddd')) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmm.mmmmmm',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm.mmmmmm')) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmmss.ssssss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss.ssssss')) AS marc21 FROM asmarc21_rt;
+
+SELECT 'hdddmmss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')) AS marc21 FROM asmarc21_rt;
+SELECT 'hddd,dddddd',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd,dddddd')) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmm,mmmmmm',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm,mmmmmm')) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmmss,ssssss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss,ssssss')) AS marc21 FROM asmarc21_rt;
+
+SELECT 'dddmmss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')) AS marc21 FROM asmarc21_rt;
+SELECT 'ddd.dddddd',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd.dddddd')) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmm.mmmmmm',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm.mmmmmm')) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmmss.ssssss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss.ssssss')) AS marc21 FROM asmarc21_rt;
+
+SELECT 'dddmmss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')) AS marc21 FROM asmarc21_rt;
+SELECT 'ddd,dddddd',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd,dddddd')) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmm,mmmmmm',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm,mmmmmm')) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmmss,ssssss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss,ssssss')) AS marc21 FROM asmarc21_rt;
 
 -- Converts geometries (except points) to MARC21/XML, converts them back to geometry, 
 -- and compare their sizes and intersection areas.
@@ -83,15 +104,27 @@ SELECT
   ST_GeometryType(geom) AS type_origin,
   gid,
   box2d(geom) AS box_origin,
-  ST_GeometryType(ST_GeomFromMARC21(ST_AsMARC21(geom))) AS type_from_marc21,
-  box2d(box2d(ST_GeomFromMARC21(ST_AsMARC21(geom)))) AS box_marc21,
-  ST_Area(box2d(ST_GeomFromMARC21(ST_AsMARC21(geom)))) / ST_Area(box2d(geom)) * 100 AS box_size_overlap,
+  ST_GeometryType(
+    ST_GeomFromMARC21(
+      ST_AsMARC21(geom,'hdddmmss'))) AS type_from_marc21,  
+  box2d(
+    ST_GeomFromMARC21(
+      ST_AsMARC21(geom,'hdddmmss'))) AS box_marc21,
+  
+  ST_Area(
+    box2d(
+      ST_GeomFromMARC21(
+        ST_AsMARC21(geom,'hdddmmss')))) / ST_Area(box2d(geom)) * 100 AS box_size_overlap,
+  
     ST_Area(
       ST_Intersection(
         box2d(geom),
-	    box2d(ST_GeomFromMARC21(ST_AsMARC21(geom)))
+	    box2d(
+	      ST_GeomFromMARC21(
+	        ST_AsMARC21(geom,'hdddmmss')))
       )
-    ) / ST_Area(box2d(geom))*100 AS box_intersection  
+    ) / ST_Area(box2d(geom))*100 AS box_intersection
+    
 FROM asmarc21_rt
 WHERE ST_GeometryType(geom) <> 'ST_Point';
   
@@ -102,8 +135,15 @@ WHERE ST_GeometryType(geom) <> 'ST_Point';
 SELECT 
   'convert points to marc21 -> convert back to geom',
   ST_AsText(geom) AS point_origin, 
-  ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom))) AS point_from_marc21, 
-  ST_Equals(geom,ST_SetSRID(ST_GeomFromMARC21(ST_AsMARC21(geom)),4326)) AS equals
+  ST_AsText(
+    ST_GeomFromMARC21(
+      ST_AsMARC21(geom,'hddd.ddddddddddddddd'))) AS point_from_marc21, 
+  ST_Equals(
+    geom,
+    ST_SetSRID(
+      ST_GeomFromMARC21(
+        ST_AsMARC21(geom,'hddd.ddddddddddddddd')),4326)) AS equals,
+  ST_AsMARC21(geom,'hdddmmss.ss') AS point_as_marc21
 FROM asmarc21_rt 
 WHERE ST_GeometryType(geom) = 'ST_Point';
 
@@ -114,7 +154,9 @@ WHERE ST_GeometryType(geom) = 'ST_Point';
 -- Dumps geometries from collections and converts them to MARC21/XML
 SELECT 
   'dump geom -> convert to marc21',
-  gid,(ST_Dump(geom)).path[1],ST_AsMARC21((ST_Dump(geom)).geom) AS marc21 
+  gid,(ST_Dump(geom)).path[1],
+  ST_AsMARC21(
+    (ST_Dump(geom)).geom,'hdddmmss') AS marc21 
 FROM asmarc21_rt;
 
 
@@ -138,18 +180,22 @@ SELECT
 FROM
   (SELECT gid,
     (ST_Dump(geom)).*,
-     ST_SetSRID((ST_Dump(ST_GeomFromMARC21(ST_AsMARC21(geom)))).geom,4326),
+     ST_SetSRID(
+       (ST_Dump(
+         ST_GeomFromMARC21(
+           ST_AsMARC21(geom,'hddd.ddddddddddddddd')))).geom,
+       4326),
      geom 
    FROM asmarc21_rt) i (gid, path_origin, geom_origin_dumped, geom_from_marc21_dumped, geom_origin)
 WHERE ST_GeometryType(geom_origin_dumped) <> 'ST_Point'
 ORDER BY gid,path_origin[1];
 
 
-SELECT 'self-intersection polygon',ST_AsMARC21('SRID=4326;POLYGON((0 0, 0 1, 2 1, 2 2, 1 2, 1 0, 0 0))');
-SELECT 'point(0 0)',ST_AsMARC21('SRID=4326;POINT(0 0)');
-SELECT 'empty_polygon',ST_AsMARC21('SRID=4326;POLYGON EMPTY');
-SELECT 'empty_point',ST_AsMARC21('SRID=4326;POINT EMPTY');
-SELECT 'empty_linstring',ST_AsMARC21('SRID=4326;LINESTRING EMPTY');
+SELECT 'self-intersection polygon',ST_AsMARC21('SRID=4326;POLYGON((0 0, 0 1, 2 1, 2 2, 1 2, 1 0, 0 0))','hdddmmss');
+SELECT 'point(0 0)',ST_AsMARC21('SRID=4326;POINT(0 0)','hdddmmss');
+SELECT 'empty_polygon',ST_AsMARC21('SRID=4326;POLYGON EMPTY','hdddmmss');
+SELECT 'empty_point',ST_AsMARC21('SRID=4326;POINT EMPTY','hdddmmss');
+SELECT 'empty_linstring',ST_AsMARC21('SRID=4326;LINESTRING EMPTY','hdddmmss');
 SELECT 'empty_triangle',ST_AsMARC21('SRID=4326;TRIANGLE EMPTY');
 SELECT 'null_parameter',ST_AsMARC21(NULL);
 
@@ -158,6 +204,685 @@ SELECT 'null_parameter',ST_AsMARC21(NULL);
 SELECT 'srid 0',ST_AsMARC21('POINT(1 1)');
 
 -- ERROR: Unsupported SRID (3587). Only lon/lat coordinate systems are supported in MARC21/XML Documents.
-SELECT 'non lon/lat srs',ST_AsMARC21('SRID=3587;POINT(10472963.740359407 3586596.632100969)');
+SELECT 'non lon/lat srs',ST_AsMARC21('SRID=3587;POINT(10472963.740359407 3586596.632100969)','hdddmmss');
+
+
+SELECT 'polygon_01',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326));
+	  
+	  
+SELECT 'polygon_02',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmmss');
+
+SELECT 'polygon_03',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hddd.dddddd');
+	  
+SELECT 'polygon_04',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmm.mmmmmm');	  
+	  
+SELECT 'polygon_05',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmmss.ssssss');
+	  
+SELECT 'polygon_06',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hddd.dddddddddddddddddddddddddddddddddddddddddd');
+	  
+
+SELECT 'polygon_07',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
+
+SELECT 'polygon_08',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmmss.sssssssssssssssssssssssssssssssssssssssssss');
+
+SELECT 'polygon_09',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'dddmmss');
+
+SELECT 'polygon_10',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'ddd.ddddd');
+	  
+
+SELECT 'polygon_11',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'dddmm.mmmm');	  
+
+SELECT 'polygon_12',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'dddmmss.ssss');	
+
+
+
+
+SELECT 'polygon_12',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326));	
+	  
+
+SELECT 'polygon_13',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmmss');	
+
+SELECT 'polygon_14',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hddd.dddddd');
+
+SELECT 'polygon_15',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmm.mmmmmm');
+	  
+SELECT 'polygon_16',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmmss.ssssss');	  
+
+SELECT 'polygon_17',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hddd.dddddddddddddddddddddddddddddddddddddddddd');	 
+	  
+SELECT 'polygon_18',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');	  
+	  
+SELECT 'polygon_19',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmmss.sssssssssssssssssssssssssssssssssssssssssss');
+	  
+SELECT 'polygon_20',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'dddmmss');	  
+	  
+SELECT 'polygon_21',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'ddd.ddddd');	  	  
+
+SELECT 'polygon_22',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'dddmm.mmmm');	
+	  
+SELECT 'polygon_23',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'dddmmss.ssss');		  
+	  
+	  
+SELECT 'polygon_24',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hddd,ddddd');		  
+
+SELECT 'polygon_25',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmm,mmmm');	
+	  
+SELECT 'polygon_26',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmmss,ssss');	
+
+SELECT 'polygon_27',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'dddmmss,ssss');	
+
+SELECT 'polygon_28',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'ddd,ddddd');	
+	  
+	  
+SELECT 'polygon_29',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'ddd,ddddd');		  
+
+SELECT 'polygon_30',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+			  <subfield code="a">a</subfield>
+			  <subfield code="d">W0584745</subfield>
+			  <subfield code="e">W0582451</subfield>
+			  <subfield code="f">S0513416</subfield>
+			  <subfield code="g">S0514450</subfield>
+			</datafield>
+		  </record>'),
+	  4326),'hdddmmss.ssssssssssssssssssss');	
+	  
+	  
+SELECT 'polygon_31',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'hdddmmss.ssssssssssssssssssss');	
+
+
+-- ERROR: invalid format
+
+SELECT 'error_1',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'h.dddmmss.ssssssssssssssssssss');	
+
+SELECT 'error_2',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'hddd.mmmm');	
+
+SELECT 'error_3',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'ddd.mmmm');	
+
+SELECT 'error_4',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'hdddmmmss');	
+
+SELECT 'error_5',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'hdddmmsss');	
+	
+SELECT 'error_6',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'dddmmmss');	
+	
+SELECT 'error_7',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'dddmmsss');	
+	
+SELECT 'error_8',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'dddmm.ss');	
+		
+SELECT 'error_9',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'hdddmm.ss');		
+	
+SELECT 'error_10',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'hdddmm,ss');			
+
+
+SELECT 'error_11',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),'ddd,mmmmm');			
+	
+	
+
+SELECT 'null_01',
+  ST_AsMARC21(
+	ST_SetSRID(
+	  ST_GeomFromMARC21('
+		  <record xmlns="http://www.loc.gov/MARC21/slim">
+			<datafield tag="034" ind1="1" ind2=" ">
+  			  <subfield code="a">a</subfield>
+			  <subfield code="d">E1262500</subfield>
+			  <subfield code="e">E1291530</subfield>
+			  <subfield code="f">N0360738</subfield>
+			  <subfield code="g">N0350200</subfield>
+			</datafield>
+		  </record>'),
+	4326),NULL);		
+
 
 DROP TABLE asmarc21_rt;
+

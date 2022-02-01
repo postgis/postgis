@@ -46,7 +46,9 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 	LWGEOM *lwgeom;
 	uint8_t is_latlong;
 	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P_COPY(0);
-	int precision = PG_GETARG_INT32(1);
+	text *format_text_input =  PG_GETARG_TEXT_P(1);
+	const char *format = text_to_cstring(format_text_input);
+
 	srid = gserialized_get_srid(gs);
 
 	if (srid == SRID_UNKNOWN) {
@@ -72,7 +74,6 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 #endif
 
 
-	//if (!lwproj->source_is_latlong) {
 	if (!is_latlong) {
 
 		PG_FREE_IF_COPY(gs, 0);
@@ -80,11 +81,9 @@ Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
 		PG_RETURN_NULL();
 	}
 
-	if (precision < 0)
-		precision = 0;
 
 	lwgeom = lwgeom_from_gserialized(gs);
-	marc21 = lwgeom_to_marc21(lwgeom, precision);
+	marc21 = lwgeom_to_marc21(lwgeom, format);
 
 	if (marc21)	PG_RETURN_TEXT_P(marc21);
 

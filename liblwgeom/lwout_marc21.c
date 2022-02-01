@@ -27,14 +27,16 @@
 #include "stringbuffer.h"
 #include "lwgeom_log.h"
 
-static int gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb);
+static int gbox_to_marc21_sb(const GBOX box, const char* format, stringbuffer_t *sb);
+static int is_format_valid(const char* format);
 
 lwvarlena_t*
-lwgeom_to_marc21(const LWGEOM *geom, int precision) {
+lwgeom_to_marc21(const LWGEOM *geom, const char* format) {
 
-	LWDEBUGF(2, "lwgeom_to_marc21 called: %s with precision %d ", lwtype_name(lwgeom_get_type(geom)), precision);
+	LWDEBUGF(2, "lwgeom_to_marc21 called: %s with format %s ", lwtype_name(lwgeom_get_type(geom)), format);
 
 	if (lwgeom_is_empty(geom))	return NULL;
+	if (is_format_valid(format)==LW_FALSE) lwerror("invalid output format: \"%s\"", format);
 
 	char *ns = "http://www.loc.gov/MARC21/slim";
 	stringbuffer_t *sb;
@@ -63,7 +65,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision) {
 
 			}
 
-			if (gbox_to_marc21_sb(box, precision, sb) == LW_FAILURE) {
+			if (gbox_to_marc21_sb(box, format, sb) == LW_FAILURE) {
 
 				stringbuffer_destroy(sb);
 				lwerror("failed to create MARC21/XML for a geometry in the collection: %s",	lwtype_name(lwgeom_get_type(coll->geoms[i])));
@@ -85,7 +87,7 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision) {
 
 		LWDEBUGF(3, "  creating MARC21/XML datafield: %s", lwtype_name(lwgeom_get_type(geom)));
 
-		if (gbox_to_marc21_sb(box, precision, sb) == LW_FAILURE) {
+		if (gbox_to_marc21_sb(box, format, sb) == LW_FAILURE) {
 
 			stringbuffer_destroy(sb);
 			lwerror("failed to create MARC21/XML for %s", lwtype_name(lwgeom_get_type(geom)));
@@ -103,39 +105,232 @@ lwgeom_to_marc21(const LWGEOM *geom, int precision) {
 	return v;
 }
 
-static int corner_to_subfield_sb(stringbuffer_t *sb, double coordinate,	int precision, char subfield) {
 
-	char *res = malloc(precision + 4);
-	double ds;
-	modf(coordinate, &ds);
-	sprintf(res, "%.*f", precision, coordinate);
+static int is_format_valid(const char* format){
 
-	if (ds < 100) {
+	char *dec_part = strchr(format, '.');
+	if(!dec_part) dec_part = strchr(format, ',');
 
-		sprintf(res, "0%.*f", precision, coordinate);
+	if(!dec_part) {
 
-		if (ds >= 0 && ds < 10)	sprintf(res, "00%.*f", precision, coordinate);
-		if (ds <  0 && ds > -10) sprintf(res, "-00%.*f", precision, coordinate * -1);
-		if (ds <= -10 && ds > -100) sprintf(res, "-0%.*f", precision, coordinate * -1);
-		if (ds <= -100) sprintf(res, "%.*f", precision, coordinate);
+		if (strcmp(format, "hdddmmss") && strcmp(format, "dddmmss")) {
+
+			return LW_FALSE;
+
+		}
+
+	} else {
+
+		if(strlen(dec_part)<2)	return LW_FALSE;
+
+		char *int_part = malloc(strlen(format) - strlen(dec_part));
+		memcpy(int_part, &format[0], strlen(format) - strlen(dec_part));
+		int_part[strlen(format) - strlen(dec_part)]='\0';
+
+		if (strcmp(int_part,"hddd") && strcmp(int_part,"ddd") &&
+			strcmp(int_part,"hdddmm") && strcmp(int_part,"dddmm") &&
+			strcmp(int_part,"hdddmmss") && strcmp(int_part,"dddmmss")) {
+
+			free(int_part);
+			return LW_FALSE;
+
+		}
+
+		for (int i = 1; i < strlen(dec_part); i++) {
+
+			if(dec_part[i]!=int_part[strlen(int_part)-1]) {
+
+				free(int_part);
+				return LW_FALSE;
+			}
+		}
+
+		free(int_part);
+
 	}
 
-	if (stringbuffer_aprintf(sb, "<subfield code=\"%c\">%s</subfield>",	subfield, res) < 0)	return LW_FAILURE;
+	return LW_TRUE;
+
+}
+
+static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, const char*format, char subfield) {
+
+	LWDEBUGF(2,"corner_to_subfield_sb called with coordinates: %f and format: %s",decimal_degrees,format);
+
+	char cardinal_direction;
+
+	int degrees = (int) decimal_degrees;
+	double minutes = fabs((decimal_degrees-degrees)*60);
+	double seconds = fabs((minutes-(int)minutes) *60);
+
+	char decimal_separator;
+
+	int has_cardinal_direction = 0;
+	int num_decimals = 0;
+	char* res = malloc(strlen(format)+1);
+
+	if((int)(seconds + 0.5)>=60) {
+
+		seconds = seconds-60;
+		minutes = minutes +1;
+
+	}
+
+
+	if(strchr(format, '.')) {
+		num_decimals = strlen(strchr(format, '.'))-1;
+		decimal_separator = '.';
+	}
+
+	if(strchr(format, ',')) {
+		num_decimals = strlen(strchr(format, ','))-1;
+		decimal_separator = ',';
+	}
+
+	if(format[0]=='h'){
+
+		has_cardinal_direction = 1;
+
+		if(subfield=='d'||subfield=='e'){
+
+			if(decimal_degrees>0){
+
+				cardinal_direction='E';
+
+			} else {
+
+				cardinal_direction='W';
+				degrees=abs(degrees);
+				decimal_degrees= fabs(decimal_degrees);
+
+			}
+		}
+
+		if(subfield=='f'||subfield=='g'){
+
+			if(decimal_degrees>0){
+
+				cardinal_direction='N';
+
+			} else {
+
+				cardinal_direction='S';
+				degrees=abs(degrees);
+				decimal_degrees= fabs(decimal_degrees);
+
+			}
+		}
+
+
+	}
+
+	if(format[3+has_cardinal_direction]=='.' || format[3+has_cardinal_direction]==',' )	{
+
+		/**
+		 * decimal degrees
+		 */
+
+		int pad_degrees = (int)strlen(format);
+
+//		if(decimal_degrees <0 && decimal_degrees>-10) pad_degrees=strlen(format)+1;
+//		if(decimal_degrees <=-10 && decimal_degrees>-100) pad_degrees=strlen(format)+1;
+
+		if(decimal_degrees <0 && decimal_degrees>-100) pad_degrees=strlen(format)+1;
+
+
+		if(has_cardinal_direction) pad_degrees=pad_degrees-1;
+
+		sprintf(res,"%0*.*f",pad_degrees,num_decimals,decimal_degrees);
+
+
+	} else if(format[5+has_cardinal_direction]=='.' || format[5+has_cardinal_direction]==',' )	{
+
+		/**
+		 * decimal minutes
+		 */
+		int pad_minutes = 0;
+
+		if(fabs(minutes)<10) pad_minutes = (int)strlen(format)-has_cardinal_direction-3;
+
+		sprintf(res,"%.3d%0*.*f",degrees,pad_minutes,num_decimals,fabs(minutes));
+
+	}
+
+	else if(format[7+has_cardinal_direction]=='.' || format[7+has_cardinal_direction]==',') {
+
+		/*
+		 * decimal Seconds
+		 */
+		int pad_seconds = 0;
+
+		if(fabs(seconds)<10) pad_seconds = (int) strlen(format)-has_cardinal_direction-5;
+
+		sprintf(res,"%.3d%.2d%0*.*f",degrees,(int)fabs(minutes),pad_seconds,num_decimals,fabs(seconds));
+
+	} else {
+
+		/**
+		 * degrees/minutes/seconds (dddmmss)
+		 */
+//		minutes = fabs(minutes);
+//		seconds = fabs(seconds);
+
+		sprintf(res,"%.3d%.2d%.2d",degrees,(int)fabs(minutes),(int)(fabs(seconds) + 0.5));
+
+	}
+
+
+	if(decimal_separator==','){
+
+		res[strlen(res)-num_decimals-1] = ',';
+
+	}
+
+	if(has_cardinal_direction){
+
+		if (stringbuffer_aprintf(sb, "<subfield code=\"%c\">%c%s</subfield>", subfield, cardinal_direction, res) < 0) return LW_FAILURE;
+
+	} else {
+
+		if (stringbuffer_aprintf(sb, "<subfield code=\"%c\">%s</subfield>",	subfield, res) < 0)	return LW_FAILURE;
+
+	}
+
+
+//	char *res = malloc(precision + 4);
+//	double ds;
+//	modf(coordinate, &ds);
+//	sprintf(res, "%.*f", precision, coordinate);
+//
+//	if (ds < 100) {
+//
+//		sprintf(res, "0%.*f", precision, coordinate);
+//
+//		if (ds >= 0 && ds < 10)	sprintf(res, "00%.*f", precision, coordinate);
+//		if (ds <  0 && ds > -10) sprintf(res, "-00%.*f", precision, coordinate * -1);
+//		if (ds <= -10 && ds > -100) sprintf(res, "-0%.*f", precision, coordinate * -1);
+//		if (ds <= -100) sprintf(res, "%.*f", precision, coordinate);
+//	}
+//
+//	if (stringbuffer_aprintf(sb, "<subfield code=\"%c\">%s</subfield>",	subfield, res) < 0)	return LW_FAILURE;
 
 	free(res);
 	return LW_SUCCESS;
+
+
+
 }
 
-static int gbox_to_marc21_sb(const GBOX box, int precision, stringbuffer_t *sb) {
+static int gbox_to_marc21_sb(const GBOX box, const char* format, stringbuffer_t *sb) {
 
 	LWDEBUG(2, "gbox_to_marc21_sb called");
 
 	if (stringbuffer_aprintf(sb, "<datafield tag=\"034\" ind1=\"1\" ind2=\" \">") < 0)	return LW_FAILURE;
 	if (stringbuffer_aprintf(sb, "<subfield code=\"a\">a</subfield>") < 0) return LW_FAILURE;
-	if (!corner_to_subfield_sb(sb, box.xmin, precision, 'd')) return LW_FAILURE;
-	if (!corner_to_subfield_sb(sb, box.xmax, precision, 'e')) return LW_FAILURE;
-	if (!corner_to_subfield_sb(sb, box.ymax, precision, 'f')) return LW_FAILURE;
-	if (!corner_to_subfield_sb(sb, box.ymin, precision, 'g')) return LW_FAILURE;
+	if (!corner_to_subfield_sb(sb, box.xmin, format, 'd')) return LW_FAILURE;
+	if (!corner_to_subfield_sb(sb, box.xmax, format, 'e')) return LW_FAILURE;
+	if (!corner_to_subfield_sb(sb, box.ymax, format, 'f')) return LW_FAILURE;
+	if (!corner_to_subfield_sb(sb, box.ymin, format, 'g')) return LW_FAILURE;
 	if (stringbuffer_aprintf(sb, "</datafield>") < 0) return LW_FAILURE;
 
 	LWDEBUG(2, "=> gbox_to_marc21_sb returns LW_SUCCESS");
