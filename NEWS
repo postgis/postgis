@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Correct the definition of ST_Touches in the manual (Martin Davis)
  - Report missing TopoGeometries with an incorrect layer ID (Sandro Santilli)
  - Honor regression flags when running installcheck (Sandro Santilli)
  - Correct the ST_PointM signature in the manual (Martin Davis)
