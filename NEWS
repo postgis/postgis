@@ -3,6 +3,7 @@ PostGIS 3.5.8dev
 
 * Bug Fixes *
 
+  - #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
   - #5841, Allow cancellation during raster grid interpolation (Paul Ramsey)
   - Read tagged dollar quotes when generating function upgrades (Sandro Santilli)
   - Fix the link to the geography performance article (Laurențiu Nicola)
