@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
  - Include generated raster upgrades in the hard-upgrade restore list (Sandro Santilli)
  - #5841, Allow cancellation during raster grid interpolation (Paul Ramsey)
  - Fail documentation validation if xmllint is unavailable (Sandro Santilli)
