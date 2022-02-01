@@ -49,4 +49,4 @@ mkfifo check.fifo
 tee check.log < check.fifo &
 ${SRCDIR}/utils/check_all_upgrades.sh -s ${CURRENTVERSION}! > check.fifo
 echo "-- Summary of upgrade tests --"
-egrep '(PASS|FAIL)' check.log
+egrep '(PASS|FAIL|SKIP)' check.log
