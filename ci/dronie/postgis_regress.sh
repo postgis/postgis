@@ -3,9 +3,6 @@
 # Exit on first error
 set -e
 
-# Fail the whole pipeline if any pipeline command fails
-set -o pipefail
-
 service postgresql start $PGVER
 export PGPORT=`grep ^port /etc/postgresql/$PGVER/main/postgresql.conf | awk '{print $3}'`
 export PATH=/usr/lib/postgresql/$PGVER/bin:$PATH
@@ -48,6 +45,8 @@ RUNTESTFLAGS=-v make installcheck
 #-----------------------------------------------
 
 CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste -sd '.'`
-${SRCDIR}/utils/check_all_upgrades.sh -s ${CURRENTVERSION}! | tee check.log
+mkfifo check.fifo
+tee check.log < check.fifo &
+${SRCDIR}/utils/check_all_upgrades.sh -s ${CURRENTVERSION}! > check.fifo
 echo "-- Summary of upgrade tests --"
 egrep '(PASS|FAIL)' check.log
