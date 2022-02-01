@@ -4,6 +4,26 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+        <title>Release 3.1.5</title>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para>Release date: 2022/02/01</para>
+            <para>#4994, Random missing INSERT in shp2pgsql (Sandro Santilli)</para>
+            <para>#5016, loader (shp2pgsq): Respect LDFLAGS (Greg Troxel)</para>
+            <para>#5018, pgsql2shp basic support for WITH CTE clause (Regina Obe)</para>
+            <para>#5026, fix DropTopology in presence of UPDATE triggers on
+                    topology layers (Sandro Santilli)</para>
+            <para>#5033, #5035, allow upgrades in presence of views using deprecated
+                    functions (Sandro Santilli)</para>
+            <para>#5046, Fix upgrades in absence of old library (Sandro Santilli)</para>
+            <para>#5069, search_path vulnerabilty during install/upgrade
+                    (Regina Obe)</para>
+            <para>#5041, postgis_tiger_geocoder: loader_generate_script
+                    generates script with invalid syntax (Regna Obe)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
         <title>Release 3.1.4</title>
         <simplesect>
             <title>Bug Fixes</title>
