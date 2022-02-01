@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Improve compatibility of the cluster upgrade test script (Sandro Santilli)
  - Read regression directives correctly with or without a final newline (Sandro Santilli)
  - Initialize the complete GiST key header without an out-of-bounds access (Sandro Santilli)
  - Correct the topology manual typo (Sandro Santilli)
