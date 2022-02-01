@@ -48,5 +48,6 @@ CURRENTVERSION=`grep '^POSTGIS_' ${SRCDIR}/Version.config | cut -d= -f2 | paste 
 mkfifo check.fifo
 tee check.log < check.fifo &
 ${SRCDIR}/utils/check_all_upgrades.sh -s ${CURRENTVERSION}! > check.fifo
+wait # for tee process to flush its buffers
 echo "-- Summary of upgrade tests --"
 egrep '(PASS|FAIL|SKIP)' check.log
