@@ -289,7 +289,7 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
 		<refname>ST_ClosestPoint</refname>
 
 		<refpurpose>Returns the 2D point on g1 that is closest to g2.  This is the first point of
-			the shortest line.</refpurpose>
+			the shortest line from one geometry to the other.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -318,58 +318,47 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
 
 	  <refsection>
 		<title>Examples</title>
-			<informaltable>
-				  <tgroup cols="2">
-					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_closestpoint01.png" />
-							  </imageobject>
-							  <caption><para>Closest between point and linestring is the point itself, but closest
-											point between a linestring and point is the point on line string that is closest.</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(ST_ClosestPoint(pt,line)) AS cp_pt_line,
-	ST_AsText(ST_ClosestPoint(line,pt)) As cp_line_pt
-FROM (SELECT 'POINT(100 100)'::geometry As pt,
-		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry As line
-	) As foo;
 
+    <para><informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_closestpoint01.png" />
+            </imageobject>
+            <caption><para>Closest between point and linestring is the point itself, but closest
+                        point between a linestring and point is the point on line string that is closest.</para></caption>
+        </mediaobject>
+        </informalfigure>
+<programlisting>
+SELECT ST_AsText( ST_ClosestPoint(pt,line)) AS cp_pt_line,
+       ST_AsText( ST_ClosestPoint(line,pt)) AS cp_line_pt
+    FROM (SELECT 'POINT(100 100)'::geometry AS pt,
+                 'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry AS line ) AS t;
 
    cp_pt_line   |                cp_line_pt
 ----------------+------------------------------------------
  POINT(100 100) | POINT(73.0769230769231 115.384615384615)
-				</programlisting>
-						  </para></entry>
+</programlisting>
+	</para>
 
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_closestpoint02.png" />
-							  </imageobject>
-							  <caption><para>closest point on polygon A to polygon B</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(
-		ST_ClosestPoint(
-			ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
-			ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
-			)
+    <para><informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_closestpoint02.png" />
+            </imageobject>
+            <caption><para>The closest point on polygon A to polygon B</para></caption>
+        </mediaobject>
+        </informalfigure>
+<programlisting>
+SELECT ST_AsText( ST_ClosestPoint(
+			'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
+			ST_Buffer('POINT(110 170)'::geometry, 20) )
 		) As ptwkt;
 
                   ptwkt
 ------------------------------------------
  POINT(140.752120669087 125.695053378061)
-				</programlisting>
-						</para></entry>
-					  </row>
-		</tbody>
-	</tgroup>
-</informaltable>
+</programlisting>
+	</para>
 
 	  </refsection>
 
@@ -1252,43 +1241,36 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 
 	  <refsection>
 		<title>Examples</title>
-			<informaltable>
-				  <tgroup cols="1">
-					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_longestline01.png" />
-							  </imageobject>
-							  <caption><para>Longest line between a point and a line</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(
-	ST_LongestLine('POINT(100 100)'::geometry,
+        <para><informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_longestline01.png" />
+                </imageobject>
+                <caption><para>Longest line between a point and a line</para></caption>
+            </mediaobject>
+            </informalfigure>
+<programlisting>
+SELECT ST_AsText( ST_LongestLine('POINT(100 100)'::geometry,
 		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
 	) As lline;
-
 
    lline
 -----------------
 LINESTRING(100 100,98 190)
-				</programlisting>
-						  </para></entry>
-						    </row>
-						    <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_longestline02.png" />
-							  </imageobject>
-							  <caption><para>Longest line between two polygons</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(
-	ST_LongestLine(
+</programlisting>
+	</para>
+
+    <para>
+        <informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_longestline02.png" />
+            </imageobject>
+            <caption><para>Longest line between two polygons</para></caption>
+        </mediaobject>
+        </informalfigure>
+<programlisting>
+SELECT ST_AsText( ST_LongestLine(
 		ST_GeomFromText('POLYGON((175 150, 20 40,
 			50 60, 125 100, 175 150))'),
 		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
@@ -1298,27 +1280,19 @@ SELECT ST_AsText(
    lline
 -----------------
 LINESTRING(20 40,121.111404660392 186.629392246051)
-				</programlisting>
-						</para></entry>
-					  </row>
-		</tbody>
-	</tgroup>
-</informaltable>
+</programlisting>
+	</para>
 
-<informaltable>
-	  <tgroup cols="1">
-		<tbody>
-		  <row>
-			<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_longestline03.png" />
-							  </imageobject>
-							  <caption><para>Longest straight distance to travel from one part of a city to another.
-								Note that the maximum distance is equal to the length of the line.</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
+    <para><informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_longestline03.png" />
+            </imageobject>
+            <caption><para>Longest straight distance to travel from one part of a city to another.
+            Note that the maximum distance is equal to the length of the line.</para></caption>
+        </mediaobject>
+        </informalfigure>
+<programlisting>
 SELECT ST_AsText( ST_LongestLine(c.geom, c.geom)) AS llinewkt,
        ST_MaxDistance( c.geom,c.geom) AS max_dist,
        ST_Length( ST_LongestLine(c.geom, c.geom)) AS lenll
@@ -1333,12 +1307,8 @@ FROM (SELECT ST_MakeValid( ST_Collect(geom)) AS geom
           llinewkt          |     max_dist     |      lenll
 ---------------------------+------------------+------------------
  LINESTRING(23 22,129 178) | 188.605408193933 | 188.605408193933
-				</programlisting>
-						</para></entry>
-		</row>
-	</tbody>
-</tgroup>
-</informaltable>
+</programlisting>
+	</para>
 	  </refsection>
 
 	  <refsection>
@@ -1997,19 +1967,15 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 
 	  <refsection>
 		<title>Examples</title>
-			<informaltable>
-				  <tgroup cols="2">
-					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_shortestline01.png" />
-							  </imageobject>
-							  <caption><para>Shortest line between point and linestring</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
+        <para><informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_shortestline01.png" />
+                </imageobject>
+                <caption><para>Shortest line between point and linestring</para></caption>
+            </mediaobject>
+            </informalfigure>
+<programlisting>
 SELECT ST_AsText(
 	ST_ShortestLine('POINT(100 100)'::geometry,
 		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
@@ -2019,18 +1985,18 @@ SELECT ST_AsText(
    sline
 -----------------
 LINESTRING(100 100,73.0769230769231 115.384615384615)
-				</programlisting>
-						  </para></entry>
+</programlisting>
+		</para>
 
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_shortestline02.png" />
-							  </imageobject>
-							  <caption><para>shortest line between polygon and polygon</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
+        <para><informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_shortestline02.png" />
+                </imageobject>
+                <caption><para>Shortest line between two polygons</para></caption>
+            </mediaobject>
+            </informalfigure>
+<programlisting>
 SELECT ST_AsText(
 		ST_ShortestLine(
 			ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
@@ -2039,12 +2005,8 @@ SELECT ST_AsText(
 		) As slinewkt;
 
  LINESTRING(140.752120669087 125.695053378061,121.111404660392 153.370607753949)
-				</programlisting>
-						</para></entry>
-					  </row>
-		</tbody>
-	</tgroup>
-</informaltable>
+</programlisting>
+		</para>
 
 	  </refsection>
 
