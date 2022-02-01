@@ -101,8 +101,8 @@
     <para>Returns TRUE if geometry B is completely inside geometry A.
         A contains B if and only if no points of B lie in the exterior of A, and at least one point of the interior of B lies in the interior of A.
         </para>
-        <para>A subtlety of the definition is that a geometry does not contain its boundary.
-        This implies that polygons and lines do <emphasis>not</emphasis> contain lines and points lying in their boundary.
+        <para>A subtlety of the definition is that a geometry does not contain things in its boundary.
+        Thus polygons and lines do <emphasis>not</emphasis> contain lines and points lying in their boundary.
         For further details see <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink>.
         (The <xref linkend="ST_Covers" /> predicate provides a more inclusive relationship.)
         However, a geometry does contain itself.
@@ -138,7 +138,7 @@
     <refsection>
     <title>Examples</title>
 
-    <para>The <function>ST_Contains</function> predicate returns <varname>TRUE</varname> in all the following illustrations.</para>
+    <para><function>ST_Contains</function> returns <varname>TRUE</varname> in the following situations:</para>
 
     <informaltable>
       <tgroup cols="2">
@@ -189,7 +189,7 @@
       </tgroup>
     </informaltable>
 
-    <para>The <function>ST_Contains</function> predicate returns <varname>FALSE</varname> in all the following illustrations.</para>
+    <para>The <function>ST_Contains</function> predicate returns <varname>FALSE</varname> in the following situations:</para>
 
     <informaltable>
       <tgroup cols="2">
@@ -574,7 +574,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     </mediaobject>
     </informalfigure>
 
-    <para>The DE-9IM Intersection Matrix for the two geometries is:</para>
+    <para>Geometries cross if their DE-9IM Intersection Matrix is:</para>
 
     <itemizedlist>
     <listitem>
@@ -592,8 +592,8 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     </listitem>
     </itemizedlist>
 
-    <para>For any other combination of dimensions this predicate returns
-    false.</para>
+    <para>For Point/Point and Area/Area situations this predicate returns
+    <varname>false</varname>.</para>
 
     <para>The OpenGIS Simple Features Specification defines this predicate
     only for Point/Line, Point/Area, Line/Line, and Line/Area situations.
@@ -614,7 +614,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
   <refsection>
     <title>Examples</title>
 
-    <para>The following illustrations all return <varname>TRUE</varname>.</para>
+    <para>The following situations all return <varname>TRUE</varname>.</para>
 
     <informaltable>
     <tgroup cols="2">
@@ -702,6 +702,11 @@ FROM roads, highways
 WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     </informalexample></para>
   </refsection>
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_Contains"/>, <xref linkend="ST_Overlaps"/></para>
+    </refsection>
   </refentry>
 
   <refentry id="ST_LineCrossingDirection">
@@ -1211,8 +1216,13 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
     <refsection>
     <title>Description</title>
 
-    <para>Returns TRUE if the Geometries "spatially
-      overlap".  By that we mean they intersect, but one does not completely contain another. </para>
+    <para>Returns TRUE if geometry A and B "spatially overlap".
+    Two geometries overlap if they have the same dimension,
+    each has at least one point not shared by the other
+    (or equivalently neither covers the other),
+    and the intersection of their interiors has the same dimension.
+    The overlaps relationship is symmetrical.
+    </para>
 
     <note><para>&index_aware;
         To avoid index use, use the function <function>_ST_Overlaps</function>.</para></note>
@@ -1232,7 +1242,7 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 
     <refsection>
     <title>Examples</title>
-          <para>The following illustrations all return <varname>TRUE</varname>.</para>
+          <para><function>ST_Overlaps</function> returns <varname>TRUE</varname> in the following situations:</para>
 
     <informaltable>
     <tgroup cols="3">
@@ -1267,46 +1277,65 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
       </tbody>
     </tgroup>
     </informaltable>
-    <programlisting>--a point on a line is contained by the line and is of a lower dimension, and therefore does not overlap the line
-      nor crosses
 
-SELECT ST_Overlaps(a,b) As a_overlap_b,
-  ST_Crosses(a,b) As a_crosses_b,
-    ST_Intersects(a, b) As a_intersects_b, ST_Contains(b,a) As b_contains_a
-FROM (SELECT ST_GeomFromText('POINT(1 0.5)') As a, ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)')  As b)
-  As foo
+    <informalfigure>
+          <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_overlaps04.png" />
+          </imageobject>
+          </mediaobject>
+        </informalfigure>
+<para>A Point on a LineString is contained,
+but since it has lower dimension it does not overlap or cross.</para>
+    <programlisting>
+SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,
+       ST_Intersects(a, b) AS intersects,  ST_Contains(b,a) AS b_contains_a
+FROM (SELECT ST_GeomFromText('POINT (100 100)') As a,
+             ST_GeomFromText('LINESTRING (30 50, 40 160, 160 40, 180 160)')  AS b) AS t
 
-a_overlap_b | a_crosses_b | a_intersects_b | b_contains_a
-------------+-------------+----------------+--------------
-f           | f           | t              | t
+overlaps | crosses | intersects | b_contains_a
+---------+----------------------+--------------
+f        | f       | t          | t
+</programlisting>
+    <informalfigure>
+          <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_overlaps05.png" />
+          </imageobject>
+          </mediaobject>
+        </informalfigure>
+<para>A LineString that partly covers a Polygon intersects and crosses,
+but does not overlap since it has different dimension.</para>
+<programlisting>
+SELECT ST_Overlaps(a,b) AS overlaps,        ST_Crosses(a,b) AS crosses,
+       ST_Intersects(a, b) AS intersects,   ST_Contains(a,b) AS contains
+FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
+             ST_GeomFromText('LINESTRING(10 10, 190 190)') AS b) AS t;
 
---a line that is partly contained by circle, but not fully is defined as intersecting and crossing,
--- but since of different dimension it does not overlap
-SELECT ST_Overlaps(a,b) As a_overlap_b, ST_Crosses(a,b) As a_crosses_b,
-  ST_Intersects(a, b) As a_intersects_b,
-  ST_Contains(a,b) As a_contains_b
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a, ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)')  As b)
-  As foo;
+ overlap | crosses | intersects | contains
+---------+---------+------------+--------------
+ f       | t       | t          | f
+</programlisting>
+    <informalfigure>
+          <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_overlaps06.png" />
+          </imageobject>
+          </mediaobject>
+        </informalfigure>
+<para>Two Polygons that intersect but with neither contained by the other overlap,
+but do not cross because their intersection has the same dimension.</para>
+<programlisting>
+SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,
+       ST_Intersects(a, b) AS intersects,  ST_Contains(b, a) AS b_contains_a,
+       ST_Dimension(a) AS dim_a, ST_Dimension(b) AS dim_b,
+       ST_Dimension(ST_Intersection(a,b)) AS dim_int
+FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') AS a,
+             ST_GeomFromText('POLYGON ((110 180, 20 60, 130 90, 110 180))') AS b) As t;
 
- a_overlap_b | a_crosses_b | a_intersects_b | a_contains_b
--------------+-------------+----------------+--------------
- f           | t           | t              | f
-
- -- a 2-dimensional bent hot dog (aka buffered line string) that intersects a circle,
- -- but is not fully contained by the circle is defined as overlapping since they are of the same dimension,
---  but it does not cross, because the intersection of the 2 is of the same dimension
---  as the maximum dimension of the 2
-
-SELECT ST_Overlaps(a,b) As a_overlap_b, ST_Crosses(a,b) As a_crosses_b, ST_Intersects(a, b) As a_intersects_b,
-ST_Contains(b,a) As b_contains_a,
-ST_Dimension(a) As dim_a, ST_Dimension(b) as dim_b, ST_Dimension(ST_Intersection(a,b)) As dima_intersection_b
-FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
-  ST_Buffer(ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)'),0.5)  As b)
-  As foo;
-
- a_overlap_b | a_crosses_b | a_intersects_b | b_contains_a | dim_a | dim_b | dima_intersection_b
--------------+-------------+----------------+--------------+-------+-------+---------------------
- t           | f           | t              | f            |     2 |     2 |              2
+ overlaps | crosses | intersects | b_contains_a | dim_a | dim_b | dim_int
+----------+---------+------------+--------------+-------+-------+-----------
+ t        | f       | t          | f            |     2 |     2 |       2
 </programlisting>
 
 

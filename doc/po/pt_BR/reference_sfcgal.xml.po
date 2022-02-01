@@ -59,7 +59,7 @@ msgstr "postgis_sfcgal_version"
 #: reference_sfcgal.xml:21
 #, fuzzy, no-c-format
 msgid "<refpurpose>Returns the version of SFCGAL in use</refpurpose>"
-msgstr "retorna a versão do SFCGAL em uso"
+msgstr "<refpurpose>retorna a versão do SFCGAL em uso</refpurpose>"
 
 #. Tag: funcdef
 #: reference_sfcgal.xml:27
@@ -83,7 +83,7 @@ msgstr "Descrição"
 #: reference_sfcgal.xml:36
 #, fuzzy, no-c-format
 msgid "<para>Returns the version of SFCGAL in use</para>"
-msgstr "retorna a versão do SFCGAL em uso"
+msgstr "<para>retorna a versão do SFCGAL em uso</para>"
 
 #. Tag: para
 #: reference_sfcgal.xml:38 reference_sfcgal.xml:109 reference_sfcgal.xml:202

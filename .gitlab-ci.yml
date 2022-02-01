@@ -19,7 +19,12 @@
     - ./configure
     - make maintainer-clean
     - ./autogen.sh
-    - ./configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
+    - chattr -R +i . # mark source tree as immutable
+    - export SRCDIR="${PWD}"
+    - echo "SRCDIR is ${SRCDIR}"
+    - mkdir /tmp/build && cd /tmp/build
+    - echo "Build dir is ${PWD}"
+    - ${SRCDIR}/configure CFLAGS="-Wall -fno-omit-frame-pointer -Werror"
     - make
     - RUNTESTFLAGS=-v make check
     - RUNTESTFLAGS="-v --dumprestore" make check-regress

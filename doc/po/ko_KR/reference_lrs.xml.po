@@ -751,8 +751,8 @@ msgid ""
 "Returns the locations along a measured geometry (as a Point or MultiPoint) "
 "that match a measure value. Polygonal elements are not supported."
 msgstr ""
-"<para>설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. "
-"폴리곤 구성 요소는 지원되지 않습니다.</para>"
+"설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. "
+"폴리곤 구성 요소는 지원되지 않습니다."
 
 #. Tag: para
 #: reference_lrs.xml:365 reference_lrs.xml:419
@@ -855,8 +855,8 @@ msgid ""
 "Return a geometry (collection) with the portions of the input measured "
 "geometry that match the specified measure range (inclusively)."
 msgstr ""
-"<para>설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. "
-"폴리곤 구성 요소는 지원되지 않습니다.</para>"
+"설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. "
+"폴리곤 구성 요소는 지원되지 않습니다."
 
 #. Tag: para
 #: reference_lrs.xml:423 reference_lrs.xml:474
@@ -983,11 +983,11 @@ msgstr "ST_InterpolatePoint"
 
 #. Tag: refpurpose
 #: reference_lrs.xml:501
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the interpolated measure of a geometry closest to a point."
 msgstr ""
-"<para>입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합"
-"니다.</para>"
+"입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합"
+"니다."
 
 #. Tag: funcprototype
 #: reference_lrs.xml:506
@@ -1008,8 +1008,8 @@ msgid ""
 "Returns the value of the measure dimension of a geometry at the point closed "
 "to the provided point."
 msgstr ""
-"<para>입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합"
-"니다.</para>"
+"입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합"
+"니다."
 
 #. Tag: para
 #: reference_lrs.xml:520

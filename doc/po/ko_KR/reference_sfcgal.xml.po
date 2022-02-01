@@ -58,7 +58,7 @@ msgstr "postgis_sfcgal_version"
 #: reference_sfcgal.xml:21
 #, fuzzy, no-c-format
 msgid "<refpurpose>Returns the version of SFCGAL in use</refpurpose>"
-msgstr "실행중인 SFCGAL의 버전을 반환합니다."
+msgstr "<refpurpose>실행중인 SFCGAL의 버전을 반환합니다.</refpurpose>"
 
 #. Tag: funcdef
 #: reference_sfcgal.xml:27
@@ -82,7 +82,7 @@ msgstr "설명"
 #: reference_sfcgal.xml:36
 #, fuzzy, no-c-format
 msgid "<para>Returns the version of SFCGAL in use</para>"
-msgstr "실행중인 SFCGAL의 버전을 반환합니다."
+msgstr "<para>실행중인 SFCGAL의 버전을 반환합니다.</para>"
 
 #. Tag: para
 #: reference_sfcgal.xml:38 reference_sfcgal.xml:109 reference_sfcgal.xml:202

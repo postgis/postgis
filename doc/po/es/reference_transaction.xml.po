@@ -274,9 +274,9 @@ msgid ""
 "transaction support metadata tables, and drops all triggers attached to lock-"
 "checked tables."
 msgstr ""
-"<para>Deshabilita el soporte de transacciones grandes. Esta función elimina "
+"Deshabilita el soporte de transacciones grandes. Esta función elimina "
 "las tablas de metadatos para soporte de transacciones grandes, y borra todos "
-"los disparadores vinculados a las tablas de comprobación de bloqueos.</para>"
+"los disparadores vinculados a las tablas de comprobación de bloqueos."
 
 #. Tag: para
 #: reference_transaction.xml:139
@@ -332,10 +332,10 @@ msgid ""
 "metadata tables. It must be called once before using the other functions in "
 "this section. Calling it twice is harmless."
 msgstr ""
-"<para>Habilita el soporte de transacciones grandes. Esta función crea las "
+"Habilita el soporte de transacciones grandes. Esta función crea las "
 "tablas de metadatos requeridas, necesita ser llamada una vez antes de usar "
 "las otras funciones en esta sección. Llamarla más de una vez no produce "
-"problemas.</para>"
+"problemas."
 
 #. Tag: para
 #: reference_transaction.xml:185
@@ -479,8 +479,8 @@ msgid ""
 "Removes all locks held by specified authorization token. Returns the number "
 "of locks released."
 msgstr ""
-"<para>Retira todos los bloqueos mantenidos por el id de la autorización "
-"especificada. Devuelve el número de bloqueos liberados.</para>"
+"Retira todos los bloqueos mantenidos por el id de la autorización "
+"especificada. Devuelve el número de bloqueos liberados."
 
 #. Tag: programlisting
 #: reference_transaction.xml:300

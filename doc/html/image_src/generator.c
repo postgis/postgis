@@ -2,6 +2,8 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
+ *
+ * Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
  * Copyright 2008 Kevin Neufeld
  *
  * This is free software; you can redistribute and/or modify it under
@@ -70,7 +72,7 @@ pointarrayToString(char *output, POINTARRAY *pa)
 {
 	char x[OUT_DOUBLE_BUFFER_SIZE];
 	char y[OUT_DOUBLE_BUFFER_SIZE];
-	int i;
+	unsigned int i;
 	char *ptr = output;
 
 	for ( i=0; i < pa->npoints; i++ )
@@ -160,7 +162,7 @@ static size_t
 drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
 {
 	char *ptr = output;
-	int i;
+	unsigned int i;
 
 	LWDEBUGF(4, "%s", "drawPolygon called");
 	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
@@ -191,7 +193,7 @@ static size_t
 drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
 {
 	char *ptr = output;
-	int i;
+	unsigned int i;
 	int type = lwgeom->type;
 
 	switch (type)
@@ -306,9 +308,7 @@ getStyleName(char **styleName, char* line)
 	char *ptr = strrchr(line, ';');
 	if (ptr == NULL)
 	{
-		*styleName = malloc( 8 );
-		strncpy(*styleName, "Default", 7);
-		(*styleName)[7] = '\0';
+		*styleName = strdup("Default");
 		return 1;
 	}
 	else
@@ -334,26 +334,52 @@ int main( int argc, const char* argv[] )
 	char *filename;
 	int layerCount;
 	LAYERSTYLE *styles;
-	char *image_path = "../images/";
+	char *stylefile_path;
+	const char *image_src;
+	char *ptr;
+	const char *stylefilename = "styles.conf";
 
-	getStyles(&styles);
-
-	if ( argc != 2 || strlen(argv[1]) < 3)
+	if ( argc < 2 || strlen(argv[1]) < 3)
 	{
-		lwerror("You must specify a wkt filename to convert, and it must be 3 or more characters long.\n");
+		lwerror("Usage: %s <source_wktfile> [<output_pngfile>]", argv[0]);
 		return -1;
 	}
 
-	if ( (pfile = fopen(argv[1], "r")) == NULL)
+	image_src = argv[1];
+
+	if ( (pfile = fopen(image_src, "r")) == NULL)
 	{
-		perror ( argv[1] );
+		perror ( image_src );
 		return -1;
 	}
 
-	filename = malloc( strlen(argv[1]) + strlen(image_path) + 1 );
-	strcpy( filename, image_path );
-	strncat( filename, argv[1], strlen(argv[1])-3 );
-	strncat( filename, "png", 3 );
+	/* Get style */
+	ptr = rindex( image_src, '/' );
+	if ( ptr ) /* source image file has a slash */
+	{
+		size_t dirname_len = (ptr - image_src);
+		stylefile_path = malloc( strlen(stylefilename) + dirname_len + 2);
+		/* copy the directory name */
+		memcpy(stylefile_path, image_src, dirname_len);
+		sprintf(stylefile_path + dirname_len, "/%s", stylefilename);
+	}
+	else /* source image file has no slash, use CWD */
+	{
+		stylefile_path = strdup(stylefilename);
+	}
+	printf("reading styles from %s\n", stylefile_path);
+	getStyles(stylefile_path, &styles);
+	free(stylefile_path);
+
+	if ( argc > 2 )
+	{
+		filename = strdup(argv[2]);
+	}
+	else
+	{
+		filename = strdup(image_src);
+		sprintf(filename + strlen(image_src) - 3, "png" );
+	}
 
 	printf( "generating %s\n", filename );
 
@@ -390,12 +416,13 @@ int main( int argc, const char* argv[] )
 
 		ptr += sprintf( ptr, "-flip tmp%d.png", layerCount );
 
-		lwfree( lwgeom );
+		lwgeom_free( lwgeom );
 
 		LWDEBUGF( 4, "%s", output );
 		checked_system(output);
 
-		addHighlight( layerCount );
+		//-- (MD) disable highlighting since it doesn't work well with opacity
+		//addHighlight( layerCount );
 		// addDropShadow( layerCount );
 		layerCount++;
 		free(styleName);

@@ -1689,6 +1689,15 @@ dnl ===========================================================================
 dnl Output the relevant files
 dnl ===========================================================================
 
+TRANSLATIONS_MAKEFILE_LIST=`grep 'translations = ' ${srcdir}/doc/Makefile.in \
+  | cut -d= -f2 \
+  | tr ' ' '\n' \
+  | grep -v '^ *$' \
+  | sed 's|^|doc/po/|;s|$|/Makefile|'
+`
+
+dnl echo "TRANSLATIONS_MAKEFILE_LIST: ${TRANSLATIONS_MAKEFILE_LIST}"
+
 AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
@@ -1717,6 +1726,7 @@ AC_CONFIG_FILES([GNUmakefile
    regress/loader/Makefile
    doc/Makefile
    doc/Makefile.comments
+   $TRANSLATIONS_MAKEFILE_LIST
    doc/html/image_src/Makefile
    utils/Makefile
    $RT_MAKEFILE_LIST

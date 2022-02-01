@@ -2,13 +2,14 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
+# Sandro Santilli <strk@kbt.io>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-12-11 05:14+0000\n"
-"PO-Revision-Date: 2022-01-26 08:44+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-01-31 10:53+0000\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/ja/>\n"
 "Language: ja\n"
@@ -71,8 +72,8 @@ msgstr ""
 "<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>point</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>position = -1</parameter></"
-"paramdef>"
+"<paramdef><type>integer</type> <parameter>position = "
+"-1</parameter></paramdef>"
 
 #. Tag: title
 #: reference_editor.xml:36 reference_editor.xml:92 reference_editor.xml:168

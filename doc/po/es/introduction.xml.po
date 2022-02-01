@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-10 13:02+0000\n"
+"POT-Creation-Date: 2022-01-31 00:29+0000\n"
 "PO-Revision-Date: 2018-07-22 02:48+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -134,7 +134,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
-"SFCGAL, raster, GitHub curation, and Travis bot maintenance."
+"SFCGAL, raster, GitHub curation, and bot maintenance."
 msgstr ""
 
 #. Tag: term

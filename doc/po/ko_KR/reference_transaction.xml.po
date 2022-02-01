@@ -265,9 +265,9 @@ msgid ""
 "transaction support metadata tables, and drops all triggers attached to lock-"
 "checked tables."
 msgstr ""
-"<para>장기 실행 트랜잭션 지원을 비활성화시킵니다. 이 함수는 장기 실행 트랜잭"
+"장기 실행 트랜잭션 지원을 비활성화시킵니다. 이 함수는 장기 실행 트랜잭"
 "션 지원 메타데이터 테이블을 제거하고, 잠금을 확인한(lock-checked) 테이블에 부"
-"여된 모든 트리거를 삭제합니다.</para>"
+"여된 모든 트리거를 삭제합니다."
 
 #. Tag: para
 #: reference_transaction.xml:139
@@ -323,9 +323,9 @@ msgid ""
 "metadata tables. It must be called once before using the other functions in "
 "this section. Calling it twice is harmless."
 msgstr ""
-"<para>장기 실행 트랜잭션 지원을 활성화시킵니다. 이 함수는 필수적인 메타데이"
+"장기 실행 트랜잭션 지원을 활성화시킵니다. 이 함수는 필수적인 메타데이"
 "터 테이블들을 생성하는데, 이 단원에 있는 다른 함수들을 이용하기 전에 한번 호"
-"출해줘야 합니다. 두 번 호출해도 상관없습니다.</para>"
+"출해줘야 합니다. 두 번 호출해도 상관없습니다."
 
 #. Tag: para
 #: reference_transaction.xml:185
@@ -469,8 +469,8 @@ msgid ""
 "Removes all locks held by specified authorization token. Returns the number "
 "of locks released."
 msgstr ""
-"<para>특정 승인 ID가 실행한 모든 잠금을 제거합니다. 해제된 잠금 개수를 반환합"
-"니다.</para>"
+"특정 승인 ID가 실행한 모든 잠금을 제거합니다. 해제된 잠금 개수를 반환합"
+"니다."
 
 #. Tag: programlisting
 #: reference_transaction.xml:300

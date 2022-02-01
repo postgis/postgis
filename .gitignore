@@ -31,6 +31,7 @@ doc/Makefile
 doc/Makefile.comments
 doc/po/*/*.xml
 doc/po/*/html
+doc/po/*/Makefile
 doc/po/*/xsl
 doc/po/*/*_comments.sql
 doc/postgis_aggs_mm.xml

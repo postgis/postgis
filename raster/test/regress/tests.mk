@@ -19,7 +19,7 @@ override RUNTESTFLAGS_INTERNAL := \
 
 RASTER_TEST_FIRST = \
 	$(topsrcdir)/raster/test/regress/check_gdal \
-	$(topsrcdir)/raster/test/regress/load_outdb
+	$(topsrcdir)/raster/test/regress/loader/load_outdb
 
 RASTER_TEST_LAST = \
 	$(topsrcdir)/raster/test/regress/clean

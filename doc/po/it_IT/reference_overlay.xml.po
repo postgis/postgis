@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2022-01-13 16:44+0000\n"
+"PO-Revision-Date: 2022-01-31 00:30+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/it/>\n"
@@ -1111,7 +1111,7 @@ msgstr ""
 #: reference_overlay.xml:742
 #, no-c-format
 msgid "ST_Union"
-msgstr ""
+msgstr "ST_Union"
 
 #. Tag: refpurpose
 #: reference_overlay.xml:743

@@ -2248,7 +2248,7 @@ msgstr "ST_GeomFromGeoHash"
 #: reference_input.xml:1131
 #, no-c-format
 msgid "Return a geometry from a GeoHash string."
-msgstr "<para>Gibt die Geometrie einer GeoHash Zeichenfolge zurück.</para>"
+msgstr "Gibt die Geometrie einer GeoHash Zeichenfolge zurück."
 
 #. Tag: funcprototype
 #: reference_input.xml:1136

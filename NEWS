@@ -10,11 +10,16 @@ PostGIS 3.3.0dev
   - GH655, GiST: balance the tree splits better in recursive calls (Darafei Praliaskouski)
   - GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)
   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
+  - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
+
+ * New features*
+  - ST_Letters creates geometries that look like letters
+
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
-This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher
-, and Proj 4.9+.
+
+This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+.
 Additional features are enabled if you are running GEOS 3.9+
 (and ST_MakeValid enhancements with 3.10+),
 Proj 6.1+, and PostgreSQL 14+.
@@ -28,9 +33,11 @@ If you are running PG14+, you can reenable it by doing
 ALTER OPERATOR FAMILY gist_geometry_ops_2d USING gist
      ADD FUNCTION 11 (geometry)
      geometry_gist_sortsupport_2d (internal);
+
 and then reindex your gist indexes.
 
 To revert back to the old index behavior:
+
    ALTER OPERATOR FAMILY gist_geometry_ops_2d using gist
      DROP FUNCTION 11 (geometry);
 

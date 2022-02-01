@@ -43,7 +43,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: check-no-trailing-blanks check-unit check-regress docs-check check-news
+check: check-no-trailing-blanks check-unit check-regress docs-check check-news check-tests-enabled
 
 staged-install: all
 	$(MAKE) -C regress staged-install
@@ -51,7 +51,7 @@ staged-install: all
 check-news:
 	$(top_srcdir)/utils/check_news.sh $(top_srcdir)
 
-check-unit check-regress docs-check: all
+check-unit check-regress: all
 
 check-no-trailing-blanks:
 	! find . -name '*.c' -o -name '*.h' -o -name '*.proto' | \
@@ -128,8 +128,11 @@ templategis-install:
 templategis-uninstall:
 	$(MAKE) -C extras/template_gis uninstall
 
-docs:
+docs: postgis_revision.h
 	$(MAKE) -C doc html
+
+docs-localized: postgis_revision.h
+	$(MAKE) -C doc html-localized
 
 docs-clean:
 	$(MAKE) -C doc clean

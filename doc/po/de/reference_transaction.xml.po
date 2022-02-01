@@ -274,10 +274,10 @@ msgid ""
 "transaction support metadata tables, and drops all triggers attached to lock-"
 "checked tables."
 msgstr ""
-"<para>Deaktiver die Unterstützung von lang andauernden Transaktionen. Diese "
+"Deaktiver die Unterstützung von lang andauernden Transaktionen. Diese "
 "Funktion entfernt die Metadatentabellen der Unterstützung für lang "
 "andauernde Transaktionen und löscht alle Trigger der auf Locks überprüften "
-"Tabellen.</para>"
+"Tabellen."
 
 #. Tag: para
 #: reference_transaction.xml:139
@@ -334,10 +334,10 @@ msgid ""
 "metadata tables. It must be called once before using the other functions in "
 "this section. Calling it twice is harmless."
 msgstr ""
-"<para>Akktivert die Unterstützung für lang andauernde Transaktionen. Diese "
+"Akktivert die Unterstützung für lang andauernde Transaktionen. Diese "
 "Funktion erzeut die benötigten Metadatentabellen und muss einmal aufgerufen "
 "werden bevor die anderen Funktionen dieses Abschnitts angewandt werden. Ein "
-"zweimaliger Aufruf ist harmlos.</para>"
+"zweimaliger Aufruf ist harmlos."
 
 #. Tag: para
 #: reference_transaction.xml:185
@@ -483,8 +483,8 @@ msgid ""
 "Removes all locks held by specified authorization token. Returns the number "
 "of locks released."
 msgstr ""
-"<para>Entfernt alle Locks einer bestimmten Authorisierungs-ID. Gibt die "
-"Anzahl der freigegebenen Locks aus.</para>"
+"Entfernt alle Locks einer bestimmten Authorisierungs-ID. Gibt die "
+"Anzahl der freigegebenen Locks aus."
 
 #. Tag: programlisting
 #: reference_transaction.xml:300

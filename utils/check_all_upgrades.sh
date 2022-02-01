@@ -57,6 +57,9 @@ semver_compare()
 BUILDDIR=$PWD
 EXTDIR=`pg_config --sharedir`/extension/
 CTBDIR=`pg_config --sharedir`/contrib/
+PGVER=`pg_config --version | awk '{print $2}'`
+
+echo "PostgreSQL version: ${PGVER}"
 
 cd $EXTDIR
 failures=0
@@ -79,6 +82,34 @@ failed()
   fi
 }
 
+compatible_upgrade()
+{
+  upgrade_path=$1
+  from=$2
+  to=$3
+
+  #echo "XXXX compatible_upgrade: upgrade_path=${upgrade_path}"
+  #echo "XXXX compatible_upgrade: from=${from}"
+  #echo "XXXX compatible_upgrade: to=${to}"
+
+  # only consider versions older than ${to_version_param}
+  cmp=`semver_compare "${from}" "${to}"`
+  if test $cmp -ge 0; then
+    echo "SKIP: upgrade $upgrade_path ($to is not newer than $from)"
+    return 1
+  fi
+  cmp=`semver_compare "${PGVER}" "11"`
+  if test $cmp -ge 0; then
+    cmp=`semver_compare "3.0" "${from}"`
+    if test $cmp -ge 0; then
+      echo "SKIP: upgrade $UPGRADE_PATH ($from < 3.0 which is required to run in PostgreSQL ${PGVER})"
+      return 1
+    fi
+  fi
+
+  return 0
+}
+
 for EXT in ${INSTALLED_EXTENSIONS}; do
   if test "${EXT}" = "postgis"; then
     REGDIR=${BUILDDIR}/regress
@@ -98,12 +129,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
     from_version="$fname"
     UPGRADE_PATH="${from_version}--${to_version_param}"
     UPGRADE_FILE="${EXT}--${from_version}--${to_version}.sql"
-    # only consider versions older than ${to_version}
-    cmp=`semver_compare "${from_version}" "${to_version}"`
-    if test $cmp -ge 0; then
-      echo "SKIP: upgrade $UPGRADE_PATH ($to_version is not newer than $from_version)"
-      continue
-    fi
+    compatible_upgrade ${UPGRADE_PATH} ${from_version} ${to_version} || continue
     if test -e ${UPGRADE_FILE}; then
       if expr $to_version_param : ':auto' >/dev/null; then
         echo "Testing ${EXT} upgrade $UPGRADE_PATH ($to_version)"
@@ -130,12 +156,7 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
       echo "SKIP: ${EXT} upgrade $UPGRADE_FILE is missing"
       continue
     fi
-    # only consider versions older than ${to_version_param}
-    cmp=`semver_compare "${majmin}" "${to_version}"`
-    if test $cmp -ge 0; then
-      echo "SKIP: upgrade $UPGRADE_PATH ($to_version_param is not newer than $majmin)"
-      continue
-    fi
+    compatible_upgrade ${UPGRADE_PATH} ${majmin} ${to_version} || continue
     if expr $to_version_param : ':auto' >/dev/null; then
       echo "Testing ${EXT} upgrade $UPGRADE_PATH ($to_version)"
     else

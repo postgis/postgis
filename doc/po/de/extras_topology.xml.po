@@ -2741,10 +2741,9 @@ msgid ""
 "Removes an edge and, if the removed edge separated two faces, delete one of "
 "the them and modify the other to take the space of both."
 msgstr ""
-"<para>Entfernt eine Kante. Falls die gelöschte Kante zwei Maschen "
+"Entfernt eine Kante. Falls die gelöschte Kante zwei Maschen "
 "voneinander getrennt hat, wird eine der Maschen gelöscht und die andere so "
-"geändert, dass sie den Platz der beiden ursprünglichen Maschen einnimmt.</"
-"para>"
+"geändert, dass sie den Platz der beiden ursprünglichen Maschen einnimmt."
 
 #. Tag: funcprototype
 #: extras_topology.xml:1431

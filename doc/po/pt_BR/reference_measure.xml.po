@@ -2136,9 +2136,9 @@ msgid ""
 "Returns the 2D length of a linear geometry. Alias for <varname>ST_Length</"
 "varname>"
 msgstr ""
-"<para>Retorna o comprimento 2-dimensional da geometria se for uma linestring "
+"Retorna o comprimento 2-dimensional da geometria se for uma linestring "
 "ou multi-linestring. Isto é um  heterônimo para <varname>ST_Length</"
-"varname></para>"
+"varname>"
 
 #. Tag: funcprototype
 #: reference_measure.xml:806
@@ -2159,9 +2159,9 @@ msgid ""
 "Returns the 2D length of the geometry if it is a linestring or multi-"
 "linestring. This is an alias for <varname>ST_Length</varname>"
 msgstr ""
-"<para>Retorna o comprimento 2-dimensional da geometria se for uma linestring "
+"Retorna o comprimento 2-dimensional da geometria se for uma linestring "
 "ou multi-linestring. Isto é um  heterônimo para <varname>ST_Length</"
-"varname></para>"
+"varname>"
 
 #. Tag: para
 #: reference_measure.xml:825

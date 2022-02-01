@@ -1432,3 +1432,6 @@ SELECT
 	'#5008',
 	ST_DWithin('POINT EMPTY', 'POINT(0 0)', 'Inf'),
 	ST_DWithin('POINT(1 1)', 'POLYGON EMPTY', 'Inf');
+
+-- https://trac.osgeo.org/postgis/ticket/5024
+--SELECT '#5024', 'spatial_ref_sys entries' AS table_name, count(*) FROM spatial_ref_sys;

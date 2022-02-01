@@ -84,8 +84,8 @@ msgid ""
 "Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON', "
 "'MULTIPOINT', etc."
 msgstr ""
-"<para>Retourne le type de la géométrie, par exemple: 'LINESTRING', "
-"'POLYGON', 'MULTIPOINT', etc.</para>"
+"Retourne le type de la géométrie, par exemple: 'LINESTRING', "
+"'POLYGON', 'MULTIPOINT', etc."
 
 #. Tag: para
 #: reference_accessor.xml:28

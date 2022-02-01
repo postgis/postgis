@@ -1,4 +1,3 @@
-Style6;POINT(25 25)
-Style5;POINT(65 65)
-Style7-smallpoint;MULTIPOINT((20 20), (20 30), (30 20), (190 190))
-
+Result;POINT(25 25)
+ArgB;POINT(63 63)
+ArgA;MULTIPOINT((10 10), (10 50), (50 10), (190 190))

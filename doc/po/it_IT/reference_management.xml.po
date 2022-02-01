@@ -597,7 +597,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_management.xml:292
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>Find_SRID</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
@@ -605,13 +605,11 @@ msgid ""
 "parameter></paramdef> <paramdef><type>varchar </type> "
 "<parameter>a_geomfield_name</parameter></paramdef>"
 msgstr ""
-"<funcprototype> <funcdef>text <function>Populate_Geometry_Columns</"
-"function></funcdef> <paramdef><type>boolean </type> "
-"<parameter>use_typmod=true</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>int <function>Populate_Geometry_Columns</function></"
-"funcdef> <paramdef><type>oid</type> <parameter>relation_oid</parameter></"
-"paramdef> <paramdef><type>boolean </type> <parameter>use_typmod=true</"
-"parameter></paramdef> </funcprototype>"
+"<funcdef>integer <function>Find_SRID</function></funcdef> "
+"<paramdef><type>varchar </type> <parameter>a_schema_name</parameter></"
+"paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</"
+"parameter></paramdef> <paramdef><type>varchar </type> "
+"<parameter>a_geomfield_name</parameter></paramdef>"
 
 #. Tag: para
 #: reference_management.xml:304

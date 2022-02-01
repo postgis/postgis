@@ -2121,8 +2121,8 @@ msgid ""
 "Returns the 2D length of a linear geometry. Alias for <varname>ST_Length</"
 "varname>"
 msgstr ""
-"<para>도형이 라인스트링 또는 멀티라인스트링일 경우 도형의 2차원 길이를 반환합"
-"니다. 이 함수는 <varname>ST_Length</varname> 와 동일합니다.</para>"
+"도형이 라인스트링 또는 멀티라인스트링일 경우 도형의 2차원 길이를 반환합"
+"니다. 이 함수는 <varname>ST_Length</varname> 와 동일합니다."
 
 #. Tag: funcprototype
 #: reference_measure.xml:806
@@ -2143,8 +2143,8 @@ msgid ""
 "Returns the 2D length of the geometry if it is a linestring or multi-"
 "linestring. This is an alias for <varname>ST_Length</varname>"
 msgstr ""
-"<para>도형이 라인스트링 또는 멀티라인스트링일 경우 도형의 2차원 길이를 반환합"
-"니다. 이 함수는 <varname>ST_Length</varname> 와 동일합니다.</para>"
+"도형이 라인스트링 또는 멀티라인스트링일 경우 도형의 2차원 길이를 반환합"
+"니다. 이 함수는 <varname>ST_Length</varname> 와 동일합니다."
 
 #. Tag: para
 #: reference_measure.xml:825

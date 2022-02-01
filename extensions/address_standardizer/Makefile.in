@@ -38,7 +38,6 @@ MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION
 MODULEPATH    = $$libdir/address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 endif
 EXTENSION = address_standardizer
-DATA = sql/$(EXTENSION).sql sql/$(EXTENSION)_data_us.sql
 
 DATA_built = \
 	$(EXTENSION).control \
@@ -54,7 +53,7 @@ EXTRA_CLEAN = sql/
 
 
 
-DOCS = @srcdir@/README.address_standardizer
+DOCS = README.address_standardizer
 PG_CPPFLAGS = @CFLAGS@ @CPPFLAGS@ -DPCRE_VERSION=@PCRE_VERSION@
 
 SHLIB_LINK = @SHLIB_LINK@ @PCRE_LDFLAGS@
@@ -195,11 +194,9 @@ tokenize.o: tokenize.c pagc_api.h
 std_pg_hash.o: std_pg_hash.c std_pg_hash.h pagc_api.h pagc_std_api.h
 
 #only extension files
-DATA += $(wildcard sql/*--*.sql)
-EXTRA_CLEAN += sql/*.sql
+DATA_built += $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql *.a *.so *.dll
+EXTRA_CLEAN += *.a *.so *.dll
 
 distclean: clean
 	rm Makefile
@@ -209,4 +206,19 @@ PGXS := @PGXS@
 include $(PGXS)
 PERL = @PERL@
 
-VPATH = @srcdir@
+srcdir = @srcdir@
+VPATH = $(srcdir)
+
+install: all installdirs
+	$(INSTALL_DATA) $(addprefix $(srcdir)/, $(DATA)) $(DATA_built) '$(DESTDIR)$(datadir)/$(datamoduledir)/'
+ifdef DOCS
+ifdef docdir
+	$(INSTALL_DATA) $(addprefix $(srcdir)/, $(DOCS)) '$(DESTDIR)$(docdir)/$(docmoduledir)/'
+endif # docdir
+endif # DOCS
+ifdef MODULE_big
+ifeq ($(with_llvm), yes)
+	$(call install_llvm_module,$(MODULE_big),$(OBJS))
+endif # with_llvm
+install: install-lib
+endif # MODULE_big

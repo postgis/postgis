@@ -1,1 +1,0 @@
-unlink $TEST . ".tif";

@@ -783,9 +783,9 @@ msgid ""
 "Returns the locations along a measured geometry (as a Point or MultiPoint) "
 "that match a measure value. Polygonal elements are not supported."
 msgstr ""
-"<para>Gibt eine abgeleitete Sammelgeometrie zurück, welche jene Elemente "
+"Gibt eine abgeleitete Sammelgeometrie zurück, welche jene Elemente "
 "enthält die mit dem gegebenen Kilometrierungsmaß zusammenpassen. Polygonale "
-"Elemente werden nicht untersützt.</para>"
+"Elemente werden nicht untersützt."
 
 #. Tag: para
 #: reference_lrs.xml:365 reference_lrs.xml:419
@@ -1023,8 +1023,8 @@ msgstr "ST_InterpolatePoint"
 #, fuzzy, no-c-format
 msgid "Returns the interpolated measure of a geometry closest to a point."
 msgstr ""
-"<para>Für einen gegebenen Punkt wird die Kilometrierung auf dem "
-"nächstliegenden Punkt einer Geometrie zurück.</para>"
+"Für einen gegebenen Punkt wird die Kilometrierung auf dem "
+"nächstliegenden Punkt einer Geometrie zurück."
 
 #. Tag: funcprototype
 #: reference_lrs.xml:506
@@ -1045,8 +1045,8 @@ msgid ""
 "Returns the value of the measure dimension of a geometry at the point closed "
 "to the provided point."
 msgstr ""
-"<para>Für einen gegebenen Punkt wird die Kilometrierung auf dem "
-"nächstliegenden Punkt einer Geometrie zurück.</para>"
+"Für einen gegebenen Punkt wird die Kilometrierung auf dem "
+"nächstliegenden Punkt einer Geometrie zurück."
 
 #. Tag: para
 #: reference_lrs.xml:520

@@ -2,6 +2,8 @@
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
+# *
+# * Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
 # * Copyright 2008 Kevin Neufeld
 # *
 # * This is free software; you can redistribute and/or modify it under
@@ -9,14 +11,18 @@
 # *
 # **********************************************************************
 
+top_builddir = @top_builddir@
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+
 CC=@CC@
 CFLAGS=@CFLAGS@ @PROJ_CPPFLAGS@
-top_builddir = @top_builddir@
+CPPFLAGS = -I$(top_builddir)/liblwgeom -I$(top_srcdir)/liblwgeom @CPPFLAGS@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
+LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ @PROJ_LDFLAGS@
 
-CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=-I../../../liblwgeom @CUNIT_CPPFLAGS@
+VPATH = $(srcdir)
 
 IMAGES= \
 	../images/de9im01.png \
@@ -55,12 +61,6 @@ IMAGES= \
 	../images/st_contains06.png \
 	../images/st_concavehull01.png \
 	../images/st_concavehull02.png \
-	../images/st_concavehull03.png \
-	../images/st_concavehull04.png \
-	../images/st_concavehull05.png \
-	../images/st_concavehull06.png \
-	../images/st_concavehull07.png \
-	../images/st_concavehull08.png \
 	../images/st_convexhull01.png \
 	../images/st_crosses01.png \
 	../images/st_crosses02.png \
@@ -75,7 +75,6 @@ IMAGES= \
 	../images/st_extrude01.png \
 	../images/st_extrude03.png \
 	../images/st_generatepoints01.png \
-	../images/st_generatepoints02.png \
 	../images/st_geometricmedian01.png \
 	../images/st_issimple01.png \
 	../images/st_issimple02.png \
@@ -93,6 +92,7 @@ IMAGES= \
 	../images/st_isvalid07.png \
 	../images/st_isvalid08.png \
 	../images/st_isvalid09.png \
+	../images/st_letters01.png \
 	../images/st_linecrossingdirection01.png \
 	../images/st_linecrossingdirection02.png \
 	../images/st_linecrossingdirection03.png \
@@ -126,6 +126,9 @@ IMAGES= \
 	../images/st_overlaps01.png \
 	../images/st_overlaps02.png \
 	../images/st_overlaps03.png \
+	../images/st_overlaps04.png \
+	../images/st_overlaps05.png \
+	../images/st_overlaps06.png \
 	../images/st_sharedpaths01.png \
 	../images/st_sharedpaths02.png \
 	../images/st_shortestline01.png \
@@ -177,26 +180,29 @@ OBJS=styles.o generator.o
 # Build the generator
 all: generator
 
+images_dir:
+	mkdir -p ../images
+
 # generate the images
 images: $(IMAGES) $(IMAGES_RESIZED)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
-	$(CC) $(CUNIT_CPPFLAGS) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 # Command to build each of the .wkt files
-$(IMAGES): ../images/%.png: %.wkt generator styles.conf
-	@./generator $<
+$(IMAGES): ../images/%.png: %.wkt generator styles.conf | images_dir
+	@./generator $< $@
 
 # Command to resize each of the images
-$(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
-	@./generator $<
+$(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf | images_dir
+	@./generator $< $@
 	convert $@ -resize 100x100 $@
 
 # Build the main executable
-generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
+generator: $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a
 	$(LIBTOOL) --mode=link \
-	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.la $(CUNIT_LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Build liblwgeom
 ../../../liblwgeom/.libs/liblwgeom.a:

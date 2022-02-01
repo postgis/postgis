@@ -50,7 +50,7 @@ jobs:
         uname -a
         echo "FROM postgis/postgis-build-env:${{ matrix.ci.tag }}" > Dockerfile
         echo "ADD --chown=postgres:postgres . /src/postgis" >> Dockerfile
-        echo "CMD bash ci/travis/run_${{ matrix.ci.mode }}.sh" >> Dockerfile
+        echo "CMD bash ci/github/run_${{ matrix.ci.mode }}.sh" >> Dockerfile
         docker build -t pgtest .
 
     - name: 'Build & Test'

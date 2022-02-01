@@ -6,7 +6,7 @@ LOGFILE=${TMPDIR}/log
 INIT_SCRIPT=
 export PGPORT=15432
 export PGHOST=${TMPDIR}
-export PGDATABASE=pgis
+export PGDATABASE=postgis_cluster_upgrade_test
 PG_CONFIG_OLD=
 PG_CONFIG_NEW=
 
@@ -15,9 +15,10 @@ usage() {
 }
 
 cleanup() {
-  if test -f ${DATADIR}/cluster/postmaster.pid; then
-    ${BIN_OLD}/pg_ctl -D ${DATADIR} stop
-  fi
+  echo "-- Cleaning up --"
+  echo "Stopping postmaster on ${DATADIR} up"
+  ${BIN_OLD}/pg_ctl -D ${DATADIR} stop
+  echo "Removing ${TMPDIR}"
   rm -rf ${TMPDIR}
 }
 
@@ -78,13 +79,13 @@ ${BIN_OLD}/pg_ctl -D ${DATADIR} -o "-F -p ${PGPORT} -k ${TMPDIR}" -l ${LOGFILE} 
 }
 
 echo "Creating FROM db"
-${BIN_OLD}/createdb pgis || exit 1
+${BIN_OLD}/createdb ${PGDATABASE} || exit 1
 
-#TODO: run an custom script
+# run an custom script
 if test -n "$INIT_SCRIPT"; then
-  ${BIN_OLD}/psql -X --set ON_ERROR_STOP=1 -f "$INIT_SCRIPT" || exit 1
+  ${BIN_OLD}/psql -XAt --set ON_ERROR_STOP=1 -f "$INIT_SCRIPT" || exit 1
 else
-  ${BIN_OLD}/psql -Xc --set ON_ERROR_STOP=1 "CREATE EXTENSION postgis" || exit 1
+  ${BIN_OLD}/psql -XAt --set ON_ERROR_STOP=1 -c "CREATE EXTENSION postgis" || exit 1
 fi
 
 echo "---- OLD cluster info -------------------------"
@@ -125,10 +126,18 @@ ${BIN_NEW}/pg_ctl -D ${DATADIR} -o "-F -p ${PGPORT} -k ${TMPDIR}" -l ${LOGFILE} 
 }
 
 echo "---- NEW cluster info -------------------------"
-${BIN_NEW}/psql -XAx <<EOF || exit 1
+${BIN_NEW}/psql -XAt <<EOF || exit 1
 SELECT version();
 SELECT postgis_full_version();
+EOF
+echo "-----------------------------------------------"
+
+
+echo "---- Extensions upgrade call -------------------"
+${BIN_NEW}/psql -XAt <<EOF || exit 1
 SELECT postgis_extensions_upgrade();
 SELECT postgis_full_version();
 EOF
 echo "-----------------------------------------------"
+
+# TODO: run some checks with --nocreate and appropriate PG

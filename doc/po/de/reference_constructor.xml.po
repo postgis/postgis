@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-01-31 00:29+0000\n"
 "PO-Revision-Date: 2019-03-11 09:13+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -67,7 +67,7 @@ msgstr ""
 #: reference_constructor.xml:640 reference_constructor.xml:674
 #: reference_constructor.xml:733 reference_constructor.xml:772
 #: reference_constructor.xml:844 reference_constructor.xml:881
-#: reference_constructor.xml:946
+#: reference_constructor.xml:946 reference_constructor.xml:986
 #, no-c-format
 msgid "Description"
 msgstr "Beschreibung"
@@ -283,7 +283,7 @@ msgstr ""
 #: reference_constructor.xml:652 reference_constructor.xml:706
 #: reference_constructor.xml:748 reference_constructor.xml:819
 #: reference_constructor.xml:859 reference_constructor.xml:919
-#: reference_constructor.xml:961
+#: reference_constructor.xml:961 reference_constructor.xml:1007
 #, no-c-format
 msgid "See Also"
 msgstr "Siehe auch"
@@ -350,7 +350,7 @@ msgstr "Beispiele"
 #: reference_constructor.xml:121
 #, fuzzy, no-c-format
 msgid "Create a 3D line string from a 3D MultiPoint"
-msgstr "<para>Erzeugt einen LineString aus einer MultiPoint Geometrie.</para>"
+msgstr "Erzeugt einen LineString aus einer MultiPoint Geometrie."
 
 #. Tag: programlisting
 #: reference_constructor.xml:122
@@ -1254,36 +1254,20 @@ msgid ""
 "    END AS geom\n"
 "FROM provinces p;"
 msgstr ""
-"SELECT p.gid, p.province_name,\n"
-"                CASE WHEN\n"
-"                        ST_Accum(w.the_geom) IS NULL THEN p.the_geom\n"
-"                ELSE  ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), "
-"ST_Accum(w.the_geom)) END\n"
-"        FROM\n"
-"                provinces p LEFT JOIN waterlines w\n"
-"                        ON (ST_Within(w.the_geom, p.the_geom) AND "
-"ST_IsClosed(w.the_geom))\n"
-"        GROUP BY p.gid, p.province_name, p.the_geom;\n"
-"\n"
-"        --Gleiches Beispiel wie oben, nur mit einer korrespondierenden "
-"Unterabfrage\n"
-"        --und der PostgreSQL interen ARRAY() Funktion, welche eine Menge von "
-"Zeilen in ein Feld/Array umwandelt\n"
-"\n"
-"        SELECT p.gid,  p.province_name, CASE WHEN\n"
-"                EXISTS(SELECT w.the_geom\n"
-"                        FROM waterlines w\n"
-"                        WHERE ST_Within(w.the_geom, p.the_geom)\n"
-"                        AND ST_IsClosed(w.the_geom))\n"
-"                THEN\n"
-"                ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)),\n"
-"                        ARRAY(SELECT w.the_geom\n"
-"                                FROM waterlines w\n"
-"                                WHERE ST_Within(w.the_geom, p.the_geom)\n"
-"                                AND ST_IsClosed(w.the_geom)))\n"
-"                ELSE p.the_geom END As the_geom\n"
-"        FROM\n"
-"                provinces p;"
+"SELECT p.gid,  p.province_name,\n"
+"    CASE WHEN EXISTS( SELECT w.geom\n"
+"        FROM waterlines w\n"
+"        WHERE ST_Within(w.geom, p.geom)\n"
+"        AND ST_IsClosed(w.geom))\n"
+"    THEN ST_MakePolygon(\n"
+"        ST_LineMerge(ST_Boundary(p.geom)),\n"
+"        ARRAY( SELECT w.geom\n"
+"            FROM waterlines w\n"
+"            WHERE ST_Within(w.geom, p.geom)\n"
+"            AND ST_IsClosed(w.geom)))\n"
+"    ELSE p.geom\n"
+"    END AS geom\n"
+"FROM provinces p;"
 
 #. Tag: refname
 #: reference_constructor.xml:482
@@ -1412,9 +1396,9 @@ msgid ""
 "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
 "\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
-", <xref linkend=\"ST_Accum\"/>, <xref linkend=\"ST_AddPoint\"/>, <xref "
-"linkend=\"ST_GeometryType\"/>, <xref linkend=\"ST_IsClosed\"/>, <xref "
-"linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_BuildArea\"/>"
+", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
+"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:549
@@ -2271,6 +2255,75 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_SquareGrid\"/>, <xref linkend=\"ST_Hexagon\"/>"
 msgstr ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
+
+#. Tag: refname
+#: reference_constructor.xml:970
+#, no-c-format
+msgid "ST_Letters"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_constructor.xml:971
+#, no-c-format
+msgid ""
+"Returns the input letters rendered as geometry with a default start position "
+"at the origin and default text height of 100."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_constructor.xml:975
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Letters</function></funcdef> "
+"<paramdef><type>text</type> <parameter> letters</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>double precision</type> <parameter> "
+"text_height=100.0</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>geometry</type> <parameter> start_position=POINT(0 0)</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>json</type> <parameter> font</"
+"parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
+"<paramdef><type>double precision</type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>double precision</type> <parameter>y</parameter></paramdef> "
+"<paramdef><type>double precision</type> <parameter>z</parameter></paramdef> "
+"<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
+
+#. Tag: para
+#: reference_constructor.xml:988
+#, no-c-format
+msgid ""
+"Uses a built-in font to render out a string as a multipolygon geometry. The "
+"default text height is 100.0, the distance from the bottom of a descender to "
+"the top of a capital. The default start position places the start of the "
+"baseline at the origin. Over-riding the font involves passing in a json map, "
+"with a character as the key, and base64 encoded TWKB for the font shape, "
+"with the fonts having a height of 1000 units from the bottom of the "
+"descenders to the tops of the capitals."
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:991
+#, fuzzy, no-c-format
+msgid "Availability: 3.3.0"
+msgstr "Verfügbarkeit: 2.1.0"
+
+#. Tag: title
+#: reference_constructor.xml:995
+#, fuzzy, no-c-format
+msgid "Example: Generating the word 'Yo'"
+msgstr "Beispiel: Ein Umgebungsrechteck Polygon erzeugen"
+
+#. Tag: programlisting
+#: reference_constructor.xml:996
+#, no-c-format
+msgid "SELECT ST_AsText(ST_Letters('Yo'), 1);"
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:1002
+#, no-c-format
+msgid "Letters generated by ST_Letters"
+msgstr ""
 
 #, no-c-format
 #~ msgid ""

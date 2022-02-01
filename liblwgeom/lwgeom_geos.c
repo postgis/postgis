@@ -2090,3 +2090,32 @@ lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int o
 
 	return lwgeom_result;
 }
+
+
+#if POSTGIS_GEOS_VERSION >= 31100
+LWGEOM*
+lwgeom_concavehull(const LWGEOM* geom, double ratio, uint32_t allow_holes)
+{
+	LWGEOM* result;
+	int32_t srid = RESULT_SRID(geom);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry *g1, *g3;
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
+
+	g3 = GEOSConcaveHull(g1, ratio, allow_holes);
+
+	if (!g3)
+		GEOS_FREE_AND_FAIL(g1);
+
+	GEOSSetSRID(g3, srid);
+
+	if (!(result = GEOS2LWGEOM(g3, is3d)))
+		GEOS_FREE_AND_FAIL(g1, g3);
+
+	GEOS_FREE(g1, g3);
+	return result;
+}
+#endif
