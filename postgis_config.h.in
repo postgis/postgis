@@ -5,7 +5,7 @@
 
 /* Manually manipulate the POSTGIS_DEBUG_LEVEL, it is not affected by the
    configure process */
-#define POSTGIS_DEBUG_LEVEL 5
+#define POSTGIS_DEBUG_LEVEL 0
 
 /* Define to 1 to enable memory checks in pointarray management. */
 #undef PARANOIA_LEVEL
