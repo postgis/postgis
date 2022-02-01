@@ -136,7 +136,7 @@ static int is_format_valid(const char* format){
 
 		}
 
-		for (int i = 1; i < strlen(dec_part); i++) {
+		for (size_t i = 1; i < strlen(dec_part); i++) {
 
 			if(dec_part[i]!=int_part[strlen(int_part)-1]) {
 
