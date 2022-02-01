@@ -3,6 +3,7 @@ PostGIS 3.6.5dev
 
 * Fixes *
 
+- #5041, Generate valid SQL for the TIGER 2020 tract loader (Regina Obe)
 - [tiger_geocoder] Treat address fragments literally during normalization
   (Darafei Praliaskouski)
 - #2850, GH-1020, Preserve fixed numeric DBF widths and scale in pgsql2shp (Darafei Praliaskouski)
