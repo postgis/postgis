@@ -12,6 +12,8 @@ PostGIS 3.1.5
   - #5046, Fix upgrades in absence of old library (Sandro Santilli)
   - #5069, search_path vulnerabilty during install/upgrade
            (Regina Obe)
+	- #5041, postgis_tiger_geocoder: loader_generate_script
+           generates script with invalid syntax(Regna Obe)
 
 PostGIS 3.1.4
 2021/09/04
