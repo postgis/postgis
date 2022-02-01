@@ -30,8 +30,8 @@
 --         FROM pg_catalog.pg_proc p
 --         LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
 --         WHERE
---                 LOWER(n.nspname) = LOWER('public') AND
---                 LOWER(p.proname) = LOWER('ST_AsGeoJson')
+--                 pg_catalog.LOWER(n.nspname) = pg_catalog.LOWER('public') AND
+--                 pg_catalog.LOWER(p.proname) = pg_catalog.LOWER('ST_AsGeoJson')
 --         ORDER BY 1, 2, 3, 4;
 CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
 	function_name text,

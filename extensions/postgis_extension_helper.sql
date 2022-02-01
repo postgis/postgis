@@ -30,8 +30,8 @@ DECLARE
 	var_sql_list text := '';
 	var_pgsql_version integer := pg_catalog.current_setting('server_version_num');
 BEGIN
-		var_class := CASE WHEN lower(param_type) = 'function' OR lower(param_type) = 'aggregate' THEN 'pg_proc' ELSE '' END;
-		var_is_aggregate := CASE WHEN lower(param_type) = 'aggregate' THEN true ELSE false END;
+		var_class := CASE WHEN pg_catalog.lower(param_type) = 'function' OR pg_catalog.lower(param_type) = 'aggregate' THEN 'pg_proc' ELSE '' END;
+		var_is_aggregate := CASE WHEN pg_catalog.lower(param_type) = 'aggregate' THEN true ELSE false END;
 
 		IF var_pgsql_version < 110000 THEN
 			var_sql_list := $sql$SELECT 'ALTER EXTENSION ' || e.extname || ' DROP ' || $3 || ' ' || COALESCE(proc.proname || '(' || oidvectortypes(proc.proargtypes) || ')' ,typ.typname, cd.relname, op.oprname,
@@ -115,7 +115,7 @@ BEGIN
 	ELSE
 		var_cur_search_path := var_cur_search_path || ', '
                         || pg_catalog.quote_ident(a_schema_name);
-		EXECUTE 'ALTER DATABASE ' || pg_catalog.quote_ident(current_database())
+		EXECUTE 'ALTER DATABASE ' || pg_catalog.quote_ident(pg_catalog.current_database())
                               || ' SET search_path = ' || var_cur_search_path;
 		var_result := a_schema_name || ' has been added to end of database search_path ';
 	END IF;

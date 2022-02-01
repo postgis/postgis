@@ -244,8 +244,8 @@ BEGIN
     FOR rec IN
         SELECT e.extname
         FROM
-            pg_extension e,
-            pg_depend d
+            pg_catalog.pg_extension e,
+            pg_catalog.pg_depend d
         WHERE
             d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass AND
             d.refobjid = e.oid AND
