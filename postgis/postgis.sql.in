@@ -52,14 +52,35 @@ DECLARE
   rec RECORD;
 BEGIN
   FOR rec IN
-    SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
-    WHERE p.proname = 'postgis_version'
-    AND p.pronamespace = n.oid
+	SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
+	WHERE p.proname = 'postgis_version'
+	AND p.pronamespace = n.oid
   LOOP
-    RAISE EXCEPTION 'PostGIS is already installed in schema ''%''', rec.nspname;
+	RAISE EXCEPTION 'PostGIS is already installed in schema ''%''', rec.nspname;
   END LOOP;
 END
 $$ LANGUAGE 'plpgsql';
+
+
+-- Check that pgaudit is disabled or not installed
+-- Running extension creation with pgaudit enabled will result in a
+-- multi-gigabyte log storm for PgSQL <= 14
+DO $$
+DECLARE
+	pgalog text;
+BEGIN
+	SHOW pgaudit.log INTO pgalog;
+	RAISE DEBUG 'pgaudit is installed, pgaudit.log is set to ''%''', pgalog;
+	IF lower(pgalog) != 'none'
+	THEN
+		RAISE EXCEPTION 'PostGIS installation stopped: pgaudit.log is set to ''%''. Set pgaudit.log to ''none'' before installing PostGIS. You may re-enable pgaudit after installation is complete.', pgalog;
+	END IF;
+EXCEPTION
+	WHEN undefined_object THEN
+		RAISE DEBUG 'pgaudit is not installed';
+END;
+$$;
+
 
 -- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
@@ -72,15 +93,15 @@ BEGIN
   -- Raises a NOTICE if it was deprecated in this version,
   -- a WARNING if in a previous version (only up to minor version checked)
   --
-    curver_text := POSTGIS_LIB_VERSION;
-    IF split_part(curver_text,'.',1)::int > split_part(version,'.',1)::int OR
-       ( split_part(curver_text,'.',1) = split_part(version,'.',1) AND
-         split_part(curver_text,'.',2) != split_part(version,'.',2) )
-    THEN
-      RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
-    ELSE
-      RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
-    END IF;
+	curver_text := POSTGIS_LIB_VERSION;
+	IF split_part(curver_text,'.',1)::int > split_part(version,'.',1)::int OR
+	   ( split_part(curver_text,'.',1) = split_part(version,'.',1) AND
+		 split_part(curver_text,'.',2) != split_part(version,'.',2) )
+	THEN
+	  RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+	ELSE
+	  RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
+	END IF;
 END;
 $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT _COST_MEDIUM;
 
@@ -2157,89 +2178,89 @@ BEGIN
 		AND c.oid = tbl_oid
 	LOOP
 
-        RAISE DEBUG 'Processing column %.%.%', gcs.nspname, gcs.relname, gcs.attname;
+		RAISE DEBUG 'Processing column %.%.%', gcs.nspname, gcs.relname, gcs.attname;
 
-        gc_is_valid := true;
-        -- Find the srid, coord_dimension, and type of current geometry
-        -- in geometry_columns -- which is now a view
+		gc_is_valid := true;
+		-- Find the srid, coord_dimension, and type of current geometry
+		-- in geometry_columns -- which is now a view
 
-        SELECT type, srid, coord_dimension, gcs.relkind INTO gc_old
-            FROM geometry_columns
-            WHERE f_table_schema = gcs.nspname AND f_table_name = gcs.relname AND f_geometry_column = gcs.attname;
+		SELECT type, srid, coord_dimension, gcs.relkind INTO gc_old
+			FROM geometry_columns
+			WHERE f_table_schema = gcs.nspname AND f_table_name = gcs.relname AND f_geometry_column = gcs.attname;
 
-        IF upper(gc_old.type) = 'GEOMETRY' THEN
-        -- This is an unconstrained geometry we need to do something
-        -- We need to figure out what to set the type by inspecting the data
-            EXECUTE 'SELECT @extschema@.ST_srid(' || quote_ident(gcs.attname) || ') As srid, @extschema@.GeometryType(' || quote_ident(gcs.attname) || ') As type, @extschema@.ST_NDims(' || quote_ident(gcs.attname) || ') As dims ' ||
-                     ' FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
-                     ' WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1;'
-                INTO gc;
-            IF gc IS NULL THEN -- there is no data so we can not determine geometry type
-            	RAISE WARNING 'No data in table %.%, so no information to determine geometry type and srid', gcs.nspname, gcs.relname;
-            	RETURN 0;
-            END IF;
-            gsrid := gc.srid; gtype := gc.type; gndims := gc.dims;
+		IF upper(gc_old.type) = 'GEOMETRY' THEN
+		-- This is an unconstrained geometry we need to do something
+		-- We need to figure out what to set the type by inspecting the data
+			EXECUTE 'SELECT @extschema@.ST_srid(' || quote_ident(gcs.attname) || ') As srid, @extschema@.GeometryType(' || quote_ident(gcs.attname) || ') As type, @extschema@.ST_NDims(' || quote_ident(gcs.attname) || ') As dims ' ||
+					 ' FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
+					 ' WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1;'
+				INTO gc;
+			IF gc IS NULL THEN -- there is no data so we can not determine geometry type
+				RAISE WARNING 'No data in table %.%, so no information to determine geometry type and srid', gcs.nspname, gcs.relname;
+				RETURN 0;
+			END IF;
+			gsrid := gc.srid; gtype := gc.type; gndims := gc.dims;
 
-            IF use_typmod THEN
-                BEGIN
-                    EXECUTE 'ALTER TABLE ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' ALTER COLUMN ' || quote_ident(gcs.attname) ||
-                        ' TYPE geometry(' || postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
-                    inserted := inserted + 1;
-                EXCEPTION
-                        WHEN invalid_parameter_value OR feature_not_supported THEN
-                        RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type %: %', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, postgis_type_name(gtype, gndims, true), SQLERRM;
-                            gc_is_valid := false;
-                END;
+			IF use_typmod THEN
+				BEGIN
+					EXECUTE 'ALTER TABLE ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' ALTER COLUMN ' || quote_ident(gcs.attname) ||
+						' TYPE geometry(' || postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
+					inserted := inserted + 1;
+				EXCEPTION
+						WHEN invalid_parameter_value OR feature_not_supported THEN
+						RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type %: %', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, postgis_type_name(gtype, gndims, true), SQLERRM;
+							gc_is_valid := false;
+				END;
 
-            ELSE
-                -- Try to apply srid check to column
-            	constraint_successful = false;
-                IF (gsrid > 0 AND postgis_constraint_srid(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
-                    BEGIN
-                        EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
-                                 ' ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) ||
-                                 ' CHECK (ST_srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
-                        constraint_successful := true;
-                    EXCEPTION
-                        WHEN check_violation THEN
-                            RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
-                            gc_is_valid := false;
-                    END;
-                END IF;
+			ELSE
+				-- Try to apply srid check to column
+				constraint_successful = false;
+				IF (gsrid > 0 AND postgis_constraint_srid(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+					BEGIN
+						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
+								 ' ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) ||
+								 ' CHECK (ST_srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
+						constraint_successful := true;
+					EXCEPTION
+						WHEN check_violation THEN
+							RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
+							gc_is_valid := false;
+					END;
+				END IF;
 
-                -- Try to apply ndims check to column
-                IF (gndims IS NOT NULL AND postgis_constraint_dims(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
-                    BEGIN
-                        EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-                                 ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || '
-                                 CHECK (st_ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
-                        constraint_successful := true;
-                    EXCEPTION
-                        WHEN check_violation THEN
-                            RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
-                            gc_is_valid := false;
-                    END;
-                END IF;
+				-- Try to apply ndims check to column
+				IF (gndims IS NOT NULL AND postgis_constraint_dims(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+					BEGIN
+						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
+								 ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || '
+								 CHECK (st_ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
+						constraint_successful := true;
+					EXCEPTION
+						WHEN check_violation THEN
+							RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
+							gc_is_valid := false;
+					END;
+				END IF;
 
-                -- Try to apply geometrytype check to column
-                IF (gtype IS NOT NULL AND postgis_constraint_type(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
-                    BEGIN
-                        EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-                        ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
-                        CHECK (geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ')';
-                        constraint_successful := true;
-                    EXCEPTION
-                        WHEN check_violation THEN
-                            -- No geometry check can be applied. This column contains a number of geometry types.
-                            RAISE WARNING 'Could not add geometry type check (%) to table column: %.%.%', gtype, quote_ident(gcs.nspname),quote_ident(gcs.relname),quote_ident(gcs.attname);
-                    END;
-                END IF;
-                 --only count if we were successful in applying at least one constraint
-                IF constraint_successful THEN
-                	inserted := inserted + 1;
-                END IF;
-            END IF;
-	    END IF;
+				-- Try to apply geometrytype check to column
+				IF (gtype IS NOT NULL AND postgis_constraint_type(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
+					BEGIN
+						EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
+						ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
+						CHECK (geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ')';
+						constraint_successful := true;
+					EXCEPTION
+						WHEN check_violation THEN
+							-- No geometry check can be applied. This column contains a number of geometry types.
+							RAISE WARNING 'Could not add geometry type check (%) to table column: %.%.%', gtype, quote_ident(gcs.nspname),quote_ident(gcs.relname),quote_ident(gcs.attname);
+					END;
+				END IF;
+				 --only count if we were successful in applying at least one constraint
+				IF constraint_successful THEN
+					inserted := inserted + 1;
+				END IF;
+			END IF;
+		END IF;
 
 	END LOOP;
 
@@ -2361,52 +2382,52 @@ BEGIN
 
 	-- Add geometry column to table
 	IF use_typmod THEN
-	     sql := 'ALTER TABLE ' ||
-            quote_ident(real_schema) || '.' || quote_ident(table_name)
-            || ' ADD COLUMN ' || quote_ident(column_name) ||
-            ' geometry(' || @extschema@.postgis_type_name(new_type, new_dim) || ', ' || new_srid::text || ')';
-        RAISE DEBUG '%', sql;
+		 sql := 'ALTER TABLE ' ||
+			quote_ident(real_schema) || '.' || quote_ident(table_name)
+			|| ' ADD COLUMN ' || quote_ident(column_name) ||
+			' geometry(' || @extschema@.postgis_type_name(new_type, new_dim) || ', ' || new_srid::text || ')';
+		RAISE DEBUG '%', sql;
 	ELSE
-        sql := 'ALTER TABLE ' ||
-            quote_ident(real_schema) || '.' || quote_ident(table_name)
-            || ' ADD COLUMN ' || quote_ident(column_name) ||
-            ' geometry ';
-        RAISE DEBUG '%', sql;
-    END IF;
+		sql := 'ALTER TABLE ' ||
+			quote_ident(real_schema) || '.' || quote_ident(table_name)
+			|| ' ADD COLUMN ' || quote_ident(column_name) ||
+			' geometry ';
+		RAISE DEBUG '%', sql;
+	END IF;
 	EXECUTE sql;
 
 	IF NOT use_typmod THEN
-        -- Add table CHECKs
-        sql := 'ALTER TABLE ' ||
-            quote_ident(real_schema) || '.' || quote_ident(table_name)
-            || ' ADD CONSTRAINT '
-            || quote_ident('enforce_srid_' || column_name)
-            || ' CHECK (st_srid(' || quote_ident(column_name) ||
-            ') = ' || new_srid::text || ')' ;
-        RAISE DEBUG '%', sql;
-        EXECUTE sql;
+		-- Add table CHECKs
+		sql := 'ALTER TABLE ' ||
+			quote_ident(real_schema) || '.' || quote_ident(table_name)
+			|| ' ADD CONSTRAINT '
+			|| quote_ident('enforce_srid_' || column_name)
+			|| ' CHECK (st_srid(' || quote_ident(column_name) ||
+			') = ' || new_srid::text || ')' ;
+		RAISE DEBUG '%', sql;
+		EXECUTE sql;
 
-        sql := 'ALTER TABLE ' ||
-            quote_ident(real_schema) || '.' || quote_ident(table_name)
-            || ' ADD CONSTRAINT '
-            || quote_ident('enforce_dims_' || column_name)
-            || ' CHECK (st_ndims(' || quote_ident(column_name) ||
-            ') = ' || new_dim::text || ')' ;
-        RAISE DEBUG '%', sql;
-        EXECUTE sql;
+		sql := 'ALTER TABLE ' ||
+			quote_ident(real_schema) || '.' || quote_ident(table_name)
+			|| ' ADD CONSTRAINT '
+			|| quote_ident('enforce_dims_' || column_name)
+			|| ' CHECK (st_ndims(' || quote_ident(column_name) ||
+			') = ' || new_dim::text || ')' ;
+		RAISE DEBUG '%', sql;
+		EXECUTE sql;
 
-        IF ( NOT (new_type = 'GEOMETRY')) THEN
-            sql := 'ALTER TABLE ' ||
-                quote_ident(real_schema) || '.' || quote_ident(table_name) || ' ADD CONSTRAINT ' ||
-                quote_ident('enforce_geotype_' || column_name) ||
-                ' CHECK (GeometryType(' ||
-                quote_ident(column_name) || ')=' ||
-                quote_literal(new_type) || ' OR (' ||
-                quote_ident(column_name) || ') is null)';
-            RAISE DEBUG '%', sql;
-            EXECUTE sql;
-        END IF;
-    END IF;
+		IF ( NOT (new_type = 'GEOMETRY')) THEN
+			sql := 'ALTER TABLE ' ||
+				quote_ident(real_schema) || '.' || quote_ident(table_name) || ' ADD CONSTRAINT ' ||
+				quote_ident('enforce_geotype_' || column_name) ||
+				' CHECK (GeometryType(' ||
+				quote_ident(column_name) || ')=' ||
+				quote_literal(new_type) || ' OR (' ||
+				quote_ident(column_name) || ') is null)';
+			RAISE DEBUG '%', sql;
+			EXECUTE sql;
+		END IF;
+	END IF;
 
 	RETURN
 		real_schema || '.' ||
@@ -2686,34 +2707,34 @@ BEGIN
 
 	IF postgis_constraint_srid(real_schema, table_name, column_name) IS NOT NULL THEN
 	-- srid was enforced with constraints before, keep it that way.
-        -- Make up constraint name
-        cname = 'enforce_srid_'  || column_name;
+		-- Make up constraint name
+		cname = 'enforce_srid_'  || column_name;
 
-        -- Drop enforce_srid constraint
-        EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
-            '.' || quote_ident(table_name) ||
-            ' DROP constraint ' || quote_ident(cname);
+		-- Drop enforce_srid constraint
+		EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
+			'.' || quote_ident(table_name) ||
+			' DROP constraint ' || quote_ident(cname);
 
-        -- Update geometries SRID
-        EXECUTE 'UPDATE ' || quote_ident(real_schema) ||
-            '.' || quote_ident(table_name) ||
-            ' SET ' || quote_ident(column_name) ||
-            ' = @extschema@.ST_SetSRID(' || quote_ident(column_name) ||
-            ', ' || new_srid::text || ')';
+		-- Update geometries SRID
+		EXECUTE 'UPDATE ' || quote_ident(real_schema) ||
+			'.' || quote_ident(table_name) ||
+			' SET ' || quote_ident(column_name) ||
+			' = @extschema@.ST_SetSRID(' || quote_ident(column_name) ||
+			', ' || new_srid::text || ')';
 
-        -- Reset enforce_srid constraint
-        EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
-            '.' || quote_ident(table_name) ||
-            ' ADD constraint ' || quote_ident(cname) ||
-            ' CHECK (st_srid(' || quote_ident(column_name) ||
-            ') = ' || new_srid::text || ')';
-    ELSE
-        -- We will use typmod to enforce if no srid constraints
-        -- We are using postgis_type_name to lookup the new name
-        -- (in case Paul changes his mind and flips geometry_columns to return old upper case name)
-        EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' || quote_ident(table_name) ||
-        ' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || @extschema@.postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ') USING @extschema@.ST_SetSRID(' || quote_ident(column_name) || ',' || new_srid::text || ');' ;
-    END IF;
+		-- Reset enforce_srid constraint
+		EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
+			'.' || quote_ident(table_name) ||
+			' ADD constraint ' || quote_ident(cname) ||
+			' CHECK (st_srid(' || quote_ident(column_name) ||
+			') = ' || new_srid::text || ')';
+	ELSE
+		-- We will use typmod to enforce if no srid constraints
+		-- We are using postgis_type_name to lookup the new name
+		-- (in case Paul changes his mind and flips geometry_columns to return old upper case name)
+		EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' || quote_ident(table_name) ||
+		' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || @extschema@.postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ') USING @extschema@.ST_SetSRID(' || quote_ident(column_name) || ',' || new_srid::text || ');' ;
+	END IF;
 
 	RETURN real_schema || '.' || table_name || '.' || column_name ||' SRID changed to ' || new_srid::text;
 
@@ -2987,19 +3008,19 @@ BEGIN
 				SELECT INTO var_schema n.nspname
 				  FROM pg_namespace n, pg_proc p
 				  WHERE p.proname = 'postgis_full_version'
-				    AND n.oid = p.pronamespace
+					AND n.oid = p.pronamespace
 				  LIMIT 1;
 				IF rec.name NOT IN('postgis_topology', 'postgis_tiger_geocoder')
 				THEN
 					sql := format(
-					          'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
-					          'ALTER EXTENSION %1$I UPDATE TO %3$I',
-					          rec.name, var_schema, rec.default_version);
+							  'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
+							  'ALTER EXTENSION %1$I UPDATE TO %3$I',
+							  rec.name, var_schema, rec.default_version);
 				ELSE
 					sql := format(
-					         'CREATE EXTENSION %1$I VERSION unpackaged;'
-					         'ALTER EXTENSION %1$I UPDATE TO %2$I',
-					         rec.name, rec.default_version);
+							 'CREATE EXTENSION %1$I VERSION unpackaged;'
+							 'ALTER EXTENSION %1$I UPDATE TO %2$I',
+							 rec.name, rec.default_version);
 				END IF;
 				RAISE NOTICE 'Packaging extension %', rec.name;
 				RAISE DEBUG '%', sql;
@@ -6159,38 +6180,38 @@ LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 
 CREATE OR REPLACE VIEW geometry_columns AS
  SELECT current_database()::character varying(256) AS f_table_catalog,
-    n.nspname AS f_table_schema,
-    c.relname AS f_table_name,
-    a.attname AS f_geometry_column,
-    COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
-    COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
-    replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text)::character varying(30) AS type
+	n.nspname AS f_table_schema,
+	c.relname AS f_table_name,
+	a.attname AS f_geometry_column,
+	COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
+	COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
+	replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text)::character varying(30) AS type
    FROM pg_class c
-     JOIN pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
-     JOIN pg_namespace n ON c.relnamespace = n.oid
-     JOIN pg_type t ON a.atttypid = t.oid
-     LEFT JOIN ( SELECT s.connamespace,
-            s.conrelid,
-            s.conkey, replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
-           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+	 JOIN pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
+	 JOIN pg_namespace n ON c.relnamespace = n.oid
+	 JOIN pg_type t ON a.atttypid = t.oid
+	 LEFT JOIN ( SELECT s.connamespace,
+			s.conrelid,
+			s.conkey, replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
+		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
 				FROM pg_constraint) AS s
-          WHERE s.consrc ~~* '%geometrytype(% = %'::text
+		  WHERE s.consrc ~~* '%geometrytype(% = %'::text
 
 ) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
-     LEFT JOIN ( SELECT s.connamespace,
-            s.conrelid,
-            s.conkey, replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
-           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-		    FROM pg_constraint) AS s
-          WHERE s.consrc ~~* '%ndims(% = %'::text
+	 LEFT JOIN ( SELECT s.connamespace,
+			s.conrelid,
+			s.conkey, replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
+		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
+		  WHERE s.consrc ~~* '%ndims(% = %'::text
 
 ) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
-     LEFT JOIN ( SELECT s.connamespace,
-            s.conrelid,
-            s.conkey, replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
-           FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
-		    FROM pg_constraint) AS s
-          WHERE s.consrc ~~* '%srid(% = %'::text
+	 LEFT JOIN ( SELECT s.connamespace,
+			s.conrelid,
+			s.conkey, replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
+		   FROM (SELECT connamespace, conrelid, conkey, pg_get_constraintdef(oid) As consrc
+			FROM pg_constraint) AS s
+		  WHERE s.consrc ~~* '%srid(% = %'::text
 
 ) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
   WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"]))
@@ -6199,18 +6220,18 @@ CREATE OR REPLACE VIEW geometry_columns AS
 
 -- TODO: support RETURNING and raise a WARNING
 CREATE OR REPLACE RULE geometry_columns_insert AS
-        ON INSERT TO geometry_columns
-        DO INSTEAD NOTHING;
+		ON INSERT TO geometry_columns
+		DO INSTEAD NOTHING;
 
 -- TODO: raise a WARNING
 CREATE OR REPLACE RULE geometry_columns_update AS
-        ON UPDATE TO geometry_columns
-        DO INSTEAD NOTHING;
+		ON UPDATE TO geometry_columns
+		DO INSTEAD NOTHING;
 
 -- TODO: raise a WARNING
 CREATE OR REPLACE RULE geometry_columns_delete AS
-        ON DELETE TO geometry_columns
-        DO INSTEAD NOTHING;
+		ON DELETE TO geometry_columns
+		DO INSTEAD NOTHING;
 
 ---------------------------------------------------------------
 -- 3D-functions
@@ -6613,74 +6634,74 @@ $$
 				--var_param_geom := @extschema@.ST_Union(param_geom, var_param_geom);
 				return var_param_geom;
 			END IF;
-            var_cent := @extschema@.ST_Centroid(var_param_geom);
-            IF (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline) ) > var_buf AND (@extschema@.ST_YMax(var_enline) - @extschema@.ST_YMin(var_enline) ) > var_buf THEN
-                    IF @extschema@.ST_Dwithin(@extschema@.ST_Centroid(var_convhull) , @extschema@.ST_Centroid(@extschema@.ST_Envelope(var_param_geom)), var_buf/2) THEN
-                -- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
-                        var_cent := @extschema@.ST_Translate(var_cent, (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline))/1000,  (@extschema@.ST_YMAX(var_enline) - @extschema@.ST_YMin(var_enline))/1000);
-                    ELSE
-                        -- uses closest point on geometry to centroid. I can't explain why we are doing this
-                        var_cent := @extschema@.ST_ClosestPoint(var_param_geom,var_cent);
-                    END IF;
-                    IF @extschema@.ST_DWithin(var_cent, var_enline,var_buf) THEN
-                        var_cent := @extschema@.ST_centroid(@extschema@.ST_Envelope(var_param_geom));
-                    END IF;
-                    -- break envelope into 4 triangles about the centroid of the geometry and returned the clipped geometry in each quadrant
-                    FOR i in 1 .. 4 LOOP
-                       var_geoms[i] := @extschema@.ST_MakePolygon(@extschema@.ST_MakeLine(ARRAY[@extschema@.ST_PointN(var_enline,i), @extschema@.ST_PointN(var_enline,i+1), var_cent, @extschema@.ST_PointN(var_enline,i)]));
-                       var_geoms[i] := @extschema@.ST_ForceSFS(@extschema@.ST_Intersection(var_param_geom, @extschema@.ST_Buffer(var_geoms[i],var_buf)));
-                       IF @extschema@.ST_IsValid(var_geoms[i]) THEN
+			var_cent := @extschema@.ST_Centroid(var_param_geom);
+			IF (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline) ) > var_buf AND (@extschema@.ST_YMax(var_enline) - @extschema@.ST_YMin(var_enline) ) > var_buf THEN
+					IF @extschema@.ST_Dwithin(@extschema@.ST_Centroid(var_convhull) , @extschema@.ST_Centroid(@extschema@.ST_Envelope(var_param_geom)), var_buf/2) THEN
+				-- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
+						var_cent := @extschema@.ST_Translate(var_cent, (@extschema@.ST_XMax(var_enline) - @extschema@.ST_XMin(var_enline))/1000,  (@extschema@.ST_YMAX(var_enline) - @extschema@.ST_YMin(var_enline))/1000);
+					ELSE
+						-- uses closest point on geometry to centroid. I can't explain why we are doing this
+						var_cent := @extschema@.ST_ClosestPoint(var_param_geom,var_cent);
+					END IF;
+					IF @extschema@.ST_DWithin(var_cent, var_enline,var_buf) THEN
+						var_cent := @extschema@.ST_centroid(@extschema@.ST_Envelope(var_param_geom));
+					END IF;
+					-- break envelope into 4 triangles about the centroid of the geometry and returned the clipped geometry in each quadrant
+					FOR i in 1 .. 4 LOOP
+					   var_geoms[i] := @extschema@.ST_MakePolygon(@extschema@.ST_MakeLine(ARRAY[@extschema@.ST_PointN(var_enline,i), @extschema@.ST_PointN(var_enline,i+1), var_cent, @extschema@.ST_PointN(var_enline,i)]));
+					   var_geoms[i] := @extschema@.ST_ForceSFS(@extschema@.ST_Intersection(var_param_geom, @extschema@.ST_Buffer(var_geoms[i],var_buf)));
+					   IF @extschema@.ST_IsValid(var_geoms[i]) THEN
 
-                       ELSE
-                            var_geoms[i] := @extschema@.ST_BuildArea(@extschema@.ST_MakeLine(ARRAY[@extschema@.ST_PointN(var_enline,i), @extschema@.ST_PointN(var_enline,i+1), var_cent, @extschema@.ST_PointN(var_enline,i)]));
-                       END IF;
-                    END LOOP;
-                    var_tempgeom := @extschema@.ST_Union(ARRAY[@extschema@.ST_ConvexHull(var_geoms[1]), @extschema@.ST_ConvexHull(var_geoms[2]) , @extschema@.ST_ConvexHull(var_geoms[3]), @extschema@.ST_ConvexHull(var_geoms[4])]);
-                    --RAISE NOTICE 'Curr vex % ', @extschema@.ST_AsText(var_tempgeom);
-                    IF @extschema@.ST_Area(var_tempgeom) <= var_newarea AND @extschema@.ST_IsValid(var_tempgeom)  THEN --AND @extschema@.ST_GeometryType(var_tempgeom) ILIKE '%Polygon'
+					   ELSE
+							var_geoms[i] := @extschema@.ST_BuildArea(@extschema@.ST_MakeLine(ARRAY[@extschema@.ST_PointN(var_enline,i), @extschema@.ST_PointN(var_enline,i+1), var_cent, @extschema@.ST_PointN(var_enline,i)]));
+					   END IF;
+					END LOOP;
+					var_tempgeom := @extschema@.ST_Union(ARRAY[@extschema@.ST_ConvexHull(var_geoms[1]), @extschema@.ST_ConvexHull(var_geoms[2]) , @extschema@.ST_ConvexHull(var_geoms[3]), @extschema@.ST_ConvexHull(var_geoms[4])]);
+					--RAISE NOTICE 'Curr vex % ', @extschema@.ST_AsText(var_tempgeom);
+					IF @extschema@.ST_Area(var_tempgeom) <= var_newarea AND @extschema@.ST_IsValid(var_tempgeom)  THEN --AND @extschema@.ST_GeometryType(var_tempgeom) ILIKE '%Polygon'
 
-                        var_tempgeom := @extschema@.ST_Buffer(@extschema@.ST_ConcaveHull(var_geoms[1],least(param_pctconvex + param_pctconvex/var_div),true),var_buf, 'quad_segs=2');
-                        FOR i IN 1 .. 4 LOOP
-                            var_geoms[i] := @extschema@.ST_Buffer(@extschema@.ST_ConcaveHull(var_geoms[i],least(param_pctconvex + param_pctconvex/var_div),true), var_buf, 'quad_segs=2');
-                            IF @extschema@.ST_IsValid(var_geoms[i]) Then
-                                var_tempgeom := @extschema@.ST_Union(var_tempgeom, var_geoms[i]);
-                            ELSE
-                                RAISE NOTICE 'Not valid % %', i, @extschema@.ST_AsText(var_tempgeom);
-                                var_tempgeom := @extschema@.ST_Union(var_tempgeom, @extschema@.ST_ConvexHull(var_geoms[i]));
-                            END IF;
-                        END LOOP;
+						var_tempgeom := @extschema@.ST_Buffer(@extschema@.ST_ConcaveHull(var_geoms[1],least(param_pctconvex + param_pctconvex/var_div),true),var_buf, 'quad_segs=2');
+						FOR i IN 1 .. 4 LOOP
+							var_geoms[i] := @extschema@.ST_Buffer(@extschema@.ST_ConcaveHull(var_geoms[i],least(param_pctconvex + param_pctconvex/var_div),true), var_buf, 'quad_segs=2');
+							IF @extschema@.ST_IsValid(var_geoms[i]) Then
+								var_tempgeom := @extschema@.ST_Union(var_tempgeom, var_geoms[i]);
+							ELSE
+								RAISE NOTICE 'Not valid % %', i, @extschema@.ST_AsText(var_tempgeom);
+								var_tempgeom := @extschema@.ST_Union(var_tempgeom, @extschema@.ST_ConvexHull(var_geoms[i]));
+							END IF;
+						END LOOP;
 
-                        --RAISE NOTICE 'Curr concave % ', @extschema@.ST_AsText(var_tempgeom);
-                        IF @extschema@.ST_IsValid(var_tempgeom) THEN
-                            var_resultgeom := var_tempgeom;
-                        END IF;
-                        var_newarea := @extschema@.ST_Area(var_resultgeom);
-                    ELSIF @extschema@.ST_IsValid(var_tempgeom) THEN
-                        var_resultgeom := var_tempgeom;
-                    END IF;
+						--RAISE NOTICE 'Curr concave % ', @extschema@.ST_AsText(var_tempgeom);
+						IF @extschema@.ST_IsValid(var_tempgeom) THEN
+							var_resultgeom := var_tempgeom;
+						END IF;
+						var_newarea := @extschema@.ST_Area(var_resultgeom);
+					ELSIF @extschema@.ST_IsValid(var_tempgeom) THEN
+						var_resultgeom := var_tempgeom;
+					END IF;
 
-                    IF @extschema@.ST_NumGeometries(var_resultgeom) > 1  THEN
-                        var_tempgeom := @extschema@._ST_ConcaveHull(var_resultgeom);
-                        IF @extschema@.ST_IsValid(var_tempgeom) AND @extschema@.ST_GeometryType(var_tempgeom) ILIKE 'ST_Polygon' THEN
-                            var_resultgeom := var_tempgeom;
-                        ELSE
-                            var_resultgeom := @extschema@.ST_Buffer(var_tempgeom,var_buf, 'quad_segs=2');
-                        END IF;
-                    END IF;
-                    IF param_allow_holes = false THEN
-                    -- only keep exterior ring since we do not want holes
-                        var_resultgeom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_resultgeom));
-                    END IF;
-                ELSE
-                    var_resultgeom := @extschema@.ST_Buffer(var_resultgeom,var_buf);
-                END IF;
-                var_resultgeom := @extschema@.ST_ForceSFS(@extschema@.ST_Intersection(var_resultgeom, @extschema@.ST_ConvexHull(var_param_geom)));
-            ELSE
-                -- dimensions are too small to cut
-                var_resultgeom := @extschema@._ST_ConcaveHull(var_param_geom);
-            END IF;
+					IF @extschema@.ST_NumGeometries(var_resultgeom) > 1  THEN
+						var_tempgeom := @extschema@._ST_ConcaveHull(var_resultgeom);
+						IF @extschema@.ST_IsValid(var_tempgeom) AND @extschema@.ST_GeometryType(var_tempgeom) ILIKE 'ST_Polygon' THEN
+							var_resultgeom := var_tempgeom;
+						ELSE
+							var_resultgeom := @extschema@.ST_Buffer(var_tempgeom,var_buf, 'quad_segs=2');
+						END IF;
+					END IF;
+					IF param_allow_holes = false THEN
+					-- only keep exterior ring since we do not want holes
+						var_resultgeom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_resultgeom));
+					END IF;
+				ELSE
+					var_resultgeom := @extschema@.ST_Buffer(var_resultgeom,var_buf);
+				END IF;
+				var_resultgeom := @extschema@.ST_ForceSFS(@extschema@.ST_Intersection(var_resultgeom, @extschema@.ST_ConvexHull(var_param_geom)));
+			ELSE
+				-- dimensions are too small to cut
+				var_resultgeom := @extschema@._ST_ConcaveHull(var_param_geom);
+			END IF;
 
-            RETURN var_resultgeom;
+			RETURN var_resultgeom;
 	END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE _COST_HIGH;
