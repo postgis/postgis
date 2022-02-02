@@ -91,6 +91,38 @@ pointarrayToString(char *output, POINTARRAY *pa)
 }
 
 /**
+ * Draws a point in a POINTARRAY to a char* using ImageMagick SVG for styling.
+
+ * @param output a char reference to write the LWPOINT to
+ * @param lwp a reference to a LWPOINT
+ * @return the numbers of character written to *output
+ */
+static size_t
+drawPointSymbol(char *output, POINTARRAY *pa, unsigned int index, int size, char* color)
+{
+	// short-circuit no-op
+	if (size <= 0) return 0;
+
+	char x[OUT_DOUBLE_BUFFER_SIZE];
+	char y1[OUT_DOUBLE_BUFFER_SIZE];
+	char y2[OUT_DOUBLE_BUFFER_SIZE];
+	char *ptr = output;
+
+	POINT2D p;
+	getPoint2d_p(pa, index, &p);
+
+	lwprint_double(p.x, 10, x);
+	lwprint_double(p.y, 10, y1);
+	lwprint_double(p.y + size, 10, y2);
+
+	ptr += sprintf(ptr, "-fill %s -strokewidth 0 ", color);
+	ptr += sprintf(ptr, "-draw \"circle %s,%s %s,%s", x, y1, x, y2);
+	ptr += sprintf(ptr, "'\" ");
+
+	return (ptr - output);
+}
+
+/**
  * Serializes a LWPOINT to a char*.  This is a helper function that partially
  * writes the appropriate draw and fill commands used to generate an SVG image
  * using ImageMagick's "convert" command.
@@ -145,6 +177,9 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
 	ptr += sprintf(ptr, "-draw \"stroke-linecap round stroke-linejoin round path 'M ");
 	ptr += pointarrayToString(ptr, lwl->points );
 	ptr += sprintf(ptr, "'\" ");
+
+	ptr += drawPointSymbol(ptr, lwl->points, 0, style->lineStartSize, style->lineColor);
+	ptr += drawPointSymbol(ptr, lwl->points, lwl->points->npoints-1, style->lineEndSize, style->lineColor);
 
 	return (ptr - output);
 }
@@ -419,6 +454,7 @@ int main( int argc, const char* argv[] )
 		lwgeom_free( lwgeom );
 
 		LWDEBUGF( 4, "%s", output );
+		//puts(output);
 		checked_system(output);
 
 		//-- (MD) disable highlighting since it doesn't work well with opacity
