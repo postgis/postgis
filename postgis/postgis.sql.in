@@ -29,15 +29,15 @@ DO $$
 DECLARE
 	pgver text;
 BEGIN
-	SELECT substring(version(), 'PostgreSQL ([0-9\.]+)') INTO pgver;
+	SELECT pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') INTO pgver;
 
 	IF POSTGIS_PGSQL_VERSION::text != ( SELECT CASE
-		WHEN split_part(s,'.',1)::integer > 9
-			THEN split_part(s,'.',1) || '0'
+		WHEN pg_catalog.split_part(s,'.',1)::integer > 9
+			THEN pg_catalog.split_part(s,'.',1) || '0'
 		ELSE
-			split_part(s,'.', 1) || split_part(s,'.', 2)
+			pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2)
 		END
-		FROM substring(version(), 'PostgreSQL ([0-9\.]+)') AS s )
+		FROM pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') AS s )
 	THEN
 		RAISE EXCEPTION 'PostGIS built for PostgreSQL % cannot be loaded in PostgreSQL %',
 			POSTGIS_PGSQL_HR_VERSION, pgver;
@@ -52,7 +52,7 @@ DECLARE
   rec RECORD;
 BEGIN
   FOR rec IN
-    SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
+    SELECT n.nspname, p.proname FROM pg_catalog.pg_proc p, pg_catalog.pg_namespace n
     WHERE p.proname = 'postgis_version'
     AND p.pronamespace = n.oid
   LOOP
@@ -2591,7 +2591,7 @@ BEGIN
         -- We are using postgis_type_name to lookup the new name
         -- (in case Paul changes his mind and flips geometry_columns to return old upper case name)
         EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' || quote_ident(table_name) ||
-        ' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || @extschema@.postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ') USING @extschema@.ST_SetSRID(' || quote_ident(column_name) || ',' || new_srid::text || ');' ;
+        ' ALTER COLUMN ' || pg_catalog.quote_ident(column_name) || ' TYPE  geometry(' || @extschema@.postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ') USING @extschema@.ST_SetSRID(' || pg_catalog.quote_ident(column_name) || ',' || new_srid::text || ');' ;
     END IF;
 
 	RETURN real_schema || '.' || table_name || '.' || column_name ||' SRID changed to ' || new_srid::text;
@@ -2788,8 +2788,8 @@ CREATE OR REPLACE FUNCTION _postgis_scripts_pgsql_version() RETURNS text
 
 CREATE OR REPLACE FUNCTION _postgis_pgsql_version() RETURNS text
 AS $$
-	SELECT CASE WHEN split_part(s,'.',1)::integer > 9 THEN split_part(s,'.',1) || '0' ELSE split_part(s,'.', 1) || split_part(s,'.', 2) END AS v
-	FROM substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
+	SELECT CASE WHEN pg_catalog.split_part(s,'.',1)::integer > 9 THEN pg_catalog.split_part(s,'.',1) || '0' ELSE pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2) END AS v
+	FROM pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') AS s;
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0
@@ -2846,7 +2846,7 @@ BEGIN
 				--force install in same schema as postgis only if postgis extension is installed
 				IF rec.name NOT IN('postgis', 'postgis_topology', 'postgis_tiger_geocoder') AND EXISTS (SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'postgis') THEN
 					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged SCHEMA '
-					|| quote_ident( (SELECT ns.nspname FROM pg_catalog.pg_extension AS e INNER JOIN pg_catalog.pg_namespace AS ns ON e.extnamespace = ns.oid WHERE extname = 'postgis')) || ';';
+					|| pg_catalog.quote_ident( (SELECT ns.nspname FROM pg_catalog.pg_extension AS e INNER JOIN pg_catalog.pg_namespace AS ns ON e.extnamespace = ns.oid WHERE extname = 'postgis')) || ';';
 				ELSE
 					sql = 'CREATE EXTENSION ' || rec.name || ' FROM unpackaged;';
 				END IF;
@@ -2859,7 +2859,7 @@ BEGIN
 		ELSIF rec.default_version != rec.installed_version
 		THEN
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version)   || ';';
+						pg_catalog.quote_ident(rec.default_version)   || ';';
 			RAISE NOTICE 'Updating extension % from % to %',
 				rec.name, rec.installed_version, rec.default_version;
 			RAISE DEBUG '%', sql;
@@ -2871,11 +2871,11 @@ BEGIN
 			RAISE NOTICE 'Updating extension % %',
 				rec.name, rec.installed_version;
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version || 'next')   || ';';
+						pg_catalog.quote_ident(rec.default_version || 'next')   || ';';
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version)   || ';';
+						pg_catalog.quote_ident(rec.default_version)   || ';';
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
 		END IF;
@@ -2959,7 +2959,7 @@ BEGIN
 	END;
 
 	BEGIN
-		SELECT postgis_raster_scripts_installed() INTO rast_scr_ver;
+		SELECT @extschema@.postgis_raster_scripts_installed() INTO rast_scr_ver;
 	EXCEPTION
 		WHEN undefined_function THEN
 			RAISE DEBUG 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and rtpostgis.sql installed?';

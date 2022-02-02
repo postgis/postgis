@@ -545,8 +545,8 @@ BEGIN
         SELECT into old_scripts MODULE_scripts_installed();
     END;
     SELECT into new_scripts 'NEWVERSION';
-    SELECT into old_maj substring(old_scripts from 1 for 1);
-    SELECT into new_maj substring(new_scripts from 1 for 1);
+    SELECT into old_maj pg_catalog.substring(old_scripts, 1, 1);
+    SELECT into new_maj pg_catalog.substring(new_scripts, 1,1);
 
     -- 2.x to 3.x was upgrade-compatible, see
     -- https://trac.osgeo.org/postgis/ticket/4170#comment:1
@@ -567,11 +567,11 @@ CREATE TEMPORARY TABLE _postgis_upgrade_info AS WITH versions AS (
 ) SELECT
   upgraded as scripts_upgraded,
   installed as scripts_installed,
-  substring(upgraded from '([0-9]*)\.')::int * 100 +
-  substring(upgraded from '[0-9]*\.([0-9]*)\.')::int
+  pg_catalog.substring(upgraded, '([0-9]*)\.')::int * 100 +
+  pg_catalog.substring(upgraded, '[0-9]*\.([0-9]*)\.')::int
     as version_to_num,
-  substring(installed from '([0-9]*)\.')::int * 100 +
-  substring(installed from '[0-9]*\.([0-9]*)\.')::int
+  pg_catalog.substring(installed, '([0-9]*)\.')::int * 100 +
+  pg_catalog.substring(installed, '[0-9]*\.([0-9]*)\.')::int
     as version_from_num,
   installed ~ 'dev|alpha|beta'
     as version_from_isdev

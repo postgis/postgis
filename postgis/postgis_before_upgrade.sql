@@ -30,8 +30,8 @@
 --         FROM pg_catalog.pg_proc p
 --         LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
 --         WHERE
---                 LOWER(n.nspname) = LOWER('public') AND
---                 LOWER(p.proname) = LOWER('ST_AsGeoJson')
+--                 pg_catalog.LOWER(n.nspname) = pg_catalog.LOWER('public') AND
+--                 pg_catalog.LOWER(p.proname) = pg_catalog.LOWER('ST_AsGeoJson')
 --         ORDER BY 1, 2, 3, 4;
 CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
 	function_name text,
@@ -53,9 +53,9 @@ BEGIN
 	SELECT oid
 	FROM pg_catalog.pg_proc p
 	WHERE pronamespace = postgis_namespace
-	AND LOWER(p.proname) = LOWER(function_name)
+	AND pg_catalog.LOWER(p.proname) = pg_catalog.LOWER(function_name)
 	AND pg_catalog.pg_function_is_visible(p.oid)
-	AND LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ LOWER(function_arguments)
+	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ pg_catalog.LOWER(function_arguments)
 	INTO matching_function;
 
 	IF matching_function IS NOT NULL THEN
