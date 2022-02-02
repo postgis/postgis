@@ -250,9 +250,9 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 		 */
 		int pad_minutes = 0;
 
-		if(fabs(minutes)<10) pad_minutes = (int)strlen(format)-has_cardinal_direction-3;
+		if(minutes<10) pad_minutes = (int)strlen(format)-has_cardinal_direction-3;
 
-		sprintf(res,"%.3d%0*.*f",degrees,pad_minutes,num_decimals,fabs(minutes));
+		sprintf(res,"%.3d%0*.*f",degrees,pad_minutes,num_decimals,minutes);
 
 	}
 
@@ -263,19 +263,17 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 		 */
 		int pad_seconds = 0;
 
-		if(fabs(seconds)<10) pad_seconds = (int) strlen(format)-has_cardinal_direction-5;
+		if(seconds<10) pad_seconds = (int) strlen(format)-has_cardinal_direction-5;
 
-		sprintf(res,"%.3d%.2d%0*.*f",degrees,(int)fabs(minutes),pad_seconds,num_decimals,fabs(seconds));
+		sprintf(res,"%.3d%.2d%0*.*f",degrees,(int)minutes,pad_seconds,num_decimals,seconds);
 
 	} else {
 
 		/**
 		 * degrees/minutes/seconds (dddmmss)
 		 */
-//		minutes = fabs(minutes);
-//		seconds = fabs(seconds);
 
-		sprintf(res,"%.3d%.2d%.2d",degrees,(int)fabs(minutes),(int)(fabs(seconds) + 0.5));
+		sprintf(res,"%.3d%.2d%.2d",degrees,(int)minutes,(int)(seconds + 0.5));
 
 	}
 
@@ -296,23 +294,6 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 
 	}
 
-
-//	char *res = malloc(precision + 4);
-//	double ds;
-//	modf(coordinate, &ds);
-//	sprintf(res, "%.*f", precision, coordinate);
-//
-//	if (ds < 100) {
-//
-//		sprintf(res, "0%.*f", precision, coordinate);
-//
-//		if (ds >= 0 && ds < 10)	sprintf(res, "00%.*f", precision, coordinate);
-//		if (ds <  0 && ds > -10) sprintf(res, "-00%.*f", precision, coordinate * -1);
-//		if (ds <= -10 && ds > -100) sprintf(res, "-0%.*f", precision, coordinate * -1);
-//		if (ds <= -100) sprintf(res, "%.*f", precision, coordinate);
-//	}
-//
-//	if (stringbuffer_aprintf(sb, "<subfield code=\"%c\">%s</subfield>",	subfield, res) < 0)	return LW_FAILURE;
 
 	free(res);
 	return LW_SUCCESS;
