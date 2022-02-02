@@ -619,9 +619,9 @@ POINT(0.5 1)
         <funcsynopsis>
          <funcprototype>
             <funcdef>geometry <function>ST_ConcaveHull</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-            <paramdef><type>float </type> <parameter>target_percent</parameter></paramdef>
-            <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>param_geom</parameter></paramdef>
+            <paramdef><type>float </type> <parameter>param_pctconvex</parameter></paramdef>
+            <paramdef choice="opt"><type>boolean </type> <parameter>param_allow_holes = false</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -632,7 +632,7 @@ POINT(0.5 1)
         <para>A concave hull of a geometry is a possibly concave
         geometry that encloses the vertices of the input geometry.
         In the general case the concave hull is a Polygon.
-        The polygon will not contain holes unless the optional <varname>allow_holes</varname>
+        The polygon will not contain holes unless the optional <varname>param_allow_holes</varname>
         argument is specified as true.
         The concave hull of two or more collinear points is a two-point LineString.
         The concave hull of one or more identical points is a Point.
@@ -646,7 +646,7 @@ POINT(0.5 1)
         Like the convex hull, the vertices of a concave hull are a subset of the input points,
         and all other input points are contained within it.</para>
 
-        <para>The <varname>target_percent</varname> controls the concaveness of the computed hull.
+        <para>The <varname>param_pctconvex</varname> controls the concaveness of the computed hull.
         A value of 1 produces the convex hull.
         A value of 0 produces a hull of maximum concaveness (but still a single polygon).
         Values between 1 and 0 produce hulls of increasing concaveness.
