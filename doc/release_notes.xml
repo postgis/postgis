@@ -3,6 +3,21 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>Release 3.0.5</title>
+        <para>Release date: 2022/02/02</para>
+        <para>This is a bug fix / performance enhancements release. This version requires PostgreSQL 9.5+-13 and GEOS >= 3.6+
+              Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8</para>
+        <simplesect>
+          <title>Bug Fixes and Enhancements</title>
+          <para>5026, fix DropTopology in presence of UPDATE triggers on
+                    topology layers (Sandro Santilli)</para>
+          <para>5046, Fix upgrades in absence of old library (Sandro Santilli)</para>
+          <para>5069, search_path vulnerabilty during install/upgrade
+                    (Regina Obe)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
         <title>Release 3.0.4</title>
         <para>Release date: 2021/09/04</para>
         <para>This is a bug fix / performance enhancements release. This version requires PostgreSQL 9.5+-13 and GEOS >= 3.6+

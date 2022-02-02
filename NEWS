@@ -1,5 +1,5 @@
 PostGIS 3.0.5
-2022/02/XX
+2022/02/02
 * Bug Fixes and Enhancements *
   - #5026, fix DropTopology in presence of UPDATE triggers on
            topology layers (Sandro Santilli)
