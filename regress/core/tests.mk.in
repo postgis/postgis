@@ -169,8 +169,11 @@ ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31000),1)
 		$(topsrcdir)/regress/core/geos310
 endif
 
-# Only run the internal concavehull tests for GEOS < 3.11
-ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" "<" 31100),1)
+ifeq ($(shell expr "$(POSTGIS_GEOS_VERSION)" ">=" 31100),1)
+	TESTS += \
+		$(topsrcdir)/regress/core/geos311
+# Only run the old internal concavehull tests for GEOS < 3.11
+else
 	TESTS += \
 		$(topsrcdir)/regress/core/concave_hull
 endif
