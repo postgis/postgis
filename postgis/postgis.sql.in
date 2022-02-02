@@ -6449,9 +6449,10 @@ CREATE OR REPLACE FUNCTION ST_SquareGrid(size float8, bounds geometry, OUT geom 
 
 #if POSTGIS_GEOS_VERSION >= 31100
 
--- Availability: 3.3.0
-
-CREATE OR REPLACE FUNCTION ST_ConcaveHull(geom geometry, area_ratio float8, allow_holes boolean DEFAULT false)
+-- Availability: 2.0.0
+-- Changed: 2.5.0
+-- Enhanced: 3.3.0 implements it in C, if GEOS >= 3.10
+CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_ConcaveHull'
 	LANGUAGE 'c' IMMUTABLE STRICT
@@ -6546,6 +6547,7 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE _COST_HIGH;
 
 -- Availability: 2.0.0
 -- Changed: 2.5.0
+-- Enhanced: 3.3.0 implements it in C, if GEOS >= 3.10
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
 	DECLARE
