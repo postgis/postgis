@@ -1,6 +1,9 @@
 PostGIS 3.1.6
 2022/XX/XX
 
+* Bug Fixes
+  - #5076, Avoid log storm installed with pgaudit enabled (Paul Ramsey)
+
 
 PostGIS 3.1.5
 2022/02/01
@@ -16,7 +19,7 @@ PostGIS 3.1.5
   - #5046, Fix upgrades in absence of old library (Sandro Santilli)
   - #5069, search_path vulnerabilty during install/upgrade
            (Regina Obe)
-	- #5041, postgis_tiger_geocoder: loader_generate_script
+  - #5041, postgis_tiger_geocoder: loader_generate_script
            generates script with invalid syntax (Regna Obe)
 
 PostGIS 3.1.4
