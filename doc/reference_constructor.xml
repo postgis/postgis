@@ -1221,7 +1221,7 @@ FROM admin0 WHERE name = 'Canada'
             <para>Uses a built-in font to render out a string as a multipolygon geometry. The default text height is 100.0, the distance from the bottom of a descender to the top of a capital. The default start position places the start of the baseline at the origin. Over-riding the font involves passing in a json map, with a character as the key, and base64 encoded TWKB for the font shape, with the fonts having a height of 1000 units from the bottom of the descenders to the tops of the capitals.
             </para>
 
-            <para>The text is generated at the origin by default, so to reposition and resize the text, first apply the <code>ST_Scale</code> function and then apply the <code>ST_Translate</code> function.
+            <para>The text is generated at the origin by default, so to reposition and resize the text, first apply the <code>ST_Scale</code> function and then apply the <code>ST_Translate</code> function.</para>
 
             <para>Availability: 3.3.0</para>
         </refsection>
