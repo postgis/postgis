@@ -620,7 +620,8 @@ GEOMETRYCOLLECTION(
         <title>Description</title>
 
         <para>
-            A set-returning function that divides geometry into parts using rectilinear lines,
+            Returns a set of geometries that are the result of dividing <varname>geom</varname>
+            into parts using rectilinear lines,
             with each part containing no more than <code>max_vertices</code>.
         </para>
         <para>
@@ -629,11 +630,18 @@ GEOMETRYCOLLECTION(
         </para>
         <para>
             Point-in-polygon and other spatial operations are normally faster for indexed subdivided datasets.
-            Since the bounding boxes for parts usually cover a smaller area than original geometry bbox,
-            the index queries are more selective and produce fewer "hit" cases.
+            Since the bounding boxes for the parts usually cover a smaller area than the original geometry bbox,
+            index queries produce fewer "hit" cases.
             The "hit" cases are faster because the spatial operations
             executed by the index recheck process fewer points.
         </para>
+        <note><para>
+            This is a <ulink url="https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-TABLEFUNCTIONS">set-returning function</ulink>
+            (SRF) that return a set of rows containing single geometry values.
+            It can be used in a SELECT list or a FROM clause
+            to produce a result set with one record for each result geometry.
+        </para></note>
+
         <para>Performed by the GEOS module.</para>
         <para>Availability: 2.2.0</para>
         <para>Enhanced: 2.5.0 reuses existing points on polygon split, vertex count is lowered from 8 to 5.</para>
@@ -720,12 +728,15 @@ INSERT INTO polygons_table (fid, column1, column2, column3, geom)
         Create a new table containing subdivided geometries,
         retaining the key of the original geometry so that the new table
         can be joined to the source table.
+        Since ST_Subdivide is a set-returning (table) function
+        that returns a set of single-value rows,
+        this syntax automatically produces a table with one row for each result part.
         </para>
 
-<programlisting>-- Create a new subdivided table suitable for joining to the original
+<programlisting>
 CREATE TABLE subdivided_geoms AS
-SELECT pkey, ST_Subdivide(geom) AS geom
-FROM original_geoms;
+    SELECT pkey, ST_Subdivide(geom) AS geom
+    FROM original_geoms;
 </programlisting>
 
       </refsection>
