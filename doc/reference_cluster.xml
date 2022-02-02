@@ -248,7 +248,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
     <refsection>
       <title>Examples</title>
-		<para>Generate dummy set of parcels for examples</para>
+		<para>Generate dummy set of parcels for examples:</para>
 		<programlisting>CREATE TABLE parcels AS
 SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,
 ('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As type
@@ -257,31 +257,17 @@ FROM
     40, 'endcap=square'),12) As geom;
 </programlisting>
 
-	<informaltable>
-			  <tgroup cols="1">
-				<tbody>
-				  <row>
-					<entry>
-						<para><informalfigure>
-						<mediaobject>
-						  <imageobject>
-							<imagedata fileref="images/st_clusterkmeans01.png" />
-						  </imageobject>
-						  <caption><para>Original Parcels</para></caption>
-						</mediaobject>
-						</informalfigure>
-						</para>
-					</entry>
-					<entry><para><informalfigure>
-						<mediaobject>
-						  <imageobject>
-							<imagedata fileref="images/st_clusterkmeans02.png" />
-						  </imageobject>
-						  <caption><para>Parcels color-coded by cluster number (cid)</para></caption>
-						</mediaobject>
-					  </informalfigure>
-						<programlisting>SELECT ST_ClusterKMeans(geom, 5) OVER() AS cid, parcel_id, geom
-FROM parcels;</programlisting>
+        <para><informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_clusterkmeans02.png" />
+                </imageobject>
+                <caption><para>Parcels color-coded by cluster number (cid)</para></caption>
+            </mediaobject>
+            </informalfigure>
+<programlisting>
+SELECT ST_ClusterKMeans(geom, 3) OVER() AS cid, parcel_id, geom
+    FROM parcels;</programlisting>
 <screen> cid | parcel_id |   geom
 -----+-----------+---------------
    0 | 001       | 0103000000...
@@ -291,15 +277,13 @@ FROM parcels;</programlisting>
    1 | 005       | 0103000000...
    2 | 006       | 0103000000...
    2 | 007       | 0103000000...
-(7 rows)</screen>
-					</para></entry>
-				  </row>
-			</tbody>
-			</tgroup>
-		</informaltable>
-<para>Partitioning parcel clusters by type:</para>
-		    <programlisting>SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, type
-FROM parcels;</programlisting>
+</screen>
+        </para>
+
+        <para>Partitioning parcel clusters by type:</para>
+<programlisting>
+SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, type
+    FROM parcels;</programlisting>
 <screen> cid | parcel_id |    type
 -----+-----------+-------------
    1 | 005       | commercial
@@ -309,12 +293,14 @@ FROM parcels;</programlisting>
    1 | 004       | residential
    0 | 002       | residential
    2 | 006       | residential
-(7 rows)</screen>
+</screen>
 
-
-<para>Clustering preaggregated planetary scale data like population dataset may require using 3D clusering and weighting.
-Let's try to idenify 20-ish meta-regions based on <ulink url="https://data.humdata.org/dataset/kontur-population-dataset">Kontur Population</ulink> that will not span more than 3000 km from their center:</para>
-		    <programlisting>create table kontur_population_3000km_clusters as
+<para>Example: Clustering a preaggregated planetary-scale data population dataset
+using 3D clusering and weighting.
+Identify at least 20 regions based on
+<ulink url="https://data.humdata.org/dataset/kontur-population-dataset">Kontur Population Data</ulink>
+that do not span more than 3000 km from their center:</para>
+<programlisting>create table kontur_population_3000km_clusters as
 select
     geom,
     ST_ClusterKMeans(
@@ -333,7 +319,11 @@ from
         <imageobject>
         <imagedata fileref="images/st_clusterkmeans03.png" />
         </imageobject>
-        <caption><para>World population clustered to above specs: 46 resulting clusters. Greenland is one cluster, there are island clusters that span across antimeridian, clusters are centered at well-populated regions (New York, Moscow), and edges follow Earth's curvature.</para></caption>
+        <caption><para>World population clustered to above specs produces 46 clusters.
+        Clusters are centered at well-populated regions (New York, Moscow).
+        Greenland is one cluster.
+        There are island clusters that span across the antimeridian.
+        Cluster edges follow Earth's curvature.</para></caption>
     </mediaobject>
     </informalfigure>
     </para>
