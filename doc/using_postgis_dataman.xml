@@ -1364,12 +1364,12 @@ VALUES ( 990000,
 		<tgroup cols="1">
 		  <tbody>
 			<row>
-				<entry><para>In these examples
+				<entry><para><emphasis>
                 <emphasis role="bold">(a)</emphasis> and
 				<emphasis role="bold">(c)</emphasis> are simple	<varname>LINESTRING</varname>s.
                 <emphasis role="bold">(b)</emphasis> and <emphasis role="bold">(d)</emphasis> are not simple.
-                <emphasis role="bold">(c)</emphasis> and <emphasis role="bold">(d)</emphasis> are closed Linear Rings.
-                </para></entry>
+                <emphasis role="bold">(c)</emphasis> is a closed Linear Ring.
+                </emphasis></para></entry>
 			</row>
 		  </tbody>
 		</tgroup>
@@ -1432,11 +1432,12 @@ VALUES ( 990000,
 		<tgroup cols="1">
 		  <tbody>
 			<row>
-				<entry><para>In these examples
+				<entry><para><emphasis>
                 <emphasis role="bold">(e)</emphasis> and
 				<emphasis role="bold">(f)</emphasis> are simple
-				<varname>MULTILINESTRING</varname>s, <emphasis role="bold">(g)</emphasis>
-				is not.</para></entry>
+				<varname>MULTILINESTRING</varname>s.
+                <emphasis role="bold">(g)</emphasis> is not simple.
+                </emphasis></para></entry>
 			</row>
 		  </tbody>
 		</tgroup>
@@ -1510,13 +1511,13 @@ VALUES ( 990000,
 		<tgroup cols="1">
 		  <tbody>
 			<row>
-				<entry><para>In these examples
+				<entry><para><emphasis>
                 <emphasis role="bold">(h)</emphasis> and
 				<emphasis role="bold">(i)</emphasis> are valid <varname>POLYGON</varname>s.
-                <emphasis role="bold">(j-m)</emphasis> are invalid
-				(but <emphasis role="bold">(j)</emphasis>
-				could be represented as a valid <varname>MULTIPOLYGON</varname>).
-				</para></entry>
+                <emphasis role="bold">(j-m)</emphasis> are invalid.
+				<emphasis role="bold">(j)</emphasis>
+				could be represented as a valid <varname>MULTIPOLYGON</varname>.
+				</emphasis></para></entry>
 			</row>
 		  </tbody>
 		</tgroup>
@@ -1608,10 +1609,10 @@ VALUES ( 990000,
 		<tgroup cols="1">
 		  <tbody>
 			<row>
-				<entry><para>In these examples
+				<entry><para><emphasis>
                 <emphasis role="bold">(n)</emphasis> is a valid <varname>MULTIPOLYGON</varname>.
 				<emphasis role="bold">(o)</emphasis> and <emphasis role="bold">(p)</emphasis> are not valid.
-                </para></entry>
+                </emphasis></para></entry>
 			</row>
 		  </tbody>
 		</tgroup>
