@@ -9,6 +9,8 @@ YYYY/MM/DD
   - #3056, spurious notice on ST_StartPoint(empty) (Paul Ramsey)
   - #5041, postgis_tiger_geocoder: loader_generate_script
            generates script with invalid syntax (Regna Obe)
+  - #5076, stop install when pgaudit is active (Paul Ramsey)
+
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
