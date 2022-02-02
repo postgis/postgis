@@ -298,10 +298,10 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
 			<funcdef>geometry <function>ST_ClosestPoint</function></funcdef>
 
 			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
+			<parameter>geom1</parameter></paramdef>
 
 			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
+			<parameter>geom2</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -309,8 +309,9 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 2-dimensional point on g1 that is closest to g2.  This is the first point of
-			the shortest line.
+		<para>Returns the 2-dimensional point on <varname>geom1</varname> that is closest to <varname>geom2</varname>.
+        This is the first point of the shortest line between the geometries
+        (as computed by <xref linkend="ST_ShortestLine"/>).
 		</para>
 		<note><para>If you have a 3D Geometry, you may prefer to use <xref linkend="ST_3DClosestPoint" />.</para></note>
 		<para>Availability: 1.5.0</para>
@@ -324,19 +325,19 @@ SELECT degrees( ST_Angle('LINESTRING(0 0, 0.3 0.7, 1 1)', 'LINESTRING(0 0, 0.2 0
             <imageobject>
             <imagedata fileref="images/st_closestpoint01.png" />
             </imageobject>
-            <caption><para>Closest between point and linestring is the point itself, but closest
-                        point between a linestring and point is the point on line string that is closest.</para></caption>
+            <caption><para>The closest point for a Point and a LineString is the point itself.
+            The closest point for a LineString and a Point is a point on the line.</para></caption>
         </mediaobject>
         </informalfigure>
 <programlisting>
 SELECT ST_AsText( ST_ClosestPoint(pt,line)) AS cp_pt_line,
        ST_AsText( ST_ClosestPoint(line,pt)) AS cp_line_pt
-    FROM (SELECT 'POINT(100 100)'::geometry AS pt,
-                 'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry AS line ) AS t;
+    FROM (SELECT 'POINT (160 40)'::geometry AS pt,
+                 'LINESTRING (10 30, 50 50, 30 110, 70 90, 180 140, 130 190)'::geometry AS line ) AS t;
 
    cp_pt_line   |                cp_line_pt
 ----------------+------------------------------------------
- POINT(100 100) | POINT(73.0769230769231 115.384615384615)
+ POINT(160 40)  | POINT(125.75342465753425 115.34246575342466)
 </programlisting>
 	</para>
 
@@ -350,13 +351,10 @@ SELECT ST_AsText( ST_ClosestPoint(pt,line)) AS cp_pt_line,
         </informalfigure>
 <programlisting>
 SELECT ST_AsText( ST_ClosestPoint(
-			'POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'::geometry,
-			ST_Buffer('POINT(110 170)'::geometry, 20) )
-		) As ptwkt;
-
-                  ptwkt
+		'POLYGON ((190 150, 20 10, 160 70, 190 150))',
+		ST_Buffer('POINT(80 160)', 30)	)) As ptwkt;
 ------------------------------------------
- POINT(140.752120669087 125.695053378061)
+ POINT(131.59149149528952 101.89887534906197)
 </programlisting>
 	</para>
 
@@ -365,7 +363,7 @@ SELECT ST_AsText( ST_ClosestPoint(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_3DClosestPoint" />,<xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
+		<para><xref linkend="ST_3DClosestPoint" />, <xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
 	  </refsection>
 </refentry>
 
@@ -524,14 +522,12 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 	  </refsection>
 
 	  <refsection>
-		<title>Basic Geometry Examples</title>
+		<title>Geometry Examples</title>
 
 		<para>Geometry example - units in planar degrees 4326 is WGS 84 long lat, units are degrees.</para>
 		<programlisting>SELECT ST_Distance(
-		'SRID=4326;POINT(-72.1235 42.3521)'::geometry,
-		'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry
-	);
-st_distance
+    'SRID=4326;POINT(-72.1235 42.3521)'::geometry,
+    'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry );
 -----------------
 0.00150567726382282</programlisting>
 
@@ -539,38 +535,30 @@ st_distance
 Although the value is off, nearby ones can be compared correctly,
 which makes it a good choice for algorithms like KNN or KMeans.</para>
 <programlisting>SELECT ST_Distance(
-			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
-			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
-		);
-st_distance
+    ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
+    ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857) );
 -----------------
 167.441410065196</programlisting>
 
 <para>Geometry example - units in meters (SRID: 3857 as above, but corrected by cos(lat) to account for distortion)</para>
 <programlisting>SELECT ST_Distance(
-			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
-			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
+    ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 3857),
+    ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 3857)
 		) * cosd(42.3521);
-st_distance
 -----------------
 123.742351254151</programlisting>
 
 <para>Geometry example - units in meters (SRID: 26986 Massachusetts state plane meters) (most accurate for Massachusetts)</para>
 <programlisting>SELECT ST_Distance(
-			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 26986),
-			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 26986)
-		);
-st_distance
+    ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 26986),
+    ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 26986) );
 -----------------
 123.797937878454</programlisting>
 
 <para>Geometry example - units in meters (SRID: 2163 US National Atlas Equal area) (least accurate) </para>
 <programlisting>SELECT ST_Distance(
-			ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 2163),
-			ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 2163)
-		);
-
-st_distance
+    ST_Transform('SRID=4326;POINT(-72.1235 42.3521)'::geometry, 2163),
+    ST_Transform('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geometry, 2163) );
 ------------------
 126.664256056812</programlisting>
 	</refsection>
@@ -579,8 +567,8 @@ st_distance
 <para>Same as geometry example but note units in meters - use sphere for slightly faster and less accurate computation.</para>
 <programlisting>SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist
 FROM (SELECT
-	'SRID=4326;POINT(-72.1235 42.3521)'::geography as gg1,
-	'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geography as gg2
+    'SRID=4326;POINT(-72.1235 42.3521)'::geography as gg1,
+    'SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)'::geography as gg2
 	) As foo  ;
 
   spheroid_dist   |   sphere_dist
@@ -1230,11 +1218,16 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 		<title>Description</title>
 
 		<para>Returns the 2-dimensional longest line between the points of two geometries.
+        The line returned starts on <varname>g1</varname> and ends on <varname>g2</varname>.
 		</para>
-		<para>The function returns the first longest line if more than one is found.
-		The line returned starts on g1 and ends on g2.
+		<para>The longest line always occurs between two vertices.
+        The function returns the first longest line if more than one is found.
 		The length of the line is equal to the distance returned by <xref linkend="ST_MaxDistance"/>.
 		</para>
+        <para>
+        If g1 and g2 are the same geometry, returns the line between the two vertices farthest apart in the geometry.
+        This is a diameter of the circle computed by <xref linkend="ST_MinimumBoundingCircle"/>
+        </para>
 		<para>Availability: 1.5.0</para>
 
 	  </refsection>
@@ -1250,13 +1243,12 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
             </mediaobject>
             </informalfigure>
 <programlisting>
-SELECT ST_AsText( ST_LongestLine('POINT(100 100)'::geometry,
-		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
-	) As lline;
-
-   lline
+SELECT ST_AsText( ST_LongestLine(
+        'POINT (160 40)',
+        'LINESTRING (10 30, 50 50, 30 110, 70 90, 180 140, 130 190)' )
+	) AS lline;
 -----------------
-LINESTRING(100 100,98 190)
+LINESTRING(160 40,130 190)
 </programlisting>
 	</para>
 
@@ -1271,15 +1263,11 @@ LINESTRING(100 100,98 190)
         </informalfigure>
 <programlisting>
 SELECT ST_AsText( ST_LongestLine(
-		ST_GeomFromText('POLYGON((175 150, 20 40,
-			50 60, 125 100, 175 150))'),
-		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
-		)
-	) As llinewkt;
-
-   lline
+        'POLYGON ((190 150, 20 10, 160 70, 190 150))',
+        ST_Buffer('POINT(80 160)', 30)
+            ) ) AS llinewkt;
 -----------------
-LINESTRING(20 40,121.111404660392 186.629392246051)
+LINESTRING(20 10,105.3073372946034 186.95518130045156)
 </programlisting>
 	</para>
 
@@ -1288,25 +1276,21 @@ LINESTRING(20 40,121.111404660392 186.629392246051)
             <imageobject>
             <imagedata fileref="images/st_longestline03.png" />
             </imageobject>
-            <caption><para>Longest straight distance to travel from one part of a city to another.
-            Note that the maximum distance is equal to the length of the line.</para></caption>
+            <caption><para>Longest line across a single geometry.
+            The length of the line is equal to the Maximum Distance.
+            The line is a diameter of the Minimum Bounding Circle.</para></caption>
         </mediaobject>
         </informalfigure>
 <programlisting>
-SELECT ST_AsText( ST_LongestLine(c.geom, c.geom)) AS llinewkt,
-       ST_MaxDistance( c.geom,c.geom) AS max_dist,
-       ST_Length( ST_LongestLine(c.geom, c.geom)) AS lenll
-FROM (SELECT ST_MakeValid( ST_Collect(geom)) AS geom
-      FROM (SELECT ST_Translate( ST_SnapToGrid(
-                ST_Buffer(
-                    ST_Point(50 ,generate_series(50,190, 50)),
-                    40, 'quad_segs=2'),1), x, 0) AS geom
-            FROM generate_series(1,100,50) As x) AS foo
-      ) AS c;
+SELECT ST_AsText( ST_LongestLine( geom, geom)) AS llinewkt,
+                  ST_MaxDistance( geom, geom) AS max_dist,
+                  ST_Length( ST_LongestLine(geom, geom)) AS lenll
+FROM (SELECT 'POLYGON ((40 180, 110 160, 180 180, 180 120, 140 90, 160 40, 80 10, 70 40, 20 50, 40 180),
+              (60 140, 99 77.5, 90 140, 60 140))'::geometry AS geom) AS t;
 
-          llinewkt          |     max_dist     |      lenll
----------------------------+------------------+------------------
- LINESTRING(23 22,129 178) | 188.605408193933 | 188.605408193933
+         llinewkt          |      max_dist      |       lenll
+---------------------------+--------------------+--------------------
+ LINESTRING(20 50,180 180) | 206.15528128088303 | 206.15528128088303
 </programlisting>
 	</para>
 	  </refsection>
@@ -1314,7 +1298,8 @@ FROM (SELECT ST_MakeValid( ST_Collect(geom)) AS geom
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_MakeValid"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_3DLongestLine"/></para>
+		<para><xref linkend="ST_MaxDistance"/>, <xref linkend="ST_ShortestLine"/>,
+        <xref linkend="ST_3DLongestLine"/>, <xref linkend="ST_MinimumBoundingCircle"/></para>
 	  </refsection>
 	</refentry>
 
@@ -1453,22 +1438,19 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
     <title>Examples</title>
 
      <para>Maximum distance between a point and lines.</para>
-		<programlisting>postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
-   st_maxdistance
+		<programlisting>SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
 -----------------
  2
 
-postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )'::geometry);
-  st_maxdistance
+SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )'::geometry);
 ------------------
  2.82842712474619
 </programlisting>
 
-     <para>Maximum distance between vertices of a geometry.</para>
+     <para>Maximum distance between vertices of a single geometry.</para>
 <programlisting>
 SELECT ST_MaxDistance('POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry,
                       'POLYGON ((10 10, 10 0, 0 0, 10 10))'::geometry);
-  st_maxdistance
 ------------------
  14.142135623730951
 </programlisting>
@@ -1640,10 +1622,8 @@ SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g</parameter></paramdef>
-
+			    <paramdef><type>geometry </type>
+			    <parameter>g</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1652,19 +1632,18 @@ SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');
 		<title>Description</title>
 
 		<para>
-			Returns the two-point LineString spanning a geometry's minimum clearance.  If the geometry does not have a minimum
-			clearance, <varname>LINESTRING EMPTY</varname> will be returned.
+		Returns the two-point LineString spanning a geometry's minimum clearance.
+        If the geometry does not have a minimum
+		clearance, <varname>LINESTRING EMPTY</varname> is returned.
 		</para>
 		<para>Performed by the GEOS module.</para>
 		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.6.0</para>
-
 	  </refsection>
 
 	  <refsection>
 		  <title>Examples</title>
 		  <programlisting>
 SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))'));
-st_astext
 -------------------------------
 LINESTRING(0.5 0.00032,0.5 0)
 		  </programlisting>
@@ -1672,12 +1651,8 @@ LINESTRING(0.5 0.00032,0.5 0)
 
 	  <refsection>
 		<title>See Also</title>
-
-		<para>
-			<xref linkend="ST_MinimumClearance" />
-		</para>
+		<para><xref linkend="ST_MinimumClearance" /></para>
 	  </refsection>
-
 	</refentry>
 
 	<refentry id="ST_Perimeter">
@@ -1911,13 +1886,11 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 		  <refsection>
 			<title>Example: Projected point at 100,000 meters and bearing 45 degrees </title>
 
-			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
-
-                 st_astext
+<programlisting>
+SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 --------------------------------------------
  POINT(0.635231029125537 0.639472334729198)
-(1 row)
-      </programlisting>
+</programlisting>
 		  </refsection>
 
 		  <refsection>
@@ -1941,10 +1914,10 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 			<funcdef>geometry <function>ST_ShortestLine</function></funcdef>
 
 			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
+			<parameter>geom1</parameter></paramdef>
 
 			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
+			<parameter>geom2</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1952,14 +1925,11 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 	  <refsection>
 		<title>Description</title>
 
-		<para>Returns the 2-dimensional shortest line between two geometries. The function will
-		only return the first shortest line if more than one, that the function finds.
-		If g1 and g2 intersects in just one point the function will return a line with both start
-		and end in that intersection-point.
-		If g1 and g2 are intersecting with more than one point the function will return a line with start
-		and end in the same point but it can be any of the intersecting points.
-		The line returned will always start in g1 and end in g2.
-		The length of the line this function returns will always be the same as ST_Distance returns for g1 and g2.
+		<para>Returns the 2-dimensional shortest line between two geometries.
+		The line returned starts in <varname>geom1</varname> and ends in <varname>geom2</varname>.
+		If <varname>geom1</varname> and <varname>geom2</varname> intersect
+        the result is a line with start and end at an intersection point.
+		The length of the line is the same as <xref linkend="ST_Distance"/> returns for g1 and g2.
 		</para>
 
 		<para>Availability: 1.5.0</para>
@@ -1972,19 +1942,16 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
                 <imageobject>
                 <imagedata fileref="images/st_shortestline01.png" />
                 </imageobject>
-                <caption><para>Shortest line between point and linestring</para></caption>
+                <caption><para>Shortest line between Point and LineString</para></caption>
             </mediaobject>
             </informalfigure>
 <programlisting>
-SELECT ST_AsText(
-	ST_ShortestLine('POINT(100 100)'::geometry,
-		'LINESTRING (20 80, 98 190, 110 180, 50 75 )'::geometry)
+SELECT ST_AsText(  ST_ShortestLine(
+        'POINT (160 40)',
+        'LINESTRING (10 30, 50 50, 30 110, 70 90, 180 140, 130 190)')
 	) As sline;
-
-
-   sline
------------------
-LINESTRING(100 100,73.0769230769231 115.384615384615)
+---------------------------------------------------------
+ LINESTRING(160 40,125.75342465753425 115.34246575342466)
 </programlisting>
 		</para>
 
@@ -1993,18 +1960,16 @@ LINESTRING(100 100,73.0769230769231 115.384615384615)
                 <imageobject>
                 <imagedata fileref="images/st_shortestline02.png" />
                 </imageobject>
-                <caption><para>Shortest line between two polygons</para></caption>
+                <caption><para>Shortest line between Polygons</para></caption>
             </mediaobject>
             </informalfigure>
 <programlisting>
-SELECT ST_AsText(
-		ST_ShortestLine(
-			ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'),
-			ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
-			)
-		) As slinewkt;
-
- LINESTRING(140.752120669087 125.695053378061,121.111404660392 153.370607753949)
+SELECT ST_AsText( ST_ShortestLine(
+         'POLYGON ((190 150, 20 10, 160 70, 190 150))',
+         ST_Buffer('POINT(80 160)', 30)
+              ) ) AS llinewkt;
+-----------------
+LINESTRING(131.59149149528952 101.89887534906197,101.21320343559644 138.78679656440357)
 </programlisting>
 		</para>
 
