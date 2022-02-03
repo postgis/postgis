@@ -2,6 +2,23 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1>
+      <title>PostGIS 2.5.6</title>
+      <para>Release Date: 2022/02/03</para>
+      <simplesect>
+        <title>Bug fixes</title>
+        <para>4968, Update autogen.sh to handle autoconf 2.71 issues</para>
+        <para>4871, TopoGeometry::geometry cast returns NULL for empty
+                  TopoGeometry objects (Sandro Santilli)</para>
+        <para>4757, Handle line collapse due to snap-to-existing node (Sandro Santilli)</para>
+        <para>4769, Fix segfault in st_addband (Raúl Marín)</para>
+        <para>4863, Update bboxes after affine/scale operations (Paul Ramsey)</para>
+        <para>4326, Fix CircularPolygon area calculation (Paul Ramsey)</para>
+        <para>4971, Cunit fixes for newer CUnit (Raúl Marín, Regina Obe)</para>
+        <para>5069, search_path vulnerabilty during install/upgrade
+                  (Regina Obe)</para>
+      </simplesect>
+    </sect1>
 
     <sect1>
       <title>Release 2.5.5</title>

@@ -1,5 +1,5 @@
-PostGIS 2.5.6dev
-YYYY/MM/DD
+PostGIS 2.5.6
+2022/02/03
 
  * Bug fixes *
 
@@ -11,6 +11,8 @@ YYYY/MM/DD
   - #4863, Update bboxes after affine/scale operations (Paul Ramsey)
   - #4326, Fix CircularPolygon area calculation (Paul Ramsey)
   - #4971, Cunit fixes for newer CUnit (Raúl Marín, Regina Obe)
+  - #5069, search_path vulnerabilty during install/upgrade
+           (Regina Obe)
 
 
 PostGIS 2.5.5
