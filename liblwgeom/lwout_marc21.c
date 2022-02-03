@@ -232,11 +232,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 
 		int pad_degrees = (int)strlen(format);
 
-//		if(decimal_degrees <0 && decimal_degrees>-10) pad_degrees=strlen(format)+1;
-//		if(decimal_degrees <=-10 && decimal_degrees>-100) pad_degrees=strlen(format)+1;
-
 		if(decimal_degrees <0 && decimal_degrees>-100) pad_degrees=strlen(format)+1;
-
 
 		if(has_cardinal_direction) pad_degrees=pad_degrees-1;
 
@@ -252,20 +248,20 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 
 		if(minutes<10) pad_minutes = (int)strlen(format)-has_cardinal_direction-3;
 
-		sprintf(res,"%.3d%0*.*f",degrees,pad_minutes,num_decimals,minutes);
+		sprintf(res,"%.3d%0*.*f",degrees,pad_minutes,num_decimals,fabs(minutes));
 
 	}
 
 	else if(format[7+has_cardinal_direction]=='.' || format[7+has_cardinal_direction]==',') {
 
 		/*
-		 * decimal Seconds
+		 * decimal seconds
 		 */
 		int pad_seconds = 0;
 
 		if(seconds<10) pad_seconds = (int) strlen(format)-has_cardinal_direction-5;
 
-		sprintf(res,"%.3d%.2d%0*.*f",degrees,(int)minutes,pad_seconds,num_decimals,seconds);
+		sprintf(res,"%.3d%.2d%0*.*f",degrees,(int)minutes,pad_seconds,num_decimals,fabs(seconds));
 
 	} else {
 
