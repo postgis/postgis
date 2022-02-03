@@ -967,7 +967,7 @@ t
   <refsection>
     <title>Description</title>
 
-    <para>Given 2 linestrings, returns an integer between -3 and 3
+    <para>Given two linestrings returns an integer between -3 and 3
       indicating what kind of crossing behavior exists between them.
       0 indicates no crossing.
       This is only supported for <varname>LINESTRING</varname>s.
@@ -998,10 +998,7 @@ t
       </itemizedlist>
     </para>
     <para>Availability: 1.4</para>
-    <!-- optionally mention that this function uses indexes if appropriate -->
-
   </refsection>
-
 
   <refsection>
     <title>Examples</title>
@@ -1014,20 +1011,20 @@ t
             <imageobject>
             <imagedata fileref="images/st_linecrossingdirection03.png" />
             </imageobject>
-            <caption><para>Blue: Line 1;  Green: Line 2</para></caption>
+            <caption><para>Blue: Line A;  Green: Line B</para></caption>
           </mediaobject>
           </informalfigure>
           <programlisting>
-SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2,
-       ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
+SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
+       ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
-  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
-  ST_GeomFromText('LINESTRING (20 140, 71 74, 161 53)') As line2
+  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,
+  ST_GeomFromText('LINESTRING (20 140, 71 74, 161 53)') As lineB
   ) As foo;
 
- l1_cross_l2 | l2_cross_l1
--------------+-------------
-          -1 |          1
+ A_cross_B | B_cross_A
+-----------+-----------
+        -1 |         1
 </programlisting>
 
     <para><emphasis role="bold">Example:</emphasis>
@@ -1038,20 +1035,20 @@ FROM (SELECT
             <imageobject>
             <imagedata fileref="images/st_linecrossingdirection01.png" />
             </imageobject>
-            <caption><para>Blue: Line 1;  Green: Line 2</para></caption>
+            <caption><para>Blue: Line A;  Green: Line B</para></caption>
           </mediaobject>
           </informalfigure>
           <programlisting>
-SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2,
-       ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
+SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
+       ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
- ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
- ST_GeomFromText('LINESTRING(171 154,20 140,71 74,161 53)') As line2
+ ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,
+ ST_GeomFromText('LINESTRING(171 154,20 140,71 74,161 53)') As lineB
   ) As foo;
 
- l1_cross_l2 | l2_cross_l1
--------------+-------------
-           3 |          -3
+ A_cross_B | B_cross_A
+-----------+-----------
+         3 |        -3
 </programlisting>
 
       <para><emphasis role="bold">Example:</emphasis>
@@ -1062,20 +1059,20 @@ FROM (SELECT
           <imageobject>
           <imagedata fileref="images/st_linecrossingdirection04.png" />
           </imageobject>
-            <caption><para>Blue: Line 1;  Green: Line 2</para></caption>
+            <caption><para>Blue: Line A;  Green: Line B</para></caption>
         </mediaobject>
         </informalfigure>
         <programlisting>
-SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2,
-       ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
+SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
+       ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
-  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
-  ST_GeomFromText('LINESTRING(5 90, 71 74, 20 140, 171 154)') As line2
+  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,
+  ST_GeomFromText('LINESTRING(5 90, 71 74, 20 140, 171 154)') As lineB
   ) As foo;
 
- l1_cross_l2 | l2_cross_l1
--------------+-------------
-          -2 |          2
+ A_cross_B | B_cross_A
+-----------+-----------
+        -2 |         2
 </programlisting>
 
       <para><emphasis role="bold">Example:</emphasis>
@@ -1086,20 +1083,20 @@ FROM (SELECT
           <imageobject>
           <imagedata fileref="images/st_linecrossingdirection02.png" />
           </imageobject>
-            <caption><para>Blue: Line 1;  Green: Line 2</para></caption>
+            <caption><para>Blue: Line A;  Green: Line B</para></caption>
         </mediaobject>
         </informalfigure>
         <programlisting>
-SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2,
-       ST_LineCrossingDirection(foo.line2, foo.line1) As l2_cross_l1
+SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,
+       ST_LineCrossingDirection(lineB, lineA) As B_cross_A
 FROM (SELECT
-  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1,
-  ST_GeomFromText('LINESTRING (171 154, 20 140, 71 74, 2.99 90.16)') As line2
+  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,
+  ST_GeomFromText('LINESTRING (171 154, 20 140, 71 74, 2.99 90.16)') As lineB
 ) As foo;
 
- l1_cross_l2 | l2_cross_l1
--------------+-------------
-           2 |          -2
+ A_cross_B | B_cross_A
+-----------+-----------
+         2 |        -2
 </programlisting>
 
 <programlisting>
