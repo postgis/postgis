@@ -2,13 +2,13 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
+ *
+ * Copyright (C) 2022 Martin Davis
  * Copyright 2008 Kevin Neufeld
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
- * TODO: fix segfault bug caused by a referenced style that doesn't exist in
- *          the .conf file
  **********************************************************************/
 
 #include <stdio.h>
