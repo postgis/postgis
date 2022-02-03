@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2022 Martin Davis
  * Copyright 2008 Kevin Neufeld
  *
  * This is free software; you can redistribute and/or modify it under
@@ -12,8 +13,9 @@
  * This program will generate a .png image for every .wkt file specified
  * in this directory's Makefile.  Every .wkt file may contain several
  * entries of geometries represented as WKT strings.  Every line in
- * a wkt file is stylized using a predetermined style (line thinkness,
- * fill color, etc) currently hard coded in this programs main function.
+ * a wkt file is stylized using a predetermined style (line thickness,
+ * fill color, etc).
+ * The styles are specified in the adjacent styles.conf file.
  *
  * In order to generate a png file, ImageMagicK must be installed in the
  * user's path as system calls are invoked to "convert".  In this manner,
@@ -28,6 +30,14 @@
  * rendered outside of the generated image's extents, or may be rendered too
  * small to be recognizable as anything other than a single point.
  *
+ * Usage:
+ *  generator [-v] <source_wktfile> [<output_pngfile>]
+ *
+ * -v - show generated Imagemagick commands
+ *
+ * If <output_pngfile> is omitted the output image PNG file has the
+ * same name as the source file
+ *
  **********************************************************************/
 
 #include <stdio.h>
@@ -35,6 +45,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/wait.h> /* for WEXITSTATUS */
+#include <stdbool.h>
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
@@ -43,6 +54,8 @@
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DOUBLE_PRECISION 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 for dot and sign */
+
+bool optionVerbose = false;
 
 // Some global styling variables
 char *imageSize = "200x200";
@@ -86,6 +99,38 @@ pointarrayToString(char *output, POINTARRAY *pa)
 		if ( i ) ptr += sprintf(ptr, " ");
 		ptr += sprintf(ptr, "%s,%s", x, y);
 	}
+
+	return (ptr - output);
+}
+
+/**
+ * Draws a point in a POINTARRAY to a char* using ImageMagick SVG for styling.
+
+ * @param output a char reference to write the LWPOINT to
+ * @param lwp a reference to a LWPOINT
+ * @return the numbers of character written to *output
+ */
+static size_t
+drawPointSymbol(char *output, POINTARRAY *pa, unsigned int index, int size, char* color)
+{
+	// short-circuit no-op
+	if (size <= 0) return 0;
+
+	char x[OUT_DOUBLE_BUFFER_SIZE];
+	char y1[OUT_DOUBLE_BUFFER_SIZE];
+	char y2[OUT_DOUBLE_BUFFER_SIZE];
+	char *ptr = output;
+
+	POINT2D p;
+	getPoint2d_p(pa, index, &p);
+
+	lwprint_double(p.x, 10, x);
+	lwprint_double(p.y, 10, y1);
+	lwprint_double(p.y + size, 10, y2);
+
+	ptr += sprintf(ptr, "-fill %s -strokewidth 0 ", color);
+	ptr += sprintf(ptr, "-draw \"circle %s,%s %s,%s", x, y1, x, y2);
+	ptr += sprintf(ptr, "'\" ");
 
 	return (ptr - output);
 }
@@ -145,6 +190,9 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
 	ptr += sprintf(ptr, "-draw \"stroke-linecap round stroke-linejoin round path 'M ");
 	ptr += pointarrayToString(ptr, lwl->points );
 	ptr += sprintf(ptr, "'\" ");
+
+	ptr += drawPointSymbol(ptr, lwl->points, 0, style->lineStartSize, style->lineColor);
+	ptr += drawPointSymbol(ptr, lwl->points, lwl->points->npoints-1, style->lineEndSize, style->lineColor);
 
 	return (ptr - output);
 }
@@ -321,10 +369,22 @@ getStyleName(char **styleName, char* line)
 	}
 }
 
+int parseOptions(int argc, const char* argv[] )
+{
+	if (argc <= 1) return 1;
+
+	int argPos = 1;
+	while (strncmp(argv[argPos], "-", 1) == 0) {
+		if (strncmp(argv[argPos], "-v", 2) == 0) {
+			optionVerbose = true;
+		}
+		argPos++;
+	}
+	return argPos;
+}
 
 /**
- * Main Application.  Currently, drawing styles are hardcoded in this method.
- * Future work may entail reading the styles from a .properties file.
+ * Main Application.
  */
 int main( int argc, const char* argv[] )
 {
@@ -339,13 +399,14 @@ int main( int argc, const char* argv[] )
 	char *ptr;
 	const char *stylefilename = "styles.conf";
 
-	if ( argc < 2 || strlen(argv[1]) < 3)
+	int filePos = parseOptions(argc, argv);
+	if ( filePos >= argc || strlen(argv[filePos]) < 3)
 	{
-		lwerror("Usage: %s <source_wktfile> [<output_pngfile>]", argv[0]);
+		lwerror("Usage: %s [-v] <source_wktfile> [<output_pngfile>]", argv[0]);
 		return -1;
 	}
 
-	image_src = argv[1];
+	image_src = argv[filePos];
 
 	if ( (pfile = fopen(image_src, "r")) == NULL)
 	{
@@ -371,9 +432,9 @@ int main( int argc, const char* argv[] )
 	getStyles(stylefile_path, &styles);
 	free(stylefile_path);
 
-	if ( argc > 2 )
+	if ( argc - filePos >= 2 )
 	{
-		filename = strdup(argv[2]);
+		filename = strdup(argv[filePos + 1]);
 	}
 	else
 	{
@@ -419,6 +480,9 @@ int main( int argc, const char* argv[] )
 		lwgeom_free( lwgeom );
 
 		LWDEBUGF( 4, "%s", output );
+		if (optionVerbose) {
+			puts(output);
+		}
 		checked_system(output);
 
 		//-- (MD) disable highlighting since it doesn't work well with opacity

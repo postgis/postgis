@@ -2,13 +2,13 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
+ *
+ * Copyright (C) 2022 Martin Davis
  * Copyright 2008 Kevin Neufeld
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
- * TODO: fix segfault bug caused by a referenced style that doesn't exist in
- *          the .conf file
  **********************************************************************/
 
 #include <stdio.h>
@@ -46,6 +46,8 @@ getStyles( const char *filename, LAYERSTYLE **headRef )
 			char *pointColor = "Grey";
 			int lineWidth = 5;
 			char *lineColor = "Grey";
+			int lineStartSize = 0;
+			int lineEndSize = 0;
 			char *polygonFillColor = "Grey";
 			char *polygonStrokeColor = "Grey";
 			int polygonStrokeWidth = 0;
@@ -76,6 +78,21 @@ getStyles( const char *filename, LAYERSTYLE **headRef )
 					}
 					else if (strncmp(line, "lineColor", 9) == 0)
 						lineColor = ptr;
+					else if (strncmp(line, "lineWidth", 9) == 0)
+					{
+						lineWidth = atoi(ptr);
+						free(ptr);
+					}
+					else if (strncmp(line, "lineStartSize", 13) == 0)
+					{
+						lineStartSize = atoi(ptr);
+						free(ptr);
+					}
+					else if (strncmp(line, "lineEndSize", 11) == 0)
+					{
+						lineEndSize = atoi(ptr);
+						free(ptr);
+					}
 					else if (strncmp(line, "polygonFillColor", 16) == 0)
 						polygonFillColor = ptr;
 					else if (strncmp(line, "polygonStrokeColor", 18) == 0)
@@ -85,17 +102,15 @@ getStyles( const char *filename, LAYERSTYLE **headRef )
 						polygonStrokeWidth = atoi(ptr);
 						free(ptr);
 					}
-
 				}
 				getResults = fgets ( line, sizeof line, pFile );
 			}
-
-			addStyle(headRef, styleName, pointSize, pointColor, lineWidth, lineColor, polygonFillColor, polygonStrokeColor, polygonStrokeWidth);
+			addStyle(headRef, styleName, pointSize, pointColor,
+				lineWidth, lineColor, lineStartSize, lineEndSize,
+				polygonFillColor, polygonStrokeColor, polygonStrokeWidth);
 		}
-
 		getResults = fgets ( line, sizeof line, pFile );
 	}
-
 	fclose( pFile );
 }
 
@@ -128,6 +143,7 @@ addStyle(
     char* styleName,
     int pointSize, char* pointColor,
     int lineWidth, char* lineColor,
+	int lineStartSize, int lineEndSize,
     char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth)
 {
 	LAYERSTYLE *style = malloc( sizeof(LAYERSTYLE) );
@@ -137,6 +153,8 @@ addStyle(
 	style->pointColor = pointColor;
 	style->lineWidth = lineWidth;
 	style->lineColor = lineColor;
+	style->lineStartSize = lineStartSize;
+	style->lineEndSize = lineEndSize;
 	style->polygonFillColor = polygonFillColor;
 	style->polygonStrokeColor = polygonStrokeColor;
 	style->polygonStrokeWidth = polygonStrokeWidth;

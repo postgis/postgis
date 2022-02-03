@@ -564,7 +564,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     geometries must not equal either of the source geometries. Otherwise, it
     returns <varname>false</varname>.</para>
 
-    <para>In mathematical terms, this is expressed as:</para>
+    <para>In mathematical terms, this is:</para>
 
     <informalfigure>
     <mediaobject>
@@ -1625,12 +1625,12 @@ SELECT pat.name AS relationship, pat.val AS pattern,
     <title>Description</title>
 
     <para>Returns <varname>TRUE</varname> if A and B intersect,
-        but their interiors do not intersect.  Equivalently, A and B have at least one point in common,
-        and the common points lie in the intersection of their boundaries.
+    but their interiors do not intersect.  Equivalently, A and B have at least one point in common,
+    and the common points lie in at least one boundary.
     For Point/Point inputs the relationship is always <varname>FALSE</varname>,
-        since points do not have a boundary.</para>
+    since points do not have a boundary.</para>
 
-    <para>In mathematical terms, this relationship is expressed as:</para>
+    <para>In mathematical terms, this relationship is:</para>
 
     <informalfigure>
       <mediaobject>
@@ -1671,7 +1671,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
     <refsection>
     <title>Examples</title>
 
-    <para>The <function>ST_Touches</function> predicate returns <varname>TRUE</varname> in all the following illustrations.</para>
+    <para>The <function>ST_Touches</function> predicate returns <varname>TRUE</varname> in the following examples.</para>
     <informaltable>
       <tgroup cols="3">
       <tbody>

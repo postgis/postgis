@@ -1210,8 +1210,6 @@ FROM admin0 WHERE name = 'Canada'
           <funcprototype>
             <funcdef>geometry <function>ST_Letters</function></funcdef>
             <paramdef><type>text</type> <parameter> letters</parameter></paramdef>
-            <paramdef choice="opt"><type>double precision</type> <parameter> text_height=100.0</parameter></paramdef>
-            <paramdef choice="opt"><type>geometry</type> <parameter> start_position=POINT(0 0)</parameter></paramdef>
             <paramdef choice="opt"><type>json</type> <parameter> font</parameter></paramdef>
           </funcprototype>
          </funcsynopsis>
@@ -1222,6 +1220,8 @@ FROM admin0 WHERE name = 'Canada'
 
             <para>Uses a built-in font to render out a string as a multipolygon geometry. The default text height is 100.0, the distance from the bottom of a descender to the top of a capital. The default start position places the start of the baseline at the origin. Over-riding the font involves passing in a json map, with a character as the key, and base64 encoded TWKB for the font shape, with the fonts having a height of 1000 units from the bottom of the descenders to the tops of the capitals.
             </para>
+
+            <para>The text is generated at the origin by default, so to reposition and resize the text, first apply the <code>ST_Scale</code> function and then apply the <code>ST_Translate</code> function.</para>
 
             <para>Availability: 3.3.0</para>
         </refsection>
@@ -1239,8 +1239,12 @@ FROM admin0 WHERE name = 'Canada'
             </informalfigure>
         </refsection>
         <refsection>
+            <title>Example: Scaling and moving words</title>
+            <programlisting>SELECT ST_Translate(ST_Scale(ST_Letters('Yo'), 10, 10), 100,100);</programlisting>
+        </refsection>
+        <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_AsTWKB" /></para>
+            <para><xref linkend="ST_AsTWKB" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" /></para>
         </refsection>
     </refentry>
 

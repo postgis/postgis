@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION ST_Letters(letters text, text_height double precision DEFAULT 100, start_position geometry DEFAULT 'POINT(0 0)', font json DEFAULT NULL)
+CREATE OR REPLACE FUNCTION ST_Letters(letters text, font json DEFAULT NULL)
 RETURNS geometry
 AS
 $$
@@ -9,6 +9,7 @@ DECLARE
   prevgeom geometry = NULL;
   adjustment float8 = 0.0;
   position float8 = 0.0;
+  text_height float8 = 100.0;
   width float8;
   m_width float8;
   spacing float8;
@@ -138,9 +139,9 @@ BEGIN
   END LOOP;
   -- apply the start point and scaling options
   wordgeom := ST_CollectionExtract(ST_Collect(wordarr));
-  wordgeom := ST_Translate(ST_Scale(wordgeom, 
-                text_height/font_default_height, text_height/font_default_height),
-                ST_XMin(start_position), ST_YMin(start_position));
+  wordgeom := ST_Scale(wordgeom,
+                text_height/font_default_height,
+                text_height/font_default_height);
   return wordgeom;
 END;
 $$
