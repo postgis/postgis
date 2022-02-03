@@ -879,12 +879,13 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 	  <title>Geometry Validation</title>
 
 	  <para>PostGIS is compliant with the Open Geospatial Consortium’s (OGC)
-	  Simple Features Specification.
-      It defines the concepts of geometry being
+	  Simple Features specification.
+      That standard defines the concepts of geometry being
       <emphasis>simple</emphasis> and <emphasis>valid</emphasis>.
       These definitions allow the Simple Features geometry model
       to represent spatial objects in a consistent and unambiguous way
       that supports efficient computation.
+      (Note: the OGC SF and SQL/MM have the same definitions for simple and valid.)
         </para>
 
 	<sect2 id="Simple_Geometry">
@@ -1025,8 +1026,8 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 		</tgroup>
 	  </informaltable>
 
-    <para>As described in the next section, the linear rings forming a
-    <varname>POLYGON</varname> must be simple for it to be valid.</para>
+    <para><varname>POLYGON</varname>s are formed from linear rings, so
+    valid polygonal geometry is always <emphasis>simple</emphasis>.</para>
 
     <para>To test if a geometry is simple
 	use the <xref linkend="ST_IsSimple" /> function:</para>
@@ -1045,6 +1046,7 @@ SELECT
 	Simplicity is primarily used as a basis for defining geometric validity.
     It is also a requirement for some kinds of spatial data models
     (for example, linear networks often disallow lines that cross).
+    Multipoint and linear geometry can be made simple using <xref linkend="ST_UnaryUnion" />.
     </para>
     </sect2>
 
