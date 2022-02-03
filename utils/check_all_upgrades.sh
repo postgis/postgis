@@ -1,6 +1,14 @@
 #!/bin/sh
 
 EXIT_ON_FIRST_FAILURE=0
+BUILDDIR=$PWD
+EXTDIR=`pg_config --sharedir`/extension/
+CTBDIR=`pg_config --sharedir`/contrib/
+TMPDIR=/tmp/check_all_upgrades-$$-tmp
+PGVER=`pg_config --version | awk '{print $2}'`
+PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//')
+echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
+
 
 if test "$1" = "-s"; then
   EXIT_ON_FIRST_FAILURE=1
@@ -14,14 +22,13 @@ if test -z "$1"; then
   exit 1
 fi
 
-to_version_param="$1"
-to_version=$to_version_param
-if expr $to_version : ':auto' >/dev/null; then
-  export PGDATABASE=template1
-  to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
-elif expr $to_version : '.*!$' >/dev/null; then
-  to_version=$(echo "${to_version}" | sed 's/\!$//')
-fi
+mkdir -p ${TMPDIR}
+cleanup()
+{
+  rm -rf ${TMPDIR}
+}
+
+trap 'cleanup' 0
 
 
 # Return -1, 1 or 0 if the first version
@@ -53,13 +60,79 @@ semver_compare()
   echo 0; return;
 }
 
+failed()
+{
+  failures=$((failures+1))
+  if test $EXIT_ON_FIRST_FAILURE != 0 -a $failures != 0; then
+    exit $failures
+  fi
+}
 
-BUILDDIR=$PWD
-EXTDIR=`pg_config --sharedir`/extension/
-CTBDIR=`pg_config --sharedir`/contrib/
-PGVER=`pg_config --version | awk '{print $2}'`
+minimum_postgis_version_for_postgresql_major_version()
+{
+  pgver=$1
+  supportfile=${TMPDIR}/minimum_supported_version_for_postgresql
 
-echo "PostgreSQL version: ${PGVER}"
+  if ! test -e ${supportfile}; then
+    # Source: https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS
+    cat > ${supportfile} <<EOF
+9.6:2.3
+10:2.4
+11:2.5
+12:2.5
+13:3.0
+14:3.1
+EOF
+  fi
+
+  # Drop patch-level number from PostgreSQL version
+  minsupported=`grep ^${pgver}: ${supportfile} | cut -d: -f2`
+  test -n "${minsupported}" || {
+    echo "Cannot detemine minimum supported PostGIS version for PostgreSQL major version ${pgver}" >&2
+    exit 1
+  }
+  echo "${minsupported}"
+}
+
+compatible_upgrade()
+{
+  label=$1
+  from=$2
+  to=$3
+
+  #echo "XXXX compatible_upgrade: upgrade_path=${upgrade_path}"
+  #echo "XXXX compatible_upgrade: from=${from}"
+  #echo "XXXX compatible_upgrade: to=${to}"
+
+  # only consider versions older than ${to}
+  cmp=`semver_compare "${from}" "${to}"`
+  #echo "INFO: semver_compare ${from} ${to} returned $cmp"
+  if test $cmp -ge 0; then
+    echo "SKIP: $label ($to is not newer than $from)"
+    return 1
+  fi
+  cmp=`semver_compare "${PGIS_MIN_VERSION}" "${from}"`
+  if test $cmp -gt 0; then
+    echo "SKIP: $label ($from older than ${PGIS_MIN_VERSION}, which is required to run in PostgreSQL ${PGVER})"
+    return 1
+  fi
+
+  return 0
+}
+
+to_version_param="$1"
+to_version=$to_version_param
+if expr $to_version : ':auto' >/dev/null; then
+  export PGDATABASE=template1
+  to_version=`psql -XAtc "select default_version from pg_available_extensions where name = 'postgis'"` || exit 1
+elif expr $to_version : '.*!$' >/dev/null; then
+  to_version=$(echo "${to_version}" | sed 's/\!$//')
+fi
+
+
+PGIS_MIN_VERSION=`minimum_postgis_version_for_postgresql_major_version "${PGVER_MAJOR}"`
+echo "INFO: minimum PostGIS version supporting PostgreSQL ${PGVER_MAJOR}: ${PGIS_MIN_VERSION}"
+
 
 cd $EXTDIR
 failures=0
@@ -73,42 +146,6 @@ if test -f postgis_raster--${to_version}.sql; then
 fi
 
 echo "INFO: installed extensions: $INSTALLED_EXTENSIONS"
-
-failed()
-{
-  failures=$((failures+1))
-  if test $EXIT_ON_FIRST_FAILURE != 0 -a $failures != 0; then
-    exit $failures
-  fi
-}
-
-compatible_upgrade()
-{
-  upgrade_path=$1
-  from=$2
-  to=$3
-
-  #echo "XXXX compatible_upgrade: upgrade_path=${upgrade_path}"
-  #echo "XXXX compatible_upgrade: from=${from}"
-  #echo "XXXX compatible_upgrade: to=${to}"
-
-  # only consider versions older than ${to_version_param}
-  cmp=`semver_compare "${from}" "${to}"`
-  if test $cmp -ge 0; then
-    echo "SKIP: upgrade $upgrade_path ($to is not newer than $from)"
-    return 1
-  fi
-  cmp=`semver_compare "${PGVER}" "11"`
-  if test $cmp -ge 0; then
-    cmp=`semver_compare "3.0" "${from}"`
-    if test $cmp -ge 0; then
-      echo "SKIP: upgrade $UPGRADE_PATH ($from < 3.0 which is required to run in PostgreSQL ${PGVER})"
-      return 1
-    fi
-  fi
-
-  return 0
-}
 
 for EXT in ${INSTALLED_EXTENSIONS}; do
   if test "${EXT}" = "postgis"; then
@@ -128,45 +165,45 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
   for fname in $files; do
     from_version="$fname"
     UPGRADE_PATH="${from_version}--${to_version_param}"
-    UPGRADE_FILE="${EXT}--${from_version}--${to_version}.sql"
-    compatible_upgrade ${UPGRADE_PATH} ${from_version} ${to_version} || continue
-    if test -e ${UPGRADE_FILE}; then
-      if expr $to_version_param : ':auto' >/dev/null; then
-        echo "Testing ${EXT} upgrade $UPGRADE_PATH ($to_version)"
-      else
-        echo "Testing ${EXT} upgrade $UPGRADE_PATH"
-      fi
-      RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
-      make -C ${REGDIR} check && {
-        echo "PASS: ${EXT} upgrade $UPGRADE_PATH"
-      } || {
-        echo "FAIL: ${EXT} upgrade $UPGRADE_PATH"
-        failed
-      }
-    else
-      echo "SKIP: ${EXT} upgrade $UPGRADE_FILE is missing"
+    test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
+    if expr $to_version_param : ':auto' >/dev/null; then
+      test_label="${test_label} ($to_version)"
     fi
+    compatible_upgrade "${test_label}" ${from_version} ${to_version} || continue
+    UPGRADE_FILE="${EXT}--${from_version}--${to_version}.sql"
+    if ! test -e ${UPGRADE_FILE}; then
+      echo "SKIP: ${test_label} ($UPGRADE_FILE is missing)"
+      continue
+    fi
+    echo "Testing ${test_label}"
+    RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
+    make -C ${REGDIR} check && {
+      echo "PASS: ${test_label}"
+    } || {
+      echo "FAIL: ${test_label}"
+      failed
+    }
   done
 
   # Check unpackaged->extension upgrades
   for majmin in `'ls' -d ${CTBDIR}/postgis-* | sed 's/.*postgis-//'`; do
     UPGRADE_PATH="unpackaged${majmin}--${to_version_param}"
+    test_label="${EXT} extension upgrade ${UPGRADE_PATH}"
+    if expr $to_version_param : ':auto' >/dev/null; then
+      test_label="${test_label} ($to_version)"
+    fi
+    compatible_upgrade "${test_label}" ${majmin} ${to_version} || continue
     UPGRADE_FILE="${EXT}--unpackaged--${to_version}.sql"
     if ! test -e ${UPGRADE_FILE}; then
-      echo "SKIP: ${EXT} upgrade $UPGRADE_FILE is missing"
+      echo "SKIP: ${test_label} ($UPGRADE_FILE is missing)"
       continue
     fi
-    compatible_upgrade ${UPGRADE_PATH} ${majmin} ${to_version} || continue
-    if expr $to_version_param : ':auto' >/dev/null; then
-      echo "Testing ${EXT} upgrade $UPGRADE_PATH ($to_version)"
-    else
-      echo "Testing ${EXT} upgrade $UPGRADE_PATH"
-    fi
+    echo "Testing ${test_label}"
     RUNTESTFLAGS="-v --extension --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
     make -C ${REGDIR} check && {
-      echo "PASS: ${EXT} upgrade $UPGRADE_PATH"
+      echo "PASS: ${test_label}"
     } || {
-      echo "FAIL: ${EXT} upgrade $UPGRADE_PATH"
+      echo "FAIL: ${test_label}"
       failed
     }
   done
