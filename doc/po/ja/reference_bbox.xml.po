@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-26 08:44+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-02-05 02:52+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_bboxxml/ja/>\n"
 "Language: ja\n"
@@ -148,7 +148,7 @@ msgstr ""
 #: reference_bbox.xml:688 reference_bbox.xml:733
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "関連情報"
 
 #. Tag: para
 #: reference_bbox.xml:52
