@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-02-05 02:52+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_address_standardizerxml/ja/>\n"
 "Language: ja\n"
@@ -63,7 +63,7 @@ msgid ""
 "contains gaz, lex, and rules tables for US data. This extensions can be "
 "installed via: <code>CREATE EXTENSION address_standardizer_data_us;</code>"
 msgstr ""
-"コードは、<code>address_standardizer</code>という名前の、1つのPostgreSQLエクステンションとしてビルドされます。"
+"コードは、<code>address_standardizer</code>という名前の、一つのPostgreSQLエクステンションとしてビルドされます。"
 "<code>CREATE EXTENSION address_standardizer;</code>でインストールできます。address_standa"
 "rdizerエクステンションとともに、<code>address_standardizer_data_us</code>というサンプルデータのエクステンシ"
 "ョンがビルドされます。これには、アメリカのgaz, lexとrulesテーブルデータがあります。このエクステンションは<code>CREATE "
@@ -335,9 +335,8 @@ msgid ""
 "street type following the root street name. Example <emphasis>STREET</"
 "emphasis> in <code>75 State Street</code>."
 msgstr ""
-"文字列 (トークン番号 <code>6</code>): St, Ave, Cir等の、後置詞の種別。スト"
-"リート名に続いて記述されるものです。<code>75 State Street</code>では"
-"<emphasis>STREET</emphasis>が該当します。"
+"文字列 (トークン番号 <code>6</code>): St, Ave, Cir等の後置詞の種別です。ストリート名に続いて記述されるものです。"
+"<code>75 State Street</code>では<emphasis>STREET</emphasis>が該当します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:88 extras_address_standardizer.xml:423
@@ -365,13 +364,13 @@ msgstr "ruralroute"
 
 #. Tag: para
 #: extras_address_standardizer.xml:95
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
 "emphasis> in <code>RR 7</code>."
 msgstr ""
-"文字列 (トークン番号 <code>8</code>): RURAL ROUTE (地方集配路線)。<code>RR "
-"7</code>では<emphasis>8</emphasis>が該当します。"
+"文字列 (トークン番号 <code>8</code>): RURAL ROUTE (地方集配路線)。<emphasis>8</"
+"emphasis>が<code>RR 7</code>では該当します。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:98
@@ -549,7 +548,7 @@ msgstr "<term>id</term>"
 #: extras_address_standardizer.xml:536
 #, no-c-format
 msgid "Primary key of table"
-msgstr "テーブルの主キー。"
+msgstr "テーブルの主キー"
 
 #. Tag: term
 #: extras_address_standardizer.xml:163
@@ -1222,13 +1221,13 @@ msgstr "(トークン番号 <code>0</code>): パースされていない建物�
 
 #. Tag: para
 #: extras_address_standardizer.xml:448
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
 msgstr ""
-"(トークン番号 <code>14</code>): <code>BOX 3B</code>内の<emphasis role=\"bold"
-"\">BOX</emphasis>にあたります。"
+"(トークン番号 <code>14</code>): <code>BOX 3B</code>内の <emphasis role=\"bold\""
+">BOX</emphasis>にあたります。"
 
 #. Tag: term
 #: extras_address_standardizer.xml:451
@@ -1321,8 +1320,8 @@ msgid ""
 "<code>ONE</code> mapped to stdword: <code>1</code>."
 msgstr ""
 "lex (lexiconの略語)テーブルは、英数入力を分類し、入力を (a) <xref linkend=\"rule_input_tokens\"/"
-">および (b) 標準化された表現、に関連付けます。これらのテーブルで発見した物は、\n"
-"<code>ONE</code>がstdwordでは<code>1</code>に対応付けされます。"
+">および (b) 標準化された表現、に関連付けます。これらのテーブルで発見した物は、<code>ONE</code>がstdwordでは<code>1</"
+"code>に対応付けされます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:489
@@ -1404,15 +1403,15 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:529
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A gaz (short for gazeteer) table is used to standardize place names and "
 "associate that input with <xref linkend=\"rule_input_tokens\"/> and (b) "
 "standardized representations. For example if you are in US, you may load "
 "these with State Names and associated abbreviations."
 msgstr ""
-"gaz (gazeteerの略語)テーブルは、地名を分類し、入力を (a) <xref linkend="
-"\"rule_input_tokens\"/>および (b) 標準化された表現、に関連付けます。"
+"gaz (gazeteerの略語)テーブルは、地名を分類し、入力を (a) <xref linkend=\"rule_input_tokens\"/"
+">および (b) 標準化された表現、に関連付けます。たとえば、米国にいる場合には、州名と略称を持つものをダウンロードできます。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:531
@@ -1461,7 +1460,7 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:588
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns takes an address as input, and returns a record output consisting of "
 "fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, "
@@ -1469,11 +1468,10 @@ msgid ""
 "emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, "
 "<emphasis>zipplus</emphasis>, <emphasis>country</emphasis>."
 msgstr ""
-"一つの住所を入力に取り、<emphasis>num</emphasis>、<emphasis>street</"
-"emphasis>、<emphasis>street2</emphasis>、<emphasis>address1</emphasis>、"
-"<emphasis>city</emphasis>、<emphasis>state</emphasis>、<emphasis>zip</"
-"emphasis>、<emphasis>zipplus</emphasis>、<emphasis>country</emphasis>からなる"
-"レコードを一つ返します。"
+"一つの住所を入力に取り、<emphasis>num</emphasis>、<emphasis>street</emphasis>、<emphasis>st"
+"reet2</emphasis>、<emphasis>address1</emphasis>、<emphasis>city</emphasis>、<emp"
+"hasis>state</emphasis>、<emphasis>zip</emphasis>、<emphasis>zipplus</emphasis>、"
+"<emphasis>country</emphasis>からなるレコードを一つ返します。"
 
 #. Tag: para
 #: extras_address_standardizer.xml:592 extras_address_standardizer.xml:654
@@ -1752,8 +1750,7 @@ msgid ""
 "Make easier to read we'll dump output using hstore extension CREATE "
 "EXTENSION hstore; you need to install"
 msgstr ""
-"読みやすくするために、hstoreエクステンションを使ってダウンぷします。必要なら "
-"CREATE EXTENSION hstore; を実行します。"
+"読みやすくするために、hstoreエクステンションを使ってダンプします。必要なら CREATE EXTENSION hstore; を実行します。"
 
 #. Tag: programlisting
 #: extras_address_standardizer.xml:671
