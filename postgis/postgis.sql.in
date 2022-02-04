@@ -2959,6 +2959,7 @@ DECLARE
 	rec record;
 	sql text;
 	var_schema text;
+	target_version text; -- TODO: optionally take as argument
 BEGIN
 
 	FOR rec IN
@@ -2973,10 +2974,15 @@ BEGIN
 		)
 		ORDER BY length(name) -- this is to make sure 'postgis' is first !
 	LOOP --{
-		IF rec.installed_version IS NULL THEN
+
+		IF target_version IS NULL THEN
+			target_version := rec.default_version;
+		END IF;
+
+		IF rec.installed_version IS NULL THEN --{
 			-- If the support installed by available extension
 			-- is found unpackaged, we package it
-			IF
+			IF --{
 				 -- PostGIS is always available (this function is part of it)
 				 rec.name = 'postgis'
 
@@ -3003,7 +3009,7 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_class c
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
-			THEN
+			THEN --}{
 				-- Force install in same schema as postgis
 				SELECT INTO var_schema n.nspname
 				  FROM pg_namespace n, pg_proc p
@@ -3015,46 +3021,50 @@ BEGIN
 					sql := format(
 							  'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
 							  'ALTER EXTENSION %1$I UPDATE TO %3$I',
-							  rec.name, var_schema, rec.default_version);
+							  rec.name, var_schema, target_version);
 				ELSE
 					sql := format(
 							 'CREATE EXTENSION %1$I VERSION unpackaged;'
 							 'ALTER EXTENSION %1$I UPDATE TO %2$I',
-							 rec.name, rec.default_version);
+							 rec.name, target_version);
 				END IF;
-				RAISE NOTICE 'Packaging extension %', rec.name;
+				RAISE NOTICE 'Packaging and updating %', rec.name;
 				RAISE DEBUG '%', sql;
 				EXECUTE sql;
 			ELSE
-				RAISE NOTICE 'Extension % is not available or not packagable for some reason', rec.name;
+				RAISE DEBUG 'Skipping % (not in use)', rec.name;
 			END IF;
-		ELSIF rec.default_version != rec.installed_version
-		THEN
+		ELSIF target_version != rec.installed_version
+		THEN --}{
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version)   || ';';
-			RAISE NOTICE 'Updating extension % from % to %',
-				rec.name, rec.installed_version, rec.default_version;
-			RAISE DEBUG '%', sql;
-			EXECUTE sql;
-		ELSIF (rec.default_version = rec.installed_version AND rec.installed_version ILIKE '%dev') OR
-			(@extschema@._postgis_pgsql_version() != @extschema@._postgis_scripts_pgsql_version())
-		THEN
-			-- we need to upgrade to next and back
+						quote_ident(target_version)   || ';';
 			RAISE NOTICE 'Updating extension % %',
 				rec.name, rec.installed_version;
+			RAISE DEBUG '%', sql;
+			EXECUTE sql;
+		ELSIF (target_version = rec.installed_version AND rec.installed_version ILIKE '%dev') OR
+			(@extschema@._postgis_pgsql_version() != @extschema@._postgis_scripts_pgsql_version())
+		THEN --}{
+			-- we need to upgrade to next and back
+			RAISE NOTICE 'Updating extension % % (self refresh)',
+				rec.name, rec.installed_version;
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version || 'next')   || ';';
+						quote_ident(target_version || 'next')   || ';';
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
 			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(rec.default_version)   || ';';
+						quote_ident(target_version)   || ';';
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
-		END IF;
+		END IF; --}
 
 	END LOOP; --}
 
-	RETURN 'Upgrade completed, run SELECT postgis_full_version(); for details';
+	RETURN format(
+		'Upgrade to version %s completed, run SELECT postgis_full_version(); for details',
+		target_version
+	);
+
 
 END
 $$ LANGUAGE plpgsql VOLATILE;
