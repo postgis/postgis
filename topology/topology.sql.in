@@ -716,25 +716,31 @@ LANGUAGE 'sql' VOLATILE;
 CREATE OR REPLACE FUNCTION topology.DropTopoGeometryColumn(schema varchar, tbl varchar, col varchar)
   RETURNS text
 AS
-$$
+$BODY$
 DECLARE
   rec RECORD;
   lyrinfo RECORD;
   ok BOOL;
   result text;
+  sql TEXT;
 BEGIN
 
   -- Get layer and topology info
-  ok = false;
-  FOR rec IN EXECUTE 'SELECT t.name as toponame, l.* FROM '
-       'topology.topology t, topology.layer l '
-       ' WHERE l.topology_id = t.id'
-       ' AND l.schema_name = ' || quote_literal(schema)
-    || ' AND l.table_name = ' || quote_literal(tbl)
-    || ' AND l.feature_column = ' || quote_literal(col)
+
+  sql := $$
+    SELECT t.name as toponame, l.*
+    FROM topology.topology t, topology.layer l
+    WHERE l.topology_id = t.id
+    AND l.schema_name = $1
+    AND l.table_name = $2
+    AND l.feature_column = $3
+  $$;
+
+  ok := false;
+  FOR rec IN EXECUTE sql USING schema, tbl, col
   LOOP
-    ok = true;
-    lyrinfo = rec;
+    ok := true;
+    lyrinfo := rec;
   END LOOP;
 
   -- Layer not found
@@ -746,14 +752,19 @@ BEGIN
   -- Clean up the topology schema
   BEGIN
     -- Cleanup the relation table
-    EXECUTE 'DELETE FROM ' || quote_ident(lyrinfo.toponame)
-      || '.relation '
-         ' WHERE '
-         'layer_id = ' || lyrinfo.layer_id;
+    sql := format(
+      'DELETE FROM %I.relation WHERE layer_id = $1',
+      lyrinfo.toponame
+    );
+    EXECUTE sql USING lyrinfo.layer_id;
 
     -- Drop the sequence for topogeoms in this layer
-    EXECUTE 'DROP SEQUENCE ' || quote_ident(lyrinfo.toponame)
-      || '.topogeo_s_' || lyrinfo.layer_id;
+    sql := format(
+      'DROP SEQUENCE %I.topogeo_s_%s',
+      lyrinfo.toponame,
+      lyrinfo.layer_id
+    );
+    EXECUTE sql;
   EXCEPTION
     WHEN UNDEFINED_TABLE THEN
       RAISE NOTICE '%', SQLERRM;
@@ -775,25 +786,30 @@ BEGIN
 
   IF ok THEN
     -- Drop the layer column
-    EXECUTE 'ALTER TABLE ' || quote_ident(schema) || '.'
-      || quote_ident(tbl)
-      || ' DROP ' || quote_ident(col)
-      || ' cascade';
+    sql := format(
+      'ALTER TABLE %I.%I DROP %I CASCADE',
+      schema, tbl, col
+    );
+    EXECUTE sql;
   END IF;
 
   -- Delete the layer record
-  EXECUTE 'DELETE FROM topology.layer '
-       ' WHERE topology_id = ' || lyrinfo.topology_id
-    || ' AND layer_id = ' || lyrinfo.layer_id;
+  sql := $$
+    DELETE FROM topology.layer
+    WHERE topology_id = $1
+    AND layer_id = $2
+  $$;
+  EXECUTE sql USING lyrinfo.topology_id, lyrinfo.layer_id;
 
 
-  result = 'Layer ' || lyrinfo.layer_id || ' ('
-    || schema || '.' || tbl || '.' || col
-    || ') dropped';
+  result := format(
+    'Layer %s (%I.%I.%I) dropped',
+    lyrinfo.layer_id, schema, tbl, col
+  );
 
   RETURN result;
 END;
-$$
+$BODY$
 LANGUAGE 'plpgsql' VOLATILE;
 --
 --} DropTopoGeometryColumn
@@ -1723,6 +1739,7 @@ $$
 DECLARE
   topoid integer;
   rec RECORD;
+  sql TEXT;
 BEGIN
   -- Get topology id
   SELECT id INTO topoid
@@ -1736,30 +1753,43 @@ BEGIN
     quote_literal(atopology), topoid;
 
   -- Drop all layers in the topology
-  FOR rec IN EXECUTE 'SELECT * FROM topology.layer WHERE '
-    || ' topology_id = ' || topoid
+  sql := 'SELECT * FROM topology.layer WHERE topology_id = $1';
+  FOR rec IN EXECUTE sql USING topoid
   LOOP
 
-    EXECUTE 'SELECT topology.DropTopoGeometryColumn('
-      || quote_literal(rec.schema_name)
-      || ','
-      || quote_literal(rec.table_name)
-      || ','
-      || quote_literal(rec.feature_column)
-      || ')';
+    sql := format(
+      'SELECT topology.DropTopoGeometryColumn(%L, %L, %L)',
+      rec.schema_name, rec.table_name, rec.feature_column
+    );
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Executing: %', sql;
+#endif
+    EXECUTE sql;
   END LOOP;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Deleting record from topology.topology';
+#endif
+
   -- Delete record from topology.topology
-  EXECUTE 'DELETE FROM topology.topology WHERE id = '
-    || topoid;
+  sql := 'DELETE FROM topology.topology WHERE id = $1';
+  EXECUTE sql USING topoid;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Query pg_namespace';
+#endif
 
   -- Drop the schema (if it exists)
   FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
   LOOP
-    EXECUTE 'DROP SCHEMA '||quote_ident(atopology)||' CASCADE';
+    sql := format('DROP SCHEMA %I CASCADE', atopology);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Executing: %', sql;
+#endif
+    EXECUTE sql;
   END LOOP;
 
-  RETURN 'Topology ' || quote_literal(atopology) || ' dropped';
+  RETURN format('Topology %L dropped', atopology);
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
