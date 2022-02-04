@@ -1474,46 +1474,26 @@ BEGIN
     topology_id = rec.nextval;
   END LOOP;
 
-  EXECUTE 'CREATE SCHEMA ' || quote_ident(atopology);
-
-  -------------{ face CREATION
   sql := format(
     $$
-      CREATE TABLE %I.face(
+      CREATE SCHEMA %1$I;
+
+      -------------{ face CREATION
+      CREATE TABLE %1$I.face(
         face_id SERIAL,
-        mbr GEOMETRY(polygon%s, %L),
+        mbr GEOMETRY(polygon, %2$L), -- 2d only mbr is good enough
         CONSTRAINT face_primary_key
         PRIMARY KEY(face_id)
-     )
-    $$,
-    atopology,
-    zsuffix,
-    srid
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      );
 
-  -- Face standard view description
-  sql := format(
-    $$
-      COMMENT ON TABLE %I.face IS
-      'Contains face topology primitives'
-    $$,
-    atopology
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      -- Face standard view description
+      COMMENT ON TABLE %1$I.face IS
+      'Contains face topology primitives';
 
-  -------------} END OF face CREATION
+      -------------} END OF face CREATION
 
-  --------------{ node CREATION
+      --------------{ node CREATION
 
-  sql := format(
-    $$
       CREATE TABLE %1$I.node(
         node_id SERIAL,
         geom GEOMETRY(point%3$s, %2$L),
@@ -1523,37 +1503,17 @@ BEGIN
         CONSTRAINT face_exists
           FOREIGN KEY(containing_face)
           REFERENCES %1$I.face(face_id)
-     )
-    $$,
-    atopology,
-    srid,
-    zsuffix
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      );
 
-  -- Node standard view description
-  sql := format(
-    $$
-      COMMENT ON TABLE %I.node IS
-      'Contains node topology primitives'
-    $$,
-    atopology
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      -- Node standard view description
+      COMMENT ON TABLE %1$I.node IS
+      'Contains node topology primitives';
 
-  --------------} END OF node CREATION
+      --------------} END OF node CREATION
 
-  --------------{ edge CREATION
+      --------------{ edge CREATION
 
-  -- edge_data table
-  sql := format(
-    $$
+      -- edge_data table
       CREATE TABLE %1$I.edge_data (
         edge_id SERIAL NOT NULL PRIMARY KEY,
         start_node INTEGER NOT NULL,
@@ -1591,65 +1551,36 @@ BEGIN
           FOREIGN KEY(abs_next_right_edge)
           REFERENCES %1$I .edge_data(edge_id)
           DEFERRABLE INITIALLY DEFERRED
-      )
-    $$,
-    atopology,
-    srid,
-    zsuffix
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      );
 
-  -- edge standard view (select rule)
-  sql := format(
-    $$
+      -- edge standard view (select rule)
       CREATE VIEW %1$I.edge AS
       SELECT
         edge_id, start_node, end_node, next_left_edge,
         next_right_edge, left_face, right_face, geom
-      FROM %1$I.edge_data
-    $$,
-    atopology
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      FROM %1$I.edge_data;
 
-  -- Edge standard view description
-  sql := format(
-    $$
-  COMMENT ON VIEW %1$I.edge IS
-       'Contains edge topology primitives';
-  COMMENT ON COLUMN %1$I.edge.edge_id IS
-       'Unique identifier of the edge';
-  COMMENT ON COLUMN %1$I.edge.start_node IS
-       'Unique identifier of the node at the start of the edge';
-  COMMENT ON COLUMN %1$I.edge.end_node IS
-       'Unique identifier of the node at the end of the edge';
-  COMMENT ON COLUMN %1$I.edge.next_left_edge IS
-       'Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
-  COMMENT ON COLUMN %1$I.edge.next_right_edge IS
-       'Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
-  COMMENT ON COLUMN %1$I.edge.left_face IS
-       'Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE';
-  COMMENT ON COLUMN %1$I.edge.right_face IS
-       'Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE';
-  COMMENT ON COLUMN %1$I.edge.geom IS
-       'The geometry of the edge';
-     $$,
-    atopology
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      -- Edge standard view description
+      COMMENT ON VIEW %1$I.edge IS
+      'Contains edge topology primitives';
+      COMMENT ON COLUMN %1$I.edge.edge_id IS
+      'Unique identifier of the edge';
+      COMMENT ON COLUMN %1$I.edge.start_node IS
+      'Unique identifier of the node at the start of the edge';
+      COMMENT ON COLUMN %1$I.edge.end_node IS
+      'Unique identifier of the node at the end of the edge';
+      COMMENT ON COLUMN %1$I.edge.next_left_edge IS
+      'Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
+      COMMENT ON COLUMN %1$I.edge.next_right_edge IS
+      'Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
+      COMMENT ON COLUMN %1$I.edge.left_face IS
+      'Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE';
+      COMMENT ON COLUMN %1$I.edge.right_face IS
+      'Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE';
+      COMMENT ON COLUMN %1$I.edge.geom IS
+      'The geometry of the edge';
 
-  -- edge standard view (insert rule)
-  sql := format(
-    $$
+      -- edge standard view (insert rule)
       CREATE RULE edge_insert_rule AS
       ON INSERT TO %1$I.edge
       DO INSTEAD INSERT into %1$I.edge_data
@@ -1658,106 +1589,74 @@ BEGIN
         NEW.next_left_edge, abs(NEW.next_left_edge),
         NEW.next_right_edge, abs(NEW.next_right_edge),
         NEW.left_face, NEW.right_face, NEW.geom
-      )
-    $$,
-    atopology
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      );
 
-  --------------} END OF edge CREATION
+      --------------} END OF edge CREATION
 
-  --------------{ layer sequence
-  sql := format(
-    'CREATE SEQUENCE %I.layer_id_seq',
-    atopology
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
-  --------------} layer sequence
+      --------------{ layer sequence
+      CREATE SEQUENCE %1$I.layer_id_seq;
+      --------------} layer sequence
 
-  --------------{ relation CREATION
-  sql := format(
-    $$
+      --------------{ relation CREATION
       CREATE TABLE %1$I.relation (
         topogeo_id integer NOT NULL,
         layer_id integer NOT NULL,
         element_id integer NOT NULL,
         element_type integer NOT NULL,
         UNIQUE(layer_id,topogeo_id,element_id,element_type)
-      )
-    $$,
-    atopology
-  );
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'SQL: %', sql;
-#endif
-  EXECUTE sql;
+      );
 
-  sql := format(
-    $$
       CREATE TRIGGER relation_integrity_checks
       BEFORE UPDATE OR INSERT ON %1$I.relation
       FOR EACH ROW EXECUTE PROCEDURE
-      topology.RelationTrigger(%2$L, %1$L)
+      topology.RelationTrigger(%4$L, %1$L);
+      --------------} END OF relation CREATION
+
+      ------- Default (world) face
+      INSERT INTO %1$I.face(face_id) VALUES(0);
+
+      ------- GiST index on face
+      CREATE INDEX face_gist ON %1$I.face
+      USING gist (mbr);
+
+      ------- GiST index on node
+      CREATE INDEX node_gist ON %1$I.node
+      USING gist (geom);
+
+      ------- GiST index on edge
+      CREATE INDEX edge_gist ON %1$I.edge_data
+      USING gist (geom);
+
+      ------- Indexes on left_face and right_face of edge_data
+      ------- NOTE: these indexes speed up GetFaceGeometry (and thus
+      -------       TopoGeometry::Geometry) by a factor of 10 !
+      -------       See http://trac.osgeo.org/postgis/ticket/806
+      CREATE INDEX edge_left_face_idx
+        ON %1$I.edge_data (left_face);
+      CREATE INDEX edge_right_face_idx
+        ON %1$I.edge_data (right_face);
+
+      ------- Indexes on start_node and end_node of edge_data
+      ------- NOTE: this indexes speed up node deletion
+      -------       by a factor of 1000 !
+      -------       See http://trac.osgeo.org/postgis/ticket/2082
+      CREATE INDEX edge_start_node_idx
+        ON %1$I.edge_data (start_node);
+      CREATE INDEX edge_end_node_idx
+        ON %1$I.edge_data (end_node);
+
+      -- TODO: consider also adding an index on node.containing_face
+
     $$,
-    atopology,
-    topology_id
+    atopology,   -- %1
+    srid,        -- %2
+    zsuffix,     -- %3
+    topology_id  -- %4
   );
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'SQL: %', sql;
 #endif
   EXECUTE sql;
-  --------------} END OF relation CREATION
-
-  ------- Default (world) face
-  EXECUTE format('INSERT INTO %I.face(face_id) VALUES(0)', atopology);
-
-  ------- GiST index on face
-  EXECUTE format($$
-    CREATE INDEX face_gist ON %1$I.face
-    USING gist (mbr)
-  $$, atopology);
-
-  ------- GiST index on node
-  EXECUTE format($$
-    CREATE INDEX node_gist ON %1$I.node
-    USING gist (geom)
-  $$, atopology);
-
-  ------- GiST index on edge
-  EXECUTE format($$
-    CREATE INDEX edge_gist ON %1$I.edge_data
-    USING gist (geom)
-  $$, atopology);
-
-  ------- Indexes on left_face and right_face of edge_data
-  ------- NOTE: these indexes speed up GetFaceGeometry (and thus
-  -------       TopoGeometry::Geometry) by a factor of 10 !
-  -------       See http://trac.osgeo.org/postgis/ticket/806
-  EXECUTE format($$
-    CREATE INDEX edge_left_face_idx
-      ON %1$I.edge_data (left_face);
-    CREATE INDEX edge_right_face_idx
-      ON %1$I.edge_data (right_face);
-  $$, atopology);
-
-  ------- Indexes on start_node and end_node of edge_data
-  ------- NOTE: this indexes speed up node deletion
-  -------       by a factor of 1000 !
-  -------       See http://trac.osgeo.org/postgis/ticket/2082
-  EXECUTE format($$
-    CREATE INDEX edge_start_node_idx
-      ON %1$I.edge_data (start_node);
-    CREATE INDEX edge_end_node_idx
-      ON %1$I.edge_data (end_node);
-  $$, atopology);
-
-  -- TODO: consider also adding an index on node.containing_face
 
   ------- Add record to the "topology" metadata table
   INSERT INTO topology.topology (id, name, srid, precision, hasZ)
