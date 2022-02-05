@@ -3034,26 +3034,14 @@ BEGIN
 			ELSE
 				RAISE DEBUG 'Skipping % (not in use)', rec.name;
 			END IF;
-		ELSIF target_version != rec.installed_version
-		THEN --}{
-			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(target_version)   || ';';
+		ELSE -- IF target_version != rec.installed_version THEN --}{
+			sql = format(
+				'UPDATE pg_catalog.pg_extension SET extversion = ''ANY'' WHERE extname = %1$L;'
+				'ALTER EXTENSION %1$I UPDATE TO %2$I',
+				rec.name, target_version
+			);
 			RAISE NOTICE 'Updating extension % %',
 				rec.name, rec.installed_version;
-			RAISE DEBUG '%', sql;
-			EXECUTE sql;
-		ELSIF (target_version = rec.installed_version AND rec.installed_version ILIKE '%dev') OR
-			(@extschema@._postgis_pgsql_version() != @extschema@._postgis_scripts_pgsql_version())
-		THEN --}{
-			-- we need to upgrade to next and back
-			RAISE NOTICE 'Updating extension % % (self refresh)',
-				rec.name, rec.installed_version;
-			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(target_version || 'next')   || ';';
-			RAISE DEBUG '%', sql;
-			EXECUTE sql;
-			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						quote_ident(target_version)   || ';';
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
 		END IF; --}
