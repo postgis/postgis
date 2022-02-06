@@ -3,62 +3,6 @@
 -- Copyright (C) 2021 University of Münster (WWU), Germany
 -- Written by Jim Jones <jim.jones@uni-muenster.de>
 
--- BEGIN stress test 
-
--- Creates random unicode strings with a given length 
-CREATE OR REPLACE FUNCTION public.random_unicode_string(int)
-RETURNS text LANGUAGE 'plpgsql'
-AS $$
-DECLARE
-  res text := '';
-  char_num int := 1;
-  min_surrogate int := 55296;
-  max_surrogate int := 57343;
-  max_unicode int := 1111998;
-BEGIN
-   FOR i IN 1 .. $1 LOOP
-     char_num := floor(random()* (max_unicode) + 1);
-	 IF (char_num > 0 AND char_num < min_surrogate) OR
-	    (char_num > max_surrogate AND char_num <= max_unicode) THEN
-       res := res || chr(char_num);
-	 END IF;
-   END LOOP;
-   RETURN res;
-END;
-$$;
-
-
--- Creates invalid "subfield" values and "code" attributes
--- with 100k random unicode strings from char 1 to 1111998.
-DO $$
-DECLARE marc_string text DEFAULT '';
-BEGIN
-  FOR i IN 1 .. 100000 LOOP    	
-     marc_string := format('
-		<record xmlns="http://www.loc.gov/MARC21/slim">
-		  <datafield tag="034" ind1="0" ind2=" ">
-			<subfield code="%2$s"><![CDATA[%2$s]]></subfield>
-			<subfield code="d"><![CDATA[%1$s]]></subfield>
-			<subfield code="e"><![CDATA[%1$s]]></subfield>
-			<subfield code="f"><![CDATA[%1$s]]></subfield>
-			<subfield code="g"><![CDATA[%1$s]]></subfield>
-		  </datafield>
-		</record>',
-		random_unicode_string(10),random_unicode_string(1));
-	BEGIN
-	  PERFORM ST_GeomFromMARC21(marc_string);	
-	  EXCEPTION WHEN OTHERS THEN
-	  --raise info '%',marc_string;
-	END;
-  END LOOP;
-END;$$;
-
--- END stress test
--- ##############################################################
-
-
-
-
 -- ERROR: Empty string
 SELECT 'empty_string',ST_GeomFromMARC21('');
 
@@ -180,7 +124,7 @@ SELECT 'missing_g',
 	</record>');
 
 
--- ERROR: invalid hemisphere char for subfield "d"
+-- ERROR: invalid cardinal direction for subfield "d"
 SELECT 'invalid_hemisphere_d',
   ST_GeomFromMARC21('
 	<record>
@@ -193,7 +137,7 @@ SELECT 'invalid_hemisphere_d',
 	  </datafield>
 	</record>');
 
--- ERROR: invalid hemisphere char for subfield "e"
+-- ERROR: invalid cardinal direction for subfield "e"
 SELECT 'invalid_hemisphere_e',
   ST_GeomFromMARC21('
 	<record>
@@ -207,7 +151,7 @@ SELECT 'invalid_hemisphere_e',
 	</record>');
 
 
--- ERROR: invalid hemisphere char for subfield "f"
+-- ERROR: invalid cardinal direction for subfield "f"
 SELECT 'invalid_hemisphere_f',
   ST_GeomFromMARC21('
 	<record>
@@ -220,7 +164,7 @@ SELECT 'invalid_hemisphere_f',
 	  </datafield>
 	</record>');
 
--- ERROR: invalid hemisphere char for subfield "g"
+-- ERROR: invalid cardinal direction for subfield "g"
 SELECT 'invalid_hemisphere_g',
   ST_GeomFromMARC21('
 	<record>
@@ -850,7 +794,3 @@ SELECT 'geocollection_1',
 	  <subfield code="g">S0514450</subfield>
     </datafield>
   </record>'));      
-
-
-
-DROP FUNCTION public.random_unicode_string(int);
