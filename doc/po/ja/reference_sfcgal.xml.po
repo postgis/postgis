@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-10 13:02+0000\n"
+"POT-Creation-Date: 2022-02-06 07:55+0000\n"
 "PO-Revision-Date: 2022-01-31 10:53+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -135,7 +135,7 @@ msgstr "&T_support;"
 #: reference_sfcgal.xml:45 reference_sfcgal.xml:80 reference_sfcgal.xml:176
 #: reference_sfcgal.xml:298 reference_sfcgal.xml:559 reference_sfcgal.xml:704
 #: reference_sfcgal.xml:779 reference_sfcgal.xml:822 reference_sfcgal.xml:918
-#: reference_sfcgal.xml:960
+#: reference_sfcgal.xml:960 reference_sfcgal.xml:1068
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -207,7 +207,7 @@ msgstr ""
 #: reference_sfcgal.xml:116 reference_sfcgal.xml:209 reference_sfcgal.xml:275
 #: reference_sfcgal.xml:423 reference_sfcgal.xml:528 reference_sfcgal.xml:592
 #: reference_sfcgal.xml:668 reference_sfcgal.xml:743 reference_sfcgal.xml:816
-#: reference_sfcgal.xml:854
+#: reference_sfcgal.xml:854 reference_sfcgal.xml:1051
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -1180,7 +1180,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_sfcgal.xml:900 reference_sfcgal.xml:1053
+#: reference_sfcgal.xml:900
 #, no-c-format
 msgid "ST_AsText output"
 msgstr ""
@@ -1231,7 +1231,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: title
-#: reference_sfcgal.xml:953 reference_sfcgal.xml:1051
+#: reference_sfcgal.xml:953
 #, fuzzy, no-c-format
 msgid "Example"
 msgstr "例"
@@ -1342,12 +1342,12 @@ msgstr ""
 #: reference_sfcgal.xml:1052
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_3DConvexHull('MULTIPOINTZ(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 "
-"7 5, 6 3 5)')) As 3DHull;"
+"SELECT ST_AsText(ST_3DConvexHull('LINESTRING Z(0 0 5, 1 5 3, 5 7 6, 9 5 3 , "
+"5 7 5, 6 3 5)'::geometry));"
 msgstr ""
 
 #. Tag: screen
-#: reference_sfcgal.xml:1054
+#: reference_sfcgal.xml:1053
 #, no-c-format
 msgid ""
 "POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),"
@@ -1356,7 +1356,29 @@ msgid ""
 "7 5,9 5 3,1 5 3)))"
 msgstr ""
 
+#. Tag: programlisting
+#: reference_sfcgal.xml:1055
 #, no-c-format
+msgid ""
+"WITH f AS (SELECT i, ST_Extrude(geom, 0,0, i ) AS geom\n"
+"FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)\n"
+"      )\n"
+"      SELECT ST_3DConvexHull(ST_Collect(f.geom) )\n"
+"      FROM f;"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:1062
+#, no-c-format
+msgid "Original geometry overlaid with 3D convex hull"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:1069
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsX3D\"/>"
+msgstr ""
+
 #~ msgid ""
 #~ "These functions compute geometric constructions, or alter geometry size "
 #~ "or shape."
@@ -1364,15 +1386,12 @@ msgstr ""
 #~ "これらの関数は幾何的構造の計算、すなわちジオメトリのサイズや形状を変更しま"
 #~ "す。"
 
-#, no-c-format
 #~ msgid "Geometry Processing"
 #~ msgstr "ジオメトリ処理関数"
 
-#, no-c-format
 #~ msgid "ST_Buffer"
 #~ msgstr "ST_Buffer"
 
-#, no-c-format
 #~ msgid ""
 #~ "Computes a geometry covering all points within a given distance from a "
 #~ "geometry."
@@ -1380,7 +1399,6 @@ msgstr ""
 #~ "あるジオメトリからの距離が指定された距離以下となる点全ての集合となるジオメ"
 #~ "トリを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcprototype> <funcdef>geometry <function>ST_Buffer</function></"
 #~ "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
@@ -1426,7 +1444,6 @@ msgstr ""
 #~ "<paramdef><type>integer </type> <parameter>num_seg_quarter_circle</"
 #~ "parameter></paramdef> </funcprototype>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Computes a a POLYGON or MULTIPOLYGON that represents all points whose "
 #~ "distance from a geometry/geography is less than or equal to a given "
@@ -1441,7 +1458,6 @@ msgstr ""
 #~ "能性があり、その場合には、POLYGON EMPTYが返ります。ポイントとラインの負の"
 #~ "距離は常に空を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "For geometry, the distance is specified in the units of the Spatial "
 #~ "Reference System of the geometry. For geography, the distance is "
@@ -1450,7 +1466,6 @@ msgstr ""
 #~ "ジオメトリの場合、指定される距離の単位は、ジオメトリの空間参照系の単位で"
 #~ "す。ジオグラフィの場合、指定される距離の単位はメートルです。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The optional third parameter controls the buffer accuracy and style. The "
 #~ "accuracy of circular arcs in the buffer is specified as the number of "
@@ -1463,13 +1478,11 @@ msgstr ""
 #~ "ファのスタイルは キー=値 のペアを空白区切りでリストにして指定します。キー"
 #~ "は次の通りです。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'quad_segs=#' : number of line segments used to approximate a quarter "
 #~ "circle (default is 8)."
 #~ msgstr "'quad_segs=#' : 四分の一円近似に使う辺の数 (デフォルトは8)。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'endcap=round|flat|square' : endcap style (defaults to \"round\"). 'butt' "
 #~ "is accepted as a synonym for 'flat'."
@@ -1477,7 +1490,6 @@ msgstr ""
 #~ "'endcap=round|flat|square' : 終端スタイル (デフォルトは \"round"
 #~ "\")。'butt'は'flat'の同義語として受け付けます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 #~ "accepted as a synonym for 'mitre'."
@@ -1485,7 +1497,6 @@ msgstr ""
 #~ "'join=round|mitre|bevel' : 接続スタイル (デフォルトは\"round"
 #~ "\")。'miter'も'mitre'の同義語として受け付けます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). "
 #~ "'miter_limit' is accepted as a synonym for 'mitre_limit'."
@@ -1494,7 +1505,6 @@ msgstr ""
 #~ "比)の最大値 (継ぎ目スタイルがmiterである場合のみ有"
 #~ "効)。'miter_limit'は'mitre_limit'の同義語として受け付けます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'side=both|left|right' : 'left' or 'right' performs a single-sided buffer "
 #~ "on the geometry, with the buffered side relative to the direction of the "
@@ -1506,7 +1516,6 @@ msgstr ""
 #~ "メトリにだけ関連して、POINTまたはPOLYGONジオメトリには影響がありません。デ"
 #~ "フォルトでは終端スタイルは四角形です。"
 
-#, no-c-format
 #~ msgid ""
 #~ "For geography, this is a wrapper around the geometry implementation. It "
 #~ "determines a planar spatial reference system that best fits the bounding "
@@ -1523,7 +1532,6 @@ msgstr ""
 #~ "ジェクトがUTMゾーンより非常に大きい場合や日付変更線を超える場合には、望ま"
 #~ "しくない振る舞いになる場合があります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Buffer output is always a valid polygonal geometry. Buffer can handle "
 #~ "invalid inputs, so buffering by distance 0 is sometimes used as a way of "
@@ -1535,7 +1543,6 @@ msgstr ""
 #~ "われます。同じ目的の関数としては<xref linkend=\"ST_MakeValid\"/>が使われま"
 #~ "す。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Buffering is sometimes used to perform a within-distance search. For this "
 #~ "use case it is more efficient to use <xref linkend=\"ST_DWithin\"/>."
@@ -1543,7 +1550,6 @@ msgstr ""
 #~ "バッファ作成は時々、距離内にある地物を検索する際に使われます。この使い方に"
 #~ "ついては、<xref linkend=\"ST_DWithin\"/>の方が効率的です。"
 
-#, no-c-format
 #~ msgid ""
 #~ "This function ignores the Z dimension. It always gives a 2D result even "
 #~ "when used on a 3D geometry."
@@ -1551,7 +1557,6 @@ msgstr ""
 #~ "この関数はZ値を無視します。この関数を3次元ジオメトリ上で使用したとしても、"
 #~ "常に2次元の結果となります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Enhanced: 2.5.0 - ST_Buffer geometry support was enhanced to allow for "
 #~ "side buffering specification <code>side=both|left|right</code>."
@@ -1559,7 +1564,6 @@ msgstr ""
 #~ "Enhanced: 2.5.0 - ST_Bufferのジオメトリ対応版が強化され、バッファを施す側"
 #~ "を<code>side=both|left|right</code>で指定できるようになりました。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Availability: 1.5 - ST_Buffer was enhanced to support different endcaps "
 #~ "and join types. These are useful for example to convert road linestrings "
@@ -1571,23 +1575,18 @@ msgstr ""
 #~ "端を丸でなく平面や四角で処理したい場合などに使えます。ジオグラフィ用の薄い"
 #~ "ラッパが追加されました。"
 
-#, no-c-format
 #~ msgid "Performed by the GEOS module."
 #~ msgstr "GEOSモジュールで実現しています。"
 
-#, no-c-format
 #~ msgid "&sfs_compliant; s2.1.1.3"
 #~ msgstr "&sfs_compliant; s2.1.1.3"
 
-#, no-c-format
 #~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.17"
 #~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.17"
 
-#, no-c-format
 #~ msgid "quad_segs=8 (default)"
 #~ msgstr "quad_segs=8 (デフォルト)"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText('POINT(100 90)'),\n"
@@ -1597,15 +1596,12 @@ msgstr ""
 #~ " ST_GeomFromText('POINT(100 90)'),\n"
 #~ " 50, 'quad_segs=8');"
 
-#, no-c-format
 #~ msgid "quad_segs=2 (lame)"
 #~ msgstr "quad_segs=2 (不十分)"
 
-#, no-c-format
 #~ msgid "endcap=round join=round (default)"
 #~ msgstr "endcap=round join=round (デフォルト)"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText(\n"
@@ -1617,11 +1613,9 @@ msgstr ""
 #~ "  'LINESTRING(50 50,150 150,150 50)'\n"
 #~ " ), 10, 'endcap=round join=round');"
 
-#, no-c-format
 #~ msgid "endcap=square"
 #~ msgstr "endcap=square"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText(\n"
@@ -1633,11 +1627,9 @@ msgstr ""
 #~ "  'LINESTRING(50 50,150 150,150 50)'\n"
 #~ " ), 10, 'endcap=square join=round');"
 
-#, no-c-format
 #~ msgid "endcap=flat"
 #~ msgstr "endcap=flat"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText(\n"
@@ -1649,11 +1641,9 @@ msgstr ""
 #~ "  'LINESTRING(50 50,150 150,150 50)'\n"
 #~ " ), 10, 'endcap=flat join=round');"
 
-#, no-c-format
 #~ msgid "join=bevel"
 #~ msgstr "join=bevel"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText(\n"
@@ -1665,11 +1655,9 @@ msgstr ""
 #~ "  'LINESTRING(50 50,150 150,150 50)'\n"
 #~ " ), 10, 'join=bevel');"
 
-#, no-c-format
 #~ msgid "join=mitre mitre_limit=5.0 (default mitre limit)"
 #~ msgstr "join=mitre mitre_limit=5.0 (デフォルトの最大マイター比)"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText(\n"
@@ -1681,11 +1669,9 @@ msgstr ""
 #~ "  'LINESTRING(50 50,150 150,150 50)'\n"
 #~ " ), 10, 'join=mitre mitre_limit=5.0');"
 
-#, no-c-format
 #~ msgid "join=mitre mitre_limit=1"
 #~ msgstr "join=mitre mitre_limit=1"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText(\n"
@@ -1697,15 +1683,12 @@ msgstr ""
 #~ "  'LINESTRING(50 50,150 150,150 50)'\n"
 #~ " ), 10, 'join=mitre mitre_limit=1.0');"
 
-#, no-c-format
 #~ msgid "side=left"
 #~ msgstr "side=left"
 
-#, no-c-format
 #~ msgid "side=right"
 #~ msgstr "side=right"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText(\n"
@@ -1717,11 +1700,9 @@ msgstr ""
 #~ "  'LINESTRING(50 50,150 150,150 50)'\n"
 #~ " ), 10, 'side=right');"
 
-#, no-c-format
 #~ msgid "side=left join=mitre"
 #~ msgstr "side=left join=mitre"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ " ST_GeomFromText(\n"
@@ -1733,11 +1714,9 @@ msgstr ""
 #~ "  'LINESTRING(50 50,150 150,150 50)'\n"
 #~ " ), 10, 'side=left join=mitre');"
 
-#, no-c-format
 #~ msgid "right-hand-winding, polygon boundary side=left"
 #~ msgstr "右回り、ポリゴン境界は左"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ "ST_ForceRHR(\n"
@@ -1753,11 +1732,9 @@ msgstr ""
 #~ "'POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))'))),\n"
 #~ " ), 20, 'side=left');"
 
-#, no-c-format
 #~ msgid "right-hand-winding, polygon boundary side=right"
 #~ msgstr "右回り、ポリゴン境界は右"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Buffer(\n"
 #~ "ST_ForceRHR(\n"
@@ -1773,7 +1750,6 @@ msgstr ""
 #~ "'POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))'))\n"
 #~ "), 20,'side=right')"
 
-#, no-c-format
 #~ msgid ""
 #~ "--A buffered point approximates a circle\n"
 #~ "-- A buffered point forcing approximation of (see diagram)\n"
@@ -1836,7 +1812,6 @@ msgstr ""
 #~ "901008.759918\n"
 #~ "696,236028.301252769 900979.470596815,236057.59057465 900908.759918696))"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
 #~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
@@ -1846,11 +1821,9 @@ msgstr ""
 #~ "linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
 #~ "\"ST_MakeValid\"/>"
 
-#, no-c-format
 #~ msgid "Creates a polygonal geometry formed by the linework of a geometry."
 #~ msgstr "与えられたジオメトリの構成ラインから面ジオメトリを生成します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Creates an areal geometry formed by the constituent linework of the input "
 #~ "geometry. The input can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, "
@@ -1864,26 +1837,21 @@ msgstr ""
 #~ "は入力に依存します。入力構成ラインがポリゴンを形成しない場合はNULLを返しま"
 #~ "す。"
 
-#, no-c-format
 #~ msgid "This function assumes all inner geometries represent holes"
 #~ msgstr "この関数は全ての内部ジオメトリが穴を表現すると仮定します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Input linework must be correctly noded for this function to work properly"
 #~ msgstr ""
 #~ "この関数が正しく動作するには、入力ラインに正しくノードが作成されている必要"
 #~ "があります。"
 
-#, no-c-format
 #~ msgid "Availability: 1.1.0"
 #~ msgstr "Availability: 1.1.0"
 
-#, no-c-format
 #~ msgid "These will create a donut"
 #~ msgstr "ドーナツを生成します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "--using polygons\n"
 #~ "SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
@@ -1899,7 +1867,6 @@ msgstr ""
 #~ "      ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
 #~ "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_MakeValid\"/>, "
 #~ "<xref linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText"
@@ -1909,11 +1876,9 @@ msgstr ""
 #~ "<xref linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText"
 #~ "\"/> (wrappers to this function with standard OGC interface)"
 
-#, no-c-format
 #~ msgid "ST_Centroid"
 #~ msgstr "ST_Centroid"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcprototype> <funcdef>geometry <function>ST_Centroid</function></"
 #~ "funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
@@ -1931,7 +1896,6 @@ msgstr ""
 #~ "\"><type>boolean </type> <parameter>use_spheroid=true</parameter></"
 #~ "paramdef> </funcprototype>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Computes a point which is the geometric center of mass of a geometry. For "
 #~ "[<varname>MULTI</varname>]<varname>POINT</varname>s, the centroid is the "
@@ -1957,7 +1921,6 @@ msgstr ""
 #~ "<varname>COMPOUNDCURVE</varname>が与えられた場合には、まずCurveToLineで直"
 #~ "線に変換されてから、<varname>LINESTRING</varname>と同じ計算を行います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "For mixed-dimension input, the result is equal to the centroid of the "
 #~ "component Geometries of highest dimension (since the lower-dimension "
@@ -1966,7 +1929,6 @@ msgstr ""
 #~ "入力が混合次元の場合には、結果は最大次元のジオメトリの重心と同じになりま"
 #~ "す (低次元ジオメトリは重心に0の「重み」を与えるためです)。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Note that for polygonal geometries the centroid does not necessarily lie "
 #~ "in the interior of the polygon. For example, see the diagram below of the "
@@ -1978,7 +1940,6 @@ msgstr ""
 #~ "い。ポリゴン内部にポイントがあることを保障するには<xref linkend="
 #~ "\"ST_PointOnSurface\"/>を使います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "New in 2.3.0 : supports <varname>CIRCULARSTRING</varname> and "
 #~ "<varname>COMPOUNDCURVE</varname> (using CurveToLine)"
@@ -1986,41 +1947,32 @@ msgstr ""
 #~ "New in 2.3.0 : <varname>CIRCULARSTRING</varname>と<varname>COMPOUNDCURVE</"
 #~ "varname>に対応するようになりました (CurveToLineを使います)。"
 
-#, no-c-format
 #~ msgid "Availability: 2.4.0 support for geography was introduced."
 #~ msgstr "Availability: 2.4.0 ジオグラフィが導入されました。"
 
-#, no-c-format
 #~ msgid "&sfs_compliant;"
 #~ msgstr "&sfs_compliant;"
 
-#, no-c-format
 #~ msgid "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 #~ msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 
-#, no-c-format
 #~ msgid ""
 #~ "In the following illustrations the green dot is the centroid of the "
 #~ "source geometry."
 #~ msgstr "次に示す図では、緑点が入力ジオメトリの重心です。"
 
-#, no-c-format
 #~ msgid "Centroid of a <varname>MULTIPOINT</varname>"
 #~ msgstr "<varname>MULTIPOINT</varname>の重心"
 
-#, no-c-format
 #~ msgid "Centroid of a <varname>LINESTRING</varname>"
 #~ msgstr "<varname>LINESTRING</varname>の重心"
 
-#, no-c-format
 #~ msgid "Centroid of a <varname>POLYGON</varname>"
 #~ msgstr "<varname>POLYGON</varname>の重心"
 
-#, no-c-format
 #~ msgid "Centroid of a <varname>GEOMETRYCOLLECTION</varname>"
 #~ msgstr "<varname>GEOMETRYCOLLECTION</varname>の重心"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_Centroid('MULTIPOINT ( -1 0, -1 2, -1 3, -1 4, -1 7, "
 #~ "0 1, 0 3, 1 1, 2 0, 6 0, 7 8, 9 8, 10 6 )'));\n"
@@ -2062,15 +2014,12 @@ msgstr ""
 #~ "------------------------------------------\n"
 #~ "POINT(0.5 1)"
 
-#, no-c-format
 #~ msgid ", <xref linkend=\"ST_GeometricMedian\"/>"
 #~ msgstr ", <xref linkend=\"ST_GeometricMedian\"/>"
 
-#, no-c-format
 #~ msgid "ST_ConcaveHull"
 #~ msgstr "ST_ConcaveHull"
 
-#, no-c-format
 #~ msgid ""
 #~ "Computes a possibly concave geometry that encloses all input geometry "
 #~ "vertices"
@@ -2078,7 +2027,6 @@ msgstr ""
 #~ "全ての入力ジオメトリの頂点を囲むことができる凹多角形のジオメトリを計算しま"
 #~ "す。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
 #~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
@@ -2092,7 +2040,6 @@ msgstr ""
 #~ "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 #~ "<parameter>allow_holes = false</parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "A concave hull of a geometry represents a possibly concave geometry that "
 #~ "encloses the input geometry. The result is a single polygon, line or "
@@ -2103,7 +2050,6 @@ msgstr ""
 #~ "り値は単一のポリゴン、ラインストリングまたはポイントです。任意引数"
 #~ "<varname>allow_holes</varname>をTRUEに指定しない限り、穴を持ちません。"
 
-#, no-c-format
 #~ msgid ""
 #~ "One can think of a concave hull as a geometry obtained by \"shrink-"
 #~ "wrapping\" a set of geometries. This is different to the convex hull, "
@@ -2116,7 +2062,6 @@ msgstr ""
 #~ "がかかりますが、一般により小さい面積で、より入力ジオメトリに対して自然な境"
 #~ "界を表現します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The <varname>target_percent</varname> is the percentage of area of the "
 #~ "convex hull the solution tries to approach. A target_percent of 1 gives "
@@ -2127,7 +2072,6 @@ msgstr ""
 #~ "百分率です。target_percentに1を与えると、凸包と同じ結果が得られます。 "
 #~ "target_percentが0から0.99の間では、凸包より小さい面積の結果を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The smaller the target percent, the longer it takes to process the "
 #~ "concave hull, and the more likely to run into topological exceptions. "
@@ -2153,7 +2097,6 @@ msgstr ""
 #~ "ことがあります。ST_SimplifyPreserveTopologyは常にジオメトリの妥当性を確保"
 #~ "します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "This is not an aggregate function. To compute the concave hull of a set "
 #~ "of geometries, use with <xref linkend=\"ST_Collect\"/> or <xref linkend="
@@ -2164,7 +2107,6 @@ msgstr ""
 #~ "\"ST_Collect\"/>または<xref linkend=\"ST_Union\"/>を使います "
 #~ "(<code>ST_ConcaveHull(ST_Collect(somepointfield), 0.80)</code>等)。"
 
-#, no-c-format
 #~ msgid ""
 #~ "For use with sets of points or linestrings use <code>ST_Collect</code>. "
 #~ "Use <code>ST_Union</code> for polygons, since it may fail with invalid "
@@ -2174,7 +2116,6 @@ msgstr ""
 #~ "います。ポリゴンの集合を使うには、無効なジオメトリで失敗する可能性があるた"
 #~ "め<code>ST_Union</code>を使います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "More real world examples and brief explanation of the technique are shown "
 #~ "<ulink url=\"http://www.bostongis.com/postgis_concavehull.snippet"
@@ -2184,7 +2125,6 @@ msgstr ""
 #~ "bostongis.com/postgis_concavehull.snippet\">http://www.bostongis.com/"
 #~ "postgis_concavehull.snippet</ulink>にあります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Also check out Simon Greener's article on demonstrating ConcaveHull "
 #~ "introduced in Oracle 11G R2. <ulink url=\"http://www.spatialdbadvisor.com/"
@@ -2202,11 +2142,9 @@ msgstr ""
 #~ "ulink>にあります。凸包に対する目標割合を0.75にした際の形状がSimonさん"
 #~ "OracleのSDO_CONCAVEHULL_BOUNDARYで得た形状と似ています。"
 
-#, no-c-format
 #~ msgid "Performed by the GEOS module"
 #~ msgstr "GEOSモジュールによって実現しています。"
 
-#, no-c-format
 #~ msgid ""
 #~ "--Get estimate of infected area based on point observations\n"
 #~ "SELECT d.disease_type,\n"
@@ -2220,12 +2158,10 @@ msgstr ""
 #~ "    FROM disease_obs As d\n"
 #~ "    GROUP BY d.disease_type;"
 
-#, no-c-format
 #~ msgid ""
 #~ "ST_ConcaveHull of 2 polygons encased in target 100% shrink concave hull"
 #~ msgstr " 縮小目標割合100%にした場合の2ポリゴンのST_ConcaveHull"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- geometries overlaid with concavehull\n"
 #~ "-- at target 100% shrink (this is the same as convex hull - since no "
@@ -2249,12 +2185,10 @@ msgstr ""
 #~ "        ), 1)\n"
 #~ "     As convexhull;"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- geometries overlaid with concavehull at target 90% of convex hull area"
 #~ msgstr "凸包に対する縮小目標割合を90%にした凹包で覆われるジオメトリ"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- geometries overlaid with concavehull at target 90% shrink\n"
 #~ "SELECT\n"
@@ -2274,11 +2208,9 @@ msgstr ""
 #~ "        ), 0.9)\n"
 #~ "     As target_90;"
 
-#, no-c-format
 #~ msgid "L Shape points overlaid with convex hull"
 #~ msgstr "凸包で覆われたL字型のポイント群"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- this produces a table of 42 points that form an L shape\n"
 #~ "SELECT (ST_DumpPoints(ST_GeomFromText(\n"
@@ -2304,11 +2236,9 @@ msgstr ""
 #~ "SELECT ST_ConvexHull(ST_Collect(geom))\n"
 #~ "FROM l_shape;"
 
-#, no-c-format
 #~ msgid "ST_ConcaveHull of L points at target 99% of convex hull"
 #~ msgstr "凸包に対する縮小目標割合を99%としたL字型のポイント群の凹包"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_ConcaveHull(ST_Collect(geom), 0.99)\n"
 #~ "    FROM l_shape;"
@@ -2316,11 +2246,9 @@ msgstr ""
 #~ "SELECT ST_ConcaveHull(ST_Collect(geom), 0.99)\n"
 #~ "    FROM l_shape;"
 
-#, no-c-format
 #~ msgid "Concave Hull of L points at target 80% convex hull area"
 #~ msgstr "凸包に対する縮小目標割合を80%としたL字型のポイント群の凹包"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- Concave Hull L shape points\n"
 #~ "    -- at target 80% of convexhull\n"
@@ -2331,11 +2259,9 @@ msgstr ""
 #~ "    SELECT ST_ConcaveHull(ST_Collect(geom), 0.80)\n"
 #~ "    FROM l_shape;"
 
-#, no-c-format
 #~ msgid "multilinestring overlaid with Convex hull"
 #~ msgstr "凸包に覆われたマルチラインストリング"
 
-#, no-c-format
 #~ msgid ""
 #~ "multilinestring with overlaid with Concave hull of linestrings at 99% "
 #~ "target -- first hop"
@@ -2343,7 +2269,6 @@ msgstr ""
 #~ "凸包に対する縮小目標割合を99% (第1段階)とした凹包に覆われたマルチラインス"
 #~ "トリング"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 "
 #~ "70,82 112,130 94,\n"
@@ -2365,7 +2290,6 @@ msgstr ""
 #~ "190 122,182 148,178 170,176 184,156 164,146 178,\n"
 #~ "132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_ConvexHull\"/>, <xref linkend="
 #~ "\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SnapToGrid\"/>"
@@ -2373,7 +2297,6 @@ msgstr ""
 #~ ", <xref linkend=\"ST_ConvexHull\"/>, <xref linkend="
 #~ "\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SnapToGrid\"/>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Computes the convex hull of a geometry. The convex hull is the smallest "
 #~ "convex geometry that encloses all geometries in the input."
@@ -2381,7 +2304,6 @@ msgstr ""
 #~ "ジオメトリの凸包を計算します。凸包は、入力ジオメトリのすべてを囲む最小の凸"
 #~ "ジオメトリです。"
 
-#, no-c-format
 #~ msgid ""
 #~ "One can think of the convex hull as the geometry obtained by wrapping an "
 #~ "rubber band around a set of geometries. This is different from a concave "
@@ -2393,7 +2315,6 @@ msgstr ""
 #~ "きます。ジオメトリの収縮包装に似ている凹包と違う点です。凸包は、しばしば観"
 #~ "察値のポイントの集合を基にして、影響を受ける範囲を決定するのに使用します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "In the general case the convex hull is a Polygon. The convex hull of two "
 #~ "or more collinear points is a two-point LineString. The convex hull of "
@@ -2402,7 +2323,6 @@ msgstr ""
 #~ "凸包は一般的にポリゴンです。二つ以上の同一線上のポイントの凸包は、2点のラ"
 #~ "インストリングになります。一つ以上の同一ポイントの凸包はポイントです。"
 
-#, no-c-format
 #~ msgid ""
 #~ "This is not an aggregate function. To compute the convex hull of a set of "
 #~ "geometries, use <xref linkend=\"ST_Collect\"/> to aggregate them into a "
@@ -2412,15 +2332,12 @@ msgstr ""
 #~ "をジオメトリコレクションに集約する<xref linkend=\"ST_Collect\"/>を使いま"
 #~ "す (<code>ST_ConvexHull(ST_Collect(geom))</code>等)。"
 
-#, no-c-format
 #~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.16"
 #~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.16"
 
-#, no-c-format
 #~ msgid "Convex Hull of a MultiLinestring and a MultiPoint"
 #~ msgstr "マルチラインストリングとマルチポイントの凸包"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_ConvexHull(\n"
 #~ "    ST_Collect(\n"
@@ -2440,11 +2357,9 @@ msgstr ""
 #~ "---st_astext--\n"
 #~ "POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))"
 
-#, no-c-format
 #~ msgid "Using with ST_Collect to compute the convex hulls of geometry sets."
 #~ msgstr "ST_Collectを使ってジオメトリ集合の凸包を計算します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "--Get estimate of infected area based on point observations\n"
 #~ "SELECT d.disease_type,\n"
@@ -2458,7 +2373,6 @@ msgstr ""
 #~ "    FROM disease_obs As d\n"
 #~ "    GROUP BY d.disease_type;"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
 #~ "\"ST_MinimumBoundingCircle\"/>"
@@ -2466,7 +2380,6 @@ msgstr ""
 #~ ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
 #~ "\"ST_MinimumBoundingCircle\"/>"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
 #~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
@@ -2478,11 +2391,9 @@ msgstr ""
 #~ "<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef> "
 #~ "<paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>"
 
-#, no-c-format
 #~ msgid "2D Examples"
 #~ msgstr "2次元の例"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- our original geometry --\n"
 #~ "    ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,\n"
@@ -2496,7 +2407,6 @@ msgstr ""
 #~ "        ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
 #~ "        )"
 
-#, no-c-format
 #~ msgid ""
 #~ "ST_DelaunayTriangles of 2 polygons: delaunay triangle polygons each "
 #~ "triangle themed in different color"
@@ -2504,7 +2414,6 @@ msgstr ""
 #~ "二つのポリゴンのST_DelaunayTriangles: ポリゴンごとに異なる色をつけたドロ"
 #~ "ネー三角形ポリゴン"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- geometries overlaid multilinestring triangles\n"
 #~ "SELECT\n"
@@ -2524,15 +2433,12 @@ msgstr ""
 #~ "        ))\n"
 #~ "     As  dtriag;"
 
-#, no-c-format
 #~ msgid "-- delaunay triangles as multilinestring"
 #~ msgstr "マルチラインストリングにしたドロネー三角形"
 
-#, no-c-format
 #~ msgid "-- delaunay triangles of 45 points as 55 triangle polygons"
 #~ msgstr "45個のポイントから生成した55個のドロネー三角形"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- this produces a table of 42 points that form an L shape\n"
 #~ "SELECT (ST_DumpPoints(ST_GeomFromText(\n"
@@ -2580,11 +2486,9 @@ msgstr ""
 #~ ":\n"
 #~ ":"
 
-#, no-c-format
 #~ msgid "3D Examples"
 #~ msgstr "3次元の例"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- 3D multipoint --\n"
 #~ "SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(\n"
@@ -2604,15 +2508,12 @@ msgstr ""
 #~ "GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))\n"
 #~ " ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))"
 
-#, no-c-format
 #~ msgid "ST_FilterByM"
 #~ msgstr "ST_FilterByM"
 
-#, no-c-format
 #~ msgid "Removes vertices based on their M value"
 #~ msgstr "M値に基づいて頂点を削除します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Filters out vertex points based on their M-value. Returns a geometry with "
 #~ "only vertex points that have a M-value larger or equal to the min value "
@@ -2631,7 +2532,6 @@ msgstr ""
 #~ "は、空ジオメトリが返されます。ジオメトリコレクション内の、十分なポイントを"
 #~ "持たないジオメトリ要素は消えます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "This function is mainly intended to be used in conjunction with "
 #~ "ST_SetEffectiveArea. ST_EffectiveArea sets the effective area of a vertex "
@@ -2642,7 +2542,6 @@ msgstr ""
 #~ "ST_SetEffectiveAreaは頂点の有効面積をM値に設定します。ST_FilterByMによる"
 #~ "フィルタリングだけで、他の計算なしに簡略化されたジオメトリを得られます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "There is a difference in what ST_SimplifyVW returns when not enough "
 #~ "points meet the criteria compared to ST_FilterByM. ST_SimplifyVW returns "
@@ -2653,23 +2552,18 @@ msgstr ""
 #~ "ST_FilterByMの返り値とで違いがあります。ST_FilterByMは空ジオメトリを返し、"
 #~ "ST_SimplifyVWは十分なポイントを持つジオメトリを返します。"
 
-#, no-c-format
 #~ msgid "Note that the returned geometry might be invalid"
 #~ msgstr "返されるジオメトリは不正である場合があることに注意して下さい。"
 
-#, no-c-format
 #~ msgid "This function returns all dimensions, including the Z and M values"
 #~ msgstr "この関数は全ての次元を返し、Z値もM値も残ります。"
 
-#, no-c-format
 #~ msgid "Availability: 2.5.0"
 #~ msgstr "Availability: 2.5.0"
 
-#, no-c-format
 #~ msgid "A linestring is filtered"
 #~ msgstr "フィルタリングされたラインストリング"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_FilterByM(geom,30)) simplified\n"
 #~ "FROM (SELECT  ST_SetEffectiveArea('LINESTRING(5 2, 3 8, 6 20, 7 25, 10 "
@@ -2687,19 +2581,15 @@ msgstr ""
 #~ "----------------------------\n"
 #~ " LINESTRING(5 2,7 25,10 10)"
 
-#, no-c-format
 #~ msgid ", <xref linkend=\"ST_SimplifyVW\"/>"
 #~ msgstr ", <xref linkend=\"ST_SimplifyVW\"/>"
 
-#, no-c-format
 #~ msgid "ST_GeneratePoints"
 #~ msgstr "ST_GeneratePoints"
 
-#, no-c-format
 #~ msgid "Generates random points contained in a Polygon or MultiPolygon."
 #~ msgstr "ポリゴン内やマルチポリゴン内にランダムなポイントを生成します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcprototype> <funcdef>geometry <function>ST_GeneratePoints</function></"
 #~ "funcdef> <paramdef> <parameter>g</parameter> <type>geometry</type> </"
@@ -2721,7 +2611,6 @@ msgstr ""
 #~ "<paramdef> <type>integer</type> <parameter>seed</parameter> </paramdef> </"
 #~ "funcprototype>"
 
-#, no-c-format
 #~ msgid ""
 #~ "ST_GeneratePoints generates a given number of pseudo-random points which "
 #~ "lie within the input area. The optional <code>seed</code> is used to "
@@ -2732,18 +2621,15 @@ msgstr ""
 #~ "乱数によるポイントを生成します。任意引数の<code>seed</code>は、ポイント列"
 #~ "の再生成が決定的にするために使い、0より大きい数でなければなりません。"
 
-#, no-c-format
 #~ msgid "Enhanced: 3.0.0, added seed parameter"
 #~ msgstr "Enhanced: 3.0.0 seedパラメータの追加"
 
-#, no-c-format
 #~ msgid ""
 #~ "Generated 12 Points overlaid on top of original polygon using a random "
 #~ "seed value 1996"
 #~ msgstr ""
 #~ "乱数シード値に1996を使った元のポリゴンの上に重なった12個のポイント生成"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_GeneratePoints(geom, 12, 1996)\n"
 #~ "FROM (\n"
@@ -2761,15 +2647,12 @@ msgstr ""
 #~ "        10, 'endcap=round join=round') AS geom\n"
 #~ ") AS s;"
 
-#, no-c-format
 #~ msgid "ST_GeometricMedian"
 #~ msgstr "ST_GeometricMedian"
 
-#, no-c-format
 #~ msgid "Returns the geometric median of a MultiPoint."
 #~ msgstr "マルチポイントの幾何学的中央値を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_GeometricMedian</function> </funcdef> "
 #~ "<paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -2787,7 +2670,6 @@ msgstr ""
 #~ "\"><type>boolean</type> <parameter>fail_if_not_converged = false</"
 #~ "parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Computes the approximate geometric median of a MultiPoint geometry using "
 #~ "the Weiszfeld algorithm. The geometric median is the point minimizing the "
@@ -2799,7 +2681,6 @@ msgstr ""
 #~ "使って計算します。幾何中央値は、入力ポイントとの距離の合計を最小にするポイ"
 #~ "ントです。幾何中央値によって、重心よりもはみ出しにくい中心測定ができます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The algorithm iterates until the distance change between successive "
 #~ "iterations is less than the supplied <varname>tolerance</varname> "
@@ -2814,7 +2695,6 @@ msgstr ""
 #~ "<varname>fail_if_not_converged</varname>を<code>FALSE</code>に指定してい"
 #~ "る (デフォルト)場合を除いて、エラーを生成して終了します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "If a <varname>tolerance</varname> argument is not provided, the tolerance "
 #~ "value is calculated based on the extent of the input geometry."
@@ -2822,21 +2702,17 @@ msgstr ""
 #~ "<varname>tolerance</varname>値が渡されていない場合には、デフォルトの許容値"
 #~ "は、入力ジオメトリの範囲を基に計算されます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "If present, the input point M values are interpreted as their relative "
 #~ "weights."
 #~ msgstr "存在する場合には、入力ポイントのM値は相対的な重みに解釈されます。"
 
-#, no-c-format
 #~ msgid "Enhanced: 2.5.0 Added support for M as weight of points."
 #~ msgstr "Enhanced: 2.5.0 ポイントの重みとしてのM値の対応が追加されました。"
 
-#, no-c-format
 #~ msgid "&M_support;"
 #~ msgstr "&M_support;"
 
-#, no-c-format
 #~ msgid ""
 #~ "Comparison of the centroid (turquoise point) and geometric median (red "
 #~ "point) of a four-point MultiPoint (yellow points)."
@@ -2844,7 +2720,6 @@ msgstr ""
 #~ "4点のマルチポイント (黄色の点)から得た重心 (青緑色の点)と幾何学的中央値 "
 #~ "(赤色の点)との比較。"
 
-#, no-c-format
 #~ msgid ""
 #~ "WITH test AS (\n"
 #~ "SELECT 'MULTIPOINT((0 0), (1 1), (2 2), (200 200))'::geometry geom)\n"
@@ -2868,15 +2743,12 @@ msgstr ""
 #~ " POINT(50.75 50.75) | POINT(1.9761550281255 1.9761550281255)\n"
 #~ "(1 row)"
 
-#, no-c-format
 #~ msgid "ST_LineMerge"
 #~ msgstr "ST_LineMerge"
 
-#, no-c-format
 #~ msgid "Return the lines formed by sewing together a MultiLineString."
 #~ msgstr "MULTILINESTRINGを縫い合わせて形成したラインを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
 #~ "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
@@ -2886,7 +2758,6 @@ msgstr ""
 #~ "<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
 #~ "paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a LineString or MultiLineString formed by joining together the "
 #~ "constituent line work of a MultiLineString. Lines are joined at their "
@@ -2897,7 +2768,6 @@ msgstr ""
 #~ "MULTILINESTRINGを返します。ラインは2方向交点の終端で結合します。ラインは3"
 #~ "方向以上の交点では結合しません。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Only use with MultiLineString/LineStrings. If you pass a Polygon or "
 #~ "GeometryCollection into this function, it returns an empty "
@@ -2906,11 +2776,9 @@ msgstr ""
 #~ "MULTILINESTRING/LINESTRINGでのみ使います。POLYGONまたはGEOMETRYCOLLECTION"
 #~ "をこの関数に渡した場合には、EMPTY GEOMETRYCOLLECTIONが返ります。"
 
-#, no-c-format
 #~ msgid "This function will strip the M dimension."
 #~ msgstr "この関数はM値を取り除きます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_LineMerge(\n"
 #~ "'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))'\n"
@@ -2926,7 +2794,6 @@ msgstr ""
 #~ "--------------------------------------------------------------------------------------------------\n"
 #~ "LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)"
 
-#, no-c-format
 #~ msgid ""
 #~ "If merging is not possible due to non-touching lines, the original "
 #~ "MultiLineString is returned."
@@ -2934,7 +2801,6 @@ msgstr ""
 #~ "接触するラインが無くマージができない場合には、元のMULTILINESTRINGが返され"
 #~ "ます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_LineMerge(\n"
 #~ "'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 "
@@ -2952,11 +2818,9 @@ msgstr ""
 #~ "----------------\n"
 #~ "MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))"
 
-#, no-c-format
 #~ msgid "Example showing Z-dimension handling."
 #~ msgstr "Z値処理を示す例。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_LineMerge(\n"
 #~ "      'MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), "
@@ -2976,16 +2840,13 @@ msgstr ""
 #~ "LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 "
 #~ "-32 11)"
 
-#, no-c-format
 #~ msgid "ST_MaximumInscribedCircle"
 #~ msgstr "ST_MaximumInscribedCircle"
 
-#, no-c-format
 #~ msgid ""
 #~ "Computes the largest circle that is fully contained within a geometry."
 #~ msgstr "ジオメトリに完全に含まれる最大の円を計算します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>(geometry, geometry, double precision) "
 #~ "<function>ST_MaximumInscribedCircle</function></funcdef> "
@@ -2995,7 +2856,6 @@ msgstr ""
 #~ "<function>ST_MaximumInscribedCircle</function></funcdef> "
 #~ "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Finds the largest circle that is fully contained within a geometry. "
 #~ "Returns a record with the center point of the circle, a point on the "
@@ -3004,7 +2864,6 @@ msgstr ""
 #~ "完全にジオメトリ内に含まれる最大の円を探します。円の中心点、中心に最も近い"
 #~ "ジオメトリ、円の半径からなるレコードを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "For polygonal inputs, the circle is inscribed within the external ring, "
 #~ "using the internal rings as boundaries. For linear and point inputs, the "
@@ -3015,11 +2874,9 @@ msgstr ""
 #~ "またはポイントの入力では、円は入力の凸包に内接して、入力はさらに境界として"
 #~ "使用します。"
 
-#, no-c-format
 #~ msgid "Availability: 3.1.0 - requires GEOS &gt;= 3.9.0."
 #~ msgstr "Availability: 3.1.0 - GEOS 3.9.0以上が必要です。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT radius, ST_AsText(center) AS center, ST_AsText(nearest) AS "
 #~ "nearest\n"
@@ -3039,28 +2896,23 @@ msgstr ""
 #~ "--------+----------------+---------------\n"
 #~ "     50 | POINT(100 100) | POINT(100 50)"
 
-#, no-c-format
 #~ msgid ""
 #~ "Maximum inscribed circle of a triangle polygon. Center, nearest point, "
 #~ "and radius are returned."
 #~ msgstr "三角形ポリゴンの最大の内接円。中心点、最近点、半径が返ります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Maximum inscribed circle of a multi-linestring. Center, nearest point, "
 #~ "and radius are returned."
 #~ msgstr ""
 #~ "マルチラインストリングの最大の内接円。中心点、最近点と半径が返ります。"
 
-#, no-c-format
 #~ msgid ", <xref linkend=\"ST_MinimumBoundingRadius\"/>"
 #~ msgstr ", <xref linkend=\"ST_MinimumBoundingRadius\"/>"
 
-#, no-c-format
 #~ msgid "ST_MinimumBoundingCircle"
 #~ msgstr "ST_MinimumBoundingCircle"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_MinimumBoundingCircle</function></funcdef> "
 #~ "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
@@ -3072,12 +2924,10 @@ msgstr ""
 #~ "<paramdef choice=\"opt\"><type>integer </type> "
 #~ "<parameter>num_segs_per_qt_circ=48</parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "<para>Returns the smallest circle polygon that contains a geometry.</para>"
 #~ msgstr "<para>入力ジオメトリを含む最小の円を返します。</para>"
 
-#, no-c-format
 #~ msgid ""
 #~ "The circle is approximated by a polygon with a default of 48 segments per "
 #~ "quarter circle. Because the polygon is an approximation of the minimum "
@@ -3094,7 +2944,6 @@ msgstr ""
 #~ "似が適切でない場合のアプリケーションにおいては、ST_MinimumBoundingRadiusを"
 #~ "使います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "It is often used with MULTI and Geometry Collections. Although it is not "
 #~ "an aggregate - you can use it in conjunction with ST_Collect to get the "
@@ -3105,7 +2954,6 @@ msgstr ""
 #~ "はありません。ST_Collectと併用して、ジオメトリの集合の最小包含円を得ます。"
 #~ "ST_MinimumBoundingCircle(ST_Collect(somepointfield))とします。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The ratio of the area of a polygon divided by the area of its Minimum "
 #~ "Bounding Circle is often referred to as the Roeck test."
@@ -3113,11 +2961,9 @@ msgstr ""
 #~ "ポリゴンの面積を最小包含円の面積で割った割合は、しばしばRoeckテストとして"
 #~ "参照されます。"
 
-#, no-c-format
 #~ msgid "Availability: 1.4.0"
 #~ msgstr "Availability: 1.4.0"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT d.disease_type,\n"
 #~ "    ST_MinimumBoundingCircle(ST_Collect(d.geom)) As geom\n"
@@ -3129,7 +2975,6 @@ msgstr ""
 #~ "    FROM disease_obs As d\n"
 #~ "    GROUP BY d.disease_type;"
 
-#, no-c-format
 #~ msgid ""
 #~ "Minimum bounding circle of a point and linestring. Using 8 segs to "
 #~ "approximate a quarter circle"
@@ -3137,7 +2982,6 @@ msgstr ""
 #~ "ポイントとラインストリングの最小包含円です。4分の1円の近似に8区分使用して"
 #~ "います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_MinimumBoundingCircle(\n"
 #~ "        ST_Collect(\n"
@@ -3193,17 +3037,14 @@ msgstr ""
 #~ "150.054896839789,130.79416296937 139.146232909101,134.384753327498 "
 #~ "127.309642789079,135.59714732062 115))"
 
-#, no-c-format
 #~ msgid "ST_MinimumBoundingRadius"
 #~ msgstr "ST_MinimumBoundingRadius"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns the center point and radius of the smallest circle that contains "
 #~ "a geometry."
 #~ msgstr "ジオメトリを完全に包含する最小円の中心ポイントと半径を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>(geometry, double precision) <function>ST_MinimumBoundingRadius</"
 #~ "function></funcdef> <paramdef><type>geometry</type> <parameter>geom</"
@@ -3213,13 +3054,11 @@ msgstr ""
 #~ "function></funcdef> <paramdef><type>geometry</type> <parameter>geom</"
 #~ "parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a record containing the center point and radius of the smallest "
 #~ "circle that contains a geometry."
 #~ msgstr "ジオメトリを完全に包含する最小円の中心ポイントと半径を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Use in conjunction with <xref linkend=\"ST_Collect\"/> to get the minimum "
 #~ "bounding circle of a set of geometries."
@@ -3227,15 +3066,12 @@ msgstr ""
 #~ "ジオメトリの集合の最小包含円を得るには<xref linkend=\"ST_Collect\"/>と併用"
 #~ "します。"
 
-#, no-c-format
 #~ msgid "Availability - 2.3.0"
 #~ msgstr "Availability: 2.3.0"
 
-#, no-c-format
 #~ msgid ", <xref linkend=\"ST_MinimumBoundingCircle\"/>"
 #~ msgstr ", <xref linkend=\"ST_MinimumBoundingCircle\"/>"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(center), radius FROM "
 #~ "ST_MinimumBoundingRadius('POLYGON((26426 65078,26531 65242,26075 "
@@ -3253,11 +3089,9 @@ msgstr ""
 #~ "------------------------------------------+------------------\n"
 #~ " POINT(26284.8418027133 65267.1145090825) | 247.436045591407"
 
-#, no-c-format
 #~ msgid "Returns a minimum-area rectangle containing a geometry."
 #~ msgstr "ジオメトリを囲む最小の回転四角形を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns the minimum-area rotated rectangle enclosing a geometry. Note "
 #~ "that more than one such rectangle may exist. May return a Point or "
@@ -3267,7 +3101,6 @@ msgstr ""
 #~ "ことがあるので注意して下さい。入力が退化している場合には、ポイントまたはラ"
 #~ "インストリングを返すことがあります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_OrientedEnvelope('MULTIPOINT ((0 0), (-1 -1), (3 "
 #~ "2))'));\n"
@@ -3283,11 +3116,9 @@ msgstr ""
 #~ "                ------------------------------------------------\n"
 #~ "                POLYGON((3 2,2.88 2.16,-1.12 -0.84,-1 -1,3 2))"
 
-#, no-c-format
 #~ msgid "Oriented envelope of a point and linestring."
 #~ msgstr "ポイントとラインストリングの回転したエンベロープ。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_OrientedEnvelope(\n"
 #~ "        ST_Collect(\n"
@@ -3311,16 +3142,13 @@ msgstr ""
 #~ "60.3846153846152,138.076923076924 130.384615384616,125.000000000001 "
 #~ "150.000000000001,19.9999999999997 79.9999999999999))"
 
-#, no-c-format
 #~ msgid "ST_OffsetCurve"
 #~ msgstr "ST_OffsetCurve"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns an offset line at a given distance and side from an input line."
 #~ msgstr "与えられた距離と方面に入力ラインをずらしたラインを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
 #~ "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
@@ -3334,7 +3162,6 @@ msgstr ""
 #~ "paramdef> <paramdef choice=\"opt\"><type>text </type> "
 #~ "<parameter>style_parameters=''</parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Return an offset line at a given distance and side from an input line. "
 #~ "All points of the returned geometries are not further than the given "
@@ -3345,7 +3172,6 @@ msgstr ""
 #~ "トリの全てのポイントは、入力ジオメトリより与えられた距離以上には離れませ"
 #~ "ん。中心線に対する平行線を計算するのに使用します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "For positive distance the offset is on the left side of the input line "
 #~ "and retains the same direction. For a negative distance it is on the "
@@ -3354,12 +3180,10 @@ msgstr ""
 #~ "距離が正の場合には、入力ラインの左側にずらして、方向が保持されます。負の場"
 #~ "合には、右側にずらし、逆方向のラインになります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Units of distance are measured in units of the spatial reference system."
 #~ msgstr "距離の単位は空間参照系の単位です。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Note that output may be a MULTILINESTRING or EMPTY for some jigsaw-shaped "
 #~ "input geometries."
@@ -3367,7 +3191,6 @@ msgstr ""
 #~ "入力ジオメトリがジグソーパズルのような形状の場合には、出力が"
 #~ "MULTILINESTRINGまたはEMPTYになることがあるので、注意して下さい。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The optional third parameter allows specifying a list of blank-separated "
 #~ "key=value pairs to tweak operations as follows:"
@@ -3375,7 +3198,6 @@ msgstr ""
 #~ "任意指定の第3引数では、空白区切りのkey=valueペアの一覧を指定して、次のよう"
 #~ "な操作をすることができます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'quad_segs=#' : number of segments used to approximate a quarter circle "
 #~ "(defaults to 8)."
@@ -3383,7 +3205,6 @@ msgstr ""
 #~ "'quad_segs=#' : 4分の1円区分数に近づけるために使われる区分の数 (デフォルト"
 #~ "は8)。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
 #~ "also accepted as a synonym for 'mitre'."
@@ -3391,7 +3212,6 @@ msgstr ""
 #~ "'join=round|mitre|bevel' : 接続スタイル (デフォルトは\"round"
 #~ "\")。'miter'も'mitre'の同義語として受け付けます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). "
 #~ "'miter_limit' is also accepted as a synonym for 'mitre_limit'."
@@ -3399,20 +3219,16 @@ msgstr ""
 #~ "'mitre_limit=#.#' : マイターの割合制限 (接続スタイルがマイターである場合の"
 #~ "み影響が出ます)。'miter_limit'も'mitre_limit'の同義語として受け付けます。"
 
-#, no-c-format
 #~ msgid "Availability: 2.0"
 #~ msgstr "Availability: 2.0"
 
-#, no-c-format
 #~ msgid ""
 #~ "Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING"
 #~ msgstr "Enhanced: 2.5 - GEOMETRYCOLLECTIONとULTILINESTRINGへの対応追加"
 
-#, no-c-format
 #~ msgid "Compute an open buffer around roads"
 #~ msgstr "道路の周りの開いたバッファの算出"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Union(\n"
 #~ " ST_OffsetCurve(f.geom,  f.width/2, 'quad_segs=4 join=round'),\n"
@@ -3426,11 +3242,9 @@ msgstr ""
 #~ ") as track\n"
 #~ "FROM someroadstable;"
 
-#, no-c-format
 #~ msgid "15, 'quad_segs=4 join=round' original line and its offset 15 units."
 #~ msgstr "15, 'quad_segs=4 join=round' 元のラインと15単位ずらしたライン。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
 #~ "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
@@ -3456,11 +3270,9 @@ msgstr ""
 #~ "    5.39339828220179 7.39339828220179,\n"
 #~ "    2.14180701233067 12.2597485145237,1 18,1 195)"
 
-#, no-c-format
 #~ msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
 #~ msgstr "-15, 'quad_segs=4 join=round' 元のラインと-15単位ずらしたライン。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_OffsetCurve(geom,\n"
 #~ "    -15, 'quad_segs=4 join=round')) As notsocurvy\n"
@@ -3482,7 +3294,6 @@ msgstr ""
 #~ "-- 曲線になりません --\n"
 #~ "LINESTRING(31 195,31 31,164 31)"
 
-#, no-c-format
 #~ msgid ""
 #~ "double-offset to get more curvy, note the first reverses direction, so "
 #~ "-30 + 15 = -15"
@@ -3490,7 +3301,6 @@ msgstr ""
 #~ "二重にずらして曲線を得ます。1回目で逆方向にしていて、-30 + 15 = -15として"
 #~ "います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
 #~ "    -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As "
@@ -3518,7 +3328,6 @@ msgstr ""
 #~ "35.3933982822018 35.3933982822018,\n"
 #~ "32.1418070123307 40.2597485145237,31 46,31 195)"
 
-#, no-c-format
 #~ msgid ""
 #~ "double-offset to get more curvy,combined with regular offset 15 to get "
 #~ "parallel lines. Overlaid with original."
@@ -3526,7 +3335,6 @@ msgstr ""
 #~ "二重にずらして曲線を得て、順方向に15ずらして平行線を得ます。元のラインを覆"
 #~ "います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_Collect(\n"
 #~ "    ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'),\n"
@@ -3566,11 +3374,9 @@ msgstr ""
 #~ "35.3933982822018,\n"
 #~ "32.1418070123307 40.2597485145237,31 46,31 195))"
 
-#, no-c-format
 #~ msgid "15, 'quad_segs=4 join=bevel' shown with original line"
 #~ msgstr "15, 'quad_segs=4 join=bevel' と元のライン"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
 #~ "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
@@ -3592,13 +3398,11 @@ msgstr ""
 #~ "LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,\n"
 #~ "    5.39339828220179 7.39339828220179,1 18,1 195)"
 
-#, no-c-format
 #~ msgid "15,-15 collected, join=mitre mitre_limit=2.1"
 #~ msgstr ""
 #~ "join=mitre mitre_limit=2.1で、15ずらしたものと-15ずらしたものとを集めたも"
 #~ "の。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_Collect(\n"
 #~ "    ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),\n"
@@ -3626,16 +3430,13 @@ msgstr ""
 #~ "MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),\n"
 #~ "    (31 195,31 31,164 31))"
 
-#, no-c-format
 #~ msgid "ST_PointOnSurface"
 #~ msgstr "ST_PointOnSurface"
 
-#, no-c-format
 #~ msgid "Computes a point guaranteed to lie in a polygon, or on a geometry."
 #~ msgstr ""
 #~ "ポリゴン内またはジオメトリ上にあるのが保証されたポイントを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
 #~ "interior of a surface (POLYGON, MULTIPOLYGON, and CURVED POLYGON). In "
@@ -3645,11 +3446,9 @@ msgstr ""
 #~ "た<varname>POINT</varname>を返します。PostGISでは、この関数はラインジオメ"
 #~ "トリとポイントジオメトリ上でも動作します。"
 
-#, no-c-format
 #~ msgid "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
 #~ msgstr "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
 
-#, no-c-format
 #~ msgid ""
 #~ "&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6. The specifications define "
 #~ "ST_PointOnSurface for surface geometries only. PostGIS extends the "
@@ -3663,7 +3462,6 @@ msgstr ""
 #~ "ArcSDE)は、サーフェスに対してのみこの機能をサポートしているようです。SQL "
 #~ "Server 2008では、すべての一般的なジオメトリタイプに対応しています。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));\n"
 #~ " st_astext\n"
@@ -3709,22 +3507,18 @@ msgstr ""
 #~ "----------------\n"
 #~ " POINT(0 0 1)"
 
-#, no-c-format
 #~ msgid ", <xref linkend=\"ST_MaximumInscribedCircle\"/>"
 #~ msgstr ", <xref linkend=\"ST_MaximumInscribedCircle\"/>"
 
-#, no-c-format
 #~ msgid "ST_Polygonize"
 #~ msgstr "ST_Polygonize"
 
-#, no-c-format
 #~ msgid ""
 #~ "Computes a collection of polygons formed from the linework of a set of "
 #~ "geometries."
 #~ msgstr ""
 #~ "ジオメトリ集合のラインから形成されるポリゴンのコレクションを計算します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcprototype> <funcdef>geometry <function>ST_Polygonize</function></"
 #~ "funcdef> <paramdef><type>geometry set</type> <parameter>geomfield</"
@@ -3738,7 +3532,6 @@ msgstr ""
 #~ "<function>ST_Polygonize</function></funcdef> <paramdef><type>geometry[]</"
 #~ "type> <parameter>geom_array</parameter></paramdef> </funcprototype>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Creates a GeometryCollection containing the polygons formed by the "
 #~ "constituent linework of a set of geometries. Input linework must be "
@@ -3748,7 +3541,6 @@ msgstr ""
 #~ "コレクションを計算します。この関数が確実に動作するために、入力ラインは正し"
 #~ "いノードを持たなければなりません。"
 
-#, no-c-format
 #~ msgid ""
 #~ "To ensure input is fully noded use <xref linkend=\"ST_Node\"/> on the "
 #~ "input geometry before polygonizing."
@@ -3756,7 +3548,6 @@ msgstr ""
 #~ "入力が完全にノードを持っているようにするには、ポリゴン化の前に入力ジオメト"
 #~ "リに対して<xref linkend=\"ST_Node\"/>を使います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "GeometryCollections are often difficult to deal with with third party "
 #~ "tools. Use <xref linkend=\"ST_Dump\"/> to convert the polygonize result "
@@ -3766,15 +3557,12 @@ msgstr ""
 #~ "しいとされることがあります。ポリゴン化の結果を個々のポリゴンに変換するには"
 #~ "<xref linkend=\"ST_Dump\"/>を使います。"
 
-#, no-c-format
 #~ msgid "Availability: 1.0.0RC1"
 #~ msgstr "Availability: 1.0.0RC1"
 
-#, no-c-format
 #~ msgid "Examples: Polygonizing single linestrings"
 #~ msgstr "例: 単一ラインストリングのポリゴン化"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsEWKT(ST_Polygonize(geom_4269)) As geomtextrep\n"
 #~ "FROM (SELECT geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As "
@@ -3836,21 +3624,17 @@ msgstr ""
 #~ "42.353675))\n"
 #~ "(2 rows)"
 
-#, no-c-format
 #~ msgid ", <xref linkend=\"ST_Dump\"/>"
 #~ msgstr ", <xref linkend=\"ST_Dump\"/>"
 
-#, no-c-format
 #~ msgid "ST_ReducePrecision"
 #~ msgstr "ST_ReducePrecision"
 
-#, no-c-format
 #~ msgid "Returns a valid geometry with points rounded to a grid tolerance."
 #~ msgstr ""
 #~ "全ての与えられたグリッド許容値に丸められたポイントからなる妥当なジオメトリ"
 #~ "を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_ReducePrecision</function></funcdef> "
 #~ "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> "
@@ -3860,7 +3644,6 @@ msgstr ""
 #~ "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef> "
 #~ "<paramdef><type>float8 </type> <parameter>gridsize</parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a valid geometry with all points rounded to the provided grid "
 #~ "tolerance, and features below the tolerance removed."
@@ -3868,7 +3651,6 @@ msgstr ""
 #~ "全ての与えられたグリッド許容値に丸められたポイントからなる妥当なジオメトリ"
 #~ "を返します。許容値より下の地物は削除されます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Unlike <xref linkend=\"ST_SnapToGrid\"/> the returned geometry will be "
 #~ "valid, with no ring self-intersections or collapsed components."
@@ -3876,19 +3658,15 @@ msgstr ""
 #~ "<xref linkend=\"ST_SnapToGrid\"/>と違い、返されるジオメトリは妥当で、自己"
 #~ "交差の環や崩壊した要素を伴いません。"
 
-#, no-c-format
 #~ msgid "Precision reduction can be used to:"
 #~ msgstr "精度提言は次の場合に使います。"
 
-#, no-c-format
 #~ msgid "match coordinate precision to the data accuracy"
 #~ msgstr "座標精度をデータ精度に合わせる"
 
-#, no-c-format
 #~ msgid "reduce the number of coordinates needed to represent a geometry"
 #~ msgstr "ジオメトリを表現するのに必要な座標の数を減らす"
 
-#, no-c-format
 #~ msgid ""
 #~ "ensure valid geometry output to formats which use lower precision (e.g. "
 #~ "text formats such as WKT, GeoJSON or KML when the number of output "
@@ -3897,7 +3675,6 @@ msgstr ""
 #~ "低精度書式 (出力桁数が制限されるWKT, GeoJSON, KML等のテキスト書式)への出力"
 #~ "ジオメトリの妥当性の確保。"
 
-#, no-c-format
 #~ msgid ""
 #~ "export valid geometry to systems which use lower or limited precision (e."
 #~ "g. SDE, Oracle tolerance value)"
@@ -3905,7 +3682,6 @@ msgstr ""
 #~ "妥当なジオメトリの低精度や制度制限のあるシステム (SDE, Oracle許容値等)への"
 #~ "エクスポート"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));\n"
 #~ "    st_astext\n"
@@ -3937,11 +3713,9 @@ msgstr ""
 #~ "-------------\n"
 #~ " POINT(0 20)"
 
-#, no-c-format
 #~ msgid "Precision reduction can reduce number of vertices"
 #~ msgstr "精度を落とすことで頂点数を減らすことができます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_ReducePrecision('LINESTRING (10 10, 19.6 30.1, 20 30, "
 #~ "20.3 30, 40 40)', 1));\n"
@@ -3955,13 +3729,11 @@ msgstr ""
 #~ "-------------\n"
 #~ " LINESTRING (10 10, 20 30, 40 40)"
 
-#, no-c-format
 #~ msgid "Precision reduction splits polygons if needed to ensure validity"
 #~ msgstr ""
 #~ "妥当性を確保するために必要な場合には、精度を落とす際にポリゴンを分割しま"
 #~ "す。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_ReducePrecision('POLYGON ((10 10, 60 60.1, 70 30, 40 "
 #~ "40, 50 10, 10 10))', 10));\n"
@@ -3977,11 +3749,9 @@ msgstr ""
 #~ " MULTIPOLYGON (((60 60, 70 30, 40 40, 60 60)), ((40 40, 50 10, 10 10, 40 "
 #~ "40)))"
 
-#, no-c-format
 #~ msgid "ST_SharedPaths"
 #~ msgstr "ST_SharedPaths"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a collection containing paths shared by the two input linestrings/"
 #~ "multilinestrings."
@@ -3989,7 +3759,6 @@ msgstr ""
 #~ "二つのLINESTRING/MULTILINESTRINGの入力が共有するパスのコレクションを返しま"
 #~ "す。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a collection containing paths shared by the two input geometries. "
 #~ "Those going in the same direction are in the first element of the "
@@ -4001,18 +3770,15 @@ msgstr ""
 #~ "のはコレクションの一つ目の要素にあり、逆方向は二つ目の要素にあります。これ"
 #~ "らのパス自体は一つ目のジオメトリの方向をもとにします。"
 
-#, no-c-format
 #~ msgid "Examples: Finding shared paths"
 #~ msgstr "例: 共有パスの探索"
 
-#, no-c-format
 #~ msgid ""
 #~ "The shared path of multilinestring and linestring overlaid with original "
 #~ "geometries."
 #~ msgstr ""
 #~ "マルチラインストリングとラインストリングとの共有パスと元のジオメトリ。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(\n"
 #~ "  ST_SharedPaths(\n"
@@ -4044,7 +3810,6 @@ msgstr ""
 #~ "GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),\n"
 #~ " (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- same example but linestring orientation flipped\n"
 #~ "SELECT ST_AsText(\n"
@@ -4078,17 +3843,14 @@ msgstr ""
 #~ "GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,\n"
 #~ "MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 #~ msgstr ""
 #~ ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
-#, no-c-format
 #~ msgid "ST_Simplify"
 #~ msgstr "ST_Simplify"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a simplified version of a geometry, using the Douglas-Peucker "
 #~ "algorithm."
@@ -4096,7 +3858,6 @@ msgstr ""
 #~ "Douglas-Peukerアルゴリズムを使用して、与えられたジオメトリを簡略化したもの"
 #~ "を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
 #~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
@@ -4110,7 +3871,6 @@ msgstr ""
 #~ "<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></"
 #~ "paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
 #~ "Peucker algorithm. Will actually do something only with (multi)lines and "
@@ -4123,7 +3883,6 @@ msgstr ""
 #~ "のような種類のジオメトリでも安全に呼ぶことができます。簡略化はオブジェクト"
 #~ "ごとに行われるので、ジオメトリコレクションでこの関数を呼ぶことができます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The \"preserve collapsed\" flag will retain objects that would otherwise "
 #~ "be too small given the tolerance. For example, a 1m long line simplified "
@@ -4138,7 +3897,6 @@ msgstr ""
 #~ "ラグは、多数の非常に小さいオブジェクトを持っていて、これらが想定外の隙間を"
 #~ "残して地図から消えることを避けるのに使えます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Note that returned geometry might lose its simplicity (see <xref linkend="
 #~ "\"ST_IsSimple\"/>)"
@@ -4146,7 +3904,6 @@ msgstr ""
 #~ "返されるジオメトリは単純性 (<xref linkend=\"ST_IsSimple\"/>参照)を失うこと"
 #~ "があります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Note topology may not be preserved and may result in invalid geometries. "
 #~ "Use (see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve "
@@ -4156,15 +3913,12 @@ msgstr ""
 #~ "トポロジを保存するには<xref linkend=\"ST_SimplifyPreserveTopology\"/>を使"
 #~ "います。"
 
-#, no-c-format
 #~ msgid "Availability: 1.2.2"
 #~ msgstr "Availability: 1.2.2"
 
-#, no-c-format
 #~ msgid "A circle simplified too much becomes a triangle, medium an octagon,"
 #~ msgstr "簡略化をやりすぎて三角形になった円、八角形になった円です。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Npoints(geom) AS np_before,\n"
 #~ "       ST_NPoints(ST_Simplify(geom,0.1)) AS np01_notbadcircle,\n"
@@ -4198,7 +3952,6 @@ msgstr ""
 #~ "        49 |                33 |                  17 |           9 "
 #~ "|             4 | t"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend="
 #~ "\"TP_ST_Simplify\"/>"
@@ -4206,11 +3959,9 @@ msgstr ""
 #~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend="
 #~ "\"TP_ST_Simplify\"/>"
 
-#, no-c-format
 #~ msgid "ST_SimplifyPreserveTopology"
 #~ msgstr "ST_SimplifyPreserveTopology"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a simplified and valid version of a geometry, using the Douglas-"
 #~ "Peucker algorithm."
@@ -4218,7 +3969,6 @@ msgstr ""
 #~ "Douglas-Peukerアルゴリズムを使用して、与えられたジオメトリを簡略化したもの"
 #~ "を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_SimplifyPreserveTopology</function></"
 #~ "funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></"
@@ -4230,7 +3980,6 @@ msgstr ""
 #~ "paramdef> <paramdef><type>float</type> <parameter>tolerance</parameter></"
 #~ "paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a \"simplified\" version of the given geometry using the Douglas-"
 #~ "Peucker algorithm. Will avoid creating derived geometries (polygons in "
@@ -4245,11 +3994,9 @@ msgstr ""
 #~ "メトリでも安全に呼ぶことができます。簡略化はオブジェクトごとに行われるの"
 #~ "で、ジオメトリコレクションでこの関数を呼ぶことができます。"
 
-#, no-c-format
 #~ msgid "Availability: 1.3.3"
 #~ msgstr "Availability: 1.3.3"
 
-#, no-c-format
 #~ msgid ""
 #~ "Same example as Simplify, but we see Preserve Topology prevents "
 #~ "oversimplification. The circle can at most become a square."
@@ -4257,7 +4004,6 @@ msgstr ""
 #~ "Simplyfyと同じ例ですが、トポロジ保存で簡略化の行きすぎを阻止します。円は最"
 #~ "低でも四角形になります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_Npoints(geom) As np_before, "
 #~ "ST_NPoints(ST_SimplifyPreserveTopology(geom,0.1)) As np01_notbadcircle, "
@@ -4293,11 +4039,9 @@ msgstr ""
 #~ "        49 |                33 |                  17 |           9 "
 #~ "|             5 |                 5"
 
-#, no-c-format
 #~ msgid "ST_SimplifyVW"
 #~ msgstr "ST_SimplifyVW"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
 #~ "algorithm"
@@ -4305,7 +4049,6 @@ msgstr ""
 #~ "Visvalingam-Whyattアルゴリズムを使用して、入力ジオメトリを簡略化したジオメ"
 #~ "トリを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_SimplifyVW</function></funcdef> "
 #~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
@@ -4315,7 +4058,6 @@ msgstr ""
 #~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
 #~ "<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a \"simplified\" version of the given geometry using the "
 #~ "Visvalingam-Whyatt algorithm. Will actually do something only with "
@@ -4330,16 +4072,13 @@ msgstr ""
 #~ "きます。簡略化はオブジェクトごとに行われるので、ジオメトリコレクションでこ"
 #~ "の関数を呼ぶことができます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "This function handles 3D and the third dimension will affect the result."
 #~ msgstr "この関数は3次元を扱います。第3次元は結果に影響を与えます。"
 
-#, no-c-format
 #~ msgid "A LineString is simplified with a minimum area threshold of 30."
 #~ msgstr "ラインストリングを最小範囲のしきい値を30で簡略化しています。"
 
-#, no-c-format
 #~ msgid ""
 #~ "select ST_AsText(ST_SimplifyVW(geom,30)) simplified\n"
 #~ "FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) "
@@ -4357,7 +4096,6 @@ msgstr ""
 #~ "------------------------------\n"
 #~ "LINESTRING(5 2,7 25,10 10)"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
 #~ "\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify"
@@ -4367,18 +4105,15 @@ msgstr ""
 #~ "\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify"
 #~ "\"/>"
 
-#, no-c-format
 #~ msgid "ST_ChaikinSmoothing"
 #~ msgstr "ST_ChaikinSmoothing"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a smoothed version of a geometry, using the Chaikin algorithm"
 #~ msgstr ""
 #~ " チャイキンのアルゴリズムを使って、与えられたジオメトリの平滑化されたもの"
 #~ "を返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
 #~ "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
@@ -4392,7 +4127,6 @@ msgstr ""
 #~ "paramdef> <paramdef><type>boolean</type> <parameter>preserveEndPoints = "
 #~ "false</parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns a \"smoothed\" version of the given geometry using the Chaikin "
 #~ "algorithm. See <ulink url=\"http://www.idav.ucdavis.edu/education/"
@@ -4413,17 +4147,14 @@ msgstr ""
 #~ "数を使います。新しいポイントの、ZとMを含むジオメトリの全ての次元に補間値が"
 #~ "付きます。"
 
-#, no-c-format
 #~ msgid "Second argument, number of iterations is limited to max 5 iterations"
 #~ msgstr "第2引数は繰り返し回数で最大5回です。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Note third argument is only valid for polygons, and will be ignored for "
 #~ "linestrings"
 #~ msgstr "第3引数はポリゴンにのみ有効です。ラインストリングでは無視されます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Note that returned geometry will get more points than the original. To "
 #~ "reduce the number of points again use one of the simplification functions "
@@ -4434,11 +4165,9 @@ msgstr ""
 #~ "い。再びポイント数を低減するには、単純化関数を使います (<xref linkend="
 #~ "\"ST_Simplify\"/>と<xref linkend=\"ST_SimplifyVW\"/>参照)。"
 
-#, no-c-format
 #~ msgid "A triangle is smoothed"
 #~ msgstr "トライアングルの平滑化"
 
-#, no-c-format
 #~ msgid ""
 #~ "select ST_AsText(ST_ChaikinSmoothing(geom)) smoothed\n"
 #~ "FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;\n"
@@ -4456,18 +4185,15 @@ msgstr ""
 #~ "│ POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2)) │\n"
 #~ "└───────────────────────────────────────────┘"
 
-#, no-c-format
 #~ msgid "ST_SetEffectiveArea"
 #~ msgstr "ST_SetEffectiveArea"
 
-#, no-c-format
 #~ msgid ""
 #~ "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
 #~ "algorithm."
 #~ msgstr ""
 #~ "Visvalingam-Whyattアルゴリズムを使って有効範囲となる個々の頂点を置きます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef> "
 #~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
@@ -4481,7 +4207,6 @@ msgstr ""
 #~ "paramdef> <paramdef><type>integer</type> <parameter>set_area = 1</"
 #~ "parameter></paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
 #~ "algorithm. The effective area is stored as the M-value of the vertex. If "
@@ -4493,7 +4218,6 @@ msgstr ""
 #~ "範囲はジオメトリのM値として格納されます。任意引数である第2引数を使うと、し"
 #~ "きい値以上の有効範囲となる頂点だけで構築されるジオメトリを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "This function can be used for server-side simplification when a threshold "
 #~ "is specified. Another option is to use a threshold value of zero. In this "
@@ -4505,7 +4229,6 @@ msgstr ""
 #~ "すが、クライアントが非常に高速に簡略化するために使うM値として格納している"
 #~ "有効範囲を持っています。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Will actually do something only with (multi)lines and (multi)polygons but "
 #~ "you can safely call it with any kind of geometry. Since simplification "
@@ -4516,18 +4239,15 @@ msgstr ""
 #~ "メトリでも安全に呼ぶことができます。簡略化はオブジェクトごとに行われるの"
 #~ "で、ジオメトリコレクションでこの関数を呼ぶことができます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The output geometry will lose all previous information in the M-values"
 #~ msgstr "出力ジオメトリは、入力時に持っていたM値の情報の全てを失います。"
 
-#, no-c-format
 #~ msgid ""
 #~ "This function handles 3D and the third dimension will affect the "
 #~ "effective area"
 #~ msgstr "この関数は3次元を扱います。第3次元は結果に影響を与えます。"
 
-#, no-c-format
 #~ msgid ""
 #~ "Calculating the effective area of a LineString. Because we use a "
 #~ "threshold value of zero, all vertices in the input geometry are returned."
@@ -4535,7 +4255,6 @@ msgstr ""
 #~ "ラインストリングの有効範囲の計算。しきい値を0にしているので、入力ジオメト"
 #~ "リの全ての頂点が返ります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "select ST_AsText(ST_SetEffectiveArea(geom)) all_pts, "
 #~ "ST_AsText(ST_SetEffectiveArea(geom,30) ) thrshld_30\n"
@@ -4559,17 +4278,14 @@ msgstr ""
 #~ "3.40282346638529e+38) | LINESTRING M (5 2 3.40282346638529e+38,7 25 "
 #~ "49.5,10 10 3.40282346638529e+38)"
 
-#, no-c-format
 #~ msgid "ST_VoronoiLines"
 #~ msgstr "ST_VoronoiLines"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns the boundaries of the Voronoi diagram of the vertices of a "
 #~ "geometry."
 #~ msgstr "ジオメトリの頂点からボロノイ図のセルを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> "
 #~ "<paramdef> <parameter>g1</parameter> <type>geometry</type> </paramdef> "
@@ -4583,7 +4299,6 @@ msgstr ""
 #~ "type> </paramdef> <paramdef choice=\"opt\"> <parameter>extend_to</"
 #~ "parameter> <type>geometry</type> </paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "ST_VoronoiLines computes a two-dimensional <ulink url=\"https://en."
 #~ "wikipedia.org/wiki/Voronoi_diagram\">Voronoi diagram</ulink> from the "
@@ -4601,11 +4316,9 @@ msgstr ""
 #~ "extend_toのエンベロープの面積が0の場合には、空ジオメトリコレクションを返し"
 #~ "ます。"
 
-#, no-c-format
 #~ msgid "Optional parameters:"
 #~ msgstr "任意パラメータ:"
 
-#, no-c-format
 #~ msgid ""
 #~ "'tolerance' : The distance within which vertices will be considered "
 #~ "equivalent. Robustness of the algorithm can be improved by supplying a "
@@ -4614,7 +4327,6 @@ msgstr ""
 #~ "'tolerance' : この距離以内の点は等価とします。0でない許容距離を指定するこ"
 #~ "とで、アルゴリズムのロバスト性が改善します。デフォルトは0.0です。"
 
-#, no-c-format
 #~ msgid ""
 #~ "'extend_to' : If a geometry is supplied as the \"extend_to\" parameter, "
 #~ "the diagram will be extended to cover the envelope of the \"extend_to\" "
@@ -4628,11 +4340,9 @@ msgstr ""
 #~ "NULLで、デフォルトのエンベロープは入力ジオメトリのバウンディングボックスか"
 #~ "ら各方向に50%ずつ拡張したものです)。"
 
-#, no-c-format
 #~ msgid "Voronoi lines with tolerance of 30 units"
 #~ msgstr "許容範囲を30単位としたボロノイ図"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_VoronoiLines(geom, 30) As geom\n"
 #~ "FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::"
@@ -4642,7 +4352,6 @@ msgstr ""
 #~ "FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::"
 #~ "geometry As geom ) As g"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- ST_AsText output\n"
 #~ "MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),"
@@ -4654,22 +4363,18 @@ msgstr ""
 #~ "(36.8181818181818 92.2727272727273,-110 43.3333333333333),(230 "
 #~ "-45.7142857142858,36.8181818181818 92.2727272727273))"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_VoronoiPolygons\"/>, <xref linkend=\"ST_Collect\"/>"
 #~ msgstr ""
 #~ ", <xref linkend=\"ST_VoronoiPolygons\"/>, <xref linkend=\"ST_Collect\"/>"
 
-#, no-c-format
 #~ msgid "ST_VoronoiPolygons"
 #~ msgstr "ST_VoronoiPolygons"
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns the cells of the Voronoi diagram of the vertices of a geometry."
 #~ msgstr "ジオメトリの頂点からボロノイ図のセルを返します。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef> "
 #~ "<paramdef> <parameter>g1</parameter> <type>geometry</type> </paramdef> "
@@ -4683,7 +4388,6 @@ msgstr ""
 #~ "type> </paramdef> <paramdef choice=\"opt\"> <parameter>extend_to</"
 #~ "parameter> <type>geometry</type> </paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "ST_VoronoiPolygons computes a two-dimensional <ulink url=\"https://en."
 #~ "wikipedia.org/wiki/Voronoi_diagram\">Voronoi diagram</ulink> from the "
@@ -4702,11 +4406,9 @@ msgstr ""
 #~ "空ジオメトリコレクションを返します。extend_toのエンベロープの面積が0の場合"
 #~ "には、空ジオメトリコレクションを返します。"
 
-#, no-c-format
 #~ msgid "Points overlaid on top of Voronoi diagram"
 #~ msgstr "Points overlaid on top of Voronoi diagram"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT\n"
 #~ "    ST_VoronoiPolygons(geom) As geom\n"
@@ -4718,7 +4420,6 @@ msgstr ""
 #~ "FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::"
 #~ "geometry As geom ) As g;"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- ST_AsText output\n"
 #~ "GEOMETRYCOLLECTION(POLYGON((-110 43.3333333333333,-110 270,100.5 "
@@ -4746,11 +4447,9 @@ msgstr ""
 #~ "POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 "
 #~ "132.826086956522,100.5 270)))"
 
-#, no-c-format
 #~ msgid "Voronoi with tolerance of 30 units"
 #~ msgstr "許容範囲を30単位としたボロノイ図"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_VoronoiPolygons(geom, 30) As geom\n"
 #~ "FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::"
@@ -4760,7 +4459,6 @@ msgstr ""
 #~ "FROM (SELECT 'MULTIPOINT (50 30, 60 30, 100 100,10 150, 110 120)'::"
 #~ "geometry As geom ) As g;"
 
-#, no-c-format
 #~ msgid ""
 #~ "-- ST_AsText output\n"
 #~ "GEOMETRYCOLLECTION(POLYGON((-110 43.3333333333333,-110 270,100.5 "
@@ -4786,11 +4484,9 @@ msgstr ""
 #~ "POLYGON((100.5 270,230 270,230 47.5,59.3478260869565 "
 #~ "132.826086956522,100.5 270)))"
 
-#, no-c-format
 #~ msgid "Voronoi with tolerance of 30 units as MultiLineString"
 #~ msgstr "許容範囲を30単位とした、マルチラインストリングのボロノイ図"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 #~ msgstr ""

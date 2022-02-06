@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-10 06:28+0000\n"
+"POT-Creation-Date: 2022-02-06 07:55+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -141,7 +141,7 @@ msgstr "&T_support;"
 #: reference_sfcgal.xml:45 reference_sfcgal.xml:80 reference_sfcgal.xml:176
 #: reference_sfcgal.xml:298 reference_sfcgal.xml:559 reference_sfcgal.xml:704
 #: reference_sfcgal.xml:779 reference_sfcgal.xml:822 reference_sfcgal.xml:918
-#: reference_sfcgal.xml:960
+#: reference_sfcgal.xml:960 reference_sfcgal.xml:1068
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -212,7 +212,7 @@ msgstr ""
 #: reference_sfcgal.xml:116 reference_sfcgal.xml:209 reference_sfcgal.xml:275
 #: reference_sfcgal.xml:423 reference_sfcgal.xml:528 reference_sfcgal.xml:592
 #: reference_sfcgal.xml:668 reference_sfcgal.xml:743 reference_sfcgal.xml:816
-#: reference_sfcgal.xml:854
+#: reference_sfcgal.xml:854 reference_sfcgal.xml:1051
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -1323,7 +1323,7 @@ msgstr ""
 "160, 120 190, 10 190 ))'::geometry);"
 
 #. Tag: para
-#: reference_sfcgal.xml:900 reference_sfcgal.xml:1053
+#: reference_sfcgal.xml:900
 #, no-c-format
 msgid "ST_AsText output"
 msgstr "ST_AsText 출력물:"
@@ -1379,7 +1379,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: title
-#: reference_sfcgal.xml:953 reference_sfcgal.xml:1051
+#: reference_sfcgal.xml:953
 #, no-c-format
 msgid "Example"
 msgstr "예시"
@@ -1507,18 +1507,41 @@ msgstr ""
 #: reference_sfcgal.xml:1052
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_3DConvexHull('MULTIPOINTZ(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 "
-"7 5, 6 3 5)')) As 3DHull;"
+"SELECT ST_AsText(ST_3DConvexHull('LINESTRING Z(0 0 5, 1 5 3, 5 7 6, 9 5 3 , "
+"5 7 5, 6 3 5)'::geometry));"
 msgstr ""
 
 #. Tag: screen
-#: reference_sfcgal.xml:1054
+#: reference_sfcgal.xml:1053
 #, no-c-format
 msgid ""
 "POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),"
 "((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 "
 "6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 "
 "7 5,9 5 3,1 5 3)))"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:1055
+#, no-c-format
+msgid ""
+"WITH f AS (SELECT i, ST_Extrude(geom, 0,0, i ) AS geom\n"
+"FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)\n"
+"      )\n"
+"      SELECT ST_3DConvexHull(ST_Collect(f.geom) )\n"
+"      FROM f;"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:1062
+#, no-c-format
+msgid "Original geometry overlaid with 3D convex hull"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:1069
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsX3D\"/>"
 msgstr ""
 
 #, fuzzy

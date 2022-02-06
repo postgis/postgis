@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-19 03:22+0000\n"
+"POT-Creation-Date: 2022-02-06 07:55+0000\n"
 "PO-Revision-Date: 2022-01-31 10:53+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -91,7 +91,7 @@ msgstr ""
 #: reference_output.xml:694 reference_output.xml:808 reference_output.xml:871
 #: reference_output.xml:939 reference_output.xml:1015 reference_output.xml:1093
 #: reference_output.xml:1146 reference_output.xml:1194
-#: reference_output.xml:1316
+#: reference_output.xml:1328
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -179,7 +179,7 @@ msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_output.xml:74 reference_output.xml:160 reference_output.xml:249
-#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1330
+#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1342
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -204,7 +204,7 @@ msgstr "&T_support;"
 #: reference_output.xml:509 reference_output.xml:616 reference_output.xml:844
 #: reference_output.xml:900 reference_output.xml:959 reference_output.xml:1055
 #: reference_output.xml:1112 reference_output.xml:1161
-#: reference_output.xml:1334
+#: reference_output.xml:1346
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -256,7 +256,7 @@ msgstr ""
 #: reference_output.xml:330 reference_output.xml:424 reference_output.xml:639
 #: reference_output.xml:773 reference_output.xml:848 reference_output.xml:964
 #: reference_output.xml:1061 reference_output.xml:1170
-#: reference_output.xml:1338
+#: reference_output.xml:1350
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -2908,10 +2908,11 @@ msgid ""
 "functions-aggregate.html\">array_agg</ulink> function. The other parameters "
 "operate the same as for the simple form of the function."
 msgstr ""
-"配列入力の形式は、ジオメトリのコレクションを変換して、一意の識別子をTWKBコレクションに持たせるためのものです。これは、コレクションを展開して、オブジェ"
-"クト内部に関する情報にさらにアクセスするのに使えます。<ulink url=\"http://www.postgresql.org/docs/"
-"current/functions-aggregate.html\""
-">array_agg</ulink>関数を使用して配列を生成できます。他のパラメータは、単純な形式のものと同じです。"
+"配列入力の形式は、ジオメトリのコレクションを変換して、一意の識別子をTWKBコレ"
+"クションに持たせるためのものです。これは、コレクションを展開して、オブジェク"
+"ト内部に関する情報にさらにアクセスするのに使えます。<ulink url=\"http://www."
+"postgresql.org/docs/current/functions-aggregate.html\">array_agg</ulink>関数"
+"を使用して配列を生成できます。他のパラメータは、単純な形式のものと同じです。"
 
 #. Tag: para
 #: reference_output.xml:1152
@@ -3268,15 +3269,11 @@ msgstr ""
 #: reference_output.xml:1267
 #, no-c-format
 msgid ""
-"Also check out <ulink url=\"https://github.com/robe2/postgis_x3d_viewer"
-"\">PostGIS minimalist X3D viewer</ulink> that utilizes this function and "
-"<ulink url=\"http://www.x3dom.org/\">x3dDom html/js open source toolkit</"
-"ulink>."
+"Also check out <ulink url=\"https://git.osgeo.org/gitea/robe/"
+"postgis_x3d_viewer\">PostGIS minimalist X3D viewer</ulink> that utilizes "
+"this function and <ulink url=\"http://www.x3dom.org/\">x3dDom html/js open "
+"source toolkit</ulink>."
 msgstr ""
-"また、この関数と<ulink url=\"http://www.x3dom.org/\">x3dDom html/js open "
-"source toolkit</ulink>を用いる<ulink url=\"https://github.com/robe2/"
-"postgis_x3d_viewer\">PostGIS minimalist X3D viewer</ulink>をチェックアウトし"
-"てみて下さい。"
 
 #. Tag: para
 #: reference_output.xml:1268
@@ -3401,13 +3398,39 @@ msgstr ""
 #. Tag: title
 #: reference_output.xml:1285
 #, no-c-format
-msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
-msgstr "例: 高さ3単位で精度が6桁の八角柱"
+msgid "PostGIS buildings"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:1286
 #, no-c-format
 msgid ""
+"<![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*4)) "
+"||\n"
+"    '<Appearance>\n"
+"          <Material diffuseColor=\"' || (0.01*i)::text || ' 0.8 0.2\" "
+"specularColor=\"' || (0.05*i)::text || ' 0 0.5\"/>\n"
+"        </Appearance>\n"
+"    </Shape>', '')\n"
+"FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);]]>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1292
+#, no-c-format
+msgid "Buildings formed by subdividing PostGIS and extrusion"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:1297
+#, no-c-format
+msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
+msgstr "例: 高さ3単位で精度が6桁の八角柱"
+
+#. Tag: programlisting
+#: reference_output.xml:1298
+#, no-c-format
+msgid ""
 "SELECT ST_AsX3D(\n"
 "ST_Translate(\n"
 "    ST_Force_3d(\n"
@@ -3437,13 +3460,13 @@ msgstr ""
 "</IndexedFaceSet>]]>"
 
 #. Tag: title
-#: reference_output.xml:1289
+#: reference_output.xml:1301
 #, no-c-format
 msgid "Example: TIN"
 msgstr "例: TIN"
 
 #. Tag: programlisting
-#: reference_output.xml:1290
+#: reference_output.xml:1302
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((\n"
@@ -3483,13 +3506,13 @@ msgstr ""
 "0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]>"
 
 #. Tag: title
-#: reference_output.xml:1293
+#: reference_output.xml:1305
 #, no-c-format
 msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
 msgstr "例: 閉じたラインストリング (穴のあるポリゴンの境界)"
 
 #. Tag: programlisting
-#: reference_output.xml:1294
+#: reference_output.xml:1306
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsX3D(\n"
@@ -3525,19 +3548,19 @@ msgstr ""
 " </IndexedLineSet>]]>"
 
 #. Tag: refname
-#: reference_output.xml:1300
+#: reference_output.xml:1312
 #, no-c-format
 msgid "ST_GeoHash"
 msgstr "ST_GeoHash"
 
 #. Tag: refpurpose
-#: reference_output.xml:1302
+#: reference_output.xml:1314
 #, no-c-format
 msgid "Return a GeoHash representation of the geometry."
 msgstr "ジオメトリのGeoHash表現を返します。"
 
 #. Tag: funcprototype
-#: reference_output.xml:1307
+#: reference_output.xml:1319
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_GeoHash</function></funcdef> "
@@ -3551,7 +3574,7 @@ msgstr ""
 "<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_output.xml:1318
+#: reference_output.xml:1330
 #, no-c-format
 msgid ""
 "Return a GeoHash representation (<ulink url=\"http://en.wikipedia.org/wiki/"
@@ -3567,7 +3590,7 @@ msgstr ""
 "られます。"
 
 #. Tag: para
-#: reference_output.xml:1320
+#: reference_output.xml:1332
 #, no-c-format
 msgid ""
 "If no <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
@@ -3587,7 +3610,7 @@ msgstr ""
 "れます。GeoHashが含むボックスは常に入力フィーチャーを含むようにしています。"
 
 #. Tag: para
-#: reference_output.xml:1322
+#: reference_output.xml:1334
 #, no-c-format
 msgid ""
 "If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
@@ -3600,13 +3623,13 @@ msgstr ""
 "以外では、計算の開始点はジオメトリのバウンディングボックスの中心となります。"
 
 #. Tag: para
-#: reference_output.xml:1324
+#: reference_output.xml:1336
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "Availability: 1.4.0"
 
 #. Tag: para
-#: reference_output.xml:1327
+#: reference_output.xml:1339
 #, no-c-format
 msgid ""
 "ST_GeoHash will not work with geometries that are not in geographic (lon/"
@@ -3614,7 +3637,7 @@ msgid ""
 msgstr "ST_GeoHashはジオグラフィ (経度緯度)座標系では動作しません。"
 
 #. Tag: programlisting
-#: reference_output.xml:1335
+#: reference_output.xml:1347
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326));\n"
@@ -3643,7 +3666,17 @@ msgstr ""
 " c0w3h\n"
 "                ]]>"
 
-#, no-c-format
+#~ msgid ""
+#~ "Also check out <ulink url=\"https://github.com/robe2/postgis_x3d_viewer"
+#~ "\">PostGIS minimalist X3D viewer</ulink> that utilizes this function and "
+#~ "<ulink url=\"http://www.x3dom.org/\">x3dDom html/js open source toolkit</"
+#~ "ulink>."
+#~ msgstr ""
+#~ "また、この関数と<ulink url=\"http://www.x3dom.org/\">x3dDom html/js open "
+#~ "source toolkit</ulink>を用いる<ulink url=\"https://github.com/robe2/"
+#~ "postgis_x3d_viewer\">PostGIS minimalist X3D viewer</ulink>をチェックアウト"
+#~ "してみて下さい。"
+
 #~ msgid ""
 #~ "<varname>geom_name</varname> is the name of the geometry column in the "
 #~ "row data. Default is the first geometry column."

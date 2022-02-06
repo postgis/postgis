@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-19 03:22+0000\n"
+"POT-Creation-Date: 2022-02-06 07:55+0000\n"
 "PO-Revision-Date: 2021-11-28 22:06+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -78,7 +78,7 @@ msgstr ""
 #: reference_output.xml:694 reference_output.xml:808 reference_output.xml:871
 #: reference_output.xml:939 reference_output.xml:1015 reference_output.xml:1093
 #: reference_output.xml:1146 reference_output.xml:1194
-#: reference_output.xml:1316
+#: reference_output.xml:1328
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -154,7 +154,7 @@ msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_output.xml:74 reference_output.xml:160 reference_output.xml:249
-#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1330
+#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1342
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -179,7 +179,7 @@ msgstr "&T_support;"
 #: reference_output.xml:509 reference_output.xml:616 reference_output.xml:844
 #: reference_output.xml:900 reference_output.xml:959 reference_output.xml:1055
 #: reference_output.xml:1112 reference_output.xml:1161
-#: reference_output.xml:1334
+#: reference_output.xml:1346
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -231,7 +231,7 @@ msgstr ""
 #: reference_output.xml:330 reference_output.xml:424 reference_output.xml:639
 #: reference_output.xml:773 reference_output.xml:848 reference_output.xml:964
 #: reference_output.xml:1061 reference_output.xml:1170
-#: reference_output.xml:1338
+#: reference_output.xml:1350
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -2894,14 +2894,11 @@ msgstr ""
 #: reference_output.xml:1267
 #, no-c-format
 msgid ""
-"Also check out <ulink url=\"https://github.com/robe2/postgis_x3d_viewer"
-"\">PostGIS minimalist X3D viewer</ulink> that utilizes this function and "
-"<ulink url=\"http://www.x3dom.org/\">x3dDom html/js open source toolkit</"
-"ulink>."
+"Also check out <ulink url=\"https://git.osgeo.org/gitea/robe/"
+"postgis_x3d_viewer\">PostGIS minimalist X3D viewer</ulink> that utilizes "
+"this function and <ulink url=\"http://www.x3dom.org/\">x3dDom html/js open "
+"source toolkit</ulink>."
 msgstr ""
-"또 <ulink url=\"http://www.x3dom.org/\">X3DDom HTML/JS 오픈소스 툴키트</"
-"ulink> 및 ST_AsX3D 함수를 활용하는 <ulink url=\"https://github.com/robe2/"
-"postgis_x3d_viewer\">PostGIS 미니멀리스트 X3D 뷰어</ulink> 도 확인해보십시오."
 
 #. Tag: para
 #: reference_output.xml:1268
@@ -3027,13 +3024,39 @@ msgstr ""
 #. Tag: title
 #: reference_output.xml:1285
 #, no-c-format
-msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
-msgstr "예시: 소수점 정밀도 6이며 3단위 상승한  팔각형"
+msgid "PostGIS buildings"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_output.xml:1286
 #, no-c-format
 msgid ""
+"<![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*4)) "
+"||\n"
+"    '<Appearance>\n"
+"          <Material diffuseColor=\"' || (0.01*i)::text || ' 0.8 0.2\" "
+"specularColor=\"' || (0.05*i)::text || ' 0 0.5\"/>\n"
+"        </Appearance>\n"
+"    </Shape>', '')\n"
+"FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);]]>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1292
+#, no-c-format
+msgid "Buildings formed by subdividing PostGIS and extrusion"
+msgstr ""
+
+#. Tag: title
+#: reference_output.xml:1297
+#, no-c-format
+msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
+msgstr "예시: 소수점 정밀도 6이며 3단위 상승한  팔각형"
+
+#. Tag: programlisting
+#: reference_output.xml:1298
+#, no-c-format
+msgid ""
 "SELECT ST_AsX3D(\n"
 "ST_Translate(\n"
 "    ST_Force_3d(\n"
@@ -3063,13 +3086,13 @@ msgstr ""
 "</IndexedFaceSet>]]>"
 
 #. Tag: title
-#: reference_output.xml:1289
+#: reference_output.xml:1301
 #, no-c-format
 msgid "Example: TIN"
 msgstr "예시: TIN"
 
 #. Tag: programlisting
-#: reference_output.xml:1290
+#: reference_output.xml:1302
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((\n"
@@ -3109,13 +3132,13 @@ msgstr ""
 "0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]>"
 
 #. Tag: title
-#: reference_output.xml:1293
+#: reference_output.xml:1305
 #, no-c-format
 msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
 msgstr "예시: 닫힌 멀티라인스트링(구멍을 가진 폴리곤의 경계선)"
 
 #. Tag: programlisting
-#: reference_output.xml:1294
+#: reference_output.xml:1306
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsX3D(\n"
@@ -3151,19 +3174,19 @@ msgstr ""
 " </IndexedLineSet>]]>"
 
 #. Tag: refname
-#: reference_output.xml:1300
+#: reference_output.xml:1312
 #, no-c-format
 msgid "ST_GeoHash"
 msgstr "ST_GeoHash"
 
 #. Tag: refpurpose
-#: reference_output.xml:1302
+#: reference_output.xml:1314
 #, no-c-format
 msgid "Return a GeoHash representation of the geometry."
 msgstr "도형의 GeoHash 표현식을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_output.xml:1307
+#: reference_output.xml:1319
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_GeoHash</function></funcdef> "
@@ -3177,7 +3200,7 @@ msgstr ""
 "<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_output.xml:1318
+#: reference_output.xml:1330
 #, no-c-format
 msgid ""
 "Return a GeoHash representation (<ulink url=\"http://en.wikipedia.org/wiki/"
@@ -3193,7 +3216,7 @@ msgstr ""
 "제 포인트를 담고 있는 상자로 생각할 수도 있습니다."
 
 #. Tag: para
-#: reference_output.xml:1320
+#: reference_output.xml:1332
 #, no-c-format
 msgid ""
 "If no <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
@@ -3214,7 +3237,7 @@ msgstr ""
 "는 가정 때문입니다."
 
 #. Tag: para
-#: reference_output.xml:1322
+#: reference_output.xml:1334
 #, no-c-format
 msgid ""
 "If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
@@ -3228,13 +3251,13 @@ msgstr ""
 "합니다."
 
 #. Tag: para
-#: reference_output.xml:1324
+#: reference_output.xml:1336
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "1.4.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_output.xml:1327
+#: reference_output.xml:1339
 #, no-c-format
 msgid ""
 "ST_GeoHash will not work with geometries that are not in geographic (lon/"
@@ -3244,7 +3267,7 @@ msgstr ""
 "다."
 
 #. Tag: programlisting
-#: reference_output.xml:1335
+#: reference_output.xml:1347
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326));\n"
@@ -3261,7 +3284,17 @@ msgid ""
 "                ]]>"
 msgstr ""
 
-#, no-c-format
+#~ msgid ""
+#~ "Also check out <ulink url=\"https://github.com/robe2/postgis_x3d_viewer"
+#~ "\">PostGIS minimalist X3D viewer</ulink> that utilizes this function and "
+#~ "<ulink url=\"http://www.x3dom.org/\">x3dDom html/js open source toolkit</"
+#~ "ulink>."
+#~ msgstr ""
+#~ "또 <ulink url=\"http://www.x3dom.org/\">X3DDom HTML/JS 오픈소스 툴키트</"
+#~ "ulink> 및 ST_AsX3D 함수를 활용하는 <ulink url=\"https://github.com/robe2/"
+#~ "postgis_x3d_viewer\">PostGIS 미니멀리스트 X3D 뷰어</ulink> 도 확인해보십시"
+#~ "오."
+
 #~ msgid ""
 #~ "Version 1: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / "
 #~ "maxdecimaldigits=15"
@@ -3269,7 +3302,6 @@ msgstr ""
 #~ "버전 1: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / "
 #~ "maxdecimaldigits=15"
 
-#, no-c-format
 #~ msgid ""
 #~ "Version 2: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) "
 #~ "maxdecimaldigits=15 / nprefix=NULL"
@@ -3277,7 +3309,6 @@ msgstr ""
 #~ "버전 2: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) "
 #~ "maxdecimaldigits=15 / nprefix=NULL"
 
-#, no-c-format
 #~ msgid "Changed: 2.0.0 - uses default args and supports named args"
 #~ msgstr ""
 #~ "변경 사항: 2.0.0 버전부터 기본 독립 변수(default arg)를 사용하고 명명된 독"
