@@ -38,8 +38,8 @@
  *
  **********************************************************************/
 
-PG_FUNCTION_INFO_V1(LWGEOM_asMARC21);
-Datum LWGEOM_asMARC21(PG_FUNCTION_ARGS) {
+PG_FUNCTION_INFO_V1(ST_AsMARC21);
+Datum ST_AsMARC21(PG_FUNCTION_ARGS) {
 	lwvarlena_t *marc21;
 	int32_t srid;
 	LWPROJ *lwproj;
