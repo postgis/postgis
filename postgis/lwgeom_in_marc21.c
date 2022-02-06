@@ -57,9 +57,6 @@ Datum ST_GeomFromMARC21(PG_FUNCTION_ARGS) {
 	char *xml;
 	xmlNodePtr xmlroot = NULL;
 
-	/*
-	 * Get the MARC21/XML stream
-	 */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 
 	xml_input = PG_GETARG_TEXT_P(0);
@@ -110,8 +107,8 @@ static int is_literal_valid(char *literal) {
 
 	/**
 	 * Shortest allowed literal:
-	 *   containing hemisphere sign >  hemisphere sign + degree with 3 digits
-	 *   no hemisphere sign >  degree with 3 digits
+	 *   containing cardinal direction >  cardinal direction + degree with 3 digits
+	 *   no cardinal direction >  degree with 3 digits
 	 *
 	 * The variable "coord_start" stores the position where the coordinates start (0 or 1),
 	 * so that the script can identify where each literal element begins to validate its content.
@@ -171,7 +168,7 @@ static int is_literal_valid(char *literal) {
 static double parse_geo_literal(char *literal) {
 
 	/**
-	 * Coordinate formats supported by MARC21/XML:
+	 * Coordinate formats supported (from the MARC21/XML documentation):
 	 *
 	 *  -> hdddmmss (hemisphere-degrees-minutes-seconds)
 	 *  -> hddd.dddddd (hemisphere-degrees.decimal degrees)
@@ -182,7 +179,6 @@ static double parse_geo_literal(char *literal) {
 	 *
 	 */
 
-	//char dgr[3];
 	char *dgr;
 	char *min;
 	char *sec;
@@ -207,7 +203,6 @@ static double parse_geo_literal(char *literal) {
 
 	POSTGIS_DEBUGF(2, "    var start_literal=%d", start_literal);
 
-	//memset(dgr, '\0', sizeof(dgr));
 	dgr = malloc(literal_length);
 	memcpy(dgr, &literal[start_literal], 3);
 	dgr[3]='\0';
