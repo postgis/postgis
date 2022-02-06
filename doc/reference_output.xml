@@ -1588,7 +1588,11 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
 	  </refsection>
       <refsection>
          <title>PostGIS buildings</title>
-         <para>Copy and paste the output of this query to <ulink url="http://postgis.net/docs/support/viewers/x3d_viewer.htm">x3d scene viewer</url> and click Show</para>
+         <para>
+            Copy and paste the output of this query to
+            <ulink url="http://postgis.net/docs/support/viewers/x3d_viewer.htm">x3d scene viewer</ulink>
+            and click Show
+         </para>
          <programlisting><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*0.5)) ||
     '<Appearance>
           <Material diffuseColor="' || (0.01*i)::text || ' 0.8 0.2" specularColor="' || (0.05*i)::text || ' 0 0.5"/>
