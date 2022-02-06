@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-06 07:55+0000\n"
+"POT-Creation-Date: 2022-02-06 20:51+0000\n"
 "PO-Revision-Date: 2022-01-19 08:46+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -81,7 +81,7 @@ msgstr ""
 #: reference_output.xml:694 reference_output.xml:808 reference_output.xml:871
 #: reference_output.xml:939 reference_output.xml:1015 reference_output.xml:1093
 #: reference_output.xml:1146 reference_output.xml:1194
-#: reference_output.xml:1328
+#: reference_output.xml:1333
 #, no-c-format
 msgid "Description"
 msgstr "Beschreibung"
@@ -157,7 +157,7 @@ msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_output.xml:74 reference_output.xml:160 reference_output.xml:249
-#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1342
+#: reference_output.xml:315 reference_output.xml:368 reference_output.xml:1347
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -182,7 +182,7 @@ msgstr "&T_support;"
 #: reference_output.xml:509 reference_output.xml:616 reference_output.xml:844
 #: reference_output.xml:900 reference_output.xml:959 reference_output.xml:1055
 #: reference_output.xml:1112 reference_output.xml:1161
-#: reference_output.xml:1346
+#: reference_output.xml:1351
 #, no-c-format
 msgid "Examples"
 msgstr "Beispiele"
@@ -234,7 +234,7 @@ msgstr ""
 #: reference_output.xml:330 reference_output.xml:424 reference_output.xml:639
 #: reference_output.xml:773 reference_output.xml:848 reference_output.xml:964
 #: reference_output.xml:1061 reference_output.xml:1170
-#: reference_output.xml:1350
+#: reference_output.xml:1355
 #, no-c-format
 msgid "See Also"
 msgstr "Siehe auch"
@@ -3283,12 +3283,20 @@ msgstr ""
 msgid "PostGIS buildings"
 msgstr ""
 
-#. Tag: programlisting
+#. Tag: para
 #: reference_output.xml:1286
 #, no-c-format
 msgid ""
-"<![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*4)) "
-"||\n"
+"Copy and paste the output of this query to <ulink url=\"http://postgis.net/"
+"docs/support/viewers/x3d_viewer.htm\">x3d scene viewer</ulink> and click Show"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_output.xml:1291
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, "
+"i*0.5)) ||\n"
 "    '<Appearance>\n"
 "          <Material diffuseColor=\"' || (0.01*i)::text || ' 0.8 0.2\" "
 "specularColor=\"' || (0.05*i)::text || ' 0 0.5\"/>\n"
@@ -3298,13 +3306,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1292
+#: reference_output.xml:1297
 #, no-c-format
 msgid "Buildings formed by subdividing PostGIS and extrusion"
 msgstr ""
 
 #. Tag: title
-#: reference_output.xml:1297
+#: reference_output.xml:1302
 #, no-c-format
 msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
 msgstr ""
@@ -3312,7 +3320,7 @@ msgstr ""
 "Genauigkeit von 6"
 
 #. Tag: programlisting
-#: reference_output.xml:1298
+#: reference_output.xml:1303
 #, no-c-format
 msgid ""
 "SELECT ST_AsX3D(\n"
@@ -3344,13 +3352,13 @@ msgstr ""
 "</IndexedFaceSet>]]>"
 
 #. Tag: title
-#: reference_output.xml:1301
+#: reference_output.xml:1306
 #, no-c-format
 msgid "Example: TIN"
 msgstr "Beispiel: TIN"
 
 #. Tag: programlisting
-#: reference_output.xml:1302
+#: reference_output.xml:1307
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((\n"
@@ -3390,7 +3398,7 @@ msgstr ""
 "0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]>"
 
 #. Tag: title
-#: reference_output.xml:1305
+#: reference_output.xml:1310
 #, no-c-format
 msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
 msgstr ""
@@ -3398,7 +3406,7 @@ msgstr ""
 "Lücken)"
 
 #. Tag: programlisting
-#: reference_output.xml:1306
+#: reference_output.xml:1311
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsX3D(\n"
@@ -3434,19 +3442,19 @@ msgstr ""
 " </IndexedLineSet>]]>"
 
 #. Tag: refname
-#: reference_output.xml:1312
+#: reference_output.xml:1317
 #, no-c-format
 msgid "ST_GeoHash"
 msgstr "ST_GeoHash"
 
 #. Tag: refpurpose
-#: reference_output.xml:1314
+#: reference_output.xml:1319
 #, no-c-format
 msgid "Return a GeoHash representation of the geometry."
 msgstr "Gibt die Geometrie in der GeoHash Darstellung aus."
 
 #. Tag: funcprototype
-#: reference_output.xml:1319
+#: reference_output.xml:1324
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_GeoHash</function></funcdef> "
@@ -3460,7 +3468,7 @@ msgstr ""
 "<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_output.xml:1330
+#: reference_output.xml:1335
 #, no-c-format
 msgid ""
 "Return a GeoHash representation (<ulink url=\"http://en.wikipedia.org/wiki/"
@@ -3477,7 +3485,7 @@ msgstr ""
 "eine Box vorstellen, welche den tatsächlichen Punkt enthält."
 
 #. Tag: para
-#: reference_output.xml:1332
+#: reference_output.xml:1337
 #, no-c-format
 msgid ""
 "If no <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
@@ -3500,7 +3508,7 @@ msgstr ""
 "Box immer das gegebene Geoobjekt beinhaltet."
 
 #. Tag: para
-#: reference_output.xml:1334
+#: reference_output.xml:1339
 #, no-c-format
 msgid ""
 "If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
@@ -3515,13 +3523,13 @@ msgstr ""
 "Berechnung im Mittelpunkt des Umgebungsrechtecks der Geometrie."
 
 #. Tag: para
-#: reference_output.xml:1336
+#: reference_output.xml:1341
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "Verfügbarkeit: 1.4.0"
 
 #. Tag: para
-#: reference_output.xml:1339
+#: reference_output.xml:1344
 #, no-c-format
 msgid ""
 "ST_GeoHash will not work with geometries that are not in geographic (lon/"
@@ -3531,7 +3539,7 @@ msgstr ""
 "(Länge/Breite) Koordinaten vorliegen."
 
 #. Tag: programlisting
-#: reference_output.xml:1347
+#: reference_output.xml:1352
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_Point(-126,48),4326));\n"
