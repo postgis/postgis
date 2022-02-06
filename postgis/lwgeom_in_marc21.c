@@ -47,8 +47,8 @@ static LWGEOM* parse_marc21(xmlNodePtr xnode);
  *
  **********************************************************************/
 
-PG_FUNCTION_INFO_V1(geom_from_marc21);
-Datum geom_from_marc21(PG_FUNCTION_ARGS) {
+PG_FUNCTION_INFO_V1(ST_GeomFromMARC21);
+Datum ST_GeomFromMARC21(PG_FUNCTION_ARGS) {
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	xmlDocPtr xmldoc;
