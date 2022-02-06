@@ -1173,10 +1173,29 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	  </refsection>
 
 	  <refsection>
-	      <title>Example</title>
-          <programlisting>SELECT ST_AsText(ST_3DConvexHull('MULTIPOINTZ(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)')) As 3DHull;</programlisting>
-          <para>ST_AsText output</para>
+	      <title>Examples</title>
+         <programlisting>SELECT ST_AsText(ST_3DConvexHull('LINESTRING Z(0 0 5, 1 5 3, 5 7 6, 9 5 3 , 5 7 5, 6 3 5)'::geometry));</programlisting>
           <screen>POLYHEDRALSURFACE Z (((1 5 3,9 5 3,0 0 5,1 5 3)),((1 5 3,0 0 5,5 7 6,1 5 3)),((5 7 6,5 7 5,1 5 3,5 7 6)),((0 0 5,6 3 5,5 7 6,0 0 5)),((6 3 5,9 5 3,5 7 6,6 3 5)),((0 0 5,9 5 3,6 3 5,0 0 5)),((9 5 3,5 7 5,5 7 6,9 5 3)),((1 5 3,5 7 5,9 5 3,1 5 3)))</screen>
+
+          <programlisting>WITH f AS (SELECT i, ST_Extrude(geom, 0,0, i ) AS geom
+FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
+      )
+      SELECT ST_3DConvexHull(ST_Collect(f.geom) )
+      FROM f;</programlisting>
+         <para>
+            <informalfigure>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_3dconvexhull.png" />
+                    </imageobject>
+                    <caption><para>Original geometry overlaid with 3D convex hull</para></caption>
+                </mediaobject>
+            </informalfigure>
+        </para>
+	  </refsection>
+      <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Letters" />, <xref linkend="ST_AsX3D" /></para>
 	  </refsection>
 
 	</refentry>

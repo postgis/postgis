@@ -127,7 +127,7 @@ BEGIN
     -- between them like Yo or To
     adjustment := 0.0;
     IF prevgeom IS NOT NULL AND geom IS NOT NULL THEN
-      dist = ST_Distance(prevgeom, geom);  
+      dist = ST_Distance(prevgeom, geom);
       IF dist > spacing THEN
         adjustment = spacing - dist;
         geom := ST_Translate(geom, adjustment, 0.0);
@@ -146,4 +146,4 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT _COST_MEDIUM;
+IMMUTABLE _COST_MEDIUM;

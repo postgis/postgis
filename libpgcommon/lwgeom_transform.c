@@ -53,7 +53,7 @@ PROJSRSCache *PROJ_CACHE = NULL;
  * from spatial_ref_sys query.
  */
 typedef struct {
-	char* authtext;
+	char* authtext; /* auth_name:auth_srid */
 	char* srtext;
 	char* proj4text;
 } PjStrs;
@@ -245,7 +245,9 @@ GetProjStringsSPI(int32_t srid)
 
 
 /**
- *  Given an SRID, return the proj4 text.
+ *  Given an SRID, return the corresponding proj strings
+ *  (auth_name:auth_srid/srtext/proj4text)
+ *
  *  If the integer is one of the "well known" projections we support
  *  (WGS84 UTM N/S, Polar Stereographic N/S - see SRID_* macros),
  *  return the proj4text for those.
@@ -440,9 +442,9 @@ AddToPROJSRSCache(PROJSRSCache *PROJCache, int32_t srid_from, int32_t srid_to)
 #else
 
 	LWPROJ *projection = NULL;
-	/* Try combinations of ESPG/SRTEXT/PROJ4TEXT until we find */
+	/* Try combinations of AUTH_NAME:AUTH_SRID/SRTEXT/PROJ4TEXT until we find */
 	/* one that gives us a usable transform. Note that we prefer */
-	/* EPSG numbers over SRTEXT and SRTEXT over PROJ4TEXT */
+	/* AUTH_NAME:AUTH_SRID over SRTEXT and SRTEXT over PROJ4TEXT */
 	/* (3 entries * 3 entries = 9 combos) */
 	uint32_t i;
 	for (i = 0; i < 9; i++)

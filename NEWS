@@ -5,6 +5,8 @@ PostGIS 3.3.0dev
   - ...
 
  * Enhancements *
+  - postgis_extensions_upgrade() support for upgrades from any PostGIS
+    version, including yet to be released ones (Sandro Santilli)
   - #5037, add convexhull 3D (Loïc Bartoletti)
   - #5040, add postgis_sfcgal_full_version (Loïc Bartoletti)
   - GH655, GiST: balance the tree splits better in recursive calls (Darafei Praliaskouski)
@@ -12,8 +14,13 @@ PostGIS 3.3.0dev
   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
   - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
 
+
  * New features*
-  - ST_Letters creates geometries that look like letters
+  - ST_Letters creates geometries that look like letters (Paul Ramsey)
+  - #5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)
+  - postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version
+    (Loïc Bartoletti)
+
 
 
 PostGIS 3.2.0 (Olivier Courtin Edition)

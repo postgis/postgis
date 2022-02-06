@@ -874,8 +874,643 @@ SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.
 			</qandaset>
 	</sect2>
 </sect1>
+<!-- ==============================================================  -->
+<sect1 id="OGC_Validity">
+	  <title>Geometry Validation</title>
 
-  <sect1>
+	  <para>PostGIS is compliant with the Open Geospatial Consortium’s (OGC)
+	  Simple Features specification.
+      That standard defines the concepts of geometry being
+      <emphasis>simple</emphasis> and <emphasis>valid</emphasis>.
+      These definitions allow the Simple Features geometry model
+      to represent spatial objects in a consistent and unambiguous way
+      that supports efficient computation.
+      (Note: the OGC SF and SQL/MM have the same definitions for simple and valid.)
+        </para>
+
+	<sect2 id="Simple_Geometry">
+	  <title>Simple Geometry</title>
+
+	  <para>A <emphasis>simple</emphasis>
+	  geometry is one that has no anomalous geometric points, such as self
+	  intersection or self tangency.
+	  </para>
+
+	  <para>A <varname>POINT</varname> is inherently <emphasis>simple</emphasis>
+	  as a 0-dimensional geometry object.</para>
+
+	  <para><varname>MULTIPOINT</varname>s are <emphasis>simple</emphasis> if
+	  no two coordinates (<varname>POINT</varname>s) are equal (have identical
+	  coordinate values).</para>
+
+	  <para>A <varname>LINESTRING</varname> is <emphasis>simple</emphasis> if
+	  it does not pass through the same point twice, except for the endpoints.
+      If the endpoints of a simple LineString are identical it is called <emphasis>closed</emphasis>
+      and referred to as a Linear Ring.</para>
+
+	  <informaltable border="0" frame="none">
+		<tgroup cols="1">
+		  <tbody>
+			<row>
+				<entry><para><emphasis>
+                <emphasis role="bold">(a)</emphasis> and
+				<emphasis role="bold">(c)</emphasis> are simple	<varname>LINESTRING</varname>s.
+                <emphasis role="bold">(b)</emphasis> and <emphasis role="bold">(d)</emphasis> are not simple.
+                <emphasis role="bold">(c)</emphasis> is a closed Linear Ring.
+                </emphasis></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+		<tgroup cols="2" align="center">
+		  <tbody>
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_issimple01.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(a)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_issimple02.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(b)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_issimple03.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(c)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_issimple04.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(d)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+
+	  </informaltable>
+
+	  <para>A <varname>MULTILINESTRING</varname> is <emphasis>simple</emphasis>
+	  only if all of its elements are simple and the only intersection between
+	  any two elements occurs at points that are on the
+	  boundaries of both elements.  </para>
+
+	  <informaltable border="0" frame="none">
+		<tgroup cols="1">
+		  <tbody>
+			<row>
+				<entry><para><emphasis>
+                <emphasis role="bold">(e)</emphasis> and
+				<emphasis role="bold">(f)</emphasis> are simple
+				<varname>MULTILINESTRING</varname>s.
+                <emphasis role="bold">(g)</emphasis> is not simple.
+                </emphasis></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+		<tgroup cols="3" align="center">
+		  <tbody>
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_issimple05.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(e)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_issimple06.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(f)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_issimple07.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(g)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+	  </informaltable>
+
+    <para><varname>POLYGON</varname>s are formed from linear rings, so
+    valid polygonal geometry is always <emphasis>simple</emphasis>.</para>
+
+    <para>To test if a geometry is simple
+	use the <xref linkend="ST_IsSimple" /> function:</para>
+
+	  <programlisting>
+SELECT
+   ST_IsSimple('LINESTRING(0 0, 100 100)') AS straight,
+   ST_IsSimple('LINESTRING(0 0, 100 100, 100 0, 0 100)') AS crossing;
+
+ straight | crossing
+----------+----------
+ t        | f
+</programlisting>
+
+    <para>Generally, PostGIS functions do not require geometric arguments to be simple.
+	Simplicity is primarily used as a basis for defining geometric validity.
+    It is also a requirement for some kinds of spatial data models
+    (for example, linear networks often disallow lines that cross).
+    Multipoint and linear geometry can be made simple using <xref linkend="ST_UnaryUnion" />.
+    </para>
+    </sect2>
+
+	<sect2 id="Valid_Geometry">
+	  <title>Valid Geometry</title>
+
+        <para>Geometry validity primarily applies to 2-dimensional
+        geometries (<varname>POLYGON</varname>s and <varname>MULTIPOLYGON</varname>s) .
+        Validity is defined by rules that allow polygonal geometry
+        to model planar areas unambiguously.
+        </para>
+
+      <para>A <varname>POLYGON</varname> is <emphasis>valid</emphasis> if:
+      </para>
+
+        <orderedlist>
+	    <listitem><para>
+        the polygon boundary rings (the exterior shell ring and interior hole rings)
+        are <emphasis>simple</emphasis> (do not cross or self-touch).
+        Because of this a polygon cannnot have cut lines, spikes or loops.
+        This implies that polygon holes must be represented as interior rings,
+        rather than by the exterior ring self-touching (a so-called "inverted hole").
+        </para></listitem>
+	    <listitem><para>
+        boundary rings do not cross
+        </para></listitem>
+	    <listitem><para>
+        boundary rings may touch at points but only as a tangent (i.e. not in a line)
+        </para></listitem>
+	    <listitem><para>
+        interior rings are contained in the exterior ring
+        </para></listitem>
+	    <listitem><para>
+        the polygon interior is simply connected
+        (i.e. the rings must not touch in a way that splits the polygon into more than one part)
+        </para></listitem>
+        </orderedlist>
+
+	  <informaltable border="0" frame="none">
+		<tgroup cols="1">
+		  <tbody>
+			<row>
+				<entry><para><emphasis>
+                <emphasis role="bold">(h)</emphasis> and
+				<emphasis role="bold">(i)</emphasis> are valid <varname>POLYGON</varname>s.
+                <emphasis role="bold">(j-m)</emphasis> are invalid.
+				<emphasis role="bold">(j)</emphasis>
+				can be represented as a valid <varname>MULTIPOLYGON</varname>.
+				</emphasis></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+		<tgroup cols="3" align="center">
+		  <tbody>
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid01.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(h)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid02.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(i)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid03.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(j)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+			<row>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid04.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(k)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid05.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(l)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid06.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(m)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+	  </informaltable>
+
+	  <para>A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> if:
+	  </para>
+
+        <orderedlist>
+        <listitem><para>
+        its element <varname>POLYGON</varname>s are valid
+        </para></listitem>
+        <listitem><para>
+        elements do not overlap (i.e. their interiors must not intersect)
+        </para></listitem>
+        <listitem><para>
+        elements touch only at points (i.e. not along a line)
+        </para></listitem>
+        </orderedlist>
+
+	  <informaltable border="0" frame="none">
+		<tgroup cols="1">
+		  <tbody>
+			<row>
+				<entry><para><emphasis>
+                <emphasis role="bold">(n)</emphasis> is a valid <varname>MULTIPOLYGON</varname>.
+				<emphasis role="bold">(o)</emphasis> and <emphasis role="bold">(p)</emphasis> are invalid.
+                </emphasis></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+		<tgroup cols="3" align="center">
+		  <tbody>
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid09.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(n)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid07.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(o)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_isvalid08.png" />
+					</imageobject>
+
+					<caption><para><emphasis role="bold">(p)</emphasis></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+	  </informaltable>
+
+	  <para>These rules mean that valid polygonal geometry is also <emphasis>simple</emphasis>.
+       </para>
+
+	<para>For linear geometry the only validity rule is that <varname>LINESTRING</varname>s must
+    have at least two points and have non-zero length
+    (or equivalently, have at least two distinct points.)
+    Note that non-simple (self-intersecting) lines are valid.
+    </para>
+
+<programlisting>
+SELECT
+   ST_IsValid('LINESTRING(0 0, 1 1)') AS len_nonzero,
+   ST_IsValid('LINESTRING(0 0, 0 0, 0 0)') AS len_zero,
+   ST_IsValid('LINESTRING(10 10, 150 150, 180 50, 20 130)') AS self_int;
+
+ len_nonzero | len_zero | self_int
+-------------+----------+----------
+ t           | f        | t
+</programlisting>
+
+    <para><varname>POINT</varname> and <varname>MULTIPOINT</varname> geometries
+    have no validity rules.
+    </para>
+    </sect2>
+
+    <sect2 id="Managing_Validity">
+	  <title>Managing Validity</title>
+
+        <para>PostGIS allows creating and storing both valid and invalid Geometry.
+        This allows invalid geometry to be detected and flagged or fixed.
+        There are also situations where the OGC validity rules are stricter than desired
+        (examples of this are zero-length linestrings and polygons with inverted holes.)
+        </para>
+
+	  <para>Many of the functions provided by PostGIS rely on the
+	  assumption that geometry arguments are valid.
+      For example, it does not make sense to calculate the area of
+	  a polygon that has a hole defined outside of the polygon, or to construct
+	  a polygon from a non-simple boundary line.
+      Assuming valid geometric inputs allows functions to operate more efficiently,
+      since they do not need to check for topological correctness.
+      (Notable exceptions are that zero-length lines
+      and polygons with inversions are generally handled correctly.)
+      Also, most PostGIS functions produce valid geometry output if the inputs are valid.
+      This allows PostGIS functions to be chained together safely.
+      </para>
+
+	  <para>If you encounter unexpected error messages when calling PostGIS functions
+      (such as "GEOS Intersection() threw an error!"),
+      you should first confirm that the function arguments are valid.
+      If they are not, then consider using one of the techniques below to ensure
+      the data you are processing is valid.
+        </para>
+
+      <note><para>
+      If a function reports an error with valid inputs,
+      then you may have found an error in either PostGIS or one of
+		the libraries it uses, and you should report this to the PostGIS project.
+		The same is true if a PostGIS function returns an invalid geometry for
+		valid input.</para></note>
+
+	  <para>To test if a geometry is valid use the
+	  <xref linkend="ST_IsValid" /> function:
+      </para>
+<programlisting>
+SELECT ST_IsValid('POLYGON ((20 180, 180 180, 180 20, 20 20, 20 180))');
+-----------------
+ t
+</programlisting>
+	  <para>Information about the nature and location of an geometry invalidity are provided by
+	  the <xref linkend="ST_IsValidDetail" /> function:
+      </para>
+<programlisting>
+SELECT valid, reason, ST_AsText(location) AS location
+    FROM ST_IsValidDetail('POLYGON ((20 20, 120 190, 50 190, 170 50, 20 20))') AS t;
+
+ valid |      reason       |                  location
+-------+-------------------+---------------------------------------------
+ f     | Self-intersection | POINT(91.51162790697674 141.56976744186045)
+</programlisting>
+
+	  <para>In some situations it is desirable to correct invalid geometry automatically.
+	  Use the <xref linkend="ST_MakeValid" /> function to do this.
+      (<code>ST_MakeValid</code> is a case of a spatial function that <emphasis>does</emphasis> allow invalid input!)
+      </para>
+
+      <para>By default, PostGIS does not check for validity when loading geometry,
+	  because validity testing can take a lot of CPU time for complex
+	  geometries. If you do not trust your data sources,
+	  you can enforce a validity check on your tables by adding a check
+	  constraint:</para>
+
+	  <programlisting>ALTER TABLE mytable
+  ADD CONSTRAINT geometry_valid_check
+	CHECK (ST_IsValid(geom));</programlisting>
+
+    </sect2>
+</sect1>
+<!-- ==============================================================  -->
+<sect1 id="spatial_ref_sys">
+	<title>Spatial Reference Systems</title>
+
+	<para><ulink url="https://en.wikipedia.org/wiki/Spatial_reference_system">Spatial Reference Systems</ulink> (SRS)
+    define how geometry is referenced to locations on the Earth's surface.</para>
+
+	<sect2 id="spatial_ref_sys_table">
+	  <title>SPATIAL_REF_SYS Table</title>
+
+	<para>The <varname>SPATIAL_REF_SYS</varname> table used by PostGIS
+    is an OGC-compliant database table that defines the available
+	spatial reference systems.
+	It holds the numeric IDs and textual descriptions of the coordinate systems.
+    The main use is to support transformation (reprojection) between them using
+    <xref linkend="ST_Transform" />.
+    </para>
+
+	  <para>The <varname>spatial_ref_sys</varname> table definition is:</para>
+
+	  <programlisting>CREATE TABLE spatial_ref_sys (
+  srid       INTEGER NOT NULL PRIMARY KEY,
+  auth_name  VARCHAR(256),
+  auth_srid  INTEGER,
+  srtext     VARCHAR(2048),
+  proj4text  VARCHAR(2048)
+)</programlisting>
+
+	  <para>The columns are:</para>
+
+	  <variablelist>
+		<varlistentry>
+		  <term>srid</term>
+
+		  <listitem>
+			<para>An integer code that uniquely identifies the <ulink url="http://en.wikipedia.org/wiki/SRID">Spatial
+			Reference System</ulink> (SRS) within the database.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>auth_name</term>
+
+		  <listitem>
+			<para>The name of the standard or standards body that is being
+			cited for this reference system. For example, "EPSG" is a
+			valid <varname>auth_name</varname>.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>auth_srid</term>
+
+		  <listitem>
+			<para>The ID of the Spatial Reference System as defined by the
+			Authority cited in the <varname>auth_name</varname>. In the case
+			of EPSG, this is where the EPSG projection code would go.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>srtext</term>
+
+		  <listitem>
+			<para>The Well-Known Text representation of the Spatial Reference
+			System. An example of a WKT SRS representation is:</para>
+
+			<programlisting>PROJCS["NAD83 / UTM Zone 10N",
+  GEOGCS["NAD83",
+	DATUM["North_American_Datum_1983",
+	  SPHEROID["GRS 1980",6378137,298.257222101]
+	],
+	PRIMEM["Greenwich",0],
+	UNIT["degree",0.0174532925199433]
+  ],
+  PROJECTION["Transverse_Mercator"],
+  PARAMETER["latitude_of_origin",0],
+  PARAMETER["central_meridian",-123],
+  PARAMETER["scale_factor",0.9996],
+  PARAMETER["false_easting",500000],
+  PARAMETER["false_northing",0],
+  UNIT["metre",1]
+]</programlisting>
+
+			<para>For a listing of EPSG projection codes and their
+			corresponding WKT representations, see <ulink
+			url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.
+			For a discussion of SRS WKT in general, see the OpenGIS "Coordinate
+			Transformation Services Implementation Specification" at <ulink
+			url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.
+			For information on the European Petroleum Survey Group (EPSG) and
+			their database of spatial reference systems, see <ulink
+			url="http://www.epsg.org/">http://www.epsg.org</ulink>.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>proj4text</term>
+
+		  <listitem>
+			<para>PostGIS uses the PROJ library to provide coordinate
+			transformation capabilities. The <varname>proj4text</varname>
+			column contains the PROJ coordinate definition string for a
+			particular SRID. For example:</para>
+
+			<programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting>
+
+			<para>For more information see the
+            <ulink url="https://proj.org/">PROJ web site</ulink>.
+			The <filename>spatial_ref_sys.sql</filename> file contains both
+			<varname>srtext</varname> and <varname>proj4text</varname>
+			definitions for all EPSG projections.</para>
+		  </listitem>
+		</varlistentry>
+	  </variablelist>
+
+    <para>When retrieving spatial reference system definitions for use in transformations,
+    PostGIS uses fhe following strategy:
+    </para>
+	<itemizedlist>
+		<listitem><para>If <varname>auth_name</varname> and <varname>auth_srid</varname>
+            are present (non-NULL)
+            use the PROJ SRS based on those entries (if one exists).
+            </para></listitem>
+		<listitem><para>If <varname>srtext</varname> is present
+            create a SRS using it, if possible.
+            </para></listitem>
+		<listitem><para>If <varname>proj4text</varname> is present
+            create a SRS using it, if possible.
+            </para></listitem>
+	</itemizedlist>
+    </sect2>
+    <sect2 id="user-spatial-ref-sys">
+    <title>User-Defined Spatial Reference Systems</title>
+
+    <para>The PostGIS <varname>spatial_ref_sys</varname> table contains over 3000 of
+    the most common spatial reference system definitions that are handled by the
+    <ulink url="https://proj.org">PROJ</ulink> projection library.
+    But there are many coordinate systems that it does not contain.
+    You can add SRS definitions to the table if you have
+    the required information about the spatial reference system.
+    Or, you can define your own custom spatial reference system if you are familiar with PROJ constructs.
+    Keep in mind that most spatial reference systems are regional
+    and have no meaning when used outside of the bounds they were intended for.</para>
+
+    <para>A resource for finding spatial reference systems not defined in the core set is <ulink url="http://spatialreference.org/">http://spatialreference.org/</ulink></para>
+
+	<para>Some commonly used spatial reference systems are:
+            <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/4269/">4269 - NAD 83 Long Lat</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/3395/">3395 - WGS 84 World Mercator</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/2163/">2163 - US National Atlas Equal Area</ulink>,
+        and the 60 WGS84 UTM zones.
+		UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
+        (To determine which UTM zone to use for your area of interest, see the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance">utmzone PostGIS plpgsql helper function</ulink>.)
+	</para>
+	<para>
+		US states use State Plane spatial reference systems (meter or feet based) - usually one or 2 exists per state.
+        Most of the meter-based ones are in the core set, but many of the
+		feet-based ones or ESRI-created ones will need to be copied from <ulink url="http://spatialreference.org">spatialreference.org</ulink>.
+	</para>
+
+	<para>You can even define non-Earth-based coordinate systems,
+    such as <ulink url="http://spatialreference.org/ref/iau2000/mars-2000/">Mars 2000</ulink>
+    This Mars coordinate system is non-planar (it's in degrees spheroidal),
+    but you can use it with the <varname>geography</varname> type
+    to obtain length and proximity measurements in meters instead of degrees.</para>
+
+    <para>Here is an example of loading a custom coordinate system using
+    an unassigned SRID and the PROJ definition for a US-centric Lambert Conformal projection:</para>
+
+<programlisting>
+INSERT INTO spatial_ref_sys (srid, proj4text)
+VALUES ( 990000,
+  '+proj=lcc  +lon_0=-95 +lat_0=25 +lat_1=25 +lat_2=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs'
+);
+</programlisting>
+
+	</sect2>
+</sect1>
+<!-- ==============================================================  -->
+<sect1>
 	<title>Spatial Tables</title>
 
 	<sect2 id="Create_Spatial_Table">
@@ -1145,555 +1780,8 @@ SELECT f_table_name, f_geometry_column, srid, type
  vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
     </sect2>
 </sect1>
-<!-- ==============================================================  -->
-
-<sect1 id="spatial_ref_sys">
-	<title>Spatial Reference Systems</title>
-
-	<para><ulink url="https://en.wikipedia.org/wiki/Spatial_reference_system">Spatial Reference Systems</ulink> (SRS)
-    define how geometry is referenced to locations on the Earth's surface.</para>
-
-	<sect2 id="spatial_ref_sys_table">
-	  <title>SPATIAL_REF_SYS Table</title>
-
-	<para>The <varname>SPATIAL_REF_SYS</varname> table used by PostGIS
-    is an OGC-compliant database table that defines the available
-	spatial reference systems.
-	It holds the numeric IDs and textual descriptions of the coordinate systems.
-    The main use is to support transformation (reprojection) between them using
-    <xref linkend="ST_Transform" />.
-    </para>
-
-	  <para>The <varname>spatial_ref_sys</varname> table definition is:</para>
-
-	  <programlisting>CREATE TABLE spatial_ref_sys (
-  srid       INTEGER NOT NULL PRIMARY KEY,
-  auth_name  VARCHAR(256),
-  auth_srid  INTEGER,
-  srtext     VARCHAR(2048),
-  proj4text  VARCHAR(2048)
-)</programlisting>
-
-	  <para>The columns are:</para>
-
-	  <variablelist>
-		<varlistentry>
-		  <term>srid</term>
-
-		  <listitem>
-			<para>An integer code that uniquely identifies the <ulink url="http://en.wikipedia.org/wiki/SRID">Spatial
-			Reference System</ulink> (SRS) within the database.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>auth_name</term>
-
-		  <listitem>
-			<para>The name of the standard or standards body that is being
-			cited for this reference system. For example, "EPSG" is a
-			valid <varname>auth_name</varname>.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>auth_srid</term>
-
-		  <listitem>
-			<para>The ID of the Spatial Reference System as defined by the
-			Authority cited in the <varname>auth_name</varname>. In the case
-			of EPSG, this is where the EPSG projection code would go.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>srtext</term>
-
-		  <listitem>
-			<para>The Well-Known Text representation of the Spatial Reference
-			System. An example of a WKT SRS representation is:</para>
-
-			<programlisting>PROJCS["NAD83 / UTM Zone 10N",
-  GEOGCS["NAD83",
-	DATUM["North_American_Datum_1983",
-	  SPHEROID["GRS 1980",6378137,298.257222101]
-	],
-	PRIMEM["Greenwich",0],
-	UNIT["degree",0.0174532925199433]
-  ],
-  PROJECTION["Transverse_Mercator"],
-  PARAMETER["latitude_of_origin",0],
-  PARAMETER["central_meridian",-123],
-  PARAMETER["scale_factor",0.9996],
-  PARAMETER["false_easting",500000],
-  PARAMETER["false_northing",0],
-  UNIT["metre",1]
-]</programlisting>
-
-			<para>For a listing of EPSG projection codes and their
-			corresponding WKT representations, see <ulink
-			url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.
-			For a discussion of SRS WKT in general, see the OpenGIS "Coordinate
-			Transformation Services Implementation Specification" at <ulink
-			url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.
-			For information on the European Petroleum Survey Group (EPSG) and
-			their database of spatial reference systems, see <ulink
-			url="http://www.epsg.org/">http://www.epsg.org</ulink>.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>proj4text</term>
-
-		  <listitem>
-			<para>PostGIS uses the PROJ library to provide coordinate
-			transformation capabilities. The <varname>proj4text</varname>
-			column contains the PROJ coordinate definition string for a
-			particular SRID. For example:</para>
-
-			<programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting>
-
-			<para>For more information see the
-            <ulink url="https://proj.org/">PROJ web site</ulink>.
-			The <filename>spatial_ref_sys.sql</filename> file contains both
-			<varname>srtext</varname> and <varname>proj4text</varname>
-			definitions for all EPSG projections.</para>
-		  </listitem>
-		</varlistentry>
-	  </variablelist>
-
-    <para>When retrieving spatial reference system definitions for use in transformations,
-    PostGIS uses fhe following strategy:
-    </para>
-	<itemizedlist>
-		<listitem><para>If <varname>auth_name</varname> and <varname>auth_srid</varname>
-            are present (non-NULL)
-            use the PROJ SRS based on those entries (if one exists).
-            </para></listitem>
-		<listitem><para>If <varname>srtext</varname> is present
-            create a SRS using it, if possible.
-            </para></listitem>
-		<listitem><para>If <varname>proj4text</varname> is present
-            create a SRS using it, if possible.
-            </para></listitem>
-	</itemizedlist>
-    </sect2>
-    <sect2 id="user-spatial-ref-sys">
-    <title>User-Defined Spatial Reference Systems</title>
-
-    <para>The PostGIS <varname>spatial_ref_sys</varname> table contains over 3000 of
-    the most common spatial reference system definitions that are handled by the
-    <ulink url="https://proj.org">PROJ</ulink> projection library.
-    But there are many coordinate systems that it does not contain.
-    You can add SRS definitions to the table if you have
-    the required information about the spatial reference system.
-    Or, you can define your own custom spatial reference system if you are familiar with PROJ constructs.
-    Keep in mind that most spatial reference systems are regional
-    and have no meaning when used outside of the bounds they were intended for.</para>
-
-    <para>A resource for finding spatial reference systems not defined in the core set is <ulink url="http://spatialreference.org/">http://spatialreference.org/</ulink></para>
-
-	<para>Some commonly used spatial reference systems are:
-            <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>,
-			<ulink url="http://spatialreference.org/ref/epsg/4269/">4269 - NAD 83 Long Lat</ulink>,
-			<ulink url="http://spatialreference.org/ref/epsg/3395/">3395 - WGS 84 World Mercator</ulink>,
-			<ulink url="http://spatialreference.org/ref/epsg/2163/">2163 - US National Atlas Equal Area</ulink>,
-        and the 60 WGS84 UTM zones.
-		UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
-        (To determine which UTM zone to use for your area of interest, see the <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance">utmzone PostGIS plpgsql helper function</ulink>.)
-	</para>
-	<para>
-		US states use State Plane spatial reference systems (meter or feet based) - usually one or 2 exists per state.
-        Most of the meter-based ones are in the core set, but many of the
-		feet-based ones or ESRI-created ones will need to be copied from <ulink url="http://spatialreference.org">spatialreference.org</ulink>.
-	</para>
-
-	<para>You can even define non-Earth-based coordinate systems,
-    such as <ulink url="http://spatialreference.org/ref/iau2000/mars-2000/">Mars 2000</ulink>
-    This Mars coordinate system is non-planar (it's in degrees spheroidal),
-    but you can use it with the <varname>geography</varname> type
-    to obtain length and proximity measurements in meters instead of degrees.</para>
-
-    <para>Here is an example of loading a custom coordinate system using
-    an unassigned SRID and the PROJ definition for a US-centric Lambert Conformal projection:</para>
-
-<programlisting>
-INSERT INTO spatial_ref_sys (srid, proj4text)
-VALUES ( 990000,
-  '+proj=lcc  +lon_0=-95 +lat_0=25 +lat_1=25 +lat_2=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs'
-);
-</programlisting>
-
-	</sect2>
-</sect1>
 
 <!-- ==============================================================  -->
-<sect1 id="OGC_Validity">
-	  <title>Geometry Validation</title>
-
-	  <para>PostGIS is compliant with the Open Geospatial Consortium’s (OGC)
-	  OpenGIS Specifications.  As such, many PostGIS methods require, or more
-	  accurately, assume that geometries that are operated on are both simple
-	  and valid. For example, it does not make sense to calculate the area of
-	  a polygon that has a hole defined outside of the polygon, or to construct
-	  a polygon from a non-simple boundary line.</para>
-
-	  <para>According to the OGC Specifications, a <emphasis>simple</emphasis>
-	  geometry is one that has no anomalous geometric points, such as self
-	  intersection or self tangency and primarily refers to 0 or 1-dimensional
-	  geometries (i.e. <varname>[MULTI]POINT, [MULTI]LINESTRING</varname>).
-	  Geometry validity, on the other hand, primarily refers to 2-dimensional
-	  geometries (i.e. <varname>[MULTI]POLYGON)</varname> and defines the set
-	  of assertions that characterizes a valid polygon. The description of each
-	  geometric class includes specific conditions that further detail geometric
-	  simplicity and validity.</para>
-
-	  <para>A <varname>POINT</varname> is inherently <emphasis>simple</emphasis>
-	  as a 0-dimensional geometry object.</para>
-
-	  <para><varname>MULTIPOINT</varname>s are <emphasis>simple</emphasis> if
-	  no two coordinates (<varname>POINT</varname>s) are equal (have identical
-	  coordinate values).</para>
-
-	  <para>A <varname>LINESTRING</varname> is <emphasis>simple</emphasis> if
-	  it does not pass through the same point twice (except
-	  for the endpoints, in which case it is referred to as a Linear Ring and
-	  additionally considered <emphasis>closed</emphasis>).</para>
-
-	  <informaltable border="0" frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(a)</emphasis> and
-				<emphasis role="bold">(c)</emphasis> are simple	<varname>LINESTRING</varname>s.
-                <emphasis role="bold">(b)</emphasis> and <emphasis role="bold">(d)</emphasis> are not simple.
-                <emphasis role="bold">(c)</emphasis> is a closed Linear Ring.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="2" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple01.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(a)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple02.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(b)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple03.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(c)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple04.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(d)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-
-	  </informaltable>
-
-	  <para>A <varname>MULTILINESTRING</varname> is <emphasis>simple</emphasis>
-	  only if all of its elements are simple and the only intersection between
-	  any two elements occurs at points that are on the
-	  boundaries of both elements.  </para>
-
-	  <informaltable border="0" frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(e)</emphasis> and
-				<emphasis role="bold">(f)</emphasis> are simple
-				<varname>MULTILINESTRING</varname>s.
-                <emphasis role="bold">(g)</emphasis> is not simple.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple05.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(e)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple06.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(f)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_issimple07.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(g)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-
-	  </informaltable>
-
-      <para>A <varname>POLYGON</varname> is <emphasis>valid</emphasis> if:
-      </para>
-
-        <orderedlist>
-	    <listitem><para>
-        the polygon boundary rings (the exterior shell ring and interior hole rings)
-        are <emphasis>simple</emphasis> (do not cross or self-touch).
-        Because of this a polygon cannnot have cut lines or spikes.
-        </para></listitem>
-	    <listitem><para>
-        boundary rings do not cross
-        </para></listitem>
-	    <listitem><para>
-        boundary rings may touch at points but only as a tangent (i.e. not in a line)
-        </para></listitem>
-	    <listitem><para>
-        the interior rings are contained in the exterior ring
-        </para></listitem>
-	    <listitem><para>
-        the polygon interior is simply connected
-        (i.e. the interior rings must not split the polygon into more than one part)
-        </para></listitem>
-        </orderedlist>
-
-	  <para>These rules imply that valid <varname>POLYGON</varname>s are
-	  <emphasis>simple</emphasis> as well.
-       </para>
-
-	  <informaltable border="0" frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(h)</emphasis> and
-				<emphasis role="bold">(i)</emphasis> are valid <varname>POLYGON</varname>s.
-                <emphasis role="bold">(j-m)</emphasis> are invalid.
-				<emphasis role="bold">(j)</emphasis>
-				could be represented as a valid <varname>MULTIPOLYGON</varname>.
-				</emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid01.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(h)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid02.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(i)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid03.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(j)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-			<row>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid04.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(k)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid05.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(l)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid06.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(m)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-	  </informaltable>
-
-	  <para>A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> if:
-	  </para>
-
-        <orderedlist>
-        <listitem><para>
-        its element <varname>POLYGON</varname>s are valid
-        </para></listitem>
-        <listitem><para>
-        elements do not overlap (have intersecting interiors)
-        </para></listitem>
-        <listitem><para>
-        elements touch only at points (i.e. not along a line)
-        </para></listitem>
-        </orderedlist>
-
-	  <informaltable border="0" frame="none">
-		<tgroup cols="1">
-		  <tbody>
-			<row>
-				<entry><para><emphasis>
-                <emphasis role="bold">(n)</emphasis> is a valid <varname>MULTIPOLYGON</varname>.
-				<emphasis role="bold">(o)</emphasis> and <emphasis role="bold">(p)</emphasis> are not valid.
-                </emphasis></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-		<tgroup cols="3" align="center">
-		  <tbody>
-			<row>
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid09.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(n)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid07.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(o)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-
-			  <entry><para><informalfigure>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="images/st_isvalid08.png" />
-					</imageobject>
-
-					<caption><para><emphasis role="bold">(p)</emphasis></para></caption>
-				  </mediaobject>
-				</informalfigure></para></entry>
-			</row>
-		  </tbody>
-		</tgroup>
-	  </informaltable>
-
-	  <para>Most of the functions implemented by the GEOS library rely on the
-	  assumption that input geometries are valid as specified by the OpenGIS
-	  Simple Feature Specification. To check simplicity or validity of
-	  geometries you can use the <link linkend="ST_IsSimple">ST_IsSimple()</link> and
-	  <link linkend="ST_IsValid">ST_IsValid()</link></para>
-
-	  <programlisting>-- Typically, it doesn't make sense to check
--- for validity on linear features since it will always return TRUE.
--- But in this example, PostGIS extends the definition of the OGC IsValid
--- by returning false if a LineString has less than 2 *distinct* vertices.
-gisdb=# SELECT
-   ST_IsValid('LINESTRING(0 0, 1 1)'),
-   ST_IsValid('LINESTRING(0 0, 0 0, 0 0)');
-
- st_isvalid | st_isvalid
-------------+-----------
-      t     |     f</programlisting>
-
-	  <para>By default, PostGIS does not apply this validity check on geometry
-	  input, because testing for validity needs lots of CPU time for complex
-	  geometries, especially polygons. If you do not trust your data sources,
-	  you can manually enforce such a check to your tables by adding a check
-	  constraint:</para>
-
-	  <programlisting>ALTER TABLE mytable
-  ADD CONSTRAINT geometry_valid_check
-	CHECK (ST_IsValid(geom));</programlisting>
-
-	  <para>If you encounter any strange error messages such as "GEOS
-	  Intersection() threw an error!" when calling PostGIS functions with valid
-		input geometries, you likely found an error in either PostGIS or one of
-		the libraries it uses, and you should contact the PostGIS developers.
-		The same is true if a PostGIS function returns an invalid geometry for
-		valid input.</para>
-
-	  <note>
-		<para>The <link linkend="ST_IsValid">ST_IsValid()</link>
-        function does not check the Z and M dimensions.
-        </para>
-	  </note>
-</sect1>
 
   <sect1 id="loading-data">
 	<title>Loading Spatial Data</title>

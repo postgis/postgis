@@ -1534,7 +1534,7 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
 		<note><para>2D geometry support not yet complete.  Inner rings currently just drawn as separate polygons.  We are working on these.</para></note>
 		<para>Lots of advancements happening in 3D space particularly with <ulink url="https://www.web3d.org/wiki/index.php/X3D_and_HTML5">X3D Integration with HTML5</ulink></para>
 		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
-		<para>Also check out <ulink url="https://github.com/robe2/postgis_x3d_viewer">PostGIS minimalist X3D viewer</ulink>  that utilizes this function and <ulink url="http://www.x3dom.org/">x3dDom html/js open source toolkit</ulink>.</para>
+		<para>Also check out <ulink url="https://git.osgeo.org/gitea/robe/postgis_x3d_viewer">PostGIS minimalist X3D viewer</ulink>  that utilizes this function and <ulink url="http://www.x3dom.org/">x3dDom html/js open source toolkit</ulink>.</para>
 		<para>Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
 		<para>Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
 		<!-- Optionally mention 3d support -->
@@ -1586,6 +1586,28 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
   </Scene>
 </X3D>]]></programlisting>
 	  </refsection>
+      <refsection>
+         <title>PostGIS buildings</title>
+         <para>
+            Copy and paste the output of this query to
+            <ulink url="http://postgis.net/docs/support/viewers/x3d_viewer.htm">x3d scene viewer</ulink>
+            and click Show
+         </para>
+         <programlisting><![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*0.5)) ||
+    '<Appearance>
+          <Material diffuseColor="' || (0.01*i)::text || ' 0.8 0.2" specularColor="' || (0.05*i)::text || ' 0 0.5"/>
+        </Appearance>
+    </Shape>', '')
+FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);]]></programlisting>
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="images/st_asx3d01.png" />
+                </imageobject>
+                <caption><para>Buildings formed by subdividing PostGIS and extrusion</para></caption>
+            </mediaobject>
+        </informalfigure>
+      </refsection>
 	   <refsection>
 		<title>Example: An Octagon elevated 3 Units and decimal precision of 6</title>
 		<programlisting>SELECT ST_AsX3D(

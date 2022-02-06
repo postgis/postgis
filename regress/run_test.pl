@@ -110,10 +110,6 @@ if ( @ARGV < 1 )
 
 if ( $OPT_UPGRADE_PATH )
 {
-  if ( ! $OPT_EXTENSIONS )
-  {
-    die "--upgrade-path is only supported with --extension"
-  }
   $OPT_UPGRADE = 1; # implied
   my @path = split ('--', $OPT_UPGRADE_PATH);
   $OPT_UPGRADE_FROM = $path[0]
@@ -1332,22 +1328,37 @@ sub create_db
 
 sub create_spatial
 {
-	my ($cmd, $rv);
-	print "Creating database '$DB' \n";
+    my ($cmd, $rv);
+    print "Creating database '$DB' \n";
 
-  	$rv = create_db();
+    $rv = create_db();
 
-	# Count database objects before installing anything
-	$OBJ_COUNT_PRE = count_db_objects();
+    # Count database objects before installing anything
+    $OBJ_COUNT_PRE = count_db_objects();
 
-	if ( $OPT_EXTENSIONS )
-	{
-		prepare_spatial_extensions();
-	}
-	else
-	{
-		prepare_spatial();
-	}
+    if ( $OPT_EXTENSIONS )
+    {
+        prepare_spatial_extensions();
+    }
+    else
+    {
+        if ( ! $OPT_UPGRADE_FROM )
+        {
+            prepare_spatial();
+            return;
+        }
+
+        if ( $OPT_UPGRADE_FROM !~ /^unpackaged(.*)/ )
+        {
+            die "--upgrade-path without --extension is only supported with source unpackaged*";
+        }
+
+        if ( $OPT_UPGRADE_TO != ':auto' )
+        {
+            die "--upgrade-path without --extension is only supported with target :auto";
+        }
+        prepare_spatial($1);
+    }
 }
 
 
