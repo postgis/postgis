@@ -890,29 +890,35 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
         <para>
         A single-input variant of <xref linkend="ST_Union" />.
         The input may be a single geometry, a MultiGeometry, or a GeometryCollection.
-        The union is applied to the individual components of the input.
-        This allow using this function to fix MultiPolygons which  are
+        The union is applied to the individual elements of the input.
+        </para>
+        <para>
+        This function can be used to fix MultiPolygons which  are
         invalid due to overlapping components.
-        (However, the input components must each be valid.
-        An invalid input component such as a bow-tie polygon may cause an error.)
+        However, the input components must each be valid.
+        An invalid input component such as a bow-tie polygon may cause an error.
+        For this reason it may be better to use <xref linkend="ST_MakeValid" />.
         </para>
 
         <para>
-        Another use of this function is to node and dissolve a collection of linestrings.
-        (This can also be done with <xref linkend="ST_Node" />.)
+        Another use of this function is to node and dissolve a collection of
+        linestrings which cross or overlap
+        to make them <link linkend="Simple_Geometry">simple</link>.
+        (To add nodes but not dissolve duplicate linework
+        use <xref linkend="ST_Node" />.)
         </para>
 
         <para>
-        It is possible to mix ST_UnaryUnion with <xref linkend="ST_Collect" /> to fine-tune
+        It is possible to combine ST_UnaryUnion with <xref linkend="ST_Collect" /> to fine-tune
         how many geometries are be unioned at once.
         This allows trading off between memory usage and compute time,
         striking a balance between ST_Union and <xref linkend="ST_MemUnion" />.
         </para>
 
         <para>
-If the optional <code>gridSize</code> argument is provided, the inputs are
-snapped to a grid of the given size, and the result vertices are computed
-on that same grid. (Requires GEOS-3.9.0 or higher)
+        If the optional <code>gridSize</code> argument is provided, the inputs are
+        snapped to a grid of the given size, and the result vertices are computed
+        on that same grid. (Requires GEOS-3.9.0 or higher)
         </para>
 
         <para>&Z_support; However, the result is computed using XY only.
@@ -930,6 +936,7 @@ on that same grid. (Requires GEOS-3.9.0 or higher)
         <para>
             <xref linkend="ST_Union" />,
             <xref linkend="ST_MemUnion" />,
+            <xref linkend="ST_MakeValid" />,
             <xref linkend="ST_Collect" />,
             <xref linkend="ST_Node" />
         </para>

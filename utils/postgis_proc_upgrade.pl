@@ -586,6 +586,8 @@ DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 DECLARE
     deprecated_functions regprocedure[];
+    new_name TEXT;
+    rewrote_as_wrapper BOOLEAN;
     rec RECORD;
     extrec RECORD;
     procrec RECORD;
@@ -599,6 +601,8 @@ BEGIN
     FROM pg_catalog.pg_proc
     WHERE proname = ANY ('${deprecated_names}'::name[])
     INTO deprecated_functions;
+
+    RAISE DEBUG 'Handling deprecated functions: %', deprecated_functions;
 
 --    -- Rewrite views using deprecated functions
 --    -- to improve the odds of being able to drop them
@@ -641,42 +645,13 @@ BEGIN
     FOR rec IN SELECT unnest(deprecated_functions) as proc
     LOOP --{
 
-        -- Rewrite the function as an SQL WRAPPER
+        RAISE DEBUG 'Handling deprecated function %', rec.proc;
 
-        SELECT pg_get_functiondef(oid) def, pronargs
-        FROM pg_proc WHERE oid = rec.proc
-        INTO procrec;
-
-        -- Force LANGUAGE to be SQL
-        sql := regexp_replace(procrec.def, 'LANGUAGE [^ \n]*', 'LANGUAGE sql');
-
-        --RAISE DEBUG 'SQL (LANGUAGE): %', sql;
-
-        -- Change body to be a wrapper
-        sql := regexp_replace(
-            sql,
-			-- Find a stricted match here ?
-            'AS .*',
-            format(
-                -- TODO: have the function raise a warning too ?
-                'AS \$\$ SELECT %s(%s) \$\$',
-                regexp_replace(
-                    rec.proc::text,
-                    '_deprecated_by_postgis[^(]*\\(.*',
-                    ''
-                ),
-                (
-                    SELECT array_to_string(
-                        array_agg('\$' || x),
-                        ','
-                    )
-                    FROM generate_series(1, procrec.pronargs) x
-                )
-            )
+        new_name := regexp_replace(
+            rec.proc::text,
+            '_deprecated_by_postgis[^(]*\\(.*',
+            ''
         );
-
-        RAISE DEBUG 'SQL: %', sql;
-        EXECUTE sql;
 
         sql := format('DROP FUNCTION %s', rec.proc);
         --RAISE DEBUG 'SQL: %', sql;
@@ -690,12 +665,62 @@ BEGIN
                 hint = format(
                     'Replace the view changing all occurrences of %s in its definition with %s',
                     rec.proc,
-                    regexp_replace(rec.proc::text, '_deprecated_by_postgis[^(]*', '')
+                    new_name
                 );
             END IF;
             hint = hint || ' and upgrade again';
-            RAISE WARNING 'Deprecated function % left behind as a wrapper: %', rec.proc, SQLERRM
+
+            RAISE WARNING 'Deprecated function % left behind: %',
+                rec.proc, SQLERRM
             USING DETAIL = detail, HINT = hint;
+
+            --
+            -- Try to rewrite the function as an SQL WRAPPER
+            -- {
+            SELECT pg_get_functiondef(oid) def, pronargs
+            FROM pg_proc WHERE oid = rec.proc
+            INTO procrec;
+            --
+            -- TODO: don't even try if it's an aggregate or windowing
+            --       function (procrec.prokind)
+            -- TODO: don't even try if it's a scripting language function
+            --       function (procrec.prokind)
+            --
+            -- Force LANGUAGE to be SQL
+            sql := regexp_replace(procrec.def, 'LANGUAGE [^ \n]*', 'LANGUAGE sql');
+            --RAISE DEBUG 'SQL (LANGUAGE): %', sql;
+            -- Change body to be a wrapper
+            sql := regexp_replace(
+                sql,
+                -- Find a stricted match here ?
+                'AS .*',
+                format(
+                    -- TODO: have the function raise a warning too ?
+                    'AS \$\$ SELECT %s(%s) \$\$',
+                    new_name,
+                    (
+                        SELECT array_to_string(
+                            array_agg('\$' || x),
+                            ','
+                        )
+                        FROM generate_series(1, procrec.pronargs) x
+                    )
+                )
+            );
+            RAISE DEBUG 'SQL: %', sql;
+            rewrote_as_wrapper := false;
+            BEGIN
+                EXECUTE sql;
+                rewrote_as_wrapper := true;
+            EXCEPTION
+            WHEN OTHERS THEN
+                RAISE WARNING
+                    'Deprecated function % could not be rewritten as a wrapper: % (%)',
+                    rec.proc, SQLERRM, SQLSTATE;
+            END;
+            --
+            --}
+
 
             -- Drop the function from any extension it is part of
             -- so dump/reloads still work

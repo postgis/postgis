@@ -23,11 +23,19 @@ Make targets
 ``make html``
   generates a single-file ``html/postgis.html``
 
+``make html-localized``
+  generates single-file ``html/postgis-<lang>.html`` for
+  each supported language
+
 ``make chunked-html``
   generates a separate html file for every chapter or section break
 
 ``make pdf``
   generates a single PDF file with the PostGIS version as a filename
+
+``make pdf``
+  generates a single PDF file with the PostGIS version as a filename
+  and ``-<lang>`` suffix for each supported language
 
 ``make images``
   generates all the images used in the HTML and PDF targets
@@ -52,6 +60,18 @@ Make targets
 ``make maintainer-clean``
   removes all generated files (including comments)
 
+``make update-po``
+  update translation files to be in sync with the source
+  XML files. See ``make check-localized``
+
+``make check``
+  check structural correctness of XML documentation
+
+``make check-localized``
+  check structural correctness of localized (translated)
+  XML documentation. Remember to run this before committing
+  updates to translation files (see ``make update-po``)
+
 
 Requirements
 ------------
@@ -70,6 +90,9 @@ To generate a PDF:
 To generate the developer's documentation:
  * Doxygen - http://www.stack.nl/~dimitri/doxygen/
  * Graphviz - http://www.graphviz.org/
+
+To generate the translated XML files:
+ * poxml - https://github.com/KDE/poxml
 
 How to
 ------

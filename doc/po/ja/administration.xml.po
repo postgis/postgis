@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: 2022-01-22 06:52+0000\n"
+"PO-Revision-Date: 2022-02-05 02:52+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/ja/>\n"
@@ -440,16 +440,15 @@ msgstr "ソフトアップグレード"
 
 #. Tag: para
 #: administration.xml:162
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you installed your database using extensions, you'll need to upgrade "
 "using the extension model as well. If you installed using the old sql script "
 "way, you are advised to switch your install to extensions because the script "
 "way is no longer supported."
 msgstr ""
-"エクステンションを使ってインストールした場合は、エクステンションモデルでアッ"
-"プグレードしなければなりません。 古いSQLスクリプトを使ってインストールした場"
-"合は、SQLスクリプトでアップグレードすべきです。適切な方を参照して下さい。"
+"エクステンションを使ってデータベースをインストールした場合には、エクステンションモデルでアップグレードしなければなりません。 "
+"古いSQLスクリプトを使ってインストールした場合には、SQLスクリプトは既にサポートされていませんので、エクステンションに切り替えるべきです。"
 
 #. Tag: title
 #: administration.xml:164
@@ -477,18 +476,20 @@ msgid ""
 "\"PostGIS_Extensions_Upgrade\"/> function to upgrade to the latest version "
 "you have installed."
 msgstr ""
+"PostGIS 3以上を実行している場合には、<xref linkend=\"PostGIS_Extensions_Upgrade\""
+"/>関数を使ってインストールしているもののうち最新の版にアップグレードすべきです。"
 
 #. Tag: programlisting
 #: administration.xml:167
 #, no-c-format
 msgid "SELECT postgis_extensions_upgrade();"
-msgstr ""
+msgstr "SELECT postgis_extensions_upgrade();"
 
 #. Tag: para
 #: administration.xml:169
 #, no-c-format
 msgid "If you are running PostGIS 2.5 or lower, then do the following:"
-msgstr ""
+msgstr "PostGIS 2.5以前を実行している場合には、次のようにします。"
 
 #. Tag: programlisting
 #: administration.xml:170
@@ -499,6 +500,10 @@ msgid ""
 "-- This second call is needed to rebundle postgis_raster extension\n"
 "SELECT postgis_extensions_upgrade();"
 msgstr ""
+"ALTER EXTENSION postgis UPDATE;\n"
+"SELECT postgis_extensions_upgrade();\n"
+"-- 二回目の実行はpostgis_rasterエクステンションの再構築に必要です。\n"
+"SELECT postgis_extensions_upgrade();"
 
 #. Tag: para
 #: administration.xml:172
@@ -507,6 +512,7 @@ msgid ""
 "If you have multiple versions of PostGIS installed, and you don't want to "
 "upgrade to the latest, you can explicitly specify the version as follows:"
 msgstr ""
+"インストールされたPostGISに複数のバージョンがあり、最新版にアップグレードしたくない場合には、明示的なバージョンの指定ができます。次のようにします。"
 
 #. Tag: programlisting
 #: administration.xml:173
@@ -604,6 +610,8 @@ msgid ""
 "will have a new extension <emphasis>postgis_raster</emphasis> which you can "
 "safely drop, if you don't need raster support. You can drop as follows:"
 msgstr ""
+"PostGISエクステンションを3.0.0より前からアップグレードする場合には、ラスタ機能が不要なら、安全に削除できる新しい "
+"<emphasis>postgis_raster</emphasis>エクステンションを持つことになります。次のようにします。"
 
 #. Tag: programlisting
 #: administration.xml:192
@@ -718,13 +726,13 @@ msgstr "psql -f sfcgal_upgrade.sql -d [データベース名]"
 #: administration.xml:240
 #, no-c-format
 msgid "You are advised to switch to an extension based install by running"
-msgstr ""
+msgstr "エクステンションによるインストールに変更した方が良いです。次のようにします。"
 
 #. Tag: programlisting
 #: administration.xml:241
 #, no-c-format
 msgid "psql -c \"SELECT postgis_extensions_upgrade();\""
-msgstr ""
+msgstr "psql -c \"SELECT postgis_extensions_upgrade();\""
 
 #. Tag: para
 #: administration.xml:244

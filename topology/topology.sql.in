@@ -716,25 +716,31 @@ LANGUAGE 'sql' VOLATILE;
 CREATE OR REPLACE FUNCTION topology.DropTopoGeometryColumn(schema varchar, tbl varchar, col varchar)
   RETURNS text
 AS
-$$
+$BODY$
 DECLARE
   rec RECORD;
   lyrinfo RECORD;
   ok BOOL;
   result text;
+  sql TEXT;
 BEGIN
 
   -- Get layer and topology info
-  ok = false;
-  FOR rec IN EXECUTE 'SELECT t.name as toponame, l.* FROM '
-       'topology.topology t, topology.layer l '
-       ' WHERE l.topology_id = t.id'
-       ' AND l.schema_name = ' || quote_literal(schema)
-    || ' AND l.table_name = ' || quote_literal(tbl)
-    || ' AND l.feature_column = ' || quote_literal(col)
+
+  sql := $$
+    SELECT t.name as toponame, l.*
+    FROM topology.topology t, topology.layer l
+    WHERE l.topology_id = t.id
+    AND l.schema_name = $1
+    AND l.table_name = $2
+    AND l.feature_column = $3
+  $$;
+
+  ok := false;
+  FOR rec IN EXECUTE sql USING schema, tbl, col
   LOOP
-    ok = true;
-    lyrinfo = rec;
+    ok := true;
+    lyrinfo := rec;
   END LOOP;
 
   -- Layer not found
@@ -746,14 +752,19 @@ BEGIN
   -- Clean up the topology schema
   BEGIN
     -- Cleanup the relation table
-    EXECUTE 'DELETE FROM ' || quote_ident(lyrinfo.toponame)
-      || '.relation '
-         ' WHERE '
-         'layer_id = ' || lyrinfo.layer_id;
+    sql := format(
+      'DELETE FROM %I.relation WHERE layer_id = $1',
+      lyrinfo.toponame
+    );
+    EXECUTE sql USING lyrinfo.layer_id;
 
     -- Drop the sequence for topogeoms in this layer
-    EXECUTE 'DROP SEQUENCE ' || quote_ident(lyrinfo.toponame)
-      || '.topogeo_s_' || lyrinfo.layer_id;
+    sql := format(
+      'DROP SEQUENCE %I.topogeo_s_%s',
+      lyrinfo.toponame,
+      lyrinfo.layer_id
+    );
+    EXECUTE sql;
   EXCEPTION
     WHEN UNDEFINED_TABLE THEN
       RAISE NOTICE '%', SQLERRM;
@@ -775,25 +786,30 @@ BEGIN
 
   IF ok THEN
     -- Drop the layer column
-    EXECUTE 'ALTER TABLE ' || quote_ident(schema) || '.'
-      || quote_ident(tbl)
-      || ' DROP ' || quote_ident(col)
-      || ' cascade';
+    sql := format(
+      'ALTER TABLE %I.%I DROP %I CASCADE',
+      schema, tbl, col
+    );
+    EXECUTE sql;
   END IF;
 
   -- Delete the layer record
-  EXECUTE 'DELETE FROM topology.layer '
-       ' WHERE topology_id = ' || lyrinfo.topology_id
-    || ' AND layer_id = ' || lyrinfo.layer_id;
+  sql := $$
+    DELETE FROM topology.layer
+    WHERE topology_id = $1
+    AND layer_id = $2
+  $$;
+  EXECUTE sql USING lyrinfo.topology_id, lyrinfo.layer_id;
 
 
-  result = 'Layer ' || lyrinfo.layer_id || ' ('
-    || schema || '.' || tbl || '.' || col
-    || ') dropped';
+  result := format(
+    'Layer %s (%I.%I.%I) dropped',
+    lyrinfo.layer_id, schema, tbl, col
+  );
 
   RETURN result;
 END;
-$$
+$BODY$
 LANGUAGE 'plpgsql' VOLATILE;
 --
 --} DropTopoGeometryColumn
@@ -1430,11 +1446,12 @@ CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(
 CREATE OR REPLACE FUNCTION topology.CreateTopology(atopology varchar, srid integer, prec float8, hasZ boolean)
 RETURNS integer
 AS
-$$
+$BODY$
 DECLARE
   rec RECORD;
   topology_id integer;
-  ndims integer;
+  sql TEXT;
+  zsuffix TEXT := '';
 BEGIN
 
 --  FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
@@ -1442,8 +1459,9 @@ BEGIN
 --    RAISE EXCEPTION 'SQL/MM Spatial exception - schema already exists';
 --  END LOOP;
 
-  ndims = 2;
-  IF hasZ THEN ndims = 3; END IF;
+  IF hasZ THEN
+    zsuffix := 'z';
+  END IF;
 
   IF srid < 0 THEN
     RAISE NOTICE 'SRID value % converted to the officially unknown SRID value 0', srid;
@@ -1456,235 +1474,197 @@ BEGIN
     topology_id = rec.nextval;
   END LOOP;
 
-  EXECUTE 'CREATE SCHEMA ' || quote_ident(atopology);
+  sql := format(
+    $$
+      CREATE SCHEMA %1$I;
 
-  -------------{ face CREATION
-  EXECUTE
-  'CREATE TABLE ' || quote_ident(atopology) || '.face ('
-     'face_id SERIAL,'
-     ' CONSTRAINT face_primary_key PRIMARY KEY(face_id)'
-     ');';
+      -------------{ face CREATION
+      CREATE TABLE %1$I.face(
+        face_id SERIAL,
+        mbr GEOMETRY(polygon, %2$L), -- 2d only mbr is good enough
+        CONSTRAINT face_primary_key
+        PRIMARY KEY(face_id)
+      );
 
-  -- Add mbr column to the face table
-  EXECUTE
-  'SELECT AddGeometryColumn('||quote_literal(atopology)
-  ||',''face'',''mbr'','||quote_literal(srid)
-  ||',''POLYGON'',2)'; -- 2d only mbr is good enough
+      -- Face standard view description
+      COMMENT ON TABLE %1$I.face IS
+      'Contains face topology primitives';
 
-  -- Face standard view description
-  EXECUTE 'COMMENT ON TABLE ' || quote_ident(atopology)
-    || '.face IS '
-       '''Contains face topology primitives''';
+      -------------} END OF face CREATION
 
-  -------------} END OF face CREATION
+      --------------{ node CREATION
 
-  --------------{ node CREATION
+      CREATE TABLE %1$I.node(
+        node_id SERIAL,
+        geom GEOMETRY(point%3$s, %2$L),
+        containing_face INTEGER,
+        CONSTRAINT node_primary_key
+          PRIMARY KEY(node_id),
+        CONSTRAINT face_exists
+          FOREIGN KEY(containing_face)
+          REFERENCES %1$I.face(face_id)
+      );
 
-  EXECUTE
-  'CREATE TABLE ' || quote_ident(atopology) || '.node ('
-     'node_id SERIAL,'
-  --|| 'geom GEOMETRY,'
-     'containing_face INTEGER,'
+      -- Node standard view description
+      COMMENT ON TABLE %1$I.node IS
+      'Contains node topology primitives';
 
-     'CONSTRAINT node_primary_key PRIMARY KEY(node_id),'
+      --------------} END OF node CREATION
 
-  --|| 'CONSTRAINT node_geometry_type CHECK '
-  --|| '( GeometryType(geom) = ''POINT'' ),'
+      --------------{ edge CREATION
 
-     'CONSTRAINT face_exists FOREIGN KEY(containing_face) '
-     'REFERENCES ' || quote_ident(atopology) || '.face(face_id)'
+      -- edge_data table
+      CREATE TABLE %1$I.edge_data (
+        edge_id SERIAL NOT NULL PRIMARY KEY,
+        start_node INTEGER NOT NULL,
+        end_node INTEGER NOT NULL,
+        next_left_edge INTEGER NOT NULL,
+        abs_next_left_edge INTEGER NOT NULL,
+        next_right_edge INTEGER NOT NULL,
+        abs_next_right_edge INTEGER NOT NULL,
+        left_face INTEGER NOT NULL,
+        right_face INTEGER NOT NULL,
+        geom GEOMETRY(linestring%3$s, %2$L) NOT NULL,
 
-     ');';
+        CONSTRAINT start_node_exists
+          FOREIGN KEY(start_node)
+          REFERENCES %1$I.node(node_id),
 
-  -- Add geometry column to the node table
-  EXECUTE
-  'SELECT AddGeometryColumn('||quote_literal(atopology)
-  ||',''node'',''geom'','||quote_literal(srid)
-  ||',''POINT'',' || ndims || ')';
+        CONSTRAINT end_node_exists
+          FOREIGN KEY(end_node)
+          REFERENCES %1$I.node(node_id),
 
-  -- Node standard view description
-  EXECUTE 'COMMENT ON TABLE ' || quote_ident(atopology)
-    || '.node IS '
-       '''Contains node topology primitives''';
+        CONSTRAINT left_face_exists
+          FOREIGN KEY(left_face)
+          REFERENCES %1$I.face(face_id),
 
-  --------------} END OF node CREATION
+        CONSTRAINT right_face_exists
+          FOREIGN KEY(right_face)
+          REFERENCES %1$I.face(face_id),
 
-  --------------{ edge CREATION
+        CONSTRAINT next_left_edge_exists
+          FOREIGN KEY(abs_next_left_edge)
+          REFERENCES %1$I.edge_data(edge_id)
+          DEFERRABLE INITIALLY DEFERRED,
 
-  -- edge_data table
-  EXECUTE
-  'CREATE TABLE ' || quote_ident(atopology) || '.edge_data ('
-     'edge_id SERIAL NOT NULL PRIMARY KEY,'
-     'start_node INTEGER NOT NULL,'
-     'end_node INTEGER NOT NULL,'
-     'next_left_edge INTEGER NOT NULL,'
-     'abs_next_left_edge INTEGER NOT NULL,'
-     'next_right_edge INTEGER NOT NULL,'
-     'abs_next_right_edge INTEGER NOT NULL,'
-     'left_face INTEGER NOT NULL,'
-     'right_face INTEGER NOT NULL,'
-  --   'geom GEOMETRY NOT NULL,'
+        CONSTRAINT next_right_edge_exists
+          FOREIGN KEY(abs_next_right_edge)
+          REFERENCES %1$I .edge_data(edge_id)
+          DEFERRABLE INITIALLY DEFERRED
+      );
 
-  --   'CONSTRAINT edge_geometry_type CHECK '
-  --   '( GeometryType(geom) = ''LINESTRING'' ),'
+      -- edge standard view (select rule)
+      CREATE VIEW %1$I.edge AS
+      SELECT
+        edge_id, start_node, end_node, next_left_edge,
+        next_right_edge, left_face, right_face, geom
+      FROM %1$I.edge_data;
 
-     'CONSTRAINT start_node_exists FOREIGN KEY(start_node)'
-     ' REFERENCES ' || quote_ident(atopology) || '.node(node_id),'
+      -- Edge standard view description
+      COMMENT ON VIEW %1$I.edge IS
+      'Contains edge topology primitives';
+      COMMENT ON COLUMN %1$I.edge.edge_id IS
+      'Unique identifier of the edge';
+      COMMENT ON COLUMN %1$I.edge.start_node IS
+      'Unique identifier of the node at the start of the edge';
+      COMMENT ON COLUMN %1$I.edge.end_node IS
+      'Unique identifier of the node at the end of the edge';
+      COMMENT ON COLUMN %1$I.edge.next_left_edge IS
+      'Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
+      COMMENT ON COLUMN %1$I.edge.next_right_edge IS
+      'Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary';
+      COMMENT ON COLUMN %1$I.edge.left_face IS
+      'Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE';
+      COMMENT ON COLUMN %1$I.edge.right_face IS
+      'Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE';
+      COMMENT ON COLUMN %1$I.edge.geom IS
+      'The geometry of the edge';
 
-     'CONSTRAINT end_node_exists FOREIGN KEY(end_node) '
-     ' REFERENCES ' || quote_ident(atopology) || '.node(node_id),'
+      -- edge standard view (insert rule)
+      CREATE RULE edge_insert_rule AS
+      ON INSERT TO %1$I.edge
+      DO INSTEAD INSERT into %1$I.edge_data
+      VALUES (
+        NEW.edge_id, NEW.start_node, NEW.end_node,
+        NEW.next_left_edge, abs(NEW.next_left_edge),
+        NEW.next_right_edge, abs(NEW.next_right_edge),
+        NEW.left_face, NEW.right_face, NEW.geom
+      );
 
-     'CONSTRAINT left_face_exists FOREIGN KEY(left_face) '
-     'REFERENCES ' || quote_ident(atopology) || '.face(face_id),'
+      --------------} END OF edge CREATION
 
-     'CONSTRAINT right_face_exists FOREIGN KEY(right_face) '
-     'REFERENCES ' || quote_ident(atopology) || '.face(face_id),'
+      --------------{ layer sequence
+      CREATE SEQUENCE %1$I.layer_id_seq;
+      --------------} layer sequence
 
-     'CONSTRAINT next_left_edge_exists FOREIGN KEY(abs_next_left_edge)'
-     ' REFERENCES ' || quote_ident(atopology)
-  || '.edge_data(edge_id)'
-     ' DEFERRABLE INITIALLY DEFERRED,'
+      --------------{ relation CREATION
+      CREATE TABLE %1$I.relation (
+        topogeo_id integer NOT NULL,
+        layer_id integer NOT NULL,
+        element_id integer NOT NULL,
+        element_type integer NOT NULL,
+        UNIQUE(layer_id,topogeo_id,element_id,element_type)
+      );
 
-     'CONSTRAINT next_right_edge_exists '
-     'FOREIGN KEY(abs_next_right_edge)'
-     ' REFERENCES ' || quote_ident(atopology)
-  || '.edge_data(edge_id) '
-     ' DEFERRABLE INITIALLY DEFERRED'
-     ');';
+      CREATE TRIGGER relation_integrity_checks
+      BEFORE UPDATE OR INSERT ON %1$I.relation
+      FOR EACH ROW EXECUTE PROCEDURE
+      topology.RelationTrigger(%4$L, %1$L);
+      --------------} END OF relation CREATION
 
-  -- Add geometry column to the edge_data table
-  EXECUTE
-  'SELECT AddGeometryColumn('||quote_literal(atopology)
-  ||',''edge_data'',''geom'','||quote_literal(srid)
-  ||',''LINESTRING'',' || ndims || ')';
+      ------- Default (world) face
+      INSERT INTO %1$I.face(face_id) VALUES(0);
 
-  -- edge standard view (select rule)
-  EXECUTE 'CREATE VIEW ' || quote_ident(atopology)
-    || '.edge AS SELECT '
-       ' edge_id, start_node, end_node, next_left_edge, '
-       ' next_right_edge, '
-       ' left_face, right_face, geom FROM '
-    || quote_ident(atopology) || '.edge_data';
+      ------- GiST index on face
+      CREATE INDEX face_gist ON %1$I.face
+      USING gist (mbr);
 
-  -- Edge standard view description
-  EXECUTE 'COMMENT ON VIEW ' || quote_ident(atopology)
-    || '.edge IS '
-       '''Contains edge topology primitives''';
-  EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
-    || '.edge.edge_id IS '
-       '''Unique identifier of the edge''';
-  EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
-    || '.edge.start_node IS '
-       '''Unique identifier of the node at the start of the edge''';
-  EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
-    || '.edge.end_node IS '
-       '''Unique identifier of the node at the end of the edge''';
-  EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
-    || '.edge.next_left_edge IS '
-       '''Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary''';
-  EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
-    || '.edge.next_right_edge IS '
-       '''Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary''';
-  EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
-    || '.edge.left_face IS '
-       '''Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE''';
-  EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
-    || '.edge.right_face IS '
-       '''Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE''';
-  EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
-    || '.edge.geom IS '
-       '''The geometry of the edge''';
+      ------- GiST index on node
+      CREATE INDEX node_gist ON %1$I.node
+      USING gist (geom);
 
-  -- edge standard view (insert rule)
-  EXECUTE 'CREATE RULE edge_insert_rule AS ON INSERT '
-             'TO ' || quote_ident(atopology)
-    || '.edge DO INSTEAD '
-                   ' INSERT into ' || quote_ident(atopology)
-    || '.edge_data '
-                   ' VALUES (NEW.edge_id, NEW.start_node, NEW.end_node, '
-       ' NEW.next_left_edge, abs(NEW.next_left_edge), '
-       ' NEW.next_right_edge, abs(NEW.next_right_edge), '
-       ' NEW.left_face, NEW.right_face, NEW.geom);';
+      ------- GiST index on edge
+      CREATE INDEX edge_gist ON %1$I.edge_data
+      USING gist (geom);
 
-  --------------} END OF edge CREATION
+      ------- Indexes on left_face and right_face of edge_data
+      ------- NOTE: these indexes speed up GetFaceGeometry (and thus
+      -------       TopoGeometry::Geometry) by a factor of 10 !
+      -------       See http://trac.osgeo.org/postgis/ticket/806
+      CREATE INDEX edge_left_face_idx
+        ON %1$I.edge_data (left_face);
+      CREATE INDEX edge_right_face_idx
+        ON %1$I.edge_data (right_face);
 
-  --------------{ layer sequence
-  EXECUTE 'CREATE SEQUENCE '
-    || quote_ident(atopology) || '.layer_id_seq;';
-  --------------} layer sequence
+      ------- Indexes on start_node and end_node of edge_data
+      ------- NOTE: this indexes speed up node deletion
+      -------       by a factor of 1000 !
+      -------       See http://trac.osgeo.org/postgis/ticket/2082
+      CREATE INDEX edge_start_node_idx
+        ON %1$I.edge_data (start_node);
+      CREATE INDEX edge_end_node_idx
+        ON %1$I.edge_data (end_node);
 
-  --------------{ relation CREATION
-  --
-  EXECUTE
-  'CREATE TABLE ' || quote_ident(atopology) || '.relation ('
-     ' topogeo_id integer NOT NULL, '
-     ' layer_id integer NOT NULL, '
-     ' element_id integer NOT NULL, '
-     ' element_type integer NOT NULL, '
-     ' UNIQUE(layer_id,topogeo_id,element_id,element_type));';
+      -- TODO: consider also adding an index on node.containing_face
 
-  EXECUTE
-  'CREATE TRIGGER relation_integrity_checks '
-     'BEFORE UPDATE OR INSERT ON '
-  || quote_ident(atopology) || '.relation FOR EACH ROW '
-     ' EXECUTE PROCEDURE topology.RelationTrigger('
-  ||topology_id||','||quote_literal(atopology)||')';
-  --------------} END OF relation CREATION
-
-  ------- Default (world) face
-  EXECUTE 'INSERT INTO ' || quote_ident(atopology) || '.face(face_id) VALUES(0);';
-
-  ------- GiST index on face
-  EXECUTE 'CREATE INDEX face_gist ON '
-    || quote_ident(atopology)
-    || '.face using gist (mbr);';
-
-  ------- GiST index on node
-  EXECUTE 'CREATE INDEX node_gist ON '
-    || quote_ident(atopology)
-    || '.node using gist (geom);';
-
-  ------- GiST index on edge
-  EXECUTE 'CREATE INDEX edge_gist ON '
-    || quote_ident(atopology)
-    || '.edge_data using gist (geom);';
-
-  ------- Indexes on left_face and right_face of edge_data
-  ------- NOTE: these indexes speed up GetFaceGeometry (and thus
-  -------       TopoGeometry::Geometry) by a factor of 10 !
-  -------       See http://trac.osgeo.org/postgis/ticket/806
-  EXECUTE 'CREATE INDEX edge_left_face_idx ON '
-    || quote_ident(atopology)
-    || '.edge_data (left_face);';
-  EXECUTE 'CREATE INDEX edge_right_face_idx ON '
-    || quote_ident(atopology)
-    || '.edge_data (right_face);';
-
-  ------- Indexes on start_node and end_node of edge_data
-  ------- NOTE: this indexes speed up node deletion
-  -------       by a factor of 1000 !
-  -------       See http://trac.osgeo.org/postgis/ticket/2082
-  EXECUTE 'CREATE INDEX edge_start_node_idx ON '
-    || quote_ident(atopology)
-    || '.edge_data (start_node);';
-  EXECUTE 'CREATE INDEX edge_end_node_idx ON '
-    || quote_ident(atopology)
-    || '.edge_data (end_node);';
-
-  -- TODO: consider also adding an index on node.containing_face
+    $$,
+    atopology,   -- %1
+    srid,        -- %2
+    zsuffix,     -- %3
+    topology_id  -- %4
+  );
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'SQL: %', sql;
+#endif
+  EXECUTE sql;
 
   ------- Add record to the "topology" metadata table
-  EXECUTE 'INSERT INTO topology.topology '
-    || '(id, name, srid, precision, hasZ) VALUES ('
-    || quote_literal(topology_id) || ','
-    || quote_literal(atopology) || ','
-    || quote_literal(srid) || ',' || quote_literal(prec)
-    || ',' || hasZ
-    || ')';
+  INSERT INTO topology.topology (id, name, srid, precision, hasZ)
+  VALUES (topology_id, atopology, srid, prec, hasZ);
 
   RETURN topology_id;
 END
-$$
+$BODY$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --} CreateTopology
@@ -1723,6 +1703,7 @@ $$
 DECLARE
   topoid integer;
   rec RECORD;
+  sql TEXT;
 BEGIN
   -- Get topology id
   SELECT id INTO topoid
@@ -1736,30 +1717,43 @@ BEGIN
     quote_literal(atopology), topoid;
 
   -- Drop all layers in the topology
-  FOR rec IN EXECUTE 'SELECT * FROM topology.layer WHERE '
-    || ' topology_id = ' || topoid
+  sql := 'SELECT * FROM topology.layer WHERE topology_id = $1';
+  FOR rec IN EXECUTE sql USING topoid
   LOOP
 
-    EXECUTE 'SELECT topology.DropTopoGeometryColumn('
-      || quote_literal(rec.schema_name)
-      || ','
-      || quote_literal(rec.table_name)
-      || ','
-      || quote_literal(rec.feature_column)
-      || ')';
+    sql := format(
+      'SELECT topology.DropTopoGeometryColumn(%L, %L, %L)',
+      rec.schema_name, rec.table_name, rec.feature_column
+    );
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Executing: %', sql;
+#endif
+    EXECUTE sql;
   END LOOP;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Deleting record from topology.topology';
+#endif
+
   -- Delete record from topology.topology
-  EXECUTE 'DELETE FROM topology.topology WHERE id = '
-    || topoid;
+  sql := 'DELETE FROM topology.topology WHERE id = $1';
+  EXECUTE sql USING topoid;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Query pg_namespace';
+#endif
 
   -- Drop the schema (if it exists)
   FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
   LOOP
-    EXECUTE 'DROP SCHEMA '||quote_ident(atopology)||' CASCADE';
+    sql := format('DROP SCHEMA %I CASCADE', atopology);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Executing: %', sql;
+#endif
+    EXECUTE sql;
   END LOOP;
 
-  RETURN 'Topology ' || quote_literal(atopology) || ' dropped';
+  RETURN format('Topology %L dropped', atopology);
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
