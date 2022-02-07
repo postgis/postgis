@@ -28,6 +28,7 @@ struct layerStyle
 
 	int   lineStartSize;
 	int   lineEndSize;
+	int   lineArrowSize;
 
 	char *polygonFillColor;
 	char *polygonStrokeColor;
@@ -38,7 +39,9 @@ struct layerStyle
 
 void getStyles( const char *filename, LAYERSTYLE **headRef );
 void freeStyles( LAYERSTYLE **headRef );
-void addStyle( LAYERSTYLE **headRef, char* styleName, int pointSize, char* pointColor, int lineWidth, char* lineColor, int lineStartSize, int lineEndSize, char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth );
+void addStyle( LAYERSTYLE **headRef, char* styleName, int pointSize, char* pointColor,
+	int lineWidth, char* lineColor, int lineStartSize, int lineEndSize, int lineArrowSize,
+	char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth );
 
 int length( LAYERSTYLE *headRef );
 LAYERSTYLE* getStyle( LAYERSTYLE *headRef, char* styleName );

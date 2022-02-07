@@ -525,7 +525,7 @@ FROM (SELECT
     <refsection>
       <title>Examples</title>
 
-      <para>In the following illustrations the green dot is
+      <para>In the following illustrations the red dot is
       the centroid of the source geometry.</para>
 
       <informaltable>
@@ -1764,25 +1764,100 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
       <refsection>
         <title>Examples</title>
 
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_pointonsurface01.png" />
+                    </imageobject>
+
+                    <caption><para>PointOnSurface of a
+                    <varname>MULTIPOINT</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_pointonsurface02.png" />
+                    </imageobject>
+
+                    <caption><para>PointOnSurface of a
+                    <varname>LINESTRING</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_pointonsurface03.png" />
+                    </imageobject>
+
+                    <caption><para>PointOnSurface of a
+                    <varname>POLYGON</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_pointonsurface04.png" />
+                    </imageobject>
+
+                    <caption><para>PointOnSurface of a
+                    <varname>GEOMETRYCOLLECTION</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
         <programlisting>SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));
- st_astext
 ------------
  POINT(0 5)
 
 SELECT ST_AsText(ST_PointOnSurface('LINESTRING(0 5, 0 10)'::geometry));
- st_astext
 ------------
  POINT(0 5)
 
 SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometry));
-   st_astext
 ----------------
  POINT(2.5 2.5)
 
 SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 10 2)')));
-   st_asewkt
 ----------------
  POINT(0 0 1)
+</programlisting>
+
+        <para><emphasis role="bold">Example:</emphasis>
+        The result of ST_PointOnSurface is guaranteed to lie within polygons,
+        whereas the point computed by <xref linkend="ST_Centroid" /> may be outside.
+        </para>
+
+        <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_pointonsurface.png" />
+                </imageobject>
+                <caption><para>Red: point on surface; Green: centroid</para></caption>
+            </mediaobject>
+            </informalfigure>
+
+<programlisting>
+SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,
+       ST_AsText(ST_Centroid(geom)) AS centroid
+    FROM (SELECT 'POLYGON ((130 120, 120 190, 30 140, 50 20, 190 20,
+                      170 100, 90 60, 90 130, 130 120))'::geometry AS geom) AS t;
+
+   pt_on_surf    |                  centroid
+-----------------+---------------------------------------------
+ POINT(62.5 110) | POINT(100.18264840182648 85.11415525114155)
 </programlisting>
       </refsection>
 
