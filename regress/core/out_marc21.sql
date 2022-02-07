@@ -70,32 +70,32 @@ INSERT INTO asmarc21_rt (gid,geom) VALUES
 	(35,'SRID=4326;POLYGONZM((-4.617730198522098 54.18456893527372 42 73,-4.593268452306278 54.18456893527372 42 73,-4.593268452306278 54.1668855796329 42 73,-4.617730198522098 54.1668855796329 42 73,-4.617730198522098 54.18456893527372 42 73))'),
 	(36,'SRID=4326;LINESTRINGZM(-4.626617431640625 54.0819511048804 42 73,-4.484481811523437 54.15519691025378 42 73,-4.6966552734375 54.22349644815273 42 73)');
 
-UPDATE asmarc21_rt SET geom = ST_AsEWKT(geom,15);
+UPDATE asmarc21_rt SET geom = ST_AsEWKT(geom,5);
 
 
 -- Converts to geometries to MARC21/XML
 SELECT gid,ST_AsMARC21(geom,'hdddmmss') AS marc21 FROM asmarc21_rt;
 
 -- Converts to geometries to MARC21/XML
-SELECT 'hdddmmss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')) AS marc21 FROM asmarc21_rt;
-SELECT 'hddd.dddddd',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd.dddddd')) AS marc21 FROM asmarc21_rt;
-SELECT 'hdddmm.mmmmmm',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm.mmmmmm')) AS marc21 FROM asmarc21_rt;
-SELECT 'hdddmmss.ssssss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss.ssssss')) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'hddd.dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd.dddddd')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmm.mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm.mmmmmm')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmmss.ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss.ssssss')),5) AS marc21 FROM asmarc21_rt;
 
-SELECT 'hdddmmss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')) AS marc21 FROM asmarc21_rt;
-SELECT 'hddd,dddddd',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd,dddddd')) AS marc21 FROM asmarc21_rt;
-SELECT 'hdddmm,mmmmmm',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm,mmmmmm')) AS marc21 FROM asmarc21_rt;
-SELECT 'hdddmmss,ssssss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss,ssssss')) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'hddd,dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd,dddddd')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmm,mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm,mmmmmm')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmmss,ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss,ssssss')),5) AS marc21 FROM asmarc21_rt;
 
-SELECT 'dddmmss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')) AS marc21 FROM asmarc21_rt;
-SELECT 'ddd.dddddd',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd.dddddd')) AS marc21 FROM asmarc21_rt;
-SELECT 'dddmm.mmmmmm',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm.mmmmmm')) AS marc21 FROM asmarc21_rt;
-SELECT 'dddmmss.ssssss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss.ssssss')) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'ddd.dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd.dddddd')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmm.mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm.mmmmmm')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmmss.ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss.ssssss')),5) AS marc21 FROM asmarc21_rt;
 
-SELECT 'dddmmss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')) AS marc21 FROM asmarc21_rt;
-SELECT 'ddd,dddddd',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd,dddddd')) AS marc21 FROM asmarc21_rt;
-SELECT 'dddmm,mmmmmm',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm,mmmmmm')) AS marc21 FROM asmarc21_rt;
-SELECT 'dddmmss,ssssss',gid,ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss,ssssss')) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'ddd,dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd,dddddd')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmm,mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm,mmmmmm')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmmss,ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss,ssssss')),5) AS marc21 FROM asmarc21_rt;
 
 -- Converts geometries (except points) to MARC21/XML, converts them back to geometry, 
 -- and compare their sizes and intersection areas.
@@ -106,22 +106,22 @@ SELECT
   box2d(geom) AS box_origin,
   ST_GeometryType(
     ST_GeomFromMARC21(
-      ST_AsMARC21(geom,'hdddmmss'))) AS type_from_marc21,  
+      ST_AsMARC21(geom,'hddd.ddddd'))) AS type_from_marc21,  
   box2d(
     ST_GeomFromMARC21(
-      ST_AsMARC21(geom,'hdddmmss'))) AS box_marc21,
+      ST_AsMARC21(geom,'hddd.ddddd'))) AS box_marc21,
   
   ST_Area(
     box2d(
       ST_GeomFromMARC21(
-        ST_AsMARC21(geom,'hdddmmss')))) / ST_Area(box2d(geom)) * 100 AS box_size_overlap,
+        ST_AsMARC21(geom,'hddd.ddddd')))) / ST_Area(box2d(geom)) * 100 AS box_size_overlap,
   
     ST_Area(
       ST_Intersection(
         box2d(geom),
 	    box2d(
 	      ST_GeomFromMARC21(
-	        ST_AsMARC21(geom,'hdddmmss')))
+	        ST_AsMARC21(geom,'hddd.ddddd')))
       )
     ) / ST_Area(box2d(geom))*100 AS box_intersection
     
@@ -137,12 +137,12 @@ SELECT
   ST_AsText(geom) AS point_origin, 
   ST_AsText(
     ST_GeomFromMARC21(
-      ST_AsMARC21(geom,'hddd.ddddddddddddddd'))) AS point_from_marc21, 
+      ST_AsMARC21(geom,'hddd.ddddd')),5) AS point_from_marc21, 
   ST_Equals(
     geom,
     ST_SetSRID(
       ST_GeomFromMARC21(
-        ST_AsMARC21(geom,'hddd.ddddddddddddddd')),4326)) AS equals,
+        ST_AsMARC21(geom,'hddd.ddddd')),4326)) AS equals,
   ST_AsMARC21(geom,'hdddmmss.ss') AS point_as_marc21
 FROM asmarc21_rt 
 WHERE ST_GeometryType(geom) = 'ST_Point';
@@ -183,7 +183,7 @@ FROM
      ST_SetSRID(
        (ST_Dump(
          ST_GeomFromMARC21(
-           ST_AsMARC21(geom,'hddd.ddddddddddddddd')))).geom,
+           ST_AsMARC21(geom,'hddd.ddddd')))).geom,
        4326),
      geom 
    FROM asmarc21_rt) i (gid, path_origin, geom_origin_dumped, geom_from_marc21_dumped, geom_origin)
