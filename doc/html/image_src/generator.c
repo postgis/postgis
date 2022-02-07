@@ -270,43 +270,6 @@ drawGeometry(char *output, LWGEOM *lwgeom, LAYERSTYLE *styles )
 }
 
 /**
- * Invokes a system call to ImageMagick's "convert" command that adds a drop
- * shadow to the current layer image.
- *
- * @param layerNumber the current working layer number.
-static void
-addDropShadow(int layerNumber)
-{
-	char str[512];
-	sprintf(
-	    str,
-	    "convert tmp%d.png -gravity center \"(\" +clone -background navy -shadow 100x3+4+4 \")\" +swap -background none -flatten tmp%d.png",
-	    layerNumber, layerNumber);
-	LWDEBUGF(4, "%s", str);
-	checked_system(str);
-}
- */
-
-/**
- * Invokes a system call to ImageMagick's "convert" command that adds a
- * highlight to the current layer image.
- *
- * @param layerNumber the current working layer number.
- */
-static void
-addHighlight(int layerNumber)
-{
-	// TODO: change to properly sized string
-	char str[512];
-	sprintf(
-	    str,
-	    "convert tmp%d.png \"(\" +clone -channel A -separate +channel -negate -background black -virtual-pixel background -blur 0x3 -shade 120x55 -contrast-stretch 0%% +sigmoidal-contrast 7x50%% -fill grey50 -colorize 10%% +clone +swap -compose overlay -composite \")\" -compose In -composite tmp%d.png",
-	    layerNumber, layerNumber);
-	LWDEBUGF(4, "%s", str);
-	checked_system(str);
-}
-
-/**
  * Invokes a system call to ImageMagick's "convert" command that reduces
  * the overall filesize
  *
@@ -485,9 +448,6 @@ int main( int argc, const char* argv[] )
 		}
 		checked_system(output);
 
-		//-- (MD) disable highlighting since it doesn't work well with opacity
-		//addHighlight( layerCount );
-		// addDropShadow( layerCount );
 		layerCount++;
 		free(styleName);
 	}
