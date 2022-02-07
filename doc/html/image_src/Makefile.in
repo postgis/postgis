@@ -128,6 +128,11 @@ IMAGES= \
 	../images/st_overlaps04.png \
 	../images/st_overlaps05.png \
 	../images/st_overlaps06.png \
+	../images/st_pointonsurface.png \
+	../images/st_pointonsurface01.png \
+	../images/st_pointonsurface02.png \
+	../images/st_pointonsurface03.png \
+	../images/st_pointonsurface04.png \
 	../images/st_sharedpaths01.png \
 	../images/st_sharedpaths02.png \
 	../images/st_shortestline01.png \
