@@ -443,7 +443,7 @@ SELECT 'polygon_1',
     <subfield code="f">N0354700</subfield>
     <subfield code="g">N0524700</subfield>
     </datafield>
-  </record>'));
+  </record>'),5);
 
 -- PASS: valid parameter in subfield "e" wrapped in a CDATA block
 SELECT 'polygon_2', 
@@ -456,7 +456,7 @@ SELECT 'polygon_2',
     <subfield code="f">N0354700</subfield>
     <subfield code="g">N0524700</subfield>
     </datafield>
-  </record>'));
+  </record>'),5);
 
 -- PASS: valid parameter in subfield "f" wrapped in a CDATA block
 SELECT 'polygon_3', 
@@ -469,7 +469,7 @@ SELECT 'polygon_3',
     <subfield code="f"><![CDATA[N0834700]]></subfield>
     <subfield code="g">N0524700</subfield>
     </datafield>
-  </record>'));
+  </record>'),5);
 
 -- PASS: valid parameter in subfield "g" wrapped in a CDATA block
 SELECT 'polygon_4', 
@@ -482,7 +482,7 @@ SELECT 'polygon_4',
     <subfield code="f">N0354700</subfield>
     <subfield code="g"><![CDATA[N0524700]]></subfield>
     </datafield>
-  </record>'));
+  </record>'),5);
 
 
 -- PASS: valid parameters in all subfields wrapped in CDATA blocks
@@ -496,7 +496,7 @@ SELECT 'polygon_5',
     <subfield code="f"><![CDATA[N0354700]]></subfield>
     <subfield code="g"><![CDATA[N0524700]]></subfield>
     </datafield>
-  </record>'));
+  </record>'),5);
 
 
 -- PASS: NULL parameter
@@ -525,7 +525,7 @@ SELECT 'polygon_6',
       <subfield code="f">N0520100</subfield>
       <subfield code="g">N0515700</subfield>
     </datafield>
-  </record>'));
+  </record>'),5);
 
 -- PASS: coordinates formats [WE]dddmmss, +dddmmss, dddmmss
 SELECT 'polygon_7',
@@ -538,7 +538,7 @@ SELECT 'polygon_7',
 	  <subfield code="f">0520100</subfield>
 	  <subfield code="g">N0515700</subfield>
 	</datafield>
-  </record>'));
+  </record>'),5);
 
 -- PASS: coordinates formats [WS]dddmmss'
 SELECT 'polygon_8',
@@ -551,7 +551,7 @@ SELECT 'polygon_8',
 	  <subfield code="f">S0513416</subfield>
 	  <subfield code="g">S0514450</subfield>
 	</datafield>
-  </record>'));
+  </record>'),5);
   
 -- PASS: coordinates formats [WS]dddmmss, -dddmmss
 SELECT 'polygon_9',
@@ -564,7 +564,7 @@ SELECT 'polygon_9',
 	  <subfield code="f">S0513416</subfield>
 	  <subfield code="g">-0514450</subfield>
 	</datafield>
-  </record>'));  
+  </record>'),5);  
   
 -- PASS: coordinates format [EN]ddd.dddddd 
 SELECT 'polygon_10',
@@ -577,7 +577,7 @@ SELECT 'polygon_10',
 	  <subfield code="f">N051.195833</subfield>
 	  <subfield code="g">N049.618333</subfield>
 	</datafield>
-  </record>'));   
+  </record>'),5);   
 
 -- PASS: coordinates format [EN]ddd,dddddd
 SELECT 'polygon_11',
@@ -590,7 +590,7 @@ SELECT 'polygon_11',
 	  <subfield code="f">N051,195833</subfield>
 	  <subfield code="g">N049,618333</subfield>
 	</datafield>
-  </record>'));
+  </record>'),5);
 
 -- PASS: coordinates formats [EN]ddd.dddddd, +ddd.dddddd, ddd.dddddd
 SELECT 'polygon_13',
@@ -603,7 +603,7 @@ SELECT 'polygon_13',
 	  <subfield code="f">051.195833</subfield>
 	  <subfield code="g">N049.618333</subfield>
 	</datafield>
-  </record>'));    
+  </record>'),5);    
 
 -- PASS: coordinates formats [EN]dddmm.mmmmm, +dddmm.mmmmm, dddmm.mmmmm
 SELECT 'polygon_14',
@@ -629,7 +629,7 @@ SELECT 'polygon_15',
 	  <subfield code="f">0511958.33</subfield>
 	  <subfield code="g">N0496183.33</subfield>
 	</datafield>
-  </record>'));      
+  </record>'),5);      
 
 -- PASS: very large number encoded as hdddmmss+
 SELECT 'polygon_16',
@@ -642,7 +642,7 @@ ST_AsText(ST_GeomFromMARC21('
 		<subfield code="f">N0354700165434046468468471164764064646468713100465189461014404600</subfield>
 		<subfield code="g">N0484700165434046468468471164764064646468713100465189461014404600</subfield>
 	  </datafield>
-	</record>'));
+	</record>'),5);
 
 -- PASS: very large number encoded with decimal degrees
 SELECT 'polygon_17',
@@ -655,7 +655,7 @@ ST_AsText(ST_GeomFromMARC21('
 		<subfield code="f">N035.4700165434046468468471164764064646468713100465189461014404600</subfield>
 		<subfield code="g">N048.4700165434046468468471164764064646468713100465189461014404600</subfield>
 	  </datafield>
-	</record>'));
+	</record>'),5);
 
 -- PASS: very large number encoded with decimal minutes
 SELECT 'polygon_18',
@@ -668,7 +668,7 @@ ST_AsText(ST_GeomFromMARC21('
 		<subfield code="f">N03547.00165434046468468471164764064646468713100465189461014404600</subfield>
 		<subfield code="g">N04847.00165434046468468471164764064646468713100465189461014404600</subfield>
 	  </datafield>
-	</record>'));
+	</record>'),5);
 
 -- PASS: very large number encoded with decimal minutes
 SELECT 'polygon_19',
@@ -681,7 +681,7 @@ ST_AsText(ST_GeomFromMARC21('
 		<subfield code="f">N0354700.165434046468468471164764064646468713100465189461014404600</subfield>
 		<subfield code="g">N0484700.165434046468468471164764064646468713100465189461014404600</subfield>
 	  </datafield>
-	</record>'));
+	</record>'),5);
 
 
 -- PASS: coordinates format [EN]ddd.ddddd
@@ -697,7 +697,7 @@ SELECT 'point_1',
       <subfield code="f">N052.500000</subfield>
       <subfield code="g">N052.500000</subfield>
     </datafield>
-  </record>'));     
+  </record>'),5);     
 
 -- PASS: coordinates format [EN]dddmm.mmmmm
 SELECT 'point_2',
@@ -712,7 +712,7 @@ SELECT 'point_2',
       <subfield code="f">N05250.0000</subfield>
       <subfield code="g">N05250.0000</subfield>
     </datafield>
-  </record>'));     
+  </record>'),5);     
 
 -- PASS: coordinates format [EN]dddmmss.sssss
 SELECT 'point_3',
@@ -727,7 +727,7 @@ SELECT 'point_3',
       <subfield code="f">N0525000.00</subfield>
       <subfield code="g">N0525000.00</subfield>
     </datafield>
-  </record>'));  
+  </record>'),5);  
   
 -- PASS: coordinates formats [EN]dddmmss.sssss, +dddmmss.sssss, dddmmss.sssss  
 SELECT 'multipolygon_1',
@@ -749,7 +749,7 @@ SELECT 'multipolygon_1',
 	  <subfield code="f">S0513416</subfield>
 	  <subfield code="g">S0514450</subfield>
 	</datafield>
-  </record>'));      
+  </record>'),5);      
 
 -- PASS: coordinates formats [ENW]ddd.ddddd
 SELECT 'multipoint_1',
@@ -771,7 +771,7 @@ SELECT 'multipoint_1',
 	  <subfield code="f">N051.508530</subfield>
 	  <subfield code="g">N051.508530</subfield>
 	</datafield>
-  </record>'));      
+  </record>'),5);      
 
 -- PASS: coordinates formats [ENW]ddd.ddddd
 SELECT 'geocollection_1',
@@ -793,4 +793,4 @@ SELECT 'geocollection_1',
 	  <subfield code="f">S0513416</subfield>
 	  <subfield code="g">S0514450</subfield>
     </datafield>
-  </record>'));      
+  </record>'),5);      
