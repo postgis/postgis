@@ -136,6 +136,61 @@ drawPointSymbol(char *output, POINTARRAY *pa, unsigned int index, int size, char
 }
 
 /**
+ * Draws a point in a POINTARRAY to a char* using ImageMagick SVG for styling.
+
+ * @param output a char reference to write the LWPOINT to
+ * @param lwp a reference to a LWPOINT
+ * @return the numbers of character written to *output
+ */
+static size_t
+drawLineArrow(char *output, POINTARRAY *pa, int size, int strokeWidth, char* color)
+{
+	// short-circuit no-op
+	if (size <= 0) return 0;
+	if (pa->npoints <= 1) return 0;
+
+	char s0x[OUT_DOUBLE_BUFFER_SIZE];
+	char s0y[OUT_DOUBLE_BUFFER_SIZE];
+	char s1x[OUT_DOUBLE_BUFFER_SIZE];
+	char s1y[OUT_DOUBLE_BUFFER_SIZE];
+	char s2x[OUT_DOUBLE_BUFFER_SIZE];
+	char s2y[OUT_DOUBLE_BUFFER_SIZE];
+
+	POINT2D pn;
+	getPoint2d_p(pa, pa->npoints-1, &pn);
+	POINT2D pn1;
+	getPoint2d_p(pa, pa->npoints-2, &pn1);
+
+	double dx = pn1.x - pn.x;
+	double dy = pn1.y - pn.y;
+	double len = sqrt(dx*dx + dy*dy);
+	//-- abort if final line segment has length 0
+	if (len <= 0) return 0;
+
+	double offx = -0.5 * size * dy/len;
+	double offy =  0.5 * size * dx/len;
+
+
+	double p1x = pn.x + size * dx / len + offx;
+	double p1y = pn.y + size * dy / len + offy;
+	double p2x = pn.x + size * dx / len - offx;
+	double p2y = pn.y + size * dy / len - offy;
+
+	lwprint_double(pn.x, 10, s0x);
+	lwprint_double(pn.y, 10, s0y);
+	lwprint_double(p1x,  10, s1x);
+	lwprint_double(p1y,  10, s1y);
+	lwprint_double(p2x,  10, s2x);
+	lwprint_double(p2y,  10, s2y);
+
+	char *ptr = output;
+	ptr += sprintf(ptr, "-fill %s -strokewidth %d ", color, 2);
+	ptr += sprintf(ptr, "-draw \"path 'M %s,%s %s,%s %s,%s %s,%s'\" ", s0x, s0y, s1x, s1y, s2x, s2y, s0x, s0y);
+
+	return (ptr - output);
+}
+
+/**
  * Serializes a LWPOINT to a char*.  This is a helper function that partially
  * writes the appropriate draw and fill commands used to generate an SVG image
  * using ImageMagick's "convert" command.
@@ -193,6 +248,7 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
 
 	ptr += drawPointSymbol(ptr, lwl->points, 0, style->lineStartSize, style->lineColor);
 	ptr += drawPointSymbol(ptr, lwl->points, lwl->points->npoints-1, style->lineEndSize, style->lineColor);
+	ptr += drawLineArrow(ptr, lwl->points, style->lineArrowSize, style->lineWidth, style->lineColor);
 
 	return (ptr - output);
 }

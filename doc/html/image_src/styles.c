@@ -48,6 +48,7 @@ getStyles( const char *filename, LAYERSTYLE **headRef )
 			char *lineColor = "Grey";
 			int lineStartSize = 0;
 			int lineEndSize = 0;
+			int lineArrowSize = 0;
 			char *polygonFillColor = "Grey";
 			char *polygonStrokeColor = "Grey";
 			int polygonStrokeWidth = 0;
@@ -93,6 +94,11 @@ getStyles( const char *filename, LAYERSTYLE **headRef )
 						lineEndSize = atoi(ptr);
 						free(ptr);
 					}
+					else if (strncmp(line, "lineArrowSize", 3) == 0)
+					{
+						lineArrowSize = atoi(ptr);
+						free(ptr);
+					}
 					else if (strncmp(line, "polygonFillColor", 16) == 0)
 						polygonFillColor = ptr;
 					else if (strncmp(line, "polygonStrokeColor", 18) == 0)
@@ -106,7 +112,7 @@ getStyles( const char *filename, LAYERSTYLE **headRef )
 				getResults = fgets ( line, sizeof line, pFile );
 			}
 			addStyle(headRef, styleName, pointSize, pointColor,
-				lineWidth, lineColor, lineStartSize, lineEndSize,
+				lineWidth, lineColor, lineStartSize, lineEndSize, lineArrowSize,
 				polygonFillColor, polygonStrokeColor, polygonStrokeWidth);
 		}
 		getResults = fgets ( line, sizeof line, pFile );
@@ -143,7 +149,7 @@ addStyle(
     char* styleName,
     int pointSize, char* pointColor,
     int lineWidth, char* lineColor,
-	int lineStartSize, int lineEndSize,
+	int lineStartSize, int lineEndSize, int lineArrowSize,
     char* polygonFillColor, char* polygonStrokeColor, int polygonStrokeWidth)
 {
 	LAYERSTYLE *style = malloc( sizeof(LAYERSTYLE) );
@@ -155,6 +161,7 @@ addStyle(
 	style->lineColor = lineColor;
 	style->lineStartSize = lineStartSize;
 	style->lineEndSize = lineEndSize;
+	style->lineArrowSize = lineArrowSize;
 	style->polygonFillColor = polygonFillColor;
 	style->polygonStrokeColor = polygonStrokeColor;
 	style->polygonStrokeWidth = polygonStrokeWidth;
