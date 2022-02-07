@@ -203,7 +203,7 @@ static double parse_geo_literal(char *literal) {
 
 	POSTGIS_DEBUGF(2, "    var start_literal=%d", start_literal);
 
-	dgr = malloc(literal_length);
+	dgr = palloc(literal_length);
 	memcpy(dgr, &literal[start_literal], 3);
 	dgr[3]='\0';
 
@@ -222,8 +222,8 @@ static double parse_geo_literal(char *literal) {
 		POSTGIS_DEBUG(2, "  lat/lon literal detected");
 		POSTGIS_DEBUGF(2, "  degrees: %s", dgr);
 
-		POSTGIS_DEBUGF(5, "  min = malloc(%d)", literal_length-5);
-		min = malloc(literal_length - 5);
+		POSTGIS_DEBUGF(5, "  min = palloc(%d)", literal_length-5);
+		min = palloc(literal_length - 5);
 
 		if (literal_length > (start_literal + 3)) {
 
@@ -232,8 +232,8 @@ static double parse_geo_literal(char *literal) {
 		}
 
 		POSTGIS_DEBUGF(2, "  lat/lon minutes: %s", min);
-		POSTGIS_DEBUGF(5, "  sec = malloc(%d)", literal_length-5);
-		sec = malloc(literal_length - 5);
+		POSTGIS_DEBUGF(5, "  sec = palloc(%d)", literal_length-5);
+		sec = palloc(literal_length - 5);
 
 		if (literal_length >= (start_literal + 5)) {
 
@@ -248,9 +248,9 @@ static double parse_geo_literal(char *literal) {
 		if (sec)
 			result = result + atof(sec) / 3600;
 
-		free(min);
+		pfree(min);
 		POSTGIS_DEBUG(5, "  free(min)");
-		free(sec);
+		pfree(sec);
 		POSTGIS_DEBUG(5, "  free(sec)");
 
 	} else {
@@ -263,7 +263,7 @@ static double parse_geo_literal(char *literal) {
 			 * Changes the literal decimal sign from comma to period to avoid problems with atof.
 			 * -> In MARC21/XML coordinates, the decimal sign may be either a period or a comma.
 			 **/
-			csl = malloc(literal_length);
+			csl = palloc(literal_length);
 
 			memcpy(csl, &literal[0],literal_length - strlen(strchr(literal, ',')));
 			csl[literal_length - strlen(strchr(literal, ','))] = '\0';
@@ -272,7 +272,7 @@ static double parse_geo_literal(char *literal) {
 			strcat(csl, strchr(literal, ',') + 1);
 
 			memcpy(literal, &csl[0], literal_length);
-			free(csl);
+			pfree(csl);
 
 			POSTGIS_DEBUGF(3, "  new literal value (replaced comma): %s",literal);
 
@@ -290,8 +290,8 @@ static double parse_geo_literal(char *literal) {
 			 *     ||_ degrees
 			 *     |_ start_literal (hemisphere)
 			 */
-			POSTGIS_DEBUGF(5, "  dec = malloc(%d)",literal_length-start_literal);
-			dec = malloc(literal_length - start_literal);
+			POSTGIS_DEBUGF(5, "  dec = palloc(%d)",literal_length-start_literal);
+			dec = palloc(literal_length - start_literal);
 
 			memcpy(dec, &literal[start_literal],literal_length - start_literal);
 			dec[literal_length - start_literal] = '\0';
@@ -299,7 +299,7 @@ static double parse_geo_literal(char *literal) {
 			result = atof(dec);
 			POSTGIS_DEBUGF(2, "  decimal degrees: %s", dec);
 			POSTGIS_DEBUG(5, "  free(dec)");
-			free(dec);
+			pfree(dec);
 
 		} else if (literal[start_literal + 5] == '.') {
 
@@ -311,9 +311,9 @@ static double parse_geo_literal(char *literal) {
 			 *     ||_ degrees
 			 *     |_ start_literal (hemisphere)
 			 */
-			POSTGIS_DEBUGF(5, "  min = malloc(%d)", literal_length);
+			POSTGIS_DEBUGF(5, "  min = palloc(%d)", literal_length);
 
-			min = malloc(literal_length);
+			min = palloc(literal_length);
 			memcpy(min, &literal[start_literal + 3],literal_length - (start_literal + 3));
 			min[literal_length - (start_literal + 3)] = '\0';
 			POSTGIS_DEBUGF(2, "  decimal minutes: %s", min);
@@ -321,7 +321,7 @@ static double parse_geo_literal(char *literal) {
 			result = atof(dgr) + (atof(min) / 60);
 
 			POSTGIS_DEBUG(5, "  free(min)");
-			free(min);
+			pfree(min);
 
 		} else if (literal[start_literal + 7] == '.') {
 
@@ -334,13 +334,13 @@ static double parse_geo_literal(char *literal) {
 			 *     ||_degrees
 			 *     |_start_literal (hemisphere)
 			 */
-			POSTGIS_DEBUGF(5, "  min = malloc(%d)", literal_length);
-			min = malloc(literal_length);
+			POSTGIS_DEBUGF(5, "  min = palloc(%d)", literal_length);
+			min = palloc(literal_length);
 			memcpy(min, &literal[start_literal + 3], 2);
 			min[2] = '\0';
 
-			POSTGIS_DEBUGF(5, "  sec = malloc(%d)", literal_length);
-			sec = malloc(literal_length);
+			POSTGIS_DEBUGF(5, "  sec = palloc(%d)", literal_length);
+			sec = palloc(literal_length);
 			memcpy(sec, &literal[start_literal + 5],literal_length - (start_literal + 5));
 			sec[literal_length - (start_literal + 5)] = '\0';
 
@@ -349,9 +349,9 @@ static double parse_geo_literal(char *literal) {
 			POSTGIS_DEBUGF(2, "  decimal seconds: %s", sec);
 
 			POSTGIS_DEBUG(5, "  free(min)");
-			free(min);
+			pfree(min);
 			POSTGIS_DEBUG(5, "  free(dec)");
-			free(sec);
+			pfree(sec);
 
 		}
 
@@ -362,7 +362,7 @@ static double parse_geo_literal(char *literal) {
 	 * “-“ for S and W
 	 */
 
-	free(dgr);
+	pfree(dgr);
 
 	if (hemisphere_sign == 'S' || hemisphere_sign == 'W' || hemisphere_sign == '-') {
 
