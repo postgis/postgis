@@ -185,7 +185,7 @@ static double parse_geo_literal(char *literal) {
 	char *dec;
 	char *csl;
 
-	size_t literal_length;
+	int literal_length;
 
 	char hemisphere_sign = literal[0];
 	int start_literal = 0;
