@@ -53,7 +53,7 @@ Datum ST_AsMARC21(PG_FUNCTION_ARGS) {
 	int32_t srid;
 	LWPROJ *lwproj;
 	LWGEOM *lwgeom;
-	uint8_t is_latlong;
+	//uint8_t is_latlong;
 	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P_COPY(0);
 	text *format_text_input =  PG_GETARG_TEXT_P(1);
 	const char *format = text_to_cstring(format_text_input);
@@ -68,7 +68,7 @@ Datum ST_AsMARC21(PG_FUNCTION_ARGS) {
 
 	}
 
-	if (GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
+	if (lwproj_lookup(srid, srid, &lwproj) == LW_FAILURE) {
 
 		PG_FREE_IF_COPY(gs, 0);
 		lwpgerror("ST_AsMARC21: Failure reading projections from spatial_ref_sys.");
@@ -76,14 +76,23 @@ Datum ST_AsMARC21(PG_FUNCTION_ARGS) {
 
 	}
 
-#if POSTGIS_PROJ_VERSION < 61
-	is_latlong = pj_is_latlong(lwproj->pj_from);
-#else
-	is_latlong = lwproj->source_is_latlong;
-#endif
+//	if (GetLWPROJ(srid, srid, &lwproj) == LW_FAILURE) {
+//
+//		PG_FREE_IF_COPY(gs, 0);
+//		lwpgerror("ST_AsMARC21: Failure reading projections from spatial_ref_sys.");
+//		PG_RETURN_NULL();
+//
+//	}
 
+//#if POSTGIS_PROJ_VERSION < 61
+//	is_latlong = pj_is_latlong(lwproj->pj_from);
+//#else
+//	is_latlong = lwproj->source_is_latlong;
+//#endif
 
-	if (!is_latlong) {
+	//is_latlong = lwproj_is_latlong(lwproj);
+
+	if (!lwproj_is_latlong(lwproj)) {
 
 		PG_FREE_IF_COPY(gs, 0);
 		lwpgerror("ST_AsMARC21: Unsupported SRID (%d). Only lon/lat coordinate systems are supported in MARC21/XML Documents.", srid);
@@ -98,10 +107,6 @@ Datum ST_AsMARC21(PG_FUNCTION_ARGS) {
 
 	PG_RETURN_NULL();
 }
-
-
-
-//
 
 lwvarlena_t*
 lwgeom_to_marc21(const LWGEOM *geom, const char* format) {
@@ -216,7 +221,7 @@ static int is_format_valid(const char* format){
 			strcmp(int_part,"hdddmm") && strcmp(int_part,"dddmm") &&
 			strcmp(int_part,"hdddmmss") && strcmp(int_part,"dddmmss")) {
 
-			//pfree(int_part);
+			pfree(int_part);
 			return LW_FALSE;
 
 		}
@@ -225,12 +230,12 @@ static int is_format_valid(const char* format){
 
 			if(dec_part[i]!=int_part[strlen(int_part)-1]) {
 
-				//pfree(int_part);
+				pfree(int_part);
 				return LW_FALSE;
 			}
 		}
 
-		//pfree(int_part);
+		pfree(int_part);
 
 	}
 
@@ -376,7 +381,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 	}
 
 
-	//pfree(res);
+	pfree(res);
 	return LW_SUCCESS;
 
 
