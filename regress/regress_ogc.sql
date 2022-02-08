@@ -158,9 +158,9 @@ SELECT 'isvalid', ST_isvalid('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry)
 SELECT 'isvalid', ST_isvalid('POLYGON((0 0, 0 10, 10 10, -5 10, 10 0, 0 0))'::geometry);
 SELECT 'isvalid', ST_isvalid('GEOMETRYCOLLECTION EMPTY'::geometry);
 SELECT 'intersection', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)'::geometry, 'LINESTRING(0 0, 1 1)'::geometry));
-SELECT 'difference', ST_astext(ST_difference('LINESTRING(0 10, 0 -10)'::GEOMETRY, 'LINESTRING(0 2, 0 -2)'::GEOMETRY));
+SELECT 'difference', ST_astext(ST_Normalize(ST_difference('LINESTRING(0 10, 0 -10)'::GEOMETRY, 'LINESTRING(0 2, 0 -2)'::GEOMETRY)));
 SELECT 'boundary', ST_astext(ST_boundary('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'::geometry));
-SELECT 'symdifference', ST_astext(ST_symdifference('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'::geometry, 'LINESTRING(0 0, 20 20)'::geometry));
+SELECT 'symdifference', ST_astext(ST_Normalize(ST_symdifference('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'::geometry, 'LINESTRING(0 0, 20 20)'::geometry)));
 SELECT 'issimple', ST_issimple('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'::geometry);
 SELECT 'equals', ST_equals('LINESTRING(0 0, 1 1)'::geometry, 'LINESTRING(1 1, 0 0)'::geometry);
 WITH inp AS ( SELECT
@@ -188,7 +188,7 @@ select 'intersects', ST_intersects(
 
 select 'ST_GeometryN', ST_asewkt(ST_GeometryN('LINESTRING(0 0, 1 1)'::geometry, 1));
 select 'ST_NumGeometries', ST_NumGeometries('LINESTRING(0 0, 1 1)'::geometry);
-select 'ST_Union1', ST_AsText(ST_Union(ARRAY['POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'POLYGON((0.5 0.5, 1.5 0.5, 1.5 1.5, 0.5 1.5, 0.5 0.5))'::geometry]));
+select 'ST_Union1', ST_AsText(ST_Normalize(ST_Union(ARRAY['POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 'POLYGON((0.5 0.5, 1.5 0.5, 1.5 1.5, 0.5 1.5, 0.5 0.5))'::geometry])));
 select 'ST_StartPoint1',ST_AsText(ST_StartPoint('LINESTRING(0 0, 1 1, 2 2)'::geometry));
 select 'ST_EndPoint1', ST_AsText(ST_Endpoint('LINESTRING(0 0, 1 1, 2 2)'::geometry));
 select 'ST_PointN1', ST_AsText(ST_PointN('LINESTRING(0 0, 1 1, 2 2)'::geometry,2));

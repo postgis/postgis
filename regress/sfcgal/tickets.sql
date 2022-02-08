@@ -18,7 +18,7 @@ INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 3395, '+proj=merc +lon_
 INSERT INTO spatial_ref_sys (srid,proj4text) VALUES (32707,'+proj=utm +zone=7 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs ');
 
 -- #2 --
-SELECT '#2', ST_AsText(ST_Union(g)) FROM
+SELECT '#2', ST_AsText(ST_Normalize(ST_Union(g)) ) FROM
 ( VALUES
 ('SRID=4326;MULTIPOLYGON(((1 1,1 2,2 2,2 1,1 1)))'),
 ('SRID=4326;MULTIPOLYGON(((2 1,3 1,3 2,2 2,2 1)))')

@@ -17,6 +17,11 @@
         <para>4971, Cunit fixes for newer CUnit (Raúl Marín, Regina Obe)</para>
         <para>5069, search_path vulnerabilty during install/upgrade
                   (Regina Obe)</para>
+        <para>5086, regress cleanly (clip by box, make valid)
+           with GEOS 3.8+. For GEOS 3.8+
+           use native GEOS makevalid, buildarea, clipbybox (Regina Obe)</para>
+        <para>4457, Stop trying to createlang in regress
+           plpgsql is always installed (Regina Obe)</para>
       </simplesect>
     </sect1>
 

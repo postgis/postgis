@@ -1,5 +1,5 @@
 PostGIS 2.5.6
-2022/02/03
+2022/02/06
 
  * Bug fixes *
 
@@ -13,6 +13,11 @@ PostGIS 2.5.6
   - #4971, Cunit fixes for newer CUnit (Raúl Marín, Regina Obe)
   - #5069, search_path vulnerabilty during install/upgrade
            (Regina Obe)
+  - #5086, regress cleanly (clip by box, make valid)
+           with GEOS 3.8+. For GEOS 3.8+
+           use native GEOS makevalid, buildarea, clipbybox (Regina Obe)
+  - #4457, Stop trying to createlang in regress
+           plpgsql is always installed (Regina Obe)
 
 
 PostGIS 2.5.5
