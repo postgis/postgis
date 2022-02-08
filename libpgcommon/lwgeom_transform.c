@@ -534,7 +534,7 @@ DeleteFromPROJSRSCache(PROJSRSCache *PROJCache, uint32_t position)
 
 
 int
-GetLWPROJ(int32_t srid_from, int32_t srid_to, LWPROJ **pj)
+lwproj_lookup(int32_t srid_from, int32_t srid_to, LWPROJ **pj)
 {
 	/* get or initialize the cache for this round */
 	PROJSRSCache* proj_cache = GetPROJSRSCache();
@@ -552,8 +552,8 @@ GetLWPROJ(int32_t srid_from, int32_t srid_to, LWPROJ **pj)
 	return pj != NULL;
 }
 
-static int
-proj_pj_is_latlong(const LWPROJ *pj)
+int
+lwproj_is_latlong(const LWPROJ *pj)
 {
 #if POSTGIS_PROJ_VERSION < 61
 	return pj_is_latlong(pj->pj_from);
@@ -566,9 +566,9 @@ static int
 srid_is_latlong(int32_t srid)
 {
 	LWPROJ *pj;
-	if ( GetLWPROJ(srid, srid, &pj) == LW_FAILURE)
+	if ( lwproj_lookup(srid, srid, &pj) == LW_FAILURE)
 		return LW_FALSE;
-	return proj_pj_is_latlong(pj);
+	return lwproj_is_latlong(pj);
 }
 
 void
@@ -613,7 +613,7 @@ spheroid_init_from_srid(int32_t srid, SPHEROID *s)
 	double major_axis, minor_axis, eccentricity_squared;
 #endif
 
-	if ( GetLWPROJ(srid, srid, &pj) == LW_FAILURE)
+	if ( lwproj_lookup(srid, srid, &pj) == LW_FAILURE)
 		return LW_FAILURE;
 
 #if POSTGIS_PROJ_VERSION >= 61

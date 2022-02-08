@@ -74,7 +74,7 @@ Datum transform(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(geom);
 
 	postgis_initialize_cache();
-	if ( GetLWPROJ(srid_from, srid_to, &pj) == LW_FAILURE )
+	if ( lwproj_lookup(srid_from, srid_to, &pj) == LW_FAILURE )
 	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "ST_Transform: Failure reading projections from spatial_ref_sys.");
@@ -211,7 +211,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	if (srid_from != srid_to)
 	{
 		LWPROJ *pj;
-		if (GetLWPROJ(srid_from, srid_to, &pj) == LW_FAILURE)
+		if (lwproj_lookup(srid_from, srid_to, &pj) == LW_FAILURE)
 		{
 			PG_FREE_IF_COPY(geom, 0);
 			elog(ERROR, "ST_AsKML: Failure reading projections from spatial_ref_sys.");
