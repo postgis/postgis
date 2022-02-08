@@ -216,7 +216,7 @@ static int is_format_valid(const char* format){
 			strcmp(int_part,"hdddmm") && strcmp(int_part,"dddmm") &&
 			strcmp(int_part,"hdddmmss") && strcmp(int_part,"dddmmss")) {
 
-			pfree(int_part);
+			//pfree(int_part);
 			return LW_FALSE;
 
 		}
@@ -225,12 +225,12 @@ static int is_format_valid(const char* format){
 
 			if(dec_part[i]!=int_part[strlen(int_part)-1]) {
 
-				pfree(int_part);
+				//pfree(int_part);
 				return LW_FALSE;
 			}
 		}
 
-		pfree(int_part);
+		//pfree(int_part);
 
 	}
 
@@ -376,7 +376,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 	}
 
 
-	pfree(res);
+	//pfree(res);
 	return LW_SUCCESS;
 
 
