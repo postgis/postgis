@@ -203,7 +203,7 @@ static double parse_geo_literal(char *literal) {
 
 	POSTGIS_DEBUGF(2, "    var start_literal=%d", start_literal);
 
-	dgr = palloc(literal_length);
+	dgr = palloc(4);
 	memcpy(dgr, &literal[start_literal], 3);
 	dgr[3]='\0';
 
@@ -223,7 +223,7 @@ static double parse_geo_literal(char *literal) {
 		POSTGIS_DEBUGF(2, "  degrees: %s", dgr);
 
 		POSTGIS_DEBUGF(5, "  min = palloc(%d)", literal_length-5);
-		min = palloc(literal_length - 5);
+		min = palloc(3);
 
 		if (literal_length > (start_literal + 3)) {
 
@@ -233,7 +233,7 @@ static double parse_geo_literal(char *literal) {
 
 		POSTGIS_DEBUGF(2, "  lat/lon minutes: %s", min);
 		POSTGIS_DEBUGF(5, "  sec = palloc(%d)", literal_length-5);
-		sec = palloc(literal_length - 5);
+		sec = palloc(3);
 
 		if (literal_length >= (start_literal + 5)) {
 
@@ -263,7 +263,7 @@ static double parse_geo_literal(char *literal) {
 			 * Changes the literal decimal sign from comma to period to avoid problems with atof.
 			 * -> In MARC21/XML coordinates, the decimal sign may be either a period or a comma.
 			 **/
-			csl = palloc(literal_length);
+			csl = palloc(literal_length+1);
 
 			memcpy(csl, &literal[0],literal_length - strlen(strchr(literal, ',')));
 			csl[literal_length - strlen(strchr(literal, ','))] = '\0';
@@ -291,7 +291,7 @@ static double parse_geo_literal(char *literal) {
 			 *     |_ start_literal (hemisphere)
 			 */
 			POSTGIS_DEBUGF(5, "  dec = palloc(%d)",literal_length-start_literal);
-			dec = palloc(literal_length - start_literal);
+			dec = palloc(literal_length);
 
 			memcpy(dec, &literal[start_literal],literal_length - start_literal);
 			dec[literal_length - start_literal] = '\0';

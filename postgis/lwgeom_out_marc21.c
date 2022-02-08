@@ -208,7 +208,7 @@ static int is_format_valid(const char* format){
 
 		if(strlen(dec_part)<2)	return LW_FALSE;
 
-		int_part = palloc(strlen(format) - strlen(dec_part));
+		int_part = palloc(strlen(format));
 		memcpy(int_part, &format[0], strlen(format) - strlen(dec_part));
 		int_part[strlen(format) - strlen(dec_part)]='\0';
 
@@ -250,7 +250,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 
 	int has_cardinal_direction = 0;
 	int num_decimals = 0;
-	char* res = palloc(strlen(format)+1);
+	char* res = palloc(strlen(format)+2);
 
 	POSTGIS_DEBUGF(2,"corner_to_subfield_sb called with coordinates: %f and format: %s",decimal_degrees,format);
 
