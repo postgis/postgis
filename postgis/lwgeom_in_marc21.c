@@ -181,7 +181,7 @@ static double parse_geo_literal(char *literal) {
 	char *dgr;
 	char *min;
 	char *sec;
-	int literal_length;
+	size_t literal_length;
 
 	char start_character = literal[0];
 	int start_literal = 0;
