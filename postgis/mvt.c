@@ -33,6 +33,7 @@
 
 #ifdef HAVE_LIBPROTOBUF
 #include "utils/jsonb.h"
+#include "utils/memutils.h"
 
 #include "lwgeom_wagyu.h"
 
@@ -506,18 +507,29 @@ parse_datum_as_string(mvt_agg_context *ctx, Oid typoid, Datum datum, uint32_t *t
 	add_value_as_string(ctx, value, tags, k);
 }
 
-static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
-	uint32_t *tags)
+static uint32_t *
+parse_jsonb(mvt_agg_context *ctx, Jsonb *jb, uint32_t *tags, size_t *tag_pairs)
 {
 	JsonbIterator *it;
 	JsonbValue v;
 	bool skipNested = false;
 	JsonbIteratorToken r;
 	uint32_t k;
+	size_t properties;
 
 	if (!JB_ROOT_IS_OBJECT(jb))
 		return tags;
 
+	/* Reserve a pair for each JSON property, including reused keys. */
+	properties = JB_ROOT_COUNT(jb);
+	if (properties > MaxAllocSize / (2 * sizeof(*tags)) - *tag_pairs)
+		ereport(ERROR,
+			(errcode(ERRCODE_PROGRAM_LIMIT_EXCEEDED), errmsg("too many Mapbox vector tile attributes")));
+	if (properties)
+	{
+		*tag_pairs += properties;
+		tags = repalloc(tags, *tag_pairs * 2 * sizeof(*tags));
+	}
 	it = JsonbIteratorInit(&jb->root);
 
 	while ((r = JsonbIteratorNext(&it, &v, skipNested)) != WJB_DONE)
@@ -531,13 +543,11 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 			if (k == UINT32_MAX)
 			{
 				char *key;
-				uint32_t newSize = ctx->keys_hash_i + 1;
 
 				key = palloc(v.val.string.len + 1);
 				memcpy(key, v.val.string.val, v.val.string.len);
 				key[v.val.string.len] = '\0';
 
-				tags = repalloc(tags, newSize * 2 * sizeof(*tags));
 				k = add_key(ctx, key);
 			}
 
@@ -631,11 +641,11 @@ static void set_feature_id(mvt_agg_context *ctx, Datum datum, bool isNull)
 
 static void parse_values(mvt_agg_context *ctx)
 {
-	uint32_t n_keys = ctx->keys_hash_i;
-	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
 	uint32_t i;
 	mvt_column_cache cc = ctx->column_cache;
 	uint32_t natts = (uint32_t) cc.tupdesc->natts;
+	size_t tag_pairs = natts;
+	uint32_t *tags = palloc(tag_pairs * 2 * sizeof(*tags));
 
 	HeapTupleData tuple;
 
@@ -683,7 +693,7 @@ static void parse_values(mvt_agg_context *ctx)
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 		if (typoid == JSONBOID)
 		{
-			tags = parse_jsonb(ctx, DatumGetJsonbP(datum), tags);
+			tags = parse_jsonb(ctx, DatumGetJsonbP(datum), tags, &tag_pairs);
 			continue;
 		}
 

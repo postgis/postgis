@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5088, Size vector tile feature tags for each row and JSON property (Victor "multun" Collod)
  - #5790, Resolve extension objects in their installed schema (Regina Obe)
  - Use size_t for geometry and raster serialization size arithmetic (Even Rouault)
  - Stop regression setup when a required SQL load fails (Sandro Santilli)
