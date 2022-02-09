@@ -72,9 +72,12 @@ typedef struct mvt_agg_context
 	uint32_t geom_index;
 
 	HeapTupleHeader row;
+	/* The layer which stores all the aggregated features. Aggregation can only yield a single layer. */
 	VectorTile__Tile__Layer *layer;
-	VectorTile__Tile *tile;
+	/* The size of the features array in the layer */
 	size_t features_capacity;
+	/* The cached result of the aggregation. It can only be set once the operation is complete. */
+	VectorTile__Tile *tile;
 
 	/* Hash table holding the feature keys */
 	struct mvt_kv_key *keys_hash;
@@ -92,7 +95,6 @@ typedef struct mvt_agg_context
 	/* Total number of keys stored */
 	uint32_t keys_hash_i;
 
-	uint32_t row_columns;
 	mvt_column_cache column_cache;
 } mvt_agg_context;
 

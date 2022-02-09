@@ -73,6 +73,70 @@ struct mvt_kv_value {
 	UT_hash_handle hh;
 };
 
+
+/* Must be >= 2, otherwise an overflow will occur at the first grow, as tags come in pairs */
+#define TAGS_INITIAL_CAPACITY 20
+
+/* This structure keeps track of the capacity of
+ * the tags array while the feature is being built.
+ */
+struct feature_builder {
+	bool has_id;
+	uint64_t id;
+
+	/* A growable array of tags */
+	size_t n_tags;
+	size_t tags_capacity;
+	uint32_t *tags;
+
+	/* The geometry of the feature. */
+	VectorTile__Tile__GeomType type;
+	size_t n_geometry;
+	uint32_t *geometry;
+};
+
+static void feature_init(struct feature_builder *builder)
+{
+	builder->has_id = false;
+	builder->n_tags = 0;
+	builder->tags_capacity = TAGS_INITIAL_CAPACITY;
+	builder->tags = palloc(TAGS_INITIAL_CAPACITY * sizeof(*builder->tags));
+	builder->type = VECTOR_TILE__TILE__GEOM_TYPE__UNKNOWN;
+	builder->n_geometry = 0;
+	builder->geometry = NULL;
+}
+
+static VectorTile__Tile__Feature *feature_build(struct feature_builder *builder)
+{
+	VectorTile__Tile__Feature *feature = palloc(sizeof(*feature));
+	vector_tile__tile__feature__init(feature);
+
+	feature->has_id = builder->has_id;
+	feature->id = builder->id;
+	feature->n_tags = builder->n_tags;
+	feature->tags = builder->tags;
+	feature->type = builder->type;
+	feature->n_geometry = builder->n_geometry;
+	feature->geometry = builder->geometry;
+	return feature;
+}
+
+static void feature_add_property(struct feature_builder *builder, uint32_t key_id, uint32_t value_id)
+{
+	size_t new_n_tags = builder->n_tags + 2;
+	if (new_n_tags >= builder->tags_capacity)
+	{
+		size_t new_capacity = builder->tags_capacity * 2;
+		builder->tags = repalloc(builder->tags, new_capacity * sizeof(*builder->tags));
+		builder->tags_capacity = new_capacity;
+	}
+
+	builder->tags[builder->n_tags] = key_id;
+	builder->tags[builder->n_tags + 1] = value_id;
+	builder->n_tags = new_n_tags;
+}
+
+
 static inline uint32_t c_int(enum mvt_cmd_id id, uint32_t count)
 {
 	return (id & 0x7) | (count << 3);
@@ -138,7 +202,7 @@ static uint32_t encode_ptarray_initial(enum mvt_type type, POINTARRAY *pa, uint3
 	return encode_ptarray(type, pa, buffer, &px, &py);
 }
 
-static void encode_point(VectorTile__Tile__Feature *feature, LWPOINT *point)
+static void encode_point(struct feature_builder *feature, LWPOINT *point)
 {
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POINT;
 	feature->n_geometry = 3;
@@ -146,7 +210,7 @@ static void encode_point(VectorTile__Tile__Feature *feature, LWPOINT *point)
 	encode_ptarray_initial(MVT_POINT, point->point, feature->geometry);
 }
 
-static void encode_mpoint(VectorTile__Tile__Feature *feature, LWMPOINT *mpoint)
+static void encode_mpoint(struct feature_builder *feature, LWMPOINT *mpoint)
 {
 	size_t c;
 	// NOTE: inefficient shortcut LWMPOINT->LWLINE
@@ -158,7 +222,7 @@ static void encode_mpoint(VectorTile__Tile__Feature *feature, LWMPOINT *mpoint)
 		lwline->points, feature->geometry);
 }
 
-static void encode_line(VectorTile__Tile__Feature *feature, LWLINE *lwline)
+static void encode_line(struct feature_builder *feature, LWLINE *lwline)
 {
 	size_t c;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__LINESTRING;
@@ -168,7 +232,7 @@ static void encode_line(VectorTile__Tile__Feature *feature, LWLINE *lwline)
 		lwline->points, feature->geometry);
 }
 
-static void encode_mline(VectorTile__Tile__Feature *feature, LWMLINE *lwmline)
+static void encode_mline(struct feature_builder *feature, LWMLINE *lwmline)
 {
 	uint32_t i;
 	int32_t px = 0, py = 0;
@@ -184,7 +248,7 @@ static void encode_mline(VectorTile__Tile__Feature *feature, LWMLINE *lwmline)
 	feature->n_geometry = offset;
 }
 
-static void encode_poly(VectorTile__Tile__Feature *feature, LWPOLY *lwpoly)
+static void encode_poly(struct feature_builder *feature, LWPOLY *lwpoly)
 {
 	uint32_t i;
 	int32_t px = 0, py = 0;
@@ -200,7 +264,7 @@ static void encode_poly(VectorTile__Tile__Feature *feature, LWPOLY *lwpoly)
 	feature->n_geometry = offset;
 }
 
-static void encode_mpoly(VectorTile__Tile__Feature *feature, LWMPOLY *lwmpoly)
+static void encode_mpoly(struct feature_builder *feature, LWMPOLY *lwmpoly)
 {
 	uint32_t i, j;
 	int32_t px = 0, py = 0;
@@ -219,7 +283,7 @@ static void encode_mpoly(VectorTile__Tile__Feature *feature, LWMPOLY *lwmpoly)
 	feature->n_geometry = offset;
 }
 
-static void encode_feature_geometry(VectorTile__Tile__Feature *feature, LWGEOM *lwgeom)
+static void encode_feature_geometry(struct feature_builder *feature, LWGEOM *lwgeom)
 {
 	int type = lwgeom->type;
 
@@ -402,8 +466,7 @@ static void encode_values(mvt_agg_context *ctx)
 				kv->value->test_oneof_case = pftype; \
 				HASH_ADD_KEYPTR_BYHASHVALUE(hh, ctx->hash, &kv->value->pfvaluefield, size, hashv, kv); \
 			} \
-			tags[ctx->row_columns * 2] = k; \
-			tags[ctx->row_columns * 2 + 1] = kv->id; \
+			feature_add_property(feature, k, kv->id); \
 		} \
 	}
 
@@ -442,7 +505,7 @@ static void encode_values(mvt_agg_context *ctx)
 }
 
 static bool
-add_value_as_string_with_size(mvt_agg_context *ctx, char *value, size_t size, uint32_t *tags, uint32_t k)
+add_value_as_string_with_size(mvt_agg_context *ctx, struct feature_builder *feature, char *value, size_t size, uint32_t k)
 {
 	bool kept = false;
 	struct mvt_kv_value *kv;
@@ -463,23 +526,23 @@ add_value_as_string_with_size(mvt_agg_context *ctx, char *value, size_t size, ui
 		HASH_ADD_KEYPTR_BYHASHVALUE(hh, ctx->string_values_hash, kv->value->string_value, size, hashv, kv);
 		kept = true;
 	}
-	tags[ctx->row_columns * 2] = k;
-	tags[ctx->row_columns * 2 + 1] = kv->id;
+
+	feature_add_property(feature, k, kv->id);
 	return kept;
 }
 
 /* Adds a string to the stored values. Gets ownership of the string */
 static void
-add_value_as_string(mvt_agg_context *ctx, char *value, uint32_t *tags, uint32_t k)
+add_value_as_string(mvt_agg_context *ctx, struct feature_builder *feature, char *value, uint32_t k)
 {
-	bool kept = add_value_as_string_with_size(ctx, value, strlen(value), tags, k);
+	bool kept = add_value_as_string_with_size(ctx, feature, value, strlen(value), k);
 	if (!kept)
 		pfree(value);
 }
 
 /* Adds a Datum to the stored values as a string. */
 static inline void
-parse_datum_as_string(mvt_agg_context *ctx, Oid typoid, Datum datum, uint32_t *tags, uint32_t k)
+parse_datum_as_string(mvt_agg_context *ctx, struct feature_builder *feature, Oid typoid, Datum datum, uint32_t k)
 {
 	Oid foutoid;
 	bool typisvarlena;
@@ -488,11 +551,10 @@ parse_datum_as_string(mvt_agg_context *ctx, Oid typoid, Datum datum, uint32_t *t
 	getTypeOutputInfo(typoid, &foutoid, &typisvarlena);
 	value = OidOutputFunctionCall(foutoid, datum);
 	POSTGIS_DEBUGF(4, "parse_value_as_string value: %s", value);
-	add_value_as_string(ctx, value, tags, k);
+	add_value_as_string(ctx, feature, value, k);
 }
 
-static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
-	uint32_t *tags)
+static void parse_jsonb(mvt_agg_context *ctx, struct feature_builder *feature, Jsonb *jb)
 {
 	JsonbIterator *it;
 	JsonbValue v;
@@ -501,7 +563,7 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 	uint32_t k;
 
 	if (!JB_ROOT_IS_OBJECT(jb))
-		return tags;
+		return;
 
 	it = JsonbIteratorInit(&jb->root);
 
@@ -515,14 +577,9 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 			k = get_key_index_with_size(ctx, v.val.string.val, v.val.string.len);
 			if (k == UINT32_MAX)
 			{
-				char *key;
-				uint32_t newSize = ctx->keys_hash_i + 1;
-
-				key = palloc(v.val.string.len + 1);
+				char *key = palloc(v.val.string.len + 1);
 				memcpy(key, v.val.string.val, v.val.string.len);
 				key[v.val.string.len] = '\0';
-
-				tags = repalloc(tags, newSize * 2 * sizeof(*tags));
 				k = add_key(ctx, key);
 			}
 
@@ -533,8 +590,7 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 				char *value = palloc(v.val.string.len + 1);
 				memcpy(value, v.val.string.val, v.val.string.len);
 				value[v.val.string.len] = '\0';
-				add_value_as_string(ctx, value, tags, k);
-				ctx->row_columns++;
+				add_value_as_string(ctx, feature, value, k);
 			}
 			else if (v.type == jbvBool)
 			{
@@ -543,7 +599,6 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 						sizeof(protobuf_c_boolean),
 						bool_value,
 						VECTOR_TILE__TILE__VALUE__TEST_ONEOF_BOOL_VALUE);
-				ctx->row_columns++;
 			}
 			else if (v.type == jbvNumeric)
 			{
@@ -567,18 +622,15 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 				{
 					MVT_PARSE_INT_VALUE(l);
 				}
-				ctx->row_columns++;
 			}
 		}
 	}
-
-	return tags;
 }
 
 /**
  * Sets the feature id. Ignores Nulls and negative values
  */
-static void set_feature_id(mvt_agg_context *ctx, VectorTile__Tile__Feature *feature, Datum datum, bool isNull)
+static void set_feature_id(mvt_agg_context *ctx, struct feature_builder *feature, Datum datum, bool isNull)
 {
 	Oid typoid = ctx->column_cache.column_oid[ctx->id_index];
 	int64_t value = INT64_MIN;
@@ -614,10 +666,8 @@ static void set_feature_id(mvt_agg_context *ctx, VectorTile__Tile__Feature *feat
 	feature->id = (uint64_t) value;
 }
 
-static void parse_values(mvt_agg_context *ctx, VectorTile__Tile__Feature *feature)
+static void parse_values(mvt_agg_context *ctx, struct feature_builder *feature)
 {
-	uint32_t n_keys = ctx->keys_hash_i;
-	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
 	uint32_t i;
 	mvt_column_cache cc = ctx->column_cache;
 	uint32_t natts = (uint32_t) cc.tupdesc->natts;
@@ -625,7 +675,6 @@ static void parse_values(mvt_agg_context *ctx, VectorTile__Tile__Feature *featur
 	HeapTupleData tuple;
 
 	POSTGIS_DEBUG(2, "parse_values called");
-	ctx->row_columns = 0;
 
 	/* Build a temporary HeapTuple control structure */
 	tuple.t_len = HeapTupleHeaderGetDatumLength(ctx->row);
@@ -668,7 +717,7 @@ static void parse_values(mvt_agg_context *ctx, VectorTile__Tile__Feature *featur
 			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 		if (typoid == JSONBOID)
 		{
-			tags = parse_jsonb(ctx, DatumGetJsonbP(datum), tags);
+			parse_jsonb(ctx, feature, DatumGetJsonbP(datum));
 			continue;
 		}
 
@@ -708,24 +757,16 @@ static void parse_values(mvt_agg_context *ctx, VectorTile__Tile__Feature *featur
 					VECTOR_TILE__TILE__VALUE__TEST_ONEOF_DOUBLE_VALUE);
 			break;
 		case TEXTOID:
-			add_value_as_string(ctx, text_to_cstring(DatumGetTextP(datum)), tags, k);
+			add_value_as_string(ctx, feature, text_to_cstring(DatumGetTextP(datum)), k);
 			break;
 		case CSTRINGOID:
-			add_value_as_string(ctx, DatumGetCString(datum), tags, k);
+			add_value_as_string(ctx, feature, DatumGetCString(datum), k);
 			break;
 		default:
-			parse_datum_as_string(ctx, typoid, datum, tags, k);
+			parse_datum_as_string(ctx, feature, typoid, datum, k);
 			break;
 		}
-
-		ctx->row_columns++;
 	}
-
-
-	feature->n_tags = ctx->row_columns * 2;
-	feature->tags = tags;
-
-	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", feature->n_tags);
 }
 
 /* For a given geometry, look for the highest dimensional basic type, that is,
@@ -993,7 +1034,7 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 	Datum datum;
 	GSERIALIZED *gs;
 	LWGEOM *lwgeom;
-	VectorTile__Tile__Feature *feature;
+	struct feature_builder feature_builder;
 	VectorTile__Tile__Layer *layer = ctx->layer;
 	POSTGIS_DEBUG(2, "mvt_agg_transfn called");
 
@@ -1007,14 +1048,21 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 		return;
 
 	/* Allocate a new feature object */
-	feature = palloc(sizeof(*feature));
-	vector_tile__tile__feature__init(feature);
+	feature_init(&feature_builder);
 
 	/* Deserialize the geometry */
 	gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
 	lwgeom = lwgeom_from_gserialized(gs);
 
-	/* Add the feature to the result */
+	/* Set the geometry of the feature */
+	encode_feature_geometry(&feature_builder, lwgeom);
+	lwgeom_free(lwgeom);
+	// TODO: free detoasted datum?
+
+	/* Parse properties */
+	parse_values(ctx, &feature_builder);
+
+	/* Grow the features array of the layer */
 	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %zd", layer->n_features);
 	if (layer->n_features >= ctx->features_capacity)
 	{
@@ -1024,13 +1072,9 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 		ctx->features_capacity = new_capacity;
 		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %zd", new_capacity);
 	}
-	layer->features[layer->n_features++] = feature;
 
-	/* Set the geometry of the feature */
-	encode_feature_geometry(feature, lwgeom);
-	lwgeom_free(lwgeom);
-	// TODO: free detoasted datum?
-	parse_values(ctx, feature);
+	/* Build and add the feature to the layer */
+	layer->features[layer->n_features++] = feature_build(&feature_builder);
 }
 
 static VectorTile__Tile * mvt_ctx_to_tile(mvt_agg_context *ctx)

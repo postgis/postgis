@@ -42,6 +42,7 @@ PostGIS 3.3.0dev
    - #5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)
    - #5123, PG15 now exposes json types and functions, no need
     to include for PG15+ (Regina Obe)
+   - #5088, Memory corruption in mvt_agg_transfn (Victor Collod)
 
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
