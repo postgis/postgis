@@ -1058,8 +1058,11 @@ if test "$CHECK_PROTOBUF" != "no"; then
 	)
 
 	dnl confirm that discovered/configured library path works
-	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init],
-		[],
+	AC_CHECK_LIB([protobuf-c], [protobuf_c_message_init],[
+			if test "x$PROTOBUF_LDFLAGS" = "x"; then
+				PROTOBUF_LDFLAGS="-lprotobuf-c"
+			fi
+		],
 		AC_MSG_ERROR([unable to link protobuf-c using $LDFLAGS. You can disable MVT and Geobuf support using --without-protobuf])
 		HAVE_PROTOBUF=no
 	)
