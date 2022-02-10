@@ -1340,24 +1340,28 @@ SELECT valid, reason, ST_AsText(location) AS location
      </para>
 	<itemizedlist>
 		<listitem><para>A <emphasis role="bold">geodetic</emphasis> SRS uses angular coordinates
-        (longitude and latitude)
-        which map directly to the surface of the earth.
+            (longitude and latitude) which map directly to the surface of the earth.
             </para></listitem>
 		<listitem><para>A <emphasis role="bold">projected</emphasis> SRS
-        uses a mathematical projection transformation
-        to "flatten" the surface of the spheroidal earth.
-        It assigns location coordinates in a way that allows direct measurement
-        of metrics such as distance, area, and angle.
+            uses a mathematical projection transformation
+            to "flatten" the surface of the spheroidal earth onto a plane.
+            It assigns location coordinates in a way that allows direct measurement
+            of quantities such as distance, area, and angle.
+            The coordinate system is Cartesian, which means it has a defined origin point
+            and two perpendicular axes (usually oriented North and East).
+            Each projected SRS uses a stated length unit (usually metres or feet).
+            A projected SRS may be limited in its area of applicability to avoid distortion
+            and fit within the defined coordinate bounds.
             </para></listitem>
 		<listitem><para>A <emphasis role="bold">local</emphasis> SRS
-        is a Cartesian coordinate system which is not referenced to the earth's surface.
-        In PostGIS this is specified by a SRID value of 0.
+            is a Cartesian coordinate system which is not referenced to the earth's surface.
+            In PostGIS this is specified by a SRID value of 0.
             </para></listitem>
 	</itemizedlist>
     <para>
     There are many different spatial reference systems in use.
-    Many common SRSes are standardized by the
-    European Petroleum Survey Group in their
+    Common SRSes are standardized in the
+    European Petroleum Survey Group
     <ulink url="http://www.epsg.org/">EPSG database</ulink>.
     For convenience PostGIS (and many other spatial systems) refers to SRS
     definitions using an integer identifier called a SRID.
@@ -1365,11 +1369,10 @@ SELECT valid, reason, ST_AsText(location) AS location
 
     <para>A geometry is associated with a Spatial Reference System by its SRID value,
     which is accessed by <xref linkend="ST_SRID" />.
-    The SRID can be assigned to a geometry using <xref linkend="ST_SetSRID" />.
+    The SRID for a geometry can be assigned using <xref linkend="ST_SetSRID" />.
     Some geometry constructor functions allow supplying a SRID
     (such as <xref linkend="ST_Point" />  and <xref linkend="ST_MakeEnvelope" />).
-    A SRID can be specified in the EWKT format with the
-    <code>SRID=n;</code> prefix.
+    The <link linkend="EWKB_EWKT">EWKT</link> format supports SRIDs with the <code>SRID=n;</code> prefix.
     </para>
 
     <para>
@@ -1379,6 +1382,7 @@ SELECT valid, reason, ST_AsText(location) AS location
     require that the input geometries are in the same spatial reference system (have the same SRID).
     Geometry data can be transformed into a different spatial reference system using
     <xref linkend="ST_Transform" />.
+    Geometry returned from functions has the same SRS as the input geometries.
     </para>
 
 	<sect2 id="spatial_ref_sys_table">
@@ -1457,7 +1461,7 @@ SELECT valid, reason, ST_AsText(location) AS location
 ]</programlisting>
 
 			<para>For a discussion of SRS WKT, see the OGC standard <ulink
-			url="https://www.ogc.org/standards/wkt-crs">Well-known text representation of coordinate reference systems</ulink>.
+			url="http://docs.opengeospatial.org/is/12-063r5/12-063r5.html">Well-known text representation of coordinate reference systems</ulink>.
             </para>
 		  </listitem>
 		</varlistentry>
