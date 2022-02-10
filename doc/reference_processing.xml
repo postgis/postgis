@@ -2204,7 +2204,11 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_IsSimple" />, <xref linkend="ST_SimplifyPreserveTopology" />, Topology <xref linkend="TP_ST_Simplify"/></para>
+            <para>
+    <xref linkend="ST_IsSimple" />,
+    <xref linkend="ST_SimplifyPreserveTopology" />,
+    <xref linkend="ST_SimplifyVW" />,
+    Topology <xref linkend="TP_ST_Simplify"/></para>
           </refsection>
     </refentry>
 
