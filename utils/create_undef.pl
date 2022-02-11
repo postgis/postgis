@@ -287,10 +287,10 @@ DECLARE
 BEGIN
 	FOR rec IN
 		SELECT n.nspname, c.relname, a.attname, t.typname
-		FROM pg_attribute a
-		JOIN pg_class c ON a.attrelid = c.oid
-		JOIN pg_namespace n ON c.relnamespace = n.oid
-		JOIN pg_type t ON a.atttypid = t.oid
+		FROM pg_catalog.pg_attribute a
+		JOIN pg_catalog.pg_class c ON a.attrelid = c.oid
+		JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid
+		JOIN pg_catalog.pg_type t ON a.atttypid = t.oid
 		WHERE t.typname = '$type'
 		  AND NOT (
 				-- we exclude complexes defined as types
@@ -398,15 +398,15 @@ DECLARE
 	var_result text;
 	var_search_path text;
 BEGIN
-	SELECT reset_val INTO var_search_path FROM pg_settings WHERE name = 'search_path';
-	IF var_search_path NOT LIKE '%' || quote_ident(a_schema_name) || '%' THEN
+	SELECT reset_val INTO var_search_path FROM pg_catalog.pg_settings WHERE name = 'search_path';
+	IF var_search_path NOT LIKE '%' || pg_catalog.quote_ident(a_schema_name) || '%' THEN
 		var_result := a_schema_name || ' not in database search_path';
 	ELSE
-    var_search_path := btrim( regexp_replace(
-        replace(var_search_path, a_schema_name, ''), ', *,', ','),
+    var_search_path := pg_catalog.btrim( pg_catalog.regexp_replace(
+        pg_catalog.replace(var_search_path, a_schema_name, ''), ', *,', ','),
         ', ');
     RAISE NOTICE 'New search_path: %', var_search_path;
-		EXECUTE 'ALTER DATABASE ' || quote_ident(current_database()) || ' SET search_path = ' || var_search_path;
+		EXECUTE 'ALTER DATABASE ' || pg_catalog.quote_ident(pg_catalog.current_database()) || ' SET search_path = ' || var_search_path;
 		var_result := a_schema_name || ' has been stripped off database search_path ';
 	END IF;
 

@@ -30,15 +30,15 @@
 --         FROM pg_catalog.pg_proc p
 --         LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
 --         WHERE
---                 LOWER(n.nspname) = LOWER('public') AND
---                 LOWER(p.proname) = LOWER('ST_AsGeoJson')
+--                 pg_catalog.LOWER(n.nspname) = pg_catalog.LOWER('public') AND
+--                 pg_catalog.LOWER(p.proname) = pg_catalog.LOWER('ST_AsGeoJson')
 --         ORDER BY 1, 2, 3, 4;
 CREATE OR REPLACE FUNCTION _postgis_drop_function_if_needed(
-	function_name text,
-	function_arguments text) RETURNS void AS $$
+	function_name pg_catalog.text,
+	function_arguments pg_catalog.text) RETURNS void AS $$
 DECLARE
-	sql_drop text;
-	postgis_namespace OID;
+	sql_drop pg_catalog.text;
+	postgis_namespace pg_catalog.OID;
 	matching_function REGPROCEDURE;
 BEGIN
 
@@ -53,9 +53,9 @@ BEGIN
 	SELECT oid
 	FROM pg_catalog.pg_proc p
 	WHERE pronamespace = postgis_namespace
-	AND LOWER(p.proname) = LOWER(function_name)
+	AND pg_catalog.LOWER(p.proname) = pg_catalog.LOWER(function_name)
 	AND pg_catalog.pg_function_is_visible(p.oid)
-	AND LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ LOWER(function_arguments)
+	AND pg_catalog.LOWER(pg_catalog.pg_get_function_identity_arguments(p.oid)) ~ pg_catalog.LOWER(function_arguments)
 	INTO matching_function;
 
 	IF matching_function IS NOT NULL THEN
@@ -108,7 +108,7 @@ SELECT _postgis_drop_function_if_needed
 DO  language 'plpgsql' $$
 BEGIN
 	-- fix geometry ops --
-	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprrest::text = 'geometry_gist_sel_2d') THEN
+	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprrest::pg_catalog.text = 'geometry_gist_sel_2d') THEN
 	--it is bound to old name, drop new, rename old to new, install will fix body of code
 		DROP FUNCTION IF EXISTS gserialized_gist_sel_2d(internal, oid, internal, int4) ;
 		ALTER FUNCTION geometry_gist_sel_2d(internal, oid, internal, int4) RENAME TO gserialized_gist_sel_2d;

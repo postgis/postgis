@@ -63,7 +63,7 @@ sub status
   {
     my $sql = "
 SELECT n.nspname
-  FROM pg_namespace n, pg_proc p
+  FROM pg_catalog.pg_namespace n, pg_catalog.pg_proc p
   WHERE n.oid = p.pronamespace
     AND p.proname = 'postgis_full_version'
 ";

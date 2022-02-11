@@ -253,7 +253,7 @@ BEGIN
             d.objid = replaced_proc::oid
     LOOP
         RAISE DEBUG 'Unpackaging ${renamed} from extension %', rec.extname;
-        sql := format('ALTER EXTENSION %I DROP FUNCTION ${renamed}(${args})', rec.extname);
+        sql := pg_catalog.format('ALTER EXTENSION %I DROP FUNCTION ${renamed}(${args})', rec.extname);
         EXECUTE sql;
     END LOOP;
 
@@ -622,8 +622,8 @@ BEGIN
 --    FOR rec IN
 --        SELECT n.nspname AS schemaname,
 --            c.relname AS viewname,
---            pg_get_userbyid(c.relowner) AS viewowner,
---            pg_get_viewdef(c.oid) AS definition,
+--            pg_catalog.pg_get_userbyid(c.relowner) AS viewowner,
+--            pg_catalog.pg_get_viewdef(c.oid) AS definition,
 --            CASE
 --                WHEN 'check_option=cascaded' = ANY (c.reloptions) THEN 'WITH CASCADED CHECK OPTION'
 --                WHEN 'check_option=local' = ANY (c.reloptions) THEN 'WITH LOCAL CHECK OPTION'
@@ -632,12 +632,12 @@ BEGIN
 --        FROM pg_class c
 --        LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
 --        WHERE c.relkind = 'v'
---        AND pg_get_viewdef(c.oid) ~ 'deprecated_by_postgis'
+--        AND pg_catalog.pg_get_viewdef(c.oid) ~ 'deprecated_by_postgis'
 --    LOOP
---        sql := format('CREATE OR REPLACE VIEW %I.%I AS %s %s',
+--        sql := pg_catalog.format('CREATE OR REPLACE VIEW %I.%I AS %s %s',
 --            rec.schemaname,
 --            rec.viewname,
---            regexp_replace(rec.definition, '_deprecated_by_postgis_[^(]*', '', 'g'),
+--            pg_catalog.regexp_replace(rec.definition, '_deprecated_by_postgis_[^(]*', '', 'g'),
 --            rec.check_option
 --        );
 --        RAISE NOTICE 'Updating view % to not use deprecated signatures', rec.viewname;
@@ -647,17 +647,17 @@ BEGIN
 --        WHEN OTHERS THEN
 --                GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
 --                RAISE WARNING 'Could not rewrite view % using deprecated functions', rec.viewname
---                        USING DETAIL = format('%s: %s', SQLERRM, detail);
+--                        USING DETAIL = pg_catalog.format('%s: %s', SQLERRM, detail);
 --        END;
 --    END LOOP;
 
     -- Try to drop all deprecated functions, raising a warning
     -- for each one which cannot be drop
 
-    FOR rec IN SELECT unnest(deprecated_functions) as proc
+    FOR rec IN SELECT pg_catalog.unnest(deprecated_functions) as proc
     LOOP --{
 
-        sql := format('DROP FUNCTION %s', rec.proc);
+        sql := pg_catalog.format('DROP FUNCTION %s', rec.proc);
         --RAISE DEBUG 'SQL: %', sql;
         BEGIN
             EXECUTE sql;
@@ -666,10 +666,10 @@ BEGIN
             hint = 'Resolve the issue';
             GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
             IF detail LIKE '%view % depends%' THEN
-                hint = format(
+                hint = pg_catalog.format(
                     'Replace the view changing all occurrences of %s in its definition with %s',
                     rec.proc,
-                    regexp_replace(rec.proc::text, '_deprecated_by_postgis[^(]*', '')
+                    pg_catalog.regexp_replace(rec.proc::text, '_deprecated_by_postgis[^(]*', '')
                 );
             END IF;
             hint = hint || ' and upgrade again';
@@ -719,8 +719,8 @@ BEGIN
         SELECT into old_scripts MODULE_scripts_installed();
     END;
     SELECT into new_scripts 'NEWVERSION';
-    SELECT into old_maj substring(old_scripts from 1 for 1);
-    SELECT into new_maj substring(new_scripts from 1 for 1);
+    SELECT into old_maj pg_catalog.substring(old_scripts,1, 1);
+    SELECT into new_maj pg_catalog.substring(new_scripts,1, 1);
 
     -- 2.x to 3.x was upgrade-compatible, see
     -- https://trac.osgeo.org/postgis/ticket/4170#comment:1
@@ -738,18 +738,18 @@ BEGIN
     ) SELECT
       upgraded as scripts_upgraded,
       installed as scripts_installed,
-      substring(upgraded from '([0-9]+)\.')::int * 100 +
-      substring(upgraded from '[0-9]+\.([0-9]+)(\.|$)')::int
+      pg_catalog.substring(upgraded, '([0-9]+)\.')::int * 100 +
+      pg_catalog.substring(upgraded, '[0-9]+\.([0-9]+)(\.|$)')::int
         as version_to_num,
-      substring(installed from '([0-9]+)\.')::int * 100 +
-      substring(installed from '[0-9]+\.([0-9]+)(\.|$)')::int
+      pg_catalog.substring(installed, '([0-9]+)\.')::int * 100 +
+      pg_catalog.substring(installed, '[0-9]+\.([0-9]+)(\.|$)')::int
         as version_from_num,
       installed ~ 'dev|alpha|beta'
         as version_from_isdev
       FROM versions INTO postgis_upgrade_info
     ;
 
-    postgis_upgrade_info_func_code := format($func_code$
+    postgis_upgrade_info_func_code := pg_catalog.format($func_code$
         CREATE FUNCTION _postgis_upgrade_info(OUT scripts_upgraded TEXT,
                                               OUT scripts_installed TEXT,
                                               OUT version_to_num INT,
