@@ -48,8 +48,7 @@ while(<SRSFILE>) {
 	$proj4text =~ s/\'/\'\'/g;
 	print "INSERT INTO \"$SRSTABLE\" (\"srid\", \"auth_name\", \"auth_srid\", \"srtext\", \"proj4text\") VALUES ($srid, '$auth_name', $auth_srid, '$srtext', '$proj4text')";
 	if ($UPDATE) {
-		print "\n";
-		print "ON CONFLICT (srid) DO NOTHING";
+		print "\nON CONFLICT (srid) DO NOTHING";
 	}
 	print ";\n\n";
 }
