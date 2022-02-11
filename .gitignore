@@ -117,6 +117,8 @@ postgis/postgis_upgrade_for_extension.sql
 postgis/postgis_upgrade_for_extension.sql.in
 postgis/sfcgal_upgrade.sql*
 postgis/sqldefines.h
+postgis/spatial_ref_sys.sql
+postgis/spatial_ref_sys_upgrade.sql
 postgis/uninstall_legacy.sql
 postgis/uninstall_postgis.sql
 postgis/vector_tile.pb-c.c

@@ -35,12 +35,14 @@ MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 endif
 
 # Files to be copied to the contrib/ directory
-SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
-DATA=../spatial_ref_sys.sql
+SQL_built=postgis.sql spatial_ref_sys.sql spatial_ref_sys_upgrade.sql uninstall_postgis.sql postgis_upgrade.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
+DATA=
 
 # SQL objects (files requiring pre-processing)
 SQL_OBJS = \
 	postgis.sql \
+	spatial_ref_sys_upgrade.sql \
+	spatial_ref_sys.sql \
 	legacy.sql \
 	legacy_minimal.sql
 
@@ -254,6 +256,11 @@ postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_a
 $(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 
 #postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c
+spatial_ref_sys.sql: spatial_ref_sys.txt ../utils/create_spatial_ref_sys.pl
+	$(PERL) @top_srcdir@/utils/create_spatial_ref_sys.pl $< > $@
+
+spatial_ref_sys_upgrade.sql: spatial_ref_sys.txt ../utils/create_spatial_ref_sys.pl
+	$(PERL) @top_srcdir@/utils/create_spatial_ref_sys.pl -u $< > $@
 
 uninstall_postgis.sql: postgis.sql ../utils/create_undef.pl
 	$(PERL) @top_srcdir@/utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@

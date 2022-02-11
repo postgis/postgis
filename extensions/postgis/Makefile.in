@@ -51,7 +51,8 @@ EXTENSION_UPGRADE_SCRIPTS = \
 	sql/raster_unpackage.sql \
 	sql/postgis_upgrade.sql \
 	../../doc/postgis_comments.sql \
-	../postgis_extension_helper_uninstall.sql
+	../postgis_extension_helper_uninstall.sql \
+	sql/spatial_ref_sys_upgrade.sql
 
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
@@ -108,13 +109,16 @@ sql:
 	mkdir -p $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
-sql/spatial_ref_sys.sql: ../../spatial_ref_sys.sql | sql
+sql/spatial_ref_sys.sql: ../../postgis/spatial_ref_sys.sql | sql
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
+
+sql/spatial_ref_sys_upgrade.sql: ../../postgis/spatial_ref_sys_upgrade.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 ../../doc/postgis_comments.sql:
 	$(MAKE) -C ../../doc comments
 
-sql/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql
+sql/spatial_ref_sys_config_dump.sql: ../../postgis/spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl | sql
 	$(PERL) @top_srcdir@/utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
 sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_before_upgrade.sql sql/postgis_upgrade_for_extension.sql.in ../../postgis/postgis_after_upgrade.sql | sql
