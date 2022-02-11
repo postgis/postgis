@@ -49,7 +49,7 @@ while(<SRSFILE>) {
 	print "INSERT INTO \"$SRSTABLE\" (\"srid\", \"auth_name\", \"auth_srid\", \"srtext\", \"proj4text\") VALUES ($srid, '$auth_name', $auth_srid, '$srtext', '$proj4text')";
 	if ($UPDATE) {
 		print "\n";
-		print "ON CONFLICT (srid) DO UPDATE SET \"auth_name\"='$auth_name', \"auth_srid\"=$auth_srid, \"srtext\"='$srtext', \"proj4text\"='$proj4text'";
+		print "ON CONFLICT (srid) DO NOTHING";
 	}
 	print ";\n\n";
 }
