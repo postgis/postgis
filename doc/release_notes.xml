@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appendix id="release_notes">
   <title>Appendix</title>
-    <subtitle>Release Notes</subtitle>
+   <subtitle>Release Notes</subtitle>
+    <sect1>
+        <title>PostGIS 3.2.1</title>
+        <para>2022/02/13</para>
+        <para>This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+
+            Additional features are enabled if you are running GEOS 3.9+
+            (and ST_MakeValid enhancements with 3.10+),
+            Proj 6.1+, and PostgreSQL 14+.</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para>5033, 5035, allow upgrades in presence of views using deprecated
+                    functions (Sandro Santilli)</para>
+            <para>5046, Fix upgrades in absence of old library (Sandro Santilli)</para>
+            <para>5063, Fix ST_Srid(TopoGeometry) against a set (Sandro Santilli)</para>
+            <para>3056, spurious notice on ST_StartPoint(empty) (Paul Ramsey)</para>
+            <para>5041, postgis_tiger_geocoder: loader_generate_script
+                    generates script with invalid syntax (Regna Obe)</para>
+            <para>5076, stop install when pgaudit is active (Paul Ramsey)</para>
+            <para>5069, search_path vulnerabilty during install/upgrade
+                    (Regina Obe)</para>
+        </simplesect>
+    </sect1>
+
     <sect1>
         <title>PostGIS 3.2.0 (Olivier Courtin Edition)</title>
         <para>2021/12/18</para>
