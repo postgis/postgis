@@ -51,7 +51,9 @@ EXTENSION_UPGRADE_SCRIPTS = \
 	sql/raster_unpackage.sql \
 	sql/postgis_upgrade.sql \
 	../../doc/postgis_comments.sql \
-	../postgis_extension_helper_uninstall.sql
+	../postgis_extension_helper_uninstall.sql \
+	sql/spatial_ref_sys_config_dump.sql \
+	sql/spatial_ref_sys.sql
 
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
