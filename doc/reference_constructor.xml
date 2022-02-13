@@ -672,6 +672,7 @@ FROM provinces p;
 
 		<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
+	    <para>Enhanced: 3.2.0 srid as an extra optional argument was added. Older installs require combining with ST_SetSRID to mark the srid on the geometry.</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.2</para>
 
 	  </refsection>
@@ -680,17 +681,22 @@ FROM provinces p;
 	  <refsection>
 		<title>Examples: Geometry</title>
 
-		<programlisting>SELECT ST_SetSRID( ST_Point( -71.104, 42.315), 4326)</programlisting>
+        <programlisting>SELECT ST_Point( -71.104, 42.315);</programlisting>
+        <programlisting>SELECT ST_SetSRID(ST_Point( -71.104, 42.315),4326);</programlisting>
+
+        <para>New in 3.2.0: With SRID specified</para>
+		<programlisting>SELECT ST_Point( -71.104, 42.315, 4326);</programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples: Geography</title>
-
-		<programlisting>SELECT CAST(ST_SetSRID( ST_Point( -71.104, 42.315), 4326) AS geography);</programlisting>
+        <para>Pre-PostGIS 3.2 syntax</para>
+        <programlisting>SELECT CAST( ST_SetSRID(ST_Point( -71.104, 42.315), 4326) AS geography);</programlisting>
+        <para>3.2 and on you can include the srid</para>
+		<programlisting>SELECT CAST( ST_Point( -71.104, 42.315, 4326) AS geography);</programlisting>
 
 		<para>PostgreSQL also provides the <varname>::</varname> short-hand for casting</para>
-		<programlisting>
-SELECT ST_SetSRID( ST_Point( -71.104, 42.315), 4326)::geography;</programlisting>
+		<programlisting>SELECT ST_Point( -71.104, 42.315, 4326)::geography;</programlisting>
 
 <para>If the point coordinates are not in a geodetic coordinate system (such as WGS84),
 then they must be reprojected before casting to a geography.
@@ -730,6 +736,7 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Description</title>
         <para>Returns an Point with the given X, Y and Z coordinate values, and optionally an SRID number.</para>
+        <para>Enhanced: 3.2.0 srid as an extra optional argument was added. Older installs require combining with ST_SetSRID to mark the srid on the geometry.</para>
       </refsection>
 
       <refsection>
@@ -766,6 +773,7 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Description</title>
         <para>Returns an Point with the given X, Y and M coordinate values, and optionally an SRID number.</para>
+        <para>Enhanced: 3.2.0 srid as an extra optional argument was added. Older installs require combining with ST_SetSRID to mark the srid on the geometry.</para>
       </refsection>
 
       <refsection>
@@ -804,6 +812,7 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
       <refsection>
         <title>Description</title>
         <para>Returns an Point with the given X, Y, Z and M coordinate values, and optionally an SRID number.</para>
+        <para>Enhanced: 3.2.0 srid as an extra optional argument was added. Older installs require combining with ST_SetSRID to mark the srid on the geometry.</para>
       </refsection>
 
       <refsection>
@@ -815,7 +824,7 @@ SELECT ST_Transform(ST_SetSRID( ST_Point( 3637510, 3014852 ), 2273), 4326)::geog
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_PointM" />, <xref linkend="ST_PointZ" /></para>
+        <para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_PointM" />, <xref linkend="ST_PointZ" />, <xref linkend="ST_SetSRID" /></para>
       </refsection>
     </refentry>
 
