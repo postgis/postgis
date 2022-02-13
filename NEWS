@@ -1,5 +1,5 @@
-PostGIS 3.2.1dev
-2022/02/DD
+PostGIS 3.2.1
+2022/02/12
 
 * Bug Fixes *
   - #5033, #5035, allow upgrades in presence of views using deprecated
@@ -12,6 +12,9 @@ PostGIS 3.2.1dev
   - #5076, stop install when pgaudit is active (Paul Ramsey)
   - #5069, search_path vulnerabilty during install/upgrade
            (Regina Obe)
+  - #5090, #5091 configure --with-protobuf-lib / --with-protobufdir
+           , --without-protobuf broken (Tobias Bussmann)
+
 
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
