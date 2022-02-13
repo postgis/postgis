@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2020-02-13
+Date: 2022-02-13
 
 Versioning Scheme
 -----------------
@@ -123,7 +123,7 @@ Release procedure
   - Documentation should also have been built and should be in http://postgis.net/stuff
      (this sometimes takes sometime so wait 15 minutes)
   - Test generated tarball (including extension upgrade)
-  - Copy tarball, pdf, doc-html to https://download.osgeo.org/postgis/ web site.
+  - Copy tarball, pdf, doc-html to https://upload.osgeo.org/postgis/ web site.
 
   - PostGIS doc release versioned doc - http://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
