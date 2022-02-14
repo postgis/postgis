@@ -23,8 +23,7 @@ open SRSFILE, "<$SRSFILE" || die "Can't open $SRSFILE for reading\n";
 
 my @SRIDS = ();
 while (<SRSFILE>) {
-  /^INSERT/ || next;
-  /\(([0-9]*),/ || next;
+  /^\(([0-9]+),/ || next;
   push @SRIDS, $1;
 }
 @SRIDS = sort {$b <=> $a} @SRIDS;
