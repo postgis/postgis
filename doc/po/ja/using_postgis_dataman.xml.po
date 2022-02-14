@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-10 14:03+0000\n"
+"POT-Creation-Date: 2022-02-13 18:12+0000\n"
 "PO-Revision-Date: 2022-01-11 01:06+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -2588,17 +2588,22 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1248
+#: using_postgis_dataman.xml:1247
 #, no-c-format
 msgid ""
 "A <emphasis role=\"bold\">projected</emphasis> SRS uses a mathematical "
-"projection transformation to \"flatten\" the surface of the spheroidal "
-"earth. It assigns location coordinates in a way that allows direct "
-"measurement of metrics such as distance, area, and angle."
+"projection transformation to \"flatten\" the surface of the spheroidal earth "
+"onto a plane. It assigns location coordinates in a way that allows direct "
+"measurement of quantities such as distance, area, and angle. The coordinate "
+"system is Cartesian, which means it has a defined origin point and two "
+"perpendicular axes (usually oriented North and East). Each projected SRS "
+"uses a stated length unit (usually metres or feet). A projected SRS may be "
+"limited in its area of applicability to avoid distortion and fit within the "
+"defined coordinate bounds."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1254
+#: using_postgis_dataman.xml:1258
 #, no-c-format
 msgid ""
 "A <emphasis role=\"bold\">local</emphasis> SRS is a Cartesian coordinate "
@@ -2607,30 +2612,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1259
+#: using_postgis_dataman.xml:1263
 #, no-c-format
 msgid ""
-"There are many different spatial reference systems in use. Many common SRSes "
-"are standardized by the European Petroleum Survey Group in their <ulink url="
-"\"http://www.epsg.org/\">EPSG database</ulink>. For convenience PostGIS (and "
-"many other spatial systems) refers to SRS definitions using an integer "
-"identifier called a SRID."
+"There are many different spatial reference systems in use. Common SRSes are "
+"standardized in the European Petroleum Survey Group <ulink url=\"http://www."
+"epsg.org/\">EPSG database</ulink>. For convenience PostGIS (and many other "
+"spatial systems) refers to SRS definitions using an integer identifier "
+"called a SRID."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1268
+#: using_postgis_dataman.xml:1272
 #, no-c-format
 msgid ""
 "A geometry is associated with a Spatial Reference System by its SRID value, "
-"which is accessed by <xref linkend=\"ST_SRID\"/>. The SRID can be assigned "
-"to a geometry using <xref linkend=\"ST_SetSRID\"/>. Some geometry "
+"which is accessed by <xref linkend=\"ST_SRID\"/>. The SRID for a geometry "
+"can be assigned using <xref linkend=\"ST_SetSRID\"/>. Some geometry "
 "constructor functions allow supplying a SRID (such as <xref linkend="
-"\"ST_Point\"/> and <xref linkend=\"ST_MakeEnvelope\"/>). A SRID can be "
-"specified in the EWKT format with the <code>SRID=n;</code> prefix."
+"\"ST_Point\"/> and <xref linkend=\"ST_MakeEnvelope\"/>). The <link linkend="
+"\"EWKB_EWKT\">EWKT</link> format supports SRIDs with the <code>SRID=n;</"
+"code> prefix."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1277
+#: using_postgis_dataman.xml:1280
 #, no-c-format
 msgid ""
 "Spatial functions processing pairs of geometries (such as <link linkend="
@@ -2638,17 +2644,18 @@ msgid ""
 "\"Spatial_Relationships\">relationship</link> functions) require that the "
 "input geometries are in the same spatial reference system (have the same "
 "SRID). Geometry data can be transformed into a different spatial reference "
-"system using <xref linkend=\"ST_Transform\"/>."
+"system using <xref linkend=\"ST_Transform\"/>. Geometry returned from "
+"functions has the same SRS as the input geometries."
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:1287
+#: using_postgis_dataman.xml:1291
 #, no-c-format
 msgid "SPATIAL_REF_SYS Table"
 msgstr "SPATIAL_REF_SYSテーブル"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1289
+#: using_postgis_dataman.xml:1293
 #, no-c-format
 msgid ""
 "The <varname>SPATIAL_REF_SYS</varname> table used by PostGIS is an OGC-"
@@ -2658,13 +2665,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1295
+#: using_postgis_dataman.xml:1299
 #, no-c-format
 msgid "The <varname>spatial_ref_sys</varname> table definition is:"
 msgstr "<varname>spatial_ref_sys</varname>の定義は次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1297
+#: using_postgis_dataman.xml:1301
 #, no-c-format
 msgid ""
 "CREATE TABLE spatial_ref_sys (\n"
@@ -2684,19 +2691,19 @@ msgstr ""
 ")"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1299 using_postgis_dataman.xml:1510
+#: using_postgis_dataman.xml:1303 using_postgis_dataman.xml:1514
 #, no-c-format
 msgid "The columns are:"
 msgstr "カラムは次の通りです。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1303 using_postgis_dataman.xml:1541
+#: using_postgis_dataman.xml:1307 using_postgis_dataman.xml:1545
 #, no-c-format
 msgid "srid"
 msgstr "srid"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1306
+#: using_postgis_dataman.xml:1310
 #, no-c-format
 msgid ""
 "An integer code that uniquely identifies the <ulink url=\"http://en."
@@ -2707,13 +2714,13 @@ msgstr ""
 "Reference System</ulink> (SRS, 空間参照系)で一意に識別される整数コードです。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1312
+#: using_postgis_dataman.xml:1316
 #, no-c-format
 msgid "auth_name"
 msgstr "auth_name"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1315
+#: using_postgis_dataman.xml:1319
 #, no-c-format
 msgid ""
 "The name of the standard or standards body that is being cited for this "
@@ -2724,13 +2731,13 @@ msgstr ""
 "「EPSG」は妥当な<varname>auth_name</varname>です。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1322
+#: using_postgis_dataman.xml:1326
 #, no-c-format
 msgid "auth_srid"
 msgstr "auth_srid"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1325
+#: using_postgis_dataman.xml:1329
 #, no-c-format
 msgid ""
 "The ID of the Spatial Reference System as defined by the Authority cited in "
@@ -2738,13 +2745,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1332
+#: using_postgis_dataman.xml:1336
 #, no-c-format
 msgid "srtext"
 msgstr "srtext"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1335
+#: using_postgis_dataman.xml:1339
 #, no-c-format
 msgid ""
 "The Well-Known Text representation of the Spatial Reference System. An "
@@ -2754,7 +2761,7 @@ msgstr ""
 "なります。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1338
+#: using_postgis_dataman.xml:1342
 #, no-c-format
 msgid ""
 "PROJCS[\"NAD83 / UTM Zone 10N\",\n"
@@ -2792,22 +2799,22 @@ msgstr ""
 "]"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1340
+#: using_postgis_dataman.xml:1344
 #, no-c-format
 msgid ""
-"For a discussion of SRS WKT, see the OGC standard <ulink url=\"https://www."
-"ogc.org/standards/wkt-crs\">Well-known text representation of coordinate "
-"reference systems</ulink>."
+"For a discussion of SRS WKT, see the OGC standard <ulink url=\"http://docs."
+"opengeospatial.org/is/12-063r5/12-063r5.html\">Well-known text "
+"representation of coordinate reference systems</ulink>."
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1347
+#: using_postgis_dataman.xml:1351
 #, no-c-format
 msgid "proj4text"
 msgstr "proj4text"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1350
+#: using_postgis_dataman.xml:1354
 #, no-c-format
 msgid ""
 "PostGIS uses the PROJ library to provide coordinate transformation "
@@ -2819,13 +2826,13 @@ msgstr ""
 "入ります。たとえば次のようになります。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1355
+#: using_postgis_dataman.xml:1359
 #, no-c-format
 msgid "+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m"
 msgstr "+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1357
+#: using_postgis_dataman.xml:1361
 #, no-c-format
 msgid ""
 "For more information see the <ulink url=\"https://proj.org/\">PROJ web site</"
@@ -2839,7 +2846,7 @@ msgstr ""
 "あります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1366
+#: using_postgis_dataman.xml:1370
 #, no-c-format
 msgid ""
 "When retrieving spatial reference system definitions for use in "
@@ -2847,7 +2854,7 @@ msgid ""
 msgstr "投影変換で空間参照系の定義を使用する場合には、次の戦略を取ります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1370
+#: using_postgis_dataman.xml:1374
 #, no-c-format
 msgid ""
 "If <varname>auth_name</varname> and <varname>auth_srid</varname> are present "
@@ -2857,7 +2864,7 @@ msgstr ""
 "場合には、これに基づいてPROJSRSを使います (存在する場合)。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1374
+#: using_postgis_dataman.xml:1378
 #, no-c-format
 msgid ""
 "If <varname>srtext</varname> is present create a SRS using it, if possible."
@@ -2866,7 +2873,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1377
+#: using_postgis_dataman.xml:1381
 #, no-c-format
 msgid ""
 "If <varname>proj4text</varname> is present create a SRS using it, if "
@@ -2876,13 +2883,13 @@ msgstr ""
 "ます。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1383
+#: using_postgis_dataman.xml:1387
 #, no-c-format
 msgid "User-Defined Spatial Reference Systems"
 msgstr "ユーザ定義空間参照系"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1385
+#: using_postgis_dataman.xml:1389
 #, no-c-format
 msgid ""
 "The PostGIS <varname>spatial_ref_sys</varname> table contains over 3000 of "
@@ -2903,7 +2910,7 @@ msgstr ""
 "のであり、目的の範囲外で使用する場合は意味を持たない点に注意してください。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1395
+#: using_postgis_dataman.xml:1399
 #, no-c-format
 msgid ""
 "A resource for finding spatial reference systems not defined in the core set "
@@ -2915,7 +2922,7 @@ msgstr ""
 "ulink>にあります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1397
+#: using_postgis_dataman.xml:1401
 #, no-c-format
 msgid ""
 "Some commonly used spatial reference systems are: <ulink url=\"http://"
@@ -2942,7 +2949,7 @@ msgstr ""
 "ulink>を参照してください)。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1406
+#: using_postgis_dataman.xml:1410
 #, no-c-format
 msgid ""
 "US states use State Plane spatial reference systems (meter or feet based) - "
@@ -2958,7 +2965,7 @@ msgstr ""
 "る必要があります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1412
+#: using_postgis_dataman.xml:1416
 #, no-c-format
 msgid ""
 "You can even define non-Earth-based coordinate systems, such as <ulink url="
@@ -2973,7 +2980,7 @@ msgstr ""
 "でなくメートル単位で長さや近接測定値を取得することができます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1418
+#: using_postgis_dataman.xml:1422
 #, no-c-format
 msgid ""
 "Here is an example of loading a custom coordinate system using an unassigned "
@@ -2983,7 +2990,7 @@ msgstr ""
 "ロードする例を次に示します。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1421
+#: using_postgis_dataman.xml:1425
 #, no-c-format
 msgid ""
 "INSERT INTO spatial_ref_sys (srid, proj4text)\n"
@@ -2999,19 +3006,19 @@ msgstr ""
 ");"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1428
+#: using_postgis_dataman.xml:1432
 #, no-c-format
 msgid "Spatial Tables"
 msgstr "空間テーブル"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1431
+#: using_postgis_dataman.xml:1435
 #, no-c-format
 msgid "Creating a Spatial Table"
 msgstr "空間テーブルを作る"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1433
+#: using_postgis_dataman.xml:1437
 #, no-c-format
 msgid ""
 "You can create a table to store geometry data using the <ulink url=\"https://"
@@ -3027,7 +3034,7 @@ msgstr ""
 "るジオメトリカラムを持つテーブルを生成します。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1439
+#: using_postgis_dataman.xml:1443
 #, no-c-format
 msgid ""
 "CREATE TABLE roads (\n"
@@ -3043,7 +3050,7 @@ msgstr ""
 "  );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1441
+#: using_postgis_dataman.xml:1445
 #, no-c-format
 msgid ""
 "The <varname>geometry</varname> type supports two optional <emphasis role="
@@ -3053,7 +3060,7 @@ msgstr ""
 "\"bold\">型修飾子</emphasis>に対応しています。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1445
+#: using_postgis_dataman.xml:1449
 #, no-c-format
 msgid ""
 "the <emphasis role=\"bold\">spatial type modifier</emphasis> restricts the "
@@ -3075,7 +3082,7 @@ msgstr ""
 "許します。同様に、'POINTZM'では4次元 (XYZM)データが求められます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1456
+#: using_postgis_dataman.xml:1460
 #, no-c-format
 msgid ""
 "the <emphasis role=\"bold\">SRID modifier</emphasis> restricts the <link "
@@ -3089,56 +3096,56 @@ msgstr ""
 "link> SRID to a particular number. If omitted, the SRID defaults to 0."
 
 #. Tag: para
-#: using_postgis_dataman.xml:1465
+#: using_postgis_dataman.xml:1469
 #, no-c-format
 msgid "Examples of creating tables with geometry columns:"
 msgstr "ジオグラフィカラムを持つテーブルの生成の例を次に挙げます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1468
+#: using_postgis_dataman.xml:1472
 #, no-c-format
 msgid "Create a table holding any kind of geometry with the default SRID:"
 msgstr "デフォルトSRIDであらゆる種類のジオメトリを保持するテーブルの生成:"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1469
+#: using_postgis_dataman.xml:1473
 #, no-c-format
 msgid "CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry );"
 msgstr "CREATE TABLE geoms(gid serial PRIMARY KEY, geom geometry );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1472
+#: using_postgis_dataman.xml:1476
 #, no-c-format
 msgid "Create a table with 2D POINT geometry with the default SRID:"
 msgstr "2次元ポイントでSRIDがデフォルトのテーブル作成:"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1473
+#: using_postgis_dataman.xml:1477
 #, no-c-format
 msgid "CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT) );"
 msgstr "CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINT) );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1476
+#: using_postgis_dataman.xml:1480
 #, no-c-format
 msgid "Create a table with 3D (XYZ) POINTs and an explicit SRID of 3005:"
 msgstr "3次元 (XYZ)ポイントでSRIDが3005のテーブル作成:"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1477
+#: using_postgis_dataman.xml:1481
 #, no-c-format
 msgid "CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ,3005) );"
 msgstr "CREATE TABLE pts(gid serial PRIMARY KEY, geom geometry(POINTZ,3005) );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1480
+#: using_postgis_dataman.xml:1484
 #, no-c-format
 msgid ""
 "Create a table with 4D (XYZM) LINESTRING geometry with the default SRID:"
 msgstr "4次元 (XYZM)ラインストリングでSRIDがデフォルトのテーブル作成:"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1481
+#: using_postgis_dataman.xml:1485
 #, no-c-format
 msgid ""
 "CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM) );"
@@ -3146,7 +3153,7 @@ msgstr ""
 "CREATE TABLE lines(gid serial PRIMARY KEY, geom geometry(LINESTRINGZM) );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1484
+#: using_postgis_dataman.xml:1488
 #, no-c-format
 msgid ""
 "Create a table with 2D POLYGON geometry with the SRID 4267 (NAD 1927 long "
@@ -3154,7 +3161,7 @@ msgid ""
 msgstr "2次元ポリゴンでSRIDが4276 (NAD 1927地理座標系)のテーブル作成:"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1485
+#: using_postgis_dataman.xml:1489
 #, no-c-format
 msgid ""
 "CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON,4267) );"
@@ -3162,7 +3169,7 @@ msgstr ""
 "CREATE TABLE polys(gid serial PRIMARY KEY, geom geometry(POLYGON,4267) );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1489
+#: using_postgis_dataman.xml:1493
 #, no-c-format
 msgid ""
 "It is possible to have more than one geometry column in a table. This can be "
@@ -3177,19 +3184,19 @@ msgstr ""
 "現できます。次に3次元ラインストリングを格納するカラムを追加する例を示します。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1495
+#: using_postgis_dataman.xml:1499
 #, no-c-format
 msgid "ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);"
 msgstr "ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1499
+#: using_postgis_dataman.xml:1503
 #, no-c-format
 msgid "GEOMETRY_COLUMNS View"
 msgstr "GEOMETRY_COLUMNSビュー"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1501
+#: using_postgis_dataman.xml:1505
 #, no-c-format
 msgid ""
 "The OGC <emphasis>Simple Features Specification for SQL</emphasis> defines "
@@ -3206,13 +3213,13 @@ msgstr ""
 "メタデータ情報が常に現在定義されているテーブルやビューと矛盾しなくなります。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1507
+#: using_postgis_dataman.xml:1511
 #, no-c-format
 msgid "\\d geometry_columns"
 msgstr "\\d geometry_columns"
 
 #. Tag: screen
-#: using_postgis_dataman.xml:1508
+#: using_postgis_dataman.xml:1512
 #, no-c-format
 msgid ""
 "View \"public.geometry_columns\"\n"
@@ -3238,13 +3245,13 @@ msgstr ""
 " type              | character varying(30)  |"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1514
+#: using_postgis_dataman.xml:1518
 #, no-c-format
 msgid "f_table_catalog, f_table_schema, f_table_name"
 msgstr "f_table_catalog, f_table_schema, f_table_name"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1517
+#: using_postgis_dataman.xml:1521
 #, no-c-format
 msgid ""
 "The fully qualified name of the feature table containing the geometry "
@@ -3258,31 +3265,31 @@ msgstr ""
 "す)。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1525
+#: using_postgis_dataman.xml:1529
 #, no-c-format
 msgid "f_geometry_column"
 msgstr "f_geometry_column"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1528
+#: using_postgis_dataman.xml:1532
 #, no-c-format
 msgid "The name of the geometry column in the feature table."
 msgstr "フィーチャーテーブル内のジオメトリカラムの名前。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1533
+#: using_postgis_dataman.xml:1537
 #, no-c-format
 msgid "coord_dimension"
 msgstr "coord_dimension"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1536
+#: using_postgis_dataman.xml:1540
 #, no-c-format
 msgid "The coordinate dimension (2, 3 or 4) of the column."
 msgstr "カラムの座標次元 (2, 3, 4)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1544
+#: using_postgis_dataman.xml:1548
 #, no-c-format
 msgid ""
 "The ID of the spatial reference system used for the coordinate geometry in "
@@ -3294,13 +3301,13 @@ msgstr ""
 "linkend=\"spatial_ref_sys_table\"/>を参照して下さい)。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1552
+#: using_postgis_dataman.xml:1556
 #, no-c-format
 msgid "type"
 msgstr "type"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1555
+#: using_postgis_dataman.xml:1559
 #, no-c-format
 msgid ""
 "The type of the spatial object. To restrict the spatial column to a single "
@@ -3318,13 +3325,13 @@ msgstr ""
 "す。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1568
+#: using_postgis_dataman.xml:1572
 #, no-c-format
 msgid "Manually Registering Geometry Columns"
 msgstr "手動でジオメトリカラムをgeometry_columnsに登録する"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1570
+#: using_postgis_dataman.xml:1574
 #, no-c-format
 msgid ""
 "Two of the cases where you may need this are the case of SQL Views and bulk "
@@ -3344,7 +3351,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1575
+#: using_postgis_dataman.xml:1579
 #, no-c-format
 msgid ""
 "-- Lets say you have a view created like this\n"
@@ -3391,7 +3398,7 @@ msgstr ""
 "        FROM public.mytable;"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1576
+#: using_postgis_dataman.xml:1580
 #, no-c-format
 msgid ""
 "--Lets say you created a derivative table by doing a bulk insert\n"
@@ -3452,7 +3459,7 @@ msgstr ""
 "false);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1578
+#: using_postgis_dataman.xml:1582
 #, no-c-format
 msgid ""
 "Although the old-constraint based method is still supported, a constraint-"
@@ -3466,7 +3473,7 @@ msgstr ""
 "制約に基づくカラムの定義とを行っています。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1581
+#: using_postgis_dataman.xml:1585
 #, no-c-format
 msgid ""
 "CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY, poi_name text, cat text, geom "
@@ -3478,26 +3485,26 @@ msgstr ""
 "SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1582
+#: using_postgis_dataman.xml:1586
 #, no-c-format
 msgid "If we run in psql"
 msgstr "psqlで次を実行します。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1583
+#: using_postgis_dataman.xml:1587
 #, no-c-format
 msgid "\\d pois_ny;"
 msgstr "\\d pois_ny;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1584
+#: using_postgis_dataman.xml:1588
 #, no-c-format
 msgid ""
 "We observe they are defined differently -- one is typmod, one is constraint"
 msgstr "型修飾子と制約に基づくのとでは異なった定義になっているのが見えます。"
 
 #. Tag: screen
-#: using_postgis_dataman.xml:1585
+#: using_postgis_dataman.xml:1589
 #, no-c-format
 msgid ""
 "Table \"public.pois_ny\"\n"
@@ -3541,13 +3548,13 @@ msgstr ""
 "    \"enforce_srid_geom_2160\" CHECK (st_srid(geom_2160) = 2160)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1586
+#: using_postgis_dataman.xml:1590
 #, no-c-format
 msgid "In geometry_columns, they both register correctly"
 msgstr "geometry_columnsでは、両方とも正しく登録されています。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1587
+#: using_postgis_dataman.xml:1591
 #, no-c-format
 msgid ""
 "SELECT f_table_name, f_geometry_column, srid, type\n"
@@ -3559,7 +3566,7 @@ msgstr ""
 "        WHERE f_table_name = 'pois_ny';"
 
 #. Tag: screen
-#: using_postgis_dataman.xml:1588
+#: using_postgis_dataman.xml:1592
 #, no-c-format
 msgid ""
 "f_table_name | f_geometry_column | srid | type\n"
@@ -3573,13 +3580,13 @@ msgstr ""
 "pois_ny      | geom_2160         | 2160 | POINT"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1589
+#: using_postgis_dataman.xml:1593
 #, no-c-format
 msgid "However -- if we were to create a view like this"
 msgstr "しかし、次のようにビューを作ろうとします。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1590
+#: using_postgis_dataman.xml:1594
 #, no-c-format
 msgid ""
 "CREATE VIEW vw_pois_ny_parks AS\n"
@@ -3601,7 +3608,7 @@ msgstr ""
 "        WHERE f_table_name = 'vw_pois_ny_parks';"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1591
+#: using_postgis_dataman.xml:1595
 #, no-c-format
 msgid ""
 "The typmod based geom view column registers correctly, but the constraint "
@@ -3611,7 +3618,7 @@ msgstr ""
 "しく登録されません。"
 
 #. Tag: screen
-#: using_postgis_dataman.xml:1593
+#: using_postgis_dataman.xml:1597
 #, no-c-format
 msgid ""
 "f_table_name   | f_geometry_column | srid |   type\n"
@@ -3625,7 +3632,7 @@ msgstr ""
 " vw_pois_ny_parks | geom_2160         |    0 | GEOMETRY"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1595
+#: using_postgis_dataman.xml:1599
 #, no-c-format
 msgid ""
 "This may change in future versions of PostGIS, but for now to force the "
@@ -3635,7 +3642,7 @@ msgstr ""
 "基づくビューカラムを正しく登録させるには、次のようにします。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1597
+#: using_postgis_dataman.xml:1601
 #, no-c-format
 msgid ""
 "DROP VIEW vw_pois_ny_parks;\n"
@@ -3661,7 +3668,7 @@ msgstr ""
 "        WHERE f_table_name = 'vw_pois_ny_parks';"
 
 #. Tag: screen
-#: using_postgis_dataman.xml:1598
+#: using_postgis_dataman.xml:1602
 #, no-c-format
 msgid ""
 "f_table_name   | f_geometry_column | srid | type\n"
@@ -3675,13 +3682,13 @@ msgstr ""
 " vw_pois_ny_parks | geom_2160         | 2160 | POINT"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1605
+#: using_postgis_dataman.xml:1609
 #, no-c-format
 msgid "Loading Spatial Data"
 msgstr "空間データのロード"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1607
+#: using_postgis_dataman.xml:1611
 #, no-c-format
 msgid ""
 "Once you have created a spatial table, you are ready to upload spatial data "
@@ -3695,13 +3702,13 @@ msgstr ""
 "う、という二つの方法があります。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1613
+#: using_postgis_dataman.xml:1617
 #, no-c-format
 msgid "Using SQL to Load Data"
 msgstr "SQLを使ってロードする"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1615
+#: using_postgis_dataman.xml:1619
 #, no-c-format
 msgid ""
 "If spatial data can be converted to a text representation (as either WKT or "
@@ -3715,7 +3722,7 @@ msgstr ""
 "PostGIS/PostgreSQLに一括読み込みできます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1620
+#: using_postgis_dataman.xml:1624
 #, no-c-format
 msgid ""
 "A SQL load file (<filename>roads.sql</filename> for example) might look like "
@@ -3725,7 +3732,7 @@ msgstr ""
 "になるでしょう。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1623
+#: using_postgis_dataman.xml:1627
 #, no-c-format
 msgid ""
 "BEGIN;\n"
@@ -3759,7 +3766,7 @@ msgstr ""
 "COMMIT;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1625
+#: using_postgis_dataman.xml:1629
 #, no-c-format
 msgid "The SQL file can be loaded into PostgreSQL using <code>psql</code>:"
 msgstr ""
@@ -3767,19 +3774,19 @@ msgstr ""
 "ます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1627
+#: using_postgis_dataman.xml:1631
 #, no-c-format
 msgid "psql -d [database] -f roads.sql"
 msgstr "psql -d [データベース名] -f roads.sql"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1631
+#: using_postgis_dataman.xml:1635
 #, no-c-format
 msgid "Using the Shapefile Loader"
 msgstr "シェープファイルローダを使う"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1633
+#: using_postgis_dataman.xml:1637
 #, no-c-format
 msgid ""
 "The <filename>shp2pgsql</filename> data loader converts Shapefiles into SQL "
@@ -3793,7 +3800,7 @@ msgstr ""
 "る、いくつかの操作モードがあります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1638
+#: using_postgis_dataman.xml:1642
 #, no-c-format
 msgid ""
 "There is also a <filename>shp2pgsql-gui</filename> graphical interface with "
@@ -3807,19 +3814,19 @@ msgstr ""
 "簡単に使用できます。PgAdminIIIのプラグインとすることもできます。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1646
+#: using_postgis_dataman.xml:1650
 #, no-c-format
 msgid "(c|a|d|p) These are mutually exclusive options:"
 msgstr "(c|a|d|p) 相互に排他的なオプションです"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1651
+#: using_postgis_dataman.xml:1655
 #, no-c-format
 msgid "<term>-c</term>"
 msgstr "<term>-c</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1653
+#: using_postgis_dataman.xml:1657
 #, no-c-format
 msgid ""
 "Creates a new table and populates it from the Shapefile. <emphasis>This is "
@@ -3829,13 +3836,13 @@ msgstr ""
 "<emphasis>これがデフォルトモードです</emphasis>。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1661
+#: using_postgis_dataman.xml:1665
 #, no-c-format
 msgid "<term>-a</term>"
 msgstr "<term>-a</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1663
+#: using_postgis_dataman.xml:1667
 #, no-c-format
 msgid ""
 "Appends data from the Shapefile into the database table. Note that to use "
@@ -3847,13 +3854,13 @@ msgstr ""
 "じデータ型を持つ必要があります。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1672
+#: using_postgis_dataman.xml:1676
 #, no-c-format
 msgid "<term>-d</term>"
 msgstr "<term>-d</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1674
+#: using_postgis_dataman.xml:1678
 #, no-c-format
 msgid ""
 "Drops the database table before creating a new table with the data in the "
@@ -3863,13 +3870,13 @@ msgstr ""
 "テーブルを削除します。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1681
+#: using_postgis_dataman.xml:1685
 #, no-c-format
 msgid "<term>-p</term>"
 msgstr "<term>-p</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1683
+#: using_postgis_dataman.xml:1687
 #, no-c-format
 msgid ""
 "Only produces the table creation SQL code, without adding any actual data. "
@@ -3880,25 +3887,25 @@ msgstr ""
 "ドは、テーブル作成とデータロードとを完全に分けたい場合に使用します。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1696
+#: using_postgis_dataman.xml:1700
 #, no-c-format
 msgid "<term>-?</term>"
 msgstr "<term>-?</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1698
+#: using_postgis_dataman.xml:1702
 #, no-c-format
 msgid "Display help screen."
 msgstr "ヘルプ画面を表示します。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1705
+#: using_postgis_dataman.xml:1709
 #, no-c-format
 msgid "<term>-D</term>"
 msgstr "<term>-D</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1707
+#: using_postgis_dataman.xml:1711
 #, no-c-format
 msgid ""
 "Use the PostgreSQL \"dump\" format for the output data. This can be combined "
@@ -3910,13 +3917,13 @@ msgstr ""
 "きます。大きなデータセットではこちらを使用して下さい。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1716
+#: using_postgis_dataman.xml:1720
 #, no-c-format
 msgid "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
 msgstr "-s [&lt;FROM_SRID&gt;:]&lt;SRID&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1718
+#: using_postgis_dataman.xml:1722
 #, no-c-format
 msgid ""
 "Creates and populates the geometry tables with the specified SRID. "
@@ -3928,13 +3935,13 @@ msgstr ""
 "リは変更先SRIDに投影変換します。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1728
+#: using_postgis_dataman.xml:1732
 #, no-c-format
 msgid "<term>-k</term>"
 msgstr "<term>-k</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1730
+#: using_postgis_dataman.xml:1734
 #, no-c-format
 msgid ""
 "Keep identifiers' case (column, schema and attributes). Note that attributes "
@@ -3944,13 +3951,13 @@ msgstr ""
 "ルの属性は全て大文字であることに注意して下さい。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1738
+#: using_postgis_dataman.xml:1742
 #, no-c-format
 msgid "<term>-i</term>"
 msgstr "<term>-i</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1740
+#: using_postgis_dataman.xml:1744
 #, no-c-format
 msgid ""
 "Coerce all integers to standard 32-bit integers, do not create 64-bit "
@@ -3960,25 +3967,25 @@ msgstr ""
 "しても、64ビットのbigintを生成しません。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1748
+#: using_postgis_dataman.xml:1752
 #, no-c-format
 msgid "<term>-I</term>"
 msgstr "<term>-I</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1750
+#: using_postgis_dataman.xml:1754
 #, no-c-format
 msgid "Create a GiST index on the geometry column."
 msgstr "ジオメトリカラムにGiSTインデックスを生成します。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1757
+#: using_postgis_dataman.xml:1761
 #, no-c-format
 msgid "<term>-m</term>"
 msgstr "<term>-m</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1759
+#: using_postgis_dataman.xml:1763
 #, no-c-format
 msgid ""
 "-m <filename>a_file_name</filename> Specify a file containing a set of "
@@ -3991,7 +3998,7 @@ msgstr ""
 "りで二つの名前を持ち、行頭行末に空白を入れません。例を次に示します。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1764
+#: using_postgis_dataman.xml:1768
 #, no-c-format
 msgid ""
 "COLUMNNAME DBFFIELD1\n"
@@ -4001,13 +4008,13 @@ msgstr ""
 "AVERYLONGCOLUMNNAME DBFFIELD2"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1770
+#: using_postgis_dataman.xml:1774
 #, no-c-format
 msgid "<term>-S</term>"
 msgstr "<term>-S</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1772
+#: using_postgis_dataman.xml:1776
 #, no-c-format
 msgid ""
 "Generate simple geometries instead of MULTI geometries. Will only succeed if "
@@ -4019,13 +4026,13 @@ msgstr ""
 "MULTIPOINT)場合にのみ成功します。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1781
+#: using_postgis_dataman.xml:1785
 #, no-c-format
 msgid "-t &lt;dimensionality&gt;"
 msgstr "-t &lt;次元&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1783
+#: using_postgis_dataman.xml:1787
 #, no-c-format
 msgid ""
 "Force the output geometry to have the specified dimensionality. Use the "
@@ -4035,7 +4042,7 @@ msgstr ""
 "字列を使います。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1787
+#: using_postgis_dataman.xml:1791
 #, no-c-format
 msgid ""
 "If the input has fewer dimensions that specified, the output will have those "
@@ -4046,13 +4053,13 @@ msgstr ""
 "合には、外されます。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1796
+#: using_postgis_dataman.xml:1800
 #, no-c-format
 msgid "<term>-w</term>"
 msgstr "<term>-w</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1798
+#: using_postgis_dataman.xml:1802
 #, no-c-format
 msgid ""
 "Output WKT format, instead of WKB. Note that this can introduce coordinate "
@@ -4062,13 +4069,13 @@ msgstr ""
 "意が必要です。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1806
+#: using_postgis_dataman.xml:1810
 #, no-c-format
 msgid "<term>-e</term>"
 msgstr "<term>-e</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1808
+#: using_postgis_dataman.xml:1812
 #, no-c-format
 msgid ""
 "Execute each statement on its own, without using a transaction. This allows "
@@ -4082,13 +4089,13 @@ msgstr ""
 "グを指定している場合には使えません。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1818
+#: using_postgis_dataman.xml:1822
 #, no-c-format
 msgid "-W &lt;encoding&gt;"
 msgstr "-W &lt;エンコーディング&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1820
+#: using_postgis_dataman.xml:1824
 #, no-c-format
 msgid ""
 "Specify encoding of the input data (dbf file). When used, all attributes of "
@@ -4103,13 +4110,13 @@ msgstr ""
 "データベースが内部利用のために設定したエンコーディングに再変換できます。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1830
+#: using_postgis_dataman.xml:1834
 #, no-c-format
 msgid "-N &lt;policy&gt;"
 msgstr "-N &lt;方針&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1832
+#: using_postgis_dataman.xml:1836
 #, no-c-format
 msgid "NULL geometries handling policy (insert*,skip,abort)"
 msgstr ""
@@ -4117,13 +4124,13 @@ msgstr ""
 "す。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1838
+#: using_postgis_dataman.xml:1842
 #, no-c-format
 msgid "<term>-n</term>"
 msgstr "<term>-n</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1840
+#: using_postgis_dataman.xml:1844
 #, no-c-format
 msgid ""
 "-n Only import DBF file. If your data has no corresponding shapefile, it "
@@ -4137,13 +4144,13 @@ msgstr ""
 "くない時のみ使用します。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1848
+#: using_postgis_dataman.xml:1852
 #, no-c-format
 msgid "<term>-G</term>"
 msgstr "<term>-G</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1850
+#: using_postgis_dataman.xml:1854
 #, no-c-format
 msgid ""
 "Use geography type instead of geometry (requires lon/lat data) in WGS84 long "
@@ -4153,13 +4160,13 @@ msgstr ""
 "す (経度緯度データが必要です)。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1856
+#: using_postgis_dataman.xml:1860
 #, no-c-format
 msgid "-T &lt;tablespace&gt;"
 msgstr "-T &lt;tablespace&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1858
+#: using_postgis_dataman.xml:1862
 #, no-c-format
 msgid ""
 "Specify the tablespace for the new table. Indexes will still use the default "
@@ -4171,13 +4178,13 @@ msgstr ""
 "ブル空間を用いるべき時に関する良い文書があります。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1866
+#: using_postgis_dataman.xml:1870
 #, no-c-format
 msgid "-X &lt;tablespace&gt;"
 msgstr "-X &lt;tablespace&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1868
+#: using_postgis_dataman.xml:1872
 #, no-c-format
 msgid ""
 "Specify the tablespace for the new table's indexes. This applies to the "
@@ -4188,13 +4195,13 @@ msgstr ""
 "適用されます。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1875
+#: using_postgis_dataman.xml:1879
 #, no-c-format
 msgid "<term>-Z</term>"
 msgstr "<term>-Z</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1877
+#: using_postgis_dataman.xml:1881
 #, no-c-format
 msgid ""
 "When used, this flag will prevent the generation of <code>ANALYZE</code> "
@@ -4206,7 +4213,7 @@ msgstr ""
 "ます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1886
+#: using_postgis_dataman.xml:1890
 #, no-c-format
 msgid ""
 "An example session using the loader to create an input file and loading it "
@@ -4216,7 +4223,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1891
+#: using_postgis_dataman.xml:1895
 #, no-c-format
 msgid ""
 "# shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable &gt; "
@@ -4228,25 +4235,25 @@ msgstr ""
 "# psql -d roadsdb -f roads.sql"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1893
+#: using_postgis_dataman.xml:1897
 #, no-c-format
 msgid "A conversion and load can be done in one step using UNIX pipes:"
 msgstr "変換とアップロードはUNIXのパイプを使うと一回で実行できます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1897
+#: using_postgis_dataman.xml:1901
 #, no-c-format
 msgid "# shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb"
 msgstr "# shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1902
+#: using_postgis_dataman.xml:1906
 #, no-c-format
 msgid "Extracting Spatial Data"
 msgstr "空間データの抽出"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1904
+#: using_postgis_dataman.xml:1908
 #, no-c-format
 msgid ""
 "Spatial data can be extracted from the database using either SQL or the "
@@ -4257,13 +4264,13 @@ msgstr ""
 "テーブルで比較とクエリに使用できる関数を示します。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1910
+#: using_postgis_dataman.xml:1914
 #, no-c-format
 msgid "Using SQL to Extract Data"
 msgstr "SQLを使ってデータを抽出する"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1912
+#: using_postgis_dataman.xml:1916
 #, no-c-format
 msgid ""
 "The most straightforward way of extracting spatial data out of the database "
@@ -4275,7 +4282,7 @@ msgstr ""
 "イルにダンプすることです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1917
+#: using_postgis_dataman.xml:1921
 #, no-c-format
 msgid ""
 "db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;\n"
@@ -4305,7 +4312,7 @@ msgstr ""
 "(6 rows)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1919
+#: using_postgis_dataman.xml:1923
 #, no-c-format
 msgid ""
 "There will be times when some kind of restriction is necessary to cut down "
@@ -4318,26 +4325,26 @@ msgstr ""
 "空間に制限をかけるには次の関数を使います。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1927
+#: using_postgis_dataman.xml:1931
 #, no-c-format
 msgid "ST_Intersects"
 msgstr "ST_Intersects"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1930
+#: using_postgis_dataman.xml:1934
 #, no-c-format
 msgid "This function tells whether two geometries share any space."
 msgstr ""
 "この関数は、二つのジオメトリが空間を共有しているかどうかをテストします。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1935
+#: using_postgis_dataman.xml:1939
 #, no-c-format
 msgid "<term>=</term>"
 msgstr "<term>=</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1938
+#: using_postgis_dataman.xml:1942
 #, no-c-format
 msgid ""
 "This tests whether two geometries are geometrically identical. For example, "
@@ -4349,7 +4356,7 @@ msgstr ""
 "見ることができます (これは同じとなります)。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1946
+#: using_postgis_dataman.xml:1950
 #, no-c-format
 msgid ""
 "Next, you can use these operators in queries. Note that when specifying "
@@ -4363,7 +4370,7 @@ msgstr ""
 "空の空間参照系番号で、ここでのデータに合致しています。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1952
+#: using_postgis_dataman.xml:1956
 #, no-c-format
 msgid ""
 "SELECT road_id, road_name\n"
@@ -4377,7 +4384,7 @@ msgstr ""
 "geometry;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1954
+#: using_postgis_dataman.xml:1958
 #, no-c-format
 msgid ""
 "The above query would return the single record from the \"ROADS_GEOM\" table "
@@ -4387,7 +4394,7 @@ msgstr ""
 "します。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1957
+#: using_postgis_dataman.xml:1961
 #, no-c-format
 msgid ""
 "To check whether some of the roads passes in the area defined by a polygon:"
@@ -4396,7 +4403,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1959
+#: using_postgis_dataman.xml:1963
 #, no-c-format
 msgid ""
 "SELECT road_id, road_name\n"
@@ -4408,7 +4415,7 @@ msgstr ""
 "WHERE ST_Intersects(roads_geom, 'SRID=312;POLYGON((...))');"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1963
+#: using_postgis_dataman.xml:1967
 #, no-c-format
 msgid ""
 "The most common spatial query will probably be a \"frame-based\" query, used "
@@ -4420,7 +4427,7 @@ msgstr ""
 "ウェブマッパのようなクライアントソフトウェアに使われます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1966
+#: using_postgis_dataman.xml:1970
 #, no-c-format
 msgid ""
 "When using the \"&amp;&amp;\" operator, you can specify either a BOX3D as "
@@ -4432,13 +4439,13 @@ msgstr ""
 "比較に使われます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1970
+#: using_postgis_dataman.xml:1974
 #, no-c-format
 msgid "Using a \"BOX3D\" object for the frame, such a query looks like this:"
 msgstr "次に示すクエリのように、フレームにBOX3Dオブジェクトを使います。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1972
+#: using_postgis_dataman.xml:1976
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(roads_geom) AS geom\n"
@@ -4452,7 +4459,7 @@ msgstr ""
 "  roads_geom &amp;&amp; ST_MakeEnvelope(191232, 243117,191232, 243119,312);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1974
+#: using_postgis_dataman.xml:1978
 #, no-c-format
 msgid ""
 "Note the use of the SRID 312, to specify the projection of the envelope."
@@ -4460,13 +4467,13 @@ msgstr ""
 "エンベロープの投影を指定するためにSRID 312を使っていることに注意して下さい。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:1980
+#: using_postgis_dataman.xml:1984
 #, no-c-format
 msgid "Using the Shapefile Dumper"
 msgstr "ダンパを使う"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1982
+#: using_postgis_dataman.xml:1986
 #, no-c-format
 msgid ""
 "The <filename>pgsql2shp</filename> table dumper connects to the database and "
@@ -4478,7 +4485,7 @@ msgstr ""
 "のです。基本的な文は次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1986
+#: using_postgis_dataman.xml:1990
 #, no-c-format
 msgid ""
 "pgsql2shp [&lt;options&gt;] &lt;database&gt; [&lt;schema&gt;.]&lt;table&gt;"
@@ -4487,85 +4494,85 @@ msgstr ""
 "table&gt;"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1988
+#: using_postgis_dataman.xml:1992
 #, no-c-format
 msgid "pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;query&gt;"
 msgstr "pgsql2shp [&lt;オプション&gt;] &lt;データベース&gt; &lt;クエリ&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1990
+#: using_postgis_dataman.xml:1994
 #, no-c-format
 msgid "The commandline options are:"
 msgstr "コマンドラインオプションは次の通りです。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:1994
+#: using_postgis_dataman.xml:1998
 #, no-c-format
 msgid "-f &lt;filename&gt;"
 msgstr "-f &lt;ファイル名&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1997
+#: using_postgis_dataman.xml:2001
 #, no-c-format
 msgid "Write the output to a particular filename."
 msgstr "特定のファイル名に出力を書きこみます。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:2002
+#: using_postgis_dataman.xml:2006
 #, no-c-format
 msgid "-h &lt;host&gt;"
 msgstr "-h &lt;ホスト&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2005
+#: using_postgis_dataman.xml:2009
 #, no-c-format
 msgid "The database host to connect to."
 msgstr "接続先データベースのホスト名。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:2010
+#: using_postgis_dataman.xml:2014
 #, no-c-format
 msgid "-p &lt;port&gt;"
 msgstr "-p &lt;ポート&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2013
+#: using_postgis_dataman.xml:2017
 #, no-c-format
 msgid "The port to connect to on the database host."
 msgstr "接続先データベースのポート。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:2018
+#: using_postgis_dataman.xml:2022
 #, no-c-format
 msgid "-P &lt;password&gt;"
 msgstr "-P &lt;パスワード&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2021
+#: using_postgis_dataman.xml:2025
 #, no-c-format
 msgid "The password to use when connecting to the database."
 msgstr "データベースに接続するためのパスワード。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:2026
+#: using_postgis_dataman.xml:2030
 #, no-c-format
 msgid "-u &lt;user&gt;"
 msgstr "-u &lt;ユーザ名&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2029
+#: using_postgis_dataman.xml:2033
 #, no-c-format
 msgid "The username to use when connecting to the database."
 msgstr "データベースに接続する際のユーザ名。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:2034
+#: using_postgis_dataman.xml:2038
 #, no-c-format
 msgid "-g &lt;geometry column&gt;"
 msgstr "-g &lt;ジオメトリカラム&gt;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2037
+#: using_postgis_dataman.xml:2041
 #, no-c-format
 msgid ""
 "In the case of tables with multiple geometry columns, the geometry column to "
@@ -4575,13 +4582,13 @@ msgstr ""
 "るジオメトリカラム。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:2043
+#: using_postgis_dataman.xml:2047
 #, no-c-format
 msgid "<term>-b</term>"
 msgstr "<term>-b</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2046
+#: using_postgis_dataman.xml:2050
 #, no-c-format
 msgid ""
 "Use a binary cursor. This will make the operation faster, but will not work "
@@ -4591,13 +4598,13 @@ msgstr ""
 "メトリ属性がテキストへのキャストを持っていない場合には、動作しません。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:2053
+#: using_postgis_dataman.xml:2057
 #, no-c-format
 msgid "<term>-r</term>"
 msgstr "<term>-r</term>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2056
+#: using_postgis_dataman.xml:2060
 #, no-c-format
 msgid ""
 "Raw mode. Do not drop the <varname>gid</varname> field, or escape column "
@@ -4607,13 +4614,13 @@ msgstr ""
 "してはいけません。"
 
 #. Tag: term
-#: using_postgis_dataman.xml:2062
+#: using_postgis_dataman.xml:2066
 #, no-c-format
 msgid "-m <varname>filename</varname>"
 msgstr "-m <varname>ファイル名</varname>"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2064
+#: using_postgis_dataman.xml:2068
 #, no-c-format
 msgid ""
 "Remap identifiers to ten character names. The content of the file is lines "
@@ -4625,13 +4632,13 @@ msgstr ""
 "ANOTHERVERYLONGSYMBOL SHORTER等となります。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2077
+#: using_postgis_dataman.xml:2081
 #, no-c-format
 msgid "Spatial Indexes"
 msgstr "空間インデックス"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2079
+#: using_postgis_dataman.xml:2083
 #, no-c-format
 msgid ""
 "Spatial indexes make using a spatial database for large data sets possible. "
@@ -4645,7 +4652,7 @@ msgstr ""
 "ド探索のために早く移動できる構造を構築するので、検索速度が向上します。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2085
+#: using_postgis_dataman.xml:2089
 #, no-c-format
 msgid ""
 "The B-tree index method commonly used for attribute data is not very useful "
@@ -4664,7 +4671,7 @@ msgstr ""
 "デックス手法を提供していることです。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2095
+#: using_postgis_dataman.xml:2099
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">GiST (Generalized Search Tree)</emphasis> indexes "
@@ -4681,7 +4688,7 @@ msgstr ""
 "多目的なインデックス手法で、非常に良好な問い合わせ効率を提供しています。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2105
+#: using_postgis_dataman.xml:2109
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">BRIN (Block Range Index)</emphasis> indexes operate "
@@ -4697,7 +4704,7 @@ msgstr ""
 "に小さくなります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2115
+#: using_postgis_dataman.xml:2119
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">SP-GiST (Space-Partitioned Generalized Search Tree)</"
@@ -4709,7 +4716,7 @@ msgstr ""
 "インデックス手法です。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2122
+#: using_postgis_dataman.xml:2126
 #, no-c-format
 msgid ""
 "Spatial indexes store only the bounding box of geometries. Spatial queries "
@@ -4728,7 +4735,7 @@ msgstr ""
 "情報については<xref linkend=\"using-query-indexes\"/>をご覧下さい。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2130
+#: using_postgis_dataman.xml:2134
 #, no-c-format
 msgid ""
 "See also the <ulink url=\"https://postgis.net/workshops/postgis-intro/"
@@ -4742,13 +4749,13 @@ msgstr ""
 "覧下さい。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2136
+#: using_postgis_dataman.xml:2140
 #, no-c-format
 msgid "GiST Indexes"
 msgstr "GiSTインデックス"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2138
+#: using_postgis_dataman.xml:2142
 #, no-c-format
 msgid ""
 "GiST stands for \"Generalized Search Tree\" and is a generic form of "
@@ -4771,7 +4778,7 @@ msgstr ""
 "ulink>をご覧ください。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2148
+#: using_postgis_dataman.xml:2152
 #, no-c-format
 msgid ""
 "Once a spatial data table exceeds a few thousand rows, you will want to "
@@ -4784,14 +4791,14 @@ msgstr ""
 "デックスを属性フィールドに追加します)。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2153
+#: using_postgis_dataman.xml:2157
 #, no-c-format
 msgid ""
 "The syntax for building a GiST index on a \"geometry\" column is as follows:"
 msgstr "GiSTインデックスをジオメトリカラムに追加するための文は次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2156
+#: using_postgis_dataman.xml:2160
 #, no-c-format
 msgid "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] );"
 msgstr ""
@@ -4799,7 +4806,7 @@ msgstr ""
 "名] );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2158
+#: using_postgis_dataman.xml:2162
 #, no-c-format
 msgid ""
 "The above syntax will always build a 2D-index. To get the an n-dimensional "
@@ -4809,7 +4816,7 @@ msgstr ""
 "で使うには、次の文でインデックスを生成できます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2159
+#: using_postgis_dataman.xml:2163
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] "
@@ -4819,7 +4826,7 @@ msgstr ""
 "名] gist_geometry_ops_nd);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2161
+#: using_postgis_dataman.xml:2165
 #, no-c-format
 msgid ""
 "Building a spatial index is a computationally intensive exercise. It also "
@@ -4831,7 +4838,7 @@ msgstr ""
 "り遅いCONCURRENTLYを選択するかも知れません。次のようにします。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2162
+#: using_postgis_dataman.xml:2166
 #, no-c-format
 msgid ""
 "CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING GIST "
@@ -4841,7 +4848,7 @@ msgstr ""
 "メトリカラム名] );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2164 using_postgis_dataman.xml:2336
+#: using_postgis_dataman.xml:2168 using_postgis_dataman.xml:2340
 #, no-c-format
 msgid ""
 "After building an index, it is sometimes helpful to force PostgreSQL to "
@@ -4851,19 +4858,19 @@ msgstr ""
 "ます。クエリプランの最適化に使われます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2167 using_postgis_dataman.xml:2339
+#: using_postgis_dataman.xml:2171 using_postgis_dataman.xml:2343
 #, no-c-format
 msgid "VACUUM ANALYZE [table_name] [(column_name)];"
 msgstr "VACUUM ANALYZE [テーブル名] [(カラム名)];"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2172
+#: using_postgis_dataman.xml:2176
 #, no-c-format
 msgid "BRIN Indexes"
 msgstr "BRINインデックス"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2174
+#: using_postgis_dataman.xml:2178
 #, no-c-format
 msgid ""
 "BRIN stands for \"Block Range Index\". It is a general-purpose index method "
@@ -4890,7 +4897,7 @@ msgstr ""
 "manual</ulink>をご覧ください。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2190
+#: using_postgis_dataman.xml:2194
 #, no-c-format
 msgid ""
 "Once a spatial table exceeds a few thousand rows, you will want to build an "
@@ -4908,7 +4915,7 @@ msgstr ""
 "スを代替に考えることができます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2197
+#: using_postgis_dataman.xml:2201
 #, no-c-format
 msgid ""
 "A BRIN index stores the bounding box enclosing all the geometries contained "
@@ -4930,7 +4937,7 @@ msgstr ""
 "スより悪くなります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2207
+#: using_postgis_dataman.xml:2211
 #, no-c-format
 msgid ""
 "Building a BRIN index is much less CPU-intensive than building a GiST index. "
@@ -4946,7 +4953,7 @@ msgstr ""
 "スを1000倍少なくできます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2213
+#: using_postgis_dataman.xml:2217
 #, no-c-format
 msgid ""
 "You can choose the number of blocks to summarize in a range. If you decrease "
@@ -4957,7 +4964,7 @@ msgstr ""
 "は大きくなりますが、効率向上の助けになる可能性があります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2217
+#: using_postgis_dataman.xml:2221
 #, no-c-format
 msgid ""
 "For BRIN to be effective, the table data should be stored in a physical "
@@ -4977,7 +4984,7 @@ msgstr ""
 "曲線オーダーが使われています)。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2226
+#: using_postgis_dataman.xml:2230
 #, no-c-format
 msgid ""
 "CREATE TABLE table_sorted AS\n"
@@ -4987,7 +4994,7 @@ msgstr ""
 "   SELECT * FROM table  ORDER BY geom;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2228
+#: using_postgis_dataman.xml:2232
 #, no-c-format
 msgid ""
 "Alternatively, data can be sorted in-place by using a GeoHash as a "
@@ -4997,7 +5004,7 @@ msgstr ""
 "クスでクラスタリングを行うことによって適切に並べ替えることができます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2232
+#: using_postgis_dataman.xml:2236
 #, no-c-format
 msgid ""
 "CREATE INDEX idx_temp_geohash ON table\n"
@@ -5009,7 +5016,7 @@ msgstr ""
 "CLUSTER table USING idx_temp_geohash;"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2235
+#: using_postgis_dataman.xml:2239
 #, no-c-format
 msgid ""
 "The syntax for building a BRIN index on a <code>geometry</code> column is:"
@@ -5018,7 +5025,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2237
+#: using_postgis_dataman.xml:2241
 #, no-c-format
 msgid "CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geome_col] );"
 msgstr ""
@@ -5026,7 +5033,7 @@ msgstr ""
 "名] );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2239
+#: using_postgis_dataman.xml:2243
 #, no-c-format
 msgid ""
 "The above syntax builds a 2D index. To build a 3D-dimensional index, use "
@@ -5036,7 +5043,7 @@ msgstr ""
 "の文を使います。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2241
+#: using_postgis_dataman.xml:2245
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename]\n"
@@ -5046,13 +5053,13 @@ msgstr ""
 "    USING BRIN ( [ジオメトリカラム名] brin_geometry_inclusion_ops_3d);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2243
+#: using_postgis_dataman.xml:2247
 #, no-c-format
 msgid "You can also get a 4D-dimensional index using the 4D operator class:"
 msgstr "また、4次元演算子クラスを使う4次元インデックスを使うこともできます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2245
+#: using_postgis_dataman.xml:2249
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename]\n"
@@ -5062,7 +5069,7 @@ msgstr ""
 "    USING BRIN ( [ジオメトリカラム名] brin_geometry_inclusion_ops_4d);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2247
+#: using_postgis_dataman.xml:2251
 #, no-c-format
 msgid ""
 "The above commands use the default number of blocks in a range, which is "
@@ -5072,7 +5079,7 @@ msgstr ""
 "範囲のブロック数を指定するには、この文を使います。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2250
+#: using_postgis_dataman.xml:2254
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename]\n"
@@ -5082,7 +5089,7 @@ msgstr ""
 "    USING BRIN ( [ジオメトリカラム名] ) WITH (pages_per_range = [数字]);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2252
+#: using_postgis_dataman.xml:2256
 #, no-c-format
 msgid ""
 "Keep in mind that a BRIN index only stores one index entry for a large "
@@ -5097,7 +5104,7 @@ msgstr ""
 "の次元数の最小値となる演算子クラスを選択します。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2260
+#: using_postgis_dataman.xml:2264
 #, no-c-format
 msgid ""
 "The <code>geography</code> datatype is supported for BRIN indexing. The "
@@ -5107,7 +5114,7 @@ msgstr ""
 "「ジオグラフィ」カラムに構築するための文は次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2263
+#: using_postgis_dataman.xml:2267
 #, no-c-format
 msgid "CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geog_col] );"
 msgstr ""
@@ -5115,7 +5122,7 @@ msgstr ""
 "名] );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2265
+#: using_postgis_dataman.xml:2269
 #, no-c-format
 msgid ""
 "The above syntax builds a 2D-index for geospatial objects on the spheroid."
@@ -5124,7 +5131,7 @@ msgstr ""
 "ます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2267
+#: using_postgis_dataman.xml:2271
 #, no-c-format
 msgid ""
 "Currently, only \"inclusion support\" is provided, meaning that just the "
@@ -5140,7 +5147,7 @@ msgstr ""
 "えます。しばらくはKNN検索に対応しません。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2274
+#: using_postgis_dataman.xml:2278
 #, no-c-format
 msgid ""
 "An important difference between BRIN and other index types is that the "
@@ -5164,38 +5171,38 @@ msgstr ""
 "ご覧下さい。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2284
+#: using_postgis_dataman.xml:2288
 #, no-c-format
 msgid "To summarize using BRIN for spatial data:"
 msgstr "空間データにBRINを使用して集計するには:"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2288
+#: using_postgis_dataman.xml:2292
 #, no-c-format
 msgid "Index build time is very fast, and index size is very small."
 msgstr ""
 "インデックス構築時間は非常に速く、インデックスサイズは非常に小さいです。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2289
+#: using_postgis_dataman.xml:2293
 #, no-c-format
 msgid "Index query time is slower than GiST, but can still be very acceptable."
 msgstr "インデックスのクエリ時間はGiSTより遅いですが、十分許容できます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2290
+#: using_postgis_dataman.xml:2294
 #, no-c-format
 msgid "Requires table data to be sorted in a spatial ordering."
 msgstr "テーブルデータを空間順序で並べ替える必要があります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2291
+#: using_postgis_dataman.xml:2295
 #, no-c-format
 msgid "Requires manual index maintenance."
 msgstr "手動でインデックスの保守をする必要があります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2292
+#: using_postgis_dataman.xml:2296
 #, no-c-format
 msgid ""
 "Most appropriate for very large tables, with low or no overlap (e.g. "
@@ -5205,7 +5212,7 @@ msgstr ""
 "頻繁には変更しないようなものに、最も適しています。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2295
+#: using_postgis_dataman.xml:2299
 #, no-c-format
 msgid ""
 "More effective for queries which return relatively large numbers of data "
@@ -5213,13 +5220,13 @@ msgid ""
 msgstr "比較的多数のデータレコードを返すクエリでの使用が、より効果的です。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2301
+#: using_postgis_dataman.xml:2305
 #, no-c-format
 msgid "SP-GiST Indexes"
 msgstr "SP-GiSTインデックス"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2303
+#: using_postgis_dataman.xml:2307
 #, no-c-format
 msgid ""
 "SP-GiST stands for \"Space-Partitioned Generalized Search Tree\" and is a "
@@ -5242,7 +5249,7 @@ msgstr ""
 "ulink>をご覧下さい。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2315
+#: using_postgis_dataman.xml:2319
 #, no-c-format
 msgid ""
 "As it is the case for GiST indexes, SP-GiST indexes are lossy, in the sense "
@@ -5254,7 +5261,7 @@ msgstr ""
 "クスは、GiSTインデックスの代替と考えることができます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2319
+#: using_postgis_dataman.xml:2323
 #, no-c-format
 msgid ""
 "Once a GIS data table exceeds a few thousand rows, an SP-GiST index may be "
@@ -5266,7 +5273,7 @@ msgstr ""
 "クスを構築するための文は次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2323
+#: using_postgis_dataman.xml:2327
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING SPGIST ( [geometryfield] );"
@@ -5275,7 +5282,7 @@ msgstr ""
 "ム] );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2325
+#: using_postgis_dataman.xml:2329
 #, no-c-format
 msgid ""
 "The above syntax will build a 2-dimensional index. A 3-dimensional index for "
@@ -5285,7 +5292,7 @@ msgstr ""
 "は、次のように、3次元演算子クラスを使用して生成します。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2328
+#: using_postgis_dataman.xml:2332
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING SPGIST ([geometryfield] "
@@ -5295,7 +5302,7 @@ msgstr ""
 "ム] spgist_geometry_ops_3d);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2330
+#: using_postgis_dataman.xml:2334
 #, no-c-format
 msgid ""
 "Building a spatial index is a computationally intensive operation. It also "
@@ -5307,7 +5314,7 @@ msgstr ""
 "より遅いCONCURRENTLYを選択するかも知れません。次のようにします。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2334
+#: using_postgis_dataman.xml:2338
 #, no-c-format
 msgid ""
 "CREATE INDEX CONCURRENTLY [indexname] ON [tablename] USING SPGIST "
@@ -5317,7 +5324,7 @@ msgstr ""
 "オメトリカラム] );"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2341
+#: using_postgis_dataman.xml:2345
 #, no-c-format
 msgid ""
 "An SP-GiST index can accelerate queries involving the following operators:"
@@ -5325,7 +5332,7 @@ msgstr ""
 "SP-GiSTインデックスは次の演算子を含むクエリの実行速度を向上させられます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2343
+#: using_postgis_dataman.xml:2347
 #, no-c-format
 msgid ""
 "&lt;&lt;, &amp;&lt;, &amp;&gt;, &gt;&gt;, &lt;&lt;|, &amp;&lt;|, |&amp;&gt;, "
@@ -5335,26 +5342,26 @@ msgstr ""
 "&lt;|, &amp;&lt;|, |&amp;&gt;, |&gt;&gt;, &amp;&amp;, @&gt;, &lt;@, and ~= 。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2344
+#: using_postgis_dataman.xml:2348
 #, no-c-format
 msgid "&amp;/&amp;, ~==, @&gt;&gt;, and &lt;&lt;@, for 3-dimensional indexes."
 msgstr ""
 "3次元インデックスについては &amp;/&amp;, ~==, @&gt;&gt;, and &lt;&lt;@ 。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2346
+#: using_postgis_dataman.xml:2350
 #, no-c-format
 msgid "There is no support for kNN searches at the moment."
 msgstr "現時点ではkNN探索に対応していません。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2349
+#: using_postgis_dataman.xml:2353
 #, no-c-format
 msgid "Tuning Index Usage"
 msgstr "インデックス使用のチューニング"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2351
+#: using_postgis_dataman.xml:2355
 #, no-c-format
 msgid ""
 "Ordinarily, indexes invisibly speed up data access: once an index is built, "
@@ -5369,7 +5376,7 @@ msgstr ""
 "クスを選択せず、遅いシーケンシャルスキャンを使い続ける場合があります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2357
+#: using_postgis_dataman.xml:2361
 #, no-c-format
 msgid ""
 "If you find your spatial indexes are not being used, there are a few things "
@@ -5379,7 +5386,7 @@ msgstr ""
 "ます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2362
+#: using_postgis_dataman.xml:2366
 #, no-c-format
 msgid ""
 "Examine the query plan and check your query actually computes the thing you "
@@ -5393,7 +5400,7 @@ msgstr ""
 "<code>EXPLAIN</code>を付けて実行します。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2369
+#: using_postgis_dataman.xml:2373
 #, no-c-format
 msgid ""
 "Make sure statistics are gathered about the number and distributions of "
@@ -5406,7 +5413,7 @@ msgstr ""
 "す。<command>VACUUM ANALYZE</command>は両方を計算します。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2374
+#: using_postgis_dataman.xml:2378
 #, no-c-format
 msgid ""
 "You should regularly vacuum your databases anyways. Many PostgreSQL DBAs run "
@@ -5417,7 +5424,7 @@ msgstr ""
 "command>を実行します。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2379
+#: using_postgis_dataman.xml:2383
 #, no-c-format
 msgid ""
 "If vacuuming does not help, you can temporarily force the planner to use the "
@@ -5438,7 +5445,7 @@ msgstr ""
 "のクエリでは通常操作にすることを忘れないでください。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2391
+#: using_postgis_dataman.xml:2395
 #, no-c-format
 msgid ""
 "If <command>SET ENABLE_SEQSCAN TO OFF;</command> helps your query to run "
@@ -5460,7 +5467,7 @@ msgstr ""
 "ンナがインデックススキャンをしやすくなります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2402
+#: using_postgis_dataman.xml:2406
 #, no-c-format
 msgid ""
 "If <command>SET ENABLE_SEQSCAN TO OFF;</command> does not help your query, "
@@ -5477,7 +5484,7 @@ msgstr ""
 "LATERAL JOINを使うように書き換えることができます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2411
+#: using_postgis_dataman.xml:2415
 #, no-c-format
 msgid ""
 "For more information see the Postgres manual section on <ulink url=\"https://"
@@ -5488,7 +5495,6 @@ msgstr ""
 "jp/document/current/html/runtime-config-query.html\">問い合わせ計画</ulink>節"
 "をご覧下さい。"
 
-#, no-c-format
 #~ msgid ""
 #~ "<ulink url=\"https://en.wikipedia.org/wiki/Spatial_reference_system"
 #~ "\">Spatial Reference Systems</ulink> (SRS) define how geometry is "
@@ -5498,7 +5504,6 @@ msgstr ""
 #~ "\">Spatial Reference Systems</ulink> (SRS, 空間参照系)は、どのようにジオメ"
 #~ "トリが地表位置に参照されるかを定義しています。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The <varname>SPATIAL_REF_SYS</varname> table used by PostGIS is an OGC-"
 #~ "compliant database table that defines the available spatial reference "
@@ -5511,7 +5516,6 @@ msgstr ""
 #~ "の空間参照系の説明を持ちます。主に<xref linkend=\"ST_Transform\"/>を用いた"
 #~ "空間参照系間の変換 (投影変換)に対応するために使用されています。"
 
-#, no-c-format
 #~ msgid ""
 #~ "The ID of the Spatial Reference System as defined by the Authority cited "
 #~ "in the <varname>auth_name</varname>. In the case of EPSG, this is where "
@@ -5520,7 +5524,6 @@ msgstr ""
 #~ "<varname>auth_name</varname>で引用されている団体によって定義された空間参照"
 #~ "系のIDです。EPSGの場合、EPSG投影コードが入ります。"
 
-#, no-c-format
 #~ msgid ""
 #~ "For a listing of EPSG projection codes and their corresponding WKT "
 #~ "representations, see <ulink url=\"http://www.opengeospatial.org/\">http://"

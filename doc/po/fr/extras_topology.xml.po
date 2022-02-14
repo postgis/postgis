@@ -6,20 +6,22 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
 # Vincent Picavet <vincent.ml@oslandia.com>, 2013
+# H Santanna <delazj@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2021-11-28 21:13+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
-"fr/)\n"
+"PO-Revision-Date: 2022-02-13 18:28+0000\n"
+"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"extras_topologyxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -271,7 +273,7 @@ msgid ""
 "type: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
 msgstr ""
 "<varname>type</varname> un entier entre 1 et 4 qui définit le type de la "
-"géométrie :  1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
+"géométrie : 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection"
 
 #. Tag: title
 #: extras_topology.xml:77

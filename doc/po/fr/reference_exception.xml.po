@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2014-03-25 13:52+0000\n"
-"Last-Translator: vpicavet <vincent.ml@oslandia.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
-"language/fr/)\n"
+"PO-Revision-Date: 2022-02-13 18:28+0000\n"
+"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"reference_exceptionxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: reference_exception.xml:3
@@ -50,7 +51,7 @@ msgstr "Ajoute une bounding box à la géométrie"
 
 #. Tag: funcprototype
 #: reference_exception.xml:16
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
