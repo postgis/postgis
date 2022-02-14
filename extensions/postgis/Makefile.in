@@ -58,11 +58,11 @@ EXTENSION_UPGRADE_SCRIPTS = \
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
-    ../postgis_extension_helper.sql \
-    sql/raster_unpackage.sql \
-    sql/postgis_upgrade.sql \
-    ../../doc/postgis_comments.sql \
-    ../postgis_extension_helper_uninstall.sql
+	../postgis_extension_helper.sql \
+	sql/raster_unpackage.sql \
+	sql/postgis_upgrade.sql \
+	../../doc/postgis_comments.sql \
+	../postgis_extension_helper_uninstall.sql
 
 
 RASTER_DROP_SCRIPTS = \
