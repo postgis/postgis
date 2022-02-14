@@ -44,7 +44,7 @@ EXTENSION_SCRIPTS = \
 	sql/spatial_ref_sys_config_dump.sql \
 	sql/spatial_ref_sys.sql
 
-# Scripts making up the extension minor upgrade file
+# Scripts making up the extension minor upgrade fil e
 # NOTE: order matters
 EXTENSION_UPGRADE_SCRIPTS = \
 	../postgis_extension_helper.sql \
