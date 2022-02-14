@@ -1289,7 +1289,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 	  <para><varname>row</varname> row data with at least a geometry column.</para>
 		<para><varname>name</varname> is the name of the layer. Default is the string "default".</para>
 		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. Default is 4096.</para>
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data. Default is the first geometry column.</para>
+		<para><varname>geom_name</varname> is the name of the geometry column in the row data. Default is the first geometry column. Note that PostgreSQL by default automatically <ulink url="https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">folds unquoted identifiers to lower case</ulink>, which means that unless the geometry column is quoted, e.g. <varname>"MyMVTGeom"</varname>, this parameter must be provided as lowercase.</para>
 		<para><varname>feature_id_name</varname> is the name of the Feature ID column in the row data. If NULL or negative the Feature ID is not set. The first column matching name and valid type (smallint, integer, bigint) will be used as Feature ID, and any subsequent column will be added as a property. JSON properties are not supported.</para>
 
 
@@ -1406,7 +1406,7 @@ FROM mvtgeom;
 			<para>Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a <ulink url="https://github.com/TWKB/Specification/blob/master/twkb.md">compressed binary format</ulink> with a focus on minimizing the size of the output. </para>
 			<para>The decimal digits parameters control how much precision is stored in the output. By default, values are rounded to the nearest unit before encoding. If you want to transfer more precision, increase the number. For example, a value of 1 implies that the first digit to the right of the decimal point will be preserved.</para>
 			<para>The sizes and bounding boxes parameters control whether optional information about the encoded length of the object and the bounds of the object are included in the output. By default they are not. Do not turn them on unless your client software has a use for them, as they just use up space (and saving space is the point of TWKB).</para>
-			<para>The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url="http://www.postgresql.org/docs/9.4/static/functions-aggregate.html">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function.</para>
+			<para>The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url="https://www.postgresql.org/docs/current/functions-aggregate.html">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function.</para>
 			<note>
 			  <para>The format specification is available online at <ulink url="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</ulink>, and code for building a JavaScript client can be found at <ulink url="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</ulink>.</para>
 			</note>
@@ -1534,7 +1534,7 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
 		<note><para>2D geometry support not yet complete.  Inner rings currently just drawn as separate polygons.  We are working on these.</para></note>
 		<para>Lots of advancements happening in 3D space particularly with <ulink url="https://www.web3d.org/wiki/index.php/X3D_and_HTML5">X3D Integration with HTML5</ulink></para>
 		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
-		<para>Also check out <ulink url="https://github.com/robe2/postgis_x3d_viewer">PostGIS minimalist X3D viewer</ulink>  that utilizes this function and <ulink url="http://www.x3dom.org/">x3dDom html/js open source toolkit</ulink>.</para>
+		<para>Also check out <ulink url="https://git.osgeo.org/gitea/robe/postgis_x3d_viewer">PostGIS minimalist X3D viewer</ulink>  that utilizes this function and <ulink url="http://www.x3dom.org/">x3dDom html/js open source toolkit</ulink>.</para>
 		<para>Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
 		<para>Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>
 		<!-- Optionally mention 3d support -->
