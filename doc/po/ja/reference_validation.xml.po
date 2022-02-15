@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-02-05 02:52+0000\n"
+"PO-Revision-Date: 2022-02-15 13:19+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_validationxml/ja/>\n"
@@ -239,7 +239,7 @@ msgstr ""
 #: reference_validation.xml:143 reference_validation.xml:287
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Availability: 2.0.0"
 
 #. Tag: programlisting
 #: reference_validation.xml:149

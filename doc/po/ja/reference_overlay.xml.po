@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-06 07:55+0000\n"
-"PO-Revision-Date: 2022-02-05 02:52+0000\n"
+"PO-Revision-Date: 2022-02-15 13:19+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/ja/>\n"
@@ -583,7 +583,7 @@ msgstr ""
 #: reference_overlay.xml:339 reference_overlay.xml:760
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Availability: 2.0.0"
 
 #. Tag: para
 #: reference_overlay.xml:341
