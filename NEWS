@@ -1,3 +1,10 @@
+PostGIS 3.2.2dev
+2022/MM/DD
+
+* Bug Fixes *
+  - #5097, Ensure spatial index is used during topology population
+           at the getClosestEdge step (Sandro Santilli)
+
 PostGIS 3.2.1
 2022/02/12
 
