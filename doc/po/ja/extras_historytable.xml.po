@@ -6,15 +6,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2016-11-07 07:54+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-02-15 13:19+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"extras_historytablexml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: extras_historytable.xml:3
@@ -34,12 +35,9 @@ msgid ""
 "trail of what changes have been made, by whom, and what the past state of "
 "the data is?"
 msgstr ""
-"特定の地物の現在の状態を示すデータのテーブルがあるとします。区画テーブルで"
-"あったり、道路テーブルであったり、果樹テーブルであったり、なんでもかまいませ"
-"ん。一般的にGISツールはテーブルを、更新と削除が可能な単一の実体ととらえます。"
-"一般的なGISツールに、先ほどのデータに対して、どういう変更が、誰によってなさ"
-"れ、かつ過去のデータの状態がどうであったかの監査証跡を維持しながら動作させる"
-"にはどのようにするでしょうか。"
+"特定の地物の現在の状態を示すデータのテーブルがあるとします。区画テーブルであったり、道路テーブルであったり、果樹テーブルであったり、なんでもかまいません。"
+"一般的にGISツールはテーブルを、更新と削除が可能な単一の実体ととらえます。一般的なGISツールに、先ほどのデータに対して、どういう変更が、誰によってなさ"
+"れ、かつ過去のデータの状態がどうであったかの監査証跡を維持しながら動作させるにはどのようにするでしょうか？"
 
 #. Tag: para
 #: extras_historytable.xml:10
@@ -238,14 +236,12 @@ msgstr "Postgis_Enable_History"
 
 #. Tag: refpurpose
 #: extras_historytable.xml:78
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Registers a table in the history_information table for tracking and also "
 "adds in side line history table and insert, update, delete rules on the "
 "table."
-msgstr ""
-"history_informationテーブルに追跡のための登録を行い、履歴テーブルを追加し、"
-"テーブルに挿入、更新、削除の規則を設定します。"
+msgstr "history_informationテーブルに追跡のための登録を行い、履歴テーブルを追加し、テーブルに挿入、更新、削除の規則を設定します。"
 
 #. Tag: funcprototype
 #: extras_historytable.xml:83
