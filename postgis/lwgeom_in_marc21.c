@@ -79,7 +79,7 @@ Datum ST_GeomFromMARC21(PG_FUNCTION_ARGS) {
 
 	if (lwgeom == NULL) {
 
-		lwgeom_free(lwgeom);
+		//lwgeom_free(lwgeom);
 		PG_RETURN_NULL();
 
 	}
@@ -91,11 +91,15 @@ Datum ST_GeomFromMARC21(PG_FUNCTION_ARGS) {
 	PG_RETURN_POINTER(geom);
 }
 
-static int is_literal_valid(char *literal) {
+static int is_literal_valid(const char *literal) {
 
 	int num_dec_sep;
 	int coord_start;
-	int literal_length = strlen(literal);
+	int literal_length;
+
+	if(literal == NULL) return LW_FALSE;
+
+	literal_length = strlen(literal);
 
 	POSTGIS_DEBUGF(2, "is_literal_valid called (%s)", literal);
 
@@ -219,6 +223,8 @@ static double parse_geo_literal(char *literal) {
 		POSTGIS_DEBUG(2, "  lat/lon integer coordinates detected");
 		POSTGIS_DEBUGF(2, "    parsed degrees (lon/lat): %s", dgr);
 
+		/* literal contain at least degrees.
+		 * minutes and seconds are optional */
 		result = atof(dgr);
 
 		/* checks if the literal contains minutes */
@@ -252,10 +258,8 @@ static double parse_geo_literal(char *literal) {
 
 		if (strchr(literal, ',')) {
 
-			/**
-			 * Changes the literal decimal sign from comma to period to avoid problems with atof.
-			 * -> In MARC21/XML coordinates, the decimal sign may be either a period or a comma.
-			 **/
+			/* changes the literal decimal sign from comma to period to avoid problems with atof.
+			 * from the docs "In MARC21/XML coordinates, the decimal sign may be either a period or a comma." */
 
 			literal[literal_length-strlen(strchr(literal, ','))]='.';
 			POSTGIS_DEBUGF(2, "  decimal separator changed to '.': %s",literal);

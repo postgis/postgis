@@ -54,7 +54,7 @@ Datum ST_AsMARC21(PG_FUNCTION_ARGS) {
 	LWPROJ *lwproj;
 	LWGEOM *lwgeom;
 	//uint8_t is_latlong;
-	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P_COPY(0);
+	GSERIALIZED *gs = PG_GETARG_GSERIALIZED_P(0);
 	text *format_text_input =  PG_GETARG_TEXT_P(1);
 	const char *format = text_to_cstring(format_text_input);
 
@@ -246,16 +246,25 @@ static int is_format_valid(const char* format){
 static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, const char*format, char subfield) {
 
 	char cardinal_direction;
+	char decimal_separator;
 
 	int degrees = (int) decimal_degrees;
 	double minutes = fabs((decimal_degrees-degrees)*60);
 	double seconds = fabs((minutes-(int)minutes) *60);
 
-	char decimal_separator;
-
 	int has_cardinal_direction = 0;
 	int num_decimals = 0;
 	char* res = palloc(sizeof(char)*strlen(format)+2);
+
+	/* size of the buffer for the output snprintf calls.
+	 * the output strings must have the same length as the format.
+	 * +1 to make room for the null character '\0' */
+	size_t buffer_size = strlen(format)+1;
+
+	/* +1 one digit to the buffer size in case of negative
+	 * numbers to account for the "-" sign */
+	if(degrees < 0) buffer_size = buffer_size+1;
+
 
 	POSTGIS_DEBUGF(2,"corner_to_subfield_sb called with coordinates: %f and format: %s",decimal_degrees,format);
 
@@ -326,7 +335,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 
 		if(has_cardinal_direction) pad_degrees=pad_degrees-1;
 
-		sprintf(res,"%0*.*f",pad_degrees,num_decimals,decimal_degrees);
+		snprintf(res,buffer_size,"%0*.*f",pad_degrees,num_decimals,decimal_degrees);
 
 
 	} else if(format[5+has_cardinal_direction]=='.' || format[5+has_cardinal_direction]==',' )	{
@@ -338,7 +347,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 
 		if(minutes<10) pad_minutes = (int)strlen(format)-has_cardinal_direction-3;
 
-		sprintf(res,"%.3d%0*.*f",degrees,pad_minutes,num_decimals,fabs(minutes));
+		snprintf(res,buffer_size,"%.3d%0*.*f",degrees,pad_minutes,num_decimals,fabs(minutes));
 
 	}
 
@@ -347,11 +356,12 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 		/*
 		 * decimal seconds
 		 */
+
 		int pad_seconds = 0;
 
 		if(seconds<10) pad_seconds = (int) strlen(format)-has_cardinal_direction-5;
 
-		sprintf(res,"%.3d%.2d%0*.*f",degrees,(int)minutes,pad_seconds,num_decimals,fabs(seconds));
+		snprintf(res,buffer_size,"%.3d%.2d%0*.*f",degrees,(int)minutes,pad_seconds,num_decimals,fabs(seconds));
 
 	} else {
 
@@ -359,7 +369,7 @@ static int corner_to_subfield_sb(stringbuffer_t *sb, double decimal_degrees, con
 		 * degrees/minutes/seconds (dddmmss)
 		 */
 
-		sprintf(res,"%.3d%.2d%.2d",degrees,(int)minutes,(int)(seconds + 0.5));
+		snprintf(res,buffer_size,"%.3d%.2d%.2d",degrees,(int)minutes,(int)(seconds + 0.5));
 
 	}
 
