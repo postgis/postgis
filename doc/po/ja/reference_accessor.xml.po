@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-20 20:56+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-02-15 13:19+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/ja/>\n"
 "Language: ja\n"
@@ -1062,9 +1062,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:420
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.5.0"
-msgstr "Availability: 1.2.2"
+msgstr "Availability: 1.5.0"
 
 #. Tag: title
 #: reference_accessor.xml:427

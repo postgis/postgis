@@ -2158,6 +2158,11 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
             <funcdef>geometry <function>ST_Simplify</function></funcdef>
             <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
             <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+          </funcprototype>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Simplify</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+            <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
             <paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
@@ -2174,8 +2179,9 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 
     <para>The "preserve collapsed" flag will retain objects that would otherwise
       be too small given the tolerance. For example, a 1m long line simplified with a 10m
-      tolerance. If the preserve flag is given, the line will not disappear. This flag
-      is useful for rendering engines, to avoid having large numbers of very
+      tolerance. If <varname>preserveCollapsed</varname> argument is
+      specified as true, the line will not disappear.
+      This flag is useful for rendering engines, to avoid having large numbers of very
       small objects disappear from a map leaving surprising gaps.</para>
 
         <note><para>Note that returned geometry might lose its
@@ -2204,7 +2210,11 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
           </refsection>
           <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_IsSimple" />, <xref linkend="ST_SimplifyPreserveTopology" />, Topology <xref linkend="TP_ST_Simplify"/></para>
+            <para>
+    <xref linkend="ST_IsSimple" />,
+    <xref linkend="ST_SimplifyPreserveTopology" />,
+    <xref linkend="ST_SimplifyVW" />,
+    Topology <xref linkend="TP_ST_Simplify"/></para>
           </refsection>
     </refentry>
 

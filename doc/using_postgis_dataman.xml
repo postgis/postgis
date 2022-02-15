@@ -1333,8 +1333,57 @@ SELECT valid, reason, ST_AsText(location) AS location
 <sect1 id="spatial_ref_sys">
 	<title>Spatial Reference Systems</title>
 
-	<para><ulink url="https://en.wikipedia.org/wiki/Spatial_reference_system">Spatial Reference Systems</ulink> (SRS)
-    define how geometry is referenced to locations on the Earth's surface.</para>
+	<para>A <ulink url="https://en.wikipedia.org/wiki/Spatial_reference_system">Spatial Reference System</ulink> (SRS)
+    (also called a Coordinate Reference System (CRS))
+    defines how geometry is referenced to locations on the Earth's surface.
+    There are three types of SRS:
+     </para>
+	<itemizedlist>
+		<listitem><para>A <emphasis role="bold">geodetic</emphasis> SRS uses angular coordinates
+            (longitude and latitude) which map directly to the surface of the earth.
+            </para></listitem>
+		<listitem><para>A <emphasis role="bold">projected</emphasis> SRS
+            uses a mathematical projection transformation
+            to "flatten" the surface of the spheroidal earth onto a plane.
+            It assigns location coordinates in a way that allows direct measurement
+            of quantities such as distance, area, and angle.
+            The coordinate system is Cartesian, which means it has a defined origin point
+            and two perpendicular axes (usually oriented North and East).
+            Each projected SRS uses a stated length unit (usually metres or feet).
+            A projected SRS may be limited in its area of applicability to avoid distortion
+            and fit within the defined coordinate bounds.
+            </para></listitem>
+		<listitem><para>A <emphasis role="bold">local</emphasis> SRS
+            is a Cartesian coordinate system which is not referenced to the earth's surface.
+            In PostGIS this is specified by a SRID value of 0.
+            </para></listitem>
+	</itemizedlist>
+    <para>
+    There are many different spatial reference systems in use.
+    Common SRSes are standardized in the
+    European Petroleum Survey Group
+    <ulink url="http://www.epsg.org/">EPSG database</ulink>.
+    For convenience PostGIS (and many other spatial systems) refers to SRS
+    definitions using an integer identifier called a SRID.
+    </para>
+
+    <para>A geometry is associated with a Spatial Reference System by its SRID value,
+    which is accessed by <xref linkend="ST_SRID" />.
+    The SRID for a geometry can be assigned using <xref linkend="ST_SetSRID" />.
+    Some geometry constructor functions allow supplying a SRID
+    (such as <xref linkend="ST_Point" />  and <xref linkend="ST_MakeEnvelope" />).
+    The <link linkend="EWKB_EWKT">EWKT</link> format supports SRIDs with the <code>SRID=n;</code> prefix.
+    </para>
+
+    <para>
+    Spatial functions processing pairs of geometries
+    (such as <link linkend="Overlay_Functions">overlay</link> and
+    <link linkend="Spatial_Relationships">relationship</link> functions)
+    require that the input geometries are in the same spatial reference system (have the same SRID).
+    Geometry data can be transformed into a different spatial reference system using
+    <xref linkend="ST_Transform" />.
+    Geometry returned from functions has the same SRS as the input geometries.
+    </para>
 
 	<sect2 id="spatial_ref_sys_table">
 	  <title>SPATIAL_REF_SYS Table</title>
@@ -1342,9 +1391,7 @@ SELECT valid, reason, ST_AsText(location) AS location
 	<para>The <varname>SPATIAL_REF_SYS</varname> table used by PostGIS
     is an OGC-compliant database table that defines the available
 	spatial reference systems.
-	It holds the numeric IDs and textual descriptions of the coordinate systems.
-    The main use is to support transformation (reprojection) between them using
-    <xref linkend="ST_Transform" />.
+	It holds the numeric SRIDs and textual descriptions of the coordinate systems.
     </para>
 
 	  <para>The <varname>spatial_ref_sys</varname> table definition is:</para>
@@ -1385,7 +1432,7 @@ SELECT valid, reason, ST_AsText(location) AS location
 		  <listitem>
 			<para>The ID of the Spatial Reference System as defined by the
 			Authority cited in the <varname>auth_name</varname>. In the case
-			of EPSG, this is where the EPSG projection code would go.</para>
+			of EPSG, this is the EPSG code.</para>
 		  </listitem>
 		</varlistentry>
 
@@ -1413,15 +1460,9 @@ SELECT valid, reason, ST_AsText(location) AS location
   UNIT["metre",1]
 ]</programlisting>
 
-			<para>For a listing of EPSG projection codes and their
-			corresponding WKT representations, see <ulink
-			url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.
-			For a discussion of SRS WKT in general, see the OpenGIS "Coordinate
-			Transformation Services Implementation Specification" at <ulink
-			url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.
-			For information on the European Petroleum Survey Group (EPSG) and
-			their database of spatial reference systems, see <ulink
-			url="http://www.epsg.org/">http://www.epsg.org</ulink>.</para>
+			<para>For a discussion of SRS WKT, see the OGC standard <ulink
+			url="http://docs.opengeospatial.org/is/12-063r5/12-063r5.html">Well-known text representation of coordinate reference systems</ulink>.
+            </para>
 		  </listitem>
 		</varlistentry>
 
@@ -1508,6 +1549,7 @@ VALUES ( 990000,
 </programlisting>
 
 	</sect2>
+
 </sect1>
 <!-- ==============================================================  -->
 <sect1>

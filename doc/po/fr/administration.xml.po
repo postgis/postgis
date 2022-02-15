@@ -1,25 +1,26 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# H Santanna <delazj@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-02-13 18:28+0000\n"
+"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"administrationxml/fr/>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: administration.xml:3
 #, no-c-format
 msgid "PostGIS Administration"
-msgstr ""
+msgstr "Administration de PostGIS"
 
 #. Tag: chapter
 #: administration.xml:3
@@ -63,7 +64,7 @@ msgstr ""
 #: administration.xml:20
 #, no-c-format
 msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-msgstr ""
+msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
 
 #. Tag: para
 #: administration.xml:21
