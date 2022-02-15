@@ -3007,11 +3007,7 @@ cb_getClosestEdge( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt, uint64_t *num
 
   appendStringInfoString(sql, "SELECT ");
   addEdgeFields(sql, fields, 0);
-  appendStringInfo(sql, " FROM \"%s\".edge_data WHERE edge_id = COALESCE ( ", topo->name);
-  appendStringInfo(sql, "(SELECT  e1.edge_id FROM \"%s\".edge_data e1 WHERE geom && $1 ORDER BY e1.geom <-> $1 ASC, e1.edge_id LIMIT 1)", topo->name);
-  appendStringInfo(sql, ", ");
-  appendStringInfo(sql, "(SELECT  e1.edge_id FROM \"%s\".edge_data e1 ORDER BY e1.geom <-> $1 ASC, e1.edge_id LIMIT 1)", topo->name);
-  appendStringInfo(sql, " )");
+  appendStringInfo(sql, " FROM \"%s\".edge_data e1 ORDER BY e1.geom <-> $1 ASC LIMIT 1", topo->name);
 
   POSTGIS_DEBUGF(1, "cb_getClosestEdge query: %s", sql->data);
 
