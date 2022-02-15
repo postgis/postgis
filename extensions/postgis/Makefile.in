@@ -34,6 +34,7 @@ DATA_built = \
 	sql/$(EXTENSION)--$(EXTVERSION).sql \
 	sql/$(EXTENSION)--unpackaged.sql \
 	sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql \
+	sql/$(EXTENSION)--ANY--$(EXTVERSION).sql \
 	$(NULL)
 
 # Scripts making up the extension file
@@ -51,12 +52,18 @@ EXTENSION_UPGRADE_SCRIPTS = \
 	sql/raster_unpackage.sql \
 	sql/postgis_upgrade.sql \
 	../../doc/postgis_comments.sql \
+	sql/spatial_ref_sys.sql \
+	sql/spatial_ref_sys_config_dump.sql \
 	../postgis_extension_helper_uninstall.sql
 
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
-	sql/$(EXTENSION)--$(EXTVERSION).sql
+	../postgis_extension_helper.sql \
+	sql/raster_unpackage.sql \
+	sql/postgis_upgrade.sql \
+	../../doc/postgis_comments.sql \
+	../postgis_extension_helper_uninstall.sql
 
 RASTER_DROP_SCRIPTS = \
 	../../raster/rt_pg/rtpostgis_upgrade_cleanup.sql \
@@ -98,8 +105,9 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile sql
 	# Ensure version is correct
-	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
-	cat $^ | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis >> $@
+	cat $^ > $@
+	cat sql/$(EXTENSION)--$(EXTVERSION).sql | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis >> $@
+
 
 sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 	echo "-- Nothing to do here" > $@
