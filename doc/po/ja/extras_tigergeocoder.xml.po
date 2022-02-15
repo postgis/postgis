@@ -3,13 +3,14 @@
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2017
 # Sandro Santilli <strk@kbt.io>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-02-15 13:19+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_tigergeocoderxml/ja/>\n"
 "Language: ja\n"
@@ -527,11 +528,10 @@ msgid ""
 "is needed if you are upgrading from <varname>tiger_2010</varname> to "
 "<varname>tiger_2011</varname> data."
 msgstr ""
-"指定したスキーマ内のテーブルのうち、名前が<varname>county_all</varname>、"
-"<varname>state_all</varname>、<varname>(州コード)_county</varname>、"
-"<varname>(州コード)_state</varname>で始まるテーブルを全て削除するスクリプトを"
-"生成します。 <varname>tiger_2010</varname>データから<varname>tiger_2011</"
-"varname>データに更新する際に必要です。"
+"指定したスキーマ内のテーブルのうち、名前が<varname>county_all</varname>、<varname>state_all</varnam"
+"e>、<varname>(州コード)_county</varname>、<varname>(州コード)_state</varname>で始まるテーブルを全"
+"て削除するスクリプトを生成します。 <varname>tiger_2010</varname>データから<varname>tiger_2011</varn"
+"ame>データに更新する際に必要です。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:120 extras_tigergeocoder.xml:326
