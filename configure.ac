@@ -10,6 +10,15 @@ dnl *
 dnl **********************************************************************
 
 AC_INIT
+
+# test to see if srcdir already configured, when
+# building out of tree
+if test "`cd $srcdir && pwd`" != "`pwd`"; then
+  if test -f $srcdir/config.status; then
+    AC_MSG_ERROR([source directory already configured; run "make distclean" there first])
+  fi
+fi
+
 AC_CONFIG_HEADERS([postgis_config.h])
 AH_TEMPLATE([HAVE_VASPRINTF])
 AH_TEMPLATE([HAVE_ASPRINTF])
