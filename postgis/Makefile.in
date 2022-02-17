@@ -219,18 +219,16 @@ $(FLATGEOBUF_LIBPATH):
 PROTOCC=@PROTOCC@
 
 # Generate Mapbox Vector Tile encoder/decoder using protobuf-c compiler
-vector_tile.pb-c.c vector_tile.pb-c.h: vector_tile.proto
+vector_tile.pb-c.c: vector_tile.proto
 	$(PROTOCC) -I@srcdir@ --c_out=. $<
 
 # Generate Geobuf encoder/decoder using protobuf-c compiler
-geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
+geobuf.pb-c.c: geobuf.proto
 	$(PROTOCC) -I@srcdir@ --c_out=. $<
 
 ifeq (@HAVE_PROTOBUF@,yes)
-lwgeom_out_mvt.o: vector_tile.pb-c.h
-mvt.o: vector_tile.pb-c.h
-lwgeom_out_geobuf.o: geobuf.pb-c.h
-geobuf.o: geobuf.pb-c.h
+lwgeom_out_mvt.o mvt.o vector_tile.pb-c.o: vector_tile.pb-c.c
+lwgeom_out_geobuf.o geobuf.o geobuf.pb-c.o: geobuf.pb-c.c
 endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
