@@ -262,6 +262,7 @@ uninstall_legacy.sql: legacy.sql ../utils/create_undef.pl
 
 distclean: clean
 	rm -f Makefile
+	rm -f sqldefines.h
 
 check-unit:
 
