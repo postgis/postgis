@@ -1126,7 +1126,7 @@ AC_ARG_WITH([gui],
 	[GUI="yes"], [GUI="no"])
 
 if test "x$GUI" = "xyes"; then
-	AC_MSG_RESULT([GUI: Build requested, checking for dependencies (GKT+2.0)])
+	AC_MSG_RESULT([GUI: Build requested, checking for dependencies (GTK+2.0)])
 	dnl Try to find the GTK libs with pkgconfig
 	AM_PATH_GTK_2_0([2.8.0], [GTK_BUILD="gui"], [GTK_BUILD=""])
 
