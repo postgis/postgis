@@ -74,28 +74,28 @@ UPDATE asmarc21_rt SET geom = ST_AsEWKT(geom,5);
 
 
 -- Converts to geometries to MARC21/XML
-SELECT gid,ST_AsMARC21(geom,'hdddmmss') AS marc21 FROM asmarc21_rt;
+SELECT gid,ST_AsMARC21(geom,'hdddmmss') AS marc21 FROM asmarc21_rt ORDER BY gid;
 
 -- Converts to geometries to MARC21/XML
-SELECT 'hdddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'hddd.dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd.dddddd')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'hdddmm.mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm.mmmmmm')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'hdddmmss.ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss.ssssss')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid; 
+SELECT 'hddd.dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd.dddddd')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'hdddmm.mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm.mmmmmm')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'hdddmmss.ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss.ssssss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 
-SELECT 'hdddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'hddd,dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd,dddddd')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'hdddmm,mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm,mmmmmm')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'hdddmmss,ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss,ssssss')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'hdddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'hddd,dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hddd,dddddd')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'hdddmm,mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmm,mmmmmm')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'hdddmmss,ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'hdddmmss,ssssss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 
-SELECT 'dddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'ddd.dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd.dddddd')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'dddmm.mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm.mmmmmm')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'dddmmss.ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss.ssssss')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'ddd.dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd.dddddd')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'dddmm.mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm.mmmmmm')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'dddmmss.ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss.ssssss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 
-SELECT 'dddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'ddd,dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd,dddddd')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'dddmm,mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm,mmmmmm')),5) AS marc21 FROM asmarc21_rt;
-SELECT 'dddmmss,ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss,ssssss')),5) AS marc21 FROM asmarc21_rt;
+SELECT 'dddmmss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'ddd,dddddd',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'ddd,dddddd')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'dddmm,mmmmmm',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmm,mmmmmm')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
+SELECT 'dddmmss,ssssss',gid,ST_AsText(ST_GeomFromMARC21(ST_AsMARC21(geom,'dddmmss,ssssss')),5) AS marc21 FROM asmarc21_rt ORDER BY gid;
 
 -- Converts geometries (except points) to MARC21/XML, converts them back to geometry, 
 -- and compare their sizes and intersection areas.
@@ -126,7 +126,8 @@ SELECT
     ) / ST_Area(box2d(geom))*100 AS box_intersection
     
 FROM asmarc21_rt
-WHERE ST_GeometryType(geom) <> 'ST_Point';
+WHERE ST_GeometryType(geom) <> 'ST_Point' 
+ORDER BY gid;
   
 
 -- Converts points to MARC21/XML, converts them back to geometry, 
@@ -145,7 +146,8 @@ SELECT
         ST_AsMARC21(geom,'hddd.ddddd')),4326)) AS equals,
   ST_AsMARC21(geom,'hdddmmss.ss') AS point_as_marc21
 FROM asmarc21_rt 
-WHERE ST_GeometryType(geom) = 'ST_Point';
+WHERE ST_GeometryType(geom) = 'ST_Point'
+ORDER BY gid;
 
 
 
@@ -157,7 +159,8 @@ SELECT
   gid,(ST_Dump(geom)).path[1],
   ST_AsMARC21(
     (ST_Dump(geom)).geom,'hdddmmss') AS marc21 
-FROM asmarc21_rt;
+FROM asmarc21_rt
+ORDER BY gid;
 
 
 -- Dumps geometries from collections, converts them to MARC21/XML, 
