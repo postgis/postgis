@@ -30,6 +30,8 @@
     - make install
     - RUNTESTFLAGS=-v make installcheck
     - RUNTESTFLAGS="-v --dumprestore" make installcheck
+    - make distclean
+    - ${SRCDIR}/utils/check_distclean.sh
 
 test:
   image: debian:buster
