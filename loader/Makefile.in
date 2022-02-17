@@ -118,7 +118,7 @@ $(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM)
 	  $(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS)
 
 shp2pgsql-gui.o: shp2pgsql-gui.c shp2pgsql-core.h shpcommon.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c shp2pgsql-gui.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c $<
 
 $(SHP2PGSQL-GUI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core.o $(LIBLWGEOM) $(GTK_WIN32_RES)
 	$(LIBTOOL) --mode=link \
