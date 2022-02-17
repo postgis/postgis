@@ -1,5 +1,4 @@
 #include "sqldefines.h"
-#if POSTGIS_PGSQL_VERSION > 100
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- SP-GiST 2D Support Functions
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -265,5 +264,3 @@ CREATE OPERATOR CLASS spgist_geography_ops_nd
 	FUNCTION		4		geography_spgist_inner_consistent_nd(internal, internal),
 	FUNCTION		5		geography_spgist_leaf_consistent_nd(internal, internal),
 	FUNCTION		6		geography_spgist_compress_nd(internal);
-
-#endif

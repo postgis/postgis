@@ -36,11 +36,6 @@
 
 #include "lwgeom_wagyu.h"
 
-#if POSTGIS_PGSQL_VERSION < 110
-/* See trac ticket #3867 */
-# define DatumGetJsonbP DatumGetJsonb
-#endif
-
 #define uthash_fatal(msg) lwerror("uthash: fatal error (out of memory)")
 #define uthash_malloc(sz) palloc(sz)
 #define uthash_free(ptr,sz) pfree(ptr)

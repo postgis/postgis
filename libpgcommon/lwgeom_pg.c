@@ -35,9 +35,7 @@
 
 #include "../postgis_config.h"
 
-#if POSTGIS_PGSQL_VERSION >= 100
 #include <utils/regproc.h>
-#endif
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
@@ -535,51 +533,6 @@ postgis_guc_find_option(const char *name)
 }
 
 
-#if POSTGIS_PGSQL_VERSION < 100
-Datum
-CallerFInfoFunctionCall1(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1)
-{
-	FunctionCallInfoData fcinfo;
-	Datum		result;
-
-	InitFunctionCallInfoData(fcinfo, flinfo, 1, collation, NULL, NULL);
-
-	fcinfo.arg[0] = arg1;
-	fcinfo.argnull[0] = false;
-
-	result = (*func) (&fcinfo);
-
-	/* Check for null result, since caller is clearly not expecting one */
-	if (fcinfo.isnull)
-		elog(ERROR, "function %p returned NULL", (void *) func);
-
-	return result;
-}
-
-Datum
-CallerFInfoFunctionCall2(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2)
-{
-	FunctionCallInfoData fcinfo;
-	Datum		result;
-
-	InitFunctionCallInfoData(fcinfo, flinfo, 2, collation, NULL, NULL);
-
-	fcinfo.arg[0] = arg1;
-	fcinfo.arg[1] = arg2;
-	fcinfo.argnull[0] = false;
-	fcinfo.argnull[1] = false;
-
-	result = (*func) (&fcinfo);
-
-	/* Check for null result, since caller is clearly not expecting one */
-	if (fcinfo.isnull)
-		elog(ERROR, "function %p returned NULL", (void *) func);
-
-	return result;
-}
-
-#else
-
 #if POSTGIS_PGSQL_VERSION < 120
 Datum
 CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2, Datum arg3)
@@ -629,6 +582,4 @@ CallerFInfoFunctionCall3(PGFunction func, FmgrInfo *flinfo, Oid collation, Datum
 
     return result;
 }
-#endif
-
 #endif

@@ -13,7 +13,7 @@
 <!-- Change these values to update the version numbers referenced within the documentation -->
 <!ENTITY last_proj_release_version "8.2.1">
 <!ENTITY last_geos_release_version "3.10.1">
-<!ENTITY min_postgres_version "9.6">
+<!ENTITY min_postgres_version "11">
 
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">

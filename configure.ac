@@ -496,15 +496,12 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-  dnl Ensure that we are using PostgreSQL >= 9.6
-  if test $POSTGIS_PGSQL_VERSION -lt 96; then
-    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.6])
+  dnl Ensure that we are using PostgreSQL >= 11
+  if test $POSTGIS_PGSQL_VERSION -lt 110; then
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 11])
   fi
 
-  HAVE_SPGIST=no
-  if test $POSTGIS_PGSQL_VERSION -gt 100; then
-    HAVE_SPGIST=yes
-  fi
+  HAVE_SPGIST=yes
 
   dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS
 

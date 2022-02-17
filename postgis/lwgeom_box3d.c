@@ -597,7 +597,6 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 }
 
 /** needed for sp-gist support PostgreSQL 11+ **/
-#if POSTGIS_PGSQL_VERSION > 100
 /*****************************************************************************
  * BOX3D functions
  *****************************************************************************/
@@ -935,4 +934,3 @@ PGDLLEXPORT Datum BOX3D_distance(PG_FUNCTION_ARGS)
 	BOX3D *box2 = PG_GETARG_BOX3D_P(1);
 	PG_RETURN_FLOAT8(BOX3D_distance_internal(box1, box2));
 }
-#endif
