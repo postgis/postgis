@@ -1617,9 +1617,6 @@ dnl ===========================================================================
 dnl FlatGeobuf
 dnl ===========================================================================
 
-DEPS_SUBDIR="deps"
-AC_SUBST([DEPS_SUBDIR])
-
 FLATGEOBUF_LIB=libflatgeobuf.la
 AC_SUBST([FLATGEOBUF_LIB])
 
