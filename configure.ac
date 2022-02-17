@@ -490,6 +490,11 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
     AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.5])
   fi
 
+	dnl Ensure that we are using PostgreSQL < 14
+  if test $POSTGIS_PGSQL_VERSION -gt 130; then
+    AC_MSG_ERROR([This version of PostGIS requires PostgreSQL < 14])
+  fi
+
   HAVE_SPGIST=no
   if test $POSTGIS_PGSQL_VERSION -gt 100; then
     HAVE_SPGIST=yes

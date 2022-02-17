@@ -1,3 +1,10 @@
+PostGIS 3.0.6
+2022/XX/XX
+* Bug Fixes and Enhancements *
+  - #5087, Prevent configure for PostgreSQL >= 14
+           and note in docs, PostgreSQL > 13 major
+           is not supported (Regina Obe)
+
 PostGIS 3.0.5
 2022/02/02
 * Bug Fixes and Enhancements *
