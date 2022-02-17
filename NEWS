@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Run the protobuf compiler once per input during parallel builds (Sandro Santilli)
  - #5394, Preserve distinct vertices in topology edge direction calculations (Sandro Santilli)
  - #5782, Improve the precision of point-to-line distance comparisons (Sandro Santilli)
  - #5118, Clean up the topology relation when a layer sequence is missing (Sandro Santilli)
