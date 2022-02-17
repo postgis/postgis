@@ -32,7 +32,7 @@ REGRESS = test-normalize_address test-upgrade
 REGRESS_OPTS = --load-extension=fuzzystrmatch --load-extension=postgis --load-extension=$(EXTENSION)
 
 SQL_BITS     = $(wildcard sql_bits/*.sql)
-EXTRA_CLEAN = sql ${SQL_BITS}
+EXTRA_CLEAN = sql expected ${SQL_BITS}
 
 #test address standardizer if also built
 ifeq (@ADDRESS_STANDARDIZER@,address_standardizer)
@@ -76,7 +76,7 @@ expected/test-upgrade.out: sql/test-upgrade.sql | expected
 sql/test-pagc_normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress.sql | sql
 	cat $^ > $@
 
-sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql | sql
+sql/$(EXTENSION).sql: sql/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql | sql
 	cat $^ > $@
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql | sql
@@ -126,7 +126,7 @@ sql/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_
 	cat $^ > $@
 
 #also remove tiger_data from extension if it is part of it so data gets backed up
-sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
+sql/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/geocode_settings.sql \
 	../../extras/tiger_geocoder/tables/lookup_tables_2011.sql \
@@ -161,19 +161,16 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/geocode/census_tracts_functions.sql \
 	../../extras/tiger_geocoder/topology/tiger_topology_loader.sql \
 	../postgis_extension_helper.sql \
-	sql_bits/add_search_path.sql
-	mkdir -p sql_bits
+	sql/add_search_path.sql | sql
 	cat $^ > $@
 	echo "SELECT postgis_extension_drop_if_exists('${EXTENSION}', 'DROP SCHEMA tiger_data');" >> $@
 	cat @srcdir@/../postgis_extension_helper_uninstall.sql  >> $@
 
-sql_bits/tiger_geocoder.sql: sql_bits/tiger_geocoder.sql.in
-	mkdir -p sql_bits
+sql/tiger_geocoder.sql: sql/tiger_geocoder.sql.in
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
-sql_bits/add_search_path.sql: sql_bits/add_search_path.sql.in
-	mkdir -p sql_bits
+sql/add_search_path.sql: sql_bits/add_search_path.sql.in | sql
 	cp $< $@
 
 ../../doc/tiger_geocoder_comments.sql:
@@ -182,20 +179,6 @@ sql_bits/add_search_path.sql: sql_bits/add_search_path.sql.in
 sql_bits/tiger_geocoder_comments.sql: ../../doc/tiger_geocoder_comments.sql
 	mkdir -p sql_bits
 	cp $< $@
-
-#grep all lines that start with CREATE OR REPLACE FUNCTION, TRIGGER...
-#then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
-#then remove default values and extra junk
-# sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../tiger_geocoder/tiger_geocoder.sql
-# 	sed -e '/^CREATE \(OR REPLACE\|TYPE\|TABLE\|VIEW\|CAST\)/!d;' \
-# 		-e 's/OR REPLACE//g' \
-# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
-# 		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
-# 		-e 's/\(BEFORE\|WITH FUNCTION\)\(.*\)/;/' \
-# 		-e 's/[ \t]+;/;/' \
-# 		-e 's/(;/;/' \
-# 		-e 's/\\(;/;/' \
-# 		-e 's/;;/;/g' $< > $@
 
 #hardcode for now
 #TODO: generate via create_unpackaged.pl

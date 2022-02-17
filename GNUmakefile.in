@@ -91,6 +91,7 @@ distclean-local: clean-local
 	rm -f GNUmakefile
 	rm -f config.log config.cache config.status
 	rm -f postgis_config.h
+	rm -f libtool
 
 maintainer-clean-local: distclean-local
 	rm -f configure

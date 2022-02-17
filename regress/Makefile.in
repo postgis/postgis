@@ -65,6 +65,7 @@ clean:
 distclean: clean
 	rm -f Makefile
 	rm -f core/Makefile
+	rm -f core/tests.mk
 	rm -f loader/Makefile
 	rm -f dumper/Makefile
 

@@ -102,6 +102,15 @@ this to work.
 
     apt-get install libprotobuf-c-dev protobuf-c-compiler
 
+* GTK (Optional, Version 2.2.0)
+
+  The GTK library is required to build the GUI version of shp2pgsql
+  loader.
+
+  To get packages on apt-based systems:
+
+    apt-get install libgtk2.0-dev
+
 CONFIGURATION
 -------------
 

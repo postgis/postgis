@@ -217,16 +217,19 @@ $(WAGYU_LIBPATH):
 $(FLATGEOBUF_LIBPATH):
 	$(MAKE) -C ../deps/flatgeobuf all
 
+ifeq (@HAVE_PROTOBUF@,yes)
+
 # Get protobuf-c compiler command
 PROTOCC=@PROTOCC@
+lwgeom_out_mvt.o mvt.o: vector_tile.pb-c.h
+lwgeom_out_geobuf.o geobuf.o: geobuf.pb-c.h
+vector_tile.pb-c.h: vector_tile.pb-c.c
+geobuf.pb-c.h: geobuf.pb-c.c
 
 # Generate Mapbox Vector Tile and Geobuf encoder/decoders using protobuf-c compiler
 %.pb-c.c: %.proto
 	$(PROTOCC) -I@srcdir@ --c_out=. $<
 
-ifeq (@HAVE_PROTOBUF@,yes)
-lwgeom_out_mvt.o mvt.o: vector_tile.pb-c.c
-lwgeom_out_geobuf.o geobuf.o: geobuf.pb-c.c
 endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
@@ -259,6 +262,7 @@ uninstall_legacy.sql: legacy.sql ../utils/create_undef.pl
 
 distclean: clean
 	rm -f Makefile
+	rm -f sqldefines.h
 
 check-unit:
 
