@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-06 07:55+0000\n"
-"PO-Revision-Date: 2022-01-13 16:44+0000\n"
+"PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/it/>\n"
@@ -353,7 +353,7 @@ msgstr ""
 #: reference_sfcgal.xml:945 reference_sfcgal.xml:986 reference_sfcgal.xml:1014
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilità: 2.2.0"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:276
