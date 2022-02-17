@@ -51,6 +51,8 @@ TESTS += \
 	$(topsrcdir)/regress/core/in_geohash \
 	$(topsrcdir)/regress/core/in_gml \
 	$(topsrcdir)/regress/core/in_kml \
+	$(topsrcdir)/regress/core/in_marc21 \
+	$(topsrcdir)/regress/core/out_marc21 \
 	$(topsrcdir)/regress/core/in_encodedpolyline \
 	$(topsrcdir)/regress/core/iscollection \
 	$(topsrcdir)/regress/core/legacy \

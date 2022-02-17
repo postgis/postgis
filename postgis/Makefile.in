@@ -92,6 +92,8 @@ PG_OBJS= \
 	lwgeom_export.o \
 	lwgeom_in_gml.o \
 	lwgeom_in_kml.o \
+	lwgeom_in_marc21.o \
+	lwgeom_out_marc21.o \
 	lwgeom_in_geohash.o \
 	lwgeom_in_geojson.o \
 	lwgeom_in_encoded_polyline.o \
@@ -218,19 +220,13 @@ $(FLATGEOBUF_LIBPATH):
 # Get protobuf-c compiler command
 PROTOCC=@PROTOCC@
 
-# Generate Mapbox Vector Tile encoder/decoder using protobuf-c compiler
-vector_tile.pb-c.c vector_tile.pb-c.h: vector_tile.proto
-	$(PROTOCC) -I@srcdir@ --c_out=. $<
-
-# Generate Geobuf encoder/decoder using protobuf-c compiler
-geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
+# Generate Mapbox Vector Tile and Geobuf encoder/decoders using protobuf-c compiler
+%.pb-c.c: %.proto
 	$(PROTOCC) -I@srcdir@ --c_out=. $<
 
 ifeq (@HAVE_PROTOBUF@,yes)
-lwgeom_out_mvt.o: vector_tile.pb-c.h
-mvt.o: vector_tile.pb-c.h
-lwgeom_out_geobuf.o: geobuf.pb-c.h
-geobuf.o: geobuf.pb-c.h
+lwgeom_out_mvt.o mvt.o: vector_tile.pb-c.c
+lwgeom_out_geobuf.o geobuf.o: geobuf.pb-c.c
 endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor

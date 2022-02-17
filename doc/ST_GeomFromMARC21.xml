@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<refentry id="ST_GeomFromMARC21">
+    <refnamediv>
+        <refname>ST_GeomFromMARC21</refname>
+        <refpurpose>Takes MARC21/XML geographic data as input and returns a PostGIS geometry object. </refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+        <funcsynopsis>
+            <funcprototype>
+                <funcdef>
+                    geometry
+                    <function>ST_GeomFromMARC21</function>
+                </funcdef>
+                <paramdef>
+                    <type>text </type>
+                    <parameter>marcxml</parameter>
+                </paramdef>
+            </funcprototype>
+        </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+        <title>Description</title>
+        <para>
+            This function creates a PostGIS geometry from a MARC21/XML record, which can contain a <varname>POINT</varname> or a <varname>POLYGON</varname>. 
+            In case of multiple geographic data entries in the same MARC21/XML record, a <varname>MULTIPOINT</varname> or <varname>MULTIPOLYGON</varname> will be returned. 
+            If the record contains mixed geometry types, a <varname>GEOMETRYCOLLECTION</varname> will be returned.
+            It returns NULL if the MARC21/XML record does not contain any geographic data (datafield:034).
+        </para>
+
+        <para>
+            LOC MARC21/XML versions supported:
+            <itemizedlist>
+                <listitem>
+                    <para><ulink url="https://www.loc.gov/standards/marcxml/">MARC21/XML 1.1</ulink></para>
+                </listitem>
+            </itemizedlist>
+        </para>
+
+        <para>Availability: 3.3.0, requires libxml2 2.6+</para>
+
+        <note>
+            <para>
+                The MARC21/XML Coded Cartographic Mathematical Data currently does not provide any means to describe the Spatial Reference System of the encoded coordinates, so
+                this function will always return a geometry with <varname>SRID 0</varname>.
+            </para>
+        </note>
+        
+        <note>
+           <para>
+                Returned <varname>POLYGON</varname> geometries will always be clockwise oriented. 
+           </para>
+        </note>
+
+    </refsection>
+
+    <refsection>
+        
+        <title>Examples</title>
+        
+        <para>Converting MARC21/XML geographic data containing a single <varname>POINT</varname> encoded as  <varname>hddd.dddddd</varname>  </para>
+        <programlisting>
+            SELECT
+              ST_AsText(
+                ST_GeomFromMARC21('<![CDATA[
+                    <record xmlns="http://www.loc.gov/MARC21/slim">
+                        <leader>00000nz a2200000nc 4500</leader>
+                        <controlfield tag="001">040277569</controlfield>
+                        <datafield tag="034" ind1=" " ind2=" ">
+                            <subfield code="d">W004.500000</subfield>
+                            <subfield code="e">W004.500000</subfield>
+                            <subfield code="f">N054.250000</subfield>
+                            <subfield code="g">N054.250000</subfield>
+                        </datafield>
+                    </record>']]>));
+
+            st_astext
+            -------------------
+            POINT(-4.5 54.25)
+            (1 row)
+
+        </programlisting>
+
+        <para>Converting MARC21/XML geographic data containing a single <varname>POLYGON</varname> encoded as <varname>hdddmmss</varname></para>
+        
+        <programlisting>
+
+            SELECT
+              ST_AsText(
+                ST_GeomFromMARC21('<![CDATA[
+                    <record xmlns="http://www.loc.gov/MARC21/slim">
+                        <leader>01062cem a2200241 a 4500</leader>
+                        <controlfield tag="001">   84696781 </controlfield>
+                        <datafield tag="034" ind1="1" ind2=" ">
+                            <subfield code="a">a</subfield>
+                            <subfield code="b">50000</subfield>
+                            <subfield code="d">E0130600</subfield>
+                            <subfield code="e">E0133100</subfield>
+                            <subfield code="f">N0523900</subfield>
+                            <subfield code="g">N0522300</subfield>
+                        </datafield>
+                    </record>']]>));
+                    
+            st_astext
+            -----------------------------------------------------------------------------------------------------------------------
+            POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65))
+            (1 row)
+
+        </programlisting>
+
+        <para>Converting MARC21/XML geographic data containing a <varname>POLYGON</varname> and a <varname>POINT</varname>:</para>
+        
+        <programlisting>
+            
+            SELECT 
+              ST_AsText(
+                ST_GeomFromMARC21('<![CDATA[
+            <record xmlns="http://www.loc.gov/MARC21/slim">
+                <datafield tag="034" ind1="1" ind2=" ">
+                    <subfield code="a">a</subfield>
+                    <subfield code="b">50000</subfield>
+                    <subfield code="d">E0130600</subfield>
+                    <subfield code="e">E0133100</subfield>
+                    <subfield code="f">N0523900</subfield>
+                    <subfield code="g">N0522300</subfield>
+                </datafield>
+                <datafield tag="034" ind1=" " ind2=" ">
+                    <subfield code="d">W004.500000</subfield>
+                    <subfield code="e">W004.500000</subfield>
+                    <subfield code="f">N054.250000</subfield>
+                    <subfield code="g">N054.250000</subfield>
+                </datafield>                                      
+            </record>']]>));
+                                                                                      st_astext                                                                          
+            -------------------------------------------------------------------------------------------------------------------------------------------------------------
+             GEOMETRYCOLLECTION(POLYGON((13.1 52.65,13.516666666666667 52.65,13.516666666666667 52.38333333333333,13.1 52.38333333333333,13.1 52.65)),POINT(-4.5 54.25))
+            (1 row)
+        </programlisting>
+        
+    </refsection>
+
+    <refsection>
+        <title>See Also</title>
+        <para>
+            <xref linkend="ST_AsMARC21" />
+        </para>
+    </refsection>
+</refentry>

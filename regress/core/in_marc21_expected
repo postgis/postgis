@@ -1,0 +1,63 @@
+ERROR:  invalid MARC21/XML document.
+ERROR:  invalid MARC21/XML document. Root element <record> expected but <collection> found.
+ERROR:  invalid MARC21/XML document. Root element <record> expected but <collection> found.
+ERROR:  invalid MARC21/XML document.
+ERROR:  invalid MARC21/XML document.
+ERROR:  parse error - invalid literal at 034$d: "N42"
+ERROR:  parse error - invalid literal at 034$e: "N42"
+ERROR:  parse error - invalid literal at 034$f: "N42"
+ERROR:  parse error - invalid literal at 034$g: "N42"
+ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) in the given MARC21/XML is incomplete. Coordinates for subfields "$d","$e","$f" and "$g" are expected.
+ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) in the given MARC21/XML is incomplete. Coordinates for subfields "$d","$e","$f" and "$g" are expected.
+ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) in the given MARC21/XML is incomplete. Coordinates for subfields "$d","$e","$f" and "$g" are expected.
+ERROR:  parse error - the Coded Cartographic Mathematical Data (datafield:034) in the given MARC21/XML is incomplete. Coordinates for subfields "$d","$e","$f" and "$g" are expected.
+ERROR:  parse error - invalid literal at 034$d: "x1204600"
+ERROR:  parse error - invalid literal at 034$e: " 1202600"
+ERROR:  parse error - invalid literal at 034$f: "f0354700"
+ERROR:  parse error - invalid literal at 034$g: ".0354700"
+ERROR:  parse error - invalid literal at 034$e: "-W1202600"
+ERROR:  parse error - invalid literal at 034$f: "N+0354700"
+ERROR:  parse error - invalid literal at 034$g: "++0354700"
+ERROR:  parse error - invalid literal at 034$e: "--1202600"
+ERROR:  parse error - invalid literal at 034$d: "W150 4600"
+ERROR:  parse error - invalid literal at 034$f: "N035+4700"
+ERROR:  parse error - invalid literal at 034$d: "W150-4600"
+ERROR:  parse error - invalid literal at 034$g: "N048/4700"
+ERROR:  parse error - invalid literal at 034$g: "N048*4700"
+ERROR:  parse error - invalid literal at 034$d: "W120.46.89"
+ERROR:  parse error - invalid literal at 034$e: "W120.46,89"
+ERROR:  parse error - invalid literal at 034$f: "W120,46,89"
+ERROR:  parse error - invalid literal at 034$g: "W12,046.89"
+ERROR:  parse error - invalid literal at 034$d: ""
+ERROR:  parse error - invalid literal at 034$e: ""
+ERROR:  parse error - invalid literal at 034$f: ""
+ERROR:  parse error - invalid literal at 034$g: ""
+ERROR:  invalid MARC21/XML document.
+ERROR:  invalid MARC21/XML document.
+polygon_1|POLYGON((45.78333 35.78333,35.78333 35.78333,35.78333 52.78333,45.78333 52.78333,45.78333 35.78333))
+polygon_2|POLYGON((45.78333 35.78333,35.78333 35.78333,35.78333 52.78333,45.78333 52.78333,45.78333 35.78333))
+polygon_3|POLYGON((45.78333 83.78333,45.78333 52.78333,35.78333 52.78333,35.78333 83.78333,45.78333 83.78333))
+polygon_4|POLYGON((45.78333 35.78333,35.78333 35.78333,35.78333 52.78333,45.78333 52.78333,45.78333 35.78333))
+polygon_5|POLYGON((45.78333 35.78333,35.78333 35.78333,35.78333 52.78333,45.78333 52.78333,45.78333 35.78333))
+null_parameter|
+empty_record|
+034_without_geo|
+polygon_6|POLYGON((7.55 52.01667,7.71667 52.01667,7.71667 51.95,7.55 51.95,7.55 52.01667))
+polygon_7|POLYGON((7.55 52.01667,7.71667 52.01667,7.71667 51.95,7.55 51.95,7.55 52.01667))
+polygon_8|POLYGON((-58.79583 -51.57111,-58.41417 -51.57111,-58.41417 -51.74722,-58.79583 -51.74722,-58.79583 -51.57111))
+polygon_9|POLYGON((-58.79583 -51.57111,-58.41417 -51.57111,-58.41417 -51.74722,-58.79583 -51.74722,-58.79583 -51.57111))
+polygon_10|POLYGON((2.31806 51.19583,4.48444 51.19583,4.48444 49.61833,2.31806 49.61833,2.31806 51.19583))
+polygon_11|POLYGON((2.31806 51.19583,4.48444 51.19583,4.48444 49.61833,2.31806 49.61833,2.31806 51.19583))
+polygon_13|POLYGON((2.31806 51.19583,4.48444 51.19583,4.48444 49.61833,2.31806 49.61833,2.31806 51.19583))
+polygon_14|POLYGON((2.530091666666666 51.326388333333334,4.807406666666667 51.326388333333334,4.807406666666667 50.030555,2.530091666666666 50.030555,2.530091666666666 51.326388333333334))
+polygon_15|POLYGON((2.53904 51.33287,4.81234 51.33287,4.81234 50.03981,2.53904 50.03981,2.53904 51.33287))
+polygon_16|POLYGON((-154.44833 35.78333,-154.44833 48.78333,-120.43333 48.78333,-120.43333 35.78333,-154.44833 35.78333))
+polygon_17|POLYGON((-154.26542 35.47002,-154.26542 48.47002,-120.26002 48.47002,-120.26002 35.47002,-154.26542 35.47002))
+polygon_18|POLYGON((-154.44236 35.78336,-154.44236 48.78336,-120.43336 48.78336,-120.43336 35.78336,-154.44236 35.78336))
+polygon_19|POLYGON((-154.44833 35.78338,-154.44833 48.78338,-120.43338 48.78338,-120.43338 35.78338,-154.44833 35.78338))
+point_1|POINT(13.41667 52.5)
+point_2|POINT(13.69445 52.83333)
+point_3|POINT(13.70186 52.83333)
+multipolygon_1|MULTIPOLYGON(((7.55 52.01667,7.71667 52.01667,7.71667 51.95,7.55 51.95,7.55 52.01667)),((-58.79583 -51.57111,-58.41417 -51.57111,-58.41417 -51.74722,-58.79583 -51.74722,-58.79583 -51.57111)))
+multipoint_1|MULTIPOINT(13.41667 52.5,-0.12574 51.50853)
+geocollection_1|GEOMETRYCOLLECTION(POINT(13.41667 52.5),POLYGON((-58.79583 -51.57111,-58.41417 -51.57111,-58.41417 -51.74722,-58.79583 -51.74722,-58.79583 -51.57111)))

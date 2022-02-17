@@ -4703,6 +4703,34 @@ CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
+
+
+-----------------------------------------------------------------------
+-- MARC21/XML INPUT
+-----------------------------------------------------------------------
+
+-- Availability: 3.2.3
+
+CREATE OR REPLACE FUNCTION ST_GeomFromMARC21(marc21xml text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','ST_GeomFromMARC21'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 500;
+
+-----------------------------------------------------------------------
+-- MARC21 OUTPUT
+-----------------------------------------------------------------------
+
+-- Availability: 3.2.3
+
+CREATE OR REPLACE FUNCTION ST_AsMARC21(geom geometry, format text DEFAULT 'hdddmmss')
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','ST_AsMARC21'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+
+
 -----------------------------------------------------------------------
 -- GEOJSON INPUT
 -----------------------------------------------------------------------
