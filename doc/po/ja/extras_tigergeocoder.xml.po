@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-02-15 13:19+0000\n"
+"PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_tigergeocoderxml/ja/>\n"
@@ -520,7 +520,7 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:117
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Generates a script that drops all tables in the specified schema that start "
 "with <varname>county_all</varname>, <varname>state_all</varname> or state "
@@ -770,7 +770,7 @@ msgstr "完全一致は速いです (61ミリ秒)"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:228
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat,\n"
 "    (addy).address As stno, (addy).streetname As street,\n"
@@ -788,13 +788,13 @@ msgstr ""
 "    (addy).address As stno, (addy).streetname As street,\n"
 "    (addy).streettypeabbrev As styp, (addy).location As city, (addy)."
 "stateabbrev As st,(addy).zip\n"
-"    FROM geocode('75 State Street, Boston MA 02109') As g;\n"
-" rating |        lon        |       lat        | stno | street | styp |  "
-"city  | st |  zip\n"
-"--------+-------------------+------------------+------+--------+------"
-"+--------+----+-------\n"
-"      0 | -71.0556722990239 | 42.3589914927049 |   75 | State  | St   | "
-"Boston | MA | 02109"
+"    FROM geocode('75 State Street, Boston MA 02109', 1) As g;\n"
+" rating |        lon        |      lat       | stno | street | styp |  city  "
+"| st |  zip\n"
+"--------+-------------------+----------------+------+--------+------+--------"
+"+----+-------\n"
+"      0 | -71.0557505845646 | 42.35897920691 |   75 | State  | St   | Boston "
+"| MA | 02109"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:229
@@ -843,7 +843,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:232
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,\n"
 "    (addy).address As stno, (addy).streetname As street,\n"
@@ -861,12 +861,12 @@ msgstr ""
 "    (addy).address As stno, (addy).streetname As street,\n"
 "    (addy).streettypeabbrev As styp, (addy).location As city, (addy)."
 "stateabbrev As st,(addy).zip\n"
-"    FROM geocode('31 - 37 Stewart Street, Boston, MA 02116') As g;\n"
+"    FROM geocode('31 - 37 Stewart Street, Boston, MA 02116',1) As g;\n"
 " rating |         wktlonlat         | stno | street | styp |  city  | st |  "
 "zip\n"
-"--------+---------------------------+------+--------+------+--------+----"
-"+-------\n"
-"     70 | POINT(-71.06459 42.35113) |   31 | Stuart | St   | Boston | MA | "
+"--------+---------------------------+------+--------+------+--------+----+---"
+"----\n"
+"     70 | POINT(-71.06466 42.35114) |   31 | Stuart | St   | Boston | MA | "
 "02116"
 
 #. Tag: para
@@ -883,7 +883,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:235
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE TABLE addresses_to_geocode(addid serial PRIMARY KEY, address text,\n"
 "        lon numeric, lat numeric, new_address text, rating integer);\n"
@@ -942,25 +942,20 @@ msgstr ""
 " ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
 " ('950 Main Street, Worcester, MA 01610');\n"
 "\n"
-"-- 全体のジオコードでは、必ず最後に一度コミットが行われます。\n"
+"-- 全体のジオコードでは、必ず一度コミットが行われます。\n"
 "-- 多数の住所があって、一度に全てを更新したくない場合として、\n"
 "-- 最初の三つのアドレスだけ更新します。\n"
-"-- (323-704ミリ秒 - キャッシュと共有メモリがあるので、最初のジオコーディング"
-"は必ず遅くなります)\n"
-"-- この例では、間違った住所の逆ジオコーディングをしなよう、\n"
+"-- (323-704ミリ秒 - キャッシュと共有メモリがあるので、最初のジオコーディングは必ず遅くなります)\n"
+"-- この例では、間違った住所の逆ジオコーディングをしないよう、\n"
 "-- LEFT JOINで再結合して、合致しないものには-1の評価値を設定しています。\n"
 "UPDATE addresses_to_geocode\n"
 "  SET  (rating, new_address, lon, lat)\n"
-"    = ( COALESCE((g.geo).rating,-1), pprint_addy((g.geo).addy),\n"
-"       ST_X((g.geo).geomout)::numeric(8,5), ST_Y((g.geo).geomout)::"
-"numeric(8,5) )\n"
-"FROM (SELECT addid\n"
+"    = ( COALESCE(g.rating,-1), pprint_addy(g.addy),\n"
+"       ST_X(g.geomout)::numeric(8,5), ST_Y(g.geomout)::numeric(8,5) )\n"
+"FROM (SELECT addid, address\n"
 "    FROM addresses_to_geocode\n"
 "    WHERE rating IS NULL ORDER BY addid LIMIT 3) As a\n"
-"    LEFT JOIN (SELECT addid, (geocode(address,1)) As geo\n"
-"    FROM addresses_to_geocode As ag\n"
-"    WHERE ag.rating IS NULL ORDER BY addid LIMIT 3) As g ON a.addid = g."
-"addid\n"
+"    LEFT JOIN LATERAL geocode(a.address,1) As g ON true\n"
 "WHERE a.addid = addresses_to_geocode.addid;\n"
 "\n"
 "結果\n"
@@ -973,12 +968,13 @@ msgstr ""
 "|                new_address                | rating\n"
 "-------+----------------------------------------------+-----------+----------"
 "+-------------------------------------------+--------\n"
-"     1 | 529 Main Street, Boston MA, 02129            | -71.07181 | 42.38359 "
+"     1 | 529 Main Street, Boston MA, 02129            | -71.07177 | 42.38357 "
 "| 529 Main St, Boston, MA 02129             |      0\n"
-"     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09428 | 42.35988 "
+"     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09396 | 42.35961 "
 "| 77 Massachusetts Ave, Cambridge, MA 02139 |      0\n"
-"     3 | 25 Wizard of Oz, Walaford, KS 99912323       |           |          "
-"|                                           |     -1"
+"     3 | 25 Wizard of Oz, Walaford, KS 99912323       | -97.92913 | 38.12717 "
+"| Willowbrook, KS 67502                     |    108\n"
+"(3 rows)"
 
 #. Tag: title
 #: extras_tigergeocoder.xml:238
@@ -988,7 +984,7 @@ msgstr "例: ジオメトリフィルタの使用"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:239
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat,\n"
 "    (addy).address As stno, (addy).streetname As street,\n"
@@ -1022,13 +1018,17 @@ msgstr ""
 "            FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry\n"
 "        ) As g;\n"
 "\n"
-" rating |        wktlonlat         | stno | street  | styp | city | st |  "
+" rating |         wktlonlat         | stno | street  | styp | city | st |  "
 "zip\n"
-"--------+--------------------------+------+---------+------+------+----"
-"+-------\n"
-"      8 | POINT(-70.96796 42.4659) |  100 | Federal | St   | Lynn | MA | "
+"--------+---------------------------+------+---------+------+------+----+----"
+"---\n"
+"      7 | POINT(-70.96796 42.4659)  |  100 | Federal | St   | Lynn | MA | "
 "01905\n"
-"Total query runtime: 245 ms."
+"     16 | POINT(-70.96786 42.46853) | NULL | Federal | St   | Lynn | MA | "
+"01905\n"
+"(2 rows)\n"
+"\n"
+"Time: 622.939 ms"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:245
