@@ -616,7 +616,7 @@ SELECT 'polygon_14',
 	  <subfield code="f">05119.5833</subfield>
 	  <subfield code="g">N04961.8333</subfield>
 	</datafield>
-  </record>'));      
+  </record>'),5);      
   
 -- PASS: coordinates formats [EN]dddmmss.sssss, +dddmmss.sssss, dddmmss.sssss
 SELECT 'polygon_15',
