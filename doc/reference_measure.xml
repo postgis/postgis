@@ -926,13 +926,14 @@ The smaller densifyFrac we specify, the more acurate Fréchet distance we get. B
             <imageobject>
                 <imagedata fileref="images/st_hausdorffdistance01.png" />
             </imageobject>
-            <caption><para>Hausdorff distance (red) and closest distance yellow)
+            <caption><para>Hausdorff distance (red) and distance (yellow)
             between two lines </para></caption>
             </mediaobject>
         </informalfigure>
 
 <programlisting>
-SELECT ST_HausdorffDistance(geomA, geomB), ST_Distance(geomA, geomB)
+SELECT ST_HausdorffDistance(geomA, geomB),
+       ST_Distance(geomA, geomB)
     FROM (SELECT 'LINESTRING (20 70, 70 60, 110 70, 170 70)'::geometry AS geomA,
                  'LINESTRING (20 90, 130 90, 60 100, 190 100)'::geometry AS geomB) AS t;
  st_hausdorffdistance | st_distance
