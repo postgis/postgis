@@ -2859,6 +2859,18 @@ CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid i
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
+CREATE OR REPLACE FUNCTION postgis_spatial_ref_sys(auth_name_in text, auth_srid_in text, OUT auth_name text, OUT auth_srid TEXT, OUT srtext TEXT, OUT proj4text TEXT)
+	RETURNS RECORD
+	AS 'MODULE_PATHNAME', 'postgis_srs_entry'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
+
+CREATE OR REPLACE FUNCTION postgis_spatial_ref_sys(OUT auth_name text, OUT auth_srid TEXT, OUT srtext TEXT, OUT proj4text TEXT)
+	RETURNS SETOF RECORD
+	AS 'MODULE_PATHNAME', 'postgis_srs_entry_all'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
 -----------------------------------------------------------------------
