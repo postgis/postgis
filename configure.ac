@@ -1647,7 +1647,7 @@ AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
 AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
 
 if test "x$HAVE_CPP" = "xyes"; then
-	WFLATGEOBUF_LDFLAGS="-lc++"
+	FLATGEOBUF_LDFLAGS="-lc++"
 elif test "x$HAVE_STDCPP" = "xyes"; then
 	FLATGEOBUF_LDFLAGS="-lstdc++"
 else
