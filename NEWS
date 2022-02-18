@@ -14,12 +14,12 @@ PostGIS 3.3.0dev
   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
   - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
 
-
  * New features*
   - ST_Letters creates geometries that look like letters (Paul Ramsey)
   - #5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)
   - postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version
     (Loïc Bartoletti)
+  - GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)
 
 
 
