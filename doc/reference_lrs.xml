@@ -63,36 +63,27 @@
 			</informalfigure>
 			<programlisting>-- The point 20% along a line
 
-SELECT ST_AsEWKT(
-    ST_LineInterpolatePoint(
+SELECT ST_AsEWKT(  ST_LineInterpolatePoint(
         'LINESTRING(25 50, 100 125, 150 190)',
         0.2 ));
-
-   st_asewkt
 ----------------
  POINT(51.5974135047432 76.5974135047432)
 </programlisting>
 
 <para>The mid-point of a 3D line:</para>
 <programlisting>
-SELECT ST_AsEWKT(
-    ST_LineInterpolatePoint('
+SELECT ST_AsEWKT(  ST_LineInterpolatePoint('
         LINESTRING(1 2 3, 4 5 6, 6 7 8)',
         0.5 ));
-
-	st_asewkt
 --------------------
  POINT(3.5 4.5 5.5)
 </programlisting>
 
 <para>The closest point on a line to a point:</para>
 <programlisting>
-SELECT ST_AsText(
-    ST_LineInterpolatePoint( line.geom,
-        ST_LineLocatePoint( line.geom, 'POINT(4 3)')))
+SELECT ST_AsText( ST_LineInterpolatePoint( line.geom,
+                      ST_LineLocatePoint( line.geom, 'POINT(4 3)')))
 FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
-
- st_astext
 ------------
  POINT(3 4)
 </programlisting>
@@ -202,12 +193,12 @@ SELECT ST_AsText(
 			must be a LINESTRING. The second argument is a float8 between 0 and 1
 			representing the spacing between the points as a fraction of
 			line length. If the third argument is false, at most one point
-			will be constructed (the function will be equivalent to <xref linkend="ST_LineInterpolatePoint" />.)
+			will be constructed (which is equivalent to <xref linkend="ST_LineInterpolatePoint" />.)
 		</para>
 
 		<para>
-			If the result has zero or one points, it will be returned as a POINT.
-			If it has two or more points, it will be returned as a MULTIPOINT.
+			If the result has zero or one points, it is returned as a POINT.
+			If it has two or more points, it is returned as a MULTIPOINT.
 		</para>
 
 
@@ -223,12 +214,11 @@ SELECT ST_AsText(
 				<imageobject>
 				  <imagedata fileref="images/st_line_interpolate_points01.png" />
 				</imageobject>
-				<caption><para>A LineString with the interpolated points every 20% </para></caption>
+				<caption><para>A LineString with points interpolated every 20% </para></caption>
 			  </mediaobject>
 			</informalfigure>
 			<programlisting>--Return points each 20% along a 2D line
 SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)', 0.20))
-   st_astext
 ----------------
  MULTIPOINT(51.5974135047432 76.5974135047432,78.1948270094864 103.194827009486,104.132163186446 130.37181214238,127.066081593223 160.18590607119,150 190)
 </programlisting>
@@ -238,7 +228,7 @@ SELECT ST_AsText(ST_LineInterpolatePoints('LINESTRING(25 50, 100 125, 150 190)',
 			<title>See Also</title>
 
 			<para>
-				<xref linkend="ST_LineInterpolatePoint" />
+				<xref linkend="ST_LineInterpolatePoint" />,
 				<xref linkend="ST_LineLocatePoint" />
 			</para>
 		  </refsection>
@@ -386,11 +376,9 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			  </mediaobject>
 			</informalfigure>
 	<programlisting>
-SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.666));
-
-										   st_astext
+SELECT ST_AsText(ST_LineSubstring( 'LINESTRING (20 180, 50 20, 90 80, 120 40, 180 150)', 0.333, 0.666));
 ------------------------------------------------------------------------------------------------
-LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463138888)
+LINESTRING (45.17311810399485 45.74337011202746, 50 20, 90 80, 112.97593050157862 49.36542599789519)
 </programlisting>
 
 <para>
@@ -398,8 +386,6 @@ If start and end locations are the same, the result is a POINT.
 </para>
 <programlisting>
 SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', 0.333, 0.333));
-
-                st_astext
 ------------------------------------------
  POINT(69.2846934853974 94.2846934853974)
 </programlisting>
@@ -559,13 +545,30 @@ SELECT ST_AsText(
 SELECT ST_AsText(
   ST_LocateBetween(
        'MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))':: geometry,
-       1.5,
-       3 ));
-
-							 st_asewkt
+       1.5, 3 ));
 ------------------------------------------------------------------------
  GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))
 </programlisting>
+
+        <informalfigure>
+            <mediaobject>
+            <imageobject>
+                <imagedata fileref="images/st_locatebetween01.png" />
+            </imageobject>
+            <caption><para>A LineString with the section between measures 2 and 8, offset to the left </para></caption>
+            </mediaobject>
+        </informalfigure>
+
+<programlisting>
+SELECT ST_AsText( ST_LocateBetween(
+  ST_AddMeasure('LINESTRING (20 180, 50 20, 100 120, 180 20)', 0, 10),
+  2, 8,
+  20
+));
+------------------------------------------------------------------------
+MULTILINESTRING((54.49835019899045 104.53426957938231,58.70056060327303 82.12248075654186,69.16695286779743 103.05526528559065,82.11145618000168 128.94427190999915,84.24893681714357 132.32493442618113,87.01636951231555 135.21267035596549,90.30307285299679 137.49198684843182,93.97759758337769 139.07172433557758,97.89298381958797 139.8887023914453,101.89263860095893 139.9102465862721,105.81659870902816 139.13549527600819,109.50792827749828 137.5954340631298,112.81899532549731 135.351656550512,115.6173761888606 132.49390095108848,145.31017306064817 95.37790486135405))
+</programlisting>
+
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
