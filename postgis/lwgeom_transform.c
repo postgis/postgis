@@ -26,6 +26,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "utils/builtins.h"
+#include "funcapi.h"
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
@@ -224,4 +225,216 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	if (kml)
 		PG_RETURN_TEXT_P(kml);
 	PG_RETURN_NULL();
+}
+
+
+/********************************************************************************
+ * PROJ database reading functions
+ */
+
+
+#if POSTGIS_PROJ_VERSION >= 61
+
+struct srs_entry {
+	text* auth_name;
+	text* auth_code;
+};
+
+struct srs_data {
+	struct srs_entry* entries;
+	uint32_t num_entries;
+	uint32_t capacity;
+	uint32_t current_entry;
+};
+
+static Datum
+srs_tuple_from_entry(const struct srs_entry* entry, TupleDesc tuple_desc)
+{
+	HeapTuple tuple;
+	Datum tuple_data[4] = {0, 0, 0, 0};
+	bool  tuple_null[4] = {false, false, false, false};
+	PJ_CONTEXT *ctx = NULL;
+	const char* const empty_options[2] = {NULL};
+	const char* const wkt_options[2] = {"MULTILINE=NO", NULL};
+	const char *srtext;
+	const char *proj4text;
+
+	PJ *obj = proj_create_from_database(ctx,
+		text_to_cstring(entry->auth_name),
+		text_to_cstring(entry->auth_code),
+		PJ_CATEGORY_CRS, 0, empty_options);
+
+	if (!obj)
+		return (Datum) 0;
+
+	srtext = proj_as_wkt(ctx, obj, PJ_WKT1_GDAL, wkt_options);
+	proj4text = proj_as_proj_string(ctx, obj, PJ_PROJ_4, empty_options);
+
+	if (entry->auth_name)
+		tuple_data[0] = PointerGetDatum(entry->auth_name);
+	else
+		tuple_null[0] = true;
+
+	if (entry->auth_code)
+		tuple_data[1] = PointerGetDatum(entry->auth_code);
+	else
+		tuple_null[1] = true;
+
+	if (srtext)
+		tuple_data[2] = PointerGetDatum(cstring_to_text(srtext));
+	else
+		tuple_null[2] = true;
+
+	if (proj4text)
+		tuple_data[3] = PointerGetDatum(cstring_to_text(proj4text));
+	else
+		tuple_null[3] = true;
+
+	tuple = heap_form_tuple(tuple_desc, tuple_data, tuple_null);
+	proj_destroy(obj);
+
+	return HeapTupleGetDatum(tuple);
+}
+
+#endif
+
+/**
+ * Search for srtext and proj4text given auth_name and auth_srid,
+ * returns TABLE(auth_name text, auth_srid text, srtext text, proj4text text)
+ */
+Datum postgis_srs_entry(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(postgis_srs_entry);
+Datum postgis_srs_entry(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_PROJ_VERSION < 61
+	elog(ERROR, "%s is not supported with Proj < 6.1", __func__);
+#else
+	Datum result;
+	struct srs_entry entry;
+	text* auth_name = PG_GETARG_TEXT_P(0);
+	text* auth_code = PG_GETARG_TEXT_P(1);
+	TupleDesc tuple_desc;
+
+	if (get_call_result_type(fcinfo, 0, &tuple_desc) != TYPEFUNC_COMPOSITE) {
+		ereport(ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+			errmsg("%s called with incompatible return type", __func__)));
+	}
+	BlessTupleDesc(tuple_desc);
+
+	entry.auth_name = auth_name;
+	entry.auth_code = auth_code;
+	result = srs_tuple_from_entry(&entry, tuple_desc);
+
+	if (result)
+		PG_RETURN_DATUM(srs_tuple_from_entry(&entry, tuple_desc));
+	else
+		PG_RETURN_NULL();
+#endif
+}
+
+
+Datum postgis_srs_entry_all(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(postgis_srs_entry_all);
+Datum postgis_srs_entry_all(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_PROJ_VERSION < 61
+	elog(ERROR, "%s is not supported with Proj < 6.1", __func__);
+#else
+	FuncCallContext *funcctx;
+	MemoryContext oldcontext;
+	struct srs_data *state;
+	Datum result;
+
+	/*
+	* On the first call, fill in the state with all
+	* of the auth_name/auth_srid pairings in the
+	* proj database. Then the per-call routine is just
+	* one isolated call per pair.
+	*/
+	if (SRF_IS_FIRSTCALL()) {
+		uint32_t i, j;
+		/*
+		* Only a subset of supported proj types actually
+		* show up in spatial_ref_sys
+		*/
+		#define ntypes 3
+		PJ_TYPE types[ntypes] = {PJ_TYPE_PROJECTED_CRS, PJ_TYPE_GEOGRAPHIC_CRS, PJ_TYPE_COMPOUND_CRS};
+
+		/*
+		* Could read all authorities from database, but includes
+		* authorities (IGN, OGC) that use non-integral values in
+		* auth_srid. So hand-coded list for now.
+		*/
+		#define nauths 2
+		const char* auth_names[nauths] = {"EPSG", "ESRI"};
+
+		funcctx = SRF_FIRSTCALL_INIT();
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		state = palloc0(sizeof(*state));
+		state->capacity = 8192;
+		state->num_entries = 0;
+		state->entries = palloc0(state->capacity * sizeof(*(state->entries)));
+
+		for (i = 0; i < nauths; i++) {
+			const char* auth_name = auth_names[i];
+			for (j = 0; j < ntypes; j++) {
+				PJ_CONTEXT *ctx = NULL;
+				int allow_deprecated = 0;
+				PJ_TYPE type = types[j];
+				PROJ_STRING_LIST codes_ptr = proj_get_codes_from_database(ctx, auth_name, type, allow_deprecated);
+				PROJ_STRING_LIST codes = codes_ptr;
+				const char *code;
+				while(codes && *codes) {
+					code = *codes++;
+					/* Ensure there is space in the entry list */
+					if (state->num_entries == state->capacity) {
+						state->capacity *= 2;
+						state->entries = repalloc(state->entries, state->capacity * sizeof(*(state->entries)));
+					}
+					/* Write the entry into the entry list and increment */
+					state->entries[state->num_entries].auth_name = cstring_to_text(auth_name);
+					state->entries[state->num_entries].auth_code = cstring_to_text(code);
+					state->num_entries++;
+				}
+				/* Clean up system allocated memory */
+				proj_string_list_destroy(codes_ptr);
+			}
+		}
+
+		/*
+		* Read the TupleDesc from the FunctionCallInfo. The SQL definition
+		* of the function must have the right number of fields and types
+		* to match up to this C code.
+		*/
+		if (get_call_result_type(fcinfo, 0, &funcctx->tuple_desc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg("%s called with incompatible return type", __func__)));
+		}
+
+		BlessTupleDesc(funcctx->tuple_desc);
+		funcctx->user_fctx = state;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* Stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+	state = funcctx->user_fctx;
+
+	/* Exit when we've read all entries */
+	if (!state->num_entries || state->current_entry == state->num_entries) {
+		SRF_RETURN_DONE(funcctx);
+	}
+
+	/* Lookup the srtext/proj4text for this entry */
+	result = srs_tuple_from_entry(
+		state->entries + state->current_entry++,
+		funcctx->tuple_desc);
+
+	if (result)
+		SRF_RETURN_NEXT(funcctx, result);
+
+	/* Stop if lookup fails drastically */
+	SRF_RETURN_DONE(funcctx);
+#endif
 }
