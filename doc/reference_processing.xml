@@ -56,7 +56,7 @@ Computes a geometry covering all points within a given distance from a geometry.
               <refsection>
                 <title>Description</title>
 
-                <para>Computes a a POLYGON or MULTIPOLYGON that represents all points whose distance
+                <para>Computes a POLYGON or MULTIPOLYGON that represents all points whose distance
             from a geometry/geography is less than or equal to a given distance.
             A negative distance shrinks the geometry rather than expanding it.
             A negative distance may shrink a polygon completely, in which case POLYGON EMPTY is returned.
