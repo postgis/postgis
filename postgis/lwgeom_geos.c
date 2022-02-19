@@ -2986,8 +2986,8 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	char elmalign;
 
 	/* Null array, null geometry (should be empty?) */
-    if (PG_ARGISNULL(0))
-        PG_RETURN_NULL();
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 
 	array = PG_GETARG_ARRAYTYPE_P(0);
     nelems = array_nelems_not_null(array);
