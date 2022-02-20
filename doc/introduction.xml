@@ -211,8 +211,10 @@
 					<member>Andrea Peri</member>
 					<member>Andreas Forø Tollefsen</member>
 					<member>Andreas Neumann</member>
+                    <member>Andrew Gierth</member>
 					<member>Anne Ghisla</member>
 					<member>Antoine Bajolet</member>
+                    <member>Arthur Lesuisse</member>
 					<member>Artur Zakirov</member>
 					<member>Barbara Phillipot</member>
 					<member>Ben Jubb</member>
@@ -241,14 +243,19 @@
 					<member>Gino Lucrezi</member>
 					<member>Greg Troxel</member>
 					<member>Guillaume Lelarge</member>
+                    <member>Giuseppe Broccolo</member>
+                    <member>Han Wang</member>
 					<member>Haribabu Kommi</member>
 					<member>Havard Tveite</member>
 					<member>IIDA Tetsushi</member>
 					<member>Ingvild Nystuen</member>
 					<member>Jackie Leng</member>
 					<member>James Marca</member>
+                    <member>Jan Katins</member>
 					<member>Jason Smith</member>
 					<member>Jeff Adams</member>
+                    <member>Jim Jones</member>
+                    <member>Joe Conway</member>
 					<member>Jonne Savolainen</member>
 					<member>Jose Carlos Martinez Llari</member>
 					<member>Jörg Habenicht</member>
@@ -259,14 +266,17 @@
 					<member>Laurenz Albe</member>
 					<member>Lars Roessiger</member>
 					<member>Leo Hsu</member>
+                    <member>Loïc Bartoletti</member>
 					<member>Loic Dachary</member>
 					<member>Luca S. Percich</member>
+                    <member>Lucas C. Villa Real</member>
 					<member>Maria Arias de Reyna</member>
 					<member>Marc Ducobu</member>
 					<member>Mark Sondheim</member>
 					<member>Markus Schaber</member>
 					<member>Markus Wanner</member>
 					<member>Matt Amos</member>
+                    <member>Matt Bretl</member>
 					<member>Matthias Bay</member>
 					<member>Maxime Guillaud</member>
 					<member>Maxime van Noppen</member>
@@ -284,13 +294,16 @@
 					<member>Roger Crew</member>
 					<member>Ron Mayer</member>
 					<member>Sebastiaan Couwenberg</member>
+                    <member>Sergei Shoulbakov</member>
 					<member>Sergey Fedoseev</member>
 					<member>Shinichi Sugiyama</member>
 					<member>Shoaib Burq</member>
 					<member>Silvio Grosso</member>
+                    <member>Stefan Corneliu Petrea</member>
 					<member>Steffen Macke</member>
 					<member>Stepan Kuzmin</member>
 					<member>Stephen Frost</member>
+                    <member>Steven Ottens</member>
 					<member>Talha Rizwan</member>
 					<member>Tom Glancy</member>
 					<member>Tom van Tilburg</member>
@@ -309,6 +322,7 @@
 			<para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project.
 			      In alphabetical order:
 			<itemizedlist>
+                <listitem><simpara><ulink url="https://aiven.io">Aiven</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://arrival3d.com">Arrival 3D</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.ausvet.com.au">AusVet</ulink></simpara></listitem>
@@ -318,6 +332,7 @@
 				<listitem><simpara><ulink url="https://www.cadcorp.com">Cadcorp</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.camptocamp.com">Camptocamp</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://carto.com">Carto</ulink></simpara></listitem>
+                <listitem><simpara><ulink url="https://www.crunchydata.com">Crunchy Data</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.boston.gov">City of Boston (DND)</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.hel.fi">City of Helsinki</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://blog.cleverelephant.ca">Clever Elephant Solutions</ulink></simpara></listitem>
@@ -325,8 +340,9 @@
 				<listitem><simpara><ulink url="http://www.elecnor-deimos.com">Deimos Space</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.faunalia.eu">Faunalia</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://gov.bc.ca">Geographic Data BC</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="http://www.hunterbiometrics.com">Hunter Systems Group</ulink></simpara></listitem>
+				<listitem><simpara>Hunter Systems Group</simpara></listitem>
 				<listitem><simpara><ulink url="https://www.isciences.com">ISciences, LLC</ulink></simpara></listitem>
+                <listitem><simpara><ulink url="https://www.kontur.io">Kontur</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.lidwala.com">Lidwala Consulting Engineers</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.jirotech.com">LISAsoft</ulink></simpara></listitem>
 				<listitem><simpara>Logical Tracking &amp; Tracing International AG</simpara></listitem>
