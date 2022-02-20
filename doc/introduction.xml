@@ -44,13 +44,6 @@
 		</varlistentry>
 
 		<varlistentry>
-		<term>Bborie Park</term>
-		<listitem>
-			<para>Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
-		</listitem>
-		</varlistentry>
-
-		<varlistentry>
 			<term>Darafei Praliaskouski</term>
 			<listitem>
 				<para>Index improvements, bug fixing and geometry/geography function improvements, SFCGAL, raster, GitHub curation, and Travis bot maintenance.</para>
@@ -79,13 +72,6 @@
 	<title>Core Contributors Present</title>
 	<variablelist>
 		<varlistentry>
-			<term>Jorge Arévalo</term>
-			<listitem>
-			  <para>Raster development, GDAL driver support, loader</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
 			<term>Nicklas Avén</term>
 
 			<listitem>
@@ -98,13 +84,6 @@
 
 			<listitem>
 			  <para>Geometry clustering function additions, other geometry algorithm enhancements, GEOS enhancements and general user support</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Olivier Courtin</term>
-			<listitem>
-			  <para>Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
 
@@ -123,38 +102,39 @@
 			</listitem>
 		</varlistentry>
 
-
-		<varlistentry>
-			<term>Mateusz Loskot</term>
-			<listitem>
-			  <para>CMake support for PostGIS, built original raster loader in python and low level raster API functions</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>Pierre Racine</term>
-			<listitem>
-			  <para>Raster overall architecture, prototyping, programming support</para>
-			</listitem>
-		</varlistentry>
 	</variablelist>
   </sect1>
   <sect1 id="credits_core_past">
 	<title>Core Contributors Past</title>
 	<variablelist>
+
 		<varlistentry>
-			<term>Mark Cave-Ayland</term>
+            <term>Bborie Park</term>
+            <listitem>
+                <para>Prior PSC Member. Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
+            </listitem>
+		</varlistentry>
+
+		<varlistentry>
+            <term>Mark Cave-Ayland</term>
+            <listitem>
+                <para>Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
+                    and new function enhancements.</para>
+            </listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Olivier Courtin</term>
 			<listitem>
-				<para>Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
-					and new function enhancements.</para>
+			  <para>(Emeritus) PostGIS SFCGAL creator, Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
 
 		<varlistentry>
-		<term>Chris Hodgson</term>
-		<listitem>
-		  <para>Prior PSC Member. General development, site and buildbot maintenance, OSGeo incubation management</para>
-		</listitem>
+            <term>Chris Hodgson</term>
+            <listitem>
+            <para>Prior PSC Member. General development, site and buildbot maintenance, OSGeo incubation management</para>
+            </listitem>
 		</varlistentry>
 
 		<varlistentry>
@@ -166,13 +146,34 @@
 		</varlistentry>
 
 		<varlistentry>
-		<term>Dave Blasby</term>
+            <term>Dave Blasby</term>
 
-		<listitem>
-		  <para>The original developer/Co-founder of PostGIS. Dave wrote the server side
-		  objects, index bindings, and many of the server side analytical
-		  functions.</para>
-		</listitem>
+            <listitem>
+            <para>The original developer/Co-founder of PostGIS. Dave wrote the server side
+            objects, index bindings, and many of the server side analytical
+            functions.</para>
+            </listitem>
+		</varlistentry>
+
+        <varlistentry>
+			<term>Pierre Racine</term>
+			<listitem>
+			  <para>Architect of PostGIS raster</para>
+			</listitem>
+		</varlistentry>
+
+        <varlistentry>
+			<term>Jorge Arévalo</term>
+			<listitem>
+			  <para>Raster development, GDAL driver support, loader</para>
+			</listitem>
+		</varlistentry>
+
+        <varlistentry>
+			<term>David Zwarg</term>
+			<listitem>
+			  <para>Raster development (mostly map algebra analytic functions)</para>
+			</listitem>
 		</varlistentry>
 
 		<varlistentry>
@@ -191,9 +192,9 @@
 		</varlistentry>
 
         <varlistentry>
-			<term>David Zwarg</term>
+			<term>Mateusz Loskot</term>
 			<listitem>
-			  <para>Raster development (mostly map algebra analytic functions)</para>
+			  <para>CMake support for PostGIS, built original raster loader in python and low level raster API functions</para>
 			</listitem>
 		</varlistentry>
 	</variablelist>
@@ -212,8 +213,10 @@
 					<member>Andrea Peri</member>
 					<member>Andreas Forø Tollefsen</member>
 					<member>Andreas Neumann</member>
+                    <member>Andrew Gierth</member>
 					<member>Anne Ghisla</member>
 					<member>Antoine Bajolet</member>
+                    <member>Arthur Lesuisse</member>
 					<member>Artur Zakirov</member>
 					<member>Barbara Phillipot</member>
 					<member>Ben Jubb</member>
@@ -242,14 +245,19 @@
 					<member>Gino Lucrezi</member>
 					<member>Greg Troxel</member>
 					<member>Guillaume Lelarge</member>
+                    <member>Giuseppe Broccolo</member>
+                    <member>Han Wang</member>
 					<member>Haribabu Kommi</member>
 					<member>Havard Tveite</member>
 					<member>IIDA Tetsushi</member>
 					<member>Ingvild Nystuen</member>
 					<member>Jackie Leng</member>
 					<member>James Marca</member>
+                    <member>Jan Katins</member>
 					<member>Jason Smith</member>
 					<member>Jeff Adams</member>
+                    <member>Jim Jones</member>
+                    <member>Joe Conway</member>
 					<member>Jonne Savolainen</member>
 					<member>Jose Carlos Martinez Llari</member>
 					<member>Jörg Habenicht</member>
@@ -260,14 +268,17 @@
 					<member>Laurenz Albe</member>
 					<member>Lars Roessiger</member>
 					<member>Leo Hsu</member>
+                    <member>Loïc Bartoletti</member>
 					<member>Loic Dachary</member>
 					<member>Luca S. Percich</member>
+                    <member>Lucas C. Villa Real</member>
 					<member>Maria Arias de Reyna</member>
 					<member>Marc Ducobu</member>
 					<member>Mark Sondheim</member>
 					<member>Markus Schaber</member>
 					<member>Markus Wanner</member>
 					<member>Matt Amos</member>
+                    <member>Matt Bretl</member>
 					<member>Matthias Bay</member>
 					<member>Maxime Guillaud</member>
 					<member>Maxime van Noppen</member>
@@ -285,13 +296,16 @@
 					<member>Roger Crew</member>
 					<member>Ron Mayer</member>
 					<member>Sebastiaan Couwenberg</member>
+                    <member>Sergei Shoulbakov</member>
 					<member>Sergey Fedoseev</member>
 					<member>Shinichi Sugiyama</member>
 					<member>Shoaib Burq</member>
 					<member>Silvio Grosso</member>
+                    <member>Stefan Corneliu Petrea</member>
 					<member>Steffen Macke</member>
 					<member>Stepan Kuzmin</member>
 					<member>Stephen Frost</member>
+                    <member>Steven Ottens</member>
 					<member>Talha Rizwan</member>
 					<member>Tom Glancy</member>
 					<member>Tom van Tilburg</member>
@@ -310,6 +324,7 @@
 			<para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project.
 			      In alphabetical order:
 			<itemizedlist>
+                <listitem><simpara><ulink url="https://aiven.io">Aiven</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://arrival3d.com">Arrival 3D</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="http://gfoss.it">Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it)</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.ausvet.com.au">AusVet</ulink></simpara></listitem>
@@ -319,6 +334,7 @@
 				<listitem><simpara><ulink url="https://www.cadcorp.com">Cadcorp</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.camptocamp.com">Camptocamp</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://carto.com">Carto</ulink></simpara></listitem>
+                <listitem><simpara><ulink url="https://www.crunchydata.com">Crunchy Data</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.boston.gov">City of Boston (DND)</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.hel.fi">City of Helsinki</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://blog.cleverelephant.ca">Clever Elephant Solutions</ulink></simpara></listitem>
@@ -326,8 +342,9 @@
 				<listitem><simpara><ulink url="http://www.elecnor-deimos.com">Deimos Space</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.faunalia.eu">Faunalia</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://gov.bc.ca">Geographic Data BC</ulink></simpara></listitem>
-				<listitem><simpara><ulink url="http://www.hunterbiometrics.com">Hunter Systems Group</ulink></simpara></listitem>
+				<listitem><simpara>Hunter Systems Group</simpara></listitem>
 				<listitem><simpara><ulink url="https://www.isciences.com">ISciences, LLC</ulink></simpara></listitem>
+                <listitem><simpara><ulink url="https://www.kontur.io">Kontur</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.lidwala.com">Lidwala Consulting Engineers</ulink></simpara></listitem>
 				<listitem><simpara><ulink url="https://www.jirotech.com">LISAsoft</ulink></simpara></listitem>
 				<listitem><simpara>Logical Tracking &amp; Tracing International AG</simpara></listitem>
