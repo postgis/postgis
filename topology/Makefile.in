@@ -149,5 +149,10 @@ check-regress: topology.sql
 
 check: check-regress
 
+clean: clean-subdirs
+
+clean-subdirs:
+	$(MAKE) -C test clean
+
 distclean: clean
 	rm -f Makefile test/Makefile
