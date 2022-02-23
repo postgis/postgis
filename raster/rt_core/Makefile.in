@@ -23,7 +23,7 @@ top_srcdir = @top_srcdir@
 builddir = @builddir@
 top_builddir = @top_builddir@
 
-AR = ar rs
+AR = @AR@ @AR_FLAGS@
 
 CC = @CC@
 LIBLWGEOM_LDFLAGS = $(top_builddir)/liblwgeom/.libs/liblwgeom.a
