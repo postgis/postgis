@@ -335,6 +335,7 @@ srs_state_codes(const char* auth_name, struct srs_data *state)
 		PROJ_STRING_LIST codes = codes_ptr;
 		const char *code;
 		while(codes && *codes) {
+			/* Read current code and move forward one entry */
 			code = *codes++;
 			/* Ensure there is space in the entry list */
 			srs_state_memcheck(state);
@@ -417,6 +418,7 @@ Datum postgis_srs_entry_all(PG_FUNCTION_ARGS)
 		state = srs_state_init();
 		srs_state_codes("EPSG", state);
 		srs_state_codes("ESRI", state);
+		srs_state_codes("IAU_2015", state);
 
 		/*
 		* Read the TupleDesc from the FunctionCallInfo. The SQL definition
