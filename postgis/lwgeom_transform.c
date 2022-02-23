@@ -296,7 +296,6 @@ srs_tuple_from_entry(const struct srs_entry* entry, TupleDesc tuple_desc)
 	return HeapTupleGetDatum(tuple);
 }
 
-
 static struct srs_data *
 srs_state_init()
 {
