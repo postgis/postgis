@@ -136,7 +136,7 @@ endif
 
 ICON_SIZES = 8x8 16x16 22x22 24x24 32x32 36x36 40x40 42x42 48x48 64x64
 
-install-icons: $(ICONS)
+install-icons:
 ifdef gtk_build
 	for size in $(ICON_SIZES); do \
 		mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/$${size}/apps; \
