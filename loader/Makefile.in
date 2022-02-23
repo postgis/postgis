@@ -128,10 +128,10 @@ $(SHP2PGSQL-GUI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
 
-install-desktop:
+install-desktop: shp2pgsql-gui.desktop
 ifdef gtk_build
 	mkdir -p $(DESTDIR)$(datadir)/applications
-	$(INSTALL_DATA) shp2pgsql-gui.desktop $(DESTDIR)$(datadir)/applications/shp2pgsql-gui.desktop
+	$(INSTALL_DATA) $^ $(DESTDIR)$(datadir)/applications/shp2pgsql-gui.desktop
 endif
 
 ICON_SIZES = 8x8 16x16 22x22 24x24 32x32 36x36 40x40 42x42 48x48 64x64
@@ -140,7 +140,7 @@ install-icons:
 ifdef gtk_build
 	for size in $(ICON_SIZES); do \
 		mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/$${size}/apps; \
-		$(INSTALL_DATA) icons/hicolor/$${size}/apps/shp2pgsql-gui.png $(DESTDIR)$(datadir)/icons/hicolor/$${size}/apps/shp2pgsql-gui.png; \
+		$(INSTALL_DATA) $(srcdir)/icons/hicolor/$${size}/apps/shp2pgsql-gui.png $(DESTDIR)$(datadir)/icons/hicolor/$${size}/apps/shp2pgsql-gui.png; \
 	done
 endif
 

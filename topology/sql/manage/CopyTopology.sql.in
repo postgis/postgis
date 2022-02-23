@@ -19,7 +19,7 @@
 CREATE OR REPLACE FUNCTION topology.CopyTopology(atopology varchar, newtopo varchar)
 RETURNS int
 AS
-$$
+$BODY$
 DECLARE
   rec RECORD;
   rec2 RECORD;
@@ -27,6 +27,7 @@ DECLARE
   newtopo_id integer;
   n int4;
   ret text;
+  sql text;
 BEGIN
 
   SELECT * FROM topology.topology where name = atopology
@@ -37,35 +38,43 @@ BEGIN
   SELECT topology.CreateTopology(newtopo, rec.SRID, rec.precision, rec.hasZ)
   INTO strict newtopo_id;
 
-  -- Copy faces
-  EXECUTE 'INSERT INTO ' || quote_ident(newtopo)
-    || '.face SELECT * FROM ' || quote_ident(atopology)
-    || '.face WHERE face_id != 0';
-  -- Update faces sequence
-  EXECUTE 'SELECT setval(' || quote_literal(
-      quote_ident(newtopo) || '.face_face_id_seq'
-    ) || ', (SELECT last_value FROM '
-    || quote_ident(atopology) || '.face_face_id_seq))';
+  sql := format(
+    $$
+      -- Copy faces
+      INSERT INTO %1$I.face
+      SELECT * FROM %2$I.face
+      WHERE face_id != 0;
 
-  -- Copy nodes
-  EXECUTE 'INSERT INTO ' || quote_ident(newtopo)
-    || '.node SELECT * FROM ' || quote_ident(atopology)
-    || '.node';
-  -- Update node sequence
-  EXECUTE 'SELECT setval(' || quote_literal(
-      quote_ident(newtopo) || '.node_node_id_seq'
-    ) || ', (SELECT last_value FROM '
-    || quote_ident(atopology) || '.node_node_id_seq))';
+      -- Update face sequence
+      SELECT setval(
+        '%1$I.face_face_id_seq',
+        (SELECT last_value FROM %2$I.face_face_id_seq)
+      );
 
-  -- Copy edges
-  EXECUTE 'INSERT INTO ' || quote_ident(newtopo)
-    || '.edge_data SELECT * FROM ' || quote_ident(atopology)
-    || '.edge_data';
-  -- Update edge sequence
-  EXECUTE 'SELECT setval(' || quote_literal(
-      quote_ident(newtopo) || '.edge_data_edge_id_seq'
-    ) || ', (SELECT last_value FROM '
-    || quote_ident(atopology) || '.edge_data_edge_id_seq))';
+      -- Copy nodes
+      INSERT INTO %1$I.node
+      SELECT * FROM %2$I.node;
+
+      -- Update node sequence
+      SELECT setval(
+        '%1$I.node_node_id_seq',
+        (SELECT last_value FROM %2$I.node_node_id_seq)
+      );
+
+      -- Copy edges
+      INSERT INTO %1$I.edge_data
+      SELECT * FROM %2$I.edge_data;
+
+      -- Update edge sequence
+      SELECT setval(
+        '%1$I.edge_data_edge_id_seq',
+        (SELECT last_value FROM %2$I.edge_data_edge_id_seq)
+      );
+    $$,
+    newtopo,
+    atopology
+  );
+  EXECUTE sql;
 
   -- Copy layers and their TopoGeometry sequences
   FOR rec IN SELECT * FROM topology.layer WHERE topology_id = oldtopo_id
@@ -75,25 +84,35 @@ BEGIN
       VALUES (newtopo_id, rec.layer_id, rec.feature_type,
               rec.level, rec.child_id, newtopo,
               'LAYER' ||  rec.layer_id, '');
+
     -- Create layer's TopoGeometry sequences
-    EXECUTE 'SELECT last_value FROM '
-      || quote_ident(atopology) || '.topogeo_s_' || rec.layer_id
-      INTO STRICT n;
-    EXECUTE 'CREATE SEQUENCE ' || quote_ident(newtopo)
-      || '.topogeo_s_' || rec.layer_id;
-    EXECUTE 'SELECT setval(' || quote_literal(
-      quote_ident(newtopo) || '.topogeo_s_' || rec.layer_id
-      ) || ', ' || n || ')';
+    EXECUTE format(
+      $$
+        CREATE SEQUENCE %1$I.topogeo_s_%2$s;
+        SELECT setval(
+          '%1$I.topogeo_s_%2$s',
+          (SELECT last_value FROM %3$I.topogeo_s_%2$s)
+        );
+      $$,
+      newtopo,
+      rec.layer_id,
+      atopology
+    );
   END LOOP;
 
   -- Copy TopoGeometry definitions
-  EXECUTE 'INSERT INTO ' || quote_ident(newtopo)
-    || '.relation SELECT * FROM ' || quote_ident(atopology)
-    || '.relation';
+  EXECUTE format(
+    $$
+      INSERT INTO %1$I.relation
+      SELECT * FROM %2$I.relation
+    $$,
+    newtopo,
+    atopology
+  );
 
   RETURN newtopo_id;
 END
-$$
+$BODY$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --} TopologySummary
