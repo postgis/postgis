@@ -296,6 +296,60 @@ srs_tuple_from_entry(const struct srs_entry* entry, TupleDesc tuple_desc)
 	return HeapTupleGetDatum(tuple);
 }
 
+
+static struct srs_data *
+srs_state_init()
+{
+	struct srs_data *state = palloc0(sizeof(*state));
+	state->capacity = 8192;
+	state->num_entries = 0;
+	state->entries = palloc0(state->capacity * sizeof(*(state->entries)));
+	return state;
+}
+
+static void
+srs_state_memcheck(struct srs_data *state)
+{
+	if (state->num_entries == state->capacity) {
+		state->capacity *= 2;
+		state->entries = repalloc(state->entries, state->capacity * sizeof(*(state->entries)));
+	}
+	return;
+}
+
+static void
+srs_state_codes(const char* auth_name, struct srs_data *state)
+{
+	/*
+	* Only a subset of supported proj types actually
+	* show up in spatial_ref_sys
+	*/
+	#define ntypes 3
+	PJ_TYPE types[ntypes] = {PJ_TYPE_PROJECTED_CRS, PJ_TYPE_GEOGRAPHIC_CRS, PJ_TYPE_COMPOUND_CRS};
+	uint32_t j;
+
+	for (j = 0; j < ntypes; j++) {
+		PJ_CONTEXT *ctx = NULL;
+		int allow_deprecated = 0;
+		PJ_TYPE type = types[j];
+		PROJ_STRING_LIST codes_ptr = proj_get_codes_from_database(ctx, auth_name, type, allow_deprecated);
+		PROJ_STRING_LIST codes = codes_ptr;
+		const char *code;
+		while(codes && *codes) {
+			code = *codes++;
+			/* Ensure there is space in the entry list */
+			srs_state_memcheck(state);
+
+			/* Write the entry into the entry list and increment */
+			state->entries[state->num_entries].auth_name = cstring_to_text(auth_name);
+			state->entries[state->num_entries].auth_code = cstring_to_text(code);
+			state->num_entries++;
+		}
+		/* Clean up system allocated memory */
+		proj_string_list_destroy(codes_ptr);
+	}
+}
+
 #endif
 
 /**
@@ -306,8 +360,8 @@ Datum postgis_srs_entry(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_srs_entry);
 Datum postgis_srs_entry(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PROJ_VERSION < 61
-	elog(ERROR, "%s is not supported with Proj < 6.1", __func__);
+#if POSTGIS_PROJ_VERSION < 60
+	elog(ERROR, "%s is not supported with Proj < 6.0", __func__);
 #else
 	Datum result;
 	struct srs_entry entry;
@@ -337,8 +391,8 @@ Datum postgis_srs_entry_all(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_srs_entry_all);
 Datum postgis_srs_entry_all(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PROJ_VERSION < 61
-	elog(ERROR, "%s is not supported with Proj < 6.1", __func__);
+#if POSTGIS_PROJ_VERSION < 60
+	elog(ERROR, "%s is not supported with Proj < 6.0", __func__);
 #else
 	FuncCallContext *funcctx;
 	MemoryContext oldcontext;
@@ -352,55 +406,18 @@ Datum postgis_srs_entry_all(PG_FUNCTION_ARGS)
 	* one isolated call per pair.
 	*/
 	if (SRF_IS_FIRSTCALL()) {
-		uint32_t i, j;
-		/*
-		* Only a subset of supported proj types actually
-		* show up in spatial_ref_sys
-		*/
-		#define ntypes 3
-		PJ_TYPE types[ntypes] = {PJ_TYPE_PROJECTED_CRS, PJ_TYPE_GEOGRAPHIC_CRS, PJ_TYPE_COMPOUND_CRS};
+
+		funcctx = SRF_FIRSTCALL_INIT();
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/*
 		* Could read all authorities from database, but includes
 		* authorities (IGN, OGC) that use non-integral values in
 		* auth_srid. So hand-coded list for now.
 		*/
-		#define nauths 2
-		const char* auth_names[nauths] = {"EPSG", "ESRI"};
-
-		funcctx = SRF_FIRSTCALL_INIT();
-		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
-
-		state = palloc0(sizeof(*state));
-		state->capacity = 8192;
-		state->num_entries = 0;
-		state->entries = palloc0(state->capacity * sizeof(*(state->entries)));
-
-		for (i = 0; i < nauths; i++) {
-			const char* auth_name = auth_names[i];
-			for (j = 0; j < ntypes; j++) {
-				PJ_CONTEXT *ctx = NULL;
-				int allow_deprecated = 0;
-				PJ_TYPE type = types[j];
-				PROJ_STRING_LIST codes_ptr = proj_get_codes_from_database(ctx, auth_name, type, allow_deprecated);
-				PROJ_STRING_LIST codes = codes_ptr;
-				const char *code;
-				while(codes && *codes) {
-					code = *codes++;
-					/* Ensure there is space in the entry list */
-					if (state->num_entries == state->capacity) {
-						state->capacity *= 2;
-						state->entries = repalloc(state->entries, state->capacity * sizeof(*(state->entries)));
-					}
-					/* Write the entry into the entry list and increment */
-					state->entries[state->num_entries].auth_name = cstring_to_text(auth_name);
-					state->entries[state->num_entries].auth_code = cstring_to_text(code);
-					state->num_entries++;
-				}
-				/* Clean up system allocated memory */
-				proj_string_list_destroy(codes_ptr);
-			}
-		}
+		state = srs_state_init();
+		srs_state_codes("EPSG", state);
+		srs_state_codes("ESRI", state);
 
 		/*
 		* Read the TupleDesc from the FunctionCallInfo. The SQL definition
@@ -438,3 +455,60 @@ Datum postgis_srs_entry_all(PG_FUNCTION_ARGS)
 	SRF_RETURN_DONE(funcctx);
 #endif
 }
+
+
+Datum postgis_srs_codes(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(postgis_srs_codes);
+Datum postgis_srs_codes(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_PROJ_VERSION < 60
+	elog(ERROR, "%s is not supported with Proj < 6.0", __func__);
+#else
+	FuncCallContext *funcctx;
+	MemoryContext oldcontext;
+	struct srs_data *state;
+	Datum result;
+	text* auth_name = PG_GETARG_TEXT_P(0);
+	text* auth_code;
+
+	/*
+	* On the first call, fill in the state with all
+	* of the auth_name/auth_srid pairings in the
+	* proj database. Then the per-call routine is just
+	* one isolated call per pair.
+	*/
+	if (SRF_IS_FIRSTCALL()) {
+		/*
+		* Only a subset of supported proj types actually
+		* show up in spatial_ref_sys
+		*/
+		funcctx = SRF_FIRSTCALL_INIT();
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+		state = srs_state_init();
+		srs_state_codes(text_to_cstring(auth_name), state);
+		funcctx->user_fctx = state;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* Stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+	state = funcctx->user_fctx;
+
+	/* Exit when we've read all entries */
+	if (!state->num_entries || state->current_entry == state->num_entries) {
+		SRF_RETURN_DONE(funcctx);
+	}
+
+	/* Read the code for this entry */
+	auth_code = state->entries[state->current_entry++].auth_code;
+	result = PointerGetDatum(auth_code);
+
+	/* We are returning setof(text) */
+	if (result)
+		SRF_RETURN_NEXT(funcctx, result);
+
+	/* Stop if lookup fails drastically */
+	SRF_RETURN_DONE(funcctx);
+#endif
+}
+
