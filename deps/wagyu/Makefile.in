@@ -84,7 +84,7 @@ WAGYU_HEADERS = \
 all: @WAGYU_LIB@
 
 @WAGYU_LIB@: $(WAGYU_OBJS)
-	ar rs @WAGYU_LIB@ $(WAGYU_OBJS)
+	@AR@ @AR_FLAGS@ @WAGYU_LIB@ $(WAGYU_OBJS)
 
 $(WAGYU_OBJS): %.o: %.cpp ../../liblwgeom/liblwgeom.h $(WAGYU_HEADERS)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<

@@ -26,6 +26,8 @@ AC_CONFIG_MACRO_DIR([macros])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PROG_INSTALL
 
+# Set default AR_FLAGS before libtool does
+: ${AR_FLAGS=rs}
 
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
 dnl flags required to build liblwgeom
@@ -62,7 +64,7 @@ AC_SUBST([SQLPP])
 dnl
 dnl Silence warning: ar: 'u' modifier ignored since 'D' is the default
 dnl
-AC_SUBST(AR_FLAGS, [cr])
+AC_ARG_VAR(AR_FLAGS, [Archiver flags])
 
 dnl
 dnl Define PIC flags in PICFLAGS (note: this variable is set as part of libtool initialisation above)
@@ -1758,6 +1760,7 @@ fi
 AC_MSG_RESULT([  CPPFLAGS:             $CPPFLAGS])
 AC_MSG_RESULT([  LDFLAGS:              $LDFLAGS])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
+AC_MSG_RESULT([  Archiver:             $AR $AR_FLAGS])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])
 if test "x$LIBINCLUDEMINORVERSION" = "xyes"; then
