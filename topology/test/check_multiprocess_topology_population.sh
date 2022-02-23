@@ -23,7 +23,7 @@ cleanup() {
 trap cleanup EXIT
 
 #psql ${PSQL_OPTS} -c "SELECT NULL FROM DropTopology('mt_topo');" | grep -v '^$'
-psql ${PSQL_OPTS} -c "SELECT NULL FROM CreateTopology('mt_topo')" > /dev/null
+psql ${PSQL_OPTS} -c "SELECT NULL FROM CreateTopology('mt_topo')" > /dev/null || exit 1
 
 # $RANDOM: random integer between 0 and 32767
 for x in `seq 0 10 40`; do
