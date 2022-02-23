@@ -798,9 +798,10 @@ if test "x$with_sfcgal" != "xno"; then
 		if test "x$SFCGAL_STATIC" = "xON"; then
 			AC_MSG_WARN([The SFCGAL version found is not installed as a dynamic library.])
 		else
-        		SFCGAL="sfcgal"
+      SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
-                        AC_DEFINE([HAVE_SFCGAL], [1], [Define to 1 if sfcgal is being built])
+      AC_DEFINE([HAVE_SFCGAL], [1], [Define to 1 if sfcgal is being built])
+	    SFCGAL_MAKEFILE_LIST="sfcgal/Makefile sfcgal/regress/Makefile extensions/postgis_sfcgal/Makefile"
 		fi
 		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 10301; then
 			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.3.1 (found $SFCGAL_VERSION)])
@@ -1710,7 +1711,6 @@ AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
    extensions/postgis_raster/Makefile
-   extensions/postgis_sfcgal/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
    extensions/address_standardizer/Makefile
@@ -1721,8 +1721,7 @@ AC_CONFIG_FILES([GNUmakefile
    libpgcommon/cunit/Makefile
    postgis/Makefile
    postgis/sqldefines.h
-	 sfcgal/Makefile
-   sfcgal/regress/Makefile
+   $SFCGAL_MAKEFILE_LIST
    loader/Makefile
    loader/cunit/Makefile
    topology/Makefile
