@@ -17,6 +17,7 @@ cleanup() {
     psql ${PSQL_OPTS} -c "SELECT NULL FROM DropTopology('mt_topo');" | grep -v '^$'
   fi
   rm -f pids.$$
+  rm -f invalidities_found
 }
 
 trap cleanup EXIT
@@ -85,6 +86,6 @@ done
 
 psql ${PSQL_OPTS} -c "SELECT TopologySummary('mt_topo')" | grep -v '^$'
 echo " -- INVALIDITIES START --"
-psql ${PSQL_OPTS} -c "SELECT 'INVALIDITY', * FROM ValidateTopology('mt_topo')" | grep -v '^$'
+psql ${PSQL_OPTS} -c "SELECT 'INVALIDITY', * FROM ValidateTopology('mt_topo')" | grep -v '^$' | tee invalidities_found
 echo " -- INVALIDITIES END --"
-
+test $(cat invalidities_found | wc -l) = 0
