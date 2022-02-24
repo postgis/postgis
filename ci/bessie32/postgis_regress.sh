@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
 #export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 sh autogen.sh
 CC=gcc8   \
