@@ -27,5 +27,5 @@ configure: configure.ac
 build-dir:
 	mkdir -p build
 
-build/GNUmakefile: configure | build-dir
+build/GNUmakefile: configure build-dir
 	cd build && ../configure
