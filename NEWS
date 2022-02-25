@@ -3,7 +3,7 @@ PostGIS 3.1.6
 
 * Bug Fixes
   - #5076, Avoid log storm installed with pgaudit enabled (Paul Ramsey)
-
+  - #5100, Stop using pg_atoi, removed in PG 15 (Laurenz Albe)
 
 PostGIS 3.1.5
 2022/02/01

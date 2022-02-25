@@ -31,10 +31,11 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "utils/elog.h"
 #include "utils/array.h"
-#include "utils/builtins.h"  /* for pg_atoi */
+#include "utils/builtins.h"  /* for cstring_to_text */
 #include "lib/stringinfo.h"  /* For binary input */
 #include "catalog/pg_type.h" /* for CSTRINGOID */
 
@@ -272,8 +273,33 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 		}
 		if ( i == 1 ) /* SRID */
 		{
-			int32_t srid = pg_atoi(DatumGetCString(elem_values[i]), sizeof(int32), '\0');
-			srid = clamp_srid(srid);
+			char *int_string = DatumGetCString(elem_values[i]);
+			char *endp;
+			long l;
+			int32_t srid;
+
+			errno = 0;
+			l = strtol(int_string, &endp, 10);
+
+			if (int_string == endp)
+				ereport(ERROR,
+						(errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+						 errmsg("invalid input syntax for type %s: \"%s\"",
+								"integer", int_string)));
+
+			if (errno == ERANGE || l < INT_MIN || l > INT_MAX)
+				ereport(ERROR,
+						(errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
+						 errmsg("value \"%s\" is out of range for type %s", int_string,
+								"integer")));
+
+			if (*endp != '\0')
+				ereport(ERROR,
+						(errcode(ERRCODE_INVALID_TEXT_REPRESENTATION),
+						 errmsg("invalid input syntax for type %s: \"%s\"",
+								"integer", int_string)));
+
+			srid = clamp_srid(l);
 			POSTGIS_DEBUGF(3, "srid: %d", srid);
 			if ( srid != SRID_UNKNOWN )
 			{

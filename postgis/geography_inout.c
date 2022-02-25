@@ -34,7 +34,7 @@
 
 #include "utils/elog.h"
 #include "utils/array.h"
-#include "utils/builtins.h"  /* for pg_atoi */
+#include "utils/builtins.h"  /* for text_to_cstring */
 #include "lib/stringinfo.h"  /* For binary input */
 #include "catalog/pg_type.h" /* for CSTRINGOID, INT4OID */
 
