@@ -75,6 +75,7 @@ IMAGES= \
 	../images/st_extrude03.png \
 	../images/st_generatepoints01.png \
 	../images/st_geometricmedian01.png \
+	../images/st_hausdorffdistance01.png \
 	../images/st_issimple01.png \
 	../images/st_issimple02.png \
 	../images/st_issimple03.png \
@@ -99,6 +100,7 @@ IMAGES= \
 	../images/st_line_interpolate_point01.png \
 	../images/st_line_interpolate_points01.png \
 	../images/st_line_substring01.png \
+	../images/st_locatebetween01.png \
 	../images/st_longestline01.png \
 	../images/st_longestline02.png \
 	../images/st_longestline03.png \

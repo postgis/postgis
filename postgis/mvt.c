@@ -83,9 +83,7 @@ static inline uint32_t p_int(int32_t value)
 	return (value << 1) ^ (value >> 31);
 }
 
-static uint32_t encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
-			       enum mvt_type type, POINTARRAY *pa, uint32_t *buffer,
-			       int32_t *px, int32_t *py)
+static uint32_t encode_ptarray(enum mvt_type type, POINTARRAY *pa, uint32_t *buffer, int32_t *px, int32_t *py)
 {
 	uint32_t offset = 0;
 	uint32_t i, c = 0;
@@ -134,88 +132,80 @@ static uint32_t encode_ptarray(__attribute__((__unused__)) mvt_agg_context *ctx,
 	return offset;
 }
 
-static uint32_t encode_ptarray_initial(mvt_agg_context *ctx,
-				       enum mvt_type type,
-				       POINTARRAY *pa, uint32_t *buffer)
+static uint32_t encode_ptarray_initial(enum mvt_type type, POINTARRAY *pa, uint32_t *buffer)
 {
 	int32_t px = 0, py = 0;
-	return encode_ptarray(ctx, type, pa, buffer, &px, &py);
+	return encode_ptarray(type, pa, buffer, &px, &py);
 }
 
-static void encode_point(mvt_agg_context *ctx, LWPOINT *point)
+static void encode_point(VectorTile__Tile__Feature *feature, LWPOINT *point)
 {
-	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POINT;
 	feature->n_geometry = 3;
 	feature->geometry = palloc(sizeof(*feature->geometry) * 3);
-	encode_ptarray_initial(ctx, MVT_POINT, point->point, feature->geometry);
+	encode_ptarray_initial(MVT_POINT, point->point, feature->geometry);
 }
 
-static void encode_mpoint(mvt_agg_context *ctx, LWMPOINT *mpoint)
+static void encode_mpoint(VectorTile__Tile__Feature *feature, LWMPOINT *mpoint)
 {
 	size_t c;
-	VectorTile__Tile__Feature *feature = ctx->feature;
 	// NOTE: inefficient shortcut LWMPOINT->LWLINE
 	LWLINE *lwline = lwline_from_lwmpoint(mpoint->srid, mpoint);
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POINT;
 	c = 1 + lwline->points->npoints * 2;
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
-	feature->n_geometry = encode_ptarray_initial(ctx, MVT_POINT,
+	feature->n_geometry = encode_ptarray_initial(MVT_POINT,
 		lwline->points, feature->geometry);
 }
 
-static void encode_line(mvt_agg_context *ctx, LWLINE *lwline)
+static void encode_line(VectorTile__Tile__Feature *feature, LWLINE *lwline)
 {
 	size_t c;
-	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__LINESTRING;
 	c = 2 + lwline->points->npoints * 2;
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
-	feature->n_geometry = encode_ptarray_initial(ctx, MVT_LINE,
+	feature->n_geometry = encode_ptarray_initial(MVT_LINE,
 		lwline->points, feature->geometry);
 }
 
-static void encode_mline(mvt_agg_context *ctx, LWMLINE *lwmline)
+static void encode_mline(VectorTile__Tile__Feature *feature, LWMLINE *lwmline)
 {
 	uint32_t i;
 	int32_t px = 0, py = 0;
 	size_t c = 0, offset = 0;
-	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__LINESTRING;
 	for (i = 0; i < lwmline->ngeoms; i++)
 		c += 2 + lwmline->geoms[i]->points->npoints * 2;
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
 	for (i = 0; i < lwmline->ngeoms; i++)
-		offset += encode_ptarray(ctx, MVT_LINE,
+		offset += encode_ptarray(MVT_LINE,
 			lwmline->geoms[i]->points,
 			feature->geometry + offset, &px, &py);
 	feature->n_geometry = offset;
 }
 
-static void encode_poly(mvt_agg_context *ctx, LWPOLY *lwpoly)
+static void encode_poly(VectorTile__Tile__Feature *feature, LWPOLY *lwpoly)
 {
 	uint32_t i;
 	int32_t px = 0, py = 0;
 	size_t c = 0, offset = 0;
-	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POLYGON;
 	for (i = 0; i < lwpoly->nrings; i++)
 		c += 3 + ((lwpoly->rings[i]->npoints - 1) * 2);
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
 	for (i = 0; i < lwpoly->nrings; i++)
-		offset += encode_ptarray(ctx, MVT_RING,
+		offset += encode_ptarray(MVT_RING,
 			lwpoly->rings[i],
 			feature->geometry + offset, &px, &py);
 	feature->n_geometry = offset;
 }
 
-static void encode_mpoly(mvt_agg_context *ctx, LWMPOLY *lwmpoly)
+static void encode_mpoly(VectorTile__Tile__Feature *feature, LWMPOLY *lwmpoly)
 {
 	uint32_t i, j;
 	int32_t px = 0, py = 0;
 	size_t c = 0, offset = 0;
 	LWPOLY *poly;
-	VectorTile__Tile__Feature *feature = ctx->feature;
 	feature->type = VECTOR_TILE__TILE__GEOM_TYPE__POLYGON;
 	for (i = 0; i < lwmpoly->ngeoms; i++)
 		for (j = 0; poly = lwmpoly->geoms[i], j < poly->nrings; j++)
@@ -223,31 +213,31 @@ static void encode_mpoly(mvt_agg_context *ctx, LWMPOLY *lwmpoly)
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
 	for (i = 0; i < lwmpoly->ngeoms; i++)
 		for (j = 0; poly = lwmpoly->geoms[i], j < poly->nrings; j++)
-			offset += encode_ptarray(ctx, MVT_RING,
+			offset += encode_ptarray(MVT_RING,
 				poly->rings[j],	feature->geometry + offset,
 				&px, &py);
 	feature->n_geometry = offset;
 }
 
-static void encode_geometry(mvt_agg_context *ctx, LWGEOM *lwgeom)
+static void encode_feature_geometry(VectorTile__Tile__Feature *feature, LWGEOM *lwgeom)
 {
 	int type = lwgeom->type;
 
 	switch (type)
 	{
 	case POINTTYPE:
-		return encode_point(ctx, (LWPOINT*)lwgeom);
+		return encode_point(feature, (LWPOINT*)lwgeom);
 	case LINETYPE:
-		return encode_line(ctx, (LWLINE*)lwgeom);
+		return encode_line(feature, (LWLINE*)lwgeom);
 	case POLYGONTYPE:
-		return encode_poly(ctx, (LWPOLY*)lwgeom);
+		return encode_poly(feature, (LWPOLY*)lwgeom);
 	case MULTIPOINTTYPE:
-		return encode_mpoint(ctx, (LWMPOINT*)lwgeom);
+		return encode_mpoint(feature, (LWMPOINT*)lwgeom);
 	case MULTILINETYPE:
-		return encode_mline(ctx, (LWMLINE*)lwgeom);
+		return encode_mline(feature, (LWMLINE*)lwgeom);
 	case MULTIPOLYGONTYPE:
-		return encode_mpoly(ctx, (LWMPOLY*)lwgeom);
-	default: elog(ERROR, "encode_geometry: '%s' geometry type not supported",
+		return encode_mpoly(feature, (LWMPOLY*)lwgeom);
+	default: elog(ERROR, "encode_feature_geometry: '%s' geometry type not supported",
 		lwtype_name(type));
 	}
 }
@@ -588,7 +578,7 @@ static uint32_t *parse_jsonb(mvt_agg_context *ctx, Jsonb *jb,
 /**
  * Sets the feature id. Ignores Nulls and negative values
  */
-static void set_feature_id(mvt_agg_context *ctx, Datum datum, bool isNull)
+static void set_feature_id(mvt_agg_context *ctx, VectorTile__Tile__Feature *feature, Datum datum, bool isNull)
 {
 	Oid typoid = ctx->column_cache.column_oid[ctx->id_index];
 	int64_t value = INT64_MIN;
@@ -620,11 +610,11 @@ static void set_feature_id(mvt_agg_context *ctx, Datum datum, bool isNull)
 		return;
 	}
 
-	ctx->feature->has_id = true;
-	ctx->feature->id = (uint64_t) value;
+	feature->has_id = true;
+	feature->id = (uint64_t) value;
 }
 
-static void parse_values(mvt_agg_context *ctx)
+static void parse_values(mvt_agg_context *ctx, VectorTile__Tile__Feature *feature)
 {
 	uint32_t n_keys = ctx->keys_hash_i;
 	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
@@ -660,7 +650,7 @@ static void parse_values(mvt_agg_context *ctx)
 
 		if (i == ctx->id_index)
 		{
-			set_feature_id(ctx, datum, cc.nulls[i]);
+			set_feature_id(ctx, feature, datum, cc.nulls[i]);
 			continue;
 		}
 
@@ -732,10 +722,10 @@ static void parse_values(mvt_agg_context *ctx)
 	}
 
 
-	ctx->feature->n_tags = ctx->row_columns * 2;
-	ctx->feature->tags = tags;
+	feature->n_tags = ctx->row_columns * 2;
+	feature->tags = tags;
 
-	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", ctx->feature->n_tags);
+	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", feature->n_tags);
 }
 
 /* For a given geometry, look for the highest dimensional basic type, that is,
@@ -991,7 +981,7 @@ void mvt_agg_init_context(mvt_agg_context *ctx)
 }
 
 /**
- * Aggregation step.
+ * Aggregation step. Parse a row, turn it into a feature, and add it to the layer.
  *
  * Expands features array if needed by a factor of 2.
  * Allocates a new feature, increment feature counter and
@@ -1005,9 +995,27 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 	LWGEOM *lwgeom;
 	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer = ctx->layer;
-/*	VectorTile__Tile__Feature **features = layer->features; */
 	POSTGIS_DEBUG(2, "mvt_agg_transfn called");
 
+	/* geom_index is the cached index of the geometry. if missing, it needs to be initialized */
+	if (ctx->geom_index == UINT32_MAX)
+		parse_column_keys(ctx);
+
+	/* Get the geometry column */
+	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
+	if (isnull) /* Skip rows that have null geometry */
+		return;
+
+	/* Allocate a new feature object */
+	feature = palloc(sizeof(*feature));
+	vector_tile__tile__feature__init(feature);
+
+	/* Deserialize the geometry */
+	gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
+	lwgeom = lwgeom_from_gserialized(gs);
+
+	/* Add the feature to the result */
+	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %zd", layer->n_features);
 	if (layer->n_features >= ctx->features_capacity)
 	{
 		size_t new_capacity = ctx->features_capacity * 2;
@@ -1016,35 +1024,13 @@ void mvt_agg_transfn(mvt_agg_context *ctx)
 		ctx->features_capacity = new_capacity;
 		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %zd", new_capacity);
 	}
-
-	if (ctx->geom_index == UINT32_MAX)
-		parse_column_keys(ctx);
-
-	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
-	POSTGIS_DEBUGF(3, "mvt_agg_transfn ctx->geom_index: %d", ctx->geom_index);
-	POSTGIS_DEBUGF(3, "mvt_agg_transfn isnull: %u", isnull);
-	POSTGIS_DEBUGF(3, "mvt_agg_transfn datum: %lu", datum);
-	if (isnull) /* Skip rows that have null geometry */
-	{
-		POSTGIS_DEBUG(3, "mvt_agg_transfn got null geom");
-		return;
-	}
-
-	feature = palloc(sizeof(*feature));
-	vector_tile__tile__feature__init(feature);
-
-	ctx->feature = feature;
-
-	gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
-	lwgeom = lwgeom_from_gserialized(gs);
-
-	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %zd", layer->n_features);
 	layer->features[layer->n_features++] = feature;
 
-	encode_geometry(ctx, lwgeom);
+	/* Set the geometry of the feature */
+	encode_feature_geometry(feature, lwgeom);
 	lwgeom_free(lwgeom);
 	// TODO: free detoasted datum?
-	parse_values(ctx);
+	parse_values(ctx, feature);
 }
 
 static VectorTile__Tile * mvt_ctx_to_tile(mvt_agg_context *ctx)

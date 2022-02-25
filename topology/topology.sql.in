@@ -1496,8 +1496,8 @@ BEGIN
 
       CREATE TABLE %1$I.node(
         node_id SERIAL,
-        geom GEOMETRY(point%3$s, %2$L),
         containing_face INTEGER,
+        geom GEOMETRY(point%3$s, %2$L),
         CONSTRAINT node_primary_key
           PRIMARY KEY(node_id),
         CONSTRAINT face_exists

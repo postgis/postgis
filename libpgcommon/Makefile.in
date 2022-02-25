@@ -43,7 +43,7 @@ all: libpgcommon.a
 install uninstall:
 
 libpgcommon.a: $(SA_OBJS) $(SA_HEADERS)
-	ar rs libpgcommon.a $(SA_OBJS)
+	@AR@ @AR_FLAGS@ libpgcommon.a $(SA_OBJS)
 
 maintainer-clean: clean
 

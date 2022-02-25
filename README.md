@@ -1,3 +1,5 @@
+**Doc / Make Dist**: [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_Make_Dist%2Flabel%3Ddebbie)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_Make_Dist/label=debbie/)
+
 
 | **Debbie** | **Winnie** | **Dronie** |
 | ---------  | ---------- | ---------  |

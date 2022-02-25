@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# Sandro Santilli <strk@kbt.io>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-12 23:53+0000\n"
+"PO-Revision-Date: 2022-02-18 09:52+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
 "extras_address_standardizerxml/it/>\n"
@@ -140,6 +141,10 @@ msgid ""
 "Standardizer extension. Note we describe the casting behavior of these which "
 "is very important especially when designing your own functions."
 msgstr ""
+"Questa sezione contiene una lista dei tipi di dato PostgreSQL installati "
+"dalla estensione Address Standardizer. Nota che sono descritti i "
+"comportamenti di conversione di questi tipi di dato, informazione molto "
+"importante nella progettazione di funzioni proprie."
 
 #. Tag: title
 #: extras_address_standardizer.xml:42
@@ -198,7 +203,7 @@ msgstr ""
 #: extras_address_standardizer.xml:55
 #, no-c-format
 msgid "building"
-msgstr ""
+msgstr "compilare"
 
 #. Tag: para
 #: extras_address_standardizer.xml:57
@@ -385,7 +390,7 @@ msgstr ""
 #: extras_address_standardizer.xml:123
 #, no-c-format
 msgid "<term>box</term>"
-msgstr ""
+msgstr "<term>box</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:125
@@ -464,7 +469,7 @@ msgstr ""
 #: extras_address_standardizer.xml:534
 #, no-c-format
 msgid "<term>id</term>"
-msgstr ""
+msgstr "<term>id</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:160 extras_address_standardizer.xml:494
@@ -619,7 +624,7 @@ msgstr ""
 #: extras_address_standardizer.xml:221 extras_address_standardizer.xml:228
 #, no-c-format
 msgid "<term>ORD</term>"
-msgstr ""
+msgstr "<term>ORD</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:223
@@ -741,7 +746,7 @@ msgstr ""
 #: extras_address_standardizer.xml:287 extras_address_standardizer.xml:456
 #, no-c-format
 msgid "<term>RR</term>"
-msgstr ""
+msgstr "<term>RR</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:289
@@ -813,7 +818,7 @@ msgstr ""
 #: extras_address_standardizer.xml:325
 #, no-c-format
 msgid "<term>PCH</term>"
-msgstr ""
+msgstr "<term>PCH</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:327
@@ -827,7 +832,7 @@ msgstr ""
 #: extras_address_standardizer.xml:332
 #, no-c-format
 msgid "<term>PCT</term>"
-msgstr ""
+msgstr "<term>PCT</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:334
@@ -1173,7 +1178,7 @@ msgstr ""
 #: extras_address_standardizer.xml:497 extras_address_standardizer.xml:539
 #, no-c-format
 msgid "<term>seq</term>"
-msgstr ""
+msgstr "<term>seq</term>"
 
 #. Tag: para
 #: extras_address_standardizer.xml:499
@@ -1301,7 +1306,7 @@ msgstr ""
 #: extras_address_standardizer.xml:592 extras_address_standardizer.xml:654
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilità: 2.2.0"
 
 #. Tag: title
 #: extras_address_standardizer.xml:598 extras_address_standardizer.xml:660

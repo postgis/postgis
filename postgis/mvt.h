@@ -72,7 +72,6 @@ typedef struct mvt_agg_context
 	uint32_t geom_index;
 
 	HeapTupleHeader row;
-	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer;
 	VectorTile__Tile *tile;
 	size_t features_capacity;

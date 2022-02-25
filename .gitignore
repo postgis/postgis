@@ -15,6 +15,7 @@ gmon.out
 postgis_revision.h
 aclocal.m4
 autom4te.cache/
+build/
 build-aux/
 config.log
 config.guess

@@ -11,7 +11,6 @@
         libprotobuf-c1 libprotobuf-c-dev protobuf-c-compiler
     - lsb_release -a
     - uname -a
-    - echo "LONG INT is "`getconf LONG_BIT`"bit"
     - service postgresql start
     - su -l postgres -c "createuser -s `whoami`"
   script:
@@ -31,6 +30,8 @@
     - make install
     - RUNTESTFLAGS=-v make installcheck
     - RUNTESTFLAGS="-v --dumprestore" make installcheck
+    - make distclean
+    - ${SRCDIR}/utils/check_distclean.sh
 
 test:
   image: debian:buster

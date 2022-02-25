@@ -26,6 +26,8 @@ AC_CONFIG_MACRO_DIR([macros])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PROG_INSTALL
 
+# Set default AR_FLAGS before libtool does
+: ${AR_FLAGS=rs}
 
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
 dnl flags required to build liblwgeom
@@ -62,7 +64,7 @@ AC_SUBST([SQLPP])
 dnl
 dnl Silence warning: ar: 'u' modifier ignored since 'D' is the default
 dnl
-AC_SUBST(AR_FLAGS, [cr])
+AC_ARG_VAR(AR_FLAGS, [Archiver flags])
 
 dnl
 dnl Define PIC flags in PICFLAGS (note: this variable is set as part of libtool initialisation above)
@@ -796,9 +798,10 @@ if test "x$with_sfcgal" != "xno"; then
 		if test "x$SFCGAL_STATIC" = "xON"; then
 			AC_MSG_WARN([The SFCGAL version found is not installed as a dynamic library.])
 		else
-        		SFCGAL="sfcgal"
+      SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
-                        AC_DEFINE([HAVE_SFCGAL], [1], [Define to 1 if sfcgal is being built])
+      AC_DEFINE([HAVE_SFCGAL], [1], [Define to 1 if sfcgal is being built])
+	    SFCGAL_MAKEFILE_LIST="sfcgal/Makefile sfcgal/regress/Makefile extensions/postgis_sfcgal/Makefile"
 		fi
 		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 10301; then
 			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.3.1 (found $SFCGAL_VERSION)])
@@ -1647,7 +1650,7 @@ AC_CHECK_LIB(c++, main, [HAVE_CPP=yes], [HAVE_CPP=no])
 AC_CHECK_LIB(stdc++, main, [HAVE_STDCPP=yes], [HAVE_STDCPP=no])
 
 if test "x$HAVE_CPP" = "xyes"; then
-	WFLATGEOBUF_LDFLAGS="-lc++"
+	FLATGEOBUF_LDFLAGS="-lc++"
 elif test "x$HAVE_STDCPP" = "xyes"; then
 	FLATGEOBUF_LDFLAGS="-lstdc++"
 else
@@ -1708,7 +1711,6 @@ AC_CONFIG_FILES([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
    extensions/postgis_raster/Makefile
-   extensions/postgis_sfcgal/Makefile
    extensions/postgis_topology/Makefile
    extensions/postgis_tiger_geocoder/Makefile
    extensions/address_standardizer/Makefile
@@ -1719,8 +1721,7 @@ AC_CONFIG_FILES([GNUmakefile
    libpgcommon/cunit/Makefile
    postgis/Makefile
    postgis/sqldefines.h
-	 sfcgal/Makefile
-   sfcgal/regress/Makefile
+   $SFCGAL_MAKEFILE_LIST
    loader/Makefile
    loader/cunit/Makefile
    topology/Makefile
@@ -1758,6 +1759,7 @@ fi
 AC_MSG_RESULT([  CPPFLAGS:             $CPPFLAGS])
 AC_MSG_RESULT([  LDFLAGS:              $LDFLAGS])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
+AC_MSG_RESULT([  Archiver:             $AR $AR_FLAGS])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Additional Info ------------- ])
 if test "x$LIBINCLUDEMINORVERSION" = "xyes"; then

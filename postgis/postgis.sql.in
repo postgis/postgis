@@ -1029,7 +1029,6 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 	FUNCTION        1        geometry_gist_consistent_nd (internal, geometry, int4),
 	FUNCTION        2        geometry_gist_union_nd (bytea, internal),
 	FUNCTION        3        geometry_gist_compress_nd (internal),
-	-- Changed: 3.3.0
 	FUNCTION        4        geometry_gist_decompress_nd (internal),
 	FUNCTION        5        geometry_gist_penalty_nd (internal, internal, internal),
 	FUNCTION        6        geometry_gist_picksplit_nd (internal, internal),

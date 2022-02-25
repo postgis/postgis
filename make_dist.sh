@@ -59,6 +59,9 @@ git clone -b $tag . $outdir || exit 1
 echo "Removing make_dist.sh and HOWTO_RELEASE"
 rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 
+echo "Removing ci files"
+rm -rfv "$outdir"/ci "$outdir"/.gitlab-ci.yml "$outdir"/.github "$outdir"/.dron*.yml "$outdir"/.cirrus.yml "$outdir"/.clang-format
+
 # generating configure script and configuring
 echo "Running autogen.sh; ./configure"
 owd="$PWD"
