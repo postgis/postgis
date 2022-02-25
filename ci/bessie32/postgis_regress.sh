@@ -9,7 +9,7 @@ CXX=g++8 \
 CXXFLAGS="-O2 -pipe  -fstack-protector-strong -Wl,-rpath=/usr/local/lib/gcc8  -nostdinc++ -isystem /usr/include/c++/v1 -Wl,-rpath=/usr/local/lib/gcc8" \
 CFLAGS="-Wall -Wmissing-prototypes -Wpointer-arith -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-trunc" \
  ./configure --with-libiconv=/usr/local --without-interrupt-tests
-make distclean
+#make distclean
 make
 export PGUSER=postgres
 export PGIS_REG_TMPDIR=~/tmp/pgis_reg_${BRANCH}
