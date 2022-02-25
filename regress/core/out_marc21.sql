@@ -485,7 +485,7 @@ SELECT 'polygon_17',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hddd.dddddddddddddddddddddddddddddddddddddddddd');	 
+	  4326),'hddd.ddddd');	 
 	  
 SELECT 'polygon_18',
   ST_AsMARC21(
@@ -500,7 +500,7 @@ SELECT 'polygon_18',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmm.mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');	  
+	  4326),'hdddmm.mmmmm');	  
 	  
 SELECT 'polygon_19',
   ST_AsMARC21(
@@ -515,7 +515,7 @@ SELECT 'polygon_19',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmmss.sssssssssssssssssssssssssssssssssssssssssss');
+	  4326),'hdddmmss.sssss');
 	  
 SELECT 'polygon_20',
   ST_AsMARC21(
@@ -682,7 +682,7 @@ SELECT 'polygon_30',
 			  <subfield code="g">S0514450</subfield>
 			</datafield>
 		  </record>'),
-	  4326),'hdddmmss.ssssssssssssssssssss');	
+	  4326),'hdddmmss.sssss');	
 	  
 	  
 SELECT 'polygon_31',
@@ -698,7 +698,7 @@ SELECT 'polygon_31',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'hdddmmss.ssssssssssssssssssss');	
+	4326),'hdddmmss.sssss');	
 
 
 -- ERROR: invalid format
@@ -716,7 +716,7 @@ SELECT 'error_1',
 			  <subfield code="g">N0350200</subfield>
 			</datafield>
 		  </record>'),
-	4326),'h.dddmmss.ssssssssssssssssssss');	
+	4326),'h.dddmmss.sssss');	
 
 SELECT 'error_2',
   ST_AsMARC21(
