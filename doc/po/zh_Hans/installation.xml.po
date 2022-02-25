@@ -6,19 +6,22 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-02-26 16:52+0000\n"
+"Last-Translator: Chen <onsummer@foxmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/installationxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
 #: installation.xml:3
 #, no-c-format
 msgid "PostGIS Installation"
-msgstr ""
+msgstr "安装 PostGIS"
 
 #. Tag: para
 #: installation.xml:5
@@ -30,7 +33,7 @@ msgstr ""
 #: installation.xml:10
 #, no-c-format
 msgid "Short Version"
-msgstr ""
+msgstr "短版本"
 
 #. Tag: para
 #: installation.xml:11
