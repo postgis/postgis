@@ -157,5 +157,31 @@ SELECT '#5017.2', (ValidateTopology('city_data')).error;
 SELECT '#5017.3', (ValidateTopology('city_data')).error;
 ROLLBACK;
 
+-- Test dangling edgerings are never considered shells
+-- See https://trac.osgeo.org/postgis/ticket/5105
+BEGIN;
+SELECT NULL FROM CreateTopology('t5105');
+SELECT '#5105.0', TopoGeo_addLineString('t5105', '
+LINESTRING(
+  29.262792863298348 71.22115103790775,
+  29.26598031986849  71.22202978558047,
+  29.275379947735576 71.22044935739267,
+  29.29461024331857  71.22741507590429,
+  29.275379947735576 71.22044935739267,
+  29.26598031986849  71.22202978558047,
+  29.262792863298348 71.22115103790775
+)');
+SELECT '#5105.1', TopoGeo_addLineString(
+  't5105',
+  ST_Translate(geom, 0, -2)
+)
+FROM t5105.edge WHERE edge_id = 1;
+SELECT '#5105.edges_count', count(*) FROM t5105.edge;
+SELECT '#5105.faces_count', count(*) FROM t5105.face WHERE face_id > 0;
+SELECT '#5105.unexpected_invalidities', * FROM ValidateTopology('t5105');
+-- TODO: add some areas to the endpoints of the dangling edges above
+--       to form O-O figures
+ROLLBACK;
+
 SELECT NULL FROM topology.DropTopology('city_data');
 
