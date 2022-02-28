@@ -610,22 +610,22 @@ BEGIN
 --    FOR rec IN
 --        SELECT n.nspname AS schemaname,
 --            c.relname AS viewname,
---            pg_get_userbyid(c.relowner) AS viewowner,
---            pg_get_viewdef(c.oid) AS definition,
+--            pg_catalog.pg_get_userbyid(c.relowner) AS viewowner,
+--            pg_catalog.pg_get_viewdef(c.oid) AS definition,
 --            CASE
 --                WHEN 'check_option=cascaded' = ANY (c.reloptions) THEN 'WITH CASCADED CHECK OPTION'
 --                WHEN 'check_option=local' = ANY (c.reloptions) THEN 'WITH LOCAL CHECK OPTION'
 --                ELSE ''
 --            END::text AS check_option
---        FROM pg_class c
---        LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+--        FROM pg_catalog.pg_class c
+--        LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
 --        WHERE c.relkind = 'v'
---        AND pg_get_viewdef(c.oid) ~ 'deprecated_by_postgis'
+--        AND pg_catalog.pg_get_viewdef(c.oid) ~ 'deprecated_by_postgis'
 --    LOOP
---        sql := format('CREATE OR REPLACE VIEW %I.%I AS %s %s',
+--        sql := pg_catalog.format('CREATE OR REPLACE VIEW %I.%I AS %s %s',
 --            rec.schemaname,
 --            rec.viewname,
---            regexp_replace(rec.definition, '_deprecated_by_postgis_[^(]*', '', 'g'),
+--            pg_catalog.regexp_replace(rec.definition, '_deprecated_by_postgis_[^(]*', '', 'g'),
 --            rec.check_option
 --        );
 --        RAISE NOTICE 'Updating view % to not use deprecated signatures', rec.viewname;
@@ -635,25 +635,25 @@ BEGIN
 --        WHEN OTHERS THEN
 --                GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
 --                RAISE WARNING 'Could not rewrite view % using deprecated functions', rec.viewname
---                        USING DETAIL = format('%s: %s', SQLERRM, detail);
+--                        USING DETAIL = pg_catalog.format('%s: %s', SQLERRM, detail);
 --        END;
 --    END LOOP;
 
     -- Try to drop all deprecated functions, or rewrite those
     -- who cannot be drop and rewrite them in SQL
 
-    FOR rec IN SELECT unnest(deprecated_functions) as proc
+    FOR rec IN SELECT pg_catalog.unnest(deprecated_functions) as proc
     LOOP --{
 
         RAISE DEBUG 'Handling deprecated function %', rec.proc;
 
-        new_name := regexp_replace(
+        new_name := pg_catalog.regexp_replace(
             rec.proc::text,
             '_deprecated_by_postgis[^(]*\\(.*',
             ''
         );
 
-        sql := format('DROP FUNCTION %s', rec.proc);
+        sql := pg_catalog.format('DROP FUNCTION %s', rec.proc);
         --RAISE DEBUG 'SQL: %', sql;
         BEGIN
             EXECUTE sql;
@@ -662,7 +662,7 @@ BEGIN
             hint = 'Resolve the issue';
             GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
             IF detail LIKE '%view % depends%' THEN
-                hint = format(
+                hint = pg_catalog.format(
                     'Replace the view changing all occurrences of %s in its definition with %s',
                     rec.proc,
                     new_name
@@ -678,7 +678,7 @@ BEGIN
             -- Try to rewrite the function as an SQL WRAPPER
             -- {
             SELECT pg_get_functiondef(oid) def, pronargs
-            FROM pg_proc WHERE oid = rec.proc
+            FROM pg_catalog.pg_proc WHERE oid = rec.proc
             INTO procrec;
             --
             -- TODO: don't even try if it's an aggregate or windowing
@@ -687,14 +687,14 @@ BEGIN
             --       function (procrec.prokind)
             --
             -- Force LANGUAGE to be SQL
-            sql := regexp_replace(procrec.def, 'LANGUAGE [^ \n]*', 'LANGUAGE sql');
+            sql := pg_catalog.regexp_replace(procrec.def, 'LANGUAGE [^ \n]*', 'LANGUAGE sql');
             --RAISE DEBUG 'SQL (LANGUAGE): %', sql;
             -- Change body to be a wrapper
-            sql := regexp_replace(
+            sql := pg_catalog.regexp_replace(
                 sql,
                 -- Find a stricted match here ?
                 'AS .*',
-                format(
+                pg_catalog.format(
                     -- TODO: have the function raise a warning too ?
                     'AS \$\$ SELECT %s(%s) \$\$',
                     new_name,
@@ -727,16 +727,16 @@ BEGIN
             FOR extrec IN
                 SELECT e.extname
                 FROM
-                    pg_extension e,
-                    pg_depend d
+                    pg_catalog.pg_extension e,
+                    pg_catalog.pg_depend d
                 WHERE
                     d.refclassid = 'pg_catalog.pg_extension'::pg_catalog.regclass AND
                     d.refobjid = e.oid AND
-                    d.classid = 'pg_proc'::regclass AND
+                    d.classid = 'pg_catalog.pg_proc'::pg_catalog.regclass AND
                     d.objid = rec.proc::oid
             LOOP
                 RAISE DEBUG 'Unpackaging % from extension %', rec.proc, extrec.extname;
-                sql := format('ALTER EXTENSION %I DROP FUNCTION %s', extrec.extname, rec.proc);
+                sql := pg_catalog.format('ALTER EXTENSION %I DROP FUNCTION %s', extrec.extname, rec.proc);
                 EXECUTE sql;
             END LOOP;
         END;
@@ -783,8 +783,8 @@ BEGIN
         SELECT into old_scripts MODULE_scripts_installed();
     END;
     SELECT into new_scripts 'NEWVERSION';
-    SELECT into old_maj substring(old_scripts from 1 for 1);
-    SELECT into new_maj substring(new_scripts from 1 for 1);
+    SELECT into old_maj pg_catalog.substring(old_scripts, 1, 1);
+    SELECT into new_maj pg_catalog.substring(new_scripts, 1, 1);
 
     -- 2.x to 3.x was upgrade-compatible, see
     -- https://trac.osgeo.org/postgis/ticket/4170#comment:1
@@ -802,18 +802,18 @@ BEGIN
     ) SELECT
       upgraded as scripts_upgraded,
       installed as scripts_installed,
-      substring(upgraded from '([0-9]+)\.')::int * 100 +
-      substring(upgraded from '[0-9]+\.([0-9]+)(\.|$)')::int
+      pg_catalog.substring(upgraded, '([0-9]+)\.')::int * 100 +
+      pg_catalog.substring(upgraded, '[0-9]+\.([0-9]+)(\.|$)')::int
         as version_to_num,
-      substring(installed from '([0-9]+)\.')::int * 100 +
-      substring(installed from '[0-9]+\.([0-9]+)(\.|$)')::int
+      pg_catalog.substring(installed, '([0-9]+)\.')::int * 100 +
+      pg_catalog.substring(installed, '[0-9]+\.([0-9]+)(\.|$)')::int
         as version_from_num,
       installed ~ 'dev|alpha|beta'
         as version_from_isdev
       FROM versions INTO postgis_upgrade_info
     ;
 
-    postgis_upgrade_info_func_code := format($func_code$
+    postgis_upgrade_info_func_code := pg_catalog.format($func_code$
         CREATE FUNCTION _postgis_upgrade_info(OUT scripts_upgraded TEXT,
                                               OUT scripts_installed TEXT,
                                               OUT version_to_num INT,

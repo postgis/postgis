@@ -47,7 +47,7 @@ DECLARE
   rec RECORD;
 BEGIN
   FOR rec IN
-    SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
+    SELECT n.nspname, p.proname FROM pg_catalog.pg_proc p, pg_catalog.pg_namespace n
     WHERE p.proname = 'postgis_raster_lib_version'
     AND p.pronamespace = n.oid
   LOOP
@@ -63,11 +63,11 @@ DECLARE
   nsp TEXT;
 BEGIN
   SELECT n.nspname
-	INTO nsp FROM pg_proc p, pg_namespace n
+	INTO nsp FROM pg_catalog.pg_proc p, pg_catalog.pg_namespace n
   WHERE p.proname = 'postgis_lib_version'
   AND p.pronamespace = n.oid;
 
-	IF nsp != current_schema() THEN
+	IF nsp != pg_catalog.current_schema() THEN
     RAISE EXCEPTION
 			'PostGIS Raster must be in the same schema as PostGIS (%)',
 			nsp;
@@ -8715,7 +8715,7 @@ BEGIN
   sql := 'SELECT r.r_table_schema sch, r.r_table_name tab, '
       || 'r.scale_x sfx, r.scale_y sfy, r.blocksize_x tw, '
       || 'r.blocksize_y th, r.extent ext, r.srid FROM @extschema@.raster_columns r, '
-      || 'pg_class c, pg_namespace n WHERE r.r_table_schema = n.nspname '
+      || 'pg_class c, pg_catalog.pg_namespace n WHERE r.r_table_schema = n.nspname '
       || 'AND r.r_table_name = c.relname AND r_raster_column = $2 AND '
       || ' c.relnamespace = n.oid AND c.oid = $1'
   ;

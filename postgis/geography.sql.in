@@ -162,7 +162,7 @@ CREATE OR REPLACE FUNCTION postgis_typmod_type(integer)
 -- Changed: 2.4.0 Limit to only list things that are tables
 CREATE OR REPLACE VIEW geography_columns AS
 	SELECT
-		current_database() AS f_table_catalog,
+		pg_catalog.current_database() AS f_table_catalog,
 		n.nspname AS f_table_schema,
 		c.relname AS f_table_name,
 		a.attname AS f_geography_column,

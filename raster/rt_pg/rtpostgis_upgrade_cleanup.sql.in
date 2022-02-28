@@ -94,11 +94,11 @@ BEGIN
 	IF NOT EXISTS (
 			SELECT
 				proname
-			FROM pg_proc f
-			JOIN pg_type r
+			FROM pg_catalog.pg_proc f
+			JOIN pg_catalog.pg_type r
 				ON r.typname = 'raster'
 					AND (f.proargtypes::oid[])[0] = r.oid
-			JOIN pg_type g
+			JOIN pg_catalog.pg_type g
 				ON g.typname = 'geometry'
 					AND (f.proargtypes::oid[])[1] = g.oid
 			WHERE proname = 'raster_contained_by_geometry'
@@ -117,11 +117,11 @@ BEGIN
 	IF NOT EXISTS (
 			SELECT
 				proname
-			FROM pg_proc f
-			JOIN pg_type r
+			FROM pg_catalog.pg_proc f
+			JOIN pg_catalog.pg_type r
 				ON r.typname = 'raster'
 					AND (f.proargtypes::oid[])[1] = r.oid
-			JOIN pg_type g
+			JOIN pg_catalog.pg_type g
 				ON g.typname = 'geometry'
 					AND (f.proargtypes::oid[])[0] = g.oid
 			WHERE proname = 'geometry_contained_by_raster'
@@ -589,7 +589,7 @@ BEGIN
 	FROM pg_proc f
 	JOIN pg_type t
 		ON f.prorettype = t.oid
-	WHERE lower(f.proname) = '_raster_constraint_nodata_values'
+	WHERE pg_catalog.lower(f.proname) = '_raster_constraint_nodata_values'
 		AND f.pronargs = 1
 		AND t.typname = '_float8'; -- array form
 
