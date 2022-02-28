@@ -2,6 +2,8 @@ PostGIS 3.2.2dev
 2022/MM/DD
 
 * Bug Fixes *
+  - #5105, Fix false invalidity report from ValidateTopology
+           (Sandro Santilli)
   - #5097, Ensure spatial index is used during topology population
            at the getClosestEdge step (Sandro Santilli)
   - #5091, Fix --without-protobuf builds (Tobias Bussmann)

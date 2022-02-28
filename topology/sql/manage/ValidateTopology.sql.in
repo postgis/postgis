@@ -474,14 +474,16 @@ BEGIN
           ELSE
             e.right_face
           END
-        ) side_faces
+        ) side_faces,
+        count(signed_edge_id) num_edges,
+        count(distinct abs(signed_edge_id)) distinct_edges
       FROM
         all_rings_with_ring_ordinal_edge r,
         edge_data e
       WHERE e.edge_id = abs(r.signed_edge_id)
       GROUP BY ring_id
     ) --}{
-    SELECT ring_id, geom as ring_geom, side_faces
+    SELECT ring_id, geom as ring_geom, side_faces, distinct_edges, num_edges
     FROM all_rings_with_ring_geom
   LOOP --}{
 
@@ -511,6 +513,9 @@ BEGIN
     END IF; --}
 
     --RAISE DEBUG 'Ring geom: %', ST_AsTexT(rec.ring_geom);
+    --RAISE DEBUG 'Distinct edges: %', rec.distinct_edges;
+    --RAISE DEBUG 'Num edges: %', rec.num_edges;
+
     IF NOT ST_Equals(
       ST_StartPoint(rec.ring_geom),
       ST_EndPoint(rec.ring_geom)
@@ -527,7 +532,9 @@ BEGIN
 
     -- Ring is valid, save it.
     is_shell := false;
-    IF ST_NPoints(rec.ring_geom) > 3 THEN
+    IF ST_NPoints(rec.ring_geom) > 3 AND
+       rec.num_edges != rec.distinct_edges * 2
+    THEN
       ring_poly := ST_MakePolygon(rec.ring_geom);
       IF ST_IsPolygonCCW(ring_poly) THEN
         is_shell := true;
