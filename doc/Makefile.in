@@ -168,7 +168,7 @@ XML_GENERATED_SOURCES = \
 
 XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
 
-XML_INPUTS_POT = $(XML_SOURCES:%.xml=po/templates/%.xml.pot)
+XML_INPUTS_POT = $(XML_SOURCES:%.xml=$(srcdir)/po/templates/%.xml.pot)
 
 VPATH = $(srcdir)
 
@@ -176,7 +176,7 @@ VPATH = $(srcdir)
 ifeq ($(XML2POT),)
 $(XML_INPUTS_POT): requirements_not_met_xml2pot
 else
-$(XML_INPUTS_POT): po/templates/%.xml.pot: %.xml
+$(XML_INPUTS_POT): $(srcdir)/po/templates/%.xml.pot: %.xml
 	@if test -f $@; then \
 	  $(XML2POT) $< > $@.tmp; \
     changed=`diff $@.tmp $@ \
@@ -206,8 +206,8 @@ update-po: $(XML_INPUTS_POT)
 	@for lang in $(translations); do \
     echo "Creating po files for language $$lang..." ; \
     for pot in $(XML_INPUTS_POT); do \
-      mkdir -p po/$$lang; \
-      po=po/$$lang/`basename $$pot .pot`.po; \
+      mkdir -p $(srcdir)/po/$$lang; \
+      po=$(srcdir)/po/$$lang/`basename $$pot .pot`.po; \
       if test -f $$po; then \
         $(MSGMERGE) --no-fuzzy-matching --update $$po $$pot; \
       else \
