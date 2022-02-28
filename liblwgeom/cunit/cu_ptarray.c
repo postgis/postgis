@@ -322,20 +322,20 @@ static void test_ptarray_signed_area()
 	/* parallelogram */
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,1 1, 2 1, 1 0, 0 0)"));
 	area = ptarray_signed_area(line->points);
-	CU_ASSERT_DOUBLE_EQUAL(area, 1.0, 0.0000001);
+	ASSERT_DOUBLE_EQUAL_TOLERANCE(area, 1.0, 0.0000001);
 	lwline_free(line);
 
 	/* square */
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 2, 2 2, 2 0, 0 0)"));
 	area = ptarray_signed_area(line->points);
-	CU_ASSERT_DOUBLE_EQUAL(area, 4.0, 0.0000001);
+	ASSERT_DOUBLE_EQUAL_TOLERANCE(area, 4.0, 0.0000001);
 	lwline_free(line);
 
 	/* square backwares*/
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,2 0, 2 2, 0 2, 0 0)"));
 	area = ptarray_signed_area(line->points);
 	//printf("%g\n",area);
-	CU_ASSERT_DOUBLE_EQUAL(area, -4.0, 0.0000001);
+	ASSERT_DOUBLE_EQUAL_TOLERANCE(area, -4.0, 0.0000001);
 	lwline_free(line);
 
 }
