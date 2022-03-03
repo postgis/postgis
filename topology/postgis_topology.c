@@ -877,7 +877,7 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
       /* NOTE: this is a geometry of which we want to take (and clone) the BBOX */
       geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
       g = lwgeom_from_gserialized(geom);
-      lwgeom_refresh_bbox(g); /* Ensure we use a fit mbr, see #4149 */
+      lwgeom_refresh_bbox(g); /* Ensure we use a fit mbr, see #4941 */
       box = lwgeom_get_bbox(g);
       if ( box )
       {
