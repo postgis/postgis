@@ -142,7 +142,7 @@ BEGIN
   UPDATE city_data.edge_data SET right_face = 3 WHERE edge_id = 19;
   -- 2. Try to change the edge of a face with no bbox
   BEGIN
-    SELECT ST_ChangeEdgeGeom('city_data', 7, 'LINESTRING(21 22,28 20,35 22)' );
+    PERFORM ST_ChangeEdgeGeom('city_data', 7, 'LINESTRING(21 22,28 20,35 22)' );
   EXCEPTION
   WHEN OTHERS THEN
     -- Strip details, we only want the first part
