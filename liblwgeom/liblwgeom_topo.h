@@ -853,6 +853,17 @@ typedef struct LWT_BE_CALLBACKS_T {
 					   uint64_t *numelems,
 					   int fields);
 
+  /**
+   * Compute minimum bounding rectangle of a face
+   *
+   * @param topo the topology to act upon
+   * @param face the face identifier
+   *
+   * @return a GBOX describing the minimum bounding rectangle of the face.
+   *
+   */
+  GBOX *(*computeFaceMBR)(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face);
+
 } LWT_BE_CALLBACKS;
 
 

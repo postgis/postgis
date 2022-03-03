@@ -3046,6 +3046,100 @@ cb_getClosestEdge( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt, uint64_t *num
   return edges;
 }
 
+static GBOX *
+cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
+{
+  //LWT_ELEMID *edges;
+  int spi_result;
+  HeapTuple row;
+  //TupleDesc rowdesc;
+  bool isnull;
+  Datum dat;
+  GSERIALIZED *geom;
+  LWGEOM *lwg;
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+  const GBOX *box;
+  MemoryContext oldcontext = CurrentMemoryContext;
+
+  initStringInfo(sql);
+  appendStringInfo(
+    sql,
+    "SELECT ST_BoundingDiagonal(ST_Collect("
+    "ST_BoundingDiagonal(geom, true)"
+    "), true) FROM \"%s\".edge "
+    "WHERE left_face != right_face AND "
+    "( left_face = %" LWTFMT_ELEMID
+    " OR right_face = %" LWTFMT_ELEMID
+    ")",
+    topo->name,
+    face,
+    face
+  );
+
+  POSTGIS_DEBUGF(1, "cb_computeFaceMBR query: %s", sql->data);
+  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+  MemoryContextSwitchTo( oldcontext ); /* switch back */
+  if ( spi_result != SPI_OK_SELECT )
+  {
+    cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
+    return NULL;
+  }
+  pfree(sqldata.data);
+
+  if ( ! SPI_processed )
+  {
+    cberror(
+      topo->be_data,
+      "Face with id %" LWTFMT_ELEMID" in topology \"%s\" has no edges",
+      face,
+      topo->name
+    );
+    return NULL;
+  }
+
+  row = SPI_tuptable->vals[0];
+  dat = SPI_getbinval(row, SPI_tuptable->tupdesc, 1, &isnull);
+
+  if ( isnull )
+  {
+    cberror(
+      topo->be_data,
+      "Face with id %" LWTFMT_ELEMID" in topology \"%s\" has null edges ?",
+      face,
+      topo->name
+    );
+    return NULL;
+  }
+
+  geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
+  lwg = lwgeom_from_gserialized(geom);
+
+  lwgeom_refresh_bbox(lwg); /* Ensure we use a fit mbr, see #4149 */
+  box = lwgeom_get_bbox(lwg);
+  if ( box )
+  {
+    POSTGIS_DEBUGF(1, "Face %" LWTFMT_ELEMID " bbox xmin is %.15g", face, box->xmin);
+  }
+  else
+  {
+    cberror(
+      topo->be_data,
+      "Face with id %" LWTFMT_ELEMID" in topology \"%s\" has empty MBR ?",
+      face,
+      topo->name
+    );
+    return NULL;
+  }
+  lwgeom_free(lwg);
+  if ( DatumGetPointer(dat) != (Pointer)geom ) pfree(geom);
+
+  SPI_freetuptable(SPI_tuptable);
+
+  return gbox_clone(box);
+}
+
 static int
 cb_deleteFacesById(const LWT_BE_TOPOLOGY *topo, const LWT_ELEMID *ids, uint64_t numelems)
 {
@@ -3423,7 +3517,8 @@ static LWT_BE_CALLBACKS be_callbacks =
   cb_getFaceWithinBox2D,
   cb_checkTopoGeomRemIsoNode,
   cb_checkTopoGeomRemIsoEdge,
-  cb_getClosestEdge
+  cb_getClosestEdge,
+  cb_computeFaceMBR
 };
 
 static void

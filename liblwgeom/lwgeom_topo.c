@@ -412,6 +412,12 @@ lwt_be_getClosestEdge(const LWT_TOPOLOGY *topo, const LWPOINT *pt, uint64_t *num
   CBT3(topo, getClosestEdge, pt, numelems, fields);
 }
 
+static GBOX *
+lwt_be_computeFaceMBR(const LWT_TOPOLOGY *topo, LWT_ELEMID face)
+{
+  CBT1(topo, computeFaceMBR, face);
+}
+
 /************************************************************************
  *
  * Utility functions
@@ -2043,7 +2049,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
 	  return -2;
   }
-  LWDEBUGF(1, "lwt_be_getEdgeByFace returned %d edges", numfaceedges);
+  LWDEBUGF(1, "_lwt_AddFaceSplit: lwt_be_getEdgeByFace returned %d edges", numfaceedges);
 
   if ( numfaceedges )
   {
@@ -2831,6 +2837,7 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
 	  lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
 	  return NULL;
   }
+  LWDEBUGF(1, "lwt_GetFaceGeometry: lwt_be_getEdgeByFace returned %d edges", numfaceedges);
 
   if ( numfaceedges == 0 )
   {
@@ -3078,6 +3085,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
 	  return -1;
   }
   if ( ! numfaceedges ) return 0; /* no edges in output */
+  LWDEBUGF(1, "lwt_GetFaceEdges: lwt_be_getEdgeByFace returned %d edges", numfaceedges);
 
   /* order edges by occurrence in face */
 
@@ -3480,89 +3488,53 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   const GBOX* newbox = lwgeom_get_bbox(lwline_as_lwgeom(geom));
   if ( ! gbox_same(oldbox, newbox) )
   {
+    GBOX* updatedBox;
     uint64_t facestoupdate = 0;
     LWT_ISO_FACE faces[2];
-    LWGEOM *nface1 = NULL;
-    LWGEOM *nface2 = NULL;
     if ( oldedge->face_left > 0 )
     {
-      nface1 = lwt_GetFaceGeometry(topo, oldedge->face_left);
-      if ( ! nface1 )
-      {
-        lwerror("lwt_ChangeEdgeGeom could not construct face %"
-                   LWTFMT_ELEMID ", on the left of edge %" LWTFMT_ELEMID,
-                  oldedge->face_left, edge_id);
-        return -1;
-      }
-  #if 0
-      {
-      size_t sz;
-      char *wkt = lwgeom_to_wkt(nface1, WKT_EXTENDED, 2, &sz);
-      LWDEBUGF(1, "new geometry of face left (%d): %s", (int)oldedge->face_left, wkt);
-      lwfree(wkt);
-      }
-  #endif
-      lwgeom_add_bbox(nface1);
-      if ( ! nface1->bbox )
+      updatedBox = lwt_be_computeFaceMBR(topo, oldedge->face_left);
+      if ( ! updatedBox )
       {
         lwerror("Corrupted topology: face %d, left of edge %d, has no bbox",
           oldedge->face_left, edge_id);
         return -1;
       }
       faces[facestoupdate].face_id = oldedge->face_left;
-      /* ownership left to nface */
-      faces[facestoupdate++].mbr = nface1->bbox;
+      /* ownership transferred to faces[] */
+      faces[facestoupdate++].mbr = updatedBox;
     }
     if ( oldedge->face_right > 0
          /* no need to update twice the same face.. */
          && oldedge->face_right != oldedge->face_left )
     {
-      nface2 = lwt_GetFaceGeometry(topo, oldedge->face_right);
-      if ( ! nface2 )
-      {
-        lwerror("lwt_ChangeEdgeGeom could not construct face %"
-                   LWTFMT_ELEMID ", on the right of edge %" LWTFMT_ELEMID,
-                  oldedge->face_right, edge_id);
-        return -1;
-      }
-  #if 0
-      {
-      size_t sz;
-      char *wkt = lwgeom_to_wkt(nface2, WKT_EXTENDED, 2, &sz);
-      LWDEBUGF(1, "new geometry of face right (%d): %s", (int)oldedge->face_right, wkt);
-      lwfree(wkt);
-      }
-  #endif
-      lwgeom_add_bbox(nface2);
-      if ( ! nface2->bbox )
+      updatedBox = lwt_be_computeFaceMBR(topo, oldedge->face_right);
+      if ( ! updatedBox )
       {
         lwerror("Corrupted topology: face %d, right of edge %d, has no bbox",
           oldedge->face_right, edge_id);
         return -1;
       }
       faces[facestoupdate].face_id = oldedge->face_right;
-      faces[facestoupdate++].mbr = nface2->bbox; /* ownership left to nface */
+      /* ownership transferred to faces[] */
+      faces[facestoupdate++].mbr = updatedBox;
     }
     LWDEBUGF(1, "%d faces to update", facestoupdate);
     if ( facestoupdate )
     {
-		uint64_t updatedFaces = lwt_be_updateFacesById(topo, &(faces[0]), facestoupdate);
+      uint64_t updatedFaces = lwt_be_updateFacesById(topo, &(faces[0]), facestoupdate);
 	    if (updatedFaces != facestoupdate)
 	    {
-		    if (nface1)
-			    lwgeom_free(nface1);
-		    if (nface2)
-			    lwgeom_free(nface2);
+        while ( facestoupdate-- ) lwfree(faces[facestoupdate].mbr);
 		    _lwt_release_edges(oldedge, 1);
 		    if (updatedFaces == UINT64_MAX)
 			    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
 		    else
-			    lwerror("Unexpected error: %d faces found when expecting 1", i);
+			    lwerror("Unexpected error: %d faces updated when expecting 1", updatedFaces);
 		    return -1;
 	    }
     }
-    if ( nface1 ) lwgeom_free(nface1);
-    if ( nface2 ) lwgeom_free(nface2);
+    while ( facestoupdate-- ) lwfree(faces[facestoupdate].mbr);
   }
   else
   {
