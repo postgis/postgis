@@ -3060,6 +3060,7 @@ cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
   const GBOX *box;
+  GBOX *outbox;
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
@@ -3121,6 +3122,7 @@ cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
   if ( box )
   {
     POSTGIS_DEBUGF(1, "Face %" LWTFMT_ELEMID " bbox xmin is %.15g", face, box->xmin);
+    outbox = gbox_clone(box);
   }
   else
   {
@@ -3137,7 +3139,7 @@ cb_computeFaceMBR(const LWT_BE_TOPOLOGY *topo, LWT_ELEMID face)
 
   SPI_freetuptable(SPI_tuptable);
 
-  return gbox_clone(box);
+  return outbox;
 }
 
 static int
