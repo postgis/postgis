@@ -5,6 +5,7 @@ PostGIS 3.3.0dev
   - Drop support for PostgreSQL 9.6 and 10 (Regina Obe)
 
  * Enhancements *
+  - #5111, faster topology face MBR computation (Sandro Santilli)
   - postgis_extensions_upgrade() support for upgrades from any PostGIS
     version, including yet to be released ones (Sandro Santilli)
   - #5037, add convexhull 3D (Loïc Bartoletti)
