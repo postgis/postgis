@@ -19,7 +19,8 @@ task:
     - service postgresql oneinitdb
     - service postgresql onestart
     - whoami
-    - sudo -u postgres createuser -s `whoami`
+    - sudo -u postgres psql -c "create user root superuser"
+    #- sudo -u postgres createuser -s `whoami`
     #- su -l postgres -c "createuser -s `whoami`"
   build_script:
     - gmake -j8
