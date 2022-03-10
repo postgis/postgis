@@ -2,12 +2,13 @@
 #
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2019
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-18 14:46+0000\n"
+"PO-Revision-Date: 2022-03-11 05:52+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/extrasxml/"
 "de/>\n"
@@ -16,13 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: extras.xml:3
 #, no-c-format
 msgid "PostGIS Extras"
-msgstr ""
+msgstr "PostGIS Extras"
 
 #. Tag: para
 #: extras.xml:5
