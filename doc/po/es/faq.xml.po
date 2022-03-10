@@ -6,20 +6,22 @@
 # Manuel Retamozo <manuel@retamozo.com.ar>, 2018
 # nramire1 nramire1, 2017
 # Néstor, 2017
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2021-11-28 21:23+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
-"es/)\n"
+"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/faqxml/es/"
+">\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: faq.xml:3
@@ -470,6 +472,11 @@ msgid ""
 "different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
 "\"/> for details on storing geography."
 msgstr ""
+"Primero, necesitas crear una tabla con una columna de tipo \"geometría\" o "
+"\"geografía\" para almacenar tus datos SIG. Almacenar datos de tipo "
+"geográfico es un poco diferente que almacenar geometrías. Para obtener "
+"detalles de como se almacenan los tipos geográficos ves a <xref linkend="
+"\"PostGIS_Geography\"/>."
 
 #. Tag: para
 #: faq.xml:152
