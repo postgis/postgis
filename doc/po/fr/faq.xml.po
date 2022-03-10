@@ -15,13 +15,14 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014,2016
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
 # H Santanna <delazj@gmail.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2022-02-13 18:28+0000\n"
-"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/faqxml/fr/>"
 "\n"
 "Language: fr\n"
@@ -29,7 +30,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: faq.xml:3
@@ -488,6 +489,11 @@ msgid ""
 "different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
 "\"/> for details on storing geography."
 msgstr ""
+"D'abords, vous devez créer une table avec une colonne de type \"geometry\" "
+"ou \"geography\" pour stocker vos données SIG. Stocker des données de type "
+"géographique est un petit différent que stocker des géométries. Référez vous "
+"à la page <xref linkend=\"PostGIS_Geography\"/> pour les détails sur le "
+"stockage géographique."
 
 #. Tag: para
 #: faq.xml:152
