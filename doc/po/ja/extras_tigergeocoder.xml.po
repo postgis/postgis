@@ -4,13 +4,14 @@
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2017
 # Sandro Santilli <strk@kbt.io>, 2022.
 # Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-02-23 07:52+0000\n"
-"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_tigergeocoderxml/ja/>\n"
 "Language: ja\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:6
@@ -2094,6 +2095,8 @@ msgid ""
 "UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
 "'zcta510';"
 msgstr ""
+"UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
+"'zcta510';"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:590
