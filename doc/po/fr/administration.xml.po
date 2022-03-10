@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # H Santanna <delazj@gmail.com>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: 2022-02-13 18:28+0000\n"
-"Last-Translator: H Santanna <delazj@gmail.com>\n"
+"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "administrationxml/fr/>\n"
 "Language: fr\n"
@@ -14,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: administration.xml:3
@@ -32,7 +33,7 @@ msgstr ""
 #: administration.xml:9
 #, no-c-format
 msgid "Configuring raster support"
-msgstr ""
+msgstr "Configurer la prise en charge du raster"
 
 #. Tag: para
 #: administration.xml:11
@@ -41,6 +42,8 @@ msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
 msgstr ""
+"Si vous activez la prise en charge du raster, vous devriez lire ce qui suit "
+"afin de bien la configurer."
 
 #. Tag: para
 #: administration.xml:16
@@ -58,7 +61,7 @@ msgstr ""
 #: administration.xml:19
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr ""
+msgstr "Si vous souhaitez activer le raster hors connexion :"
 
 #. Tag: programlisting
 #: administration.xml:20
