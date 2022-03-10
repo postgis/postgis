@@ -3,20 +3,22 @@
 # Translators:
 # Daniel Quisbert <dani3l.quisb3rt@gmail.com>, 2017
 # Néstor, 2017
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2021-01-22 13:45+0000\n"
-"Last-Translator: Cláudia Rodrigues <claudia@bgeo.es>\n"
-"Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
-"es/)\n"
+"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Spanish <https://weblate.osgeo.org/projects/postgis/"
+"extras_address_standardizerxml/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
@@ -503,7 +505,7 @@ msgstr ""
 #: extras_address_standardizer.xml:146
 #, no-c-format
 msgid "Address Standardizer Tables"
-msgstr ""
+msgstr "Tipos de Address Standardizer"
 
 #. Tag: refname
 #: extras_address_standardizer.xml:149
