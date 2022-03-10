@@ -1,25 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"using_postgis_queryxml/fr/>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: using_postgis_query.xml:3
 #, no-c-format
 msgid "Spatial Queries"
-msgstr ""
+msgstr "Requêtes spatiales"
 
 #. Tag: para
 #: using_postgis_query.xml:5
@@ -31,12 +33,18 @@ msgid ""
 "functions are available, how to use them in queries, and ensuring that "
 "appropriate indexes are in place to provide good performance."
 msgstr ""
+"La <emphasis>raison d'être</emphasis> des bases de données spatiales est de "
+"réaliser à l'intérieur de la base de données des requêtes qui normalement "
+"nécessiteraient des fonctionnalités d'un SIG Desktop. Utiliser PostGIS "
+"requiert en effet la connaissance de quelles fonctions spatiales sont "
+"disponibles, comment les utiliser dans une requête, et de s'assurer de la "
+"mise en place adéquate des index, pour une bonne performance."
 
 #. Tag: title
 #: using_postgis_query.xml:14
 #, no-c-format
 msgid "Determining Spatial Relationships"
-msgstr ""
+msgstr "Déterminer les relations spatiales"
 
 #. Tag: para
 #: using_postgis_query.xml:16
@@ -45,6 +53,9 @@ msgid ""
 "Spatial relationships indicate how two geometries interact with one another. "
 "They are a fundamental capability for querying geometry."
 msgstr ""
+"Les relations spatiales indiquent comment deux géométries interagissent "
+"l'une avec l'autre. Elles constituent une fonctionnalité fondamentale pour "
+"effectuer des requêtes sur des géométries."
 
 #. Tag: title
 #: using_postgis_query.xml:21
@@ -149,13 +160,13 @@ msgstr ""
 #: using_postgis_query.xml:97
 #, no-c-format
 msgid "<literal>0</literal> =&gt; point"
-msgstr ""
+msgstr "<literal>0</literal> =&gt; point"
 
 #. Tag: para
 #: using_postgis_query.xml:101
 #, no-c-format
 msgid "<literal>1</literal> =&gt; line"
-msgstr ""
+msgstr "<literal>1</literal> =&gt; ligne"
 
 #. Tag: para
 #: using_postgis_query.xml:105
