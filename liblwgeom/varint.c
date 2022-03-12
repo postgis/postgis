@@ -140,6 +140,7 @@ varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size
 		}
 	}
 	lwerror("%s: varint extends past end of buffer", __func__);
+	*size = 0;
 	return 0;
 }
 
