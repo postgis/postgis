@@ -2,6 +2,8 @@ PostGIS 3.2.2dev
 2022/MM/DD
 
 * Bug Fixes *
+  - #5115, Allow dropping topologies with pending constraints
+           (Sandro Santilli)
   - #5105, Fix false invalidity report from ValidateTopology
            (Sandro Santilli)
   - #5097, Ensure spatial index is used during topology population
