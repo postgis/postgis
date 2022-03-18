@@ -1704,6 +1704,8 @@ DECLARE
   topoid integer;
   rec RECORD;
   sql TEXT;
+  toposchema REGNAMESPACE;
+  deferred_constraints TEXT[];
 BEGIN
   -- Get topology id
   SELECT id INTO topoid
@@ -1744,14 +1746,37 @@ BEGIN
 #endif
 
   -- Drop the schema (if it exists)
-  FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology
-  LOOP
+  SELECT oid FROM pg_namespace WHERE text(nspname) = atopology
+  INTO toposchema;
+
+  IF toposchema IS NOT NULL THEN --{
+
+    -- Give immediate execution to pending constraints
+    -- in the topology schema.
+    --
+    -- See https://trac.osgeo.org/postgis/ticket/5115
+    SELECT array_agg(format('%I.%I', atopology, conname))
+    FROM pg_constraint c
+    WHERE connamespace = toposchema AND condeferred
+    INTO deferred_constraints;
+
+    IF deferred_constraints IS NOT NULL THEN --{
+      sql := format(
+        'SET constraints %s IMMEDIATE',
+        array_to_string(deferred_constraints, ',')
+      );
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Executing: %', sql;
+#endif
+      EXECUTE sql;
+    END IF; --}
+
     sql := format('DROP SCHEMA %I CASCADE', atopology);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Executing: %', sql;
 #endif
     EXECUTE sql;
-  END LOOP;
+  END IF; --}
 
   RETURN format('Topology %L dropped', atopology);
 END
