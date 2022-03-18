@@ -1,5 +1,8 @@
 Topology 't1' dropped
 Topology 't2' dropped
 Topology 't3' dropped
+t5115.create
+t5115.addline
+t5115.drop
 ERROR:  Topology 'topology' does not exist
 ERROR:  Topology 'doesnotexist' does not exist
