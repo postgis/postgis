@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-03-18 04:12+0000\n"
+"PO-Revision-Date: 2022-03-19 09:12+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_tigergeocoderxml/ja/>\n"
@@ -1603,12 +1603,13 @@ msgid ""
 "from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</"
 "varname> which inherits from <varname>tiger.faces</varname>"
 msgstr ""
-"レコードごとにテーブルの種類 (州、国)、レコード処理の有無、ロード方法を定義し"
-"ています。データインポート方法、データ格納準備、カラム追加、カラム削除、イン"
-"デックス、制約がそれぞれで定義されています。個々のテーブルは、名前の先頭に州"
-"コードを持ち、tigerスキーマのテーブルから継承されています。たとえば、"
-"<varname>tiger.faces</varname>から継承された<varname>tiger_data.ma_faces</"
-"varname>する、といったことが行われます。"
+"<varname>loader_lookuptables</varname> レコードごとにテーブルの種類 (州、国)"
+"、レコード処理の有無、ロード方法を定義しています。データインポート方法、デー"
+"タ格納準備、カラム追加、カラム削除、インデックス、制約がそれぞれで定義されて"
+"います。個々のテーブルは、名前の先頭に州コードを持ち、tigerスキーマのテーブル"
+"から継承されています。たとえば、<varname>tiger."
+"faces</varname>から継承した<varname>tiger_data."
+"ma_faces</varname>の生成といったことが行われます。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:470
@@ -1858,6 +1859,10 @@ msgid ""
 "&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger "
 "than 50000 characters."
 msgstr ""
+"pgAdmin 3を使用している場合には、pgAdmin "
+"3はデフォルトでは長い文字列を切り捨てることに注意して下さい。修正するには、"
+"<emphasis>ファイル -&gt; オプション -&gt; クエリツール -&gt; クエリエディタ "
+"-&gt; カラムあたり最大文字数</emphasis>を50000文字以上に変更します。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:537
@@ -1866,6 +1871,9 @@ msgid ""
 "Using psql where gistest is your database and <filename>/gisdata/data_load."
 "sh</filename> is the file to create with the shell commands to run."
 msgstr ""
+"gistestが使用中のデータベースで、また<filename>/gisdata/data_load.sh</filenam"
+"e>が実行するシェルコマンドを使って生成するファイルとすると、psqlを使って次の"
+"ようにします。"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:538
@@ -1875,6 +1883,9 @@ msgid ""
 " -c \"SELECT Loader_Generate_Script(ARRAY['MA'], 'gistest')\" > /gisdata/"
 "data_load.sh;]]>"
 msgstr ""
+"<![CDATA[psql -U postgres -h localhost -d gistest -A -t \\\n"
+" -c \"SELECT Loader_Generate_Script(ARRAY['MA'], 'gistest')\" > /gisdata/"
+"data_load.sh;]]>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:539
@@ -2059,9 +2070,9 @@ msgid ""
 "loader_lookuptables</varname> to control the process and different OS shell "
 "syntax variations."
 msgstr ""
-"プロセスの制御や異なるOSのシェルの書式の制御のために、制御テーブル"
-"<varname>tiger.loader_platform</varname>, <varname>tiger.loader_variables</"
-"varname>,  <varname>tiger.loader_lookuptables</varname>を使います。"
+"プロセスの制御や異なるOSのシェルの書式の制御のために、制御テーブル<varname>ti"
+"ger.loader_platform</varname>, <varname>tiger.loader_variables</varname>, "
+"<varname>tiger.loader_lookuptables</varname>を使います。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:581
