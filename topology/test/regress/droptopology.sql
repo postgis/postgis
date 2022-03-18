@@ -31,6 +31,14 @@ INSERT INTO t3.f(g) VALUES (toTopoGeom('POINT(0 0)', 't3', 1));
 --SELECT topology.DropTopoGeometryColumn('t3', 'f', 'g');
 SELECT topology.DropTopology('t3');
 
+-- Test DropTopology with pending deferred triggers
+-- See https://trac.osgeo.org/postgis/ticket/5115
+BEGIN;
+SELECT 't5115.create' FROM topology.CreateTopology('t5115');
+SELECT 't5115.addline' FROM topology.TopoGeo_addLineString('t5115', 'LINESTRING(0 0, 10 0)');
+SELECT 't5115.drop' FROM topology.DropTopology('t5115');
+ROLLBACK;
+
 -- Exceptions
 SELECT topology.DropTopology('topology');
 SELECT topology.DropTopology('doesnotexist');
