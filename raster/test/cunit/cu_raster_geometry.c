@@ -583,6 +583,7 @@ static void test_raster_get_pixel_bilinear() {
 	double ul_y = 0.0;
 	double scale_x = 1;
 	double scale_y = 1;
+	int err;
 
 	double xr, yr;
 	double igt[6];
@@ -623,14 +624,15 @@ static void test_raster_get_pixel_bilinear() {
 	rt_band_set_pixel(band, 1, 1, 40.0, NULL);
 
 
-	double value;
-	int nodata;
-	rt_band_get_pixel_bilinear(
+	double value = 0.0;
+	int nodata = 0;
+	err = rt_band_get_pixel_bilinear(
 		band,
 		xw, yw, // double xw, double yw,
 		&value, &nodata // double *r_value, int *r_nodata)
 		);
 
+	CU_ASSERT_EQUAL(err, ES_NONE);
 	printf("xw = %g, yw = %g, value = %g, nodata = %d\n", xr, yr, value, nodata);
 
 

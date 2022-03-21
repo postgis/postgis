@@ -26,8 +26,15 @@ AC_CONFIG_MACRO_DIR([macros])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_PROG_INSTALL
 
-# Set default AR_FLAGS before libtool does
-: ${AR_FLAGS=rs}
+dnl Overwrite _LT_PROG_AR
+m4_pushdef([_LT_PROG_AR],
+  [: ${AR_FLAGS=rs}
+  PG_PROG_AR
+  PG_PROG_RANLIB
+  dnl Call original _LT_PROG_AR
+  m4_popdef([_LT_PROG_AR])
+  _LT_PROG_AR
+]) # _LT_PROG_AR
 
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
 dnl flags required to build liblwgeom
@@ -1168,6 +1175,9 @@ if test $ENABLE_DEBUG -eq 1; then
 else
     AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
+
+    AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -flto], [_cv_flto], [-flto], [], [CFLAGS="$CFLAGS -flto"], [])
+    AC_LIBTOOL_LINKER_OPTION([if $compiler supports -flto], [_cv_flto], [[-flto]], [LDFLAGS="$LDFLAGS -flto"])
 fi
 
 AC_DEFINE([POSTGIS_DEBUG_LEVEL], [0], [Define debug level. Default 0])
