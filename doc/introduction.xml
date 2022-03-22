@@ -94,11 +94,19 @@
 			</listitem>
 		</varlistentry>
 
-    	<varlistentry>
+    <varlistentry>
 			<term>Björn Harrtell</term>
 
 			<listitem>
 			  <para>MapBox Vector Tile and GeoBuf functions. Gogs testing and GitLab experimentation.</para>
+			</listitem>
+		</varlistentry>
+
+    <varlistentry>
+			<term>Aliaksandr Kalenik</term>
+
+			<listitem>
+			  <para>Geometry Processing, PostgreSQL gist, general bug fixing</para>
 			</listitem>
 		</varlistentry>
 
