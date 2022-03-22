@@ -44,13 +44,6 @@
 		</varlistentry>
 
 		<varlistentry>
-		<term>Bborie Park</term>
-		<listitem>
-			<para>Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
-		</listitem>
-		</varlistentry>
-
-		<varlistentry>
 			<term>Darafei Praliaskouski</term>
 			<listitem>
 				<para>Index improvements, bug fixing and geometry/geography function improvements, SFCGAL, raster, GitHub curation, and Travis bot maintenance.</para>
@@ -79,13 +72,6 @@
 	<title>Core Contributors Present</title>
 	<variablelist>
 		<varlistentry>
-			<term>Jorge Arévalo</term>
-			<listitem>
-			  <para>Raster development, GDAL driver support, loader</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
 			<term>Nicklas Avén</term>
 
 			<listitem>
@@ -102,20 +88,13 @@
 		</varlistentry>
 
 		<varlistentry>
-			<term>Olivier Courtin</term>
-			<listitem>
-			  <para>Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
 			<term>Martin Davis</term>
 			<listitem>
 			  <para>GEOS enhancements and documentation</para>
 			</listitem>
 		</varlistentry>
 
-    	<varlistentry>
+    <varlistentry>
 			<term>Björn Harrtell</term>
 
 			<listitem>
@@ -123,30 +102,39 @@
 			</listitem>
 		</varlistentry>
 
+    <varlistentry>
+			<term>Aliaksandr Kalenik</term>
 
-		<varlistentry>
-			<term>Mateusz Loskot</term>
 			<listitem>
-			  <para>CMake support for PostGIS, built original raster loader in python and low level raster API functions</para>
+			  <para>Geometry Processing, PostgreSQL gist, general bug fixing</para>
 			</listitem>
 		</varlistentry>
 
-		<varlistentry>
-			<term>Pierre Racine</term>
-			<listitem>
-			  <para>Raster overall architecture, prototyping, programming support</para>
-			</listitem>
-		</varlistentry>
 	</variablelist>
   </sect1>
   <sect1 id="credits_core_past">
 	<title>Core Contributors Past</title>
 	<variablelist>
+
+		<varlistentry>
+		<term>Bborie Park</term>
+		<listitem>
+			<para>Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
+		</listitem>
+		</varlistentry>
+
 		<varlistentry>
 			<term>Mark Cave-Ayland</term>
 			<listitem>
 				<para>Prior PSC Member. Coordinated bug fixing and maintenance effort, spatial index selectivity and binding, loader/dumper, and Shapefile GUI Loader, integration of new
 					and new function enhancements.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>Olivier Courtin (Emeritus)</term>
+			<listitem>
+			  <para>Input/output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
 
@@ -176,12 +164,18 @@
 		</varlistentry>
 
 		<varlistentry>
-		<term>Jeff Lounsbury</term>
-		<listitem>
-		  <para>Original development of the Shapefile loader/dumper.</para>
-		</listitem>
+			<term>Pierre Racine</term>
+			<listitem>
+			  <para>Raster overall architecture, prototyping, programming support</para>
+			</listitem>
 		</varlistentry>
 
+		<varlistentry>
+			<term>Jorge Arévalo</term>
+			<listitem>
+			  <para>Raster development, GDAL driver support, loader</para>
+			</listitem>
+		</varlistentry>
 
 		<varlistentry>
 		<term>Mark Leslie</term>
@@ -190,7 +184,21 @@
 		</listitem>
 		</varlistentry>
 
-        <varlistentry>
+		<varlistentry>
+			<term>Mateusz Loskot</term>
+			<listitem>
+			  <para>CMake support for PostGIS, built original raster loader in python and low level raster API functions</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+		<term>Jeff Lounsbury</term>
+		<listitem>
+		  <para>Original development of the Shapefile loader/dumper.</para>
+		</listitem>
+		</varlistentry>
+
+    <varlistentry>
 			<term>David Zwarg</term>
 			<listitem>
 			  <para>Raster development (mostly map algebra analytic functions)</para>
