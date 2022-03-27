@@ -19,6 +19,7 @@
 # 'all' and 'install' targets with the ones we really want to use below.
 PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
+CUSTOM_CC := $(CC)
 include $(PGXS)
 
 top_builddir = @top_builddir@

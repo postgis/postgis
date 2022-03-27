@@ -154,6 +154,7 @@ distclean: clean
 
 PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
+CUSTOM_CC := $(CC)
 include $(PGXS)
 PERL = @PERL@
 

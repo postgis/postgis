@@ -24,6 +24,7 @@ DATA_built=postgis_restore.pl
 # PGXS information
 PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
+CUSTOM_CC := $(CC)
 include $(PGXS)
 
 VPATH := @srcdir@
