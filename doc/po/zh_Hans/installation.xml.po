@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: 2022-02-26 16:52+0000\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
 "Last-Translator: Chen <onsummer@foxmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
 "postgis/installationxml/zh_Hans/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -27,7 +27,7 @@ msgstr "安装 PostGIS"
 #: installation.xml:5
 #, no-c-format
 msgid "This chapter details the steps required to install PostGIS."
-msgstr ""
+msgstr "本章详细介绍了 PostGIS 的安装步骤。"
 
 #. Tag: title
 #: installation.xml:10
@@ -65,7 +65,7 @@ msgstr ""
 #: installation.xml:23
 #, no-c-format
 msgid "Compiling and Install from Source"
-msgstr ""
+msgstr "使用源代码编译安装"
 
 #. Tag: para
 #: installation.xml:26
@@ -74,7 +74,8 @@ msgid ""
 "Many OS systems now include pre-built packages for PostgreSQL/PostGIS. In "
 "many cases compilation is only necessary if you want the most bleeding edge "
 "versions or you are a package maintainer."
-msgstr ""
+msgstr "现在很多操作系统有编译好的 PostgreSQL/PostGIS "
+"包。有时候你想要用最新的版本，或者你就是包的维护者，你才需要用源代码编译。"
 
 #. Tag: para
 #: installation.xml:31
@@ -94,6 +95,8 @@ msgid ""
 "Pre-Built Packages for various OS are listed in <ulink url=\"http://trac."
 "osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink>"
 msgstr ""
+"<ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS "
+"Pre-built Packages</ulink> 中列出了各种操作系统的编译好的包。"
 
 #. Tag: para
 #: installation.xml:34
@@ -164,7 +167,7 @@ msgstr ""
 #: installation.xml:79
 #, no-c-format
 msgid "Getting the Source"
-msgstr ""
+msgstr "获取源代码"
 
 #. Tag: para
 #: installation.xml:81
