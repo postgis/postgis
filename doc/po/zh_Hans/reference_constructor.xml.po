@@ -6,25 +6,28 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-13 18:15+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"Last-Translator: Chen <onsummer@foxmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.osgeo.org/projects/"
+"postgis/reference_constructorxml/zh_Hans/>\n"
 "Language: zh_Hans\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: reference_constructor.xml:3
 #, no-c-format
 msgid "Geometry Constructors"
-msgstr ""
+msgstr "几何（Geometry）构造器"
 
 #. Tag: refname
 #: reference_constructor.xml:7
 #, no-c-format
 msgid "ST_Collect"
-msgstr ""
+msgstr "ST_Collect"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:8
@@ -59,7 +62,7 @@ msgstr ""
 #: reference_constructor.xml:956 reference_constructor.xml:994
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #. Tag: para
 #: reference_constructor.xml:31
@@ -160,12 +163,18 @@ msgid ""
 "----------\n"
 "MULTIPOINT(1 2,-2 3)"
 msgstr ""
+"SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),\n"
+"        ST_GeomFromText('POINT(-2 3)') ));\n"
+"\n"
+"st_astext\n"
+"----------\n"
+"MULTIPOINT(1 2,-2 3)"
 
 #. Tag: para
 #: reference_constructor.xml:67
 #, no-c-format
 msgid "Collect 3D points."
-msgstr ""
+msgstr "将 3D 点集合在一起。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:68
@@ -178,6 +187,12 @@ msgid ""
 "-------------------------\n"
 " MULTIPOINT(1 2 3,1 2 4)"
 msgstr ""
+"SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),\n"
+"                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
+"\n"
+"                st_asewkt\n"
+"-------------------------\n"
+" MULTIPOINT(1 2 3,1 2 4)"
 
 #. Tag: para
 #: reference_constructor.xml:70
@@ -199,6 +214,16 @@ msgid ""
 "MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
 " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))"
 msgstr ""
+"SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 "
+"150505,220227 150406)',\n"
+"                'CIRCULARSTRING(220227 150406,2220227 150407,220227 "
+"150406)'));\n"
+"\n"
+"                st_astext\n"
+"-----------------------------------------------------------------------------"
+"-------\n"
+"MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
+" CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))"
 
 #. Tag: title
 #: reference_constructor.xml:74
@@ -272,26 +297,26 @@ msgstr ""
 #: reference_constructor.xml:971 reference_constructor.xml:1021
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "或者你看看"
 
 #. Tag: para
 #: reference_constructor.xml:88
 #, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
-msgstr ""
+msgstr "，<xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:94
 #, no-c-format
 msgid "ST_LineFromMultiPoint"
-msgstr ""
+msgstr "ST_LineFromMultiPoint"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:96
 #, no-c-format
 msgid ""
 "<refpurpose>Creates a LineString from a MultiPoint geometry.</refpurpose>"
-msgstr ""
+msgstr "<refpurpose>使用 MultiPoint 对象创建 LineString 对象。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_constructor.xml:101
@@ -323,7 +348,7 @@ msgstr ""
 #: reference_constructor.xml:706
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "例子"
 
 #. Tag: para
 #: reference_constructor.xml:121
@@ -426,7 +451,7 @@ msgstr ""
 #: reference_constructor.xml:177
 #, no-c-format
 msgid "ST_MakeLine"
-msgstr ""
+msgstr "ST_MakeLine"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:179
