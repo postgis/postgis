@@ -3,13 +3,14 @@
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016-2018
 # Sandro Santilli <strk@kbt.io>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/ja/>\n"
 "Language: ja\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -77,9 +78,9 @@ msgid ""
 msgstr ""
 "トポロジベースのGISデータベースの例として<ulink url=\"https://www.census.gov/"
 "geo/maps-data/data/tiger.html\">US Census Topologically Integrated "
-"Geographic Encoding and Referencing System (TIGER)</ulink>があります。PostGIS"
-"トポロジの試験がしたくて、何らかのデータが必要なら<xref linkend="
-"\"Topology_Load_Tiger\"/>をご覧下さい"
+"Geographic Encoding and Referencing System "
+"(TIGER)</ulink>があります。PostGISトポロジの試験がしたくて、"
+"何らかのデータが必要なら<xref linkend=\"Topology_Load_Tiger\"/>をご覧下さい。"
 
 #. Tag: para
 #: extras_topology.xml:8
@@ -588,7 +589,7 @@ msgstr "TopoElementArray"
 #: extras_topology.xml:191
 #, no-c-format
 msgid "An array of TopoElement objects."
-msgstr "TopoElementオブジェクトの配列"
+msgstr "TopoElementオブジェクトの配列。"
 
 #. Tag: para
 #: extras_topology.xml:195
@@ -1483,9 +1484,8 @@ msgstr ""
 msgid ""
 "Changed: 3.2.0 added optional bbox parameter, perform face labeling and edge "
 "linking checks."
-msgstr ""
-"Changed: 3.2.0 任意パラメータbboxの追加、フェイスラベルとエッジリンクのチェッ"
-"クの追加"
+msgstr "Changed: 3.2.0 任意パラメータbboxを追加し、フェイスラベルとエッジリンクのチェ"
+"ックを追加しました。"
 
 #. Tag: programlisting
 #: extras_topology.xml:628
@@ -2119,8 +2119,7 @@ msgstr "TopoGeo_AddPoint"
 msgid ""
 "Adds a point to an existing topology using a tolerance and possibly "
 "splitting an existing edge."
-msgstr ""
-"許容差を使って既存のトポロジにポイントを追加し、可能ならエッジを分割します。 "
+msgstr "許容差を使って既存のトポロジにポイントを追加し、可能ならエッジを分割します。"
 
 #. Tag: funcprototype
 #: extras_topology.xml:989
@@ -2554,11 +2553,11 @@ msgid ""
 "<varname>anode</varname> and <varname>anothernode</varname> are not the "
 "start and endpoints of <varname>acurve</varname> then an error is thrown."
 msgstr ""
-"引数がNULLの場合、与えられたノードが不明な場合(トポロジスキーマの"
-"<varname>node</varname>テーブル内に既に存在していなければなりません)、"
-"<varname>acurve</varname>が<varname>LINESTRING</varname>でない場合、"
-"<varname>anode</varname>と<varname>anothernode</varname>が始端、終端でない場"
-"合には、例外が投げられます。"
+"引数がNULLの場合、与えられたノードが不明な場合(トポロジスキーマの<varname>nod"
+"e</varname>テーブル内に既に存在していなければなりません)、<varname>acurve</va"
+"rname>が<varname>LINESTRING</varname>でない場合、<varname>anode</varname>と<v"
+"arname>anothernode</varname>が<varname>acurve</varname>の始端、終端でない場合"
+"には、例外が投げられます。"
 
 #. Tag: para
 #: extras_topology.xml:1260 extras_topology.xml:1326 extras_topology.xml:1521
@@ -2884,7 +2883,7 @@ msgstr "Availability: 1.1.0"
 #: extras_topology.xml:1533
 #, no-c-format
 msgid "Enhanced: 2.0.0 adds topological consistency enforcement"
-msgstr "Enhanced: 2.0.0版で、トポロジ整合性の強制を追加しました。"
+msgstr "Enhanced: 2.0.0 トポロジ整合性の強制を追加しました。"
 
 #. Tag: para
 #: extras_topology.xml:1537
@@ -4672,11 +4671,10 @@ msgid ""
 "existing face is returned; if <varname>force_new</varname> is true a new id "
 "will be assigned to the newly registered face."
 msgstr ""
-"<varname>apolygon</varname>ジオメトリが既にフェイスとして存在している場合に"
-"は、\n"
-"<varname>force_new</varname>がfalse (デフォルト)の場合は、既存フェイスのフェ"
-"イス識別番号が返り、<varname>force_new</varname>がtrueの場合は、新しい識別番"
-"号が"
+"<varname>apolygon</varname>ジオメトリがフェイスとして既に存在している場合には"
+"、<varname>force_new</varname>がFALSE "
+"(デフォルト)なら既存フェイスのフェイスIDを返し、<varname>force_new</varname> "
+"がTRUEなら新しいIDが新規登録されたフェイスに割り当てられます。"
 
 #. Tag: para
 #: extras_topology.xml:2625
@@ -4752,9 +4750,8 @@ msgstr ""
 "-- 最初に、反復子にgenerate_seriesを使用してエッジを追加\n"
 "-- (generate_seriesの最大値の関係上、\n"
 "-- 頂点が10000個未満のポリゴンでのみ動作します)\n"
-"\n"
-"SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), "
-"ST_PointN(geom, i + 1) )) As edgeid\n"
+"SELECT topology.AddEdge('ma_topo', ST_MakeLine(ST_PointN(geom,i), ST_PointN("
+"geom, i + 1) )) As edgeid\n"
 "    FROM (SELECT  ST_NPoints(geom) AS npt, geom\n"
 "            FROM\n"
 "                (SELECT ST_Boundary(ST_GeomFromText('POLYGON((234896.5 "
@@ -4765,7 +4762,7 @@ msgstr ""
 "26986) )  As geom\n"
 "            )  As geoms) As facen CROSS JOIN generate_series(1,10000) As i\n"
 "         WHERE i &lt; npt;\n"
-"-- 結果 --\n"
+"-- result --\n"
 " edgeid\n"
 "--------\n"
 "      3\n"
@@ -5036,7 +5033,8 @@ msgstr ""
 "-- addtopgeometrycolumn --\n"
 "1\n"
 "\n"
-"-- 全てがエッジに沿っている前提でのカラムのアップデート\n"
+"-- 全てが完全にエッジに沿っている前提での\n"
+"-- カラムの更新\n"
 "UPDATE boston.blockgroups AS bg\n"
 "        SET topo = topology.CreateTopoGeom('topo_boston'\n"
 "        ,3,1\n"
@@ -5100,18 +5098,19 @@ msgstr ""
 "        OR\n"
 " (  ST_Intersects(b.geom, topology.ST_GetFaceGeometry('topo_boston', f."
 "face_id))\n"
-"            AND ST_Area(ST_Intersection(b.geom, topology."
-"ST_GetFaceGeometry('topo_boston', f.face_id) ) ) >\n"
+"            AND ST_Area(ST_Intersection(b.geom, topology.ST_GetFaceGeometry("
+"'topo_boston', f.face_id) ) ) >\n"
 "                ST_Area(topology.ST_GetFaceGeometry('topo_boston', f."
 "face_id))*0.5\n"
 "                )\n"
 "            GROUP BY b.gid) As foo\n"
 "WHERE foo.gid = bg.gid;\n"
 "\n"
-"-- TopoGeometryから、フェイスやエッジに沿うような正規化が\n"
-"-- なされていないジオメトリに戻すには、topoをジオメトリにキャストします。\n"
-"-- 新しいジオメトリは、Tigerの道路中心線に沿っていて、とても素晴らしいで"
-"す。\n"
+"-- TopoGeometryから\n"
+"-- フェイスやエッジに沿うような正規化がなされていないジオメトリに\n"
+"-- 戻すには、topoをジオメトリにキャストします。\n"
+"-- 新しいジオメトリは、Tigerの道路中心線に沿っていて、とても素晴らしいです。"
+"\n"
 "UPDATE boston.blockgroups SET new_geom = topo::geometry;"
 
 #. Tag: para
@@ -5641,8 +5640,8 @@ msgid ""
 "    tg_specific2\n"
 ");"
 msgstr ""
-"-- 「全体的」なTopoGeometry値を、指定したTopoGeometry値の要素全てで構成する値"
-"に設定\n"
+"-- 「全体的」なTopoGeometry値を\n"
+"-- 指定したTopoGeometry値の全ての要素で構成する値に設定\n"
 "UPDATE mylayer SET tg_overall = TopoGeom_addTopogeom(\n"
 "    TopoGeom_addTopoGeom(\n"
 "        clearTopoGeom(tg_overall),\n"
@@ -5947,12 +5946,13 @@ msgid ""
 "Example:"
 msgstr ""
 "<varname>visitedTable</varname>パラメタは、与えられた場合には、訪問したノード"
-"要素とエッジ要素のトラックを保持するために使われ、重複定義になるところで相互"
-"参照 (xlink:xref)を使います。テーブルは 整数カラムであ"
-"る'element_type'と'element_id'とを持つことを期待されます。この関数を呼び出し"
-"たユーザは、このテーブルへの読み込み権限と書き込み権限とが必要です。効率よく"
-"するには、element_typeとelement_idに、この順序でインデクスを定義します。イン"
-"デクスは一意制約をカラムに追加すると自動的に生成されます。例を示します。"
+"要素とエッジ要素のトラックを保持するために使われ、"
+"重複定義になるところで相互参照 (xlink:xref)を使います。テーブルは 整数カラム"
+"である'element_type'と'element_id'とを持つことを期待されます。この関数を呼び"
+"出したユーザは、このテーブルへの読み込み権限と書き込み権限とが必要です。効率"
+"よくするには、 <varname>element_type</varname>と<varname>element_id</varname>"
+"に、この順序でインデックスを定義します。インデックスは一意制約をカラムに追加"
+"すると自動的に生成されます。例を示します。"
 
 #. Tag: programlisting
 #: extras_topology.xml:3275
@@ -6089,7 +6089,7 @@ msgstr ""
 #: extras_topology.xml:3291
 #, no-c-format
 msgid "Same exercise as previous without namespace"
-msgstr "上の例から名前空間を取った例です。"
+msgstr "上の例から名前空間を取り除いた例です。"
 
 #. Tag: programlisting
 #: extras_topology.xml:3292
@@ -6387,9 +6387,8 @@ msgstr ""
 msgid ""
 "This section lists the Topology functions used to check relationships "
 "between topogeometries and topology primitives"
-msgstr ""
-"本節では、TopoGeometryとトポロジプリミティブとの間の関係を見るトポロジ関数の"
-"一覧を挙げます。"
+msgstr "本節ではTopoGeometryとトポロジプリミティブとの間の関係を見るトポロジ関数の一"
+"覧を挙げます。"
 
 #. Tag: title
 #: extras_topology.xml:3367
