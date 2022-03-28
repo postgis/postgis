@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-06 07:55+0000\n"
-"PO-Revision-Date: 2022-02-15 13:19+0000\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_overlay.xml:5
@@ -78,7 +78,7 @@ msgstr ""
 #: reference_overlay.xml:856
 #, no-c-format
 msgid "Performed by the GEOS module."
-msgstr ""
+msgstr "GEOSモジュールで実現しています。"
 
 #. Tag: para
 #: reference_overlay.xml:42 reference_overlay.xml:538
@@ -176,7 +176,7 @@ msgstr ""
 #: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:643
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "GEOSモジュールで実現しています。"
 
 #. Tag: para
 #: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:645
@@ -577,7 +577,7 @@ msgstr ""
 #: reference_overlay.xml:337
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_overlay.xml:339 reference_overlay.xml:760
