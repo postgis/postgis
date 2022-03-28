@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: 2018-07-24 01:52+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"installationxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -43,7 +44,7 @@ msgstr "全ての依存がパスに入っているとする場合、次のよう
 
 #. Tag: programlisting
 #: installation.xml:12
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "tar -xvfz postgis-&last_release_version;.tar.gz\n"
 "cd postgis-&last_release_version;\n"
@@ -51,7 +52,7 @@ msgid ""
 "make\n"
 "make install"
 msgstr ""
-"tar xvfz postgis-&last_release_version;.tar.gz\n"
+"tar -xvfz postgis-&last_release_version;.tar.gz\n"
 "cd postgis-&last_release_version;\n"
 "./configure\n"
 "make\n"
@@ -59,20 +60,21 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Once PostGIS is installed, it needs to be enabled (<xref linkend="
 "\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) in each "
 "individual database you want to use it in."
 msgstr ""
-"PostGISをインストールした後は、利用したいデータベース個々内で利用可能にする必"
-"要があります。"
+"PostGISをインストールした後は、利用したいデータベース個々内で利用可能にする ("
+"<xref linkend=\"create_spatial_db\"/>)か、アップグレード (<xref linkend="
+"\"upgrading\"/>)する必要があります。"
 
 #. Tag: title
 #: installation.xml:23
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Compiling and Install from Source"
-msgstr "ソースからのコンパイルとインストール: 詳細"
+msgstr "ソースからのコンパイルとインストール"
 
 #. Tag: para
 #: installation.xml:26
@@ -115,7 +117,7 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:34
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you are a windows user, you can get stable builds via Stackbuilder or "
 "<ulink url=\"https://postgis.net/windows_downloads\">PostGIS Windows "
@@ -126,11 +128,12 @@ msgid ""
 "PostGIS"
 msgstr ""
 "Windowsユーザの場合は、スタックビルダか、<ulink url=\"http://www.postgis.org/"
-"download/windows/\">PostGIS Windows download site</ulink>から安定版を得ること"
-"ができます。また、週に1回か2回、刺激的なことがあれば随時ビルドを行っている"
-"<ulink url=\"http://www.postgis.org/download/windows/experimental.php\">very "
-"bleeding-edge windows experimental builds</ulink>もあります。これらはPostGIS"
-"の進行中のリリースでの試験に使用します。"
+"download/windows/\">PostGIS Windows download "
+"site</ulink>から安定版を得ることができます。また、"
+"週に1回か2回のビルドと刺激的なことがあった時の随時ビルドとを行っている<ulink "
+"url=\"https://postgis.net/windows_downloads\">very bleeding-edge windows "
+"experimental builds</ulink>もあります。これらはPostGISの進行中のリリースでの"
+"試験に使用します。"
 
 #. Tag: para
 #: installation.xml:39
@@ -238,31 +241,30 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:96
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Alternatively, checkout the source from the <ulink url=\"https://git-scm.com/"
 "\"> git </ulink> repository <ulink url=\"https://git.osgeo.org/gitea/postgis/"
 "postgis/\"> https://git.osgeo.org/gitea/postgis/postgis/ </ulink> ."
 msgstr ""
-"もしくは<ulink url=\"http://subversion.apache.org/\">svn</ulink>レポジトリ"
-"<ulink url=\"http://svn.osgeo.org/postgis/trunk/\">http://svn.osgeo.org/"
-"postgis/trunk/</ulink>からチェックアウトします。"
+"もしくは <ulink url=\"https://git-scm.com/\"> git </ulink>レポジトリ<ulink "
+"url=\"https://git.osgeo.org/gitea/postgis/postgis/\"> https://git.osgeo.org/"
+"gitea/postgis/postgis/ </ulink>からチェックアウトします。"
 
 #. Tag: programlisting
 #: installation.xml:108
 #, no-c-format
 msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis"
-msgstr ""
+msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis"
 
 #. Tag: para
 #: installation.xml:110
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Change into the newly created <varname>postgis</varname> directory to "
 "continue the installation."
-msgstr ""
-"新しく作られた<varname>postgis-&last_release_version;</varname>ディレクトトリ"
-"に移動して、インストールを続けます。"
+msgstr "新しく作られた<varname>postgis</varname>ディレクトトリに移動して、インストー"
+"ルを続けます。"
 
 #. Tag: title
 #: installation.xml:118
@@ -338,31 +340,31 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:163
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Proj reprojection library. Proj 4.9 or above is required. The Proj library "
 "is used to provide coordinate reprojection support within PostGIS. Proj is "
 "available for download from <ulink url=\"https://proj.org/\"> https://proj."
 "org/ </ulink> ."
 msgstr ""
-"投影変換ライブラリ Proj4 の 4.9.0版以上。地理座標系の改善の利点を得るには、"
-"Proj4 4.9以上が必要です。Proj4ライブラリは、PostGISの座標系投影変換機能に使わ"
-"れます。Proj4は、<ulink url=\"http://trac.osgeo.org/proj/\">http://trac."
-"osgeo.org/proj/</ulink>からダウンロードできます。"
+"投影変換ライブラリProj。Proj 4."
+"9以上が必要です。Projライブラリは、PostGISの座標系投影変換機能に使われます。"
+"Projは<ulink url=\"https://proj.org/\"> https://proj.org/ "
+"</ulink>からダウンロードできます。"
 
 #. Tag: para
 #: installation.xml:175
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "GEOS geometry library, version 3.6 or greater, but GEOS 3.9+ is required to "
 "take full advantage of all the new functions and features. GEOS is available "
 "for download from <ulink url=\"http://trac.osgeo.org/geos/\"> http://trac."
 "osgeo.org/geos/ </ulink>."
 msgstr ""
-"投影変換ライブラリ Proj4 の 4.9.0版以上。地理座標系の改善の利点を得るには、"
-"Proj4 4.9以上が必要です。Proj4ライブラリは、PostGISの座標系投影変換機能に使わ"
-"れます。Proj4は、<ulink url=\"http://trac.osgeo.org/proj/\">http://trac."
-"osgeo.org/proj/</ulink>からダウンロードできます。"
+"ジオメトリライブラリGEOS、3."
+"6版以降が必要ですが、新しい関数と機能の最大限に活用するためには3."
+"9以上をお勧めします。GEOSは<ulink url=\"http://trac.osgeo.org/geos/\"> "
+"http://trac.osgeo.org/geos/ </ulink>からダウンロード可能です。"
 
 #. Tag: para
 #: installation.xml:183
@@ -394,31 +396,27 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:198
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "GDAL, version 2+ is required 3+ is preferred. This is required for raster "
 "support. <ulink url=\"http://trac.osgeo.org/gdal/wiki/DownloadSource"
 "\">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>."
 msgstr ""
-"GDAL 1.8以上 (古い版では一部機能が働かなかったり挙動が異なるので1.9以上を強く"
-"推奨します)。ラスタ機能に必要で、<code>CREATE EXTENSION postgis</code>でのイ"
-"ンストールに必要となります。このため、PostgreSQL 9.1以上での使用では非常に推"
-"奨されます<ulink url=\"http://trac.osgeo.org/gdal/wiki/DownloadSource/"
-"\">http://trac.osgeo.org/gdal/wiki/DownloadSource/</ulink>からダウンロード可"
-"能です。"
+"GDAL、2以上が必要ですが3以上の方が良いです。ラスタ機能に必要です。<ulink url="
+"\"http://trac.osgeo.org/gdal/wiki/DownloadSource\">http://trac.osgeo.org/"
+"gdal/wiki/DownloadSource</ulink>。"
 
 #. Tag: para
 #: installation.xml:206
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <ulink url="
 "\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
 "postgis/ticket/4125</ulink>."
 msgstr ""
-"このパラメータは現在のところ壊れていて、PostgreSQLのインストール先にしかイン"
-"ストールされません。このバグのトラックについては<ulink url=\"http://trac."
-"osgeo.org/postgis/ticket/635\">http://trac.osgeo.org/postgis/ticket/635</"
-"ulink>をご覧ください。"
+"PostgreSQL+JITでコンパイルする場合には、LLVM 6版以上が必要です。<ulink url="
+"\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
+"postgis/ticket/4125</ulink>を参照して下さい。"
 
 #. Tag: emphasis
 #: installation.xml:215
@@ -428,14 +426,15 @@ msgstr "オプション"
 
 #. Tag: para
 #: installation.xml:220
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "GDAL (pseudo optional) only if you don't want raster you can leave it out. "
 "Also make sure to enable the drivers you want to use as described in <xref "
 "linkend=\"raster_configuration\"/>."
 msgstr ""
-"ドライバを有効にするには<xref linkend=\"install_short_version\"/>を参照してく"
-"ださい。"
+"GDAL (擬似的任意)。ラスタが必要ない場合に限り不要です。<xref linkend="
+"\"raster_configuration\""
+"/>の説明に従って使用したいドライバを有効にしてください。"
 
 #. Tag: para
 #: installation.xml:228
@@ -714,15 +713,15 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:431
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Proj is a reprojection library required by PostGIS. Use this parameter "
 "(<command>--with-projdir=/path/to/projdir</command>) to manually specify a "
 "particular Proj installation directory that PostGIS will build against."
 msgstr ""
-"Proj4はPostGISに必須の投影変換ライブラリです。PostGISのビルドに使う特定の"
-"Proj4のディレクトリを手動で指定する場合は、このパラメータ (<command>--with-"
-"projdir=/path/to/projdir</command>)を使います。"
+"ProjはPostGISに必須の投影変換ライブラリです。PostGISのビルドに使う特定のProj"
+"のインストールディレクトリを手動で指定する場合は、このパラメータ (<command"
+">--with-projdir=/path/to/projdir</command>)を使います。"
 
 #. Tag: para
 #: installation.xml:443
@@ -773,9 +772,9 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:485
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Compile without raster support."
-msgstr "ラスタ機能をインストールします。"
+msgstr "ラスタ機能なしでコンパイルします。"
 
 #. Tag: para
 #: installation.xml:493
