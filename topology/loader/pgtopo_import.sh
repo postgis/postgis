@@ -1,0 +1,314 @@
+#!/bin/sh
+
+#
+# PostGIS - Spatial Types for PostgreSQL
+# http://postgis.net
+#
+# Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+
+set -e
+
+usage() {
+  echo "Usage: $0 [ --skip-layers | --only-layers ] [ -f <dumpfile> ] <toponame>"
+}
+
+
+
+SKIP_LAYERS=no
+ONLY_LAYERS=no
+TOPONAME=
+DUMPFILE=-
+
+while test -n "$1"; do
+  if test "$1" = '--skip-layers'; then
+    SKIP_LAYERS=yes
+    shift
+  elif test "$1" = '--only-layers'; then
+    ONLY_LAYERS=yes
+    shift
+  elif test "$1" = '-f'; then
+    shift
+    DUMPFILE="$1"
+    shift
+  elif test -z "${TOPONAME}"; then
+    TOPONAME=$1
+    shift
+  else
+    echo "Unrecognized option $1" >&2
+    usage >&2
+    exit 1
+  fi
+done
+
+test -n "${TOPONAME}" || {
+  usage >&2
+  exit 1
+}
+
+if test "${SKIP_LAYERS}" = "yes" -a "${ONLY_LAYERS}" = "yes"; then
+  echo "--skip-layers conflicts with --only-layers" >&2
+  exit 1
+fi
+
+TMPDIR=${TMPDIR-/tmp}
+WORKDIR=${TMPDIR}/pgtopo_import_$$
+mkdir -p ${WORKDIR}
+
+cleanup() {
+  echo "Cleaning up" >&2
+  rm -rf ${WORKDIR}
+}
+
+trap 'cleanup' 0
+
+#################################################
+# Uncompress the dumpfile
+#################################################
+tar xzf ${DUMPFILE} -C ${WORKDIR} >&2
+DUMPDIR="${WORKDIR}/pgtopo_export"
+test -d "${DUMPDIR}" || {
+  echo "Missing 'pgtopo_export' dir in export file zip" >&2
+  exit 1
+}
+
+#################################################
+# Verify version
+#################################################
+
+DUMPVERSION=$(cat ${DUMPDIR}/pgtopo_dump_version)
+test ${DUMPVERSION} -eq '1' || {
+  echo "Unknown pgtopo dump version ${DUMPVERSION}" >&2
+  exit 1
+}
+
+#################################################
+# Start a transaction
+#################################################
+
+echo "BEGIN;"
+
+if test "$ONLY_LAYERS" = "no"; then # {
+  #################################################
+  # Create topology
+  #################################################
+
+  TOPO_SRID=$(cut -f1 ${DUMPDIR}/topology)
+  TOPO_PREC=$(cut -f2 ${DUMPDIR}/topology)
+  TOPO_HASZ=$(cut -f3 ${DUMPDIR}/topology)
+  cat<<EOF
+  SELECT topology.CreateTopology(
+    '${TOPONAME}',
+    '${TOPO_SRID}',
+    '${TOPO_PREC}',
+    '${TOPO_HASZ}'
+  );
+EOF
+
+  #################################################
+  # Load primitives data
+  #################################################
+
+  # Load faces
+  cat <<EOF
+  COPY "${TOPONAME}".face (
+    face_id,
+    mbr
+  ) FROM STDIN;
+EOF
+  cat ${DUMPDIR}/face
+  echo "\\."
+
+  # Load nodes
+  cat <<EOF
+  COPY "${TOPONAME}".node (
+    node_id,
+    geom,
+    containing_face
+  ) FROM STDIN;
+EOF
+  cat ${DUMPDIR}/node
+  echo "\\."
+
+  # Load edges
+  cat <<EOF
+  COPY "${TOPONAME}".edge_data (
+    edge_id,
+    start_node,
+    end_node,
+    next_left_edge,
+    abs_next_left_edge,
+    next_right_edge,
+    abs_next_right_edge,
+    left_face,
+    right_face,
+    geom
+  ) FROM STDIN;
+EOF
+  cat ${DUMPDIR}/edge_data
+  echo "\\."
+
+  #################################################
+  # Set id sequences of primitive tables
+  #################################################
+  cat <<EOF
+    SELECT pg_catalog.setval(
+      '${TOPONAME}.node_node_id_seq',
+      max(node_id),
+      true
+    )
+    FROM "${TOPONAME}".node;
+
+    SELECT pg_catalog.setval(
+      '${TOPONAME}.edge_data_edge_id_seq',
+      max(edge_id),
+      true
+    )
+    FROM "${TOPONAME}".edge_data;
+
+    SELECT pg_catalog.setval(
+      '${TOPONAME}.face_face_id_seq',
+      NULLIF(max(face_id), 0),
+      true
+    )
+    FROM "${TOPONAME}".face;
+EOF
+
+fi # } ONLY_LAYERS != "no"
+
+if test "$SKIP_LAYERS" = "no"; then # {
+
+  #################################################
+  # Create schemas of layer tables, if any
+  #################################################
+
+  for sch in $(cut -f2 ${DUMPDIR}/layers | sort -u); do
+    echo "CREATE SCHEMA IF NOT EXISTS \"${sch}\";"
+  done
+
+  #################################################
+  # Restore all layer tables
+  #################################################
+
+  if test -f ${DUMPDIR}/layers.dump; then
+    pg_restore -x -O -f - ${DUMPDIR}/layers.dump
+  fi
+
+  #####################################################
+  # Register topological layers
+  #####################################################
+
+  exec 3< ${DUMPDIR}/layers
+  while read -r line <&3; do
+    #echo "X LINE: ${line}" >&2
+    id=$(echo "${line}" | cut -f1)
+    schema=$(echo "${line}" | cut -f2)
+    table=$(echo "${line}" | cut -f3)
+    column=$(echo "${line}" | cut -f4)
+    typ=$(echo "${line}" | cut -f5)
+    level=$(echo "${line}" | cut -f6)
+    child=$(echo "${line}" | cut -f7)
+    #echo "X CHILD: ${child}" >&2
+    if test "${child}" = '\N'; then
+      child="null"
+    fi
+    #echo "CHILD: ${child}" >&2
+
+    cat <<EOF
+
+DO \$BODY\$
+DECLARE
+  t topology.topology;
+BEGIN
+  SELECT * FROM topology.topology
+  WHERE name = '${TOPONAME}'
+  INTO STRICT t;
+
+  -- Register layer in topology.layer table
+  INSERT INTO topology.layer VALUES (
+    t.id,
+    ${id},
+    '${schema}',
+    '${table}',
+    '${column}',
+    ${typ},
+    ${level},
+    ${child}
+  );
+
+  -- Create and initialize layer's topogeometry sequence
+  CREATE SEQUENCE "${TOPONAME}".topogeo_s_${id};
+  PERFORM pg_catalog.setval(
+    '${TOPONAME}.topogeo_s_${id}',
+    max(id("${column}")),
+    true
+  )
+  FROM "${schema}"."${table}";
+
+  -- drop-constraint (should we not restore them at all instead?)
+  ALTER TABLE "${schema}"."${table}"
+  DROP CONSTRAINT IF EXISTS "check_topogeom_${column}";
+
+  -- update topology_id
+  UPDATE "${schema}"."${table}"
+  SET "${column}".topology_id = t.id;
+
+  -- re-create constraint (skip this?)
+  EXECUTE format(
+    \$STATEMENT\$
+      ALTER TABLE "${schema}"."${table}"
+      ADD CONSTRAINT "check_topogeom_${column}"
+      CHECK (
+        topology_id("${column}") = %1\$L
+        AND
+        layer_id("${column}") = ${id}
+        AND
+        type("${column}") = ${typ}
+    )
+    \$STATEMENT\$,
+    t.id
+  );
+END;
+\$BODY\$ LANGUAGE 'plpgsql';
+
+EOF
+  done;
+
+  #################################################
+  # Update layer_id sequence
+  #################################################
+  cat <<EOF
+  SELECT pg_catalog.setval(
+    '${TOPONAME}.layer_id_seq',
+    max(l.layer_id),
+    true
+  )
+  FROM topology.layer l, topology.topology t
+  WHERE l.topology_id = t.id AND
+  t.name = '${TOPONAME}';
+EOF
+
+
+  #################################################
+  # Load relation (after creating layers)
+  #################################################
+
+  for tab in relation; do
+    cat <<EOF
+  COPY "${TOPONAME}".${tab} FROM STDIN;
+EOF
+    cat ${DUMPDIR}/${tab}
+    echo "\\."
+  done
+
+fi # } SKIP_LAYERS != "no"
+
+
+#################################################
+# Commit all
+#################################################
+
+echo "COMMIT;"

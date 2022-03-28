@@ -23,6 +23,7 @@ PostGIS 3.3.0dev
   - GH678, Enable Link-Time Optimizations by default if supported (Sergei Shoulbakov)
 
  * New features *
+  - #5116, Topology export/import scripts (Sandro Santilli)
   - ST_Letters creates geometries that look like letters (Paul Ramsey)
   - #5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)
   - postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version

@@ -1,0 +1,209 @@
+#!/bin/sh
+
+#
+# PostGIS - Spatial Types for PostgreSQL
+# http://postgis.net
+#
+# Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+
+set -e
+
+usage() {
+  echo "Usage: $0 [--skip-layers] [ -f <dumpfile> ] <dbname> <toponame>"
+}
+
+SKIP_LAYERS=no
+OUTFILE=-
+
+while test -n "$1"; do
+  if test "$1" = '--skip-layers'; then
+    SKIP_LAYERS=yes
+    shift
+  elif test "$1" = '-f'; then
+    shift
+    OUTFILE=$1
+    shift
+  elif test -z "${DBNAME}"; then
+    DBNAME=$1
+    shift
+  elif test -z "${TOPONAME}"; then
+    TOPONAME=$1
+    shift
+  else
+    echo "Unrecognized option $1" >&2
+    usage >&2
+    exit 1
+  fi
+done
+
+DUMPNAME="pgtopo_export"
+
+if test "${OUTFILE}" = "-"; then
+  exec 4>&2
+else
+  exec 4>&1
+fi
+
+test -n "${TOPONAME}" || {
+  usage >&2
+  exit 1
+}
+
+TMPDIR=${TMPDIR-/tmp}
+WORKDIR=${TMPDIR}/pgtopo_export_$$
+DUMPDIR=${WORKDIR}/${DUMPNAME}
+mkdir -p ${DUMPDIR}
+
+cleanup() {
+  echo "Cleaning up" >&4
+  rm -rf ${WORKDIR}
+}
+
+trap 'cleanup' 0
+
+export PGDATABASE=${DBNAME}
+
+#################################################
+# Write version info (of the output format)
+#################################################
+
+echo "1" > ${DUMPDIR}/pgtopo_dump_version || exit 1
+
+#####################
+# Save topology info
+#####################
+
+echo "Exporting topology config..." >&4
+cat <<EOF | psql --set ON_ERROR_STOP=1 -XtA > ${DUMPDIR}/topology || exit 1
+COPY (
+  SELECT
+    srid,
+    precision,
+    hasz
+  FROM
+    topology.topology
+  WHERE name = '${TOPONAME}'
+)
+TO STDOUT;
+EOF
+
+###################
+# Save layers info
+###################
+
+echo "Exporting layers info..." >&4
+cat <<EOF | psql --set ON_ERROR_STOP=1 -XtA > ${DUMPDIR}/layers || exit 1
+COPY (
+  SELECT
+    layer_id,
+    schema_name,
+    table_name,
+    feature_column,
+    feature_type,
+    level,
+    child_id
+  FROM
+    topology.layer l,
+    topology.topology t
+  WHERE
+    t.name = '${TOPONAME}'
+    AND l.topology_id = t.id
+)
+TO STDOUT;
+EOF
+
+##########################
+# Copy topology primitives
+##########################
+
+# Nodes
+# Workaround for https://trac.osgeo.org/postgis/ticket/5102
+echo "Exporting node..." >&4
+cat <<EOF | psql --set ON_ERROR_STOP=1 -XtA > ${DUMPDIR}/node || exit 1
+COPY ( SELECT
+  node_id,
+  geom,
+  containing_face
+FROM ${TOPONAME}.node ) TO STDOUT;
+EOF
+
+# Edges
+# FIXME: copy edge view https://trac.osgeo.org/postgis/ticket/5119
+echo "Exporting edge..." >&4
+cat <<EOF | psql --set ON_ERROR_STOP=1 -XtA > ${DUMPDIR}/edge_data || exit 1
+COPY ( SELECT
+  edge_id,
+  start_node,
+  end_node,
+  next_left_edge,
+  abs_next_left_edge,
+  next_right_edge,
+  abs_next_right_edge,
+  left_face,
+  right_face,
+  geom
+FROM ${TOPONAME}.edge_data ) TO STDOUT;
+EOF
+
+# Faces
+echo "Exporting face..." >&4
+  cat <<EOF | psql --set ON_ERROR_STOP=1 -XtA > ${DUMPDIR}/face || exit 1
+COPY ( SELECT
+  face_id,
+  mbr
+FROM ${TOPONAME}.face WHERE face_id != 0 ) TO STDOUT;
+EOF
+
+# Relation
+echo "Exporting relation..." >&4
+  cat <<EOF | psql --set ON_ERROR_STOP=1 -XtA > ${DUMPDIR}/relation || exit 1
+COPY ( SELECT * FROM ${TOPONAME}.relation ) TO STDOUT;
+EOF
+
+if test "$SKIP_LAYERS" = "no"; then # {
+  ###################
+  # Dump layer tables
+  ###################
+
+  DUMPFILE="${DUMPDIR}/layers.dump"
+  CMD="pg_dump -O -x -Fc"
+  CMD="${CMD} -f ${DUMPFILE}"
+
+  exec 3< ${DUMPDIR}/layers
+  numlayers=0
+  while read -r line <&3; do
+    id=$(echo "${line}" | cut -f1)
+    schema=$(echo "${line}" | cut -f2)
+    table=$(echo "${line}" | cut -f3)
+    layer="\"${schema}\".\"${table}\""
+    #echo "Layer: ${layer}"
+    CMD="${CMD} -t ${layer}"
+    numlayers=$((numlayers+1))
+  done;
+
+
+  if test ${numlayers} -gt 0; then
+    echo "Dumping ${numlayers} layers..." >&4
+    #echo "Running ${CMD}" >&4
+    ${CMD} || exit 1
+  fi
+fi # }
+
+
+(
+  if test "${OUTFILE}" != "-"; then
+    OFILE=$(cd $(dirname ${OUTFILE}) && pwd)/$(basename ${OUTFILE})
+  else
+    OFILE=-
+  fi
+
+  cd ${DUMPDIR}/.. || exit 1
+  echo "Archiving..." >&4
+  tar czf ${OFILE} ${DUMPNAME} || exit 1
+)
+
+exit 0
