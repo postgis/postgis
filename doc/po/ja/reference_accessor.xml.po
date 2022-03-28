@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-20 20:56+0000\n"
-"PO-Revision-Date: 2022-02-15 13:19+0000\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: reference_accessor.xml:4
@@ -354,7 +354,7 @@ msgstr ""
 #: reference_accessor.xml:89
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr "GEOSモジュールによって実現しています。"
+msgstr "GEOSモジュールで実現しています。"
 
 #. Tag: para
 #: reference_accessor.xml:91
@@ -1383,9 +1383,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:500
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 3.2.0"
-msgstr "Availability: 2.2.0"
+msgstr "Availability: 3.2.0"
 
 #. Tag: programlisting
 #: reference_accessor.xml:508
