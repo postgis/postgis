@@ -743,23 +743,22 @@ BEGIN
       schema,tbl,col;
   END IF;
 
-  -- Clean up the topology schema
+  -- Clean up the relation table if it exists
   BEGIN
-    -- Cleanup the relation table
     EXECUTE 'DELETE FROM ' || quote_ident(lyrinfo.toponame)
       || '.relation '
          ' WHERE '
          'layer_id = ' || lyrinfo.layer_id;
 
-    -- Drop the sequence for topogeoms in this layer
-    EXECUTE 'DROP SEQUENCE ' || quote_ident(lyrinfo.toponame)
-      || '.topogeo_s_' || lyrinfo.layer_id;
   EXCEPTION
     WHEN UNDEFINED_TABLE THEN
       RAISE NOTICE '%', SQLERRM;
     WHEN OTHERS THEN
       RAISE EXCEPTION 'Got % (%)', SQLERRM, SQLSTATE;
   END;
+
+  EXECUTE 'DROP SEQUENCE IF EXISTS ' || quote_ident(lyrinfo.toponame)
+    || '.topogeo_s_' || lyrinfo.layer_id;
 
   ok = false;
   FOR rec IN SELECT * FROM pg_namespace n, pg_class c, pg_attribute a
