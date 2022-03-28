@@ -749,28 +749,27 @@ BEGIN
       schema,tbl,col;
   END IF;
 
-  -- Clean up the topology schema
+  -- Cleanup the relation table (if it exists)
   BEGIN
-    -- Cleanup the relation table
     sql := format(
       'DELETE FROM %I.relation WHERE layer_id = $1',
       lyrinfo.toponame
     );
     EXECUTE sql USING lyrinfo.layer_id;
-
-    -- Drop the sequence for topogeoms in this layer
-    sql := format(
-      'DROP SEQUENCE %I.topogeo_s_%s',
-      lyrinfo.toponame,
-      lyrinfo.layer_id
-    );
-    EXECUTE sql;
   EXCEPTION
     WHEN UNDEFINED_TABLE THEN
       RAISE NOTICE '%', SQLERRM;
     WHEN OTHERS THEN
       RAISE EXCEPTION 'Got % (%)', SQLERRM, SQLSTATE;
   END;
+
+  -- Drop the sequence for topogeoms in this layer
+  sql := format(
+    'DROP SEQUENCE IF EXISTS %I.topogeo_s_%s',
+    lyrinfo.toponame,
+    lyrinfo.layer_id
+  );
+  EXECUTE sql;
 
   ok = false;
   FOR rec IN SELECT * FROM pg_namespace n, pg_class c, pg_attribute a
