@@ -2,20 +2,22 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2018
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-07-24 03:02+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"faq_rasterxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: faq_raster.xml:3
@@ -49,7 +51,7 @@ msgstr "この素晴らしいものを始めるための書籍やチュートリ
 
 #. Tag: para
 #: faq_raster.xml:22
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "There is a full length beginner tutorial <ulink url=\"http://trac.osgeo.org/"
 "postgis/wiki/WKTRasterTutorial01\"> Intersecting vector buffers with large "
@@ -70,17 +72,18 @@ msgstr ""
 "網羅的な初心者用チュートリアルは<ulink url=\"http://trac.osgeo.org/postgis/"
 "wiki/WKTRasterTutorial01\">Intersecting vector buffers with large raster "
 "coverage using PostGIS Raster</ulink>にあります。PostGISラスタに関するJorgeさ"
-"んの一連のブログに、ラスタデータのロード方法、Oracle GeoRasterのタスクとのク"
-"ロス比較があります。<ulink url=\"http://gis4free.wordpress.com/category/"
-"postgis-raster/\">Jorge's PostGIS Raster / Oracle GeoRaster Series</ulink>を"
-"ご覧ください。 <ulink url=\"https://www.manning.com/books/postgis-in-action-"
-"second-edition\">PostGIS in Action - Raster chapter</ulink>では、章全体(35"
-"ページ超)がPostGISラスタにささげられていて、フリーのコードとデータがついてい"
-"ます。 Manningからハードコピー本または電子書籍版を<ulink url=\"http://www."
-"postgis.us/page_buy_book\">Buy PostGIS in Action</ulink>から購入することがで"
-"きます (大量発注によるかなりの割引があります)。また、Amazon等書籍販売サイトで"
-"購入することも可能です。全てのハードコピー本は電子書籍版の無償ダウンロードの"
-"クーポンが付きます。 "
+"んの一連のブログに、ラスタデータのロード方法、Oracle "
+"GeoRasterのタスクとのクロス比較があります。<ulink url=\"http://gis4free."
+"wordpress.com/category/postgis-raster/\">Jorge's PostGIS Raster / Oracle "
+"GeoRaster Series</ulink>をご覧ください。 <ulink url=\"https://www.manning."
+"com/books/postgis-in-action-second-edition\">PostGIS in Action - Raster "
+"chapter</ulink>では、章全体 (35ページ超)がPostGISラスタにささげられていて、フ"
+"リーのコードとデータがついています。 "
+"Manningからハードコピー本または電子書籍版を<ulink url=\"http://www.postgis."
+"us/page_buy_book\">Buy PostGIS in Action</ulink>から購入することができます ("
+"大量発注によるかなりの割引があります)。また、Amazon等書籍販売サイトで購入する"
+"ことも可能です。全てのハードコピー本は電子書籍版の無償ダウンロードのクーポン"
+"が付きます。"
 
 #. Tag: para
 #: faq_raster.xml:29
@@ -113,6 +116,11 @@ msgid ""
 "will need to compile with GDAL otherwise postgis_raster extension will not "
 "be built."
 msgstr ""
+"PostGISラスタはPostGISのコードベースの一部であり、一般的にPostGISバイナリ配布"
+"では有効です。PostGIS 3.0からは、PostGISラスタは別のエクステンションとなって"
+"いて、データベースで有効にするには`CREATE EXTENSION postgis_raster;`を実行す"
+"る必要があります。PostGISをコンパイルする場合にはGDALを合わせてコンパイルする"
+"必要があり、そうでないならpostgis_rasterエクステンションはビルドされません。"
 
 #. Tag: para
 #: faq_raster.xml:41
@@ -122,6 +130,9 @@ msgid ""
 "binaries</ulink> for popular distributions of PostGIS that include raster "
 "support."
 msgstr ""
+"ラスタ機能を持つPostGISの一般的なディストリビューションについては<ulink url="
+"\"http://postgis.net/install/\">Download PostGIS "
+"binaries</ulink>を参照して下さい。"
 
 #. Tag: para
 #: faq_raster.xml:47
@@ -199,17 +210,22 @@ msgid ""
 "GDAL. You can get a list of these using the <xref linkend=\"RT_ST_GDALDrivers"
 "\"/> SQL function."
 msgstr ""
+"PostGISラスタには<xref linkend=\"RT_ST_AsGDALRaster\"/>関数があり、GDALによっ"
+"てSQLを使ってあらゆるラスタ書式に出力することができます。"
+"書式リストはSQL関数<xref linkend=\"RT_ST_GDALDrivers\""
+"/>を使うことで見ることができます。"
 
 #. Tag: para
 #: faq_raster.xml:75
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You can also use GDAL commandline tools to export PostGIS raster to other "
 "formats. GDAL has a PostGIS raster driver, but is only compiled in if you "
 "choose to compile with PostgreSQL support."
 msgstr ""
-"GDALにはPostGISラスタのドライバがあります。ただしPostgreSQLサポートを付けてコ"
-"ンパイルするようにした場合に限ります。"
+"PostGISラスタを他の書式にエクスポートするのに、GDALコマンドラインツールも使う"
+"ことができます。GDALはPostGISラスタのドライバを持っています。ただし、PostgreS"
+"QL対応でコンパイルするよう指定した場合に限ります。"
 
 #. Tag: para
 #: faq_raster.xml:76
@@ -348,15 +364,15 @@ msgstr ""
 
 #. Tag: para
 #: faq_raster.xml:102
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To see more examples and syntax refer to <ulink url=\"https://gdal.org/"
 "drivers/raster/postgisraster.html\">Reading Raster Data of PostGIS Raster "
 "section</ulink>"
 msgstr ""
-"より多くの例、構文については<ulink url=\"http://trac.osgeo.org/gdal/wiki/"
-"frmts_wtkraster.html#a3.2-Readingrasterdatafromthedatabase\">Reading Raster "
-"Data of PostGIS Raster section</ulink>を参照してください。"
+"より多くの例、構文については<ulink url=\"https://gdal.org/drivers/raster/"
+"postgisraster.html\">Reading Raster Data of PostGIS Raster "
+"section</ulink>を参照してください。"
 
 #. Tag: para
 #: faq_raster.xml:107
@@ -368,20 +384,22 @@ msgstr "GDALバイナリはPostGISラスタ機能付きでコンパイルされ�
 
 #. Tag: para
 #: faq_raster.xml:109
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Yes. Check out the page <ulink url=\"https://gdal.org/download.html#binaries"
 "\">GDAL Binaries</ulink> page. Any compiled with PostgreSQL support should "
 "have PostGIS Raster in them. GDAL tools is also generally included as part "
 "of <ulink url=\"https://qgis.org\">QGIS</ulink>."
 msgstr ""
-"はい。<ulink url=\"http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries"
-"\">GDAL Binaries</ulink>のページをご覧下さい。PostgreSQL対応でコンパイルされ"
-"ているものはPostGISラスタを持っています。"
+"はい。<ulink url=\"https://gdal.org/drivers/raster/postgisraster.html\""
+">Reading Raster Data of PostGIS Raster section</ulink>のページをご覧下さい。P"
+"ostgreSQL対応でコンパイルされているものはPostGISラスタを持っています。"
+"GDALツールは一般的に<ulink url=\"https://qgis.org\""
+">QGIS</ulink>に取り入れられています。"
 
 #. Tag: para
 #: faq_raster.xml:111
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you want to get the latest nightly build for Windows -- then check out "
 "the Tamas Szekeres nightly builds built with Visual Studio which contain "
@@ -390,13 +408,12 @@ msgid ""
 "<ulink url=\"www.gisinternals.com\">http://www.gisinternals.com</ulink>. "
 "Also available are VS project files."
 msgstr ""
-"PostGISラスタは多数の変更が行われているところです。Windows用の最新のナイトリ"
-"ビルドを得るには、Visual StudioでビルドしたTamas Szekeresナイトリビルドを見て"
-"みて下さい。GDALの開発途中版とPythonバインディングとMapServer実行ファイルと"
-"PostGISラスタドライバが組み込まれています。 SDKバッチファイルをクリックして、"
-"そこからコマンドを実行します。 <ulink url=\"www.gisinternals.com\">http://"
-"www.gisinternals.com</ulink>にあります。Visual Studioプロジェクトファイルもあ"
-"ります。"
+"Windows用の最新のナイトリビルドを得るには、Visual StudioでビルドしたTamas Sze"
+"keresナイトリビルドを見てみて下さい。GDALの開発途中版とPythonバインディングと"
+"MapServer実行ファイルとPostGISラスタドライバが組み込まれています。 "
+"SDKバッチファイルをクリックして、そこからコマンドを実行します。 <ulink url="
+"\"www.gisinternals.com\">http://www.gisinternals.com</ulink>にあります。"
+"Visual Studioプロジェクトファイルもあります。"
 
 #. Tag: para
 #: faq_raster.xml:120
@@ -406,19 +423,19 @@ msgstr "PostGISラスタデータを見るのに使うことができるツー�
 
 #. Tag: para
 #: faq_raster.xml:124
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You can use <ulink url=\"https://mapserver.org/\">MapServer</ulink> compiled "
 "with GDAL to view Raster data. QGIS supports viewing of PostGIS Raster if "
 "you have PostGIS raster driver installed."
 msgstr ""
-"GDAL 1.7以上とPostGISラスタドライバサポートとを付けてコンパイルしたMapServer"
-"でラスタデータの閲覧に使うことが可能です。QGISは、PostGISラスタドライバをイン"
-"ストールすると、PostGISラスタの閲覧が可能です。"
+"ラスタデータの表示にはGDAL付きでコンパイルした<ulink url=\"https://mapserver."
+"org/\">MapServer</ulink>を使うことができます。QGISは、PostGISラスタドライバを"
+"インストールしているならPostGISラスタの表示に対応しています。"
 
 #. Tag: para
 #: faq_raster.xml:126
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In theory any tool that renders data using GDAL can support PostGIS raster "
 "data or support it with fairly minimal effort. Again for Windows, Tamas' "
@@ -427,9 +444,9 @@ msgid ""
 "want the hassle of having to setup to compile your own."
 msgstr ""
 "理論上、GDALを使用してデータをレンダリングするツールはPostGISラスタに対応でき"
-"るか、ごく小さな労力で対応できます。ご自身でコンパイルする面倒を望まないな"
-"ら、Tamasさんのバイナ<ulink url=\"www.gisinternals.com\">http://www."
-"gisinternals.com</ulink>が良い選択です (訳注: Windows用バイナリです)。"
+"るか、ごく小さな労力で対応できます。Windows用については、ご自身でコンパイルす"
+"る面倒を望まないなら、Tamasさんのバイナリ<ulink url=\"www.gisinternals.com\""
+">http://www.gisinternals.com</ulink>が良い選択です。"
 
 #. Tag: para
 #: faq_raster.xml:133
@@ -440,19 +457,19 @@ msgstr ""
 
 #. Tag: para
 #: faq_raster.xml:137
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "First you need GDAL 1.7 or higher compiled with PostGIS raster support. GDAL "
 "3 or above is preferred since many issues have been fixed in 1.8 and more "
 "PostGIS raster issues fixed in trunk version."
 msgstr ""
-"まずGDAL 1.7以上をPostGISラスタサポート付きでコンパイルします。多数の問題が"
-"1.8で解消したので、GDAL 1.8以上が望ましいです。また、より多くのPostGISラスタ"
-"の問題は開発中の版で解消しています。"
+"まずGDAL 1.7以上をPostGISラスタサポート付きでコンパイルします。多数の問題が1."
+"8で解消したので、GDAL 3以上が望ましいです。また、より多くのPostGISラスタの問"
+"題は開発中の版で解消しています。"
 
 #. Tag: para
 #: faq_raster.xml:139
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You can much like you can with any other raster. Refer to <ulink url="
 "\"https://mapserver.org/input/raster.html\">MapServer Raster processing "
@@ -461,8 +478,8 @@ msgid ""
 msgstr ""
 "他のラスタでできることと同じことができます。MapServerラスタレイヤで使うことが"
 "できる様々な処理機能のリストを得るには<ulink url=\"http://mapserver.org/"
-"input/raster.html\">MapServer Raster processing options</ulink>を参照して下さ"
-"い。"
+"input/raster.html\">MapServer Raster processing "
+"options</ulink>を参照して下さい。"
 
 #. Tag: para
 #: faq_raster.xml:142
@@ -472,8 +489,8 @@ msgid ""
 "tile can have various standard database columns, you can segment it in your "
 "data source"
 msgstr ""
-"PostGISラスタデータを特に興味深くするのは、それぞれのタイルが様々な標準的な"
-"データベースカラムを持ち得るので、データソースで分割することができる点です。"
+"PostGISラスタデータを特に興味深くするのは、それぞれのタイルが様々な標準データ"
+"ベースカラムを持ち得るので、データソースで分割することができる点です。"
 
 #. Tag: para
 #: faq_raster.xml:144
