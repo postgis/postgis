@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Count only TopoGeometries belonging to the requested topology (Sandro Santilli)
  - Place the test utility interpreter directive on the first line (Jan Tojnar)
  - Use the SQL argument name k in the ST_ClusterKMeans synopsis (Dan Levy)
  - Fix the link to the geography performance article (Laurențiu Nicola)

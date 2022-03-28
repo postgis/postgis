@@ -152,13 +152,15 @@ SELECT count(*) FROM (
   SELECT DISTINCT id(%3$I)
   FROM %4$I.%5$I
   WHERE layer_id(%3$I) = %2$L
+    AND topology_id(%3$I) = %6$L
 ) as foo
             $$,
             atopology,
             rec.layer_id,
             rec.feature_column,
             rec.schema_name,
-            rec.table_name
+            rec.table_name,
+            var_topology_id
           );
           BEGIN
             RAISE DEBUG 'Executing %', sql;
