@@ -2,20 +2,22 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016-2017
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2021-11-30 08:28+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/faqxml/"
+"ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: faq.xml:3
@@ -101,9 +103,10 @@ msgid ""
 "and spatial_ref_sys.sql to get back all the 200 some-odd old functions we "
 "removed."
 msgstr ""
-" <varname>legacy.sql</varname>ファイルはpostgis.sqlのインストール先と同じフォ"
-"ルダにあります。postgis.sqlとspatial_ref_sys.sqlをインストールした後、この"
-"ファイルをインストールすると、削除した200余の関数を復帰させられます。"
+"<varname>legacy.sql</varname>ファイルはpostgis."
+"sqlのインストール先と同じフォルダにあります。postgis.sqlとspatial_ref_sys.sql"
+"をインストールした後、このファイルをインストールすると、削除した200余の関数を"
+"復帰させられます。"
 
 #. Tag: para
 #: faq.xml:35
@@ -149,7 +152,7 @@ msgstr ""
 #: faq.xml:42
 #, no-c-format
 msgid "BAD:"
-msgstr "悪い例"
+msgstr "悪い例を示します。"
 
 #. Tag: programlisting
 #: faq.xml:43
@@ -165,7 +168,7 @@ msgstr ""
 #: faq.xml:44
 #, no-c-format
 msgid "To GOOD:"
-msgstr "良い例"
+msgstr "良い例を示します。"
 
 #. Tag: programlisting
 #: faq.xml:45
@@ -298,9 +301,8 @@ msgstr ""
 msgid ""
 "PgAdmin doesn't show anything for large geometries. The best ways to verify "
 "you do have data in your geometry columns are?"
-msgstr ""
-"pgAdminは大きなジオメトリを表示しません。ジオメトリカラムがそうなっていないか"
-"を確かめる最善の方法は次の通りです。"
+msgstr "pgAdminは大きなジオメトリを表示しません。ジオメトリカラムがそうなっていないか"
+"を確かめる最善の方法はどのようになるでしょう?"
 
 #. Tag: programlisting
 #: faq.xml:85
@@ -321,9 +323,8 @@ msgid ""
 "geometry columns\n"
 "SELECT MAX(ST_NPoints(geom)) FROM sometable;"
 msgstr ""
-"-- ジオメトリがどれぐらい大きいかを調べるには\n"
-"-- ジオメトリカラムの中でジオメトリごとに、それが持つポイントの数を\n"
-"-- 尋ねるかたちのクエリを実行します\n"
+"-- ジオメトリがどれぐらい大きいかを調べるには、ジオメトリカラムで\n"
+"-- ジオメトリごとに保持するポイントの数を尋ねるクエリを実行します\n"
 "SELECT MAX(ST_NPoints(geom)) FROM sometable;"
 
 #. Tag: para
@@ -407,9 +408,9 @@ msgid ""
 "\"PostGIS_GeographyVSGeometry\"/> and <link linkend="
 "\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
 msgstr ""
-" 長い答: <xref linkend=\"PostGIS_GeographyVSGeometry\"/>と<link linkend="
-"\"PostGIS_TypeFunctionMatrix\">function type matrix</link>とを参照して下さ"
-"い。"
+"長い答: <xref linkend=\"PostGIS_GeographyVSGeometry\"/>と<link linkend="
+"\"PostGIS_TypeFunctionMatrix\">function type "
+"matrix</link>とを参照して下さい。"
 
 #. Tag: para
 #: faq.xml:133
@@ -421,9 +422,9 @@ msgid ""
 "fit in a hemisphere (like SQL Server 2008 has), speed etc?"
 msgstr ""
 "もっとジオグラフィについて聞きたいです。 たとえば、ジオグラフィカラムにデータ"
-"を入れて合理的な答えが得られる領域範囲はどれぐらいでしょうか、とか。極、全"
-"データが半球上になければならないのでしょうか(SQL Server 2008はそう)、速度等の"
-"制限はあるのでしょうか、とか。"
+"を入れて合理的な答えが得られる領域範囲はどれぐらいでしょうか、とか。極、全デ"
+"ータが半球上になければならないのでしょうか(SQL Server "
+"2008はそう)、速度等の制限はあるのでしょうか?"
 
 #. Tag: para
 #: faq.xml:137
@@ -462,9 +463,8 @@ msgstr ""
 msgid ""
 "For geometry: Connect to your database with <filename>psql</filename> and "
 "try the following SQL:"
-msgstr ""
-"ジオメトリについては、psqlでデータベースに接続して、次のSQLを試してみて下さ"
-"い。"
+msgstr "ジオメトリについては、<filename>psql</filename>でデータベースに接続して、次の"
+"SQLを試してみて下さい。"
 
 #. Tag: programlisting
 #: faq.xml:156
@@ -1003,11 +1003,12 @@ msgid ""
 "<emphasis>publish</emphasis> your source code, only that you share it with "
 "people you give binaries to."
 msgstr ""
-"PostGISソースコードに変更を加えて、変更したPostGISを配布したときだけは例外で"
-"す。この場合、変更したPostGISのコードを共有しなければなりません (PostGIS上で"
-"動作するアプリケーションのコードではありません)。この限られた場合でも、ソース"
-"コードはバイナリの配布相手にだけ配布します。GPLはソースコードの<emphasis>公開"
-"</emphasis>までは求めておらず、バイナリを配布した相手との共有を求めています。"
+"PostGISソースコードに変更を加えて、<emphasis>変更したPostGISを配布した</empha"
+"sis>ときだけは例外です。この場合、"
+"変更したPostGISのコードを共有しなければなりません (PostGIS上で動作するアプリ"
+"ケーションのコードではありません)。この限られた場合でも、ソースコードはバイナ"
+"リの配布相手にだけ配布します。GPLはソースコードの<emphasis>公開</emphasis>ま"
+"では求めておらず、バイナリを配布した相手との共有を求めています。"
 
 #. Tag: para
 #: faq.xml:385
