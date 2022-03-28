@@ -25,7 +25,9 @@ ALTER TABLE test.t ADD c TopoGeometry;
 SELECT E'--registered_layer_missing_topogeom--\n' || TopologySummary('test');
 INSERT INTO test.t(c) VALUES ( (1,2,1,1) );
 SELECT E'--registered_layer_missing_topogeom_in_proper_layer--\n' || TopologySummary('test');
-UPDATE test.t SET c.layer_id = 1 WHERE layer_id(c) = 2;
+UPDATE test.t SET c.layer_id = 1, c.topology_id = topology_id(c)+1 WHERE layer_id(c) = 2;
+SELECT E'--registered_layer_missing_topogeom_in_proper_topo--\n' || TopologySummary('test');
+UPDATE test.t SET c.topology_id = topology_id(c)-1 WHERE layer_id(c) = 1;
 SELECT E'--registered_layer--\n' || TopologySummary('test');
 -- TODO: test hierarchical
 DROP TABLE test.t;
