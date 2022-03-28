@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-03-19 09:12+0000\n"
+"PO-Revision-Date: 2022-03-28 21:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_tigergeocoderxml/ja/>\n"
@@ -2094,6 +2094,9 @@ msgid ""
 "when enabled, zcta5 data is loaded as a single table called zcta5_all as "
 "part of the nation script load."
 msgstr ""
+"Enhanced: 2.4.1 5桁郵便番号集計地域 (zcta5)のロードが修正されて、zcta5データ"
+"は、有効な時には、国データのロードの中でzcta5_allという単一テーブルとしてロー"
+"ドされるようになりました。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:589
@@ -2101,7 +2104,8 @@ msgstr ""
 msgid ""
 "If you want zip code 5 tabulation area (zcta5) to be included in your nation "
 "script load, do the following:"
-msgstr ""
+msgstr "5桁郵便番号集計地域を国データのロードに取り込みたい場合には、次のようにします"
+"。"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:589
@@ -2115,17 +2119,17 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:590
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you were running <varname>tiger_2010</varname> version and you want to "
 "reload as state with newer tiger data, you'll need to for the very first "
 "load generate and run drop statements <xref linkend="
 "\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
 msgstr ""
-"<varname>tiger_2010</varname>を実行してから<varname>tiger_2011</varname>の再"
-"ロードを行うには、このスクリプトを実行する前に、最初に、<xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\"/>によって、テーブル削除スクリプトを生"
-"成、実行する必要があります。"
+"<varname>tiger_2010</varname>を実行して、それより新しいTigerデータで州データ"
+"の再ロードを行うには、このスクリプトを実行する前に、最初に、<xref linkend="
+"\"Drop_Nation_Tables_Generate_Script\""
+"/>によって、テーブル削除スクリプトを生成、実行する必要があります。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:597
@@ -2153,9 +2157,9 @@ msgstr "SELECT loader_generate_nation_script('sh');"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:606
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
-msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
+msgstr ", <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:612
@@ -2342,14 +2346,15 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:681
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] "
 "[internal] [location] [stateAbbrev] [zip] [parsed] [zip4] "
 "[address_alphanumeric]"
 msgstr ""
 "(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] "
-"[internal] [location] [stateAbbrev] [zip]"
+"[internal] [location] [stateAbbrev] [zip] [parsed] [zip4] "
+"[address_alphanumeric]"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:682 extras_tigergeocoder.xml:774
@@ -2358,6 +2363,8 @@ msgid ""
 "Enhanced: 2.4.0 norm_addy object includes additional fields zip4 and "
 "address_alphanumeric."
 msgstr ""
+"Enhanced: 2.4.0 norm_addyオブジェクトには追加フィールドのzip4とaddress_alphan"
+"umericとが含まれます。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:685 extras_tigergeocoder.xml:777
@@ -2448,11 +2455,12 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:715 extras_tigergeocoder.xml:807
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: "
 "PostGIS 2.4.0."
-msgstr "<varname>zip</varname> varchar型 02109等の5桁の数字です。"
+msgstr "<varname>zip4</varname> 9桁郵便番号の後半4桁です。Availability: PostGIS 2.4."
+"0。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:718 extras_tigergeocoder.xml:810
@@ -2462,6 +2470,10 @@ msgid ""
 "alpha characters like 17R. Parsing of this is better using <xref linkend="
 "\"Pagc_Normalize_Address\"/> function. Availability: PostGIS 2.4.0."
 msgstr ""
+"<varname>address_alphanumeric</varname> "
+"17Rのような文字を含む完全なストリート番号。これの解析は<xref linkend="
+"\"Pagc_Normalize_Address\"/>関数を使うと良くなります。 Availability: PostGIS "
+"2.4.0。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:727
@@ -2517,12 +2529,7 @@ msgstr ", <xref linkend=\"Pprint_Addy\"/>"
 #: extras_tigergeocoder.xml:743
 #, no-c-format
 msgid "Pagc_Normalize_Address"
-msgstr ""
-"Pagc_Normalize_Address文字列のストリート住所を与えると、道路後置辞、前置辞、"
-"標準タイプ、番地、ストリート名等を複数フィールドに分解して持つ"
-"<varname>norm_addy</varname>複合型を返します。この関数は、tiger_geocoder同梱"
-"のルックアップテーブルだけを使います (Tigerデータは不要です)。住所標準化エク"
-"ステンションが必要です。"
+msgstr "Pagc_Normalize_Address"
 
 #. Tag: refpurpose
 #: extras_tigergeocoder.xml:745
@@ -2659,10 +2666,9 @@ msgid ""
 msgstr ""
 "バッチ呼び出しの例です。現在は、postgis_tiger_geocoderはaddress_standardizer"
 "を使用しているため、速度の問題があります。うまくいけば、今後解決されることで"
-"しょう。\n"
-"normaddyへのジオコーディングのバッチ処理で速度が必要な場合には、住所標準化エ"
-"クステンションのstandaridze_address関数を直接呼ぶことで回避できます。<xref "
-"linkend=\"Geocode\"/>で生成されたデータを使う<xref linkend="
+"しょう。normaddyへのジオコーディングのバッチ処理で速度が必要な場合には、住所"
+"標準化エクステンションのstandaridze_address関数を直接呼ぶことで回避できます。"
+"<xref linkend=\"Geocode\"/>で生成されたデータを使う<xref linkend="
 "\"Normalize_Address\"/>で行っていることと似ています。例を次に示します。"
 
 #. Tag: programlisting
@@ -2980,6 +2986,10 @@ msgid ""
 "loaded. Refer to <xref linkend=\"Loader_Generate_Nation_Script\"/> for "
 "details on loading zcta5 data."
 msgstr ""
+"Enhanced: 2.4.1 ZCTA5データセットを追加でロードする場合には、reverse_geocode"
+"関数は、特定の州データがロードされていなくても、州とZIPを解決することができま"
+"す。ZTCA5データのロードに関する詳細については<xref linkend="
+"\"Loader_Generate_Nation_Script\"/>を参照して下さい。"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:931
@@ -2990,9 +3000,10 @@ msgid ""
 "that although we don't have 3 streets, PostgreSQL will just return null for "
 "entries above our upper bound so safe to use. This includes street ranges"
 msgstr ""
-"二つの近いストリートの角となる点の例です。MIT (Massachusetts Ave, Cambridge, "
-"MA 02139 )に近い位置です。ストリートは三つはないですが、PostgreSQLは配列の範"
-"囲からはみ出してもNULLを返すので安全です。番地範囲を含んでいます。"
+"ストリートの角であって、かつ最も近くなる二つの点の例です。MIT (Massachusetts "
+"Ave, Cambridge, MA 02139 )に近い位置です。ストリートは三つはないですが、Postg"
+"reSQLは配列の範囲からはみ出してもNULLを返すので安全です。番地範囲を含んでいま"
+"す。"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:933
@@ -3129,11 +3140,13 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:947
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"Geocode\"/>, <xref linkend=\"Loader_Generate_Nation_Script"
 "\"/>"
-msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
+msgstr ""
+", <xref linkend=\"Geocode\"/>, <xref linkend=\"Loader_Generate_Nation_Script"
+"\"/>"
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:953
@@ -3165,8 +3178,8 @@ msgstr ""
 "<funcdef>text <function>Topology_Load_Tiger</function></funcdef> "
 "<paramdef><type>varchar </type> <parameter>topo_name</parameter></paramdef> "
 "<paramdef><type>varchar </type> <parameter>region_type</parameter></"
-"paramdef> <paramdef><type>varchar </type> <parameter>region_id</parameter></"
-"paramdef>"
+"paramdef> <paramdef><type>varchar </type> "
+"<parameter>region_id</parameter></paramdef>"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:973
