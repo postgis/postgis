@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Report missing TopoGeometries with an incorrect layer ID (Sandro Santilli)
  - Honor regression flags when running installcheck (Sandro Santilli)
  - Correct the ST_PointM signature in the manual (Martin Davis)
  - #5136, Stabilize raster polygonization tests on GDAL 3.2 (Regina Obe)
