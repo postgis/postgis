@@ -1,4 +1,4 @@
-PostGIS 3.0.6
+PostGIS 3.0.6dev
 2022/XX/XX
 
 * Bug Fixes and Enhancements *
@@ -6,6 +6,8 @@ PostGIS 3.0.6
            and note in docs, PostgreSQL > 13 major
            is not supported (Regina Obe)
   - #5115, Allow dropping topologies with pending constraints (Sandro Santilli)
+  - #5120, Fix not-null result from ST_EstimatedExtent against
+           truncated tables with spatial index (Sandro Santilli)
 
 PostGIS 3.0.5
 2022/02/02
