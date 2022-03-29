@@ -2316,7 +2316,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	char *tbl = NULL;
 	text *col = NULL;
 	char *nsp_tbl = NULL;
-	Oid tbl_oid, idx_oid;
+	Oid tbl_oid, idx_oid = 0;
 	ND_STATS *nd_stats;
 	GBOX *gbox = NULL;
 	bool only_parent = false;
@@ -2361,17 +2361,23 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-#if 1
 	/* Read the extent from the head of the spatial index, if there is one */
+#if 1
 	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
-	if (!idx_oid)
-		POSTGIS_DEBUGF(2, "index for \"%s.%s\" does not exist", tbl, text_to_cstring(col));
-	gbox = spatial_index_read_extent(idx_oid, key_type);
 #endif
-
-	/* Fall back to reading the stats, if no index answer */
-	if (!gbox)
+	if (idx_oid)
 	{
+		/* TODO: how about only_parent ? */
+		gbox = spatial_index_read_extent(idx_oid, key_type);
+		POSTGIS_DEBUGF(2, "index for \"%s.%s\" exists, reading gbox from there", tbl, text_to_cstring(col));
+		if ( ! gbox ) PG_RETURN_NULL();
+	}
+	else
+	{
+		POSTGIS_DEBUGF(2, "index for \"%s.%s\" does not exist", tbl, text_to_cstring(col));
+
+		/* Fall back to reading the stats, if no index is found */
+
 		/* Estimated extent only returns 2D bounds, so use mode 2 */
 		nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
 
