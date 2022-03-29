@@ -1,7 +1,9 @@
-PostGIS 3.1.6
+PostGIS 3.1.6dev
 2022/XX/XX
 
 * Bug Fixes
+  - #5120, Fix not-null result from ST_EstimatedExtent against
+           truncated tables with spatial index (Sandro Santilli)
   - #5076, Avoid log storm installed with pgaudit enabled (Paul Ramsey)
   - #5100, Stop using pg_atoi, removed in PG 15 (Laurenz Albe)
   - #5115, Allow dropping topologies with pending constraints (Sandro Santilli)
