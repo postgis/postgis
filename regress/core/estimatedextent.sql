@@ -179,6 +179,30 @@ from ( select ST_EstimatedExtent('public','c1','g', 't') as e offset 0 ) AS e;
 
 drop table p cascade;
 
+
+-- #5120
+BEGIN;
+CREATE TABLE t(g geometry);
+INSERT INTO t SELECT ST_MakePoint(n,n) FROM generate_series(0,10) n;
+ANALYZE t;
+SELECT '#5120.without_index', ST_AsText(
+	ST_BoundingDiagonal(ST_EstimatedExtent('t','g')),
+	0
+);
+CREATE INDEX ON t USING GIST (g);
+SELECT '#5120.with_index', ST_AsText(
+	ST_BoundingDiagonal(ST_EstimatedExtent('t','g')),
+	0
+);
+TRUNCATE t;
+--DELETE FROM t; -- requires VACUUM to clean index
+--VACUUM t; -- drops entries from index (cannot run within transaction)
+SELECT '#5120.without_data', ST_AsText(
+	ST_BoundingDiagonal(ST_EstimatedExtent('t','g')),
+	0
+);
+ROLLBACK;
+
 --
 -- Index assisted extent generation
 --
