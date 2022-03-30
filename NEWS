@@ -5,6 +5,8 @@ PostGIS 3.3.0dev
   - Drop support for PostgreSQL 9.6 and 10 (Regina Obe)
 
  * Enhancements *
+  - #2083, Add index on topology.relation(element_id) and use it from
+    RemEdge functions (Sandro Santilli)
   - #5118, Allow dropping topologies with missing topogeometry sequences
     (Sandro Santilli)
   - #5111, faster topology face MBR computation (Sandro Santilli)

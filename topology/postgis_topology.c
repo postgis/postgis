@@ -2194,7 +2194,8 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
   }
   appendStringInfo( sql, " FROM \"%s\".relation r %s topology.layer l WHERE "
                     "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
-                    "AND abs(r.element_id) = %" LWTFMT_ELEMID " AND r.element_type = 2",
+                    "AND r.element_id IN ( %" LWTFMT_ELEMID ", -%" LWTFMT_ELEMID
+                    ") AND r.element_type = 2",
                     topo->name, (new_edge2 == -1 ? "," : "USING" ), topo->id, split_edge );
   if ( new_edge2 != -1 )
   {

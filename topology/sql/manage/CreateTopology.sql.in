@@ -183,6 +183,12 @@ BEGIN
         element_type integer NOT NULL,
         UNIQUE(layer_id,topogeo_id,element_id,element_type)
       );
+      ------- Add index on element_type, element_id to speed up
+      ------- queries looking for TopoGeometries using specific
+      ------- primitive elements of the topology
+      ------- See http://trac.osgeo.org/postgis/ticket/2083
+      CREATE INDEX relation_element_id_idx
+        ON %1$I.relation (element_id);
 
       CREATE TRIGGER relation_integrity_checks
       BEFORE UPDATE OR INSERT ON %1$I.relation
