@@ -87,6 +87,12 @@ BEGIN
       COMMENT ON TABLE %1$I.node IS
       'Contains node topology primitives';
 
+      ------- Add index on containing_face, to speed up
+      ------- topology editing (adding/removing faces)
+      ------- See http://trac.osgeo.org/postgis/ticket/2861
+      CREATE INDEX node_containing_face_idx
+        ON %1$I.node (containing_face);
+
       --------------} END OF node CREATION
 
       --------------{ edge CREATION
