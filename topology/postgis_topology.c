@@ -2330,7 +2330,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
   }
   appendStringInfo( sql, " FROM \"%s\".relation r %s topology.layer l WHERE "
                     "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
-                    "AND abs(r.element_id) = %" LWTFMT_ELEMID " AND r.element_type = 3",
+                    "AND r.element_id = %" LWTFMT_ELEMID " AND r.element_type = 3",
                     topo->name, (new_face2 == -1 ? "," : "USING" ), topo->id, split_face );
   if ( new_face2 != -1 )
   {
@@ -2458,8 +2458,9 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
                     "topology.layer l INNER JOIN \"%s\".relation r "
                     "ON (l.layer_id = r.layer_id) WHERE l.level = 0 AND "
                     "l.feature_type IN ( 2, 4 ) AND l.topology_id = %d"
-                    " AND r.element_type = 2 AND abs(r.element_id) = %" LWTFMT_ELEMID,
-                    topo->name, topo->id, rem_edge );
+                    " AND r.element_type = 2 AND r.element_id IN (%"
+                    LWTFMT_ELEMID ", -%" LWTFMT_ELEMID ")",
+                    topo->name, topo->id, rem_edge, rem_edge );
 
   POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemEdge query 1: %s", sql->data);
 
@@ -2579,8 +2580,9 @@ cb_checkTopoGeomRemIsoEdge ( const LWT_BE_TOPOLOGY* topo,
                     "topology.layer l INNER JOIN \"%s\".relation r "
                     "ON (l.layer_id = r.layer_id) WHERE l.level = 0 AND "
                     "l.feature_type IN ( 2, 4 ) AND l.topology_id = %d"
-                    " AND r.element_type = 2 AND abs(r.element_id) = %" LWTFMT_ELEMID,
-                    topo->name, topo->id, rem_edge );
+                    " AND r.element_type = 2 AND r.element_id IN (%"
+                    LWTFMT_ELEMID ", %" LWTFMT_ELEMID ")",
+                    topo->name, topo->id, rem_edge, rem_edge );
 
   POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemIsoEdge query 1: %s", sql->data);
 
@@ -2641,12 +2643,18 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
                     " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
                     "WHERE l.level = 0 and l.feature_type in ( 2, 4 ) "
                     "AND l.topology_id = %d"
-                    " AND r.element_type = 2 AND abs(r.element_id) = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
+                    " AND r.element_type = 2 AND r.element_id = ANY (ARRAY[%"
+                    LWTFMT_ELEMID ", -%" LWTFMT_ELEMID ", %"
+                    LWTFMT_ELEMID ", -%" LWTFMT_ELEMID
                     "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
                     "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%"
                     LWTFMT_ELEMID ",%" LWTFMT_ELEMID "]::int4[] LIMIT 1",
                     topo->name, topo->id,
-                    edge1, edge2, edge1, edge2 );
+                    edge1, edge1,
+                    edge2, edge2,
+                    edge1,
+                    edge2
+  );
 
   POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemNode query 1: %s", sql->data);
 
@@ -2823,8 +2831,8 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
                       " AND l.feature_type IN (3,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
                       " AND r.element_type = 3"
-                      " AND abs(r.element_id) IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
-                      " AND abs(r.element_id) != %" LWTFMT_ELEMID,
+                      " AND r.element_id IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
+                      " AND r.element_id != %" LWTFMT_ELEMID,
                       topo->name, topo->id, face1, face2, newface );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query: %s", sql->data);
 
@@ -2848,7 +2856,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
                       " AND l.feature_type IN (3,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
                       " AND r.element_type = 3"
-                      " AND abs(r.element_id) = %" LWTFMT_ELEMID,
+                      " AND r.element_id = %" LWTFMT_ELEMID,
                       topo->name, topo->id, face1 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 1: %s", sql->data);
 
@@ -2911,9 +2919,14 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
                       " AND l.feature_type IN (2,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
                       " AND r.element_type = 2"
-                      " AND abs(r.element_id) IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
-                      " AND abs(r.element_id) != %" LWTFMT_ELEMID,
-                      topo->name, topo->id, edge1, edge2, newedge );
+                      " AND r.element_id IN ( %" LWTFMT_ELEMID ", -%" LWTFMT_ELEMID
+                      ", %" LWTFMT_ELEMID ", -%" LWTFMT_ELEMID ")"
+                      " AND r.element_id NOT IN  ( %" LWTFMT_ELEMID
+                      ", -%" LWTFMT_ELEMID ")",
+                      topo->name, topo->id,
+                      edge1, edge1,
+                      edge2, edge2,
+                      newedge, newedge );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query: %s", sql->data);
 
     spi_result = SPI_execute(sql->data, false, 0);
@@ -2936,8 +2949,9 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
                       " AND l.feature_type IN ( 2, 4 )"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
                       " AND r.element_type = 2"
-                      " AND abs(r.element_id) = %" LWTFMT_ELEMID,
-                      topo->name, topo->id, edge2 );
+                      " AND r.element_id in (%" LWTFMT_ELEMID
+                      ", -%" LWTFMT_ELEMID ")",
+                      topo->name, topo->id, edge2, edge2 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query 1: %s", sql->data);
 
     spi_result = SPI_execute(sql->data, false, 0);
@@ -2960,8 +2974,10 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
                       "WHERE l.level = 0 AND l.feature_type IN (2,4)"
                       " AND l.topology_id = %d AND l.layer_id = r.layer_id"
                       " AND r.element_type = 2"
-                      " AND abs(r.element_id) = %" LWTFMT_ELEMID,
-                      topo->name, newedge, edge1, topo->id, edge1 );
+                      " AND r.element_id IN ( %" LWTFMT_ELEMID
+                      ", -%" LWTFMT_ELEMID ")",
+                      topo->name, newedge, edge1,
+                      topo->id, edge1, edge1 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query 2: %s", sql->data);
 
     spi_result = SPI_execute(sql->data, false, 0);
