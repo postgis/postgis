@@ -175,6 +175,11 @@ BEGIN
         NEW.left_face, NEW.right_face, NEW.geom
       );
 
+      ------- Add support indices supporting edge linking foreign keys
+      ------- See https://trac.osgeo.org/postgis/ticket/2083#comment:20
+      CREATE INDEX ON %1$I.edge_data(abs_next_left_edge);
+      CREATE INDEX ON %1$I.edge_data(abs_next_right_edge);
+
       --------------} END OF edge CREATION
 
       --------------{ layer sequence

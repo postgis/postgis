@@ -7,8 +7,8 @@ PostGIS 3.3.0dev
  * Enhancements *
   - #2861, Add index on topology.node(containing_face) speeding up
     splitting and merging of faces (Sandro Santilli)
-  - #2083, Add index on topology.relation(element_id) speeding up
-    removal of edges and nodes (Sandro Santilli)
+  - #2083, Speed up ST_RemEdge topology functions adding index on
+    relation(element_id) and edge_data(abs_next*) (Sandro Santilli)
   - #5118, Allow dropping topologies with missing topogeometry sequences
     (Sandro Santilli)
   - #5111, faster topology face MBR computation (Sandro Santilli)
