@@ -133,7 +133,7 @@ BEGIN
 
         CONSTRAINT next_right_edge_exists
           FOREIGN KEY(abs_next_right_edge)
-          REFERENCES %1$I .edge_data(edge_id)
+          REFERENCES %1$I.edge_data(edge_id)
           DEFERRABLE INITIALLY DEFERRED
       );
 
