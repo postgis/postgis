@@ -1,25 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-04-02 01:21+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"using_postgis_queryxml/ja/>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: using_postgis_query.xml:3
 #, no-c-format
 msgid "Spatial Queries"
-msgstr ""
+msgstr "空間クエリ"
 
 #. Tag: para
 #: using_postgis_query.xml:5
@@ -31,12 +33,16 @@ msgid ""
 "functions are available, how to use them in queries, and ensuring that "
 "appropriate indexes are in place to provide good performance."
 msgstr ""
+"空間データベースの<emphasis>レゾンデートル</emphasis>は、通常ならデスクトップ"
+"GISの機能が必要なクエリをデータベース内で実行することです。PostGISを使うには"
+"、使用可能な空間関数は何かを知り、またクエリ内でどう使うかを知って、適切なイ"
+"ンデックスで能率を向上させることが求められます。"
 
 #. Tag: title
 #: using_postgis_query.xml:14
 #, no-c-format
 msgid "Determining Spatial Relationships"
-msgstr ""
+msgstr "空間関係の決定"
 
 #. Tag: para
 #: using_postgis_query.xml:16
@@ -45,12 +51,14 @@ msgid ""
 "Spatial relationships indicate how two geometries interact with one another. "
 "They are a fundamental capability for querying geometry."
 msgstr ""
+"空間関係は、二つのジオメトリについて、一方がもう一方にどのような相互関係にな"
+"っているかを示すものです。ジオメトリのクエリにおける基本的な機能です。"
 
 #. Tag: title
 #: using_postgis_query.xml:21
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Dimensionally Extended 9-Intersection Model"
-msgstr ""
+msgstr "Dimensionally Extended 9-Intersection Model"
 
 #. Tag: para
 #: using_postgis_query.xml:23
@@ -63,6 +71,11 @@ msgid ""
 "two geometries and to classify the relationship between the two geometries "
 "based on the entries in the resulting 'intersection' matrix.\""
 msgstr ""
+"<ulink url=\"http://www.opengeospatial.org/standards/sfs\">OpenGIS Simple "
+"Features Implementation Specification for SQL</ulink>によると「二つのジオメト"
+"リの比較の基本的なアプローチは、二つのジオメトリの内部、境界、外部のインタセ"
+"クションの比較と、『インタセクション行列』の要素に基づく2ジオメトリの関係の分"
+"類です」。"
 
 #. Tag: para
 #: using_postgis_query.xml:32
@@ -70,13 +83,14 @@ msgstr ""
 msgid ""
 "In the theory of point-set topology, the points in a geometry embedded in 2-"
 "dimensional space are categorized into three sets:"
-msgstr ""
+msgstr "点集合トポロジでは、2次元空間に埋め込まれたジオメトリの中にあるポイントは、次"
+"に示す三つの集合に分類されます。"
 
 #. Tag: glossterm
 #: using_postgis_query.xml:38
 #, no-c-format
 msgid "<glossterm>Boundary</glossterm>"
-msgstr ""
+msgstr "<glossterm>境界</glossterm>"
 
 #. Tag: para
 #: using_postgis_query.xml:41
