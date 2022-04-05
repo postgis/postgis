@@ -11,6 +11,8 @@
 # *
 # **********************************************************************
 
+CUSTOM_CC = @CC@
+
 # Separate PGXS-enabled Makefile for documentation installation (it is
 # not possible to merge into the main Makefile as has been done for
 # the shapefile loader)

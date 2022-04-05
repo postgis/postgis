@@ -51,6 +51,7 @@ OBJS = postgis_topology.o
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a
 # supplied with newer versions of PostGIS
+CUSTOM_CC = @CC@
 PG_CPPFLAGS += -I@top_builddir@/liblwgeom -I@top_srcdir@/liblwgeom -I@top_srcdir@/libpgcommon @CFLAGS@ @CPPFLAGS@ @PICFLAGS@
 SHLIB_LINK_F = @top_builddir@/libpgcommon/libpgcommon.a @top_builddir@/liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
 

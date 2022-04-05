@@ -230,6 +230,7 @@ EXTRA_CLEAN += $(wildcard expected/*--*.out)
 distclean: clean
 	rm Makefile
 
+CUSTOM_CC = @CC@
 PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)

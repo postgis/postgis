@@ -152,6 +152,7 @@ include @srcdir@/../upgrade-paths-rules.mk
 distclean: clean
 	rm -f Makefile
 
+CUSTOM_CC = @CC@
 PG_CONFIG := @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)

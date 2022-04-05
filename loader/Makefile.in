@@ -11,6 +11,8 @@
 # *
 # **********************************************************************
 
+CUSTOM_CC = @CC@
+
 # PGXS information
 #
 # Note that PGXS currently doesn't handle building FE executables, but we need
