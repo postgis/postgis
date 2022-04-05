@@ -1176,7 +1176,7 @@ else
     AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
 
-		if test "MINGWBUILD" = "0"; then
+		if test "$MINGWBUILD" = "0"; then
     	AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -flto], [_cv_flto], [-flto], [], [CFLAGS="$CFLAGS -flto"], [])
     	AC_LIBTOOL_LINKER_OPTION([if $compiler supports -flto], [_cv_flto], [[-flto]], [LDFLAGS="$LDFLAGS -flto"])
 		fi
