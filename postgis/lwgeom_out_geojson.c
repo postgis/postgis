@@ -337,7 +337,7 @@ json_categorize_type(Oid typoid,
 			break;
 	}
 }
-
+#endif
 /*
  * Turn a Datum into JSON text, appending the string to "result".
  *
@@ -736,4 +736,3 @@ postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid)
 
 	return buf;
 }
-#endif
