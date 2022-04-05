@@ -1176,8 +1176,10 @@ else
     AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
 
-    AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -flto], [_cv_flto], [-flto], [], [CFLAGS="$CFLAGS -flto"], [])
-    AC_LIBTOOL_LINKER_OPTION([if $compiler supports -flto], [_cv_flto], [[-flto]], [LDFLAGS="$LDFLAGS -flto"])
+		if test "MINGWBUILD" = "0"; then
+    	AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -flto], [_cv_flto], [-flto], [], [CFLAGS="$CFLAGS -flto"], [])
+    	AC_LIBTOOL_LINKER_OPTION([if $compiler supports -flto], [_cv_flto], [[-flto]], [LDFLAGS="$LDFLAGS -flto"])
+		fi
 fi
 
 AC_DEFINE([POSTGIS_DEBUG_LEVEL], [0], [Define debug level. Default 0])
