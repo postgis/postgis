@@ -1,0 +1,184 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2022 Sandro Santilli <strk@kbt.io>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+--  AddTopoGeometryColumn(toponame, schema, table, colum, type, [child])
+--
+--  Add a TopoGeometry column to a table, making it a topology layer.
+--  Returns created layer id.
+--
+-- Availability: 1.1.0
+--
+CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(toponame varchar, schema varchar, tbl varchar, col varchar, ltype varchar, child integer)
+  RETURNS integer
+AS
+$$
+DECLARE
+  intltype integer;
+  newlevel integer;
+  topoid integer;
+  rec RECORD;
+  newlayer_id integer;
+  query text;
+BEGIN
+
+  -- Get topology id
+  SELECT id INTO topoid
+    FROM topology.topology WHERE name = toponame;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Topology % does not exist', quote_literal(toponame);
+  END IF;
+
+  IF ltype ILIKE '%POINT%' OR ltype ILIKE 'PUNTAL' THEN
+    intltype = 1;
+  ELSIF ltype ILIKE '%LINE%' OR ltype ILIKE 'LINEAL' THEN
+    intltype = 2;
+  ELSIF ltype ILIKE '%POLYGON%' OR ltype ILIKE 'AREAL' THEN
+    intltype = 3;
+  ELSIF ltype ILIKE '%COLLECTION%' OR ltype ILIKE 'GEOMETRY' THEN
+    intltype = 4;
+  ELSE
+    RAISE EXCEPTION 'Layer type must be one of POINT,LINE,POLYGON,COLLECTION';
+  END IF;
+
+  --
+  -- Add new TopoGeometry column in schema.table
+  --
+  EXECUTE 'ALTER TABLE ' || quote_ident(schema)
+    || '.' || quote_ident(tbl)
+    || ' ADD COLUMN ' || quote_ident(col)
+    || ' topology.TopoGeometry;';
+
+  --
+  -- See if child id exists and extract its level
+  --
+  IF child IS NOT NULL THEN
+    SELECT level + 1 FROM topology.layer
+      WHERE layer_id = child
+        AND topology_id = topoid
+      INTO newlevel;
+    IF newlevel IS NULL THEN
+      RAISE EXCEPTION 'Child layer % does not exist in topology "%"', child, toponame;
+    END IF;
+  END IF;
+
+  --
+  -- Get new layer id from sequence
+  --
+  EXECUTE 'SELECT nextval(' ||
+    quote_literal(
+      quote_ident(toponame) || '.layer_id_seq'
+    ) || ')' INTO STRICT newlayer_id;
+
+  EXECUTE 'INSERT INTO '
+       'topology.layer(topology_id, '
+       'layer_id, level, child_id, schema_name, '
+       'table_name, feature_column, feature_type) '
+       'VALUES ('
+    || topoid || ','
+    || newlayer_id || ',' || COALESCE(newlevel, 0) || ','
+    || COALESCE(child::text, 'NULL') || ','
+    || quote_literal(schema) || ','
+    || quote_literal(tbl) || ','
+    || quote_literal(col) || ','
+    || intltype || ');';
+
+  --
+  -- Create a sequence for TopoGeometries in this new layer
+  --
+  EXECUTE 'CREATE SEQUENCE ' || quote_ident(toponame)
+    || '.topogeo_s_' || newlayer_id;
+
+  --
+  -- Add constraints on TopoGeom column
+  --
+  EXECUTE 'ALTER TABLE ' || quote_ident(schema)
+    || '.' || quote_ident(tbl)
+    || ' ADD CONSTRAINT "check_topogeom_' || col || '" CHECK ('
+       'topology_id(' || quote_ident(col) || ') = ' || topoid
+    || ' AND '
+       'layer_id(' || quote_ident(col) || ') = ' || newlayer_id
+    || ' AND '
+       'type(' || quote_ident(col) || ') = ' || intltype
+    || ');';
+
+  --
+  -- Add dependency of the feature column on the topology schema
+  --
+  query = 'INSERT INTO pg_catalog.pg_depend SELECT '
+       'fcat.oid, fobj.oid, fsub.attnum, tcat.oid, '
+       'tobj.oid, 0, ''n'' '
+       'FROM pg_class fcat, pg_namespace fnsp, '
+       ' pg_class fobj, pg_attribute fsub, '
+       ' pg_class tcat, pg_namespace tobj '
+       ' WHERE fcat.relname = ''pg_class'' '
+       ' AND fnsp.nspname = ' || quote_literal(schema)
+    || ' AND fobj.relnamespace = fnsp.oid '
+       ' AND fobj.relname = ' || quote_literal(tbl)
+    || ' AND fsub.attrelid = fobj.oid '
+       ' AND fsub.attname = ' || quote_literal(col)
+    || ' AND tcat.relname = ''pg_namespace'' '
+       ' AND tobj.nspname = ' || quote_literal(toponame);
+
+--
+-- The only reason to add this dependency is to avoid
+-- simple drop of a feature column. Still, drop cascade
+-- will remove both the feature column and the sequence
+-- corrupting the topology anyway ...
+--
+#if 0
+  --
+  -- Add dependency of the topogeom sequence on the feature column
+  -- This is a dirty hack ...
+  --
+  query = 'INSERT INTO pg_catalog.pg_depend SELECT '
+       'scat.oid, sobj.oid, 0, fcat.oid, '
+       'fobj.oid, fsub.attnum, ''n'' '
+       'FROM pg_class fcat, pg_namespace fnsp, '
+       ' pg_class fobj, pg_attribute fsub, '
+       ' pg_class scat, pg_class sobj, '
+       ' pg_namespace snsp '
+       ' WHERE fcat.relname = ''pg_class'' '
+       ' AND fnsp.nspname = ' || quote_literal(schema)
+    || ' AND fobj.relnamespace = fnsp.oid '
+       ' AND fobj.relname = ' || quote_literal(tbl)
+    || ' AND fsub.attrelid = fobj.oid '
+       ' AND fsub.attname = ' || quote_literal(col)
+    || ' AND scat.relname = ''pg_class'' '
+       ' AND snsp.nspname = ' || quote_literal(toponame)
+    || ' AND sobj.relnamespace = snsp.oid '
+       ' AND sobj.relname = '
+       ' ''topogeo_s_' || newlayer_id || ''' ';
+
+  RAISE NOTICE '%', query;
+  EXECUTE query;
+#endif
+
+  RETURN newlayer_id;
+END;
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--}{ AddTopoGeometryColumn
+
+CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar)
+  RETURNS integer
+AS
+$$
+  SELECT topology.AddTopoGeometryColumn($1, $2, $3, $4, $5, NULL);
+$$
+LANGUAGE 'sql' VOLATILE;
+
+--
+--} AddTopoGeometryColumn
+
