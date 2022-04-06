@@ -25,6 +25,8 @@
 --
 -- Type returned by ST_GetFaceEdges
 --
+-- Availability: 1.1.0
+--
 CREATE TYPE topology.GetFaceEdges_ReturnType AS (
   sequence integer,
   edge integer
@@ -36,7 +38,7 @@ CREATE TYPE topology.GetFaceEdges_ReturnType AS (
 --
 --  ST_GetFaceEdges(atopology, aface)
 --
---
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.ST_GetFaceEdges(toponame varchar, face_id integer)
   RETURNS SETOF topology.GetFaceEdges_ReturnType AS
@@ -146,6 +148,8 @@ CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface i
 --
 --  ST_AddIsoNode(atopology, aface, apoint)
 --
+-- Availability: 1.1.0
+--
 CREATE OR REPLACE FUNCTION topology.ST_AddIsoNode(atopology varchar, aface integer, apoint geometry)
   RETURNS INTEGER AS
 	'MODULE_PATHNAME','ST_AddIsoNode'
@@ -170,6 +174,8 @@ CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(atopology character varying, 
 --
 --  ST_RemoveIsoNode(atopology, anode)
 --
+-- Availability: 1.1.0
+--
 CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(atopology varchar, anode integer)
   RETURNS TEXT AS
 	'MODULE_PATHNAME','ST_RemoveIsoNode'
@@ -192,6 +198,8 @@ CREATE OR REPLACE FUNCTION topology.ST_RemIsoNode(varchar, integer)
 -- X.3.7
 --
 --  ST_RemoveIsoEdge(atopology, anedge)
+--
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(atopology varchar, anedge integer)
   RETURNS TEXT AS
@@ -240,6 +248,8 @@ CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(atopology varchar, anedge in
 --   as they stop being isolated nodes
 -- * Refuse to add a closed edge, as it would not be isolated
 --   (ie: would create a ring)
+--
+-- Availability: 1.1.0
 --
 -- }{
 --
@@ -342,6 +352,8 @@ CREATE OR REPLACE FUNCTION topology.ST_AddEdgeModFace(atopology varchar, anode i
 -- X.3.17
 --
 --  ST_InitTopoGeo(atopology)
+--
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.ST_InitTopoGeo(atopology varchar)
 RETURNS text

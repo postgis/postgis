@@ -322,7 +322,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
                 <para>Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
 
 			</refsection>
 
@@ -376,7 +376,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
                 This function should be USED WITH CAUTION, as it could destroy data you care about.  If the schema does not exist, it just removes reference entries the named schema.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
 			</refsection>
 
 
@@ -418,7 +418,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
                 of drop status.  NOTE: it first sets all values to NULL before dropping to bypass referential integrity checks.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
 			</refsection>
 
 
@@ -1019,7 +1019,8 @@ ANALYZE themselves, to use updated statistics.
                 <para>This is similar to the SQL/MM <xref linkend="ST_InitTopoGeo" /> but a bit more functional.  <varname>hasz</varname> defaults to false if not specified.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
+                <para>Enhanched: 2.0 added the signature accepting hasZ</para>
 			</refsection>
 
 
@@ -1114,7 +1115,7 @@ This example makes a backup of a topology called ma_topo
                 <para>This is an SQL-MM equivalent of CreateTopology but lacks the spatial reference and tolerance options of CreateTopology and outputs a text description of creation instead of topology id.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
                 <para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.17</para>
 			</refsection>
 
@@ -1390,7 +1391,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 <para>If <varname>aface</varname> is not null and the <varname>apoint</varname> is not within the face, then an exception is thrown.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
+                <para>Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X+1.3.1</para>
 			</refsection>
 
@@ -1437,7 +1438,7 @@ up to caller, see <xref linkend="Topology_StatsManagement"/>.
                 <para>If the <varname>anode</varname> and <varname>anothernode</varname> are not the start and end points of the <varname>alinestring</varname> then an exception is thrown.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
+                <para>Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.4</para>
 			</refsection>
 
@@ -2102,7 +2103,7 @@ SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
+                <para>Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X+1.3.3</para>
 			</refsection>
 
@@ -2149,7 +2150,7 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
+                <para>Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X+1.3.3</para>
 			</refsection>
 
@@ -2423,7 +2424,7 @@ ERROR:  Two or more faces found</programlisting>
 
                 <para>Returns the id of a topology in the topology.topology table given the name of the topology.</para>
               <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
 			</refsection>
 
 
@@ -2513,7 +2514,7 @@ ERROR:  Two or more faces found</programlisting>
 
                 <para>Returns the topology name (schema) of a topology from the topology.topology table given the topology id of the topology.</para>
               <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
 			</refsection>
 
 
@@ -2632,7 +2633,7 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
+                <para>Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.16</para>
 			</refsection>
 
@@ -3137,7 +3138,7 @@ faceid
 	and collections can be formed from a mixture of nodes, edges, and faces.</para>
                 <para>Omitting the array of components generates an empty TopoGeometry object.</para>
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
 			</refsection>
 
 
@@ -3639,7 +3640,7 @@ Refer to <xref linkend="toTopoGeom" />.
                 <para>tg_id is the topogeometry id of the topogeometry object in the topology in the layer denoted by <varname>layer_id</varname> in the topology.layer table.</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.1</para>
 			</refsection>
 
 

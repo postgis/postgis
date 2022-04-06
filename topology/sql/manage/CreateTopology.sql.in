@@ -21,6 +21,8 @@
 -- in the topology.topology relation, return it's numeric
 -- id.
 --
+-- Availability: 2.0.0
+--
 CREATE OR REPLACE FUNCTION topology.CreateTopology(atopology varchar, srid integer, prec float8, hasZ boolean)
 RETURNS integer
 AS
@@ -267,18 +269,21 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --{ CreateTopology wrappers for unspecified srid or precision or hasZ
 
 --  CreateTopology(name, SRID, precision) -- hasZ = false
+-- Availability: 1.1.0
 CREATE OR REPLACE FUNCTION topology.CreateTopology(toponame varchar, srid integer, prec float8)
 RETURNS integer AS
 ' SELECT topology.CreateTopology($1, $2, $3, false);'
 LANGUAGE 'sql' VOLATILE STRICT;
 
 --  CreateTopology(name, SRID) -- precision = 0
+-- Availability: 1.1.0
 CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar, integer)
 RETURNS integer AS
 ' SELECT topology.CreateTopology($1, $2, 0); '
 LANGUAGE 'sql' VOLATILE STRICT;
 
 --  CreateTopology(name) -- srid = unknown, precision = 0
+-- Availability: 1.1.0
 CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar)
 RETURNS integer AS
 $$ SELECT topology.CreateTopology($1, ST_SRID('POINT EMPTY'::geometry), 0); $$

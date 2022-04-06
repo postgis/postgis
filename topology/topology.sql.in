@@ -542,6 +542,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --  Add a TopoGeometry column to a table, making it a topology layer.
 --  Returns created layer id.
 --
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(toponame varchar, schema varchar, tbl varchar, col varchar, ltype varchar, child integer)
   RETURNS integer
@@ -712,6 +713,7 @@ LANGUAGE 'sql' VOLATILE;
 --  Drop a TopoGeometry column, unregister the associated layer,
 --  cleanup the relation table.
 --
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.DropTopoGeometryColumn(schema varchar, tbl varchar, col varchar)
   RETURNS text
@@ -886,6 +888,8 @@ LANGUAGE 'sql' VOLATILE;
 --
 -- Return a topology.TopoGeometry object.
 --
+-- Availability: 1.1.0
+--
 CREATE OR REPLACE FUNCTION topology.CreateTopoGeom(toponame varchar, tg_type integer, layer_id integer, tg_objs topology.TopoElementArray)
   RETURNS topology.TopoGeometry
 AS
@@ -1007,6 +1011,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --{
 -- CreateTopoGeom(topology_name, topogeom_type, layer_id) - creates the empty topogeom
+-- Availability: 1.1.0
 CREATE OR REPLACE FUNCTION topology.CreateTopoGeom(toponame varchar, tg_type integer, layer_id integer)
   RETURNS topology.TopoGeometry
 AS
@@ -1018,7 +1023,9 @@ $$ LANGUAGE 'sql' VOLATILE STRICT;
 --{
 -- GetTopologyName(topology_id)
 --
--- TODO: rewrite in SQL ?
+-- TODO: rewrite in SQL, as a wrapper around findTopology
+--
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.GetTopologyName(topoid integer)
   RETURNS varchar
@@ -1038,7 +1045,9 @@ LANGUAGE 'plpgsql' STABLE STRICT;
 --{
 -- GetTopologyId(toponame)
 --
--- TODO: rewrite in SQL ?
+-- TODO: rewrite in SQL, as a wrapper around findTopology
+--
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.GetTopologyId(toponame varchar)
   RETURNS integer
@@ -1075,6 +1084,8 @@ $$ LANGUAGE 'sql' STABLE STRICT;
 -- GetTopoGeomElementArray(TopoGeometry)
 --
 -- Returns a set of element_id,element_type
+--
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(toponame varchar, layer_id integer, tgid integer)
   RETURNS topology.TopoElementArray
@@ -1439,6 +1450,8 @@ CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(
 --  DropTopology(name)
 --
 -- Drops a topology schema getting rid of every dependent object.
+--
+-- Availability: 1.1.0
 --
 CREATE OR REPLACE FUNCTION topology.DropTopology(atopology varchar)
 RETURNS text
