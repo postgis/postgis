@@ -12,6 +12,7 @@ PostGIS 3.2.2dev
            at the getClosestEdge step (Sandro Santilli)
   - #5091, Fix --without-protobuf builds (Tobias Bussmann)
   - #5100, Don't use pg_atoi (removed in PG15) (Laurenz Albe)
+  - #5123, Support for PG15 (JSON funcs exposed) (Regina Obe)
 
 
 PostGIS 3.2.1

@@ -32,7 +32,7 @@
 #include "lwgeom_log.h"
 #include "liblwgeom.h"
 
-
+#if POSTGIS_PGSQL_VERSION < 150
 typedef enum					/* type categories for datum_to_json */
 {
 	JSONTYPE_NULL,				/* null, so we didn't bother to identify */
@@ -47,6 +47,7 @@ typedef enum					/* type categories for datum_to_json */
 	JSONTYPE_CAST,				/* something with an explicit cast to JSON */
 	JSONTYPE_OTHER				/* all else */
 } JsonTypeCategory;
+#endif
 
 static void array_dim_to_json(StringInfo result, int dim, int ndims, int *dims,
 				  Datum *vals, bool *nulls, int *valcount,
@@ -67,9 +68,11 @@ static void composite_to_json(Datum composite, StringInfo result,
 static void datum_to_json(Datum val, bool is_null, StringInfo result,
 						  JsonTypeCategory tcategory, Oid outfuncoid,
 						  bool key_scalar);
+#if POSTGIS_PGSQL_VERSION < 150
 static void json_categorize_type(Oid typoid,
 								 JsonTypeCategory *tcategory,
 								 Oid *outfuncoid);
+#endif
 static char * postgis_JsonEncodeDateTime(char *buf, Datum value, Oid typid);
 static int postgis_time2tm(TimeADT time, struct pg_tm *tm, fsec_t *fsec);
 static int postgis_timetz2tm(TimeTzADT *time, struct pg_tm *tm, fsec_t *fsec, int *tzp);
@@ -231,6 +234,7 @@ composite_to_geojson(FunctionCallInfo fcinfo,
  * json.c from the Postgres source tree as of 2019-03-28.
  * It would be far better if these were exported from the
  * backend so we could just use them here. Maybe someday.
+ * Sequel: 2022-04-04 That some day finally came in PG15
  */
 
 /*
@@ -240,6 +244,7 @@ composite_to_geojson(FunctionCallInfo fcinfo,
  * output function OID.  If the returned category is JSONTYPE_CAST, we
  * return the OID of the type->JSON cast function instead.
  */
+#if POSTGIS_PGSQL_VERSION < 150
 static void
 json_categorize_type(Oid typoid,
 					 JsonTypeCategory *tcategory,
@@ -332,7 +337,7 @@ json_categorize_type(Oid typoid,
 			break;
 	}
 }
-
+#endif
 /*
  * Turn a Datum into JSON text, appending the string to "result".
  *
