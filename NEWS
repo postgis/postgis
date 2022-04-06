@@ -21,6 +21,7 @@ PostGIS 3.3.0dev
   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
   - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
   - GH678, Enable Link-Time Optimizations by default if supported (Sergei Shoulbakov)
+  - GH676, faster ST_Clip (Aliaksandr Kalenik)
 
  * New features *
   - #5116, Topology export/import scripts (Sandro Santilli)

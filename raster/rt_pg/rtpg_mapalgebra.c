@@ -3004,23 +3004,6 @@ static void rtpg_clip_arg_destroy(rtpg_clip_arg arg) {
 	pfree(arg);
 }
 
-static int rtpg_clip_callback(
-	rt_iterator_arg arg, void *userarg,
-	double *value, int *nodata
-) {
-	*value = 0;
-	*nodata = 0;
-
-	/* either is NODATA, output is NODATA */
-	if (arg->nodata[0][0][0] || arg->nodata[1][0][0])
-		*nodata = 1;
-	/* set to value */
-	else
-		*value = arg->values[0][0][0];
-
-	return 1;
-}
-
 PG_FUNCTION_INFO_V1(RASTER_clip);
 Datum RASTER_clip(PG_FUNCTION_ARGS)
 {
@@ -3050,14 +3033,27 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	int k = 0;
 	rtpg_clip_arg arg = NULL;
 	LWGEOM *tmpgeom = NULL;
-	rt_iterator itrset;
 
-	rt_raster _raster = NULL;
-	rt_band band = NULL;
 	rt_pixtype pixtype;
 	int hasnodata;
 	double nodataval;
-	int noerr = 0;
+
+	double offset[4] = {0.};
+	int input_x = 0;
+	int input_y = 0;
+	int mask_x = 0;
+	int mask_y = 0;
+	int x = 0;
+	int y = 0;
+	int width = 0;
+	int height = 0;
+	int mask_width = 0;
+	int mask_height = 0;
+	rt_band input_band = NULL;
+	rt_band mask_band = NULL;
+	rt_band output_band = NULL;
+	double value;
+	int isnodata;
 
 	POSTGIS_RT_DEBUG(3, "Starting...");
 
@@ -3362,128 +3358,106 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	/* set SRID */
 	rt_raster_set_srid(arg->mask, srid);
 
-	/* run iterator */
+	mask_width = rt_raster_get_width(arg->mask);
+	mask_height = rt_raster_get_height(arg->mask);
 
-	/* init itrset */
-	itrset = palloc(sizeof(struct rt_iterator_t) * 2);
-	if (itrset == NULL) {
+	if (rt_raster_from_two_rasters(arg->raster, arg->mask, arg->extenttype, &rtn, offset) != ES_NONE) {
 		rtpg_clip_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_clip: Could not allocate memory for iterator arguments");
+		elog(ERROR, "RASTER_clip: Could not compute extent of rasters");
 		PG_RETURN_NULL();
 	}
 
-	/* one band at a time */
-	for (i = 0; i < arg->numbands; i++) {
-		POSTGIS_RT_DEBUGF(4, "band arg %d (nband, hasnodata, nodataval) = (%d, %d, %f)",
-			i, arg->band[i].nband, arg->band[i].hasnodata, arg->band[i].nodataval);
+	width = rt_raster_get_width(rtn);
+	height = rt_raster_get_height(rtn);
 
-		band = rt_raster_get_band(arg->raster, arg->band[i].nband);
+	mask_band = rt_raster_get_band(arg->mask, 0);
+
+	for (i = 0; i < arg->numbands; i++) {
+		input_band = rt_raster_get_band(arg->raster, arg->band[i].nband);
 
 		/* band metadata */
-		pixtype = rt_band_get_pixtype(band);
+		pixtype = rt_band_get_pixtype(input_band);
 
 		if (arg->band[i].hasnodata) {
 			hasnodata = 1;
 			nodataval = arg->band[i].nodataval;
 		}
-		else if (rt_band_get_hasnodata_flag(band)) {
+		else if (rt_band_get_hasnodata_flag(input_band)) {
 			hasnodata = 1;
-			rt_band_get_nodata(band, &nodataval);
+			rt_band_get_nodata(input_band, &nodataval);
 		}
 		else {
 			hasnodata = 0;
-			nodataval = rt_band_get_min_value(band);
+			nodataval = rt_band_get_min_value(input_band);
 		}
 
-		/* band is NODATA, create NODATA band and continue */
-		if (rt_band_get_isnodata_flag(band)) {
-			/* create raster */
-			if (rtn == NULL) {
-				noerr = rt_raster_from_two_rasters(arg->raster, arg->mask, arg->extenttype, &rtn, NULL);
-				if (noerr != ES_NONE) {
-					rtpg_clip_arg_destroy(arg);
-					PG_FREE_IF_COPY(pgraster, 0);
-					elog(ERROR, "RASTER_clip: Could not create output raster");
-					PG_RETURN_NULL();
-				}
-			}
-
-			/* create NODATA band */
-			if (rt_raster_generate_new_band(rtn, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
-				rt_raster_destroy(rtn);
-				rtpg_clip_arg_destroy(arg);
-				PG_FREE_IF_COPY(pgraster, 0);
-				elog(ERROR, "RASTER_clip: Could not add NODATA band to output raster");
-				PG_RETURN_NULL();
-			}
-
-			continue;
-		}
-
-		/* raster */
-		itrset[0].raster = arg->raster;
-		itrset[0].nband = arg->band[i].nband;
-		itrset[0].nbnodata = 1;
-
-		/* mask */
-		itrset[1].raster = arg->mask;
-		itrset[1].nband = 0;
-		itrset[1].nbnodata = 1;
-
-		/* pass to iterator */
-		noerr = rt_raster_iterator(
-			itrset, 2,
-			arg->extenttype, NULL,
-			pixtype,
-			hasnodata, nodataval,
-			0, 0,
-			NULL,
-			NULL,
-			rtpg_clip_callback,
-			&_raster
-		);
-
-		if (noerr != ES_NONE) {
-			pfree(itrset);
+		if (rt_raster_generate_new_band(rtn, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
 			rtpg_clip_arg_destroy(arg);
-			if (rtn != NULL) rt_raster_destroy(rtn);
 			PG_FREE_IF_COPY(pgraster, 0);
-			elog(ERROR, "RASTER_clip: Could not run raster iterator function");
+			elog(ERROR, "RASTER_clip: Could not add new band in output raster");
 			PG_RETURN_NULL();
 		}
 
-		/* new raster */
-		if (rtn == NULL)
-			rtn = _raster;
-		/* copy band */
-		else {
-			band = rt_raster_get_band(_raster, 0);
-			if (band == NULL) {
-				pfree(itrset);
-				rtpg_clip_arg_destroy(arg);
-				rt_raster_destroy(_raster);
-				rt_raster_destroy(rtn);
-				PG_FREE_IF_COPY(pgraster, 0);
-				elog(NOTICE, "RASTER_clip: Could not get band from working raster");
-				PG_RETURN_NULL();
-			}
+		if (rt_band_get_isnodata_flag(input_band)) {
+			continue;
+		}
 
-			if (rt_raster_add_band(rtn, band, i) < 0) {
-				pfree(itrset);
-				rtpg_clip_arg_destroy(arg);
-				rt_raster_destroy(_raster);
-				rt_raster_destroy(rtn);
-				PG_FREE_IF_COPY(pgraster, 0);
-				elog(ERROR, "RASTER_clip: Could not add new band to output raster");
-				PG_RETURN_NULL();
-			}
+		output_band = rt_raster_get_band(rtn, arg->band[i].nband);
 
-			rt_raster_destroy(_raster);
+		if (!mask_band) {
+			continue;
+		}
+
+		for (y = 0; y < height; y++) {
+			for (x = 0; x < width; x++) {
+				mask_x = x - (int)offset[2];
+				mask_y = y - (int)offset[3];
+
+				if (!(
+					mask_x >= 0 &&
+					mask_x < mask_width &&
+					mask_y >= 0 &&
+					mask_y < mask_height
+				)) {
+					continue;
+				}
+
+				if (rt_band_get_pixel(mask_band, mask_x, mask_y, &value, &isnodata) != ES_NONE) {
+					rtpg_clip_arg_destroy(arg);
+					PG_FREE_IF_COPY(pgraster, 0);
+					elog(ERROR, "RASTER_clip: Could not get pixel value");
+					PG_RETURN_NULL();
+				}
+
+				if (isnodata) {
+					continue;
+				}
+
+				input_x = x - (int)offset[0];
+				input_y = y - (int)offset[1];
+
+				if (rt_band_get_pixel(input_band, input_x, input_y, &value, &isnodata) != ES_NONE) {
+					rtpg_clip_arg_destroy(arg);
+					PG_FREE_IF_COPY(pgraster, 0);
+					elog(ERROR, "RASTER_clip: Could not get pixel value");
+					PG_RETURN_NULL();
+				}
+
+				if (isnodata) {
+					continue;
+				}
+
+				if (rt_band_set_pixel(output_band, x, y, value, NULL)) {
+					rtpg_clip_arg_destroy(arg);
+					PG_FREE_IF_COPY(pgraster, 0);
+					elog(ERROR, "RASTER_clip: Could not set pixel value");
+					PG_RETURN_NULL();
+				}
+			}
 		}
 	}
 
-	pfree(itrset);
 	rtpg_clip_arg_destroy(arg);
 	PG_FREE_IF_COPY(pgraster, 0);
 
