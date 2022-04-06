@@ -924,6 +924,72 @@ SELECT name(findTopology('features.land_parcels', 'feature'));
 </programlisting>
 			</refsection>
 			<!-- Optionally add a "See Also" section -->
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="FindLayer"/></para>
+			</refsection>
+		</refentry>
+
+		<refentry id="FindLayer">
+			<refnamediv>
+				<refname>FindLayer</refname>
+
+				<refpurpose>Returns a topology.layer record by different means.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+                        <funcdef>topology.layer <function>FindLayer</function></funcdef>
+                        <paramdef><type>TopoGeometry</type> <parameter>tg</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>topology.layer <function>FindLayer</function></funcdef>
+                        <paramdef><type>regclass</type> <parameter>layer_table</parameter></paramdef>
+                        <paramdef><type>name</type> <parameter>feature_column</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>topology.layer <function>FindLayer</function></funcdef>
+                        <paramdef><type>name</type> <parameter>schema_name</parameter></paramdef>
+                        <paramdef><type>name</type> <parameter>table_name</parameter></paramdef>
+                        <paramdef><type>name</type> <parameter>feature_column</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+                        <funcdef>topology.layer <function>FindLayer</function></funcdef>
+                        <paramdef><type>integer</type> <parameter>topology_id</parameter></paramdef>
+                        <paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Takes a layer identifier or the identifier of
+a topology-related object and returns a topology.layer record.</para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 3.2.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+<programlisting>
+SELECT layer_id(findLayer('features.land_parcels', 'feature'));
+ layer_id
+----------
+        1
+(1 row)
+</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="FindTopology"/></para>
+			</refsection>
 		</refentry>
 	</sect1>
 
