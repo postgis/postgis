@@ -1818,7 +1818,7 @@ Returns the identifier of the newly added node.
 		</para>
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
+                <para>Availability: 1.1 </para>
                 <para>Changed: 2.0 - In prior versions, this was misnamed ST_ModEdgesSplit</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
 			</refsection>
@@ -2046,7 +2046,7 @@ Updates all existing joined edges and relationships accordingly.
 
 
                 <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
+                <para>Availability: 1.1 </para>
 	<para>&sqlmm_compliant; SQL-MM: Topo-Net Routines:  X.3.8</para>
 			</refsection>
 

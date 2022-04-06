@@ -216,6 +216,8 @@ CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(atopology varchar, anedge i
 -- Not in the specs:
 -- * Update references in the Relation table.
 --
+-- Availability: 1.1.0
+--
 CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(atopology varchar, anedge integer, apoint geometry)
   RETURNS INTEGER AS
   'MODULE_PATHNAME','ST_NewEdgesSplit'
@@ -230,6 +232,9 @@ CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(atopology varchar, anedge i
 --
 -- Not in the specs:
 -- * Update references in the Relation table.
+--
+-- Availability: 2.0.0
+-- Replaces ST_ModEdgesSplit(varchar, integer, geometry) deprecated in 2.0.0
 --
 CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(atopology varchar, anedge integer, apoint geometry)
   RETURNS INTEGER AS
