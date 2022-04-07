@@ -5,6 +5,7 @@ PostGIS 3.3.0dev
   - Drop support for PostgreSQL 9.6 and 10 (Regina Obe)
 
  * Enhancements *
+  - #5124, GRANT USAGE on topology schema to PUBLIC (Sandro Santilli)
   - #2861, Add index on topology.node(containing_face) speeding up
     splitting and merging of faces (Sandro Santilli)
   - #2083, Speed up ST_RemEdge topology functions adding index on

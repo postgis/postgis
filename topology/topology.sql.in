@@ -1430,5 +1430,7 @@ SELECT topology.AddToSearchPath('topology');
 -- See https://trac.osgeo.org/postgis/ticket/4575
 GRANT SELECT ON topology.topology TO PUBLIC;
 GRANT SELECT ON topology.layer TO PUBLIC;
+-- See https://trac.osgeo.org/postgis/ticket/5124
+GRANT USAGE ON SCHEMA topology TO PUBLIC;
 
 COMMIT;
