@@ -2,6 +2,7 @@ PostGIS 3.2.2dev
 2022/MM/DD
 
 * Bug Fixes *
+  - #5124, GRANT USAGE on topology schema to PUBLIC (Sandro Santilli)
   - #5120, Fix not-null result from ST_EstimatedExtent against
            truncated tables with spatial index (Sandro Santilli)
   - #5115, Allow dropping topologies with pending constraints
@@ -32,10 +33,9 @@ PostGIS 3.2.1
   - #5090, #5091 configure --with-protobuf-lib / --with-protobufdir
            , --without-protobuf broken (Tobias Bussmann)
 
-
-
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
+
 This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher
 , and Proj 4.9+.
 Additional features are enabled if you are running GEOS 3.9+
