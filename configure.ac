@@ -1166,6 +1166,18 @@ dnl
 AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug], [Enable debugging code and flags]),
 	[ENABLE_DEBUG=1], [ENABLE_DEBUG=0])
 
+dnl Allow the developer to turn on link time optimization is supported by compiler
+dnl with --enable-lto (for non-debug build)
+AC_ARG_ENABLE(
+    [lto],
+    AS_HELP_STRING([--enable-lto], [enable link time optimization if supported by compiler (for non-debug build)]),
+    [case "${enableval}" in
+        yes) ENABLE_LTO=1 ;;
+        no)  ENABLE_LTO=0 ;;
+        *) AC_MSG_ERROR([bad value "${enableval}" for --enable-lto]) ;;
+    esac],
+    [ENABLE_LTO=0])
+
 dnl Add -Wall to CFLAGS
 _LT_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [CFLAGS="$CFLAGS -Wall"], [])
 
@@ -1176,10 +1188,10 @@ else
     AC_DEFINE([PARANOIA_LEVEL], [0], [Disable use of memory checks])
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
 
-		if test "$MINGWBUILD" = "0"; then
-    	AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -flto], [_cv_flto], [-flto], [], [CFLAGS="$CFLAGS -flto"], [])
-    	AC_LIBTOOL_LINKER_OPTION([if $compiler supports -flto], [_cv_flto], [[-flto]], [LDFLAGS="$LDFLAGS -flto"])
-		fi
+    if test $ENABLE_LTO -eq 1; then
+        AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -flto], [_cv_flto], [-flto], [], [CFLAGS="$CFLAGS -flto"], [])
+        AC_LIBTOOL_LINKER_OPTION([if $compiler supports -flto], [_cv_flto], [[-flto]], [LDFLAGS="$LDFLAGS -flto"])
+    fi
 fi
 
 AC_DEFINE([POSTGIS_DEBUG_LEVEL], [0], [Define debug level. Default 0])
