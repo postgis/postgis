@@ -21,7 +21,7 @@ ERROR:  A Layer of type 3 cannot contain a TopoGeometry of type 2
 ERROR:  A TopoGeometry of type 3 cannot contain topology elements of type 2
 A1|MULTIPOLYGON(((10 0,0 0,5 5,10 0)))
 l4|4
-MP|MULTIPOINT(0 0)
+MP|MULTIPOINT((0 0))
 ML|MULTILINESTRING((0 0,10 0))
 MA|MULTIPOLYGON(((10 0,0 0,5 5,10 0)))
 MM|GEOMETRYCOLLECTION(POLYGON((10 0,0 0,5 5,10 0)),LINESTRING(0 0,10 0),POINT(0 0))
