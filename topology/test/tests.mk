@@ -18,9 +18,9 @@ override RUNTESTFLAGS_INTERNAL := \
   --after-upgrade-script $(topsrcdir)/topology/test/regress/hooks/hook-after-upgrade-topology.sql
 
 TESTS += \
-  $(topsrcdir)/topology/test/regress/addedge.sql \
+	$(topsrcdir)/topology/test/regress/addedge.sql \
 	$(topsrcdir)/topology/test/regress/addface2.5d.sql \
-  $(topsrcdir)/topology/test/regress/addface.sql \
+	$(topsrcdir)/topology/test/regress/addface.sql \
 	$(topsrcdir)/topology/test/regress/addnode.sql \
 	$(topsrcdir)/topology/test/regress/addtopogeometrycolumn.sql \
 	$(topsrcdir)/topology/test/regress/cleartopogeom.sql \

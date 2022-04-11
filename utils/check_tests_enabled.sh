@@ -21,17 +21,24 @@ check_enabled() {
   suffix=$2
   bd=`dirname ${mk}`/${suffix}
 
-  #echo "MK file: ${mk}"
+  #cho "MK file: ${mk}"
   #echo "Suffix: ${suffix}"
   #echo "Basedir: ${bd}"
 
   grep 'topsrcdir)' ${mk} |
       sed 's|.*topsrcdir)/||;s/ .*$//' |
       sed 's|\\||' |
-      sed 's|\.sql\>||' > ${TMPDIR}/enabled_tests
+      sed 's/\.sql$//' > ${TMPDIR}/enabled_tests
+
+  #cat ${TMPDIR}/enabled_tests
 
   find ${bd} -name '*.sql' |
+    grep -v '\-post.sql' | grep -v '\-pre.sql' |
+    sed 's|\.select.sql$||' |
+    sed 's|//|/|' |
     sed 's|\.sql$||' > ${TMPDIR}/available_tests
+
+  #cat ${TMPDIR}/available_tests
 
   MISSING=`grep -vf ${TMPDIR}/enabled_tests ${TMPDIR}/available_tests`
   if test -n "${MISSING}"; then
@@ -69,7 +76,7 @@ if [ -z "${RD}" ]; then
 fi
 
 cd ${RD}
-check_enabled topology/test/tests.mk regress &&
+check_enabled topology/test/tests.mk regress #&&
 check_enabled regress/loader/tests.mk &&
 check_enabled regress/dumper/tests.mk &&
 check_enabled sfcgal/regress/tests.mk &&
