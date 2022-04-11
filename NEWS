@@ -20,7 +20,7 @@ PostGIS 3.3.0dev
   - GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)
   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
   - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
-  - #4574, GH678, #5121 Enable Link-Time Optimizations using --with-lto config (Sergei Shoulbakov)
+  - #4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)
   - GH676, faster ST_Clip (Aliaksandr Kalenik)
 
  * New features *
