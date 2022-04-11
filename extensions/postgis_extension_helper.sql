@@ -119,8 +119,8 @@ BEGIN
 			WHERE datname = current_database()
 		) and setrole = 0
 	)
-	SELECT regexp_replace(c, '^search_path=', '')
-	FROM settings WHERE c like 'search_path=%'
+	SELECT regexp_replace(config, '^search_path=', '')
+	FROM settings WHERE config like 'search_path=%'
 	INTO var_cur_search_path;
 
 	RAISE NOTICE 'cur_search_path from pg_db_role_setting is %', var_cur_search_path;
