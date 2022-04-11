@@ -609,8 +609,8 @@ aline                            | null_return
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');
-SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326);</programlisting>
+		<programlisting>SELECT ST_MPointFromText('MULTIPOINT((1 2),(3 4))');
+SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 42.1223))', 4326);</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
