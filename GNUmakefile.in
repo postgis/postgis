@@ -202,6 +202,7 @@ topsrcdir = $(top_srcdir)
 include $(top_builddir)/regress/core/tests.mk
 include $(top_srcdir)/regress/loader/tests.mk
 include $(top_srcdir)/regress/dumper/tests.mk
+include $(top_srcdir)/extensions/postgis_tiger_geocoder/tests.mk
 ifeq ($(HAVE_SFCGAL),yes)
 	override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
 	include $(top_srcdir)/sfcgal/regress/tests.mk

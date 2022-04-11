@@ -216,7 +216,9 @@ CREATE TABLE tm.trianglezm4326 (id serial, g geometry(trianglezm, 4326) );
 SELECT 'g',
  f_table_name, f_geometry_column,
  coord_dimension, srid, type
-from geometry_columns ORDER BY f_table_name;
+from geometry_columns
+where f_table_schema != 'tiger'
+ORDER BY f_table_name;
 
 SELECT 'gg',
  f_table_name, f_geography_column,
@@ -224,6 +226,7 @@ SELECT 'gg',
 from geography_columns ORDER BY f_table_name;
 
 SELECT distinct 'catalog-schema', f_table_catalog = current_database(),f_table_schema FROM geometry_columns
+where f_table_schema != 'tiger'
 UNION
 SELECT distinct 'catalog-schema', f_table_catalog = current_database(),f_table_schema FROM geography_columns
 ;
@@ -288,8 +291,10 @@ BEGIN
 		EXECUTE sql;
 	END LOOP;
 
-	FOR rec IN SELECT * from geometry_columns
-		WHERE f_table_name != 'types' ORDER BY 3
+	FOR rec IN SELECT * FROM geometry_columns
+		WHERE f_table_name != 'types'
+		AND f_table_schema != 'tiger'
+		ORDER BY 3
 	LOOP
 		out_where := rec.f_table_name;
 
