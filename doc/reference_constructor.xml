@@ -68,7 +68,7 @@ SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),
 
 st_astext
 ----------
-MULTIPOINT(1 2,-2 3)
+MULTIPOINT((1 2),(-2 3))
 </programlisting>
 
 <para>Collect 3D points.</para>

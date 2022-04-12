@@ -3,6 +3,8 @@ PostGIS 3.3.0dev
 
  * Breaking changes *
   - Drop support for PostgreSQL 9.6 and 10 (Regina Obe)
+  - Change output for WKT MULTIPOINT. All points now
+    wrapped in parens. (Even Roualt)
 
  * Enhancements *
   - #2861, Add index on topology.node(containing_face) speeding up

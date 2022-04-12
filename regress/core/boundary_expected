@@ -1,6 +1,6 @@
 boundary01|POINT EMPTY
 boundary02|MULTIPOINT EMPTY
-boundary03|MULTIPOINT(1 1,-1 1)
+boundary03|MULTIPOINT((1 1),(-1 1))
 boundary04|MULTIPOINT EMPTY
 boundary05|LINESTRING(1 1,0 0,-1 1,1 1)
 boundary06|LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)
