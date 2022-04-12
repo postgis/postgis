@@ -76,7 +76,7 @@ if [ -z "${RD}" ]; then
 fi
 
 cd ${RD}
-check_enabled topology/test/tests.mk regress #&&
+check_enabled topology/test/tests.mk regress &&
 check_enabled regress/loader/tests.mk &&
 check_enabled regress/dumper/tests.mk &&
 check_enabled sfcgal/regress/tests.mk &&
