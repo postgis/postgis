@@ -222,8 +222,10 @@ static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb,
 
 
 /*
-* Multi-points do not wrap their sub-members in parens, unlike other multi-geometries.
+* Multi-points, in non-ISO format, do not wrap their sub-members in parens, unlike other multi-geometries.
 *   MULTPOINT(0 0, 1 1) instead of MULTIPOINT((0 0),(1 1))
+* Strictly speaking, the SFA spec also mandates use of parens in sub-members, but
+* use the old non-parens interpretation for WKT_SFSQL
 */
 static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int precision, uint8_t variant)
 {
@@ -239,13 +241,15 @@ static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int p
 		return;
 	}
 	stringbuffer_append_len(sb, "(", 1);
-	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
+	variant = variant | WKT_IS_CHILD | WKT_NO_TYPE; /* Inform the sub-geometries they are children */
+	if ( !(variant & WKT_ISO) )
+		variant = variant | WKT_NO_PARENS;
 	for ( i = 0; i < mpoint->ngeoms; i++ )
 	{
 		if ( i > 0 )
 			stringbuffer_append_len(sb, ",", 1);
 		/* We don't want type strings or parens on our subgeoms */
-		lwpoint_to_wkt_sb(mpoint->geoms[i], sb, precision, variant | WKT_NO_PARENS | WKT_NO_TYPE );
+		lwpoint_to_wkt_sb(mpoint->geoms[i], sb, precision, variant);
 	}
 	stringbuffer_append_len(sb, ")", 1);
 }

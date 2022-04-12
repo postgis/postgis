@@ -144,7 +144,7 @@
 FROM (SELECT 'LINESTRING(100 150,50 60, 70 80, 160 170)'::geometry As geom) As f;
 				</programlisting>
 <screen>-- ST_AsText output
-MULTIPOINT(100 150,160 170)
+MULTIPOINT((100 150),(160 170))
 </screen>
 						  </para></entry>
 
@@ -175,7 +175,7 @@ MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),
 		 <programlisting>SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));
 st_astext
 -----------
-MULTIPOINT(1 1,-1 1)
+MULTIPOINT((1 1),(-1 1))
 
 SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 1))')));
 st_astext
@@ -194,7 +194,7 @@ SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1
 
 st_asewkt
 ----------
-MULTIPOINT(-1 1 1,1 1 0.75)
+MULTIPOINT((-1 1 1),(1 1 0.75))
 </programlisting>
 		</refsection>
 		<refsection>
@@ -1243,7 +1243,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<programlisting>--Extracting a subset of points from a 3d multipoint
 SELECT n, ST_AsEWKT(ST_GeometryN(geom, n)) As geomewkt
 FROM (
-VALUES (ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') ),
+VALUES (ST_GeomFromEWKT('MULTIPOINT((1 2 7), (3 4 7), (5 6 7), (8 9 10))') ),
 ( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 11, 12 11))') )
 	)As foo(geom)
 	CROSS JOIN generate_series(1,100) n
@@ -2319,7 +2319,7 @@ SELECT ST_NumGeometries(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.2
 1
 
 --Geometry Collection Example - multis count as one geom in a collection
-SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT(-2 3 , -2 2),
+SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT((-2 3),(-2 2)),
 LINESTRING(5 5 ,10 10),
 POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 --result
@@ -2709,7 +2709,7 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
 			<programlisting>SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 10))'));
 
 --result
-MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)
+MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))
 			</programlisting>
 		</refsection>
 
