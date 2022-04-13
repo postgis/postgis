@@ -815,7 +815,8 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 		<title>Description</title>
 
 
-		<para>Availability: 2.2.0, aggregate variant: 3.0.0</para>
+		<para>Availability: 2.2.0</para>
+		<para>Availability: 3.3.0 aggregate variant was added</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
