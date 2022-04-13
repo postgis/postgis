@@ -14,16 +14,16 @@ set -e
 #export GCC_TYPE=gcc48  #for pre-4.8.0 compiles this is blank
 if  [[ "${OVERRIDE}" == '' ]] ; then
 export GEOS_VER=3.8.1
-export GDAL_VER=2.2.4
+export GDAL_VER=2.4.4
 export PROJ_VER=5.2.0
-export SFCGAL_VER=1.3.8
+export SFCGAL_VER=1.4.1
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
-export CGAL_VER=4.11
-export BOOST_VER=1.53.0
+export CGAL_VER=5.3
+export BOOST_VER=1.78.0
 	#BOOST_VER_WU=1_49_0
-export BOOST_VER_WU=1_53_0
+export BOOST_VER_WU=1_78_0
 fi;
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
@@ -41,19 +41,19 @@ if  [[ "${ZLIB_VER}" == '' ]] ; then
 fi;
 
 if  [[ "${BOOST_VER}" == '' ]] ; then
-  export BOOST_VER=1.59.0
-  export BOOST_VER_WU=1_59_0
+  export BOOST_VER=1.78.0
+  export BOOST_VER_WU=1_78_0
 fi;
 
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.7.8
+  export LIBXML_VER=2.9.9
 fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=4.11
+  export CGAL_VER=5.3
 fi;
 
 

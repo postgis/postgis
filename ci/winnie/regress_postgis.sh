@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-export SFCGAL_VER=1.3.8
+export SFCGAL_VER=1.4.1
 export GEOS_VER=3.8.1
 export GDAL_VER=2.2.4
 export PROJ_VER=5.2.0
@@ -9,14 +9,14 @@ export SFCGAL_VER=1.3.2
 export ICONV_VER=1.13.1
 if [["${OS_BUILD}" == '64']] ; then
   export GDAL_VER=2.4.4
-  export SFCGAL_VER=1.3.8
-  export ICONV_VER=1.15
+  export SFCGAL_VER=1.4.1
+  export ICONV_VER=1.16
 fi;
 
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
-export CGAL_VER=4.11
+export CGAL_VER=5.3
 export BOOST_VER=1.53.0
 	#BOOST_VER_WU=1_49_0
 export BOOST_VER_WU=1_53_0
@@ -26,7 +26,7 @@ export PROTOBUFC_VER=1.2.1
 export JSON_VER=0.12
 export PCRE_VER=8.33
 if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.15
+  export ICON_VER=1.16
 fi;
 
 echo "ICON_VER ${ICON_VER}"
@@ -37,8 +37,8 @@ if  [[ "${ZLIB_VER}" == '' ]] ; then
 fi;
 
 if  [[ "${BOOST_VER}" == '' ]] ; then
-  export BOOST_VER=1.59.0
-  export BOOST_VER_WU=1_59_0
+  export BOOST_VER=1.78.0
+  export BOOST_VER_WU=1_78_0
 fi;
 
 
