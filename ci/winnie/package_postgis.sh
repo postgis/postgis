@@ -16,10 +16,10 @@
 #otherwise use the ones jenkins passes thru
 #!/usr/bin/env bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.0
-	export GDAL_VER=3.3.3
+	export GEOS_VER=3.10.2
+	export GDAL_VER=3.4.3
 	export PROJ_VER=7.2.1
-	export SFCGAL_VER=1.4.0
+	export SFCGAL_VER=1.4.1
 	export CGAL_VER=5.3
 	export ICON_VER=1.16
 	export ZLIB_VER=1.2.11
@@ -181,8 +181,8 @@ fi;
 
 if [ -n "$SFCGAL_VER"  ]; then
 	## only copy cgal and sfcgal stuff if sfcgal is packaged
-	export BOOST_VER=1.59.0
-	export BOOST_VER_WU=1_59_0
+	export BOOST_VER=1.78.0
+	export BOOST_VER_WU=1_78_0
 	export GMP_VER=5.1.2
 	export MPFR_VER=3.1.2
 	echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
