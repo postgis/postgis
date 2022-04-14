@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Correct the ST_PointM signature in the manual (Martin Davis)
  - #5136, Stabilize raster polygonization tests on GDAL 3.2 (Regina Obe)
  - Correct the documented parameters of topology functions (Regina Obe)
  - #5157, Allow for i386 rounding in the minimum bounding circle test (Regina Obe)
