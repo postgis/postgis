@@ -5,6 +5,8 @@ PostGIS 3.3.0dev
   - Drop support for PostgreSQL 9.6 and 10 (Regina Obe)
   - Change output for WKT MULTIPOINT. All points now
     wrapped in parens. (Even Roualt)
+  - GH674, geometry validation and fixing is disabled for ST_DumpAsPolygons
+    so it works faster but might produce invalid polygons.
 
  * Enhancements *
   - #2861, Add index on topology.node(containing_face) speeding up

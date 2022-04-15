@@ -433,9 +433,6 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 		return ES_NONE;
 	}
 
-	/* initialize GEOS */
-	initGEOS(rtinfo, lwgeom_geos_error);
-
 	/* use gdal polygonize */
 	gv = rt_raster_gdal_polygonize(raster, nband, 1, &gvcount);
 	/* no polygons returned */
@@ -1004,11 +1001,6 @@ rt_raster_gdal_polygonize(
 	int iBandHasNodataValue = FALSE;
 	double dBandNoData = 0.0;
 
-	/* for checking that a geometry is valid */
-	GEOSGeometry *ggeom = NULL;
-	int isValid;
-	LWGEOM *lwgeomValid = NULL;
-
 	uint32_t bandNums[1] = {nband};
 	int excludeNodataValues[1] = {exclude_nodata_value};
 
@@ -1260,40 +1252,6 @@ rt_raster_gdal_polygonize(
 
 		/* specify SRID */
 		lwgeom_set_srid(lwgeom, rt_raster_get_srid(raster));
-
-		/*
-			is geometry valid?
-			if not, try to make valid
-		*/
-		do {
-			ggeom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom, 0);
-			if (ggeom == NULL) {
-				rtwarn("Cannot test geometry for validity");
-				break;
-			}
-
-			isValid = GEOSisValid(ggeom);
-
-			GEOSGeom_destroy(ggeom);
-			ggeom = NULL;
-
-			/* geometry is valid */
-			if (isValid)
-				break;
-
-			RASTER_DEBUG(3, "fixing invalid geometry");
-
-			/* make geometry valid */
-			lwgeomValid = lwgeom_make_valid(lwgeom);
-			if (lwgeomValid == NULL) {
-				rtwarn("Cannot fix invalid geometry");
-				break;
-			}
-
-			lwgeom_free(lwgeom);
-			lwgeom = lwgeomValid;
-		}
-		while (0);
 
 		/* save lwgeom */
 		pols[j].geom = lwgeom_as_lwpoly(lwgeom);
