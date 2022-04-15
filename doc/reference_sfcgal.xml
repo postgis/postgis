@@ -794,7 +794,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	  <refnamediv>
 		<refname>ST_3DUnion</refname>
 
-		<refpurpose>Perform 3D union</refpurpose>
+		<refpurpose>Perform 3D union.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -804,6 +804,10 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
 			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DUnion</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -812,10 +816,20 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 
 
 		<para>Availability: 2.2.0</para>
+		<para>Availability: 3.3.0 aggregate variant was added</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
+
+        <para>
+            <emphasis role="bold">Aggregate variant:</emphasis>
+            returns a geometry that is the 3D union of a rowset of geometries.
+            The ST_3DUnion() function is an "aggregate"
+            function in the terminology of PostgreSQL. That means that it
+            operates on rows of data, in the same way the SUM() and AVG()
+            functions do and like most aggregates, it also ignores NULL geometries.
+        </para>
 	  </refsection>
 
 		  <refsection>

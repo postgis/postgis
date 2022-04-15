@@ -32,6 +32,7 @@ PostGIS 3.3.0dev
   - postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version
     (Loïc Bartoletti)
   - GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)
+  - #5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)
 
  * Bug Fix *
    - #5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)
