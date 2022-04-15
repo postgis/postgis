@@ -24,6 +24,7 @@ PostGIS 3.3.0dev
   - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
   - #4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)
   - GH676, faster ST_Clip (Aliaksandr Kalenik)
+  - #5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)
 
  * New features *
   - #5116, Topology export/import scripts (Sandro Santilli)

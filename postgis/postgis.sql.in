@@ -823,9 +823,13 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
 	OPERATOR        14       <#> FOR ORDER BY pg_catalog.float_ops,
 --
--- Note at 3.2: Sort support in bulk indexing not included in the
--- default opclass due to performance degredation in query
--- may be enabled in future versions.
+-- Sort support in bulk indexing not included in the default
+-- opclass for PostgreSQL versions <15 due to query performance
+-- degradation caused by GiST index page overlap.
+-- Since PostgreSQL 15 sorting build uses picksplit function to
+-- find better partitioning for index records. This allows to
+-- build indices performing similarly to those produced by default
+-- method while still reducing index build time significantly.
 --
 -- To enable sortsupport:
 --   alter operator family gist_geometry_ops_2d using gist
@@ -836,10 +840,9 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 --   alter operator family gist_geometry_ops_2d using gist
 --     drop function 11 (geometry);
 --
--- #if POSTGIS_PGSQL_VERSION >= 140
---	FUNCTION        11       geometry_gist_sortsupport_2d (internal),
--- #endif
---
+#if POSTGIS_PGSQL_VERSION >= 150
+	FUNCTION        11       geometry_gist_sortsupport_2d (internal),
+#endif
 	FUNCTION        8        geometry_gist_distance_2d (internal, geometry, int4),
 	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
 	FUNCTION        2        geometry_gist_union_2d (bytea, internal),
