@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-12-11 05:14+0000\n"
-"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"PO-Revision-Date: 2022-04-17 08:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/pl/>\n"
@@ -1997,7 +1997,7 @@ msgstr "Dostępność: 2.0.0"
 #: reference_raster.xml:1289
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "Przykład"
 
 #. Tag: programlisting
 #: reference_raster.xml:1092
