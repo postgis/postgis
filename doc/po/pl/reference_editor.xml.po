@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"PO-Revision-Date: 2022-04-17 08:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/pl/>\n"
@@ -897,7 +897,7 @@ msgstr "&T_support;"
 #: reference_editor.xml:366 reference_editor.xml:1720
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "Przykład"
 
 #. Tag: programlisting
 #: reference_editor.xml:367
