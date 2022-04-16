@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2022-03-11 05:52+0000\n"
+"PO-Revision-Date: 2022-04-17 08:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/pl/>\n"
@@ -1160,7 +1160,7 @@ msgstr ""
 #: reference_sfcgal.xml:967
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "Przykład"
 
 #. Tag: para
 #: reference_sfcgal.xml:968
