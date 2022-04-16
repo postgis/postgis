@@ -13,8 +13,7 @@
 
 #export GCC_TYPE=
 if  [[ "${OVERRIDE}" == '' ]] ; then
-export SFCGAL_VER=1.3.2
-export GEOS_VER=3.8.1
+export GEOS_VER=3.8.2
 export GDAL_VER=2.4.4
 export PROJ_VER=5.2.0
 export SFCGAL_VER=1.4.1

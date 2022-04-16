@@ -1,11 +1,10 @@
 #!/bin/bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-export SFCGAL_VER=1.4.1
-export GEOS_VER=3.8.1
+export GEOS_VER=3.8.2
 export GDAL_VER=2.2.4
 export PROJ_VER=5.2.0
-export SFCGAL_VER=1.3.2
+export SFCGAL_VER=1.4.1
 export ICONV_VER=1.13.1
 if [["${OS_BUILD}" == '64']] ; then
   export GDAL_VER=2.4.4
@@ -17,9 +16,9 @@ export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
 export CGAL_VER=5.3
-export BOOST_VER=1.53.0
+export BOOST_VER=1.78.0
 	#BOOST_VER_WU=1_49_0
-export BOOST_VER_WU=1_53_0
+export BOOST_VER_WU=1_78_0
 fi;
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
