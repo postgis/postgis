@@ -5,20 +5,22 @@
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
 # Vincent Picavet <vincent.ml@oslandia.com>, 2014
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2021-11-28 21:41+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
-"fr/)\n"
+"PO-Revision-Date: 2022-04-17 08:55+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
+"reference_editorxml/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -899,7 +901,7 @@ msgstr "&T_support;"
 #: reference_editor.xml:366 reference_editor.xml:1720
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "Exemple"
 
 #. Tag: programlisting
 #: reference_editor.xml:367
