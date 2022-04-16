@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"POT-Creation-Date: 2022-04-16 08:20+0000\n"
 "PO-Revision-Date: 2019-08-03 21:25+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>, 2019\n"
 "Language-Team: German (https://www.transifex.com/postgis/teams/3227/de/)\n"
@@ -1083,13 +1083,10 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 9.2.4"
 #: reference_input.xml:521
 #, no-c-format
 msgid ""
-"SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');\n"
-"SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', "
-"4326);"
+"SELECT ST_MPointFromText('MULTIPOINT((1 2),(3 4))');\n"
+"SELECT ST_MPointFromText('MULTIPOINT((-70.9590 42.1180),(-70.9611 "
+"42.1223))', 4326);"
 msgstr ""
-"SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');\n"
-"SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', "
-"4326);"
 
 #. Tag: refname
 #: reference_input.xml:534
@@ -3310,3 +3307,12 @@ msgstr ""
 #, no-c-format
 msgid "<varname>data</varname> input FlatGeobuf data."
 msgstr ""
+
+#~ msgid ""
+#~ "SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');\n"
+#~ "SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 "
+#~ "42.1223)', 4326);"
+#~ msgstr ""
+#~ "SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');\n"
+#~ "SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 "
+#~ "42.1223)', 4326);"

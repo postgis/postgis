@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-10 14:03+0000\n"
+"POT-Creation-Date: 2022-02-28 12:23+0000\n"
 "PO-Revision-Date: 2021-11-28 22:08+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -95,12 +95,12 @@ msgstr "설명"
 #: reference_processing.xml:59
 #, no-c-format
 msgid ""
-"Computes a a POLYGON or MULTIPOLYGON that represents all points whose "
-"distance from a geometry/geography is less than or equal to a given "
-"distance. A negative distance shrinks the geometry rather than expanding it. "
-"A negative distance may shrink a polygon completely, in which case POLYGON "
-"EMPTY is returned. For points and lines negative distances always return "
-"empty results."
+"Computes a POLYGON or MULTIPOLYGON that represents all points whose distance "
+"from a geometry/geography is less than or equal to a given distance. A "
+"negative distance shrinks the geometry rather than expanding it. A negative "
+"distance may shrink a polygon completely, in which case POLYGON EMPTY is "
+"returned. For points and lines negative distances always return empty "
+"results."
 msgstr ""
 
 #. Tag: para
@@ -3535,7 +3535,6 @@ msgstr ""
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ""
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
 #~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
@@ -3549,7 +3548,6 @@ msgstr ""
 #~ "<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></"
 #~ "paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "The \"preserve collapsed\" flag will retain objects that would otherwise "
 #~ "be too small given the tolerance. For example, a 1m long line simplified "
@@ -3565,7 +3563,6 @@ msgstr ""
 #~ "유용합니다. 수많은 작은 객체들이 맵에서 한꺼번에 사라져 놀랄 만한 자국들"
 #~ "이 생기는 일을 막을 수 있으니까요."
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend="
 #~ "\"TP_ST_Simplify\"/>"
