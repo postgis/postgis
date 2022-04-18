@@ -2,8 +2,8 @@
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
 export GEOS_VER=3.8.2
-export GDAL_VER=2.2.4
-export PROJ_VER=5.2.0
+export GDAL_VER=3.4.2
+export PROJ_VER=7.2.1
 export SFCGAL_VER=1.4.1
 export ICONV_VER=1.13.1
 if [["${OS_BUILD}" == '64']] ; then

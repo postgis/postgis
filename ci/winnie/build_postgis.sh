@@ -14,8 +14,8 @@ set -e
 #export GCC_TYPE=gcc48  #for pre-4.8.0 compiles this is blank
 if  [[ "${OVERRIDE}" == '' ]] ; then
 export GEOS_VER=3.8.2
-export GDAL_VER=2.4.4
-export PROJ_VER=5.2.0
+export GDAL_VER=3.4.2
+export PROJ_VER=7.2.1
 export SFCGAL_VER=1.4.1
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
