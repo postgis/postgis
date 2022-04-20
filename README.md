@@ -1,11 +1,9 @@
 Debbie:
    [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_2.5)](https://debbie.postgis.net/view/PostGIS/job/PostGIS_2.5/)
 Winnie:
- [![Build Status](https://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_2.5)](https://debbie.postgis.net:444/view/PostGIS/job/PostGIS_2.5/)
+ [![Build Status](https://winnie.postgis.net/buildStatus/icon?job=PostGIS_2.5)](https://winnie.postgis.net/view/PostGIS/job/PostGIS_2.5/)
 Dronie:
  [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?ref=refs/heads/stable-2.5)](https://dronie.osgeo.org/postgis/postgis?branch=stable-2.5)
-Travis:
- [![Build Status](https://secure.travis-ci.org/postgis/postgis.svg)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-2.5/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/stable-2.5)
 
