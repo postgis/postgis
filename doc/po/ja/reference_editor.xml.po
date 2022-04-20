@@ -3,13 +3,14 @@
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 # Sandro Santilli <strk@kbt.io>, 2022.
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-04-20 14:55+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/ja/>\n"
 "Language: ja\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -392,6 +393,12 @@ msgid ""
 "    ---------------\n"
 "    MULTIPOINT((0 0))"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionExtract(\n"
+"        'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',\n"
+"        1 ));\n"
+"    st_astext\n"
+"    ---------------\n"
+"    MULTIPOINT(0 0)"
 
 #. Tag: para
 #: reference_editor.xml:138
@@ -580,6 +587,12 @@ msgid ""
 "        ---------------------\n"
 "        MULTIPOINT((0 0),(1 1))"
 msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 "
+"0),POINT(1 1))'));\n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"        MULTIPOINT((0 0),(1 1))"
 
 #. Tag: para
 #: reference_editor.xml:202
