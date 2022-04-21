@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.0
-	export GDAL_VER=3.3.3
+	export GEOS_VER=3.10.2
+	export GDAL_VER=3.4.2
 	export PROJ_VER=7.2.1
-	export SFCGAL_VER=1.4.0
-	export CGAL_VER=5.3.0
-	export ICON_VER=1.15
+	export SFCGAL_VER=1.4.1
+	export CGAL_VER=5.3
+	export ICON_VER=1.16
 	export ZLIB_VER=1.2.11
   export PROTOBUF_VER=3.2.0
 	export PROTOBUFC_VER=1.2.1
@@ -135,9 +135,9 @@ fi
 if [ -n "$SFCGAL_VER" ]; then
 	##hard code versions of cgal etc. for now
 	#export CGAL_VER=4.11
-	BOOST_VER=1.73.0
+	BOOST_VER=1.78.0
 	#BOOST_VER_WU=1_49_0
-	export BOOST_VER_WU=1_73_0
+	export BOOST_VER_WU=1_78_0
 	export PATH="${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/boost/rel-${BOOST_VER_WU}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 
 

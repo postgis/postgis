@@ -520,7 +520,7 @@ WHERE ST_DWithin( geom, 'SRID=312;POINT(100000 200000)', 100 )
     This is enabled by <varname>ST_DWithin()</varname> using the
     <varname>&amp;&amp;</varname> operator internally on an expanded bounding box
     of the query geometry.
-    If there is a spatial index on <code>the_geom</code>, the query
+    If there is a spatial index on <code>geom</code>, the query
     planner will recognize that it can use the index to reduce the number of
     rows scanned before calculating the distance.
     The spatial index allows retrieving only records with geometries
@@ -538,25 +538,25 @@ WHERE ST_DWithin( geom, 'SRID=312;POINT(100000 200000)', 100 )
 	<sect1 id="examples_spatial_sql">
 	  <title>Examples of Spatial SQL</title>
 
-	  <para>The examples in this section will make use of two tables, a table
+	  <para>The examples in this section make use of a table
 	  of linear roads, and a table of polygonal municipality boundaries. The
-	  table definitions for the <varname>bc_roads</varname> table is:</para>
+	  definition of the <varname>bc_roads</varname> table is:</para>
 
-	  <programlisting>Column      | Type              | Description
-------------+-------------------+-------------------
-gid         | integer           | Unique ID
-name        | character varying | Road Name
-the_geom    | geometry          | Location Geometry (Linestring)</programlisting>
+	  <programlisting>Column    | Type              | Description
+----------+-------------------+-------------------
+gid       | integer           | Unique ID
+name      | character varying | Road Name
+geom      | geometry          | Location Geometry (Linestring)</programlisting>
 
-	  <para>The table definition for the <varname>bc_municipality</varname>
+	  <para>The definition of the <varname>bc_municipality</varname>
 	  table is:</para>
 
-	  <programlisting>Column     | Type              | Description
------------+-------------------+-------------------
-gid        | integer           | Unique ID
-code       | integer           | Unique ID
-name       | character varying | City / Town Name
-the_geom   | geometry          | Location Geometry (Polygon)</programlisting>
+	  <programlisting>Column   | Type              | Description
+---------+-------------------+-------------------
+gid      | integer           | Unique ID
+code     | integer           | Unique ID
+name     | character varying | City / Town Name
+geom     | geometry          | Location Geometry (Polygon)</programlisting>
 
 	  <qandaset>
 		<qandaentry id="qa_total_length_roads">
@@ -569,12 +569,12 @@ the_geom   | geometry          | Location Geometry (Polygon)</programlisting>
 			<para>You can answer this question with a very simple piece of
 			SQL:</para>
 
-			<programlisting>SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;
+			<programlisting>SELECT sum(ST_Length(geom))/1000 AS km_roads FROM bc_roads;
 
 km_roads
 ------------------
 70842.1243039643
-(1 row)</programlisting>
+</programlisting>
 		  </answer>
 		</qandaentry>
 
@@ -586,17 +586,17 @@ km_roads
 		  <answer>
 			<para>This query combines an attribute condition (on the
 			municipality name) with a spatial calculation (of the
-			area):</para>
+			polygon area):</para>
 
 			<programlisting>SELECT
-  ST_Area(the_geom)/10000 AS hectares
+  ST_Area(geom)/10000 AS hectares
 FROM bc_municipality
 WHERE name = 'PRINCE GEORGE';
 
 hectares
 ------------------
 32657.9103824927
-(1 row)</programlisting>
+</programlisting>
 		  </answer>
 		</qandaentry>
 
@@ -607,30 +607,29 @@ hectares
 		  </question>
 
 		  <answer>
-			<para>This query brings a spatial measurement into the query
-			condition. There are several ways of approaching this problem, but
+			<para>This query uses a spatial measurement as an ordering value.
+            There are several ways of approaching this problem, but
 			the most efficient is below:</para>
 
 			<programlisting>SELECT
   name,
-  ST_Area(the_geom)/10000 AS hectares
-FROM
-  bc_municipality
+  ST_Area(geom)/10000 AS hectares
+FROM bc_municipality
 ORDER BY hectares DESC
 LIMIT 1;
 
 name           | hectares
 ---------------+-----------------
 TUMBLER RIDGE  | 155020.02556131
-(1 row)</programlisting>
+</programlisting>
 
 			<para>Note that in order to answer this query we have to calculate
 			the area of every polygon. If we were doing this a lot it would
-			make sense to add an area column to the table that we could
-			separately index for performance. By ordering the results in a
+			make sense to add an area column to the table that could
+			be indexed for performance. By ordering the results in a
 			descending direction, and them using the PostgreSQL "LIMIT"
-			command we can easily pick off the largest value without using an
-			aggregate function like max().</para>
+			command we can easily select just the largest value without using an
+			aggregate function like MAX().</para>
 		  </answer>
 		</qandaentry>
 
@@ -641,20 +640,18 @@ TUMBLER RIDGE  | 155020.02556131
 		  </question>
 
 		  <answer>
-			<para>This is an example of a "spatial join", because we are
-			bringing together data from two tables (doing a join) but using a
-			spatial interaction condition ("contained") as the join condition
-			rather than the usual relational approach of joining on a common
-			key:</para>
+			<para>This is an example of a "spatial join",
+			which brings together data from two tables (with a join) using a
+			spatial interaction ("contained") as the join condition
+			(rather than the usual relational approach of joining on a common
+			key):</para>
 
 			<programlisting>SELECT
   m.name,
-  sum(ST_Length(r.the_geom))/1000 as roads_km
-FROM
-  bc_roads AS r,
-  bc_municipality AS m
-WHERE
-  ST_Contains(m.the_geom, r.the_geom)
+  sum(ST_Length(r.geom))/1000 as roads_km
+FROM bc_roads AS r
+JOIN bc_municipality AS m
+  ON ST_Contains(m.geom, r.geom)
 GROUP BY m.name
 ORDER BY roads_km;
 
@@ -668,8 +665,8 @@ PRINCE GEORGE               | 694.37554369147
 ...</programlisting>
 
 			<para>This query takes a while, because every road in the table is
-			summarized into the final result (about 250K roads for our
-			particular example table). For smaller overlays (several thousand
+			summarized into the final result (about 250K roads for the
+			example table). For smaller datsets (several thousand
 			records on several hundred) the response can be very fast.</para>
 		  </answer>
 		</qandaentry>
@@ -684,21 +681,21 @@ PRINCE GEORGE               | 694.37554369147
 			<para>This is an example of an "overlay", which takes in two
 			tables and outputs a new table that consists of spatially clipped
 			or cut resultants. Unlike the "spatial join" demonstrated above,
-			this query actually creates new geometries. An overlay is like a
+			this query creates new geometries. An overlay is like a
 			turbo-charged spatial join, and is useful for more exact analysis
 			work:</para>
 
 			<programlisting>CREATE TABLE pg_roads as
 SELECT
-  ST_Intersection(r.the_geom, m.the_geom) AS intersection_geom,
-  ST_Length(r.the_geom) AS rd_orig_length,
+  ST_Intersection(r.geom, m.geom) AS intersection_geom,
+  ST_Length(r.geom) AS rd_orig_length,
   r.*
-FROM
-  bc_roads AS r,
-  bc_municipality AS m
+FROM bc_roads AS r
+JOIN bc_municipality AS m
+  ON ST_Intersects(r.geom, m.geom)
 WHERE
-  m.name = 'PRINCE GEORGE'
-	AND ST_Intersects(r.the_geom, m.the_geom);</programlisting>
+  m.name = 'PRINCE GEORGE';
+</programlisting>
 		  </answer>
 		</qandaentry>
 
@@ -710,19 +707,18 @@ WHERE
 
 		  <answer>
 			<programlisting>SELECT
-  sum(ST_Length(r.the_geom))/1000 AS kilometers
-FROM
-  bc_roads r,
-  bc_municipality m
+  sum(ST_Length(r.geom))/1000 AS kilometers
+FROM bc_roads r
+JOIN bc_municipality m
+  ON ST_Intersects(m.geom, r.geom
 WHERE
-	r.name = 'Douglas St'
-	AND m.name = 'VICTORIA'
-	AND ST_Intersects(m.the_geom, r.the_geom);
+  r.name = 'Douglas St'
+  AND m.name = 'VICTORIA';
 
 kilometers
 ------------------
 4.89151904172838
-(1 row)</programlisting>
+</programlisting>
 		  </answer>
 		</qandaentry>
 
@@ -733,15 +729,15 @@ kilometers
 		  </question>
 
 		  <answer>
-			<programlisting>SELECT gid, name, ST_Area(the_geom) AS area
+			<programlisting>SELECT gid, name, ST_Area(geom) AS area
 FROM bc_municipality
-WHERE ST_NRings(the_geom) &gt; 1
+WHERE ST_NRings(geom) &gt; 1
 ORDER BY area DESC LIMIT 1;
 
 gid  | name         | area
 -----+--------------+------------------
 12   | SPALLUMCHEEN | 257374619.430216
-(1 row)</programlisting>
+</programlisting>
 		  </answer>
 		</qandaentry>
 	  </qandaset>

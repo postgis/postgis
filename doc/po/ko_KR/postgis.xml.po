@@ -3,19 +3,22 @@
 # Translators:
 # BJ Jang <qgis.tr.kr@gmail.com>, 2013,2016
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2016-07-22 08:18+0000\n"
-"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
+"PO-Revision-Date: 2022-04-20 14:55+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/postgis/ko/"
+">\n"
 "Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: postgis.xml:146
@@ -37,9 +40,14 @@ msgstr "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</ul
 
 #. Tag: para
 #: postgis.xml:170
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "PostGIS is an extension to the <ulink url=\"https://www.postgresql.org/\">PostgreSQL</ulink> object-relational database system which allows GIS (Geographic Information Systems) objects to be stored in the database. PostGIS includes support for GiST-based R-Tree spatial indexes, and functions for analysis and processing of GIS objects."
-msgstr "PostGIS는 객체 관계형 데이터베이스 시스템인 PostgreSQL의 확장 프로그램으로, 데이터베이스에 GIS(지리정보 시스템) 객체를 저장할 수 있게 해줍니다. PostGIS는 GiST 기반 R-Tree 공간 인덱스를 지원하며, GIS 객체의 분석 및 공간 처리를 위한 기능을 포함하고 있습니다."
+msgstr ""
+"PostGIS는 객체 관계형 데이터베이스 시스템인 <ulink url=\"https://www."
+"postgresql.org/\">PostgreSQL</ulink> 의 확장 프로그램으로, 데이터베이스에 "
+"GIS(지리정보 시스템) 객체를 저장할 수 있게 해줍니다. PostGIS는 GiST 기반 R-"
+"Tree 공간 인덱스를 지원하며, GIS 객체의 분석 및 공간 처리를 위한 기능을 "
+"포함하고 있습니다."
 
 #. Tag: para
 #: postgis.xml:179

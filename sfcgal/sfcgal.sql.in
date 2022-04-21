@@ -66,6 +66,13 @@ CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;
 
+-- Availability: 3.3.0
+CREATE AGGREGATE ST_3DUnion(geometry) (
+       sfunc = ST_3DUnion,
+       stype = geometry,
+       parallel = safe
+);
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Tesselate(geometry)
        RETURNS geometry

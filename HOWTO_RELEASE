@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2021-11-18
+Date: 2022-04-21
 
 Versioning Scheme
 -----------------
@@ -128,12 +128,13 @@ Release procedure
       Verify the documentation is up to date (might need to change the apache config)
 
   - Post on website:
-      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/master/_content/config.yml
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config/_default/params.toml#L132
         Fix latest version pointers.
-      - https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/posts
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/content/post
         a) create a new Post for current year making sure the page name starts with mm-dd
-        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
-        c) commit and wait 5 minutes to see changes on website
+          Since hugo move, the mm-dd isn't absolutely necessary anymore
+          as it uses the slug or title and date to determine the permalink.  But for now lets keep the same convention.
+        b) commit and wait 5 minutes to see changes on website
 
 6. Spread the word
 

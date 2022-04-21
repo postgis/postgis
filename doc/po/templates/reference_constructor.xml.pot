@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-13 18:15+0000\n"
+"POT-Creation-Date: 2022-04-16 08:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -158,7 +158,7 @@ msgid ""
 "\n"
 "st_astext\n"
 "----------\n"
-"MULTIPOINT(1 2,-2 3)"
+"MULTIPOINT((1 2),(-2 3))"
 msgstr ""
 
 #. Tag: para
@@ -1097,8 +1097,7 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_constructor.xml:484
 #, no-c-format
-msgid ""
-"Creates a Point with the given coordinate values. Alias for ST_MakePoint."
+msgid "Creates a Point with X, Y and SRID values."
 msgstr ""
 
 #. Tag: funcprototype
@@ -1124,8 +1123,8 @@ msgstr ""
 #: reference_constructor.xml:508
 #, no-c-format
 msgid ""
-"Returns an Point with the given X and Y coordinate values. This is the SQL-"
-"MM alias for <xref linkend=\"ST_MakePoint\"/> that takes just X and Y."
+"Returns a Point with the given X and Y coordinate values. This is the SQL-MM "
+"equivalent for <xref linkend=\"ST_MakePoint\"/> that takes just X and Y."
 msgstr ""
 
 #. Tag: para
@@ -1251,10 +1250,9 @@ msgid "ST_PointZ"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_constructor.xml:557 reference_constructor.xml:594
-#: reference_constructor.xml:632
+#: reference_constructor.xml:557
 #, no-c-format
-msgid "Creates a Point with the given coordinate and SRID values."
+msgid "Creates a Point with X, Y, Z and SRID values."
 msgstr ""
 
 #. Tag: funcprototype
@@ -1309,11 +1307,17 @@ msgstr ""
 msgid "ST_PointM"
 msgstr ""
 
+#. Tag: refpurpose
+#: reference_constructor.xml:594
+#, no-c-format
+msgid "Creates a Point with X, Y, M and SRID values."
+msgstr ""
+
 #. Tag: funcprototype
 #: reference_constructor.xml:599
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_PointZ</function></funcdef> "
+"<funcdef>geometry <function>ST_PointM</function></funcdef> "
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
@@ -1359,6 +1363,12 @@ msgstr ""
 #: reference_constructor.xml:631
 #, no-c-format
 msgid "ST_PointZM"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_constructor.xml:632
+#, no-c-format
+msgid "Creates a Point with X, Y, Z, M and SRID values."
 msgstr ""
 
 #. Tag: funcprototype

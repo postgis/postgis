@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-10 14:03+0000\n"
+"POT-Creation-Date: 2022-02-28 12:23+0000\n"
 "PO-Revision-Date: 2022-03-28 21:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -122,18 +122,13 @@ msgstr "説明"
 #: reference_processing.xml:59
 #, no-c-format
 msgid ""
-"Computes a a POLYGON or MULTIPOLYGON that represents all points whose "
-"distance from a geometry/geography is less than or equal to a given "
-"distance. A negative distance shrinks the geometry rather than expanding it. "
-"A negative distance may shrink a polygon completely, in which case POLYGON "
-"EMPTY is returned. For points and lines negative distances always return "
-"empty results."
+"Computes a POLYGON or MULTIPOLYGON that represents all points whose distance "
+"from a geometry/geography is less than or equal to a given distance. A "
+"negative distance shrinks the geometry rather than expanding it. A negative "
+"distance may shrink a polygon completely, in which case POLYGON EMPTY is "
+"returned. For points and lines negative distances always return empty "
+"results."
 msgstr ""
-"あるジオメトリ/ジオグラフィからの距離が指定された距離以下となる全ての点を表現"
-"するPOLYGONまたはMULTIPOLYGONを計算します。距離に負数を指定すると、ジオメトリ"
-"は拡大されずに縮小されます。負の距離はポリゴンを完全に縮退させる可能性があ"
-"り、その場合には、POLYGON EMPTYが返ります。ポイントとラインの負の距離は常に空"
-"を返します。"
 
 #. Tag: para
 #: reference_processing.xml:65
@@ -4258,13 +4253,25 @@ msgstr "許容範囲を30単位とした、マルチラインストリングの�
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 
-#, no-c-format
+#~ msgid ""
+#~ "Computes a a POLYGON or MULTIPOLYGON that represents all points whose "
+#~ "distance from a geometry/geography is less than or equal to a given "
+#~ "distance. A negative distance shrinks the geometry rather than expanding "
+#~ "it. A negative distance may shrink a polygon completely, in which case "
+#~ "POLYGON EMPTY is returned. For points and lines negative distances always "
+#~ "return empty results."
+#~ msgstr ""
+#~ "あるジオメトリ/ジオグラフィからの距離が指定された距離以下となる全ての点を"
+#~ "表現するPOLYGONまたはMULTIPOLYGONを計算します。距離に負数を指定すると、ジ"
+#~ "オメトリは拡大されずに縮小されます。負の距離はポリゴンを完全に縮退させる可"
+#~ "能性があり、その場合には、POLYGON EMPTYが返ります。ポイントとラインの負の"
+#~ "距離は常に空を返します。"
+
 #~ msgid ""
 #~ "In the following illustrations the green dot is the centroid of the "
 #~ "source geometry."
 #~ msgstr "次に示す図では、緑点が入力ジオメトリの重心です。"
 
-#, no-c-format
 #~ msgid ""
 #~ "SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));\n"
 #~ " st_astext\n"
@@ -4310,7 +4317,6 @@ msgstr ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 #~ "----------------\n"
 #~ " POINT(0 0 1)"
 
-#, no-c-format
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
 #~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
@@ -4324,7 +4330,6 @@ msgstr ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 #~ "<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></"
 #~ "paramdef>"
 
-#, no-c-format
 #~ msgid ""
 #~ "The \"preserve collapsed\" flag will retain objects that would otherwise "
 #~ "be too small given the tolerance. For example, a 1m long line simplified "
@@ -4339,7 +4344,6 @@ msgstr ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 #~ "ラグは、多数の非常に小さいオブジェクトを持っていて、これらが想定外の隙間を"
 #~ "残して地図から消えることを避けるのに使えます。"
 
-#, no-c-format
 #~ msgid ""
 #~ ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend="
 #~ "\"TP_ST_Simplify\"/>"

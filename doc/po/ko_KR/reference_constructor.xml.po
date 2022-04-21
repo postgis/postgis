@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-13 18:15+0000\n"
+"POT-Creation-Date: 2022-04-16 08:20+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -173,7 +173,7 @@ msgid ""
 "\n"
 "st_astext\n"
 "----------\n"
-"MULTIPOINT(1 2,-2 3)"
+"MULTIPOINT((1 2),(-2 3))"
 msgstr ""
 
 #. Tag: para
@@ -1258,12 +1258,9 @@ msgstr "ST_Point"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:484
-#, fuzzy, no-c-format
-msgid ""
-"Creates a Point with the given coordinate values. Alias for ST_MakePoint."
+#, no-c-format
+msgid "Creates a Point with X, Y and SRID values."
 msgstr ""
-"주어진 좌표값을 가진 ST_Point를 반환합니다. ST_MakePoint와 동일한 OGC 함수입"
-"니다."
 
 #. Tag: funcprototype
 #: reference_constructor.xml:489
@@ -1293,13 +1290,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:508
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Returns an Point with the given X and Y coordinate values. This is the SQL-"
-"MM alias for <xref linkend=\"ST_MakePoint\"/> that takes just X and Y."
+"Returns a Point with the given X and Y coordinate values. This is the SQL-MM "
+"equivalent for <xref linkend=\"ST_MakePoint\"/> that takes just X and Y."
 msgstr ""
-"주어진 좌표값을 가진 ST_Point를 반환합니다. MM을 준수하며 x, y만을 입력받는, "
-"ST_MakePoint와 동일한 함수입니다."
 
 #. Tag: para
 #: reference_constructor.xml:512 reference_constructor.xml:575
@@ -1429,13 +1424,10 @@ msgid "ST_PointZ"
 msgstr "ST_Point"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:557 reference_constructor.xml:594
-#: reference_constructor.xml:632
-#, fuzzy, no-c-format
-msgid "Creates a Point with the given coordinate and SRID values."
+#: reference_constructor.xml:557
+#, no-c-format
+msgid "Creates a Point with X, Y, Z and SRID values."
 msgstr ""
-"주어진 좌표값을 가진 ST_Point를 반환합니다. ST_MakePoint와 동일한 OGC 함수입"
-"니다."
 
 #. Tag: funcprototype
 #: reference_constructor.xml:562
@@ -1498,22 +1490,23 @@ msgstr ""
 msgid "ST_PointM"
 msgstr "ST_Point"
 
+#. Tag: refpurpose
+#: reference_constructor.xml:594
+#, no-c-format
+msgid "Creates a Point with X, Y, M and SRID values."
+msgstr ""
+
 #. Tag: funcprototype
 #: reference_constructor.xml:599
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_PointZ</function></funcdef> "
+"<funcdef>geometry <function>ST_PointM</function></funcdef> "
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef> <paramdef "
 "choice=\"opt\"><type>integer</type> <parameter>srid=unknown</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
-"<paramdef><type>double precision</type> <parameter>x</parameter></paramdef> "
-"<paramdef><type>double precision</type> <parameter>y</parameter></paramdef> "
-"<paramdef><type>double precision</type> <parameter>z</parameter></paramdef> "
-"<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:611
@@ -1558,6 +1551,12 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid "ST_PointZM"
 msgstr "ST_Point"
+
+#. Tag: refpurpose
+#: reference_constructor.xml:632
+#, no-c-format
+msgid "Creates a Point with X, Y, Z, M and SRID values."
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_constructor.xml:637
@@ -2362,6 +2361,43 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>"
 msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "Creates a Point with the given coordinate values. Alias for ST_MakePoint."
+#~ msgstr ""
+#~ "주어진 좌표값을 가진 ST_Point를 반환합니다. ST_MakePoint와 동일한 OGC 함수"
+#~ "입니다."
+
+#, fuzzy
+#~ msgid ""
+#~ "Returns an Point with the given X and Y coordinate values. This is the "
+#~ "SQL-MM alias for <xref linkend=\"ST_MakePoint\"/> that takes just X and Y."
+#~ msgstr ""
+#~ "주어진 좌표값을 가진 ST_Point를 반환합니다. MM을 준수하며 x, y만을 입력받"
+#~ "는, ST_MakePoint와 동일한 함수입니다."
+
+#, fuzzy
+#~ msgid "Creates a Point with the given coordinate and SRID values."
+#~ msgstr ""
+#~ "주어진 좌표값을 가진 ST_Point를 반환합니다. ST_MakePoint와 동일한 OGC 함수"
+#~ "입니다."
+
+#, fuzzy
+#~ msgid ""
+#~ "<funcdef>geometry <function>ST_PointZ</function></funcdef> "
+#~ "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
+#~ "<paramdef><type>float</type> <parameter>m</parameter></paramdef> "
+#~ "<paramdef choice=\"opt\"><type>integer</type> <parameter>srid=unknown</"
+#~ "parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
+#~ "<paramdef><type>double precision</type> <parameter>x</parameter></"
+#~ "paramdef> <paramdef><type>double precision</type> <parameter>y</"
+#~ "parameter></paramdef> <paramdef><type>double precision</type> "
+#~ "<parameter>z</parameter></paramdef> <paramdef><type>double precision</"
+#~ "type> <parameter>m</parameter></paramdef>"
 
 #, fuzzy
 #~ msgid "SELECT ST_SetSRID( ST_Point( -71.104, 42.315), 4326)"

@@ -4,7 +4,7 @@ freebsd_instance:
   memory: 16G
 
 task:
-  only_if: $BRANCH != 'main'
+  only_if: $BRANCH != 'master'
   install_script:
     - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
     - ASSUME_ALWAYS_YES=yes pkg bootstrap -f

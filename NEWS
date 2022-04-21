@@ -5,6 +5,8 @@ PostGIS 3.3.0dev
   - Drop support for PostgreSQL 9.6 and 10 (Regina Obe)
   - Change output for WKT MULTIPOINT. All points now
     wrapped in parens. (Even Roualt)
+  - GH674, geometry validation and fixing is disabled for ST_DumpAsPolygons
+    so it works faster but might produce invalid polygons.
 
  * Enhancements *
   - #2861, Add index on topology.node(containing_face) speeding up
@@ -24,6 +26,7 @@ PostGIS 3.3.0dev
   - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
   - #4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)
   - GH676, faster ST_Clip (Aliaksandr Kalenik)
+  - #5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)
 
  * New features *
   - #5116, Topology export/import scripts (Sandro Santilli)
@@ -32,6 +35,7 @@ PostGIS 3.3.0dev
   - postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version
     (Loïc Bartoletti)
   - GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)
+  - #5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)
 
  * Bug Fix *
    - #5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)
