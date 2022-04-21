@@ -665,7 +665,7 @@ POINT(0.5 1)
         (e.g. <code>ST_ConcaveHull( ST_Collect( geom ), 0.80)</code>.</para>
 
         <para>Availability: 2.0.0</para>
-        <para>Enhanced: 3.2.0</para>
+        <para>Enhanced: 3.3.0</para>
       </refsection>
 
       <refsection>
