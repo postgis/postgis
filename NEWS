@@ -1,3 +1,7 @@
+PostGIS 2.5.7
+xxxx/xx/xx
+ * Bug fixes *
+
 PostGIS 2.5.6
 2022/04/20
 
@@ -18,7 +22,7 @@ PostGIS 2.5.6
            use native GEOS makevalid, buildarea, clipbybox (Regina Obe)
   - #4457, Stop trying to createlang in regress
            plpgsql is always installed (Regina Obe)
-  - Support pkg-config for pcre detection (Regina Obe
+  - #4980, Support pkg-config for pcre detection (Regina Obe)
 
 
 PostGIS 2.5.5
