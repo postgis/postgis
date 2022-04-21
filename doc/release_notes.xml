@@ -4,7 +4,7 @@
     <subtitle>Release Notes</subtitle>
     <sect1>
       <title>PostGIS 2.5.6</title>
-      <para>Release Date: 2022/02/03</para>
+      <para>Release Date: 2022/04/20</para>
       <simplesect>
         <title>Bug fixes</title>
         <para>4968, Update autogen.sh to handle autoconf 2.71 issues</para>
@@ -22,6 +22,7 @@
            use native GEOS makevalid, buildarea, clipbybox (Regina Obe)</para>
         <para>4457, Stop trying to createlang in regress
            plpgsql is always installed (Regina Obe)</para>
+        <para>4980, Support pkg-config for pcre detection (Regina Obe)</para>
       </simplesect>
     </sect1>
 

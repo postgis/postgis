@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2020-02-02
+Date: 2022-04-20
 
 Versioning Scheme
 -----------------
@@ -102,18 +102,18 @@ Release procedure
     - osgeo-discuss
 - Update web sites
     - PostGIS News
-      - https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/posts
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/content/post
        a) create a new Post for current year making sure the page name starts with mm-dd
-       b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
+       b) Update dev and tag versions corresponding to this branch on https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config/_default/params.toml#L132
        c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
-    - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
-         - nginx -t #to confirm you didn't breat the config
+    - (only needed for new branches) On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
+         - nginx -t #to confirm you didn't break the config
          - service nginx reload
      Verify the documentation is up to date (might need to change the apach config)
     - Wikipedia
     - Twitter
        This should automatically happen as a result of posting to PostGIS website since Planet PostGIS and Planet PostgreSQL both autotweet.
-- Update Trac and make old Milestone as completed
+- Update Trac and mark old Milestone as completed
 - Push the revision number forward (see Versioning Scheme)
 - Remove the "dev" suffixed version from extensions/upgradeable_versions.mk
