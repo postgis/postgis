@@ -462,10 +462,10 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
     AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.3])
   fi
 
-  dnl Ensure that we are using PostgreSQL <= 11
-  dnl if test $POSTGIS_PGSQL_VERSION -ge 120; then
-  dnl   AC_MSG_ERROR([PostGIS requires PostgreSQL <= 11])
-  dnl fi
+  dnl Ensure that we are using PostgreSQL <= 12
+ if test $POSTGIS_PGSQL_VERSION -ge 120; then
+   AC_MSG_ERROR([PostGIS requires PostgreSQL <= 12])
+ fi
 
   HAVE_BRIN=no
   if test $POSTGIS_PGSQL_VERSION -gt 94; then
@@ -1145,6 +1145,17 @@ if test "x$with_address_standardizer" != "xno"; then
                 AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
             fi
         fi
+    elif test ! -z "$PKG_CONFIG"; then
+				PKG_CHECK_MODULES([PCRE], [libpcre], [
+                PCRE_CPPFLAGS="$PCRE_CFLAGS"
+                PCRE_LDFLAGS="$PCRE_LIBS"
+                ADDRESS_STANDARDIZER="address_standardizer"
+                HAVE_PCRE=yes
+            ],
+            [
+                ADDRESS_STANDARDIZER=""
+                HAVE_PCRE=no
+            ])
     fi
 
 
@@ -1165,18 +1176,18 @@ if test "x$with_address_standardizer" != "xno"; then
     AC_SUBST([PCRE_CPPFLAGS])
     AC_SUBST([PCRE_LDFLAGS])
 
-
-
 else
     ADDRESS_STANDARDIZER=""
-    AC_SUBST([ADDRESS_STANDARDIZER])
     AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
 fi
+
+AC_SUBST([HAVE_PCRE])
+AC_SUBST([ADDRESS_STANDARDIZER])
 
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $PCRE_LDFLAGS $EXCLUDELIBS_LDFLAGS"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $PCRE_LDFLAGS $EXCLUDELIBS_LDFLAGS $LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
@@ -1363,7 +1374,10 @@ if test "x$with_raster" != "xno"; then
 		CPPFLAGS_SAVE="$CPPFLAGS"
 		CPPFLAGS="$LIBGDAL_CFLAGS"
 		CFLAGS_SAVE="$CFLAGS"
-		CFLAGS=""
+		CFLAGS=`"$PG_CONFIG" --cflags`
+		CC_SAVE="$CC"
+		CC=`"$PG_CONFIG" --cc`
+
 		LIBS_SAVE="$LIBS"
 		LIBS="$LIBGDAL_LDFLAGS"
 
@@ -1384,6 +1398,7 @@ if test "x$with_raster" != "xno"; then
 		LIBS="$LIBGDAL_LDFLAGS"
 		CPPFLAGS="$CPPFLAGS_SAVE"
 		CFLAGS="$CFLAGS_SAVE"
+		CC="$CC_SAVE"
 		LIBS="$LIBS_SAVE"
 
 		AC_SUBST([LIBGDAL_CFLAGS])
@@ -1453,7 +1468,7 @@ dnl ===========================================================================
 AC_OUTPUT([GNUmakefile
    extensions/Makefile
    extensions/postgis/Makefile
-   extensions/postgis/postgis.control
+	 extensions/postgis/postgis.control
    extensions/postgis_sfcgal/Makefile
    extensions/postgis_sfcgal/postgis_sfcgal.control
    extensions/postgis_topology/Makefile
@@ -1462,7 +1477,7 @@ AC_OUTPUT([GNUmakefile
    extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control
    extensions/address_standardizer/Makefile
    extensions/address_standardizer/address_standardizer.control
-   extensions/address_standardizer/address_standardizer_data_us.control
+	 extensions/address_standardizer/address_standardizer_data_us.control
    liblwgeom/Makefile
    liblwgeom/cunit/Makefile
    liblwgeom/liblwgeom.h

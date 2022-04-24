@@ -1,5 +1,5 @@
 PostGIS 2.4.10dev
-YYYY/MM/DD
+2022/04/23
 
   * Bug Fixes and Enhancements *
 
@@ -11,6 +11,9 @@ YYYY/MM/DD
   - #4326, Fix CircularPolygon area calculation (Paul Ramsey)
   - #4968, Update autogen.sh to handle autoconf 2.71 issues (Raúl Marín, Regina Obe)
   - #4971, Cunit fixes for newer CUnit (Raúl Marín, Regina Obe)
+  - #5140, regress cleanly against GEOS 3.7-3.8, GDAL 3.4,
+           fix address_standardizer install
+           and allow to install via pkg-config  (Regina Obe)
 
 
 PostGIS 2.4.9
