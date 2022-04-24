@@ -75,14 +75,13 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 TESTS_EXPECTED = $(TESTS:.sql=_expected)
 
 regress/topogeo_addlinestring_expected: Makefile
-	ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">" 30308),1)
-	cp regress/topogeo_addlinestring_expected_newsnap regress/topogeo_addlinestring_expected
-	else
-	cp regress/topogeo_addlinestring_expected_oldsnap regress/topogeo_addlinestring_expected
-	endif
-	ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">" 30700),1)
+ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">" 30700),1)
 	cp regress/topogeo_addlinestring_expected_newsnap2 regress/topogeo_addlinestring_expected
-	endif
+else ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">" 30308),1)
+	cp regress/topogeo_addlinestring_expected_newsnap regress/topogeo_addlinestring_expected
+else
+	cp regress/topogeo_addlinestring_expected_oldsnap regress/topogeo_addlinestring_expected
+endif
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql $(TESTS) $(TESTS_EXPECTED)
 	$(MAKE) -C ../../regress staged-install
