@@ -4,8 +4,6 @@ Winnie:
  [![Build Status](https://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_2.4)](https://debbie.postgis.net:444/view/PostGIS/job/PostGIS_2.4/)
 Dronie:
  [![Build Status](https://dronie.osgeo.org/api/badges/postgis/postgis/status.svg?branch=stable-2.4)](https://dronie.osgeo.org/postgis/postgis?branch=svn-2.4)
-Travis:
- [![Build Status](https://secure.travis-ci.org/postgis/postgis.svg)](http://travis-ci.org/postgis/postgis)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/stable-2.4/pipeline.svg)](https://gitlab.com/postgis/postgis/commits/svn-2.4)
 
