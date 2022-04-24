@@ -82,7 +82,7 @@ else
 		cp regress/topogeo_addlinestring_expected_newsnap regress/topogeo_addlinestring_expected
 	else
 		cp regress/topogeo_addlinestring_expected_oldsnap regress/topogeo_addlinestring_expected
-	endif
+endif
 endif
 
 
