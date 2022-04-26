@@ -59,6 +59,11 @@ const char *libwagyu_version();
  */
 void lwgeom_wagyu_interruptRequest();
 
+/**
+ * Cancels request to stop processing.
+ */
+void lwgeom_wagyu_interruptReset();
+
 #ifdef __cplusplus
 }
 #endif

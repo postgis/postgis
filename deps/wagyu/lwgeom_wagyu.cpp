@@ -264,3 +264,9 @@ lwgeom_wagyu_interruptRequest()
 {
 	mapbox::geometry::wagyu::interrupt_request();
 }
+
+void
+lwgeom_wagyu_interruptReset()
+{
+    mapbox::geometry::wagyu::interrupt_reset();
+}

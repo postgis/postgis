@@ -25,6 +25,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "executor/executor.h"
 #include "utils/elog.h"
 #include "utils/guc.h"
 #include "libpq/pqsignal.h"
@@ -54,6 +55,9 @@ static void interruptCallback() {
 }
 #endif
 
+static ExecutorStart_hook_type onExecutorStartPrev = NULL;
+static void onExecutorStart(QueryDesc *queryDesc, int eflags);
+
 /*
  * Module load callback
  */
@@ -70,6 +74,10 @@ _PG_init(void)
 
   /* install PostgreSQL handlers */
   pg_install_lwgeom_handlers();
+
+  /* setup hooks */
+  onExecutorStartPrev = ExecutorStart_hook;
+  ExecutorStart_hook = onExecutorStart;
 }
 
 /*
@@ -81,6 +89,9 @@ _PG_fini(void)
 {
   elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
   pqsignal(SIGINT, coreIntHandler);
+
+  /* restore original hooks */
+  ExecutorStart_hook = onExecutorStartPrev;
 }
 
 
@@ -106,4 +117,22 @@ handleInterrupt(int sig)
   if ( coreIntHandler ) {
     (*coreIntHandler)(sig);
   }
+}
+
+static void onExecutorStart(QueryDesc *queryDesc, int eflags) {
+    /* cancel interrupt requests */
+
+    GEOS_interruptCancel();
+
+#ifdef HAVE_LIBPROTOBUF
+    lwgeom_wagyu_interruptReset();
+#endif
+
+    lwgeom_cancel_interrupt();
+
+    if (onExecutorStartPrev) {
+        (*onExecutorStartPrev)(queryDesc, eflags);
+    } else {
+        standard_ExecutorStart(queryDesc, eflags);
+    }
 }
