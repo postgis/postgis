@@ -43,7 +43,7 @@ PostGIS 3.3.0dev
    - #5123, PG15 now exposes json types and functions, no need
     to include for PG15+ (Regina Obe)
    - #5088, Memory corruption in mvt_agg_transfn (Victor Collod)
-
+   - #5137, resetting interrupt flags before query execution (Sergei Shoulbakov)
 
 PostGIS 3.2.0 (Olivier Courtin Edition)
 2021/12/17
