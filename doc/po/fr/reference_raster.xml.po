@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-12-11 05:14+0000\n"
-"PO-Revision-Date: 2022-04-17 08:55+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-04-29 12:55+0000\n"
+"Last-Translator: bartoletti <lbartoletti@tuxfamily.org>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/fr/>\n"
 "Language: fr\n"
@@ -514,7 +514,7 @@ msgstr ""
 #: reference_raster.xml:188
 #, no-c-format
 msgid "Behavior"
-msgstr ""
+msgstr "Comportement"
 
 #. Tag: entry
 #: reference_raster.xml:191
