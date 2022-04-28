@@ -1528,8 +1528,8 @@ UPDATE sometable
     <refentry id="ST_RemoveRepeatedPoints">
       <refnamediv>
         <refname>ST_RemoveRepeatedPoints</refname>
-        <refpurpose>Returns a version of the given geometry with
-                duplicated points removed.</refpurpose>
+        <refpurpose>Returns a version of a geometry with
+                duplicate points removed.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1544,20 +1544,56 @@ UPDATE sometable
 
       <refsection>
         <title>Description</title>
-        <para>Returns a version of the given geometry with
-                duplicated points removed. Will actually do something only with
-                (multi)lines, (multi)polygons and multipoints but you can safely call it with
-                any kind of geometry. Since simplification occurs on a
-                object-by-object basis you can also feed a GeometryCollection to
-                this function.</para>
-        <para>If the tolerance parameter is provided, vertices within the tolerance
-        of one another will be considered the "same" for the purposes of removal.</para>
+        <para>Returns a version of the given geometry with duplicate consecutive points removed.
+                The function processes only (Multi)LineStrings, (Multi)Polygons and MultiPoints
+                but it can be called with any kind of geometry.
+                Elements of GeometryCollections are processed individually.
+                The endpoints of LineStrings are preserved.
+        </para>
+
+        <para>If the <parameter>tolerance</parameter> parameter is provided, vertices within the tolerance distance
+        of one another are considered to be duplicates.</para>
 
         <para>Enhanced: 3.2.0</para>
         <para>Availability: 2.2.0</para>
         <para>&P_support;</para>
         <para>&Z_support;</para>
       </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_AsText( ST_RemoveRepeatedPoints( 'MULTIPOINT ((1 1), (2 2), (3 3), (2 2))'));
+-------------------------
+ MULTIPOINT(1 1,2 2,3 3)
+</programlisting>
+
+		<programlisting>
+SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 0 0, 1 1, 2 2)'));
+---------------------------------
+ LINESTRING(0 0,1 1,0 0,1 1,2 2)
+</programlisting>
+
+      <para><emphasis role="bold">Example:</emphasis>
+      Collection elements are processed individually.
+      </para>
+		<programlisting>
+SELECT ST_AsText( ST_RemoveRepeatedPoints( 'GEOMETRYCOLLECTION (LINESTRING (1 1, 2 2, 2 2, 3 3), POINT (4 4), POINT (4 4), POINT (5 5))'));
+------------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(LINESTRING(1 1,2 2,3 3),POINT(4 4),POINT(4 4),POINT(5 5))
+</programlisting>
+
+      <para><emphasis role="bold">Example:</emphasis>
+      Repeated point removal with a distance tolerance.
+      </para>
+		<programlisting>
+SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, 1 1, 2 2)', 2));
+-------------------------
+ LINESTRING(0 0,5 5,2 2)
+</programlisting>
+
+	  </refsection>
 
           <refsection>
             <title>See Also</title>
