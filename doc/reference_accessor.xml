@@ -2680,11 +2680,11 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
 			<title>Description</title>
 
 			<para>
-				Returns a MultiPoint containing all the coordinates of a
-				geometry.  Does not remove points that are repeated in
-				the geometry, including the start and end points of ring geometries.
-				(If this behavior is undesired, duplicates may be removed using
-				<xref linkend="ST_RemoveRepeatedPoints" />).
+				Returns a MultiPoint containing all the coordinates of a geometry.
+                Duplicate points are preserved,
+				including the start and end points of ring geometries.
+				(If desired, duplicate points can be removed by calling
+				<xref linkend="ST_RemoveRepeatedPoints" /> on the result).
 			</para>
 
             <para>
@@ -2693,7 +2693,7 @@ FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g
             </para>
 
 			<para>
-				M and Z coordinates will be preserved if present.
+				M and Z coordinates are preserved if present.
 			</para>
 
 			<para>&curve_support;</para>
