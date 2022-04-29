@@ -129,4 +129,4 @@ int flatgeobuf_decode_feature(flatgeobuf_ctx *ctx);
 }
 #endif
 
-#endif /* LWGEOM_WAGYU_H */
+#endif /* FLATGEOBUF_C_H */
