@@ -57,8 +57,9 @@ FROM (
 	FROM raster_polygon
 ) foo;
 
+-- TODO: Only GDAL 3.2 fails without ST_MakeValid, remove ST_MakeValid when GDAL 3.2 is no longer supported
 SELECT
-	ST_Equals( ST_Polygon(rast), 'MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2)))'::geometry)
+	ST_Equals( ST_MakeValid(ST_Polygon(rast)), 'MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2)))'::geometry)
 FROM (
 	SELECT
 		ST_SetValue(
@@ -74,7 +75,7 @@ FROM (
 ) foo;
 
 SELECT
-	ST_Equals( ST_Polygon(rast) , 'MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))'::geometry)
+	ST_Equals( ST_MakeValid(ST_Polygon(rast)) , 'MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))'::geometry)
 FROM (
 	SELECT
 		ST_SetValue(

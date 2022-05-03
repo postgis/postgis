@@ -322,7 +322,7 @@ static void test_raster_surface() {
 	gexpected = lwgeom_from_wkt(
 	    "MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2)))",
 	    LW_PARSER_CHECK_NONE);
-	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(gobserved), lwgeom_area(gexpected), FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(lwgeom_perimeter(gobserved), lwgeom_perimeter(gexpected), FLT_EPSILON);
 	lwmpoly_free(mpoly);
 	mpoly = NULL;
 
@@ -336,7 +336,7 @@ static void test_raster_surface() {
 	gexpected = lwgeom_from_wkt(
 	    "MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))",
 	    LW_PARSER_CHECK_NONE);
-	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(gobserved), lwgeom_area(gexpected), FLT_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(lwgeom_perimeter(gobserved), lwgeom_perimeter(gexpected), FLT_EPSILON);
 	lwmpoly_free(mpoly);
 	mpoly = NULL;
 
