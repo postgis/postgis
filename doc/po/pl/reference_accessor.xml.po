@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-04-16 08:20+0000\n"
+"POT-Creation-Date: 2022-05-03 02:58+0000\n"
 "PO-Revision-Date: 2022-03-11 05:52+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/"
@@ -3349,10 +3349,10 @@ msgstr ""
 #: reference_accessor.xml:1877
 #, no-c-format
 msgid ""
-"Returns a MultiPoint containing all the coordinates of a geometry. Does not "
-"remove points that are repeated in the geometry, including the start and end "
-"points of ring geometries. (If this behavior is undesired, duplicates may be "
-"removed using <xref linkend=\"ST_RemoveRepeatedPoints\"/>)."
+"Returns a MultiPoint containing all the coordinates of a geometry. Duplicate "
+"points are preserved, including the start and end points of ring geometries. "
+"(If desired, duplicate points can be removed by calling <xref linkend="
+"\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
 
 #. Tag: para
@@ -3366,7 +3366,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:1890
 #, no-c-format
-msgid "M and Z coordinates will be preserved if present."
+msgid "M and Z coordinates are preserved if present."
 msgstr ""
 
 #. Tag: para

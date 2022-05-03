@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-12-11 05:14+0000\n"
+"POT-Creation-Date: 2022-05-03 02:58+0000\n"
 "PO-Revision-Date: 2018-07-23 18:02+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -242,18 +242,18 @@ msgstr ""
 #: reference_raster.xml:9757 reference_raster.xml:9831
 #: reference_raster.xml:9879 reference_raster.xml:9931
 #: reference_raster.xml:9973 reference_raster.xml:10021
-#: reference_raster.xml:10072 reference_raster.xml:10120
-#: reference_raster.xml:10162 reference_raster.xml:10234
-#: reference_raster.xml:10279 reference_raster.xml:10323
-#: reference_raster.xml:10368 reference_raster.xml:10437
-#: reference_raster.xml:10484 reference_raster.xml:10557
-#: reference_raster.xml:10625 reference_raster.xml:10714
-#: reference_raster.xml:10799 reference_raster.xml:10880
-#: reference_raster.xml:10961 reference_raster.xml:11090
-#: reference_raster.xml:11174 reference_raster.xml:11254
-#: reference_raster.xml:11373 reference_raster.xml:11420
-#: reference_raster.xml:11492 reference_raster.xml:11589
-#: reference_raster.xml:11682
+#: reference_raster.xml:10073 reference_raster.xml:10121
+#: reference_raster.xml:10163 reference_raster.xml:10236
+#: reference_raster.xml:10281 reference_raster.xml:10325
+#: reference_raster.xml:10370 reference_raster.xml:10439
+#: reference_raster.xml:10486 reference_raster.xml:10559
+#: reference_raster.xml:10627 reference_raster.xml:10716
+#: reference_raster.xml:10801 reference_raster.xml:10882
+#: reference_raster.xml:10963 reference_raster.xml:11092
+#: reference_raster.xml:11176 reference_raster.xml:11256
+#: reference_raster.xml:11375 reference_raster.xml:11422
+#: reference_raster.xml:11494 reference_raster.xml:11591
+#: reference_raster.xml:11684
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -338,17 +338,17 @@ msgstr ""
 #: reference_raster.xml:9714 reference_raster.xml:9799
 #: reference_raster.xml:9847 reference_raster.xml:9898
 #: reference_raster.xml:9948 reference_raster.xml:9993
-#: reference_raster.xml:10046 reference_raster.xml:10092
-#: reference_raster.xml:10135 reference_raster.xml:10174
-#: reference_raster.xml:10382 reference_raster.xml:10450
-#: reference_raster.xml:10503 reference_raster.xml:10569
-#: reference_raster.xml:10660 reference_raster.xml:10745
-#: reference_raster.xml:10826 reference_raster.xml:10907
-#: reference_raster.xml:10991 reference_raster.xml:11120
-#: reference_raster.xml:11201 reference_raster.xml:11281
-#: reference_raster.xml:11394 reference_raster.xml:11438
-#: reference_raster.xml:11525 reference_raster.xml:11620
-#: reference_raster.xml:11713
+#: reference_raster.xml:10047 reference_raster.xml:10093
+#: reference_raster.xml:10136 reference_raster.xml:10176
+#: reference_raster.xml:10384 reference_raster.xml:10452
+#: reference_raster.xml:10505 reference_raster.xml:10571
+#: reference_raster.xml:10662 reference_raster.xml:10747
+#: reference_raster.xml:10828 reference_raster.xml:10909
+#: reference_raster.xml:10993 reference_raster.xml:11122
+#: reference_raster.xml:11203 reference_raster.xml:11283
+#: reference_raster.xml:11396 reference_raster.xml:11440
+#: reference_raster.xml:11527 reference_raster.xml:11622
+#: reference_raster.xml:11715
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -1154,8 +1154,8 @@ msgstr ""
 #: reference_raster.xml:9323 reference_raster.xml:9394
 #: reference_raster.xml:9469 reference_raster.xml:9555
 #: reference_raster.xml:9651 reference_raster.xml:9779
-#: reference_raster.xml:10241 reference_raster.xml:10492
-#: reference_raster.xml:10564 reference_raster.xml:11383
+#: reference_raster.xml:10243 reference_raster.xml:10494
+#: reference_raster.xml:10566 reference_raster.xml:11385
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
@@ -1474,17 +1474,17 @@ msgstr ""
 #: reference_raster.xml:9399 reference_raster.xml:9474
 #: reference_raster.xml:9709 reference_raster.xml:9842
 #: reference_raster.xml:9893 reference_raster.xml:9942
-#: reference_raster.xml:9985 reference_raster.xml:10041
-#: reference_raster.xml:10086 reference_raster.xml:10130
-#: reference_raster.xml:10169 reference_raster.xml:10245
-#: reference_raster.xml:10289 reference_raster.xml:10334
-#: reference_raster.xml:10497 reference_raster.xml:10653
-#: reference_raster.xml:10740 reference_raster.xml:10821
-#: reference_raster.xml:10902 reference_raster.xml:10983
-#: reference_raster.xml:11115 reference_raster.xml:11196
-#: reference_raster.xml:11276 reference_raster.xml:11433
-#: reference_raster.xml:11520 reference_raster.xml:11615
-#: reference_raster.xml:11708
+#: reference_raster.xml:9985 reference_raster.xml:10042
+#: reference_raster.xml:10087 reference_raster.xml:10131
+#: reference_raster.xml:10171 reference_raster.xml:10247
+#: reference_raster.xml:10291 reference_raster.xml:10336
+#: reference_raster.xml:10499 reference_raster.xml:10655
+#: reference_raster.xml:10742 reference_raster.xml:10823
+#: reference_raster.xml:10904 reference_raster.xml:10985
+#: reference_raster.xml:11117 reference_raster.xml:11198
+#: reference_raster.xml:11278 reference_raster.xml:11435
+#: reference_raster.xml:11522 reference_raster.xml:11617
+#: reference_raster.xml:11710
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -2754,13 +2754,13 @@ msgstr ""
 #: reference_raster.xml:7511 reference_raster.xml:7702
 #: reference_raster.xml:8972 reference_raster.xml:9257
 #: reference_raster.xml:9705 reference_raster.xml:9838
-#: reference_raster.xml:9889 reference_raster.xml:10126
-#: reference_raster.xml:10377 reference_raster.xml:10649
-#: reference_raster.xml:10736 reference_raster.xml:10817
-#: reference_raster.xml:10898 reference_raster.xml:10979
-#: reference_raster.xml:11192 reference_raster.xml:11272
-#: reference_raster.xml:11429 reference_raster.xml:11516
-#: reference_raster.xml:11611 reference_raster.xml:11704
+#: reference_raster.xml:9889 reference_raster.xml:10127
+#: reference_raster.xml:10379 reference_raster.xml:10651
+#: reference_raster.xml:10738 reference_raster.xml:10819
+#: reference_raster.xml:10900 reference_raster.xml:10981
+#: reference_raster.xml:11194 reference_raster.xml:11274
+#: reference_raster.xml:11431 reference_raster.xml:11518
+#: reference_raster.xml:11613 reference_raster.xml:11706
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr "2.1.0 버전부터 사용할 수 있습니다."
@@ -9592,7 +9592,7 @@ msgstr ""
 "                WHERE rid = 2   ;"
 
 #. Tag: para
-#: reference_raster.xml:4166 reference_raster.xml:10175
+#: reference_raster.xml:4166 reference_raster.xml:10177
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
 msgstr ", <xref linkend=\"RT_ST_DumpAsPolygons\"/>"
@@ -23617,13 +23617,21 @@ msgstr ""
 "폴리곤/멀티폴리곤으로 확장하는 데 이 함수를 쓸 수 있습니다."
 
 #. Tag: para
-#: reference_raster.xml:10030
+#: reference_raster.xml:10030 reference_raster.xml:10164
+#, no-c-format
+msgid ""
+"Changed 3.3.0, validation and fixing is disabled to improve performance. May "
+"result invalid geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_raster.xml:10031
 #, no-c-format
 msgid "Availability: Requires GDAL 1.7 or higher."
 msgstr "GDAL 1.7 이상 버전이 필요합니다."
 
 #. Tag: para
-#: reference_raster.xml:10031
+#: reference_raster.xml:10032
 #, no-c-format
 msgid ""
 "If there is a no data value set for a band, pixels with that value will not "
@@ -23631,7 +23639,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10032
+#: reference_raster.xml:10033
 #, no-c-format
 msgid ""
 "If you only care about count of pixels with a given value in a raster, it is "
@@ -23641,7 +23649,7 @@ msgstr ""
 "linkend=\"RT_ST_ValueCount\"/> 함수가 더 빠릅니다."
 
 #. Tag: para
-#: reference_raster.xml:10034
+#: reference_raster.xml:10035
 #, no-c-format
 msgid ""
 "This is different than ST_PixelAsPolygons where one geometry is returned for "
@@ -23651,7 +23659,7 @@ msgstr ""
 "ST_PixelAsPolygons 함수와 다릅니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:10042
+#: reference_raster.xml:10043
 #, no-c-format
 msgid ""
 "-- this syntax requires PostgreSQL 9.3+\n"
@@ -23682,7 +23690,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10047
+#: reference_raster.xml:10048
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Value\"/>, <xref linkend=\"RT_ST_Polygon\"/>, <xref "
@@ -23692,19 +23700,19 @@ msgstr ""
 "linkend=\"RT_ST_ValueCount\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:10058
+#: reference_raster.xml:10059
 #, no-c-format
 msgid "ST_Envelope"
 msgstr "ST_Envelope"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10059
+#: reference_raster.xml:10060
 #, no-c-format
 msgid "Returns the polygon representation of the extent of the raster."
 msgstr "래스터 범위의 폴리곤 표현식을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_raster.xml:10064
+#: reference_raster.xml:10065
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Envelope</function></funcdef> "
@@ -23714,7 +23722,7 @@ msgstr ""
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:10074
+#: reference_raster.xml:10075
 #, no-c-format
 msgid ""
 "Returns the polygon representation of the extent of the raster in spatial "
@@ -23725,7 +23733,7 @@ msgstr ""
 "기에서 폴리곤 표현식이란 폴리곤으로 표현된 float8 형 최소치 경계 상자입니다."
 
 #. Tag: para
-#: reference_raster.xml:10076
+#: reference_raster.xml:10077
 #, no-c-format
 msgid ""
 "The polygon is defined by the corner points of the bounding box "
@@ -23741,7 +23749,7 @@ msgstr ""
 "varname>, <varname>MINY</varname>))."
 
 #. Tag: programlisting
-#: reference_raster.xml:10088
+#: reference_raster.xml:10089
 #, fuzzy, no-c-format
 msgid ""
 "SELECT rid, ST_AsText(ST_Envelope(rast)) As envgeomwkt\n"
@@ -23763,25 +23771,25 @@ msgstr ""
 "                3427928 5793244,3427927 5793244, 3427927 5793243))"
 
 #. Tag: para
-#: reference_raster.xml:10093
+#: reference_raster.xml:10094
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"RT_ST_SRID\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:10103
+#: reference_raster.xml:10104
 #, no-c-format
 msgid "ST_MinConvexHull"
 msgstr "ST_MinConvexHull"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10104
+#: reference_raster.xml:10105
 #, no-c-format
 msgid "Return the convex hull geometry of the raster excluding NODATA pixels."
 msgstr "래스터의 NODATA 픽셀을 제외한 볼록 껍질 도형을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_raster.xml:10111
+#: reference_raster.xml:10112
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MinConvexHull</function></funcdef> "
@@ -23795,7 +23803,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:10122
+#: reference_raster.xml:10123
 #, no-c-format
 msgid ""
 "Return the convex hull geometry of the raster excluding NODATA pixels. If "
@@ -23805,7 +23813,7 @@ msgstr ""
 "varname> 가 NULL일 경우, 래스터의 모든 밴드를 처리합니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:10131
+#: reference_raster.xml:10132
 #, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
@@ -23905,7 +23913,7 @@ msgstr ""
 "POLYGON((3 -3,9 -3,9 -6,3 -6,3 -3)) | POLYGON((0 -3,6 -3,6 -9,0 -9,0 -3))"
 
 #. Tag: para
-#: reference_raster.xml:10136
+#: reference_raster.xml:10137
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_ConvexHull\"/>, <xref linkend=\"ST_ConvexHull\"/>, "
@@ -23915,13 +23923,13 @@ msgstr ""
 "<xref linkend=\"ST_AsText\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:10147
+#: reference_raster.xml:10148
 #, no-c-format
 msgid "ST_Polygon"
 msgstr "ST_Polygon"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10148
+#: reference_raster.xml:10149
 #, no-c-format
 msgid ""
 "Returns a multipolygon geometry formed by the union of pixels that have a "
@@ -23932,7 +23940,7 @@ msgstr ""
 "환합니다."
 
 #. Tag: funcprototype
-#: reference_raster.xml:10153
+#: reference_raster.xml:10154
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Polygon</function></funcdef> "
@@ -23946,13 +23954,13 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:10163
+#: reference_raster.xml:10165
 #, no-c-format
 msgid "Availability: 0.1.6 Requires GDAL 1.7 or higher."
 msgstr "0.1.6 버전부터 사용할 수 있습니다. GDAL 1.7 이상 버전이 필요합니다."
 
 #. Tag: para
-#: reference_raster.xml:10164
+#: reference_raster.xml:10166
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 Improved Speed (fully C-Based) and the returning "
@@ -23962,7 +23970,7 @@ msgstr ""
 "니다). 반환되는 멀티폴리곤이 유효한 도형인지 확인합니다."
 
 #. Tag: para
-#: reference_raster.xml:10165
+#: reference_raster.xml:10167
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 In prior versions would sometimes return a polygon, changed "
@@ -23972,7 +23980,7 @@ msgstr ""
 "폴리곤을 반환하도록 바꿨습니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:10170
+#: reference_raster.xml:10172
 #, fuzzy, no-c-format
 msgid ""
 "-- by default no data band value is 0 or not set, so polygon will return a "
@@ -24088,19 +24096,19 @@ msgstr ""
 "5793243.9,3427927.9 5793243.9)))"
 
 #. Tag: title
-#: reference_raster.xml:10185
+#: reference_raster.xml:10187
 #, no-c-format
 msgid "Raster Operators"
 msgstr "래스터 연산자"
 
 #. Tag: refname
-#: reference_raster.xml:10188
+#: reference_raster.xml:10190
 #, no-c-format
 msgid "&amp;&amp;"
 msgstr "&amp;&amp;"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10190
+#: reference_raster.xml:10192
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box intersects B's bounding "
@@ -24110,7 +24118,7 @@ msgstr ""
 "합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10194
+#: reference_raster.xml:10196
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>&amp;&amp;</function></funcdef> "
@@ -24136,7 +24144,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:10236
+#: reference_raster.xml:10238
 #, no-c-format
 msgid ""
 "The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
@@ -24147,9 +24155,9 @@ msgstr ""
 "형 B의 경계 상자가 교차하는 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: para
-#: reference_raster.xml:10238 reference_raster.xml:10285
-#: reference_raster.xml:10489 reference_raster.xml:11499
-#: reference_raster.xml:11600 reference_raster.xml:11693
+#: reference_raster.xml:10240 reference_raster.xml:10287
+#: reference_raster.xml:10491 reference_raster.xml:11501
+#: reference_raster.xml:11602 reference_raster.xml:11695
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
@@ -24159,7 +24167,7 @@ msgstr ""
 "니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:10247
+#: reference_raster.xml:10249
 #, no-c-format
 msgid ""
 "SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&amp; B.rast As "
@@ -24183,13 +24191,13 @@ msgstr ""
 "     2 |     1 | f"
 
 #. Tag: refname
-#: reference_raster.xml:10253
+#: reference_raster.xml:10255
 #, no-c-format
 msgid "&amp;&lt;"
 msgstr "&amp;&lt;"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10255
+#: reference_raster.xml:10257
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is to the left of B's."
@@ -24198,7 +24206,7 @@ msgstr ""
 "환합니다."
 
 #. Tag: funcprototype
-#: reference_raster.xml:10260
+#: reference_raster.xml:10262
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
@@ -24210,7 +24218,7 @@ msgstr ""
 "<type>raster </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:10281
+#: reference_raster.xml:10283
 #, no-c-format
 msgid ""
 "The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if "
@@ -24224,7 +24232,7 @@ msgstr ""
 "니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:10291
+#: reference_raster.xml:10293
 #, no-c-format
 msgid ""
 "SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&lt; B.rast As overleft\n"
@@ -24258,13 +24266,13 @@ msgstr ""
 "    1 |     1 | t"
 
 #. Tag: refname
-#: reference_raster.xml:10297
+#: reference_raster.xml:10299
 #, no-c-format
 msgid "&amp;&gt;"
 msgstr "&amp;&gt;"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10299
+#: reference_raster.xml:10301
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is to the right of B's."
@@ -24273,7 +24281,7 @@ msgstr ""
 "반환합니다."
 
 #. Tag: funcprototype
-#: reference_raster.xml:10304
+#: reference_raster.xml:10306
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
@@ -24285,7 +24293,7 @@ msgstr ""
 "<type>raster </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:10325
+#: reference_raster.xml:10327
 #, no-c-format
 msgid ""
 "The <varname>&amp;&gt;</varname> operator returns <varname>TRUE</varname> if "
@@ -24299,7 +24307,7 @@ msgstr ""
 "합니다."
 
 #. Tag: para
-#: reference_raster.xml:10329
+#: reference_raster.xml:10331
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
@@ -24309,7 +24317,7 @@ msgstr ""
 "니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:10336
+#: reference_raster.xml:10338
 #, no-c-format
 msgid ""
 "SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&gt; B.rast As overright\n"
@@ -24343,13 +24351,13 @@ msgstr ""
 "     1 |     1 | t"
 
 #. Tag: refname
-#: reference_raster.xml:10342
+#: reference_raster.xml:10344
 #, no-c-format
 msgid "&#61;"
 msgstr "&#61;"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10344
+#: reference_raster.xml:10346
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses "
@@ -24359,7 +24367,7 @@ msgstr ""
 "니다. 이중 정밀도 경계 상자를 이용합니다."
 
 #. Tag: funcprototype
-#: reference_raster.xml:10349
+#: reference_raster.xml:10351
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&#61;</function></funcdef> <paramdef> "
@@ -24371,7 +24379,7 @@ msgstr ""
 "<type>raster </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:10370
+#: reference_raster.xml:10372
 #, no-c-format
 msgid ""
 "The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the "
@@ -24386,7 +24394,7 @@ msgstr ""
 "니다(예: GROUP BY 또는 ORDER BY 절에서)."
 
 #. Tag: para
-#: reference_raster.xml:10374
+#: reference_raster.xml:10376
 #, no-c-format
 msgid ""
 "This operand will NOT make use of any indexes that may be available on the "
@@ -24398,13 +24406,13 @@ msgstr ""
 "십시오. 이 연산자의 목적은 대부분 래스터 열로 그룹화(group by)하는 것입니다."
 
 #. Tag: refname
-#: reference_raster.xml:10390
+#: reference_raster.xml:10392
 #, no-c-format
 msgid "<refname>@</refname>"
 msgstr "<refname>@</refname>"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10392
+#: reference_raster.xml:10394
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contained by B's. "
@@ -24414,7 +24422,7 @@ msgstr ""
 "환합니다. 이중 정밀도 경계 상자를 이용합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10396
+#: reference_raster.xml:10398
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>@</function></funcdef> <paramdef> "
@@ -24438,7 +24446,7 @@ msgstr ""
 "<type>geometry </type> <parameter>A</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:10439
+#: reference_raster.xml:10441
 #, no-c-format
 msgid ""
 "The <varname>@</varname> operator returns <varname>TRUE</varname> if the "
@@ -24449,32 +24457,32 @@ msgstr ""
 "계 상자를 담고 있을 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: para
-#: reference_raster.xml:10442 reference_raster.xml:10562
+#: reference_raster.xml:10444 reference_raster.xml:10564
 #, no-c-format
 msgid "This operand will use spatial indexes on the rasters."
 msgstr "이 피연산자(operand)는 래스터에 있는 공간 인덱스를 활용할 것입니다."
 
 #. Tag: para
-#: reference_raster.xml:10444
+#: reference_raster.xml:10446
 #, no-c-format
 msgid "Availability: 2.0.0 raster @ raster, raster @ geometry introduced"
 msgstr ""
 "2.0.0 버전부터 raster @ raster, raster @ geometry 를 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_raster.xml:10445
+#: reference_raster.xml:10447
 #, no-c-format
 msgid "Availability: 2.0.5 geometry @ raster introduced"
 msgstr "2.0.5 버전부터 geometry @ raster 를 지원합니다."
 
 #. Tag: refname
-#: reference_raster.xml:10458
+#: reference_raster.xml:10460
 #, no-c-format
 msgid "<refname>~=</refname>"
 msgstr "<refname>~=</refname>"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10460
+#: reference_raster.xml:10462
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
@@ -24482,7 +24490,7 @@ msgstr ""
 "니다."
 
 #. Tag: funcprototype
-#: reference_raster.xml:10465
+#: reference_raster.xml:10467
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>raster </"
@@ -24494,7 +24502,7 @@ msgstr ""
 "<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:10486
+#: reference_raster.xml:10488
 #, no-c-format
 msgid ""
 "The <varname>~=</varname> operator returns <varname>TRUE</varname> if the "
@@ -24504,7 +24512,7 @@ msgstr ""
 "동일할 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: para
-#: reference_raster.xml:10498
+#: reference_raster.xml:10500
 #, no-c-format
 msgid ""
 "Very useful usecase is for taking two sets of single band rasters that are "
@@ -24515,7 +24523,7 @@ msgstr ""
 "력받아 다중 밴드 래스터를 생성하는 데 매우 유용합니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:10499
+#: reference_raster.xml:10501
 #, no-c-format
 msgid ""
 "SELECT ST_AddBand(prec.rast, alt.rast) As new_rast\n"
@@ -24525,19 +24533,19 @@ msgstr ""
 "    FROM prec INNER JOIN alt ON (prec.rast ~= alt.rast);"
 
 #. Tag: para
-#: reference_raster.xml:10504
+#: reference_raster.xml:10506
 #, no-c-format
 msgid ", <xref linkend=\"RT_Raster_EQ\"/>"
 msgstr ", <xref linkend=\"RT_Raster_EQ\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:10510
+#: reference_raster.xml:10512
 #, no-c-format
 msgid "<refname>~</refname>"
 msgstr "<refname>~</refname>"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10512
+#: reference_raster.xml:10514
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contains B's. Uses "
@@ -24547,7 +24555,7 @@ msgstr ""
 "환합니다. 이중 정밀도 경계 상자를 이용합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10516
+#: reference_raster.xml:10518
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>~</function></funcdef> <paramdef> "
@@ -24571,7 +24579,7 @@ msgstr ""
 "<type>geometry </type> <parameter>A</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:10559
+#: reference_raster.xml:10561
 #, no-c-format
 msgid ""
 "The <varname>~</varname> operator returns <varname>TRUE</varname> if the "
@@ -24582,19 +24590,19 @@ msgstr ""
 "계 상자를 담고 있을 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: title
-#: reference_raster.xml:10577
+#: reference_raster.xml:10579
 #, no-c-format
 msgid "Raster and Raster Band Spatial Relationships"
 msgstr "래스터 및 래스터 밴드의 공간 관계성"
 
 #. Tag: refname
-#: reference_raster.xml:10581
+#: reference_raster.xml:10583
 #, no-c-format
 msgid "ST_Contains"
 msgstr "ST_Contains"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10582
+#: reference_raster.xml:10584
 #, no-c-format
 msgid ""
 "Return true if no points of raster rastB lie in the exterior of raster rastA "
@@ -24605,7 +24613,7 @@ msgstr ""
 "내부의 포인트 하나가 rastA의 내부에 있는 경우 참을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10588
+#: reference_raster.xml:10590
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Contains</function></funcdef> "
@@ -24629,7 +24637,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:10627
+#: reference_raster.xml:10629
 #, no-c-format
 msgid ""
 "Raster rastA contains rastB if and only if no points of rastB lie in the "
@@ -24646,10 +24654,10 @@ msgstr ""
 "(NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:10632 reference_raster.xml:10725
-#: reference_raster.xml:10806 reference_raster.xml:10887
-#: reference_raster.xml:11097 reference_raster.xml:11181
-#: reference_raster.xml:11261
+#: reference_raster.xml:10634 reference_raster.xml:10727
+#: reference_raster.xml:10808 reference_raster.xml:10889
+#: reference_raster.xml:11099 reference_raster.xml:11183
+#: reference_raster.xml:11263
 #, no-c-format
 msgid ""
 "This function will make use of any indexes that may be available on the "
@@ -24657,7 +24665,7 @@ msgid ""
 msgstr "이 함수는 래스터에서 이용할 수도 있는 모든 인덱스를 활용할 것입니다."
 
 #. Tag: para
-#: reference_raster.xml:10638
+#: reference_raster.xml:10640
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -24669,7 +24677,7 @@ msgstr ""
 "ST_Polygon 함수를 이용하십시오."
 
 #. Tag: para
-#: reference_raster.xml:10644
+#: reference_raster.xml:10646
 #, no-c-format
 msgid ""
 "ST_Contains() is the inverse of ST_Within(). So, ST_Contains(rastA, rastB) "
@@ -24679,7 +24687,7 @@ msgstr ""
 "의 결과와 ST_Within(rastB, rastA)의 결과는 동일할 것입니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:10655
+#: reference_raster.xml:10657
 #, no-c-format
 msgid ""
 "-- specified band numbers\n"
@@ -24703,7 +24711,7 @@ msgstr ""
 "   1 |   2 | f"
 
 #. Tag: programlisting
-#: reference_raster.xml:10657
+#: reference_raster.xml:10659
 #, no-c-format
 msgid ""
 "-- no band numbers specified\n"
@@ -24723,19 +24731,19 @@ msgstr ""
 "   1 |   2 | f"
 
 #. Tag: para
-#: reference_raster.xml:10661
+#: reference_raster.xml:10663
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Within\"/>"
 msgstr ", <xref linkend=\"RT_ST_Within\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:10670
+#: reference_raster.xml:10672
 #, no-c-format
 msgid "ST_ContainsProperly"
 msgstr "ST_ContainsProperly"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10671
+#: reference_raster.xml:10673
 #, no-c-format
 msgid ""
 "Return true if rastB intersects the interior of rastA but not the boundary "
@@ -24745,7 +24753,7 @@ msgstr ""
 "경우 참을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10677
+#: reference_raster.xml:10679
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_ContainsProperly</function></"
@@ -24769,7 +24777,7 @@ msgstr ""
 "type> <parameter>rastB</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:10716
+#: reference_raster.xml:10718
 #, no-c-format
 msgid ""
 "Raster rastA contains properly rastB if rastB intersects the interior of "
@@ -24785,7 +24793,7 @@ msgstr ""
 "만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:10720
+#: reference_raster.xml:10722
 #, no-c-format
 msgid "Raster rastA does not contain properly itself but does contain itself."
 msgstr ""
@@ -24793,7 +24801,7 @@ msgstr ""
 "합니다."
 
 #. Tag: para
-#: reference_raster.xml:10731
+#: reference_raster.xml:10733
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -24806,7 +24814,7 @@ msgstr ""
 "수를 이용하십시오."
 
 #. Tag: programlisting
-#: reference_raster.xml:10742
+#: reference_raster.xml:10744
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM "
@@ -24826,26 +24834,26 @@ msgstr ""
 "   2 |   2 | f"
 
 #. Tag: para
-#: reference_raster.xml:10746
+#: reference_raster.xml:10748
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Contains\"/>"
 msgstr ", <xref linkend=\"RT_ST_Contains\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:10755
+#: reference_raster.xml:10757
 #, no-c-format
 msgid "ST_Covers"
 msgstr "ST_Covers"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10756
+#: reference_raster.xml:10758
 #, no-c-format
 msgid "Return true if no points of raster rastB lie outside raster rastA."
 msgstr ""
 "래스터 rastB의 어떤 포인트도 래스터 rastA 외부에 없을 경우 참을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10762
+#: reference_raster.xml:10764
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Covers</function></funcdef> "
@@ -24869,7 +24877,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:10801
+#: reference_raster.xml:10803
 #, no-c-format
 msgid ""
 "Raster rastA covers rastB if and only if no points of rastB lie in the "
@@ -24884,7 +24892,7 @@ msgstr ""
 "을 가진 (NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:10812
+#: reference_raster.xml:10814
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -24896,7 +24904,7 @@ msgstr ""
 "ST_Polygon 함수를 이용하십시오."
 
 #. Tag: programlisting
-#: reference_raster.xml:10823
+#: reference_raster.xml:10825
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
@@ -24916,26 +24924,26 @@ msgstr ""
 "   2 |   2 | t"
 
 #. Tag: para
-#: reference_raster.xml:10827
+#: reference_raster.xml:10829
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_CoveredBy\"/>"
 msgstr ", <xref linkend=\"RT_ST_CoveredBy\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:10836
+#: reference_raster.xml:10838
 #, no-c-format
 msgid "ST_CoveredBy"
 msgstr "ST_CoveredBy"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10837
+#: reference_raster.xml:10839
 #, no-c-format
 msgid "Return true if no points of raster rastA lie outside raster rastB."
 msgstr ""
 "래스터 rastA의 어떤 포인트도 래스터 rastB 외부에 없을 경우 참을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10843
+#: reference_raster.xml:10845
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_CoveredBy</function></funcdef> "
@@ -24959,7 +24967,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:10882
+#: reference_raster.xml:10884
 #, no-c-format
 msgid ""
 "Raster rastA is covered by rastB if and only if no points of rastA lie in "
@@ -24974,7 +24982,7 @@ msgstr ""
 "중 값을 가진 (NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:10893
+#: reference_raster.xml:10895
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -24986,7 +24994,7 @@ msgstr ""
 "ST_Polygon 함수를 이용하십시오."
 
 #. Tag: programlisting
-#: reference_raster.xml:10904
+#: reference_raster.xml:10906
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast "
@@ -25006,26 +25014,26 @@ msgstr ""
 "   2 |   2 | t"
 
 #. Tag: para
-#: reference_raster.xml:10908
+#: reference_raster.xml:10910
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Covers\"/>"
 msgstr ", <xref linkend=\"RT_ST_Covers\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:10917
+#: reference_raster.xml:10919
 #, no-c-format
 msgid "ST_Disjoint"
 msgstr "ST_Disjoint"
 
 #. Tag: refpurpose
-#: reference_raster.xml:10918
+#: reference_raster.xml:10920
 #, no-c-format
 msgid "Return true if raster rastA does not spatially intersect rastB."
 msgstr ""
 "래스터 rastA와 래스터 rastB가 공간적으로 교차하지 않을 경우 참을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10924
+#: reference_raster.xml:10926
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Disjoint</function></funcdef> "
@@ -25049,7 +25057,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:10963
+#: reference_raster.xml:10965
 #, no-c-format
 msgid ""
 "Raster rastA and rastB are disjointed if they do not share any space "
@@ -25064,13 +25072,13 @@ msgstr ""
 "인 작업중 값을 가진 (NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:10968
+#: reference_raster.xml:10970
 #, no-c-format
 msgid "This function does NOT use any indexes."
 msgstr "이 함수는 어떤 인덱스도 활용하지 않습니다."
 
 #. Tag: para
-#: reference_raster.xml:10974
+#: reference_raster.xml:10976
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -25080,7 +25088,7 @@ msgstr ""
 "geometry)처럼 래스터에 ST_Polygon 함수를 이용하십시오."
 
 #. Tag: programlisting
-#: reference_raster.xml:10985
+#: reference_raster.xml:10987
 #, no-c-format
 msgid ""
 "-- rid = 1 has no bands, hence the NOTICE and the NULL value for "
@@ -25106,7 +25114,7 @@ msgstr ""
 "   2 |   2 | f"
 
 #. Tag: programlisting
-#: reference_raster.xml:10987
+#: reference_raster.xml:10989
 #, no-c-format
 msgid ""
 "-- this time, without specifying band numbers\n"
@@ -25128,19 +25136,19 @@ msgstr ""
 "   2 |   2 | f"
 
 #. Tag: refname
-#: reference_raster.xml:11000
+#: reference_raster.xml:11002
 #, no-c-format
 msgid "ST_Intersects"
 msgstr "ST_Intersects"
 
 #. Tag: refpurpose
-#: reference_raster.xml:11001
+#: reference_raster.xml:11003
 #, no-c-format
 msgid "Return true if raster rastA spatially intersects raster rastB."
 msgstr "래스터 rastA와 래스터 rastB가 공간적으로 교차할 경우 참을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:11005
+#: reference_raster.xml:11007
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Intersects</function></"
@@ -25192,7 +25200,7 @@ msgstr ""
 "<parameter>nband=NULL</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:11092
+#: reference_raster.xml:11094
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially intersects raster rastB. If the band "
@@ -25206,13 +25214,13 @@ msgstr ""
 "닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:11102
+#: reference_raster.xml:11104
 #, no-c-format
 msgid "Enhanced: 2.0.0 support raster/raster intersects was introduced."
 msgstr "개선 사항: 2.0.0 버전부터 래스터/래스터 교차를 지원합니다."
 
 #. Tag: para
-#: reference_raster.xml:11107
+#: reference_raster.xml:11109
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants "
@@ -25222,7 +25230,7 @@ msgstr ""
 "기 위해 ST_Intersects(raster, geometry)  변종의 습성을 바꿨습니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:11116
+#: reference_raster.xml:11118
 #, no-c-format
 msgid ""
 "-- different bands of same raster\n"
@@ -25240,19 +25248,19 @@ msgstr ""
 " t"
 
 #. Tag: para
-#: reference_raster.xml:11121
+#: reference_raster.xml:11123
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Disjoint\"/>"
 msgstr ", <xref linkend=\"RT_ST_Disjoint\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:11130
+#: reference_raster.xml:11132
 #, no-c-format
 msgid "ST_Overlaps"
 msgstr "ST_Overlaps"
 
 #. Tag: refpurpose
-#: reference_raster.xml:11131
+#: reference_raster.xml:11133
 #, no-c-format
 msgid ""
 "Return true if raster rastA and rastB intersect but one does not completely "
@@ -25262,7 +25270,7 @@ msgstr ""
 "고 있지는 않을 경우 참을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:11137
+#: reference_raster.xml:11139
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Overlaps</function></funcdef> "
@@ -25286,7 +25294,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:11176
+#: reference_raster.xml:11178
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially overlaps raster rastB. This means that "
@@ -25302,7 +25310,7 @@ msgstr ""
 "을 가진 (NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:11187
+#: reference_raster.xml:11189
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -25312,7 +25320,7 @@ msgstr ""
 "geometry)처럼 래스터에 ST_Polygon 함수를 이용하십시오."
 
 #. Tag: programlisting
-#: reference_raster.xml:11198
+#: reference_raster.xml:11200
 #, no-c-format
 msgid ""
 "-- comparing different bands of same raster\n"
@@ -25330,13 +25338,13 @@ msgstr ""
 " f"
 
 #. Tag: refname
-#: reference_raster.xml:11210
+#: reference_raster.xml:11212
 #, no-c-format
 msgid "ST_Touches"
 msgstr "ST_Touches"
 
 #. Tag: refpurpose
-#: reference_raster.xml:11211
+#: reference_raster.xml:11213
 #, no-c-format
 msgid ""
 "Return true if raster rastA and rastB have at least one point in common but "
@@ -25346,7 +25354,7 @@ msgstr ""
 "지는 않을 경우 <varname>TRUE</varname> 를 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:11217
+#: reference_raster.xml:11219
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Touches</function></funcdef> "
@@ -25370,7 +25378,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:11256
+#: reference_raster.xml:11258
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially touches raster rastB. This means that "
@@ -25387,7 +25395,7 @@ msgstr ""
 "중 값을 가진 (NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:11267
+#: reference_raster.xml:11269
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -25397,7 +25405,7 @@ msgstr ""
 "geometry)처럼 래스터에 ST_Polygon 함수를 이용하십시오."
 
 #. Tag: programlisting
-#: reference_raster.xml:11278
+#: reference_raster.xml:11280
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
@@ -25417,13 +25425,13 @@ msgstr ""
 "   2 |   2 | f"
 
 #. Tag: refname
-#: reference_raster.xml:11290
+#: reference_raster.xml:11292
 #, no-c-format
 msgid "ST_SameAlignment"
 msgstr "ST_SameAlignment"
 
 #. Tag: refpurpose
-#: reference_raster.xml:11292
+#: reference_raster.xml:11294
 #, no-c-format
 msgid ""
 "Returns true if rasters have same skew, scale, spatial ref, and offset "
@@ -25436,7 +25444,7 @@ msgstr ""
 "니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:11296
+#: reference_raster.xml:11298
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_SameAlignment</function></"
@@ -25486,7 +25494,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:11375
+#: reference_raster.xml:11377
 #, no-c-format
 msgid ""
 "Non-Aggregate version (Variants 1 and 2): Returns true if the two rasters "
@@ -25503,7 +25511,7 @@ msgstr ""
 "설명하는 안내문(NOTICE)과 함께 거짓을 반환합니다."
 
 #. Tag: para
-#: reference_raster.xml:11379
+#: reference_raster.xml:11381
 #, no-c-format
 msgid ""
 "Aggregate version (Variant 3): From a set of rasters, returns true if all "
@@ -25517,19 +25525,19 @@ msgstr ""
 "들을 대상으로 연산한다는 뜻입니다."
 
 #. Tag: para
-#: reference_raster.xml:11384
+#: reference_raster.xml:11386
 #, no-c-format
 msgid "Enhanced: 2.1.0 addition of Aggegrate variant"
 msgstr "개선 사항: 2.1.0 버전에서 종합 함수 변종이 추가됐습니다."
 
 #. Tag: title
-#: reference_raster.xml:11388
+#: reference_raster.xml:11390
 #, no-c-format
 msgid "Examples: Rasters"
 msgstr "예시: 래스터"
 
 #. Tag: programlisting
-#: reference_raster.xml:11390
+#: reference_raster.xml:11392
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_SameAlignment(\n"
@@ -25551,7 +25559,7 @@ msgstr ""
 "t"
 
 #. Tag: programlisting
-#: reference_raster.xml:11391
+#: reference_raster.xml:11393
 #, no-c-format
 msgid ""
 "SELECT ST_SameAlignment(A.rast,b.rast)\n"
@@ -25579,7 +25587,7 @@ msgstr ""
 " f"
 
 #. Tag: para
-#: reference_raster.xml:11395
+#: reference_raster.xml:11397
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref linkend="
@@ -25589,13 +25597,13 @@ msgstr ""
 "\"RT_ST_MakeEmptyRaster\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:11405
+#: reference_raster.xml:11407
 #, no-c-format
 msgid "ST_NotSameAlignmentReason"
 msgstr "ST_NotSameAlignmentReason"
 
 #. Tag: refpurpose
-#: reference_raster.xml:11406
+#: reference_raster.xml:11408
 #, no-c-format
 msgid ""
 "<refpurpose>Returns text stating if rasters are aligned and if not aligned, "
@@ -25605,7 +25613,7 @@ msgstr ""
 "를 설명하는 텍스트를 반환합니다.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_raster.xml:11411
+#: reference_raster.xml:11413
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef> "
@@ -25617,7 +25625,7 @@ msgstr ""
 "<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>"
 
 #. Tag: para
-#: reference_raster.xml:11421
+#: reference_raster.xml:11423
 #, no-c-format
 msgid ""
 "<para>Returns text stating if rasters are aligned and if not aligned, a "
@@ -25627,7 +25635,7 @@ msgstr ""
 "명하는 텍스트를 반환합니다.</para>"
 
 #. Tag: para
-#: reference_raster.xml:11424
+#: reference_raster.xml:11426
 #, no-c-format
 msgid ""
 "If there are several reasons why the rasters are not aligned, only one "
@@ -25637,7 +25645,7 @@ msgstr ""
 "째 확인 작업)만 반환할 것입니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:11434
+#: reference_raster.xml:11436
 #, fuzzy, no-c-format
 msgid ""
 "SELECT\n"
@@ -25673,19 +25681,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_raster.xml:11439
+#: reference_raster.xml:11441
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SameAlignment\"/>"
 msgstr ", <xref linkend=\"RT_ST_SameAlignment\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:11448
+#: reference_raster.xml:11450
 #, no-c-format
 msgid "ST_Within"
 msgstr "ST_Within"
 
 #. Tag: refpurpose
-#: reference_raster.xml:11449
+#: reference_raster.xml:11451
 #, no-c-format
 msgid ""
 "Return true if no points of raster rastA lie in the exterior of raster rastB "
@@ -25696,7 +25704,7 @@ msgstr ""
 "부의 포인트 하나가 rastB의 내부에 있는 경우 참을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:11455
+#: reference_raster.xml:11457
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Within</function></funcdef> "
@@ -25720,7 +25728,7 @@ msgstr ""
 "parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:11494
+#: reference_raster.xml:11496
 #, no-c-format
 msgid ""
 "Raster rastA is within rastB if and only if no points of rastA lie in the "
@@ -25737,7 +25745,7 @@ msgstr ""
 "(NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:11505
+#: reference_raster.xml:11507
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -25749,7 +25757,7 @@ msgstr ""
 "ST_Polygon 함수를 이용하십시오."
 
 #. Tag: para
-#: reference_raster.xml:11511
+#: reference_raster.xml:11513
 #, no-c-format
 msgid ""
 "ST_Within() is the inverse of ST_Contains(). So, ST_Within(rastA, rastB) "
@@ -25759,7 +25767,7 @@ msgstr ""
 "의 결과와 ST_Contains(rastB, rastA)의 결과는 동일할 것입니다."
 
 #. Tag: programlisting
-#: reference_raster.xml:11522
+#: reference_raster.xml:11524
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
@@ -25779,7 +25787,7 @@ msgstr ""
 "   2 |   2 | t"
 
 #. Tag: para
-#: reference_raster.xml:11526
+#: reference_raster.xml:11528
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Contains\"/>, <xref linkend=\"RT_ST_DWithin\"/>, "
@@ -25789,13 +25797,13 @@ msgstr ""
 "<xref linkend=\"RT_ST_DFullyWithin\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:11537
+#: reference_raster.xml:11539
 #, no-c-format
 msgid "ST_DWithin"
 msgstr "ST_DWithin"
 
 #. Tag: refpurpose
-#: reference_raster.xml:11538
+#: reference_raster.xml:11540
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are within the specified distance of "
@@ -25805,7 +25813,7 @@ msgstr ""
 "다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:11544
+#: reference_raster.xml:11546
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_DWithin</function></funcdef> "
@@ -25833,7 +25841,7 @@ msgstr ""
 "type> <parameter>distance_of_srid</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:11591
+#: reference_raster.xml:11593
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are within the specified distance of "
@@ -25848,7 +25856,7 @@ msgstr ""
 "(NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:11595 reference_raster.xml:11688
+#: reference_raster.xml:11597 reference_raster.xml:11690
 #, no-c-format
 msgid ""
 "The distance is specified in units defined by the spatial reference system "
@@ -25860,7 +25868,7 @@ msgstr ""
 "야 합니다."
 
 #. Tag: para
-#: reference_raster.xml:11606
+#: reference_raster.xml:11608
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -25870,7 +25878,7 @@ msgstr ""
 "geometry)처럼 래스터에 ST_Polygon 함수를 이용하십시오."
 
 #. Tag: programlisting
-#: reference_raster.xml:11617
+#: reference_raster.xml:11619
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM "
@@ -25890,19 +25898,19 @@ msgstr ""
 "   2 |   2 | t"
 
 #. Tag: para
-#: reference_raster.xml:11621
+#: reference_raster.xml:11623
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DFullyWithin\"/>"
 msgstr ", <xref linkend=\"RT_ST_DFullyWithin\"/>"
 
 #. Tag: refname
-#: reference_raster.xml:11630
+#: reference_raster.xml:11632
 #, no-c-format
 msgid "ST_DFullyWithin"
 msgstr "ST_DFullyWithin"
 
 #. Tag: refpurpose
-#: reference_raster.xml:11631
+#: reference_raster.xml:11633
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are fully within the specified "
@@ -25912,7 +25920,7 @@ msgstr ""
 "환합니다."
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:11637
+#: reference_raster.xml:11639
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_DFullyWithin</function></"
@@ -25942,7 +25950,7 @@ msgstr ""
 "<parameter>distance_of_srid</parameter> </paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_raster.xml:11684
+#: reference_raster.xml:11686
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are fully within the specified "
@@ -25957,7 +25965,7 @@ msgstr ""
 "진 (NODATA가 아닌) 픽셀들만 고려합니다."
 
 #. Tag: para
-#: reference_raster.xml:11699
+#: reference_raster.xml:11701
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -25968,7 +25976,7 @@ msgstr ""
 "이용하십시오."
 
 #. Tag: programlisting
-#: reference_raster.xml:11710
+#: reference_raster.xml:11712
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM "
@@ -25988,38 +25996,38 @@ msgstr ""
 "   2 |   2 | t"
 
 #. Tag: para
-#: reference_raster.xml:11714
+#: reference_raster.xml:11716
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DWithin\"/>"
 msgstr ", <xref linkend=\"RT_ST_DWithin\"/>"
 
 #. Tag: para
-#: reference_raster.xml:11726
+#: reference_raster.xml:11728
 #, no-c-format
 msgid ""
 "This section documents various gotchas and tips related to PostGIS Raster."
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11729
+#: reference_raster.xml:11731
 #, no-c-format
 msgid "Raster Tips"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11732
+#: reference_raster.xml:11734
 #, no-c-format
 msgid "Out-DB Rasters"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11735
+#: reference_raster.xml:11737
 #, no-c-format
 msgid "Directory containing many files"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11736
+#: reference_raster.xml:11738
 #, no-c-format
 msgid ""
 "When GDAL opens a file, GDAL eagerly scans the directory of that file to "
@@ -26029,7 +26037,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11739
+#: reference_raster.xml:11741
 #, no-c-format
 msgid ""
 "To control this behavior, GDAL provides the following environment variable: "
@@ -26040,7 +26048,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11743
+#: reference_raster.xml:11745
 #, no-c-format
 msgid ""
 "In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), "
@@ -26052,7 +26060,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:11746
+#: reference_raster.xml:11748
 #, no-c-format
 msgid ""
 "# environment variables for postmaster process\n"
@@ -26071,13 +26079,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11752
+#: reference_raster.xml:11754
 #, no-c-format
 msgid "Maximum Number of Open Files"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11754
+#: reference_raster.xml:11756
 #, no-c-format
 msgid ""
 "The maximum number of open files permitted by Linux and PostgreSQL are "
@@ -26090,7 +26098,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11758
+#: reference_raster.xml:11760
 #, no-c-format
 msgid ""
 "The easiest change to make is the following PostgreSQL setting: <ulink url="
@@ -26105,7 +26113,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:11761
+#: reference_raster.xml:11763
 #, no-c-format
 msgid ""
 "...\n"
@@ -26118,7 +26126,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11764
+#: reference_raster.xml:11766
 #, no-c-format
 msgid ""
 "The major change to make is the Linux kernel's open files limits. There are "
@@ -26126,25 +26134,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11768
+#: reference_raster.xml:11770
 #, no-c-format
 msgid "<para>Maximum number of open files for the entire system</para>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11771
+#: reference_raster.xml:11773
 #, no-c-format
 msgid "<para>Maximum number of open files per process</para>"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11777
+#: reference_raster.xml:11779
 #, no-c-format
 msgid "<title>Maximum number of open files for the entire system</title>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11779
+#: reference_raster.xml:11781
 #, no-c-format
 msgid ""
 "You can inspect the current maximum number of open files for the entire "
@@ -26152,7 +26160,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:11783
+#: reference_raster.xml:11785
 #, no-c-format
 msgid ""
 "$ sysctl -a | grep fs.file-max\n"
@@ -26160,7 +26168,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11785
+#: reference_raster.xml:11787
 #, no-c-format
 msgid ""
 "If the value returned is not large enough, add a file to <emphasis>/etc/"
@@ -26168,7 +26176,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:11789
+#: reference_raster.xml:11791
 #, no-c-format
 msgid ""
 "$ echo \"fs.file-max = 6145324\" >> /etc/sysctl.d/fs.conf\n"
@@ -26186,13 +26194,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:11793
+#: reference_raster.xml:11795
 #, no-c-format
 msgid "<title>Maximum number of open files per process</title>"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11795
+#: reference_raster.xml:11797
 #, no-c-format
 msgid ""
 "We need to increase the maximum number of open files per process for the "
@@ -26200,7 +26208,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11799
+#: reference_raster.xml:11801
 #, no-c-format
 msgid ""
 "To see what the current PostgreSQL service processes are using for maximum "
@@ -26209,7 +26217,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:11803
+#: reference_raster.xml:11805
 #, no-c-format
 msgid ""
 "$ ps aux | grep postgres\n"
@@ -26252,7 +26260,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11805
+#: reference_raster.xml:11807
 #, no-c-format
 msgid ""
 "In the example above, we inspected the open files limit for Process 31718. "
@@ -26261,7 +26269,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11809
+#: reference_raster.xml:11811
 #, no-c-format
 msgid ""
 "We want to increase <emphasis>Soft Limit</emphasis> and <emphasis>Hard "
@@ -26272,7 +26280,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11813
+#: reference_raster.xml:11815
 #, no-c-format
 msgid ""
 "In Ubuntu (and assuming you are using PostgreSQL's packages for Ubuntu), the "
@@ -26283,7 +26291,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11817
+#: reference_raster.xml:11819
 #, no-c-format
 msgid ""
 "Let's first address the SysV Ubuntu case where we add <emphasis role=\"strong"
@@ -26293,7 +26301,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:11821
+#: reference_raster.xml:11823
 #, no-c-format
 msgid ""
 "...\n"
@@ -26321,7 +26329,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11823
+#: reference_raster.xml:11825
 #, no-c-format
 msgid ""
 "Now to address the systemd Ubuntu case. We will add <emphasis role=\"strong"
@@ -26331,7 +26339,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:11827
+#: reference_raster.xml:11829
 #, no-c-format
 msgid ""
 "...\n"
@@ -26347,19 +26355,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:11829
+#: reference_raster.xml:11831
 #, no-c-format
 msgid ""
 "After making the necessary systemd changes, make sure to reload the daemon"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:11833
+#: reference_raster.xml:11835
 #, no-c-format
 msgid "systemctl daemon-reload"
 msgstr ""
 
-#, no-c-format
 #~ msgid ""
 #~ "Returns the value of a given band in a given columnx, rowy pixel or at a "
 #~ "given geometry point. Band numbers start at 1 and band is assumed to be 1 "
@@ -26375,7 +26382,6 @@ msgstr ""
 #~ "<varname>exclude_nodata_value</varname> 를 거짓으로 설정할 경우, 모든 픽셀"
 #~ "을 처리합니다."
 
-#, no-c-format
 #~ msgid ""
 #~ "/*\n"
 #~ "The ST_SetValues() does the following...\n"
@@ -26475,7 +26481,6 @@ msgstr ""
 #~ " 3 | 2 |   9\n"
 #~ " 3 | 3 |   9"
 
-#, no-c-format
 #~ msgid ""
 #~ "/*\n"
 #~ "The ST_SetValues() does the following...\n"

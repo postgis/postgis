@@ -13873,6 +13873,7 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
                     reverse of a GROUP BY in that it creates new rows. For example it
                     can be used to expand a single raster into multiple POLYGONS/MULTIPOLYGONS.</para>
 
+                    <para>Changed 3.3.0, validation and fixing is disabled to improve performance. May result invalid geometries.</para>
                     <para>Availability: Requires GDAL 1.7 or higher.</para>
                     <note><para>If there is a no data value set for a band, pixels with that value will not be returned except in the case of exclude_nodata_value=false.</para></note>
                     <note><para>If you only care about count of pixels with a given value in a raster, it is faster to use <xref linkend="RT_ST_ValueCount" />.</para></note>
@@ -14078,6 +14079,7 @@ FROM foo
 
                 <refsection>
                     <title>Description</title>
+                    <para>Changed 3.3.0, validation and fixing is disabled to improve performance. May result invalid geometries.</para>
                     <para>Availability: 0.1.6 Requires GDAL 1.7 or higher.</para>
                     <para>Enhanced: 2.1.0 Improved Speed (fully C-Based) and the returning multipolygon is ensured to be valid.</para>
                     <para>Changed: 2.1.0 In prior versions would sometimes return a polygon, changed to always return multipolygon.</para>

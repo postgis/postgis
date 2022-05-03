@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-04-16 08:20+0000\n"
+"POT-Creation-Date: 2022-05-03 02:58+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -4176,17 +4176,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1877
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Returns a MultiPoint containing all the coordinates of a geometry. Does not "
-"remove points that are repeated in the geometry, including the start and end "
-"points of ring geometries. (If this behavior is undesired, duplicates may be "
-"removed using <xref linkend=\"ST_RemoveRepeatedPoints\"/>)."
+"Returns a MultiPoint containing all the coordinates of a geometry. Duplicate "
+"points are preserved, including the start and end points of ring geometries. "
+"(If desired, duplicate points can be removed by calling <xref linkend="
+"\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
-"도형의 모든 좌표들을 담고 있는 멀티포인트를 반환합니다. 입력 도형에서 중첩되"
-"어 있는 포인트들 -- 고리 도형의 시작점과 종단점 포함 -- 을 제거하지 않습니다"
-"(이런 습성을 원하지 않을 경우, <xref linkend=\"ST_RemoveRepeatedPoints\"/> 함"
-"수를 이용해서 중첩된 포인트를 제거할 수도 있습니다)."
 
 #. Tag: para
 #: reference_accessor.xml:1885
@@ -4198,9 +4194,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1890
-#, fuzzy, no-c-format
-msgid "M and Z coordinates will be preserved if present."
-msgstr "M 및 Z 좌표가 있을 경우 그대로 유지될 것입니다."
+#, no-c-format
+msgid "M and Z coordinates are preserved if present."
+msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1897
@@ -4859,6 +4855,23 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
+
+#, fuzzy
+#~ msgid ""
+#~ "Returns a MultiPoint containing all the coordinates of a geometry. Does "
+#~ "not remove points that are repeated in the geometry, including the start "
+#~ "and end points of ring geometries. (If this behavior is undesired, "
+#~ "duplicates may be removed using <xref linkend=\"ST_RemoveRepeatedPoints\"/"
+#~ ">)."
+#~ msgstr ""
+#~ "도형의 모든 좌표들을 담고 있는 멀티포인트를 반환합니다. 입력 도형에서 중첩"
+#~ "되어 있는 포인트들 -- 고리 도형의 시작점과 종단점 포함 -- 을 제거하지 않습"
+#~ "니다(이런 습성을 원하지 않을 경우, <xref linkend=\"ST_RemoveRepeatedPoints"
+#~ "\"/> 함수를 이용해서 중첩된 포인트를 제거할 수도 있습니다)."
+
+#, fuzzy
+#~ msgid "M and Z coordinates will be preserved if present."
+#~ msgstr "M 및 Z 좌표가 있을 경우 그대로 유지될 것입니다."
 
 #~ msgid ""
 #~ "-- ST_AsText output\n"

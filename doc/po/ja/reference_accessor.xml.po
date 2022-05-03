@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-04-16 08:20+0000\n"
+"POT-Creation-Date: 2022-05-03 02:58+0000\n"
 "PO-Revision-Date: 2022-03-28 21:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -4181,17 +4181,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1877
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"Returns a MultiPoint containing all the coordinates of a geometry. Does not "
-"remove points that are repeated in the geometry, including the start and end "
-"points of ring geometries. (If this behavior is undesired, duplicates may be "
-"removed using <xref linkend=\"ST_RemoveRepeatedPoints\"/>)."
+"Returns a MultiPoint containing all the coordinates of a geometry. Duplicate "
+"points are preserved, including the start and end points of ring geometries. "
+"(If desired, duplicate points can be removed by calling <xref linkend="
+"\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
-"ジオメトリの全ての座標値からなるマルチポイントを返します。入力ジオメトリの重"
-"複ポイントを削除せず、環ジオメトリの開始点と終了点も削除しません (この挙動を"
-"望まない場合には<xref linkend=\"ST_RemoveRepeatedPoints\"/>を使って消しま"
-"す)。"
 
 #. Tag: para
 #: reference_accessor.xml:1885
@@ -4203,9 +4199,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1890
-#, fuzzy, no-c-format
-msgid "M and Z coordinates will be preserved if present."
-msgstr "M値とZ値は、存在する場合には保存されます。"
+#, no-c-format
+msgid "M and Z coordinates are preserved if present."
+msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1897
@@ -4861,6 +4857,23 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
+
+#, fuzzy
+#~ msgid ""
+#~ "Returns a MultiPoint containing all the coordinates of a geometry. Does "
+#~ "not remove points that are repeated in the geometry, including the start "
+#~ "and end points of ring geometries. (If this behavior is undesired, "
+#~ "duplicates may be removed using <xref linkend=\"ST_RemoveRepeatedPoints\"/"
+#~ ">)."
+#~ msgstr ""
+#~ "ジオメトリの全ての座標値からなるマルチポイントを返します。入力ジオメトリの"
+#~ "重複ポイントを削除せず、環ジオメトリの開始点と終了点も削除しません (この挙"
+#~ "動を望まない場合には<xref linkend=\"ST_RemoveRepeatedPoints\"/>を使って消"
+#~ "します)。"
+
+#, fuzzy
+#~ msgid "M and Z coordinates will be preserved if present."
+#~ msgstr "M値とZ値は、存在する場合には保存されます。"
 
 #~ msgid ""
 #~ "-- ST_AsText output\n"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-28 12:23+0000\n"
+"POT-Creation-Date: 2022-05-03 02:58+0000\n"
 "PO-Revision-Date: 2021-11-28 22:08+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -898,7 +898,7 @@ msgstr "Disponibilidade: 2.0.0"
 #. Tag: para
 #: reference_processing.xml:549
 #, no-c-format
-msgid "Enhanced: 3.2.0"
+msgid "Enhanced: 3.3.0, GEOS native implementation enabled for GEOS 3.11+"
 msgstr ""
 
 #. Tag: para
