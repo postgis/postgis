@@ -205,7 +205,7 @@ include $(top_srcdir)/regress/dumper/tests.mk
 include $(top_srcdir)/extensions/postgis_tiger_geocoder/tests.mk
 ifeq ($(HAVE_SFCGAL),yes)
 	override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
-	include $(top_srcdir)/sfcgal/regress/tests.mk
+	include $(top_builddir)/sfcgal/regress/tests.mk
 endif
 ifeq (@TOPOLOGY@,topology)
 	include $(top_srcdir)/topology/test/tests.mk

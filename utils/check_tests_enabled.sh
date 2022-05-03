@@ -79,6 +79,6 @@ cd ${RD}
 check_enabled topology/test/tests.mk regress &&
 check_enabled regress/loader/tests.mk &&
 check_enabled regress/dumper/tests.mk &&
-check_enabled sfcgal/regress/tests.mk &&
+check_enabled sfcgal/regress/tests.mk.in &&
 check_enabled regress/core/tests.mk.in &&
 check_enabled raster/test/regress/tests.mk

@@ -808,7 +808,7 @@ if test "x$with_sfcgal" != "xno"; then
       SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
       AC_DEFINE([HAVE_SFCGAL], [1], [Define to 1 if sfcgal is being built])
-	    SFCGAL_MAKEFILE_LIST="sfcgal/Makefile sfcgal/regress/Makefile extensions/postgis_sfcgal/Makefile"
+	    SFCGAL_MAKEFILE_LIST="sfcgal/Makefile sfcgal/regress/Makefile sfcgal/regress/tests.mk extensions/postgis_sfcgal/Makefile"
 		fi
 		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 10301; then
 			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.3.1 (found $SFCGAL_VERSION)])

@@ -721,7 +721,7 @@ SELECT disease_type,
 
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_ConvexHull" />, <xref linkend="ST_Collect" /></para>
+        <para><xref linkend="ST_ConvexHull" />, <xref linkend="ST_Collect" />, <xref linkend="ST_AlphaShape" />, <xref linkend="ST_OptimalAlphaShape" /></para>
       </refsection>
     </refentry>
 

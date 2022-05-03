@@ -162,6 +162,7 @@ regress/postgis_garden_result.txt
 regress/raster_garden_result.txt
 sfcgal/Makefile
 sfcgal/regress/Makefile
+sfcgal/regress/tests.mk
 sfcgal/*.sql
 sfcgal/sfcgal_upgrade.sql.in
 *.so

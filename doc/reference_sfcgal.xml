@@ -1214,4 +1214,148 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 
 	</refentry>
 
+	<refentry id="ST_AlphaShape">
+	  <refnamediv>
+		<refname>ST_AlphaShape</refname>
+
+		<refpurpose>Computes a possible concave geometry using the CGAL Alpha Shapes algorithm.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry<function>ST_AlphaShape</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>param_geom</parameter></paramdef>
+                        <paramdef choice="opt"><type>float </type> <parameter>param_alpha</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>param_allow_holes = false</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+            <title>Description</title>
+
+            <para>Assume we are given a set S of points in 2D [...] and we would like to have something like "the shape formed by these points". This is quite a vague notion and there are probably many possible interpretations, the α-shape being one of them. Alpha shapes can be used for shape reconstruction from a dense unorganized set of data points. Indeed, an α-shape is demarcated by a frontier, which is a linear approximation of the original shape [1].
+            [1] F. Bernardini and C. Bajaj. Sampling and reconstructing manifolds using alpha-shapes. Technical Report CSD-TR-97-013, Dept. Comput. Sci., Purdue Univ., West Lafayette, IN, 1997.
+
+            Source:  <ulink url="https://doc.cgal.org/latest/Alpha_shapes_2/index.html#Chapter_2D_Alpha_Shapes">CGAL ALpha Shapes</ulink>
+
+            This function compute the concave hull of a set of geometry, but using CGAL and a different algorithm than ST_ConcaveHull performed by the GEOS module.
+            See : <ulink url="http://lin-ear-th-inking.blogspot.com/2022/01/concave-hulls-in-jts.html">Concave Hulls in JTS</ulink></para>
+
+		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Examples</title>
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_alphashape01.png" />
+        </imageobject>
+        <caption><para>Concave Hull of a MultiPoint</para></caption>
+      </mediaobject>
+    </informalfigure>
+         <programlisting>SELECT ST_AsText(ST_AlphaShape('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))
+'::geometry));</programlisting>
+          <screen>POLYGON((8.9 5.3,9.1 5,8.7 4.2,9 3,8.4 1.9,7.8 1.6,7.3 1.6,6.5 1.6,5.3 1.8,4.3 1.9,3.7 2.3,3 2.2,2.8 3.3,2.3 3.6,2.6 4.4,2.7 5.4,2.3 6,2.4 6.7,2.7 7.7,2.4 8.2,2.6 8.5,3.4 8.6,3.9 8.8,4.5 9,4.9 9.5,5.2 9.8,5.7 9.7,6.4 9.7,7.2 9.5,7.6 8.8,7.5 8.4,8.3 7.2,8.5 7.1,8.8 5.8,8.9 5.3))</screen>
+        </para>
+
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_alphashape02.png" />
+        </imageobject>
+        <caption><para>Concave Hull of a MultiPoint, allowing holes</para></caption>
+      </mediaobject>
+    </informalfigure>
+         <programlisting>SELECT ST_AsText(ST_AlphaShape('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))
+           '::geometry), allow_holes => true);</programlisting>
+          <screen>POLYGON((8.9 5.3,9.1 5.0,8.7 4.2,9.0 3.0,8.4 1.9,7.8 1.6,7.3 1.6,6.5 1.6,5.3 1.8,4.3 1.9,3.7 2.3,3.0 2.2,2.8 3.3,2.3 3.6,2.6 4.4,2.7 5.4,2.3 6.0,2.4 6.7,2.7 7.7,2.4 8.2,2.6 8.5,3.4 8.6,3.9 8.8,4.5 9.0,4.9 9.5,5.2 9.8,5.7 9.7,6.4 9.7,7.2 9.5,7.6 8.8,7.5 8.4,8.3 7.2,8.5 7.1,8.8 5.8,8.9 5.3),(3.6 6.1,3.6 6.8,4.0 7.5,4.3 8.0,6.0 8.1,6.8 7.3,7.7 6.7,8.1 6.0,8.2 5.4,8.1 4.7,7.8 4.3,7.6 2.7,6.2 2.2,5.4 3.2,4.4 4.2,3.8 4.6,3.6 6.1))</screen>
+        </para>
+	  </refsection>
+      <refsection>
+		<title>See Also</title>
+                <para><xref linkend="ST_ConcaveHull" />, <xref linkend="ST_OptimalAlphaShape" /></para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_OptimalAlphaShape">
+	  <refnamediv>
+		<refname>ST_OptimalAlphaShape</refname>
+
+		<refpurpose>Computes a possible concave geometry using the CGAL Alpha Shapes algorithm after have computed the "optimal" alpha value.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry<function>ST_OptimalAlphaShape</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>param_geom</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>param_allow_holes = false</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>param_nb_components</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+         <title>Description</title>
+
+         <para>Computes the "optimal" alpha-shapes of the set of geometry.
+
+            CGAL can automatically found the optimal value of alpha. This version use it to find an "optimal" alpha-shapes.
+            The result is a single polygon. It will not contain holes unless the optional <varname>param_allow_holes</varname> argument is specified as true.
+
+            The result will be generated such as the number of solid component of the alpha shape is equal to or smaller than <varname>param_nb_components</varname>.</para>
+
+		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+	      <title>Examples</title>
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_optimalalphashape01.png" />
+        </imageobject>
+        <caption><para>Concave Hull of a MultiPoint</para></caption>
+      </mediaobject>
+    </informalfigure>
+         <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))
+'::geometry));</programlisting>
+          <screen>POLYGON((8.9 5.3,9.1 5,8.7 4.2,9 3,8.8 2.9,8.4 1.9,7.8 1.6,7.3 1.6,6.5 1.6,5.3 1.8,4.3 1.9,3.7 2.3,3 2.2,2.8 3.3,2.3 3.6,2.6 4.4,2.7 5.4,2.3 6,2.4 6.7,2.7 7.7,2.4 8.2,2.6 8.5,3.4 8.6,3.9 8.8,4.5 9,4.9 9.5,5.2 9.8,5.7 9.7,6.4 9.7,7.2 9.5,7.6 8.8,7.5 8.4,7.5 7.7,8.3 7.2,8.5 7.1,8.3 6.4,8.8 5.8,8.9 5.3))</screen>
+        </para>
+
+<para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_optimalalphashape02.png" />
+        </imageobject>
+        <caption><para>Concave Hull of a MultiPoint, allowing holes</para></caption>
+      </mediaobject>
+    </informalfigure>
+         <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))
+           '::geometry), allow_holes => true);</programlisting>
+          <screen>POLYGON((8.9 5.3,9.1 5,8.7 4.2,9 3,8.8 2.9,8.4 1.9,7.8 1.6,7.3 1.6,6.5 1.6,5.3 1.8,4.3 1.9,3.7 2.3,3 2.2,2.8 3.3,2.3 3.6,2.6 4.4,2.7 5.4,2.3 6,2.4 6.7,2.7 7.7,2.4 8.2,2.6 8.5,3.4 8.6,3.9 8.8,4.5 9,4.9 9.5,5.2 9.8,5.7 9.7,6.4 9.7,7.2 9.5,7.6 8.8,7.5 8.4,7.5 7.7,8.3 7.2,8.5 7.1,8.3 6.4,8.8 5.8,8.9 5.3),(3.6 6.1,3.6 6.8,4 7.5,4.3 8,5 8.6,6 8.1,6.8 7.3,7.7 6.7,8.1 6,8.2 5.4,8.1 4.7,7.8 4.3,8.1 2.9,7.6 2.7,7 2,6.2 2.2,5.5 2.6,5.4 3.2,4.8 3.4,4.4 4.2,3.8 4.6,3.6 6.1))</screen>
+        </para>
+	  </refsection>
+      <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_ConcaveHull" />, <xref linkend="ST_AlphaShape" /></para>
+	  </refsection>
+
+	</refentry>
 </sect1>
