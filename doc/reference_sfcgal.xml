@@ -1170,7 +1170,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry<function>ST_3DConvexHull</function></funcdef>
+			<funcdef>geometry <function>ST_3DConvexHull</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -1224,10 +1224,10 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry<function>ST_AlphaShape</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>param_geom</parameter></paramdef>
-                        <paramdef choice="opt"><type>float </type> <parameter>param_alpha</parameter></paramdef>
-                        <paramdef choice="opt"><type>boolean </type> <parameter>param_allow_holes = false</parameter></paramdef>
+			<funcdef>geometry <function>ST_AlphaShape</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+                        <paramdef choice="opt"><type>float </type> <parameter>alpha</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1245,9 +1245,6 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 
 		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
 		<para>&sfcgal_required;</para>
-		<para>&Z_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
 	  </refsection>
 
 	  <refsection>
@@ -1261,28 +1258,44 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
         <caption><para>Concave Hull of a MultiPoint</para></caption>
       </mediaobject>
     </informalfigure>
-         <programlisting>SELECT ST_AsText(ST_AlphaShape('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),
-         (8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),
-         (8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),
-         (7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),
-         (8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),
-         (3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))'::geometry));</programlisting>
-          <screen>POLYGON((8.9 5.3,9.1 5,8.7 4.2,9 3,8.4 1.9,7.8 1.6,7.3 1.6,6.5 1.6,5.3 1.8,4.3 1.9,3.7 2.3,3 2.2,2.8 3.3,2.3 3.6,2.6 4.4,2.7 5.4,2.3 6,2.4 6.7,2.7 7.7,2.4 8.2,2.6 8.5,3.4 8.6,3.9 8.8,4.5 9,4.9 9.5,5.2 9.8,5.7 9.7,6.4 9.7,7.2 9.5,7.6 8.8,7.5 8.4,8.3 7.2,8.5 7.1,8.8 5.8,8.9 5.3))</screen>
+         <programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((94 126),(114 132),(102 110),(80 27),(136 75),(122 105),(132 44),(36 123),(48 76),(56 34),(40 81),(126 28),(112 130),(66 63),(116 100),(135 45),(54 92),(48 98),(122 70),(132 87),(102 110),(74 142),(122 90),(130 75),(117 24),(118 32),(45 33),(117 64),(39 128),(72 51),(52 52),(54 60),(46 118),(125 44),(40 126),(78 147),(108 142),(128 106),(112 126),(112 116),(122 44),(116 110),(61 63),(125 108),(34 54),(134 80),(40 86),(86 146),(40 116),(58 132),(90 122),(120 108),(81 48),(82 39),(93 33),(105 30),(114 40),(126 52),(130 63),(123 81),(125 96),(104 129),(90 135),(75 129),(64 120),(54 110),(54 102),(60 112),(36 100),(34 90),(39 66),(42 50),(60 48),(64 28),(98 24),(110 24),(57 69),(46 88),(51 129),(68 135),(96 146))'::geometry,80.2));</programlisting>
+          <screen>POLYGON((134 80,136 75,130 63,126 52,135 45,132 44,126 28,117 24,110 24,98 24,93 33,80 27,82 39,72 51,60 48,52 52,42 50,34 54,39 66,40 81,34 90,36 100,48 98,54 110,40 116,36 123,39 128,51 129,58 132,68 135,74 142,78 147,86 146,96 146,90 135,104 129,108 142,114 132,112 126,112 116,116 110,120 108,125 108,128 106,125 96,132 87,134 80))</screen>
         </para>
+    <para>
+        <informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_alphashape02.png" />
+            </imageobject>
+            <caption><para>Concave Hull of a MultiPoint, allowing holes (same example as ST_OptimalAlphaShape)</para></caption>
+        </mediaobject>
+        </informalfigure>
+            <programlisting>SELECT ST_AsText(ST_AlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),
+            (37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),(78 16),
+            (79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),(75 84),(75 77),(81 29),
+            (77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),(80 72),(54 32),(55 26),(62 22),(70 20),(76 27),
+            (84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),(36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),
+            (43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, 100.1,true))</programlisting>
+            <screen>POLYGON((89 53,91 50,87 42,90 30,84 19,78 16,73 16,65 16,53 18,43 19,30 22,28 33,23 36,26 44,27 54,
+            23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,76 88,75 84,83 72,85 71,88 58,89 53),
+            (36 61,36 68,40 75,43 80,60 81,68 73,77 67,81 60,82 54,81 47,78 43,76 27,62 22,54 32,44 42,38 46,36 61))</screen>
+    </para>
 
-<para>
-    <informalfigure>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_alphashape02.png" />
-        </imageobject>
-        <caption><para>Concave Hull of a MultiPoint, allowing holes</para></caption>
-      </mediaobject>
-    </informalfigure>
-         <programlisting>SELECT ST_AsText(ST_AlphaShape('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))
-           '::geometry), allow_holes => true);</programlisting>
-          <screen>POLYGON((8.9 5.3,9.1 5.0,8.7 4.2,9.0 3.0,8.4 1.9,7.8 1.6,7.3 1.6,6.5 1.6,5.3 1.8,4.3 1.9,3.7 2.3,3.0 2.2,2.8 3.3,2.3 3.6,2.6 4.4,2.7 5.4,2.3 6.0,2.4 6.7,2.7 7.7,2.4 8.2,2.6 8.5,3.4 8.6,3.9 8.8,4.5 9.0,4.9 9.5,5.2 9.8,5.7 9.7,6.4 9.7,7.2 9.5,7.6 8.8,7.5 8.4,8.3 7.2,8.5 7.1,8.8 5.8,8.9 5.3),(3.6 6.1,3.6 6.8,4.0 7.5,4.3 8.0,6.0 8.1,6.8 7.3,7.7 6.7,8.1 6.0,8.2 5.4,8.1 4.7,7.8 4.3,7.6 2.7,6.2 2.2,5.4 3.2,4.4 4.2,3.8 4.6,3.6 6.1))</screen>
-        </para>
+    <para>
+        <informalfigure>
+        <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_alphashape03.png" />
+            </imageobject>
+            <caption><para>Concave Hull of a MultiPoint, allowing holes (same example as ST_ConcaveHull)</para></caption>
+        </mediaobject>
+        </informalfigure>
+            <programlisting>SELECT ST_AlphaShape(
+            'MULTIPOINT ((132 64), (114 64), (99 64), (81 64), (63 64), (57 49), (52 36), (46 20), (37 20), (26 20), (32 36), (39 55), (43 69), (50 84), (57 100), (63 118), (68 133), (74 149), (81 164), (88 180), (101 180), (112 180), (119 164), (126 149), (132 131), (139 113), (143 100), (150 84), (157 69), (163 51), (168 36), (174 20), (163 20), (150 20), (143 36), (139 49), (132 64), (99 151), (92 138), (88 124), (81 109), (74 93), (70 82), (83 82), (99 82), (112 82), (126 82), (121 96), (114 109), (110 122), (103 138), (99 151), (34 27), (43 31), (48 44), (46 58), (52 73), (63 73), (61 84), (72 71), (90 69), (101 76), (123 71), (141 62), (166 27), (150 33), (159 36), (146 44), (154 53), (152 62), (146 73), (134 76), (143 82), (141 91), (130 98), (126 104), (132 113), (128 127), (117 122), (112 133), (119 144), (108 147), (119 153), (110 171), (103 164), (92 171), (86 160), (88 142), (79 140), (72 124), (83 131), (79 118), (68 113), (63 102), (68 93), (35 45))'::geometry,102.2, true);</programlisting>
+            <screen>POLYGON((134 80,136 75,130 63,135 45,132 44,126 28,117 24,110 24,98 24,80 27,82 39,72 51,60 48,56 34,52 52,42 50,
+                34 54,39 66,40 81,34 90,36 100,40 116,36 123,39 128,51 129,58 132,68 135,74 142,78 147,86 146,96 146,
+                108 142,114 132,112 126,112 116,116 110,120 108,125 108,128 106,125 96,132 87,134 80))</screen>
+    </para>
 	  </refsection>
       <refsection>
 		<title>See Also</title>
@@ -1303,8 +1316,8 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 		  <funcprototype>
 			<funcdef>geometry<function>ST_OptimalAlphaShape</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>param_geom</parameter></paramdef>
-                        <paramdef choice="opt"><type>boolean </type> <parameter>param_allow_holes = false</parameter></paramdef>
-                        <paramdef choice="opt"><type>integer </type> <parameter>param_nb_components</parameter></paramdef>
+                        <paramdef choice="opt"><type>boolean </type> <parameter>allow_holes = false</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>nb_components</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1321,55 +1334,47 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 
 		<para>Availability: 3.3.0 - requires SFCGAL &gt;= 1.4.1.</para>
 		<para>&sfcgal_required;</para>
-		<para>&Z_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
 	  </refsection>
 
 	  <refsection>
-	      <title>Examples</title>
-<para>
-    <informalfigure>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_optimalalphashape01.png" />
-        </imageobject>
-        <caption><para>Concave Hull of a MultiPoint</para></caption>
-      </mediaobject>
-    </informalfigure>
-         <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((94 126),(114 132),(102 110),(80 27),
-         (136 75),(122 105),(132 44),(36 123),(48 76),(56 34),(40 81),(126 28),(112 130),(66 63),(116 100),(135 45),
-         (54 92),(48 98),(122 70),(132 87),(102 110),(74 142),(122 90),(130 75),(117 24),(118 32),(45 33),(117 64),
-         (39 128),(72 51),(52 52),(54 60),(46 118),(125 44),(40 126),(78 147),(108 142),(128 106),(112 126),(112 116),
-         (122 44),(116 110),(61 63),(125 108),(34 54),(134 80),(40 86),(86 146),(40 116),(58 132),(90 122),(120 108),
-         (81 48),(82 39),(93 33),(105 30),(114 40),(126 52),(130 63),(123 81),(125 96),(104 129),(90 135),(75 129),
-         (64 120),(54 110),(54 102),(60 112),(36 100),(34 90),(39 66),(42 50),(60 48),(64 28),(98 24),(110 24),(57 69),
-         (46 88),(51 129),(68 135),(96 146))'::geometry));</programlisting>
-          <screen>POLYGON((134 80,136 75,130 63,135 45,132 44,126 28,117 24,110 24,98 24,80 27,64 28,56 34,45 33,42 50,34 54,
-          39 66,40 81,34 90,36 100,40 116,36 123,39 128,51 129,58 132,68 135,74 142,78 147,86 146,96 146,108 142,
-          114 132,112 126,112 116,125 108,128 106,125 96,132 87,134 80))</screen>
+	    <title>Examples</title>
+        <para>
+            <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_optimalalphashape01.png" />
+                </imageobject>
+                <caption><para>Concave Hull of a MultiPoint</para></caption>
+            </mediaobject>
+            </informalfigure>
+                <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((94 126),(114 132),(102 110),(80 27),
+                (136 75),(122 105),(132 44),(36 123),(48 76),(56 34),(40 81),(126 28),(112 130),(66 63),(116 100),(135 45),
+                (54 92),(48 98),(122 70),(132 87),(102 110),(74 142),(122 90),(130 75),(117 24),(118 32),(45 33),(117 64),
+                (39 128),(72 51),(52 52),(54 60),(46 118),(125 44),(40 126),(78 147),(108 142),(128 106),(112 126),(112 116),
+                (122 44),(116 110),(61 63),(125 108),(34 54),(134 80),(40 86),(86 146),(40 116),(58 132),(90 122),(120 108),
+                (81 48),(82 39),(93 33),(105 30),(114 40),(126 52),(130 63),(123 81),(125 96),(104 129),(90 135),(75 129),
+                (64 120),(54 110),(54 102),(60 112),(36 100),(34 90),(39 66),(42 50),(60 48),(64 28),(98 24),(110 24),(57 69),
+                (46 88),(51 129),(68 135),(96 146))'::geometry));</programlisting>
+                <screen>POLYGON((134 80,136 75,130 63,135 45,132 44,126 28,117 24,110 24,98 24,80 27,64 28,56 34,45 33,42 50,34 54,
+                39 66,40 81,34 90,36 100,40 116,36 123,39 128,51 129,58 132,68 135,74 142,78 147,86 146,96 146,108 142,
+                114 132,112 126,112 116,125 108,128 106,125 96,132 87,134 80))</screen>
         </para>
 
-<para>
-    <informalfigure>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/st_optimalalphashape02.png" />
-        </imageobject>
-        <caption><para>Concave Hull of a MultiPoint, allowing holes</para></caption>
-      </mediaobject>
-    </informalfigure>
-         <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((94 126),(114 132),(102 110),(80 27),(136 75),(122 105),(132 44),(36 123),
-         (48 76),(56 34),(40 81),(126 28),(112 130),(66 63),(116 100),(135 45),(54 92),(48 98),(122 70),(132 87),(102 110),(74 142),(122 90),(130 75),(117 24),
-         (118 32),(45 33),(117 64),(39 128),
-         (72 51),(52 52),(54 60),(46 118),(125 44),(40 126),(78 147),(108 142),(128 106),(112 126),(112 116),(122 44),(116 110),(61 63),(125 108),(34 54),(134 80),
-         (40 86),(86 146),(40 116),
-         (58 132),(90 122),(120 108),(81 48),(82 39),(93 33),(105 30),(114 40),(126 52),(130 63),(123 81),(125 96),(104 129),(90 135),(75 129),(64 120),(54 110),
-         (54 102),(60 112),(36 100),(34 90),(39 66),(42 50),(60 48),(64 28),(98 24),(110 24),(57 69),(46 88),(51 129),
-         (68 135),(96 146))'::geometry, allow_holes => true));</programlisting>
-          <screen>POLYGON((134 80,136 75,130 63,135 45,132 44,126 28,117 24,110 24,98 24,80 27,64 28,56 34,45 33,42 50,
-          34 54,39 66,40 81,34 90,36 100,40 116,36 123,39 128,51 129,58 132,68 135,74 142,78 147,86 146,96 146,108 142,
-          114 132,112 126,112 116,125 108,128 106,125 96,132 87,134 80))</screen>
+        <para>
+            <informalfigure>
+            <mediaobject>
+                <imageobject>
+                <imagedata fileref="images/st_optimalalphashape02.png" />
+                </imageobject>
+                <caption><para>Concave Hull of a MultiPoint, allowing holes</para></caption>
+            </mediaobject>
+            </informalfigure>
+                <programlisting>SELECT ST_AsText(ST_OptimalAlphaShape('MULTIPOINT((63 84),(76 88),(68 73),(53 18),(91 50),(81 70),(88 29),(24 82),(32 51),(37 23),(27 54),(84 19),(75 87),(44 42),(77 67),(90 30),(36 61),(32 65),(81 47),(88 58),(68 73),(49 95),(81 60),(87 50),
+                (78 16),(79 21),(30 22),(78 43),(26 85),(48 34),(35 35),(36 40),(31 79),(83 29),(27 84),(52 98),(72 95),(85 71),
+                (75 84),(75 77),(81 29),(77 73),(41 42),(83 72),(23 36),(89 53),(27 57),(57 97),(27 77),(39 88),(60 81),
+                (80 72),(54 32),(55 26),(62 22),(70 20),(76 27),(84 35),(87 42),(82 54),(83 64),(69 86),(60 90),(50 86),(43 80),(36 73),
+                (36 68),(40 75),(24 67),(23 60),(26 44),(28 33),(40 32),(43 19),(65 16),(73 16),(38 46),(31 59),(34 86),(45 90),(64 97))'::geometry, allow_holes => true));</programlisting>
+                <screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,37 23,30 22,28 33,23 36,26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,76 88,75 84,75 77,83 72,85 71,83 64,88 58,89 53),(36 61,36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61))</screen>
         </para>
 	  </refsection>
       <refsection>
