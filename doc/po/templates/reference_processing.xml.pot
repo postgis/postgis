@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-05-03 02:58+0000\n"
+"POT-Creation-Date: 2022-05-04 02:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -966,7 +966,9 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:587
 #, no-c-format
-msgid ", <xref linkend=\"ST_Collect\"/>"
+msgid ""
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_AlphaShape\"/>, <xref "
+"linkend=\"ST_OptimalAlphaShape\"/>"
 msgstr ""
 
 #. Tag: refname

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-05-03 02:58+0000\n"
+"POT-Creation-Date: 2022-05-04 02:43+0000\n"
 "PO-Revision-Date: 2022-03-11 05:52+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Polish <https://weblate.osgeo.org/projects/postgis/"
@@ -971,7 +971,9 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:587
 #, no-c-format
-msgid ", <xref linkend=\"ST_Collect\"/>"
+msgid ""
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_AlphaShape\"/>, <xref "
+"linkend=\"ST_OptimalAlphaShape\"/>"
 msgstr ""
 
 #. Tag: refname

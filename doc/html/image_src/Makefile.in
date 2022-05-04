@@ -27,6 +27,8 @@ VPATH = $(srcdir)
 IMAGES= \
 	../images/de9im01.png \
 	../images/de9im02.png \
+	../images/st_alphashape01.png \
+	../images/st_alphashape02.png \
 	../images/st_azimuth01.png \
 	../images/st_azimuth02.png \
 	../images/st_boundary01.png \
@@ -123,6 +125,8 @@ IMAGES= \
 	../images/st_offsetcurve04.png \
 	../images/st_offsetcurve05.png \
 	../images/st_offsetcurve06.png \
+	../images/st_optimalalphashape01.png \
+	../images/st_optimalalphashape02.png \
 	../images/st_orientedenvelope01.png \
 	../images/st_overlaps01.png \
 	../images/st_overlaps02.png \

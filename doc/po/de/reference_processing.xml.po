@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-05-03 02:58+0000\n"
+"POT-Creation-Date: 2022-05-04 02:43+0000\n"
 "PO-Revision-Date: 2021-11-28 22:08+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
@@ -1043,9 +1043,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:587
-#, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_Collect\"/>"
-msgstr ", <xref linkend=\"ST_Dump\"/>"
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_AlphaShape\"/>, <xref "
+"linkend=\"ST_OptimalAlphaShape\"/>"
+msgstr ""
 
 #. Tag: refname
 #: reference_processing.xml:593
@@ -3706,6 +3708,10 @@ msgstr "Voronoi als MultiLinestring mit einer Toleranz von 30 Einheiten"
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
+
+#, fuzzy
+#~ msgid ", <xref linkend=\"ST_Collect\"/>"
+#~ msgstr ", <xref linkend=\"ST_Dump\"/>"
 
 #~ msgid ""
 #~ "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
