@@ -904,7 +904,7 @@ Datum ST_ConcaveHull(PG_FUNCTION_ARGS)
 
 #else /* POSTGIS_GEOS_VERSION >= 31100 */
 	GSERIALIZED* geom = PG_GETARG_GSERIALIZED_P(0);
-	double ratio = (double)PG_GETARG_FLOAT4(1);
+	double ratio = PG_GETARG_FLOAT8(1);
 	bool allow_holes = PG_GETARG_BOOL(2);
 
 	LWGEOM* lwgeom = lwgeom_from_gserialized(geom);
