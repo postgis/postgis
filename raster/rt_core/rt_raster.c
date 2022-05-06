@@ -3072,7 +3072,7 @@ rt_raster_gdal_rasterize(
 			double _w[2] = {0};
 
 			/* raster is already aligned */
-			if (FLT_EQ(*grid_xw, extent.UpperLeftX) && FLT_EQ(*grid_yw, extent.UpperLeftY)) {
+			if (DBL_EQ(*grid_xw, extent.UpperLeftX) && DBL_EQ(*grid_yw, extent.UpperLeftY)) {
 				RASTER_DEBUG(3, "Skipping raster alignment as it is already aligned to grid");
 				break;
 			}
