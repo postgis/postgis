@@ -716,42 +716,6 @@ SELECT disease_type,
   FROM disease_obs
   GROUP BY disease_type;
 </programlisting>
-
-        <para>
-            <informaltable>
-                  <tgroup cols="2">
-                    <tbody>
-                      <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_concavehull03.png" />
-                              </imageobject>
-                              <caption><para>ST_ConcaveHull of MultiPolygon (0.3)</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                          </para>
-                        </entry>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_concavehull04.png" />
-                              </imageobject>
-                              <caption><para>ST_ConcaveHull of MultiPolygon 0.2</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                        </para></entry>
-                      </row>
-                    </tbody>
-                  </tgroup>
-            </informaltable>
-                <programlisting>SELECT ST_ConcaveHull(f.geom,0.3) AS opt_03,
-    ST_ConcaveHull(f.geom, 0.2) AS opt_02
-   FROM ST_Scale(ST_Letters('Post GIS'),
-        ST_Point(0.59,0.59), ST_Point(40,40)
-        ) AS f(geom);</programlisting>
-        </para>
-
       </refsection>
 
       <refsection>

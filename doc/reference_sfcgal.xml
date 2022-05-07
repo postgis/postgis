@@ -1123,40 +1123,6 @@ MULTIPOLYGON(
                 <screen>POLYGON((89 53,91 50,87 42,90 30,88 29,84 19,78 16,73 16,65 16,53 18,43 19,37 23,30 22,28 33,23 36,26 44,27 54,23 60,24 67,27 77,24 82,26 85,34 86,39 88,45 90,49 95,52 98,57 97,64 97,72 95,76 88,75 84,75 77,83 72,85 71,83 64,88 58,89 53),(36 61,36 68,40 75,43 80,50 86,60 81,68 73,77 67,81 60,82 54,81 47,78 43,81 29,76 27,70 20,62 22,55 26,54 32,48 34,44 42,38 46,36 61))</screen>
         </para>
 
-        <para>
-            <informaltable>
-                  <tgroup cols="2">
-                    <tbody>
-                      <row>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_optimalalphashape03.png" />
-                              </imageobject>
-                              <caption><para>ST_OptimalAlphaShape of MultiPolygon (opt_no_args)</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                          </para>
-                        </entry>
-                        <entry><para><informalfigure>
-                            <mediaobject>
-                              <imageobject>
-                                <imagedata fileref="images/st_optimalalphashape04.png" />
-                              </imageobject>
-                              <caption><para>ST_OptimalAlphaShape of MultiPolygon with components (opt_2)</para></caption>
-                            </mediaobject>
-                          </informalfigure>
-                        </para></entry>
-                      </row>
-                    </tbody>
-                  </tgroup>
-            </informaltable>
-                <programlisting>SELECT ST_OptimalAlphaShape(f.geom) AS opt_no_args,
-    ST_OptimalAlphaShape(f.geom, nb_components => 2) AS opt_2
-   FROM ST_Scale(ST_Letters('Post GIS'),
-        ST_Point(0.59,0.59), ST_Point(40,40)
-        ) AS f(geom);</programlisting>
-        </para>
 	  </refsection>
       <refsection>
 		<title>See Also</title>
