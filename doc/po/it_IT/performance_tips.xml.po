@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2013-11-30 05:55+0000\n"
-"Last-Translator: Tommaso Di Bucchianico\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
-"postgis-1/language/it_IT/)\n"
+"PO-Revision-Date: 2022-05-07 19:23+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
+"performance_tipsxml/it/>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: performance_tips.xml:3
@@ -53,7 +54,7 @@ msgstr ""
 "di grandi dimensioni (nel senso di dimensioni dei dati) che non possono "
 "essere salvati in normali pagine (per esempio lunghi testi, immagini o "
 "geometrie con molti vertici). Vedi <ulink url=\"http://www.postgresql.org/"
-"docs/current/static/storage-toast.html\">la  documentazione PostgreSQL sulle "
+"docs/current/static/storage-toast.html\">la documentazione PostgreSQL sulle "
 "tabelle TOAST</ulink> per maggiori informazioni)."
 
 #. Tag: para
@@ -88,7 +89,7 @@ msgid ""
 "pages, too."
 msgstr ""
 "Ora si lanci una query che usi l'operatore  &amp;&amp; e che [MATCHES] solo "
-"poche righe. Il "
+"poche righe. Il"
 
 #. Tag: para
 #: performance_tips.xml:35
