@@ -3,20 +3,22 @@
 # Translators:
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
 # Kwon.Yongchan <ruvyn@naver.com>, 2016
+# Regina Obe <regina@arrival3d.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2018-07-23 18:00+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
-"language/ko_KR/)\n"
+"PO-Revision-Date: 2022-05-07 19:23+0000\n"
+"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"Language-Team: Korean <https://weblate.osgeo.org/projects/postgis/"
+"extras_address_standardizerxml/ko/>\n"
 "Language: ko_KR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: extras_address_standardizer.xml:3
@@ -1673,10 +1675,10 @@ msgid ""
 "street</code>, and a macro consisting of standard postal second line of an "
 "address e.g <code>city, state postal_code country</code>."
 msgstr ""
-"변종 2: 주소를 두 부분으로 입력받습니다.  <code>house_num street</code> 같은 "
+"변종 2: 주소를 두 부분으로 입력받습니다. <code>house_num street</code> 같은 "
 "우편 주소의 표준 첫 번째 행으로 이루어진 <varname>micro</varname> 절과,  "
-"<code>city, state postal_code country</code> 같은 우편 주소의 표준 두 번째 행"
-"으로 이루어진 <varname>macro</varname> 절입니다."
+"<code>city, state postal_code country</code> 같은 우편 주소의 표준 두 번째 "
+"행으로 이루어진 <varname>macro</varname> 절입니다."
 
 #. Tag: para
 #: extras_address_standardizer.xml:661
