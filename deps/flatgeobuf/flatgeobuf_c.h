@@ -79,7 +79,7 @@ typedef struct flatgeobuf_item
 
 typedef struct flatgeobuf_ctx
 {
-    // header contents
+	// header contents
 	const char *name;
 	uint64_t features_count;
 	uint8_t geometry_type;
@@ -97,19 +97,19 @@ typedef struct flatgeobuf_ctx
 	flatgeobuf_column **columns;
 	uint16_t columns_size;
 
-    // encode/decode buffers
+	// encode/decode buffers
 	uint8_t *buf;
 	uint64_t offset;
-    uint64_t size;
+	uint64_t size;
 
-    LWGEOM *lwgeom;
+	LWGEOM *lwgeom;
 	uint8_t lwgeom_type;
-    uint8_t *properties;
+	uint8_t *properties;
 	uint32_t properties_len;
-    uint32_t properties_size;
+	uint32_t properties_size;
 
-    // encode input
-    const char *geom_name;
+	// encode input
+	const char *geom_name;
 	uint32_t geom_index;
 
 	// encode spatial index bookkeeping
