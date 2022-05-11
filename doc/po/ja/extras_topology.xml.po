@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/ja/>\n"
@@ -60,6 +60,11 @@ msgid ""
 "pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf\"> PostGIS "
 "Topology PGConf EU 2012 </ulink>."
 msgstr ""
+"Vincent Picavetさんはトポロジとは何か、どのように使われるか、および、"
+"対応するFOSS4Gツールに関する良い概略説明を<ulink url=\"https://gitlab.com/"
+"Oslandia/documentation/presentations/-/blob/master/2012/pgconf_eu_2012/"
+"pgconfeu2012_vincent_picavet_postgis_topology.pdf\">PostGIS Topology PGConf "
+"EU 2012</ulink>で出しています。"
 
 #. Tag: para
 #: extras_topology.xml:13
@@ -798,7 +803,7 @@ msgstr ""
 #: extras_topology.xml:3292
 #, no-c-format
 msgid "Availability: 1.1"
-msgstr ""
+msgstr "Availability: 1.1"
 
 #. Tag: programlisting
 #: extras_topology.xml:296
@@ -1225,11 +1230,12 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:498
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "List of possible errors, what they mean and what the returned ids represent "
 "are displayed below:"
-msgstr ""
+msgstr "エラーの一覧を示します。可能性のある、意味することろ、返されるid表現は次の通"
+"りです:"
 
 #. Tag: entry
 #: extras_topology.xml:504
@@ -1253,7 +1259,7 @@ msgstr "<entry>id2</entry>"
 #: extras_topology.xml:507
 #, no-c-format
 msgid "Meaning"
-msgstr ""
+msgstr "意味"
 
 #. Tag: entry
 #: extras_topology.xml:512
@@ -1265,19 +1271,19 @@ msgstr "coincident nodes (訳注: 重複ノード)"
 #: extras_topology.xml:513
 #, no-c-format
 msgid "Identifier of first node."
-msgstr ""
+msgstr "最初のノードの識別子。"
 
 #. Tag: entry
 #: extras_topology.xml:514
 #, no-c-format
 msgid "Identifier of second node."
-msgstr ""
+msgstr "2番目のノードの識別子。"
 
 #. Tag: entry
 #: extras_topology.xml:515
 #, no-c-format
 msgid "Two nodes have the same geometry."
-msgstr ""
+msgstr "二つのノードは同じジオメトリを持ちます。"
 
 #. Tag: entry
 #: extras_topology.xml:520
@@ -1290,19 +1296,20 @@ msgstr "edge crosses node (訳注: エッジとノードのクロス)"
 #: extras_topology.xml:557 extras_topology.xml:569
 #, no-c-format
 msgid "Identifier of the edge."
-msgstr ""
+msgstr "エッジの識別子。"
 
 #. Tag: entry
 #: extras_topology.xml:522
 #, no-c-format
 msgid "Identifier of the node."
-msgstr ""
+msgstr "ノードの識別子。"
 
 #. Tag: entry
 #: extras_topology.xml:523
 #, no-c-format
 msgid "An edge has a node in its interior. See <xref linkend=\"ST_Relate\"/>."
-msgstr ""
+msgstr "エッジが内部にノードを持っています。<xref linkend=\"ST_Relate\""
+"/>を参照して下さい。"
 
 #. Tag: entry
 #: extras_topology.xml:529
@@ -1314,7 +1321,7 @@ msgstr "invalid edge (訳注: 不正なエッジ)"
 #: extras_topology.xml:532
 #, no-c-format
 msgid "An edge geometry is invalid. See <xref linkend=\"ST_IsValid\"/>."
-msgstr ""
+msgstr "エッジジオメトリが不正です。<xref linkend=\"ST_IsValid\"/>をご覧下さい。"
 
 #. Tag: entry
 #: extras_topology.xml:538
@@ -1327,7 +1334,8 @@ msgstr "edge not simple (訳注: 単純でないエッジ)"
 #, no-c-format
 msgid ""
 "An edge geometry has self-intersections. See <xref linkend=\"ST_IsSimple\"/>."
-msgstr ""
+msgstr "エッジジオメトリが自己交差しています。<xref linkend=\"ST_IsSimple\""
+"/>を参照して下さい。"
 
 #. Tag: entry
 #: extras_topology.xml:547
@@ -1339,20 +1347,21 @@ msgstr "edge crosses edge (訳注: エッジとエッジのクロス)"
 #: extras_topology.xml:548
 #, no-c-format
 msgid "Identifier of first edge."
-msgstr ""
+msgstr "最初のエッジの識別子。"
 
 #. Tag: entry
 #: extras_topology.xml:549
 #, no-c-format
 msgid "Identifier of second edge."
-msgstr ""
+msgstr "2番目のエッジの識別子。"
 
 #. Tag: entry
 #: extras_topology.xml:550
 #, no-c-format
 msgid ""
 "Two edges have an interior intersection. See <xref linkend=\"ST_Relate\"/>."
-msgstr ""
+msgstr "二つのエッジが内部でインタセクトしています。<xref linkend=\"ST_Relate\""
+"/>をご覧下さい。"
 
 #. Tag: entry
 #: extras_topology.xml:556
