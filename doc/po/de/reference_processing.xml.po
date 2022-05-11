@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-04 02:43+0000\n"
-"PO-Revision-Date: 2021-11-28 22:08+0000\n"
-"Last-Translator: Regina Obe\n"
-"Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
-"de/)\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
+"reference_processingxml/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_processing.xml:5
@@ -1125,7 +1126,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.16"
 #. Tag: para
 #: reference_processing.xml:632 reference_processing.xml:694
 #: reference_processing.xml:920 reference_processing.xml:1392
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
@@ -1221,7 +1222,7 @@ msgstr "Verfügbarkeit: 2.1.0"
 
 #. Tag: para
 #: reference_processing.xml:695
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
 
