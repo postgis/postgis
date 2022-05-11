@@ -1,22 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
-# Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2019
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2019, 2022.
 # Jürgen E. Fischer <jef@norbit.de>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-01-10 13:34+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
-"de/)\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
+"reference_editorxml/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -110,7 +111,7 @@ msgstr "Verfügbarkeit: 1.1.0"
 #: reference_editor.xml:1256 reference_editor.xml:1341
 #: reference_editor.xml:1383 reference_editor.xml:1440
 #: reference_editor.xml:1538 reference_editor.xml:1733
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
@@ -913,14 +914,14 @@ msgstr ""
 #: reference_editor.xml:494 reference_editor.xml:676 reference_editor.xml:771
 #: reference_editor.xml:814 reference_editor.xml:1206 reference_editor.xml:1257
 #: reference_editor.xml:1386 reference_editor.xml:1735
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
 #. Tag: para
 #: reference_editor.xml:362 reference_editor.xml:772 reference_editor.xml:1387
 #: reference_editor.xml:1736
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
 
