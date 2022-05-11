@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-06 07:55+0000\n"
-"PO-Revision-Date: 2022-01-15 01:45+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/de/>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
@@ -27,19 +27,19 @@ msgstr ""
 #: reference_relationship.xml:8
 #, no-c-format
 msgid "Spatial Relationships"
-msgstr ""
+msgstr "Lagevergleiche"
 
 #. Tag: title
 #: reference_relationship.xml:11
 #, no-c-format
 msgid "Topological Relationships"
-msgstr ""
+msgstr "Topologische Beziehungen"
 
 #. Tag: refname
 #: reference_relationship.xml:15
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "ST_3DIntersects"
-msgstr ""
+msgstr "ST_3DIntersects"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:17
@@ -48,15 +48,21 @@ msgid ""
 "Returns true if two geometries spatially intersect in 3D - only for points, "
 "linestrings, polygons, polyhedral surface (area)."
 msgstr ""
+"Gibt TRUE zurück, wenn sich die geometrischen Objekte im 3D \"räumlich "
+"schneiden\" - gilt nur für Punkte, Linienzüge, Polygone und polyedrische "
+"Oberflächen (Flächen)."
 
 #. Tag: funcprototype
 #: reference_relationship.xml:23
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_3DIntersects</function></funcdef> <paramdef> "
 "<type>geometry</type> <parameter>geomA</parameter> </paramdef> <paramdef> "
 "<type>geometry</type> <parameter>geomB</parameter> </paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_3DIntersects</function></funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geomA</parameter> </paramdef> <paramdef> "
+"<type>geometry</type> <parameter>geomB</parameter> </paramdef>"
 
 #. Tag: title
 #: reference_relationship.xml:37 reference_relationship.xml:90
@@ -82,69 +88,75 @@ msgid ""
 "aforementioned returns true, then the geometries also spatially intersect. "
 "Disjoint implies false for spatial intersection."
 msgstr ""
+"Overlaps, Touches und Within implizieren räumliche Überschneidung. Wenn "
+"irgendeine dieser Eigenschaften TRUE zurückgibt, dann überschneiden sich die "
+"geometrischen Objekte auch. Disjoint impliziert FALSE für die räumliche "
+"Überschneidung."
 
 #. Tag: para
 #: reference_relationship.xml:42 reference_relationship.xml:503
 #: reference_relationship.xml:754 reference_relationship.xml:1529
 #: reference_relationship.xml:1589 reference_relationship.xml:1645
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&index_aware;"
-msgstr ""
+msgstr "&index_aware;"
 
 #. Tag: para
 #: reference_relationship.xml:44
 #, no-c-format
 msgid "Changed: 3.0.0 SFCGAL backend removed, GEOS backend supports TINs."
 msgstr ""
+"Änderung: 3.0.0 das SFCGAL Back-end wurde entfernt, das GEOS Back-end "
+"unterstützt TIN."
 
 #. Tag: para
 #: reference_relationship.xml:45 reference_relationship.xml:1245
 #: reference_relationship.xml:1536 reference_relationship.xml:1591
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Verfügbarkeit: 2.0.0"
 
 #. Tag: para
 #: reference_relationship.xml:47 reference_relationship.xml:1531
 #: reference_relationship.xml:1592
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_relationship.xml:49 reference_relationship.xml:1533
 #: reference_relationship.xml:1594
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_relationship.xml:50 reference_relationship.xml:775
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: para
 #: reference_relationship.xml:51
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&sfcgal_enhanced;"
-msgstr ""
+msgstr "&sfcgal_enhanced;"
 
 #. Tag: para
 #: reference_relationship.xml:52
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: ?"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: ?"
 
 #. Tag: title
 #: reference_relationship.xml:55 reference_relationship.xml:778
 #, no-c-format
 msgid "Geometry Examples"
-msgstr ""
+msgstr "Beispiele mit dem geometrischen Datentyp"
 
 #. Tag: programlisting
 #: reference_relationship.xml:56
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT ST_3DIntersects(pt, line), ST_Intersects(pt, line)\n"
 "  FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::"
@@ -154,16 +166,23 @@ msgid ""
 " f               | t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_3DIntersects(pt, line), ST_Intersects(pt, line)\n"
+"  FROM (SELECT 'POINT(0 0 2)'::geometry As pt, 'LINESTRING (0 0 1, 0 2 3)'::"
+"geometry As line) As foo;\n"
+" st_3dintersects | st_intersects\n"
+"-----------------+---------------\n"
+" f               | t\n"
+"(1 row)"
 
 #. Tag: title
 #: reference_relationship.xml:59
 #, no-c-format
 msgid "TIN Examples"
-msgstr ""
+msgstr "Beispiele mit dem Datentyp TIN"
 
 #. Tag: programlisting
 #: reference_relationship.xml:60
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT ST_3DIntersects('TIN(((0 0 0,1 0 0,0 1 0,0 0 0)))'::geometry, "
 "'POINT(.1 .1 0)'::geometry);\n"
@@ -171,6 +190,11 @@ msgid ""
 "-----------------\n"
 " t"
 msgstr ""
+"SELECT ST_3DIntersects('TIN(((0 0 0,1 0 0,0 1 0,0 0 0)))'::geometry, 'POINT(."
+"1 .1 0)'::geometry);\n"
+" st_3dintersects\n"
+"-----------------\n"
+" t"
 
 #. Tag: title
 #: reference_relationship.xml:63 reference_relationship.xml:217
@@ -185,13 +209,13 @@ msgstr ""
 #: reference_relationship.xml:1741 reference_relationship.xml:1788
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Siehe auch"
 
 #. Tag: refname
 #: reference_relationship.xml:70
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "ST_Contains"
-msgstr ""
+msgstr "ST_Contains"
 
 #. Tag: refpurpose
 #: reference_relationship.xml:72
@@ -200,15 +224,20 @@ msgid ""
 "Returns true if no points of B lie in the exterior of A, and A and B have at "
 "least one interior point in common."
 msgstr ""
+"Gibt TRUE zurück, wenn kein Punkt von B außerhalb von A liegt und ein Punkt "
+"sowohl innerhalb von A als auch von B liegt."
 
 #. Tag: funcprototype
 #: reference_relationship.xml:77
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Contains</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_Contains</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
 
 #. Tag: para
 #: reference_relationship.xml:92
