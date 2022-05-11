@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-15 01:45+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/de/>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_srs.xml:5
@@ -131,7 +131,7 @@ msgstr ""
 #: reference_srs.xml:58 reference_srs.xml:99 reference_srs.xml:219
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Siehe auch"
 
 #. Tag: para
 #: reference_srs.xml:60
@@ -313,9 +313,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_srs.xml:180
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_srs.xml:186
