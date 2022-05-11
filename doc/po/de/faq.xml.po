@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
-# Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2020
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017-2020, 2022.
 # Andreas Schild <schildandreas1@gmail.com>, 2015
 # Chris Leick <c.leick@vollbio.de>, 2013
 # Jürgen E. Fischer <jef@norbit.de>, 2020
@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-11-08 06:12+0000\n"
-"PO-Revision-Date: 2022-01-27 16:52+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/faqxml/de/>"
 "\n"
 "Language: de\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: faq.xml:3
@@ -46,6 +46,10 @@ msgid ""
 "packaged data as well as intro to working with OpenGeo Suite. It is probably "
 "the best tutorial on PostGIS."
 msgstr ""
+"Ein Workshop mit schrittweiser Anleitung\n"
+"<ulink url=\"http://postgis.net/workshops/postgis-intro/\">Introduction to "
+"PostGIS</ulink>. Dieser beinhaltet auch ein Datenpaket und eine Einführung "
+"in die Arbeit mit der OpenGeo Suite. Vermutlich das beste PostGIS Tutorial."
 
 #. Tag: para
 #: faq.xml:13
@@ -663,6 +667,10 @@ msgid ""
 "WHERE\n"
 "  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
+"SELECT id, geom\n"
+"FROM thetable\n"
+"WHERE\n"
+"  ST_Contains(geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -936,12 +944,20 @@ msgid ""
 "The below projects a geometry to NAD 83 long lat. The below will only work "
 "if the srid of geom is not -1 (not undefined spatial ref)"
 msgstr ""
+"Um eine Projektion durchzuführen, müssen sowohl die Quell- als auch die "
+"Zielkoordinatensysteme in der Tabelle SPATIAL_REF_SYS vorhanden sein und die "
+"zu projizierende Geometrie muss eine SRID aufweisen. Sofern dies gegeben "
+"ist, muss für die Projektion lediglich die gewünschte Ziel-SRID angegeben "
+"werden. Nachfolgend wird\n"
+"eine Geometrie auf »NAD 83 long lat« projiziert. Dies funktioniert aber nur, "
+"wenn die SRID der Geometrie nicht gleich -1 ist (das Koordinatensystem nicht "
+"undefiniert ist)."
 
 #. Tag: programlisting
 #: faq.xml:348
 #, no-c-format
 msgid "SELECT ST_Transform(geom,4269) FROM geotable;"
-msgstr ""
+msgstr "SELECT ST_Transform(geom,4269) FROM geotable;"
 
 #. Tag: para
 #: faq.xml:354
@@ -974,6 +990,9 @@ msgid ""
 "                                SELECT count(gid) FROM geotable WHERE geom "
 "IS NULL;"
 msgstr ""
+"--Überprüfen, ob die Geometrie wirklich leer ist\n"
+"                                SELECT count(gid) FROM geotable WHERE geom "
+"IS NULL;"
 
 #. Tag: para
 #: faq.xml:367
@@ -1070,12 +1089,14 @@ msgid ""
 "Why are the results of overlay operations and spatial predicates sometimes "
 "inconsistent?"
 msgstr ""
+"Warum sind die Ergebnisse von Verschneidungen und räumlicher Prädikatenlogik "
+"manchmal nicht konsistent?"
 
 #. Tag: para
 #: faq.xml:395
 #, no-c-format
 msgid "This is usually presented as a specific case, such as"
-msgstr ""
+msgstr "Diese Spezialfälle kann man üblicherweise wie folgt ausdrücken"
 
 #. Tag: para
 #: faq.xml:399
@@ -1083,12 +1104,13 @@ msgstr ""
 msgid ""
 "Why is <varname>ST_Contains( A, ST_Intersection(A, B) )</varname> false ?"
 msgstr ""
+"Warum ist <varname>ST_Contains( A, ST_Intersection(A, B) )</varname> false ?"
 
 #. Tag: para
 #: faq.xml:402
 #, no-c-format
 msgid "Why is <varname>ST_Contains( ST_Union(A, B), A ) )</varname> false ?"
-msgstr ""
+msgstr "Warum ist <varname>ST_Contains( ST_Union(A, B), A ) )</varname> false ?"
 
 #. Tag: para
 #: faq.xml:405
@@ -1096,6 +1118,8 @@ msgstr ""
 msgid ""
 "Why is <varname>ST_Union( A, ST_Difference(A, B) )</varname> not equal to A ?"
 msgstr ""
+"Warum ist <varname>ST_Union( A, ST_Difference(A, B) )</varname> nicht gleich "
+"A ?"
 
 #. Tag: para
 #: faq.xml:408
@@ -1104,6 +1128,8 @@ msgid ""
 "Why does <varname>ST_Difference(A, B)</varname> intersect the interior of "
 "<varname>B</varname> ?"
 msgstr ""
+"Warum ist <varname>ST_Difference(A, B)</varname> intersect the interior of "
+"<varname>B</varname> ?"
 
 #. Tag: para
 #: faq.xml:412
@@ -1115,6 +1141,12 @@ msgid ""
 "inaccuracies occur, which cause results of different operations to be "
 "slightly inconsistent."
 msgstr ""
+"Der Grund dafür ist, dass PostGIS die Geometrie und räumliche Operationen "
+"mittels Fließpunktzahlen mit begrenzter Präzision darstellt. Dies erzeugt "
+"die Illusion, dass die Berechnung mit reellen Zahlen durchgeführt werden - "
+"dies ist allerdings nur eine Illusion. Zwangsläufig kommt es zu kleinen "
+"Ungenauigkeiten, welche zu inkonsistenten Ergebnissen bei unterschiedlichen "
+"Operationen führen können."
 
 #. Tag: para
 #: faq.xml:417
@@ -1125,6 +1157,10 @@ msgid ""
 "errors from occurring. These minor alterations also may produce computed "
 "results which are not fully consistent."
 msgstr ""
+"Weiters enthalten PostGIS Operationen fehlervermeidenden Code, welcher die "
+"Eingabegeometrie leicht beeinflussen kann, um \"robustness errors\" "
+"vorzubeugen. Diese minimalen Abänderungen können ebenfalls zu nicht "
+"vollkommen konsistenten Ergebnissen führen."
 
 #. Tag: para
 #: faq.xml:422
@@ -1135,3 +1171,8 @@ msgid ""
 "Instead, consider using an area or distance-based tolerance in geometric "
 "comparisons."
 msgstr ""
+"Diese Diskrepanzen zwischen den Ergebnissen sollten immer relativ klein "
+"sein. Aber Abfragen sollten nicht auf exakten Konsistenzen aufbauen, wenn "
+"Ergebnisse von Überlagerungsoperationen verglichen werden. Stattdessen "
+"sollten bei geometrischen Vergleichen eine Fläche oder distanzbasierte "
+"Toleranzen in Betracht gezogen werden."
