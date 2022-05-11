@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-06 07:55+0000\n"
-"PO-Revision-Date: 2022-01-15 01:45+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_clusterxml/de/>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_cluster.xml:5
@@ -215,7 +215,7 @@ msgstr ""
 #: reference_cluster.xml:244 reference_cluster.xml:286
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Siehe auch"
 
 #. Tag: para
 #: reference_cluster.xml:111
