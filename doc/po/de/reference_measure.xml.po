@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-28 12:23+0000\n"
-"PO-Revision-Date: 2019-03-11 14:57+0000\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
-"Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
-"de/)\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
+"reference_measurexml/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: para
 #: reference_measure.xml:5
@@ -141,7 +142,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3"
 #: reference_measure.xml:46 reference_measure.xml:317 reference_measure.xml:474
 #: reference_measure.xml:1059 reference_measure.xml:1173
 #: reference_measure.xml:1603
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
@@ -761,7 +762,7 @@ msgstr ""
 #: reference_measure.xml:868 reference_measure.xml:920
 #: reference_measure.xml:1057 reference_measure.xml:1171
 #: reference_measure.xml:1423 reference_measure.xml:1601
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
@@ -1017,7 +1018,7 @@ msgstr ""
 #: reference_measure.xml:413 reference_measure.xml:799
 #, no-c-format
 msgid "Geometry Examples"
-msgstr "Beispiele mit geometrischem Datentyp"
+msgstr "Beispiele mit dem geometrischen Datentyp"
 
 #. Tag: para
 #: reference_measure.xml:415
@@ -1944,7 +1945,7 @@ msgstr "Verfügbarkeit: 1.5.0 Unterstützung von geograpischen Koordinaten."
 
 #. Tag: para
 #: reference_measure.xml:795
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&sfcgal_enhanced;"
 msgstr "&sfcgal_enhanced;"
 
