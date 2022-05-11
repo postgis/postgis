@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2019-03-11 09:13+0000\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
-"Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
-"de/)\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
+"reference_constructorxml/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: reference_constructor.xml:3
@@ -141,7 +142,7 @@ msgstr ""
 #: reference_constructor.xml:58 reference_constructor.xml:115
 #: reference_constructor.xml:220 reference_constructor.xml:327
 #: reference_constructor.xml:427 reference_constructor.xml:701
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
