@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2019-03-11 09:12+0000\n"
+"PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
-"Language-Team: German (http://www.transifex.com/postgis/postgis/language/"
-"de/)\n"
+"Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
+"reference_accessorxml/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
 #: reference_accessor.xml:4
@@ -158,7 +159,7 @@ msgstr "&curve_support;"
 #: reference_accessor.xml:1895 reference_accessor.xml:1940
 #: reference_accessor.xml:2080 reference_accessor.xml:2125
 #: reference_accessor.xml:2170 reference_accessor.xml:2210
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
@@ -170,7 +171,7 @@ msgstr "&Z_support;"
 #: reference_accessor.xml:1425 reference_accessor.xml:1497
 #: reference_accessor.xml:1578 reference_accessor.xml:1681
 #: reference_accessor.xml:1773 reference_accessor.xml:2017
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
@@ -180,7 +181,7 @@ msgstr "&P_support;"
 #: reference_accessor.xml:423 reference_accessor.xml:501
 #: reference_accessor.xml:786 reference_accessor.xml:1426
 #: reference_accessor.xml:1579 reference_accessor.xml:2020
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
 
@@ -3881,7 +3882,7 @@ msgstr "Verfügbarkeit: 2.0.0"
 
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: ?"
 msgstr "&sqlmm_compliant; SQL-MM 3: ?"
 
