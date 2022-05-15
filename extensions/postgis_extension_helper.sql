@@ -18,7 +18,7 @@
 -- this is needed because there is no ALTER EXTENSION DROP FUNCTION/AGGREGATE command
 -- and we can't CREATE OR REPALCe functions whose signatures have changed and we can drop them if they are part of an extention
 -- So we use this to remove it from extension first before we drop
-CREATE OR REPLACE FUNCTION postgis_extension_remove_objects(param_extension text, param_type text)
+CREATE FUNCTION postgis_extension_remove_objects(param_extension text, param_type text)
   RETURNS boolean AS
 $$
 DECLARE
@@ -81,7 +81,7 @@ END;
 $$
 LANGUAGE plpgsql VOLATILE;
 
-CREATE OR REPLACE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_statement text)
+CREATE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_statement text)
   RETURNS boolean AS
 $$
 DECLARE
@@ -101,7 +101,7 @@ END;
 $$
 LANGUAGE plpgsql VOLATILE;
 
-CREATE OR REPLACE FUNCTION postgis_extension_AddToSearchPath(a_schema_name varchar)
+CREATE FUNCTION postgis_extension_AddToSearchPath(a_schema_name text)
 RETURNS text
 AS
 $$
