@@ -158,3 +158,17 @@ ORDER BY 1, 2, 3, 4, 5, 6, 8;
 DROP TABLE IF EXISTS geom_clip;
 DROP TABLE IF EXISTS raster_clip;
 DROP TABLE IF EXISTS raster_clip_out;
+
+-- #5148 mask raster not aligned to input raster
+SELECT
+	ST_UpperLeftX(rast) AS x,
+	ST_UpperLeftY(rast) AS y,
+	ST_Width(rast) AS w,
+	ST_Height(rast) AS h
+FROM ST_Clip(
+	ST_AddBand(
+		ST_MakeEmptyRaster(100, 100, 0, 0.001, 1e-5, -1e-5, 0, 0, 0),
+		1, '8BUI', 1, 0
+	),
+	ST_GeomFromText('POLYGON((0 0.0009999, 0.0001 0.0009999, 0.0001 0.0009, 0 0.0009, 0 0.0009999))')
+) AS rast;
