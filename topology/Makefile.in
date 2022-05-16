@@ -30,6 +30,8 @@ endif
 # Files to be copied to the contrib/ directory
 DATA_built=topology.sql topology_upgrade.sql uninstall_topology.sql
 
+SCRIPTS = loader/pgtopo_import loader/pgtopo_export
+
 # SQL preprocessor
 SQLPP = @SQLPP@
 
