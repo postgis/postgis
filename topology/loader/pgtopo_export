@@ -13,7 +13,7 @@
 set -e
 
 usage() {
-  echo "Usage: $0 [--skip-layers] [ -f <dumpfile> ] <dbname> <toponame>"
+  echo "Usage: $(basename $0) [--skip-layers] [ -f <dumpfile> ] <dbname> <toponame>"
 }
 
 SKIP_LAYERS=no
@@ -44,6 +44,10 @@ DUMPNAME="pgtopo_export"
 
 if test "${OUTFILE}" = "-"; then
   exec 4>&2
+  if [ -t 1 ]; then
+    echo "Exporting to terminal is not supported, please redirect stdout or specify a destination with -f" >&4
+    exit 1
+  fi
 else
   exec 4>&1
 fi

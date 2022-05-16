@@ -13,7 +13,7 @@
 set -e
 
 usage() {
-  echo "Usage: $0 [ --skip-layers | --only-layers ] [ -f <dumpfile> ] <toponame>"
+  echo "Usage: $(basename $0) [ --skip-layers | --only-layers ] [ -f <dumpfile> ] <toponame>"
 }
 
 
