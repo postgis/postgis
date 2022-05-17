@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
-# Andreas Schild <andreas.schild@bfw.gv.at>, 2017,2019-2020
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017,2019-2020, 2022.
 # Jürgen E. Fischer <jef@norbit.de>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-04 02:43+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"PO-Revision-Date: 2022-05-18 16:04+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/de/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #. Tag: para
 #: reference_processing.xml:5
@@ -1115,7 +1115,7 @@ msgstr ""
 #: reference_processing.xml:628
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr "Wird vom GEOS Modul ausgeführt"
+msgstr "Wird durch das GEOS Modul ausgeführt"
 
 #. Tag: para
 #: reference_processing.xml:631
