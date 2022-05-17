@@ -2,6 +2,7 @@ PostGIS 3.2.2dev
 2022/MM/DD
 
 * Bug Fixes *
+  - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
   - #5124, GRANT USAGE on topology schema to PUBLIC (Sandro Santilli)
   - #5120, Fix not-null result from ST_EstimatedExtent against
            truncated tables with spatial index (Sandro Santilli)
