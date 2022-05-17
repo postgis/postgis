@@ -1,6 +1,9 @@
-PostGIS 2.5.7
-xxxx/xx/xx
+PostGIS 2.5.7dev
+2022/xx/xx
+
  * Bug fixes *
+
+  - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
 
 PostGIS 2.5.6
 2022/04/20
