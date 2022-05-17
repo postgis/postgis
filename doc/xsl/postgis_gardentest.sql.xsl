@@ -8,7 +8,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.2.0</xsl:variable>
+	<xsl:variable name='testversion'>3.3.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
@@ -238,6 +238,17 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		)
 		</pgis:gset>
 
+		<pgis:gset ID="Empty Linestring" GeometryType="LINESTRING" createtable="false">
+		(SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Empty Point" GeometryType="POINT" createtable="false">
+		(SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Empty Polygon" GeometryType="POLYGON" createtable="false">
+		(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom)
+		</pgis:gset>
 
 		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
 		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
