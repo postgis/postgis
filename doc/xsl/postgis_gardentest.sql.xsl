@@ -238,6 +238,21 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		)
 		</pgis:gset>
 
+		<pgis:gset ID="Empty Linestring" GeometryType="LINESTRING" createtable="false">
+		(SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Empty Point" GeometryType="POINT" createtable="false">
+		(SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Empty Polygon" GeometryType="POLYGON" createtable="false">
+		(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
+		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
+		</pgis:gset>
 
 		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
 		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
