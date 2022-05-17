@@ -15,7 +15,7 @@ PostGIS 3.2.2dev
   - #5091, Fix --without-protobuf builds (Tobias Bussmann)
   - #5100, Don't use pg_atoi (removed in PG15) (Laurenz Albe)
   - #5123, Support for PG15 (JSON funcs exposed) (Regina Obe)
-
+  - #5151, ST_SetPoint with empty geometries (Regina Obe)
 
 PostGIS 3.2.1
 2022/02/12

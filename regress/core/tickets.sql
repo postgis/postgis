@@ -1432,3 +1432,6 @@ SELECT
 	'#5008',
 	ST_DWithin('POINT EMPTY', 'POINT(0 0)', 'Inf'),
 	ST_DWithin('POINT(1 1)', 'POLYGON EMPTY', 'Inf');
+
+-- https://trac.osgeo.org/postgis/ticket/5151
+SELECT '#5151', ST_SetPoint(ST_GeomFromText('LINESTRING EMPTY',4326), 1, ST_GeomFromText('POINT(40 50)',4326)) As result;
