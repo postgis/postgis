@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-06 07:55+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"PO-Revision-Date: 2022-05-18 16:04+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/de/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
@@ -247,6 +247,9 @@ msgid ""
 "and only if no points of B lie in the exterior of A, and at least one point "
 "of the interior of B lies in the interior of A."
 msgstr ""
+"Gibt TRUE zurück, wenn Geometrie B zur Gänze innerhalb von Geometrie A "
+"liegt. A beinhaltet B dann und nur dann, wenn kein Punkt von B außerhalb von "
+"A liegt und zumindest ein Punkt von B innerhalb von A liegt."
 
 #. Tag: para
 #: reference_relationship.xml:95
@@ -262,6 +265,15 @@ msgid ""
 "<xref linkend=\"ST_ContainsProperly\"/> predicate a geometry does "
 "<emphasis>not</emphasis> properly contain itself.)"
 msgstr ""
+"Eine Feinheit dieser Definition ist, dass eine Geometrie keine Teile seiner "
+"Begrenzung enthält. Deshalb enthalten Polygone und Linien <emphasis>keine</"
+"emphasis> Linien oder Punkte ihrer Begrenzung. Für weitere Einzelheiten "
+"siehe <ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-"
+"of-ogc-covers-spatial.html\">Subtleties of OGC Covers, Contains, Within</"
+"ulink>. (Das <xref linkend=\"ST_Covers\"/> Prädikat bietet eine umfassendere "
+"Beziehung.) Allerdings beinhaltet eine Geometrie sich selbst. (Demgegenüber "
+"beinhaltet im <xref linkend=\"ST_ContainsProperly\"/> Prädikat eine "
+"Geometrie <emphasis>nicht</emphasis> genau sich selbst.)"
 
 #. Tag: para
 #: reference_relationship.xml:103
@@ -270,6 +282,8 @@ msgid ""
 "ST_Contains is the inverse of <xref linkend=\"ST_Within\"/>. So, "
 "<code>ST_Contains(A,B) = ST_Within(B,A)</code>."
 msgstr ""
+"ST_Contains ist das Gegenteil von <xref linkend=\"ST_Within\"/>. Daher, "
+"<code>ST_Contains(A,B) = ST_Within(B,A)</code>."
 
 #. Tag: para
 #: reference_relationship.xml:106
@@ -278,6 +292,8 @@ msgid ""
 "&index_aware; To avoid index use, use the function <function>_ST_Contains</"
 "function>."
 msgstr ""
+"&index_aware; Um die Verwendung eines Indices zu vermeiden, kann die "
+"Funktion <function>_ST_Contains</function> verwendet werden."
 
 #. Tag: para
 #: reference_relationship.xml:109 reference_relationship.xml:338
@@ -286,7 +302,7 @@ msgstr ""
 #: reference_relationship.xml:1243 reference_relationship.xml:1452
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Wird durch das GEOS Modul ausgeführt"
 
 #. Tag: para
 #: reference_relationship.xml:110 reference_relationship.xml:758
