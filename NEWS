@@ -2,6 +2,7 @@ PostGIS 3.1.6dev
 2022/XX/XX
 
 * Bug Fixes
+  - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
   - #5120, Fix not-null result from ST_EstimatedExtent against
            truncated tables with spatial index (Sandro Santilli)
   - #5076, Avoid log storm installed with pgaudit enabled (Paul Ramsey)
