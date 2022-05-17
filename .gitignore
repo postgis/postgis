@@ -191,6 +191,7 @@ postgis/uninstall_sfcgal.sql
 .idea/*
 .syntastic_c_config
 .vs/*
+.vscode/*
 
 # LLVM JIT
 *.bc
