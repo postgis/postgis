@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-06 07:55+0000\n"
-"PO-Revision-Date: 2022-05-12 13:42+0000\n"
+"PO-Revision-Date: 2022-05-18 16:04+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "reference_overlayxml/de/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #. Tag: para
 #: reference_overlay.xml:5
@@ -176,7 +176,7 @@ msgstr ""
 #: reference_overlay.xml:96 reference_overlay.xml:217 reference_overlay.xml:643
 #, no-c-format
 msgid "Performed by the GEOS module"
-msgstr ""
+msgstr "Wird durch das GEOS Modul ausgeführt"
 
 #. Tag: para
 #: reference_overlay.xml:97 reference_overlay.xml:219 reference_overlay.xml:645
