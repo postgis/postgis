@@ -1435,3 +1435,6 @@ SELECT
 
 -- https://trac.osgeo.org/postgis/ticket/5024
 --SELECT '#5024', 'spatial_ref_sys entries' AS table_name, count(*) FROM spatial_ref_sys;
+
+-- https://trac.osgeo.org/postgis/ticket/5151
+SELECT '#5151', ST_SetPoint(ST_GeomFromText('LINESTRING EMPTY',4326), 1, ST_GeomFromText('POINT(40 50)',4326)) As result;
