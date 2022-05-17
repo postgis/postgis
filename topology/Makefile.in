@@ -30,7 +30,6 @@ endif
 # Files to be copied to the contrib/ directory
 DATA_built=topology.sql topology_upgrade.sql uninstall_topology.sql
 
-SCRIPTS = loader/pgtopo_import loader/pgtopo_export
 
 # SQL preprocessor
 SQLPP = @SQLPP@
@@ -74,7 +73,10 @@ PGXS := @PGXS@
 NO_TEMP_INSTALL=yes
 include $(PGXS)
 
+top_builddir = @top_builddir@
 VPATH := @srcdir@
+INSTALL = @INSTALL@
+LIBTOOL = @LIBTOOL@
 
 # Set PERL _after_ the include of PGXS
 PERL=@PERL@
@@ -158,3 +160,14 @@ clean-subdirs:
 
 distclean: clean
 	rm -f Makefile test/Makefile
+
+installdir:
+	mkdir -p $(DESTDIR)$(bindir)
+
+install: install-importer install-exporter
+
+install-importer: loader/pgtopo_import | installdir
+	$(LIBTOOL) --mode=install $(INSTALL) $^ "$(DESTDIR)$(bindir)/pgtopo_import"
+
+install-exporter: loader/pgtopo_export | installdir
+	$(LIBTOOL) --mode=install $(INSTALL) $^ "$(DESTDIR)$(bindir)/pgtopo_export"
