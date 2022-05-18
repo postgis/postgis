@@ -8,6 +8,7 @@ PostGIS 3.1.6dev
   - #5076, Avoid log storm installed with pgaudit enabled (Paul Ramsey)
   - #5100, Stop using pg_atoi, removed in PG 15 (Laurenz Albe)
   - #5115, Allow dropping topologies with pending constraints (Sandro Santilli)
+  - #5151, ST_SetPoint with empty geometries (Regina Obe)
 
 PostGIS 3.1.5
 2022/02/01

@@ -1424,3 +1424,6 @@ WITH w AS (
 SELECT '#4770.c', ST_AsText(g), s FROM w;
 
 ------
+
+-- https://trac.osgeo.org/postgis/ticket/5151
+SELECT '#5151', ST_SetPoint(ST_GeomFromText('LINESTRING EMPTY',4326), 1, ST_GeomFromText('POINT(40 50)',4326)) As result;
