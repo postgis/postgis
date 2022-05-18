@@ -238,6 +238,21 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		)
 		</pgis:gset>
 
+		<pgis:gset ID="Empty Linestring" GeometryType="LINESTRING" createtable="false">
+		(SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Empty Point" GeometryType="POINT" createtable="false">
+		(SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Empty Polygon" GeometryType="POLYGON" createtable="false">
+		(SELECT ST_GeomFromText('POLYGON EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
+		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
+		</pgis:gset>
 
 		<pgis:gset ID="Empty Geometry Collection" GeometryType="GEOMETRY" createtable="false">
 		 (SELECT ST_GeomFromText('GEOMETRYCOLLECTION EMPTY',4326) As the_geom )
@@ -481,7 +496,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 	</xsl:for-each>
 <!--End test on operators -->
 <!-- Start regular function checks excluding operators -->
-		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]/refentry">
+		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]//refentry">
 		<xsl:sort select="@id"/>
 
 			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
@@ -511,11 +526,11 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				  </xsl:choose>
 				</xsl:variable>
 
-				<!-- is a window function -->
+				<!-- is a window or aggregate function -->
 				<xsl:variable name='over_clause'>
 					 <xsl:choose>
-					 	<xsl:when test="paramdef/type[contains(text(),'winset')]">
-					 		<xsl:value-of select="'OVER()'"/>
+					 	<xsl:when test="paramdef/type[contains(text(),'set')]">
+					 		<xsl:value-of select="'OVER(ORDER BY random())'"/>
 					 	</xsl:when>
 					<xsl:otherwise>
 					  <xsl:value-of select="''"/>
