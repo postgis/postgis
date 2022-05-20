@@ -85,7 +85,7 @@ CREATE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_sta
   RETURNS boolean AS
 $$
 DECLARE
-	var_sql_ext text := 'ALTER EXTENSION ' || pg_catalog.quote_ident(param_extension) || ' ' || replace(param_statement, 'IF EXISTS', '');
+	var_sql_ext text := 'ALTER EXTENSION ' || pg_catalog.quote_ident(param_extension) || ' ' || pg_catalog.replace(param_statement, 'IF EXISTS', '');
 	var_result boolean := false;
 BEGIN
 	BEGIN
@@ -111,7 +111,7 @@ DECLARE
 BEGIN
 
 	WITH settings AS (
-		SELECT unnest(setconfig) config
+		SELECT pg_catalog.unnest(setconfig) config
 		FROM pg_catalog.pg_db_role_setting
 		WHERE setdatabase = (
 			SELECT oid
@@ -119,7 +119,7 @@ BEGIN
 			WHERE datname = current_database()
 		) and setrole = 0
 	)
-	SELECT regexp_replace(config, '^search_path=', '')
+	SELECT pg_catalog.regexp_replace(config, '^search_path=', '')
 	FROM settings WHERE config like 'search_path=%'
 	INTO var_cur_search_path;
 
