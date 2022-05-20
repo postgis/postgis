@@ -526,11 +526,11 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				  </xsl:choose>
 				</xsl:variable>
 
-				<!-- is a window or aggregate function -->
+				<!-- is a window function -->
 				<xsl:variable name='over_clause'>
 					 <xsl:choose>
-					 	<xsl:when test="paramdef/type[contains(text(),'set')]">
-					 		<xsl:value-of select="'OVER(ORDER BY random())'"/>
+					 	<xsl:when test="paramdef/type[contains(text(),'winset')]">
+					 		<xsl:value-of select="'OVER(random())'"/>
 					 	</xsl:when>
 					<xsl:otherwise>
 					  <xsl:value-of select="''"/>
