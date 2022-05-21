@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
-"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-04-16 08:20+0000\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2022-05-21 19:55+0000\n"
 "PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -60,9 +60,9 @@ msgid ""
 "pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf\"> PostGIS "
 "Topology PGConf EU 2012 </ulink>."
 msgstr ""
-"Vincent Picavetさんはトポロジとは何か、どのように使われるか、および、"
-"対応するFOSS4Gツールに関する良い概略説明を<ulink url=\"https://gitlab.com/"
-"Oslandia/documentation/presentations/-/blob/master/2012/pgconf_eu_2012/"
+"Vincent Picavetさんはトポロジとは何か、どのように使われるか、および、対応する"
+"FOSS4Gツールに関する良い概略説明を<ulink url=\"https://gitlab.com/Oslandia/"
+"documentation/presentations/-/blob/master/2012/pgconf_eu_2012/"
 "pgconfeu2012_vincent_picavet_postgis_topology.pdf\">PostGIS Topology PGConf "
 "EU 2012</ulink>で出しています。"
 
@@ -1234,7 +1234,8 @@ msgstr ""
 msgid ""
 "List of possible errors, what they mean and what the returned ids represent "
 "are displayed below:"
-msgstr "エラーの一覧を示します。可能性のある、意味することろ、返されるid表現は次の通"
+msgstr ""
+"エラーの一覧を示します。可能性のある、意味することろ、返されるid表現は次の通"
 "りです:"
 
 #. Tag: entry
@@ -1308,8 +1309,9 @@ msgstr "ノードの識別子。"
 #: extras_topology.xml:523
 #, no-c-format
 msgid "An edge has a node in its interior. See <xref linkend=\"ST_Relate\"/>."
-msgstr "エッジが内部にノードを持っています。<xref linkend=\"ST_Relate\""
-"/>を参照して下さい。"
+msgstr ""
+"エッジが内部にノードを持っています。<xref linkend=\"ST_Relate\"/>を参照して下"
+"さい。"
 
 #. Tag: entry
 #: extras_topology.xml:529
@@ -1321,7 +1323,8 @@ msgstr "invalid edge (訳注: 不正なエッジ)"
 #: extras_topology.xml:532
 #, no-c-format
 msgid "An edge geometry is invalid. See <xref linkend=\"ST_IsValid\"/>."
-msgstr "エッジジオメトリが不正です。<xref linkend=\"ST_IsValid\"/>をご覧下さい。"
+msgstr ""
+"エッジジオメトリが不正です。<xref linkend=\"ST_IsValid\"/>をご覧下さい。"
 
 #. Tag: entry
 #: extras_topology.xml:538
@@ -1334,8 +1337,9 @@ msgstr "edge not simple (訳注: 単純でないエッジ)"
 #, no-c-format
 msgid ""
 "An edge geometry has self-intersections. See <xref linkend=\"ST_IsSimple\"/>."
-msgstr "エッジジオメトリが自己交差しています。<xref linkend=\"ST_IsSimple\""
-"/>を参照して下さい。"
+msgstr ""
+"エッジジオメトリが自己交差しています。<xref linkend=\"ST_IsSimple\"/>を参照し"
+"て下さい。"
 
 #. Tag: entry
 #: extras_topology.xml:547
@@ -1360,8 +1364,9 @@ msgstr "2番目のエッジの識別子。"
 #, no-c-format
 msgid ""
 "Two edges have an interior intersection. See <xref linkend=\"ST_Relate\"/>."
-msgstr "二つのエッジが内部でインタセクトしています。<xref linkend=\"ST_Relate\""
-"/>をご覧下さい。"
+msgstr ""
+"二つのエッジが内部でインタセクトしています。<xref linkend=\"ST_Relate\"/>をご"
+"覧下さい。"
 
 #. Tag: entry
 #: extras_topology.xml:556
@@ -6758,6 +6763,170 @@ msgstr ""
 "この関数はジオメトリコレクションのTopoGeometryに対応していません。異なるトポ"
 "ロジからなるTopoGeometryとの比較もできません。また、現在のところ、階層"
 "TopoGeometry (他のTopoGeometryからなるTopoGeometry)に対応していません。"
+
+#. Tag: title
+#: extras_topology.xml:3640
+#, no-c-format
+msgid "Importing and exporting Topologies"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3642
+#, no-c-format
+msgid ""
+"Once you have created topologies, and maybe associated topological layers, "
+"you might want to export them into a file-based format for backup or "
+"transfer into another database."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3648
+#, no-c-format
+msgid ""
+"Using the standard dump/restore tools of PostgreSQL is problematic because "
+"topologies are composed by a set of tables (4 for primitives, an arbitrary "
+"number for layers) and records in metadata tables (topology.topology and "
+"topology.layer). Additionally, topology identifiers are not univoque across "
+"databases so that parameter of your topology will need to be changes upon "
+"restoring it."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3657
+#, no-c-format
+msgid ""
+"In order to simplify export/restore of topologies a pair of executables are "
+"provided: <filename>pgtopo_export</filename> and <filename>pgtopo_import</"
+"filename>. Example usage:"
+msgstr ""
+
+#. Tag: programlisting
+#: extras_topology.xml:3662
+#, no-c-format
+msgid "pgtopo_export dev_db topo1 | pgtopo_import topo1 | psql staging_db"
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3665
+#, no-c-format
+msgid "Using the Topology exporter"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3667
+#, no-c-format
+msgid ""
+"The <filename>pgtopo_export</filename> script takes the name of a database "
+"and a topology and outputs a dump file which can be used to import the "
+"topology (and associated layers) into a new database."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3673
+#, no-c-format
+msgid ""
+"By default <filename>pgtopo_export</filename> writes the dump file to the "
+"standard output so that it can be piped to <filename>pgtopo_import</"
+"filename> or redirected to a file (refusing to write to terminal). You can "
+"optionally specify an output filename with the <code>-f</code> commandline "
+"switch."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3681
+#, no-c-format
+msgid ""
+"By default <filename>pgtopo_export</filename> includes a dump of all layers "
+"defined against the given topology. This may be more data than you need, or "
+"may be non-working (in case your layer tables have complex dependencies) in "
+"which case you can request skipping the layers with the <code>--skip-layers</"
+"code> switch and deal with those separately."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3690
+#, no-c-format
+msgid ""
+"Invoking <filename>pgtopo_export</filename> with the <code>--help</code> (or "
+"<code>-h</code> for short) switch will always print short usage string."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3697
+#, no-c-format
+msgid ""
+"The dump file format is a compressed tar archive of a "
+"<filename>pgtopo_export</filename> directory containing at least a "
+"<filename>pgtopo_dump_version</filename> file with format version info. As "
+"of version <code>1</code> the directory contains tab-delimited CSV files "
+"with data of the topology primitive tables (node, edge_data, face, "
+"relation), of the topology and layer records associated with it, and "
+"optionall (if <code>--skip-layers</code> is not given) a custom-format "
+"PostgreSQL dump of tables reported as being layers of the given topology."
+msgstr ""
+
+#. Tag: title
+#: extras_topology.xml:3713
+#, no-c-format
+msgid "Using the Topology importer"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3715
+#, no-c-format
+msgid ""
+"The <filename>pgtopo_import</filename> script takes a <code>pgtopo_export</"
+"code> format topology dump and a name to give to the topology to be created "
+"and outputs an SQL script reconstructing the topology and associated layers."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3723
+#, no-c-format
+msgid ""
+"The generated SQL file will contain statements that create a topology with "
+"the given name, load primitive data in it, restores and registers all "
+"topology layers by properly linking all TopoGeometry values to their correct "
+"topology."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3731
+#, no-c-format
+msgid ""
+"By default <filename>pgtopo_import</filename> reads the dump from the "
+"standard input so that it can be used in conjuction with "
+"<filename>pgtopo_export</filename> in a pipeline. You can optionally specify "
+"an input filename with the <code>-f</code> commandline switch."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3739
+#, no-c-format
+msgid ""
+"By default <filename>pgtopo_import</filename> includes in the output SQL "
+"file the code to restore all layers found in the dump."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3744
+#, no-c-format
+msgid ""
+"This may be unwanted or non-working in case your target database already "
+"have tables with the same name as the ones in the dump. In that case you can "
+"request skipping the layers with the <code>--skip-layers</code> switch and "
+"deal with those separately (or later)."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3751
+#, no-c-format
+msgid ""
+"SQL to only load and link layers to a named topology can be generated using "
+"the <code>--only-layers</code> switch. This can be useful to load layers "
+"AFTER resolving the naming conflicts or to link layers to a different "
+"topology (say a spatially-simplified version of the starting topology)."
+msgstr ""
 
 #~ msgid ""
 #~ "Vincent Picavet provides a good synopsis and overview of what is "

@@ -3,6 +3,76 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>PostGIS 3.3.0alpha1</title>
+        <para>2022/05/21</para>
+        <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 4.9+.
+            Additional features are enabled if you are running GEOS 3.9+ (precision feature of many processing functions)
+            ST_MakeValid enhancements with 3.10+, ST_ConcaveHull native GEOS implementation with GEOS 3.11+</para>
+
+        <para>The new --enable-lto flag improves math computations.  This new feature is disabled by default
+because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)</para>
+
+        <para>Use below to enable it.</para>
+        <programlisting>
+./configure --enable-lto
+        </programlisting>
+
+
+        <simplesect>
+            <title>Breaking changes</title>
+            <para>Drop support for PostgreSQL 9.6 and 10 (Regina Obe)</para>
+            <para>Change output for WKT MULTIPOINT. All points now
+                            wrapped in parens. (Even Roualt)</para>
+            <para>GH674, geometry validation and fixing is disabled
+                            for ST_DumpAsPolygons and ST_Polygon so it works faster
+                            but might produce invalid polygons. (Aliaksandr Kalenik)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Enhancements</title>
+            <para>2861, Add index on topology.node(containing_face) speeding up
+                splitting and merging of faces (Sandro Santilli)</para>
+            <para>2083, Speed up ST_RemEdge topology functions adding index on
+                relation(element_id) and edge_data(abs_next*) (Sandro Santilli)</para>
+            <para>5118, Allow dropping topologies with missing topogeometry sequences
+                (Sandro Santilli)</para>
+            <para>5111, faster topology face MBR computation (Sandro Santilli)</para>
+            <para>postgis_extensions_upgrade() support for upgrades from any PostGIS
+                  version, including yet to be released ones (Sandro Santilli)</para>
+            <para>5040, add postgis_sfcgal_full_version (Loïc Bartoletti)</para>
+            <para>GH655, GiST: balance the tree splits better in recursive calls (Darafei Praliaskouski)</para>
+            <para>GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)</para>
+            <para>4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)</para>
+            <para>ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)</para>
+            <para>4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)</para>
+            <para>GH676, faster ST_Clip (Aliaksandr Kalenik)</para>
+            <para>5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>New features</title>
+            <para>5116, Topology export/import scripts (Sandro Santilli)</para>
+            <para>ST_Letters creates geometries that look like letters (Paul Ramsey)</para>
+            <para>5037, postgis_sfcgal: ST_3DConvexHull (Loïc Bartoletti)</para>
+            <para>postgis_sfcgal: sfcgal_full_version - reports BOOST and CGAL version
+                (Loïc Bartoletti)</para>
+            <para>GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)</para>
+            <para>5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)</para>
+            <para>5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape (Loïc Bartoletti)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Bug Fix</title>
+            <para>5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)</para>
+            <para>5123, Support for PostgreSQL 15 - PG15 now exposes json types and functions,
+                        do not include for PG15+ (Regina Obe)</para>
+            <para>5088, Memory corruption in mvt_agg_transfn (Victor Collod)</para>
+            <para>5137, resetting interrupt flags before query execution (Sergei Shoulbakov)</para>
+            <para>5148, ST_Clip is more robust to alignment of raster and clip geometry (Sergei Shoulbakov)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
         <title>PostGIS 3.2.0 (Olivier Courtin Edition)</title>
         <para>2021/12/18</para>
         <para>This version requires PostgreSQL 9.6 or higher, GEOS 3.6 or higher, and Proj 4.9+

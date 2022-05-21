@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2022-04-21
+Date: 2022-05-21
 
 Versioning Scheme
 -----------------
@@ -62,7 +62,7 @@ Release procedure
 
 1. Check access.
 
-  - Can edit tickets and milestones on http://trac.osgeo.org/postgis/
+  - Can edit tickets and milestones on https://trac.osgeo.org/postgis/
   - Can commit to upstream git https://git.osgeo.org/gitea/postgis/postgis
   - Have SSH to download.osgeo.org and can write to /osgeo/download/postgis.
   - Have SSH to postgis.net and can write to /etc/nginx/sites-enabled/postgis.net.

@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.2.0
-:Date: 2021-12-17
+:Version: 3.3.0alpha1
+:Date: 2022-05-21
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -18,14 +18,17 @@ Directory structure::
   ./extras      Various pieces that didn't belong to mainstream
                 (package management specfiles, WFS_locks
                   , sample WKB parser, postgis_tiger_geocoder)
+  ./fuzzers     Google fuzz tests for liblwgeom
   ./liblwgeom   LWGEOM geometry library
   ./libpgcommon PostGIS library to bridge LWGEOM to PostgreSQL
   ./loader      A program to convert ESRI Shape files into SQL text suitable
                 for uploading into a PostGIS/PostgreSQL database and a program
                 for converting PostGIS spatial tables into shapefiles
+  ./macros      autoconf helper macros
   ./postgis     PostGIS library source code
   ./raster      PostGIS rasters extension source code
   ./regress     Online regression tests
+  ./sfcgal      PostGIS sfcgal extension source code and tests
   ./topology    PostGIS topology extension source code
   ./utils       Utility scripts for PostGIS (upgrade, profiling, ...)
 
@@ -33,7 +36,7 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 9.6 and above.
+PostGIS is compatible with PostgreSQL 11 and above.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
@@ -55,7 +58,7 @@ this to work.
   ST_Touches(), ST_Contains(), ST_Disjoint() and spatial operations such as
   ST_Intersection(), ST_Union() and ST_Buffer().
 
-    http://trac.osgeo.org/geos/
+    https://libgeos.org
 
 * XML SUPPORT (Required, Version 2.5.0 or higher):
 
@@ -82,13 +85,13 @@ this to work.
 
 * GDAL (Optional, Version 2 or higher 3+ is strongly recommended)
 
-  GDAL (http://gdal.org) is *required* if you want to compile PostGIS
+  GDAL (https://gdal.org) is *required* if you want to compile PostGIS
   with raster support. To compile without raster support you
   must ``./configure --without-raster``
 
 * CGAL 4.1+ and SFCGAL 1.3.2+ (Optional) needed for advanced 3D support
 
-  https://github.com/Oslandia/SFCGAL
+  https://gitlab.com/Oslandia/SFCGAL
 
 * protobuf-c (Optional, Version 1.1.0 or higher)
 
@@ -118,7 +121,11 @@ To configure PostGIS, run::
 
   ./configure
 
-If the file is missing you must be using a development version
+Far faster math processing use below, may not work on all platforms:
+
+  ./configure --enable-lto
+
+If the configure file is missing you must be using a development version
 of the code. In that case call ./autogen.sh to generate it.
 
 The results of the configuration can be easily seen within the
