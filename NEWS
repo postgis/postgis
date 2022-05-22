@@ -1,9 +1,16 @@
+PostGIS 3.3.0dev
+2022/XX/XX
+Changes since PostGIS 3.3.0alpha1
+* Enhancements *
+
+
 PostGIS 3.3.0alpha1
 2022/05/21
 
 This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
 Additional features are enabled if you are running GEOS 3.9+
-ST_MakeValid enhancements with 3.10+, ST_ConcaveHull enhancements with GEOS 3.11+
+ST_MakeValid enhancements with 3.10+, ST_ConcaveHull enhancements with GEOS 3.11+.
+Note GEOS 3.11+ is not yet released, you can download from https://github.com/libgeos/geos.
 
 The new --enable-lto flag improves math computations.  This new feature is disabled by default
 because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)
