@@ -1193,35 +1193,68 @@ FROM test;
 			<title>Description</title>
 
 			<para>Returns a LineString or MultiLineString formed by joining together
-			the constituent line work of a MultiLineString.
+			the line elements of a MultiLineString.
             Lines are joined at their endpoints at 2-way intersections.
             Lines are not joined across intersections of 3-way or greater degree.
             </para>
 
-			<note><para>Only use with MultiLineString/LineStrings. If you pass a Polygon or GeometryCollection into this function, it
-			returns an empty GeometryCollection</para></note>
+			<note><para>Only use with MultiLineString/LineStrings. Other geometry types
+			return an empty GeometryCollection</para></note>
 			<para>Performed by the GEOS module.</para>
 			<para>Availability: 1.1.0</para>
-			<warning><para>This function will strip the M dimension.</para></warning>
+			<warning><para>This function strips the M dimension.</para></warning>
 		</refsection>
 
 		<refsection>
 			<title>Examples</title>
+      <para>
+          <informalfigure>
+              <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_linemerge01.png" />
+                    </imageobject>
 
+                    <caption>
+                        <para>Merging lines with different orientation.
+                        </para>
+                    </caption>
+              </mediaobject>
+        </informalfigure>
+      </para>
 			<programlisting>SELECT ST_AsText(ST_LineMerge(
-'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))'
+'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120))'
 		));
-st_astext
---------------------------------------------------------------------------------------------------
-LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)
+--------------------------------------------
+ LINESTRING(10 160,60 120,120 140,180 120)
 </programlisting>
+
+      <para>
+          <informalfigure>
+              <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="images/st_linemerge02.png" />
+                    </imageobject>
+
+                    <caption>
+                        <para>Lines are not merged across intersections with degree > 2.
+                        </para>
+                    </caption>
+              </mediaobject>
+        </informalfigure>
+      </para>
+			<programlisting>SELECT ST_AsText(ST_LineMerge(
+'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120), (100 180, 120 140))'
+		));
+--------------------------------------------
+ MULTILINESTRING((10 160,60 120,120 140),(100 180,120 140),(120 140,180 120))
+</programlisting>
+
 <para>If merging is not possible due to non-touching lines,
 the original MultiLineString is returned.</para>
 <programlisting>
 SELECT ST_AsText(ST_LineMerge(
 'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 -32))'
 ));
-st_astext
 ----------------
 MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 </programlisting>
@@ -1230,7 +1263,6 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 SELECT ST_AsText(ST_LineMerge(
       'MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 -27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))'
         ));
-st_astext
 --------------------------------------------------------------------------------------------------
 LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11)
 </programlisting>

@@ -102,6 +102,8 @@ IMAGES= \
 	../images/st_linecrossingdirection04.png \
 	../images/st_line_interpolate_point01.png \
 	../images/st_line_interpolate_points01.png \
+	../images/st_linemerge01.png \
+	../images/st_linemerge02.png \
 	../images/st_line_substring01.png \
 	../images/st_locatebetween01.png \
 	../images/st_longestline01.png \
