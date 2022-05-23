@@ -391,12 +391,11 @@ endif
 comments-uninstall:
 	$(MAKE) -f Makefile.comments uninstall
 
-man-install: man/shp2pgsql.1 man/pgsql2shp.1
+man-install: man/shp2pgsql.1 man/pgsql2shp.1 man/pgtopo_export.1 man/pgtopo_import.1
 	mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
-	$(INSTALL_DATA) man/pgsql2shp.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
-	$(INSTALL_DATA) man/shp2pgsql.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
-	$(INSTALL_DATA) man/pgtopo_export.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgtopo_export.1
-	$(INSTALL_DATA) man/pgtopo_import.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgtopo_import.1
+	for f in $^; do \
+		$(INSTALL_DATA) $$f $(DESTDIR)$(PGSQL_MANDIR)/man1/`basename $$f`; \
+	done
 
 man-uninstall:
 	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
