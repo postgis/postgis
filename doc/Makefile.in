@@ -395,10 +395,14 @@ man-install: man/shp2pgsql.1 man/pgsql2shp.1
 	mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
 	$(INSTALL_DATA) man/pgsql2shp.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
 	$(INSTALL_DATA) man/shp2pgsql.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
+	$(INSTALL_DATA) man/pgtopo_export.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgtopo_export.1
+	$(INSTALL_DATA) man/pgtopo_import.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgtopo_import.1
 
 man-uninstall:
 	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
 	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
+	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgtopo_export.1
+	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgtopo_import.1
 
 docs-install: html/postgis.html html/style.css
 	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images

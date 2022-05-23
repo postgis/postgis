@@ -1,0 +1,60 @@
+.TH "pgtopo_import" "1" "" "" "PostGIS"
+.SH "NAME"
+.LP
+pgtopo_import - postgis topology importer
+
+.SH "SYNTAX"
+.LP
+pgtopo_import [ --skip-layers | --only-layers ] [ -f <dumpfile> ] <toponame>
+pgtopo_import [\fIoptions\fR] \fItopology\fR
+
+.SH "DESCRIPTION"
+.LP
+The pgtopo_import data loader reads an export file written
+by pgtopo_export and outputs an SQL script reconstructing
+the topology therein contained.
+
+.SH "USAGE"
+.LP
+The <topology> is the name to give to the re-created topology, which
+can be different from the name of the topology the export was made
+from.
+
+By default the SQL script is written on standard output.
+
+.SH "OPTIONS"
+.LP
+These are the supported options
+
+(Note that \--skip-layers and \--only-layers are mutually exclusive.)
+.TP
+\fB\--skip-layers\fR
+Do not include layers in the output SQL script. Just the topology
+schema.
+.TP
+\fB\--only-layers\fR
+Do not include the topology schema in the output SQL script. Just the
+layers.
+.TP
+\fB\-f\fR <\fIfilename\fR>
+Read the export file from the specified filename, rather than from
+standard input.
+\fB\-h\fR
+Display usage information.
+
+.SH "EXAMPLES"
+.LP
+An example session using the loader to create an SQL file and uploading it
+might look like this:
+
+# \fBpgtopo_import city_data < city_data.pgtopo_export | psql newdb\fR
+
+.SH "AUTHORS"
+.LP
+Originally written by Sandro Santilli <strk@kbt.io>.
+
+.SH "SEE ALSO"
+.LP
+pgtopo_export(1)
+
+More information is available at http://postgis.net

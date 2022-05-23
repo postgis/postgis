@@ -1,0 +1,49 @@
+.TH "pgtopo_export" "1" "" "" "PostGIS"
+.SH "NAME"
+.LP
+pgtopo_export - postgis topology exporter
+
+.SH "SYNTAX"
+.LP
+pgtopo_export [\fIoptions\fR] \fIdatabase\fR \fItopology\fR
+
+.SH "DESCRIPTION"
+.LP
+The pgtopo_export script connects to the named database and exports
+data of the named topology and associated layers to a file with a
+custom format.
+
+.SH "USAGE"
+.LP
+The <database> is the name of the database to connect to.
+
+The <topology> is the name of the topology to read data from.
+
+.SH "OPTIONS"
+.LP
+The commandline options are:
+.TP
+\fB\-f\fR <\fIfilename\fR>
+Write the output to a particular filename instead of stadard output.
+.TP
+\fB\--skip-layers\fR
+Do not export layers, just topology primitives.
+\fB\-h\fR
+Display usage information.
+
+.SH "EXAMPLES"
+.LP
+An example session using the exporter to create an export file of a
+topology "city_data" from a database might look like this:
+
+# \fBpgtopo_export \-f city_data.pgtopo_export my_db city_data\fR
+
+.SH "AUTHORS"
+.LP
+Originally written by Sandro Santilli <strk@kbt.io>.
+
+.SH "SEE ALSO"
+.LP
+pgtopo_import(1)
+
+More information is available at http://postgis.net
