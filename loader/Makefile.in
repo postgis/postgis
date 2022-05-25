@@ -4,31 +4,25 @@
 # * http://postgis.net
 # *
 # * Copyright 2008 Mark Cave-Ayland
-# * Copyright (c) 2020 Sandro Santilli <strk@kbt.io>
+# * Copyright (c) 2020-2022 Sandro Santilli <strk@kbt.io>
 # *
 # * This is free software; you can redistribute and/or modify it under
 # * the terms of the GNU General Public Licence. See the COPYING file.
 # *
 # **********************************************************************
 
-# PGXS information
-#
-# Note that PGXS currently doesn't handle building FE executables, but we need
-# the DESTDIR variable so we can get the correct install paths.
-# Hence we include the PGXS Makefile here, but ensure that we override the
-# 'all' and 'install' targets with the ones we really want to use below.
-PG_CONFIG := @PG_CONFIG@
-PGXS := @PGXS@
-include $(PGXS)
-
 top_builddir = @top_builddir@
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+datadir = @datadir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
 
 VPATH = $(srcdir)
 
-# Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
-# version which is not what we want.
 CC=@CC@
 CFLAGS= -I$(top_srcdir)/liblwgeom -I$(top_builddir)/liblwgeom @CPPFLAGS@ @CFLAGS@ @PICFLAGS@ @PROJ_CPPFLAGS@
 SHELL = @SHELL@
@@ -72,6 +66,9 @@ CFLAGS += $(GETTEXT_CFLAGS) $(ICONV_CFLAGS)
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
 # directory for regression testing.
+#
+# TODO: rely on DESTDIR instead
+#
 ifeq ($(REGRESS),1)
 	bindir=/bin
 	pkglibdir=/lib
