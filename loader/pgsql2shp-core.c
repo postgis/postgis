@@ -35,6 +35,7 @@
 #include <sys/param.h>
 #endif
 
+#include "../liblwgeom/stringbuffer.h"
 #include "../liblwgeom/liblwgeom.h" /* for LWGEOM struct and funx */
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
 
@@ -1351,12 +1352,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	/* If a user-defined query has been specified, create and point the state to our new table */
 	if (state->config->usrquery)
 	{
-		state->table = malloc(20 + 20);		/* string + max long precision */
-		sprintf(state->table, "__pgsql2shp%lu_tmp_table", (long)getpid());
-
-		query = malloc(32 + strlen(state->table) + strlen(state->config->usrquery));
-
-		sprintf(query, "CREATE TEMP TABLE \"%s\" AS %s", state->table, state->config->usrquery);
+		asprintf(&(state->table), "__pgsql2shp%lu_tmp_table", (long)getpid());
+		asprintf(&query, "CREATE TEMP TABLE \"%s\" AS %s", state->table, state->config->usrquery);
 		res = PQexec(state->conn, query);
 		free(query);
 
@@ -1380,9 +1377,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	/* Get the list of columns and their types for the selected table */
 	if (state->schema)
 	{
-		query = malloc(250 + strlen(state->schema) + strlen(state->table));
-
-		sprintf(query, "SELECT a.attname, a.atttypid, "
+		asprintf(&query, "SELECT a.attname, a.atttypid, "
 		        "a.atttypmod, a.attlen FROM "
 		        "pg_attribute a, pg_class c, pg_namespace n WHERE "
 		        "n.nspname = '%s' AND a.attrelid = c.oid AND "
@@ -1392,9 +1387,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	}
 	else
 	{
-		query = malloc(250 + strlen(state->table));
-
-		sprintf(query, "SELECT a.attname, a.atttypid, "
+		asprintf(&query, "SELECT a.attname, a.atttypid, "
 		        "a.atttypmod, a.attlen FROM "
 		        "pg_attribute a, pg_class c WHERE "
 		        "a.attrelid = c.oid and a.attnum > 0 AND "
@@ -1569,13 +1562,10 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		/* Issue warning if column has been renamed */
 		if (strcasecmp(dbffieldname, pgfieldname))
 		{
-			if ( snprintf(buf, 256, _("Warning, field %s renamed to %s\n"),
-			              pgfieldname, dbffieldname) >= 256 )
-			{
-				buf[255] = '\0';
-			}
+			snprintf(buf, sizeof(buf), _("Warning, field %s renamed to %s\n"), pgfieldname, dbffieldname);
 			/* Note: we concatenate all warnings from the main loop as this is useful information */
-			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message) - 1);
+			if (SHPDUMPERMSGLEN > (strlen(state->message) + 1))
+				strncat(state->message, buf, SHPDUMPERMSGLEN - (strlen(state->message) + 1));
 
 			ret = SHPDUMPERWARN;
 		}
@@ -1765,9 +1755,12 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			if (dbffieldsize > MAX_DBF_FIELD_SIZE)
 			{
 				/* Note: we concatenate all warnings from the main loop as this is useful information */
-				snprintf(buf, 256, _("Warning: values of field '%s' exceeding maximum dbf field width (%d) "
+				snprintf(buf, sizeof(buf), _("Warning: values of field '%s' exceeding maximum dbf field width (%d) "
 					"will be truncated.\n"), dbffieldname, MAX_DBF_FIELD_SIZE);
-				strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
+
+				if (SHPDUMPERMSGLEN > (strlen(state->message) + 1))
+					strncat(state->message, buf, SHPDUMPERMSGLEN - (strlen(state->message)+1));
+
 				dbffieldsize = MAX_DBF_FIELD_SIZE;
 
 				ret = SHPDUMPERWARN;
@@ -1820,8 +1813,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		{
 			/* No geo* column specified so we can only create the DBF section -
 			   but let's issue a warning... */
-			snprintf(buf, 256, _("No geometry column found.\nThe DBF file will be created but not the shx or shp files.\n"));
-			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
+			snprintf(buf, sizeof(buf), _("No geometry column found.\nThe DBF file will be created but not the shx or shp files.\n"));
+			if (SHPDUMPERMSGLEN > (strlen(state->message) + 1))
+				strncat(state->message, buf, SHPDUMPERMSGLEN - (strlen(state->message)+1));
 
 			state->shp = NULL;
 
@@ -1840,10 +1834,10 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		}
 	}
 
-
 	/* Now we have the complete list of fieldnames, let's generate the SQL query. First let's make sure
 	   we reserve enough space for tables with lots of columns */
 	j = 0;
+
 	/*TODO: this really should be rewritten to use stringbuffer */
 	for (i = 0; i < state->fieldcount; i++)
 		j += strlen( state->pgfieldnames[i]) + 10;	/*add extra space for the quotes to quote identify and any embedded quotes that may need escaping */
@@ -1957,8 +1951,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	state->fetchres = NULL;
 
 	/* Generate the fetch query */
-	state->fetch_query = malloc(256);
-	sprintf(state->fetch_query, "FETCH %d FROM cur", state->config->fetchsize);
+	asprintf(&(state->fetch_query), "FETCH %d FROM cur", state->config->fetchsize);
 
 	return SHPDUMPEROK;
 }
