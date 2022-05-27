@@ -102,4 +102,9 @@ select '86', ST_AsEWKT(ST_Split(
   'SRID=3;MULTIPOINT(2 6,5 0,5 20,2 20,8 20,8 0,5 -2,0 0, 5 -5, 10 20)'
 ));
 
+-- Split empty line by point
+-- See http://trac.osgeo.org/postgis/ticket/5152
+select '87', ST_AsEWKT(ST_Split('SRID=4326;LINESTRING EMPTY', 'SRID=4326;POINT(0 1)'));
+
+
 -- TODO: split line by collapsed line

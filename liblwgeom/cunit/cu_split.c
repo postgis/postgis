@@ -74,8 +74,20 @@ static void test_lwline_split_by_point_to(void)
 	CU_ASSERT_EQUAL(coll->ngeoms, 4);
 	lwpoint_free(point);
 
-	lwcollection_free((LWCOLLECTION*)coll);
 	lwline_free(line);
+
+	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING EMPTY",
+		LW_PARSER_CHECK_NONE));
+	CU_ASSERT(line != NULL);
+	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
+		"POINT(0 0)", LW_PARSER_CHECK_NONE));
+	CU_ASSERT(point != NULL);
+	ret = lwline_split_by_point_to(line, point, coll);
+	CU_ASSERT_EQUAL(ret, 0); /* the point is not on the line */
+	lwpoint_free(point);
+	lwline_free(line);
+
+	lwcollection_free((LWCOLLECTION*)coll);
 }
 
 static void test_lwgeom_split(void)

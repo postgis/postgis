@@ -18,7 +18,7 @@
 -- this is needed because there is no ALTER EXTENSION DROP FUNCTION/AGGREGATE command
 -- and we can't CREATE OR REPALCe functions whose signatures have changed and we can drop them if they are part of an extention
 -- So we use this to remove it from extension first before we drop
-CREATE OR REPLACE FUNCTION postgis_extension_remove_objects(param_extension text, param_type text)
+CREATE FUNCTION postgis_extension_remove_objects(param_extension text, param_type text)
   RETURNS boolean AS
 $$
 DECLARE
@@ -81,7 +81,7 @@ END;
 $$
 LANGUAGE plpgsql VOLATILE;
 
-CREATE OR REPLACE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_statement text)
+CREATE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_statement text)
   RETURNS boolean AS
 $$
 DECLARE
@@ -101,7 +101,7 @@ END;
 $$
 LANGUAGE plpgsql VOLATILE;
 
-CREATE OR REPLACE FUNCTION postgis_extension_AddToSearchPath(a_schema_name varchar)
+CREATE FUNCTION postgis_extension_AddToSearchPath(a_schema_name text)
 RETURNS text
 AS
 $$
@@ -109,7 +109,30 @@ DECLARE
 	var_result text;
 	var_cur_search_path text;
 BEGIN
-	SELECT reset_val INTO var_cur_search_path FROM pg_catalog.pg_settings WHERE name = 'search_path';
+
+	WITH settings AS (
+		SELECT pg_catalog.unnest(setconfig) config
+		FROM pg_catalog.pg_db_role_setting
+		WHERE setdatabase = (
+			SELECT oid
+			FROM pg_catalog.pg_database
+			WHERE datname = current_database()
+		) and setrole = 0
+	)
+	SELECT pg_catalog.regexp_replace(config, '^search_path=', '')
+	FROM settings WHERE config like 'search_path=%'
+	INTO var_cur_search_path;
+
+	RAISE NOTICE 'cur_search_path from pg_db_role_setting is %', var_cur_search_path;
+
+	IF var_cur_search_path IS NULL THEN
+		SELECT reset_val
+		INTO var_cur_search_path
+		FROM pg_catalog.pg_settings
+		WHERE name = 'search_path';
+
+		RAISE NOTICE 'cur_search_path from pg_settings is %', var_cur_search_path;
+	END IF;
 	IF var_cur_search_path LIKE '%' || pg_catalog.quote_ident(a_schema_name) || '%' THEN
 		var_result := a_schema_name || ' already in database search_path';
 	ELSE
