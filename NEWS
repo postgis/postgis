@@ -2,6 +2,7 @@ PostGIS 3.3.0dev
 2022/XX/XX
 Changes since PostGIS 3.3.0alpha1
 * Enhancements *
+  - #5158 pgtopo_import / pgtopo_export manpages
 
 
 PostGIS 3.3.0alpha1
