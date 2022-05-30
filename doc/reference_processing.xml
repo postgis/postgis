@@ -1186,6 +1186,11 @@ FROM test;
 				<funcdef>geometry <function>ST_LineMerge</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></paramdef>
 			  </funcprototype>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_LineMerge</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>directed</parameter></paramdef>
+			  </funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
 
@@ -1198,9 +1203,14 @@ FROM test;
             Lines are not joined across intersections of 3-way or greater degree.
             </para>
 
+			<para>If <emphasis role="bold">directed</emphasis> is TRUE, then ST_LineMerge
+			will not change point order within LineStrings, so lines with opposite directions
+			will not be merged</para>
+
 			<note><para>Only use with MultiLineString/LineStrings. Other geometry types
 			return an empty GeometryCollection</para></note>
 			<para>Performed by the GEOS module.</para>
+			<para>Enhanced: 3.3.0 accept a directed parameter - requires GEOS &gt;= 3.11.0</para>
 			<para>Availability: 1.1.0</para>
 			<warning><para>This function strips the M dimension.</para></warning>
 		</refsection>
@@ -1258,6 +1268,27 @@ SELECT ST_AsText(ST_LineMerge(
 ----------------
 MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 </programlisting>
+
+<para>
+	<informalfigure>
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="images/st_linemerge03.png" />
+			</imageobject>
+			<caption>
+				<para>Lines with opposite directions are not merged if directed = TRUE.</para>
+			</caption>
+		</mediaobject>
+	</informalfigure>
+</para>
+<programlisting>
+SELECT ST_AsText(ST_LineMerge(
+'MULTILINESTRING((60 30, 10 70), (120 50, 60 30), (120 50, 180 30))',
+TRUE));
+-------------------------------------------------------
+ MULTILINESTRING((120 50,60 30,10 70),(120 50,180 30))
+</programlisting>
+
 <para>Example showing Z-dimension handling.</para>
 <programlisting>
 SELECT ST_AsText(ST_LineMerge(
