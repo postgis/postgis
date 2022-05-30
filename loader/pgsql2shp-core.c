@@ -1352,8 +1352,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	/* If a user-defined query has been specified, create and point the state to our new table */
 	if (state->config->usrquery)
 	{
-		asprintf(&(state->table), "__pgsql2shp%lu_tmp_table", (long)getpid());
-		asprintf(&query, "CREATE TEMP TABLE \"%s\" AS %s", state->table, state->config->usrquery);
+		(void)asprintf(&(state->table), "__pgsql2shp%lu_tmp_table", (long)getpid());
+		(void)asprintf(&query, "CREATE TEMP TABLE \"%s\" AS %s", state->table, state->config->usrquery);
 		res = PQexec(state->conn, query);
 		free(query);
 
@@ -1377,7 +1377,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	/* Get the list of columns and their types for the selected table */
 	if (state->schema)
 	{
-		asprintf(&query, "SELECT a.attname, a.atttypid, "
+		(void)asprintf(&query, "SELECT a.attname, a.atttypid, "
 		        "a.atttypmod, a.attlen FROM "
 		        "pg_attribute a, pg_class c, pg_namespace n WHERE "
 		        "n.nspname = '%s' AND a.attrelid = c.oid AND "
@@ -1387,7 +1387,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	}
 	else
 	{
-		asprintf(&query, "SELECT a.attname, a.atttypid, "
+		(void)asprintf(&query, "SELECT a.attname, a.atttypid, "
 		        "a.atttypmod, a.attlen FROM "
 		        "pg_attribute a, pg_class c WHERE "
 		        "a.attrelid = c.oid and a.attnum > 0 AND "
@@ -1951,7 +1951,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	state->fetchres = NULL;
 
 	/* Generate the fetch query */
-	asprintf(&(state->fetch_query), "FETCH %d FROM cur", state->config->fetchsize);
+	(void)asprintf(&(state->fetch_query), "FETCH %d FROM cur", state->config->fetchsize);
 
 	return SHPDUMPEROK;
 }
