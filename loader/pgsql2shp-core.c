@@ -534,32 +534,32 @@ static int
 getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 {
 	int size;
-	char *query;
+	stringbuffer_t query;
 	PGresult *res;
 
 	/*( this is ugly: don't forget counting the length  */
 	/* when changing the fixed query strings ) */
 
+	stringbuffer_init(&query);
 	if ( schema )
 	{
-		query = (char *)malloc(strlen(fname)+strlen(table)+
-		                       strlen(schema)+46);
-		sprintf(query,
-		        "select max(octet_length(\"%s\"::text)) from \"%s\".\"%s\"",
-		        fname, schema, table);
+		stringbuffer_aprintf(
+			&query,
+			"select max(octet_length(\"%s\"::text)) from \"%s\".\"%s\"",
+			fname, schema, table);
 	}
 	else
 	{
-		query = (char *)malloc(strlen(fname)+strlen(table)+46);
-		sprintf(query,
-		        "select max(octet_length(\"%s\"::text)) from \"%s\"",
-		        fname, table);
+		stringbuffer_aprintf(
+			&query,
+			"select max(octet_length(\"%s\"::text)) from \"%s\"",
+			fname, table);
 	}
 
-	LWDEBUGF(4, "maxFieldLenQuery: %s\n", query);
+	LWDEBUGF(4, "maxFieldLenQuery: %s\n", stringbuffer_getstring(&query));
 
-	res = PQexec(conn, query);
-	free(query);
+	res = PQexec(conn, stringbuffer_getstring(&query));
+	stringbuffer_release(&query);
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK )
 	{
 		printf( _("Querying for maximum field length: %s"),
@@ -1182,54 +1182,28 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 char *
 ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
 {
-	char *connstring;
-	int connlen;
-
-	connlen = 64 +
-		(conn->host ? strlen(conn->host) : 0) + (conn->port ? strlen(conn->port) : 0) +
-		(conn->username ? strlen(conn->username) : 0) + (conn->password ? strlen(conn->password) : 0) +
-		(conn->database ? strlen(conn->database) : 0);
-
-	connstring = malloc(connlen);
-	memset(connstring, 0, connlen);
+	stringbuffer_t cs;
+	stringbuffer_init(&cs);
 
 	if (conn->host)
-	{
-		strcat(connstring, " host=");
-		strcat(connstring, conn->host);
-	}
+		stringbuffer_aprintf(&cs, " host=%s", conn->host);
 
 	if (conn->port)
-	{
-		strcat(connstring, " port=");
-		strcat(connstring, conn->port);
-	}
+		stringbuffer_aprintf(&cs, " port=%s", conn->port);
 
 	if (conn->username)
-	{
-		strcat(connstring, " user=");
-		strcat(connstring, conn->username);
-	}
+		stringbuffer_aprintf(&cs, " user=%s", conn->username);
 
 	if (conn->password)
-	{
-		strcat(connstring, " password='");
-		strcat(connstring, conn->password);
-		strcat(connstring, "'");
-	}
+		stringbuffer_aprintf(&cs, " password='%s'", conn->password);
 
 	if (conn->database)
-	{
-		strcat(connstring, " dbname=");
-		strcat(connstring, conn->database);
-	}
+		stringbuffer_aprintf(&cs, " dbname=%s", conn->database);
 
 	if ( ! getenv("PGCLIENTENCODING") )
-	{
-		strcat(connstring, " client_encoding=UTF8");
-	}
+		stringbuffer_append(&cs, " client_encoding=UTF8");
 
-	return connstring;
+	return cs.str_start;
 }
 
 /* Connect to the database and identify the version of PostGIS (and any other
@@ -1238,11 +1212,10 @@ int
 ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 {
 	PGresult *res;
-
-	char *connstring, *tmpvalue;
+	char *tmpvalue;
 
 	/* Generate the PostgreSQL connection string */
-	connstring = ShpDumperGetConnectionStringFromConn(state->config->conn);
+	char *connstring = ShpDumperGetConnectionStringFromConn(state->config->conn);
 
 	/* Connect to the database */
 	state->conn = PQconnectdb(connstring);
@@ -1353,7 +1326,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	if (state->config->usrquery)
 	{
 		int r = asprintf(&(state->table), "__pgsql2shp%lu_tmp_table", (long)getpid());
+		(void)r;
 		r = asprintf(&query, "CREATE TEMP TABLE \"%s\" AS %s", state->table, state->config->usrquery);
+		(void)r;
 		res = PQexec(state->conn, query);
 		free(query);
 
@@ -1384,6 +1359,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		        "n.oid = c.relnamespace AND "
 		        "a.atttypid != 0 AND "
 		        "a.attnum > 0 AND c.relname = '%s'", state->schema, state->table);
+		(void)r;
 	}
 	else
 	{
@@ -1394,6 +1370,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		        "a.atttypid != 0 AND "
 		        "c.relname = '%s' AND "
 		        "pg_catalog.pg_table_is_visible(c.oid)", state->table);
+		(void)r;
 	}
 
 	LWDEBUGF(3, "query is: %s\n", query);
