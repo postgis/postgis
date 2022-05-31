@@ -67,6 +67,20 @@ static char * goodDBFValue(char *in, char fieldType);
 /** @brief Binary to hexewkb conversion function */
 char *convert_bytes_to_hex(uint8_t *ewkb, size_t size);
 
+static char*
+core_asprintf(const char* format, ...)
+{
+	va_list ap;
+	char *value;
+    int err;
+	va_start(ap, format);
+    err = vasprintf(&value, format, ap);
+    if (err < 0)
+    	exit(-1);
+    va_end(ap);
+    return value;
+}
+
 static SHPObject *
 create_point_empty(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 {
@@ -712,31 +726,20 @@ projFileCreate(SHPDUMPERSTATE *state)
 
 	char *srtext;
 	char *query;
-	char *esc_schema;
-	char *esc_table;
-	char *esc_geo_col_name;
+	char esc_schema[1024];
+	char esc_table[1024];
+	char esc_geo_col_name[1024];
 
 	int error, result;
 	PGresult *res;
-	int size;
 
 	/***********
 	*** I'm multiplying by 2 instead of 3 because I am too lazy to figure out how many characters to add
 	*** after escaping if any **/
-	size = 1000;
-	if ( schema )
-	{
-		size += 3 * strlen(schema);
-	}
-	size += 1000;
-	esc_table = (char *) malloc(3 * strlen(table) + 1);
-	esc_geo_col_name = (char *) malloc(3 * strlen(geo_col_name) + 1);
 	PQescapeStringConn(state->conn, esc_table, table, strlen(table), &error);
 	PQescapeStringConn(state->conn, esc_geo_col_name, geo_col_name, strlen(geo_col_name), &error);
 
 	/** make our address space large enough to hold query with table/schema **/
-	query = (char *) malloc(size);
-	if ( ! query ) return 0; /* out of virtual memory */
 
 	/**************************************************
 	 * Get what kind of spatial ref is the selected geometry field
@@ -745,31 +748,29 @@ projFileCreate(SHPDUMPERSTATE *state)
 	 *	Escaping quotes in the schema and table in query may not be necessary except to prevent malicious attacks
 	 *	or should someone be crazy enough to have quotes or other weird character in their table, column or schema names
 	 **************************************************/
-	if ( schema )
+	if (schema)
 	{
-		esc_schema = (char *) malloc(2 * strlen(schema) + 1);
 		PQescapeStringConn(state->conn, esc_schema, schema, strlen(schema), &error);
-		sprintf(query, "SELECT COALESCE((SELECT sr.srtext "
-		        " FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
-		        " WHERE gc.f_table_schema = '%s' AND gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' LIMIT 1),  "
-		        " (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END As srtext "
-		        " FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID((g.\"%s\")::geometry)) , ' ') As srtext ",
-		        esc_schema, esc_table,esc_geo_col_name, schema, table, geo_col_name);
-		free(esc_schema);
+		query = core_asprintf(
+			"SELECT COALESCE((SELECT sr.srtext "
+			" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
+			" WHERE gc.f_table_schema = '%s' AND gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' LIMIT 1),  "
+			" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END As srtext "
+			" FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID((g.\"%s\")::geometry)) , ' ') As srtext ",
+			esc_schema, esc_table, esc_geo_col_name, schema, table, geo_col_name);
 	}
 	else
 	{
-		sprintf(query, "SELECT COALESCE((SELECT sr.srtext "
-		        " FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
-		        " WHERE gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' AND pg_table_is_visible((gc.f_table_schema || '.' || gc.f_table_name)::regclass) LIMIT 1),  "
-		        " (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END as srtext "
-		        " FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID((g.\"%s\")::geometry)), ' ') As srtext ",
-		        esc_table, esc_geo_col_name, table, geo_col_name);
+		query = core_asprintf(
+			"SELECT COALESCE((SELECT sr.srtext "
+		    " FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
+		    " WHERE gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' AND pg_table_is_visible((gc.f_table_schema || '.' || gc.f_table_name)::regclass) LIMIT 1),  "
+		    " (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END as srtext "
+		    " FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID((g.\"%s\")::geometry)), ' ') As srtext ",
+		    esc_table, esc_geo_col_name, table, geo_col_name);
 	}
 
-	LWDEBUGF(3,"%s\n",query);
-	free(esc_table);
-	free(esc_geo_col_name);
+	LWDEBUGF(3,"%s\n", query);
 
 	res = PQexec(state->conn, query);
 
@@ -816,8 +817,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 				if ( pszBasename[i] == '.' )
 					pszBasename[i] = '\0';
 
-				pszFullname = (char *) malloc(strlen(pszBasename) + 5);
-				sprintf( pszFullname, "%s.prj", pszBasename );
+				pszFullname = core_asprintf("%s.prj", pszBasename);
 				free( pszBasename );
 
 
@@ -881,17 +881,15 @@ getTableInfo(SHPDUMPERSTATE *state)
 		/* Include geometry information */
 		if (state->schema)
 		{
-			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->schema) + strlen(state->table));
-
-			sprintf(query, "SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY 3",
-			        state->geo_col_name, state->geo_col_name, state->schema, state->table);
+			query = core_asprintf(
+				"SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY 3",
+		        state->geo_col_name, state->geo_col_name, state->schema, state->table);
 		}
 		else
 		{
-			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->table));
-
-			sprintf(query, "SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY 3",
-			        state->geo_col_name, state->geo_col_name, state->table);
+			query = core_asprintf(
+				"SELECT count(1), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY 3",
+			    state->geo_col_name, state->geo_col_name, state->table);
 		}
 	}
 	else
@@ -899,15 +897,15 @@ getTableInfo(SHPDUMPERSTATE *state)
 		/* Otherwise... just a row count will do */
 		if (state->schema)
 		{
-			query = malloc(40 + strlen(state->schema) + strlen(state->table));
-
-			sprintf(query, "SELECT count(1) FROM \"%s\".\"%s\"", state->schema, state->table);
+			query = core_asprintf(
+				"SELECT count(1) FROM \"%s\".\"%s\"",
+				state->schema, state->table);
 		}
 		else
 		{
-			query = malloc(40 + strlen(state->table));
-
-			sprintf(query, "SELECT count(1) FROM \"%s\"", state->table);
+			query = core_asprintf(
+				"SELECT count(1) FROM \"%s\"",
+				state->table);
 		}
 	}
 
@@ -1310,9 +1308,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	PGresult *res;
 
 	char buf[256];
-	char *query;
 	int gidfound = 0, i, j, ret, status;
-
+	stringbuffer_t sb;
 
 	/* Open the column map if one was specified */
 	if (state->config->column_map_filename)
@@ -1325,12 +1322,13 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	/* If a user-defined query has been specified, create and point the state to our new table */
 	if (state->config->usrquery)
 	{
-		int r = asprintf(&(state->table), "__pgsql2shp%lu_tmp_table", (long)getpid());
-		(void)r;
-		r = asprintf(&query, "CREATE TEMP TABLE \"%s\" AS %s", state->table, state->config->usrquery);
-		(void)r;
-		res = PQexec(state->conn, query);
-		free(query);
+		state->table = core_asprintf("__pgsql2shp%lu_tmp_table", (long)getpid());
+		stringbuffer_init(&sb);
+		stringbuffer_aprintf(&sb,
+			"CREATE TEMP TABLE \"%s\" AS %s",
+			state->table, state->config->usrquery);
+		res = PQexec(state->conn, stringbuffer_getstring(&sb));
+		stringbuffer_release(&sb);
 
 		/* Execute the code to create the table */
 		if (PQresultStatus(res) != PGRES_COMMAND_OK)
@@ -1348,35 +1346,38 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			state->schema = strdup(state->config->schema);
 	}
 
-
+	stringbuffer_init(&sb);
 	/* Get the list of columns and their types for the selected table */
 	if (state->schema)
 	{
-		int r = asprintf(&query, "SELECT a.attname, a.atttypid, "
-		        "a.atttypmod, a.attlen FROM "
-		        "pg_attribute a, pg_class c, pg_namespace n WHERE "
-		        "n.nspname = '%s' AND a.attrelid = c.oid AND "
-		        "n.oid = c.relnamespace AND "
-		        "a.atttypid != 0 AND "
-		        "a.attnum > 0 AND c.relname = '%s'", state->schema, state->table);
-		(void)r;
+		stringbuffer_aprintf(&sb,
+			"SELECT a.attname, a.atttypid, "
+	        "a.atttypmod, a.attlen FROM "
+		    "pg_attribute a, pg_class c, pg_namespace n WHERE "
+		    "n.nspname = '%s' AND a.attrelid = c.oid AND "
+		    "n.oid = c.relnamespace AND "
+		    "a.atttypid != 0 AND "
+		    "a.attnum > 0 AND c.relname = '%s'",
+		    state->schema,
+		    state->table);
 	}
 	else
 	{
-		int r = asprintf(&query, "SELECT a.attname, a.atttypid, "
-		        "a.atttypmod, a.attlen FROM "
-		        "pg_attribute a, pg_class c WHERE "
-		        "a.attrelid = c.oid and a.attnum > 0 AND "
-		        "a.atttypid != 0 AND "
-		        "c.relname = '%s' AND "
-		        "pg_catalog.pg_table_is_visible(c.oid)", state->table);
-		(void)r;
+		stringbuffer_aprintf(&sb,
+		    "SELECT a.attname, a.atttypid, "
+		    "a.atttypmod, a.attlen FROM "
+		    "pg_attribute a, pg_class c WHERE "
+		    "a.attrelid = c.oid and a.attnum > 0 AND "
+		    "a.atttypid != 0 AND "
+		    "c.relname = '%s' AND "
+		    "pg_catalog.pg_table_is_visible(c.oid)",
+		    state->table);
 	}
 
 	LWDEBUGF(3, "query is: %s\n", query);
 
-	res = PQexec(state->conn, query);
-	free(query);
+	res = PQexec(state->conn, stringbuffer_getstring(&sb));
+	stringbuffer_release(&sb);
 
 	if (PQresultStatus(res) != PGRES_TUPLES_OK)
 	{
@@ -1819,82 +1820,91 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	for (i = 0; i < state->fieldcount; i++)
 		j += strlen( state->pgfieldnames[i]) + 10;	/*add extra space for the quotes to quote identify and any embedded quotes that may need escaping */
 
-	state->main_scan_query = malloc(1024 + j);
+	stringbuffer_init(&sb);
 
-	sprintf(state->main_scan_query, "DECLARE cur ");
+	stringbuffer_append(&sb, "DECLARE cur ");
 	if (state->config->binary)
-		strcat(state->main_scan_query, "BINARY ");
+		stringbuffer_append(&sb, "BINARY ");
 
-	strcat(state->main_scan_query, "CURSOR FOR SELECT ");
+	stringbuffer_append(&sb, "CURSOR FOR SELECT ");
 
 	for (i = 0; i < state->fieldcount; i++)
 	{
 		/* Comma-separated column names */
-		if (i > 0)
-			strcat(state->main_scan_query, ",");
+		if (i > 0) {
+			stringbuffer_append(&sb, ",");
+		}
 
-		if (state->config->binary)
-			sprintf(buf, "%s::text", quote_identifier(state->pgfieldnames[i]) ) ;
-		else
-			sprintf(buf, "%s", quote_identifier(state->pgfieldnames[i]) );
-
-		strcat(state->main_scan_query, buf);
+		if (state->config->binary) {
+			stringbuffer_aprintf(&sb,
+			    "%s::text",
+			    quote_identifier(state->pgfieldnames[i]) );
+		}
+		else {
+			stringbuffer_append(&sb,
+			    quote_identifier(state->pgfieldnames[i]) );
+		}
 	}
 
 	/* If we found a valid geometry/geography column then use it */
 	if (state->geo_col_name)
 	{
 		/* If this is the (only) column, no need for the initial comma */
-		if (state->fieldcount > 0)
-			strcat(state->main_scan_query, ",");
+		if (state->fieldcount > 0) {
+			stringbuffer_append(&sb, ",");
+		}
 
 #ifdef WORDS_BIGENDIAN
-		if (state->pgis_major_version > 0)
-		{
-			sprintf(buf, "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX", quote_identifier(state->geo_col_name) );
+		if (state->pgis_major_version > 0) {
+			stringbuffer_aprintf(&sb,
+			    "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX"
+			    quote_identifier(state->geo_col_name) );
 		}
 		else
 		{
-			sprintf(buf, "asbinary(%s::geometry, 'XDR') AS _geoX",
-			        quote_identifier(state->geo_col_name) );
+			stringbuffer_aprintf(&sb,
+			    "asbinary(%s::geometry, 'XDR') AS _geoX",
+			    quote_identifier(state->geo_col_name) );
 		}
 #else
 		if (state->pgis_major_version > 0)
 		{
-			sprintf(buf, "ST_AsEWKB(ST_SetSRID(%s::geometry, 0), 'NDR') AS _geoX", quote_identifier(state->geo_col_name) ) ;
+			stringbuffer_aprintf(&sb,
+			    "ST_AsEWKB(ST_SetSRID(%s::geometry, 0), 'NDR') AS _geoX",
+			    quote_identifier(state->geo_col_name) );
 		}
 		else
 		{
-			sprintf(buf, "asbinary(%s::geometry, 'NDR') AS _geoX",
-			        quote_identifier(state->geo_col_name) );
+			stringbuffer_aprintf(&sb,
+			    "asbinary(%s::geometry, 'NDR') AS _geoX",
+			    quote_identifier(state->geo_col_name) );
 		}
 #endif
-
-		strcat(state->main_scan_query, buf);
 	}
 
 	if (state->schema)
 	{
-		sprintf(buf, " FROM \"%s\".\"%s\"", state->schema, state->table);
+		stringbuffer_aprintf(&sb,
+		    " FROM \"%s\".\"%s\"",
+		    state->schema, state->table);
 	}
 	else
 	{
-		sprintf(buf, " FROM \"%s\"", state->table);
+		stringbuffer_aprintf(&sb,
+		    " FROM \"%s\"",
+		    state->table);
 	}
-
-	strcat(state->main_scan_query, buf);
 
 	/* Order by 'gid' (if found) */
 	if (gidfound)
 	{
-		sprintf(buf, " ORDER BY \"gid\"");
-		strcat(state->main_scan_query, buf);
+		stringbuffer_append(&sb, " ORDER BY \"gid\"");
 	}
 
 	/* Now we've finished with the result set, we can dispose of it */
 	PQclear(res);
 
-	LWDEBUGF(3, "FINAL QUERY: %s\n", state->main_scan_query);
+	LWDEBUGF(3, "FINAL QUERY: %s\n", stringbuffer_getstring(&sb));
 
 	/*
 	 * Begin the transaction
@@ -1911,6 +1921,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	PQclear(res);
 
 	/* Execute the main scan query */
+	state->main_scan_query = stringbuffer_getstringcopy(&sb);
+	stringbuffer_release(&sb);
 	res = PQexec(state->conn, state->main_scan_query);
 	if (!res || PQresultStatus(res) != PGRES_COMMAND_OK)
 	{
@@ -1928,7 +1940,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	state->fetchres = NULL;
 
 	/* Generate the fetch query */
-	tmpint = asprintf(&(state->fetch_query), "FETCH %d FROM cur", state->config->fetchsize);
+	state->fetch_query = core_asprintf("FETCH %d FROM cur", state->config->fetchsize);
 
 	return SHPDUMPEROK;
 }
