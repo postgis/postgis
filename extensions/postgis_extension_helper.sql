@@ -30,46 +30,46 @@ DECLARE
 	var_sql_list text := '';
 	var_pgsql_version integer := pg_catalog.current_setting('server_version_num');
 BEGIN
-		var_class := CASE WHEN pg_catalog.lower(param_type) = 'function' OR pg_catalog.lower(param_type) = 'aggregate' THEN 'pg_proc' ELSE '' END;
-		var_is_aggregate := CASE WHEN pg_catalog.lower(param_type) = 'aggregate' THEN true ELSE false END;
+		var_class := CASE WHEN pg_catalog.lower(param_type) OPERATOR(pg_catalog.=) 'function' OR pg_catalog.lower(param_type) OPERATOR(pg_catalog.=) 'aggregate' THEN 'pg_catalog.pg_proc' ELSE '' END;
+		var_is_aggregate := CASE WHEN pg_catalog.lower(param_type) OPERATOR(pg_catalog.=) 'aggregate' THEN true ELSE false END;
 
-		IF var_pgsql_version < 110000 THEN
-			var_sql_list := $sql$SELECT 'ALTER EXTENSION ' || e.extname || ' DROP ' || $3 || ' ' || COALESCE(proc.proname || '(' || oidvectortypes(proc.proargtypes) || ')' ,typ.typname, cd.relname, op.oprname,
-					cs.typname || ' AS ' || ct.typname || ') ', opcname, opfname) || ';' AS remove_command
+		IF var_pgsql_version OPERATOR(pg_catalog.<) 110000 THEN
+			var_sql_list := $sql$SELECT 'ALTER EXTENSION ' OPERATOR(pg_catalog.||)  e.extname OPERATOR(pg_catalog.||) ' DROP ' OPERATOR(pg_catalog.||) $3 OPERATOR(pg_catalog.||) ' ' OPERATOR(pg_catalog.||) COALESCE(proc.proname OPERATOR(pg_catalog.||) '(' OPERATOR(pg_catalog.||) oidvectortypes(proc.proargtypes) OPERATOR(pg_catalog.||) ')' ,typ.typname, cd.relname, op.oprname,
+					cs.typname OPERATOR(pg_catalog.||) ' AS ' OPERATOR(pg_catalog.||) ct.typname OPERATOR(pg_catalog.||) ') ', opcname, opfname) OPERATOR(pg_catalog.||) ';' AS remove_command
 			FROM pg_catalog.pg_depend As d INNER JOIN pg_catalog.pg_extension As e
-				ON d.refobjid = e.oid INNER JOIN pg_catalog.pg_class As c ON
-					c.oid = d.classid
-					LEFT JOIN pg_catalog.pg_proc AS proc ON proc.oid = d.objid
-					LEFT JOIN pg_catalog.pg_type AS typ ON typ.oid = d.objid
-					LEFT JOIN pg_catalog.pg_class As cd ON cd.oid = d.objid
-					LEFT JOIN pg_catalog.pg_operator As op ON op.oid = d.objid
-					LEFT JOIN pg_catalog.pg_cast AS ca ON ca.oid = d.objid
-					LEFT JOIN pg_catalog.pg_type AS cs ON ca.castsource = cs.oid
-					LEFT JOIN pg_catalog.pg_type AS ct ON ca.casttarget = ct.oid
-					LEFT JOIN pg_catalog.pg_opclass As oc ON oc.oid = d.objid
-					LEFT JOIN pg_catalog.pg_opfamily As ofa ON ofa.oid = d.objid
-			WHERE d.deptype = 'e' and e.extname = $1 and c.relname = $2 AND COALESCE(proc.proisagg, false) = $4;$sql$;
+				ON d.refobjid OPERATOR(pg_catalog.=) e.oid INNER JOIN pg_catalog.pg_class As c ON
+					c.oid OPERATOR(pg_catalog.=) d.classid
+					LEFT JOIN pg_catalog.pg_proc AS proc ON proc.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_type AS typ ON typ.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_class As cd ON cd.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_operator As op ON op.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_cast AS ca ON ca.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_type AS cs ON ca.castsource OPERATOR(pg_catalog.=) cs.oid
+					LEFT JOIN pg_catalog.pg_type AS ct ON ca.casttarget OPERATOR(pg_catalog.=) ct.oid
+					LEFT JOIN pg_catalog.pg_opclass As oc ON oc.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_opfamily As ofa ON ofa.oid OPERATOR(pg_catalog.=) d.objid
+			WHERE d.deptype OPERATOR(pg_catalog.=) 'e' and e.extname OPERATOR(pg_catalog.=) $1 and c.relname OPERATOR(pg_catalog.=) $2 AND COALESCE(proc.proisagg, false) OPERATOR(pg_catalog.=) $4;$sql$;
 		ELSE -- for PostgreSQL 11 and above, they removed proc.proisagg among others and replaced with some func type thing
-			var_sql_list := $sql$SELECT 'ALTER EXTENSION ' || e.extname || ' DROP ' || $3 || ' ' || COALESCE(proc.proname || '(' || oidvectortypes(proc.proargtypes) || ')' ,typ.typname, cd.relname, op.oprname,
-					cs.typname || ' AS ' || ct.typname || ') ', opcname, opfname) || ';' AS remove_command
+			var_sql_list := $sql$SELECT 'ALTER EXTENSION ' OPERATOR(pg_catalog.||) e.extname OPERATOR(pg_catalog.||) ' DROP ' OPERATOR(pg_catalog.||) $3 OPERATOR(pg_catalog.||) ' ' OPERATOR(pg_catalog.||) COALESCE(proc.proname OPERATOR(pg_catalog.||) '(' OPERATOR(pg_catalog.||) oidvectortypes(proc.proargtypes) OPERATOR(pg_catalog.||) ')' ,typ.typname, cd.relname, op.oprname,
+					cs.typname OPERATOR(pg_catalog.||) ' AS ' OPERATOR(pg_catalog.||) ct.typname OPERATOR(pg_catalog.||) ') ', opcname, opfname) OPERATOR(pg_catalog.||) ';' AS remove_command
 			FROM pg_catalog.pg_depend As d INNER JOIN pg_catalog.pg_extension As e
-				ON d.refobjid = e.oid INNER JOIN pg_catalog.pg_class As c ON
-					c.oid = d.classid
-					LEFT JOIN pg_catalog.pg_proc AS proc ON proc.oid = d.objid
-					LEFT JOIN pg_catalog.pg_type AS typ ON typ.oid = d.objid
-					LEFT JOIN pg_catalog.pg_class As cd ON cd.oid = d.objid
-					LEFT JOIN pg_catalog.pg_operator As op ON op.oid = d.objid
-					LEFT JOIN pg_catalog.pg_cast AS ca ON ca.oid = d.objid
-					LEFT JOIN pg_catalog.pg_type AS cs ON ca.castsource = cs.oid
-					LEFT JOIN pg_catalog.pg_type AS ct ON ca.casttarget = ct.oid
-					LEFT JOIN pg_catalog.pg_opclass As oc ON oc.oid = d.objid
-					LEFT JOIN pg_catalog.pg_opfamily As ofa ON ofa.oid = d.objid
-			WHERE d.deptype = 'e' and e.extname = $1 and c.relname = $2 AND (proc.prokind = 'a')  = $4;$sql$;
+				ON d.refobjid OPERATOR(pg_catalog.=) e.oid INNER JOIN pg_catalog.pg_class As c ON
+					c.oid OPERATOR(pg_catalog.=) d.classid
+					LEFT JOIN pg_catalog.pg_proc AS proc ON proc.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_type AS typ ON typ.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_class As cd ON cd.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_operator As op ON op.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_cast AS ca ON ca.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_type AS cs ON ca.castsource OPERATOR(pg_catalog.=) cs.oid
+					LEFT JOIN pg_catalog.pg_type AS ct ON ca.casttarget OPERATOR(pg_catalog.=) ct.oid
+					LEFT JOIN pg_catalog.pg_opclass As oc ON oc.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_opfamily As ofa ON ofa.oid OPERATOR(pg_catalog.=) d.objid
+			WHERE d.deptype OPERATOR(pg_catalog.=) 'e' and e.extname OPERATOR(pg_catalog.=) $1 and c.relname OPERATOR(pg_catalog.=) $2 AND (proc.prokind OPERATOR(pg_catalog.=) 'a')  OPERATOR(pg_catalog.=) $4;$sql$;
 		END IF;
 
 		FOR var_r IN EXECUTE var_sql_list  USING param_extension, var_class, param_type, var_is_aggregate
 		LOOP
-			var_sql := var_sql || var_r.remove_command || ';';
+			var_sql := var_sql OPERATOR(pg_catalog.||) var_r.remove_command OPERATOR(pg_catalog.||) ';';
 		END LOOP;
 		IF var_sql > '' THEN
 			EXECUTE var_sql;
@@ -85,7 +85,7 @@ CREATE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_sta
   RETURNS boolean AS
 $$
 DECLARE
-	var_sql_ext text := 'ALTER EXTENSION ' || pg_catalog.quote_ident(param_extension) || ' ' || pg_catalog.replace(param_statement, 'IF EXISTS', '');
+	var_sql_ext text := 'ALTER EXTENSION ' OPERATOR(pg_catalog.||) pg_catalog.quote_ident(param_extension) OPERATOR(pg_catalog.||) ' ' OPERATOR(pg_catalog.||) pg_catalog.replace(param_statement, 'IF EXISTS', '');
 	var_result boolean := false;
 BEGIN
 	BEGIN
