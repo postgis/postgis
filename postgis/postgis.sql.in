@@ -1872,16 +1872,12 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
 
-#if POSTGIS_GEOS_VERSION >= 31100
-
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry, boolean)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'linemerge'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_HIGH;
-
-#endif
 
 -----------------------------------------------------------------------------
 -- Affine transforms
