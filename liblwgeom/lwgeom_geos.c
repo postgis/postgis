@@ -2118,4 +2118,31 @@ lwgeom_concavehull(const LWGEOM* geom, double ratio, uint32_t allow_holes)
 	GEOS_FREE(g1, g3);
 	return result;
 }
+
+LWGEOM*
+lwgeom_simplify_polygonal(const LWGEOM* geom, double vertex_fraction, uint32_t is_outer)
+{
+	LWGEOM* result;
+	int32_t srid = RESULT_SRID(geom);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry *g1, *g3;
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
+
+	g3 = GEOSPolygonHullSimplify(g1, vertex_fraction, is_outer);
+
+	if (!g3)
+		GEOS_FREE_AND_FAIL(g1);
+
+	GEOSSetSRID(g3, srid);
+
+	if (!(result = GEOS2LWGEOM(g3, is3d)))
+		GEOS_FREE_AND_FAIL(g1, g3);
+
+	GEOS_FREE(g1, g3);
+	return result;
+}
+
 #endif
