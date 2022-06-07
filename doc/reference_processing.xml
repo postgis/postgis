@@ -2403,6 +2403,58 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
           </refsection>
     </refentry>
 
+
+    <refentry id="ST_SimplifyPolygonal">
+      <refnamediv>
+        <refname>ST_SimplifyPolygonal</refname>
+        <refpurpose>Computes a boundary-respecting hull of a polygonal geometry, with hull shape determined by a target parameter.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+         <funcprototype>
+            <funcdef>geometry <function>ST_SimplifyPolygonal</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>param_geom</parameter></paramdef>
+            <paramdef><type>float </type> <parameter>vertex_fraction</parameter></paramdef>
+            <paramdef choice="opt"><type>integer </type> <parameter>is_outer = 1</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Computes a boundary-respecting hull of a polygonal geometry, with hull shape determined by a target parameter specifying the <varname>vertex_fraction</varname> of the input vertices retained in the result. Larger values produce less concave results. A vertex fraction of 1.0 produces a convex hull; a value of 0.0 produces the original geometry. An outer hull is computed if the <varname>is_outer</varname> parameter is positive, an inner hull is computed if it is zero. A concave hull of a geometry is a possibly concave.</para>
+
+        <para>The simplification operates by removing the line segments that generate the least amount of extra area, progressively, until the vertex target is reached. To get "nice" results with geometries that have long lines without vertices, it might be necessary to first "pre-segmentize" before running the process, as shown below.</para>
+      </refsection>
+      <refsection>
+        <title>Examples</title>
+
+    <para>
+    <informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/st_simplifypolygonal01.png" />
+        </imageobject>
+        <caption><para>Polygonal simplification of a MultiPolygon</para></caption>
+      </mediaobject>
+    </informalfigure>
+    <programlisting>SELECT ST_SimplifyPolygonal(
+  ST_Segmentize(ST_Letters('xt'), 2.0),
+    0.1);
+    </programlisting>
+    </para>
+
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_ConvexHull" />, <xref linkend="ST_SimplifyVW" />, <xref linkend="ST_ConcaveHull" /></para>
+      </refsection>
+    </refentry>
+
+
     <refentry id="ST_SetEffectiveArea">
       <refnamediv>
         <refname>ST_SetEffectiveArea</refname>

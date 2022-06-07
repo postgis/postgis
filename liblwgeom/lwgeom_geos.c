@@ -2131,7 +2131,7 @@ lwgeom_simplify_polygonal(const LWGEOM* geom, double vertex_fraction, uint32_t i
 
 	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
-	g3 = GEOSPolygonHullSimplify(g1, vertex_fraction, is_outer);
+	g3 = GEOSPolygonHullSimplify(g1, is_outer, vertex_fraction);
 
 	if (!g3)
 		GEOS_FREE_AND_FAIL(g1);
