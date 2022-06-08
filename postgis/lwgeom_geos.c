@@ -934,7 +934,7 @@ Datum ST_SimplifyPolygonal(PG_FUNCTION_ARGS)
 #else /* POSTGIS_GEOS_VERSION >= 31100 */
 	GSERIALIZED* geom = PG_GETARG_GSERIALIZED_P(0);
 	double vertex_fraction = PG_GETARG_FLOAT8(1);
-	uint32_t is_outer = PG_GETARG_INT32(2) > 0 ? PG_GETARG_INT32(2) : 0;
+	uint32_t is_outer = PG_GETARG_BOOL(2);
 
 	LWGEOM* lwgeom = lwgeom_from_gserialized(geom);
 	LWGEOM* lwresult = lwgeom_simplify_polygonal(lwgeom, vertex_fraction, is_outer);
