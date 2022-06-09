@@ -2404,16 +2404,16 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
     </refentry>
 
 
-    <refentry id="ST_SimplifyPolygonal">
+    <refentry id="ST_SimplifyPolygonHull">
       <refnamediv>
-        <refname>ST_SimplifyPolygonal</refname>
+        <refname>ST_SimplifyPolygonHull</refname>
         <refpurpose>Computes a boundary-respecting hull of a polygonal geometry, with hull shape determined by a target parameter.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
         <funcsynopsis>
          <funcprototype>
-            <funcdef>geometry <function>ST_SimplifyPolygonal</function></funcdef>
+            <funcdef>geometry <function>ST_SimplifyPolygonHull</function></funcdef>
             <paramdef><type>geometry </type> <parameter>param_geom</parameter></paramdef>
             <paramdef><type>float </type> <parameter>vertex_fraction</parameter></paramdef>
             <paramdef choice="opt"><type>boolean </type> <parameter>is_outer = true</parameter></paramdef>
@@ -2435,12 +2435,12 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
     <informalfigure>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/st_simplifypolygonal01.png" />
+          <imagedata fileref="images/st_simplifypolygonhull01.png" />
         </imageobject>
         <caption><para>Polygonal simplification of a MultiPolygon</para></caption>
       </mediaobject>
     </informalfigure>
-    <programlisting>SELECT ST_SimplifyPolygonal(
+    <programlisting>SELECT ST_SimplifyPolygonHull(
   ST_Segmentize(ST_Letters('xt'), 2.0),
     0.1);
     </programlisting>

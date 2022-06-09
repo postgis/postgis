@@ -106,7 +106,7 @@ Datum ST_BuildArea(PG_FUNCTION_ARGS);
 Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
 Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS);
 Datum ST_ConcaveHull(PG_FUNCTION_ARGS);
-Datum ST_SimplifyPolygonal(PG_FUNCTION_ARGS);
+Datum ST_SimplifyPolygonHull(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
@@ -920,14 +920,14 @@ Datum ST_ConcaveHull(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(ST_SimplifyPolygonal);
-Datum ST_SimplifyPolygonal(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_SimplifyPolygonHull);
+Datum ST_SimplifyPolygonHull(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 31100
 
 	lwpgerror("The GEOS version this PostGIS binary "
 				"was compiled against (%d) doesn't support "
-				"'ST_SimplifyPolygonal' function (3.11.0+ required)",
+				"'ST_SimplifyPolygonHull' function (3.11.0+ required)",
 				POSTGIS_GEOS_VERSION);
 	PG_RETURN_NULL();
 
