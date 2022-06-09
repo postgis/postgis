@@ -37,3 +37,17 @@ SELECT 'concavehull02-points' as test,
 	ST_Area(ST_ConcaveHull(ST_Points(geom), 0.5, true)) > 0.0 AS nohole_area_non_zero
 FROM hull;
 
+-- ST_SimplifyPolygonHull
+SELECT 'simplifypolygonhull-1' AS test,
+	ST_AsText(ST_SimplifyPolygonHull('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'::geometry, 0.5),1);
+
+SELECT 'simplifypolygonhull-2' AS test,
+	ST_AsText(ST_SimplifyPolygonHull(
+		'POLYGON((0 0, 0 1, 0.5 0.1, 1 1, 1 0, 0 0))'::geometry,
+		0.5),1);
+
+SELECT 'simplifypolygonhull-3' AS test,
+	ST_AsText(ST_SimplifyPolygonHull(
+		'POLYGON((0 0, 0 1, 0.5 0.1, 0.5 0.1, 1 1, 1 0, 0 0))'::geometry,
+		0.85),1);
+

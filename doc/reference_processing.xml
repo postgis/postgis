@@ -2409,7 +2409,7 @@ FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;
     <refentry id="ST_SimplifyPolygonHull">
       <refnamediv>
         <refname>ST_SimplifyPolygonHull</refname>
-        <refpurpose>Computes a boundary-respecting hull of a polygonal geometry, with hull shape determined by a target parameter.</refpurpose>
+        <refpurpose>Computes a boundary-respecting fully exterior or fully interior hull of a polygonal geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
