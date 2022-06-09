@@ -409,7 +409,7 @@ int main( int argc, const char* argv[] )
 {
 	FILE *pfile;
 	LWGEOM *lwgeom;
-	char line [2048];
+	char line [65536];
 	char *filename;
 	int layerCount;
 	LAYERSTYLE *styles;

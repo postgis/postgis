@@ -6458,9 +6458,14 @@ CREATE OR REPLACE FUNCTION ST_SquareGrid(size float8, bounds geometry, OUT geom 
 -- moved to separate file cause its involved
 #include "postgis_brin.sql.in"
 
----------------------------------------------------------------
--- USER CONTRIBUTED
----------------------------------------------------------------
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION ST_SimplifyPolygonHull(geom geometry, vertex_fraction float8, is_outer boolean DEFAULT true)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_SimplifyPolygonHull'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
+	_COST_HIGH;
 
 
 #if POSTGIS_GEOS_VERSION >= 31100

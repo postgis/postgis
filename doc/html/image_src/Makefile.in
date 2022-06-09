@@ -155,6 +155,7 @@ IMAGES= \
 	../images/st_split02.png \
 	../images/st_split03.png \
 	../images/st_split04.png \
+	../images/st_simplifypolygonhull01.png \
 	../images/st_straightskeleton01.png \
 	../images/st_approximatemedialaxis01.png \
 	../images/st_subdivide01.png \

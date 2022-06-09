@@ -2535,6 +2535,7 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int3
  */
 LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges);
 
+#if POSTGIS_GEOS_VERSION >= 31100
 /**
  * Take a geometry and build the concave hull. The concave
  * hull is smaller than the convex hull, but still encompasses all the points
@@ -2545,8 +2546,21 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
  * @param ratio proportion of output vs input
  * @param allow_holes can there be holes in the output. large performance penalty.
  */
-#if POSTGIS_GEOS_VERSION >= 31100
 LWGEOM* lwgeom_concavehull(const LWGEOM* geom, double ratio, uint32_t allow_holes);
+
+/**
+ * Computes a boundary-respecting hull of a polygonal geometry,
+ * with hull shape determined by a target parameter
+ * specifying the fraction of the input vertices retained in the result.
+ * Larger values produce less concave results.
+ *
+ * @param geom the input geometry
+ * @param vertex_fraction proportion of vertices in output vs input.
+ * @param is_outer expand geometry while removing edges.
+ */
+LWGEOM*
+lwgeom_simplify_polygonal(const LWGEOM* geom, double vertex_fraction, uint32_t is_outer);
+
 #endif
 
 /**

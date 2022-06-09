@@ -106,6 +106,7 @@ Datum ST_BuildArea(PG_FUNCTION_ARGS);
 Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
 Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS);
 Datum ST_ConcaveHull(PG_FUNCTION_ARGS);
+Datum ST_SimplifyPolygonHull(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
@@ -909,6 +910,34 @@ Datum ST_ConcaveHull(PG_FUNCTION_ARGS)
 
 	LWGEOM* lwgeom = lwgeom_from_gserialized(geom);
 	LWGEOM* lwresult = lwgeom_concavehull(lwgeom, ratio, allow_holes);
+	GSERIALIZED* result = geometry_serialize(lwresult);
+
+	lwgeom_free(lwgeom);
+	lwgeom_free(lwresult);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+#endif
+}
+
+
+PG_FUNCTION_INFO_V1(ST_SimplifyPolygonHull);
+Datum ST_SimplifyPolygonHull(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31100
+
+	lwpgerror("The GEOS version this PostGIS binary "
+				"was compiled against (%d) doesn't support "
+				"'ST_SimplifyPolygonHull' function (3.11.0+ required)",
+				POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 31100 */
+	GSERIALIZED* geom = PG_GETARG_GSERIALIZED_P(0);
+	double vertex_fraction = PG_GETARG_FLOAT8(1);
+	uint32_t is_outer = PG_GETARG_BOOL(2);
+
+	LWGEOM* lwgeom = lwgeom_from_gserialized(geom);
+	LWGEOM* lwresult = lwgeom_simplify_polygonal(lwgeom, vertex_fraction, is_outer);
 	GSERIALIZED* result = geometry_serialize(lwresult);
 
 	lwgeom_free(lwgeom);
