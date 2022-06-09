@@ -1,2 +1,4 @@
-concavehull01|t
-concavehull02|t|ST_Polygon|t
+concavehull01-poly|t
+concavehull02-poly|t|ST_Polygon|t
+concavehull01-points|t
+concavehull02-points|t|ST_Polygon|t

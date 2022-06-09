@@ -2100,12 +2100,20 @@ lwgeom_concavehull(const LWGEOM* geom, double ratio, uint32_t allow_holes)
 	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
 	GEOSGeometry *g1, *g3;
+	int geosGeomType;
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
-	g3 = GEOSConcaveHull(g1, ratio, allow_holes);
+	geosGeomType = GEOSGeomTypeId(g1);
+	if (geosGeomType == GEOS_POLYGON || geosGeomType == GEOS_MULTIPOLYGON) {
+		int is_tight = LW_FALSE;
+		g3 = GEOSConcaveHullOfPolygons(g1, ratio, is_tight, allow_holes);
+	}
+	else {
+		g3 = GEOSConcaveHull(g1, ratio, allow_holes);
+	}
 
 	if (!g3)
 		GEOS_FREE_AND_FAIL(g1);
