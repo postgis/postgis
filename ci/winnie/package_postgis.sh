@@ -142,6 +142,11 @@ cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libcrypto-1_1-x64.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libssl-1_1-x64.dll $outdir/bin/postgisgui
 
+#pg 15 is shipping with newer ssl
+cp ${PGPATHEDB}/bin/libcrypto-3-x64.dll $outdir/bin/postgisgui
+cp ${PGPATHEDB}/bin/libssl-3-x64.dll $outdir/bin/postgisgui
+
+
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libstdc++-6.dll $outdir/bin
 cp /c/ming${OS_BUILD}${GCC_TYPE}/mingw${OS_BUILD}/bin/libgcc*.dll $outdir/bin
 cp -r ${PROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
