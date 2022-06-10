@@ -14,7 +14,7 @@
     <refnamediv>
       <refname>ST_3DIntersects</refname>
 
-      <refpurpose>Returns true if two geometries spatially
+      <refpurpose>Tests if two geometries spatially
       intersect in 3D - only for points, linestrings, polygons, polyhedral surface (area).
       </refpurpose>
     </refnamediv>
@@ -78,7 +78,7 @@
     <refnamediv>
     <refname>ST_Contains</refname>
 
-    <refpurpose>Returns true if no points of B lie in the exterior of A, and A and B have at least one interior point in common. </refpurpose>
+    <refpurpose>Tests if no points of B lie in the exterior of A, and A and B have at least one interior point in common. </refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -262,7 +262,7 @@ ST_Point      | t          | t              | f           | f
     <refnamediv>
     <refname>ST_ContainsProperly</refname>
 
-    <refpurpose>Returns true if B intersects the interior of A but not the boundary or exterior. </refpurpose>
+    <refpurpose>Tests if B intersects the interior of A but not the boundary or exterior. </refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -356,7 +356,7 @@ ST_Point      | t          | t              | f           | f
     <refnamediv>
     <refname>ST_CoveredBy</refname>
 
-    <refpurpose>Returns true if no point in A is outside B</refpurpose>
+    <refpurpose>Tests if no point in A is outside B</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -438,7 +438,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
     <refnamediv>
     <refname>ST_Covers</refname>
 
-    <refpurpose>Returns true if no point in B is outside A</refpurpose>
+    <refpurpose>Tests if no point in B is outside A</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -536,7 +536,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
   <refnamediv>
     <refname>ST_Crosses</refname>
 
-    <refpurpose>Returns true if two geometries have some, but not all,
+    <refpurpose>Tests if two geometries have some, but not all,
     interior points in common.</refpurpose>
   </refnamediv>
 
@@ -555,11 +555,11 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
   <refsection>
     <title>Description</title>
 
-    <para><function>ST_Crosses</function> takes two geometry objects and
+    <para>Compares two geometry objects and
     returns <varname>true</varname> if their intersection "spatially cross", that is, the
     geometries have some, but not all interior points in common. The
-    intersection of the interiors of the geometries must not be the empty
-    set and must have a dimensionality less than the maximum dimension
+    intersection of the interiors of the geometries must be non-empty
+    and must have dimension less than the maximum dimension
     of the two input geometries. Additionally, the intersection of the two
     geometries must not equal either of the source geometries. Otherwise, it
     returns <varname>false</varname>.</para>
@@ -574,21 +574,19 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
     </mediaobject>
     </informalfigure>
 
-    <para>Geometries cross if their DE-9IM Intersection Matrix is:</para>
+    <para>Geometries cross if their DE-9IM Intersection Matrix matches:</para>
 
     <itemizedlist>
     <listitem>
-      <para><markup>T*T******</markup> (for Point/Line, Point/Area, and
-      Line/Area situations)</para>
+      <para><code>T*T******</code> for Point/Line, Point/Area, and Line/Area situations</para>
     </listitem>
 
     <listitem>
-      <para><markup>T*****T**</markup> (for Line/Point, Area/Point, and
-      Area/Line situations)</para>
+      <para><code>T*****T**</code> for Line/Point, Area/Point, and Area/Line situations</para>
     </listitem>
 
     <listitem>
-      <para><markup>0********</markup> (for Line/Line situations)</para>
+      <para><code>0********</code> for Line/Line situations</para>
     </listitem>
     </itemizedlist>
 
@@ -614,7 +612,7 @@ SELECT ST_Covers(geog_poly, geog_pt) As poly_covers_pt,
   <refsection>
     <title>Examples</title>
 
-    <para>The following situations all return <varname>TRUE</varname>.</para>
+    <para>The following situations all return <varname>true</varname>.</para>
 
     <informaltable>
     <tgroup cols="2">
@@ -713,8 +711,7 @@ WHERE ST_Crosses(roads.geom, highways.geom);</programlisting>
     <refnamediv>
       <refname>ST_Disjoint</refname>
 
-      <refpurpose>Returns true if two geometries do not
-      intersect (they have no point in common).
+      <refpurpose>Tests if two geometries are disjoint (they have no point in common).
       </refpurpose>
     </refnamediv>
     <refsynopsisdiv>
@@ -781,7 +778,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
     <refnamediv>
     <refname>ST_Equals</refname>
 
-    <refpurpose>Returns true if two geometries include the same set of points.</refpurpose>
+    <refpurpose>Tests if two geometries include the same set of points.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -797,7 +794,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
     <refsection>
     <title>Description</title>
 
-    <para>Returns TRUE if the given Geometries are "spatially
+    <para>Returns <varname>true</varname> if the given geometries are "spatially
       equal". Use this for a 'better' answer than '='.
       Note by spatially equal we mean ST_Within(A,B) = true and ST_Within(B,A) = true and
       also mean ordering of points can be different but
@@ -846,7 +843,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
     <refnamediv>
       <refname>ST_Intersects</refname>
 
-      <refpurpose>Returns true if two geometries
+      <refpurpose>Tests if two geometries
       intersect (they have at least one point in common).
       </refpurpose>
     </refnamediv>
@@ -878,12 +875,26 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
     </refsynopsisdiv>
     <refsection>
       <title>Description</title>
-      <para>If a geometry or geography shares any portion of space then they intersect.
-      For geography -- tolerance is 0.00001 meters (so any points that are close are considered to intersect)</para>
-      <para>ST_Overlaps, ST_Touches, ST_Within all imply spatial intersection.
-        If any of the aforementioned
-        returns true, then the geometries also spatially intersect.
-        Disjoint implies false for spatial intersection.</para>
+      <para>Compares two geometries and returns <varname>true</varname> if they intersect.
+      Geometries intersect if they have any point in common.
+      </para>
+
+      <para>
+      For geography, a distance tolerance of 0.00001 meters is used
+      (so points that are very close are considered to intersect).</para>
+
+    <para>Geometries intersect if their DE-9IM Intersection Matrix matches one of:
+    </para>
+
+    <itemizedlist>
+    <listitem>  <para><code>T********</code></para> </listitem>
+    <listitem>  <para><code>*T*******</code></para> </listitem>
+    <listitem>  <para><code>***T*****</code></para> </listitem>
+    <listitem>  <para><code>****T****</code></para> </listitem>
+    </itemizedlist>
+
+      <para>Spatial intersection is implied by all the other spatial relationship tests,
+      except <xref linkend="ST_Disjoint"/>, which tests that geometries do NOT intersect.</para>
 
       <note><para>&index_aware;</para></note>
 
@@ -1117,7 +1128,7 @@ WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;
     <refnamediv>
     <refname>ST_OrderingEquals</refname>
 
-    <refpurpose>Returns true if two geometries represent the same geometry
+    <refpurpose>Tests if two geometries represent the same geometry
     and have points in the same directional order.</refpurpose>
     </refnamediv>
 
@@ -1181,7 +1192,7 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
     <refnamediv>
     <refname>ST_Overlaps</refname>
 
-    <refpurpose>Returns true if two geometries intersect and have the same dimension, but are not completely contained by each other.</refpurpose>
+    <refpurpose>Tests if two geometries intersect and have the same dimension, but are not completely contained by each other.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1584,7 +1595,7 @@ SELECT pat.name AS relationship, pat.val AS pattern,
     <refnamediv>
     <refname>ST_Touches</refname>
 
-    <refpurpose>Returns true if two geometries have at least one point in common,
+    <refpurpose>Tests if two geometries have at least one point in common,
     but their interiors do not intersect.</refpurpose>
     </refnamediv>
 
@@ -1740,7 +1751,7 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
     <refnamediv>
     <refname>ST_Within</refname>
 
-    <refpurpose>Returns true if no points of A lie in the exterior of B, and A and B have at least one interior point in common.</refpurpose>
+    <refpurpose>Tests if no points of A lie in the exterior of B, and A and B have at least one interior point in common.</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1842,7 +1853,7 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
     <refnamediv>
     <refname>ST_3DDWithin</refname>
 
-    <refpurpose>Returns true if two 3D geometries are within a given 3D distance</refpurpose>
+    <refpurpose>Tests if two 3D geometries are within a given 3D distance</refpurpose>
     </refnamediv>
     <refsynopsisdiv>
     <funcsynopsis>
@@ -1919,7 +1930,7 @@ ST_DWithin(
     <refnamediv>
     <refname>ST_3DDFullyWithin</refname>
 
-    <refpurpose>Returns true if two 3D geometries are entirely within a given 3D distance</refpurpose>
+    <refpurpose>Tests if two 3D geometries are entirely within a given 3D distance</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -1985,7 +1996,7 @@ ST_DWithin(
     <refnamediv>
     <refname>ST_DFullyWithin</refname>
 
-    <refpurpose>Returns true if two geometries are entirely within a given distance</refpurpose>
+    <refpurpose>Tests if two geometries are entirely within a given distance</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
@@ -2042,7 +2053,7 @@ ST_DWithin(
     <refnamediv>
     <refname>ST_DWithin</refname>
 
-    <refpurpose>Returns true if two geometries are within a given distance</refpurpose>
+    <refpurpose>Tests if two geometries are within a given distance</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv>
