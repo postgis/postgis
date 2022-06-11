@@ -672,6 +672,7 @@ FROM provinces p;
 
 		<note><para>For geodetic coordinates, <varname>X</varname> is longitude and <varname>Y</varname> is latitude</para></note>
 
+        <para>Enhanced: 3.2.0 srid as an extra optional argument was added. Older installs require combining with ST_SetSRID to mark the srid on the geometry. Creates a Point with X, Y and SRID values.</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 6.1.2</para>
 
 	  </refsection>
