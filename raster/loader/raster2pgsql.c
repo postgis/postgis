@@ -2604,7 +2604,7 @@ main(int argc, char **argv) {
 
 		/* max tiles per copy */
 		else if (CSEQUAL(argv[argit], "-Z") && argit < argc - 1) {
-			config->max_tiles_per_copy = atof(argv[++argit]);
+			config->max_tiles_per_copy = atoi(argv[++argit]);
 		}
 		/* GDAL formats */
 		else if (CSEQUAL(argv[argit], "-G")) {
