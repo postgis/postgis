@@ -2397,6 +2397,10 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
         </para>
 
         <para>To get better results with geometries that contain relatively long line segments, it might be necessary to "segmentize" the input, as shown below.</para>
+
+        <para>Performed by the GEOS module.</para>
+    	<para>Availability: 3.3.0 - requires GEOS &gt;= 3.11.0 </para>
+
       </refsection>
       <refsection>
         <title>Examples</title>
