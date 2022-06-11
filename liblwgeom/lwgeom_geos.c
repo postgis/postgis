@@ -750,6 +750,12 @@ lwgeom_intersection_prec(const LWGEOM* geom1, const LWGEOM* geom2, double prec)
 LWGEOM*
 lwgeom_linemerge(const LWGEOM* geom)
 {
+	return lwgeom_linemerge_directed(geom, LW_FALSE);
+}
+
+LWGEOM*
+lwgeom_linemerge_directed(const LWGEOM* geom, int directed)
+{
 	LWGEOM* result;
 	int32_t srid = RESULT_SRID(geom);
 	uint8_t is3d = FLAGS_GET_Z(geom->flags);
@@ -765,7 +771,20 @@ lwgeom_linemerge(const LWGEOM* geom)
 
 	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
 
-	g3 = GEOSLineMerge(g1);
+	if (directed)
+	{
+#if POSTGIS_GEOS_VERSION < 31100
+		lwerror("Directed line merging requires GEOS-3.11 or higher");
+		GEOS_FREE_AND_FAIL(g1);
+		return NULL;
+#else
+		g3 = GEOSLineMergeDirected(g1);
+#endif
+	}
+	else
+	{
+		g3 = GEOSLineMerge(g1);
+	}
 
 	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);

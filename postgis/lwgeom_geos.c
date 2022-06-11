@@ -3145,15 +3145,18 @@ PG_FUNCTION_INFO_V1(linemerge);
 Datum linemerge(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
+	bool directed = false;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult ;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
+	if ( PG_NARGS() > 1 )
+		directed = PG_GETARG_BOOL(1);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 
-	lwresult = lwgeom_linemerge(lwgeom1);
+	lwresult = lwgeom_linemerge_directed(lwgeom1, directed ? LW_TRUE : LW_FALSE);
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
