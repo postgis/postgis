@@ -159,6 +159,9 @@ typedef struct raster_loader_config {
 	/* use COPY instead of INSERT */
 	int copy_statements;
 
+	/** max tiles per copy */
+	int max_tiles_per_copy;
+
 } RTLOADERCFG;
 
 typedef struct rasterinfo_t {
