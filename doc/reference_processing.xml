@@ -2392,7 +2392,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
     <refentry id="ST_SimplifyPolygonHull">
       <refnamediv>
         <refname>ST_SimplifyPolygonHull</refname>
-        <refpurpose>Computes a boundary-respecting fully exterior or fully interior hull of a polygonal geometry.</refpurpose>
+        <refpurpose>Computes a simplifed topology-preserving outer or inner hull of a polygonal geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -2409,8 +2409,9 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
       <refsection>
         <title>Description</title>
 
-        <para>Computes a boundary-respecting simplified hull of a polygonal geometry.
-        An "outer" hull completely covers the input geometry. An "inner" hull is completely contained by the input geometry.
+        <para>Computes a simplified topology-preserving outer or inner hull of a polygonal geometry.
+        An outer hull completely covers the input geometry.
+        An inner hull is completely covered by the input geometry.
         The result is a polygonal geometry formed by a subset of the input vertices.
         MultiPolygons and holes are handled and produce a result with the same structure as the input.
         </para>
@@ -2424,7 +2425,7 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As geom) As foo;
 
         <para>
         The simplification process operates by progressively removing concave corners that contain the least amount of area, until the vertex count target is reached.
-        It prevents result edges from crossing, so the result is always a valid polygonal geometry.
+        It prevents edges from crossing, so the result is always a valid polygonal geometry.
         </para>
 
         <para>To get better results with geometries that contain relatively long line segments, it might be necessary to "segmentize" the input, as shown below.</para>
