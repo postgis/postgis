@@ -160,7 +160,7 @@ typedef struct raster_loader_config {
 	int copy_statements;
 
 	/** max tiles per copy */
-	int max_tiles_per_copy;
+	uint32_t  max_tiles_per_copy;
 
 } RTLOADERCFG;
 
