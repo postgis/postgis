@@ -21,12 +21,23 @@ make
 export err_status=0
 make check RUNTESTFLAGS="-v"
 make install
+
 make check RUNTESTFLAGS="-v --extension"
-err_status=$?
+if [ "$?" != "0" ]; then
+	err_status=$?
+fi
 
 
-#make garden
-#err_status=$?
+make garden
+if [ "$?" != "0" ]; then
+	err_status=$?
+fi
+
+utils/check_all_upgrades.sh \
+    `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
+ if [ "$?" != "0" ]; then
+   err_status=$?
+ fi
 
 
 if [ -d $PGDATA/postmaster.pid ] ; then

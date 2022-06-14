@@ -118,8 +118,10 @@ fi
 
 # Test all available upgrades
 # TODO: protect via some variable ?
-utils/check_all_upgrades.sh \
+if [ "$MAKE_UPGRADE" = "1" ]; then
+ utils/check_all_upgrades.sh \
         `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
-if [ "$?" != "0" ]; then
+ if [ "$?" != "0" ]; then
   exit $?
+ fi
 fi
