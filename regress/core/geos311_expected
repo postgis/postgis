@@ -5,3 +5,8 @@ concavehull02-points|t|ST_Polygon|t
 simplifypolygonhull-1|POLYGON((0 0,0 1,1 1,1 0,0 0))
 simplifypolygonhull-2|POLYGON((0 0,0 1,1 1,1 0,0 0))
 simplifypolygonhull-3|POLYGON((0 0,0 1,0.5 0.1,1 1,1 0,0 0))
+triangulatepolygon-1|GEOMETRYCOLLECTION(POLYGON((0 0,1 1,1 0,0 0)),POLYGON((0 0,0 1,1 1,0 0)))
+triangulatepolygon-2|GEOMETRYCOLLECTION(POLYGON((0 0,1 1,1 0,0 0)),POLYGON((0 0,0 1,1 1,0 0)))
+triangulatepolygon-3|GEOMETRYCOLLECTION EMPTY
+triangulatepolygon-4|GEOMETRYCOLLECTION EMPTY
+triangulatepolygon-5|GEOMETRYCOLLECTION(POLYGON((0 0,1 1,1 0,0 0)),POLYGON((0 0,0 1,1 1,0 0)))

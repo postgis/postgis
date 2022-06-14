@@ -3911,6 +3911,24 @@ CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DE
 	_COST_HIGH;
 
 --------------------------------------------------------------------------------
+-- ST_TriangulatePolygon
+--------------------------------------------------------------------------------
+
+-- ST_TriangulatePolygon(g1 geometry)
+--
+-- Builds a triangulation that respects the boundaries of the polygon.
+--
+-- Returns a collection of triangular polygons.
+--
+-- Availability: 3.3.0
+--
+CREATE OR REPLACE FUNCTION ST_TriangulatePolygon(g1 geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_TriangulatePolygon'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_HIGH;
+
+--------------------------------------------------------------------------------
 -- _ST_Voronoi
 --------------------------------------------------------------------------------
 
