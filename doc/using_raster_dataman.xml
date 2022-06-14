@@ -254,7 +254,8 @@
                   <term>-k</term>
                   <listitem>
                     <para>
-                        Skip NODATA value checks for each raster band.
+                        Keeps empty tiles and skips NODATA value checks for each raster band.
+                        Note you save time in checking, but could end up with far more junk rows in your database and those junk rows are not marked as empty tiles.
                     </para>
                   </listitem>
                 </varlistentry>
@@ -287,6 +288,14 @@
                   <listitem>
                     <para>
                       Use copy statements instead of insert statements.</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>-Z <varname>max_rows_per_copy</varname></term>
+                  <listitem>
+                    <para>
+                      Specify max number of rows per copy statement. Only relevant when combined with -Y.</para>
                   </listitem>
                 </varlistentry>
 

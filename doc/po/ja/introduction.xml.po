@@ -2,20 +2,22 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2022-01-11 01:10+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-06-14 09:50+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"introductionxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #. Tag: title
 #: introduction.xml:3
@@ -131,13 +133,12 @@ msgstr "Darafei Praliaskouski"
 
 #. Tag: para
 #: introduction.xml:49
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Index improvements, bug fixing and geometry/geography function improvements, "
 "SFCGAL, raster, GitHub curation, and bot maintenance."
-msgstr ""
-"インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラス"
-"タ、GitHubキュレーション、Travis Botのメンテナンス。"
+msgstr "インデックス改善、誤り修正とジオメトリ/ジオグラフィ関数の改善、SFCGAL、ラスタ"
+"、GitHubキュレーション、Botのメンテナンス。"
 
 #. Tag: term
 #: introduction.xml:54
@@ -248,13 +249,13 @@ msgstr "MapBox Vector Tile関数とGeoBuf関数、Gogsの試験とGitLabの実�
 #: introduction.xml:105
 #, no-c-format
 msgid "Aliaksandr Kalenik"
-msgstr ""
+msgstr "Aliaksandr Kalenik"
 
 #. Tag: para
 #: introduction.xml:108
 #, no-c-format
 msgid "Geometry Processing, PostgreSQL gist, general bug fixing"
-msgstr ""
+msgstr "ジオメトリ処理、PostgreSQL GiST、共通部の誤り修正"
 
 #. Tag: title
 #: introduction.xml:115
@@ -276,6 +277,8 @@ msgid ""
 "user support, general bug fixing, testing on various OS (Slackware, Mac, "
 "Windows, and more)"
 msgstr ""
+"以前のPSCメンバ。ラスタ開あｈ津、GDALとの統合、ラスタローダ、ユーザ対応、共通"
+"部の誤り修正、様々なOS (Slackware、Mac、Windows等多数)での試験"
 
 #. Tag: term
 #: introduction.xml:125
@@ -426,7 +429,8 @@ msgstr "Pierre Racine"
 msgid ""
 "Architect of PostGIS raster implementation. Raster overall architecture, "
 "prototyping, programming support"
-msgstr ""
+msgstr "PostGISラスタ実装の設計。ラスタ全体のアーキテクチャ、プロトタイプ作成、プログ"
+"ラミング補助"
 
 #. Tag: term
 #: introduction.xml:201
@@ -486,7 +490,7 @@ msgstr "Andreas Neumann"
 #: introduction.xml:222
 #, no-c-format
 msgid "Andrew Gierth"
-msgstr ""
+msgstr "Andrew Gierth"
 
 #. Tag: member
 #: introduction.xml:223
@@ -504,7 +508,7 @@ msgstr "Antoine Bajolet"
 #: introduction.xml:225
 #, no-c-format
 msgid "Arthur Lesuisse"
-msgstr ""
+msgstr "Arthur Lesuisse"
 
 #. Tag: member
 #: introduction.xml:226
@@ -678,13 +682,13 @@ msgstr "Guillaume Lelarge"
 #: introduction.xml:254
 #, no-c-format
 msgid "Giuseppe Broccolo"
-msgstr ""
+msgstr "Giuseppe Broccolo"
 
 #. Tag: member
 #: introduction.xml:255
 #, no-c-format
 msgid "Han Wang"
-msgstr ""
+msgstr "Han Wang"
 
 #. Tag: member
 #: introduction.xml:256
@@ -726,7 +730,7 @@ msgstr "James Marca"
 #: introduction.xml:262
 #, no-c-format
 msgid "Jan Katins"
-msgstr ""
+msgstr "Jan Katins"
 
 #. Tag: member
 #: introduction.xml:263
@@ -744,13 +748,13 @@ msgstr "Jeff Adams"
 #: introduction.xml:265
 #, no-c-format
 msgid "Jim Jones"
-msgstr ""
+msgstr "Jim Jones"
 
 #. Tag: member
 #: introduction.xml:266
 #, no-c-format
 msgid "Joe Conway"
-msgstr ""
+msgstr "Joe Conway"
 
 #. Tag: member
 #: introduction.xml:267
@@ -816,7 +820,7 @@ msgstr "Leo Hsu"
 #: introduction.xml:277
 #, no-c-format
 msgid "Loïc Bartoletti"
-msgstr ""
+msgstr "Loïc Bartoletti"
 
 #. Tag: member
 #: introduction.xml:278
@@ -834,7 +838,7 @@ msgstr "Luca S. Percich"
 #: introduction.xml:280
 #, no-c-format
 msgid "Lucas C. Villa Real"
-msgstr ""
+msgstr "Lucas C. Villa Real"
 
 #. Tag: member
 #: introduction.xml:281
@@ -876,7 +880,7 @@ msgstr "Matt Amos"
 #: introduction.xml:287
 #, no-c-format
 msgid "Matt Bretl"
-msgstr ""
+msgstr "Matt Bretl"
 
 #. Tag: member
 #: introduction.xml:288
@@ -984,7 +988,7 @@ msgstr "Sebastiaan Couwenberg"
 #: introduction.xml:305
 #, no-c-format
 msgid "Sergei Shoulbakov"
-msgstr ""
+msgstr "Sergei Shoulbakov"
 
 #. Tag: member
 #: introduction.xml:306
@@ -1014,7 +1018,7 @@ msgstr "Silvio Grosso"
 #: introduction.xml:310
 #, no-c-format
 msgid "Stefan Corneliu Petrea"
-msgstr ""
+msgstr "Stefan Corneliu Petrea"
 
 #. Tag: member
 #: introduction.xml:311
@@ -1038,7 +1042,7 @@ msgstr "Stephen Frost"
 #: introduction.xml:314
 #, no-c-format
 msgid "Steven Ottens"
-msgstr ""
+msgstr "Steven Ottens"
 
 #. Tag: member
 #: introduction.xml:315
@@ -1096,7 +1100,7 @@ msgstr ""
 #: introduction.xml:333
 #, no-c-format
 msgid "Aiven"
-msgstr ""
+msgstr "Aiven"
 
 #. Tag: ulink
 #: introduction.xml:334
@@ -1156,7 +1160,7 @@ msgstr "Carto"
 #: introduction.xml:343
 #, no-c-format
 msgid "Crunchy Data"
-msgstr ""
+msgstr "Crunchy Data"
 
 #. Tag: ulink
 #: introduction.xml:344
@@ -1216,7 +1220,7 @@ msgstr "ISciences, LLC"
 #: introduction.xml:353
 #, no-c-format
 msgid "Kontur"
-msgstr ""
+msgstr "Kontur"
 
 #. Tag: ulink
 #: introduction.xml:354
@@ -1430,7 +1434,7 @@ msgstr "重要なサポートライブラリ "
 msgid ""
 "The <ulink url=\"https://libgeos.org\">GEOS</ulink> geometry operations "
 "library"
-msgstr ""
+msgstr "ジオメトリ演算ライブラ <ulink url=\"https://libgeos.org\">GEOS</ulink>"
 
 #. Tag: para
 #: introduction.xml:399
@@ -1441,6 +1445,9 @@ msgid ""
 "2. In kind, improvements needed in GDAL to support PostGIS are contributed "
 "back to the GDAL project."
 msgstr ""
+"地理空間データ抽象化ライブラリ<ulink url=\"https://gdal.org\""
+">GDAL</ulink>は、PostGIS 2で導入されたラスタ機能の多くに使われています。また"
+"、GDALのPostGIS対応に必要な改善でGDALプロジェクトに貢献しています。"
 
 #. Tag: para
 #: introduction.xml:404

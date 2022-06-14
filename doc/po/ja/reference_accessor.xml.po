@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"PO-Revision-Date: 2022-06-14 09:50+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #. Tag: title
 #: reference_accessor.xml:4
@@ -32,9 +32,9 @@ msgstr "GeometryType"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:10
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the type of a geometry as text."
-msgstr "ST_Geometry値のジオメトリ型を返します。"
+msgstr "ジオメトリのタイプを文字列で返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:15
@@ -321,9 +321,9 @@ msgstr "ST_Boundary"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:66
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the boundary of a geometry."
-msgstr "ジオメトリの組み合わせ境界の閉包を返します。"
+msgstr "ジオメトリの境界を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:71
@@ -384,14 +384,14 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.14"
 #: reference_accessor.xml:96
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for Triangle was introduced"
-msgstr "Enhanced: 2.1.0で三角対応が導入されました。"
+msgstr "Enhanced: 2.1.0 三角対応が導入されました。"
 
 #. Tag: para
 #: reference_accessor.xml:97
 #, no-c-format
 msgid ""
 "Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves"
-msgstr ""
+msgstr "Changed: 3.2.0 TINに対応しました。GEOSを使いません。曲線を線形化しません。"
 
 #. Tag: para
 #: reference_accessor.xml:112
@@ -418,6 +418,8 @@ msgid ""
 "-- ST_AsText output\n"
 "MULTIPOINT((100 150),(160 170))"
 msgstr ""
+"-- ST_AsText 出力\n"
+"MULTIPOINT((100 150),(160 170))"
 
 #. Tag: para
 #: reference_accessor.xml:124
@@ -487,6 +489,33 @@ msgid ""
 "----------\n"
 "MULTIPOINT((-1 1 1),(1 1 0.75))"
 msgstr ""
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));"
+"\n"
+"st_astext\n"
+"-----------\n"
+"MULTIPOINT((1 1),(-1 1))\n"
+"\n"
+"SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 "
+"1))')));\n"
+"st_astext\n"
+"----------\n"
+"LINESTRING(1 1,0 0,-1 1,1 1)\n"
+"\n"
+"-- 3次元ポリゴンの使用\n"
+"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, "
+"1 1 1))')));\n"
+"\n"
+"st_asewkt\n"
+"-----------------------------------\n"
+"LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)\n"
+"\n"
+"-- 3次元ラインストリングの使用\n"
+"SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 "
+"0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));\n"
+"\n"
+"st_asewkt\n"
+"----------\n"
+"MULTIPOINT((-1 1 1),(1 1 0.75))"
 
 #. Tag: para
 #: reference_accessor.xml:141
@@ -587,7 +616,7 @@ msgstr "&M_support;"
 
 #. Tag: programlisting
 #: reference_accessor.xml:200
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Get the minimum X in a buffer around a point\n"
 "SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(\n"
@@ -599,7 +628,7 @@ msgid ""
 msgstr ""
 "-- ポイントまわりのバッファのXの最小値を得ます\n"
 "SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(\n"
-"  ST_Buffer(ST_MakePoint(0,0),10)\n"
+"  ST_Buffer(ST_Point(0,0),10)\n"
 ")));\n"
 " st_x\n"
 "------\n"
@@ -607,7 +636,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:204
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
 "\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
@@ -615,7 +644,7 @@ msgid ""
 msgstr ""
 ", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
 "\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"geometry_overlaps_nd\"/>"
+"linkend=\"ST_Envelope\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:218
@@ -627,7 +656,7 @@ msgstr "ST_CoordDim"
 #: reference_accessor.xml:220
 #, no-c-format
 msgid "Return the coordinate dimension of a geometry."
-msgstr ""
+msgstr "ジオメトリの座標次元を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:225
@@ -703,7 +732,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:282
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the topological dimension of this Geometry object, which must be less "
 "than or equal to the coordinate dimension. OGC SPEC s2.1.1.1 - returns 0 for "
@@ -712,11 +741,11 @@ msgid ""
 "<varname>GEOMETRYCOLLECTION</varname>. If the dimension is unknown (e.g. for "
 "an empty <varname>GEOMETRYCOLLECTION</varname>) 0 is returned."
 msgstr ""
-"ジオメトリの固有次元を返します。ジオメトリは座標次元以下でなければなりませ"
-"ん。OGC SPEC s2.1.1.1 - 0なら<varname>POINT</varname>、1なら"
-"<varname>LINESTRING</varname>、2なら<varname>POLYGON</varname>で、"
-"<varname>GEOMETRYCOLLECTION</varname>の場合は要素ごとの次元の最大値です。不明"
-"なジオメトリ (空ジオメトリ)の場合はNULLが返ります。"
+"ジオメトリの固有次元を返します。ジオメトリは座標次元以下でなければなりません"
+"。OGC SPEC s2.1.1.1 - 0なら<varname>POINT</varname>、1なら<varname>LINESTRING"
+"</varname>、2なら<varname>POLYGON</varname>で、<varname>GEOMETRYCOLLECTION</v"
+"arname>の場合は要素ごとの次元の最大値です。不明なジオメトリ "
+"(空の<varname>GEOMETRYCOLLECTION</varname>等)の場合はNULLが返ります。"
 
 #. Tag: para
 #: reference_accessor.xml:290
@@ -760,7 +789,7 @@ msgstr ""
 #: reference_accessor.xml:311
 #, no-c-format
 msgid "ST_Dump"
-msgstr ""
+msgstr "ST_Dump"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:312
@@ -768,16 +797,16 @@ msgstr ""
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the components of "
 "a geometry."
-msgstr ""
+msgstr "ジオメトリの要素となる<varname>geometry_dump</varname>行の集合を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:317
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Envelope</function></funcdef> "
+"<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
@@ -789,6 +818,10 @@ msgid ""
 "a geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 "
+"(<parameter>path</parameter>フィールド)からなる<xref linkend=\"geometry_dump"
+"\"/>行の集合を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:333
@@ -801,6 +834,10 @@ msgid ""
 "<parameter>path</parameter> denotes the position of the component inside the "
 "collection."
 msgstr ""
+"非マルチ系ジオメトリタイプ (POINT,LINESTRING,POLYGON)では、<parameter>path</p"
+"arameter>配列が空で<parameter>geom</parameter>が入力ジオメトリと同じになる単"
+"一の行が返ります。コレクションまたはマルチ系ジオメトリでは、個々の要素と、コ"
+"レクションの要素位置を示す<parameter>path</parameter>とからなる行を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:340
@@ -810,12 +847,15 @@ msgid ""
 "linkend=\"ST_Collect\"/> / GROUP BY, in that it creates new rows. For "
 "example it can be use to expand MULTIPOLYGONS into POLYGONS."
 msgstr ""
+"ST_Dumpはジオメトリを展開するのに使います。<xref linkend=\"ST_Collect\"/>/"
+"GROUP BYの逆で、この関数の中で新行を作成します。たとえば、MULTIPOLYGONをPOLYG"
+"ONに展開するために使います。"
 
 #. Tag: para
 #: reference_accessor.xml:345
 #, no-c-format
 msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
-msgstr ""
+msgstr "Availability: PostGIS 1.0.0RC1。PostgreSQL 7.3以上が必要です。"
 
 #. Tag: para
 #: reference_accessor.xml:347 reference_accessor.xml:1494
@@ -854,6 +894,21 @@ msgid ""
 " LINESTRING(1 0,0 1)         | f\n"
 "(2 rows)"
 msgstr ""
+"SELECT sometable.field1, sometable.field1,\n"
+"      (ST_Dump(sometable.geom)).geom AS geom\n"
+"FROM sometable;\n"
+"\n"
+"-- 複合曲線をラインストリングと曲線ストリングに分解\n"
+"SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)\n"
+"  FROM ( SELECT (ST_Dump(p_geom)).geom AS geom\n"
+"         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 "
+"1, 1 0),(1 0, 0 1))') AS p_geom) AS b\n"
+"        ) AS a;\n"
+"          st_asewkt          | st_hasarc\n"
+"-----------------------------+----------\n"
+" CIRCULARSTRING(0 0,1 1,1 0) | t\n"
+" LINESTRING(1 0,0 1)         | f\n"
+"(2 rows)"
 
 #. Tag: title
 #: reference_accessor.xml:359 reference_accessor.xml:444
@@ -864,7 +919,7 @@ msgstr "多面体サーフェス、TIN、三角形の例"
 
 #. Tag: programlisting
 #: reference_accessor.xml:360
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Polyhedral surface example\n"
 "-- Break a Polyhedral surface into its faces\n"
@@ -888,23 +943,27 @@ msgid ""
 msgstr ""
 "-- 多面体サーフェスの例\n"
 "-- 多面体サーフェスをフェイスに分解します。\n"
-"SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt\n"
-"  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
+"SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt\n"
+"  FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
 "((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
-"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
-"((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
-"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
-"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
-"((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))\n"
-")')  AS p_geom )  AS a;\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0))"
+",  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))"
 "\n"
-"                geom_ewkt\n"
-"------------------------------------------\n"
-" POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))"
+")') ) AS p_geom )  AS a;\n"
+"\n"
+" path |                geom_ewkt\n"
+"------+------------------------------------------\n"
+"    1 | POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0))\n"
+"    2 | POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))\n"
+"    3 | POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))\n"
+"    4 | POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0))\n"
+"    5 | POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0))\n"
+"    6 | POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))"
 
 #. Tag: programlisting
 #: reference_accessor.xml:362
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- TIN --\n"
 "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
@@ -930,10 +989,10 @@ msgid ""
 " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
 msgstr ""
 "-- TIN --\n"
-"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
 "  FROM\n"
 "    (SELECT\n"
-"       ST_GeomFromEWKT('TIN (((\n"
+"       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
 "                0 0 0,\n"
 "                0 0 1,\n"
 "                0 1 0,\n"
@@ -944,28 +1003,29 @@ msgstr ""
 "                1 1 0,\n"
 "                0 0 0\n"
 "            ))\n"
-"            )')  AS geom\n"
+"            )') ) AS gdump\n"
 "    ) AS g;\n"
-"-- 結果--\n"
-"                 wkt\n"
-"-------------------------------------\n"
-" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+"-- result --\n"
+" path |                 wkt\n"
+"------+-------------------------------------\n"
+" {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
+" {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
 
 #. Tag: para
 #: reference_accessor.xml:366
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
 "\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
+"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:372
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_DumpPoints"
-msgstr "ST_NumPoints"
+msgstr "ST_DumpPoints"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:373
@@ -977,13 +1037,13 @@ msgstr "ジオメトリについての要約文を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:378
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry_dump[] <function>ST_DumpPoints</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
+"<funcdef>geometry_dump[] <function>ST_DumpPoints</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:387
@@ -1066,10 +1126,27 @@ msgid ""
 "       2 |     2 | POINT(5 6)\n"
 "       2 |     3 | POINT(9 10)"
 msgstr ""
+"SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode\n"
+"FROM (SELECT 1 As edge_id\n"
+"        , ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS "
+"dp\n"
+"     UNION ALL\n"
+"     SELECT 2 As edge_id\n"
+"        , ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS "
+"dp\n"
+"   ) As foo;\n"
+" edge_id | index |    wktnode\n"
+"---------+-------+--------------\n"
+"       1 |     1 | POINT(1 2)\n"
+"       1 |     2 | POINT(3 4)\n"
+"       1 |     3 | POINT(10 10)\n"
+"       2 |     1 | POINT(3 5)\n"
+"       2 |     2 | POINT(5 6)\n"
+"       2 |     3 | POINT(9 10)"
 
 #. Tag: title
 #: reference_accessor.xml:431 reference_accessor.xml:506
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Standard Geometry Examples"
 msgstr "標準的な例"
 
@@ -1130,6 +1207,58 @@ msgid ""
 " {5,2,1,4} | POINT(5 4)\n"
 "(29 rows)"
 msgstr ""
+"SELECT path, ST_AsText(geom)\n"
+"FROM (\n"
+"  SELECT (ST_DumpPoints(g.geom)).*\n"
+"  FROM\n"
+"    (SELECT\n"
+"       'GEOMETRYCOLLECTION(\n"
+"          POINT ( 0 1 ),\n"
+"          LINESTRING ( 0 3, 3 4 ),\n"
+"          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
+"          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ),\n"
+"                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
+"          MULTIPOLYGON (\n"
+"                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ),\n"
+"                   ( 1 6, 3 6, 2 7, 1 6 )),\n"
+"                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
+"          )\n"
+"        )'::geometry AS geom\n"
+"    ) AS g\n"
+"  ) j;\n"
+"\n"
+"   path    | st_astext\n"
+"-----------+------------\n"
+" {1,1}     | POINT(0 1)\n"
+" {2,1}     | POINT(0 3)\n"
+" {2,2}     | POINT(3 4)\n"
+" {3,1,1}   | POINT(2 0)\n"
+" {3,1,2}   | POINT(2 3)\n"
+" {3,1,3}   | POINT(0 2)\n"
+" {3,1,4}   | POINT(2 0)\n"
+" {4,1,1}   | POINT(3 0)\n"
+" {4,1,2}   | POINT(3 3)\n"
+" {4,1,3}   | POINT(6 3)\n"
+" {4,1,4}   | POINT(6 0)\n"
+" {4,1,5}   | POINT(3 0)\n"
+" {4,2,1}   | POINT(5 1)\n"
+" {4,2,2}   | POINT(4 2)\n"
+" {4,2,3}   | POINT(5 2)\n"
+" {4,2,4}   | POINT(5 1)\n"
+" {5,1,1,1} | POINT(0 5)\n"
+" {5,1,1,2} | POINT(0 8)\n"
+" {5,1,1,3} | POINT(4 8)\n"
+" {5,1,1,4} | POINT(4 5)\n"
+" {5,1,1,5} | POINT(0 5)\n"
+" {5,1,2,1} | POINT(1 6)\n"
+" {5,1,2,2} | POINT(3 6)\n"
+" {5,1,2,3} | POINT(2 7)\n"
+" {5,1,2,4} | POINT(1 6)\n"
+" {5,2,1,1} | POINT(5 4)\n"
+" {5,2,1,2} | POINT(5 8)\n"
+" {5,2,1,3} | POINT(6 7)\n"
+" {5,2,1,4} | POINT(5 4)\n"
+"(29 rows)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:445
@@ -1182,10 +1311,56 @@ msgid ""
 " {6,1,5} | POINT(0 0 1)\n"
 "(30 rows)"
 msgstr ""
+"-- 多面体サーフェスの立方体 --\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+"  FROM\n"
+"    (SELECT\n"
+"       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
+"1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),"
+"\n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) "
+")') ) AS gdump\n"
+"    ) AS g;\n"
+"-- 結果 --\n"
+"  path   |     wkt\n"
+"---------+--------------\n"
+" {1,1,1} | POINT(0 0 0)\n"
+" {1,1,2} | POINT(0 0 1)\n"
+" {1,1,3} | POINT(0 1 1)\n"
+" {1,1,4} | POINT(0 1 0)\n"
+" {1,1,5} | POINT(0 0 0)\n"
+" {2,1,1} | POINT(0 0 0)\n"
+" {2,1,2} | POINT(0 1 0)\n"
+" {2,1,3} | POINT(1 1 0)\n"
+" {2,1,4} | POINT(1 0 0)\n"
+" {2,1,5} | POINT(0 0 0)\n"
+" {3,1,1} | POINT(0 0 0)\n"
+" {3,1,2} | POINT(1 0 0)\n"
+" {3,1,3} | POINT(1 0 1)\n"
+" {3,1,4} | POINT(0 0 1)\n"
+" {3,1,5} | POINT(0 0 0)\n"
+" {4,1,1} | POINT(1 1 0)\n"
+" {4,1,2} | POINT(1 1 1)\n"
+" {4,1,3} | POINT(1 0 1)\n"
+" {4,1,4} | POINT(1 0 0)\n"
+" {4,1,5} | POINT(1 1 0)\n"
+" {5,1,1} | POINT(0 1 0)\n"
+" {5,1,2} | POINT(0 1 1)\n"
+" {5,1,3} | POINT(1 1 1)\n"
+" {5,1,4} | POINT(1 1 0)\n"
+" {5,1,5} | POINT(0 1 0)\n"
+" {6,1,1} | POINT(0 0 1)\n"
+" {6,1,2} | POINT(1 0 1)\n"
+" {6,1,3} | POINT(1 1 1)\n"
+" {6,1,4} | POINT(0 1 1)\n"
+" {6,1,5} | POINT(0 0 1)\n"
+"(30 rows)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:446
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Triangle --\n"
 "SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt\n"
@@ -1206,31 +1381,28 @@ msgid ""
 " {3}  | POINT(9 0)\n"
 " {4}  | POINT(0 0)"
 msgstr ""
-"-- TIN --\n"
-"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
+"-- Triangle --\n"
+"SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt\n"
 "  FROM\n"
 "    (SELECT\n"
-"       ST_GeomFromEWKT('TIN (((\n"
-"                0 0 0,\n"
-"                0 0 1,\n"
-"                0 1 0,\n"
-"                0 0 0\n"
-"            )), ((\n"
-"                0 0 0,\n"
-"                0 1 0,\n"
-"                1 1 0,\n"
-"                0 0 0\n"
-"            ))\n"
-"            )')  AS geom\n"
+"       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((\n"
+"                0 0,\n"
+"                0 9,\n"
+"                9 0,\n"
+"                0 0\n"
+"            ))') ) AS gdump\n"
 "    ) AS g;\n"
-"-- 結果--\n"
-"                 wkt\n"
-"-------------------------------------\n"
-" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+"-- 結果 --\n"
+" path |    wkt\n"
+"------+------------\n"
+" {1}  | POINT(0 0)\n"
+" {2}  | POINT(0 9)\n"
+" {3}  | POINT(9 0)\n"
+" {4}  | POINT(0 0)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:447
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- TIN --\n"
 "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
@@ -1263,10 +1435,10 @@ msgid ""
 "(8 rows)"
 msgstr ""
 "-- TIN --\n"
-"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
+"SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
 "  FROM\n"
 "    (SELECT\n"
-"       ST_GeomFromEWKT('TIN (((\n"
+"       ST_DumpPoints( ST_GeomFromEWKT('TIN (((\n"
 "                0 0 0,\n"
 "                0 0 1,\n"
 "                0 1 0,\n"
@@ -1277,12 +1449,20 @@ msgstr ""
 "                1 1 0,\n"
 "                0 0 0\n"
 "            ))\n"
-"            )')  AS geom\n"
+"            )') ) AS gdump\n"
 "    ) AS g;\n"
-"-- 結果--\n"
-"                 wkt\n"
-"-------------------------------------\n"
-" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+"-- 結果 --\n"
+"  path   |     wkt\n"
+"---------+--------------\n"
+" {1,1,1} | POINT(0 0 0)\n"
+" {1,1,2} | POINT(0 0 1)\n"
+" {1,1,3} | POINT(0 1 0)\n"
+" {1,1,4} | POINT(0 0 0)\n"
+" {2,1,1} | POINT(0 0 0)\n"
+" {2,1,2} | POINT(0 1 0)\n"
+" {2,1,3} | POINT(1 1 0)\n"
+" {2,1,4} | POINT(0 0 0)\n"
+"(8 rows)"
 
 #. Tag: para
 #: reference_accessor.xml:451

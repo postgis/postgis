@@ -161,7 +161,8 @@ TEST_LOADER = \
 	loader/Tiled10x10Copy \
 	loader/Tiled8x8 \
 	loader/TiledAuto \
-	loader/TiledAutoSkipNoData
+	loader/TiledAutoSkipNoData \
+	loader/TiledAutoZCopy
 
 RASTER_TESTS := $(TEST_FIRST) \
 	$(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \

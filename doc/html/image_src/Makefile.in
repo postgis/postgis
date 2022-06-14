@@ -104,6 +104,7 @@ IMAGES= \
 	../images/st_line_interpolate_points01.png \
 	../images/st_linemerge01.png \
 	../images/st_linemerge02.png \
+	../images/st_linemerge03.png \
 	../images/st_line_substring01.png \
 	../images/st_locatebetween01.png \
 	../images/st_longestline01.png \
@@ -157,6 +158,8 @@ IMAGES= \
 	../images/st_split03.png \
 	../images/st_split04.png \
 	../images/st_simplifypolygonhull01.png \
+	../images/st_simplifypolygonhull02.png \
+	../images/st_simplifypolygonhull03.png \
 	../images/st_straightskeleton01.png \
 	../images/st_approximatemedialaxis01.png \
 	../images/st_subdivide01.png \

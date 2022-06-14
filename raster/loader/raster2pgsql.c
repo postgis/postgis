@@ -428,7 +428,7 @@ usage() {
 		"  -N <nodata> NODATA value to use on bands without a NODATA value.\n"
 	));
 	printf(_(
-		"  -k  Skip NODATA value checks for each raster band.\n"
+		"  -k  Keep empty tiles by skipping NODATA value checks for each raster band. \n"
 	));
 	printf(_(
 		"  -E <endian> Control endianness of generated binary output of\n"
@@ -444,6 +444,10 @@ usage() {
 	));
 	printf(_(
 		"  -Y  Use COPY statements instead of INSERT statements.\n"
+	));
+
+	printf(_(
+		"  -Z  Set max insert rows per COPY statement.  Only does something with -Y. Default is 11 if not specified.\n"
 	));
 	printf(_(
 		"  -G  Print the supported GDAL raster formats.\n"
@@ -700,6 +704,7 @@ init_config(RTLOADERCFG *config) {
 	config->version = 0;
 	config->transaction = 1;
 	config->copy_statements = 0;
+	config->max_tiles_per_copy = 11;
 }
 
 static void
@@ -1515,7 +1520,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, uint32_t ovx, STR
 			GDALClose(hdsDst);
 
 			/* flush if tileset gets too big */
-			if (tileset->length > 10) {
+			if (tileset->length >= config->max_tiles_per_copy) {
 				if (!insert_records(
 					config->schema, ovtable, config->raster_column,
 					(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
@@ -1842,7 +1847,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 					append_stringbuffer(tileset, hex);
 
 				/* flush if tileset gets too big */
-				if (tileset->length > 10) {
+				if (tileset->length >= config->max_tiles_per_copy ) {
 					if (!insert_records(
 						config->schema, config->table, config->raster_column,
 						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
@@ -1965,7 +1970,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				GDALClose(hdsDst);
 
 				/* flush if tileset gets too big */
-				if (tileset->length > 10) {
+				if (tileset->length >= config->max_tiles_per_copy ) {
 					if (!insert_records(
 						config->schema, config->table, config->raster_column,
 						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
@@ -2595,6 +2600,11 @@ main(int argc, char **argv) {
 		/* COPY statements */
 		else if (CSEQUAL(argv[argit], "-Y")) {
 			config->copy_statements = 1;
+		}
+
+		/* max tiles per copy */
+		else if (CSEQUAL(argv[argit], "-Z") && argit < argc - 1) {
+			config->max_tiles_per_copy = atoi(argv[++argit]);
 		}
 		/* GDAL formats */
 		else if (CSEQUAL(argv[argit], "-G")) {
