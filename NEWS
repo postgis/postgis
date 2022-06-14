@@ -19,6 +19,7 @@ PostGIS 3.2.2dev
   - #5150, Change signature of AddToSearchPath (Regina Obe)
   - #5125, Fix search path function (Sandro Santilli)
   - #5114, Crash with long column names pgsql2shp (Paul Ramsey)
+  - #5039, postgis_tiger_geocoder: Support for TIGER 2021 (Regina Obe)
 
 
 PostGIS 3.2.1
