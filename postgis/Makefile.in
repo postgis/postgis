@@ -76,6 +76,7 @@ SQLPP = @SQLPP@
 PG_OBJS= \
 	postgis_module.o \
 	lwgeom_accum.o \
+	lwgeom_union.o \
 	lwgeom_spheroid.o \
 	lwgeom_ogc.o \
 	lwgeom_functions_analytic.o \
