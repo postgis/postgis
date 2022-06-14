@@ -1051,7 +1051,7 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 			<listitem><para>As of PostGIS 2.4.1 the Zip code-5 digit tabulation area <varname>zcta5</varname> load step was revised to load current zcta5 data and is part of the  <xref linkend="Loader_Generate_Nation_Script" /> when enabled.
 It is turned off by default because it takes quite a bit of time to load (20 to 60 minutes), takes up quite a bit of disk space, and is not used that often.</para>
 <para>To enable it, do the following:</para>
-<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = 'zcta510';</programlisting>
+<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = 'zcta520';</programlisting>
 <para>
 If present the <xref linkend="Geocode" /> function can use it if a boundary filter is added to limit to just zips in that boundary.
 The <xref linkend="Reverse_Geocode" /> function uses it if the returned address is missing a zip, which often happens with highway reverse geocoding.</para></listitem>
