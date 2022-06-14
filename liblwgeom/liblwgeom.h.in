@@ -2526,14 +2526,6 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int3
 
 
 /**
- * Take vertices of a polygon and build a constrained triangulation
- * that respects the boundary of the polygon.
- *
- * @param geom the input geometry
- */
-LWGEOM* lwgeom_triangulate_polygon(const LWGEOM* geom);
-
-/**
  * Take vertices of a geometry and build the Voronoi diagram
  *
  * @param g the input geometry
@@ -2569,6 +2561,14 @@ LWGEOM* lwgeom_concavehull(const LWGEOM* geom, double ratio, uint32_t allow_hole
  */
 LWGEOM*
 lwgeom_simplify_polygonal(const LWGEOM* geom, double vertex_fraction, uint32_t is_outer);
+
+/**
+ * Take vertices of a polygon and build a constrained triangulation
+ * that respects the boundary of the polygon.
+ *
+ * @param geom the input geometry
+ */
+LWGEOM* lwgeom_triangulate_polygon(const LWGEOM* geom);
 
 #endif
 
