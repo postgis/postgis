@@ -7,10 +7,11 @@ Changes since PostGIS 3.3.0alpha1
     control number of rows per copy statement (Regina Obe)
   - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
     useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
+  - #5039, postgis_tiger_geocoder TIGER 2021 (Regina Obe)
 
 * New features *
   - #5169, ST_SimplifyPolygonHull (requires GEOS 3.11)
-    (Paul Ramsey, Martin Davis)  
+    (Paul Ramsey, Martin Davis)
 
 
 PostGIS 3.3.0alpha1
