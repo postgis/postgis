@@ -5,7 +5,8 @@
 -- Adds a schema to  the front of search path so that functions, tables etc get installed by default in set schema
 -- but if people have postgis and other things installed in non-public, it will still keep those in path
 -- Example usage: SELECT tiger.SetSearchPathForInstall('tiger');
-CREATE OR REPLACE FUNCTION tiger.SetSearchPathForInstall(a_schema_name varchar)
+DROP FUNCTION IF EXISTS tiger.SetSearchPathForInstall(varchar);
+CREATE OR REPLACE FUNCTION tiger.SetSearchPathForInstall(a_schema_name text)
 RETURNS text
 AS
 $$
