@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-25 19:29+0000\n"
-"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"PO-Revision-Date: 2022-06-14 09:50+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -216,8 +216,8 @@ msgid ""
 "Retrieve the PostGIS source archive from the downloads website <ulink url="
 "\"&postgis_download_url;\"> &postgis_download_url; </ulink>"
 msgstr ""
-"ダウンロードサイト<ulink url=\"&postgis_download_url;"
-"\">&postgis_download_url;</ulink>からソースのアーカイブを入手します。"
+"ダウンロードサイト<ulink url=\"&postgis_download_url;\"> "
+"&postgis_download_url; </ulink>からソースのアーカイブを入手します。"
 
 #. Tag: programlisting
 #: installation.xml:88
@@ -334,9 +334,10 @@ msgid ""
 "filename> properly."
 msgstr ""
 "GNU Make (<filename>gmake</filename>または<filename>make</filename>)。多くの"
-"システムで、GNU makeがデフォルトのmakeになっています。<filename>make -v</"
-"filename>を実行して版を確認して下さい。他版の<filename>make</filename>では、"
-"PostGISの<filename>Makefile</filename>を完全に処理しきれないかもしれません。"
+"システムで、GNU <filename>make</filename>がデフォルトのmakeになっています。"
+"<filename>make -v</filename>を実行して版を確認して下さい。他版の<filename>mak"
+"e</filename>では、PostGISの<filename>Makefile</filename>を完全に処理しきれな"
+"いかもしれません。"
 
 #. Tag: para
 #: installation.xml:163
@@ -449,7 +450,7 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:238
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SFCGAL, version 1.3.1 (or higher), 1.4.0 or higher is recommended. SFCGAL "
 "can be used to provide additional 2D and 3D advanced analysis functions to "
@@ -463,17 +464,17 @@ msgid ""
 "SFCGAL/dev.html</ulink>) <ulink url=\"https://gitlab.com/Oslandia/SFCGAL/"
 "\">https://gitlab.com/Oslandia/SFCGAL/</ulink>."
 msgstr ""
-"SFCGAL 1.1版以上。追加的な2次元や3次元の高度な解析関数をPostGISで使うために使"
-"用するものです。<xref linkend=\"reference_sfcgal\"/>をご覧下さい。また、GEOS"
-"を使う2次元関数のうちいくつか (たとえばST_IntersectionやST_Area)は、GEOSでな"
-"くSFCGALを使用することができます。PostgreSQLコンフィギュレーション変数"
-"<code>postgis.backend</code>によって、SFCGALがインストールされている場合には"
-"エンドユーザがバックエンドを制御することができます (デフォルトではGEOS)。"
-"SFCGAL 1.2は少なくともCGAL 4.3とBoost 1.54 (<ulink url=\"http://oslandia."
-"github.io/SFCGAL/installation.html\">http://oslandia.github.io/SFCGAL/"
-"installation.html</ulink>をご覧下さい)が必要ですのでご注意下さい。<ulink url="
-"\"https://github.com/Oslandia/SFCGAL\">https://github.com/Oslandia/SFCGAL</"
-"ulink>にあります。"
+"SFCGAL 1.3.1版以上が必須ですが1.4.0以上を推奨します。追加的な2次元や3次元の高"
+"度な解析関数をPostGISで使うために使用するものです。<xref linkend="
+"\"reference_sfcgal\"/>をご覧下さい。また、GEOSを使う2次元関数のうちいくつか ("
+"たとえばST_IntersectionやST_Area)は、GEOSでなくSFCGALを使用することができます"
+"。PostgreSQLコンフィギュレーション変数<code>postgis.backend</code>によって、S"
+"FCGALがインストールされている場合にはエンドユーザがバックエンドを制御すること"
+"ができます (デフォルトではGEOS)。SFCGAL 1.2は少なくともCGAL 4.3とBoost 1.54 "
+"(: <ulink url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia"
+".gitlab.io/SFCGAL/dev.html</ulink>をご覧下さい)が必要ですのでご注意下さい。 "
+"<ulink url=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/"
+"Oslandia/SFCGAL/</ulink>にあります。"
 
 #. Tag: para
 #: installation.xml:246
@@ -498,7 +499,7 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:253
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To enable ST_AsMVT protobuf-c library 1.1.0 or higher (for usage) and the "
 "protoc-c compiler (for building) are required. Also, pkg-config is required "
@@ -510,9 +511,13 @@ msgid ""
 "without-wagyu</varname> during the configure step."
 msgstr ""
 "ST_AsMVTを有効にするには、protobuf-cライブラリ (実行時)とprotoc-cコンパイラ "
-"(ビルド時)が必要です。protobuf-cの正しい最小版を確認するには、pkg-configが必"
-"要です。<ulink url=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</"
-"ulink>をご覧下さい。"
+"(ビルド時)が必要です。protobuf-cの正しい最小版を確認するには、pkg-"
+"configが必要です。<ulink url=\"https://github.com/protobuf-c/protobuf-c\">pro"
+"tobuf-c</ulink>をご覧下さい。デフォルトでは、PostGISは、MVTポリゴンを高速に評"
+"価するためにWagyuを使用していますが、C++11コンパイラが必要です。CXXFLAGSを使"
+"って、PostgreSQLインストールに使ったのと同じコンパイラを使います。これを無効"
+"化してGEOSを代わりに使う場合には、コンフィギュレーション時に<varname"
+">--without-wagyu</varname>を指定します。"
 
 #. Tag: para
 #: installation.xml:262
@@ -563,7 +568,7 @@ msgstr ""
 
 #. Tag: title
 #: installation.xml:304
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Build configuration"
 msgstr "コンフィギュレーション"
 
@@ -618,17 +623,24 @@ msgid ""
 "the minor version: e.g. <code>postgis-3.0</code> add this switch to your "
 "configure statement."
 msgstr ""
+"PostGIS 3.0以降では、デフォルトではライブラリファイルのファイル名にマイナーバ"
+"ージョンが入らなくなりました。PostGIS 3のライブラリは<code>postgis-3</code>で"
+"終わります。pg_upgradeを簡単にするために実施された変更ですが、"
+"サーバにPostGIS 3シリーズは一つのマイナーバージョンのものだけしかインストール"
+"できません。<code>postgis-3.0</code>といったようにマイナーバージョンをファイ"
+"ル名に含む古い振る舞いにしたいなら、コンフィギュレーション実行の際に次のスイ"
+"ッチを追加します。"
 
 #. Tag: para
 #: installation.xml:349
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This is the location the PostGIS loader executables and shared libs will be "
 "installed. By default, this location is the same as the detected PostgreSQL "
 "installation."
 msgstr ""
-"PostGISライブラリとSQLスクリプトのインストール先を指定します。デフォルトで"
-"は、検出されたPostgreSQLのインストール先と同じになります。"
+"PostGISライブラリとSQLスクリプトのインストール先を指定します。デフォルトでは"
+"、検出されたPostgreSQLのインストール先と同じになります。"
 
 #. Tag: para
 #: installation.xml:356
@@ -826,18 +838,19 @@ msgstr ""
 msgid ""
 "Disable updating postgis_revision.h to match current HEAD of the git "
 "repository."
-msgstr ""
+msgstr "Gitレポジトリの現在のHEADに一致するように、postgis_revision."
+"hの更新を無効にします。"
 
 #. Tag: para
 #: installation.xml:529
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you obtained PostGIS from the <ulink url=\"https://trac.osgeo.org/postgis/"
 "wiki/CodeRepository\"> code repository </ulink> , the first step is really "
 "to run the script"
 msgstr ""
-"PostGISをSVN<ulink url=\"http://svn.osgeo.org/postgis/trunk/\">レポジトリ</"
-"ulink>から得る場合には、はじめに次のスクリプトを実行します。"
+"PostGISを<ulink url=\"https://trac.osgeo.org/postgis/wiki/CodeRepository\">コ"
+"ードレポジトリ</ulink>から得る場合には、はじめに次のスクリプトを実行します。"
 
 #. Tag: para
 #: installation.xml:541
@@ -921,10 +934,9 @@ msgid ""
 "<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
 "html</filename>"
 msgstr ""
-"PostGIS 2.0で導入されました。早見表に、または学習中の方のハンドアウトに適して"
-"いるHTMLチートシートを生成します。xsltprocが必要で、"
-"<filename>topology_cheatsheet.html</filename>, "
-"<filename>tiger_geocoder_cheatsheet.html</filename>, "
+"PostGIS 2.0で導入されました。早見表にも、また学習中の方のハンドアウトにも適し"
+"ているHTMLチートシートを生成します。xsltprocが必要で、<filename>topology_chea"
+"tsheet.html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>, "
 "<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
 "html</filename>の4ファイルが生成されます。"
 
@@ -985,15 +997,15 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:608
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The extensions should automatically build as part of the make install "
 "process. You can if needed build from the extensions folders or copy files "
 "if you need them on a different server."
 msgstr ""
-"PostgreSQL 9.1を対象にビルドしている場合は、extensionsは自動的にmake install"
-"処理の一部としてビルドするべきです。必要ならextensionsフォルダからビルドでき"
-"ますし、他のサーバで必要ならファイルの複製ができます。"
+"PostgreSQL 9.1を対象にビルドしている場合は、エクステンションは自動的にmake in"
+"stall処理の一部としてビルドするべきです。必要ならextensionsフォルダからビルド"
+"できますし、他のサーバで必要ならファイルの複製ができます。"
 
 #. Tag: programlisting
 #: installation.xml:610
@@ -1009,6 +1021,15 @@ msgid ""
 "# to test extensions\n"
 "make check RUNTESTFLAGS=--extension"
 msgstr ""
+"cd extensions\n"
+"cd postgis\n"
+"make clean\n"
+"make\n"
+"export PGUSER=postgres # psql変数の上書き\n"
+"make check #to test before install\n"
+"make install\n"
+"# extensionsのテスト\n"
+"make check RUNTESTFLAGS=--extension"
 
 #. Tag: para
 #: installation.xml:611
@@ -1020,19 +1041,25 @@ msgid ""
 "<ulink url=\"https://www.postgresql.org/docs/current/libpq-envars.html"
 "\">psql environment variables</ulink>"
 msgstr ""
+"<code>make "
+"check</code>は、テスト実行のためにpsqlを使用し、psql環境変数を使用します。"
+"一般的なpsql環境変数で上書きすると便利なのが "
+"<varname>PGUSER</varname>,<varname>PGPORT</varname>, and "
+"<varname>PGHOST</varname>です。<ulink url=\"https://www.postgresql.org/docs/"
+"current/libpq-envars.html\">環境変数</ulink>を参照して下さい。"
 
 #. Tag: para
 #: installation.xml:613
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The extension files will always be the same for the same version of PostGIS "
 "and PostgreSQL regardless of OS, so it is fine to copy over the extension "
 "files from one OS to another as long as you have the PostGIS binaries "
 "already installed on your servers."
 msgstr ""
-"エクステンションファイルは、OSに関係なく、常に同じ版のPostGISと同じです。"
-"PostGISバイナリを既にインストールしている限りは、エクステンションファイルをあ"
-"るOSから別のものに複写して大丈夫です。"
+"エクステンションファイルは、常に、OSに関係なく同じ版のPostGISでは同じです。Po"
+"stGISバイナリを既にインストールしている限りは、エクステンションファイルをある"
+"OSから別のものに複写して大丈夫です。"
 
 #. Tag: para
 #: installation.xml:615
@@ -1097,7 +1124,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: installation.xml:636
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT name, default_version,installed_version\n"
 "FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address"
@@ -1120,8 +1147,8 @@ msgid ""
 "(6 rows)"
 msgstr ""
 "SELECT name, default_version,installed_version\n"
-"FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address"
-"%';\n"
+"FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE "
+"'address%';\n"
 "\n"
 "             name             | default_version | installed_version\n"
 "------------------------------+-----------------+-------------------\n"
@@ -1130,6 +1157,8 @@ msgstr ""
 " address_standardizer_data_us | &last_release_version;         | "
 "&last_release_version;\n"
 " postgis                      | &last_release_version;         | "
+"&last_release_version;\n"
+" postgis_raster               | &last_release_version;         | "
 "&last_release_version;\n"
 " postgis_sfcgal               | &last_release_version;         |\n"
 " postgis_tiger_geocoder       | &last_release_version;         | "
@@ -1169,7 +1198,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: installation.xml:643
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE EXTENSION postgis;\n"
 "CREATE EXTENSION postgis_raster;\n"
@@ -1182,6 +1211,7 @@ msgid ""
 "CREATE EXTENSION postgis_topology;"
 msgstr ""
 "CREATE EXTENSION postgis;\n"
+"CREATE EXTENSION postgis_raster;\n"
 "CREATE EXTENSION postgis_sfcgal;\n"
 "CREATE EXTENSION fuzzystrmatch; -- postgis_tiger_geocoderに必要\n"
 "-- postgis_tiger_geocoderで使用されるか単独で使われます\n"
@@ -1214,7 +1244,7 @@ msgstr ""
 
 #. Tag: screen
 #: installation.xml:648
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "List of installed extensions\n"
 "-[ RECORD 1 ]-------------------------------------------------\n"
@@ -1240,19 +1270,21 @@ msgid ""
 msgstr ""
 "List of installed extensions\n"
 "-[ RECORD 1 ]-------------------------------------------------\n"
-"-\n"
 "Name        | postgis\n"
 "Version     | &last_release_version;\n"
 "Schema      | public\n"
 "Description | PostGIS geometry, geography, and raster spat..\n"
 "-[ RECORD 2 ]-------------------------------------------------\n"
-"-\n"
+"Name        | postgis_raster\n"
+"Version     | 3.0.0dev\n"
+"Schema      | public\n"
+"Description | PostGIS raster types and functions\n"
+"-[ RECORD 3 ]-------------------------------------------------\n"
 "Name        | postgis_tiger_geocoder\n"
 "Version     | &last_release_version;\n"
 "Schema      | tiger\n"
 "Description | PostGIS tiger geocoder and reverse geocoder\n"
-"-[ RECORD 3 ]-------------------------------------------------\n"
-"-\n"
+"-[ RECORD 4 ]-------------------------------------------------\n"
 "Name        | postgis_topology\n"
 "Version     | &last_release_version;\n"
 "Schema      | topology\n"
@@ -1293,7 +1325,7 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:655
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you installed &last_release_version;, without using our wonderful "
 "extension system, you can change it to be extension based by running the "
@@ -1301,16 +1333,16 @@ msgid ""
 "Installing using `unpackaged` was removed in PostgreSQL 13, so you are "
 "advised to switch to an extension build before upgrading to PostgreSQL 13."
 msgstr ""
-"この素晴らしいエクステンション機能を使わずに&last_release_version;をインス"
-"トールした場合でもエクステンションベースに変更することができます。まず"
-"<filename>postgis_upgrade_22_minor.sql</filename>,"
-"<filename>raster_upgrade_22_minor.sql</filename>,"
-"<filename>topology_upgrade_22_minor.sql</filename>のアップグレードスクリプト"
-"を実行して最新版にアップグレードします"
+"素晴らしいエクステンション機構を使わずに&last_release_version;をインストール"
+"した場合には、それぞれのエクステンションが持つ関数をパッケージするためのコマ"
+"ンドを実行して、エクステンションに基づくように変更できます。PostgreSQL "
+"13では、パッケージしない方法でのインストールは削除されましたので、PostgreSQL "
+"13にアップグレードする前にエクステンションをビルドするように変更するべきです"
+"。"
 
 #. Tag: programlisting
 #: installation.xml:660
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE EXTENSION postgis FROM unpackaged;\n"
 "CREATE EXTENSION postgis_raster FROM unpackaged;\n"
@@ -1318,6 +1350,7 @@ msgid ""
 "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 msgstr ""
 "CREATE EXTENSION postgis FROM unpackaged;\n"
+"CREATE EXTENSION postgis_raster FROM unpackaged;\n"
 "CREATE EXTENSION postgis_topology FROM unpackaged;\n"
 "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 
@@ -1351,15 +1384,15 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:682
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you configured PostGIS using non-standard PostgreSQL, GEOS, or Proj "
 "locations, you may need to add their library locations to the "
 "<varname>LD_LIBRARY_PATH</varname> environment variable."
 msgstr ""
-"PostgreSQL, GEOS または Proj4 を標準の位置にインストールしていない場合には、"
-"環境変数LD_LIBRARY_PATHに、ライブラリの位置を追加する必要があるかも知れませ"
-"ん。"
+"PostgreSQL, GEOS または Proj を標準の位置にインストールしていない場合には、環"
+"境変数<varname>LD_LIBRARY_PATH</varname>に、ライブラリの位置を追加する必要が"
+"あるかも知れません。"
 
 #. Tag: para
 #: installation.xml:690
@@ -1386,7 +1419,8 @@ msgstr ""
 msgid ""
 "If successful, make check will produce the output of almost 500 tests. The "
 "results will look similar to the following (numerous lines omitted below):"
-msgstr ""
+msgstr "成功したなら、make checkで約500個のテストを生成します。"
+"結果は次のようなかんじになります (かなりの行を省略しています)。"
 
 #. Tag: programlisting
 #: installation.xml:707
@@ -1488,10 +1522,105 @@ msgid ""
 "               tests      4      4      4      0        0\n"
 "             asserts      4      4      4      0      n/a"
 msgstr ""
+"CUnit - A unit testing framework for C - Version 2.1-3\n"
+"     http://cunit.sourceforge.net/\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Run Summary:    Type  Total    Ran Passed Failed Inactive\n"
+"              suites     44     44    n/a      0        0\n"
+"               tests    300    300    300      0        0\n"
+"             asserts   4215   4215   4215      0      n/a\n"
+"Elapsed time =    0.229 seconds\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Running tests\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Run tests: 134\n"
+"Failed: 0\n"
+"\n"
+"\n"
+"-- if you build with SFCGAL\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Running tests\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Run tests: 13\n"
+"Failed: 0\n"
+"\n"
+"-- if you built with raster support\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Run Summary:    Type  Total    Ran Passed Failed Inactive\n"
+"              suites     12     12    n/a      0        0\n"
+"               tests     65     65     65      0        0\n"
+"             asserts  45896  45896  45896      0      n/a\n"
+"\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Running tests\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Run tests: 101\n"
+"Failed: 0\n"
+"\n"
+"-- topology regress\n"
+"\n"
+".\n"
+".\n"
+".\n"
+"\n"
+"Running tests\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Run tests: 51\n"
+"Failed: 0\n"
+"\n"
+"-- if you built --with-gui, you should see this too\n"
+"\n"
+"     CUnit - A unit testing framework for C - Version 2.1-2\n"
+"     http://cunit.sourceforge.net/\n"
+"\n"
+"        .\n"
+"        .\n"
+"        .\n"
+"\n"
+"Run Summary:    Type  Total    Ran Passed Failed Inactive\n"
+"              suites      2      2    n/a      0        0\n"
+"               tests      4      4      4      0        0\n"
+"             asserts      4      4      4      0      n/a"
 
 #. Tag: para
 #: installation.xml:709
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>postgis_tiger_geocoder</varname> and "
 "<varname>address_standardizer</varname> extensions, currently only support "
@@ -1499,11 +1628,11 @@ msgid ""
 "make install is not necessary if you already did make install at root of "
 "PostGIS code folder."
 msgstr ""
-"<varname>postgis_tiger_geocoder</varname>と<varname>address_standardizer</"
-"varname>は、現在は、標準的なPostgreSQLインストールチェックにのみ対応していま"
-"す。これらをテストするには、次のようにします。ご注意: PostGISコードフォルダの"
-"ルートでmake installを既に行っている場合には、make installは重要ではありませ"
-"ん。"
+"<varname>postgis_tiger_geocoder</varname>と<varname>address_standardizer</var"
+"name>エクステンションは、現在は、標準的なPostgreSQLインストールチェックにのみ"
+"対応しています。これらをテストするには、次のようにします。ご注意: "
+"PostGISコードフォルダのルートでmake installを既に行っている場合には、make "
+"installは重要ではありません。"
 
 #. Tag: para
 #: installation.xml:710
@@ -1913,11 +2042,11 @@ msgstr ""
 "Tigerジオコーダのような拡張機能はPostGISディストリビューションに同梱されてい"
 "ません。Tigerジオコーダエクステンションが無かったり、インストールしているもの"
 "より新しい版のものが欲しい場合には、<ulink url=\"http://postgis.net/"
-"windows_downloads/\">Windows Unreleased Versions</ulink>節でPostgreSQLの版に"
-"合ったパッケージにある<filename>share/extension/postgis_tiger_geocoder.*</"
-"filename>ファイルを使います。これらのパッケージはWindows用ですが、"
-"postgis_tige_geocoderエクステンションファイルは、SQLとPL/pgSQLだけですので、"
-"他のOSでも動作します。"
+"windows_downloads/\">Windows Unreleased "
+"Versions</ulink>でPostgreSQLの版に合ったパッケージにある<filename>share/"
+"extension/postgis_tiger_geocoder.*</filename>ファイルを使います。これらのパッ"
+"ケージはWindows用ですが、postgis_tige_geocoderエクステンションファイルは、SQL"
+"とPL/pgSQLだけですので、他のOSでも動作します。"
 
 #. Tag: title
 #: installation.xml:818
@@ -2180,7 +2309,7 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:850
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Create a folder called temp in the <filename>gisdata</filename> folder or "
 "wherever you designated the <varname>staging_fold</varname> to be. This will "
@@ -2375,7 +2504,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: installation.xml:880
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT install_missing_indexes();\n"
 "vacuum (analyze, verbose) tiger.addr;\n"
@@ -2391,17 +2520,17 @@ msgid ""
 "vacuum (analyze, verbose) tiger.zip_state_loc;"
 msgstr ""
 "SELECT install_missing_indexes();\n"
-"vacuum analyze verbose tiger.addr;\n"
-"vacuum analyze verbose tiger.edges;\n"
-"vacuum analyze verbose tiger.faces;\n"
-"vacuum analyze verbose tiger.featnames;\n"
-"vacuum analyze verbose tiger.place;\n"
-"vacuum analyze verbose tiger.cousub;\n"
-"vacuum analyze verbose tiger.county;\n"
-"vacuum analyze verbose tiger.state;\n"
-"vacuum analyze verbose tiger.zip_lookup_base;\n"
-"vacuum analyze verbose tiger.zip_state;\n"
-"vacuum analyze verbose tiger.zip_state_loc;"
+"vacuum (analyze, verbose) tiger.addr;\n"
+"vacuum (analyze, verbose) tiger.edges;\n"
+"vacuum (analyze, verbose) tiger.faces;\n"
+"vacuum (analyze, verbose) tiger.featnames;\n"
+"vacuum (analyze, verbose) tiger.place;\n"
+"vacuum (analyze, verbose) tiger.cousub;\n"
+"vacuum (analyze, verbose) tiger.county;\n"
+"vacuum (analyze, verbose) tiger.state;\n"
+"vacuum (analyze, verbose) tiger.zip_lookup_base;\n"
+"vacuum (analyze, verbose) tiger.zip_state;\n"
+"vacuum (analyze, verbose) tiger.zip_state_loc;"
 
 #. Tag: title
 #: installation.xml:883
@@ -2679,7 +2808,7 @@ msgid ""
 "from <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>"
 msgstr ""
 "Windowsでは7-zipです。<ulink url=\"http://www.7-zip.org/\">http://www.7-zip."
-"org/</ulink>からダウンロードできる無償の圧縮解答ツールです。"
+"org/</ulink>からダウンロードできる無償の圧縮解凍ツールです。"
 
 #. Tag: para
 #: installation.xml:940
@@ -2979,12 +3108,11 @@ msgstr "SELECT postgis_full_version();"
 
 #. Tag: para
 #: installation.xml:1032
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Also check that configure has correctly detected the location and version of "
 "PostgreSQL, the Proj library and the GEOS library."
-msgstr ""
-"また、コンフィギュアが正しくPostgreSQL、Proj4ライブラリ、GEOSライブラリのイン"
+msgstr "また、コンフィギュアが正しくPostgreSQL、Proj4ライブラリ、GEOSライブラリのイン"
 "ストール先を検出したかチェックして下さい。"
 
 #. Tag: para
