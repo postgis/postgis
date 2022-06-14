@@ -44,6 +44,7 @@ Use below to enable it.
   - GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)
   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
   - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
+  - ST_ConcaveHull GEOS 3.11+ polygon-respecting native implementation (Paul Ramsey, Martin Davis)
   - #4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)
   - GH676, faster ST_Clip (Aliaksandr Kalenik)
   - #5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)
@@ -57,6 +58,8 @@ Use below to enable it.
   - GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)
   - #5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)
   - #5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape (Loïc Bartoletti)
+  - ST_TriangulatePolygon with GEOS 3.11+ (Paul Ramsey, Martin Davis)
+  - ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)
 
  * Bug Fix *
    - #5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)
