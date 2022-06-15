@@ -673,7 +673,8 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 		  <funcprototype>
 			<funcdef>float <function>ST_DistanceSphere</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
+            <paramdef choice="opt"><type>float8 </type> <parameter>radius=6371008</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -732,7 +733,7 @@ FROM
 			<funcdef>float <function>ST_DistanceSpheroid</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
-			<paramdef><type>spheroid </type> <parameter>measurement_spheroid</parameter></paramdef>
+			<paramdef choice="opt"><type>spheroid </type><parameter>measurement_spheroid=WGS84</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>

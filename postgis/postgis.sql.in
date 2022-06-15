@@ -1345,11 +1345,18 @@ CREATE OR REPLACE FUNCTION ST_IsPolygonCCW(geometry)
 	_COST_LOW;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry,spheroid)
+CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	_COST_MEDIUM; --upped this
+	_COST_MEDIUM;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	_COST_MEDIUM;
 
 -- Minimum distance. 2D only.
 CREATE OR REPLACE FUNCTION ST_Distance(geom1 geometry, geom2 geometry)
@@ -6055,6 +6062,13 @@ CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry)
 	RETURNS FLOAT8 AS
 	'select @extschema@.ST_distance( @extschema@.geography($1), @extschema@.geography($2),false)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry, radius float8)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','LWGEOM_distance_sphere'
+	LANGUAGE 'c' IMMUTABLE STRICT
+ 	_COST_HIGH;
 
 ---------------------------------------------------------------
 -- GEOMETRY_COLUMNS view support functions
