@@ -588,7 +588,7 @@ nd_box_init_bounds(ND_BOX *a)
 static void
 nd_box_from_gbox(const GBOX *gbox, ND_BOX *nd_box)
 {
-	int d = 0;
+	volatile int d = 0;
 	POSTGIS_DEBUGF(3, " %s", gbox_to_string(gbox));
 
 	nd_box_init(nd_box);
@@ -724,7 +724,6 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 	bool covered = true;
 	double ivol = 1.0;
 	double vol2 = 1.0;
-	double vol1 = 1.0;
 
 	for ( d = 0 ; d < ndims; d++ )
 	{
@@ -740,11 +739,9 @@ nd_box_ratio(const ND_BOX *b1, const ND_BOX *b2, int ndims)
 
 	for ( d = 0; d < ndims; d++ )
 	{
-		double width1 = b1->max[d] - b1->min[d];
 		double width2 = b2->max[d] - b2->min[d];
 		double imin, imax, iwidth;
 
-		vol1 *= width1;
 		vol2 *= width2;
 
 		imin = Max(b1->min[d], b2->min[d]);
@@ -1389,7 +1386,6 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	size_t    nd_stats_size;           /* Size to allocate */
 
 	double total_width = 0;            /* # of bytes used by sample */
-	double total_sample_volume = 0;    /* Area/volume coverage of the sample */
 	double total_cell_count = 0;       /* # of cells in histogram affected by sample */
 
 	ND_BOX sum;                        /* Sum of extents of sample boxes */
@@ -1734,7 +1730,6 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		int at[ND_DIMS];
 		int d;
 		double num_cells = 0;
-		double tmp_volume = 1.0;
 		double min[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
 		double max[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
 		double cellsize[ND_DIMS] = {0.0, 0.0, 0.0, 0.0};
@@ -1760,13 +1755,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 			min[d] = nd_stats->extent.min[d];
 			max[d] = nd_stats->extent.max[d];
 			cellsize[d] = (max[d] - min[d])/(nd_stats->size[d]);
-
-			/* What's the volume (area) of this feature's box? */
-			tmp_volume *= (nd_box->max[d] - nd_box->min[d]);
 		}
-
-		/* Add feature volume (area) to our total */
-		total_sample_volume += tmp_volume;
 
 		/*
 		 * Move through all the overlaped histogram cells values and
