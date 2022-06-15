@@ -616,6 +616,7 @@ static int load_lex(LEXICON *lex, char *tab)
 
     int ntuples;
     int total_tuples = 0;
+    (void) total_tuples; // avoid an unused variable warning.
 
     lex_columns_t lex_columns = {.seq = -1, .word = -1, .stdword = -1, .token = -1};
 
@@ -742,6 +743,7 @@ static int load_rules(RULES *rules, char *tab)
 
     int ntuples;
     int total_tuples = 0;
+    (void) total_tuples; // avoid an unused variable warning.
 
     rules_columns_t rules_columns = {.rule = -1};
 
