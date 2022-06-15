@@ -616,7 +616,6 @@ static int load_lex(LEXICON *lex, char *tab)
 
     int ntuples;
     int total_tuples = 0;
-    (void) total_tuples; // avoid an unused variable warning.
 
     lex_columns_t lex_columns = {.seq = -1, .word = -1, .stdword = -1, .token = -1};
 
@@ -708,6 +707,9 @@ static int load_lex(LEXICON *lex, char *tab)
     ELAPSED_T(t1, t2);
     DBG("Time to read %i lexicon records: %.1f ms.", total_tuples, elapsed);
 
+    (void) total_tuples; // avoid an unused variable warning.
+                         // must be after declaration to pet -Werror=declaration-after-statement
+
     return 0;
 }
 
@@ -743,7 +745,6 @@ static int load_rules(RULES *rules, char *tab)
 
     int ntuples;
     int total_tuples = 0;
-    (void) total_tuples; // avoid an unused variable warning.
 
     rules_columns_t rules_columns = {.rule = -1};
 
@@ -838,6 +839,8 @@ static int load_rules(RULES *rules, char *tab)
     ELAPSED_T(t1, t2);
     DBG("Time to read %i rule records: %.1f ms.", total_tuples, elapsed);
 
+    (void) total_tuples; // avoid an unused variable warning.
+                         // must be after declaration to pet -Werror=declaration-after-statement
     return 0;
 }
 
