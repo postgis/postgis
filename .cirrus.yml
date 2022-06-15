@@ -19,11 +19,11 @@ task:
     - service postgresql oneinitdb
     - service postgresql onestart
     - su postgres -c "createuser -s `whoami`"
-    - gmake -j8
-    - gmake -j8 check
-    - gmake -j8 install
-    - gmake -j8 check RUNTESTFLAGS="-v --extension"
-    - gmake -j8 check RUNTESTFLAGS="-v --dumprestore"
+    - gmake -j8 || { service postgresql onestop; exit 1;}
+    - gmake -j8 check || { service postgresql onestop; exit 1;}
+    - gmake -j8 install || { service postgresql onestop; exit 1;}
+    - gmake -j8 check RUNTESTFLAGS="-v --extension" || { service postgresql onestop; exit 1;}
+    - gmake -j8 check RUNTESTFLAGS="-v --dumprestore" || { service postgresql onestop; exit 1;}
     - service postgresql onestop
 
   freebsd_instance:
