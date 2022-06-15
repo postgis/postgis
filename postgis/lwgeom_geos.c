@@ -3235,6 +3235,43 @@ Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS)
 }
 
 /*
+ * Take a polygon and build a constrained
+ * triangulation that respect the edges of the
+ * polygon.
+ */
+PG_FUNCTION_INFO_V1(ST_TriangulatePolygon);
+Datum ST_TriangulatePolygon(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 31100
+
+	lwpgerror("The GEOS version this PostGIS binary "
+	          "was compiled against (%d) doesn't support "
+	          "'GEOSConstrainedDelaunayTriangulation' function (3.11.0+ required)",
+	          POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 31100 */
+	GSERIALIZED *result;
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	LWGEOM *lwgeom_in = lwgeom_from_gserialized(geom);
+	LWGEOM *lwgeom_out = lwgeom_triangulate_polygon(lwgeom_in);
+	lwgeom_free(lwgeom_in);
+
+	if (!lwgeom_out)
+	{
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	result = geometry_serialize(lwgeom_out);
+	lwgeom_free(lwgeom_out);
+
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+#endif
+}
+
+/*
  * ST_Snap
  *
  * Snap a geometry to another with a given tolerance

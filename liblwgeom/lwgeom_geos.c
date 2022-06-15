@@ -2015,6 +2015,7 @@ lwgeom_delaunay_triangulation(const LWGEOM* geom, double tolerance, int32_t outp
 	return result;
 }
 
+
 static GEOSCoordSequence*
 lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_points)
 {
@@ -2163,6 +2164,33 @@ lwgeom_simplify_polygonal(const LWGEOM* geom, double vertex_fraction, uint32_t i
 	if (!g3)
 		GEOS_FREE_AND_FAIL(g1);
 
+	GEOSSetSRID(g3, srid);
+
+	if (!(result = GEOS2LWGEOM(g3, is3d)))
+		GEOS_FREE_AND_FAIL(g1, g3);
+
+	GEOS_FREE(g1, g3);
+	return result;
+}
+
+LWGEOM*
+lwgeom_triangulate_polygon(const LWGEOM* geom)
+{
+	LWGEOM* result;
+	int32_t srid = RESULT_SRID(geom);
+	uint8_t is3d = FLAGS_GET_Z(geom->flags);
+	GEOSGeometry *g1, *g3;
+
+	if (srid == SRID_INVALID) return NULL;
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	if (!(g1 = LWGEOM2GEOS(geom, AUTOFIX))) GEOS_FAIL();
+
+	/* if output != 1 we want polys */
+	g3 = GEOSConstrainedDelaunayTriangulation(g1);
+
+	if (!g3) GEOS_FREE_AND_FAIL(g1);
 	GEOSSetSRID(g3, srid);
 
 	if (!(result = GEOS2LWGEOM(g3, is3d)))

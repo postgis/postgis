@@ -996,7 +996,7 @@ POLYGON((154 14,150 14,154 6,154 14))
 </informaltable>
       </refsection>
       <refsection>
-            <title>3D Examples</title>
+            <title>Example 1</title>
             <programlisting>-- 3D multipoint --
 SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(
 'MULTIPOINT Z(14 14 10,
@@ -1006,12 +1006,70 @@ SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(
 GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
  ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))</programlisting>
         </refsection>
+    </refentry>
+
+
+    <refentry id="ST_TriangulatePolygon">
+      <refnamediv>
+        <refname>ST_TriangulatePolygon</refname>
+        <refpurpose>Computes the constrained Delaunay triangulation of polygons</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_TriangulatePolygon</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Computes the constrained Delaunay triangulation of polygons. The "constrained Delaunay triangulation" of a polygon is a set of triangles covering the polygon, with the maximum total interior angle over all possible triangulations.  It provides the "best quality" triangulation of the polygon.</para>
+
+        <para>Availability: 3.3.0</para>
+      </refsection>
+
+          <refsection>
+            <title>Example</title>
+            <para>A square is triangulated</para>
+                <programlisting>
+SELECT ST_AsText(
+    ST_TriangulatePolygon('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'));
+
+                                 st_astext
+---------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(POLYGON((0 0,0 1,1 1,0 0)),POLYGON((1 1,1 0,0 0,1 1)))
+                </programlisting>
+          </refsection>
+      <refsection>
+            <title>Example</title>
+            <programlisting>SELECT ST_AsText(ST_TriangulatePolygon(
+    'POLYGON((0 0, 0 1, 3 1, 4 0.5, 5 1, 5 0, 2 0, 1 0.5, 0 0))'
+    ));
+</programlisting>
+            <informalfigure>
+            <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_triangulatepolygon01.png" />
+            </imageobject>
+            <caption><para>Polygon Triangulation</para></caption>
+            </mediaobject>
+            </informalfigure>
+        </refsection>
         <refsection>
             <title>See Also</title>
-            <para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />, <xref linkend="ST_Tesselate" />
+            <para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />, <xref linkend="ST_Tesselate" />, <xref linkend="ST_TriangulatePolygon" />
             </para>
         </refsection>
+
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_DelaunayTriangles" />, <xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_Tesselate" /></para>
+          </refsection>
     </refentry>
+
 
     <refentry id="ST_FilterByM">
       <refnamediv>
