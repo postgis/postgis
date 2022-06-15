@@ -9,7 +9,7 @@ jobs:
       matrix:
         #fail-fast: false
         include:
-          - { icon: '⬛', sys: mingw32 }
+          # mingw32 fail: addface
           - { icon: '🟦', sys: mingw64 }
           - { icon: '🟨', sys: ucrt64  } # Experimental!
           - { icon: '🟧', sys: clang64 } # Experimental!
