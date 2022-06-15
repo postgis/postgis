@@ -173,7 +173,6 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     int mi;
     size_t ui, uj;
     int rc;
-    int comma = 0;
     ADDRESS *ret;
 #ifdef USE_HSEARCH
     ENTRY e, *ep;
@@ -208,7 +207,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
     s[uj] = '\0';
 
     /* clean trailing punctuation */
-    comma |= clean_trailing_punct(s);
+    (void)clean_trailing_punct(s);
 
     /* assume country code is US */
 
@@ -227,7 +226,6 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
         }
         /* truncate the postalcode off the string */
         *(s+ovect[0]) = '\0';
-        comma = 0;
     }
     /* get canada zipcode components */
     else {
@@ -238,12 +236,11 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
             strcpy(ret->cc, "CA");
             /* truncate the postalcode off the string */
             *(s+ovect[0]) = '\0';
-            comma = 0;
         }
     }
 
     /* clean trailing punctuation */
-    comma |= clean_trailing_punct(s);
+    (void)clean_trailing_punct(s);
 
     /* get state components */
 
@@ -285,11 +282,10 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
             strcpy(ret->cc, "CA");
             // if (ret->cc) printf("  CC: %s\n", ret->cc);
         }
-        comma = 0;
     }
 
     /* clean trailing punctuation */
-    comma |= clean_trailing_punct(s);
+    (void)clean_trailing_punct(s);
 
     /* get city components */
 

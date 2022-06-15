@@ -707,6 +707,9 @@ static int load_lex(LEXICON *lex, char *tab)
     ELAPSED_T(t1, t2);
     DBG("Time to read %i lexicon records: %.1f ms.", total_tuples, elapsed);
 
+    (void) total_tuples; // avoid an unused variable warning.
+                         // must be after declaration to pet -Werror=declaration-after-statement
+
     return 0;
 }
 
@@ -836,6 +839,8 @@ static int load_rules(RULES *rules, char *tab)
     ELAPSED_T(t1, t2);
     DBG("Time to read %i rule records: %.1f ms.", total_tuples, elapsed);
 
+    (void) total_tuples; // avoid an unused variable warning.
+                         // must be after declaration to pet -Werror=declaration-after-statement
     return 0;
 }
 
