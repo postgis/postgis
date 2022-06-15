@@ -48,7 +48,6 @@
       <!-- Optionally mention supports Polyhedral Surface  -->
       <para>&P_support;</para>
       <para>&T_support;</para>
-      <para>&sfcgal_enhanced;</para>
       <para>&sqlmm_compliant; SQL-MM 3: ?</para>
     </refsection>
     <refsection>
