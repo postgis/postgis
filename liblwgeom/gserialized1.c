@@ -1465,8 +1465,11 @@ LWGEOM* lwgeom_from_gserialized1(const GSERIALIZED *g)
 
 	lwgeom = lwgeom_from_gserialized1_buffer(data_ptr, lwflags, &size);
 
-	if ( ! lwgeom )
+	if ( ! lwgeom ) 
+	{
 		lwerror("%s: unable create geometry", __func__); /* Ooops! */
+		return NULL;
+	}
 
 	lwgeom->type = lwtype;
 	lwgeom->flags = lwflags;
