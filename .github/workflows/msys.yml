@@ -1,0 +1,53 @@
+name: MSYS2
+on: [push, pull_request]
+
+jobs:
+  mingw:
+    name: mingw
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        #fail-fast: false
+        include:
+          # mingw32 fail: addface
+          - { icon: '🟦', sys: mingw64 }
+          - { icon: '🟨', sys: ucrt64  } # Experimental!
+          - { icon: '🟧', sys: clang64 } # Experimental!
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      # see https://github.com/msys2/setup-msys2
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: '${{ matrix.icon }} Setup MSYS2'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ matrix.sys }}
+        update: true
+        install: >-
+          git
+          make
+          bison
+        pacboy: >-
+          toolchain:p
+          autotools:p
+          geos:p
+          proj:p
+          gdal:p
+          sfcgal:p
+          json-c:p
+          gettext:p
+          libxml2:p
+          postgresql:p
+
+    - name: '🚧 Build TOOL'
+      run: |
+        MSYSTEM= /${{ matrix.sys }}/bin/initdb -D D:/a/_tmp/psql
+        MSYSTEM= /${{ matrix.sys }}/bin/pg_ctl -D D:/a/_tmp/psql -l logfile start
+        MSYSTEM= /${{ matrix.sys }}/bin/pg_ctl register -N "postgresql" -U "NT AUTHORITY\NetworkService" -D D:/a/_tmp/psql -w -S demand
+        MSYSTEM= /${{ matrix.sys }}/bin/createuser -U `whoami` -s postgres
+        MSYSTEM= ./autogen.sh
+        MSYSTEM= ./configure --with-pgconfig=/${{ matrix.sys }}/bin/pg_config --without-protobuf
+        MSYSTEM= make
+        MSYSTEM= make check
