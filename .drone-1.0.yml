@@ -7,7 +7,7 @@
 test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel2
 clone: &clone
     image: plugins/git
-    depth: 20
+    depth: 50
     recursive: false
 
 kind: pipeline
