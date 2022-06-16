@@ -284,18 +284,11 @@
                  </varlistentry>
 
                <varlistentry>
-                  <term>-Y</term>
+                  <term>-Y  <varname>max_rows_per_copy=50</varname></term>
                   <listitem>
                     <para>
-                      Use copy statements instead of insert statements.</para>
-                  </listitem>
-                </varlistentry>
-
-                <varlistentry>
-                  <term>-Z <varname>max_rows_per_copy</varname></term>
-                  <listitem>
-                    <para>
-                      Specify max number of rows per copy statement. Only relevant when combined with -Y.</para>
+                      Use copy statements instead of insert statements.  Optionally specify <varname>max_rows_per_copy</varname> statement.
+                      Defaults to 50 when not specified.</para>
                   </listitem>
                 </varlistentry>
 
