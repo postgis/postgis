@@ -13,6 +13,7 @@
 top_srcdir = @top_srcdir@
 srcdir = @srcdir@
 builddir = @builddir@
+top_builddir = @top_builddir@
 
 PERL=@PERL@
 
