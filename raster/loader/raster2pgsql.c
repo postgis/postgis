@@ -704,7 +704,7 @@ init_config(RTLOADERCFG *config) {
 	config->version = 0;
 	config->transaction = 1;
 	config->copy_statements = 0;
-	config->max_tiles_per_copy = 11;
+	config->max_tiles_per_copy = 50;
 }
 
 static void
@@ -2600,12 +2600,17 @@ main(int argc, char **argv) {
 		/* COPY statements */
 		else if (CSEQUAL(argv[argit], "-Y")) {
 			config->copy_statements = 1;
+			/* max tiles per copy */
+			if ( argit < argc - 1) {
+				optarg = argv[argit + 1];
+				if (atoi(optarg) > 0 ) {
+					config->max_tiles_per_copy = atoi(optarg);
+					++argit;
+				}
+			}
 		}
 
-		/* max tiles per copy */
-		else if (CSEQUAL(argv[argit], "-Z") && argit < argc - 1) {
-			config->max_tiles_per_copy = atoi(argv[++argit]);
-		}
+
 		/* GDAL formats */
 		else if (CSEQUAL(argv[argit], "-G")) {
 			uint32_t drv_count = 0;

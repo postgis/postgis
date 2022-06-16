@@ -134,7 +134,7 @@ RASTER_TEST_LOADER = \
 	$(topsrcdir)/raster/test/regress/loader/Tiled8x8 \
 	$(topsrcdir)/raster/test/regress/loader/TiledAuto \
 	$(topsrcdir)/raster/test/regress/loader/TiledAutoSkipNoData \
-	$(topsrcdir)/raster/test/regress/loader/TiledAutoZCopy
+	$(topsrcdir)/raster/test/regress/loader/TiledAutoCopyn
 
 RASTER_TESTS := $(RASTER_TEST_FIRST) \
 	$(RASTER_TEST_METADATA) $(RASTER_TEST_IO) $(RASTER_TEST_BASIC_FUNC) \
