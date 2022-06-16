@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-04-16 08:20+0000\n"
-"PO-Revision-Date: 2022-06-14 09:50+0000\n"
+"PO-Revision-Date: 2022-06-16 22:10+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "introductionxml/ja/>\n"
@@ -399,7 +399,7 @@ msgstr "Jeff Lounsbury"
 #: introduction.xml:181
 #, no-c-format
 msgid "Original development of the Shapefile loader/dumper."
-msgstr "シェープファイルのローダ/ダンパのオリジナル開発者"
+msgstr "シェープファイルのローダ/ダンパのオリジナル開発者。"
 
 #. Tag: term
 #: introduction.xml:187
