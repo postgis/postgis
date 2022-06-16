@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"POT-Creation-Date: 2022-06-16 22:07+0000\n"
 "PO-Revision-Date: 2021-11-30 08:26+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -490,17 +490,20 @@ msgstr "<term>-k</term>"
 #. Tag: para
 #: using_raster_dataman.xml:256
 #, no-c-format
-msgid "Skip NODATA value checks for each raster band."
-msgstr "バンドごとのNODATA値のチェックを省略します。"
+msgid ""
+"Keeps empty tiles and skips NODATA value checks for each raster band. Note "
+"you save time in checking, but could end up with far more junk rows in your "
+"database and those junk rows are not marked as empty tiles."
+msgstr ""
 
 #. Tag: term
-#: using_raster_dataman.xml:264
+#: using_raster_dataman.xml:265
 #, no-c-format
 msgid "-T <varname>tablespace</varname>"
 msgstr "-T <varname>tablespace</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:266
+#: using_raster_dataman.xml:267
 #, no-c-format
 msgid ""
 "Specify the tablespace for the new table. Note that indices (including the "
@@ -512,13 +515,13 @@ msgstr ""
 "注意ください。"
 
 #. Tag: term
-#: using_raster_dataman.xml:275
+#: using_raster_dataman.xml:276
 #, no-c-format
 msgid "-X <varname>tablespace</varname>"
 msgstr "-X <varname>tablespace</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:277
+#: using_raster_dataman.xml:278
 #, no-c-format
 msgid ""
 "Specify the tablespace for the table's new index. This applies to the "
@@ -528,37 +531,40 @@ msgstr ""
 "Iフラグがある場合においては空間インデクスにも適用されます。"
 
 #. Tag: term
-#: using_raster_dataman.xml:286
+#: using_raster_dataman.xml:287
 #, no-c-format
-msgid "<term>-Y</term>"
-msgstr "<term>-Y</term>"
+msgid "-Y <varname>max_rows_per_copy=50</varname>"
+msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:288
+#: using_raster_dataman.xml:289
 #, no-c-format
-msgid "Use copy statements instead of insert statements."
-msgstr "INSERTステートメントでなくCOPYステートメントを使います。"
+msgid ""
+"Use copy statements instead of insert statements. Optionally specify "
+"<varname>max_rows_per_copy</varname> statement. Defaults to 50 when not "
+"specified."
+msgstr ""
 
 #. Tag: term
-#: using_raster_dataman.xml:299
+#: using_raster_dataman.xml:301
 #, no-c-format
 msgid "<term>-e</term>"
 msgstr "<term>-e</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:300
+#: using_raster_dataman.xml:302
 #, no-c-format
 msgid "Execute each statement individually, do not use a transaction."
 msgstr "ステートメント毎に実行して、トランザクションを使用しないようにします。"
 
 #. Tag: term
-#: using_raster_dataman.xml:304
+#: using_raster_dataman.xml:306
 #, no-c-format
 msgid "-E ENDIAN"
 msgstr "-E ENDIAN"
 
 #. Tag: para
-#: using_raster_dataman.xml:305
+#: using_raster_dataman.xml:307
 #, no-c-format
 msgid ""
 "Control endianness of generated binary output of raster; specify 0 for XDR "
@@ -569,13 +575,13 @@ msgstr ""
 "定します。デフォルトは1です。現時点ではNDR出力のみサポートします。"
 
 #. Tag: term
-#: using_raster_dataman.xml:309
+#: using_raster_dataman.xml:311
 #, no-c-format
 msgid "-V <varname>version</varname>"
 msgstr "-V <varname>version</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:310
+#: using_raster_dataman.xml:312
 #, no-c-format
 msgid ""
 "Specify version of output format. Default is 0. Only 0 is supported at this "
@@ -584,7 +590,7 @@ msgstr ""
 "出力書式の版を指定します。デフォルトは0です。現時点では0のみサポートします。"
 
 #. Tag: para
-#: using_raster_dataman.xml:313
+#: using_raster_dataman.xml:315
 #, no-c-format
 msgid ""
 "An example session using the loader to create an input file and uploading it "
@@ -594,7 +600,7 @@ msgstr ""
 "ロードする例は、次の通りです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:314
+#: using_raster_dataman.xml:316
 #, no-c-format
 msgid ""
 "You can leave the schema name out e.g <varname>demelevation</varname> "
@@ -606,7 +612,7 @@ msgstr ""
 "ベースまたユーザの指定するデフォルトのスキーマに生成されます。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:316
+#: using_raster_dataman.xml:318
 #, no-c-format
 msgid ""
 "raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > elev."
@@ -618,13 +624,13 @@ msgstr ""
 "psql -d gisdb -f elev.sql"
 
 #. Tag: para
-#: using_raster_dataman.xml:318
+#: using_raster_dataman.xml:320
 #, no-c-format
 msgid "A conversion and upload can be done all in one step using UNIX pipes:"
 msgstr "変換とアップロードはUNIXのパイプを使うと一回で実行できます。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:320
+#: using_raster_dataman.xml:322
 #, no-c-format
 msgid ""
 "raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql "
@@ -634,7 +640,7 @@ msgstr ""
 "-d gisdb"
 
 #. Tag: para
-#: using_raster_dataman.xml:322
+#: using_raster_dataman.xml:324
 #, no-c-format
 msgid ""
 "Load rasters Massachusetts state plane meters aerial tiles into a schema "
@@ -655,7 +661,7 @@ msgstr ""
 "ます。-Fで、カラム名をタイル切り出し元ファイルのファイル名にします。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:324
+#: using_raster_dataman.xml:326
 #, no-c-format
 msgid ""
 "raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*."
@@ -665,7 +671,7 @@ msgstr ""
 "jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:326
+#: using_raster_dataman.xml:328
 #, no-c-format
 msgid ""
 "--get a list of raster types supported:\n"
@@ -675,13 +681,13 @@ msgstr ""
 "raster2pgsql -G"
 
 #. Tag: para
-#: using_raster_dataman.xml:328
+#: using_raster_dataman.xml:330
 #, no-c-format
 msgid "The -G commands outputs a list something like"
 msgstr "-Gコマンドの出力は次のようになります。"
 
 #. Tag: screen
-#: using_raster_dataman.xml:329
+#: using_raster_dataman.xml:331
 #, no-c-format
 msgid ""
 "Available GDAL raster formats:\n"
@@ -883,13 +889,13 @@ msgstr ""
 "  NOAA NGS Geoid Height Grids"
 
 #. Tag: title
-#: using_raster_dataman.xml:332
+#: using_raster_dataman.xml:334
 #, no-c-format
 msgid "Creating rasters using PostGIS raster functions"
 msgstr "PostGISラスタ関数を用いたラスタの生成"
 
 #. Tag: para
-#: using_raster_dataman.xml:333
+#: using_raster_dataman.xml:335
 #, no-c-format
 msgid ""
 "On many occasions, you'll want to create rasters and raster tables right in "
@@ -900,7 +906,7 @@ msgstr ""
 "行うための関数が多数あります。一般的な手順は次の通りです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:335
+#: using_raster_dataman.xml:337
 #, no-c-format
 msgid ""
 "Create a table with a raster column to hold the new raster records which can "
@@ -910,13 +916,13 @@ msgstr ""
 "行します。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:336
+#: using_raster_dataman.xml:338
 #, no-c-format
 msgid "CREATE TABLE myrasters(rid serial primary key, rast raster);"
 msgstr "CREATE TABLE myrasters(rid serial primary key, rast raster);"
 
 #. Tag: para
-#: using_raster_dataman.xml:339
+#: using_raster_dataman.xml:341
 #, no-c-format
 msgid ""
 "There are many functions to help with that goal. If you are creating rasters "
@@ -929,7 +935,7 @@ msgstr ""
 "\"RT_ST_AddBand\"/>を順次実行して作業を開始します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:341
+#: using_raster_dataman.xml:343
 #, no-c-format
 msgid ""
 "You can also create rasters from geometries. To achieve that you'll want to "
@@ -944,7 +950,7 @@ msgstr ""
 "る場合もあります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:343
+#: using_raster_dataman.xml:345
 #, no-c-format
 msgid ""
 "There are even many more options for creating new raster tables from "
@@ -956,7 +962,7 @@ msgstr ""
 "投影法のラスタテーブルを生成します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:345
+#: using_raster_dataman.xml:347
 #, no-c-format
 msgid ""
 "Once you are done populating your table initially, you'll want to create a "
@@ -966,7 +972,7 @@ msgstr ""
 "なるでしょう。次のようにします。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:346
+#: using_raster_dataman.xml:348
 #, no-c-format
 msgid ""
 "CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING "
@@ -976,7 +982,7 @@ msgstr ""
 "gist( ST_ConvexHull(rast) );"
 
 #. Tag: para
-#: using_raster_dataman.xml:347
+#: using_raster_dataman.xml:349
 #, no-c-format
 msgid ""
 "Note the use of <xref linkend=\"RT_ST_ConvexHull\"/> since most raster "
@@ -986,7 +992,7 @@ msgstr ""
 "のラスタ演算子はラスタの凸包を元にしています。"
 
 #. Tag: para
-#: using_raster_dataman.xml:348
+#: using_raster_dataman.xml:350
 #, no-c-format
 msgid ""
 "Pre-2.0 versions of PostGIS raster were based on the envelop rather than the "
@@ -998,7 +1004,7 @@ msgstr ""
 "を削除して、凸包を元にしたインデクスに置き換えます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:349
+#: using_raster_dataman.xml:351
 #, no-c-format
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
@@ -1006,13 +1012,13 @@ msgstr ""
 "<xref linkend=\"RT_AddRasterConstraints\"/>を用いてラスタ制約を適用します。"
 
 #. Tag: title
-#: using_raster_dataman.xml:354
+#: using_raster_dataman.xml:356
 #, no-c-format
 msgid "Using \"out db\" cloud rasters"
 msgstr "「データベース外」クラウドラスタの使用"
 
 #. Tag: para
-#: using_raster_dataman.xml:355
+#: using_raster_dataman.xml:357
 #, no-c-format
 msgid ""
 "The <varname>raster2pgsql</varname> tool uses GDAL to access raster data, "
@@ -1028,7 +1034,7 @@ msgstr ""
 "能の利点を享受することができます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:359
+#: using_raster_dataman.xml:361
 #, no-c-format
 msgid ""
 "Efficient use of cloud stored rasters requires the use of a \"cloud optimized"
@@ -1046,7 +1052,7 @@ msgstr ""
 "ロードするためです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:362
+#: using_raster_dataman.xml:364
 #, no-c-format
 msgid ""
 "First, load your raster into the cloud storage of your choice. Once it is "
@@ -1065,7 +1071,7 @@ msgstr ""
 "emphasis>ます。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:365
+#: using_raster_dataman.xml:367
 #, no-c-format
 msgid ""
 "AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx \\\n"
@@ -1091,7 +1097,7 @@ msgstr ""
 "  | psql your_db"
 
 #. Tag: para
-#: using_raster_dataman.xml:366
+#: using_raster_dataman.xml:368
 #, no-c-format
 msgid ""
 "Once the table is loaded, you need to give the database permission to read "
@@ -1105,7 +1111,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:369
+#: using_raster_dataman.xml:371
 #, no-c-format
 msgid ""
 "SET postgis.enable_outdb_rasters = true;\n"
@@ -1115,7 +1121,7 @@ msgstr ""
 "SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 
 #. Tag: para
-#: using_raster_dataman.xml:370
+#: using_raster_dataman.xml:372
 #, no-c-format
 msgid ""
 "To make the changes sticky, set them directly on your database. You will "
@@ -1125,7 +1131,7 @@ msgstr ""
 "が必要です。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:373
+#: using_raster_dataman.xml:375
 #, no-c-format
 msgid ""
 "ALTER DATABASE your_db SET postgis.enable_outdb_rasters = true;\n"
@@ -1135,7 +1141,7 @@ msgstr ""
 "ALTER DATABASE your_db SET postgis.gdal_enabled_drivers TO 'ENABLE_ALL';"
 
 #. Tag: para
-#: using_raster_dataman.xml:374
+#: using_raster_dataman.xml:376
 #, no-c-format
 msgid ""
 "For non-public rasters, you may have to provide access keys to read from the "
@@ -1151,7 +1157,7 @@ msgstr ""
 "区切ることで、複数のオプションを設定できることに注意してください。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:377
+#: using_raster_dataman.xml:379
 #, no-c-format
 msgid ""
 "SET postgis.gdal_vsi_options = 'AWS_ACCESS_KEY_ID=xxxxxxxxxxxxxxxxxxxx\n"
@@ -1161,7 +1167,7 @@ msgstr ""
 "AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';"
 
 #. Tag: para
-#: using_raster_dataman.xml:378
+#: using_raster_dataman.xml:380
 #, no-c-format
 msgid ""
 "Once you have the data loaded and permissions set you can interact with the "
@@ -1175,13 +1181,13 @@ msgstr ""
 "す。"
 
 #. Tag: title
-#: using_raster_dataman.xml:384
+#: using_raster_dataman.xml:386
 #, no-c-format
 msgid "Raster Catalogs"
 msgstr "ラスタカタログ"
 
 #. Tag: para
-#: using_raster_dataman.xml:385
+#: using_raster_dataman.xml:387
 #, no-c-format
 msgid ""
 "There are two raster catalog views that come packaged with PostGIS. Both "
@@ -1195,7 +1201,7 @@ msgstr ""
 "ません。"
 
 #. Tag: para
-#: using_raster_dataman.xml:389
+#: using_raster_dataman.xml:391
 #, no-c-format
 msgid ""
 "<varname>raster_columns</varname> this view catalogs all the raster table "
@@ -1205,7 +1211,7 @@ msgstr ""
 "スタテーブルカラムのカタログです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:392
+#: using_raster_dataman.xml:394
 #, no-c-format
 msgid ""
 "<varname>raster_overviews</varname> this view catalogs all the raster table "
@@ -1218,13 +1224,13 @@ msgstr ""
 "テーブルは、ロード時に<varname>-l</varname>を指定した時に生成されます。"
 
 #. Tag: title
-#: using_raster_dataman.xml:396
+#: using_raster_dataman.xml:398
 #, no-c-format
 msgid "Raster Columns Catalog"
 msgstr "ラスタカラムカタログ"
 
 #. Tag: para
-#: using_raster_dataman.xml:397
+#: using_raster_dataman.xml:399
 #, no-c-format
 msgid ""
 "The <varname>raster_columns</varname> is a catalog of all raster table "
@@ -1240,7 +1246,7 @@ msgstr ""
 "あります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:399
+#: using_raster_dataman.xml:401
 #, no-c-format
 msgid ""
 "If you created your tables not with the loader or forgot to specify the "
@@ -1255,7 +1261,7 @@ msgstr ""
 "の情報を登録します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:404
+#: using_raster_dataman.xml:406
 #, no-c-format
 msgid ""
 "<varname>r_table_catalog</varname> The database the table is in. This will "
@@ -1265,7 +1271,7 @@ msgstr ""
 "常に現在のデータベースを読みます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:407
+#: using_raster_dataman.xml:409
 #, no-c-format
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table "
@@ -1275,13 +1281,13 @@ msgstr ""
 "です。"
 
 #. Tag: para
-#: using_raster_dataman.xml:410
+#: using_raster_dataman.xml:412
 #, no-c-format
 msgid "<varname>r_table_name</varname> raster table"
 msgstr "<varname>r_table_name</varname> ラスタテーブルです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:413
+#: using_raster_dataman.xml:415
 #, no-c-format
 msgid ""
 "<varname>r_raster_column</varname> the column in the <varname>r_table_name</"
@@ -1296,7 +1302,7 @@ msgstr ""
 "ム毎に複数回出現するテーブルを持つことができます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:416
+#: using_raster_dataman.xml:418
 #, no-c-format
 msgid ""
 "<varname>srid</varname> The spatial reference identifier of the raster. "
@@ -1306,7 +1312,7 @@ msgstr ""
 "\"spatial_ref_sys\"/>にあるエントリであるべきです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:419
+#: using_raster_dataman.xml:421
 #, no-c-format
 msgid ""
 "<varname>scale_x</varname> The scaling between geometric spatial coordinates "
@@ -1320,7 +1326,7 @@ msgstr ""
 "\"RT_ST_ScaleX\"/>を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:422
+#: using_raster_dataman.xml:424
 #, no-c-format
 msgid ""
 "<varname>scale_y</varname> The scaling between geometric spatial coordinates "
@@ -1335,7 +1341,7 @@ msgstr ""
 "\"RT_ST_ScaleY\"/>を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:425
+#: using_raster_dataman.xml:427
 #, no-c-format
 msgid ""
 "<varname>blocksize_x</varname> The width (number of pixels across) of each "
@@ -1345,7 +1351,7 @@ msgstr ""
 "す。詳細情報については<xref linkend=\"RT_ST_Width\"/>を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:428
+#: using_raster_dataman.xml:430
 #, no-c-format
 msgid ""
 "<varname>blocksize_y</varname> The width (number of pixels down) of each "
@@ -1355,7 +1361,7 @@ msgstr ""
 "す。詳細情報については<xref linkend=\"RT_ST_Height\" />を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:431
+#: using_raster_dataman.xml:433
 #, no-c-format
 msgid ""
 "<varname>same_alignment</varname> A boolean that is true if all the raster "
@@ -1367,7 +1373,7 @@ msgstr ""
 "\"RT_ST_SameAlignment\"/>を参照してください。"
 
 #. Tag: para
-#: using_raster_dataman.xml:434
+#: using_raster_dataman.xml:436
 #, no-c-format
 msgid ""
 "<varname>regular_blocking</varname> If the raster column has the spatially "
@@ -1378,7 +1384,7 @@ msgstr ""
 "タイルの制約を持つなら、TRUEとなります。その他の場合はFALSEになります。。"
 
 #. Tag: para
-#: using_raster_dataman.xml:437
+#: using_raster_dataman.xml:439
 #, no-c-format
 msgid ""
 "<varname>num_bands</varname> The number of bands in each tile of your raster "
@@ -1386,7 +1392,7 @@ msgid ""
 msgstr "<varname>num_bands</varname> ラスタ集合のタイルごとのバンド数。"
 
 #. Tag: para
-#: using_raster_dataman.xml:440
+#: using_raster_dataman.xml:442
 #, no-c-format
 msgid ""
 "<varname>pixel_types</varname> An array defining the pixel type for each "
@@ -1399,7 +1405,7 @@ msgstr ""
 "\"RT_ST_BandPixelType\"/>で定義されるピクセルタイプの一つを取ります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:443
+#: using_raster_dataman.xml:445
 #, no-c-format
 msgid ""
 "<varname>nodata_values</varname> An array of double precision numbers "
@@ -1415,7 +1421,7 @@ msgstr ""
 "<xref linkend=\"RT_ST_BandNoDataValue\"/>で得られる情報と似ています。"
 
 #. Tag: para
-#: using_raster_dataman.xml:446
+#: using_raster_dataman.xml:448
 #, no-c-format
 msgid ""
 "<varname>out_db</varname> An array of boolean flags indicating if the raster "
@@ -1426,7 +1432,7 @@ msgstr ""
 "かを示す真偽値の配列です。この配列の添え字はバンド番号と同じです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:449
+#: using_raster_dataman.xml:451
 #, no-c-format
 msgid ""
 "<varname>extent</varname> This is the extent of all the raster rows in your "
@@ -1441,7 +1447,7 @@ msgstr ""
 "\"RT_AddRasterConstraints\"/>で制約を再適用します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:452
+#: using_raster_dataman.xml:454
 #, no-c-format
 msgid ""
 "<varname>spatial_index</varname> A boolean that is true if raster column has "
@@ -1451,13 +1457,13 @@ msgstr ""
 "値です。"
 
 #. Tag: title
-#: using_raster_dataman.xml:457
+#: using_raster_dataman.xml:459
 #, no-c-format
 msgid "Raster Overviews"
 msgstr "ラスタオーバビュー"
 
 #. Tag: para
-#: using_raster_dataman.xml:458
+#: using_raster_dataman.xml:460
 #, no-c-format
 msgid ""
 "<varname>raster_overviews</varname> catalogs information about raster table "
@@ -1481,7 +1487,7 @@ msgstr ""
 "\"RT_AddOverviewConstraints\"/>を使うと手動で生成できます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:459
+#: using_raster_dataman.xml:461
 #, no-c-format
 msgid ""
 "Overview tables contain the same constraints as other raster tables as well "
@@ -1491,7 +1497,7 @@ msgstr ""
 "制約となる追加情報があります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:460
+#: using_raster_dataman.xml:462
 #, no-c-format
 msgid ""
 "The information in <varname>raster_overviews</varname> does not duplicate "
@@ -1508,13 +1514,13 @@ msgstr ""
 "することができます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:461
+#: using_raster_dataman.xml:463
 #, no-c-format
 msgid "Two main reasons for overviews are:"
 msgstr "オーバビューの主たる理由は次の二つです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:463
+#: using_raster_dataman.xml:465
 #, no-c-format
 msgid ""
 "Low resolution representation of the core tables commonly used for fast "
@@ -1524,7 +1530,7 @@ msgstr ""
 "般的に使われます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:464
+#: using_raster_dataman.xml:466
 #, no-c-format
 msgid ""
 "Computations are generally faster to do on them than their higher resolution "
@@ -1538,7 +1544,7 @@ msgstr ""
 "かな計算には十分でありえます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:467
+#: using_raster_dataman.xml:469
 #, no-c-format
 msgid ""
 "The <varname>raster_overviews</varname> catalog contains the following "
@@ -1547,7 +1553,7 @@ msgstr ""
 "<varname>raster_overviews</varname>カタログには、次の情報のカラムがあります。"
 
 #. Tag: para
-#: using_raster_dataman.xml:470
+#: using_raster_dataman.xml:472
 #, no-c-format
 msgid ""
 "<varname>o_table_catalog</varname> The database the overview table is in. "
@@ -1557,7 +1563,7 @@ msgstr ""
 "です。常に現在のデータベースを読みます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:473
+#: using_raster_dataman.xml:475
 #, no-c-format
 msgid ""
 "<varname>o_table_schema</varname> The database schema the overview raster "
@@ -1567,13 +1573,13 @@ msgstr ""
 "ベーススキーマです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:476
+#: using_raster_dataman.xml:478
 #, no-c-format
 msgid "<varname>o_table_name</varname> raster overview table name"
 msgstr "<varname>o_table_name</varname> ラスタオーバビューテーブル名です。"
 
 #. Tag: para
-#: using_raster_dataman.xml:479
+#: using_raster_dataman.xml:481
 #, no-c-format
 msgid ""
 "<varname>o_raster_column</varname> the raster column in the overview table."
@@ -1581,7 +1587,7 @@ msgstr ""
 "<varname>o_raster_column</varname> オーバビューテーブル内のラスタカラムです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:483
+#: using_raster_dataman.xml:485
 #, no-c-format
 msgid ""
 "<varname>r_table_catalog</varname> The database the raster table that this "
@@ -1591,7 +1597,7 @@ msgstr ""
 "データベースです。常に現在のデータベースを読みます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:486
+#: using_raster_dataman.xml:488
 #, no-c-format
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table that "
@@ -1601,7 +1607,7 @@ msgstr ""
 "属するデータベーススキーマです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:489
+#: using_raster_dataman.xml:491
 #, no-c-format
 msgid ""
 "<varname>r_table_name</varname> raster table that this overview services."
@@ -1610,7 +1616,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_raster_dataman.xml:492
+#: using_raster_dataman.xml:494
 #, no-c-format
 msgid ""
 "<varname>r_raster_column</varname> the raster column that this overview "
@@ -1620,7 +1626,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_raster_dataman.xml:495
+#: using_raster_dataman.xml:497
 #, no-c-format
 msgid ""
 "<varname>overview_factor</varname> - this is the pyramid level of the "
@@ -1653,13 +1659,13 @@ msgstr ""
 "る点に注意して下さい。"
 
 #. Tag: title
-#: using_raster_dataman.xml:507
+#: using_raster_dataman.xml:509
 #, no-c-format
 msgid "Building Custom Applications with PostGIS Raster"
 msgstr "PostGISラスタを使ったカスタムアプリケーションの構築"
 
 #. Tag: para
-#: using_raster_dataman.xml:508
+#: using_raster_dataman.xml:510
 #, no-c-format
 msgid ""
 "The fact that PostGIS raster provides you with SQL functions to render "
@@ -1680,14 +1686,14 @@ msgstr ""
 "節で示す通り、多種多様な言語を使用できます。"
 
 #. Tag: title
-#: using_raster_dataman.xml:511
+#: using_raster_dataman.xml:513
 #, no-c-format
 msgid ""
 "PHP Example Outputting using ST_AsPNG in concert with other raster functions"
 msgstr "ST_AsPNG を他の関数とあわせて使った PHP 出力例"
 
 #. Tag: para
-#: using_raster_dataman.xml:512
+#: using_raster_dataman.xml:514
 #, no-c-format
 msgid ""
 "In this section, we'll demonstrate how to use the PHP PostgreSQL driver and "
@@ -1700,7 +1706,7 @@ msgstr ""
 "タの1、2、3バンドを出力する方法を示します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:515 using_raster_dataman.xml:527
+#: using_raster_dataman.xml:517 using_raster_dataman.xml:529
 #, no-c-format
 msgid ""
 "The sample query demonstrates how to combine a whole bunch of raster "
@@ -1717,7 +1723,7 @@ msgstr ""
 "スタ関数群全体をまとめる方法を示します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:518
+#: using_raster_dataman.xml:520
 #, no-c-format
 msgid ""
 "You would call the below using <programlisting>http://mywebserver/"
@@ -1729,7 +1735,7 @@ msgstr ""
 "像を取得するものです。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:519
+#: using_raster_dataman.xml:521
 #, no-c-format
 msgid ""
 "<![CDATA[<?php\n"
@@ -1793,7 +1799,7 @@ msgstr ""
 "?>]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:522
+#: using_raster_dataman.xml:524
 #, no-c-format
 msgid ""
 "ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster "
@@ -1801,7 +1807,7 @@ msgid ""
 msgstr "ST_AsPNGを他の関数とあわせて使ったASP.NET C#出力例"
 
 #. Tag: para
-#: using_raster_dataman.xml:523
+#: using_raster_dataman.xml:525
 #, no-c-format
 msgid ""
 "In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver "
@@ -1814,7 +1820,7 @@ msgstr ""
 "2、3バンドを出力する方法を示します。"
 
 #. Tag: para
-#: using_raster_dataman.xml:526
+#: using_raster_dataman.xml:528
 #, no-c-format
 msgid ""
 "You will need the npgsql .NET PostgreSQL driver for this exercise which you "
@@ -1828,7 +1834,7 @@ msgstr ""
 "れるだけでうまくいきます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:530
+#: using_raster_dataman.xml:532
 #, no-c-format
 msgid ""
 "This is same example as <xref linkend=\"RT_PHP_Output\"/> except implemented "
@@ -1838,7 +1844,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_raster_dataman.xml:531
+#: using_raster_dataman.xml:533
 #, no-c-format
 msgid ""
 "You would call the below using <programlisting>http://mywebserver/TestRaster."
@@ -1850,7 +1856,7 @@ msgstr ""
 "像を取得します。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:532
+#: using_raster_dataman.xml:534
 #, no-c-format
 msgid ""
 "-- web.config connection string section --\n"
@@ -1868,7 +1874,7 @@ msgstr ""
 "</connectionStrings>]]>"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:533
+#: using_raster_dataman.xml:535
 #, no-c-format
 msgid ""
 "// Code for TestRaster.ashx\n"
@@ -2010,13 +2016,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:536
+#: using_raster_dataman.xml:538
 #, no-c-format
 msgid "Java console app that outputs raster query as Image file"
 msgstr "rasterクエリを画像ファイルで出力するJavaコンソールアプリケーション"
 
 #. Tag: para
-#: using_raster_dataman.xml:537
+#: using_raster_dataman.xml:539
 #, no-c-format
 msgid ""
 "This is a simple java console app that takes a query that returns one image "
@@ -2026,7 +2032,7 @@ msgstr ""
 "コンソールアプリケーションです。"
 
 #. Tag: para
-#: using_raster_dataman.xml:538
+#: using_raster_dataman.xml:540
 #, no-c-format
 msgid ""
 "You can download the latest PostgreSQL JDBC drivers from <ulink url=\"http://"
@@ -2038,13 +2044,13 @@ msgstr ""
 "ロードできます。"
 
 #. Tag: para
-#: using_raster_dataman.xml:539
+#: using_raster_dataman.xml:541
 #, no-c-format
 msgid "You can compile the following code using a command something like:"
 msgstr "あとで示すコードをコンパイルします。コマンドは次の通りです。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:540
+#: using_raster_dataman.xml:542
 #, no-c-format
 msgid ""
 "set env CLASSPATH .:..\\postgresql-9.0-801.jdbc4.jar\n"
@@ -2056,37 +2062,37 @@ msgstr ""
 "jar cfm SaveQueryImage.jar Manifest.txt *.class"
 
 #. Tag: para
-#: using_raster_dataman.xml:541
+#: using_raster_dataman.xml:543
 #, no-c-format
 msgid "And call it from the command-line with something like"
 msgstr "次のようにコマンドラインから呼び出します。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:542
-#, no-c-format
-msgid ""
-"java -jar SaveQueryImage.jar \"SELECT "
-"ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, "
-"'8BUI',100));\" \"test.png\""
-msgstr ""
-"java -jar SaveQueryImage.jar \"SELECT "
-"ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, "
-"'8BUI',100));\" \"test.png\""
-
-#. Tag: programlisting
-#: using_raster_dataman.xml:543
-#, no-c-format
-msgid ""
-"-- Manifest.txt --\n"
-"<![CDATA[Class-Path: postgresql-9.0-801.jdbc4.jar\n"
-"Main-Class: SaveQueryImage]]>"
-msgstr ""
-"-- Manifest.txt --\n"
-"<![CDATA[Class-Path: postgresql-9.0-801.jdbc4.jar\n"
-"Main-Class: SaveQueryImage]]>"
-
-#. Tag: programlisting
 #: using_raster_dataman.xml:544
+#, no-c-format
+msgid ""
+"java -jar SaveQueryImage.jar \"SELECT "
+"ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, "
+"'8BUI',100));\" \"test.png\""
+msgstr ""
+"java -jar SaveQueryImage.jar \"SELECT "
+"ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, "
+"'8BUI',100));\" \"test.png\""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:545
+#, no-c-format
+msgid ""
+"-- Manifest.txt --\n"
+"<![CDATA[Class-Path: postgresql-9.0-801.jdbc4.jar\n"
+"Main-Class: SaveQueryImage]]>"
+msgstr ""
+"-- Manifest.txt --\n"
+"<![CDATA[Class-Path: postgresql-9.0-801.jdbc4.jar\n"
+"Main-Class: SaveQueryImage]]>"
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:546
 #, no-c-format
 msgid ""
 "// Code for SaveQueryImage.java\n"
@@ -2214,13 +2220,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: using_raster_dataman.xml:548
+#: using_raster_dataman.xml:550
 #, no-c-format
 msgid "Use PLPython to dump out images via SQL"
 msgstr "PLPython を使って SQL を介して画像をダンプする"
 
 #. Tag: para
-#: using_raster_dataman.xml:549
+#: using_raster_dataman.xml:551
 #, no-c-format
 msgid ""
 "This is a plpython stored function that creates a file in the server "
@@ -2231,7 +2237,7 @@ msgstr ""
 "関数です。plpythonが必要です。plpythonuとplpython3uの両方が正しく動作します。"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:551
+#: using_raster_dataman.xml:553
 #, no-c-format
 msgid ""
 "<![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, "
@@ -2253,7 +2259,7 @@ msgstr ""
 "$$ LANGUAGE plpythonu;]]>"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:552
+#: using_raster_dataman.xml:554
 #, no-c-format
 msgid ""
 "--write out 5 images to the PostgreSQL server in varying sizes\n"
@@ -2292,13 +2298,13 @@ msgstr ""
 " C:/temp/slices5.png"
 
 #. Tag: title
-#: using_raster_dataman.xml:555
+#: using_raster_dataman.xml:557
 #, no-c-format
 msgid "Outputting Rasters with PSQL"
 msgstr "PSQLでラスタを出力する"
 
 #. Tag: para
-#: using_raster_dataman.xml:556
+#: using_raster_dataman.xml:558
 #, no-c-format
 msgid ""
 "Sadly PSQL doesn't have easy to use built-in functionality for outputting "
@@ -2312,7 +2318,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: using_raster_dataman.xml:558
+#: using_raster_dataman.xml:560
 #, no-c-format
 msgid ""
 "Unlike the python approach, this approach creates the file on your local "
@@ -2320,7 +2326,7 @@ msgid ""
 msgstr "この方法はPythonの場合と違い、ローカル機にファイルが生成されます"
 
 #. Tag: screen
-#: using_raster_dataman.xml:559
+#: using_raster_dataman.xml:561
 #, no-c-format
 msgid ""
 "SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes\n"
@@ -2358,3 +2364,12 @@ msgstr ""
 "\n"
 "-- db上のラージオブジェクトストレージからファイルを削除します\n"
 "SELECT lo_unlink(2630819);"
+
+#~ msgid "Skip NODATA value checks for each raster band."
+#~ msgstr "バンドごとのNODATA値のチェックを省略します。"
+
+#~ msgid "<term>-Y</term>"
+#~ msgstr "<term>-Y</term>"
+
+#~ msgid "Use copy statements instead of insert statements."
+#~ msgstr "INSERTステートメントでなくCOPYステートメントを使います。"

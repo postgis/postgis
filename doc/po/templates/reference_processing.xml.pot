@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2022-05-21 19:55+0000\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-06-16 22:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -72,17 +72,18 @@ msgstr ""
 #. Tag: title
 #: reference_processing.xml:57 reference_processing.xml:308
 #: reference_processing.xml:390 reference_processing.xml:511
-#: reference_processing.xml:606 reference_processing.xml:681
-#: reference_processing.xml:780 reference_processing.xml:839
-#: reference_processing.xml:894 reference_processing.xml:969
-#: reference_processing.xml:1016 reference_processing.xml:1077
-#: reference_processing.xml:1131 reference_processing.xml:1168
-#: reference_processing.xml:1227 reference_processing.xml:1378
-#: reference_processing.xml:1499 reference_processing.xml:1557
-#: reference_processing.xml:1623 reference_processing.xml:1704
-#: reference_processing.xml:1759 reference_processing.xml:1800
-#: reference_processing.xml:1841 reference_processing.xml:1888
-#: reference_processing.xml:1956 reference_processing.xml:2044
+#: reference_processing.xml:557 reference_processing.xml:654
+#: reference_processing.xml:729 reference_processing.xml:821
+#: reference_processing.xml:876 reference_processing.xml:935
+#: reference_processing.xml:990 reference_processing.xml:1070
+#: reference_processing.xml:1167 reference_processing.xml:1228
+#: reference_processing.xml:1282 reference_processing.xml:1319
+#: reference_processing.xml:1378 reference_processing.xml:1529
+#: reference_processing.xml:1650 reference_processing.xml:1708
+#: reference_processing.xml:1774 reference_processing.xml:1855
+#: reference_processing.xml:1910 reference_processing.xml:1953
+#: reference_processing.xml:2045 reference_processing.xml:2088
+#: reference_processing.xml:2157 reference_processing.xml:2245
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -193,7 +194,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:110 reference_processing.xml:1267
+#: reference_processing.xml:110 reference_processing.xml:1418
 #, no-c-format
 msgid ""
 "This function ignores the Z dimension. It always gives a 2D result even when "
@@ -219,17 +220,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:118 reference_processing.xml:691
-#: reference_processing.xml:979 reference_processing.xml:1087
-#: reference_processing.xml:1263 reference_processing.xml:1517
-#: reference_processing.xml:1628 reference_processing.xml:1768
-#: reference_processing.xml:1974 reference_processing.xml:2065
+#: reference_processing.xml:118 reference_processing.xml:739
+#: reference_processing.xml:1084 reference_processing.xml:1238
+#: reference_processing.xml:1414 reference_processing.xml:1668
+#: reference_processing.xml:1779 reference_processing.xml:1919
+#: reference_processing.xml:1976 reference_processing.xml:2175
+#: reference_processing.xml:2266
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:119 reference_processing.xml:629
+#: reference_processing.xml:119 reference_processing.xml:677
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
 msgstr ""
@@ -242,17 +244,17 @@ msgstr ""
 
 #. Tag: title
 #: reference_processing.xml:125 reference_processing.xml:326
-#: reference_processing.xml:424 reference_processing.xml:553
-#: reference_processing.xml:635 reference_processing.xml:798
-#: reference_processing.xml:853 reference_processing.xml:923
-#: reference_processing.xml:985 reference_processing.xml:1033
-#: reference_processing.xml:1097 reference_processing.xml:1143
-#: reference_processing.xml:1188 reference_processing.xml:1273
-#: reference_processing.xml:1395 reference_processing.xml:1588
-#: reference_processing.xml:1727 reference_processing.xml:1773
-#: reference_processing.xml:1813 reference_processing.xml:1858
-#: reference_processing.xml:1915 reference_processing.xml:1980
-#: reference_processing.xml:2071
+#: reference_processing.xml:424 reference_processing.xml:528
+#: reference_processing.xml:601 reference_processing.xml:683
+#: reference_processing.xml:894 reference_processing.xml:949
+#: reference_processing.xml:1019 reference_processing.xml:1091
+#: reference_processing.xml:1184 reference_processing.xml:1248
+#: reference_processing.xml:1294 reference_processing.xml:1339
+#: reference_processing.xml:1424 reference_processing.xml:1546
+#: reference_processing.xml:1739 reference_processing.xml:1878
+#: reference_processing.xml:1924 reference_processing.xml:1981
+#: reference_processing.xml:2058 reference_processing.xml:2115
+#: reference_processing.xml:2181 reference_processing.xml:2272
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -504,19 +506,20 @@ msgstr ""
 
 #. Tag: title
 #: reference_processing.xml:285 reference_processing.xml:350
-#: reference_processing.xml:487 reference_processing.xml:585
-#: reference_processing.xml:655 reference_processing.xml:755
-#: reference_processing.xml:803 reference_processing.xml:944
-#: reference_processing.xml:995 reference_processing.xml:1028
-#: reference_processing.xml:1055 reference_processing.xml:1092
-#: reference_processing.xml:1110 reference_processing.xml:1138
-#: reference_processing.xml:1180 reference_processing.xml:1355
-#: reference_processing.xml:1471 reference_processing.xml:1528
-#: reference_processing.xml:1600 reference_processing.xml:1671
-#: reference_processing.xml:1732 reference_processing.xml:1778
-#: reference_processing.xml:1818 reference_processing.xml:1863
-#: reference_processing.xml:1922 reference_processing.xml:2005
-#: reference_processing.xml:2124
+#: reference_processing.xml:487 reference_processing.xml:533
+#: reference_processing.xml:633 reference_processing.xml:703
+#: reference_processing.xml:845 reference_processing.xml:851
+#: reference_processing.xml:899 reference_processing.xml:1040
+#: reference_processing.xml:1146 reference_processing.xml:1179
+#: reference_processing.xml:1206 reference_processing.xml:1243
+#: reference_processing.xml:1261 reference_processing.xml:1289
+#: reference_processing.xml:1331 reference_processing.xml:1506
+#: reference_processing.xml:1622 reference_processing.xml:1679
+#: reference_processing.xml:1751 reference_processing.xml:1822
+#: reference_processing.xml:1883 reference_processing.xml:1929
+#: reference_processing.xml:2022 reference_processing.xml:2063
+#: reference_processing.xml:2122 reference_processing.xml:2206
+#: reference_processing.xml:2325
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -575,7 +578,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:322 reference_processing.xml:980
+#: reference_processing.xml:322 reference_processing.xml:1086
 #, no-c-format
 msgid "Availability: 1.1.0"
 msgstr ""
@@ -773,11 +776,112 @@ msgstr ""
 #. Tag: refname
 #: reference_processing.xml:495
 #, no-c-format
-msgid "ST_ConcaveHull"
+msgid "ST_ChaikinSmoothing"
 msgstr ""
 
 #. Tag: refpurpose
 #: reference_processing.xml:496
+#, no-c-format
+msgid "Returns a smoothed version of a geometry, using the Chaikin algorithm"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:501
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>integer</type> <parameter>nIterations = 1</parameter></"
+"paramdef> <paramdef><type>boolean</type> <parameter>preserveEndPoints = "
+"false</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:512
+#, no-c-format
+msgid ""
+"Returns a \"smoothed\" version of the given geometry using the Chaikin "
+"algorithm. See <ulink url=\"http://www.idav.ucdavis.edu/education/CAGDNotes/"
+"Chaikins-Algorithm/Chaikins-Algorithm.html\">Chaikins-Algorithm</ulink> for "
+"an explanation of the process. For each iteration the number of vertex "
+"points will double. The function puts new vertex points at 1/4 of the line "
+"before and after each point and removes the original point. To reduce the "
+"number of points use one of the simplification functions on the result. The "
+"new points gets interpolated values for all included dimensions, also z and "
+"m."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:518
+#, no-c-format
+msgid "Second argument, number of iterations is limited to max 5 iterations"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:519
+#, no-c-format
+msgid ""
+"Note third argument is only valid for polygons, and will be ignored for "
+"linestrings"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:520 reference_processing.xml:2053
+#, no-c-format
+msgid ""
+"This function handles 3D and the third dimension will affect the result."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:521
+#, no-c-format
+msgid ""
+"Note that returned geometry will get more points than the original. To "
+"reduce the number of points again use one of the simplification functions on "
+"the result. (see <xref linkend=\"ST_Simplify\"/> and <xref linkend="
+"\"ST_SimplifyVW\"/>)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:524 reference_processing.xml:890
+#: reference_processing.xml:1325
+#, no-c-format
+msgid "Availability: 2.5.0"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:529
+#, no-c-format
+msgid "A triangle is smoothed"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:530
+#, no-c-format
+msgid ""
+"select ST_AsText(ST_ChaikinSmoothing(geom)) smoothed\n"
+"FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;\n"
+"┌───────────────────────────────────────────┐\n"
+"│                 smoothed                  │\n"
+"├───────────────────────────────────────────┤\n"
+"│ POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2)) │\n"
+"└───────────────────────────────────────────┘"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:534 reference_processing.xml:900
+#, no-c-format
+msgid ", <xref linkend=\"ST_SimplifyVW\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:541
+#, no-c-format
+msgid "ST_ConcaveHull"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:542
 #, no-c-format
 msgid ""
 "Computes a possibly concave geometry that encloses all input geometry "
@@ -785,7 +889,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:501
+#: reference_processing.xml:547
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> "
@@ -796,7 +900,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:513
+#: reference_processing.xml:559
 #, no-c-format
 msgid ""
 "A concave hull of a geometry is a possibly concave geometry that encloses "
@@ -808,7 +912,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:522
+#: reference_processing.xml:568
 #, no-c-format
 msgid ""
 "One can think of a concave hull as \"shrink-wrapping\" a set of points. This "
@@ -821,7 +925,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:530
+#: reference_processing.xml:576
 #, no-c-format
 msgid ""
 "The <varname>param_pctconvex</varname> controls the concaveness of the "
@@ -833,17 +937,29 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:538
+#: reference_processing.xml:584
 #, no-c-format
 msgid ""
-"Technically, the target percent determines a length as a fraction of the "
-"difference between the longest and shortest edges in the Delaunay "
-"Triangulation of the input points. Edges longer than this length are \"eroded"
-"\" from the triangulation. The triangles remaining form the concave hull."
+"Technically, the <varname>param_pctconvex</varname> determines a length as a "
+"fraction of the difference between the longest and shortest edges in the "
+"Delaunay Triangulation of the input points. Edges longer than this length "
+"are \"eroded\" from the triangulation. The triangles remaining form the "
+"concave hull."
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:544
+#: reference_processing.xml:590
+#, no-c-format
+msgid ""
+"For point and linear inputs, the hull will enclose all the points of the "
+"inputs. For polygonal inputs, the hull will enclose all the points of the "
+"input <emphasis>and also</emphasis> all the areas covered by the input. If "
+"you want a point-wise hull of a polygonal input, convert it to points first, "
+"using <xref linkend=\"ST_Points\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:592
 #, no-c-format
 msgid ""
 "This is not an aggregate function. To compute the concave hull of a set of "
@@ -852,25 +968,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:548 reference_processing.xml:1629
+#: reference_processing.xml:596 reference_processing.xml:1780
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:549
+#: reference_processing.xml:597
 #, no-c-format
 msgid "Enhanced: 3.3.0, GEOS native implementation enabled for GEOS 3.11+"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:561
+#: reference_processing.xml:609
 #, no-c-format
 msgid "Concave Hull of a MultiPoint"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:564
+#: reference_processing.xml:612
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_ConcaveHull(\n"
@@ -913,13 +1029,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:573
+#: reference_processing.xml:621
 #, no-c-format
 msgid "Concave Hull of a MultiPoint, allowing holes"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:576
+#: reference_processing.xml:624
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_ConcaveHull(\n"
@@ -947,13 +1063,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:579
+#: reference_processing.xml:627
 #, no-c-format
 msgid "Using with ST_Collect to compute the concave hull of a geometry set."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:581
+#: reference_processing.xml:629
 #, no-c-format
 msgid ""
 "-- Compute estimate of infected area based on point observations\n"
@@ -964,7 +1080,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:586
+#: reference_processing.xml:634
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_AlphaShape\"/>, <xref "
@@ -972,19 +1088,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:592
+#: reference_processing.xml:640
 #, no-c-format
 msgid "ST_ConvexHull"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:593
+#: reference_processing.xml:641
 #, no-c-format
 msgid "Computes the convex hull of a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:598
+#: reference_processing.xml:646
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ConvexHull</function></funcdef> "
@@ -992,7 +1108,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:607
+#: reference_processing.xml:655
 #, no-c-format
 msgid ""
 "Computes the convex hull of a geometry. The convex hull is the smallest "
@@ -1000,7 +1116,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:611
+#: reference_processing.xml:659
 #, no-c-format
 msgid ""
 "One can think of the convex hull as the geometry obtained by wrapping an "
@@ -1011,7 +1127,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:618
+#: reference_processing.xml:666
 #, no-c-format
 msgid ""
 "In the general case the convex hull is a Polygon. The convex hull of two or "
@@ -1020,7 +1136,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:622
+#: reference_processing.xml:670
 #, no-c-format
 msgid ""
 "This is not an aggregate function. To compute the convex hull of a set of "
@@ -1029,32 +1145,32 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:627
+#: reference_processing.xml:675
 #, no-c-format
 msgid "Performed by the GEOS module"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:630
+#: reference_processing.xml:678
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.16"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:631 reference_processing.xml:693
-#: reference_processing.xml:919 reference_processing.xml:1391
+#: reference_processing.xml:679 reference_processing.xml:741
+#: reference_processing.xml:1015 reference_processing.xml:1542
 #, no-c-format
 msgid "&Z_support;"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:643
+#: reference_processing.xml:691
 #, no-c-format
 msgid "Convex Hull of a MultiLinestring and a MultiPoint"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:646
+#: reference_processing.xml:694
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_ConvexHull(\n"
@@ -1067,13 +1183,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:649
+#: reference_processing.xml:697
 #, no-c-format
 msgid "Using with ST_Collect to compute the convex hulls of geometry sets."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:651
+#: reference_processing.xml:699
 #, no-c-format
 msgid ""
 "--Get estimate of infected area based on point observations\n"
@@ -1084,7 +1200,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:656
+#: reference_processing.xml:704
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
@@ -1092,19 +1208,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:662
+#: reference_processing.xml:710
 #, no-c-format
 msgid "ST_DelaunayTriangles"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:664
+#: reference_processing.xml:712
 #, no-c-format
 msgid "Returns the Delaunay triangulation of the vertices of a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:671
+#: reference_processing.xml:719
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> "
@@ -1114,7 +1230,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:683
+#: reference_processing.xml:731
 #, no-c-format
 msgid ""
 "Return the <ulink url=\"http://en.wikipedia.org/wiki/Delaunay_triangulation"
@@ -1125,31 +1241,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:692
+#: reference_processing.xml:740
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:694
+#: reference_processing.xml:742
 #, no-c-format
 msgid "&T_support;"
 msgstr ""
 
 #. Tag: title
-#: reference_processing.xml:698
+#: reference_processing.xml:746
 #, no-c-format
 msgid "2D Examples"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:707
+#: reference_processing.xml:755
 #, no-c-format
 msgid "Original polygons"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:710
+#: reference_processing.xml:758
 #, no-c-format
 msgid ""
 "-- our original geometry --\n"
@@ -1160,7 +1276,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:718
+#: reference_processing.xml:766
 #, no-c-format
 msgid ""
 "ST_DelaunayTriangles of 2 polygons: delaunay triangle polygons each triangle "
@@ -1168,7 +1284,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:721
+#: reference_processing.xml:769
 #, no-c-format
 msgid ""
 "-- geometries overlaid multilinestring triangles\n"
@@ -1182,13 +1298,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:728
+#: reference_processing.xml:776
 #, no-c-format
 msgid "-- delaunay triangles as multilinestring"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:731
+#: reference_processing.xml:779
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -1201,13 +1317,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:739
+#: reference_processing.xml:787
 #, no-c-format
 msgid "-- delaunay triangles of 45 points as 55 triangle polygons"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:742
+#: reference_processing.xml:790
 #, no-c-format
 msgid ""
 "-- this produces a table of 42 points that form an L shape\n"
@@ -1235,13 +1351,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_processing.xml:751
+#: reference_processing.xml:799
 #, no-c-format
-msgid "3D Examples"
+msgid "Example 1"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:752
+#: reference_processing.xml:800
 #, no-c-format
 msgid ""
 "-- 3D multipoint --\n"
@@ -1254,28 +1370,112 @@ msgid ""
 " ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))"
 msgstr ""
 
+#. Tag: refname
+#: reference_processing.xml:807
+#, no-c-format
+msgid "ST_TriangulatePolygon"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:808
+#, no-c-format
+msgid "Computes the constrained Delaunay triangulation of polygons"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:813
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_TriangulatePolygon</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
 #. Tag: para
-#: reference_processing.xml:756
+#: reference_processing.xml:822
+#, no-c-format
+msgid ""
+"Computes the constrained Delaunay triangulation of polygons. The "
+"\"constrained Delaunay triangulation\" of a polygon is a set of triangles "
+"covering the polygon, with the maximum total interior angle over all "
+"possible triangulations. It provides the \"best quality\" triangulation of "
+"the polygon."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:824
+#, no-c-format
+msgid "Availability: 3.3.0"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:828 reference_processing.xml:833
+#, no-c-format
+msgid "Example"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:829
+#, no-c-format
+msgid "A square is triangulated"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:830
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(\n"
+"    ST_TriangulatePolygon('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'));\n"
+"\n"
+"                                 st_astext\n"
+"---------------------------------------------------------------------------\n"
+" GEOMETRYCOLLECTION(POLYGON((0 0,0 1,1 1,0 0)),POLYGON((1 1,1 0,0 0,1 1)))"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:834
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_TriangulatePolygon(\n"
+"    'POLYGON((0 0, 0 1, 3 1, 4 0.5, 5 1, 5 0, 2 0, 1 0.5, 0 0))'\n"
+"    ));"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:840
+#, no-c-format
+msgid "Polygon Triangulation"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:846
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_Tesselate\"/>"
+"linkend=\"ST_Tesselate\"/>, <xref linkend=\"ST_TriangulatePolygon\"/>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:852
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref linkend="
+"\"ST_Tesselate\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:763
+#: reference_processing.xml:859
 #, no-c-format
 msgid "ST_FilterByM"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:764
+#: reference_processing.xml:860
 #, no-c-format
 msgid "Removes vertices based on their M value"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:769
+#: reference_processing.xml:865
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_FilterByM</function></funcdef> "
@@ -1287,7 +1487,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:781
+#: reference_processing.xml:877
 #, no-c-format
 msgid ""
 "Filters out vertex points based on their M-value. Returns a geometry with "
@@ -1301,7 +1501,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:787
+#: reference_processing.xml:883
 #, no-c-format
 msgid ""
 "This function is mainly intended to be used in conjunction with "
@@ -1311,7 +1511,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:790
+#: reference_processing.xml:886
 #, no-c-format
 msgid ""
 "There is a difference in what ST_SimplifyVW returns when not enough points "
@@ -1320,32 +1520,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:792
+#: reference_processing.xml:888
 #, no-c-format
 msgid "Note that the returned geometry might be invalid"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:793
+#: reference_processing.xml:889
 #, no-c-format
 msgid "This function returns all dimensions, including the Z and M values"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:794 reference_processing.xml:1174
-#: reference_processing.xml:1854
-#, no-c-format
-msgid "Availability: 2.5.0"
-msgstr ""
-
-#. Tag: para
-#: reference_processing.xml:799
+#: reference_processing.xml:895
 #, no-c-format
 msgid "A linestring is filtered"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:800
+#: reference_processing.xml:896
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_FilterByM(geom,30)) simplified\n"
@@ -1357,26 +1550,20 @@ msgid ""
 " LINESTRING(5 2,7 25,10 10)"
 msgstr ""
 
-#. Tag: para
-#: reference_processing.xml:804 reference_processing.xml:1864
-#, no-c-format
-msgid ", <xref linkend=\"ST_SimplifyVW\"/>"
-msgstr ""
-
 #. Tag: refname
-#: reference_processing.xml:810
+#: reference_processing.xml:906
 #, no-c-format
 msgid "ST_GeneratePoints"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:812
+#: reference_processing.xml:908
 #, no-c-format
 msgid "Generates random points contained in a Polygon or MultiPolygon."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_processing.xml:816
+#: reference_processing.xml:912
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_GeneratePoints</function></"
@@ -1390,7 +1577,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:841
+#: reference_processing.xml:937
 #, no-c-format
 msgid ""
 "ST_GeneratePoints generates a given number of pseudo-random points which lie "
@@ -1399,20 +1586,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:848 reference_processing.xml:917
-#: reference_processing.xml:1975 reference_processing.xml:2066
+#: reference_processing.xml:944 reference_processing.xml:1013
+#: reference_processing.xml:2176 reference_processing.xml:2267
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:849
+#: reference_processing.xml:945
 #, no-c-format
 msgid "Enhanced: 3.0.0, added seed parameter"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:860
+#: reference_processing.xml:956
 #, no-c-format
 msgid ""
 "Generated 12 Points overlaid on top of original polygon using a random seed "
@@ -1420,7 +1607,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:863
+#: reference_processing.xml:959
 #, no-c-format
 msgid ""
 "SELECT ST_GeneratePoints(geom, 12, 1996)\n"
@@ -1433,19 +1620,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:870
+#: reference_processing.xml:966
 #, no-c-format
 msgid "ST_GeometricMedian"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:874
+#: reference_processing.xml:970
 #, no-c-format
 msgid "Returns the geometric median of a MultiPoint."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:881
+#: reference_processing.xml:977
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_GeometricMedian</function> </funcdef> "
@@ -1458,7 +1645,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:896
+#: reference_processing.xml:992
 #, no-c-format
 msgid ""
 "Computes the approximate geometric median of a MultiPoint geometry using the "
@@ -1468,7 +1655,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:903
+#: reference_processing.xml:999
 #, no-c-format
 msgid ""
 "The algorithm iterates until the distance change between successive "
@@ -1480,7 +1667,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:910
+#: reference_processing.xml:1006
 #, no-c-format
 msgid ""
 "If a <varname>tolerance</varname> argument is not provided, the tolerance "
@@ -1488,7 +1675,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:914
+#: reference_processing.xml:1010
 #, no-c-format
 msgid ""
 "If present, the input point M values are interpreted as their relative "
@@ -1496,19 +1683,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:918
+#: reference_processing.xml:1014
 #, no-c-format
 msgid "Enhanced: 2.5.0 Added support for M as weight of points."
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:920
+#: reference_processing.xml:1016
 #, no-c-format
 msgid "&M_support;"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:932
+#: reference_processing.xml:1028
 #, no-c-format
 msgid ""
 "Comparison of the geometric median (red) and centroid (turquoise) of a "
@@ -1516,7 +1703,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:940
+#: reference_processing.xml:1036
 #, no-c-format
 msgid ""
 "WITH test AS (\n"
@@ -1533,64 +1720,106 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:953
+#: reference_processing.xml:1049
 #, no-c-format
 msgid "ST_LineMerge"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:955
+#: reference_processing.xml:1051
 #, no-c-format
 msgid "Return the lines formed by sewing together a MultiLineString."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_processing.xml:961
+#. Tag: funcsynopsis
+#: reference_processing.xml:1056
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>amultilinestring</parameter></"
-"paramdef>"
+"<funcprototype> <funcdef>geometry <function>ST_LineMerge</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>amultilinestring</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_LineMerge</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>amultilinestring</parameter></paramdef> <paramdef><type>boolean </"
+"type> <parameter>directed</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:971
+#: reference_processing.xml:1072
 #, no-c-format
 msgid ""
-"Returns a LineString or MultiLineString formed by joining together the "
-"constituent line work of a MultiLineString. Lines are joined at their "
-"endpoints at 2-way intersections. Lines are not joined across intersections "
-"of 3-way or greater degree."
+"Returns a LineString or MultiLineString formed by joining together the line "
+"elements of a MultiLineString. Lines are joined at their endpoints at 2-way "
+"intersections. Lines are not joined across intersections of 3-way or greater "
+"degree."
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:977
+#: reference_processing.xml:1078
 #, no-c-format
 msgid ""
-"Only use with MultiLineString/LineStrings. If you pass a Polygon or "
-"GeometryCollection into this function, it returns an empty GeometryCollection"
+"If <emphasis role=\"bold\">directed</emphasis> is TRUE, then ST_LineMerge "
+"will not change point order within LineStrings, so lines with opposite "
+"directions will not be merged"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:981
+#: reference_processing.xml:1082
 #, no-c-format
-msgid "This function will strip the M dimension."
+msgid ""
+"Only use with MultiLineString/LineStrings. Other geometry types return an "
+"empty GeometryCollection"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1085
+#, no-c-format
+msgid ""
+"Enhanced: 3.3.0 accept a directed parameter - requires GEOS &gt;= 3.11.0"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1087
+#, no-c-format
+msgid "This function strips the M dimension."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1100
+#, no-c-format
+msgid "Merging lines with different orientation."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:987
+#: reference_processing.xml:1106
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_LineMerge(\n"
-"'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))'\n"
+"'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120))'\n"
 "                ));\n"
-"st_astext\n"
-"--------------------------------------------------------------------------------------------------\n"
-"LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)"
+"--------------------------------------------\n"
+" LINESTRING(10 160,60 120,120 140,180 120)"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:988
+#: reference_processing.xml:1116
+#, no-c-format
+msgid "Lines are not merged across intersections with degree > 2."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1122
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_LineMerge(\n"
+"'MULTILINESTRING((10 160, 60 120), (120 140, 60 120), (120 140, 180 120), "
+"(100 180, 120 140))'\n"
+"                ));\n"
+"--------------------------------------------\n"
+" MULTILINESTRING((10 160,60 120,120 140),(100 180,120 140),(120 140,180 120))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1124
 #, no-c-format
 msgid ""
 "If merging is not possible due to non-touching lines, the original "
@@ -1598,58 +1827,73 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:990
+#: reference_processing.xml:1126
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_LineMerge(\n"
 "'MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 "
 "-32))'\n"
 "));\n"
-"st_astext\n"
 "----------------\n"
 "MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:991
+#: reference_processing.xml:1135
+#, no-c-format
+msgid "Lines with opposite directions are not merged if directed = TRUE."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1140
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_LineMerge(\n"
+"'MULTILINESTRING((60 30, 10 70), (120 50, 60 30), (120 50, 180 30))',\n"
+"TRUE));\n"
+"-------------------------------------------------------\n"
+" MULTILINESTRING((120 50,60 30,10 70),(120 50,180 30))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1142
 #, no-c-format
 msgid "Example showing Z-dimension handling."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:992
+#: reference_processing.xml:1143
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_LineMerge(\n"
 "      'MULTILINESTRING((-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 6), (-29 "
 "-27 12,-30 -29.7 5), (-45 -33 1,-46 -32 11))'\n"
 "        ));\n"
-"st_astext\n"
 "--------------------------------------------------------------------------------------------------\n"
 "LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 "
 "-32 11)"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:996
+#: reference_processing.xml:1147
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1002
+#: reference_processing.xml:1153
 #, no-c-format
 msgid "ST_MaximumInscribedCircle"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1003
+#: reference_processing.xml:1154
 #, no-c-format
 msgid "Computes the largest circle that is fully contained within a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1008
+#: reference_processing.xml:1159
 #, no-c-format
 msgid ""
 "<funcdef>(geometry, geometry, double precision) "
@@ -1658,7 +1902,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1017
+#: reference_processing.xml:1168
 #, no-c-format
 msgid ""
 "Finds the largest circle that is fully contained within a geometry. Returns "
@@ -1667,7 +1911,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1021
+#: reference_processing.xml:1172
 #, no-c-format
 msgid ""
 "For polygonal inputs, the circle is inscribed within the external ring, "
@@ -1677,13 +1921,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1024 reference_processing.xml:1584
+#: reference_processing.xml:1175 reference_processing.xml:1735
 #, no-c-format
 msgid "Availability: 3.1.0 - requires GEOS &gt;= 3.9.0."
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1039
+#: reference_processing.xml:1190
 #, no-c-format
 msgid ""
 "Maximum inscribed circle of a polygon. Center, nearest point, and radius are "
@@ -1691,7 +1935,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1042
+#: reference_processing.xml:1193
 #, no-c-format
 msgid ""
 "SELECT radius, ST_AsText(center) AS center, ST_AsText(nearest) AS nearest\n"
@@ -1706,7 +1950,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1049
+#: reference_processing.xml:1200
 #, no-c-format
 msgid ""
 "Maximum inscribed circle of a multi-linestring. Center, nearest point, and "
@@ -1714,20 +1958,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1056 reference_processing.xml:1093
-#: reference_processing.xml:1111
+#: reference_processing.xml:1207 reference_processing.xml:1244
+#: reference_processing.xml:1262
 #, no-c-format
 msgid ", <xref linkend=\"ST_MinimumBoundingRadius\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1062
+#: reference_processing.xml:1213
 #, no-c-format
 msgid "ST_MinimumBoundingCircle"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1063
+#: reference_processing.xml:1214
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the smallest circle polygon that contains a geometry.</"
@@ -1735,7 +1979,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1068
+#: reference_processing.xml:1219
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MinimumBoundingCircle</function></funcdef> "
@@ -1745,14 +1989,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1078
+#: reference_processing.xml:1229
 #, no-c-format
 msgid ""
 "<para>Returns the smallest circle polygon that contains a geometry.</para>"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1079
+#: reference_processing.xml:1230
 #, no-c-format
 msgid ""
 "The circle is approximated by a polygon with a default of 48 segments per "
@@ -1765,7 +2009,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1081
+#: reference_processing.xml:1232
 #, no-c-format
 msgid ""
 "It is often used with MULTI and Geometry Collections. Although it is not an "
@@ -1775,7 +2019,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1086
+#: reference_processing.xml:1237
 #, no-c-format
 msgid ""
 "The ratio of the area of a polygon divided by the area of its Minimum "
@@ -1783,13 +2027,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1088
+#: reference_processing.xml:1239
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1098
+#: reference_processing.xml:1249
 #, no-c-format
 msgid ""
 "SELECT d.disease_type,\n"
@@ -1799,7 +2043,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1104
+#: reference_processing.xml:1255
 #, no-c-format
 msgid ""
 "Minimum bounding circle of a point and linestring. Using 8 segs to "
@@ -1807,7 +2051,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1107
+#: reference_processing.xml:1258
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MinimumBoundingCircle(\n"
@@ -1839,13 +2083,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1117
+#: reference_processing.xml:1268
 #, no-c-format
 msgid "ST_MinimumBoundingRadius"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1118
+#: reference_processing.xml:1269
 #, no-c-format
 msgid ""
 "Returns the center point and radius of the smallest circle that contains a "
@@ -1853,7 +2097,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1123
+#: reference_processing.xml:1274
 #, no-c-format
 msgid ""
 "<funcdef>(geometry, double precision) <function>ST_MinimumBoundingRadius</"
@@ -1862,7 +2106,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1132
+#: reference_processing.xml:1283
 #, no-c-format
 msgid ""
 "Returns a record containing the center point and radius of the smallest "
@@ -1870,7 +2114,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1133
+#: reference_processing.xml:1284
 #, no-c-format
 msgid ""
 "Use in conjunction with <xref linkend=\"ST_Collect\"/> to get the minimum "
@@ -1878,19 +2122,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1134
+#: reference_processing.xml:1285
 #, no-c-format
 msgid "Availability - 2.3.0"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1139
+#: reference_processing.xml:1290
 #, no-c-format
 msgid ", <xref linkend=\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1144
+#: reference_processing.xml:1295
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(center), radius FROM "
@@ -1903,19 +2147,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1151
+#: reference_processing.xml:1302
 #, no-c-format
 msgid "ST_OrientedEnvelope"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1152
+#: reference_processing.xml:1303
 #, no-c-format
 msgid "Returns a minimum-area rectangle containing a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1157
+#: reference_processing.xml:1308
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_OrientedEnvelope</function></funcdef> "
@@ -1923,7 +2167,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1169
+#: reference_processing.xml:1320
 #, no-c-format
 msgid ""
 "Returns the minimum-area rotated rectangle enclosing a geometry. Note that "
@@ -1932,7 +2176,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1189
+#: reference_processing.xml:1340
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OrientedEnvelope('MULTIPOINT ((0 0), (-1 -1), (3 "
@@ -1944,13 +2188,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1196
+#: reference_processing.xml:1347
 #, no-c-format
 msgid "Oriented envelope of a point and linestring."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1199
+#: reference_processing.xml:1350
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OrientedEnvelope(\n"
@@ -1966,19 +2210,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1206
+#: reference_processing.xml:1357
 #, no-c-format
 msgid "ST_OffsetCurve"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1208
+#: reference_processing.xml:1359
 #, no-c-format
 msgid "Returns an offset line at a given distance and side from an input line."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1216
+#: reference_processing.xml:1367
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
@@ -1989,7 +2233,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1229
+#: reference_processing.xml:1380
 #, no-c-format
 msgid ""
 "Return an offset line at a given distance and side from an input line. All "
@@ -1999,7 +2243,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1236
+#: reference_processing.xml:1387
 #, no-c-format
 msgid ""
 "For positive distance the offset is on the left side of the input line and "
@@ -2008,14 +2252,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1241
+#: reference_processing.xml:1392
 #, no-c-format
 msgid ""
 "Units of distance are measured in units of the spatial reference system."
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1244
+#: reference_processing.xml:1395
 #, no-c-format
 msgid ""
 "Note that output may be a MULTILINESTRING or EMPTY for some jigsaw-shaped "
@@ -2023,7 +2267,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1247
+#: reference_processing.xml:1398
 #, no-c-format
 msgid ""
 "The optional third parameter allows specifying a list of blank-separated "
@@ -2031,7 +2275,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1252
+#: reference_processing.xml:1403
 #, no-c-format
 msgid ""
 "'quad_segs=#' : number of segments used to approximate a quarter circle "
@@ -2039,7 +2283,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1255
+#: reference_processing.xml:1406
 #, no-c-format
 msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
@@ -2047,7 +2291,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1258
+#: reference_processing.xml:1409
 #, no-c-format
 msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). "
@@ -2055,26 +2299,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1264
+#: reference_processing.xml:1415
 #, no-c-format
 msgid "Availability: 2.0"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1265
+#: reference_processing.xml:1416
 #, no-c-format
 msgid ""
 "Enhanced: 2.5 - added support for GEOMETRYCOLLECTION and MULTILINESTRING"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1274
+#: reference_processing.xml:1425
 #, no-c-format
 msgid "Compute an open buffer around roads"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1275
+#: reference_processing.xml:1426
 #, no-c-format
 msgid ""
 "SELECT ST_Union(\n"
@@ -2085,13 +2329,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1285
+#: reference_processing.xml:1436
 #, no-c-format
 msgid "15, 'quad_segs=4 join=round' original line and its offset 15 units."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1289
+#: reference_processing.xml:1440
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
@@ -2108,13 +2352,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1296
+#: reference_processing.xml:1447
 #, no-c-format
 msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1300
+#: reference_processing.xml:1451
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(geom,\n"
@@ -2129,7 +2373,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1309
+#: reference_processing.xml:1460
 #, no-c-format
 msgid ""
 "double-offset to get more curvy, note the first reverses direction, so -30 + "
@@ -2137,7 +2381,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1312
+#: reference_processing.xml:1463
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
@@ -2155,7 +2399,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1319
+#: reference_processing.xml:1470
 #, no-c-format
 msgid ""
 "double-offset to get more curvy,combined with regular offset 15 to get "
@@ -2163,7 +2407,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1322
+#: reference_processing.xml:1473
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
@@ -2187,13 +2431,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1331
+#: reference_processing.xml:1482
 #, no-c-format
 msgid "15, 'quad_segs=4 join=bevel' shown with original line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1334
+#: reference_processing.xml:1485
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
@@ -2208,13 +2452,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1342
+#: reference_processing.xml:1493
 #, no-c-format
 msgid "15,-15 collected, join=mitre mitre_limit=2.1"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1345
+#: reference_processing.xml:1496
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
@@ -2232,19 +2476,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1362
+#: reference_processing.xml:1513
 #, no-c-format
 msgid "ST_PointOnSurface"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1363
+#: reference_processing.xml:1514
 #, no-c-format
 msgid "Computes a point guaranteed to lie in a polygon, or on a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1368
+#: reference_processing.xml:1519
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
@@ -2252,7 +2496,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1380
+#: reference_processing.xml:1531
 #, no-c-format
 msgid ""
 "Returns a <varname>POINT</varname> which is guaranteed to lie in the "
@@ -2261,13 +2505,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1385
+#: reference_processing.xml:1536
 #, no-c-format
 msgid "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1386
+#: reference_processing.xml:1537
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6. The specifications define "
@@ -2278,31 +2522,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1407
+#: reference_processing.xml:1558
 #, no-c-format
 msgid "PointOnSurface of a <varname>MULTIPOINT</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1418
+#: reference_processing.xml:1569
 #, no-c-format
 msgid "PointOnSurface of a <varname>LINESTRING</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1431
+#: reference_processing.xml:1582
 #, no-c-format
 msgid "PointOnSurface of a <varname>POLYGON</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1442
+#: reference_processing.xml:1593
 #, no-c-format
 msgid "PointOnSurface of a <varname>GEOMETRYCOLLECTION</varname>"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1451
+#: reference_processing.xml:1602
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));\n"
@@ -2325,7 +2569,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1453
+#: reference_processing.xml:1604
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> The result of ST_PointOnSurface "
@@ -2334,13 +2578,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1463
+#: reference_processing.xml:1614
 #, no-c-format
 msgid "Red: point on surface; Green: centroid"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1467
+#: reference_processing.xml:1618
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_PointOnSurface(geom)) AS pt_on_surf,\n"
@@ -2355,19 +2599,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1472
+#: reference_processing.xml:1623
 #, no-c-format
 msgid ", <xref linkend=\"ST_MaximumInscribedCircle\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1478
+#: reference_processing.xml:1629
 #, no-c-format
 msgid "ST_Polygonize"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1480
+#: reference_processing.xml:1631
 #, no-c-format
 msgid ""
 "Computes a collection of polygons formed from the linework of a set of "
@@ -2375,7 +2619,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_processing.xml:1485
+#: reference_processing.xml:1636
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Polygonize</function></"
@@ -2386,7 +2630,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1501
+#: reference_processing.xml:1652
 #, no-c-format
 msgid ""
 "Creates a GeometryCollection containing the polygons formed by the "
@@ -2395,7 +2639,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1506
+#: reference_processing.xml:1657
 #, no-c-format
 msgid ""
 "To ensure input is fully noded use <xref linkend=\"ST_Node\"/> on the input "
@@ -2403,7 +2647,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1513
+#: reference_processing.xml:1664
 #, no-c-format
 msgid ""
 "GeometryCollections are often difficult to deal with with third party tools. "
@@ -2412,19 +2656,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1519
+#: reference_processing.xml:1670
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
 msgstr ""
 
 #. Tag: title
-#: reference_processing.xml:1523
+#: reference_processing.xml:1674
 #, no-c-format
 msgid "Examples: Polygonizing single linestrings"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1524
+#: reference_processing.xml:1675
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_Polygonize(geom_4269)) As geomtextrep\n"
@@ -2459,25 +2703,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1529
+#: reference_processing.xml:1680
 #, no-c-format
 msgid ", <xref linkend=\"ST_Dump\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1538
+#: reference_processing.xml:1689
 #, no-c-format
 msgid "ST_ReducePrecision"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1540
+#: reference_processing.xml:1691
 #, no-c-format
 msgid "Returns a valid geometry with points rounded to a grid tolerance."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1545
+#: reference_processing.xml:1696
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ReducePrecision</function></funcdef> "
@@ -2486,7 +2730,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1559
+#: reference_processing.xml:1710
 #, no-c-format
 msgid ""
 "Returns a valid geometry with all points rounded to the provided grid "
@@ -2494,7 +2738,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1561
+#: reference_processing.xml:1712
 #, no-c-format
 msgid ""
 "Unlike <xref linkend=\"ST_SnapToGrid\"/> the returned geometry will be "
@@ -2502,25 +2746,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1563
+#: reference_processing.xml:1714
 #, no-c-format
 msgid "Precision reduction can be used to:"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1566
+#: reference_processing.xml:1717
 #, no-c-format
 msgid "match coordinate precision to the data accuracy"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1569
+#: reference_processing.xml:1720
 #, no-c-format
 msgid "reduce the number of coordinates needed to represent a geometry"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1572
+#: reference_processing.xml:1723
 #, no-c-format
 msgid ""
 "ensure valid geometry output to formats which use lower precision (e.g. text "
@@ -2529,7 +2773,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1577
+#: reference_processing.xml:1728
 #, no-c-format
 msgid ""
 "export valid geometry to systems which use lower or limited precision (e.g. "
@@ -2537,7 +2781,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1590
+#: reference_processing.xml:1741
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_ReducePrecision('POINT(1.412 19.323)', 0.1));\n"
@@ -2557,13 +2801,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1592
+#: reference_processing.xml:1743
 #, no-c-format
 msgid "Precision reduction can reduce number of vertices"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1593
+#: reference_processing.xml:1744
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_ReducePrecision('LINESTRING (10 10, 19.6 30.1, 20 30, "
@@ -2574,13 +2818,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1595
+#: reference_processing.xml:1746
 #, no-c-format
 msgid "Precision reduction splits polygons if needed to ensure validity"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1596
+#: reference_processing.xml:1747
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_ReducePrecision('POLYGON ((10 10, 60 60.1, 70 30, 40 40, "
@@ -2592,19 +2836,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1602
+#: reference_processing.xml:1753
 #, no-c-format
 msgid ", <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_SimplifyVW\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1608
+#: reference_processing.xml:1759
 #, no-c-format
 msgid "ST_SharedPaths"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1609
+#: reference_processing.xml:1760
 #, no-c-format
 msgid ""
 "Returns a collection containing paths shared by the two input linestrings/"
@@ -2612,7 +2856,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1614
+#: reference_processing.xml:1765
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SharedPaths</function></funcdef> "
@@ -2621,7 +2865,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1624
+#: reference_processing.xml:1775
 #, no-c-format
 msgid ""
 "Returns a collection containing paths shared by the two input geometries. "
@@ -2631,19 +2875,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_processing.xml:1632
+#: reference_processing.xml:1783
 #, no-c-format
 msgid "Examples: Finding shared paths"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1642
+#: reference_processing.xml:1793
 #, no-c-format
 msgid "A multilinestring and a linestring"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1653
+#: reference_processing.xml:1804
 #, no-c-format
 msgid ""
 "The shared path of multilinestring and linestring overlaid with original "
@@ -2651,7 +2895,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1656
+#: reference_processing.xml:1807
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -2671,7 +2915,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1662
+#: reference_processing.xml:1813
 #, no-c-format
 msgid ""
 "-- same example but linestring orientation flipped\n"
@@ -2690,20 +2934,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1672
+#: reference_processing.xml:1823
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1682
+#: reference_processing.xml:1833
 #, no-c-format
 msgid "ST_Simplify"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1683
+#: reference_processing.xml:1834
 #, no-c-format
 msgid ""
 "Returns a simplified version of a geometry, using the Douglas-Peucker "
@@ -2711,7 +2955,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_processing.xml:1688
+#: reference_processing.xml:1839
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Simplify</function></funcdef> "
@@ -2725,7 +2969,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1705
+#: reference_processing.xml:1856
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -2736,7 +2980,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1712
+#: reference_processing.xml:1863
 #, no-c-format
 msgid ""
 "The \"preserve collapsed\" flag will retain objects that would otherwise be "
@@ -2748,8 +2992,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1719 reference_processing.xml:1805
-#: reference_processing.xml:1906
+#: reference_processing.xml:1870 reference_processing.xml:2050
+#: reference_processing.xml:2106
 #, no-c-format
 msgid ""
 "Note that returned geometry might lose its simplicity (see <xref linkend="
@@ -2757,8 +3001,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1721 reference_processing.xml:1807
-#: reference_processing.xml:1908
+#: reference_processing.xml:1872 reference_processing.xml:2052
+#: reference_processing.xml:2108
 #, no-c-format
 msgid ""
 "Note topology may not be preserved and may result in invalid geometries. Use "
@@ -2766,19 +3010,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1723
+#: reference_processing.xml:1874
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1728
+#: reference_processing.xml:1879
 #, no-c-format
 msgid "A circle simplified too much becomes a triangle, medium an octagon,"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1729
+#: reference_processing.xml:1880
 #, no-c-format
 msgid ""
 "SELECT ST_Npoints(geom) AS np_before,\n"
@@ -2799,7 +3043,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1733
+#: reference_processing.xml:1884
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
@@ -2807,13 +3051,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1743
+#: reference_processing.xml:1894
 #, no-c-format
 msgid "ST_SimplifyPreserveTopology"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1744
+#: reference_processing.xml:1895
 #, no-c-format
 msgid ""
 "Returns a simplified and valid version of a geometry, using the Douglas-"
@@ -2821,7 +3065,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1750
+#: reference_processing.xml:1901
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SimplifyPreserveTopology</function></funcdef> "
@@ -2830,7 +3074,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1760
+#: reference_processing.xml:1911
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -2842,13 +3086,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1769
+#: reference_processing.xml:1920
 #, no-c-format
 msgid "Availability: 1.3.3"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1774
+#: reference_processing.xml:1925
 #, no-c-format
 msgid ""
 "Same example as Simplify, but we see Preserve Topology prevents "
@@ -2856,7 +3100,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1775
+#: reference_processing.xml:1926
 #, no-c-format
 msgid ""
 "SELECT ST_Npoints(geom) As np_before, "
@@ -2877,13 +3121,156 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1785
+#: reference_processing.xml:1937
+#, no-c-format
+msgid "ST_SimplifyPolygonHull"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1938
+#, no-c-format
+msgid ""
+"Computes a simplifed topology-preserving outer or inner hull of a polygonal "
+"geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1943
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_SimplifyPolygonHull</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>param_geom</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>vertex_fraction</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>is_outer = true</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1955
+#, no-c-format
+msgid ""
+"Computes a simplified topology-preserving outer or inner hull of a polygonal "
+"geometry. An outer hull completely covers the input geometry. An inner hull "
+"is completely covered by the input geometry. The result is a polygonal "
+"geometry formed by a subset of the input vertices. MultiPolygons and holes "
+"are handled and produce a result with the same structure as the input."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1962
+#, no-c-format
+msgid ""
+"The reduction in vertex count is controlled by the <varname>vertex_fraction</"
+"varname> parameter, which is a number in the range 0 to 1. Lower values "
+"produce simpler results, with smaller vertex count and less concaveness. For "
+"both outer and inner hulls a vertex fraction of 1.0 produces the orginal "
+"geometry. For outer hulls a value of 0.0 produces the convex hull (for a "
+"single polygon); for inner hulls it produces a triangle."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1969
+#, no-c-format
+msgid ""
+"The simplification process operates by progressively removing concave "
+"corners that contain the least amount of area, until the vertex count target "
+"is reached. It prevents edges from crossing, so the result is always a valid "
+"polygonal geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1974
+#, no-c-format
+msgid ""
+"To get better results with geometries that contain relatively long line "
+"segments, it might be necessary to \"segmentize\" the input, as shown below."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1977
+#, no-c-format
+msgid "Availability: 3.3.0 - requires GEOS &gt;= 3.11.0"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1989
+#, no-c-format
+msgid "Outer hull of a Polygon"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1992
+#, no-c-format
+msgid ""
+"SELECT ST_SimplifyPolygonHull(\n"
+"  'POLYGON ((131 158, 136 163, 161 165, 173 156, 179 148, 169 140, 186 144, "
+"190 137, 185 131, 174 128, 174 124, 166 119, 158 121, 158 115, 165 107, 161 "
+"97, 166 88, 166 79, 158 57, 145 57, 112 53, 111 47, 93 43, 90 48, 88 40, 80 "
+"39, 68 32, 51 33, 40 31, 39 34, 49 38, 34 38, 25 34, 28 39, 36 40, 44 46, 24 "
+"41, 17 41, 14 46, 19 50, 33 54, 21 55, 13 52, 11 57, 22 60, 34 59, 41 68, 75 "
+"72, 62 77, 56 70, 46 72, 31 69, 46 76, 52 82, 47 84, 56 90, 66 90, 64 94, 56 "
+"91, 33 97, 36 100, 23 100, 22 107, 29 106, 31 112, 46 116, 36 118, 28 131, "
+"53 132, 59 127, 62 131, 76 130, 80 135, 89 137, 87 143, 73 145, 80 150, 88 "
+"150, 85 157, 99 162, 116 158, 115 165, 123 165, 122 170, 134 164, 131 "
+"158))',\n"
+"    0.3);"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2001
+#, no-c-format
+msgid "Inner hull of a Polygon"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:2004
+#, no-c-format
+msgid ""
+"SELECT ST_SimplifyPolygonHull(\n"
+"  'POLYGON ((131 158, 136 163, 161 165, 173 156, 179 148, 169 140, 186 144, "
+"190 137, 185 131, 174 128, 174 124, 166 119, 158 121, 158 115, 165 107, 161 "
+"97, 166 88, 166 79, 158 57, 145 57, 112 53, 111 47, 93 43, 90 48, 88 40, 80 "
+"39, 68 32, 51 33, 40 31, 39 34, 49 38, 34 38, 25 34, 28 39, 36 40, 44 46, 24 "
+"41, 17 41, 14 46, 19 50, 33 54, 21 55, 13 52, 11 57, 22 60, 34 59, 41 68, 75 "
+"72, 62 77, 56 70, 46 72, 31 69, 46 76, 52 82, 47 84, 56 90, 66 90, 64 94, 56 "
+"91, 33 97, 36 100, 23 100, 22 107, 29 106, 31 112, 46 116, 36 118, 28 131, "
+"53 132, 59 127, 62 131, 76 130, 80 135, 89 137, 87 143, 73 145, 80 150, 88 "
+"150, 85 157, 99 162, 116 158, 115 165, 123 165, 122 170, 134 164, 131 "
+"158))',\n"
+"    0.3, false);"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2013
+#, no-c-format
+msgid "Outer hull simplification of a MultiPolygon, with segmentization"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:2016
+#, no-c-format
+msgid ""
+"SELECT ST_SimplifyPolygonHull(\n"
+"  ST_Segmentize(ST_Letters('xt'), 2.0),\n"
+"    0.1);"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2023
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_SimplifyVW\"/>, <xref linkend=\"ST_ConcaveHull\"/>, "
+"<xref linkend=\"ST_Segmentize\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:2030
 #, no-c-format
 msgid "ST_SimplifyVW"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1786
+#: reference_processing.xml:2031
 #, no-c-format
 msgid ""
 "Returns a simplified version of a geometry, using the Visvalingam-Whyatt "
@@ -2891,7 +3278,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1791
+#: reference_processing.xml:2036
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SimplifyVW</function></funcdef> "
@@ -2900,7 +3287,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1801
+#: reference_processing.xml:2046
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Visvalingam-"
@@ -2911,26 +3298,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1808 reference_processing.xml:1850
-#, no-c-format
-msgid ""
-"This function handles 3D and the third dimension will affect the result."
-msgstr ""
-
-#. Tag: para
-#: reference_processing.xml:1809 reference_processing.xml:1911
+#: reference_processing.xml:2054 reference_processing.xml:2111
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1814
+#: reference_processing.xml:2059
 #, no-c-format
 msgid "A LineString is simplified with a minimum area threshold of 30."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1815
+#: reference_processing.xml:2060
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_SimplifyVW(geom,30)) simplified\n"
@@ -2943,7 +3323,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1819
+#: reference_processing.xml:2064
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
@@ -2952,94 +3332,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1825
-#, no-c-format
-msgid "ST_ChaikinSmoothing"
-msgstr ""
-
-#. Tag: refpurpose
-#: reference_processing.xml:1826
-#, no-c-format
-msgid "Returns a smoothed version of a geometry, using the Chaikin algorithm"
-msgstr ""
-
-#. Tag: funcprototype
-#: reference_processing.xml:1831
-#, no-c-format
-msgid ""
-"<funcdef>geometry <function>ST_ChaikinSmoothing</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>nIterations = 1</parameter></"
-"paramdef> <paramdef><type>boolean</type> <parameter>preserveEndPoints = "
-"false</parameter></paramdef>"
-msgstr ""
-
-#. Tag: para
-#: reference_processing.xml:1842
-#, no-c-format
-msgid ""
-"Returns a \"smoothed\" version of the given geometry using the Chaikin "
-"algorithm. See <ulink url=\"http://www.idav.ucdavis.edu/education/CAGDNotes/"
-"Chaikins-Algorithm/Chaikins-Algorithm.html\">Chaikins-Algorithm</ulink> for "
-"an explanation of the process. For each iteration the number of vertex "
-"points will double. The function puts new vertex points at 1/4 of the line "
-"before and after each point and removes the original point. To reduce the "
-"number of points use one of the simplification functions on the result. The "
-"new points gets interpolated values for all included dimensions, also z and "
-"m."
-msgstr ""
-
-#. Tag: para
-#: reference_processing.xml:1848
-#, no-c-format
-msgid "Second argument, number of iterations is limited to max 5 iterations"
-msgstr ""
-
-#. Tag: para
-#: reference_processing.xml:1849
-#, no-c-format
-msgid ""
-"Note third argument is only valid for polygons, and will be ignored for "
-"linestrings"
-msgstr ""
-
-#. Tag: para
-#: reference_processing.xml:1851
-#, no-c-format
-msgid ""
-"Note that returned geometry will get more points than the original. To "
-"reduce the number of points again use one of the simplification functions on "
-"the result. (see <xref linkend=\"ST_Simplify\"/> and <xref linkend="
-"\"ST_SimplifyVW\"/>)"
-msgstr ""
-
-#. Tag: para
-#: reference_processing.xml:1859
-#, no-c-format
-msgid "A triangle is smoothed"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_processing.xml:1860
-#, no-c-format
-msgid ""
-"select ST_AsText(ST_ChaikinSmoothing(geom)) smoothed\n"
-"FROM (SELECT  'POLYGON((0 0, 8 8, 0 16, 0 0))'::geometry geom) As foo;\n"
-"┌───────────────────────────────────────────┐\n"
-"│                 smoothed                  │\n"
-"├───────────────────────────────────────────┤\n"
-"│ POLYGON((2 2,6 6,6 10,2 14,0 12,0 4,2 2)) │\n"
-"└───────────────────────────────────────────┘"
-msgstr ""
-
-#. Tag: refname
-#: reference_processing.xml:1870
+#: reference_processing.xml:2070
 #, no-c-format
 msgid "ST_SetEffectiveArea"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1871
+#: reference_processing.xml:2071
 #, no-c-format
 msgid ""
 "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
@@ -3047,7 +3346,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1878
+#: reference_processing.xml:2078
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef> "
@@ -3057,7 +3356,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1889
+#: reference_processing.xml:2089
 #, no-c-format
 msgid ""
 "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
@@ -3068,7 +3367,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1894
+#: reference_processing.xml:2094
 #, no-c-format
 msgid ""
 "This function can be used for server-side simplification when a threshold is "
@@ -3078,7 +3377,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1897
+#: reference_processing.xml:2097
 #, no-c-format
 msgid ""
 "Will actually do something only with (multi)lines and (multi)polygons but "
@@ -3088,13 +3387,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1909
+#: reference_processing.xml:2109
 #, no-c-format
 msgid "The output geometry will lose all previous information in the M-values"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1910
+#: reference_processing.xml:2110
 #, no-c-format
 msgid ""
 "This function handles 3D and the third dimension will affect the effective "
@@ -3102,7 +3401,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1916
+#: reference_processing.xml:2116
 #, no-c-format
 msgid ""
 "Calculating the effective area of a LineString. Because we use a threshold "
@@ -3110,7 +3409,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1919
+#: reference_processing.xml:2119
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_SetEffectiveArea(geom)) all_pts, "
@@ -3126,20 +3425,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:1929
+#: reference_processing.xml:2130
 #, no-c-format
 msgid "ST_VoronoiLines"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:1931
+#: reference_processing.xml:2132
 #, no-c-format
 msgid ""
 "Returns the boundaries of the Voronoi diagram of the vertices of a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:1936
+#: reference_processing.xml:2137
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> <paramdef> "
@@ -3150,7 +3449,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1957
+#: reference_processing.xml:2158
 #, no-c-format
 msgid ""
 "ST_VoronoiLines computes a two-dimensional <ulink url=\"https://en.wikipedia."
@@ -3162,13 +3461,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1962 reference_processing.xml:2052
+#: reference_processing.xml:2163 reference_processing.xml:2253
 #, no-c-format
 msgid "Optional parameters:"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1966 reference_processing.xml:2056
+#: reference_processing.xml:2167 reference_processing.xml:2257
 #, no-c-format
 msgid ""
 "'tolerance' : The distance within which vertices will be considered "
@@ -3177,7 +3476,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1969 reference_processing.xml:2059
+#: reference_processing.xml:2170 reference_processing.xml:2260
 #, no-c-format
 msgid ""
 "'extend_to' : If a geometry is supplied as the \"extend_to\" parameter, the "
@@ -3188,13 +3487,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:1990
+#: reference_processing.xml:2191
 #, no-c-format
 msgid "Voronoi lines with tolerance of 30 units"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:1993 reference_processing.xml:2112
+#: reference_processing.xml:2194 reference_processing.xml:2313
 #, no-c-format
 msgid ""
 "SELECT ST_VoronoiLines(geom, 30) As geom\n"
@@ -3203,7 +3502,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_processing.xml:1994 reference_processing.xml:2113
+#: reference_processing.xml:2195 reference_processing.xml:2314
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -3213,26 +3512,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2007
+#: reference_processing.xml:2208
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_VoronoiPolygons\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_processing.xml:2017
+#: reference_processing.xml:2218
 #, no-c-format
 msgid "ST_VoronoiPolygons"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_processing.xml:2019
+#: reference_processing.xml:2220
 #, no-c-format
 msgid "Returns the cells of the Voronoi diagram of the vertices of a geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_processing.xml:2024
+#: reference_processing.xml:2225
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef> "
@@ -3243,7 +3542,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2046
+#: reference_processing.xml:2247
 #, no-c-format
 msgid ""
 "ST_VoronoiPolygons computes a two-dimensional <ulink url=\"https://en."
@@ -3256,13 +3555,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2082
+#: reference_processing.xml:2283
 #, no-c-format
 msgid "Points overlaid on top of Voronoi diagram"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2085
+#: reference_processing.xml:2286
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -3272,7 +3571,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_processing.xml:2086
+#: reference_processing.xml:2287
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -3290,13 +3589,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2096
+#: reference_processing.xml:2297
 #, no-c-format
 msgid "Voronoi with tolerance of 30 units"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_processing.xml:2099
+#: reference_processing.xml:2300
 #, no-c-format
 msgid ""
 "SELECT ST_VoronoiPolygons(geom, 30) As geom\n"
@@ -3305,7 +3604,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: reference_processing.xml:2100
+#: reference_processing.xml:2301
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -3321,13 +3620,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2109
+#: reference_processing.xml:2310
 #, no-c-format
 msgid "Voronoi with tolerance of 30 units as MultiLineString"
 msgstr ""
 
 #. Tag: para
-#: reference_processing.xml:2126
+#: reference_processing.xml:2327
 #, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ""
