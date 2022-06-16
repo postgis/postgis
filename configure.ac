@@ -1537,6 +1537,7 @@ if test "x$with_raster" != "xno"; then
 		raster/loader/Makefile \
 		raster/test/Makefile \
 		raster/test/cunit/Makefile \
+		raster/test/regress/Makefile \
 		raster/scripts/Makefile \
 		raster/scripts/python/Makefile"
 

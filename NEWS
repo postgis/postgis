@@ -3,9 +3,8 @@ PostGIS 3.3.0dev
 Changes since PostGIS 3.3.0alpha1
 * Enhancements *
   - #5158, pgtopo_import / pgtopo_export manpages (Sandro Santilli)
-  - #5170, add a optional max_rows_per_copy to -Y option to raster2pgsql to
-    control number of rows per copy statement.
-    Default to 50 when not specified (Regina Obe)
+  - #5170, add a -Z option to raster2pgsql to
+    control number of rows per copy statement (Regina Obe)
   - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
     useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
   - #5039, postgis_tiger_geocoder TIGER 2021 (Regina Obe)
