@@ -1,5 +1,5 @@
 task:
-  only_if: $BRANCH != 'master'
+  only_if: true
   name: FreeBSD
   alias: test-freebsd
   env:
