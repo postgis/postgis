@@ -367,8 +367,7 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		{
 			if (bsz1 < bsz2)
 				return -1;
-			else if (bsz1 > bsz2)
-				return 1;
+			return 1;
 		}
 
 		/* If SRID is not equal, sort on it */
