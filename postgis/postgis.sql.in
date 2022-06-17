@@ -4162,21 +4162,21 @@ CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_combinefn(internal, inte
 CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_serialfn(internal)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE STRICT
 	_COST_DEFAULT;
 
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_deserialfn(bytea, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE STRICT
 	_COST_DEFAULT;;
 
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE STRICT
 	_COST_DEFAULT;;
 
 -- Availability: 1.4.0

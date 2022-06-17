@@ -7,7 +7,7 @@ SELECT ST_Square(1.0, x, y, ST_MakePoint(0, 0))
 FROM coords;
 
 WITH u AS (SELECT ST_Union(geom) AS g FROM geoms)
-SELECT ST_Area(g), ST_XMin((g)), sT_YMin(g), ST_XMax(g), ST_YMax(g) from u;
+SELECT ST_Area(g), ST_XMin((g)), ST_YMin(g), ST_XMax(g), ST_YMax(g) from u;
 
 -- NOTE: using gridSize > 0 requires GEOS-3.9 or higher
 WITH u AS (SELECT ST_Union(geom, -1.0) AS g FROM geoms)
@@ -47,7 +47,7 @@ SELECT ST_Square(1.0, x, y, ST_MakePoint(0, 0))
 FROM coords;
 
 WITH u AS (SELECT ST_Union(geom) AS g FROM geoms)
-SELECT ST_Area(g), ST_XMin((g)), sT_YMin(g), ST_XMax(g), ST_YMax(g) from u;
+SELECT ST_Area(g), ST_XMin((g)), ST_YMin(g), ST_XMax(g), ST_YMax(g) from u;
 
 WITH u AS (SELECT ST_Union(geom, -1.0) AS g FROM geoms)
 SELECT ST_Area(g), ST_XMin((g)), sT_YMin(g), ST_XMax(g), ST_YMax(g) from u;
