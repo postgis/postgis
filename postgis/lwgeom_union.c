@@ -123,17 +123,11 @@ PG_FUNCTION_INFO_V1(pgis_geometry_union_parallel_serialfn);
 Datum pgis_geometry_union_parallel_serialfn(PG_FUNCTION_ARGS)
 {
 	UnionState *state;
-	bytea *serialized;
-
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
-	state = (UnionState*) PG_GETARG_POINTER(0);
 
 	CheckAggContext();
 
-	serialized = state_serialize(state);
-
-	PG_RETURN_BYTEA_P(serialized);
+	state = (UnionState*) PG_GETARG_POINTER(0);
+	PG_RETURN_BYTEA_P(state_serialize(state));
 }
 
 
@@ -144,11 +138,10 @@ Datum pgis_geometry_union_parallel_deserialfn(PG_FUNCTION_ARGS)
 	UnionState *state;
 	bytea *serialized;
 
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
+	GetAggContext(&aggcontext);
+
 	serialized = PG_GETARG_BYTEA_P(0);
 
-	GetAggContext(&aggcontext);
 	old = MemoryContextSwitchTo(aggcontext);
 	state = state_deserialize(serialized);
 	MemoryContextSwitchTo(old);
@@ -163,14 +156,10 @@ Datum pgis_geometry_union_parallel_finalfn(PG_FUNCTION_ARGS)
 	UnionState *state;
 	LWGEOM *geom = NULL;
 
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
-	state = (UnionState*)PG_GETARG_POINTER(0);
-
 	CheckAggContext();
 
+	state = (UnionState*)PG_GETARG_POINTER(0);
 	geom = gserialized_list_union(state->list, state->gridSize);
-
 	if (!geom)
 		PG_RETURN_NULL();
 	PG_RETURN_POINTER(geometry_serialize(geom));
