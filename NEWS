@@ -2,7 +2,6 @@ PostGIS 3.2.2dev
 2022/MM/DD
 
 * Bug Fixes *
-  - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
   - #5124, GRANT USAGE on topology schema to PUBLIC (Sandro Santilli)
   - #5120, Fix not-null result from ST_EstimatedExtent against
            truncated tables with spatial index (Sandro Santilli)
@@ -10,15 +9,17 @@ PostGIS 3.2.2dev
            (Sandro Santilli)
   - #5105, Fix false invalidity report from ValidateTopology
            (Sandro Santilli)
+  - #5039, postgis_tiger_geocoder: Support for TIGER 2021 (Regina Obe)
   - #5097, Ensure spatial index is used during topology population
            at the getClosestEdge step (Sandro Santilli)
   - #5091, Fix --without-protobuf builds (Tobias Bussmann)
   - #5100, Don't use pg_atoi (removed in PG15) (Laurenz Albe)
-  - #5123, Support for PG15 (JSON funcs exposed) (Regina Obe)
-  - #5151, ST_SetPoint with empty geometries (Regina Obe)
-  - #5150, Change signature of AddToSearchPath (Regina Obe)
-  - #5125, Fix search path function (Sandro Santilli)
   - #5114, Crash with long column names pgsql2shp (Paul Ramsey)
+  - #5123, Support for PG15 (JSON funcs exposed) (Regina Obe)
+  - #5125, Fix search path function (Sandro Santilli)
+  - #5150, Change signature of AddToSearchPath (Regina Obe)
+  - #5151, ST_SetPoint with empty geometries (Regina Obe)
+  - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
   - #5173, Crash creating flatgeobuf on row without geometry (Julien Rouhaud)
 
 
