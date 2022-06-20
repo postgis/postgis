@@ -110,6 +110,9 @@ static void inspect_table(struct flatgeobuf_agg_ctx *ctx)
 		columns_size++;
 	}
 
+	if (!geom_found)
+		elog(ERROR, "no geom column found");
+
 	if (columns_size > 0) {
 		ctx->ctx->columns = columns;
 		ctx->ctx->columns_size = columns_size;
