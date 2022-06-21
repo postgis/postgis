@@ -42,7 +42,7 @@ BEGIN
 					LEFT JOIN pg_catalog.pg_proc AS proc ON proc.oid OPERATOR(pg_catalog.=) d.objid
 					LEFT JOIN pg_catalog.pg_type AS typ ON typ.oid OPERATOR(pg_catalog.=) d.objid
 					LEFT JOIN pg_catalog.pg_class As cd ON cd.oid OPERATOR(pg_catalog.=) d.objid
-					LEFT JOIN pg_operator As op ON op.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_operator As op ON op.oid OPERATOR(pg_catalog.=) d.objid
 					LEFT JOIN pg_catalog.pg_cast AS ca ON ca.oid OPERATOR(pg_catalog.=) d.objid
 					LEFT JOIN pg_catalog.pg_type AS cs ON ca.castsource OPERATOR(pg_catalog.=) cs.oid
 					LEFT JOIN pg_catalog.pg_type AS ct ON ca.casttarget OPERATOR(pg_catalog.=) ct.oid
@@ -58,7 +58,7 @@ BEGIN
 					LEFT JOIN pg_catalog.pg_proc AS proc ON proc.oid OPERATOR(pg_catalog.=) d.objid
 					LEFT JOIN pg_catalog.pg_type AS typ ON typ.oid OPERATOR(pg_catalog.=) d.objid
 					LEFT JOIN pg_catalog.pg_class As cd ON cd.oid OPERATOR(pg_catalog.=) d.objid
-					LEFT JOIN pg_operator As op ON op.oid OPERATOR(pg_catalog.=) d.objid
+					LEFT JOIN pg_catalog.pg_operator As op ON op.oid OPERATOR(pg_catalog.=) d.objid
 					LEFT JOIN pg_catalog.pg_cast AS ca ON ca.oid OPERATOR(pg_catalog.=) d.objid
 					LEFT JOIN pg_catalog.pg_type AS cs ON ca.castsource OPERATOR(pg_catalog.=) cs.oid
 					LEFT JOIN pg_catalog.pg_type AS ct ON ca.casttarget OPERATOR(pg_catalog.=) ct.oid
@@ -71,7 +71,7 @@ BEGIN
 		LOOP
 			var_sql := var_sql OPERATOR(pg_catalog.||) var_r.remove_command OPERATOR(pg_catalog.||) ';';
 		END LOOP;
-		IF var_sql > '' THEN
+		IF var_sql OPERATOR(pg_catalog.>) '' THEN
 			EXECUTE var_sql;
 			var_result := true;
 		END IF;
