@@ -287,8 +287,8 @@
                   <term>-Y  <varname>max_rows_per_copy=50</varname></term>
                   <listitem>
                     <para>
-                      Use copy statements instead of insert statements.  Optionally specify <varname>max_rows_per_copy</varname> statement.
-                      Defaults to 50 when not specified.</para>
+                      Use copy statements instead of insert statements.  Optionally specify <varname>max_rows_per_copy</varname>;
+                      default 50 when not specified.</para>
                   </listitem>
                 </varlistentry>
 

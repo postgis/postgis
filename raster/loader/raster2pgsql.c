@@ -443,12 +443,10 @@ usage() {
 		"  -e  Execute each statement individually, do not use a transaction.\n"
 	));
 	printf(_(
-		"  -Y  Use COPY statements instead of INSERT statements.\n"
+		"  -Y <max_rows_per_copy> Use COPY statements instead of INSERT statements. \n"
+		"    Optionally specify <max_rows_per_copy>; default 50 when not specified. \n"
 	));
 
-	printf(_(
-		"  -Z  Set max insert rows per COPY statement.  Only does something with -Y. Default is 11 if not specified.\n"
-	));
 	printf(_(
 		"  -G  Print the supported GDAL raster formats.\n"
 	));
