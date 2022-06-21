@@ -4149,7 +4149,7 @@ CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_transfn(internal, geomet
 	RETURNS internal
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	_COST_DEFAULT;
+	_COST_LOW;
 
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_combinefn(internal, internal)
@@ -4170,14 +4170,14 @@ CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_deserialfn(bytea, intern
 	RETURNS internal
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE STRICT
-	_COST_DEFAULT;;
+	_COST_DEFAULT;
 
 -- Availability: 3.3.0
 CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE STRICT
-	_COST_DEFAULT;;
+	_COST_HIGH;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_Union (geometry[])
