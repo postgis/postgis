@@ -4091,14 +4091,6 @@ CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float
 
 -- Availability: 1.4.0
 -- Changed: 2.5.0 use 'internal' transfer type
-CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(internal)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' PARALLEL SAFE
-	_COST_HIGH;
-
--- Availability: 1.4.0
--- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_collect_finalfn(internal)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'

@@ -102,3 +102,4 @@ POSTGIS_DEPRECATE("3.1.0", postgis_sfcgal_noop);
 
 POSTGIS_DEPRECATE("3.1.0", LWGEOM_locate_between_m);
 POSTGIS_DEPRECATE("3.1.0", postgis_svn_version);
+POSTGIS_DEPRECATE("3.3.0", pgis_geometry_union_finalfn);
