@@ -130,8 +130,8 @@ sql/postgis_upgrade_for_extension.sql: ../../postgis/postgis_before_upgrade.sql 
 	# WARNING: we should make sure these are not internal to function bodies
 	cat $^ | $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
 
-sql/postgis_upgrade_for_extension.sql.in: sql/postgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl | sql
-	$(PERL) @top_srcdir@/utils/postgis_proc_upgrade.pl $< UNUSED > $@
+sql/postgis_upgrade_for_extension.sql.in: sql/postgis_for_extension.sql ../../utils/create_upgrade.pl | sql
+	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
 sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in ../../postgis_revision.h | sql
 	$(SQLPP) -I@builddir@/../../postgis $< | grep -v '^#' | \

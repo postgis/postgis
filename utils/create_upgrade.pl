@@ -84,7 +84,7 @@ sub parse_missing
 #
 ($#ARGV == 0)
   ||die
-"Usage: perl postgis_proc_upgrade.pl <postgis.sql> <version_from> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
+"Usage: perl create_upgrade.pl <create_script.sql> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
   if ( @ARGV < 1 || @ARGV > 3 );
 
 my $sql_file = $ARGV[0];
@@ -92,10 +92,8 @@ my $module = 'postgis';
 my $soname = '';
 my $version_to = "";
 my $version_to_num = 0;
-my $version_from = $ARGV[1];
-my $version_from_num = 0;
 my $schema = "";
-$schema = $ARGV[2] if @ARGV > 2;
+$schema = $ARGV[1] if @ARGV > 1;
 
 my @renamed_deprecated_functions = ();
 

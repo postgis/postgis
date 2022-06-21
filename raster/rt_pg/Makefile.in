@@ -146,8 +146,8 @@ $(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../rt_core/librtcore.a ../../libpgcom
 $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_revision.h
 
 #this is redundant but trying to fold in with the  other just hangs
-rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
-	$(PERL) @top_srcdir@/utils/postgis_proc_upgrade.pl $< UNUSED > $@
+rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/create_upgrade.pl
+	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
 rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql
 	echo 'BEGIN;' > $@

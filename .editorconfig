@@ -25,8 +25,8 @@ indent_style = tab
 indent_style = space
 indent_size = 2
 
-# Exception: utils/postgis_proc_upgrade.pl uses 4-spaces indent
-[utils/postgis_proc_upgrade.pl]
+# Exception: utils/create_upgrade.pl uses 4-spaces indent
+[utils/create_upgrade.pl]
 indent_style = space
 indent_size = 4
 

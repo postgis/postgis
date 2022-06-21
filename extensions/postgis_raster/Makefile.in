@@ -106,8 +106,8 @@ sql/rtpostgis_upgrade_for_extension.sql: ../../raster/rt_pg/rtpostgis_upgrade_cl
 	echo 'COMMIT;' >> $@
 
 
-sql/rtpostgis_upgrade_for_extension.sql.in: sql/rtpostgis_for_extension.sql ../../utils/postgis_proc_upgrade.pl | sql
-	$(PERL) @top_srcdir@/utils/postgis_proc_upgrade.pl $< UNUSED > $@
+sql/rtpostgis_upgrade_for_extension.sql.in: sql/rtpostgis_for_extension.sql ../../utils/create_upgrade.pl | sql
+	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
 
 ../../doc/raster_comments.sql:

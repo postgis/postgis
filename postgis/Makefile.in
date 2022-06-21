@@ -240,8 +240,8 @@ endif
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
 #this is redundant but trying to fold in with extension just hangs
-postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
-	$(PERL) @top_srcdir@/utils/postgis_proc_upgrade.pl $< UNUSED > $@
+postgis_upgrade.sql.in: postgis.sql ../utils/create_upgrade.pl
+	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
 
 postgis_upgrade.sql: postgis_before_upgrade.sql postgis_upgrade.sql.in postgis_after_upgrade.sql

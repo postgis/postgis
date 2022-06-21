@@ -107,7 +107,7 @@ endif
 
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
-# TODO: use postgis_proc_upgrade.pl
+# TODO: use create_upgrade.pl
 topology_upgrade.sql.in:  topology.sql
 	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 

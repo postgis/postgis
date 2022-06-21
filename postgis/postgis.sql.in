@@ -2902,9 +2902,9 @@ CREATE OR REPLACE FUNCTION postgis_wagyu_version() RETURNS text
 
 --
 -- IMPORTANT:
--- Starting at 1.1.0 this function is used by postgis_proc_upgrade.pl
+-- Starting at 1.1.0 this function is used by create_upgrade.pl
 -- to extract version of postgis being installed.
--- Do not modify this w/out also changing postgis_proc_upgrade.pl
+-- Do not modify this w/out also changing create_upgrade.pl
 --
 CREATE OR REPLACE FUNCTION postgis_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
