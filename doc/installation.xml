@@ -36,16 +36,16 @@ in each individual database you want to use it in.
 		or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
 	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink></para>
 	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="https://postgis.net/windows_downloads">PostGIS Windows download site</ulink>
-	  We also have <ulink url="https://postgis.net/windows_downloads">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
-	  use these to experiment with the in progress releases of PostGIS</para>
+	  We also have <ulink url="https://postgis.net/windows_downloads">windows experimental builds</ulink> that are built whenever there is a change in the PostGIS source code.  You can
+	  use these to experiment with the in progress releases of PostGIS or to get a bug patch before it is released.</para>
 	</note>
 
 	<para>
 	  The PostGIS module is an extension to the PostgreSQL backend server. As
 	  such, PostGIS &last_release_version; <emphasis>requires</emphasis> full
 	  PostgreSQL server headers access in order to compile. It can be built
-	  against PostgreSQL versions &min_postgres_version; or higher. Earlier
-	  versions of PostgreSQL are <emphasis>not</emphasis> supported.
+	  against PostgreSQL versions &min_postgres_version;- 14. Earlier
+	  and later versions of PostgreSQL are <emphasis>not</emphasis> supported.
 	</para>
 
 	<para>
