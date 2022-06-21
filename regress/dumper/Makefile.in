@@ -17,9 +17,6 @@ top_builddir = @top_builddir@
 
 PERL=@PERL@
 
-# TODO: drop this variable, use top_srcdir directly
-topsrcdir = $(top_srcdir)
-
 include $(srcdir)/tests.mk
 include $(top_srcdir)/regress/runtest.mk
 

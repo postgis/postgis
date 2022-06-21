@@ -13,128 +13,128 @@
 override RUNTESTFLAGS := $(RUNTESTFLAGS) --raster
 
 override RUNTESTFLAGS_INTERNAL := \
-  --before-upgrade-script $(topsrcdir)/raster/test/regress/hooks/hook-before-upgrade-raster.sql \
+  --before-upgrade-script $(top_srcdir)/raster/test/regress/hooks/hook-before-upgrade-raster.sql \
   $(RUNTESTFLAGS_INTERNAL) \
-  --after-upgrade-script $(topsrcdir)/raster/test/regress/hooks/hook-after-upgrade-raster.sql
+  --after-upgrade-script $(top_srcdir)/raster/test/regress/hooks/hook-after-upgrade-raster.sql
 
 RASTER_TEST_FIRST = \
-	$(topsrcdir)/raster/test/regress/check_gdal \
-	$(topsrcdir)/raster/test/regress/loader/load_outdb
+	$(top_srcdir)/raster/test/regress/check_gdal \
+	$(top_srcdir)/raster/test/regress/loader/load_outdb
 
 RASTER_TEST_LAST = \
-	$(topsrcdir)/raster/test/regress/clean
+	$(top_srcdir)/raster/test/regress/clean
 
 RASTER_TEST_METADATA = \
-	$(topsrcdir)/raster/test/regress/check_raster_columns \
-	$(topsrcdir)/raster/test/regress/check_raster_overviews
+	$(top_srcdir)/raster/test/regress/check_raster_columns \
+	$(top_srcdir)/raster/test/regress/check_raster_overviews
 
 RASTER_TEST_IO = \
-	$(topsrcdir)/raster/test/regress/rt_io
+	$(top_srcdir)/raster/test/regress/rt_io
 
 RASTER_TEST_BASIC_FUNC = \
-	$(topsrcdir)/raster/test/regress/rt_bytea \
-	$(topsrcdir)/raster/test/regress/rt_wkb \
-	$(topsrcdir)/raster/test/regress/box3d \
-	$(topsrcdir)/raster/test/regress/rt_addband \
-	$(topsrcdir)/raster/test/regress/rt_band \
-	$(topsrcdir)/raster/test/regress/rt_tile
+	$(top_srcdir)/raster/test/regress/rt_bytea \
+	$(top_srcdir)/raster/test/regress/rt_wkb \
+	$(top_srcdir)/raster/test/regress/box3d \
+	$(top_srcdir)/raster/test/regress/rt_addband \
+	$(top_srcdir)/raster/test/regress/rt_band \
+	$(top_srcdir)/raster/test/regress/rt_tile
 
 RASTER_TEST_PROPS = \
-	$(topsrcdir)/raster/test/regress/rt_dimensions \
-	$(topsrcdir)/raster/test/regress/rt_scale \
-	$(topsrcdir)/raster/test/regress/rt_pixelsize \
-	$(topsrcdir)/raster/test/regress/rt_upperleft \
-	$(topsrcdir)/raster/test/regress/rt_rotation \
-	$(topsrcdir)/raster/test/regress/rt_georeference \
-	$(topsrcdir)/raster/test/regress/rt_set_properties \
-	$(topsrcdir)/raster/test/regress/rt_isempty \
-	$(topsrcdir)/raster/test/regress/rt_hasnoband \
-	$(topsrcdir)/raster/test/regress/rt_metadata \
-	$(topsrcdir)/raster/test/regress/rt_rastertoworldcoord \
-	$(topsrcdir)/raster/test/regress/rt_worldtorastercoord \
-	$(topsrcdir)/raster/test/regress/rt_convexhull \
-	$(topsrcdir)/raster/test/regress/rt_envelope
+	$(top_srcdir)/raster/test/regress/rt_dimensions \
+	$(top_srcdir)/raster/test/regress/rt_scale \
+	$(top_srcdir)/raster/test/regress/rt_pixelsize \
+	$(top_srcdir)/raster/test/regress/rt_upperleft \
+	$(top_srcdir)/raster/test/regress/rt_rotation \
+	$(top_srcdir)/raster/test/regress/rt_georeference \
+	$(top_srcdir)/raster/test/regress/rt_set_properties \
+	$(top_srcdir)/raster/test/regress/rt_isempty \
+	$(top_srcdir)/raster/test/regress/rt_hasnoband \
+	$(top_srcdir)/raster/test/regress/rt_metadata \
+	$(top_srcdir)/raster/test/regress/rt_rastertoworldcoord \
+	$(top_srcdir)/raster/test/regress/rt_worldtorastercoord \
+	$(top_srcdir)/raster/test/regress/rt_convexhull \
+	$(top_srcdir)/raster/test/regress/rt_envelope
 
 RASTER_TEST_BANDPROPS = \
-	$(topsrcdir)/raster/test/regress/rt_band_properties \
-	$(topsrcdir)/raster/test/regress/rt_set_band_properties \
-	$(topsrcdir)/raster/test/regress/rt_pixelaspolygons \
-	$(topsrcdir)/raster/test/regress/rt_pixelaspoints \
-	$(topsrcdir)/raster/test/regress/rt_pixelascentroids \
-	$(topsrcdir)/raster/test/regress/rt_setvalues_array \
-	$(topsrcdir)/raster/test/regress/rt_summarystats \
-	$(topsrcdir)/raster/test/regress/rt_count \
-	$(topsrcdir)/raster/test/regress/rt_histogram \
-	$(topsrcdir)/raster/test/regress/rt_quantile \
-	$(topsrcdir)/raster/test/regress/rt_valuecount \
-	$(topsrcdir)/raster/test/regress/rt_valuepercent \
-	$(topsrcdir)/raster/test/regress/rt_bandmetadata \
-	$(topsrcdir)/raster/test/regress/rt_pixelvalue \
-	$(topsrcdir)/raster/test/regress/rt_neighborhood \
-	$(topsrcdir)/raster/test/regress/rt_nearestvalue \
-	$(topsrcdir)/raster/test/regress/rt_pixelofvalue \
-	$(topsrcdir)/raster/test/regress/rt_polygon \
-	$(topsrcdir)/raster/test/regress/rt_setbandpath
+	$(top_srcdir)/raster/test/regress/rt_band_properties \
+	$(top_srcdir)/raster/test/regress/rt_set_band_properties \
+	$(top_srcdir)/raster/test/regress/rt_pixelaspolygons \
+	$(top_srcdir)/raster/test/regress/rt_pixelaspoints \
+	$(top_srcdir)/raster/test/regress/rt_pixelascentroids \
+	$(top_srcdir)/raster/test/regress/rt_setvalues_array \
+	$(top_srcdir)/raster/test/regress/rt_summarystats \
+	$(top_srcdir)/raster/test/regress/rt_count \
+	$(top_srcdir)/raster/test/regress/rt_histogram \
+	$(top_srcdir)/raster/test/regress/rt_quantile \
+	$(top_srcdir)/raster/test/regress/rt_valuecount \
+	$(top_srcdir)/raster/test/regress/rt_valuepercent \
+	$(top_srcdir)/raster/test/regress/rt_bandmetadata \
+	$(top_srcdir)/raster/test/regress/rt_pixelvalue \
+	$(top_srcdir)/raster/test/regress/rt_neighborhood \
+	$(top_srcdir)/raster/test/regress/rt_nearestvalue \
+	$(top_srcdir)/raster/test/regress/rt_pixelofvalue \
+	$(top_srcdir)/raster/test/regress/rt_polygon \
+	$(top_srcdir)/raster/test/regress/rt_setbandpath
 
 RASTER_TEST_UTILITY = \
-	$(topsrcdir)/raster/test/regress/rt_utility \
-	$(topsrcdir)/raster/test/regress/rt_fromgdalraster \
-	$(topsrcdir)/raster/test/regress/rt_asgdalraster \
-	$(topsrcdir)/raster/test/regress/rt_astiff \
-	$(topsrcdir)/raster/test/regress/rt_asjpeg \
-	$(topsrcdir)/raster/test/regress/rt_aspng \
-	$(topsrcdir)/raster/test/regress/rt_reclass \
-	$(topsrcdir)/raster/test/regress/rt_gdalwarp \
-	$(topsrcdir)/raster/test/regress/rt_gdalcontour \
-	$(topsrcdir)/raster/test/regress/rt_asraster \
-	$(topsrcdir)/raster/test/regress/rt_dumpvalues \
-	$(topsrcdir)/raster/test/regress/rt_makeemptycoverage \
-	$(topsrcdir)/raster/test/regress/rt_createoverview
+	$(top_srcdir)/raster/test/regress/rt_utility \
+	$(top_srcdir)/raster/test/regress/rt_fromgdalraster \
+	$(top_srcdir)/raster/test/regress/rt_asgdalraster \
+	$(top_srcdir)/raster/test/regress/rt_astiff \
+	$(top_srcdir)/raster/test/regress/rt_asjpeg \
+	$(top_srcdir)/raster/test/regress/rt_aspng \
+	$(top_srcdir)/raster/test/regress/rt_reclass \
+	$(top_srcdir)/raster/test/regress/rt_gdalwarp \
+	$(top_srcdir)/raster/test/regress/rt_gdalcontour \
+	$(top_srcdir)/raster/test/regress/rt_asraster \
+	$(top_srcdir)/raster/test/regress/rt_dumpvalues \
+	$(top_srcdir)/raster/test/regress/rt_makeemptycoverage \
+	$(top_srcdir)/raster/test/regress/rt_createoverview
 
 RASTER_TEST_MAPALGEBRA = \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebraexpr \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebrafct \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebraexpr_2raster \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebrafct_2raster \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebrafctngb \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebrafctngb_userfunc \
-	$(topsrcdir)/raster/test/regress/rt_intersection \
-	$(topsrcdir)/raster/test/regress/rt_clip \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebra \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebra_expr \
-	$(topsrcdir)/raster/test/regress/rt_mapalgebra_mask \
-	$(topsrcdir)/raster/test/regress/rt_union \
-	$(topsrcdir)/raster/test/regress/rt_invdistweight4ma \
-	$(topsrcdir)/raster/test/regress/rt_4ma \
-	$(topsrcdir)/raster/test/regress/rt_setvalues_geomval \
-	$(topsrcdir)/raster/test/regress/rt_elevation_functions \
-	$(topsrcdir)/raster/test/regress/rt_colormap \
-	$(topsrcdir)/raster/test/regress/rt_grayscale
+	$(top_srcdir)/raster/test/regress/rt_mapalgebraexpr \
+	$(top_srcdir)/raster/test/regress/rt_mapalgebrafct \
+	$(top_srcdir)/raster/test/regress/rt_mapalgebraexpr_2raster \
+	$(top_srcdir)/raster/test/regress/rt_mapalgebrafct_2raster \
+	$(top_srcdir)/raster/test/regress/rt_mapalgebrafctngb \
+	$(top_srcdir)/raster/test/regress/rt_mapalgebrafctngb_userfunc \
+	$(top_srcdir)/raster/test/regress/rt_intersection \
+	$(top_srcdir)/raster/test/regress/rt_clip \
+	$(top_srcdir)/raster/test/regress/rt_mapalgebra \
+	$(top_srcdir)/raster/test/regress/rt_mapalgebra_expr \
+	$(top_srcdir)/raster/test/regress/rt_mapalgebra_mask \
+	$(top_srcdir)/raster/test/regress/rt_union \
+	$(top_srcdir)/raster/test/regress/rt_invdistweight4ma \
+	$(top_srcdir)/raster/test/regress/rt_4ma \
+	$(top_srcdir)/raster/test/regress/rt_setvalues_geomval \
+	$(top_srcdir)/raster/test/regress/rt_elevation_functions \
+	$(top_srcdir)/raster/test/regress/rt_colormap \
+	$(top_srcdir)/raster/test/regress/rt_grayscale
 
 RASTER_TEST_SREL = \
-	$(topsrcdir)/raster/test/regress/rt_gist_relationships \
-	$(topsrcdir)/raster/test/regress/rt_intersects \
-	$(topsrcdir)/raster/test/regress/rt_samealignment \
-	$(topsrcdir)/raster/test/regress/rt_geos_relationships \
-	$(topsrcdir)/raster/test/regress/rt_iscoveragetile
+	$(top_srcdir)/raster/test/regress/rt_gist_relationships \
+	$(top_srcdir)/raster/test/regress/rt_intersects \
+	$(top_srcdir)/raster/test/regress/rt_samealignment \
+	$(top_srcdir)/raster/test/regress/rt_geos_relationships \
+	$(top_srcdir)/raster/test/regress/rt_iscoveragetile
 
 RASTER_TEST_BUGS = \
-	$(topsrcdir)/raster/test/regress/bug_test_car5 \
-	$(topsrcdir)/raster/test/regress/permitted_gdal_drivers \
-	$(topsrcdir)/raster/test/regress/tickets
+	$(top_srcdir)/raster/test/regress/bug_test_car5 \
+	$(top_srcdir)/raster/test/regress/permitted_gdal_drivers \
+	$(top_srcdir)/raster/test/regress/tickets
 
 RASTER_TEST_LOADER = \
-	$(topsrcdir)/raster/test/regress/loader/Basic \
-	$(topsrcdir)/raster/test/regress/loader/Projected \
-	$(topsrcdir)/raster/test/regress/loader/BasicCopy \
-	$(topsrcdir)/raster/test/regress/loader/BasicFilename \
-	$(topsrcdir)/raster/test/regress/loader/BasicOutDB \
-	$(topsrcdir)/raster/test/regress/loader/Tiled10x10 \
-	$(topsrcdir)/raster/test/regress/loader/Tiled10x10Copy \
-	$(topsrcdir)/raster/test/regress/loader/Tiled8x8 \
-	$(topsrcdir)/raster/test/regress/loader/TiledAuto \
-	$(topsrcdir)/raster/test/regress/loader/TiledAutoSkipNoData \
-	$(topsrcdir)/raster/test/regress/loader/TiledAutoCopyn
+	$(top_srcdir)/raster/test/regress/loader/Basic \
+	$(top_srcdir)/raster/test/regress/loader/Projected \
+	$(top_srcdir)/raster/test/regress/loader/BasicCopy \
+	$(top_srcdir)/raster/test/regress/loader/BasicFilename \
+	$(top_srcdir)/raster/test/regress/loader/BasicOutDB \
+	$(top_srcdir)/raster/test/regress/loader/Tiled10x10 \
+	$(top_srcdir)/raster/test/regress/loader/Tiled10x10Copy \
+	$(top_srcdir)/raster/test/regress/loader/Tiled8x8 \
+	$(top_srcdir)/raster/test/regress/loader/TiledAuto \
+	$(top_srcdir)/raster/test/regress/loader/TiledAutoSkipNoData \
+	$(top_srcdir)/raster/test/regress/loader/TiledAutoCopyn
 
 RASTER_TESTS := $(RASTER_TEST_FIRST) \
 	$(RASTER_TEST_METADATA) $(RASTER_TEST_IO) $(RASTER_TEST_BASIC_FUNC) \

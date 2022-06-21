@@ -10,23 +10,23 @@
 # *
 # **********************************************************************
 
-abstopsrcdir := $(realpath $(top_srcdir))
-abssrcdir := $(realpath .)
+abs_top_srcdir := $(realpath $(top_srcdir))
+abs_srcdir := $(realpath .)
 abs_top_builddir := $(realpath $(top_builddir))
 
-TESTS := $(patsubst $(topsrcdir)/%,$(abstopsrcdir)/%,$(TESTS))
-TESTS := $(patsubst $(abssrcdir)/%,./%,$(TESTS))
+TESTS := $(patsubst $(top_srcdir)/%,$(abs_top_srcdir)/%,$(TESTS))
+TESTS := $(patsubst $(abs_srcdir)/%,./%,$(TESTS))
 
 .PHONY: check-regress
 check-regress:
 	@echo "RUNTESTFLAGS: $(RUNTESTFLAGS)"
 	@echo "RUNTESTFLAGS_INTERNAL: $(RUNTESTFLAGS_INTERNAL)"
 
-	POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(topsrcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
+	POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(top_srcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(RUNTESTFLAGS_INTERNAL) $(TESTS)
 
 	@if echo "$(RUNTESTFLAGS)" | grep -vq -- --upgrade; then \
 		echo "Running upgrade test as RUNTESTFLAGS did not contain that"; \
-		POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(topsrcdir)/regress/run_test.pl \
+		POSTGIS_TOP_BUILD_DIR=$(abs_top_builddir) $(PERL) $(top_srcdir)/regress/run_test.pl \
       --upgrade \
       $(RUNTESTFLAGS) \
       $(RUNTESTFLAGS_INTERNAL) \
@@ -36,5 +36,5 @@ check-regress:
 	fi
 
 check-long:
-	$(PERL) $(topsrcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(TESTS) $(TESTS_SLOW)
+	$(PERL) $(top_srcdir)/regress/run_test.pl $(RUNTESTFLAGS) $(TESTS) $(TESTS_SLOW)
 

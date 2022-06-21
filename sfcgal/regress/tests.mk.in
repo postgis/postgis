@@ -14,10 +14,10 @@ POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_SFCGAL_VERSION=@POSTGIS_SFCGAL_VERSION@
 
 TESTS += \
-		$(topsrcdir)/sfcgal/regress/regress_sfcgal \
-		$(topsrcdir)/sfcgal/regress/approximatemedialaxis.sql
+		$(top_srcdir)/sfcgal/regress/regress_sfcgal \
+		$(top_srcdir)/sfcgal/regress/approximatemedialaxis.sql
 
 ifeq ($(shell expr "$(POSTGIS_SFCGAL_VERSION)" ">=" 10401),1)
 	TESTS += \
-		$(topsrcdir)/sfcgal/regress/alphashape.sql
+		$(top_srcdir)/sfcgal/regress/alphashape.sql
 endif

@@ -25,8 +25,8 @@ check_enabled() {
   #echo "Suffix: ${suffix}"
   #echo "Basedir: ${bd}"
 
-  grep 'topsrcdir)' ${mk} |
-      sed 's|.*topsrcdir)/||;s/ .*$//' |
+  grep 'top_srcdir)' ${mk} |
+      sed 's|.*top_srcdir)/||;s/ .*$//' |
       sed 's|\\||' |
       sed 's/\.sql$//' > ${TMPDIR}/enabled_tests
 

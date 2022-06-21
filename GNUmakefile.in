@@ -196,9 +196,6 @@ postgis_revision.h:
 
 .PHONY: utils liblwgeom ChangeLog raster
 
-# TODO: drop this variable, use top_srcdir directly
-topsrcdir = $(top_srcdir)
-
 include $(top_builddir)/regress/core/tests.mk
 include $(top_srcdir)/regress/loader/tests.mk
 include $(top_srcdir)/regress/dumper/tests.mk

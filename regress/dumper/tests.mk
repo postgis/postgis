@@ -11,9 +11,9 @@
 # **********************************************************************
 
 TESTS += \
-	$(topsrcdir)/regress/dumper/mfiledmp \
-	$(topsrcdir)/regress/dumper/literalsrid \
-	$(topsrcdir)/regress/dumper/realtable \
-	$(topsrcdir)/regress/dumper/nullsintable \
-	$(topsrcdir)/regress/dumper/null3d \
-	$(topsrcdir)/regress/dumper/withclause
+	$(top_srcdir)/regress/dumper/mfiledmp \
+	$(top_srcdir)/regress/dumper/literalsrid \
+	$(top_srcdir)/regress/dumper/realtable \
+	$(top_srcdir)/regress/dumper/nullsintable \
+	$(top_srcdir)/regress/dumper/null3d \
+	$(top_srcdir)/regress/dumper/withclause

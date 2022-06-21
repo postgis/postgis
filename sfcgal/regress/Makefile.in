@@ -19,9 +19,6 @@ PERL=@PERL@
 
 override RUNTESTFLAGS := $(RUNTESTFLAGS) --sfcgal
 
-# TODO: drop this variable, use top_srcdir directly
-topsrcdir = $(top_srcdir)
-
 include $(builddir)/tests.mk
 include $(top_srcdir)/regress/runtest.mk
 

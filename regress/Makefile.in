@@ -49,9 +49,6 @@ check: check-regress
 
 check-unit:
 
-# TODO: drop this variable, use top_srcdir directly
-topsrcdir = $(top_srcdir)
-
 include $(builddir)/core/tests.mk
 include $(srcdir)/loader/tests.mk
 include $(srcdir)/dumper/tests.mk

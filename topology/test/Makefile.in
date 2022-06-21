@@ -58,8 +58,5 @@ check-regress: check-regress-deps
 
 check-regress-deps: topo_predicates.sql load_topology.sql load_topology-4326.sql
 
-# TODO: drop this variable, use top_srcdir directly
-topsrcdir = $(top_srcdir)
-
 include $(srcdir)/tests.mk
 include $(top_srcdir)/regress/runtest.mk
