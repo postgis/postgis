@@ -1008,69 +1008,6 @@ GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
         </refsection>
     </refentry>
 
-
-    <refentry id="ST_TriangulatePolygon">
-      <refnamediv>
-        <refname>ST_TriangulatePolygon</refname>
-        <refpurpose>Computes the constrained Delaunay triangulation of polygons</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry <function>ST_TriangulatePolygon</function></funcdef>
-            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-        <para>Computes the constrained Delaunay triangulation of polygons. The "constrained Delaunay triangulation" of a polygon is a set of triangles covering the polygon, with the maximum total interior angle over all possible triangulations.  It provides the "best quality" triangulation of the polygon.</para>
-
-        <para>Availability: 3.3.0</para>
-      </refsection>
-
-          <refsection>
-            <title>Example</title>
-            <para>A square is triangulated</para>
-                <programlisting>
-SELECT ST_AsText(
-    ST_TriangulatePolygon('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'));
-
-                                 st_astext
----------------------------------------------------------------------------
- GEOMETRYCOLLECTION(POLYGON((0 0,0 1,1 1,0 0)),POLYGON((1 1,1 0,0 0,1 1)))
-                </programlisting>
-          </refsection>
-      <refsection>
-            <title>Example</title>
-            <programlisting>SELECT ST_AsText(ST_TriangulatePolygon(
-    'POLYGON((0 0, 0 1, 3 1, 4 0.5, 5 1, 5 0, 2 0, 1 0.5, 0 0))'
-    ));
-</programlisting>
-            <informalfigure>
-            <mediaobject>
-            <imageobject>
-            <imagedata fileref="images/st_triangulatepolygon01.png" />
-            </imageobject>
-            <caption><para>Polygon Triangulation</para></caption>
-            </mediaobject>
-            </informalfigure>
-        </refsection>
-        <refsection>
-            <title>See Also</title>
-            <para><xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />, <xref linkend="ST_Tesselate" />, <xref linkend="ST_TriangulatePolygon" />
-            </para>
-        </refsection>
-
-          <refsection>
-            <title>See Also</title>
-            <para><xref linkend="ST_DelaunayTriangles" />, <xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_Tesselate" /></para>
-          </refsection>
-    </refentry>
-
-
     <refentry id="ST_FilterByM">
       <refnamediv>
         <refname>ST_FilterByM</refname>
@@ -2666,6 +2603,68 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
           </refsection>
     </refentry>
 
+    <refentry id="ST_TriangulatePolygon">
+      <refnamediv>
+        <refname>ST_TriangulatePolygon</refname>
+        <refpurpose>Computes the constrained Delaunay triangulation of polygons</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_TriangulatePolygon</function></funcdef>
+            <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+        <para>Computes the constrained Delaunay triangulation of polygons.
+        Holes and Multipolygons are supported.
+        </para>
+        <para>
+        The "constrained Delaunay triangulation" of a polygon is a set of triangles formed from the vertices of the polygon,
+        and covering it exactly, with the maximum total interior angle over all possible triangulations.
+        It provides the "best quality" triangulation of the polygon.</para>
+
+        <para>Availability: 3.3.0</para>
+      </refsection>
+
+          <refsection>
+            <title>Example</title>
+            <para>Triangulation of a square.</para>
+                <programlisting>
+SELECT ST_AsText(
+    ST_TriangulatePolygon('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'));
+
+                                 st_astext
+---------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(POLYGON((0 0,0 1,1 1,0 0)),POLYGON((1 1,1 0,0 0,1 1)))
+                </programlisting>
+          </refsection>
+      <refsection>
+            <title>Example</title>
+            <para>Triangulation of the letter P.</para>
+            <programlisting>SELECT ST_AsText(ST_TriangulatePolygon(
+    'POLYGON ((26 17, 31 19, 34 21, 37 24, 38 29, 39 43, 39 161, 38 172, 36 176, 34 179, 30 181, 25 183, 10 185, 10 190, 100 190, 121 189, 139 187, 154 182, 167 177, 177 169, 184 161, 189 152, 190 141, 188 128, 186 123, 184 117, 180 113, 176 108, 170 104, 164 101, 151 96, 136 92, 119 89, 100 89, 86 89, 73 89, 73 39, 74 32, 75 27, 77 23, 79 20, 83 18, 89 17, 106 15, 106 10, 10 10, 10 15, 26 17), (152 147, 151 152, 149 157, 146 162, 142 166, 137 169, 132 172, 126 175, 118 177, 109 179, 99 180, 89 180, 80 179, 76 178, 74 176, 73 171, 73 100, 85 99, 91 99, 102 99, 112 100, 121 102, 128 104, 134 107, 139 110, 143 114, 147 118, 149 123, 151 128, 153 141, 152 147))'
+    ));
+</programlisting>
+            <informalfigure>
+            <mediaobject>
+            <imageobject>
+            <imagedata fileref="images/st_triangulatepolygon01.png" />
+            </imageobject>
+            <caption><para>Polygon Triangulation</para></caption>
+            </mediaobject>
+            </informalfigure>
+        </refsection>
+
+          <refsection>
+            <title>See Also</title>
+            <para><xref linkend="ST_DelaunayTriangles" />, <xref linkend="ST_ConstrainedDelaunayTriangles" />, <xref linkend="ST_Tesselate" /></para>
+          </refsection>
+    </refentry>
 
     <refentry id="ST_VoronoiLines">
       <refnamediv>
