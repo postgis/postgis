@@ -242,9 +242,20 @@ cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-
 #cp topology/README* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
-cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+# don't bother shiping old upgrade scripts
+cp ${PGPATH}/share/extension/postgis--ANY*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*--2.3.7*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*--2.4.4*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*--2.4.10*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*--2.5*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/postgis*--3*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
 cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+# in case we ever do MAX ship all the max scripts
+export POSTGIS_MINOR_MAX_VER=${POSTGIS_MINOR_VER}.MAX
+cp ${PGPATH}/share/extension/postgis*${POSTGIS_MINOR_MAX_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+
+cp ${PGPATH}/share/extension/address_standardizer*--3*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+cp ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MINOR_MAX_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.control ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer in theory has this
 #cp extensions/postgis_topology/sql/* ${RELDIR}/${RELVERDIR}/share/extension
