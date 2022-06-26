@@ -1,8 +1,7 @@
-#### $Id: package_postgis210.sh 10291 2012-09-15 05:37:23Z robe $
+#!/usr/bin/env bash
 ### this script is used to zip up the compiled binaries
 ## PostgreSQL, OS_BUILD denote the last build to be packaged
 ## and are passed in by the jenkins job process
-## the scp to postgis website is done using Jenkins scp plugin as a final step
 ###
 #export OS_BUILD=64
 #export PGPORT=8442
@@ -16,8 +15,8 @@
 #otherwise use the ones jenkins passes thru
 #!/usr/bin/env bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.2
-	export GDAL_VER=3.4.3
+	export GEOS_VER=3.10.3
+	export GDAL_VER=3.4.2
 	export PROJ_VER=7.2.1
 	export SFCGAL_VER=1.4.1
 	export CGAL_VER=5.3
@@ -242,20 +241,50 @@ cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-
 #cp topology/README* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
-# don't bother shiping old upgrade scripts
-cp ${PGPATH}/share/extension/postgis--ANY*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis*--2.3.7*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis*--2.4.4*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis*--2.4.10*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis*--2.5*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis*--3*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${RELDIR}/${RELVERDIR}/share/extension
 # in case we ever do MAX ship all the max scripts
 export POSTGIS_MINOR_MAX_VER=${POSTGIS_MINOR_VER}.MAX
-cp ${PGPATH}/share/extension/postgis*${POSTGIS_MINOR_MAX_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
 
-cp ${PGPATH}/share/extension/address_standardizer*--3*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-cp ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MINOR_MAX_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+#export UPGRADE_VER_FILE="extensions/upgradeable_versions.mk"
+value=$(<extensions/upgradeable_versions.mk)
+export value=${value//\\/}
+value=${value//UPGRADEABLE_VERSIONS = /}
+#echo $value
+export UPGRADEABLE_VERSIONS=$value
+#echo "Versions are:  $UPGRADEABLE_VERSIONS"
+export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
+for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
+	cp extensions/$EXTNAME/sql/$EXTNAME--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+	cp extensions/postgis/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
+
+	# special cases of ANY and next
+	echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--ANY--${POSTGIS_MINOR_MAX_VER}.sql
+	echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
+
+	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
+		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+		cp extensions/postgis/sql/postgis--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/${EXTNAME}_data_us--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
+		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
+		echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension//${EXTNAME}_data_us--ANY--${POSTGIS_MINOR_MAX_VER}.sql
+		echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension//${EXTNAME}_data_us--${POSTGIS_MICRO_VER}--${POSTGIS_MINOR_MAX_VER}.sql
+		echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension//${EXTNAME}_data_us--${POSTGIS_MICRO_VER}next--${POSTGIS_MINOR_MAX_VER}.sql
+	fi
+
+	for OLD_VERSION in $UPGRADEABLE_VERSIONS; do \
+		if [ "$OLD_VERSION" > "2.5" ] || [ "$OLD_VERSION" in $WIN_RELEASED_VERSIONS ]; then
+			echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
+			if test "$EXTNAME" = "address_standardizer"; then
+				echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension/${EXTNAME}_data_us--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
+			fi
+		fi
+	done
+done
+#cp ${PGPATH}/share/extension/postgis*--2.5*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+#cp ${PGPATH}/share/extension/postgis*--3*${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+#cp ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${RELDIR}/${RELVERDIR}/share/extension
+
 cp -r extensions/*/*.control ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer in theory has this
 #cp extensions/postgis_topology/sql/* ${RELDIR}/${RELVERDIR}/share/extension
