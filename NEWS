@@ -21,6 +21,7 @@ PostGIS 3.2.2dev
   - #5151, ST_SetPoint with empty geometries (Regina Obe)
   - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
   - #5173, Crash creating flatgeobuf on row without geometry (Julien Rouhaud)
+  - #4541, ST_ConcaveHull returns a "geometrycollection" type instead of the expected "polygon"
 
 
 PostGIS 3.2.1
