@@ -1358,7 +1358,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
     <refentry id="ST_MaximumInscribedCircle">
       <refnamediv>
         <refname>ST_MaximumInscribedCircle</refname>
-        <refpurpose>Computes the largest circle that is fully contained within a geometry.</refpurpose>
+        <refpurpose>Computes the largest circle contained within a geometry.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -1372,12 +1372,19 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
 
       <refsection>
         <title>Description</title>
-        <para>Finds the largest circle that is fully contained within a geometry.
-        Returns a record with the center point of the circle,
-        a point on the geometry that is nearest to the center, and the radius of the circle. </para>
+        <para>Finds the largest circle that is contained within a (multi)polygon,
+        or which does not overlap any lines and points.
+        Returns a record with fields:
+        </para>
+        <itemizedlist>
+            <listitem><para> <varname>center</varname> - center point of the circle </para></listitem>
+            <listitem><para> <varname>nearest</varname> - a point on the geometry nearest to the center </para></listitem>
+            <listitem><para> <varname>radius</varname> - radius of the circle </para></listitem>
+        </itemizedlist>
 
-        <para>For polygonal inputs, the circle is inscribed within the external ring, using the internal rings as boundaries.
-        For linear and point inputs, the circle is inscribed within the convex hull of the input, using the input as further boundaries.</para>
+        <para>For polygonal inputs, the circle is inscribed within the boundary rings, using the internal rings as boundaries.
+        For linear and point inputs, the circle is inscribed within the convex hull of the input,
+        using the input lines and points as further boundaries.</para>
 
         <para>Availability: 3.1.0 - requires GEOS &gt;= 3.9.0.</para>
 
@@ -1419,7 +1426,7 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingRadius" /></para>
+        <para><xref linkend="ST_MinimumBoundingRadius" /></para>
       </refsection>
     </refentry>
 
@@ -1442,14 +1449,17 @@ LINESTRING Z (-30 -29.7 5,-29 -27 11,-30 -29.7 10,-36 -31 5,-45 -33 1,-46 -32 11
       <refsection>
         <title>Description</title>
             <para>Returns the smallest circle polygon that contains a geometry. </para>
-            <note><para>The circle is approximated by a polygon with a default of 48 segments per quarter circle.  Because the polygon is an approximation of the minimum bounding circle, some points in the input geometry may not be contained within the polygon.  The approximation can be improved by increasing the number of segments, with little performance penalty.  For applications where a polygonal approximation is not suitable, ST_MinimumBoundingRadius may be used.</para></note>
 
-            <para>It is often used with MULTI and Geometry Collections.
-        Although it is not an aggregate - you can use it in conjunction
-        with ST_Collect to get the minimum bounding circle of a set of geometries.
-        ST_MinimumBoundingCircle(ST_Collect(somepointfield)).</para>
+            <note><para>The bounding circle is approximated by a polygon with a default of 48 segments per quarter circle.
+            Because the polygon is an approximation of the minimum bounding circle, some points in the input geometry may not be contained within the polygon.
+            The approximation can be improved by increasing the number of segments.
+            For applications where an approximation is not suitable <xref linkend="ST_MinimumBoundingRadius" /> may be used.</para></note>
 
-        <para>The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle is often referred to as the Roeck test.</para>
+            <para>This function is not an aggregate. It can be used
+            with <xref linkend="ST_Collect" /> to get the minimum bounding circle of a set of geometries.</para>
+
+        <para>The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle
+        is referred to as the <emphasis>Reock compactness score</emphasis>.</para>
         <para>Performed by the GEOS module.</para>
         <para>Availability: 1.4.0</para>
 
@@ -1490,7 +1500,7 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingRadius" /></para>
+        <para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingRadius" /> </para>
       </refsection>
     </refentry>
 
@@ -1511,7 +1521,14 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 
     <refsection>
         <title>Description</title>
-        <para>Returns a record containing the center point and radius of the smallest circle that contains a geometry.</para>
+        <para>Computes the center point and radius of the smallest circle that contains a geometry.
+        Returns a record with fields:
+        </para>
+        <itemizedlist>
+            <listitem><para> <varname>center</varname> - center point of the circle </para></listitem>
+            <listitem><para> <varname>radius</varname> - radius of the circle </para></listitem>
+        </itemizedlist>
+
         <para>Use in conjunction with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
         <para>Availability - 2.3.0</para>
     </refsection>
