@@ -2,6 +2,7 @@ PostGIS 3.0.6dev
 2022/XX/XX
 
 * Bug Fixes and Enhancements *
+  - #4835, Occasional distance errors in polar area (Paul Ramsey)
   - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
   - #5087, Prevent configure for PostgreSQL >= 14
            and note in docs, PostgreSQL > 13 major
