@@ -272,7 +272,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	const GSERIALIZED *g1 = shared_gserialized_get(shared_geom1);
 	const GSERIALIZED *g2 = shared_gserialized_get(shared_geom2);
 	SPHEROID s;
-	double tolerance = 0.0;
+	double tolerance = FP_TOLERANCE;
 	bool use_spheroid = true;
 	double distance;
 	int dwithin = LW_FALSE;
