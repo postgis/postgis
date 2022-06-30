@@ -3,6 +3,7 @@ on: [push, pull_request]
 
 jobs:
   mingw:
+    if: 'false' == 'true'
     name: mingw
     runs-on: windows-latest
     strategy:
