@@ -242,7 +242,7 @@ cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
 # in case we ever do MAX ship all the max scripts
-export POSTGIS_MINOR_MAX_VER=${POSTGIS_MINOR_VER}.MAX
+export POSTGIS_MINOR_MAX_VER=${POSTGIS_MINOR_VER}.UPGRADEME
 
 #export UPGRADE_VER_FILE="extensions/upgradeable_versions.mk"
 value=$(<extensions/upgradeable_versions.mk)
