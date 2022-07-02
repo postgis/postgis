@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.2
+	export GEOS_VER=3.11.0
 	export GDAL_VER=3.4.2
 	export PROJ_VER=7.2.1
 	export SFCGAL_VER=1.4.1
@@ -193,9 +193,49 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp sfcgal/*.dll ${PGPATHEDB}/lib
  cp raster/rt_pg/postgis_raster-*.dll ${PGPATHEDB}/lib
- cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
- cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${PGPATHEDB}/share/extension
- cp -r ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
+
+export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
+export POSTGIS_MINOR_MAX_VER=${POSTGIS_MINOR_VER}.UPGRADEME
+
+#export UPGRADE_VER_FILE="extensions/upgradeable_versions.mk"
+value=$(<extensions/upgradeable_versions.mk)
+export value=${value//\\/}
+value=${value//UPGRADEABLE_VERSIONS = /}
+#echo $value
+export UPGRADEABLE_VERSIONS=$value
+#echo "Versions are:  $UPGRADEABLE_VERSIONS"
+ for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
+	cp extensions/$EXTNAME/sql/$EXTNAME--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
+	cp extensions/postgis/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
+
+	# special cases of ANY and next
+	echo "--placeholder" >  ${PGPATHEDB}/share/extension/$EXTNAME--ANY--${POSTGIS_MINOR_MAX_VER}.sql
+	echo "--placeholder" >  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
+
+	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
+		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
+		cp extensions/postgis/sql/postgis--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
+		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
+		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
+		echo "--placeholder" >  ${PGPATHEDB}/share/extension//${EXTNAME}_data_us--ANY--${POSTGIS_MINOR_MAX_VER}.sql
+		echo "--placeholder" >  ${PGPATHEDB}/share/extension//${EXTNAME}_data_us--${POSTGIS_MICRO_VER}--${POSTGIS_MINOR_MAX_VER}.sql
+		echo "--placeholder" >  ${PGPATHEDB}/share/extension//${EXTNAME}_data_us--${POSTGIS_MICRO_VER}next--${POSTGIS_MINOR_MAX_VER}.sql
+	fi
+
+	for OLD_VERSION in $UPGRADEABLE_VERSIONS; do \
+		if [ "$OLD_VERSION" > "2.5" ] ; then
+			echo "--placeholder" >  ${PGPATHEDB}/share/extension/$EXTNAME--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
+			if test "$EXTNAME" = "address_standardizer"; then
+				echo "--placeholder" >  ${PGPATHEDB}/share/extension/${EXTNAME}_data_us--$OLD_VERSION--${POSTGIS_MINOR_MAX_VER}.sql; \
+			fi
+		fi
+	done
+done
+ #cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
+ #cp -r ${PGPATH}/share/extension/postgis*${POSTGIS_MICRO_VER}next.sql ${PGPATHEDB}/share/extension
+ #cp -r ${PGPATH}/share/extension/address_standardizer*${POSTGIS_MICRO_VER}.sql ${PGPATHEDB}/share/extension
  cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
  cp -r extensions/*/*.dll ${PGPATHEDB}/lib
 
