@@ -1,5 +1,5 @@
-PostGIS 3.3.0dev
-2022/XX/XX
+PostGIS 3.3.0beta1
+2022/07/xx
 Changes since PostGIS 3.3.0alpha1
 * Enhancements *
   - #5158, pgtopo_import / pgtopo_export manpages (Sandro Santilli)
@@ -13,6 +13,7 @@ Changes since PostGIS 3.3.0alpha1
 * New features *
   - #5169, ST_SimplifyPolygonHull (requires GEOS 3.11)
     (Paul Ramsey, Martin Davis)
+  - #5162, ST_TriangulatePolygon with GEOS 3.11+ (Paul Ramsey, Martin Davis)
 
 
 PostGIS 3.3.0alpha1
@@ -69,7 +70,7 @@ Use below to enable it.
   - #5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)
   - #5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape (Loïc Bartoletti)
   - ST_TriangulatePolygon with GEOS 3.11+ (Paul Ramsey, Martin Davis)
-  - ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)
+  - #5162, ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)
 
  * Bug Fix *
    - #5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)
