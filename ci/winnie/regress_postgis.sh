@@ -206,7 +206,7 @@ export UPGRADEABLE_VERSIONS=$value
 #echo "Versions are:  $UPGRADEABLE_VERSIONS"
  for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
 	cp extensions/$EXTNAME/sql/$EXTNAME--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
-	cp extensions/postgis/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
 
