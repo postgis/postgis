@@ -52,7 +52,11 @@ export PROJECTS=/projects
 export MINGPROJECTS=/projects
 export PATHOLD=$PATH
 
+POSTGIS_MAJOR_VERSION=`grep ^POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`
+POSTGIS_MINOR_VERSION=`grep ^POSTGIS_MINOR_VERSION Version.config | cut -d= -f2`
+POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
 
+echo "Version major minor micro: $POSTGIS_MAJOR_VERSION $POSTGIS_MINOR_VERSION $POSTGIS_MICRO_VERSION"
 if [ "$OS_BUILD" == "64" ] ; then
 	export MINGHOST=x86_64-w64-mingw32
 else
@@ -189,6 +193,7 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  echo "Postgis src dir is ${POSTGIS_SRC}"
  strip postgis/postgis-*.dll
  strip raster/rt_pg/postgis_raster-*.dll
+ strip sfcgal/*.dll
  cp topology/*.dll ${PGPATHEDB}/lib
  cp postgis/postgis*.dll ${PGPATHEDB}/lib
  cp sfcgal/*.dll ${PGPATHEDB}/lib
@@ -204,15 +209,15 @@ value=${value//UPGRADEABLE_VERSIONS = /}
 #echo $value
 export UPGRADEABLE_VERSIONS=$value
 #echo "Versions are:  $UPGRADEABLE_VERSIONS"
- for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
+for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
 	cp extensions/$EXTNAME/sql/$EXTNAME--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
 
 	# special cases of ANY and next
 	echo "--placeholder" >  ${PGPATHEDB}/share/extension/$EXTNAME--ANY--${POSTGIS_MINOR_MAX_VER}.sql
-	echo "--placeholder" >  ${PGPATHEDB}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
 
 	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
 		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql  ${PGPATHEDB}/share/extension

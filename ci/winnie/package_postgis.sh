@@ -5,9 +5,9 @@
 ###
 #export OS_BUILD=64
 #export PGPORT=8442
-#POSTGIS_MAJOR_VERSION=2
-#POSTGIS_MINOR_VERSION=1
-#POSTGIS_MICRO_VERSION=0dev
+POSTGIS_MAJOR_VERSION=`grep ^POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`
+POSTGIS_MINOR_VERSION=`grep ^POSTGIS_MINOR_VERSION Version.config | cut -d= -f2`
+POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
 #export OS_BUILD=32
 
 #export GCC_TYPE=
@@ -91,6 +91,8 @@ export PGPATHEDB=${PGPATH}edb
 #export PROJSO=libproj-13.dll
 export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
+
+echo "Version: $POSTGIS_MICRO_VER"
 
 if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
@@ -257,10 +259,10 @@ for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_ti
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
 
 	# special cases of ANY and next
 	echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--ANY--${POSTGIS_MINOR_MAX_VER}.sql
-	echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
 
 	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
 		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
