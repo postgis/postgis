@@ -123,9 +123,9 @@ Release procedure
 
   - PostGIS doc release versioned doc - http://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
-         - nginx -t #to confirm you didn't breat the config
+         - nginx -t #to confirm you didn't break the config
          - service nginx reload
-      Verify the documentation is up to date (might need to change the apache config)
+      Verify the documentation is up to date (might need to change the nginx config)
 
   - Post on website:
       - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config/_default/params.toml#L132
