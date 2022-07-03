@@ -93,6 +93,7 @@ Use below to enable it.
   - #5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)
   - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
     useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
+  - GH698: support parallel aggregate for ST_Union (Sergei Shoulbakov)
 
  * New features *
   - #5116, Topology export/import scripts (Sandro Santilli)
