@@ -1857,7 +1857,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 #ifdef WORDS_BIGENDIAN
 		if (state->pgis_major_version > 0) {
 			stringbuffer_aprintf(&sb,
-			    "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX"
+			    "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX",
 			    quote_identifier(state->geo_col_name) );
 		}
 		else

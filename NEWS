@@ -6,9 +6,10 @@ ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEO
 
 Changes since PostGIS 3.3.0beta1
 * Enhancements *
-  - GH698: support parallel aggregate for ST_Union (Sergei Shoulbakov)
+  - GH698, support parallel aggregate for ST_Union (Sergei Shoulbakov)
 
 * Bug fixes *
+  - #5179, pgsql2shp syntax error on big-endian (Bas Couwenberg)
 
 
 PostGIS 3.3.0beta1
