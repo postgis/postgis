@@ -9,6 +9,7 @@
         <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
 Additional features are enabled if you are running GEOS 3.9+
 ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.</para>
+<para>Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.</para>
         <para>NOTE: GEOS 3.11.0 was recently released,
  details at <ulink url="https://libgeos.org/posts/2022-07-01-geos-3-11-0-released/">GEOS 3.11.0 release notes</ulink></para>
         <para>The new --enable-lto flag improves math computations.  This new feature is disabled by default
@@ -52,6 +53,7 @@ because on some platforms, causes compilation errors (BSD and MingW64 issues hav
         <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 4.9+.
             Additional features are enabled if you are running GEOS 3.9+ (precision feature of many processing functions)
             ST_MakeValid enhancements with 3.10+, ST_ConcaveHull native GEOS implementation with GEOS 3.11+</para>
+        <para>Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.</para>
 
         <para>The new --enable-lto flag improves math computations.  This new feature is disabled by default
 because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)</para>
