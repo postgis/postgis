@@ -115,6 +115,7 @@ topology_upgrade.sql: topology_before_upgrade.sql topology_upgrade.sql.in topolo
 	cat $^ > $@
 
 topology.sql: \
+	sql/cleanup/RemoveUnusedPrimitives.sql.in \
 	sql/sqlmm.sql.in \
 	sql/populate.sql.in \
 	sql/polygonize.sql.in \

@@ -55,6 +55,10 @@ indent_style = space
 [topology/**.{sql,sql.in}]
 indent_style = space
 
+# topology/clean SQL files want 2-space indentation
+[topology/sql/cleanup/**.{sql,sql.in}]
+indent_size = 2
+
 # postgis/sfcgal.sql.in wants space indentation
 [postgis/sfcgal.sql.in]
 indent_style = space

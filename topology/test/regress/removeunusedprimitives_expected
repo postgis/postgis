@@ -1,0 +1,9 @@
+ERROR:  Could not find topology "non-existent"
+ERROR:  Could not find topology "<NULL>"
+t0|clean|2
+t1|clean|4
+t2|clean|3
+t3|clean|1
+t4|clean|1
+t5|clean|2
+t6|clean|3

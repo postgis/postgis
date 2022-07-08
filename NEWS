@@ -12,6 +12,8 @@ Changes since PostGIS 3.3.0beta1
 * Bug fixes *
   - #5179, pgsql2shp syntax error on big-endian (Bas Couwenberg)
 
+* New features *
+  - #5183, topology.RemoveUnusedPrimitives (Sandro Santilli)
 
 PostGIS 3.3.0beta1
 2022/07/03

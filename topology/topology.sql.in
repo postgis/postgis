@@ -1418,6 +1418,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/manage/ValidateTopology.sql.in"
 #include "sql/manage/ValidateTopologyRelation.sql.in"
 
+-- Cleanup functions
+#include "sql/cleanup/RemoveUnusedPrimitives.sql.in"
+
 
 CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
