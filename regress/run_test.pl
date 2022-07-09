@@ -175,7 +175,8 @@ foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 	else
 	{
 		print "failed\n";
-		die "Unable to find $exec executable.\n";
+		print STDERR "Unable to find $exec executable.\n";
+		die "HINT: set POSTGIS_TOP_BUILD_DIR env variable to the build dir.\n";
 	}
 
 }
