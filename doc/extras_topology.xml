@@ -2030,7 +2030,7 @@ Updates all existing joined edges and relationships accordingly.
 					<funcprototype>
 					<funcdef>text <function>ST_MoveIsoNode</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
