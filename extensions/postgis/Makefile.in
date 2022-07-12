@@ -58,6 +58,7 @@ EXTENSION_UPGRADE_SCRIPTS = \
 
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
+# TODO: DROPME
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	../postgis_extension_helper.sql \
 	sql/raster_unpackage.sql \
@@ -103,10 +104,10 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION_SCRIPTS) | sql
 	printf '\\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \\quit\n' > $@
 	cat $^ >> $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile sql
-	# Ensure version is correct
-	cat $^ > $@
-	cat sql/$(EXTENSION)--$(EXTVERSION).sql | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis >> $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
+	cat sql/$(EXTENSION)--$(EXTVERSION).sql | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis > $@
+	# Upgrade after packaging
+	cat $< >> $@
 
 
 sql/$(EXTENSION)--unpackaged.sql: Makefile | sql

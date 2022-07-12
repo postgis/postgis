@@ -79,9 +79,9 @@ sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 	echo "-- Nothing to do here" > $@
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) | ../../utils/create_unpackaged.pl sql/$(EXTENSION)--ANY--$(EXTVERSION).sql Makefile sql
-	# Ensure version is correct
-	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
-	cat $^ | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis_raster >> $@
+	cat $^ | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis_raster > $@
+	# Upgrade after packaging
+	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql >> $@
 
 unpackaged_check.sql: unpackaged_check.sql.in Makefile
 	cat $< \

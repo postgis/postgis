@@ -78,11 +78,11 @@ sql/$(EXTENSION)--unpackaged.sql: Makefile | sql
 #then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
 #then remove default values and extra junk
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql/sfcgal.sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
-	# Ensure version is correct
-	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
 	cat $< \
 		| $(PERL) @top_srcdir@/utils/create_unpackaged.pl ${EXTENSION} \
-		>> $@
+		> $@
+	# Upgrade after packaging
+	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql >> $@
 
 sql/sfcgal_upgrade.sql : ../../sfcgal/sfcgal_upgrade.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
