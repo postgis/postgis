@@ -15,7 +15,7 @@
 --
 -- Return a topology.topology record from a TopoGeometry
 --
-CREATE OR REPLACE FUNCTION topology.FindTopology(TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.FindTopology(topology.TopoGeometry)
 RETURNS topology.topology
 AS $$
     SELECT * FROM topology.topology
