@@ -16,7 +16,7 @@ echo $WORKSPACE
 sh autogen.sh
 ./configure --with-pgconfig=${PGPATH}/bin/pg_config \
   --with-geosconfig=${GEOS_PATH}/bin/geos-config \
-	--without-protobuf
+	--without-protobuf --with-library-minor-version
 #make clean
 make
 export err_status=0

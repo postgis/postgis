@@ -10,7 +10,7 @@ CXXFLAGS="-O2 -pipe  -fstack-protector-strong -Wl,-rpath=/usr/local/lib/gcc8  -n
 CFLAGS="-Wall -Wmissing-prototypes -Wpointer-arith -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-trunc" \
 export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 sh autogen.sh
-./configure --with-projdir=/usr/local --with-libiconv=/usr/local --without-interrupt-tests
+./configure --with-projdir=/usr/local --with-libiconv=/usr/local --without-interrupt-tests --with-library-minor-version
 
 #make distclean
 make

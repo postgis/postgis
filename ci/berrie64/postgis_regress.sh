@@ -15,7 +15,7 @@ echo $PATH
 cd ${WORKSPACE}/PostGIS_Worker_Run/label/${label}/$BRANCH
 
 sh autogen.sh
-./configure --with-pgconfig=${PGPATH}/bin/pg_config --with-geosconfig=${GEOS_PATH}/bin/geos-config
+./configure --with-pgconfig=${PGPATH}/bin/pg_config --with-geosconfig=${GEOS_PATH}/bin/geos-config --with-library-minor-version
 #make clean
 make
 export err_status=0
