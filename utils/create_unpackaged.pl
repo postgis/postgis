@@ -4,7 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2013 Sandro Santilli <strk@kbt.io>
+# Copyright (C) 2013-2022 Sandro Santilli <strk@kbt.io>
 #
 # This is free software; you can redistribute and/or modify it under
 # the terms of the GNU General Public Licence. See the COPYING file.
@@ -144,15 +144,29 @@ sub add_if_not_exists
   print <<"EOF"
 DO \$\$
 BEGIN
- ALTER EXTENSION $extname ADD $obj;
- RAISE NOTICE 'newly registered $obj';
-EXCEPTION WHEN object_not_in_prerequisite_state THEN
+
+	-- TODO: check if ownership of the object
+	--       matches ownership of the extension
+	--       the object to the extension
+
+	ALTER EXTENSION $extname ADD $obj;
+	RAISE NOTICE 'newly registered $obj';
+
+EXCEPTION
+WHEN object_not_in_prerequisite_state THEN
   IF SQLERRM ~ '\\m$extname\\M'
   THEN
     RAISE NOTICE 'already registered $obj';
   ELSE
     RAISE EXCEPTION '%', SQLERRM;
   END IF;
+WHEN
+	undefined_function
+	-- TODO: handle more exceptions ?
+THEN
+	RAISE NOTICE 'undefined function $obj';
+WHEN OTHERS THEN
+	RAISE EXCEPTION 'Trying to add $obj to $extname, got % (%)', SQLERRM, SQLSTATE;
 END;
 \$\$ LANGUAGE 'plpgsql';
 EOF
