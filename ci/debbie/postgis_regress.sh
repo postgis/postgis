@@ -17,6 +17,7 @@ export MAKE_EXTENSION=1
 export DUMP_RESTORE=0
 export MAKE_LOGBT=0
 export NO_SFCGAL=0
+export MAKE_UPGRADE=1
 
 ## end variables passed in by jenkins
 
