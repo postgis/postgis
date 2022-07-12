@@ -84,12 +84,12 @@ sql_bits/sfcgal_comments.sql: ../../doc/sfcgal_comments.sql
 #grep all lines that start with CREATE OR REPLACE FUNCTION, TRIGGER...
 #then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
 #then remove default values and extra junk
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
-	# Ensure version is correct
-	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
-	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
-		| $(PERL) ../../utils/create_unpackaged.pl ${EXTENSION} \
-		>> $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/sfcgal.sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
+	cat $< \
+		| $(PERL) @top_srcdir@/utils/create_unpackaged.pl ${EXTENSION} \
+		> $@
+	# Upgrade after packaging
+	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql >> $@
 
 sql_bits/sfcgal_upgrade.sql : ../../postgis/sfcgal_upgrade.sql
 	mkdir -p sql_bits

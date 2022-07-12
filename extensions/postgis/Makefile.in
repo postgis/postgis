@@ -51,6 +51,7 @@ EXTENSION_UPGRADE_SCRIPTS = \
 
 # Scripts making up the extension upgrade-from-unpackaged file
 # NOTE: order matters
+# TODO: DROPME
 EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS = \
 	sql_bits/postgis.sql \
 	sql_bits/rtpostgis.sql
@@ -79,12 +80,10 @@ $(EXTENSION).control: $(EXTENSION).control.in Makefile
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql | sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
-	# Ensure version is correct
-	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
-	cat $(EXTENSION_UNPACKAGED_UPGRADE_SCRIPTS) \
-		| $(PERL) ../../utils/create_unpackaged.pl postgis \
-		>> $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql/$(EXTENSION)--ANY--$(EXTVERSION).sql ../../utils/create_unpackaged.pl Makefile | sql
+	cat sql/$(EXTENSION)--$(EXTVERSION).sql | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis > $@
+	# Upgrade after packaging
+	cat $< >> $@
 
 unpackaged_check.sql: unpackaged_check.sql.in Makefile
 	cat $< \

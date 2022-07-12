@@ -70,10 +70,10 @@ sql_bits/topology.sql: ../../topology/topology.sql
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/$(EXTENSION)--ANY--$(EXTVERSION).sql Makefile | sql
-	# Ugprade before packaging
-	cat sql/$(EXTENSION)--ANY--$(EXTVERSION).sql > $@
-	cat $< | $(PERL) ../../utils/create_unpackaged.pl postgis_topology >> $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl sql/topology_upgrade.sql Makefile | sql
+	cat $< | $(PERL) @top_srcdir@/utils/create_unpackaged.pl postgis_topology > $@
+	# Ugprade after packaging (TODO: use ANY--TARGET path?)
+	cat sql/topology_upgrade.sql >> $@
 
 #upgrade script should have everything but table, schema, type creation/alter
 #NOTE: we assume all object definitions end in ;

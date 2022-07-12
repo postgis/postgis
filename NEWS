@@ -4,6 +4,7 @@ PostGIS 2.5.8dev
  * Bug fixes *
 
   - #5202, Guard against downgrades (Sandro Santilli)
+  - #5209, #5210, Fix upgrades with CVE-2022-2625 PostgreSQL fix
 
 PostGIS 2.5.7
 2022/07/19
