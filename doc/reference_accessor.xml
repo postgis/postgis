@@ -2429,7 +2429,7 @@ GROUP BY gid, field1,field2;
 		<para>Availability: 2.0.0</para>
 		<para>&Z_support;</para>
 		<para>&sfs_compliant;</para>
-		<para>&sqlmm_compliant; SQL-MM 3: ?</para>
+		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3</para>
 		<para>&P_support;</para>
 	  </refsection>
 
@@ -2529,7 +2529,7 @@ GROUP BY gid, field1,field2;
 		</note>
 
 		<para>Availability: 2.0.0</para>
-		<para>&sqlmm_compliant; SQL-MM 3: ?</para>
+		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 
