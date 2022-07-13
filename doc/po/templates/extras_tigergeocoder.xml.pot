@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -81,8 +81,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "For instructions on how to enable the extension in your database and also to "
-"load data using it, refer to <xref linkend=\"install_tiger_geocoder_extension"
-"\"/>."
+"load data using it, refer to <xref "
+"linkend=\"install_tiger_geocoder_extension\"/>."
 msgstr ""
 
 #. Tag: para
@@ -276,8 +276,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is useful for minimizing index bloat that may confuse the query planner "
-"or take up unnecessary space. Use in combination with <xref linkend="
-"\"Install_Missing_Indexes\"/> to add just the indexes used by the geocoder."
+"or take up unnecessary space. Use in combination with <xref "
+"linkend=\"Install_Missing_Indexes\"/> to add just the indexes used by the "
+"geocoder."
 msgstr ""
 
 #. Tag: para
@@ -503,9 +504,9 @@ msgid ""
 "paramdef> <paramdef><type>integer </type> <parameter>OUT rating</parameter></"
 "paramdef> </funcprototype> <funcprototype> <funcdef>setof record "
 "<function>geocode</function></funcdef> <paramdef><type>norm_addy </type> "
-"<parameter>in_addy</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>max_results=10</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>geometry </type> "
+"<parameter>in_addy</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> <parameter>max_results=10</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>geometry </type> "
 "<parameter>restrict_region=NULL</parameter></paramdef> "
 "<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></"
@@ -726,8 +727,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"Pprint_Addy\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
-"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y"
-"\"/>"
+"linkend=\"ST_SnapToGrid\"/>, <xref linkend=\"ST_X\"/>, <xref "
+"linkend=\"ST_Y\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -963,8 +964,8 @@ msgstr ""
 msgid ""
 "This function uses the census <varname>tract</varname> which is not loaded "
 "by default. If you have already loaded your state table, you can load tract "
-"as well as bg, and tabblock using the <xref linkend="
-"\"Loader_Generate_Census_Script\"/> script."
+"as well as bg, and tabblock using the <xref "
+"linkend=\"Loader_Generate_Census_Script\"/> script."
 msgstr ""
 
 #. Tag: para
@@ -1172,8 +1173,8 @@ msgstr ""
 msgid ""
 "SELECT loader_generate_census_script(ARRAY['MA'], 'windows');\n"
 "-- result --\n"
-"set STATEDIR=\"\\gisdata\\www2.census.gov\\geo\\pvs\\tiger2010st"
-"\\25_Massachusetts\"\n"
+"set STATEDIR=\"\\gisdata\\www2.census."
+"gov\\geo\\pvs\\tiger2010st\\25_Massachusetts\"\n"
 "set TMPDIR=\\gisdata\\temp\\\n"
 "set UNZIPTOOL=\"C:\\Program Files\\7-Zip\\7z.exe\"\n"
 "set WGETTOOL=\"C:\\wget\\wget.exe\"\n"
@@ -1396,8 +1397,8 @@ msgstr ""
 #: extras_tigergeocoder.xml:549
 #, no-c-format
 msgid ""
-", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/>"
+", <xref linkend=\"Loader_Generate_Nation_Script\"/>, <xref "
+"linkend=\"Drop_State_Tables_Generate_Script\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1492,8 +1493,8 @@ msgstr ""
 msgid ""
 "If you were running <varname>tiger_2010</varname> version and you want to "
 "reload as state with newer tiger data, you'll need to for the very first "
-"load generate and run drop statements <xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
+"load generate and run drop statements <xref "
+"linkend=\"Drop_Nation_Tables_Generate_Script\"/> before you run this script."
 msgstr ""
 
 #. Tag: para
@@ -1766,8 +1767,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<varname>address_alphanumeric</varname> Full street number even if it has "
-"alpha characters like 17R. Parsing of this is better using <xref linkend="
-"\"Pagc_Normalize_Address\"/> function. Availability: PostGIS 2.4.0."
+"alpha characters like 17R. Parsing of this is better using <xref "
+"linkend=\"Pagc_Normalize_Address\"/> function. Availability: PostGIS 2.4.0."
 msgstr ""
 
 #. Tag: para
@@ -1845,8 +1846,8 @@ msgstr ""
 #: extras_tigergeocoder.xml:767
 #, no-c-format
 msgid ""
-"There are slight variations in casing and formatting over the <xref linkend="
-"\"Normalize_Address\"/>."
+"There are slight variations in casing and formatting over the <xref "
+"linkend=\"Normalize_Address\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1911,8 +1912,8 @@ msgid ""
 "batch geocoding to call generate a normaddy in batch mode, you are "
 "encouraged to directly call the address_standardizer standardize_address "
 "function as shown below which is similar exercise to what we did in <xref "
-"linkend=\"Normalize_Address\"/> that uses data created in <xref linkend="
-"\"Geocode\"/>."
+"linkend=\"Normalize_Address\"/> that uses data created in <xref "
+"linkend=\"Geocode\"/>."
 msgstr ""
 
 #. Tag: programlisting
@@ -2240,8 +2241,8 @@ msgstr ""
 #: extras_tigergeocoder.xml:947
 #, no-c-format
 msgid ""
-", <xref linkend=\"Geocode\"/>, <xref linkend=\"Loader_Generate_Nation_Script"
-"\"/>"
+", <xref linkend=\"Geocode\"/>, <xref "
+"linkend=\"Loader_Generate_Nation_Script\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -2297,11 +2298,11 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This function relies on Tiger data as well as the installation of the "
-"PostGIS topology module. For more information, refer to <xref linkend="
-"\"Topology\"/> and <xref linkend=\"installation_configuration\"/>. If you "
-"have not loaded data covering the region of interest, then no topology "
-"records will be created. This function will also fail if you have not "
-"created a topology using the topology functions."
+"PostGIS topology module. For more information, refer to <xref "
+"linkend=\"Topology\"/> and <xref linkend=\"installation_configuration\"/>. "
+"If you have not loaded data covering the region of interest, then no "
+"topology records will be created. This function will also fail if you have "
+"not created a topology using the topology functions."
 msgstr ""
 
 #. Tag: para

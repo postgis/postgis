@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-11-08 06:12+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -186,8 +186,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "You can upgrade your JDBC driver to the latest PostgreSQL 9.0 version which "
-"you can get from <ulink url=\"http://jdbc.postgresql.org/download.html"
-"\">http://jdbc.postgresql.org/download.html</ulink>"
+"you can get from <ulink url=\"http://jdbc.postgresql.org/download."
+"html\">http://jdbc.postgresql.org/download.html</ulink>"
 msgstr ""
 
 #. Tag: para
@@ -269,8 +269,8 @@ msgid ""
 "measurement, the geography data type which uses a geodetic coordinate "
 "system, with calculations on either a sphere or spheroid. The newest family "
 "member of the PostGIS spatial type family is raster for storing and "
-"analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="
-"\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
+"analyzing raster data. Raster has its very own FAQ. Refer to <xref "
+"linkend=\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
 msgstr ""
 
 #. Tag: para
@@ -304,9 +304,9 @@ msgstr ""
 #: faq.xml:125
 #, no-c-format
 msgid ""
-"Long Answer: Refer to our more lengthy discussion in the <xref linkend="
-"\"PostGIS_GeographyVSGeometry\"/> and <link linkend="
-"\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
+"Long Answer: Refer to our more lengthy discussion in the <xref "
+"linkend=\"PostGIS_GeographyVSGeometry\"/> and <link "
+"linkend=\"PostGIS_TypeFunctionMatrix\">function type matrix</link>."
 msgstr ""
 
 #. Tag: para
@@ -340,8 +340,8 @@ msgstr ""
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
 "\"geography\" to hold your GIS data. Storing geography type data is a little "
-"different than storing geometry. Refer to <xref linkend=\"PostGIS_Geography"
-"\"/> for details on storing geography."
+"different than storing geometry. Refer to <xref "
+"linkend=\"PostGIS_Geography\"/> for details on storing geography."
 msgstr ""
 
 #. Tag: para
@@ -394,8 +394,8 @@ msgstr ""
 #: faq.xml:168
 #, no-c-format
 msgid ""
-"For more information about other GIS objects, see the <link linkend="
-"\"RefObject\">object reference</link>."
+"For more information about other GIS objects, see the <link "
+"linkend=\"RefObject\">object reference</link>."
 msgstr ""
 
 #. Tag: para

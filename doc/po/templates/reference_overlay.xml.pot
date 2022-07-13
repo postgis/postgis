@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-06 07:55+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -474,9 +474,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Difference\"/>, <xref linkend=\"ST_Union\"/>, <xref "
-"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
-"\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref linkend="
-"\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+"linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref "
+"linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -699,12 +699,12 @@ msgstr ""
 #: reference_overlay.xml:401
 #, no-c-format
 msgid ""
-"To improve the robustness of ST_Split it may be convenient to <xref linkend="
-"\"ST_Snap\"/> the input to the blade in advance using a very low tolerance. "
-"Otherwise the internally used coordinate grid may cause tolerance problems, "
-"where coordinates of input and blade do not fall onto each other and the "
-"input is not being split correctly (see <ulink url=\"http://trac.osgeo.org/"
-"postgis/ticket/2192\">#2192</ulink>)."
+"To improve the robustness of ST_Split it may be convenient to <xref "
+"linkend=\"ST_Snap\"/> the input to the blade in advance using a very low "
+"tolerance. Otherwise the internally used coordinate grid may cause tolerance "
+"problems, where coordinates of input and blade do not fall onto each other "
+"and the input is not being split correctly (see <ulink url=\"http://trac."
+"osgeo.org/postgis/ticket/2192\">#2192</ulink>)."
 msgstr ""
 
 #. Tag: para
@@ -1150,9 +1150,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Another use of this function is to node and dissolve a collection of "
-"linestrings which cross or overlap to make them <link linkend="
-"\"Simple_Geometry\">simple</link>. (To add nodes but not dissolve duplicate "
-"linework use <xref linkend=\"ST_Node\"/>.)"
+"linestrings which cross or overlap to make them <link "
+"linkend=\"Simple_Geometry\">simple</link>. (To add nodes but not dissolve "
+"duplicate linework use <xref linkend=\"ST_Node\"/>.)"
 msgstr ""
 
 #. Tag: para

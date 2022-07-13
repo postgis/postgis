@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -270,8 +270,9 @@ msgstr ""
 #: reference_srs.xml:166
 #, no-c-format
 msgid ""
-"Requires PostGIS be compiled with PROJ support. Use <xref linkend="
-"\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled in."
+"Requires PostGIS be compiled with PROJ support. Use <xref "
+"linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled "
+"in."
 msgstr ""
 
 #. Tag: para
@@ -486,6 +487,6 @@ msgstr ""
 #: reference_srs.xml:221
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
-"\"UpdateGeometrySRID\"/>"
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
+"linkend=\"UpdateGeometrySRID\"/>"
 msgstr ""

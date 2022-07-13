@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-28 01:37+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -59,9 +59,9 @@ msgid ""
 "funcprototype> <funcprototype> <funcdef>geography <function>ST_Buffer</"
 "function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
 "parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>radius_of_buffer</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>text </type> <parameter>buffer_style_parameters</parameter></"
-"paramdef> </funcprototype> <funcprototype> <funcdef>geography "
+"<parameter>radius_of_buffer</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> <parameter>buffer_style_parameters</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geography "
 "<function>ST_Buffer</function></funcdef> <paramdef><type>geography </type> "
 "<parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
 "<parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>integer </"
@@ -528,8 +528,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref linkend="
-"\"ST_MakeValid\"/>"
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>, <xref "
+"linkend=\"ST_MakeValid\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -837,8 +837,8 @@ msgstr ""
 msgid ""
 "Note that returned geometry will get more points than the original. To "
 "reduce the number of points again use one of the simplification functions on "
-"the result. (see <xref linkend=\"ST_Simplify\"/> and <xref linkend="
-"\"ST_SimplifyVW\"/>)"
+"the result. (see <xref linkend=\"ST_Simplify\"/> and <xref "
+"linkend=\"ST_SimplifyVW\"/>)"
 msgstr ""
 
 #. Tag: para
@@ -1202,8 +1202,8 @@ msgstr ""
 #: reference_processing.xml:704
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend="
-"\"ST_MinimumBoundingCircle\"/>"
+", <xref linkend=\"ST_ConcaveHull\"/>, <xref "
+"linkend=\"ST_MinimumBoundingCircle\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1232,11 +1232,11 @@ msgstr ""
 #: reference_processing.xml:731
 #, no-c-format
 msgid ""
-"Return the <ulink url=\"http://en.wikipedia.org/wiki/Delaunay_triangulation"
-"\">Delaunay triangulation</ulink> of the vertices of the input geometry. "
-"Output is a COLLECTION of polygons (for flags=0) or a MULTILINESTRING (for "
-"flags=1) or TIN (for flags=2). The tolerance, if any, is used to snap input "
-"vertices together."
+"Return the <ulink url=\"http://en.wikipedia.org/wiki/"
+"Delaunay_triangulation\">Delaunay triangulation</ulink> of the vertices of "
+"the input geometry. Output is a COLLECTION of polygons (for flags=0) or a "
+"MULTILINESTRING (for flags=1) or TIN (for flags=2). The tolerance, if any, "
+"is used to snap input vertices together."
 msgstr ""
 
 #. Tag: para
@@ -1546,9 +1546,9 @@ msgid ""
 "<paramdef> <type>geometry</type> <parameter>geom</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>float8</type> <parameter>tolerance = NULL</"
 "parameter></paramdef> <paramdef choice=\"opt\"><type>int</type> "
-"<parameter>max_iter = 10000</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>boolean</type> <parameter>fail_if_not_converged = false</"
-"parameter></paramdef>"
+"<parameter>max_iter = 10000</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>boolean</type> <parameter>fail_if_not_converged = "
+"false</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1929,8 +1929,9 @@ msgstr ""
 #: reference_processing.xml:1190
 #, no-c-format
 msgid ""
-"This function is not an aggregate. It can be used with <xref linkend="
-"\"ST_Collect\"/> to get the minimum bounding circle of a set of geometries."
+"This function is not an aggregate. It can be used with <xref "
+"linkend=\"ST_Collect\"/> to get the minimum bounding circle of a set of "
+"geometries."
 msgstr ""
 
 #. Tag: para
@@ -2918,8 +2919,8 @@ msgstr ""
 #: reference_processing.xml:2070
 #, no-c-format
 msgid ""
-"Note that returned geometry might lose its simplicity (see <xref linkend="
-"\"ST_IsSimple\"/>)"
+"Note that returned geometry might lose its simplicity (see <xref "
+"linkend=\"ST_IsSimple\"/>)"
 msgstr ""
 
 #. Tag: para
@@ -2968,8 +2969,8 @@ msgstr ""
 #: reference_processing.xml:1848
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend="
-"\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
+", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref "
+"linkend=\"ST_SimplifyVW\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -3248,9 +3249,9 @@ msgstr ""
 #: reference_processing.xml:2028
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
-"\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend=\"TP_ST_Simplify\"/"
-">"
+", <xref linkend=\"ST_Simplify\"/>, <xref "
+"linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref "
+"linkend=\"TP_ST_Simplify\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -3447,8 +3448,8 @@ msgstr ""
 #: reference_processing.xml:2140
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref linkend="
-"\"ST_Tesselate\"/>"
+", <xref linkend=\"ST_ConstrainedDelaunayTriangles\"/>, <xref "
+"linkend=\"ST_Tesselate\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -3469,10 +3470,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> <paramdef> "
-"<parameter>g1</parameter> <type>geometry</type> </paramdef> <paramdef choice="
-"\"opt\"> <parameter>tolerance</parameter> <type>float8</type> </paramdef> "
-"<paramdef choice=\"opt\"> <parameter>extend_to</parameter> <type>geometry</"
-"type> </paramdef>"
+"<parameter>g1</parameter> <type>geometry</type> </paramdef> <paramdef "
+"choice=\"opt\"> <parameter>tolerance</parameter> <type>float8</type> </"
+"paramdef> <paramdef choice=\"opt\"> <parameter>extend_to</parameter> "
+"<type>geometry</type> </paramdef>"
 msgstr ""
 
 #. Tag: para

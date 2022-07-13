@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -155,9 +155,9 @@ msgstr ""
 #: reference_trajectory.xml:86 reference_trajectory.xml:142
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref linkend="
-"\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do not "
-"overlap in their M ranges."
+"Inputs must be valid trajectories as checked by <xref "
+"linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do "
+"not overlap in their M ranges."
 msgstr ""
 
 #. Tag: para
@@ -264,8 +264,8 @@ msgstr ""
 #: reference_trajectory.xml:160
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -304,9 +304,9 @@ msgstr ""
 #: reference_trajectory.xml:196
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref linkend="
-"\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do not "
-"overlap in their M ranges."
+"Inputs must be valid trajectories as checked by <xref "
+"linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do "
+"not overlap in their M ranges."
 msgstr ""
 
 #. Tag: programlisting
@@ -334,6 +334,6 @@ msgstr ""
 #: reference_trajectory.xml:215
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 msgstr ""

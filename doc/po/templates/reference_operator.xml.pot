@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -200,9 +200,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
-"<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
-"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
-"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+"<xref linkend=\"ST_Geometry_Overright\"/>, <xref "
+"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/"
+">, <xref linkend=\"ST_Geometry_Contain\"/>, <xref "
+"linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -280,12 +281,13 @@ msgstr ""
 #: reference_operator.xml:139 reference_operator.xml:200
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_box2df\"/>, <xref linkend="
-"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
-">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
-"\"is_contained_geometry_box2df\"/>, <xref linkend="
-"\"is_contained_box2df_geometry\"/>, <xref linkend="
-"\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_box2df\"/>, <xref "
+"linkend=\"contains_geometry_box2df\"/>, <xref "
+"linkend=\"contains_box2df_geometry\"/>, <xref "
+"linkend=\"contains_box2df_box2df\"/>, <xref "
+"linkend=\"is_contained_geometry_box2df\"/>, <xref "
+"linkend=\"is_contained_box2df_geometry\"/>, <xref "
+"linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -394,12 +396,13 @@ msgstr ""
 #: reference_operator.xml:261
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
-"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
-">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
-"\"is_contained_geometry_box2df\"/>, <xref linkend="
-"\"is_contained_box2df_geometry\"/>, <xref linkend="
-"\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
+"linkend=\"contains_geometry_box2df\"/>, <xref "
+"linkend=\"contains_box2df_geometry\"/>, <xref "
+"linkend=\"contains_box2df_box2df\"/>, <xref "
+"linkend=\"is_contained_geometry_box2df\"/>, <xref "
+"linkend=\"is_contained_box2df_geometry\"/>, <xref "
+"linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -717,8 +720,9 @@ msgstr ""
 #: reference_operator.xml:556
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
-"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/>"
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
+"linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/"
+">"
 msgstr ""
 
 #. Tag: refname
@@ -779,8 +783,8 @@ msgstr ""
 #: reference_operator.xml:617
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
-"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
+"linkend=\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -842,8 +846,8 @@ msgstr ""
 #: reference_operator.xml:675
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
-"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref "
+"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1017,8 +1021,8 @@ msgid ""
 "same coordinates, in the same order, are considered equal by this operator. "
 "For \"spatial equality\", that ignores things like coordinate order, and can "
 "detect features that cover the same spatial area with different "
-"representations, use <xref linkend=\"ST_OrderingEquals\"/> or <xref linkend="
-"\"ST_Equals\"/>"
+"representations, use <xref linkend=\"ST_OrderingEquals\"/> or <xref "
+"linkend=\"ST_Equals\"/>"
 msgstr ""
 
 #. Tag: para
@@ -1035,8 +1039,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Changed: 2.4.0, in prior versions this was bounding box equality not a "
-"geometric equality. If you need bounding box equality, use <xref linkend="
-"\"ST_Geometry_Same\"/> instead."
+"geometric equality. If you need bounding box equality, use <xref "
+"linkend=\"ST_Geometry_Same\"/> instead."
 msgstr ""
 
 #. Tag: programlisting
@@ -1249,11 +1253,13 @@ msgstr ""
 #: reference_operator.xml:1035
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
-"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
-"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
-"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_box2df_geometry\"/"
-">, <xref linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
+"linkend=\"overlaps_box2df_box2df\"/>, <xref "
+"linkend=\"contains_geometry_box2df\"/>, <xref "
+"linkend=\"contains_box2df_geometry\"/>, <xref "
+"linkend=\"contains_box2df_box2df\"/>, <xref "
+"linkend=\"is_contained_box2df_geometry\"/>, <xref "
+"linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1306,11 +1312,13 @@ msgstr ""
 #: reference_operator.xml:1096
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
-"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
-"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
-"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
-">, <xref linkend=\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
+"linkend=\"overlaps_box2df_box2df\"/>, <xref "
+"linkend=\"contains_geometry_box2df\"/>, <xref "
+"linkend=\"contains_box2df_geometry\"/>, <xref "
+"linkend=\"contains_box2df_box2df\"/>, <xref "
+"linkend=\"is_contained_geometry_box2df\"/>, <xref "
+"linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1363,11 +1371,13 @@ msgstr ""
 #: reference_operator.xml:1157
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
-"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
-"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
-"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
-">, <xref linkend=\"is_contained_box2df_geometry\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
+"linkend=\"overlaps_box2df_box2df\"/>, <xref "
+"linkend=\"contains_geometry_box2df\"/>, <xref "
+"linkend=\"contains_box2df_geometry\"/>, <xref "
+"linkend=\"contains_box2df_box2df\"/>, <xref "
+"linkend=\"is_contained_geometry_box2df\"/>, <xref "
+"linkend=\"is_contained_box2df_geometry\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1428,8 +1438,8 @@ msgstr ""
 #: reference_operator.xml:1219
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
-"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref "
+"linkend=\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1594,12 +1604,13 @@ msgstr ""
 #: reference_operator.xml:1382
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
-"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/>, "
-"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
-"\"is_contained_geometry_box2df\"/>, <xref linkend="
-"\"is_contained_box2df_geometry\"/>, <xref linkend="
-"\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
+"linkend=\"overlaps_box2df_box2df\"/>, <xref "
+"linkend=\"contains_box2df_geometry\"/>, <xref "
+"linkend=\"contains_box2df_box2df\"/>, <xref "
+"linkend=\"is_contained_geometry_box2df\"/>, <xref "
+"linkend=\"is_contained_box2df_geometry\"/>, <xref "
+"linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1652,12 +1663,13 @@ msgstr ""
 #: reference_operator.xml:1443
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
-"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
-"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
-"\"is_contained_geometry_box2df\"/>, <xref linkend="
-"\"is_contained_box2df_geometry\"/>, <xref linkend="
-"\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
+"linkend=\"overlaps_box2df_box2df\"/>, <xref "
+"linkend=\"contains_geometry_box2df\"/>, <xref "
+"linkend=\"contains_box2df_box2df\"/>, <xref "
+"linkend=\"is_contained_geometry_box2df\"/>, <xref "
+"linkend=\"is_contained_box2df_geometry\"/>, <xref "
+"linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1710,12 +1722,13 @@ msgstr ""
 #: reference_operator.xml:1504
 #, no-c-format
 msgid ""
-", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
-"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
-"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
-"\"is_contained_geometry_box2df\"/>, <xref linkend="
-"\"is_contained_box2df_geometry\"/>, <xref linkend="
-"\"is_contained_box2df_box2df\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref "
+"linkend=\"overlaps_box2df_box2df\"/>, <xref "
+"linkend=\"contains_geometry_box2df\"/>, <xref "
+"linkend=\"contains_box2df_geometry\"/>, <xref "
+"linkend=\"is_contained_geometry_box2df\"/>, <xref "
+"linkend=\"is_contained_box2df_geometry\"/>, <xref "
+"linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1762,8 +1775,8 @@ msgid ""
 "geometric equality to only checking for bounding box equality. To complicate "
 "things it also depends on if you have done a hard or soft upgrade which "
 "behavior your database has. To find out which behavior your database has you "
-"can run the query below. To check for true equality use <xref linkend="
-"\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/>."
+"can run the query below. To check for true equality use <xref "
+"linkend=\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/>."
 msgstr ""
 
 #. Tag: programlisting
@@ -1850,8 +1863,8 @@ msgstr ""
 #: reference_operator.xml:1646
 #, no-c-format
 msgid ""
-"Refer to <ulink url=\"https://postgis.net/workshops/postgis-intro/knn.html"
-"\">PostGIS workshop: Nearest-Neighbor Searching</ulink> for a detailed "
+"Refer to <ulink url=\"https://postgis.net/workshops/postgis-intro/knn."
+"html\">PostGIS workshop: Nearest-Neighbor Searching</ulink> for a detailed "
 "example."
 msgstr ""
 
@@ -2076,8 +2089,8 @@ msgstr ""
 #: reference_operator.xml:1731
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_IsValidTrajectory\"/>"
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_IsValidTrajectory\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -2107,8 +2120,8 @@ msgstr ""
 msgid ""
 "The <varname>&lt;#&gt;</varname> operator returns distance between two "
 "floating point bounding boxes, possibly reading them from a spatial index "
-"(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis role="
-"\"strong\">approximate</emphasis> distance ordering."
+"(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis "
+"role=\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
 
 #. Tag: para
@@ -2205,8 +2218,8 @@ msgstr ""
 msgid ""
 "The <varname>&lt;&lt;-&gt;&gt;</varname> operator returns the n-D "
 "(euclidean) distance between the centroids of the bounding boxes of two "
-"geometries. Useful for doing nearest neighbor <emphasis role=\"strong"
-"\">approximate</emphasis> distance ordering."
+"geometries. Useful for doing nearest neighbor <emphasis "
+"role=\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
 
 #. Tag: para

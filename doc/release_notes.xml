@@ -2,6 +2,36 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+        <sect1>
+        <title>PostGIS 3.3.0beta2</title>
+        <para>2022/07/13</para>
+        <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+        Additional features are enabled if you are running GEOS 3.9+
+        ST_MakeValid enhancements with 3.10+, numerous additional enhancements with GEOS 3.11+.
+        Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.</para>
+        <para>NOTE: GEOS 3.11.0 was recently released,
+ details at <ulink url="https://libgeos.org/posts/2022-07-01-geos-3-11-0-released/">GEOS 3.11.0 release notes</ulink></para>
+        <para>The new --enable-lto flag improves speed of math computations.  This new feature is disabled by default
+because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)</para>
+        <para>Use below to enable it.</para>
+        <programlisting>./configure --enable-lto</programlisting>
+        <para>Changes since PostGIS 3.3.0beta1:</para>
+
+        <simplesect>
+            <title>New Features</title>
+           <para><ulink url="https://trac.osgeo.org/postgis/ticket/5183">5183</ulink>, topology.RemoveUnusedPrimitives (Sandro Santilli)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Enhancements</title>
+            <para><ulink url="https://github.com/postgis/postgis/pull/698">GH698</ulink>, support parallel aggregate for ST_Union (Sergei Shoulbakov)</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5179">5179</ulink>, pgsql2shp syntax error on big-endian (Bas Couwenberg)</para>
+        </simplesect>
+    </sect1>
 
     <sect1>
         <title>PostGIS 3.3.0beta1</title>
