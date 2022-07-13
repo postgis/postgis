@@ -1,3 +1,15 @@
+PostGIS 3.3.0rc1
+2022/xx/xx
+This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+Additional features are enabled if you are running GEOS 3.9+
+ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.
+Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.
+
+Changes since PostGIS 3.3.0beta2:
+* Bug fixes *
+
+
+
 PostGIS 3.3.0beta2
 2022/07/13
 This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
