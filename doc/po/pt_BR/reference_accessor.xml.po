@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -385,8 +385,8 @@ msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 #. Tag: para
 #: reference_accessor.xml:94
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
+msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:96
@@ -1858,8 +1858,8 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #. Tag: para
 #: reference_accessor.xml:673
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:679
@@ -3851,7 +3851,7 @@ msgstr "Disponibilidade: 2.0.0"
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
 msgstr ""
 
 #. Tag: programlisting
@@ -4916,6 +4916,14 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
+
+#, no-c-format
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+
+#, no-c-format
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.15"
 
 #, no-c-format
 #~ msgid "&sqlmm_compliant; SQL-MM 3: ?"

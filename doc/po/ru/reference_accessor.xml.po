@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2022-04-17 08:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -328,7 +328,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:94
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
 msgstr ""
 
 #. Tag: para
@@ -1551,7 +1551,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:673
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
 msgstr ""
 
 #. Tag: programlisting
@@ -3078,7 +3078,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
 msgstr ""
 
 #. Tag: programlisting

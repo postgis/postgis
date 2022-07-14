@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2022-01-19 10:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -1104,8 +1104,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:475 reference_measure.xml:870
-#: reference_measure.xml:1426
+#: reference_measure.xml:475
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
 msgstr ""
@@ -1846,6 +1845,12 @@ msgid ""
 "Returns the 3-dimensional or 2-dimensional length of the geometry if it is a "
 "LineString or MultiLineString. For 2-d lines it will just return the 2-d "
 "length (same as ST_Length and ST_Length2D)"
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:870
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
 msgstr ""
 
 #. Tag: para
@@ -2868,6 +2873,12 @@ msgid ""
 "Returns the 3-dimensional perimeter of the geometry, if it is a polygon or "
 "multi-polygon. If the geometry is 2-dimensional, then the 2-dimensional "
 "perimeter is returned."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:1426
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
 msgstr ""
 
 #. Tag: para

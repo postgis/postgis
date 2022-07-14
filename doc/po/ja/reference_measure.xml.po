@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2022-03-28 21:21+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -1177,8 +1177,7 @@ msgstr ""
 "に基づきます)を、投影法の単位で返します。"
 
 #. Tag: para
-#: reference_measure.xml:475 reference_measure.xml:870
-#: reference_measure.xml:1426
+#: reference_measure.xml:475
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
 msgstr ""
@@ -2066,6 +2065,12 @@ msgstr ""
 "LINESTRINGまたはMULTILINESTRINGに対して、ジオメトリの3次元長または2次元長を返"
 "します。2次元ラインについては、2次元長を返します (ST_LengthやST_Length2Dと同"
 "じです)。"
+
+#. Tag: para
+#: reference_measure.xml:870
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:871
@@ -3203,6 +3208,12 @@ msgid ""
 msgstr ""
 "POLYGONまたはMULTIPOLYGONジオメトリの場合には、3次元周囲長を返します。ジオメ"
 "トリが2次元の場合には、2次元周囲長を返します。"
+
+#. Tag: para
+#: reference_measure.xml:1426
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:1427

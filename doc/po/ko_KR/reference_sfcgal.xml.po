@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -146,7 +146,7 @@ msgstr "&T_support;"
 #: reference_sfcgal.xml:170 reference_sfcgal.xml:317 reference_sfcgal.xml:407
 #: reference_sfcgal.xml:491 reference_sfcgal.xml:553 reference_sfcgal.xml:623
 #: reference_sfcgal.xml:718 reference_sfcgal.xml:1004 reference_sfcgal.xml:1188
-#: reference_sfcgal.xml:1230
+#: reference_sfcgal.xml:1231
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -208,10 +208,9 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_sfcgal.xml:108 reference_sfcgal.xml:197 reference_sfcgal.xml:274
-#: reference_sfcgal.xml:355
+#: reference_sfcgal.xml:108
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5"
 msgstr ""
 
 #. Tag: title
@@ -365,6 +364,12 @@ msgstr ""
 #, no-c-format
 msgid "Return a geometry that is the shared portion between geom1 and geom2."
 msgstr "geom1과 geom2가 공유하는 부분을 도형으로 반환합니다."
+
+#. Tag: para
+#: reference_sfcgal.xml:197 reference_sfcgal.xml:274 reference_sfcgal.xml:355
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
+msgstr ""
 
 #. Tag: para
 #: reference_sfcgal.xml:205 reference_sfcgal.xml:282 reference_sfcgal.xml:372
@@ -1803,14 +1808,20 @@ msgstr ""
 "<funcdef>float <function>ST_Volume</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
+#. Tag: para
+#: reference_sfcgal.xml:1220
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)"
+msgstr ""
+
 #. Tag: title
-#: reference_sfcgal.xml:1223
+#: reference_sfcgal.xml:1224
 #, no-c-format
 msgid "Example"
 msgstr "예시"
 
 #. Tag: para
-#: reference_sfcgal.xml:1224
+#: reference_sfcgal.xml:1225
 #, no-c-format
 msgid ""
 "When closed surfaces are created with WKT, they are treated as areal rather "
@@ -1823,7 +1834,7 @@ msgstr ""
 "면 도형은 부피가 없습니다. 다음은 그 사실을 보여주는 예시입니다."
 
 #. Tag: programlisting
-#: reference_sfcgal.xml:1226
+#: reference_sfcgal.xml:1227
 #, no-c-format
 msgid ""
 "SELECT ST_Volume(geom) As cube_surface_vol,\n"
@@ -1853,7 +1864,7 @@ msgstr ""
 "                0 |                 1"
 
 #. Tag: para
-#: reference_sfcgal.xml:1232
+#: reference_sfcgal.xml:1233
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"

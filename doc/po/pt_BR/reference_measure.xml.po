@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1158,8 +1158,7 @@ msgstr ""
 "entre duas geometrias em unidades projetadas (spatial ref units)."
 
 #. Tag: para
-#: reference_measure.xml:475 reference_measure.xml:870
-#: reference_measure.xml:1426
+#: reference_measure.xml:475
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
 msgstr ""
@@ -2023,6 +2022,12 @@ msgstr ""
 "Retorna o comprimento 3-dimensional ou 2-dimensional da geometria se for uma "
 "linestring ou multi-linestring. Para linhas 2-d, ela só retornará o "
 "comprimento 2-d (o mesmo da ST_Length e ST_Length2D)"
+
+#. Tag: para
+#: reference_measure.xml:870
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:871
@@ -3177,6 +3182,12 @@ msgstr ""
 "Retorna o perímetro 3-dimensional da geometria, se for um polígono ou multi-"
 "polígono. Se a geometria for 2-dimensional, então retorna o perímetro 2-"
 "dimensional. "
+
+#. Tag: para
+#: reference_measure.xml:1426
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:1427

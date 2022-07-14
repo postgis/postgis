@@ -135,6 +135,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As geom) AS line;
 			</note>
 
 			<para>Availability: 3.0.0</para>
+            <para>&Z_support;</para>
 		</refsection>
 
 
@@ -473,6 +474,7 @@ CROSS JOIN LATERAL (
 		<para>Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.</para>
 
 		<para>&M_support;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13</para>
 	  </refsection>
 
 
@@ -535,6 +537,7 @@ SELECT ST_AsText(
 		<para>Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE.</para>
 
 		<para>&M_support;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
 	  </refsection>
 
 	  <refsection>

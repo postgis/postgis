@@ -870,6 +870,7 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 		  <para>Enhanced: 2.1.0 id support was introduced, for GML 3.</para>
 
 		<note><para>Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>

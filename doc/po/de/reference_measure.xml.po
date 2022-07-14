@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2022-05-12 13:42+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
@@ -1209,8 +1209,7 @@ msgstr ""
 "Einheiten (Einheiten des Koordinatenreferenzsystem) zurückgegeben."
 
 #. Tag: para
-#: reference_measure.xml:475 reference_measure.xml:870
-#: reference_measure.xml:1426
+#: reference_measure.xml:475
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3"
 msgstr ""
@@ -2127,6 +2126,12 @@ msgstr ""
 "Gibt die 2- oder 3-dimensionale Länge einer Linie oder einer Mehrfachlinie "
 "zurück. Bei einer 2-D Linie wird die Länge nur in 2D zurückgegeben (gleich "
 "wie ST_Length und ST_Length2D)"
+
+#. Tag: para
+#: reference_measure.xml:870
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:871
@@ -3299,6 +3304,12 @@ msgstr ""
 "Gibt den 3-dimensionalen Umfang eines Polygons oder eines Mehrfachpolygons "
 "zurück. Wenn es sich um eine 2-dimensionale Geometrie handelt wird der 2-"
 "dimensionale Umfang zurückgegeben."
+
+#. Tag: para
+#: reference_measure.xml:1426
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5"
+msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:1427
