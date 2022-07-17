@@ -1,4 +1,4 @@
-PostGIS 3.0.6dev
+PostGIS 3.0.6
 2022/XX/XX
 
 * Bug Fixes and Enhancements *
@@ -11,6 +11,8 @@ PostGIS 3.0.6dev
   - #5120, Fix not-null result from ST_EstimatedExtent against
            truncated tables with spatial index (Sandro Santilli)
 	- #5151, garden crash ST_SetPoint with empty geometries (Regina Obe)
+  - #5150, Change signature of AddToSearchPath (Regina Obe)
+  - #5155, More schema qual fixes (Regina Obe)
 
 PostGIS 3.0.5
 2022/02/02
