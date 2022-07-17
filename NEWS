@@ -3,6 +3,7 @@ PostGIS 2.5.7dev
 
  * Bug fixes *
 
+  - #5151, ST_SetPoint with empty geometries (Regina Obe)
   - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
 
 PostGIS 2.5.6
