@@ -5,6 +5,8 @@ PostGIS 2.5.7dev
 
   - #5151, ST_SetPoint with empty geometries (Regina Obe)
   - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
+  - #5150, Change signature of AddToSearchPath (Regina Obe)
+  - #5155, More schema qual fixes (Regina Obe)
 
 PostGIS 2.5.6
 2022/04/20
