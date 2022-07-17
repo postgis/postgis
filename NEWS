@@ -16,6 +16,7 @@ PostGIS 3.1.6dev
   - #5114, Crash with long column names in pgsql2shp (Paul Ramsey)
   - #4541, ST_ConcaveHull returns a "geometrycollection" type
            instead of the expected "polygon" (Regina Obe)
+  - #5154, raster ST_Value is undercosted (Regina Obe)
 
 
 PostGIS 3.1.5

@@ -4581,12 +4581,12 @@ CREATE OR REPLACE FUNCTION St_BandFileTimestamp(rast raster, band integer DEFAUL
 CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y integer, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getPixelValue'
-    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+    LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 
 CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
     AS $$ SELECT st_value($1, 1, $2, $3, $4) $$
-    LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+    LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 
 CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8 AS
@@ -4614,12 +4614,12 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, excl
                         exclude_nodata_value);
     END;
     $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
+    LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 
 CREATE OR REPLACE FUNCTION ST_Value(rast raster, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
     AS $$ SELECT @extschema@.ST_value($1, 1, $2, $3) $$
-    LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+    LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE _COST_MEDIUM;
 
 -----------------------------------------------------------------------
 -- ST_PixelOfValue()
