@@ -7,6 +7,7 @@ Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.
 
 Changes since PostGIS 3.3.0beta2:
 * Bug fixes *
+  - #5154, raster ST_Value is undercosted (Regina Obe)
 
 
 
