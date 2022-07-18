@@ -1,5 +1,5 @@
-PostGIS 3.2.2dev
-2022/MM/DD
+PostGIS 3.2.2
+2022/07/DD
 
 * Bug Fixes *
   - #5182, Fix loading topology.sql in new database (Sandro Santilli)
@@ -24,6 +24,7 @@ PostGIS 3.2.2dev
   - #5152, Fix infinite loop with ST_Split (Sandro Santilli)
   - #5173, Crash creating flatgeobuf on row without geometry (Julien Rouhaud)
   - #4541, ST_ConcaveHull returns a "geometrycollection" type instead of the expected "polygon"
+- - #5154, raster ST_Value is undercosted (Regina Obe)
 
 
 PostGIS 3.2.1
