@@ -8,7 +8,7 @@ SELECT 'difference', ST_AsText(ST_Difference(
 	'LINESTRING(7 0, 13.2 0)'::geometry,
 2));
 
-SELECT 'symdifference', ST_AsText(ST_Difference(
+SELECT 'symdifference', ST_AsText(ST_SymDifference(
 	'LINESTRING(0 0, 9 0)'::geometry,
 	'LINESTRING(7 0, 13.2 0)'::geometry,
 2));
