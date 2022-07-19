@@ -116,7 +116,8 @@ Use below to enable it.
   - #5170, add a optional max_rows_per_copy to -Y option to raster2pgsql to
     control number of rows per copy statement.
     Default to 50 when not specified (Regina Obe)
-  - GH698: support parallel aggregate for ST_Union (Sergei Shoulbakov)
+  - GH698, support parallel aggregate for ST_Union (Sergei Shoulbakov)
+  - #5024, Update spatial_ref_sys as part of ALTER EXTENSION update postgis (Paul Ramsey)
 
 
  * New features *
