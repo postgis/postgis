@@ -2,10 +2,33 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+    <sect1>
+        <title>Release 3.0.6</title>
+        <para>Release date: 2022/07/19</para>
+        <para>This is a bug fix / performance enhancements release. This version requires PostgreSQL 9.5+-13 and GEOS &gt;= 3.6+
+              Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8</para>
+        <simplesect>
+          <title>Bug Fixes and Enhancements</title>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/4835">4835</ulink>, Occasional distance errors in polar area (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5152">5152</ulink>, Fix infinite loop with ST_Split (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5087">5087</ulink>, Prevent configure for PostgreSQL &gt;= 14
+                      and note in docs, PostgreSQL > 13 major
+                      is not supported (Regina Obe)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5115">5115</ulink>, Allow dropping topologies with pending constraints (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5120">5120</ulink>, Fix not-null result from ST_EstimatedExtent against
+                      truncated tables with spatial index (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5151">5151</ulink>, garden crash ST_SetPoint with empty geometries (Regina Obe)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5150">5150</ulink>, Change signature of AddToSearchPath (Regina Obe)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5155">5155</ulink>, More schema qual fixes (Regina Obe)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5154">5154</ulink>, ST_Value is undercosted (Regina Obe)</para>
+        </simplesect>
+    </sect1>
+
     <sect1>
         <title>Release 3.0.5</title>
         <para>Release date: 2022/02/02</para>
-        <para>This is a bug fix / performance enhancements release. This version requires PostgreSQL 9.5+-13 and GEOS >= 3.6+
+        <para>This is a bug fix / performance enhancements release. This version requires PostgreSQL 9.5+-13 and GEOS &gt;= 3.6+
               Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8</para>
         <simplesect>
           <title>Bug Fixes and Enhancements</title>
