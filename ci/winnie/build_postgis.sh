@@ -20,7 +20,7 @@ export JSON_VER=0.12
 export PCRE_VER=8.33
 
 if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.15
+  export ICON_VER=1.16
 fi;
 
 echo "ICON_VER ${ICON_VER}"

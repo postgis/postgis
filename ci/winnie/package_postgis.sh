@@ -98,9 +98,6 @@ if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
 fi
 
-if [[ "$reference"  == *trunk* ]] ; then
-	export svnurl="https://svn.osgeo.org/postgis/trunk"
-fi;
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 #POSTGIS_SVN_REVISION=will_be_passed_in_by_bot
 export GDAL_DATA="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal"
@@ -203,11 +200,13 @@ fi;
 
 echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
 echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
+echo "CURL VERSION: ${CURL_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
 cp ${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/
 #cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
 cd ${POSTGIS_SRC}
 strip postgis/*.dll
+strip sfcgal/*.dll
 strip raster/rt_pg/*.dll
 strip liblwgeom/.libs/*.dll
 
@@ -256,6 +255,7 @@ cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
 echo "GEOS VERSION: ${GEOS_VER} https://trac.osgeo.org/geos" >> $verfile
 echo "GDAL VERSION: ${GDAL_VER} https://gdal.org/download.html#current-releases" >> $verfile
 echo "PROJ VERSION: ${PROJ_VER} https://proj.org/download.html#current-release" >> $verfile
+echo "LIBICONV VERSION: ${ICON_VER} http://ftp.gnu.org/gnu/libiconv/libiconv-${ICONV_VER}.tar.gz" >> $verfile
 
 if [ -n "$SFCGAL_VER"  ]; then
     echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
@@ -270,6 +270,7 @@ fi
 #echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}
+md5sum $package > ${package}.md5
 #scp $package robe@www.refractions.net:${DWN}/${REL_PGVER}/buildbot/${RELVERDIR}.zip
 cp $package ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
 cd ${POSTGIS_SRC}

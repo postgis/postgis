@@ -1,5 +1,5 @@
 PostGIS 3.0.6
-2022/17/19
+2022/07/19
 
 * Bug Fixes and Enhancements *
   - #4835, Occasional distance errors in polar area (Paul Ramsey)
