@@ -3,6 +3,18 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>PostGIS 2.5.7</title>
+      <para>Release Date: 2022/07/18</para>
+      <simplesect>
+        <title>Bug fixes</title>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5151">5151</ulink>, ST_SetPoint with empty geometries (Regina Obe)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5152">5152</ulink>, Fix infinite loop with ST_Split (Sandro Santilli)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5150">5150</ulink>, Change signature of AddToSearchPath (Regina Obe)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5155">5155</ulink>, More schema qual fixes (Regina Obe)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>PostGIS 2.5.6</title>
       <para>Release Date: 2022/04/20</para>
       <simplesect>
