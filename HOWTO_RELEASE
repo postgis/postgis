@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2020-02-23
+Date: 2022-07-20
 
 Versioning Scheme
 -----------------
@@ -64,7 +64,7 @@ Release procedure
 
   - Can edit tickets and milestones on http://trac.osgeo.org/postgis/
   - Can commit to upstream git https://git.osgeo.org/gitea/postgis/postgis
-  - Have SSH to download.osgeo.org and can write to /osgeo/download/postgis.
+  - Have SSH to upload.osgeo.org and can write to /osgeo/download/postgis.
   - Have SSH to postgis.net and can write to /etc/nginx/sites-enabled/postgis.net.
   - Post to https://git.osgeo.org/gitea/postgis/postgis.net/ and get it added to feed
   https://planet.postgresql.org/register/new/
@@ -84,17 +84,17 @@ Release procedure
 
 4. Update code.
 
-  - For first micro of a minor, make sure to pull the latest translations from transifex
-     TODO: more detail here - there is a job on debbie for 3.1 for examples
-     https://debbie.postgis.net/view/PostGIS/job/PostGIS_docs_translations_3.1
-     and she's setup with an api key to pull and push translations.
+  - For first micro of a minor, make sure weblate.osgeo.org has the latest translation files.
+   - use in doc/  make update-pot && make update-po and commit
+
   - Update the README.md to reflect new to be created buildbot badges
-	   (this should only be needed for trunk release)
+	   (this should only be needed for master release)
   - Edit README.postgis and set release date and version.
   - Add release notes in doc/release_notes.xml
   - Update Version.config to drop the "dev" suffix
-  - Add the "dev" suffixed version in extensions/upgradeable_versions.mk
-    and ensure all the previous released minor versions are listed in it
+  - Add the "dev" suffixed version (for first micro) in extensions/upgradeable_versions.mk
+    and ensure all the previous released minor versions are listed in it.
+
   - Commit all changes
   - If this is a minor or major release (no branch exists):
 	   $ rev=x.x
@@ -116,14 +116,15 @@ Release procedure
      $ git tag -a $rev -m "Tagged release $rev"
      $ git push osgeo --tags
 
-  - Take tar ball from http://postgis.net/stuff/
+  - Take tar balls and .md5 file from http://postgis.net/stuff/
      (You might need to wait a few minutes to see it.
      If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
      If it fails, sh make_dist.sh $rev)
   - Documentation should also have been built and should be in http://postgis.net/stuff
      (this sometimes takes sometime so wait 15 minutes)
   - Test generated tarball (including extension upgrade)
-  - Copy tarball, pdf, doc-html to https://download.osgeo.org/postgis/ web site.
+  - Copy tarball, pdf, md5, doc-html via ssh/sftp upload.osgeo.org/postgis/ source and docs folders.
+    Verify it shows on https://download.osgeo.org/postgis
 
   - PostGIS doc release versioned doc - http://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
@@ -132,12 +133,14 @@ Release procedure
       Verify the documentation is up to date (might need to change the apache config)
 
   - Post on website:
-      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/master/_content/config.yml
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config/_default/params.toml#L132
         Fix latest version pointers.
-      - https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/posts
+      - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/content/post
         a) create a new Post for current year making sure the page name starts with mm-dd
-        b) Update links on https://git.osgeo.org/gitea/postgis/postgis.net/src/master/_content/pages/source.html
-        c) commit and wait 5 minutes to see changes on website
+          Since hugo move, the mm-dd isn't absolutely necessary anymore
+          as it uses the slug or title and date to determine the permalink.  But for now lets keep the same convention.
+          Make sure you have the date and title correct as that is used for the url.
+        b) commit and wait 5 minutes to see changes on website
 
 6. Spread the word
 
@@ -145,7 +148,7 @@ Release procedure
     - postgis-users@lists.osgeo.org
     - postgis-devel@lists.osgeo.org
     - discuss@lists.osgeo.org
-    - pgsql-announce@postgresql.org (send email just to them, not with other ccs, they reject if others in cc)
+    - pgsql-announce@postgresql.org (no longer accepts direct posts) need to log in and post https://www.postgresql.org/account/edit/news/
     - david@fetter.org to be included in Weekly news
 
   - External web sites

@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.1.5
-:Date: 2022-02-01
+:Version: 3.1.6
+:Date: 2022-07-20
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -33,17 +33,17 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 9.6 and above.
+PostGIS is compatible with PostgreSQL 9.6-14.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
 
-* PROJ4 (Required, Version 4.9.0 or higher):
+* PROJ (Required, Version 4.9.0 or higher):
 
-  The PROJ4 catographic projection library is required if you want to use the
+  The PROJ catographic projection library is required if you want to use the
   ST_Transform() function to reproject features within the database.
 
-    http://trac.osgeo.org/proj/
+    https://proj.org
 
 * GEOS (Required, Version 3.6 or higher)
   - 3.9+ is needed to take advantage of
