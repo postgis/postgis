@@ -5,7 +5,7 @@
 
     <sect1>
         <title>Release 3.0.6</title>
-        <para>Release date: 2022/07/19</para>
+        <para>Release date: 2022/07/20</para>
         <para>This is a bug fix / performance enhancements release. This version requires PostgreSQL 9.5+-13 and GEOS &gt;= 3.6+
               Additional features and enhancements enabled if you are running Proj6+, PostgreSQL 12+, and GEOS 3.8</para>
         <simplesect>
