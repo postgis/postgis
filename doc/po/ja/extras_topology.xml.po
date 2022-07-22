@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-22 01:55+0000\n"
 "PO-Revision-Date: 2022-06-14 09:50+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -190,8 +190,9 @@ msgstr "順序番号とエッジ番号で構成される複合型。"
 #: extras_topology.xml:2869 extras_topology.xml:2932 extras_topology.xml:3001
 #: extras_topology.xml:3077 extras_topology.xml:3122 extras_topology.xml:3164
 #: extras_topology.xml:3208 extras_topology.xml:3249 extras_topology.xml:3288
-#: extras_topology.xml:3326 extras_topology.xml:3374 extras_topology.xml:3474
-#: extras_topology.xml:3528 extras_topology.xml:3595 extras_topology.xml:3644
+#: extras_topology.xml:3326 extras_topology.xml:3374 extras_topology.xml:3418
+#: extras_topology.xml:3513 extras_topology.xml:3567 extras_topology.xml:3634
+#: extras_topology.xml:3683
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -352,8 +353,8 @@ msgstr "自動"
 #: extras_topology.xml:2962 extras_topology.xml:3050 extras_topology.xml:3091
 #: extras_topology.xml:3141 extras_topology.xml:3182 extras_topology.xml:3225
 #: extras_topology.xml:3273 extras_topology.xml:3345 extras_topology.xml:3392
-#: extras_topology.xml:3506 extras_topology.xml:3559 extras_topology.xml:3620
-#: extras_topology.xml:3673
+#: extras_topology.xml:3435 extras_topology.xml:3545 extras_topology.xml:3598
+#: extras_topology.xml:3659 extras_topology.xml:3712
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -515,8 +516,8 @@ msgstr ""
 #: extras_topology.xml:2806 extras_topology.xml:3041 extras_topology.xml:3087
 #: extras_topology.xml:3135 extras_topology.xml:3176 extras_topology.xml:3219
 #: extras_topology.xml:3267 extras_topology.xml:3338 extras_topology.xml:3385
-#: extras_topology.xml:3497 extras_topology.xml:3564 extras_topology.xml:3613
-#: extras_topology.xml:3666
+#: extras_topology.xml:3430 extras_topology.xml:3536 extras_topology.xml:3603
+#: extras_topology.xml:3652 extras_topology.xml:3705
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -1142,7 +1143,7 @@ msgstr ""
 #: extras_topology.xml:2095 extras_topology.xml:2153 extras_topology.xml:2238
 #: extras_topology.xml:2324 extras_topology.xml:2527 extras_topology.xml:2631
 #: extras_topology.xml:2684 extras_topology.xml:2725 extras_topology.xml:2801
-#: extras_topology.xml:3082 extras_topology.xml:3380 extras_topology.xml:3492
+#: extras_topology.xml:3082 extras_topology.xml:3380 extras_topology.xml:3531
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Availability: 2.0.0"
@@ -1745,7 +1746,7 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:770 extras_topology.xml:823 extras_topology.xml:878
-#: extras_topology.xml:2198
+#: extras_topology.xml:2198 extras_topology.xml:3424
 #, no-c-format
 msgid "Availability: 3.2.0"
 msgstr "Availability: 3.2.0"
@@ -3128,7 +3129,7 @@ msgstr ""
 "ます。"
 
 #. Tag: para
-#: extras_topology.xml:1696 extras_topology.xml:3604 extras_topology.xml:3657
+#: extras_topology.xml:1696 extras_topology.xml:3643 extras_topology.xml:3696
 #, no-c-format
 msgid "Availability: 1.1.0"
 msgstr "Availability: 1.1.0"
@@ -5090,7 +5091,7 @@ msgid "Splitting component edges may help retaining simplicity/validity."
 msgstr "要素エッジの分割によって単純性/妥当性を維持することがあります。"
 
 #. Tag: para
-#: extras_topology.xml:2843 extras_topology.xml:3552
+#: extras_topology.xml:2843 extras_topology.xml:3591
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr "Availability: 2.1.0"
@@ -6115,26 +6116,87 @@ msgstr ""
 ", <xref linkend=\"topoelement\"/>, <xref linkend=\"TopoGeom_addElement\"/>, "
 "<xref linkend=\"TopoGeom_remElement\"/>"
 
+#. Tag: refname
+#: extras_topology.xml:3404
+#, no-c-format
+msgid "ST_SRID"
+msgstr ""
+
+#. Tag: refpurpose
+#: extras_topology.xml:3405
+#, no-c-format
+msgid "Returns the spatial reference identifier for a topogeometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: extras_topology.xml:3410
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_SRID</function></funcdef> "
+"<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3420
+#, no-c-format
+msgid ""
+"Returns the spatial reference identifier for the ST_Geometry as defined in "
+"spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3421
+#, no-c-format
+msgid ""
+"spatial_ref_sys table is a table that catalogs all spatial reference systems "
+"known to PostGIS and is used for transformations from one spatial reference "
+"system to another. So verifying you have the right spatial reference system "
+"identifier is important if you plan to ever transform your geometries."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3425
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 14.1.5"
+msgstr ""
+
+#. Tag: programlisting
+#: extras_topology.xml:3432
+#, no-c-format
+msgid ""
+"SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
+"                --result\n"
+"                4326"
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:3437
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"ST_SRID\"/>"
+msgstr ""
+
 #. Tag: title
-#: extras_topology.xml:3406
+#: extras_topology.xml:3445
 #, no-c-format
 msgid "TopoGeometry Outputs"
 msgstr "TopoGeometry出力"
 
 #. Tag: refname
-#: extras_topology.xml:3409
+#: extras_topology.xml:3448
 #, no-c-format
 msgid "AsGML"
 msgstr "AsGML"
 
 #. Tag: refpurpose
-#: extras_topology.xml:3411
+#: extras_topology.xml:3450
 #, no-c-format
 msgid "Returns the GML representation of a topogeometry."
 msgstr "TopoGeometryのGML表現を返します。"
 
 #. Tag: funcsynopsis
-#: extras_topology.xml:3415
+#: extras_topology.xml:3454
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>AsGML</function></funcdef> "
@@ -6222,7 +6284,7 @@ msgstr ""
 "<parameter>gmlversion</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: extras_topology.xml:3476
+#: extras_topology.xml:3515
 #, no-c-format
 msgid ""
 "Returns the GML representation of a topogeometry in version GML3 format. If "
@@ -6238,7 +6300,7 @@ msgstr ""
 "渡します。"
 
 #. Tag: para
-#: extras_topology.xml:3478
+#: extras_topology.xml:3517
 #, no-c-format
 msgid ""
 "The <varname>visitedTable</varname> parameter, if given, is used for keeping "
@@ -6261,7 +6323,7 @@ msgstr ""
 "と自動的に生成されます。例を示します。"
 
 #. Tag: programlisting
-#: extras_topology.xml:3484
+#: extras_topology.xml:3523
 #, no-c-format
 msgid ""
 "CREATE TABLE visited (\n"
@@ -6275,7 +6337,7 @@ msgstr ""
 ");"
 
 #. Tag: para
-#: extras_topology.xml:3487
+#: extras_topology.xml:3526
 #, no-c-format
 msgid ""
 "The <varname>idprefix</varname> parameter, if given, will be prepended to "
@@ -6285,7 +6347,7 @@ msgstr ""
 "Nodeタグ識別子の前に付きます。"
 
 #. Tag: para
-#: extras_topology.xml:3489
+#: extras_topology.xml:3528
 #, no-c-format
 msgid ""
 "The <varname>gmlver</varname> parameter, if given, will be passed to the "
@@ -6295,7 +6357,7 @@ msgstr ""
 "ST_AsGMLに渡されます。デフォルトは3です。"
 
 #. Tag: para
-#: extras_topology.xml:3498
+#: extras_topology.xml:3537
 #, no-c-format
 msgid ""
 "This uses the topo geometry we created in <xref linkend=\"CreateTopoGeom\"/>"
@@ -6304,7 +6366,7 @@ msgstr ""
 "ます。"
 
 #. Tag: programlisting
-#: extras_topology.xml:3499
+#: extras_topology.xml:3538
 #, no-c-format
 msgid ""
 "SELECT topology.AsGML(topo) As rdgml\n"
@@ -6392,13 +6454,13 @@ msgstr ""
 "</gml:TopoCurve>]]>"
 
 #. Tag: para
-#: extras_topology.xml:3500
+#: extras_topology.xml:3539
 #, no-c-format
 msgid "Same exercise as previous without namespace"
 msgstr "上の例から名前空間を取り除いた例です。"
 
 #. Tag: programlisting
-#: extras_topology.xml:3501
+#: extras_topology.xml:3540
 #, no-c-format
 msgid ""
 "SELECT topology.AsGML(topo,'') As rdgml\n"
@@ -6486,25 +6548,25 @@ msgstr ""
 "</TopoCurve>]]>"
 
 #. Tag: para
-#: extras_topology.xml:3507
+#: extras_topology.xml:3546
 #, no-c-format
 msgid ", <xref linkend=\"ST_CreateTopoGeo\"/>"
 msgstr ", <xref linkend=\"ST_CreateTopoGeo\"/>"
 
 #. Tag: refname
-#: extras_topology.xml:3512
+#: extras_topology.xml:3551
 #, no-c-format
 msgid "AsTopoJSON"
 msgstr "AsTopoJSON"
 
 #. Tag: refpurpose
-#: extras_topology.xml:3514
+#: extras_topology.xml:3553
 #, no-c-format
 msgid "Returns the TopoJSON representation of a topogeometry."
 msgstr "opoGeometryのTopoJSON表現を返します。"
 
 #. Tag: funcprototype
-#: extras_topology.xml:3519
+#: extras_topology.xml:3558
 #, no-c-format
 msgid ""
 "<funcdef>text <function>AsTopoJSON</function></funcdef> "
@@ -6518,7 +6580,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: extras_topology.xml:3530
+#: extras_topology.xml:3569
 #, no-c-format
 msgid ""
 "Returns the TopoJSON representation of a topogeometry. If "
@@ -6532,7 +6594,7 @@ msgstr ""
 "るためです。"
 
 #. Tag: para
-#: extras_topology.xml:3533
+#: extras_topology.xml:3572
 #, no-c-format
 msgid ""
 "The table, if given, is expected to have an \"arc_id\" field of type "
@@ -6544,7 +6606,7 @@ msgstr ""
 "合わせるので、このカラムにインデクスを追加することが推奨されます。"
 
 #. Tag: para
-#: extras_topology.xml:3538
+#: extras_topology.xml:3577
 #, no-c-format
 msgid ""
 "Arc indices in the TopoJSON output are 0-based but they are 1-based in the "
@@ -6554,7 +6616,7 @@ msgstr ""
 "1始まりです。"
 
 #. Tag: para
-#: extras_topology.xml:3544
+#: extras_topology.xml:3583
 #, no-c-format
 msgid ""
 "A full TopoJSON document will be need to contain, in addition to the "
@@ -6568,13 +6630,13 @@ msgstr ""
 "specification</ulink>をご覧ください。"
 
 #. Tag: para
-#: extras_topology.xml:3553
+#: extras_topology.xml:3592
 #, no-c-format
 msgid "Enhanced: 2.2.1 added support for puntal inputs"
 msgstr "Enhanced: 2.2.1 点入力に対応するようになりました"
 
 #. Tag: programlisting
-#: extras_topology.xml:3565
+#: extras_topology.xml:3604
 #, no-c-format
 msgid ""
 "CREATE TEMP TABLE edgemap(arc_id serial, edge_id int unique);\n"
@@ -6688,7 +6750,7 @@ msgstr ""
 " ]}"
 
 #. Tag: para
-#: extras_topology.xml:3573
+#: extras_topology.xml:3612
 #, no-c-format
 msgid ""
 "This section lists the Topology functions used to check relationships "
@@ -6698,19 +6760,19 @@ msgstr ""
 "覧を挙げます。"
 
 #. Tag: title
-#: extras_topology.xml:3576
+#: extras_topology.xml:3615
 #, no-c-format
 msgid "Topology Spatial Relationships"
 msgstr "トポロジ空間関係関数"
 
 #. Tag: refname
-#: extras_topology.xml:3579
+#: extras_topology.xml:3618
 #, no-c-format
 msgid "Equals"
 msgstr "Equals"
 
 #. Tag: refpurpose
-#: extras_topology.xml:3581
+#: extras_topology.xml:3620
 #, no-c-format
 msgid ""
 "Returns true if two topogeometries are composed of the same topology "
@@ -6720,7 +6782,7 @@ msgstr ""
 "す。"
 
 #. Tag: funcprototype
-#: extras_topology.xml:3586
+#: extras_topology.xml:3625
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>Equals</function></funcdef> "
@@ -6732,7 +6794,7 @@ msgstr ""
 "<paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>"
 
 #. Tag: para
-#: extras_topology.xml:3597
+#: extras_topology.xml:3636
 #, no-c-format
 msgid ""
 "Returns true if two topogeometries are composed of the same topology "
@@ -6741,7 +6803,7 @@ msgstr ""
 "二つTopoGeometryが同じトポロジプリミティブで成っている場合にtrueを返します。"
 
 #. Tag: para
-#: extras_topology.xml:3601
+#: extras_topology.xml:3640
 #, no-c-format
 msgid ""
 "This function not supported for topogeometries that are geometry "
@@ -6752,31 +6814,31 @@ msgstr ""
 "ロジからなるTopoGeometryとの比較もできません。"
 
 #. Tag: para
-#: extras_topology.xml:3608 extras_topology.xml:3661
+#: extras_topology.xml:3647 extras_topology.xml:3700
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: programlisting
-#: extras_topology.xml:3615 extras_topology.xml:3668
+#: extras_topology.xml:3654 extras_topology.xml:3707
 #, no-c-format
 msgid "<!--TODO: Need example -->"
 msgstr "<!--TODO: Need example -->"
 
 #. Tag: para
-#: extras_topology.xml:3622
+#: extras_topology.xml:3661
 #, no-c-format
 msgid ", <xref linkend=\"ST_Equals\"/>"
 msgstr ", <xref linkend=\"ST_Equals\"/>"
 
 #. Tag: refname
-#: extras_topology.xml:3628
+#: extras_topology.xml:3667
 #, no-c-format
 msgid "Intersects"
 msgstr "Intersects"
 
 #. Tag: refpurpose
-#: extras_topology.xml:3630
+#: extras_topology.xml:3669
 #, no-c-format
 msgid ""
 "<refpurpose>Returns true if any pair of primitives from the two "
@@ -6786,7 +6848,7 @@ msgstr ""
 "trueを返します。</refpurpose>"
 
 #. Tag: funcprototype
-#: extras_topology.xml:3635
+#: extras_topology.xml:3674
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>Intersects</function></funcdef> "
@@ -6798,7 +6860,7 @@ msgstr ""
 "<paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>"
 
 #. Tag: para
-#: extras_topology.xml:3646
+#: extras_topology.xml:3685
 #, no-c-format
 msgid ""
 "<para>Returns true if any pair of primitives from the two topogeometries "
@@ -6808,7 +6870,7 @@ msgstr ""
 "ます。</para>"
 
 #. Tag: para
-#: extras_topology.xml:3653
+#: extras_topology.xml:3692
 #, no-c-format
 msgid ""
 "This function not supported for topogeometries that are geometry "
@@ -6821,13 +6883,13 @@ msgstr ""
 "TopoGeometry (他のTopoGeometryからなるTopoGeometry)に対応していません。"
 
 #. Tag: title
-#: extras_topology.xml:3681
+#: extras_topology.xml:3720
 #, no-c-format
 msgid "Importing and exporting Topologies"
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3683
+#: extras_topology.xml:3722
 #, no-c-format
 msgid ""
 "Once you have created topologies, and maybe associated topological layers, "
@@ -6836,7 +6898,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3689
+#: extras_topology.xml:3728
 #, no-c-format
 msgid ""
 "Using the standard dump/restore tools of PostgreSQL is problematic because "
@@ -6848,7 +6910,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3698
+#: extras_topology.xml:3737
 #, no-c-format
 msgid ""
 "In order to simplify export/restore of topologies a pair of executables are "
@@ -6857,19 +6919,19 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: extras_topology.xml:3703
+#: extras_topology.xml:3742
 #, no-c-format
 msgid "pgtopo_export dev_db topo1 | pgtopo_import topo1 | psql staging_db"
 msgstr ""
 
 #. Tag: title
-#: extras_topology.xml:3706
+#: extras_topology.xml:3745
 #, no-c-format
 msgid "Using the Topology exporter"
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3708
+#: extras_topology.xml:3747
 #, no-c-format
 msgid ""
 "The <filename>pgtopo_export</filename> script takes the name of a database "
@@ -6878,7 +6940,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3714
+#: extras_topology.xml:3753
 #, no-c-format
 msgid ""
 "By default <filename>pgtopo_export</filename> writes the dump file to the "
@@ -6889,7 +6951,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3722
+#: extras_topology.xml:3761
 #, no-c-format
 msgid ""
 "By default <filename>pgtopo_export</filename> includes a dump of all layers "
@@ -6900,7 +6962,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3731
+#: extras_topology.xml:3770
 #, no-c-format
 msgid ""
 "Invoking <filename>pgtopo_export</filename> with the <code>--help</code> (or "
@@ -6908,7 +6970,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3738
+#: extras_topology.xml:3777
 #, no-c-format
 msgid ""
 "The dump file format is a compressed tar archive of a "
@@ -6922,13 +6984,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extras_topology.xml:3754
+#: extras_topology.xml:3793
 #, no-c-format
 msgid "Using the Topology importer"
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3756
+#: extras_topology.xml:3795
 #, no-c-format
 msgid ""
 "The <filename>pgtopo_import</filename> script takes a <code>pgtopo_export</"
@@ -6937,7 +6999,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3764
+#: extras_topology.xml:3803
 #, no-c-format
 msgid ""
 "The generated SQL file will contain statements that create a topology with "
@@ -6947,7 +7009,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3772
+#: extras_topology.xml:3811
 #, no-c-format
 msgid ""
 "By default <filename>pgtopo_import</filename> reads the dump from the "
@@ -6957,7 +7019,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3780
+#: extras_topology.xml:3819
 #, no-c-format
 msgid ""
 "By default <filename>pgtopo_import</filename> includes in the output SQL "
@@ -6965,7 +7027,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3785
+#: extras_topology.xml:3824
 #, no-c-format
 msgid ""
 "This may be unwanted or non-working in case your target database already "
@@ -6975,7 +7037,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:3792
+#: extras_topology.xml:3831
 #, no-c-format
 msgid ""
 "SQL to only load and link layers to a named topology can be generated using "

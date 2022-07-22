@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-07-22 01:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -200,7 +200,9 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:101
 #, no-c-format
-msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"id=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refname
