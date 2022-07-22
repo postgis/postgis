@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-22 01:55+0000\n"
+"POT-Creation-Date: 2022-07-22 06:23+0000\n"
 "PO-Revision-Date: 2022-02-05 02:52+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -205,7 +205,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
-"id=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
+"linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refname
