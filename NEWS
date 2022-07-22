@@ -1,5 +1,10 @@
 PostGIS 3.2.2
-2022/07/DD
+2022/07/22
+
+This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
+Additional features are enabled if you are running GEOS 3.9+
+ (and ST_MakeValid enhancements with 3.10+),
+Proj 6.1+, and PostgreSQL 14+.
 
 * Bug Fixes *
   - #5182, Fix loading topology.sql in new database (Sandro Santilli)

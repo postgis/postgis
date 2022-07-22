@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.2.1
-:Date: 2022-02-12
+:Version: 3.2.2
+:Date: 2022-07-22
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -26,6 +26,7 @@ Directory structure::
   ./postgis     PostGIS library source code
   ./raster      PostGIS rasters extension source code
   ./regress     Online regression tests
+  ./sfcgal      PostGIS sfcgal extension source code
   ./topology    PostGIS topology extension source code
   ./utils       Utility scripts for PostGIS (upgrade, profiling, ...)
 
@@ -33,7 +34,7 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 9.6 and above.
+PostGIS is compatible with PostgreSQL 9.6-15.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
@@ -55,7 +56,7 @@ this to work.
   ST_Touches(), ST_Contains(), ST_Disjoint() and spatial operations such as
   ST_Intersection(), ST_Union() and ST_Buffer().
 
-    http://trac.osgeo.org/geos/
+    https://libgeos.org
 
 * XML SUPPORT (Required, Version 2.5.0 or higher):
 
@@ -82,13 +83,13 @@ this to work.
 
 * GDAL (Optional, Version 2 or higher 3+ is strongly recommended)
 
-  GDAL (http://gdal.org) is *required* if you want to compile PostGIS
+  GDAL (https://gdal.org) is *required* if you want to compile PostGIS
   with raster support. To compile without raster support you
   must ``./configure --without-raster``
 
 * CGAL 4.1+ and SFCGAL 1.3.2+ (Optional) needed for advanced 3D support
 
-  https://github.com/Oslandia/SFCGAL
+  https://gitlab.com/Oslandia/SFCGAL
 
 * protobuf-c (Optional, Version 1.1.0 or higher)
 
@@ -236,6 +237,9 @@ PostGIS support must be enabled for each database that requires its usage.
 Enabling spatial functionality requires a PostgreSQL super-user.
 
     CREATE EXTENSION postgis;
+    CREATE EXTENSION postgis_raster;
+    CREATE EXTENSION postgis_sfcgal;
+    CREATE EXTENSION postgis_topology;
 
 
 UPGRADING EXISTING SPATIAL DATABASES
@@ -243,7 +247,9 @@ UPGRADING EXISTING SPATIAL DATABASES
 
 Upgrade PostGIS using the "ALTER EXTENSION" facility.
 
-  ALTER EXTENSION postgis UPDATE TO '2.2.0';
+  ALTER EXTENSION postgis UPDATE;
+  SELECT postgis_extensions_upgrade();
+  SELECT postgis_extensions_upgrade();
 
 
 USAGE
