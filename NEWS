@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - #5157, Allow for i386 rounding in the minimum bounding circle test (Regina Obe)
  - Fail documentation validation if xmllint is unavailable (Sandro Santilli)
  - #5632, Handle empty geometries correctly in the 2D GiST index (Paul Ramsey)
  - #5649, Return NULL with a notice when a raster band cannot be read (Paul Ramsey)
