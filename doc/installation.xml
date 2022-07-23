@@ -44,7 +44,7 @@ in each individual database you want to use it in.
 	  The PostGIS module is an extension to the PostgreSQL backend server. As
 	  such, PostGIS &last_release_version; <emphasis>requires</emphasis> full
 	  PostgreSQL server headers access in order to compile. It can be built
-	  against PostgreSQL versions &min_postgres_version; or higher. Earlier
+	  against PostgreSQL versions &min_postgres_version; - &max_postgres_version;. Earlier
 	  versions of PostgreSQL are <emphasis>not</emphasis> supported.
 	</para>
 
@@ -133,7 +133,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	<itemizedlist>
 	  <listitem>
 		<para>
-		  PostgreSQL &min_postgres_version; or higher. A complete installation
+		  PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete installation
 		  of PostgreSQL (including server headers) is required. PostgreSQL
 		  is available from
 		  <ulink url="http://www.postgresql.org">
@@ -241,7 +241,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	  <listitem>
 		<para>
-			SFCGAL, version 1.3.1 (or higher), 1.4.0 or higher is recommended. SFCGAL can be used to provide additional 2D and 3D advanced analysis functions to PostGIS cf <xref linkend="reference_sfcgal" />. And also allow to use SFCGAL rather than GEOS for some 2D functions provided by both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis.backend</code> allow end user to control which backend he want to use if SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <ulink url="https://oslandia.gitlab.io/SFCGAL/dev.html">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>)
+			SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended. SFCGAL can be used to provide additional 2D and 3D advanced analysis functions to PostGIS cf <xref linkend="reference_sfcgal" />. And also allow to use SFCGAL rather than GEOS for some 2D functions provided by both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis.backend</code> allow end user to control which backend he want to use if SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <ulink url="https://oslandia.gitlab.io/SFCGAL/dev.html">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>)
 
 		  <ulink url="https://gitlab.com/Oslandia/SFCGAL/">https://gitlab.com/Oslandia/SFCGAL/</ulink>.
 		</para>
