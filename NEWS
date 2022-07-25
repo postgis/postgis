@@ -1,5 +1,57 @@
-PostGIS 3.3.0dev
-2022/XX/XX
+PostGIS 3.3.0rc1
+2022/xx/xx
+This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+Additional features are enabled if you are running GEOS 3.9+
+ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.
+Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.
+
+Changes since PostGIS 3.3.0beta2:
+* Bug fixes *
+  - #5154, raster ST_Value is undercosted (Regina Obe)
+  - #5157, Revise minimum_bounding_circle Cunit test
+           to be tolerant of small 32-bit floating point differences
+           (Regina Obe)
+  - #5191, Functions should use integer instead of int4 (Regina Obe)
+  - #5139, PostGIS causes to_jsonb to no longer be parallel safe,
+           ST_AsGeoJSON and ST_AsGML are also parallel unsafe
+           (Regina Obe, Paul Ramsey)
+
+
+
+PostGIS 3.3.0beta2
+2022/07/13
+This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+Additional features are enabled if you are running GEOS 3.9+
+ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.
+Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.
+
+Changes since PostGIS 3.3.0beta1
+
+* New features *
+  - #5183, topology.RemoveUnusedPrimitives (Sandro Santilli)
+
+* Enhancements *
+  - GH698, support parallel aggregate for ST_Union (Sergei Shoulbakov)
+
+* Bug fixes *
+  - #5179, pgsql2shp syntax error on big-endian (Bas Couwenberg)
+
+PostGIS 3.3.0beta1
+2022/07/03
+This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+Additional features are enabled if you are running GEOS 3.9+
+ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.
+
+NOTE: GEOS 3.11.0 was recently released,
+ details at https://libgeos.org/posts/2022-07-01-geos-3-11-0-released/.
+
+The new --enable-lto flag improves math computations.  This new feature is disabled by default
+because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)
+
+Use below to enable it.
+
+ ./configure --enable-lto flag
+
 Changes since PostGIS 3.3.0alpha1
 * Enhancements *
   - #5158, pgtopo_import / pgtopo_export manpages (Sandro Santilli)
@@ -8,21 +60,27 @@ Changes since PostGIS 3.3.0alpha1
     Default to 50 when not specified (Regina Obe)
   - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
     useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
+  - ST_ConcaveHull GEOS 3.11+ polygon-respecting native implementation (Paul Ramsey, Martin Davis)
   - #5039, postgis_tiger_geocoder TIGER 2021 (Regina Obe)
 
 * New features *
   - #5169, ST_SimplifyPolygonHull (requires GEOS 3.11)
     (Paul Ramsey, Martin Davis)
+  - #5162, ST_TriangulatePolygon with GEOS 3.11+
+    (Paul Ramsey, Martin Davis)
+
+* Bug fixes *
+  - #5173 st_asflatgeobuf detoast crash (Paul Ramsey)
+  - #4932, Bug with geography ST_Intersects / ST_Distance (Paul Ramsey)
+  - #5114, pgsql2shp segfault with long or many truncated columns
 
 
-PostGIS 3.3.0alpha1
-2022/05/21
+PostGIS 3.3.0dev
+2022/xx/xx
 
 This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
 Additional features are enabled if you are running GEOS 3.9+
-ST_MakeValid enhancements with 3.10+, ST_ConcaveHull enhancements with GEOS 3.11+.
-
-NOTE: GEOS 3.11+ is not yet released, you can download from https://github.com/libgeos/geos.
+ST_MakeValid enhancements with 3.10+, ST_ConcaveHull and several other enhancements with GEOS 3.11+.
 
 The new --enable-lto flag improves math computations.  This new feature is disabled by default
 because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)
@@ -52,12 +110,22 @@ Use below to enable it.
   - #5040, add postgis_sfcgal_full_version (Loïc Bartoletti)
   - GH655, GiST: balance the tree splits better in recursive calls (Darafei Praliaskouski)
   - GH657, GiST: do not call no-op decompress function (Aliaksandr Kalenik)
-  - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
+  - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
+    useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
   - ST_ConcaveHull GEOS 3.11+ native implementation (Paul Ramsey, Martin Davis)
   - ST_ConcaveHull GEOS 3.11+ polygon-respecting native implementation (Paul Ramsey, Martin Davis)
   - #4574, GH678, #5121 Enable Link-Time Optimizations using --enable-lto (Sergei Shoulbakov)
   - GH676, faster ST_Clip (Aliaksandr Kalenik)
   - #5135, Fast GiST index build is enabled by default for PostgreSQL 15+ (Sergei Shoulbakov)
+  - #4939, #5161, ST_LineMerge now has option to keep the directions of input linestrings,
+    useful when processing road graphs. Requires GEOS 3.11. (Sergei Shoulbakov)
+  - #5158, pgtopo_import / pgtopo_export manpages (Sandro Santilli)
+  - #5170, add a optional max_rows_per_copy to -Y option to raster2pgsql to
+    control number of rows per copy statement.
+    Default to 50 when not specified (Regina Obe)
+  - GH698, support parallel aggregate for ST_Union (Sergei Shoulbakov)
+  - #5024, Update spatial_ref_sys as part of ALTER EXTENSION update postgis (Paul Ramsey)
+
 
  * New features *
   - #5116, Topology export/import scripts (Sandro Santilli)
@@ -67,17 +135,38 @@ Use below to enable it.
     (Loïc Bartoletti)
   - GH659, MARC21/XML, ST_GeomFromMARC21, ST_AsMARC21 (Jim Jones)
   - #5132, GH683, sfcgal: ST_3DUnion aggregate function (Sergei Shoulbakov)
-  - #5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape (Loïc Bartoletti)
-  - ST_TriangulatePolygon with GEOS 3.11+ (Paul Ramsey, Martin Davis)
-  - ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)
+  - #5143, SFCGAL ST_AlphaShape and ST_OptimalAlphaShape
+           Requires SFCGAL 1.4.1+ (Loïc Bartoletti)
+  - #5162, ST_TriangulatePolygon with GEOS 3.11+ (Paul Ramsey, Martin Davis)
+  - #5162, ST_SimplifyPolygonHull with GEOS 3.11+ (Paul Ramsey, Martin Davis)
+  - #5183, topology.RemoveUnusedPrimitives (Sandro Santilli)
 
  * Bug Fix *
+   - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
    - #5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)
    - #5123, Support for PostgreSQL 15 - PG15 now exposes json types and functions,
             do not include for PG15+ (Regina Obe)
    - #5088, Memory corruption in mvt_agg_transfn (Victor Collod)
    - #5137, resetting interrupt flags before query execution (Sergei Shoulbakov)
    - #5148, ST_Clip is more robust to alignment of raster and clip geometry (Sergei Shoulbakov)
+   - #4932, Bug with geography ST_Intersects / ST_Distance (Paul Ramsey)
+
+
+PostGIS 3.3.0alpha1
+2022/05/21
+
+This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+Additional features are enabled if you are running GEOS 3.9+
+ST_MakeValid enhancements with 3.10+, ST_ConcaveHull enhancements with GEOS 3.11+.
+
+NOTE: GEOS 3.11+ is not yet released, you can download from https://github.com/libgeos/geos.
+
+The new --enable-lto flag improves math computations.  This new feature is disabled by default
+because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)
+
+Use below to enable it.
+
+ ./configure --enable-lto flag
 
 
 PostGIS 3.2.0 (Olivier Courtin Edition)

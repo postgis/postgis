@@ -112,20 +112,20 @@ Release procedure
      $ git tag -a $rev -m "Tagged release $rev"
      $ git push osgeo --tags
 
-  - Take tar ball from http://postgis.net/stuff/
-     (You might need to wait a few minutes to see it.
+  - Take tar ball and md5 from http://postgis.net/stuff/
+     (You might need to wait a few minutes to see it)
      If impatient check status of job - https://debbie.postgis.net/job/PostGIS_Make_Dist/
      If it fails, sh make_dist.sh $rev)
-  - Documentation should also have been built and should be in http://postgis.net/stuff
+  - Documentation should also have been built and should be in https://postgis.net/stuff
      (this sometimes takes sometime so wait 15 minutes)
   - Test generated tarball (including extension upgrade)
-  - Copy tarball, pdf, doc-html to https://upload.osgeo.org/postgis/ web site.
+  - Copy tarball, md5, pdf, doc-html to https://upload.osgeo.org/postgis/ .
 
   - PostGIS doc release versioned doc - http://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
-         - nginx -t #to confirm you didn't breat the config
+         - nginx -t #to confirm you didn't break the config
          - service nginx reload
-      Verify the documentation is up to date (might need to change the apache config)
+      Verify the documentation is up to date (might need to change the nginx config)
 
   - Post on website:
       - https://git.osgeo.org/gitea/postgis/postgis.net/src/branch/website/config/_default/params.toml#L132

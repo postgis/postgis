@@ -1813,9 +1813,7 @@ Changes the shape of an edge without affecting the topology structure.
                 <para>
 If any arguments are null, the given edge does not exist in
 the <varname>edge</varname> table of the topology schema, the
-<varname>acurve</varname> is not a <varname>LINESTRING</varname>, the
-<varname>anode</varname> and <varname>anothernode</varname> are not the
-start and endpoints of <varname>acurve</varname> or the modification would
+<varname>acurve</varname> is not a <varname>LINESTRING</varname>, or the modification would
 change the underlying topology then an error is thrown.
 		</para>
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
@@ -2030,7 +2028,7 @@ Updates all existing joined edges and relationships accordingly.
 					<funcprototype>
 					<funcdef>text <function>ST_MoveIsoNode</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -3159,6 +3157,49 @@ faceid
 		  </refsection>
 	</refentry>
 
+	<refentry id="TP_RemoveUnusedPrimitives">
+	  <refnamediv>
+		<refname>RemoveUnusedPrimitives</refname>
+		<refpurpose>Removes topology primitives which not needed to define existing TopoGeometry objects.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>int <function>RemoveUnusedPrimitives</function></funcdef>
+			<paramdef><type>text</type> <parameter>topology_name</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>bbox</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>
+Finds all primitives (nodes, edges, faces) that are not
+strictly needed to represent existing TopoGeometry objects and removes
+them, maintaining topology validity (edge linking, face labeling)
+and TopoGeometry space occupation.
+        </para>
+
+        <para>
+No new primitive identifiers are created, but rather existing primitives
+are expanded to include merged faces (upon removing edges) or healed edges
+(upon removing nodes).
+        </para>
+
+		<para>Availability: 3.3.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_ModEdgeHeal" />,
+<xref linkend="ST_RemEdgeModFace" />
+            </para>
+		  </refsection>
+	</refentry>
+
 
 	</sect1>
 
@@ -3774,6 +3815,48 @@ Refer to <xref linkend="toTopoGeom" />.
         </para>
 			</refsection>
 		</refentry>
+
+    <refentry id="TG_ST_SRID">
+	  <refnamediv>
+		<refname>ST_SRID</refname>
+		<refpurpose>Returns the spatial reference identifier for a topogeometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_SRID</function></funcdef>
+			<paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. <xref linkend="spatial_ref_sys" /></para>
+		<para><note><para>spatial_ref_sys
+		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
+			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
+        <para>Availability: 3.2.0</para>
+		<para>&sqlmm_compliant; SQL-MM 3: 14.1.5</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
+		--result
+		4326
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
 
 	</sect1>
 

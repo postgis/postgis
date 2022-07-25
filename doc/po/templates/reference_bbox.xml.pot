@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-04-16 08:20+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -254,11 +254,11 @@ msgstr ""
 #: reference_bbox.xml:135
 #, no-c-format
 msgid ""
-"Returns the estimated extent of a spatial table as a <xref linkend="
-"\"box2d_type\"/>. The current schema is used if not specified. The estimated "
-"extent is taken from the geometry column's statistics. This is usually much "
-"faster than computing the exact extent of the table using <xref linkend="
-"\"ST_Extent\"/> or <xref linkend=\"ST_3DExtent\"/>."
+"Returns the estimated extent of a spatial table as a <xref "
+"linkend=\"box2d_type\"/>. The current schema is used if not specified. The "
+"estimated extent is taken from the geometry column's statistics. This is "
+"usually much faster than computing the exact extent of the table using <xref "
+"linkend=\"ST_Extent\"/> or <xref linkend=\"ST_3DExtent\"/>."
 msgstr ""
 
 #. Tag: para
@@ -346,8 +346,8 @@ msgid ""
 "<parameter>geom</parameter></paramdef> <paramdef><type>float</type> "
 "<parameter>dx</parameter></paramdef> <paramdef><type>float</type> "
 "<parameter>dy</parameter></paramdef> <paramdef choice=\"opt\"><type>float</"
-"type> <parameter>dz=0</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>float</type> <parameter>dm=0</parameter></paramdef> </"
+"type> <parameter>dz=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>float</type> <parameter>dm=0</parameter></paramdef> </"
 "funcprototype> <funcprototype> <funcdef>box2d <function>ST_Expand</"
 "function></funcdef> <paramdef><type>box2d </type> <parameter>box</"
 "parameter></paramdef> <paramdef><type>float</type> "
@@ -408,11 +408,11 @@ msgstr ""
 #: reference_bbox.xml:255
 #, no-c-format
 msgid ""
-"Pre version 1.3, ST_Expand was used in conjunction with <xref linkend="
-"\"ST_Distance\"/> to do indexable distance queries. For example, <code>geom "
-"&amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(geom, 'POINT(10 "
-"20)') &lt; 10</code>. This has been replaced by the simpler and more "
-"efficient <xref linkend=\"ST_DWithin\"/> function."
+"Pre version 1.3, ST_Expand was used in conjunction with <xref "
+"linkend=\"ST_Distance\"/> to do indexable distance queries. For example, "
+"<code>geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(geom, "
+"'POINT(10 20)') &lt; 10</code>. This has been replaced by the simpler and "
+"more efficient <xref linkend=\"ST_DWithin\"/> function."
 msgstr ""
 
 #. Tag: para
@@ -823,8 +823,8 @@ msgstr ""
 #: reference_bbox.xml:514 reference_bbox.xml:559
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -961,8 +961,8 @@ msgstr ""
 #: reference_bbox.xml:604
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-"\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1029,8 +1029,9 @@ msgstr ""
 #: reference_bbox.xml:649
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-"\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+"linkend=\"ST_ZMin\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1097,8 +1098,9 @@ msgstr ""
 #: reference_bbox.xml:694
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-"\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+"linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+"linkend=\"ST_ZMax\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1166,6 +1168,6 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
-"\"/>, <xref linkend=\"ST_ZMax\"/>"
+"linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
+"linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
 msgstr ""

@@ -613,7 +613,7 @@ FROM (SELECT
 		<para>&Z_support;</para>
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
-		<para>&sqlmm_compliant; SQL-MM ?</para>
+		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3</para>
 
 		<para>Availability: 2.0.0</para>
 		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
@@ -1118,6 +1118,7 @@ FROM (SELECT ST_GeographyFromText(
 		<para>Returns the 3-dimensional or 2-dimensional length of the geometry if it is a
 			LineString or MultiLineString. For 2-d lines it will just return the 2-d length (same as ST_Length and ST_Length2D)</para>
 		<para>&Z_support;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 7.1, 10.3</para>
 		<para>Changed: 2.0.0 In prior versions this used to be called ST_Length3D</para>
 	  </refsection>
 
@@ -1841,6 +1842,7 @@ FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.10445
 		<para>Returns the 3-dimensional perimeter of the geometry, if it
 			is a polygon or multi-polygon. If the geometry is 2-dimensional, then the 2-dimensional perimeter is returned.  </para>
 		<para>&Z_support;</para>
+        <para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.1, 10.5</para>
 		<para>Changed: 2.0.0 In prior versions this used to be called ST_Perimeter3D</para>
 	  </refsection>
 

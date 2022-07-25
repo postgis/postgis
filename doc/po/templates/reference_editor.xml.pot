@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-05-03 02:58+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -420,8 +420,8 @@ msgstr ""
 msgid ""
 "This function does not ensure that the result is valid. In particular, a "
 "collection containing adjacent or overlapping Polygons will create an "
-"invalid MultiPolygon. This situation can be checked with <xref linkend="
-"\"ST_IsValid\"/> and repaired with <xref linkend=\"ST_MakeValid\"/>."
+"invalid MultiPolygon. This situation can be checked with <xref "
+"linkend=\"ST_IsValid\"/> and repaired with <xref linkend=\"ST_MakeValid\"/>."
 msgstr ""
 
 #. Tag: para
@@ -2511,8 +2511,8 @@ msgstr ""
 #: reference_editor.xml:1523
 #, no-c-format
 msgid ""
-"The returned geometry might lose its simplicity (see <xref linkend="
-"\"ST_IsSimple\"/>)."
+"The returned geometry might lose its simplicity (see <xref "
+"linkend=\"ST_IsSimple\"/>)."
 msgstr ""
 
 #. Tag: para
@@ -2643,8 +2643,8 @@ msgstr ""
 #: reference_editor.xml:1610
 #, no-c-format
 msgid ""
-"The returned geometry might lose its simplicity (see <xref linkend="
-"\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
+"The returned geometry might lose its simplicity (see <xref "
+"linkend=\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
 msgstr ""
 
 #. Tag: para

@@ -15,7 +15,7 @@
 --
 -- Return a topology.layer record from a TopoGeometry
 --
-CREATE OR REPLACE FUNCTION topology.FindLayer(tg TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.FindLayer(tg topology.TopoGeometry)
 RETURNS topology.layer
 AS $$
     SELECT * FROM topology.layer

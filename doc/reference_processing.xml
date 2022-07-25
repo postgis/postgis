@@ -117,8 +117,7 @@ It always gives a 2D result even when used on a 3D geometry.</para></note>
 
                 <para>Performed by the GEOS module.</para>
                 <para>&sfs_compliant; s2.1.1.3</para>
-                <para>&sqlmm_compliant; SQL-MM 3: 5.1.17</para>
-
+                <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.30</para>
             </refsection>
 
               <refsection>
@@ -820,7 +819,7 @@ SELECT disease_type,
         <para>Performed by the GEOS module</para>
 
         <para>&sfs_compliant; s2.1.1.3</para>
-        <para>&sqlmm_compliant; SQL-MM 3: 5.1.16</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.16</para>
         <para>&Z_support;</para>
       </refsection>
 

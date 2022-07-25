@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-07-22 06:23+0000\n"
 "PO-Revision-Date: 2022-01-19 00:27+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -203,7 +203,9 @@ msgstr ""
 #. Tag: para
 #: reference_srs.xml:101
 #, no-c-format
-msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+msgid ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -273,8 +275,9 @@ msgstr ""
 #: reference_srs.xml:166
 #, no-c-format
 msgid ""
-"Requires PostGIS be compiled with PROJ support. Use <xref linkend="
-"\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled in."
+"Requires PostGIS be compiled with PROJ support. Use <xref "
+"linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled "
+"in."
 msgstr ""
 
 #. Tag: para
@@ -491,6 +494,6 @@ msgstr ""
 #: reference_srs.xml:221
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
-"\"UpdateGeometrySRID\"/>"
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
+"linkend=\"UpdateGeometrySRID\"/>"
 msgstr ""

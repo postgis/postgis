@@ -11,9 +11,10 @@
 <!ENTITY postgis_download_url "@@POSTGIS_DOWNLOAD_URL@@/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">
 
 <!-- Change these values to update the version numbers referenced within the documentation -->
-<!ENTITY last_proj_release_version "8.2.1">
-<!ENTITY last_geos_release_version "3.10.1">
+<!ENTITY last_proj_release_version "9.0.1">
+<!ENTITY last_geos_release_version "3.11.0">
 <!ENTITY min_postgres_version "11">
+<!ENTITY max_postgres_version "15">
 
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">

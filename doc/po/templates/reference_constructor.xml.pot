@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-04-16 08:20+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -716,9 +716,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "While not OGC-compliant, <varname>ST_MakePoint</varname> is faster and more "
-"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref linkend="
-"\"ST_PointFromText\"/>. It is also easier to use for numeric coordinate "
-"values."
+"precise than <xref linkend=\"ST_GeomFromText\"/> and <xref "
+"linkend=\"ST_PointFromText\"/>. It is also easier to use for numeric "
+"coordinate values."
 msgstr ""
 
 #. Tag: para
@@ -918,9 +918,9 @@ msgstr ""
 #: reference_constructor.xml:423 reference_constructor.xml:695
 #, no-c-format
 msgid ""
-"This function does not accept MultiLineStrings. Use <xref linkend="
-"\"ST_LineMerge\"/> to generate a LineString, or <xref linkend=\"ST_Dump\"/> "
-"to extract LineStrings."
+"This function does not accept MultiLineStrings. Use <xref "
+"linkend=\"ST_LineMerge\"/> to generate a LineString, or <xref "
+"linkend=\"ST_Dump\"/> to extract LineStrings."
 msgstr ""
 
 #. Tag: title
@@ -947,8 +947,8 @@ msgstr ""
 #: reference_constructor.xml:435
 #, no-c-format
 msgid ""
-"Create a Polygon from an open LineString, using <xref linkend=\"ST_StartPoint"
-"\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
+"Create a Polygon from an open LineString, using <xref "
+"linkend=\"ST_StartPoint\"/> and <xref linkend=\"ST_AddPoint\"/> to close it."
 msgstr ""
 
 #. Tag: programlisting
@@ -1028,13 +1028,13 @@ msgstr ""
 msgid ""
 "Create a set of province boundaries with holes representing lakes. The input "
 "is a table of province Polygons/MultiPolygons and a table of water "
-"linestrings. Lines forming lakes are determined by using <xref linkend="
-"\"ST_IsClosed\"/>. The province linework is extracted by using <xref linkend="
-"\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the boundary "
-"is forced to be a single LineString by using <xref linkend=\"ST_LineMerge\"/"
-">. (However, note that if a province has more than one region or has islands "
-"this will produce an invalid polygon.) Using a LEFT JOIN ensures all "
-"provinces are included even if they have no lakes."
+"linestrings. Lines forming lakes are determined by using <xref "
+"linkend=\"ST_IsClosed\"/>. The province linework is extracted by using <xref "
+"linkend=\"ST_Boundary\"/>. As required by <code>ST_MakePolygon</code>, the "
+"boundary is forced to be a single LineString by using <xref "
+"linkend=\"ST_LineMerge\"/>. (However, note that if a province has more than "
+"one region or has islands this will produce an invalid polygon.) Using a "
+"LEFT JOIN ensures all provinces are included even if they have no lakes."
 msgstr ""
 
 #. Tag: para
@@ -1239,8 +1239,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
+"linkend=\"ST_Transform\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
+"linkend=\"ST_PointM\"/>, <xref linkend=\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1297,8 +1297,8 @@ msgstr ""
 #: reference_constructor.xml:587
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
-"\"ST_PointZM\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1355,8 +1355,8 @@ msgstr ""
 #: reference_constructor.xml:624
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref linkend="
-"\"ST_PointZM\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointZ\"/>, <xref "
+"linkend=\"ST_PointZM\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1414,8 +1414,8 @@ msgstr ""
 #: reference_constructor.xml:663
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref linkend="
-"\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
+", <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_PointM\"/>, <xref "
+"linkend=\"ST_PointZ\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1544,8 +1544,9 @@ msgid ""
 "<paramdef><type>integer</type> <parameter>tileY</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>geometry</type> <parameter>bounds=SRID=3857;"
 "LINESTRING(-20037508.342789 -20037508.342789,20037508.342789 "
-"20037508.342789)</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>float</type> <parameter>margin=0.0</parameter></paramdef>"
+"20037508.342789)</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>float</type> <parameter>margin=0.0</parameter></"
+"paramdef>"
 msgstr ""
 
 #. Tag: para

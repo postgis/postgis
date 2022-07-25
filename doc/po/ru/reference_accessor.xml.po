@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-05-03 02:58+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2022-04-17 08:55+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: Russian <https://weblate.osgeo.org/projects/postgis/"
@@ -14,9 +14,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
 "X-Generator: Weblate 4.11.2\n"
 
 #. Tag: title
@@ -328,7 +328,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:94
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
 msgstr ""
 
 #. Tag: para
@@ -524,9 +524,9 @@ msgstr ""
 #: reference_accessor.xml:204
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
-"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"ST_Envelope\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
+"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
+"<xref linkend=\"ST_Envelope\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -804,8 +804,8 @@ msgstr ""
 #: reference_accessor.xml:366
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -867,8 +867,8 @@ msgstr ""
 #: reference_accessor.xml:414
 #, no-c-format
 msgid ""
-"To obtain a single geometry containing the coordinates use <xref linkend="
-"\"ST_Points\"/>."
+"To obtain a single geometry containing the coordinates use <xref "
+"linkend=\"ST_Points\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1091,8 +1091,9 @@ msgstr ""
 #: reference_accessor.xml:451
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref linkend=\"ST_Points\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref "
+"linkend=\"ST_Points\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1249,8 +1250,8 @@ msgstr ""
 #: reference_accessor.xml:517
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_DumpRings\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1363,9 +1364,9 @@ msgstr ""
 #: reference_accessor.xml:571
 #, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN"
-"\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_InteriorRingN\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -1550,7 +1551,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:673
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
 msgstr ""
 
 #. Tag: programlisting
@@ -1651,8 +1652,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This function does not support MULTIPOLYGONs. For MULTIPOLYGONs use in "
-"conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref linkend=\"ST_Dump"
-"\"/>"
+"conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
+"linkend=\"ST_Dump\"/>"
 msgstr ""
 
 #. Tag: para
@@ -2043,8 +2044,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref linkend="
-"\"ST_NumInteriorRings\"/>"
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -2551,8 +2552,8 @@ msgstr ""
 msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
 "self-intersection or self-tangency. For more information on the OGC's "
-"definition of geometry simplicity and validity, refer to <link linkend="
-"\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
+"definition of geometry simplicity and validity, refer to <link "
+"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 msgstr ""
 
 #. Tag: para
@@ -3077,7 +3078,7 @@ msgstr ""
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: ?"
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
 msgstr ""
 
 #. Tag: programlisting
@@ -3351,8 +3352,8 @@ msgstr ""
 msgid ""
 "Returns a MultiPoint containing all the coordinates of a geometry. Duplicate "
 "points are preserved, including the start and end points of ring geometries. "
-"(If desired, duplicate points can be removed by calling <xref linkend="
-"\"ST_RemoveRepeatedPoints\"/> on the result)."
+"(If desired, duplicate points can be removed by calling <xref "
+"linkend=\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
 
 #. Tag: para

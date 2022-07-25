@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-05-03 02:58+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -385,8 +385,8 @@ msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 #. Tag: para
 #: reference_accessor.xml:94
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
+msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:96
@@ -619,13 +619,13 @@ msgstr ""
 #: reference_accessor.xml:204
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
-"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"ST_Envelope\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
+"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
+"<xref linkend=\"ST_Envelope\"/>"
 msgstr ""
-", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
-"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"geometry_overlaps_nd\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
+"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
+"<xref linkend=\"geometry_overlaps_nd\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:218
@@ -978,8 +978,8 @@ msgstr ""
 #: reference_accessor.xml:366
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -1045,8 +1045,8 @@ msgstr ""
 #: reference_accessor.xml:414
 #, no-c-format
 msgid ""
-"To obtain a single geometry containing the coordinates use <xref linkend="
-"\"ST_Points\"/>."
+"To obtain a single geometry containing the coordinates use <xref "
+"linkend=\"ST_Points\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1311,8 +1311,9 @@ msgstr ""
 #: reference_accessor.xml:451
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref linkend=\"ST_Points\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref "
+"linkend=\"ST_Points\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -1517,11 +1518,11 @@ msgstr ""
 #: reference_accessor.xml:517
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_DumpRings\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
 msgstr ""
-", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
-"\"ST_NumInteriorRing\"/>,"
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_NumInteriorRing\"/>,"
 
 #. Tag: refname
 #: reference_accessor.xml:524
@@ -1637,9 +1638,9 @@ msgstr ""
 #: reference_accessor.xml:571
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN"
-"\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_InteriorRingN\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -1857,8 +1858,8 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #. Tag: para
 #: reference_accessor.xml:673
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:679
@@ -1996,8 +1997,8 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "This function does not support MULTIPOLYGONs. For MULTIPOLYGONs use in "
-"conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref linkend=\"ST_Dump"
-"\"/>"
+"conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
+"linkend=\"ST_Dump\"/>"
 msgstr ""
 "Isso não funcionará para MULTIPOLÍGONOS. Use em conjunção com ST_Dump para "
 "MULTIPOLÍGONOS. "
@@ -2516,8 +2517,8 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref linkend="
-"\"ST_NumInteriorRings\"/>"
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
@@ -3104,8 +3105,8 @@ msgstr ""
 "Retorna <varname>VERDADEIRO</varname> se essa <varname>LINESTRING</varname> "
 "for <xref linkend=\"ST_IsClosed\"/> (<function>ST_StartPoint(<parameter>g</"
 "parameter>)</function> <function>~=</function> "
-"<function>ST_Endpoint(<parameter>g</parameter>)</function>) e <xref linkend="
-"\"ST_IsSimple\"/> (não cruzar consigo mesma)."
+"<function>ST_Endpoint(<parameter>g</parameter>)</function>) e <xref "
+"linkend=\"ST_IsSimple\"/> (não cruzar consigo mesma)."
 
 #. Tag: para
 #: reference_accessor.xml:1278
@@ -3200,8 +3201,8 @@ msgstr ""
 msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
 "self-intersection or self-tangency. For more information on the OGC's "
-"definition of geometry simplicity and validity, refer to <link linkend="
-"\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
+"definition of geometry simplicity and validity, refer to <link "
+"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 msgstr ""
 "Retorna verdadeira se essa geometria não tem nenhum ponto geométrico "
 "irregular, como auto intersecção ou tangenciação. Para maiores informações "
@@ -3850,8 +3851,8 @@ msgstr "Disponibilidade: 2.0.0"
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: ?"
-msgstr "&sqlmm_compliant; SQL-MM 3: ?"
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:1687
@@ -4221,8 +4222,8 @@ msgstr ""
 msgid ""
 "Returns a MultiPoint containing all the coordinates of a geometry. Duplicate "
 "points are preserved, including the start and end points of ring geometries. "
-"(If desired, duplicate points can be removed by calling <xref linkend="
-"\"ST_RemoveRepeatedPoints\"/> on the result)."
+"(If desired, duplicate points can be removed by calling <xref "
+"linkend=\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
 
 #. Tag: para
@@ -4915,6 +4916,18 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
+
+#, no-c-format
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+
+#, no-c-format
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+
+#, no-c-format
+#~ msgid "&sqlmm_compliant; SQL-MM 3: ?"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: ?"
 
 #, fuzzy
 #~ msgid ""

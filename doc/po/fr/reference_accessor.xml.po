@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-05-03 02:58+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2018-07-23 18:00+0000\n"
 "Last-Translator: Vincent Picavet <vincent.ml@oslandia.com>\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
@@ -357,8 +357,8 @@ msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 #. Tag: para
 #: reference_accessor.xml:94
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
+msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:96
@@ -569,13 +569,13 @@ msgstr ""
 #: reference_accessor.xml:204
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
-"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"ST_Envelope\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
+"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
+"<xref linkend=\"ST_Envelope\"/>"
 msgstr ""
-", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref linkend="
-"\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, <xref "
-"linkend=\"geometry_overlaps_nd\"/>"
+", <xref linkend=\"ST_EndPoint\"/>, <xref linkend=\"ST_X\"/>, <xref "
+"linkend=\"ST_Y\"/>, <xref linkend=\"ST_Z\"/>, <xref linkend=\"ST_M\"/>, "
+"<xref linkend=\"geometry_overlaps_nd\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:218
@@ -880,8 +880,8 @@ msgstr ""
 #: reference_accessor.xml:366
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend="
-"\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -947,8 +947,8 @@ msgstr ""
 #: reference_accessor.xml:414
 #, no-c-format
 msgid ""
-"To obtain a single geometry containing the coordinates use <xref linkend="
-"\"ST_Points\"/>."
+"To obtain a single geometry containing the coordinates use <xref "
+"linkend=\"ST_Points\"/>."
 msgstr ""
 
 #. Tag: para
@@ -1171,8 +1171,9 @@ msgstr ""
 #: reference_accessor.xml:451
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref linkend=\"ST_Points\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref "
+"linkend=\"ST_Points\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -1335,11 +1336,11 @@ msgstr ""
 #: reference_accessor.xml:517
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_DumpRings\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
 msgstr ""
-", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend="
-"\"ST_NumInteriorRing\"/>,"
+", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
+"linkend=\"ST_NumInteriorRing\"/>,"
 
 #. Tag: refname
 #: reference_accessor.xml:524
@@ -1455,9 +1456,9 @@ msgstr ""
 #: reference_accessor.xml:571
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
-"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN"
-"\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
+"linkend=\"ST_InteriorRingN\"/>"
 msgstr ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
 "linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -1677,8 +1678,8 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #. Tag: para
 #: reference_accessor.xml:673
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
-msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:679
@@ -1782,8 +1783,8 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "This function does not support MULTIPOLYGONs. For MULTIPOLYGONs use in "
-"conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref linkend=\"ST_Dump"
-"\"/>"
+"conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
+"linkend=\"ST_Dump\"/>"
 msgstr ""
 "Ne support pas les MULTIPOLYGON. Utiliser en association avec ST_Dump pour "
 "les MULTIPOLYGON"
@@ -2241,8 +2242,8 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
-"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref linkend="
-"\"ST_NumInteriorRings\"/>"
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref "
+"linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
 ", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
 ">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
@@ -2901,13 +2902,13 @@ msgstr ""
 msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
 "self-intersection or self-tangency. For more information on the OGC's "
-"definition of geometry simplicity and validity, refer to <link linkend="
-"\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
+"definition of geometry simplicity and validity, refer to <link "
+"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 msgstr ""
 "Renvoie TRUE si cette géométrie ne présente pas d'anomalie comme une auto "
 "intersection ou des segments tangentiels. Pour plus d'information sur les "
-"notions OGC de simplicité et de validité, se référer à  <link linkend="
-"\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
+"notions OGC de simplicité et de validité, se référer à  <link "
+"linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 
 #. Tag: para
 #: reference_accessor.xml:1326
@@ -3503,8 +3504,8 @@ msgstr "Disponibilité : 2.0.0"
 #. Tag: para
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
 #, no-c-format
-msgid "&sqlmm_compliant; SQL-MM 3: ?"
-msgstr "&sqlmm_compliant; SQL-MM 3: ?"
+msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
+msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:1687
@@ -3797,8 +3798,8 @@ msgstr ""
 msgid ""
 "Returns a MultiPoint containing all the coordinates of a geometry. Duplicate "
 "points are preserved, including the start and end points of ring geometries. "
-"(If desired, duplicate points can be removed by calling <xref linkend="
-"\"ST_RemoveRepeatedPoints\"/> on the result)."
+"(If desired, duplicate points can be removed by calling <xref "
+"linkend=\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
 
 #. Tag: para
@@ -4445,6 +4446,18 @@ msgstr ""
 msgid ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
+#, no-c-format
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.14"
+
+#, no-c-format
+#~ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.15"
+
+#, no-c-format
+#~ msgid "&sqlmm_compliant; SQL-MM 3: ?"
+#~ msgstr "&sqlmm_compliant; SQL-MM 3: ?"
+
 #~ msgid ""
 #~ "-- ST_AsText output\n"
 #~ "MULTIPOINT(100 150,160 170)"
@@ -4746,11 +4759,11 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ " t         | f"
 
 #~ msgid ""
-#~ ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail"
-#~ "\"/>, <xref linkend=\"ST_Summary\"/>"
+#~ ", <xref linkend=\"ST_IsValidReason\"/>, <xref "
+#~ "linkend=\"ST_IsValidDetail\"/>, <xref linkend=\"ST_Summary\"/>"
 #~ msgstr ""
-#~ ", <xref linkend=\"ST_IsValidReason\"/>, <xref linkend=\"ST_IsValidDetail"
-#~ "\"/>, <xref linkend=\"ST_Summary\"/>"
+#~ ", <xref linkend=\"ST_IsValidReason\"/>, <xref "
+#~ "linkend=\"ST_IsValidDetail\"/>, <xref linkend=\"ST_Summary\"/>"
 
 #~ msgid "ST_IsValidReason"
 #~ msgstr "ST_IsValidReason"
@@ -4908,11 +4921,11 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "220288.248780547"
 
 #~ msgid ""
-#~ ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-#~ "\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 #~ msgstr ""
-#~ ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-#~ "\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ ", <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #~ msgid "ST_XMin"
 #~ msgstr "ST_XMin"
@@ -4992,11 +5005,11 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "paramdef>"
 
 #~ msgid ""
-#~ ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-#~ "\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 #~ msgstr ""
-#~ ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend="
-#~ "\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ ", <xref linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
 
 #~ msgid "ST_YMin"
 #~ msgstr "ST_YMin"
@@ -5011,11 +5024,13 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "paramdef>"
 
 #~ msgid ""
-#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-#~ "\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+#~ "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+#~ "linkend=\"ST_ZMin\"/>"
 #~ msgstr ""
-#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-#~ "\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+#~ "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_ZMax\"/>, <xref "
+#~ "linkend=\"ST_ZMin\"/>"
 
 #~ msgid "ST_ZMax"
 #~ msgstr "ST_ZMax"
@@ -5030,11 +5045,13 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 #~ "paramdef>"
 
 #~ msgid ""
-#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-#~ "\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+#~ "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>"
 #~ msgstr ""
-#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref linkend="
-#~ "\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+#~ ", <xref linkend=\"ST_XMin\"/>, <xref linkend=\"ST_XMax\"/>, <xref "
+#~ "linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin\"/>, <xref "
+#~ "linkend=\"ST_ZMax\"/>"
 
 #~ msgid "ST_ZMin"
 #~ msgstr "ST_ZMin"
@@ -5103,9 +5120,9 @@ msgstr ", <xref linkend=\"ST_NDims\"/>, <xref linkend=\"ST_Dimension\"/>"
 
 #~ msgid ""
 #~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-#~ "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend="
-#~ "\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+#~ "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
+#~ "linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
 #~ msgstr ""
 #~ ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
-#~ "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend="
-#~ "\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"
+#~ "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref "
+#~ "linkend=\"ST_YMin\"/>, <xref linkend=\"ST_ZMax\"/>"

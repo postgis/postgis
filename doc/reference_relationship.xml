@@ -48,7 +48,7 @@
       <!-- Optionally mention supports Polyhedral Surface  -->
       <para>&P_support;</para>
       <para>&T_support;</para>
-      <para>&sqlmm_compliant; SQL-MM 3: ?</para>
+      <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
     </refsection>
     <refsection>
     <title>Geometry Examples</title>

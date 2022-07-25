@@ -22,17 +22,25 @@ static void mbc_test(LWGEOM* g)
 
 	POINT2D p;
 	POINT4D p4;
+	char *msg1 = "mbc_test failed (got %.12f should be less than radius %.12f) \n";
 	while (lwpointiterator_next(it, &p4))
 	{
 		p.x = p4.x;
 		p.y = p4.y;
 
 		/* We need to store the distance in a variable before the assert so that
-		 * it is rounded from its 80-bit representation (on x86) down to 64 bits.
-		 * */
+		* it is rounded from its 80-bit representation (on x86) down to 64 bits.
+		* */
 		volatile double d = distance2d_pt_pt(result->center, &p);
-
-		CU_ASSERT_TRUE(d <= result->radius);
+		if ( (d - result->radius) > 0.0000001  )
+		{
+			printf(msg1, d, result->radius);
+			CU_FAIL();
+		}
+		else
+		{
+			CU_PASS();
+		}
 	}
 
 	lwboundingcircle_destroy(result);

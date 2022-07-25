@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -64,8 +64,8 @@ msgstr ""
 #: extras_address_standardizer.xml:8
 #, no-c-format
 msgid ""
-"For installation instructions refer to: <xref linkend="
-"\"installing_pagc_address_standardizer\"/>."
+"For installation instructions refer to: <xref "
+"linkend=\"installing_pagc_address_standardizer\"/>."
 msgstr ""
 
 #. Tag: title
@@ -180,8 +180,8 @@ msgstr ""
 #: extras_address_standardizer.xml:51
 #, no-c-format
 msgid ""
-"The token numbers denote the output reference number in the <xref linkend="
-"\"rulestab\"/>."
+"The token numbers denote the output reference number in the <xref "
+"linkend=\"rulestab\"/>."
 msgstr ""
 
 #. Tag: para
@@ -510,8 +510,8 @@ msgstr ""
 #: extras_address_standardizer.xml:168
 #, no-c-format
 msgid ""
-"Numbers for corresponding output tokens are listed in <xref linkend=\"stdaddr"
-"\"/>."
+"Numbers for corresponding output tokens are listed in <xref "
+"linkend=\"stdaddr\"/>."
 msgstr ""
 
 #. Tag: title
@@ -546,8 +546,8 @@ msgstr ""
 #: extras_address_standardizer.xml:181
 #, no-c-format
 msgid ""
-"(13). The ampersand (&amp;) is frequently used to abbreviate the word \"and"
-"\"."
+"(13). The ampersand (&amp;) is frequently used to abbreviate the word "
+"\"and\"."
 msgstr ""
 
 #. Tag: term
@@ -1558,6 +1558,6 @@ msgstr ""
 #: extras_address_standardizer.xml:684
 #, no-c-format
 msgid ""
-", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
-"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
+", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref "
+"linkend=\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 msgstr ""

@@ -5,9 +5,7 @@
 ###
 #export OS_BUILD=64
 #export PGPORT=8442
-#POSTGIS_MAJOR_VERSION=2
-#POSTGIS_MINOR_VERSION=1
-#POSTGIS_MICRO_VERSION=0dev
+
 #export OS_BUILD=32
 
 #export GCC_TYPE=
@@ -89,12 +87,20 @@ echo PATH BEFORE: $PATH
 export PGPATH=${PROJECTS}/postgresql/rel/pg${PG_VER}w${OS_BUILD}${GCC_TYPE}
 export PGPATHEDB=${PGPATH}edb
 #export PROJSO=libproj-13.dll
-export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
-export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
 
 if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
+	cd $POSTGIS_SRC
 fi
+
+export POSTGIS_MAJOR_VERSION=`grep ^POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`
+export POSTGIS_MINOR_VERSION=`grep ^POSTGIS_MINOR_VERSION Version.config | cut -d= -f2`
+export POSTGIS_MICRO_VERSION=`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
+
+export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
+export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
+
+echo "Version: $POSTGIS_MICRO_VER"
 
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 #POSTGIS_SVN_REVISION=will_be_passed_in_by_bot
@@ -126,11 +132,7 @@ mkdir $outdir/bin/postgisgui/share
 mkdir $outdir/bin/postgisgui/lib
 mkdir $outdir/utils
 cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/postgisgui
-# it seems 9.2 and 9.3 doesn't come with its own libiconv good grief
-# and trying to use their libiconv2.dll makes shp2pgsql crash
-if [[ "$PG_VER" == *9.2* || "$PG_VER" == *9.3* ]]; then
-	cp ${PROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin
-fi;
+
 cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
 #cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
 cp ${PROJECTS}/rel-libiconv-${ICON_VER}w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
@@ -168,19 +170,16 @@ cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/
 #for protobuf
 cp ${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin/libprotobuf-c-*.dll $outdir/bin
 
-echo "POSTGIS: ${POSTGIS_MINOR_VER} r${POSTGIS_SVN_REVISION} http://postgis.net/source" > $verfile
+echo "POSTGIS: ${POSTGIS_MICRO_VER} http://postgis.net/source" > $verfile
 
 if [ "$POSTGIS_MAJOR_VERSION" > "1" ] ; then
   ## only copy gdal components if 2+.  1.5 doesn't have raster support
   cp -p ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
   cp -rp  ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal $outdir/gdal-data
 
-  if [ "$POSTGIS_MINOR_VERSION" > "0" ] ; then
-    ## only copy pagc standardizer components for 2.1+
-    cp -p ${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/bin/libpcre-1*.dll $outdir/bin
-    # cp -p ${PGPATH}/share/extension/address*.* $outdir/share/extension
-    # cp -p ${PGPATH}/share/extension/us-*.sql $outdir/share/extension
-  fi;
+	# needed for address standardizer
+  cp -p ${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/bin/libpcre-1*.dll $outdir/bin
+
 fi;
 
 if [ -n "$SFCGAL_VER"  ]; then
@@ -242,7 +241,7 @@ cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-
 #cp utils/* ${RELDIR}/${RELVERDIR}/utils
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
 # in case we ever do MAX ship all the max scripts
-export POSTGIS_MINOR_MAX_VER=${POSTGIS_MINOR_VER}.MAX
+export POSTGIS_MINOR_MAX_VER=${POSTGIS_MINOR_VER}.UPGRADEME
 
 #export UPGRADE_VER_FILE="extensions/upgradeable_versions.mk"
 value=$(<extensions/upgradeable_versions.mk)
@@ -254,13 +253,13 @@ export UPGRADEABLE_VERSIONS=$value
 export WIN_RELEASED_VERSIONS="2.0.0 2.0.1 2.0.3 2.0.4 2.0.6 2.1.4 2.1.7 2.1.8 2.2.0 2.2.3 2.3.0 2.3.7 2.4.0 2.4.4"
 for EXTNAME in postgis postgis_raster postgis_topology postgis_sfcgal postgis_tiger_geocoder address_standardizer; do
 	cp extensions/$EXTNAME/sql/$EXTNAME--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
-	cp extensions/postgis/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MINOR_MAX_VER}--${POSTGIS_MICRO_VER}.sql
 	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}next--${POSTGIS_MICRO_VER}.sql
+	cp extensions/$EXTNAME/sql/$EXTNAME--ANY--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
 
 	# special cases of ANY and next
 	echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--ANY--${POSTGIS_MINOR_MAX_VER}.sql
-	echo "--placeholder" > ${RELDIR}/${RELVERDIR}/share/extension/$EXTNAME--${POSTGIS_MICRO_VER}--${POSTGIS_MICRO_VER}next.sql
 
 	if test "$EXTNAME" = "address_standardizer"; then #repeat for address_standardizer_data_us
 		cp extensions/$EXTNAME/sql/${EXTNAME}_data_us--${POSTGIS_MICRO_VER}.sql ${RELDIR}/${RELVERDIR}/share/extension
@@ -310,6 +309,8 @@ fi
 #echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}
+md5sum $package > ${package}.md5
 #scp $package robe@www.refractions.net:${DWN}/${REL_PGVER}/buildbot/${RELVERDIR}.zip
 cp $package ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
+cp ${package}.md5 ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
 cd ${POSTGIS_SRC}

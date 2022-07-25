@@ -119,7 +119,7 @@
 		<note> <para>Prior to 2.0.0, this function throws an exception if used with <varname>GEOMETRYCOLLECTION</varname>. From 2.0.0 up it will return NULL instead (unsupported input).</para></note>
 
 		<para>&sfs_compliant; OGC SPEC s2.1.1.1</para>
-		<para>&sqlmm_compliant; SQL-MM 3: 5.1.14</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17</para>
 		<para>&Z_support;</para>
 		<para>Enhanced: 2.1.0 support for Triangle was introduced</para>
 		<para>Changed: 3.2.0 support for TIN, does not use geos, does not linearize curves</para>
@@ -1059,7 +1059,7 @@ SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 3)':
 
 			<para>Availability: 1.5.0 behavior changed to output double precision instead of float4</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
-			<para>&sqlmm_compliant; SQL-MM 3: 5.1.15</para>
+			<para>&sqlmm_compliant; SQL-MM 3: 5.1.19</para>
 		</refsection>
 
 	  <refsection>
@@ -2429,7 +2429,7 @@ GROUP BY gid, field1,field2;
 		<para>Availability: 2.0.0</para>
 		<para>&Z_support;</para>
 		<para>&sfs_compliant;</para>
-		<para>&sqlmm_compliant; SQL-MM 3: ?</para>
+		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
 		<para>&P_support;</para>
 	  </refsection>
 
@@ -2529,7 +2529,7 @@ GROUP BY gid, field1,field2;
 		</note>
 
 		<para>Availability: 2.0.0</para>
-		<para>&sqlmm_compliant; SQL-MM 3: ?</para>
+		<para>&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 

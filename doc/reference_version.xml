@@ -43,6 +43,7 @@ postgis_topology, postgis_sfcgal) to latest available version.
 
 		<para>Availability: 2.5.0</para>
 		<note>
+            <para>Changed: 3.3.0 support for upgrades from any PostGIS version. Does not work on all systems.</para>
 			<para>Changed: 3.0.0 to repackage loose extensions and support postgis_raster.</para>
 		</note>
 	  </refsection>

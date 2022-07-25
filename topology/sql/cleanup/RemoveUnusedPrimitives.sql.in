@@ -1,0 +1,674 @@
+-- This function finds primitives intersecting a bounding box
+-- that are not used in the definition of TopoGeometry objects
+-- and remove them all.
+--
+-- Returns number of deleted primitives
+--
+CREATE OR REPLACE FUNCTION topology.RemoveUnusedPrimitives(
+  atopology text,
+  bbox GEOMETRY DEFAULT NULL
+)
+RETURNS INT AS
+$BODY$
+DECLARE
+  topo topology.topology;
+  deletedNodes INT := 0;
+  deletedEdges INT := 0;
+  deletedNodesDeg2 INT := 0;
+  sql TEXT;
+  rec RECORD;
+  edgeMap JSONB := '{}';
+  edge1 INT;
+  edge2 INT;
+  removedNode INT;
+  ok BOOLEAN;
+  fixedLinks INT := 0;
+  mergedFaces INT[];
+  moreMergedFaces INT[];
+BEGIN
+
+  topo := findTopology(atopology);
+  IF topo.id IS NULL THEN
+    RAISE EXCEPTION 'Could not find topology "%"', atopology;
+  END IF;
+
+  RAISE NOTICE 'Removing unused edges';
+
+  RAISE DEBUG 'Determining edges not referenced by linear TopoGeoms';
+  -- Delete edges not used in non-hierarchical TopoGeometry
+  -- from linear typed layers
+  sql := format(
+    $$
+      CREATE TEMPORARY TABLE deleted_edges AS
+      SELECT
+        edge_id,
+        next_right_edge,
+        next_left_edge,
+        left_face,
+        right_face,
+        start_node,
+        end_node
+      FROM %1$I.edge_data e
+      WHERE ( $1 IS NULL OR ST_Intersects(geom, $1) )
+      AND NOT EXISTS (
+        SELECT 1
+        FROM %1$I.relation r, topology.layer l
+        WHERE r.layer_id = l.layer_id
+        AND l.topology_id = $2
+        AND l.child_id IS NULL
+        AND l.feature_type IN (2, 4)
+        AND r.element_id in ( e.edge_id, -e.edge_id )
+      )
+    $$,
+    topo.name
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql USING bbox, topo.id;
+  GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+  RAISE DEBUG 'Found % edges not referenced by linear TopoGeoms', fixedLinks;
+
+  -- remove from deleted_edges the edges binding
+  -- faces that individually (not both) take part
+  -- of the definition of an areal TopoGeometry
+  RAISE DEBUG 'Determining edges not binding areal TopoGeoms';
+  sql := format(
+    $$
+      WITH breaking_merges AS (
+        SELECT
+          DISTINCT
+          de.edge_id
+          --, ARRAY[r.layer_id, r.topogeo_id] topogeo
+          --, array_agg(r.element_id) faces
+        FROM
+          topology.layer l,
+          %1$I.relation r,
+          pg_temp.deleted_edges de
+        WHERE l.topology_id = %2$L
+        AND l.child_id IS NULL -- non-hierarchical layer
+        AND l.feature_type IN (3, 4) -- areal or mixed layer
+        AND r.layer_id = l.layer_id
+        AND r.element_type = 3 -- face primitive
+        AND de.left_face != de.right_face -- non-dangling edges
+        AND ( r.element_id = de.left_face OR r.element_id = de.right_face )
+        GROUP BY de.edge_id, r.layer_id, r.topogeo_id
+        HAVING count(DISTINCT r.element_id) != 2
+      )
+      --SELECT * FROM breaking_merges
+      DELETE FROM pg_temp.deleted_edges de
+      WHERE edge_id IN (
+        SELECT edge_id FROM breaking_merges
+      )
+    $$,
+    topo.name,
+    topo.id
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+  RAISE DEBUG 'Retained % edges binding areal TopoGeoms', fixedLinks;
+  --FOR rec IN EXECUTE sql LOOP
+    --RAISE NOTICE 'Should retain edges % binding areal TopoGeom % in layer %', rec.edge_id, rec.topogeo_id, rec.layer_id;
+  --END LOOP;
+
+
+  RAISE DEBUG 'Deleting unused edges';
+  sql := format(
+    $$
+      DELETE FROM %1$I.edge_data e
+      WHERE e.edge_id IN (
+        SELECT edge_id FROM pg_temp.deleted_edges
+      )
+    $$,
+    topo.name
+  );
+  EXECUTE sql;
+  GET DIAGNOSTICS deletedEdges = ROW_COUNT;
+  RAISE DEBUG 'Deleted % unused edges', deletedEdges;
+
+
+  RAISE DEBUG 'Fixing broken next_right_edge links';
+  sql := format(
+    $$
+      UPDATE %1$I.edge_data e
+      SET
+        next_right_edge =
+          CASE
+          WHEN e.next_right_edge = ne.edge_id THEN
+            ne.next_right_edge
+          ELSE
+            ne.next_left_edge
+          END,
+        abs_next_right_edge =
+          CASE
+          WHEN e.next_right_edge = ne.edge_id THEN
+            abs(ne.next_right_edge)
+          ELSE
+            abs(ne.next_left_edge)
+          END
+      FROM pg_temp.deleted_edges ne
+      WHERE e.abs_next_right_edge = ne.edge_id
+        AND e.next_right_edge !=
+        CASE
+        WHEN e.next_right_edge = ne.edge_id THEN
+          ne.next_right_edge
+        ELSE
+          ne.next_left_edge
+        END
+      RETURNING e.*
+    $$,
+    topo.name
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  LOOP
+    EXECUTE sql;
+    GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+--    fixedLinks := 0;
+--    FOR rec IN EXECUTE sql LOOP
+--      fixedLinks := fixedLinks + 1;
+--      RAISE DEBUG 'Updated next_right_edge link for edge %, now having next_right_edge=% and abs_next_right_edge=%', rec.edge_id, rec.next_right_edge, rec.abs_next_right_edge;
+--    END LOOP;
+    IF fixedLinks = 0 THEN
+      RAISE DEBUG 'No (more) broken next_right_edge links';
+      EXIT;
+    END IF;
+    RAISE DEBUG 'Updated % broken next_right_edge links', fixedLinks;
+  END LOOP;
+
+  RAISE DEBUG 'Fixing broken next_left_edge links';
+  sql := format(
+    $$
+      UPDATE %1$I.edge_data e
+      SET
+        next_left_edge =
+          CASE
+          WHEN e.next_left_edge = ne.edge_id THEN
+            ne.next_right_edge
+          ELSE
+            ne.next_left_edge
+          END,
+        abs_next_left_edge =
+          CASE
+          WHEN e.next_left_edge = ne.edge_id THEN
+            abs(ne.next_right_edge)
+          ELSE
+            abs(ne.next_left_edge)
+          END
+      FROM pg_temp.deleted_edges ne
+      WHERE e.abs_next_left_edge = ne.edge_id
+        -- Avoid updating records which do not need
+        -- to be updated (alternatively we could DELETE
+        -- those records from deleted_edges before next iteration)
+        AND e.next_left_edge !=
+        CASE
+        WHEN e.next_left_edge = ne.edge_id THEN
+          ne.next_right_edge
+        ELSE
+          ne.next_left_edge
+        END
+      RETURNING e.*
+    $$,
+    topo.name
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  LOOP
+    EXECUTE sql;
+    GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+--    fixedLinks := 0;
+--    FOR rec IN EXECUTE sql LOOP
+--      fixedLinks := fixedLinks + 1;
+--      RAISE DEBUG 'Updated next_left_edge link for edge %, now having next_left_edge=% and abs_next_left_edge=%', rec.edge_id, rec.next_left_edge, rec.abs_next_left_edge;
+--    END LOOP;
+    IF fixedLinks = 0 THEN
+      RAISE DEBUG 'No (more) broken next_left_edge links found';
+      EXIT;
+    END IF;
+    RAISE DEBUG 'Updated % broken next_left_edge links', fixedLinks;
+  END LOOP;
+
+  --
+  -- Build arrays of faces to be merged
+  --
+
+  RAISE DEBUG 'Building face merge sets';
+
+  CREATE TEMPORARY TABLE mergeable_faces AS
+  WITH merges AS (
+    SELECT
+      DISTINCT
+      ARRAY[
+        LEAST(left_face, right_face),
+        GREATEST(left_face, right_face)
+      ] faceset
+    FROM deleted_edges
+    WHERE left_face != right_face
+  )
+  SELECT faceset
+  FROM merges;
+
+  CREATE TEMPORARY TABLE merged_faces (keep INT, merge INT[]);
+
+  LOOP -- {
+
+    -- Fetch next merge
+    DELETE FROM mergeable_faces
+    WHERE ctid = (SELECT ctid FROM mergeable_faces LIMIT 1)
+    RETURNING faceset
+    INTO mergedFaces;
+    IF mergedFaces IS NULL THEN
+      EXIT;
+    END IF;
+
+    RAISE DEBUG 'Next merged faces start with: %', mergedFaces;
+
+    LOOP --{
+      WITH deleted AS (
+        DELETE FROM mergeable_faces
+        WHERE faceset && mergedFaces
+        RETURNING faceset
+      ), flood_faces AS (
+        SELECT DISTINCT unnest(faceset) merged
+        FROM deleted
+      )
+      SELECT array_agg(merged)
+      FROM flood_faces
+      INTO moreMergedFaces;
+
+      IF moreMergedFaces IS NULL THEN
+        EXIT;
+      END IF;
+
+      RAISE DEBUG 'There is more merged faces: %', moreMergedFaces;
+      SELECT array_agg(x) FROM (
+        SELECT unnest(mergedFaces) x
+          UNION
+        SELECT unnest(moreMergedFaces)
+      ) foo
+      INTO mergedFaces;
+      RAISE DEBUG 'Merged faces grows to: %', mergedFaces;
+
+    END LOOP; --}
+
+    mergedFaces := array_agg(distinct x ORDER BY x) FROM unnest(mergedFaces) x;
+    RAISE DEBUG 'Storing merged faceset: %', mergedFaces;
+
+    INSERT INTO pg_temp.merged_faces VALUES (
+      mergedFaces[1],
+      array_remove(mergedFaces, mergedFaces[1])
+    );
+
+  END LOOP; --}
+
+  DROP TABLE pg_temp.mergeable_faces;
+
+  --
+  -- Fix face labels
+  --
+
+  RAISE DEBUG 'Fixing broken left_face labels';
+  sql := format(
+    $$
+      UPDATE %1$I.edge_data e
+      SET left_face = mf.keep
+      FROM pg_temp.merged_faces mf
+      WHERE e.left_face != mf.keep
+        AND e.left_face = ANY(mf.merge)
+    $$,
+    topo.name
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+  RAISE DEBUG 'Updated % broken left_face links', fixedLinks;
+
+  RAISE DEBUG 'Fixing broken right_face labels';
+  sql := format(
+    $$
+      UPDATE %1$I.edge_data e
+      SET right_face = mf.keep
+      FROM pg_temp.merged_faces mf
+      WHERE e.right_face != mf.keep
+        AND e.right_face = ANY(mf.merge)
+    $$,
+    topo.name
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+  RAISE DEBUG 'Updated % broken right_face links', fixedLinks;
+
+
+  RAISE DEBUG 'Updating containing_face labels for merged faces';
+  sql := format(
+    $$
+      UPDATE %1$I.node n
+      SET containing_face = mf.keep
+      FROM pg_temp.merged_faces mf
+      WHERE n.containing_face != mf.keep
+      AND n.containing_face = ANY(mf.merge)
+    $$,
+    topo.name
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+  RAISE DEBUG 'Updated % containing_face labels for nodes', fixedLinks;
+
+  --
+  -- Fix face table (delete/update mbr)
+  --
+
+  RAISE DEBUG 'Updating merged faces MBR';
+  sql := format(
+    $$
+      WITH merged_mbr AS (
+        SELECT
+          mf.keep,
+          ST_Envelope(
+            ST_Collect(
+              f.mbr
+            )
+          ) mbr
+        FROM pg_temp.merged_faces mf
+        JOIN %1$I.face f ON (
+          f.face_id = mf.keep OR
+          f.face_id = ANY( mf.merge )
+        )
+        WHERE mf.keep != 0
+        GROUP by mf.keep
+      )
+      UPDATE %1$I.face f
+      SET mbr = m.mbr
+      FROM merged_mbr m
+      WHERE f.face_id = m.keep
+    $$,
+    topo.name
+  );
+  EXECUTE sql;
+  GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+  RAISE DEBUG 'Updated % merged faces MBR', fixedLinks;
+
+  RAISE DEBUG 'Deleting removed faces';
+  sql := format(
+    $$
+      DELETE FROM %1$I.face
+      USING pg_temp.merged_faces mf
+      WHERE face_id = ANY (mf.merge)
+    $$,
+    topo.name
+  );
+  EXECUTE sql;
+  GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+  RAISE DEBUG 'Deleted % merged faces', fixedLinks;
+
+  --
+  -- Fix TopoGeometry
+  --
+
+  RAISE DEBUG 'Updating areal TopoGeometry definitions';
+  -- We remove the merged faces from the definition
+  -- of areal TopoGeometry objects
+  sql := format(
+    $$
+      WITH deleted AS (
+        DELETE FROM %1$I.relation r
+        USING topology.layer l, pg_temp.merged_faces mf
+        WHERE l.topology_id = %2$L
+        AND l.feature_type IN (3, 4)
+        AND l.child_id IS NULL
+        AND r.layer_id = l.layer_id
+        AND r.element_id = ANY (mf.merge)
+        RETURNING
+          r.topogeo_id,
+          r.layer_id,
+          l.schema_name,
+          l.table_name,
+          l.feature_column,
+          mf.merge,
+          mf.keep,
+          r.element_id
+      )
+      SELECT
+        topogeo_id,
+        layer_id,
+        schema_name,
+        table_name,
+        feature_column,
+        merge,
+        keep,
+        array_agg(element_id) lost_faces
+      FROM deleted
+      GROUP BY 1,2,3,4,5,6,7
+    $$,
+    topo.name,
+    topo.id
+  );
+  --RAISE NOTICE 'SQL: %', sql;
+  FOR rec IN EXECUTE sql
+  LOOP
+    RAISE DEBUG 'Areal TopoGeometry % in layer %.%.% '
+      'lost faces % (kept %) in its composition',
+      rec.topogeo_id, rec.schema_name,
+      rec.table_name, rec.feature_column,
+      rec.lost_faces, rec.keep
+    ;
+  END LOOP;
+
+  --
+  -- Mark newly isolated nodes as such
+  --
+
+  RAISE DEBUG 'Determining newly isolated nodes';
+  sql := format(
+    $$
+      WITH unlinked_nodes AS (
+        SELECT start_node node_id FROM pg_temp.deleted_edges
+          UNION
+        SELECT end_node FROM pg_temp.deleted_edges
+      ), isolated AS (
+        SELECT node_id FROM unlinked_nodes
+        EXCEPT SELECT start_node FROM %1$I.edge_data
+        EXCEPT  SELECT end_node FROM %1$I.edge_data
+      ), incident_faces AS (
+        SELECT
+          node_id,
+          array_agg(DISTINCT face_id) incident_faces
+        FROM (
+          SELECT DISTINCT node_id, unnest(face_id) face_id
+          FROM (
+            SELECT
+              i.node_id,
+              ARRAY[e.left_face, e.right_face] face_id
+            FROM isolated i, deleted_edges e
+            WHERE e.start_node = i.node_id
+              UNION
+            SELECT
+              i.node_id,
+              ARRAY[e.left_face, e.right_face] face_id
+            FROM isolated i, deleted_edges e
+            WHERE e.end_node = i.node_id
+          ) foo
+        ) bar
+        GROUP BY node_id
+      ), containing_faces AS (
+        SELECT
+          inc.node_id,
+          COALESCE(mf.keep, incident_faces[1]) face_id
+        FROM incident_faces inc
+        LEFT JOIN pg_temp.merged_faces mf
+          ON ( inc.incident_faces && mf.merge )
+      )
+      UPDATE %1$I.node n
+      SET containing_face = cf.face_id
+      FROM containing_faces cf
+      WHERE n.node_id = cf.node_id
+      AND n.containing_face IS DISTINCT FROM cf.face_id
+    $$,
+    topo.name
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  EXECUTE sql;
+  GET DIAGNOSTICS fixedLinks = ROW_COUNT;
+  RAISE DEBUG 'Isolated % nodes', fixedLinks;
+
+  RAISE NOTICE 'Removed % unused edges', deletedEdges;
+
+
+  --
+  -- Clean isolated nodes
+  --
+
+  -- Cleanup isolated nodes
+  -- (non-isolated ones would have become isolated by now)
+  sql := format(
+    $$
+      SELECT
+        n.node_id
+      FROM
+        %1$I.node n
+      WHERE ( $1 IS NULL OR ST_Intersects(n.geom, $1) )
+      AND n.containing_face IS NOT NULL
+      AND NOT EXISTS (
+        SELECT 1
+        FROM %1$I.relation r, topology.layer l
+        WHERE r.layer_id = l.layer_id
+        AND l.topology_id = $2
+        AND l.child_id IS NULL
+        AND l.feature_type = 1
+        AND r.element_id = n.node_id
+      )
+    $$,
+    topo.name
+  );
+  RAISE NOTICE 'Removing isolated nodes';
+  FOR rec in EXECUTE sql USING bbox, topo.id
+  LOOP --{
+    BEGIN
+      PERFORM topology.ST_RemIsoNode(topo.name, rec.node_id);
+      RAISE DEBUG 'Removed isolated node %', rec.node_id;
+      deletedNodes := deletedNodes + 1;
+    EXCEPTION WHEN OTHERS
+    THEN
+      RAISE WARNING 'Isolated node % could not be removed: %', rec.node_id, SQLERRM;
+    END;
+  END LOOP; --}
+  RAISE NOTICE 'Removed % isolated nodes', deletedNodes;
+
+  -- Remove nodes connecting only 2 edges if
+  -- no lineal TopoGeometry exists that is defined
+  -- by only one of them
+  sql := format(
+    $$
+      WITH
+      unused_connected_nodes_in_bbox AS (
+        SELECT
+          n.node_id
+        FROM %1$I.node n
+        WHERE
+          ( $1 IS NULL OR ST_Intersects(n.geom, $1) )
+          AND n.containing_face IS NULL
+
+          EXCEPT
+
+        SELECT r.element_id
+        FROM %1$I.relation r
+        JOIN topology.layer l ON ( r.layer_id = l.layer_id )
+        WHERE l.child_id IS NULL
+        AND l.topology_id = $2
+        AND l.feature_type IN ( 1, 4 ) -- puntual or mixed layer
+        AND r.element_type = 1 -- node primitive
+      ),
+      removable_nodes_of_degree_2_in_bbox AS (
+        SELECT
+          n.node_id,
+          array_agg(e.edge_id) edges
+        FROM
+          unused_connected_nodes_in_bbox n,
+          %1$I.edge e
+        WHERE (
+            n.node_id = e.start_node
+            OR n.node_id = e.end_node
+          )
+        GROUP BY n.node_id
+        HAVING count(e.edge_id) = 2
+      ),
+      breaking_heals AS (
+        SELECT
+          DISTINCT
+          n.node_id
+          -- , ARRAY[r.layer_id, r.topogeo_id]
+          -- , array_agg(r.element_id) edges
+        FROM
+          removable_nodes_of_degree_2_in_bbox n,
+          %1$I.relation r,
+          topology.layer l
+        WHERE l.topology_id = $2
+          AND l.child_id IS NULL
+          AND l.feature_type IN ( 2, 4 ) -- lineal or mixed layer
+          AND r.layer_id = l.layer_id
+          AND r.element_type = 2 -- edge primitive
+          AND r.element_id IN (
+            n.edges[1], -n.edges[1],
+            n.edges[2], -n.edges[2]
+          )
+          GROUP BY n.node_id, r.layer_id, r.topogeo_id
+          HAVING count(DISTINCT abs(r.element_id)) != 2
+      )
+      SELECT
+        node_id,
+        edges[1] edge1,
+        edges[2] edge2
+      FROM removable_nodes_of_degree_2_in_bbox
+      WHERE node_id NOT IN (
+        SELECT node_id FROM breaking_heals
+      )
+    $$,
+    topo.name
+  );
+  --RAISE DEBUG 'SQL: %', sql;
+  RAISE NOTICE 'Removing unneeded nodes of degree 2';
+  EXECUTE sql USING bbox, topo.id;
+  FOR rec in EXECUTE sql USING bbox, topo.id
+  LOOP --{
+    RAISE DEBUG 'edgeMap: %', edgeMap;
+    -- Edges may have changed name
+    edge1 := COALESCE( (edgeMap -> rec.edge1::text)::int, rec.edge1);
+    edge2 := COALESCE( (edgeMap -> rec.edge2::text)::int, rec.edge2);
+
+    RAISE DEBUG 'Should heal edges % (now %) and % (now %) bound by node %',
+      rec.edge1, edge1, rec.edge2, edge2, rec.node_id;
+
+    IF edge1 = edge2 THEN
+      -- Nothing to merge here, continue
+      CONTINUE;
+    END IF;
+    ok := false;
+
+    BEGIN
+      -- TODO: replace ST_ModEdgeHeal loop with a faster direct deletion and healing
+      removedNode := topology.ST_ModEdgeHeal(topo.name, edge1, edge2);
+      IF rec.node_id != removedNode THEN
+        RAISE EXCEPTION 'Healing of edges % and % was reported '
+                        'to remove node % while we expected % instead',
+                        edge1, edge2, removedNode, rec.node_id;
+      END IF;
+      RAISE DEBUG 'Edge % merged into %, dropping node %', edge2, edge1, removedNode;
+      ok := 1;
+    EXCEPTION WHEN OTHERS
+    THEN
+      RAISE WARNING 'Edges % and % joined by node % could not be healed: %', edge1, edge2, rec.node_id, SQLERRM;
+    END;
+    IF ok THEN
+      -- edge2 was now renamed to edge1, update map
+      edgeMap := jsonb_set(edgeMap, ARRAY[edge2::text], to_jsonb(edge1));
+      deletedNodesDeg2 := deletedNodesDeg2 + 1;
+    END IF;
+  END LOOP; --}
+  RAISE NOTICE 'Removed % unneeded nodes of degree 2', deletedNodesDeg2;
+
+  DROP TABLE pg_temp.deleted_edges;
+  DROP TABLE pg_temp.merged_faces;
+
+  RETURN deletedEdges + deletedNodes + deletedNodesDeg2;
+END;
+$BODY$ LANGUAGE 'plpgsql' VOLATILE;
+

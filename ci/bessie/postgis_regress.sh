@@ -5,7 +5,7 @@ set -e
 #BRANCH is passed in via jenkins which is set via webhook hook
 export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 sh autogen.sh
-./configure --with-projdir=/usr/local --with-libiconv=/usr/local --without-interrupt-tests
+./configure --with-projdir=/usr/local --with-libiconv=/usr/local --without-interrupt-tests --with-library-minor-version
 #make distclean
 make
 export PGUSER=postgres

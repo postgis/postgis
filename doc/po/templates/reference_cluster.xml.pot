@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-06 07:55+0000\n"
+"POT-Creation-Date: 2022-07-13 19:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -66,8 +66,8 @@ msgid ""
 "of the <ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">Density-based "
 "spatial clustering of applications with noise (DBSCAN)</ulink> algorithm. "
 "Unlike <xref linkend=\"ST_ClusterKMeans\"/>, it does not require the number "
-"of clusters to be specified, but instead uses the desired <link linkend="
-"\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
+"of clusters to be specified, but instead uses the desired <link "
+"linkend=\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
 "(<varname>minpoints</varname>) parameters to construct each cluster."
 msgstr ""
 
@@ -81,17 +81,17 @@ msgstr ""
 #: reference_cluster.xml:48
 #, no-c-format
 msgid ""
-"A \"core\" geometry, that is within <varname>eps</varname> <link linkend="
-"\"ST_Distance\">distance</link> of at least <varname>minpoints</varname> "
-"input geometries (including itself) or"
+"A \"core\" geometry, that is within <varname>eps</varname> <link "
+"linkend=\"ST_Distance\">distance</link> of at least <varname>minpoints</"
+"varname> input geometries (including itself) or"
 msgstr ""
 
 #. Tag: para
 #: reference_cluster.xml:53
 #, no-c-format
 msgid ""
-"A \"border\" geometry, that is within <varname>eps</varname> <link linkend="
-"\"ST_Distance\">distance</link> of a core geometry."
+"A \"border\" geometry, that is within <varname>eps</varname> <link "
+"linkend=\"ST_Distance\">distance</link> of a core geometry."
 msgstr ""
 
 #. Tag: para
@@ -218,8 +218,8 @@ msgstr ""
 #: reference_cluster.xml:111
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
-"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
+"linkend=\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
 
 #. Tag: refname
@@ -431,9 +431,9 @@ msgstr ""
 msgid ""
 "Example: Clustering a preaggregated planetary-scale data population dataset "
 "using 3D clusering and weighting. Identify at least 20 regions based on "
-"<ulink url=\"https://data.humdata.org/dataset/kontur-population-dataset"
-"\">Kontur Population Data</ulink> that do not span more than 3000 km from "
-"their center:"
+"<ulink url=\"https://data.humdata.org/dataset/kontur-population-"
+"dataset\">Kontur Population Data</ulink> that do not span more than 3000 km "
+"from their center:"
 msgstr ""
 
 #. Tag: programlisting
@@ -471,9 +471,9 @@ msgstr ""
 #: reference_cluster.xml:245
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref linkend="
-"\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref linkend="
-"\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
+", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref "
+"linkend=\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref "
+"linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 msgstr ""
 
 #. Tag: refname
@@ -535,6 +535,6 @@ msgstr ""
 #: reference_cluster.xml:287
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
-"\"ST_ClusterIntersecting\"/>"
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref "
+"linkend=\"ST_ClusterIntersecting\"/>"
 msgstr ""

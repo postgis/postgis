@@ -5,7 +5,7 @@ EXTDIR=`pg_config --sharedir`/extension/
 CTBDIR=`pg_config --sharedir`/contrib/
 TMPDIR=/tmp/check_all_upgrades-$$-tmp
 PGVER=`pg_config --version | awk '{print $2}'`
-PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//')
+PGVER_MAJOR=$(echo "${PGVER}" | sed 's/\.[^\.]*//' | sed 's/\(alpha\|beta\|rc\).*//' )
 echo "INFO: PostgreSQL version: ${PGVER} [${PGVER_MAJOR}]"
 
 BUILDDIR=$PWD # TODO: allow override ?
@@ -87,6 +87,7 @@ minimum_postgis_version_for_postgresql_major_version()
 12:2.5
 13:3.0
 14:3.1
+15:3.2
 EOF
   fi
 

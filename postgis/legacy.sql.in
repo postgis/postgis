@@ -23,12 +23,12 @@ CREATE OR REPLACE FUNCTION hasbbox(geometry)
 
 -- Availability: 1.2.2 -- never deprecated but don't think anyone uses it
 CREATE OR REPLACE FUNCTION getsrid(geometry)
-	RETURNS int4
+	RETURNS integer
 	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION GeometryFromText(text, int4)
+CREATE OR REPLACE FUNCTION GeometryFromText(text, integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT;
@@ -597,14 +597,14 @@ CREATE OR REPLACE FUNCTION AsGML(geometry)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsGML(geometry, int4)
+CREATE OR REPLACE FUNCTION AsGML(geometry, integer)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- AsKML(geom, precision) / version=2
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsKML(geometry, int4)
+CREATE OR REPLACE FUNCTION AsKML(geometry, integer)
 	RETURNS TEXT
 	AS 'SELECT ST_AsKML(ST_transform($1,4326), $2, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -618,7 +618,7 @@ CREATE OR REPLACE FUNCTION AsKML(geometry)
 
 -- AsKML(version, geom, precision)
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsKML(int4, geometry, int4)
+CREATE OR REPLACE FUNCTION AsKML(integer, geometry, integer)
 	RETURNS TEXT
 	AS 'SELECT ST_AsKML(ST_Transform($2,4326), $3, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -642,13 +642,13 @@ CREATE OR REPLACE FUNCTION AsSVG(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsSVG(geometry,int4)
+CREATE OR REPLACE FUNCTION AsSVG(geometry,integer)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsSVG(geometry,int4,int4)
+CREATE OR REPLACE FUNCTION AsSVG(geometry,integer,integer)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'c' IMMUTABLE STRICT;
@@ -778,7 +778,7 @@ CREATE OR REPLACE FUNCTION difference(geometry,geometry)
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Dimension(geometry)
-	RETURNS int4
+	RETURNS integer
 	AS 'MODULE_PATHNAME', 'LWGEOM_dimension'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
@@ -934,7 +934,7 @@ CREATE OR REPLACE FUNCTION ForceRHR(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION GeomCollFromText(text, int4)
+CREATE OR REPLACE FUNCTION GeomCollFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE
@@ -1178,7 +1178,7 @@ CREATE OR REPLACE FUNCTION LineFromText(text)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineFromText(text, int4)
+CREATE OR REPLACE FUNCTION LineFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''LINESTRING''
@@ -1220,7 +1220,7 @@ CREATE OR REPLACE FUNCTION LineStringFromText(text)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION LineStringFromText(text, int4)
+CREATE OR REPLACE FUNCTION LineStringFromText(text, integer)
 	RETURNS geometry
 	AS 'SELECT LineFromText($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -1316,12 +1316,12 @@ CREATE OR REPLACE FUNCTION max_distance(geometry,geometry)
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION mem_size(geometry)
-	RETURNS int4
+	RETURNS integer
 	AS 'MODULE_PATHNAME', 'LWGEOM_mem_size'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MLineFromText(text, int4)
+CREATE OR REPLACE FUNCTION MLineFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE
@@ -1362,7 +1362,7 @@ CREATE OR REPLACE FUNCTION MLineFromWKB(bytea)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPointFromText(text, int4)
+CREATE OR REPLACE FUNCTION MPointFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromText($1,$2)) = ''MULTIPOINT''
@@ -1402,7 +1402,7 @@ CREATE OR REPLACE FUNCTION MPointFromWKB(bytea)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MPolyFromText(text, int4)
+CREATE OR REPLACE FUNCTION MPolyFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
@@ -1468,7 +1468,7 @@ CREATE OR REPLACE FUNCTION MultiLineStringFromText(text)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiLineStringFromText(text, int4)
+CREATE OR REPLACE FUNCTION MultiLineStringFromText(text, integer)
 	RETURNS geometry
 	AS 'SELECT MLineFromText($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -1486,7 +1486,7 @@ CREATE OR REPLACE FUNCTION MultiPointFromText(text)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPointFromText(text, int4)
+CREATE OR REPLACE FUNCTION MultiPointFromText(text, integer)
 	RETURNS geometry
 	AS 'SELECT MPointFromText($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -1512,7 +1512,7 @@ CREATE OR REPLACE FUNCTION MultiPointFromWKB(bytea)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION MultiPolygonFromText(text, int4)
+CREATE OR REPLACE FUNCTION MultiPolygonFromText(text, integer)
 	RETURNS geometry
 	AS 'SELECT MPolyFromText($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -1537,25 +1537,25 @@ CREATE OR REPLACE FUNCTION NumInteriorRings(geometry)
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION npoints(geometry)
-	RETURNS int4
+	RETURNS integer
 	AS 'MODULE_PATHNAME', 'LWGEOM_npoints'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION nrings(geometry)
-	RETURNS int4
+	RETURNS integer
 	AS 'MODULE_PATHNAME', 'LWGEOM_nrings'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION NumGeometries(geometry)
-	RETURNS int4
+	RETURNS integer
 	AS 'MODULE_PATHNAME', 'LWGEOM_numgeometries_collection'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION NumPoints(geometry)
-	RETURNS int4
+	RETURNS integer
 	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
@@ -1596,7 +1596,7 @@ CREATE OR REPLACE FUNCTION PointFromText(text)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PointFromText(text, int4)
+CREATE OR REPLACE FUNCTION PointFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POINT''
@@ -1647,7 +1647,7 @@ CREATE OR REPLACE FUNCTION PolyFromText(text)
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolyFromText(text, int4)
+CREATE OR REPLACE FUNCTION PolyFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POLYGON''
@@ -1677,7 +1677,7 @@ CREATE OR REPLACE FUNCTION PolyFromWKB(bytea)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION PolygonFromText(text, int4)
+CREATE OR REPLACE FUNCTION PolygonFromText(text, integer)
 	RETURNS geometry
 	AS 'SELECT PolyFromText($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -1950,7 +1950,7 @@ CREATE OR REPLACE FUNCTION ST_find_extent(text,text)
 -- Availability: 1.2.2
 -- Deprecation in 2.2.0
 CREATE OR REPLACE FUNCTION ST_mem_size(geometry)
-	RETURNS int4 AS
+	RETURNS integer AS
   	'SELECT ST_MemSize($1);'
 	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY INVOKER;
 
@@ -2191,22 +2191,22 @@ CREATE AGGREGATE ST_Extent3D(
 -- Versioned Format Export Functions --
 ------------------------------------------------
 
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(version integer, geog geography, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0)
 	RETURNS text AS
 	$$ SELECT ST_AsGeoJson($2::geometry,$3,$4); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(version int4, geog geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(version integer, geog geometry, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0)
 	RETURNS text AS
 	$$ SELECT ST_AsGeoJson($2::geometry,15,0); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geography, maxdecimaldigits int4 DEFAULT 15, nprefix TEXT default '')
+CREATE OR REPLACE FUNCTION ST_AsKML(version integer, geom geography, maxdecimaldigits integer DEFAULT 15, nprefix TEXT default '')
 	RETURNS text AS
 	$$ SELECT ST_AsKML($2::geometry,$3,$4); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix TEXT default '')
+CREATE OR REPLACE FUNCTION ST_AsKML(version integer, geom geometry, maxdecimaldigits integer DEFAULT 15, nprefix TEXT default '')
 	RETURNS text AS
 	$$ SELECT ST_AsKML($2::geometry,$3,$4); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;

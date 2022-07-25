@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-04-16 08:20+0000\n"
+"POT-Creation-Date: 2022-07-14 02:04+0000\n"
 "PO-Revision-Date: 2018-07-23 18:01+0000\n"
 "Last-Translator: Regina Obe\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -51,10 +51,10 @@ msgstr ""
 "paramdef>"
 
 #. Tag: title
-#: reference_lrs.xml:23 reference_lrs.xml:103 reference_lrs.xml:162
-#: reference_lrs.xml:225 reference_lrs.xml:274 reference_lrs.xml:359
-#: reference_lrs.xml:414 reference_lrs.xml:481 reference_lrs.xml:528
-#: reference_lrs.xml:572
+#: reference_lrs.xml:23 reference_lrs.xml:103 reference_lrs.xml:163
+#: reference_lrs.xml:226 reference_lrs.xml:275 reference_lrs.xml:360
+#: reference_lrs.xml:416 reference_lrs.xml:483 reference_lrs.xml:529
+#: reference_lrs.xml:576
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -79,8 +79,8 @@ msgid ""
 "See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location "
 "nearest to a Point."
 msgstr ""
-"포인트에 가장 가까운 라인의 위치를 계산하는 방법에 대해서는 <xref linkend="
-"\"ST_LineLocatePoint\"/> 를 참조하십시오."
+"포인트에 가장 가까운 라인의 위치를 계산하는 방법에 대해서는 <xref "
+"linkend=\"ST_LineLocatePoint\"/> 를 참조하십시오."
 
 #. Tag: para
 #: reference_lrs.xml:37
@@ -117,17 +117,18 @@ msgstr ""
 "ST_Line_Interpolate_Point였습니다."
 
 #. Tag: para
-#: reference_lrs.xml:50 reference_lrs.xml:179 reference_lrs.xml:303
-#: reference_lrs.xml:491 reference_lrs.xml:534 reference_lrs.xml:578
+#: reference_lrs.xml:50 reference_lrs.xml:119 reference_lrs.xml:180
+#: reference_lrs.xml:304 reference_lrs.xml:493 reference_lrs.xml:538
+#: reference_lrs.xml:582
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: title
-#: reference_lrs.xml:55 reference_lrs.xml:123 reference_lrs.xml:184
-#: reference_lrs.xml:242 reference_lrs.xml:307 reference_lrs.xml:381
-#: reference_lrs.xml:435 reference_lrs.xml:495 reference_lrs.xml:538
-#: reference_lrs.xml:582
+#: reference_lrs.xml:55 reference_lrs.xml:124 reference_lrs.xml:185
+#: reference_lrs.xml:243 reference_lrs.xml:308 reference_lrs.xml:384
+#: reference_lrs.xml:438 reference_lrs.xml:497 reference_lrs.xml:542
+#: reference_lrs.xml:586
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -186,9 +187,9 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_lrs.xml:75 reference_lrs.xml:131 reference_lrs.xml:197
-#: reference_lrs.xml:249 reference_lrs.xml:334 reference_lrs.xml:387
-#: reference_lrs.xml:454 reference_lrs.xml:502 reference_lrs.xml:544
+#: reference_lrs.xml:75 reference_lrs.xml:132 reference_lrs.xml:198
+#: reference_lrs.xml:250 reference_lrs.xml:335 reference_lrs.xml:389
+#: reference_lrs.xml:456 reference_lrs.xml:503 reference_lrs.xml:548
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -197,11 +198,11 @@ msgstr "참고"
 #: reference_lrs.xml:77
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref linkend="
-"\"ST_LineLocatePoint\"/>"
+", <xref linkend=\"ST_3DLineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:87
@@ -257,13 +258,13 @@ msgid "Availability: 3.0.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:125
+#: reference_lrs.xml:126
 #, no-c-format
 msgid "Return point 20% along 3D line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_lrs.xml:126
+#: reference_lrs.xml:127
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -284,29 +285,29 @@ msgstr ""
 " POINT(51.5974135047432 76.5974135047432)"
 
 #. Tag: para
-#: reference_lrs.xml:133
+#: reference_lrs.xml:134
 #, fuzzy, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref linkend="
-"\"ST_LineLocatePoint\"/>"
+", <xref linkend=\"ST_LineInterpolatePoints\"/>, <xref "
+"linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:143
+#: reference_lrs.xml:144
 #, no-c-format
 msgid "ST_LineInterpolatePoints"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_lrs.xml:145
+#: reference_lrs.xml:146
 #, no-c-format
 msgid "Returns points interpolated along a line at a fractional interval."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:152
+#: reference_lrs.xml:153
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineInterpolatePoints</function></funcdef> "
@@ -317,19 +318,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:164
+#: reference_lrs.xml:165
 #, no-c-format
 msgid ""
 "Returns one or more points interpolated along a line at a fractional "
 "interval. The first argument must be a LINESTRING. The second argument is a "
 "float8 between 0 and 1 representing the spacing between the points as a "
 "fraction of line length. If the third argument is false, at most one point "
-"will be constructed (which is equivalent to <xref linkend="
-"\"ST_LineInterpolatePoint\"/>.)"
+"will be constructed (which is equivalent to <xref "
+"linkend=\"ST_LineInterpolatePoint\"/>.)"
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:172
+#: reference_lrs.xml:173
 #, no-c-format
 msgid ""
 "If the result has zero or one points, it is returned as a POINT. If it has "
@@ -337,25 +338,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:178
+#: reference_lrs.xml:179
 #, no-c-format
 msgid "Availability: 2.5.0"
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:180 reference_lrs.xml:376 reference_lrs.xml:431
+#: reference_lrs.xml:181 reference_lrs.xml:378 reference_lrs.xml:433
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
 
 #. Tag: para
-#: reference_lrs.xml:190
+#: reference_lrs.xml:191
 #, no-c-format
 msgid "A LineString with points interpolated every 20%"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_lrs.xml:193
+#: reference_lrs.xml:194
 #, no-c-format
 msgid ""
 "--Return points each 20% along a 2D line\n"
@@ -368,26 +369,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:199
+#: reference_lrs.xml:200
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_lrs.xml:208
+#: reference_lrs.xml:209
 #, no-c-format
 msgid "ST_LineLocatePoint"
 msgstr "ST_LineLocatePoint"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:210
+#: reference_lrs.xml:211
 #, no-c-format
 msgid ""
 "Returns the fractional location of the closest point on a line to a point."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:216
+#: reference_lrs.xml:217
 #, no-c-format
 msgid ""
 "<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef> "
@@ -401,42 +402,42 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:227
+#: reference_lrs.xml:228
 #, fuzzy, no-c-format
 msgid ""
 "Returns a float between 0 and 1 representing the location of the closest "
-"point on a LineString to the given Point, as a fraction of <link linkend="
-"\"ST_Length2D\">2d line</link> length."
+"point on a LineString to the given Point, as a fraction of <link "
+"linkend=\"ST_Length2D\">2d line</link> length."
 msgstr ""
 "입력 포인트에 가장 가까운 위치에 있는 라인스트링 상의 포인트를 나타내는 "
 "<link linkend=\"ST_Length2D\">2차원 라인</link> 전체 길이의 비율을 0에서 1 사"
 "이의 부동소수점 데이터형(float)으로 반환합니다."
 
 #. Tag: para
-#: reference_lrs.xml:231
+#: reference_lrs.xml:232
 #, no-c-format
 msgid ""
-"You can use the returned location to extract a Point (<xref linkend="
-"\"ST_LineInterpolatePoint\"/>) or a substring (<xref linkend="
-"\"ST_LineSubstring\"/>)."
+"You can use the returned location to extract a Point (<xref "
+"linkend=\"ST_LineInterpolatePoint\"/>) or a substring (<xref "
+"linkend=\"ST_LineSubstring\"/>)."
 msgstr ""
 "반환된 위치를 이용해서 포인트(<xref linkend=\"ST_LineInterpolatePoint\"/>) 또"
 "는 부분 스트링(<xref linkend=\"ST_LineSubstring\"/>)을 추출할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:234
+#: reference_lrs.xml:235
 #, no-c-format
 msgid "This is useful for approximating numbers of addresses"
 msgstr "이 함수는 주소의 개수의 근사치를 구하는 데 유용합니다."
 
 #. Tag: para
-#: reference_lrs.xml:236
+#: reference_lrs.xml:237
 #, no-c-format
 msgid "Availability: 1.1.0"
 msgstr "1.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:237
+#: reference_lrs.xml:238
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point."
 msgstr ""
@@ -444,7 +445,7 @@ msgstr ""
 "ST_Line_Locate_Point였습니다."
 
 #. Tag: programlisting
-#: reference_lrs.xml:244
+#: reference_lrs.xml:245
 #, fuzzy, no-c-format
 msgid ""
 "--Rough approximation of finding the street number of a point along the "
@@ -514,7 +515,7 @@ msgstr ""
 " POINT(3 4)"
 
 #. Tag: para
-#: reference_lrs.xml:251
+#: reference_lrs.xml:252
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
@@ -524,19 +525,19 @@ msgstr ""
 ">, <xref linkend=\"ST_LineSubstring\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:257
+#: reference_lrs.xml:258
 #, no-c-format
 msgid "ST_LineSubstring"
 msgstr "ST_LineSubstring"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:259
+#: reference_lrs.xml:260
 #, no-c-format
 msgid "Returns the part of a line between two fractional locations."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:264
+#: reference_lrs.xml:265
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineSubstring</function></funcdef> "
@@ -552,7 +553,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:276
+#: reference_lrs.xml:277
 #, no-c-format
 msgid ""
 "Computes the line which is the section of the input line starting and ending "
@@ -563,18 +564,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:285
+#: reference_lrs.xml:286
 #, fuzzy, no-c-format
 msgid ""
 "If <varname>startfraction</varname> and <varname>endfraction</varname> have "
-"the same value this is equivalent to <xref linkend=\"ST_LineInterpolatePoint"
-"\"/>."
+"the same value this is equivalent to <xref "
+"linkend=\"ST_LineInterpolatePoint\"/>."
 msgstr ""
-"'시작'과 '끝'이 동일한 값일 경우 이 함수는 <xref linkend="
-"\"ST_LineInterpolatePoint\"/> 함수와 같아집니다."
+"'시작'과 '끝'이 동일한 값일 경우 이 함수는 <xref "
+"linkend=\"ST_LineInterpolatePoint\"/> 함수와 같아집니다."
 
 #. Tag: para
-#: reference_lrs.xml:290
+#: reference_lrs.xml:291
 #, no-c-format
 msgid ""
 "This only works with LINESTRINGs. To use on contiguous MULTILINESTRINGs "
@@ -582,7 +583,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:296
+#: reference_lrs.xml:297
 #, fuzzy, no-c-format
 msgid ""
 "Since release 1.1.1 this function interpolates M and Z values. Prior "
@@ -592,13 +593,13 @@ msgstr ""
 "서는 두 값을 설정하지 않았습니다."
 
 #. Tag: para
-#: reference_lrs.xml:301
+#: reference_lrs.xml:302
 #, no-c-format
 msgid "Availability: 1.1.0, Z and M supported added in 1.1.1"
 msgstr "1.1.0 버전부터 사용할 수 있습니다. 1.1.1 버전부터 Z 및 M을 지원합니다."
 
 #. Tag: para
-#: reference_lrs.xml:302
+#: reference_lrs.xml:303
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring."
 msgstr ""
@@ -606,13 +607,13 @@ msgstr ""
 "ST_Line_Substring이었습니다."
 
 #. Tag: para
-#: reference_lrs.xml:313
+#: reference_lrs.xml:314
 #, fuzzy, no-c-format
 msgid "A LineString seen with 1/3 midrange overlaid (0.333, 0.666)"
 msgstr "중간 1/3 범위(0.333, 0.666)를 중첩해서 출력한 라인스트링"
 
 #. Tag: programlisting
-#: reference_lrs.xml:316
+#: reference_lrs.xml:317
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_LineSubstring( 'LINESTRING (20 180, 50 20, 90 80, 120 "
@@ -623,13 +624,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:318
+#: reference_lrs.xml:319
 #, no-c-format
 msgid "If start and end locations are the same, the result is a POINT."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_lrs.xml:321
+#: reference_lrs.xml:322
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_LineSubstring( 'LINESTRING(25 50, 100 125, 150 190)', "
@@ -639,7 +640,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:324
+#: reference_lrs.xml:325
 #, no-c-format
 msgid ""
 "A query to cut a LineString into sections of length 100 or shorter. It uses "
@@ -648,7 +649,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_lrs.xml:329
+#: reference_lrs.xml:330
 #, no-c-format
 msgid ""
 "WITH data(id, geom) AS (VALUES\n"
@@ -682,29 +683,29 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:336
+#: reference_lrs.xml:337
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 msgstr ""
-", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
+", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref "
+"linkend=\"ST_LineMerge\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:342
+#: reference_lrs.xml:343
 #, no-c-format
 msgid "ST_LocateAlong"
 msgstr "ST_LocateAlong"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:344
+#: reference_lrs.xml:345
 #, no-c-format
 msgid "Returns the point(s) on a geometry that match a measure value."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:349
+#: reference_lrs.xml:350
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
@@ -720,35 +721,31 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:361
-#, fuzzy, no-c-format
-msgid ""
-"Returns the locations along a measured geometry (as a Point or MultiPoint) "
-"that match a measure value. Polygonal elements are not supported."
-msgstr ""
-"설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. 폴리"
-"곤 구성 요소는 지원되지 않습니다."
-
-#. Tag: para
-#: reference_lrs.xml:365 reference_lrs.xml:419
-#, fuzzy, no-c-format
-msgid ""
-"If the <varname>offset</varname> is provided, the result is offset to the "
-"left or right of the input line by the specified distance. A positive offset "
-"will be to the left, and a negative one to the right."
-msgstr ""
-"오프셋을 설정할 경우, 그 결과 입력 라인에서 설정한 단위 개수만큼 왼쪽 또는 오"
-"른쪽에 오프셋 도형 집합을 출력할 것입니다. 양의 오프셋은 왼쪽, 음의 오프셋은 "
-"오른쪽으로 출력할 것입니다."
-
-#. Tag: para
-#: reference_lrs.xml:369
+#: reference_lrs.xml:362
 #, no-c-format
-msgid "Use this function only for geometries with an M component"
-msgstr "M 구성 요소를 가진 도형에 대해서만 이 함수를 이용하십시오."
+msgid ""
+"Returns the location(s) along a measured geometry that have the given "
+"measure values. The result is a Point or MultiPoint. Polygonal inputs are "
+"not supported."
+msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:371 reference_lrs.xml:425
+#: reference_lrs.xml:367
+#, no-c-format
+msgid ""
+"If <varname>offset</varname> is provided, the result is offset to the left "
+"or right of the input line by the specified distance. A positive offset will "
+"be to the left, and a negative one to the right."
+msgstr ""
+
+#. Tag: para
+#: reference_lrs.xml:371 reference_lrs.xml:534
+#, no-c-format
+msgid "Use this function only for linear geometries with an M component"
+msgstr ""
+
+#. Tag: para
+#: reference_lrs.xml:373 reference_lrs.xml:427
 #, no-c-format
 msgid ""
 "The semantic is specified by the <emphasis>ISO/IEC 13249-3 SQL/MM Spatial</"
@@ -756,14 +753,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:373
+#: reference_lrs.xml:375
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Along_Measure."
 msgstr ""
 "1.1.0 버전부터 예전 명칭인 ST_Locate_Along_Measure로 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:374
+#: reference_lrs.xml:376
 #, fuzzy, no-c-format
 msgid ""
 "Changed: 2.0.0 in prior versions this used to be called "
@@ -772,8 +769,14 @@ msgstr ""
 "변경 사항: 2.0.0 미만 버전에서는 ST_Locate_Along_Measure라는 명칭이었습니다. "
 "예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 사용할 수 있습니다."
 
+#. Tag: para
+#: reference_lrs.xml:379
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.13"
+msgstr ""
+
 #. Tag: programlisting
-#: reference_lrs.xml:382
+#: reference_lrs.xml:385
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -781,32 +784,32 @@ msgid ""
 "    'MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),(1 2 3, 5 4 5))'::geometry,\n"
 "    3 ));\n"
 "\n"
-"            st_astext\n"
 "----------------------------------\n"
 " MULTIPOINT M ((1 2 3),(9 4 3),(1 2 3))"
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:389 reference_lrs.xml:456
-#, fuzzy, no-c-format
-msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
+#: reference_lrs.xml:391
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_LocateBetweenElevations\"/>, <xref "
+"linkend=\"ST_InterpolatePoint\"/>"
 msgstr ""
-", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:395
+#: reference_lrs.xml:397
 #, no-c-format
 msgid "ST_LocateBetween"
 msgstr "ST_LocateBetween"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:397
+#: reference_lrs.xml:399
 #, no-c-format
 msgid "Returns the portions of a geometry that match a measure range."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:402
+#: reference_lrs.xml:404
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
@@ -824,7 +827,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:416
+#: reference_lrs.xml:418
 #, fuzzy, no-c-format
 msgid ""
 "Return a geometry (collection) with the portions of the input measured "
@@ -834,20 +837,32 @@ msgstr ""
 "곤 구성 요소는 지원되지 않습니다."
 
 #. Tag: para
-#: reference_lrs.xml:423 reference_lrs.xml:486
+#: reference_lrs.xml:421
+#, fuzzy, no-c-format
+msgid ""
+"If the <varname>offset</varname> is provided, the result is offset to the "
+"left or right of the input line by the specified distance. A positive offset "
+"will be to the left, and a negative one to the right."
+msgstr ""
+"오프셋을 설정할 경우, 그 결과 입력 라인에서 설정한 단위 개수만큼 왼쪽 또는 오"
+"른쪽에 오프셋 도형 집합을 출력할 것입니다. 양의 오프셋은 왼쪽, 음의 오프셋은 "
+"오른쪽으로 출력할 것입니다."
+
+#. Tag: para
+#: reference_lrs.xml:425 reference_lrs.xml:488
 #, no-c-format
 msgid "Clipping a non-convex POLYGON may produce invalid geometry."
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:427
+#: reference_lrs.xml:429
 #, no-c-format
 msgid "Availability: 1.1.0 by old name ST_Locate_Between_Measures."
 msgstr ""
 "1.1.0 버전부터 예전 명칭인 ST_Locate_Between_Measures로 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:428
+#: reference_lrs.xml:430
 #, fuzzy, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions this used to be called "
@@ -857,13 +872,19 @@ msgstr ""
 "예전 명칭은 더 지원되지 않고 곧 삭제될 예정이지만, 아직은 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_lrs.xml:429 reference_lrs.xml:489
+#: reference_lrs.xml:431 reference_lrs.xml:491
 #, no-c-format
 msgid "Enhanced: 3.0.0 - added support for POLYGON, TIN, TRIANGLE."
 msgstr ""
 
+#. Tag: para
+#: reference_lrs.xml:434
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
+msgstr ""
+
 #. Tag: programlisting
-#: reference_lrs.xml:437
+#: reference_lrs.xml:440
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -876,14 +897,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:444
+#: reference_lrs.xml:447
 #, no-c-format
 msgid ""
 "A LineString with the section between measures 2 and 8, offset to the left"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_lrs.xml:448
+#: reference_lrs.xml:451
 #, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_LocateBetween(\n"
@@ -902,20 +923,27 @@ msgid ""
 "132.49390095108848,145.31017306064817 95.37790486135405))"
 msgstr ""
 
+#. Tag: para
+#: reference_lrs.xml:458
+#, fuzzy, no-c-format
+msgid ", <xref linkend=\"ST_LocateBetweenElevations\"/>"
+msgstr ""
+", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
+
 #. Tag: refname
-#: reference_lrs.xml:462
+#: reference_lrs.xml:464
 #, no-c-format
 msgid "ST_LocateBetweenElevations"
 msgstr "ST_LocateBetweenElevations"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:464
+#: reference_lrs.xml:466
 #, no-c-format
 msgid "Returns the portions of a geometry that lie in an elevation (Z) range."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:470
+#: reference_lrs.xml:472
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
@@ -931,21 +959,21 @@ msgstr ""
 "<parameter>elevation_end</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:483
+#: reference_lrs.xml:485
 #, no-c-format
 msgid ""
 "Returns a geometry (collection) with the portions of a geometry that lie in "
-"an elevations (Z) range."
+"an elevation (Z) range."
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:488
+#: reference_lrs.xml:490
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "1.4.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_lrs.xml:497
+#: reference_lrs.xml:499
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -968,68 +996,60 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_lrs.xml:504
+#: reference_lrs.xml:505
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_LocateBetween\"/>"
 msgstr ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:511
+#: reference_lrs.xml:512
 #, no-c-format
 msgid "ST_InterpolatePoint"
 msgstr "ST_InterpolatePoint"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:513
+#: reference_lrs.xml:514
 #, no-c-format
 msgid "Returns the interpolated measure of a geometry closest to a point."
 msgstr ""
 "입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합니다."
 
 #. Tag: funcprototype
-#: reference_lrs.xml:518
+#: reference_lrs.xml:519
 #, no-c-format
 msgid ""
 "<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
+"<paramdef><type>geometry </type> <parameter>linear_geom_with_measure</"
+"parameter></paramdef> <paramdef><type>geometry </type> <parameter>point</"
+"parameter></paramdef>"
 msgstr ""
-"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:530
-#, fuzzy, no-c-format
+#: reference_lrs.xml:531
+#, no-c-format
 msgid ""
-"Returns the value of the measure dimension of a geometry at the point closed "
-"to the provided point."
+"Returns an interpolated measure value of a linear measured geometry at the "
+"location closest to the given point."
 msgstr ""
-"입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합니다."
 
 #. Tag: para
-#: reference_lrs.xml:532
+#: reference_lrs.xml:536
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_lrs.xml:540
-#, fuzzy, no-c-format
+#: reference_lrs.xml:544
+#, no-c-format
 msgid ""
 "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
-" st_interpolatepoint\n"
 " ---------------------\n"
 "         10"
 msgstr ""
-"SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');\n"
-" st_interpolatepoint\n"
-" ---------------------\n"
-"                                    10"
 
 #. Tag: para
-#: reference_lrs.xml:546
+#: reference_lrs.xml:550
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
@@ -1037,19 +1057,19 @@ msgstr ""
 ", <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_LocateBetween\"/>"
 
 #. Tag: refname
-#: reference_lrs.xml:554
+#: reference_lrs.xml:558
 #, no-c-format
 msgid "ST_AddMeasure"
 msgstr "ST_AddMeasure"
 
 #. Tag: refpurpose
-#: reference_lrs.xml:556
+#: reference_lrs.xml:560
 #, no-c-format
 msgid "Interpolates measures along a linear geometry."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_lrs.xml:561
+#: reference_lrs.xml:565
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
@@ -1065,7 +1085,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_lrs.xml:574
+#: reference_lrs.xml:578
 #, fuzzy, no-c-format
 msgid ""
 "Return a derived geometry with measure values linearly interpolated between "
@@ -1079,13 +1099,13 @@ msgstr ""
 "인스트링만 지원합니다."
 
 #. Tag: para
-#: reference_lrs.xml:576
+#: reference_lrs.xml:580
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "1.5.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_lrs.xml:584
+#: reference_lrs.xml:588
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_AddMeasure(\n"
@@ -1137,6 +1157,51 @@ msgstr ""
 "                             ewelev\n"
 "-----------------------------------------------------------------\n"
 " MULTILINESTRINGM((1 0 10,2 0 20,4 0 40),(1 0 40,2 0 50,4 0 70))"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Returns the locations along a measured geometry (as a Point or "
+#~ "MultiPoint) that match a measure value. Polygonal elements are not "
+#~ "supported."
+#~ msgstr ""
+#~ "설정한 척도와 일치하는 요소들을 가진 파생 도형 집합의 값을 반환합니다. 폴"
+#~ "리곤 구성 요소는 지원되지 않습니다."
+
+#, no-c-format
+#~ msgid "Use this function only for geometries with an M component"
+#~ msgstr "M 구성 요소를 가진 도형에 대해서만 이 함수를 이용하십시오."
+
+#, no-c-format
+#~ msgid ""
+#~ "<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
+#~ "<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
+#~ "<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "Returns the value of the measure dimension of a geometry at the point "
+#~ "closed to the provided point."
+#~ msgstr ""
+#~ "입력 포인트에 가까운 포인트에서 도형의 척도 차원(M 차원)의 값을 반환합니"
+#~ "다."
+
+#, fuzzy, no-c-format
+#~ msgid ""
+#~ "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 "
+#~ "5)');\n"
+#~ " st_interpolatepoint\n"
+#~ " ---------------------\n"
+#~ "         10"
+#~ msgstr ""
+#~ "SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 "
+#~ "5)');\n"
+#~ " st_interpolatepoint\n"
+#~ " ---------------------\n"
+#~ "                                    10"
 
 #, fuzzy
 #~ msgid ""
@@ -1246,11 +1311,13 @@ msgstr ""
 #, fuzzy
 #~ msgid ""
 #~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-#~ "linkend=\"ST_LineInterpolatePoints\"/> <xref linkend="
-#~ "\"ST_3DLineInterpolatePoint\"/> <xref linkend=\"ST_LineLocatePoint\"/> O"
+#~ "linkend=\"ST_LineInterpolatePoints\"/> <xref "
+#~ "linkend=\"ST_3DLineInterpolatePoint\"/> <xref "
+#~ "linkend=\"ST_LineLocatePoint\"/> O"
 #~ msgstr ""
-#~ ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint"
-#~ "\"/>, <xref linkend=\"ST_LineSubstring\"/>"
+#~ ", <xref linkend=\"ST_Length2D\"/>, <xref "
+#~ "linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineSubstring\"/"
+#~ ">"
 
 #, fuzzy
 #~ msgid ""
@@ -1265,11 +1332,13 @@ msgstr ""
 #, fuzzy
 #~ msgid ""
 #~ ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-#~ "linkend=\"ST_LineInterpolatePoint\"/> <xref linkend="
-#~ "\"ST_LineInterpolatePoints\"/> <xref linkend=\"ST_LineLocatePoint\"/>"
+#~ "linkend=\"ST_LineInterpolatePoint\"/> <xref "
+#~ "linkend=\"ST_LineInterpolatePoints\"/> <xref "
+#~ "linkend=\"ST_LineLocatePoint\"/>"
 #~ msgstr ""
-#~ ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint"
-#~ "\"/>, <xref linkend=\"ST_LineSubstring\"/>"
+#~ ", <xref linkend=\"ST_Length2D\"/>, <xref "
+#~ "linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineSubstring\"/"
+#~ ">"
 
 #~ msgid ""
 #~ "Returns a float between 0 and 1 representing the location of the closest "

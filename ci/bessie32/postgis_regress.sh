@@ -3,12 +3,14 @@
 set -e
 
 #export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
+export CC=gcc11
+export CXX=g++11
+export CXXFLAGS="-O2 -pipe  -fstack-protector-strong -Wl,-rpath=/usr/local/lib/gcc11  -nostdinc++ -isystem /usr/include/c++/v1 -Wl,-rpath=/usr/local/lib/gcc11"
+export CFLAGS="-Wall -Wmissing-prototypes -Wpointer-arith -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-trunc"
+export PATH=${PATH}:/usr/local:/usr/local/lib:/usr/local/bin
 sh autogen.sh
-CC=gcc8   \
-CXX=g++8 \
-CXXFLAGS="-O2 -pipe  -fstack-protector-strong -Wl,-rpath=/usr/local/lib/gcc8  -nostdinc++ -isystem /usr/include/c++/v1 -Wl,-rpath=/usr/local/lib/gcc8" \
-CFLAGS="-Wall -Wmissing-prototypes -Wpointer-arith -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-trunc" \
- ./configure --with-libiconv=/usr/local --without-interrupt-tests
+./configure PKG_CONFIG=/usr/local/bin/pkgconf LDFLAGS="-L/usr/local/lib" --with-libiconv-prefix=/usr/local --without-gui --without-interrupt-tests --with-topology --with-raster --with-sfcgal=/usr/local/bin/sfcgal-config --with-address-standardizer --with-protobuf --with-wagyu
+
 #make distclean
 make
 export PGUSER=postgres

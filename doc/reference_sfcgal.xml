@@ -105,6 +105,7 @@
 
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 8.1, 10.5</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -208,6 +209,7 @@ FROM ST_Subdivide(ST_Letters('CH'),5) WITH ORDINALITY AS sd(geom,i)
 		<para>Return a geometry that is the shared portion between geom1 and geom2.</para>
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -318,6 +320,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 		<para>Returns that part of geom1 that is not part of geom2.</para>
 		<para>Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -406,6 +409,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 		<para>Availability: 2.2.0</para>
 		<para>Availability: 3.3.0 aggregate variant was added</para>
 		<para>&sfcgal_required;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -1356,6 +1360,7 @@ MULTIPOLYGON(
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
+        <para>&sqlmm_compliant; SQL-MM IEC 13249-3: 9.1 (same as ST_3DVolume)</para>
 	  </refsection>
 
 	  <refsection>

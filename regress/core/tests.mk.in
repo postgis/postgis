@@ -122,6 +122,7 @@ TESTS += \
 	$(top_srcdir)/regress/core/snap \
 	$(top_srcdir)/regress/core/node \
 	$(top_srcdir)/regress/core/unaryunion \
+	$(top_srcdir)/regress/core/union \
 	$(top_srcdir)/regress/core/clean \
 	$(top_srcdir)/regress/core/relate_bnr \
 	$(top_srcdir)/regress/core/delaunaytriangles \

@@ -107,9 +107,7 @@ Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
 Datum ST_MaximumInscribedCircle(PG_FUNCTION_ARGS);
 Datum ST_ConcaveHull(PG_FUNCTION_ARGS);
 Datum ST_SimplifyPolygonHull(PG_FUNCTION_ARGS);
-
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
-Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
 
 /*
 ** Prototypes end
@@ -635,88 +633,6 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(gser_out);
 }
-
-
-PG_FUNCTION_INFO_V1(pgis_geometry_union_finalfn);
-Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
-{
-	CollectionBuildState *state;
-	ListCell *l;
-	LWGEOM **geoms;
-	GSERIALIZED *gser_out;
-	size_t ngeoms = 0;
-	int empty_type = 0;
-	bool first = true;
-	int32_t srid = SRID_UNKNOWN;
-	int has_z = LW_FALSE;
-
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL(); /* returns null iff no input values */
-
-	state = (CollectionBuildState *)PG_GETARG_POINTER(0);
-	geoms = palloc(list_length(state->geoms) * sizeof(LWGEOM*));
-
-	/* Read contents of list into an array of only non-null values */
-	foreach (l, state->geoms)
-	{
-		LWGEOM *geom = (LWGEOM*)(lfirst(l));
-		if (geom)
-		{
-			if (!lwgeom_is_empty(geom))
-			{
-				geoms[ngeoms++] = geom;
-				if (first)
-				{
-					srid = lwgeom_get_srid(geom);
-					has_z = lwgeom_has_z(geom);
-					first = false;
-				}
-			}
-			else
-			{
-				int type = lwgeom_get_type(geom);
-				empty_type = type > empty_type ? type : empty_type;
-				srid = (srid != SRID_UNKNOWN ? srid : lwgeom_get_srid(geom));
-			}
-		}
-	}
-
-	/*
-	** Take our array of LWGEOM* and turn it into a GEOS collection,
-	** then pass that into cascaded union.
-	*/
-	if (ngeoms > 0)
-	{
-		LWCOLLECTION* col = lwcollection_construct(COLLECTIONTYPE, srid, NULL, ngeoms, geoms);
-		LWGEOM *out = lwgeom_unaryunion_prec(lwcollection_as_lwgeom(col), state->gridSize);
-		if ( ! out )
-		{
-			lwcollection_free(col);
-		}
-		gser_out = geometry_serialize(out);
-	}
-	/* No real geometries in our array, any empties? */
-	else
-	{
-		/* If it was only empties, we'll return the largest type number */
-		if (empty_type > 0)
-			PG_RETURN_POINTER(
-			    geometry_serialize(lwgeom_construct_empty(empty_type, srid, has_z, 0)));
-
-		/* Nothing but NULL, returns NULL */
-		else
-			PG_RETURN_NULL();
-	}
-
-	if (!gser_out)
-	{
-		/* Union returned a NULL geometry */
-		PG_RETURN_NULL();
-	}
-
-	PG_RETURN_POINTER(gser_out);
-}
-
 
 
 /**
