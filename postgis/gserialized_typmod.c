@@ -61,8 +61,8 @@ Datum geometry_enforce_typmod(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_typmod_out);
 Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 {
-	char *s = (char*)palloc(64);
-	char *str = s;
+	StringInfoData si;
+	// char *s = (char*)palloc(64);
 	int32 typmod = PG_GETARG_INT32(0);
 	int32 srid = TYPMOD_GET_SRID(typmod);
 	int32 type = TYPMOD_GET_TYPE(typmod);
@@ -74,33 +74,32 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 	/* No SRID or type or dimensionality? Then no typmod at all. Return empty string. */
 	if (!(srid || type || hasz || hasm) || typmod < 0)
 	{
-		*str = '\0';
-		PG_RETURN_CSTRING(str);
+		PG_RETURN_CSTRING(pstrdup(""));
 	}
 
 	/* Opening bracket. */
-	str += sprintf(str, "(");
+	initStringInfo(&si);
+	appendStringInfoChar(&si, '(');
 
 	/* Has type? */
 	if (type)
-		str += sprintf(str, "%s", lwtype_name(type));
+		appendStringInfo(&si, "%s", lwtype_name(type));
 	else if (srid || hasz || hasm)
-		str += sprintf(str, "Geometry");
+		appendStringInfoString(&si, "Geometry");
 
 	/* Has Z? */
-	if (hasz) str += sprintf(str, "%s", "Z");
+	if (hasz) appendStringInfoString(&si, "Z");
 
 	/* Has M? */
-	if (hasm) str += sprintf(str, "%s", "M");
+	if (hasm) appendStringInfoString(&si, "M");
 
 	/* Has SRID? */
-	if (srid) str += sprintf(str, ",%d", srid);
+	if (srid) appendStringInfo(&si, ",%d", srid);
 
 	/* Closing bracket. */
-	str += sprintf(str, ")");
+	appendStringInfoChar(&si, ')');
 
-	PG_RETURN_CSTRING(s);
-
+	PG_RETURN_CSTRING(si.data);
 }
 
 

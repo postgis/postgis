@@ -57,10 +57,11 @@ lwpoint_summary(LWPOINT *point, int offset)
 	char *result;
 	char *pad="";
 	char *zmflags = lwgeom_flagchars((LWGEOM*)point);
+	size_t sz = 128+offset;
 
-	result = (char *)lwalloc(128+offset);
+	result = (char *)lwalloc(sz);
 
-	sprintf(result, "%*.s%s[%s]",
+	snprintf(result, sz, "%*.s%s[%s]",
 	        offset, pad, lwtype_name(point->type),
 	        zmflags);
 	return result;
@@ -72,10 +73,11 @@ lwline_summary(LWLINE *line, int offset)
 	char *result;
 	char *pad="";
 	char *zmflags = lwgeom_flagchars((LWGEOM*)line);
+	size_t sz = 128+offset;
 
-	result = (char *)lwalloc(128+offset);
+	result = (char *)lwalloc(sz);
 
-	sprintf(result, "%*.s%s[%s] with %d points",
+	snprintf(result, sz, "%*.s%s[%s] with %d points",
 	        offset, pad, lwtype_name(line->type),
 	        zmflags,
 	        line->points->npoints);
@@ -98,7 +100,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 
 	result = (char *)lwalloc(size);
 
-	sprintf(result, "%*.s%s[%s] with %d element%s",
+	snprintf(result, size, "%*.s%s[%s] with %d element%s",
 	        offset, pad, lwtype_name(col->type),
 	        zmflags,
 	        col->ngeoms,
@@ -139,7 +141,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	result = (char *)lwalloc(size);
 
-	sprintf(result, "%*.s%s[%s] with %i ring%s",
+	snprintf(result, size, "%*.s%s[%s] with %i ring%s",
 	        offset, pad, lwtype_name(poly->type),
 	        zmflags,
 	        poly->nrings,
@@ -149,7 +151,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	for (i=0; i<poly->nrings; i++)
 	{
-		sprintf(tmp,"%s   ring %i has %i points",
+		snprintf(tmp, sizeof(tmp), "%s   ring %i has %i points",
 		        pad, i, poly->rings[i]->npoints);
 		if ( i > 0 ) strcat(result,nl);
 		strcat(result,tmp);
@@ -190,7 +192,7 @@ lwgeom_summary(const LWGEOM *lwgeom, int offset)
 		return lwcollection_summary((LWCOLLECTION *)lwgeom, offset);
 	default:
 		result = (char *)lwalloc(256);
-		sprintf(result, "Object is of unknown type: %d",
+		snprintf(result, 256, "Object is of unknown type: %d",
 		        lwgeom->type);
 		return result;
 	}
