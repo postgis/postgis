@@ -472,6 +472,11 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
     AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.4])
   fi
 
+		dnl Ensure that we are using PostgreSQL < 13
+  if test $POSTGIS_PGSQL_VERSION -gt 120; then
+    AC_MSG_ERROR([This version of PostGIS requires PostgreSQL < 13])
+  fi
+
   HAVE_BRIN=no
   if test $POSTGIS_PGSQL_VERSION -gt 94; then
     HAVE_BRIN=yes
@@ -1173,6 +1178,17 @@ if test "x$with_address_standardizer" != "xno"; then
                 AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
             fi
         fi
+    elif test ! -z "$PKG_CONFIG"; then
+	PKG_CHECK_MODULES([PCRE], [libpcre], [
+                PCRE_CPPFLAGS="$PCRE_CFLAGS"
+                PCRE_LDFLAGS="$PCRE_LIBS"
+                ADDRESS_STANDARDIZER="address_standardizer"
+                HAVE_PCRE=yes
+            ],
+            [
+                ADDRESS_STANDARDIZER=""
+                HAVE_PCRE=no
+            ])
     fi
 
 
@@ -1195,9 +1211,11 @@ if test "x$with_address_standardizer" != "xno"; then
 
 else
     ADDRESS_STANDARDIZER=""
-    AC_SUBST([ADDRESS_STANDARDIZER])
     AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
 fi
+
+AC_SUBST([HAVE_PCRE])
+AC_SUBST([ADDRESS_STANDARDIZER])
 
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])

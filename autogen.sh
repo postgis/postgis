@@ -36,7 +36,7 @@ done
 AUTOCONF=`which autoconf 2>/dev/null`
 if [ ! ${AUTOCONF} ]; then
     echo "Missing autoconf!"
-    exit
+    exit 1
 fi
 AUTOCONF_VER=`${AUTOCONF} --version | ${GREP} -E "^.*[0-9]$" | ${SED} 's/^.* //'`
 
@@ -48,7 +48,7 @@ for aclocal in aclocal aclocal-1.10 aclocal-1.9; do
 done
 if [ ! ${ACLOCAL} ]; then
     echo "Missing aclocal!"
-    exit
+    exit 1
 fi
 ACLOCAL_VER=`${ACLOCAL} --version | ${GREP} -E "^.*[0-9]$" | ${SED} 's/^.* //'`
 
@@ -60,7 +60,7 @@ for libtoolize in glibtoolize libtoolize; do
 done
 if [ ! ${LIBTOOLIZE} ]; then
     echo "Missing libtoolize!"
-    exit
+    exit 1
 fi
 LIBTOOLIZE_VER=`${LIBTOOLIZE} --version | ${GREP} -E "^.*[0-9]\.[0-9]" | ${SED} 's/^.* //'`
 LIBTOOLIZE_MAJOR_VER=`echo ${LIBTOOLIZE_VER} | cut -f1 -d'.'`
@@ -80,6 +80,9 @@ ${ACLOCAL} -I macros || giveup
 
 echo "* Running ${AUTOCONF} (${AUTOCONF_VER})"
 ${AUTOCONF} || giveup
+
+# Work around an autoconf bug insisting in having this file
+touch build-aux/config.rpath
 
 if test -f "${PWD}/configure"; then
     echo "======================================"

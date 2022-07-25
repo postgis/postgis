@@ -233,6 +233,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	getPoint4d_p(blade_in->point, 0, &pt);
 
 	/* Find closest segment */
+	if ( ipa->npoints < 1 ) return 0; /* empty input line */
 	getPoint4d_p(ipa, 0, &p1);
 	nsegs = ipa->npoints - 1;
 	for ( i = 0; i < nsegs; i++ )

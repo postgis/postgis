@@ -2,6 +2,41 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1>
+      <title>PostGIS 2.5.7</title>
+      <para>Release Date: 2022/07/19</para>
+      <simplesect>
+        <title>Bug fixes</title>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5151">5151</ulink>, ST_SetPoint with empty geometries (Regina Obe)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5152">5152</ulink>, Fix infinite loop with ST_Split (Sandro Santilli)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5150">5150</ulink>, Change signature of AddToSearchPath (Regina Obe)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5155">5155</ulink>, More schema qual fixes (Regina Obe)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>PostGIS 2.5.6</title>
+      <para>Release Date: 2022/04/20</para>
+      <simplesect>
+        <title>Bug fixes</title>
+        <para>4968, Update autogen.sh to handle autoconf 2.71 issues</para>
+        <para>4871, TopoGeometry::geometry cast returns NULL for empty
+                  TopoGeometry objects (Sandro Santilli)</para>
+        <para>4757, Handle line collapse due to snap-to-existing node (Sandro Santilli)</para>
+        <para>4769, Fix segfault in st_addband (Raúl Marín)</para>
+        <para>4863, Update bboxes after affine/scale operations (Paul Ramsey)</para>
+        <para>4326, Fix CircularPolygon area calculation (Paul Ramsey)</para>
+        <para>4971, Cunit fixes for newer CUnit (Raúl Marín, Regina Obe)</para>
+        <para>5069, search_path vulnerabilty during install/upgrade
+                  (Regina Obe)</para>
+        <para>5086, regress cleanly (clip by box, make valid)
+           with GEOS 3.8+. For GEOS 3.8+
+           use native GEOS makevalid, buildarea, clipbybox (Regina Obe)</para>
+        <para>4457, Stop trying to createlang in regress
+           plpgsql is always installed (Regina Obe)</para>
+        <para>4980, Support pkg-config for pcre detection (Regina Obe)</para>
+      </simplesect>
+    </sect1>
 
     <sect1>
       <title>Release 2.5.5</title>

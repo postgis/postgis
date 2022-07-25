@@ -15,7 +15,7 @@ cd postgis-&last_release_version;
 make
 make install</programlisting>
 	<para>Once postgis is installed, it needs to be enabled in each individual database you want to use it in.</para>
-	<note><para>The raster support is currently optional, but installed by default. For enabling using the PostgreSQL 9.1+ extensions model raster is required. Using the extension enable process is preferred and more user-friendly. To spatially enable your database:</para></note>
+	<note><para>The raster support is currently optional, but installed by default. For enabling using the  extensions model raster is required. Using the extension enable process is preferred and more user-friendly. To spatially enable your database:</para></note>
 	<programlisting>psql -d yourdatabase -c "CREATE EXTENSION postgis;"
 psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
 -- if you built with sfcgal support --
@@ -94,16 +94,16 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	<itemizedlist>
 	  <listitem>
 		<para>
-		  PostgreSQL &min_postgres_version; or higher. A complete installation
+		  PostgreSQL &min_postgres_version; thru 12 are supported . A complete installation
 		  of PostgreSQL (including server headers) is required. PostgreSQL
 		  is available from
-		  <ulink url="http://www.postgresql.org">
-			http://www.postgresql.org
+		  <ulink url="https://www.postgresql.org">
+			https://www.postgresql.org
 		  </ulink>
 		  .
 		</para>
 		<para>For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support matrix refer to
-			<ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS">http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</ulink>
+			<ulink url="https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS">https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</ulink>
 		</para>
 	  </listitem>
 
@@ -2483,33 +2483,33 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</programlisting>
 
 		<programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));</programlisting>
-	  
+
 		If you are upgrading an old database containing french <ulink url="https://en.wikipedia.org/wiki/Institut_g%C3%A9ographique_national">
 			IGN
-		  </ulink> cartography, you will have probably SRIDs out 
+		  </ulink> cartography, you will have probably SRIDs out
 		of range and you will see, when importing your database, issues like this :
-	  
+
 		<programlisting> WARNING: SRID 310642222 converted to 999175 (in reserved zone)</programlisting>
-	  
-		In this case, you can try following steps : first throw 
-		out completely the IGN from the sql which is resulting 
+
+		In this case, you can try following steps : first throw
+		out completely the IGN from the sql which is resulting
 		from postgis_restore.pl. So, after having run :
-	  
+
 		<programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" > oldbb.sql</programlisting>
 
 		run this command :
-	  
+
 		<programlisting>grep -v IGNF olddb.sql > olddb-without-IGN.sql</programlisting>
-	  
-		Create then your newdb, activate the required Postgis extensions, 
+
+		Create then your newdb, activate the required Postgis extensions,
 		and insert properly the french system IGN with :
-	  
+
 		<ulink url="https://raw.githubusercontent.com/Remi-C/IGN_spatial_ref_for_PostGIS/master/Put_IGN_SRS_into_Postgis.sql">
 			this script
 		  </ulink>
-	  
+
 		After these operations, import your data :
-	  
+
 		<programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f olddb-without-IGN.sql  2> errors.txt</programlisting>
 
 	</para>

@@ -13,22 +13,21 @@
 
 #export GCC_TYPE=
 if  [[ "${OVERRIDE}" == '' ]] ; then
-export SFCGAL_VER=1.3.2
-export GEOS_VER=3.7.2
-export GDAL_VER=2.2.4
-export PROJ_VER=4.9.3
-export SFCGAL_VER=1.3.2
+export GEOS_VER=3.8.2
+export GDAL_VER=3.4.2
+export PROJ_VER=7.2.1
+export SFCGAL_VER=1.4.1
 export PCRE_VER=8.33
 export PROTOBUF_VER=3.2.0
 export PROTOBUFC_VER=1.2.1
 export CGAL_VER=4.11
-export BOOST_VER=1.53.0
+export BOOST_VER=1.78.0
 	#BOOST_VER_WU=1_49_0
-export BOOST_VER_WU=1_53_0
+export BOOST_VER_WU=1_78_0
 
 if [["${OS_BUILD}" == '64']] ; then
   export GDAL_VER=2.4.4
-  export SFCGAL_VER=1.3.8
+  export SFCGAL_VER=1.4.1
 fi;
 
 fi;
@@ -37,7 +36,7 @@ export PROTOBUFC_VER=1.2.1
 export JSON_VER=0.12
 export PCRE_VER=8.33
 if  [[ "${ICON_VER}" == '' ]] ; then
-  export ICON_VER=1.15
+  export ICON_VER=1.16
 fi;
 
 echo "ICON_VER ${ICON_VER}"
@@ -48,19 +47,19 @@ if  [[ "${ZLIB_VER}" == '' ]] ; then
 fi;
 
 if  [[ "${BOOST_VER}" == '' ]] ; then
-  export BOOST_VER=1.59.0
-  export BOOST_VER_WU=1_59_0
+  export BOOST_VER=1.78.0
+  export BOOST_VER_WU=1_78_0
 fi;
 
 
 #set to something even if override is on but not set
 if  [[ "${LIBXML_VER}" == '' ]] ; then
-  export LIBXML_VER=2.7.8
+  export LIBXML_VER=2.9.9
 fi;
 
 #set to something even if override is on but not set
 if  [[ "${CGAL_VER}" == '' ]] ; then
-  export CGAL_VER=4.11
+  export CGAL_VER=5.3
 fi;
 
 if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
@@ -173,7 +172,7 @@ cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/
 #for protobuf
 cp ${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin/libprotobuf-c-*.dll $outdir/bin
 
-echo "POSTGIS: ${POSTGIS_MINOR_VER} r${POSTGIS_SVN_REVISION} https://postgis.net/source" > $verfile
+echo "POSTGIS: ${POSTGIS_MICRO_VER} https://postgis.net/source" > $verfile
 
 if [ "$POSTGIS_MAJOR_VERSION" == "2" ] ; then
   ## only copy gdal components if 2+.  1.5 doesn't have raster support
@@ -190,8 +189,8 @@ fi;
 
 if [ -n "$SFCGAL_VER"  ]; then
 	## only copy cgal and sfcgal stuff if sfcgal is packaged
-	export BOOST_VER=1.59.0
-	export BOOST_VER_WU=1_59_0
+	export BOOST_VER=1.78.0
+	export BOOST_VER_WU=1_78_0
 	export GMP_VER=5.1.2
 	export MPFR_VER=3.1.2
 	echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
@@ -252,14 +251,12 @@ cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer i
 cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
 
 
-echo "GEOS VERSION: ${GEOS_VER} http://trac.osgeo.org/geos" >> $verfile
-echo "GDAL VERSION: ${GDAL_VER} http://trac.osgeo.org/gdal" >> $verfile
-echo "PROJ VERSION: ${PROJ_VER} http://trac.osgeo.org/proj" >> $verfile
+echo "GEOS VERSION: ${GEOS_VER} https://libgeos.org/usage/download/" >> $verfile
+echo "GDAL VERSION: ${GDAL_VER} https://proj.org/download.html" >> $verfile
+echo "PROJ VERSION: ${PROJ_VER} https://proj.org/download.html" >> $verfile
 
 if [ -n "$SFCGAL_VER"  ]; then
-    echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
-    echo "BOOST VERSION: ${BOOST_VER} http://www.boost.org" >> $verfile
-    echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://github.com/Oslandia/SFCGAL" >> $verfile
+    echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://gitlab.com/Oslandia/SFCGAL" >> $verfile
 fi;
 #echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
 cd ${RELDIR}

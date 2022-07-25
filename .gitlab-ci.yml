@@ -2,6 +2,7 @@ image: debian:stretch
 test:
   script:
     - apt-get update -qq && apt-get install -y
+        bison flex
         postgresql-9.6 postgresql-server-dev-9.6
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex

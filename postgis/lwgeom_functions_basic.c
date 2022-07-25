@@ -2310,6 +2310,12 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 		elog(ERROR, "First argument must be a LINESTRING");
 		PG_RETURN_NULL();
 	}
+
+	if ( line->points->npoints < 1 )        {
+					elog(ERROR, "Line has no points");
+					PG_RETURN_NULL();
+	}
+
 	if(which < 0){
 		/* Use backward indexing for negative values */
 		which = which + line->points->npoints ;
