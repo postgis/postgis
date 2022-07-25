@@ -12,6 +12,9 @@ Changes since PostGIS 3.3.0beta2:
            to be tolerant of small 32-bit floating point differences
            (Regina Obe)
   - #5191, Functions should use integer instead of int4 (Regina Obe)
+  - #5139, PostGIS causes to_jsonb to no longer be parallel safe,
+           ST_AsGeoJSON and ST_AsGML are also parallel unsafe
+           (Regina Obe, Paul Ramsey)
 
 
 
