@@ -225,7 +225,13 @@ print "TMPDIR is $TMPDIR\n";
 # Prepare the database
 ##################################################################
 
-my @dblist = grep(/\b$DB\b/, split(/\n/, `psql -Xl`));
+my @dblist = grep(/1/, split(/\n/, `
+psql -tAc "
+    SELECT 1 FROM pg_catalog.pg_database
+    WHERE datname = '${DB}'
+" template1
+`));
+
 my $dbcount = @dblist;
 
 if ( $dbcount == 0 )
