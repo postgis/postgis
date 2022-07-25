@@ -134,7 +134,7 @@ main()
 	 * fetch rows from the pg_database, the system catalog of
 	 * databases
 	 */
-	sprintf(query_str, "DECLARE mycursor BINARY CURSOR FOR select text(num), asbinary(the_geom,'ndr') as wkb from %s", table_name);
+	snprintf(query_str, sizeof(query_str), "DECLARE mycursor BINARY CURSOR FOR select text(num), asbinary(the_geom,'ndr') as wkb from %s", table_name);
 
 	printf(query_str);
 	printf("\n");

@@ -1158,8 +1158,9 @@ rt_raster_gdal_polygonize(
 	 * Thanks to David Zwarg.
 	 **/
 	if (iBandHasNodataValue) {
-		pszQuery = (char *) rtalloc(50 * sizeof (char));
-		sprintf(pszQuery, "PixelValue != %f", dBandNoData );
+		size_t sz = 50 * sizeof (char);
+		pszQuery = (char *) rtalloc(sz);
+		snprintf(pszQuery, sz, "PixelValue != %f", dBandNoData );
 		OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
 		if (e != OGRERR_NONE) {
 			rtwarn("Error filtering NODATA values for band. All values will be treated as data values");

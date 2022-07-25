@@ -657,10 +657,9 @@ _PG_init(void) {
 	*/
 	env_postgis_gdal_enabled_drivers = getenv("POSTGIS_GDAL_ENABLED_DRIVERS");
 	if (env_postgis_gdal_enabled_drivers == NULL) {
-		boot_postgis_gdal_enabled_drivers = palloc(
-			sizeof(char) * (strlen(GDAL_DISABLE_ALL) + 1)
-		);
-		sprintf(boot_postgis_gdal_enabled_drivers, "%s", GDAL_DISABLE_ALL);
+		size_t sz = sizeof(char) * (strlen(GDAL_DISABLE_ALL) + 1);
+		boot_postgis_gdal_enabled_drivers = palloc(sz);
+		snprintf(boot_postgis_gdal_enabled_drivers, sz, "%s", GDAL_DISABLE_ALL);
 	}
 	else {
 		boot_postgis_gdal_enabled_drivers = rtpg_trim(

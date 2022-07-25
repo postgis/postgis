@@ -122,10 +122,10 @@ Datum ellipsoid_out(PG_FUNCTION_ARGS)
 {
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(0);
 	char *result;
+	size_t sz = MAX_DIGS_DOUBLE + MAX_DIGS_DOUBLE + 20 + 9 + 2;
+	result = palloc(sz);
 
-	result = palloc(MAX_DIGS_DOUBLE + MAX_DIGS_DOUBLE + 20 + 9 + 2);
-
-	sprintf(result,"SPHEROID(\"%s\",%.15g,%.15g)",
+	snprintf(result, sz, "SPHEROID(\"%s\",%.15g,%.15g)",
 	        sphere->name, sphere->a, 1.0/sphere->f);
 
 	PG_RETURN_CSTRING(result);
