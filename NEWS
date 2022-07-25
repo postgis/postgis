@@ -11,6 +11,7 @@ Changes since PostGIS 3.3.0beta2:
   - #5157, Revise minimum_bounding_circle Cunit test
            to be tolerant of small 32-bit floating point differences
            (Regina Obe)
+  - #5191, Functions should use integer instead of int4 (Regina Obe)
 
 
 
