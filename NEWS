@@ -1,5 +1,5 @@
-PostGIS 3.0.6dev
-2022/XX/XX
+PostGIS 3.0.6
+2022/07/20
 
 * Bug Fixes and Enhancements *
   - #4835, Occasional distance errors in polar area (Paul Ramsey)
@@ -10,6 +10,10 @@ PostGIS 3.0.6dev
   - #5115, Allow dropping topologies with pending constraints (Sandro Santilli)
   - #5120, Fix not-null result from ST_EstimatedExtent against
            truncated tables with spatial index (Sandro Santilli)
+	- #5151, garden crash ST_SetPoint with empty geometries (Regina Obe)
+  - #5150, Change signature of AddToSearchPath (Regina Obe)
+  - #5155, More schema qual fixes (Regina Obe)
+  - #5154, ST_Value is undercosted (Regina Obe)
 
 PostGIS 3.0.5
 2022/02/02
