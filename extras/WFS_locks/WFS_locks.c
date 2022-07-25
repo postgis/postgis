@@ -33,8 +33,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	char *lockcode;
 	char *authtable = "authorization_table";
 	const char *op;
-#define ERRMSGLEN 256
-	char errmsg[ERRMSGLEN];
+	char errmsg[256];
 
 
 	/* Make sure trigdata is pointing at what I expect */
@@ -86,7 +85,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	elog(NOTICE,"check_authorization called");
 #endif
 
-	sprintf(query,"SELECT authid FROM \"%s\" WHERE expires >= now() AND toid = '%d' AND rid = '%s'", authtable, trigdata->tg_relation->rd_id, pk_id);
+	snprintf(query, sizeof(query), "SELECT authid FROM \"%s\" WHERE expires >= now() AND toid = '%d' AND rid = '%s'", authtable, trigdata->tg_relation->rd_id, pk_id);
 
 #if PGIS_DEBUG > 1
 	elog(NOTICE,"about to execute :%s", query);
@@ -120,7 +119,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	 * check to see if temp_lock_have_table table exists
 	 * (it might not exist if they own no locks)
 	 */
-	sprintf(query,"SELECT * FROM pg_class WHERE relname = 'temp_lock_have_table'");
+	snprintf(query, sizeof(query), "SELECT * FROM pg_class WHERE relname = 'temp_lock_have_table'");
 	SPIcode = SPI_exec(query,0);
 	if (SPIcode != SPI_OK_SELECT )
 		elog(ERROR,"couldnt execute to test for lockkey temp table :%s",query);
@@ -129,7 +128,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 		goto fail;
 	}
 
-	sprintf(query, "SELECT * FROM temp_lock_have_table WHERE xideq( transid, getTransactionID() ) AND lockcode ='%s'", lockcode);
+	snprintf(query, sizeof(query), "SELECT * FROM temp_lock_have_table WHERE xideq( transid, getTransactionID() ) AND lockcode ='%s'", lockcode);
 
 #if PGIS_DEBUG
 	elog(NOTICE,"about to execute :%s", query);
@@ -150,7 +149,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 fail:
 
-	snprintf(errmsg, ERRMSGLEN, "%s where \"%s\" = '%s' requires authorization '%s'",
+	snprintf(errmsg, sizeof(errmsg), "%s where \"%s\" = '%s' requires authorization '%s'",
 	         op, colname, pk_id, lockcode);
 	errmsg[ERRMSGLEN-1] = '\0';
 
