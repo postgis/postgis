@@ -690,6 +690,7 @@ update_table_chooser_from_database()
 	/* Now insert one row for each query result */
 	for (i = 0; i < PQntuples(result); i++)
 	{
+		size_t sz;
 		gtk_list_store_insert_before(chooser_table_list_store, &iter, NULL);
 
 		/* Look up the geo columns; if there are none then we set the field to (None). If we have just one
@@ -700,8 +701,9 @@ update_table_chooser_from_database()
 
 		sql_form = "SELECT n.nspname, c.relname, a.attname FROM pg_class c, pg_namespace n, pg_attribute a WHERE c.relnamespace = n.oid AND n.nspname = '%s' AND c.relname = '%s' AND a.attrelid = c.oid AND a.atttypid IN (SELECT oid FROM pg_type WHERE typname in ('geometry', 'geography'))";
 
-		geocol_query = malloc(strlen(sql_form) + strlen(schema) + strlen(table) + 1);
-		sprintf(geocol_query, sql_form, schema, table);
+		sz = strlen(sql_form) + strlen(schema) + strlen(table) + 1;
+		geocol_query = malloc(sz);
+		snprintf(geocol_query, sz, sql_form, schema, table);
 
 		geocol_result = PQexec(pg_connection, geocol_query);
 
@@ -1462,14 +1464,16 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	/* Validation: we loop through each of the files in order to validate them as a separate pass */
 	while (is_valid)
 	{
+		size_t sz;
 		/* Grab the SHPLOADERCONFIG for this row */
 		gtk_tree_model_get(GTK_TREE_MODEL(import_file_list_store), &iter, IMPORT_POINTER_COLUMN, &gptr, -1);
 		loader_file_config = (SHPLOADERCONFIG *)gptr;
 
 		/* For each entry, we execute a remote query in order to determine the column names
 		   and types for the remote table if they actually exist */
-		query = malloc(strlen(sql_form) + strlen(loader_file_config->schema) + strlen(loader_file_config->table) + 1);
-		sprintf(query, sql_form, loader_file_config->table, loader_file_config->schema);
+		sz = strlen(sql_form) + strlen(loader_file_config->schema) + strlen(loader_file_config->table) + 1;
+		query = malloc(sz);
+		snprintf(query, sz, sql_form, loader_file_config->table, loader_file_config->schema);
 		result = PQexec(pg_connection, query);
 
 		/* Call the validation function with the SHPLOADERCONFIG and the result set */

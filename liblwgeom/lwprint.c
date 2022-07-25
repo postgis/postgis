@@ -357,7 +357,7 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	}
 	if(deg_piece >= 0)
 	{
-		sprintf(pieces[deg_piece], "%*.*f", deg_digits, deg_dec_digits, degrees);
+		snprintf(pieces[deg_piece], WORK_SIZE, "%*.*f", deg_digits, deg_dec_digits, degrees);
 	}
 
 	if (min_piece >= 0)
@@ -367,7 +367,7 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 		{
 			lwerror("Bad format, minutes (MM.MMM) number of digits was greater than our working limit.");
 		}
-		sprintf(pieces[min_piece], "%*.*f", min_digits, min_dec_digits, minutes);
+		snprintf(pieces[min_piece], WORK_SIZE, "%*.*f", min_digits, min_dec_digits, minutes);
 	}
 	if (sec_piece >= 0)
 	{
@@ -376,7 +376,7 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 		{
 			lwerror("Bad format, seconds (SS.SSS) number of digits was greater than our working limit.");
 		}
-		sprintf(pieces[sec_piece], "%*.*f", sec_digits, sec_dec_digits, seconds);
+		snprintf(pieces[sec_piece], WORK_SIZE, "%*.*f", sec_digits, sec_dec_digits, seconds);
 	}
 
 	/* Allocate space for the result.  Leave plenty of room for excess digits, negative sign, etc.*/
@@ -404,6 +404,7 @@ static char * lwdoubles_to_latlon(double lat, double lon, const char * format)
 	char * lat_text;
 	char * lon_text;
 	char * result;
+	size_t sz;
 
 	/* Normalize lat/lon to the normal (-90 to 90, -180 to 180) range. */
 	lwprint_normalize_latlon(&lat, &lon);
@@ -412,8 +413,9 @@ static char * lwdoubles_to_latlon(double lat, double lon, const char * format)
 	lon_text = lwdouble_to_dms(lon, "E", "W", format);
 
 	/* lat + lon + a space between + the null terminator. */
-	result = (char*)lwalloc(strlen(lat_text) + strlen(lon_text) + 2);
-	sprintf(result, "%s %s", lat_text, lon_text);
+	sz = strlen(lat_text) + strlen(lon_text) + 2;
+	result = (char*)lwalloc(sz);
+	snprintf(result, sz, "%s %s", lat_text, lon_text);
 	lwfree(lat_text);
 	lwfree(lon_text);
 	return result;
