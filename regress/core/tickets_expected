@@ -461,3 +461,5 @@ ERROR:  LWGEOM_addpoint: Invalid offset
 #4770.c|POINT(0 0)|300
 #4770.c|MULTIPOINT(0 0,1 1)|602
 ERROR:  Line has no points
+#5139|100000
+#5139|1000000

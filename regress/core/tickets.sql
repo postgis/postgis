@@ -1427,3 +1427,29 @@ SELECT '#4770.c', ST_AsText(g), s FROM w;
 
 -- https://trac.osgeo.org/postgis/ticket/5151
 SELECT '#5151', ST_SetPoint(ST_GeomFromText('LINESTRING EMPTY',4326), 1, ST_GeomFromText('POINT(40 50)',4326)) As result;
+
+-- https://trac.osgeo.org/postgis/ticket/5139
+SET client_min_messages TO ERROR;
+DROP TABLE IF EXISTS a;
+CREATE TABLE a AS
+SELECT x AS id, ST_Point(40000 + 10000, -100000 , 27700) AS geom
+FROM generate_series(1,1000000) AS x ;
+
+set max_parallel_workers_per_gather=3;
+set force_parallel_mode=on;
+DROP TABLE IF EXISTS object_list_temp;
+WITH object_list AS (
+	SELECT '#5139'::text AS t, id, to_jsonb(geom) AS json_data
+	FROM a
+	WHERE id::text LIKE '100000%'
+)
+SELECT * INTO TEMPORARY TABLE object_list_temp
+FROM object_list;
+DROP TABLE IF EXISTS object_list;
+SELECT t, id FROM object_list_temp ORDER BY id;
+DROP TABLE IF EXISTS object_list_temp;
+DROP TABLE IF EXISTS a;
+reset max_parallel_workers_per_gather;
+reset force_parallel_mode;
+
+SET client_min_messages TO NOTICE;
