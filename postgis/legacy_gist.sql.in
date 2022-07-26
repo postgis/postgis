@@ -16,9 +16,9 @@ CREATE OPERATOR CLASS gist_geometry_ops
 
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
 	OPERATOR        14       <#> FOR ORDER BY pg_catalog.float_ops,
-	FUNCTION        8        geometry_gist_distance_2d (internal, geometry, int4),
+	FUNCTION        8        geometry_gist_distance_2d (internal, geometry, integer),
 
-	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
+	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, integer),
 	FUNCTION        2        geometry_gist_union_2d (bytea, internal),
 	FUNCTION        3        geometry_gist_compress_2d (internal),
 	FUNCTION        4        geometry_gist_decompress_2d (internal),

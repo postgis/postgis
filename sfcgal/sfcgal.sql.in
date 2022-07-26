@@ -85,7 +85,7 @@ CREATE OR REPLACE FUNCTION ST_ForceLHR(geometry)
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Orientation(geometry)
-       RETURNS INT4
+       RETURNS integer
        AS 'MODULE_PATHNAME','sfcgal_orientation'
        LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
        COST 100;

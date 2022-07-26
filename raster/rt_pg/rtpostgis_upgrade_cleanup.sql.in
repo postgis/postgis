@@ -216,7 +216,7 @@ DROP FUNCTION IF EXISTS st_polygon(raster, integer);
 -- function no longer exists
 DROP FUNCTION IF EXISTS st_makeemptyraster(int, int, float8, float8, float8, float8, float8, float8);
 -- signature changed
-DROP FUNCTION IF EXISTS st_makeemptyraster(int, int, float8, float8, float8, float8, float8, float8, int4);
+DROP FUNCTION IF EXISTS st_makeemptyraster(int, int, float8, float8, float8, float8, float8, float8, integer);
 
 -- function no longer exists
 DROP FUNCTION IF EXISTS st_addband(raster, text);
