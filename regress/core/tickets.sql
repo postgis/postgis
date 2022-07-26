@@ -1457,7 +1457,7 @@ WITH object_list AS (
 SELECT * INTO TEMPORARY TABLE object_list_temp
 FROM object_list;
 DROP TABLE IF EXISTS object_list;
-SELECT t, id FROM object_list_temp;
+SELECT t, id FROM object_list_temp ORDER BY id;
 DROP TABLE IF EXISTS object_list_temp;
 DROP TABLE IF EXISTS a;
 reset max_parallel_workers_per_gather;
