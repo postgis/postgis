@@ -392,8 +392,9 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 					PG_RETURN_POINTER((Node *)NULL);
 
 				/*
-				* Avoid mising a 3D operator with a
-				* non-3D function.
+				* Avoid using a 3D operator (@@) with a
+				* non-3D function (like ST_Within)
+				* https://trac.osgeo.org/postgis/ticket/5025
 				*/
 				if (opfamilydims == 3 && idxfn.dims != 3)
 					PG_RETURN_POINTER((Node *)NULL);
