@@ -23,11 +23,11 @@ DECLARE
   rec RECORD;
   rec2 RECORD;
   var_topology_id integer;
-  n int4;
-  missing int4;
+  n integer;
+  missing integer;
   sql text;
   ret text;
-  tgcount int4;
+  tgcount integer;
 BEGIN
 
   ret := 'Topology ' || quote_ident(atopology) ;

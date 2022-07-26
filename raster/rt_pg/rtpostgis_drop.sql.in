@@ -60,13 +60,13 @@ DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
 -- Removed in 2.1.0
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionfinal1(raster);
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, integer);
 -- Removed in 2.1.0
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster);
 -- Removed in 2.1.0
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text);
 -- Removed in 2.1.0
-DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4, text);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, integer, text);
 -- Removed in 2.1.0
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8);
 -- Removed in 2.2.0

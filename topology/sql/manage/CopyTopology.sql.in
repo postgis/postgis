@@ -25,7 +25,7 @@ DECLARE
   rec2 RECORD;
   oldtopo_id integer;
   newtopo_id integer;
-  n int4;
+  n integer;
   ret text;
 BEGIN
 

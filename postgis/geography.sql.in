@@ -106,7 +106,7 @@ CREATE OR REPLACE FUNCTION ST_AsText(geography)
 	_COST_MEDIUM;
 
 -- Availability: 2.5.0
-CREATE OR REPLACE FUNCTION ST_AsText(geography, int4)
+CREATE OR REPLACE FUNCTION ST_AsText(geography, integer)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -206,7 +206,7 @@ CREATE CAST (geography AS geometry) WITH FUNCTION geometry(geography) ;
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_consistent(internal,geography,int4)
+CREATE OR REPLACE FUNCTION geography_gist_consistent(internal,geography,integer)
 	RETURNS bool
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
 	LANGUAGE 'c';
@@ -275,7 +275,7 @@ CREATE OPERATOR <-> (
 );
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION geography_gist_distance(internal, geography, int4)
+CREATE OR REPLACE FUNCTION geography_gist_distance(internal, geography, integer)
 	RETURNS float8
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_geog_distance'
 	LANGUAGE 'c';
@@ -292,8 +292,8 @@ CREATE OPERATOR CLASS gist_geography_ops
 -- Availability: 2.2.0
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
 -- Availability: 2.2.0
-	FUNCTION        8        geography_gist_distance (internal, geography, int4),
-	FUNCTION        1        geography_gist_consistent (internal, geography, int4),
+	FUNCTION        8        geography_gist_distance (internal, geography, integer),
+	FUNCTION        1        geography_gist_consistent (internal, geography, integer),
 	FUNCTION        2        geography_gist_union (bytea, internal),
 	FUNCTION        3        geography_gist_compress (internal),
 	FUNCTION        4        geography_gist_decompress (internal),
@@ -404,7 +404,7 @@ CREATE OPERATOR CLASS btree_geography_ops
 --
 
 -- Changed 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography, rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15)
+CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography, rel integer DEFAULT 0, maxdecimaldigits integer DEFAULT 15)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_svg'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -426,13 +426,13 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 -- Changed: 2.0.0 to use default args and allow named args
 -- Changed: 2.1.0 enhance to allow id value
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
+CREATE OR REPLACE FUNCTION ST_AsGML(version integer, geog geography, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_gml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
-CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
+CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_gml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -452,8 +452,8 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 
 -- AsKML(geography,precision)
 -- Changed: 2.0.0 to use default args and named args
--- Replaces ST_AsKML(geography, int4) deprecated in 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT '')
+-- Replaces ST_AsKML(geography, integer) deprecated in 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits integer DEFAULT 15, nprefix text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_kml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -471,7 +471,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(text)
 -- GeoJson Output
 --
 
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 9, options int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits integer DEFAULT 9, options integer DEFAULT 0)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_geojson'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -711,7 +711,7 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_MEDIUM;
 
-CREATE OR REPLACE FUNCTION ST_AsEWKT(geography, int4)
+CREATE OR REPLACE FUNCTION ST_AsEWKT(geography, integer)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -738,7 +738,7 @@ CREATE OR REPLACE FUNCTION ST_Summary(geography)
 	_COST_LOW;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_GeoHash(geog geography, maxchars int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_GeoHash(geog geography, maxchars integer DEFAULT 0)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME', 'ST_GeoHash'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
@@ -746,13 +746,13 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geog geography, maxchars int4 DEFAULT 0)
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_SRID(geog geography)
-	RETURNS int4
+	RETURNS integer
 	AS 'MODULE_PATHNAME', 'LWGEOM_get_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	_COST_LOW;
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid int4)
+CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid integer)
 	RETURNS geography
 	AS 'MODULE_PATHNAME', 'LWGEOM_set_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
