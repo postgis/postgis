@@ -1432,7 +1432,7 @@ SELECT '#5151', ST_SetPoint(ST_GeomFromText('LINESTRING EMPTY',4326), 1, ST_Geom
 SET client_min_messages TO ERROR;
 DROP TABLE IF EXISTS a;
 CREATE TABLE a AS
-SELECT x AS id, ST_Point(40000 + 10000, -100000 , 27700) AS geom
+SELECT x AS id, ST_SetSRID(ST_Point(40000 + 10000, -100000) , 27700) AS geom
 FROM generate_series(1,1000000) AS x ;
 
 set max_parallel_workers_per_gather=3;
