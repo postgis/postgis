@@ -461,3 +461,5 @@ ERROR:  LWGEOM_addpoint: Invalid offset
 #4799|{"type": "Feature", "geometry": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:25832"}},"coordinates":[359667,5651729]}, "properties": {"id": 1, "geom1": {"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:3035"}},"coordinates":[4110471,3103061]}}}
 #5008|f|f
 ERROR:  Line has no points
+#5139|100000
+#5139|1000000
