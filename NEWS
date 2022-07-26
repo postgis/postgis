@@ -8,6 +8,9 @@ Proj 6.1+, and PostgreSQL 14+.
 
 * Bug Fixes *
   - #5191, Use integer instead of int4 (Regina Obe)
+  - #5139, PostGIS causes to_jsonb to no longer be parallel safe,
+           ST_AsGeoJSON and ST_AsGML are also parallel unsafe
+           (Regina Obe, Paul Ramsey)
 
 
 PostGIS 3.2.2
