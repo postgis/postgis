@@ -38,7 +38,7 @@ RASTER2PGSQL=raster2pgsql@EXESUFFIX@
 # PostgreSQL executable directory
 PGSQL_BINDIR=@PGSQL_BINDIR@
 
-LIBLWGEOM_LDFLAGS = -static $(top_builddir)/liblwgeom/liblwgeom.la
+LIBLWGEOM_LDFLAGS = $(top_builddir)/liblwgeom/liblwgeom.la
 LIBLWGEOM_CFLAGS = -I$(top_builddir)/liblwgeom -I$(top_srcdir)/liblwgeom
 LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
 LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
