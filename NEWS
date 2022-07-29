@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Run ST_EstimatedExtent with caller privileges (Sandro Santilli)
  - #5790, Resolve extension objects in their installed schema (Regina Obe)
  - Use size_t for geometry and raster serialization size arithmetic (Even Rouault)
  - #5422, Build EPUB documentation with its images and stylesheet (Sandro Santilli)
