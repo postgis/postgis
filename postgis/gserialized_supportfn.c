@@ -147,6 +147,7 @@ typedef struct
 	uint16_t index;     /* Position of the strategy in the arrays */
 	uint8_t nargs;      /* Expected number of function arguments */
 	uint8_t expand_arg; /* Radius argument for "within distance" search */
+	uint8_t dims;       /* Dimensionality of function */
 } IndexableFunction;
 
 /*
@@ -155,25 +156,50 @@ typedef struct
 * and searched with binary search.
 */
 static const IndexableFunction IndexableFunctions[] = {
-	{"st_intersects", ST_INTERSECTS_IDX, 2, 0},
-	{"st_dwithin", ST_DWITHIN_IDX, 3, 3},
-	{"st_contains", ST_CONTAINS_IDX, 2, 0},
-	{"st_within", ST_WITHIN_IDX, 2, 0},
-	{"st_touches", ST_TOUCHES_IDX, 2, 0},
-	{"st_3dintersects", ST_3DINTERSECTS_IDX, 2, 0},
-	{"st_containsproperly", ST_CONTAINSPROPERLY_IDX, 2, 0},
-	{"st_coveredby", ST_COVEREDBY_IDX, 2, 0},
-	{"st_overlaps", ST_OVERLAPS_IDX, 2, 0},
-	{"st_covers", ST_COVERS_IDX, 2, 0},
-	{"st_crosses", ST_CROSSES_IDX, 2, 0},
-	{"st_dfullywithin", ST_DFULLYWITHIN_IDX, 3, 3},
-	{"st_3ddwithin", ST_3DDWITHIN_IDX, 3, 3},
-	{"st_3ddfullywithin", ST_3DDFULLYWITHIN_IDX, 3, 3},
-	{"st_linecrossingdirection", ST_LINECROSSINGDIRECTION_IDX, 2, 0},
-	{"st_orderingequals", ST_ORDERINGEQUALS_IDX, 2, 0},
-	{"st_equals", ST_EQUALS_IDX, 2, 0},
-	{NULL, 0, 0, 0}
+	{"st_intersects", ST_INTERSECTS_IDX, 2, 0, 2},
+	{"st_dwithin", ST_DWITHIN_IDX, 3, 3, 2},
+	{"st_contains", ST_CONTAINS_IDX, 2, 0, 2},
+	{"st_within", ST_WITHIN_IDX, 2, 0, 2},
+	{"st_touches", ST_TOUCHES_IDX, 2, 0, 2},
+	{"st_3dintersects", ST_3DINTERSECTS_IDX, 2, 0, 3},
+	{"st_containsproperly", ST_CONTAINSPROPERLY_IDX, 2, 0, 2},
+	{"st_coveredby", ST_COVEREDBY_IDX, 2, 0, 2},
+	{"st_overlaps", ST_OVERLAPS_IDX, 2, 0, 2},
+	{"st_covers", ST_COVERS_IDX, 2, 0, 2},
+	{"st_crosses", ST_CROSSES_IDX, 2, 0, 2},
+	{"st_dfullywithin", ST_DFULLYWITHIN_IDX, 3, 3, 2},
+	{"st_3ddwithin", ST_3DDWITHIN_IDX, 3, 3, 3},
+	{"st_3ddfullywithin", ST_3DDFULLYWITHIN_IDX, 3, 3, 3},
+	{"st_linecrossingdirection", ST_LINECROSSINGDIRECTION_IDX, 2, 0, 2},
+	{"st_orderingequals", ST_ORDERINGEQUALS_IDX, 2, 0, 2},
+	{"st_equals", ST_EQUALS_IDX, 2, 0, 2},
+	{NULL, 0, 0, 0, 0}
 };
+
+
+/*
+* We need to look up whether an opfamily supports
+* 2D or 3D filtering, so we can avoid accidentally
+* combining 3D filters with 2D functions.
+*/
+typedef struct
+{
+	const char *opfamilyname;
+	uint8_t dims;
+} OpFamilyDim;
+
+static const OpFamilyDim OpFamilyDims[] = {
+	{"gist_geometry_ops_2d", 2},
+	{"gist_geometry_ops_nd", 3},
+	{"brin_geometry_inclusion_ops_2d", 2},
+	{"brin_geometry_inclusion_ops_3d", 3},
+	{"brin_geometry_inclusion_ops_4d", 3},
+	{"spgist_geometry_ops_2d", 2},
+	{"spgist_geometry_ops_3d", 3},
+	{"spgist_geometry_ops_nd", 3},
+	{NULL, 0}
+};
+
 
 /*
 * Is the function calling the support function
@@ -202,6 +228,22 @@ needsSpatialIndex(Oid funcid, IndexableFunction *idxfn)
 	return false;
 }
 
+static uint8_t
+opFamilyDim(const char* opfamily)
+{
+	const OpFamilyDim *idxdims = OpFamilyDims;
+	do
+	{
+		if(strcmp(idxdims->opfamilyname, opfamily) == 0)
+		{
+			return idxdims->dims;
+		}
+		idxdims++;
+	}
+	while (idxdims->opfamilyname);
+	return 0;
+}
+
 /*
 * We only add spatial index enhancements for
 * indexes that support spatial searches (range
@@ -209,18 +251,21 @@ needsSpatialIndex(Oid funcid, IndexableFunction *idxfn)
 * implementations based on GIST, SPGIST and BRIN.
 */
 static Oid
-opFamilyAmOid(Oid opfamilyoid)
+opFamilyAmOid(Oid opfamilyoid, uint8_t* dims)
 {
 	Form_pg_opfamily familyform;
-	// char *opfamilyname;
+	char *opfamilyname;
 	Oid opfamilyam;
 	HeapTuple familytup = SearchSysCache1(OPFAMILYOID, ObjectIdGetDatum(opfamilyoid));
 	if (!HeapTupleIsValid(familytup))
 		elog(ERROR, "cache lookup failed for operator family %u", opfamilyoid);
 	familyform = (Form_pg_opfamily) GETSTRUCT(familytup);
 	opfamilyam = familyform->opfmethod;
-	// opfamilyname = NameStr(familyform->opfname);
-	// elog(NOTICE, "%s: found opfamily %s [%u]", __func__, opfamilyname, opfamilyam);
+	opfamilyname = NameStr(familyform->opfname);
+	elog(DEBUG3, "%s: found opfamily %s [%u]", __func__, opfamilyname, opfamilyam);
+	if (dims) {
+		*dims = opFamilyDim(opfamilyname);
+	}
 	ReleaseSysCache(familytup);
 	return opfamilyam;
 }
@@ -313,7 +358,7 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 		{
 			FuncExpr *clause = (FuncExpr *) req->node;
 			Oid funcid = clause->funcid;
-			IndexableFunction idxfn = {NULL, 0, 0, 0};
+			IndexableFunction idxfn = {NULL, 0, 0, 0, 0};
 			Oid opfamilyoid = req->opfamily; /* OPERATOR FAMILY of the index */
 
 			if (needsSpatialIndex(funcid, &idxfn))
@@ -330,7 +375,8 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				* gist_geometry_ops_2d, gist_geometry_ops_nd,
 				* spgist_geometry_ops_2d, spgist_geometry_ops_nd
 				*/
-				Oid opfamilyam = opFamilyAmOid(opfamilyoid);
+				uint8_t opfamilydims;
+				Oid opfamilyam = opFamilyAmOid(opfamilyoid, &opfamilydims);
 				if (opfamilyam != GIST_AM_OID &&
 				    opfamilyam != SPGIST_AM_OID &&
 				    opfamilyam != BRIN_AM_OID)
@@ -343,6 +389,14 @@ Datum postgis_index_supportfn(PG_FUNCTION_ARGS)
 				* or second argument.
 				*/
 				if (req->indexarg > 1)
+					PG_RETURN_POINTER((Node *)NULL);
+
+				/*
+				* Avoid using a 3D operator (@@) with a
+				* non-3D function (like ST_Within)
+				* https://trac.osgeo.org/postgis/ticket/5025
+				*/
+				if (opfamilydims == 3 && idxfn.dims != 3)
 					PG_RETURN_POINTER((Node *)NULL);
 
 				/*
