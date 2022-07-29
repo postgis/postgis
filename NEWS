@@ -15,6 +15,9 @@ Changes since PostGIS 3.3.0beta2:
   - #5139, PostGIS causes to_jsonb to no longer be parallel safe,
            ST_AsGeoJSON and ST_AsGML are also parallel unsafe
            (Regina Obe, Paul Ramsey)
+  - #5025, Ensure that additional operators are not appended
+           when the function and opfamily disagree
+           about dimensionality (Paul Ramsey)
 
 
 
