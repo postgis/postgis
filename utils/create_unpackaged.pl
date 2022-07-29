@@ -161,7 +161,7 @@ WHEN object_not_in_prerequisite_state THEN
     RAISE EXCEPTION '%', SQLERRM;
   END IF;
 WHEN
-	undefined_function
+	undefined_function OR
 	undefined_object
 	-- TODO: handle more exceptions ?
 THEN
