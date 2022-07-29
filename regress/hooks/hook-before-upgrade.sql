@@ -86,3 +86,11 @@ FROM upgrade_test;
 -- the upgrade procedure to replace them all
 UPDATE pg_proc SET probin = probin || '-uninstalled'
 WHERE probin like '%postgis%';
+
+-- Change SECURITY of postgis_version() to DEFINER
+-- to verify the bit is reset upon upgrade
+--
+-- NOTE: we pick postgis_version as one of the oldest
+--       function names
+--
+ALTER FUNCTION postgis_version() SECURITY DEFINER;
