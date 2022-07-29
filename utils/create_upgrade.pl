@@ -208,40 +208,28 @@ while(<INPUT>)
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 DECLARE
-    replaced_proc regprocedure;
-    rec RECORD;
-    new_view_def TEXT;
-    sql TEXT;
     detail TEXT;
 BEGIN
-    -- Check if the old function signature, exists
+    -- Rename the replaced function, to avoid ambiguities.
+    -- The renamed function will eventually be drop.
     BEGIN
-        replaced_proc := '$name($args)'::regprocedure;
+        ALTER FUNCTION $name( $args ) RENAME TO ${renamed};
     EXCEPTION
-    -- Catch the "function does not exist"
     WHEN undefined_function THEN
-        RAISE DEBUG 'Function $name($args) does not exist';
+        RAISE DEBUG 'Replaced function $name($args) does not exist';
     WHEN OTHERS THEN
         GET STACKED DIAGNOSTICS detail := PG_EXCEPTION_DETAIL;
-        RAISE EXCEPTION 'Got % (%)', SQLERRM, SQLSTATE
+        RAISE EXCEPTION 'Attempting to rename replaced function $name($args) got % (%)', SQLERRM, SQLSTATE
             USING DETAIL = detail;
     END;
-
-    IF replaced_proc IS NULL THEN
-        $def
-        RETURN;
-    END IF;
-
-    -- Old function signature exists
-
-    -- Rename old function, to avoid ambiguities and eventually drop
-    ALTER FUNCTION $name( $args ) RENAME TO ${renamed};
-
 
 END;
 \$postgis_proc_upgrade\$;
 EOF
         }
+
+        # TODO: set owner to current owner, in case the new signature exists
+
         print $def;
     }
 
