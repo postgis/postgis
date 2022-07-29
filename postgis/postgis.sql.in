@@ -545,7 +545,7 @@ CREATE OR REPLACE FUNCTION geometry_gist_sortsupport_2d(internal)
 -- Given a table, column and query geometry, returns the estimate of what proportion
 -- of the table would be returned by a query using the &&/&&& operators. The mode
 -- changes whether the estimate is in x/y only or in all available dimensions.
-CREATE OR REPLACE FUNCTION _postgis_selectivity(tbl pg_catalog.regclass, att_name text, geom geometry, mode text default '2')
+CREATE OR REPLACE FUNCTION _postgis_selectivity(tbl regclass, att_name text, geom geometry, mode text default '2')
 	RETURNS float8
 	AS 'MODULE_PATHNAME', '_postgis_gserialized_sel'
 	LANGUAGE 'c' STRICT PARALLEL SAFE;
