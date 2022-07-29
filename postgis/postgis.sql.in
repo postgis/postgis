@@ -1134,23 +1134,26 @@ CREATE OR REPLACE FUNCTION ST_MakeBox2d(geom1 geometry, geom2 geometry)
 -----------------------------------------------------------------------
 
 -- Availability: 2.3.0
+-- Changed: 3.4.0 drop security definer
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text,boolean) RETURNS box2d AS
 	'MODULE_PATHNAME', 'gserialized_estimated_extent'
-	LANGUAGE 'c' STABLE STRICT SECURITY DEFINER;
+	LANGUAGE 'c' STABLE STRICT;
 
 -- Availability: 2.1.0
+-- Changed: 3.4.0 drop security definer
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'gserialized_estimated_extent'
-	LANGUAGE 'c' STABLE STRICT SECURITY DEFINER;
+	LANGUAGE 'c' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
 
 -- Availability: 2.1.0
+-- Changed: 3.4.0 drop security definer
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'gserialized_estimated_extent'
-	LANGUAGE 'c' STABLE STRICT SECURITY DEFINER;
+	LANGUAGE 'c' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
