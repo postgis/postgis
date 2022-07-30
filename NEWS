@@ -8,6 +8,13 @@ xxxx/xx/xx
   - #5231, PG15 no longer compiles against PostGIS 3.2 - 3.4
     because SQL/JSON removed upstream (Regina Obe)
 
+* New Features *
+  - New install-extension-upgrades command in postgis script (Sandro Santilli)
+
+ * Enhancements *
+  - #5194, do not update system catalogs from postgis_extensions_upgrade (Sandro Santilli)
+  - #5092, reduce number of upgrade paths installed on system (Sandro Santilli)
+
 PostGIS 3.3.0
 2022/08/26
 

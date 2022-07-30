@@ -209,6 +209,11 @@ abs_topbuilddir=$(abspath $(top_builddir))
 
 VPATH = $(srcdir)
 
+INSTALLED_UPGRADE_SCRIPTS +=  \
+	$(wildcard $(EXTDIR)/$(EXTENSION)_data_us--*--$(EXTVERSION).sql) \
+	$(wildcard $(EXTDIR)/$(EXTENSION)_data_us--*--ANY.sql) \
+	$(NULL)
+
 install: all installdirs
 	$(INSTALL_DATA) $(addprefix $(srcdir)/, $(DATA)) $(DATA_built) '$(DESTDIR)$(datadir)/$(datamoduledir)/'
 ifdef DOCS

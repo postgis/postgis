@@ -4,11 +4,13 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
-# Copyright (C) 2020 Sandro Santilli <strk@kbt.io>
+# Copyright (C) 2020-2022 Sandro Santilli <strk@kbt.io>
 #
 # This is free software; you can redistribute and/or modify it under
 # the terms of the GNU General Public Licence. See the COPYING file.
 #
+
+use File::Basename;
 
 
 sub usage
@@ -19,7 +21,132 @@ Commands:
   enable <database>  enable PostGIS in given database
   upgrade <database> upgrade PostGIS in given database
   status <database>  print PostGIS status in given database
+  install-extension-upgrades [--pg_sharedir <dir>] [<from>...]
+		Ensure files required to upgrade PostGIS from
+		the given version are installed on the system.
+		The <from> arguments may be either version numbers
+		or PostgreSQL share directories to scan to find available
+		ones.
 };
+
+}
+
+sub install_upgrade_from
+{
+	my ( $SHAREDIR, $from ) = @_;
+
+	#print "SHAREDIR: $SHAREDIR\n";
+	#print "FROM: $from\n";
+	die "Please specify a sharedir and a version to install upgrade support for.\n"
+		unless $from;
+
+	my %supported_extension = (
+		'postgis' => 1,
+		'postgis_raster' => 1,
+		'postgis_sfcgal' => 1,
+		'postgis_tiger_geocoder' => 1,
+		'postgis_topology' => 1
+	);
+
+	# sanify ${from}
+	die "'${from}': invalid version, only 3 dot-separated numbers optionally followed by alphanumeric string are allowed\n"
+		unless $from =~ /^[0-9]*\.[0-9]*\.[0-9]*[a-z1-9]*/;
+
+	# Reserver versions
+
+	my $EXTDIR = ${SHAREDIR} . '/extension';
+
+	#for ls postgis*.control
+	while (my $cfile = glob("${EXTDIR}/postgis*.control")) {
+		# Do stuff
+		#print " CFILE: ${cfile}\n";
+		my $extname = basename($cfile, '.control');
+
+		unless ( exists( $supported_extension{$extname} ) )
+		{
+			print STDERR "NOTICE: extension [${extname}] is not a core PostGIS extension\n";
+			next;
+		}
+
+		#print " EXTENSION: [${extname}]\n";
+
+		# TODO: if the target is before 3.3.0 we need to symlink
+		#       ${extname}--ANY--${to} to ${extname}--${from}--${to}
+
+		my $shcmd = "ln -fvs '${extname}--TEMPLATED--TO--ANY.sql' '${EXTDIR}/${extname}--${from}--ANY.sql'";
+		#print " CMD: ${shcmd}\n";
+		my $rv = system($shcmd);
+		if ( $rv ) {
+			die "Error encountered running: $cmd: $!";
+		}
+
+	}
+
+	return 0; # success
+}
+
+sub install_upgrade_from_available
+{
+	my ($SHAREDIR) = @_;
+	my $EXTDIR = ${SHAREDIR} . '/extension';
+
+	#print "EXTDIR: ${EXTDIR}\n";
+
+	opendir(my $d, $EXTDIR) || die "Cannot read ${EXTDIR} directory\n";
+	my @files = grep { /^postgis--/ && ! /--.*--/ } readdir($d);
+	foreach ( @files )
+	{
+		m/^postgis--(.*)\.sql/;
+		my $ver = $1;
+		next if $ver eq 'unpackaged'; # we don't want to install upgrade from unpackaged
+		print "Found version $ver\n";
+		return $rv if my $rv = install_upgrade_from $SHAREDIR, $ver;
+		#return $rv if $rv; # first failure aborts all
+	}
+	closedir($d);
+
+	exit 0; # success
+}
+
+sub install_extension_upgrades
+{
+	my $DEFSHAREDIR = `pg_config --sharedir`;
+	chop($DEFSHAREDIR);
+	my $SHAREDIR = ${DEFSHAREDIR};
+
+	my @ver;
+
+	for ( my $i=0; $i<@_; $i++ )
+	{
+		if ( $_[$i] eq '--pg_sharedir' )
+		{
+			$i++ < @_ - 1 || die '--pg_sharedir requires an argument';
+			$SHAREDIR = $_[$i];
+			die "$SHAREDIR is not a directory" unless -d ${SHAREDIR};
+			next;
+		}
+
+		push @ver, $_[$i];
+	}
+
+	print "Installation target: ${SHAREDIR}\n";
+
+	if ( 0 == @ver )
+	{
+		print "No versions given, will scan ${SHAREDIR}\n";
+		push @ver, ${SHAREDIR};
+	}
+
+
+	foreach ( @ver )
+	{
+		my $v = $_;
+		if ( -d $v ) {
+			install_upgrade_from_available($SHAREDIR, $v);
+		} else {
+			install_upgrade_from($SHAREDIR, $v);
+		}
+	}
 
 }
 
@@ -125,6 +252,9 @@ elsif ( $cmd eq "upgrade" ) {
 }
 elsif ( $cmd eq "status" ) {
 	exit status(@ARGV);
+}
+elsif ( $cmd eq "install-extension-upgrades" ) {
+	exit install_extension_upgrades(@ARGV);
 }
 else {
 	print STDERR "Unrecognized command: $cmd\n";
