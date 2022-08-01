@@ -66,10 +66,10 @@ sql/%.sql: %.sql.in
 
 %.control: %.control.in Makefile
 	cat $< \
-		| sed -e 's|@EXTVERSION@|$(EXTVERSION)|g' \
+		| $(PERL) -lpe "s'@EXTVERSION@'$(EXTVERSION)'g" \
 		> $@
 
-sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer_types.sql \
+sql/address_standardizer--@POSTGIS_LIB_VERSION@_raw.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
 	mkdir -p sql
 	cat $^ > $@
