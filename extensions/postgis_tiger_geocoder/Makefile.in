@@ -81,7 +81,7 @@ sql/$(EXTENSION)_pre.sql: sql/tiger_geocoder.sql  sql_bits/mark_editable_objects
 
 sql/$(EXTENSION).sql: sql/$(EXTENSION)_pre.sql ../../utils/create_or_replace_to_create.pl
 	cat $< \
-		| $(PERL) ../../utils/create_or_replace_to_create.pl sql/$(EXTENSION)_pre.sql \
+		| $(PERL) @top_srcdir@/utils/create_or_replace_to_create.pl sql/$(EXTENSION)_pre.sql \
 		> $@
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql | sql

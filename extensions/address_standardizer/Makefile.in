@@ -79,13 +79,13 @@ sql/address_standardizer_pre.sql: $(EXTENSION_SCRIPTS)
 sql/address_standardizer--$(EXTVERSION).sql: sql/address_standardizer_pre.sql ../../utils/create_or_replace_to_create.pl
 	mkdir -p sql
 	cat $< \
-		| $(PERL) ../../utils/create_or_replace_to_create.pl sql/address_standardizer_pre.sql \
+		| $(PERL) @top_srcdir@/utils/create_or_replace_to_create.pl sql/address_standardizer_pre.sql \
 		> $@
 
 sql/address_standardizer.sql: sql/address_standardizer_pre.sql ../../utils/create_or_replace_to_create.pl
 	mkdir -p sql
 	cat $< \
-		| $(PERL) ../../utils/create_or_replace_to_create.pl sql/address_standardizer_pre.sql \
+		| $(PERL) @top_srcdir@/utils/create_or_replace_to_create.pl sql/address_standardizer_pre.sql \
 		> $@
 
 EXTENSION_UPGRADE_SCRIPTS = sql/address_standardizer_functions.sql
