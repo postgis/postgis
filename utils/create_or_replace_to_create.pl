@@ -32,57 +32,11 @@ use strict;
 use warnings;
 
 #
-# Conditionally upgraded types and operators based
-# on their last updated version and the version of
-# the target database
-#
-
-sub parse_last_updated
-{
-    my $comment = shift;
-    if ( $comment =~ m/.*(?:Availability|Changed|Updated):\s([^\.])\.([^.]*)/s )
-    {
-        return $1*100 + $2;
-    }
-    return 0;
-}
-
-sub parse_replaces
-{
-    my @replaces = ();
-    my $comment = shift;
-    my ($name, $args, $ver);
-    foreach my $line ( split /\n/, $comment )
-    {
-        if ( $line =~ m/.*Replaces\s\s*([^\(]*)\(([^\)]*)\)\s\s*deprecated in\s\s*([^\.]*)\.([^.]*)/ )
-        {
-            $name = $1;
-            $args = $2;
-            $ver = $3*100 + $4;
-            my @r = ($name, $args, $ver);
-            push @replaces, \@r;
-        }
-    }
-    return @replaces;
-}
-
-sub parse_missing
-{
-    my $comment = shift;
-    my @missing = ();
-    if ( $comment =~ m/.*(?:Missing in):\s([^\.])\.([^.]*)/s )
-    {
-        push(@missing, $1*100 + $2);
-    }
-    return join(',',@missing);
-}
-
-#
 # Commandline argument handling
 #
 ($#ARGV == 0)
   ||die
-"Usage: perl create_upgrade.pl <create_script.sql> [<schema>]\nCreates a new SQL script that has all CREATE OR REPLACE converted to CREATE so it is suitable for CREATE EXTENSION only.\n"
+"Usage: perl create_or_replace_to_create.pl <create_script.sql> [<schema>]\nCreates a new SQL script that has all CREATE OR REPLACE converted to CREATE so it is suitable for CREATE EXTENSION only.\n"
   if ( @ARGV < 1 || @ARGV > 3 );
 
 my $sql_file = $ARGV[0];
@@ -160,8 +114,6 @@ while(<INPUT>)
 }
 
 close(INPUT);
-
-#print "COMMIT;\n";
 
 1;
 
