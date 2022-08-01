@@ -38,13 +38,16 @@ MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION
 MODULEPATH    = $$libdir/address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 endif
 EXTENSION = address_standardizer
+EXTENSION_SCRIPTS = \
+ 		sql/address_standardizer_types.sql \
+    sql/address_standardizer_functions.sql
 
 DATA_built = \
 	$(EXTENSION).control \
 	$(EXTENSION)_data_us.control \
 	$(NULL)
 
-all:  sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql \
+all:  sql/address_standardizer_pre.sql sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--ANY--$(EXTVERSION).sql \
  sql/$(EXTENSION)_data_us.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql  sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql \
 sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql \
 sql/test-init-extensions.sql sql/test-parseaddress.sql sql/test-standardize_address_1.sql sql/test-standardize_address_2.sql
@@ -69,23 +72,29 @@ sql/%.sql: %.sql.in
 		| $(PERL) -lpe "s'@EXTVERSION@'$(EXTVERSION)'g" \
 		> $@
 
-sql/address_standardizer--@POSTGIS_LIB_VERSION@_raw.sql: sql/address_standardizer_types.sql \
-    sql/address_standardizer_functions.sql
+sql/address_standardizer_pre.sql: $(EXTENSION_SCRIPTS)
 	mkdir -p sql
 	cat $^ > $@
 
-sql/address_standardizer.sql: sql/address_standardizer_types.sql \
-    sql/address_standardizer_functions.sql
+sql/address_standardizer--$(EXTVERSION).sql: sql/address_standardizer_pre.sql ../../utils/create_or_replace_to_create.pl
 	mkdir -p sql
-	cat $^ > $@
+	cat $< \
+		| $(PERL) ../../utils/create_or_replace_to_create.pl sql/address_standardizer_pre.sql \
+		> $@
 
-sql/address_standardizer--1.0--$(EXTVERSION).sql:  sql/address_standardizer_functions.sql
+sql/address_standardizer.sql: sql/address_standardizer_pre.sql ../../utils/create_or_replace_to_create.pl
 	mkdir -p sql
-	cat $^ > $@
+	cat $< \
+		| $(PERL) ../../utils/create_or_replace_to_create.pl sql/address_standardizer_pre.sql \
+		> $@
 
 EXTENSION_UPGRADE_SCRIPTS = sql/address_standardizer_functions.sql
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
+sql/$(EXTENSION)--1.0--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
+	mkdir -p sql
+	cat $^ > $@
+
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
 	mkdir -p sql
 	cat $^ > $@

@@ -18,6 +18,9 @@ Changes since PostGIS 3.3.0beta2:
   - #5025, Ensure that additional operators are not appended
            when the function and opfamily disagree
            about dimensionality (Paul Ramsey)
+  - #5195, #5196  Change address_standardizer
+           and postgis_tiger_geocoder CREATE EXTENSION to use CREATE
+           instead of CREATE OR REPLACE. (Regina Obe)
 
 
 
