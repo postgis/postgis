@@ -16,9 +16,9 @@ sub usage
 	print qq{Usage: $0 <command> [<args>]
 Commands:
   help               print this message and exits
-  enable <database>  enable postgis in given database
-  upgrade <database>  enable postgis in given database
-  status <database>  prints postgis status in given database
+  enable <database>  enable PostGIS in given database
+  upgrade <database> upgrade PostGIS in given database
+  status <database>  print PostGIS status in given database
 };
 
 }
