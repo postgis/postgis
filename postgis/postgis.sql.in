@@ -3024,7 +3024,7 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_class c
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
-			THEN --}{
+			THEN --}{ -- the code is unpackaged
 				-- Force install in same schema as postgis
 				SELECT INTO var_schema n.nspname
 				  FROM pg_namespace n, pg_proc p
@@ -3049,22 +3049,9 @@ BEGIN
 			ELSE
 				RAISE DEBUG 'Skipping % (not in use)', rec.name;
 			END IF;
-		ELSE -- IF target_version != rec.installed_version THEN --}{
-			sql = '';
-			-- If logged in as super user
-			-- force an update regardless if at target version, no downgrade allowed
-			IF (SELECT usesuper FROM pg_user WHERE usename = CURRENT_USER)
-						AND pg_catalog.substring(target_version, '[0-9]+\.[0-9]+\.[0-9]+')
-								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+') THEN
-					sql = format(
-						'UPDATE pg_catalog.pg_extension SET extversion = ''ANY'' WHERE extname = %1$L;'
-						'ALTER EXTENSION %1$I UPDATE TO %2$I',
-						rec.name, target_version
-				);
-			-- sandboxed users do standard upgrade
-			ELSIF pg_catalog.substring(target_version, '[0-9]+\.[0-9]+\.[0-9]+')
-								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+') THEN
-				sql = format(
+		ELSE -- The code is already packaged, upgrade it --}{
+			sql = format(
+				'ALTER EXTENSION %1$I UPDATE TO ANY;',
 				'ALTER EXTENSION %1$I UPDATE TO %2$I',
 				rec.name, target_version
 				);
