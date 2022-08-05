@@ -228,9 +228,9 @@ for EXT in ${INSTALLED_EXTENSIONS}; do
       echo "Testing ${test_label}"
       RUNTESTFLAGS="-v --upgrade-path=${UPGRADE_PATH} ${USERTESTFLAGS}" \
       make -C ${REGDIR} check && {
-        echo "PASS: ${EXT} script-based upgrade $UPGRADE_PATH"
+        echo "PASS: ${test_label}"
       } || {
-        echo "FAIL: ${EXT} script-based upgrade $UPGRADE_PATH"
+        echo "FAIL: ${test_label}"
         failed
       }
     done #}
