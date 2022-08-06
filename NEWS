@@ -4,6 +4,7 @@ PostGIS 3.0.7dev
 * Bug Fixes
   - #5202, Guard against downgrades (Sandro Santilli)
 
+PostGIS 3.0.6
 2022/07/20
 
 * Bug Fixes and Enhancements *
