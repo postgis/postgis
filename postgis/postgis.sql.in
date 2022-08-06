@@ -2959,7 +2959,8 @@ CREATE OR REPLACE FUNCTION _postgis_scripts_pgsql_version() RETURNS text
 
 CREATE OR REPLACE FUNCTION _postgis_pgsql_version() RETURNS text
 AS $$
-	SELECT CASE WHEN split_part(s,'.',1)::integer > 9 THEN split_part(s,'.',1) || '0' ELSE split_part(s,'.', 1) || split_part(s,'.', 2) END AS v
+	SELECT CASE WHEN pg_catalog.split_part(s,'.',1)::integer > 9 THEN pg_catalog.split_part(s,'.',1) || '0'
+	ELSE pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2) END AS v
 	FROM pg_catalog.substring(version(), 'PostgreSQL ([0-9\.]+)') AS s;
 $$ LANGUAGE 'sql' STABLE;
 
@@ -3049,15 +3050,34 @@ BEGIN
 				RAISE DEBUG 'Skipping % (not in use)', rec.name;
 			END IF;
 		ELSE -- IF target_version != rec.installed_version THEN --}{
-			sql = format(
-				'UPDATE pg_catalog.pg_extension SET extversion = ''ANY'' WHERE extname = %1$L;'
+			sql = '';
+			-- If logged in as super user
+			-- force an update regardless if at target version, no downgrade allowed
+			IF (SELECT usesuper FROM pg_user WHERE usename = CURRENT_USER)
+						AND pg_catalog.substring(target_version, '[0-9]+\.[0-9]+\.[0-9]+')
+								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+') THEN
+					sql = format(
+						'UPDATE pg_catalog.pg_extension SET extversion = ''ANY'' WHERE extname = %1$L;'
+						'ALTER EXTENSION %1$I UPDATE TO %2$I',
+						rec.name, target_version
+				);
+			-- sandboxed users do standard upgrade
+			ELSIF pg_catalog.substring(target_version, '[0-9]+\.[0-9]+\.[0-9]+')
+								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+') THEN
+				sql = format(
 				'ALTER EXTENSION %1$I UPDATE TO %2$I',
 				rec.name, target_version
-			);
-			RAISE NOTICE 'Updating extension % %',
-				rec.name, rec.installed_version;
-			RAISE DEBUG '%', sql;
-			EXECUTE sql;
+				);
+			END IF;
+			IF sql > '' THEN
+				RAISE NOTICE 'Updating extension % %',
+					rec.name, rec.installed_version;
+				RAISE DEBUG '%', sql;
+				EXECUTE sql;
+			ELSE
+				RAISE NOTICE 'Downgrade % from % to % not allowed',
+						rec.name, rec.installed_version, target_version;
+			END IF;
 		END IF; --}
 
 	END LOOP; --}
