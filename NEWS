@@ -11,6 +11,7 @@ Proj 6.1+, and PostgreSQL 14+.
   - #5139, PostGIS causes to_jsonb to no longer be parallel safe,
            ST_AsGeoJSON and ST_AsGML are also parallel unsafe
            (Regina Obe, Paul Ramsey)
+  - #5202, Guard against downgrades (Sandro Santilli)
 
 
 PostGIS 3.2.2
