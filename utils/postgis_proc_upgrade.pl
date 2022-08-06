@@ -72,6 +72,7 @@ my $sql_file = $ARGV[0];
 my $module = 'postgis';
 my $soname = '';
 my $version_to = "";
+my $version_to_full = "";
 my $version_to_num = 0;
 my $version_from = $ARGV[1];
 my $version_from_num = 0;
@@ -111,8 +112,9 @@ close(INPUT);
 die "Unable to locate target new version number in $sql_file\n"
   if( !$version_to );
 
-if ( $version_to =~ /(\d+)\.(\d+)\..*/ )
+if ( $version_to =~ /(\d+)\.(\d+)\.(\d+)([^' ]*)/ )
 {
+    $version_to_full = $1 . '.' . $2 . '.' . $3 . $4;
     $version_to = $1 . "." . $2;
     $version_to_num = 100 * $1 + $2;
 }
@@ -123,7 +125,7 @@ else
 
 print qq{
 --
--- UPGRADE SCRIPT TO PostGIS $version_to
+-- UPGRADE SCRIPT TO PostGIS $version_to_full
 --
 
 };
@@ -139,7 +141,7 @@ print "SET search_path TO $schema;\n" if $schema;
 #
 while(<DATA>)
 {
-    s/NEWVERSION/$version_to/g;
+    s/NEWVERSION/$version_to_full/g;
     s/MODULE/$module/g;
     print;
 }
@@ -523,6 +525,8 @@ DO $$
 DECLARE
     old_scripts text;
     new_scripts text;
+    old_ver_int int[];
+    new_ver_int int[];
     old_maj text;
     new_maj text;
 BEGIN
@@ -545,8 +549,43 @@ BEGIN
         SELECT into old_scripts MODULE_scripts_installed();
     END;
     SELECT into new_scripts 'NEWVERSION';
-    SELECT into old_maj pg_catalog.substring(old_scripts, 1, 1);
-    SELECT into new_maj pg_catalog.substring(new_scripts, 1,1);
+
+    BEGIN
+        new_ver_int := pg_catalog.string_to_array(
+            pg_catalog.regexp_replace(
+                new_scripts,
+                '[^\d.].*',
+                ''
+            ),
+            '.'
+        )::int[];
+    EXCEPTION WHEN OTHERS THEN
+        RAISE EXCEPTION 'Cannot parse new version % into integers', new_scripts;
+    END;
+
+    BEGIN
+        old_ver_int := pg_catalog.string_to_array(
+            pg_catalog.regexp_replace(
+                old_scripts,
+                '[^\d.].*',
+                ''
+            ),
+            '.'
+        )::int[];
+    EXCEPTION WHEN OTHERS THEN
+        RAISE EXCEPTION 'Cannot parse old version % into integers', old_scripts;
+    END;
+
+    -- Guard against downgrade
+    IF new_ver_int < old_ver_int
+    THEN
+        RAISE EXCEPTION 'Downgrade of MODULE from version % to version % is forbidden', old_scripts, new_scripts;
+    END IF;
+
+
+    -- Check for hard-upgrade being required
+    SELECT into old_maj pg_catalog.substring(old_scripts,1, 1);
+    SELECT into new_maj pg_catalog.substring(new_scripts,1, 1);
 
     -- 2.x to 3.x was upgrade-compatible, see
     -- https://trac.osgeo.org/postgis/ticket/4170#comment:1
