@@ -1,4 +1,4 @@
-PostGIS 3.1.7
+PostGIS 3.1.7dev
 2022/xx/xx
 
 * Bug Fixes
@@ -6,6 +6,7 @@ PostGIS 3.1.7
   - #5139, PostGIS causes to_jsonb to no longer be parallel safe,
            ST_AsGeoJSON and ST_AsGML are also parallel unsafe
            (Regina Obe, Paul Ramsey)
+  - #5202, Guard against downgrades (Sandro Santilli)
 
 PostGIS 3.1.6
 2022/07/20
