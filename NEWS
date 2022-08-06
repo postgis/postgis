@@ -1,7 +1,9 @@
-PostGIS 2.5.8
+PostGIS 2.5.8dev
 2022/xx/xx
 
  * Bug fixes *
+
+  - #5202, Guard against downgrades (Sandro Santilli)
 
 PostGIS 2.5.7
 2022/07/19
