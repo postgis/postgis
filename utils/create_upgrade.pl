@@ -769,6 +769,24 @@ BEGIN
         SELECT into old_scripts MODULE_scripts_installed();
     END;
     SELECT into new_scripts 'NEWVERSION';
+
+    -- Guard against downgrade
+    IF
+       pg_catalog.string_to_array(
+            pg_catalog.regexp_replace(new_scripts, '(dev|alpha|beta)[0-9]*', ''),
+            '.'
+        )::int[]
+            <
+        pg_catalog.string_to_array(
+            pg_catalog.regexp_replace(old_scripts, '(dev|alpha|beta)[0-9]*', ''),
+            '.'
+        )::int[]
+    THEN
+        RAISE EXCEPTION 'Downgrade of MODULE from version % to version % is forbidden', old_scripts, new_scripts;
+    END IF;
+
+
+    -- Check for hard-upgrade being required
     SELECT into old_maj pg_catalog.substring(old_scripts, 1, 1);
     SELECT into new_maj pg_catalog.substring(new_scripts, 1, 1);
 
