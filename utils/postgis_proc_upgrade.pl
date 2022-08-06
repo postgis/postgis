@@ -91,6 +91,7 @@ my $sql_file = $ARGV[0];
 my $module = 'postgis';
 my $soname = '';
 my $version_to = "";
+my $version_to_full = "";
 my $version_to_num = 0;
 my $version_from = $ARGV[1];
 my $version_from_num = 0;
@@ -132,8 +133,9 @@ close(INPUT);
 die "Unable to locate target new version number in $sql_file\n"
   if( !$version_to );
 
-if ( $version_to =~ /(\d+)\.(\d+)\..*/ )
+if ( $version_to =~ /(\d+)\.(\d+)\.(\d+)([^' ]*)/ )
 {
+    $version_to_full = $1 . '.' . $2 . '.' . $3 . $4;
     $version_to = $1 . "." . $2;
     $version_to_num = 100 * $1 + $2;
 }
@@ -144,7 +146,7 @@ else
 
 print qq{
 --
--- UPGRADE SCRIPT TO PostGIS $version_to
+-- UPGRADE SCRIPT TO PostGIS $version_to_full
 --
 
 };
@@ -160,7 +162,7 @@ print "SET search_path TO $schema;\n" if $schema;
 #
 while(<DATA>)
 {
-    s/NEWVERSION/$version_to/g;
+    s/NEWVERSION/$version_to_full/g;
     s/MODULE/$module/g;
     print;
 }
