@@ -747,6 +747,8 @@ DO $$
 DECLARE
     old_scripts text;
     new_scripts text;
+    old_ver_int int[];
+    new_ver_int int[];
     old_maj text;
     new_maj text;
     postgis_upgrade_info RECORD;
@@ -772,17 +774,34 @@ BEGIN
     END;
     SELECT into new_scripts 'NEWVERSION';
 
+    BEGIN
+        new_ver_int := pg_catalog.string_to_array(
+            pg_catalog.regexp_replace(
+                new_scripts,
+                '[^\d.].*',
+                ''
+            ),
+            '.'
+        )::int[];
+    EXCEPTION WHEN OTHERS THEN
+        RAISE EXCEPTION 'Cannot parse new version % into integers', new_scripts;
+    END;
+
+    BEGIN
+        old_ver_int := pg_catalog.string_to_array(
+            pg_catalog.regexp_replace(
+                old_scripts,
+                '[^\d.].*',
+                ''
+            ),
+            '.'
+        )::int[];
+    EXCEPTION WHEN OTHERS THEN
+        RAISE EXCEPTION 'Cannot parse old version % into integers', old_scripts;
+    END;
+
     -- Guard against downgrade
-    IF
-       pg_catalog.string_to_array(
-            pg_catalog.regexp_replace(new_scripts, '(dev|alpha|beta)[0-9]*', ''),
-            '.'
-        )::int[]
-            <
-        pg_catalog.string_to_array(
-            pg_catalog.regexp_replace(old_scripts, '(dev|alpha|beta)[0-9]*', ''),
-            '.'
-        )::int[]
+    IF new_ver_int < old_ver_int
     THEN
         RAISE EXCEPTION 'Downgrade of MODULE from version % to version % is forbidden', old_scripts, new_scripts;
     END IF;
