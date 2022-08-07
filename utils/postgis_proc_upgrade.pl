@@ -471,7 +471,7 @@ __END__
 
 CREATE OR REPLACE FUNCTION postgis_major_version_check()
 RETURNS text
-AS '
+AS $BODY$
 DECLARE
     old_scripts text;
     new_scripts text;
@@ -546,8 +546,10 @@ BEGIN
     IF old_maj != new_maj THEN
         RAISE EXCEPTION 'Upgrade of MODULE from version % to version % requires a dump/reload. See PostGIS manual for instructions', old_scripts, new_scripts;
     END IF;
-END
-'
+
+    RETURN 'Scripts versions checked for upgrade: ok';
+END;
+$BODY$
 LANGUAGE 'plpgsql';
 
 SELECT postgis_major_version_check();
