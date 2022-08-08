@@ -1,5 +1,5 @@
 PostGIS 3.3.0rc1
-2022/xx/xx
+2022/08/xx
 This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
 Additional features are enabled if you are running GEOS 3.9+
 ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.
@@ -21,7 +21,8 @@ Changes since PostGIS 3.3.0beta2:
   - #5195, #5196  Change address_standardizer
            and postgis_tiger_geocoder CREATE EXTENSION to use CREATE
            instead of CREATE OR REPLACE. (Regina Obe)
-
+  - #5202, Guard against downgrade (Sandro Santilli)
+  - #5104, postgis_extensions_upgrade() fails with pgextwlist (Regina Obe)
 
 
 PostGIS 3.3.0beta2

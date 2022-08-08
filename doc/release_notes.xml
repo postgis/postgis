@@ -2,7 +2,42 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
-        <sect1>
+    <sect1>
+        <title>PostGIS 3.3.0rc1</title>
+        <para>2022/08/08</para>
+        <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+        Additional features are enabled if you are running GEOS 3.9+
+        ST_MakeValid enhancements with 3.10+, numerous additional enhancements with GEOS 3.11+.
+        Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.</para>
+        <para>NOTE: GEOS 3.11.0 was recently released,
+ details at <ulink url="https://libgeos.org/posts/2022-07-01-geos-3-11-0-released/">GEOS 3.11.0 release notes</ulink></para>
+        <para>The new --enable-lto flag improves speed of math computations.  This new feature is disabled by default
+because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)</para>
+        <para>Use below to enable it.</para>
+        <programlisting>./configure --enable-lto</programlisting>
+        <para>Changes since PostGIS 3.3.0beta2:</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5154">5154</ulink>, raster ST_Value is undercosted (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5157">5157</ulink>, Revise minimum_bounding_circle Cunit test
+                        to be tolerant of small 32-bit floating point differences
+                        (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5191">5191</ulink>, Functions should use integer instead of int4 (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5139">5139</ulink>, PostGIS causes to_jsonb to no longer be parallel safe,
+                        ST_AsGeoJSON and ST_AsGML are also parallel unsafe
+                        (Regina Obe, Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5025">5025</ulink>, Ensure that additional operators are not appended
+                        when the function and opfamily disagree
+                        about dimensionality (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5195">5195</ulink>, #5196  Change address_standardizer
+                        and postgis_tiger_geocoder CREATE EXTENSION to use CREATE
+                        instead of CREATE OR REPLACE. (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5202">5202</ulink>, Guard against downgrade (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5104">5104</ulink>, postgis_extensions_upgrade() fails with pgextwlist (Regina Obe)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
         <title>PostGIS 3.3.0beta2</title>
         <para>2022/07/13</para>
         <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
