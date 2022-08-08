@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2022-05-21
+Date: 2022-08-08
 
 Versioning Scheme
 -----------------
@@ -64,7 +64,7 @@ Release procedure
 
   - Can edit tickets and milestones on https://trac.osgeo.org/postgis/
   - Can commit to upstream git https://git.osgeo.org/gitea/postgis/postgis
-  - Have SSH to download.osgeo.org and can write to /osgeo/download/postgis.
+  - Have SSH to upload.osgeo.org and can write to /osgeo/download/postgis.
   - Have SSH to postgis.net and can write to /etc/nginx/sites-enabled/postgis.net.
   - Post to https://git.osgeo.org/gitea/postgis/postgis.net/ and get it added to feed
   https://planet.postgresql.org/register/new/

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-16 22:07+0000\n"
+"POT-Creation-Date: 2022-08-08 04:50+0000\n"
 "PO-Revision-Date: 2022-06-14 09:50+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
@@ -62,13 +62,13 @@ msgstr ""
 #: installation.xml:13
 #, no-c-format
 msgid ""
-"Once PostGIS is installed, it needs to be enabled (<xref linkend="
-"\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) in each "
-"individual database you want to use it in."
+"Once PostGIS is installed, it needs to be enabled (<xref "
+"linkend=\"create_spatial_db\"/>) or upgraded (<xref linkend=\"upgrading\"/>) "
+"in each individual database you want to use it in."
 msgstr ""
 "PostGISをインストールした後は、利用したいデータベース個々内で利用可能にする "
-"(<xref linkend=\"create_spatial_db\"/>)か、アップグレード (<xref linkend="
-"\"upgrading\"/>)する必要があります。"
+"(<xref linkend=\"create_spatial_db\"/>)か、アップグレード (<xref "
+"linkend=\"upgrading\"/>)する必要があります。"
 
 #. Tag: title
 #: installation.xml:23
@@ -99,10 +99,10 @@ msgid ""
 "org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</ulink>."
 msgstr ""
 "本節では、一般的なコンパイル手順を示します。Windows用や他のOS用等にコンパイル"
-"するなら、<ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiInstall"
-"\">PostGIS User contributed compile guides</ulink>や<ulink url=\"http://trac."
-"osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</ulink>で、より詳細な助"
-"けが見つかるかも知れません。"
+"するなら、<ulink url=\"http://trac.osgeo.org/postgis/wiki/"
+"UsersWikiInstall\">PostGIS User contributed compile guides</ulink>や<ulink "
+"url=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</"
+"ulink>で、より詳細な助けが見つかるかも知れません。"
 
 #. Tag: para
 #: installation.xml:33
@@ -141,13 +141,9 @@ msgid ""
 "The PostGIS module is an extension to the PostgreSQL backend server. As "
 "such, PostGIS &last_release_version; <emphasis>requires</emphasis> full "
 "PostgreSQL server headers access in order to compile. It can be built "
-"against PostgreSQL versions &min_postgres_version; or higher. Earlier "
-"versions of PostgreSQL are <emphasis>not</emphasis> supported."
+"against PostgreSQL versions &min_postgres_version; - &max_postgres_version;. "
+"Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported."
 msgstr ""
-"PostGISモジュールは、PostgreSQLバックエンドサーバの拡張です。PostGIS "
-"&last_release_version;では、コンパイルのために、完全なPostgreSQLサーバヘッダ"
-"が<emphasis>必要です</emphasis>。PostgreSQL &last_release_version;以上でビル"
-"ドできます。古い版のPostgreSQLは<emphasis>サポートされません</emphasis>。"
 
 #. Tag: para
 #: installation.xml:47
@@ -212,8 +208,8 @@ msgstr "ソースの取得"
 #: installation.xml:81
 #, no-c-format
 msgid ""
-"Retrieve the PostGIS source archive from the downloads website <ulink url="
-"\"&postgis_download_url;\"> &postgis_download_url; </ulink>"
+"Retrieve the PostGIS source archive from the downloads website <ulink "
+"url=\"&postgis_download_url;\"> &postgis_download_url; </ulink>"
 msgstr ""
 "ダウンロードサイト<ulink url=\"&postgis_download_url;\"> "
 "&postgis_download_url; </ulink>からソースのアーカイブを入手します。"
@@ -223,10 +219,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "wget &postgis_download_url;\n"
-"tar -xvzf postgis-&last_release_version;.tar.gz"
+"tar -xvzf postgis-&last_release_version;.tar.gz\n"
+"cd postgis-&last_release_version;"
 msgstr ""
-"wget &postgis_download_url;\n"
-"tar -xvzf postgis-&last_release_version;.tar.gz"
 
 #. Tag: para
 #: installation.xml:90
@@ -253,8 +248,11 @@ msgstr ""
 #. Tag: programlisting
 #: installation.xml:108
 #, no-c-format
-msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis"
-msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis"
+msgid ""
+"git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis\n"
+"cd postgis\n"
+"sh autogen.sh"
+msgstr ""
 
 #. Tag: para
 #: installation.xml:110
@@ -266,39 +264,42 @@ msgstr ""
 "新しく作られた<varname>postgis</varname>ディレクトトリに移動して、インストー"
 "ルを続けます。"
 
+#. Tag: programlisting
+#: installation.xml:115
+#, no-c-format
+msgid "<programlisting>./configure</programlisting>"
+msgstr ""
+
 #. Tag: title
-#: installation.xml:118
+#: installation.xml:119
 #, no-c-format
 msgid "Install Requirements"
 msgstr "インストール要件"
 
 #. Tag: para
-#: installation.xml:120
+#: installation.xml:121
 #, no-c-format
 msgid "PostGIS has the following requirements for building and usage:"
 msgstr "PostGISのビルドと利用のために、次のものが必要です。"
 
 #. Tag: emphasis
-#: installation.xml:125
+#: installation.xml:126
 #, no-c-format
 msgid "Required"
 msgstr "必須"
 
 #. Tag: para
-#: installation.xml:130
+#: installation.xml:131
 #, no-c-format
 msgid ""
-"PostgreSQL &min_postgres_version; or higher. A complete installation of "
-"PostgreSQL (including server headers) is required. PostgreSQL is available "
-"from <ulink url=\"http://www.postgresql.org\"> http://www.postgresql.org </"
-"ulink> ."
+"PostgreSQL &min_postgres_version; - &max_postgres_version;. A complete "
+"installation of PostgreSQL (including server headers) is required. "
+"PostgreSQL is available from <ulink url=\"http://www.postgresql.org\"> "
+"http://www.postgresql.org </ulink> ."
 msgstr ""
-"PostgreSQL &min_postgres_version;以上。PostgreSQLの完全なインストール (サーバ"
-"ヘッダを含む)が必要です。PostgreSQLは<ulink url=\"http://www.postgresql.org/"
-"\"> http://www.postgresql.org/</ulink>にあります。"
 
 #. Tag: para
-#: installation.xml:139
+#: installation.xml:140
 #, no-c-format
 msgid ""
 "For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support "
@@ -306,13 +307,13 @@ msgid ""
 "UsersWikiPostgreSQLPostGIS\">http://trac.osgeo.org/postgis/wiki/"
 "UsersWikiPostgreSQLPostGIS</ulink>"
 msgstr ""
-"完全なPosgreSQL/PostGIS対応表とPostGIS/GEOS対応表については<ulink url="
-"\"http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS\">http://"
+"完全なPosgreSQL/PostGIS対応表とPostGIS/GEOS対応表については<ulink "
+"url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS\">http://"
 "trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</ulink>をご覧くださ"
 "い。"
 
 #. Tag: para
-#: installation.xml:145
+#: installation.xml:146
 #, no-c-format
 msgid ""
 "GNU C compiler (<filename>gcc</filename>). Some other ANSI C compilers can "
@@ -324,7 +325,7 @@ msgstr ""
 "のが最も問題が少ないと見ています。"
 
 #. Tag: para
-#: installation.xml:153
+#: installation.xml:154
 #, no-c-format
 msgid ""
 "GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many "
@@ -340,7 +341,7 @@ msgstr ""
 "処理しきれないかもしれません。"
 
 #. Tag: para
-#: installation.xml:163
+#: installation.xml:164
 #, no-c-format
 msgid ""
 "Proj reprojection library. Proj 4.9 or above is required. The Proj library "
@@ -353,7 +354,7 @@ msgstr ""
 "https://proj.org/ </ulink>からダウンロードできます。"
 
 #. Tag: para
-#: installation.xml:175
+#: installation.xml:176
 #, no-c-format
 msgid ""
 "GEOS geometry library, version 3.6 or greater, but GEOS 3.9+ is required to "
@@ -366,21 +367,17 @@ msgstr ""
 "org/geos/\"> http://trac.osgeo.org/geos/ </ulink>からダウンロード可能です。"
 
 #. Tag: para
-#: installation.xml:183
+#: installation.xml:184
 #, no-c-format
 msgid ""
 "LibXML2, version 2.5.x or higher. LibXML2 is currently used in some imports "
 "functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is available for "
-"download from <ulink url=\"http://xmlsoft.org/downloads.html\">http://"
-"xmlsoft.org/downloads.html</ulink>."
+"download from <ulink url=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
+"releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</ulink>."
 msgstr ""
-"LibXML2の2.5.x以上。LibXML2は現在取り込み関数 (ST_GeomFromGMLと"
-"ST_GeomFromKML)で使っています。LibXML2は<ulink url=\"http://xmlsoft.org/"
-"downloads.html\">http://xmlsoft.org/downloads.html</ulink>からダウンロード可"
-"能です。"
 
 #. Tag: para
-#: installation.xml:190
+#: installation.xml:191
 #, no-c-format
 msgid ""
 "JSON-C, version 0.9 or higher. JSON-C is currently used to import GeoJSON "
@@ -394,49 +391,46 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: installation.xml:198
+#: installation.xml:199
 #, no-c-format
 msgid ""
 "GDAL, version 2+ is required 3+ is preferred. This is required for raster "
-"support. <ulink url=\"http://trac.osgeo.org/gdal/wiki/DownloadSource"
-"\">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>."
+"support. <ulink url=\"https://gdal.org/download.html\">https://gdal.org/"
+"download.html</ulink>."
 msgstr ""
-"GDAL、2以上が必要ですが3以上の方が良いです。ラスタ機能に必要です。<ulink url="
-"\"http://trac.osgeo.org/gdal/wiki/DownloadSource\">http://trac.osgeo.org/"
-"gdal/wiki/DownloadSource</ulink>。"
 
 #. Tag: para
-#: installation.xml:206
+#: installation.xml:207
 #, no-c-format
 msgid ""
-"If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <ulink url="
-"\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
+"If compiling with PostgreSQL+JIT, LLVM version &gt;=6 is required <ulink "
+"url=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
 "postgis/ticket/4125</ulink>."
 msgstr ""
-"PostgreSQL+JITでコンパイルする場合には、LLVM 6版以上が必要です。<ulink url="
-"\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
+"PostgreSQL+JITでコンパイルする場合には、LLVM 6版以上が必要です。<ulink "
+"url=\"https://trac.osgeo.org/postgis/ticket/4125\">https://trac.osgeo.org/"
 "postgis/ticket/4125</ulink>を参照して下さい。"
 
 #. Tag: emphasis
-#: installation.xml:215
+#: installation.xml:216
 #, no-c-format
 msgid "Optional"
 msgstr "オプション"
 
 #. Tag: para
-#: installation.xml:220
+#: installation.xml:221
 #, no-c-format
 msgid ""
 "GDAL (pseudo optional) only if you don't want raster you can leave it out. "
 "Also make sure to enable the drivers you want to use as described in <xref "
 "linkend=\"raster_configuration\"/>."
 msgstr ""
-"GDAL (擬似的任意)。ラスタが必要ない場合に限り不要です。<xref linkend="
-"\"raster_configuration\"/>の説明に従って使用したいドライバを有効にしてくださ"
-"い。"
+"GDAL (擬似的任意)。ラスタが必要ない場合に限り不要です。<xref "
+"linkend=\"raster_configuration\"/>の説明に従って使用したいドライバを有効にし"
+"てください。"
 
 #. Tag: para
-#: installation.xml:228
+#: installation.xml:229
 #, no-c-format
 msgid ""
 "GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader. "
@@ -447,66 +441,56 @@ msgstr ""
 "にあります。"
 
 #. Tag: para
-#: installation.xml:238
+#: installation.xml:239
 #, no-c-format
 msgid ""
-"SFCGAL, version 1.3.1 (or higher), 1.4.0 or higher is recommended. SFCGAL "
+"SFCGAL, version 1.3.1 (or higher), 1.4.1 or higher is recommended. SFCGAL "
 "can be used to provide additional 2D and 3D advanced analysis functions to "
 "PostGIS cf <xref linkend=\"reference_sfcgal\"/>. And also allow to use "
 "SFCGAL rather than GEOS for some 2D functions provided by both backends "
 "(like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration "
 "variable <code>postgis.backend</code> allow end user to control which "
 "backend he want to use if SFCGAL is installed (GEOS by default). Nota: "
-"SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <ulink url="
-"\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia.gitlab.io/"
-"SFCGAL/dev.html</ulink>) <ulink url=\"https://gitlab.com/Oslandia/SFCGAL/"
+"SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: <ulink "
+"url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://oslandia.gitlab."
+"io/SFCGAL/dev.html</ulink>) <ulink url=\"https://gitlab.com/Oslandia/SFCGAL/"
 "\">https://gitlab.com/Oslandia/SFCGAL/</ulink>."
 msgstr ""
-"SFCGAL 1.3.1版以上が必須ですが1.4.0以上を推奨します。追加的な2次元や3次元の高"
-"度な解析関数をPostGISで使うために使用するものです。<xref linkend="
-"\"reference_sfcgal\"/>をご覧下さい。また、GEOSを使う2次元関数のうちいくつか "
-"(たとえばST_IntersectionやST_Area)は、GEOSでなくSFCGALを使用することができま"
-"す。PostgreSQLコンフィギュレーション変数<code>postgis.backend</code>によっ"
-"て、SFCGALがインストールされている場合にはエンドユーザがバックエンドを制御す"
-"ることができます (デフォルトではGEOS)。SFCGAL 1.2は少なくともCGAL 4.3とBoost "
-"1.54 (: <ulink url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://"
-"oslandia.gitlab.io/SFCGAL/dev.html</ulink>をご覧下さい)が必要ですのでご注意下"
-"さい。 <ulink url=\"https://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/"
-"Oslandia/SFCGAL/</ulink>にあります。"
 
 #. Tag: para
-#: installation.xml:246
+#: installation.xml:247
 #, no-c-format
 msgid ""
 "In order to build the <xref linkend=\"Address_Standardizer\"/> you will also "
 "need PCRE <ulink url=\"http://www.pcre.org\">http://www.pcre.org</ulink> "
 "(which generally is already installed on nix systems). <code>Regex::"
 "Assemble</code> perl CPAN package is only needed if you want to rebuild the "
-"data encoded in <filename>parseaddress-stcities.h</filename>. <xref linkend="
-"\"Address_Standardizer\"/> will automatically be built if it detects a PCRE "
-"library, or you pass in a valid <varname>--with-pcre-dir=/path/to/pcre</"
-"varname> during configure."
+"data encoded in <filename>parseaddress-stcities.h</filename>. <xref "
+"linkend=\"Address_Standardizer\"/> will automatically be built if it detects "
+"a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/"
+"pcre</varname> during configure."
 msgstr ""
-"<xref linkend=\"Address_Standardizer\"/>をビルドするには、PCRE <ulink url="
-"\"http://www.pcre.org\">http://www.pcre.org</ulink> (Unix系システムには通常は"
-"インストール済みです)も必要です。<filename>parseaddress-stcities.h</filename>"
-"内のエンコードしたデータを再構築したい場合には、Perl CPANの<code>Regex::"
-"Assemble</code>パッケージのみ必要です。<xref linkend=\"Address_Standardizer"
-"\"/>は、PCREライブラリを検出するか、コンフィギュレーションで適切に<varname>--"
-"with-pcre-dir=/path/to/pcre</varname>を指定すると、自動的にビルドされます。"
+"<xref linkend=\"Address_Standardizer\"/>をビルドするには、PCRE <ulink "
+"url=\"http://www.pcre.org\">http://www.pcre.org</ulink> (Unix系システムには通"
+"常はインストール済みです)も必要です。<filename>parseaddress-stcities.h</"
+"filename>内のエンコードしたデータを再構築したい場合には、Perl CPANの"
+"<code>Regex::Assemble</code>パッケージのみ必要です。<xref "
+"linkend=\"Address_Standardizer\"/>は、PCREライブラリを検出するか、コンフィ"
+"ギュレーションで適切に<varname>--with-pcre-dir=/path/to/pcre</varname>を指定"
+"すると、自動的にビルドされます。"
 
 #. Tag: para
-#: installation.xml:253
+#: installation.xml:254
 #, no-c-format
 msgid ""
 "To enable ST_AsMVT protobuf-c library 1.1.0 or higher (for usage) and the "
 "protoc-c compiler (for building) are required. Also, pkg-config is required "
-"to verify the correct minimum version of protobuf-c. See <ulink url="
-"\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</ulink>. By default, "
-"Postgis will use Wagyu to validate MVT polygons faster which requires a c+"
-"+11 compiler. It will use CXXFLAGS and the same compiler as the PostgreSQL "
-"installation. To disable this and use GEOS instead use the <varname>--"
-"without-wagyu</varname> during the configure step."
+"to verify the correct minimum version of protobuf-c. See <ulink "
+"url=\"https://github.com/protobuf-c/protobuf-c\">protobuf-c</ulink>. By "
+"default, Postgis will use Wagyu to validate MVT polygons faster which "
+"requires a c++11 compiler. It will use CXXFLAGS and the same compiler as the "
+"PostgreSQL installation. To disable this and use GEOS instead use the "
+"<varname>--without-wagyu</varname> during the configure step."
 msgstr ""
 "ST_AsMVTを有効にするには、protobuf-cライブラリ (実行時)とprotoc-cコンパイラ "
 "(ビルド時)が必要です。protobuf-cの正しい最小版を確認するには、pkg-configが必"
@@ -518,7 +502,7 @@ msgstr ""
 "wagyu</varname>を指定します。"
 
 #. Tag: para
-#: installation.xml:262
+#: installation.xml:263
 #, no-c-format
 msgid ""
 "CUnit (<filename>CUnit</filename>). This is needed for regression testing. "
@@ -530,18 +514,18 @@ msgstr ""
 "あります。"
 
 #. Tag: para
-#: installation.xml:268
+#: installation.xml:269
 #, no-c-format
 msgid ""
 "DocBook (<filename>xsltproc</filename>) is required for building the "
 "documentation. Docbook is available from <ulink url=\"http://www.docbook.org/"
 "\"> http://www.docbook.org/ </ulink> ."
 msgstr ""
-"DocBook (<filename>xsltproc</filename>)。文書のビルドに必要です。<ulink url="
-"\"http://www.docbook.org/\">http://www.docbook.org/</ulink>にあります。"
+"DocBook (<filename>xsltproc</filename>)。文書のビルドに必要です。<ulink "
+"url=\"http://www.docbook.org/\">http://www.docbook.org/</ulink>にあります。"
 
 #. Tag: para
-#: installation.xml:279
+#: installation.xml:280
 #, no-c-format
 msgid ""
 "DBLatex (<filename>dblatex</filename>) is required for building the "
@@ -553,25 +537,25 @@ msgstr ""
 "</ulink>にあります。"
 
 #. Tag: para
-#: installation.xml:290
+#: installation.xml:291
 #, no-c-format
 msgid ""
 "ImageMagick (<filename>convert</filename>) is required to generate the "
-"images used in the documentation. ImageMagick is available from <ulink url="
-"\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink> ."
+"images used in the documentation. ImageMagick is available from <ulink "
+"url=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink> ."
 msgstr ""
 "ImageMagick (<filename>convert</filename>)。文書で使う画像を生成するのに必要"
 "です。<ulink url=\"http://www.imagemagick.org/\">http://www.imagemagick.org/"
 "</ulink>にあります。"
 
 #. Tag: title
-#: installation.xml:304
+#: installation.xml:305
 #, no-c-format
 msgid "Build configuration"
 msgstr "コンフィギュレーション"
 
 #. Tag: para
-#: installation.xml:306
+#: installation.xml:307
 #, no-c-format
 msgid ""
 "As with most linux installations, the first step is to generate the Makefile "
@@ -582,7 +566,7 @@ msgstr ""
 "ドに使われるMakefileを生成します。これは、シェルスクリプトが行います。"
 
 #. Tag: para
-#: installation.xml:316
+#: installation.xml:317
 #, no-c-format
 msgid ""
 "With no additional parameters, this command will attempt to automatically "
@@ -598,7 +582,7 @@ msgstr ""
 "タを受け付けます。"
 
 #. Tag: para
-#: installation.xml:324
+#: installation.xml:325
 #, no-c-format
 msgid ""
 "The following list shows only the most commonly used parameters. For a "
@@ -610,7 +594,7 @@ msgstr ""
 "使って下さい。"
 
 #. Tag: para
-#: installation.xml:334
+#: installation.xml:335
 #, no-c-format
 msgid ""
 "Starting with PostGIS 3.0, the library files generated by default will no "
@@ -630,7 +614,7 @@ msgstr ""
 "加します。"
 
 #. Tag: para
-#: installation.xml:349
+#: installation.xml:350
 #, no-c-format
 msgid ""
 "This is the location the PostGIS loader executables and shared libs will be "
@@ -641,7 +625,7 @@ msgstr ""
 "は、検出されたPostgreSQLのインストール先と同じになります。"
 
 #. Tag: para
-#: installation.xml:356
+#: installation.xml:357
 #, no-c-format
 msgid ""
 "This parameter is currently broken, as the package will only install into "
@@ -655,7 +639,7 @@ msgstr ""
 "ulink>をご覧ください。"
 
 #. Tag: para
-#: installation.xml:371
+#: installation.xml:372
 #, no-c-format
 msgid ""
 "PostgreSQL provides a utility called <command>pg_config</command> to enable "
@@ -671,7 +655,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: installation.xml:385
+#: installation.xml:386
 #, no-c-format
 msgid ""
 "GDAL, a required library, provides functionality needed for raster support "
@@ -687,7 +671,7 @@ msgstr ""
 "command>)を使います。"
 
 #. Tag: para
-#: installation.xml:399
+#: installation.xml:400
 #, no-c-format
 msgid ""
 "GEOS, a required geometry library, provides a utility called <command>geos-"
@@ -703,7 +687,7 @@ msgstr ""
 "使います。"
 
 #. Tag: para
-#: installation.xml:413
+#: installation.xml:414
 #, no-c-format
 msgid ""
 "LibXML is the library required for doing GeomFromKML/GML processes. It "
@@ -722,7 +706,7 @@ msgstr ""
 "path/to/xml2-config</command>)を使います。"
 
 #. Tag: para
-#: installation.xml:431
+#: installation.xml:432
 #, no-c-format
 msgid ""
 "Proj is a reprojection library required by PostGIS. Use this parameter "
@@ -734,13 +718,13 @@ msgstr ""
 "with-projdir=/path/to/projdir</command>)を使います。"
 
 #. Tag: para
-#: installation.xml:443
+#: installation.xml:444
 #, no-c-format
 msgid "Directory where iconv is installed."
 msgstr "iconvのインストール先ディレクトリを指定します。"
 
 #. Tag: para
-#: installation.xml:452
+#: installation.xml:453
 #, no-c-format
 msgid ""
 "<ulink url=\"http://oss.metaparadigm.com/json-c/\">JSON-C</ulink> is an MIT-"
@@ -755,7 +739,7 @@ msgstr ""
 "jsondir=/path/to/jsondir</command>)を使います。"
 
 #. Tag: para
-#: installation.xml:464
+#: installation.xml:465
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.pcre.org/\">PCRE</ulink> is an BSD-licensed Perl "
@@ -770,7 +754,7 @@ msgstr ""
 "with-pcredir=/path/to/pcredir</command>)を使います。"
 
 #. Tag: para
-#: installation.xml:476
+#: installation.xml:477
 #, no-c-format
 msgid ""
 "Compile the data import GUI (requires GTK+2.0). This will create shp2pgsql-"
@@ -781,13 +765,13 @@ msgstr ""
 "れます。"
 
 #. Tag: para
-#: installation.xml:485
+#: installation.xml:486
 #, no-c-format
 msgid "Compile without raster support."
 msgstr "ラスタ機能なしでコンパイルします。"
 
 #. Tag: para
-#: installation.xml:493
+#: installation.xml:494
 #, no-c-format
 msgid ""
 "Disable topology support. There is no corresponding library as all logic "
@@ -798,7 +782,7 @@ msgstr ""
 "りません。"
 
 #. Tag: para
-#: installation.xml:502
+#: installation.xml:503
 #, no-c-format
 msgid ""
 "By default PostGIS will try to detect gettext support and compile with it, "
@@ -812,14 +796,14 @@ msgid ""
 msgstr ""
 "デフォルトでは、gettextの検出とこれを用いたコンパイルを試みますが、ローダ破損"
 "を引き起こす非互換性問題のもとで実行する場合には、このコマンドで無効にできま"
-"す。これを使ったコンフィギュレーションによって解決する問題の例は<ulink url="
-"\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo.org/postgis/"
-"ticket/748</ulink>にあります。ご注意: これを切ることで多くの機能がなくなるわ"
-"けではありません。まだ文書化されていなくて試験段階であるGUIローダにおける内部"
-"のヘルプ/ラベル機能に使われています。"
+"す。これを使ったコンフィギュレーションによって解決する問題の例は<ulink "
+"url=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo.org/"
+"postgis/ticket/748</ulink>にあります。ご注意: これを切ることで多くの機能がな"
+"くなるわけではありません。まだ文書化されていなくて試験段階であるGUIローダにお"
+"ける内部のヘルプ/ラベル機能に使われています。"
 
 #. Tag: para
-#: installation.xml:513
+#: installation.xml:514
 #, no-c-format
 msgid ""
 "By default PostGIS will not install with sfcgal support without this switch. "
@@ -831,7 +815,7 @@ msgstr ""
 "な引数です。"
 
 #. Tag: para
-#: installation.xml:522
+#: installation.xml:523
 #, no-c-format
 msgid ""
 "Disable updating postgis_revision.h to match current HEAD of the git "
@@ -841,7 +825,7 @@ msgstr ""
 "ます。"
 
 #. Tag: para
-#: installation.xml:529
+#: installation.xml:530
 #, no-c-format
 msgid ""
 "If you obtained PostGIS from the <ulink url=\"https://trac.osgeo.org/postgis/"
@@ -853,7 +837,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: installation.xml:541
+#: installation.xml:542
 #, no-c-format
 msgid ""
 "This script will generate the <command>configure</command> script that in "
@@ -863,7 +847,7 @@ msgstr ""
 "これはPostGISのインストールに関するカスタマイズに使われます。"
 
 #. Tag: para
-#: installation.xml:546
+#: installation.xml:547
 #, no-c-format
 msgid ""
 "If you instead obtained PostGIS as a tarball, running <command>./autogen.sh</"
@@ -874,13 +858,13 @@ msgstr ""
 "既に生成されているので<command>./autogen.sh</command>は不要です。"
 
 #. Tag: title
-#: installation.xml:555
+#: installation.xml:556
 #, no-c-format
 msgid "Building"
 msgstr "ビルド"
 
 #. Tag: para
-#: installation.xml:557
+#: installation.xml:558
 #, no-c-format
 msgid ""
 "Once the Makefile has been generated, building PostGIS is as simple as "
@@ -889,7 +873,7 @@ msgstr ""
 "Makefileが生成されたら、PostGISのビルドは、次のコマンドを実行するだけです。"
 
 #. Tag: para
-#: installation.xml:566
+#: installation.xml:567
 #, no-c-format
 msgid ""
 "The last line of the output should be \"<code>PostGIS was built "
@@ -899,7 +883,7 @@ msgstr ""
 "code>\"と出れば終わりです。"
 
 #. Tag: para
-#: installation.xml:571
+#: installation.xml:572
 #, no-c-format
 msgid ""
 "As of PostGIS v1.4.0, all the functions have comments generated from the "
@@ -918,13 +902,13 @@ msgstr ""
 "ルの一部として取り込まれます。"
 
 #. Tag: command
-#: installation.xml:581 installation.xml:605
+#: installation.xml:582 installation.xml:606
 #, no-c-format
 msgid "make comments"
 msgstr "make comments"
 
 #. Tag: para
-#: installation.xml:584
+#: installation.xml:585
 #, no-c-format
 msgid ""
 "Introduced in PostGIS 2.0. This generates html cheat sheets suitable for "
@@ -942,30 +926,30 @@ msgstr ""
 "html</filename>の4ファイルが生成されます。"
 
 #. Tag: para
-#: installation.xml:589
+#: installation.xml:590
 #, no-c-format
 msgid ""
 "You can download some pre-built ones available in html and pdf from <ulink "
 "url=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study "
 "Guides</ulink>"
 msgstr ""
-"HTMLとPDFのビルド済みのものは<ulink url=\"http://www.postgis.us/study_guides"
-"\">PostGIS / PostgreSQL Study Guides</ulink>にあります。"
+"HTMLとPDFのビルド済みのものは<ulink url=\"http://www.postgis.us/"
+"study_guides\">PostGIS / PostgreSQL Study Guides</ulink>にあります。"
 
 #. Tag: command
-#: installation.xml:592
+#: installation.xml:593
 #, no-c-format
 msgid "make cheatsheets"
 msgstr "make cheatsheets"
 
 #. Tag: title
-#: installation.xml:597
+#: installation.xml:598
 #, no-c-format
 msgid "Building PostGIS Extensions and Deploying them"
 msgstr "PostGISエクステンションのビルドとデプロイ"
 
 #. Tag: para
-#: installation.xml:599
+#: installation.xml:600
 #, no-c-format
 msgid ""
 "The PostGIS extensions are built and installed automatically if you are "
@@ -975,7 +959,7 @@ msgstr ""
 "ド、インストールされます。"
 
 #. Tag: para
-#: installation.xml:602
+#: installation.xml:603
 #, no-c-format
 msgid ""
 "If you are building from source repository, you need to build the function "
@@ -987,7 +971,7 @@ msgstr ""
 "インストールするには次のようにします。"
 
 #. Tag: para
-#: installation.xml:607
+#: installation.xml:608
 #, no-c-format
 msgid ""
 "Building the comments is not necessary if you are building from a release "
@@ -997,7 +981,7 @@ msgstr ""
 "のビルドは必須ではありません。"
 
 #. Tag: para
-#: installation.xml:608
+#: installation.xml:609
 #, no-c-format
 msgid ""
 "The extensions should automatically build as part of the make install "
@@ -1009,7 +993,7 @@ msgstr ""
 "ドできますし、他のサーバで必要ならファイルの複製ができます。"
 
 #. Tag: programlisting
-#: installation.xml:610
+#: installation.xml:611
 #, no-c-format
 msgid ""
 "cd extensions\n"
@@ -1033,14 +1017,14 @@ msgstr ""
 "make check RUNTESTFLAGS=--extension"
 
 #. Tag: para
-#: installation.xml:611
+#: installation.xml:612
 #, no-c-format
 msgid ""
 "<code>make check</code> uses psql to run tests and as such can use psql "
 "environment variables. Common ones useful to override are <varname>PGUSER</"
 "varname>,<varname>PGPORT</varname>, and <varname>PGHOST</varname>. Refer to "
-"<ulink url=\"https://www.postgresql.org/docs/current/libpq-envars.html"
-"\">psql environment variables</ulink>"
+"<ulink url=\"https://www.postgresql.org/docs/current/libpq-envars."
+"html\">psql environment variables</ulink>"
 msgstr ""
 "<code>make check</code>は、テスト実行のためにpsqlを使用し、psql環境変数を使用"
 "します。一般的なpsql環境変数で上書きすると便利なのが <varname>PGUSER</"
@@ -1049,7 +1033,7 @@ msgstr ""
 "変数</ulink>を参照して下さい。"
 
 #. Tag: para
-#: installation.xml:613
+#: installation.xml:614
 #, no-c-format
 msgid ""
 "The extension files will always be the same for the same version of PostGIS "
@@ -1062,7 +1046,7 @@ msgstr ""
 "るOSから別のものに複写して大丈夫です。"
 
 #. Tag: para
-#: installation.xml:615
+#: installation.xml:616
 #, no-c-format
 msgid ""
 "If you want to install the extensions manually on a separate server "
@@ -1077,7 +1061,7 @@ msgstr ""
 "share / extension</filename>フォルダに複写します。"
 
 #. Tag: para
-#: installation.xml:622
+#: installation.xml:623
 #, no-c-format
 msgid ""
 "These are the control files that denote information such as the version of "
@@ -1088,7 +1072,7 @@ msgstr ""
 "ファイ<filename>postgis.control, postgis_topology.control</filename>。"
 
 #. Tag: para
-#: installation.xml:628
+#: installation.xml:629
 #, no-c-format
 msgid ""
 "All the files in the /sql folder of each extension. Note that these need to "
@@ -1102,7 +1086,7 @@ msgstr ""
 "ることに注意して下さい。"
 
 #. Tag: para
-#: installation.xml:634
+#: installation.xml:635
 #, no-c-format
 msgid ""
 "Once you do that, you should see <varname>postgis</varname>, "
@@ -1113,7 +1097,7 @@ msgstr ""
 "<varname>postgis_topology</varname>が有効なエクステンションとして見えます。"
 
 #. Tag: para
-#: installation.xml:635
+#: installation.xml:636
 #, no-c-format
 msgid ""
 "If you are using psql, you can verify that the extensions are installed by "
@@ -1123,12 +1107,12 @@ msgstr ""
 "ることを確認できます。"
 
 #. Tag: programlisting
-#: installation.xml:636
+#: installation.xml:637
 #, no-c-format
 msgid ""
 "SELECT name, default_version,installed_version\n"
-"FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address"
-"%';\n"
+"FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE "
+"'address%';\n"
 "\n"
 "             name             | default_version | installed_version\n"
 "------------------------------+-----------------+-------------------\n"
@@ -1147,8 +1131,8 @@ msgid ""
 "(6 rows)"
 msgstr ""
 "SELECT name, default_version,installed_version\n"
-"FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address"
-"%';\n"
+"FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE "
+"'address%';\n"
 "\n"
 "             name             | default_version | installed_version\n"
 "------------------------------+-----------------+-------------------\n"
@@ -1167,7 +1151,7 @@ msgstr ""
 "(6 rows)"
 
 #. Tag: para
-#: installation.xml:638
+#: installation.xml:639
 #, no-c-format
 msgid ""
 "If you have the extension installed in the database you are querying, you'll "
@@ -1185,7 +1169,7 @@ msgstr ""
 "トールできます。"
 
 #. Tag: para
-#: installation.xml:642
+#: installation.xml:643
 #, no-c-format
 msgid ""
 "If you have the extensions available, you can install postgis extension in "
@@ -1197,7 +1181,7 @@ msgstr ""
 "トールできます。"
 
 #. Tag: programlisting
-#: installation.xml:643
+#: installation.xml:644
 #, no-c-format
 msgid ""
 "CREATE EXTENSION postgis;\n"
@@ -1221,7 +1205,7 @@ msgstr ""
 "CREATE EXTENSION postgis_topology;"
 
 #. Tag: para
-#: installation.xml:645
+#: installation.xml:646
 #, no-c-format
 msgid ""
 "In psql you can use to see what versions you have installed and also what "
@@ -1231,7 +1215,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: installation.xml:646
+#: installation.xml:647
 #, no-c-format
 msgid ""
 "\\connect mygisdb\n"
@@ -1243,7 +1227,7 @@ msgstr ""
 "\\dx postgis*"
 
 #. Tag: screen
-#: installation.xml:648
+#: installation.xml:649
 #, no-c-format
 msgid ""
 "List of installed extensions\n"
@@ -1291,7 +1275,7 @@ msgstr ""
 "Description | PostGIS topology spatial types and functions"
 
 #. Tag: para
-#: installation.xml:650
+#: installation.xml:651
 #, no-c-format
 msgid ""
 "Extension tables <varname>spatial_ref_sys</varname>, <varname>layer</"
@@ -1324,7 +1308,7 @@ msgstr ""
 "れているため、これについては何もできません。"
 
 #. Tag: para
-#: installation.xml:655
+#: installation.xml:656
 #, no-c-format
 msgid ""
 "If you installed &last_release_version;, without using our wonderful "
@@ -1340,7 +1324,7 @@ msgstr ""
 "アップグレードする前にエクステンションをビルドするように変更するべきです。"
 
 #. Tag: programlisting
-#: installation.xml:660
+#: installation.xml:661
 #, no-c-format
 msgid ""
 "CREATE EXTENSION postgis FROM unpackaged;\n"
@@ -1354,25 +1338,25 @@ msgstr ""
 "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 
 #. Tag: title
-#: installation.xml:666
+#: installation.xml:667
 #, no-c-format
 msgid "Testing"
 msgstr "テスト"
 
 #. Tag: para
-#: installation.xml:668
+#: installation.xml:669
 #, no-c-format
 msgid "If you wish to test the PostGIS build, run"
 msgstr "PostGISのテストを行うには、次のコマンドを実行します。"
 
 #. Tag: command
-#: installation.xml:673
+#: installation.xml:674
 #, no-c-format
 msgid "make check"
 msgstr "make check"
 
 #. Tag: para
-#: installation.xml:676
+#: installation.xml:677
 #, no-c-format
 msgid ""
 "The above command will run through various checks and regression tests using "
@@ -1382,7 +1366,7 @@ msgstr ""
 "した、様々なチェックとレグレッションテストを行います。"
 
 #. Tag: para
-#: installation.xml:682
+#: installation.xml:683
 #, no-c-format
 msgid ""
 "If you configured PostGIS using non-standard PostgreSQL, GEOS, or Proj "
@@ -1394,7 +1378,7 @@ msgstr ""
 "あるかも知れません。"
 
 #. Tag: para
-#: installation.xml:690
+#: installation.xml:691
 #, no-c-format
 msgid ""
 "Currently, the <command>make check</command> relies on the <code>PATH</code> "
@@ -1413,7 +1397,7 @@ msgstr ""
 "痛の準備をしておいて下さい。"
 
 #. Tag: para
-#: installation.xml:702
+#: installation.xml:703
 #, no-c-format
 msgid ""
 "If successful, make check will produce the output of almost 500 tests. The "
@@ -1423,7 +1407,7 @@ msgstr ""
 "になります (かなりの行を省略しています)。"
 
 #. Tag: programlisting
-#: installation.xml:707
+#: installation.xml:708
 #, no-c-format
 msgid ""
 "CUnit - A unit testing framework for C - Version 2.1-3\n"
@@ -1619,7 +1603,7 @@ msgstr ""
 "             asserts      4      4      4      0      n/a"
 
 #. Tag: para
-#: installation.xml:709
+#: installation.xml:710
 #, no-c-format
 msgid ""
 "The <varname>postgis_tiger_geocoder</varname> and "
@@ -1635,13 +1619,13 @@ msgstr ""
 "重要ではありません。"
 
 #. Tag: para
-#: installation.xml:710
+#: installation.xml:711
 #, no-c-format
 msgid "For address_standardizer:"
 msgstr "address_standardizer用:"
 
 #. Tag: programlisting
-#: installation.xml:711
+#: installation.xml:712
 #, no-c-format
 msgid ""
 "cd extensions/address_standardizer\n"
@@ -1653,13 +1637,13 @@ msgstr ""
 "make installcheck"
 
 #. Tag: para
-#: installation.xml:713
+#: installation.xml:714
 #, no-c-format
 msgid "Output should look like:"
 msgstr "出力は次のようなかんじになります。"
 
 #. Tag: screen
-#: installation.xml:714
+#: installation.xml:715
 #, no-c-format
 msgid ""
 "============== dropping database \"contrib_regression\" ==============\n"
@@ -1693,7 +1677,7 @@ msgstr ""
 "====================="
 
 #. Tag: para
-#: installation.xml:716
+#: installation.xml:717
 #, no-c-format
 msgid ""
 "For tiger geocoder, make sure you have postgis and fuzzystrmatch extensions "
@@ -1705,7 +1689,7 @@ msgstr ""
 "付きでビルドした場合は、address_standardizerのテストも行います。"
 
 #. Tag: programlisting
-#: installation.xml:717
+#: installation.xml:718
 #, no-c-format
 msgid ""
 "cd extensions/postgis_tiger_geocoder\n"
@@ -1717,13 +1701,13 @@ msgstr ""
 "make installcheck"
 
 #. Tag: para
-#: installation.xml:718
+#: installation.xml:719
 #, no-c-format
 msgid "output should look like:"
 msgstr "出力は次のようなかんじになります。"
 
 #. Tag: screen
-#: installation.xml:719
+#: installation.xml:720
 #, no-c-format
 msgid ""
 "============== dropping database \"contrib_regression\" ==============\n"
@@ -1769,25 +1753,25 @@ msgstr ""
 "====================="
 
 #. Tag: title
-#: installation.xml:723
+#: installation.xml:724
 #, no-c-format
 msgid "Installation"
 msgstr "インストール"
 
 #. Tag: para
-#: installation.xml:725
+#: installation.xml:726
 #, no-c-format
 msgid "To install PostGIS, type"
 msgstr "PostGISをインストールするには、次のコマンドを実行します。"
 
 #. Tag: command
-#: installation.xml:730
+#: installation.xml:731
 #, no-c-format
 msgid "make install"
 msgstr "make install"
 
 #. Tag: para
-#: installation.xml:733
+#: installation.xml:734
 #, no-c-format
 msgid ""
 "This will copy the PostGIS installation files into their appropriate "
@@ -1799,7 +1783,7 @@ msgstr ""
 "ディレクトリを示します。"
 
 #. Tag: para
-#: installation.xml:741
+#: installation.xml:742
 #, no-c-format
 msgid ""
 "The loader and dumper binaries are installed in <filename>[prefix]/bin</"
@@ -1809,7 +1793,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: installation.xml:748
+#: installation.xml:749
 #, no-c-format
 msgid ""
 "The SQL files, such as <filename>postgis.sql</filename>, are installed in "
@@ -1819,7 +1803,7 @@ msgstr ""
 "<filename>[prefix]/share/contrib</filename>です。"
 
 #. Tag: para
-#: installation.xml:755
+#: installation.xml:756
 #, no-c-format
 msgid ""
 "The PostGIS libraries are installed in <filename>[prefix]/lib</filename>."
@@ -1827,7 +1811,7 @@ msgstr ""
 "PostGISライブラリのインストール先は<filename>[prefix]/lib</filename>です。"
 
 #. Tag: para
-#: installation.xml:762
+#: installation.xml:763
 #, no-c-format
 msgid ""
 "If you previously ran the <command>make comments</command> command to "
@@ -1840,13 +1824,13 @@ msgstr ""
 "は、次のコマンドを実行すると、これらのSQLファイルがインストールされます。"
 
 #. Tag: command
-#: installation.xml:769
+#: installation.xml:770
 #, no-c-format
 msgid "make comments-install"
 msgstr "make comments-install"
 
 #. Tag: para
-#: installation.xml:773
+#: installation.xml:774
 #, no-c-format
 msgid ""
 "<filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</"
@@ -1860,20 +1844,20 @@ msgstr ""
 "た。"
 
 #. Tag: title
-#: installation.xml:782
+#: installation.xml:783
 #, no-c-format
 msgid "Installing and Using the address standardizer"
 msgstr "PAGC住所標準化ツールのインストールと使用"
 
 #. Tag: para
-#: installation.xml:783
+#: installation.xml:784
 #, no-c-format
 msgid ""
 "The <code>address_standardizer</code> extension used to be a separate "
 "package that required separate download. From PostGIS 2.2 on, it is now "
 "bundled in. For more information about the address_standardize, what it "
-"does, and how to configure it for your needs, refer to <xref linkend="
-"\"Address_Standardizer\"/>."
+"does, and how to configure it for your needs, refer to <xref "
+"linkend=\"Address_Standardizer\"/>."
 msgstr ""
 "<code>address_standardizer</code>エクステンションは、別途ダウンロードする必要"
 "がある別パッケージとしていました。PostGIS 2.2からは同梱されています。"
@@ -1881,15 +1865,15 @@ msgstr ""
 "については、<xref linkend=\"Address_Standardizer\"/>をご覧下さい。"
 
 #. Tag: para
-#: installation.xml:785
+#: installation.xml:786
 #, no-c-format
 msgid ""
 "This standardizer can be used in conjunction with the PostGIS packaged tiger "
-"geocoder extension as a replacement for the <xref linkend=\"Normalize_Address"
-"\"/> discussed. To use as replacement refer to <xref linkend="
-"\"tiger_pagc_address_standardizing\"/>. You can also use it as a building "
-"block for your own geocoder or use it to standardize your addresses for "
-"easier compare of addresses."
+"geocoder extension as a replacement for the <xref "
+"linkend=\"Normalize_Address\"/> discussed. To use as replacement refer to "
+"<xref linkend=\"tiger_pagc_address_standardizing\"/>. You can also use it as "
+"a building block for your own geocoder or use it to standardize your "
+"addresses for easier compare of addresses."
 msgstr ""
 "標準化エクステンションは、<xref linkend=\"Normalize_Address\"/>の後継で、"
 "PostGISに入っているTigerジオコーダエクステンションに使うことができます。この"
@@ -1898,13 +1882,13 @@ msgstr ""
 "所の比較を簡単にするために住所を標準化するために使うことができます。"
 
 #. Tag: para
-#: installation.xml:789
+#: installation.xml:790
 #, no-c-format
 msgid ""
 "The address standardizer relies on PCRE which is usually already installed "
 "on many Nix systems, but you can download the latest at: <ulink url=\"http://"
-"www.pcre.org\">http://www.pcre.org</ulink>. If during <xref linkend="
-"\"installation_configuration\"/>, PCRE is found, then the address "
+"www.pcre.org\">http://www.pcre.org</ulink>. If during <xref "
+"linkend=\"installation_configuration\"/>, PCRE is found, then the address "
 "standardizer extension will automatically be built. If you have a custom "
 "pcre install you want to use instead, pass to configure <code>--with-"
 "pcredir=/path/to/pcre</code> where <filename>/path/to/pcre</filename> is the "
@@ -1912,15 +1896,15 @@ msgid ""
 msgstr ""
 "住所標準化エクステンションはPCREに依存しています。PCREは多くのUNIX系システム"
 "にインストールされていますが、<ulink url=\"http://www.pcre.org\">http://www."
-"pcre.org</ulink>から最新版をダウンロードできます。<xref linkend="
-"\"installation_configuration\"/>の際にPCREを発見すると、住所標準化エクステン"
-"ションが自動的にビルドされます。使用したいPCREのインストールが独自なものであ"
-"る場合は、configureに<code>--with-pcredir=/path/to/pcre</code>を渡します。"
-"<filename>/path/to/pcre</filename>は、PCREのincludeとlibのあるルートフォルダ"
-"です。"
+"pcre.org</ulink>から最新版をダウンロードできます。<xref "
+"linkend=\"installation_configuration\"/>の際にPCREを発見すると、住所標準化エ"
+"クステンションが自動的にビルドされます。使用したいPCREのインストールが独自な"
+"ものである場合は、configureに<code>--with-pcredir=/path/to/pcre</code>を渡し"
+"ます。<filename>/path/to/pcre</filename>は、PCREのincludeとlibのあるルート"
+"フォルダです。"
 
 #. Tag: para
-#: installation.xml:792
+#: installation.xml:793
 #, no-c-format
 msgid ""
 "For Windows users, the PostGIS 2.1+ bundle is packaged with the "
@@ -1932,26 +1916,26 @@ msgstr ""
 "ます。"
 
 #. Tag: para
-#: installation.xml:795
+#: installation.xml:796
 #, no-c-format
 msgid ""
 "Once you have installed, you can connect to your database and run the SQL:"
 msgstr "インストールしたら、対象データベースに接続して次のSQLが実行できます。"
 
 #. Tag: programlisting
-#: installation.xml:796
+#: installation.xml:797
 #, no-c-format
 msgid "CREATE EXTENSION address_standardizer;"
 msgstr "CREATE EXTENSION address_standardizer;"
 
 #. Tag: para
-#: installation.xml:798
+#: installation.xml:799
 #, no-c-format
 msgid "The following test requires no rules, gaz, or lex tables"
 msgstr "次のテストでは、rules, gaz, lexテーブルは必要ありません。"
 
 #. Tag: programlisting
-#: installation.xml:799
+#: installation.xml:800
 #, no-c-format
 msgid ""
 "SELECT num, street, city, state, zip\n"
@@ -1961,13 +1945,13 @@ msgstr ""
 " FROM parse_address('1 Devonshire Place PH301, Boston, MA 02109');"
 
 #. Tag: para
-#: installation.xml:800
+#: installation.xml:801
 #, no-c-format
 msgid "Output should be"
 msgstr "出力は次のようになります。"
 
 #. Tag: screen
-#: installation.xml:801
+#: installation.xml:802
 #, no-c-format
 msgid ""
 "num |         street         |  city  | state |  zip\n"
@@ -1979,13 +1963,13 @@ msgstr ""
 " 1   | Devonshire Place PH301 | Boston | MA    | 02109"
 
 #. Tag: title
-#: installation.xml:803
+#: installation.xml:804
 #, no-c-format
 msgid "Installing Regex::Assemble"
 msgstr "Regex::Assembleのインストール"
 
 #. Tag: para
-#: installation.xml:804
+#: installation.xml:805
 #, no-c-format
 msgid ""
 "Perl Regex:Assemble is no longer needed for compiling address_standardizer "
@@ -2002,39 +1986,39 @@ msgstr ""
 "filename>のリビルドでRegex:Assembleが必要です。"
 
 #. Tag: programlisting
-#: installation.xml:805
+#: installation.xml:806
 #, no-c-format
 msgid "cpan Regexp::Assemble"
 msgstr "cpan Regexp::Assemble"
 
 #. Tag: para
-#: installation.xml:806
+#: installation.xml:807
 #, no-c-format
 msgid "or if you are on Ubuntu / Debian you might need to do"
 msgstr ""
 "Ubuntu / Degianの場合には、次のようにしなければならないかも知れません。"
 
 #. Tag: programlisting
-#: installation.xml:807
+#: installation.xml:808
 #, no-c-format
 msgid "sudo perl -MCPAN -e \"install Regexp::Assemble\""
 msgstr "sudo perl -MCPAN -e \"install Regexp::Assemble\""
 
 #. Tag: title
-#: installation.xml:812
+#: installation.xml:813
 #, no-c-format
 msgid "Installing, Upgrading Tiger Geocoder and loading data"
 msgstr "Tigerジオコーダのインストールとアップグレードとデータロード"
 
 #. Tag: para
-#: installation.xml:814
+#: installation.xml:815
 #, no-c-format
 msgid ""
 "Extras like Tiger geocoder may not be packaged in your PostGIS distribution. "
 "If you are missing the tiger geocoder extension or want a newer version than "
 "what your install comes with, then use the <filename>share/extension/"
-"postgis_tiger_geocoder.*</filename> files from the packages in <ulink url="
-"\"http://postgis.net/windows_downloads/\">Windows Unreleased Versions</"
+"postgis_tiger_geocoder.*</filename> files from the packages in <ulink "
+"url=\"http://postgis.net/windows_downloads/\">Windows Unreleased Versions</"
 "ulink> section for your version of PostgreSQL. Although these packages are "
 "for windows, the postgis_tiger_geocoder extension files will work on any OS "
 "since the extension is an SQL/plpgsql only extension."
@@ -2049,14 +2033,14 @@ msgstr ""
 "他のOSでも動作します。"
 
 #. Tag: title
-#: installation.xml:818
+#: installation.xml:819
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database: Using Extension"
 msgstr ""
 "TigerジオコーダをPostGISデータベースで有効にする: エクステンションを使用"
 
 #. Tag: para
-#: installation.xml:819
+#: installation.xml:820
 #, no-c-format
 msgid ""
 "If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage of "
@@ -2067,7 +2051,7 @@ msgstr ""
 "にします。"
 
 #. Tag: para
-#: installation.xml:821
+#: installation.xml:822
 #, no-c-format
 msgid ""
 "First get binaries for PostGIS 2.1+ or compile and install as usual. This "
@@ -2078,7 +2062,7 @@ msgstr ""
 "イルがインストールされます。"
 
 #. Tag: para
-#: installation.xml:822
+#: installation.xml:823
 #, no-c-format
 msgid ""
 "Connect to your database via psql or pgAdmin or some other tool and run the "
@@ -2093,7 +2077,7 @@ msgstr ""
 "トールされている場合は、二つ目の手順は不要です。"
 
 #. Tag: programlisting
-#: installation.xml:823
+#: installation.xml:824
 #, no-c-format
 msgid ""
 "CREATE EXTENSION postgis;\n"
@@ -2111,7 +2095,7 @@ msgstr ""
 "CREATE EXTENSION address_standardizer;"
 
 #. Tag: para
-#: installation.xml:825
+#: installation.xml:826
 #, no-c-format
 msgid ""
 "If you already have postgis_tiger_geocoder extension installed, and just "
@@ -2121,7 +2105,7 @@ msgstr ""
 "新するだけの場合には、次を実行します。"
 
 #. Tag: programlisting
-#: installation.xml:826
+#: installation.xml:827
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE;\n"
@@ -2131,7 +2115,7 @@ msgstr ""
 "ALTER EXTENSION postgis_tiger_geocoder UPDATE;"
 
 #. Tag: para
-#: installation.xml:827
+#: installation.xml:828
 #, no-c-format
 msgid ""
 "If you made custom entries or changes to <varname>tiger.loader_platform</"
@@ -2143,7 +2127,7 @@ msgstr ""
 "プデートしなければならないことがあります。"
 
 #. Tag: para
-#: installation.xml:829
+#: installation.xml:830
 #, no-c-format
 msgid ""
 "To confirm your install is working correctly, run this sql in your database:"
@@ -2152,7 +2136,7 @@ msgstr ""
 "次のSQLを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:830
+#: installation.xml:831
 #, no-c-format
 msgid ""
 "SELECT na.address, na.streetname,na.streettypeabbrev, na.zip\n"
@@ -2162,13 +2146,13 @@ msgstr ""
 "        FROM normalize_address('1 Devonshire Place, Boston, MA 02109') AS na;"
 
 #. Tag: para
-#: installation.xml:831
+#: installation.xml:832
 #, no-c-format
 msgid "Which should output"
 msgstr "出力は次のようになります。"
 
 #. Tag: screen
-#: installation.xml:832
+#: installation.xml:833
 #, no-c-format
 msgid ""
 "address | streetname | streettypeabbrev |  zip\n"
@@ -2180,7 +2164,7 @@ msgstr ""
 "           1 | Devonshire | Pl               | 02109"
 
 #. Tag: para
-#: installation.xml:834
+#: installation.xml:835
 #, no-c-format
 msgid ""
 "Create a new record in <varname>tiger.loader_platform</varname> table with "
@@ -2190,7 +2174,7 @@ msgstr ""
 "スを持つ新しいレコードを生成します。"
 
 #. Tag: para
-#: installation.xml:835
+#: installation.xml:836
 #, no-c-format
 msgid ""
 "So for example to create a profile called debbie that follows <code>sh</"
@@ -2200,7 +2184,7 @@ msgstr ""
 "て、次のコマンドを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:836
+#: installation.xml:837
 #, no-c-format
 msgid ""
 "INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, "
@@ -2220,7 +2204,7 @@ msgstr ""
 "  WHERE os = 'sh';"
 
 #. Tag: para
-#: installation.xml:837
+#: installation.xml:838
 #, no-c-format
 msgid ""
 "And then edit the paths in the <emphasis>declare_sect</emphasis> column to "
@@ -2230,7 +2214,7 @@ msgstr ""
 "pg, unzip, shp2pgsql, psql他のパス位置に適応するようにします。"
 
 #. Tag: para
-#: installation.xml:839
+#: installation.xml:840
 #, no-c-format
 msgid ""
 "If you don't edit this <varname>loader_platform</varname> table, it will "
@@ -2242,7 +2226,7 @@ msgstr ""
 "ればなりません。"
 
 #. Tag: para
-#: installation.xml:841
+#: installation.xml:842
 #, no-c-format
 msgid ""
 "As of PostGIS 2.4.1 the Zip code-5 digit tabulation area <varname>zcta5</"
@@ -2252,20 +2236,20 @@ msgid ""
 "minutes), takes up quite a bit of disk space, and is not used that often."
 msgstr ""
 "PostGIS 2.4.1からは、<varname>ZTCA5</varname> (Zip Code 5 digit Tabulation "
-"Area)のロード手順が変更され、有効になった時に<xref linkend="
-"\"Loader_Generate_Nation_Script\"/>の一部として現在のZCTA5データをロードする"
-"ようになりました。デフォルトでは切られています。ロードにかなりの時間 (20から"
-"60分)が取られ、かなりのディスクスペースを占有するのに、そんなに頻繁には使わな"
-"いためです。"
+"Area)のロード手順が変更され、有効になった時に<xref "
+"linkend=\"Loader_Generate_Nation_Script\"/>の一部として現在のZCTA5データを"
+"ロードするようになりました。デフォルトでは切られています。ロードにかなりの時"
+"間 (20から60分)が取られ、かなりのディスクスペースを占有するのに、そんなに頻繁"
+"には使わないためです。"
 
 #. Tag: para
-#: installation.xml:843
+#: installation.xml:844
 #, no-c-format
 msgid "To enable it, do the following:"
 msgstr "有効にするには、次のようにします。"
 
 #. Tag: programlisting
-#: installation.xml:844
+#: installation.xml:845
 #, no-c-format
 msgid ""
 "UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
@@ -2273,21 +2257,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:845
+#: installation.xml:846
 #, no-c-format
 msgid ""
 "If present the <xref linkend=\"Geocode\"/> function can use it if a boundary "
-"filter is added to limit to just zips in that boundary. The <xref linkend="
-"\"Reverse_Geocode\"/> function uses it if the returned address is missing a "
-"zip, which often happens with highway reverse geocoding."
+"filter is added to limit to just zips in that boundary. The <xref "
+"linkend=\"Reverse_Geocode\"/> function uses it if the returned address is "
+"missing a zip, which often happens with highway reverse geocoding."
 msgstr ""
 "境界のフィルタが追加され、ちょうど境界内のZIPに制限された場合に、<xref "
-"linkend=\"Geocode\"/>関数は、ZCTA5が存在するなら使います。<xref linkend="
-"\"Reverse_Geocode\"/>関数は、返された住所にZIPコードが無い場合に (しばしば高"
-"速道路での逆ジオコーディングで発生します)、これを使います。"
+"linkend=\"Geocode\"/>関数は、ZCTA5が存在するなら使います。<xref "
+"linkend=\"Reverse_Geocode\"/>関数は、返された住所にZIPコードが無い場合に (し"
+"ばしば高速道路での逆ジオコーディングで発生します)、これを使います。"
 
 #. Tag: para
-#: installation.xml:848
+#: installation.xml:849
 #, no-c-format
 msgid ""
 "Create a folder called <filename>gisdata</filename> on root of server or "
@@ -2306,7 +2290,7 @@ msgstr ""
 "を編集します。"
 
 #. Tag: para
-#: installation.xml:850
+#: installation.xml:851
 #, no-c-format
 msgid ""
 "Create a folder called temp in the <filename>gisdata</filename> folder or "
@@ -2318,7 +2302,7 @@ msgstr ""
 "ダウンロードしたTigerデータを展開する場所です。"
 
 #. Tag: para
-#: installation.xml:852
+#: installation.xml:853
 #, no-c-format
 msgid ""
 "Then run the <xref linkend=\"Loader_Generate_Nation_Script\"/> SQL function "
@@ -2331,7 +2315,7 @@ msgstr ""
 "します。"
 
 #. Tag: programlisting
-#: installation.xml:853
+#: installation.xml:854
 #, no-c-format
 msgid ""
 "psql -c \"SELECT Loader_Generate_Nation_Script('debbie')\" -d geocoder -tA "
@@ -2341,13 +2325,13 @@ msgstr ""
 "> /gisdata/nation_script_load.sh"
 
 #. Tag: para
-#: installation.xml:856
+#: installation.xml:857
 #, no-c-format
 msgid "Run the generated nation load commandline scripts."
 msgstr "生成された国データをロードするコマンドラインスクリプトを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:857
+#: installation.xml:858
 #, no-c-format
 msgid ""
 "cd /gisdata\n"
@@ -2357,7 +2341,7 @@ msgstr ""
 "sh nation_script_load.sh"
 
 #. Tag: para
-#: installation.xml:860
+#: installation.xml:861
 #, no-c-format
 msgid ""
 "After you are done running the nation script, you should have three tables "
@@ -2369,13 +2353,13 @@ msgstr ""
 "ます。"
 
 #. Tag: programlisting
-#: installation.xml:861
+#: installation.xml:862
 #, no-c-format
 msgid "SELECT count(*) FROM tiger_data.county_all;"
 msgstr "SELECT count(*) FROM tiger_data.county_all;"
 
 #. Tag: screen
-#: installation.xml:862
+#: installation.xml:863
 #, no-c-format
 msgid ""
 "count\n"
@@ -2389,13 +2373,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: programlisting
-#: installation.xml:863
+#: installation.xml:864
 #, no-c-format
 msgid "SELECT count(*) FROM tiger_data.state_all;"
 msgstr "SELECT count(*) FROM tiger_data.state_all;"
 
 #. Tag: screen
-#: installation.xml:864
+#: installation.xml:865
 #, no-c-format
 msgid ""
 "count\n"
@@ -2409,7 +2393,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: installation.xml:867
+#: installation.xml:868
 #, no-c-format
 msgid ""
 "By default the tables corresponding to <varname>bg</varname>, "
@@ -2424,7 +2408,7 @@ msgstr ""
 "の一部としてロードするには、次の手続きを実行して有効にします。"
 
 #. Tag: programlisting
-#: installation.xml:869
+#: installation.xml:870
 #, no-c-format
 msgid ""
 "UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND "
@@ -2434,7 +2418,7 @@ msgstr ""
 "lookup_name IN('tract', 'bg', 'tabblock');"
 
 #. Tag: para
-#: installation.xml:870
+#: installation.xml:871
 #, no-c-format
 msgid ""
 "Alternatively you can load just these tables after loading state data using "
@@ -2444,7 +2428,7 @@ msgstr ""
 "をロードした後に、これらのテーブルだけをロードできます。"
 
 #. Tag: para
-#: installation.xml:872
+#: installation.xml:873
 #, no-c-format
 msgid ""
 "For each state you want to load data for, generate a state script <xref "
@@ -2454,7 +2438,7 @@ msgstr ""
 "スクリプトを作ります。"
 
 #. Tag: para
-#: installation.xml:872
+#: installation.xml:873
 #, no-c-format
 msgid ""
 "DO NOT Generate the state script until you have already loaded the nation "
@@ -2464,7 +2448,7 @@ msgstr ""
 "トは国スクリプトでロードされる国リストを利用するためです。"
 
 #. Tag: programlisting
-#: installation.xml:874
+#: installation.xml:875
 #, no-c-format
 msgid ""
 "psql -c \"SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')\" -d geocoder "
@@ -2474,13 +2458,13 @@ msgstr ""
 "-tA > /gisdata/ma_load.sh"
 
 #. Tag: para
-#: installation.xml:876
+#: installation.xml:877
 #, no-c-format
 msgid "Run the generated commandline scripts."
 msgstr "生成されたコマンドラインスクリプトを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:877
+#: installation.xml:878
 #, no-c-format
 msgid ""
 "cd /gisdata\n"
@@ -2490,7 +2474,7 @@ msgstr ""
 "sh ma_load.sh"
 
 #. Tag: para
-#: installation.xml:879
+#: installation.xml:880
 #, no-c-format
 msgid ""
 "After you are done loading all data or at a stopping point, it's a good idea "
@@ -2501,7 +2485,7 @@ msgstr ""
 "です。"
 
 #. Tag: programlisting
-#: installation.xml:880
+#: installation.xml:881
 #, no-c-format
 msgid ""
 "SELECT install_missing_indexes();\n"
@@ -2531,13 +2515,13 @@ msgstr ""
 "vacuum (analyze, verbose) tiger.zip_state_loc;"
 
 #. Tag: title
-#: installation.xml:883
+#: installation.xml:884
 #, no-c-format
 msgid "Converting a Tiger Geocoder Regular Install to Extension Model"
 msgstr "Tigerジオコーダ通常インストールのエクステンションモデルへの変換"
 
 #. Tag: para
-#: installation.xml:884
+#: installation.xml:885
 #, no-c-format
 msgid ""
 "If you installed the tiger geocoder without using the extension model, you "
@@ -2547,7 +2531,7 @@ msgstr ""
 "次のようにして、エクステンションモデルに変換できます。"
 
 #. Tag: para
-#: installation.xml:886
+#: installation.xml:887
 #, no-c-format
 msgid ""
 "Follow instructions in <xref linkend=\"upgrade_tiger_geocoder\"/> for the "
@@ -2557,55 +2541,55 @@ msgstr ""
 "デルのアップグレードを行います。"
 
 #. Tag: para
-#: installation.xml:887
+#: installation.xml:888
 #, no-c-format
 msgid ""
 "Connect to your database with psql or pgAdmin and run the following command:"
 msgstr "psqlまたはpgAdminでデータベースに接続して、次のコマンドを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:888
+#: installation.xml:889
 #, no-c-format
 msgid "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 msgstr "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 
 #. Tag: title
-#: installation.xml:895
+#: installation.xml:896
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database: Not Using Extensions"
 msgstr ""
 "TigerジオコーダをPostGISデータベースで有効にする: エクステンション不使用"
 
 #. Tag: para
-#: installation.xml:896
+#: installation.xml:897
 #, no-c-format
 msgid "First install PostGIS using the prior instructions."
 msgstr "まず、上述の手順でPostGISをインストールします。"
 
 #. Tag: para
-#: installation.xml:900 installation.xml:960
+#: installation.xml:901 installation.xml:961
 #, no-c-format
 msgid ""
-"If you don't have an extras folder, download <ulink url="
-"\"&postgis_download_url;\">&postgis_download_url;</ulink>"
+"If you don't have an extras folder, download <ulink "
+"url=\"&postgis_download_url;\">&postgis_download_url;</ulink>"
 msgstr ""
 "extrasフォルダが無い場合、<ulink url=\"&postgis_download_url;"
 "\">&postgis_download_url;</ulink>をダウンロードします。"
 
 #. Tag: command
-#: installation.xml:905 installation.xml:965
+#: installation.xml:906 installation.xml:966
 #, no-c-format
 msgid "tar xvfz postgis-&last_release_version;.tar.gz"
 msgstr "tar xvfz postgis-&last_release_version;.tar.gz"
 
 #. Tag: command
-#: installation.xml:909
+#: installation.xml:910
 #, no-c-format
 msgid "cd postgis-&last_release_version;/extras/tiger_geocoder"
 msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder"
 
 #. Tag: para
-#: installation.xml:912
+#: installation.xml:913
 #, no-c-format
 msgid ""
 "Edit the <filename>tiger_loader_2015.sql</filename> (or latest loader file "
@@ -2614,20 +2598,21 @@ msgid ""
 "<varname>loader_platform</varname> table once installed. If you don't edit "
 "this file or the <varname>loader_platform</varname> table, it will just "
 "contain common case locations of items and you'll have to edit the generated "
-"script after the fact when you run the <xref linkend="
-"\"Loader_Generate_Nation_Script\"/> and <xref linkend="
-"\"Loader_Generate_Script\"/> SQL functions."
+"script after the fact when you run the <xref "
+"linkend=\"Loader_Generate_Nation_Script\"/> and <xref "
+"linkend=\"Loader_Generate_Script\"/> SQL functions."
 msgstr ""
 "<filename>tiger_loader_2015.sql</filename> (違う年のものをロードしたくないな"
 "らば最新のローダファイル)をあなたの実行サーバ等のパスに編集します。もしくは"
 "<varname>loader_platform</varname>がインストールされた後に一度これを更新しま"
 "す。このファイルも<varname>loader_platform</varname>も編集しない場合には、一"
-"般的なアイテムの位置を持っているだけなので、<xref linkend="
-"\"Loader_Generate_Nation_Script\"/>と<xref linkend=\"Loader_Generate_Script"
-"\"/>を実行した後に、生成されたスクリプトを編集しなければなりません。"
+"般的なアイテムの位置を持っているだけなので、<xref "
+"linkend=\"Loader_Generate_Nation_Script\"/>と<xref "
+"linkend=\"Loader_Generate_Script\"/>を実行した後に、生成されたスクリプトを編"
+"集しなければなりません。"
 
 #. Tag: para
-#: installation.xml:914
+#: installation.xml:915
 #, no-c-format
 msgid ""
 "If you are installing Tiger geocoder for the first time edit either the "
@@ -2642,7 +2627,7 @@ msgstr ""
 "定に変更したうえで、コマンドラインから対応するスクリプトを実行します。"
 
 #. Tag: para
-#: installation.xml:918
+#: installation.xml:919
 #, no-c-format
 msgid ""
 "Verify that you now have a <varname>tiger</varname> schema in your database "
@@ -2653,13 +2638,13 @@ msgstr ""
 "い場合は、次の行を参考に、コマンドを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:918
+#: installation.xml:919
 #, no-c-format
 msgid "ALTER DATABASE geocoder SET search_path=public, tiger;"
 msgstr "ALTER DATABASE geocoder SET search_path=public, tiger;"
 
 #. Tag: para
-#: installation.xml:919
+#: installation.xml:920
 #, no-c-format
 msgid ""
 "The normalizing address functionality works more or less without any data "
@@ -2669,7 +2654,7 @@ msgstr ""
 "トを実行して次のように見えることを確認して下さい。"
 
 #. Tag: programlisting
-#: installation.xml:920
+#: installation.xml:921
 #, no-c-format
 msgid ""
 "SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
@@ -2685,14 +2670,14 @@ msgstr ""
 "202 E Fremont St, Las Vegas, NV 89101"
 
 #. Tag: title
-#: installation.xml:923
+#: installation.xml:924
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
 msgstr ""
 "TigerジオコーダをPostGISデータベースで有効にする: エクステンションを使用"
 
 #. Tag: para
-#: installation.xml:924
+#: installation.xml:925
 #, no-c-format
 msgid ""
 "One of the many complaints of folks is the address normalizer function <xref "
@@ -2708,43 +2693,43 @@ msgstr ""
 "を正規化する関数<xref linkend=\"Normalize_Address\"/>があります。住所正規化は"
 "万全と言うにはほど遠く、パッチをあてようとすると膨大な資源を費やします。よっ"
 "て、より良い住所標準化エンジンを持つ他のプロジェクトに統合しました。この新し"
-"い住所標準化を使うには、<xref linkend=\"installing_pagc_address_standardizer"
-"\"/>で記述するようにエクステンションをコンパイルし、使用するデータベースにイ"
-"ンストールします。"
+"い住所標準化を使うには、<xref "
+"linkend=\"installing_pagc_address_standardizer\"/>で記述するようにエクステン"
+"ションをコンパイルし、使用するデータベースにインストールします。"
 
 #. Tag: para
-#: installation.xml:927
+#: installation.xml:928
 #, no-c-format
 msgid ""
 "Once you install this extension in the same database as you have installed "
-"<code>postgis_tiger_geocoder</code>, then the <xref linkend="
-"\"Pagc_Normalize_Address\"/> can be used instead of <xref linkend="
-"\"Normalize_Address\"/>. This extension is tiger agnostic, so can be used "
-"with other data sources such as international addresses. The tiger geocoder "
-"extension does come packaged with its own custom versions of <xref linkend="
-"\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref linkend=\"gaztab\"/> "
-"(<code>tiger.pagc_gaz</code>), and <xref linkend=\"lextab\"/> (<code>tiger."
-"pagc_lex</code>). These you can add and update to improve your standardizing "
-"experience for your own needs."
+"<code>postgis_tiger_geocoder</code>, then the <xref "
+"linkend=\"Pagc_Normalize_Address\"/> can be used instead of <xref "
+"linkend=\"Normalize_Address\"/>. This extension is tiger agnostic, so can be "
+"used with other data sources such as international addresses. The tiger "
+"geocoder extension does come packaged with its own custom versions of <xref "
+"linkend=\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref "
+"linkend=\"gaztab\"/> (<code>tiger.pagc_gaz</code>), and <xref "
+"linkend=\"lextab\"/> (<code>tiger.pagc_lex</code>). These you can add and "
+"update to improve your standardizing experience for your own needs."
 msgstr ""
 "このエクステンションを<code>postgis_tiger_geocoder</code>をインストールしてい"
 "るデータベースにインストールすると、<xref linkend=\"Pagc_Normalize_Address\"/"
 ">を、<xref linkend=\"Normalize_Address\"/>の代わりに使うことができます。この"
 "エクステンションはTigerジオコーダからは見えないので、国際的な住所といった他の"
 "データソースでも使えます。Tigerジオコーダエクステンションは、その版の<xref "
-"linkend=\"rulestab\"/> (<code>tiger.pagc_rules</code>), <xref linkend="
-"\"gaztab\"/> (<code>tiger.pagc_gaz</code>), <xref linkend=\"lextab\"/> "
-"(<code>tiger.pagc_lex</code>)を同梱しています。これらは、必要に応じて標準化の"
-"改善のために追加や更新ができます。"
+"linkend=\"rulestab\"/> (<code>tiger.pagc_rules</code>), <xref "
+"linkend=\"gaztab\"/> (<code>tiger.pagc_gaz</code>), <xref linkend=\"lextab\"/"
+"> (<code>tiger.pagc_lex</code>)を同梱しています。これらは、必要に応じて標準化"
+"の改善のために追加や更新ができます。"
 
 #. Tag: title
-#: installation.xml:930
+#: installation.xml:931
 #, no-c-format
 msgid "Loading Tiger Data"
 msgstr "Tigerデータのロード"
 
 #. Tag: para
-#: installation.xml:931
+#: installation.xml:932
 #, no-c-format
 msgid ""
 "The instructions for loading data are available in a more detailed form in "
@@ -2755,7 +2740,7 @@ msgstr ""
 "filename>にあります。これは一般的な手順を示しています。"
 
 #. Tag: para
-#: installation.xml:932
+#: installation.xml:933
 #, no-c-format
 msgid ""
 "The load process downloads data from the census website for the respective "
@@ -2763,33 +2748,33 @@ msgid ""
 "state into its own separate set of state tables. Each state table inherits "
 "from the tables defined in <varname>tiger</varname> schema so that its "
 "sufficient to just query those tables to access all the data and drop a set "
-"of state tables at any time using the <xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/> if you need to reload a state or "
-"just don't need a state anymore."
+"of state tables at any time using the <xref "
+"linkend=\"Drop_State_Tables_Generate_Script\"/> if you need to reload a "
+"state or just don't need a state anymore."
 msgstr ""
 "ロードプロセスによって、米センサスウェブサイトから個々の国ファイル、リクエス"
 "トされた州のデータをダウンロードし、ファイルを展開し、個別の州をそれぞれの州"
 "テーブルの集合にロードします。各州のテーブルは、<varname>tiger</varname>ス"
 "キーマで定義されたテーブルを継承しているので、これらのテーブルに対して全ての"
 "データにアクセスするためのクエリを出すことができますし、州の再読み込みが必要"
-"となったり、州が必要ない場合には、<xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/>で、いつでも州テーブルの集合を削除する"
-"クエリを出すことができます。"
+"となったり、州が必要ない場合には、<xref "
+"linkend=\"Drop_State_Tables_Generate_Script\"/>で、いつでも州テーブルの集合を"
+"削除するクエリを出すことができます。"
 
 #. Tag: para
-#: installation.xml:934
+#: installation.xml:935
 #, no-c-format
 msgid "In order to be able to load data you'll need the following tools:"
 msgstr "データのロードを可能にするためには次のツールが必要です。"
 
 #. Tag: para
-#: installation.xml:936
+#: installation.xml:937
 #, no-c-format
 msgid "A tool to unzip the zip files from census website."
 msgstr "センサスウェブサイトから取得するZIPファイルを展開するツール。"
 
 #. Tag: para
-#: installation.xml:937
+#: installation.xml:938
 #, no-c-format
 msgid ""
 "For Unix like systems: <varname>unzip</varname> executable which is usually "
@@ -2799,7 +2784,7 @@ msgstr ""
 "どのUnix系プラットフォームで既にインストールされています。"
 
 #. Tag: para
-#: installation.xml:938
+#: installation.xml:939
 #, no-c-format
 msgid ""
 "For Windows, 7-zip which is a free compress/uncompress tool you can download "
@@ -2809,7 +2794,7 @@ msgstr ""
 "org/</ulink>からダウンロードできる無償の圧縮解凍ツールです。"
 
 #. Tag: para
-#: installation.xml:940
+#: installation.xml:941
 #, no-c-format
 msgid ""
 "<filename>shp2pgsql</filename> commandline which is installed by default "
@@ -2819,7 +2804,7 @@ msgstr ""
 "ンストールされます。"
 
 #. Tag: para
-#: installation.xml:941
+#: installation.xml:942
 #, no-c-format
 msgid ""
 "<filename>wget</filename> which is a web grabber tool usually installed on "
@@ -2829,11 +2814,11 @@ msgstr ""
 "トールされている、ウェブ取得ツールです。"
 
 #. Tag: para
-#: installation.xml:942
+#: installation.xml:943
 #, no-c-format
 msgid ""
-"If you are on windows, you can get pre-compiled binaries from <ulink url="
-"\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
+"If you are on windows, you can get pre-compiled binaries from <ulink "
+"url=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
 "sourceforge.net/packages/wget.htm</ulink>"
 msgstr ""
 "Windows用については、コンパイル済みのバイナリを<ulink url=\"http://gnuwin32."
@@ -2841,7 +2826,7 @@ msgstr ""
 "wget.htm</ulink>から取得できます。"
 
 #. Tag: para
-#: installation.xml:945
+#: installation.xml:946
 #, no-c-format
 msgid ""
 "If you are upgrading from tiger_2010, you'll need to first generate and run "
@@ -2851,15 +2836,16 @@ msgid ""
 "script for you. <xref linkend=\"Loader_Generate_Nation_Script\"/> is a one-"
 "time step that should be done for upgrading (from 2010) and for new installs."
 msgstr ""
-"tiger_2010からアップグレードする場合には、最初に<xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\"/>を生成、実行する必要があります。州"
-"データをロードする前に、<xref linkend=\"Loader_Generate_Nation_Script\"/>で国"
-"データをロードする必要があります。これによって、環境に合ったローダスクリプト"
-"が生成されます。<xref linkend=\"Loader_Generate_Nation_Script\"/>は、一度の操"
-"作で、(2010からの)アップグレードと、新しいインストールが行われます。"
+"tiger_2010からアップグレードする場合には、最初に<xref "
+"linkend=\"Drop_Nation_Tables_Generate_Script\"/>を生成、実行する必要がありま"
+"す。州データをロードする前に、<xref "
+"linkend=\"Loader_Generate_Nation_Script\"/>で国データをロードする必要がありま"
+"す。これによって、環境に合ったローダスクリプトが生成されます。<xref "
+"linkend=\"Loader_Generate_Nation_Script\"/>は、一度の操作で、(2010からの)アッ"
+"プグレードと、新しいインストールが行われます。"
 
 #. Tag: para
-#: installation.xml:947
+#: installation.xml:948
 #, no-c-format
 msgid ""
 "To load state data refer to <xref linkend=\"Loader_Generate_Script\"/> to "
@@ -2874,7 +2860,7 @@ msgstr ""
 "要なだけダウンロードできます。"
 
 #. Tag: para
-#: installation.xml:950
+#: installation.xml:951
 #, no-c-format
 msgid ""
 "After the states you desire have been loaded, make sure to run the: "
@@ -2886,7 +2872,7 @@ msgstr ""
 "programlisting>を実行するようにして下さい。"
 
 #. Tag: para
-#: installation.xml:952
+#: installation.xml:953
 #, no-c-format
 msgid ""
 "To test that things are working as they should, try to run a geocode on an "
@@ -2896,13 +2882,13 @@ msgstr ""
 "る州の中の住所についてジオコーダを実行してみます。"
 
 #. Tag: title
-#: installation.xml:955
+#: installation.xml:956
 #, no-c-format
 msgid "Upgrading your Tiger Geocoder Install"
 msgstr "Tigerジオコーダのアップグレード"
 
 #. Tag: para
-#: installation.xml:956
+#: installation.xml:957
 #, no-c-format
 msgid ""
 "If you have Tiger Geocoder packaged with 2.0+ already installed, you can "
@@ -2916,13 +2902,13 @@ msgstr ""
 "ジオコーダで動作します。"
 
 #. Tag: command
-#: installation.xml:969
+#: installation.xml:970
 #, no-c-format
 msgid "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
 msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
 
 #. Tag: para
-#: installation.xml:972
+#: installation.xml:973
 #, no-c-format
 msgid ""
 "Locate the <filename>upgrade_geocoder.bat</filename> script If you are on "
@@ -2934,7 +2920,7 @@ msgstr ""
 "を特定します。 PostGISデータベースの資格情報を持つように編集します。"
 
 #. Tag: para
-#: installation.xml:975
+#: installation.xml:976
 #, no-c-format
 msgid ""
 "If you are upgrading from 2010 or 2011, make sure to unremark out the loader "
@@ -2944,37 +2930,37 @@ msgstr ""
 "トアウトを消すと、2012データのロードのための最新のスクリプトを得ます。"
 
 #. Tag: para
-#: installation.xml:976
+#: installation.xml:977
 #, no-c-format
 msgid "Then run th corresponding script from the commandline."
 msgstr "対応するスクリプトをコマンドラインから実行します。"
 
 #. Tag: para
-#: installation.xml:980
+#: installation.xml:981
 #, no-c-format
 msgid ""
 "Next drop all nation tables and load up the new ones. Generate a drop script "
-"with this SQL statement as detailed in <xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\"/>"
+"with this SQL statement as detailed in <xref "
+"linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
 msgstr ""
 "次に、全ての国テーブルを削除し、新しい国テーブルをロードします。<xref "
 "linkend=\"Drop_Nation_Tables_Generate_Script\"/>に詳細がある通り、このSQLス"
 "テートメントを使った削除スクリプトを生成します。"
 
 #. Tag: programlisting
-#: installation.xml:981
+#: installation.xml:982
 #, no-c-format
 msgid "SELECT drop_nation_tables_generate_script();"
 msgstr "SELECT drop_nation_tables_generate_script();"
 
 #. Tag: para
-#: installation.xml:982
+#: installation.xml:983
 #, no-c-format
 msgid "Run the generated drop SQL statements."
 msgstr "生成した削除SQLステートメントを実行します。"
 
 #. Tag: para
-#: installation.xml:983
+#: installation.xml:984
 #, no-c-format
 msgid ""
 "Generate a nation load script with this SELECT statement as detailed in "
@@ -2984,61 +2970,62 @@ msgstr ""
 "ステートメントを使った削除スクリプトを生成します。"
 
 #. Tag: emphasis
-#: installation.xml:984
+#: installation.xml:985
 #, no-c-format
 msgid "For windows"
 msgstr "Windows向け"
 
 #. Tag: programlisting
-#: installation.xml:985
+#: installation.xml:986
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('windows');"
 msgstr "SELECT loader_generate_nation_script('windows');"
 
 #. Tag: emphasis
-#: installation.xml:986
+#: installation.xml:987
 #, no-c-format
 msgid "For unix/linux"
 msgstr "Unix/Linux向け"
 
 #. Tag: programlisting
-#: installation.xml:987
+#: installation.xml:988
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('sh');"
 msgstr "SELECT loader_generate_nation_script('sh');"
 
 #. Tag: para
-#: installation.xml:988
+#: installation.xml:989
 #, no-c-format
 msgid ""
 "Refer to <xref linkend=\"tiger_geocoder_loading_data\"/> for instructions on "
 "how to run the generate script. This only needs to be done once."
 msgstr ""
-"生成したスクリプトの実行方法に関する説明は、<xref linkend="
-"\"tiger_geocoder_loading_data\"/>を参照して下さい。これは一度だけ実行する必要"
-"があります。"
+"生成したスクリプトの実行方法に関する説明は、<xref "
+"linkend=\"tiger_geocoder_loading_data\"/>を参照して下さい。これは一度だけ実行"
+"する必要があります。"
 
 #. Tag: para
-#: installation.xml:989
+#: installation.xml:990
 #, no-c-format
 msgid ""
 "You can have a mix of 2010/2011 state tables and can upgrade each state "
 "separately. Before you upgrade a state to 2011, you first need to drop the "
-"2010 tables for that state using <xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/>."
+"2010 tables for that state using <xref "
+"linkend=\"Drop_State_Tables_Generate_Script\"/>."
 msgstr ""
 "2010/2011州テーブルを混在させることができ、それぞれの州について個別にアップグ"
-"レードできます。2011にアップグレードする前に、まず、<xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/>を使って、2010州テーブルを削除します。"
+"レードできます。2011にアップグレードする前に、まず、<xref "
+"linkend=\"Drop_State_Tables_Generate_Script\"/>を使って、2010州テーブルを削除"
+"します。"
 
 #. Tag: title
-#: installation.xml:996
+#: installation.xml:997
 #, no-c-format
 msgid "Common Problems during installation"
 msgstr "共通の問題"
 
 #. Tag: para
-#: installation.xml:997
+#: installation.xml:998
 #, no-c-format
 msgid ""
 "There are several things to check when your installation or upgrade doesn't "
@@ -3048,7 +3035,7 @@ msgstr ""
 "かあります。"
 
 #. Tag: para
-#: installation.xml:1004
+#: installation.xml:1005
 #, no-c-format
 msgid ""
 "Check that you have installed PostgreSQL &min_postgres_version; or newer, "
@@ -3071,13 +3058,13 @@ msgstr ""
 "エリを実行して下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1017
+#: installation.xml:1018
 #, no-c-format
 msgid "SELECT version();"
 msgstr "SELECT version();"
 
 #. Tag: para
-#: installation.xml:1019
+#: installation.xml:1020
 #, no-c-format
 msgid ""
 "If you are running an RPM based distribution, you can check for the "
@@ -3089,7 +3076,7 @@ msgstr ""
 "<command>rpm -qa | grep postgresql</command>でチェックできます。"
 
 #. Tag: para
-#: installation.xml:1027
+#: installation.xml:1028
 #, no-c-format
 msgid ""
 "If your upgrade fails, make sure you are restoring into a database that "
@@ -3099,13 +3086,13 @@ msgstr ""
 "にリストアしているか確認して下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1028
+#: installation.xml:1029
 #, no-c-format
 msgid "SELECT postgis_full_version();"
 msgstr "SELECT postgis_full_version();"
 
 #. Tag: para
-#: installation.xml:1032
+#: installation.xml:1033
 #, no-c-format
 msgid ""
 "Also check that configure has correctly detected the location and version of "
@@ -3115,7 +3102,7 @@ msgstr ""
 "ストール先を検出したかチェックして下さい。"
 
 #. Tag: para
-#: installation.xml:1039
+#: installation.xml:1040
 #, no-c-format
 msgid ""
 "The output from configure is used to generate the <filename>postgis_config."
@@ -3127,6 +3114,91 @@ msgstr ""
 "れます。<varname>POSTGIS_PGSQL_VERSION</varname>、"
 "<varname>POSTGIS_PROJ_VERSION</varname>および<varname>POSTGIS_GEOS_VERSION</"
 "varname>変数が正しくセットされたかをチェックして下さい。"
+
+#, no-c-format
+#~ msgid ""
+#~ "The PostGIS module is an extension to the PostgreSQL backend server. As "
+#~ "such, PostGIS &last_release_version; <emphasis>requires</emphasis> full "
+#~ "PostgreSQL server headers access in order to compile. It can be built "
+#~ "against PostgreSQL versions &min_postgres_version; or higher. Earlier "
+#~ "versions of PostgreSQL are <emphasis>not</emphasis> supported."
+#~ msgstr ""
+#~ "PostGISモジュールは、PostgreSQLバックエンドサーバの拡張です。PostGIS "
+#~ "&last_release_version;では、コンパイルのために、完全なPostgreSQLサーバヘッ"
+#~ "ダが<emphasis>必要です</emphasis>。PostgreSQL &last_release_version;以上で"
+#~ "ビルドできます。古い版のPostgreSQLは<emphasis>サポートされません</"
+#~ "emphasis>。"
+
+#, no-c-format
+#~ msgid ""
+#~ "wget &postgis_download_url;\n"
+#~ "tar -xvzf postgis-&last_release_version;.tar.gz"
+#~ msgstr ""
+#~ "wget &postgis_download_url;\n"
+#~ "tar -xvzf postgis-&last_release_version;.tar.gz"
+
+#, no-c-format
+#~ msgid "git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis"
+#~ msgstr "git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis"
+
+#, no-c-format
+#~ msgid ""
+#~ "PostgreSQL &min_postgres_version; or higher. A complete installation of "
+#~ "PostgreSQL (including server headers) is required. PostgreSQL is "
+#~ "available from <ulink url=\"http://www.postgresql.org\"> http://www."
+#~ "postgresql.org </ulink> ."
+#~ msgstr ""
+#~ "PostgreSQL &min_postgres_version;以上。PostgreSQLの完全なインストール "
+#~ "(サーバヘッダを含む)が必要です。PostgreSQLは<ulink url=\"http://www."
+#~ "postgresql.org/\"> http://www.postgresql.org/</ulink>にあります。"
+
+#, no-c-format
+#~ msgid ""
+#~ "LibXML2, version 2.5.x or higher. LibXML2 is currently used in some "
+#~ "imports functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is "
+#~ "available for download from <ulink url=\"http://xmlsoft.org/downloads."
+#~ "html\">http://xmlsoft.org/downloads.html</ulink>."
+#~ msgstr ""
+#~ "LibXML2の2.5.x以上。LibXML2は現在取り込み関数 (ST_GeomFromGMLと"
+#~ "ST_GeomFromKML)で使っています。LibXML2は<ulink url=\"http://xmlsoft.org/"
+#~ "downloads.html\">http://xmlsoft.org/downloads.html</ulink>からダウンロード"
+#~ "可能です。"
+
+#, no-c-format
+#~ msgid ""
+#~ "GDAL, version 2+ is required 3+ is preferred. This is required for raster "
+#~ "support. <ulink url=\"http://trac.osgeo.org/gdal/wiki/"
+#~ "DownloadSource\">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>."
+#~ msgstr ""
+#~ "GDAL、2以上が必要ですが3以上の方が良いです。ラスタ機能に必要です。<ulink "
+#~ "url=\"http://trac.osgeo.org/gdal/wiki/DownloadSource\">http://trac.osgeo."
+#~ "org/gdal/wiki/DownloadSource</ulink>。"
+
+#, no-c-format
+#~ msgid ""
+#~ "SFCGAL, version 1.3.1 (or higher), 1.4.0 or higher is recommended. SFCGAL "
+#~ "can be used to provide additional 2D and 3D advanced analysis functions "
+#~ "to PostGIS cf <xref linkend=\"reference_sfcgal\"/>. And also allow to use "
+#~ "SFCGAL rather than GEOS for some 2D functions provided by both backends "
+#~ "(like ST_Intersection or ST_Area, for instance). A PostgreSQL "
+#~ "configuration variable <code>postgis.backend</code> allow end user to "
+#~ "control which backend he want to use if SFCGAL is installed (GEOS by "
+#~ "default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: "
+#~ "<ulink url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\">https://"
+#~ "oslandia.gitlab.io/SFCGAL/dev.html</ulink>) <ulink url=\"https://gitlab."
+#~ "com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</ulink>."
+#~ msgstr ""
+#~ "SFCGAL 1.3.1版以上が必須ですが1.4.0以上を推奨します。追加的な2次元や3次元"
+#~ "の高度な解析関数をPostGISで使うために使用するものです。<xref "
+#~ "linkend=\"reference_sfcgal\"/>をご覧下さい。また、GEOSを使う2次元関数のう"
+#~ "ちいくつか (たとえばST_IntersectionやST_Area)は、GEOSでなくSFCGALを使用す"
+#~ "ることができます。PostgreSQLコンフィギュレーション変数<code>postgis."
+#~ "backend</code>によって、SFCGALがインストールされている場合にはエンドユーザ"
+#~ "がバックエンドを制御することができます (デフォルトではGEOS)。SFCGAL 1.2は"
+#~ "少なくともCGAL 4.3とBoost 1.54 (: <ulink url=\"https://oslandia.gitlab.io/"
+#~ "SFCGAL/dev.html\">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>をご覧"
+#~ "下さい)が必要ですのでご注意下さい。 <ulink url=\"https://gitlab.com/"
+#~ "Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/</ulink>にあります。"
 
 #~ msgid ""
 #~ "UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
@@ -4825,9 +4897,9 @@ msgstr ""
 #~ msgstr ""
 #~ "PostGISが持つ関数についての助けとなるコメントを求めるなら、"
 #~ "<filename>postgis_comments.sql</filename>を、データベースにロードします。"
-#~ "コメントは、<command>psql</command>ターミナルウィンドウで単に<command>"
-#~ "\\dd [function_name]</command>とすれば見ることができます。ロードは次のよう"
-#~ "にします。"
+#~ "コメントは、<command>psql</command>ターミナルウィンドウで単に"
+#~ "<command>\\dd [function_name]</command>とすれば見ることができます。ロード"
+#~ "は次のようにします。"
 
 #~ msgid "psql -d [yourdatabase] -f postgis_comments.sql"
 #~ msgstr "psql -d [データベース名] -f postgis_comments.sql"
@@ -5049,9 +5121,10 @@ msgstr ""
 #~ "in <xref linkend=\"create_new_db_extensions\"/> and then restore your "
 #~ "backup ontop of this new database."
 #~ msgstr ""
-#~ "この場合は、データベースをバックアップして、<xref linkend="
-#~ "\"create_new_db_extensions\"/>に記述されているように新しいデータベースを生"
-#~ "成し、バックアップを新しいデータベースにリストアしなければなりません。"
+#~ "この場合は、データベースをバックアップして、<xref "
+#~ "linkend=\"create_new_db_extensions\"/>に記述されているように新しいデータ"
+#~ "ベースを生成し、バックアップを新しいデータベースにリストアしなければなりま"
+#~ "せん。"
 
 #~ msgid "If you get a notice message like:"
 #~ msgstr "次のようなメッセージを得ることがあります。"
@@ -5100,9 +5173,9 @@ msgstr ""
 #~ msgid ""
 #~ "By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. "
 #~ "You need a HARD UPGRADE when PostGIS objects' internal storage changes or "
-#~ "when SOFT UPGRADE is not possible. The <link linkend=\"release_notes"
-#~ "\">Release Notes</link> appendix reports for each version whether you "
-#~ "need a dump/reload (HARD UPGRADE) to upgrade."
+#~ "when SOFT UPGRADE is not possible. The <link "
+#~ "linkend=\"release_notes\">Release Notes</link> appendix reports for each "
+#~ "version whether you need a dump/reload (HARD UPGRADE) to upgrade."
 #~ msgstr ""
 #~ "ハードアップグレードとは、PostGISで利用可能なデータの完全なダンプ/リロード"
 #~ "を意味します。PostGISオブジェクトの内部格納状態が変更される場合や、ソフト"
@@ -5123,9 +5196,9 @@ msgstr ""
 #~ "データをPostGISをインストールしたデータベースにリストアできます 。"
 
 #~ msgid ""
-#~ "Supplementary instructions for windows users are available at <ulink url="
-#~ "\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
-#~ "upgrade</ulink>."
+#~ "Supplementary instructions for windows users are available at <ulink "
+#~ "url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows "
+#~ "Hard upgrade</ulink>."
 #~ msgstr ""
 #~ "Windows用に関する追加情報は<ulink url=\"http://trac.osgeo.org/postgis/"
 #~ "wiki/UsersWikiWinUpgrade\">Windows Hard upgrade</ulink>にあります。"
@@ -5153,14 +5226,14 @@ msgstr ""
 
 #~ msgid ""
 #~ "Do a fresh install of PostGIS in a new database -- we'll refer to this "
-#~ "database as <varname>newdb</varname>. Please refer to <xref linkend="
-#~ "\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> for "
-#~ "instructions on how to do this."
+#~ "database as <varname>newdb</varname>. Please refer to <xref "
+#~ "linkend=\"create_new_db\"/> and <xref "
+#~ "linkend=\"create_new_db_extensions\"/> for instructions on how to do this."
 #~ msgstr ""
 #~ "新しいデータベースにPostGISを、PostGISが無い状態からインストールします。こ"
 #~ "のデータベースを<varname>newdb</varname>と呼ぶことにします。この作業に関す"
-#~ "る説明については<xref linkend=\"create_new_db\"/>と<xref linkend="
-#~ "\"create_new_db_extensions\"/>とを参照して下さい。"
+#~ "る説明については<xref linkend=\"create_new_db\"/>と<xref "
+#~ "linkend=\"create_new_db_extensions\"/>とを参照して下さい。"
 
 #~ msgid ""
 #~ "The spatial_ref_sys entries found in your dump will be restored, but they "
@@ -5256,11 +5329,11 @@ msgstr ""
 #~ "upgrade."
 #~ msgstr ""
 #~ "ジオメトリライブラリGEOSの3.５版以上。新しい関数や機能の全てを得るために、"
-#~ "GEOS 3.7以上を推奨します。少なくともGEOS 3.5は持つべきで、<xref linkend="
-#~ "\"ST_ClipByBox2D\"/>や<xref linkend=\"ST_Subdivide\"/>のような機能強化が使"
-#~ "えません。GEOSは<ulink url=\"http://trac.osgeo.org/geos/\">http://trac."
-#~ "osgeo.org/geos/</ulink>からダウンロードできます。3.5以上は古い版との後方互"
-#~ "換があり、アップグレードがかなり安全です。"
+#~ "GEOS 3.7以上を推奨します。少なくともGEOS 3.5は持つべきで、<xref "
+#~ "linkend=\"ST_ClipByBox2D\"/>や<xref linkend=\"ST_Subdivide\"/>のような機能"
+#~ "強化が使えません。GEOSは<ulink url=\"http://trac.osgeo.org/geos/\">http://"
+#~ "trac.osgeo.org/geos/</ulink>からダウンロードできます。3.5以上は古い版との"
+#~ "後方互換があり、アップグレードがかなり安全です。"
 
 #~ msgid ""
 #~ "cd extensions\n"
@@ -5330,9 +5403,9 @@ msgstr ""
 #~ "invalid entry from spatial_ref_sys and re-construct the check(s) with:"
 #~ msgstr ""
 #~ "これの訂正には、カスタムSRSを妥当値 (多分91000から910999の間になります)に"
-#~ "複写して、全てのテーブルを新しいSRIDに変換して(<xref linkend="
-#~ "\"UpdateGeometrySRID\"/>を参照して下さい)、不正なエントリをspatial_ref_sys"
-#~ "から削除して、次を実行してチェック制約を再構築します。"
+#~ "複写して、全てのテーブルを新しいSRIDに変換して(<xref "
+#~ "linkend=\"UpdateGeometrySRID\"/>を参照して下さい)、不正なエントリを"
+#~ "spatial_ref_sysから削除して、次を実行してチェック制約を再構築します。"
 
 #~ msgid ""
 #~ "ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check "

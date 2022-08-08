@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-08-08 04:50+0000\n"
 "PO-Revision-Date: 2022-01-20 19:18+0000\n"
 "Last-Translator: Regina Obe <regina@arrival3d.com>\n"
 "Language-Team: French <https://weblate.osgeo.org/projects/postgis/postgis/fr/"
@@ -21,27 +21,40 @@ msgstr ""
 "X-Generator: Weblate 4.10.1\n"
 
 #. Tag: title
-#: postgis.xml:146
+#: postgis.xml:147
 #, no-c-format
 msgid "PostGIS &last_release_version; Manual"
 msgstr "Manuel PostGIS &last_release_version;"
 
 #. Tag: corpauthor
-#: postgis.xml:150
+#: postgis.xml:151
 #, no-c-format
 msgid "The PostGIS Development Group"
 msgstr ""
 
 #. Tag: affiliation
-#: postgis.xml:156
+#: postgis.xml:157
 #, no-c-format
-msgid "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</ulink></orgname> <address><city>Victoria</city> <state>British Columbia</state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></address>"
-msgstr "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</ulink></orgname> <address><city>Victoria</city> <state>British Columbia</state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></address>"
+msgid ""
+"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
+"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
+"address>"
+msgstr ""
+"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
+"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
+"address>"
 
 #. Tag: para
-#: postgis.xml:170
+#: postgis.xml:171
 #, no-c-format
-msgid "PostGIS is an extension to the <ulink url=\"https://www.postgresql.org/\">PostgreSQL</ulink> object-relational database system which allows GIS (Geographic Information Systems) objects to be stored in the database. PostGIS includes support for GiST-based R-Tree spatial indexes, and functions for analysis and processing of GIS objects."
+msgid ""
+"PostGIS is an extension to the <ulink url=\"https://www.postgresql.org/"
+"\">PostgreSQL</ulink> object-relational database system which allows GIS "
+"(Geographic Information Systems) objects to be stored in the database. "
+"PostGIS includes support for GiST-based R-Tree spatial indexes, and "
+"functions for analysis and processing of GIS objects."
 msgstr ""
 "PostGIS est une extension du système de base de <ulink url=\"https://www."
 "postgresql.org/\">PostgreSQL</ulink> données relationnel-objet qui permet de "
@@ -50,13 +63,18 @@ msgstr ""
 "fonctions d'analyse et de traitement des objets SIG."
 
 #. Tag: para
-#: postgis.xml:179
+#: postgis.xml:180
 #, no-c-format
 msgid "This is the manual for version &last_release_version;"
 msgstr "Manuel de la version &last_release_version;"
 
 #. Tag: para
-#: postgis.xml:180
+#: postgis.xml:181
 #, no-c-format
-msgid "This work is licensed under a <ulink url=\"http://creativecommons.org/licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</ulink>. Feel free to use this material any way you like, but we ask that you attribute credit to the PostGIS Project and wherever possible, a link back to <ulink url=\"http://postgis.net\">http://postgis.net</ulink>."
+msgid ""
+"This work is licensed under a <ulink url=\"http://creativecommons.org/"
+"licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</"
+"ulink>. Feel free to use this material any way you like, but we ask that you "
+"attribute credit to the PostGIS Project and wherever possible, a link back "
+"to <ulink url=\"http://postgis.net\">http://postgis.net</ulink>."
 msgstr ""
