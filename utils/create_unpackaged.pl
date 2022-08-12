@@ -161,10 +161,11 @@ WHEN object_not_in_prerequisite_state THEN
     RAISE EXCEPTION '%', SQLERRM;
   END IF;
 WHEN
-	undefined_function
+	undefined_function OR
+	undefined_object
 	-- TODO: handle more exceptions ?
 THEN
-	RAISE NOTICE 'undefined function $obj';
+	RAISE NOTICE 'Object $obj does not exist yet';
 WHEN OTHERS THEN
 	RAISE EXCEPTION 'Trying to add $obj to $extname, got % (%)', SQLERRM, SQLSTATE;
 END;
