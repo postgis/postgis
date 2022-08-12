@@ -50,9 +50,10 @@ BEGIN {
 
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = abs_path(dirname($0));
-our $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
-our $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
-our $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
+our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${REGDIR} . '/..';
+our $SHP2PGSQL = $TOP_BUILDDIR . "/loader/shp2pgsql";
+our $PGSQL2SHP = $TOP_BUILDDIR . "/loader/pgsql2shp";
+our $RASTER2PGSQL = $TOP_BUILDDIR . "/raster/loader/raster2pgsql";
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
@@ -109,10 +110,6 @@ if ( @ARGV < 1 )
 
 if ( $OPT_UPGRADE_PATH )
 {
-  if ( ! $OPT_EXTENSIONS )
-  {
-    die "--upgrade-path is only supported with --extension"
-  }
   $OPT_UPGRADE = 1; # implied
   my @path = split ('--', $OPT_UPGRADE_PATH);
   $OPT_UPGRADE_FROM = $path[0]
@@ -156,7 +153,7 @@ $ENV{"PGOPTIONS"} = $PGOPTIONS;
 my $PATH = $ENV{"PATH"}; # this is useless
 
 # Calculate the regression directory locations
-my $STAGED_INSTALL_DIR = $REGDIR . "/00-regress-install";
+my $STAGED_INSTALL_DIR = $TOP_BUILDDIR . "/regress/00-regress-install";
 my $STAGED_SCRIPTS_DIR = $STAGED_INSTALL_DIR . "/share/contrib/postgis";
 
 my $OBJ_COUNT_PRE = 0;
@@ -178,7 +175,8 @@ foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 	else
 	{
 		print "failed\n";
-		die "Unable to find $exec executable.\n";
+		print STDERR "Unable to find $exec executable.\n";
+		die "HINT: set POSTGIS_TOP_BUILD_DIR env variable to the build dir.\n";
 	}
 
 }
@@ -227,7 +225,13 @@ print "TMPDIR is $TMPDIR\n";
 # Prepare the database
 ##################################################################
 
-my @dblist = grep(/\b$DB\b/, split(/\n/, `psql -Xl`));
+my @dblist = grep(/1/, split(/\n/, `
+psql -tAc "
+    SELECT 1 FROM pg_catalog.pg_database
+    WHERE datname = '${DB}'
+" template1
+`));
+
 my $dbcount = @dblist;
 
 if ( $dbcount == 0 )
@@ -399,6 +403,7 @@ foreach $TEST (@ARGV)
 		# TODO: add more variables?
 		my $cmd = "psql -Xq"
 		  . " -v \"regdir=$REGDIR\""
+		  . " -v \"top_builddir=$TOP_BUILDDIR\""
 		  . " -v \"scriptdir=$scriptdir\""
 		  . " -v \"schema=$OPT_SCHEMA.\""
 		  # TODO: inject search_path somehow
@@ -443,7 +448,20 @@ foreach $TEST (@ARGV)
 	}
 	elsif ( -r "${TEST}.tif" )
 	{
-		my $rv = run_raster_loader_test();
+		my $rv = run_raster_loader_test("${TEST}.tif");
+		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if $rv;
+	}
+	elsif ( -r "${TEST}.tif.ref" )
+	{
+		open(REF, "${TEST}.tif.ref");
+		my $raster_ref = <REF>;
+		close(REF);
+		chop $raster_ref;
+		#print "Raster ref: [$raster_ref]\n";
+		# Resolve raster_ref relative to ${TEST} dirname
+		my $raster_path = dirname(${TEST}) . '/' . $raster_ref;
+		#print "Raster path: [$raster_path]\n";
+		my $rv = run_raster_loader_test($raster_path);
 		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if $rv;
 	}
 	elsif ( -r "${TEST}.sql" )
@@ -659,6 +677,7 @@ sub run_simple_sql
 	my $tmpfile = sprintf("%s/test_%s_tmp", $TMPDIR, $RUN);
 	my $cmd = "psql -v \"VERBOSITY=terse\" "
 		. " -v \"regdir=$REGDIR\""
+		. " -v \"top_builddir=$TOP_BUILDDIR\""
 		. " -tXAq $DB < $sql > $tmpfile 2>&1";
 	#print($cmd);
 	my $rv = system($cmd);
@@ -756,6 +775,7 @@ sub run_simple_test
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
+          . " -v \"top_builddir=$TOP_BUILDDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
           . " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
           . " -tXAq -f $sqlfile $DB > $outfile 2>&1";
@@ -979,6 +999,7 @@ sub run_dumper_and_check_output
 sub run_raster_loader_and_check_output
 {
 	my $description = shift;
+	my $raster_file = shift;
 	my $tblname = shift;
 	my $expected_sql_file = shift;
 	my $expected_select_results_file = shift;
@@ -997,7 +1018,7 @@ sub run_raster_loader_and_check_output
 		show_progress();
 
 		# Produce the output SQL file.
-		$cmd = "$RASTER2PGSQL $loader_options ${TEST}.tif $tblname > $outfile 2> $errfile";
+		$cmd = "$RASTER2PGSQL $loader_options $raster_file $tblname > $outfile 2> $errfile";
 		$rv = system($cmd);
 
 		if ( $rv )
@@ -1230,24 +1251,30 @@ sub run_dumper_test
 ##################################################################
 sub run_raster_loader_test
 {
+	my $raster_file = shift;
 	# See if there is a custom command-line options file
 	my $opts_file = "${TEST}.opts";
 	my $custom_opts="";
 
 	if ( -r $opts_file )
 	{
+		my $regdir = abs_path(dirname(${TEST}));
 		open(FILE, $opts_file);
-		my @opts = <FILE>;
+		my @opts;
+		while (<FILE>) {
+			next if /^\s*#/;
+			chop;
+			s/{regdir}/$regdir/;
+			push @opts, $_;
+		}
 		close(FILE);
-		@opts = grep(!/^\s*#/, @opts);
-		map(s/\n//, @opts);
 		$custom_opts = join(" ", @opts);
 	}
 
 	my $tblname="loadedrast";
 
 	# If we have some expected files to compare with, run in geography mode.
-	if ( ! run_raster_loader_and_check_output("test", $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", $custom_opts, "true") )
+	if ( ! run_raster_loader_and_check_output("test", $raster_file, $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", $custom_opts, "true") )
 	{
 		return 0;
 	}
@@ -1308,22 +1335,37 @@ sub create_db
 
 sub create_spatial
 {
-	my ($cmd, $rv);
-	print "Creating database '$DB' \n";
+    my ($cmd, $rv);
+    print "Creating database '$DB' \n";
 
-  	$rv = create_db();
+    $rv = create_db();
 
-	# Count database objects before installing anything
-	$OBJ_COUNT_PRE = count_db_objects();
+    # Count database objects before installing anything
+    $OBJ_COUNT_PRE = count_db_objects();
 
-	if ( $OPT_EXTENSIONS )
-	{
-		prepare_spatial_extensions();
-	}
-	else
-	{
-		prepare_spatial();
-	}
+    if ( $OPT_EXTENSIONS )
+    {
+        prepare_spatial_extensions();
+    }
+    else
+    {
+        if ( ! $OPT_UPGRADE_FROM )
+        {
+            prepare_spatial();
+            return;
+        }
+
+        if ( $OPT_UPGRADE_FROM !~ /^unpackaged(.*)/ )
+        {
+            die "--upgrade-path without --extension is only supported with source unpackaged*";
+        }
+
+        if ( $OPT_UPGRADE_TO != ':auto' )
+        {
+            die "--upgrade-path without --extension is only supported with target :auto";
+        }
+        prepare_spatial($1);
+    }
 }
 
 
