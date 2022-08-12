@@ -1664,41 +1664,28 @@ sub upgrade_spatial_extensions
       die;
     }
 
-    # Handle raster split if coming from pre-split and going
-    # to splitted raster
-    if ( $OPT_UPGRADE_FROM && has_split_raster_ext($OPT_UPGRADE_TO) &&
+    # Handle raster split if coming from pre-split extension
+    # and going to splitted raster
+    if ( $OPT_UPGRADE_FROM &&
+         ! $OPT_UPGRADE_FROM =~ /^unpackaged/ &&
+         has_split_raster_ext($OPT_UPGRADE_TO) &&
          ! has_split_raster_ext($OPT_UPGRADE_FROM) )
     {
-      if ( $OPT_WITH_RASTER )
-      {
-        # upgrade of postgis must have unpackaged raster, so
-        # we create it again here
-				my $sql = package_extension_sql('postgis_raster', ${nextver});
+      # upgrade of postgis must have unpackaged raster, so
+      # we create it again here
+      my $sql = package_extension_sql('postgis_raster', ${nextver});
 
-        print "Upgrading PostGIS Raster in '${DB}' using: ${sql}\n" ;
+      print "Packaging PostGIS Raster in '${DB}' using: ${sql}\n" ;
 
-        my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-        my $rv = system($cmd);
-        if ( $rv ) {
-          fail "Error encountered creating EXTENSION POSTGIS_RASTER from unpackaged on upgrade", $REGRESS_LOG;
-          die;
-        }
+      my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+      my $rv = system($cmd);
+      if ( $rv ) {
+        fail "Error encountered creating EXTENSION POSTGIS_RASTER from unpackaged on upgrade", $REGRESS_LOG;
+        die;
       }
-      else
+
+      if ( ! $OPT_WITH_RASTER )
       {
-        # Raster support was not requested, so drop it if
-        # left unpackaged
-        print "Packaging PostGIS Raster in '${DB}' for later drop using: ${sql}\n" ;
-
-				$sql = package_extension_sql('postgis_raster', ${nextver});
-
-        $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
-        $rv = system($cmd);
-        if ( $rv ) {
-          fail "Error encountered creating EXTENSION POSTGIS_RASTER from unpackaged on upgrade", $REGRESS_LOG;
-          die;
-        }
-
         print "Dropping PostGIS Raster in '${DB}' using: ${sql}\n" ;
 
         $sql = "DROP EXTENSION postgis_raster";
