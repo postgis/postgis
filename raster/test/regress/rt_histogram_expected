@@ -44,7 +44,6 @@
 -2.115|0.513|0|0.000
 0.513|3.142|1|0.500
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-BEGIN
 -10.000|-3.429|10|0.500
 -3.429|3.142|10|0.500
 -10.000|-3.429|10|0.500
@@ -87,16 +86,12 @@ NOTICE:  Raster does not have band at index 2. Skipping raster
 NOTICE:  Raster does not have band at index 2. Skipping raster
 NOTICE:  Raster does not have band at index 2. Skipping raster
 ERROR:  RASTER_histogramCoverage: Cannot get summary stats of coverage
-COMMIT
 RELEASE
 SAVEPOINT
 -10.000|-3.429|10|0.500
 -3.429|3.142|10|0.500
-COMMIT
 RELEASE
 SAVEPOINT
 -10.000|-3.429|10|0.500
 -3.429|3.142|10|0.500
-COMMIT
 RELEASE
-COMMIT

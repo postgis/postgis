@@ -2,7 +2,6 @@
 2
 100
 2
-BEGIN
 20
 1000
 20
@@ -27,10 +26,7 @@ NOTICE:  Invalid band index (must use 1-based). Returning NULL
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-COMMIT
 RELEASE
 SAVEPOINT
 ERROR:  Sample percent must be between zero and one
-COMMIT
 RELEASE
-COMMIT

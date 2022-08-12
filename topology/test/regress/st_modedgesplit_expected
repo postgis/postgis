@@ -1,9 +1,7 @@
-BEGIN
 t
 9
 22
 26
-COMMIT
 max|node|22
 max|edge|26
 ERROR:  geometry has too many points at character 53
