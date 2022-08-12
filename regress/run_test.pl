@@ -1667,9 +1667,9 @@ sub upgrade_spatial_extensions
     # Handle raster split if coming from pre-split extension
     # and going to splitted raster
     if ( $OPT_UPGRADE_FROM &&
-         ! $OPT_UPGRADE_FROM =~ /^unpackaged/ &&
+         ( not $OPT_UPGRADE_FROM =~ /^unpackaged/ ) &&
          has_split_raster_ext($OPT_UPGRADE_TO) &&
-         ! has_split_raster_ext($OPT_UPGRADE_FROM) )
+         not has_split_raster_ext($OPT_UPGRADE_FROM) )
     {
       # upgrade of postgis must have unpackaged raster, so
       # we create it again here
