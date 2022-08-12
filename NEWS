@@ -7,6 +7,7 @@ PostGIS 3.1.7dev
            ST_AsGeoJSON and ST_AsGML are also parallel unsafe
            (Regina Obe, Paul Ramsey)
   - #5202, Guard against downgrades (Sandro Santilli)
+  - #5209, #5210, Fix upgrades with CVE-2022-2625 PostgreSQL fix
 
 PostGIS 3.1.6
 2022/07/20
