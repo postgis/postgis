@@ -75,6 +75,13 @@ SELECT
 	ST_DWithin(g2, g2, 1) as geography_dwithin
 FROM upgrade_test;
 
+-- Add view using ST_ClusterKMeans windowing function
+-- NOTE: 3.2.0 changed it to add max_radius parameter
+CREATE VIEW upgrade_view_test_clusterkmeans AS
+SELECT
+	ST_ClusterKMeans(g1, 1) OVER ()
+FROM upgrade_test;
+
 -- Break probin of all postgis functions, as we expect
 -- the upgrade procedure to replace them all
 UPDATE pg_proc SET probin = probin || '-uninstalled'
