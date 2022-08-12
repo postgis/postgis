@@ -1,21 +1,3 @@
-INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text)
-VALUES (
- '4326',
- 'EPSG',
- '4326',
- 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]',
- '+proj=longlat +datum=WGS84 +no_defs'
-);
-
-INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text)
-VALUES (
- '4269',
- 'EPSG',
- '4269',
- 'GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]]',
- '+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs'
-);
-
 -- Do cached and uncached distance agree?
 SELECT c, abs(ST_Distance(ply::geography, pt::geography) - _ST_DistanceUnCached(ply::geography, pt::geography)) < 0.01 FROM
 ( VALUES
@@ -142,6 +124,3 @@ select 'dwithin_poly_line_1', ST_DWithin('POLYGON((1 1, 2 2, 3 0, 1 1))'::geogra
 select 'dwithin_poly_poly_1', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 10);
 select 'dwithin_poly_poly_2', ST_DWithin('POLYGON((0 0, -2 -2, -3 0, 0 0))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
 select 'dwithin_poly_poly_3', ST_DWithin('POLYGON((1 1, -2 -2, -3 0, 1 1))'::geography, 'POLYGON((1 1, 2 2, 3 0, 1 1))'::geography, 300000);
-
--- Clean up spatial_ref_sys
-DELETE FROM spatial_ref_sys WHERE srid IN (4269, 4326);

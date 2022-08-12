@@ -1,14 +1,5 @@
 SET postgis.backend = 'sfcgal';
 
-INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text)
-VALUES (
- '4326',
- 'EPSG',
- '4326',
- 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]',
- '+proj=longlat +datum=WGS84 +no_defs'
-);
-
 -- Do cached and uncached distance agree?
 SELECT c, abs(ST_Distance(ply::geography, pt::geography) - _ST_DistanceUnCached(ply::geography, pt::geography)) < 0.01 FROM
 ( VALUES
@@ -72,7 +63,4 @@ ply AS (
     ) as q(polygon)
 )
 SELECT 'geog_precision_pazafir', _ST_DistanceUnCached(pt.point, ply.polygon), ST_Distance(pt.point, ply.polygon) FROM pt, ply;
-
--- Clean up spatial_ref_sys
-DELETE FROM spatial_ref_sys WHERE srid = 4326;
 

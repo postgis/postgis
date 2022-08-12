@@ -1,4 +1,4 @@
-﻿-- create table
+-- create table
 CREATE TABLE knn_recheck_geom(gid serial primary key, geom geometry);
 INSERT INTO knn_recheck_geom(gid,geom)
 SELECT ROW_NUMBER() OVER(ORDER BY x,y) AS gid, ST_Point(x*0.777,y*0.887) As geom
@@ -66,9 +66,6 @@ ORDER BY a.gid, true_rn, b.gid;
 DROP TABLE knn_recheck_geom;
 
 -- geography tests
-DELETE FROM spatial_ref_sys where srid = 4326;
-INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","proj4text")
-    VALUES (4326,'EPSG',4326,'+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ');
 -- create table
 CREATE TABLE knn_recheck_geog(gid serial primary key, geog geography);
 INSERT INTO knn_recheck_geog(gid,geog)
@@ -129,11 +126,6 @@ FROM knn_recheck_geog As a
 ORDER BY a.gid;
 
 DROP TABLE knn_recheck_geog;
-
---
--- Delete inserted spatial data
---
-DELETE FROM spatial_ref_sys WHERE srid = 4326;
 
 --now the nd operator tests
 -- create table and load
