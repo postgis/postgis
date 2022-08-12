@@ -149,6 +149,7 @@ WHEN object_not_in_prerequisite_state THEN
   END IF;
 WHEN
 	undefined_function OR
+	undefined_table OR
 	undefined_object
 	-- TODO: handle more exceptions ?
 THEN
