@@ -1,7 +1,5 @@
 set client_min_messages to WARNING;
 
-INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( 'EPSG', 4326, 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
-
 \i load_topology-4326.sql
 \i load_features.sql
 \i more_features.sql
@@ -218,5 +216,4 @@ ORDER BY name;
 
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;
-DELETE FROM spatial_ref_sys where srid = 4326;
 DROP TABLE visited;
