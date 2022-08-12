@@ -12,6 +12,7 @@ Proj 6.1+, and PostgreSQL 14+.
            ST_AsGeoJSON and ST_AsGML are also parallel unsafe
            (Regina Obe, Paul Ramsey)
   - #5202, Guard against downgrades (Sandro Santilli)
+  - #5209, #5210, Fix upgrades with CVE-2022-2625 PostgreSQL fix
 
 
 PostGIS 3.2.2
