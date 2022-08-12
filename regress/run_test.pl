@@ -1704,7 +1704,7 @@ sub upgrade_spatial_extensions
       return 1;
     }
 
-    if ( $OPT_WITH_RASTER && has_split_raster_ext($OPT_UPGRADE_FROM) )
+    if ( $OPT_WITH_RASTER && has_split_raster_ext(${nextver}) )
     {
         my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
 
