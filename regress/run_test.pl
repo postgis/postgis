@@ -125,7 +125,8 @@ sub has_split_raster_ext
   my $fullver = shift;
   # unpackaged is always current, so does have
   # split raster already.
-  return 1 if $fullver =~ /^unpackaged/;
+  return 1 if $fullver =~ /^unpackaged$/;
+  $fullver =~ s/unpackaged//;
   my @ver = split(/\./, $fullver);
   return 0 if ( $ver[0] < 3 );
   return 1;
@@ -1716,7 +1717,7 @@ sub upgrade_spatial_extensions
       return 1;
     }
 
-    if ( $OPT_WITH_RASTER )
+    if ( $OPT_WITH_RASTER && has_split_raster_ext($OPT_UPGRADE_FROM) )
     {
         my $sql = "ALTER EXTENSION postgis_raster UPDATE TO '${nextver}'";
 
