@@ -39,6 +39,9 @@ BEGIN {
 #
 #  Run the <testname>.sql script
 #  Check output against <testname>_expected
+#
+#  Use `-` as the testname to drop into an interactive shell
+#
 ##################################################################
 
 ##################################################################
@@ -47,9 +50,10 @@ BEGIN {
 
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = abs_path(dirname($0));
-our $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
-our $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
-our $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
+our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${REGDIR} . '/..';
+our $SHP2PGSQL = $TOP_BUILDDIR . "/loader/shp2pgsql";
+our $PGSQL2SHP = $TOP_BUILDDIR . "/loader/pgsql2shp";
+our $RASTER2PGSQL = $TOP_BUILDDIR . "/raster/loader/raster2pgsql";
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
@@ -61,11 +65,16 @@ my $OPT_NODROP = 0;
 my $OPT_NOCREATE = 0;
 my $OPT_UPGRADE = 0;
 my $OPT_DUMPRESTORE = 0;
+my $OPT_WITH_TIGER = 0;
 my $OPT_WITH_TOPO = 0;
 my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
+my @OPT_HOOK_AFTER_CREATE;
+my @OPT_HOOK_BEFORE_UNINSTALL;
+my @OPT_HOOK_BEFORE_UPGRADE;
+my @OPT_HOOK_AFTER_UPGRADE;
 my $OPT_EXTVERSION = '';
 my $OPT_UPGRADE_PATH = '';
 our $OPT_UPGRADE_FROM = '';
@@ -81,12 +90,17 @@ GetOptions (
 	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
 	'dumprestore' => \$OPT_DUMPRESTORE,
 	'nocreate' => \$OPT_NOCREATE,
+	'tiger' => \$OPT_WITH_TIGER,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
 	'sfcgal' => \$OPT_WITH_SFCGAL,
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS,
-	'schema=s' => \$OPT_SCHEMA
+	'schema=s' => \$OPT_SCHEMA,
+	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
+	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
+	'before-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE,
+	'after-upgrade-script=s' => \@OPT_HOOK_AFTER_UPGRADE
 	);
 
 if ( @ARGV < 1 )
@@ -96,10 +110,6 @@ if ( @ARGV < 1 )
 
 if ( $OPT_UPGRADE_PATH )
 {
-  if ( ! $OPT_EXTENSIONS )
-  {
-    die "--upgrade-path is only supported with --extension"
-  }
   $OPT_UPGRADE = 1; # implied
   my @path = split ('--', $OPT_UPGRADE_PATH);
   $OPT_UPGRADE_FROM = $path[0]
@@ -143,7 +153,7 @@ $ENV{"PGOPTIONS"} = $PGOPTIONS;
 my $PATH = $ENV{"PATH"}; # this is useless
 
 # Calculate the regression directory locations
-my $STAGED_INSTALL_DIR = $REGDIR . "/00-regress-install";
+my $STAGED_INSTALL_DIR = $TOP_BUILDDIR . "/regress/00-regress-install";
 my $STAGED_SCRIPTS_DIR = $STAGED_INSTALL_DIR . "/share/contrib/postgis";
 
 my $OBJ_COUNT_PRE = 0;
@@ -165,7 +175,8 @@ foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 	else
 	{
 		print "failed\n";
-		die "Unable to find $exec executable.\n";
+		print STDERR "Unable to find $exec executable.\n";
+		die "HINT: set POSTGIS_TOP_BUILD_DIR env variable to the build dir.\n";
 	}
 
 }
@@ -214,7 +225,13 @@ print "TMPDIR is $TMPDIR\n";
 # Prepare the database
 ##################################################################
 
-my @dblist = grep(/\b$DB\b/, split(/\n/, `psql -Xl`));
+my @dblist = grep(/1/, split(/\n/, `
+psql -tAc "
+    SELECT 1 FROM pg_catalog.pg_database
+    WHERE datname = '${DB}'
+" template1
+`));
+
 my $dbcount = @dblist;
 
 if ( $dbcount == 0 )
@@ -289,127 +306,15 @@ sub semver_lessthan
 	return @bcomp ? 1 : 0;
 }
 
-sub create_upgrade_test_objects
-{
-  # TODO: allow passing the "upgrade-init" script via commandline
-
-  my $query = "create table upgrade_test(g1 geometry, g2 geography";
-  $query .= ", r raster" if ( $OPT_WITH_RASTER );
-  $query .= ")";
-  my $ret = sql($query);
-  unless ( $ret =~ /^CREATE/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong creating upgrade_test table: $ret.\n";
-    exit(1);
-  }
-
-  $query = "insert into upgrade_test(g1,g2) values ";
-	$query .= "('POINT(0 0)', 'LINESTRING(0 0, 1 1)'), ";
-	$query .= "('POINT(1 0)', 'LINESTRING(0 1, 1 1)');";
-  my $ret = sql($query);
-  unless ( $ret =~ /^INSERT/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong populating upgrade_test table: $ret.\n";
-    exit(1);
-  }
-
-
-  if ( $pgvernum >= 120000 ) {
-    # We know upgrading with an st_union() based view
-    # fails unless you're on PostgreSQL 12, so we don't
-    # even try that.
-    #
-    # We could re-enable this test IF we fix the upgrade
-    # in pre-12 versions. Refer to
-    # https://trac.osgeo.org/postgis/ticket/4386
-    #
-    $query = "create view upgrade_view_test as ";
-    $query .= "select st_union(g1) from upgrade_test;";
-    my $ret = sql($query);
-    unless ( $ret =~ /^CREATE/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong creating upgrade_view_test view: $ret.\n";
-      exit(1);
-    }
-  }
-
-  if ( $OPT_WITH_RASTER )
-  {
-    $query = "UPDATE upgrade_test SET r = ";
-    $query .= " ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);";
-    $ret = sql($query);
-    unless ( $ret =~ /^UPDATE/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong setting raster into upgrade_test table: $ret.\n";
-      exit(1);
-    }
-
-    $query = "set client_min_messages to error; select AddRasterConstraints('upgrade_test', 'r')";
-    $ret = sql($query);
-    unless ( $ret =~ /^t$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong adding raster constraints to upgrade_test: " . $ret . "\n";
-      exit(1);
-    }
-  }
-
-  if ( $OPT_WITH_TOPO )
-  {
-    $query = "select topology.createTopology('upgrade_test');";
-    $ret = sql($query);
-    unless ( $ret =~ /^[1-9][0-9]*$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong adding upgrade_test topology: " . $ret . "\n";
-      exit(1);
-    }
-  }
-
-  # Break current binary postgis functions
-  $query = "UPDATE pg_proc SET probin = probin || '-uninstalled' WHERE probin like '%postgis%'";
-  my $ret = sql($query);
-  unless ( $ret =~ /^UPDATE/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong breaking postgis funx probin: $ret.\n";
-    exit(1);
-  }
-}
-
-sub drop_upgrade_test_objects
-{
-  # TODO: allow passing the "upgrade-cleanup" script via commandline
-
-  my $ret = sql("drop view if exists upgrade_view_test;");
-  unless ( $ret =~ /^DROP/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong dropping spatial view: $ret.\n";
-    exit(1);
-  }
-
-  my $ret = sql("drop table upgrade_test;");
-  unless ( $ret =~ /^DROP/ ) {
-    `dropdb $DB`;
-    print "\nSomething went wrong dropping spatial tables: $ret.\n";
-    exit(1);
-  }
-
-  if ( $OPT_WITH_TOPO )
-  {
-    my $query = "SELECT topology.DropTopology('upgrade_test');";
-    $ret = sql($query);
-    unless ( $ret =~ /^Topology 'upgrade_test' dropped$/ ) {
-      `dropdb $DB`;
-      print "\nSomething went wrong dropping upgrade_test topology: " . $ret . "\n";
-      exit(1);
-    }
-  }
-}
-
-
 if ( $OPT_UPGRADE )
 {
-	print "  Upgrading from postgis $libver\n";
+	print "Upgrading from postgis $libver\n";
 
-  create_upgrade_test_objects();
+	foreach my $hook (@OPT_HOOK_BEFORE_UPGRADE)
+	{
+		print "Running before-upgrade-script $hook\n";
+		die unless load_sql_file($hook, 1);
+	}
 
   if ( $OPT_EXTENSIONS )
   {
@@ -420,7 +325,11 @@ if ( $OPT_UPGRADE )
 	  upgrade_spatial();
   }
 
-  drop_upgrade_test_objects();
+	foreach my $hook (@OPT_HOOK_AFTER_UPGRADE)
+	{
+		print "Running after-upgrade-script $hook\n";
+		die unless load_sql_file($hook, 1);
+	}
 
   # Update libver
   $libver = sql("select postgis_lib_version()");
@@ -474,11 +383,37 @@ our $TEST = "";
 
 print "\nRunning tests\n\n";
 
+foreach my $hook (@OPT_HOOK_AFTER_CREATE)
+{
+	start_test("after-create-script $hook");
+	show_progress();
+	pass() if load_sql_file($hook, 1);
+}
+
 foreach $TEST (@ARGV)
 {
 	my $TEST_OBJ_COUNT_PRE;
 	my $TEST_OBJ_COUNT_POST;
 	my $TEST_START_TIME;
+
+	if ( "${TEST}" eq '-' )
+	{
+		my $scriptdir = scriptdir($libver, $OPT_EXTENSIONS);
+		print "-- Entering interactive shell --\n";
+		# TODO: add more variables?
+		my $cmd = "psql -Xq"
+		  . " -v \"regdir=$REGDIR\""
+		  . " -v \"top_builddir=$TOP_BUILDDIR\""
+		  . " -v \"scriptdir=$scriptdir\""
+		  . " -v \"schema=$OPT_SCHEMA.\""
+		  # TODO: inject search_path somehow
+		  #. " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
+		  . " ${DB}"
+		;
+		my $rv = system($cmd);
+		print "-- Moving on with tests, if any --\n";
+		next;
+	}
 
 	# catch a common mistake (strip trailing .sql)
 	$TEST =~ s/.sql$//;
@@ -513,7 +448,20 @@ foreach $TEST (@ARGV)
 	}
 	elsif ( -r "${TEST}.tif" )
 	{
-		my $rv = run_raster_loader_test();
+		my $rv = run_raster_loader_test("${TEST}.tif");
+		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if $rv;
+	}
+	elsif ( -r "${TEST}.tif.ref" )
+	{
+		open(REF, "${TEST}.tif.ref");
+		my $raster_ref = <REF>;
+		close(REF);
+		chop $raster_ref;
+		#print "Raster ref: [$raster_ref]\n";
+		# Resolve raster_ref relative to ${TEST} dirname
+		my $raster_path = dirname(${TEST}) . '/' . $raster_ref;
+		#print "Raster path: [$raster_path]\n";
+		my $rv = run_raster_loader_test($raster_path);
 		pass("in ".int(1000*(time-$TEST_START_TIME))." ms") if $rv;
 	}
 	elsif ( -r "${TEST}.sql" )
@@ -552,6 +500,13 @@ foreach $TEST (@ARGV)
 		fail("PostGIS object count pre-test ($TEST_OBJ_COUNT_POST) != post-test ($TEST_OBJ_COUNT_PRE)");
 	}
 
+}
+
+foreach my $hook (@OPT_HOOK_BEFORE_UNINSTALL)
+{
+	start_test("before-uninstall-script $hook");
+	show_progress();
+	pass() if load_sql_file($hook, 1);
 }
 
 
@@ -615,7 +570,7 @@ Options:
                          to specify a script version to start from.
                   <to> can be specified as ":auto" to request
                        upgrades to default version, and be appended
-                       a question mark (ie: ":auto!" or "3.0.0!") to
+                       an exclamation mark (ie: ":auto!" or "3.0.0!") to
                        request upgrade via postgis_extensions_upgrade()
                        if available.
   --dumprestore   dump and restore spatially-enabled db before running tests
@@ -623,11 +578,24 @@ Options:
   --schema        where to install/find PostGIS (relocatable) PostGIS
                   (defaults to "public")
   --raster        load also raster extension
+  --tiger      		load also tiger_geocoder extension
   --topology      load also topology extension
   --sfcgal        use also sfcgal backend
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
   --extension     load using extensions
+  --after-create-script <path>
+                  script to load after spatial db creation
+                  (multiple switches supported, to be run in given order)
+  --before-uninstall-script <path>
+                  script to load before spatial extension uninstall
+                  (multiple switches supported, to be run in given order)
+  --before-upgrade-script <path>
+                  script to load before upgrade
+                  (multiple switches supported, to be run in given order)
+  --after-upgrade-script <path>
+                  script to load after upgrade
+                  (multiple switches supported, to be run in given order)
 };
 
 }
@@ -707,7 +675,10 @@ sub run_simple_sql
 
 	# Dump output to a temp file.
 	my $tmpfile = sprintf("%s/test_%s_tmp", $TMPDIR, $RUN);
-	my $cmd = "psql -v \"VERBOSITY=terse\" -tXAq $DB < $sql > $tmpfile 2>&1";
+	my $cmd = "psql -v \"VERBOSITY=terse\" "
+		. " -v \"regdir=$REGDIR\""
+		. " -v \"top_builddir=$TOP_BUILDDIR\""
+		. " -tXAq $DB < $sql > $tmpfile 2>&1";
 	#print($cmd);
 	my $rv = system($cmd);
 	# Check if psql errored out.
@@ -804,10 +775,15 @@ sub run_simple_test
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
           . " -v \"regdir=$REGDIR\""
+          . " -v \"top_builddir=$TOP_BUILDDIR\""
           . " -v \"schema=$OPT_SCHEMA.\""
           . " -c \"SET search_path TO public,$OPT_SCHEMA,topology\""
           . " -tXAq -f $sqlfile $DB > $outfile 2>&1";
 	my $rv = system($cmd);
+    if ( $rv ) {
+        fail "psql exited with an error", $outfile;
+        die;
+    }
 
 	# Check for ERROR lines
 	open(FILE, "$outfile");
@@ -816,7 +792,7 @@ sub run_simple_test
 
 	# Strip the lines we don't care about
 	@lines = grep(!/^\$/, @lines);
-	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT|COPY|DO)/, @lines);
+	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT [0-9]*|COPY|DO)$/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
 	@lines = grep(!/^(DROP|CREATE|ALTER|VACUUM)/, @lines);
 	@lines = grep(!/^(LOG|SET|TRUNCATE|DISCARD)/, @lines);
@@ -1023,6 +999,7 @@ sub run_dumper_and_check_output
 sub run_raster_loader_and_check_output
 {
 	my $description = shift;
+	my $raster_file = shift;
 	my $tblname = shift;
 	my $expected_sql_file = shift;
 	my $expected_select_results_file = shift;
@@ -1041,7 +1018,7 @@ sub run_raster_loader_and_check_output
 		show_progress();
 
 		# Produce the output SQL file.
-		$cmd = "$RASTER2PGSQL $loader_options ${TEST}.tif $tblname > $outfile 2> $errfile";
+		$cmd = "$RASTER2PGSQL $loader_options $raster_file $tblname > $outfile 2> $errfile";
 		$rv = system($cmd);
 
 		if ( $rv )
@@ -1118,6 +1095,7 @@ sub run_loader_test
 	# If we have some expected files to compare with, run in wkt mode.
 	if ( ! run_loader_and_check_output("wkt test", $tblname, "${TEST}-w.sql.expected", "${TEST}-w.select.expected", "-w $custom_opts") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	drop_table($tblname);
@@ -1125,11 +1103,13 @@ sub run_loader_test
 	# If we have some expected files to compare with, run in geography mode.
 	if ( ! run_loader_and_check_output("geog test", $tblname, "${TEST}-G.sql.expected", "${TEST}-G.select.expected", "-G $custom_opts") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	# If we have some expected files to compare with, run the dumper and compare shape files.
 	if ( ! run_dumper_and_check_output("dumper geog test", $tblname, "${TEST}-G.shp.expected") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	drop_table($tblname);
@@ -1137,11 +1117,13 @@ sub run_loader_test
 	# Always run in wkb ("normal") mode, even if there are no expected files to compare with.
 	if( ! run_loader_and_check_output("wkb test", $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", "$custom_opts", "true") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	# If we have some expected files to compare with, run the dumper and compare shape files.
 	if( ! run_dumper_and_check_output("dumper wkb test", $tblname, "${TEST}.shp.expected") )
 	{
+		drop_table($tblname) unless $OPT_NODROP;
 		return 0;
 	}
 	drop_table($tblname);
@@ -1152,6 +1134,7 @@ sub run_loader_test
 		# If we have some expected files to compare with, run in wkt dump mode.
 		if ( ! run_loader_and_check_output("wkt dump test", $tblname, "${TEST}-wD.sql.expected") )
 		{
+			drop_table($tblname) unless $OPT_NODROP;
 			return 0;
 		}
 		drop_table($tblname);
@@ -1159,6 +1142,7 @@ sub run_loader_test
 		# If we have some expected files to compare with, run in wkt dump mode.
 		if ( ! run_loader_and_check_output("geog dump test", $tblname, "${TEST}-GD.sql.expected") )
 		{
+			drop_table($tblname) unless $OPT_NODROP;
 			return 0;
 		}
 		drop_table($tblname);
@@ -1166,6 +1150,7 @@ sub run_loader_test
 		# If we have some expected files to compare with, run in wkb dump mode.
 		if ( ! run_loader_and_check_output("wkb dump test", $tblname, "${TEST}-D.sql.expected") )
 		{
+			drop_table($tblname) unless $OPT_NODROP;
 			return 0;
 		}
 		drop_table($tblname);
@@ -1266,24 +1251,30 @@ sub run_dumper_test
 ##################################################################
 sub run_raster_loader_test
 {
+	my $raster_file = shift;
 	# See if there is a custom command-line options file
 	my $opts_file = "${TEST}.opts";
 	my $custom_opts="";
 
 	if ( -r $opts_file )
 	{
+		my $regdir = abs_path(dirname(${TEST}));
 		open(FILE, $opts_file);
-		my @opts = <FILE>;
+		my @opts;
+		while (<FILE>) {
+			next if /^\s*#/;
+			chop;
+			s/{regdir}/$regdir/;
+			push @opts, $_;
+		}
 		close(FILE);
-		@opts = grep(!/^\s*#/, @opts);
-		map(s/\n//, @opts);
 		$custom_opts = join(" ", @opts);
 	}
 
 	my $tblname="loadedrast";
 
 	# If we have some expected files to compare with, run in geography mode.
-	if ( ! run_raster_loader_and_check_output("test", $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", $custom_opts, "true") )
+	if ( ! run_raster_loader_and_check_output("test", $raster_file, $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", $custom_opts, "true") )
 	{
 		return 0;
 	}
@@ -1344,22 +1335,37 @@ sub create_db
 
 sub create_spatial
 {
-	my ($cmd, $rv);
-	print "Creating database '$DB' \n";
+    my ($cmd, $rv);
+    print "Creating database '$DB' \n";
 
-  	$rv = create_db();
+    $rv = create_db();
 
-	# Count database objects before installing anything
-	$OBJ_COUNT_PRE = count_db_objects();
+    # Count database objects before installing anything
+    $OBJ_COUNT_PRE = count_db_objects();
 
-	if ( $OPT_EXTENSIONS )
-	{
-		prepare_spatial_extensions();
-	}
-	else
-	{
-		prepare_spatial();
-	}
+    if ( $OPT_EXTENSIONS )
+    {
+        prepare_spatial_extensions();
+    }
+    else
+    {
+        if ( ! $OPT_UPGRADE_FROM )
+        {
+            prepare_spatial();
+            return;
+        }
+
+        if ( $OPT_UPGRADE_FROM !~ /^unpackaged(.*)/ )
+        {
+            die "--upgrade-path without --extension is only supported with source unpackaged*";
+        }
+
+        if ( $OPT_UPGRADE_TO != ':auto' )
+        {
+            die "--upgrade-path without --extension is only supported with target :auto";
+        }
+        prepare_spatial($1);
+    }
 }
 
 
@@ -1370,7 +1376,8 @@ sub load_sql_file
 
 	if ( $strict && ! -e $file )
 	{
-		die "Unable to find $file\n";
+		fail "Unable to find $file";
+		return 0;
 	}
 
 	if ( -e $file )
@@ -1385,7 +1392,8 @@ sub load_sql_file
 		if ( $rv )
 		{
 		  fail "Error encountered loading $file", $REGRESS_LOG;
-		  exit 1;
+		  #exit 1;
+			return 0;
 		}
 	}
 	return 1;
@@ -1440,6 +1448,23 @@ sub prepare_spatial_extensions
 		$rv = system($cmd);
   	if ( $rv ) {
   		fail "Error encountered creating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+  		die;
+		}
+ 	}
+
+	if ( $OPT_WITH_TIGER )
+	{
+		my $sql = "CREATE EXTENSION postgis_tiger_geocoder CASCADE";
+		if ( $OPT_UPGRADE_FROM ) {
+			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+		}
+
+		print "Preparing db '${DB}' using: ${sql}\n";
+
+ 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+		$rv = system($cmd);
+  	if ( $rv ) {
+  		fail "Error encountered creating EXTENSION POSTGIS_TIGER_GEOCODER", $REGRESS_LOG;
   		die;
 		}
  	}
@@ -1555,62 +1580,29 @@ sub upgrade_spatial
 {
     print "Upgrading PostGIS in '${DB}' \n" ;
 
-    my $script = `ls ${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql`;
-    chomp($script);
-
-    if ( -e $script )
-    {
-        print "Upgrading core\n";
-        load_sql_file($script);
-    }
-    else
-    {
-        die "$script not found\n";
-    }
+    my $script = "${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql";
+    print "Upgrading core\n";
+    die unless load_sql_file($script, 1);
 
     if ( $OPT_WITH_TOPO )
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/topology_upgrade.sql`;
-        chomp($script);
-        if ( -e $script )
-        {
-            print "Upgrading topology\n";
-            load_sql_file($script);
-        }
-        else
-        {
-            die "$script not found\n";
-        }
+        $script = "${STAGED_SCRIPTS_DIR}/topology_upgrade.sql";
+        print "Upgrading topology\n";
+        die unless load_sql_file($script, 1);
     }
 
     if ( $OPT_WITH_RASTER )
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade.sql`;
-        chomp($script);
-        if ( -e $script )
-        {
-            print "Upgrading raster\n";
-            load_sql_file($script);
-        }
-        else
-        {
-            die "$script not found\n";
-        }
+        $script = "${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade.sql";
+        print "Upgrading raster\n";
+        die unless load_sql_file($script, 1);
     }
 
     if ( $OPT_WITH_SFCGAL )
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql`;
-        chomp($script);
-        if ( -e $script )
-        {
-            print "Upgrading sfcgal\n";
-            load_sql_file($script);
-        }
-        else
-        {
-            die "$script not found\n";
-        }
+        $script = "${STAGED_SCRIPTS_DIR}/sfcgal_upgrade.sql";
+        print "Upgrading sfcgal\n";
+        die unless load_sql_file($script, 1);
     }
 
     return 1;
@@ -1842,6 +1834,16 @@ sub drop_spatial_extensions
         $rv = system($cmd);
       	$ok = 0 if $rv;
     }
+    if ( $OPT_WITH_TIGER )
+    {
+        $cmd = "psql $psql_opts -c \"DROP EXTENSION IF EXISTS postgis_tiger_geocoder;
+                DROP EXTENSION IF EXISTS fuzzystrmatch;
+                DROP SCHEMA IF EXISTS tiger;
+                DROP SCHEMA IF EXISTS tiger_data;
+                \" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+      	$ok = 0 if $rv;
+    }
 
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
     $rv = system($cmd);
@@ -1857,6 +1859,7 @@ sub drop_spatial_extensions
 sub uninstall_spatial
 {
 	my $ok;
+
 	start_test("uninstall");
 
 	if ( $OPT_EXTENSIONS )
@@ -1868,24 +1871,19 @@ sub uninstall_spatial
 		$ok = drop_spatial();
 	}
 
-	if ( $ok )
-	{
-		show_progress(); # on to objects count
-		$OBJ_COUNT_POST = count_db_objects();
+	return $ok if ! $ok;
 
-		if ( $OBJ_COUNT_POST != $OBJ_COUNT_PRE )
-		{
-			fail("Object count pre-install ($OBJ_COUNT_PRE) != post-uninstall ($OBJ_COUNT_POST)");
-			return 0;
-		}
-		else
-		{
-			pass("($OBJ_COUNT_PRE)");
-			return 1;
-		}
+	show_progress(); # on to objects count
+	$OBJ_COUNT_POST = count_db_objects();
+
+	if ( $OBJ_COUNT_POST != $OBJ_COUNT_PRE )
+	{
+		fail("Object count pre-install ($OBJ_COUNT_PRE) != post-uninstall ($OBJ_COUNT_POST)");
+		return 0;
 	}
 
-	return 0;
+	pass("($OBJ_COUNT_PRE)");
+	return 1;
 }
 
 # Dump and restore the database
