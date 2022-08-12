@@ -56,5 +56,5 @@ SELECT 12, ST_AsEWKT(ST_Transform(
            ST_GeomFromEWKT('SRID=100002;POINT(16 48)'),
            'invalid projection'));
 
-DELETE FROM spatial_ref_sys WHERE srid >= 100000;
+DELETE FROM spatial_ref_sys WHERE srid in (100001, 100002);
 
