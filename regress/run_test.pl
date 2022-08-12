@@ -1383,7 +1383,7 @@ sub load_sql_file
 	if ( -e $file )
 	{
 		# ON_ERROR_STOP is used by psql to return non-0 on an error
-		my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+		my $psql_opts = "--quiet --no-psqlrc --variable ON_ERROR_STOP=true";
 		my $cmd = "psql $psql_opts -c 'CREATE SCHEMA IF NOT EXISTS $OPT_SCHEMA' ";
 		$cmd .= "-c 'SET search_path TO $OPT_SCHEMA,topology'";
 		$cmd .= " -Xf $file $DB >> $REGRESS_LOG 2>&1";
