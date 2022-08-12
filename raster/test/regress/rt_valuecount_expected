@@ -35,12 +35,6 @@ NOTICE:  Invalid band index (must use 1-based). Returning NULL
 0
 10
 0
-SAVEPOINT
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-RELEASE
-SAVEPOINT
 ERROR:  relation "test1" does not exist at character 20
-RELEASE
-SAVEPOINT
 ERROR:  column "rast1" does not exist at character 8
-RELEASE
