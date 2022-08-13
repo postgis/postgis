@@ -233,6 +233,14 @@ psql -tAc "
 " template1
 `));
 
+my $defextver = `
+psql -XtAc "
+	SELECT default_version
+	FROM pg_catalog.pg_available_extensions
+	WHERE name = 'postgis'
+" template1
+`;
+
 my $dbcount = @dblist;
 
 if ( $dbcount == 0 )
@@ -264,7 +272,6 @@ else
 
 my $pgvernum = sql("SELECT current_setting('server_version_num')");
 my $libver = sql("select postgis_lib_version()");
-my $defextver = sql("select default_version from pg_available_extensions where name = 'postgis'");
 
 if ( ! $libver )
 {
@@ -1470,7 +1477,8 @@ sub prepare_spatial_extensions
 		}
  	}
 
-	if ( $OPT_WITH_RASTER && has_split_raster_ext($OPT_UPGRADE_FROM) )
+	my $extver = $OPT_UPGRADE_FROM ? $OPT_UPGRADE_FROM : $OPT_UPGRADE_TO ? $OPT_UPGRADE_TO : $defextver;
+	if ( $OPT_WITH_RASTER && has_split_raster_ext($extver) )
 	{
 		my $sql = "CREATE EXTENSION postgis_raster";
 		if ( $OPT_UPGRADE_FROM ) {
