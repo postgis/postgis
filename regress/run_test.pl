@@ -1470,12 +1470,7 @@ sub prepare_spatial_extensions
 		}
  	}
 
-	if ( $OPT_WITH_RASTER && (
-		# NOTE: this code is assuming that the default version
-		# (!$OPT_UPGRADE_FROM) has split raster extension
-		! $OPT_UPGRADE_FROM ||
-		has_split_raster_ext($OPT_UPGRADE_FROM)
-	) )
+	if ( $OPT_WITH_RASTER && has_split_raster_ext($OPT_UPGRADE_FROM) )
 	{
 		my $sql = "CREATE EXTENSION postgis_raster";
 		if ( $OPT_UPGRADE_FROM ) {
