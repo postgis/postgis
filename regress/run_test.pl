@@ -51,9 +51,6 @@ BEGIN {
 our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = abs_path(dirname($0));
 our $TOP_BUILDDIR = $ENV{"POSTGIS_TOP_BUILD_DIR"} || ${REGDIR} . '/..';
-our $SHP2PGSQL = $TOP_BUILDDIR . "/loader/shp2pgsql";
-our $PGSQL2SHP = $TOP_BUILDDIR . "/loader/pgsql2shp";
-our $RASTER2PGSQL = $TOP_BUILDDIR . "/raster/loader/raster2pgsql";
 our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
@@ -97,6 +94,7 @@ GetOptions (
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS,
 	'schema=s' => \$OPT_SCHEMA,
+	'build-dir=s' => \$TOP_BUILDDIR,
 	'after-create-script=s' => \@OPT_HOOK_AFTER_CREATE,
 	'before-uninstall-script=s' => \@OPT_HOOK_BEFORE_UNINSTALL,
 	'before-upgrade-script=s' => \@OPT_HOOK_BEFORE_UPGRADE,
@@ -107,6 +105,10 @@ if ( @ARGV < 1 )
 {
 	usage();
 }
+
+our $SHP2PGSQL = $TOP_BUILDDIR . "/loader/shp2pgsql";
+our $PGSQL2SHP = $TOP_BUILDDIR . "/loader/pgsql2shp";
+our $RASTER2PGSQL = $TOP_BUILDDIR . "/raster/loader/raster2pgsql";
 
 if ( $OPT_UPGRADE_PATH )
 {
@@ -177,7 +179,8 @@ foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 	{
 		print "failed\n";
 		print STDERR "Unable to find $exec executable.\n";
-		die "HINT: set POSTGIS_TOP_BUILD_DIR env variable to the build dir.\n";
+		print STDERR "TOP_BUILDDIR is ${TOP_BUILDDIR}\n";
+		die "HINT: use POSTGIS_TOP_BUILD_DIR env or --build-dir switch the specify top build dir.\n";
 	}
 
 }
@@ -592,6 +595,9 @@ Options:
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
   --extension     load using extensions
+  --build-dir <path>
+                  specify where to find the top build dir of PostGIS,
+                  to find binaries and scripts
   --after-create-script <path>
                   script to load after spatial db creation
                   (multiple switches supported, to be run in given order)
