@@ -1,7 +1,7 @@
 pipeline {
     agent   {
         label {
-            label 'armmie'
+            label 'jarmmie-drone'
         }
     }
 
