@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent jarmmie
 
     stages {
         stage('Build') {
