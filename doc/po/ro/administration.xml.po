@@ -5,31 +5,35 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-13 19:13+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-08-16 23:55+0000\n"
+"Last-Translator: Florentin Drogeanu <drogeanu.florentin@gmail.com>\n"
+"Language-Team: Romanian <https://weblate.osgeo.org/projects/postgis/"
+"administrationxml/ro/>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: administration.xml:3
 #, no-c-format
 msgid "PostGIS Administration"
-msgstr ""
+msgstr "Administrare PostGIS"
 
 #. Tag: chapter
 #: administration.xml:3
 #, no-c-format
 msgid "&database_tuning;"
-msgstr ""
+msgstr "&database_tuning;"
 
 #. Tag: title
 #: administration.xml:9
 #, no-c-format
 msgid "Configuring raster support"
-msgstr ""
+msgstr "Configurarea suportului raster"
 
 #. Tag: para
 #: administration.xml:11
@@ -38,10 +42,12 @@ msgid ""
 "If you enabled raster support you may want to read below how to properly "
 "configure it."
 msgstr ""
+"Dacă ați activat suportul raster, este posibil să doriți să citiți mai jos "
+"cum să îl configurați corect."
 
 #. Tag: para
 #: administration.xml:16
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled "
 "by default. In order to re-enable these, you need to set the following "
@@ -50,24 +56,33 @@ msgid ""
 "For PostGIS 2.2, you can use the more cross-platform approach of setting the "
 "corresponding <xref linkend=\"PostGIS_GUC\"/>."
 msgstr ""
+"Începând cu PostGIS 2.1.3, rasterele din afara bazei de date și toate "
+"driverele raster sunt dezactivate în mod implicit. Pentru a le activa din "
+"nou, trebuie să setați următoarele variabile de mediu "
+"<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> și "
+"<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> în mediul serverului. Pentru "
+"PostGIS 2.2, puteți utiliza o abordare pentru platforme multiple de setare a "
+"parametrului corespunzător <xref linkend=\"PostGIS_GUC\"/>."
 
 #. Tag: para
 #: administration.xml:19
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr ""
+msgstr "Dacă doriți să activați rasterul offline:"
 
 #. Tag: programlisting
 #: administration.xml:20
 #, no-c-format
 msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-msgstr ""
+msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
 
 #. Tag: para
 #: administration.xml:21
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
 msgstr ""
+"Orice altă setare sau nicio altă setare va dezactiva rasterele din afara "
+"bazei de date."
 
 #. Tag: para
 #: administration.xml:22
@@ -76,12 +91,14 @@ msgid ""
 "In order to enable all GDAL drivers available in your GDAL install, set this "
 "environment variable as follows"
 msgstr ""
+"Pentru a activa toate driverele GDAL disponibile în instalarea GDAL, setați "
+"această variabilă de mediu după cum urmează"
 
 #. Tag: programlisting
 #: administration.xml:23
 #, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-msgstr ""
+msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
 
 #. Tag: para
 #: administration.xml:24
@@ -90,18 +107,20 @@ msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
 msgstr ""
+"Dacă doriți să activați numai anumite drivere, setați variabila de mediu "
+"după cum urmează:"
 
 #. Tag: programlisting
 #: administration.xml:25
 #, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
-msgstr ""
+msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
 
 #. Tag: para
 #: administration.xml:27
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr ""
+msgstr "Dacă sunteți pe Windows, nu citați lista de drivere"
 
 #. Tag: para
 #: administration.xml:29
@@ -113,6 +132,12 @@ msgid ""
 "<replaceable>main</replaceable>/environment</filename> where 10 refers to "
 "version of PostgreSQL and main refers to the cluster."
 msgstr ""
+"Setarea variabilelor de mediu variază în funcție de sistemul de operare. "
+"Pentru PostgreSQL instalat pe Ubuntu sau Debian prin apt-postgresql, "
+"modalitatea preferată este să editați <filename>/etc/postgresql/"
+"<replaceable>10</replaceable>/<replaceable>main</replaceable>/environment</"
+"filename> unde 10 se referă la versiunea de PostgreSQL și main se referă la "
+"cluster."
 
 #. Tag: para
 #: administration.xml:32
@@ -133,18 +158,20 @@ msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
 msgstr ""
+"După ce ați setat variabilele de mediu, va trebui să reporniți serviciul "
+"PostgreSQL pentru ca modificările să intre în vigoare."
 
 #. Tag: title
 #: administration.xml:39
 #, no-c-format
 msgid "Creating spatial databases"
-msgstr ""
+msgstr "Se crează bazele de date spațiale"
 
 #. Tag: title
 #: administration.xml:42
 #, no-c-format
 msgid "Spatially enable database using EXTENSION"
-msgstr ""
+msgstr "Activarea spațială a bazei de date folosind EXTENSION"
 
 #. Tag: para
 #: administration.xml:44
@@ -154,6 +181,9 @@ msgid ""
 "extensions/postgis modules, you can turn a database into a spatial one using "
 "the EXTENSION mechanism."
 msgstr ""
+"Dacă utilizați PostgreSQL 9.1+ și ați compilat și instalat modulele "
+"extensions/postgis, puteți transforma o bază de date într-una spațială "
+"utilizând mecanismul EXTENSION."
 
 #. Tag: para
 #: administration.xml:49
@@ -163,6 +193,9 @@ msgid ""
 "the functions and comments. Raster and topology are packaged as a separate "
 "extension."
 msgstr ""
+"Extensia postgis de bază include geometrie, geografie, spatial_ref_sys și "
+"toate funcțiile și comentariile. Raster și topologie sunt împachetate ca o "
+"extensie separată."
 
 #. Tag: para
 #: administration.xml:55
@@ -170,6 +203,8 @@ msgstr ""
 msgid ""
 "Run the following SQL snippet in the database you want to enable spatially:"
 msgstr ""
+"Rulați următorul fragment SQL în baza de date pe care doriți să activați "
+"spațial:"
 
 #. Tag: programlisting
 #: administration.xml:57
@@ -180,12 +215,18 @@ msgid ""
 "      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
 "      CREATE EXTENSION postgis_topology; -- OPTIONAL"
 msgstr ""
+"CREATE EXTENSION IF NOT EXISTS plpgsql;\n"
+"      CREATE EXTENSION postgis;\n"
+"      CREATE EXTENSION postgis_raster; -- OPTIONAL\n"
+"      CREATE EXTENSION postgis_topology; -- OPTIONAL"
 
 #. Tag: title
 #: administration.xml:63
 #, no-c-format
 msgid "Spatially enable database without using EXTENSION (discouraged)"
 msgstr ""
+"Activează abilitate spațială a bazei de date fără a utiliza EXTENSION "
+"(descurajat)"
 
 #. Tag: para
 #: administration.xml:65
@@ -261,6 +302,21 @@ msgid ""
 "    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql\n"
 "    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPTIONAL"
 msgstr ""
+"DB=[bazatadedate]\n"
+"    SCRIPTSDIR=`pg_config --sharedir`/contrib/postgis-&last_minor_version;/\n"
+"\n"
+"    #  Obiecte de bază\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/postgis.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/spatial_ref_sys.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/postgis_comments.sql # OPȚIONAL\n"
+"\n"
+"    # Suport Raster (OPȚIONAL)\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/rtpostgis.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/raster_comments.sql # OPȚIONAL\n"
+"\n"
+"    # Suport pentru topologie  (OPȚIONAL)\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/topology.sql\n"
+"    psql -d ${DB} -f ${SCRIPTSDIR}/topology_comments.sql # OPȚIONAL"
 
 #. Tag: title
 #: administration.xml:107
