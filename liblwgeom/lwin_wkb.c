@@ -261,9 +261,9 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 * Byte
 * Read a byte and advance the parse state forward.
 */
-static char byte_from_wkb_state(wkb_parse_state *s)
+static uint8_t byte_from_wkb_state(wkb_parse_state *s)
 {
-	char char_value = 0;
+	uint8_t char_value = 0;
 	LWDEBUG(4, "Entered function");
 
 	wkb_parse_state_check(s, WKB_BYTE_SIZE);
@@ -734,7 +734,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 */
 LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 {
-	char wkb_little_endian;
+	uint8_t wkb_little_endian;
 	uint32_t wkb_type;
 
 	LWDEBUG(4,"Entered function");
