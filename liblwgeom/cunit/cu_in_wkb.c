@@ -279,6 +279,16 @@ test_wkb_fuzz(void)
 	lwfree(wkb5);
 }
 
+#include "cu_in_wkb_fuzz.h"
+
+static void test_wkb_fuzz2(void)
+{
+	LWGEOM* g = lwgeom_from_hexwkb(hexwkbfuzz, LW_PARSER_CHECK_NONE);
+	lwgeom_free(g);
+}
+
+
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -300,4 +310,6 @@ void wkb_in_suite_setup(void)
 	PG_ADD_TEST(suite, test_wkb_in_multisurface);
 	PG_ADD_TEST(suite, test_wkb_in_malformed);
 	PG_ADD_TEST(suite, test_wkb_fuzz);
+	PG_ADD_TEST(suite, test_wkb_fuzz2);
 }
+
