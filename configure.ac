@@ -1189,8 +1189,8 @@ else
     CPPFLAGS="-DNDEBUG $CPPFLAGS"
 
     if test $ENABLE_LTO -eq 1; then
-        AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -flto], [_cv_flto], [-flto], [], [CFLAGS="$CFLAGS -flto"], [])
-        AC_LIBTOOL_LINKER_OPTION([if $compiler supports -flto], [_cv_flto], [[-flto]], [LDFLAGS="$LDFLAGS -flto"])
+        _LT_COMPILER_OPTION([if $compiler supports -flto],[_cv_flto],[-flto],[],[CFLAGS="$CFLAGS -flto"],[])
+        _LT_LINKER_OPTION([if $compiler supports -flto],[_cv_flto],[[-flto]],[LDFLAGS="$LDFLAGS -flto"])
     fi
 fi
 
