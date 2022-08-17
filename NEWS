@@ -6,6 +6,8 @@ ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEO
 Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.
 
   - #5089, ST_Reverse also reverses components of CompoundCurve (Paul Ramsey)
+  - #5181, Reset proj error state after failed parse (Paul Ramsey)
+  - #5171, Short circuit geodesic distance when inputs equal (Paul Ramsey)
 
 
 PostGIS 3.3.0rc1
