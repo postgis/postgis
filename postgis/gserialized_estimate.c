@@ -145,8 +145,9 @@ Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS);
 Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS);
 
 /* Local prototypes */
-static Oid table_get_spatial_index(Oid tbl_oid, text *col, int *key_type);
-static GBOX * spatial_index_read_extent(Oid idx_oid, int key_type);
+static Oid table_get_spatial_index(Oid tbl_oid, text *col, int *key_type, int *att_num);
+static GBOX * spatial_index_read_extent(Oid idx_oid, int key_type, int att_num);
+
 
 /* Other prototypes */
 float8 gserialized_joinsel_internal(PlannerInfo *root, List *args, JoinType jointype, int mode);
@@ -2316,7 +2317,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	ND_STATS *nd_stats;
 	GBOX *gbox = NULL;
 	bool only_parent = false;
-	int key_type;
+	int key_type, att_num;
 	size_t sz;
 
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
@@ -2362,13 +2363,12 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	}
 
 	/* Read the extent from the head of the spatial index, if there is one */
-#if 1
-	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
-#endif
+
+	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type, &att_num);
 	if (idx_oid)
 	{
 		/* TODO: how about only_parent ? */
-		gbox = spatial_index_read_extent(idx_oid, key_type);
+		gbox = spatial_index_read_extent(idx_oid, key_type, att_num);
 		POSTGIS_DEBUGF(2, "index for \"%s.%s\" exists, reading gbox from there", tbl, text_to_cstring(col));
 		if ( ! gbox ) PG_RETURN_NULL();
 	}
@@ -2434,7 +2434,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 /************************************************************************/
 
 static Oid
-table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
+table_get_spatial_index(Oid tbl_oid, text *col, int *key_type, int *att_num)
 {
 	Relation tbl_rel;
 	ListCell *lc;
@@ -2473,6 +2473,7 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 		{
 			Form_pg_attribute att;
 			Oid atttypid;
+			int attnum;
 			/* Is the index on the column name we are looking for? */
 			HeapTuple att_tup = SearchSysCache2(ATTNAME,
 			                                    ObjectIdGetDatum(idx_oid),
@@ -2482,6 +2483,7 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 
 			att = (Form_pg_attribute) GETSTRUCT(att_tup);
 			atttypid = att->atttypid;
+			attnum = att->attnum;
 			ReleaseSysCache(att_tup);
 
 			/* Is the column actually spatial? */
@@ -2489,6 +2491,8 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 			{
 				/* Save result, clean up, and break out */
 				result = idx_oid;
+				if (att_num)
+					*att_num = attnum;
 				if (key_type)
 					*key_type = (atttypid == b2d_oid ? STATISTIC_KIND_2D : STATISTIC_KIND_ND);
 				break;
@@ -2499,7 +2503,7 @@ table_get_spatial_index(Oid tbl_oid, text *col, int *key_type)
 }
 
 static GBOX *
-spatial_index_read_extent(Oid idx_oid, int key_type)
+spatial_index_read_extent(Oid idx_oid, int key_type, int att_num)
 {
 	BOX2DF *bounds_2df = NULL;
 	GIDX *bounds_gidx = NULL;
@@ -2532,7 +2536,7 @@ spatial_index_read_extent(Oid idx_oid, int key_type)
 		if (!GistTupleIsInvalid(ituple))
 		{
 			bool isnull;
-			Datum idx_attr = index_getattr(ituple, 1, idx_rel->rd_att, &isnull);
+			Datum idx_attr = index_getattr(ituple, att_num, idx_rel->rd_att, &isnull);
 			if (!isnull)
 			{
 				if (key_type == STATISTIC_KIND_2D)
@@ -2591,6 +2595,7 @@ Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS)
 {
 	GBOX *gbox = NULL;
 	int key_type;
+	int att_num;
 	Oid tbl_oid = PG_GETARG_DATUM(0);
 	text *col = PG_GETARG_TEXT_P(1);
 	Oid idx_oid;
@@ -2601,11 +2606,11 @@ Datum _postgis_gserialized_index_extent(PG_FUNCTION_ARGS)
 	/* We need to initialize the internal cache to access it later via postgis_oid() */
 	postgis_initialize_cache();
 
-	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type);
+	idx_oid = table_get_spatial_index(tbl_oid, col, &key_type, &att_num);
 	if (!idx_oid)
 		PG_RETURN_NULL();
 
-	gbox = spatial_index_read_extent(idx_oid, key_type);
+	gbox = spatial_index_read_extent(idx_oid, key_type, att_num);
 	if (!gbox)
 		PG_RETURN_NULL();
 	else
