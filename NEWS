@@ -6,6 +6,7 @@ PostGIS 3.0.7dev
   - #4643, Fix upgrade from unpackaged on PostgreSQL >= 13 (Sandro Santilli)
   - #5209, #5210, Fix upgrades with CVE-2022-2625 PostgreSQL fix
   - #5032, Correctly read extent off multi-key GIST indexes (Paul Ramsey)
+  - #5171, Reset proj error state after failed parse (Paul Ramsey)
 
 PostGIS 3.0.6
 2022/07/20
