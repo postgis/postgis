@@ -5,6 +5,7 @@ PostGIS 2.5.8dev
 
   - #5202, Guard against downgrades (Sandro Santilli)
   - #5209, #5210, Fix upgrades with CVE-2022-2625 PostgreSQL fix
+  - #5171, Short circuit geodesic distance when inputs equal (Paul Ramsey)
 
 PostGIS 2.5.7
 2022/07/19
