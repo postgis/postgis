@@ -79,6 +79,11 @@ static double spheroid_big_b(double u2)
 double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
 {
 	struct geod_geodesic gd;
+
+	/* Same point => zero distance */
+	if ( geographic_point_equals(a, b) )
+		return 0.0;
+
 	geod_init(&gd, spheroid->a, spheroid->f);
 	double lat1 = a->lat * 180.0 / M_PI;
 	double lon1 = a->lon * 180.0 / M_PI;
