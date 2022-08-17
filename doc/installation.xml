@@ -110,7 +110,9 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  .
 	</para>
 
-	<programlisting>git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis</programlisting>
+	<programlisting>git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis
+cd postgis
+sh autogen.sh</programlisting>
 
 	<para>
 	  Change into the newly created
