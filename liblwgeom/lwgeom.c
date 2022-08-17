@@ -132,6 +132,24 @@ lwgeom_reverse_in_place(LWGEOM *geom)
 				ptarray_reverse_in_place(poly->rings[r]);
 			return;
 		}
+		/* CompoundCurve needs to also reverse the sub-geometries */
+		/* so that the end-points remain coincident */
+		case COMPOUNDTYPE:
+		{
+			uint32_t ngeoms;
+			col = (LWCOLLECTION *)(geom);
+			if (!col->geoms)
+				return;
+			ngeoms = col->ngeoms;
+			for (i=0; i<ngeoms; i++)
+				lwgeom_reverse_in_place(col->geoms[i]);
+			for (i=0; i<col->ngeoms/2; i++) {
+				LWGEOM* tmp = col->geoms[i];
+				col->geoms[i] = col->geoms[ngeoms-i-1];
+				col->geoms[ngeoms-i-1] = tmp;
+			}
+			return;
+		}
 		case MULTICURVETYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
@@ -139,7 +157,6 @@ lwgeom_reverse_in_place(LWGEOM *geom)
 		case POLYHEDRALSURFACETYPE:
 		case TINTYPE:
 		case COLLECTIONTYPE:
-		case COMPOUNDTYPE:
 		case CURVEPOLYTYPE:
 		{
 			col = (LWCOLLECTION *)(geom);
