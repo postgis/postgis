@@ -16,10 +16,10 @@
 #otherwise use the ones jenkins passes thru
 #!/usr/bin/env bash
 if  [[ "${OVERRIDE}" == '' ]] ; then
-	export GEOS_VER=3.10.0
-	export GDAL_VER=3.3.3
+	export GEOS_VER=3.10.3
+	export GDAL_VER=3.4.3
 	export PROJ_VER=7.2.1
-	export SFCGAL_VER=1.4.0
+	export SFCGAL_VER=1.4.1
 	export CGAL_VER=5.3
 	export ICON_VER=1.16
 	export ZLIB_VER=1.2.11
@@ -198,7 +198,7 @@ fi;
 
 echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
 echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
-echo "CURL VERSION: ${CURL_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
+echo "CURL VERSION: ${CURL_VER} https://curl.se/download.html"  >> $verfile
 cp ${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/
 #cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
@@ -265,6 +265,7 @@ fi
 #echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}
+md5sum $package > ${package}.md5
 #scp $package robe@www.refractions.net:${DWN}/${REL_PGVER}/buildbot/${RELVERDIR}.zip
 cp $package ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
 cd ${POSTGIS_SRC}

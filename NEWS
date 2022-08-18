@@ -16,6 +16,7 @@ Proj 6.1+, and PostgreSQL 14+.
   - #5032, Correctly read extent off multi-key GIST indexes (Paul Ramsey)
   - #5181, Reset proj error state after failed parse (Paul Ramsey)
   - #5171, Short circuit geodesic distance when inputs equal (Paul Ramsey)
+  - Fix potential buffer overflow in long transaction locks (Paul Ramsey)
 
 PostGIS 3.2.2
 2022/07/22
