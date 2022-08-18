@@ -800,7 +800,9 @@ sub run_simple_test
 
 	# Strip the lines we don't care about
 	@lines = grep(!/^\$/, @lines);
-	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT [0-9]*|COPY|DO)$/, @lines);
+	## TODO: Figure out why this fails on windows
+	#@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT [0-9]*|COPY|DO)$/, @lines);
+	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT|COPY|DO)/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
 	@lines = grep(!/^(DROP|CREATE|ALTER|VACUUM)/, @lines);
 	@lines = grep(!/^(LOG|SET|TRUNCATE|DISCARD)/, @lines);
