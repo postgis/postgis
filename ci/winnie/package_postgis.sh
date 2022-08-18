@@ -85,15 +85,6 @@ export PROJSO=libproj-9.dll
 export POSTGIS_MINOR_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 export POSTGIS_MICRO_VER=${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}
 
-if [[ "$POSTGIS_MICRO_VERSION"  == *SVN* || "$POSTGIS_MICRO_VERSION"  == *dev* ]] ; then
-	export POSTGIS_SRC=${PROJECTS}/postgis/branches/${POSTGIS_MINOR_VER}
-	export svnurl="https://svn.osgeo.org/postgis/branches/${POSTGIS_MINOR_VER}"
-else
-	#tagged version -- official release
-	export POSTGIS_SRC=${PROJECTS}/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}
-	export svnurl="https://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
-fi;
-
 if [ -n "$SOURCE_FOLDER" ]; then
   export POSTGIS_SRC=${PROJECTS}/postgis/$SOURCE_FOLDER
 fi
