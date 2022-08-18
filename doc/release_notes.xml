@@ -3,6 +3,25 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>Release 3.1.7</title>
+        <para>This release works with PostgreSQL 9.6-14.</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+                <para>Release date: 2022/08/18</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5191">5191</ulink>, Use integer instead of int4 (Regina Obe)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5139">5139</ulink>, PostGIS causes to_jsonb to no longer be parallel safe,
+                        ST_AsGeoJSON and ST_AsGML are also parallel unsafe
+                        (Regina Obe, Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5202">5202</ulink>, Guard against downgrades (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5209">5209</ulink>, <ulink url="https://trac.osgeo.org/postgis/ticket/5210">5210</ulink>, Fix upgrades with CVE-2022-2625 PostgreSQL fix</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5032">5032</ulink>, Correctly read extent off multi-key GIST indexes (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5181">5181</ulink>, Reset proj error state after failed parse (Paul Ramsey)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5171">5171</ulink>, Short circuit geodesic distance when inputs equal (Paul Ramsey)</para>
+                <para>Fix potential buffer overflow in long transaction locks (Paul Ramsey)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
         <title>Release 3.1.6</title>
         <para>This release works with PostgreSQL 9.6-14.</para>
         <simplesect>

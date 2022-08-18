@@ -1,5 +1,5 @@
-PostGIS 3.1.7dev
-2022/xx/xx
+PostGIS 3.1.7
+2022/08/18
 
 * Bug Fixes
   - #5191, Use integer instead of int4 (Regina Obe)
@@ -11,6 +11,7 @@ PostGIS 3.1.7dev
   - #5032, Correctly read extent off multi-key GIST indexes (Paul Ramsey)
   - #5181, Reset proj error state after failed parse (Paul Ramsey)
   - #5171, Short circuit geodesic distance when inputs equal (Paul Ramsey)
+  - Fix potential buffer overflow in long transaction locks (Paul Ramsey)
 
 
 PostGIS 3.1.6

@@ -18,7 +18,7 @@
 if  [[ "${OVERRIDE}" == '' ]] ; then
 	export GEOS_VER=3.8.1
 	export GDAL_VER=3.0.4
-	export PROJ_VER=6.3.2
+	export PROJ_VER=7.2.1
 	export SFCGAL_VER=1.3.8
 	export CGAL_VER=5.0
 	export ICON_VER=1.16
@@ -27,6 +27,7 @@ if  [[ "${OVERRIDE}" == '' ]] ; then
 	export PROTOBUFC_VER=1.2.1
 	export JSON_VER=0.12
 	export PROJSO=libproj-13.dll
+	export CURL_VER=7.73
 fi;
 
 export PROTOBUF_VER=3.2.0
@@ -39,6 +40,9 @@ if  [[ "${ICON_VER}" == '' ]] ; then
 fi;
 
 echo "ICON_VER ${ICON_VER}"
+if  [[ "${CURL_VER}" == '' ]] ; then
+  export CURL_VER=7.73
+fi;
 
 #set to something even if override is on but not set
 if  [[ "${ZLIB_VER}" == '' ]] ; then
@@ -156,7 +160,7 @@ cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/
 #for protobuf
 cp ${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin/libprotobuf-c-*.dll $outdir/bin
 
-echo "POSTGIS: ${POSTGIS_MINOR_VER} r${POSTGIS_SVN_REVISION} http://postgis.net/source" > $verfile
+echo "POSTGIS: ${POSTGIS_MINOR_VER} http://postgis.net/source" > $verfile
 
 if [ "$POSTGIS_MAJOR_VERSION" > "1" ] ; then
   ## only copy gdal components if 2+.  1.5 doesn't have raster support
@@ -190,6 +194,7 @@ fi;
 
 echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
 echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
+echo "CURL VERSION: ${CURL_VER} https://curl.se/download.html"  >> $verfile
 cp ${PROJECTS}/libxml/rel-libxml2-${LIBXML_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin/
 #cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
@@ -256,6 +261,7 @@ fi
 #echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}
+md5sum $package > ${package}.md5
 #scp $package robe@www.refractions.net:${DWN}/${REL_PGVER}/buildbot/${RELVERDIR}.zip
 cp $package ${PROJECTS}/postgis/win_web/download/windows/pg${REL_PGVER}/buildbot
 cd ${POSTGIS_SRC}
