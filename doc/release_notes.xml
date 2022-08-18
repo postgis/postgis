@@ -3,6 +3,19 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>PostGIS 2.5.8</title>
+      <para>Release Date: 2022/08/18</para>
+      <simplesect>
+        <title>Bug fixes</title>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5202">5202</ulink>, Guard against downgrades (Sandro Santilli)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5209">5209</ulink>, <ulink url="https://trac.osgeo.org/postgis/ticket/5210">5210</ulink>, Fix upgrades with CVE-2022-2625 PostgreSQL fix
+          (Sandro Santilli)</para>
+        <para><ulink url="https://trac.osgeo.org/postgis/ticket/5171">5171</ulink>, Short circuit geodesic distance when inputs equal (Paul Ramsey)</para>
+        <para>Fix potential buffer overflow in long transaction locks (Paul Ramsey)</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>PostGIS 2.5.7</title>
       <para>Release Date: 2022/07/19</para>
       <simplesect>
