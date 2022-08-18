@@ -729,7 +729,7 @@ sub drop_table
 sub sql
 {
 	my $sql = shift;
-	my $result = `psql -tXA -d $DB -c 'SET search_path TO public,$OPT_SCHEMA' -c "$sql" | sed '/^SET\$/d'`;
+	my $result = `psql -qtXA -d $DB -c 'SET search_path TO public,$OPT_SCHEMA' -c "$sql" | sed '/^SET\$/d'`;
 	$result =~ s/[\n\r]*$//;
 	$result;
 }
@@ -805,12 +805,6 @@ sub run_simple_test
 	close(FILE);
 
 	# Strip the lines we don't care about
-	@lines = grep(!/^\$/, @lines);
-	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT [0-9]*|COPY|DO)$/, @lines);
-	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
-	@lines = grep(!/^(DROP|CREATE|ALTER|VACUUM)/, @lines);
-	@lines = grep(!/^(LOG|SET|TRUNCATE|DISCARD)/, @lines);
-	@lines = grep(!/^LINE \d/, @lines);
 	@lines = grep(!/^\s+$/, @lines);
 
 	# Morph values into expected forms
@@ -893,7 +887,7 @@ sub run_loader_and_check_output
 	my $errfile = "${TMPDIR}/loader.err";
 
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
-	my $psql_opts = " --no-psqlrc --variable ON_ERROR_STOP=true";
+	my $psql_opts = " --quiet --no-psqlrc --variable ON_ERROR_STOP=true";
 
 	if ( $run_always || -r $expected_sql_file || -r $expected_select_results_file )
 	{
