@@ -3,6 +3,24 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+        <title>PostGIS 3.3.0rc2</title>
+        <para>2022/08/22</para>
+        <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
+Additional features are enabled if you are running GEOS 3.9+
+ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.
+Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.</para>
+        <para>NOTE: GEOS 3.11.0 was recently released,
+ details at <ulink url="https://libgeos.org/posts/2022-07-01-geos-3-11-0-released/">GEOS 3.11.0 release notes</ulink></para>
+        <para>The new --enable-lto flag improves speed of math computations.  This new feature is disabled by default
+because on some platforms, causes compilation errors (BSD and MingW64 issues have been raised)</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5089">5089</ulink>, ST_Reverse also reverses components of CompoundCurve (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5181">5181</ulink>, Reset proj error state after failed parse (Paul Ramsey)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5171">5171</ulink>, Short circuit geodesic distance when inputs equal (Paul Ramsey)</para>
+        </simplesect>
+    </sect1>
+    <sect1>
         <title>PostGIS 3.3.0rc1</title>
         <para>2022/08/08</para>
         <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.

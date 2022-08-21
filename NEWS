@@ -1,5 +1,5 @@
 PostGIS 3.3.0rc2
-2022/xx/xx
+2022/08/21
 This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
 Additional features are enabled if you are running GEOS 3.9+
 ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.
@@ -162,13 +162,11 @@ Use below to enable it.
 
  * Bug Fix *
    - #4912, GiST: fix crash on STORAGE EXTERNAL for geography (Aliaksandr Kalenik)
-   - #5100, Support for PostgreSQL 15 (atoi removal) (Laurenz Albe)
-   - #5123, Support for PostgreSQL 15 - PG15 now exposes json types and functions,
-            do not include for PG15+ (Regina Obe)
    - #5088, Memory corruption in mvt_agg_transfn (Victor Collod)
    - #5137, resetting interrupt flags before query execution (Sergei Shoulbakov)
    - #5148, ST_Clip is more robust to alignment of raster and clip geometry (Sergei Shoulbakov)
    - #4932, Bug with geography ST_Intersects / ST_Distance (Paul Ramsey)
+   - #5089, ST_Reverse also reverses components of CompoundCurve (Paul Ramsey)
 
 
 PostGIS 3.3.0alpha1
