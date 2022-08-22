@@ -1,3 +1,7 @@
+PostGIS 3.4.0dev
+xxxx/xx/xx
+
+
 PostGIS 3.3.0rc2
 2022/08/21
 This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
