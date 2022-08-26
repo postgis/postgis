@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 3.3.0rc2
-:Date: 2022-08-21
+:Version: 3.3.0
+:Date: 2022-08-26
 :Website: https://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -258,6 +258,12 @@ PostGIS support must be enabled for each database that requires its usage.
 Enabling spatial functionality requires a PostgreSQL super-user.
 
     CREATE EXTENSION postgis;
+    CREATE EXTENSION postgis_raster;
+    CREATE EXTENSION postgis_sfcgal;
+    CREATE EXTENSION postgis_topology;
+    CREATE EXTENSION address_standardizer;
+    CREATE EXTENSION fuzzystrmatch; -- needed for postgis_tiger_geocoder
+    CREATE EXTENSION postgis_tiger_geocoder;
 
 
 UPGRADING EXISTING SPATIAL DATABASES
@@ -265,7 +271,9 @@ UPGRADING EXISTING SPATIAL DATABASES
 
 Upgrade PostGIS using the "ALTER EXTENSION" facility.
 
-  ALTER EXTENSION postgis UPDATE TO '2.2.0';
+  ALTER EXTENSION postgis UPDATE;
+  SELECT postgis_extensions_upgrade();
+  SELECT postgis_extensions_upgrade();
 
 
 USAGE
