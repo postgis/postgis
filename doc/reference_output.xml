@@ -1159,7 +1159,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 	  <refnamediv>
 		<refname>ST_AsMVTGeom</refname>
 
-		<refpurpose>Transform a geometry into the coordinate space of a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink>.</refpurpose>
+		<refpurpose>Transforms a geometry into the coordinate space of a MVT tile.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -1177,15 +1177,27 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 	  <refsection>
 		<title>Description</title>
 
-		<para>Transform a geometry into the coordinate space of a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> of a set of rows corresponding to a Layer.
-		Makes best effort to keep and even correct validity and might collapse geometry into a lower dimension in the process.
+		<para>Transforms a geometry into the coordinate space of a MVT (<ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink>) tile,
+        clipping it to the tile bounds if required.
+        The geometry must be in the coordinate system of the target map (using <xref linkend="ST_Transform" /> if needed).
+        Commonly this is <ulink url="https://en.wikipedia.org/wiki/Web_Mercator_projection">Web Mercator</ulink> (SRID:3857).
+        </para>
+		<para>The function attempts to preserve geometry validity, and corrects it if needed.
+        This may cause the result geometry to collapse to a lower dimension.
 		</para>
+        <para>The rectangular bounds of the tile in the target map coordinate space must be provided,
+        so the geometry can be transformed, and clipped if required.
+        The bounds can be generated using <xref linkend="ST_TileEnvelope" />.
+        </para>
+        <para>
+        This function is used to convert geometry into the tile coordinate space required by <xref linkend="ST_AsMVT" />.
+        </para>
 
-		<para><varname>geom</varname> is the geometry to transform.</para>
-		<para><varname>bounds</varname> is the geometric bounds of the tile contents without buffer.</para>
-		<para><varname>extent</varname> is the tile extent in tile coordinate space as defined by the <ulink url="https://www.mapbox.com/vector-tiles/specification/">specification</ulink>. If NULL it will default to 4096.</para>
-		<para><varname>buffer</varname> is the buffer distance in tile coordinate space to optionally clip geometries. If NULL it will default to 256.</para>
-		<para><varname>clip_geom</varname> is a boolean to control if geometries should be clipped or encoded as is. If NULL it will default to true.</para>
+		<para><varname>geom</varname> is the geometry to transform, in the coordinate system of the target map.</para>
+		<para><varname>bounds</varname> is the rectangular bounds of the tile in map coordinate space, with no buffer.</para>
+		<para><varname>extent</varname> is the tile extent size in tile coordinate space as defined by the <ulink url="https://www.mapbox.com/vector-tiles/specification/">MVT specification</ulink>. Defaults to 4096.</para>
+		<para><varname>buffer</varname> is the buffer size in tile coordinate space for geometry clippig. Defaults to 256.</para>
+		<para><varname>clip_geom</varname> is a boolean to control if geometries are clipped or encoded as-is. Defaults to true.</para>
 
 		<para>Availability: 2.4.0</para>
 
@@ -1196,16 +1208,27 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_AsText(ST_AsMVTGeom(
+		<programlisting>
+SELECT ST_AsText(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
 	4096, 0, false));
                               st_astext
 --------------------------------------------------------------------
  MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 4096)))
-
-		]]>
 		</programlisting>
+
+    <para>Canonical example for a Web Mercator tile using a computed tile bounds to query and clip geometry.
+    </para>
+		<programlisting>
+<![CDATA[SELECT ST_AsMVTGeom(
+            ST_Transform( geom, 3857 ),
+            ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS geom
+  FROM data
+  WHERE geom && ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096))
+]]>
+</programlisting>
+
 	  </refsection>
 
     <refsection>
@@ -1222,7 +1245,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 	  <refnamediv>
 		<refname>ST_AsMVT</refname>
 
-		<refpurpose>Aggregate function returning a Mapbox Vector Tile representation of a set of rows.</refpurpose>
+		<refpurpose>Aggregate function returning a MVT representation of a set of rows.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -1264,8 +1287,8 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 
 		<para>An aggregate function which returns a binary <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink>
 		representation of a set of rows corresponding to a tile layer.
-		The rows should contain a geometry column which will be encoded as a feature geometry.
-		The geometry should be in tile coordinate space
+		The rows must contain a geometry column which will be encoded as a feature geometry.
+		The geometry must be in tile coordinate space
 		and valid as per the <ulink url="https://www.mapbox.com/vector-tiles/specification/">MVT specification</ulink>.
 		<xref linkend="ST_AsMVTGeom" /> can be used to transform geometry into tile coordinate space.
 		Other row columns are encoded as feature attributes.

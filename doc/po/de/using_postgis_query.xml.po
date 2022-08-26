@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-01-15 01:45+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-08-23 23:30+0000\n"
+"Last-Translator: Juergen E. Fischer <jef@norbit.de>\n"
 "Language-Team: German <https://weblate.osgeo.org/projects/postgis/"
 "using_postgis_queryxml/de/>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: using_postgis_query.xml:3
@@ -33,12 +33,18 @@ msgid ""
 "functions are available, how to use them in queries, and ensuring that "
 "appropriate indexes are in place to provide good performance."
 msgstr ""
+"Der Sinn von räumlichen Datenbanken liegt darin Abfragen in der Datenbank "
+"ausführen zu können, die normalerweise Desktop-GIS-Funktionionalität "
+"verlangen würden. Um PostGIS effektiv verwenden zu können muss man die "
+"verfügbaren räumlichen Funktionen kennen, wissen wie sie in Abfragen "
+"verwendet werden und sicherstellen, dass für gute Performanz  die passenden "
+"Indizes vorhanden sind."
 
 #. Tag: title
 #: using_postgis_query.xml:14
 #, no-c-format
 msgid "Determining Spatial Relationships"
-msgstr ""
+msgstr "Räumliche Beziehungen feststellen"
 
 #. Tag: para
 #: using_postgis_query.xml:16
@@ -47,6 +53,8 @@ msgid ""
 "Spatial relationships indicate how two geometries interact with one another. "
 "They are a fundamental capability for querying geometry."
 msgstr ""
+"Räumliche Beziehungen geben an wie zwei Geometrien miteinander interagieren. "
+"Sie sind die fundamentale Fähigkeit zum Abfragen von Geometrie."
 
 #. Tag: title
 #: using_postgis_query.xml:21
