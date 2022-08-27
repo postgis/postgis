@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-09-11 01:55+0000\n"
+"POT-Creation-Date: 2022-08-27 04:57+0000\n"
 "PO-Revision-Date: 2022-01-13 16:44+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian <https://weblate.osgeo.org/projects/postgis/"
@@ -335,8 +335,8 @@ msgstr ""
 #: reference_validation.xml:192
 #, no-c-format
 msgid ""
-"Allowed <varname>flags</varname> are documented in <xref linkend="
-"\"ST_IsValidDetail\"/>."
+"Allowed <varname>flags</varname> are documented in <xref "
+"linkend=\"ST_IsValidDetail\"/>."
 msgstr ""
 
 #. Tag: para
@@ -476,8 +476,8 @@ msgstr ""
 msgid ""
 "The <varname>params</varname> argument can be used to supply an options "
 "string to select the method to use for building valid geometry. The options "
-"string is in the format \"method=linework|structure keepcollapsed=true|false"
-"\"."
+"string is in the format \"method=linework|structure keepcollapsed=true|"
+"false\"."
 msgstr ""
 
 #. Tag: para
@@ -535,7 +535,9 @@ msgstr ""
 #. Tag: para
 #: reference_validation.xml:291
 #, no-c-format
-msgid "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure'."
+msgid ""
+"Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which "
+"requires GEOS &gt;= 3.10.0."
 msgstr ""
 
 #. Tag: para

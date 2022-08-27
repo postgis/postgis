@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-07-13 19:13+0000\n"
+"POT-Creation-Date: 2022-08-27 04:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -532,7 +532,9 @@ msgstr ""
 #. Tag: para
 #: reference_validation.xml:291
 #, no-c-format
-msgid "Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure'."
+msgid ""
+"Enhanced: 3.2.0, added algorithm options, 'linework' and 'structure' which "
+"requires GEOS &gt;= 3.10.0."
 msgstr ""
 
 #. Tag: para
