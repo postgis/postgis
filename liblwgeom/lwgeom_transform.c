@@ -271,6 +271,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		{
 			getPoint4d_p(pa, i, &p);
 			to_rad(&p);
+			ptarray_set_point4d(pa, i, &p);
 		}
 	}
 
@@ -340,6 +341,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		{
 			getPoint4d_p(pa, i, &p);
 			to_dec(&p);
+			ptarray_set_point4d(pa, i, &p);
 		}
 	}
 

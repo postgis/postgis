@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Write angular unit conversions back to the point array (Robert Coup)
  - Check the projection returned by PROJ (Even Rouault)
  - Correct the documented default band for raster summary statistics (Martin Davis)
  - Honor --without-gui when configuring the shapefile loader (Chris Mayo)
