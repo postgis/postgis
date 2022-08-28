@@ -2453,6 +2453,32 @@ int ptarray_transform(POINTARRAY *pa, LWPROJ* pj);
  */
 LWPROJ *lwproj_from_str(const char* str_in, const char* str_out);
 
+/**
+ * Transform (reproject) a geometry in-place using a PROJ pipeline.
+ * @param geom the geometry to transform
+ * @param pipeline the coordinate operation pipeline string. Either:
+ *        - `urn:ogc:def:coordinateOperation:AUTHORITY::CODE`
+ *        - a PROJ pipeline string: `+proj=pipeline ...`
+ *        - concatenated operations: `urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618`
+ * @param is_forward whether to execute the pipeline in a forward or inverse
+ * 		  direction.
+ */
+int lwgeom_transform_pipeline(LWGEOM *geom, const char* pipeline, bool is_forward);
+
+/**
+ * Allocate a new LWPROJ containing the reference to the PROJ's PJ using a
+ * PROJ pipeline definition:
+ * @param str_pipeline the coordinate operation pipeline string. Either:
+ *        - `urn:ogc:def:coordinateOperation:AUTHORITY::CODE`
+ *        - a PROJ pipeline: `+proj=pipeline ...`
+ *        - concatenated operations: `urn:ogc:def:coordinateOperation,coordinateOperation:EPSG::3895,coordinateOperation:EPSG::1618`
+ *        - any other coordinate operation accepted via `proj_create()`
+ * @param is_foward whether to execute the the pipeline in a forward or inverse
+ *        direction.
+ */
+LWPROJ *lwproj_from_str_pipeline(const char* str_pipeline, bool is_forward);
+
+
 /*******************************************************************************
  * GEOS-dependent extra functions on LWGEOM
  ******************************************************************************/
