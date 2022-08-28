@@ -111,6 +111,7 @@ lwproj_from_str(const char* str_in, const char* str_out)
 	/* Allocate and populate return value */
 	LWPROJ *lp = lwalloc(sizeof(LWPROJ));
 	lp->pj = pj_norm; /* Caller is going to have to explicitly proj_destroy this */
+	lp->pipeline_is_forward = true;
 	lp->source_is_latlong = source_is_latlong;
 	lp->source_semi_major_metre = semi_major_metre;
 	lp->source_semi_minor_metre = semi_minor_metre;
@@ -158,8 +159,10 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 	int has_z = ptarray_has_z(pa);
 	double *pa_double = (double*)(pa->serialized_pointlist);
 
+	PJ_DIRECTION direction = pj->pipeline_is_forward ? PJ_FWD : PJ_INV;
+
 	/* Convert to radians if necessary */
-	if (proj_angular_input(pj->pj, PJ_FWD))
+	if (proj_angular_input(pj->pj, direction))
 	{
 		for (i = 0; i < pa->npoints; i++)
 		{
@@ -175,7 +178,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		PJ_XYZT v = {pa_double[0], pa_double[1], has_z ? pa_double[2] : 0.0, 0.0};
 		PJ_COORD c;
 		c.xyzt = v;
-		PJ_COORD t = proj_trans(pj->pj, PJ_FWD, c);
+		PJ_COORD t = proj_trans(pj->pj, direction, c);
 
 		int pj_errno_val = proj_errno_reset(pj->pj);
 		if (pj_errno_val)
@@ -199,7 +202,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 		 */
 
 		n_converted = proj_trans_generic(pj->pj,
-						 PJ_FWD,
+						 direction,
 						 pa_double,
 						 point_size,
 						 n_points, /* X */
@@ -229,7 +232,7 @@ ptarray_transform(POINTARRAY *pa, LWPROJ *pj)
 	}
 
 	/* Convert radians to degrees if necessary */
-	if (proj_angular_output(pj->pj, PJ_FWD))
+	if (proj_angular_output(pj->pj, direction))
 	{
 		for (i = 0; i < pa->npoints; i++)
 		{
