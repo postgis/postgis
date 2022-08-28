@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Write angular unit conversions back to the point array (Robert Coup)
  - Check the projection returned by PROJ (Even Rouault)
  - Correct the documented default band for raster summary statistics (Martin Davis)
  - #5558, Initialize the MVT clipping box flags (Sandro Santilli)
