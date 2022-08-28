@@ -1,0 +1,9 @@
+1|POINT(1688980 5904660)
+2|POINT(426860 5427940)
+ERROR:  could not parse coordinate operation 'bad coordinate transform pipeline'
+ERROR:  lwgeom_transform_pipeline: Failed to transform
+5|0
+6|12345
+7|POINT(151.20000000000002 -33.800000000000004)
+8|POINT(2 49)
+9|12345
