@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-22 01:55+0000\n"
-"PO-Revision-Date: 2022-06-14 09:50+0000\n"
+"PO-Revision-Date: 2022-08-30 10:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/ja/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: extras_topology.xml:3
@@ -1232,12 +1232,11 @@ msgstr ""
 
 #. Tag: para
 #: extras_topology.xml:498
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "List of possible errors, what they mean and what the returned ids represent "
 "are displayed below:"
-msgstr ""
-"エラーの一覧を示します。可能性のある、意味することろ、返されるid表現は次の通"
+msgstr "エラーの一覧を示します。可能性のある、意味することろ、返されるid表現は次の通"
 "りです:"
 
 #. Tag: entry
