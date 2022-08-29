@@ -1381,7 +1381,7 @@ SELECT valid, reason, ST_AsText(location) AS location
     <link linkend="Spatial_Relationships">relationship</link> functions)
     require that the input geometries are in the same spatial reference system (have the same SRID).
     Geometry data can be transformed into a different spatial reference system using
-    <xref linkend="ST_Transform" />.
+    <xref linkend="ST_Transform" /> and <xref linkend="ST_TransformPipeline" />.
     Geometry returned from functions has the same SRS as the input geometries.
     </para>
 
