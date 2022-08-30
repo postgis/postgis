@@ -195,7 +195,7 @@ Datum ST_InterpolatePoint(PG_FUNCTION_ARGS)
 	}
 	if ( gserialized_get_type(gser_point) != POINTTYPE )
 	{
-		elog(ERROR,"ST_InterpolatePoint: 2st argument isn't a point");
+		elog(ERROR,"ST_InterpolatePoint: 2nd argument isn't a point");
 		PG_RETURN_NULL();
 	}
 
@@ -233,7 +233,7 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 	}
 	if ( gserialized_get_type(geom2) != POINTTYPE )
 	{
-		elog(ERROR,"line_locate_point: 2st arg isn't a point");
+		elog(ERROR,"line_locate_point: 2nd arg isn't a point");
 		PG_RETURN_NULL();
 	}
 
