@@ -2,12 +2,13 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"PO-Revision-Date: 2022-09-01 02:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/ja/>\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_sfcgal.xml:5
