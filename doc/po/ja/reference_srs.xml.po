@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-22 06:23+0000\n"
-"PO-Revision-Date: 2022-02-05 02:52+0000\n"
+"PO-Revision-Date: 2022-09-01 02:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_srs.xml:5
@@ -56,7 +56,7 @@ msgstr ""
 #: reference_srs.xml:34 reference_srs.xml:81 reference_srs.xml:145
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "説明"
 
 #. Tag: para
 #: reference_srs.xml:36
@@ -86,13 +86,13 @@ msgstr ""
 #: reference_srs.xml:46 reference_srs.xml:89 reference_srs.xml:179
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_srs.xml:50 reference_srs.xml:94 reference_srs.xml:185
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "例"
 
 #. Tag: para
 #: reference_srs.xml:51
@@ -145,7 +145,7 @@ msgstr ""
 #: reference_srs.xml:67
 #, no-c-format
 msgid "ST_SRID"
-msgstr ""
+msgstr "ST_SRID"
 
 #. Tag: refpurpose
 #: reference_srs.xml:68
@@ -168,6 +168,8 @@ msgid ""
 "Returns the spatial reference identifier for the ST_Geometry as defined in "
 "spatial_ref_sys table. <xref linkend=\"spatial_ref_sys\"/>"
 msgstr ""
+"ST_Geometryのspatial_ref_sysテーブルで定義されている空間参照系の識別番号を返"
+"します。<xref linkend=\"spatial_ref_sys\"/>を参照して下さい。"
 
 #. Tag: para
 #: reference_srs.xml:84
@@ -178,12 +180,16 @@ msgid ""
 "system to another. So verifying you have the right spatial reference system "
 "identifier is important if you plan to ever transform your geometries."
 msgstr ""
+"spatial_ref_sysテーブルはPostGISが知る参照系の全てのカタログを作っていて、あ"
+"る空間参照系から他の空間参照系に変換するために使われます。ジオメトリの変換を"
+"予定している場合は正しい空間参照系の識別番号を持っているか確認することは重要"
+"です。"
 
 #. Tag: para
 #: reference_srs.xml:87
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.1"
-msgstr ""
+msgstr "&sfs_compliant; s2.1.1.1"
 
 #. Tag: para
 #: reference_srs.xml:88
@@ -199,6 +205,9 @@ msgid ""
 "                --result\n"
 "                4326"
 msgstr ""
+"SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
+"                --result\n"
+"                4326"
 
 #. Tag: para
 #: reference_srs.xml:101
@@ -294,13 +303,14 @@ msgstr ""
 msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
-msgstr ""
+msgstr "1.3.4より前では、曲線を含むジオメトリで使用すると、この関数はクラッシュします"
+"。これは1.3.4以上で訂正されています。"
 
 #. Tag: para
 #: reference_srs.xml:176
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
-msgstr ""
+msgstr "Enhanced: 2.0.0 多面体サーフェス対応が導入されました。"
 
 #. Tag: para
 #: reference_srs.xml:177
