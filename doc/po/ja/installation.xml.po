@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-08 04:50+0000\n"
-"PO-Revision-Date: 2022-06-14 09:50+0000\n"
+"PO-Revision-Date: 2022-09-01 02:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "installationxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: installation.xml:3
@@ -144,6 +144,11 @@ msgid ""
 "against PostgreSQL versions &min_postgres_version; - &max_postgres_version;. "
 "Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported."
 msgstr ""
+"PostGISモジュールは、PostgreSQLバックエンドサーバの拡張です。PostGIS &last_re"
+"lease_version;では、コンパイルのために、完全なPostgreSQLサーバヘッダが<emphas"
+"is>必要です</emphasis>。PostgreSQL &min_postgres_version; - &max_postgres_ver"
+"sion;の間でビルドできます。古い版のPostgreSQLは<emphasis>サポートされません</"
+"emphasis>。"
 
 #. Tag: para
 #: installation.xml:47
@@ -222,6 +227,9 @@ msgid ""
 "tar -xvzf postgis-&last_release_version;.tar.gz\n"
 "cd postgis-&last_release_version;"
 msgstr ""
+"wget &postgis_download_url;\n"
+"tar -xvzf postgis-&last_release_version;.tar.gz\n"
+"cd postgis-&last_release_version;"
 
 #. Tag: para
 #: installation.xml:90
@@ -253,6 +261,9 @@ msgid ""
 "cd postgis\n"
 "sh autogen.sh"
 msgstr ""
+"git clone https://git.osgeo.org/gitea/postgis/postgis.git postgis\n"
+"cd postgis\n"
+"sh autogen.sh"
 
 #. Tag: para
 #: installation.xml:110
@@ -268,7 +279,7 @@ msgstr ""
 #: installation.xml:115
 #, no-c-format
 msgid "<programlisting>./configure</programlisting>"
-msgstr ""
+msgstr "<programlisting>./configure</programlisting>"
 
 #. Tag: title
 #: installation.xml:119
@@ -297,6 +308,10 @@ msgid ""
 "PostgreSQL is available from <ulink url=\"http://www.postgresql.org\"> "
 "http://www.postgresql.org </ulink> ."
 msgstr ""
+"PostgreSQL &min_postgres_version; - &max_postgres_version;。"
+"PostgreSQLの完全なインストール (サーバヘッダを含む)が必要です。"
+"PostgreSQLは<ulink url=\"http://www.postgresql.org/\"> http://www.postgresql."
+"org/</ulink>にあります。"
 
 #. Tag: para
 #: installation.xml:140
@@ -375,6 +390,10 @@ msgid ""
 "download from <ulink url=\"https://gitlab.gnome.org/GNOME/libxml2/-/"
 "releases\">https://gitlab.gnome.org/GNOME/libxml2/-/releases</ulink>."
 msgstr ""
+"LibXML2, 2.5.x以上。現在は、LibXML2はインポート関数 "
+"(ST_GeomFromGMLとST_GeomFromKML)で使われています。LibXML2は<ulink url=\"https"
+"://gitlab.gnome.org/GNOME/libxml2/-/releases\">https://gitlab.gnome.org/"
+"GNOME/libxml2/-/releases</ulink>からダウンロードできます。"
 
 #. Tag: para
 #: installation.xml:191
@@ -398,6 +417,9 @@ msgid ""
 "support. <ulink url=\"https://gdal.org/download.html\">https://gdal.org/"
 "download.html</ulink>."
 msgstr ""
+"GDAL, version 2以上が必要で以上が好ましいです。ラスタ機能に必要です。<ulink "
+"url=\"https://gdal.org/download.html\">https://gdal.org/download."
+"html</ulink>。"
 
 #. Tag: para
 #: installation.xml:207
@@ -456,6 +478,18 @@ msgid ""
 "io/SFCGAL/dev.html</ulink>) <ulink url=\"https://gitlab.com/Oslandia/SFCGAL/"
 "\">https://gitlab.com/Oslandia/SFCGAL/</ulink>."
 msgstr ""
+"SFCGAL, 1.3.1以上、1.4.1以上が推奨されます。SFCGALは追加的な2次元と3次元の高"
+"度な解析機能をPostGISに提供します。<xref linkend=\"reference_sfcgal\""
+"/>を参照して下さい。両方のバックエンドから提供される2次元関数 (たとえばST_Int"
+"ersectionやST_Areaなど)でGEOSでなくSFCGALを使うこともできます。SFCGALがインス"
+"トールされている場合には、PostgreSQLの<code>postgis."
+"backend</code>コンフィギュレーション値で、"
+"エンドユーザがどのバックエンドを使うかを制御することができます "
+"(デフォルトはGEOS)。ご注意: SFCGAL 1.2には少なくともCGAL 4.3とBoost "
+"1.54が必要です (<ulink url=\"https://oslandia.gitlab.io/SFCGAL/dev.html\""
+">https://oslandia.gitlab.io/SFCGAL/dev.html</ulink>参照)。<ulink url=\"https"
+"://gitlab.com/Oslandia/SFCGAL/\">https://gitlab.com/Oslandia/SFCGAL/"
+"</ulink>。"
 
 #. Tag: para
 #: installation.xml:247
@@ -2255,6 +2289,8 @@ msgid ""
 "UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
 "'zcta520';"
 msgstr ""
+"UPDATE tiger.loader_lookuptables SET load = true WHERE table_name = "
+"'zcta520';"
 
 #. Tag: para
 #: installation.xml:846
