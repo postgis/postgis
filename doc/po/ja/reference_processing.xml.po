@@ -4,12 +4,13 @@
 # Regina Obe, 2017
 # Regina Obe, 2017
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2017
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"PO-Revision-Date: 2022-09-01 02:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_processing.xml:5
@@ -4211,7 +4212,7 @@ msgstr ""
 #: reference_processing.xml:2115
 #, no-c-format
 msgid "Availability: 3.3.0"
-msgstr ""
+msgstr "Availability: 3.3.0"
 
 #. Tag: title
 #: reference_processing.xml:2119 reference_processing.xml:2124
