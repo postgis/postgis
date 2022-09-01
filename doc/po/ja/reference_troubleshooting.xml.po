@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-02-05 02:52+0000\n"
+"PO-Revision-Date: 2022-09-01 02:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_troubleshootingxml/ja/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_troubleshooting.xml:5
@@ -59,7 +59,7 @@ msgstr ""
 #: reference_troubleshooting.xml:124
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "説明"
 
 #. Tag: para
 #: reference_troubleshooting.xml:31
@@ -84,14 +84,14 @@ msgstr ""
 #: reference_troubleshooting.xml:129
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_troubleshooting.xml:45 reference_troubleshooting.xml:93
 #: reference_troubleshooting.xml:134
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "例"
 
 #. Tag: programlisting
 #: reference_troubleshooting.xml:47
