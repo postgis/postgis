@@ -112,13 +112,6 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);
 
-#if POSTGIS_PROJ_VERSION < 61
-	/* Internally lwgeom_from_gml calls gml_reproject_pa which, for PROJ before 6, called GetProj4String.
-	 * That function requires access to spatial_ref_sys, so in order to have it ready we need to ensure
-	 * the internal cache is initialized
-	 */
-	postgis_initialize_cache();
-#endif
 	lwgeom = lwgeom_from_gml(xml, xml_size);
 	if ( root_srid != SRID_UNKNOWN )
 		lwgeom->srid = root_srid;
@@ -303,39 +296,6 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
  * Use Proj to reproject a given POINTARRAY
  */
 
-#if POSTGIS_PROJ_VERSION < 61
-
-static POINTARRAY *
-gml_reproject_pa(POINTARRAY *pa, int32_t srid_in, int32_t srid_out)
-{
-	LWPROJ pj;
-	char *text_in, *text_out;
-
-	if (srid_in == SRID_UNKNOWN) return pa; /* nothing to do */
-	if (srid_out == SRID_UNKNOWN) gml_lwpgerror("invalid GML representation", 3);
-
-	text_in = GetProj4String(srid_in);
-	text_out = GetProj4String(srid_out);
-
-	pj.pj_from = projpj_from_string(text_in);
-	pj.pj_to = projpj_from_string(text_out);
-
-	lwfree(text_in);
-	lwfree(text_out);
-
-	if ( ptarray_transform(pa, &pj) == LW_FAILURE )
-	{
-		elog(ERROR, "gml_reproject_pa: reprojection failed");
-	}
-
-	pj_free(pj.pj_from);
-	pj_free(pj.pj_to);
-
-	return pa;
-}
-
-#else /* POSTGIS_PROJ_VERSION >= 61 */
-
 static POINTARRAY *
 gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 {
@@ -373,9 +333,6 @@ gml_reproject_pa(POINTARRAY *pa, int32_t epsg_in, int32_t epsg_out)
 
 	return pa;
 }
-
-#endif /* POSTGIS_PROJ_VERSION */
-
 
 /**
  * Return 1 if the SRS definition from the authority has a GIS friendly order,

@@ -1,6 +1,9 @@
 PostGIS 3.4.0dev
 xxxx/xx/xx
 
+* Breaking Changes *
+- #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
+
 PostGIS 3.3.0
 2022/08/26
 
