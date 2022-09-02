@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-22 01:55+0000\n"
-"PO-Revision-Date: 2022-09-01 02:55+0000\n"
+"PO-Revision-Date: 2022-09-03 09:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "extras_topologyxml/ja/>\n"
@@ -1519,13 +1519,12 @@ msgstr "はっきりしないノードの識別子。"
 
 #. Tag: entry
 #: extras_topology.xml:629
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "A node which is reported as being on the boundary of one or more edges is "
 "indicating a containing face."
-msgstr ""
-"一つ以上のエッジの境界上にあると示された一つのノードが含んでいるフェイスを示"
-"しています。"
+msgstr "一つ以上のエッジの境界上にあると示された一つのノードが、そのノードを含んでい"
+"るフェイスを示しています。"
 
 #. Tag: entry
 #: extras_topology.xml:635
