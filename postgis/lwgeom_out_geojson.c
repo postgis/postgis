@@ -68,7 +68,7 @@ static void composite_to_json(Datum composite, StringInfo result,
 static void datum_to_json(Datum val, bool is_null, StringInfo result,
 						  JsonTypeCategory tcategory, Oid outfuncoid,
 						  bool key_scalar);
-#if POSTGIS_PGSQL_VERSION < 150
+#if POSTGIS_PGSQL_VERSION < 170
 static void json_categorize_type(Oid typoid,
 								 JsonTypeCategory *tcategory,
 								 Oid *outfuncoid);
