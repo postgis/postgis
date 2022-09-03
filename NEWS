@@ -2,7 +2,11 @@ PostGIS 3.4.0dev
 xxxx/xx/xx
 
 * Breaking Changes *
-- #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
+  - #5229, Drop support for Proj < 6.1 and PG 11 (Regina Obe)
+
+* Bug Fix *
+  - #5231, PG15 no longer compiles against PostGIS 3.2 - 3.4
+    because SQL/JSON removed upstream (Regina Obe)
 
 PostGIS 3.3.0
 2022/08/26
