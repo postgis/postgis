@@ -4,7 +4,7 @@
 
 # See https://git.osgeo.org/gitea/postgis/postgis-docker
 # todo: add docker images from https://hub.docker.com/r/postgis/postgis-build-env/tags/
-test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel2
+test-image: &test-image docker.osgeo.org/postgis/build-test:trisquel3
 clone: &clone
     image: plugins/git
     depth: 50
@@ -22,11 +22,11 @@ steps:
       - ./autogen.sh
     depends_on: [ clone ]
 
-  - name: build-11
+  - name: build-12
     image: *test-image
     pull: never
     commands:
-      - PGVER=11 sh ci/dronie/postgis_regress.sh
+      - PGVER=12 sh ci/dronie/postgis_regress.sh
     depends_on: [ autogen ]
 
   - name: build-13
