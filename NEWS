@@ -2,7 +2,8 @@ PostGIS 3.3.1dev
 2022/MM/DD
 
  * Bug Fix *
-  - ...
+  - #5227, typo in ST_LineLocatePoint error message (Sandro Santilli)
+  - #5231, PG15 no longer compiles because SQL/JSON removed PG upstream (Regina Obe)
 
 PostGIS 3.3.0
 2022/08/26
