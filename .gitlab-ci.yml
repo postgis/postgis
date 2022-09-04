@@ -34,9 +34,9 @@
     - ${SRCDIR}/utils/check_distclean.sh
 
 test:
-  image: debian:bullseye
+  image: debian:bookworm
   <<: *build_definition
 
 test32:
-  image: i386/debian:bullseye
+  image: i386/debian:bookworm
   <<: *build_definition
