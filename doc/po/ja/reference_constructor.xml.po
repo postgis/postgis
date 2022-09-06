@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-27 04:57+0000\n"
-"PO-Revision-Date: 2022-09-01 02:55+0000\n"
+"PO-Revision-Date: 2022-09-07 01:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_constructorxml/ja/>\n"
@@ -26,16 +26,17 @@ msgstr "ジオメトリ コンストラクタ"
 
 #. Tag: refname
 #: reference_constructor.xml:7
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_Collect"
-msgstr "ST_GeomCollFromText"
+msgstr "ST_Collect"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:8
 #, no-c-format
 msgid ""
 "Creates a GeometryCollection or Multi* geometry from a set of geometries."
-msgstr ""
+msgstr "ジオメトリの集合からジオメトリコレクションまたはマルチ系ジオメトリを生成しま"
+"す。"
 
 #. Tag: funcsynopsis
 #: reference_constructor.xml:12
@@ -82,20 +83,26 @@ msgid ""
 "have the same or different types (homogeneous or heterogeneous). The input "
 "geometries are left unchanged within the collection."
 msgstr ""
+"ジオメトリを集めてジオメトリコレクションにします。結果はマルチ系ジオメトリか"
+"ジオメトリコレクションかのいずれかで、この差は、入力ジオメトリのタイプが同じ"
+"か異なるか(均質か不均質か)で決まります。入力ジオメトリはコレクション内で変更"
+"されることはありません。"
 
 #. Tag: para
 #: reference_constructor.xml:38 reference_constructor.xml:208
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Variant 1:</emphasis> accepts two input geometries"
-msgstr ""
+msgstr "<emphasis role=\"bold\">1番目の形式:</emphasis> "
+"二つの入力ジオメトリを受け付ける。"
 
 #. Tag: para
 #: reference_constructor.xml:39 reference_constructor.xml:209
 #, no-c-format
 msgid ""
 "<emphasis role=\"bold\">Variant 2:</emphasis> accepts an array of geometries"
-msgstr ""
+msgstr "<emphasis role=\"bold\">2番目の形式:</emphasis> "
+"ジオメトリの配列を受け付ける。"
 
 #. Tag: para
 #: reference_constructor.xml:40
@@ -103,7 +110,8 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Variant 3:</emphasis> aggregate function accepting a "
 "rowset of geometries."
-msgstr ""
+msgstr "<emphasis role=\"bold\">3番目の形式:</emphasis> "
+"ジオメトリの行集合を受け付ける集約関数。"
 
 #. Tag: para
 #: reference_constructor.xml:42
@@ -115,6 +123,12 @@ msgid ""
 "<xref linkend=\"ST_Dump\"/> in a subquery to expand the input collections to "
 "their atomic elements (see example below)."
 msgstr ""
+"入力ジオメトリのいずれかがコレクション "
+"(マルチ系ジオメトリまたはジオメトリコレクション)の場合には、"
+"ST_Collectはジオメトリコレクションを返します "
+"(入れ子になったコレクションを含む唯一のタイプであるため)。これを避けるには、"
+"サブクエリで<xref linkend=\"ST_Dump\"/> を使い、"
+"入力コレクションを分解できない要素にまで分解します (下に例があります)。"
 
 #. Tag: para
 #: reference_constructor.xml:50
@@ -126,16 +140,21 @@ msgid ""
 "geometries where they overlap, and splits linestrings at intersections. It "
 "may return single geometries when it dissolves boundaries."
 msgstr ""
+"ST_Collectと<xref linkend=\"ST_Union\"/>は似ているように見えますが、実際には"
+"全く異なる処理を行います。ST_Collectは入力ジオメトリを変更せずにコレクション"
+"にする集約関数です。ST_Unionは、オーバラップしている時は幾何学的に併合し、イ"
+"ンタセクトするところでラインストリングを分割します。境界をディゾルブするとき"
+"には単一のジオメトリを返す可能性があります。"
 
 #. Tag: para
 #: reference_constructor.xml:57
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_Collect(geomarray) was introduced. ST_Collect was "
 "enhanced to handle more geometries faster."
 msgstr ""
-"Availability: 1.4.0 - ST_MakeLine(geomarray)が導入されました。ST_MakeLine集約"
-"関数はより多くのポイントをより早く扱うための強化が施されています。"
+"Availability: 1.4.0 - ST_Collect(geometry)が導入されました。ST_Collectがより"
+"多くのジオメトリをより早く扱えるよう強化されました。"
 
 #. Tag: para
 #: reference_constructor.xml:58 reference_constructor.xml:115
@@ -153,15 +172,15 @@ msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_constructor.xml:63
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Examples - Two-input variant"
-msgstr "例 - XLink使用法"
+msgstr "例 - 二つ入力を引数に取る形式"
 
 #. Tag: para
 #: reference_constructor.xml:64
 #, no-c-format
 msgid "Collect 2D points."
-msgstr ""
+msgstr "2次元ポイントを収集します。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:65
@@ -174,12 +193,18 @@ msgid ""
 "----------\n"
 "MULTIPOINT((1 2),(-2 3))"
 msgstr ""
+"SELECT ST_AsText( ST_Collect( ST_GeomFromText('POINT(1 2)'),\n"
+"        ST_GeomFromText('POINT(-2 3)') ));\n"
+"\n"
+"st_astext\n"
+"----------\n"
+"MULTIPOINT((1 2),(-2 3))"
 
 #. Tag: para
 #: reference_constructor.xml:67
 #, no-c-format
 msgid "Collect 3D points."
-msgstr ""
+msgstr "2次元ポイントの収集"
 
 #. Tag: programlisting
 #: reference_constructor.xml:68
@@ -192,12 +217,18 @@ msgid ""
 "-------------------------\n"
 " MULTIPOINT(1 2 3,1 2 4)"
 msgstr ""
+"SELECT ST_AsEWKT( ST_Collect( ST_GeomFromEWKT('POINT(1 2 3)'),\n"
+"                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
+"\n"
+"                st_asewkt\n"
+"-------------------------\n"
+" MULTIPOINT(1 2 3,1 2 4)"
 
 #. Tag: para
 #: reference_constructor.xml:70
 #, no-c-format
 msgid "Collect curves."
-msgstr ""
+msgstr "曲線を収集します。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:71
@@ -213,30 +244,40 @@ msgid ""
 "MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
 " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))"
 msgstr ""
+"SELECT ST_AsText( ST_Collect( 'CIRCULARSTRING(220268 150415,220227 "
+"150505,220227 150406)',\n"
+"                'CIRCULARSTRING(220227 150406,2220227 150407,220227 "
+"150406)'));\n"
+"\n"
+"                st_astext\n"
+"-----------------------------------------------------------------------------"
+"-------\n"
+"MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
+" CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))"
 
 #. Tag: title
 #: reference_constructor.xml:74
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Examples - Array variant"
-msgstr "例: 配列使用版"
+msgstr "例 - 配列を引数に取る形式"
 
 #. Tag: para
 #: reference_constructor.xml:75
 #, no-c-format
 msgid "Using an array constructor for a subquery."
-msgstr ""
+msgstr "サブクエリから配列を生成するコンストラクタの使用。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:76
 #, no-c-format
 msgid "SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );"
-msgstr ""
+msgstr "SELECT ST_Collect( ARRAY( SELECT geom FROM sometable ) );"
 
 #. Tag: para
 #: reference_constructor.xml:77
 #, no-c-format
 msgid "Using an array constructor for values."
-msgstr ""
+msgstr "値から配列を生成するコンストラクタの使用。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:78
@@ -250,18 +291,25 @@ msgid ""
 "--wkt collect --\n"
 "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
 msgstr ""
+"SELECT ST_AsText(  ST_Collect(\n"
+"                ARRAY[ ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
+"                        ST_GeomFromText('LINESTRING(3 4, 4 5)') ] )) As "
+"wktcollect;\n"
+"\n"
+"--wkt collect --\n"
+"MULTILINESTRING((1 2,3 4),(3 4,4 5))"
 
 #. Tag: title
 #: reference_constructor.xml:81
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Examples - Aggregate variant"
-msgstr "例: 空間集計版"
+msgstr "例 - 集約関数の形式"
 
 #. Tag: para
 #: reference_constructor.xml:82
 #, no-c-format
 msgid "Creating multiple collections by grouping geometries in a table."
-msgstr ""
+msgstr "テーブル内のジオメトリのグループ化による複数コレクションを生成します。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:83
@@ -273,6 +321,11 @@ msgid ""
 "                                somestatetable ) As f\n"
 "        GROUP BY stusps"
 msgstr ""
+"SELECT stusps, ST_Collect(f.geom) as geom\n"
+"         FROM (SELECT stusps, (ST_Dump(geom)).geom As geom\n"
+"                                FROM\n"
+"                                somestatetable ) As f\n"
+"        GROUP BY stusps"
 
 #. Tag: title
 #: reference_constructor.xml:87 reference_constructor.xml:127
@@ -290,9 +343,9 @@ msgstr "関連情報"
 
 #. Tag: para
 #: reference_constructor.xml:88
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_Union\"/>"
-msgstr ", <xref linkend=\"ST_AsBinary\"/>"
+msgstr ", <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:94
@@ -330,13 +383,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:113
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Use <xref linkend=\"ST_MakeLine\"/> to create lines from Point or LineString "
 "inputs."
-msgstr ""
-"X, Y, Mのポイントを生成する必要がある場合には、<xref "
-"linkend=\"ST_MakePointM\"/>を使います。"
+msgstr "ポイントまたはラインストリングの入力からラインを生成するには<xref linkend="
+"\"ST_MakeLine\"/>を使います。"
 
 #. Tag: title
 #: reference_constructor.xml:120 reference_constructor.xml:331
@@ -355,7 +407,7 @@ msgstr "マルチポイントジオメトリからラインストリングを生
 
 #. Tag: programlisting
 #: reference_constructor.xml:122
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 "
 "9)')  ));\n"
@@ -363,17 +415,17 @@ msgid ""
 "--result--\n"
 "LINESTRING(1 2 3,4 5 6,7 8 9)"
 msgstr ""
-"-- 3次元マルチポイントから3次元ラインストリングを生成します\n"
-"SELECT ST_AsEWKT(ST_LineFromMultiPoint(ST_GeomFromEWKT('MULTIPOINT(1 2 3, 4 "
-"5 6, 7 8 9)')));\n"
+"SELECT ST_AsEWKT(  ST_LineFromMultiPoint('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')  "
+"));\n"
+"\n"
 "-- 結果 --\n"
 "LINESTRING(1 2 3,4 5 6,7 8 9)"
 
 #. Tag: para
 #: reference_constructor.xml:129
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_MakeLine\"/>"
-msgstr ", <xref linkend=\"ST_AsKML\"/>"
+msgstr ", <xref linkend=\"ST_MakeLine\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:135
@@ -383,15 +435,13 @@ msgstr "ST_MakeEnvelope"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:137
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Creates a rectangular Polygon from minimum and maximum coordinates."
-msgstr ""
-"与えられた最小値と最大値から長方形ポリゴンを生成します。入力値はSRIDで指定さ"
-"れた空間参照系でなければなりません。"
+msgstr "座標値の最小値と最大値から矩形ポリゴンを生成します。"
 
 #. Tag: funcprototype
 #: reference_constructor.xml:142
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef> "
 "<paramdef><type>float</type> <parameter>xmin</parameter></paramdef> "
@@ -402,26 +452,25 @@ msgid ""
 "parameter></paramdef>"
 msgstr ""
 "<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef> "
-"<paramdef><type>double precision</type> <parameter>xmin</parameter></"
-"paramdef> <paramdef><type>double precision</type> <parameter>ymin</"
-"parameter></paramdef> <paramdef><type>double precision</type> "
-"<parameter>xmax</parameter></paramdef> <paramdef><type>double precision</"
-"type> <parameter>ymax</parameter></paramdef> <paramdef "
-"choice=\"opt\"><type>integer </type> <parameter>srid=unknown</parameter></"
-"paramdef>"
+"<paramdef><type>float</type> <parameter>xmin</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>ymin</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>xmax</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>ymax</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer</type> "
+"<parameter>srid=unknown</parameter></paramdef>"
 
 #. Tag: para
 #: reference_constructor.xml:156
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a rectangular Polygon from the minimum and maximum values for X and "
 "Y. Input values must be in the spatial reference system specified by the "
 "SRID. If no SRID is specified the unknown spatial reference system (SRID 0) "
 "is used."
 msgstr ""
-"与えられた最小値と最大値から長方形ポリゴンを生成します。入力値はSRIDで指定さ"
-"れた空間参照系でなければなりません。SRIDが指定されない場合には、不明な空間参"
-"照系と仮定します。"
+"XとYの最小値と最大値から矩形ポリゴンを生成します。入力値はSRIDで指定された空"
+"間参照系に合わせなければなりません。SRIDが指定されていない場合には、"
+"不明な空間参照系 (SRID 0)が使われます。"
 
 #. Tag: para
 #: reference_constructor.xml:160
@@ -445,7 +494,7 @@ msgstr "例: バウンディングボックスポリゴンの生成"
 
 #. Tag: programlisting
 #: reference_constructor.xml:167
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) );\n"
 "\n"
@@ -453,7 +502,7 @@ msgid ""
 "-----------\n"
 "POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))"
 msgstr ""
-"SELECT ST_AsText(ST_MakeEnvelope(10, 10, 11, 11, 4326));\n"
+"SELECT ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) );\n"
 "\n"
 "st_asewkt\n"
 "-----------\n"
@@ -461,13 +510,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:171
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>, <xref "
 "linkend=\"ST_TileEnvelope\"/>"
 msgstr ""
-", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
-"linkend=\"ST_SRID\"/>"
+", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>, <xref "
+"linkend=\"ST_TileEnvelope\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:177
@@ -477,14 +526,13 @@ msgstr "ST_MakeLine"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:179
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Creates a LineString from Point, MultiPoint, or LineString geometries."
-msgstr ""
-"ポイント、マルチポイント、ラインジオメトリからラインストリングを生成します。"
+msgstr "POINT、MULTIPOINT、LINESTRINGからLINESTRINGを生成します。"
 
 #. Tag: funcsynopsis
 #: reference_constructor.xml:183
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
@@ -497,13 +545,14 @@ msgid ""
 "</funcprototype>"
 msgstr ""
 "<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
-"<paramdef><type>geometry set</type> <parameter>geoms</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>geometry <function>ST_MakeLine</"
-"function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</"
-"parameter></paramdef> <paramdef><type>geometry</type> <parameter>geom2</"
-"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
 "<function>ST_MakeLine</function></funcdef> <paramdef><type>geometry[]</type> "
-"<parameter>geoms_array</parameter></paramdef> </funcprototype>"
+"<parameter>geoms_array</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_MakeLine</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>geoms</parameter></paramdef> "
+"</funcprototype>"
 
 #. Tag: para
 #: reference_constructor.xml:205
@@ -511,7 +560,8 @@ msgstr ""
 msgid ""
 "Creates a LineString containing the points of Point, MultiPoint, or "
 "LineString geometries. Other geometry types cause an error."
-msgstr ""
+msgstr "ポイント、マルチポイントまたはラインストリングのジオメトリの点を含むラインス"
+"トリングを生成します。他のジオメトリではエラーが発生します。"
 
 #. Tag: para
 #: reference_constructor.xml:210
@@ -522,6 +572,10 @@ msgid ""
 "<varname>ORDER BY</varname> in the function call, or a subquery with an "
 "<varname>ORDER BY</varname> clause."
 msgstr ""
+"<emphasis role=\"bold\">形式3:</emphasis> "
+"ジオメトリの行集合を受け付ける約関数。入力ジオメトリの順序を確実にするには、"
+"関数呼び出しで<varname>ORDER BY</varname>を使うか、<varname>ORDER "
+"BY</varname>節を持つサブクエリを使います。"
 
 #. Tag: para
 #: reference_constructor.xml:214
@@ -532,21 +586,24 @@ msgid ""
 "collapsed. <xref linkend=\"ST_RemoveRepeatedPoints\"/> can be used to "
 "collapse repeated points from the output LineString."
 msgstr ""
+"入力ラインストリングの開始位置で重複するノードは単一のポイントに減らされます"
+"。ポイントとマルチポイントの入力での重複するポイントは減らされません。"
+"出力ラインストリングから重複ポイントを削除するには<xref linkend="
+"\"ST_RemoveRepeatedPoints\"/>が使えます。"
 
 #. Tag: para
 #: reference_constructor.xml:222
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Availability: 2.3.0 - Support for MultiPoint input elements was introduced"
-msgstr ""
-"Availability: 2.3.0 - マルチポイントの入力要素に対応するようになりました。"
+msgstr "Availability: 2.3.0 - MULTIPOINT入力要素への対応が導入されました"
 
 #. Tag: para
 #: reference_constructor.xml:223
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Availability: 2.0.0 - Support for LineString input elements was introduced"
-msgstr "Availability: 2.0.0 - ラインストリング入力要素が導入されました。"
+msgstr "Availability: 2.0.0 - LINESTRING入力要素への対応が導入されました"
 
 #. Tag: para
 #: reference_constructor.xml:224
@@ -560,19 +617,19 @@ msgstr ""
 
 #. Tag: title
 #: reference_constructor.xml:229
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Examples: Two-input variant"
-msgstr "例: 配列使用版"
+msgstr "例: 二つ入力を引数に取る形式"
 
 #. Tag: para
 #: reference_constructor.xml:231
 #, no-c-format
 msgid "Create a line composed of two points."
-msgstr ""
+msgstr "二つのポイントで構成されるラインを生成します。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:232
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );\n"
 "\n"
@@ -580,23 +637,17 @@ msgid ""
 "---------------------\n"
 " LINESTRING(1 2,3 4)"
 msgstr ""
-"SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(the_geom) FROM visit_locations "
-"ORDER BY visit_time));\n"
+"SELECT ST_AsText( ST_MakeLine(ST_Point(1,2), ST_Point(3,4)) );\n"
 "\n"
-"-- 三つの3次元ポイントから3次元ラインを生成\n"
-"SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3),\n"
-"                                ST_MakePoint(3,4,5), "
-"ST_MakePoint(6,6,6)]));\n"
-"                st_asewkt\n"
-"-------------------------\n"
-"LINESTRING(1 2 3,3 4 5,6 6 6)"
+"          st_astext\n"
+"---------------------\n"
+" LINESTRING(1 2,3 4)"
 
 #. Tag: para
 #: reference_constructor.xml:234
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Create a 3D line from two 3D points."
-msgstr ""
-"与えられた二つの3次元ポイントジオメトリから定義されるBOX3Dを生成します。"
+msgstr "二つの3次元ポイントから3次元ラインを生成します。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:235
@@ -608,13 +659,17 @@ msgid ""
 "-------------------------\n"
 " LINESTRING(1 2 3,3 4 5)"
 msgstr ""
+"SELECT ST_AsEWKT( ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5) ));\n"
+"\n"
+"                st_asewkt\n"
+"-------------------------\n"
+" LINESTRING(1 2 3,3 4 5)"
 
 #. Tag: para
 #: reference_constructor.xml:237
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Create a line from two disjoint LineStrings."
-msgstr ""
-"ポイント、マルチポイント、ラインジオメトリからラインストリングを生成します。"
+msgstr "二つの接続されていないラインストリングからラインを生成します。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:238
@@ -627,18 +682,24 @@ msgid ""
 "-----------------------------\n"
 " LINESTRING(0 0,1 1,2 2,3 3)"
 msgstr ""
+"select ST_AsText( ST_MakeLine( 'LINESTRING(0 0, 1 1)', 'LINESTRING(2 2, 3 3)"
+"' ) );\n"
+"\n"
+"          st_astext\n"
+"-----------------------------\n"
+" LINESTRING(0 0,1 1,2 2,3 3)"
 
 #. Tag: title
 #: reference_constructor.xml:242
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Examples: Array variant"
-msgstr "例: 配列使用版"
+msgstr "例: 配列を引数に取る形式"
 
 #. Tag: para
 #: reference_constructor.xml:244
 #, no-c-format
 msgid "Create a line from an array formed by a subquery with ordering."
-msgstr ""
+msgstr "並べ替えを伴うサブクエリで作られた配列からラインを生成します。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:245
@@ -647,16 +708,18 @@ msgid ""
 "SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations "
 "ORDER BY visit_time) );"
 msgstr ""
+"SELECT ST_MakeLine( ARRAY( SELECT ST_Centroid(geom) FROM visit_locations "
+"ORDER BY visit_time) );"
 
 #. Tag: para
 #: reference_constructor.xml:247
 #, no-c-format
 msgid "Create a 3D line from an array of 3D points"
-msgstr ""
+msgstr "3次元ポイントの配列から3次元ラインを生成します。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:248
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsEWKT( ST_MakeLine(\n"
 "          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), "
@@ -666,33 +729,31 @@ msgid ""
 "-------------------------\n"
 "LINESTRING(1 2 3,3 4 5,6 6 6)"
 msgstr ""
-"SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(the_geom) FROM visit_locations "
-"ORDER BY visit_time));\n"
+"SELECT ST_AsEWKT( ST_MakeLine(\n"
+"          ARRAY[ ST_MakePoint(1,2,3), ST_MakePoint(3,4,5), "
+"ST_MakePoint(6,6,6) ]  ));\n"
 "\n"
-"-- 三つの3次元ポイントから3次元ラインを生成\n"
-"SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3),\n"
-"                                ST_MakePoint(3,4,5), "
-"ST_MakePoint(6,6,6)]));\n"
 "                st_asewkt\n"
 "-------------------------\n"
 "LINESTRING(1 2 3,3 4 5,6 6 6)"
 
 #. Tag: title
 #: reference_constructor.xml:252
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Examples: Aggregate variant"
-msgstr "例: 空間集計版"
+msgstr "例: 集約関数の形式"
 
 #. Tag: para
 #: reference_constructor.xml:253
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This example queries time-based sequences of GPS points from a set of tracks "
 "and creates one record for each track. The result geometries are LineStrings "
 "composed of the GPS track points in the order of travel."
 msgstr ""
-"この例では、GPS位置の順列を取り、ジオメトリフィールドがGPSポイントからなるラ"
-"インストリングで行程順になるよう、行程ごとに一つのレコードを生成します。"
+"この例ではGPSトラックの集合からポイントの時間ベースのシーケンスを問い合わせて"
+"います。結果ジオメトリは、GPSトラックの移動順ポイントで構成されるラインストリ"
+"ングです。"
 
 #. Tag: para
 #: reference_constructor.xml:257
@@ -700,7 +761,8 @@ msgstr ""
 msgid ""
 "Using aggregate <varname>ORDER BY</varname> provides a correctly-ordered "
 "LineString."
-msgstr ""
+msgstr "<varname>ORDER "
+"BY</varname>節を使うことで、正しい順序のLINESTRINGが生成できます。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:258
@@ -710,6 +772,9 @@ msgid ""
 "        FROM gps_points As gps\n"
 "        GROUP BY track_id;"
 msgstr ""
+"SELECT gps.track_id, ST_MakeLine(gps.geom ORDER BY gps_time) As geom\n"
+"        FROM gps_points As gps\n"
+"        GROUP BY track_id;"
 
 #. Tag: para
 #: reference_constructor.xml:260
@@ -718,10 +783,12 @@ msgid ""
 "Prior to PostgreSQL 9, ordering in a subquery can be used. However, "
 "sometimes the query plan may not respect the order of the subquery."
 msgstr ""
+"PostgreSQL 9より前の版では、サブクエリでの順序付けを使うことができます。ただ"
+"し、クエリプランでサブクエリの並び順が尊重されない場合があります。"
 
 #. Tag: programlisting
 #: reference_constructor.xml:262
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT gps.track_id, ST_MakeLine(gps.geom) As geom\n"
 "        FROM ( SELECT track_id, gps_time, geom\n"
@@ -729,25 +796,23 @@ msgid ""
 "gps\n"
 "        GROUP BY track_id;"
 msgstr ""
-"-- PostgreSQL 9.0より前の版 - これは普通に動きますが、\n"
-"-- プランナが副問い合わせの並び順を尊重しない選択を発生させることがありま"
-"す。\n"
-"SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom\n"
-"        FROM (SELECT gps_track, gps_time, the_geom\n"
-"                        FROM gps_points ORDER BY gps_track, gps_time) As "
+"SELECT gps.track_id, ST_MakeLine(gps.geom) As geom\n"
+"        FROM ( SELECT track_id, gps_time, geom\n"
+"                        FROM gps_points ORDER BY track_id, gps_time ) As "
 "gps\n"
-"        GROUP BY gps.gps_track;"
+"        GROUP BY track_id;"
 
 #. Tag: para
 #: reference_constructor.xml:267
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
 "linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
 "linkend=\"ST_Point\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref "
-"linkend=\"ST_MakePoint\"/>"
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_MakePoint\"/>, <xref "
+"linkend=\"ST_Point\"/>"
 
 #. Tag: refname
 #: reference_constructor.xml:280
@@ -757,21 +822,21 @@ msgstr "ST_MakePoint"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:282
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Creates a 2D, 3DZ or 4D Point."
-msgstr "2次元、XYZの3次元または4次元のポイントジオメトリを生成します。"
+msgstr "2次元、3次元 (XYZ)、4次元のポイントを生成します。"
 
 #. Tag: funcprototype
 #: reference_constructor.xml:287
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Point</function></funcdef> "
-"<paramdef><type>float </type> <parameter>x_lon</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>y_lat</parameter></paramdef>"
+"<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
+"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>y</parameter></paramdef>"
 
 #. Tag: funcprototype
 #: reference_constructor.xml:294
