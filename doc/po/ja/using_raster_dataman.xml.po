@@ -2,20 +2,22 @@
 #
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-13 19:13+0000\n"
-"PO-Revision-Date: 2021-11-30 08:26+0000\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
+"using_raster_datamanxml/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: using_raster_dataman.xml:3
@@ -496,6 +498,9 @@ msgid ""
 "you save time in checking, but could end up with far more junk rows in your "
 "database and those junk rows are not marked as empty tiles."
 msgstr ""
+"空タイルを保持してラスタバンドごとのNODATA値のチェックを省きます。チェック時"
+"間を抑えることになりますが、データベース内の不要な行がずっと増えて、これらの"
+"行が空タイルとされないことに注意して下さい。"
 
 #. Tag: term
 #: using_raster_dataman.xml:265
@@ -535,7 +540,7 @@ msgstr ""
 #: using_raster_dataman.xml:287
 #, no-c-format
 msgid "-Y <varname>max_rows_per_copy=50</varname>"
-msgstr ""
+msgstr "-Y <varname>max_rows_per_copy=50</varname>"
 
 #. Tag: para
 #: using_raster_dataman.xml:289
@@ -544,6 +549,8 @@ msgid ""
 "Use copy statements instead of insert statements. Optionally specify "
 "<varname>max_rows_per_copy</varname>; default 50 when not specified."
 msgstr ""
+"COPYステートメントを使い、INSERTを使いません。任意で<varname>max_rows_per_cop"
+"y</varname>を指定します。指定しない場合のデフォルト値は50です。"
 
 #. Tag: term
 #: using_raster_dataman.xml:301
