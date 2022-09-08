@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-09-01 02:55+0000\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_rasterxml/ja/>\n"
@@ -5355,7 +5355,7 @@ msgstr ""
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
-msgstr "pg_total_relation_size - テーブル、TOASTテーブル、インデックスを含みます。"
+msgstr "pg_total_relation_size - テーブル、TOASTテーブル、インデクスを含みます。"
 
 #. Tag: programlisting
 #: reference_raster.xml:2173
@@ -24255,7 +24255,8 @@ msgstr ""
 msgid ""
 "Changed 3.3.0, validation and fixing is disabled to improve performance. May "
 "result invalid geometries."
-msgstr ""
+msgstr "Changed 3.3.0, 能率向上のため評価と修正が無効になりました。不正なジオメトリを"
+"返すことがあります。"
 
 #. Tag: para
 #: reference_raster.xml:10031
