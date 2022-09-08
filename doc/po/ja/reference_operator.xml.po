@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_operatorxml/ja/>\n"
 "Language: ja\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: reference_operator.xml:3
@@ -27,7 +27,7 @@ msgstr "演算子"
 #: reference_operator.xml:6
 #, no-c-format
 msgid "Bounding Box Operators"
-msgstr ""
+msgstr "バウンディングボックス演算子"
 
 #. Tag: refname
 #: reference_operator.xml:10
@@ -225,14 +225,15 @@ msgstr "関連情報"
 
 #. Tag: para
 #: reference_operator.xml:77
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
 "<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
 "\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
 "linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+", <xref linkend=\"ST_Extent\"/>, <xref linkend=\"ST_Geometry_Overabove\"/>, "
+"<xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
 "\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
 "linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
 
@@ -311,7 +312,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:133
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Point(1,1) &amp;&amp; ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) "
 "AS overlaps;\n"
@@ -321,8 +322,8 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_MakePoint(1,1) &amp;&amp; ST_MakeBox2D(ST_MakePoint(0,0), "
-"ST_MakePoint(2,2)) AS overlaps;\n"
+"SELECT ST_Point(1,1) &amp;&amp; ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) "
+"AS overlaps;\n"
 "\n"
 " overlaps\n"
 "----------\n"
@@ -394,7 +395,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:194
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) &amp;&amp; ST_Point(1,1) "
 "AS overlaps;\n"
@@ -404,8 +405,8 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; "
-"ST_MakePoint(1,1) AS overlaps;\n"
+"SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) &amp;&amp; ST_Point(1,1) "
+"AS overlaps;\n"
 "\n"
 " overlaps\n"
 "----------\n"
@@ -468,7 +469,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:255
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) &amp;&amp; "
 "ST_MakeBox2D(ST_Point(1,1), ST_Point(3,3)) AS overlaps;\n"
@@ -478,8 +479,8 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; "
-"ST_MakeBox2D(ST_MakePoint(1,1), ST_MakePoint(3,3)) AS overlaps;\n"
+"SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) &amp;&amp; "
+"ST_MakeBox2D(ST_Point(1,1), ST_Point(3,3)) AS overlaps;\n"
 "\n"
 " overlaps\n"
 "----------\n"
@@ -1304,15 +1305,14 @@ msgstr "&#61;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:793
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the coordinates and coordinate order "
 "geometry/geography A are the same as the coordinates and coordinate order of "
 "geometry/geography B."
 msgstr ""
-"<varname>~=</varname>演算子はジオメトリ/ジオグラフィAのバウンディングボックス"
-"がジオメトリ/ジオグラフィBのバウンディングボックスと同じ場合に<varname>TRUE</"
-"varname>を返します。"
+"ジオメトリ/ジオグラフィ Aの座標と座標の並び順がジオメトリ/ジオグラフィ "
+"Bと同じ場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: funcsynopsis
 #: reference_operator.xml:798
@@ -1336,7 +1336,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:839
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the "
 "coordinates and coordinate order geometry/geography A are the same as the "
@@ -1345,10 +1345,12 @@ msgid ""
 "orderings and comparison of geometries (ie. in a GROUP BY or ORDER BY "
 "clause)."
 msgstr ""
-"<varname>=</varname>演算子は、ジオメトリ/ジオグラフィAのバウンダリボックス"
-"が、Bのバウンダリボックスと同じ場合に<varname>TRUE</varname>を返します。"
-"PostgreSQLは、ジオメトリが内部の並べ替えの実行やジオメトリの比較を行うために"
-"定義した=, &lt;, &gt;演算子を使います (GROUP BYやORDER BY節)。"
+"<varname>&#61;</varname>演算子は、ジオメトリ/ジオグラフィ "
+"Aの座標と座標の並び順がジオメトリ/ジオグラフィ "
+"Bと同じ場合に<varname>TRUE</varname>を返します。PostgreSQLは、"
+"ジオメトリの内部の順位付けと比較 (GROUP BYやORDER "
+"BY節などで使います)のために、ジオメトリ用に定義されている=, &lt;および&gt; "
+"演算子を使います。"
 
 #. Tag: para
 #: reference_operator.xml:844
@@ -1361,15 +1363,21 @@ msgid ""
 "representations, use <xref linkend=\"ST_OrderingEquals\"/> or <xref linkend="
 "\"ST_Equals\"/>"
 msgstr ""
+"この演算子は、同じ座標値と並び順である、全ての点で確実に同じジオメトリ/ジオグ"
+"ラフィだけを同じと考えます。「空間的に等価」、つまり、並び順は無視し、異なる"
+"表現でも同じ空間領域を占めるかどうかをテストするには、<xref linkend="
+"\"ST_OrderingEquals\"/>または<xref linkend=\"ST_Equals\"/>を使います。"
 
 #. Tag: para
 #: reference_operator.xml:853
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This operand will NOT make use of any indexes that may be available on the "
 "geometries. For an index assisted exact equality test, combine &#61; with "
 "&amp;&amp;."
-msgstr "これのオペランドはジオメトリで使用できるインデクスを*使いません*。"
+msgstr ""
+"この演算子は、ジオメトリで有効なインデックスを一切*使いません*。インデックス"
+"を使った確実な等価性試験を行うには、&#61;と&amp;&amp;を併用します。"
 
 #. Tag: para
 #: reference_operator.xml:857
@@ -1379,10 +1387,13 @@ msgid ""
 "geometric equality. If you need bounding box equality, use <xref linkend="
 "\"ST_Geometry_Same\"/> instead."
 msgstr ""
+"Changed: 2.4.0, 以前の版では、ジオメトリ自体の等価性でなくバウンディングボッ"
+"クスが等価かどうかを見ていました。バウンディングボックスが等価かどうかを知る"
+"必要がある場合には、替わりに<xref linkend=\"ST_Geometry_Same\"/>を使います。"
 
 #. Tag: programlisting
 #: reference_operator.xml:867
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::"
 "geometry;\n"
@@ -1420,11 +1431,11 @@ msgid ""
 "--pt_intersect --\n"
 "f"
 msgstr ""
-"SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::"
-"geometry;\n"
+"SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 "
+"0)'::geometry;\n"
 " ?column?\n"
 "----------\n"
-" t\n"
+" f\n"
 "(1 row)\n"
 "\n"
 "SELECT ST_AsText(column1)\n"
@@ -1437,18 +1448,19 @@ msgstr ""
 " LINESTRING(1 1,0 0)\n"
 "(2 rows)\n"
 "\n"
-"-- Note: the GROUP BY uses the \"=\" to compare for geometry equivalency.\n"
+"-- ご注意: GROUP BYは、ジオメトリの等価性比較のために\"=\"を使います。\n"
 "SELECT ST_AsText(column1)\n"
 "FROM ( VALUES\n"
 "        ('LINESTRING(0 0, 1 1)'::geometry),\n"
 "        ('LINESTRING(1 1, 0 0)'::geometry)) AS foo\n"
 "GROUP BY column1;\n"
-"          st_astext\n"
+"      st_astext\n"
 "---------------------\n"
 " LINESTRING(0 0,1 1)\n"
-"(1 row)\n"
+" LINESTRING(1 1,0 0)\n"
+"(2 rows)\n"
 "\n"
-"-- 2.0より前の版では、これはTRUEを返します --\n"
+"-- 2.0より前ではTRUEを返しました --\n"
 " SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =\n"
 "        ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;\n"
 "\n"
@@ -1457,11 +1469,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:873
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_Same\"/>"
 msgstr ""
-", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
+", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_Same\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:880
@@ -1666,7 +1678,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:1029
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ "
 "ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;\n"
@@ -1677,7 +1689,7 @@ msgid ""
 "(1 row)"
 msgstr ""
 "SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ "
-"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;\n"
+"ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;\n"
 "\n"
 " is_contained\n"
 "--------------\n"
@@ -1745,7 +1757,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:1090
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ "
 "ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;\n"
@@ -1755,7 +1767,7 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ "
+"SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ "
 "ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;\n"
 "\n"
 " is_contained\n"
@@ -1824,7 +1836,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:1151
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ "
 "ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;\n"
@@ -1834,8 +1846,8 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ "
-"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;\n"
+"SELECT ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) @ "
+"ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) AS is_contained;\n"
 "\n"
 " is_contained\n"
 "--------------\n"
@@ -1977,14 +1989,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:1260
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> if "
 "the bounding box of geometry A is strictly above the bounding box of "
 "geometry B."
 msgstr ""
-"<varname>&lt;&lt;|</varname>演算子は、Aのバウンダリボックスが、厳密にBのバウ"
-"ンダリボックスの下にある場合に<varname>TRUE</varname>を返します。"
+"<varname>|&gt;&gt;</varname>演算子は、Aのバウンダリボックスが、厳密にBのバウ"
+"ンダリボックスの上にある場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: programlisting
 #: reference_operator.xml:1270
@@ -2153,7 +2165,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:1376
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ "
 "ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;\n"
@@ -2164,7 +2176,7 @@ msgid ""
 "(1 row)"
 msgstr ""
 "SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ "
-"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) AS contains;\n"
+"ST_MakeBox2D(ST_Point(0,0), ST_Point(2,2)) AS contains;\n"
 "\n"
 " contains\n"
 "----------\n"
@@ -2235,7 +2247,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:1437
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ "
 "ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;\n"
@@ -2245,7 +2257,7 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ "
+"SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ "
 "ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;\n"
 "\n"
 " contains\n"
@@ -2316,7 +2328,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:1498
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ "
 "ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) AS contains;\n"
@@ -2326,8 +2338,8 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ "
-"ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) AS contains;\n"
+"SELECT ST_MakeBox2D(ST_Point(0,0), ST_Point(5,5)) ~ "
+"ST_MakeBox2D(ST_Point(2,2), ST_Point(3,3)) AS contains;\n"
 "\n"
 " contains\n"
 "----------\n"
@@ -2398,7 +2410,7 @@ msgstr "Availability: 1.5.0 挙動が変更されました"
 
 #. Tag: para
 #: reference_operator.xml:1559
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This operator has changed behavior in PostGIS 1.5 from testing for actual "
 "geometric equality to only checking for bounding box equality. To complicate "
@@ -2411,10 +2423,9 @@ msgstr ""
 "バウンディングボックスの等価性のテストに変更されました。ハードアップグレード"
 "またはソフトアップグレードを実行している場合は、データベースがどの挙動を持つ"
 "かに動作が依存して、ややこしくなります。データベースがどの挙動を持つか判断す"
-"るために、下のクエリを実行することができます。本当の等価性をチェックするには"
-"<xref linkend=\"ST_OrderingEquals\"/>または <xref linkend=\"ST_Equals\"/>を使"
-"用し、バウンディングボックスの等価性をチェックするには<xref linkend="
-"\"ST_Geometry_EQ\"/>を使用するのが、安全な選択肢です。"
+"るために、下のクエリを実行することができます。"
+"本当の等価性をチェックするには<xref linkend=\"ST_OrderingEquals\"/>または "
+"<xref linkend=\"ST_Equals\"/>を使用します。"
 
 #. Tag: programlisting
 #: reference_operator.xml:1572
@@ -2442,9 +2453,9 @@ msgstr ""
 
 #. Tag: title
 #: reference_operator.xml:1584
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Distance Operators"
-msgstr "演算子"
+msgstr "距離演算子"
 
 #. Tag: refname
 #: reference_operator.xml:1589
@@ -2521,15 +2532,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:1646
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Refer to <ulink url=\"https://postgis.net/workshops/postgis-intro/knn.html"
 "\">PostGIS workshop: Nearest-Neighbor Searching</ulink> for a detailed "
 "example."
 msgstr ""
-"実際の生きた例については<ulink url=\"http://workshops.opengeo.org/postgis-"
-"intro/knn.html\">OpenGeo workshop: Nearest-Neighbour Searching</ulink>を参照"
-"して下さい。"
+"詳細な例については<ulink url=\"http://workshops.opengeo.org/postgis-intro/knn"
+".html\">OpenGeo workshop: Nearest-Neighbour "
+"Searching</ulink>を参照して下さい。"
 
 #. Tag: para
 #: reference_operator.xml:1648
@@ -2767,7 +2778,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:1710
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>|=|</varname> operator returns the 3D distance between two "
 "trajectories (See <xref linkend=\"ST_IsValidTrajectory\"/>). This is the "
@@ -2775,10 +2786,10 @@ msgid ""
 "for doing nearest neighbor searches using an N-dimensional index (requires "
 "PostgreSQL 9.5.0 or higher)."
 msgstr ""
-"<varname>|=|</varname>演算子は二つのトラジェクトリの3次元距離を返します "
-"(<xref linkend=\"ST_IsValidTrajectory\"/>を参照して下さい)。これは、<xref "
-"linkend=\"ST_DistanceCPA\"/>と同じですが、N次元インデクスを使った近傍探索 "
-"(PostgreSQL 9.5.0以上)で使われる演算子です。"
+"<varname>|=|</varname>演算子は二つのトラジェクトリの3次元距離を返します ("
+"<xref linkend=\"ST_IsValidTrajectory\"/>を参照して下さい)。これは、<xref "
+"linkend=\"ST_DistanceCPA\"/>と同じですが、N次元インデクスを使った近傍探索 ("
+"PostgreSQL 9.5.0以上)で使われる演算子です。"
 
 #. Tag: para
 #: reference_operator.xml:1718
