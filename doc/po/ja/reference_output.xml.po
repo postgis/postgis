@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-27 04:57+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_outputxml/ja/>\n"
 "Language: ja\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_output.xml:6
@@ -1787,7 +1787,7 @@ msgstr "ST_AsGMLのGML 3版以上では多面体サーフェスとTINに対応�
 #: reference_output.xml:753
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 17.2"
 
 #. Tag: title
 #: reference_output.xml:760
@@ -2370,7 +2370,7 @@ msgstr "ST_AsMVTGeom"
 #: reference_output.xml:924
 #, no-c-format
 msgid "Transforms a geometry into the coordinate space of a MVT tile."
-msgstr ""
+msgstr "ジオメトリをMVTタイルの座標空間に変換します。"
 
 #. Tag: funcprototype
 #: reference_output.xml:928
@@ -2406,6 +2406,12 @@ msgid ""
 "en.wikipedia.org/wiki/Web_Mercator_projection\">Web Mercator</ulink> "
 "(SRID:3857)."
 msgstr ""
+"ジオメトリをMVT (<ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox "
+"Vector "
+"Tile</ulink>)タイルの座標空間に変換し、必要ならタイルの境界で切り抜きます。"
+"ジオメトリは対象地図の座標系でなければなりません (必要なら<xref linkend="
+"\"ST_Transform\"/>を使います)。一般にこれは<ulink url=\"https://en.wikipedia."
+"org/wiki/Web_Mercator_projection\">Web Mercator</ulink> (SRID:3857)です。"
 
 #. Tag: para
 #: reference_output.xml:947
@@ -2413,7 +2419,8 @@ msgstr ""
 msgid ""
 "The function attempts to preserve geometry validity, and corrects it if "
 "needed. This may cause the result geometry to collapse to a lower dimension."
-msgstr ""
+msgstr "この関数は、ジオメトリに妥当性を保持しようとし、必要なら修正します。これによ"
+"って、結果ジオメトリが低い次元に落ちる可能性があります。"
 
 #. Tag: para
 #: reference_output.xml:950
@@ -2423,6 +2430,9 @@ msgid ""
 "be provided, so the geometry can be transformed, and clipped if required. "
 "The bounds can be generated using <xref linkend=\"ST_TileEnvelope\"/>."
 msgstr ""
+"対象地図の座標空間内のタイルを示す四角形の境界を与えなければなりません。ジオ"
+"メトリが変換され、必要なら切り抜きます。境界は<xref linkend=\"ST_TileEnvelope"
+"\"/>で生成できます。"
 
 #. Tag: para
 #: reference_output.xml:954
@@ -2430,7 +2440,8 @@ msgstr ""
 msgid ""
 "This function is used to convert geometry into the tile coordinate space "
 "required by <xref linkend=\"ST_AsMVT\"/>."
-msgstr ""
+msgstr "この関数はジオメトリを<xref linkend=\"ST_AsMVT\""
+"/>が求める座標空間に変換するために使います。"
 
 #. Tag: para
 #: reference_output.xml:958
@@ -2438,7 +2449,7 @@ msgstr ""
 msgid ""
 "<varname>geom</varname> is the geometry to transform, in the coordinate "
 "system of the target map."
-msgstr ""
+msgstr "<varname>geom</varname>は変換するジオメトリで、対象地図の座標系です。"
 
 #. Tag: para
 #: reference_output.xml:959
@@ -2446,7 +2457,8 @@ msgstr ""
 msgid ""
 "<varname>bounds</varname> is the rectangular bounds of the tile in map "
 "coordinate space, with no buffer."
-msgstr ""
+msgstr "<varname>bounds</varname>は地図の座標空間内のタイルの四角形境界で、バッファは"
+"ありません。"
 
 #. Tag: para
 #: reference_output.xml:960
@@ -2456,6 +2468,9 @@ msgid ""
 "as defined by the <ulink url=\"https://www.mapbox.com/vector-tiles/"
 "specification/\">MVT specification</ulink>. Defaults to 4096."
 msgstr ""
+"<varname>extent</varname>は<ulink url=\"https://www.mapbox.com/vector-tiles/"
+"specification/\">MVT specification</ulink>で定義されるタイル座標空間でのタイ"
+"ルのサイズです。デフォルトは4096です。"
 
 #. Tag: para
 #: reference_output.xml:961
@@ -2464,6 +2479,8 @@ msgid ""
 "<varname>buffer</varname> is the buffer size in tile coordinate space for "
 "geometry clippig. Defaults to 256."
 msgstr ""
+"<varname>buffer</varname>は、ジオメトリの切り抜きを行うためのタイル座標空間に"
+"おけるバッファサイズです。デフォルトは256です。"
 
 #. Tag: para
 #: reference_output.xml:962
@@ -2472,6 +2489,8 @@ msgid ""
 "<varname>clip_geom</varname> is a boolean to control if geometries are "
 "clipped or encoded as-is. Defaults to true."
 msgstr ""
+"<varname>clip_geom</varname>はジオメトリを切り抜くかそのままで符号化するかを"
+"制御する真偽値です。デフォルトはTRUEです。"
 
 #. Tag: para
 #: reference_output.xml:967
@@ -2499,6 +2518,14 @@ msgid ""
 " MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 "
 "4096)))"
 msgstr ""
+"SELECT ST_AsText(ST_AsMVTGeom(\n"
+"        ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),\n"
+"        ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),\n"
+"        4096, 0, false));\n"
+"                              st_astext\n"
+"--------------------------------------------------------------------\n"
+" MULTIPOLYGON(((5 4096,10 4091,10 4096,5 4096)),((5 4096,0 4101,0 4096,5 "
+"4096)))"
 
 #. Tag: para
 #: reference_output.xml:975
@@ -2506,7 +2533,8 @@ msgstr ""
 msgid ""
 "Canonical example for a Web Mercator tile using a computed tile bounds to "
 "query and clip geometry."
-msgstr ""
+msgstr "クエリを実行してジオメトリをクリップするために計算されたタイル境界を使うウェ"
+"ブメルカトルのタイルの標準的な例です。"
 
 #. Tag: programlisting
 #: reference_output.xml:977
@@ -2520,6 +2548,13 @@ msgid ""
 "  WHERE geom && ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096))\n"
 "]]>"
 msgstr ""
+"<![CDATA[SELECT ST_AsMVTGeom(\n"
+"            ST_Transform( geom, 3857 ),\n"
+"            ST_TileEnvelope(12, 513, 412), extent => 4096, buffer => 64) AS "
+"geom\n"
+"  FROM data\n"
+"  WHERE geom && ST_TileEnvelope(12, 513, 412, margin => (64.0 / 4096))\n"
+"]]>"
 
 #. Tag: para
 #: reference_output.xml:983
@@ -2541,7 +2576,7 @@ msgstr "ST_AsMVT"
 #: reference_output.xml:995
 #, no-c-format
 msgid "Aggregate function returning a MVT representation of a set of rows."
-msgstr ""
+msgstr "行集合のMVT表現を返す集約関数です。"
 
 #. Tag: funcsynopsis
 #: reference_output.xml:998
@@ -2606,6 +2641,13 @@ msgid ""
 "linkend=\"ST_AsMVTGeom\"/> can be used to transform geometry into tile "
 "coordinate space. Other row columns are encoded as feature attributes."
 msgstr ""
+"タイルレイヤに対応する行集合を<ulink url=\"https://www.mapbox.com/"
+"vector-tiles/\">Mapbox Vector Tile</ulink>表現で返す集約関数です。行には地物"
+"ジオメトリとして符号化されるgeometryが必ずあります。ジオメトリはタイルの座標"
+"空間に存在しなければならず、<ulink url=\"https://www.mapbox.com/vector-tiles/"
+"specification/\">MVT specification</ulink>として妥当でなければなりません。"
+"<xref linkend=\"ST_AsMVTGeom\"/>はジオメトリをタイルの座標空間に変換するのに"
+"使えます。他のカラムは地物の属性として符号化されます。"
 
 #. Tag: para
 #: reference_output.xml:1044
@@ -2676,6 +2718,13 @@ msgid ""
 "g. <varname>\"MyMVTGeom\"</varname>, this parameter must be provided as "
 "lowercase."
 msgstr ""
+"<varname>geom_name</varname>は、行データ内のジオメトリカラム名です。デフォル"
+"トはジオメトリカラムのうちの先頭です。"
+"PostgreSQLはデフォルトでは自動的に<ulink url=\"https://www.postgresql.org/"
+"docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS\">引用符で括らな"
+"い識別子は小文字になります</ulink>。これは、ジオメトリカラムがカラム名が引用"
+"符で括られる(<varname>\"MyMVTGeom\"</varname>等)ようになっていない場合には、"
+"このパラメータは小文字で渡さなければなりません。"
 
 #. Tag: para
 #: reference_output.xml:1064
@@ -3309,6 +3358,10 @@ msgid ""
 "this function and <ulink url=\"http://www.x3dom.org/\">x3dDom html/js open "
 "source toolkit</ulink>."
 msgstr ""
+"この関数と<ulink url=\"http://www.x3dom.org/\">x3dDom html/js open source "
+"toolkit</ulink>を用いた<ulink url=\"https://git.osgeo.org/gitea/robe/"
+"postgis_x3d_viewer\">PostGIS minimalist X3D "
+"viewer</ulink>を開いてみて下さい。"
 
 #. Tag: para
 #: reference_output.xml:1286
@@ -3434,7 +3487,7 @@ msgstr ""
 #: reference_output.xml:1303
 #, no-c-format
 msgid "PostGIS buildings"
-msgstr ""
+msgstr "PostGISの建物"
 
 #. Tag: para
 #: reference_output.xml:1304
@@ -3443,6 +3496,9 @@ msgid ""
 "Copy and paste the output of this query to <ulink url=\"http://postgis.net/"
 "docs/support/viewers/x3d_viewer.htm\">x3d scene viewer</ulink> and click Show"
 msgstr ""
+"このクエリの出力を<ulink url=\"http://postgis.net/docs/support/viewers/"
+"x3d_viewer.htm\">x3d scene "
+"viewer</ulink>にコピーして貼り付けて、Showをクリックします。"
 
 #. Tag: programlisting
 #: reference_output.xml:1309
@@ -3457,12 +3513,20 @@ msgid ""
 "    </Shape>', '')\n"
 "FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);]]>"
 msgstr ""
+"<![CDATA[SELECT string_agg('<Shape>' || ST_AsX3D(ST_Extrude(geom, 0,0, i*0."
+"5)) ||\n"
+"    '<Appearance>\n"
+"          <Material diffuseColor=\"' || (0.01*i)::text || ' 0.8 0.2\" "
+"specularColor=\"' || (0.05*i)::text || ' 0 0.5\"/>\n"
+"        </Appearance>\n"
+"    </Shape>', '')\n"
+"FROM ST_Subdivide(ST_Letters('PostGIS'),20) WITH ORDINALITY AS f(geom,i);]]>"
 
 #. Tag: para
 #: reference_output.xml:1315
 #, no-c-format
 msgid "Buildings formed by subdividing PostGIS and extrusion"
-msgstr ""
+msgstr "PostGISのデータ細分化と押し出しによって形成された建物"
 
 #. Tag: title
 #: reference_output.xml:1320
