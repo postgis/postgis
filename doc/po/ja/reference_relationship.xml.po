@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-03-28 21:21+0000\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
@@ -53,6 +53,8 @@ msgid ""
 "Tests if two geometries spatially intersect in 3D - only for points, "
 "linestrings, polygons, polyhedral surface (area)."
 msgstr ""
+"二つのジオメトリが3次元で空間的にインタセクトするかをテストします。ポイント、"
+"ラインストリング、ポリゴン、多面体サーフェス (面)のみ有効です。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:23
@@ -141,7 +143,7 @@ msgstr "&T_support;"
 #: reference_relationship.xml:51
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1"
 
 #. Tag: title
 #: reference_relationship.xml:54 reference_relationship.xml:788
@@ -218,7 +220,8 @@ msgstr "ST_Contains"
 msgid ""
 "Tests if no points of B lie in the exterior of A, and A and B have at least "
 "one interior point in common."
-msgstr ""
+msgstr "Bの外部にAのポイントが無く、かつAとBが内部に少なくとも一つのポイントを共有す"
+"る場合にはTRUEを返します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:76
@@ -258,6 +261,14 @@ msgid ""
 "<xref linkend=\"ST_ContainsProperly\"/> predicate a geometry does "
 "<emphasis>not</emphasis> properly contain itself.)"
 msgstr ""
+"この定義は、ジオメトリに境界が含まれていない点で微妙です。これは、ポリゴンと"
+"ラインに境界であるラインとポイントを<emphasis>含まない</emphasis>ことを意味し"
+"ます。詳細については、<ulink url=\"http://lin-ear-th-inking.blogspot.com/"
+"2007/06/subtleties-of-ogc-covers-spatial.html\">Subtleties of OGC Covers, "
+"Contains, Within</ulink>をご覧下さい (<xref linkend=\"ST_Covers\""
+"/>は、より包括的な関係を提供します)。しかし、ジオメトリは自身を含みます ("
+"対して<xref linkend=\"ST_ContainsProperly\""
+"/>ではジオメトリは自身を<emphasis>正しく含むことにはなりません</emphasis>)。"
 
 #. Tag: para
 #: reference_relationship.xml:102
@@ -371,7 +382,8 @@ msgstr "例"
 msgid ""
 "<function>ST_Contains</function> returns <varname>TRUE</varname> in the "
 "following situations:"
-msgstr ""
+msgstr "次に示す図全てで、<function>ST_Contains</function>は<varname>TRUE</varname>を"
+"返します。"
 
 #. Tag: para
 #: reference_relationship.xml:143
@@ -406,6 +418,8 @@ msgid ""
 "The <function>ST_Contains</function> predicate returns <varname>FALSE</"
 "varname> in the following situations:"
 msgstr ""
+"次に示す図全てで、<function>ST_Contains</function>は<function>FALSE</function"
+">を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:194
@@ -510,7 +524,8 @@ msgstr "ST_ContainsProperly"
 #, no-c-format
 msgid ""
 "Tests if B intersects the interior of A but not the boundary or exterior."
-msgstr ""
+msgstr "BがAの内部にインタセクトするが境界または外部にインタセクトしないかどうかをテ"
+"ストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:230
@@ -530,7 +545,8 @@ msgstr ""
 msgid ""
 "Returns true if B intersects the interior of A but not the boundary or "
 "exterior."
-msgstr ""
+msgstr "BがAの内部にインタセクトするが境界と外部にインタセクトしない場合にはTRUEを返"
+"します。"
 
 #. Tag: para
 #: reference_relationship.xml:247
@@ -697,7 +713,7 @@ msgstr "ST_CoveredBy"
 #: reference_relationship.xml:291
 #, no-c-format
 msgid "Tests if no point in A is outside B"
-msgstr ""
+msgstr "AのポイントがBの外部に存在しないかどうかをテストします。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:295
@@ -806,7 +822,7 @@ msgstr "ST_Covers"
 #: reference_relationship.xml:361
 #, no-c-format
 msgid "Tests if no point in B is outside A"
-msgstr ""
+msgstr "BのポイントがAの外部に存在しないかどうかをテストします。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:365
@@ -969,7 +985,8 @@ msgstr "ST_Crosses"
 #, no-c-format
 msgid ""
 "Tests if two geometries have some, but not all, interior points in common."
-msgstr ""
+msgstr "与えられたジオメトリが共通の内部の点を持ち、かつそうでない内部の点を持つ場合"
+"に、TRUEを返します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:443
@@ -995,38 +1012,46 @@ msgid ""
 "two geometries must not equal either of the source geometries. Otherwise, it "
 "returns <varname>false</varname>."
 msgstr ""
+"与えられたジオメトリ表現が「空間的にクロスしている」場合には<varname>TRUE</va"
+"rname>を返します。\\\n"
+"\n"
+"'='よりも「よりよい」答を得るために使います。空間的に同じということは、ST_Wit"
+"hin(A,B) = trueかつST_Within(B,A) = trueとなります。また、ポイントの順序が違"
+"っても同じジオメトリ構造ならtrueとなります。"
+"構成ポイントの順序の確認にはST_OrderingEqualsを使用します (ST_OrderingEquals"
+"はポイントのオーダが同じかを確認するよりも若干厳しくなります)。"
 
 #. Tag: para
 #: reference_relationship.xml:465
 #, no-c-format
 msgid "In mathematical terms, this is:"
-msgstr ""
+msgstr "数学的に述べると、次のようになります。"
 
 #. Tag: para
 #: reference_relationship.xml:475
 #, no-c-format
 msgid "Geometries cross if their DE-9IM Intersection Matrix matches:"
-msgstr ""
+msgstr "DE-9IMインタセクション行列が次の通り合致するとジオメトリはクロスしています。"
 
 #. Tag: para
 #: reference_relationship.xml:479
 #, no-c-format
 msgid ""
 "<code>T*T******</code> for Point/Line, Point/Area, and Line/Area situations"
-msgstr ""
+msgstr "Point/Line, Point/Area, Line/Areaの場合には<code>T*T******</code>"
 
 #. Tag: para
 #: reference_relationship.xml:483
 #, no-c-format
 msgid ""
 "<code>T*****T**</code> for Line/Point, Area/Point, and Area/Line situations"
-msgstr ""
+msgstr "Line/Point, Area/Point, Area/Lineの場合には<code>T*****T**</code>"
 
 #. Tag: para
 #: reference_relationship.xml:487
 #, no-c-format
 msgid "<code>0********</code> for Line/Line situations"
-msgstr ""
+msgstr "Line/Lineの場合には<code>0********</code>"
 
 #. Tag: para
 #: reference_relationship.xml:491
@@ -1034,7 +1059,8 @@ msgstr ""
 msgid ""
 "For Point/Point and Area/Area situations this predicate returns "
 "<varname>false</varname>."
-msgstr ""
+msgstr "Point/PointとArea/"
+"Areaの場合には、この述語は<varname>FALSE</varname>を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:494
@@ -1066,7 +1092,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.29"
 #: reference_relationship.xml:513
 #, no-c-format
 msgid "The following situations all return <varname>true</varname>."
-msgstr ""
+msgstr "次の場合には全て<varname>TRUE</varname>を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:525
@@ -1158,7 +1184,7 @@ msgstr ""
 #: reference_relationship.xml:594
 #, no-c-format
 msgid ", <xref linkend=\"ST_Overlaps\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_Overlaps\"/>"
 
 #. Tag: refname
 #: reference_relationship.xml:600
@@ -1170,7 +1196,8 @@ msgstr "ST_Disjoint"
 #: reference_relationship.xml:602
 #, no-c-format
 msgid "Tests if two geometries are disjoint (they have no point in common)."
-msgstr ""
+msgstr "二つのジオメトリがインタセクトしていない "
+"(共有しているポイントが存在しない)かどうかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:607
@@ -1254,7 +1281,7 @@ msgstr "ST_Equals"
 #: reference_relationship.xml:659
 #, no-c-format
 msgid "Tests if two geometries include the same set of points."
-msgstr ""
+msgstr "二つのジオメトリが同じポイントの集合でできているかどうかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:664
@@ -1280,6 +1307,12 @@ msgid ""
 "noted ST_OrderingEquals is a little more stringent than simply verifying "
 "order of points are the same)."
 msgstr ""
+"与えられたジオメトリ表現が「空間的に同じ」場合には<varname>TRUE</varname>を返"
+"します。'='よりも「よりよい」答を得るために使います。空間的に同じということは"
+"、ST_Within(A,B) = trueかつST_Within(B,A) = trueとなります。また、ポイントの"
+"順序が違っても同じジオメトリ構造ならtrueとなります。"
+"構成ポイントの順序の確認にはST_OrderingEqualsを使用します (ST_OrderingEquals"
+"はポイントのオーダが同じかを確認するよりも若干厳しくなります)。"
 
 #. Tag: para
 #: reference_relationship.xml:687
@@ -1356,7 +1389,8 @@ msgstr "ST_Intersects"
 #, no-c-format
 msgid ""
 "Tests if two geometries intersect (they have at least one point in common)."
-msgstr ""
+msgstr "二つのジオメトリがインタセクトしている "
+"(少なくとも一つのポイントを共有している)かどうかをテストします。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:716
@@ -1385,6 +1419,9 @@ msgid ""
 "Compares two geometries and returns <varname>true</varname> if they "
 "intersect. Geometries intersect if they have any point in common."
 msgstr ""
+"二つのジオメトリを比較して、インタセクトしている場合には<varname>TRUE</varnam"
+"e>を返します。ジオメトリが共有部分を持っている場合にはインタセクトしているこ"
+"とになります。"
 
 #. Tag: para
 #: reference_relationship.xml:747
@@ -1392,38 +1429,40 @@ msgstr ""
 msgid ""
 "For geography, a distance tolerance of 0.00001 meters is used (so points "
 "that are very close are considered to intersect)."
-msgstr ""
+msgstr "ジオグラフィに対しては、0.00001メートルの距離許容値が使われます "
+"(このため非常に近いポイントはインタセクトしているとみなされます)。"
 
 #. Tag: para
 #: reference_relationship.xml:751
 #, no-c-format
 msgid ""
 "Geometries intersect if their DE-9IM Intersection Matrix matches one of:"
-msgstr ""
+msgstr "DE-9IMインタセクション行列が次の通り合致するとジオメトリはインタセクトしてい"
+"ます。"
 
 #. Tag: code
 #: reference_relationship.xml:755
 #, no-c-format
 msgid "T********"
-msgstr ""
+msgstr "T********"
 
 #. Tag: code
 #: reference_relationship.xml:756
 #, no-c-format
 msgid "*T*******"
-msgstr ""
+msgstr "*T*******"
 
 #. Tag: code
 #: reference_relationship.xml:757
 #, no-c-format
 msgid "***T*****"
-msgstr ""
+msgstr "***T*****"
 
 #. Tag: code
 #: reference_relationship.xml:758
 #, no-c-format
 msgid "****T****"
-msgstr ""
+msgstr "****T****"
 
 #. Tag: para
 #: reference_relationship.xml:761
@@ -1433,6 +1472,9 @@ msgid ""
 "except <xref linkend=\"ST_Disjoint\"/>, which tests that geometries do NOT "
 "intersect."
 msgstr ""
+"空間的なインタセクションは全ての他の空間関係テスト関数に含まれます。"
+"例外は<xref linkend=\"ST_Disjoint\"/>で、全てのジオメトリがインタセクトしてい"
+"ないかどうかをテストすることになります。"
 
 #. Tag: para
 #: reference_relationship.xml:766
@@ -1612,6 +1654,9 @@ msgid ""
 "kind of crossing behavior exists between them. 0 indicates no crossing. This "
 "is only supported for <varname>LINESTRING</varname>s."
 msgstr ""
+"二つのラインストリングを与えると、-3から3までの整数が返ります。この整数は、ど"
+"のようにクロスしているかを示すもので、0は交差無しを意味します。この関数は<var"
+"name>LINESTRING</varname>にのみ対応しています。"
 
 #. Tag: para
 #: reference_relationship.xml:826
@@ -1673,14 +1718,14 @@ msgstr "Availability: 1.4"
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE CROSS LEFT and LINE CROSS "
 "RIGHT"
-msgstr ""
+msgstr "<emphasis role=\"bold\">例:</emphasis> 左クロスと右クロス"
 
 #. Tag: para
 #: reference_relationship.xml:865 reference_relationship.xml:878
 #: reference_relationship.xml:891 reference_relationship.xml:904
 #, no-c-format
 msgid "Blue: Line A; Green: Line B"
-msgstr ""
+msgstr "青: ライン A、緑: ライン B"
 
 #. Tag: programlisting
 #: reference_relationship.xml:868
@@ -1697,6 +1742,16 @@ msgid ""
 "-----------+-----------\n"
 "        -1 |         1"
 msgstr ""
+"SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,\n"
+"       ST_LineCrossingDirection(lineB, lineA) As B_cross_A\n"
+"FROM (SELECT\n"
+"  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,\n"
+"  ST_GeomFromText('LINESTRING (20 140, 71 74, 161 53)') As lineB\n"
+"  ) As foo;\n"
+"\n"
+" A_cross_B | B_cross_A\n"
+"-----------+-----------\n"
+"        -1 |         1"
 
 #. Tag: para
 #: reference_relationship.xml:870
@@ -1704,7 +1759,8 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE MULTICROSS END SAME FIRST "
 "LEFT and LINE MULTICROSS END SAME FIRST RIGHT"
-msgstr ""
+msgstr "<emphasis role=\"bold\">例:</emphasis> "
+"複数回クロスで開始終了ともに左と、複数回クロスで開始終了ともに右"
 
 #. Tag: programlisting
 #: reference_relationship.xml:881
@@ -1721,6 +1777,16 @@ msgid ""
 "-----------+-----------\n"
 "         3 |        -3"
 msgstr ""
+"SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,\n"
+"       ST_LineCrossingDirection(lineB, lineA) As B_cross_A\n"
+"FROM (SELECT\n"
+" ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,\n"
+" ST_GeomFromText('LINESTRING(171 154,20 140,71 74,161 53)') As lineB\n"
+"  ) As foo;\n"
+"\n"
+" A_cross_B | B_cross_A\n"
+"-----------+-----------\n"
+"         3 |        -3"
 
 #. Tag: para
 #: reference_relationship.xml:883 reference_relationship.xml:896
@@ -1728,7 +1794,8 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> LINE MULTICROSS END LEFT and "
 "LINE MULTICROSS END RIGHT"
-msgstr ""
+msgstr "<emphasis role=\"bold\">例:</emphasis> "
+"複数回クロスで最後が左と複数回クロスで最後が右"
 
 #. Tag: programlisting
 #: reference_relationship.xml:894
@@ -1745,6 +1812,16 @@ msgid ""
 "-----------+-----------\n"
 "        -2 |         2"
 msgstr ""
+"SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,\n"
+"       ST_LineCrossingDirection(lineB, lineA) As B_cross_A\n"
+"FROM (SELECT\n"
+"  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,\n"
+"  ST_GeomFromText('LINESTRING(5 90, 71 74, 20 140, 171 154)') As lineB\n"
+"  ) As foo;\n"
+"\n"
+" A_cross_B | B_cross_A\n"
+"-----------+-----------\n"
+"        -2 |         2"
 
 #. Tag: programlisting
 #: reference_relationship.xml:907
@@ -1762,6 +1839,17 @@ msgid ""
 "-----------+-----------\n"
 "         2 |        -2"
 msgstr ""
+"SELECT ST_LineCrossingDirection(lineA, lineB) As A_cross_B,\n"
+"       ST_LineCrossingDirection(lineB, lineA) As B_cross_A\n"
+"FROM (SELECT\n"
+"  ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As lineA,\n"
+"  ST_GeomFromText('LINESTRING (171 154, 20 140, 71 74, 2.99 90.16)') As "
+"lineB\n"
+") As foo;\n"
+"\n"
+" A_cross_B | B_cross_A\n"
+"-----------+-----------\n"
+"         2 |        -2"
 
 #. Tag: programlisting
 #: reference_relationship.xml:909
@@ -1772,6 +1860,10 @@ msgid ""
 "         ON (s1.gid != s2.gid AND s1.geom &amp;&amp; s2.geom )\n"
 "WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;"
 msgstr ""
+"SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.geom, s2.geom)\n"
+"  FROM streets s1 CROSS JOIN streets s2\n"
+"         ON (s1.gid != s2.gid AND s1.geom &amp;&amp; s2.geom )\n"
+"WHERE ST_LineCrossingDirection(s1.geom, s2.geom) > 0;"
 
 #. Tag: refname
 #: reference_relationship.xml:920
@@ -1785,7 +1877,8 @@ msgstr "ST_OrderingEquals"
 msgid ""
 "Tests if two geometries represent the same geometry and have points in the "
 "same directional order."
-msgstr ""
+msgstr "二つのジオメトリが同じジオメトリを表現し、かつポイントの順序が同じかどうかを"
+"テストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:928
@@ -1895,7 +1988,8 @@ msgstr "ST_Overlaps"
 msgid ""
 "Tests if two geometries intersect and have the same dimension, but are not "
 "completely contained by each other."
-msgstr ""
+msgstr "二つのジオメトリがインタセクトし、同じ次元で、一方に完全に含まれることが無い"
+"かどうかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:971
@@ -1919,6 +2013,10 @@ msgid ""
 "intersection of their interiors has the same dimension. The overlaps "
 "relationship is symmetrical."
 msgstr ""
+"AとBが「空間的にオーバラップする」とTRUEを返します。二つのジオメトリが同じ次"
+"元で、それぞれが少なくとも一つのポイントを他方と共有していなくて (他方を覆わ"
+"なくて)、かつ内部のインタセクションが同じ次元になる場合には、ジオメトリはオー"
+"バラップしています。オーバラップは対称の関係になります。"
 
 #. Tag: para
 #: reference_relationship.xml:990
@@ -1949,7 +2047,8 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.32"
 msgid ""
 "<function>ST_Overlaps</function> returns <varname>TRUE</varname> in the "
 "following situations:"
-msgstr ""
+msgstr "次に示す図全てで、<function>ST_Overlaps</function>は<varname>TRUE</varname>を"
+"返します。"
 
 #. Tag: para
 #: reference_relationship.xml:1019
@@ -1963,7 +2062,8 @@ msgstr "<varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname>"
 msgid ""
 "A Point on a LineString is contained, but since it has lower dimension it "
 "does not overlap or cross."
-msgstr ""
+msgstr "ラインストリング上のポイントが含まますが、次元が低いのでオーバラップにもクロ"
+"スにもなりません。"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1053
@@ -1979,6 +2079,15 @@ msgid ""
 "---------+----------------------+--------------\n"
 "f        | f       | t          | t"
 msgstr ""
+"SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,\n"
+"       ST_Intersects(a, b) AS intersects,  ST_Contains(b,a) AS b_contains_a\n"
+"FROM (SELECT ST_GeomFromText('POINT (100 100)') As a,\n"
+"             ST_GeomFromText('LINESTRING (30 50, 40 160, 160 40, 180 160)')  "
+"AS b) AS t\n"
+"\n"
+"overlaps | crosses | intersects | b_contains_a\n"
+"---------+----------------------+--------------\n"
+"f        | f       | t          | t"
 
 #. Tag: para
 #: reference_relationship.xml:1061
@@ -1986,7 +2095,8 @@ msgstr ""
 msgid ""
 "A LineString that partly covers a Polygon intersects and crosses, but does "
 "not overlap since it has different dimension."
-msgstr ""
+msgstr "部分的にポリゴンを覆うラインストリングはインタセクトもクロスもしますが、異な"
+"り次元なのでオーバラップしません。"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1063
@@ -2002,6 +2112,15 @@ msgid ""
 "---------+---------+------------+--------------\n"
 " f       | t       | t          | f"
 msgstr ""
+"SELECT ST_Overlaps(a,b) AS overlaps,        ST_Crosses(a,b) AS crosses,\n"
+"       ST_Intersects(a, b) AS intersects,   ST_Contains(a,b) AS contains\n"
+"FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') "
+"AS a,\n"
+"             ST_GeomFromText('LINESTRING(10 10, 190 190)') AS b) AS t;\n"
+"\n"
+" overlap | crosses | intersects | contains\n"
+"---------+---------+------------+--------------\n"
+" f       | t       | t          | f"
 
 #. Tag: para
 #: reference_relationship.xml:1071
@@ -2009,7 +2128,8 @@ msgstr ""
 msgid ""
 "Two Polygons that intersect but with neither contained by the other overlap, "
 "but do not cross because their intersection has the same dimension."
-msgstr ""
+msgstr "二つのポリゴンがインタセクトするものの一方が他方のオーバラップを含んでいませ"
+"んが、インタセクトが同じ次元なのでクロスしません。"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1073
@@ -2030,6 +2150,20 @@ msgid ""
 "+-----------\n"
 " t        | f       | t          | f            |     2 |     2 |       2"
 msgstr ""
+"SELECT ST_Overlaps(a,b) AS overlaps,       ST_Crosses(a,b) AS crosses,\n"
+"       ST_Intersects(a, b) AS intersects,  ST_Contains(b, a) AS b_contains_a,"
+"\n"
+"       ST_Dimension(a) AS dim_a, ST_Dimension(b) AS dim_b,\n"
+"       ST_Dimension(ST_Intersection(a,b)) AS dim_int\n"
+"FROM (SELECT ST_GeomFromText('POLYGON ((40 170, 90 30, 180 100, 40 170))') "
+"AS a,\n"
+"             ST_GeomFromText('POLYGON ((110 180, 20 60, 130 90, 110 180))') "
+"AS b) As t;\n"
+"\n"
+" overlaps | crosses | intersects | b_contains_a | dim_a | dim_b | dim_int\n"
+"----------+---------+------------+--------------+-------+-------+-----------"
+"\n"
+" t        | f       | t          | f            |     2 |     2 |       2"
 
 #. Tag: para
 #: reference_relationship.xml:1081
@@ -2498,7 +2632,8 @@ msgstr "ST_Touches"
 msgid ""
 "Tests if two geometries have at least one point in common, but their "
 "interiors do not intersect."
-msgstr ""
+msgstr "二つのジオメトリが共通のポイントを少なくとも一つ持ち、かつ内部でインタセクト"
+"しないかどうかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1285
@@ -2522,12 +2657,16 @@ msgid ""
 "relationship is always <varname>FALSE</varname>, since points do not have a "
 "boundary."
 msgstr ""
+"AとBがインタセクトするがAの内部とBの内部がインタセクトしない場合には<varname>"
+"TRUE</varname>を返します。AとBが少なくとも一つの共有点があり、共有点が少なく"
+"とも一つの境界の上にあることと同じです。ポイント/ポイント入力では、ポイントは"
+"境界を持たないため、常に<varname>FALSE</varname>を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:1306
 #, no-c-format
 msgid "In mathematical terms, this relationship is:"
-msgstr ""
+msgstr "数学的に述べると、この関係は次のようになります。"
 
 #. Tag: para
 #: reference_relationship.xml:1316
@@ -2579,7 +2718,8 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.28"
 msgid ""
 "The <function>ST_Touches</function> predicate returns <varname>TRUE</"
 "varname> in the following examples."
-msgstr ""
+msgstr "次の例では<function>ST_Touches</function>述語は<varname>TRUE</varname>を返し"
+"ます。"
 
 #. Tag: programlisting
 #: reference_relationship.xml:1417
@@ -2625,7 +2765,8 @@ msgstr "ST_Within"
 msgid ""
 "Tests if no points of A lie in the exterior of B, and A and B have at least "
 "one interior point in common."
-msgstr ""
+msgstr "Bの外部にAのポイントが無く、かつAとBが内部に少なくとも一つのポイントを共有す"
+"るかどうかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1430
@@ -2773,7 +2914,7 @@ msgstr "ST_3DDWithin"
 #: reference_relationship.xml:1510
 #, no-c-format
 msgid "Tests if two 3D geometries are within a given 3D distance"
-msgstr ""
+msgstr "二つの3次元ジオメトリが与えらえれた3次元距離内にあるかどうかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1514
@@ -2885,7 +3026,8 @@ msgstr "ST_3DDFullyWithin"
 #: reference_relationship.xml:1570
 #, no-c-format
 msgid "Tests if two 3D geometries are entirely within a given 3D distance"
-msgstr ""
+msgstr "二つの3次元ジオメトリが完全に与えらえれた3次元距離内にあるかどうかをテストし"
+"ます。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1575
@@ -2971,7 +3113,7 @@ msgstr "ST_DFullyWithin"
 #: reference_relationship.xml:1626
 #, no-c-format
 msgid "Tests if two geometries are entirely within a given distance"
-msgstr ""
+msgstr "二つのジオメトリが完全に与えらえれた距離内にあるかどうかをテストします。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:1631
@@ -3056,7 +3198,7 @@ msgstr "ST_DWithin"
 #: reference_relationship.xml:1677
 #, no-c-format
 msgid "Tests if two geometries are within a given distance"
-msgstr ""
+msgstr "二つのジオメトリが与えらえれた距離内にあるかどうかをテストします。"
 
 #. Tag: funcsynopsis
 #: reference_relationship.xml:1681
