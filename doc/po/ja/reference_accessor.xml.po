@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-09-01 02:55+0000\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/ja/>\n"
@@ -3685,7 +3685,7 @@ msgstr ""
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
-msgstr "pg_total_relation_size - テーブル、TOASTテーブル、インデックスを含みます。"
+msgstr "pg_total_relation_size - テーブル、TOASTテーブル、インデクスを含みます。"
 
 #. Tag: para
 #: reference_accessor.xml:1420
