@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-22 06:23+0000\n"
-"PO-Revision-Date: 2022-09-01 02:55+0000\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_srsxml/ja/>\n"
@@ -23,13 +23,14 @@ msgstr ""
 msgid ""
 "These functions work with the Spatial Reference System of geometries as "
 "defined in the <varname>spatial_ref_sys</varname> table."
-msgstr ""
+msgstr "これらの関数は<varname>spatial_ref_sys</varname>テーブルで定義されているジオ"
+"メトリの空間参照系と連携します。"
 
 #. Tag: title
 #: reference_srs.xml:10
 #, no-c-format
 msgid "Spatial Reference System Functions"
-msgstr ""
+msgstr "空間参照系関数"
 
 #. Tag: refname
 #: reference_srs.xml:14
@@ -41,7 +42,7 @@ msgstr "ST_SetSRID"
 #: reference_srs.xml:16
 #, no-c-format
 msgid "Set the SRID on a geometry."
-msgstr ""
+msgstr "ジオメトリにSRIDを設定します。"
 
 #. Tag: funcprototype
 #: reference_srs.xml:21
@@ -51,6 +52,9 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: title
 #: reference_srs.xml:34 reference_srs.xml:81 reference_srs.xml:145
@@ -64,7 +68,8 @@ msgstr "説明"
 msgid ""
 "Sets the SRID on a geometry to a particular integer value. Useful in "
 "constructing bounding boxes for queries."
-msgstr ""
+msgstr "ジオメトリのSRIDを特定の整数値に設定します。クエリのためのバウンディングボッ"
+"クスを生成する際に使います。"
 
 #. Tag: para
 #: reference_srs.xml:40
@@ -75,12 +80,15 @@ msgid ""
 "is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you want to "
 "transform the geometry into a new projection."
 msgstr ""
+"この関数はジオメトリを変換せず、ジオメトリが仮定する空間参照系を定義するメタ"
+"データを設定するだけです。ジオメトリを新しい投影法に変換したい場合は<xref "
+"linkend=\"ST_Transform\"/>を使います。"
 
 #. Tag: para
 #: reference_srs.xml:45
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_srs.xml:46 reference_srs.xml:89 reference_srs.xml:179
@@ -98,7 +106,7 @@ msgstr "例"
 #: reference_srs.xml:51
 #, no-c-format
 msgid "-- Mark a point as WGS 84 long lat --"
-msgstr ""
+msgstr "-- ポイントをWGS84経度緯度に設定 --"
 
 #. Tag: programlisting
 #: reference_srs.xml:52
@@ -108,6 +116,9 @@ msgid ""
 "-- the ewkt representation (wrap with ST_AsEWKT) -\n"
 "SRID=4326;POINT(-123.365556 48.428611)"
 msgstr ""
+"SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
+"-- EWKT表現 (ST_AsEWKTでラップして表示します) --\n"
+"SRID=4326;POINT(-123.365556 48.428611)"
 
 #. Tag: para
 #: reference_srs.xml:53
@@ -115,7 +126,8 @@ msgstr ""
 msgid ""
 "-- Mark a point as WGS 84 long lat and then transform to web mercator "
 "(Spherical Mercator) --"
-msgstr ""
+msgstr "-- ポイントをWGS84経度緯度に設定したうえで、WEBメルカトル(球面メルカトル)"
+"に変換 --"
 
 #. Tag: programlisting
 #: reference_srs.xml:54
@@ -126,6 +138,10 @@ msgid ""
 "-- the ewkt representation (wrap with ST_AsEWKT) -\n"
 "SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
 msgstr ""
+"SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) "
+"As spere_merc;\n"
+"-- EWKT表現 (ST_AsEWKTでラップします) --\n"
+"SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
 
 #. Tag: title
 #: reference_srs.xml:58 reference_srs.xml:99 reference_srs.xml:219
@@ -140,6 +156,8 @@ msgid ""
 ", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"UpdateGeometrySRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"UpdateGeometrySRID\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:67
@@ -151,7 +169,7 @@ msgstr "ST_SRID"
 #: reference_srs.xml:68
 #, no-c-format
 msgid "Returns the spatial reference identifier for a geometry."
-msgstr ""
+msgstr "ジオメトリの空間参照系識別子を返します。"
 
 #. Tag: funcprototype
 #: reference_srs.xml:73
@@ -160,6 +178,8 @@ msgid ""
 "<funcdef>integer <function>ST_SRID</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_SRID</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_srs.xml:83
@@ -195,7 +215,7 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #: reference_srs.xml:88
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.5"
 
 #. Tag: programlisting
 #: reference_srs.xml:96
@@ -206,7 +226,7 @@ msgid ""
 "                4326"
 msgstr ""
 "SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));\n"
-"                --result\n"
+"                -- 結果\n"
 "                4326"
 
 #. Tag: para
@@ -216,12 +236,14 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
 "linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
+"linkend=\"RT_ST_SRID\"/>, <xref linkend=\"TG_ST_SRID\"/>"
 
 #. Tag: refname
 #: reference_srs.xml:107
 #, no-c-format
 msgid "ST_Transform"
-msgstr ""
+msgstr "ST_Transform"
 
 #. Tag: refpurpose
 #: reference_srs.xml:109
@@ -229,7 +251,7 @@ msgstr ""
 msgid ""
 "Return a new geometry with coordinates transformed to a different spatial "
 "reference system."
-msgstr ""
+msgstr "異なる空間参照系に投影変換された新しいジオメトリを返します。"
 
 #. Tag: funcsynopsis
 #: reference_srs.xml:114
@@ -252,6 +274,22 @@ msgid ""
 "parameter></paramdef> <paramdef><type>integer </type> <parameter>to_srid</"
 "parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>to_proj</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geometry <function>ST_Transform</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>from_proj</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>to_proj</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>from_proj</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>to_srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_srs.xml:147
@@ -269,6 +307,14 @@ msgid ""
 "functions with <varname>from_proj</varname>, input geometries must have a "
 "defined SRID."
 msgstr ""
+"異なる空間参照系に投影変換された新しいジオメトリを返します。変換先空間参照系"
+"である<varname>to_srid</varname>は、妥当なSRID整数パラメータ (<varname>spatia"
+"l_ref_sys</varname>にあるということ)です。他にも、<varname>to_proj</varname>"
+"と<varname>from_proj</varname>にPROJ.4文字列で定義された空間参照系を指定する"
+"ことができますが、最適化されません。変換先空間参照系がSRIDの代わりにPROJ.4文"
+"字列で表現されている場合には、出力ジオメトリのSRIDは0になります。<varname>fro"
+"m_proj</varname>を使う場合には、入力ジオメトリは定義されたSRIDを持っていなけ"
+"ればなりません。"
 
 #. Tag: para
 #: reference_srs.xml:161
@@ -279,6 +325,9 @@ msgid ""
 "reference system to another, while ST_SetSRID() simply changes the SRID "
 "identifier of the geometry."
 msgstr ""
+"ST_Transformはしばしば<xref linkend=\"ST_SetSRID\"/>と混同されます。ST_Transf"
+"ormは実際にジオメトリの座標を、ある空間参照系から他のものに変換します。ST_Set"
+"SRIDは単にジオメトリのSRIDを変更するだけです。"
 
 #. Tag: para
 #: reference_srs.xml:166
@@ -288,6 +337,9 @@ msgid ""
 "linkend=\"PostGIS_Full_Version\"/> to confirm you have PROJ support compiled "
 "in."
 msgstr ""
+"PostGISはPROJ対応でコンパイルする必要があります。"
+"PROJ対応でコンパイルしたかを確認するには<xref linkend=\"PostGIS_Full_Version"
+"\"/>を使います。"
 
 #. Tag: para
 #: reference_srs.xml:170
@@ -295,7 +347,8 @@ msgstr ""
 msgid ""
 "If using more than one transformation, it is useful to have a functional "
 "index on the commonly used transformations to take advantage of index usage."
-msgstr ""
+msgstr "一つ以上の変換を行う場合は、インデクスの利点を得るために、使用する変換に関す"
+"る関数インデクスを持つと便利です。"
 
 #. Tag: para
 #: reference_srs.xml:174
@@ -316,13 +369,13 @@ msgstr "Enhanced: 2.0.0 多面体サーフェス対応が導入されました�
 #: reference_srs.xml:177
 #, no-c-format
 msgid "Enhanced: 2.3.0 support for direct PROJ.4 text was introduced."
-msgstr ""
+msgstr "Enhanced: 2.3.0 直接のPROJ.4文字列への対応が導入されました。"
 
 #. Tag: para
 #: reference_srs.xml:178
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.6"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.6"
 
 #. Tag: para
 #: reference_srs.xml:180
@@ -334,7 +387,8 @@ msgstr "&P_support;"
 #: reference_srs.xml:186
 #, no-c-format
 msgid "Change Massachusetts state plane US feet geometry to WGS 84 long lat"
-msgstr ""
+msgstr "マサチューセッツ州平面座標系 "
+"(アメリカ測量フィート)をWGS84経度緯度に変更します。"
 
 #. Tag: programlisting
 #: reference_srs.xml:187
@@ -366,6 +420,32 @@ msgid ""
 " -71.1775844305465 42.3903826677917 3,\n"
 " -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
 msgstr ""
+"SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
+"2967416,743238 2967450,\n"
+"        743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As "
+"wgs_geom;\n"
+"\n"
+" wgs_geom\n"
+"---------------------------\n"
+" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42."
+"3903829478009,\n"
+"-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71."
+"177684\n"
+"8522251 42.3902896512902));\n"
+"(1 row)\n"
+"\n"
+"-- 3次元曲線ストリングの例\n"
+"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING("
+"743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 "
+"3,743238 2967416 4)'),4326));\n"
+"\n"
+"                                 st_asewkt\n"
+"-----------------------------------------------------------------------------"
+"---------\n"
+" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-"
+"71.1776843766326 42.3903829478009 2,\n"
+" -71.1775844305465 42.3903826677917 3,\n"
+" -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
 
 #. Tag: para
 #: reference_srs.xml:188
@@ -376,6 +456,9 @@ msgid ""
 "that leaves out null geometries which will both conserve space and make your "
 "index smaller and more efficient."
 msgstr ""
+"部分関数インデクスを作る例です。全てのジオメトリが入っているとは確信できない"
+"テーブルのためには、スペースの節約とインデクスを小さく効率的にするために、NUL"
+"Lジオメトリを無視する部分インデクスを使うのが最善です。"
 
 #. Tag: programlisting
 #: reference_srs.xml:190
@@ -387,13 +470,18 @@ msgid ""
 "  (ST_Transform(geom, 26986))\n"
 "  WHERE geom IS NOT NULL;"
 msgstr ""
+"CREATE INDEX idx_geom_26986_parcels\n"
+"  ON parcels\n"
+"  USING gist\n"
+"  (ST_Transform(geom, 26986))\n"
+"  WHERE geom IS NOT NULL;"
 
 #. Tag: para
 #: reference_srs.xml:192
 #, no-c-format
 msgid ""
 "Examples of using PROJ.4 text to transform with custom spatial references."
-msgstr ""
+msgstr "PROJ.4テキストを使って、独自の空間参照系に投影変換する例です。"
 
 #. Tag: programlisting
 #: reference_srs.xml:193
@@ -420,12 +508,33 @@ msgid ""
 "  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 "
 "74.053793645338))"
 msgstr ""
+"-- 独自の心射方位図法を使って北極付近の二つのポリゴンのインタセクションを探し"
+"ます\n"
+"-- http://boundlessgeo.com/2012/02/flattening-the-peel/ を参照して下さい。\n"
+" WITH data AS (\n"
+"   SELECT\n"
+"     ST_GeomFromText('POLYGON((170 50,170 72,-130 72,-130 50,170 50))', 4326)"
+" AS p1,\n"
+"     ST_GeomFromText('POLYGON((-170 68,-170 90,-141 90,-141 68,-170 68))', "
+"4326) AS p2,\n"
+"     '+proj=gnom +ellps=WGS84 +lat_0=70 +lon_0=-160 +no_defs'::text AS gnom\n"
+" )\n"
+" SELECT ST_AsText(\n"
+"   ST_Transform(\n"
+"     ST_Intersection(ST_Transform(p1, gnom), ST_Transform(p2, gnom)),\n"
+"   gnom, 4326))\n"
+" FROM data;\n"
+"                                          st_astext\n"
+" ----------------------------------------------------------------------------"
+"----\n"
+"  POLYGON((-170 74.053793645338,-141 73.4268621378904,-141 68,-170 68,-170 74"
+".053793645338))"
 
 #. Tag: title
 #: reference_srs.xml:197
 #, no-c-format
 msgid "Configuring transformation behavior"
-msgstr ""
+msgstr "変換の挙動の設定"
 
 #. Tag: para
 #: reference_srs.xml:198
@@ -440,6 +549,13 @@ msgid ""
 "<varname>proj4text</varname> value within the <varname>spatial_ref_sys</"
 "varname> table."
 msgstr ""
+"グリッドシフトを含む座標変換は、ときどき失敗します。たとえば、PROJ.4にグリッ"
+"ドシフトファイルを付けてビルドされていなかった場合や、座標がグリッドシフト定"
+"義の範囲内に無い、といった場合です。デフォルトでは、PostGISはグリッドシフトフ"
+"ァイルが無い場合はエラーを投げますが、この挙動は、PROJ.4 テキストの<varname>t"
+"o_proj</varname>値の変更を試みたり、<varname>spatial_ref_sys</varname>テーブ"
+"ルの<varname>proj4text</varname>値を変更したりすることで、SRID毎の原則を設定"
+"することができます。"
 
 #. Tag: para
 #: reference_srs.xml:208
@@ -447,13 +563,14 @@ msgstr ""
 msgid ""
 "For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
 "the following +nadgrids parameter:"
-msgstr ""
+msgstr "たとえば、proj4textパラメータ +datum=NAD87 "
+"は次に示す+nadgridsパラメータの短縮形です。"
 
 #. Tag: programlisting
 #: reference_srs.xml:209
 #, no-c-format
 msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
-msgstr ""
+msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
 
 #. Tag: para
 #: reference_srs.xml:210
@@ -463,6 +580,9 @@ msgid ""
 "the end of the list is reached with no file having been appropriate (ie. "
 "found and overlapping) then an error is issued."
 msgstr ""
+"接頭辞@は、ファイルが無くてもエラー報告をしないという意味ですが、適切だった ("
+"発見されてオーバラップした)ファイルがないままリストの終わりに達した場合はエラ"
+"ーが出ます。"
 
 #. Tag: para
 #: reference_srs.xml:211
@@ -472,12 +592,14 @@ msgid ""
 "present, but that if all files were scanned without a hit a null "
 "transformation is applied you could use:"
 msgstr ""
+"逆に、少なくとも標準的なファイルが確実にあって欲しいけれども、該当が無いまま"
+"全てのファイルが走査された場合に、NULL変換としたいなら、次が使えます。"
 
 #. Tag: programlisting
 #: reference_srs.xml:212
 #, no-c-format
 msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
-msgstr ""
+msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
 
 #. Tag: para
 #: reference_srs.xml:213
@@ -488,6 +610,9 @@ msgid ""
 "PostGIS so that transformations to SRID 4267 that didn't lie within the "
 "correct range did not throw an ERROR, you would use the following:"
 msgstr ""
+"NULLグリッドシフトファイルは、世界全体をカバーして、シフトを行わない、妥当な"
+"グリッドシフトファイルです。 完全な例のために、正しい範囲にないSRID 4267への"
+"変換でエラーが投げられないようPostGISを変えたいなら、次のようにします。"
 
 #. Tag: programlisting
 #: reference_srs.xml:214
@@ -497,6 +622,9 @@ msgid ""
 "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid "
 "= 4267;"
 msgstr ""
+"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
+"+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid "
+"= 4267;"
 
 #. Tag: para
 #: reference_srs.xml:221
@@ -505,3 +633,5 @@ msgid ""
 ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
 "linkend=\"UpdateGeometrySRID\"/>"
 msgstr ""
+", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend="
+"\"UpdateGeometrySRID\"/>"
