@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"PO-Revision-Date: 2022-09-09 12:50+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_gucxml/ja/>\n"
@@ -297,9 +297,9 @@ msgid ""
 "<varname>DISABLE_ALL</varname> overrides all other values in "
 "<varname>postgis.gdal_enabled_drivers</varname>."
 msgstr ""
-"<varname>DISABLE_ALL</varname> 全てのGDALドライバを無効にします。これが出現す"
-"ると、 <varname>postgis.gdal_enabled_drivers</varname>にある他の全ての値を上"
-"書きします。"
+"<varname>DISABLE_ALL</varname> 全てのGDALドライバを無効にします。<varname>DIS"
+"ABLE_ALL</varname>は<varname>postgis."
+"gdal_enabled_drivers</varname>にある他の全ての値を上書きします。"
 
 #. Tag: para
 #: reference_guc.xml:118
@@ -355,7 +355,7 @@ msgstr ""
 #: reference_guc.xml:148
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
-msgstr " <varname>postgis.gdal_enabled_drivers</varname>の設定とリセット。"
+msgstr "<varname>postgis.gdal_enabled_drivers</varname>の設定とリセット。"
 
 #. Tag: para
 #: reference_guc.xml:150
