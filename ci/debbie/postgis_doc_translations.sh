@@ -14,6 +14,14 @@ set -e
 # export MAKE_GARDEN=1
 # export MAKE_EXTENSION=1
 
+export PG_VER=13
+# export PGPORT=8442
+export OS_BUILD=64
+#this is passed in via postgis_make_dist.sh via jenkins
+#export reference=
+export GEOS_VER=3.10
+export GDAL_VER=3.4
+
 ## end variables passed in by jenkins
 
 export PROJECTS=${JENKINS_HOME}/workspace
@@ -50,7 +58,7 @@ make check-localized
 #make pdf
 rm -rf images
 mkdir images
-cp html/images/* images 
+cp html/images/* images
 #make epub
 #make -e chunked-html 2>&1 | tee -a doc-errors.log
 #make update-po
