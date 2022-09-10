@@ -3,6 +3,19 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
         <sect1>
+            <title>PostGIS 3.3.1</title>
+            <para>2022/09/09</para>
+             <para>This version requires PostgreSQL 11 - 15, GEOS 3.6 or higher, and Proj 5.2+.
+            Additional features are enabled if you are running GEOS 3.9+
+            ST_MakeValid enhancements with 3.10+, numerouse additional enhancements with GEOS 3.11+.
+            Requires SFCGAL 1.4.1+ for ST_AlphaShape and ST_OptimalAlphaShape.</para>
+            <simplesect>
+                <title>Bug Fixes</title>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5227">5227</ulink>, typo in ST_LineLocatePoint error message (Sandro Santilli)</para>
+                <para><ulink url="https://trac.osgeo.org/postgis/ticket/5231">5231</ulink>, PG15 no longer compiles because SQL/JSON removed PG upstream (Regina Obe)</para>
+            </simplesect>
+        </sect1>
+        <sect1>
             <title>PostGIS 3.3.0</title>
             <para>2022/08/26</para>
             <para>This version requires PostgreSQL 11 or higher, GEOS 3.6 or higher, and Proj 5.2+.
