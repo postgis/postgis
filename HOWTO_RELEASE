@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2022-07-22
+Date: 2022-09-10
 
 Versioning Scheme
 -----------------
@@ -64,7 +64,7 @@ Release procedure
 
   - Can edit tickets and milestones on https://trac.osgeo.org/postgis/
   - Can commit to upstream git https://git.osgeo.org/gitea/postgis/postgis
-  - Have SSH to download.osgeo.org and can write to /osgeo/download/postgis.
+  - Have SSH to upload.osgeo.org and can write to /osgeo/download/postgis.
   - Have SSH to postgis.net and can write to /etc/nginx/sites-enabled/postgis.net.
   - Post to https://git.osgeo.org/gitea/postgis/postgis.net/ and get it added to feed
   https://planet.postgresql.org/register/new/
@@ -94,7 +94,7 @@ Release procedure
   - Commit all changes
   - If this is a minor or major release (no branch exists):
 	   $ rev=x.x
-	   $ git checkout master; git checkout -b "$rev"; git push -u osgeo $rev
+	   $ git checkout master; git checkout -b "stable-$rev"; git push -u osgeo $rev
 
 	   Go to: https://debbie.postgis.net and copy last branch version and make new job
 	   a) Replace PostGIS_* string params with new version
@@ -123,7 +123,7 @@ Release procedure
 
   - PostGIS doc release versioned doc - http://postgis.net/documentation/
     - On postgis.net server, change /etc/nginx/sites-enabled/postgis.net (Versionless URL line )
-         - nginx -t #to confirm you didn't breat the config
+         - nginx -t #to confirm you didn't break the config
          - service nginx reload
       Verify the documentation is up to date (might need to change the nginx config)
 

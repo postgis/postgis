@@ -2,6 +2,29 @@
 <appendix id="release_notes">
   <title>Appendix</title>
    <subtitle>Release Notes</subtitle>
+    <sect1>
+        <title>PostGIS 3.2.4</title>
+        <para>2022/09/09</para>
+            <para>This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
+            Additional features are enabled if you are running GEOS 3.9+
+            (and ST_MakeValid enhancements with 3.10+),
+            Proj 6.1+, and PostgreSQL 14+.</para>
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5227">5227</ulink>, typo in ST_LineLocatePoint error message (Sandro Santilli)</para>
+            <para><ulink url="https://trac.osgeo.org/postgis/ticket/5231">5231</ulink>, PG15 no longer compiles because SQL/JSON removed PG upstream (Regina Obe)</para>
+        </simplesect>
+    </sect1>
+
+    <sect1>
+        <title>PostGIS 3.2.3</title>
+        <para>2022/08/18</para>
+            <para>This version requires PostgreSQL 9.6-15, GEOS 3.6 or higher, and Proj 4.9+
+            Additional features are enabled if you are running GEOS 3.9+
+            (and ST_MakeValid enhancements with 3.10+),
+            Proj 6.1+, and PostgreSQL 14+.</para>
+    </sect>
+
    <sect1>
         <title>PostGIS 3.2.2</title>
         <para>2022/07/22</para>
