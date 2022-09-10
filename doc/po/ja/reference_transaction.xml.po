@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_transactionxml/ja/>\n"
 "Language: ja\n"
@@ -15,24 +15,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_transaction.xml:6
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "These functions implement a row locking mechanism to support long "
 "transactions. They are provided primarily for implementors of the <ulink url="
 "\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</ulink> "
 "specification."
 msgstr ""
-"このモジュールとPL/pgSQL関数は、<ulink url=\"http://www.opengeospatial.org/"
-"standards/wfs\">Web Feature Service</ulink>仕様で求められているロングロックに"
-"対応しています。"
+"これらの関数は、ロングトランザクション機能のために、行をロックする機構を実装"
+"しています。これらは主に<ulink url=\"http://www.opengeospatial.org/standards/"
+"wfs\">Web Feature Service</ulink>仕様を実装する方のために提供されています。"
 
 #. Tag: title
 #: reference_transaction.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Long Transaction Support"
 msgstr "ロングトランザクション機能"
 
@@ -56,13 +56,12 @@ msgstr "AddAuth"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:26
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<refpurpose>Adds an authorization token to be used in the current "
 "transaction.</refpurpose>"
-msgstr ""
-"<refpurpose>現在のトランザクションで使われる認証トークンを追加します。</"
-"refpurpose>"
+msgstr "<refpurpose>現在のトランザクションで使用する認可トークンを追加します。</refpu"
+"rpose>"
 
 #. Tag: funcprototype
 #: reference_transaction.xml:31
@@ -84,12 +83,11 @@ msgstr "説明"
 
 #. Tag: para
 #: reference_transaction.xml:41
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<para>Adds an authorization token to be used in the current transaction.</"
 "para>"
-msgstr ""
-"<para>現在のトランザクションで使われる認証トークンを追加します。</para>"
+msgstr "<para>現在のトランザクションで使用する認可トークンを追加します。</para>"
 
 #. Tag: para
 #: reference_transaction.xml:43
@@ -98,6 +96,8 @@ msgid ""
 "Adds the current transaction identifier and authorization token to a "
 "temporary table called <varname>temp_lock_have_table</varname>."
 msgstr ""
+"現在のトランザクション識別子と認可トークンを<varname>temp_lock_have_table</va"
+"rname>という一時テーブルに追加します。"
 
 #. Tag: para
 #: reference_transaction.xml:46 reference_transaction.xml:98
@@ -117,7 +117,7 @@ msgstr "例"
 
 #. Tag: programlisting
 #: reference_transaction.xml:52
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
 "                BEGIN TRANSACTION;\n"
@@ -134,8 +134,8 @@ msgstr ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
 "                BEGIN TRANSACTION;\n"
 "                        SELECT AddAuth('joey');\n"
-"                        UPDATE towns SET the_geom = "
-"ST_Translate(the_geom,2,2) WHERE gid = 353;\n"
+"                        UPDATE towns SET geom = ST_Translate(geom,2,2) WHERE "
+"gid = 353;\n"
 "                COMMIT;\n"
 "\n"
 "\n"
@@ -159,13 +159,12 @@ msgstr "CheckAuth"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:67
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates a trigger on a table to prevent/allow updates and deletes of rows "
 "based on authorization token."
-msgstr ""
-"認証トークンに基づいて行の更新と削除を拒否/許可するテーブルのトリガを生成しま"
-"す。"
+msgstr "認可トークンを基に行の更新と削除とを禁止/許可するためにテーブル上にトリガを生"
+"成します。"
 
 #. Tag: funcsynopsis
 #: reference_transaction.xml:71
@@ -191,14 +190,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:90
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Creates trigger on a table to prevent/allow updates and deletes of rows "
 "based on an authorization token. Identify rows using &lt;rowid_col&gt; "
 "column."
 msgstr ""
-"認証トークンに基づいて行の更新と削除を拒否/許可するテーブルのトリガを生成しま"
-"す。&lt;rowid_col&gt;カラムを使用する行を判別します。"
+"認可トークンを基に行の更新と削除とを禁止/許可するためにテーブル上にトリガを生"
+"成します。&lt;rowid_col&gt;カラムを使って行を特定します。"
 
 #. Tag: para
 #: reference_transaction.xml:93
@@ -243,9 +242,9 @@ msgstr "DisableLongTransactions"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:121
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Disables long transaction support."
-msgstr "DisableLongTransactions"
+msgstr "ロングトランザクション機能を無効にします。"
 
 #. Tag: funcprototype
 #: reference_transaction.xml:126
@@ -300,9 +299,9 @@ msgstr "EnableLongTransactions"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:165
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Enables long transaction support."
-msgstr "EnableLongTransactions"
+msgstr "ロングトランザクション機能を有効にします。"
 
 #. Tag: funcprototype
 #: reference_transaction.xml:170
@@ -355,9 +354,9 @@ msgstr "LockRow"
 
 #. Tag: refpurpose
 #: reference_transaction.xml:210
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Sets lock/authorization for a row in a table."
-msgstr "テーブルの指定した行についてロック/認証を設定します。"
+msgstr "テーブル内の行にロック/認可を設定します。"
 
 #. Tag: funcsynopsis
 #: reference_transaction.xml:214
@@ -399,7 +398,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_transaction.xml:245
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Sets lock/authorization for a specific row in a table. "
 "<varname>an_auth_token</varname> is a text value. <varname>expire_dt</"
@@ -407,10 +406,10 @@ msgid ""
 "emphasis>. Returns 1 if lock has been assigned, 0 otherwise (i.e. row is "
 "already locked by another auth.)"
 msgstr ""
-"テーブルの指定した行についてロック/認証を設定します。&lt;authid&gt;は文字列値"
-"です。&lt;expires&gt;はタイムスタンプ値で、now()+1時間がデフォルトです。ロッ"
-"クされた場合は1を返し、他の場合 (既に他の認証によってロックされている場合)に"
-"は、0を返します。"
+"テーブル内の指定した行にロック/認可を設定します。<varname>an_auth_token</varn"
+"ame>はテキスト値です。<varname>expire_dt</varname>は <emphasis>now() + 1 時間"
+"</emphasis>をデフォルトとするタイムスタンプです。割り当てが行われたなら1が返"
+"り、他の場合 (例: 行が他の認可で既にロックされていた)には0が返ります。"
 
 #. Tag: programlisting
 #: reference_transaction.xml:259
@@ -449,7 +448,7 @@ msgstr "UnlockRows"
 #: reference_transaction.xml:274
 #, no-c-format
 msgid "Removes all locks held by an authorization token."
-msgstr ""
+msgstr "認可トークンによって保持されているロックをすべて削除します。"
 
 #. Tag: funcprototype
 #: reference_transaction.xml:280

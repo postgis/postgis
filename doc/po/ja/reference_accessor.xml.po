@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-06-14 09:50+0000\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_accessorxml/ja/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: reference_accessor.xml:4
@@ -378,7 +378,7 @@ msgstr "&sfs_compliant; OGC SPEC s2.1.1.1"
 #: reference_accessor.xml:94
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM IEC 13249-3: 5.1.17"
 
 #. Tag: para
 #: reference_accessor.xml:96
@@ -534,9 +534,9 @@ msgstr "ST_BoundingDiagonal"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:149
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the diagonal of a geometry's bounding box."
-msgstr "与えられたジオメトリのバウンディングボックスの対角線を返します。"
+msgstr "ジオメトリのバウンディングボックスの対角線を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:154
@@ -554,7 +554,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:166
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the diagonal of the supplied geometry's bounding box as a "
 "LineString. The diagonal is a 2-point LineString with the minimum values of "
@@ -562,13 +562,13 @@ msgid ""
 "If the input geometry is empty, the diagonal line is a LINESTRING EMPTY."
 msgstr ""
 "与えられたジオメトリのバウンディングボックスの対角線をラインストリングで返し"
-"ます。入力ジオメトリが空の場合には、対角線も空になります。その他の場合には、"
-"最小値のポイントを始点とし、最大値のポイントを終点とする、二つのポイントから"
-"なるラインストリングになります。"
+"ます。最小値のポイントを始点とし、最大値のポイントを終点とする、二つのポイン"
+"トからなるラインストリングになります。入力ジオメトリが空の場合には、"
+"対角線はLINESTRING EMPTYとなります。"
 
 #. Tag: para
 #: reference_accessor.xml:173
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The optional <varname>fits</varname> parameter specifies if the best fit is "
 "needed. If false, the diagonal of a somewhat larger bounding box can be "
@@ -576,31 +576,30 @@ msgid ""
 "either case, the bounding box of the returned diagonal line always covers "
 "the input geometry."
 msgstr ""
-"<varname>fits</varname>パラメータは、最良適合が必要かどうかを指定するもので"
-"す。FALSEの場合には、幾分大きめなバウンディングボックスの対角線を受け付けるこ"
-"とができます (多数の頂点からなるジオメトリの取得が早くなります)。いずれにして"
-"も返された対角線のバウンディングボックスは常に入力ジオメトリを含みます。"
+"<varname>fits</varname>パラメータは、最良適合が必要かどうかを指定するものです"
+"。FALSEの場合には、"
+"幾分大きめなバウンディングボックスの対角線を受け付けることができます (多数の"
+"頂点からなるジオメトリの取得が早くなります)。いずれにしても返された対角線のバ"
+"ウンディングボックスは常に入力ジオメトリを含みます。"
 
 #. Tag: para
 #: reference_accessor.xml:181
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The returned geometry retains the SRID and dimensionality (Z and M presence) "
 "of the input geometry."
-msgstr ""
-"返されるラインストリングは常に、入力ジオメトリのSRIDと次元 (ZとMがあること)を"
-"維持します。"
+msgstr "返されるラインストリングは常に、入力ジオメトリのSRIDと次元 "
+"(ZとMがあること)を維持します。"
 
 #. Tag: para
 #: reference_accessor.xml:186
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In degenerate cases (i.e. a single vertex in input) the returned linestring "
 "will be formally invalid (no interior). The result is still topologically "
 "valid."
-msgstr ""
-"縮退した (入力の頂点が一つ)場合、返されるラインストリングはトポロジ的に不正で"
-"す (内部が無い)。返り値を意味的な不正にはしません。"
+msgstr "縮退した (入力の頂点が一つ)場合、返されるラインストリングは形式的に不正です "
+"(内部が無い)。トポロジ的には妥当です。"
 
 #. Tag: para
 #: reference_accessor.xml:192
@@ -866,9 +865,8 @@ msgstr "Availability: PostGIS 1.0.0RC1。PostgreSQL 7.3以上が必要です。"
 msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
 "CURVES. This is fixed in 1.3.4+"
-msgstr ""
-"1.3.4より前では、曲線を含むジオメトリで使用すると、この関数はクラッシュしま"
-"す。これは1.3.4以上で訂正されています。"
+msgstr "1.3.4より前では、曲線を含むジオメトリで使用すると、この関数はクラッシュします"
+"。これは1.3.4以上で訂正されています。"
 
 #. Tag: title
 #: reference_accessor.xml:356 reference_accessor.xml:792
@@ -1036,7 +1034,8 @@ msgstr "ST_DumpPoints"
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the coordinates "
 "in a geometry."
-msgstr "ジオメトリについての要約文を返します。"
+msgstr "ジオメトリ内の座標の行である<varname>geometry_dump</varname>行の集合を返しま"
+"す。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:378
@@ -1057,6 +1056,10 @@ msgid ""
 "containing a geometry (<parameter>geom</parameter> field) and an array of "
 "integers (<parameter>path</parameter> field)."
 msgstr ""
+"ジオメトリの座標 (頂点)を抽出する、集合を返す関数 (SRF=Set-Returning "
+"Function)です。ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 "
+"(<parameter>path</parameter>フィールド)からなる<xref linkend=\"geometry_dump"
+"\"/>行の集合を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:396
@@ -1065,6 +1068,8 @@ msgid ""
 "the <parameter>geom</parameter> field <varname>POINT</varname>s represent "
 "the coordinates of the supplied geometry."
 msgstr ""
+"<parameter>geom</parameter>フィールドには、与えられたジオメトリの座標を表現す"
+"る<varname>POINT</varname>が入ります。"
 
 #. Tag: para
 #: reference_accessor.xml:401
@@ -1080,6 +1085,13 @@ msgid ""
 "(1 is outer; inner rings follow) and <varname>j</varname> is the coordinate "
 "position in the ring."
 msgstr ""
+"<parameter>path</parameter>フィールド (<varname>integer[]</varname>)は、与え"
+"られたジオメトリの要素内の座標位置を列挙するインデックスです。インデックスは1"
+"始まりです。たとえば、<varname>LINESTRING</varname>に対しては、<varname>LINES"
+"TRING</varname>の<varname>n番目</varname>の座標を<varname>i</varname>とすると"
+"、<varname>{i}</varname>となります。<varname>POLYGON</varname>に対しては、<va"
+"rname>i</varname>を環番号 (1が外環、続いて内環)、<varname>j</varname>を環の座"
+"標位置とすると、<varname>{i,j}</varname>となります。"
 
 #. Tag: para
 #: reference_accessor.xml:414
@@ -1087,13 +1099,14 @@ msgstr ""
 msgid ""
 "To obtain a single geometry containing the coordinates use <xref "
 "linkend=\"ST_Points\"/>."
-msgstr ""
+msgstr "座業を含む単一ジオメトリを取得するには<xref linkend=\"ST_Points\""
+"/>を使います。"
 
 #. Tag: para
 #: reference_accessor.xml:418
 #, no-c-format
 msgid "Enhanced: 2.1.0 Faster speed. Reimplemented as native-C."
-msgstr ""
+msgstr "Enhanced: 2.1.0 速度向上しました。C言語で実装しなおしました。"
 
 #. Tag: para
 #: reference_accessor.xml:420
@@ -1105,7 +1118,7 @@ msgstr "Availability: 1.5.0"
 #: reference_accessor.xml:427
 #, no-c-format
 msgid "Classic Explode a Table of LineStrings into nodes"
-msgstr ""
+msgstr "ラインストリングのテーブルのノードへの古典的な分割"
 
 #. Tag: programlisting
 #: reference_accessor.xml:428
@@ -1469,20 +1482,20 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:451
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref "
 "linkend=\"ST_Points\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>, <xref linkend=\"ST_Points\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:458
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_DumpSegments"
-msgstr "ST_NumPoints"
+msgstr "ST_DumpSegments"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:459
@@ -1490,17 +1503,18 @@ msgstr "ST_NumPoints"
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the segments in a "
 "geometry."
-msgstr "ジオメトリについての要約文を返します。"
+msgstr "ジオメトリ内の辺の行である<varname>geometry_dump</varname>行の集合を返します"
+"。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:464
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry_dump[] <function>ST_DumpSegments</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
+"<funcdef>geometry_dump[] <function>ST_DumpSegments</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:473
@@ -1511,16 +1525,20 @@ msgid ""
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"ジオメトリの辺を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 "
+"(<parameter>path</parameter>フィールド)からなる<xref linkend=\"geometry_dump"
+"\"/>行の集合を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:482
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "the <parameter>geom</parameter> field <varname>LINESTRING</varname>s "
 "represent the segments of the supplied geometry."
 msgstr ""
-"<varname>LINESTRING</varname>が閉じていて、かつ単純である場合に"
-"<varname>TRUE</varname>を返します。"
+"<parameter>geom</parameter>フィールドには、与えられたジオメトリの辺を表現する"
+"<varname>LINESTRING</varname>が入ります。"
 
 #. Tag: para
 #: reference_accessor.xml:487
@@ -1536,6 +1554,13 @@ msgid ""
 "number (1 is outer; inner rings follow) and <varname>j</varname> is the "
 "segment start point position in the ring."
 msgstr ""
+"<parameter>path</parameter>フィールド (<varname>integer[]</varname>)は、与え"
+"られたジオメトリの要素内の辺の始点位置を列挙するインデックスです。インデック"
+"スは1始まりです。たとえば、<varname>LINESTRING</varname>に対しては、<varname>"
+"LINESTRING</varname>の<varname>n番目</varname>の辺を<varname>i</varname>とす"
+"ると、<varname>{i}</varname>となります。<varname>POLYGON</varname>に対しては"
+"、<varname>i</varname>を環番号 (1が外環、続いて内環)、<varname>j</varname>を"
+"環の辺の始点位置とすると、<varname>{i,j}</varname>となります。"
 
 #. Tag: para
 #: reference_accessor.xml:500
@@ -1566,16 +1591,34 @@ msgid ""
 " {2,1,3} │ LINESTRING(7 7,5 5)\n"
 "(5 rows)"
 msgstr ""
+"SELECT path, ST_AsText(geom)\n"
+"FROM (\n"
+"    SELECT (ST_DumpSegments(g.geom)).*\n"
+"    FROM (SELECT 'GEOMETRYCOLLECTION(\n"
+"    LINESTRING(1 1, 3 3, 4 4),\n"
+"    POLYGON((5 5, 6 6, 7 7, 5 5))\n"
+")'::geometry AS geom\n"
+"        ) AS g\n"
+") j;\n"
+"\n"
+"  path   │      st_astext\n"
+"---------------------------------\n"
+" {1,1}   │ LINESTRING(1 1,3 3)\n"
+" {1,2}   │ LINESTRING(3 3,4 4)\n"
+" {2,1,1} │ LINESTRING(5 5,6 6)\n"
+" {2,1,2} │ LINESTRING(6 6,7 7)\n"
+" {2,1,3} │ LINESTRING(7 7,5 5)\n"
+"(5 rows)"
 
 #. Tag: title
 #: reference_accessor.xml:511
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "TIN and Triangle Examples"
-msgstr "多面体サーフェス、TIN、三角形の例"
+msgstr "TIN、三角形の例"
 
 #. Tag: programlisting
 #: reference_accessor.xml:512
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Triangle --\n"
 "SELECT path, ST_AsText(geom)\n"
@@ -1597,31 +1640,29 @@ msgid ""
 " {1,3} │ LINESTRING(9 0,0 0)\n"
 "(3 rows)"
 msgstr ""
-"-- TIN --\n"
-"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
-"  FROM\n"
-"    (SELECT\n"
-"       ST_GeomFromEWKT('TIN (((\n"
-"                0 0 0,\n"
-"                0 0 1,\n"
-"                0 1 0,\n"
-"                0 0 0\n"
-"            )), ((\n"
-"                0 0 0,\n"
-"                0 1 0,\n"
-"                1 1 0,\n"
-"                0 0 0\n"
-"            ))\n"
-"            )')  AS geom\n"
-"    ) AS g;\n"
-"-- 結果--\n"
-"                 wkt\n"
-"-------------------------------------\n"
-" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+"-- 三角形 --\n"
+"SELECT path, ST_AsText(geom)\n"
+"FROM (\n"
+"    SELECT (ST_DumpSegments(g.geom)).*\n"
+"    FROM (SELECT 'TRIANGLE((\n"
+"        0 0,\n"
+"        0 9,\n"
+"        9 0,\n"
+"        0 0\n"
+"    ))'::geometry AS geom\n"
+"        ) AS g\n"
+") j;\n"
+"\n"
+" path  │      st_astext\n"
+" ---------------------------------\n"
+" {1,1} │ LINESTRING(0 0,0 9)\n"
+" {1,2} │ LINESTRING(0 9,9 0)\n"
+" {1,3} │ LINESTRING(9 0,0 0)\n"
+"(3 rows)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:513
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- TIN --\n"
 "SELECT path, ST_AsEWKT(geom)\n"
@@ -1653,42 +1694,49 @@ msgid ""
 "(6 rows)"
 msgstr ""
 "-- TIN --\n"
-"SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
-"  FROM\n"
-"    (SELECT\n"
-"       ST_GeomFromEWKT('TIN (((\n"
-"                0 0 0,\n"
-"                0 0 1,\n"
-"                0 1 0,\n"
-"                0 0 0\n"
-"            )), ((\n"
-"                0 0 0,\n"
-"                0 1 0,\n"
-"                1 1 0,\n"
-"                0 0 0\n"
-"            ))\n"
-"            )')  AS geom\n"
-"    ) AS g;\n"
-"-- 結果--\n"
-"                 wkt\n"
-"-------------------------------------\n"
-" TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+"SELECT path, ST_AsEWKT(geom)\n"
+"FROM (\n"
+"    SELECT (ST_DumpSegments(g.geom)).*\n"
+"    FROM (SELECT 'TIN(((\n"
+"        0 0 0,\n"
+"        0 0 1,\n"
+"        0 1 0,\n"
+"        0 0 0\n"
+"    )), ((\n"
+"        0 0 0,\n"
+"        0 1 0,\n"
+"        1 1 0,\n"
+"        0 0 0\n"
+"    ))\n"
+"    )'::geometry AS geom\n"
+"        ) AS g\n"
+") j;\n"
+"\n"
+"  path   │        st_asewkt\n"
+"  ---------------------------------\n"
+" {1,1,1} │ LINESTRING(0 0 0,0 0 1)\n"
+" {1,1,2} │ LINESTRING(0 0 1,0 1 0)\n"
+" {1,1,3} │ LINESTRING(0 1 0,0 0 0)\n"
+" {2,1,1} │ LINESTRING(0 0 0,0 1 0)\n"
+" {2,1,2} │ LINESTRING(0 1 0,1 1 0)\n"
+" {2,1,3} │ LINESTRING(1 1 0,0 0 0)\n"
+"(6 rows)"
 
 #. Tag: para
 #: reference_accessor.xml:517
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
 msgstr ""
-", <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_NumInteriorRing\"/>,"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_DumpRings\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:524
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_DumpRings"
-msgstr "ST_NRings"
+msgstr "ST_DumpRings"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:526
@@ -1696,16 +1744,16 @@ msgstr "ST_NRings"
 msgid ""
 "Returns a set of <varname>geometry_dump</varname> rows for the exterior and "
 "interior rings of a Polygon."
-msgstr ""
+msgstr "ポリゴンのリングごとの<varname>geometry_dump</varname>行の集合を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:532
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_ExteriorRing</function></funcdef> "
+"<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
 
 #. Tag: para
@@ -1717,6 +1765,10 @@ msgid ""
 "geometry (<parameter>geom</parameter> field) and an array of integers "
 "(<parameter>path</parameter> field)."
 msgstr ""
+"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 "
+"(<parameter>path</parameter>フィールド)からなる<xref linkend=\"geometry_dump"
+"\"/>行の集合を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:547
@@ -1727,27 +1779,29 @@ msgid ""
 "the polygon ring index. The exterior ring (shell) has index 0. The interior "
 "rings (holes) have indices of 1 and higher."
 msgstr ""
+"ジオメトリ要素を抽出する、集合を返す関数 (SRF=Set-Returning Function)です。"
+"ジオメトリ (<parameter>geom</parameter>フィールド)と整数配列 "
+"(<parameter>path</parameter>フィールド)からなる<xref linkend=\"geometry_dump"
+"\"/>行の集合を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:553
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This only works for POLYGON geometries. It does not work for MULTIPOLYGONS"
-msgstr ""
-"この関数はマルチポリゴンでは動作しません。マルチポリゴンに対してはST_Dumpを併"
-"用して下さい。"
+msgstr "POLYGONジオメトリでのみ動作します。MULTIPOLYGONでは動作しません。"
 
 #. Tag: para
 #: reference_accessor.xml:554
 #, no-c-format
 msgid "Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher."
-msgstr ""
+msgstr "Availability: PostGIS 1.1.3 PostgreSQL 7.3以上が必要です。"
 
 #. Tag: para
 #: reference_accessor.xml:561
 #, no-c-format
 msgid "General form of query."
-msgstr ""
+msgstr "クエリの一般的な形式。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:562
@@ -1757,12 +1811,15 @@ msgid ""
 "          (ST_DumpRings(polyTable.geom)).geom As geom\n"
 "FROM polyTable;"
 msgstr ""
+"SELECT polyTable.field1, polyTable.field1,\n"
+"          (ST_DumpRings(polyTable.geom)).geom As geom\n"
+"FROM polyTable;"
 
 #. Tag: para
 #: reference_accessor.xml:563
 #, no-c-format
 msgid "A polygon with a single hole."
-msgstr ""
+msgstr "単一の穴を持つポリゴン"
 
 #. Tag: programlisting
 #: reference_accessor.xml:564
@@ -1793,17 +1850,42 @@ msgid ""
 "          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 "
 "1))"
 msgstr ""
+"SELECT path, ST_AsEWKT(geom) As geom\n"
+"        FROM ST_DumpRings(\n"
+"                ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 "
+"5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 "
+"5132466 1,-8148924 5132394 1,\n"
+"                -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-"
+"8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,\n"
+"                -8150305 5132788 1,-8149064 5133092 1),\n"
+"                (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-"
+"8149695 5132675 1,-8149362 5132394 1))')\n"
+"                )  as foo;\n"
+" path |                                            geom\n"
+"-----------------------------------------------------------------------------"
+"-----------------------------------\n"
+"  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-"
+"8148972 5132767 1,-8148958 5132508 1,\n"
+"          |          -8148941 5132466 1,-8148924 5132394 1,\n"
+"          |          -8148903 5132210 1,-8148930 5131967 1,\n"
+"          |          -8148992 5131978 1,-8149237 5132093 1,\n"
+"          |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 "
+"1,-8150305 5132788 1,-8149064 5133092 1))\n"
+"  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,\n"
+"          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 "
+"1))"
 
 #. Tag: para
 #: reference_accessor.xml:571
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref "
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
 "linkend=\"ST_InteriorRingN\"/>"
 msgstr ""
-", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
-"linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump"
+"\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN\""
+"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:577
@@ -1813,23 +1895,23 @@ msgstr "ST_EndPoint"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:579
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the last point of a LineString or CircularLineString."
-msgstr "ST_LineStringまたはST_CircularStringのポイント数を返します。"
+msgstr "LINESTRINGまたはCIRCULARLINESTRINGの終端のポイントを返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:584
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_EndPoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
-"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
+"<funcdef>geometry <function>ST_EndPoint</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:595
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the last point of a <varname>LINESTRING</varname> or "
 "<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</"
@@ -1837,7 +1919,7 @@ msgid ""
 "<varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>."
 msgstr ""
 "<varname>LINESTRING</varname>または<varname>CIRCULARLINESTRING</varname>ジオ"
-"メトリの、最初のポイントを<varname>POINT</varname>で返します。入力パラメータ"
+"メトリの、最後のポイントを<varname>POINT</varname>で返します。入力パラメータ"
 "が<varname>LINESTRING</varname>でも<varname>CIRCULARLINESTRING</varname>でも"
 "ない場合には、<varname>NULL</varname>を返します。"
 
@@ -1849,7 +1931,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.4"
 
 #. Tag: para
 #: reference_accessor.xml:605
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Changed: 2.0.0 no longer works with single geometry MultiLineStrings. In "
 "older versions of PostGIS a single-line MultiLineString would work with this "
@@ -1858,18 +1940,18 @@ msgid ""
 "who assumed they had their data stored as LINESTRING may experience these "
 "returning NULL in 2.0.0."
 msgstr ""
-"Changed: 2.0.0では単一ジオメトリのMULTILINESTRINGで動作しなくなりました。単一"
-"のラインストリングからなるMULTILINESTRINGについては幸運にも動いていて、最初の"
-"ポイントを返していました。2.0.0では他のMULTILINESTRINGと同様にNULLを返すよう"
-"になりました。古い挙動は記載されていませんでしたが、LINESTRINGとして格納され"
-"ているデータを持っていると思われる人々は2.0でNULLが返って来ることを経験するこ"
-"とでしょう。"
+"Changed: 2.0.0 一つのジオメトリマルチラインストリングで動作しなくなりました。"
+"PostGIS の古いバージョンでは、この関数は一つのマルチラインストリングで動作し"
+"、終端ポイントを返します。2.0.0では、他のマルチラインストリングと同様にNULLを"
+"返します。古い動作は文書化されていない機能でしたが、データをLINESTRINGとして"
+"格納していると思われるユーザーは、2.0.0 "
+"でNULLが返されることを経験するかも知れません。"
 
 #. Tag: para
 #: reference_accessor.xml:616
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "End point of a LineString"
-msgstr "ポイントとラインストリングの最小バウンディングボックス"
+msgstr "ラインストリングの終端ポイント"
 
 #. Tag: programlisting
 #: reference_accessor.xml:617
@@ -1881,12 +1963,17 @@ msgid ""
 "------------\n"
 " POINT(3 3)"
 msgstr ""
+"postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 "
+"3)'::geometry));\n"
+" st_astext\n"
+"------------\n"
+" POINT(3 3)"
 
 #. Tag: para
 #: reference_accessor.xml:619
 #, no-c-format
 msgid "End point of a non-LineString is NULL"
-msgstr ""
+msgstr "ラインストリング以外の終端ポイントはNULL"
 
 #. Tag: programlisting
 #: reference_accessor.xml:620
@@ -1897,12 +1984,16 @@ msgid ""
 "----------\n"
 " t"
 msgstr ""
+"SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;\n"
+"  is_null\n"
+"----------\n"
+" t"
 
 #. Tag: para
 #: reference_accessor.xml:622
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "End point of a 3D LineString"
-msgstr "ポイントとラインストリングの最小バウンディングボックス"
+msgstr "3次元ラインストリングの終端ポイント"
 
 #. Tag: programlisting
 #: reference_accessor.xml:623
@@ -1914,12 +2005,17 @@ msgid ""
 "--------------\n"
 " POINT(0 0 5)"
 msgstr ""
+"-- 3次元終端ポイント\n"
+"SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));\n"
+"  st_asewkt\n"
+"--------------\n"
+" POINT(0 0 5)"
 
 #. Tag: para
 #: reference_accessor.xml:625
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "End point of a CircularString"
-msgstr "ST_LineStringまたはST_CircularStringのポイント数を返します。"
+msgstr "CIRCULARSTRINGの終端ポイント"
 
 #. Tag: programlisting
 #: reference_accessor.xml:626
@@ -1931,6 +2027,11 @@ msgid ""
 "------------\n"
 " POINT(6 3)"
 msgstr ""
+"SELECT ST_AsText(ST_EndPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 6 "
+"3)'::geometry));\n"
+" st_astext\n"
+"------------\n"
+" POINT(6 3)"
 
 #. Tag: para
 #: reference_accessor.xml:632
@@ -1946,11 +2047,9 @@ msgstr "ST_Envelope"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:641
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a geometry representing the bounding box of a geometry."
-msgstr ""
-"ジオメトリの浮動小数点数 (float8)バウンディングボックスを表現するジオメトリを"
-"返します。"
+msgstr "ジオメトリのバウンディングボックスを表現するジオメトリを返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:646
@@ -1964,7 +2063,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:657
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the double-precision (float8) minimum bounding box for the supplied "
 "geometry, as a geometry. The polygon is defined by the corner points of the "
@@ -1975,13 +2074,14 @@ msgid ""
 "will add a <varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as "
 "well)."
 msgstr ""
-"ジオメトリのfloat8数の最小バウンディングボックスをジオメトリとして返します。"
-"バウンディングボックスの角で定義されたポリゴンで、 ((<varname>MINX</"
-"varname>, <varname>MINY</varname>), (<varname>MINX</varname>, <varname>MAXY</"
-"varname>), (<varname>MAXX</varname>, <varname>MAXY</varname>), "
-"(<varname>MAXX</varname>, <varname>MINY</varname>), (<varname>MINX</"
-"varname>, <varname>MINY</varname>))となります。可能なら<varname>ZMIN</"
-"varname>/<varname>ZMAX</varname>座標が追加されます。"
+"与えられたジオメトリの倍精度浮動小数点数 "
+"(float8)の最小バウンディングボックスをジオメトリで返します。"
+"ポリゴンはバウンディングボックスの角のポイントで定義されます "
+"((<varname>MINX</varname>, <varname>MINY</varname>), (<varname>MINX</"
+"varname>, <varname>MAXY</varname>), (<varname>MAXX</varname>, "
+"<varname>MAXY</varname>), (<varname>MAXX</varname>, <varname>MINY</varname>)"
+", (<varname>MINX</varname>, <varname>MINY</varname>))。(PostGISは<varname>ZMI"
+"N</varname>/<varname>ZMAX</varname>も追加します)."
 
 #. Tag: para
 #: reference_accessor.xml:667
@@ -2014,7 +2114,7 @@ msgstr "&sfs_compliant; s2.1.1.1"
 #: reference_accessor.xml:673
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.19"
 
 #. Tag: programlisting
 #: reference_accessor.xml:679
@@ -2130,9 +2230,9 @@ msgstr "ST_ExteriorRing"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:701
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a LineString representing the exterior ring of a Polygon."
-msgstr "ポリゴンジオメトリの内環の数を返します。"
+msgstr "ポリゴンの外環を表現するラインストリングを返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:706
@@ -2146,24 +2246,23 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:717
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns a LINESTRING representing the exterior ring (shell) of a POLYGON. "
 "Returns NULL if the geometry is not a polygon."
-msgstr ""
-"<varname>POLYGON</varname>の外環を表現するラインストリングを返します。ジオメ"
-"トリがポリゴンでない場合はNULLを返します。"
+msgstr "POLYGONの外環を表現するLINESTRINGを返します。ジオメトリがポリゴンでない場合は"
+"NULLを返します。"
 
 #. Tag: para
 #: reference_accessor.xml:721 reference_accessor.xml:923
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This function does not support MULTIPOLYGONs. For MULTIPOLYGONs use in "
 "conjunction with <xref linkend=\"ST_GeometryN\"/> or <xref "
 "linkend=\"ST_Dump\"/>"
 msgstr ""
-"この関数はマルチポリゴンでは動作しません。マルチポリゴンに対してはST_Dumpを併"
-"用して下さい。"
+"この関数はマルチポリゴンでは動作しません。マルチポリゴンに対しては<xref "
+"linkend=\"ST_GeometryN\"/>または<xref linkend=\"ST_Dump\"/>を併用して下さい。"
 
 #. Tag: para
 #: reference_accessor.xml:725 reference_accessor.xml:1277
@@ -2179,7 +2278,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.3, 8.3.3"
 
 #. Tag: programlisting
 #: reference_accessor.xml:733
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--If you have a table of polygons\n"
 "SELECT gid, ST_ExteriorRing(geom) AS ering\n"
@@ -2205,18 +2304,19 @@ msgid ""
 "LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)"
 msgstr ""
 "-- ポリゴンのテーブルを持っているとします\n"
-"SELECT gid, ST_ExteriorRing(the_geom) AS ering\n"
+"SELECT gid, ST_ExteriorRing(geom) AS ering\n"
 "FROM sometable;\n"
 "\n"
 "-- マルチポリゴンのテーブルを持っていて、\n"
-"-- それぞれのポリゴンの外環からなるマルチラインストリングを返させたいとしま"
-"す。\n"
-"SELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings\n"
-"        FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom\n"
+"-- "
+"それぞれのポリゴンの外環からなるマルチラインストリングを返させたいとします。"
+"\n"
+"SELECT gid, ST_Collect(ST_ExteriorRing(geom)) AS erings\n"
+"        FROM (SELECT gid, (ST_Dump(geom)).geom As geom\n"
 "                        FROM sometable) As foo\n"
 "GROUP BY gid;\n"
 "\n"
-"--3次元の例\n"
+"-- 3次元の例\n"
 "SELECT ST_AsEWKT(\n"
 "        ST_ExteriorRing(\n"
 "        ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 1, 1 2 1, 1 1 1, 0 0 1))')\n"
@@ -2243,9 +2343,9 @@ msgstr "ST_GeometryN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:751
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Return an element of a geometry collection."
-msgstr "ST_Geometry値のジオメトリ型を返します。"
+msgstr "ジオメトリコレクションの要素を一つ返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:756
@@ -2261,15 +2361,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:767
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the 1-based Nth element geometry of an input geometry which is a "
 "GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTI)POLYGON, "
 "or POLYHEDRALSURFACE. Otherwise, returns NULL."
 msgstr ""
-"GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE, "
-"(MULTI)POLYGON, POLYHEDRALSURFACEの場合には、1始まりでN番目のジオメトリを返し"
-"ます。それ以外の場合にはNULLを返します。"
+"GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE, MULTIPOLYGON, PO"
+"LYHEDRALSURFACEの入力ジオメトリの、1始まりでN番目の要素を返します。他の場合に"
+"はNULLを返します。"
 
 #. Tag: para
 #: reference_accessor.xml:772
@@ -2283,13 +2383,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:777
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "To extract all elements of a geometry, <xref linkend=\"ST_Dump\"/> is more "
 "efficient and works for atomic geometries."
-msgstr ""
-"一つのジオメトリから全てのジオメトリを抽出したい場合は、ST_Dumpを使う方が効果"
-"的ですし、単一ジオメトリにも対応しています。"
+msgstr "ジオメトリの全ての要素を抽出するには<xref linkend=\"ST_Dump\""
+"/>の方が効率的ですし、単一ジオメトリでも動作します。"
 
 #. Tag: para
 #: reference_accessor.xml:780
@@ -2337,6 +2436,30 @@ msgid ""
 "FROM sometable CROSS JOIN generate_series(1,100) n\n"
 "WHERE n &lt;= ST_NumGeometries(geom);"
 msgstr ""
+"-- 3次元マルチポイントから部分集合を抽出\n"
+"SELECT n, ST_AsEWKT(ST_GeometryN(the_geom, n)) As geomewkt\n"
+"FROM (\n"
+"VALUES (ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') ),\n"
+"( ST_GeomFromEWKT('MULTICURVE(CIRCULARSTRING(2.5 2.5,4.5 2.5, 3.5 3.5), (10 "
+"11, 12 11))') )\n"
+"        )As foo(the_geom)\n"
+"        CROSS JOIN generate_series(1,100) n\n"
+"WHERE n &lt;= ST_NumGeometries(the_geom);\n"
+"\n"
+" n |               geomewkt\n"
+"---+-----------------------------------------\n"
+" 1 | POINT(1 2 7)\n"
+" 2 | POINT(3 4 7)\n"
+" 3 | POINT(5 6 7)\n"
+" 4 | POINT(8 9 10)\n"
+" 1 | CIRCULARSTRING(2.5 2.5,4.5 2.5,3.5 3.5)\n"
+" 2 | LINESTRING(10 11,12 11)\n"
+"\n"
+"\n"
+"-- 全てのジオメトリを抽出(idを付けたい場合に便利です)\n"
+"SELECT gid, n, ST_GeometryN(the_geom, n)\n"
+"FROM sometable CROSS JOIN generate_series(1,100) n\n"
+"WHERE n &lt;= ST_NumGeometries(the_geom);"
 
 #. Tag: programlisting
 #: reference_accessor.xml:798
@@ -2436,9 +2559,9 @@ msgstr "ST_GeometryType"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:814
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the SQL-MM type of a geometry as text."
-msgstr "ST_Geometry値のジオメトリ型を返します。"
+msgstr "ジオメトリのSQL-MM型を文字列で返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:819
@@ -2563,38 +2686,37 @@ msgstr ""
 #: reference_accessor.xml:857
 #, no-c-format
 msgid "ST_HasArc"
-msgstr ""
+msgstr "ST_HasArc"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:859
 #, no-c-format
 msgid "Tests if a geometry contains a circular arc"
-msgstr ""
+msgstr "ジオメトリに円弧が含まれているかどうかテストします。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:864
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_HasArc</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
-"<funcdef>boolean <function>ST_IsEmpty</function></funcdef> "
+"<funcdef>boolean <function>ST_HasArc</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:874
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns true if a geometry or geometry collection contains a circular string"
-msgstr ""
-"ジオメトリが、空のジオメトリコレクション、ポリゴン、ポイント等の場合に、true"
-"を返します。"
+msgstr "ジオメトリまたはジオメトリコレクションに曲線ラインストリングが含まれている場"
+"合にTRUEを返します。"
 
 #. Tag: para
 #: reference_accessor.xml:876
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 1.2.3?"
-msgstr "Availability: 1.2.2"
+msgstr "Availability: 1.2.3?"
 
 #. Tag: programlisting
 #: reference_accessor.xml:885
@@ -2606,12 +2728,17 @@ msgid ""
 "                --------\n"
 "                t"
 msgstr ""
+"SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 "
+"1, 2 3, 4 5, 6 7, 5 6)'));\n"
+"                st_hasarc\n"
+"                --------\n"
+"                t"
 
 #. Tag: para
 #: reference_accessor.xml:892
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_LineToCurve\"/>"
-msgstr ", <xref linkend=\"ST_PointN\"/>"
+msgstr ", <xref linkend=\"ST_LineToCurve\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:898
@@ -2621,9 +2748,9 @@ msgstr "ST_InteriorRingN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:900
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the Nth interior ring (hole) of a Polygon."
-msgstr "ポリゴンジオメトリの内環の数を返します。"
+msgstr "ポリゴンのN番目の内環 (穴)を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:905
@@ -2639,13 +2766,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:916
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the Nth interior ring (hole) of a POLYGON geometry as a LINESTRING. "
 "The index starts at 1. Returns NULL if the geometry is not a polygon or the "
 "index is out of range."
-msgstr ""
-"ポリゴンのN番目の内環を返します。ジオメトリがポリゴンでないかNが範囲外の場合"
+msgstr "ポリゴンのN番目の内環を返します。ジオメトリがポリゴンでないかNが範囲外の場合"
 "はNULLを返します。"
 
 #. Tag: para
@@ -2656,7 +2782,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.6, 8.3.5"
 
 #. Tag: programlisting
 #: reference_accessor.xml:937
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_InteriorRingN(geom, 1)) As geom\n"
 "FROM (SELECT ST_BuildArea(\n"
@@ -2664,22 +2790,23 @@ msgid ""
 "                        ST_Buffer(ST_Point(1, 2), 10,3))) As geom\n"
 "                )  as foo;"
 msgstr ""
-"SELECT ST_AsText(ST_InteriorRingN(the_geom, 1)) As the_geom\n"
+"SELECT ST_AsText(ST_InteriorRingN(geom, 1)) As geom\n"
 "FROM (SELECT ST_BuildArea(\n"
 "                ST_Collect(ST_Buffer(ST_Point(1,2), 20,3),\n"
-"                        ST_Buffer(ST_Point(1, 2), 10,3))) As the_geom\n"
-"                )  as foo"
+"                        ST_Buffer(ST_Point(1, 2), 10,3))) As geom\n"
+"                )  as foo;"
 
 #. Tag: para
 #: reference_accessor.xml:944
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
 "linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref "
 "linkend=\"ST_NumInteriorRings\"/>"
 msgstr ""
-", <xref linkend=\"ST_M\"/>, <xref linkend=\"ST_X\"/>, <xref linkend=\"ST_Y\"/"
-">, <xref linkend=\"ST_ZMax\"/>, <xref linkend=\"ST_ZMin\"/>"
+", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
+"linkend=\"ST_Dump\"/>, <xref linkend=\"ST_NumInteriorRing\"/>, <xref linkend="
+"\"ST_NumInteriorRings\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:957
@@ -2689,14 +2816,12 @@ msgstr "ST_IsClosed"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:959
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Tests if a LineStrings's start and end points are coincident. For a "
 "PolyhedralSurface tests if it is closed (volumetric)."
-msgstr ""
-"<varname>LINESTRING</varname>の始点と終点が一致する場合に<varname>TRUE</"
-"varname>を返します。多面体サーフェスの場合は閉じているかどうか (ボリュームで"
-"あるかどうか)を返します。"
+msgstr "ラインストリングの始点と終点が一致しているかをテストします。"
+"多面体サーフェスについては閉じているか (立体であるか)をテストします。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:965
@@ -2710,15 +2835,15 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:976
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s start "
 "and end points are coincident. For Polyhedral Surfaces, reports if the "
 "surface is areal (open) or volumetric (closed)."
 msgstr ""
-"<varname>LINESTRING</varname>の始点と終点が一致する場合に<varname>TRUE</"
-"varname>を返します。多面体サーフェスの場合は面であるか (開いているか)、または"
-"ボリュームであるか (閉じているか)を返します。"
+"<varname>LINESTRING</varname>の始点と終点が一致する場合に<varname>TRUE</varna"
+"me>を返します。多面体サーフェスについては、サーフェスが面 (開いている)か立体 "
+"(閉じている)かをテストします。"
 
 #. Tag: para
 #: reference_accessor.xml:981
@@ -2878,11 +3003,9 @@ msgstr "ST_IsCollection"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1018
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Tests if a geometry is a geometry collection type."
-msgstr ""
-"ジオメトリが、空のジオメトリコレクション、ポリゴン、ポイント等の場合に、true"
-"を返します。"
+msgstr "ジオメトリのタイプがジオメトリコレクションかをテストします。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1023
@@ -2896,11 +3019,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1033
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the geometry type of the argument a "
 "geometry collection type. Collection types are the following:"
-msgstr "引数が次のいずれかの場合には<varname>TRUE</varname>を返します。"
+msgstr "ジオメトリのタイプがジオメトリコレクションである場合に<varname>TRUE</varname>"
+"を返します。コレクションは次の通りです。"
 
 #. Tag: para
 #: reference_accessor.xml:1036
@@ -3010,7 +3134,7 @@ msgstr "ST_IsEmpty"
 #: reference_accessor.xml:1072
 #, no-c-format
 msgid "Tests if a geometry is empty."
-msgstr ""
+msgstr "ジオメトリが空かをテストします。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1078
@@ -3135,11 +3259,12 @@ msgstr "ST_IsPolygonCCW"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1116
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Tests if Polygons have exterior rings oriented counter-clockwise and "
 "interior rings oriented clockwise."
-msgstr "全ての外環が反時計回りで、全ての内環が時計回りならTRUEを返します。"
+msgstr "ポリゴンが反時計回りの外環を持っていて、時計回りの内環を持っているかをテスト"
+"します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1122
@@ -3194,9 +3319,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1165 reference_accessor.xml:1235
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.4.0"
-msgstr "Availability: 2.2.0"
+msgstr "Availability: 2.4.0"
 
 #. Tag: para
 #: reference_accessor.xml:1173 reference_accessor.xml:1242
@@ -3214,13 +3339,12 @@ msgstr "ST_IsPolygonCW"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1186
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Tests if Polygons have exterior rings oriented clockwise and interior rings "
 "oriented counter-clockwise."
-msgstr ""
-"入力ジオメトリの全てのポリゴン要素の外環については時計回りで、全ての内環につ"
-"いては反時計回りである場合には、TRUEを返します。"
+msgstr "ポリゴンが時計回りの外環を持っていて、反時計回りの内環を持っているかをテスト"
+"します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1192
@@ -3253,7 +3377,7 @@ msgstr "ST_IsRing"
 #: reference_accessor.xml:1254
 #, no-c-format
 msgid "Tests if a LineString is closed and simple."
-msgstr ""
+msgstr "ラインストリングが閉じていてかつ単純であるかをテストします。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1259
@@ -3299,7 +3423,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:1289
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_IsRing(geom), ST_IsClosed(geom), ST_IsSimple(geom)\n"
 "FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS geom) AS "
@@ -3317,17 +3441,17 @@ msgid ""
 " f         | t           | f\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\n"
-"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS "
-"foo;\n"
+"SELECT ST_IsRing(geom), ST_IsClosed(geom), ST_IsSimple(geom)\n"
+"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS geom) AS foo;"
+"\n"
 " st_isring | st_isclosed | st_issimple\n"
 "-----------+-------------+-------------\n"
 " t         | t           | t\n"
 "(1 row)\n"
 "\n"
-"SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)\n"
-"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS "
-"foo;\n"
+"SELECT ST_IsRing(geom), ST_IsClosed(geom), ST_IsSimple(geom)\n"
+"FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS geom) AS foo;"
+"\n"
 " st_isring | st_isclosed | st_issimple\n"
 "-----------+-------------+-------------\n"
 " f         | t           | f\n"
@@ -3351,12 +3475,11 @@ msgstr "ST_IsSimple"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1305
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Tests if a geometry has no points of self-intersection or self-tangency."
-msgstr ""
-"ジオメトリが自己インタセクションや自己接触のような異常な幾何学ポイントを持っ"
-"ていない場合にTRUEを返します。"
+msgstr "ジオメトリが自己インタセクトまたは自己接触となるポイントが無いかをテストしま"
+"す。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1310
@@ -3370,7 +3493,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1320
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns true if this Geometry has no anomalous geometric points, such as "
 "self-intersection or self-tangency. For more information on the OGC's "
@@ -3378,9 +3501,10 @@ msgid ""
 "linkend=\"OGC_Validity\">\"Ensuring OpenGIS compliancy of geometries\"</link>"
 msgstr ""
 "ジオメトリが自己インタセクションや自己接触のような異常な幾何学ポイントを持っ"
-"ていない場合にTRUEを返します。OGCのジオメトリ単純性と妥当性の定義に関する詳細"
-"情報については<link linkend=\"OGC_Validity\">「ジオメトリのOpenGIS準拠を確実"
-"にする」</link>をご覧ください。"
+"ていない場合にTRUEを返します。"
+"OGCのジオメトリ単純性と妥当性の定義に関する詳細情報については<link linkend="
+"\"OGC_Validity\""
+">「ジオメトリのOpenGIS準拠を確実にする」</link>をご覧ください。"
 
 #. Tag: para
 #: reference_accessor.xml:1326
@@ -3437,7 +3561,7 @@ msgstr "ST_M"
 #: reference_accessor.xml:1353
 #, no-c-format
 msgid "Returns the M coordinate of a Point."
-msgstr ""
+msgstr "ポイントのM値を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1358
@@ -3505,29 +3629,29 @@ msgstr ""
 #: reference_accessor.xml:1397
 #, no-c-format
 msgid "ST_MemSize"
-msgstr ""
+msgstr "ST_MemSize"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1399
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the amount of memory space a geometry takes."
-msgstr "ST_Geometry値のジオメトリ型を返します。"
+msgstr "ジオメトリが取るメモリ空間の合計を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1404
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_MemSize</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
-"<funcdef>integer <function>ST_NRings</function></funcdef> "
+"<funcdef>integer <function>ST_MemSize</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1414
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the amount of memory space (in bytes) the geometry takes."
-msgstr "ST_Geometry値のジオメトリ型を返します。"
+msgstr "ジオメトリが取るメモリ空間の合計をバイト単位で返します。"
 
 #. Tag: para
 #: reference_accessor.xml:1415
@@ -3538,6 +3662,10 @@ msgid ""
 "object functions</ulink> pg_column_size, pg_size_pretty, pg_relation_size, "
 "pg_total_relation_size."
 msgstr ""
+"この関数は、PostgreSQLビルトイン<ulink url=\"https://www.postgresql.jp/"
+"document/current/html/functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT\""
+">データベースオブジェクト管理関数</ulink>のpg_column_size, pg_size_pretty, "
+"pg_relation_size, pg_total_relation_sizeを補完します。"
 
 #. Tag: para
 #: reference_accessor.xml:1417
@@ -3547,6 +3675,9 @@ msgid ""
 "lower than ST_MemSize. This is because pg_relation_size does not add toasted "
 "table contribution and large geometries are stored in TOAST tables."
 msgstr ""
+"テーブルのバイト単位のサイズを与えるpg_relation_sizeはST_Mem_Sizeより小さいバ"
+"イト数が返ります。これはpg_relation_sizeがTOAST化されたテーブルの寄与を追加せ"
+"ず、TOASTテーブルに格納された大きなジオメトリを加えないためです。"
 
 #. Tag: para
 #: reference_accessor.xml:1419
@@ -3554,7 +3685,7 @@ msgstr ""
 msgid ""
 "pg_total_relation_size - includes, the table, the toasted tables, and the "
 "indexes."
-msgstr ""
+msgstr "pg_total_relation_size - テーブル、TOASTテーブル、インデクスを含みます。"
 
 #. Tag: para
 #: reference_accessor.xml:1420
@@ -3563,12 +3694,14 @@ msgid ""
 "pg_column_size returns how much space a geometry would take in a column "
 "considering compression, so may be lower than ST_MemSize"
 msgstr ""
+"pg_column_sizeは、ジオメトリがカラム内で取る領域がどれだけかを、圧縮を考慮し"
+"て返します。そのため、ST_MemSizeより小さくなることがあります。"
 
 #. Tag: para
 #: reference_accessor.xml:1427
 #, no-c-format
 msgid "Changed: 2.2.0 name changed to ST_MemSize to follow naming convention."
-msgstr ""
+msgstr "Changed: 2.2.0 命名規則に従うためにST_MemSizeに変更しました。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1434
@@ -3603,6 +3736,35 @@ msgid ""
 "------------------------------------------------\n"
 "262144         96238         36.71188354492187500000"
 msgstr ""
+"-- "
+"マサチューセッツのデータセットでボストンが占めるバイト単位の容量を返します\n"
+"SELECT pg_size_pretty(SUM(ST_MemSize(geom))) as totgeomsum,\n"
+"pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 "
+"END)) As bossum,\n"
+"CAST(SUM(CASE WHEN town = 'BOSTON' THEN ST_MemSize(geom) ELSE 0 END)*1.00 /\n"
+"                SUM(ST_MemSize(geom))*100 As numeric(10,2)) As perbos\n"
+"FROM towns;\n"
+"\n"
+"totgeomsum        bossum        perbos\n"
+"----------        ------        ------\n"
+"1522 kB                30 kB        1.99\n"
+"\n"
+"\n"
+"SELECT ST_MemSize(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 "
+"150505,220227 150406)'));\n"
+"\n"
+"---\n"
+"73\n"
+"\n"
+"-- ジオメトリがテーブルに占める割合\n"
+"SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, "
+"sum(ST_MemSize(geom)) As geomsize,\n"
+"sum(ST_MemSize(geom))*1.00/pg_total_relation_size('public.neighborhoods')*"
+"100 As pergeom\n"
+"FROM neighborhoods;\n"
+"fulltable_size geomsize  pergeom\n"
+"------------------------------------------------\n"
+"262144         96238         36.71188354492187500000"
 
 #. Tag: refname
 #: reference_accessor.xml:1441
@@ -3672,9 +3834,9 @@ msgstr "ST_NPoints"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1477
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the number of points (vertices) in a geometry."
-msgstr "ジオメトリのポイント (頂点)数を返します。"
+msgstr "ジオメトリのポイント (頂点)の数を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1482
@@ -3727,9 +3889,9 @@ msgstr "ST_NRings"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1516
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the number of rings in a polygonal geometry."
-msgstr "ポリゴンジオメトリの内環の数を返します。"
+msgstr "ポリゴンジオメトリのリング数を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1521
@@ -3753,7 +3915,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:1541
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_NRings(geom) As Nrings, ST_NumInteriorRings(geom) As ninterrings\n"
 "                                        FROM (SELECT "
@@ -3763,10 +3925,9 @@ msgid ""
 "          1 |           0\n"
 "(1 row)"
 msgstr ""
-"SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As "
-"ninterrings\n"
+"SELECT ST_NRings(geom) As Nrings, ST_NumInteriorRings(geom) As ninterrings\n"
 "                                        FROM (SELECT "
-"ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As the_geom) As foo;\n"
+"ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As geom) As foo;\n"
 "         nrings | ninterrings\n"
 "--------+-------------\n"
 "          1 |           0\n"
@@ -3780,10 +3941,9 @@ msgstr "ST_NumGeometries"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1555
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the number of elements in a geometry collection."
-msgstr ""
-"ジオメトリのポイントの数を返します。全てのジオメトリに対して動作します。"
+msgstr "ジオメトリコレクションの要素数を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1560
@@ -3844,6 +4004,21 @@ msgid ""
 "--result\n"
 "3"
 msgstr ""
+"-- 以前の版ではNULLが返りました\n"
+"-- 2.0.0から1が返ります\n"
+"SELECT ST_NumGeometries(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 "
+"29.26,77.27 29.31,77.29 29.07)'));\n"
+"-- 結果\n"
+"1\n"
+"\n"
+"-- ジオメトリコレクションの例\n"
+"-- - マルチ系はコレクションで一つのジオメトリと数えます。\n"
+"SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT(-2 3 "
+", -2 2),\n"
+"LINESTRING(5 5 ,10 10),\n"
+"POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));\n"
+"-- 結果\n"
+"3"
 
 #. Tag: para
 #: reference_accessor.xml:1591
@@ -3859,9 +4034,9 @@ msgstr "ST_NumInteriorRings"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1598
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the number of interior rings (holes) of a Polygon."
-msgstr "ポリゴンジオメトリの内環の数を返します。"
+msgstr "ポリゴンの内環 (穴)の数を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1603
@@ -3901,7 +4076,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:1625
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--If you have a regular polygon\n"
 "SELECT gid, field1, field2, ST_NumInteriorRings(geom) AS numholes\n"
@@ -3916,20 +4091,20 @@ msgid ""
 "GROUP BY gid, field1,field2;"
 msgstr ""
 "-- 通常のポリゴンの場合\n"
-"SELECT gid, field1, field2, ST_NumInteriorRings(the_geom) AS numholes\n"
+"SELECT gid, field1, field2, ST_NumInteriorRings(geom) AS numholes\n"
 "FROM sometable;\n"
 "\n"
-"-- マルチポリゴンの内環の総数を知りたい場合\n"
-"SELECT gid, field1, field2, SUM(ST_NumInteriorRings(the_geom)) AS numholes\n"
-"FROM (SELECT gid, field1, field2, (ST_Dump(the_geom)).geom As the_geom\n"
+"-- マルチポリゴンの内側リングの総数を知りたい場合\n"
+"SELECT gid, field1, field2, SUM(ST_NumInteriorRings(geom)) AS numholes\n"
+"FROM (SELECT gid, field1, field2, (ST_Dump(geom)).geom As geom\n"
 "        FROM sometable) As foo\n"
 "GROUP BY gid, field1,field2;"
 
 #. Tag: para
 #: reference_accessor.xml:1630 reference_accessor.xml:1652
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_InteriorRingN\"/>"
-msgstr ", <xref linkend=\"ST_PointN\"/>"
+msgstr ", <xref linkend=\"ST_InteriorRingN\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1636
@@ -3939,12 +4114,11 @@ msgstr "ST_NumInteriorRing"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1637
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the number of interior rings (holes) of a Polygon. Aias for "
 "ST_NumInteriorRings"
-msgstr ""
-"ジオメトリ内のポリゴンの内環の数を返します。ST_NumInteriorRingsと同義です。"
+msgstr "ポリゴンの内環 (穴)の数を返します。ST_NumInteriorRingsの別名です。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1642
@@ -4004,7 +4178,7 @@ msgstr "Availability: 2.0.0"
 #: reference_accessor.xml:1680 reference_accessor.xml:1771
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
-msgstr ""
+msgstr "&sqlmm_compliant; SQL-MM ISO/IEC 13249-3: 8.5"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1687
@@ -4038,9 +4212,9 @@ msgstr "ST_NumPoints"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1699
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the number of points in a LineString or CircularString."
-msgstr "ST_LineStringまたはST_CircularStringのポイント数を返します。"
+msgstr "ラインストリングまたは曲線ストリングのポイント数を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1704
@@ -4054,7 +4228,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1714
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the number of points in an ST_LineString or ST_CircularString value. "
 "Prior to 1.4 only works with linestrings as the specs state. From 1.4 "
@@ -4062,10 +4236,10 @@ msgid ""
 "not just linestrings. Consider using ST_NPoints instead which is multi-"
 "purpose and works with many geometry types."
 msgstr ""
-"ST_LineStringまたはST_CircularStringのポイント数を返します。1.4より前は仕様通"
-"りにラインストリングにのみ対応していました。1.4以上ではラインストリングだけで"
-"なく頂点数を返すST_NPointsの別名です。多目的で多数のジオメトリタイプで動作す"
-"るST_NPointsを使うことを考えて下さい。"
+"ST_LineStringまたはST_CircularStringのポイント数を返します。1."
+"4より前は仕様通りにラインストリングにのみ対応していました。1.4以上ではライン"
+"ストリングだけでなく頂点数を返すST_NPointsの別名です。多目的で多数のジオメト"
+"リタイプで動作するST_NPointsを使うことを考えて下さい。"
 
 #. Tag: para
 #: reference_accessor.xml:1721
@@ -4095,9 +4269,9 @@ msgstr "ST_PatchN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1740
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns the Nth geometry (face) of a PolyhedralSurface."
-msgstr "ST_Geometry値のジオメトリ型を返します。"
+msgstr "多面体サーフェスのN番目のジオメトリ (フェイス)を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1745
@@ -4113,17 +4287,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1756
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the 1-based Nth geometry (face) if the geometry is a "
 "POLYHEDRALSURFACE or POLYHEDRALSURFACEM. Otherwise, returns NULL. This "
 "returns the same answer as ST_GeometryN for PolyhedralSurfaces. Using "
 "ST_GeometryN is faster."
 msgstr ""
-">ジオメトリがPOLYHEDRALSURFACEかPOLYHEDRALSURFACEMの場合には、1始まりでN番目"
-"のジオメトリ (フェイス)を返します。それ以外の場合には、NULLを返します。多面体"
-"サーフェスを引数にとるST_GeometryNと同じ答えが返ります。ST_GeometryNの方が速"
-"いです。"
+"ジオメトリがPOLYHEDRALSURFACEかPOLYHEDRALSURFACEMの場合には、"
+"1始まりでN番目のジオメトリ (フェイス)を返します。それ以外の場合には、NULLを返"
+"します。多面体サーフェスを引数にとるST_GeometryNと同じ答えが返ります。ST_Geom"
+"etryNの方が速いです。"
 
 #. Tag: para
 #: reference_accessor.xml:1763
@@ -4133,13 +4307,12 @@ msgstr "インデクスは1始まりです。"
 
 #. Tag: para
 #: reference_accessor.xml:1767
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you want to extract all elements of a geometry <xref linkend=\"ST_Dump\"/"
 "> is more efficient."
-msgstr ""
-"一つのジオメトリから全てのジオメトリを抽出したい場合は、ST_Dumpを使う方が効率"
-"的です。"
+msgstr "ジオメトリの全ての要素を抽出するには<xref linkend=\"ST_Dump\""
+"/>が最も効率的です。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1781
@@ -4193,11 +4366,12 @@ msgstr "ST_PointN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1796
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the Nth point in the first LineString or circular LineString in a "
 "geometry."
-msgstr "ST_LineStringまたはST_CircularStringのポイント数を返します。"
+msgstr "ジオメトリの最初のラインストリングまたは曲線ストリングのN番目のポイントを返し"
+"ます。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1802
@@ -4238,13 +4412,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1824
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you want to get the Nth point of each LineString in a MultiLineString, "
 "use in conjunction with ST_Dump"
-msgstr ""
-"マルチラインストリングからN番目のポイントを得たい場合には、ST_Dumpを併用して"
-"下さい。"
+msgstr "マルチラインストリング内のラインストリングのN番目のポイントを得るには、ST_Dum"
+"pを併用します。"
 
 #. Tag: para
 #: reference_accessor.xml:1829
@@ -4275,7 +4448,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:1845
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Extract all POINTs from a LINESTRING\n"
 "SELECT ST_AsText(\n"
@@ -4325,21 +4498,23 @@ msgstr ""
 " POINT(2 2)\n"
 "(3 rows)\n"
 "\n"
-"-- CIRCULARSTRINGの例\n"
-"SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 "
-"2)'),2));\n"
+"-- 曲線ストリングの例\n"
+"SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'), "
+"2));\n"
 "\n"
-"st_astext\n"
-"----------\n"
-"POINT(3 2)\n"
+" st_astext\n"
+"------------\n"
+" POINT(3 2)\n"
+"(1 row)\n"
 "\n"
-"SELECT st_astext(f)\n"
-"FROM ST_GeometryFromtext('LINESTRING(0 0 0, 1 1 1, 2 2 2)') as g\n"
-"        ,ST_PointN(g, -2) AS f -- 1 based index\n"
+"SELECT ST_AsText(f)\n"
+"FROM ST_GeomFromText('LINESTRING(0 0 0, 1 1 1, 2 2 2)') AS g\n"
+"  ,ST_PointN(g, -2) AS f; -- 1 based index\n"
 "\n"
-"st_astext\n"
-"----------\n"
-"\"POINT Z (1 1 1)\""
+"    st_astext\n"
+"-----------------\n"
+" POINT Z (1 1 1)\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_accessor.xml:1857
@@ -4349,9 +4524,9 @@ msgstr "ST_Points"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1858
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Returns a MultiPoint containing the coordinates of a geometry."
-msgstr "ジオメトリの全ての座標値からなるマルチポイントを返します。"
+msgstr "ジオメトリの全ての座標を含むマルチポイントを返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1864
@@ -4372,6 +4547,10 @@ msgid ""
 "(If desired, duplicate points can be removed by calling <xref "
 "linkend=\"ST_RemoveRepeatedPoints\"/> on the result)."
 msgstr ""
+"ジオメトリの全ての座標を含むマルチポイントを返します。"
+"リングジオメトリの始点と終点を含む重複ポイントは保存されます ("
+"重複ポイントの削除が必要なら<xref linkend=\"ST_RemoveRepeatedPoints\""
+"/>を呼ぶと削除した結果が得られます)。"
 
 #. Tag: para
 #: reference_accessor.xml:1885
@@ -4379,13 +4558,14 @@ msgstr ""
 msgid ""
 "To obtain information about the position of each coordinate in the parent "
 "geometry use <xref linkend=\"ST_DumpPoints\"/>."
-msgstr ""
+msgstr "親ジオメトリの個々の座標のポイントに関する情報を取得するには<xref linkend="
+"\"ST_DumpPoints\"/>を使います。"
 
 #. Tag: para
 #: reference_accessor.xml:1890
 #, no-c-format
 msgid "M and Z coordinates are preserved if present."
-msgstr ""
+msgstr "M値とZ値が存在する場合には保持されます。"
 
 #. Tag: para
 #: reference_accessor.xml:1897
@@ -4403,12 +4583,17 @@ msgid ""
 "--result\n"
 "MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))"
 msgstr ""
+"SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 10))'));"
+"\n"
+"\n"
+"-- 結果 --\n"
+"MULTIPOINT Z ((30 10 4),(10 30 5),(40 40 6),(30 10 4))"
 
 #. Tag: para
 #: reference_accessor.xml:1909
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"ST_DumpPoints\"/>"
-msgstr ", <xref linkend=\"ST_PointN\"/>"
+msgstr ", <xref linkend=\"ST_DumpPoints\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:1915
@@ -4420,7 +4605,7 @@ msgstr "ST_StartPoint"
 #: reference_accessor.xml:1917
 #, no-c-format
 msgid "Returns the first point of a LineString."
-msgstr ""
+msgstr "ラインストリングの始点を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1922
@@ -4434,7 +4619,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1933
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns the first point of a <varname>LINESTRING</varname> or "
 "<varname>CIRCULARLINESTRING</varname> geometry as a <varname>POINT</"
@@ -4459,10 +4644,12 @@ msgid ""
 "Enhanced: 3.2.0 returns a point for all geometries. Prior behavior returns "
 "NULLs if input was not a LineString."
 msgstr ""
+"Enhanced: 3.2.0 全てのジオメトリのポイントを返すようになりました。以前のバー"
+"ジョンではラインストリング以外ではNULLを返していました。"
 
 #. Tag: para
 #: reference_accessor.xml:1945
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Changed: 2.0.0 no longer works with single geometry MultiLineStrings. In "
 "older versions of PostGIS a single-line MultiLineString would work happily "
@@ -4471,18 +4658,18 @@ msgid ""
 "feature, but people who assumed they had their data stored as LINESTRING may "
 "experience these returning NULL in 2.0.0."
 msgstr ""
-"Changed: 2.0.0では単一ジオメトリのMULTILINESTRINGで動作しなくなりました。単一"
-"のラインストリングからなるMULTILINESTRINGについては幸運にも動いていて、最初の"
-"ポイントを返していました。2.0.0では他のMULTILINESTRINGと同様にNULLを返すよう"
-"になりました。古い挙動は記載されていませんでしたが、LINESTRINGとして格納され"
-"ているデータを持っていると思われる人々は2.0でNULLが返って来ることを経験するこ"
-"とでしょう。"
+"Changed: 2.0.0 一つのMULTILINESTRINGで動作しなくなりました。PostGIS の古いバ"
+"ージョンでは、この関数は、一つのラインストリングからなるMULTILINESTRINGについ"
+"ては幸運にも動いていて、始端ポイントを返していました。2.0.0では他のMULTILINES"
+"TRINGと同様にNULLを返すようになりました。古い動作は文書化されていない機能でし"
+"たが、データをLINESTRINGとして格納していると思われるユーザーは、2.0.0 "
+"でNULLが返されることを経験するかも知れません。"
 
 #. Tag: para
 #: reference_accessor.xml:1957
 #, no-c-format
 msgid "Start point of a LineString"
-msgstr ""
+msgstr "ラインストリングの始端ポイント"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1958
@@ -4493,12 +4680,16 @@ msgid ""
 "------------\n"
 " POINT(0 1)"
 msgstr ""
+"SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));\n"
+" st_astext\n"
+"------------\n"
+" POINT(0 1)"
 
 #. Tag: para
 #: reference_accessor.xml:1960
 #, no-c-format
 msgid "Start point of a non-LineString is NULL"
-msgstr ""
+msgstr "ラインストリングでないものの始端ポイントはNULL"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1961
@@ -4509,12 +4700,16 @@ msgid ""
 "----------\n"
 " t"
 msgstr ""
+"SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;\n"
+"  is_null\n"
+"----------\n"
+" t"
 
 #. Tag: para
 #: reference_accessor.xml:1963
 #, no-c-format
 msgid "Start point of a 3D LineString"
-msgstr ""
+msgstr "3次元ラインストリングの始端ポイント"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1964
@@ -4525,12 +4720,16 @@ msgid ""
 "------------\n"
 " POINT(0 1 1)"
 msgstr ""
+"SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));\n"
+" st_asewkt\n"
+"------------\n"
+" POINT(0 1 1)"
 
 #. Tag: para
 #: reference_accessor.xml:1966
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Start point of a CircularString"
-msgstr "ST_LineStringまたはST_CircularStringのポイント数を返します。"
+msgstr "CIRCULARSTRINGの始端ポイント"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1967
@@ -4542,6 +4741,11 @@ msgid ""
 "------------\n"
 " POINT(5 2)"
 msgstr ""
+"SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, "
+"6 3)'::geometry));\n"
+" st_astext\n"
+"------------\n"
+" POINT(5 2)"
 
 #. Tag: para
 #: reference_accessor.xml:1973
@@ -4593,13 +4797,13 @@ msgstr "ジオメトリ型の後の角括弧で示されたフラグには次の
 
 #. Tag: para
 #: reference_accessor.xml:2006
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "M: has M coordinate"
 msgstr "M: M軸を持ちます"
 
 #. Tag: para
 #: reference_accessor.xml:2007
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Z: has Z coordinate"
 msgstr "Z: Z軸を持ちます"
 
@@ -4728,7 +4932,7 @@ msgstr "ST_X"
 #: reference_accessor.xml:2058
 #, no-c-format
 msgid "Returns the X coordinate of a Point."
-msgstr ""
+msgstr "ポイントのX値を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:2063
@@ -4757,6 +4961,8 @@ msgid ""
 "To get the minimum and maximum X value of geometry coordinates use the "
 "functions <xref linkend=\"ST_XMin\"/> and <xref linkend=\"ST_XMax\"/>."
 msgstr ""
+"ジオメトリのX値の最小値と最大値を得るには<xref linkend=\"ST_XMin\"/>と<xref "
+"linkend=\"ST_XMax\"/>を使います。"
 
 #. Tag: para
 #: reference_accessor.xml:2079
@@ -4814,7 +5020,7 @@ msgstr "ST_Y"
 #: reference_accessor.xml:2102
 #, no-c-format
 msgid "Returns the Y coordinate of a Point."
-msgstr ""
+msgstr "ポイントのY値を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:2107
@@ -4843,6 +5049,8 @@ msgid ""
 "To get the minimum and maximum Y value of geometry coordinates use the "
 "functions <xref linkend=\"ST_YMin\"/> and <xref linkend=\"ST_YMax\"/>."
 msgstr ""
+"ジオメトリの値の最小値と最大値を得るには<xref linkend=\"ST_YMin\"/>と<xref "
+"linkend=\"ST_YMax\"/>を使います。"
 
 #. Tag: para
 #: reference_accessor.xml:2124
@@ -4900,7 +5108,7 @@ msgstr "ST_Z"
 #: reference_accessor.xml:2147
 #, no-c-format
 msgid "Returns the Z coordinate of a Point."
-msgstr ""
+msgstr "ポイントのZ値を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:2152
@@ -4929,6 +5137,8 @@ msgid ""
 "To get the minimum and maximum Z value of geometry coordinates use the "
 "functions <xref linkend=\"ST_ZMin\"/> and <xref linkend=\"ST_ZMax\"/>."
 msgstr ""
+"ジオメトリのZ値の最小値と最大値を得るには<xref linkend=\"ST_ZMin\"/>と<xref "
+"linkend=\"ST_ZMax\"/>を使います。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:2176
@@ -4964,11 +5174,11 @@ msgstr "ST_Zmflag"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:2191
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<refpurpose>Returns a code indicating the ZM coordinate dimension of a "
 "geometry.</refpurpose>"
-msgstr "<refpurpose>ST_Geometry値の座標次元を返します。</refpurpose>"
+msgstr "<refpurpose>ジオメトリのZM座標次元を示す符号を返します。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:2196
@@ -4982,17 +5192,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:2206
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<para>Returns a code indicating the ZM coordinate dimension of a geometry.</"
 "para>"
-msgstr "<para>ST_Geometry値の座標次元を返します。</para>"
+msgstr "<para>ジオメトリのZM座標次元を示す符号を返します。</para>"
 
 #. Tag: para
 #: reference_accessor.xml:2208
 #, no-c-format
 msgid "Values are: 0 = 2D, 1 = 3D-M, 2 = 3D-Z, 3 = 4D."
-msgstr ""
+msgstr "値は 0=XY, 1=XYM, 2=XYZ, 3=XYZMとなります。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:2218

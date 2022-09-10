@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2020-12-19 17:06+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-09-09 06:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "referencexml/ja/>\n"
 "Language: ja\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: reference.xml:3

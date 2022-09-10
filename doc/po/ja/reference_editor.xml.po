@@ -4,13 +4,14 @@
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 # Sandro Santilli <strk@kbt.io>, 2022.
 # Regina Obe <regina@arrival3d.com>, 2022.
+# Teramoto Ikuhiro <yellow@affrc.go.jp>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-04-20 14:55+0000\n"
-"Last-Translator: Regina Obe <regina@arrival3d.com>\n"
+"PO-Revision-Date: 2022-09-09 06:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_editorxml/ja/>\n"
 "Language: ja\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_editor.xml:5
@@ -1045,7 +1046,7 @@ msgstr "ST_Scroll"
 #: reference_editor.xml:301
 #, no-c-format
 msgid "Change start point of a closed LineString."
-msgstr "閉じたLINESTRINGの開始点を変更する"
+msgstr "閉じたLINESTRINGの開始点を変更する。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:305
@@ -2661,7 +2662,7 @@ msgstr "ST_RemoveRepeatedPoints"
 #: reference_editor.xml:1178
 #, no-c-format
 msgid "Returns a version of a geometry with duplicate points removed."
-msgstr ""
+msgstr "重複ポイントを除いたジオメトリを返します。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1184
@@ -2687,6 +2688,10 @@ msgid ""
 "GeometryCollections are processed individually. The endpoints of LineStrings "
 "are preserved."
 msgstr ""
+"重複ポイントを除いたジオメトリを返します。この関数は(MULTI)LINESTRING、(MULTI"
+")POLYGON、MULTIPOINTのみを処理しますが、全ての種類のジオメトリを与えることが"
+"できます。GEOMETRYCOLLECTIONの要素は個別に処理されます。LINESTRINGの端点は保"
+"持されます。"
 
 #. Tag: para
 #: reference_editor.xml:1201
@@ -2695,6 +2700,8 @@ msgid ""
 "If the <parameter>tolerance</parameter> parameter is provided, vertices "
 "within the tolerance distance of one another are considered to be duplicates."
 msgstr ""
+"<parameter>tolerance</parameter>を指定した場合には、他の頂点との距離が許容距"
+"離内にある頂点は重複しているとみなされます。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1213
@@ -2705,6 +2712,10 @@ msgid ""
 "-------------------------\n"
 " MULTIPOINT(1 1,2 2,3 3)"
 msgstr ""
+"SELECT ST_AsText( ST_RemoveRepeatedPoints( 'MULTIPOINT ((1 1), (2 2), (3 3), "
+"(2 2))'));\n"
+"-------------------------\n"
+" MULTIPOINT(1 1,2 2,3 3)"
 
 #. Tag: programlisting
 #: reference_editor.xml:1215
@@ -2715,6 +2726,10 @@ msgid ""
 "---------------------------------\n"
 " LINESTRING(0 0,1 1,0 0,1 1,2 2)"
 msgstr ""
+"SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 0 0, "
+"1 1, 2 2)'));\n"
+"---------------------------------\n"
+" LINESTRING(0 0,1 1,0 0,1 1,2 2)"
 
 #. Tag: para
 #: reference_editor.xml:1217
@@ -2722,7 +2737,8 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Collection elements are "
 "processed individually."
-msgstr ""
+msgstr "<emphasis role=\"bold\">例:</emphasis> "
+"ジオメトリコレクションの要素は個別に処理されます。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1220
@@ -2733,6 +2749,11 @@ msgid ""
 "------------------------------------------------------------------------------\n"
 " GEOMETRYCOLLECTION(LINESTRING(1 1,2 2,3 3),POINT(4 4),POINT(4 4),POINT(5 5))"
 msgstr ""
+"SELECT ST_AsText( ST_RemoveRepeatedPoints( 'GEOMETRYCOLLECTION (LINESTRING ("
+"1 1, 2 2, 2 2, 3 3), POINT (4 4), POINT (4 4), POINT (5 5))'));\n"
+"-----------------------------------------------------------------------------"
+"-\n"
+" GEOMETRYCOLLECTION(LINESTRING(1 1,2 2,3 3),POINT(4 4),POINT(4 4),POINT(5 5))"
 
 #. Tag: para
 #: reference_editor.xml:1222
@@ -2740,7 +2761,8 @@ msgstr ""
 msgid ""
 "<emphasis role=\"bold\">Example:</emphasis> Repeated point removal with a "
 "distance tolerance."
-msgstr ""
+msgstr "<emphasis role=\"bold\">例:</emphasis> "
+"許容距離内にある繰り返しポイントの削除。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1225
@@ -2751,6 +2773,10 @@ msgid ""
 "-------------------------\n"
 " LINESTRING(0 0,5 5,2 2)"
 msgstr ""
+"SELECT ST_AsText( ST_RemoveRepeatedPoints( 'LINESTRING (0 0, 0 0, 1 1, 5 5, "
+"1 1, 2 2)', 2));\n"
+"-------------------------\n"
+" LINESTRING(0 0,5 5,2 2)"
 
 #. Tag: refname
 #: reference_editor.xml:1237

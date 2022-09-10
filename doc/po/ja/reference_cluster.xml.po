@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-06 07:55+0000\n"
-"PO-Revision-Date: 2022-06-14 09:50+0000\n"
+"PO-Revision-Date: 2022-09-03 09:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_clusterxml/ja/>\n"
@@ -15,25 +15,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: para
 #: reference_cluster.xml:5
 #, no-c-format
 msgid "These functions implement clustering algorithms for sets of geometries."
-msgstr ""
+msgstr "これらの関数はジオメトリ集合に対するクラスタリングアルゴリズムを実装したもの"
+"です。"
 
 #. Tag: title
 #: reference_cluster.xml:8
 #, no-c-format
 msgid "Clustering Functions"
-msgstr ""
+msgstr "クラスタリング関数"
 
 #. Tag: refname
 #: reference_cluster.xml:12
 #, no-c-format
 msgid "ST_ClusterDBSCAN"
-msgstr ""
+msgstr "ST_ClusterDBSCAN"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:14
@@ -41,7 +42,8 @@ msgstr ""
 msgid ""
 "Window function that returns a cluster id for each input geometry using the "
 "DBSCAN algorithm."
-msgstr ""
+msgstr "入力ジオメトリごとにDBSCANアルゴリズムを使ってクラスタ番号を返すウィンドウ関"
+"数です。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:19
@@ -53,13 +55,18 @@ msgid ""
 "paramdef> <paramdef><type>integer </type> <parameter>minpoints</parameter></"
 "paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
+"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>eps</parameter></"
+"paramdef> <paramdef><type>integer </type> "
+"<parameter>minpoints</parameter></paramdef>"
 
 #. Tag: title
 #: reference_cluster.xml:35 reference_cluster.xml:137 reference_cluster.xml:185
 #: reference_cluster.xml:274
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "説明"
 
 #. Tag: para
 #: reference_cluster.xml:37
@@ -73,12 +80,18 @@ msgid ""
 "\"ST_Distance\">distance</link> (<varname>eps</varname>) and density "
 "(<varname>minpoints</varname>) parameters to construct each cluster."
 msgstr ""
+"<ulink url=\"https://en.wikipedia.org/wiki/DBSCAN\">DBSCAN (ノイズ適用可能な"
+"密度に基づいた空間クラスタリング)</ulink>アルゴリズムの2次元実装に基づいて、"
+"それぞれの入力ジオメトリが入るクラスタの整数識別子を返します。<xref linkend="
+"\"ST_ClusterKMeans\"/>と違って、クラスタ数の指定は求められず、所望する<link "
+"linkend=\"ST_Distance\">距離</link> (<varname>eps</varname>)と密度(<varname>m"
+"inpoints</varname>)をクラスタを構築するためのパラメータとして使います。"
 
 #. Tag: para
 #: reference_cluster.xml:44
 #, no-c-format
 msgid "An input geometry will be added to a cluster if it is either:"
-msgstr ""
+msgstr "入力ジオメトリは次の場合にクラスタに追加されます。"
 
 #. Tag: para
 #: reference_cluster.xml:48
@@ -88,6 +101,10 @@ msgid ""
 "\"ST_Distance\">distance</link> of at least <varname>minpoints</varname> "
 "input geometries (including itself) or"
 msgstr ""
+"「核」ジオメトリは、入力ジオメトリ "
+"(自分を含む)のうち少なくとも<varname>minpoints</varname>個が<varname>eps</"
+"varname>で指定した<link linkend=\"ST_Distance\""
+">距離</link>の範囲内にあるものです。"
 
 #. Tag: para
 #: reference_cluster.xml:53
@@ -96,6 +113,8 @@ msgid ""
 "A \"border\" geometry, that is within <varname>eps</varname> <link linkend="
 "\"ST_Distance\">distance</link> of a core geometry."
 msgstr ""
+"「境界」ジオメトリは、核ジオメトリから<varname>eps</varname>で指定した<link "
+"linkend=\"ST_Distance\">距離</link>の範囲内にあるものです。"
 
 #. Tag: para
 #: reference_cluster.xml:60
@@ -111,6 +130,13 @@ msgid ""
 "clause is included in the window definition, but cluster assignments may "
 "differ from other implementations of the same algorithm."
 msgstr ""
+"境界ジオメトリが<varname>eps</varname>以内に複数の核ジオメトリがあるかも知れ"
+"ないことに注意して下さい。この場合には、どちらに割り当てられても正しく、境界"
+"ジオメトリは、対象クラスタのうちの一つに任意に割り当てられます。これらの場合"
+"には、<varname>minpoints</varname>より少ないジオメトリで正しいクラスタを生成"
+"できます。境界ジオメトリの割り当てが曖昧な時、ウィンドウの定義にORDER BY句が"
+"含まれている場合には、ST_ClusterDBSCANは同じ結果を返しますが、クラスタの割り"
+"当ては同じアルゴリズムの他の実装と異なる可能性があります。"
 
 #. Tag: para
 #: reference_cluster.xml:68
@@ -118,7 +144,7 @@ msgstr ""
 msgid ""
 "Input geometries that do not meet the criteria to join any other cluster "
 "will be assigned a cluster number of NULL."
-msgstr ""
+msgstr "どのクラスタの参加基準にも合わない入力ジオメトリは、番号をNULLとします。"
 
 #. Tag: para
 #: reference_cluster.xml:72 reference_cluster.xml:197
@@ -131,7 +157,7 @@ msgstr "Availability: 2.3.0"
 #: reference_cluster.xml:282
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "例"
 
 #. Tag: para
 #: reference_cluster.xml:77
@@ -139,13 +165,15 @@ msgstr ""
 msgid ""
 "Assigning a cluster number to each polygon within 50 meters of each other. "
 "Require at least 2 polygons per cluster"
-msgstr ""
+msgstr "50メートル以内にある個々のポリゴンへのクラスタ番号の割り当て。少なくともクラ"
+"スタには二つのポリゴンが求められます。"
 
 #. Tag: para
 #: reference_cluster.xml:89
 #, no-c-format
 msgid "within 50 meters at least 2 per cluster. singletons have NULL for cid"
-msgstr ""
+msgstr "少なくともクラスタごとに二つ以上のポリゴンがある50メートル以内のクラスタ。一"
+"つだけならcidはNULL。"
 
 #. Tag: programlisting
 #: reference_cluster.xml:92
@@ -160,6 +188,14 @@ msgid ""
 "            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),\n"
 "           500);"
 msgstr ""
+"SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS "
+"cid\n"
+"FROM boston_polys\n"
+"WHERE name > '' AND building > ''\n"
+"        AND ST_DWithin(geom,\n"
+"        ST_Transform(\n"
+"            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),\n"
+"           500);"
 
 #. Tag: screen
 #: reference_cluster.xml:95
@@ -189,6 +225,29 @@ msgid ""
 " World Trade Center West             |   NULL\n"
 "(20 rows)]]>"
 msgstr ""
+"<![CDATA[                name                 | bucket\n"
+"-------------------------------------+--------\n"
+" Manulife Tower                      |      0\n"
+" Park Lane Seaport I                 |      0\n"
+" Park Lane Seaport II                |      0\n"
+" Renaissance Boston Waterfront Hotel |      0\n"
+" Seaport Boston Hotel                |      0\n"
+" Seaport Hotel & World Trade Center  |      0\n"
+" Waterside Place                     |      0\n"
+" World Trade Center East             |      0\n"
+" 100 Northern Avenue                 |      1\n"
+" 100 Pier 4                          |      1\n"
+" The Institute of Contemporary Art   |      1\n"
+" 101 Seaport                         |      2\n"
+" District Hall                       |      2\n"
+" One Marina Park Drive               |      2\n"
+" Twenty Two Liberty                  |      2\n"
+" Vertex                              |      2\n"
+" Vertex                              |      2\n"
+" Watermark Seaport                   |      2\n"
+" Blue Hills Bank Pavilion            |   NULL\n"
+" World Trade Center West             |   NULL\n"
+"(20 rows)]]>"
 
 #. Tag: para
 #: reference_cluster.xml:103
@@ -196,7 +255,8 @@ msgstr ""
 msgid ""
 "Combining parcels with the same cluster number into a single geometry. This "
 "uses named argument calling"
-msgstr ""
+msgstr "同じクラスタ番号の群を一つのジオメトリに統合します。名前付き引数を使用してい"
+"ます。"
 
 #. Tag: programlisting
 #: reference_cluster.xml:106
@@ -209,6 +269,12 @@ msgid ""
 "    FROM parcels) sq\n"
 "GROUP BY cid;"
 msgstr ""
+"SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS "
+"ids_in_cluster FROM (\n"
+"    SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) "
+"over () AS cid, geom\n"
+"    FROM parcels) sq\n"
+"GROUP BY cid;"
 
 #. Tag: title
 #: reference_cluster.xml:110 reference_cluster.xml:149
@@ -224,19 +290,21 @@ msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
 "\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 
 #. Tag: refname
 #: reference_cluster.xml:122
 #, no-c-format
 msgid "ST_ClusterIntersecting"
-msgstr ""
+msgstr "ST_ClusterIntersecting"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:124
 #, no-c-format
 msgid ""
 "Aggregate function that clusters the input geometries into connected sets."
-msgstr ""
+msgstr "入力ジオメトリを接続関係にある集合にクラスタリングする集約関数です。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:129
@@ -245,6 +313,8 @@ msgid ""
 "<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
 "<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
+"<paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:139
@@ -254,6 +324,8 @@ msgid ""
 "GeometryCollections, where each GeometryCollection represents an "
 "interconnected set of geometries."
 msgstr ""
+"ST_ClusterIntersectingはジオメトリコレクションの配列を返す集約関数です。配列"
+"の要素は、相互接続されるジオメトリの集合を表現します。"
 
 #. Tag: para
 #: reference_cluster.xml:141 reference_cluster.xml:278
@@ -283,6 +355,23 @@ msgid ""
 "-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
 "GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
 msgstr ""
+"WITH testdata AS\n"
+"  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,\n"
+"                       'LINESTRING (5 5, 4 4)'::geometry,\n"
+"                       'LINESTRING (6 6, 7 7)'::geometry,\n"
+"                       'LINESTRING (0 0, -1 -1)'::geometry,\n"
+"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS "
+"geom)\n"
+"\n"
+"SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;\n"
+"\n"
+"-- 結果 --\n"
+"\n"
+"st_astext\n"
+"---------\n"
+"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
+"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
+"GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
 
 #. Tag: para
 #: reference_cluster.xml:150
@@ -290,12 +379,13 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 
 #. Tag: refname
 #: reference_cluster.xml:162
 #, no-c-format
 msgid "ST_ClusterKMeans"
-msgstr ""
+msgstr "ST_ClusterKMeans"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:164
@@ -303,7 +393,8 @@ msgstr ""
 msgid ""
 "Window function that returns a cluster id for each input geometry using the "
 "K-means algorithm."
-msgstr ""
+msgstr "入力ジオメトリごとにk平均法アルゴリズムを使ってクラスタ番号を返すウィンドウ関"
+"数です。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:169
@@ -315,6 +406,11 @@ msgid ""
 "parameter></paramdef> <paramdef><type>float </type> <parameter>max_radius</"
 "parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
+"<paramdef><type>geometry winset </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>integer </type> "
+"<parameter>number_of_clusters</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>max_radius</parameter></paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:187
@@ -326,6 +422,11 @@ msgid ""
 "distance between bounding box centers for 3D geometries. For POINT inputs, M "
 "coordinate will be treated as weight of input and has to be larger than 0."
 msgstr ""
+"入力ジオメトリごとの<ulink url=\"https://en.wikipedia.org/wiki/K-"
+"means_clustering\">K平均法</ulink>のクラスタ番号を返します。クラスタリングに"
+"使われる距離は、2次元ジオメトリでは重心間の距離、3次元ジオメトリではバウンデ"
+"ィングボックスの中心点間の距離です。POINT入力では、M値は入力の重みとして扱わ"
+"れ、0より大きくなければなりません。"
 
 #. Tag: para
 #: reference_cluster.xml:192
@@ -336,24 +437,28 @@ msgid ""
 "output has radius larger than <varname>max_radius</varname>. This is useful "
 "in reachability analysis."
 msgstr ""
+"<varname>max_radius</varname>が設定されている場合には、ST_ClusterKMeansは、出"
+"力クラスタが<varname>max_radius</varname>より半径が大きいクラスタを作らなくな"
+"るので、<varname>k</varname>より多いクラスタを生成します。到達可能性分析に使"
+"います。"
 
 #. Tag: para
 #: reference_cluster.xml:195
 #, no-c-format
 msgid "Enhanced: 3.2.0 Support for <varname>max_radius</varname>"
-msgstr ""
+msgstr "Enhanced: 3.2.0 <varname>max_radius</varname>パラメータに対応しました"
 
 #. Tag: para
 #: reference_cluster.xml:196
 #, no-c-format
 msgid "Enhanced: 3.1.0 Support for 3D geometries and weights"
-msgstr ""
+msgstr "Enhanced: 3.1.0 3次元ジオメトリと重みに対応するようになりました"
 
 #. Tag: para
 #: reference_cluster.xml:202
 #, no-c-format
 msgid "Generate dummy set of parcels for examples:"
-msgstr ""
+msgstr "例としてダミーの区画の集合を生成します。"
 
 #. Tag: programlisting
 #: reference_cluster.xml:203
@@ -368,12 +473,20 @@ msgid ""
 "90)'::geometry,\n"
 "    40, 'endcap=square'),12) As geom;"
 msgstr ""
+"CREATE TABLE parcels AS\n"
+"SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom,\n"
+"('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As "
+"type\n"
+"FROM\n"
+"    ST_Subdivide(ST_Buffer('SRID=3857;LINESTRING(40 100, 98 100, 100 150, 60 "
+"90)'::geometry,\n"
+"    40, 'endcap=square'),12) As geom;"
 
 #. Tag: para
 #: reference_cluster.xml:210
 #, no-c-format
 msgid "Parcels color-coded by cluster number (cid)"
-msgstr ""
+msgstr "クラスタ番号 (cid)による色付けを施した区画"
 
 #. Tag: programlisting
 #: reference_cluster.xml:213
@@ -382,6 +495,8 @@ msgid ""
 "SELECT ST_ClusterKMeans(geom, 3) OVER() AS cid, parcel_id, geom\n"
 "    FROM parcels;"
 msgstr ""
+"SELECT ST_ClusterKMeans(geom, 3) OVER() AS cid, parcel_id, geom\n"
+"    FROM parcels;"
 
 #. Tag: screen
 #: reference_cluster.xml:214
@@ -397,12 +512,21 @@ msgid ""
 "   2 | 006       | 0103000000...\n"
 "   2 | 007       | 0103000000..."
 msgstr ""
+"cid | parcel_id |   geom\n"
+"-----+-----------+---------------\n"
+"   0 | 001       | 0103000000...\n"
+"   0 | 002       | 0103000000...\n"
+"   1 | 003       | 0103000000...\n"
+"   0 | 004       | 0103000000...\n"
+"   1 | 005       | 0103000000...\n"
+"   2 | 006       | 0103000000...\n"
+"   2 | 007       | 0103000000..."
 
 #. Tag: para
 #: reference_cluster.xml:217
 #, no-c-format
 msgid "Partitioning parcel clusters by type:"
-msgstr ""
+msgstr "タイプ別による区画の分割"
 
 #. Tag: programlisting
 #: reference_cluster.xml:218
@@ -412,6 +536,9 @@ msgid ""
 "type\n"
 "    FROM parcels;"
 msgstr ""
+"SELECT ST_ClusterKMeans(geom, 3) over (PARTITION BY type) AS cid, parcel_id, "
+"type\n"
+"    FROM parcels;"
 
 #. Tag: screen
 #: reference_cluster.xml:219
@@ -427,6 +554,15 @@ msgid ""
 "   0 | 002       | residential\n"
 "   2 | 006       | residential"
 msgstr ""
+"cid | parcel_id |    type\n"
+"-----+-----------+-------------\n"
+"   1 | 005       | commercial\n"
+"   1 | 003       | commercial\n"
+"   2 | 007       | commercial\n"
+"   0 | 001       | commercial\n"
+"   1 | 004       | residential\n"
+"   0 | 002       | residential\n"
+"   2 | 006       | residential"
 
 #. Tag: para
 #: reference_cluster.xml:221
@@ -438,6 +574,11 @@ msgid ""
 "\">Kontur Population Data</ulink> that do not span more than 3000 km from "
 "their center:"
 msgstr ""
+"例: 3次元クラスタリングと重み付けを使った、事前集計した地球規模の人口データセ"
+"ットのクラスタリング。<ulink url=\"https://data.humdata.org/dataset/kontur-"
+"population-dataset\">Kontur Population "
+"Data</ulink>に基づいて、中心から3000km以下となる、少なくとも 20 "
+"の地域が識別されます。"
 
 #. Tag: programlisting
 #: reference_cluster.xml:226
@@ -459,6 +600,21 @@ msgid ""
 "from\n"
 "    kontur_population;"
 msgstr ""
+"create table kontur_population_3000km_clusters as\n"
+"select\n"
+"    geom,\n"
+"    ST_ClusterKMeans(\n"
+"        ST_Force4D(\n"
+"            ST_Transform(ST_Force3D(geom), 4978), -- cluster in 3D XYZ CRS\n"
+"            mvalue := population -- set clustering to be weighed by "
+"population\n"
+"        ),\n"
+"        20,                      -- aim to generate at least 20 clusters\n"
+"        max_radius := 3000000    -- but generate more to make each under "
+"3000 km radius\n"
+"    ) over () as cid\n"
+"from\n"
+"    kontur_population;"
 
 #. Tag: para
 #: reference_cluster.xml:232
@@ -469,6 +625,10 @@ msgid ""
 "cluster. There are island clusters that span across the antimeridian. "
 "Cluster edges follow Earth's curvature."
 msgstr ""
+"世界人口を上記仕様でクラスタリングして、46のクラスタを得ました。人口集中地域 "
+"(ニューヨーク、モスクワ)にクラスタの中心が来ます。グリーンランドは一つのクラ"
+"スタです。日付変更線をまたぐクラスタがあります。クラスタのエッジは地球の曲線"
+"に従います。"
 
 #. Tag: para
 #: reference_cluster.xml:245
@@ -478,19 +638,22 @@ msgid ""
 "\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref linkend="
 "\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 msgstr ""
+", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref linkend="
+"\"ST_ClusterWithin\"/>, <xref linkend=\"ST_Subdivide\"/>, <xref linkend="
+"\"ST_Force_3D\"/>, <xref linkend=\"ST_Force_4D\"/>,"
 
 #. Tag: refname
 #: reference_cluster.xml:258
 #, no-c-format
 msgid "ST_ClusterWithin"
-msgstr ""
+msgstr "ST_ClusterWithin"
 
 #. Tag: refpurpose
 #: reference_cluster.xml:260
 #, no-c-format
 msgid ""
 "Aggregate function that clusters the input geometries by separation distance."
-msgstr ""
+msgstr "入力ジオメトリを空間距離でクラスタリングする集約関数です。"
 
 #. Tag: funcprototype
 #: reference_cluster.xml:265
@@ -500,6 +663,9 @@ msgid ""
 "<paramdef><type>geometry set </type> <parameter>g</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
+"<paramdef><type>geometry set </type> <parameter>g</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_cluster.xml:276
@@ -510,6 +676,9 @@ msgid ""
 "geometries separated by no more than the specified distance. (Distances are "
 "Cartesian distances in the units of the SRID.)"
 msgstr ""
+"ST_ClusterWithinはジオメトリコレクションの配列を返す集計関数です。それぞれの"
+"ジオメトリコレクション要素は、指定した距離 "
+"(SRIDの単位によるデカルト距離)以内となるよう分けられたジオメトリの集合です。"
 
 #. Tag: programlisting
 #: reference_cluster.xml:283
@@ -533,6 +702,23 @@ msgid ""
 "-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
 "GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
 msgstr ""
+"WITH testdata AS\n"
+"  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,\n"
+"                       'LINESTRING (5 5, 4 4)'::geometry,\n"
+"                       'LINESTRING (6 6, 7 7)'::geometry,\n"
+"                       'LINESTRING (0 0, -1 -1)'::geometry,\n"
+"                       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS "
+"geom)\n"
+"\n"
+"SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;\n"
+"\n"
+"-- 結果 --\n"
+"\n"
+"st_astext\n"
+"---------\n"
+"GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 "
+"-1),POLYGON((0 0,4 0,4 4,0 4,0 0)))\n"
+"GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))"
 
 #. Tag: para
 #: reference_cluster.xml:287
@@ -541,3 +727,5 @@ msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
 "\"ST_ClusterIntersecting\"/>"
 msgstr ""
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>"

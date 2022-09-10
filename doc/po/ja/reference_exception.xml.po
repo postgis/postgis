@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-09-11 01:55+0000\n"
-"PO-Revision-Date: 2022-01-31 10:53+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_exceptionxml/ja/>\n"
 "Language: ja\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13.1\n"
 
 #. Tag: title
 #: reference_exception.xml:3
@@ -104,15 +104,15 @@ msgstr "例"
 
 #. Tag: programlisting
 #: reference_exception.xml:42
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "UPDATE sometable\n"
 " SET geom =  PostGIS_AddBBox(geom)\n"
 " WHERE PostGIS_HasBBox(geom) = false;"
 msgstr ""
 "UPDATE sometable\n"
-" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE PostGIS_HasBBox(the_geom) = false;"
+" SET geom =  PostGIS_AddBBox(geom)\n"
+" WHERE PostGIS_HasBBox(geom) = false;"
 
 #. Tag: title
 #: reference_exception.xml:47 reference_exception.xml:95
@@ -191,7 +191,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_exception.xml:90
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--This example drops bounding boxes where the cached box is not correct\n"
 "                        --The force to ST_AsBinary before applying Box2D "
@@ -213,12 +213,12 @@ msgstr ""
 "-- ジオメトリテーブルに適用されたBox2Dが\n"
 "-- 常にバウンディングボックスのキャッシュを返すようにします。\n"
 "                        UPDATE sometable\n"
-" SET the_geom =  PostGIS_DropBBox(the_geom)\n"
-" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+" SET geom =  PostGIS_DropBBox(geom)\n"
+" WHERE Not (Box2D(ST_AsBinary(geom)) = Box2D(geom));\n"
 "\n"
 "        UPDATE sometable\n"
-" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
-" WHERE Not PostGIS_HasBBOX(the_geom);"
+" SET geom =  PostGIS_AddBBox(geom)\n"
+" WHERE Not PostGIS_HasBBOX(geom);"
 
 #. Tag: para
 #: reference_exception.xml:97
@@ -265,13 +265,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_exception.xml:131
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT geom\n"
 "FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
 msgstr ""
-"SELECT the_geom\n"
-"FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
+"SELECT geom\n"
+"FROM sometable WHERE PostGIS_HasBBox(geom) = false;"
 
 #. Tag: para
 #: reference_exception.xml:138
