@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-13 19:13+0000\n"
-"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"PO-Revision-Date: 2022-09-12 12:43+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "using_raster_datamanxml/ja/>\n"
@@ -161,7 +161,7 @@ msgstr "サポートされているラスタ書式を印字します。"
 #: using_raster_dataman.xml:46
 #, no-c-format
 msgid "(c|a|d|p) These are mutually exclusive options:"
-msgstr "(c|a|d|p) 相互に排他的なオプションです"
+msgstr "(c|a|d|p) 相互に排他的なオプションです。"
 
 #. Tag: term
 #: using_raster_dataman.xml:51
@@ -189,7 +189,7 @@ msgstr "<term>-a</term>"
 #: using_raster_dataman.xml:62
 #, no-c-format
 msgid "Append raster(s) to an existing table."
-msgstr "既存のテーブルにラスタを追加します。 "
+msgstr "既存のテーブルにラスタを追加します。"
 
 #. Tag: term
 #: using_raster_dataman.xml:69
@@ -1344,9 +1344,9 @@ msgid ""
 "details."
 msgstr ""
 "<varname>scale_y</varname> 地理空間座標とピクセルの間の拡大縮小係数です。これ"
-"は、ラスタカラムのすべてのタイルが同じ<varname>scale_y</varname>を持ち、制約"
-"が適用されている場合のみ出現します。詳細情報については<xref "
-"linkend=\"RT_ST_ScaleY\"/>を参照してください。"
+"は、ラスタカラムのすべてのタイルが同じ<varname>scale_y</varname>を持ち、<varn"
+"ame>scale_y</varname>の制約が適用されている場合のみ出現します。"
+"詳細情報については<xref linkend=\"RT_ST_ScaleY\"/>を参照してください。"
 
 #. Tag: para
 #: using_raster_dataman.xml:427
@@ -1397,7 +1397,8 @@ msgstr ""
 msgid ""
 "<varname>num_bands</varname> The number of bands in each tile of your raster "
 "set. This is the same information as what is provided by"
-msgstr "<varname>num_bands</varname> ラスタ集合のタイルごとのバンド数。"
+msgstr "<varname>num_bands</varname> "
+"ラスタ集合のタイルごとのバンド数。これは次の関数で得られる情報と同じです。"
 
 #. Tag: para
 #: using_raster_dataman.xml:442
@@ -2331,7 +2332,7 @@ msgstr ""
 msgid ""
 "Unlike the python approach, this approach creates the file on your local "
 "computer."
-msgstr "この方法はPythonの場合と違い、ローカル機にファイルが生成されます"
+msgstr "この方法はPythonの場合と違い、ローカル機にファイルが生成されます。"
 
 #. Tag: screen
 #: using_raster_dataman.xml:561
