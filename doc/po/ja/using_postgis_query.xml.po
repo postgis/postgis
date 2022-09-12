@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-05-03 02:58+0000\n"
-"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"PO-Revision-Date: 2022-09-12 12:43+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "using_postgis_queryxml/ja/>\n"
@@ -1136,7 +1136,7 @@ msgstr ""
 #: using_postgis_query.xml:605
 #, no-c-format
 msgid "Create a new table with all the roads within the city of Prince George."
-msgstr "プリンスジョージ市内の全ての道路からなるテーブルを作る"
+msgstr "プリンスジョージ市内の全ての道路からなるテーブルを作ります。"
 
 #. Tag: para
 #: using_postgis_query.xml:610
