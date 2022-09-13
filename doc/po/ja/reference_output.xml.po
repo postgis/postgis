@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-08-27 04:57+0000\n"
-"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"PO-Revision-Date: 2022-09-14 01:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_outputxml/ja/>\n"
@@ -158,7 +158,7 @@ msgstr ""
 #: reference_output.xml:70
 #, no-c-format
 msgid "Enhanced: 3.1.0 support for optional precision parameter."
-msgstr "Enhanced: 3.1.0 精度パラメータ (任意)に対応しました"
+msgstr "Enhanced: 3.1.0 精度パラメータ (任意)に対応しました。"
 
 #. Tag: para
 #: reference_output.xml:71
@@ -1096,7 +1096,7 @@ msgstr ""
 #: reference_output.xml:465 reference_output.xml:502 reference_output.xml:1060
 #, no-c-format
 msgid "<varname>row</varname> row data with at least a geometry column."
-msgstr "<varname>row</varname> 少なくとも一つのジオメトリカラムを持つ行データ"
+msgstr "<varname>row</varname> 少なくとも一つのジオメトリカラムを持つ行データ。"
 
 #. Tag: para
 #: reference_output.xml:466
@@ -1391,7 +1391,7 @@ msgstr "Changed: 3.0.0 レコードの入力に対応しました"
 #: reference_output.xml:611
 #, no-c-format
 msgid "Changed: 3.0.0 output SRID if not EPSG:4326."
-msgstr "Changed: 3.0.0 EPSG:4326以外の場合のSRID出力"
+msgstr "Changed: 3.0.0 EPSG:4326以外の場合のSRID出力。"
 
 #. Tag: para
 #: reference_output.xml:618
@@ -1666,9 +1666,11 @@ msgid ""
 "<varname>maxdecimaldigits</varname> argument may be used to reduce the "
 "maximum number of decimal places used in output (defaults to 15)."
 msgstr ""
-"Geography Markup Language (GML)要素としてジオメトリを返します。versionパラ"
-"メータは、指定する場合には2か3になります。versionパラメータが無い場合には、デ"
-"フォルトは2です。"
+"Geography Markup Language (GML)要素としてジオメトリを返します。versionパラメ"
+"ータは、指定する場合には2か3になります。versionパラメータが無い場合には、デフ"
+"ォルトは2です。<varname>maxdecimaldigits</"
+"varname>引数は出力に使用する小数点以下桁数 "
+"(デフォルトは15です)の最大値を減らすために使えます。"
 
 #. Tag: para
 #: reference_output.xml:710
@@ -1880,8 +1882,8 @@ msgid ""
 "        <gml:upperCorner>20 10</gml:upperCorner>\n"
 "</gml:Envelope>]]>"
 msgstr ""
-"-- エンベロープ出力 (32)、座標入れ替え (経度緯度を緯度経度に)、Long CRS(1)\n"
-" = 32 | 16 | 1 = 49 --\n"
+"-- エンベロープ出力 (32)、(経度緯度を緯度経度に)座標入れ替え (16)、長いCRS "
+"(1) = 32 | 16 | 1 = 49 --\n"
 "<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 "
 "20)',4326), 5, 49);\n"
 "        st_asgml\n"
@@ -2942,10 +2944,10 @@ msgid ""
 "md\">compressed binary format</ulink> with a focus on minimizing the size of "
 "the output."
 msgstr ""
-"TWKB (Tiny Well-Known Binary) 書式としてジオメトリを返します。\n"
-"TWKBは、出力サイズを最小化することに焦点を当てた<ulink url=\"https://github."
-"com/TWKB/Specification/blob/master/twkb.md\">compressed binary format</"
-"ulink> (圧縮バイナリ書式)です。"
+"TWKB (Tiny Well-Known Binary) 書式としてジオメトリを返します。TWKBは、"
+"出力サイズを最小化することに焦点を当てた<ulink url=\"https://github.com/TWKB/"
+"Specification/blob/master/twkb.md\">compressed binary format</ulink> "
+"(圧縮バイナリ書式)です。"
 
 #. Tag: para
 #: reference_output.xml:1166
@@ -3038,9 +3040,9 @@ msgid ""
 "desired geometries and objects first, using \"array_agg()\", then call the "
 "appropriate TWKB function."
 msgstr ""
-" 識別子を含むTWKBオブジェクトの集計を生成するには、まず、\"array_agg()\"を"
-"使って求めるジオメトリとオブジェクトを集計して、その後に適切なTWKB関数を呼ん"
-"でいます。"
+"識別子を含むTWKBオブジェクトの集計を生成するには、まず、\"array_agg()"
+"\"を使って求めるジオメトリとオブジェクトを集計して"
+"、その後に適切なTWKB関数を呼んでいます。"
 
 #. Tag: programlisting
 #: reference_output.xml:1183
@@ -3078,9 +3080,8 @@ msgstr "ST_AsX3D"
 msgid ""
 "Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2-"
 "X3DEncodings-XML"
-msgstr ""
-"ジオメトリをX3Dノード要素書式　(ISO-IEC-19776-1.2-X3DEncodings-XML)で返しま"
-"す。"
+msgstr "ジオメトリをX3Dノード要素書式 (ISO-IEC-19776-1.2-X3DEncodings-"
+"XML)で返します。"
 
 #. Tag: funcprototype
 #: reference_output.xml:1202
@@ -3190,15 +3191,16 @@ msgid ""
 "default of <code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</"
 "code> use <code>(2 + 1)</code> = <code>3</code>"
 msgstr ""
-"2: GeoSpatial GeoCoordinates内への座標出力。WGS 84経度緯度 (SRID: 4326)でない"
-"場合にエラーが投げられます。現在はGeoCoordinate型のみ対応します。\n"
+"2: GeoSpatial GeoCoordinates内への座標出力。WGS 84経度緯度 (SRID: "
+"4326)でない場合にエラーが投げられます。現在はGeoCoordinate型のみ対応します。"
 "<ulink url=\"http://www.web3d.org/documents/specifications/19775-1/V3.2/"
 "Part01/components/geodata.html#Specifyingaspatialreference\">X3D specs "
-"specifying a spatial reference system.</ulink>を参照して下さい。デフォルト出"
-"力は<code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"'</code>"
-"となります。X3Dのデフォルトである<code>GeoCoordinate geoSystem='\"GD\" "
-"\"WE\" \"latitude_first\"'</code>とするには、<code>(2 + 1)</code> = <code>3</"
-"code>とします。"
+"specifying a spatial reference system.</ulink>を参照して下さい。"
+"デフォルト出力は<code>GeoCoordinate geoSystem='\"GD\" \"WE\" "
+"\"longitude_first\"'</code>となります。"
+"X3Dのデフォルトである<code>GeoCoordinate geoSystem='\"GD\" \"WE\" "
+"\"latitude_first\"'</code>とするには、<code>(2 + 1)</code> = "
+"<code>3</code>とします。"
 
 #. Tag: entry
 #: reference_output.xml:1243
