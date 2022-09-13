@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"PO-Revision-Date: 2022-09-14 01:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_processingxml/ja/>\n"
@@ -1008,8 +1008,7 @@ msgstr "ST_ChaikinSmoothing"
 #: reference_processing.xml:495
 #, no-c-format
 msgid "Returns a smoothed version of a geometry, using the Chaikin algorithm"
-msgstr ""
-" チャイキンのアルゴリズムを使って、与えられたジオメトリの平滑化されたものを返"
+msgstr "チャイキンのアルゴリズムを使って、与えられたジオメトリの平滑化されたものを返"
 "します。"
 
 #. Tag: funcprototype
@@ -1244,7 +1243,7 @@ msgid ""
 "geometries use <xref linkend=\"ST_Collect\"/> (e.g. "
 "<code>ST_ConcaveHull( ST_Collect( geom ), 0.80)</code>."
 msgstr ""
-"これは集約関数ではありません。ジオメトリ集合の凹包の計算にはxref linkend="
+"これは集約関数ではありません。ジオメトリ集合の凹包の計算には<xref linkend="
 "\"ST_Collect\"/>を使います (例 <code>ST_ConcaveHull( ST_Collect( geom ), 0."
 "80)</code>)。"
 
@@ -4725,7 +4724,7 @@ msgstr ""
 #: reference_processing.xml:2298
 #, no-c-format
 msgid "Points overlaid on top of Voronoi diagram"
-msgstr "Points overlaid on top of Voronoi diagram"
+msgstr "ボロノイ図の上にポイントを置いた図"
 
 #. Tag: programlisting
 #: reference_processing.xml:2301
