@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"PO-Revision-Date: 2022-09-14 01:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -418,8 +418,8 @@ msgid ""
 "The <function>ST_Contains</function> predicate returns <varname>FALSE</"
 "varname> in the following situations:"
 msgstr ""
-"次に示す図全てで、<function>ST_Contains</function>は<function>FALSE</function"
-">を返します。"
+"次に示す図全てで、<function>ST_Contains</function>は<varname>FALSE</varname>"
+"を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:194
@@ -1012,14 +1012,12 @@ msgid ""
 "two geometries must not equal either of the source geometries. Otherwise, it "
 "returns <varname>false</varname>."
 msgstr ""
-"与えられたジオメトリ表現が「空間的にクロスしている」場合には<varname>TRUE</va"
-"rname>を返します。\\\n"
-"\n"
-"'='よりも「よりよい」答を得るために使います。空間的に同じということは、ST_Wit"
-"hin(A,B) = trueかつST_Within(B,A) = trueとなります。また、ポイントの順序が違"
-"っても同じジオメトリ構造ならtrueとなります。"
-"構成ポイントの順序の確認にはST_OrderingEqualsを使用します (ST_OrderingEquals"
-"はポイントのオーダが同じかを確認するよりも若干厳しくなります)。"
+"二つのジオメトリを比較して、共有部が「空間的にクロスしている」場合には<varnam"
+"e>true</varname>を返します。二つのジオメトリの内部の全部でない一部が共有され"
+"ている、という意味です。二つのジオメトリの内部の共有部は空であってはならず、"
+"二つの入力ジオメトリの最大次元より小さい次元でなければなりません。さらに、二"
+"つのジオメトリの共有部は入力ジオメトリの一方とでも同じであってなりません。"
+"これらの条件に合わない場合には <varname>false</varname>を返します。"
 
 #. Tag: para
 #: reference_relationship.xml:465
@@ -1227,7 +1225,7 @@ msgstr ""
 #: reference_relationship.xml:632
 #, no-c-format
 msgid "This function call does not use indexes"
-msgstr "この関数はインデクスを使用しません。"
+msgstr "この関数はインデックスを使用しません。"
 
 #. Tag: para
 #: reference_relationship.xml:639
