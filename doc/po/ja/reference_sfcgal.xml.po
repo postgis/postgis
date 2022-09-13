@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-07-14 02:04+0000\n"
-"PO-Revision-Date: 2022-09-08 03:55+0000\n"
+"PO-Revision-Date: 2022-09-14 01:55+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_sfcgalxml/ja/>\n"
@@ -417,7 +417,7 @@ msgstr ""
 #: reference_sfcgal.xml:217
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is shown semi-transparent"
-msgstr "元の3次元ジオメトリを重ねたもの。geom2は半透明で示しています。"
+msgstr "元の3次元ジオメトリを重ねたものでgeom2は半透明で表示"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:222
@@ -515,7 +515,7 @@ msgstr ""
 msgid ""
 "Intersection of 2 solids that result in volumetric intersection is also a "
 "solid (ST_Dimension returns 3)"
-msgstr "二つの立体の共通部分もまた立体です (ST_Dimensionで3を返します)。"
+msgstr "二つの立体の共通部分もまた立体です (ST_Dimensionで3を返します)"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:245
@@ -617,7 +617,7 @@ msgstr ""
 #: reference_sfcgal.xml:271
 #, no-c-format
 msgid "Returns that part of geom1 that is not part of geom2."
-msgstr "geom2に含まれないgeom1の一部を返します"
+msgstr "geom2に含まれないgeom1の一部を返します。"
 
 #. Tag: para
 #: reference_sfcgal.xml:272 reference_sfcgal.xml:352 reference_sfcgal.xml:523
@@ -1502,8 +1502,7 @@ msgstr "ポリゴンとマルチポイントとのミンコフスキー和"
 #, no-c-format
 msgid ""
 "After summing: polygon is duplicated and translated to position of points"
-msgstr "ミンコフスキー和実行後: "
-"ポリゴンが二つになり、ポイントの位置に移動しています。"
+msgstr "ミンコフスキー和実行後: 重複ポリゴンが生成されポイントの位置に移動"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:937
