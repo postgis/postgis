@@ -59,11 +59,12 @@ SHLIB_LINK = @SHLIB_LINK@ @PCRE_LDFLAGS@
 EXTRA_CLEAN = sql/ usps-st-city-name.txt mk-st-regexp mk-city-regex test_main
 REGRESS = test-init-extensions test-parseaddress test-standardize_address_1 test-standardize_address_2
 
+sql:
+	mkdir -p $@
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
-sql/%.sql: %.sql.in
-	mkdir -p sql
+sql/%.sql: %.sql.in | sql
 	$(SQLPP) -I@buiddir@/../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
@@ -72,18 +73,15 @@ sql/%.sql: %.sql.in
 		| $(PERL) -lpe "s'@EXTVERSION@'$(EXTVERSION)'g" \
 		> $@
 
-sql/address_standardizer_pre.sql: $(EXTENSION_SCRIPTS)
-	mkdir -p sql
+sql/address_standardizer_pre.sql: $(EXTENSION_SCRIPTS) | sql
 	cat $^ > $@
 
-sql/address_standardizer--$(EXTVERSION).sql: sql/address_standardizer_pre.sql ../../utils/create_or_replace_to_create.pl
-	mkdir -p sql
+sql/address_standardizer--$(EXTVERSION).sql: sql/address_standardizer_pre.sql ../../utils/create_or_replace_to_create.pl | sql
 	cat $< \
 		| $(PERL) @top_srcdir@/utils/create_or_replace_to_create.pl sql/address_standardizer_pre.sql \
 		> $@
 
-sql/address_standardizer.sql: sql/address_standardizer_pre.sql ../../utils/create_or_replace_to_create.pl
-	mkdir -p sql
+sql/address_standardizer.sql: sql/address_standardizer_pre.sql ../../utils/create_or_replace_to_create.pl | sql
 	cat $< \
 		| $(PERL) @top_srcdir@/utils/create_or_replace_to_create.pl sql/address_standardizer_pre.sql \
 		> $@
@@ -91,39 +89,32 @@ sql/address_standardizer.sql: sql/address_standardizer_pre.sql ../../utils/creat
 EXTENSION_UPGRADE_SCRIPTS = sql/address_standardizer_functions.sql
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
-sql/$(EXTENSION)--1.0--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
-	mkdir -p sql
+sql/$(EXTENSION)--1.0--$(EXTVERSION).sql: sql/address_standardizer_functions.sql | sql
 	cat $^ > $@
 
-sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
-	mkdir -p sql
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer_functions.sql | sql
 	cat $^ > $@
 
 # build us data extension
-sql/$(EXTENSION)_data_us--$(EXTVERSION).sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in
-	mkdir -p sql
+sql/$(EXTENSION)_data_us--$(EXTVERSION).sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in | sql
 	cat $^ > $@
 
-sql/$(EXTENSION)_data_us.sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in
-	mkdir -p sql
+sql/$(EXTENSION)_data_us.sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in | sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to next cludge for dev upgrading)
-sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
-	mkdir -p sql
+sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql | sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
-sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
-	mkdir -p sql
+sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql | sql
 	cat $^ > $@
 
 
 sql/$(EXTENSION)--ANY--$(EXTVERSION).sql: $(EXTENSION_UPGRADE_SCRIPTS)
 	cat $(EXTENSION_UPGRADE_SCRIPTS) > $@
 
-sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
-	mkdir -p sql
+sql/$(EXTENSION)_data_us--ANY--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql | sql
 	cat $^ > $@
 
 include @srcdir@/../upgrade-paths-rules.mk
