@@ -203,6 +203,9 @@ include $(PGXS)
 PERL = @PERL@
 
 srcdir = @srcdir@
+top_builddir = @top_builddir@
+abs_topbuilddir=$(abspath $(top_builddir))
+
 VPATH = $(srcdir)
 
 install: all installdirs

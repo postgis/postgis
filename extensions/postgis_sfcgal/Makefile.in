@@ -105,3 +105,6 @@ include $(PGXS)
 PERL = @PERL@
 
 VPATH = @srcdir@
+
+top_builddir = @top_builddir@
+abs_topbuilddir=$(abspath $(top_builddir))
