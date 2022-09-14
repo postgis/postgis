@@ -1,5 +1,5 @@
 PostGIS 3.2.4
-2022/09/10
+2022/09/xx
 
 * Bug Fixes *
   - #5227, typo in ST_LineLocatePoint error message (Sandro Santilli)
