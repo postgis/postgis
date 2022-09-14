@@ -21,13 +21,7 @@ install-upgrade-paths: tag-as-any
 	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
 	$(INSTALL_DATA) "sql/$(TAG_UPGRADE)" "$(EXTDIR)/$(TAG_UPGRADE)"; \
 	ln -fs "$(TAG_UPGRADE)" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--ANY.sql; \
-  : TODO: stop installing the "next" scripts; \
-	ln -fs "$(TAG_UPGRADE)" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql; \
-	ln -fs "$(TAG_UPGRADE)" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)next--ANY.sql; \
-	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-    : TODO: delegate this to an admin script; \
-	  ln -fs "$(TAG_UPGRADE)" $(EXTDIR)/$(EXTENSION)--$${OLD_VERSION}--ANY.sql; \
-	done
+	$(abs_topbuilddir)/loader/postgis install-extension-upgrades $(UPGRADEABLE_VERSIONS)
 
 tag-as-any: sql/$(TAG_UPGRADE)
 
