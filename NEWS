@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Stop generating SQL when the preprocessor fails (Sandro Santilli)
  - Correct additional topology debug formats for 64-bit values (Sandro Santilli)
  - Fix topology debug formatting for 64-bit counts and IDs (Sandro Santilli)
  - Ship the DE-9IM figures as PNG for PDF builds (Sandro Santilli)
