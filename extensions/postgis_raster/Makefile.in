@@ -93,7 +93,8 @@ sql/rtpostgis.sql: sql/rtpostgis_for_extension.sql | sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 sql/rtpostgis_for_extension.sql: ../../raster/rt_pg/rtpostgis.sql.in ../../postgis_revision.h | sql
-	$(SQLPP) -I@builddir@/../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(SQLPP) -I@builddir@/../../postgis/ -I../../ $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
 sql/rtpostgis_upgrade.sql: sql/rtpostgis_upgrade_for_extension.sql | sql

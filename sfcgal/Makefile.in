@@ -122,7 +122,8 @@ $(SQL_OBJS): ../postgis_config.h ../postgis_revision.h
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I@top_builddir@/postgis $< | grep -v '^#' | \
+	$(SQLPP) -I@top_builddir@/postgis $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
 sfcgal_upgrade.sql.in: sfcgal.sql ../utils/create_upgrade.pl

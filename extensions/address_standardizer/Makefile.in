@@ -65,7 +65,8 @@ sql:
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
 sql/%.sql: %.sql.in | sql
-	$(SQLPP) -I@buiddir@/../libpgcommon $< | grep -v '^#' | \
+	$(SQLPP) -I@buiddir@/../libpgcommon $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
 
 %.control: %.control.in Makefile

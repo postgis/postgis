@@ -135,7 +135,8 @@ sql/postgis_upgrade_for_extension.sql.in: sql/postgis_for_extension.sql ../../ut
 	$(PERL) @top_srcdir@/utils/create_upgrade.pl $< > $@
 
 sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in ../../postgis_revision.h | sql
-	$(SQLPP) -I@builddir@/../../postgis $< | grep -v '^#' | \
+	$(SQLPP) -I@builddir@/../../postgis $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe \
 		"s'MODULE_PATHNAME'\$(MODULEPATH)'g" \
 		| $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@

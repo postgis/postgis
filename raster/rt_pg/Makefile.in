@@ -125,7 +125,8 @@ endif
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I@top_builddir@/postgis/ $< | grep -v '^#' | \
+	$(SQLPP) -I@top_builddir@/postgis/ $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
 
 ../../liblwgeom/.libs/liblwgeom.a:
