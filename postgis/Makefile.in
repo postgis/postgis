@@ -232,8 +232,10 @@ endif
 # and adding the version number
 # replace @extschema@. with nothing, this is only used as placeholder for extension install
 %.sql: %.sql.in
-	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
+	$(SQLPP) -I../libpgcommon $< > $@.tmp
+	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g;s'@extschema@\.''g" > $@
+	rm -f $@.tmp
 
 #this is redundant but trying to fold in with extension just hangs
 postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl

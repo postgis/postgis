@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Stop generating SQL when the preprocessor fails (Sandro Santilli)
  - #5251, Remove the GEOS-dependent polygon case from the LineMerge regression (Regina Obe)
  - #5260, Keep the GEOS validity regression stable across diagnostic precision changes (Regina Obe)
  - Correct additional topology debug formats for 64-bit values (Sandro Santilli)
