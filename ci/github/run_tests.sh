@@ -16,7 +16,5 @@ export CUNIT_VALGRIND_FLAGS="--leak-check=full --error-exitcode=1"
 
 # Standard build
 ./configure CFLAGS="${CFLAGS_STD}" LDFLAGS="${LDFLAGS_STD}"
-#bash ./ci/github/logbt --
-make -j
-#bash ./ci/github/logbt \ --
-make check RUNTESTFLAGS=--verbose
+bash ./ci/github/logbt -- make -j
+bash ./ci/github/logbt -- make check "RUNTESTFLAGS=--verbose"
