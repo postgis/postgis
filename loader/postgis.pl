@@ -70,14 +70,14 @@ sub install_upgrade_from
 
 		#print " EXTENSION: [${extname}]\n";
 
-		# TODO: if the target is before 3.3.0 we need to symlink
-		#       ${extname}--ANY--${to} to ${extname}--${from}--${to}
+		die "File ${EXTDIR}/${extname}--TEMPLATED--TO--ANY.sql is missing"
+			unless -f "${EXTDIR}/${extname}--TEMPLATED-TO-ANY.sql";
 
 		my $shcmd = "ln -fvs '${extname}--TEMPLATED--TO--ANY.sql' '${EXTDIR}/${extname}--${from}--ANY.sql'";
 		#print " CMD: ${shcmd}\n";
 		my $rv = system($shcmd);
 		if ( $rv ) {
-			die "Error encountered running: $cmd: $!";
+			die "Error encountered running: $shcmd: $!";
 		}
 
 	}
