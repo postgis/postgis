@@ -71,7 +71,7 @@ sub install_upgrade_from
 		#print " EXTENSION: [${extname}]\n";
 
 		die "File ${EXTDIR}/${extname}--TEMPLATED--TO--ANY.sql is missing"
-			unless -f "${EXTDIR}/${extname}--TEMPLATED-TO-ANY.sql";
+			unless -f "${EXTDIR}/${extname}--TEMPLATED--TO--ANY.sql";
 
 		my $shcmd = "ln -fvs '${extname}--TEMPLATED--TO--ANY.sql' '${EXTDIR}/${extname}--${from}--ANY.sql'";
 		#print " CMD: ${shcmd}\n";
