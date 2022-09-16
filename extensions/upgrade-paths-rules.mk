@@ -2,6 +2,8 @@ EXTDIR=$(DESTDIR)$(datadir)/$(datamoduledir)
 
 TAG_UPGRADE=$(EXTENSION)--TEMPLATED--TO--ANY.sql
 
+PG_SHAREDIR=$(shell $(PG_CONFIG) --sharedir)
+
 install: install-upgrade-paths
 
 # The "next" lines are a cludge to allow upgrading between different
@@ -21,7 +23,11 @@ install-upgrade-paths: tag-as-any
 	$(INSTALL_DATA) sql/$${tpl} "$(EXTDIR)/$${tpl}"; \
 	$(INSTALL_DATA) "sql/$(TAG_UPGRADE)" "$(EXTDIR)/$(TAG_UPGRADE)"; \
 	ln -fs "$(TAG_UPGRADE)" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--ANY.sql; \
-	$(abs_topbuilddir)/loader/postgis install-extension-upgrades $(UPGRADEABLE_VERSIONS)
+	$(abs_topbuilddir)/loader/postgis \
+	$(abs_topbuilddir)/loader/postgis \
+		install-extension-upgrades \
+		--pg_sharedir $(PG_SHAREDIR) \
+		$(UPGRADEABLE_VERSIONS)
 
 all: sql/$(TAG_UPGRADE)
 
