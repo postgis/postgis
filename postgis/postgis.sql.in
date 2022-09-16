@@ -3055,29 +3055,24 @@ BEGIN
 			-- force an update regardless if at target version, no downgrade allowed
 			IF (SELECT usesuper FROM pg_user WHERE usename = CURRENT_USER)
 						AND pg_catalog.substring(target_version, '[0-9]+\.[0-9]+\.[0-9]+')
-								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+') THEN
-					sql = format(
-						'UPDATE pg_catalog.pg_extension SET extversion = ''ANY'' WHERE extname = %1$L;'
-						'ALTER EXTENSION %1$I UPDATE TO %2$I',
-						rec.name, target_version
+								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+')
+			THEN
+				sql = format(
+					'UPDATE pg_catalog.pg_extension SET extversion = ''ANY'' WHERE extname = %1$L;'
+					'ALTER EXTENSION %1$I UPDATE TO %2$I',
+					rec.name, target_version
 				);
 			-- sandboxed users do standard upgrade
-			ELSIF pg_catalog.substring(target_version, '[0-9]+\.[0-9]+\.[0-9]+')
-								>= pg_catalog.substring(rec.installed_version, '[0-9]+\.[0-9]+\.[0-9]+') THEN
+			ELSE
 				sql = format(
 				'ALTER EXTENSION %1$I UPDATE TO %2$I',
 				rec.name, target_version
 				);
 			END IF;
-			IF sql > '' THEN
-				RAISE NOTICE 'Updating extension % %',
-					rec.name, rec.installed_version;
-				RAISE DEBUG '%', sql;
-				EXECUTE sql;
-			ELSE
-				RAISE NOTICE 'Downgrade % from % to % not allowed',
-						rec.name, rec.installed_version, target_version;
-			END IF;
+			RAISE NOTICE 'Updating extension % %',
+				rec.name, rec.installed_version;
+			RAISE DEBUG '%', sql;
+			EXECUTE sql;
 		END IF; --}
 
 	END LOOP; --}
