@@ -105,6 +105,7 @@ endif
 	$(SQLPP) -I@top_builddir@/postgis $< > $@.tmp
 	grep -v '^#' $@.tmp | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$(MODULEPATH)'g" > $@
+	rm $@.tmp
 
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains

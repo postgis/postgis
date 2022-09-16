@@ -140,6 +140,7 @@ sql/postgis_for_extension.sql: ../../postgis/postgis.sql.in ../../postgis_revisi
 	$(PERL) -lpe \
 		"s'MODULE_PATHNAME'\$(MODULEPATH)'g" \
 		| $(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' > $@
+	rm $@.tmp
 
 sql/postgis_upgrade.sql: sql/postgis_upgrade_for_extension.sql | sql
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
