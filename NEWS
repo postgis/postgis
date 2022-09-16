@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Exercise mixed empty members in multipolygon garden tests (Regina Obe)
  - Generate aggregate support XML without reading its previous output (Sandro Santilli)
  - Ship the DE-9IM figures as PNG for PDF builds (Sandro Santilli)
  - Find PDF figures in the build and source directories (Sandro Santilli)
