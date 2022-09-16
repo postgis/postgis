@@ -8,9 +8,9 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>3.3.0</xsl:variable>
+	<xsl:variable name='testversion'>3.4.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable ST_DumpPoints ST_DumpSegments ST_SnapToGrid</xsl:variable>
 	<!--This is just a place holder to state functions not supported or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
@@ -244,6 +244,10 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 
 		<pgis:gset ID="Empty Point" GeometryType="POINT" createtable="false">
 		(SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom)
+		</pgis:gset>
+
+		<pgis:gset ID='MULTIPOLYGON with Empty' GeometryType='MULTIPOLYGON'>
+		(SELECT ST_GeomFromText('MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)', 4326) As the_geom )
 		</pgis:gset>
 
 		<pgis:gset ID="Empty Polygon" GeometryType="POLYGON" createtable="false">

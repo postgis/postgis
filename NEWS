@@ -3,6 +3,7 @@ PostGIS 3.3.11
 
 * Bug Fixes and Enhancements *
 
+ - Exercise nested empty polygons in the garden tests (Regina Obe)
  - Correct the topology manual typo (Sandro Santilli)
  - Use the ST_ShiftLongitude identifier consistently in the manual (Regina Obe)
  - Correct the topology import command in the manual page (Sandro Santilli)
