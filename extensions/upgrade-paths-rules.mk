@@ -25,6 +25,7 @@ install-upgrade-paths: tag-as-any
 	ln -fs "$(TAG_UPGRADE)" $(EXTDIR)/$(EXTENSION)--$(EXTVERSION)--ANY.sql; \
 	$(abs_topbuilddir)/loader/postgis \
 		install-extension-upgrades \
+		--extension $(EXTENSION) \
 		--pg_sharedir $(PG_SHAREDIR) \
 		$(UPGRADEABLE_VERSIONS)
 

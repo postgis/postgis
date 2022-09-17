@@ -21,7 +21,7 @@ Commands:
   enable <database>  enable PostGIS in given database
   upgrade <database> upgrade PostGIS in given database
   status <database>  print PostGIS status in given database
-  install-extension-upgrades [--pg_sharedir <dir>] [<from>...]
+  install-extension-upgrades [--pg_sharedir <dir>] [--extension <name>] [<from>...]
 		Ensure files required to upgrade PostGIS from
 		the given version are installed on the system.
 		The <from> arguments may be either version numbers
@@ -31,28 +31,36 @@ Commands:
 
 }
 
+my %SUPPORTED_EXTENSIONS = (
+	'address_standardizer' => 1,
+	'postgis' => 1,
+	'postgis_raster' => 1,
+	'postgis_sfcgal' => 1,
+	'postgis_tiger_geocoder' => 1,
+	'postgis_topology' => 1
+);
+
+
 sub install_upgrade_from
 {
-	my ( $SHAREDIR, $from ) = @_;
+	my ( $SHAREDIR, $EXTENSION, $from ) = @_;
 
 	#print "SHAREDIR: $SHAREDIR\n";
 	#print "FROM: $from\n";
 	die "Please specify a sharedir and a version to install upgrade support for.\n"
 		unless $from;
 
-	my %supported_extension = (
-		'postgis' => 1,
-		'postgis_raster' => 1,
-		'postgis_sfcgal' => 1,
-		'postgis_tiger_geocoder' => 1,
-		'postgis_topology' => 1
-	);
-
 	# sanify ${from}
 	die "'${from}': invalid version, only 3 dot-separated numbers optionally followed by alphanumeric string are allowed\n"
 		unless $from =~ /^[0-9]*\.[0-9]*\.[0-9]*[a-z1-9]*/;
 
 	# Reserver versions
+	my %supported_extension = %SUPPORTED_EXTENSIONS;
+	if ( defined($EXTENSION) ) {
+		%supported_extension = (
+			$EXTENSION => 1
+		)
+	}
 
 	my $EXTDIR = ${SHAREDIR} . '/extension';
 
@@ -87,7 +95,7 @@ sub install_upgrade_from
 
 sub install_upgrade_from_available
 {
-	my ($SHAREDIR) = @_;
+	my ($SHAREDIR, $EXTENSION) = @_;
 	my $EXTDIR = ${SHAREDIR} . '/extension';
 
 	#print "EXTDIR: ${EXTDIR}\n";
@@ -100,7 +108,7 @@ sub install_upgrade_from_available
 		my $ver = $1;
 		next if $ver eq 'unpackaged'; # we don't want to install upgrade from unpackaged
 		print "Found version $ver\n";
-		return $rv if my $rv = install_upgrade_from $SHAREDIR, $ver;
+		return $rv if my $rv = install_upgrade_from $SHAREDIR, $EXTENSION, $ver;
 		#return $rv if $rv; # first failure aborts all
 	}
 	closedir($d);
@@ -113,6 +121,7 @@ sub install_extension_upgrades
 	my $DEFSHAREDIR = `pg_config --sharedir`;
 	chop($DEFSHAREDIR);
 	my $SHAREDIR = ${DEFSHAREDIR};
+	my $EXTENSION;
 
 	my @ver;
 
@@ -125,11 +134,19 @@ sub install_extension_upgrades
 			die "$SHAREDIR is not a directory" unless -d ${SHAREDIR};
 			next;
 		}
+		elsif ( $_[$i] eq '--extension' )
+		{
+			$i++ < @_ - 1 || die '--extension requires an argument';
+			$EXTENSION = $_[$i];
+			die "$EXTENSION is not a supported extension"
+				unless ( exists( $SUPPORTED_EXTENSIONS{$EXTENSION} ) );
+			next;
+		}
 
 		push @ver, $_[$i];
 	}
 
-	print "Installation target: ${SHAREDIR}\n";
+	print "Installation target: ${SHAREDIR} ${EXTENSION}\n";
 
 	if ( 0 == @ver )
 	{
@@ -142,9 +159,9 @@ sub install_extension_upgrades
 	{
 		my $v = $_;
 		if ( -d $v ) {
-			install_upgrade_from_available($SHAREDIR, $v);
+			install_upgrade_from_available($SHAREDIR, ${EXTENSION}, $v);
 		} else {
-			install_upgrade_from($SHAREDIR, $v);
+			install_upgrade_from($SHAREDIR, ${EXTENSION}, $v);
 		}
 	}
 
