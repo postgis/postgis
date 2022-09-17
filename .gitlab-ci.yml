@@ -4,7 +4,7 @@
   before_script:
     - apt-get update -qq && apt-get install -y
         bison flex
-        postgresql-13 postgresql-server-dev-13
+        postgresql-14 postgresql-server-dev-14
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
         libproj-dev libgdal-dev libgeos-dev libjson-c-dev
@@ -34,9 +34,9 @@
     - ${SRCDIR}/utils/check_distclean.sh
 
 test:
-  image: debian:bullseye
+  image: debian:bookworm
   <<: *build_definition
 
 test32:
-  image: i386/debian:bullseye
+  image: i386/debian:bookworm
   <<: *build_definition
