@@ -240,6 +240,7 @@ psql -XtAc "
 	WHERE name = 'postgis'
 " template1
 `;
+chop $defextver;
 
 my $dbcount = @dblist;
 
