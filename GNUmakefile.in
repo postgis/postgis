@@ -85,6 +85,10 @@ installcheck-upgrade-byfunc:
 distclean: distclean-local
 
 distclean-local: clean-local
+	if test -z "@RASTER@"; then \
+		$(MAKE) -C raster/rt_pg distclean && \
+		  rm -f raster/Makefile extensions/postgis_raster/Makefile; \
+	fi
 	rm -Rf autom4te.cache
 	rm -f GNUmakefile
 	rm -f config.log config.cache config.status

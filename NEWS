@@ -3,6 +3,7 @@ PostGIS 3.2.11
 
 * Bug Fixes *
 
+ - Clean generated raster Makefiles when raster is disabled (Sandro Santilli)
  - Update TIGER geocoder installation instructions and the GEOS link (Regina Obe)
  - Release temporary allocations in the shapefile loader and dumper (Laurențiu Nicola)
  - #5605, Normalize buffer regression output across GEOS versions (Regina Obe)
