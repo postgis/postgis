@@ -54,25 +54,31 @@ sub install_upgrade_from
 	die "'${from}': invalid version, only 3 dot-separated numbers optionally followed by alphanumeric string are allowed\n"
 		unless $from =~ /^[0-9]*\.[0-9]*\.[0-9]*[a-z1-9]*/;
 
-	# Reserver versions
-	my %supported_extension = %SUPPORTED_EXTENSIONS;
+	# extension to process
+	my %extensions = %SUPPORTED_EXTENSIONS;
+	my $glob = "postgis*.control";
+
 	if ( defined($EXTENSION) ) {
-		%supported_extension = (
+		%extensions = (
 			$EXTENSION => 1
-		)
+		);
+		$glob = $EXTENSION;
 	}
 
 	my $EXTDIR = ${SHAREDIR} . '/extension';
 
-	#for ls postgis*.control
-	while (my $cfile = glob("${EXTDIR}/postgis*.control")) {
+	while (my $cfile = glob("${EXTDIR}/${glob}")) {
 		# Do stuff
 		#print " CFILE: ${cfile}\n";
 		my $extname = basename($cfile, '.control');
 
-		unless ( exists( $supported_extension{$extname} ) )
+		unless ( exists( $extensions{$extname} ) )
 		{
-			print STDERR "NOTICE: extension [${extname}] is not a core PostGIS extension\n";
+			if ( defined($EXTENSION) )  {
+				print STDERR "ERROR: glob [${glob}] matched unrequested extension [${extname}]\n";
+			} else {
+				print STDERR "NOTICE: extension [${extname}] is not a core PostGIS extension\n";
+			}
 			next;
 		}
 
