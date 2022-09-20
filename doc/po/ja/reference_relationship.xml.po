@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-09-19 22:09+0000\n"
-"PO-Revision-Date: 2022-09-14 01:55+0000\n"
+"PO-Revision-Date: 2022-09-21 07:04+0000\n"
 "Last-Translator: Teramoto Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese <https://weblate.osgeo.org/projects/postgis/"
 "reference_relationshipxml/ja/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. Tag: para
 #: reference_relationship.xml:5
@@ -53,6 +53,9 @@ msgid ""
 "Tests if two geometries spatially intersect in 3D - only for points, "
 "linestrings, polygons, polyhedral surface (area)"
 msgstr ""
+"二つのジオメトリが3次元空間において空間的にインタセクトするかどうかをテストし"
+"ます。ポイント、ラインストリング、ポリゴン、多面体サーフェス "
+"(面)についてのみ動作します。"
 
 #. Tag: funcprototype
 #: reference_relationship.xml:23
